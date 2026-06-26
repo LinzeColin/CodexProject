@@ -5,6 +5,8 @@ import unittest
 from arxiv_daily_push.stage2_stress_e2e import (
     S2PMT05_BACKPRESSURE_HIGH_PRIORITY_SLO_SECONDS,
     S2PMT05_BACKPRESSURE_PEAK_MULTIPLIERS,
+    S2PMT05_CAPACITY_BASELINE_MAX_QUEUE_AGE_SECONDS,
+    S2PMT05_CAPACITY_BASELINE_MULTIPLIERS,
     S2PMT05_CLOCK_SKEW_TOLERANCE_SECONDS,
     S2PMT05_REPLAY_DAYS_REQUIRED,
     S2PMT05_REQUIRED_FINDINGS,
@@ -12,11 +14,13 @@ from arxiv_daily_push.stage2_stress_e2e import (
     S2PMT05_REQUIRED_PRODUCTION_FALSE_FLAGS,
     S2PMT05_SOAK_HOURS_REQUIRED,
     build_35_day_e2e_fixture,
+    build_capacity_baseline_model,
     build_fault_injection_matrix,
     build_result_validity_fixture,
     build_s2pmt05_report,
     build_workload_profile,
     evaluate_backpressure_policy,
+    evaluate_capacity_baseline_model,
     evaluate_dst_clock_policy,
     evaluate_load_stress_spike_soak,
     evaluate_result_validity,
@@ -39,6 +43,36 @@ class Stage2StressE2ETests(unittest.TestCase):
         self.assertGreater(profile["spike"]["shed_messages"], 0)
         self.assertFalse(profile["spike"]["durable_evidence_dropped"])
         self.assertTrue(evaluation["checks"]["sqlite_busy_policy_present"])
+
+    def test_capacity_baseline_model_covers_formal_load_stress_spike_and_soak_metrics(self) -> None:
+        baseline = build_capacity_baseline_model(generated_at="2026-07-04T06:00:00+10:00")
+
+        self.assertEqual(baseline["status"], "pass")
+        self.assertFalse(baseline["real_24h_wall_clock_run"])
+        self.assertEqual(set(baseline["required_multipliers"]), set(S2PMT05_CAPACITY_BASELINE_MULTIPLIERS))
+        self.assertEqual(baseline["max_queue_age_seconds"], S2PMT05_CAPACITY_BASELINE_MAX_QUEUE_AGE_SECONDS)
+        self.assertTrue(baseline["checks"]["load_stress_spike_soak_rows_present"])
+        self.assertTrue(baseline["checks"]["throughput_latency_queue_metrics_present"])
+        self.assertTrue(baseline["checks"]["queue_age_bounded_and_recoverable"])
+        self.assertTrue(baseline["checks"]["memory_disk_metrics_present"])
+        self.assertTrue(baseline["checks"]["error_rate_within_budget"])
+        rows = {row["phase"]: row for row in baseline["rows"]}
+        self.assertEqual(rows["soak"]["duration_hours"], S2PMT05_SOAK_HOURS_REQUIRED)
+        self.assertGreater(rows["spike"]["shed_rebuildable_items"], 0)
+        self.assertFalse(rows["spike"]["durable_evidence_dropped"])
+
+    def test_capacity_baseline_model_blocks_missing_peak_and_unbounded_queue(self) -> None:
+        baseline = build_capacity_baseline_model(generated_at="2026-07-04T06:00:00+10:00")
+        rows = [dict(row) for row in baseline["rows"] if not (row["phase"] == "spike" and row["multiplier"] == 5)]
+        rows[1]["max_queue_age_seconds"] = S2PMT05_CAPACITY_BASELINE_MAX_QUEUE_AGE_SECONDS + 1
+        rows[1]["min_free_disk_mb"] = 0
+
+        evaluation = evaluate_capacity_baseline_model(rows=rows)
+
+        self.assertEqual(evaluation["status"], "blocked")
+        self.assertFalse(evaluation["checks"]["required_multipliers_present"])
+        self.assertFalse(evaluation["checks"]["queue_age_bounded_and_recoverable"])
+        self.assertFalse(evaluation["checks"]["memory_disk_metrics_present"])
 
     def test_dual_scheduler_race_keeps_one_active_revision_per_mail_product(self) -> None:
         race = simulate_dual_scheduler_race(cycle_id="2026-07-04", trigger_count=100)
@@ -179,6 +213,8 @@ class Stage2StressE2ETests(unittest.TestCase):
         self.assertFalse(report["production_acceptance_claimed"])
         self.assertFalse(report["inherited_p0_p1_closed"])
         self.assertEqual(set(report["findings_covered"]), set(S2PMT05_REQUIRED_FINDINGS))
+        self.assertTrue(report["gates"]["capacity_baseline_model"])
+        self.assertEqual(report["findings_covered"]["B-006"], ["capacity_baseline_model", "load_stress_spike_soak"])
         self.assertTrue(report["gates"]["result_validity_semantic_evidence"])
         self.assertEqual(report["findings_covered"]["B-013"], ["result_validity_semantic_evidence"])
         self.assertTrue(report["backpressure_degradation"]["checks"]["covers_2x_and_5x_peak_profiles"])

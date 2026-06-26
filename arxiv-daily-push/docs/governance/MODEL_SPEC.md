@@ -7,7 +7,7 @@ machine_summary:
 
 - model_count: 106
 - formula_count: 108
-- parameter_count: 909
+- parameter_count: 912
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -28,6 +28,17 @@ Fact levels follow `docs/governance/STANDARD.md`.
   change public schema or DB, mutate production queues, change source adapters
   or ranking, edit CURRENT or V7.1/V7.2 contracts, close inherited P0/P1,
   enable DAILY_OPERATION, or claim integrated production acceptance.
+
+- `S2PMT05-CAPACITY-BASELINE-B006` refreshes `MOD-ADP-098` and
+  `FORM-ADP-100`. It adds a local formal capacity baseline gate for inherited
+  B-006 with load/stress/spike/soak rows, 1x/2x/5x multipliers,
+  throughput/latency/queue/memory/disk/error metrics, max queue age `1800`,
+  max error rate `0.001`, accelerated local 24h soak, and rebuildable-only
+  spike shedding. It does not run a real production load test, enable SMTP,
+  install scheduler, upload Release, change public schema or DB, mutate
+  production queues, change source adapters or ranking, edit CURRENT or
+  V7.1/V7.2 contracts, close inherited P0/P1, enable DAILY_OPERATION, or claim
+  integrated production acceptance.
 
 - `S1P5T04` imported the V6 task-numbering roadmap and recorded two
   controlled GitHub/cloud-runner Gmail SMTP send artifacts from run

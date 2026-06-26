@@ -46,8 +46,10 @@ This project follows the root `AGENTS.md` and `docs/governance/STANDARD.md`.
   completion receipts, low-disk cache degradation, whitelist/symlink guarded
   dry-run cache cleanup, parseable launchd plist generation, and no production
   side effects. `S2PMT05` local stress/fault/time/E2E evidence covers
-  deterministic load/stress/spike profiles, accelerated local 24h soak coverage,
-  dual scheduler race protection, SMTP crash-window handling, ENOSPC/read-only/
+  formal capacity baseline rows, deterministic load/stress/spike profiles,
+  accelerated local 24h soak coverage, bounded recoverable queue age, 1x/2x/5x
+  multipliers, throughput/latency/memory/disk/error-budget evidence, dual
+  scheduler race protection, SMTP crash-window handling, ENOSPC/read-only/
   SQLITE_BUSY/corrupt-artifact fault injection, Australia/Sydney DST and clock
   skew policy, 35-day 3+1/weekly/monthly/review/action/ROI E2E count
   conservation, semantic/evidence-bound non-template result validity, 2x/5x

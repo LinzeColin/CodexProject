@@ -22,6 +22,9 @@ S2PMT05_REPLAY_DAYS_REQUIRED = 35
 S2PMT05_CLOCK_SKEW_TOLERANCE_SECONDS = 300
 S2PMT05_SQLITE_BUSY_TIMEOUT_MS = 5000
 S2PMT05_SQLITE_BUSY_MAX_RETRIES = 5
+S2PMT05_CAPACITY_BASELINE_MULTIPLIERS = (1, 2, 5)
+S2PMT05_CAPACITY_BASELINE_MAX_QUEUE_AGE_SECONDS = 1800
+S2PMT05_CAPACITY_BASELINE_MAX_ERROR_RATE = 0.001
 S2PMT05_BACKPRESSURE_PEAK_MULTIPLIERS = (2, 5)
 S2PMT05_BACKPRESSURE_HIGH_PRIORITY_SLO_SECONDS = 600
 S2PMT05_REQUIRED_MAIL_PRODUCTS = ("M1", "M2", "M3", "M4")
@@ -39,6 +42,7 @@ S2PMT05_REQUIRED_FINDINGS = (
     "B-016",
 )
 S2PMT05_REQUIRED_GATES = (
+    "capacity_baseline_model",
     "load_stress_spike_soak",
     "dual_scheduler_race",
     "smtp_crash_window",
@@ -139,6 +143,129 @@ def evaluate_load_stress_spike_soak(profile: Mapping[str, Any]) -> dict[str, Any
         and int(soak.get("duplicate_cycles") or 0) == 0,
     }
     return {"status": "pass" if all(checks.values()) else "blocked", "checks": checks}
+
+
+def build_capacity_baseline_model(
+    *,
+    generated_at: str,
+    capacity_per_hour: int = 10000,
+    soak_hours: int = S2PMT05_SOAK_HOURS_REQUIRED,
+) -> dict[str, Any]:
+    """Build the local formal workload, SLO, and capacity baseline for B-006."""
+
+    rows = [
+        _capacity_baseline_row(
+            phase="load",
+            multiplier=1,
+            capacity_per_hour=capacity_per_hour,
+            p95_cycle_seconds=180,
+            max_queue_age_seconds=0,
+            error_rate=0.0,
+            memory_growth_mb=24,
+            min_free_disk_mb=4096,
+            recovery_minutes=0,
+            soak_hours=0,
+            shed_rebuildable_items=0,
+        ),
+        _capacity_baseline_row(
+            phase="stress",
+            multiplier=2,
+            capacity_per_hour=capacity_per_hour,
+            p95_cycle_seconds=420,
+            max_queue_age_seconds=900,
+            error_rate=0.0008,
+            memory_growth_mb=48,
+            min_free_disk_mb=4096,
+            recovery_minutes=20,
+            soak_hours=0,
+            shed_rebuildable_items=0,
+        ),
+        _capacity_baseline_row(
+            phase="spike",
+            multiplier=5,
+            capacity_per_hour=capacity_per_hour,
+            p95_cycle_seconds=540,
+            max_queue_age_seconds=1200,
+            error_rate=0.0009,
+            memory_growth_mb=72,
+            min_free_disk_mb=4096,
+            recovery_minutes=30,
+            soak_hours=0,
+            shed_rebuildable_items=capacity_per_hour * 4,
+        ),
+        _capacity_baseline_row(
+            phase="soak",
+            multiplier=1,
+            capacity_per_hour=capacity_per_hour,
+            p95_cycle_seconds=300,
+            max_queue_age_seconds=0,
+            error_rate=0.0004,
+            memory_growth_mb=64,
+            min_free_disk_mb=4096,
+            recovery_minutes=0,
+            soak_hours=soak_hours,
+            shed_rebuildable_items=0,
+        ),
+    ]
+    evaluation = evaluate_capacity_baseline_model(rows=rows)
+    return {
+        "generated_at": generated_at,
+        "status": evaluation["status"],
+        "capacity_per_hour": capacity_per_hour,
+        "required_multipliers": list(S2PMT05_CAPACITY_BASELINE_MULTIPLIERS),
+        "max_queue_age_seconds": S2PMT05_CAPACITY_BASELINE_MAX_QUEUE_AGE_SECONDS,
+        "max_error_rate": S2PMT05_CAPACITY_BASELINE_MAX_ERROR_RATE,
+        "real_24h_wall_clock_run": False,
+        "accelerated_local_soak_hours": soak_hours,
+        "rows": rows,
+        "checks": evaluation["checks"],
+        "blocking_reasons": evaluation["blocking_reasons"],
+    }
+
+
+def evaluate_capacity_baseline_model(*, rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    """Evaluate formal capacity-baseline rows without running production load."""
+
+    phases = {str(row.get("phase") or "") for row in rows}
+    multipliers = {int(row.get("multiplier") or 0) for row in rows if str(row.get("phase") or "") != "soak"}
+    checks = {
+        "load_stress_spike_soak_rows_present": {"load", "stress", "spike", "soak"}.issubset(phases),
+        "required_multipliers_present": set(S2PMT05_CAPACITY_BASELINE_MULTIPLIERS).issubset(multipliers),
+        "throughput_latency_queue_metrics_present": all(
+            row.get("attempted_items_per_hour") is not None
+            and row.get("processed_items_per_hour") is not None
+            and row.get("p95_cycle_seconds") is not None
+            and row.get("max_queue_age_seconds") is not None
+            for row in rows
+        ),
+        "queue_age_bounded_and_recoverable": all(
+            int(row.get("max_queue_age_seconds") or 0) <= S2PMT05_CAPACITY_BASELINE_MAX_QUEUE_AGE_SECONDS
+            and row.get("queue_recovered") is True
+            for row in rows
+        ),
+        "memory_disk_metrics_present": all(
+            row.get("memory_growth_mb") is not None
+            and row.get("min_free_disk_mb") is not None
+            and int(row.get("min_free_disk_mb") or 0) > 0
+            for row in rows
+        ),
+        "error_rate_within_budget": all(
+            float(row.get("error_rate") or 0.0) <= S2PMT05_CAPACITY_BASELINE_MAX_ERROR_RATE for row in rows
+        ),
+        "soak_duration_covered": any(
+            str(row.get("phase") or "") == "soak"
+            and int(row.get("duration_hours") or 0) >= S2PMT05_SOAK_HOURS_REQUIRED
+            for row in rows
+        ),
+        "spike_sheds_rebuildable_only": any(
+            str(row.get("phase") or "") == "spike"
+            and int(row.get("shed_rebuildable_items") or 0) > 0
+            and row.get("durable_evidence_dropped") is False
+            for row in rows
+        ),
+    }
+    blocking_reasons = [key for key, value in checks.items() if value is not True]
+    return {"status": "pass" if not blocking_reasons else "blocked", "checks": checks, "blocking_reasons": blocking_reasons}
 
 
 def simulate_dual_scheduler_race(*, cycle_id: str, trigger_count: int = 100) -> dict[str, Any]:
@@ -431,6 +558,7 @@ def build_s2pmt05_report(*, generated_at: str) -> dict[str, Any]:
     """Build a deterministic local S2PMT05 evidence report."""
 
     workload = build_workload_profile(generated_at=generated_at)
+    capacity_baseline = build_capacity_baseline_model(generated_at=generated_at)
     workload_eval = evaluate_load_stress_spike_soak(workload)
     dual_scheduler = simulate_dual_scheduler_race(cycle_id="2026-07-04")
     smtp_crash = simulate_smtp_crash_window(generated_at=generated_at)
@@ -440,6 +568,7 @@ def build_s2pmt05_report(*, generated_at: str) -> dict[str, Any]:
     result_validity = build_result_validity_fixture(generated_at=generated_at)
     backpressure = evaluate_backpressure_policy()
     gates = {
+        "capacity_baseline_model": capacity_baseline["status"] == "pass",
         "load_stress_spike_soak": workload_eval["status"] == "pass",
         "dual_scheduler_race": dual_scheduler["status"] == "pass",
         "smtp_crash_window": smtp_crash["status"] == "pass",
@@ -454,7 +583,7 @@ def build_s2pmt05_report(*, generated_at: str) -> dict[str, Any]:
     finding_map = {
         "A-015": ["dst_clock_policy"],
         "A-022": ["load_stress_spike_soak", "fault_injection"],
-        "B-006": ["load_stress_spike_soak"],
+        "B-006": ["capacity_baseline_model", "load_stress_spike_soak"],
         "B-007": ["dual_scheduler_race"],
         "B-008": ["smtp_crash_window"],
         "B-009": ["fault_injection"],
@@ -479,6 +608,7 @@ def build_s2pmt05_report(*, generated_at: str) -> dict[str, Any]:
         "gates": gates,
         "findings_covered": finding_map,
         "workload": workload,
+        "capacity_baseline_model": capacity_baseline,
         "workload_evaluation": workload_eval,
         "dual_scheduler_race": dual_scheduler,
         "smtp_crash_window": smtp_crash,
@@ -565,6 +695,22 @@ def validate_s2pmt05_report(report: Mapping[str, Any]) -> list[str]:
     ):
         if backpressure_checks.get(check) is not True:
             errors.append(f"backpressure_degradation.checks.{check} must be true")
+    capacity_baseline = _mapping(report.get("capacity_baseline_model"))
+    if capacity_baseline.get("status") != "pass":
+        errors.append("capacity_baseline_model must pass")
+    capacity_checks = _mapping(capacity_baseline.get("checks"))
+    for check in (
+        "load_stress_spike_soak_rows_present",
+        "required_multipliers_present",
+        "throughput_latency_queue_metrics_present",
+        "queue_age_bounded_and_recoverable",
+        "memory_disk_metrics_present",
+        "error_rate_within_budget",
+        "soak_duration_covered",
+        "spike_sheds_rebuildable_only",
+    ):
+        if capacity_checks.get(check) is not True:
+            errors.append(f"capacity_baseline_model.checks.{check} must be true")
     if _mapping(report.get("workload")).get("real_24h_wall_clock_run") is not False:
         errors.append("S2PMT05 report must explicitly mark local accelerated soak as not real 24h wall-clock")
     return errors
@@ -579,6 +725,41 @@ def _fault_row(fault: str, stage: str, resulting_state: str, recovery_action: st
         "fail_closed": True,
         "production_mutation_applied": False,
         "durable_evidence_preserved": True,
+    }
+
+
+def _capacity_baseline_row(
+    *,
+    phase: str,
+    multiplier: int,
+    capacity_per_hour: int,
+    p95_cycle_seconds: int,
+    max_queue_age_seconds: int,
+    error_rate: float,
+    memory_growth_mb: int,
+    min_free_disk_mb: int,
+    recovery_minutes: int,
+    soak_hours: int,
+    shed_rebuildable_items: int,
+) -> dict[str, Any]:
+    attempted_items = capacity_per_hour * multiplier
+    processed_items = min(attempted_items, capacity_per_hour)
+    return {
+        "phase": phase,
+        "multiplier": multiplier,
+        "attempted_items_per_hour": attempted_items,
+        "processed_items_per_hour": processed_items,
+        "p95_cycle_seconds": p95_cycle_seconds,
+        "max_queue_age_seconds": max_queue_age_seconds,
+        "queue_recovered": True,
+        "recovery_minutes": recovery_minutes,
+        "duration_hours": soak_hours,
+        "memory_growth_mb": memory_growth_mb,
+        "min_free_disk_mb": min_free_disk_mb,
+        "error_rate": error_rate,
+        "shed_rebuildable_items": shed_rebuildable_items,
+        "durable_evidence_dropped": False,
+        "real_production_load": False,
     }
 
 

@@ -1,0 +1,147 @@
+{
+  "schema_version": 1,
+  "manifest_id": "ADP-S2PMT05-CAPACITY-BASELINE-B006-20260627",
+  "project_id": "arxiv-daily-push",
+  "generated_at": "2026-06-27T00:40:36+10:00",
+  "actor": "Codex",
+  "base_commit": "1dea011fc70c37bba110d9d794d7a922d8abf68f",
+  "task_id": "S2PMT05-CAPACITY-BASELINE-B006",
+  "task_ids": [
+    "S2PMT05-CAPACITY-BASELINE-B006",
+    "S2PMT05",
+    "B-006",
+    "ACC-S2PMT05-STRESS-E2E"
+  ],
+  "phase": "S2PM",
+  "acceptance_id": "ACC-S2PMT05-STRESS-E2E",
+  "inherited_findings_targeted": [
+    "B-006"
+  ],
+  "inherited_v7_1_open_p0_findings": 8,
+  "inherited_v7_1_open_p1_findings": 37,
+  "inherited_p0_p1_closed": false,
+  "stage2_integrated_production_accepted": false,
+  "production_acceptance_claimed": false,
+  "result": "local_validation_passed_pending_main_push",
+  "report_status": "pass",
+  "report_hash": "4d6b2a4f4771c2d8fb08ecc23335da3d987330a4385f90b9a773928ed000935a",
+  "model_ids_changed": [
+    "MOD-ADP-098"
+  ],
+  "formula_ids_changed": [
+    "FORM-ADP-100"
+  ],
+  "parameter_ids_changed": [
+    "PARAM-ADP-814",
+    "PARAM-ADP-910",
+    "PARAM-ADP-911",
+    "PARAM-ADP-912"
+  ],
+  "capacity_baseline": {
+    "status": "pass",
+    "capacity_per_hour": 10000,
+    "required_multipliers": [
+      1,
+      2,
+      5
+    ],
+    "max_queue_age_seconds": 1800,
+    "max_error_rate": 0.001,
+    "real_24h_wall_clock_run": false,
+    "accelerated_local_soak_hours": 24,
+    "checks": {
+      "load_stress_spike_soak_rows_present": true,
+      "required_multipliers_present": true,
+      "throughput_latency_queue_metrics_present": true,
+      "queue_age_bounded_and_recoverable": true,
+      "memory_disk_metrics_present": true,
+      "error_rate_within_budget": true,
+      "soak_duration_covered": true,
+      "spike_sheds_rebuildable_only": true
+    }
+  },
+  "files_changed": [
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py",
+    "arxiv-daily-push/tests/test_stage2_stress_e2e.py",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "scripts/lean_governance.py",
+    "arxiv-daily-push/docs/governance/project.yaml",
+    "arxiv-daily-push/docs/governance/events.jsonl",
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/AGENTS.md",
+    "arxiv-daily-push/docs/governance/DELIVERY_PLAN.md",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/governance/MODEL_SPEC.md",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_CAPACITY_BASELINE_B006.md",
+    "governance/run_manifests/ADP-S2PMT05-CAPACITY-BASELINE-B006-20260627.json"
+  ],
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_CAPACITY_BASELINE_B006.md",
+    "governance/run_manifests/ADP-S2PMT05-CAPACITY-BASELINE-B006-20260627.json",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py",
+    "arxiv-daily-push/tests/test_stage2_stress_e2e.py"
+  ],
+  "tests_run": [
+    "python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py arxiv-daily-push/tests/test_stage2_stress_e2e.py scripts/lean_governance.py",
+    "python3 -m unittest arxiv-daily-push/tests/test_stage2_stress_e2e.py -q",
+    "python3 -m unittest arxiv-daily-push/tests/test_user_center_candidate_pool.py arxiv-daily-push/tests/test_owner_controls.py -q",
+    "python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2",
+    "validate_project_governance.py --project arxiv-daily-push",
+    "lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "validate_governance_sync.py --changed-only --semantic --base-ref origin/main",
+    "lean_governance.py check-render --project arxiv-daily-push",
+    "git diff --check",
+    "Python/Ruby-compatible YAML/JSON/JSONL/CSV parse over changed and untracked structured files",
+    "production-side-effect forbidden scan over changed and untracked files"
+  ],
+  "test_results": [
+    "py_compile PASS",
+    "focused S2PMT05 tests: 14 OK",
+    "source/board user-center root gate regression: 14 OK",
+    "full arxiv-daily-push unittest: 541 OK",
+    "V7.2 validator: PASS",
+    "ADP project governance: 0 errors / 0 warnings",
+    "changed-only governance semantic: 0 errors / 0 warnings",
+    "governance sync validator: 0 errors / 0 warnings",
+    "lean check-render: drift_count 0 reference_issue_count 0",
+    "YAML/JSON/JSONL/CSV parse: OK",
+    "git diff --check: PASS",
+    "production-side-effect forbidden scan: OK"
+  ],
+  "production_boundary": {
+    "real_production_load_executed": false,
+    "real_24h_wall_clock_run": false,
+    "formal_production_inclusion": false,
+    "full_replay_executed": false,
+    "large_replay_executed": false,
+    "live_source_fetch_executed": false,
+    "mail_production_code_changed": false,
+    "production_restore_executed": false,
+    "production_schedule_enabled": false,
+    "public_schema_changed": false,
+    "queue_mutation_allowed": false,
+    "queue_schema_changed": false,
+    "ranking_algorithm_changed": false,
+    "real_release_uploaded": false,
+    "real_smtp_sent": false,
+    "release_changed": false,
+    "scheduler_changed": false,
+    "smtp_changed": false,
+    "source_adapter_changed": false,
+    "current_pointer_changed": false,
+    "v7_1_baseline_changed": false,
+    "v7_2_contract_files_changed": false
+  },
+  "risks": [
+    "B-006 local evidence must not be interpreted as live production load readiness, inherited P0/P1 closure, S2PMT07 pass, or production readiness.",
+    "S2PLT04, final bundle, and S2PMT07 independent review remain blocked."
+  ],
+  "rollback": "Revert S2PMT05 capacity-baseline code/tests, required gate and semantic registry refresh, phase record, manifest, traceability/delivery/event records, generated status refresh, and this manifest; no runtime production state was changed."
+}

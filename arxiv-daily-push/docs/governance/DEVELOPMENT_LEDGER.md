@@ -10,11 +10,32 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.1
 - Current phase: S2PM
-- Current gate: S2PMT05_B014_BACKPRESSURE_PRIORITY_LOCAL_VALIDATION_NO_PRODUCTION
-- Confirmed iteration count: 127
+- Current gate: S2PMT05_B006_CAPACITY_BASELINE_LOCAL_VALIDATION_NO_PRODUCTION
+- Confirmed iteration count: 128
 - Reconstructed event count: 0
-- Current task: `S2PMT05-BACKPRESSURE-B014` records local inherited P1 B-014 remediation evidence. S2PMT05 backpressure now requires 2x/5x peak profiles, high-priority work inside a 600 second SLO, explicit low-priority delay/drop reason codes, durable evidence preservation, and rebuildable-only shedding. This does not close inherited P0/P1, does not change live mail production, and does not supersede later S2PL blocked prechecks. `S2PMT07` remains the final production gate and is still blocked by inherited P0/P1, S2PLT04, final bundle, independent signoff, and independent final command execution. No CURRENT, V7.1/V7.2 contract file, production replay, real production backup/restore/email, real SMTP, scheduler installation, Release, DB migration, public schema, production queue, source adapter, ranking, inherited P0/P1 closure, DAILY_OPERATION, or integrated production acceptance state changed. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
+- Current task: `S2PMT05-CAPACITY-BASELINE-B006` records local inherited P1 B-006 remediation evidence. S2PMT05 capacity baseline now requires load/stress/spike/soak rows, 1x/2x/5x multipliers, throughput/latency/queue/memory/disk/error metrics, bounded recoverable queue age, accelerated local 24h soak, and rebuildable-only spike shedding. This does not close inherited P0/P1, does not change live mail production, and does not supersede later S2PL blocked prechecks. `S2PMT07` remains the final production gate and is still blocked by inherited P0/P1, S2PLT04, final bundle, independent signoff, and independent final command execution. No CURRENT, V7.1/V7.2 contract file, production replay, real production backup/restore/email, real SMTP, scheduler installation, Release, DB migration, public schema, production queue, source adapter, ranking, inherited P0/P1 closure, DAILY_OPERATION, or integrated production acceptance state changed. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
+
+### `ITER-20260627-ADP-S2PMT05-CAPACITY-BASELINE-B006`
+
+- Timestamp: `2026-06-27T00:40:36+10:00`
+- Fact level: EXTRACTED from S2PMT05 capacity-baseline code, focused tests, FORM-ADP-100 semantic refresh, PARAM-ADP-814/PARAM-ADP-910/PARAM-ADP-911/PARAM-ADP-912 registration, phase record, and run manifest.
+- Base commit: `1dea011fc70c37bba110d9d794d7a922d8abf68f`
+- Product version: `0.23.1`
+- Status: local validation passed pending main push.
+- Phase: S2PM
+- Task IDs: `S2PMT05-CAPACITY-BASELINE-B006`; parent `S2PMT05`; inherited finding `B-006`; acceptance `ACC-S2PMT05-STRESS-E2E`.
+- Goal: Remediate inherited B-006 locally by making S2PMT05 require a formal capacity baseline with load/stress/spike/soak rows, 1x/2x/5x multipliers, bounded recoverable queue age, throughput/latency/memory/disk/error evidence, accelerated local 24h soak, and rebuildable-only spike shedding.
+- Files changed: S2PMT05 stress/fault/time/E2E helper, focused tests, MOD-ADP-098/FORM-ADP-100/PARAM-ADP-814/PARAM-ADP-910/PARAM-ADP-911/PARAM-ADP-912 refresh, phase record, run manifest, changelog/status/owner/traceability/delivery/event records, and this ledger entry.
+- Model changes: Reused `MOD-ADP-098`; existing S2PMT05 local stress/fault/time/E2E model now includes formal local capacity baseline and SLO evidence.
+- Formula changes: Refreshed `FORM-ADP-100` to require capacity baseline rows, required multipliers, bounded recoverable queue age, memory/disk/error-rate metrics, local accelerated soak coverage, and rebuildable-only spike shedding.
+- Parameter changes: Refreshed `PARAM-ADP-814` to require `capacity_baseline_model`; added `PARAM-ADP-910` for multipliers `1;2;5`; added `PARAM-ADP-911` for max queue age `1800`; added `PARAM-ADP-912` for max error rate `0.001`.
+- Validation: py_compile PASS; focused S2PMT05 tests: 14 OK; source/board user-center root gate regression: 14 OK; full arxiv-daily-push unittest: 541 OK; V7.2 validator: PASS; ADP project governance: 0 errors / 0 warnings; changed-only governance semantic: 0 errors / 0 warnings; governance sync validator: 0 errors / 0 warnings; lean check-render: drift_count 0 reference_issue_count 0; YAML/JSON/JSONL/CSV parse: OK; git diff --check: PASS; production-side-effect forbidden scan: OK.
+- Decisions: This is a local B-006 remediation gate only. It does not run real production load, enable SMTP, install scheduler, upload Release, mutate public schema/DB/production queue, change source adapters or ranking, edit CURRENT or V7.1/V7.2 contracts, close inherited P0/P1, enable DAILY_OPERATION, or claim integrated production acceptance.
+- Remaining risks: Independent review must still verify B-006 closure. Inherited V7.1 P0=8/P1=37 remain open until S2PMT07 closes them with final independent evidence.
+- Rollback: Revert S2PMT05 capacity-baseline code/tests, FORM-ADP-100/PARAM-ADP-814/PARAM-ADP-910/PARAM-ADP-911/PARAM-ADP-912 refresh, phase record, manifest, changelog/status/owner/traceability/delivery/event records, and this ledger entry; no runtime production state was changed.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_CAPACITY_BASELINE_B006.md`; `governance/run_manifests/ADP-S2PMT05-CAPACITY-BASELINE-B006-20260627.json`; `arxiv-daily-push/tests/test_stage2_stress_e2e.py`.
+- Next step: Run final validation, commit, push directly to `main` if safe, and continue inherited P0/P1 remediation or S2PMT07 independent review under no-production boundaries.
 
 ### `ITER-20260627-ADP-S2PMT05-BACKPRESSURE-B014`
 
