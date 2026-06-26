@@ -9,6 +9,7 @@ class StateMachineTests(unittest.TestCase):
     def test_run_record_initial_state_is_valid(self) -> None:
         record = initial_run_record("run-001", "2026-06-21", "Australia/Sydney")
 
+        self.assertEqual(record["state_history"][0]["at"], "2026-06-21T00:00:00+10:00")
         self.assertEqual(validate_run_record(record), [])
 
     def test_transition_appends_history_and_sets_running_status(self) -> None:
@@ -51,6 +52,30 @@ class StateMachineTests(unittest.TestCase):
         errors = validate_run_record(updated)
 
         self.assertIn("RunRecord.current_state must match state_history last to_state", errors)
+
+    def test_validate_run_record_rejects_missing_history_reason_or_at(self) -> None:
+        record = initial_run_record("run-001", "2026-06-21", "Australia/Sydney")
+        record["state_history"][0]["reason"] = ""
+        record["state_history"][0]["at"] = ""
+
+        errors = validate_run_record(record)
+
+        self.assertIn("RunRecord.state_history[0].reason is required", errors)
+        self.assertIn("RunRecord.state_history[0].at is required", errors)
+
+    def test_validate_run_record_rejects_unparseable_or_decreasing_history_at(self) -> None:
+        record = initial_run_record("run-001", "2026-06-21", "Australia/Sydney")
+        updated = transition_run_record(record, "health_checked", reason="doctor pass", at="2026-06-21T04:45:00+10:00")
+        updated = transition_run_record(updated, "source_collected", reason="source ready", at="2026-06-21T04:44:59+10:00")
+
+        errors = validate_run_record(updated)
+
+        self.assertIn("RunRecord.state_history[2].at must be non-decreasing", errors)
+
+        updated["state_history"][2]["at"] = "not-a-time"
+        errors = validate_run_record(updated)
+
+        self.assertIn("RunRecord.state_history[2].at must be an ISO timestamp", errors)
 
     def test_validate_run_record_checks_nested_contracts(self) -> None:
         record = initial_run_record("run-001", "2026-06-21", "Australia/Sydney")
