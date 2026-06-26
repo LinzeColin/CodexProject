@@ -14,6 +14,10 @@ import {
 } from "lucide-react";
 import { ACTIVE_ANALYSIS_CONTEXT } from "../analysis-contract";
 import { BrandMark } from "../brand-mark";
+import {
+  OperatorReceiptLedgerPanel,
+  type OperatorReceiptLedgerRecord
+} from "../operator-receipt-ledger-client";
 
 type CsvRow = Record<string, string>;
 
@@ -121,6 +125,9 @@ export default function DevelopmentStatusPage() {
   const gates = readCsv("release_gate_catalog.csv");
   const operatorInputs = readArtifactJson<OperatorInputStatus>(
     "operator_inputs/operator_input_status.json"
+  );
+  const operatorReceiptLedger = readArtifactJson<OperatorReceiptLedgerRecord>(
+    "operator_inputs/operator_input_submission_receipts.json"
   );
 
   const lanes: StatusLane[] = [
@@ -309,6 +316,13 @@ export default function DevelopmentStatusPage() {
             <ShieldAlert size={16} aria-hidden="true" />
             <span>operator gates</span>
           </a>
+          <a
+            data-testid="status-link-operator-receipts"
+            href={`${githubArtifactRoot}/operator_inputs/operator_input_submission_receipts.json`}
+          >
+            <FileCheck2 size={16} aria-hidden="true" />
+            <span>operator receipts</span>
+          </a>
         </section>
 
         <section className="statusPanels">
@@ -335,6 +349,11 @@ export default function DevelopmentStatusPage() {
               ))}
             </div>
           </article>
+
+          <OperatorReceiptLedgerPanel
+            evidenceHref={`${githubArtifactRoot}/operator_inputs/operator_input_submission_receipts.json`}
+            initialLedger={operatorReceiptLedger}
+          />
 
           <article data-testid="status-ledger-panel">
             <header>

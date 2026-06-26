@@ -1715,7 +1715,7 @@ dd {
 
 .evidenceLinks {
   display: grid;
-  grid-template-columns: repeat(5, minmax(150px, 1fr));
+  grid-template-columns: repeat(6, minmax(140px, 1fr));
   gap: 10px;
 }
 
@@ -1758,6 +1758,26 @@ dd {
 
 .statusPanels h2 {
   font-size: 18px;
+}
+
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  margin-left: auto;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #ffffff;
+  color: #134aa1;
+  cursor: pointer;
+}
+
+.iconButton:disabled {
+  color: var(--muted);
+  cursor: wait;
+  opacity: 0.7;
 }
 
 .statusTable {

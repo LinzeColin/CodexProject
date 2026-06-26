@@ -6,7 +6,7 @@ EEI 当前治理结论：实现一致性为 `VERIFIED`，方法/实证为 `UNVER
 
 ## 2. 本次运行改变了什么
 
-Owner 视图现在记录 T1303/A204-A205 operator input submission preflight、receipt 与 receipt ledger：`/v1/release/operator-input-submission-preflight` 可对已登记的 A202/A210/A026/A027/A209 输入返回 dry-run/manual-command-only validator dispatch plan；`/v1/release/operator-input-submission-receipt` 可在 operator 文件已放置且 hash 匹配时返回 hash-bound receipt 并写入受控 ledger；`/v1/release/operator-input-submission-receipts` 可读回 ledger。ledger 支持重复相同 receipt 幂等和 `expected_previous_receipt_id` 冲突控制，但仍不写 operator 输入文件、不执行 validators、不关闭 release gate。`/v1/release/operator-input-status` 和 `/development-status` 仍显示 6 个必需外部输入全部缺失、6 个专用 validator contract 已注册但尚未运行，release-manager/MVP refresh 仍被阻断。A209 live-rerun monitor hardening 仍保留为背景稳定性证据；本次不停止、重启、resume、promote 或 finalize A209。
+Owner 视图现在记录 T1303/A204-A205 operator input submission preflight、receipt、receipt ledger 与前端 readback：`/v1/release/operator-input-submission-preflight` 可对已登记的 A202/A210/A026/A027/A209 输入返回 dry-run/manual-command-only validator dispatch plan；`/v1/release/operator-input-submission-receipt` 可在 operator 文件已放置且 hash 匹配时返回 hash-bound receipt 并写入受控 ledger；`/v1/release/operator-input-submission-receipts` 可读回 ledger。`/development-status` 现在显示 Operator Receipt Ledger 面板，默认读取 committed ledger artifact，在配置 `eei.apiBaseUrl.v1` 或 `NEXT_PUBLIC_EEI_API_BASE_URL` 后可 hydrate 真实 API readback 并用 refresh icon 手动刷新。ledger 支持重复相同 receipt 幂等和 `expected_previous_receipt_id` 冲突控制，但仍不写 operator 输入文件、不执行 validators、不关闭 release gate。`/v1/release/operator-input-status` 和 `/development-status` 仍显示 6 个必需外部输入全部缺失、6 个专用 validator contract 已注册但尚未运行，release-manager/MVP refresh 仍被阻断。A209 live-rerun monitor hardening 仍保留为背景稳定性证据；本次不停止、重启、resume、promote 或 finalize A209。
 
 ## 3. 为什么重要
 
@@ -39,7 +39,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (94/94 active parameters, 11/11 active formulas)
+- implementation_congruence: `VERIFIED` (97/97 active parameters, 11/11 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `UNVERIFIED`
 - empirical_validation: `PARTIAL`
@@ -71,14 +71,14 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - model_count: `12`
 - total_formulas: `12`
 - active_formulas: `11`
-- total_parameters: `95`
-- active_parameters: `95`
+- total_parameters: `97`
+- active_parameters: `97`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `TASK-T1303-OPERATOR-INPUT-STATUS-API-FRONTEND-BINDING`
+- release_gate: `TASK-T1303-OPERATOR-RECEIPT-LEDGER-FRONTEND-BINDING`
 
 ## 14. Evidence Freshness
 
@@ -101,7 +101,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - snapshot_event_time: `2026-06-27T01:17:20+10:00`
 - generator_version: `4.0.0`
 - version: `0.1.0`
-- phase/gate: `D / TASK-T1303-OPERATOR-INPUT-STATUS-API-FRONTEND-BINDING`
+- phase/gate: `D / TASK-T1303-OPERATOR-RECEIPT-LEDGER-FRONTEND-BINDING`
 
 ## 17. Next Unique Task
 

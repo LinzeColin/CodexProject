@@ -1,5 +1,47 @@
 # MVP Development Record
 
+## 2026-06-27 - T1303/A204-A205 operator receipt ledger frontend binding
+
+Status: LOCAL TARGET VALIDATED; WAITING FOR OPERATOR INPUTS; RELEASE GATES STILL BLOCKED
+
+### Scope
+
+- Added `OperatorReceiptLedgerPanel` to `/development-status`.
+- The panel reads `artifacts/operator_inputs/operator_input_submission_receipts.json` as the committed local fallback evidence.
+- The panel hydrates `GET /v1/release/operator-input-submission-receipts` when `eei.apiBaseUrl.v1` or `NEXT_PUBLIC_EEI_API_BASE_URL` is configured.
+- The refresh control is read-only and only re-fetches ledger readback; it does not upload files, execute validators, mutate the ledger, write operator evidence or close gates.
+- Added the `operator receipts` evidence link and E2E coverage for local fallback plus API hydration.
+
+### Acceptance Mapping
+
+- T1303 -> A204/A205.
+- This improves release-manager evidence visibility and frontend/API readback readiness only. It does not close A204/A205.
+
+### Validation
+
+- `npx --yes pnpm@11.8.0 --filter @eei/web typecheck`: PASS.
+- `PLAYWRIGHT_BROWSERS_PATH=/private/tmp/eei-ms-playwright ./apps/web/node_modules/.bin/playwright test --config=playwright.config.ts tests/e2e/development-status.spec.ts --workers=1`: PASS, `3/3`.
+- `.venv/bin/uv run python scripts/validate_ui_copy.py`: PASS after replacing visible `gate open/closed` copy with `release open/closed`.
+- `python3 scripts/validate_semantic_extractors.py EEI`: PASS, `semantic_parameters_checked=97`, `semantic_formulas_checked=11`.
+- `make generate-clean-room-release validate-clean-room-release generate-release-artifacts validate-release-artifacts`: PASS, `package_paths=458`, `manifest_paths=465`, `checksum_paths=464`.
+- `PLAYWRIGHT_BROWSERS_PATH=/private/tmp/eei-ms-playwright make verify`: PASS, unit tests `169/169`.
+- Clean-worktree Project Governance changed-only semantic reproduction: PASS, errors `0`, warnings `0`.
+- Remote CI is pending for this event until the current iteration closes.
+
+### Non-Claims
+
+- This does not create signed operator inputs.
+- This does not upload, modify or certify operator evidence files.
+- This does not execute dedicated validator commands.
+- This does not activate release-manager refresh, MVP refresh or any publication path.
+- This does not close A202, A210, A026, A027, A209, A204, A205 or MVP release readiness.
+- No database schema, scoring formula, graph traversal formula, extraction model, model weight, threshold, publication policy or active parameter value changed.
+
+### Rollback
+
+- Revert `apps/web/src/app/operator-receipt-ledger-client.tsx`, the `/development-status` receipt ledger import/panel/evidence link, `globals.css` icon button rules, the added Playwright assertions and companion governance/release artifact changes.
+- Preserve `artifacts/operator_inputs/operator_input_submission_receipts.json`, the existing receipt-ledger API and any future real signed operator files under `artifacts/operator_inputs/`.
+
 ## 2026-06-27 - T1303/A204-A205 operator input submission preflight
 
 Status: LOCAL TARGET VALIDATED; WAITING FOR OPERATOR INPUTS; RELEASE GATES STILL BLOCKED

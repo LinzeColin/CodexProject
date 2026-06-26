@@ -11,6 +11,7 @@ source_policy: "Canonical CodexProject governance source generated from EEI data
 # 2026-06-26 audit: T1308/A211 app icon and BrandMark refresh updates app-shell branding only; model definitions, scoring behavior, formulas, weights and active thresholds are unchanged.
 # 2026-06-27 audit: T1303/A204-A205 operator input validator contracts update operational release-gate metadata only; model definitions, scoring behavior, formulas, weights and active thresholds are unchanged.
 # 2026-06-27 audit: T1303/A204-A205 operator input submission preflight, receipt and receipt ledger add dry-run/hash-bound API intake responses and ledger persistence only; model definitions, scoring behavior, formulas, weights and active thresholds are unchanged.
+# 2026-06-27 audit: T1303/A204-A205 operator receipt ledger frontend readback binds local artifact fallback and API hydration only; model definitions, scoring behavior, formulas, weights and active thresholds are unchanged.
 assumptions:
   - assumption_id: "ASM-001"
     statement: "Scores are research prioritization and explanation aids, not investment return probabilities."
@@ -630,7 +631,7 @@ models:
   - model_id: "MOD-012"
     name: "运行、视觉与校准阈值控制"
     kind: "deterministic_configuration_rule"
-    purpose: "Provide non-scoring operational thresholds for refresh, visual coverage, motion timing, calibration controls, soak windows, review-packet gates, release-decision bundle schema validation/publication binding, signed-intake source-boundary controls, gold-quality evaluation/intake gates, fail-closed operator-input release blocker visibility, dry-run operator-input submission preflight dispatch and operator-input receipt ledger persistence."
+    purpose: "Provide non-scoring operational thresholds for refresh, visual coverage, motion timing, calibration controls, soak windows, review-packet gates, release-decision bundle schema validation/publication binding, signed-intake source-boundary controls, gold-quality evaluation/intake gates, fail-closed operator-input release blocker visibility, dry-run operator-input submission preflight dispatch, operator-input receipt ledger persistence and read-only receipt-ledger frontend readback."
     owner: "model owner"
     status: "active"
     fact_level: "RECONSTRUCTED"
@@ -708,7 +709,7 @@ models:
       - "max_value"
     outputs:
       - "validated operational parameter value"
-    methodology: "Deterministic lookup and range validation from parameter_catalog rows plus machine-verified threshold, motion, frontend hydration guard, signed-intake source-boundary, gold-quality validation/intake, external release operator intake packet, operator input status/validator-contract, operator input submission preflight, operator input submission receipt and receipt-ledger surfaces without legacy formula_id."
+    methodology: "Deterministic lookup and range validation from parameter_catalog rows plus machine-verified threshold, motion, frontend hydration guard, signed-intake source-boundary, gold-quality validation/intake, external release operator intake packet, operator input status/validator-contract, operator input submission preflight, operator input submission receipt, receipt-ledger and receipt-ledger frontend readback surfaces without legacy formula_id."
     code_refs:
       - "EEI/data/parameter_catalog.csv:43-84"
       - "EEI/scripts/run_operator_soak.mjs"
@@ -748,6 +749,7 @@ models:
       - "operator input submission preflight returns manual dispatch plans only and cannot write evidence or execute validators"
       - "operator input submission receipt returns hash-bound intake receipts only and cannot write evidence, execute validators or close release gates"
       - "operator input receipt ledger stores receipt attempts idempotently and cannot write evidence, execute validators or close release gates"
+      - "operator receipt ledger frontend readback displays local/API ledger state and cannot upload files, mutate evidence or close release gates"
     failure_modes:
       - "missing runtime motion config"
       - "threshold out of schema range"

@@ -41,9 +41,9 @@ parameter_profile_versions:
   operator-input-submission-receipt: "1"
   operator-input-submission-receipt-ledger: "1"
 data_snapshot_version: "task-pack-v4.2.0-2026-06-19"
-current_iteration: "ITER-20260627-021"
+current_iteration: "ITER-20260627-022"
 current_phase: "D"
-current_gate: "TASK-T1303-OPERATOR-INPUT-SUBMISSION-RECEIPT-LEDGER"
+current_gate: "TASK-T1303-OPERATOR-RECEIPT-LEDGER-FRONTEND-BINDING"
 version_file_value: "0.1.0"
 legacy_version_labels:
   - "v4.2.0"

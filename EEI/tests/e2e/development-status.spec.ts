@@ -44,6 +44,7 @@ test("links tasks risks controls and acceptance evidence from the status screen"
   await expect(page.getByTestId("status-linked-evidence")).toContainText("controls");
   await expect(page.getByTestId("status-linked-evidence")).toContainText("acceptance evidence");
   await expect(page.getByTestId("status-linked-evidence")).toContainText("operator gates");
+  await expect(page.getByTestId("status-linked-evidence")).toContainText("operator receipts");
   await expect(page.getByTestId("status-link-tasks")).toHaveAttribute("href", /task_backlog\.csv/);
   await expect(page.getByTestId("status-link-risks")).toHaveAttribute("href", /risk_register\.csv/);
   await expect(page.getByTestId("status-link-controls")).toHaveAttribute(
@@ -57,6 +58,10 @@ test("links tasks risks controls and acceptance evidence from the status screen"
   await expect(page.getByTestId("status-link-operator-inputs")).toHaveAttribute(
     "href",
     /operator_input_status\.json/
+  );
+  await expect(page.getByTestId("status-link-operator-receipts")).toHaveAttribute(
+    "href",
+    /operator_input_submission_receipts\.json/
   );
 
   await expect(page.getByTestId("status-operator-gates-panel")).toContainText("A202");
@@ -74,6 +79,17 @@ test("links tasks risks controls and acceptance evidence from the status screen"
   await expect(page.getByTestId("status-operator-gates-panel")).toContainText(
     "operator input target is missing"
   );
+  await expect(page.getByTestId("status-receipt-ledger-panel")).toContainText(
+    "eei-operator-input-submission-receipt-ledger-v1"
+  );
+  await expect(page.getByTestId("status-receipt-ledger-panel")).toContainText("local artifact");
+  await expect(page.getByTestId("status-receipt-ledger-counts")).toContainText("0 accepted");
+  await expect(page.getByTestId("status-receipt-ledger-conflict-policy")).toContainText(
+    "idempotent retry"
+  );
+  await expect(page.getByTestId("status-receipt-ledger-release-policy")).toContainText(
+    "release-manager refresh blocked"
+  );
   await expect(page.getByTestId("status-ledger-panel")).toContainText("FUN-EXP-01");
   await expect(page.getByTestId("status-ledger-panel")).toContainText("LOCAL_E2E_VALIDATED");
   await expect(page.getByTestId("status-task-T1302")).toContainText(
@@ -83,4 +99,50 @@ test("links tasks risks controls and acceptance evidence from the status screen"
   await expect(page.getByTestId("status-acceptance-panel")).toContainText("DONE");
   await expect(page.getByTestId("status-risk-control-panel")).toContainText("R001");
   await expect(page.getByTestId("status-risk-control-panel")).toContainText("critical");
+});
+
+test("hydrates operator receipt ledger from the production API when configured", async ({
+  page
+}) => {
+  await page.addInitScript(() => {
+    window.localStorage.setItem("eei.apiBaseUrl.v1", "https://eei.test");
+  });
+  await page.route("https://eei.test/v1/release/operator-input-submission-receipts", async (route) => {
+    await route.fulfill({
+      contentType: "application/json",
+      body: JSON.stringify({
+        schema_version: "eei-operator-input-submission-receipt-ledger-v1",
+        artifact_id: "t1303-operator-input-submission-receipt-ledger",
+        task_id: "T1303",
+        acceptance_ids: ["A202", "A204", "A205"],
+        receipt_count: 2,
+        accepted_receipt_count: 1,
+        rejected_receipt_count: 1,
+        latest_receipt_id: "receipt-live-002",
+        receipt_ids: ["receipt-live-001", "receipt-live-002"],
+        release_gate_closed_by_receipt_ledger: false,
+        release_manager_preflight_refresh_allowed: false,
+        mvp_release_gate_refresh_allowed: false,
+        conflict_policy: {
+          expected_previous_receipt_id_required_when_supplied: true,
+          identical_receipt_is_idempotent: true,
+          ledger_never_modifies_operator_input_files: true,
+          receipt_id_must_be_unique: true
+        },
+        non_claims: ["mock API receipt ledger for frontend hydration test"],
+        receipts: []
+      })
+    });
+  });
+
+  await page.goto("/development-status");
+
+  await expect(page.getByTestId("status-receipt-ledger-schema")).toContainText("API hydrated");
+  await expect(page.getByTestId("status-receipt-ledger-counts")).toContainText(
+    "1 accepted / 1 rejected"
+  );
+  await expect(page.getByTestId("status-receipt-ledger-counts")).toContainText("receipt-live-002");
+  await expect(page.getByTestId("status-receipt-ledger-release-policy")).toContainText(
+    "release open"
+  );
 });

@@ -14,7 +14,7 @@
 - Project: `EEI`
 - Path: `EEI`
 - Product version: `0.1.0`
-- Phase/Gate: `D / TASK-T1303-OPERATOR-INPUT-SUBMISSION-RECEIPT-LEDGER`
+- Phase/Gate: `D / TASK-T1303-OPERATOR-RECEIPT-LEDGER-FRONTEND-BINDING`
 - Models/Formulas/Parameters total: `12 / 12 / 97`
 - Active formulas/parameters: `11 / 97`
 - Machine checked formulas/parameters: `11 / 97`
@@ -35,9 +35,9 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `TASK-T1303-OPERATOR-INPUT-SUBMISSION-RECEIPT-LEDGER`
+- Release gate: `TASK-T1303-OPERATOR-RECEIPT-LEDGER-FRONTEND-BINDING`
 - Next executable task: `TASK-T1303`
-- Latest non-closure product binding: `EVENT-20260627-020` persists hash-bound operator-input submission receipts in a conflict-checked ledger while release readiness remains blocked.
+- Latest non-closure product binding: `EVENT-20260627-022` binds the operator-input submission receipt ledger into `/development-status` with local artifact fallback, real API hydration and refresh control while release readiness remains blocked.
 - Pending/stale events: `126`
 - Tree-bound events: `0`
 - Commit-bound events: `21`
