@@ -36,6 +36,7 @@
 | 2026-06-26 18:45 Australia/Sydney | S2PMT07 P0 复审收据 | 把 8 个历史 P0 的证据位置和仍需独立判定的事项写入审计收据 | 未关闭 P0/P1、未提供独立签署、未启用任何生产动作 | [S2PMT07 P0 收据](docs/phase_records/PHASE_S2PMT07_P0_INDEPENDENT_REVIEW_RECEIPT.md) / [运行清单](../governance/run_manifests/ADP-S2PMT07-P0-INDEPENDENT-REVIEW-RECEIPT-20260626.json) |
 | 2026-06-26 18:45 Australia/Sydney | 本地 runner 用户中心同步硬门 | daily runner pass 必须同步浅层 GitHub 用户中心复习、行动、资产、收益快照；缺失或仍为待写入时阻断，且真实 SMTP 不发送 | 未启用 scheduler、SMTP、Release 或 daily operation | [同步硬门记录](docs/phase_records/PHASE_LOCAL_RUNNER_USER_CENTER_SYNC_GATE.md) / [运行清单](../governance/run_manifests/ADP-LOCAL-RUNNER-USER-CENTER-SYNC-GATE-20260626.json) |
 | 2026-06-26 19:26 Australia/Sydney | 截至今日总候选池和评分公开 | 公开 299 条总候选记录、30 条报告/邮件预览索引、269 条待处理候选；公开 ranking.py 评分公式、8 个权重、eligibility、空值处理和 tie-breaker；新增回归测试防止退回 11 条样本 | 未改排序算法、生产队列、SMTP、scheduler、Release、CURRENT/V7 合同或 P0/P1 状态 | [截至今日候选池](用户中心/截至今日候选池.md) / [已生成报告与邮件预览](用户中心/已生成报告与邮件预览.md) / [模型参数文件](模型参数文件) |
+| 2026-06-26 19:42 Australia/Sydney | 候选队列前20精选和库存流转规则 | 将 owner 候选入口改为候选队列前20精选；每篇精选写出评分；新增每日库存流转公式、指标流转表和板块期末候选数验收口径 | 未伪造日级板块流转账本；未改排序算法、生产队列、SMTP、scheduler、Release、CURRENT/V7 合同或 P0/P1 状态 | [截至今日候选池](用户中心/截至今日候选池.md) / [模型参数文件](模型参数文件) |
 
 ## 当前路线图
 
