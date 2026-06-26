@@ -5751,7 +5751,7 @@ formulas:
     assumption_ids:
       - "ASM-ADP-035"
     status: "active"
-    expression: "S2PLT01 full-system replay entry precheck remains blocked unless S2PBT05, S2PCT07, S2PDT04, S2PET04, S2PFT05, and S2PKT05 dependencies are complete, inherited V7.1 P0/P1 findings are zero, a provided replay evidence payload proves 30 independent replay days, 120 M1-M4 EMAIL_LEARNING_V1 no-send mail previews, all D1-D4 source domains, B1-B6 reading boards, D1-D4 terminal source states, zero future leakage, zero replay P0/P1 counters, non-empty evidence refs, no production acceptance is claimed, and all production/CURRENT/V7 baseline side-effect flags remain false."
+    expression: "S2PLT01 full-system replay entry precheck remains blocked unless S2PBT05, S2PCT07, S2PDT04, S2PET04, S2PFT05, and S2PKT05 dependencies are complete, inherited V7.1 P0/P1 findings are zero, a deterministic no-production replay payload envelope has required metadata, evidence mode, evidence refs, payload hash, all forbidden production/CURRENT/V7 side-effect flags false, and a provided replay evidence payload proves 30 independent replay days, 120 M1-M4 EMAIL_LEARNING_V1 no-send mail previews, all D1-D4 source domains, B1-B6 reading boards, D1-D4 terminal source states, zero future leakage, zero replay P0/P1 counters, non-empty evidence refs, no production acceptance is claimed, and all production/CURRENT/V7 baseline side-effect flags remain false."
     variables:
       -
         name: "dependency_state"
@@ -5768,6 +5768,11 @@ formulas:
         data_type: "object"
         unit: "full-system replay evidence"
         input_domain: "30 independent days, 120 M1-M4 EMAIL_LEARNING_V1 no-send mail previews, D1-D4, B1-B6, terminal states, future leakage, replay P0/P1 counters, evidence refs"
+      -
+        name: "replay_payload_contract"
+        data_type: "object"
+        unit: "payload envelope"
+        input_domain: "payload id, generated_at, generated_by, evidence_mode, evidence refs, replay evidence state, payload hash, and no-production flags"
     constraints: "S2PLT01 entry precheck is fail-closed only. It must not execute full replay, accept S2PLT01, complete S2PLT04, claim INTEGRATED_PRODUCTION_ACCEPTED or DAILY_OPERATION, send SMTP, enable scheduler, upload Release, mutate production queue, change public schema or DB, change CURRENT, change V7.1 baseline, or edit V7.2 contract files."
     missing_policy: "Missing any required dependency, nonzero inherited P0/P1, missing or failed replay evidence status, missing 30-day replay evidence, missing 120 M1-M4 EMAIL_LEARNING_V1 mail previews, missing source terminal states, nonzero or unknown future leakage, nonzero replay P0/P1 counters, missing evidence refs, or any forbidden production flag blocks S2PLT01."
     output_range: "S2PLT01 entry precheck report with pass or blocked status, required dependencies, inherited blocker counts, replay evidence state, blocking reasons, deterministic report hash, production_acceptance_claimed false, and all forbidden flags false."
@@ -5778,11 +5783,14 @@ formulas:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PLT01-ENTRY-PRECHECK-20260626.json"
       - "governance/run_manifests/ADP-S2PLT01-REPLAY-EVIDENCE-GATE-20260626.json"
+      - "governance/run_manifests/ADP-S2PLT01-REPLAY-PAYLOAD-CONTRACT-20260626.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT01_ENTRY_PRECHECK.md"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT01_REPLAY_EVIDENCE_GATE.md"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT01_REPLAY_PAYLOAD_CONTRACT.md"
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::S2PLT01_ENTRY_PRECHECK_MODEL_ID"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::S2PLT01_REPLAY_PAYLOAD_CONTRACT_ID"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::S2PLT01_ACCEPTANCE_ID"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::S2PLT01_TASK_ID"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::S2PLT01_SCHEMA_VERSION"
@@ -5800,17 +5808,20 @@ formulas:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::build_s2plt01_audit_blocker_state"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::build_s2plt01_replay_evidence_state"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::build_s2plt01_replay_evidence_from_records"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::build_s2plt01_replay_payload"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::validate_s2plt01_replay_payload"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::build_s2plt01_entry_precheck_report"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::validate_s2plt01_entry_precheck_report"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::_validate_s2plt01_replay_payload_inputs"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::_replay_record_passes"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::_mail_preview_record_passes"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::_terminal_source_record_passes"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::_has_evidence_refs"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py::_is_date"
-    implementation_fingerprint: "sha256:59f8e1bedfdb29ace47bffba520f6d85e1436fd0fa6b88397681ba65ac8c4f61"
-    evidence_hash: "sha256:b2a5bea8e5fdaa400f00c0c9bf4f516accf36ee726a1f635c7bc6fb685e6dbf0"
-    last_verified_commit: "f38a084583e166155721e69b948edf12d665c5e3"
-    verified_at: "2026-06-26T12:24:28+10:00"
+    implementation_fingerprint: "sha256:8ecd4d3fd3bbfe14e8b40935bad0a5d429d1739069ec65a17985fad42a268460"
+    evidence_hash: "sha256:db8be1302fc553847e14b58b5cf9da2b20b2a0ae23a510d579cb0a668bda199c"
+    last_verified_commit: "ae9cf0216781e23281407728b8cc7fc1b9bd0d00"
+    verified_at: "2026-06-26T12:48:44+10:00"
 
   -
     formula_id: "FORM-ADP-104"

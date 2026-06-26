@@ -21,7 +21,7 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 130
+- task_count: 131
 - acceptance_count: 119
 
 ## Delivery Tasks
@@ -222,4 +222,5 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PMT06 | Chinese owner UX and safe controls | completed_local_validation | `ACC-S2PMT06-UX` | Local-only Chinese owner first screen, fixed navigation, status feedback, error cards, safe config changes, queue views, safe actions, accessibility, C-001 through C-015 coverage, and no production side effects. |
 | S2PLT01 | Full-system 30-day replay entry precheck | blocked | `ACC-S2PLT01-30D` | Fail-closed replay entry precheck; inherited P0/P1, full 30-day replay, 120 mail previews, and terminal source-state proof still block S2PLT01, S2PLT04, S2PMT07, and integrated production acceptance. |
 | S2PLT01-REPLAY-EVIDENCE-GATE | Full-system replay evidence gate | completed_local_validation | `ACC-S2PLT01-30D` | Validates provided 30 replay days, 120 M1-M4 Email V1 previews, D1-D4 terminal source states, coverage, zero leakage/P0P1 counters, and evidence refs without executing replay or claiming S2PLT01 acceptance. |
+| S2PLT01-REPLAY-PAYLOAD-CONTRACT | Full-system replay payload contract | completed_local_validation | `ACC-S2PLT01-30D` | Wraps explicit replay/mail/source-terminal records in a deterministic no-production payload contract with metadata, evidence mode, payload hash, evidence refs, and forbidden production side-effect flags before entry precheck consumption. |
 | S2PMT07 | Final gate precheck | blocked | `ACC-S2PMT07-FINAL-REVIEW` | Fail-closed final gate precheck; independent reviewer proof, inherited P0/P1 zero state, S2PLT04 completion, final acceptance bundle, independent signoff, and final command execution are still missing, so integrated production acceptance remains false. |

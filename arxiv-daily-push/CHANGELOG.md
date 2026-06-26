@@ -477,3 +477,4 @@
 - Added S2PMT02 local atomic storage and recovery hardening evidence without production side effects.
 
 - Added S2PMT03 local lease fencing, state concurrency, transactional outbox, SMTP crash-window, and M4 watermark evidence without production side effects.
+- Added S2PLT01 replay payload contract evidence without replay execution or production side effects.

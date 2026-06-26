@@ -14,7 +14,9 @@ from arxiv_daily_push.stage2_replay_gate import (
     build_s2plt01_entry_precheck_report,
     build_s2plt01_replay_evidence_from_records,
     build_s2plt01_replay_evidence_state,
+    build_s2plt01_replay_payload,
     validate_s2plt01_entry_precheck_report,
+    validate_s2plt01_replay_payload,
 )
 
 
@@ -166,6 +168,78 @@ class Stage2ReplayGateTests(unittest.TestCase):
         self.assertIn("inherited_v7_1_p0_findings_open", report["blocking_reasons"])
         self.assertIn("inherited_v7_1_p1_findings_open", report["blocking_reasons"])
         self.assertEqual(validate_s2plt01_entry_precheck_report(report), [])
+
+    def test_replay_payload_contract_passes_valid_no_production_records(self) -> None:
+        payload = build_s2plt01_replay_payload(
+            payload_id="S2PLT01-PAYLOAD-20260626-001",
+            generated_at="2026-06-26T18:30:00+10:00",
+            generated_by="codex-stage2-local",
+            evidence_mode="actual_replay_evidence",
+            replay_records=self.replay_records(),
+            mail_preview_records=self.mail_preview_records(),
+            source_terminal_states=self.source_terminal_states(),
+            evidence_refs=["runs/s2plt01/payload.json"],
+        )
+
+        self.assertEqual(payload["status"], "pass")
+        self.assertEqual(payload["replay_evidence"]["status"], "pass")
+        self.assertEqual(payload["validation_errors"], [])
+        for flag in S2PLT01_FORBIDDEN_FLAGS:
+            self.assertFalse(payload[flag])
+        self.assertEqual(validate_s2plt01_replay_payload(payload), [])
+
+        report = build_s2plt01_entry_precheck_report(
+            generated_at="2026-06-26T18:30:00+10:00",
+            replay_evidence=payload["replay_evidence"],
+        )
+        self.assertEqual(report["status"], "blocked")
+        self.assertIn("inherited_v7_1_p0_findings_open", report["blocking_reasons"])
+        self.assertIn("inherited_v7_1_p1_findings_open", report["blocking_reasons"])
+
+    def test_replay_payload_contract_blocks_missing_metadata_and_evidence(self) -> None:
+        payload = build_s2plt01_replay_payload(
+            payload_id="",
+            generated_at="",
+            generated_by="",
+            evidence_mode="invalid",
+            replay_records=[],
+            mail_preview_records=[],
+            source_terminal_states=[],
+            evidence_refs=[],
+        )
+
+        self.assertEqual(payload["status"], "blocked")
+        self.assertIn("payload_id_required", payload["validation_errors"])
+        self.assertIn("generated_at_required", payload["validation_errors"])
+        self.assertIn("generated_by_required", payload["validation_errors"])
+        self.assertIn("invalid_evidence_mode", payload["validation_errors"])
+        self.assertIn("replay_records_required", payload["validation_errors"])
+        self.assertIn("mail_preview_records_required", payload["validation_errors"])
+        self.assertIn("source_terminal_states_required", payload["validation_errors"])
+        self.assertIn("evidence_refs_required", payload["validation_errors"])
+        errors = validate_s2plt01_replay_payload(payload)
+        self.assertIn("S2PLT01 replay payload_id is required", errors)
+        self.assertIn("S2PLT01 replay payload evidence_mode is invalid", errors)
+        self.assertIn("S2PLT01 replay payload evidence_refs are required", errors)
+
+    def test_replay_payload_validator_rejects_production_side_effect_and_hash_drift(self) -> None:
+        payload = build_s2plt01_replay_payload(
+            payload_id="S2PLT01-PAYLOAD-20260626-001",
+            generated_at="2026-06-26T18:30:00+10:00",
+            generated_by="codex-stage2-local",
+            evidence_mode="fixture_replay_contract",
+            replay_records=self.replay_records(),
+            mail_preview_records=self.mail_preview_records(),
+            source_terminal_states=self.source_terminal_states(),
+            evidence_refs=["runs/s2plt01/payload-fixture.json"],
+        )
+        tampered = dict(payload)
+        tampered["real_smtp_sent"] = True
+
+        errors = validate_s2plt01_replay_payload(tampered)
+
+        self.assertIn("real_smtp_sent must be false", errors)
+        self.assertIn("S2PLT01 replay payload_hash does not match payload content", errors)
 
     def test_entry_precheck_report_fails_closed_without_production_side_effects(self) -> None:
         report = build_s2plt01_entry_precheck_report(generated_at="2026-06-26T18:00:00+10:00")
