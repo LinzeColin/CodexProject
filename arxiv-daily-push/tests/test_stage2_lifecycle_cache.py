@@ -12,11 +12,13 @@ from arxiv_daily_push.stage2_lifecycle_cache import (
     build_lifecycle_cache_report,
     build_lifecycle_transition_plan,
     build_shutdown_receipt,
+    build_startup_convergence_receipt,
     build_startup_reconciliation,
     build_transaction_completion_receipt,
     validate_launchd_plist_payload,
     validate_lifecycle_cache_report,
     validate_lifecycle_transition,
+    validate_startup_convergence_receipt,
     validate_transaction_completion_receipt,
 )
 
@@ -45,6 +47,49 @@ class Stage2LifecycleCacheTests(unittest.TestCase):
         self.assertFalse(receipt["queue_mutation_applied"])
         self.assertEqual(receipt["temp_actions"][0]["action"], "cleanup_temp_after_whitelist_check")
         self.assertFalse(receipt["outbox_actions"][0]["resend_allowed_without_provider_ref"])
+
+    def test_startup_convergence_receipt_conserves_counts_after_restart(self) -> None:
+        startup = build_startup_reconciliation(
+            temp_items=[{"item_id": "tmp-1"}, {"item_id": "tmp-2"}],
+            inflight_items=[{"work_id": "work-1", "state": "RUNNING"}],
+            outbox_items=[{"mail_key": "cycle|M1|owner", "status": "ACCEPTED_PENDING_COMMIT"}],
+            stale_locks=[{"lock_id": "lock-1", "lease_owner": "worker-old"}],
+            generated_at="2026-07-03T06:00:00+10:00",
+        )
+        receipt = build_startup_convergence_receipt(
+            startup_reconciliation=startup,
+            expected_counts={"temp_items": 2, "inflight_items": 1, "outbox_items": 1, "stale_locks": 1},
+            generated_at="2026-07-03T06:00:01+10:00",
+        )
+
+        self.assertEqual(receipt["status"], "pass")
+        self.assertTrue(receipt["count_conservation"])
+        self.assertTrue(receipt["terminal_convergence"])
+        self.assertFalse(receipt["new_work_claim_allowed"])
+        self.assertFalse(receipt["queue_mutation_applied"])
+        self.assertEqual(receipt["total_expected_count"], 5)
+        self.assertEqual(receipt["total_accounted_count"], 5)
+        self.assertEqual(validate_startup_convergence_receipt(receipt), [])
+
+    def test_startup_convergence_receipt_blocks_missing_persistent_state_action(self) -> None:
+        startup = build_startup_reconciliation(
+            temp_items=[{"item_id": "tmp-1"}],
+            inflight_items=[{"work_id": "work-1", "state": "RUNNING"}],
+            outbox_items=[{"mail_key": "cycle|M1|owner", "status": "ACCEPTED_PENDING_COMMIT"}],
+            stale_locks=[],
+            generated_at="2026-07-03T06:00:00+10:00",
+        )
+        startup["outbox_actions"] = []
+        receipt = build_startup_convergence_receipt(
+            startup_reconciliation=startup,
+            expected_counts={"temp_items": 1, "inflight_items": 1, "outbox_items": 1, "stale_locks": 0},
+            generated_at="2026-07-03T06:00:01+10:00",
+        )
+
+        self.assertEqual(receipt["status"], "blocked")
+        self.assertFalse(receipt["count_conservation"])
+        self.assertIn("outbox_items expected 1 but accounted 0", receipt["blocking_reasons"])
+        self.assertIn("outbox_items expected/accounted count mismatch", validate_startup_convergence_receipt(receipt))
 
     def test_shutdown_receipt_requires_checkpoint_backup_and_lease_release(self) -> None:
         ok = build_shutdown_receipt(
@@ -188,6 +233,8 @@ class Stage2LifecycleCacheTests(unittest.TestCase):
         self.assertFalse(report["real_smtp_sent"])
         self.assertFalse(report["scheduler_installed"])
         self.assertFalse(report["queue_mutation_allowed"])
+        self.assertTrue(report["gates"]["startup_convergence_count_conservation"])
+        self.assertTrue(report["startup_convergence_receipt"]["count_conservation"])
         self.assertTrue(report["gates"]["transaction_completion_signal"])
         self.assertTrue(report["transaction_completion_receipt"]["interrupted_recoverable"])
         self.assertTrue(report["gates"]["cache_cleanup_safety"])

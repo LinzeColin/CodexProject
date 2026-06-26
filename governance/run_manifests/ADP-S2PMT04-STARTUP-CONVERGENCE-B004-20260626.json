@@ -1,0 +1,63 @@
+{
+  "manifest_id": "ADP-S2PMT04-STARTUP-CONVERGENCE-B004-20260626",
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PMT04-STARTUP-CONVERGENCE-B004",
+  "parent_task_id": "S2PMT04",
+  "inherited_finding_id": "B-004",
+  "acceptance_id": "ACC-S2PMT04-LIFECYCLE",
+  "phase": "S2PM",
+  "model_id": "MOD-ADP-097",
+  "formula_id": "FORM-ADP-099",
+  "parameter_ids_changed": [
+    "PARAM-ADP-800"
+  ],
+  "base_commit": "9edfc3e8c5f0d46bef65fb2ae452f1d70d35a969",
+  "created_at": "2026-06-26T23:12:24+10:00",
+  "scope": "Local S2PMT04 B-004 remediation evidence for startup convergence and count conservation across temp, inflight, outbox, and stale-lock persistent-state categories after restart.",
+  "non_scope": "No scheduler install or enablement, real SMTP send, Release, production restore, DB migration, public schema change, production queue mutation, ranking, source adapter change, live source fetch, V7.1/V7.2 contract edit, P0/P1 closure claim, DAILY_OPERATION, or integrated production acceptance.",
+  "production_side_effects": false,
+  "stage2_integrated_production_accepted": false,
+  "inherited_p0_p1_closed": false,
+  "inherited_v7_1_open_p0_findings": 8,
+  "inherited_v7_1_open_p1_findings": 37,
+  "real_smtp_sent": false,
+  "scheduler_installed": false,
+  "scheduler_enabled": false,
+  "release_upload_allowed": false,
+  "public_schema_changed": false,
+  "db_migration_executed": false,
+  "production_queue_mutated": false,
+  "ranking_algorithm_changed": false,
+  "source_adapter_changed": false,
+  "current_pointer_changed": false,
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false,
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT04_STARTUP_CONVERGENCE_B004.md",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_lifecycle_cache.py",
+    "arxiv-daily-push/tests/test_stage2_lifecycle_cache.py"
+  ],
+  "local_gates": [
+    "Temp, inflight, outbox, and stale-lock categories each have expected and accounted counts",
+    "Total expected count equals total accounted count",
+    "Startup convergence blocks new work claims",
+    "Startup convergence evidence does not mutate queues",
+    "Missing persistent-state actions block the convergence receipt",
+    "S2PMT04 report requires startup_convergence_count_conservation"
+  ],
+  "validation": [
+    "py_compile PASS",
+    "focused S2PMT04 lifecycle/cache tests: 10 OK",
+    "source/board user-center root gate regression: 14 OK",
+    "full arxiv-daily-push unittest: 533 OK",
+    "V7.2 validator: PASS",
+    "ADP project governance: 0 errors / 0 warnings",
+    "changed-only governance semantic: 0 errors / 0 warnings",
+    "governance sync validator: 0 errors / 0 warnings",
+    "lean check-render: drift_count 0 reference_issue_count 0",
+    "JSON/JSONL/CSV/YAML parse: OK",
+    "git diff --check: PASS"
+  ],
+  "result": "local_validation_passed_pending_main_push",
+  "next_task": "CONTINUE_INHERITED_P0_P1_REMEDIATION_OR_S2PMT07_INDEPENDENT_REVIEW_AFTER_REQUIRED_GATES"
+}

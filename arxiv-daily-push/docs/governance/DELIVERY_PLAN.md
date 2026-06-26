@@ -21,7 +21,7 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 144
+- task_count: 145
 - acceptance_count: 122
 
 ## Delivery Tasks
@@ -224,6 +224,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PMT03-LESSON-REVISION-A016 | Lesson revision identity hardening | completed_local_validation | `ACC-S2PMT03-CONCURRENCY-OUTBOX` | Local A-016 remediation: stable `lesson_key`, immutable content/evidence/model-sensitive `lesson_revision_id`, `lesson_id` preserved as revision-sensitive compatibility field, focused regression tests, and no production side effects. |
 | S2PMT04 | Automatic lifecycle and cache cleanup | completed_local_validation | `ACC-S2PMT04-LIFECYCLE` | Local-only disabled wake dry-run, lifecycle drain/checkpoint/cleanup, startup reconciliation, shutdown receipt, safe cache cleanup, parseable launchd plist, and no production side effects. |
 | S2PMT04-SCHEDULER-TEMPLATE-A013 | S2PMT04 A-013 scheduler template hardening | completed_local_validation | `ACC-S2PMT04-LIFECYCLE` | Local A-013 remediation: macOS scheduler dry-run launchd template is `plistlib` generated, parseable, argument-structured, and safe for special-character paths; no scheduler install or production side effects. |
+| S2PMT04-STARTUP-CONVERGENCE-B004 | Startup reconciliation convergence gate | completed_local_validation | `ACC-S2PMT04-LIFECYCLE` | Local B-004 remediation: startup convergence accounts for temp, inflight, outbox, and stale-lock persistent-state categories, preserves expected/accounted counts, blocks new work during recovery, and avoids queue mutation; no scheduler/SMTP/production side effects. |
 | S2PMT04-TRANSACTION-COMPLETION-B015 | Shutdown transaction completion gate | completed_local_validation | `ACC-S2PMT04-LIFECYCLE` | Local B-015 remediation: shutdown save/cleanup steps expose committed or pending-rollback transaction receipts, interrupted-step recovery actions, observable completion signals, and new-work blocking during recovery; no scheduler/SMTP/production side effects. |
 | S2PMT05 | Pressure fault time and E2E | completed_local_validation | `ACC-S2PMT05-STRESS-E2E` | Local-only load/stress/spike, accelerated 24h soak, dual scheduler race, SMTP crash-window, fault injection, DST/clock skew, 35-day 3+1/weekly/monthly/review/action/ROI, backpressure, deterministic isolation, and no production side effects. |
 | S2PMT06 | Chinese owner UX and safe controls | completed_local_validation | `ACC-S2PMT06-UX` | Local-only Chinese owner first screen, fixed navigation, status feedback, error cards, safe config changes, queue views, safe actions, accessibility, C-001 through C-015 coverage, and no production side effects. |
