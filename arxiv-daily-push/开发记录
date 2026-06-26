@@ -21,12 +21,6 @@
 - roadmap_evidence_ref_count: `21`
 - evidence_status: `EXTRACTED`
 
-## 用户中心补丁记录
-
-| 时间 | 类型 | 摘要 | 任务 | 事实等级 |
-|---|---|---|---|---|
-| 2026-06-26T16:27:41+10:00 | github_user_center_one_look_three_check | GitHub 浅层用户中心补齐一看三查、已发送/未发送/排队/已讲解、复习行动 ROI、关键结论、Owner 决策、Roadmap、Stop Gate、人类可读信息索引，并记录复习/行动/ROI 每日数量尚未自动刷新到 GitHub 用户中心的缺口；不改生产代码、SMTP、scheduler、schema 或队列。 | ADP-USER-CENTER-ONE-LOOK-THREE-CHECK-20260626 | EXTRACTED |
-
 ## Roadmap
 
 Stage -> Phase -> Task
@@ -222,3 +216,4 @@ Task detail fields:
 | 2026-06-26T19:00:00+10:00 | stage2_two_day_live_run_precheck | S2PLT02 two-day live-run readiness precheck records missing S2PLT01 acceptance, missing two real natural days, missing 8 real M1-M4 emails, missing scheduler/SMTP proof, missing M4 watermark proof, and inherited P0/P1 blockers while preserving no-production flags. | S2PLT02 | EXTRACTED |
 | 2026-06-26T16:20:00+10:00 | stage2_two_day_live_run_precheck_main_merge_attestation | S2PLT02 live 2-day readiness precheck PR #237 was marked ready, CI passed, and merged to main at 018c50a without production side effects. | S2PLT02-MAIN-MERGE-ATTESTATION | EXTRACTED |
 | 2026-06-26T16:30:00+10:00 | email_learning_v1_local_runner_runtime_attestation | Local launchd daily/health/watchdog now point at CodexProject_adp_local_runner_current@2eaa872, health/watchdog pass, and no-write daily smoke renders EMAIL_LEARNING_V1 M1 without SMTP. | EMAIL-V1-LOCAL-RUNNER-ATTESTATION | EXTRACTED |
+| 2026-06-26T17:13:59+10:00 | user_center_one_look_three_check_main_merge_binding | ADP GitHub user center PR #243 is merged to main at fd068a, with seven shallow user-center pages present and local runtime files kept as evidence only. | USER-CENTER-ONE-LOOK-THREE-CHECK-BINDING | EXTRACTED |

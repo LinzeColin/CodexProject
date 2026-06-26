@@ -82,9 +82,9 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 14. Evidence Freshness
 
-- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+- final_commit_binding: `CI_ATTESTED:fd068a9453e1dd9b0346e8047f6c57bcbe2f24bf`
 - tree_bound_events: `0`
-- commit_bound_events: `3`
+- commit_bound_events: `4`
 - legacy_unbound_events: `120`
 - precommit_pending_events: `40`
 - pending_or_stale_events: `159`
@@ -97,7 +97,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:f0525836e64f22bb62ec0aa8f210cecf38d9a908833d0902a2bddf064f86af40`
+- source_snapshot_hash: `sha256:db66b124f49920fe9e2220c8b8de213f777d66e04ca017d44c74865a694bc50c`
 - snapshot_event_time: `2026-06-27T00:30:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
