@@ -21,6 +21,7 @@ PACKAGE = Path("artifacts/tests/a200/Enterprise_Ecosystem_Intelligence_clean_roo
 INTERNAL_MANIFEST = "PACKAGE_MANIFEST.json"
 INTERNAL_CHECKSUMS = "PACKAGE_CHECKSUMS.sha256"
 FIXED_ZIP_DATETIME = (2026, 6, 19, 0, 0, 0)
+BINARY_SUFFIXES = {".gif", ".gz", ".ico", ".jpg", ".jpeg", ".pdf", ".png", ".webp", ".zip"}
 
 REQUIRED_MARKDOWN = {
     "README.md",
@@ -114,14 +115,28 @@ EXCLUDED_FROM_PACKAGE = {
 
 
 def run_git(*args: str) -> str:
+    return run_git_bytes(*args).decode("utf-8")
+
+
+def run_git_bytes(*args: str) -> bytes:
     completed = subprocess.run(
-        ["git", "-c", "core.quotepath=false", *args],
+        ["git", *args],
         cwd=ROOT,
         check=True,
-        text=True,
         stdout=subprocess.PIPE,
     )
     return completed.stdout
+
+
+def path_id(path: str | Path) -> str:
+    return Path(path).as_posix()
+
+
+def canonical_file_bytes(path: Path) -> bytes:
+    payload = path.read_bytes()
+    if path.suffix.lower() in BINARY_SUFFIXES or b"\0" in payload:
+        return payload
+    return payload.replace(b"\r\n", b"\n")
 
 
 def sha256_bytes(payload: bytes) -> str:
@@ -129,11 +144,7 @@ def sha256_bytes(payload: bytes) -> str:
 
 
 def sha256_file(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
+    return sha256_bytes(canonical_file_bytes(path))
 
 
 def read_text(path: str) -> str:
@@ -162,7 +173,8 @@ def read_json(path: str) -> Any:
 
 
 def tracked_paths() -> set[str]:
-    return set(run_git("ls-files").splitlines())
+    payload = run_git_bytes("-c", "core.quotePath=false", "ls-files", "-z")
+    return {path for path in payload.decode("utf-8").split("\0") if path}
 
 
 def package_paths() -> list[str]:
@@ -288,7 +300,7 @@ def write_zip(paths: list[str], manifest: dict[str, Any], checksums: dict[str, s
     target.parent.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(target, "w") as archive:
         for path in paths:
-            archive.writestr(zip_info(path), (ROOT / path).read_bytes())
+            archive.writestr(zip_info(path), canonical_file_bytes(ROOT / path))
         archive.writestr(
             zip_info(INTERNAL_MANIFEST),
             json.dumps(manifest, ensure_ascii=False, indent=2, sort_keys=True).encode("utf-8")
