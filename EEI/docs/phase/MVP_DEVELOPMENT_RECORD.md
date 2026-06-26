@@ -1,8 +1,35 @@
 # MVP Development Record
 
+## 2026-06-26 - T1309/A210 source-boundary remote CI binding
+
+Status: REMOTE CI ATTESTED FOR COMMIT `86e566b74651e2775465920de6901ef70b2b1e2a`; A210 STILL IN PROGRESS; A209 ISOLATED RERUN CONTINUES IN BACKGROUND
+
+### Scope
+
+- Bound the committed A210 signed-bundle source-boundary hardening to GitHub Actions evidence.
+- Project Governance run `28211854220` completed PASS for commit `86e566b74651e2775465920de6901ef70b2b1e2a`.
+- EEI validation run `28211854217` / job `83574671606` completed PASS for the same commit, including static/contract/lint/typecheck/unit, G2 PostgreSQL integration, G2 browser E2E and live FastAPI PostgreSQL E2E.
+- No product runtime code, database schema, scoring formula, model weight, threshold, frontend route, formal legal clearance or publication policy changed in this CI-binding record.
+
+### Current Evidence
+
+- Release evidence is refreshed to `remote_status=PASS` for the bound commit.
+- A209 isolated rerun was read-only observed at `33/288` PASS windows with `0` failed; no A209 promotion, restart or finalization was performed.
+
+### Acceptance Mapping
+
+- T1309 -> A210 for source-boundary false-closure control and future formal brand clearance.
+- T1211 -> A175/A177 for release manifest/checksum evidence.
+- This CI binding does not close A210, A209, A202, A026/A027 or release-manager activation.
+
+### Rollback
+
+- Revert this CI-binding governance evidence update and regenerate release artifacts with `remote_status=PENDING`.
+- Preserve live A209 checkpoint, PID and log files unless a failed window or stale-process condition requires explicit operator intervention.
+
 ## 2026-06-26 - T1309/A210 signed brand-clearance bundle source-boundary hardening
 
-Status: LOCAL FOCUSED VALIDATED; CI PENDING; A210 STILL IN PROGRESS; A209 ISOLATED RERUN CONTINUES IN BACKGROUND
+Status: LOCAL FOCUSED VALIDATED AND REMOTE CI ATTESTED BY THE 2026-06-26 CI-BINDING RECORD; A210 STILL IN PROGRESS; A209 ISOLATED RERUN CONTINUES IN BACKGROUND
 
 ### Scope
 

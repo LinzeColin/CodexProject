@@ -20,6 +20,33 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Blockers: T1301/A202 is still `IN_PROGRESS`; the refreshed operator review packet is freshness-correct supporting review evidence only and does not create source-license review, passage-level human approval, production owner approval, legal release clearance, brand clearance, release-manager activation or final public relationship publication. T1307/A209 is still `IN_PROGRESS`; failed `7/288` evidence plus short repair probes are non-closure evidence only and a new 24h chain must reach `288/288` successful windows with zero failures before finalization. A204/A205 release-manager activation preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED` until A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence pass. A026 still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%. The new T904 operator labeling packet is a source-bound worksheet with blank `OPERATOR_TO_LABEL` slots and is not production gold evidence. A210 still needs formal brand legal/market clearance or signed risk waiver. The T1303 external release operator intake packet lists the exact A202/A210/A026/A027/A209 operator inputs and keeps `release_gate_closed_by_operator_packet=false`; it is a checklist/hash manifest, not clearance.
 
 
+## EVENT-20260626-008 - T1309/A210 source-boundary remote CI binding
+
+- Timestamp: 2026-06-26T11:50:00+10:00
+- Fact level: EXTRACTED
+- Bound commit: `86e566b74651e2775465920de6901ef70b2b1e2a`
+- Scope: bind the T1309/A210 signed-bundle source-boundary hardening commit to remote CI evidence and refresh release evidence to `remote_status=PASS`.
+- Remote CI: Project Governance run `28211854220` PASS; EEI validation run `28211854217` / job `83574671606` PASS.
+- EEI validation coverage: static/contracts/lint/typecheck/unit, G2 PostgreSQL preparation/integration, G2 browser E2E and live FastAPI PostgreSQL E2E.
+- A209 background state: isolated rerun read-only observed at `33/288` PASS windows, `0` failed, latest window ended `2026-06-26T01:47:15Z`; this event does not promote, restart or finalize A209 evidence.
+- Non-claims: remote CI proves source-boundary enforcement, not formal brand legal/market clearance, signed risk waiver, production owner approval, 24h soak completion or MVP release readiness.
+- Next step: continue A209 background monitoring and collect real A210 legal/market clearance or signed waiver evidence.
+
+## ITER-20260626-008 - A210 source-boundary CI attestation
+
+- Date: 2026-06-26
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Acceptance IDs: `A210`, `A175`, `A177`.
+- Result: `CI_ATTESTED_A210_SOURCE_BOUNDARY_VALIDATED_A210_STILL_OPEN`.
+- Commands run: GitHub Project Governance read-only verification; GitHub EEI validation read-only verification; release artifact generation/validation with `remote_status=PASS`; clean-room release generation/validation.
+- Test results: Project Governance PASS; EEI validation PASS; release artifacts validate with `remote_status=PASS`; A209 remains open at `33/288` isolated rerun progress.
+- Decisions: keep A210 `IN_PROGRESS`; keep A209 `IN_PROGRESS`; do not treat source-boundary validation or remote CI as legal/market clearance.
+- Risks: a real signed bundle can still contain invalid legal/market assertions; A209 can still fail before 288 windows; external release gates remain blocked.
+- Rollback: revert this CI-binding governance sync and regenerate release artifacts with `remote_status=PENDING`; preserve live A209 runtime files unless explicit operator intervention is authorized.
+- Result commit: `86e566b74651e2775465920de6901ef70b2b1e2a`
+
 ## EVENT-20260626-007 - T1309/A210 signed-bundle source-boundary hardening
 
 - Timestamp: 2026-06-26T11:23:23+10:00

@@ -2,11 +2,11 @@
 
 ## 1. 当前结论
 
-EEI 当前治理结论：实现一致性为 `VERIFIED`，方法/实证为 `UNVERIFIED` / `PARTIAL`，交付状态为 `FAILED`；本轮新增 A210 signed bundle source-boundary 控制，A210 仍缺正式法律/市场清权或签署风险豁免；A209 24h 证据仍未完成，isolated rerun 正在后台运行；这不是生产上线声明。
+EEI 当前治理结论：实现一致性为 `VERIFIED`，方法/实证为 `UNVERIFIED` / `PARTIAL`，交付状态为 `FAILED`；本轮 A210 signed bundle source-boundary 控制已绑定远端 CI PASS，但 A210 仍缺正式法律/市场清权或签署风险豁免；A209 24h 证据仍未完成，isolated rerun 正在后台运行；这不是生产上线声明。
 
 ## 2. 本次运行改变了什么
 
-Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，并明确 A210 source-boundary PASS、A209 failed evidence / isolated rerun 都是不闭合的运行或证据完整性控制，避免把 `MACHINE_VERIFIED`、source-boundary PASS 或 partial soak 误读为模型有效、法律清权完成或可上线。
+Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，并明确 A210 source-boundary CI PASS、A209 failed evidence / isolated rerun 都是不闭合的运行或证据完整性控制，避免把 `MACHINE_VERIFIED`、source-boundary PASS、remote CI PASS 或 partial soak 误读为模型有效、法律清权完成或可上线。
 
 ## 3. 为什么重要
 
@@ -82,7 +82,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 ## 14. Evidence Freshness
 
-- final_commit_binding: `CI_ATTESTED:f1b89fc30e6b87fc21f8d75527e8cbc5f2b74298; Project Governance run 28210071092/job 83569239854 PASS; EEI validation run 28210071130/job 83569239684 PASS; A209 remains open until 288/288 zero-failure evidence is promoted and release-ready validation passes.`
+- final_commit_binding: `CI_ATTESTED:86e566b74651e2775465920de6901ef70b2b1e2a; Project Governance run 28211854220 PASS; EEI validation run 28211854217/job 83574671606 PASS; A210 remains open until formal brand legal/market clearance or signed risk waiver is supplied, and A209 remains open until 288/288 zero-failure evidence is promoted and release-ready validation passes.`
 - tree_bound_events: `0`
 - commit_bound_events: `18`
 - legacy_unbound_events: `19`
@@ -95,10 +95,10 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 ## 16. 技术元数据
 
-- source_base_commit: `058c792f8376312842784533016d8716f9177dae`
+- source_base_commit: `86e566b74651e2775465920de6901ef70b2b1e2a`
 - source_tree_hash: `00e27599461403192b998e8f9a3f7f0e769e5d8f`
 - source_snapshot_hash: `sha256:7c54a3c5bccbba28955e4bbf5c06815c44996965b66c98fe91c7f1069d328342`
-- snapshot_event_time: `2026-06-26T10:05:00+10:00`
+- snapshot_event_time: `2026-06-26T11:50:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.1.0`
 - phase/gate: `D / TASK-T1309-A210-SIGNED-BUNDLE-SOURCE-BOUNDARY`

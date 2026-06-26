@@ -34,7 +34,7 @@ parameter_profile_versions:
   release-decision-bundle: "2"
   brand-clearance-intake: "2"
 data_snapshot_version: "task-pack-v4.2.0-2026-06-19"
-current_iteration: "ITER-20260626-007"
+current_iteration: "ITER-20260626-008"
 current_phase: "D"
 current_gate: "TASK-T1309-A210-SIGNED-BUNDLE-SOURCE-BOUNDARY"
 version_file_value: "0.1.0"

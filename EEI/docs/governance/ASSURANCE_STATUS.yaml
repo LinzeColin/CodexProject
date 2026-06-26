@@ -1,11 +1,11 @@
 project_id: "EEI"
-as_of_event_id: "EVENT-20260626-007"
+as_of_event_id: "EVENT-20260626-008"
 source_snapshot_hash: "sha256:7c54a3c5bccbba28955e4bbf5c06815c44996965b66c98fe91c7f1069d328342"
-source_base_commit: "4b3ff3d898bbf3ec117829f6ad2a809578360435"
+source_base_commit: "86e566b74651e2775465920de6901ef70b2b1e2a"
 source_tree_hash: "00e27599461403192b998e8f9a3f7f0e769e5d8f"
-snapshot_event_time: "2026-06-26T01:23:23Z"
+snapshot_event_time: "2026-06-26T01:50:00Z"
 generator_version: "4.0.0"
-final_commit_binding: "CI_ATTESTED:f1b89fc30e6b87fc21f8d75527e8cbc5f2b74298; Project Governance run 28210071092/job 83569239854 PASS; EEI validation run 28210071130/job 83569239684 PASS; A209 remains open until 288/288 zero-failure evidence is promoted and release-ready validation passes."
+final_commit_binding: "CI_ATTESTED:86e566b74651e2775465920de6901ef70b2b1e2a; Project Governance run 28211854220 PASS; EEI validation run 28211854217/job 83574671606 PASS; A210 remains open until formal brand legal/market clearance or signed risk waiver is supplied, and A209 remains open until 288/288 zero-failure evidence is promoted and release-ready validation passes."
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -79,7 +79,7 @@ delivery_readiness:
 next_executable_task:
   task_id: "TASK-T1309"
   status: "in_progress"
-  reason: "Validate and bind A210 signed-bundle source boundaries while A209 continues as a separate background gate"
+  reason: "Complete formal A210 brand legal/market clearance or signed risk waiver; source-boundary hardening is CI-attested but not clearance"
   acceptance_ids:
     - "ACC-A210"
   owner: "product_owner + data_owner + risk_owner"
