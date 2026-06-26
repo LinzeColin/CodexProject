@@ -1,0 +1,88 @@
+{
+  "manifest_id": "ADP-S2PMT03-WATCHDOG-RECOVERY-B003-20260626",
+  "project_id": "arxiv-daily-push",
+  "phase": "S2PM",
+  "task_id": "S2PMT03-WATCHDOG-RECOVERY-B003",
+  "canonical_parent_task_id": "S2PMT03",
+  "finding_id": "B-003",
+  "finding_title": "watchdog only reports stale lock and lacks provably safe recovery",
+  "acceptance_id": "ACC-S2PMT03-LEASE-FENCING-OUTBOX",
+  "created_at": "2026-06-26T21:52:49+10:00",
+  "contract": "ADP-PRODUCT-CONTRACT-V7.2",
+  "status": "completed_local_validation",
+  "model_id": "adp-s2pmt03-lease-fencing-outbox-v1",
+  "decision_gate": "watchdog_stale_lock_recovery",
+  "watchdog_gate": {
+    "live_owner_policy": "block even when lease appears stale",
+    "dead_owner_policy": "safe takeover only after lease expiry through claim_leased_item fencing path",
+    "active_lease_policy": "block while lease_until_ms is greater than now_ms",
+    "real_watchdog_changed": false,
+    "launchd_changed": false,
+    "safe_takeover_requires_row_version_and_fencing_token": true
+  },
+  "scope": [
+    "local pure decision helper for stale-lock watchdog recovery",
+    "focused regression tests for live-owner block, dead-owner takeover, and unexpired-lease block",
+    "S2PMT03 report gate extension with no production side effects"
+  ],
+  "non_scope": [
+    "no real watchdog or launchd installation",
+    "no SMTP enablement or real send",
+    "no scheduler install or enablement",
+    "no Release upload",
+    "no public schema or DB migration",
+    "no production queue mutation",
+    "no source adapter or ranking change",
+    "no CURRENT or V7 contract edit",
+    "no inherited P0/P1 closure",
+    "no DAILY_OPERATION or integrated production acceptance"
+  ],
+  "production_flags": {
+    "real_smtp_sent": false,
+    "scheduler_enabled": false,
+    "release_uploaded": false,
+    "production_restore_executed": false,
+    "public_schema_changed": false,
+    "queue_schema_changed": false,
+    "queue_mutation_allowed": false,
+    "db_migration_executed": false,
+    "source_adapter_changed": false,
+    "ranking_algorithm_changed": false,
+    "current_pointer_changed": false,
+    "v7_1_baseline_changed": false,
+    "v7_2_contract_files_changed": false,
+    "daily_operation_enabled": false,
+    "integrated_production_accepted": false
+  },
+  "inherited_findings": {
+    "targeted": ["B-003"],
+    "closed_by_this_run": false,
+    "open_p0_after": 8,
+    "open_p1_after": 37
+  },
+  "evidence_refs": [
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py",
+    "arxiv-daily-push/tests/test_stage2_lease_fencing.py",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_WATCHDOG_RECOVERY_B003.md"
+  ],
+  "test_results": [
+    "py_compile PASS",
+    "focused test_stage2_lease_fencing.py: 9 OK",
+    "source/board user-center root gate regression: 14 OK",
+    "full arxiv-daily-push unittest: 526 OK",
+    "V7.2 validator: PASS",
+    "ADP project governance: 0 errors / 0 warnings",
+    "changed-only governance semantic: 0 errors / 0 warnings",
+    "governance sync validator: 0 errors / 0 warnings",
+    "lean check-render: drift_count 0 reference_issue_count 0",
+    "JSON/JSONL/CSV/YAML parse: OK",
+    "git diff --check: PASS",
+    "full semantic extractor: NOT COMPLETED after local interrupt at more than 60 seconds"
+  ],
+  "remaining_blockers": [
+    "Inherited V7.1 P0=8 and P1=37 remain open until independent review closes them.",
+    "S2PMT07 remains blocked by independent reviewer proof, inherited P0/P1 zero state, S2PLT04 completion, final acceptance bundle, independent signoff, and final command execution.",
+    "Real production watchdog behavior remains a later production gate."
+  ],
+  "rollback": "Revert S2PMT03 watchdog recovery code/tests, phase record, manifest, traceability/delivery/event records, generated status refresh, and changelog/ledger/version entries; no runtime production state was changed."
+}

@@ -28,6 +28,7 @@ S2PMT03_REQUIRED_GATES = (
     "transactional_outbox",
     "smtp_accept_crash_window",
     "m4_cycle_watermark",
+    "watchdog_stale_lock_recovery",
     "no_production_side_effect",
 )
 
@@ -246,6 +247,69 @@ def claim_outbox_message(
     return _pass_action("claim_outbox", {"message": updated, "transactional_outbox": True})
 
 
+def decide_watchdog_stale_lock_recovery(
+    lock: Mapping[str, Any],
+    *,
+    recovery_owner_id: str,
+    now_ms: int,
+    live_owner_ids: set[str] | frozenset[str],
+    lease_ms: int = S2PMT03_DEFAULT_LEASE_MS,
+) -> dict[str, Any]:
+    """Decide whether a watchdog may safely recover a stale local lease."""
+
+    owner_id = str(lock.get("lease_owner") or "")
+    lease_until = int(lock.get("lease_until_ms") or 0)
+    reasons: list[str] = []
+    if not recovery_owner_id:
+        reasons.append("recovery_owner_id is required")
+    if owner_id and owner_id in live_owner_ids:
+        reasons.append("lease owner is still live; watchdog recovery is forbidden")
+    if lease_until > now_ms:
+        reasons.append("lease has not expired")
+    if reasons:
+        return _blocked_action(
+            "watchdog_stale_lock_recovery",
+            reasons,
+            {
+                "lock": dict(lock),
+                "now_ms": now_ms,
+                "live_owner_ids": sorted(live_owner_ids),
+                "watchdog_stale_lock_recovery": False,
+                "safe_takeover": False,
+                "affected_rows": 0,
+            },
+        )
+
+    recovered = claim_leased_item(lock, owner_id=recovery_owner_id, now_ms=now_ms, lease_ms=lease_ms)
+    if recovered["status"] != "pass":
+        return _blocked_action(
+            "watchdog_stale_lock_recovery",
+            list(recovered.get("blocking_reasons") or ["watchdog recovery claim failed"]),
+            {
+                "lock": dict(lock),
+                "now_ms": now_ms,
+                "live_owner_ids": sorted(live_owner_ids),
+                "watchdog_stale_lock_recovery": False,
+                "safe_takeover": False,
+                "affected_rows": 0,
+            },
+        )
+    return _pass_action(
+        "watchdog_stale_lock_recovery",
+        {
+            "lock": recovered["item"],
+            "previous_owner_id": owner_id,
+            "recovery_owner_id": recovery_owner_id,
+            "now_ms": now_ms,
+            "live_owner_ids": sorted(live_owner_ids),
+            "watchdog_stale_lock_recovery": True,
+            "safe_takeover": True,
+            "affected_rows": recovered["affected_rows"],
+            "fencing_token": recovered["fencing_token"],
+        },
+    )
+
+
 def reconcile_smtp_accept_crash(
     message: Mapping[str, Any],
     *,
@@ -330,6 +394,30 @@ def build_lease_fencing_report(*, generated_at: str) -> dict[str, Any]:
         reason="owner worker",
         at=generated_at,
     )
+    live_lock_recovery = decide_watchdog_stale_lock_recovery(
+        {
+            "work_id": "cycle-20260702-M2",
+            "row_version": 4,
+            "lease_owner": "slow-worker",
+            "lease_until_ms": 1000,
+            "fencing_token": 9,
+        },
+        recovery_owner_id="watchdog",
+        now_ms=2000,
+        live_owner_ids={"slow-worker"},
+    )
+    dead_lock_recovery = decide_watchdog_stale_lock_recovery(
+        {
+            "work_id": "cycle-20260702-M3",
+            "row_version": 5,
+            "lease_owner": "dead-worker",
+            "lease_until_ms": 1000,
+            "fencing_token": 10,
+        },
+        recovery_owner_id="watchdog",
+        now_ms=2000,
+        live_owner_ids=set(),
+    )
     outbox = build_outbox_message(
         cycle_id="2026-07-02",
         product_id="M1",
@@ -361,6 +449,9 @@ def build_lease_fencing_report(*, generated_at: str) -> dict[str, Any]:
         "transactional_outbox": outbox_claim["status"] == "pass" and bool(outbox.get("mail_key")),
         "smtp_accept_crash_window": crash["status"] == "blocked" and crash.get("smtp_accept_crash_window") is True,
         "m4_cycle_watermark": watermark["m4_cycle_watermark"] is True,
+        "watchdog_stale_lock_recovery": live_lock_recovery["status"] == "blocked"
+        and dead_lock_recovery["status"] == "pass"
+        and dead_lock_recovery["safe_takeover"] is True,
         "no_production_side_effect": True,
     }
     status = "pass" if all(gates.values()) else "blocked"
@@ -376,6 +467,8 @@ def build_lease_fencing_report(*, generated_at: str) -> dict[str, Any]:
             "cas_event_log": claim_repo.events(),
             "stale_transition": stale_transition,
             "valid_transition": valid_transition,
+            "live_lock_recovery": live_lock_recovery,
+            "dead_lock_recovery": dead_lock_recovery,
             "outbox_claim": outbox_claim,
             "smtp_accept_crash": crash,
             "m4_watermark": watermark,

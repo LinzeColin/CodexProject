@@ -12,6 +12,7 @@ from arxiv_daily_push.stage2_lease_fencing import (
     build_outbox_message,
     claim_leased_item,
     claim_outbox_message,
+    decide_watchdog_stale_lock_recovery,
     reconcile_smtp_accept_crash,
     validate_lease_fencing_report,
 )
@@ -147,6 +148,54 @@ class Stage2LeaseFencingTests(unittest.TestCase):
         self.assertEqual(resolved["message"]["status"], "SENT")
         self.assertFalse(resolved["message"]["real_smtp_sent"])
 
+    def test_watchdog_recovery_blocks_live_owner_and_recovers_dead_stale_lock(self) -> None:
+        stale_lock = {
+            "work_id": "cycle-20260702-M2",
+            "row_version": 4,
+            "lease_owner": "slow-worker",
+            "lease_until_ms": 1000,
+            "fencing_token": 9,
+        }
+        live_owner = decide_watchdog_stale_lock_recovery(
+            stale_lock,
+            recovery_owner_id="watchdog",
+            now_ms=2000,
+            live_owner_ids={"slow-worker"},
+        )
+        dead_owner = decide_watchdog_stale_lock_recovery(
+            {**stale_lock, "lease_owner": "dead-worker"},
+            recovery_owner_id="watchdog",
+            now_ms=2000,
+            live_owner_ids=set(),
+        )
+
+        self.assertEqual(live_owner["status"], "blocked")
+        self.assertFalse(live_owner["safe_takeover"])
+        self.assertIn("lease owner is still live; watchdog recovery is forbidden", live_owner["blocking_reasons"])
+        self.assertEqual(dead_owner["status"], "pass")
+        self.assertTrue(dead_owner["safe_takeover"])
+        self.assertEqual(dead_owner["lock"]["lease_owner"], "watchdog")
+        self.assertEqual(dead_owner["lock"]["row_version"], 5)
+        self.assertEqual(dead_owner["lock"]["fencing_token"], 10)
+
+    def test_watchdog_recovery_blocks_unexpired_dead_owner_lock(self) -> None:
+        active_lease = decide_watchdog_stale_lock_recovery(
+            {
+                "work_id": "cycle-20260702-M3",
+                "row_version": 0,
+                "lease_owner": "dead-worker",
+                "lease_until_ms": 3000,
+                "fencing_token": 1,
+            },
+            recovery_owner_id="watchdog",
+            now_ms=2000,
+            live_owner_ids=set(),
+        )
+
+        self.assertEqual(active_lease["status"], "blocked")
+        self.assertEqual(active_lease["affected_rows"], 0)
+        self.assertIn("lease has not expired", active_lease["blocking_reasons"])
+
     def test_m4_watermark_is_cycle_scoped_and_degrades_after_deadline(self) -> None:
         ready = build_m4_cycle_watermark(
             cycle_id="2026-07-02",
@@ -181,6 +230,7 @@ class Stage2LeaseFencingTests(unittest.TestCase):
         self.assertFalse(report["exactly_once_claimed"])
         self.assertFalse(report["real_smtp_sent"])
         self.assertFalse(report["queue_mutation_allowed"])
+        self.assertTrue(report["gates"]["watchdog_stale_lock_recovery"])
         self.assertEqual(validate_lease_fencing_report(report), [])
 
 

@@ -2264,6 +2264,24 @@ tasks:
     completed_version: "0.23.1"
     unknown_task_ids: []
 
+  - task_id: "S2PMT03-WATCHDOG-RECOVERY-B003"
+    phase: "S2PM"
+    objective: "Remediate inherited P1 B-003 locally by making watchdog stale-lock recovery provably safe under lease/fencing semantics."
+    scope: "S2PMT03 watchdog stale-lock recovery decision helper, focused regression tests, S2PMT03 required gate extension, phase record, run manifest, traceability row, delivery/event records, and no-production evidence."
+    non_scope: "No real watchdog or launchd installation, no SMTP enablement, no scheduler install or enablement, no Release upload, no public schema or DB migration, no production queue mutation, no source adapter or ranking change, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no inherited P0/P1 closure, no DAILY_OPERATION, and no integrated production acceptance."
+    status: "completed"
+    dependencies: ["S2PMT03", "S2PMT07", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py", "arxiv-daily-push/tests/test_stage2_lease_fencing.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_WATCHDOG_RECOVERY_B003.md"]
+    acceptance_ids: ["ACC-S2PMT03-LEASE-FENCING-OUTBOX"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b003_compile2 PYTHONPATH=arxiv-daily-push/src python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py arxiv-daily-push/tests/test_stage2_lease_fencing.py", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b003_focus2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_lease_fencing.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b003_source_gate3 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_user_center_candidate_pool.py arxiv-daily-push/tests/test_owner_controls.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b003_all2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b003_v723 PYTHONPATH=arxiv-daily-push/src python3 arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b003_gov3 PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b003_changed3 PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b003_checkrender3 PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/lean_governance.py check-render --project arxiv-daily-push", "JSON/JSONL/CSV/YAML parse", "git diff --check"]
+    test_results: ["py_compile PASS", "focused S2PMT03 lease-fencing tests: 9 OK", "source/board user-center root gate regression: 14 OK", "full arxiv-daily-push unittest: 526 OK", "V7.2 validator: PASS", "ADP project governance: 0 errors / 0 warnings", "changed-only governance semantic: 0 errors / 0 warnings", "governance sync validator: 0 errors / 0 warnings", "lean check-render: drift_count 0 reference_issue_count 0", "JSON/JSONL/CSV/YAML parse: OK", "git diff --check: PASS", "full semantic extractor: NOT COMPLETED after local interrupt at more than 60 seconds"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_WATCHDOG_RECOVERY_B003.md", "governance/run_manifests/ADP-S2PMT03-WATCHDOG-RECOVERY-B003-20260626.json", "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py", "arxiv-daily-push/tests/test_stage2_lease_fencing.py"]
+    risk: "B-003 local evidence can be misread as real watchdog production recovery or inherited P0/P1 closure; those remain separate gates under S2PMT07 and final production acceptance."
+    rollback: "Revert S2PMT03 watchdog recovery code/tests, phase record, manifest, traceability/delivery/event records, generated status refresh, and this task entry; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
+
   - task_id: "S2PLT01-INDEPENDENT-REPLAY-REVIEW"
     phase: "S2PL"
     objective: "Add a machine-verifiable no-production independent replay review receipt for the S2PLT01 replay payload execution package without accepting S2PLT01."
