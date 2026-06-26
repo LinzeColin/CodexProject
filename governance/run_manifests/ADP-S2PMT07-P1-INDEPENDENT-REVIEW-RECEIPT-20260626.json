@@ -607,7 +607,24 @@
       "track": "C_UI交互架构"
     },
     {
+      "current_evidence_surface": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PAT05_LEGACY_MAIL_SCAN_C011.md",
+        "governance/run_manifests/ADP-S2PAT05-LEGACY-MAIL-SCAN-C011-20260627.json",
+        "arxiv-daily-push/用户中心/旧邮件标识兼容扫描.md",
+        "arxiv-daily-push/src/arxiv_daily_push/mail_templates.py",
+        "arxiv-daily-push/tests/test_stage2_sources.py"
+      ],
       "evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PAT05_LEGACY_MAIL_SCAN_C011.md",
+        "governance/run_manifests/ADP-S2PAT05-LEGACY-MAIL-SCAN-C011-20260627.json",
+        "arxiv-daily-push/用户中心/旧邮件标识兼容扫描.md",
+        "arxiv-daily-push/src/arxiv_daily_push/mail_templates.py",
+        "arxiv-daily-push/tests/test_stage2_sources.py"
+      ],
+      "finding_id": "C-011",
+      "fix_task": "S2PAT05-LEGACY-MAIL-SCAN-C011",
+      "preliminary_review_state": "refreshed_current_evidence_located_independent_review_required_closure_not_claimed",
+      "previous_evidence_surface": [
         "arxiv-daily-push/docs/phase_records/PHASE_S2PHT01V1_1_T01_EMAIL_PATH_AUDIT.md",
         "arxiv-daily-push/docs/phase_records/PHASE_S2PHT01V1_1_T02_T04_EMAIL_V1_RENDERER.md",
         "arxiv-daily-push/docs/phase_records/PHASE_S2PMT06_OWNER_UX.md",
@@ -615,9 +632,7 @@
         "arxiv-daily-push/docs/pursuing_goal/v7_1/09_并行审查/问题清单.csv",
         "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv"
       ],
-      "finding_id": "C-011",
-      "fix_task": "S2PAT05",
-      "preliminary_review_state": "evidence_surface_located_sufficiency/gap_review_required_closure_not_claimed",
+      "receipt_refreshed_at": "2026-06-27T07:40:20+10:00",
       "reviewer_decision_required": "Verify V7.1 fix/test requirement: 全仓扫描旧标识仅允许在 archive/compat 列表出现",
       "severity": "P1",
       "title": "旧 B1–B5/五邮件/英文名称与新 3+1 合同并存",
@@ -666,9 +681,9 @@
     "independent_final_signoff_missing",
     "independent_final_command_execution_missing"
   ],
-  "previous_refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C003-20260627.json",
+  "previous_refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C010-20260627.json",
   "project_id": "arxiv-daily-push",
-  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C010-20260627.json",
+  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C011-20260627.json",
   "refresh_manifests": [
     "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A006-A009-20260627.json",
@@ -682,9 +697,10 @@
     "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C006-C007-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C012-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C003-20260627.json",
-    "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C010-20260627.json"
+    "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C010-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C011-20260627.json"
   ],
-  "refreshed_at": "2026-06-27T07:15:07+10:00",
+  "refreshed_at": "2026-06-27T07:40:20+10:00",
   "refreshed_findings": [
     "A-006",
     "A-007",
@@ -721,6 +737,7 @@
     "C-006",
     "C-007",
     "C-010",
+    "C-011",
     "C-012"
   ],
   "result": "blocked_receipt_recorded",

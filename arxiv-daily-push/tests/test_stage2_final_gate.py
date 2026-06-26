@@ -182,7 +182,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         manifest_path = REPO_ROOT / "governance/run_manifests/ADP-S2PMT07-P1-INDEPENDENT-REVIEW-RECEIPT-20260626.json"
         refresh_manifest_path = (
             REPO_ROOT
-            / "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C010-20260627.json"
+            / "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C011-20260627.json"
         )
         receipt = receipt_path.read_text(encoding="utf-8")
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
@@ -256,6 +256,11 @@ class Stage2FinalGateTests(unittest.TestCase):
                 "ADP-S2PAT05-TRACEABILITY-CHAIN-C010-20260627.json",
                 "用户中心/功能任务测试证据追踪链.md",
             ),
+            "C-011": (
+                "PHASE_S2PAT05_LEGACY_MAIL_SCAN_C011.md",
+                "ADP-S2PAT05-LEGACY-MAIL-SCAN-C011-20260627.json",
+                "用户中心/旧邮件标识兼容扫描.md",
+            ),
             "C-012": (
                 "PHASE_S2PMT06_SAFE_MANUAL_ACTION_C012.md",
                 "ADP-S2PMT06-SAFE-MANUAL-ACTION-C012-20260627.json",
@@ -317,6 +322,13 @@ class Stage2FinalGateTests(unittest.TestCase):
             "C-006": ("PHASE_S2PMT06_OWNER_UX.md", "ADP-S2PMT06-OWNER-UX-20260626.json"),
             "C-007": ("PHASE_S2PMT06_OWNER_UX.md", "ADP-S2PMT06-OWNER-UX-20260626.json"),
             "C-010": ("并行审查汇总与合并结论.md", "问题清单.csv"),
+            "C-011": (
+                "PHASE_S2PHT01V1_1_T01_EMAIL_PATH_AUDIT.md",
+                "PHASE_S2PHT01V1_1_T02_T04_EMAIL_V1_RENDERER.md",
+                "PHASE_S2PMT06_OWNER_UX.md",
+                "并行审查汇总与合并结论.md",
+                "问题清单.csv",
+            ),
             "C-012": ("PHASE_S2PMT06_OWNER_UX.md", "ADP-S2PMT06-OWNER-UX-20260626.json"),
         }
 
@@ -324,7 +336,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(manifest["refreshed_findings"], list(expected_current_refs))
         self.assertEqual(
             manifest["refresh_manifest"],
-            "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C010-20260627.json",
+            "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C011-20260627.json",
         )
         self.assertIn(
             "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-20260627.json",

@@ -5680,3 +5680,43 @@ models:
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PAT05_TRACEABILITY_CHAIN_C010.md"
       - "governance/run_manifests/ADP-S2PAT05-TRACEABILITY-CHAIN-C010-20260627.json"
       - "arxiv-daily-push/用户中心/功能任务测试证据追踪链.md"
+
+
+  -
+    model_id: "MOD-ADP-109"
+    name: "S2PAT05 legacy mail identifier scan model"
+    purpose: "Refresh inherited P1 C-011 evidence by scanning old B1-B5/five-mail/English visible-mail identifiers and proving any remaining hits are isolated to Email V1 filters, tests, history, compatibility, or governance evidence while current mail delivery remains EMAIL_LEARNING_V1 M1-M4."
+    owner: "arxiv-daily-push"
+    status: "active"
+    assumption_ids:
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-111"
+    parameter_ids:
+      - "PARAM-ADP-930"
+      - "PARAM-ADP-931"
+      - "PARAM-ADP-932"
+      - "PARAM-ADP-933"
+      - "PARAM-ADP-934"
+    inputs:
+      - "current repository scan hits"
+      - "S2PKT01 mail contract report"
+      - "S2PKT05 M4 mail report"
+      - "production gate state"
+    outputs:
+      - "legacy_marker_hits"
+      - "classification_counts"
+      - "marker_summary"
+      - "legacy_mail_scan_hash"
+      - "s2pat05_legacy_mail_scan_ready"
+      - "blocking_reasons"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PAT05_LEGACY_MAIL_SCAN_C011.md"
+      - "governance/run_manifests/ADP-S2PAT05-LEGACY-MAIL-SCAN-C011-20260627.json"
+      - "arxiv-daily-push/用户中心/旧邮件标识兼容扫描.md"

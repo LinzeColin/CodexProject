@@ -904,6 +904,31 @@ S2PAT05_TRACEABILITY_REQUIRED_GATES = (
 )
 S2PAT05_TRACEABILITY_REQUIRED_PRODUCTION_FALSE_FLAGS = S2PIT05_REQUIRED_PRODUCTION_FALSE_FLAGS
 S2PAT05_TRACEABILITY_REPORT_FILENAME = "stage2_s2pat05_traceability_chain_report.json"
+S2PAT05_LEGACY_MAIL_SCAN_MODEL_ID = "adp-s2pat05-legacy-mail-identifier-scan-v1"
+S2PAT05_LEGACY_MAIL_SCAN_ACCEPTANCE_ID = "ACC-S2PAT05-LEGACY-MAIL-SCAN"
+S2PAT05_LEGACY_MAIL_FINDING_ID = "C-011"
+S2PAT05_LEGACY_MAIL_REQUIRED_SCOPES = (
+    "src_runtime",
+    "tests",
+    "shallow_user_center",
+    "governance_current",
+)
+S2PAT05_LEGACY_MAIL_ALLOWED_CLASSIFICATIONS = (
+    "current_email_v1_contract",
+    "current_m1_m4_contract",
+    "current_board_id_contract",
+    "forbidden_visible_marker_filter",
+    "negative_test_fixture",
+    "historical_or_compat_record",
+    "governance_evidence_record",
+)
+S2PAT05_LEGACY_MAIL_FORBIDDEN_CLASSIFICATIONS = (
+    "active_legacy_runtime",
+    "active_owner_surface_legacy",
+    "unclassified",
+)
+S2PAT05_LEGACY_MAIL_REQUIRED_PRODUCTION_FALSE_FLAGS = S2PIT05_REQUIRED_PRODUCTION_FALSE_FLAGS
+S2PAT05_LEGACY_MAIL_REPORT_FILENAME = "stage2_s2pat05_legacy_mail_identifier_scan_report.json"
 S2PKT01_MAIL_CONTRACT_MODEL_ID = "adp-s2pkt01-mail-contract-v1"
 S2PKT01_ACCEPTANCE_ID = "ACC-S2PKT01-MAIL-CONTRACT"
 S2PKT01_TASK_ID = "S2PKT01"
@@ -9495,6 +9520,284 @@ def validate_s2pat05_traceability_chain_report(report: Mapping[str, Any]) -> lis
         errors.append("blocked S2PAT05 report requires blocking_reasons")
     if report.get("status") == "pass" and report.get("s2pat05_traceability_chain_ready") is not True:
         errors.append("passing S2PAT05 report requires s2pat05_traceability_chain_ready=true")
+    return errors
+
+
+def _s2pat05_legacy_mail_scan_hash(
+    legacy_marker_hits: Sequence[Mapping[str, Any]],
+    marker_summary: Mapping[str, Any],
+) -> str:
+    encoded = json.dumps(
+        {"legacy_marker_hits": list(legacy_marker_hits), "marker_summary": dict(marker_summary)},
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    )
+    return "sha256:" + hashlib.sha256(encoded.encode("utf-8")).hexdigest()
+
+
+def build_s2pat05_legacy_mail_identifier_scan_report(
+    *,
+    generated_at: str,
+    scanned_scopes: Sequence[str],
+    legacy_marker_hits: Sequence[Mapping[str, Any]],
+    marker_summary: Mapping[str, Any],
+    mail_contract_report: Mapping[str, Any],
+    m4_mail_report: Mapping[str, Any],
+    production_gate_state: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Build C-011 evidence that legacy mail names are only historical/compat markers."""
+
+    production_gate = dict(production_gate_state or {})
+    hits = [dict(row) for row in legacy_marker_hits]
+    summary = dict(marker_summary)
+    scanned = [str(scope) for scope in scanned_scopes]
+
+    scan_scope_errors = [
+        f"missing scan scope {scope}" for scope in S2PAT05_LEGACY_MAIL_REQUIRED_SCOPES if scope not in scanned
+    ]
+    legacy_errors: list[str] = []
+    visible_marker_errors: list[str] = []
+    side_effect_errors: list[str] = []
+    classification_counts = {classification: 0 for classification in S2PAT05_LEGACY_MAIL_ALLOWED_CLASSIFICATIONS}
+    classification_counts.update({classification: 0 for classification in S2PAT05_LEGACY_MAIL_FORBIDDEN_CLASSIFICATIONS})
+
+    for index, hit in enumerate(hits):
+        marker_id = str(hit.get("marker_id") or f"hit-{index}")
+        classification = str(hit.get("classification") or "unclassified")
+        classification_counts[classification] = classification_counts.get(classification, 0) + 1
+        if classification not in S2PAT05_LEGACY_MAIL_ALLOWED_CLASSIFICATIONS:
+            legacy_errors.append(f"{marker_id} at {hit.get('path', '<unknown>')} is not an allowed C-011 classification")
+        if classification in S2PAT05_LEGACY_MAIL_FORBIDDEN_CLASSIFICATIONS:
+            legacy_errors.append(f"{marker_id} at {hit.get('path', '<unknown>')} is active legacy mail naming")
+        if not str(hit.get("path") or "").strip():
+            legacy_errors.append(f"{marker_id} missing path")
+        if not str(hit.get("allowed_reason") or "").strip():
+            legacy_errors.append(f"{marker_id} missing allowed_reason")
+        if str(hit.get("path") or "").startswith(("/Users/", "file://")):
+            legacy_errors.append(f"{marker_id} must not use local absolute evidence path")
+        if marker_id in {"frontier_delta", "action_ladder", "decision_card", "reading_time"} and classification not in {
+            "forbidden_visible_marker_filter",
+            "negative_test_fixture",
+            "historical_or_compat_record",
+            "governance_evidence_record",
+        }:
+            visible_marker_errors.append(f"{marker_id} visible-frontstage marker is not isolated to filter/test/history")
+
+    mail_contract_errors = validate_s2pkt01_mail_contract_report(mail_contract_report)
+    mail_products = [
+        str(row.get("mail_product_id") or "")
+        for row in mail_contract_report.get("mail_contracts") or []
+        if isinstance(row, Mapping)
+    ]
+    mail_contract_gate = (
+        "pass"
+        if mail_contract_report.get("status") == "pass"
+        and mail_contract_report.get("email_contract_id") == S2PKT01_EMAIL_CONTRACT_ID
+        and tuple(sorted(mail_products)) == S2PKT01_MAIL_PRODUCTS
+        and mail_contract_report.get("mail_product_count") == len(S2PKT01_MAIL_PRODUCTS)
+        and not mail_contract_errors
+        else "blocked"
+    )
+    if mail_contract_gate != "pass":
+        legacy_errors.append("S2PKT01 current mail contract must be EMAIL_LEARNING_V1 with M1-M4 only")
+        legacy_errors.extend(mail_contract_errors)
+
+    m4_errors = validate_s2pkt05_m4_mail_report(m4_mail_report)
+    m4_orchestration_record = (
+        m4_mail_report.get("m4_orchestration_record")
+        if isinstance(m4_mail_report.get("m4_orchestration_record"), Mapping)
+        else {}
+    )
+    legacy_five_mail_active = bool(m4_orchestration_record.get("legacy_five_mail_active"))
+    m4_legacy_gate = (
+        "pass"
+        if m4_mail_report.get("status") == "pass"
+        and legacy_five_mail_active is False
+        and m4_mail_report.get("mail_product_id") == "M4"
+        and not m4_errors
+        else "blocked"
+    )
+    if m4_legacy_gate != "pass":
+        legacy_errors.append("S2PKT05 M4 must keep legacy_five_mail_active=false")
+        legacy_errors.extend(m4_errors)
+
+    production_errors: list[str] = []
+    for key in (*S2PAT05_LEGACY_MAIL_REQUIRED_PRODUCTION_FALSE_FLAGS, "production_restore_executed", "smtp_transport_allowed"):
+        if production_gate.get(key, False) is not False:
+            production_errors.append(f"production_gate_state.{key} must be false")
+    for key in (
+        "real_smtp_sent",
+        "scheduler_enabled",
+        "release_upload_allowed",
+        "public_schema_changed",
+        "queue_schema_changed",
+        "source_adapter_changed",
+        "email_frontstage_changed",
+    ):
+        if mail_contract_report.get(key, False) is not False:
+            side_effect_errors.append(f"mail_contract_report.{key} must be false")
+        if m4_mail_report.get(key, False) is not False:
+            side_effect_errors.append(f"m4_mail_report.{key} must be false")
+
+    gates = {
+        "scan_scope_gate": "pass" if not scan_scope_errors else "blocked",
+        "legacy_identifier_classification_gate": "pass" if not legacy_errors else "blocked",
+        "visible_frontstage_marker_gate": "pass" if not visible_marker_errors else "blocked",
+        "mail_contract_gate": mail_contract_gate,
+        "m4_legacy_mail_gate": m4_legacy_gate,
+        "no_side_effect_gate": "pass" if not side_effect_errors and not production_errors else "blocked",
+    }
+    blocking_reasons = sorted(set([*scan_scope_errors, *legacy_errors, *visible_marker_errors, *side_effect_errors, *production_errors]))
+    status = "pass" if not blocking_reasons and all(value == "pass" for value in gates.values()) else "blocked"
+
+    return {
+        "model_id": S2PAT05_LEGACY_MAIL_SCAN_MODEL_ID,
+        "acceptance_id": S2PAT05_LEGACY_MAIL_SCAN_ACCEPTANCE_ID,
+        "task_id": S2PAT05_TASK_ID,
+        "finding_id": S2PAT05_LEGACY_MAIL_FINDING_ID,
+        "phase": "S2PA",
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "status": status,
+        **gates,
+        "required_scan_scopes": list(S2PAT05_LEGACY_MAIL_REQUIRED_SCOPES),
+        "scanned_scopes": scanned,
+        "allowed_classifications": list(S2PAT05_LEGACY_MAIL_ALLOWED_CLASSIFICATIONS),
+        "forbidden_classifications": list(S2PAT05_LEGACY_MAIL_FORBIDDEN_CLASSIFICATIONS),
+        "legacy_marker_hits": hits,
+        "legacy_marker_hit_count": len(hits),
+        "classification_counts": classification_counts,
+        "marker_summary": summary,
+        "email_contract_id": S2PKT01_EMAIL_CONTRACT_ID,
+        "required_mail_products": list(S2PKT01_MAIL_PRODUCTS),
+        "observed_mail_products": sorted(mail_products),
+        "legacy_five_mail_active": legacy_five_mail_active,
+        "legacy_mail_scan_hash": _s2pat05_legacy_mail_scan_hash(hits, summary),
+        "s2pat05_legacy_mail_scan_ready": status == "pass",
+        "p1_closure_claimed": False,
+        "independent_review_signoff_present": False,
+        "stage2_production_accepted": False,
+        "integrated_production_accepted": False,
+        "production_affected": False,
+        "real_smtp_sent": False,
+        "smtp_transport_allowed": False,
+        "scheduler_enabled": False,
+        "release_upload_allowed": False,
+        "db_migration_executed": False,
+        "schema_migration_allowed": False,
+        "public_schema_changed": False,
+        "queue_schema_changed": False,
+        "queue_mutation_allowed": False,
+        "ranking_algorithm_changed": False,
+        "source_adapter_changed": False,
+        "email_frontstage_changed": False,
+        "v7_1_current_switched": False,
+        "v7_2_contract_files_changed": False,
+        "blocking_reasons": blocking_reasons,
+    }
+
+
+def run_s2pat05_legacy_mail_identifier_scan(
+    *,
+    state_dir: str | Path,
+    date: str,
+    generated_at: str,
+    scanned_scopes: Sequence[str],
+    legacy_marker_hits: Sequence[Mapping[str, Any]],
+    marker_summary: Mapping[str, Any],
+    mail_contract_report: Mapping[str, Any],
+    m4_mail_report: Mapping[str, Any],
+    production_gate_state: Mapping[str, Any] | None = None,
+    write: bool = True,
+) -> dict[str, Any]:
+    """Persist C-011 legacy mail identifier scan evidence without runtime side effects."""
+
+    state = Path(state_dir).resolve()
+    run_dir = state / "runs" / date.replace("-", "") / "s2pat05-legacy-mail-identifier-scan"
+    if write:
+        run_dir.mkdir(parents=True, exist_ok=True)
+    report = build_s2pat05_legacy_mail_identifier_scan_report(
+        generated_at=generated_at,
+        scanned_scopes=scanned_scopes,
+        legacy_marker_hits=legacy_marker_hits,
+        marker_summary=marker_summary,
+        mail_contract_report=mail_contract_report,
+        m4_mail_report=m4_mail_report,
+        production_gate_state=production_gate_state,
+    )
+    report.update(
+        {
+            "date": date,
+            "timezone": DEFAULT_TIMEZONE,
+            "state_dir": str(state),
+            "run_dir": str(run_dir),
+            "legacy_mail_identifier_scan_report_path": str(
+                run_dir / "adp-s2pat05-legacy-mail-identifier-scan-report.json"
+            ),
+        }
+    )
+    if write:
+        _write_json(run_dir / "adp-s2pat05-legacy-mail-identifier-scan-report.json", report)
+        _write_json(state / S2PAT05_LEGACY_MAIL_REPORT_FILENAME, report)
+    return report
+
+
+def validate_s2pat05_legacy_mail_identifier_scan_report(report: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if report.get("model_id") != S2PAT05_LEGACY_MAIL_SCAN_MODEL_ID:
+        errors.append("S2PAT05 C-011 model_id must be adp-s2pat05-legacy-mail-identifier-scan-v1")
+    if report.get("task_id") != S2PAT05_TASK_ID:
+        errors.append("S2PAT05 C-011 task_id must be S2PAT05")
+    if report.get("acceptance_id") != S2PAT05_LEGACY_MAIL_SCAN_ACCEPTANCE_ID:
+        errors.append("S2PAT05 C-011 acceptance_id must be ACC-S2PAT05-LEGACY-MAIL-SCAN")
+    if report.get("finding_id") != S2PAT05_LEGACY_MAIL_FINDING_ID:
+        errors.append("S2PAT05 C-011 finding_id must be C-011")
+    if report.get("status") != "pass":
+        errors.append("S2PAT05 C-011 status must be pass")
+    for gate in (
+        "scan_scope_gate",
+        "legacy_identifier_classification_gate",
+        "visible_frontstage_marker_gate",
+        "mail_contract_gate",
+        "m4_legacy_mail_gate",
+        "no_side_effect_gate",
+    ):
+        if report.get(gate) != "pass":
+            errors.append(f"S2PAT05 C-011 {gate} must be pass")
+    if report.get("email_contract_id") != S2PKT01_EMAIL_CONTRACT_ID:
+        errors.append("S2PAT05 C-011 email_contract_id must be EMAIL_LEARNING_V1")
+    if tuple(report.get("observed_mail_products") or []) != S2PKT01_MAIL_PRODUCTS:
+        errors.append("S2PAT05 C-011 observed_mail_products must be M1-M4")
+    if report.get("legacy_five_mail_active") is not False:
+        errors.append("S2PAT05 C-011 legacy_five_mail_active must be false")
+    if not str(report.get("legacy_mail_scan_hash") or "").startswith("sha256:"):
+        errors.append("S2PAT05 C-011 legacy_mail_scan_hash is required")
+    for classification in S2PAT05_LEGACY_MAIL_FORBIDDEN_CLASSIFICATIONS:
+        if int((report.get("classification_counts") or {}).get(classification) or 0) != 0:
+            errors.append(f"S2PAT05 C-011 forbidden classification {classification} must be 0")
+    for key in (
+        "p1_closure_claimed",
+        "independent_review_signoff_present",
+        "stage2_production_accepted",
+        "integrated_production_accepted",
+        "real_smtp_sent",
+        "smtp_transport_allowed",
+        "scheduler_enabled",
+        "release_upload_allowed",
+        "db_migration_executed",
+        "schema_migration_allowed",
+        "public_schema_changed",
+        "queue_schema_changed",
+        "queue_mutation_allowed",
+        "ranking_algorithm_changed",
+        "source_adapter_changed",
+        "email_frontstage_changed",
+        "v7_1_current_switched",
+        "v7_2_contract_files_changed",
+    ):
+        if report.get(key) is not False:
+            errors.append(f"S2PAT05 C-011 production flag {key} must be false")
     return errors
 
 

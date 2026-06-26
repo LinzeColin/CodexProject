@@ -9,7 +9,7 @@
 - status: `review_receipt_ready_no_closure_claim`
 - V7.2 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - created_at: `2026-06-26 19:51:01 Australia/Sydney`
-- refreshed_at: `2026-06-27 07:15:07 Australia/Sydney`
+- refreshed_at: `2026-06-27 07:40:20 Australia/Sydney`
 
 This receipt organizes the inherited V7.1 P1 evidence set for later independent review. It is not an independent reviewer signoff, does not close any P0/P1 finding, and does not unblock integrated production acceptance.
 
@@ -87,16 +87,16 @@ No P0/P1 closure, no independent final signoff, no S2PLT04 completion, no final 
 | `C-006` | `S2PMT06-SAFE-CONFIG-C006` | 修改配置缺少预览、diff、校验、影响分析和一键回滚 | `PHASE_S2PMT06_SAFE_CONFIG_C006.md`, `ADP-S2PMT06-SAFE-CONFIG-C006-20260627.json`, `test_stage2_owner_ux.py` | refreshed current evidence located; independent review required; closure not claimed | Verify V7.1 fix/test requirement: 非法配置无法应用；应用后可回滚到上个 revision |
 | `C-007` | `S2PMT06-APPEND-ONLY-AUDIT-C007` | 用户控制修改缺少 append-only 审计历史 | `PHASE_S2PMT06_APPEND_ONLY_AUDIT_C007.md`, `ADP-S2PMT06-APPEND-ONLY-AUDIT-C007-20260627.json`, `test_stage2_owner_ux.py` | refreshed current evidence located; independent review required; closure not claimed | Verify V7.1 fix/test requirement: 每次有效修改都有 revision；结果产物记录使用的 revision |
 | `C-010` | `S2PAT05-TRACEABILITY-CHAIN-C010` | 功能→Task→测试→运行证据在 UI 中没有可点击追踪链 | `PHASE_S2PAT05_TRACEABILITY_CHAIN_C010.md`, `ADP-S2PAT05-TRACEABILITY-CHAIN-C010-20260627.json`, `用户中心/功能任务测试证据追踪链.md`, `test_stage2_sources.py` | refreshed current evidence located; independent review required; closure not claimed | Verify V7.1 fix/test requirement: 每个 required feature 追踪覆盖 100%，无孤儿 Task/测试/证据 |
-| `C-011` | `S2PAT05` | 旧 B1–B5/五邮件/英文名称与新 3+1 合同并存 | `PHASE_S2PHT01V1_1_T01_EMAIL_PATH_AUDIT.md`, `PHASE_S2PHT01V1_1_T02_T04_EMAIL_V1_RENDERER.md`, `PHASE_S2PMT06_OWNER_UX.md`, `并行审查汇总与合并结论.md` | evidence surface located; sufficiency/gap review required; closure not claimed | Verify V7.1 fix/test requirement: 全仓扫描旧标识仅允许在 archive/compat 列表出现 |
+| `C-011` | `S2PAT05-LEGACY-MAIL-SCAN-C011` | 旧 B1–B5/五邮件/英文名称与新 3+1 合同并存 | `PHASE_S2PAT05_LEGACY_MAIL_SCAN_C011.md`, `ADP-S2PAT05-LEGACY-MAIL-SCAN-C011-20260627.json`, `用户中心/旧邮件标识兼容扫描.md`, `test_stage2_sources.py` | refreshed current evidence located; independent review required; closure not claimed | Verify V7.1 fix/test requirement: 全仓扫描旧标识仅允许在 archive/compat 列表出现 |
 | `C-012` | `S2PMT06-SAFE-MANUAL-ACTION-C012` | 缺少手动重试、取消、重新排队、跳过和重新生成的安全交互 | `PHASE_S2PMT06_SAFE_MANUAL_ACTION_C012.md`, `ADP-S2PMT06-SAFE-MANUAL-ACTION-C012-20260627.json`, `test_stage2_owner_ux.py` | refreshed current evidence located; independent review required; closure not claimed | Verify V7.1 fix/test requirement: 重复点击不重复发送；非法状态动作被禁用并解释原因 |
 
 ## Evidence Refresh 2026-06-27
 
 This refresh updates the P1 receipt to point completed P1 remediation rows at their dedicated phase records and manifests instead of older aggregate evidence surfaces. It does not close any P1 finding and does not provide independent review signoff.
 
-- refreshed_findings: `A-006`, `A-007`, `A-008`, `A-009`, `A-010`, `A-011`, `A-012`, `A-013`, `A-014`, `A-015`, `A-016`, `A-017`, `A-018`, `A-019`, `A-020`, `A-021`, `B-002`, `B-003`, `B-004`, `B-005`, `B-006`, `B-009`, `B-010`, `B-011`, `B-012`, `B-013`, `B-014`, `B-015`, `C-001`, `C-002`, `C-003`, `C-005`, `C-006`, `C-007`, `C-010`, `C-012`
-- refresh_manifest: `governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C010-20260627.json`
-- previous_refresh_manifest: `governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C003-20260627.json`
+- refreshed_findings: `A-006`, `A-007`, `A-008`, `A-009`, `A-010`, `A-011`, `A-012`, `A-013`, `A-014`, `A-015`, `A-016`, `A-017`, `A-018`, `A-019`, `A-020`, `A-021`, `B-002`, `B-003`, `B-004`, `B-005`, `B-006`, `B-009`, `B-010`, `B-011`, `B-012`, `B-013`, `B-014`, `B-015`, `C-001`, `C-002`, `C-003`, `C-005`, `C-006`, `C-007`, `C-010`, `C-011`, `C-012`
+- refresh_manifest: `governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C011-20260627.json`
+- previous_refresh_manifest: `governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C010-20260627.json`
 - closure_claimed: `false`
 - independent_review_signoff_present: `false`
 

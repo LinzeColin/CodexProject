@@ -19,6 +19,7 @@ CANDIDATE_POOL_PAGE = USER_CENTER / "截至今日候选池.md"
 DATA_SOURCE_PAGE = USER_CENTER / "数据源与板块健康.md"
 REPORT_PREVIEW_INDEX_PAGE = USER_CENTER / "已生成报告与邮件预览.md"
 TRACEABILITY_CHAIN_PAGE = USER_CENTER / "功能任务测试证据追踪链.md"
+LEGACY_MAIL_SCAN_PAGE = USER_CENTER / "旧邮件标识兼容扫描.md"
 TRACEABILITY_MATRIX = ROOT / "docs" / "governance" / "TRACEABILITY_MATRIX.csv"
 MODEL_PARAMS_PAGE = ROOT / "模型参数文件"
 SUMMARY_PAGES = (
@@ -121,6 +122,26 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertNotIn("/Users/", page)
         self.assertNotIn("file://", page)
         self.assertIn("[功能任务测试证据追踪链](./功能任务测试证据追踪链.md)", readme)
+
+    def test_legacy_mail_scan_page_exposes_c011_current_evidence(self):
+        page = LEGACY_MAIL_SCAN_PAGE.read_text(encoding="utf-8")
+        readme = (USER_CENTER / "README.md").read_text(encoding="utf-8")
+
+        self.assertTrue(page.startswith("# 旧邮件标识兼容扫描\n"))
+        self.assertRegex(page, r"更新时间：\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} Australia/Sydney")
+        self.assertIn("C-011", page)
+        self.assertIn("活跃旧邮件运行命中 | 0", page)
+        self.assertIn("活跃旧用户页面命中 | 0", page)
+        self.assertIn("未分类命中 | 0", page)
+        self.assertIn("`EMAIL_LEARNING_V1`", page)
+        self.assertIn("`M1, M2, M3, M4`", page)
+        self.assertIn("[C-011 运行清单](../../governance/run_manifests/ADP-S2PAT05-LEGACY-MAIL-SCAN-C011-20260627.json)", page)
+        self.assertIn("[C-011 阶段记录](../docs/phase_records/PHASE_S2PAT05_LEGACY_MAIL_SCAN_C011.md)", page)
+        self.assertIn("[P1 复审 receipt](../docs/phase_records/PHASE_S2PMT07_P1_INDEPENDENT_REVIEW_RECEIPT.md)", page)
+        self.assertIn("[Focused tests](../tests/test_stage2_sources.py)", page)
+        self.assertNotIn("/Users/", page)
+        self.assertNotIn("file://", page)
+        self.assertIn("[旧邮件标识兼容扫描](./旧邮件标识兼容扫描.md)", readme)
 
     def test_user_center_pages_keep_chinese_facing_labels(self):
         forbidden = (

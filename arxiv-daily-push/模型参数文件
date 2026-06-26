@@ -2,9 +2,9 @@
 
 ## 中文速读
 
-- 本次 C-010 追踪链门新增本地证据模型 `MOD-ADP-108` / `adp-s2pat05-clickable-traceability-chain-v1`，不新增生产排序算法或收益评分公式。
-- C-010 的关键可验证字段是 `requirement_id`、`task_id`、`acceptance_id`、`code_ref`、`test_ref`、`evidence_ref` 和 `status`。
-- C-010 还要求用户中心、功能清单、矩阵、阶段记录、运行清单和测试入口都是可点击 Markdown 链接；本条只刷新 P1 receipt 路由，不关闭 P1，不启用生产。
+- 本次 C-011 旧邮件标识扫描门新增本地证据模型 `MOD-ADP-109` / `adp-s2pat05-legacy-mail-identifier-scan-v1`，不新增生产排序算法、收益评分公式或邮件 runtime 行为。
+- C-011 的关键可验证字段是扫描范围、标识组、分类、允许原因、活跃旧运行命中数、当前邮件产品和 `legacy_five_mail_active`。
+- C-011 要求当前邮件合同仍为 `EMAIL_LEARNING_V1` / `M1-M4`，旧标识只能作为过滤器、负例测试、历史/compat 或治理证据存在；本条只刷新 P1 receipt 路由，不关闭 P1，不启用生产。
 
 ## 摘要
 
@@ -1409,3 +1409,19 @@
 | PARAM-ADP-379 | SUPPORTED_TOP_JOURNALS | S2PCT01 supported top journals | nature | EXTRACTED from top_journal_adapter.py | EXTRACTED |
 | PARAM-ADP-380 | S2P2_QUEUE_FILENAME | S2PCT01 top-journal shadow queue filename | stage2_s2p2_top_journal_queue.json | EXTRACTED from stage2_sources.py | EXTRACTED |
 | PARAM-ADP-381 | S2P2_LEDGER_FILENAME | S2PCT01 top-journal shadow ledger filename | stage2_s2p2_top_journal_ledger.jsonl | EXTRACTED from stage2_sources.py | EXTRACTED |
+
+
+## S2PAT05 C-011 旧邮件标识兼容扫描门
+
+| 字段 | 值 |
+|---|---|
+| 模型 ID | `MOD-ADP-109` |
+| 模型名称 | `adp-s2pat05-legacy-mail-identifier-scan-v1` |
+| 公式 ID | `FORM-ADP-111` |
+| 参数版本 | `adp-s2pat05-legacy-mail-scan-parameters-v1` |
+| 适用范围 | C-011 P1 复审证据刷新；验证旧 B1-B5、五邮件、旧英文可见邮件前台标识是否只在允许分类中出现 |
+| 必扫范围 | `src_runtime`、`tests`、`shallow_user_center`、`governance_current` |
+| 允许分类 | 当前 Email V1 合同、当前 M1-M4 合同、当前 board-id 合同、旧前台禁用/替换过滤器、负例测试、历史/compat、治理证据 |
+| 禁止分类 | 活跃旧 runtime、活跃旧用户页面、未分类命中 |
+| 当前扫描结果 | 271 个命中已分类；活跃旧 runtime / owner / 未分类均为 0 |
+| 禁止误读 | 本模型只刷新 P1 证据路由，不关闭 C-011，不声明独立复审通过，不启用 SMTP、scheduler、Release、DB/schema、队列、ranking、source adapter、Email frontstage 或 Stage2 production |
