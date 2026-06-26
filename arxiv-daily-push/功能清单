@@ -1,35 +1,49 @@
 # 功能清单
 
+## 中文速读
+
+| 问题 | 结论 |
+|---|---|
+| 当前这个项目能做什么 | 从 arXiv 选择高价值论文，生成中文学习邮件，维护候选队列、内容账本、复习行动和收益证据 |
+| 用户现在从哪里看状态 | GitHub 浅层目录 `arxiv-daily-push/用户中心/` |
+| 今天邮件状态在哪里 | `用户中心/邮件发送与队列状态.md` |
+| 一屏检查在哪里 | `用户中心/一看三查.md` |
+| 仍未完成什么 | Stage 2 正式生产验收、历史问题清零、复习行动收益每日自动快照 |
+| 不能宣称什么 | 不能把本机补发、影子证据或手工快照说成正式每日生产通过 |
+
+说明：下方保留任务编号、合同编号、文件名和少量系统原始状态值，用于审查和追溯；面向用户的自然语言说明必须优先使用中文。
+
 ## 摘要
 
-- project_id: `arxiv-daily-push`
-- product_version: `0.23.0`
-- current_stage: `S2`
-- current_phase: `S2PC`
-- current_task: `S2PCT02`
-- progress: `80.95%`
-- capability_count: `9`
-- blockers: `none`
-- next_gate: `S2PC-GATE-V7-2-REVALIDATION`
-- next_unique_task: `S2PCT02 Science main-journal metadata-only no-send shadow evidence (planned)`
-- evidence_ref_count: `17`
-- roadmap_test_command_count: `10`
-- roadmap_gate_count: `5`
-- evidence_status: `EXTRACTED`
+- 项目：`arxiv-daily-push`
+- 产品版本：`0.23.0`
+- 当前阶段：`S2`
+- 当前分支阶段：`S2PC`
+- 当前任务：`S2PCT02`
+- 进度：`80.95%`
+- 功能数量：`10`
+- 当前阻断：无公开阻断；Stage 2 最终门仍未通过
+- 下一门禁：`S2PC-GATE-V7-2-REVALIDATION`
+- 下一候选任务：`S2PCT02 Science 主刊元数据影子证据`
+- 证据引用数量：`18`
+- 路线图测试命令数量：`10`
+- 路线图门禁数量：`5`
+- 证据状态：已抽取
 
 ## 功能概览
 
 | 功能 ID | 名称 | 状态 | 说明 | 证据等级 |
 |---|---|---|---|---|
-| FEAT-ADP-001 | 全 arXiv 扫描与来源输入 | completed | 从 arXiv 主档案桶获取候选，保持真实 arXiv metadata、日期和 source identity；不在本迁移中新增 bioRxiv/medRxiv。 | EXTRACTED |
-| FEAT-ADP-002 | 候选队列、ROI/学习价值排序与内容账本 | completed | 对候选进行确定性排序、队列和 CONTENT_LEDGER 闭环；前台邮件不展示后台 ROI 数字。 | EXTRACTED |
-| FEAT-ADP-003 | 中文讲解邮件与教学型前台 | completed | 生成中文教学简报、plain/HTML preview 和候选队列摘要；不启用视频附件或 Release/ROI 前台展示。 | EXTRACTED |
-| FEAT-ADP-004 | 本机 Codex/local runner 运行与迁移准备 | completed | 本地 preflight、daily-run、queue/ledger/report/email preview 持久化、launchd 草案和 2026-06-30 迁移 runbook 已准备。 | EXTRACTED |
-| FEAT-ADP-005 | 生产 fail-closed gate 与副作用边界 | completed | 生产变量、SMTP、Release、schedule、trial start 与 launch readiness 失败关闭；本迁移不启用真实生产发送。 | EXTRACTED |
-| FEAT-ADP-006 | Stage 1 严格验收与 Gmail SMTP test10 | completed | 30 天真实 arXiv backfill、CONTENT_LEDGER closure、test10 Gmail SMTP 证据共同支持 Stage 1 arXiv accepted。 | EXTRACTED |
-| FEAT-ADP-007 | Stage 2 bioRxiv/medRxiv shadow source evidence | completed | S2PBT01/S2P1T01 已完成 metadata-only details API adapter、SourceItem preprint、disabled source entries、promotion gate、separate shadow queue/ledger/email preview、30-date replay/48h shadow builder、live canary 和真实 no-send replay；正式生产纳入仍被 V7/root contract gates 阻断。 | EXTRACTED |
-| FEAT-ADP-008 | Stage 2 Nature/top-journal shadow source evidence | completed | S2PCT01/S2P2T01 已完成 official Nature RSS metadata-only adapter、s41586 主刊 research article filter、top-journal SourceItem、separate shadow queue/ledger/email preview、live Nature no-send canary 和 PR #119 main merge；正式 D2 source-domain acceptance 与 Stage2 production 仍被 P0/P1 与 S2PMT07 阻断。 | EXTRACTED |
-| FEAT-ADP-009 | Review9 Lean v2 owner-readable governance | proposed | 把已有 ADP 治理事实压缩为 canonical project/roadmap/events 与三个人类入口；不搬运治理计算到每次开发动作。 | PROPOSED |
+| FEAT-ADP-001 | 全 arXiv 扫描与来源输入 | 已完成 | 从 arXiv 主档案桶获取候选，保留真实元数据、日期和来源身份；本能力不新增 bioRxiv 或 medRxiv。 | 已抽取 |
+| FEAT-ADP-002 | 候选队列、学习价值排序与内容账本 | 已完成 | 对候选进行确定性排序，维护队列和内容账本；前台邮件不展示后台收益分数。 | 已抽取 |
+| FEAT-ADP-003 | 中文讲解邮件与教学前台 | 已完成 | 生成中文教学简报、纯文本/网页邮件预览和候选队列摘要；不启用视频附件或媒体发布。 | 已抽取 |
+| FEAT-ADP-004 | 本机运行与迁移准备 | 已完成 | 本机预检查、日常运行、队列/账本/报告/邮件预览持久化、计划任务草案和迁移手册已准备。 | 已抽取 |
+| FEAT-ADP-005 | 生产失败关闭与副作用边界 | 已完成 | 生产变量、邮件发送、发布、计划任务、试运行和启动门禁均失败关闭；本迁移不启用真实生产发送。 | 已抽取 |
+| FEAT-ADP-006 | Stage 1 严格验收与受控邮件发送 | 已完成 | 30 天真实 arXiv 回放、内容账本闭环和受控 Gmail SMTP 证据共同支持 Stage 1 arXiv 验收。 | 已抽取 |
+| FEAT-ADP-007 | Stage 2 预印本影子来源证据 | 已完成 | bioRxiv/medRxiv 已完成元数据影子证据；正式纳入生产仍被 V7.2 最终门阻断。 | 已抽取 |
+| FEAT-ADP-008 | Stage 2 顶刊影子来源证据 | 已完成 | Nature 顶刊元数据影子证据已完成；正式 D2 来源验收和 Stage 2 生产仍被历史问题和最终门阻断。 | 已抽取 |
+| FEAT-ADP-009 | 精简治理与中文入口 | 拟议 | 把已有治理事实压缩为少量规范来源和中文入口，不把治理计算搬进每次开发动作。 | 拟议 |
+| FEAT-ADP-010 | GitHub 中文用户中心与一看三查 | 已完成 | 在 `arxiv-daily-push/用户中心/` 提供一看三查、已发送/未发送/排队/已讲解、复习行动与收益、关键结论与用户决策、路线图与停止门、人类可读信息索引；本机运行文件只作为证据来源。 | 已抽取 |
 
 ## V7.2 CURRENT 产品合同
 
@@ -88,3 +102,4 @@
 | EVID-ADP-S2PBT01-REAL-REPLAY-SHADOW | manifest | governance/run_manifests/ADP-S2PBT01-REAL-REPLAY-SHADOW-EVIDENCE-20260624.json | EXTRACTED |
 | EVID-ADP-S2PCT01-NATURE | manifest | governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json | EXTRACTED |
 | EVID-REVIEW9-S5PBT05-MANIFEST | manifest | governance/run_manifests/GOV-REVIEW9-S5PBT05-ARXIV-DAILY-PUSH-CANONICAL-RENDER-20260624.json | PROPOSED |
+| EVID-ADP-USER-CENTER-READABLE-CN | manifest | governance/run_manifests/ADP-USER-CENTER-READABLE-CN-20260626.json | 已抽取 |

@@ -1,29 +1,48 @@
 # 开发记录
 
+## 中文速读
+
+| 问题 | 当前答案 |
+|---|---|
+| 当前开发主线 | Stage 2 仍在推进，但正式生产验收未通过 |
+| 用户中心修复状态 | 已把入口改为中文、高密度、可决策的信息面 |
+| 本次修复边界 | 只改用户可读文档、三基说明和运行清单；不改生产代码、公共结构、队列、计划任务或 SMTP |
+| 下一步最有价值任务 | 把复习、行动、能力资产、收益的每日数量自动写入 GitHub 用户中心 |
+| 当前禁止结论 | 不能宣称 Stage 2 正式生产通过，不能宣称每日运行已验收 |
+
+说明：下方保留任务编号、验收编号、提交记录和命令名，用于审查；自然语言描述必须中文优先。
+
 ## 摘要
 
-- project_id: `arxiv-daily-push`
-- product_version: `0.23.0`
-- current_stage: `S2`
-- current_phase: `S2PC`
-- current_task: `S2PCT02`
-- total_hours: `10.50`
-- completed_hours: `8.50`
-- progress: `80.95%`
-- blockers: `none`
-- next_gate: `S2PC-GATE-V7-2-REVALIDATION`
-- next_unique_task: `S2PCT02 Science main-journal metadata-only no-send shadow evidence (planned)`
-- roadmap_kind: `product`
-- roadmap_task_count: `4`
-- roadmap_gate_count: `5`
-- roadmap_acceptance_count: `4`
-- roadmap_test_command_count: `10`
-- roadmap_evidence_ref_count: `21`
-- evidence_status: `EXTRACTED`
+- 项目：`arxiv-daily-push`
+- 产品版本：`0.23.0`
+- 当前阶段：`S2`
+- 当前分支阶段：`S2PC`
+- 当前任务：`S2PCT02`
+- 总估算工时：`10.50`
+- 已完成工时：`8.50`
+- 进度：`80.95%`
+- 当前阻断：无公开阻断；Stage 2 最终门仍未通过
+- 下一门禁：`S2PC-GATE-V7-2-REVALIDATION`
+- 下一候选任务：`S2PCT02 Science 主刊元数据影子证据`
+- 路线图类型：产品路线图
+- 路线图任务数：`4`
+- 路线图门禁数：`5`
+- 验收项数量：`4`
+- 测试命令数量：`10`
+- 证据引用数量：`21`
+- 证据状态：已抽取
 
-## Roadmap
+## 用户中心补丁记录
 
-Stage -> Phase -> Task
+| 时间 | 类型 | 摘要 | 任务 | 事实等级 |
+|---|---|---|---|---|
+| 2026-06-26T16:27:41+10:00 | GitHub 用户中心补齐 | GitHub 浅层用户中心补齐一看三查、已发送/未发送/排队/已讲解、复习行动与收益、关键结论与用户决策、路线图与停止门、人类可读信息索引，并记录复习、行动、收益每日数量尚未自动刷新到 GitHub 用户中心的缺口；不改生产代码、SMTP、计划任务、公共结构或队列。 | ADP-USER-CENTER-ONE-LOOK-THREE-CHECK-20260626 | 已抽取 |
+| 2026-06-26T17:17:15+10:00 | 中文可读性修复 | 将用户中心页面改成全中文优先、结论优先、动作优先、低噪声的 owner 阅读面；把非必要英文文件名改为中文；保留任务编号和合同编号作为证据标识。 | ADP-USER-CENTER-READABLE-CN-20260626 | 已抽取 |
+
+## 路线图
+
+阶段 -> 分支 -> 任务
 
 ### S2 Stage 2 多来源证据推进
 

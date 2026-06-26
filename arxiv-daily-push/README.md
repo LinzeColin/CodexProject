@@ -1,85 +1,70 @@
-# arXiv Daily Push
+# arXiv 日报推送
 
-Owner 人类可读入口在 GitHub 浅层目录：[用户中心](./用户中心/README.md)。
-第一屏检查入口：[一看三查](./用户中心/一看三查.md)。
-已发送、未发送、排队信息直接看：[邮件发送与队列状态](./用户中心/邮件发送与队列状态.md)。
-不要要求 owner 去本机 `.adp` 目录或深层 `docs/owner` 目录里找状态。
+## 先读这里
 
-`arXiv 日报推送 / arXiv Daily Push` is a private, evidence-first daily teaching
-pipeline. V5 Stage 1 for the B1/arXiv single-source vertical slice is recorded
-as `ARXIV_PRODUCTION_ACCEPTED`. `ADP-S1P5T05` completed local production and
-2026-06-30 migration prep. Current V6 task pointer: `S2P1T01`.
+| 你要找什么 | GitHub 中文入口 |
+|---|---|
+| 今天总体状态 | [用户中心](./用户中心/README.md) |
+| 一屏判断和三项检查 | [一看三查](./用户中心/一看三查.md) |
+| 已发送、未发送、排队、已讲解 | [邮件发送与队列状态](./用户中心/邮件发送与队列状态.md) |
+| 复习、行动、能力资产、收益 | [复习行动与收益](./用户中心/复习行动与收益.md) |
+| 当前路线图和停止门 | [路线图与停止门](./用户中心/路线图与停止门.md) |
 
-The user-facing product must be an explanatory Chinese learning email, not a
-shallow news digest. Stage 1 delivery is text-first: high-density Chinese
-teaching report, email preview/delivery contract, and Markdown/HTML/JSON audit
-artifacts. Video, TTS, MP4 rendering, GitHub Release video links, and media
-attachments are historical/legacy capabilities only and are not Stage 1 V5
-acceptance requirements.
+不要要求用户去本机 `.adp` 目录、原始 JSON、LaunchAgent 或深层 `docs/owner` 目录里找状态。用户主阅读面就是 GitHub 浅层中文用户中心。
 
-Stage 1 acceptance is not the same as enabling unattended sends. The current
-owner-approved production strategy is local Mac + Codex/local runner, with
-state persisted under a local state directory and GitHub used for code, PR/CI,
-evidence, status, and backup only. GitHub cloud scheduled production remains
-disabled and must not become the daily runner without a new explicit task.
+## 项目定位
 
-Baseline clarification: 30-day-grade Stage 1/2 evidence means 30 independent
-unique-date artifacts and replay/coverage checks generated from real data where
-available. It must not be interpreted as waiting 30 wall-clock days when the
-same evidence can be produced and verified faster.
+`arXiv 日报推送` 是一个证据优先的中文学习邮件系统，不是浅层论文新闻摘要。它的目标是每天把一篇或一组高价值研究转成中文讲解、复习计划、行动建议和可追踪的学习收益。
 
-## Current Scope
+当前事实：
 
-Implemented foundations now:
+| 事项 | 状态 |
+|---|---|
+| Stage 1 arXiv 单源 | 已验收并维持 |
+| 本机运行策略 | 本机加本地 Codex 运行器 |
+| GitHub 角色 | 代码、PR、证据、状态和备份 |
+| GitHub 云端每日生产 | 未启用 |
+| Stage 2 多来源正式生产 | 未通过 |
+| Email V1 | 已作为 M1 到 M4 后续邮件模板合同 |
 
-- package and CLI foundation: `adp version`, `adp doctor`, `adp render-email`,
-  `adp send-notification`, `adp validate-record`;
-- arXiv adapter and source controls: `adp arxiv-url`, `adp parse-arxiv-atom`,
-  `adp fetch-arxiv-latest`, `adp source-registry`;
-- deterministic ranking, evidence gate, Chinese lesson JSON, publication gate,
-  dry-run pipeline, handoff, and acceptance validators from earlier phases;
-- owner controls: `config/owner_controls.yaml` plus generated owner views under
-  `docs/owner/`;
-- Stage 1 SQLite/WAL/FTS5 document and event storage model;
-- Stage 1 source registry contract with only `SRC-ARXIV / arxiv.atom.v1` active;
-- Stage 1 scoring, deterministic queue, and content ledger contract via
-  `adp stage1-queue`;
-- Stage 1 B1 report/email preview, 30 historical preview evidence, local
-  runtime recovery, migration package, and post-migration bootstrap gates via
-  `adp build-b1-report-email`, `adp historical-b1-previews`,
-  `adp runtime-audit`, `adp migration`, and `adp post-migration-bootstrap`;
-- Stage 1 local production prep via `adp local-runner preflight`,
-  `adp local-runner daily`, and `adp local-runner launchd-package`.
+30 天级别证据指 30 个独立日期的真实数据回放、覆盖检查和证据产物；不等于必须等待 30 个自然日。
 
-Retained but inactive for V5 Stage 1 acceptance:
+## 当前范围
 
-- historical TTS/storyboard/video commands;
-- historical GitHub Release media delivery paths;
-- Phase 12 all-arXiv/ROI/manual-delivery experiments.
+已经具备的基础能力：
 
-These are not current acceptance gates for `ARXIV_PRODUCTION_ACCEPTED` unless a
-later owner decision explicitly restores them.
+- 命令行和本地运行基础：版本检查、健康检查、邮件渲染、通知发送、记录校验。
+- arXiv 来源接入：构造 arXiv 请求、解析 Atom 元数据、获取最新论文、维护来源注册。
+- 确定性排序、证据门、中文讲解、发布门、干运行流水线、交接包和验收校验。
+- 用户控制配置和中文用户中心。
+- Stage 1 文档和事件存储模型。
+- Stage 1 来源注册，目前正式来源只有 arXiv。
+- Stage 1 候选排序、确定性队列和内容账本。
+- Stage 1 B1 报告和邮件预览、30 个历史预览、本机恢复、迁移包和迁移后启动证据。
+- Stage 1 本机运行准备，包括预检查、日常运行和计划任务草案。
 
-Completed Stage 1 acceptance evidence:
+保留但当前不作为验收目标的能力：
 
-- 30 independent historical B1 report/email previews.
-- Two controlled Gmail SMTP refs on GitHub/cloud runner from run
-  `28002478689`, both sent to `linzezhang35@gmail.com`.
-- PR #82 live all-arXiv cloud dry-run artifact `7818287996`: 20/20 primary
-  archive buckets, 49 real candidates, 30 selected samples, and
-  `ARXIV_PRODUCTION_ACCEPTED`.
+- 历史语音、分镜、视频命令。
+- 历史 GitHub Release 媒体交付路径。
+- 早期全 arXiv、收益、手工交付实验。
 
-Not enabled yet:
+已完成的 Stage 1 验收证据：
 
-- GitHub cloud scheduled production;
-- real local SMTP production send without owner-controlled local env/Keychain
-  setup and smoke test;
-- actual launchd installation;
-- Stage 2 source promotion completion.
+- 30 个独立历史 B1 报告和邮件预览。
+- 两次受控 Gmail SMTP 发送引用。
+- PR #82 的真实 arXiv 云端干运行证据。
 
-## Goal Baseline
+尚未启用：
 
-The current long-running baseline is locked at:
+- GitHub 云端计划任务生产运行。
+- 未经用户本机环境和密钥设置验证的真实本地 SMTP 生产发送。
+- 真实安装 launchd。
+- Stage 2 来源正式生产推广。
+
+## 目标基线
+
+当前长期目标基线锁定在：
 
 ```text
 docs/pursuing_goal/BASELINE_LOCK.md
@@ -88,45 +73,29 @@ docs/pursuing_goal/FULL_PURSUING_GOAL_PROMPT_TWO_STAGE_TEXT_DELIVERY_V5.txt
 docs/pursuing_goal/ARXIV_DAILY_PUSH_TWO_STAGE_ROADMAP_V6.md
 ```
 
-V4 and Phase 1-12 files remain historical context only. For the current goal,
-Stage 1 covers only board one, B1/arXiv. Stage 2 may later promote the other
-boards and sources.
+V4 和 Phase 1 到 12 文件只保留为历史上下文。当前目标中，Stage 1 只覆盖 B1/arXiv 单源；Stage 2 可以在后续门禁通过后推广其他板块和来源。
 
-V6 task-numbering rule: every completion report must state the current Task ID.
-The current Task is `S2P1T01` - bioRxiv and medRxiv source promotion. Stage 1
-arXiv is accepted, and local production/migration prep is complete.
+V6 任务编号规则：每次完成报告必须写明当前任务编号。历史当前任务曾是 `S2P1T01`，即 bioRxiv 和 medRxiv 来源推广。现在 Stage 1 arXiv 已验收，本机生产和迁移准备已完成；Stage 2 正式生产仍未通过。
 
-Current V5-to-V6 Stage 1 task continuity:
+V5 到 V6 的 Stage 1 任务连续性：
 
-- `S1-01-READONLY-AUDIT-001`: read-only package and repository audit.
-- `S1-02-V5-BASELINE-GOVERNANCE-CALIBRATION-001`: V5 baseline lock and
-  governance calibration.
-- `S1-03-OWNER-CONTROLS-001`: owner controls and generated owner-readable
-  views.
-- `S1-04-SQLITE-DATA-MODEL-001`: unified local document/event store.
-- `S1-05-ARXIV-CONNECTOR-CONTRACT-001`: arXiv source registry contract.
-- `S1-06-SCORING-QUEUE-LEDGER-001`: research scoring, 10,000 queue behavior,
-  and content ledger.
-- `S1-07-B1_REPORT_EMAIL_TEXT-001`: B1 teaching report, claims, and email text
-  preview.
-- `S1-08-LOCAL_RUNTIME_RECOVERY-001`: tick, watchdog, backup, restore, runtime
-  audit, and scheduler controls.
-- `S1-09-MIGRATION_PACKAGE-001`: low-resource integration and migration package.
-- `S1-10-POST_MIGRATION_BOOTSTRAP-001`: migration-bound target machine or
-  GitHub-hosted runner bootstrap.
-- `S1-11-HISTORICAL_B1_PREVIEWS-001`: completed 30 independent historical B1
-  report/email previews.
-- `S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001`: completed through the PR #82
-  accelerated real-arXiv acceptance artifact and existing controlled SMTP refs.
-- `S1P5T03-R`: completed 30 real historical arXiv as-of date backfill and
-  CONTENT_LEDGER reconciliation.
-- `S1P5T04`: completed controlled post-merge Gmail SMTP test10 and Stage 1
-  arXiv acceptance evidence.
-- `ADP-S1P5T05-LOCAL-PRODUCTION-AND-MIGRATION-PREP`: completed local
-  production runner and 2026-06-30 migration prep without installing launchd or
-  enabling GitHub cloud scheduled production.
+- `S1-01-READONLY-AUDIT-001`：只读任务包和仓库审计。
+- `S1-02-V5-BASELINE-GOVERNANCE-CALIBRATION-001`：V5 基线锁和治理校准。
+- `S1-03-OWNER-CONTROLS-001`：用户控制项和用户可读视图。
+- `S1-04-SQLITE-DATA-MODEL-001`：统一本地文档和事件存储。
+- `S1-05-ARXIV-CONNECTOR-CONTRACT-001`：arXiv 来源注册合同。
+- `S1-06-SCORING-QUEUE-LEDGER-001`：研究评分、队列行为和内容账本。
+- `S1-07-B1_REPORT_EMAIL_TEXT-001`：B1 教学报告、证据声明和邮件文本预览。
+- `S1-08-LOCAL_RUNTIME_RECOVERY-001`：心跳、看门狗、备份、恢复、运行审计和计划任务控制。
+- `S1-09-MIGRATION_PACKAGE-001`：低资源迁移包。
+- `S1-10-POST_MIGRATION_BOOTSTRAP-001`：迁移后目标机器或 GitHub 托管运行器启动。
+- `S1-11-HISTORICAL_B1_PREVIEWS-001`：完成 30 个独立历史 B1 报告和邮件预览。
+- `S1-12-CONTROLLED_B1_LIVE_EMAIL_DAYS-001`：通过 PR #82 的加速真实 arXiv 验收产物和已有受控 SMTP 引用完成。
+- `S1P5T03-R`：完成 30 个真实历史 arXiv 日期回放和内容账本对账。
+- `S1P5T04`：完成受控 Gmail SMTP test10 和 Stage 1 arXiv 验收证据。
+- `ADP-S1P5T05-LOCAL-PRODUCTION-AND-MIGRATION-PREP`：完成本机运行器和 2026-06-30 迁移准备；未安装 launchd，也未启用 GitHub 云端计划生产。
 
-## Local Validation
+## 本地验证
 
 ```bash
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q
@@ -134,11 +103,6 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=arxiv-daily-push/src python3 scripts/valida
 git diff --check
 ```
 
-## Resource Policy
+## 资源和安全边界
 
-Do not commit media, model weights, voice samples, credentials, Codex auth,
-GitHub tokens, SMTP secrets, render cache, or dependency directories. Local
-production must keep secrets in owner-controlled environment or Keychain-backed
-setup only. No PDF bulk downloads, no large model/TTS downloads, no uncontrolled
-real SMTP send, no Release upload, no GitHub cloud production schedule, and no
-Stage 2 source promotion without source gates.
+禁止提交媒体文件、模型权重、声音样本、凭证、Codex 认证信息、GitHub 令牌、SMTP 密钥、渲染缓存或依赖目录。本机生产必须把密钥保留在用户控制的环境或 Keychain 支持的设置中。禁止批量下载 PDF，禁止下载大模型或语音模型，禁止未受控真实 SMTP 发送，禁止上传 Release，禁止启用 GitHub 云端生产计划任务，禁止在来源门禁通过前推广 Stage 2 来源。

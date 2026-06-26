@@ -1,22 +1,34 @@
 # 模型参数文件
 
+## 中文速读
+
+| 问题 | 当前答案 |
+|---|---|
+| 这个文件说明什么 | ADP 如何排序论文、阻断不可靠内容、控制发送边界、记录模型和参数 |
+| 用户最该关心什么 | 排序分数不是收益承诺；邮件发送、计划任务、生产验收都有失败关闭门禁 |
+| 当前模型风险 | 不能把本地证据、影子来源或邮件补发成功误读为正式生产验收 |
+| 与用户中心的关系 | 用户中心给结论；本文件给模型、公式、参数和证据口径 |
+| 英文残留原则 | 产品名、命令名、任务编号、参数编号保留原文；解释文字使用中文 |
+
+说明：下方大量 `MOD`、`FORM`、`PARAM` 编号是审查标识，不是用户自然语言入口。
+
 ## 摘要
 
-- project_id: `arxiv-daily-push`
-- product_version: `0.23.0`
-- current_stage: `S2`
-- current_phase: `S2PC`
-- current_task: `S2PCT02`
-- active_model_count: `52`
-- active_formula_count: `54`
-- active_parameter_count: `364`
-- blockers: `none`
-- next_gate: `S2PC-GATE-V7-2-REVALIDATION`
-- next_unique_task: `S2PCT02 Science main-journal metadata-only no-send shadow evidence (planned)`
-- evidence_ref_count: `17`
-- roadmap_test_command_count: `10`
-- roadmap_gate_count: `5`
-- evidence_status: `EXTRACTED`
+- 项目：`arxiv-daily-push`
+- 产品版本：`0.23.0`
+- 当前阶段：`S2`
+- 当前分支阶段：`S2PC`
+- 当前任务：`S2PCT02`
+- 有效模型数量：`52`
+- 有效公式数量：`54`
+- 有效参数数量：`364`
+- 当前阻断：无公开阻断；Stage 2 最终门仍未通过
+- 下一门禁：`S2PC-GATE-V7-2-REVALIDATION`
+- 下一候选任务：`S2PCT02 Science 主刊元数据影子证据`
+- 证据引用数量：`17`
+- 路线图测试命令数量：`10`
+- 路线图门禁数量：`5`
+- 证据状态：已抽取
 
 ## V7.2 CURRENT 产品合同
 
