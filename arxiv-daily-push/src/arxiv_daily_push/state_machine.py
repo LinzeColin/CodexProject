@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import copy
 from collections.abc import Mapping
+from datetime import datetime, timezone
 from typing import Any
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from .contracts import (
     validate_evidence_claim,
@@ -65,7 +67,7 @@ def initial_run_record(run_id: str, date: str, timezone: str) -> dict[str, Any]:
         "status": "created",
         "current_state": "created",
         "stages": [],
-        "state_history": [{"from_state": "", "to_state": "created", "reason": "initial", "at": ""}],
+        "state_history": [{"from_state": "", "to_state": "created", "reason": "initial", "at": _initial_history_at(date, timezone)}],
         "source_items": [],
         "evidence_claims": [],
         "lessons": [],
@@ -153,12 +155,24 @@ def _validate_state_history(history: Any, errors: list[str]) -> None:
         errors.append("RunRecord.state_history must be an array")
         return
     previous = ""
+    previous_at: datetime | None = None
     for index, item in enumerate(history):
         if not isinstance(item, Mapping):
             errors.append(f"RunRecord.state_history[{index}] must be an object")
             continue
         from_state = str(item.get("from_state") or "")
         to_state = str(item.get("to_state") or "")
+        reason = str(item.get("reason") or "")
+        at_value = str(item.get("at") or "")
+        at = _parse_history_at(at_value)
+        if not reason:
+            errors.append(f"RunRecord.state_history[{index}].reason is required")
+        if not at_value:
+            errors.append(f"RunRecord.state_history[{index}].at is required")
+        elif at is None:
+            errors.append(f"RunRecord.state_history[{index}].at must be an ISO timestamp")
+        elif previous_at is not None and at < previous_at:
+            errors.append(f"RunRecord.state_history[{index}].at must be non-decreasing")
         if index == 0:
             if from_state or to_state != "created":
                 errors.append("RunRecord.state_history[0] must initialize to created")
@@ -167,3 +181,29 @@ def _validate_state_history(history: Any, errors: list[str]) -> None:
         elif previous and validate_transition(previous, to_state):
             errors.append(f"RunRecord.state_history[{index}] transition {previous} -> {to_state} is not allowed")
         previous = to_state
+        if at is not None:
+            previous_at = at
+
+
+def _parse_history_at(value: str) -> datetime | None:
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc)
+
+
+def _initial_history_at(date: str, timezone_name: str) -> str:
+    try:
+        parsed = datetime.fromisoformat(date)
+    except ValueError:
+        return f"{date}T00:00:00"
+    if parsed.tzinfo is not None:
+        return parsed.isoformat()
+    try:
+        zone = ZoneInfo(timezone_name)
+    except ZoneInfoNotFoundError:
+        zone = timezone.utc
+    return parsed.replace(hour=0, minute=0, second=0, microsecond=0, tzinfo=zone).isoformat()
