@@ -303,6 +303,14 @@ def _validate_daily_input(daily_input: Mapping[str, Any]) -> list[str]:
     source_item = daily_input.get("source_item")
     if isinstance(source_item, Mapping):
         errors.extend(validate_source_item(source_item))
+        if not sanitize_public_url(str(source_item.get("canonical_url") or "")):
+            errors.append("daily_input.source_item.canonical_url must be a safe public URL")
+        for index, ref in enumerate(source_item.get("content_refs") or []):
+            if not isinstance(ref, Mapping):
+                continue
+            ref_url = str(ref.get("uri") or ref.get("url") or "")
+            if ref_url and not sanitize_public_url(ref_url):
+                errors.append(f"daily_input.source_item.content_refs[{index}] URL must be safe")
         if source_item.get("source_type") != "arxiv":
             errors.append("S1-07 only accepts arXiv SourceItem input")
     else:

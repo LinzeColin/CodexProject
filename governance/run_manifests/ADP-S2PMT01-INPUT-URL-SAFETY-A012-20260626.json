@@ -1,0 +1,50 @@
+{
+  "manifest_id": "ADP-S2PMT01-INPUT-URL-SAFETY-A012-20260626",
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PMT01",
+  "finding_id": "A-012",
+  "finding_title": "邮件原文链接未限制 URL scheme",
+  "phase": "S2PM",
+  "created_at": "2026-06-26T20:36:13+10:00",
+  "scope": "Harden Stage 1 B1 report/email input URL validation for V7.1 inherited P1 finding A-012 before any report or email rendering.",
+  "non_scope": "No SMTP, scheduler, Release, production restore, public schema, DB migration, source adapter, ranking, CURRENT, V7.1/V7.2 contract file, P0/P1 closure, integrated production acceptance, or daily operation enablement change.",
+  "production_side_effects": false,
+  "stage2_integrated_production_accepted": false,
+  "inherited_v7_1_p0_closed": 0,
+  "inherited_v7_1_p1_closed": 0,
+  "inherited_v7_1_open_p0_findings_after": 8,
+  "inherited_v7_1_open_p1_findings_after": 37,
+  "url_safety_contract": {
+    "validator": "sanitize_public_url",
+    "blocked_input_schemes": [
+      "javascript",
+      "data",
+      "file"
+    ],
+    "blocked_userinfo": true,
+    "canonical_url_policy": "unsafe canonical_url blocks before report/email rendering",
+    "content_ref_policy": "unsafe content_refs uri/url blocks before report/email rendering",
+    "blocked_package_policy": "blocked packages do not include report_markdown, email_plain, or email_html"
+  },
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT01_INPUT_URL_SAFETY_A012.md",
+    "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py",
+    "arxiv-daily-push/tests/test_stage1_b1_report.py"
+  ],
+  "validation": [
+    "py_compile PASS for stage1_b1_report.py and test_stage1_b1_report.py",
+    "python3 -m unittest arxiv-daily-push/tests/test_stage1_b1_report.py arxiv-daily-push/tests/test_security_boundary.py arxiv-daily-push/tests/test_mail_templates.py -q: 16 OK",
+    "python3 -m unittest arxiv-daily-push/tests/test_stage1_b1_report.py arxiv-daily-push/tests/test_security_boundary.py arxiv-daily-push/tests/test_mail_templates.py arxiv-daily-push/tests/test_stage1_historical_previews.py -q: 21 OK",
+    "python3 -m unittest arxiv-daily-push/tests/test_user_center_candidate_pool.py -q: 7 OK",
+    "python3 -m unittest discover -s arxiv-daily-push/tests -q: 507 OK",
+    "scripts/validate_project_governance.py --project arxiv-daily-push: errors 0 / warnings 0",
+    "docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root docs/pursuing_goal/v7_2: PASS",
+    "python3 -m json.tool governance/run_manifests/ADP-S2PMT01-INPUT-URL-SAFETY-A012-20260626.json: OK",
+    "git diff --check: PASS"
+  ],
+  "remaining_blockers": [
+    "Inherited V7.1 P0=8 and P1=37 remain open until independent review accepts remediation evidence.",
+    "S2PMT07 final gate precheck remains blocked.",
+    "This manifest does not enable production side effects or claim INTEGRATED_PRODUCTION_ACCEPTED."
+  ]
+}
