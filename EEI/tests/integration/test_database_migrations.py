@@ -1384,6 +1384,66 @@ def exercise_domain_api_and_repository_contracts() -> None:
         for gap in nvidia_supply_chain["unknowns"]
     )
 
+    capital_response = client.get(f"/v1/entities/{MICROSOFT_ID}/capital")
+    assert capital_response.status_code == 200
+    microsoft_capital = capital_response.json()
+    assert microsoft_capital["schema_version"] == "entity-capital-map-v1"
+    assert {
+        "investment",
+        "debt",
+        "acquisition",
+        "commitment",
+        "capex",
+        "buyback",
+        "dividend",
+    } <= set(microsoft_capital["coverage"]["required_semantic_classes"])
+    assert microsoft_capital["coverage"]["no_silent_summing"] is True
+    assert microsoft_capital["coverage"]["unknown_amount_not_zero"] is True
+    assert microsoft_capital["relationships"]
+    assert any(
+        "investment" in record["semantic_tags"]
+        for record in microsoft_capital["relationships"]
+    )
+    capital_buckets = {bucket["key"]: bucket for bucket in microsoft_capital["semantic_buckets"]}
+    assert capital_buckets["debt"]["unknown_count"] >= 1
+    assert capital_buckets["buyback"]["unknown_count"] >= 1
+
+    policy_response = client.get(f"/v1/entities/{PALANTIR_ID}/policy")
+    assert policy_response.status_code == 200
+    palantir_policy = policy_response.json()
+    assert palantir_policy["schema_version"] == "entity-policy-map-v1"
+    assert {
+        "award",
+        "obligation",
+        "ceiling",
+        "regulation",
+        "lobbying",
+        "trade_restriction",
+    } <= set(palantir_policy["coverage"]["policy_semantic_classes"])
+    assert palantir_policy["content_rules"]["award_ceiling_is_not_paid_cash"] is True
+    assert palantir_policy["policy_records"]
+    policy_bucket_map = {bucket["key"]: bucket for bucket in palantir_policy["semantic_buckets"]}
+    assert policy_bucket_map["award"]["record_count"] >= 1
+    assert policy_bucket_map["ceiling"]["record_count"] >= 1
+    assert policy_bucket_map["obligation"]["unknown_count"] >= 1
+
+    technology_response = client.get(f"/v1/entities/{NVIDIA_ID}/policy")
+    assert technology_response.status_code == 200
+    nvidia_policy = technology_response.json()
+    assert {
+        "ip",
+        "standards",
+        "data_access",
+        "integration",
+        "cloud_compute",
+    } <= set(nvidia_policy["coverage"]["technology_semantic_classes"])
+    assert nvidia_policy["content_rules"]["technology_dependency_is_not_control"] is True
+    assert nvidia_policy["technology_records"]
+    technology_tags = {
+        tag for record in nvidia_policy["technology_records"] for tag in record["semantic_tags"]
+    }
+    assert {"ip", "cloud_compute"} <= technology_tags
+
     structure = nvidia_empire["structure"]
     assert set(structure) >= {
         "legal_group",

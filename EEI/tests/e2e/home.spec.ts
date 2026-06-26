@@ -371,6 +371,367 @@ test("shows supply-chain ordered stages upstream downstream metadata and unknown
   );
 });
 
+test("shows capital policy and technology semantic layers", async ({ page }) => {
+  const apiBaseUrl = "http://127.0.0.1:45322";
+  const amountSemantics = (
+    semanticClass: string,
+    amount: number | null,
+    currency: string | null,
+    amountKind: string | null
+  ) => ({
+    amount,
+    currency,
+    amount_kind: amountKind,
+    unknown_not_zero: amount === null,
+    aggregation_rule: "only_same_semantics_currency_period",
+    aggregation_key: `${semanticClass}:${amountKind ?? "unknown"}:${currency ?? "unknown"}`,
+    summable: amount !== null && amountKind !== null && currency !== null
+  });
+  const bucket = (
+    key: string,
+    label: string,
+    dimension: string,
+    recordCount: number,
+    amountRecordCount = 0,
+    unknownCount = recordCount === 0 ? 1 : 0
+  ) => ({
+    key,
+    label,
+    dimension,
+    description: `${label} semantic bucket`,
+    record_count: recordCount,
+    amount_record_count: amountRecordCount,
+    unknown_count: unknownCount,
+    required: true
+  });
+
+  await page.route(`${apiBaseUrl}/v1/catalogs`, async (route) => {
+    await route.fulfill({
+      contentType: "application/json",
+      json: {
+        as_of: "2026-06-19T00:00:00Z",
+        catalog_version: "taxonomy-v4.2",
+        catalog_count: 10,
+        source_of_truth_count: 10,
+        total_declared_rows: 363,
+        catalogs: []
+      }
+    });
+  });
+  await page.route(`${apiBaseUrl}/v1/entities/**/capital**`, async (route) => {
+    await route.fulfill({
+      contentType: "application/json",
+      json: {
+        schema_version: "entity-capital-map-v1",
+        as_of: "2026-06-19T00:00:00Z",
+        focus: {
+          id: "00000000-0000-4000-8000-000000000006",
+          canonical_name: "NVIDIA Corporation",
+          entity_type: "legal_entity"
+        },
+        relationships: [
+          {
+            id: "rel-capital-investment",
+            relationship_type: "invested_in",
+            relationship_family: "capital_financing",
+            status: "reported",
+            confidence: 0.8,
+            semantic_class: "investment",
+            semantic_tags: ["investment"],
+            direction: "out",
+            subject: {
+              id: "00000000-0000-4000-8000-000000000006",
+              canonical_name: "NVIDIA Corporation",
+              entity_type: "legal_entity"
+            },
+            object: {
+              id: "entity-ai-startup",
+              canonical_name: "Synthetic AI Startup",
+              entity_type: "legal_entity"
+            },
+            amount_semantics: amountSemantics("investment", null, null, null),
+            time: { observed_at: "2026-06-19T00:00:00Z" },
+            evidence_count: 1,
+            unknown_fields: ["amount", "amount_kind"],
+            synthetic: true,
+            fixture_notice: "Synthetic capital test."
+          },
+          {
+            id: "rel-capital-acquisition",
+            relationship_type: "acquired",
+            relationship_family: "mergers_acquisitions",
+            status: "reported",
+            confidence: 0.8,
+            semantic_class: "acquisition",
+            semantic_tags: ["acquisition"],
+            direction: "out",
+            subject: {
+              id: "00000000-0000-4000-8000-000000000006",
+              canonical_name: "NVIDIA Corporation",
+              entity_type: "legal_entity"
+            },
+            object: {
+              id: "entity-target",
+              canonical_name: "Synthetic Target",
+              entity_type: "legal_entity"
+            },
+            amount_semantics: amountSemantics("acquisition", null, null, null),
+            time: { observed_at: "2026-06-19T00:00:00Z" },
+            evidence_count: 1,
+            unknown_fields: ["amount", "amount_kind"],
+            synthetic: true,
+            fixture_notice: "Synthetic M&A test."
+          }
+        ],
+        events: [
+          {
+            id: "event-capex",
+            event_type: "capital_expenditure",
+            title: "Synthetic capex event",
+            status: "reported",
+            semantic_class: "capex",
+            semantic_tags: ["capex"],
+            amount_semantics: amountSemantics("capex", 1000000000, "USD", "period_capex"),
+            time: { observed_at: "2026-06-19T00:00:00Z" },
+            evidence_count: 1,
+            unknown_fields: [],
+            participants: []
+          }
+        ],
+        semantic_buckets: [
+          bucket("investment", "Investment", "capital", 1),
+          bucket("debt", "Debt", "capital", 0),
+          bucket("acquisition", "Acquisition", "ma", 1),
+          bucket("commitment", "Commitment", "capital", 0),
+          bucket("capex", "Capex", "capital", 1, 1, 0),
+          bucket("buyback", "Buyback", "capital", 0),
+          bucket("dividend", "Dividend", "capital", 0)
+        ],
+        coverage: {
+          relationship_count: 2,
+          event_count: 1,
+          semantic_class_count: 3,
+          required_semantic_classes: [
+            "investment",
+            "debt",
+            "acquisition",
+            "commitment",
+            "capex",
+            "buyback",
+            "dividend"
+          ],
+          no_silent_summing: true,
+          unknown_amount_not_zero: true
+        },
+        content_rules: {
+          amount_unknown_not_zero: true,
+          incomparable_amounts_not_summed: true
+        },
+        data_mode: "synthetic_fixture",
+        fixture_notice: "Synthetic capital API hydration test."
+      }
+    });
+  });
+  await page.route(`${apiBaseUrl}/v1/entities/**/policy**`, async (route) => {
+    await route.fulfill({
+      contentType: "application/json",
+      json: {
+        schema_version: "entity-policy-map-v1",
+        as_of: "2026-06-19T00:00:00Z",
+        focus: {
+          id: "00000000-0000-4000-8000-000000000006",
+          canonical_name: "NVIDIA Corporation",
+          entity_type: "legal_entity"
+        },
+        policy_records: [
+          {
+            id: "rel-policy-award",
+            relationship_type: "government_award_to",
+            relationship_family: "government_policy",
+            status: "reported",
+            confidence: 0.8,
+            semantic_class: "award",
+            semantic_tags: ["award", "ceiling"],
+            direction: "in",
+            subject: {
+              id: "entity-government",
+              canonical_name: "Synthetic Government",
+              entity_type: "government_body"
+            },
+            object: {
+              id: "00000000-0000-4000-8000-000000000006",
+              canonical_name: "NVIDIA Corporation",
+              entity_type: "legal_entity"
+            },
+            amount_semantics: amountSemantics("award", 500000000, "USD", "award_ceiling"),
+            time: { observed_at: "2026-06-19T00:00:00Z" },
+            evidence_count: 1,
+            unknown_fields: [],
+            synthetic: true,
+            fixture_notice: "Synthetic policy test."
+          }
+        ],
+        technology_records: [
+          {
+            id: "rel-tech-ip",
+            relationship_type: "licenses_ip_to",
+            relationship_family: "technology_data_ip",
+            status: "reported",
+            confidence: 0.8,
+            semantic_class: "ip",
+            semantic_tags: ["ip", "integration"],
+            direction: "out",
+            subject: {
+              id: "00000000-0000-4000-8000-000000000006",
+              canonical_name: "NVIDIA Corporation",
+              entity_type: "legal_entity"
+            },
+            object: {
+              id: "entity-integrator",
+              canonical_name: "Synthetic Integrator",
+              entity_type: "legal_entity"
+            },
+            amount_semantics: amountSemantics("ip", null, null, null),
+            time: { observed_at: "2026-06-19T00:00:00Z" },
+            evidence_count: 1,
+            unknown_fields: ["amount", "amount_kind"],
+            synthetic: true,
+            fixture_notice: "Synthetic technology test."
+          },
+          {
+            id: "rel-tech-compute",
+            relationship_type: "compute_provider_to",
+            relationship_family: "commercial_dependency",
+            status: "reported",
+            confidence: 0.8,
+            semantic_class: "cloud_compute",
+            semantic_tags: ["cloud_compute", "data_access"],
+            direction: "out",
+            subject: {
+              id: "00000000-0000-4000-8000-000000000006",
+              canonical_name: "NVIDIA Corporation",
+              entity_type: "legal_entity"
+            },
+            object: {
+              id: "entity-cloud",
+              canonical_name: "Synthetic Cloud",
+              entity_type: "legal_entity"
+            },
+            amount_semantics: amountSemantics("cloud_compute", null, null, null),
+            time: { observed_at: "2026-06-19T00:00:00Z" },
+            evidence_count: 1,
+            unknown_fields: ["amount", "amount_kind"],
+            synthetic: true,
+            fixture_notice: "Synthetic cloud compute test."
+          }
+        ],
+        events: [
+          {
+            id: "event-contract-award",
+            event_type: "contract_award",
+            title: "Synthetic award ceiling",
+            status: "reported",
+            semantic_class: "award",
+            semantic_tags: ["award", "ceiling"],
+            amount_semantics: amountSemantics("award", 500000000, "USD", "award_ceiling"),
+            time: { observed_at: "2026-06-19T00:00:00Z" },
+            evidence_count: 1,
+            unknown_fields: [],
+            participants: []
+          }
+        ],
+        semantic_buckets: [
+          bucket("award", "Award", "policy", 2, 2, 0),
+          bucket("obligation", "Obligation", "policy", 0),
+          bucket("ceiling", "Ceiling", "policy", 2, 2, 0),
+          bucket("regulation", "Regulation", "policy", 0),
+          bucket("lobbying", "Lobbying", "policy", 0),
+          bucket("trade_restriction", "Trade restriction", "policy", 0),
+          bucket("ip", "IP", "technology", 1),
+          bucket("standards", "Standards", "technology", 0),
+          bucket("data_access", "Data access", "technology", 1),
+          bucket("integration", "Integration", "technology", 1),
+          bucket("cloud_compute", "Cloud compute", "technology", 1)
+        ],
+        coverage: {
+          policy_record_count: 1,
+          technology_record_count: 2,
+          event_count: 1,
+          policy_semantic_classes: [
+            "award",
+            "obligation",
+            "ceiling",
+            "regulation",
+            "lobbying",
+            "trade_restriction"
+          ],
+          technology_semantic_classes: [
+            "ip",
+            "standards",
+            "data_access",
+            "integration",
+            "cloud_compute"
+          ],
+          unknowns_explicit: true
+        },
+        content_rules: {
+          award_ceiling_is_not_paid_cash: true,
+          obligation_ceiling_and_award_are_distinct: true,
+          technology_dependency_is_not_control: true
+        },
+        data_mode: "synthetic_fixture",
+        fixture_notice: "Synthetic policy API hydration test."
+      }
+    });
+  });
+
+  await page.goto("/");
+  const panel = page.getByTestId("capital-policy-layer-panel");
+  await expect(panel).toBeVisible();
+  await expect(panel).toHaveAttribute("data-capital-api-contract", "/v1/entities/{entityId}/capital");
+  await expect(panel).toHaveAttribute("data-policy-api-contract", "/v1/entities/{entityId}/policy");
+  await expect(panel).toHaveAttribute("data-capital-sync-mode", "local_fallback");
+  await expect(panel).toHaveAttribute(
+    "data-capital-distinguishes",
+    /investment,debt,acquisition,commitment,capex,buyback,dividend/
+  );
+  await expect(panel).toHaveAttribute(
+    "data-policy-distinguishes",
+    /award,obligation,ceiling,regulation,lobbying,trade_restriction/
+  );
+  await expect(panel).toHaveAttribute(
+    "data-technology-distinguishes",
+    /ip,standards,data_access,integration,cloud_compute/
+  );
+  await expect(page.getByTestId("capital-semantic-buckets")).toContainText("Investment");
+  await expect(page.getByTestId("capital-semantic-buckets")).toContainText("Debt");
+  await expect(page.getByTestId("policy-semantic-buckets")).toContainText("Ceiling");
+  await expect(page.getByTestId("technology-semantic-buckets")).toContainText("Cloud compute");
+
+  await page.evaluate((baseUrl) => {
+    window.localStorage.setItem("eei.productionDataApiBaseUrl.v1", baseUrl);
+  }, apiBaseUrl);
+  await page.getByTestId("hydrate-production-data").click();
+  await expect(panel).toHaveAttribute("data-capital-sync-mode", "server");
+  await expect(panel).toHaveAttribute("data-policy-sync-mode", "server");
+  await expect(panel).toHaveAttribute("data-capital-relationship-count", "2");
+  await expect(panel).toHaveAttribute("data-capital-event-count", "1");
+  await expect(panel).toHaveAttribute("data-policy-record-count", "1");
+  await expect(panel).toHaveAttribute("data-technology-record-count", "2");
+  await expect(page.getByTestId("capital-semantic-capex")).toHaveAttribute(
+    "data-amount-record-count",
+    "1"
+  );
+  await expect(page.getByTestId("policy-semantic-ceiling")).toHaveAttribute(
+    "data-record-count",
+    "2"
+  );
+  await expect(page.getByTestId("technology-semantic-cloud_compute")).toHaveAttribute(
+    "data-record-count",
+    "1"
+  );
+});
+
 test("exposes eight company layers and separates structure object types", async ({ page }) => {
   await page.goto("/");
 

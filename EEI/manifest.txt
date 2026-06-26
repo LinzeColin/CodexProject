@@ -111,6 +111,9 @@ artifacts/tests/a063/t501_commercial_empire_not_control.json
 artifacts/tests/a064/t502_supply_chain_stage_view_contract.json
 artifacts/tests/a065/t502_supply_chain_edge_metadata_contract.json
 artifacts/tests/a066/t502_supply_chain_unknowns_contract.json
+artifacts/tests/a069/t503_capital_semantics_contract.json
+artifacts/tests/a070/t503_policy_semantics_contract.json
+artifacts/tests/a071/t503_technology_semantics_contract.json
 artifacts/tests/a072/t504_strategic_signal_panel_contract.json
 artifacts/tests/a119/t905_migration_rollback_rehearsal.json
 artifacts/tests/a120/t905_clean_start_operator_rehearsal.json

@@ -44,11 +44,15 @@ import {
 } from "./model-activation-client";
 import {
   PRODUCTION_DATA_API_BASE_STORAGE_KEY,
+  loadCapitalMap,
   loadCatalogInventory,
   loadEvidenceDetail,
+  loadPolicyMap,
   loadScoreExplanation,
   loadSupplyChain,
   type CatalogInventoryRecord,
+  type EntityCapitalMapRecord,
+  type EntityPolicyMapRecord,
   type EvidenceDetailRecord,
   type ScoreExplanationRecord,
   type SupplyChainRecord
@@ -1134,6 +1138,411 @@ function buildLocalSupplyChainRecord(
   };
 }
 
+type SemanticDefinition = {
+  key: string;
+  label: string;
+  dimension: string;
+  description: string;
+  required: boolean;
+};
+
+const capitalSemanticDefinitions: SemanticDefinition[] = [
+  {
+    key: "investment",
+    label: "Investment",
+    dimension: "capital",
+    description: "Equity or strategic capital deployed into another entity.",
+    required: true
+  },
+  {
+    key: "debt",
+    label: "Debt",
+    dimension: "capital",
+    description: "Loans, credit, underwriting or guarantees.",
+    required: true
+  },
+  {
+    key: "acquisition",
+    label: "Acquisition",
+    dimension: "ma",
+    description: "Acquisition, merger, divestiture or spin-off transaction.",
+    required: true
+  },
+  {
+    key: "commitment",
+    label: "Commitment",
+    dimension: "capital",
+    description: "Future purchase, capacity, cloud or capital commitment.",
+    required: true
+  },
+  {
+    key: "capex",
+    label: "Capex",
+    dimension: "capital",
+    description: "Capital expenditure or infrastructure deployment.",
+    required: true
+  },
+  {
+    key: "buyback",
+    label: "Buyback",
+    dimension: "capital",
+    description: "Share repurchase authorization or execution.",
+    required: true
+  },
+  {
+    key: "dividend",
+    label: "Dividend",
+    dimension: "capital",
+    description: "Dividend declaration or distribution.",
+    required: true
+  }
+];
+
+const policySemanticDefinitions: SemanticDefinition[] = [
+  {
+    key: "award",
+    label: "Award",
+    dimension: "policy",
+    description: "Government contract, grant, loan or incentive award.",
+    required: true
+  },
+  {
+    key: "obligation",
+    label: "Obligation",
+    dimension: "policy",
+    description: "Reported government obligation or committed spend.",
+    required: true
+  },
+  {
+    key: "ceiling",
+    label: "Ceiling",
+    dimension: "policy",
+    description: "Maximum award ceiling or cap, not paid cash.",
+    required: true
+  },
+  {
+    key: "regulation",
+    label: "Regulation",
+    dimension: "policy",
+    description: "Regulatory action, license or supervision relationship.",
+    required: true
+  },
+  {
+    key: "lobbying",
+    label: "Lobbying",
+    dimension: "policy",
+    description: "Lobbying disclosure by issue or government body.",
+    required: true
+  },
+  {
+    key: "trade_restriction",
+    label: "Trade restriction",
+    dimension: "policy",
+    description: "Export control, sanction or trade restriction exposure.",
+    required: true
+  }
+];
+
+const technologySemanticDefinitions: SemanticDefinition[] = [
+  {
+    key: "ip",
+    label: "IP",
+    dimension: "technology",
+    description: "Patent, license or intellectual-property dependency.",
+    required: true
+  },
+  {
+    key: "standards",
+    label: "Standards",
+    dimension: "technology",
+    description: "Technical standard or certification dependency.",
+    required: true
+  },
+  {
+    key: "data_access",
+    label: "Data access",
+    dimension: "technology",
+    description: "Documented data access, feed or data-service dependency.",
+    required: true
+  },
+  {
+    key: "integration",
+    label: "Integration",
+    dimension: "technology",
+    description: "Platform, product or API integration relationship.",
+    required: true
+  },
+  {
+    key: "cloud_compute",
+    label: "Cloud compute",
+    dimension: "technology",
+    description: "Cloud or compute infrastructure dependency.",
+    required: true
+  }
+];
+
+function localAmountSemantics(
+  semanticClass: string,
+  amount: number | null,
+  currency: string | null,
+  amountKind: string | null
+) {
+  return {
+    amount,
+    currency,
+    amount_kind: amountKind,
+    unknown_not_zero: amount === null,
+    aggregation_rule: "only_same_semantics_currency_period",
+    aggregation_key: `${semanticClass}:${amountKind ?? "unknown"}:${currency ?? "unknown"}`,
+    summable: amount !== null && amountKind !== null && currency !== null
+  };
+}
+
+function buildSemanticBuckets(
+  definitions: SemanticDefinition[],
+  relationships: EntityCapitalMapRecord["relationships"],
+  events: EntityCapitalMapRecord["events"]
+) {
+  const items = [...relationships, ...events];
+  return definitions.map((definition) => {
+    const matching = items.filter((item) => item.semantic_tags.includes(definition.key));
+    const amountRecordCount = matching.filter(
+      (item) => item.amount_semantics.amount !== null
+    ).length;
+    const unknownCount =
+      matching.filter((item) => item.unknown_fields.length > 0).length +
+      (definition.required && matching.length === 0 ? 1 : 0);
+    return {
+      ...definition,
+      record_count: matching.length,
+      amount_record_count: amountRecordCount,
+      unknown_count: unknownCount
+    };
+  });
+}
+
+function buildLocalCapitalMapRecord(
+  focusEntityId: string,
+  focusName: string,
+  edges: GraphRenderEdge[],
+  nodeByKey: Map<NodeKey, MapNode>,
+  asOf: string
+): EntityCapitalMapRecord {
+  const capitalEdges = edges.filter((edge) => edge.lens === "capital_transactions");
+  const relationships: EntityCapitalMapRecord["relationships"] = capitalEdges.map((edge) => {
+    const subjectNode = isNodeKey(edge.from) ? nodeByKey.get(edge.from) : undefined;
+    const objectNode = isNodeKey(edge.to) ? nodeByKey.get(edge.to) : undefined;
+    return {
+      id: edge.id,
+      relationship_type: "capital_commitment",
+      relationship_family: "capital_financing",
+      status: "fixture",
+      confidence: null,
+      semantic_class: "commitment",
+      semantic_tags: ["investment", "commitment"],
+      direction: isFocusKey(edge.to) ? "in" : "out",
+      subject: {
+        id: isFocusKey(edge.from) ? focusEntityIds[edge.from] : edge.from,
+        canonical_name: subjectNode?.label ?? edge.from,
+        entity_type: "fixture_entity"
+      },
+      object: {
+        id: isFocusKey(edge.to) ? focusEntityIds[edge.to] : edge.to,
+        canonical_name: objectNode?.label ?? edge.to,
+        entity_type: "fixture_entity"
+      },
+      amount_semantics: localAmountSemantics("commitment", null, null, null),
+      time: { observed_at: `${asOf}T00:00:00Z`, valid_from: null, valid_to: null },
+      evidence_count: edge.evidenceCount,
+      unknown_fields: ["amount", "amount_kind"],
+      synthetic: true,
+      fixture_notice: edge.fixtureNotice
+    };
+  });
+  const events: EntityCapitalMapRecord["events"] = [
+    {
+      id: "local-capex-signal",
+      event_type: "capital_expenditure",
+      title: "Synthetic AI infrastructure capex signal",
+      status: "fixture",
+      semantic_class: "capex",
+      semantic_tags: ["capex"],
+      amount_semantics: localAmountSemantics("capex", 1000000000, "USD", "period_capex"),
+      time: {
+        announced_at: `${asOf}T00:00:00Z`,
+        effective_at: null,
+        observed_at: `${asOf}T00:00:00Z`
+      },
+      evidence_count: 1,
+      unknown_fields: [],
+      participants: [{ entity_id: focusEntityId, role: "spender", direction: "out" }]
+    }
+  ];
+  const buckets = buildSemanticBuckets(capitalSemanticDefinitions, relationships, events);
+  return {
+    schema_version: "entity-capital-map-v1",
+    as_of: `${asOf}T00:00:00Z`,
+    focus: { id: focusEntityId, canonical_name: focusName, entity_type: "legal_entity" },
+    relationships,
+    events,
+    semantic_buckets: buckets,
+    coverage: {
+      relationship_count: relationships.length,
+      event_count: events.length,
+      semantic_class_count: new Set(
+        [...relationships, ...events].flatMap((item) => item.semantic_tags)
+      ).size,
+      required_semantic_classes: capitalSemanticDefinitions.map((item) => item.key),
+      no_silent_summing: true,
+      unknown_amount_not_zero: true
+    },
+    content_rules: {
+      amount_unknown_not_zero: true,
+      incomparable_amounts_not_summed: true,
+      semantic_bucket_absence_is_not_zero: true,
+      synthetic_fixture_not_live_fact: true
+    },
+    data_mode: "synthetic_fixture",
+    fixture_notice: "Synthetic fixture records are explicitly marked and are not live facts."
+  };
+}
+
+function buildLocalPolicyMapRecord(
+  focusEntityId: string,
+  focusName: string,
+  edges: GraphRenderEdge[],
+  nodeByKey: Map<NodeKey, MapNode>,
+  asOf: string
+): EntityPolicyMapRecord {
+  const policyEdges = edges.filter((edge) => edge.lens === "policy_risk");
+  const policyRecords: EntityPolicyMapRecord["policy_records"] = policyEdges.map((edge) => {
+    const subjectNode = isNodeKey(edge.from) ? nodeByKey.get(edge.from) : undefined;
+    const objectNode = isNodeKey(edge.to) ? nodeByKey.get(edge.to) : undefined;
+    return {
+      id: edge.id,
+      relationship_type: "export_restricted_by",
+      relationship_family: "government_policy",
+      status: "fixture",
+      confidence: null,
+      semantic_class: "trade_restriction",
+      semantic_tags: ["trade_restriction", "regulation"],
+      direction: isFocusKey(edge.to) ? "in" : "out",
+      subject: {
+        id: isFocusKey(edge.from) ? focusEntityIds[edge.from] : edge.from,
+        canonical_name: subjectNode?.label ?? edge.from,
+        entity_type: "fixture_entity"
+      },
+      object: {
+        id: isFocusKey(edge.to) ? focusEntityIds[edge.to] : edge.to,
+        canonical_name: objectNode?.label ?? edge.to,
+        entity_type: "fixture_entity"
+      },
+      amount_semantics: localAmountSemantics("trade_restriction", null, null, null),
+      time: { observed_at: `${asOf}T00:00:00Z`, valid_from: null, valid_to: null },
+      evidence_count: edge.evidenceCount,
+      unknown_fields: ["amount", "amount_kind"],
+      synthetic: true,
+      fixture_notice: edge.fixtureNotice
+    };
+  });
+  const technologyRecords: EntityPolicyMapRecord["technology_records"] = [
+    {
+      id: "local-ip-license",
+      relationship_type: "licenses_ip_to",
+      relationship_family: "technology_data_ip",
+      status: "fixture",
+      confidence: null,
+      semantic_class: "ip",
+      semantic_tags: ["ip", "integration"],
+      direction: "out",
+      subject: { id: focusEntityId, canonical_name: focusName, entity_type: "legal_entity" },
+      object: {
+        id: "local-systems-integrator",
+        canonical_name: entityLabels.systems,
+        entity_type: "fixture_entity"
+      },
+      amount_semantics: localAmountSemantics("ip", null, null, null),
+      time: { observed_at: `${asOf}T00:00:00Z`, valid_from: null, valid_to: null },
+      evidence_count: 1,
+      unknown_fields: ["amount", "amount_kind"],
+      synthetic: true,
+      fixture_notice: "Synthetic fixture for technology/data/IP layer coverage."
+    },
+    {
+      id: "local-cloud-compute",
+      relationship_type: "compute_provider_to",
+      relationship_family: "commercial_dependency",
+      status: "fixture",
+      confidence: null,
+      semantic_class: "cloud_compute",
+      semantic_tags: ["cloud_compute", "data_access"],
+      direction: "out",
+      subject: { id: focusEntityId, canonical_name: focusName, entity_type: "legal_entity" },
+      object: {
+        id: "local-cloud-customer",
+        canonical_name: entityLabels.cloud,
+        entity_type: "fixture_entity"
+      },
+      amount_semantics: localAmountSemantics("cloud_compute", null, null, null),
+      time: { observed_at: `${asOf}T00:00:00Z`, valid_from: null, valid_to: null },
+      evidence_count: 1,
+      unknown_fields: ["amount", "amount_kind"],
+      synthetic: true,
+      fixture_notice: "Synthetic fixture for cloud and compute semantics."
+    }
+  ];
+  const events: EntityPolicyMapRecord["events"] = [
+    {
+      id: "local-contract-award",
+      event_type: "contract_award",
+      title: "Synthetic government award with ceiling semantics",
+      status: "fixture",
+      semantic_class: "award",
+      semantic_tags: ["award", "ceiling"],
+      amount_semantics: localAmountSemantics("award", 500000000, "USD", "award_ceiling"),
+      time: {
+        announced_at: `${asOf}T00:00:00Z`,
+        effective_at: `${asOf}T00:00:00Z`,
+        observed_at: `${asOf}T00:00:00Z`
+      },
+      evidence_count: 1,
+      unknown_fields: [],
+      participants: [{ entity_id: focusEntityId, role: "awardee", direction: "in" }]
+    }
+  ];
+  const buckets = buildSemanticBuckets(
+    [...policySemanticDefinitions, ...technologySemanticDefinitions],
+    [...policyRecords, ...technologyRecords],
+    events
+  );
+  return {
+    schema_version: "entity-policy-map-v1",
+    as_of: `${asOf}T00:00:00Z`,
+    focus: { id: focusEntityId, canonical_name: focusName, entity_type: "legal_entity" },
+    policy_records: policyRecords,
+    technology_records: technologyRecords,
+    events,
+    semantic_buckets: buckets,
+    coverage: {
+      policy_record_count: policyRecords.length,
+      technology_record_count: technologyRecords.length,
+      event_count: events.length,
+      policy_semantic_classes: policySemanticDefinitions.map((item) => item.key),
+      technology_semantic_classes: technologySemanticDefinitions.map((item) => item.key),
+      unknowns_explicit: true
+    },
+    content_rules: {
+      award_ceiling_is_not_paid_cash: true,
+      obligation_ceiling_and_award_are_distinct: true,
+      technology_dependency_is_not_control: true,
+      semantic_bucket_absence_is_not_zero: true,
+      synthetic_fixture_not_live_fact: true
+    },
+    data_mode: "synthetic_fixture",
+    fixture_notice: "Synthetic fixture records are explicitly marked and are not live facts."
+  };
+}
+
 function serverGraphRenderNodes(
   graph: ExploreGraphRecord | null,
   focusEntityId: string
@@ -1663,6 +2072,25 @@ export default function Home() {
   const [productionSupplyChain, setProductionSupplyChain] = useState<SupplyChainRecord | null>(
     null
   );
+  const [productionCapitalStatus, setProductionCapitalStatus] =
+    useState<ProductionDataStatus>("local-fixture");
+  const [productionCapitalSyncMode, setProductionCapitalSyncMode] = useState<
+    "server" | "local_fallback"
+  >("local_fallback");
+  const [productionCapitalSyncReason, setProductionCapitalSyncReason] = useState("not_synced");
+  const [productionCapitalEndpoint, setProductionCapitalEndpoint] = useState("");
+  const [productionCapitalMap, setProductionCapitalMap] =
+    useState<EntityCapitalMapRecord | null>(null);
+  const [productionPolicyStatus, setProductionPolicyStatus] =
+    useState<ProductionDataStatus>("local-fixture");
+  const [productionPolicySyncMode, setProductionPolicySyncMode] = useState<
+    "server" | "local_fallback"
+  >("local_fallback");
+  const [productionPolicySyncReason, setProductionPolicySyncReason] = useState("not_synced");
+  const [productionPolicyEndpoint, setProductionPolicyEndpoint] = useState("");
+  const [productionPolicyMap, setProductionPolicyMap] = useState<EntityPolicyMapRecord | null>(
+    null
+  );
   const [selectedProductionNodeKey, setSelectedProductionNodeKey] = useState("");
   const [modelContextSyncMode, setModelContextSyncMode] = useState<"server" | "local_fallback">(
     "local_fallback"
@@ -1784,6 +2212,37 @@ export default function Home() {
   const supplyChainUnknownFields = Array.from(
     new Set(supplyChainRecord.unknowns.map((item) => item.field))
   );
+  const localCapitalMapRecord = useMemo(
+    () =>
+      buildLocalCapitalMapRecord(
+        focusEntityIds[focusKey],
+        scenario.heading,
+        fixtureGraphEdges,
+        nodeByKey,
+        asOf
+      ),
+    [asOf, fixtureGraphEdges, focusKey, nodeByKey, scenario.heading]
+  );
+  const localPolicyMapRecord = useMemo(
+    () =>
+      buildLocalPolicyMapRecord(
+        focusEntityIds[focusKey],
+        scenario.heading,
+        fixtureGraphEdges,
+        nodeByKey,
+        asOf
+      ),
+    [asOf, fixtureGraphEdges, focusKey, nodeByKey, scenario.heading]
+  );
+  const capitalMapRecord = productionCapitalMap ?? localCapitalMapRecord;
+  const policyMapRecord = productionPolicyMap ?? localPolicyMapRecord;
+  const capitalSemanticKeys = capitalMapRecord.semantic_buckets.map((item) => item.key);
+  const policySemanticKeys = policyMapRecord.semantic_buckets
+    .filter((item) => item.dimension === "policy")
+    .map((item) => item.key);
+  const technologySemanticKeys = policyMapRecord.semantic_buckets
+    .filter((item) => item.dimension === "technology")
+    .map((item) => item.key);
   const serverGraphNodes = useMemo(
     () => serverGraphRenderNodes(productionGraph, productionGraphRequest.focus.object_id),
     [productionGraph, productionGraphRequest.focus.object_id]
@@ -2028,7 +2487,16 @@ export default function Home() {
     setProductionScoreStatus(candidateId ? "loading-production-data" : "local-fixture");
     setProductionEvidenceStatus(candidateId ? "loading-production-data" : "local-fixture");
     setProductionSupplyChainStatus("loading-production-data");
-    const [catalogResult, scoreResult, evidenceResult, supplyChainResult] = await Promise.all([
+    setProductionCapitalStatus("loading-production-data");
+    setProductionPolicyStatus("loading-production-data");
+    const [
+      catalogResult,
+      scoreResult,
+      evidenceResult,
+      supplyChainResult,
+      capitalResult,
+      policyResult
+    ] = await Promise.all([
       loadCatalogInventory(),
       loadScoreExplanation({
         objectType: "relationship_fact_candidate",
@@ -2041,6 +2509,14 @@ export default function Home() {
         limit: 20
       }),
       loadSupplyChain({
+        entityId: productionGraphRequest.focus.object_id,
+        profileId: serverModelContext?.active_scoring_profile_version_id
+      }),
+      loadCapitalMap({
+        entityId: productionGraphRequest.focus.object_id,
+        profileId: serverModelContext?.active_scoring_profile_version_id
+      }),
+      loadPolicyMap({
         entityId: productionGraphRequest.focus.object_id,
         profileId: serverModelContext?.active_scoring_profile_version_id
       })
@@ -2125,6 +2601,46 @@ export default function Home() {
       setProductionSupplyChainSyncReason(reason);
       setProductionSupplyChainEndpoint(supplyChainResult.endpoint);
       setProductionSupplyChainStatus("server-hydrated");
+    }
+
+    if (capitalResult.mode === "local_fallback") {
+      setProductionCapitalSyncMode("local_fallback");
+      setProductionCapitalSyncReason(capitalResult.reason);
+      setProductionCapitalEndpoint("");
+      setProductionCapitalMap(null);
+      setProductionCapitalStatus("local-fixture");
+    } else if (capitalResult.status === "error") {
+      setProductionCapitalSyncMode("server");
+      setProductionCapitalSyncReason(capitalResult.reason);
+      setProductionCapitalEndpoint(capitalResult.endpoint);
+      setProductionCapitalMap(null);
+      setProductionCapitalStatus("server-error");
+    } else {
+      setProductionCapitalMap(capitalResult.record);
+      setProductionCapitalSyncMode("server");
+      setProductionCapitalSyncReason(reason);
+      setProductionCapitalEndpoint(capitalResult.endpoint);
+      setProductionCapitalStatus("server-hydrated");
+    }
+
+    if (policyResult.mode === "local_fallback") {
+      setProductionPolicySyncMode("local_fallback");
+      setProductionPolicySyncReason(policyResult.reason);
+      setProductionPolicyEndpoint("");
+      setProductionPolicyMap(null);
+      setProductionPolicyStatus("local-fixture");
+    } else if (policyResult.status === "error") {
+      setProductionPolicySyncMode("server");
+      setProductionPolicySyncReason(policyResult.reason);
+      setProductionPolicyEndpoint(policyResult.endpoint);
+      setProductionPolicyMap(null);
+      setProductionPolicyStatus("server-error");
+    } else {
+      setProductionPolicyMap(policyResult.record);
+      setProductionPolicySyncMode("server");
+      setProductionPolicySyncReason(reason);
+      setProductionPolicyEndpoint(policyResult.endpoint);
+      setProductionPolicyStatus("server-hydrated");
     }
   }
 
@@ -2937,6 +3453,9 @@ export default function Home() {
           data-catalog-sync-reason={productionCatalogSyncReason}
           data-catalog-total-declared-rows={productionCatalogInventory?.total_declared_rows ?? 0}
           data-catalog-version={productionCatalogInventory?.catalog_version ?? "local"}
+          data-capital-endpoint={productionCapitalEndpoint || "local"}
+          data-capital-sync-mode={productionCapitalSyncMode}
+          data-capital-sync-reason={productionCapitalSyncReason}
           data-evidence-detail-count={productionEvidenceDetail?.evidence_count ?? 0}
           data-evidence-endpoint={productionEvidenceEndpoint || "local"}
           data-evidence-object-id={
@@ -2948,6 +3467,9 @@ export default function Home() {
           data-evidence-source-document-count={productionEvidenceDetail?.source_document_count ?? 0}
           data-evidence-sync-mode={productionEvidenceSyncMode}
           data-evidence-sync-reason={productionEvidenceSyncReason}
+          data-policy-endpoint={productionPolicyEndpoint || "local"}
+          data-policy-sync-mode={productionPolicySyncMode}
+          data-policy-sync-reason={productionPolicySyncReason}
           data-supply-chain-endpoint={productionSupplyChainEndpoint || "local"}
           data-supply-chain-sync-mode={productionSupplyChainSyncMode}
           data-supply-chain-sync-reason={productionSupplyChainSyncReason}
@@ -2979,7 +3501,7 @@ export default function Home() {
             <strong>Production data</strong>
             <span data-testid="production-data-status">
               {productionCatalogStatus} / {productionScoreStatus} / {productionEvidenceStatus} /{" "}
-              {productionSupplyChainStatus}
+              {productionSupplyChainStatus} / {productionCapitalStatus} / {productionPolicyStatus}
             </span>
           </div>
           <div>
@@ -3172,6 +3694,106 @@ export default function Home() {
             <strong>unknown not zero</strong>
             <span>{supplyChainUnknownFields.join(", ") || "none"}</span>
             <small>{supplyChainRecord.unknowns[0]?.message ?? "no missing fields"}</small>
+          </div>
+        </section>
+        <section
+          className="modelPreviewPanel capitalPolicyPanel"
+          data-capital-api-contract="/v1/entities/{entityId}/capital"
+          data-capital-distinguishes={capitalMapRecord.coverage.required_semantic_classes.join(",")}
+          data-capital-event-count={capitalMapRecord.coverage.event_count}
+          data-capital-relationship-count={capitalMapRecord.coverage.relationship_count}
+          data-capital-sync-mode={productionCapitalSyncMode}
+          data-capital-sync-reason={productionCapitalSyncReason}
+          data-capital-unknown-not-zero={String(
+            capitalMapRecord.coverage.unknown_amount_not_zero &&
+              capitalMapRecord.coverage.no_silent_summing
+          )}
+          data-policy-api-contract="/v1/entities/{entityId}/policy"
+          data-policy-distinguishes={policySemanticKeys.join(",")}
+          data-policy-event-count={policyMapRecord.coverage.event_count}
+          data-policy-record-count={policyMapRecord.coverage.policy_record_count}
+          data-policy-sync-mode={productionPolicySyncMode}
+          data-policy-sync-reason={productionPolicySyncReason}
+          data-technology-distinguishes={technologySemanticKeys.join(",")}
+          data-technology-record-count={policyMapRecord.coverage.technology_record_count}
+          data-testid="capital-policy-layer-panel"
+        >
+          <div>
+            <strong>资本 / 政策 / 技术</strong>
+            <span data-testid="capital-policy-sync-status">
+              {productionCapitalStatus} / {productionCapitalSyncMode} / {productionPolicyStatus} /{" "}
+              {productionPolicySyncMode}
+            </span>
+          </div>
+          <dl className="capitalPolicyStats" data-testid="capital-policy-counts">
+            <div>
+              <dt>Capital records</dt>
+              <dd data-testid="capital-record-count">
+                {capitalMapRecord.coverage.relationship_count} rel /{" "}
+                {capitalMapRecord.coverage.event_count} events
+              </dd>
+            </div>
+            <div>
+              <dt>Policy records</dt>
+              <dd data-testid="policy-record-count">
+                {policyMapRecord.coverage.policy_record_count} rel /{" "}
+                {policyMapRecord.coverage.event_count} events
+              </dd>
+            </div>
+            <div>
+              <dt>Technology records</dt>
+              <dd data-testid="technology-record-count">
+                {policyMapRecord.coverage.technology_record_count}
+              </dd>
+            </div>
+            <div>
+              <dt>Amount rules</dt>
+              <dd data-testid="capital-amount-rules">
+                unknown not zero / no silent summing
+              </dd>
+            </div>
+          </dl>
+          <div className="semanticBucketList" data-testid="capital-semantic-buckets">
+            {capitalMapRecord.semantic_buckets.map((bucket) => (
+              <span
+                data-amount-record-count={bucket.amount_record_count}
+                data-record-count={bucket.record_count}
+                data-testid={`capital-semantic-${bucket.key}`}
+                data-unknown-count={bucket.unknown_count}
+                key={bucket.key}
+              >
+                {bucket.label}
+              </span>
+            ))}
+          </div>
+          <div className="semanticBucketList" data-testid="policy-semantic-buckets">
+            {policyMapRecord.semantic_buckets
+              .filter((bucket) => bucket.dimension === "policy")
+              .map((bucket) => (
+                <span
+                  data-amount-record-count={bucket.amount_record_count}
+                  data-record-count={bucket.record_count}
+                  data-testid={`policy-semantic-${bucket.key}`}
+                  data-unknown-count={bucket.unknown_count}
+                  key={bucket.key}
+                >
+                  {bucket.label}
+                </span>
+              ))}
+          </div>
+          <div className="semanticBucketList" data-testid="technology-semantic-buckets">
+            {policyMapRecord.semantic_buckets
+              .filter((bucket) => bucket.dimension === "technology")
+              .map((bucket) => (
+                <span
+                  data-record-count={bucket.record_count}
+                  data-testid={`technology-semantic-${bucket.key}`}
+                  data-unknown-count={bucket.unknown_count}
+                  key={bucket.key}
+                >
+                  {bucket.label}
+                </span>
+              ))}
           </div>
         </section>
         <div

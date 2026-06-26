@@ -1,0 +1,48 @@
+{
+  "schema_version": "eei-acceptance-evidence-v1",
+  "task_id": "T503",
+  "acceptance_ids": ["A071"],
+  "status": "PASS",
+  "generated_at": "2026-06-27T08:10:00+10:00",
+  "capability": "technology_data_ip_semantic_layer",
+  "required_semantic_classes": [
+    "ip",
+    "standards",
+    "data_access",
+    "integration",
+    "cloud_compute"
+  ],
+  "contract": {
+    "api_path": "/v1/entities/{entityId}/policy",
+    "response_schema_version": "entity-policy-map-v1",
+    "technology_bucket_collection": "technology_semantic_buckets",
+    "frontend_panel_test_id": "capital-policy-layer-panel",
+    "frontend_bucket_test_id": "technology-semantic-buckets",
+    "distinguishes_required_semantics": true,
+    "technology_dependency_not_control": true,
+    "cloud_compute_dependency_visible": true
+  },
+  "implementation_refs": [
+    "EEI/apps/api/app/domain.py",
+    "EEI/apps/api/app/domain_repository.py",
+    "EEI/apps/web/src/app/page.tsx",
+    "EEI/apps/web/src/app/production-data-client.ts",
+    "EEI/specs/api_contract.yaml"
+  ],
+  "validation_refs": [
+    "EEI/tests/integration/test_database_migrations.py",
+    "EEI/tests/e2e/home.spec.ts",
+    "EEI/scripts/validate_contracts.py"
+  ],
+  "results": [
+    "Policy endpoint includes technology_data_ip and selected commercial_dependency records needed for technology/data/IP semantics.",
+    "Repository buckets separate IP, standards, data_access, integration and cloud_compute semantics.",
+    "Frontend local fallback and server hydration expose the same technology buckets.",
+    "Integration assertions prevent cloud/compute dependencies from being treated as control relations."
+  ],
+  "non_claims": [
+    "Does not implement a standalone technology scoring model or new formula.",
+    "Does not certify production-reviewed IP, standards, data-access or cloud contracts.",
+    "Does not close A202, A209, A210, A026/A027, A204/A205 or MVP release readiness."
+  ]
+}

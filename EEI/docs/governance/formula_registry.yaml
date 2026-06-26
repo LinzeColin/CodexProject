@@ -12,6 +12,7 @@ project_id: "EEI"
 # 2026-06-27 audit: T1303/A204-A205 operator input receipt ledger persistence changes no formula expressions, weights, thresholds or extraction logic.
 # 2026-06-27 audit: T1303/A204-A205 operator receipt ledger frontend readback changes no formula expressions, weights, thresholds or extraction logic.
 # 2026-06-27 audit: T502/A064-A066 supply-chain stage view changes API/UI contract and unknown disclosure only; FORM-005 expression, weights, thresholds and extraction logic are unchanged.
+# 2026-06-27 audit: T503/A069-A071 capital, policy and technology semantic layers change API/UI contract and semantic disclosure only; FORM-007/FORM-008 expressions, weights, thresholds and extraction logic are unchanged.
 formulas:
   - formula_id: "FORM-001"
     legacy_formula_id: "F-NP-001"
@@ -424,9 +425,12 @@ formulas:
     test_refs:
       - "EEI/scripts/validate_governance.py:108-121"
       - "EEI/scripts/validate_model_config.py:23-47"
+      - "EEI/tests/e2e/home.spec.ts"
+      - "EEI/tests/integration/test_database_migrations.py"
     evidence_refs:
       - "EEI/data/formula_registry.csv:10"
       - "EEI/data/formula_registry.csv"
+      - "EEI/artifacts/tests/a069/t503_capital_semantics_contract.json"
     unknown_task_ids: []
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["csv_row:EEI/data/formula_registry.csv::formula_id=F-CM-001"]
@@ -490,9 +494,13 @@ formulas:
     test_refs:
       - "EEI/scripts/validate_governance.py:108-121"
       - "EEI/scripts/validate_model_config.py:23-47"
+      - "EEI/tests/e2e/home.spec.ts"
+      - "EEI/tests/integration/test_database_migrations.py"
     evidence_refs:
       - "EEI/data/formula_registry.csv:11"
       - "EEI/data/formula_registry.csv"
+      - "EEI/artifacts/tests/a070/t503_policy_semantics_contract.json"
+      - "EEI/artifacts/tests/a071/t503_technology_semantics_contract.json"
     unknown_task_ids: []
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs: ["csv_row:EEI/data/formula_registry.csv::formula_id=F-PE-001"]

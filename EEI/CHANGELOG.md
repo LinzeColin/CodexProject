@@ -104,6 +104,7 @@
 - `EVENT-20260627-019`: Added `POST /v1/release/operator-input-submission-receipt` and `PARAM-096` for hash-bound operator input intake receipts; receipts remain manual-validator-only and cannot write evidence, execute validators or close release gates.
 - `EVENT-20260627-020`: Added receipt-ledger persistence for operator input submission receipts plus `GET /v1/release/operator-input-submission-receipts` and `PARAM-097`; repeated identical receipts are idempotent, stale previous-receipt expectations fail closed, and the ledger cannot write evidence, execute validators or close release gates.
 - `EVENT-20260627-023`: Completed T502/A064-A066 supply-chain stage view contract. `/v1/entities/{entityId}/supply-chain` now returns `entity-supply-chain-v1`; the home workspace shows ordered stages, upstream/downstream counts, edge metadata and explicit unknown-not-zero handling. `PARAM-098` records the API schema; supply-chain scoring formulas and release gates are unchanged.
+- `EVENT-20260627-024`: Completed T503/A069-A071 capital, policy and technology semantic-layer contract. `/v1/entities/{entityId}/capital` now returns `entity-capital-map-v1`; `/v1/entities/{entityId}/policy` now returns `entity-policy-map-v1`; the home workspace shows capital, policy and technology semantic buckets with local fallback and API hydration. `PARAM-099` and `PARAM-100` record API schemas only; capital/policy scoring formulas and release gates are unchanged.
 
 ## Legacy Task Pack v4.2.0 - 2026-06-19
 

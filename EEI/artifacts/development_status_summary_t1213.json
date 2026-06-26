@@ -18,22 +18,21 @@
     "implementation_status": {
       "DONE": 5,
       "N/A": 8,
-      "NOT_STARTED": 13,
-      "PARTIAL": 20
+      "NOT_STARTED": 11,
+      "PARTIAL": 22
     },
     "validation_status": {
       "CATALOG_VALIDATED": 11,
-      "CI_VALIDATED": 14,
-      "LOCAL_E2E_VALIDATED": 4,
+      "CI_VALIDATED": 13,
+      "LOCAL_E2E_VALIDATED": 7,
       "LOCAL_VALIDATED": 7,
-      "SPEC_VALIDATED": 2,
       "VALIDATED": 8
     },
     "lane_counts": {
-      "resolved": 33,
+      "resolved": 35,
       "prototyped": 21,
-      "specified": 13,
-      "not_started_tasks": 60,
+      "specified": 11,
+      "not_started_tasks": 58,
       "blocked_tasks": 0,
       "out_of_scope_tasks": 8
     },
@@ -79,9 +78,9 @@
       "task_ids": "T201;T205;T502;T507;T1105;T1301;T1306",
       "acceptance_ids": "A016;A020;A021;A064;A065;A066;A067;A068;A137;A138;A139;A140;A141;A142;A143;A144;A145;A188;A192;A202;A208",
       "traceability_rows": "19",
-      "done_traceability_rows": "4",
+      "done_traceability_rows": "7",
       "test_types": "Budget test;CSV/data check;Critical E2E;DOM/SVG assertion;Data check;Data/UI test;E2E;E2E + contract;E2E/API;Fixture E2E;Fixture/E2E;Schema/unit test;Screenshot assertion;State test;catalog validation",
-      "evidence_paths": "artifacts/tests/a064/;artifacts/tests/a065/;artifacts/tests/a066/;artifacts/tests/a068/;artifacts/tests/a137/;artifacts/tests/a138/;artifacts/tests/a139/;artifacts/tests/a140/;artifacts/tests/a141/;artifacts/tests/a142/;artifacts/tests/a143/;artifacts/tests/a144/;artifacts/tests/a145/;artifacts/tests/a188/;artifacts/tests/a192/;data/relationship_family_catalog.csv;data/supply_chain_stage_taxonomy.csv;scripts/check_database_schema.py;specs/domain_schema.sql;tests/e2e/home.spec.ts;tests/integration/test_database_migrations.py",
+      "evidence_paths": "apps/api/app/domain.py;apps/api/app/domain_repository.py;apps/web/src/app/page.tsx;apps/web/src/app/production-data-client.ts;artifacts/tests/a064/t502_supply_chain_stage_view_contract.json;artifacts/tests/a065/t502_supply_chain_edge_metadata_contract.json;artifacts/tests/a066/t502_supply_chain_unknowns_contract.json;artifacts/tests/a068/;artifacts/tests/a137/;artifacts/tests/a138/;artifacts/tests/a139/;artifacts/tests/a140/;artifacts/tests/a141/;artifacts/tests/a142/;artifacts/tests/a143/;artifacts/tests/a144/;artifacts/tests/a145/;artifacts/tests/a188/;artifacts/tests/a192/;data/relationship_family_catalog.csv;data/supply_chain_stage_taxonomy.csv;scripts/check_database_schema.py;specs/api_contract.yaml;specs/domain_schema.sql;tests/e2e/home.spec.ts;tests/integration/test_database_migrations.py",
       "missing_task_ids": "",
       "missing_acceptance_ids": "",
       "source_doc": "docs/17_SUPPLY_CHAIN_RESEARCH_AND_EXPANSION_RULES.md"
@@ -107,9 +106,9 @@
       "task_ids": "T503;T800;T801;T805",
       "acceptance_ids": "A069;A070;A071;A108;A109;A110;A191",
       "traceability_rows": "7",
-      "done_traceability_rows": "0",
+      "done_traceability_rows": "3",
       "test_types": "API/UI;E2E;UI/data test;Unit/UI;catalog validation",
-      "evidence_paths": "artifacts/tests/a069/;artifacts/tests/a070/;artifacts/tests/a071/;artifacts/tests/a108/;artifacts/tests/a109/;artifacts/tests/a110/;artifacts/tests/a191/",
+      "evidence_paths": "apps/api/app/domain.py;apps/api/app/domain_repository.py;apps/web/src/app/page.tsx;apps/web/src/app/production-data-client.ts;artifacts/tests/a069/t503_capital_semantics_contract.json;artifacts/tests/a070/t503_policy_semantics_contract.json;artifacts/tests/a071/t503_technology_semantics_contract.json;artifacts/tests/a108/;artifacts/tests/a109/;artifacts/tests/a110/;artifacts/tests/a191/;specs/api_contract.yaml;tests/e2e/home.spec.ts;tests/integration/test_database_migrations.py",
       "missing_task_ids": "",
       "missing_acceptance_ids": "",
       "source_doc": "docs/31_DOMAIN_OBJECT_SCOPE_CATALOG.md"
@@ -121,9 +120,9 @@
       "task_ids": "T201;T500;T503;T506",
       "acceptance_ids": "A020;A021;A022;A023;A069;A070;A071;A137;A138;A139;A140;A187",
       "traceability_rows": "12",
-      "done_traceability_rows": "4",
+      "done_traceability_rows": "7",
       "test_types": "API/UI;CSV/data check;DOM/SVG assertion;Fixture E2E;Repository integration test;Schema/golden test;Schema/unit test;Screenshot assertion;Unit/UI;catalog validation",
-      "evidence_paths": "artifacts/tests/a069/;artifacts/tests/a070/;artifacts/tests/a071/;artifacts/tests/a137/;artifacts/tests/a138/;artifacts/tests/a139/;artifacts/tests/a140/;artifacts/tests/a187/;data/supply_chain_stage_taxonomy.csv;scripts/check_database_schema.py;specs/domain_schema.sql;tests/integration/test_database_migrations.py",
+      "evidence_paths": "apps/api/app/domain.py;apps/api/app/domain_repository.py;apps/web/src/app/page.tsx;apps/web/src/app/production-data-client.ts;artifacts/tests/a069/t503_capital_semantics_contract.json;artifacts/tests/a070/t503_policy_semantics_contract.json;artifacts/tests/a071/t503_technology_semantics_contract.json;artifacts/tests/a137/;artifacts/tests/a138/;artifacts/tests/a139/;artifacts/tests/a140/;artifacts/tests/a187/;data/supply_chain_stage_taxonomy.csv;scripts/check_database_schema.py;specs/api_contract.yaml;specs/domain_schema.sql;tests/e2e/home.spec.ts;tests/integration/test_database_migrations.py",
       "missing_task_ids": "",
       "missing_acceptance_ids": "",
       "source_doc": "docs/04_DATA_MODEL.md"

@@ -761,6 +761,228 @@ class DomainRepository:
                 }
             )
 
+    def get_entity_capital_map(
+        self,
+        *,
+        entity_id: UUID,
+        as_of: datetime | None = None,
+        profile_id: UUID | None = None,
+    ) -> dict[str, Any]:
+        with self.connect() as connection:
+            focus = self.entity_summary(connection, entity_id)
+            relationship_rows = self.layer_relationship_rows_for_entity(
+                connection,
+                entity_id,
+                families=["capital_financing", "mergers_acquisitions"],
+                as_of=as_of,
+            )
+            event_rows = self.layer_event_rows_for_entity(
+                connection,
+                entity_id,
+                event_types=[
+                    "funding_round",
+                    "capital_expenditure",
+                    "merger_acquisition",
+                    "share_repurchase",
+                    "dividend",
+                ],
+                as_of=as_of,
+            )
+            records = [
+                self.capital_policy_relationship_record(
+                    focus_id=entity_id,
+                    relationship=row,
+                    semantic_tags=self.capital_semantic_tags(
+                        row["relationship_type"],
+                        row.get("amount_kind"),
+                    ),
+                )
+                for row in relationship_rows
+            ]
+            events = [
+                self.capital_policy_event_record(
+                    event=row,
+                    semantic_tags=self.capital_event_semantic_tags(
+                        row["event_type"],
+                        row.get("amount_kind"),
+                    ),
+                )
+                for row in event_rows
+            ]
+            semantic_buckets = self.semantic_buckets(
+                definitions=self.capital_semantic_definitions(),
+                relationships=records,
+                events=events,
+            )
+            return _jsonable(
+                {
+                    "schema_version": "entity-capital-map-v1",
+                    "as_of": as_of or _now(),
+                    "profile_id": profile_id,
+                    "focus": focus,
+                    "relationships": records,
+                    "events": events,
+                    "semantic_buckets": semantic_buckets,
+                    "coverage": {
+                        "relationship_count": len(records),
+                        "event_count": len(events),
+                        "semantic_class_count": len(
+                            {
+                                tag
+                                for item in [*records, *events]
+                                for tag in item["semantic_tags"]
+                            }
+                        ),
+                        "required_semantic_classes": [
+                            item["key"] for item in self.capital_semantic_definitions()
+                        ],
+                        "no_silent_summing": True,
+                        "unknown_amount_not_zero": True,
+                    },
+                    "content_rules": {
+                        "amount_unknown_not_zero": True,
+                        "incomparable_amounts_not_summed": True,
+                        "semantic_bucket_absence_is_not_zero": True,
+                        "synthetic_fixture_not_live_fact": bool(
+                            focus.get("synthetic") or any(item["synthetic"] for item in records)
+                        ),
+                    },
+                    "data_mode": (
+                        "synthetic_fixture"
+                        if focus.get("synthetic") or any(item["synthetic"] for item in records)
+                        else "database"
+                    ),
+                    "fixture_notice": (
+                        "Synthetic fixture records are explicitly marked and are not live facts."
+                        if focus.get("synthetic") or any(item["synthetic"] for item in records)
+                        else None
+                    ),
+                }
+            )
+
+    def get_entity_policy_map(
+        self,
+        *,
+        entity_id: UUID,
+        as_of: datetime | None = None,
+        profile_id: UUID | None = None,
+    ) -> dict[str, Any]:
+        with self.connect() as connection:
+            focus = self.entity_summary(connection, entity_id)
+            relationship_rows = self.layer_relationship_rows_for_entity(
+                connection,
+                entity_id,
+                families=["government_policy", "technology_data_ip", "commercial_dependency"],
+                relationship_types=[
+                    "government_award_to",
+                    "lobbies_on",
+                    "regulated_by",
+                    "export_restricted_by",
+                    "licenses_ip_to",
+                    "provides_data_to",
+                    "depends_on_standard",
+                    "integrates_with",
+                    "cloud_provider_to",
+                    "compute_provider_to",
+                ],
+                as_of=as_of,
+            )
+            event_rows = self.layer_event_rows_for_entity(
+                connection,
+                entity_id,
+                event_types=[
+                    "contract_award",
+                    "regulatory_action",
+                    "lobbying_disclosure",
+                    "trade_restriction",
+                ],
+                as_of=as_of,
+            )
+            policy_records = []
+            technology_records = []
+            for row in relationship_rows:
+                if row["relationship_family"] == "government_policy":
+                    policy_records.append(
+                        self.capital_policy_relationship_record(
+                            focus_id=entity_id,
+                            relationship=row,
+                            semantic_tags=self.policy_semantic_tags(
+                                row["relationship_type"],
+                                row.get("amount_kind"),
+                            ),
+                        )
+                    )
+                else:
+                    technology_records.append(
+                        self.capital_policy_relationship_record(
+                            focus_id=entity_id,
+                            relationship=row,
+                            semantic_tags=self.technology_semantic_tags(row["relationship_type"]),
+                        )
+                    )
+            events = [
+                self.capital_policy_event_record(
+                    event=row,
+                    semantic_tags=self.policy_event_semantic_tags(
+                        row["event_type"],
+                        row.get("amount_kind"),
+                    ),
+                )
+                for row in event_rows
+            ]
+            semantic_buckets = self.semantic_buckets(
+                definitions=[
+                    *self.policy_semantic_definitions(),
+                    *self.technology_semantic_definitions(),
+                ],
+                relationships=[*policy_records, *technology_records],
+                events=events,
+            )
+            all_records = [*policy_records, *technology_records]
+            return _jsonable(
+                {
+                    "schema_version": "entity-policy-map-v1",
+                    "as_of": as_of or _now(),
+                    "profile_id": profile_id,
+                    "focus": focus,
+                    "policy_records": policy_records,
+                    "technology_records": technology_records,
+                    "events": events,
+                    "semantic_buckets": semantic_buckets,
+                    "coverage": {
+                        "policy_record_count": len(policy_records),
+                        "technology_record_count": len(technology_records),
+                        "event_count": len(events),
+                        "policy_semantic_classes": [
+                            item["key"] for item in self.policy_semantic_definitions()
+                        ],
+                        "technology_semantic_classes": [
+                            item["key"] for item in self.technology_semantic_definitions()
+                        ],
+                        "unknowns_explicit": True,
+                    },
+                    "content_rules": {
+                        "award_ceiling_is_not_paid_cash": True,
+                        "obligation_ceiling_and_award_are_distinct": True,
+                        "technology_dependency_is_not_control": True,
+                        "semantic_bucket_absence_is_not_zero": True,
+                        "synthetic_fixture_not_live_fact": bool(
+                            focus.get("synthetic") or any(item["synthetic"] for item in all_records)
+                        ),
+                    },
+                    "data_mode": (
+                        "synthetic_fixture"
+                        if focus.get("synthetic") or any(item["synthetic"] for item in all_records)
+                        else "database"
+                    ),
+                    "fixture_notice": (
+                        "Synthetic fixture records are explicitly marked and are not live facts."
+                        if focus.get("synthetic") or any(item["synthetic"] for item in all_records)
+                        else None
+                    ),
+                }
+            )
+
     def list_industries(self, parent: UUID | None = None) -> list[dict[str, Any]]:
         with self.connect() as connection:
             return self.list_industries_for_connection(connection, parent=parent)
@@ -1454,6 +1676,506 @@ class DomainRepository:
             (families, entity_ids, entity_ids, limit),
         ).fetchall()
         return _jsonable(rows)
+
+    def layer_relationship_rows_for_entity(
+        self,
+        connection: psycopg.Connection[dict[str, Any]],
+        entity_id: UUID,
+        *,
+        families: list[str],
+        as_of: datetime | None,
+        relationship_types: list[str] | None = None,
+        limit: int = 80,
+    ) -> list[dict[str, Any]]:
+        rows = connection.execute(
+            """
+            SELECT
+              r.id, r.subject_entity_id, r.object_entity_id, r.relationship_type,
+              r.relationship_family, r.status, r.confidence, r.valid_from, r.valid_to,
+              r.announced_at, r.filed_at, r.observed_at, r.amount, r.currency,
+              r.amount_kind, r.qualifiers,
+              subject.canonical_name AS subject_name,
+              subject.entity_type AS subject_type,
+              object.canonical_name AS object_name,
+              object.entity_type AS object_type,
+              count(re.source_document_id)::int AS evidence_count,
+              frn.fixture_notice, COALESCE(frn.synthetic, false) AS synthetic
+            FROM relationships r
+            JOIN entities subject ON subject.id = r.subject_entity_id
+            JOIN entities object ON object.id = r.object_entity_id
+            LEFT JOIN relationship_evidence re ON re.relationship_id = r.id
+            LEFT JOIN fixture_relationship_notices frn ON frn.relationship_id = r.id
+            WHERE r.status NOT IN ('superseded', 'revoked')
+              AND r.relationship_family = ANY(%(families)s::text[])
+              AND (
+                %(relationship_types)s::text[] IS NULL
+                OR r.relationship_type = ANY(%(relationship_types)s::text[])
+              )
+              AND (r.subject_entity_id = %(entity_id)s OR r.object_entity_id = %(entity_id)s)
+              AND (
+                %(as_of)s::timestamptz IS NULL
+                OR (
+                  (r.valid_from IS NULL OR r.valid_from <= %(as_of)s::timestamptz)
+                  AND (r.valid_to IS NULL OR r.valid_to >= %(as_of)s::timestamptz)
+                )
+              )
+            GROUP BY r.id, subject.id, object.id, frn.fixture_notice, frn.synthetic
+            ORDER BY r.confidence DESC NULLS LAST, r.observed_at DESC, r.id
+            LIMIT %(limit)s
+            """,
+            {
+                "entity_id": entity_id,
+                "families": families,
+                "relationship_types": relationship_types,
+                "as_of": as_of,
+                "limit": limit,
+            },
+        ).fetchall()
+        return _jsonable(rows)
+
+    def layer_event_rows_for_entity(
+        self,
+        connection: psycopg.Connection[dict[str, Any]],
+        entity_id: UUID,
+        *,
+        event_types: list[str],
+        as_of: datetime | None,
+        limit: int = 80,
+    ) -> list[dict[str, Any]]:
+        rows = connection.execute(
+            """
+            SELECT
+              ev.id, ev.event_type, ev.title, ev.status, ev.announced_at,
+              ev.effective_at, ev.period_start, ev.period_end, ev.observed_at,
+              ev.amount, ev.currency, ev.amount_kind, ev.description, ev.qualifiers,
+              (
+                SELECT count(*)::int
+                FROM event_evidence ee
+                WHERE ee.event_id = ev.id
+              ) AS evidence_count,
+              (
+                SELECT COALESCE(
+                  jsonb_agg(
+                    jsonb_build_object(
+                      'entity_id', ep.entity_id,
+                      'role', ep.role,
+                      'direction', ep.direction
+                    )
+                    ORDER BY ep.role, ep.entity_id
+                  ),
+                  '[]'::jsonb
+                )
+                FROM event_participants ep
+                WHERE ep.event_id = ev.id
+              ) AS participants
+            FROM events ev
+            WHERE ev.status NOT IN ('superseded', 'revoked')
+              AND ev.event_type = ANY(%(event_types)s::text[])
+              AND EXISTS (
+                SELECT 1
+                FROM event_participants focus_ep
+                WHERE focus_ep.event_id = ev.id
+                  AND focus_ep.entity_id = %(entity_id)s
+              )
+              AND (
+                %(as_of)s::timestamptz IS NULL
+                OR (
+                  (ev.effective_at IS NULL OR ev.effective_at <= %(as_of)s::timestamptz)
+                  AND (ev.announced_at IS NULL OR ev.announced_at <= %(as_of)s::timestamptz)
+                )
+              )
+            ORDER BY ev.observed_at DESC, ev.announced_at DESC NULLS LAST, ev.id
+            LIMIT %(limit)s
+            """,
+            {
+                "entity_id": entity_id,
+                "event_types": event_types,
+                "as_of": as_of,
+                "limit": limit,
+            },
+        ).fetchall()
+        return _jsonable(rows)
+
+    @staticmethod
+    def capital_policy_relationship_record(
+        *,
+        focus_id: UUID,
+        relationship: dict[str, Any],
+        semantic_tags: list[str],
+    ) -> dict[str, Any]:
+        primary_class = semantic_tags[0] if semantic_tags else "other"
+        amount_semantics = DomainRepository.amount_semantics(
+            amount=relationship.get("amount"),
+            currency=relationship.get("currency"),
+            amount_kind=relationship.get("amount_kind"),
+            semantic_class=primary_class,
+        )
+        unknown_fields = []
+        if relationship.get("amount") is None:
+            unknown_fields.append("amount")
+        if relationship.get("amount_kind") is None:
+            unknown_fields.append("amount_kind")
+        direction = DomainRepository.focus_relative_direction(
+            focus_id=str(focus_id),
+            subject_id=str(relationship["subject_entity_id"]),
+            object_id=str(relationship["object_entity_id"]),
+        )
+        return _jsonable(
+            {
+                "id": relationship["id"],
+                "relationship_type": relationship["relationship_type"],
+                "relationship_family": relationship["relationship_family"],
+                "status": relationship["status"],
+                "confidence": relationship["confidence"],
+                "semantic_class": primary_class,
+                "semantic_tags": semantic_tags or ["other"],
+                "direction": direction,
+                "subject": {
+                    "id": relationship["subject_entity_id"],
+                    "canonical_name": relationship["subject_name"],
+                    "entity_type": relationship["subject_type"],
+                },
+                "object": {
+                    "id": relationship["object_entity_id"],
+                    "canonical_name": relationship["object_name"],
+                    "entity_type": relationship["object_type"],
+                },
+                "amount_semantics": amount_semantics,
+                "time": {
+                    "valid_from": relationship["valid_from"],
+                    "valid_to": relationship["valid_to"],
+                    "announced_at": relationship["announced_at"],
+                    "filed_at": relationship["filed_at"],
+                    "observed_at": relationship["observed_at"],
+                },
+                "qualifiers": relationship["qualifiers"] or {},
+                "evidence_count": relationship["evidence_count"],
+                "unknown_fields": unknown_fields,
+                "synthetic": relationship["synthetic"],
+                "fixture_notice": relationship["fixture_notice"],
+            }
+        )
+
+    @staticmethod
+    def capital_policy_event_record(
+        *,
+        event: dict[str, Any],
+        semantic_tags: list[str],
+    ) -> dict[str, Any]:
+        primary_class = semantic_tags[0] if semantic_tags else "other"
+        amount_semantics = DomainRepository.amount_semantics(
+            amount=event.get("amount"),
+            currency=event.get("currency"),
+            amount_kind=event.get("amount_kind"),
+            semantic_class=primary_class,
+        )
+        unknown_fields = []
+        if event.get("amount") is None:
+            unknown_fields.append("amount")
+        if event.get("amount_kind") is None:
+            unknown_fields.append("amount_kind")
+        return _jsonable(
+            {
+                "id": event["id"],
+                "event_type": event["event_type"],
+                "title": event["title"],
+                "status": event["status"],
+                "semantic_class": primary_class,
+                "semantic_tags": semantic_tags or ["other"],
+                "amount_semantics": amount_semantics,
+                "time": {
+                    "announced_at": event["announced_at"],
+                    "effective_at": event["effective_at"],
+                    "period_start": event["period_start"],
+                    "period_end": event["period_end"],
+                    "observed_at": event["observed_at"],
+                },
+                "description": event["description"],
+                "qualifiers": event["qualifiers"] or {},
+                "evidence_count": event["evidence_count"],
+                "unknown_fields": unknown_fields,
+                "participants": event["participants"] or [],
+            }
+        )
+
+    @staticmethod
+    def amount_semantics(
+        *,
+        amount: Any,
+        currency: str | None,
+        amount_kind: str | None,
+        semantic_class: str,
+    ) -> dict[str, Any]:
+        amount_kind_key = amount_kind or "unknown"
+        currency_key = currency or "unknown"
+        return {
+            "amount": amount,
+            "currency": currency,
+            "amount_kind": amount_kind,
+            "unknown_not_zero": amount is None,
+            "aggregation_rule": "only_same_semantics_currency_period",
+            "aggregation_key": f"{semantic_class}:{amount_kind_key}:{currency_key}",
+            "summable": amount is not None and amount_kind is not None and currency is not None,
+        }
+
+    @staticmethod
+    def semantic_buckets(
+        *,
+        definitions: list[dict[str, Any]],
+        relationships: list[dict[str, Any]],
+        events: list[dict[str, Any]],
+    ) -> list[dict[str, Any]]:
+        items = [*relationships, *events]
+        buckets = []
+        for definition in definitions:
+            key = definition["key"]
+            matching = [item for item in items if key in item.get("semantic_tags", [])]
+            amount_record_count = len(
+                [
+                    item
+                    for item in matching
+                    if item["amount_semantics"]["amount"] is not None
+                ]
+            )
+            unknown_count = len([item for item in matching if item["unknown_fields"]])
+            if definition.get("required") and not matching:
+                unknown_count += 1
+            buckets.append(
+                {
+                    **definition,
+                    "record_count": len(matching),
+                    "amount_record_count": amount_record_count,
+                    "unknown_count": unknown_count,
+                }
+            )
+        return buckets
+
+    @staticmethod
+    def focus_relative_direction(*, focus_id: str, subject_id: str, object_id: str) -> str:
+        if subject_id == focus_id:
+            return "out"
+        if object_id == focus_id:
+            return "in"
+        return "neutral"
+
+    @staticmethod
+    def capital_semantic_definitions() -> list[dict[str, Any]]:
+        return [
+            {
+                "key": "investment",
+                "label": "Investment",
+                "dimension": "capital",
+                "description": "Equity or strategic capital deployed into another entity.",
+                "required": True,
+            },
+            {
+                "key": "debt",
+                "label": "Debt",
+                "dimension": "capital",
+                "description": "Loans, credit, underwriting or guarantees.",
+                "required": True,
+            },
+            {
+                "key": "acquisition",
+                "label": "Acquisition",
+                "dimension": "ma",
+                "description": "Acquisition, merger, divestiture or spin-off transaction.",
+                "required": True,
+            },
+            {
+                "key": "commitment",
+                "label": "Commitment",
+                "dimension": "capital",
+                "description": "Future purchase, capacity, cloud or capital commitment.",
+                "required": True,
+            },
+            {
+                "key": "capex",
+                "label": "Capex",
+                "dimension": "capital",
+                "description": "Capital expenditure or infrastructure deployment.",
+                "required": True,
+            },
+            {
+                "key": "buyback",
+                "label": "Buyback",
+                "dimension": "capital",
+                "description": "Share repurchase authorization or execution.",
+                "required": True,
+            },
+            {
+                "key": "dividend",
+                "label": "Dividend",
+                "dimension": "capital",
+                "description": "Dividend declaration or distribution.",
+                "required": True,
+            },
+        ]
+
+    @staticmethod
+    def policy_semantic_definitions() -> list[dict[str, Any]]:
+        return [
+            {
+                "key": "award",
+                "label": "Award",
+                "dimension": "policy",
+                "description": "Government contract, grant, loan or incentive award.",
+                "required": True,
+            },
+            {
+                "key": "obligation",
+                "label": "Obligation",
+                "dimension": "policy",
+                "description": "Reported government obligation or committed spend.",
+                "required": True,
+            },
+            {
+                "key": "ceiling",
+                "label": "Ceiling",
+                "dimension": "policy",
+                "description": "Maximum award ceiling or cap, not paid cash.",
+                "required": True,
+            },
+            {
+                "key": "regulation",
+                "label": "Regulation",
+                "dimension": "policy",
+                "description": "Regulatory action, license or supervision relationship.",
+                "required": True,
+            },
+            {
+                "key": "lobbying",
+                "label": "Lobbying",
+                "dimension": "policy",
+                "description": "Lobbying disclosure by issue or government body.",
+                "required": True,
+            },
+            {
+                "key": "trade_restriction",
+                "label": "Trade restriction",
+                "dimension": "policy",
+                "description": "Export control, sanction or trade restriction exposure.",
+                "required": True,
+            },
+        ]
+
+    @staticmethod
+    def technology_semantic_definitions() -> list[dict[str, Any]]:
+        return [
+            {
+                "key": "ip",
+                "label": "IP",
+                "dimension": "technology",
+                "description": "Patent, license or intellectual-property dependency.",
+                "required": True,
+            },
+            {
+                "key": "standards",
+                "label": "Standards",
+                "dimension": "technology",
+                "description": "Technical standard or certification dependency.",
+                "required": True,
+            },
+            {
+                "key": "data_access",
+                "label": "Data access",
+                "dimension": "technology",
+                "description": "Documented data access, feed or data-service dependency.",
+                "required": True,
+            },
+            {
+                "key": "integration",
+                "label": "Integration",
+                "dimension": "technology",
+                "description": "Platform, product or API integration relationship.",
+                "required": True,
+            },
+            {
+                "key": "cloud_compute",
+                "label": "Cloud compute",
+                "dimension": "technology",
+                "description": "Cloud or compute infrastructure dependency.",
+                "required": True,
+            },
+        ]
+
+    @staticmethod
+    def capital_semantic_tags(relationship_type: str, amount_kind: str | None) -> list[str]:
+        if relationship_type == "invested_in":
+            return ["investment"]
+        if relationship_type in {"lender_to", "financed_by", "underwrites_for"}:
+            return ["debt"]
+        if relationship_type == "guarantees_obligation_of":
+            return ["debt", "commitment"]
+        if relationship_type in {"acquired", "merged_with", "divested", "spun_off"}:
+            return ["acquisition"]
+        if relationship_type == "capital_commitment":
+            return ["commitment"]
+        if amount_kind in {"period_capex", "capital_expenditure"}:
+            return ["capex"]
+        if amount_kind in {"share_repurchase", "buyback"}:
+            return ["buyback"]
+        if amount_kind == "dividend":
+            return ["dividend"]
+        return ["investment"]
+
+    @staticmethod
+    def capital_event_semantic_tags(event_type: str, amount_kind: str | None) -> list[str]:
+        if event_type == "capital_expenditure" or amount_kind == "period_capex":
+            return ["capex"]
+        if event_type == "share_repurchase" or amount_kind in {"share_repurchase", "buyback"}:
+            return ["buyback"]
+        if event_type == "dividend" or amount_kind == "dividend":
+            return ["dividend"]
+        if event_type == "merger_acquisition":
+            return ["acquisition"]
+        return ["investment"]
+
+    @staticmethod
+    def policy_semantic_tags(relationship_type: str, amount_kind: str | None) -> list[str]:
+        if relationship_type == "government_award_to":
+            tags = ["award"]
+            if amount_kind and "ceiling" in amount_kind:
+                tags.append("ceiling")
+            if amount_kind and "obligation" in amount_kind:
+                tags.append("obligation")
+            return tags
+        if relationship_type == "lobbies_on":
+            return ["lobbying"]
+        if relationship_type == "regulated_by":
+            return ["regulation"]
+        if relationship_type == "export_restricted_by":
+            return ["trade_restriction"]
+        return ["regulation"]
+
+    @staticmethod
+    def policy_event_semantic_tags(event_type: str, amount_kind: str | None) -> list[str]:
+        if event_type == "contract_award":
+            tags = ["award"]
+            if amount_kind and "ceiling" in amount_kind:
+                tags.append("ceiling")
+            if amount_kind and "obligation" in amount_kind:
+                tags.append("obligation")
+            return tags
+        if event_type == "lobbying_disclosure":
+            return ["lobbying"]
+        if event_type == "trade_restriction":
+            return ["trade_restriction"]
+        return ["regulation"]
+
+    @staticmethod
+    def technology_semantic_tags(relationship_type: str) -> list[str]:
+        if relationship_type == "licenses_ip_to":
+            return ["ip"]
+        if relationship_type == "provides_data_to":
+            return ["data_access"]
+        if relationship_type == "depends_on_standard":
+            return ["standards"]
+        if relationship_type == "integrates_with":
+            return ["integration"]
+        if relationship_type in {"cloud_provider_to", "compute_provider_to"}:
+            return ["cloud_compute"]
+        return ["integration"]
 
     def aliases_for_entity(
         self,

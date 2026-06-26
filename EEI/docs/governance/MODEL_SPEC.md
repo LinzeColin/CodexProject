@@ -17,7 +17,7 @@ machine_summary:
 
 - model_count: 12
 - formula_count: 12
-- parameter_count: 98
+- parameter_count: 100
 
 The counts above are generated from the canonical machine registries in this directory. Legacy Markdown files are indexes and must not be edited as independent count sources.
 
@@ -60,6 +60,7 @@ The counts above are generated from the canonical machine registries in this dir
 - 2026-06-26 T1308/A211 evidence drawer focus-trap hardening adds frontend dialog/focus/inert behavior and E2E coverage only; no scoring model, graph traversal formula, extraction formula, formula weight, business threshold, API schema, database schema, publication policy or active parameter value changed.
 - 2026-06-26 T504/A072 strategic-signal panel displays support, contradiction, alternatives, time decay and rule version using existing fixture UI and PARAM-007 context only; no scoring model, graph traversal formula, extraction formula, formula weight, business threshold, API schema, database schema, publication policy or active parameter value changed.
 - 2026-06-26 T1308/A211 app icon and BrandMark refresh updates app-shell branding, metadata icon and web manifest only; no scoring model, graph traversal formula, extraction formula, formula weight, business threshold, API schema, database schema, publication policy or active parameter value changed.
+- 2026-06-27 T503/A069-A071 capital, policy and technology semantic layers add `PARAM-099` and `PARAM-100` for `entity-capital-map-v1` and `entity-policy-map-v1` API schema contracts; no scoring model, graph traversal formula, extraction formula, formula weight, business threshold, database schema, publication policy or active model profile changed.
 
 ## A. Model Overview
 
@@ -566,4 +567,15 @@ Machine source: `parameter_registry.csv`. Defaults, initial/prior values, active
 - Model impact: no change to `FORM-005` expression, weights, thresholds, missing policy or active model profile.
 - Behavior impact: `/v1/entities/{entityId}/supply-chain` and the home workspace supply-chain panel expose ordered stages, upstream/downstream counts, edge metadata and explicit unknown-not-zero rows.
 - Validation: focused `py_compile`, `ruff`, web `typecheck`, OpenAPI contract validation and targeted Playwright supply-chain hydration test passed; local PostgreSQL integration collected but skipped because this host lacks PostgreSQL/Docker.
+- Release boundary: this does not close A202, A209, A210, A026/A027, A204/A205 or MVP release readiness.
+
+## I. T503 Capital, Policy And Technology API Contract Binding
+
+- Date: 2026-06-27.
+- Task: `TASK-T503` / `A069-A071`.
+- Parameter binding: `PARAM-099` records `capital.entity_capital_map.schema_version=entity-capital-map-v1` from `specs/api_contract.yaml`.
+- Parameter binding: `PARAM-100` records `policy.entity_policy_map.schema_version=entity-policy-map-v1` from `specs/api_contract.yaml`.
+- Model impact: no change to `FORM-007` or `FORM-008` expressions, weights, thresholds, missing policies or active model profile.
+- Behavior impact: `/v1/entities/{entityId}/capital` exposes investment, debt, acquisition, commitment, capex, buyback and dividend buckets with amount semantics and unknown-not-zero handling; `/v1/entities/{entityId}/policy` exposes award, obligation, ceiling, regulation, lobbying, trade restriction, IP, standards, data access, integration and cloud/compute buckets.
+- Validation: focused `py_compile`, `ruff`, web `typecheck`, OpenAPI contract validation and targeted Playwright capital/policy/technology hydration test passed; local PostgreSQL integration collected but skipped because this host lacks PostgreSQL/Docker.
 - Release boundary: this does not close A202, A209, A210, A026/A027, A204/A205 or MVP release readiness.

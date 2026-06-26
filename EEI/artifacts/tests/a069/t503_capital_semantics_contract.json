@@ -1,0 +1,58 @@
+{
+  "schema_version": "eei-acceptance-evidence-v1",
+  "task_id": "T503",
+  "acceptance_ids": ["A069"],
+  "status": "PASS",
+  "generated_at": "2026-06-27T08:10:00+10:00",
+  "capability": "capital_and_mna_semantic_layer",
+  "required_semantic_classes": [
+    "investment",
+    "debt",
+    "acquisition",
+    "commitment",
+    "capex",
+    "buyback",
+    "dividend"
+  ],
+  "contract": {
+    "api_path": "/v1/entities/{entityId}/capital",
+    "response_schema_version": "entity-capital-map-v1",
+    "frontend_panel_test_id": "capital-policy-layer-panel",
+    "frontend_bucket_test_id": "capital-semantic-buckets",
+    "distinguishes_required_semantics": true,
+    "amount_semantics_required": true,
+    "no_silent_summing": true,
+    "unknown_amount_not_zero": true,
+    "ui_fallback_mode": "synthetic_fixture_explicit"
+  },
+  "implementation_refs": [
+    "EEI/apps/api/app/domain.py",
+    "EEI/apps/api/app/domain_repository.py",
+    "EEI/apps/web/src/app/page.tsx",
+    "EEI/apps/web/src/app/production-data-client.ts",
+    "EEI/specs/api_contract.yaml"
+  ],
+  "validation_refs": [
+    "EEI/tests/integration/test_database_migrations.py",
+    "EEI/tests/e2e/home.spec.ts",
+    "EEI/scripts/validate_contracts.py"
+  ],
+  "commands": [
+    "PYTHONPYCACHEPREFIX=/private/tmp/eei-t503-pycache .venv/bin/python -m py_compile apps/api/app/domain.py apps/api/app/domain_repository.py tests/integration/test_database_migrations.py",
+    "RUFF_CACHE_DIR=/private/tmp/eei-t503-ruff .venv/bin/ruff check apps/api/app/domain.py apps/api/app/domain_repository.py tests/integration/test_database_migrations.py",
+    "npx --yes pnpm@11.8.0 --filter @eei/web typecheck",
+    "apps/web/node_modules/.bin/playwright test --config=playwright.config.ts tests/e2e/home.spec.ts --grep \"capital policy and technology\" --workers=1",
+    ".venv/bin/python scripts/validate_contracts.py"
+  ],
+  "results": [
+    "API route and OpenAPI schema bind EntityCapitalMapResponse.",
+    "Repository buckets separate investment, debt, acquisition, commitment, capex, buyback and dividend semantics.",
+    "Frontend local fallback and server hydration expose the same semantic buckets.",
+    "Integration assertions preserve unknown amounts as unknown, not zero."
+  ],
+  "non_claims": [
+    "Does not implement Capital River or Sankey A108-A110.",
+    "Does not certify production-reviewed capital facts.",
+    "Does not close A202, A209, A210, A026/A027, A204/A205 or MVP release readiness."
+  ]
+}

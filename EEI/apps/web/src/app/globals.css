@@ -647,6 +647,58 @@ dd {
   line-height: 1.35;
 }
 
+.capitalPolicyPanel {
+  border-color: #dac3a6;
+  background: #fffaf3;
+}
+
+.capitalPolicyStats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+
+.capitalPolicyStats div {
+  min-width: 0;
+  border: 1px solid #ead8bf;
+  border-radius: 7px;
+  background: #ffffff;
+  padding: 7px 8px;
+}
+
+.capitalPolicyStats dt {
+  color: #72502b;
+  font-size: 11px;
+  font-weight: 760;
+}
+
+.capitalPolicyStats dd {
+  margin: 3px 0 0;
+  color: #4c3419;
+  font-size: 12px;
+  font-weight: 720;
+  overflow-wrap: anywhere;
+}
+
+.capitalPolicyPanel > .semanticBucketList {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.capitalPolicyPanel > .semanticBucketList span {
+  min-width: 0;
+  border: 1px solid #ead8bf;
+  border-radius: 7px;
+  background: #ffffff;
+  padding: 6px 8px;
+  color: #4c3419;
+  font-size: 11px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
 .modelPreviewActions button {
   min-height: 32px;
   border: 1px solid #b9c9f5;

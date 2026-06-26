@@ -625,6 +625,10 @@ paths:
       responses:
         '200':
           description: Financing, investment, M&A, contracts and capex
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityCapitalMapResponse'
         '404':
           description: Not found
   /v1/entities/{entityId}/policy:
@@ -654,6 +658,10 @@ paths:
       responses:
         '200':
           description: Government contracts, regulation, trade and lobbying
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityPolicyMapResponse'
         '404':
           description: Not found
   /v1/entities/{entityId}/strategy:
@@ -3169,6 +3177,343 @@ components:
           type:
           - string
           - 'null'
+    EntityCapitalMapResponse:
+      type: object
+      required:
+      - schema_version
+      - as_of
+      - focus
+      - relationships
+      - events
+      - semantic_buckets
+      - coverage
+      - content_rules
+      - data_mode
+      properties:
+        schema_version:
+          type: string
+          enum:
+          - entity-capital-map-v1
+        as_of:
+          type: string
+          format: date-time
+        profile_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        focus:
+          $ref: '#/components/schemas/EntitySummary'
+        relationships:
+          type: array
+          items:
+            $ref: '#/components/schemas/CapitalPolicyRelationship'
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/CapitalPolicyEvent'
+        semantic_buckets:
+          type: array
+          items:
+            $ref: '#/components/schemas/SemanticBucket'
+        coverage:
+          type: object
+          required:
+          - relationship_count
+          - event_count
+          - semantic_class_count
+          - required_semantic_classes
+          - no_silent_summing
+          - unknown_amount_not_zero
+          properties:
+            relationship_count:
+              type: integer
+              minimum: 0
+            event_count:
+              type: integer
+              minimum: 0
+            semantic_class_count:
+              type: integer
+              minimum: 0
+            required_semantic_classes:
+              type: array
+              items:
+                type: string
+            no_silent_summing:
+              type: boolean
+            unknown_amount_not_zero:
+              type: boolean
+        content_rules:
+          type: object
+          additionalProperties: true
+        data_mode:
+          type: string
+        fixture_notice:
+          type:
+          - string
+          - 'null'
+    EntityPolicyMapResponse:
+      type: object
+      required:
+      - schema_version
+      - as_of
+      - focus
+      - policy_records
+      - technology_records
+      - events
+      - semantic_buckets
+      - coverage
+      - content_rules
+      - data_mode
+      properties:
+        schema_version:
+          type: string
+          enum:
+          - entity-policy-map-v1
+        as_of:
+          type: string
+          format: date-time
+        profile_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        focus:
+          $ref: '#/components/schemas/EntitySummary'
+        policy_records:
+          type: array
+          items:
+            $ref: '#/components/schemas/CapitalPolicyRelationship'
+        technology_records:
+          type: array
+          items:
+            $ref: '#/components/schemas/CapitalPolicyRelationship'
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/CapitalPolicyEvent'
+        semantic_buckets:
+          type: array
+          items:
+            $ref: '#/components/schemas/SemanticBucket'
+        coverage:
+          type: object
+          required:
+          - policy_record_count
+          - technology_record_count
+          - event_count
+          - policy_semantic_classes
+          - technology_semantic_classes
+          - unknowns_explicit
+          properties:
+            policy_record_count:
+              type: integer
+              minimum: 0
+            technology_record_count:
+              type: integer
+              minimum: 0
+            event_count:
+              type: integer
+              minimum: 0
+            policy_semantic_classes:
+              type: array
+              items:
+                type: string
+            technology_semantic_classes:
+              type: array
+              items:
+                type: string
+            unknowns_explicit:
+              type: boolean
+        content_rules:
+          type: object
+          additionalProperties: true
+        data_mode:
+          type: string
+        fixture_notice:
+          type:
+          - string
+          - 'null'
+    SemanticBucket:
+      type: object
+      required:
+      - key
+      - label
+      - dimension
+      - description
+      - record_count
+      - amount_record_count
+      - unknown_count
+      - required
+      properties:
+        key:
+          type: string
+        label:
+          type: string
+        dimension:
+          type: string
+        description:
+          type: string
+        record_count:
+          type: integer
+          minimum: 0
+        amount_record_count:
+          type: integer
+          minimum: 0
+        unknown_count:
+          type: integer
+          minimum: 0
+        required:
+          type: boolean
+    CapitalPolicyRelationship:
+      type: object
+      required:
+      - id
+      - relationship_type
+      - relationship_family
+      - semantic_class
+      - semantic_tags
+      - direction
+      - subject
+      - object
+      - amount_semantics
+      - time
+      - evidence_count
+      - unknown_fields
+      properties:
+        id:
+          type: string
+        relationship_type:
+          type: string
+        relationship_family:
+          type: string
+        status:
+          type: string
+        confidence:
+          type:
+          - number
+          - 'null'
+        semantic_class:
+          type: string
+        semantic_tags:
+          type: array
+          items:
+            type: string
+        direction:
+          type: string
+          enum:
+          - in
+          - out
+          - neutral
+        subject:
+          $ref: '#/components/schemas/EntitySummary'
+        object:
+          $ref: '#/components/schemas/EntitySummary'
+        amount_semantics:
+          $ref: '#/components/schemas/AmountSemantics'
+        time:
+          type: object
+          additionalProperties: true
+        qualifiers:
+          type: object
+          additionalProperties: true
+        evidence_count:
+          type: integer
+          minimum: 0
+        unknown_fields:
+          type: array
+          items:
+            type: string
+        synthetic:
+          type: boolean
+        fixture_notice:
+          type:
+          - string
+          - 'null'
+    CapitalPolicyEvent:
+      type: object
+      required:
+      - id
+      - event_type
+      - title
+      - status
+      - semantic_class
+      - semantic_tags
+      - amount_semantics
+      - time
+      - evidence_count
+      - unknown_fields
+      - participants
+      properties:
+        id:
+          type: string
+        event_type:
+          type: string
+        title:
+          type: string
+        status:
+          type: string
+        semantic_class:
+          type: string
+        semantic_tags:
+          type: array
+          items:
+            type: string
+        amount_semantics:
+          $ref: '#/components/schemas/AmountSemantics'
+        time:
+          type: object
+          additionalProperties: true
+        description:
+          type:
+          - string
+          - 'null'
+        qualifiers:
+          type: object
+          additionalProperties: true
+        evidence_count:
+          type: integer
+          minimum: 0
+        unknown_fields:
+          type: array
+          items:
+            type: string
+        participants:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+    AmountSemantics:
+      type: object
+      required:
+      - amount
+      - currency
+      - amount_kind
+      - unknown_not_zero
+      - aggregation_rule
+      - aggregation_key
+      - summable
+      properties:
+        amount:
+          type:
+          - number
+          - 'null'
+        currency:
+          type:
+          - string
+          - 'null'
+        amount_kind:
+          type:
+          - string
+          - 'null'
+        unknown_not_zero:
+          type: boolean
+        aggregation_rule:
+          type: string
+        aggregation_key:
+          type: string
+        summable:
+          type: boolean
     EmpireWorkspaceLayer:
       type: object
       required:

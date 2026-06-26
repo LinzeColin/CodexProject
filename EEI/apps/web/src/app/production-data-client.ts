@@ -87,6 +87,100 @@ export type SupplyChainRecord = {
   fixture_notice: string | null;
 };
 
+export type SemanticBucketRecord = {
+  key: string;
+  label: string;
+  dimension: string;
+  description: string;
+  record_count: number;
+  amount_record_count: number;
+  unknown_count: number;
+  required: boolean;
+};
+
+export type CapitalPolicyRelationshipRecord = {
+  id: string;
+  relationship_type: string;
+  relationship_family: string;
+  status: string;
+  confidence: number | null;
+  semantic_class: string;
+  semantic_tags: string[];
+  direction: "in" | "out" | "neutral";
+  subject: { id: string; canonical_name: string; entity_type: string };
+  object: { id: string; canonical_name: string; entity_type: string };
+  amount_semantics: {
+    amount: number | null;
+    currency: string | null;
+    amount_kind: string | null;
+    unknown_not_zero: boolean;
+    aggregation_rule: string;
+    aggregation_key: string;
+    summable: boolean;
+  };
+  time: Record<string, unknown>;
+  qualifiers?: Record<string, unknown>;
+  evidence_count: number;
+  unknown_fields: string[];
+  synthetic: boolean;
+  fixture_notice: string | null;
+};
+
+export type CapitalPolicyEventRecord = {
+  id: string;
+  event_type: string;
+  title: string;
+  status: string;
+  semantic_class: string;
+  semantic_tags: string[];
+  amount_semantics: CapitalPolicyRelationshipRecord["amount_semantics"];
+  time: Record<string, unknown>;
+  evidence_count: number;
+  unknown_fields: string[];
+  participants: unknown[];
+};
+
+export type EntityCapitalMapRecord = {
+  schema_version: "entity-capital-map-v1";
+  as_of: string;
+  focus: { id: string; canonical_name: string; entity_type: string };
+  relationships: CapitalPolicyRelationshipRecord[];
+  events: CapitalPolicyEventRecord[];
+  semantic_buckets: SemanticBucketRecord[];
+  coverage: {
+    relationship_count: number;
+    event_count: number;
+    semantic_class_count: number;
+    required_semantic_classes: string[];
+    no_silent_summing: boolean;
+    unknown_amount_not_zero: boolean;
+  };
+  content_rules: Record<string, unknown>;
+  data_mode: string;
+  fixture_notice: string | null;
+};
+
+export type EntityPolicyMapRecord = {
+  schema_version: "entity-policy-map-v1";
+  as_of: string;
+  focus: { id: string; canonical_name: string; entity_type: string };
+  policy_records: CapitalPolicyRelationshipRecord[];
+  technology_records: CapitalPolicyRelationshipRecord[];
+  events: CapitalPolicyEventRecord[];
+  semantic_buckets: SemanticBucketRecord[];
+  coverage: {
+    policy_record_count: number;
+    technology_record_count: number;
+    event_count: number;
+    policy_semantic_classes: string[];
+    technology_semantic_classes: string[];
+    unknowns_explicit: boolean;
+  };
+  content_rules: Record<string, unknown>;
+  data_mode: string;
+  fixture_notice: string | null;
+};
+
 export type CatalogInventoryRecord = {
   as_of: string;
   catalog_version: string;
@@ -250,6 +344,46 @@ export type SupplyChainSyncResult =
       reason: "api_base_missing" | "entity_id_missing";
     };
 
+export type CapitalMapSyncResult =
+  | {
+      mode: "server";
+      status: "hydrated";
+      endpoint: string;
+      record: EntityCapitalMapRecord;
+    }
+  | {
+      mode: "server";
+      status: "error";
+      endpoint: string;
+      reason: string;
+      detail?: unknown;
+    }
+  | {
+      mode: "local_fallback";
+      status: "fixture";
+      reason: "api_base_missing" | "entity_id_missing";
+    };
+
+export type PolicyMapSyncResult =
+  | {
+      mode: "server";
+      status: "hydrated";
+      endpoint: string;
+      record: EntityPolicyMapRecord;
+    }
+  | {
+      mode: "server";
+      status: "error";
+      endpoint: string;
+      reason: string;
+      detail?: unknown;
+    }
+  | {
+      mode: "local_fallback";
+      status: "fixture";
+      reason: "api_base_missing" | "entity_id_missing";
+    };
+
 export function readProductionDataApiBaseUrl() {
   const override = window.localStorage.getItem(PRODUCTION_DATA_API_BASE_STORAGE_KEY)?.trim();
   const sharedOverride = window.localStorage.getItem(SHARED_API_BASE_STORAGE_KEY)?.trim();
@@ -311,6 +445,70 @@ export async function loadSupplyChain(input: {
     return { mode: "server", status: "hydrated", endpoint, record: payload };
   } catch (error) {
     return fetchSupplyChainErrorResult(endpoint, error);
+  }
+}
+
+export async function loadCapitalMap(input: {
+  entityId?: string | null;
+  profileId?: string | null;
+}): Promise<CapitalMapSyncResult> {
+  if (!input.entityId) {
+    return { mode: "local_fallback", status: "fixture", reason: "entity_id_missing" };
+  }
+  const apiBaseUrl = readProductionDataApiBaseUrl();
+  if (!apiBaseUrl) {
+    return { mode: "local_fallback", status: "fixture", reason: "api_base_missing" };
+  }
+
+  const query = input.profileId ? `?profile=${encodeURIComponent(input.profileId)}` : "";
+  const endpoint = `${apiBaseUrl}/v1/entities/${encodeURIComponent(input.entityId)}/capital${query}`;
+  try {
+    const response = await window.fetch(endpoint);
+    const payload = (await response.json().catch(() => null)) as unknown;
+    if (!response.ok || !isEntityCapitalMapRecord(payload)) {
+      return {
+        mode: "server",
+        status: "error",
+        endpoint,
+        reason: `http_${response.status}`,
+        detail: payload
+      };
+    }
+    return { mode: "server", status: "hydrated", endpoint, record: payload };
+  } catch (error) {
+    return fetchCapitalMapErrorResult(endpoint, error);
+  }
+}
+
+export async function loadPolicyMap(input: {
+  entityId?: string | null;
+  profileId?: string | null;
+}): Promise<PolicyMapSyncResult> {
+  if (!input.entityId) {
+    return { mode: "local_fallback", status: "fixture", reason: "entity_id_missing" };
+  }
+  const apiBaseUrl = readProductionDataApiBaseUrl();
+  if (!apiBaseUrl) {
+    return { mode: "local_fallback", status: "fixture", reason: "api_base_missing" };
+  }
+
+  const query = input.profileId ? `?profile=${encodeURIComponent(input.profileId)}` : "";
+  const endpoint = `${apiBaseUrl}/v1/entities/${encodeURIComponent(input.entityId)}/policy${query}`;
+  try {
+    const response = await window.fetch(endpoint);
+    const payload = (await response.json().catch(() => null)) as unknown;
+    if (!response.ok || !isEntityPolicyMapRecord(payload)) {
+      return {
+        mode: "server",
+        status: "error",
+        endpoint,
+        reason: `http_${response.status}`,
+        detail: payload
+      };
+    }
+    return { mode: "server", status: "hydrated", endpoint, record: payload };
+  } catch (error) {
+    return fetchPolicyMapErrorResult(endpoint, error);
   }
 }
 
@@ -478,6 +676,98 @@ function isSupplyChainEdgeRecord(value: unknown): value is SupplyChainEdgeRecord
   );
 }
 
+function isEntityCapitalMapRecord(value: unknown): value is EntityCapitalMapRecord {
+  if (!isRecord(value) || !isRecord(value.coverage)) return false;
+  return (
+    value.schema_version === "entity-capital-map-v1" &&
+    typeof value.as_of === "string" &&
+    isRecord(value.focus) &&
+    typeof value.focus.id === "string" &&
+    Array.isArray(value.relationships) &&
+    value.relationships.every(isCapitalPolicyRelationshipRecord) &&
+    Array.isArray(value.events) &&
+    value.events.every(isCapitalPolicyEventRecord) &&
+    Array.isArray(value.semantic_buckets) &&
+    value.semantic_buckets.every(isSemanticBucketRecord) &&
+    typeof value.coverage.relationship_count === "number" &&
+    typeof value.coverage.event_count === "number" &&
+    Array.isArray(value.coverage.required_semantic_classes) &&
+    typeof value.coverage.no_silent_summing === "boolean" &&
+    typeof value.coverage.unknown_amount_not_zero === "boolean"
+  );
+}
+
+function isEntityPolicyMapRecord(value: unknown): value is EntityPolicyMapRecord {
+  if (!isRecord(value) || !isRecord(value.coverage)) return false;
+  return (
+    value.schema_version === "entity-policy-map-v1" &&
+    typeof value.as_of === "string" &&
+    isRecord(value.focus) &&
+    typeof value.focus.id === "string" &&
+    Array.isArray(value.policy_records) &&
+    value.policy_records.every(isCapitalPolicyRelationshipRecord) &&
+    Array.isArray(value.technology_records) &&
+    value.technology_records.every(isCapitalPolicyRelationshipRecord) &&
+    Array.isArray(value.events) &&
+    value.events.every(isCapitalPolicyEventRecord) &&
+    Array.isArray(value.semantic_buckets) &&
+    value.semantic_buckets.every(isSemanticBucketRecord) &&
+    typeof value.coverage.policy_record_count === "number" &&
+    typeof value.coverage.technology_record_count === "number" &&
+    Array.isArray(value.coverage.policy_semantic_classes) &&
+    Array.isArray(value.coverage.technology_semantic_classes) &&
+    typeof value.coverage.unknowns_explicit === "boolean"
+  );
+}
+
+function isSemanticBucketRecord(value: unknown): value is SemanticBucketRecord {
+  if (!isRecord(value)) return false;
+  return (
+    typeof value.key === "string" &&
+    typeof value.label === "string" &&
+    typeof value.dimension === "string" &&
+    typeof value.record_count === "number" &&
+    typeof value.amount_record_count === "number" &&
+    typeof value.unknown_count === "number" &&
+    typeof value.required === "boolean"
+  );
+}
+
+function isCapitalPolicyRelationshipRecord(
+  value: unknown
+): value is CapitalPolicyRelationshipRecord {
+  if (!isRecord(value) || !isRecord(value.subject) || !isRecord(value.object)) return false;
+  return (
+    typeof value.id === "string" &&
+    typeof value.relationship_type === "string" &&
+    typeof value.relationship_family === "string" &&
+    typeof value.semantic_class === "string" &&
+    Array.isArray(value.semantic_tags) &&
+    ["in", "out", "neutral"].includes(String(value.direction)) &&
+    isRecord(value.amount_semantics) &&
+    typeof value.amount_semantics.unknown_not_zero === "boolean" &&
+    typeof value.evidence_count === "number" &&
+    Array.isArray(value.unknown_fields) &&
+    typeof value.synthetic === "boolean"
+  );
+}
+
+function isCapitalPolicyEventRecord(value: unknown): value is CapitalPolicyEventRecord {
+  if (!isRecord(value)) return false;
+  return (
+    typeof value.id === "string" &&
+    typeof value.event_type === "string" &&
+    typeof value.title === "string" &&
+    typeof value.semantic_class === "string" &&
+    Array.isArray(value.semantic_tags) &&
+    isRecord(value.amount_semantics) &&
+    typeof value.amount_semantics.unknown_not_zero === "boolean" &&
+    typeof value.evidence_count === "number" &&
+    Array.isArray(value.unknown_fields) &&
+    Array.isArray(value.participants)
+  );
+}
+
 function isScoreExplanationRecord(value: unknown): value is ScoreExplanationRecord {
   if (!isRecord(value)) return false;
   return (
@@ -551,6 +841,26 @@ function fetchCatalogErrorResult(endpoint: string, error: unknown): CatalogInven
 }
 
 function fetchSupplyChainErrorResult(endpoint: string, error: unknown): SupplyChainSyncResult {
+  return {
+    mode: "server",
+    status: "error",
+    endpoint,
+    reason: error instanceof Error ? error.name : "fetch_failed",
+    detail: error instanceof Error ? error.message : String(error)
+  };
+}
+
+function fetchCapitalMapErrorResult(endpoint: string, error: unknown): CapitalMapSyncResult {
+  return {
+    mode: "server",
+    status: "error",
+    endpoint,
+    reason: error instanceof Error ? error.name : "fetch_failed",
+    detail: error instanceof Error ? error.message : String(error)
+  };
+}
+
+function fetchPolicyMapErrorResult(endpoint: string, error: unknown): PolicyMapSyncResult {
   return {
     mode: "server",
     status: "error",

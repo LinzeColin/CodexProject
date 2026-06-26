@@ -7392,3 +7392,49 @@ Status: LOCAL FOCUSED VALIDATED; RELEASE GATES STILL BLOCKED
 ### Rollback
 
 - Revert the T502 API route/repository methods, frontend supply-chain panel/client additions, OpenAPI schema, E2E/integration assertions, A064-A066 artifacts and companion governance rows.
+
+## 2026-06-27 - T503/A069-A071 capital policy technology layers
+
+Status: LOCAL FOCUSED VALIDATED; RELEASE GATES STILL BLOCKED
+
+### Scope
+
+- Added `/v1/entities/{entityId}/capital` backed by `DomainRepository.get_entity_capital_map`.
+- Added `/v1/entities/{entityId}/policy` backed by `DomainRepository.get_entity_policy_map`.
+- The capital API returns `entity-capital-map-v1` and distinguishes investment, debt, acquisition, commitment, capex, buyback and dividend semantics.
+- The policy API returns `entity-policy-map-v1` and distinguishes award, obligation, ceiling, regulation, lobbying, trade restriction, IP, standards, data access, integration and cloud/compute semantics.
+- The home workspace now has `capital-policy-layer-panel` with local fixture fallback and server hydration through `loadCapitalMap` and `loadPolicyMap`.
+- FUN-EXP-04, FUN-EXP-05 and FUN-EXP-06 implementation status moved to `PARTIAL`; T503 and A069-A071 are marked `DONE`.
+
+### Acceptance Mapping
+
+- T503 -> A069/A070/A071.
+- T505/A073-A074, T800-T805/A108-A112, A202, A209, A210, A026/A027, A204/A205 and MVP release readiness remain open.
+
+### Validation
+
+- `PYTHONPYCACHEPREFIX=/private/tmp/eei-t503-pycache .venv/bin/python -m py_compile apps/api/app/domain.py apps/api/app/domain_repository.py tests/integration/test_database_migrations.py`: PASS.
+- `RUFF_CACHE_DIR=/private/tmp/eei-t503-ruff .venv/bin/ruff check apps/api/app/domain.py apps/api/app/domain_repository.py tests/integration/test_database_migrations.py`: PASS.
+- `.venv/bin/python scripts/validate_contracts.py`: PASS.
+- `npx --yes pnpm@11.8.0 --filter @eei/web typecheck`: PASS.
+- `apps/web/node_modules/.bin/playwright test --config=playwright.config.ts tests/e2e/home.spec.ts --grep "capital policy and technology" --workers=1`: PASS, `1/1`.
+- `PYTHONPYCACHEPREFIX=/private/tmp/eei-t503-pycache .venv/bin/python -m pytest -q tests/integration/test_database_migrations.py -p no:cacheprovider`: PASS collection with `2 skipped` because this host has no PostgreSQL/Docker.
+
+### Evidence
+
+- `artifacts/tests/a069/t503_capital_semantics_contract.json`
+- `artifacts/tests/a070/t503_policy_semantics_contract.json`
+- `artifacts/tests/a071/t503_technology_semantics_contract.json`
+- `tests/e2e/home.spec.ts`
+- `tests/integration/test_database_migrations.py`
+- `specs/api_contract.yaml`
+
+### Model And Parameter Boundary
+
+- Added `PARAM-099` for `capital.entity_capital_map.schema_version=entity-capital-map-v1`.
+- Added `PARAM-100` for `policy.entity_policy_map.schema_version=entity-policy-map-v1`.
+- No active scoring formula, weight, threshold, missing policy or model profile changed.
+
+### Rollback
+
+- Revert the T503 API routes/repository semantic helpers, frontend capital-policy layer panel/client additions, OpenAPI schemas, E2E/integration assertions, A069-A071 artifacts and companion governance rows.
