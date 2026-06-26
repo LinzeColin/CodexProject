@@ -130,7 +130,11 @@ def finalization_status(
     evidence_summary: dict[str, Any],
     heartbeat_errors: list[str],
 ) -> str:
-    if heartbeat_errors or evidence_summary["status"] in {"FAIL", "FAILED_OPERATOR_EVIDENCE"}:
+    if heartbeat_errors:
+        return "A209_FINALIZATION_OPERATOR_INTERVENTION_REQUIRED"
+    if is_running_zero_failure_rerun(heartbeat_summary):
+        return "A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL"
+    if evidence_summary["status"] in {"FAIL", "FAILED_OPERATOR_EVIDENCE"}:
         return "A209_FINALIZATION_OPERATOR_INTERVENTION_REQUIRED"
     if evidence_summary["status"] == "EVIDENCE_READY_FOR_RELEASE_MANAGER_REVIEW":
         if (
@@ -144,6 +148,17 @@ def finalization_status(
     if heartbeat_summary.get("progress_status") == "COMPLETE_SUMMARY_PENDING":
         return "A209_FINALIZATION_BLOCKED_SUMMARY_PENDING"
     return "A209_FINALIZATION_BLOCKED_MISSING_OR_PARTIAL"
+
+
+def is_running_zero_failure_rerun(heartbeat_summary: dict[str, Any]) -> bool:
+    windows_completed = heartbeat_summary.get("windows_completed")
+    return (
+        heartbeat_summary.get("progress_status") == "RUNNING_PARTIAL"
+        and heartbeat_summary.get("operator_process_status") == "RUNNING"
+        and isinstance(windows_completed, int)
+        and 0 < windows_completed < 288
+        and heartbeat_summary.get("windows_failed") == 0
+    )
 
 
 def build_preflight(

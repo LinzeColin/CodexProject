@@ -82,12 +82,12 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 ## 14. Evidence Freshness
 
-- final_commit_binding: `CI_ATTESTED:2a9afde825a2819da337e27b16f31201d2150f3e Project Governance run 28213678625 job 83580117668; EEI validation run 28213678638 job 83580117632`
+- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `0`
 - commit_bound_events: `21`
 - legacy_unbound_events: `19`
-- precommit_pending_events: `86`
-- pending_or_stale_events: `107`
+- precommit_pending_events: `87`
+- pending_or_stale_events: `108`
 
 ## 15. UNKNOWN
 
@@ -97,8 +97,8 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 - source_base_commit: `2a9afde825a2819da337e27b16f31201d2150f3e`
 - source_tree_hash: `9657d04d30d592c81ed3a9d6ffbd0deda0478c3c`
-- source_snapshot_hash: `sha256:a723f6ef86547ac0f48486cbe0b962b05fb48815654a6bef8e6cb65a1011c216`
-- snapshot_event_time: `2026-06-26T12:52:00+10:00`
+- source_snapshot_hash: `sha256:ce73fd5bc26b51636dd291908bb1dbf391bcc44623bbb5cbee2149df6b03ce1c`
+- snapshot_event_time: `2026-06-26T13:18:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.1.0`
 - phase/gate: `D / TASK-T904-A026-A027-GOLD-LABEL-SOURCE-BOUNDARY`

@@ -1,5 +1,39 @@
 # MVP Development Record
 
+## 2026-06-26 - T1307/A209 isolated rerun finalization status correction
+
+Status: LOCAL FOCUSED VALIDATED; A209 STILL IN PROGRESS; RELEASE GATES STILL BLOCKED
+
+### Scope
+
+- Updated `scripts/finalize_operator_soak_evidence.py` so a healthy running heartbeat with zero failed windows is represented as `A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL`, even while preserved canonical 24h evidence remains failed.
+- Refreshed repository A209 background heartbeat from `/private/tmp/eei-a209-rerun-20260626-0918/` to `49/288` PASS windows, `0` failed, `239` remaining and `17.01%` completion.
+- Regenerated A209 finalization, A203 production API release preflight, external release-evidence bundle, external release operator intake packet, release-manager activation preflight and MVP release-gate preflight from the current heartbeat.
+
+### Current Evidence
+
+- A209 finalization status is now `A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL`.
+- `downstream_release_gate_refresh_allowed=false`, `a209_evidence_ready_for_release_manager=false`, and `release_gate_closed_by_finalizer=false`.
+- External release evidence remains blocked by A202 signed source/license/passage/owner/legal release, A210 brand clearance or waiver, A026/A027 production gold sets and A209 24h finalization.
+
+### Validation
+
+- `py_compile` for `scripts/finalize_operator_soak_evidence.py` and `tests/unit/test_operator_soak_finalization.py`: PASS.
+- Focused `ruff` for A209/preflight scripts and tests: PASS.
+- `tests/unit/test_operator_soak_finalization.py tests/unit/test_external_release_evidence_bundle.py`: PASS, `12/12`.
+- `tests/unit/test_release_manager_activation.py tests/unit/test_mvp_release_gate.py tests/unit/test_production_api_release_preflight.py`: PASS, `6/6`.
+- A209 heartbeat, finalization, external bundle, operator intake packet, release-manager, production API and MVP preflight validators: PASS.
+
+### Non-Claims
+
+- This does not promote isolated `/private/tmp` evidence into canonical 24h release evidence.
+- This does not close A209, A202, A210, A026, A027, A204, A205, A203 release readiness or MVP v0.1 readiness.
+
+### Rollback
+
+- Revert the finalizer status predicate/test and regenerated preflight artifacts, then regenerate release artifacts from the previous committed state.
+- Do not stop, restart, delete or promote live A209 checkpoint/PID/log files without explicit operator authorization.
+
 ## 2026-06-26 - T904/A026-A027 source-boundary remote CI binding
 
 Status: REMOTE CI ATTESTED FOR COMMIT `2a9afde825a2819da337e27b16f31201d2150f3e`; A026/A027 STILL IN PROGRESS; A209 ISOLATED RERUN CONTINUES IN BACKGROUND; A210 STILL IN PROGRESS

@@ -3780,6 +3780,7 @@ tasks:
       - "A209 focused validator tests PASS: py_compile PASS, ruff PASS, tests/unit/test_operator_soak_evidence.py plus tests/unit/test_operator_soak_finalization.py PASS 25/25"
       - "A209 dependent fixed-point refresh PASS: release-manager activation, A203 production API preflight, MVP release gate, external release evidence bundle, development/risk artifacts, clean-room release and release artifacts regenerated/validated from the intervention state"
       - "A209 isolated 24h rerun started: /private/tmp/eei-a209-rerun-20260626-0918 preserves the failed canonical 7/288 evidence, first observed checkpoint is 1/288 PASS with 0 failed, operator PID 80478 and watchdog PID 80732; A209 remains IN_PROGRESS until 288/288 zero-failure release-ready validation passes"
+      - "A209 isolated rerun finalization status correction PASS: heartbeat refreshed to 49/288 PASS, 0 failed, 239 remaining, completion 17.01%; finalization now reports A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL for healthy zero-failure running rerun while canonical evidence remains FAILED_OPERATOR_EVIDENCE; A203/A205/MVP release preflights validate and remain blocked; focused unit tests PASS 18/18"
     evidence_refs:
       - "EEI/artifacts/tests/a209/t1307_operator_soak_readiness.json"
       - "EEI/artifacts/tests/a209/t1307_operator_soak_readiness.checkpoints.jsonl"
