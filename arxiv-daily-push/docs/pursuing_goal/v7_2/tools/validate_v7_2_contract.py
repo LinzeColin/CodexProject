@@ -21,6 +21,9 @@ EMAIL_V1_REQUIRED_TASKS = {
     "S2PHT01V1.1-T04",
     "S2PHT01V1.1-T05",
 }
+DEPENDENCY_KEYS = {"dependencies", "depends_on", "required_dependencies"}
+TASK_REF_SCALAR_KEYS = {"task_id", "next_task", "global_current_task", "canonical_parent_task", "alias_parent"}
+TASK_REF_LIST_KEYS = {"completed_tasks"}
 
 
 def repo_root_from_v7_2(root: Path) -> Path:
@@ -60,6 +63,155 @@ def count_audit_severities(path: Path) -> dict[str, int]:
         severity = match.group(1)
         counts[severity] = counts.get(severity, 0) + 1
     return counts
+
+
+def path_label(parts: tuple[str, ...]) -> str:
+    return ".".join(parts) if parts else "<root>"
+
+
+def walk_dicts(value: Any, path: tuple[str, ...] = ()) -> list[tuple[tuple[str, ...], dict[str, Any]]]:
+    nodes: list[tuple[tuple[str, ...], dict[str, Any]]] = []
+    if isinstance(value, dict):
+        nodes.append((path, value))
+        for key, child in value.items():
+            nodes.extend(walk_dicts(child, path + (str(key),)))
+    elif isinstance(value, list):
+        for index, child in enumerate(value):
+            nodes.extend(walk_dicts(child, path + (str(index),)))
+    return nodes
+
+
+def collect_registered_stop_codes(root: Path, repo: Path, stop_registry: dict[str, Any]) -> tuple[set[str], list[str]]:
+    errors: list[str] = []
+    stop_codes = stop_registry.get("stop_codes")
+    if not isinstance(stop_codes, dict) or not stop_codes:
+        return set(), ["stop_codes_v7_2.yaml must define non-empty stop_codes mapping"]
+    codes = {str(code) for code in stop_codes}
+
+    inherited = stop_registry.get("inherits")
+    if inherited:
+        inherited_path = str(inherited)
+        candidates = [
+            repo / "arxiv-daily-push" / inherited_path,
+            repo / inherited_path,
+            root / inherited_path,
+        ]
+        inherited_file = next((path for path in candidates if path.is_file()), None)
+        if inherited_file is None:
+            errors.append(f"stop code registry inherits missing file: {inherited_path}")
+        else:
+            inherited_data = load_yaml(inherited_file)
+            inherited_codes = inherited_data.get("stop_codes")
+            if not isinstance(inherited_codes, dict) or not inherited_codes:
+                errors.append(f"inherited stop code registry has no stop_codes mapping: {inherited_file}")
+            else:
+                codes.update(str(code) for code in inherited_codes)
+
+    return codes, errors
+
+
+def validate_roadmap_machine_gate(roadmap: dict[str, Any], registered_stop_codes: set[str]) -> tuple[list[str], dict[str, int]]:
+    errors: list[str] = []
+    nodes = walk_dicts(roadmap)
+    task_defs: dict[str, tuple[str, ...]] = {}
+    task_refs: set[str] = set()
+
+    for path, node in nodes:
+        for key in TASK_REF_SCALAR_KEYS:
+            if key not in node:
+                continue
+            value = node.get(key)
+            if isinstance(value, str) and value.strip():
+                if key == "task_id" and value in task_defs:
+                    errors.append(f"duplicate task id {value} at {path_label(path)}")
+                if key == "task_id":
+                    task_defs[value] = path
+                task_refs.add(value)
+            elif value is not None:
+                errors.append(f"{path_label(path)}.{key} must be a non-empty string")
+
+        for key in TASK_REF_LIST_KEYS:
+            if key not in node:
+                continue
+            value = node.get(key)
+            if not isinstance(value, list):
+                errors.append(f"{path_label(path)}.{key} must be a list")
+                continue
+            for index, item in enumerate(value):
+                if isinstance(item, str) and item.strip():
+                    task_refs.add(item)
+                else:
+                    errors.append(f"{path_label(path)}.{key}.{index} must be a non-empty string")
+
+    dependency_edges: dict[str, list[str]] = {}
+    stop_condition_count = 0
+    dependency_count = 0
+    for path, node in nodes:
+        if "stop_conditions" in node:
+            value = node.get("stop_conditions")
+            if not isinstance(value, list):
+                errors.append(f"{path_label(path)}.stop_conditions must be a list of registered stop codes")
+            else:
+                for index, code in enumerate(value):
+                    if not isinstance(code, str) or not code.strip():
+                        errors.append(f"{path_label(path)}.stop_conditions.{index} must be a non-empty string")
+                        continue
+                    stop_condition_count += 1
+                    if code not in registered_stop_codes:
+                        errors.append(f"unknown stop code {code} at {path_label(path)}.stop_conditions.{index}")
+
+        task_id = node.get("task_id")
+        parent_task = task_id if isinstance(task_id, str) and task_id.strip() else None
+        for key in DEPENDENCY_KEYS:
+            if key not in node:
+                continue
+            value = node.get(key)
+            if not isinstance(value, list):
+                errors.append(f"{path_label(path)}.{key} must be a list")
+                continue
+            for index, dep in enumerate(value):
+                if not isinstance(dep, str) or not dep.strip():
+                    errors.append(f"{path_label(path)}.{key}.{index} must be a non-empty string")
+                    continue
+                dependency_count += 1
+                if dep not in task_refs:
+                    errors.append(f"{path_label(path)}.{key}.{index} references unknown task {dep}")
+                if parent_task and dep == parent_task:
+                    errors.append(f"{parent_task} cannot depend on itself")
+                if parent_task and dep in task_defs:
+                    dependency_edges.setdefault(parent_task, []).append(dep)
+
+    visiting: set[str] = set()
+    visited: set[str] = set()
+
+    def visit(task_id: str, stack: list[str]) -> None:
+        if task_id in visiting:
+            if task_id in stack:
+                start = stack.index(task_id)
+                cycle = stack[start:] + [task_id]
+            else:
+                cycle = stack + [task_id]
+            errors.append(f"task dependency graph contains a cycle: {' -> '.join(cycle)}")
+            return
+        if task_id in visited:
+            return
+        visiting.add(task_id)
+        for dependency in dependency_edges.get(task_id, []):
+            visit(dependency, stack + [dependency])
+        visiting.remove(task_id)
+        visited.add(task_id)
+
+    for task_id in task_defs:
+        visit(task_id, [task_id])
+
+    metrics = {
+        "registered_stop_code_count": len(registered_stop_codes),
+        "roadmap_task_count": len(task_defs),
+        "roadmap_task_reference_count": len(task_refs),
+        "roadmap_dependency_count": dependency_count,
+        "roadmap_stop_condition_count": stop_condition_count,
+    }
+    return errors, metrics
 
 
 def main() -> int:
@@ -104,6 +256,12 @@ def main() -> int:
     review = data["review"]
     roadmap = data["roadmap"]
     pointer = data["pointer"]
+    stops = data["stops"]
+
+    registered_stop_codes, stop_registry_errors = collect_registered_stop_codes(root, repo, stops)
+    errors.extend(stop_registry_errors)
+    roadmap_machine_gate_errors, roadmap_machine_gate = validate_roadmap_machine_gate(roadmap, registered_stop_codes)
+    errors.extend(roadmap_machine_gate_errors)
 
     if current.get("current_product_contract", {}).get("version") != "ADP-PRODUCT-CONTRACT-V7.2":
         errors.append("CURRENT.yaml does not point to ADP-PRODUCT-CONTRACT-V7.2")
@@ -226,6 +384,10 @@ def main() -> int:
         "status": "PASS" if not errors else "FAIL",
         "contract_version": "ADP-PRODUCT-CONTRACT-V7.2",
         "current_pointer": current.get("current_product_contract", {}).get("root_lock"),
+        "roadmap_machine_gate": {
+            "status": "PASS" if not roadmap_machine_gate_errors and not stop_registry_errors else "FAIL",
+            **roadmap_machine_gate,
+        },
         "errors": errors,
         "warnings": warnings,
     }

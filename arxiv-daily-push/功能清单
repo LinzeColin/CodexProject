@@ -1,78 +1,90 @@
 # 功能清单
 
-本文件是 ADP 的中文功能基线。它面向 GitHub 阅读和复审，不是机器注册表转储。任务编号、文件名、命令名、协议名和括号中的治理校验定位码保留原文，是为了能跳转证据和定位实现。
-
 ## 摘要
 
-| 字段 | 当前值 |
-|---|---|
-| 项目标识（`project_id`） | arxiv-daily-push |
-| 当前阶段（`current_stage`） | Stage 2 进行中 |
-| 当前任务（`current_task`） | S2PMT07 |
-| 证据状态（`evidence_status`） | 复审收据仍阻断；继承 P0/P1 未关闭 |
-| 当前合同 | ADP-PRODUCT-CONTRACT-V7.2 |
-| 历史合同 | ADP-PRODUCT-CONTRACT-V7.1 |
-| 历史锁定文件 | V7_1_ROOT_LOCK.yaml |
-| 第一阶段门禁 | ARXIV_PRODUCTION_ACCEPTED |
-| 已完成影子任务 | S2PCT01 / S2P2T01 / S2PBT01 |
+- project_id: `arxiv-daily-push`
+- product_version: `0.23.0`
+- current_stage: `S2`
+- current_phase: `S2PC`
+- current_task: `S2PCT02`
+- progress: `80.95%`
+- capability_count: `9`
+- blockers: `none`
+- next_gate: `S2PC-GATE-V7-2-REVALIDATION`
+- next_unique_task: `S2PCT02 Science main-journal metadata-only no-send shadow evidence (planned)`
+- evidence_ref_count: `17`
+- roadmap_test_command_count: `10`
+- roadmap_gate_count: `5`
+- evidence_status: `EXTRACTED`
 
-## 总览
+## 功能概览
 
-| 问题 | 当前结论 |
-|---|---|
-| 当前项目能做什么 | 从 arXiv 选择高价值论文，生成中文学习邮件，维护候选池，并保留复习、行动、能力资产和收益复盘证据 |
-| 用户从哪里看状态 | [用户中心](用户中心/README.md) |
-| 今天邮件状态在哪里 | [邮件发送与队列状态](用户中心/邮件发送与队列状态.md) |
-| M1-M4 邮件模板在哪里 | [邮件模板预览](用户中心/邮件模板预览.md) |
-| 复习行动收益在哪里 | [复习行动与收益](用户中心/复习行动与收益.md) |
-| 仍未完成什么 | Stage 2 正式生产验收、每日真实快照自动写入、最终独立复审和历史 P0/P1 阻断项清零 |
-| 不能宣称什么 | 不能把本机证据、补发成功、影子来源或手工快照说成正式每日生产通过 |
-
-## 用户可见功能
-
-| 功能 | 状态 | 用户价值 | 边界 | 证据 |
+| 功能 ID | 名称 | 状态 | 说明 | 证据等级 |
 |---|---|---|---|---|
-| GitHub 用户中心 | 已完成本轮修复 | 一个浅层入口看邮件、候选池、复习行动收益和停止门 | 不是生产开关 | [用户中心 README](用户中心/README.md) |
-| 一看三查 | 已完成本轮修复 | 每天先看总览，再查邮件、复习和停止门 | 不替代运行证据 | [一看三查](用户中心/一看三查.md) |
-| 邮件发送状态 | 已完成本轮修复 | 查看今日已发送 / 总应发送、历史发送记录、候选池和模板入口 | 总应发送必须来自正式发送计划 | [邮件发送与队列状态](用户中心/邮件发送与队列状态.md) |
-| M1-M4 邮件模板预览 | 已完成本轮修复 | 直接看用户真实会看到的界面结构 | 预览不是 SMTP 发送证明 | [邮件模板预览](用户中心/邮件模板预览.md) |
-| 截至今日总候选池 | 已完成本轮修复 | 公开 299 条总候选记录、30 条已生成报告 / 邮件预览、269 条待生成 / 待处理候选、候选队列前20精选和每日库存流转规则 | 前20精选是阅读入口，不是总量上限；日级板块流转账本仍待接入 | [截至今日候选池](用户中心/截至今日候选池.md) |
-| 报告与邮件预览索引 | 已完成本轮修复 | 给 30 条已生成记录提供可点击浅层索引 | 索引不是完整报告正文，不伪造未生成报告 | [已生成报告与邮件预览](用户中心/已生成报告与邮件预览.md) |
-| 复习计划 | 已有本地能力，GitHub 已有展示位 | 看今日到期、未来 7 天、逾期和已完成复习字段 | 当前真实数量待当日运行快照写入 | [复习行动与收益](用户中心/复习行动与收益.md) / [S2PJT02](../governance/run_manifests/ADP-S2PJT02-REVIEW-SCHEDULE-20260626.json) |
-| 行动建议 | 已有本地能力，GitHub 已有展示位 | 看 15 分钟、2 小时、7 天、30 天行动字段 | 不能用测试样例填今天真实数量 | [S2PJT03](../governance/run_manifests/ADP-S2PJT03-ACTION-ASSET-ROI-20260626.json) |
-| 能力资产 | 已有本地能力，GitHub 已有展示位 | 追踪论文学习如何沉淀为可复用资产 | 资产数量待当日运行快照写入 | [PHASE_S2PJT03](docs/phase_records/PHASE_S2PJT03_ACTION_ASSET_ROI.md) |
-| 收益复盘 | 已有本地能力，GitHub 已有展示位 | 区分预期收益和有证据的实际收益 | 没有成本、收益和证据时不得填实际收益数字 | [复习行动与收益](用户中心/复习行动与收益.md) |
-| 周报和月报 | 已有本地证据 | 支持周期复盘学习质量、行动完成和转化证据 | 不等于正式生产周报/月报已通过 | [S2PJT04](../governance/run_manifests/ADP-S2PJT04-WEEKLY-REPORT-20260626.json) / [S2PJT05](../governance/run_manifests/ADP-S2PJT05-MONTHLY-REPORT-20260626.json) |
-| Stage 2 影子来源 | 已有多项本地证据 | 证明多来源链路可以被本地审查 | 不能污染正式 arXiv 邮件，不能宣称正式生产纳入 | [开发记录](开发记录) |
-| 失败关闭边界 | 已生效 | 防止误启用 SMTP、计划任务、Release 或生产发送 | 任何生产动作都需要单独任务和验收 | [路线图与停止门](用户中心/路线图与停止门.md) |
+| FEAT-ADP-001 | 全 arXiv 扫描与来源输入 | completed | 从 arXiv 主档案桶获取候选，保持真实 arXiv metadata、日期和 source identity；不在本迁移中新增 bioRxiv/medRxiv。 | EXTRACTED |
+| FEAT-ADP-002 | 候选队列、ROI/学习价值排序与内容账本 | completed | 对候选进行确定性排序、队列和 CONTENT_LEDGER 闭环；前台邮件不展示后台 ROI 数字。 | EXTRACTED |
+| FEAT-ADP-003 | 中文讲解邮件与教学型前台 | completed | 生成中文教学简报、plain/HTML preview 和候选队列摘要；不启用视频附件或 Release/ROI 前台展示。 | EXTRACTED |
+| FEAT-ADP-004 | 本机 Codex/local runner 运行与迁移准备 | completed | 本地 preflight、daily-run、queue/ledger/report/email preview 持久化、launchd 草案和 2026-06-30 迁移 runbook 已准备。 | EXTRACTED |
+| FEAT-ADP-005 | 生产 fail-closed gate 与副作用边界 | completed | 生产变量、SMTP、Release、schedule、trial start 与 launch readiness 失败关闭；本迁移不启用真实生产发送。 | EXTRACTED |
+| FEAT-ADP-006 | Stage 1 严格验收与 Gmail SMTP test10 | completed | 30 天真实 arXiv backfill、CONTENT_LEDGER closure、test10 Gmail SMTP 证据共同支持 Stage 1 arXiv accepted。 | EXTRACTED |
+| FEAT-ADP-007 | Stage 2 bioRxiv/medRxiv shadow source evidence | completed | S2PBT01/S2P1T01 已完成 metadata-only details API adapter、SourceItem preprint、disabled source entries、promotion gate、separate shadow queue/ledger/email preview、30-date replay/48h shadow builder、live canary 和真实 no-send replay；正式生产纳入仍被 V7/root contract gates 阻断。 | EXTRACTED |
+| FEAT-ADP-008 | Stage 2 Nature/top-journal shadow source evidence | completed | S2PCT01/S2P2T01 已完成 official Nature RSS metadata-only adapter、s41586 主刊 research article filter、top-journal SourceItem、separate shadow queue/ledger/email preview、live Nature no-send canary 和 PR #119 main merge；正式 D2 source-domain acceptance 与 Stage2 production 仍被 P0/P1 与 S2PMT07 阻断。 | EXTRACTED |
+| FEAT-ADP-009 | Review9 Lean v2 owner-readable governance | proposed | 把已有 ADP 治理事实压缩为 canonical project/roadmap/events 与三个人类入口；不搬运治理计算到每次开发动作。 | PROPOSED |
 
-## 后台能力
+## V7.2 CURRENT 产品合同
 
-| 能力 | 当前状态 | 说明 | 证据 |
+- contract_version: `ADP-PRODUCT-CONTRACT-V7.2`
+- root_lock: `docs/pursuing_goal/v7_2/V7_2_ROOT_LOCK.yaml`
+- product_contract: `docs/pursuing_goal/v7_2/machine_readable/product_contract_v7_2.yaml`
+- contract_sha256: `a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d`
+- roadmap_version: `ADP-ROADMAP-V7.2`
+- roadmap_sha256: `7c5f2d842d4f6b909343c953fe39b4a4aa540d168199747a9f7decdb1aad9bd1`
+- migration_matrix_sha256: `08696d0211878131b5ddaaef1a8a963b8870e9e844f7d5c70beb6412a5f4c7fc`
+- final_review_sha256: `571b3dbbc78d6dac01bd18472a0358f5ce4c51ac3d590c10d0c02e6453a7ea6c`
+- previous_read_only_contract: `ADP-PRODUCT-CONTRACT-V7.1`
+- previous_read_only_root_lock: `docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml`
+- global_current_task: `S2PMT07`
+- email_v1_workstream_next: `EMAIL_LEARNING_V1_MERGED_TO_MAIN_NO_PRODUCTION_SIDE_EFFECTS`
+- v7_contract_remediation_next: `NONE_AFTER_EMAIL_V1_MAIN_MERGE_STATUS`
+- shadow_source_next: `NONE_WHILE_S2PMT07_BLOCKED`
+- agent_revalidation_required: `true`
+
+## V7.1 只读历史根治理锁
+
+- contract_version: `ADP-PRODUCT-CONTRACT-V7.1`
+- contract_lock: `docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml`
+- contract_sha256: `e51f306755629870f5a3693a50191c2291131d2224b91a8f3ef976e272eec7ad`
+- roadmap_version: `ADP-ROADMAP-V7.1`
+- roadmap_sha256: `b3e9860042fcbbf67ef5c49c12d3da30dbf0ae217ff1fe44bd25580a52f7c1a6`
+- audit_version: `ADP-PARALLEL-AUDIT-V7.1`
+- stage1_gate: `ARXIV_PRODUCTION_ACCEPTED_MAINTAINED`
+- stage2_current_task: `S2PCT01`
+- stage2_shadow_source_task: `S2PBT01`
+- legacy_alias: `S2PBT01 -> S2P1T01; S2PCT01 -> S2P2T01`
+- stage2_final_task: `S2PMT07`
+- stage2_stop_gate: `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`
+- stage2_integrated_production_accepted: `false`
+- production_forbidden_until: `inherited V7.1 P0=0; inherited V7.1 P1=0; S2PMT07 independent review passed`
+- forbidden_actions: `real_smtp_send, automatic_scheduler_install, daily_operation_enablement, production_restore, release_packaging, final_video_claim`
+
+## 证据
+
+| 证据 ID | 类型 | 引用 | 事实等级 |
 |---|---|---|---|
-| arXiv 来源读取 | 已完成 Stage 1 验收 | 保留真实元数据、日期和来源身份 | [Stage 1 清单](../governance/run_manifests/ADP-S1P5T04-ARXIV-PRODUCTION-ACCEPTED-20260623.json) |
-| 候选排序 | 已完成并公开评分口径 | 使用公开评分公式；8 个权重、入选资格、空值处理和同分排序规则已写入中文参数文件 | [模型参数文件](模型参数文件) |
-| 内容账本 | 已完成本地证据 | 记录内容、证据、邮件预览、反馈、复习、行动、资产和收益之间的追踪关系 | [内容账本阶段记录](docs/phase_records/PHASE_S2PIT04_CONTENT_LEDGER.md) |
-| Email V1 渲染 | 已完成本轮用户预览 | M1、M2、M3、M4 使用同一学习邮件前台合同 | [模板规则](docs/pursuing_goal/v7_2/machine_readable/email_learning_frontstage_overlay_v1.yaml) |
-| 时间戳防漂移 | 已完成本轮修复 | 用户中心更新时间由脚本写入并校验，避免未来时间 | [时间戳脚本](scripts/update_user_center_timestamps.py) |
-| 复习行动收益快照同步 | 已完成本轮修复 | 真实日报存在时自动写入复习、行动、资产和收益数量；日报不存在时保留待写入状态 | [学习快照脚本](scripts/update_user_center_learning_snapshot.py) |
-| 本地每日运行器用户中心同步硬门 | 已进入本地运行器验证 | `user_center_sync_ready=true` 是每日报告通过条件；缺失或待写入会阻断真实 SMTP | [同步硬门记录](docs/phase_records/PHASE_LOCAL_RUNNER_USER_CENTER_SYNC_GATE.md) |
-| S2PMT07 P0 复审准备 | 已记录审计收据 | 8 个历史 P0 的证据位置已整理给独立复审者；这不是关闭证明 | [S2PMT07 P0 收据](docs/phase_records/PHASE_S2PMT07_P0_INDEPENDENT_REVIEW_RECEIPT.md) |
-
-## 当前最重要缺口
-
-| 缺口 | 为什么重要 | 正确下一步 |
-|---|---|---|
-| 截至今日总候选池必须防回归 | 用户需要看到 299 条总候选记录、前20精选评分和每日库存流转规则，而不是只看运行快照 | 保持 [截至今日候选池](用户中心/截至今日候选池.md) 与 `CONTENT_LEDGER.csv` 行数一致，并运行回归测试 |
-| 评分标准必须继续公开 | 用户需要知道排序公式、权重、空值处理和同分排序规则，不能只看“高价值”结论 | 保持 [模型参数文件](模型参数文件) 与 `ranking.py` / `FORM-ADP-003` 同步 |
-| Stage 2 最终门仍阻断 | 防止把本地证据误读成生产通过 | 继续完成 S2PMT07 独立复审、最终包和阻断项清零 |
-| 8 个历史 P0 尚未独立签署关闭 | 真实 restore、SMTP、调度和最终集成门都依赖这些结论 | 按 [S2PMT07 P0 收据](docs/phase_records/PHASE_S2PMT07_P0_INDEPENDENT_REVIEW_RECEIPT.md) 逐项复核；不满足先修复，满足后单独签署关闭 |
-
-## 禁止误读
-
-| 事实 | 不能推导出的结论 |
-|---|---|
-| 用户中心已经可读 | 不能推导出正式每日生产已验收 |
-| 邮件补发成功 | 不能推导出 M1-M4 全部自动发送已通过 |
-| 复习行动收益有字段和证据链 | 不能推导出今天真实数量已经生成 |
-| 影子来源本地验收通过 | 不能推导出该来源已经进入正式邮件 |
+| EVID-ADP-MODEL-REGISTRY | file | arxiv-daily-push/docs/governance/model_registry.yaml | EXTRACTED |
+| EVID-ADP-FORMULA-REGISTRY | file | arxiv-daily-push/docs/governance/formula_registry.yaml | EXTRACTED |
+| EVID-ADP-PARAMETER-REGISTRY | file | arxiv-daily-push/docs/governance/parameter_registry.csv | EXTRACTED |
+| EVID-ADP-TRACEABILITY-MATRIX | file | arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv | EXTRACTED |
+| EVID-ADP-ASSURANCE-STATUS | file | arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml | EXTRACTED |
+| EVID-ADP-DELIVERY-TASKS | file | arxiv-daily-push/docs/governance/delivery_tasks.yaml | EXTRACTED |
+| EVID-ADP-DEVELOPMENT-EVENTS | file | arxiv-daily-push/docs/governance/development_events.jsonl | EXTRACTED |
+| EVID-ADP-OWNER-STATUS | file | arxiv-daily-push/docs/governance/OWNER_STATUS.md | EXTRACTED |
+| EVID-SEMANTIC-ADP-MANIFEST | manifest | governance/run_manifests/GOV-SEMANTIC-ADP-EXTRACT-005.json | EXTRACTED |
+| EVID-ADP-STAGE1-ACCEPTED | manifest | governance/run_manifests/ADP-S1P5T04-ARXIV-PRODUCTION-ACCEPTED-20260623.json | EXTRACTED |
+| EVID-ADP-REAL-BACKFILL | manifest | governance/run_manifests/ADP-S1P5T03-REAL-ARXIV-30-ASOF-REPLAY-20260623.json | EXTRACTED |
+| EVID-ADP-TEST10 | manifest | governance/run_manifests/ADP-S1P5T04-POST-MERGE-TEST10-VERIFIED-20260624.json | EXTRACTED |
+| EVID-ADP-LOCAL-PRODUCTION-PREP | manifest | governance/run_manifests/ADP-S1P5T05-LOCAL-PRODUCTION-AND-MIGRATION-PREP-20260624.json | EXTRACTED |
+| EVID-ADP-S2P1T01-PREPRINT | manifest | governance/run_manifests/ADP-S2P1T01-PREPRINT-SOURCE-PROMOTION-20260624.json | EXTRACTED |
+| EVID-ADP-S2PBT01-REAL-REPLAY-SHADOW | manifest | governance/run_manifests/ADP-S2PBT01-REAL-REPLAY-SHADOW-EVIDENCE-20260624.json | EXTRACTED |
+| EVID-ADP-S2PCT01-NATURE | manifest | governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json | EXTRACTED |
+| EVID-REVIEW9-S5PBT05-MANIFEST | manifest | governance/run_manifests/GOV-REVIEW9-S5PBT05-ARXIV-DAILY-PUSH-CANONICAL-RENDER-20260624.json | PROPOSED |
