@@ -1,7 +1,13 @@
 from __future__ import annotations
 
+import io
+import json
+import tempfile
 import unittest
+from contextlib import redirect_stdout
+from pathlib import Path
 
+from arxiv_daily_push.cli import main as cli_main
 from arxiv_daily_push.stage2_replay_gate import (
     S2PLT01_BLOCKING_REASONS,
     S2PLT01_FORBIDDEN_FLAGS,
@@ -15,8 +21,10 @@ from arxiv_daily_push.stage2_replay_gate import (
     build_s2plt01_replay_evidence_from_records,
     build_s2plt01_replay_evidence_state,
     build_s2plt01_replay_payload,
+    build_s2plt01_replay_payload_execution_report,
     validate_s2plt01_entry_precheck_report,
     validate_s2plt01_replay_payload,
+    validate_s2plt01_replay_payload_execution_report,
 )
 
 
@@ -240,6 +248,114 @@ class Stage2ReplayGateTests(unittest.TestCase):
 
         self.assertIn("real_smtp_sent must be false", errors)
         self.assertIn("S2PLT01 replay payload_hash does not match payload content", errors)
+
+    def test_replay_payload_execution_report_packages_payload_but_stays_blocked_by_inherited_findings(self) -> None:
+        report = build_s2plt01_replay_payload_execution_report(
+            execution_id="S2PLT01-REPLAY-PAYLOAD-EXECUTION-20260626-001",
+            generated_at="2026-06-26T19:10:00+10:00",
+            generated_by="codex-stage2-local",
+            evidence_mode="actual_replay_evidence",
+            replay_records=self.replay_records(),
+            mail_preview_records=self.mail_preview_records(),
+            source_terminal_states=self.source_terminal_states(),
+            evidence_refs=["runs/s2plt01/replay_payload_execution.json"],
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertTrue(report["payload_execution_package_passed"])
+        self.assertFalse(report["entry_precheck_passed"])
+        self.assertEqual(report["payload"]["status"], "pass")
+        self.assertEqual(report["entry_precheck"]["status"], "blocked")
+        self.assertIn("inherited_v7_1_p0_findings_open", report["blocking_reasons"])
+        self.assertIn("inherited_v7_1_p1_findings_open", report["blocking_reasons"])
+        self.assertNotIn("full_30_day_replay_not_executed", report["blocking_reasons"])
+        self.assertNotIn("mail_preview_count_not_proven", report["blocking_reasons"])
+        self.assertNotIn("source_terminal_states_not_proven", report["blocking_reasons"])
+        for flag in S2PLT01_FORBIDDEN_FLAGS:
+            self.assertFalse(report[flag])
+            self.assertFalse(report["payload"][flag])
+            self.assertFalse(report["entry_precheck"][flag])
+        self.assertEqual(validate_s2plt01_replay_payload_execution_report(report), [])
+
+    def test_replay_payload_execution_report_blocks_invalid_payload_inputs(self) -> None:
+        report = build_s2plt01_replay_payload_execution_report(
+            execution_id="",
+            generated_at="",
+            generated_by="",
+            evidence_mode="invalid",
+            replay_records=[],
+            mail_preview_records=[],
+            source_terminal_states=[],
+            evidence_refs=[],
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertFalse(report["payload_execution_package_passed"])
+        self.assertIn("payload_id_required", report["blocking_reasons"])
+        self.assertIn("replay_payload_execution_package_not_passed", report["blocking_reasons"])
+        errors = validate_s2plt01_replay_payload_execution_report(report)
+        self.assertIn("S2PLT01 replay payload execution_id is required", errors)
+        self.assertIn("S2PLT01 replay payload execution evidence_mode is invalid", errors)
+        self.assertIn("S2PLT01 replay payload execution evidence_refs are required", errors)
+
+    def test_replay_payload_execution_validator_rejects_production_side_effect_and_hash_drift(self) -> None:
+        report = build_s2plt01_replay_payload_execution_report(
+            execution_id="S2PLT01-REPLAY-PAYLOAD-EXECUTION-20260626-001",
+            generated_at="2026-06-26T19:10:00+10:00",
+            generated_by="codex-stage2-local",
+            evidence_mode="fixture_replay_contract",
+            replay_records=self.replay_records(),
+            mail_preview_records=self.mail_preview_records(),
+            source_terminal_states=self.source_terminal_states(),
+            evidence_refs=["runs/s2plt01/replay_payload_execution_fixture.json"],
+        )
+        tampered = dict(report)
+        tampered["scheduler_enabled"] = True
+
+        errors = validate_s2plt01_replay_payload_execution_report(tampered)
+
+        self.assertIn("scheduler_enabled must be false", errors)
+        self.assertIn("S2PLT01 replay payload execution_hash does not match report content", errors)
+
+    def test_replay_payload_execution_cli_returns_success_for_valid_package_with_blocked_precheck(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            input_path = Path(tmpdir) / "s2plt01_evidence.json"
+            input_path.write_text(
+                json.dumps(
+                    {
+                        "replay_records": self.replay_records(),
+                        "mail_preview_records": self.mail_preview_records(),
+                        "source_terminal_states": self.source_terminal_states(),
+                        "evidence_refs": ["runs/s2plt01/replay_payload_execution_cli.json"],
+                    },
+                    ensure_ascii=False,
+                    sort_keys=True,
+                ),
+                encoding="utf-8",
+            )
+            stdout = io.StringIO()
+
+            with redirect_stdout(stdout):
+                exit_code = cli_main(
+                    [
+                        "stage2-replay-payload-execution",
+                        "--input",
+                        str(input_path),
+                        "--execution-id",
+                        "S2PLT01-REPLAY-PAYLOAD-EXECUTION-CLI-20260626-001",
+                        "--generated-at",
+                        "2026-06-26T19:20:00+10:00",
+                        "--json",
+                    ]
+                )
+
+        output = json.loads(stdout.getvalue())
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(output["status"], "blocked")
+        self.assertTrue(output["payload_execution_package_passed"])
+        self.assertFalse(output["entry_precheck_passed"])
+        self.assertIn("inherited_v7_1_p0_findings_open", output["blocking_reasons"])
+        self.assertIn("inherited_v7_1_p1_findings_open", output["blocking_reasons"])
 
     def test_entry_precheck_report_fails_closed_without_production_side_effects(self) -> None:
         report = build_s2plt01_entry_precheck_report(generated_at="2026-06-26T18:00:00+10:00")

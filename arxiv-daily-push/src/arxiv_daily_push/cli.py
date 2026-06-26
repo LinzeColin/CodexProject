@@ -106,6 +106,10 @@ from .stage1_runtime import (
     run_watchdog,
     validate_stage1_runtime_report,
 )
+from .stage2_replay_gate import (
+    build_s2plt01_replay_payload_execution_report,
+    validate_s2plt01_replay_payload_execution_report,
+)
 from .stage2_sources import (
     run_s2pgt05_cross_board_calibration,
     run_s2pgt04_delta_resonance,
@@ -1102,6 +1106,23 @@ def build_parser() -> argparse.ArgumentParser:
     s2pht05_quality.add_argument("--production-gate-state", help="Optional production gate state JSON; all production side-effect flags must be false.")
     s2pht05_quality.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
     s2pht05_quality.add_argument("--json", action="store_true", help="Print JSON content quality gate report.")
+
+    s2plt01_replay_execution = subparsers.add_parser(
+        "stage2-replay-payload-execution",
+        help="Build S2PLT01 no-production replay payload execution evidence from explicit records.",
+    )
+    s2plt01_replay_execution.add_argument("--input", required=True, help="JSON object with replay, mail preview, and source terminal evidence records.")
+    s2plt01_replay_execution.add_argument("--execution-id", required=True, help="Stable local execution package ID.")
+    s2plt01_replay_execution.add_argument("--generated-at", required=True, help="Evidence timestamp.")
+    s2plt01_replay_execution.add_argument("--generated-by", default="codex-stage2-local", help="Evidence producer ID.")
+    s2plt01_replay_execution.add_argument(
+        "--evidence-mode",
+        choices=("actual_replay_evidence", "fixture_replay_contract"),
+        default="actual_replay_evidence",
+        help="Evidence mode label. Neither mode enables production side effects.",
+    )
+    s2plt01_replay_execution.add_argument("--evidence-ref", action="append", default=[], help="Durable evidence ref. May be repeated.")
+    s2plt01_replay_execution.add_argument("--json", action="store_true", help="Print JSON replay payload execution report.")
 
     all_arxiv_plan = subparsers.add_parser("plan-all-arxiv-scan", help="Print the Phase 12 all-arXiv scan plan.")
     all_arxiv_plan.add_argument("--max-results-per-category", type=int, default=ALL_ARXIV_MAX_RESULTS_PER_CATEGORY)
@@ -3211,6 +3232,33 @@ def main(argv: list[str] | None = None) -> int:
             for error in errors:
                 print(f"- error: {error}")
         return 0 if report["status"] == "pass" and not errors else 2
+    if args.command == "stage2-replay-payload-execution":
+        evidence_input = load_json_mapping(args.input)
+        evidence_refs = args.evidence_ref or list(evidence_input.get("evidence_refs") or [args.input])
+        report = build_s2plt01_replay_payload_execution_report(
+            execution_id=args.execution_id,
+            generated_at=args.generated_at,
+            generated_by=args.generated_by,
+            evidence_mode=args.evidence_mode,
+            replay_records=list(evidence_input.get("replay_records") or []),
+            mail_preview_records=list(evidence_input.get("mail_preview_records") or []),
+            source_terminal_states=list(evidence_input.get("source_terminal_states") or []),
+            evidence_refs=evidence_refs,
+        )
+        errors = validate_s2plt01_replay_payload_execution_report(report)
+        output = {**report, "report_validation_errors": errors} if errors else report
+        if args.json:
+            print(json.dumps(output, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- payload_execution_package_passed: {report.get('payload_execution_package_passed')}")
+            print(f"- entry_precheck_passed: {report.get('entry_precheck_passed')}")
+            print(f"- execution_hash: {report.get('execution_hash')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if report["payload_execution_package_passed"] and not errors else 2
     if args.command == "plan-all-arxiv-scan":
         plan = build_all_arxiv_scan_plan(max_results_per_category=args.max_results_per_category)
         errors = validate_all_arxiv_scan_plan(plan)
