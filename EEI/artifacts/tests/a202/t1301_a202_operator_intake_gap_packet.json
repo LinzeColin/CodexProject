@@ -1,0 +1,374 @@
+{
+  "a202_clearance_complete": false,
+  "acceptance_ids": [
+    "A202"
+  ],
+  "artifact_id": "t1301-a202-operator-intake-gap-packet",
+  "final_attestation_task": {
+    "completion_criteria": [
+      "attestation is signed by the release manager or approved operator",
+      "signed_at and signature are non-empty",
+      "attestation covers the exact source hashes listed in this packet"
+    ],
+    "current_status": "MISSING_SIGNED_REVIEW",
+    "input_id": "A202_final_attestation",
+    "required_fields": [
+      "signed_by",
+      "signed_at",
+      "signature"
+    ]
+  },
+  "generated_at": "2026-06-26T10:55:34Z",
+  "legal_release_clearance_task": {
+    "accepted_statuses": [
+      "CLEARED",
+      "RISK_WAIVER_ACCEPTED"
+    ],
+    "completion_criteria": [
+      "clearance_status is CLEARED or RISK_WAIVER_ACCEPTED",
+      "clearance_scope covers A202 relationship evidence publication",
+      "risk_waiver_id_or_opinion_ref points to the legal evidence record",
+      "legal_reviewer, signed_at and signature are non-empty"
+    ],
+    "current_status": "MISSING_SIGNED_REVIEW",
+    "input_id": "A202_legal_release_clearance",
+    "required_fields": [
+      "legal_reviewer",
+      "clearance_status",
+      "clearance_scope",
+      "risk_waiver_id_or_opinion_ref",
+      "signed_at",
+      "signature"
+    ]
+  },
+  "missing_signed_input_groups": [
+    {
+      "input_id": "A202_source_license_reviews",
+      "reason": "source-license review signatures are not supplied"
+    },
+    {
+      "input_id": "A202_passage_level_relationship_reviews",
+      "reason": "passage-level relationship review signatures are not supplied"
+    },
+    {
+      "input_id": "A202_production_owner_signoffs",
+      "reason": "production owner sign-off signatures are not supplied"
+    },
+    {
+      "input_id": "A202_legal_release_clearance",
+      "reason": "legal clearance or signed risk waiver is not supplied"
+    },
+    {
+      "input_id": "A202_final_attestation",
+      "reason": "final release-decision attestation is not supplied"
+    }
+  ],
+  "non_claims": [
+    "This packet is an operator checklist and hash manifest, not clearance.",
+    "This packet does not create source-license, passage, owner or legal approval.",
+    "This packet does not publish relationship facts or graph edges.",
+    "This packet does not close A202, A209, A210, A026/A027 or MVP release."
+  ],
+  "packet_status": "A202_OPERATOR_INPUTS_REQUIRED",
+  "passage_level_relationship_review_tasks": [
+    {
+      "accepted_decisions": [
+        "approved_for_publication"
+      ],
+      "candidate_key": "GV-FACT-001",
+      "completion_criteria": [
+        "supporting_anchor_ids exactly cover the required source anchors",
+        "supporting_passage_locator identifies the reviewed passage location",
+        "counter_evidence_reviewed is true",
+        "decision is approved_for_publication",
+        "reviewer, reviewed_at and signature are non-empty"
+      ],
+      "counter_evidence_count": 0,
+      "current_status": "MISSING_SIGNED_REVIEW",
+      "input_id": "A202_passage_level_relationship_review:GV-FACT-001",
+      "locator": "SEC NVIDIA Form 10-K FY2026, Manufacturing section",
+      "object_candidate_name": "NVIDIA Corporation",
+      "relationship_family": "supply_chain_operations",
+      "relationship_type": "wafer_foundry_for",
+      "required_anchor_ids": [
+        "GV-SNAPSHOT-001",
+        "GV-SNAPSHOT-003"
+      ],
+      "required_fields": [
+        "candidate_key",
+        "supporting_anchor_ids",
+        "supporting_passage_locator",
+        "counter_evidence_reviewed",
+        "decision",
+        "reviewer",
+        "reviewed_at",
+        "signature"
+      ],
+      "subject_candidate_name": "TSMC",
+      "support_excerpt": "NVIDIA says it utilizes foundries such as TSMC to produce semiconductor wafers."
+    },
+    {
+      "accepted_decisions": [
+        "approved_for_publication"
+      ],
+      "candidate_key": "GV-FACT-002",
+      "completion_criteria": [
+        "supporting_anchor_ids exactly cover the required source anchors",
+        "supporting_passage_locator identifies the reviewed passage location",
+        "counter_evidence_reviewed is true",
+        "decision is approved_for_publication",
+        "reviewer, reviewed_at and signature are non-empty"
+      ],
+      "counter_evidence_count": 0,
+      "current_status": "MISSING_SIGNED_REVIEW",
+      "input_id": "A202_passage_level_relationship_review:GV-FACT-002",
+      "locator": "ASML official story, Busting ASML myths",
+      "object_candidate_name": "TSMC",
+      "relationship_family": "supply_chain_operations",
+      "relationship_type": "equipment_provider_to",
+      "required_anchor_ids": [
+        "GV-SNAPSHOT-002",
+        "GV-SNAPSHOT-004"
+      ],
+      "required_fields": [
+        "candidate_key",
+        "supporting_anchor_ids",
+        "supporting_passage_locator",
+        "counter_evidence_reviewed",
+        "decision",
+        "reviewer",
+        "reviewed_at",
+        "signature"
+      ],
+      "subject_candidate_name": "ASML",
+      "support_excerpt": "ASML says customers such as TSMC use its DUV and EUV lithography systems."
+    }
+  ],
+  "post_submission_commands": [
+    "make A202_SIGNED_INTAKE=artifacts/operator_inputs/a202/signed-release-decision-intake.json generate-a202-signed-intake-preflight generate-a202-operator-intake-gap-packet validate-a202-signed-intake-preflight validate-a202-operator-intake-gap-packet",
+    "make generate-external-release-evidence-bundle validate-external-release-evidence-bundle",
+    "make generate-release-manager-activation-artifact validate-release-manager-activation"
+  ],
+  "production_owner_signoff_tasks": [
+    {
+      "candidate_key": "GV-FACT-001",
+      "completion_criteria": [
+        "owner_actor and owner_role identify the accountable production owner",
+        "authority_scope explicitly covers A202 relationship publication",
+        "signed_at and signature are non-empty",
+        "candidate_key matches the Golden Vertical candidate with no duplicates"
+      ],
+      "current_status": "MISSING_SIGNED_REVIEW",
+      "input_id": "A202_production_owner_signoff:GV-FACT-001",
+      "object_candidate_name": "NVIDIA Corporation",
+      "relationship_type": "wafer_foundry_for",
+      "required_fields": [
+        "candidate_key",
+        "owner_actor",
+        "owner_role",
+        "authority_scope",
+        "signed_at",
+        "signature"
+      ],
+      "subject_candidate_name": "TSMC"
+    },
+    {
+      "candidate_key": "GV-FACT-002",
+      "completion_criteria": [
+        "owner_actor and owner_role identify the accountable production owner",
+        "authority_scope explicitly covers A202 relationship publication",
+        "signed_at and signature are non-empty",
+        "candidate_key matches the Golden Vertical candidate with no duplicates"
+      ],
+      "current_status": "MISSING_SIGNED_REVIEW",
+      "input_id": "A202_production_owner_signoff:GV-FACT-002",
+      "object_candidate_name": "TSMC",
+      "relationship_type": "equipment_provider_to",
+      "required_fields": [
+        "candidate_key",
+        "owner_actor",
+        "owner_role",
+        "authority_scope",
+        "signed_at",
+        "signature"
+      ],
+      "subject_candidate_name": "ASML"
+    }
+  ],
+  "relationship_publication_allowed": false,
+  "release_gate_closed_by_operator_packet": false,
+  "release_ready": false,
+  "required_counts": {
+    "final_attestation": 1,
+    "legal_release_clearance": 1,
+    "passage_level_relationship_reviews": 2,
+    "production_owner_signoffs": 2,
+    "source_license_reviews": 4,
+    "total_review_items": 10
+  },
+  "rollback": [
+    "Regenerate this packet from the A202 signed-intake preflight.",
+    "Do not delete operator-supplied signed intake files during rollback."
+  ],
+  "schema_version": "eei-a202-operator-intake-gap-packet-v1",
+  "source_files": {
+    "a202_operator_review_packet": {
+      "path": "artifacts/tests/a202/t1301_operator_review_packet_contract.json",
+      "sha256": "d24b9b46814839829a125bed916fca3b909d179d863e47c96d066795129667cb"
+    },
+    "a202_signed_intake_preflight": {
+      "path": "artifacts/tests/a202/t1301_a202_signed_intake_preflight.json",
+      "sha256": "05da532995047121c791a9d57f271f8cc39dc597fd65f86a424c50595f8303fe"
+    },
+    "golden_vertical_fact_candidates": {
+      "path": "data/golden_vertical_fact_candidates.json",
+      "sha256": "bd6a53c6e83808582db172f5ceaf591e5c47e0330cea017ec6fa15d343de64a6"
+    },
+    "signed_intake": {
+      "path": "artifacts/tests/a202/t1301_a202_release_decision_intake_template.json",
+      "sha256": "27b34274a0e379162f51867620e129a242c63189374c5456625c33e296ee7747"
+    }
+  },
+  "source_license_review_tasks": [
+    {
+      "accepted_statuses": [
+        "approved_for_internal_review",
+        "approved_for_public_release"
+      ],
+      "anchor_id": "GV-SNAPSHOT-001",
+      "completion_criteria": [
+        "source_license_status is approved_for_public_release or approved_for_internal_review",
+        "allowed_use_scope explains EEI publication/review scope",
+        "evidence_uri points to the signed legal/source review record",
+        "reviewer, reviewed_at and signature are non-empty"
+      ],
+      "current_status": "MISSING_SIGNED_REVIEW",
+      "input_id": "A202_source_license_review:GV-SNAPSHOT-001",
+      "official_publisher": "SEC EDGAR / NVIDIA Form 10-K",
+      "required_fields": [
+        "anchor_id",
+        "reviewer",
+        "reviewed_at",
+        "source_license_status",
+        "allowed_use_scope",
+        "evidence_uri",
+        "signature"
+      ],
+      "source_title": "NVIDIA Form 10-K FY2026 - Manufacturing disclosure",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000021/nvda-20260125.htm"
+    },
+    {
+      "accepted_statuses": [
+        "approved_for_internal_review",
+        "approved_for_public_release"
+      ],
+      "anchor_id": "GV-SNAPSHOT-002",
+      "completion_criteria": [
+        "source_license_status is approved_for_public_release or approved_for_internal_review",
+        "allowed_use_scope explains EEI publication/review scope",
+        "evidence_uri points to the signed legal/source review record",
+        "reviewer, reviewed_at and signature are non-empty"
+      ],
+      "current_status": "MISSING_SIGNED_REVIEW",
+      "input_id": "A202_source_license_review:GV-SNAPSHOT-002",
+      "official_publisher": "ASML Stories",
+      "required_fields": [
+        "anchor_id",
+        "reviewer",
+        "reviewed_at",
+        "source_license_status",
+        "allowed_use_scope",
+        "evidence_uri",
+        "signature"
+      ],
+      "source_title": "Busting ASML myths",
+      "source_url": "https://www.asml.com/news/stories/2022/busting-asml-myths"
+    },
+    {
+      "accepted_statuses": [
+        "approved_for_internal_review",
+        "approved_for_public_release"
+      ],
+      "anchor_id": "GV-SNAPSHOT-003",
+      "completion_criteria": [
+        "source_license_status is approved_for_public_release or approved_for_internal_review",
+        "allowed_use_scope explains EEI publication/review scope",
+        "evidence_uri points to the signed legal/source review record",
+        "reviewer, reviewed_at and signature are non-empty"
+      ],
+      "current_status": "MISSING_SIGNED_REVIEW",
+      "input_id": "A202_source_license_review:GV-SNAPSHOT-003",
+      "official_publisher": "TSMC Press Center",
+      "required_fields": [
+        "anchor_id",
+        "reviewer",
+        "reviewed_at",
+        "source_license_status",
+        "allowed_use_scope",
+        "evidence_uri",
+        "signature"
+      ],
+      "source_title": "NVIDIA and TSMC Celebrate New Milestone: 500 Million Processors",
+      "source_url": "https://pr.tsmc.com/english/news/1408"
+    },
+    {
+      "accepted_statuses": [
+        "approved_for_internal_review",
+        "approved_for_public_release"
+      ],
+      "anchor_id": "GV-SNAPSHOT-004",
+      "completion_criteria": [
+        "source_license_status is approved_for_public_release or approved_for_internal_review",
+        "allowed_use_scope explains EEI publication/review scope",
+        "evidence_uri points to the signed legal/source review record",
+        "reviewer, reviewed_at and signature are non-empty"
+      ],
+      "current_status": "MISSING_SIGNED_REVIEW",
+      "input_id": "A202_source_license_review:GV-SNAPSHOT-004",
+      "official_publisher": "TSMC Press Center",
+      "required_fields": [
+        "anchor_id",
+        "reviewer",
+        "reviewed_at",
+        "source_license_status",
+        "allowed_use_scope",
+        "evidence_uri",
+        "signature"
+      ],
+      "source_title": "TSMC and ASML Reach Agreement to Develop Next Generation Lithography Technologies as an Extension of Long-Term Partnership",
+      "source_url": "https://pr.tsmc.com/english/news/1734"
+    }
+  ],
+  "submission_contract": {
+    "allowed_submission_paths": [
+      "artifacts/operator_inputs/a202/",
+      "operator_inputs/a202/",
+      "work/operator_inputs/a202/",
+      "external operator file outside repository"
+    ],
+    "default_make_target_uses_template_until_A202_SIGNED_INTAKE_is_set": true,
+    "operator_validation_command": "make A202_SIGNED_INTAKE=artifacts/operator_inputs/a202/signed-release-decision-intake.json generate-a202-signed-intake-preflight generate-a202-operator-intake-gap-packet validate-a202-signed-intake-preflight validate-a202-operator-intake-gap-packet",
+    "signed_intake_source_boundary": {
+      "closure_allowed": false,
+      "path": "artifacts/tests/a202/t1301_a202_release_decision_intake_template.json",
+      "reason": "default intake template is not signed operator evidence",
+      "repository_relative": "artifacts/tests/a202/t1301_a202_release_decision_intake_template.json",
+      "source_kind": "repository_template"
+    },
+    "target_path": "artifacts/operator_inputs/a202/signed-release-decision-intake.json"
+  },
+  "system_en_name": "Enterprise Ecosystem Intelligence",
+  "system_name": "EEI",
+  "system_zh_name": "商域图谱",
+  "task_ids": [
+    "T1301"
+  ],
+  "validation_policy": {
+    "default_make_target_uses_template_until_A202_SIGNED_INTAKE_is_set": true,
+    "operator_packet_counts_as_clearance": false,
+    "repository_fixtures_count_as_clearance": false,
+    "signed_intake_must_cover_all_candidate_source_anchors": true,
+    "signed_intake_must_include_counter_evidence_review": true,
+    "template_only_counts_as_clearance": false
+  }
+}

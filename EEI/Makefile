@@ -6,8 +6,11 @@ UV_VERSION := 0.11.22
 UV := $(VENV)/bin/uv
 PNPM_VERSION := 11.8.0
 PNPM ?= npx --yes pnpm@$(PNPM_VERSION)
+A202_SIGNED_INTAKE ?= artifacts/tests/a202/t1301_a202_release_decision_intake_template.json
+A202_SIGNED_INTAKE_PREFLIGHT_OUTPUT ?= artifacts/tests/a202/t1301_a202_signed_intake_preflight.json
+A202_OPERATOR_INTAKE_GAP_PACKET_OUTPUT ?= artifacts/tests/a202/t1301_a202_operator_intake_gap_packet.json
 
-.PHONY: bootstrap bootstrap-python bootstrap-node doctor db-up wait-db db-down db-logs migrate-up migrate-down seed-catalogs load-fixtures check-db-schema health worker-health worker-once worker-supervise validate-governance validate-catalogs validate-contracts validate-prototype-parity validate-github-governance validate-governance-consistency validate-v5-production-readiness-sync validate-worker-deployment generate-brand-clearance-artifact validate-brand-clearance generate-release-decision-bundle-artifact validate-release-decision-bundle generate-a202-signed-intake-preflight validate-a202-signed-intake-preflight generate-external-release-evidence-bundle validate-external-release-evidence-bundle generate-release-manager-activation-artifact validate-release-manager-activation generate-mvp-release-gate-preflight validate-mvp-release-gate-preflight generate-gold-quality-evaluation-artifacts validate-gold-quality-evaluation generate-t905-release-rehearsal-artifacts validate-t905-release-rehearsal generate-development-status-artifacts validate-development-status-artifacts generate-risk-control-artifacts validate-risk-control-artifacts generate-clean-room-release validate-clean-room-release generate-release-artifacts validate-release-artifacts validate-scale-benchmark-smoke validate-scale-benchmark-operator validate-scale-browser-benchmark validate-soak-smoke validate-operator-soak-runner monitor-operator-soak supervise-operator-soak watch-operator-soak generate-operator-soak-background-heartbeat validate-operator-soak-background-heartbeat generate-operator-soak-evidence-artifact validate-operator-soak-evidence generate-operator-soak-finalization-preflight validate-operator-soak-finalization-preflight secret-scan copy-lint lint typecheck test test-unit test-integration test-e2e test-e2e-live verify verify-g1 verify-g2-db dev-api dev-web clean-local
+.PHONY: bootstrap bootstrap-python bootstrap-node doctor db-up wait-db db-down db-logs migrate-up migrate-down seed-catalogs load-fixtures check-db-schema health worker-health worker-once worker-supervise validate-governance validate-catalogs validate-contracts validate-prototype-parity validate-github-governance validate-governance-consistency validate-v5-production-readiness-sync validate-worker-deployment generate-brand-clearance-artifact validate-brand-clearance generate-release-decision-bundle-artifact validate-release-decision-bundle generate-a202-signed-intake-preflight validate-a202-signed-intake-preflight generate-a202-operator-intake-gap-packet validate-a202-operator-intake-gap-packet generate-external-release-evidence-bundle validate-external-release-evidence-bundle generate-release-manager-activation-artifact validate-release-manager-activation generate-mvp-release-gate-preflight validate-mvp-release-gate-preflight generate-gold-quality-evaluation-artifacts validate-gold-quality-evaluation generate-t905-release-rehearsal-artifacts validate-t905-release-rehearsal generate-development-status-artifacts validate-development-status-artifacts generate-risk-control-artifacts validate-risk-control-artifacts generate-clean-room-release validate-clean-room-release generate-release-artifacts validate-release-artifacts validate-scale-benchmark-smoke validate-scale-benchmark-operator validate-scale-browser-benchmark validate-soak-smoke validate-operator-soak-runner monitor-operator-soak supervise-operator-soak watch-operator-soak generate-operator-soak-background-heartbeat validate-operator-soak-background-heartbeat generate-operator-soak-evidence-artifact validate-operator-soak-evidence generate-operator-soak-finalization-preflight validate-operator-soak-finalization-preflight secret-scan copy-lint lint typecheck test test-unit test-integration test-e2e test-e2e-live verify verify-g1 verify-g2-db dev-api dev-web clean-local
 
 $(UV):
 	$(PYTHON) -m venv $(VENV)
@@ -108,20 +111,28 @@ validate-brand-clearance:
 generate-release-decision-bundle-artifact:
 	$(UV) run python scripts/validate_release_decision_bundle.py generate-template
 	$(UV) run python scripts/validate_release_decision_bundle.py generate
-	$(UV) run python scripts/validate_a202_signed_intake_preflight.py generate
+	$(UV) run python scripts/validate_a202_signed_intake_preflight.py generate --signed-intake $(A202_SIGNED_INTAKE) --output $(A202_SIGNED_INTAKE_PREFLIGHT_OUTPUT)
+	$(UV) run python scripts/validate_a202_signed_intake_preflight.py generate-packet --signed-intake $(A202_SIGNED_INTAKE) --output $(A202_SIGNED_INTAKE_PREFLIGHT_OUTPUT) --packet-output $(A202_OPERATOR_INTAKE_GAP_PACKET_OUTPUT)
 
 validate-release-decision-bundle:
 	$(UV) run python scripts/validate_release_decision_bundle.py validate-template
 	$(UV) run python scripts/validate_release_decision_bundle.py validate
 	$(UV) run python scripts/validate_release_decision_bundle.py validate-bundle --template-only
 	$(UV) run python scripts/validate_release_decision_bundle.py validate-bundle --bundle tests/fixtures/release_decision_bundle/a202_a210_signed_decision_bundle_contract_test.json
-	$(UV) run python scripts/validate_a202_signed_intake_preflight.py validate
+	$(UV) run python scripts/validate_a202_signed_intake_preflight.py validate --signed-intake $(A202_SIGNED_INTAKE) --output $(A202_SIGNED_INTAKE_PREFLIGHT_OUTPUT)
+	$(UV) run python scripts/validate_a202_signed_intake_preflight.py validate-packet --signed-intake $(A202_SIGNED_INTAKE) --output $(A202_SIGNED_INTAKE_PREFLIGHT_OUTPUT) --packet-output $(A202_OPERATOR_INTAKE_GAP_PACKET_OUTPUT)
 
 generate-a202-signed-intake-preflight:
-	$(UV) run python scripts/validate_a202_signed_intake_preflight.py generate
+	$(UV) run python scripts/validate_a202_signed_intake_preflight.py generate --signed-intake $(A202_SIGNED_INTAKE) --output $(A202_SIGNED_INTAKE_PREFLIGHT_OUTPUT)
 
 validate-a202-signed-intake-preflight:
-	$(UV) run python scripts/validate_a202_signed_intake_preflight.py validate
+	$(UV) run python scripts/validate_a202_signed_intake_preflight.py validate --signed-intake $(A202_SIGNED_INTAKE) --output $(A202_SIGNED_INTAKE_PREFLIGHT_OUTPUT)
+
+generate-a202-operator-intake-gap-packet:
+	$(UV) run python scripts/validate_a202_signed_intake_preflight.py generate-packet --signed-intake $(A202_SIGNED_INTAKE) --output $(A202_SIGNED_INTAKE_PREFLIGHT_OUTPUT) --packet-output $(A202_OPERATOR_INTAKE_GAP_PACKET_OUTPUT)
+
+validate-a202-operator-intake-gap-packet:
+	$(UV) run python scripts/validate_a202_signed_intake_preflight.py validate-packet --signed-intake $(A202_SIGNED_INTAKE) --output $(A202_SIGNED_INTAKE_PREFLIGHT_OUTPUT) --packet-output $(A202_OPERATOR_INTAKE_GAP_PACKET_OUTPUT)
 
 generate-external-release-evidence-bundle:
 	$(UV) run python scripts/validate_external_release_evidence_bundle.py generate

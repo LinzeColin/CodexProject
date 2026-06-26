@@ -173,6 +173,7 @@ PARTIAL_EVIDENCE = {
         "artifacts/tests/a202/t1301_live_capture_postgres_ingestion_contract.json",
         "artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json",
         "artifacts/tests/a202/t1301_a202_signed_intake_preflight.json",
+        "artifacts/tests/a202/t1301_a202_operator_intake_gap_packet.json",
         "artifacts/tests/a026/t904_entity_resolution_gold_evaluation_contract.json",
         "artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json",
     },

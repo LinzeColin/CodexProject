@@ -150,3 +150,71 @@ def test_signed_intake_preflight_rejects_duplicate_owner_signoff(tmp_path: Path)
         match="production_owner_signoffs duplicate relationship candidates: GV-FACT-001",
     ):
         preflight.build_preflight(signed_intake_path=signed_path)
+
+
+def test_operator_intake_gap_packet_lists_exact_a202_missing_tasks(
+    tmp_path: Path,
+) -> None:
+    preflight_payload = preflight.build_preflight(
+        generated_at="2026-06-24T00:00:00Z"
+    )
+    preflight_path = write_json(tmp_path / "a202_preflight.json", preflight_payload)
+
+    packet = preflight.build_operator_intake_gap_packet(
+        preflight_path=preflight_path,
+        generated_at="2026-06-24T00:00:00Z",
+    )
+
+    assert packet["packet_status"] == "A202_OPERATOR_INPUTS_REQUIRED"
+    assert packet["a202_clearance_complete"] is False
+    assert packet["release_gate_closed_by_operator_packet"] is False
+    assert packet["release_ready"] is False
+    assert packet["required_counts"] == {
+        "source_license_reviews": 4,
+        "passage_level_relationship_reviews": 2,
+        "production_owner_signoffs": 2,
+        "legal_release_clearance": 1,
+        "final_attestation": 1,
+        "total_review_items": 10,
+    }
+    assert [
+        item["anchor_id"] for item in packet["source_license_review_tasks"]
+    ] == [
+        "GV-SNAPSHOT-001",
+        "GV-SNAPSHOT-002",
+        "GV-SNAPSHOT-003",
+        "GV-SNAPSHOT-004",
+    ]
+    assert [
+        item["candidate_key"]
+        for item in packet["passage_level_relationship_review_tasks"]
+    ] == ["GV-FACT-001", "GV-FACT-002"]
+    assert (
+        packet["submission_contract"]["target_path"]
+        == "artifacts/operator_inputs/a202/signed-release-decision-intake.json"
+    )
+    assert "A202_SIGNED_INTAKE=" in packet["submission_contract"][
+        "operator_validation_command"
+    ]
+    preflight.validate_operator_intake_gap_packet(packet, preflight_path=preflight_path)
+
+
+def test_operator_intake_gap_packet_detects_preflight_drift(tmp_path: Path) -> None:
+    preflight_payload = preflight.build_preflight(
+        generated_at="2026-06-24T00:00:00Z"
+    )
+    preflight_path = write_json(tmp_path / "a202_preflight.json", preflight_payload)
+    packet = preflight.build_operator_intake_gap_packet(
+        preflight_path=preflight_path,
+        generated_at="2026-06-24T00:00:00Z",
+    )
+
+    changed = copy.deepcopy(preflight_payload)
+    changed["missing_signed_inputs"] = []
+    write_json(preflight_path, changed)
+
+    with pytest.raises(ValueError, match="A202 signed-intake preflight drift"):
+        preflight.validate_operator_intake_gap_packet(
+            packet,
+            preflight_path=preflight_path,
+        )

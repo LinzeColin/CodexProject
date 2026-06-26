@@ -29,10 +29,23 @@ decisions = importlib.util.module_from_spec(DECISIONS_SPEC)
 DECISIONS_SPEC.loader.exec_module(decisions)
 
 SCHEMA_VERSION = "eei-a202-signed-intake-preflight-v1"
+OPERATOR_INTAKE_PACKET_SCHEMA_VERSION = "eei-a202-operator-intake-gap-packet-v1"
 DEFAULT_SIGNED_INTAKE = decisions.DEFAULT_INTAKE_TEMPLATE
 DEFAULT_A202_PACKET = decisions.DEFAULT_A202_PACKET
 DEFAULT_FACT_CANDIDATES = decisions.DEFAULT_FACT_CANDIDATES
 DEFAULT_OUTPUT = ROOT / "artifacts/tests/a202/t1301_a202_signed_intake_preflight.json"
+DEFAULT_OPERATOR_INTAKE_PACKET_OUTPUT = (
+    ROOT / "artifacts/tests/a202/t1301_a202_operator_intake_gap_packet.json"
+)
+OPERATOR_SIGNED_INTAKE_TARGET = (
+    "artifacts/operator_inputs/a202/signed-release-decision-intake.json"
+)
+OPERATOR_ALLOWED_SUBMISSION_PATHS = [
+    "artifacts/operator_inputs/a202/",
+    "operator_inputs/a202/",
+    "work/operator_inputs/a202/",
+    "external operator file outside repository",
+]
 
 REQUIRED_TASK_IDS = ["T1301"]
 REQUIRED_ACCEPTANCE_IDS = ["A202"]
@@ -84,6 +97,10 @@ def sha256_file(path: Path) -> str:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def source_ref(path: Path) -> dict[str, str]:
+    return {"path": display_path(path), "sha256": sha256_file(path)}
 
 
 def pending_input_rows() -> list[dict[str, str]]:
@@ -283,13 +300,336 @@ def validate_preflight(
         raise ValueError("incomplete A202 preflight must list missing signed inputs")
 
 
+def signed_item_status(a202_clearance_complete: bool) -> str:
+    return (
+        "SIGNED_READY_FOR_PREFLIGHT"
+        if a202_clearance_complete
+        else "MISSING_SIGNED_REVIEW"
+    )
+
+
+def build_source_license_tasks(
+    *,
+    snapshots: dict[str, dict[str, Any]],
+    requirements: dict[str, list[str]],
+    a202_clearance_complete: bool,
+) -> list[dict[str, Any]]:
+    required_anchor_ids = sorted(
+        {anchor_id for anchor_ids in requirements.values() for anchor_id in anchor_ids}
+    )
+    return [
+        {
+            "input_id": f"A202_source_license_review:{anchor_id}",
+            "anchor_id": anchor_id,
+            "current_status": signed_item_status(a202_clearance_complete),
+            "source_title": str(snapshots[anchor_id].get("title", "")),
+            "official_publisher": str(snapshots[anchor_id].get("official_publisher", "")),
+            "source_url": str(snapshots[anchor_id].get("url", "")),
+            "required_fields": decisions.REQUIRED_SECTIONS["source_license_reviews"],
+            "accepted_statuses": sorted(decisions.SIGNED_SOURCE_LICENSE_STATUSES),
+            "completion_criteria": [
+                "source_license_status is approved_for_public_release "
+                "or approved_for_internal_review",
+                "allowed_use_scope explains EEI publication/review scope",
+                "evidence_uri points to the signed legal/source review record",
+                "reviewer, reviewed_at and signature are non-empty",
+            ],
+        }
+        for anchor_id in required_anchor_ids
+    ]
+
+
+def build_passage_review_tasks(
+    *,
+    candidates: dict[str, dict[str, Any]],
+    requirements: dict[str, list[str]],
+    a202_clearance_complete: bool,
+) -> list[dict[str, Any]]:
+    tasks: list[dict[str, Any]] = []
+    for candidate_key, required_anchor_ids in sorted(requirements.items()):
+        candidate = candidates[candidate_key]
+        tasks.append(
+            {
+                "input_id": f"A202_passage_level_relationship_review:{candidate_key}",
+                "candidate_key": candidate_key,
+                "current_status": signed_item_status(a202_clearance_complete),
+                "subject_candidate_name": str(candidate.get("subject_candidate_name", "")),
+                "object_candidate_name": str(candidate.get("object_candidate_name", "")),
+                "relationship_type": str(candidate.get("relationship_type", "")),
+                "relationship_family": str(candidate.get("relationship_family", "")),
+                "required_anchor_ids": required_anchor_ids,
+                "locator": str(candidate.get("locator", "")),
+                "support_excerpt": str(candidate.get("support_excerpt", "")),
+                "counter_evidence_count": len(candidate.get("counter_evidence", [])),
+                "required_fields": decisions.REQUIRED_SECTIONS[
+                    "passage_level_relationship_reviews"
+                ],
+                "accepted_decisions": sorted(decisions.SIGNED_PASSAGE_DECISIONS),
+                "completion_criteria": [
+                    "supporting_anchor_ids exactly cover the required source anchors",
+                    "supporting_passage_locator identifies the reviewed passage location",
+                    "counter_evidence_reviewed is true",
+                    "decision is approved_for_publication",
+                    "reviewer, reviewed_at and signature are non-empty",
+                ],
+            }
+        )
+    return tasks
+
+
+def build_owner_signoff_tasks(
+    *,
+    candidates: dict[str, dict[str, Any]],
+    requirements: dict[str, list[str]],
+    a202_clearance_complete: bool,
+) -> list[dict[str, Any]]:
+    tasks: list[dict[str, Any]] = []
+    for candidate_key in sorted(requirements):
+        candidate = candidates[candidate_key]
+        tasks.append(
+            {
+                "input_id": f"A202_production_owner_signoff:{candidate_key}",
+                "candidate_key": candidate_key,
+                "current_status": signed_item_status(a202_clearance_complete),
+                "subject_candidate_name": str(candidate.get("subject_candidate_name", "")),
+                "object_candidate_name": str(candidate.get("object_candidate_name", "")),
+                "relationship_type": str(candidate.get("relationship_type", "")),
+                "required_fields": decisions.REQUIRED_SECTIONS["production_owner_signoffs"],
+                "completion_criteria": [
+                    "owner_actor and owner_role identify the accountable production owner",
+                    "authority_scope explicitly covers A202 relationship publication",
+                    "signed_at and signature are non-empty",
+                    "candidate_key matches the Golden Vertical candidate with no duplicates",
+                ],
+            }
+        )
+    return tasks
+
+
+def build_operator_intake_gap_packet(
+    *,
+    preflight_path: Path = DEFAULT_OUTPUT,
+    signed_intake_path: Path = DEFAULT_SIGNED_INTAKE,
+    a202_packet_path: Path = DEFAULT_A202_PACKET,
+    fact_candidates_path: Path = DEFAULT_FACT_CANDIDATES,
+    generated_at: str | None = None,
+) -> dict[str, Any]:
+    preflight = read_json(preflight_path)
+    validate_preflight(
+        preflight,
+        signed_intake_path=signed_intake_path,
+        a202_packet_path=a202_packet_path,
+        fact_candidates_path=fact_candidates_path,
+    )
+    requirements = decisions.candidate_source_anchor_requirements(fact_candidates_path)
+    snapshots, candidates = decisions.fact_candidate_payloads(fact_candidates_path)
+    a202_clearance_complete = preflight.get("a202_clearance_complete") is True
+    missing_groups = preflight.get("missing_signed_inputs")
+    if not isinstance(missing_groups, list):
+        raise ValueError("A202 operator intake gap packet requires missing_signed_inputs")
+
+    source_license_tasks = build_source_license_tasks(
+        snapshots=snapshots,
+        requirements=requirements,
+        a202_clearance_complete=a202_clearance_complete,
+    )
+    passage_review_tasks = build_passage_review_tasks(
+        candidates=candidates,
+        requirements=requirements,
+        a202_clearance_complete=a202_clearance_complete,
+    )
+    owner_signoff_tasks = build_owner_signoff_tasks(
+        candidates=candidates,
+        requirements=requirements,
+        a202_clearance_complete=a202_clearance_complete,
+    )
+    status = (
+        "A202_OPERATOR_INTAKE_READY_FOR_RELEASE_PREFLIGHT"
+        if a202_clearance_complete
+        else "A202_OPERATOR_INPUTS_REQUIRED"
+    )
+    operator_command = (
+        "make A202_SIGNED_INTAKE="
+        f"{OPERATOR_SIGNED_INTAKE_TARGET} "
+        "generate-a202-signed-intake-preflight "
+        "generate-a202-operator-intake-gap-packet "
+        "validate-a202-signed-intake-preflight "
+        "validate-a202-operator-intake-gap-packet"
+    )
+    return {
+        "schema_version": OPERATOR_INTAKE_PACKET_SCHEMA_VERSION,
+        "artifact_id": "t1301-a202-operator-intake-gap-packet",
+        "generated_at": generated_at or utc_now(),
+        "system_name": "EEI",
+        "system_en_name": "Enterprise Ecosystem Intelligence",
+        "system_zh_name": "商域图谱",
+        "task_ids": REQUIRED_TASK_IDS,
+        "acceptance_ids": REQUIRED_ACCEPTANCE_IDS,
+        "packet_status": status,
+        "a202_clearance_complete": a202_clearance_complete,
+        "relationship_publication_allowed": preflight.get(
+            "relationship_publication_allowed"
+        ),
+        "release_gate_closed_by_operator_packet": False,
+        "release_ready": False,
+        "submission_contract": {
+            "target_path": OPERATOR_SIGNED_INTAKE_TARGET,
+            "allowed_submission_paths": OPERATOR_ALLOWED_SUBMISSION_PATHS,
+            "signed_intake_source_boundary": preflight.get(
+                "signed_intake_source_boundary"
+            ),
+            "operator_validation_command": operator_command,
+            "default_make_target_uses_template_until_A202_SIGNED_INTAKE_is_set": True,
+        },
+        "source_files": {
+            "a202_signed_intake_preflight": source_ref(preflight_path),
+            "signed_intake": source_ref(signed_intake_path),
+            "a202_operator_review_packet": source_ref(a202_packet_path),
+            "golden_vertical_fact_candidates": source_ref(fact_candidates_path),
+        },
+        "required_counts": {
+            "source_license_reviews": len(source_license_tasks),
+            "passage_level_relationship_reviews": len(passage_review_tasks),
+            "production_owner_signoffs": len(owner_signoff_tasks),
+            "legal_release_clearance": 1,
+            "final_attestation": 1,
+            "total_review_items": (
+                len(source_license_tasks)
+                + len(passage_review_tasks)
+                + len(owner_signoff_tasks)
+                + 2
+            ),
+        },
+        "missing_signed_input_groups": missing_groups,
+        "source_license_review_tasks": source_license_tasks,
+        "passage_level_relationship_review_tasks": passage_review_tasks,
+        "production_owner_signoff_tasks": owner_signoff_tasks,
+        "legal_release_clearance_task": {
+            "input_id": "A202_legal_release_clearance",
+            "current_status": signed_item_status(a202_clearance_complete),
+            "required_fields": [
+                "legal_reviewer",
+                "clearance_status",
+                "clearance_scope",
+                "risk_waiver_id_or_opinion_ref",
+                "signed_at",
+                "signature",
+            ],
+            "accepted_statuses": sorted(decisions.SIGNED_LEGAL_CLEARANCE_STATUSES),
+            "completion_criteria": [
+                "clearance_status is CLEARED or RISK_WAIVER_ACCEPTED",
+                "clearance_scope covers A202 relationship evidence publication",
+                "risk_waiver_id_or_opinion_ref points to the legal evidence record",
+                "legal_reviewer, signed_at and signature are non-empty",
+            ],
+        },
+        "final_attestation_task": {
+            "input_id": "A202_final_attestation",
+            "current_status": signed_item_status(a202_clearance_complete),
+            "required_fields": ["signed_by", "signed_at", "signature"],
+            "completion_criteria": [
+                "attestation is signed by the release manager or approved operator",
+                "signed_at and signature are non-empty",
+                "attestation covers the exact source hashes listed in this packet",
+            ],
+        },
+        "post_submission_commands": [
+            operator_command,
+            "make generate-external-release-evidence-bundle "
+            "validate-external-release-evidence-bundle",
+            "make generate-release-manager-activation-artifact "
+            "validate-release-manager-activation",
+        ],
+        "validation_policy": {
+            "operator_packet_counts_as_clearance": False,
+            "template_only_counts_as_clearance": False,
+            "repository_fixtures_count_as_clearance": False,
+            "signed_intake_must_cover_all_candidate_source_anchors": True,
+            "signed_intake_must_include_counter_evidence_review": True,
+            "default_make_target_uses_template_until_A202_SIGNED_INTAKE_is_set": True,
+        },
+        "non_claims": [
+            "This packet is an operator checklist and hash manifest, not clearance.",
+            "This packet does not create source-license, passage, owner or legal approval.",
+            "This packet does not publish relationship facts or graph edges.",
+            "This packet does not close A202, A209, A210, A026/A027 or MVP release.",
+        ],
+        "rollback": [
+            "Regenerate this packet from the A202 signed-intake preflight.",
+            "Do not delete operator-supplied signed intake files during rollback.",
+        ],
+    }
+
+
+def validate_operator_intake_gap_packet(
+    payload: dict[str, Any],
+    *,
+    preflight_path: Path = DEFAULT_OUTPUT,
+    signed_intake_path: Path = DEFAULT_SIGNED_INTAKE,
+    a202_packet_path: Path = DEFAULT_A202_PACKET,
+    fact_candidates_path: Path = DEFAULT_FACT_CANDIDATES,
+) -> None:
+    expected = build_operator_intake_gap_packet(
+        preflight_path=preflight_path,
+        signed_intake_path=signed_intake_path,
+        a202_packet_path=a202_packet_path,
+        fact_candidates_path=fact_candidates_path,
+        generated_at=payload.get("generated_at"),
+    )
+    checked_fields = (
+        "schema_version",
+        "artifact_id",
+        "system_name",
+        "task_ids",
+        "acceptance_ids",
+        "packet_status",
+        "a202_clearance_complete",
+        "relationship_publication_allowed",
+        "release_gate_closed_by_operator_packet",
+        "release_ready",
+        "submission_contract",
+        "source_files",
+        "required_counts",
+        "missing_signed_input_groups",
+        "source_license_review_tasks",
+        "passage_level_relationship_review_tasks",
+        "production_owner_signoff_tasks",
+        "legal_release_clearance_task",
+        "final_attestation_task",
+        "post_submission_commands",
+        "validation_policy",
+        "non_claims",
+    )
+    for key in checked_fields:
+        if payload.get(key) != expected.get(key):
+            raise ValueError(f"A202 operator intake gap packet drift: {key}")
+    if payload.get("release_gate_closed_by_operator_packet") is not False:
+        raise ValueError("A202 operator intake gap packet must not close release gates")
+    if payload.get("release_ready") is not False:
+        raise ValueError("A202 operator intake gap packet must not claim release readiness")
+    if payload.get("a202_clearance_complete") is True and payload.get(
+        "missing_signed_input_groups"
+    ):
+        raise ValueError("complete A202 operator packet cannot list missing groups")
+    if payload.get("a202_clearance_complete") is not True and not payload.get(
+        "missing_signed_input_groups"
+    ):
+        raise ValueError("incomplete A202 operator packet must list missing groups")
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("generate", "validate"))
+    parser.add_argument(
+        "command",
+        choices=("generate", "validate", "generate-packet", "validate-packet"),
+    )
     parser.add_argument("--signed-intake", type=Path, default=DEFAULT_SIGNED_INTAKE)
     parser.add_argument("--a202-packet", type=Path, default=DEFAULT_A202_PACKET)
     parser.add_argument("--fact-candidates", type=Path, default=DEFAULT_FACT_CANDIDATES)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument(
+        "--packet-output", type=Path, default=DEFAULT_OPERATOR_INTAKE_PACKET_OUTPUT
+    )
     parser.add_argument("--quiet", action="store_true")
     return parser.parse_args()
 
@@ -311,7 +651,7 @@ def main() -> int:
         write_json(args.output, payload)
         if not args.quiet:
             print(json.dumps({"generated": True, "artifact": display_path(args.output)}))
-    else:
+    elif args.command == "validate":
         validate_preflight(
             read_json(args.output),
             signed_intake_path=args.signed_intake,
@@ -320,6 +660,37 @@ def main() -> int:
         )
         if not args.quiet:
             print(json.dumps({"valid": True, "artifact": display_path(args.output)}))
+    elif args.command == "generate-packet":
+        payload = build_operator_intake_gap_packet(
+            preflight_path=args.output,
+            signed_intake_path=args.signed_intake,
+            a202_packet_path=args.a202_packet,
+            fact_candidates_path=args.fact_candidates,
+        )
+        validate_operator_intake_gap_packet(
+            payload,
+            preflight_path=args.output,
+            signed_intake_path=args.signed_intake,
+            a202_packet_path=args.a202_packet,
+            fact_candidates_path=args.fact_candidates,
+        )
+        write_json(args.packet_output, payload)
+        if not args.quiet:
+            print(
+                json.dumps(
+                    {"generated": True, "artifact": display_path(args.packet_output)}
+                )
+            )
+    else:
+        validate_operator_intake_gap_packet(
+            read_json(args.packet_output),
+            preflight_path=args.output,
+            signed_intake_path=args.signed_intake,
+            a202_packet_path=args.a202_packet,
+            fact_candidates_path=args.fact_candidates,
+        )
+        if not args.quiet:
+            print(json.dumps({"valid": True, "artifact": display_path(args.packet_output)}))
     return 0
 
 

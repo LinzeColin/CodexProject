@@ -6814,3 +6814,36 @@ Status: LOCAL FOCUSED VALIDATED; A202 STILL IN PROGRESS; RELEASE GATES STILL BLO
 ### Rollback
 
 - Revert `scripts/fetch_official_source_full_text.py`, `scripts/load_live_official_captures.py`, `tests/unit/test_official_source_live_capture.py`, the live fixture, refreshed A202/A203/A205 artifacts and this governance sync; regenerate dependent release artifacts from the previous selected-capture state.
+
+## 2026-06-26 - T1301/A202 operator intake gap packet
+
+Status: LOCAL FOCUSED VALIDATED; A202 STILL IN PROGRESS; RELEASE GATES STILL BLOCKED
+
+### Scope
+
+- Added an A202 operator intake gap packet artifact that expands the missing signed-intake evidence into exact operator review work items.
+- The packet lists 4 source-license reviews, 2 passage-level relationship reviews, 2 production owner sign-offs, 1 legal release clearance and 1 final attestation.
+- Makefile targets now support `A202_SIGNED_INTAKE=<operator file>` while the default target remains bound to the repository template and therefore fail-closed.
+- The T1303 external release operator packet now includes the A202 gap packet as a supporting source for the A202 external input.
+
+### Acceptance Mapping
+
+- T1301 -> A202.
+- T1303 -> A204/A205 for the external release operator checklist linkage.
+- This is an operator evidence intake contract only. It does not close A202.
+
+### Validation
+
+- `make generate-a202-signed-intake-preflight generate-a202-operator-intake-gap-packet validate-a202-signed-intake-preflight validate-a202-operator-intake-gap-packet`: PASS.
+- `make generate-external-release-evidence-bundle validate-external-release-evidence-bundle`: PASS.
+- `.venv/bin/uv run ruff check scripts/validate_a202_signed_intake_preflight.py scripts/validate_external_release_evidence_bundle.py scripts/validate_v5_production_readiness_sync.py tests/unit/test_a202_signed_intake_preflight.py tests/unit/test_external_release_evidence_bundle.py`: PASS.
+- `.venv/bin/uv run pytest -q tests/unit/test_a202_signed_intake_preflight.py tests/unit/test_external_release_evidence_bundle.py`: PASS, `13/13`.
+
+### Non-Claims
+
+- This does not create source-license approval, passage-level relationship approval, production owner approval, legal clearance, relationship publication, A202 closure or MVP release readiness.
+- No database schema, API schema, scoring formula, graph traversal formula, extraction model, model weight, business threshold, frontend route or publication policy changed.
+
+### Rollback
+
+- Revert `scripts/validate_a202_signed_intake_preflight.py`, `tests/unit/test_a202_signed_intake_preflight.py`, `Makefile`, `artifacts/tests/a202/t1301_a202_operator_intake_gap_packet.json`, this record and companion governance sync; regenerate A202 signed-intake preflight and release artifacts from the previous template-only state.

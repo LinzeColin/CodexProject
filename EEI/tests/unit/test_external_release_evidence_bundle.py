@@ -216,6 +216,10 @@ def packet_paths(tmp_path: Path, *, ready: bool) -> dict[str, Path]:
             tmp_path / "a202_template.json",
             {"bundle_status": "TEMPLATE_ONLY", "template": "a202"},
         ),
+        "a202_operator_gap_packet_path": write_json(
+            tmp_path / "a202_gap_packet.json",
+            {"packet_status": "A202_OPERATOR_INPUTS_REQUIRED"},
+        ),
         "brand_intake_template_path": write_json(
             tmp_path / "brand_template.json",
             {"bundle_status": "TEMPLATE_ONLY", "template": "brand"},
@@ -235,6 +239,7 @@ def test_operator_intake_packet_lists_required_blocked_inputs(tmp_path: Path) ->
         preflight_path=input_paths["preflight_path"],
         a202_intake_template_path=input_paths["a202_intake_template_path"],
         a202_operator_review_packet_path=input_paths["a202_operator_review_packet_path"],
+        a202_operator_gap_packet_path=input_paths["a202_operator_gap_packet_path"],
         brand_intake_template_path=input_paths["brand_intake_template_path"],
         gold_intake_template_path=input_paths["gold_intake_template_path"],
         operator_soak_finalization_path=input_paths["operator_soak_finalization_path"],
@@ -283,13 +288,15 @@ def test_operator_intake_packet_lists_required_blocked_inputs(tmp_path: Path) ->
     )
     assert "external operator file outside repository" in a202_item["allowed_submission_paths"]
     assert a202_item["supporting_sources"] == [
-        payload["source_files"]["a202_operator_review_packet"]
+        payload["source_files"]["a202_operator_review_packet"],
+        payload["source_files"]["a202_operator_intake_gap_packet"],
     ]
     validate_operator_intake_packet(
         payload,
         preflight_path=input_paths["preflight_path"],
         a202_intake_template_path=input_paths["a202_intake_template_path"],
         a202_operator_review_packet_path=input_paths["a202_operator_review_packet_path"],
+        a202_operator_gap_packet_path=input_paths["a202_operator_gap_packet_path"],
         brand_intake_template_path=input_paths["brand_intake_template_path"],
         gold_intake_template_path=input_paths["gold_intake_template_path"],
         operator_soak_finalization_path=input_paths["operator_soak_finalization_path"],
@@ -306,6 +313,7 @@ def test_operator_intake_packet_allows_preflight_only_after_all_inputs_ready(
         preflight_path=input_paths["preflight_path"],
         a202_intake_template_path=input_paths["a202_intake_template_path"],
         a202_operator_review_packet_path=input_paths["a202_operator_review_packet_path"],
+        a202_operator_gap_packet_path=input_paths["a202_operator_gap_packet_path"],
         brand_intake_template_path=input_paths["brand_intake_template_path"],
         gold_intake_template_path=input_paths["gold_intake_template_path"],
         operator_soak_finalization_path=input_paths["operator_soak_finalization_path"],
@@ -319,6 +327,7 @@ def test_operator_intake_packet_allows_preflight_only_after_all_inputs_ready(
         preflight_path=input_paths["preflight_path"],
         a202_intake_template_path=input_paths["a202_intake_template_path"],
         a202_operator_review_packet_path=input_paths["a202_operator_review_packet_path"],
+        a202_operator_gap_packet_path=input_paths["a202_operator_gap_packet_path"],
         brand_intake_template_path=input_paths["brand_intake_template_path"],
         gold_intake_template_path=input_paths["gold_intake_template_path"],
         operator_soak_finalization_path=input_paths["operator_soak_finalization_path"],
@@ -334,6 +343,7 @@ def test_operator_intake_packet_validation_detects_template_hash_drift(
         preflight_path=input_paths["preflight_path"],
         a202_intake_template_path=input_paths["a202_intake_template_path"],
         a202_operator_review_packet_path=input_paths["a202_operator_review_packet_path"],
+        a202_operator_gap_packet_path=input_paths["a202_operator_gap_packet_path"],
         brand_intake_template_path=input_paths["brand_intake_template_path"],
         gold_intake_template_path=input_paths["gold_intake_template_path"],
         operator_soak_finalization_path=input_paths["operator_soak_finalization_path"],
@@ -349,6 +359,7 @@ def test_operator_intake_packet_validation_detects_template_hash_drift(
             preflight_path=input_paths["preflight_path"],
             a202_intake_template_path=input_paths["a202_intake_template_path"],
             a202_operator_review_packet_path=input_paths["a202_operator_review_packet_path"],
+            a202_operator_gap_packet_path=input_paths["a202_operator_gap_packet_path"],
             brand_intake_template_path=input_paths["brand_intake_template_path"],
             gold_intake_template_path=input_paths["gold_intake_template_path"],
             operator_soak_finalization_path=input_paths["operator_soak_finalization_path"],

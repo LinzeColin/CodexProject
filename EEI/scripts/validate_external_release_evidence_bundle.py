@@ -28,6 +28,9 @@ DEFAULT_A202_INTAKE_TEMPLATE = (
 DEFAULT_A202_OPERATOR_REVIEW_PACKET = (
     ROOT / "artifacts/tests/a202/t1301_operator_review_packet_contract.json"
 )
+DEFAULT_A202_OPERATOR_GAP_PACKET = (
+    ROOT / "artifacts/tests/a202/t1301_a202_operator_intake_gap_packet.json"
+)
 DEFAULT_BRAND_PREFLIGHT = (
     ROOT / "artifacts/tests/a210/t1309_brand_clearance_preflight_contract.json"
 )
@@ -486,6 +489,7 @@ def build_operator_intake_packet(
     preflight_path: Path = DEFAULT_OUTPUT,
     a202_intake_template_path: Path = DEFAULT_A202_INTAKE_TEMPLATE,
     a202_operator_review_packet_path: Path = DEFAULT_A202_OPERATOR_REVIEW_PACKET,
+    a202_operator_gap_packet_path: Path = DEFAULT_A202_OPERATOR_GAP_PACKET,
     brand_intake_template_path: Path = DEFAULT_BRAND_INTAKE_TEMPLATE,
     gold_intake_template_path: Path = DEFAULT_GOLD_INTAKE_TEMPLATE,
     gold_operator_labeling_packet_path: Path = DEFAULT_GOLD_OPERATOR_LABELING_PACKET,
@@ -506,7 +510,10 @@ def build_operator_intake_packet(
             acceptance_id="A202",
             label="A202 signed source/license/passage/owner/legal release decision",
             required_source=source_ref(a202_intake_template_path),
-            supporting_sources=[source_ref(a202_operator_review_packet_path)],
+            supporting_sources=[
+                source_ref(a202_operator_review_packet_path),
+                source_ref(a202_operator_gap_packet_path),
+            ],
             validation_command=(
                 "make generate-a202-signed-intake-preflight "
                 "validate-a202-signed-intake-preflight"
@@ -619,6 +626,7 @@ def build_operator_intake_packet(
             "external_release_evidence_bundle_preflight": source_ref(preflight_path),
             "a202_release_decision_intake_template": source_ref(a202_intake_template_path),
             "a202_operator_review_packet": source_ref(a202_operator_review_packet_path),
+            "a202_operator_intake_gap_packet": source_ref(a202_operator_gap_packet_path),
             "a210_brand_clearance_intake_template": source_ref(brand_intake_template_path),
             "a026_a027_gold_label_intake_template": source_ref(gold_intake_template_path),
             "a026_a027_operator_labeling_packet": source_ref(
@@ -723,6 +731,7 @@ def validate_operator_intake_packet(
     preflight_path: Path = DEFAULT_OUTPUT,
     a202_intake_template_path: Path = DEFAULT_A202_INTAKE_TEMPLATE,
     a202_operator_review_packet_path: Path = DEFAULT_A202_OPERATOR_REVIEW_PACKET,
+    a202_operator_gap_packet_path: Path = DEFAULT_A202_OPERATOR_GAP_PACKET,
     brand_intake_template_path: Path = DEFAULT_BRAND_INTAKE_TEMPLATE,
     gold_intake_template_path: Path = DEFAULT_GOLD_INTAKE_TEMPLATE,
     gold_operator_labeling_packet_path: Path = DEFAULT_GOLD_OPERATOR_LABELING_PACKET,
@@ -732,6 +741,7 @@ def validate_operator_intake_packet(
         preflight_path=preflight_path,
         a202_intake_template_path=a202_intake_template_path,
         a202_operator_review_packet_path=a202_operator_review_packet_path,
+        a202_operator_gap_packet_path=a202_operator_gap_packet_path,
         brand_intake_template_path=brand_intake_template_path,
         gold_intake_template_path=gold_intake_template_path,
         gold_operator_labeling_packet_path=gold_operator_labeling_packet_path,
@@ -812,6 +822,11 @@ def add_common_args(parser: argparse.ArgumentParser) -> None:
         default=DEFAULT_A202_OPERATOR_REVIEW_PACKET,
     )
     parser.add_argument(
+        "--a202-operator-gap-packet",
+        type=Path,
+        default=DEFAULT_A202_OPERATOR_GAP_PACKET,
+    )
+    parser.add_argument(
         "--brand-intake-template",
         type=Path,
         default=DEFAULT_BRAND_INTAKE_TEMPLATE,
@@ -881,6 +896,7 @@ def main() -> int:
             preflight_path=args.output,
             a202_intake_template_path=args.a202_intake_template,
             a202_operator_review_packet_path=args.a202_operator_review_packet,
+            a202_operator_gap_packet_path=args.a202_operator_gap_packet,
             brand_intake_template_path=args.brand_intake_template,
             gold_intake_template_path=args.gold_intake_template,
             gold_operator_labeling_packet_path=args.gold_operator_labeling_packet,
@@ -891,6 +907,7 @@ def main() -> int:
             preflight_path=args.output,
             a202_intake_template_path=args.a202_intake_template,
             a202_operator_review_packet_path=args.a202_operator_review_packet,
+            a202_operator_gap_packet_path=args.a202_operator_gap_packet,
             brand_intake_template_path=args.brand_intake_template,
             gold_intake_template_path=args.gold_intake_template,
             gold_operator_labeling_packet_path=args.gold_operator_labeling_packet,
@@ -905,6 +922,7 @@ def main() -> int:
             preflight_path=args.output,
             a202_intake_template_path=args.a202_intake_template,
             a202_operator_review_packet_path=args.a202_operator_review_packet,
+            a202_operator_gap_packet_path=args.a202_operator_gap_packet,
             brand_intake_template_path=args.brand_intake_template,
             gold_intake_template_path=args.gold_intake_template,
             gold_operator_labeling_packet_path=args.gold_operator_labeling_packet,

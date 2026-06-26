@@ -2326,6 +2326,20 @@ Status: LOCAL FULL VERIFIED; A209 STILL IN PROGRESS; 24H SOAK AND WATCHDOG RUNNI
 - Risks: A202 still depends on real operator-supplied source/license/passage/owner/legal evidence; future signed bundles must keep fail-closed policy text unchanged.
 - Rollback: revert the validator/test patch plus this governance record and rerun A202 contract validators.
 
+## EVENT-20260626-024 - T1301/A202 operator intake gap packet
+
+- Timestamp: `2026-06-26T21:05:00+10:00`
+- Base commit: `1e961377b49eecca026ed14dc1e00aba4e6ccde3`
+- Scope: added a hash-bound A202 operator intake gap packet that expands the signed-intake missing evidence into exact source-license, passage-level, production-owner, legal and attestation work items, and exposed that packet as supporting evidence in the external release operator checklist.
+- Files changed: `scripts/validate_a202_signed_intake_preflight.py`, `scripts/validate_external_release_evidence_bundle.py`, `tests/unit/test_a202_signed_intake_preflight.py`, `tests/unit/test_external_release_evidence_bundle.py`, `Makefile`, `artifacts/tests/a202/t1301_a202_operator_intake_gap_packet.json`, `artifacts/tests/a205/t1303_external_release_operator_intake_packet.json`, A202 traceability/governance records and the MVP development record.
+- Acceptance IDs: `A202`, `A204`, `A205`.
+- Model changes: no scoring formula, extraction model, model weight, threshold, graph query, API schema, database schema, frontend route or publication policy changed.
+- Parameter changes: added governance parameter `PARAM-091` for `release_decision_intake.operator_gap_packet_schema_version = eei-a202-operator-intake-gap-packet-v1`.
+- Test results so far: A202 signed-intake preflight generate/validate PASS; A202 operator gap packet generate/validate PASS; external release bundle generate/validate PASS; focused ruff PASS; A202/external-release unit tests PASS `13/13`.
+- Decisions: keep A202 `IN_PROGRESS`; the packet is an operator checklist and hash manifest only, while real source-license review, passage approval, production owner sign-off, legal clearance and final attestation remain external inputs.
+- Remaining risks: A202 can still be falsely interpreted as clear if the operator packet is treated as signed clearance; downstream release-manager activation must continue to require the real signed intake and all other release gates.
+- Rollback: revert the script/test/Makefile/artifact/governance changes for this packet, regenerate A202 signed-intake preflight from the template, and rerun the documented A202 validation subset.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.
