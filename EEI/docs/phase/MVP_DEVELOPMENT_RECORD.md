@@ -22,7 +22,7 @@ Status: LOCAL TARGET VALIDATED; WAITING FOR OPERATOR INPUTS; RELEASE GATES STILL
 - `TMPDIR=/private/tmp RUFF_CACHE_DIR=/private/tmp/eei-operator-submit-ruff .venv/bin/ruff check apps/api/app/domain.py scripts/validate_operator_input_status.py tests/unit/test_operator_input_status.py tests/unit/test_api_health.py`: PASS after import formatting.
 - `TMPDIR=/private/tmp PYTHONPYCACHEPREFIX=/private/tmp/eei-operator-submit-pycache .venv/bin/python -m pytest -q tests/unit/test_operator_input_status.py tests/unit/test_api_health.py -q -p no:cacheprovider`: PASS, `31/31`.
 - `PYTHONDONTWRITEBYTECODE=1 .venv/bin/python scripts/validate_contracts.py`: PASS.
-- `make generate-clean-room-release validate-clean-room-release generate-release-artifacts validate-release-artifacts`: PASS, `package_paths=456`, `manifest_paths=463`, `checksum_paths=462`.
+- `make generate-clean-room-release validate-clean-room-release generate-release-artifacts validate-release-artifacts`: PASS, `package_paths=457`, `manifest_paths=464`, `checksum_paths=463`.
 - `PLAYWRIGHT_BROWSERS_PATH=/private/tmp/eei-ms-playwright make verify`: PASS, unit tests `159/159`.
 - Clean-worktree Project Governance and remote CI are still pending for this event until the current iteration closes.
 

@@ -37,6 +37,18 @@ This ledger is human-readable. The append-only machine record is `development_ev
 
 
 
+## EVENT-20260627-021 - Tracked receipt ledger release artifact refresh
+
+- Timestamp: 2026-06-27T06:35:00+10:00
+- Fact level: EXTRACTED
+- Base commit: `58bd4450f5d9ad7b6ebf29d81661081c95b2e2f1`
+- Scope: refresh clean-room and release artifacts after `artifacts/operator_inputs/operator_input_submission_receipts.json` became a tracked package member.
+- Cause: the first EVENT-020 artifact generation ran before the new receipt ledger was tracked by `git ls-files`; CI checkout then computed `package_paths=457` and `json=99` while the package evidence still recorded `package_paths=456` and `json=98`.
+- Implementation: regenerated `DIRECTORY_TREE.txt`, `manifest.txt`, `CHECKSUMS.sha256`, `artifacts/tests/a200/t1215_clean_room_release.json`, the clean-room ZIP and `artifacts/release_evidence_t1211.json`; appended EVENT-021 instead of mutating `development_events.jsonl` history.
+- Validation: clean-room/release artifact generation PASS with `package_paths=457`, `json=99`, `manifest_paths=464`, `checksum_paths=463`; main worktree `make verify` PASS with unit tests `169/169`; clean worktree bootstrap, Playwright install and `make verify` PASS with unit tests `169/169`.
+- Non-claims: this does not change receipt ledger behavior, API behavior, database schema, scoring formulas, model weights, thresholds, release-manager activation, publication policy or any release gate status.
+- Rollback: revert the EVENT-021 artifact refresh files while preserving the EVENT-020 receipt-ledger implementation if that behavior remains desired.
+
 ## EVENT-20260627-020 - T1303/A204-A205 operator input receipt ledger
 
 - Timestamp: 2026-06-27T06:10:00+10:00
@@ -44,7 +56,7 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Base commit: `ff09aa34df7e31e9fa640e9c892816c24a6410b7`
 - Scope: persist hash-bound operator-input receipt attempts in a controlled ledger with idempotent retry and stale-writer conflict controls.
 - Implementation: `scripts/validate_operator_input_status.py` adds `SUBMISSION_RECEIPT_LEDGER_SCHEMA_VERSION`, ledger validation, append and record helpers; `apps/api/app/domain.py` records receipts to `artifacts/operator_inputs/operator_input_submission_receipts.json` and exposes `GET /v1/release/operator-input-submission-receipts`; `specs/api_contract.yaml` documents the request, response and ledger schemas; unit tests cover ledger append, replay idempotency, previous-receipt conflict and API readback.
-- Validation: focused py_compile PASS; focused ruff PASS; `tests/unit/test_operator_input_status.py tests/unit/test_api_health.py` PASS `41/41`; `scripts/validate_contracts.py` PASS; semantic extractor validation PASS with `97` parameters and `11` formulas; clean-room/release artifact generation PASS with `package_paths=456`, `manifest_paths=463`, `checksum_paths=462`; full `make verify` PASS with unit tests `169/169`.
+- Validation: focused py_compile PASS; focused ruff PASS; `tests/unit/test_operator_input_status.py tests/unit/test_api_health.py` PASS `41/41`; `scripts/validate_contracts.py` PASS; semantic extractor validation PASS with `97` parameters and `11` formulas; clean-room/release artifact generation PASS with `package_paths=457`, `manifest_paths=464`, `checksum_paths=463`; full `make verify` PASS with unit tests `169/169`.
 - Non-claims: this does not create signed operator input files, write or modify operator input targets, execute validator shell commands, certify real external evidence, authorize or finalize A209, activate release-manager refresh, close A202/A210/A026/A027/A209/A204/A205, or change database schema, scoring formulas, thresholds, model weights, extraction logic or publication policy.
 - Rollback: revert the ledger helpers, API route changes, OpenAPI schema, tracked empty ledger artifact, unit tests and governance event; preserve any real operator files under `artifacts/operator_inputs/`.
 
@@ -63,7 +75,7 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Model changes: no scoring formula, extraction model, graph traversal formula, database schema, model weight, threshold, release-manager activation rule or publication policy changed; the operational-controls contract now includes a receipt-ledger schema.
 - Parameter changes: added `PARAM-097` with value `eei-operator-input-submission-receipt-ledger-v1`; no scoring parameter active value changed.
 - Commands run: focused py_compile; focused ruff; focused unit tests; `scripts/validate_contracts.py`; semantic extractor validation; v5 production readiness sync; clean-room/release artifact generation and validation; full `make verify`.
-- Test results: focused unit tests PASS `41/41`; OpenAPI/JSON contract validation PASS; semantic extractor PASS with `97` parameters and `11` formulas; v5 production readiness sync PASS; clean-room/release artifacts validate with `package_paths=456`, `manifest_paths=463`, `checksum_paths=462`; full `make verify` PASS with unit tests `169/169`.
+- Test results: focused unit tests PASS `41/41`; OpenAPI/JSON contract validation PASS; semantic extractor PASS with `97` parameters and `11` formulas; v5 production readiness sync PASS; clean-room/release artifacts validate with `package_paths=457`, `manifest_paths=464`, `checksum_paths=463`; full `make verify` PASS with unit tests `169/169`.
 - Rollback: revert the script/API/schema/artifact/test/governance companion changes while preserving real future signed operator files under `artifacts/operator_inputs/`.
 - Next step: run clean-worktree governance, commit/push and confirm Project Governance plus EEI validation CI; continue A209 background monitoring separately.
 

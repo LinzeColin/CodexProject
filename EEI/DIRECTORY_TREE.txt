@@ -77,7 +77,8 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   └── operator_input_kit_manifest.json
 │   ├── operator_inputs
 │   │   ├── README.md
-│   │   └── operator_input_status.json
+│   │   ├── operator_input_status.json
+│   │   └── operator_input_submission_receipts.json
 │   ├── tests
 │   │   ├── a026
 │   │   │   ├── t904_a026_a027_operator_labeling_packet.json

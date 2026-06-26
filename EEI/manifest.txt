@@ -91,6 +91,7 @@ artifacts/operator_input_kit/a210/signed-brand-clearance.template.json
 artifacts/operator_input_kit/operator_input_kit_manifest.json
 artifacts/operator_inputs/README.md
 artifacts/operator_inputs/operator_input_status.json
+artifacts/operator_inputs/operator_input_submission_receipts.json
 artifacts/pdf_contact_sheet.png
 artifacts/release_evidence_t1211.json
 artifacts/release_operation_log_t1211.jsonl
