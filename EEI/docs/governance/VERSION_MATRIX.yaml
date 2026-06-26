@@ -38,7 +38,7 @@ parameter_profile_versions:
   release-decision-bundle: "3"
   brand-clearance-intake: "2"
 data_snapshot_version: "task-pack-v4.2.0-2026-06-19"
-current_iteration: "ITER-20260627-009"
+current_iteration: "ITER-20260627-011"
 current_phase: "D"
 current_gate: "TASK-T1307-A209-LIVE-RERUN-MONITOR-HARDENING"
 version_file_value: "0.1.0"
