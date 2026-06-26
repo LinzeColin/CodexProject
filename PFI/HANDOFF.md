@@ -13,8 +13,10 @@ Complete PFI V0.2 Stage 1 in `CodexProject/PFI`.
 - Active legacy runtime path is `PFI/大数据模拟器/qbvs`.
 - Stage 1 Phase 1A IA contract is implemented in `src/pfi_v02/stage1_ia.py`.
 - Stage 1 Phase 1B core model contract is implemented in `src/pfi_v02/core_models.py`.
+- Stage 1 Phase 1C classification rules are implemented in `src/pfi_v02/classification_rules.py`.
 - Phase 1A validation command is `PYTHONPATH=src python3 -B -m unittest tests.test_stage1_ia_contract -q`.
 - Phase 1B validation command is `PYTHONPATH=src python3 -B -m unittest tests.test_stage1_core_models -q`.
+- Phase 1C validation command is `PYTHONPATH=src python3 -B -m unittest tests.test_stage1_classification_rules -q`.
 
 ## Decisions
 
@@ -25,5 +27,5 @@ Complete PFI V0.2 Stage 1 in `CodexProject/PFI`.
 
 ## Next
 
-1. Phase 1C: add transfer/fund/bullion/credit repayment classification fixtures.
-2. Re-run Stage 1 tests plus legacy QBVS smoke.
+1. Re-run Stage 1 tests plus legacy QBVS smoke before closeout.
+2. Stage 2 can build data-source registry and parsers on these contracts.

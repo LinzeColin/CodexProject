@@ -19,7 +19,7 @@ QBVS runtime and maps to `投资管理 > 策略实验室 / 大数据模拟器`.
 | --- | --- | --- |
 | Phase 1A: 8 first-level IA contract | Verified | `src/pfi_v02/stage1_ia.py`, `tests/test_stage1_ia_contract.py`, `7 tests OK` |
 | Phase 1B: Core object models | Verified | `src/pfi_v02/core_models.py`, `tests/test_stage1_core_models.py`, `9 tests OK` |
-| Phase 1C: Classification rules | Pending | To be implemented in this Stage 1 run |
+| Phase 1C: Classification rules | Verified | `src/pfi_v02/classification_rules.py`, `tests/test_stage1_classification_rules.py`, Stage 1 total `23 tests OK` |
 
 ## Phase 1A Contract Summary
 
@@ -81,6 +81,17 @@ Required coverage:
 - Account types: payment, bank, brokerage, fund platform, bullion platform, credit card, cash, liability.
 - Asset types: cash, equity, ETF, fund, bullion, credit, FX.
 
+## Phase 1C Contract Summary
+
+Classification fixtures:
+
+| Rule | Expected result |
+| --- | --- |
+| CBA to Moomoo / bank to broker / Alipay to bank transfer | `TRANSFER`, not ordinary consumption |
+| Alipay fund subscription/redemption | `FUND`, investment event, not life spending |
+| ABC Bullion gold/silver buy/sell | `BUY_ASSET` or `SELL_ASSET`, bullion investment event |
+| Credit card repayment | `TRANSFER`, credit liability movement, dedupe key, not duplicate consumption |
+
 ## Validation
 
 Phase 1A:
@@ -109,3 +120,19 @@ PYTHONPATH=src python3 -B -m unittest tests.test_stage1_core_models -q
 ```
 
 Observed: `Ran 9 tests` / `OK`.
+
+Phase 1C:
+
+```bash
+cd PFI
+PYTHONPATH=src python3 -B -m unittest tests.test_stage1_classification_rules -q
+```
+
+Observed closeout:
+
+| Command | Result |
+| --- | --- |
+| `PYTHONPATH=src python3 -B -m unittest tests.test_stage1_ia_contract tests.test_stage1_core_models tests.test_stage1_classification_rules -q` | `Ran 23 tests` / `OK` |
+| `cd PFI/大数据模拟器 && PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q` | `Ran 1 test` / `OK` |
+| Excluded-literal grep scoped to Stage 1 touched files | Pass, no output |
+| `git diff --check` | Pass, no output |

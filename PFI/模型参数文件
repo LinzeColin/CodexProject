@@ -11,6 +11,7 @@
 | legacy_runtime | `PFI/大数据模拟器/qbvs` |
 | stage1_ia_contract | `src/pfi_v02/stage1_ia.py` |
 | stage1_core_model_contract | `src/pfi_v02/core_models.py` |
+| stage1_classification_rules | `src/pfi_v02/classification_rules.py` |
 | stage1_record | `docs/pfi_v02/STAGE1_CORE_SKELETON.md` |
 | execution_mode | local-first, research-only, review-first |
 | live_trading | disabled |
@@ -52,3 +53,11 @@ LedgerEvent = 钱发生了什么
 - Acquisition modes include CSV, ZIP, Excel, PDF, HTML, statement, read-only API/OpenD, watch folder, browser-assisted read and manual snapshot.
 - Ledger event types include CASH, TRANSFER, BUY_ASSET, SELL_ASSET, FUND, FEE, TAX, FX, REFUND and VALUATION.
 - Snapshots are point-in-time facts and must not overwrite ledger history.
+
+## Classification Rule Parameters
+
+- Own-account transfers are excluded from ordinary consumption.
+- CBA to Moomoo, bank to broker and Alipay to bank are transfer events.
+- Alipay fund subscription/redemption are fund investment events.
+- ABC Bullion gold/silver buy/sell are bullion asset events.
+- Credit-card repayment has a dedupe key and is not counted as new consumption.

@@ -31,4 +31,5 @@ cd 大数据模拟器 && PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_
 ## 待完成
 
 - Phase 1B：已新增 `src/pfi_v02/core_models.py` 和 `tests/test_stage1_core_models.py`，覆盖 DataSource / CredentialRef、Account / AssetInstrument、ImportBatch / RawRecord、NormalizedTransaction / LedgerEvent、Snapshot models；验证结果 `Ran 9 tests / OK`，IA+模型合计 `Ran 16 tests / OK`。
-- Phase 1C：转账、基金、贵金属、信用卡还款分类规则 fixture。
+- Phase 1C：已新增 `src/pfi_v02/classification_rules.py` 和 `tests/test_stage1_classification_rules.py`，覆盖转账、基金、贵金属、信用卡还款分类规则 fixture。
+- Stage 1 closeout 验证：IA + core models + classification rules 合计 `Ran 23 tests / OK`；旧 QBVS lifecycle smoke `Ran 1 test / OK`；排除项 grep 无输出；`git diff --check` 通过。

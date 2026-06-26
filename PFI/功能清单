@@ -16,6 +16,7 @@ PFI V0.2 是个人金融中枢。当前开发根为 `CodexProject/PFI`。
 
 - 8 个一级入口 contract：`src/pfi_v02/stage1_ia.py`。
 - 核心对象模型 contract：`src/pfi_v02/core_models.py`。
+- 关键分类规则 contract：`src/pfi_v02/classification_rules.py`。
 - Stage 1 记录：`docs/pfi_v02/STAGE1_CORE_SKELETON.md`。
 - 大数据模拟器兼容边界：`PFI/大数据模拟器/qbvs` 不移动、不重命名、不宽重构。
 
@@ -37,6 +38,9 @@ PFI V0.2 是个人金融中枢。当前开发根为 `CodexProject/PFI`。
 - 数据源、账户、资产、账本事件必须分离。
 - DataSource、CredentialRef、Account、AssetInstrument、ImportBatch、RawRecord、NormalizedTransaction、LedgerEvent 和 Snapshot 模型必须可追溯、可测试。
 - 转账不计普通消费。
+- 支付宝基金申购/赎回计为投资基金事件，不计生活消费。
+- ABC Bullion 黄金/白银买卖计为贵金属投资资产事件。
+- 信用卡还款必须去重，不重复计消费。
 - 建议必须有证据、动作、状态和复盘。
 - 报告必须保留证据链。
 
