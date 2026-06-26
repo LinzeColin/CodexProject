@@ -2246,6 +2246,24 @@ tasks:
     completed_version: "0.23.0"
     unknown_task_ids: []
 
+  - task_id: "S2PMT04-SCHEDULER-TEMPLATE-A013"
+    phase: "S2PM"
+    objective: "Remediate inherited A-013 locally by making the Stage 1 macOS scheduler dry-run launchd template parseable and argument-structured for special-character paths."
+    scope: "Stage 1 scheduler dry-run macOS launchd plist generation, focused regression test, phase record, run manifest, and no-production side-effect evidence."
+    non_scope: "No real scheduler install, no launchd bootstrap, no real SMTP send, no Release, no production restore, no public schema change, no DB migration, no production queue mutation, no ranking change, no source adapter change, no workflow enforcement, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no inherited P0/P1 closure claim before independent review, and no integrated production acceptance."
+    status: "completed"
+    dependencies: ["S2PMT04", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py", "arxiv-daily-push/tests/test_stage1_runtime.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT04_SCHEDULER_TEMPLATE_A013.md"]
+    acceptance_ids: ["ACC-S2PMT04-LIFECYCLE"]
+    test_commands: ["python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py arxiv-daily-push/tests/test_stage1_runtime.py", "PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage1_runtime.py"]
+    test_results: ["py_compile PASS", "focused Stage 1 runtime tests: 12 OK", "full arxiv-daily-push unittest: 474 OK", "V7.2 validator: PASS", "ADP project governance: 0 errors / 0 warnings", "changed-only governance semantic: 0 errors / 0 warnings", "lean check-render: drift_count 0 reference_issue_count 0", "YAML/JSONL/CSV/manifest parse: OK", "git diff --check: PASS", "production-side-effect forbidden scan: no true/enabling hits"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PMT04_SCHEDULER_TEMPLATE_A013.md", "governance/run_manifests/ADP-S2PMT04-SCHEDULER-TEMPLATE-A013-20260626.json", "arxiv-daily-push/tests/test_stage1_runtime.py"]
+    risk: "A-013 local remediation can be misread as scheduler install readiness or inherited P0/P1 closure; independent review plus S2PMT07 still control production acceptance."
+    rollback: "Revert Stage 1 scheduler template code, focused test, phase record, manifest, and delivery/event records; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
+
   - task_id: "S2PMT03-LESSON-REVISION-A016"
     phase: "S2PM"
     objective: "Remediate inherited audit finding A-016 locally by distinguishing stable Lesson.lesson_key from immutable content/evidence/model-sensitive Lesson.lesson_revision_id."

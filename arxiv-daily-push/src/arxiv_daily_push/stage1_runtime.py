@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import plistlib
 import shutil
 import sqlite3
 from datetime import datetime, timezone
@@ -434,7 +435,11 @@ def build_scheduler_plan(
         blocking_reasons.append("scheduler action must be scheduler_install or scheduler_uninstall")
     if normalized_platform not in STAGE1_RUNTIME_SUPPORTED_SCHEDULER_PLATFORMS:
         blocking_reasons.append("unsupported scheduler platform")
-    templates = _scheduler_templates(normalized_platform, Path(project_root), Path(state_dir), uninstall=normalized_action == "scheduler_uninstall") if not blocking_reasons else []
+    templates = (
+        _scheduler_templates(normalized_platform, Path(project_root), Path(state_dir), generated_at=generated_at, uninstall=normalized_action == "scheduler_uninstall")
+        if not blocking_reasons
+        else []
+    )
     written_paths: list[str] = []
     if write and not blocking_reasons:
         if artifact_dir is None:
@@ -537,23 +542,13 @@ def _disabled_flag_reasons(environment: Mapping[str, str]) -> list[str]:
     return reasons
 
 
-def _scheduler_templates(platform: str, project_root: Path, state_dir: Path, *, uninstall: bool) -> list[dict[str, str]]:
+def _scheduler_templates(platform: str, project_root: Path, state_dir: Path, *, generated_at: str, uninstall: bool) -> list[dict[str, str]]:
     if platform == "macos":
         label = "com.linze.adp.stage1"
         if uninstall:
             content = f"launchctl bootout gui/$(id -u) ~/Library/LaunchAgents/{label}.tick.plist\n"
             return [{"filename": "macos-uninstall.sh", "content": content, "task": "uninstall"}]
-        command = f"cd {project_root} && PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push tick --state-dir {state_dir} --generated-at \"$ADP_GENERATED_AT\" --json"
-        content = (
-            '<?xml version="1.0" encoding="UTF-8"?>\n'
-            '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n'
-            "<plist version=\"1.0\"><dict>\n"
-            f"<key>Label</key><string>{label}.tick</string>\n"
-            "<key>Disabled</key><true/>\n"
-            "<key>StartInterval</key><integer>1800</integer>\n"
-            f"<key>ProgramArguments</key><array><string>/bin/sh</string><string>-lc</string><string>{command}</string></array>\n"
-            "</dict></plist>\n"
-        )
+        content = _macos_launchd_tick_plist(label=label, project_root=project_root, state_dir=state_dir, generated_at=generated_at)
         return [{"filename": f"{label}.tick.plist", "content": content, "task": "tick"}]
     if platform == "linux":
         if uninstall:
@@ -570,6 +565,30 @@ def _scheduler_templates(platform: str, project_root: Path, state_dir: Path, *, 
         "# Dry-run template only; do not register on the current low-resource machine.\n"
     )
     return [{"filename": "windows-install.ps1", "content": ps, "task": "tick"}]
+
+
+def _macos_launchd_tick_plist(*, label: str, project_root: Path, state_dir: Path, generated_at: str) -> str:
+    payload = {
+        "Label": f"{label}.tick",
+        "Disabled": True,
+        "StartInterval": 1800,
+        "WorkingDirectory": str(project_root),
+        "EnvironmentVariables": {
+            "PYTHONPATH": str(project_root / "arxiv-daily-push" / "src"),
+        },
+        "ProgramArguments": [
+            "python3",
+            "-m",
+            "arxiv_daily_push",
+            "tick",
+            "--state-dir",
+            str(state_dir),
+            "--generated-at",
+            generated_at,
+            "--json",
+        ],
+    }
+    return plistlib.dumps(payload, fmt=plistlib.FMT_XML, sort_keys=False).decode("utf-8")
 
 
 def _manifest_file(role: str, path: Path, *, source_path: Path) -> dict[str, Any]:
