@@ -51,6 +51,7 @@ S2PMT04_REQUIRED_GATES = (
     "automatic_wake_dry_run",
     "lifecycle_transition_chain",
     "startup_reconciliation",
+    "startup_convergence_count_conservation",
     "shutdown_receipt",
     "transaction_completion_signal",
     "cache_cleanup_safety",
@@ -164,6 +165,86 @@ def build_startup_reconciliation(
         "queue_mutation_applied": False,
         "reconciliation_ready": True,
     }
+
+
+def build_startup_convergence_receipt(
+    *,
+    startup_reconciliation: Mapping[str, Any],
+    expected_counts: Mapping[str, int],
+    generated_at: str,
+) -> dict[str, Any]:
+    """Prove startup reconciliation accounts for each persistent state category."""
+
+    action_keys = {
+        "temp_items": "temp_actions",
+        "inflight_items": "inflight_actions",
+        "outbox_items": "outbox_actions",
+        "stale_locks": "stale_lock_actions",
+    }
+    category_results: dict[str, dict[str, Any]] = {}
+    blocking_reasons: list[str] = []
+    total_expected = 0
+    total_accounted = 0
+    for count_key, action_key in action_keys.items():
+        expected = int(expected_counts.get(count_key) or 0)
+        actions = startup_reconciliation.get(action_key) if isinstance(startup_reconciliation.get(action_key), list) else []
+        accounted = len(actions)
+        total_expected += expected
+        total_accounted += accounted
+        category_results[count_key] = {
+            "expected_count": expected,
+            "accounted_count": accounted,
+            "converged": expected == accounted,
+            "action_key": action_key,
+        }
+        if expected != accounted:
+            blocking_reasons.append(f"{count_key} expected {expected} but accounted {accounted}")
+    if startup_reconciliation.get("reconciliation_ready") is not True:
+        blocking_reasons.append("startup reconciliation is not ready")
+    if startup_reconciliation.get("new_work_claim_allowed") is not False:
+        blocking_reasons.append("new work claims must stay blocked during startup convergence")
+    if startup_reconciliation.get("queue_mutation_applied") is not False:
+        blocking_reasons.append("startup convergence evidence must not mutate queues")
+    return {
+        "generated_at": generated_at,
+        "phase": "RECOVERING",
+        "category_results": category_results,
+        "total_expected_count": total_expected,
+        "total_accounted_count": total_accounted,
+        "count_conservation": total_expected == total_accounted,
+        "terminal_convergence": not blocking_reasons,
+        "new_work_claim_allowed": False,
+        "queue_mutation_applied": False,
+        "status": "pass" if not blocking_reasons else "blocked",
+        "blocking_reasons": sorted(set(blocking_reasons)),
+    }
+
+
+def validate_startup_convergence_receipt(receipt: Mapping[str, Any]) -> list[str]:
+    """Validate startup restart convergence and count conservation evidence."""
+
+    errors: list[str] = []
+    categories = receipt.get("category_results") if isinstance(receipt.get("category_results"), Mapping) else {}
+    for count_key in ("temp_items", "inflight_items", "outbox_items", "stale_locks"):
+        row = categories.get(count_key)
+        if not isinstance(row, Mapping):
+            errors.append(f"{count_key} convergence row is missing")
+            continue
+        if row.get("expected_count") != row.get("accounted_count"):
+            errors.append(f"{count_key} expected/accounted count mismatch")
+        if row.get("converged") is not True:
+            errors.append(f"{count_key} did not converge")
+    if receipt.get("count_conservation") is not True:
+        errors.append("startup convergence count conservation must be true")
+    if receipt.get("terminal_convergence") is not True:
+        errors.append("startup convergence must be terminal")
+    if receipt.get("new_work_claim_allowed") is not False:
+        errors.append("startup convergence must keep new work claims blocked")
+    if receipt.get("queue_mutation_applied") is not False:
+        errors.append("startup convergence evidence must not mutate queues")
+    if receipt.get("status") == "pass" and receipt.get("blocking_reasons"):
+        errors.append("passing startup convergence receipt must not have blocking_reasons")
+    return errors
 
 
 def build_shutdown_receipt(
@@ -471,6 +552,11 @@ def build_lifecycle_cache_report(*, generated_at: str, cache_root: str | Path | 
         stale_locks=[{"lock_id": "lock-1", "lease_owner": "worker-old"}],
         generated_at=generated_at,
     )
+    startup_convergence = build_startup_convergence_receipt(
+        startup_reconciliation=startup,
+        expected_counts={"temp_items": 1, "inflight_items": 1, "outbox_items": 1, "stale_locks": 1},
+        generated_at=generated_at,
+    )
     shutdown = build_shutdown_receipt(
         cycle_id="2026-07-03",
         inflight_count=0,
@@ -522,6 +608,8 @@ def build_lifecycle_cache_report(*, generated_at: str, cache_root: str | Path | 
         "automatic_wake_dry_run": validate_launchd_plist_payload(plist_payload) == [],
         "lifecycle_transition_chain": transition_plan["transition_chain_valid"] is True,
         "startup_reconciliation": startup["reconciliation_ready"] is True,
+        "startup_convergence_count_conservation": startup_convergence["status"] == "pass"
+        and validate_startup_convergence_receipt(startup_convergence) == [],
         "shutdown_receipt": shutdown["status"] == "pass",
         "transaction_completion_signal": transaction_receipt["status"] == "pass"
         and validate_transaction_completion_receipt(transaction_receipt) == [],
@@ -541,6 +629,7 @@ def build_lifecycle_cache_report(*, generated_at: str, cache_root: str | Path | 
         "gates": gates,
         "transition_plan": transition_plan,
         "startup_reconciliation": startup,
+        "startup_convergence_receipt": startup_convergence,
         "shutdown_receipt": shutdown,
         "transaction_completion_receipt": transaction_receipt,
         "cache_cleanup_plan": cleanup,
@@ -591,6 +680,11 @@ def validate_lifecycle_cache_report(report: Mapping[str, Any]) -> list[str]:
         errors.append("durable evidence cache class must never be auto-deleted")
     if cleanup.get("dry_run") is not True:
         errors.append("S2PMT04 evidence report cache cleanup must remain dry-run")
+    startup_convergence = report.get("startup_convergence_receipt")
+    if not isinstance(startup_convergence, Mapping):
+        errors.append("startup_convergence_receipt is required")
+    else:
+        errors.extend(validate_startup_convergence_receipt(startup_convergence))
     transaction_receipt = report.get("transaction_completion_receipt")
     if not isinstance(transaction_receipt, Mapping):
         errors.append("transaction_completion_receipt is required")

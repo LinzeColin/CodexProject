@@ -5087,7 +5087,7 @@ models:
   -
     model_id: "MOD-ADP-097"
     name: "S2PMT04 local lifecycle and cache-cleanup model"
-    purpose: "Validate local S2PMT04 automatic wake dry-run, lifecycle drain/checkpoint/cleanup state sequence, startup reconciliation, durable shutdown receipt, observable transaction completion/recovery receipts, safe cache cleanup, parseable disabled launchd plist generation, and no production side effects under V7.2."
+    purpose: "Validate local S2PMT04 automatic wake dry-run, lifecycle drain/checkpoint/cleanup state sequence, startup reconciliation, startup convergence/count conservation, durable shutdown receipt, observable transaction completion/recovery receipts, safe cache cleanup, parseable disabled launchd plist generation, and no production side effects under V7.2."
     owner: "arxiv-daily-push"
     status: "active"
     assumption_ids:
@@ -5111,6 +5111,7 @@ models:
     inputs:
       - "local lifecycle cycle id"
       - "startup reconciliation fixtures"
+      - "startup expected persistent-state counts"
       - "shutdown receipt inputs"
       - "shutdown transaction completion fixtures"
       - "cache entry inventory"
@@ -5118,6 +5119,7 @@ models:
     outputs:
       - "lifecycle transition plan"
       - "startup reconciliation receipt"
+      - "startup convergence and count-conservation receipt"
       - "shutdown receipt"
       - "transaction completion and recovery receipt"
       - "cache cleanup dry-run plan"
@@ -5133,7 +5135,9 @@ models:
       - "arxiv-daily-push/tests/test_local_runner.py"
     evidence_refs:
       - "governance/run_manifests/ADP-S2PMT04-LIFECYCLE-CACHE-20260626.json"
+      - "governance/run_manifests/ADP-S2PMT04-STARTUP-CONVERGENCE-B004-20260626.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT04_LIFECYCLE_CACHE.md"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT04_STARTUP_CONVERGENCE_B004.md"
   -
     model_id: "MOD-ADP-098"
     name: "S2PMT05 local stress fault time and E2E model"
