@@ -16,6 +16,27 @@ The append-only machine record is `development_events.jsonl`.
 - Current task: `S2PLT01-REPLAY-PAYLOAD-CONTRACT` adds a no-production replay payload envelope for explicit S2PLT01 evidence records before they enter the existing replay evidence and entry precheck gates. The payload contract requires payload metadata, evidence mode, evidence refs, deterministic `payload_hash`, 30-day replay evidence, 120 M1-M4 `EMAIL_LEARNING_V1` previews, D1-D4 terminal source states, D1-D4/B1-B6 coverage, zero future leakage, zero replay P0/P1 counters, and all production/CURRENT/V7 side-effect flags false. `S2PLT01` is not accepted by this run because no actual full replay payload is executed here and inherited V7.1 P0=8/P1=37 remain open until independent S2PMT07 review closes them. Prior `S2PLT01-REPLAY-EVIDENCE-GATE`, `S2PMT02-ARTIFACT-ATOMIC-PUBLISH`, `S2PMT02-ARTIFACT-SHA256`, `S2PMT02-SUPPORTING-FILE-COLLISION`, and `S2PMT02-RESTORE-SAFETY` remediation evidence remains unchanged. `S2PMT07` remains the final production gate and is still blocked by missing S2PLT04, final bundle, independent signoff, and independent final command execution. No CURRENT, V7.1/V7.2 contract file, real production backup/restore/email, real SMTP, scheduler installation, Release, DB migration, public schema, production queue, source adapter, ranking, inherited P0/P1 closure, DAILY_OPERATION, or integrated production acceptance state changed. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
+### `ITER-20260626-ADP-S2PMT04-SCHEDULER-TEMPLATE-A013`
+
+- Timestamp: `2026-06-26T23:20:00+10:00`
+- Fact level: EXTRACTED from V7.1 inherited A-013 finding, Stage 1 scheduler dry-run template implementation, focused regression tests, phase record, run manifest, and local validation.
+- Base commit: `c48b0d3b41099796c4d17fe3c209157e3781b6fe`
+- Product version: `0.23.1`
+- Status: local validation passed, PR/CI pending.
+- Phase: S2PM
+- Task IDs: `S2PMT04-SCHEDULER-TEMPLATE-A013`; parent `S2PMT04`; inherited finding `A-013`; acceptance `ACC-S2PMT04-LIFECYCLE`.
+- Goal: Remediate inherited audit finding A-013 locally by making the macOS Stage 1 scheduler dry-run launchd plist parseable and argument-structured for paths containing spaces, Chinese characters, semicolons, and `&`.
+- Files changed: Stage 1 runtime scheduler template generator, focused runtime tests, phase record, run manifest, delivery task, events, changelog, and this ledger entry.
+- Model changes: Reused `MOD-ADP-041`; no new model ID.
+- Formula changes: Reused `FORM-ADP-043`; no formula expression change.
+- Parameter changes: No parameter value changes.
+- Validation: py_compile PASS; focused Stage 1 runtime tests 12 OK; full arxiv-daily-push unittest 474 OK; V7.2 validator PASS; ADP project governance 0 errors / 0 warnings; changed-only governance semantic 0 errors / 0 warnings; lean check-render drift_count 0 reference_issue_count 0; YAML/JSONL/CSV/manifest parse OK; git diff --check PASS; production-side-effect forbidden scan no true/enabling hits.
+- Decisions: `S2PMT04-SCHEDULER-TEMPLATE-A013` is accepted only as local A-013 remediation evidence. It does not install or enable a scheduler, close inherited P0/P1 counters, provide independent S2PMT07 signoff, enable SMTP, Release, DB migration, production queue mutation, Stage 2 production acceptance, integrated production acceptance, or production operation.
+- Remaining risks: Independent review must still verify A-013 closure and inherited P0=8/P1=37 remain open until S2PMT07 closes them.
+- Rollback: Revert Stage 1 runtime scheduler template code, focused test, phase record, manifest, delivery/event records, changelog, and this ledger entry; no runtime production state was changed.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PMT04_SCHEDULER_TEMPLATE_A013.md`; `governance/run_manifests/ADP-S2PMT04-SCHEDULER-TEMPLATE-A013-20260626.json`; `arxiv-daily-push/tests/test_stage1_runtime.py`.
+- Next step: Run final validation, commit, push, and open PR for S2PMT04 A-013 local remediation.
+
 ### `ITER-20260626-ADP-S2PLT01-REPLAY-PAYLOAD-CONTRACT`
 
 - Timestamp: `2026-06-26T12:48:44+10:00`

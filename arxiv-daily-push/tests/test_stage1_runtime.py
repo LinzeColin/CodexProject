@@ -3,6 +3,7 @@ from __future__ import annotations
 import io
 import hashlib
 import json
+import plistlib
 import tempfile
 import unittest
 from contextlib import redirect_stdout
@@ -280,6 +281,36 @@ class Stage1RuntimeTests(unittest.TestCase):
             self.assertTrue(uninstall["templates"])
             self.assertFalse(validate_stage1_runtime_report(install))
             self.assertFalse(validate_stage1_runtime_report(uninstall))
+
+    def test_macos_scheduler_template_uses_parseable_argument_plist(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            project_root = root / "repo A&B;中文"
+            state_dir = root / "state A&B;中文"
+
+            install = build_scheduler_plan(
+                action="scheduler_install",
+                platform="macos",
+                project_root=project_root,
+                state_dir=state_dir,
+                generated_at="2026-07-01T05:00:00+10:00",
+            )
+
+            self.assertEqual(install["status"], "pass")
+            self.assertTrue(install["dry_run_only"])
+            self.assertFalse(install["applied"])
+            template = install["templates"][0]["content"]
+            payload = plistlib.loads(template.encode("utf-8"))
+            arguments = payload["ProgramArguments"]
+            self.assertEqual(payload["WorkingDirectory"], str(project_root))
+            self.assertEqual(payload["EnvironmentVariables"]["PYTHONPATH"], str(project_root / "arxiv-daily-push" / "src"))
+            self.assertEqual(arguments[:4], ["python3", "-m", "arxiv_daily_push", "tick"])
+            self.assertEqual(arguments[arguments.index("--state-dir") + 1], str(state_dir))
+            self.assertEqual(arguments[arguments.index("--generated-at") + 1], "2026-07-01T05:00:00+10:00")
+            self.assertNotIn("/bin/sh", arguments)
+            self.assertNotIn("-lc", arguments)
+            self.assertIn("A&amp;B;中文", template)
+            self.assertFalse(validate_stage1_runtime_report(install))
 
     def test_cli_tick_watchdog_backup_restore_and_scheduler(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
