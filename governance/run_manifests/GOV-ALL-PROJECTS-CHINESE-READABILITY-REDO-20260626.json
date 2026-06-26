@@ -19,8 +19,8 @@
   "content_tree_hash": "sha256-changed-files-excluding-this-manifest:PRECOMMIT_PENDING_FINAL_DIFF_HASH",
   "binding_status": "PRECOMMIT_TREE_BOUND",
   "ci_attestation_subject": "All-project Chinese readability redo for README and human-entry files, with renderer and validator enforcement",
-  "ci_run_reference": "LOCAL_PASS_CHANGED_ONLY_CI latest_observed_evidence_id=9464e49dbaa5 non_binding_self_reference; PENDING_PR_AND_MAIN_CI",
-  "owner_readable_summary": "本轮按“所有项目的中文可读都是 0 分，重做”处理，把 10 个项目的 README、功能清单、开发记录、模型参数文件全部改成中文 Owner 首屏优先；同时把规则固化到渲染器、项目治理校验器和回归测试，避免后续 agent 或 render 命令把入口重新降级成英文键名、路径列表或机器字段页。",
+  "ci_run_reference": "LOCAL_PASS_CHANGED_ONLY_CI latest_observed_evidence_id=ec6f1dafc90a non_binding_self_reference; PENDING_PR_AND_MAIN_CI",
+  "owner_readable_summary": "本轮按“所有项目的中文可读都是 0 分，重做”处理，把 10 个项目的 README、功能清单、开发记录、模型参数文件全部改成中文 Owner 首屏优先；随后按“清理瘦身但不影响运行和开发”继续压缩重复说明，把机器键名改为中文标签，并把旧兼容 token 移到末尾注释，避免后续 agent 或 render 命令把入口重新降级成英文键名、路径列表或机器字段页。",
   "stop_condition_and_gate": {
     "global_chinese_first": true,
     "owner_readable_priority": true,
@@ -29,8 +29,8 @@
     "renderer_preserves_chinese_preamble": true,
     "governance_truth_retained": true,
     "governance_compute_removed_from_each_dev_action": true,
-    "ordinary_pr_path": "changed-only compact gate",
-    "full_governance_path": "schedule or workflow_dispatch all",
+    "ordinary_pr_path": "变更范围快速门禁",
+    "full_governance_path": "计划任务或手动全量范围",
     "gate_status": "PASS_LOCAL_PENDING_REMOTE_CI"
   },
   "scope_summary": {
@@ -197,7 +197,7 @@
     {
       "command": "focused Chinese readability and owner-entry tests",
       "result": "PASS",
-      "observed": "Ran 5 tests in 0.170s; OK."
+      "observed": "Ran 7 tests in 0.131s; OK."
     },
     {
       "command": "project governance all",
@@ -212,7 +212,7 @@
     {
       "command": "EEI clean-room release regenerate and validate",
       "result": "PASS",
-      "observed": "package_paths=446; package_sha256=b8914edd6fe83806458d209df8047854436a318c64f1a877c7c1a1e2d5b6ad36; fixed remote EEI validation stale README artifact plus Windows/POSIX path and canonical source-check handling."
+      "observed": "package_paths=446; package_sha256=43f9e3b5be499102fe36fb285fa1a534394b6e4afa7e6014a83a1b3ff2887713; fixed remote EEI validation stale README artifact plus Windows/POSIX path and canonical source-check handling."
     },
     {
       "command": "EEI release artifacts fixed-point regenerate and validate",
@@ -227,7 +227,7 @@
     {
       "command": "changed-only compact CI",
       "result": "PASS",
-      "observed": "decision=SHIP; legacy_exit_code=0; process_exit_code=0; zero_tracked_write=true; changed_file_count=51; latest observed evidence_id=9464e49dbaa5."
+      "observed": "decision=SHIP; legacy_exit_code=0; process_exit_code=0; zero_tracked_write=true; changed_file_count=51; latest observed evidence_id=ec6f1dafc90a."
     },
     {
       "command": "git diff --check",
