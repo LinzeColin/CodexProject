@@ -107,7 +107,25 @@ def validate_lesson(data: Mapping[str, Any]) -> list[str]:
     errors = _require_mapping(data, "Lesson")
     if errors:
         return errors
-    errors.extend(_missing(data, ("lesson_id", "source_item_id", "language", "title", "sections", "claim_ids", "generated_at"), "Lesson"))
+    errors.extend(
+        _missing(
+            data,
+            (
+                "lesson_id",
+                "lesson_key",
+                "lesson_revision_id",
+                "source_item_id",
+                "language",
+                "title",
+                "sections",
+                "claim_ids",
+                "generated_at",
+            ),
+            "Lesson",
+        )
+    )
+    if data.get("lesson_id") != data.get("lesson_revision_id"):
+        errors.append("Lesson.lesson_id must equal Lesson.lesson_revision_id")
     if data.get("language") not in {"zh-CN", "zh-Hans", "en"}:
         errors.append("Lesson.language must be zh-CN, zh-Hans, or en")
     if not isinstance(data.get("sections"), list) or not data.get("sections"):

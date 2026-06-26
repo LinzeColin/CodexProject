@@ -300,7 +300,7 @@ formulas:
     assumption_ids:
       - "ASM-ADP-008"
     status: "active"
-    expression: "A Lesson can be generated only when the Claim Ledger status is pass, at least one supported claim exists, Lesson.claim_ids are all supported Claim Ledger claim IDs, every section claim_id is present in Lesson.claim_ids, and every section body includes visible [claim_id] markers."
+    expression: "A Lesson can be generated only when the Claim Ledger status is pass, at least one supported claim exists, Lesson.claim_ids are all supported Claim Ledger claim IDs, every section claim_id is present in Lesson.claim_ids, every section body includes visible [claim_id] markers, Lesson.lesson_id equals Lesson.lesson_revision_id, and Lesson.lesson_revision_id is derived from claim statements, evidence locators, source metadata hashes, language, lesson model version, prompt contract version, and revision contract version while Lesson.lesson_key stays stable for unchanged source, claim_id set, and language."
     variables:
       -
         name: "ledger_status"
@@ -317,7 +317,12 @@ formulas:
         data_type: "list[str]"
         unit: "claim identifiers"
         input_domain: "per-section Lesson claim references"
-    constraints: "Unsupported, unverified, conflicted, or unregistered claim IDs cannot enter Lesson.claim_ids or section claim_ids."
+      -
+        name: "lesson_revision_payload"
+        data_type: "object"
+        unit: "hash payload"
+        input_domain: "supported claim content, evidence locator hash, source metadata/content refs hash, language, model version, prompt contract version, and revision contract version"
+    constraints: "Unsupported, unverified, conflicted, or unregistered claim IDs cannot enter Lesson.claim_ids or section claim_ids; claim content or evidence changes must change Lesson.lesson_revision_id while keeping Lesson.lesson_key stable when source, claim_id set, and language are unchanged."
     missing_policy: "Missing supported evidence creates a LessonGenerationError rather than generated filler text."
     output_range: "valid Lesson JSON or LessonGenerationError"
     code_refs:
@@ -328,16 +333,19 @@ formulas:
       - "arxiv-daily-push/tests/fixtures/lesson_input.json"
     evidence_refs:
       - "arxiv-daily-push/docs/phase_records/PHASE_06.md"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_LESSON_REVISION_A016.md"
       - "arxiv-daily-push/docs/pursuing_goal/06_PURSUING_GOAL_READY_PROMPT.md"
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs:
       - "arxiv-daily-push/src/arxiv_daily_push/lesson.py::generate_lesson"
+      - "arxiv-daily-push/src/arxiv_daily_push/lesson.py::_lesson_revision_hash"
+      - "arxiv-daily-push/src/arxiv_daily_push/lesson.py::_claim_revision_payload"
       - "arxiv-daily-push/src/arxiv_daily_push/lesson.py::validate_lesson_against_ledger"
       - "arxiv-daily-push/src/arxiv_daily_push/lesson.py::_build_sections"
-    implementation_fingerprint: "sha256:76f471f23a44a2f99bc52892bf1e806c928f5116eed4f747a8febaa904f52a13"
-    last_verified_commit: "032319edd56243f3c6887c7c707e00c91fdd733d"
-    verified_at: "2026-06-25T17:40:00+10:00"
-    evidence_hash: "sha256:c2186332c67a0b582096beb715154c54adae24e573066a67ad13fbf85e80cf71"
+    implementation_fingerprint: "sha256:49e69f367b73bac2b1c060daaeac3fb37cd160a9d8723eee6bea3a250c6b481a"
+    last_verified_commit: "81b7d7ea84d030a89c73ce2a08ba3150e73b5f20"
+    verified_at: "2026-06-26T22:10:00+10:00"
+    evidence_hash: "sha256:c363bee76f6ba71af1bc5cad754ea5fddf6f07451c4666d5ea54f7e022c62f11"
   -
     formula_id: "FORM-ADP-009"
     model_id: "MOD-ADP-007"

@@ -3024,3 +3024,24 @@ None for this new project baseline.
 - Rollback: Revert S2PMT01 code, tests, governance registrations, phase record, manifest, events, rendered governance sync, and this ledger entry; no runtime production state was changed.
 - Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PMT01_SECURITY_BOUNDARY.md`; `governance/run_manifests/ADP-S2PMT01-SECURITY-BOUNDARY-20260626.json`; `arxiv-daily-push/docs/governance/delivery_tasks.yaml`.
 - Next step: Run final validation, commit, push, and open PR for S2PMT01.
+
+### `ITER-20260626-ADP-S2PMT03-LESSON-REVISION-A016`
+
+- Timestamp: `2026-06-26T22:10:00+10:00`
+- Fact level: EXTRACTED from V7.1 inherited A-016 finding, Lesson revision implementation, schema/runtime contract diff, focused tests, FORM-ADP-008 refresh, parameter registry diff, and local validation.
+- Base commit: `81b7d7ea84d030a89c73ce2a08ba3150e73b5f20`
+- Product version: `0.23.1`
+- Status: local validation passed, PR/CI pending.
+- Phase: S2PM
+- Task IDs: `S2PMT03-LESSON-REVISION-A016`; parent `S2PMT03`; acceptance `ACC-S2PMT03-CONCURRENCY-OUTBOX`.
+- Goal: Remediate inherited audit finding A-016 locally by distinguishing stable `Lesson.lesson_key` from immutable content/evidence/model-sensitive `Lesson.lesson_revision_id`.
+- Files changed: Lesson generation, runtime Lesson contract, Lesson schema, narration/video dry-run propagation, focused tests, phase record, run manifest, FORM-ADP-008, PARAM-ADP-870 through PARAM-ADP-872, traceability, delivery tasks, status/owner/version records, events, and this ledger entry.
+- Model changes: Reused `MOD-ADP-006` evidence-linked Chinese lesson generator; no new model ID.
+- Formula changes: Refreshed `FORM-ADP-008` to include stable key and immutable revision semantics.
+- Parameter changes: Added `PARAM-ADP-870` through `PARAM-ADP-872` for lesson model, prompt contract, and revision contract versions embedded in the revision hash.
+- Validation: py_compile PASS; focused lesson/narration/video/contracts tests 28 OK; full arxiv-daily-push unittest 472 OK; V7.2 validator PASS; ADP project governance 0 errors / 0 warnings; changed-only governance semantic 0 errors / 0 warnings; lean check-render drift_count 0 reference_issue_count 0; JSONL/CSV/YAML/manifest parse OK; git diff --check PASS; full semantic extractor interrupted after >150 seconds during full-table AST parsing.
+- Decisions: `S2PMT03-LESSON-REVISION-A016` is accepted only as local remediation evidence for A-016. It does not close inherited P0/P1 counters, provide independent S2PMT07 signoff, enable SMTP, scheduler, Release, DB migration, production queue mutation, Stage 2 production acceptance, integrated production acceptance, or production operation.
+- Remaining risks: Independent review must still verify A-016 closure and inherited P0=8/P1=37 remain open until S2PMT07 closes them.
+- Rollback: Revert Lesson revision code/schema/test changes, FORM-ADP-008 refresh, PARAM-ADP-870 through PARAM-ADP-872, phase record, manifest, events, rendered governance sync, and this ledger entry; no runtime production state was changed.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_LESSON_REVISION_A016.md`; `governance/run_manifests/ADP-S2PMT03-LESSON-REVISION-A016-20260626.json`; `arxiv-daily-push/tests/test_lesson.py`.
+- Next step: Run final validation, commit, push, and open PR for S2PMT03 A-016 local remediation.

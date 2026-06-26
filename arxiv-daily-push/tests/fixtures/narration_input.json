@@ -1,6 +1,8 @@
 {
   "lesson": {
     "lesson_id": "lesson:arxiv:2401.00001:fixture",
+    "lesson_key": "lesson-key:arxiv:2401.00001:fixture",
+    "lesson_revision_id": "lesson:arxiv:2401.00001:fixture",
     "source_item_id": "arxiv:2401.00001",
     "language": "zh-CN",
     "title": "今日论文学习：A Useful Paper",
