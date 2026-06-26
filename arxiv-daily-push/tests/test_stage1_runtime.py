@@ -104,6 +104,36 @@ class Stage1RuntimeTests(unittest.TestCase):
             self.assertEqual(inspect_database(restored_db)["status"], "pass")
             self.assertFalse(validate_stage1_runtime_report(restore))
 
+    def test_backup_keeps_same_named_supporting_files_distinct(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            db_path = root / "adp.sqlite3"
+            migrate_database(db_path)
+            first_dir = root / "a"
+            second_dir = root / "b"
+            first_dir.mkdir()
+            second_dir.mkdir()
+            first = first_dir / "same.txt"
+            second = second_dir / "same.txt"
+            first.write_text("first config\n", encoding="utf-8")
+            second.write_text("second config\n", encoding="utf-8")
+
+            backup = create_runtime_backup(
+                db_path=db_path,
+                backup_dir=root / "backups",
+                generated_at="2026-07-01T05:00:00+10:00",
+                include_paths=[first, second],
+            )
+
+            self.assertEqual(backup["status"], "pass")
+            supporting_files = [item for item in backup["files"] if item["role"] == "supporting_file"]
+            supporting_paths = [item["path"] for item in supporting_files]
+            self.assertEqual(len(supporting_paths), 2)
+            self.assertEqual(len(set(supporting_paths)), 2)
+            manifest_dir = Path(backup["backup_manifest_path"]).parent
+            backed_up_contents = sorted((manifest_dir / item["path"]).read_text(encoding="utf-8") for item in supporting_files)
+            self.assertEqual(backed_up_contents, ["first config\n", "second config\n"])
+
     def test_restore_requires_explicit_confirmation(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
