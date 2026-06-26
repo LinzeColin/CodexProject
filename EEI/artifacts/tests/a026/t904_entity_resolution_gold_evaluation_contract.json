@@ -40,12 +40,13 @@
       "recall_is_reported_not_release_threshold": true
     }
   },
-  "generated_at": "2026-06-25T22:29:10Z",
+  "generated_at": "2026-06-26T02:11:17Z",
   "manual_review_requirements": [
     "A026 requires at least 50 human-labeled entity-resolution cases and precision >= 95.00%.",
     "A027 requires at least 100 human-labeled relationship cases and precision >= 90.00%.",
     "Recall and source coverage must be reported for every run.",
     "Repository fixtures are not production gold-set evidence.",
+    "Production gold-label files must be external operator files or repository paths under artifacts/operator_inputs/, operator_inputs/ or work/operator_inputs/.",
     "Production gold labels require --allow-production-gold-set and production_gold_evidence with owner, sampling, labeler, source-license, passage-review and signature metadata."
   ],
   "production_claim_allowed": false,
@@ -60,6 +61,22 @@
       "tests/",
       "fixture://"
     ],
+    "label_source_boundary": {
+      "allowed_repository_prefixes": [
+        "artifacts/operator_inputs/",
+        "operator_inputs/",
+        "work/operator_inputs/"
+      ],
+      "disallowed_repository_prefixes": [
+        "artifacts/tests/",
+        "data/",
+        "tests/",
+        "docs/",
+        "config/",
+        "brand/"
+      ],
+      "production_gold_labels_must_be_external_or_operator_input": true
+    },
     "release_boundary": {
       "does_not_close": [
         "A202",
@@ -164,7 +181,26 @@
     "relationship_min": 1.0
   },
   "source_files": {
-    "gold_labels": "tests/fixtures/gold_quality/golden_vertical_gold_labels_sample.json"
+    "gold_labels": "tests/fixtures/gold_quality/golden_vertical_gold_labels_sample.json",
+    "production_gold_label_source_boundary": {
+      "allowed_repository_prefixes": [
+        "artifacts/operator_inputs/",
+        "operator_inputs/",
+        "work/operator_inputs/"
+      ],
+      "closure_allowed": false,
+      "disallowed_repository_prefixes": [
+        "artifacts/tests/",
+        "data/",
+        "tests/",
+        "docs/",
+        "config/",
+        "brand/"
+      ],
+      "reason": "repository fixtures, templates, docs, config, data and tests cannot close A026/A027 production gold-label gates",
+      "repository_relative": "tests/fixtures/gold_quality/golden_vertical_gold_labels_sample.json",
+      "source_kind": "repository_fixture_template_or_source"
+    }
   },
   "status": "GOLD_EVALUATION_FAIL_CLOSED",
   "system_en_name": "Enterprise Ecosystem Intelligence",

@@ -1,5 +1,46 @@
 # MVP Development Record
 
+## 2026-06-26 - T904/A026-A027 production gold-label source-boundary hardening
+
+Status: LOCAL FOCUSED VALIDATED; CI PENDING; A026/A027 STILL IN PROGRESS; A209 ISOLATED RERUN CONTINUES IN BACKGROUND
+
+### Scope
+
+- Hardened `scripts/validate_gold_quality_evaluation.py` so `production_gold_set=true` labels can close A026/A027 only when the label file is operator-supplied.
+- Allowed production gold-label sources: external operator files and approved repository operator-input paths under `artifacts/operator_inputs/`, `operator_inputs/` or `work/operator_inputs/`.
+- Rejected production gold-label sources: repository fixtures, templates, docs, config, data, tests and generated test artifacts including `artifacts/tests/`, `data/`, `tests/`, `docs/`, `config/` and `brand/`.
+- Added `PARAM-090` / `gold_quality.production_label_source_boundary` to bind this policy into machine-verified governance.
+
+### Current Evidence
+
+- A026/A027 contracts now emit `production_gold_label_source_boundary` under `source_files`.
+- Focused tests prove external operator files and approved operator-input repository paths validate, while repository `tests/fixtures` and `data` paths fail closed before content can be treated as production gold labels.
+- A209 isolated rerun was read-only observed at `40/288` PASS windows with `0` failed; no A209 promotion, restart or finalization was performed.
+
+### Acceptance Mapping
+
+- T904 -> A026/A027 for production entity-resolution and relationship-extraction gold labels.
+- This source-boundary hardening is a false-closure control only; it does not close A026/A027.
+
+### Validation
+
+- `py_compile` for `scripts/validate_gold_quality_evaluation.py` and `tests/unit/test_gold_quality_evaluation.py`: PASS.
+- `ruff check scripts/validate_gold_quality_evaluation.py tests/unit/test_gold_quality_evaluation.py`: PASS.
+- `pytest -q tests/unit/test_gold_quality_evaluation.py -p no:cacheprovider`: PASS, `16/16`.
+- `make generate-gold-quality-evaluation-artifacts validate-gold-quality-evaluation`: PASS.
+- Downstream external release bundle, release-manager activation, MVP release-gate, development-status, clean-room and release artifacts validate with release evidence `remote_status=PENDING`.
+- Full `make verify`: PASS with `PLAYWRIGHT_BROWSERS_PATH=/private/tmp/eei-ms-playwright`, including scale browser `10k/100k/1m`, soak smoke, operator runner, lint, typecheck and unit tests `132/132`.
+
+### Remaining Gaps
+
+- A026 still requires at least 50 real operator-labeled entity-resolution cases with precision >=95% and source coverage 100%.
+- A027 still requires at least 100 real operator-labeled relationship cases with precision >=90% and source coverage 100%.
+- A202 signed source/legal/owner clearance, A210 formal brand clearance or waiver, A209 24h final evidence and release-manager activation remain incomplete external gates.
+
+### Rollback
+
+- Revert the gold-quality source-boundary validator/test/artifact changes, remove `PARAM-090`, restore the prior T904 governance records, regenerate release artifacts, and keep live A209 checkpoint/log files untouched unless operator recovery is explicitly authorized.
+
 ## 2026-06-26 - T1309/A210 source-boundary remote CI binding
 
 Status: REMOTE CI ATTESTED FOR COMMIT `86e566b74651e2775465920de6901ef70b2b1e2a`; A210 STILL IN PROGRESS; A209 ISOLATED RERUN CONTINUES IN BACKGROUND

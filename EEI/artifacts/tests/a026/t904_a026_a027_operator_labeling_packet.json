@@ -1556,7 +1556,7 @@
       }
     }
   ],
-  "generated_at": "2026-06-25T22:29:10Z",
+  "generated_at": "2026-06-26T02:11:17Z",
   "label_payload_generated": false,
   "non_claims": [
     "This packet is an operator labeling worksheet, not a production gold label set.",
@@ -1574,6 +1574,14 @@
         "data/",
         "tests/",
         "fixture://"
+      ],
+      "repository_label_source_prefixes": [
+        "artifacts/tests/",
+        "data/",
+        "tests/",
+        "docs/",
+        "config/",
+        "brand/"
       ]
     },
     "production_gold_evidence": {
@@ -1586,6 +1594,22 @@
         "tests/",
         "fixture://"
       ],
+      "label_source_boundary": {
+        "allowed_repository_prefixes": [
+          "artifacts/operator_inputs/",
+          "operator_inputs/",
+          "work/operator_inputs/"
+        ],
+        "disallowed_repository_prefixes": [
+          "artifacts/tests/",
+          "data/",
+          "tests/",
+          "docs/",
+          "config/",
+          "brand/"
+        ],
+        "production_gold_labels_must_be_external_or_operator_input": true
+      },
       "release_boundary": {
         "does_not_close": [
           "A202",
@@ -5637,7 +5661,7 @@
     "a202_operator_review_packet": "artifacts/tests/a202/t1301_operator_review_packet_contract.json",
     "a202_operator_review_packet_sha256": "cedc5ae7056c85acf249f5b1ef50da4067223d8170608fa5913efc7631d4ca7b",
     "gold_quality_intake_template": "artifacts/tests/a026/t904_a026_a027_production_gold_label_intake_template.json",
-    "gold_quality_intake_template_sha256": "f930c1fa425f24857ed3fc9a47f6ffca411a8a5e623cdd2f6aa24a45995a257a",
+    "gold_quality_intake_template_sha256": "d2b665985ef8f89a10b7899dadd2d786821b90875da81ad7604ac60204669b94",
     "golden_vertical_fact_candidates": "data/golden_vertical_fact_candidates.json",
     "golden_vertical_fact_candidates_sha256": "bd6a53c6e83808582db172f5ceaf591e5c47e0330cea017ec6fa15d343de64a6"
   },

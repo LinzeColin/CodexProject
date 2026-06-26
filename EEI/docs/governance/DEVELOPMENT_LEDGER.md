@@ -11,14 +11,46 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version: `0.1.0`
 - Product version status: `provisional`
 - Current phase: `D`
-- Current gate: `TASK-T1309-A210-SIGNED-BUNDLE-SOURCE-BOUNDARY`
-- Confirmed iteration count: 39
+- Current gate: `TASK-T904-A026-A027-GOLD-LABEL-SOURCE-BOUNDARY`
+- Confirmed iteration count: 40
 - Reconstructed development event count: 6
-- Current task: `TASK-T1309/A210 signed brand-clearance bundle source-boundary hardening`
+- Current task: `TASK-T904/A026-A027 production gold-label source-boundary hardening`
 - Current A209 point-in-time heartbeat: the clean 24h operator soak attempt launched at `2026-06-25T21:33:19Z` failed at checkpoint window `7/288`; `6` windows passed, `1` failed, latest checkpoint time is `2026-06-25T22:08:58Z`, `child_status=NO_OUTPUT`, `exit_status=1`, and stderr reports `page.evaluate: Target page, context or browser has been closed`. No `run_operator_soak` or `run_soak_smoke` process was found during the 2026-06-26 check. A209 remains `IN_PROGRESS` and has no release-ready 24h evidence.
-- Current isolated rerun: `/private/tmp/eei-a209-rerun-20260626-0918/` was started without overwriting the failed canonical checkpoint; operator PID `80478` and watchdog PID `80732` are recorded, first checkpoint window `1/288` PASS at `2026-06-25T23:04:42Z`, and the latest live check during this iteration observed `27/288` PASS windows, `0` failed, latest checkpoint time `2026-06-26T01:16:55Z`, and `9.38%` completion.
+- Current isolated rerun: `/private/tmp/eei-a209-rerun-20260626-0918/` was started without overwriting the failed canonical checkpoint; operator PID `80478` and watchdog PID `80732` are recorded, first checkpoint window `1/288` PASS at `2026-06-25T23:04:42Z`, and the latest live check during this iteration observed `40/288` PASS windows, `0` failed, latest checkpoint time `2026-06-26T02:22:43Z`, and `13.89%` completion.
 - Blockers: T1301/A202 is still `IN_PROGRESS`; the refreshed operator review packet is freshness-correct supporting review evidence only and does not create source-license review, passage-level human approval, production owner approval, legal release clearance, brand clearance, release-manager activation or final public relationship publication. T1307/A209 is still `IN_PROGRESS`; failed `7/288` evidence plus short repair probes are non-closure evidence only and a new 24h chain must reach `288/288` successful windows with zero failures before finalization. A204/A205 release-manager activation preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED` until A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence pass. A026 still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%. The new T904 operator labeling packet is a source-bound worksheet with blank `OPERATOR_TO_LABEL` slots and is not production gold evidence. A210 still needs formal brand legal/market clearance or signed risk waiver. The T1303 external release operator intake packet lists the exact A202/A210/A026/A027/A209 operator inputs and keeps `release_gate_closed_by_operator_packet=false`; it is a checklist/hash manifest, not clearance.
 
+
+## EVENT-20260626-009 - T904/A026-A027 production gold-label source-boundary hardening
+
+- Timestamp: 2026-06-26T12:12:07+10:00
+- Fact level: EXTRACTED
+- Base commit: `631c8f65050be8e3c4379af5f4d0fd5753718808`
+- Scope: harden `scripts/validate_gold_quality_evaluation.py` so production gold-label files must be supplied from an external operator file or approved repository operator-input path before A026/A027 can close.
+- Non-claims: this does not supply production labels, does not close A026/A027, does not replace A202 source/legal/owner clearance, does not close A209 24h soak, does not close A210 brand clearance and does not enable MVP release readiness.
+- Source-boundary policy: external operator files and `artifacts/operator_inputs/`, `operator_inputs/` or `work/operator_inputs/` repository paths are allowed; `artifacts/tests/`, `data/`, `tests/`, `docs/`, `config/` and `brand/` repository paths are rejected for production gold-label closure.
+- Validation: `py_compile` PASS for the gold-quality validator and tests; focused `ruff` PASS; `tests/unit/test_gold_quality_evaluation.py` PASS `16/16`; `make generate-gold-quality-evaluation-artifacts validate-gold-quality-evaluation` PASS with repository fixture output still `IN_PROGRESS`.
+- Downstream refresh: external release bundle, operator intake packet, release-manager activation preflight, MVP release-gate preflight, development-status artifacts, clean-room release and release evidence were regenerated/validated with `remote_status=PENDING`.
+- Full verification: first `make verify` attempt failed at `validate-scale-browser-benchmark` because the default macOS Playwright cache lacked Chromium; rerun with `PLAYWRIGHT_BROWSERS_PATH=/private/tmp/eei-ms-playwright` PASS, including scale browser `10k/100k/1m`, soak smoke, operator runner, lint, typecheck and unit tests `132/132`.
+- A209 background state: isolated rerun continues independently at `40/288` PASS windows with `0` failed at the latest read-only check; this event does not promote, restart or finalize A209 evidence.
+- Next step: run full EEI verification, changed-only governance, commit/push, bind CI, and keep A209 running in the background.
+
+## ITER-20260626-009 - A026/A027 gold-label source-boundary hardening
+
+- Date: 2026-06-26
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `631c8f65050be8e3c4379af5f4d0fd5753718808`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T904`
+- Acceptance IDs: `A026`, `A027`
+- Goal: prevent repository fixtures, templates, docs, configs, data or tests from being accepted as production gold-label file sources.
+- Files changed: gold-quality validator, gold-quality unit tests, A026/A027 generated artifacts, downstream A205 release preflights, clean-room/release artifacts, `PARAM-090`, T904 delivery task, traceability, version matrix, ledger, changelog, MVP development record and append-only event.
+- Model changes: none.
+- Parameter changes: adds `PARAM-090` for `gold_quality.production_label_source_boundary` with disallowed repository prefixes `artifacts/tests/|data/|tests/|docs/|config/|brand/`.
+- Commands run: focused gold-quality `py_compile`, `ruff`, unit tests, `make generate-gold-quality-evaluation-artifacts validate-gold-quality-evaluation`, downstream release/preflight regeneration, development-status artifact validation, clean-room validation, release artifact validation and full `make verify` with `PLAYWRIGHT_BROWSERS_PATH=/private/tmp/eei-ms-playwright`.
+- Test results: gold-quality focused unit tests PASS `16/16`; repository tests/fixtures and data paths are rejected while external operator files and approved operator-input repository paths are accepted; downstream release/preflight artifacts validate; full `make verify` PASS; A026/A027 remain `IN_PROGRESS`.
+- Rollback: revert the gold-label source-boundary validator/test/artifact changes plus `PARAM-090` and companion governance records; regenerate release artifacts from the previous committed state and keep live A209 checkpoints/logs untouched unless operator recovery is explicitly authorized.
 
 ## EVENT-20260626-008 - T1309/A210 source-boundary remote CI binding
 

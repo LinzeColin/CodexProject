@@ -2,22 +2,22 @@
 
 ## Snapshot Metadata
 
-- source_base_commit: `058c792f8376312842784533016d8716f9177dae`
+- source_base_commit: `631c8f65050be8e3c4379af5f4d0fd5753718808`
 - source_tree_hash: `00e27599461403192b998e8f9a3f7f0e769e5d8f`
 - source_snapshot_hash: `sha256:7c54a3c5bccbba28955e4bbf5c06815c44996965b66c98fe91c7f1069d328342`
-- snapshot_event_time: `2026-06-26T10:05:00+10:00`
+- snapshot_event_time: `2026-06-26T12:12:07+10:00`
 - generator_version: `4.0.0`
-- final_commit_binding: `CI_ATTESTED:86e566b74651e2775465920de6901ef70b2b1e2a; Project Governance run 28211854220 PASS; EEI validation run 28211854217/job 83574671606 PASS; A210 remains open until formal brand legal/market clearance or signed risk waiver is supplied, and A209 remains open until 288/288 zero-failure evidence is promoted and release-ready validation passes.`
+- final_commit_binding: `PRE_COMMIT_PENDING: T904/A026-A027 production gold-label source-boundary hardening is locally generated and focused-validated; remote CI not yet bound. A026/A027 remain open until real operator-supplied production labels meet thresholds, A210 remains open until formal clearance or signed waiver, and A209 remains open until 288/288 zero-failure evidence is promoted and release-ready validation passes.`
 
 ## Current State
 
 - Project: `EEI`
 - Path: `EEI`
 - Product version: `0.1.0`
-- Phase/Gate: `D / TASK-T1309-A210-SIGNED-BUNDLE-SOURCE-BOUNDARY`
-- Models/Formulas/Parameters total: `12 / 12 / 89`
-- Active formulas/parameters: `11 / 89`
-- Machine checked formulas/parameters: `11 / 89`
+- Phase/Gate: `D / TASK-T904-A026-A027-GOLD-LABEL-SOURCE-BOUNDARY`
+- Models/Formulas/Parameters total: `12 / 12 / 90`
+- Active formulas/parameters: `11 / 90`
+- Machine checked formulas/parameters: `11 / 90`
 
 ## Assurance
 
@@ -35,8 +35,8 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `TASK-T1309-A210-SIGNED-BUNDLE-SOURCE-BOUNDARY`
-- Next executable task: `TASK-T1309`
+- Release gate: `TASK-T904-A026-A027-GOLD-LABEL-SOURCE-BOUNDARY`
+- Next executable task: `TASK-T904`
 - Pending/stale events: `101`
 - Tree-bound events: `0`
 - Commit-bound events: `18`

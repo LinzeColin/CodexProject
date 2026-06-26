@@ -186,8 +186,59 @@ def test_complete_production_gold_set_with_evidence_can_close_a026_a027(tmp_path
     assert contract["quality_results"]["A027"]["status"] == "DONE"
     assert contract["quality_results"]["A026"]["metrics"]["sample_count"] == 50
     assert contract["quality_results"]["A027"]["metrics"]["sample_count"] == 100
+    source_boundary = contract["source_files"]["production_gold_label_source_boundary"]
+    assert source_boundary["source_kind"] == "external_operator_file"
+    assert source_boundary["closure_allowed"] is True
     gold.validate_contract(gold.focus_payload(contract, "A026"), focus_acceptance_id="A026")
     gold.validate_contract(gold.focus_payload(contract, "A027"), focus_acceptance_id="A027")
+
+
+def test_production_gold_set_accepts_approved_repository_operator_input_path(
+    tmp_path,
+    monkeypatch,
+) -> None:
+    repo_root = tmp_path / "repo"
+    monkeypatch.setattr(gold, "ROOT", repo_root)
+    labels = production_labels_payload()
+    labels_path = repo_root / "artifacts/operator_inputs/a026_a027/production_labels.json"
+    gold.write_json(labels_path, labels)
+
+    contract = gold.build_contract(
+        labels_path,
+        generated_at="2026-06-26T00:00:00Z",
+        allow_production_gold_set=True,
+    )
+
+    source_boundary = contract["source_files"]["production_gold_label_source_boundary"]
+    assert source_boundary["source_kind"] == "repository_operator_input"
+    assert source_boundary["repository_relative"] == (
+        "artifacts/operator_inputs/a026_a027/production_labels.json"
+    )
+    assert source_boundary["closure_allowed"] is True
+    gold.validate_contract(gold.focus_payload(contract, "A026"), focus_acceptance_id="A026")
+    gold.validate_contract(gold.focus_payload(contract, "A027"), focus_acceptance_id="A027")
+
+
+@pytest.mark.parametrize(
+    "relative_path",
+    [
+        "tests/fixtures/gold_quality/production_labels.json",
+        "data/production_labels.json",
+    ],
+)
+def test_production_gold_set_rejects_repository_label_source_paths(
+    tmp_path,
+    monkeypatch,
+    relative_path,
+) -> None:
+    repo_root = tmp_path / "repo"
+    monkeypatch.setattr(gold, "ROOT", repo_root)
+    labels = production_labels_payload()
+    labels_path = repo_root / relative_path
+    gold.write_json(labels_path, labels)
+
+    with pytest.raises(ValueError, match="must be operator-supplied"):
+        gold.build_contract(labels_path, allow_production_gold_set=True)
 
 
 def test_missing_counter_evidence_review_is_rejected() -> None:
@@ -215,6 +266,15 @@ def test_production_gold_label_intake_template_is_fail_closed() -> None:
     assert (
         template["production_gold_evidence_schema"]["required_list_fields"]
         == list(gold.PRODUCTION_GOLD_REQUIRED_LIST_FIELDS)
+    )
+    label_source_boundary = template["production_gold_evidence_schema"]["label_source_boundary"]
+    assert (
+        label_source_boundary["allowed_repository_prefixes"]
+        == list(gold.PRODUCTION_GOLD_ALLOWED_LABEL_SOURCE_REPO_PREFIXES)
+    )
+    assert (
+        label_source_boundary["disallowed_repository_prefixes"]
+        == list(gold.PRODUCTION_GOLD_DISALLOWED_LABEL_SOURCE_REPO_PREFIXES)
     )
     gold.validate_intake_template(template)
 

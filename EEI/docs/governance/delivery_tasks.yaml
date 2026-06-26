@@ -1986,8 +1986,8 @@ tasks:
     legacy_task_id: "T904"
     phase: "D"
     objective: "Run quality evaluation and risk review"
-    scope: "Current T904/A026/A027 implementation slice adds a fail-closed gold-quality evaluation contract plus a production gold-label intake gate for Golden Vertical entity resolution and relationship extraction. It computes precision, recall and source coverage, enforces A026 sample>=50 and precision>=95%, enforces A027 sample>=100 and precision>=90%, requires --allow-production-gold-set plus production_gold_evidence metadata before any production gold set can close A026/A027, rejects repository fixture refs and fixture labelers when production_gold_set=true, provides an operator-fillable intake template artifact for the required metadata and case schemas, adds a source-bound operator labeling packet with exactly 50 A026 entity slots and 100 A027 relationship slots derived from the A202 operator review packet and Golden Vertical candidate facts, and keeps repository fixture/template/blank-slot output IN_PROGRESS."
-    non_scope: "Does not provide real production labels, close A026, A027, A202, A209 or production MVP readiness; does not treat synthetic, repository fixture, unsigned, unreviewed or unlabeled payloads as production gold-set evidence."
+    scope: "Current T904/A026/A027 implementation slice adds a fail-closed gold-quality evaluation contract plus a production gold-label intake gate for Golden Vertical entity resolution and relationship extraction. It computes precision, recall and source coverage, enforces A026 sample>=50 and precision>=95%, enforces A027 sample>=100 and precision>=90%, requires --allow-production-gold-set plus production_gold_evidence metadata before any production gold set can close A026/A027, rejects repository fixture refs and fixture labelers when production_gold_set=true, requires production gold-label files to come from an external operator file or approved repository operator-input path, provides an operator-fillable intake template artifact for the required metadata and case schemas, adds a source-bound operator labeling packet with exactly 50 A026 entity slots and 100 A027 relationship slots derived from the A202 operator review packet and Golden Vertical candidate facts, and keeps repository fixture/template/blank-slot output IN_PROGRESS."
+    non_scope: "Does not provide real production labels, close A026, A027, A202, A209 or production MVP readiness; does not treat synthetic, repository fixture, repository template/data/test/doc/config source files, unsigned, unreviewed or unlabeled payloads as production gold-set evidence."
     status: "in_progress"
     dependencies:
       - "TASK-T903"
@@ -2017,7 +2017,7 @@ tasks:
       - ".venv/bin/python scripts/validate_gold_quality_evaluation.py validate"
     test_results:
       - "local py_compile PASS"
-      - "gold-quality unit tests PASS 13/13 after adding operator labeling packet coverage"
+      - "gold-quality unit tests PASS 16/16 after adding production label-source boundary coverage"
       - "focused ruff PASS"
       - "gold-label intake template generation PASS with release_gate_closure_allowed=false"
       - "gold-label intake template validation PASS with TEMPLATE_ONLY"
@@ -2026,6 +2026,7 @@ tasks:
       - "gold-quality artifact generation PASS with release_gate_closure_allowed=false"
       - "gold-quality artifact validation PASS with A026/A027 IN_PROGRESS"
       - "production gold-set fixture-ref exclusion PASS: repository evidence_refs and fixture_reviewer labelers are rejected before A026/A027 can close"
+      - "production gold-label source-boundary PASS: external operator files and artifacts/operator_inputs paths are accepted; tests/fixtures and data paths are rejected before A026/A027 can close"
     evidence_refs:
       - "EEI/scripts/validate_gold_quality_evaluation.py"
       - "EEI/tests/fixtures/gold_quality/golden_vertical_gold_labels_sample.json"
@@ -2034,7 +2035,7 @@ tasks:
       - "EEI/artifacts/tests/a026/t904_a026_a027_operator_labeling_packet.json"
       - "EEI/artifacts/tests/a026/t904_entity_resolution_gold_evaluation_contract.json"
       - "EEI/artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json"
-    risk: "A026/A027 can be falsely closed if a small repository fixture, precision/recall formula proof, unsigned label payload, missing source-license review reference, missing passage-review policy, repository evidence_refs, fixture labelers, blank operator labeling packet slots or unreviewed production label file is treated as a production gold set."
+    risk: "A026/A027 can be falsely closed if a small repository fixture, precision/recall formula proof, unsigned label payload, missing source-license review reference, missing passage-review policy, repository evidence_refs, fixture labelers, blank operator labeling packet slots, repository label files outside approved operator-input paths or unreviewed production label file is treated as a production gold set."
     rollback: "Revert the gold-quality validator, unit test, artifacts and A026/A027/T904 governance rows, regenerate development/release artifacts, and rerun make verify."
     target_version: "0.1.0"
     completed_version: ""

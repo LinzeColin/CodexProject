@@ -94,7 +94,7 @@
       "status": "RELEASE_MANAGER_ACTIVATION_BLOCKED"
     }
   },
-  "generated_at": "2026-06-26T01:32:27Z",
+  "generated_at": "2026-06-26T02:11:30Z",
   "missing_gates": [
     {
       "gate_id": "A202_relationship_publication_clearance",
@@ -179,7 +179,7 @@
     "brand_preflight": "artifacts/tests/a210/t1309_brand_clearance_preflight_contract.json",
     "brand_preflight_sha256": "99b0d0371cbd333022982c4a9fe4c872ac34d98d2163cf1a3d4b3db3e2b2b55d",
     "entity_gold_evaluation": "artifacts/tests/a026/t904_entity_resolution_gold_evaluation_contract.json",
-    "entity_gold_evaluation_sha256": "e34cf6e5b57500ce827a6db92a2bc533d66f4b64320021657c5e7fd6614d14d3",
+    "entity_gold_evaluation_sha256": "e14ebbc5948826d5fe6621c76f07353a2be7e286936ef8da35a24062ea8603fc",
     "operator_soak_evidence": "artifacts/tests/a209/t1307_operator_soak_evidence_validation.json",
     "operator_soak_evidence_sha256": "f5dc124f5e8beb4389163e5e171bbddc9743cfcb3a223af0798a74c9234cc53b",
     "operator_soak_heartbeat": "artifacts/tests/a209/t1307_operator_soak_background_progress.json",
@@ -187,11 +187,11 @@
     "production_api_preflight": "artifacts/tests/a203/t1302_production_api_release_preflight.json",
     "production_api_preflight_sha256": "c8084359f7e08d2258708f13842d079f4803c8cab2f8b9175f14f2b09ce2b4e5",
     "relationship_gold_evaluation": "artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json",
-    "relationship_gold_evaluation_sha256": "d695948385a5fba50ccbbf57c7adebe6a5f4bfffc1322e3ab57fb48a3fedcb64",
+    "relationship_gold_evaluation_sha256": "639857dea70d03a6ad8649f275e76aa9118be54c2c6b7d1a076de4e83bed6ede",
     "release_decision_contract": "artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json",
     "release_decision_contract_sha256": "471f0aa9dbb1ea6854807b674a1a1c8a1fb405c99e29440497ce3c5064c409c7",
     "release_manager_preflight": "artifacts/tests/a205/t1303_release_manager_activation_preflight.json",
-    "release_manager_preflight_sha256": "20c9fb9f7aa6f220880e6a753d36efc392aeaf3a6d9d5441a19fccf84faf89cf"
+    "release_manager_preflight_sha256": "4b8a620c5f426560ae1f0a48af48ce70d3d3def250420e503fe4237ecb183908"
   },
   "status": "MVP_RELEASE_BLOCKED",
   "system_en_name": "Enterprise Ecosystem Intelligence",

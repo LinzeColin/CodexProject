@@ -64,6 +64,19 @@ PRODUCTION_GOLD_FORBIDDEN_REPOSITORY_REF_PREFIXES = (
     "tests/",
     "fixture://",
 )
+PRODUCTION_GOLD_ALLOWED_LABEL_SOURCE_REPO_PREFIXES = (
+    "artifacts/operator_inputs/",
+    "operator_inputs/",
+    "work/operator_inputs/",
+)
+PRODUCTION_GOLD_DISALLOWED_LABEL_SOURCE_REPO_PREFIXES = (
+    "artifacts/tests/",
+    "data/",
+    "tests/",
+    "docs/",
+    "config/",
+    "brand/",
+)
 PRODUCTION_GOLD_FORBIDDEN_LABELERS = {
     "fixture_reviewer",
 }
@@ -149,9 +162,81 @@ def reject_fixture_labeler(labeler: str, *, case_id: str) -> None:
         )
 
 
+def production_gold_label_source_boundary(labels_path: Path) -> dict[str, Any]:
+    resolved = labels_path.resolve()
+    try:
+        repo_relative = resolved.relative_to(ROOT).as_posix()
+    except ValueError:
+        return {
+            "source_kind": "external_operator_file",
+            "repository_relative": None,
+            "closure_allowed": True,
+            "reason": "label file is outside repository and must be supplied by an operator",
+            "allowed_repository_prefixes": list(
+                PRODUCTION_GOLD_ALLOWED_LABEL_SOURCE_REPO_PREFIXES
+            ),
+            "disallowed_repository_prefixes": list(
+                PRODUCTION_GOLD_DISALLOWED_LABEL_SOURCE_REPO_PREFIXES
+            ),
+        }
+
+    if repo_relative.startswith(PRODUCTION_GOLD_ALLOWED_LABEL_SOURCE_REPO_PREFIXES):
+        return {
+            "source_kind": "repository_operator_input",
+            "repository_relative": repo_relative,
+            "closure_allowed": True,
+            "reason": "label file is under an approved operator-input repository path",
+            "allowed_repository_prefixes": list(
+                PRODUCTION_GOLD_ALLOWED_LABEL_SOURCE_REPO_PREFIXES
+            ),
+            "disallowed_repository_prefixes": list(
+                PRODUCTION_GOLD_DISALLOWED_LABEL_SOURCE_REPO_PREFIXES
+            ),
+        }
+
+    if repo_relative.startswith(PRODUCTION_GOLD_DISALLOWED_LABEL_SOURCE_REPO_PREFIXES):
+        source_kind = "repository_fixture_template_or_source"
+        reason = (
+            "repository fixtures, templates, docs, config, data and tests cannot close "
+            "A026/A027 production gold-label gates"
+        )
+    else:
+        source_kind = "repository_unapproved_source"
+        reason = "repository label files must be under an approved operator-input path"
+    return {
+        "source_kind": source_kind,
+        "repository_relative": repo_relative,
+        "closure_allowed": False,
+        "reason": reason,
+        "allowed_repository_prefixes": list(PRODUCTION_GOLD_ALLOWED_LABEL_SOURCE_REPO_PREFIXES),
+        "disallowed_repository_prefixes": list(
+            PRODUCTION_GOLD_DISALLOWED_LABEL_SOURCE_REPO_PREFIXES
+        ),
+    }
+
+
+def validate_production_gold_label_source(labels_path: Path) -> dict[str, Any]:
+    boundary = production_gold_label_source_boundary(labels_path)
+    if boundary["closure_allowed"] is not True:
+        raise ValueError(
+            "A026/A027 production gold labels must be operator-supplied, not "
+            "repository fixtures/templates/docs/config/data/tests"
+        )
+    return boundary
+
+
 def production_intake_policy() -> dict[str, Any]:
     return {
         "allow_flag_required": "--allow-production-gold-set",
+        "label_source_boundary": {
+            "production_gold_labels_must_be_external_or_operator_input": True,
+            "allowed_repository_prefixes": list(
+                PRODUCTION_GOLD_ALLOWED_LABEL_SOURCE_REPO_PREFIXES
+            ),
+            "disallowed_repository_prefixes": list(
+                PRODUCTION_GOLD_DISALLOWED_LABEL_SOURCE_REPO_PREFIXES
+            ),
+        },
         "required_text_fields": list(PRODUCTION_GOLD_REQUIRED_TEXT_FIELDS),
         "required_list_fields": list(PRODUCTION_GOLD_REQUIRED_LIST_FIELDS),
         "required_boolean_fields": {
@@ -533,6 +618,9 @@ def build_operator_labeling_packet(
             "relationship_cases_required": RELATIONSHIP_MIN_CASES,
             "forbidden": {
                 "repository_fixture_refs": list(PRODUCTION_GOLD_FORBIDDEN_REPOSITORY_REF_PREFIXES),
+                "repository_label_source_prefixes": list(
+                    PRODUCTION_GOLD_DISALLOWED_LABEL_SOURCE_REPO_PREFIXES
+                ),
                 "fixture_labelers": sorted(PRODUCTION_GOLD_FORBIDDEN_LABELERS),
             },
         },
@@ -870,6 +958,9 @@ def build_contract(
     labels = read_json(labels_path)
     validate_label_payload(labels, allow_production_gold_set=allow_production_gold_set)
     production_gold_set = bool(labels["fixture_policy"].get("production_gold_set"))
+    label_source_boundary = production_gold_label_source_boundary(labels_path)
+    if production_gold_set:
+        label_source_boundary = validate_production_gold_label_source(labels_path)
     entity = entity_stats(labels["entity_resolution_cases"])
     relationship = relationship_stats(labels["relationship_cases"])
     a026 = acceptance_payload(
@@ -908,6 +999,7 @@ def build_contract(
         "production_claim_allowed": release_allowed,
         "source_files": {
             "gold_labels": relative(labels_path),
+            "production_gold_label_source_boundary": label_source_boundary,
         },
         "fixture_policy": labels["fixture_policy"],
         "production_gold_evidence": (
@@ -930,6 +1022,8 @@ def build_contract(
             "and precision >= 90.00%.",
             "Recall and source coverage must be reported for every run.",
             "Repository fixtures are not production gold-set evidence.",
+            "Production gold-label files must be external operator files or repository "
+            "paths under artifacts/operator_inputs/, operator_inputs/ or work/operator_inputs/.",
             "Production gold labels require --allow-production-gold-set and "
             "production_gold_evidence with owner, sampling, labeler, source-license, "
             "passage-review and signature metadata.",
@@ -954,6 +1048,14 @@ def validate_contract(contract: dict[str, Any], *, focus_acceptance_id: str | No
         raise ValueError("system_name must be EEI")
     if contract.get("task_id") != "T904":
         raise ValueError("task_id must be T904")
+    source_files = contract.get("source_files")
+    if not isinstance(source_files, dict):
+        raise ValueError("source_files must be present")
+    label_source_boundary = source_files.get("production_gold_label_source_boundary")
+    if not isinstance(label_source_boundary, dict):
+        raise ValueError("production_gold_label_source_boundary must be present")
+    if not isinstance(label_source_boundary.get("closure_allowed"), bool):
+        raise ValueError("production_gold_label_source_boundary.closure_allowed drift")
     results = contract.get("quality_results")
     if not isinstance(results, dict):
         raise ValueError("quality_results must be present")
@@ -986,6 +1088,13 @@ def validate_contract(contract: dict[str, Any], *, focus_acceptance_id: str | No
             raise ValueError("release closure requires production_gold_set=true")
         if not isinstance(contract.get("production_gold_evidence"), dict):
             raise ValueError("release closure requires production_gold_evidence")
+        if label_source_boundary.get("closure_allowed") is not True:
+            raise ValueError("release closure requires operator-supplied gold label source")
+        if label_source_boundary.get("source_kind") not in {
+            "external_operator_file",
+            "repository_operator_input",
+        }:
+            raise ValueError("release closure requires an approved gold label source kind")
         if any(
             contract["quality_results"][acceptance_id]["release_gate_closure_allowed"] is not True
             for acceptance_id in ("A026", "A027")

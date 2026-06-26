@@ -1,11 +1,11 @@
 project_id: "EEI"
-as_of_event_id: "EVENT-20260626-008"
+as_of_event_id: "EVENT-20260626-009"
 source_snapshot_hash: "sha256:7c54a3c5bccbba28955e4bbf5c06815c44996965b66c98fe91c7f1069d328342"
-source_base_commit: "86e566b74651e2775465920de6901ef70b2b1e2a"
+source_base_commit: "631c8f65050be8e3c4379af5f4d0fd5753718808"
 source_tree_hash: "00e27599461403192b998e8f9a3f7f0e769e5d8f"
-snapshot_event_time: "2026-06-26T01:50:00Z"
+snapshot_event_time: "2026-06-26T02:12:07Z"
 generator_version: "4.0.0"
-final_commit_binding: "CI_ATTESTED:86e566b74651e2775465920de6901ef70b2b1e2a; Project Governance run 28211854220 PASS; EEI validation run 28211854217/job 83574671606 PASS; A210 remains open until formal brand legal/market clearance or signed risk waiver is supplied, and A209 remains open until 288/288 zero-failure evidence is promoted and release-ready validation passes."
+final_commit_binding: "PRE_COMMIT_PENDING: T904/A026-A027 production gold-label source-boundary hardening is locally generated and focused-validated; remote CI not yet bound. A026/A027 remain open until real operator-supplied production labels meet thresholds, A210 remains open until formal clearance or signed waiver, and A209 remains open until 288/288 zero-failure evidence is promoted and release-ready validation passes."
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -16,8 +16,8 @@ dimensions:
     status: "VERIFIED"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 89
-    total_active_parameters: 89
+    checked_active_parameters: 90
+    total_active_parameters: 90
     checked_active_formulas: 11
     total_active_formulas: 11
     unresolved_fact_ids: []
@@ -27,8 +27,8 @@ dimensions:
   parameter_source_quality:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 89
-    total_active_parameters: 89
+    checked_active_parameters: 90
+    total_active_parameters: 90
     evidence_refs:
       - "EEI/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -69,7 +69,7 @@ dimensions:
       - "EEI/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "FAILED"
-  release_gate: "TASK-T1309-A210-SIGNED-BUNDLE-SOURCE-BOUNDARY"
+  release_gate: "TASK-T904-A026-A027-GOLD-LABEL-SOURCE-BOUNDARY"
   blocker_ids:
     - "FACT-EEI-EMPIRICAL-EVIDENCE"
     - "FACT-EEI-OPERATIONAL-EVIDENCE"
@@ -77,14 +77,15 @@ delivery_readiness:
     - "TASK-T1301"
     - "TASK-T1307"
 next_executable_task:
-  task_id: "TASK-T1309"
+  task_id: "TASK-T904"
   status: "in_progress"
-  reason: "Complete formal A210 brand legal/market clearance or signed risk waiver; source-boundary hardening is CI-attested but not clearance"
+  reason: "Provide real operator-supplied A026/A027 production gold labels; source-boundary hardening prevents repository fixtures/templates from closing the gate"
   acceptance_ids:
-    - "ACC-A210"
-  owner: "product_owner + data_owner + risk_owner"
-  human_owner_role: "product_owner + data_owner + risk_owner"
-  unblock_condition: "Attach real signed A210 brand legal/market clearance or risk-waiver evidence from an external or approved operator-input source; source-boundary validation alone is not clearance."
+    - "ACC-A026"
+    - "ACC-A027"
+  owner: "data_owner + quality_owner"
+  human_owner_role: "data_owner + quality_owner"
+  unblock_condition: "Attach real operator-supplied production gold-label files from an external or approved operator-input source with at least 50 entity cases, 100 relationship cases, required evidence metadata, and passing precision/source-coverage thresholds."
   stale_candidates: []
 owner_decision:
   required: true
