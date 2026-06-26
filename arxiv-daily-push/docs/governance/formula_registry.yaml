@@ -2254,7 +2254,7 @@ formulas:
       - "ASM-ADP-038"
       - "ASM-ADP-041"
     status: "active"
-    expression: "A Stage 1 local runtime recovery report passes only when tick writes explicit heartbeat/checkpoint state, watchdog rejects stale heartbeat or stale locks, backup copies a passing SQLite/WAL/FTS5 database and small supporting files into a SHA256 manifest below the backup byte cap, restore requires explicit confirmation, resolves the manifest database path inside the backup root, copies to a same-directory temporary file, validates SHA256 and SQLite readiness before atomic replace, runtime audit blocks enabled production flags, and scheduler install/uninstall outputs dry-run templates only without applying OS scheduler changes."
+    expression: "A Stage 1 local runtime recovery report passes only when tick writes explicit heartbeat/checkpoint state, watchdog rejects stale heartbeat or stale locks, backup copies a passing SQLite/WAL/FTS5 database and small supporting files into a SHA256 manifest below the backup byte cap using unique source-hash-prefixed supporting-file paths, restore requires explicit confirmation, resolves the manifest database path inside the backup root, copies to a same-directory temporary file, validates SHA256 and SQLite readiness before atomic replace, runtime audit blocks enabled production flags, and scheduler install/uninstall outputs dry-run templates only without applying OS scheduler changes."
     variables:
       -
         name: "state_dir"
@@ -2298,10 +2298,10 @@ formulas:
       - "arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py::build_scheduler_plan"
       - "arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py::validate_stage1_runtime_report"
       - "arxiv-daily-push/src/arxiv_daily_push/cli.py::main"
-    implementation_fingerprint: "sha256:b7f0a6cf5cf576021735b33d30186c98782d7540c5187a046b3f959b50558d10"
+    implementation_fingerprint: "sha256:c524c51df3999ac2bd5626838121e2224887a799cfb7446a90f297360de244a1"
     last_verified_commit: "PENDING"
-    verified_at: "2026-06-26T18:45:00+10:00"
-    evidence_hash: "sha256:7e16cddb6f2e330c2686b3a98e5e4aff668c704d587237ecad048ad32e0ae423"
+    verified_at: "2026-06-26T19:30:00+10:00"
+    evidence_hash: "sha256:db1054a59f31d45f4695e7200b89be9803707d66670025e987fcf32aa9e2b1dd"
   -
     formula_id: "FORM-ADP-044"
     model_id: "MOD-ADP-042"

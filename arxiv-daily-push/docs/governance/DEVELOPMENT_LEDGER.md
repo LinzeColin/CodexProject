@@ -10,11 +10,31 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.0
 - Current phase: S2PM
-- Current gate: S2PMT02_RESTORE_SAFETY_REMEDIATION_NO_PRODUCTION
-- Confirmed iteration count: 117
+- Current gate: S2PMT02_SUPPORTING_FILE_COLLISION_REMEDIATION_NO_PRODUCTION
+- Confirmed iteration count: 118
 - Reconstructed event count: 0
-- Current task: `S2PMT02-RESTORE-SAFETY` records implementation remediation evidence for inherited A-001/A-002 by constraining restore manifest database paths to the backup root and validating a temporary SQLite restore file before atomic target replacement. `S2PBT05` D1 source-domain qualification receipt is complete and `S2PLT01` no longer has the `s2pbt05_missing` blocker, but inherited V7.1 P0=8 and P1=37 remain open until independent S2PMT07 review closes them. Full 30-day replay has not been executed, 120 mail previews are not proven, and terminal source states are not proven. `S2PMT07` remains the final production gate and is still blocked by missing S2PLT04, final bundle, independent signoff, and independent final command execution. No CURRENT, V7.1/V7.2 contract file, real production restore, real SMTP, scheduler installation, Release, DB migration, public schema, production queue, source adapter, ranking, inherited P0/P1 closure, DAILY_OPERATION, or integrated production acceptance state changed. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
+- Current task: `S2PMT02-SUPPORTING-FILE-COLLISION` records implementation remediation evidence for inherited A-014 by copying backup supporting files to source-hash-prefixed manifest paths so different directories with the same filename are preserved without silent overwrite. Prior `S2PMT02-RESTORE-SAFETY` records implementation remediation evidence for inherited A-001/A-002. `S2PBT05` D1 source-domain qualification receipt is complete and `S2PLT01` no longer has the `s2pbt05_missing` blocker, but inherited V7.1 P0=8 and P1=37 remain open until independent S2PMT07 review closes them. Full 30-day replay has not been executed, 120 mail previews are not proven, and terminal source states are not proven. `S2PMT07` remains the final production gate and is still blocked by missing S2PLT04, final bundle, independent signoff, and independent final command execution. No CURRENT, V7.1/V7.2 contract file, real production backup/restore, real SMTP, scheduler installation, Release, DB migration, public schema, production queue, source adapter, ranking, inherited P0/P1 closure, DAILY_OPERATION, or integrated production acceptance state changed. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
+
+### `ITER-20260626-ADP-S2PMT02-SUPPORTING-FILE-COLLISION`
+
+- Timestamp: `2026-06-26T19:30:00+10:00`
+- Fact level: EXTRACTED from Stage 1 runtime backup code, focused supporting-file collision test, FORM-ADP-043 semantic fingerprint refresh, phase record, and run manifest.
+- Base commit: `469071c213440e29b5cb6ba2f5262841e7548f14`
+- Status: local validation passed, PR/CI pending.
+- Phase: S2PM
+- Task IDs: `S2PMT02-SUPPORTING-FILE-COLLISION`; parent `S2PMT02`; acceptance `ACC-S2PMT02-ATOMIC-RECOVERY`; inherited finding targeted `A-014`.
+- Goal: Remediate supporting-file backup path collisions while preserving V7.2 no-production boundaries.
+- Files changed: Stage 1 runtime backup helper, focused runtime recovery tests, FORM-ADP-043 semantic fingerprint, phase record, run manifest, changelog, version/status/owner/traceability/delivery records, event log, and this ledger entry.
+- Model changes: No new model ID; existing `MOD-ADP-041` Stage 1 runtime recovery model remains in force.
+- Formula changes: Refreshed `FORM-ADP-043` implementation fingerprint and text to cover source-hash-prefixed supporting-file paths.
+- Parameter changes: No parameter value changes.
+- Validation: py_compile PASS; focused `test_stage1_runtime.py` 11 OK; full arxiv-daily-push unittest 458 OK; V7.2 validator PASS; ADP project governance 0 errors / 0 warnings; changed-only semantic governance 0 errors / 0 warnings; lean check-render drift_count 0 reference_issue_count 0; JSONL/YAML/CSV/manifest parse OK; git diff --check PASS; targeted FORM-ADP-043 fingerprint refreshed.
+- Decisions: This is implementation remediation evidence for A-014 only. Production backup/restore, SMTP, scheduler, Release, public schema, DB migration, queue mutation, ranking, source adapter changes, workflow enforcement, Stage 2 production acceptance, inherited P0/P1 closure, integrated production acceptance, and production operation remain false/disabled.
+- Remaining risks: Inherited V7.1 P0=8/P1=37 remain open until S2PMT07 independent review reruns and closes findings. A-010/A-011 and other inherited findings are not addressed in this run.
+- Rollback: Revert supporting-file collision code, focused tests, FORM-ADP-043 refresh, phase record, manifest, changelog/version/status/owner/traceability/delivery/event records, and this ledger entry; no runtime production state was changed.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_SUPPORTING_FILE_COLLISION.md`; `governance/run_manifests/ADP-S2PMT02-SUPPORTING-FILE-COLLISION-20260626.json`; `arxiv-daily-push/tests/test_stage1_runtime.py`.
+- Next step: Run final validation, commit, push, and open PR for supporting-file collision remediation.
 
 ### `ITER-20260626-ADP-S2PMT02-RESTORE-SAFETY-REMEDIATION`
 
