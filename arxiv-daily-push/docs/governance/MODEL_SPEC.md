@@ -895,7 +895,8 @@ Uncovered planned scenarios:
 ## S2PMT04 Lifecycle And Cache Cleanup
 
 - `MOD-ADP-097` / `FORM-ADP-099` define local lifecycle and cache-cleanup hardening evidence for S2PMT04.
-- Passing S2PMT04 local validation requires disabled automatic wake dry-run, lifecycle drain/checkpoint/cleanup sequence, startup reconciliation, durable shutdown receipt, safe cache cleanup, parseable disabled launchd plist generation, and all production side-effect flags false.
+- Passing S2PMT04 local validation requires disabled automatic wake dry-run, lifecycle drain/checkpoint/cleanup sequence, startup reconciliation, startup convergence/count conservation, durable shutdown receipt, observable transaction completion receipts, low-disk cache degradation, safe cache cleanup, parseable disabled launchd plist generation, and all production side-effect flags false.
+- Low-disk cache degradation must block new downloads and rebuildable cache writes, keep cleanup dry-run, preserve durable evidence, avoid delete application, and avoid queue mutation.
 - S2PMT04 local evidence does not install or enable a scheduler, send SMTP, upload Release assets, run production restore, migrate DB/public schema, mutate production queues, change source adapters or ranking, change V7.1/V7.2 contracts, or claim integrated production acceptance.
 
 ## S2PMT05 Stress Fault Time And E2E

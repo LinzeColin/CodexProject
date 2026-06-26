@@ -253,7 +253,7 @@ features:
   -
     feature_id: "FEAT-ADP-005"
     name: "生产 fail-closed gate 与副作用边界"
-    description: "生产变量、SMTP、Release、schedule、trial start 与 launch readiness 失败关闭；本迁移不启用真实生产发送。"
+    description: "生产变量、SMTP、Release、schedule、trial start、launch readiness 与 S2PMT04 本地生命周期/缓存压力证据失败关闭；低磁盘时必须阻断新下载和可重建缓存写入，并且不启用真实生产发送。"
     status: "completed"
     fact_level: "EXTRACTED"
     model_ids:
@@ -458,6 +458,7 @@ features:
     evidence_refs:
       - "EVID-ADP-OWNER-STATUS"
       - "EVID-ADP-DELIVERY-TASKS"
+      - "EVID-ADP-S2PMT04-B005"
       - "EVID-ADP-S2P1T01-PREPRINT"
       - "EVID-ADP-S2PBT01-REAL-REPLAY-SHADOW"
   -
@@ -10183,6 +10184,11 @@ evidence_refs:
     evidence_id: "EVID-ADP-S2PCT01-NATURE"
     kind: "manifest"
     ref: "governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-ADP-S2PMT04-B005"
+    kind: "manifest"
+    ref: "governance/run_manifests/ADP-S2PMT04-CACHE-LOW-DISK-B005-20260626.json"
     fact_level: "EXTRACTED"
   -
     evidence_id: "EVID-REVIEW9-S5PBT05-MANIFEST"

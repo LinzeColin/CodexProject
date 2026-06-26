@@ -7,6 +7,7 @@ from pathlib import Path
 
 from arxiv_daily_push.stage2_lifecycle_cache import (
     S2PMT04_DEFAULT_CACHE_TTL_SECONDS,
+    build_cache_low_disk_degradation_receipt,
     build_cache_cleanup_plan,
     build_launchd_plist_payload,
     build_lifecycle_cache_report,
@@ -16,6 +17,7 @@ from arxiv_daily_push.stage2_lifecycle_cache import (
     build_startup_reconciliation,
     build_transaction_completion_receipt,
     validate_launchd_plist_payload,
+    validate_cache_low_disk_degradation_receipt,
     validate_lifecycle_cache_report,
     validate_lifecycle_transition,
     validate_startup_convergence_receipt,
@@ -211,6 +213,61 @@ class Stage2LifecycleCacheTests(unittest.TestCase):
         self.assertIn("symbolic links are not cleanup candidates", plan["blocked"][0]["blocking_reasons"])
         self.assertIn("path is outside cache cleanup whitelist", plan["blocked"][1]["blocking_reasons"])
 
+    def test_cache_low_disk_degradation_blocks_new_downloads_and_keeps_durable_evidence(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            plan = build_cache_cleanup_plan(
+                cache_entries=[
+                    {
+                        "path": str(root / "raw" / "evidence.json"),
+                        "cache_class": "durable_evidence",
+                        "size_bytes": 100,
+                        "age_seconds": S2PMT04_DEFAULT_CACHE_TTL_SECONDS * 2,
+                    },
+                    {
+                        "path": str(root / "fulltext" / "old.txt"),
+                        "cache_class": "rebuildable_cache",
+                        "size_bytes": 200,
+                        "age_seconds": S2PMT04_DEFAULT_CACHE_TTL_SECONDS + 1,
+                    },
+                ],
+                whitelist_roots=[root],
+                dry_run=True,
+            )
+            receipt = build_cache_low_disk_degradation_receipt(
+                cleanup_plan=plan,
+                free_disk_bytes=128 * 1024 * 1024,
+                low_disk_threshold_bytes=512 * 1024 * 1024,
+                generated_at="2026-07-03T06:00:00+10:00",
+            )
+
+        self.assertEqual(receipt["status"], "pass")
+        self.assertTrue(receipt["low_disk_pressure"])
+        self.assertFalse(receipt["new_downloads_allowed"])
+        self.assertFalse(receipt["rebuildable_cache_writes_allowed"])
+        self.assertFalse(receipt["durable_evidence_delete_allowed"])
+        self.assertFalse(receipt["delete_apply_allowed"])
+        self.assertFalse(receipt["queue_mutation_allowed"])
+        self.assertIn("block_new_downloads", receipt["degradation_actions"])
+        self.assertEqual(validate_cache_low_disk_degradation_receipt(receipt), [])
+
+    def test_cache_low_disk_degradation_blocks_unsafe_degrade_receipt(self) -> None:
+        receipt = build_cache_low_disk_degradation_receipt(
+            cleanup_plan={"dry_run": True, "candidate_count": 1, "delete_bytes_dry_run": 200},
+            free_disk_bytes=128,
+            low_disk_threshold_bytes=512,
+            generated_at="2026-07-03T06:00:00+10:00",
+        )
+        receipt["new_downloads_allowed"] = True
+        receipt["durable_evidence_delete_allowed"] = True
+        receipt["delete_apply_allowed"] = True
+
+        errors = validate_cache_low_disk_degradation_receipt(receipt)
+
+        self.assertIn("low disk pressure must block new downloads", errors)
+        self.assertIn("durable evidence must never be deleted under low disk pressure", errors)
+        self.assertIn("low disk degradation evidence must not apply deletes", errors)
+
     def test_launchd_plist_payload_is_parseable_disabled_and_escaped(self) -> None:
         payload = build_launchd_plist_payload(
             label="com.linze.adp.local.daily",
@@ -237,6 +294,9 @@ class Stage2LifecycleCacheTests(unittest.TestCase):
         self.assertTrue(report["startup_convergence_receipt"]["count_conservation"])
         self.assertTrue(report["gates"]["transaction_completion_signal"])
         self.assertTrue(report["transaction_completion_receipt"]["interrupted_recoverable"])
+        self.assertTrue(report["gates"]["cache_low_disk_degradation"])
+        self.assertTrue(report["cache_low_disk_degradation_receipt"]["low_disk_pressure"])
+        self.assertFalse(report["cache_low_disk_degradation_receipt"]["new_downloads_allowed"])
         self.assertTrue(report["gates"]["cache_cleanup_safety"])
         self.assertEqual(validate_lifecycle_cache_report(report), [])
 

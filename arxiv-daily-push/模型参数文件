@@ -13,7 +13,7 @@
 - blockers: `none`
 - next_gate: `S2PC-GATE-V7-2-REVALIDATION`
 - next_unique_task: `S2PCT02 Science main-journal metadata-only no-send shadow evidence (planned)`
-- evidence_ref_count: `17`
+- evidence_ref_count: `18`
 - roadmap_test_command_count: `10`
 - roadmap_gate_count: `5`
 - evidence_status: `EXTRACTED`
@@ -83,6 +83,19 @@
 | 前20精选解释 | 用户中心前20精选读取来源账本中的总分字段，同一论文标识去重后取最高分/稳定记录；页面必须展示六因子评分明细，不代表只剩 20 条候选 |
 | 旧八因子口径 | [ranking.py](src/arxiv_daily_push/ranking.py) 的前沿信号、证据可靠性、新颖性、迁移价值、问题重要性、分类优先级、等待时间、多样性仍保留为历史/底层审计口径，但不能被写成当前前20总分来源 |
 | 治理引用 | [parameter_registry.csv](docs/governance/parameter_registry.csv) 的 `ROI_COMPONENT_WEIGHTS`；[formula_registry.yaml](docs/governance/formula_registry.yaml) 的 ROI 排序表达式；[global_scan.py](src/arxiv_daily_push/global_scan.py) 的实现 |
+
+## S2PMT04 本地生命周期与缓存门
+
+| 项目 | 当前口径 |
+|---|---|
+| 模型 | `MOD-ADP-097` / `adp-s2pmt04-lifecycle-cache-cleanup-v1` |
+| 公式 | `FORM-ADP-099` |
+| 参数 | `PARAM-ADP-800` / `S2PMT04_REQUIRED_GATES` |
+| 新增门 | `cache_low_disk_degradation` |
+| 低磁盘判定 | `free_disk_bytes < low_disk_threshold_bytes` |
+| 降载动作 | 低磁盘时阻断新下载、阻断可重建缓存写入、保留 durable evidence、保持 cleanup dry-run |
+| 禁止动作 | 不应用删除、不删除 durable evidence、不改队列、不安装/启用 scheduler、不发送 SMTP、不上传 Release |
+| 证据入口 | [PHASE_S2PMT04_CACHE_LOW_DISK_B005.md](docs/phase_records/PHASE_S2PMT04_CACHE_LOW_DISK_B005.md)；[ADP-S2PMT04-CACHE-LOW-DISK-B005-20260626.json](../governance/run_manifests/ADP-S2PMT04-CACHE-LOW-DISK-B005-20260626.json) |
 
 ## 模型
 

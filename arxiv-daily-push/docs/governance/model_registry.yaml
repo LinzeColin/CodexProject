@@ -5087,7 +5087,7 @@ models:
   -
     model_id: "MOD-ADP-097"
     name: "S2PMT04 local lifecycle and cache-cleanup model"
-    purpose: "Validate local S2PMT04 automatic wake dry-run, lifecycle drain/checkpoint/cleanup state sequence, startup reconciliation, startup convergence/count conservation, durable shutdown receipt, observable transaction completion/recovery receipts, safe cache cleanup, parseable disabled launchd plist generation, and no production side effects under V7.2."
+    purpose: "Validate local S2PMT04 automatic wake dry-run, lifecycle drain/checkpoint/cleanup state sequence, startup reconciliation, startup convergence/count conservation, durable shutdown receipt, observable transaction completion/recovery receipts, low-disk cache degradation, safe cache cleanup, parseable disabled launchd plist generation, and no production side effects under V7.2."
     owner: "arxiv-daily-push"
     status: "active"
     assumption_ids:
@@ -5115,6 +5115,7 @@ models:
       - "shutdown receipt inputs"
       - "shutdown transaction completion fixtures"
       - "cache entry inventory"
+      - "low disk pressure fixture"
       - "launchd program arguments"
     outputs:
       - "lifecycle transition plan"
@@ -5122,6 +5123,7 @@ models:
       - "startup convergence and count-conservation receipt"
       - "shutdown receipt"
       - "transaction completion and recovery receipt"
+      - "low-disk cache degradation receipt"
       - "cache cleanup dry-run plan"
       - "parseable disabled launchd plist payload"
       - "no production side-effect gate"
@@ -5136,6 +5138,8 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PMT04-LIFECYCLE-CACHE-20260626.json"
       - "governance/run_manifests/ADP-S2PMT04-STARTUP-CONVERGENCE-B004-20260626.json"
+      - "governance/run_manifests/ADP-S2PMT04-TRANSACTION-COMPLETION-B015-20260626.json"
+      - "governance/run_manifests/ADP-S2PMT04-CACHE-LOW-DISK-B005-20260626.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT04_LIFECYCLE_CACHE.md"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT04_STARTUP_CONVERGENCE_B004.md"
   -

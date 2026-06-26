@@ -42,7 +42,8 @@ This project follows the root `AGENTS.md` and `docs/governance/STANDARD.md`.
   idempotent transactional outbox identity, SMTP accept crash-window handling,
   and M4 cycle watermarks. `S2PMT04` local lifecycle/cache evidence covers
   disabled automatic wake dry-run, drain/checkpoint/cleanup lifecycle,
-  startup reconciliation, durable shutdown receipts, whitelist/symlink guarded
+  startup reconciliation and convergence, durable shutdown and transaction
+  completion receipts, low-disk cache degradation, whitelist/symlink guarded
   dry-run cache cleanup, parseable launchd plist generation, and no production
   side effects. `S2PMT05` local stress/fault/time/E2E evidence covers
   deterministic load/stress/spike profiles, accelerated local 24h soak coverage,
