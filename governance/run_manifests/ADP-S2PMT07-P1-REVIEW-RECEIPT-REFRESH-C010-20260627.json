@@ -1,0 +1,109 @@
+{
+  "acceptance_id": "ACC-S2PMT07-FINAL-REVIEW",
+  "closure_claimed": false,
+  "current_contract": "ADP-PRODUCT-CONTRACT-V7.2",
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_INDEPENDENT_REVIEW_RECEIPT.md",
+    "governance/run_manifests/ADP-S2PMT07-P1-INDEPENDENT-REVIEW-RECEIPT-20260626.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C010-20260627.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PAT05_TRACEABILITY_CHAIN_C010.md",
+    "governance/run_manifests/ADP-S2PAT05-TRACEABILITY-CHAIN-C010-20260627.json",
+    "arxiv-daily-push/用户中心/功能任务测试证据追踪链.md",
+    "arxiv-daily-push/tests/test_stage2_sources.py",
+    "arxiv-daily-push/tests/test_stage2_final_gate.py"
+  ],
+  "final_acceptance_bundle_present": false,
+  "formula_ids_changed": [
+    "FORM-ADP-110",
+    "FORM-ADP-102"
+  ],
+  "generated_at": "2026-06-27T07:15:07+10:00",
+  "independent_final_command_execution_present": false,
+  "independent_review_signoff_present": false,
+  "inherited_p0_p1_closed": false,
+  "inherited_v7_1_open_p0_findings_after": 8,
+  "inherited_v7_1_open_p1_findings_after": 37,
+  "manifest_id": "ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C010-20260627",
+  "model_ids_changed": [
+    "MOD-ADP-108",
+    "MOD-ADP-100"
+  ],
+  "p0_closure_claimed": false,
+  "p1_closure_claimed": false,
+  "parameter_ids_changed": [
+    "PARAM-ADP-926",
+    "PARAM-ADP-927",
+    "PARAM-ADP-928",
+    "PARAM-ADP-929",
+    "PARAM-ADP-831"
+  ],
+  "parent_task_id": "S2PMT07",
+  "previous_refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C003-20260627.json",
+  "production_boundary": {
+    "current_pointer_changed": false,
+    "daily_operation_enabled": false,
+    "db_migration_executed": false,
+    "email_frontstage_changed": false,
+    "inherited_p0_p1_closed": false,
+    "integrated_production_accepted": false,
+    "production_acceptance_claimed": false,
+    "production_restore_executed": false,
+    "production_schedule_enabled": false,
+    "public_schema_changed": false,
+    "queue_mutation_allowed": false,
+    "queue_schema_changed": false,
+    "ranking_algorithm_changed": false,
+    "real_smtp_sent": false,
+    "release_upload_allowed": false,
+    "scheduler_enabled": false,
+    "source_adapter_changed": false,
+    "stage2_integrated_production_accepted": false,
+    "stage2_production_accepted": false,
+    "v7_1_baseline_changed": false,
+    "v7_2_contract_files_changed": false
+  },
+  "project_id": "arxiv-daily-push",
+  "refreshed_findings": [
+    "C-010"
+  ],
+  "required_final_commands_executed": false,
+  "result": "p1_c010_receipt_refreshed_no_closure_no_production",
+  "risks": [
+    "This refresh can be misread as C-010 P1 closure, full traceability acceptance, or independent review signoff; it only updates evidence and receipt routing.",
+    "Inherited P0/P1, S2PLT04, final bundle, independent final command execution, independent signoff, and S2PMT07 acceptance remain blocked."
+  ],
+  "rollback": "Revert S2PAT05 traceability-chain code/tests, user-center traceability page, C-010 phase record and manifest, P1 review receipt refresh, run manifests, traceability/delivery/event records, and generated status refresh; no runtime production state was changed.",
+  "s2plt04_completed": false,
+  "schema_version": 1,
+  "stage2_integrated_production_accepted": false,
+  "status": "completed_no_closure_no_production",
+  "summary": "Refreshed S2PMT07 P1 review receipt routing for C-010 so feature-task-test-run-evidence traceability points to dedicated S2PAT05 evidence and a shallow GitHub clickable traceability page instead of aggregate traceability surfaces.",
+  "task_id": "S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C010",
+  "test_results": [
+    "py_compile PASS",
+    "focused Stage2 source/final-gate/user-center tests: 199 OK",
+    "source/board user-center root gate regression: 15 OK",
+    "full arxiv-daily-push unittest: 568 OK",
+    "V7.2 validator PASS and V7.2 unittest: 4 OK",
+    "ADP project governance: 0 errors / 0 warnings",
+    "governance sync validator: 0 errors / 0 warnings",
+    "lean check-render: drift_count 0 / reference_issue_count 0",
+    "YAML/JSON/JSONL/CSV parse OK",
+    "git diff --check PASS",
+    "full semantic extractor interrupted after more than 60 seconds; not counted as passed"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_c010_compile2 PYTHONPATH=arxiv-daily-push/src python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py arxiv-daily-push/tests/test_stage2_sources.py arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_user_center_candidate_pool.py",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_c010_target2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_user_center_candidate_pool.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_c010_source_gate2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_user_center_candidate_pool.py arxiv-daily-push/tests/test_owner_controls.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_c010_full2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "python3 arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2",
+    "PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/docs/pursuing_goal/v7_2/tests/test_v7_2_contract.py -q",
+    "PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push",
+    "PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_governance_sync.py",
+    "PYTHONPATH=arxiv-daily-push/src python3 scripts/lean_governance.py check-render --project arxiv-daily-push",
+    "ruby YAML/JSON/JSONL/CSV parse check",
+    "git diff --check",
+    "PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_semantic_extractors.py arxiv-daily-push was interrupted after more than 60 seconds; non-blocking and not counted as passed"
+  ]
+}

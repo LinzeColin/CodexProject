@@ -2,9 +2,9 @@
 
 ## 中文速读
 
-- 本次新增 `S2PIT05-FOUR-CHECK-FRESHNESS-C003` 专项证据：把 C-003 从 S2PMT06 汇总证据切到四查 freshness、事实源、漂移状态和漂移告警门。
-- C-003 要求邮件/队列、截至今日总候选池、复习行动收益、数据源与板块健康四个 GitHub 浅层用户视图都公开 `freshness_state`、`data_as_of`、`fact_source_refs`、`drift_state`，并要求模拟过期/漂移时 CI 和页面同时报警。
-- 本条只刷新 P1 复审证据路由，不关闭 C-003，不启用 SMTP、scheduler、Release、生产恢复、队列变更、公共 Schema 或 Stage2 生产验收。
+- 本次新增 `S2PAT05-TRACEABILITY-CHAIN-C010` 专项证据：把 C-010 从“已有矩阵但缺 UI 可点击追踪链”升级为浅层 GitHub 页面和机器 gate。
+- C-010 要求 245 条 `TRACEABILITY_MATRIX.csv` 链路都具备需求、任务、验收、代码、测试、运行证据和状态，并在 [功能任务测试证据追踪链](用户中心/功能任务测试证据追踪链.md) 中提供可点击入口。
+- 本条只刷新 P1 复审证据路由，不关闭 C-010，不启用 SMTP、scheduler、Release、生产恢复、队列变更、公共 Schema 或 Stage2 生产验收。
 
 ## 摘要
 
@@ -14,7 +14,7 @@
 - current_phase: `S2PC`
 - current_task: `S2PCT02`
 - progress: `80.95%`
-- capability_count: `14`
+- capability_count: `15`
 - blockers: `none`
 - next_gate: `S2PC-GATE-V7-2-REVALIDATION`
 - next_unique_task: `S2PCT02 Science main-journal metadata-only no-send shadow evidence (planned)`
@@ -41,6 +41,7 @@
 | FEAT-ADP-012 | S2PMT06 C-006/C-007 安全配置与审计门 | completed | C-006/C-007 证据现在使用专用 report/validator/test，要求配置修改有 preview、diff、校验、影响分析、确认、rollback，并要求 append-only revision ledger 与结果产物 revision 绑定。 | EXTRACTED |
 | FEAT-ADP-013 | S2PMT06 C-012 安全手动动作门 | completed | C-012 证据现在使用专用 report/validator/test，要求 retry、cancel、requeue、skip、regenerate 都有 preview、影响说明、确认、receipt、唯一 idempotency key，重复点击不重复发送或改队列，非法状态动作禁用并解释原因。 | EXTRACTED |
 | FEAT-ADP-014 | S2PIT05 C-003 四查 freshness 与漂移告警门 | completed | C-003 证据现在使用专用 report/validator/test，要求四个 GitHub 浅层用户视图都暴露 freshness、事实源、漂移状态、CI 告警和页面告警；模拟过期、事实源缺失或账本数量漂移时必须阻断。 | EXTRACTED |
+| FEAT-ADP-015 | S2PAT05 C-010 功能任务测试证据追踪链 | completed | C-010 证据现在使用专用 report/validator/test 和 GitHub 浅层用户中心页面，要求 `TRACEABILITY_MATRIX.csv` 245 条链路全部具备需求、任务、验收、代码、测试、运行证据和状态，并提供可点击追踪入口。 | EXTRACTED |
 
 ## V7.2 CURRENT 产品合同
 
@@ -86,6 +87,7 @@
 | EVID-ADP-FORMULA-REGISTRY | file | arxiv-daily-push/docs/governance/formula_registry.yaml | EXTRACTED |
 | EVID-ADP-PARAMETER-REGISTRY | file | arxiv-daily-push/docs/governance/parameter_registry.csv | EXTRACTED |
 | EVID-ADP-TRACEABILITY-MATRIX | file | arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv | EXTRACTED |
+| EVID-ADP-C010-TRACEABILITY-PAGE | file | arxiv-daily-push/用户中心/功能任务测试证据追踪链.md | EXTRACTED |
 | EVID-ADP-ASSURANCE-STATUS | file | arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml | EXTRACTED |
 | EVID-ADP-DELIVERY-TASKS | file | arxiv-daily-push/docs/governance/delivery_tasks.yaml | EXTRACTED |
 | EVID-ADP-DEVELOPMENT-EVENTS | file | arxiv-daily-push/docs/governance/development_events.jsonl | EXTRACTED |

@@ -5642,3 +5642,41 @@ models:
     evidence_refs:
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PIT05_FOUR_CHECK_FRESHNESS_C003.md"
       - "governance/run_manifests/ADP-S2PIT05-FOUR-CHECK-FRESHNESS-C003-20260627.json"
+
+  -
+    model_id: "MOD-ADP-108"
+    name: "S2PAT05 clickable feature-task-test-evidence traceability chain model"
+    purpose: "Refresh inherited P1 C-010 evidence by requiring TRACEABILITY_MATRIX rows to expose requirement, task, acceptance, code, test, evidence, and status fields, and by requiring shallow GitHub owner-facing pages to provide clickable Markdown links for the traceability chain."
+    owner: "arxiv-daily-push"
+    status: "active"
+    assumption_ids:
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-110"
+    parameter_ids:
+      - "PARAM-ADP-926"
+      - "PARAM-ADP-927"
+      - "PARAM-ADP-928"
+      - "PARAM-ADP-929"
+    inputs:
+      - "TRACEABILITY_MATRIX.csv"
+      - "用户中心/功能任务测试证据追踪链.md"
+      - "功能清单"
+      - "C-010 phase record and run manifest"
+    outputs:
+      - "traceability_rows"
+      - "owner_click_chain_refs"
+      - "traceability_chain_hash"
+      - "s2pat05_traceability_chain_ready"
+      - "blocking_reasons"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+    config_refs:
+      - "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+      - "arxiv-daily-push/tests/test_user_center_candidate_pool.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PAT05_TRACEABILITY_CHAIN_C010.md"
+      - "governance/run_manifests/ADP-S2PAT05-TRACEABILITY-CHAIN-C010-20260627.json"
+      - "arxiv-daily-push/用户中心/功能任务测试证据追踪链.md"

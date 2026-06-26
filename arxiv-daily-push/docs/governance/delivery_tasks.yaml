@@ -2984,3 +2984,39 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PAT05-TRACEABILITY-CHAIN-C010"
+    phase: "S2PA"
+    objective: "Refresh inherited P1 C-010 local evidence so feature/requirement, task, acceptance, code, test, and run-evidence traceability is complete and clickable from the shallow GitHub user center."
+    scope: "S2PAT05 traceability-chain report builder/validator, shallow user-center traceability page, full traceability matrix row coverage, focused regression tests, C-010 phase record, run manifest, semantic registry refresh, traceability/delivery/event records, and no-production evidence."
+    non_scope: "No source or board change, SMTP transport, scheduler install or enablement, Release upload, public schema or DB migration, production queue mutation, ranking change, source adapter change, Email V1 runtime/frontstage change, CURRENT pointer change, V7.1/V7.2 contract-file edit, owner-experience final acceptance, inherited P0/P1 closure, DAILY_OPERATION, or integrated production acceptance."
+    status: "completed"
+    dependencies: ["S2PAT05", "S2PMT07", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/tests/test_stage2_sources.py", "arxiv-daily-push/用户中心/功能任务测试证据追踪链.md", "arxiv-daily-push/docs/phase_records/PHASE_S2PAT05_TRACEABILITY_CHAIN_C010.md"]
+    acceptance_ids: ["ACC-S2PAT05-TRACEABILITY-CHAIN"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_c010_compile PYTHONPATH=arxiv-daily-push/src python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py arxiv-daily-push/tests/test_stage2_sources.py", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_c010_sources PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q"]
+    test_results: ["py_compile PASS", "focused Stage2 source/final-gate/user-center tests: 199 OK", "source/board user-center root gate regression: 15 OK", "full arxiv-daily-push unittest: 568 OK", "V7.2 validator PASS and V7.2 unittest: 4 OK", "ADP project governance 0 errors / 0 warnings", "governance sync validator 0 errors / 0 warnings", "lean check-render drift_count 0 / reference_issue_count 0", "YAML/JSON/JSONL/CSV parse OK", "git diff --check PASS", "full semantic extractor interrupted after more than 60 seconds; not counted as passed"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PAT05_TRACEABILITY_CHAIN_C010.md", "governance/run_manifests/ADP-S2PAT05-TRACEABILITY-CHAIN-C010-20260627.json", "arxiv-daily-push/用户中心/功能任务测试证据追踪链.md", "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv", "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/tests/test_stage2_sources.py"]
+    risk: "C-010 local evidence can be misread as independent P1 closure or full traceability acceptance; independent review still controls closure and production acceptance."
+    rollback: "Revert S2PAT05 traceability-chain code/tests, user-center traceability page, C-010 phase record, manifest, semantic registry updates, traceability/delivery/event records, and generated status refresh; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
+
+  - task_id: "S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C010"
+    phase: "S2PM"
+    objective: "Refresh S2PMT07 P1 independent-review receipt row C-010 so it points to dedicated S2PAT05 clickable traceability-chain evidence."
+    scope: "C-010 P1 review receipt row, P1 receipt manifest, refreshed C-010 run manifest, focused final-gate regression tests, traceability/delivery/event records, and no-production evidence."
+    non_scope: "No independent final signoff, final command execution, inherited P0/P1 closure, S2PLT04 completion, final acceptance bundle creation, SMTP transport, scheduler install or enablement, Release upload, public schema or DB migration, production queue mutation, ranking/source-adapter change, CURRENT pointer change, V7.1/V7.2 contract-file edit, DAILY_OPERATION, or integrated production acceptance."
+    status: "completed"
+    dependencies: ["S2PMT07", "S2PAT05-TRACEABILITY-CHAIN-C010", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_INDEPENDENT_REVIEW_RECEIPT.md", "governance/run_manifests/ADP-S2PMT07-P1-INDEPENDENT-REVIEW-RECEIPT-20260626.json", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_c010_target PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py arxiv-daily-push/tests/test_stage2_final_gate.py -q"]
+    test_results: ["py_compile PASS", "focused Stage2 source/final-gate/user-center tests: 199 OK", "source/board user-center root gate regression: 15 OK", "full arxiv-daily-push unittest: 568 OK", "V7.2 validator PASS and V7.2 unittest: 4 OK", "ADP project governance 0 errors / 0 warnings", "governance sync validator 0 errors / 0 warnings", "lean check-render drift_count 0 / reference_issue_count 0", "YAML/JSON/JSONL/CSV parse OK", "git diff --check PASS", "full semantic extractor interrupted after more than 60 seconds; not counted as passed"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_INDEPENDENT_REVIEW_RECEIPT.md", "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C010-20260627.json", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
+    risk: "This receipt refresh can be misread as C-010/P1 closure; independent review plus S2PMT07 still control closure and production acceptance."
+    rollback: "Revert the C-010 P1 review receipt refresh, run manifests, final-gate regression extension, traceability/delivery/event records, generated status refresh, and this task entry; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

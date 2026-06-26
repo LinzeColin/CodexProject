@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 107
-- formula_count: 109
-- parameter_count: 925
+- model_count: 108
+- formula_count: 110
+- parameter_count: 929
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -34,6 +34,16 @@ Fact levels follow `docs/governance/STANDARD.md`.
   expose freshness state, data-as-of timestamp, fact-source references, drift
   state, CI alarm expectation, page alarm expectation, owner-visible status,
   and a simulated-only stale/fact-source/count drift probe. It does not enable
+  SMTP, install scheduler, upload Release, change public schema or DB, mutate
+  queues, change source adapters or ranking, edit CURRENT or V7.1/V7.2
+  contracts, close inherited P0/P1, enable DAILY_OPERATION, or claim
+  integrated production acceptance.
+
+- `S2PAT05-TRACEABILITY-CHAIN-C010` adds `MOD-ADP-108` and
+  `FORM-ADP-110`. It requires `TRACEABILITY_MATRIX.csv` rows to expose
+  requirement, task, acceptance, code, test, evidence, and status fields, and
+  requires shallow GitHub owner-facing pages to render the traceability chain as
+  clickable Markdown links without local absolute paths. It does not enable
   SMTP, install scheduler, upload Release, change public schema or DB, mutate
   queues, change source adapters or ranking, edit CURRENT or V7.1/V7.2
   contracts, close inherited P0/P1, enable DAILY_OPERATION, or claim

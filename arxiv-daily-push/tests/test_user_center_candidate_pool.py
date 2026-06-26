@@ -18,6 +18,8 @@ PROJECT_README = ROOT / "README.md"
 CANDIDATE_POOL_PAGE = USER_CENTER / "截至今日候选池.md"
 DATA_SOURCE_PAGE = USER_CENTER / "数据源与板块健康.md"
 REPORT_PREVIEW_INDEX_PAGE = USER_CENTER / "已生成报告与邮件预览.md"
+TRACEABILITY_CHAIN_PAGE = USER_CENTER / "功能任务测试证据追踪链.md"
+TRACEABILITY_MATRIX = ROOT / "docs" / "governance" / "TRACEABILITY_MATRIX.csv"
 MODEL_PARAMS_PAGE = ROOT / "模型参数文件"
 SUMMARY_PAGES = (
     USER_CENTER / "README.md",
@@ -47,7 +49,7 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("[CONTENT_LEDGER.csv](../docs/owner/CONTENT_LEDGER.csv)", page)
         self.assertIn("[报告/邮件预览索引](./已生成报告与邮件预览.md#", page)
         self.assertNotIn("../docs/owner/reports.md#", page)
-        self.assertRegex(page, r"更新时间：2026-06-26 \d{2}:\d{2}:\d{2} Australia/Sydney")
+        self.assertRegex(page, r"更新时间：\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} Australia/Sydney")
 
     def test_candidate_pool_page_exposes_top_20_scored_selection_and_inventory_rules(self):
         page = CANDIDATE_POOL_PAGE.read_text(encoding="utf-8")
@@ -100,6 +102,25 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("| 序号 | 锚点 | 领域代码 | 标题 / 条目 | 状态 | 候选日期 | 证据 |", page)
         self.assertNotIn("| 原始定位 |", page)
         self.assertEqual(page.count("[CONTENT_LEDGER.csv](../docs/owner/CONTENT_LEDGER.csv)"), len(generated_rows) + 1)
+
+    def test_traceability_chain_page_exposes_all_matrix_rows_as_clickable_links(self):
+        matrix_rows = list(csv.DictReader(TRACEABILITY_MATRIX.read_text(encoding="utf-8").splitlines()))
+        page = TRACEABILITY_CHAIN_PAGE.read_text(encoding="utf-8")
+        table_rows = re.findall(r"^\| \d+ \|", page, flags=re.MULTILINE)
+        readme = (USER_CENTER / "README.md").read_text(encoding="utf-8")
+
+        self.assertGreaterEqual(len(matrix_rows), 245)
+        self.assertEqual(len(table_rows), len(matrix_rows))
+        self.assertTrue(page.startswith("# 功能任务测试证据追踪链\n"))
+        self.assertRegex(page, r"更新时间：\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} Australia/Sydney")
+        self.assertIn("[TRACEABILITY_MATRIX.csv](../docs/governance/TRACEABILITY_MATRIX.csv)", page)
+        self.assertIn("[C-010 阶段记录](../docs/phase_records/PHASE_S2PAT05_TRACEABILITY_CHAIN_C010.md)", page)
+        self.assertIn("[运行清单](../../governance/run_manifests/ADP-S2PAT05-TRACEABILITY-CHAIN-C010-20260627.json)", page)
+        self.assertIn("| 序号 | 需求 | 任务 | 验收 | 代码 | 配置 | 测试 | 运行证据 | 状态 |", page)
+        self.assertIn("[test_stage2_sources.py](../tests/test_stage2_sources.py)", page)
+        self.assertNotIn("/Users/", page)
+        self.assertNotIn("file://", page)
+        self.assertIn("[功能任务测试证据追踪链](./功能任务测试证据追踪链.md)", readme)
 
     def test_user_center_pages_keep_chinese_facing_labels(self):
         forbidden = (

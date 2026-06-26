@@ -2,9 +2,9 @@
 
 ## 中文速读
 
-- 本次 C-003 四查 freshness 门新增本地证据模型 `MOD-ADP-107` / `adp-s2pit05-four-check-freshness-v1`，不新增生产排序算法或收益评分公式。
-- C-003 的关键可验证字段是 `view_id`、`owner_page`、`freshness_state`、`data_as_of`、`fact_source_refs`、`drift_state`、`ci_alarm_expected`、`page_alarm_expected` 和 `owner_visible_status`。
-- C-003 还要求模拟过期、事实源缺失或账本数量漂移时 CI 和页面同时报警；本条只刷新 P1 receipt 路由，不关闭 P1，不启用生产。
+- 本次 C-010 追踪链门新增本地证据模型 `MOD-ADP-108` / `adp-s2pat05-clickable-traceability-chain-v1`，不新增生产排序算法或收益评分公式。
+- C-010 的关键可验证字段是 `requirement_id`、`task_id`、`acceptance_id`、`code_ref`、`test_ref`、`evidence_ref` 和 `status`。
+- C-010 还要求用户中心、功能清单、矩阵、阶段记录、运行清单和测试入口都是可点击 Markdown 链接；本条只刷新 P1 receipt 路由，不关闭 P1，不启用生产。
 
 ## 摘要
 
@@ -13,9 +13,9 @@
 - current_stage: `S2`
 - current_phase: `S2PC`
 - current_task: `S2PCT02`
-- active_model_count: `53`
-- active_formula_count: `55`
-- active_parameter_count: `370`
+- active_model_count: `54`
+- active_formula_count: `56`
+- active_parameter_count: `374`
 - blockers: `none`
 - next_gate: `S2PC-GATE-V7-2-REVALIDATION`
 - next_unique_task: `S2PCT02 Science main-journal metadata-only no-send shadow evidence (planned)`
@@ -66,6 +66,22 @@
 - `ARXIV_PRODUCTION_ACCEPTED_MAINTAINED` 只保持 Stage 1 arXiv 单源验收，不代表 Stage 2 已生产验收。
 - `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION` 只允许在 P0/P1 清零且 `S2PMT07` 独立复审通过后声明。
 - `S2PCT01` 是当前 Stage2 任务；`S2PBT01` 保留为已通过的来源 Shadow 线程任务。
+
+## S2PAT05 C-010 功能任务测试证据追踪链门
+
+| 项目 | 当前口径 |
+|---|---|
+| 模型 ID | `MOD-ADP-108` |
+| 模型名称 | `adp-s2pat05-clickable-traceability-chain-v1` |
+| 公式 ID | `FORM-ADP-110` |
+| 参数版本 | `adp-s2pat05-traceability-chain-parameters-v1` |
+| 适用范围 | C-010 P1 复审证据刷新；验证功能/需求、任务、验收、代码、测试和运行证据链路是否完整且可点击 |
+| 数据来源 | [TRACEABILITY_MATRIX.csv](docs/governance/TRACEABILITY_MATRIX.csv) 和 [功能任务测试证据追踪链](用户中心/功能任务测试证据追踪链.md) |
+| 通过公式 | `traceability_chain_ready = matrix_row_coverage_gate && required_field_gate && clickable_ui_link_gate && orphan_chain_gate && no_side_effect_gate` |
+| 必填行字段 | `requirement_id`、`task_id`、`acceptance_id`、`code_ref`、`test_ref`、`evidence_ref`、`status` |
+| 必填可点击入口 | 用户中心追踪链页、功能清单、traceability matrix、C-010 阶段记录、C-010 运行清单、focused test |
+| 缺失处理 | 任一必填行字段缺失、`UNKNOWN`、orphan 状态、原始路径未渲染成 Markdown 链接、本机绝对路径、或生产 side-effect flag 为 true 时阻断 |
+| 禁止误读 | 本模型只刷新 P1 证据路由，不关闭 C-010，不声明独立复审通过，不启用 SMTP、scheduler、Release、DB/schema、队列、ranking、source adapter 或 Stage2 production |
 
 ## 评分和排序标准
 

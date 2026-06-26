@@ -6283,3 +6283,49 @@ formulas:
     evidence_hash: "PENDING_MAIN_COMMIT"
     last_verified_commit: "PRECOMMIT"
     verified_at: "2026-06-27T06:45:31+10:00"
+
+  -
+    formula_id: "FORM-ADP-110"
+    model_id: "MOD-ADP-108"
+    assumption_ids:
+      - "ASM-ADP-035"
+    status: "active"
+    expression: "S2PAT05 C-010 traceability evidence passes only when every TRACEABILITY_MATRIX row has requirement_id, task_id, acceptance_id, code_ref, test_ref, evidence_ref, and status; no row is orphan or unresolved; the shallow owner-facing traceability page, project feature list, traceability matrix, C-010 phase record, run manifest, and focused test are rendered as Markdown links without local absolute paths; and all SMTP, scheduler, Release, DB, schema, queue, ranking, source-adapter, email-frontstage, V7.1 CURRENT, and V7.2 contract side-effect flags remain false."
+    variables:
+      -
+        name: "traceability_rows"
+        data_type: "list[object]"
+        unit: "matrix rows"
+        input_domain: "TRACEABILITY_MATRIX.csv"
+      -
+        name: "owner_click_chain_refs"
+        data_type: "list[object]"
+        unit: "Markdown links"
+        input_domain: "shallow GitHub owner and project entry pages"
+      -
+        name: "traceability_coverage_percent"
+        data_type: "number"
+        unit: "percent"
+        input_domain: "0..100"
+    constraints: "This gate must not enable SMTP, install scheduler, upload Release, mutate queues, change ranking or source adapters, mutate public schema or DB, change Email frontstage, edit CURRENT, edit V7.1/V7.2 contract files, close inherited P0/P1, claim S2PLT04/S2PMT07 acceptance, or claim integrated production acceptance."
+    missing_policy: "Missing required row field, unresolved row value, orphan status, missing required owner clickable ref, raw non-Markdown path, local absolute path, or any production side-effect flag blocks the report."
+    output_range: "S2PAT05 traceability-chain report with status pass or blocked, gate states, normalized traceability_rows, owner_click_chain_refs, deterministic traceability_chain_hash, validation errors, and all production/schema/email/source side-effect flags false."
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PAT05_TRACEABILITY_CHAIN_C010.md"
+      - "governance/run_manifests/ADP-S2PAT05-TRACEABILITY-CHAIN-C010-20260627.json"
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::S2PAT05_TRACEABILITY_CHAIN_MODEL_ID"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::S2PAT05_TRACEABILITY_REQUIRED_ROW_FIELDS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::S2PAT05_TRACEABILITY_REQUIRED_UI_REFS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::S2PAT05_TRACEABILITY_REQUIRED_GATES"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::build_s2pat05_traceability_chain_report"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::validate_s2pat05_traceability_chain_report"
+    implementation_fingerprint: "PENDING_MAIN_COMMIT"
+    evidence_hash: "PENDING_MAIN_COMMIT"
+    last_verified_commit: "PRECOMMIT"
+    verified_at: "2026-06-27T07:15:07+10:00"
