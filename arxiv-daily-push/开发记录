@@ -1,241 +1,82 @@
 # 开发记录
 
-## 中文速读
+本文件是 ADP 的中文开发基线。它保留路线图、任务、门禁、验收和关键事件；不把机器字段原样倾倒给用户。任务编号、PR、提交、文件名和命令名保留原文，是为了审查和跳转。
 
-| 问题 | 当前答案 |
+## 当前状态
+
+| 问题 | 当前结论 |
 |---|---|
-| 当前开发主线 | Stage 2 仍在推进，但正式生产验收未通过 |
-| 用户中心修复状态 | 已把入口改为中文、高密度、可决策的信息面 |
-| 本次修复边界 | 只改用户可读文档、三基说明和运行清单；不改生产代码、公共结构、队列、计划任务或 SMTP |
-| 下一步最有价值任务 | 把复习、行动、能力资产、收益的每日数量自动写入 GitHub 用户中心 |
+| 当前开发主线 | Stage 2 仍在推进，正式生产验收未通过 |
+| 用户中心修复状态 | 已把 GitHub 用户中心改为唯一入口、中文优先、证据可跳转、字段可决策 |
+| 本次修复边界 | 只改用户可读文档、三基说明、规则和运行清单；不改生产代码、公共结构、队列、计划任务或 SMTP |
+| 当前最有价值下一步 | 在每日真实运行后调用学习快照同步脚本，把复习、行动、能力资产、收益的当日真实数量写入 GitHub 用户中心 |
 | 当前禁止结论 | 不能宣称 Stage 2 正式生产通过，不能宣称每日运行已验收 |
 
-说明：下方保留任务编号、验收编号、提交记录和命令名，用于审查；自然语言描述必须中文优先。
+## 本次用户中心修复记录
 
-## 摘要
-
-- 项目：`arxiv-daily-push`
-- 产品版本：`0.23.0`
-- 当前阶段：`S2`
-- 当前分支阶段：`S2PC`
-- 当前任务：`S2PCT02`
-- 总估算工时：`10.50`
-- 已完成工时：`8.50`
-- 进度：`80.95%`
-- 当前阻断：无公开阻断；Stage 2 最终门仍未通过
-- 下一门禁：`S2PC-GATE-V7-2-REVALIDATION`
-- 下一候选任务：`S2PCT02 Science 主刊元数据影子证据`
-- 路线图类型：产品路线图
-- 路线图任务数：`4`
-- 路线图门禁数：`5`
-- 验收项数量：`4`
-- 测试命令数量：`10`
-- 证据引用数量：`21`
-- 证据状态：已抽取
-
-## 用户中心补丁记录
-
-| 时间 | 类型 | 摘要 | 任务 | 事实等级 |
+| 时间 | 任务 | 已完成 | 未改变 | 证据 |
 |---|---|---|---|---|
-| 2026-06-26T16:27:41+10:00 | GitHub 用户中心补齐 | GitHub 浅层用户中心补齐一看三查、已发送/未发送/排队/已讲解、复习行动与收益、关键结论与用户决策、路线图与停止门、人类可读信息索引，并记录复习、行动、收益每日数量尚未自动刷新到 GitHub 用户中心的缺口；不改生产代码、SMTP、计划任务、公共结构或队列。 | ADP-USER-CENTER-ONE-LOOK-THREE-CHECK-20260626 | 已抽取 |
-| 2026-06-26T17:17:15+10:00 | 中文可读性修复 | 将用户中心页面改成全中文优先、结论优先、动作优先、低噪声的 owner 阅读面；把非必要英文文件名改为中文；保留任务编号和合同编号作为证据标识。 | ADP-USER-CENTER-READABLE-CN-20260626 | 已抽取 |
-| 2026-06-26T17:37:00+10:00 | 邮件发送长期状态模板 | 将邮件发送页从“今天补发快照”改为长期上线状态模板，补充今日已发送/总应发送、历史发送记录、人类可读邮件模板格式、截至今日候选队列、内容账本定义和持续更新规则；总应发送没有证据时不得伪造为任意数字；同步更新用户中心首页、一看三查、关键结论与索引。 | ADP-MAIL-STATUS-LONGTERM-TEMPLATE-20260626 | 已抽取 |
+| 2026-06-26 16:27 Australia/Sydney | GitHub 用户中心补齐 | 建立浅层用户中心、一看三查、邮件状态、复习行动收益、路线图和决策页面 | 未启用生产发送、未改公共结构 | [ADP-USER-CENTER-ONE-LOOK-THREE-CHECK](../governance/run_manifests/ADP-USER-CENTER-ONE-LOOK-THREE-CHECK-20260626.json) |
+| 2026-06-26 17:17 Australia/Sydney | 中文可读性修复 | 将页面改为中文、结论优先、动作优先 | 未改变运行器和队列 | [ADP-USER-CENTER-READABLE-CN](../governance/run_manifests/ADP-USER-CENTER-READABLE-CN-20260626.json) |
+| 2026-06-26 18:01 Australia/Sydney | 邮件状态与模板预览修复 | 增加 UI/UX 模板预览、历史发送记录、候选池 Code 列和真实时间戳脚本 | 未改邮件生产代码和 SMTP | [ADP-MAIL-STATUS-LONGTERM-TEMPLATE](../governance/run_manifests/ADP-MAIL-STATUS-LONGTERM-TEMPLATE-20260626.json) |
+| 2026-06-26 18:27 Australia/Sydney | 用户中心复习行动收益修复 | 删除重复索引；README 成为唯一入口；复习页改为字段、证据链和今日快照待写入；新增学习快照同步脚本；三基文件改为中文可读基线 | 未伪造今日复习、行动、资产或收益数量 | [用户中心 README](用户中心/README.md) / [复习行动与收益](用户中心/复习行动与收益.md) / [学习快照脚本](scripts/update_user_center_learning_snapshot.py) |
 
-## 路线图
+## 当前路线图
 
-Stage -> Phase -> Task
+| 阶段 | 目标 | 当前状态 | 工时 | 占比 | 停止门 |
+|---|---|---|---:|---:|---|
+| S2 Stage 2 多来源证据推进 | 在不破坏 Stage 1 arXiv accepted 和本机 local runner 策略的前提下，逐来源推进真实数据链路、队列、账本、邮件预览和影子证据 | 进行中 | 6.50 | 61.90% | 未通过最终生产门前，禁止宣称 Stage 2 正式生产通过 |
+| S5 项目迁移与三文件重建 | 把治理真相保留下来，把治理计算从每次开发动作中移出去 | 进行中 | 4.00 | 38.10% | 每个项目必须保留可读三基文件，不能只做索引页 |
 
-中文说明：下方结构按“阶段 -> 分支 -> 任务”组织。
+## Stage 2 任务
 
-### S2 Stage 2 多来源证据推进
-
-- person_goal: `在不破坏 Stage 1 arXiv accepted 和本机 local runner 策略的前提下，逐来源推进真实数据链路、队列、ledger、邮件预览和 shadow 证据。`
-- status: `in_progress`
-- derived_hours: `6.50`
-- derived_percent: `61.90%`
-- stop_conditions: `V7.2 current contract gate 或 agent revalidation 未通过时宣称 STAGE2_PRODUCTION_ACCEPTED, bioRxiv/medRxiv 或 Nature shadow 影响正式 arXiv 邮件, 启用 SMTP、Release、GitHub schedule、video 或正式生产 inclusion`
-- stop_gate: `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`
-- stop_gate_pass_criteria: `V7.2 root contract、CURRENT、AGENTS、三基文件和 CI contract hash gate 合并, active/completed Stage2 agents record V7.2 revalidation receipts before new work, B1 来源级与板块级 replay/shadow/email gates 全部通过, Stage 1 arXiv local runner 无回归`
-- stop_gate_evidence: `EVID-ADP-S2PBT01-REAL-REPLAY-SHADOW, EVID-ADP-DELIVERY-TASKS`
-- stop_gate_failure_action: `block gated claim/action until pass conditions and evidence are satisfied`
-
-#### S2PB B1 preprint source shadow promotion
-
-- objective: `将 legacy S2P1T01 作为 V7 alias S2PBT01 推进 bioRxiv/medRxiv metadata-only source evidence。`
-- status: `in_progress`
-- derived_hours: `2.50`
-- derived_percent: `23.81%`
-- stop_conditions: `改写历史 task/event ID, 把 no-send evidence 当作 formal production inclusion, 发生 V6/V7 命名或合同冲突但未标记 R-CONFLICT`
-- stop_gate: `S2PB-GATE-V7-CONTRACT-BLOCKED`
-- stop_gate_pass_criteria: `S2PBT01/S2P1T01 evidence persisted, formal production flags remain false, V7/root contract gate later reconciles alias`
-- stop_gate_evidence: `EVID-ADP-S2P1T01-PREPRINT, EVID-ADP-S2PBT01-REAL-REPLAY-SHADOW`
-- stop_gate_failure_action: `block gated claim/action until pass conditions and evidence are satisfied`
-
-| Task | 名称 | 状态 | 工时 | 占比 | 依赖 | 验收 |
+| 任务 | 名称 | 状态 | 工时 | 占比 | 依赖 | 验收 |
 |---|---|---|---:|---:|---|---|
-| S2PBT01 | bioRxiv 与 medRxiv no-send shadow source evidence | completed | 2.50 | 23.81% | ARXIV_PRODUCTION_ACCEPTED, ADP-S1P5T05 | ADP-ACC-S2P1T01-SOURCE-PROMOTION |
+| S2PBT01 | bioRxiv 与 medRxiv 无发送影子来源证据 | 已完成 | 2.50 | 23.81% | Stage 1 arXiv 验收、S1P5T05 | ADP-ACC-S2P1T01-SOURCE-PROMOTION |
+| S2PCT01 | Nature 顶刊元数据无发送影子证据 | 已完成 | 2.00 | 19.05% | S2PBT01 | ACC-S2PCT01-NATURE |
+| S2PCT02 | Science 主刊元数据无发送影子证据 | 计划中 | 2.00 | 19.05% | S2PCT01 | ACC-S2PCT02-SCIENCE |
 
-Task detail fields:
+### Stage 2 停止条件
 
-- S2PBT01 test_commands: `python3 -m unittest arxiv-daily-push/tests/test_preprint_adapter.py arxiv-daily-push/tests/test_stage2_sources.py ... -q, stage2-preprint-replay-shadow --start-date 2024-01-01 --count 30, scripts/validate_project_governance.py --changed-only --enforce-sync --semantic`
-- S2PBT01 test_results: `not duplicated in roadmap; see evidence_refs`
-- S2PBT01 evidence_refs: `governance/run_manifests/ADP-S2P1T01-PREPRINT-SOURCE-PROMOTION-20260624.json, governance/run_manifests/ADP-S2PBT01-REAL-REPLAY-SHADOW-EVIDENCE-20260624.json`
-- S2PBT01 risks: `V7/root contract gates 未完成前不能纳入正式生产、不能启用邮件发送或 schedule。`
-- S2PBT01 rollback: `Revert S2PBT01/S2P1T01 source adapter, shadow/replay code, registry records, manifests, and rendered governance sync.`
+| 条件 | 处理 |
+|---|---|
+| V7.2 当前合同门或 agent 复审未通过 | 禁止宣称正式生产通过 |
+| 影子来源影响正式 arXiv 邮件 | 立即阻断并回滚相关任务 |
+| 启用 SMTP、Release、GitHub schedule、视频或正式来源纳入 | 必须另走生产任务和验收 |
+| S2PMT07 独立复审、最终包或历史 P0/P1 阻断未关闭 | 禁止进入每日生产运行 |
 
-#### S2PC D2 Nature/top-journal shadow foundation
+## S5 任务
 
-- objective: `将 legacy S2P2T01 作为 V7.2-inherited canonical S2PCT01 推进 Nature/top-journal metadata-only no-send shadow evidence，并继续到 S2PCT02 Science 主刊 metadata-only shadow。`
-- status: `in_progress`
-- derived_hours: `4.00`
-- derived_percent: `38.10%`
-- stop_conditions: `把 Nature metadata-only RSS 当作 full text 或正式 peer-review extraction, 把 S2PCT01 shadow evidence 当作 D2 source-domain acceptance, 启用 SMTP、Release、GitHub schedule、video 或正式生产 inclusion`
-- stop_gate: `S2PC-GATE-V7-CONTRACT-BLOCKED`
-- stop_gate_pass_criteria: `S2PCT01/S2P2T01 Nature evidence persisted, formal production flags remain false, V7.2 production stop gates and S2PMT07 independent review pass before acceptance`
-- stop_gate_evidence: `governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json, arxiv-daily-push/docs/phase_records/PHASE_S2P2T01_TOP_JOURNAL_SHADOW_FOUNDATION.md`
-- stop_gate_failure_action: `block gated claim/action until pass conditions and evidence are satisfied`
-
-| Task | 名称 | 状态 | 工时 | 占比 | 依赖 | 验收 |
+| 任务 | 名称 | 状态 | 工时 | 占比 | 依赖 | 验收 |
 |---|---|---|---:|---:|---|---|
-| S2PCT01 | Nature/top-journal metadata-only no-send shadow evidence | completed | 2.00 | 19.05% | S2PBT01 | ACC-S2PCT01-NATURE |
-| S2PCT02 | Science main-journal metadata-only no-send shadow evidence | planned | 2.00 | 19.05% | S2PCT01 | ACC-S2PCT02-SCIENCE |
+| S5PBT05 | 迁移 arxiv-daily-push 三基和治理入口 | 已完成，但本轮继续修复可读性 | 4.00 | 38.10% | S5PBT04 | ACC-S5PBT05 |
 
-Task detail fields:
+### S5 停止条件
 
-- S2PCT01 test_commands: `python3 -m unittest arxiv-daily-push/tests/test_top_journal_adapter.py arxiv-daily-push/tests/test_stage2_sources.py -q, stage2-top-journal-shadow-daily using the live Nature batch under /tmp/adp_s2p2_nature_live_20260624`
-- S2PCT01 test_results: `not duplicated in roadmap; see evidence_refs`
-- S2PCT01 evidence_refs: `governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json, arxiv-daily-push/tests/test_top_journal_adapter.py, arxiv-daily-push/tests/test_stage2_sources.py, https://github.com/LinzeColin/CodexProject/pull/119`
-- S2PCT01 risks: `V7.2 production stop gates 和 S2PMT07 未完成前不能纳入正式生产、不能启用邮件发送或 schedule，Nature metadata 不能被误读为全文抽取。`
-- S2PCT01 rollback: `Revert S2PCT01/S2P2T01 Nature adapter, shadow daily code, fixtures, tests, phase record, manifest, and rendered governance sync.`
-- S2PCT02 test_commands: `planned: Science source adapter focused tests, planned: Science no-send shadow daily with separate queue/ledger/email preview`
-- S2PCT02 test_results: `not executed yet; planned task only`
-- S2PCT02 evidence_refs: `arxiv-daily-push/docs/pursuing_goal/v7_2/machine_readable/roadmap_v7_2.yaml`
-- S2PCT02 risks: `错误文章类型、重复 DOI、全文/订阅墙越界、或 Science shadow 污染正式 arXiv 邮件必须阻断；不得宣称 D2_SOURCE_DOMAIN_ACCEPTED 或 Stage2 production accepted。`
-- S2PCT02 rollback: `Remove planned S2PCT02 governance entry if Science implementation is deferred or superseded.`
+| 条件 | 处理 |
+|---|---|
+| 三基文件变成空泛索引或英文机器转储 | 阻断并改回中文可读基线 |
+| 未知事实被写成已验证 | 降级为待证据或删除 |
+| 一次 PR 同时迁移多个项目 | 阻断，回到单项目范围 |
 
-### S5 项目迁移与三文件重建
+## 关键事件
 
-- person_goal: `逐项目把治理真相保留下来，把治理计算从每次开发动作中移出去。`
-- status: `in_progress`
-- derived_hours: `4.00`
-- derived_percent: `38.10%`
-- stop_conditions: `一次 PR 同时迁移多个项目, 无证据事实被写入 VERIFIED, 业务测试失败被忽略`
-- stop_gate: `S5-GATE`
-- stop_gate_pass_criteria: `10/10 项目通过结构、准确性和人类可读验收, 迁移过程中无批量空泛文档`
-- stop_gate_evidence: `migration_PRs, full_readonly_baseline, project_acceptance_matrix`
-- stop_gate_failure_action: `block gated claim/action until pass conditions and evidence are satisfied`
+| 时间 | 事件 | 结论 | 证据 |
+|---|---|---|---|
+| 2026-06-23 | Stage 1 arXiv 验收 | Stage 1 arXiv 单源已验收，生产计划仍保持关闭边界 | [Stage 1 验收清单](../governance/run_manifests/ADP-S1P5T04-ARXIV-PRODUCTION-ACCEPTED-20260623.json) |
+| 2026-06-24 | 本机运行和迁移准备 | 本机运行器、迁移准备和失败关闭边界完成 | [本机运行清单](../governance/run_manifests/ADP-S1P5T05-LOCAL-PRODUCTION-AND-MIGRATION-PREP-20260624.json) |
+| 2026-06-24 | bioRxiv/medRxiv 影子证据 | 元数据无发送影子证据完成，不进入正式邮件 | [S2PBT01 清单](../governance/run_manifests/ADP-S2PBT01-REAL-REPLAY-SHADOW-EVIDENCE-20260624.json) |
+| 2026-06-24 | Nature 影子证据 | 顶刊元数据无发送影子证据完成，不代表 D2 正式生产通过 | [S2PCT01 清单](../governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json) |
+| 2026-06-26 | 复习计划证据 | 本地复习计划报告能力完成，GitHub 今日真实数量仍待当日快照写入 | [S2PJT02 清单](../governance/run_manifests/ADP-S2PJT02-REVIEW-SCHEDULE-20260626.json) |
+| 2026-06-26 | 行动、资产、收益证据 | 本地行动和收益报告能力完成，实际收益必须有成本、收益和证据 | [S2PJT03 清单](../governance/run_manifests/ADP-S2PJT03-ACTION-ASSET-ROI-20260626.json) |
+| 2026-06-26 | 周报和月报证据 | 本地周报、月报证据完成，不代表正式生产周期报告通过 | [S2PJT04 清单](../governance/run_manifests/ADP-S2PJT04-WEEKLY-REPORT-20260626.json) / [S2PJT05 清单](../governance/run_manifests/ADP-S2PJT05-MONTHLY-REPORT-20260626.json) |
+| 2026-06-26 | M1-M4 邮件合同证据 | Email V1 M1-M4 本地合同证据完成，不代表生产发送全部通过 | [S2PKT01 清单](../governance/run_manifests/ADP-S2PKT01-MAIL-CONTRACT-20260626.json) |
+| 2026-06-26 | Stage 2 最终门预检 | 仍被独立复审、历史阻断、最终包等要求阻断 | [路线图与停止门](用户中心/路线图与停止门.md) |
 
-#### S5PB 剩余项目治理压缩迁移
+## 验收和回滚
 
-- objective: `收敛现有大量治理文档，保留有用事实并恢复三文件。`
-- status: `in_progress`
-- derived_hours: `4.00`
-- derived_percent: `38.10%`
-- stop_conditions: `任何项目缺少 owner-readable 三文件, 未知事实被写成 VERIFIED`
-- stop_gate: `S5PB-GATE`
-- stop_gate_pass_criteria: `全部 10 个项目 Lean v2 合规, 三文件均非索引页, 每项目 focused tests 通过`
-- stop_gate_evidence: `ten_project_matrix, validation_all, owner_signoffs`
-- stop_gate_failure_action: `block gated claim/action until pass conditions and evidence are satisfied`
-
-| Task | 名称 | 状态 | 工时 | 占比 | 依赖 | 验收 |
-|---|---|---|---:|---:|---|---|
-| S5PBT05 | 迁移 arxiv-daily-push | completed | 4.00 | 38.10% | S5PBT04 | ACC-S5PBT05 |
-
-Task detail fields:
-
-- S5PBT05 test_commands: `python -B -m unittest ...test_review9_s5pbt05_* -q, python -B scripts/lean_governance.py check-render --project arxiv-daily-push, python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main`
-- S5PBT05 test_results: `not duplicated in roadmap; see evidence_refs`
-- S5PBT05 evidence_refs: `arxiv-daily-push/docs/governance/project.yaml, arxiv-daily-push/docs/governance/roadmap.yaml, arxiv-daily-push/docs/governance/events.jsonl, governance/run_manifests/GOV-REVIEW9-S5PBT05-ARXIV-DAILY-PUSH-CANONICAL-RENDER-20260624.json`
-- S5PBT05 risks: `范围扩张、Stage 1 accepted 误读、Stage 2 ready 被误写成已实现或治理回归`
-- S5PBT05 rollback: `Revert only this task commit; retain the read-only audit evidence.`
-
-
-## V7.2 CURRENT 产品合同
-
-- contract_version: `ADP-PRODUCT-CONTRACT-V7.2`
-- root_lock: `docs/pursuing_goal/v7_2/V7_2_ROOT_LOCK.yaml`
-- product_contract: `docs/pursuing_goal/v7_2/machine_readable/product_contract_v7_2.yaml`
-- contract_sha256: `a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d`
-- roadmap_version: `ADP-ROADMAP-V7.2`
-- roadmap_sha256: `7c5f2d842d4f6b909343c953fe39b4a4aa540d168199747a9f7decdb1aad9bd1`
-- migration_matrix_sha256: `08696d0211878131b5ddaaef1a8a963b8870e9e844f7d5c70beb6412a5f4c7fc`
-- final_review_sha256: `571b3dbbc78d6dac01bd18472a0358f5ce4c51ac3d590c10d0c02e6453a7ea6c`
-- previous_read_only_contract: `ADP-PRODUCT-CONTRACT-V7.1`
-- previous_read_only_root_lock: `docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml`
-- global_current_task: `S2PMT07`
-- email_v1_workstream_next: `EMAIL_LEARNING_V1_MERGED_TO_MAIN_NO_PRODUCTION_SIDE_EFFECTS`
-- v7_contract_remediation_next: `NONE_AFTER_EMAIL_V1_MAIN_MERGE_STATUS`
-- shadow_source_next: `NONE_WHILE_S2PMT07_BLOCKED`
-- agent_revalidation_required: `true`
-
-## V7.1 只读历史根治理锁
-
-- contract_version: `ADP-PRODUCT-CONTRACT-V7.1`
-- contract_lock: `docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml`
-- contract_sha256: `e51f306755629870f5a3693a50191c2291131d2224b91a8f3ef976e272eec7ad`
-- roadmap_version: `ADP-ROADMAP-V7.1`
-- roadmap_sha256: `b3e9860042fcbbf67ef5c49c12d3da30dbf0ae217ff1fe44bd25580a52f7c1a6`
-- audit_version: `ADP-PARALLEL-AUDIT-V7.1`
-- stage1_gate: `ARXIV_PRODUCTION_ACCEPTED_MAINTAINED`
-- stage2_current_task: `S2PCT01`
-- stage2_shadow_source_task: `S2PBT01`
-- legacy_alias: `S2PBT01 -> S2P1T01; S2PCT01 -> S2P2T01`
-- stage2_final_task: `S2PMT07`
-- stage2_stop_gate: `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`
-- stage2_integrated_production_accepted: `false`
-- production_forbidden_until: `inherited V7.1 P0=0; inherited V7.1 P1=0; S2PMT07 independent review passed`
-- forbidden_actions: `real_smtp_send, automatic_scheduler_install, daily_operation_enablement, production_restore, release_packaging, final_video_claim`
-
-## 近期事件
-
-| 时间 | 类型 | 摘要 | 任务 | 事实等级 |
-|---|---|---|---|---|
-| 2026-06-23T00:00:00+10:00 | stage1_acceptance | Stage 1 arXiv reached ARXIV_PRODUCTION_ACCEPTED using GitHub/cloud dry-run artifacts and controlled SMTP refs while production schedule remained disabled. | S1P5T04 | EXTRACTED |
-| 2026-06-23T00:00:00+10:00 | strict_real_arxiv_replay | Strict real arXiv 30 historical as-of replay passed with CONTENT_LEDGER closure and no production schedule enablement. | S1P5T03-R-REAL_ARXIV_30_DAY_BACKFILL_AND_LEDGER_RECONCILE | EXTRACTED |
-| 2026-06-24T00:00:00+10:00 | controlled_smtp_test | Owner-triggered test10 from main sent Gmail SMTP with Sydney service date and preserved Chinese lesson/candidate queue checks while production schedule stayed disabled. | ADP-S1P5T04-POST-MERGE-TEST10-040 | EXTRACTED |
-| 2026-06-24T09:20:00+10:00 | local_runner_migration_prep | Local Mac plus Codex/local runner production and 2026-06-30 migration prep completed without enabling GitHub cloud schedule, real SMTP production send, Release upload, launchd install, video, or Stage 2 source promotion. | ADP-S1P5T05-LOCAL-PRODUCTION-AND-MIGRATION-PREP | EXTRACTED |
-| 2026-06-24T09:20:00+10:00 | next_task_ready | S2P1T01 bioRxiv/medRxiv source promotion is ready as the next executable task, with source adapter tests, registry gate, fixture parse, replay/shadow reports and arXiv no-regression evidence required. | S2P1T01 | EXTRACTED |
-| 2026-06-24T00:00:00+10:00 | lean_v2_canonical_render | S5PBT05 proposes arxiv-daily-push Lean v2 canonical files and rendered Chinese human entry files while preserving legacy V6 roadmap anchor roadmap_sha256 76b2d29a6d5cd62de472f1a8c265a89fcf03dc7031f7d4e209f85c650b498f10 and planned final production task S2P7T04 as historical context. | S5PBT05 | PROPOSED |
-| 2026-06-24T10:58:00+10:00 | stage2_preprint_shadow_evidence | S2PBT01/S2P1T01 bioRxiv/medRxiv metadata-only source path passed live canaries, fixture replay, and real no-send 30-date replay with 48h shadow evidence while preserving Stage 1 arXiv local production boundaries. | S2PBT01 | EXTRACTED |
-| 2026-06-24T20:40:00+10:00 | product_contract_current_pointer | V7.2 became the branch CURRENT product contract with EMAIL_LEARNING_V1 visible frontstage overlay, H/M dual-plane governance, migration matrix, final review, and mandatory Stage2 agent revalidation. | S2PAT06 | EXTRACTED |
-| 2026-06-24T22:30:00+10:00 | stage2_china_d3_readiness_evidence | S2PDT04/S2P3T04 China official D3 readiness review passed local evidence gates for 30-date replay, 2-day shadow, authority evidence, B2-B6 board routing, metadata-only boundaries, and V7.2 revalidation while all production flags remained false. | S2PDT04 | EXTRACTED |
-| 2026-06-25T08:30:00+10:00 | stage2_china_provincial_template_coverage | S2PFT01/S2P5T01 China mainland provincial template coverage passed local evidence gates for 31 provincial-level IDs, locality types, core department roles, health tiers, official identity, metadata-only boundaries, and V7.2 revalidation while all production flags remained false. | S2PFT01 | EXTRACTED |
-| 2026-06-25T09:20:00+10:00 | stage2_hk_mo_independent_profile | S2PFT02/S2P5T02 Hong Kong and Macau independent profiles passed local evidence gates for jurisdiction identity, zh_hant/en/pt language profiles, legal-system states, government structures, authority evidence, mainland-template reuse blockers, metadata-only boundaries, and V7.2 revalidation while all production flags remained false. | S2PFT02 | EXTRACTED |
-| 2026-06-25T10:30:00+10:00 | stage2_key_city_coverage | S2PFT03/S2P5T03 first 24 China key-city coverage passed local evidence gates for city IDs, aliases, city department roles, region groups, health tiers, authority evidence, metadata-only boundaries, and V7.2 revalidation while all production flags remained false. | S2PFT03 | EXTRACTED |
-| 2026-06-25T15:20:00+10:00 | stage2_special_zone_discovery | S2PFT04/S2P5T04 special-zone discovery passed local evidence gates for zone IDs, zone types, authority roles, policy focus areas, parent-city mappings, health tiers, authority and dedupe gates, metadata-only boundaries, and V7.2 revalidation while all production flags remained false. | S2PFT04 | EXTRACTED |
-| 2026-06-25T16:40:00+10:00 | stage2_d3_full_governance_qualification | S2PFT05/S2P5T05 D3 full governance qualification passed local evidence gates for C0-C4 components, quota roles, quota and health balance, elimination explanations, fallback routes, 30-date replay, metadata-only boundaries, and V7.2 revalidation while all production flags remained false. | S2PFT05 | EXTRACTED |
-| 2026-06-25T23:10:00+10:00 | stage2_us_ta_source_foundation | S2PET01/S2P4T01 US-TA source foundation passed local evidence gates for NSF, DARPA, DOE, NIH, NASA, NIST, USPTO, FDA agency coverage, required signal taxonomy, official identity, traceability, metadata-only boundaries, and V7.2 revalidation while all production flags remained false. | S2PET01 | EXTRACTED |
-| 2026-06-25T23:45:00+10:00 | stage2_us_lg_legal_backbone | S2PET02/S2P4T02 US-LG legal backbone passed local evidence gates for Federal Register, Regulations.gov, GovInfo, Congress.gov coverage, required legal document types, Docket/FR/CFR/bill/report/public-law/certified-text relations, upstream S2PET01 readiness, official identity, traceability, metadata-only boundaries, and V7.2 revalidation while all production flags remained false. | S2PET02 | EXTRACTED |
-| 2026-06-25T23:59:00+10:00 | stage2_us_fm_source_backbone | S2PET03/S2P4T03 US-FM source backbone passed local evidence gates for SEC/EDGAR, Federal Reserve, Treasury, CFTC, OCC, FDIC, CFPB coverage, SEC forms, CIK and Accession identifiers, company/fund/asset relations, upstream S2PET02 readiness, official identity, traceability, metadata-only boundaries, and V7.2 revalidation while all production flags remained false. | S2PET03 | EXTRACTED |
-| 2026-06-25T23:59:30+10:00 | stage2_us_tp_d4_qualification | S2PET04/S2P4T04 US-TP D4 qualification passed local evidence gates for OSTP, BIS, FTC, FCC, CISA, CHIPS Program coverage, required policy signals, upstream S2PET01-S2PET03 readiness, D4 30-date replay, 2-day shadow, B4/B5/B6 routing, 35/15/30/20 budget explanations, official identity, traceability, metadata-only boundaries, and V7.2 revalidation while all production flags remained false. | S2PET04 | EXTRACTED |
-| 2026-06-25T23:59:40+10:00 | stage2_chinese_user_center | S2PIT01 Chinese user-center evidence passed local gates for 00_用户中心, one-edit owner-control entry, four control domains, two-click reachability, config/owner_controls.yaml as the only editable fact source, read-only storage inspect input, compatible config compilation, and no-production/no-schema/no-email-frontstage boundaries while all production flags remained false. | S2PIT01 | EXTRACTED |
-| 2026-06-25T23:59:50+10:00 | stage2_runtime_dashboard | S2PIT02 local runtime dashboard evidence passed local gates for S2PIT01 aggregation, runtime audit, watchdog, read-only storage inspect, production-boundary flags, required dashboard sections, Chinese current-state visibility, and no-production/no-schema/no-email-frontstage boundaries while all production flags remained false. | S2PIT02 | EXTRACTED |
-| 2026-06-25T23:59:55+10:00 | stage2_lifecycle_state | S2PJT01 local lifecycle state evidence passed local gates for required lifecycle states, append-only history, count conservation, ledger mapping, dry-run rollback migration proof, and no-production/no-schema/no-email-frontstage boundaries while all production flags remained false. | S2PJT01 | EXTRACTED |
-| 2026-06-26T00:08:00+10:00 | stage2_review_schedule | S2PJT02 local review schedule evidence passed local gates for 1/3/7/14/30/90 intervals, due counts, deterministic due queue hash, and no-scheduler/no-production boundaries while all production flags remained false. | S2PJT02 | EXTRACTED |
-| 2026-06-26T00:40:00+10:00 | stage2_action_asset_roi | S2PJT03 local action/asset/ROI ledger evidence passed local gates for action windows, expected ROI assumptions/confidence, actual ROI verifiability, capability asset traceability, deterministic ledger hash, and no-production boundaries while all production flags remained false. | S2PJT03 | EXTRACTED |
-| 2026-06-26T01:20:00+10:00 | stage2_weekly_report | S2PJT04 local weekly report evidence passed local gates for weekly section traceability, actual-state traceability, duplicate prevention, next-week focus, deterministic report hash, and no-production boundaries while all production flags remained false. | S2PJT04 | EXTRACTED |
-| 2026-06-26T02:20:00+10:00 | stage2_monthly_report | S2PJT05 local monthly report evidence passed local gates for S2PJT04 weekly report dependency, month-start/month-end cognitive delta, capability growth, verifiable calculated conversion, forecast review, next-month focus, deterministic report hash, and no-production boundaries while all production flags remained false. | S2PJT05 | EXTRACTED |
-| 2026-06-26T03:20:00+10:00 | stage2_content_quality_gate | S2PHT05 local content quality gate evidence passed local gates for S2PHT01-S2PHT04 dependency receipts, 10 semantic gold dimensions, claim entailment, quote/location, template-rate, counterevidence, personal actionability, Stage 1 regression, manual review, deterministic quality hash, and no-production boundaries while all production flags remained false. | S2PHT05 | EXTRACTED |
-| 2026-06-26T04:20:00+10:00 | stage2_source_model_view | S2PIT03 local source/model view evidence passed focused gates for D1-D4 source domains, B1-B6 reading boards, parameter readability, queue view traceability/exportability, deterministic view hash, and no-production boundaries while all production flags remained false. | S2PIT03 | EXTRACTED |
-| 2026-06-26T05:20:00+10:00 | stage2_content_ledger | S2PIT04 local content ledger evidence passed focused gates for dependency readiness, content/evidence/run/mail/feedback/review/action/asset/ROI traceability, status counts, deterministic ledger hash, and no-production boundaries while all production flags remained false. | S2PIT04 | EXTRACTED |
-| 2026-06-26T06:20:00+10:00 | stage2_mail_contract_evidence | S2PKT01 local M1-M4 EMAIL_LEARNING_V1 mail contract evidence passed focused local gates for shared contract identity, board differentiation, three-layer reading, evidence labels, feedback actions, deterministic hashes, dependency readiness, and no-production boundaries while all production flags remained false. | S2PKT01 | EXTRACTED |
-| 2026-06-26T07:20:00+10:00 | stage2_m1_mail_evidence | S2PKT02 local M1 mail evidence passed focused local gates for S2PKT01 contract readiness, B1/B4-B6 scope, required sections, evidence/counterevidence, personal value, 15m/2h actions, deterministic hash, and no-production boundaries while all production flags remained false. | S2PKT02 | EXTRACTED |
-| 2026-06-26T08:20:00+10:00 | stage2_m2_mail_evidence | S2PKT03 local M2 mail evidence passed focused local gates for S2PKT01 contract readiness, B2/B4-B6 scope, engineering usability, reproducibility, product/industry value, limitations, 2h/7d actions, deterministic hash, and no-production boundaries while all production flags remained false. | S2PKT03 | EXTRACTED |
-| 2026-06-26T09:20:00+10:00 | stage2_m3_mail_evidence | S2PKT04 local M3 mail evidence passed focused local gates for S2PKT01 contract readiness, B3/B4-B6 scope, legal status, capital impact, geopolitical context, personal impact, 2h/30d actions, deterministic hash, and no-production boundaries while all production flags remained false. | S2PKT04 | EXTRACTED |
-| 2026-06-26T10:20:00+10:00 | stage2_m4_mail_orchestration_evidence | S2PKT05 local M4 mail orchestration evidence passed focused local gates for M1/M2/M3 terminal inputs, 07:30/11:30/17:00/21:30 staggered windows, cycle watermark, duplicate 0, silent-drop 0, cross-board summary sections, review/action traceability, deterministic hash, and no-production boundaries while all production flags remained false. | S2PKT05 | EXTRACTED |
-| 2026-06-26T11:20:00+10:00 | stage2_security_boundary_evidence | S2PMT01 local security boundary evidence passed focused local gates for UNTRUSTED_DATA source content, typed frontstage statements, safe URL rendering, zero-critical-claim blocking, local supply-chain baseline receipt, and no-production boundaries. | S2PMT01 | EXTRACTED |
-| 2026-06-26T12:20:00+10:00 | stage2_atomic_recovery_evidence | S2PMT02 local atomic recovery evidence passed focused local gates for staged atomic writes, manifest hash verification, tamper detection, explicit restore drill, staging cleanup, and no-production boundaries while all production flags remained false. | S2PMT02 | EXTRACTED |
-| 2026-06-26T13:20:00+10:00 | stage2_lease_fencing_evidence | S2PMT03 local lease fencing evidence passed focused local gates for row_version CAS, lease/fencing, state-history consistency, idempotent transactional outbox, SMTP accept crash-window, M4 cycle watermark, and no-production boundaries. | S2PMT03 | EXTRACTED |
-| 2026-06-26T15:20:00+10:00 | stage2_stress_fault_time_e2e_evidence | S2PMT05 local pressure/fault/time/E2E evidence passed focused local gates for load/stress/spike, accelerated 24h soak, dual scheduler race, SMTP crash-window, fault injection, DST/clock skew, 35-day 3+1/weekly/monthly/review/action/ROI, backpressure, deterministic isolation, and no-production boundaries. | S2PMT05 | EXTRACTED |
-| 2026-06-26T16:00:00+10:00 | stage2_owner_ux_safe_controls_evidence | S2PMT06 local owner UX evidence passed focused local gates for first screen, navigation, status feedback, error cards, safe config changes, queue views, safe actions, accessibility, C-001 through C-015 coverage, and no-production boundaries. | S2PMT06 | EXTRACTED |
-| 2026-06-26T17:00:00+10:00 | stage2_final_gate_precheck_blocked | S2PMT07 final gate precheck remained blocked by missing independent reviewer proof, inherited P0/P1 blockers, missing S2PLT04, missing final bundle, and missing independent signoff. | S2PMT07 | EXTRACTED |
-| 2026-06-26T12:48:44+10:00 | stage2_full_replay_payload_contract | S2PLT01 replay payload contract passed focused local gates for required payload metadata, evidence mode, evidence refs, deterministic payload hash, record evidence consumption, and no-production side-effect flags. | S2PLT01-REPLAY-PAYLOAD-CONTRACT | EXTRACTED |
-| 2026-06-26T22:10:00+10:00 | lesson_revision_identity_hardening | Lesson generation now emits stable lesson_key and immutable content/evidence/model-sensitive lesson_revision_id, with lesson_id preserved as the revision-sensitive downstream compatibility field. | S2PMT03-LESSON-REVISION-A016 | EXTRACTED |
-| 2026-06-26T23:20:00+10:00 | stage1_scheduler_template_a013_hardening | Stage 1 macOS scheduler dry-run template generation now emits plistlib-generated launchd XML with structured ProgramArguments, WorkingDirectory, and PYTHONPATH fields instead of a handwritten shell command string. | S2PMT04-SCHEDULER-TEMPLATE-A013 | EXTRACTED |
-| 2026-06-27T00:05:00+10:00 | stage2_full_replay_payload_execution_package | S2PLT01 replay payload execution package now emits validated payload, entry precheck, validation errors, blocking reasons, and execution hash from explicit replay/mail/source-terminal evidence while preserving inherited P0/P1 blockers. | S2PLT01-REPLAY-PAYLOAD-EXECUTION | EXTRACTED |
-| 2026-06-27T00:30:00+10:00 | stage2_full_replay_independent_review_receipt | S2PLT01 independent replay review receipt now validates reviewer independence, CI/evidence refs, execution report binding, retained inherited P0/P1 blockers, and review hash while preserving no-production flags. | S2PLT01-INDEPENDENT-REPLAY-REVIEW | EXTRACTED |
-| 2026-06-26T18:00:00+10:00 | stage2_integration_candidate_precheck | S2PLT04 integration candidate precheck now summarizes S2PLT01 review evidence, missing S2PLT02/S2PLT03 completion, local state/content evidence, inherited P0/P1 blockers, missing final bundle, and blocked S2PMT07 while preserving no-production flags. | S2PLT04 | EXTRACTED |
-| 2026-06-26T19:00:00+10:00 | stage2_two_day_live_run_precheck | S2PLT02 two-day live-run readiness precheck records missing S2PLT01 acceptance, missing two real natural days, missing 8 real M1-M4 emails, missing scheduler/SMTP proof, missing M4 watermark proof, and inherited P0/P1 blockers while preserving no-production flags. | S2PLT02 | EXTRACTED |
-| 2026-06-26T16:20:00+10:00 | stage2_two_day_live_run_precheck_main_merge_attestation | S2PLT02 live 2-day readiness precheck PR #237 was marked ready, CI passed, and merged to main at 018c50a without production side effects. | S2PLT02-MAIN-MERGE-ATTESTATION | EXTRACTED |
-| 2026-06-26T16:30:00+10:00 | email_learning_v1_local_runner_runtime_attestation | Local launchd daily/health/watchdog now point at CodexProject_adp_local_runner_current@2eaa872, health/watchdog pass, and no-write daily smoke renders EMAIL_LEARNING_V1 M1 without SMTP. | EMAIL-V1-LOCAL-RUNNER-ATTESTATION | EXTRACTED |
-| 2026-06-26T17:13:59+10:00 | user_center_one_look_three_check_main_merge_binding | ADP GitHub user center PR #243 is merged to main at fd068a, with seven shallow user-center pages present and local runtime files kept as evidence only. | USER-CENTER-ONE-LOOK-THREE-CHECK-BINDING | EXTRACTED |
+| 项目 | 当前口径 |
+|---|---|
+| 本轮验收 | 用户中心链接可跳转、重复索引删除、三基文件中文可读、误导短语清除、时间戳脚本通过 |
+| 回滚方式 | 回滚本轮文档和运行清单改动；不需要回滚生产数据，因为本轮没有生产副作用 |
+| 仍需验证 | 当日运行器是否能把复习、行动、资产、收益真实数量写入 GitHub 用户中心 |

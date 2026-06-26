@@ -104,6 +104,30 @@ This project follows the root `AGENTS.md` and `docs/governance/STANDARD.md`.
   owner to open local absolute paths. Deep `docs/owner/...` pages may remain
   generated/internal references or pointers, but must not be the only owner
   reading entry.
+- `arxiv-daily-push/用户中心/README.md` is the single owner-facing user-center
+  index. Do not create or maintain a second user-center index page; merge any
+  useful index content into README without losing
+  entry links or evidence links.
+- Evidence positions in owner-facing Markdown must be clickable Markdown links,
+  preferably relative links that work in GitHub. Do not leave evidence as raw
+  backticked paths when the user needs to jump to it.
+- Review, action, asset, and ROI owner pages must show the GitHub display
+  fields even when the current daily report has not been persisted. Use
+  `待今日运行快照写入` for missing real daily values; do not write that GitHub
+  cannot display the information, and do not fill real daily counts from tests,
+  old reports, chat content, or guesses.
+- When real S2PJT02/S2PJT03 daily report JSON files exist, update
+  `用户中心/复习行动与收益.md` through
+  `scripts/update_user_center_learning_snapshot.py --write` and validate with
+  `--check`. The script must leave missing or failed-report values as
+  `待今日运行快照写入`.
+- Owner-facing user-center Markdown must keep a concrete timestamp line in the
+  format `更新时间：YYYY-MM-DD HH:MM:SS Australia/Sydney`. Do not hand-edit or
+  invent this time. Before commit, run
+  `python arxiv-daily-push/scripts/update_user_center_timestamps.py --write`
+  and then
+  `python arxiv-daily-push/scripts/update_user_center_timestamps.py --check`;
+  missing, malformed, or future timestamps must block the PR.
 - Any unsupported key factual claim must block publication.
 - Connectors and source adapters must not generate final emails directly.
   Source output flows through EvidencePacket, routing, quality gates, review,
