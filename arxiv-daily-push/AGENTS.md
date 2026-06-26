@@ -104,6 +104,13 @@ This project follows the root `AGENTS.md` and `docs/governance/STANDARD.md`.
   owner to open local absolute paths. Deep `docs/owner/...` pages may remain
   generated/internal references or pointers, but must not be the only owner
   reading entry.
+- Owner-facing user-center Markdown must keep a concrete timestamp line in the
+  format `更新时间：YYYY-MM-DD HH:MM:SS Australia/Sydney`. Do not hand-edit or
+  invent this time. Before commit, run
+  `python arxiv-daily-push/scripts/update_user_center_timestamps.py --write`
+  and then
+  `python arxiv-daily-push/scripts/update_user_center_timestamps.py --check`;
+  missing, malformed, or future timestamps must block the PR.
 - Any unsupported key factual claim must block publication.
 - Connectors and source adapters must not generate final emails directly.
   Source output flows through EvidencePacket, routing, quality gates, review,
