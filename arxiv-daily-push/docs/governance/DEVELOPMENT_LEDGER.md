@@ -10,11 +10,30 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.1
 - Current phase: S2PM
-- Current gate: S2PMT07_P1_C001_REVIEW_RECEIPT_REFRESH_NO_CLOSURE_NO_PRODUCTION
-- Confirmed iteration count: 142
+- Current gate: S2PMT07_P1_C002_REVIEW_RECEIPT_REFRESH_NO_CLOSURE_NO_PRODUCTION
+- Confirmed iteration count: 143
 - Reconstructed event count: 0
-- Current task: `S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C001` refreshes the P1 independent-review receipt so C-001 points to dedicated shallow GitHub `用户中心` evidence instead of older deep owner-doc evidence. This does not provide independent signoff, run final commands, close inherited P0/P1, complete S2PLT04, create a final acceptance bundle, or supersede later S2PL blocked prechecks. `S2PMT07` remains the final production gate and is still blocked by inherited P0/P1, S2PLT04, final bundle, independent signoff, and independent final command execution. No CURRENT, V7.1/V7.2 contract file, production replay, real production backup/restore/email, real SMTP, scheduler installation, Release, DB migration, public schema, production queue, source adapter, ranking, inherited P0/P1 closure, DAILY_OPERATION, or integrated production acceptance state changed. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
+- Current task: `S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C002` refreshes the P1 independent-review receipt so C-002 points to dedicated shallow GitHub mail/queue status count evidence instead of older deep owner-doc runtime dashboard evidence. This does not provide independent signoff, run final commands, close inherited P0/P1, complete S2PLT04, create a final acceptance bundle, or supersede later S2PL blocked prechecks. `S2PMT07` remains the final production gate and is still blocked by inherited P0/P1, S2PLT04, final bundle, independent signoff, and independent final command execution. No CURRENT, V7.1/V7.2 contract file, production replay, real production backup/restore/email, real SMTP, scheduler installation, Release, DB migration, public schema, production queue, source adapter, ranking, inherited P0/P1 closure, DAILY_OPERATION, or integrated production acceptance state changed. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
+
+### `ITER-20260627-ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C002`
+
+- Timestamp: `2026-06-27T05:25:16+10:00`
+- Fact level: EXTRACTED from S2PIT02 shallow owner status count gate, focused S2PIT02 regression test, C-002 phase record, C-002 run manifest, S2PMT07 P1 review receipt, refreshed P1 receipt manifest, focused final-gate regression test, current-run manifest, and no-production boundary scan.
+- Base commit: `aa95fd8096473ea223955a3cc8532cefb4fca26f`
+- Product version: `0.23.1`
+- Status: C-002 shallow GitHub owner status count evidence and P1 receipt routing refreshed pending full validation; no closure claim.
+- Task IDs: `S2PIT02-OWNER-STATUS-C002`; `S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C002`; parent `S2PMT07`; inherited finding `C-002`; acceptance `ACC-S2PMT07-FINAL-REVIEW`.
+- Goal: Refresh P1 independent-review receipt row C-002 so runtime dashboard evidence points to dedicated owner-visible mail/queue counts, candidate-pool conservation, and explicit review/action daily-snapshot gaps instead of older deep owner-doc evidence.
+- Files changed: S2PIT02 owner status path/summary gate/test, CLI optional owner status summary input, C-002 phase record and manifest, P1 review receipt, P1 review receipt manifest, final-gate regression test, changelog/status/traceability/delivery/event records, semantic registry refresh, generated status refresh, and this ledger entry.
+- Model changes: Refreshed `MOD-ADP-080` for S2PIT02 owner status count evidence and reused `MOD-ADP-100` for S2PMT07 receipt routing; no production model algorithm change.
+- Formula changes: Refreshed `FORM-ADP-082` and reused `FORM-ADP-102`; no production formula semantic change.
+- Parameter changes: Refreshed `PARAM-ADP-623`; added `PARAM-ADP-920` and `PARAM-ADP-921` for required owner status summary fields and status states; reused `PARAM-ADP-831` for P1 receipt routing.
+- Validation: py_compile PASS; focused S2PIT02/Stage2 source tests 166 OK; focused S2PMT07 final-gate tests 14 OK; broader validation pending in current run.
+- Decisions: This is review-routing evidence only. It does not provide independent signoff, close C-002/P1/P0, complete S2PLT04, create the final bundle, run final commands, enable SMTP/scheduler/Release, mutate schema/DB/queues, change sources or ranking, edit V7 baselines, or claim integrated production acceptance.
+- Risks: The refreshed C-002 row can be misread as P1 closure or owner-experience final acceptance; review/action/asset/ROI daily counts and empty/delayed/failed runtime states still require independent review and real daily evidence. S2PLT04, final bundle, and independent final command execution remain blocked.
+- Rollback: Revert the S2PIT02 owner status count gate/test, CLI optional input, C-002 phase record and manifest, P1 review receipt refresh, run manifests, traceability/delivery/event records, generated status refresh, and this ledger entry; no runtime production state was changed.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PIT02_OWNER_STATUS_C002.md`; `governance/run_manifests/ADP-S2PIT02-OWNER-STATUS-C002-20260627.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_INDEPENDENT_REVIEW_RECEIPT.md`; `governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C002-20260627.json`; `arxiv-daily-push/tests/test_stage2_sources.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.
 
 ### `ITER-20260627-ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C001`
 

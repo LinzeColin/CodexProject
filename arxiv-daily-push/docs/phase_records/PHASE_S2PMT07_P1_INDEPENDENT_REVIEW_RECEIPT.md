@@ -9,7 +9,7 @@
 - status: `review_receipt_ready_no_closure_claim`
 - V7.2 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - created_at: `2026-06-26 19:51:01 Australia/Sydney`
-- refreshed_at: `2026-06-27 04:55:54 Australia/Sydney`
+- refreshed_at: `2026-06-27 05:25:16 Australia/Sydney`
 
 This receipt organizes the inherited V7.1 P1 evidence set for later independent review. It is not an independent reviewer signoff, does not close any P0/P1 finding, and does not unblock integrated production acceptance.
 
@@ -81,7 +81,7 @@ No P0/P1 closure, no independent final signoff, no S2PLT04 completion, no final 
 | `B-014` | `S2PMT05` | 无背压、熔断、降级和负载丢弃优先级 | `PHASE_S2PMT05_BACKPRESSURE_B014.md`, `ADP-S2PMT05-BACKPRESSURE-B014-20260627.json`, `test_stage2_stress_e2e.py` | refreshed current evidence located; independent review required; closure not claimed | Verify V7.1 fix/test requirement: 2x/5x 峰值下高优先项 SLO，低优先项明确延后/丢弃原因 |
 | `B-015` | `S2PMT04` | 后台清理与数据保存没有事务边界和可观察完成信号 | `PHASE_S2PMT04_TRANSACTION_COMPLETION_B015.md`, `ADP-S2PMT04-TRANSACTION-COMPLETION-B015-20260626.json`, `test_stage2_lifecycle_cache.py` | refreshed current evidence located; independent review required; closure not claimed | Verify V7.1 fix/test requirement: 关闭中每一步 kill，重启可从 receipt 精确恢复 |
 | `C-001` | `S2PIT01-SHALLOW-USER-CENTER-C001` | 当前仓库未落地唯一中文 00_用户中心首屏 | `PHASE_S2PIT01_SHALLOW_USER_CENTER_C001.md`, `ADP-S2PIT01-SHALLOW-USER-CENTER-C001-20260627.json`, `test_stage2_sources.py` | refreshed current evidence located; sufficiency/gap review required; closure not claimed | Verify V7.1 fix/test requirement: 从项目根两次点击内完成所有常用操作 |
-| `C-002` | `S2PIT02` | 总控台偏配置容量，缺真实排队/讲解/发送/复习/行动数量 | `PHASE_S2PIT02_RUNTIME_DASHBOARD.md`, `邮件发送与队列状态.md`, `ADP-S2PIT02-RUNTIME-DASHBOARD-20260625.json`, `test_stage2_sources.py` | evidence surface located; sufficiency/gap review required; closure not claimed | Verify V7.1 fix/test requirement: 各分项与总数守恒；空/延迟/失败状态正确显示 |
+| `C-002` | `S2PIT02-OWNER-STATUS-C002` | 总控台偏配置容量，缺真实排队/讲解/发送/复习/行动数量 | `PHASE_S2PIT02_OWNER_STATUS_C002.md`, `ADP-S2PIT02-OWNER-STATUS-C002-20260627.json`, `test_stage2_sources.py` | refreshed current evidence located; sufficiency/gap review required; closure not claimed | Verify V7.1 fix/test requirement: 各分项与总数守恒；空/延迟/失败状态正确显示 |
 | `C-003` | `S2PIT05` | 四查视图缺统一 freshness、事实源与漂移状态 | `PHASE_S2PMT06_OWNER_UX.md`, `ADP-S2PMT06-OWNER-UX-20260626.json`, `test_stage2_owner_ux.py` | evidence surface located; sufficiency/gap review required; closure not claimed | Verify V7.1 fix/test requirement: 故意制造漂移/过期时 CI 和页面同时报警 |
 | `C-005` | `S2PMT06` | 错误和阻塞信息缺少恢复动作、负责人和安全重试入口 | `PHASE_S2PMT06_OWNER_UX.md`, `ADP-S2PMT06-OWNER-UX-20260626.json`, `test_stage2_owner_ux.py` | evidence surface located; independent review required; closure not claimed | Verify V7.1 fix/test requirement: 每个 P0/P1 错误至少一个可执行恢复动作或明确人工门 |
 | `C-006` | `S2PMT06` | 修改配置缺少预览、diff、校验、影响分析和一键回滚 | `PHASE_S2PMT06_OWNER_UX.md`, `ADP-S2PMT06-OWNER-UX-20260626.json`, `test_stage2_owner_ux.py` | evidence surface located; independent review required; closure not claimed | Verify V7.1 fix/test requirement: 非法配置无法应用；应用后可回滚到上个 revision |
@@ -94,9 +94,9 @@ No P0/P1 closure, no independent final signoff, no S2PLT04 completion, no final 
 
 This refresh updates the P1 receipt to point completed P1 remediation rows at their dedicated phase records and manifests instead of older aggregate evidence surfaces. It does not close any P1 finding and does not provide independent review signoff.
 
-- refreshed_findings: `A-006`, `A-007`, `A-008`, `A-009`, `A-010`, `A-011`, `A-012`, `A-013`, `A-014`, `A-015`, `A-016`, `A-017`, `A-018`, `A-019`, `A-020`, `A-021`, `B-002`, `B-003`, `B-004`, `B-005`, `B-006`, `B-009`, `B-010`, `B-011`, `B-012`, `B-013`, `B-014`, `B-015`, `C-001`
-- refresh_manifest: `governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C001-20260627.json`
-- previous_refresh_manifest: `governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-B002-20260627.json`
+- refreshed_findings: `A-006`, `A-007`, `A-008`, `A-009`, `A-010`, `A-011`, `A-012`, `A-013`, `A-014`, `A-015`, `A-016`, `A-017`, `A-018`, `A-019`, `A-020`, `A-021`, `B-002`, `B-003`, `B-004`, `B-005`, `B-006`, `B-009`, `B-010`, `B-011`, `B-012`, `B-013`, `B-014`, `B-015`, `C-001`, `C-002`
+- refresh_manifest: `governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C002-20260627.json`
+- previous_refresh_manifest: `governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C001-20260627.json`
 - closure_claimed: `false`
 - independent_review_signoff_present: `false`
 

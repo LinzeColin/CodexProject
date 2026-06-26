@@ -1,5 +1,11 @@
 # 模型参数文件
 
+## 中文速读
+
+- 本次新增 C-002 用户中心状态计数门，核心不是新增生产算法，而是把用户能在 GitHub 浅层页面看到的邮件、队列、候选池和日级快照状态纳入可验证参数。
+- 当前公开且已验证的守恒关系是：截至今日总候选池 299 = 已生成报告或邮件预览 30 + 待生成或待处理候选 269；今日已发送 2 不得超过总应发送 4。
+- 复习、行动、能力资产和 ROI 的日级快照仍按 `pending_daily_snapshot` 处理，不得被写成已生产验收。
+
 ## 摘要
 
 - project_id: `arxiv-daily-push`
@@ -9,7 +15,7 @@
 - current_task: `S2PCT02`
 - active_model_count: `52`
 - active_formula_count: `54`
-- active_parameter_count: `364`
+- active_parameter_count: `366`
 - blockers: `none`
 - next_gate: `S2PC-GATE-V7-2-REVALIDATION`
 - next_unique_task: `S2PCT02 Science main-journal metadata-only no-send shadow evidence (planned)`
@@ -83,6 +89,21 @@
 | 前20精选解释 | 用户中心前20精选读取来源账本中的总分字段，同一论文标识去重后取最高分/稳定记录；页面必须展示六因子评分明细，不代表只剩 20 条候选 |
 | 旧八因子口径 | [ranking.py](src/arxiv_daily_push/ranking.py) 的前沿信号、证据可靠性、新颖性、迁移价值、问题重要性、分类优先级、等待时间、多样性仍保留为历史/底层审计口径，但不能被写成当前前20总分来源 |
 | 治理引用 | [parameter_registry.csv](docs/governance/parameter_registry.csv) 的 `ROI_COMPONENT_WEIGHTS`；[formula_registry.yaml](docs/governance/formula_registry.yaml) 的 ROI 排序表达式；[global_scan.py](src/arxiv_daily_push/global_scan.py) 的实现 |
+
+## S2PIT02 用户中心邮件与队列状态门
+
+| 项目 | 当前口径 |
+|---|---|
+| 模型 | `MOD-ADP-080` / `adp-s2pit02-runtime-dashboard-v1` |
+| 公式 | `FORM-ADP-082` |
+| 新增参数 | `PARAM-ADP-920` / `S2PIT02_OWNER_STATUS_REQUIRED_SUMMARY_FIELDS`; `PARAM-ADP-921` / `S2PIT02_OWNER_STATUS_REQUIRED_STATES` |
+| 用户中心入口 | [邮件发送与队列状态](用户中心/邮件发送与队列状态.md) |
+| 守恒规则 | `截至今日总候选池 = 已生成报告或邮件预览 + 待生成或待处理候选`；当前证据为 `299 = 30 + 269` |
+| 发送规则 | `今日已发送 <= 总应发送`；当前证据为 `2 <= 4` |
+| 必需状态 | 已发送、未发送或阻断、排队或待处理必须同时可见 |
+| 未完成快照 | 复习、行动、能力资产、ROI 日级快照仍为 `pending_daily_snapshot`，不得自动改写成已完成 |
+| 禁止动作 | 不发送 SMTP、不安装或启用 scheduler、不上传 Release、不改公共 schema、不关闭 P0/P1、不声明 Stage2 production accepted |
+| 证据入口 | [PHASE_S2PIT02_OWNER_STATUS_C002.md](docs/phase_records/PHASE_S2PIT02_OWNER_STATUS_C002.md)；[ADP-S2PIT02-OWNER-STATUS-C002-20260627.json](../governance/run_manifests/ADP-S2PIT02-OWNER-STATUS-C002-20260627.json) |
 
 ## S2PMT04 本地生命周期与缓存门
 

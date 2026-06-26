@@ -1,5 +1,11 @@
 # 功能清单
 
+## 中文速读
+
+- 本次新增 `S2PIT02-OWNER-STATUS-C002`：把 C-002 “总控台缺真实排队/讲解/发送/复习/行动数量”复审证据从旧深层 owner 页面切到 GitHub 浅层用户中心邮件与队列状态页。
+- 已验证的当前计数只包括用户中心已公开且可守恒的邮件/队列口径：今日已发送 2 / 总应发送 4、截至今日总候选池 299、已生成报告或邮件预览 30、待生成或待处理候选 269，且 `299 = 30 + 269`。
+- 复习、行动、能力资产和 ROI 的日级快照仍是 `pending_daily_snapshot`，空、延迟、失败状态还需要后续独立复审；本条不关闭 P1，也不声明 Stage2 生产通过。
+
 ## 摘要
 
 - project_id: `arxiv-daily-push`
@@ -8,7 +14,7 @@
 - current_phase: `S2PC`
 - current_task: `S2PCT02`
 - progress: `80.95%`
-- capability_count: `9`
+- capability_count: `10`
 - blockers: `none`
 - next_gate: `S2PC-GATE-V7-2-REVALIDATION`
 - next_unique_task: `S2PCT02 Science main-journal metadata-only no-send shadow evidence (planned)`
@@ -30,6 +36,7 @@
 | FEAT-ADP-007 | Stage 2 bioRxiv/medRxiv shadow source evidence | completed | S2PBT01/S2P1T01 已完成 metadata-only details API adapter、SourceItem preprint、disabled source entries、promotion gate、separate shadow queue/ledger/email preview、30-date replay/48h shadow builder、live canary 和真实 no-send replay；正式生产纳入仍被 V7/root contract gates 阻断。 | EXTRACTED |
 | FEAT-ADP-008 | Stage 2 Nature/top-journal shadow source evidence | completed | S2PCT01/S2P2T01 已完成 official Nature RSS metadata-only adapter、s41586 主刊 research article filter、top-journal SourceItem、separate shadow queue/ledger/email preview、live Nature no-send canary 和 PR #119 main merge；正式 D2 source-domain acceptance 与 Stage2 production 仍被 P0/P1 与 S2PMT07 阻断。 | EXTRACTED |
 | FEAT-ADP-009 | Review9 Lean v2 owner-readable governance | proposed | 把已有 ADP 治理事实压缩为 canonical project/roadmap/events 与三个人类入口；不搬运治理计算到每次开发动作。 | PROPOSED |
+| FEAT-ADP-010 | S2PIT02 用户中心邮件与队列状态计数门 | completed | C-002 证据现在读取 GitHub 浅层用户中心邮件与队列状态页，校验今日发送数、总应发送数、总候选池、已生成报告或邮件预览、待处理候选的守恒关系，并明确复习、行动、能力资产和 ROI 日级快照仍待接入。 | EXTRACTED |
 
 ## V7.2 CURRENT 产品合同
 
