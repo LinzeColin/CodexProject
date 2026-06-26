@@ -7232,7 +7232,7 @@ Status: LOCAL FOCUSED VALIDATED; A202 STILL IN PROGRESS; RELEASE GATES STILL BLO
 
 ## 2026-06-27 - T1303/A204-A205 operator input submission receipt
 
-Status: LOCAL FOCUSED VALIDATED; RELEASE GATES STILL BLOCKED
+Status: LOCAL TARGET VALIDATED; RELEASE GATES STILL BLOCKED
 
 ### Scope
 
@@ -7267,3 +7267,43 @@ Status: LOCAL FOCUSED VALIDATED; RELEASE GATES STILL BLOCKED
 ### Rollback
 
 - Revert `scripts/validate_operator_input_status.py`, `apps/api/app/domain.py`, `specs/api_contract.yaml`, focused tests, this record and companion governance sync; preserve any real signed operator files under `artifacts/operator_inputs/`.
+
+## 2026-06-27 - T1303/A204-A205 operator input receipt ledger
+
+Status: LOCAL FOCUSED VALIDATED; RELEASE GATES STILL BLOCKED
+
+### Scope
+
+- Added `eei-operator-input-submission-receipt-ledger-v1` as the controlled persistence contract for operator-input receipt attempts.
+- Upgraded `POST /v1/release/operator-input-submission-receipt` so accepted or rejected receipt attempts are persisted to `artifacts/operator_inputs/operator_input_submission_receipts.json`.
+- Added `GET /v1/release/operator-input-submission-receipts` for readback.
+- Repeated identical receipt submissions are idempotent and do not append duplicate ledger entries.
+- Optional `expected_previous_receipt_id` provides fail-closed optimistic conflict control before appending a new ledger entry.
+
+### Acceptance Mapping
+
+- T1303 -> A204/A205.
+- This is intake/audit persistence only. It does not close A202, A210, A026, A027, A209, A204, A205 or MVP release readiness.
+
+### Validation
+
+- `PYTHONPYCACHEPREFIX=/private/tmp/eei-operator-ledger-pycache .venv/bin/python -m py_compile scripts/validate_operator_input_status.py apps/api/app/domain.py tests/unit/test_operator_input_status.py tests/unit/test_api_health.py`: PASS.
+- `TMPDIR=/private/tmp RUFF_CACHE_DIR=/private/tmp/eei-operator-ledger-ruff .venv/bin/ruff check scripts/validate_operator_input_status.py apps/api/app/domain.py tests/unit/test_operator_input_status.py tests/unit/test_api_health.py`: PASS.
+- `TMPDIR=/private/tmp PYTHONPYCACHEPREFIX=/private/tmp/eei-operator-ledger-pycache .venv/bin/python -m pytest -q tests/unit/test_operator_input_status.py tests/unit/test_api_health.py -q -p no:cacheprovider`: PASS, `41/41`.
+- `TMPDIR=/private/tmp PYTHONPYCACHEPREFIX=/private/tmp/eei-operator-ledger-pycache .venv/bin/python scripts/validate_contracts.py`: PASS.
+- `python3 scripts/validate_semantic_extractors.py EEI`: PASS, `semantic_parameters_checked=97`, `semantic_formulas_checked=11`.
+- `EEI/.venv/bin/python EEI/scripts/validate_v5_production_readiness_sync.py`: PASS.
+- `make generate-clean-room-release validate-clean-room-release generate-release-artifacts validate-release-artifacts`: PASS, `package_paths=456`, `manifest_paths=463`, `checksum_paths=462`.
+- `PLAYWRIGHT_BROWSERS_PATH=/private/tmp/eei-ms-playwright make verify`: PASS, unit tests `169/169`.
+
+### Non-Claims
+
+- The ledger does not write or modify operator input files.
+- The ledger does not execute validator commands.
+- The ledger does not certify signed operator evidence.
+- The ledger does not close release gates or refresh release-manager/MVP preflights.
+- A209 remains a separate background 24h soak gate.
+
+### Rollback
+
+- Revert ledger helpers, API route changes, OpenAPI schema, focused tests, this record and companion governance sync; preserve any real signed operator files under `artifacts/operator_inputs/`.

@@ -6,9 +6,14 @@ from pathlib import Path
 import pytest
 
 from scripts.validate_operator_input_status import (
+    append_submission_receipt_to_ledger,
     build_status,
     build_submission_preflight,
     build_submission_receipt,
+    empty_receipt_ledger,
+    read_receipt_ledger,
+    record_submission_receipt,
+    validate_receipt_ledger,
     validate_status,
 )
 
@@ -341,3 +346,144 @@ def test_submission_receipt_rejects_hash_mismatch(tmp_path: Path) -> None:
     assert payload["validator_dispatch_allowed"] is False
     assert payload["next_validation_command"] == ""
     assert payload["expected_artifacts"] == []
+
+
+def test_submission_receipt_ledger_records_and_validates_receipt(tmp_path: Path) -> None:
+    template = write_json(tmp_path / "kit" / "a202.template.json", {"template_only": True})
+    target = write_json(
+        tmp_path / "operator_inputs" / "a202" / "signed.json",
+        {"signed_by": "operator", "template_only": False},
+    )
+    manifest = kit_manifest(tmp_path, target=target, template=template)
+    patch_manifest_template_sha(manifest, template)
+    status_payload = build_status(
+        kit_manifest_path=manifest,
+        generated_at="2026-06-27T00:00:00Z",
+    )
+    observed_sha = status_payload["input_statuses"][0]["submission_target_sha256"]
+    receipt = build_submission_receipt(
+        status_payload,
+        input_id="A202_source_license_passage_owner_legal_release",
+        submitted_sha256=observed_sha,
+        submitted_by="release.operator",
+        generated_at="2026-06-27T00:01:00Z",
+    )
+
+    ledger = append_submission_receipt_to_ledger(
+        empty_receipt_ledger(generated_at="2026-06-27T00:00:00Z"),
+        receipt,
+        generated_at="2026-06-27T00:02:00Z",
+    )
+
+    assert ledger["schema_version"] == "eei-operator-input-submission-receipt-ledger-v1"
+    assert ledger["receipt_count"] == 1
+    assert ledger["accepted_receipt_count"] == 1
+    assert ledger["rejected_receipt_count"] == 0
+    assert ledger["latest_receipt_id"] == receipt["receipt_id"]
+    assert ledger["receipt_recorded"] is True
+    assert ledger["write_status"] == "RECEIPT_RECORDED"
+    assert ledger["release_gate_closed_by_receipt_ledger"] is False
+    validate_receipt_ledger(ledger)
+
+
+def test_submission_receipt_ledger_replay_is_idempotent(tmp_path: Path) -> None:
+    template = write_json(tmp_path / "kit" / "a202.template.json", {"template_only": True})
+    target = write_json(
+        tmp_path / "operator_inputs" / "a202" / "signed.json",
+        {"signed_by": "operator", "template_only": False},
+    )
+    manifest = kit_manifest(tmp_path, target=target, template=template)
+    patch_manifest_template_sha(manifest, template)
+    status_payload = build_status(
+        kit_manifest_path=manifest,
+        generated_at="2026-06-27T00:00:00Z",
+    )
+    observed_sha = status_payload["input_statuses"][0]["submission_target_sha256"]
+    receipt = build_submission_receipt(
+        status_payload,
+        input_id="A202_source_license_passage_owner_legal_release",
+        submitted_sha256=observed_sha,
+        submitted_by="release.operator",
+        generated_at="2026-06-27T00:01:00Z",
+    )
+    receipt_later = build_submission_receipt(
+        status_payload,
+        input_id="A202_source_license_passage_owner_legal_release",
+        submitted_sha256=observed_sha,
+        submitted_by="release.operator",
+        generated_at="2026-06-27T00:05:00Z",
+    )
+    first = append_submission_receipt_to_ledger(empty_receipt_ledger(), receipt)
+
+    replay = append_submission_receipt_to_ledger(first, receipt_later)
+
+    assert receipt_later["receipt_id"] == receipt["receipt_id"]
+    assert replay["receipt_count"] == 1
+    assert replay["receipt_recorded"] is False
+    assert replay["write_status"] == "IDEMPOTENT_RECEIPT_ALREADY_RECORDED"
+
+
+def test_submission_receipt_ledger_blocks_previous_receipt_conflict(
+    tmp_path: Path,
+) -> None:
+    template = write_json(tmp_path / "kit" / "a202.template.json", {"template_only": True})
+    target = write_json(
+        tmp_path / "operator_inputs" / "a202" / "signed.json",
+        {"signed_by": "operator", "template_only": False},
+    )
+    manifest = kit_manifest(tmp_path, target=target, template=template)
+    patch_manifest_template_sha(manifest, template)
+    status_payload = build_status(
+        kit_manifest_path=manifest,
+        generated_at="2026-06-27T00:00:00Z",
+    )
+    observed_sha = status_payload["input_statuses"][0]["submission_target_sha256"]
+    receipt = build_submission_receipt(
+        status_payload,
+        input_id="A202_source_license_passage_owner_legal_release",
+        submitted_sha256=observed_sha,
+        submitted_by="release.operator",
+        generated_at="2026-06-27T00:01:00Z",
+    )
+
+    with pytest.raises(ValueError, match="previous receipt conflict"):
+        append_submission_receipt_to_ledger(
+            empty_receipt_ledger(),
+            receipt,
+            expected_previous_receipt_id="sha256:" + "1" * 64,
+        )
+
+
+def test_record_submission_receipt_persists_ledger_without_changing_input(
+    tmp_path: Path,
+) -> None:
+    template = write_json(tmp_path / "kit" / "a202.template.json", {"template_only": True})
+    target = write_json(
+        tmp_path / "operator_inputs" / "a202" / "signed.json",
+        {"signed_by": "operator", "template_only": False},
+    )
+    before = target.read_text(encoding="utf-8")
+    manifest = kit_manifest(tmp_path, target=target, template=template)
+    patch_manifest_template_sha(manifest, template)
+    status_payload = build_status(
+        kit_manifest_path=manifest,
+        generated_at="2026-06-27T00:00:00Z",
+    )
+    observed_sha = status_payload["input_statuses"][0]["submission_target_sha256"]
+    ledger_path = tmp_path / "ledger" / "operator_input_submission_receipts.json"
+
+    response = record_submission_receipt(
+        status_payload,
+        input_id="A202_source_license_passage_owner_legal_release",
+        submitted_sha256=observed_sha,
+        submitted_by="release.operator",
+        ledger_path=ledger_path,
+        generated_at="2026-06-27T00:01:00Z",
+    )
+    ledger = read_receipt_ledger(ledger_path)
+
+    assert response["ledger_write_status"] == "RECEIPT_RECORDED"
+    assert response["receipt_recorded"] is True
+    assert response["ledger_receipt_count"] == 1
+    assert ledger["receipt_count"] == 1
+    assert target.read_text(encoding="utf-8") == before

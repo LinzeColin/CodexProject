@@ -75,6 +75,18 @@ paths:
           description: Operator-input submission receipt rejected.
         '422':
           description: Request validation failed.
+  /v1/release/operator-input-submission-receipts:
+    get:
+      operationId: listOperatorInputSubmissionReceipts
+      responses:
+        '200':
+          description: Server-side ledger of operator-input submission receipt attempts.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperatorInputSubmissionReceiptLedger'
+        '500':
+          description: Operator-input submission receipt ledger is invalid.
   /v1/entities:
     get:
       operationId: searchEntities
@@ -1618,6 +1630,12 @@ components:
           - string
           - 'null'
           maxLength: 500
+        expected_previous_receipt_id:
+          type:
+          - string
+          - 'null'
+          maxLength: 80
+          pattern: ^sha256:[A-Fa-f0-9]{64}$
     OperatorInputSubmissionReceipt:
       type: object
       required:
@@ -1712,6 +1730,93 @@ components:
           type: boolean
         mvp_release_gate_refresh_allowed:
           type: boolean
+        ledger_schema_version:
+          type: string
+          enum:
+          - eei-operator-input-submission-receipt-ledger-v1
+        ledger_path:
+          type: string
+        ledger_receipt_count:
+          type: integer
+          minimum: 0
+        ledger_latest_receipt_id:
+          type: string
+        ledger_write_status:
+          type: string
+          enum:
+          - RECEIPT_RECORDED
+          - IDEMPOTENT_RECEIPT_ALREADY_RECORDED
+        receipt_recorded:
+          type: boolean
+        non_claims:
+          type: array
+          items:
+            type: string
+    OperatorInputSubmissionReceiptLedger:
+      type: object
+      required:
+      - schema_version
+      - artifact_id
+      - generated_at
+      - receipt_count
+      - accepted_receipt_count
+      - rejected_receipt_count
+      - latest_receipt_id
+      - receipt_ids
+      - receipts
+      - release_gate_closed_by_receipt_ledger
+      - release_manager_preflight_refresh_allowed
+      - mvp_release_gate_refresh_allowed
+      properties:
+        schema_version:
+          type: string
+          enum:
+          - eei-operator-input-submission-receipt-ledger-v1
+        artifact_id:
+          type: string
+        generated_at:
+          type: string
+          format: date-time
+        system_name:
+          type: string
+        system_en_name:
+          type: string
+        system_zh_name:
+          type: string
+        task_id:
+          type: string
+        acceptance_ids:
+          type: array
+          items:
+            type: string
+        receipt_count:
+          type: integer
+          minimum: 0
+        accepted_receipt_count:
+          type: integer
+          minimum: 0
+        rejected_receipt_count:
+          type: integer
+          minimum: 0
+        latest_receipt_id:
+          type: string
+        receipt_ids:
+          type: array
+          items:
+            type: string
+        receipts:
+          type: array
+          items:
+            $ref: '#/components/schemas/OperatorInputSubmissionReceipt'
+        release_gate_closed_by_receipt_ledger:
+          type: boolean
+        release_manager_preflight_refresh_allowed:
+          type: boolean
+        mvp_release_gate_refresh_allowed:
+          type: boolean
+        conflict_policy:
+          type: object
+          additionalProperties: true
         non_claims:
           type: array
           items:

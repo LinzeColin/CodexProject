@@ -8,6 +8,7 @@ from fastapi.testclient import TestClient
 from pydantic import ValidationError
 from starlette.requests import Request
 
+import apps.api.app.domain as domain_api
 from apps.api.app.db_health import check_database
 from apps.api.app.domain import (
     ScoringProfileDraftCreate,
@@ -295,7 +296,15 @@ def test_operator_input_submission_preflight_rejects_non_dry_run() -> None:
     assert response.status_code == 422
 
 
-def test_operator_input_submission_receipt_fails_closed_for_missing_target() -> None:
+def test_operator_input_submission_receipt_fails_closed_for_missing_target(
+    tmp_path,
+    monkeypatch,
+) -> None:
+    monkeypatch.setattr(
+        domain_api,
+        "OPERATOR_INPUT_RECEIPT_LEDGER_PATH",
+        tmp_path / "operator_input_submission_receipts.json",
+    )
     response = TestClient(app).post(
         "/v1/release/operator-input-submission-receipt",
         json={
@@ -312,9 +321,75 @@ def test_operator_input_submission_receipt_fails_closed_for_missing_target() -> 
     assert payload["status"] == "RECEIPT_REJECTED_TARGET_MISSING"
     assert payload["receipt_accepted"] is False
     assert payload["validator_dispatch_allowed"] is False
+    assert payload["ledger_write_status"] == "RECEIPT_RECORDED"
+    assert payload["receipt_recorded"] is True
+    assert payload["ledger_receipt_count"] == 1
     assert payload["release_gate_closure_allowed"] is False
     assert payload["release_manager_preflight_refresh_allowed"] is False
     assert payload["mvp_release_gate_refresh_allowed"] is False
+
+
+def test_operator_input_submission_receipt_replay_is_idempotent(
+    tmp_path,
+    monkeypatch,
+) -> None:
+    ledger_path = tmp_path / "operator_input_submission_receipts.json"
+    monkeypatch.setattr(domain_api, "OPERATOR_INPUT_RECEIPT_LEDGER_PATH", ledger_path)
+    request_payload = {
+        "input_id": "A202_source_license_passage_owner_legal_release",
+        "submitted_sha256": "0" * 64,
+        "submitted_by": "release.operator",
+        "submission_note": "operator file not present yet",
+    }
+
+    first = TestClient(app).post(
+        "/v1/release/operator-input-submission-receipt",
+        json=request_payload,
+    )
+    second = TestClient(app).post(
+        "/v1/release/operator-input-submission-receipt",
+        json=request_payload,
+    )
+    ledger = TestClient(app).get("/v1/release/operator-input-submission-receipts")
+
+    assert first.status_code == 200
+    assert second.status_code == 200
+    assert second.json()["ledger_write_status"] == "IDEMPOTENT_RECEIPT_ALREADY_RECORDED"
+    assert second.json()["receipt_recorded"] is False
+    assert ledger.status_code == 200
+    assert ledger.json()["receipt_count"] == 1
+    assert ledger.json()["release_gate_closed_by_receipt_ledger"] is False
+
+
+def test_operator_input_submission_receipt_blocks_previous_receipt_conflict(
+    tmp_path,
+    monkeypatch,
+) -> None:
+    ledger_path = tmp_path / "operator_input_submission_receipts.json"
+    monkeypatch.setattr(domain_api, "OPERATOR_INPUT_RECEIPT_LEDGER_PATH", ledger_path)
+    first = TestClient(app).post(
+        "/v1/release/operator-input-submission-receipt",
+        json={
+            "input_id": "A202_source_license_passage_owner_legal_release",
+            "submitted_sha256": "0" * 64,
+            "submitted_by": "release.operator",
+        },
+    )
+
+    response = TestClient(app).post(
+        "/v1/release/operator-input-submission-receipt",
+        json={
+            "input_id": "A210_brand_legal_market_clearance_or_risk_waiver",
+            "submitted_sha256": "1" * 64,
+            "submitted_by": "release.operator",
+            "expected_previous_receipt_id": "sha256:" + "2" * 64,
+        },
+    )
+
+    assert first.status_code == 200
+    assert response.status_code == 400
+    assert response.json()["detail"]["reason"] == "operator_input_submission_receipt_rejected"
+    assert "previous receipt conflict" in response.json()["detail"]["message"]
 
 
 def test_operator_input_submission_receipt_rejects_invalid_actor() -> None:

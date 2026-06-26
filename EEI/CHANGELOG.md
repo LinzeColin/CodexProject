@@ -101,6 +101,7 @@
 - `EVENT-20260626-024`: Added a T1301/A202 operator intake gap packet that enumerates 10 exact signed review items for source-license, passage-level relationship review, production owner sign-off, legal release clearance and final attestation; A202 and MVP release remain blocked until real operator evidence validates.
 - `EVENT-20260627-008`: Fixed the CI-detected T1303 external release evidence bundle `source_files` drift after the A202 public-only source-license boundary refresh by regenerating external bundle/operator intake/input-kit/status, release-manager, MVP gate, clean-room and release checksum artifacts; all external gates and MVP readiness remain blocked.
 - `EVENT-20260627-019`: Added `POST /v1/release/operator-input-submission-receipt` and `PARAM-096` for hash-bound operator input intake receipts; receipts remain manual-validator-only and cannot write evidence, execute validators or close release gates.
+- `EVENT-20260627-020`: Added receipt-ledger persistence for operator input submission receipts plus `GET /v1/release/operator-input-submission-receipts` and `PARAM-097`; repeated identical receipts are idempotent, stale previous-receipt expectations fail closed, and the ledger cannot write evidence, execute validators or close release gates.
 
 ## Legacy Task Pack v4.2.0 - 2026-06-19
 

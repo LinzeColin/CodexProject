@@ -10,7 +10,7 @@ source_policy: "Canonical CodexProject governance source generated from EEI data
 # 2026-06-26 audit: T504/A072 strategic-signal panel updates frontend display contract only; model definitions, scoring behavior, formulas, weights and active thresholds are unchanged.
 # 2026-06-26 audit: T1308/A211 app icon and BrandMark refresh updates app-shell branding only; model definitions, scoring behavior, formulas, weights and active thresholds are unchanged.
 # 2026-06-27 audit: T1303/A204-A205 operator input validator contracts update operational release-gate metadata only; model definitions, scoring behavior, formulas, weights and active thresholds are unchanged.
-# 2026-06-27 audit: T1303/A204-A205 operator input submission preflight and receipt add dry-run/hash-bound API intake responses only; model definitions, scoring behavior, formulas, weights and active thresholds are unchanged.
+# 2026-06-27 audit: T1303/A204-A205 operator input submission preflight, receipt and receipt ledger add dry-run/hash-bound API intake responses and ledger persistence only; model definitions, scoring behavior, formulas, weights and active thresholds are unchanged.
 assumptions:
   - assumption_id: "ASM-001"
     statement: "Scores are research prioritization and explanation aids, not investment return probabilities."
@@ -630,7 +630,7 @@ models:
   - model_id: "MOD-012"
     name: "运行、视觉与校准阈值控制"
     kind: "deterministic_configuration_rule"
-    purpose: "Provide non-scoring operational thresholds for refresh, visual coverage, motion timing, calibration controls, soak windows, review-packet gates, release-decision bundle schema validation/publication binding, signed-intake source-boundary controls, gold-quality evaluation/intake gates, fail-closed operator-input release blocker visibility and dry-run operator-input submission preflight dispatch."
+    purpose: "Provide non-scoring operational thresholds for refresh, visual coverage, motion timing, calibration controls, soak windows, review-packet gates, release-decision bundle schema validation/publication binding, signed-intake source-boundary controls, gold-quality evaluation/intake gates, fail-closed operator-input release blocker visibility, dry-run operator-input submission preflight dispatch and operator-input receipt ledger persistence."
     owner: "model owner"
     status: "active"
     fact_level: "RECONSTRUCTED"
@@ -699,6 +699,7 @@ models:
       - "PARAM-094"
       - "PARAM-095"
       - "PARAM-096"
+      - "PARAM-097"
     inputs:
       - "parameter_key"
       - "configured_value"
@@ -707,7 +708,7 @@ models:
       - "max_value"
     outputs:
       - "validated operational parameter value"
-    methodology: "Deterministic lookup and range validation from parameter_catalog rows plus machine-verified threshold, motion, frontend hydration guard, signed-intake source-boundary, gold-quality validation/intake, external release operator intake packet, operator input status/validator-contract, operator input submission preflight and operator input submission receipt surfaces without legacy formula_id."
+    methodology: "Deterministic lookup and range validation from parameter_catalog rows plus machine-verified threshold, motion, frontend hydration guard, signed-intake source-boundary, gold-quality validation/intake, external release operator intake packet, operator input status/validator-contract, operator input submission preflight, operator input submission receipt and receipt-ledger surfaces without legacy formula_id."
     code_refs:
       - "EEI/data/parameter_catalog.csv:43-84"
       - "EEI/scripts/run_operator_soak.mjs"
@@ -746,6 +747,7 @@ models:
       - "operator input validator contracts identify required validators but cannot count as release readiness without real validator success"
       - "operator input submission preflight returns manual dispatch plans only and cannot write evidence or execute validators"
       - "operator input submission receipt returns hash-bound intake receipts only and cannot write evidence, execute validators or close release gates"
+      - "operator input receipt ledger stores receipt attempts idempotently and cannot write evidence, execute validators or close release gates"
     failure_modes:
       - "missing runtime motion config"
       - "threshold out of schema range"

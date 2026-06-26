@@ -35,7 +35,9 @@ ROOT = Path(__file__).resolve().parents[1]
 STATUS_SCHEMA_VERSION = "eei-external-release-operator-input-status-v1"
 SUBMISSION_PREFLIGHT_SCHEMA_VERSION = "eei-operator-input-submission-preflight-v1"
 SUBMISSION_RECEIPT_SCHEMA_VERSION = "eei-operator-input-submission-receipt-v1"
+SUBMISSION_RECEIPT_LEDGER_SCHEMA_VERSION = "eei-operator-input-submission-receipt-ledger-v1"
 DEFAULT_OUTPUT = ROOT / "artifacts/operator_inputs/operator_input_status.json"
+DEFAULT_RECEIPT_LEDGER = ROOT / "artifacts/operator_inputs/operator_input_submission_receipts.json"
 VALIDATOR_CONTRACTS: dict[str, dict[str, Any]] = {
     "A202_source_license_passage_owner_legal_release": {
         "validator_id": "VAL-A202-SIGNED-INTAKE-PREFLIGHT",
@@ -471,11 +473,206 @@ def build_submission_receipt(
             "A204, A205 or MVP release gates.",
         ],
     }
-    canonical = json.dumps(receipt, sort_keys=True, separators=(",", ":"))
+    stable_receipt = {key: value for key, value in receipt.items() if key != "generated_at"}
+    canonical = json.dumps(stable_receipt, sort_keys=True, separators=(",", ":"))
     receipt["receipt_id"] = "sha256:" + hashlib.sha256(
         canonical.encode("utf-8")
     ).hexdigest()
     return receipt
+
+
+def empty_receipt_ledger(*, generated_at: str | None = None) -> dict[str, Any]:
+    return {
+        "schema_version": SUBMISSION_RECEIPT_LEDGER_SCHEMA_VERSION,
+        "artifact_id": "t1303-operator-input-submission-receipt-ledger",
+        "generated_at": generated_at or utc_now(),
+        "system_name": "EEI",
+        "system_en_name": "Enterprise Ecosystem Intelligence",
+        "system_zh_name": "商域图谱",
+        "task_id": "T1303",
+        "acceptance_ids": REQUIRED_ACCEPTANCE_IDS,
+        "receipt_count": 0,
+        "accepted_receipt_count": 0,
+        "rejected_receipt_count": 0,
+        "latest_receipt_id": "",
+        "receipt_ids": [],
+        "receipts": [],
+        "release_gate_closed_by_receipt_ledger": False,
+        "release_manager_preflight_refresh_allowed": False,
+        "mvp_release_gate_refresh_allowed": False,
+        "conflict_policy": {
+            "receipt_id_must_be_unique": True,
+            "identical_receipt_is_idempotent": True,
+            "expected_previous_receipt_id_required_when_supplied": True,
+            "ledger_never_modifies_operator_input_files": True,
+        },
+        "non_claims": [
+            "This ledger records receipt attempts only.",
+            "This ledger does not write or modify operator input files.",
+            "This ledger does not execute validator commands.",
+            "This ledger does not certify signed operator evidence.",
+            "This ledger does not close A202, A209, A210, A026, A027, "
+            "A204, A205 or MVP release gates.",
+        ],
+    }
+
+
+def validate_receipt_ledger(payload: dict[str, Any]) -> None:
+    if payload.get("schema_version") != SUBMISSION_RECEIPT_LEDGER_SCHEMA_VERSION:
+        raise ValueError("operator input receipt ledger has an unexpected schema version")
+    receipts = payload.get("receipts")
+    if not isinstance(receipts, list):
+        raise ValueError("operator input receipt ledger receipts must be a list")
+    receipt_ids: list[str] = []
+    accepted_count = 0
+    rejected_count = 0
+    for receipt in receipts:
+        if not isinstance(receipt, dict):
+            raise ValueError("operator input receipt ledger entry must be an object")
+        receipt_id = str(receipt.get("receipt_id", ""))
+        if not receipt_id.startswith("sha256:"):
+            raise ValueError("operator input receipt ledger entry missing receipt_id")
+        if receipt.get("release_gate_closure_allowed") is not False:
+            raise ValueError("operator input receipt cannot close release gates")
+        if receipt.get("release_manager_preflight_refresh_allowed") is not False:
+            raise ValueError("operator input receipt cannot refresh release manager preflight")
+        if receipt.get("mvp_release_gate_refresh_allowed") is not False:
+            raise ValueError("operator input receipt cannot refresh MVP release gate")
+        receipt_ids.append(receipt_id)
+        if receipt.get("receipt_accepted") is True:
+            accepted_count += 1
+        else:
+            rejected_count += 1
+    if len(receipt_ids) != len(set(receipt_ids)):
+        raise ValueError("operator input receipt ledger contains duplicate receipt ids")
+    if payload.get("receipt_count") != len(receipts):
+        raise ValueError("operator input receipt ledger receipt_count drift")
+    if payload.get("accepted_receipt_count") != accepted_count:
+        raise ValueError("operator input receipt ledger accepted count drift")
+    if payload.get("rejected_receipt_count") != rejected_count:
+        raise ValueError("operator input receipt ledger rejected count drift")
+    if payload.get("receipt_ids") != receipt_ids:
+        raise ValueError("operator input receipt ledger receipt_ids drift")
+    latest = receipt_ids[-1] if receipt_ids else ""
+    if payload.get("latest_receipt_id") != latest:
+        raise ValueError("operator input receipt ledger latest receipt drift")
+    if payload.get("release_gate_closed_by_receipt_ledger") is not False:
+        raise ValueError("operator input receipt ledger must not close release gates")
+    if payload.get("release_manager_preflight_refresh_allowed") is not False:
+        raise ValueError("operator input receipt ledger must not refresh release manager")
+    if payload.get("mvp_release_gate_refresh_allowed") is not False:
+        raise ValueError("operator input receipt ledger must not refresh MVP release gate")
+
+
+def read_receipt_ledger(path: Path = DEFAULT_RECEIPT_LEDGER) -> dict[str, Any]:
+    if not path.exists():
+        return empty_receipt_ledger()
+    payload = read_json(path)
+    validate_receipt_ledger(payload)
+    return payload
+
+
+def append_submission_receipt_to_ledger(
+    ledger: dict[str, Any],
+    receipt: dict[str, Any],
+    *,
+    expected_previous_receipt_id: str | None = None,
+    generated_at: str | None = None,
+) -> dict[str, Any]:
+    validate_receipt_ledger(ledger)
+    receipt_id = str(receipt.get("receipt_id", ""))
+    if not receipt_id.startswith("sha256:"):
+        raise ValueError("operator input receipt missing receipt_id")
+    if receipt.get("schema_version") != SUBMISSION_RECEIPT_SCHEMA_VERSION:
+        raise ValueError("operator input receipt has an unexpected schema version")
+    if receipt.get("release_gate_closure_allowed") is not False:
+        raise ValueError("operator input receipt cannot close release gates")
+
+    previous = str(ledger.get("latest_receipt_id", ""))
+    expected_previous = (expected_previous_receipt_id or "").strip()
+    if expected_previous and expected_previous != previous:
+        raise ValueError("operator input receipt ledger previous receipt conflict")
+
+    receipts = list(ledger.get("receipts", []))
+    for existing in receipts:
+        if isinstance(existing, dict) and existing.get("receipt_id") == receipt_id:
+            stable_existing = {
+                key: value for key, value in existing.items() if key != "generated_at"
+            }
+            stable_receipt = {
+                key: value for key, value in receipt.items() if key != "generated_at"
+            }
+            if stable_existing != stable_receipt:
+                raise ValueError("operator input receipt id conflict")
+            return {
+                **ledger,
+                "write_status": "IDEMPOTENT_RECEIPT_ALREADY_RECORDED",
+                "receipt_recorded": False,
+                "receipt": receipt,
+            }
+
+    receipts.append(receipt)
+    receipt_ids = [str(item["receipt_id"]) for item in receipts]
+    accepted_count = sum(1 for item in receipts if item.get("receipt_accepted") is True)
+    rejected_count = len(receipts) - accepted_count
+    updated = {
+        **empty_receipt_ledger(generated_at=generated_at),
+        "receipt_count": len(receipts),
+        "accepted_receipt_count": accepted_count,
+        "rejected_receipt_count": rejected_count,
+        "latest_receipt_id": receipt_ids[-1],
+        "receipt_ids": receipt_ids,
+        "receipts": receipts,
+        "write_status": "RECEIPT_RECORDED",
+        "receipt_recorded": True,
+        "receipt": receipt,
+    }
+    validate_receipt_ledger(updated)
+    return updated
+
+
+def record_submission_receipt(
+    payload: dict[str, Any],
+    *,
+    input_id: str,
+    submitted_sha256: str,
+    submitted_by: str,
+    submission_note: str | None = None,
+    expected_previous_receipt_id: str | None = None,
+    ledger_path: Path = DEFAULT_RECEIPT_LEDGER,
+    generated_at: str | None = None,
+) -> dict[str, Any]:
+    receipt = build_submission_receipt(
+        payload,
+        input_id=input_id,
+        submitted_sha256=submitted_sha256,
+        submitted_by=submitted_by,
+        submission_note=submission_note,
+        generated_at=generated_at,
+    )
+    ledger = read_receipt_ledger(ledger_path)
+    updated = append_submission_receipt_to_ledger(
+        ledger,
+        receipt,
+        expected_previous_receipt_id=expected_previous_receipt_id,
+        generated_at=generated_at,
+    )
+    write_payload = {
+        key: value
+        for key, value in updated.items()
+        if key not in {"write_status", "receipt_recorded", "receipt"}
+    }
+    validate_receipt_ledger(write_payload)
+    write_json(ledger_path, write_payload)
+    return {
+        **receipt,
+        "ledger_schema_version": SUBMISSION_RECEIPT_LEDGER_SCHEMA_VERSION,
+        "ledger_path": display_path(ledger_path),
+        "ledger_receipt_count": write_payload["receipt_count"],
+        "ledger_latest_receipt_id": write_payload["latest_receipt_id"],
+        "ledger_write_status": updated["write_status"],
+        "receipt_recorded": updated["receipt_recorded"],
+    }
 
 
 def validate_status(

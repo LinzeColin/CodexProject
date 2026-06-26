@@ -1,0 +1,40 @@
+{
+  "acceptance_ids": [
+    "A202",
+    "A204",
+    "A205",
+    "A209",
+    "A210",
+    "A026",
+    "A027"
+  ],
+  "accepted_receipt_count": 0,
+  "artifact_id": "t1303-operator-input-submission-receipt-ledger",
+  "conflict_policy": {
+    "expected_previous_receipt_id_required_when_supplied": true,
+    "identical_receipt_is_idempotent": true,
+    "ledger_never_modifies_operator_input_files": true,
+    "receipt_id_must_be_unique": true
+  },
+  "generated_at": "2026-06-27T06:10:00+10:00",
+  "latest_receipt_id": "",
+  "mvp_release_gate_refresh_allowed": false,
+  "non_claims": [
+    "This ledger records receipt attempts only.",
+    "This ledger does not write or modify operator input files.",
+    "This ledger does not execute validator commands.",
+    "This ledger does not certify signed operator evidence.",
+    "This ledger does not close A202, A209, A210, A026, A027, A204, A205 or MVP release gates."
+  ],
+  "receipt_count": 0,
+  "receipt_ids": [],
+  "receipts": [],
+  "rejected_receipt_count": 0,
+  "release_gate_closed_by_receipt_ledger": false,
+  "release_manager_preflight_refresh_allowed": false,
+  "schema_version": "eei-operator-input-submission-receipt-ledger-v1",
+  "system_en_name": "Enterprise Ecosystem Intelligence",
+  "system_name": "EEI",
+  "system_zh_name": "商域图谱",
+  "task_id": "T1303"
+}

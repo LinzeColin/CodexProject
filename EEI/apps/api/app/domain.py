@@ -16,7 +16,8 @@ from pydantic import BaseModel, Field
 
 from scripts.validate_operator_input_status import (
     build_submission_preflight,
-    build_submission_receipt,
+    read_receipt_ledger,
+    record_submission_receipt,
 )
 
 from .domain_repository import (
@@ -36,6 +37,12 @@ OPERATOR_INPUT_STATUS_PATH = (
     / "artifacts"
     / "operator_inputs"
     / "operator_input_status.json"
+)
+OPERATOR_INPUT_RECEIPT_LEDGER_PATH = (
+    Path(__file__).resolve().parents[3]
+    / "artifacts"
+    / "operator_inputs"
+    / "operator_input_submission_receipts.json"
 )
 
 EntityType = Literal[
@@ -233,6 +240,11 @@ class OperatorInputSubmissionReceiptRequest(BaseModel):
         pattern=r"^[A-Za-z0-9][A-Za-z0-9_.:@ -]{0,159}$",
     )
     submission_note: str | None = Field(default=None, max_length=500)
+    expected_previous_receipt_id: str | None = Field(
+        default=None,
+        max_length=80,
+        pattern=r"^sha256:[A-Fa-f0-9]{64}$",
+    )
 
 
 def get_repository() -> DomainRepository:
@@ -280,18 +292,34 @@ def receipt_operator_input_submission(
     request: OperatorInputSubmissionReceiptRequest,
 ) -> dict[str, Any]:
     try:
-        return build_submission_receipt(
+        return record_submission_receipt(
             _read_operator_input_status(),
             input_id=request.input_id,
             submitted_sha256=request.submitted_sha256,
             submitted_by=request.submitted_by,
             submission_note=request.submission_note,
+            expected_previous_receipt_id=request.expected_previous_receipt_id,
+            ledger_path=OPERATOR_INPUT_RECEIPT_LEDGER_PATH,
         )
-    except ValueError as exc:
+    except (OSError, ValueError) as exc:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail={
                 "reason": "operator_input_submission_receipt_rejected",
+                "message": str(exc),
+            },
+        ) from exc
+
+
+@router.get("/release/operator-input-submission-receipts")
+def get_operator_input_submission_receipts() -> dict[str, Any]:
+    try:
+        return read_receipt_ledger(OPERATOR_INPUT_RECEIPT_LEDGER_PATH)
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={
+                "reason": "operator_input_submission_receipt_ledger_invalid",
                 "message": str(exc),
             },
         ) from exc
