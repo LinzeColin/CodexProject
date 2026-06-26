@@ -1,0 +1,46 @@
+{
+  "manifest_id": "ADP-S2PMT03-OPTIMISTIC-FENCING-A009-20260626",
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PMT03",
+  "finding_id": "A-009",
+  "finding_title": "状态转换缺少乐观并发控制与 fencing token",
+  "phase": "S2PM",
+  "created_at": "2026-06-26T20:30:07+10:00",
+  "scope": "Fix local optimistic row_version compare-and-swap and fencing-token evidence for V7.1 inherited P1 finding A-009.",
+  "non_scope": "No SMTP, scheduler, Release, production restore, public schema, DB migration, source adapter, ranking, CURRENT, V7.1/V7.2 contract file, P0/P1 closure, integrated production acceptance, or daily operation enablement change.",
+  "production_side_effects": false,
+  "stage2_integrated_production_accepted": false,
+  "inherited_v7_1_p0_closed": 0,
+  "inherited_v7_1_p1_closed": 0,
+  "inherited_v7_1_open_p0_findings_after": 8,
+  "inherited_v7_1_open_p1_findings_after": 37,
+  "optimistic_fencing_contract": {
+    "claim_policy": "atomic UPDATE-style compare-and-swap requires work item row_version to equal expected_row_version",
+    "claim_success_rows": 1,
+    "claim_failure_rows": 0,
+    "concurrent_claimant_test_count": 100,
+    "stale_writer_policy": "state transition requires both expected row_version and current fencing_token",
+    "event_policy": "claim attempts append audit events without overwriting prior events"
+  },
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_OPTIMISTIC_FENCING_A009.md",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py",
+    "arxiv-daily-push/tests/test_stage2_lease_fencing.py"
+  ],
+  "validation": [
+    "py_compile PASS for stage2_lease_fencing.py and test_stage2_lease_fencing.py",
+    "python3 -m unittest arxiv-daily-push/tests/test_stage2_lease_fencing.py arxiv-daily-push/tests/test_state_machine.py -q: 17 OK",
+    "python3 -m unittest arxiv-daily-push/tests/test_stage2_lease_fencing.py arxiv-daily-push/tests/test_state_machine.py arxiv-daily-push/tests/test_pipeline.py arxiv-daily-push/tests/test_handoff.py -q: 25 OK",
+    "python3 -m unittest arxiv-daily-push/tests/test_user_center_candidate_pool.py -q: 7 OK",
+    "python3 -m unittest discover -s arxiv-daily-push/tests -q: 505 OK",
+    "scripts/validate_project_governance.py --project arxiv-daily-push: errors 0 / warnings 0",
+    "docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root docs/pursuing_goal/v7_2: PASS",
+    "python3 -m json.tool governance/run_manifests/ADP-S2PMT03-OPTIMISTIC-FENCING-A009-20260626.json: OK",
+    "git diff --check: PASS"
+  ],
+  "remaining_blockers": [
+    "Inherited V7.1 P0=8 and P1=37 remain open until independent review accepts remediation evidence.",
+    "S2PMT07 final gate precheck remains blocked.",
+    "This manifest does not enable production side effects or claim INTEGRATED_PRODUCTION_ACCEPTED."
+  ]
+}

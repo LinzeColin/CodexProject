@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+from concurrent.futures import ThreadPoolExecutor
+import threading
 import unittest
 
 from arxiv_daily_push.stage2_lease_fencing import (
+    LocalLeaseClaimRepository,
     apply_fenced_state_transition,
     build_lease_fencing_report,
     build_m4_cycle_watermark,
@@ -27,6 +30,33 @@ class Stage2LeaseFencingTests(unittest.TestCase):
         self.assertEqual(takeover["item"]["lease_owner"], "worker-b")
         self.assertEqual(takeover["item"]["row_version"], 1)
         self.assertEqual(takeover["item"]["fencing_token"], 2)
+
+    def test_atomic_claim_allows_only_one_of_100_concurrent_claimants(self) -> None:
+        claimant_count = 100
+        repo = LocalLeaseClaimRepository({"work_id": "cycle-1", "row_version": 0, "fencing_token": 0})
+        barrier = threading.Barrier(claimant_count + 1)
+
+        def claim(index: int) -> dict[str, object]:
+            barrier.wait(timeout=5)
+            return repo.claim(owner_id=f"worker-{index:03d}", expected_row_version=0, now_ms=1000)
+
+        with ThreadPoolExecutor(max_workers=claimant_count) as executor:
+            futures = [executor.submit(claim, index) for index in range(claimant_count)]
+            barrier.wait(timeout=5)
+            results = [future.result(timeout=5) for future in futures]
+
+        passed = [result for result in results if result["status"] == "pass"]
+        blocked = [result for result in results if result["status"] == "blocked"]
+
+        self.assertEqual(len(passed), 1)
+        self.assertEqual(len(blocked), claimant_count - 1)
+        self.assertEqual(passed[0]["affected_rows"], 1)
+        self.assertEqual(repo.snapshot()["row_version"], 1)
+        self.assertEqual(repo.snapshot()["fencing_token"], 1)
+        self.assertEqual(len(repo.events()), claimant_count)
+        self.assertEqual(sum(1 for event in repo.events() if event["affected_rows"] == 1), 1)
+        self.assertTrue(all(result["affected_rows"] == 0 for result in blocked))
+        self.assertTrue(all("row_version compare-and-swap failed" in result["blocking_reasons"] for result in blocked))
 
     def test_fenced_transition_blocks_stale_row_version_and_token(self) -> None:
         record = {
@@ -56,8 +86,10 @@ class Stage2LeaseFencingTests(unittest.TestCase):
         self.assertEqual(stale["status"], "blocked")
         self.assertIn("row_version compare-and-swap failed", stale["blocking_reasons"])
         self.assertIn("fencing_token is stale", stale["blocking_reasons"])
+        self.assertEqual(stale["affected_rows"], 0)
         self.assertEqual(valid["status"], "pass")
         self.assertEqual(valid["record"]["row_version"], 3)
+        self.assertEqual(valid["affected_rows"], 1)
         self.assertEqual(valid["record"]["state_history"][-1]["from_state"], "created")
 
     def test_outbox_identity_is_idempotent_per_revision_and_claimed_once(self) -> None:
