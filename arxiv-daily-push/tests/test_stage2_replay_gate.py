@@ -18,11 +18,13 @@ from arxiv_daily_push.stage2_replay_gate import (
     build_s2plt01_audit_blocker_state,
     build_s2plt01_dependency_state,
     build_s2plt01_entry_precheck_report,
+    build_s2plt01_independent_replay_review_report,
     build_s2plt01_replay_evidence_from_records,
     build_s2plt01_replay_evidence_state,
     build_s2plt01_replay_payload,
     build_s2plt01_replay_payload_execution_report,
     validate_s2plt01_entry_precheck_report,
+    validate_s2plt01_independent_replay_review_report,
     validate_s2plt01_replay_payload,
     validate_s2plt01_replay_payload_execution_report,
 )
@@ -354,6 +356,127 @@ class Stage2ReplayGateTests(unittest.TestCase):
         self.assertEqual(output["status"], "blocked")
         self.assertTrue(output["payload_execution_package_passed"])
         self.assertFalse(output["entry_precheck_passed"])
+        self.assertIn("inherited_v7_1_p0_findings_open", output["blocking_reasons"])
+        self.assertIn("inherited_v7_1_p1_findings_open", output["blocking_reasons"])
+
+    def test_independent_replay_review_accepts_valid_package_but_keeps_s2plt01_blocked(self) -> None:
+        execution_report = build_s2plt01_replay_payload_execution_report(
+            execution_id="S2PLT01-REPLAY-PAYLOAD-EXECUTION-20260626-001",
+            generated_at="2026-06-26T19:10:00+10:00",
+            generated_by="codex-stage2-local",
+            evidence_mode="actual_replay_evidence",
+            replay_records=self.replay_records(),
+            mail_preview_records=self.mail_preview_records(),
+            source_terminal_states=self.source_terminal_states(),
+            evidence_refs=["runs/s2plt01/replay_payload_execution.json"],
+        )
+
+        review = build_s2plt01_independent_replay_review_report(
+            review_id="S2PLT01-INDEPENDENT-REVIEW-20260626-001",
+            generated_at="2026-06-26T20:00:00+10:00",
+            reviewer_id="codex-independent-reviewer",
+            reviewer_role="independent_stage2_replay_reviewer",
+            reviewer_involved_in_s2plt01_implementation=False,
+            replay_execution_report=execution_report,
+            ci_evidence_refs=[
+                "https://github.com/LinzeColin/CodexProject/actions/runs/28217724286",
+                "https://github.com/LinzeColin/CodexProject/actions/runs/28217724275",
+            ],
+            evidence_refs=["reviews/s2plt01/independent_replay_review.json"],
+        )
+
+        self.assertEqual(review["status"], "blocked")
+        self.assertTrue(review["review_package_passed"])
+        self.assertFalse(review["s2plt01_acceptance_claimed"])
+        self.assertFalse(review["production_acceptance_claimed"])
+        self.assertIn("inherited_v7_1_p0_findings_open", review["blocking_reasons"])
+        self.assertIn("inherited_v7_1_p1_findings_open", review["blocking_reasons"])
+        self.assertNotIn("reviewer_independence_not_proven", review["blocking_reasons"])
+        self.assertNotIn("replay_execution_report_invalid", review["blocking_reasons"])
+        for flag in S2PLT01_FORBIDDEN_FLAGS:
+            self.assertFalse(review[flag])
+        self.assertEqual(validate_s2plt01_independent_replay_review_report(review), [])
+
+    def test_independent_replay_review_blocks_self_review_missing_ci_and_hash_drift(self) -> None:
+        execution_report = build_s2plt01_replay_payload_execution_report(
+            execution_id="S2PLT01-REPLAY-PAYLOAD-EXECUTION-20260626-001",
+            generated_at="2026-06-26T19:10:00+10:00",
+            generated_by="codex-stage2-local",
+            evidence_mode="fixture_replay_contract",
+            replay_records=self.replay_records(),
+            mail_preview_records=self.mail_preview_records(),
+            source_terminal_states=self.source_terminal_states(),
+            evidence_refs=["runs/s2plt01/replay_payload_execution_fixture.json"],
+        )
+        review = build_s2plt01_independent_replay_review_report(
+            review_id="S2PLT01-INDEPENDENT-REVIEW-20260626-002",
+            generated_at="2026-06-26T20:00:00+10:00",
+            reviewer_id="codex-same-agent",
+            reviewer_role="implementation_agent",
+            reviewer_involved_in_s2plt01_implementation=True,
+            replay_execution_report=execution_report,
+            ci_evidence_refs=[],
+            evidence_refs=[],
+        )
+
+        self.assertEqual(review["status"], "blocked")
+        self.assertFalse(review["review_package_passed"])
+        self.assertIn("reviewer_independence_not_proven", review["blocking_reasons"])
+        self.assertIn("ci_evidence_refs_missing", review["blocking_reasons"])
+        self.assertIn("review_evidence_refs_missing", review["blocking_reasons"])
+        errors = validate_s2plt01_independent_replay_review_report(review)
+        self.assertIn("S2PLT01 independent replay review ci_evidence_refs are required", errors)
+        self.assertIn("S2PLT01 independent replay review evidence_refs are required", errors)
+
+        tampered = dict(review)
+        tampered["real_smtp_sent"] = True
+        tampered["review_hash"] = review["review_hash"]
+        errors = validate_s2plt01_independent_replay_review_report(tampered)
+        self.assertIn("real_smtp_sent must be false", errors)
+        self.assertIn("S2PLT01 independent replay review_hash does not match report content", errors)
+
+    def test_independent_replay_review_cli_returns_success_for_valid_review_package(self) -> None:
+        execution_report = build_s2plt01_replay_payload_execution_report(
+            execution_id="S2PLT01-REPLAY-PAYLOAD-EXECUTION-CLI-20260626-001",
+            generated_at="2026-06-26T19:20:00+10:00",
+            generated_by="codex-stage2-local",
+            evidence_mode="actual_replay_evidence",
+            replay_records=self.replay_records(),
+            mail_preview_records=self.mail_preview_records(),
+            source_terminal_states=self.source_terminal_states(),
+            evidence_refs=["runs/s2plt01/replay_payload_execution_cli.json"],
+        )
+        with tempfile.TemporaryDirectory() as tmpdir:
+            input_path = Path(tmpdir) / "execution_report.json"
+            input_path.write_text(json.dumps(execution_report, ensure_ascii=False, sort_keys=True), encoding="utf-8")
+            stdout = io.StringIO()
+
+            with redirect_stdout(stdout):
+                exit_code = cli_main(
+                    [
+                        "stage2-independent-replay-review",
+                        "--execution-report",
+                        str(input_path),
+                        "--review-id",
+                        "S2PLT01-INDEPENDENT-REVIEW-CLI-20260626-001",
+                        "--generated-at",
+                        "2026-06-26T20:10:00+10:00",
+                        "--reviewer-id",
+                        "codex-independent-reviewer",
+                        "--reviewer-role",
+                        "independent_stage2_replay_reviewer",
+                        "--ci-evidence-ref",
+                        "https://github.com/LinzeColin/CodexProject/actions/runs/28217724286",
+                        "--evidence-ref",
+                        "reviews/s2plt01/independent_replay_review_cli.json",
+                        "--json",
+                    ]
+                )
+
+        output = json.loads(stdout.getvalue())
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(output["status"], "blocked")
+        self.assertTrue(output["review_package_passed"])
         self.assertIn("inherited_v7_1_p0_findings_open", output["blocking_reasons"])
         self.assertIn("inherited_v7_1_p1_findings_open", output["blocking_reasons"])
 

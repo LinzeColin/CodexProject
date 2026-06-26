@@ -5303,6 +5303,7 @@ models:
       - "PARAM-ADP-854"
       - "PARAM-ADP-855"
       - "PARAM-ADP-869"
+      - "PARAM-ADP-873"
     inputs:
       - "S2PLT01 required dependency set"
       - "completed governance evidence for S2PBT05, S2PCT07, S2PDT04, S2PET04, S2PFT05, and S2PKT05"
@@ -5310,11 +5311,13 @@ models:
       - "V7.1 inherited audit blocker counts"
       - "replay payload metadata, evidence mode, evidence refs, payload hash, and forbidden side-effect flags"
       - "replay payload execution package, entry precheck binding, validation errors, and execution hash"
+      - "independent reviewer identity, reviewer role, reviewer implementation involvement flag, CI evidence refs, and supporting evidence refs"
       - "full-system replay evidence records and output requirements"
     outputs:
       - "blocked S2PLT01 entry precheck report"
       - "S2PLT01 no-production replay payload envelope"
       - "S2PLT01 no-production replay payload execution package"
+      - "S2PLT01 no-production independent replay review receipt"
       - "dependency and replay evidence state"
       - "blocking reason list"
       - "forbidden production flag state"
@@ -5330,10 +5333,12 @@ models:
       - "governance/run_manifests/ADP-S2PLT01-REPLAY-EVIDENCE-GATE-20260626.json"
       - "governance/run_manifests/ADP-S2PLT01-REPLAY-PAYLOAD-CONTRACT-20260626.json"
       - "governance/run_manifests/ADP-S2PLT01-REPLAY-PAYLOAD-EXECUTION-20260626.json"
+      - "governance/run_manifests/ADP-S2PLT01-INDEPENDENT-REPLAY-REVIEW-20260626.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT01_ENTRY_PRECHECK.md"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT01_REPLAY_EVIDENCE_GATE.md"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT01_REPLAY_PAYLOAD_CONTRACT.md"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT01_REPLAY_PAYLOAD_EXECUTION.md"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT01_INDEPENDENT_REPLAY_REVIEW.md"
 
   -
     model_id: "MOD-ADP-102"

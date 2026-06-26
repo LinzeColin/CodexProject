@@ -11,6 +11,7 @@ from typing import Any
 
 S2PLT01_ENTRY_PRECHECK_MODEL_ID = "adp-s2plt01-entry-precheck-v1"
 S2PLT01_REPLAY_PAYLOAD_CONTRACT_ID = "adp-s2plt01-replay-payload-v1"
+S2PLT01_INDEPENDENT_REVIEW_MODEL_ID = "adp-s2plt01-independent-replay-review-v1"
 S2PLT01_ACCEPTANCE_ID = "ACC-S2PLT01-30D"
 S2PLT01_TASK_ID = "S2PLT01"
 S2PLT01_SCHEMA_VERSION = 1
@@ -430,6 +431,169 @@ def validate_s2plt01_replay_payload_execution_report(report: Mapping[str, Any]) 
     expected_hash = _stable_hash({key: value for key, value in report.items() if key != "execution_hash"})
     if report.get("execution_hash") != expected_hash:
         errors.append("S2PLT01 replay payload execution_hash does not match report content")
+    return errors
+
+
+def build_s2plt01_independent_replay_review_report(
+    *,
+    review_id: str,
+    generated_at: str,
+    reviewer_id: str,
+    reviewer_role: str,
+    reviewer_involved_in_s2plt01_implementation: bool,
+    replay_execution_report: Mapping[str, Any],
+    ci_evidence_refs: list[str],
+    evidence_refs: list[str],
+) -> dict[str, Any]:
+    """Build a no-production independent review receipt for an S2PLT01 execution package."""
+
+    execution_errors = validate_s2plt01_replay_payload_execution_report(replay_execution_report)
+    reviewer_independent = not reviewer_involved_in_s2plt01_implementation
+    execution_blocking_reasons = set(replay_execution_report.get("blocking_reasons") or [])
+    inherited_only_blockers = execution_blocking_reasons.issubset(
+        {"inherited_v7_1_p0_findings_open", "inherited_v7_1_p1_findings_open"}
+    )
+    review_gates = {
+        "reviewer_identity_present": bool(str(reviewer_id or "").strip()),
+        "reviewer_role_present": bool(str(reviewer_role or "").strip()),
+        "reviewer_independent": reviewer_independent,
+        "execution_report_valid": not execution_errors,
+        "payload_execution_package_passed": replay_execution_report.get("payload_execution_package_passed") is True,
+        "entry_precheck_blocked_by_inherited_only": replay_execution_report.get("status") == "blocked" and inherited_only_blockers,
+        "ci_evidence_refs_present": bool(ci_evidence_refs) and all(str(ref).strip() for ref in ci_evidence_refs),
+        "evidence_refs_present": bool(evidence_refs) and all(str(ref).strip() for ref in evidence_refs),
+        "no_production_side_effect": True,
+    }
+    blocking_reasons: list[str] = []
+    if not review_gates["reviewer_identity_present"]:
+        blocking_reasons.append("reviewer_id_missing")
+    if not review_gates["reviewer_role_present"]:
+        blocking_reasons.append("reviewer_role_missing")
+    if not review_gates["reviewer_independent"]:
+        blocking_reasons.append("reviewer_independence_not_proven")
+    if not review_gates["execution_report_valid"]:
+        blocking_reasons.append("replay_execution_report_invalid")
+    if not review_gates["payload_execution_package_passed"]:
+        blocking_reasons.append("payload_execution_package_not_passed")
+    if not review_gates["entry_precheck_blocked_by_inherited_only"]:
+        blocking_reasons.append("entry_precheck_has_unreviewed_non_inherited_blockers")
+    if not review_gates["ci_evidence_refs_present"]:
+        blocking_reasons.append("ci_evidence_refs_missing")
+    if not review_gates["evidence_refs_present"]:
+        blocking_reasons.append("review_evidence_refs_missing")
+    blocking_reasons.extend(
+        reason
+        for reason in ("inherited_v7_1_p0_findings_open", "inherited_v7_1_p1_findings_open")
+        if reason in execution_blocking_reasons
+    )
+    review_package_passed = not execution_errors and all(
+        review_gates[name]
+        for name in (
+            "reviewer_identity_present",
+            "reviewer_role_present",
+            "reviewer_independent",
+            "execution_report_valid",
+            "payload_execution_package_passed",
+            "entry_precheck_blocked_by_inherited_only",
+            "ci_evidence_refs_present",
+            "evidence_refs_present",
+            "no_production_side_effect",
+        )
+    )
+    report = {
+        "model_id": S2PLT01_INDEPENDENT_REVIEW_MODEL_ID,
+        "schema_version": S2PLT01_SCHEMA_VERSION,
+        "task_id": S2PLT01_TASK_ID,
+        "subtask_id": "S2PLT01-INDEPENDENT-REPLAY-REVIEW",
+        "acceptance_id": S2PLT01_ACCEPTANCE_ID,
+        "review_id": review_id,
+        "generated_at": generated_at,
+        "reviewer_id": reviewer_id,
+        "reviewer_role": reviewer_role,
+        "reviewer_involved_in_s2plt01_implementation": reviewer_involved_in_s2plt01_implementation,
+        "status": "blocked",
+        "scope": "no_production_independent_replay_review_receipt",
+        "review_package_passed": review_package_passed,
+        "review_gates": review_gates,
+        "replay_execution_report": dict(replay_execution_report),
+        "replay_execution_errors": execution_errors,
+        "blocking_reasons": sorted(set(blocking_reasons)),
+        "ci_evidence_refs": list(ci_evidence_refs),
+        "evidence_refs": list(evidence_refs),
+        "s2plt01_acceptance_claimed": False,
+        "production_acceptance_claimed": False,
+        "review_hash": "",
+        **{flag: False for flag in S2PLT01_FORBIDDEN_FLAGS},
+    }
+    report["review_hash"] = _stable_hash({key: value for key, value in report.items() if key != "review_hash"})
+    return report
+
+
+def validate_s2plt01_independent_replay_review_report(report: Mapping[str, Any]) -> list[str]:
+    """Validate an S2PLT01 no-production independent replay review receipt."""
+
+    errors: list[str] = []
+    if report.get("model_id") != S2PLT01_INDEPENDENT_REVIEW_MODEL_ID:
+        errors.append("S2PLT01 independent replay review model_id is invalid")
+    if report.get("schema_version") != S2PLT01_SCHEMA_VERSION:
+        errors.append("S2PLT01 independent replay review schema_version must be 1")
+    if report.get("task_id") != S2PLT01_TASK_ID:
+        errors.append("S2PLT01 independent replay review task_id is invalid")
+    if report.get("subtask_id") != "S2PLT01-INDEPENDENT-REPLAY-REVIEW":
+        errors.append("S2PLT01 independent replay review subtask_id is invalid")
+    if report.get("acceptance_id") != S2PLT01_ACCEPTANCE_ID:
+        errors.append("S2PLT01 independent replay review acceptance_id is invalid")
+    if not str(report.get("review_id") or "").strip():
+        errors.append("S2PLT01 independent replay review_id is required")
+    if not str(report.get("generated_at") or "").strip():
+        errors.append("S2PLT01 independent replay review generated_at is required")
+    if not str(report.get("reviewer_id") or "").strip():
+        errors.append("S2PLT01 independent replay reviewer_id is required")
+    if not str(report.get("reviewer_role") or "").strip():
+        errors.append("S2PLT01 independent replay reviewer_role is required")
+    if report.get("status") != "blocked":
+        errors.append("S2PLT01 independent replay review must remain blocked until inherited P0/P1 and final gates close")
+    if report.get("s2plt01_acceptance_claimed") is not False:
+        errors.append("S2PLT01 independent replay review must not claim S2PLT01 acceptance")
+    if report.get("production_acceptance_claimed") is not False:
+        errors.append("S2PLT01 independent replay review must not claim production acceptance")
+    for flag in S2PLT01_FORBIDDEN_FLAGS:
+        if report.get(flag) is not False:
+            errors.append(f"{flag} must be false")
+
+    execution_report = _mapping(report.get("replay_execution_report"))
+    execution_errors = validate_s2plt01_replay_payload_execution_report(execution_report)
+    if list(report.get("replay_execution_errors") or []) != execution_errors:
+        errors.append("S2PLT01 independent replay review replay_execution_errors must match execution validation")
+    gates = _mapping(report.get("review_gates"))
+    if report.get("review_package_passed") is True:
+        required_true = (
+            "reviewer_identity_present",
+            "reviewer_role_present",
+            "reviewer_independent",
+            "execution_report_valid",
+            "payload_execution_package_passed",
+            "entry_precheck_blocked_by_inherited_only",
+            "ci_evidence_refs_present",
+            "evidence_refs_present",
+            "no_production_side_effect",
+        )
+        for gate in required_true:
+            if gates.get(gate) is not True:
+                errors.append(f"review_package_passed requires {gate}")
+        for reason in ("inherited_v7_1_p0_findings_open", "inherited_v7_1_p1_findings_open"):
+            if reason not in report.get("blocking_reasons", []):
+                errors.append(f"blocked S2PLT01 independent replay review must retain {reason}")
+    else:
+        if not report.get("blocking_reasons"):
+            errors.append("blocked S2PLT01 independent replay review must include blocking reasons")
+    if not report.get("ci_evidence_refs"):
+        errors.append("S2PLT01 independent replay review ci_evidence_refs are required")
+    if not _has_evidence_refs(report):
+        errors.append("S2PLT01 independent replay review evidence_refs are required")
+    expected_hash = _stable_hash({key: value for key, value in report.items() if key != "review_hash"})
+    if report.get("review_hash") != expected_hash:
+        errors.append("S2PLT01 independent replay review_hash does not match report content")
     return errors
 
 
