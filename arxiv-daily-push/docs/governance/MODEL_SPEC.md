@@ -7,7 +7,7 @@ machine_summary:
 
 - model_count: 106
 - formula_count: 108
-- parameter_count: 903
+- parameter_count: 907
 
 Fact levels follow `docs/governance/STANDARD.md`.
 

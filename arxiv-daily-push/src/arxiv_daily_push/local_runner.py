@@ -47,9 +47,15 @@ LOCAL_RUNNER_REPORT_FILENAME = "adp-local-runner-report.json"
 LOCAL_RUNNER_SECRET_NAMES = (*SMTP_SECRET_ENV_KEYS,)
 LOCAL_LAUNCHD_LABEL = "com.linze.adp.local.daily"
 USER_CENTER_LEARNING_PAGE = Path("用户中心") / "复习行动与收益.md"
+USER_CENTER_MAIL_STATUS_PAGES = (
+    Path("用户中心") / "README.md",
+    Path("用户中心") / "一看三查.md",
+    Path("用户中心") / "邮件发送与队列状态.md",
+)
 REVIEW_REPORT_FILENAME = "stage2_s2pjt02_review_schedule_report.json"
 ACTION_ROI_REPORT_FILENAME = "stage2_s2pjt03_action_asset_roi_ledger_report.json"
 USER_CENTER_PENDING_VALUE = "待今日运行快照写入"
+USER_CENTER_PENDING_PLANNED_SEND_TOTAL = "待确认"
 USER_CENTER_SNAPSHOT_FIELDS = (
     "今日到期复习",
     "未来 7 天复习",
@@ -264,7 +270,13 @@ def run_local_daily(
         _write_json(run_dir / "adp-release-dry-run.json", release_report)
     delivery_package = build_daily_delivery_package(daily_run, daily_input, release_report, generated_at=generated_at)
     notification = delivery_package["notification"]
-    user_center_sync = _sync_user_center_learning_snapshot(root=root, state=state, write=write)
+    planned_mail_delivery = _planned_mail_delivery_summary(delivery_package)
+    user_center_sync = _sync_user_center_learning_snapshot(
+        root=root,
+        state=state,
+        write=write,
+        planned_mail_delivery=planned_mail_delivery,
+    )
     user_center_sync_ready = user_center_sync.get("status") == "pass"
     if allow_smtp_send and not user_center_sync_ready:
         notification_report = {
@@ -342,6 +354,7 @@ def run_local_daily(
             "email_preview_written": write,
             "user_center_sync": user_center_sync,
             "user_center_sync_ready": user_center_sync_ready,
+            "planned_mail_delivery": planned_mail_delivery,
             "notification_report": notification_report,
             "delivery_package": {
                 key: value
@@ -496,25 +509,34 @@ def _write_or_return(report: dict[str, Any], run_dir: Path, *, write: bool) -> d
     return normalized
 
 
-def _sync_user_center_learning_snapshot(*, root: Path, state: Path, write: bool) -> dict[str, Any]:
+def _sync_user_center_learning_snapshot(
+    *,
+    root: Path,
+    state: Path,
+    write: bool,
+    planned_mail_delivery: Mapping[str, Any],
+) -> dict[str, Any]:
     page = root / USER_CENTER_LEARNING_PAGE
     review_path = state / REVIEW_REPORT_FILENAME
     action_path = state / ACTION_ROI_REPORT_FILENAME
+    mail_pages = [root / path for path in USER_CENTER_MAIL_STATUS_PAGES]
     report = {
         "status": "blocked",
         "page": str(page),
+        "mail_status_pages": [str(path) for path in mail_pages],
         "review_report": str(review_path),
         "action_roi_report": str(action_path),
         "write_enabled": write,
         "blocking_reasons": [],
         "snapshot_values": {},
+        "planned_mail_delivery": dict(planned_mail_delivery),
     }
     if not write:
         report["blocking_reasons"] = ["user center sync requires write mode"]
         return report
     missing = [
         str(path)
-        for path in (page, review_path, action_path)
+        for path in (page, review_path, action_path, *mail_pages)
         if not path.exists()
     ]
     if missing:
@@ -535,6 +557,14 @@ def _sync_user_center_learning_snapshot(*, root: Path, state: Path, write: bool)
             report["blocking_reasons"] = ["user center sync verification failed after write"]
             report["snapshot_values"] = values
             return report
+        for mail_page in mail_pages:
+            current_mail_page = mail_page.read_text(encoding="utf-8")
+            updated_mail_page = _replace_user_center_planned_send_total(current_mail_page, planned_mail_delivery)
+            mail_page.write_text(updated_mail_page, encoding="utf-8")
+            if _replace_user_center_planned_send_total(mail_page.read_text(encoding="utf-8"), planned_mail_delivery) != updated_mail_page:
+                report["blocking_reasons"] = [f"user center mail status verification failed after write: {mail_page}"]
+                report["snapshot_values"] = values
+                return report
     except (OSError, ValueError, json.JSONDecodeError) as error:
         report["blocking_reasons"] = [f"user center sync failed: {error}"]
         return report
@@ -542,6 +572,22 @@ def _sync_user_center_learning_snapshot(*, root: Path, state: Path, write: bool)
     report["blocking_reasons"] = []
     report["snapshot_values"] = values
     return report
+
+
+def _planned_mail_delivery_summary(delivery_package: Mapping[str, Any]) -> dict[str, Any]:
+    products = tuple(str(product) for product in delivery_package.get("mail_products_supported") or M1_M4_MAIL_PRODUCTS)
+    if set(products) != set(M1_M4_MAIL_PRODUCTS):
+        products = tuple(M1_M4_MAIL_PRODUCTS)
+    current_product = str(delivery_package.get("mail_product_id") or "")
+    return {
+        "source": "EMAIL_LEARNING_V1_M1_M4_CONTRACT",
+        "planned_send_total": len(M1_M4_MAIL_PRODUCTS),
+        "planned_mail_products": list(M1_M4_MAIL_PRODUCTS),
+        "current_mail_product_id": current_product,
+        "current_mail_product_planned": current_product in M1_M4_MAIL_PRODUCTS,
+        "daily_operation_accepted": False,
+        "smtp_or_scheduler_enabled_by_this_gate": False,
+    }
 
 
 def _user_center_report_passed(report: Mapping[str, Any] | None, ready_key: str) -> bool:
@@ -609,6 +655,37 @@ def _replace_user_center_snapshot_values(text: str, values: Mapping[str, str]) -
     if missing:
         raise ValueError("复习行动与收益.md missing snapshot rows: " + ", ".join(missing))
     return "\n".join(changed_lines) + ("\n" if text.endswith("\n") else "")
+
+
+def _replace_user_center_planned_send_total(text: str, planned_mail_delivery: Mapping[str, Any]) -> str:
+    planned_total = int(planned_mail_delivery.get("planned_send_total") or 0)
+    planned_products = ", ".join(str(product) for product in planned_mail_delivery.get("planned_mail_products") or [])
+    if planned_total <= 0 or not planned_products:
+        raise ValueError("planned mail delivery summary missing planned total or products")
+    lines = text.splitlines()
+    changed = False
+    row_re = re.compile(r"^(?P<prefix>\| 今日已发送 / 总应发送 \| )(?P<value>[^|]+)(?P<suffix>\|.*)$")
+    for index, line in enumerate(lines):
+        match = row_re.match(line)
+        if not match:
+            continue
+        current_value = match.group("value").strip()
+        sent_part = current_value.split("/", 1)[0].strip()
+        if not sent_part or sent_part == USER_CENTER_PENDING_PLANNED_SEND_TOTAL:
+            sent_part = "0"
+        lines[index] = f"{match.group('prefix')}{sent_part} / {planned_total} {match.group('suffix').lstrip()}"
+        changed = True
+    if not changed:
+        raise ValueError("mail status page missing 今日已发送 / 总应发送 row")
+    updated = "\n".join(lines) + ("\n" if text.endswith("\n") else "")
+    marker = f"计划来源：Email V1 每日 3+1（{planned_products}），总应发送 {planned_total} 封；这不是 Stage 2 生产验收通过声明。"
+    if marker not in updated:
+        updated = updated.rstrip() + "\n\n" + marker + "\n"
+    if USER_CENTER_PENDING_PLANNED_SEND_TOTAL in "\n".join(
+        line for line in updated.splitlines() if "今日已发送 / 总应发送" in line
+    ):
+        raise ValueError("mail status page still contains pending planned send total")
+    return updated
 
 
 def _command_gate(resolver: CommandResolver) -> dict[str, Any]:

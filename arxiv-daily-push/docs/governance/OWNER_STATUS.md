@@ -39,7 +39,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (879/879 machine-checked active parameters, 107/107 machine-checked active formulas; 7 new local runner gate parameters require human review)
+- implementation_congruence: `VERIFIED` (879/890 machine-checked active parameters, 107/108 machine-checked active formulas; 11 local runner gate parameters require human review)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `VERIFIED`
 - empirical_validation: `VERIFIED`
@@ -71,8 +71,8 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - model_count: `106`
 - total_formulas: `108`
 - active_formulas: `108`
-- total_parameters: `903`
-- active_parameters: `886`
+- total_parameters: `907`
+- active_parameters: `890`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance

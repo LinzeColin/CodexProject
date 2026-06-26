@@ -15,6 +15,7 @@ from arxiv_daily_push.local_runner import (
     ACTION_ROI_REPORT_FILENAME,
     REVIEW_REPORT_FILENAME,
     USER_CENTER_LEARNING_PAGE,
+    USER_CENTER_MAIL_STATUS_PAGES,
     build_launchd_package,
     build_local_preflight,
     run_local_daily,
@@ -138,6 +139,22 @@ def write_user_center_sync_inputs(root: Path, state: Path) -> None:
         ),
         encoding="utf-8",
     )
+    for mail_status_page in USER_CENTER_MAIL_STATUS_PAGES:
+        page = root / mail_status_page
+        page.parent.mkdir(parents=True, exist_ok=True)
+        page.write_text(
+            "\n".join(
+                [
+                    f"# {page.stem}",
+                    "",
+                    "| 项目 | 当前值 |",
+                    "|---|---|",
+                    "| 今日已发送 / 总应发送 | 2 / 待确认 |",
+                    "",
+                ]
+            ),
+            encoding="utf-8",
+        )
     state.mkdir(parents=True, exist_ok=True)
     (state / REVIEW_REPORT_FILENAME).write_text(
         json.dumps(
@@ -212,9 +229,15 @@ class LocalRunnerTests(unittest.TestCase):
             self.assertTrue(Path(report["email_preview_paths"]["plain"]).is_file())
             self.assertEqual(report["delivery_package"]["email_template_contract"], EMAIL_LEARNING_V1_CONTRACT_ID)
             self.assertEqual(report["delivery_package"]["mail_product_id"], "M1")
+            self.assertEqual(report["planned_mail_delivery"]["planned_send_total"], 4)
+            self.assertEqual(report["planned_mail_delivery"]["planned_mail_products"], ["M1", "M2", "M3", "M4"])
             self.assertIn("【先把论文讲成人话】", Path(report["email_preview_paths"]["plain"]).read_text(encoding="utf-8"))
             self.assertTrue(report["user_center_sync_ready"])
             self.assertIn("| 今日到期复习 | 1 项 |", (root / USER_CENTER_LEARNING_PAGE).read_text(encoding="utf-8"))
+            for mail_status_page in USER_CENTER_MAIL_STATUS_PAGES:
+                page_text = (root / mail_status_page).read_text(encoding="utf-8")
+                self.assertIn("| 今日已发送 / 总应发送 | 2 / 4 |", page_text)
+                self.assertIn("计划来源：Email V1 每日 3+1（M1, M2, M3, M4）", page_text)
             self.assertFalse(validate_local_runner_report(report))
 
     def test_local_daily_real_smtp_requires_secret_env_names_and_does_not_log_values(self) -> None:

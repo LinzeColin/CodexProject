@@ -3243,7 +3243,21 @@ None for this new project baseline.
 - Decisions: `local_runner` now writes/syncs `用户中心/复习行动与收益.md` from S2PJT02/S2PJT03 reports and requires `user_center_sync_ready=true` in `validate_local_runner_report`; missing reports, failed write, failed report status, missing ready flags, or remaining `待今日运行快照写入` fields block daily pass and convert SMTP intent into a blocked notification report with no real send attempt.
 - Boundaries: This run does not replay email, enable SMTP, install or enable scheduler, upload Release assets, change source adapters or ranking, change public schema or DB, mutate production queues, edit CURRENT or V7.1/V7.2 contracts, close inherited P0/P1, accept S2PLT02/S2PLT04/S2PMT07, enable DAILY_OPERATION, or claim integrated production acceptance.
 - Root governance: The root `AGENTS.md` now requires development runs to merge or close every created/inherited PR before closeout; stale, conflicting, superseded, or draft PRs must be closed with reason and re-cut from current `main` if still needed.
-- Remaining risks: The total scheduled-send denominator (`今日已发送 / 总应发送`) still needs a separate config/schedule-derived source of truth; inherited P0=8/P1=37 and final production gates remain blocked.
+- Remaining risks: The planned daily send denominator is now exposed as Email V1 M1-M4 daily 3+1 = 4 on shallow user-center pages; inherited P0=8/P1=37 and final production gates remain blocked.
 - Rollback: Revert local runner sync gate code, focused tests, owner pointer page cleanup, MOD-ADP-106/FORM-ADP-108/PARAM-ADP-897..903 registrations, phase record, manifests, and this ledger entry; no production runtime state was enabled.
 - Evidence: `arxiv-daily-push/docs/phase_records/PHASE_LOCAL_RUNNER_USER_CENTER_SYNC_GATE.md`; `governance/run_manifests/ADP-LOCAL-RUNNER-USER-CENTER-SYNC-GATE-20260626.json`; `governance/run_manifests/GOV-ROOT-NO-OPEN-PR-RULE-20260626.json`; `arxiv-daily-push/tests/test_local_runner.py`.
 - Next step: Derive the daily planned-send denominator from the authoritative schedule/config and expose it in the shallow GitHub user center without enabling production SMTP/scheduler.
+
+### `ITER-20260626-ADP-USER-CENTER-TOTAL-CANDIDATE-POOL`
+
+- Timestamp: `2026-06-26T19:32:20+10:00`
+- Actor: Codex
+- Fact level: EXTRACTED from `docs/owner/CONTENT_LEDGER.csv`, shallow GitHub user-center pages, ranking.py, focused regression tests, and project governance validation.
+- Status: owner-facing total candidate pool disclosed, no production side effects.
+- Task IDs: `USER-CENTER-TOTAL-CANDIDATE-POOL`, `S2PIT01`, `S2PJ`, `S2PMT07`.
+- Goal: Expose the owner-facing `截至今日总候选池` as 299 total candidate records, separate 30 generated report/mail-preview records, 269 pending candidates, and the current runtime queue of 11 as an immediate batch only.
+- Decisions: The shallow user center now includes `截至今日候选池.md` with 299 records and `已生成报告与邮件预览.md` with 30 status-index entries. The index links to `CONTENT_LEDGER.csv` and does not pretend to be full report text. `模型参数文件` discloses the existing `ranking.py` selection formula, eight weights, eligibility rules, null handling, and tie-breaker.
+- Regression: `test_user_center_candidate_pool.py` verifies that the total candidate pool row count matches `CONTENT_LEDGER.csv`, the report/mail-preview index has 30 rows, summary pages do not treat 11 runtime items as the total pool, and no nonexistent `../docs/owner/reports.md` link is emitted.
+- Boundaries: This run does not enable SMTP, install or enable scheduler, upload Release assets, change public schema or DB, mutate production queues, change source adapters or ranking, edit CURRENT or V7.1/V7.2 contracts, close inherited P0/P1, enable DAILY_OPERATION, or claim integrated production acceptance.
+- Evidence: `arxiv-daily-push/用户中心/截至今日候选池.md`; `arxiv-daily-push/用户中心/已生成报告与邮件预览.md`; `arxiv-daily-push/模型参数文件`; `arxiv-daily-push/tests/test_user_center_candidate_pool.py`; `governance/run_manifests/ADP-USER-CENTER-TOTAL-CANDIDATE-POOL-20260626.json`.
+- Next step: Continue S2PMT07/P0/P1 independent review and final production-gate evidence without treating the total candidate pool disclosure as production acceptance.

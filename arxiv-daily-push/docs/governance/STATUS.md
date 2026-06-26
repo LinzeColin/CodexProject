@@ -15,8 +15,8 @@
 - Path: `arxiv-daily-push`
 - Product version: `0.23.1`
 - Phase/Gate: `S2PL / LOCAL_RUNNER_USER_CENTER_SYNC_REQUIRED_NO_PRODUCTION`
-- Models/Formulas/Parameters total: `106 / 108 / 903`
-- Active formulas/parameters: `108 / 886`
+- Models/Formulas/Parameters total: `106 / 108 / 907`
+- Active formulas/parameters: `108 / 890`
 - Machine checked formulas/parameters: `107 / 879`
 
 ## Assurance
