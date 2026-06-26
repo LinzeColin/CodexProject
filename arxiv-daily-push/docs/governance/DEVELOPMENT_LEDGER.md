@@ -39,6 +39,26 @@ The append-only machine record is `development_events.jsonl`.
 
 ## Iteration Records
 
+### `ITER-20260626-ADP-S2PBT05-STATUS-DRIFT-SYNC`
+
+- Timestamp: `2026-06-26T21:30:00+10:00`
+- Fact level: EXTRACTED from post-merge S2PBT05 main state, generated owner/status views, S2PLT01 delivery task risk text, and S2PLT01 model input text.
+- Base commit: `5d1821bd909bd05cd101cd7ab3713b01b4166500`
+- Status: governance sync local validation pending PR.
+- Phase: S2PB
+- Task IDs: `S2PBT05-STATUS-SYNC`; acceptance `ACC-S2PBT05-D1`.
+- Goal: Remove stale post-merge owner/status wording that still described `S2PBT05` as missing after the S2PBT05 D1 qualification receipt had merged to main.
+- Files changed: S2PLT01 model input text, S2PLT01 delivery-task objective/scope/risk text, generated `ASSURANCE_STATUS`, `OWNER_STATUS`, and `STATUS`, changelog, phase record, run manifest, and this ledger entry.
+- Model changes: No new model; `MOD-ADP-101` wording now treats S2PBT05 as completed dependency evidence.
+- Formula changes: No formula semantic change.
+- Parameter changes: No parameter value change.
+- Validation: YAML/JSON/JSONL parse PASS; ADP project governance 0 errors / 0 warnings; changed-only governance semantic 0 errors / 0 warnings; V7.2 validator PASS; lean check-render drift_count 0 reference_issue_count 0; git diff --check PASS.
+- Decisions: This is a governance/status drift sync only. It does not execute S2PLT01 full replay, does not prove 120 mail previews, does not prove terminal source states, does not enable formal D1 production inclusion, and does not claim Stage 2 production acceptance, integrated production acceptance, or DAILY_OPERATION.
+- Remaining risks: Inherited V7.1 P0=8/P1=37, missing full 30-day replay, missing 120 mail previews, missing D1-D4 terminal source states, S2PLT04, and S2PMT07 remain blocking.
+- Rollback: Revert the status wording sync, generated dashboard outputs, phase record, manifest, event, changelog, and this ledger entry; no runtime production state was changed.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PBT05_STATUS_DRIFT_SYNC.md`; `governance/run_manifests/ADP-S2PBT05-STATUS-DRIFT-SYNC-20260626.json`; `arxiv-daily-push/docs/governance/OWNER_STATUS.md`; `arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml`.
+- Next step: Resolve inherited P0/P1 blockers, execute full S2PLT01 replay, prove 120 mail previews, and prove terminal source states before S2PLT01 acceptance.
+
 ### `ITER-20260626-ADP-S2PBT05-D1-QUALIFICATION`
 
 - Timestamp: `2026-06-26T18:40:00+10:00`
