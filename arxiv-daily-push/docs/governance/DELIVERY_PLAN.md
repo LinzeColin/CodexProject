@@ -21,7 +21,7 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 132
+- task_count: 133
 - acceptance_count: 120
 
 ## Delivery Tasks
@@ -220,6 +220,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PMT03 | Lease fencing and transactional outbox | completed_local_validation | `ACC-S2PMT03-LEASE-FENCING-OUTBOX` | Local-only row_version CAS, lease/fencing, state-history consistency, idempotent outbox Message-ID, SMTP accept crash-window, M4 cycle watermark, and no production side effects. |
 | S2PMT03-LESSON-REVISION-A016 | Lesson revision identity hardening | completed_local_validation | `ACC-S2PMT03-CONCURRENCY-OUTBOX` | Local A-016 remediation: stable `lesson_key`, immutable content/evidence/model-sensitive `lesson_revision_id`, `lesson_id` preserved as revision-sensitive compatibility field, focused regression tests, and no production side effects. |
 | S2PMT04 | Automatic lifecycle and cache cleanup | completed_local_validation | `ACC-S2PMT04-LIFECYCLE` | Local-only disabled wake dry-run, lifecycle drain/checkpoint/cleanup, startup reconciliation, shutdown receipt, safe cache cleanup, parseable launchd plist, and no production side effects. |
+| S2PMT04-SCHEDULER-TEMPLATE-A013 | S2PMT04 A-013 scheduler template hardening | completed_local_validation | `ACC-S2PMT04-LIFECYCLE` | Local A-013 remediation: macOS scheduler dry-run launchd template is `plistlib` generated, parseable, argument-structured, and safe for special-character paths; no scheduler install or production side effects. |
 | S2PMT05 | Pressure fault time and E2E | completed_local_validation | `ACC-S2PMT05-STRESS-E2E` | Local-only load/stress/spike, accelerated 24h soak, dual scheduler race, SMTP crash-window, fault injection, DST/clock skew, 35-day 3+1/weekly/monthly/review/action/ROI, backpressure, deterministic isolation, and no production side effects. |
 | S2PMT06 | Chinese owner UX and safe controls | completed_local_validation | `ACC-S2PMT06-UX` | Local-only Chinese owner first screen, fixed navigation, status feedback, error cards, safe config changes, queue views, safe actions, accessibility, C-001 through C-015 coverage, and no production side effects. |
 | S2PLT01 | Full-system 30-day replay entry precheck | blocked | `ACC-S2PLT01-30D` | Fail-closed replay entry precheck; inherited P0/P1, full 30-day replay, 120 mail previews, and terminal source-state proof still block S2PLT01, S2PLT04, S2PMT07, and integrated production acceptance. |
