@@ -238,8 +238,8 @@ def validate_source_files() -> dict[str, Any]:
     if "python scripts/manage_clean_room_release.py validate" not in workflow_text:
         raise AssertionError("governance workflow does not validate clean-room release")
 
-    index = (ROOT / "prototype/index.html").read_bytes()
-    standalone = (ROOT / "prototype/standalone.html").read_bytes()
+    index = canonical_file_bytes(ROOT / "prototype/index.html")
+    standalone = canonical_file_bytes(ROOT / "prototype/standalone.html")
     if index != standalone:
         raise AssertionError("prototype/index.html and prototype/standalone.html differ")
 

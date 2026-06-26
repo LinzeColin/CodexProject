@@ -197,7 +197,7 @@
     {
       "command": "EEI clean-room release regenerate and validate",
       "result": "PASS",
-      "observed": "package_paths=446; package_sha256=435aec4ba10f496ad6751204e62a58d135b8916ec45f67b680c1e22a89d2e6cb; fixed remote EEI validation stale README artifact and Windows/POSIX release path handling."
+      "observed": "package_paths=446; package_sha256=71d2d9cf1b4e62c314fccd92f44cd47b6d9bf85f570385abee28ab46a1adaf2f; fixed remote EEI validation stale README artifact plus Windows/POSIX path and canonical source-check handling."
     },
     {
       "command": "changed-only governance sync before manifest",
