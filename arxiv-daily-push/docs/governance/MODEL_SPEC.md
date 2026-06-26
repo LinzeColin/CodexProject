@@ -7,7 +7,7 @@ machine_summary:
 
 - model_count: 106
 - formula_count: 108
-- parameter_count: 914
+- parameter_count: 919
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -48,6 +48,17 @@ Fact levels follow `docs/governance/STANDARD.md`.
   preservation, and fail-closed checks. It does not execute production restore,
   enable SMTP, install scheduler, upload Release, change public schema or DB,
   mutate production queues, change source adapters or ranking, edit CURRENT or
+  V7.1/V7.2 contracts, close inherited P0/P1, enable DAILY_OPERATION, or claim
+  integrated production acceptance.
+
+- `S2PMT05-TIME-POLICY-B010` refreshes `MOD-ADP-098` and `FORM-ADP-100`.
+  It adds a local structured time-policy gate for inherited B-010 with
+  Australia/Sydney 05:00 schedule, 3600-second misfire grace, one-cycle
+  catch-up bound, DST fold/gap cases, 8h sleep recovery, NTP backward/forward
+  clock-jump cases, local business-date cycle IDs plus UTC watermarks, and no
+  duplicate M4 watermark. It does not install scheduler, trigger a real
+  catch-up run, enable SMTP, upload Release, change public schema or DB, mutate
+  production queues, change source adapters or ranking, edit CURRENT or
   V7.1/V7.2 contracts, close inherited P0/P1, enable DAILY_OPERATION, or claim
   integrated production acceptance.
 

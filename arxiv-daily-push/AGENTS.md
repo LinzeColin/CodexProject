@@ -51,8 +51,11 @@ This project follows the root `AGENTS.md` and `docs/governance/STANDARD.md`.
   multipliers, throughput/latency/memory/disk/error-budget evidence, dual
   scheduler race protection, SMTP crash-window handling, ENOSPC/read-only/
   SQLITE_BUSY/corrupt JSON/PDF/backup fault injection with explicit recovery
-  states, Australia/Sydney DST and clock skew policy, 35-day 3+1/weekly/monthly/review/action/ROI E2E count
-  conservation, semantic/evidence-bound non-template result validity, 2x/5x
+  states, structured Australia/Sydney 05:00 schedule, DST fold/gap, 3600-second
+  misfire grace, bounded one-cycle catch-up, 8h sleep recovery, NTP
+  backward/forward clock-jump policy, and no duplicate M4 watermark, 35-day
+  3+1/weekly/monthly/review/action/ROI E2E count conservation,
+  semantic/evidence-bound non-template result validity, 2x/5x
   priority-aware backpressure/degradation with high-priority SLO and
   low-priority reason codes, deterministic isolation, and no production side
   effects. `S2PMT06` local owner UX evidence covers the Chinese

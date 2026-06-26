@@ -20,6 +20,10 @@ S2PMT05_DEFAULT_RANDOM_SEED = 20260626
 S2PMT05_SOAK_HOURS_REQUIRED = 24
 S2PMT05_REPLAY_DAYS_REQUIRED = 35
 S2PMT05_CLOCK_SKEW_TOLERANCE_SECONDS = 300
+S2PMT05_SCHEDULE_LOCAL_TIME = "05:00"
+S2PMT05_MISFIRE_GRACE_SECONDS = 3600
+S2PMT05_SLEEP_MISFIRE_HOURS = 8
+S2PMT05_CATCHUP_MAX_RUNS_PER_CYCLE = 1
 S2PMT05_SQLITE_BUSY_TIMEOUT_MS = 5000
 S2PMT05_SQLITE_BUSY_MAX_RETRIES = 5
 S2PMT05_CAPACITY_BASELINE_MULTIPLIERS = (1, 2, 5)
@@ -42,6 +46,17 @@ S2PMT05_REQUIRED_FAULT_RECOVERY_STATES = (
     "REGENERATE_PDF_FROM_SOURCE",
     "BLOCKED_RESTORE",
     "BLOCKED_BACKUP_PUBLISH",
+)
+S2PMT05_REQUIRED_TIME_POLICY_CASES = (
+    "NORMAL_0500",
+    "DST_BACKWARD_FOLD_0",
+    "DST_BACKWARD_FOLD_1",
+    "DST_FORWARD_AFTER_GAP",
+    "MISFIRE_WITHIN_GRACE",
+    "SLEEP_MISSED_8H",
+    "FUTURE_HEARTBEAT_GT_TOLERANCE",
+    "NTP_BACKWARD_WITHIN_TOLERANCE",
+    "NTP_FORWARD_GT_TOLERANCE",
 )
 S2PMT05_BACKPRESSURE_PEAK_MULTIPLIERS = (2, 5)
 S2PMT05_BACKPRESSURE_HIGH_PRIORITY_SLO_SECONDS = 600
@@ -398,34 +413,185 @@ def evaluate_fault_injection_matrix(*, scenarios: Sequence[Mapping[str, Any]]) -
     return {"status": "pass" if not blocking_reasons else "blocked", "checks": checks, "blocking_reasons": blocking_reasons}
 
 
-def evaluate_dst_clock_policy(*, timezone_name: str = "Australia/Sydney") -> dict[str, Any]:
-    """Evaluate DST and clock-skew handling for local cycle IDs."""
+def build_time_schedule_policy(*, timezone_name: str = "Australia/Sydney") -> dict[str, Any]:
+    """Build the local schedule policy contract for B-010 time evidence."""
+
+    return {
+        "timezone": timezone_name,
+        "local_time": S2PMT05_SCHEDULE_LOCAL_TIME,
+        "clock_skew_tolerance_seconds": S2PMT05_CLOCK_SKEW_TOLERANCE_SECONDS,
+        "misfire_grace_seconds": S2PMT05_MISFIRE_GRACE_SECONDS,
+        "catch_up_enabled": True,
+        "catch_up_max_runs_per_cycle": S2PMT05_CATCHUP_MAX_RUNS_PER_CYCLE,
+        "sleep_misfire_hours": S2PMT05_SLEEP_MISFIRE_HOURS,
+        "cycle_policy": "local_business_date_plus_utc_instant_watermark",
+        "fold_policy": "record_utc_offset_and_run_once_per_local_business_date",
+        "gap_policy": "run_after_gap_with_utc_watermark",
+        "future_heartbeat_action": "block_until_owner_review",
+        "ntp_backward_within_tolerance_action": "allow_monotonic_lease_keep_utc_audit",
+        "ntp_forward_over_tolerance_action": "clock_timezone_fail",
+        "missed_run_catchup_policy": "bounded_one_cycle_per_missed_date_no_duplicate_m4",
+        "scheduler_installed": False,
+        "scheduler_enabled": False,
+    }
+
+
+def build_time_policy_cases(*, timezone_name: str = "Australia/Sydney") -> list[dict[str, Any]]:
+    """Build deterministic DST, misfire, sleep, and NTP cases for B-010."""
 
     tz = ZoneInfo(timezone_name)
-    cases = [
-        _time_case("normal", datetime(2026, 7, 5, 5, 0, tzinfo=tz)),
-        _time_case("dst_backward_fold_0", datetime(2026, 4, 5, 2, 30, fold=0, tzinfo=tz)),
-        _time_case("dst_backward_fold_1", datetime(2026, 4, 5, 2, 30, fold=1, tzinfo=tz)),
-        _time_case("dst_forward_after_gap", datetime(2026, 10, 4, 3, 30, tzinfo=tz)),
+    future_skew_seconds = S2PMT05_CLOCK_SKEW_TOLERANCE_SECONDS + 1
+    return [
+        _time_case(
+            "NORMAL_0500",
+            datetime(2026, 7, 5, 5, 0, tzinfo=tz),
+            scheduled_local_time=S2PMT05_SCHEDULE_LOCAL_TIME,
+            action="RUN_ON_TIME",
+            catchup_run_count=0,
+            duplicate_m4_count=0,
+        ),
+        _time_case(
+            "DST_BACKWARD_FOLD_0",
+            datetime(2026, 4, 5, 2, 30, fold=0, tzinfo=tz),
+            ambiguous_time=True,
+            action="RECORD_OFFSET_AND_RUN_ONCE_PER_SERVICE_DATE",
+            catchup_run_count=0,
+            duplicate_m4_count=0,
+        ),
+        _time_case(
+            "DST_BACKWARD_FOLD_1",
+            datetime(2026, 4, 5, 2, 30, fold=1, tzinfo=tz),
+            ambiguous_time=True,
+            action="RECORD_OFFSET_AND_RUN_ONCE_PER_SERVICE_DATE",
+            catchup_run_count=0,
+            duplicate_m4_count=0,
+        ),
+        _time_case(
+            "DST_FORWARD_AFTER_GAP",
+            datetime(2026, 10, 4, 3, 30, tzinfo=tz),
+            missing_local_interval="02:00-02:59",
+            action="RUN_AFTER_GAP_WITH_UTC_WATERMARK",
+            catchup_run_count=1,
+            duplicate_m4_count=0,
+        ),
+        _time_case(
+            "MISFIRE_WITHIN_GRACE",
+            datetime(2026, 7, 5, 5, 30, tzinfo=tz),
+            misfire_lag_seconds=1800,
+            action="RUN_CURRENT_CYCLE_WITH_MISFIRE_RECEIPT",
+            catchup_run_count=1,
+            duplicate_m4_count=0,
+        ),
+        _time_case(
+            "SLEEP_MISSED_8H",
+            datetime(2026, 7, 5, 13, 0, tzinfo=tz),
+            missed_run_hours=S2PMT05_SLEEP_MISFIRE_HOURS,
+            missed_run_seconds=S2PMT05_SLEEP_MISFIRE_HOURS * 3600,
+            action="CATCH_UP_ONE_MISSED_CYCLE",
+            catchup_run_count=1,
+            duplicate_m4_count=0,
+        ),
+        _time_case(
+            "FUTURE_HEARTBEAT_GT_TOLERANCE",
+            datetime(2026, 7, 5, 5, 0, tzinfo=tz),
+            heartbeat_skew_seconds=future_skew_seconds,
+            action="BLOCK_UNTIL_OWNER_REVIEW",
+            catchup_run_count=0,
+            duplicate_m4_count=0,
+        ),
+        _time_case(
+            "NTP_BACKWARD_WITHIN_TOLERANCE",
+            datetime(2026, 7, 5, 5, 0, tzinfo=tz),
+            heartbeat_skew_seconds=-S2PMT05_CLOCK_SKEW_TOLERANCE_SECONDS,
+            action="ALLOW_MONOTONIC_LEASE_KEEP_UTC_AUDIT",
+            catchup_run_count=0,
+            duplicate_m4_count=0,
+        ),
+        _time_case(
+            "NTP_FORWARD_GT_TOLERANCE",
+            datetime(2026, 7, 5, 5, 0, tzinfo=tz),
+            heartbeat_skew_seconds=future_skew_seconds,
+            action="CLOCK_TIMEZONE_FAIL",
+            catchup_run_count=0,
+            duplicate_m4_count=0,
+        ),
     ]
-    cycle_ids = [case["cycle_id"] for case in cases]
-    future_heartbeat_seconds = S2PMT05_CLOCK_SKEW_TOLERANCE_SECONDS + 1
+
+
+def evaluate_time_policy_cases(
+    *,
+    cases: Sequence[Mapping[str, Any]],
+    schedule_policy: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Evaluate the structured local-time policy matrix without production effects."""
+
+    by_case = {str(row.get("case_id") or ""): row for row in cases}
+    fold_0 = _mapping(by_case.get("DST_BACKWARD_FOLD_0"))
+    fold_1 = _mapping(by_case.get("DST_BACKWARD_FOLD_1"))
+    gap = _mapping(by_case.get("DST_FORWARD_AFTER_GAP"))
+    misfire = _mapping(by_case.get("MISFIRE_WITHIN_GRACE"))
+    sleep = _mapping(by_case.get("SLEEP_MISSED_8H"))
+    future_heartbeat = _mapping(by_case.get("FUTURE_HEARTBEAT_GT_TOLERANCE"))
+    ntp_backward = _mapping(by_case.get("NTP_BACKWARD_WITHIN_TOLERANCE"))
+    ntp_forward = _mapping(by_case.get("NTP_FORWARD_GT_TOLERANCE"))
+    max_catchup = int(schedule_policy.get("catch_up_max_runs_per_cycle") or 0)
+    tolerance = int(schedule_policy.get("clock_skew_tolerance_seconds") or 0)
     checks = {
-        "uses_utc_cycle_watermark": all(case["utc_timestamp"] for case in cases),
-        "dst_fold_records_offset": cases[1]["utc_offset"] != cases[2]["utc_offset"],
-        "cycle_ids_are_date_scoped": len(set(cycle_ids)) == 3,
-        "future_heartbeat_blocks": future_heartbeat_seconds > S2PMT05_CLOCK_SKEW_TOLERANCE_SECONDS,
-        "catchup_is_bounded": True,
+        "required_time_policy_cases_present": set(S2PMT05_REQUIRED_TIME_POLICY_CASES).issubset(by_case),
+        "structured_schedule_policy_present": schedule_policy.get("timezone") == "Australia/Sydney"
+        and schedule_policy.get("local_time") == S2PMT05_SCHEDULE_LOCAL_TIME
+        and int(schedule_policy.get("misfire_grace_seconds") or 0) == S2PMT05_MISFIRE_GRACE_SECONDS
+        and schedule_policy.get("catch_up_enabled") is True
+        and max_catchup == S2PMT05_CATCHUP_MAX_RUNS_PER_CYCLE,
+        "uses_utc_cycle_watermark": all(row.get("utc_timestamp") and row.get("cycle_id") for row in cases),
+        "cycle_ids_are_date_scoped": all(len(str(row.get("cycle_id") or "")) == 10 for row in cases),
+        "dst_fold_records_offset": fold_0.get("utc_offset") != fold_1.get("utc_offset")
+        and fold_0.get("cycle_id") == fold_1.get("cycle_id")
+        and fold_0.get("action") == "RECORD_OFFSET_AND_RUN_ONCE_PER_SERVICE_DATE"
+        and fold_1.get("action") == "RECORD_OFFSET_AND_RUN_ONCE_PER_SERVICE_DATE",
+        "dst_gap_runs_after_gap": gap.get("action") == "RUN_AFTER_GAP_WITH_UTC_WATERMARK"
+        and bool(gap.get("missing_local_interval")),
+        "future_heartbeat_blocks": int(future_heartbeat.get("heartbeat_skew_seconds") or 0) > tolerance
+        and future_heartbeat.get("action") == "BLOCK_UNTIL_OWNER_REVIEW",
+        "ntp_backward_within_tolerance_allows": abs(int(ntp_backward.get("heartbeat_skew_seconds") or 0)) <= tolerance
+        and ntp_backward.get("action") == "ALLOW_MONOTONIC_LEASE_KEEP_UTC_AUDIT",
+        "ntp_forward_over_tolerance_blocks": int(ntp_forward.get("heartbeat_skew_seconds") or 0) > tolerance
+        and ntp_forward.get("action") == "CLOCK_TIMEZONE_FAIL",
+        "misfire_within_grace_runs_once": 0 < int(misfire.get("misfire_lag_seconds") or 0)
+        <= int(schedule_policy.get("misfire_grace_seconds") or 0)
+        and int(misfire.get("catchup_run_count") or 0) == max_catchup
+        and misfire.get("action") == "RUN_CURRENT_CYCLE_WITH_MISFIRE_RECEIPT",
+        "sleep_8h_catchup_bounded": int(sleep.get("missed_run_hours") or 0) >= S2PMT05_SLEEP_MISFIRE_HOURS
+        and int(sleep.get("catchup_run_count") or 0) == max_catchup
+        and sleep.get("action") == "CATCH_UP_ONE_MISSED_CYCLE",
+        "catchup_is_bounded": all(int(row.get("catchup_run_count") or 0) <= max_catchup for row in cases),
+        "no_duplicate_m4_watermark": all(int(row.get("duplicate_m4_count") or 0) == 0 for row in cases),
+        "scheduler_side_effects_disabled": schedule_policy.get("scheduler_installed") is False
+        and schedule_policy.get("scheduler_enabled") is False,
     }
+    blocking_reasons = [key for key, value in checks.items() if value is not True]
+    return {"status": "pass" if not blocking_reasons else "blocked", "checks": checks, "blocking_reasons": blocking_reasons}
+
+
+def evaluate_dst_clock_policy(*, timezone_name: str = "Australia/Sydney") -> dict[str, Any]:
+    """Evaluate DST, misfire, sleep catch-up, and clock-skew handling for B-010."""
+
+    schedule_policy = build_time_schedule_policy(timezone_name=timezone_name)
+    cases = build_time_policy_cases(timezone_name=timezone_name)
+    evaluation = evaluate_time_policy_cases(cases=cases, schedule_policy=schedule_policy)
+    future_heartbeat_seconds = S2PMT05_CLOCK_SKEW_TOLERANCE_SECONDS + 1
     return {
-        "status": "pass" if all(checks.values()) else "blocked",
+        "status": evaluation["status"],
         "timezone": timezone_name,
         "clock_skew_tolerance_seconds": S2PMT05_CLOCK_SKEW_TOLERANCE_SECONDS,
         "future_heartbeat_seconds": future_heartbeat_seconds,
         "future_heartbeat_action": "block_until_owner_review",
-        "missed_run_catchup_policy": "bounded_one_cycle_per_missed_date_no_duplicate_m4",
+        "missed_run_catchup_policy": schedule_policy["missed_run_catchup_policy"],
+        "required_time_policy_cases": list(S2PMT05_REQUIRED_TIME_POLICY_CASES),
+        "schedule_policy": schedule_policy,
         "cases": cases,
-        "checks": checks,
+        "checks": evaluation["checks"],
+        "blocking_reasons": evaluation["blocking_reasons"],
     }
 
 
@@ -765,6 +931,28 @@ def validate_s2pmt05_report(report: Mapping[str, Any]) -> list[str]:
     ):
         if fault_checks.get(check) is not True:
             errors.append(f"fault_injection.checks.{check} must be true")
+    time_policy = _mapping(report.get("dst_clock_policy"))
+    if time_policy.get("status") != "pass":
+        errors.append("dst_clock_policy must pass")
+    time_checks = _mapping(time_policy.get("checks"))
+    for check in (
+        "required_time_policy_cases_present",
+        "structured_schedule_policy_present",
+        "uses_utc_cycle_watermark",
+        "cycle_ids_are_date_scoped",
+        "dst_fold_records_offset",
+        "dst_gap_runs_after_gap",
+        "future_heartbeat_blocks",
+        "ntp_backward_within_tolerance_allows",
+        "ntp_forward_over_tolerance_blocks",
+        "misfire_within_grace_runs_once",
+        "sleep_8h_catchup_bounded",
+        "catchup_is_bounded",
+        "no_duplicate_m4_watermark",
+        "scheduler_side_effects_disabled",
+    ):
+        if time_checks.get(check) is not True:
+            errors.append(f"dst_clock_policy.checks.{check} must be true")
     capacity_baseline = _mapping(report.get("capacity_baseline_model"))
     if capacity_baseline.get("status") != "pass":
         errors.append("capacity_baseline_model must pass")
@@ -901,16 +1089,19 @@ def _backpressure_peak_profiles(*, capacity: int) -> list[dict[str, Any]]:
     return profiles
 
 
-def _time_case(case_id: str, local_time: datetime) -> dict[str, Any]:
+def _time_case(case_id: str, local_time: datetime, **extras: Any) -> dict[str, Any]:
     utc_time = local_time.astimezone(timezone.utc)
-    return {
+    row = {
         "case_id": case_id,
         "local_timestamp": local_time.isoformat(),
         "utc_timestamp": utc_time.isoformat(),
         "utc_offset": local_time.strftime("%z"),
         "fold": local_time.fold,
-        "cycle_id": utc_time.date().isoformat(),
+        "cycle_id": local_time.date().isoformat(),
+        "utc_cycle_watermark": utc_time.isoformat(),
     }
+    row.update(extras)
+    return row
 
 
 def _mapping(value: Any) -> Mapping[str, Any]:
