@@ -601,21 +601,91 @@ def build_35_day_e2e_fixture(*, start_date: str = "2026-07-01", days: int = S2PM
     first_day = date.fromisoformat(start_date)
     cycles = [first_day + timedelta(days=offset) for offset in range(days)]
     daily_mail_rows = [
-        {"cycle_id": day.isoformat(), "product_id": product_id, "mail_key": f"{day.isoformat()}|{product_id}|owner"}
+        {
+            "cycle_id": day.isoformat(),
+            "product_id": product_id,
+            "mail_key": f"{day.isoformat()}|{product_id}|owner",
+            "artifact_ref": f"bundle://s2pmt05-b012/{day.isoformat()}/mail/{product_id}",
+        }
         for day in cycles
         for product_id in S2PMT05_REQUIRED_MAIL_PRODUCTS
     ]
-    weekly_reports = [{"week_start": cycles[idx].isoformat(), "cycle_count": len(cycles[idx : idx + 7])} for idx in range(0, days, 7)]
-    monthly_reports = sorted({day.strftime("%Y-%m") for day in cycles})
-    content_items = days * 3
+    weekly_reports = [
+        {
+            "week_start": cycles[idx].isoformat(),
+            "cycle_count": len(cycles[idx : idx + 7]),
+            "artifact_ref": f"bundle://s2pmt05-b012/week/{cycles[idx].isoformat()}",
+        }
+        for idx in range(0, days, 7)
+    ]
+    monthly_reports = [
+        {
+            "month": month,
+            "artifact_ref": f"bundle://s2pmt05-b012/month/{month}",
+        }
+        for month in sorted({day.strftime("%Y-%m") for day in cycles})
+    ]
+    review_rows: list[dict[str, Any]] = []
+    action_rows: list[dict[str, Any]] = []
+    roi_rows: list[dict[str, Any]] = []
+    for day in cycles:
+        cycle_id = day.isoformat()
+        for item_index in range(1, 4):
+            content_id = f"{cycle_id}-item-{item_index:02d}"
+            review_id = f"review-{content_id}"
+            action_id = f"action-{content_id}"
+            roi_id = f"roi-{content_id}"
+            review_rows.append(
+                {
+                    "review_id": review_id,
+                    "content_id": content_id,
+                    "cycle_id": cycle_id,
+                    "artifact_ref": f"bundle://s2pmt05-b012/{cycle_id}/review/{content_id}",
+                    "status": "due",
+                }
+            )
+            action_rows.append(
+                {
+                    "action_id": action_id,
+                    "linked_review_id": review_id,
+                    "cycle_id": cycle_id,
+                    "artifact_ref": f"bundle://s2pmt05-b012/{cycle_id}/action/{content_id}",
+                    "status": "planned",
+                }
+            )
+            roi_rows.append(
+                {
+                    "roi_id": roi_id,
+                    "linked_action_id": action_id,
+                    "cycle_id": cycle_id,
+                    "artifact_ref": f"bundle://s2pmt05-b012/{cycle_id}/roi/{content_id}",
+                    "status": "tracked",
+                }
+            )
+    content_items = len(review_rows)
     sections = {
         "daily_3_plus_1": {"cycles": days, "mail_count": len(daily_mail_rows), "expected_mail_count": days * 4},
         "weekly_report": {"report_count": len(weekly_reports), "weekly_reports": weekly_reports},
         "monthly_report": {"report_count": len(monthly_reports), "months": monthly_reports},
         "review": {"records": content_items, "due_queue_records": content_items, "overdue_records": 0},
-        "action": {"records": content_items, "linked_review_records": content_items},
-        "roi": {"records": content_items, "linked_action_records": content_items, "negative_roi_records": 0},
+        "action": {"records": content_items, "linked_review_records": len(action_rows)},
+        "roi": {"records": content_items, "linked_action_records": len(roi_rows), "negative_roi_records": 0},
     }
+    audit_bundle = build_35_day_e2e_audit_bundle(
+        start_date=start_date,
+        days=days,
+        daily_mail_rows=daily_mail_rows,
+        weekly_reports=weekly_reports,
+        monthly_reports=monthly_reports,
+        review_rows=review_rows,
+        action_rows=action_rows,
+        roi_rows=roi_rows,
+    )
+    evaluation = evaluate_35_day_e2e_bundle(
+        days=days,
+        sections=sections,
+        audit_bundle=audit_bundle,
+    )
     checks = {
         "replay_days_covered": days >= S2PMT05_REPLAY_DAYS_REQUIRED,
         "daily_mail_count_conserved": sections["daily_3_plus_1"]["mail_count"] == sections["daily_3_plus_1"]["expected_mail_count"],
@@ -624,15 +694,149 @@ def build_35_day_e2e_fixture(*, start_date: str = "2026-07-01", days: int = S2PM
         "monthly_reports_present": len(monthly_reports) >= 1,
         "review_action_roi_linked": sections["review"]["records"] == sections["action"]["linked_review_records"]
         == sections["roi"]["linked_action_records"],
+        "audit_bundle_present": evaluation["checks"]["audit_bundle_present"],
+        "section_artifacts_present": evaluation["checks"]["section_artifacts_present"],
+        "bundle_links_reachable": evaluation["checks"]["bundle_links_reachable"],
+        "review_action_roi_links_reachable": evaluation["checks"]["review_action_roi_links_reachable"],
+        "deterministic_bundle_hash_present": evaluation["checks"]["deterministic_bundle_hash_present"],
     }
     return {
         "status": "pass" if all(checks.values()) else "blocked",
         "start_date": start_date,
         "days": days,
+        "run_bundle_id": audit_bundle["bundle_id"],
         "daily_mail_rows_sample": daily_mail_rows[:8],
+        "daily_mail_rows": daily_mail_rows,
+        "review_rows_sample": review_rows[:6],
+        "action_rows_sample": action_rows[:6],
+        "roi_rows_sample": roi_rows[:6],
         "sections": sections,
+        "audit_bundle": audit_bundle,
         "checks": checks,
+        "blocking_reasons": [key for key, value in checks.items() if value is not True],
     }
+
+
+def build_35_day_e2e_audit_bundle(
+    *,
+    start_date: str,
+    days: int,
+    daily_mail_rows: Sequence[Mapping[str, Any]],
+    weekly_reports: Sequence[Mapping[str, Any]],
+    monthly_reports: Sequence[Mapping[str, Any]],
+    review_rows: Sequence[Mapping[str, Any]],
+    action_rows: Sequence[Mapping[str, Any]],
+    roi_rows: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Build the deterministic local B-012 audit bundle and link graph."""
+
+    bundle_id = f"s2pmt05-b012-35d-{start_date}"
+    section_artifacts = {
+        "daily_3_plus_1": f"bundle://{bundle_id}/daily_3_plus_1.json",
+        "weekly_report": f"bundle://{bundle_id}/weekly_report.json",
+        "monthly_report": f"bundle://{bundle_id}/monthly_report.json",
+        "review": f"bundle://{bundle_id}/review.json",
+        "action": f"bundle://{bundle_id}/action.json",
+        "roi": f"bundle://{bundle_id}/roi.json",
+    }
+    artifact_index = sorted(
+        set(section_artifacts.values())
+        | {str(row.get("artifact_ref")) for row in daily_mail_rows if row.get("artifact_ref")}
+        | {str(row.get("artifact_ref")) for row in weekly_reports if row.get("artifact_ref")}
+        | {str(row.get("artifact_ref")) for row in monthly_reports if row.get("artifact_ref")}
+        | {str(row.get("artifact_ref")) for row in review_rows if row.get("artifact_ref")}
+        | {str(row.get("artifact_ref")) for row in action_rows if row.get("artifact_ref")}
+        | {str(row.get("artifact_ref")) for row in roi_rows if row.get("artifact_ref")}
+    )
+    review_refs = {str(row.get("review_id")): str(row.get("artifact_ref")) for row in review_rows}
+    action_refs = {str(row.get("action_id")): str(row.get("artifact_ref")) for row in action_rows}
+    link_graph = []
+    for row in action_rows:
+        link_graph.append(
+            {
+                "source": str(row.get("artifact_ref")),
+                "target": review_refs.get(str(row.get("linked_review_id")), ""),
+                "relation": "action_links_review",
+            }
+        )
+    for row in roi_rows:
+        link_graph.append(
+            {
+                "source": str(row.get("artifact_ref")),
+                "target": action_refs.get(str(row.get("linked_action_id")), ""),
+                "relation": "roi_links_action",
+            }
+        )
+    bundle_without_hash = {
+        "bundle_id": bundle_id,
+        "schema_version": 1,
+        "start_date": start_date,
+        "days": days,
+        "command": "python -m unittest arxiv-daily-push/tests/test_stage2_stress_e2e.py -q",
+        "section_artifacts": section_artifacts,
+        "artifact_index": artifact_index,
+        "ledger_counts": {
+            "daily_mail_rows": len(daily_mail_rows),
+            "weekly_reports": len(weekly_reports),
+            "monthly_reports": len(monthly_reports),
+            "review_rows": len(review_rows),
+            "action_rows": len(action_rows),
+            "roi_rows": len(roi_rows),
+        },
+        "link_graph": link_graph,
+        "production_side_effects_enabled": False,
+        "real_smtp_sent": False,
+        "scheduler_enabled": False,
+    }
+    return {**bundle_without_hash, "bundle_hash": _stable_hash(bundle_without_hash)}
+
+
+def evaluate_35_day_e2e_bundle(
+    *,
+    days: int,
+    sections: Mapping[str, Any],
+    audit_bundle: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Evaluate B-012 count conservation, bundle presence, and link reachability."""
+
+    daily = _mapping(sections.get("daily_3_plus_1"))
+    weekly = _mapping(sections.get("weekly_report"))
+    monthly = _mapping(sections.get("monthly_report"))
+    review = _mapping(sections.get("review"))
+    action = _mapping(sections.get("action"))
+    roi = _mapping(sections.get("roi"))
+    section_artifacts = _mapping(audit_bundle.get("section_artifacts"))
+    artifact_index = {str(ref) for ref in audit_bundle.get("artifact_index") or []}
+    link_graph = list(audit_bundle.get("link_graph") or [])
+    ledger_counts = _mapping(audit_bundle.get("ledger_counts"))
+    checks = {
+        "replay_days_covered": days >= S2PMT05_REPLAY_DAYS_REQUIRED,
+        "audit_bundle_present": bool(audit_bundle.get("bundle_id")) and audit_bundle.get("schema_version") == 1,
+        "section_artifacts_present": set(S2PMT05_REQUIRED_E2E_SECTIONS).issubset(section_artifacts)
+        and set(section_artifacts.values()).issubset(artifact_index),
+        "daily_mail_count_conserved": int(daily.get("mail_count") or 0) == int(daily.get("expected_mail_count") or -1)
+        and int(ledger_counts.get("daily_mail_rows") or 0) == int(daily.get("mail_count") or -1),
+        "all_mail_products_counted": int(daily.get("expected_mail_count") or 0)
+        == days * len(S2PMT05_REQUIRED_MAIL_PRODUCTS),
+        "weekly_monthly_reports_present": int(weekly.get("report_count") or 0) >= 5
+        and int(monthly.get("report_count") or 0) >= 1,
+        "review_action_roi_counts_conserved": int(review.get("records") or 0)
+        == int(action.get("linked_review_records") or -1)
+        == int(roi.get("linked_action_records") or -1)
+        and int(ledger_counts.get("review_rows") or 0) == int(review.get("records") or -1)
+        and int(ledger_counts.get("action_rows") or 0) == int(action.get("records") or -1)
+        and int(ledger_counts.get("roi_rows") or 0) == int(roi.get("records") or -1),
+        "bundle_links_reachable": bool(link_graph)
+        and all(row.get("source") in artifact_index and row.get("target") in artifact_index for row in link_graph),
+        "review_action_roi_links_reachable": bool(link_graph)
+        and {row.get("relation") for row in link_graph} == {"action_links_review", "roi_links_action"},
+        "deterministic_bundle_hash_present": bool(audit_bundle.get("bundle_hash")),
+        "no_production_side_effects": audit_bundle.get("production_side_effects_enabled") is False
+        and audit_bundle.get("real_smtp_sent") is False
+        and audit_bundle.get("scheduler_enabled") is False,
+    }
+    blocking_reasons = [key for key, value in checks.items() if value is not True]
+    return {"status": "pass" if not blocking_reasons else "blocked", "checks": checks, "blocking_reasons": blocking_reasons}
 
 
 def build_result_validity_fixture(*, generated_at: str) -> dict[str, Any]:
@@ -883,10 +1087,28 @@ def validate_s2pmt05_report(report: Mapping[str, Any]) -> list[str]:
         if finding_id not in findings:
             errors.append(f"findings_covered.{finding_id} is required")
     e2e = _mapping(report.get("thirty_five_day_e2e"))
+    if e2e.get("status") != "pass":
+        errors.append("thirty_five_day_e2e must pass")
     sections = _mapping(e2e.get("sections"))
     for section in S2PMT05_REQUIRED_E2E_SECTIONS:
         if section not in sections:
             errors.append(f"thirty_five_day_e2e.sections.{section} is required")
+    e2e_checks = _mapping(e2e.get("checks"))
+    for check in (
+        "replay_days_covered",
+        "daily_mail_count_conserved",
+        "all_mail_products_present",
+        "weekly_reports_present",
+        "monthly_reports_present",
+        "review_action_roi_linked",
+        "audit_bundle_present",
+        "section_artifacts_present",
+        "bundle_links_reachable",
+        "review_action_roi_links_reachable",
+        "deterministic_bundle_hash_present",
+    ):
+        if e2e_checks.get(check) is not True:
+            errors.append(f"thirty_five_day_e2e.checks.{check} must be true")
     result_validity = _mapping(report.get("result_validity_semantic_evidence"))
     if result_validity.get("status") != "pass":
         errors.append("result_validity_semantic_evidence must pass")

@@ -62,6 +62,16 @@ Fact levels follow `docs/governance/STANDARD.md`.
   V7.1/V7.2 contracts, close inherited P0/P1, enable DAILY_OPERATION, or claim
   integrated production acceptance.
 
+- `S2PMT05-E2E-B012` refreshes `MOD-ADP-098` and `FORM-ADP-100`. It adds a
+  local 35-day E2E audit-bundle gate for inherited B-012 with daily 3+1,
+  weekly, monthly, review, action, and ROI count conservation, section
+  artifacts, artifact index, link graph, deterministic bundle hash, and
+  reachable review/action/ROI links. It does not execute a real 35-day
+  production replay, enable SMTP, install scheduler, upload Release, change
+  public schema or DB, mutate production queues, change source adapters or
+  ranking, edit CURRENT or V7.1/V7.2 contracts, close inherited P0/P1, enable
+  DAILY_OPERATION, or claim integrated production acceptance.
+
 - `S1P5T04` imported the V6 task-numbering roadmap and recorded two
   controlled GitHub/cloud-runner Gmail SMTP send artifacts from run
   `28002478689`: `7811543123` and `7816791617`. PR #82 then produced the
@@ -935,7 +945,8 @@ Uncovered planned scenarios:
 ## S2PMT05 Stress Fault Time And E2E
 
 - `MOD-ADP-098` / `FORM-ADP-100` define local pressure, fault, time, and E2E hardening evidence for S2PMT05.
-- Passing S2PMT05 local validation requires deterministic load/stress/spike profiles, accelerated local 24h soak coverage, dual scheduler race protection, SMTP crash-window handling, ENOSPC/read-only/SQLITE_BUSY/corrupt-artifact fault injection, Australia/Sydney DST and clock-skew policy, 35-day 3+1/weekly/monthly/review/action/ROI count conservation, semantic/evidence-bound non-template result validity, 2x/5x priority-aware backpressure with high-priority SLO and low-priority delay/drop reason codes, deterministic isolation, required audit finding coverage, and all production side-effect flags false.
+- Passing S2PMT05 local validation requires deterministic load/stress/spike profiles, accelerated local 24h soak coverage, dual scheduler race protection, SMTP crash-window handling, ENOSPC/read-only/SQLITE_BUSY/corrupt-artifact fault injection, Australia/Sydney DST and clock-skew policy, 35-day 3+1/weekly/monthly/review/action/ROI count conservation with an auditable run bundle and reachable review/action/ROI links, semantic/evidence-bound non-template result validity, 2x/5x priority-aware backpressure with high-priority SLO and low-priority delay/drop reason codes, deterministic isolation, required audit finding coverage, and all production side-effect flags false.
+- B-012 E2E evidence requires a local audit bundle with section artifacts, artifact index, link graph, deterministic bundle hash, daily 3+1 mail count conservation, weekly/monthly report coverage, and review/action/ROI link reachability.
 - B-013 result validity requires semantic alignment scores, claim-ledger refs, evidence refs, specific mechanism/action summaries, non-template output variance, and unsupported P0 claim negative controls that block publication.
 - B-014 backpressure requires 2x and 5x peak profiles, high-priority work within the configured SLO, low-priority delay/drop reason codes, durable evidence preservation, and rebuildable-only shedding.
 - S2PMT05 local evidence does not execute a real 24h wall-clock production soak, install or enable a scheduler, send SMTP, upload Release assets, run production restore, migrate DB/public schema, mutate production queues, change source adapters or ranking, change V7.1/V7.2 contracts, close inherited P0/P1 before S2PMT07, or claim integrated production acceptance.

@@ -13,7 +13,7 @@
 - blockers: `none`
 - next_gate: `S2PC-GATE-V7-2-REVALIDATION`
 - next_unique_task: `S2PCT02 Science main-journal metadata-only no-send shadow evidence (planned)`
-- evidence_ref_count: `23`
+- evidence_ref_count: `24`
 - roadmap_test_command_count: `10`
 - roadmap_gate_count: `5`
 - evidence_status: `EXTRACTED`
@@ -132,6 +132,18 @@
 | B-010 判定 | 时间策略必须把 Australia/Sydney 05:00 本地日程、3600 秒 misfire grace、最多 1 次补跑、DST backward fold、DST forward gap、未来 heartbeat、NTP 向后/向前跳、休眠 8 小时补跑和 M4 去重水位组成可验证矩阵 |
 | 禁止动作 | 不安装/启用 scheduler、不发送 SMTP、不触发真实补跑、不改 schema/DB/queue/source/ranking、不关闭 P0/P1 |
 | 证据入口 | [PHASE_S2PMT05_TIME_POLICY_B010.md](docs/phase_records/PHASE_S2PMT05_TIME_POLICY_B010.md)；[ADP-S2PMT05-TIME-POLICY-B010-20260627.json](../governance/run_manifests/ADP-S2PMT05-TIME-POLICY-B010-20260627.json) |
+
+## S2PMT05 本地 35 日 E2E 审计包门
+
+| 项目 | 当前口径 |
+|---|---|
+| 模型 | `MOD-ADP-098` / `adp-s2pmt05-stress-fault-time-e2e-v1` |
+| 公式 | `FORM-ADP-100` |
+| 参数 | `PARAM-ADP-808` / `S2PMT05_REPLAY_DAYS_REQUIRED`; `PARAM-ADP-812` / `S2PMT05_REQUIRED_MAIL_PRODUCTS`; `PARAM-ADP-816` / `S2PMT05_REQUIRED_E2E_SECTIONS` |
+| 新增门 | `audit_bundle_present`; `section_artifacts_present`; `bundle_links_reachable`; `review_action_roi_links_reachable`; `deterministic_bundle_hash_present` |
+| B-012 判定 | 35 日本地 E2E 证据必须覆盖每日 3+1、周报、月报、复习、行动和 ROI；每日邮件数、复习/行动/ROI 记录数必须守恒；bundle 必须有 section artifact、artifact index、link graph 和 deterministic bundle hash；review/action/ROI 链接必须可达 |
+| 禁止动作 | 不执行真实 35 日生产 replay、不发送 SMTP、不安装/启用 scheduler、不上传 Release、不改 schema/DB/queue/source/ranking、不关闭 P0/P1 |
+| 证据入口 | [PHASE_S2PMT05_E2E_B012.md](docs/phase_records/PHASE_S2PMT05_E2E_B012.md)；[ADP-S2PMT05-E2E-B012-20260627.json](../governance/run_manifests/ADP-S2PMT05-E2E-B012-20260627.json) |
 
 ## S2PMT05 本地结果有效性门
 

@@ -10,11 +10,30 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.1
 - Current phase: S2PM
-- Current gate: S2PMT05_B010_TIME_POLICY_LOCAL_VALIDATION_NO_PRODUCTION
-- Confirmed iteration count: 130
+- Current gate: S2PMT05_B012_E2E_AUDIT_BUNDLE_LOCAL_VALIDATION_NO_PRODUCTION
+- Confirmed iteration count: 131
 - Reconstructed event count: 0
-- Current task: `S2PMT05-TIME-POLICY-B010` records local inherited P1 B-010 remediation evidence. S2PMT05 time policy now requires an Australia/Sydney 05:00 structured schedule, 3600-second misfire grace, one-cycle catch-up bound, DST fold/gap cases, 8h sleep recovery, NTP backward/forward clock-jump cases, UTC watermarks, and no duplicate M4 watermark. This does not close inherited P0/P1, does not change live mail production, and does not supersede later S2PL blocked prechecks. `S2PMT07` remains the final production gate and is still blocked by inherited P0/P1, S2PLT04, final bundle, independent signoff, and independent final command execution. No CURRENT, V7.1/V7.2 contract file, production replay, real production backup/restore/email, real SMTP, scheduler installation, Release, DB migration, public schema, production queue, source adapter, ranking, inherited P0/P1 closure, DAILY_OPERATION, or integrated production acceptance state changed. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
+- Current task: `S2PMT05-E2E-B012` records local inherited P1 B-012 remediation evidence. S2PMT05 35-day E2E evidence now requires an auditable run bundle, section artifacts, deterministic bundle hash, daily 3+1/weekly/monthly/review/action/ROI count conservation, and reachable review/action/ROI links. This does not execute real 35-day production replay, close inherited P0/P1, change live mail production, or supersede later S2PL blocked prechecks. `S2PMT07` remains the final production gate and is still blocked by inherited P0/P1, S2PLT04, final bundle, independent signoff, and independent final command execution. No CURRENT, V7.1/V7.2 contract file, production replay, real production backup/restore/email, real SMTP, scheduler installation, Release, DB migration, public schema, production queue, source adapter, ranking, inherited P0/P1 closure, DAILY_OPERATION, or integrated production acceptance state changed. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
+
+### `ITER-20260627-ADP-S2PMT05-E2E-B012`
+
+- Timestamp: `2026-06-27T01:49:14+10:00`
+- Fact level: EXTRACTED from S2PMT05 35-day E2E code, focused tests, FORM-ADP-100 semantic refresh, MOD-ADP-098 refresh, phase record, and run manifest.
+- Base commit: `5f6e4a971057a2f9ecc6d9c515b9bd2a94c63edc`
+- Product version: `0.23.1`
+- Status: local validation passed pending main push.
+- Task IDs: `S2PMT05-E2E-B012`; parent `S2PMT05`; inherited finding `B-012`; acceptance `ACC-S2PMT05-STRESS-E2E`.
+- Goal: Remediate inherited B-012 locally by making S2PMT05 35-day E2E evidence produce a deterministic audit bundle with count conservation and reachable review/action/ROI links.
+- Files changed: S2PMT05 stress/fault/time/E2E helper, focused tests, MOD-ADP-098/FORM-ADP-100 refresh, phase record, run manifest, changelog/status/owner/traceability/delivery/event records, generated status refresh, and this ledger entry.
+- Model changes: Reused `MOD-ADP-098`; existing S2PMT05 local stress/fault/time/E2E model now includes 35-day audit-bundle, section-artifact, bundle-hash, and link-reachability evidence.
+- Formula changes: Refreshed `FORM-ADP-100` to require 35-day E2E count conservation, auditable run bundle, section artifacts, deterministic bundle hash, and reachable review/action/ROI link graph.
+- Parameter changes: Reused `PARAM-ADP-808`, `PARAM-ADP-812`, and `PARAM-ADP-816`; no new parameter values.
+- Validation: py_compile PASS; focused S2PMT05 tests: 17 OK; source/board user-center root gate regression: 14 OK; full arxiv-daily-push unittest: 544 OK; V7.2 validator: PASS; ADP project governance: 0 errors / 0 warnings; changed-only governance semantic: 0 errors / 0 warnings; governance sync validator: 0 errors / 0 warnings; lean check-render: drift_count 0 / reference_issue_count 0; YAML/JSON/JSONL/CSV parse: OK; git diff --check: PASS; production-side-effect forbidden scan: OK.
+- Decisions: This is local B-012 remediation evidence only. It does not execute real 35-day production replay, install or enable scheduler, send SMTP, upload Release, mutate schema/DB/queues, change sources or ranking, edit V7 baselines, close inherited P0/P1, or claim integrated production acceptance.
+- Risks: B-012 local evidence must not be interpreted as a real 35-day production replay, inherited P0/P1 closure, S2PMT07 pass, or production readiness. S2PLT04, final bundle, and S2PMT07 independent review remain blocked.
+- Rollback: Revert S2PMT05 B-012 code/tests, FORM-ADP-100 and MOD-ADP-098 semantic refresh, phase record, manifest, traceability/delivery/event records, generated status refresh, and this ledger entry; no runtime production state was changed.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_E2E_B012.md`; `governance/run_manifests/ADP-S2PMT05-E2E-B012-20260627.json`; `arxiv-daily-push/tests/test_stage2_stress_e2e.py`.
 
 ### `ITER-20260627-ADP-S2PMT05-TIME-POLICY-B010`
 

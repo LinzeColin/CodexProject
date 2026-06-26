@@ -5145,7 +5145,7 @@ models:
   -
     model_id: "MOD-ADP-098"
     name: "S2PMT05 local stress fault time and E2E model"
-    purpose: "Validate local S2PMT05 formal capacity baseline, load, stress, spike, accelerated 24h soak, dual scheduler race, SMTP crash-window, ENOSPC/EACCES/SQLITE_BUSY/corrupt JSON/PDF/backup fault injection, structured Australia/Sydney 05:00 schedule, DST fold/gap, misfire grace, 8h sleep catch-up, NTP forward/backward clock-jump policy, 35-day 3+1/weekly/monthly/review/action/ROI E2E flow, semantic/evidence-bound non-template result validity, backpressure degradation, deterministic isolation, and no production side effects under V7.2."
+    purpose: "Validate local S2PMT05 formal capacity baseline, load, stress, spike, accelerated 24h soak, dual scheduler race, SMTP crash-window, ENOSPC/EACCES/SQLITE_BUSY/corrupt JSON/PDF/backup fault injection, structured Australia/Sydney 05:00 schedule, DST fold/gap, misfire grace, 8h sleep catch-up, NTP forward/backward clock-jump policy, 35-day 3+1/weekly/monthly/review/action/ROI E2E audit bundle with reachable links, semantic/evidence-bound non-template result validity, backpressure degradation, deterministic isolation, and no production side effects under V7.2."
     owner: "arxiv-daily-push"
     status: "active"
     assumption_ids:
@@ -5187,7 +5187,7 @@ models:
       - "local transactional outbox crash-window fixture"
       - "systematic fault injection scenario and recovery-state matrix"
       - "Australia/Sydney structured time-policy matrix for DST, misfire, sleep catch-up, future heartbeat, and NTP clock jumps"
-      - "35-day local E2E fixture"
+      - "35-day local E2E audit bundle fixture"
       - "semantic/evidence/non-template result validity fixture"
       - "backpressure queue-depth and 2x/5x peak priority fixture"
     outputs:
@@ -5197,7 +5197,7 @@ models:
       - "SMTP crash-window evidence"
       - "fault injection matrix with explicit recovery states"
       - "structured DST, misfire, sleep catch-up, and NTP clock-jump policy evidence"
-      - "35-day E2E flow evidence"
+      - "35-day E2E audit bundle, count conservation, and link-reachability evidence"
       - "result validity semantic evidence"
       - "backpressure degradation and priority SLO evidence"
       - "no production side-effect gate"
@@ -5215,12 +5215,14 @@ models:
       - "governance/run_manifests/ADP-S2PMT05-CAPACITY-BASELINE-B006-20260627.json"
       - "governance/run_manifests/ADP-S2PMT05-FAULT-INJECTION-B009-20260627.json"
       - "governance/run_manifests/ADP-S2PMT05-TIME-POLICY-B010-20260627.json"
+      - "governance/run_manifests/ADP-S2PMT05-E2E-B012-20260627.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_STRESS_E2E.md"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_RESULT_VALIDITY_B013.md"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_BACKPRESSURE_B014.md"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_CAPACITY_BASELINE_B006.md"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_FAULT_INJECTION_B009.md"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_TIME_POLICY_B010.md"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_E2E_B012.md"
 
   -
     model_id: "MOD-ADP-099"

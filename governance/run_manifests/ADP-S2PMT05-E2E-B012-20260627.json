@@ -1,0 +1,152 @@
+{
+  "schema_version": 1,
+  "manifest_id": "ADP-S2PMT05-E2E-B012-20260627",
+  "project_id": "arxiv-daily-push",
+  "generated_at": "2026-06-27T01:49:14+10:00",
+  "actor": "Codex",
+  "base_commit": "5f6e4a971057a2f9ecc6d9c515b9bd2a94c63edc",
+  "task_id": "S2PMT05-E2E-B012",
+  "task_ids": [
+    "S2PMT05-E2E-B012",
+    "S2PMT05",
+    "B-012",
+    "ACC-S2PMT05-STRESS-E2E"
+  ],
+  "phase": "S2PM",
+  "acceptance_id": "ACC-S2PMT05-STRESS-E2E",
+  "inherited_findings_targeted": [
+    "B-012"
+  ],
+  "inherited_v7_1_open_p0_findings": 8,
+  "inherited_v7_1_open_p1_findings": 37,
+  "inherited_p0_p1_closed": false,
+  "stage2_integrated_production_accepted": false,
+  "production_acceptance_claimed": false,
+  "result": "local_validation_passed_pending_main_push",
+  "report_status": "pass",
+  "report_hash": "d13f38a09f0352ea14713a73da65ae656de29c5566f0e6707bb718745362d107",
+  "model_ids_changed": [
+    "MOD-ADP-098"
+  ],
+  "formula_ids_changed": [
+    "FORM-ADP-100"
+  ],
+  "parameter_ids_changed": [
+    "PARAM-ADP-808",
+    "PARAM-ADP-812",
+    "PARAM-ADP-816"
+  ],
+  "e2e_audit_bundle": {
+    "status": "pass",
+    "bundle_id": "s2pmt05-b012-35d-2026-07-01",
+    "bundle_hash": "7ad339420c178cc9e4f8742502b674e417f8c798ff4b94c4071c53a64c16cecb",
+    "start_date": "2026-07-01",
+    "days": 35,
+    "daily_mail_rows": 140,
+    "weekly_reports": 5,
+    "monthly_reports": 2,
+    "review_rows": 105,
+    "action_rows": 105,
+    "roi_rows": 105,
+    "link_graph_edges": 210,
+    "artifact_index_entries": 468,
+    "checks": {
+      "replay_days_covered": true,
+      "daily_mail_count_conserved": true,
+      "all_mail_products_present": true,
+      "weekly_reports_present": true,
+      "monthly_reports_present": true,
+      "review_action_roi_linked": true,
+      "audit_bundle_present": true,
+      "section_artifacts_present": true,
+      "bundle_links_reachable": true,
+      "review_action_roi_links_reachable": true,
+      "deterministic_bundle_hash_present": true
+    },
+    "negative_controls": [
+      "orphan bundle link blocks B-012",
+      "review/action/ROI count drift blocks B-012"
+    ]
+  },
+  "files_changed": [
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py",
+    "arxiv-daily-push/tests/test_stage2_stress_e2e.py",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "scripts/lean_governance.py",
+    "arxiv-daily-push/docs/governance/project.yaml",
+    "arxiv-daily-push/docs/governance/events.jsonl",
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/AGENTS.md",
+    "arxiv-daily-push/docs/governance/DELIVERY_PLAN.md",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/governance/MODEL_SPEC.md",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_E2E_B012.md",
+    "governance/run_manifests/ADP-S2PMT05-E2E-B012-20260627.json"
+  ],
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_E2E_B012.md",
+    "governance/run_manifests/ADP-S2PMT05-E2E-B012-20260627.json",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py",
+    "arxiv-daily-push/tests/test_stage2_stress_e2e.py"
+  ],
+  "tests_run": [
+    "python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py arxiv-daily-push/tests/test_stage2_stress_e2e.py scripts/lean_governance.py",
+    "python3 -m unittest arxiv-daily-push/tests/test_stage2_stress_e2e.py -q",
+    "python3 -m unittest arxiv-daily-push/tests/test_user_center_candidate_pool.py arxiv-daily-push/tests/test_owner_controls.py -q",
+    "python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2",
+    "validate_project_governance.py --project arxiv-daily-push",
+    "lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "validate_governance_sync.py --changed-only --semantic --base-ref origin/main",
+    "lean_governance.py check-render --project arxiv-daily-push",
+    "git diff --check",
+    "YAML/JSON/JSONL/CSV parse over changed and untracked structured files",
+    "production-side-effect forbidden scan over changed and untracked files"
+  ],
+  "test_results": [
+    "py_compile PASS",
+    "focused S2PMT05 tests: 17 OK",
+    "source/board user-center root gate regression: 14 OK",
+    "full arxiv-daily-push unittest: 544 OK",
+    "V7.2 validator: PASS",
+    "ADP project governance: 0 errors / 0 warnings",
+    "changed-only governance semantic: 0 errors / 0 warnings",
+    "governance sync validator: 0 errors / 0 warnings",
+    "lean check-render: drift_count 0 / reference_issue_count 0",
+    "YAML/JSON/JSONL/CSV parse: OK",
+    "git diff --check: PASS",
+    "production-side-effect forbidden scan: OK"
+  ],
+  "production_boundary": {
+    "formal_production_inclusion": false,
+    "full_replay_executed": false,
+    "large_replay_executed": false,
+    "live_source_fetch_executed": false,
+    "mail_production_code_changed": false,
+    "production_restore_executed": false,
+    "production_schedule_enabled": false,
+    "public_schema_changed": false,
+    "queue_mutation_allowed": false,
+    "queue_schema_changed": false,
+    "ranking_algorithm_changed": false,
+    "real_release_uploaded": false,
+    "real_smtp_sent": false,
+    "release_changed": false,
+    "scheduler_changed": false,
+    "smtp_changed": false,
+    "source_adapter_changed": false,
+    "current_pointer_changed": false,
+    "v7_1_baseline_changed": false,
+    "v7_2_contract_files_changed": false
+  },
+  "risks": [
+    "B-012 local evidence must not be interpreted as a real 35-day production replay, inherited P0/P1 closure, S2PMT07 pass, or production readiness.",
+    "S2PLT04, final bundle, and S2PMT07 independent review remain blocked."
+  ],
+  "rollback": "Revert S2PMT05 B-012 code/tests, FORM-ADP-100 and MOD-ADP-098 semantic refresh, phase record, manifest, traceability/delivery/event records, generated status refresh, and this manifest; no runtime production state was changed."
+}
