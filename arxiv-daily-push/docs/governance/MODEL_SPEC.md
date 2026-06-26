@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 103
-- formula_count: 105
-- parameter_count: 881
+- model_count: 104
+- formula_count: 106
+- parameter_count: 892
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -917,6 +917,12 @@ Uncovered planned scenarios:
 - `MOD-ADP-102` / `FORM-ADP-104` define the D1 source-domain qualification receipt that turns completed `S2PBT01` / legacy `S2P1T01` bioRxiv and medRxiv evidence into a terminal D1 dependency for S2PLT01.
 - The receipt relies on existing real no-send replay and shadow evidence: 30/30 historical dates, 30 real preprint source IDs, duplicate selected/canonical count 0, future leakage 0, queue continuity breaks 0, P0/P1 0, and shadow_hours 720.0.
 - S2PBT05 does not enable formal bioRxiv/medRxiv production inclusion, live source fetch, SMTP, scheduler, Release, DB/public schema migration, production queue mutation, source adapter/ranking change, CURRENT or V7.1/V7.2 contract-file edits, DAILY_OPERATION, or integrated production acceptance.
+
+## S2PLT02 Live 2D Precheck
+
+- `MOD-ADP-104` / `FORM-ADP-106` define the fail-closed S2PLT02 two-day live-run readiness precheck.
+- Passing S2PLT02 is not claimed by this run. The current precheck remains blocked because S2PLT01 acceptance is not proven, two consecutive real natural days are not proven, 8 real M1-M4 emails are not proven, real scheduler and SMTP proof are missing, M4 watermark correctness is not proven, and inherited V7.1 P0=8 and P1=37 remain open.
+- S2PLT02 precheck does not start live operation, accept S2PLT02, enable SMTP, install scheduler, upload Release assets, execute production restore, migrate DB/public schema, mutate production queues, change source adapters or ranking, change CURRENT or V7.1/V7.2 contracts, close inherited P0/P1, enable DAILY_OPERATION, or claim integrated production acceptance.
 
 ## S2PLT04 Integration Candidate Precheck
 
