@@ -209,7 +209,7 @@ parameter_profile_versions:
   adp-s2plt02-live-2d-precheck: "adp-s2plt02-live-2d-precheck-v1"
   adp-s2plt02-live-2d-precheck-parameters: "adp-s2plt02-live-2d-precheck-parameters-v1"
 data_snapshot_version: "fixture_arxiv_atom_to_daily_dry_run_v1"
-current_iteration: "ITER-20260626-ADP-S2PLT02-LIVE-2D-PRECHECK"
+current_iteration: "ITER-20260626-ADP-S2PLT02-MAIN-MERGE-ATTESTATION"
 current_phase: "S2PL"
 current_gate: "S2PLT02_LIVE_2D_PRECHECK_BLOCKED_NO_PRODUCTION"
 current_v6_task_id: "NOT_APPLICABLE"

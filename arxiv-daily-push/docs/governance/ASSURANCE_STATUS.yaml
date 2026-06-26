@@ -1,11 +1,11 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260626-ADP-S2PLT02-LIVE-2D-PRECHECK-001"
-source_snapshot_hash: "sha256:4ca48457b1a8b9168b36cfdfe3967d0342a90f0e279ba2bcfab522573b5c7cb7"
+as_of_event_id: "EVENT-20260626-ADP-S2PLT02-MAIN-MERGE-ATTESTATION-001"
+source_snapshot_hash: "sha256:4a649ef17a0c68bc17e6afafcd61a7babad485a470db835aad7902f3d3dfee5b"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
-snapshot_event_time: "2026-06-26T21:30:00+10:00"
+snapshot_event_time: "2026-06-27T00:30:00+10:00"
 generator_version: "4.0.0"
-final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+final_commit_binding: "CI_ATTESTED:018c50a8e2fd181e137f099accafe05673422946 PR-237 Project Governance 28220851343 success; Project Governance 28220717836 success; Stage 1 bootstrap 28220717865 success; live all-ArXiv dry-run 28220717840 success; real 30-day backfill 28220717829 success"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -59,9 +59,9 @@ dimensions:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
     tree_bound_events: 0
-    commit_bound_events: 1
-    legacy_unbound_events: 111
-    precommit_pending_events: 41
+    commit_bound_events: 2
+    legacy_unbound_events: 118
+    precommit_pending_events: 40
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
@@ -82,14 +82,14 @@ delivery_readiness:
   parallel_shadow_source_task: "NONE_WHILE_S2PMT07_BLOCKED"
   current_v7_task_id: "S2PMT07"
 next_executable_task:
-  task_id: "S2PLT03_EVIDENCE_AFTER_S2PLT02_ACCEPTANCE"
+  task_id: "S2PLT01"
   status: "blocked"
-  reason: "Keep S2PLT02 and S2PLT04 fail-closed until S2PLT01 acceptance, real two-day scheduler/SMTP evidence, 8 real M1-M4 emails, M4 watermark proof, S2PLT03 completion, inherited P0/P1 zero state, final bundle, S2PMT07 independent final review, and final production stop gates are proven under V7.2 blocked boundaries."
+  reason: "Keep S2PLT01 fail-closed until inherited P0/P1, full replay, 120 mail previews, D1-D4 terminal source states, and independent review are proven under V7.2 and S2PMT07 blocked boundaries."
   acceptance_ids:
-    - "ACC-S2PLT02-2D"
+    - "ACC-S2PLT01-30D"
   owner: "content_owner + product_owner"
   human_owner_role: "content_owner + product_owner"
-  unblock_condition: "S2PLT02 live 2-day precheck can be misread as S2PLT02 acceptance or live operation; S2PLT01 acceptance, real two-day scheduler/SMTP evidence, 8 M1-M4 emails, M4 watermark proof, inherited P0/P1, S2PLT03, S2PLT04, S2PMT07 independent final review, and final production stop gates still block integrated production acceptance."
+  unblock_condition: "S2PLT01 replay payload execution package can be misread as S2PLT01 acceptance; inherited P0/P1, S2PLT04, S2PMT07 final independent review, and final production stop gates still block S2PLT01 and integrated production acceptance."
   stale_candidates:
     -
       task_id: "ADP-PHASE11-PRODUCTION-TRIAL-START-022"

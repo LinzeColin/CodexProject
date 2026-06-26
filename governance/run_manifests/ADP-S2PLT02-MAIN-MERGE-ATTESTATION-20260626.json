@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "run_id": "ADP-S2PLT02-MAIN-MERGE-ATTESTATION-20260626",
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PLT02-MAIN-MERGE-ATTESTATION",
+  "acceptance_id": "ACC-S2PLT02-2D",
+  "iteration_id": "ITER-20260626-ADP-S2PLT02-MAIN-MERGE-ATTESTATION",
+  "base_commit": "018c50a8e2fd181e137f099accafe05673422946",
+  "result_commit": "018c50a8e2fd181e137f099accafe05673422946",
+  "timestamp_utc": "2026-06-26T06:20:00Z",
+  "change_type": "stage2_two_day_live_run_precheck_main_merge_attestation",
+  "binding_status": "main_merge_attested_no_production",
+  "ci_run_reference": "PR-237 Project Governance 28220851343 success; Project Governance 28220717836 success; Stage 1 bootstrap 28220717865 success; live all-arXiv dry-run 28220717840 success; real 30-day backfill 28220717829 success",
+  "merged_pr": "https://github.com/LinzeColin/CodexProject/pull/237",
+  "merged_at": "2026-06-26T06:16:20Z",
+  "merge_commit_sha": "018c50a8e2fd181e137f099accafe05673422946",
+  "head_commit_sha": "17155258bc9d69af11d44dc5bf27e3e811cb7d1a",
+  "summary": "Record that S2PLT02 live 2-day readiness precheck PR #237 was marked ready, CI passed, and was merged to main without changing production state.",
+  "files_changed": [
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/governance/events.jsonl",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "governance/run_manifests/ADP-S2PLT02-MAIN-MERGE-ATTESTATION-20260626.json"
+  ],
+  "evidence_refs": [
+    "https://github.com/LinzeColin/CodexProject/pull/237",
+    "governance/run_manifests/ADP-S2PLT02-LIVE-2D-PRECHECK-20260626.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_LIVE_2D_PRECHECK.md"
+  ],
+  "workflow_runs": [
+    {
+      "id": 28220851343,
+      "name": "Project Governance",
+      "conclusion": "success"
+    },
+    {
+      "id": 28220717836,
+      "name": "Project Governance",
+      "conclusion": "success"
+    },
+    {
+      "id": 28220717865,
+      "name": "arXiv Daily Push Stage 1 bootstrap",
+      "conclusion": "success"
+    },
+    {
+      "id": 28220717840,
+      "name": "arXiv Daily Push live all-arXiv cloud dry-run",
+      "conclusion": "success"
+    },
+    {
+      "id": 28220717829,
+      "name": "arXiv Daily Push real 30-day backfill",
+      "conclusion": "success"
+    }
+  ],
+  "s2plt02_accepted": false,
+  "s2plt02_real_run_started": false,
+  "production_acceptance_claimed": false,
+  "stage2_integrated_production_accepted": false,
+  "integrated_production_accepted": false,
+  "daily_operation_enabled": false,
+  "real_smtp_sent": false,
+  "real_smtp_send_enabled": false,
+  "scheduler_enabled": false,
+  "scheduler_install_enabled": false,
+  "release_uploaded": false,
+  "production_restore_executed": false,
+  "production_queue_mutated": false,
+  "public_schema_changed": false,
+  "db_migration_executed": false,
+  "source_adapter_changed": false,
+  "ranking_algorithm_changed": false,
+  "current_pointer_changed": false,
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false,
+  "tests_run": [
+    "post-merge V7.2 validator on main",
+    "post-merge ADP project governance on main",
+    "post-merge lean check-render on main",
+    "post-merge focused S2PLT02/S2PLT04/S2PMT07 final-gate unittest on main",
+    "post-merge full arxiv-daily-push unittest on main",
+    "post-merge YAML/JSON/JSONL/CSV parse on main"
+  ],
+  "test_results": [
+    "V7.2 validator: PASS",
+    "ADP project governance: 0 errors / 0 warnings",
+    "lean check-render: drift_count 0 reference_issue_count 0",
+    "focused final-gate tests: 11 OK",
+    "full arxiv-daily-push unittest: 487 OK",
+    "YAML/JSON/JSONL/CSV parse: OK"
+  ],
+  "risks": [
+    "This attestation records merge and CI evidence only; it does not accept S2PLT02 or start real two-day operation.",
+    "S2PLT01 acceptance, inherited P0/P1, real scheduler/SMTP proof, M4 watermark proof, S2PLT03, S2PLT04, final bundle, and S2PMT07 remain blocked."
+  ],
+  "rollback": "Revert this attestation manifest, event lines, and generated status refresh; no runtime production state was changed."
+}
