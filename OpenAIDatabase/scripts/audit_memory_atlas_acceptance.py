@@ -184,6 +184,7 @@ def audit_acceptance(repo_root: Path, publish_dir: Path | None = None, require_l
         "scripts/build_memory_atlas_data.py",
         "scripts/build_agent_context_pack.py",
         "scripts/sync_codex_memory_data.py",
+        "scripts/run_codex_memory_auto_update.py",
         "scripts/install_codex_weekly_sync.py",
         "scripts/audit_memory_atlas_release.py",
         "scripts/audit_memory_atlas_visual_acceptance.py",
@@ -310,6 +311,7 @@ def audit_acceptance(repo_root: Path, publish_dir: Path | None = None, require_l
     index_html = read_text(repo_root / "apps/memory-atlas/index.html")
     installer_source = read_text(repo_root / "scripts/install_memory_atlas_app.py")
     codex_sync_source = read_text(repo_root / "scripts/sync_codex_memory_data.py")
+    codex_auto_update_source = read_text(repo_root / "scripts/run_codex_memory_auto_update.py")
     codex_weekly_source = read_text(repo_root / "scripts/install_codex_weekly_sync.py")
     deployment_doc = read_text(repo_root / "docs/MEMORY_ATLAS_DEPLOYMENT.md")
     model_parameters_doc = read_text(repo_root / "docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md")
@@ -409,13 +411,18 @@ def audit_acceptance(repo_root: Path, publish_dir: Path | None = None, require_l
         "real local Codex session logs" in codex_sync_source
         and "redacted_summary_only_no_raw_transcript_no_plaintext_secret" in codex_sync_source
         and "OpenAIDatabase" in codex_sync_source
-        and "--build-atlas" in codex_weekly_source
+        and "--build-atlas" in codex_auto_update_source
+        and "publish_runtime_snapshot" in codex_auto_update_source
+        and "run_codex_memory_auto_update.py" in codex_weekly_source
+        and '"Weekday": 1' in codex_weekly_source
+        and '"Weekday": 5' in codex_weekly_source
+        and '"Hour": 3' in codex_weekly_source
         and "--commit" in codex_weekly_source
         and "--push" in codex_weekly_source
         and "StartCalendarInterval" in codex_weekly_source,
         "real_codex_weekly_sync_ready",
-        "Real Codex redacted sync and weekly GitHub backup LaunchAgent are present",
-        "Codex sync or weekly backup launcher does not meet the real-data redacted backup contract",
+        "Real Codex redacted sync, Monday/Friday 03:00 runtime publish, and Git-backed backup path are present",
+        "Codex sync or scheduled backup launcher does not meet the real-data redacted runtime-update contract",
     )
     try:
         visual_result = audit_visual_acceptance(repo_root)
