@@ -51,7 +51,7 @@ Memory Atlas 应保持为一个合并运行的平台：同一个 Vite + React + 
 | Memory Database | active memory、candidate、profile、project index、decision log、timeline、secret_ref | GitHub-backed RAG/search/fetch；任意 agent 可读取画像/偏好/历史 | 依赖聊天上下文或 ChatGPT settings memory |
 | Derived Analytics | `data/processed/*` 与 `data/derived/*` | 脱敏、可 diff、可重建、可审计 | 混入 raw 内容或本地绝对敏感路径 |
 | Visualization Snapshot | `data/derived/visualization/memory_atlas.json` | 单文件快照、source selectable、公开部署安全 | 包含 raw source refs、record hashes、local secrets、SQLite |
-| Frontend Shell | Galaxy、Notion Map、ROI、Obsidian、Timeline、Contribution、Search、Recommendation | 中文 UI、左侧导航、状态同步、页面不滚动、右侧 Inspector | 每个来源独立 app 或第三方插件 |
+| Frontend Shell | Galaxy、数据导图、ROI、Obsidian、Timeline、Contribution、Search、Recommendation | 中文 UI、左侧导航、状态同步、页面不滚动、右侧 Inspector | 每个来源独立 app 或第三方插件 |
 | Recommendation | Memory / Meta Data 两板块 | 新增、修改、删除/降权、当前项；人类可理解；agent 可写入 personalization/AGENTS.md | 只输出 agent 内部字段 |
 | Writeback | 前端提交长期记忆修改建议 | versioned proposal、冲突检查、git commit、可回滚 | 静态前端直接改 active memory |
 | Automation | Codex weekly sync、build atlas、commit/push | LaunchAgent、日志、失败可见、幂等 | 静默失败、无限缓存、未验证即标记完成 |
@@ -74,7 +74,7 @@ Memory Atlas 应保持为一个合并运行的平台：同一个 Vite + React + 
 
 1. `Memory Atlas.app` 在 Downloads 和 Applications 都有入口、图标、可启动。
 2. 首页/全局筛选可选择 `全部来源`、`Memory Atlas / OpenAI Export 记忆库`、`Codex 本地数据`。
-3. 选择来源后 Galaxy、Notion Map、ROI、Obsidian、Timeline、Contribution、Search、Recommendation 同步更新。
+3. 选择来源后 Galaxy、数据导图、ROI、Obsidian、Timeline、Contribution、Search、Recommendation 同步更新。
 4. Codex 数据使用真实本地 Codex session/log 派生摘要，不使用 mock 数据。
 5. Contribution Grid 的日/周/月/年和年份下拉只显示有历史的年份。
 6. Recommendation 包含 `Memory（给 ChatGPT / Codex Personalization）` 与 `Meta Data（给 ChatGPT / Codex Agents.md）`，并标注新增、修改、删除/降权、当前项。

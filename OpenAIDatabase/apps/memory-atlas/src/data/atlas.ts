@@ -39,7 +39,7 @@ export const emptyAtlas: MemoryAtlas = {
   },
   visual_layers: {
     primary: "galaxy",
-    secondary: ["notion_map", "roi_dashboard", "obsidian_graph", "timeline", "contribution_grid", "summary_iteration"],
+    secondary: ["data_guide", "roi_dashboard", "obsidian_graph", "timeline", "contribution_grid", "summary_iteration"],
     navigation: "left_sidebar",
   },
   nodes: [],

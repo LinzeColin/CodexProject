@@ -64,7 +64,7 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
     atlas_path = repo_root / "data/derived/visualization/memory_atlas.json"
     atlas_source = atlas_path.read_text(encoding="utf-8") if atlas_path.exists() else ""
 
-    graph_node = function_block(app_source, "GraphSvgNode", "Metric")
+    data_guide_node = function_block(app_source, "DataGuideSvgNode", "buildFilteredSlice")
     timeline_view = function_block(app_source, "TimelineView", "ContributionGrid")
     contribution_grid = function_block(app_source, "ContributionGrid", "SearchReview")
 
@@ -665,23 +665,27 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
     )
     require(
         checks,
-        "<text" not in graph_node
-        and ".graph-node-label" not in app_source
-        and ".graph-node-label" not in css_source
-        and "isGraphParentNode(item.node)" in graph_node
-        and "function isGraphParentNode" in app_source
-        and 'node.kind === "theme" || node.kind === "project" || node.kind === "category" || node.kind === "tier"' in app_source
-        and "aria-label={`${translateKind(item.node.kind)} · ${item.node.label}`}" in graph_node
-        and "<title>{`${translateKind(item.node.kind)} · ${item.node.label}`}</title>" in graph_node
-        and "className=\"graph-node-halo\"" in graph_node
-        and "className=\"graph-node-core\"" in graph_node
-        and graph_node.count("<circle") == 2
-        and "stdDeviation=\"1.25\"" in app_source
-        and '<g opacity="0.13">' in app_source
-        and ".graph-node.parent-node .graph-node-core" in css_source,
-        "graph_nodes_have_no_internal_text_labels",
-        "Notion map graph nodes keep the picture clean: no internal text labels; details stay in title, aria, and Inspector",
-        "Notion graph nodes may still render internal text labels or may lack title/aria/detail affordances",
+        "数据导图" in app_source
+        and "function DataGuideMap" in app_source
+        and "function buildDataGuideLayout" in app_source
+        and "dataGuideFrameForNode" in app_source
+        and "dataGuideEdgePath" in app_source
+        and 'className="data-guide-canvas"' in app_source
+        and 'aria-label="数据导图框架"' in app_source
+        and '"source" | "profile" | "project" | "action"' in app_source
+        and "<text" in data_guide_node
+        and "data-guide-node-card" in data_guide_node
+        and "data-guide-node-title" in data_guide_node
+        and "aria-label={`${item.frameTitle} · ${item.typeLabel} · ${item.node.label}`}" in data_guide_node
+        and ".data-guide-frame-title" in css_source
+        and ".data-guide-node-card" in css_source
+        and ".data-guide-links path" in css_source
+        and "marker-end: url(\"#dataGuideArrow\")" in css_source
+        and "数据导图" in readme
+        and "来源、画像、项目决策和行动机会" in readme,
+        "data_guide_framework_ready",
+        "Data Guide uses a readable framework layout: source/theme, profile/preference, project/decision, and action/opportunity columns",
+        "Data Guide framework layout, labels, links, styles, or README contract are missing",
     )
     require(
         checks,
@@ -764,8 +768,9 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         and "尺度按钮和增量指标合并" in readme
         and "Galaxy 低高度视口保留最小画布高度" in readme
         and "HUD 自动换行且不裁切" in readme
-        and "图内节点不渲染文字标签" in readme
-        and "详情通过 title、aria 和 Inspector 查看" in readme
+        and "数据导图使用框架卡片" in readme
+        and "来源、画像、项目决策和行动机会" in readme
+        and "点击卡片、title、aria 和 Inspector" in readme
         and "Obsidian Graph 按 Obsidian Graph View 的文字淡出阈值显示节点标签" in readme
         and "hover 邻接高亮" in readme
         and "层级 · 主题 · 关键词" in readme
@@ -786,7 +791,7 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         and "frontend proposal refs" in readme
         and "sensitivity detail fields" in readme,
         "visual_requirements_documented",
-        "README documents the no-ghost-layer, full-grid, Notion no-label, Obsidian Graph View, slim visual snapshot, and Summary & Iteration contracts",
+        "README documents the no-ghost-layer, full-grid, Data Guide framework, Obsidian Graph View, slim visual snapshot, and Summary & Iteration contracts",
         "README does not document the current visual acceptance contracts",
     )
 
