@@ -8,7 +8,9 @@ import tempfile
 import unittest
 from contextlib import redirect_stdout
 from pathlib import Path
+from unittest.mock import patch
 
+from arxiv_daily_push import stage1_runtime
 from arxiv_daily_push.cli import main
 from arxiv_daily_push.stage1_runtime import (
     build_runtime_audit,
@@ -32,11 +34,54 @@ class Stage1RuntimeTests(unittest.TestCase):
             self.assertFalse(tick["production_side_effects_enabled"])
             self.assertTrue((state_dir / "heartbeat.json").exists())
             self.assertTrue((state_dir / "checkpoint.json").exists())
+            self.assertTrue(tick["runtime_lock"]["acquired"])
+            self.assertTrue(tick["runtime_lock"]["released"])
+            self.assertIn("owner_id", tick["runtime_lock"]["payload"])
+            self.assertIn("host", tick["runtime_lock"]["payload"])
+            self.assertIn("lease_until", tick["runtime_lock"]["payload"])
+            self.assertIn("fencing_token", tick["runtime_lock"]["payload"])
+            self.assertEqual(len(tick["runtime_lock"]["renewals"]), 1)
+            self.assertFalse((state_dir / "runtime.lock").exists())
             self.assertFalse(validate_stage1_runtime_report(tick))
 
             watchdog = run_watchdog(state_dir=state_dir, generated_at="2026-07-01T05:30:00+10:00")
             self.assertEqual(watchdog["status"], "pass")
             self.assertFalse(validate_stage1_runtime_report(watchdog))
+
+    def test_tick_write_exception_releases_runtime_lock(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            state_dir = Path(tmp) / "state"
+
+            with patch.object(stage1_runtime, "_write_json", side_effect=RuntimeError("simulated checkpoint failure")):
+                with self.assertRaises(RuntimeError):
+                    run_tick(state_dir=state_dir, generated_at="2026-07-01T05:00:00+10:00")
+
+            self.assertFalse((state_dir / "runtime.lock").exists())
+
+    def test_tick_takes_over_stale_dead_process_lock_with_new_fencing_token(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            state_dir = Path(tmp) / "state"
+            state_dir.mkdir()
+            old_payload = {
+                "generated_at": "2026-07-01T01:00:00+10:00",
+                "owner_id": "old-host:999999:tick:old",
+                "host": "old-host",
+                "pid": 999999,
+                "action": "tick",
+                "lease_until": "2026-07-01T02:00:00+10:00",
+                "fencing_token": "old-fencing-token",
+            }
+            (state_dir / "runtime.lock").write_text(json.dumps(old_payload), encoding="utf-8")
+
+            tick = run_tick(state_dir=state_dir, generated_at="2026-07-01T05:00:00+10:00")
+
+            self.assertEqual(tick["status"], "pass")
+            self.assertTrue(tick["runtime_lock"]["takeover"]["performed"])
+            self.assertEqual(tick["runtime_lock"]["takeover"]["previous_fencing_token"], "old-fencing-token")
+            self.assertNotEqual(tick["runtime_lock"]["payload"]["fencing_token"], "old-fencing-token")
+            self.assertEqual(len(tick["runtime_lock"]["renewals"]), 1)
+            self.assertTrue(tick["runtime_lock"]["released"])
+            self.assertFalse((state_dir / "runtime.lock").exists())
 
     def test_watchdog_blocks_stale_heartbeat(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

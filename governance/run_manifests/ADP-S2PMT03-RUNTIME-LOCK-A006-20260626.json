@@ -1,0 +1,52 @@
+{
+  "manifest_id": "ADP-S2PMT03-RUNTIME-LOCK-A006-20260626",
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PMT03",
+  "finding_id": "A-006",
+  "finding_title": "tick 写入异常时 runtime.lock 永久残留",
+  "phase": "S2PM",
+  "created_at": "2026-06-26T20:02:43+10:00",
+  "scope": "Fix Stage 1 run_tick runtime.lock cleanup and stale-dead-owner takeover for V7.1 inherited P1 finding A-006.",
+  "non_scope": "No SMTP, scheduler, Release, production restore, public schema, DB migration, source adapter, ranking, CURRENT, V7.1/V7.2 contract file, P0/P1 closure, integrated production acceptance, or daily operation enablement change.",
+  "production_side_effects": false,
+  "stage2_integrated_production_accepted": false,
+  "inherited_v7_1_p0_closed": 0,
+  "inherited_v7_1_p1_closed": 0,
+  "inherited_v7_1_open_p0_findings_after": 8,
+  "inherited_v7_1_open_p1_findings_after": 37,
+  "runtime_lock_contract": {
+    "cleanup_policy": "context_manager_finally_unlink_when_acquired",
+    "lock_payload_fields": [
+      "owner_id",
+      "host",
+      "pid",
+      "lease_until",
+      "fencing_token",
+      "lease_seconds"
+    ],
+    "renewal_policy": "before checkpoint write, refresh lease_until only when the on-disk fencing_token matches the current owner payload",
+    "safe_takeover_policy": "expired lock plus dead owner process may be unlinked before acquiring a new fencing token",
+    "active_foreign_lock_policy": "block without unlinking"
+  },
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_RUNTIME_LOCK_A006.md",
+    "arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py",
+    "arxiv-daily-push/tests/test_stage1_runtime.py"
+  ],
+  "validation": [
+    "py_compile PASS for stage1_runtime.py and test_stage1_runtime.py",
+    "python3 -m unittest arxiv-daily-push/tests/test_stage1_runtime.py -q: 14 OK",
+    "python3 -m unittest arxiv-daily-push/tests/test_stage1_runtime.py arxiv-daily-push/tests/test_s2pmt07_review_receipts.py -q: 17 OK",
+    "python3 -m unittest arxiv-daily-push/tests/test_user_center_candidate_pool.py -q: 5 OK",
+    "python3 -m unittest discover -s arxiv-daily-push/tests -q: 498 OK",
+    "scripts/validate_project_governance.py --project arxiv-daily-push: errors 0 / warnings 0",
+    "docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root docs/pursuing_goal/v7_2: PASS",
+    "python3 -m json.tool governance/run_manifests/ADP-S2PMT03-RUNTIME-LOCK-A006-20260626.json: OK",
+    "git diff --check: PASS"
+  ],
+  "remaining_blockers": [
+    "Inherited V7.1 P0=8 and P1=37 remain open until independent review accepts remediation evidence.",
+    "S2PMT07 final gate precheck remains blocked.",
+    "This manifest does not enable production side effects or claim INTEGRATED_PRODUCTION_ACCEPTED."
+  ]
+}
