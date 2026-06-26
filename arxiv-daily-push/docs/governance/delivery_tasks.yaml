@@ -2390,3 +2390,21 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "LOCAL-RUNNER-USER-CENTER-SYNC-GATE"
+    phase: "S2PI/S2PJ/S2PK"
+    objective: "Upgrade local daily runner readiness so shallow GitHub user-center learning snapshot sync is required before daily pass or real SMTP send attempts."
+    scope: "Local runner sync gate, focused regression test, phase record, run manifest, owner deep-doc pointer cleanup, root no-open-PR rule evidence, and governance registry synchronization."
+    non_scope: "No SMTP enablement, no scheduler install or enablement, no Release, no production restore, no source adapter or ranking change, no public schema or DB migration, no CURRENT or V7 contract edit, no inherited P0/P1 closure, no S2PLT02/S2PLT04/S2PMT07 acceptance, no DAILY_OPERATION, and no integrated production acceptance."
+    status: "blocked"
+    dependencies: ["S2PIT01", "S2PJT02", "S2PJT03", "EMAIL_LEARNING_V1", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/local_runner.py", "arxiv-daily-push/tests/test_local_runner.py", "arxiv-daily-push/用户中心/复习行动与收益.md"]
+    acceptance_ids: ["ACC-S2PIT01-USER-CENTER", "ACC-S2PJT02-REVIEW", "ACC-S2PJT03-ROI"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_final_compile PYTHONPATH=arxiv-daily-push/src python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/local_runner.py arxiv-daily-push/tests/test_local_runner.py", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_final_local_runner PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_local_runner.py -q"]
+    test_results: ["py_compile PASS", "focused local runner tests: 7 OK", "root no-open-PR governance test: OK", "V7.2 validator PASS", "ADP project governance 0 errors / 0 warnings", "git diff --check PASS"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_LOCAL_RUNNER_USER_CENTER_SYNC_GATE.md", "governance/run_manifests/ADP-LOCAL-RUNNER-USER-CENTER-SYNC-GATE-20260626.json", "arxiv-daily-push/tests/test_local_runner.py"]
+    risk: "The gate can be misread as daily operation readiness; it only blocks local daily pass and real SMTP when owner-facing GitHub user-center sync is missing. The total scheduled send denominator remains a separate owner usability gap."
+    rollback: "Revert local_runner sync gate code, focused tests, owner pointer page cleanup, MOD-ADP-106/FORM-ADP-108/PARAM-ADP-897..903 registrations, phase record, manifest, and event records; no production runtime state was enabled."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

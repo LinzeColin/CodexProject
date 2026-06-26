@@ -6062,3 +6062,56 @@ formulas:
     evidence_hash: "PENDING_PR_COMMIT"
     last_verified_commit: "PRECOMMIT"
     verified_at: "2026-06-26T16:55:00+10:00"
+
+  -
+    formula_id: "FORM-ADP-108"
+    model_id: "MOD-ADP-106"
+    assumption_ids:
+      - "ASM-ADP-035"
+    status: "active"
+    expression: "A local daily runner report is pass-ready only when daily input, email preview, candidate queue, and shallow GitHub user-center learning snapshot sync are all ready; if the user-center page or required S2PJT02/S2PJT03 reports are missing, stale, failed, or still contain the pending snapshot marker, the daily report is blocked/degraded and real SMTP delivery is not attempted."
+    variables:
+      -
+        name: "daily_input_ready"
+        data_type: "boolean"
+        unit: "runner readiness flag"
+        input_domain: "local runner report"
+      -
+        name: "email_preview_written"
+        data_type: "boolean"
+        unit: "runner readiness flag"
+        input_domain: "local runner report"
+      -
+        name: "candidate_queue_persisted"
+        data_type: "boolean"
+        unit: "runner readiness flag"
+        input_domain: "local runner report"
+      -
+        name: "user_center_sync_ready"
+        data_type: "boolean"
+        unit: "owner-facing sync flag"
+        input_domain: "local runner user_center_sync object"
+      -
+        name: "smtp_send_intent"
+        data_type: "boolean"
+        unit: "runtime intent flag"
+        input_domain: "allow_smtp_send"
+    constraints: "This gate must not enable SMTP, install scheduler, upload Release, mutate source adapters, change ranking, mutate public schema or DB, change CURRENT, edit V7.1/V7.2 contract files, close inherited P0/P1, claim S2PLT02/S2PLT04/S2PMT07 acceptance, or claim integrated production acceptance."
+    missing_policy: "Missing shallow user-center page, missing S2PJT02/S2PJT03 report, failed report status, missing ready flag, failed write, or remaining pending snapshot marker blocks daily pass and blocks real SMTP send attempts."
+    output_range: "daily runner report with user_center_sync, user_center_sync_ready, blocking_reasons, production_ready false when sync is not pass, and notification_report status blocked when SMTP was requested but sync is missing"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/local_runner.py"
+    test_refs:
+      - "arxiv-daily-push/tests/test_local_runner.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_LOCAL_RUNNER_USER_CENTER_SYNC_GATE.md"
+      - "governance/run_manifests/ADP-LOCAL-RUNNER-USER-CENTER-SYNC-GATE-20260626.json"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    implementation_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/local_runner.py::_sync_user_center_learning_snapshot"
+      - "arxiv-daily-push/src/arxiv_daily_push/local_runner.py::validate_local_runner_report"
+      - "arxiv-daily-push/tests/test_local_runner.py::test_local_daily_blocks_when_user_center_sync_missing"
+    implementation_fingerprint: "PENDING_MAIN_COMMIT"
+    evidence_hash: "PENDING_MAIN_COMMIT"
+    last_verified_commit: "PRECOMMIT"
+    verified_at: "2026-06-26T23:10:00+10:00"

@@ -5505,3 +5505,42 @@ models:
     evidence_refs:
       - "arxiv-daily-push/docs/phase_records/PHASE_OWNER_CENTER_ENTRY_RULE.md"
       - "governance/run_manifests/ADP-OWNER-CENTER-ENTRY-RULE-20260626.json"
+
+  -
+    model_id: "MOD-ADP-106"
+    name: "Local runner GitHub user-center sync gate model"
+    purpose: "Require the daily local runner to synchronize the shallow GitHub user-center learning snapshot before a daily report can pass or real SMTP can proceed, so owner-facing review/action/asset/ROI state cannot remain local-only or pending while the run is marked ready."
+    owner: "arxiv-daily-push"
+    status: "active"
+    assumption_ids:
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-108"
+    parameter_ids:
+      - "PARAM-ADP-897"
+      - "PARAM-ADP-898"
+      - "PARAM-ADP-899"
+      - "PARAM-ADP-900"
+      - "PARAM-ADP-901"
+      - "PARAM-ADP-902"
+      - "PARAM-ADP-903"
+    inputs:
+      - "local daily runner state directory"
+      - "S2PJT02 review schedule report"
+      - "S2PJT03 action asset ROI ledger report"
+      - "shallow GitHub user center learning page"
+      - "SMTP send intent"
+    outputs:
+      - "user_center_sync report object"
+      - "user_center_sync_ready flag"
+      - "daily runner blocked/degraded state when sync is missing"
+      - "real SMTP block when user-center sync is missing"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/local_runner.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_local_runner.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_LOCAL_RUNNER_USER_CENTER_SYNC_GATE.md"
+      - "governance/run_manifests/ADP-LOCAL-RUNNER-USER-CENTER-SYNC-GATE-20260626.json"

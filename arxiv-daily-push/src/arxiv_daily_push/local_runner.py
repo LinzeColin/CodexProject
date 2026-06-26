@@ -6,6 +6,7 @@ import hashlib
 import json
 import os
 import plistlib
+import re
 import shlex
 import shutil
 from collections.abc import Callable, Mapping
@@ -45,6 +46,22 @@ LOCAL_RUNNER_LATEST_FILENAME = "latest_local_run.json"
 LOCAL_RUNNER_REPORT_FILENAME = "adp-local-runner-report.json"
 LOCAL_RUNNER_SECRET_NAMES = (*SMTP_SECRET_ENV_KEYS,)
 LOCAL_LAUNCHD_LABEL = "com.linze.adp.local.daily"
+USER_CENTER_LEARNING_PAGE = Path("用户中心") / "复习行动与收益.md"
+REVIEW_REPORT_FILENAME = "stage2_s2pjt02_review_schedule_report.json"
+ACTION_ROI_REPORT_FILENAME = "stage2_s2pjt03_action_asset_roi_ledger_report.json"
+USER_CENTER_PENDING_VALUE = "待今日运行快照写入"
+USER_CENTER_SNAPSHOT_FIELDS = (
+    "今日到期复习",
+    "未来 7 天复习",
+    "已逾期复习",
+    "已完成复习",
+    "今日 15 分钟行动",
+    "今日 2 小时行动",
+    "今日 7 天行动",
+    "今日 30 天行动",
+    "新增能力资产",
+    "可验证实际收益 / 转化",
+)
 
 CommandResolver = Callable[[str], str | None]
 
@@ -247,22 +264,40 @@ def run_local_daily(
         _write_json(run_dir / "adp-release-dry-run.json", release_report)
     delivery_package = build_daily_delivery_package(daily_run, daily_input, release_report, generated_at=generated_at)
     notification = delivery_package["notification"]
-    notification_report = deliver_notification(
-        notification,
-        generated_at=generated_at,
-        allow_send=allow_smtp_send and _stage1_text_ready(delivery_package),
-        env=environment,
-        smtp_factory=smtp_factory,
-    )
+    user_center_sync = _sync_user_center_learning_snapshot(root=root, state=state, write=write)
+    user_center_sync_ready = user_center_sync.get("status") == "pass"
+    if allow_smtp_send and not user_center_sync_ready:
+        notification_report = {
+            "delivery_id": "",
+            "message_id": "",
+            "status": "blocked",
+            "generated_at": generated_at,
+            "allow_send": False,
+            "real_send_attempted": False,
+            "blocking_reasons": ["user center sync not ready; real SMTP send blocked"],
+            "secret_values_logged": False,
+        }
+    else:
+        notification_report = deliver_notification(
+            notification,
+            generated_at=generated_at,
+            allow_send=allow_smtp_send and _stage1_text_ready(delivery_package),
+            env=environment,
+            smtp_factory=smtp_factory,
+        )
     smtp_errors = validate_smtp_delivery_report(notification_report)
-    production_ready = notification_report.get("status") == "sent" and _stage1_text_ready(delivery_package)
+    production_ready = (
+        notification_report.get("status") == "sent"
+        and _stage1_text_ready(delivery_package)
+        and user_center_sync_ready
+    )
     if write:
         (run_dir / "email_preview.txt").write_text(notification.body, encoding="utf-8")
         (run_dir / "email_preview.html").write_text(notification.html_body, encoding="utf-8")
         _write_json(run_dir / "adp-smtp-delivery-report.json", notification_report)
         _persist_queue(artifact_dir / "adp-candidate-queue.json", queue_state_path)
 
-    blocking_reasons = release_errors + smtp_errors
+    blocking_reasons = release_errors + smtp_errors + list(user_center_sync.get("blocking_reasons") or [])
     if release_report.get("status") == "blocked":
         blocking_reasons.extend(release_report.get("blocking_reasons") or ["release dry-run blocked"])
     if allow_smtp_send and notification_report.get("status") != "sent":
@@ -305,6 +340,8 @@ def run_local_daily(
                 "html": str(run_dir / "email_preview.html"),
             },
             "email_preview_written": write,
+            "user_center_sync": user_center_sync,
+            "user_center_sync_ready": user_center_sync_ready,
             "notification_report": notification_report,
             "delivery_package": {
                 key: value
@@ -406,6 +443,8 @@ def validate_local_runner_report(report: Mapping[str, Any]) -> list[str]:
             errors.append("passing local daily report requires email_preview_written")
         if report.get("candidate_queue_persisted") is not True:
             errors.append("passing local daily report requires candidate_queue_persisted")
+        if report.get("user_center_sync_ready") is not True:
+            errors.append("passing local daily report requires user_center_sync_ready")
     if report.get("action") == "launchd_package":
         if report.get("applied") is not False or report.get("real_scheduler_installed") is not False:
             errors.append("launchd package must not be applied by the generator")
@@ -455,6 +494,121 @@ def _write_or_return(report: dict[str, Any], run_dir: Path, *, write: bool) -> d
         _write_json(run_dir / LOCAL_RUNNER_REPORT_FILENAME, normalized)
         _write_json(run_dir.parent.parent / LOCAL_RUNNER_LATEST_FILENAME, normalized)
     return normalized
+
+
+def _sync_user_center_learning_snapshot(*, root: Path, state: Path, write: bool) -> dict[str, Any]:
+    page = root / USER_CENTER_LEARNING_PAGE
+    review_path = state / REVIEW_REPORT_FILENAME
+    action_path = state / ACTION_ROI_REPORT_FILENAME
+    report = {
+        "status": "blocked",
+        "page": str(page),
+        "review_report": str(review_path),
+        "action_roi_report": str(action_path),
+        "write_enabled": write,
+        "blocking_reasons": [],
+        "snapshot_values": {},
+    }
+    if not write:
+        report["blocking_reasons"] = ["user center sync requires write mode"]
+        return report
+    missing = [
+        str(path)
+        for path in (page, review_path, action_path)
+        if not path.exists()
+    ]
+    if missing:
+        report["blocking_reasons"] = ["user center sync missing required files: " + ", ".join(missing)]
+        return report
+    try:
+        review_report = _load_json(review_path)
+        action_report = _load_json(action_path)
+        values = _user_center_snapshot_values(review_report, action_report)
+        if any(value == USER_CENTER_PENDING_VALUE for value in values.values()):
+            report["blocking_reasons"] = ["user center sync has pending fields; real review/action/asset/ROI reports are incomplete"]
+            report["snapshot_values"] = values
+            return report
+        current = page.read_text(encoding="utf-8")
+        updated = _replace_user_center_snapshot_values(current, values)
+        page.write_text(updated, encoding="utf-8")
+        if _replace_user_center_snapshot_values(page.read_text(encoding="utf-8"), values) != updated:
+            report["blocking_reasons"] = ["user center sync verification failed after write"]
+            report["snapshot_values"] = values
+            return report
+    except (OSError, ValueError, json.JSONDecodeError) as error:
+        report["blocking_reasons"] = [f"user center sync failed: {error}"]
+        return report
+    report["status"] = "pass"
+    report["blocking_reasons"] = []
+    report["snapshot_values"] = values
+    return report
+
+
+def _user_center_report_passed(report: Mapping[str, Any] | None, ready_key: str) -> bool:
+    return bool(report and report.get("status") == "pass" and report.get(ready_key) is True)
+
+
+def _user_center_count_value(value: Any) -> str:
+    if isinstance(value, bool):
+        return USER_CENTER_PENDING_VALUE
+    if isinstance(value, int) and value >= 0:
+        return f"{value} 项"
+    return USER_CENTER_PENDING_VALUE
+
+
+def _user_center_snapshot_values(
+    review_report: Mapping[str, Any] | None,
+    action_report: Mapping[str, Any] | None,
+) -> dict[str, str]:
+    values = {field: USER_CENTER_PENDING_VALUE for field in USER_CENTER_SNAPSHOT_FIELDS}
+    if _user_center_report_passed(review_report, "s2pjt02_review_schedule_ready"):
+        counts = review_report.get("computed_counts")
+        if isinstance(counts, Mapping):
+            values.update(
+                {
+                    "今日到期复习": _user_center_count_value(counts.get("due_today")),
+                    "未来 7 天复习": _user_center_count_value(counts.get("due_next_7_days")),
+                    "已逾期复习": _user_center_count_value(counts.get("overdue")),
+                    "已完成复习": _user_center_count_value(counts.get("completed")),
+                }
+            )
+    if _user_center_report_passed(action_report, "s2pjt03_action_roi_ready"):
+        counts = action_report.get("action_counts")
+        if isinstance(counts, Mapping):
+            values.update(
+                {
+                    "今日 15 分钟行动": _user_center_count_value(counts.get("15m")),
+                    "今日 2 小时行动": _user_center_count_value(counts.get("2h")),
+                    "今日 7 天行动": _user_center_count_value(counts.get("7d")),
+                    "今日 30 天行动": _user_center_count_value(counts.get("30d")),
+                }
+            )
+        assets = action_report.get("capability_assets")
+        if isinstance(assets, list):
+            values["新增能力资产"] = _user_center_count_value(len(assets))
+        roi_counts = action_report.get("actual_roi_status_counts")
+        if isinstance(roi_counts, Mapping):
+            values["可验证实际收益 / 转化"] = _user_center_count_value(roi_counts.get("calculated"))
+    return values
+
+
+def _replace_user_center_snapshot_values(text: str, values: Mapping[str, str]) -> str:
+    lines = text.splitlines()
+    changed_lines: list[str] = []
+    seen: set[str] = set()
+    row_re = re.compile(r"^\| (?P<field>[^|]+) \| (?P<value>[^|]+) \| (?P<source>[^|]+) \|$")
+    for line in lines:
+        match = row_re.match(line)
+        if match:
+            field = match.group("field").strip()
+            if field in values:
+                seen.add(field)
+                line = f"| {field} | {values[field]} | {match.group('source').strip()} |"
+        changed_lines.append(line)
+    missing = [field for field in USER_CENTER_SNAPSHOT_FIELDS if field not in seen]
+    if missing:
+        raise ValueError("复习行动与收益.md missing snapshot rows: " + ", ".join(missing))
+    return "\n".join(changed_lines) + ("\n" if text.endswith("\n") else "")
 
 
 def _command_gate(resolver: CommandResolver) -> dict[str, Any]:
