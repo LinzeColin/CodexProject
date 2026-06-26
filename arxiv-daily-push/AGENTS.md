@@ -48,8 +48,10 @@ This project follows the root `AGENTS.md` and `docs/governance/STANDARD.md`.
   side effects. `S2PMT05` local stress/fault/time/E2E evidence covers
   formal capacity baseline rows, deterministic load/stress/spike profiles,
   accelerated local 24h soak coverage, bounded recoverable queue age, 1x/2x/5x
-  multipliers, throughput/latency/memory/disk/error-budget evidence, dual
-  scheduler race protection, SMTP crash-window handling, ENOSPC/read-only/
+  multipliers, throughput/latency/memory/disk/error-budget evidence,
+  multi-actor duplicate-trigger race protection with `mail_key`,
+  `lease_owner`, `fencing_token`, and reason-coded blocked attempts, SMTP
+  crash-window handling, ENOSPC/read-only/
   SQLITE_BUSY/corrupt JSON/PDF/backup fault injection with explicit recovery
   states, structured Australia/Sydney 05:00 schedule, DST fold/gap, 3600-second
   misfire grace, bounded one-cycle catch-up, 8h sleep recovery, NTP

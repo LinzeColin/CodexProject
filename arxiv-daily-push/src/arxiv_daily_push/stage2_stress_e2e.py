@@ -301,35 +301,97 @@ def evaluate_capacity_baseline_model(*, rows: Sequence[Mapping[str, Any]]) -> di
     return {"status": "pass" if not blocking_reasons else "blocked", "checks": checks, "blocking_reasons": blocking_reasons}
 
 
-def simulate_dual_scheduler_race(*, cycle_id: str, trigger_count: int = 100) -> dict[str, Any]:
-    """Simulate repeated local scheduler triggers without installing a scheduler."""
+def simulate_dual_scheduler_race(
+    *,
+    cycle_id: str,
+    trigger_count: int = 100,
+    actor_sources: Sequence[str] = ("github_schedule", "local_launchd", "manual_retry", "restart_catchup"),
+) -> dict[str, Any]:
+    """Simulate multi-source duplicate triggers without installing a scheduler."""
 
-    active_revisions = []
-    blocked_attempts = 0
+    actor_list = [str(actor) for actor in actor_sources if str(actor)]
+    attempts: list[dict[str, Any]] = []
+    active_revisions: list[dict[str, Any]] = []
+    blocked_attempt_rows: list[dict[str, Any]] = []
+    claimed_mail_keys: dict[str, dict[str, Any]] = {}
     for product_id in S2PMT05_REQUIRED_MAIL_PRODUCTS:
-        active_revisions.append(
-            {
+        mail_key = f"{cycle_id}|{product_id}|owner"
+        for attempt_index in range(trigger_count):
+            actor = actor_list[attempt_index % len(actor_list)] if actor_list else "UNKNOWN_ACTOR"
+            fencing_token = f"{cycle_id}:{product_id}:{attempt_index + 1:03d}:{actor}"
+            attempt = {
+                "attempt_id": f"{mail_key}|attempt-{attempt_index + 1:03d}",
                 "cycle_id": cycle_id,
                 "product_id": product_id,
-                "owner": "scheduler-a",
-                "content_revision_id": f"{cycle_id}-{product_id}-rev-1",
-                "active": True,
+                "mail_key": mail_key,
+                "actor": actor,
+                "lease_owner": actor,
+                "fencing_token": fencing_token,
             }
-        )
-        blocked_attempts += max(trigger_count - 1, 0)
-    duplicate_active_revisions = len(active_revisions) - len({row["product_id"] for row in active_revisions})
-    status = "pass" if duplicate_active_revisions == 0 and blocked_attempts == trigger_count * 4 - 4 else "blocked"
-    return {
+            if mail_key not in claimed_mail_keys:
+                active = {
+                    **attempt,
+                    "content_revision_id": f"{cycle_id}-{product_id}-rev-1",
+                    "active": True,
+                    "claim_status": "active_revision_claimed",
+                }
+                claimed_mail_keys[mail_key] = active
+                active_revisions.append(active)
+                attempts.append({**attempt, "status": "active_revision_claimed"})
+            else:
+                blocked = {
+                    **attempt,
+                    "status": "blocked_duplicate_trigger",
+                    "blocking_reason": "MAIL_KEY_ALREADY_CLAIMED",
+                    "winning_fencing_token": claimed_mail_keys[mail_key]["fencing_token"],
+                }
+                blocked_attempt_rows.append(blocked)
+                attempts.append(blocked)
+    race = {
         "cycle_id": cycle_id,
         "trigger_count": trigger_count,
-        "attempted_revisions": trigger_count * len(S2PMT05_REQUIRED_MAIL_PRODUCTS),
+        "actor_sources": actor_list,
+        "attempted_revisions": len(attempts),
+        "attempts_sample": attempts[:12],
         "active_revisions": active_revisions,
-        "blocked_race_attempts": blocked_attempts,
-        "duplicate_active_revisions": duplicate_active_revisions,
+        "blocked_attempts": blocked_attempt_rows,
+        "blocked_race_attempts": len(blocked_attempt_rows),
+        "duplicate_active_revisions": len(active_revisions) - len({row["mail_key"] for row in active_revisions}),
         "scheduler_installed": False,
         "scheduler_enabled": False,
-        "status": status,
     }
+    evaluation = evaluate_dual_scheduler_race(race)
+    return {**race, "status": evaluation["status"], "checks": evaluation["checks"], "blocking_reasons": evaluation["blocking_reasons"]}
+
+
+def evaluate_dual_scheduler_race(race: Mapping[str, Any]) -> dict[str, Any]:
+    """Evaluate B-007 duplicate-trigger race evidence."""
+
+    active_revisions = list(race.get("active_revisions") or [])
+    blocked_attempts = list(race.get("blocked_attempts") or [])
+    actor_sources = {str(actor) for actor in race.get("actor_sources") or []}
+    active_products = {str(row.get("product_id") or "") for row in active_revisions}
+    active_mail_keys = [str(row.get("mail_key") or "") for row in active_revisions]
+    attempted_revisions = int(race.get("attempted_revisions") or 0)
+    trigger_count = int(race.get("trigger_count") or 0)
+    expected_active_count = len(S2PMT05_REQUIRED_MAIL_PRODUCTS)
+    checks = {
+        "trigger_count_at_least_100": trigger_count >= 100,
+        "actor_sources_covered": {"github_schedule", "local_launchd", "manual_retry", "restart_catchup"}.issubset(actor_sources),
+        "mail_products_covered": set(S2PMT05_REQUIRED_MAIL_PRODUCTS).issubset(active_products),
+        "one_active_revision_per_product": len(active_revisions) == expected_active_count
+        and len(set(active_mail_keys)) == expected_active_count
+        and int(race.get("duplicate_active_revisions") or 0) == 0,
+        "blocked_duplicate_attempts_conserved": len(active_revisions) + len(blocked_attempts) == attempted_revisions,
+        "blocked_attempts_have_reason_codes": bool(blocked_attempts)
+        and all(row.get("blocking_reason") == "MAIL_KEY_ALREADY_CLAIMED" for row in blocked_attempts),
+        "lease_fencing_receipts_present": all(
+            row.get("mail_key") and row.get("lease_owner") and row.get("fencing_token") for row in active_revisions
+        ),
+        "no_scheduler_side_effects": race.get("scheduler_installed") is False and race.get("scheduler_enabled") is False,
+    }
+    blocking_reasons = [key for key, value in checks.items() if value is not True]
+    return {"status": "pass" if not blocking_reasons else "blocked", "checks": checks, "blocking_reasons": blocking_reasons}
 
 
 def simulate_smtp_crash_window(*, generated_at: str) -> dict[str, Any]:
@@ -1086,6 +1148,22 @@ def validate_s2pmt05_report(report: Mapping[str, Any]) -> list[str]:
     for finding_id in S2PMT05_REQUIRED_FINDINGS:
         if finding_id not in findings:
             errors.append(f"findings_covered.{finding_id} is required")
+    dual_scheduler = _mapping(report.get("dual_scheduler_race"))
+    if dual_scheduler.get("status") != "pass":
+        errors.append("dual_scheduler_race must pass")
+    dual_scheduler_checks = _mapping(dual_scheduler.get("checks"))
+    for check in (
+        "trigger_count_at_least_100",
+        "actor_sources_covered",
+        "mail_products_covered",
+        "one_active_revision_per_product",
+        "blocked_duplicate_attempts_conserved",
+        "blocked_attempts_have_reason_codes",
+        "lease_fencing_receipts_present",
+        "no_scheduler_side_effects",
+    ):
+        if dual_scheduler_checks.get(check) is not True:
+            errors.append(f"dual_scheduler_race.checks.{check} must be true")
     e2e = _mapping(report.get("thirty_five_day_e2e"))
     if e2e.get("status") != "pass":
         errors.append("thirty_five_day_e2e must pass")
