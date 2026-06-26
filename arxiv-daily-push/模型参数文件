@@ -53,7 +53,8 @@
 | 截至今日总候选池 | 299 条总候选记录 | 来源为 [CONTENT_LEDGER.csv](docs/owner/CONTENT_LEDGER.csv)，表示累计进入 ADP 候选池/内容账本、可被报告与邮件链路处理的全部候选记录 |
 | 已生成报告 / 邮件预览 | 30 条 | 状态索引见 [已生成报告与邮件预览](用户中心/已生成报告与邮件预览.md)，索引不是完整报告正文 |
 | 待生成 / 待处理候选 | 269 条 | 仍在总候选池中，不能从候选池中扣掉 |
-| 当前运行队列 | 11 条 | 只代表 runtime 即时处理批次，不得写成总候选队列 |
+| 候选队列前20精选 | 20 篇 | 来源为 [截至今日候选池](用户中心/截至今日候选池.md)；同一篇文章去重后按 `current_score` 降序抽取，每篇必须显示评分 |
+| 每日库存流转 | 已公开公式，日级板块账本待接入 | `总候选池 = 已处理 + 待处理`；日级新增、完成、剔除和板块期末池必须由后续日级库存账本写入 |
 
 ## 评分和排序标准
 
@@ -68,6 +69,7 @@
 | 非法值处理 | signals 非数字或不在 0..1 时 blocked；不会用默认值补分 |
 | tie-breaker | eligible 优先；`total_score` 降序；`source_id` 升序 |
 | 用户可见解释 | 分数用于确定性排序和追踪，不是收益承诺；“高价值”不能脱离公式、权重和证据单独宣称 |
+| 前20精选解释 | 用户中心前20精选读取 `current_score`，同一 `item_id` 去重后保留最高分/最新记录；不改 `ranking.py` 算法，不代表只剩 20 条候选 |
 | 治理引用 | [formula_registry.yaml](docs/governance/formula_registry.yaml) 的 FORM-ADP-003；[parameter_registry.csv](docs/governance/parameter_registry.csv) 的 PARAM-ADP-009 到 PARAM-ADP-016 |
 
 ## 复习、行动、资产、收益参数
