@@ -20,11 +20,11 @@ OPERATION_LOG = Path("artifacts/release_operation_log_t1211.jsonl")
 BINARY_SUFFIXES = {".gif", ".gz", ".ico", ".jpg", ".jpeg", ".pdf", ".png", ".webp", ".zip"}
 
 REQUIRED_RELEASE_PATHS = {
-    str(MANIFEST),
-    str(DIRECTORY_TREE),
-    str(CHECKSUMS),
-    str(RELEASE_EVIDENCE),
-    str(OPERATION_LOG),
+    MANIFEST.as_posix(),
+    DIRECTORY_TREE.as_posix(),
+    CHECKSUMS.as_posix(),
+    RELEASE_EVIDENCE.as_posix(),
+    OPERATION_LOG.as_posix(),
     "scripts/manage_release_artifacts.py",
 }
 

@@ -109,8 +109,8 @@ EXCLUDED_FROM_PACKAGE = {
     "manifest.txt",
     "artifacts/release_evidence_t1211.json",
     "artifacts/release_operation_log_t1211.jsonl",
-    str(EVIDENCE),
-    str(PACKAGE),
+    EVIDENCE.as_posix(),
+    PACKAGE.as_posix(),
 }
 
 
@@ -236,8 +236,8 @@ def validate_source_files() -> dict[str, Any]:
     if "python scripts/manage_clean_room_release.py validate" not in workflow_text:
         raise AssertionError("governance workflow does not validate clean-room release")
 
-    index = (ROOT / "prototype/index.html").read_bytes()
-    standalone = (ROOT / "prototype/standalone.html").read_bytes()
+    index = canonical_file_bytes(ROOT / "prototype/index.html")
+    standalone = canonical_file_bytes(ROOT / "prototype/standalone.html")
     if index != standalone:
         raise AssertionError("prototype/index.html and prototype/standalone.html differ")
 
@@ -278,7 +278,7 @@ def validate_a200_status() -> None:
         for row in read_csv("data/acceptance_traceability.csv")
         if row["trace_id"] == "TR-FUN-SYS-02-A200"
     ][0]
-    for required in [str(EVIDENCE), str(PACKAGE), "scripts/manage_clean_room_release.py"]:
+    for required in [path_id(EVIDENCE), path_id(PACKAGE), "scripts/manage_clean_room_release.py"]:
         if required not in trace["evidence_path"]:
             raise AssertionError(f"A200 traceability missing evidence path: {required}")
 
@@ -347,7 +347,7 @@ def build_evidence(
         "acceptance_ids": ["A200"],
         "status": "LOCAL_PASS",
         "package": {
-            "path": str(PACKAGE),
+            "path": path_id(PACKAGE),
             "sha256": sha256_file(package_path),
             "bytes": package_path.stat().st_size,
             "entry_count": len(paths) + 2,

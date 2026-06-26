@@ -1,0 +1,14 @@
+governance_spec_version: "1.0.0"
+project_id: "PFI"
+product_version: "0.2.0"
+product_version_status: "provisional"
+version_file_value: "0.2.0"
+schema_version: "1.0.0"
+model_versions:
+  MOD-PFI-001: "pfi-v0.2-root-contract"
+parameter_profile_versions:
+  pfi_root_contract: "pfi-v0.2-root-contract"
+data_snapshot_version: "not_applicable_contract_only"
+current_iteration: "ITER-20260627-PFI-MD-GOVERNANCE"
+current_phase: "S2P"
+current_gate: "PFI-GOV-GATE"

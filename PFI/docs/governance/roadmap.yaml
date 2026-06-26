@@ -1,0 +1,75 @@
+schema_version: "codexproject.roadmap.v1"
+roadmap_kind: "product"
+project_id: "PFI"
+total_estimated_hours: 4
+completed_estimated_hours: 3
+current_stage_id: "S2"
+current_phase_id: "S2P"
+current_task_id: "PFI-MD-001"
+next_gate_id: "PFI-GOV-GATE"
+stages:
+  - stage_id: "S2"
+    name: "数据源与低操作自动同步 MVP"
+    person_goal: "把 PFI 根项目的真实能力、边界、参数和下一步阻塞写成 owner 可读事实。"
+    status: "in_progress"
+    estimated_hours: 4
+    estimated_pct: 75
+    stop_conditions:
+      - "自动实盘下单"
+      - "交易密码或支付提交动作"
+      - "把未验证生产能力写成已就绪"
+    stop_gate:
+      gate_id: "PFI-GOV-GATE"
+      pass_criteria:
+        - "PFI 根三基 Markdown 存在且无无后缀副本"
+        - "PFI 根治理文件通过项目治理验证"
+      evidence:
+        - "PFI/docs/governance"
+      failure_action: "blocked"
+    phases:
+      - phase_id: "S2P"
+        name: "多数据源合同与低操作导入"
+        objective: "记录已存在 Stage 1/2 合同，不新增生产声明。"
+        status: "in_progress"
+        estimated_hours: 4
+        estimated_pct: 75
+        stop_conditions:
+          - "缺少中文 owner 入口"
+          - "三基文件不是 Markdown"
+        stop_gate:
+          gate_id: "PFI-GOV-GATE"
+          pass_criteria:
+            - "本 PR 验证命令通过"
+          evidence:
+            - "PFI/功能清单.md"
+            - "PFI/开发记录.md"
+            - "PFI/模型参数文件.md"
+          failure_action: "fix_and_rerun"
+        tasks:
+          - task_id: "PFI-MD-001"
+            name: "PFI 根项目三基 Markdown 与治理文件补齐"
+            objective: "把当前注册 PFI 根项目三基入口改成 Markdown，并补齐最小治理事实文件。"
+            status: "completed"
+            estimated_hours: 4
+            estimated_pct: 75
+            dependencies: []
+            acceptance_ids:
+              - "ACC-PFI-MD-001"
+            acceptance:
+              - acceptance_id: "ACC-PFI-MD-001"
+                description: "PFI 根三基入口和最小治理文件通过本地项目治理验证。"
+                evidence_refs:
+                  - "PFI/docs/governance"
+            test_commands:
+              - "python scripts/validate_project_governance.py --project PFI"
+              - "python -m unittest tests.governance.test_human_entry_markdown_contract -q"
+            test_results:
+              - "To be rerun in this PR after file creation."
+            evidence_refs:
+              - "PFI/docs/governance/project.yaml"
+              - "PFI/docs/governance/roadmap.yaml"
+            risks:
+              - "生产联通和实盘执行仍未验证。"
+            rollback: "Revert this PR."
+            current_result: "PFI 根三基入口已改为 .md。"
+            completed_version: "0.2.0"

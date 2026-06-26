@@ -1,0 +1,1 @@
+{"event_id":"EVENT-PFI-20260627-MD-GOVERNANCE","event_time":"2026-06-27T09:45:00+10:00","event_type":"migration","summary":"PFI root human-entry files were converted to Markdown filenames and minimal root governance evidence was added.","task_id":"PFI-MD-001","fact_level":"EXTRACTED","evidence_refs":["PFI/功能清单.md","PFI/docs/governance/project.yaml"]}
