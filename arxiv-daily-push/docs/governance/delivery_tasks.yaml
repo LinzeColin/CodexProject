@@ -2082,6 +2082,24 @@ tasks:
     completed_version: "0.23.0"
     unknown_task_ids: []
 
+  - task_id: "S2PMT02-ARTIFACT-SHA256"
+    phase: "S2PM"
+    objective: "Remediate Stage 1 B1 report artifact manifest SHA256 semantics for inherited A-011 under S2PMT02 without enabling production email or changing public schema."
+    scope: "Byte-level artifact_files.sha256 values for written B1 report/email artifacts, preserved canonical content_hash field, regression test proving manifest SHA256 matches file bytes, FORM-ADP-042 fingerprint refresh, phase record, and run manifest."
+    non_scope: "No production email, no SMTP, no scheduler install, no Release, no public schema change, no DB migration, no queue mutation, no ranking change, no source adapter change, no live source fetch, no workflow change, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no inherited P0/P1 closure claim before independent review, and no integrated production acceptance."
+    status: "completed"
+    dependencies: ["S2PMT02", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py", "arxiv-daily-push/tests/test_stage1_b1_report.py"]
+    acceptance_ids: ["ACC-S2PMT02-ATOMIC-RECOVERY"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage1_b1_report.py -q"]
+    test_results: ["py_compile PASS", "focused test_stage1_b1_report.py: 6 OK", "full arxiv-daily-push unittest: 459 OK", "V7.2 validator: PASS", "ADP project governance: 0 errors / 0 warnings", "changed-only semantic governance: 0 errors / 0 warnings", "lean check-render: drift_count 0 reference_issue_count 0", "JSONL/CSV/manifest parse: OK", "targeted FORM-ADP-042 fingerprint refreshed; full semantic extractor interrupted after timeout during full-table AST parsing"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_ARTIFACT_SHA256.md", "governance/run_manifests/ADP-S2PMT02-ARTIFACT-SHA256-20260626.json", "arxiv-daily-push/tests/test_stage1_b1_report.py"]
+    risk: "Artifact SHA256 implementation evidence can be misread as inherited P0/P1 closure or production email readiness; independent review plus S2PMT07 still control production acceptance."
+    rollback: "Revert artifact SHA256 code, focused test, FORM-ADP-042 refresh, phase record, manifest, changelog/version/status/event records, and this task entry; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
+
   - task_id: "S2PMT03"
     phase: "S2PM"
     objective: "Implement local-only lease fencing, state concurrency, and transactional outbox evidence under V7.2 no-production boundaries."
