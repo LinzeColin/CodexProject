@@ -78,7 +78,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `TASK-T1301-A202-SIGNED-INTAKE-POLICY-DRIFT-HARDENING`
+- release_gate: `TASK-T1308-A211-APP-ICON-BRAND-REFRESH`
 
 ## 14. Evidence Freshness
 
@@ -86,8 +86,8 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - tree_bound_events: `0`
 - commit_bound_events: `21`
 - legacy_unbound_events: `19`
-- precommit_pending_events: `94`
-- pending_or_stale_events: `115`
+- precommit_pending_events: `96`
+- pending_or_stale_events: `117`
 
 ## 15. UNKNOWN
 
@@ -97,11 +97,11 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 - source_base_commit: `047b4094d56fb7b3162b24265501e985690296f0`
 - source_tree_hash: `8737d055c5c24cf2e160003744e375aba6f6145b`
-- source_snapshot_hash: `sha256:9b201e9700f191f6254396fe4f93dc3b622339ad1faa33be7cee0c7709000df9`
-- snapshot_event_time: `2026-06-26T17:44:43+10:00`
+- source_snapshot_hash: `sha256:c32fb1c4ff733015edc9ab464a4c7ae85741c63fda9819178da79ccef8319b8b`
+- snapshot_event_time: `2026-06-26T18:49:21+10:00`
 - generator_version: `4.0.0`
 - version: `0.1.0`
-- phase/gate: `C / TASK-T1301-A202-SIGNED-INTAKE-POLICY-DRIFT-HARDENING`
+- phase/gate: `C / TASK-T1308-A211-APP-ICON-BRAND-REFRESH`
 
 ## 17. Next Unique Task
 

@@ -31,6 +31,8 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │   └── settings.py
 │   │   └── __init__.py
 │   ├── web
+│   │   ├── public
+│   │   │   └── eei-app-icon.png
 │   │   ├── src
 │   │   │   └── app
 │   │   │       ├── development-status
@@ -40,9 +42,11 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │       ├── objects-scope
 │   │   │       │   └── page.tsx
 │   │   │       ├── analysis-contract.ts
+│   │   │       ├── brand-mark.tsx
 │   │   │       ├── explore-api-client.ts
 │   │   │       ├── globals.css
 │   │   │       ├── layout.tsx
+│   │   │       ├── manifest.ts
 │   │   │       ├── model-activation-client.ts
 │   │   │       ├── page.tsx
 │   │   │       ├── production-data-client.ts
@@ -146,6 +150,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │   ├── t1309_brand_clearance_intake_template.json
 │   │   │   └── t1309_brand_clearance_preflight_contract.json
 │   │   └── a211
+│   │       ├── t1308_app_icon_brand_contract.json
 │   │       └── t1308_frontend_workspace_context_contract.json
 │   ├── README.md
 │   ├── development_status_summary_t1213.json

@@ -1,5 +1,64 @@
 # MVP Development Record
 
+## 2026-06-26 - T1308/A211 app icon and BrandMark refresh
+
+Status: LOCAL TARGET VALIDATED; RELEASE GATES STILL BLOCKED
+
+### Scope
+
+- Added `apps/web/public/eei-app-icon.png` as the static EEI app/browser icon asset.
+- Added reusable `BrandMark` and replaced duplicated text-only brand glyphs across the main workspace, objects-scope and development-status pages.
+- Bound the icon into Next metadata and `/manifest.webmanifest`.
+- Added `artifacts/tests/a211/t1308_app_icon_brand_contract.json` with the icon hash, routes and validation evidence.
+
+### Current Evidence
+
+- Icon SHA-256: `sha256:ab8b9ce4e965b226bec16802efd6f2e3fae9877ad37cc8675e9cde063ea9d73b`.
+- Frontend typecheck passed.
+- Target Playwright `renders the watchlist-first EEI workspace` passed and verifies app icon visibility, PNG response and manifest response.
+
+### Non-Claims
+
+- This does not change scoring formulas, model parameters, graph traversal, API schema, database schema, publication policy, A202/A209/A210/A026/A027/A204/A205 or MVP release readiness.
+
+### Rollback
+
+- Revert the BrandMark component, public PNG asset, metadata/manifest wiring, home E2E additions, app icon contract artifact and companion governance records.
+
+## 2026-06-26 - T1307/A209 CI-bound isolated rerun heartbeat sync to 111/288
+
+Status: LOCAL FOCUSED GENERATED; REMOTE CI BOUND TO `66436c48`; A209 STILL IN PROGRESS; RELEASE GATES STILL BLOCKED
+
+### Scope
+
+- Bound commit `66436c483e8aeca5486474a2a4f0746bf21c58ab` to remote Project Governance run `28225689043` / job `83616962323` PASS and EEI validation run `28225688977` / job `83616961959` PASS.
+- Refreshed repository A209 background heartbeat from `/private/tmp/eei-a209-rerun-20260626-0918/` to `111/288` PASS windows, `0` failed, `177` remaining and `38.54%` completion.
+- Regenerated A209 finalization, A203 production API release preflight, external release-evidence bundle, external release operator intake packet, release-manager activation preflight and MVP release-gate preflight from the refreshed heartbeat.
+- No product API, database schema, scoring formula, model weight, frontend route, promotion bridge or public-release policy changed.
+
+### Current Evidence
+
+- Latest reflected checkpoint is window `111` ending `2026-06-26T08:25:55Z`.
+- A209 finalization remains `A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL`.
+- `downstream_release_gate_refresh_allowed=false`, `a209_evidence_ready_for_release_manager=false`, and `release_gate_closed_by_finalizer=false`.
+- Canonical 24h checkpoint evidence remains failed at `7/288`; the isolated rerun is background progress evidence until it reaches `288/288` zero-failure evidence and is explicitly promoted/finalized.
+
+### Validation
+
+- A209 heartbeat/preflight focused generation and validators passed locally for this snapshot.
+- Remote CI for the base commit is already PASS; this governance/evidence sync still requires local governance validation, commit, push and CI proof.
+
+### Non-Claims
+
+- This does not promote isolated `/private/tmp` evidence into canonical 24h release evidence.
+- This does not stop, restart or modify the live A209 operator process or watchdog.
+- This does not close A209, A202, A210, A026, A027, A204, A205, A203 release readiness or MVP v0.1 readiness.
+
+### Rollback
+
+- Revert the heartbeat/preflight artifact refresh and companion governance records, then regenerate release artifacts from the previous committed state.
+- Do not stop, restart, delete or promote live A209 checkpoint/PID/log files without explicit operator authorization.
+
 ## 2026-06-26 - T1307/A209 isolated rerun heartbeat freshness sync to 95/288
 
 Status: LOCAL FOCUSED GENERATED; A209 STILL IN PROGRESS; RELEASE GATES STILL BLOCKED

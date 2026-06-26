@@ -58,12 +58,15 @@ apps/api/app/scoring.py
 apps/api/app/settings.py
 apps/web/next.config.ts
 apps/web/package.json
+apps/web/public/eei-app-icon.png
 apps/web/src/app/analysis-contract.ts
+apps/web/src/app/brand-mark.tsx
 apps/web/src/app/development-status/page.tsx
 apps/web/src/app/explore-api-client.ts
 apps/web/src/app/globals.css
 apps/web/src/app/industries/page.tsx
 apps/web/src/app/layout.tsx
+apps/web/src/app/manifest.ts
 apps/web/src/app/model-activation-client.ts
 apps/web/src/app/objects-scope/page.tsx
 apps/web/src/app/page.tsx
@@ -145,6 +148,7 @@ artifacts/tests/a209/t1307_operator_soak_readiness.json
 artifacts/tests/a209/t1307_soak_smoke.json
 artifacts/tests/a210/t1309_brand_clearance_intake_template.json
 artifacts/tests/a210/t1309_brand_clearance_preflight_contract.json
+artifacts/tests/a211/t1308_app_icon_brand_contract.json
 artifacts/tests/a211/t1308_frontend_workspace_context_contract.json
 brand/BRAND_AND_COMPETITIVE_LANDSCAPE_RESEARCH.md
 config/brand_policy.yaml

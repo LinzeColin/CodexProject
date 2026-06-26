@@ -26,6 +26,7 @@ import {
   type WorkspaceModuleDefinition,
   type WorkspaceModuleId
 } from "./workspace-context";
+import { BrandMark } from "./brand-mark";
 
 type WorkspaceNavigationRailProps = {
   activeLens: string;
@@ -61,13 +62,7 @@ export function WorkspaceNavigationRail({
 }: WorkspaceNavigationRailProps) {
   return (
     <aside className="navRail" aria-label="主导航">
-      <div className="brandMark" aria-label="商域图谱">
-        <span className="brandGlyph">E</span>
-        <span>
-          <strong>商域图谱</strong>
-          <small>EEI</small>
-        </span>
-      </div>
+      <BrandMark />
       <nav aria-label="主导航" data-testid="primary-workspace-navigation">
         {WORKSPACE_MODULES.map((module) => (
           <WorkspaceNavigationItem

@@ -51,6 +51,7 @@ The counts above are generated from the canonical machine registries in this dir
 - 2026-06-25 T1302/A203 E2E CI repair updates development-status evidence expectations and generated release artifacts only; no scoring model, graph traversal formula, extraction formula, formula weight, business threshold, API schema, database schema, frontend behavior or publication policy changed.
 - 2026-06-26 T1308/A211 evidence drawer focus-trap hardening adds frontend dialog/focus/inert behavior and E2E coverage only; no scoring model, graph traversal formula, extraction formula, formula weight, business threshold, API schema, database schema, publication policy or active parameter value changed.
 - 2026-06-26 T504/A072 strategic-signal panel displays support, contradiction, alternatives, time decay and rule version using existing fixture UI and PARAM-007 context only; no scoring model, graph traversal formula, extraction formula, formula weight, business threshold, API schema, database schema, publication policy or active parameter value changed.
+- 2026-06-26 T1308/A211 app icon and BrandMark refresh updates app-shell branding, metadata icon and web manifest only; no scoring model, graph traversal formula, extraction formula, formula weight, business threshold, API schema, database schema, publication policy or active parameter value changed.
 
 ## A. Model Overview
 

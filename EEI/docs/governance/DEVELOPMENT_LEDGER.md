@@ -11,18 +11,79 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version: `0.1.0`
 - Product version status: `provisional`
 - Current phase: `D`
-- Current gate: `TASK-T1307-A209-BACKGROUND-HEARTBEAT-FRESHNESS-SYNC`
+- Current gate: `TASK-T1308-A211-APP-ICON-BRAND-REFRESH`
 - Confirmed iteration count: 39
 - Reconstructed development event count: 6
-- Current task: `TASK-T1307/A209 background heartbeat freshness sync`
+- Current task: `TASK-T1308/A211 app icon and BrandMark refresh`
 - Current A209 point-in-time heartbeat: the clean 24h operator soak attempt launched at `2026-06-25T21:33:19Z` failed at checkpoint window `7/288`; `6` windows passed, `1` failed, latest checkpoint time is `2026-06-25T22:08:58Z`, `child_status=NO_OUTPUT`, `exit_status=1`, and stderr reports `page.evaluate: Target page, context or browser has been closed`. No `run_operator_soak` or `run_soak_smoke` process was found during the 2026-06-26 check. A209 remains `IN_PROGRESS` and has no release-ready 24h evidence.
-- Current isolated rerun: `/private/tmp/eei-a209-rerun-20260626-0918/` was started without overwriting the failed canonical checkpoint; operator PID `80478` and watchdog PID `80732` are recorded, first checkpoint window `1/288` PASS at `2026-06-25T23:04:42Z`, and the latest repository heartbeat refresh during this iteration observed `95/288` PASS windows, `0` failed, latest checkpoint time `2026-06-26T07:03:24Z`, and `32.99%` completion.
+- Current isolated rerun: `/private/tmp/eei-a209-rerun-20260626-0918/` was started without overwriting the failed canonical checkpoint; operator PID `80478` and watchdog PID `80732` are recorded, first checkpoint window `1/288` PASS at `2026-06-25T23:04:42Z`, and the latest repository heartbeat refresh during this iteration observed `111/288` PASS windows, `0` failed, latest checkpoint time `2026-06-26T08:25:55Z`, `177` remaining and `38.54%` completion.
 - Blockers: T1301/A202 is still `IN_PROGRESS`; the refreshed operator review packet is freshness-correct supporting review evidence only and does not create source-license review, passage-level human approval, production owner approval, legal release clearance, brand clearance, release-manager activation or final public relationship publication. T1307/A209 is still `IN_PROGRESS`; failed `7/288` evidence plus short repair probes are non-closure evidence only and the isolated rerun must reach `288/288` successful windows with zero failures before promotion/finalization can allow downstream release-gate refresh. A204/A205 release-manager activation preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED` until A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence pass. A026 still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%. The new T904 operator labeling packet is a source-bound worksheet with blank `OPERATOR_TO_LABEL` slots and is not production gold evidence. A210 still needs formal brand legal/market clearance or signed risk waiver. The T1303 external release operator intake packet now uses schema `eei-external-release-operator-intake-packet-v2`, lists exact submission targets under `artifacts/operator_inputs/`, and keeps `release_gate_closed_by_operator_packet=false`; it is a checklist/hash manifest, not clearance.
 - Frontend hardening: T1308/A211 now includes an evidence detail drawer with `role=dialog`, `aria-modal=true`, sibling `inert`/`aria-hidden`, Tab/Shift+Tab focus trapping, Escape/close handling and trigger focus restoration. This fixes review issue `A11Y-002` without changing release readiness, publication policy, model formulas, API schema or A209 state.
 - E2E sequencing repair: the A203/A211 production graph hydration regression now closes the A211 evidence drawer before graph lens switching, preserving modal behavior while preventing the drawer from intercepting subsequent lens clicks.
 - Strategic-signal panel: T504/A072 now exposes support, contradiction, alternative hypothesis, half-life/time-decay policy and `F-SS-001@balanced-v2` rule version in the Watchlist-first workspace. FUN-EXP-07 is `PARTIAL` because real strategic-signal ingestion, production API and human content review remain open under T803/T805/T1301/T1302.
+- App shell branding: T1308/A211 now includes the static EEI PNG app icon, metadata/apple icon/web manifest binding, reusable BrandMark component and target Playwright coverage; no model/API/database/release-gate status changed.
 
 
+
+## EVENT-20260626-020 - T1308/A211 app icon and BrandMark refresh
+
+- Timestamp: 2026-06-26T18:49:21+10:00
+- Fact level: EXTRACTED
+- Base commit: `66436c483e8aeca5486474a2a4f0746bf21c58ab`
+- Scope: add a polished EEI app icon, wire it into Next metadata and web manifest, and replace duplicated text-only app-shell marks with a reusable `BrandMark` component.
+- Files changed: `apps/web/public/eei-app-icon.png`, `apps/web/src/app/brand-mark.tsx`, `apps/web/src/app/layout.tsx`, `apps/web/src/app/manifest.ts`, page consumers, target E2E and governance records.
+- Acceptance IDs: `A211`.
+- Validation: frontend typecheck PASS; target Playwright app-icon/manifest E2E PASS `1/1`; icon contract artifact records `sha256:ab8b9ce4e965b226bec16802efd6f2e3fae9877ad37cc8675e9cde063ea9d73b`.
+- Non-claims: no scoring formula, graph traversal formula, extraction model, model weight, business threshold, API schema, database schema, publication policy or release-gate status changed.
+- Rollback: revert the BrandMark/icon/metadata/manifest/test/artifact changes and this governance sync.
+
+## ITER-20260626-020 - App icon app-shell validation
+
+- Date: 2026-06-26
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `66436c483e8aeca5486474a2a4f0746bf21c58ab`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1308`
+- Acceptance IDs: `A211`
+- Goal: update the EEI app icon and ensure the app shell uses one reusable brand mark across routes.
+- Files changed: app icon asset, BrandMark component, metadata/manifest wiring, three app-shell consumers, home E2E, A211 icon contract artifact and companion governance records.
+- Model changes: none.
+- Parameter changes: none.
+- Commands run: frontend typecheck; target Playwright app-icon/manifest E2E.
+- Test results: typecheck PASS; target Playwright PASS `1/1`; PNG asset exists and is served through `/eei-app-icon.png`.
+- Rollback: revert this iteration's frontend, artifact and governance files.
+
+## EVENT-20260626-019 - T1307/A209 CI-bound heartbeat sync to 111/288
+
+- Timestamp: 2026-06-26T18:32:58+10:00
+- Fact level: EXTRACTED
+- Base commit: `66436c483e8aeca5486474a2a4f0746bf21c58ab`
+- Scope: bind the remotely proven `66436c48` CI state to the latest repository-local A209 background heartbeat and dependent A203/A205/MVP preflight artifacts without promotion, restart or release finalization.
+- Remote CI: Project Governance run `28225689043` / job `83616962323` PASS; EEI validation run `28225688977` / job `83616961959` PASS.
+- A209 background state: isolated rerun repository heartbeat refreshed to `111/288` PASS windows, `0` failed, latest checkpoint `2026-06-26T08:25:55Z`, `177` remaining and `38.54%` completion.
+- Downstream refresh: A209 finalization, A203 production API release, external release-evidence bundle, external release operator intake packet, release-manager activation and MVP release-gate artifacts regenerated; all release gates remain blocked.
+- Non-claims: this does not promote `/private/tmp` evidence, does not close A209 and does not close A202/A210/A026/A027/A204/A205/A203 release readiness or MVP v0.1 readiness.
+- Next step: run governance validation, regenerate release packages, commit, push, verify CI and keep the isolated A209 rerun running until `288/288` zero-failure evidence exists.
+
+## ITER-20260626-019 - A209 CI-bound heartbeat and release preflight sync
+
+- Date: 2026-06-26
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `66436c483e8aeca5486474a2a4f0746bf21c58ab`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1307`, `TASK-T1302`, `TASK-T1303`
+- Acceptance IDs: `A209`, `A203`, `A204`, `A205`
+- Goal: keep A209 background recovery evidence current and bind it to remote CI evidence while preserving fail-closed MVP release gates.
+- Files changed: A209 heartbeat/finalization artifacts, A203/A205 release preflights, changelog, handoff, MVP development record, delivery task record, version matrix, append-only event, parameter evidence narrative and regenerated release artifacts.
+- Model changes: none; no formula, weight, threshold, graph traversal, extraction model, API schema, database schema, frontend route or score publication rule changed.
+- Parameter changes: no active model parameter value changed; `operator-soak-heartbeat` profile version advances to `14` for the `111/288` point-in-time evidence snapshot.
+- Commands run: A209 heartbeat/evidence/finalization generators; A203/A205 release preflight generators; focused validators PASS; remote CI for `66436c48` PASS.
+- Test results: A209 heartbeat reports `111/288` PASS, `0` failed and `38.54%` completion; finalization remains `A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL`; all release gates remain blocked.
+- Rollback: revert the heartbeat/preflight artifact refresh and companion governance records; regenerate release artifacts from the previous committed state and keep live A209 checkpoint/PID/log files untouched unless operator recovery is explicitly authorized.
 
 ## EVENT-20260626-017 - T1307/A209 heartbeat freshness sync to 95/288
 

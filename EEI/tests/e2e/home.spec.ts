@@ -18,6 +18,25 @@ test("renders the watchlist-first EEI workspace", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("main")).toBeVisible();
   await expect(page.getByTestId("current-focus-title")).toHaveText("NVIDIA");
+  await expect(page.getByTestId("app-brand-icon")).toBeVisible();
+  await expect(page.locator('link[rel="icon"]')).toHaveAttribute(
+    "href",
+    "/eei-app-icon.png"
+  );
+  await expect(page.locator('link[rel="apple-touch-icon"]')).toHaveAttribute(
+    "href",
+    "/eei-app-icon.png"
+  );
+  await expect(page.locator('link[rel="manifest"]')).toHaveAttribute(
+    "href",
+    "/manifest.webmanifest"
+  );
+  const iconResponse = await page.request.get("/eei-app-icon.png");
+  expect(iconResponse.ok()).toBeTruthy();
+  expect(iconResponse.headers()["content-type"]).toContain("image/png");
+  const manifestResponse = await page.request.get("/manifest.webmanifest");
+  expect(manifestResponse.ok()).toBeTruthy();
+  expect(manifestResponse.headers()["content-type"]).toContain("application/manifest+json");
   await expect(page.getByTestId("workspace-shell")).toHaveAttribute(
     "data-workspace-model",
     "recursive-enterprise-map"

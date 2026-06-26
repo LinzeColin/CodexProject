@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { ACTIVE_ANALYSIS_CONTEXT } from "../analysis-contract";
+import { BrandMark } from "../brand-mark";
 
 type CsvRow = Record<string, string>;
 
@@ -221,13 +222,7 @@ export default function ObjectsScopePage() {
       data-testid="objects-scope-screen"
     >
       <aside className="navRail" aria-label="主导航">
-        <div className="brandMark" aria-label="商域图谱">
-          <span className="brandGlyph">E</span>
-          <span>
-            <strong>商域图谱</strong>
-            <small>EEI</small>
-          </span>
-        </div>
+        <BrandMark />
         <nav aria-label="主导航">
           <a className="navItem" href="/" title="商业版图">
             <Network size={18} strokeWidth={1.8} aria-hidden="true" />

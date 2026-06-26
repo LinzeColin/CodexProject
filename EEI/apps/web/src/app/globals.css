@@ -75,12 +75,51 @@ select:focus-visible {
 .brandGlyph {
   display: grid;
   place-items: center;
-  width: 34px;
-  height: 34px;
-  border-radius: 8px;
-  background: var(--ink);
-  color: white;
-  font-weight: 700;
+  flex: 0 0 auto;
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  background:
+    radial-gradient(circle at 24% 18%, rgba(142, 231, 198, 0.3), transparent 30%),
+    radial-gradient(circle at 78% 78%, rgba(243, 184, 97, 0.25), transparent 34%),
+    linear-gradient(135deg, #121918 0%, #18201d 45%, #17243a 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 10px 22px rgba(24, 32, 29, 0.16);
+}
+
+.brandGlyph svg {
+  width: 32px;
+  height: 32px;
+  overflow: visible;
+}
+
+.brandGlyphGrid,
+.brandGlyphSpine {
+  fill: none;
+  stroke: url("#eeiMarkCore");
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.brandGlyphGrid {
+  stroke-width: 2.8;
+}
+
+.brandGlyphSpine {
+  stroke-width: 2.4;
+  opacity: 0.86;
+}
+
+.brandGlyphNode {
+  fill: #4b8dff;
+  stroke: rgba(255, 255, 255, 0.82);
+  stroke-width: 1.6;
+}
+
+.brandGlyphNode.primary {
+  fill: url("#eeiMarkCore");
 }
 
 .brandMark strong,

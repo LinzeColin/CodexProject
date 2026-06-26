@@ -1,0 +1,44 @@
+{
+  "acceptance_ids": [
+    "A211"
+  ],
+  "app_bindings": {
+    "brand_component_consumers": [
+      "apps/web/src/app/workspace-navigation.tsx",
+      "apps/web/src/app/objects-scope/page.tsx",
+      "apps/web/src/app/development-status/page.tsx"
+    ],
+    "in_app_brand_component": "apps/web/src/app/brand-mark.tsx",
+    "manifest_icons": [
+      "/eei-app-icon.png"
+    ],
+    "manifest_path": "/manifest.webmanifest",
+    "metadata_apple_icon": "/eei-app-icon.png",
+    "metadata_icon": "/eei-app-icon.png"
+  },
+  "artifact_id": "t1308-a211-app-icon-brand-contract",
+  "brand_asset": {
+    "media_type": "image/png",
+    "path": "apps/web/public/eei-app-icon.png",
+    "pixel_size": "1254x1254",
+    "sha256": "ab8b9ce4e965b226bec16802efd6f2e3fae9877ad37cc8675e9cde063ea9d73b",
+    "source_reference": "Generated design asset retained under /Users/linzezhang/.codex/generated_images/019edf30-1933-79c3-9935-d249459926af/ig_03549813b8806ef4016a3e398f078c8191bc61e9c28fc53b58.png"
+  },
+  "generated_at": "2026-06-26T08:49:21Z",
+  "non_claims": [
+    "does_not_change_scoring_formulas",
+    "does_not_change_api_schema",
+    "does_not_change_database_schema",
+    "does_not_close_release_gates"
+  ],
+  "schema_version": "eei-t1308-app-icon-brand-contract-v1",
+  "status": "PASS",
+  "system_en_name": "Enterprise Ecosystem Intelligence",
+  "system_name": "EEI",
+  "system_zh_name": "商域图谱",
+  "task_id": "T1308",
+  "validation": {
+    "e2e": "PASS: Playwright home.spec.ts renders the watchlist-first EEI workspace with app icon, PNG response and manifest response",
+    "typecheck": "PASS: npx --yes pnpm@11.8.0 --filter @eei/web typecheck"
+  }
+}

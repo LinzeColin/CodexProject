@@ -59,7 +59,7 @@
       "release_gate_closed_by_finalizer": false,
       "status": "A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL",
       "target_windows": 288,
-      "windows_completed": 95,
+      "windows_completed": 111,
       "windows_failed": 0
     },
     "relationship_gold": {
@@ -80,7 +80,7 @@
       "status": "PENDING_SIGNED_DECISIONS"
     }
   },
-  "generated_at": "2026-06-26T07:06:02Z",
+  "generated_at": "2026-06-26T08:29:56Z",
   "missing_input_ids": [
     "A202_source_license_passage_owner_legal_release",
     "A210_brand_legal_market_clearance_or_risk_waiver",
@@ -287,7 +287,7 @@
         "work/operator_inputs/a209/",
         "external operator file outside repository"
       ],
-      "blocking_reason": "A209 finalization does not allow downstream refresh at 95/288 windows",
+      "blocking_reason": "A209 finalization does not allow downstream refresh at 111/288 windows",
       "completion_criteria": [
         "288/288 five-minute windows pass",
         "0 failed windows",
@@ -299,7 +299,7 @@
       "label": "A209 24h operator soak finalization evidence",
       "required_source": {
         "path": "artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json",
-        "sha256": "4c6ab5516b71936350ab2c8989a3e6e39ae725f2bb47c0cf339ca4f4c2d4d6d2"
+        "sha256": "f3bf7a34c6325bc43f4d4c3753220089fef8671a66d442e34dfdf1c3361e6427"
       },
       "submission_target": "artifacts/operator_inputs/a209/promoted-operator-soak-finalization.json",
       "supporting_sources": [],
@@ -327,7 +327,7 @@
     },
     "a209_operator_soak_finalization_preflight": {
       "path": "artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json",
-      "sha256": "4c6ab5516b71936350ab2c8989a3e6e39ae725f2bb47c0cf339ca4f4c2d4d6d2"
+      "sha256": "f3bf7a34c6325bc43f4d4c3753220089fef8671a66d442e34dfdf1c3361e6427"
     },
     "a210_brand_clearance_intake_template": {
       "path": "artifacts/tests/a210/t1309_brand_clearance_intake_template.json",
@@ -335,7 +335,7 @@
     },
     "external_release_evidence_bundle_preflight": {
       "path": "artifacts/tests/a205/t1303_external_release_evidence_bundle_preflight.json",
-      "sha256": "b41c51c0b79f3bd6c01664864bfd5e6f92b78ed60c96b8bb43ac109daa31f0ab"
+      "sha256": "7d014ed3603f6197876e214d2b84d60b6326f229f27af60932763176d701f1d4"
     }
   },
   "system_en_name": "Enterprise Ecosystem Intelligence",
