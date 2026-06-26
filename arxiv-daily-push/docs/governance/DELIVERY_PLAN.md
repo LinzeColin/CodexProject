@@ -21,7 +21,7 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 161
+- task_count: 163
 - acceptance_count: 122
 
 ## Delivery Tasks
@@ -252,3 +252,5 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A006-A009 | P1 A-006 through A-009 review receipt evidence refresh | completed | `ACC-S2PMT07-FINAL-REVIEW` | Refreshes A-006 through A-009 so runtime-lock, state-history, state-consistency, and optimistic-fencing rows point to dedicated S2PMT03 evidence instead of the aggregate lease-fencing record; this does not provide independent signoff, close P0/P1, complete S2PLT04, execute final commands, or change production state. |
 | S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A010-A016 | P1 A-010/A-011/A-013/A-014/A-016 review receipt evidence refresh | completed | `ACC-S2PMT07-FINAL-REVIEW` | Refreshes A-010, A-011, A-013, A-014, and A-016 so artifact atomic-publish, artifact SHA-256, scheduler-template, supporting-file-collision, and lesson-revision rows point to dedicated evidence instead of aggregate S2PMT02/S2PMT03/S2PMT04 records; this does not provide independent signoff, close P0/P1, complete S2PLT04, execute final commands, or change production state. |
 | S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A015 | P1 A-015 review receipt evidence refresh | completed | `ACC-S2PMT07-FINAL-REVIEW` | Refreshes A-015 so the future-heartbeat clock-skew row points to dedicated S2PMT05 evidence instead of the aggregate stress-E2E record; this does not provide independent signoff, close P0/P1, complete S2PLT04, execute final commands, or change production state. |
+| S2PMT01-ZERO-CRITICAL-CLAIM-A019 | Zero critical claim evidence gate | completed_local_validation | `ACC-S2PMT01-SECURITY` | Local A-019 evidence: a Stage 1 B1 package with zero P0/P1 critical claims is blocked with `critical_claim_count=0`, `critical_claim_coverage_percent=0.0`, and explicit blocking reasons; no security policy weakening or production side effect. |
+| S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A019 | P1 A-019 review receipt evidence refresh | completed | `ACC-S2PMT07-FINAL-REVIEW` | Refreshes A-019 so the zero-critical-claim coverage row points to dedicated S2PMT01 evidence instead of aggregate security-boundary evidence; this does not provide independent signoff, close P0/P1, complete S2PLT04, execute final commands, or change production state. |

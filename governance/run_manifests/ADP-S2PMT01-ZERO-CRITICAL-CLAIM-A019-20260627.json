@@ -1,0 +1,136 @@
+{
+  "acceptance_id": "ACC-S2PMT01-SECURITY",
+  "actor": "Codex",
+  "base_commit": "bde3907167b6c539f5a38f95a11dc30f6e47a475",
+  "contract_version": "ADP-PRODUCT-CONTRACT-V7.2",
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT01_ZERO_CRITICAL_CLAIM_A019.md",
+    "governance/run_manifests/ADP-S2PMT01-ZERO-CRITICAL-CLAIM-A019-20260627.json",
+    "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py",
+    "arxiv-daily-push/tests/test_stage1_b1_report.py"
+  ],
+  "files_changed": [
+    "arxiv-daily-push/tests/test_stage1_b1_report.py",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT01_ZERO_CRITICAL_CLAIM_A019.md",
+    "governance/run_manifests/ADP-S2PMT01-ZERO-CRITICAL-CLAIM-A019-20260627.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_INDEPENDENT_REVIEW_RECEIPT.md",
+    "governance/run_manifests/ADP-S2PMT07-P1-INDEPENDENT-REVIEW-RECEIPT-20260626.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A019-20260627.json",
+    "arxiv-daily-push/tests/test_stage2_final_gate.py",
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/docs/governance/DELIVERY_PLAN.md",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/governance/events.jsonl"
+  ],
+  "formula_ids_changed": [
+    "FORM-ADP-042",
+    "FORM-ADP-096"
+  ],
+  "generated_at": "2026-06-27T04:21:48+10:00",
+  "inherited_findings_targeted": [
+    "A-019"
+  ],
+  "inherited_p0_p1_closed": false,
+  "inherited_v7_1_open_p0_findings": 8,
+  "inherited_v7_1_open_p1_findings": 37,
+  "manifest_id": "ADP-S2PMT01-ZERO-CRITICAL-CLAIM-A019-20260627",
+  "model_ids_changed": [
+    "MOD-ADP-040",
+    "MOD-ADP-094"
+  ],
+  "next_task": "CONTINUE_P1_RECEIPT_REFRESH_OR_S2PMT07_INDEPENDENT_REVIEW_AFTER_REQUIRED_GATES",
+  "parameter_ids_changed": [
+    "PARAM-ADP-314",
+    "PARAM-ADP-758"
+  ],
+  "phase": "S2PM",
+  "production_acceptance_claimed": false,
+  "production_boundary": {
+    "current_pointer_changed": false,
+    "formal_production_inclusion": false,
+    "full_replay_executed": false,
+    "large_replay_executed": false,
+    "live_source_fetch_executed": false,
+    "mail_production_code_changed": false,
+    "production_restore_executed": false,
+    "production_schedule_enabled": false,
+    "public_schema_changed": false,
+    "queue_mutation_allowed": false,
+    "queue_schema_changed": false,
+    "ranking_algorithm_changed": false,
+    "real_release_uploaded": false,
+    "real_smtp_sent": false,
+    "release_changed": false,
+    "scheduler_changed": false,
+    "smtp_changed": false,
+    "source_adapter_changed": false,
+    "v7_1_baseline_changed": false,
+    "v7_2_contract_files_changed": false
+  },
+  "project_id": "arxiv-daily-push",
+  "result": "a019_zero_critical_claim_local_evidence_no_closure_no_production",
+  "risks": [
+    "This local A-019 evidence can be misread as inherited P1 closure; it only records current evidence and receipt routing.",
+    "Zero critical claim blocking evidence must not be interpreted as independent review signoff, inherited P0/P1 closure, S2PMT07 pass, or production readiness."
+  ],
+  "rollback": "Revert the A-019 zero-critical-claim test assertion, phase record, manifests, P1 receipt refresh, traceability/delivery/event records, generated status refresh, and this manifest; no runtime production state was changed.",
+  "schema_version": 1,
+  "stage2_integrated_production_accepted": false,
+  "status": "completed_local_validation_no_production",
+  "summary": "Records dedicated local A-019 evidence that zero P0/P1 critical claims produce critical_claim_count=0, critical_claim_coverage_percent=0.0, and blocked status instead of passing with 100 percent empty-denominator coverage.",
+  "task_id": "S2PMT01-ZERO-CRITICAL-CLAIM-A019",
+  "task_ids": [
+    "S2PMT01-ZERO-CRITICAL-CLAIM-A019",
+    "S2PMT01",
+    "A-019",
+    "ACC-S2PMT01-SECURITY"
+  ],
+  "test_results": [
+    "py_compile PASS",
+    "focused Stage1 B1 report tests: 12 OK",
+    "focused S2PMT07 final-gate tests: 14 OK",
+    "source/board user-center root gate regression: 14 OK",
+    "full arxiv-daily-push unittest: 549 OK",
+    "V7.2 validator: PASS",
+    "ADP project governance: 0 errors / 0 warnings",
+    "changed-only governance semantic: 0 errors / 0 warnings",
+    "governance sync validator: 0 errors / 0 warnings",
+    "lean check-render: drift_count 0 / reference_issue_count 0",
+    "Ruby YAML/JSON/JSONL/CSV parse: OK",
+    "git diff --check: PASS",
+    "production-side-effect added-line scan: OK",
+    "open_pr_count: 0"
+  ],
+  "tests_run": [
+    "python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py arxiv-daily-push/tests/test_stage1_b1_report.py arxiv-daily-push/tests/test_stage2_final_gate.py",
+    "python3 -m unittest arxiv-daily-push/tests/test_stage1_b1_report.py -q",
+    "python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q",
+    "python3 -m unittest arxiv-daily-push/tests/test_user_center_candidate_pool.py arxiv-daily-push/tests/test_owner_controls.py -q",
+    "python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2",
+    "validate_project_governance.py --project arxiv-daily-push",
+    "lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "validate_governance_sync.py --changed-only --semantic --base-ref origin/main",
+    "lean_governance.py check-render --project arxiv-daily-push",
+    "Ruby YAML/JSON/JSONL/CSV parse over changed and untracked structured files",
+    "git diff --check",
+    "production-side-effect added-line scan over changed and untracked files",
+    "GitHub open PR count check"
+  ],
+  "zero_critical_claim_gate": {
+    "blocking_reasons_required": [
+      "critical claim evidence coverage must be 100.0",
+      "critical claim count must be greater than 0"
+    ],
+    "critical_claim_count": 0,
+    "critical_claim_coverage_percent": 0.0,
+    "empty_denominator_pass_allowed": false,
+    "required_critical_claim_coverage_percent": 100.0,
+    "required_minimum_critical_claim_count": 1,
+    "status": "blocked_as_expected"
+  }
+}

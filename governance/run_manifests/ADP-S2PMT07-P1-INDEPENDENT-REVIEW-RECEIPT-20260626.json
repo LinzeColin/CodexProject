@@ -247,17 +247,18 @@
     },
     {
       "finding_id": "A-019",
-      "fix_task": "S2PMT01",
+      "fix_task": "S2PMT01-ZERO-CRITICAL-CLAIM-A019",
       "track": "A_安全代码并发",
       "severity": "P1",
       "title": "零关键 Claim 时覆盖率被计算为 100%",
-      "preliminary_review_state": "evidence_surface_located_independent_review_required_closure_not_claimed",
+      "preliminary_review_state": "refreshed_current_evidence_located_independent_review_required_closure_not_claimed",
       "evidence_refs": [
-        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT01_SECURITY_BOUNDARY.md",
-        "governance/run_manifests/ADP-S2PMT01-SECURITY-BOUNDARY-20260626.json",
-        "arxiv-daily-push/tests/test_security_boundary.py"
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT01_ZERO_CRITICAL_CLAIM_A019.md",
+        "governance/run_manifests/ADP-S2PMT01-ZERO-CRITICAL-CLAIM-A019-20260627.json",
+        "arxiv-daily-push/tests/test_stage1_b1_report.py"
       ],
-      "reviewer_decision_required": "Verify V7.1 fix/test requirement: 0 critical claim 不能通过关键证据门"
+      "reviewer_decision_required": "Verify V7.1 fix/test requirement: 0 critical claim 不能通过关键证据门",
+      "receipt_refreshed_at": "2026-06-27T04:21:48+10:00"
     },
     {
       "finding_id": "A-020",
@@ -629,7 +630,7 @@
   },
   "rollback": "Remove the S2PMT07 P1 review receipt phase record, manifest, and references; no production runtime state was changed.",
   "next_task": "S2PMT07_INDEPENDENT_REVIEWER_SIGNOFF_OR_P1_EVIDENCE_REPAIR",
-  "refreshed_at": "2026-06-27T04:00:50+10:00",
+  "refreshed_at": "2026-06-27T04:21:48+10:00",
   "refreshed_findings": [
     "A-006",
     "A-007",
@@ -644,6 +645,7 @@
     "A-016",
     "A-017",
     "A-018",
+    "A-019",
     "A-020",
     "A-021",
     "B-003",
@@ -658,11 +660,12 @@
     "B-014",
     "B-015"
   ],
-  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A015-20260627.json",
+  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A019-20260627.json",
   "refresh_manifests": [
     "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A006-A009-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A010-A016-20260627.json",
-    "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A015-20260627.json"
+    "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A015-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A019-20260627.json"
   ]
 }
