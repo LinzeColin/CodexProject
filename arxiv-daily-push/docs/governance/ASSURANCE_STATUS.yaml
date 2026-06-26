@@ -1,6 +1,6 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260626-ADP-S2PMT07-FINAL-GATE-PRECHECK-001"
-source_snapshot_hash: "sha256:890922e68eb2b4fc7e0e467b1b0154d253cf01e5dcc1b247bd5c26f7c750acb5"
+as_of_event_id: "EVENT-20260626-ADP-S2PLT01-ENTRY-PRECHECK-001"
+source_snapshot_hash: "sha256:53d8ca6383287e500b59b7c9c59210ecbd859cb17fdc66535732a37052090a73"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
 snapshot_event_time: "2026-06-26T17:00:00+10:00"
@@ -16,10 +16,10 @@ dimensions:
     status: "VERIFIED"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 825
-    total_active_parameters: 825
-    checked_active_formulas: 102
-    total_active_formulas: 102
+    checked_active_parameters: 838
+    total_active_parameters: 838
+    checked_active_formulas: 103
+    total_active_formulas: 103
     unresolved_fact_ids: []
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
@@ -27,8 +27,8 @@ dimensions:
   parameter_source_quality:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 825
-    total_active_parameters: 825
+    checked_active_parameters: 838
+    total_active_parameters: 838
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -60,7 +60,7 @@ dimensions:
     fact_level: "EXTRACTED"
     tree_bound_events: 0
     commit_bound_events: 1
-    legacy_unbound_events: 103
+    legacy_unbound_events: 104
     precommit_pending_events: 40
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"

@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 100
-- formula_count: 102
-- parameter_count: 842
+- model_count: 101
+- formula_count: 103
+- parameter_count: 855
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -905,3 +905,9 @@ Uncovered planned scenarios:
 - `MOD-ADP-100` / `FORM-ADP-102` define the fail-closed final production gate precheck for S2PMT07.
 - Passing S2PMT07 is not claimed by this run. The current precheck remains blocked because reviewer independence is not proven, inherited V7.1 P0=8 and P1=37 are open, S2PLT04 completion is missing, the final acceptance bundle is missing, the independent signoff is missing, and final required command execution by an independent reviewer is not proven.
 - S2PMT07 precheck does not enable SMTP, install scheduler, upload Release assets, run production restore, migrate DB/public schema, mutate production queues, change source adapters or ranking, change CURRENT or V7.1/V7.2 contracts, close inherited P0/P1, enable DAILY_OPERATION, or claim integrated production acceptance.
+
+## S2PLT01 Full Replay Entry Precheck
+
+- `MOD-ADP-101` / `FORM-ADP-103` define the fail-closed entry precheck for S2PLT01 full-system 30 independent historical-day replay.
+- Passing S2PLT01 is not claimed by this run. The current precheck remains blocked because `S2PBT05` is missing, inherited V7.1 P0=8 and P1=37 are open, full 30-day replay has not been executed, 120 mail previews are not proven, and terminal source states are not proven.
+- S2PLT01 precheck does not execute replay, accept S2PLT01, complete S2PLT04, enable SMTP, install scheduler, upload Release assets, run production restore, migrate DB/public schema, mutate production queues, change source adapters or ranking, change CURRENT or V7.1/V7.2 contracts, close inherited P0/P1, enable DAILY_OPERATION, or claim integrated production acceptance.
