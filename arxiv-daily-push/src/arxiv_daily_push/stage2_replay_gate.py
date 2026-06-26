@@ -23,6 +23,7 @@ S2PLT01_REQUIRED_DEPENDENCIES = (
     "S2PKT05",
 )
 S2PLT01_COMPLETED_DEPENDENCIES = (
+    "S2PBT05",
     "S2PCT07",
     "S2PDT04",
     "S2PET04",
@@ -58,7 +59,6 @@ S2PLT01_FORBIDDEN_FLAGS = (
     "v7_2_contract_files_changed",
 )
 S2PLT01_BLOCKING_REASONS = (
-    "s2pbt05_missing",
     "inherited_v7_1_p0_findings_open",
     "inherited_v7_1_p1_findings_open",
     "full_30_day_replay_not_executed",

@@ -15,7 +15,8 @@ full replay evidence are proven.
 
 `S2PLT01` is blocked. The precheck identifies these blockers:
 
-- `S2PBT05` D1 domain qualification evidence is missing.
+- `S2PBT05` D1 domain qualification evidence is now complete, so the
+  `s2pbt05_missing` blocker is removed.
 - inherited V7.1 P0 findings remain open: 8.
 - inherited V7.1 P1 findings remain open: 37.
 - full 30-day replay was not executed in this task.
@@ -40,7 +41,7 @@ change, and no V7.2 contract-file change.
 
 ## Next
 
-Resolve S2PBT05 and inherited P0/P1 blockers before attempting a real S2PLT01
-full-system replay. S2PLT04 and S2PMT07 remain blocked until the S2PLT01-T03
-evidence chain exists.
-
+Resolve inherited P0/P1 blockers, execute the full replay, prove 120 mail
+previews, and prove D1-D4 terminal source states before attempting S2PLT01
+acceptance. S2PLT04 and S2PMT07 remain blocked until the S2PLT01-T03 evidence
+chain exists.
