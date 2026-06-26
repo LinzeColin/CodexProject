@@ -1235,6 +1235,8 @@ test("A203 and A211 hydrate production graph context through the explore API", a
   expect(evidenceUrls[0]).toContain(scoreCandidateId);
   expect(evidenceUrls.at(-1)).toContain("limit=20");
   expect(scoreUrls[0]).toContain(scoreCandidateId);
+  await page.getByTestId("close-evidence-drawer").click();
+  await expect(page.getByTestId("evidence-detail-drawer")).toBeHidden();
 
   expect(payloads[0]).toMatchObject({
     focus: { object_type: "entity", object_id: nvidiaEntityId },
