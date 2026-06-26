@@ -2,12 +2,12 @@
 
 ## Snapshot Metadata
 
-- source_base_commit: `631c8f65050be8e3c4379af5f4d0fd5753718808`
-- source_tree_hash: `00e27599461403192b998e8f9a3f7f0e769e5d8f`
-- source_snapshot_hash: `sha256:7c54a3c5bccbba28955e4bbf5c06815c44996965b66c98fe91c7f1069d328342`
-- snapshot_event_time: `2026-06-26T12:12:07+10:00`
+- source_base_commit: `2a9afde825a2819da337e27b16f31201d2150f3e`
+- source_tree_hash: `9657d04d30d592c81ed3a9d6ffbd0deda0478c3c`
+- source_snapshot_hash: `sha256:a723f6ef86547ac0f48486cbe0b962b05fb48815654a6bef8e6cb65a1011c216`
+- snapshot_event_time: `2026-06-26T12:52:00+10:00`
 - generator_version: `4.0.0`
-- final_commit_binding: `PRE_COMMIT_PENDING: T904/A026-A027 production gold-label source-boundary hardening is locally generated and focused-validated; remote CI not yet bound. A026/A027 remain open until real operator-supplied production labels meet thresholds, A210 remains open until formal clearance or signed waiver, and A209 remains open until 288/288 zero-failure evidence is promoted and release-ready validation passes.`
+- final_commit_binding: `CI_ATTESTED:2a9afde825a2819da337e27b16f31201d2150f3e Project Governance run 28213678625 job 83580117668; EEI validation run 28213678638 job 83580117632`
 
 ## Current State
 
@@ -36,9 +36,9 @@
 
 - Readiness: `FAILED`
 - Release gate: `TASK-T904-A026-A027-GOLD-LABEL-SOURCE-BOUNDARY`
-- Next executable task: `TASK-T904`
-- Pending/stale events: `101`
+- Next executable task: `TASK-T1301`
+- Pending/stale events: `107`
 - Tree-bound events: `0`
-- Commit-bound events: `18`
+- Commit-bound events: `21`
 - Legacy unbound events: `19`
-- Unresolved fact IDs: `5`
+- Unresolved fact IDs: `7`

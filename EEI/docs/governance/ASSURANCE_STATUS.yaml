@@ -1,11 +1,11 @@
 project_id: "EEI"
-as_of_event_id: "EVENT-20260626-009"
-source_snapshot_hash: "sha256:7c54a3c5bccbba28955e4bbf5c06815c44996965b66c98fe91c7f1069d328342"
-source_base_commit: "631c8f65050be8e3c4379af5f4d0fd5753718808"
-source_tree_hash: "00e27599461403192b998e8f9a3f7f0e769e5d8f"
-snapshot_event_time: "2026-06-26T02:12:07Z"
+as_of_event_id: "EVENT-20260626-010"
+source_snapshot_hash: "sha256:a723f6ef86547ac0f48486cbe0b962b05fb48815654a6bef8e6cb65a1011c216"
+source_base_commit: "2a9afde825a2819da337e27b16f31201d2150f3e"
+source_tree_hash: "9657d04d30d592c81ed3a9d6ffbd0deda0478c3c"
+snapshot_event_time: "2026-06-26T12:52:00+10:00"
 generator_version: "4.0.0"
-final_commit_binding: "PRE_COMMIT_PENDING: T904/A026-A027 production gold-label source-boundary hardening is locally generated and focused-validated; remote CI not yet bound. A026/A027 remain open until real operator-supplied production labels meet thresholds, A210 remains open until formal clearance or signed waiver, and A209 remains open until 288/288 zero-failure evidence is promoted and release-ready validation passes."
+final_commit_binding: "CI_ATTESTED:2a9afde825a2819da337e27b16f31201d2150f3e Project Governance run 28213678625 job 83580117668; EEI validation run 28213678638 job 83580117632"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -62,9 +62,9 @@ dimensions:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
     tree_bound_events: 0
-    commit_bound_events: 19
+    commit_bound_events: 21
     legacy_unbound_events: 19
-    precommit_pending_events: 80
+    precommit_pending_events: 86
     evidence_refs:
       - "EEI/docs/governance/development_events.jsonl"
 delivery_readiness:
@@ -76,16 +76,17 @@ delivery_readiness:
     - "TASK-T1206"
     - "TASK-T1301"
     - "TASK-T1307"
+    - "TASK-T1309"
+    - "TASK-T904"
 next_executable_task:
-  task_id: "TASK-T904"
+  task_id: "TASK-T1301"
   status: "in_progress"
-  reason: "Provide real operator-supplied A026/A027 production gold labels; source-boundary hardening prevents repository fixtures/templates from closing the gate"
+  reason: "Implement real data ingestion, entity resolution and evidence chain for the Golden Vertical"
   acceptance_ids:
-    - "ACC-A026"
-    - "ACC-A027"
-  owner: "data_owner + quality_owner"
-  human_owner_role: "data_owner + quality_owner"
-  unblock_condition: "Attach real operator-supplied production gold-label files from an external or approved operator-input source with at least 50 entity cases, 100 relationship cases, required evidence metadata, and passing precision/source-coverage thresholds."
+    - "ACC-A202"
+  owner: "product_owner + data_owner + risk_owner"
+  human_owner_role: "product_owner + data_owner + risk_owner"
+  unblock_condition: "Run `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check scripts/load_curated_ingestion_anchors.py scripts/check_database_schema.py tests/integration/test_database_migrations.py` and attach the listed evidence refs."
   stale_candidates: []
 owner_decision:
   required: true
@@ -117,4 +118,4 @@ owner_decision:
   generated_from_refs:
     - "EEI/docs/governance/ASSURANCE_STATUS.yaml"
     - "EEI/docs/governance/delivery_tasks.yaml"
-  last_reviewed_at: "2026-06-25T19:26:47Z"
+  last_reviewed_at: "2026-06-26T12:52:00+10:00"

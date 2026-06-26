@@ -14,11 +14,38 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Current gate: `TASK-T904-A026-A027-GOLD-LABEL-SOURCE-BOUNDARY`
 - Confirmed iteration count: 39
 - Reconstructed development event count: 6
-- Current task: `TASK-T904/A026-A027 production gold-label source-boundary hardening`
+- Current task: `TASK-T904/A026-A027 production gold-label source-boundary CI binding`
 - Current A209 point-in-time heartbeat: the clean 24h operator soak attempt launched at `2026-06-25T21:33:19Z` failed at checkpoint window `7/288`; `6` windows passed, `1` failed, latest checkpoint time is `2026-06-25T22:08:58Z`, `child_status=NO_OUTPUT`, `exit_status=1`, and stderr reports `page.evaluate: Target page, context or browser has been closed`. No `run_operator_soak` or `run_soak_smoke` process was found during the 2026-06-26 check. A209 remains `IN_PROGRESS` and has no release-ready 24h evidence.
-- Current isolated rerun: `/private/tmp/eei-a209-rerun-20260626-0918/` was started without overwriting the failed canonical checkpoint; operator PID `80478` and watchdog PID `80732` are recorded, first checkpoint window `1/288` PASS at `2026-06-25T23:04:42Z`, and the latest live check during this iteration observed `40/288` PASS windows, `0` failed, latest checkpoint time `2026-06-26T02:22:43Z`, and `13.89%` completion.
+- Current isolated rerun: `/private/tmp/eei-a209-rerun-20260626-0918/` was started without overwriting the failed canonical checkpoint; operator PID `80478` and watchdog PID `80732` are recorded, first checkpoint window `1/288` PASS at `2026-06-25T23:04:42Z`, and the latest live check during this iteration observed `45/288` PASS windows, `0` failed, latest checkpoint time `2026-06-26T02:48:02Z`, and `15.62%` completion.
 - Blockers: T1301/A202 is still `IN_PROGRESS`; the refreshed operator review packet is freshness-correct supporting review evidence only and does not create source-license review, passage-level human approval, production owner approval, legal release clearance, brand clearance, release-manager activation or final public relationship publication. T1307/A209 is still `IN_PROGRESS`; failed `7/288` evidence plus short repair probes are non-closure evidence only and a new 24h chain must reach `288/288` successful windows with zero failures before finalization. A204/A205 release-manager activation preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED` until A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence pass. A026 still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%. The new T904 operator labeling packet is a source-bound worksheet with blank `OPERATOR_TO_LABEL` slots and is not production gold evidence. A210 still needs formal brand legal/market clearance or signed risk waiver. The T1303 external release operator intake packet lists the exact A202/A210/A026/A027/A209 operator inputs and keeps `release_gate_closed_by_operator_packet=false`; it is a checklist/hash manifest, not clearance.
 
+
+## EVENT-20260626-010 - T904/A026-A027 source-boundary remote CI binding
+
+- Timestamp: 2026-06-26T12:52:00+10:00
+- Fact level: EXTRACTED
+- Bound commit: `2a9afde825a2819da337e27b16f31201d2150f3e`
+- Scope: bind the T904/A026-A027 production gold-label source-boundary hardening and clean-room release artifact refresh to remote CI evidence.
+- Remote CI: Project Governance run `28213678625` / job `83580117668` PASS; EEI validation run `28213678638` / job `83580117632` PASS.
+- EEI validation coverage: static/contracts/lint/typecheck/unit, G2 PostgreSQL preparation/integration, G2 browser E2E and live FastAPI PostgreSQL E2E.
+- A209 background state: isolated rerun read-only observed at `45/288` PASS windows, `0` failed, latest window ended `2026-06-26T02:48:02Z`; this event does not promote, restart or finalize A209 evidence.
+- Non-claims: remote CI proves source-boundary enforcement and package freshness, not real operator-supplied production gold labels, formal brand legal/market clearance, signed risk waiver, production owner approval, 24h soak completion or MVP release readiness.
+- Next step: continue A209 background monitoring and collect real A026/A027 production labels, A202 signed source/legal/owner evidence and A210 legal/market clearance or waiver.
+
+## ITER-20260626-010 - A026/A027 source-boundary CI attestation
+
+- Date: 2026-06-26
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Acceptance IDs: `A026`, `A027`, `A175`, `A177`.
+- Result: `CI_ATTESTED_A026_A027_SOURCE_BOUNDARY_VALIDATED_A026_A027_STILL_OPEN`.
+- Commands run: GitHub Project Governance read-only verification; GitHub EEI validation read-only verification; release artifact generation/validation with `remote_status=PASS`; clean-room release generation/validation.
+- Test results: Project Governance PASS; EEI validation PASS; release artifacts validate with `remote_status=PASS`; A209 remains open at `45/288` isolated rerun progress.
+- Decisions: keep A026/A027 `IN_PROGRESS`; keep A209 `IN_PROGRESS`; keep A210 `IN_PROGRESS`; do not treat source-boundary validation or remote CI as production gold-label evidence.
+- Risks: real operator-supplied labels can still be wrong or biased; A209 can still fail before 288 windows; external release gates remain blocked.
+- Rollback: revert this CI-binding governance sync and regenerate release artifacts with `remote_status=PENDING`; preserve live A209 runtime files unless explicit operator intervention is authorized.
+- Result commit: `2a9afde825a2819da337e27b16f31201d2150f3e`
 
 ## EVENT-20260626-009 - T904/A026-A027 production gold-label source-boundary hardening
 

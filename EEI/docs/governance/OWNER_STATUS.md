@@ -2,11 +2,11 @@
 
 ## 1. 当前结论
 
-EEI 当前治理结论：实现一致性为 `VERIFIED`，方法/实证为 `UNVERIFIED` / `PARTIAL`，交付状态为 `FAILED`；本轮 T904/A026-A027 production gold-label source-boundary 控制已完成本地 focused validation，但尚未绑定远端 CI；A026/A027 仍缺真实 operator-supplied production gold labels，A210 仍缺正式法律/市场清权或签署风险豁免；A209 24h 证据仍未完成，isolated rerun 正在后台运行；这不是生产上线声明。
+EEI 当前治理结论：实现一致性为 `VERIFIED`，方法/实证为 `UNVERIFIED` / `PARTIAL`，交付状态为 `FAILED`；这不是生产上线声明。
 
 ## 2. 本次运行改变了什么
 
-Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，并明确 A026/A027 source-boundary focused validation、A210 source-boundary CI PASS、A209 failed evidence / isolated rerun 都是不闭合的运行或证据完整性控制，避免把 `MACHINE_VERIFIED`、source-boundary PASS、remote CI PASS 或 partial soak 误读为模型有效、生产 gold labels 完成、法律清权完成或可上线。
+Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。
 
 ## 3. 为什么重要
 
@@ -31,10 +31,10 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 ## 7. 下一行动、责任角色和验收证据
 
-- next_task_id: `TASK-T904`
-- responsible_role: `data_owner + quality_owner`
-- acceptance_ids: `ACC-A026; ACC-A027`
-- unblock_condition: Attach real operator-supplied production gold-label files from an external or approved operator-input source with at least 50 entity cases, 100 relationship cases, required evidence metadata, and passing precision/source-coverage thresholds.
+- next_task_id: `TASK-T1301`
+- responsible_role: `product_owner + data_owner + risk_owner`
+- acceptance_ids: `ACC-A202`
+- unblock_condition: Run `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check scripts/load_curated_ingestion_anchors.py scripts/check_database_schema.py tests/integration/test_database_migrations.py` and attach the listed evidence refs.
 
 ## 8. 九层 Assurance 状态
 
@@ -56,10 +56,9 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 ## 10. Current Blockers
 
-1. real A026/A027 operator-supplied production gold-label files with threshold-passing evidence
-2. formal A210 brand legal/market clearance or signed risk waiver
-3. historical event binding backlog
-4. product_owner + data_owner + risk_owner must provide project-specific evidence before readiness can improve.
+1. 24h operator soak evidence
+2. historical event binding backlog
+3. product_owner + data_owner + risk_owner must provide project-specific evidence before readiness can improve.
 
 ## 11. Evidence Required To Unblock
 
@@ -83,28 +82,28 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 ## 14. Evidence Freshness
 
-- final_commit_binding: `PRE_COMMIT_PENDING: T904/A026-A027 production gold-label source-boundary hardening is locally generated and focused-validated; remote CI not yet bound. A026/A027 remain open until real operator-supplied production labels meet thresholds, A210 remains open until formal clearance or signed waiver, and A209 remains open until 288/288 zero-failure evidence is promoted and release-ready validation passes.`
+- final_commit_binding: `CI_ATTESTED:2a9afde825a2819da337e27b16f31201d2150f3e Project Governance run 28213678625 job 83580117668; EEI validation run 28213678638 job 83580117632`
 - tree_bound_events: `0`
-- commit_bound_events: `18`
+- commit_bound_events: `21`
 - legacy_unbound_events: `19`
-- precommit_pending_events: `79`
-- pending_or_stale_events: `101`
+- precommit_pending_events: `86`
+- pending_or_stale_events: `107`
 
 ## 15. UNKNOWN
 
-- unresolved_fact_ids: `5`
+- unresolved_fact_ids: `7`
 
 ## 16. 技术元数据
 
-- source_base_commit: `631c8f65050be8e3c4379af5f4d0fd5753718808`
-- source_tree_hash: `00e27599461403192b998e8f9a3f7f0e769e5d8f`
-- source_snapshot_hash: `sha256:7c54a3c5bccbba28955e4bbf5c06815c44996965b66c98fe91c7f1069d328342`
-- snapshot_event_time: `2026-06-26T12:12:07+10:00`
+- source_base_commit: `2a9afde825a2819da337e27b16f31201d2150f3e`
+- source_tree_hash: `9657d04d30d592c81ed3a9d6ffbd0deda0478c3c`
+- source_snapshot_hash: `sha256:a723f6ef86547ac0f48486cbe0b962b05fb48815654a6bef8e6cb65a1011c216`
+- snapshot_event_time: `2026-06-26T12:52:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.1.0`
 - phase/gate: `D / TASK-T904-A026-A027-GOLD-LABEL-SOURCE-BOUNDARY`
 
 ## 17. Next Unique Task
 
-- task_id: `TASK-T904`
-- reason: Complete and validate A026/A027 production gold labels without treating repository fixtures/templates/docs/config/data/tests as operator-supplied labels
+- task_id: `TASK-T1301`
+- reason: Implement real data ingestion, entity resolution and evidence chain for the Golden Vertical

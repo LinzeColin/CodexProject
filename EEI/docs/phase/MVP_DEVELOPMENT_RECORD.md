@@ -1,5 +1,32 @@
 # MVP Development Record
 
+## 2026-06-26 - T904/A026-A027 source-boundary remote CI binding
+
+Status: REMOTE CI ATTESTED FOR COMMIT `2a9afde825a2819da337e27b16f31201d2150f3e`; A026/A027 STILL IN PROGRESS; A209 ISOLATED RERUN CONTINUES IN BACKGROUND; A210 STILL IN PROGRESS
+
+### Scope
+
+- Bound the committed T904/A026-A027 production gold-label source-boundary hardening and clean-room release refresh to GitHub Actions evidence.
+- Project Governance run `28213678625` / job `83580117668` completed PASS for commit `2a9afde825a2819da337e27b16f31201d2150f3e`.
+- EEI validation run `28213678638` / job `83580117632` completed PASS for the same commit, including static/contract/lint/typecheck/unit, G2 PostgreSQL integration, G2 browser E2E and live FastAPI PostgreSQL E2E.
+- No product runtime code, database schema, scoring formula, model weight, threshold, frontend route, production gold labels, formal legal clearance or publication policy changed in this CI-binding record.
+
+### Current Evidence
+
+- Release evidence is refreshed to `remote_status=PASS` for the bound commit.
+- A209 isolated rerun was read-only observed at `45/288` PASS windows with `0` failed; no A209 promotion, restart or finalization was performed.
+
+### Acceptance Mapping
+
+- T904 -> A026/A027 for source-boundary false-closure control and future production gold-label evaluation.
+- T1211 -> A175/A177 for release manifest/checksum evidence.
+- This CI binding does not close A026, A027, A209, A210, A202 or release-manager activation.
+
+### Rollback
+
+- Revert this CI-binding governance evidence update and regenerate release artifacts with `remote_status=PENDING`.
+- Preserve live A209 checkpoint, PID and log files unless a failed window or stale-process condition requires explicit operator intervention.
+
 ## 2026-06-26 - T904/A026-A027 production gold-label source-boundary hardening
 
 Status: LOCAL FOCUSED VALIDATED; CI PENDING; A026/A027 STILL IN PROGRESS; A209 ISOLATED RERUN CONTINUES IN BACKGROUND
