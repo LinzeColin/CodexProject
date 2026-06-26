@@ -47,7 +47,9 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertEqual(len(top20_rows), 20)
         self.assertIn("| 1 | cs.AI | [arXiv:2606.22716]", top20_section)
         self.assertIn("| 65.51 |", top20_section)
-        self.assertIn("同一篇文章按 `item_id` 去重", top20_section)
+        self.assertIn("同一篇文章按论文标识去重", top20_section)
+        self.assertIn("| 序号 | 领域代码 | 标题 / 条目 | 分数 | 状态 | 候选日期 | 证据 |", top20_section)
+        self.assertNotIn("| Rank |", top20_section)
         self.assertIn("截至今日总候选池 = 已处理候选 + 待处理候选", page)
         self.assertIn("每日期末总候选池 = 昨日期末总候选池 + 今日新增候选 - 今日剔除候选", page)
         self.assertIn("今日待处理候选 = 昨日待处理候选 + 今日新增候选 - 今日完成处理 - 今日剔除候选", page)
@@ -69,9 +71,30 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertEqual(len(table_rows), len(generated_rows))
         self.assertIn("本页是 GitHub 浅层用户中心里的报告/邮件预览索引", page)
         self.assertIn("不是完整报告正文", page)
-        self.assertIn("| 序号 | 锚点 | Code/category | 标题 / 条目 | 状态 | 候选日期 | 证据 |", page)
+        self.assertIn("| 序号 | 锚点 | 领域代码 | 标题 / 条目 | 状态 | 候选日期 | 证据 |", page)
         self.assertNotIn("| 原始定位 |", page)
         self.assertEqual(page.count("[CONTENT_LEDGER.csv](../docs/owner/CONTENT_LEDGER.csv)"), len(generated_rows) + 1)
+
+    def test_user_center_pages_keep_chinese_facing_labels(self):
+        forbidden = (
+            "| Rank |",
+            "Code/category",
+            "UI/UX",
+            "owner 快速浏览",
+            "owner 页面",
+            "解释=report_generated",
+            "解释=not_generated",
+            "rank 和证据",
+            "rank 和 score",
+        )
+        for path in sorted(USER_CENTER.glob("*.md")):
+            with self.subTest(path=path.name):
+                text = path.read_text(encoding="utf-8")
+                for phrase in forbidden:
+                    self.assertNotIn(phrase, text)
+        candidate_page = CANDIDATE_POOL_PAGE.read_text(encoding="utf-8")
+        self.assertIn("| 序号 | 领域代码 | 标题 / 条目 | 状态 | 分数 | 候选日期 / 截至时间 | 证据 |", candidate_page)
+        self.assertNotIn("| 序号 | 领域代码 | 标题 / 条目 | 状态 | 分数 | Rank |", candidate_page)
 
     def test_summary_pages_do_not_treat_11_item_queue_as_total_pool(self):
         forbidden = (
