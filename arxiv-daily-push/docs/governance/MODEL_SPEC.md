@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 106
-- formula_count: 108
-- parameter_count: 921
+- model_count: 107
+- formula_count: 109
+- parameter_count: 925
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -28,6 +28,16 @@ Fact levels follow `docs/governance/STANDARD.md`.
   change public schema or DB, mutate production queues, change source adapters
   or ranking, edit CURRENT or V7.1/V7.2 contracts, close inherited P0/P1,
   enable DAILY_OPERATION, or claim integrated production acceptance.
+
+- `S2PIT05-FOUR-CHECK-FRESHNESS-C003` adds `MOD-ADP-107` and
+  `FORM-ADP-109`. It requires the four shallow GitHub owner-check views to
+  expose freshness state, data-as-of timestamp, fact-source references, drift
+  state, CI alarm expectation, page alarm expectation, owner-visible status,
+  and a simulated-only stale/fact-source/count drift probe. It does not enable
+  SMTP, install scheduler, upload Release, change public schema or DB, mutate
+  queues, change source adapters or ranking, edit CURRENT or V7.1/V7.2
+  contracts, close inherited P0/P1, enable DAILY_OPERATION, or claim
+  integrated production acceptance.
 
 - `S2PMT05-DUPLICATE-TRIGGER-B007` refreshes `MOD-ADP-098` and
   `FORM-ADP-100`. It adds a local multi-actor duplicate-trigger gate for

@@ -2948,3 +2948,39 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PIT05-FOUR-CHECK-FRESHNESS-C003"
+    phase: "S2PI"
+    objective: "Refresh inherited P1 C-003 local evidence so the four shallow GitHub owner-check views expose freshness, fact-source, drift-state, and drift-alarm status."
+    scope: "S2PIT05 four-check freshness report builder/validator, focused regression tests, C-003 phase record, run manifest, semantic registry refresh, traceability/delivery/event records, and no-production evidence."
+    non_scope: "No source or board change, SMTP transport, scheduler install or enablement, Release upload, public schema or DB migration, production queue mutation, ranking change, source adapter change, Email V1 runtime/frontstage change, CURRENT pointer change, V7.1/V7.2 contract-file edit, owner-experience final acceptance, inherited P0/P1 closure, DAILY_OPERATION, or integrated production acceptance."
+    status: "completed"
+    dependencies: ["S2PIT05", "S2PMT07", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/tests/test_stage2_sources.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PIT05_FOUR_CHECK_FRESHNESS_C003.md"]
+    acceptance_ids: ["ACC-S2PIT05-FOUR-CHECK-FRESHNESS"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_c003_py_compile python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py arxiv-daily-push/tests/test_stage2_sources.py", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_c003_s2pit05 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q"]
+    test_results: ["py_compile PASS", "focused Stage2 source tests: 171 OK"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PIT05_FOUR_CHECK_FRESHNESS_C003.md", "governance/run_manifests/ADP-S2PIT05-FOUR-CHECK-FRESHNESS-C003-20260627.json", "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py", "arxiv-daily-push/tests/test_stage2_sources.py"]
+    risk: "C-003 local evidence can be misread as independent P1 closure or full owner-experience acceptance; independent review still controls closure and production acceptance."
+    rollback: "Revert S2PIT05 four-check freshness code/tests, C-003 phase record, manifest, semantic registry updates, traceability/delivery/event records, and generated status refresh; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
+
+  - task_id: "S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C003"
+    phase: "S2PM"
+    objective: "Refresh S2PMT07 P1 independent-review receipt row C-003 so it points to dedicated S2PIT05 four-check freshness evidence."
+    scope: "C-003 P1 review receipt row, P1 receipt manifest, refreshed C-003 run manifest, focused final-gate regression tests, traceability/delivery/event records, and no-production evidence."
+    non_scope: "No independent final signoff, final command execution, inherited P0/P1 closure, S2PLT04 completion, final acceptance bundle creation, SMTP transport, scheduler install or enablement, Release upload, public schema or DB migration, production queue mutation, ranking/source-adapter change, CURRENT pointer change, V7.1/V7.2 contract-file edit, DAILY_OPERATION, or integrated production acceptance."
+    status: "completed"
+    dependencies: ["S2PMT07", "S2PIT05-FOUR-CHECK-FRESHNESS-C003", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_INDEPENDENT_REVIEW_RECEIPT.md", "governance/run_manifests/ADP-S2PMT07-P1-INDEPENDENT-REVIEW-RECEIPT-20260626.json", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_c003_target PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py arxiv-daily-push/tests/test_stage2_final_gate.py -q"]
+    test_results: ["focused validation pending after final-gate update"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_INDEPENDENT_REVIEW_RECEIPT.md", "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C003-20260627.json", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
+    risk: "This receipt refresh can be misread as C-003/P1 closure; independent review plus S2PMT07 still control closure and production acceptance."
+    rollback: "Revert the C-003 P1 review receipt refresh, run manifests, final-gate regression extension, traceability/delivery/event records, generated status refresh, and this task entry; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

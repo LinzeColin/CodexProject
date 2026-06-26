@@ -6232,3 +6232,54 @@ formulas:
     evidence_hash: "PENDING_MAIN_COMMIT"
     last_verified_commit: "PRECOMMIT"
     verified_at: "2026-06-26T23:10:00+10:00"
+
+  -
+    formula_id: "FORM-ADP-109"
+    model_id: "MOD-ADP-107"
+    assumption_ids:
+      - "ASM-ADP-035"
+    status: "active"
+    expression: "S2PIT05 C-003 four-check evidence passes only when the required owner-facing views mail_queue_status, total_candidate_pool, review_action_roi, and source_board_health are all present; every view has owner_page, freshness_state, data_as_of, fact_source_refs, drift_state, CI alarm expectation, page alarm expectation, owner_visible_status, and evidence_refs; the simulated-only drift probe covers stale timestamp, missing fact source, and ledger count drift with both CI and page alarms expected; and all SMTP, scheduler, Release, DB, schema, queue, ranking, source-adapter, email-frontstage, V7.1 CURRENT, and V7.2 contract side-effect flags remain false."
+    variables:
+      -
+        name: "four_check_views"
+        data_type: "list[object]"
+        unit: "owner views"
+        input_domain: "shallow GitHub owner-center pages"
+      -
+        name: "freshness_state"
+        data_type: "string"
+        unit: "view state"
+        input_domain: "current_snapshot, pending_daily_snapshot, or blocked_with_visible_reason"
+      -
+        name: "fact_source_refs"
+        data_type: "list[str]"
+        unit: "repository refs"
+        input_domain: "CONTENT_LEDGER.csv, SOURCE_CATALOG.md, owner controls, or run manifests"
+      -
+        name: "drift_probe"
+        data_type: "object"
+        unit: "simulated probe"
+        input_domain: "stale timestamp, missing fact source, and ledger count drift"
+    constraints: "This gate must not enable SMTP, install scheduler, upload Release, mutate queues, change ranking or source adapters, mutate public schema or DB, change Email frontstage, edit CURRENT, edit V7.1/V7.2 contract files, close inherited P0/P1, claim S2PLT04/S2PMT07 acceptance, or claim integrated production acceptance."
+    missing_policy: "Missing required view, missing freshness state, missing data-as-of timestamp, missing fact-source refs, missing drift state, missing CI/page alarm expectation, missing owner-visible status, missing drift probe fault, or any production side-effect flag blocks the report."
+    output_range: "S2PIT05 four-check freshness report with status pass or blocked, gate states, normalized four_check_views, drift_probe, deterministic four_check_freshness_hash, validation errors, and all production/schema/email side-effect flags false."
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PIT05_FOUR_CHECK_FRESHNESS_C003.md"
+      - "governance/run_manifests/ADP-S2PIT05-FOUR-CHECK-FRESHNESS-C003-20260627.json"
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::S2PIT05_FOUR_CHECK_FRESHNESS_MODEL_ID"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::S2PIT05_REQUIRED_VIEW_IDS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::S2PIT05_REQUIRED_VIEW_FIELDS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::S2PIT05_REQUIRED_GATES"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::build_s2pit05_four_check_freshness_report"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::validate_s2pit05_four_check_freshness_report"
+    implementation_fingerprint: "PENDING_MAIN_COMMIT"
+    evidence_hash: "PENDING_MAIN_COMMIT"
+    last_verified_commit: "PRECOMMIT"
+    verified_at: "2026-06-27T06:45:31+10:00"
