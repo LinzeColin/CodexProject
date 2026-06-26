@@ -33,13 +33,18 @@ STAGE1_B1_REQUIRED_CRITICAL_CLAIM_COVERAGE = 100.0
 STAGE1_B1_PROHIBITED_EMAIL_MARKERS = (
     "project:",
     "recipient:",
-    "ROI",
-    "roi_",
     "delivery_policy",
     "Claim Ledger",
     "Release 资料包",
     "12秒视频",
     ".mp4",
+)
+STAGE1_B1_ROI_TEXT_MARKERS = ("ROI", "roi_", "Expected ROI", "Actual ROI", "预期 ROI", "实际 ROI")
+STAGE1_B1_FORBIDDEN_ROI_PATTERNS = (
+    r"guaranteed\s+(roi|return|profit)",
+    r"(roi|return|profit)\s+guaranteed",
+    r"保证\s*(ROI|收益|回报|盈利)",
+    r"(稳赚|必赚|保本收益)",
 )
 
 
@@ -77,12 +82,14 @@ def build_b1_report_email_package(
     report_id = f"b1-report:{date}:{_safe_id(source_id)}"
     email_id = f"b1-email:{date}:{_safe_id(source_id)}:{stable_content_hash({'report_id': report_id, 'recipient': recipient})[:10]}"
     evidence_audit = _evidence_audit(ledger)
+    roi_disclosure = _roi_disclosure(ledger, generated_at=generated_at)
     report_markdown = _render_report_markdown(
         report_id=report_id,
         daily_input=daily_input,
         source_item=source_item,
         ledger=ledger,
         lesson=lesson,
+        roi_disclosure=roi_disclosure,
         generated_at=generated_at,
     )
     rendered_email = render_email_learning_v1(
@@ -152,6 +159,7 @@ def build_b1_report_email_package(
             "secret_values_logged": False,
         },
         "claim_evidence_audit": evidence_audit,
+        "roi_disclosure": roi_disclosure,
         "lesson_claim_ids": [str(claim_id) for claim_id in lesson.get("claim_ids", []) if claim_id],
         "lesson_frontstage": lesson.get("frontstage") if isinstance(lesson.get("frontstage"), Mapping) else {},
         "candidate_queue_summary": candidate_queue_summary,
@@ -282,6 +290,7 @@ def validate_b1_report_email_package(package: Mapping[str, Any]) -> list[str]:
         receipt = frontstage.get("trust_boundary_receipt")
         if isinstance(receipt, Mapping):
             errors.extend(validate_trust_boundary_receipt(receipt))
+    errors.extend(_validate_roi_disclosure(package, "\n".join([email_plain, email_html, report_markdown])))
     if not package.get("candidate_queue_summary"):
         errors.append("candidate_queue_summary is required")
     return errors
@@ -347,6 +356,88 @@ def _evidence_audit(ledger: Mapping[str, Any]) -> dict[str, Any]:
     }
 
 
+def _roi_disclosure(ledger: Mapping[str, Any], *, generated_at: str) -> dict[str, Any]:
+    claims = [claim for claim in ledger.get("claims") or [] if isinstance(claim, Mapping)]
+    claim_refs = [f"claim:{claim.get('claim_id')}" for claim in claims if claim.get("claim_id")]
+    return {
+        "model_id": "adp-b1-roi-disclosure-v1",
+        "generated_at": generated_at,
+        "expected_roi": {
+            "label": "Expected ROI",
+            "status": "hypothesis",
+            "value_type": "qualitative_learning_and_action_option_value",
+            "cost_basis": "not_quantified_in_stage1_b1",
+            "probability_basis": "not_quantified_in_stage1_b1",
+            "assumptions": [
+                "只有在后续复现、验证和行动记录完成后，学习线索才可能转化为收益。",
+                "当前 B1 报告不估算金钱收益，不承诺商业转化。",
+            ],
+            "evidence_refs": claim_refs,
+        },
+        "actual_roi": {
+            "label": "Actual ROI",
+            "status": "not_calculable",
+            "value": None,
+            "reason": "Stage 1 B1 只生成学习报告和邮件预览，尚无复习、行动、资产或收益回写。",
+            "evidence_refs": ["claim_evidence_audit"],
+        },
+        "policy": "no_guaranteed_return_no_unverified_benefit_claim",
+    }
+
+
+def _validate_roi_disclosure(package: Mapping[str, Any], visible_text: str) -> list[str]:
+    errors: list[str] = []
+    for pattern in STAGE1_B1_FORBIDDEN_ROI_PATTERNS:
+        if re.search(pattern, visible_text, flags=re.IGNORECASE):
+            errors.append("ROI text must not claim guaranteed return, profit, or benefit")
+            break
+    roi_visible = any(marker in visible_text for marker in STAGE1_B1_ROI_TEXT_MARKERS)
+    disclosure = package.get("roi_disclosure")
+    if not roi_visible and disclosure is None:
+        return errors
+    if not isinstance(disclosure, Mapping):
+        errors.append("roi_disclosure is required when ROI appears in report or email")
+        return errors
+    expected = disclosure.get("expected_roi")
+    actual = disclosure.get("actual_roi")
+    if not isinstance(expected, Mapping):
+        errors.append("roi_disclosure.expected_roi is required")
+    else:
+        expected_status = str(expected.get("status") or "")
+        if expected_status not in {"hypothesis", "not_calculable", "calculated"}:
+            errors.append("roi_disclosure.expected_roi.status must be hypothesis, not_calculable, or calculated")
+        if expected_status != "not_calculable":
+            if not _non_empty_sequence(expected.get("assumptions")):
+                errors.append("roi_disclosure.expected_roi.assumptions are required")
+            if not _non_empty_sequence(expected.get("evidence_refs")):
+                errors.append("roi_disclosure.expected_roi.evidence_refs are required")
+            if not str(expected.get("cost_basis") or "").strip():
+                errors.append("roi_disclosure.expected_roi.cost_basis is required")
+            if not str(expected.get("probability_basis") or "").strip():
+                errors.append("roi_disclosure.expected_roi.probability_basis is required")
+    if not isinstance(actual, Mapping):
+        errors.append("roi_disclosure.actual_roi is required")
+    else:
+        actual_status = str(actual.get("status") or "")
+        if actual_status not in {"not_calculable", "calculated"}:
+            errors.append("roi_disclosure.actual_roi.status must be not_calculable or calculated")
+        actual_value = actual.get("value")
+        if actual_status == "not_calculable" and actual_value is not None and str(actual_value) not in {"", "not_calculable"}:
+            errors.append("roi_disclosure.actual_roi.value must be empty when status is not_calculable")
+        if actual_status == "calculated":
+            if not _non_empty_sequence(actual.get("evidence_refs")):
+                errors.append("roi_disclosure.actual_roi.evidence_refs are required when calculated")
+            for key in ("verifiable_cost", "verifiable_benefit"):
+                value = actual.get(key)
+                if not isinstance(value, (int, float)) or value < 0:
+                    errors.append(f"roi_disclosure.actual_roi.{key} must be a non-negative number when calculated")
+    return errors
+
+
+def _non_empty_sequence(value: Any) -> bool:
+    return isinstance(value, Sequence) and not isinstance(value, (str, bytes)) and any(str(item).strip() for item in value)
+
+
 def _render_report_markdown(
     *,
     report_id: str,
@@ -354,6 +445,7 @@ def _render_report_markdown(
     source_item: Mapping[str, Any],
     ledger: Mapping[str, Any],
     lesson: Mapping[str, Any],
+    roi_disclosure: Mapping[str, Any],
     generated_at: str,
 ) -> str:
     arxiv = _arxiv_meta(source_item)
@@ -400,17 +492,32 @@ def _render_report_markdown(
     for mapping in frontstage.get("domain_mappings") or []:
         if isinstance(mapping, Mapping):
             lines.append(f"- {mapping.get('paper_variable')}: {mapping.get('decision_mapping')}")
-    lines.extend(["", "## 5. 三个必须追问的问题", ""])
+    expected_roi = roi_disclosure.get("expected_roi") if isinstance(roi_disclosure.get("expected_roi"), Mapping) else {}
+    actual_roi = roi_disclosure.get("actual_roi") if isinstance(roi_disclosure.get("actual_roi"), Mapping) else {}
+    lines.extend(["", "## 5. ROI 口径（不是收益承诺）", ""])
+    lines.append(
+        "- Expected ROI: "
+        f"{expected_roi.get('status', 'UNKNOWN')}；"
+        f"成本基准={expected_roi.get('cost_basis', 'UNKNOWN')}；"
+        f"概率基准={expected_roi.get('probability_basis', 'UNKNOWN')}；"
+        "仅作为学习和行动选项假设。"
+    )
+    lines.append(
+        "- Actual ROI: "
+        f"{actual_roi.get('status', 'UNKNOWN')}；"
+        f"{actual_roi.get('reason', '尚无可验证行动收益。')}"
+    )
+    lines.extend(["", "## 6. 三个必须追问的问题", ""])
     for question in frontstage.get("key_questions") or []:
         lines.append(f"- {question}")
     lines.extend(
         [
             "",
-            "## 6. 下一步动作",
+            "## 7. 下一步动作",
             "",
             str(frontstage.get("default_action") or "先做最小复现实验，再决定是否深读全文。"),
             "",
-            "## 7. 不能越界的地方",
+            "## 8. 不能越界的地方",
             "",
             "- 当前证据只来自 arXiv 摘要和元数据。",
             "- 不得把摘要主张改写成已证实事实。",
