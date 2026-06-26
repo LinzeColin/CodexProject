@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 104
-- formula_count: 106
-- parameter_count: 892
+- model_count: 105
+- formula_count: 107
+- parameter_count: 896
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -929,3 +929,10 @@ Uncovered planned scenarios:
 - `MOD-ADP-103` / `FORM-ADP-105` define the fail-closed S2PLT04 integration candidate precheck.
 - Passing S2PLT04 is not claimed by this run. The current precheck remains blocked because S2PLT01 acceptance is not proven, S2PLT02/S2PLT03 authoritative completion evidence is missing, the final acceptance bundle is missing, inherited V7.1 P0=8 and P1=37 remain open, and embedded S2PMT07 precheck is blocked.
 - S2PLT04 precheck does not produce `S2_INTEGRATION_CANDIDATE_READY`, complete S2PLT04, enable SMTP, install scheduler, upload Release assets, execute production restore, migrate DB/public schema, mutate production queues, change source adapters or ranking, change CURRENT or V7.1/V7.2 contracts, close inherited P0/P1, enable DAILY_OPERATION, or claim integrated production acceptance.
+
+## Owner Center Entry Rule
+
+- `MOD-ADP-105` / `FORM-ADP-107` record the owner-facing entry rule for Stage 2 owner UX and mail-status work.
+- GitHub-rendered Markdown is the primary owner-readable surface. A shallow `arxiv-daily-push/用户中心/README.md` entry plus adjacent status pages is the required target for owner status, mail, queue, review, action, and ROI summaries.
+- Local `.adp` files, SMTP reports, run JSON, and candidate queue JSON remain valid evidence sources only. Owner pages must directly summarize sent, blocked/not sent, and queued states without requiring local absolute-path navigation.
+- This rule does not migrate PR #240 owner pages by itself and does not replay email, enable SMTP/scheduler/Release, mutate queues, change public schema/DB, change source adapters or ranking, edit CURRENT/V7 baselines, close inherited P0/P1, accept S2PLT02, enable DAILY_OPERATION, or claim integrated production acceptance.

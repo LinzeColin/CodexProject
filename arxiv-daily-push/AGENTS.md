@@ -94,6 +94,16 @@ This project follows the root `AGENTS.md` and `docs/governance/STANDARD.md`.
   generated and verified faster.
 - Email is the notification channel; dry-run rendering is allowed before real
   SMTP transport exists.
+- GitHub-rendered Markdown is the owner-facing human-readable surface for
+  status, mail, queue, review, action, and ROI summaries. Owner UX and mail
+  status work must use a shallow GitHub entry such as
+  `arxiv-daily-push/用户中心/README.md` plus adjacent status pages as the
+  primary reading path. Local `.adp` files, SMTP reports, run JSON, and
+  candidate queues are evidence sources only; owner-facing pages must directly
+  summarize sent, blocked/not sent, and queued states without requiring the
+  owner to open local absolute paths. Deep `docs/owner/...` pages may remain
+  generated/internal references or pointers, but must not be the only owner
+  reading entry.
 - Any unsupported key factual claim must block publication.
 - Connectors and source adapters must not generate final emails directly.
   Source output flows through EvidencePacket, routing, quality gates, review,
