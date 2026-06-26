@@ -22,6 +22,7 @@ from scripts.monitor_operator_soak import (  # noqa: E402
     DEFAULT_24H_OUTPUT,
     DEFAULT_24H_PID,
     build_progress_payload,
+    process_may_be_running,
     write_payload,
 )
 from scripts.validate_operator_soak_evidence import ROOT, display_path  # noqa: E402
@@ -117,10 +118,10 @@ def determine_action(progress: dict[str, Any], *, start_if_missing: bool) -> dic
             "resume_allowed": False,
             "should_launch": False,
         }
-    if process_status == "RUNNING":
+    if process_may_be_running(process_status):
         return {
             "action": "observe_existing_run",
-            "reason": "24h soak process is already running",
+            "reason": "24h soak process is already running or cannot be safely ruled out",
             "resume_allowed": False,
             "should_launch": False,
         }

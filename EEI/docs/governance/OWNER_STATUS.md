@@ -6,11 +6,11 @@ EEI 当前治理结论：实现一致性为 `VERIFIED`，方法/实证为 `UNVER
 
 ## 2. 本次运行改变了什么
 
-Owner 视图现在记录 T1303 external release evidence bundle 的 CI drift 修复：A202 public-only source-license artifact 刷新后，external bundle、operator intake packet、operator input kit/status、release-manager preflight、MVP release gate、clean-room ZIP 和 release checksum 已重新生成并验证；A202/A210/A026/A027/A209 外部输入仍缺失，release-manager/MVP refresh 仍被阻断。
+Owner 视图现在记录 T1307/A209 live-rerun monitor hardening：monitor/heartbeat 可显式发现最新 detached `/private/tmp/eei-a209-rerun-*` 链，supervisor 将 `UNKNOWN_PERMISSION_DENIED` PID 状态视为不可替换的可能运行进程，避免双启动 live soak；这不停止、重启、resume、promote 或 finalize A209，A202/A210/A026/A027/A209 外部输入仍缺失，release-manager/MVP refresh 仍被阻断。
 
 ## 3. 为什么重要
 
-降低 stale source-file hash 或过期 release manifest 被误当成当前发布证据的风险。
+降低 live A209 rerun 被旧 canonical checkpoint 掩盖、或权限未知 PID 被误判成可恢复暂停并双启动的风险。
 
 ## 4. 需要人类决定什么
 
@@ -78,7 +78,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `TASK-T1301-A202-PUBLIC-SOURCE-LICENSE-BOUNDARY`
+- release_gate: `TASK-T1307-A209-LIVE-RERUN-MONITOR-HARDENING`
 
 ## 14. Evidence Freshness
 
@@ -101,7 +101,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - snapshot_event_time: `2026-06-27T01:17:20+10:00`
 - generator_version: `4.0.0`
 - version: `0.1.0`
-- phase/gate: `D / TASK-T1301-A202-PUBLIC-SOURCE-LICENSE-BOUNDARY`
+- phase/gate: `D / TASK-T1307-A209-LIVE-RERUN-MONITOR-HARDENING`
 
 ## 17. Next Unique Task
 

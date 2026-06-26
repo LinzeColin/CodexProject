@@ -22,7 +22,9 @@ from scripts.monitor_operator_soak import (  # noqa: E402
     DEFAULT_24H_LOG,
     DEFAULT_24H_OUTPUT,
     DEFAULT_24H_PID,
+    DEFAULT_RERUN_SEARCH_ROOT,
     process_status,
+    resolve_monitor_paths,
     write_payload,
 )
 from scripts.supervise_operator_soak import build_supervisor_payload  # noqa: E402
@@ -82,6 +84,7 @@ def build_heartbeat_payload(
     log_path: Path = DEFAULT_24H_LOG,
     watchdog_pid_path: Path = DEFAULT_WATCHDOG_PID,
     generated_at: str | None = None,
+    source_selection: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     supervisor = build_supervisor_payload(
         output_path=output_path,
@@ -130,6 +133,13 @@ def build_heartbeat_payload(
             "operator_checkpoint_jsonl_present": supervisor["artifacts"][
                 "checkpoint_jsonl_present"
             ],
+        },
+        "source_selection": source_selection
+        or {
+            "selected_source": "explicit_or_default",
+            "discover_latest_rerun": False,
+            "rerun_search_root": display_path(DEFAULT_RERUN_SEARCH_ROOT),
+            "discovered_latest_rerun": None,
         },
         "supervisor_snapshot": {
             "status": supervisor["status"],
@@ -266,6 +276,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--watchdog-pid-file", type=Path, default=DEFAULT_WATCHDOG_PID)
     parser.add_argument("--write-output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--input", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument("--discover-latest-rerun", action="store_true")
+    parser.add_argument("--rerun-search-root", type=Path, default=DEFAULT_RERUN_SEARCH_ROOT)
     parser.add_argument("--quiet", action="store_true")
     return parser.parse_args()
 
@@ -273,12 +285,18 @@ def parse_args() -> argparse.Namespace:
 def main() -> int:
     args = parse_args()
     if args.command == "generate":
-        payload = build_heartbeat_payload(
+        resolved = resolve_monitor_paths(
             output_path=args.output_json,
             checkpoint_path=args.checkpoint,
             pid_path=args.pid_file,
             log_path=args.log_file,
+            discover_latest_rerun=args.discover_latest_rerun,
+            rerun_search_root=args.rerun_search_root,
+        )
+        payload = build_heartbeat_payload(
+            **resolved["paths"],
             watchdog_pid_path=args.watchdog_pid_file,
+            source_selection=resolved["source_selection"],
         )
         write_payload(args.write_output, payload)
     else:

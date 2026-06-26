@@ -14,7 +14,7 @@
 - Project: `EEI`
 - Path: `EEI`
 - Product version: `0.1.0`
-- Phase/Gate: `D / TASK-T1303-EXTERNAL-RELEASE-EVIDENCE-BUNDLE-DRIFT-FIX`
+- Phase/Gate: `D / TASK-T1307-A209-LIVE-RERUN-MONITOR-HARDENING`
 - Models/Formulas/Parameters total: `12 / 12 / 94`
 - Active formulas/parameters: `11 / 94`
 - Machine checked formulas/parameters: `11 / 94`
@@ -35,7 +35,7 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `TASK-T1303-EXTERNAL-RELEASE-EVIDENCE-BUNDLE-DRIFT-FIX`
+- Release gate: `TASK-T1307-A209-LIVE-RERUN-MONITOR-HARDENING`
 - Next executable task: `TASK-T1307`
 - Pending/stale events: `126`
 - Tree-bound events: `0`

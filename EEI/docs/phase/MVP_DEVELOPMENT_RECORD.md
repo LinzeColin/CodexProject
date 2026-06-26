@@ -1,5 +1,41 @@
 # MVP Development Record
 
+## 2026-06-27 - T1307/A209 live rerun discovery and safe PID handling
+
+Status: LOCAL TARGET VALIDATED; A209 STILL IN PROGRESS; RELEASE GATES STILL BLOCKED
+
+### Scope
+
+- Added opt-in latest detached rerun discovery for `/private/tmp/eei-a209-rerun-*` to `scripts/monitor_operator_soak.py`.
+- Added the same opt-in source binding to `scripts/record_operator_soak_heartbeat.py`, so background heartbeat generation can intentionally bind the live rerun path without overwriting canonical failed evidence.
+- Hardened `scripts/supervise_operator_soak.py` so `UNKNOWN_PERMISSION_DENIED` PID checks are treated as potentially running and never auto-resumed/replaced.
+- Left default canonical A209 paths unchanged unless `--discover-latest-rerun` is explicitly provided.
+
+### Acceptance Mapping
+
+- T1307 -> A209.
+- This is background monitoring and double-start prevention only. It does not close A209.
+
+### Validation
+
+- `TMPDIR=/private/tmp PYTHONPYCACHEPREFIX=/private/tmp/eei-pycache .venv/bin/python -m pytest -q tests/unit/test_operator_soak_evidence.py`: PASS, `28/28`.
+- `TMPDIR=/private/tmp RUFF_CACHE_DIR=/private/tmp/eei-ruff-cache .venv/bin/ruff check scripts/monitor_operator_soak.py scripts/supervise_operator_soak.py scripts/record_operator_soak_heartbeat.py tests/unit/test_operator_soak_evidence.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 .venv/bin/python scripts/monitor_operator_soak.py --discover-latest-rerun --no-write`: PASS; discovered `/private/tmp/eei-a209-rerun-20260626-150051-b6c63687/`, `19/288` windows, `0` failures, `RUNNING_PARTIAL`, `release_gate_closed_by_monitor=false`.
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 .venv/bin/python scripts/record_operator_soak_heartbeat.py generate --discover-latest-rerun --write-output /private/tmp/eei-a209-live-heartbeat-test.json --quiet`: PASS.
+- `TMPDIR=/private/tmp PYTHONDONTWRITEBYTECODE=1 .venv/bin/python scripts/record_operator_soak_heartbeat.py validate --input /private/tmp/eei-a209-live-heartbeat-test.json`: PASS, `release_gate_closed_by_background_heartbeat=false`.
+
+### Non-Claims
+
+- This does not stop, restart, resume, promote or finalize the A209 live soak.
+- This does not convert partial runtime evidence into release-ready evidence.
+- No database schema, API schema, scoring formula, graph traversal formula, extraction model, model weight, threshold, frontend route, publication policy or active parameter value changed.
+- A209 still requires `288/288` zero-failure 24h evidence, promotion/finalization validation and downstream release-gate refresh before it can support MVP release readiness.
+
+### Rollback
+
+- Revert `scripts/monitor_operator_soak.py`, `scripts/supervise_operator_soak.py`, `scripts/record_operator_soak_heartbeat.py`, `tests/unit/test_operator_soak_evidence.py` and this record.
+- Preserve canonical failed A209 evidence and live detached `/private/tmp` rerun files.
+
 ## 2026-06-27 - T1303/A204-A205 external release evidence bundle drift repair
 
 Status: LOCAL VERIFY PASS; RELEASE GATES STILL BLOCKED

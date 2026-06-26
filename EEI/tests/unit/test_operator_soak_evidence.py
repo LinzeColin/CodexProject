@@ -12,7 +12,11 @@ from scripts.finalize_operator_soak_evidence import (
     promote_rerun_source,
     validate_recovery_authorization_packet,
 )
-from scripts.monitor_operator_soak import build_progress_payload
+from scripts.monitor_operator_soak import (
+    build_progress_payload,
+    discover_latest_rerun_paths,
+    resolve_monitor_paths,
+)
 from scripts.record_operator_soak_heartbeat import (
     build_heartbeat_payload,
     validate_heartbeat_payload,
@@ -522,6 +526,46 @@ def test_operator_soak_progress_monitor_reports_paused_resume_command(tmp_path: 
     assert "--resume" in payload["resume_command"]
 
 
+def test_operator_soak_monitor_discovers_latest_detached_rerun(
+    tmp_path: Path,
+) -> None:
+    older = tmp_path / "eei-a209-rerun-older"
+    latest = tmp_path / "eei-a209-rerun-latest"
+    older.mkdir()
+    latest.mkdir()
+    older_checkpoint = older / "operator_soak_24h.checkpoints.jsonl"
+    latest_checkpoint = latest / "operator_soak_24h.checkpoints.jsonl"
+    write_checkpoint(older_checkpoint, index=1)
+    write_checkpoint(latest_checkpoint, index=1)
+    os.utime(older_checkpoint, (1, 1))
+    os.utime(latest_checkpoint, (2, 2))
+
+    discovered = discover_latest_rerun_paths(tmp_path)
+    assert discovered is not None
+    assert discovered["checkpoint_path"] == latest_checkpoint
+
+    resolved = resolve_monitor_paths(
+        output_path=tmp_path / "canonical.json",
+        checkpoint_path=tmp_path / "canonical.checkpoints.jsonl",
+        pid_path=tmp_path / "canonical.pid",
+        log_path=tmp_path / "canonical.log",
+        discover_latest_rerun=True,
+        rerun_search_root=tmp_path,
+    )
+    payload = build_progress_payload(
+        **resolved["paths"],
+        parameters=PARAMETERS,
+        source_selection=resolved["source_selection"],
+    )
+    assert payload["status"] == "PAUSED_RESUMABLE"
+    assert payload["progress"]["windows_completed"] == 1
+    assert payload["source_selection"]["selected_source"] == "latest_discovered_rerun"
+    assert (
+        payload["source_selection"]["discovered_latest_rerun"]["checkpoint_path"]
+        == str(latest_checkpoint)
+    )
+
+
 def test_operator_soak_progress_monitor_fails_on_failed_window(tmp_path: Path) -> None:
     checkpoint = tmp_path / "operator_24h.checkpoints.jsonl"
     write_checkpoint(checkpoint, index=1, status="FAIL")
@@ -580,6 +624,36 @@ def test_operator_soak_supervisor_observes_existing_running_process(tmp_path: Pa
     assert payload["status"] == "observe_existing_run"
     assert payload["supervisor"]["launch_status"] == "NOT_REQUESTED"
     assert payload["release_gate_closed_by_supervisor"] is False
+
+
+def test_operator_soak_supervisor_treats_permission_unknown_pid_as_running(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    checkpoint = tmp_path / "operator_24h.checkpoints.jsonl"
+    pid_file = tmp_path / "operator_24h.pid"
+    write_checkpoint(checkpoint, index=1)
+    pid_file.write_text("12345\n", encoding="utf-8")
+
+    def raise_permission_error(pid: int, signal: int) -> None:
+        raise PermissionError
+
+    monkeypatch.setattr("scripts.monitor_operator_soak.os.kill", raise_permission_error)
+
+    payload = build_supervisor_payload(
+        output_path=tmp_path / "operator_24h.json",
+        checkpoint_path=checkpoint,
+        pid_path=pid_file,
+        log_path=tmp_path / "operator_24h.log",
+        auto_resume=True,
+        dry_run=False,
+    )
+
+    assert payload["progress_status"] == "RUNNING_PARTIAL"
+    assert payload["process"]["status"] == "UNKNOWN_PERMISSION_DENIED"
+    assert payload["status"] == "observe_existing_run"
+    assert payload["supervisor"]["launch_status"] == "NOT_REQUESTED"
+    assert payload["supervisor"]["launched_pid"] is None
 
 
 def test_operator_soak_supervisor_requires_explicit_auto_resume(tmp_path: Path) -> None:
@@ -774,6 +848,37 @@ def test_operator_soak_heartbeat_records_background_watchdog_state(tmp_path: Pat
     assert payload["release_gate_closed_by_background_heartbeat"] is False
     assert payload["background_resolution_contract"]["operator_process_status"] == "RUNNING"
     assert payload["background_resolution_contract"]["watchdog_process_status"] == "RUNNING"
+    assert validate_heartbeat_payload(payload) == []
+
+
+def test_operator_soak_heartbeat_can_bind_latest_discovered_rerun(
+    tmp_path: Path,
+) -> None:
+    rerun = tmp_path / "eei-a209-rerun-live"
+    rerun.mkdir()
+    checkpoint = rerun / "operator_soak_24h.checkpoints.jsonl"
+    write_checkpoint(checkpoint, index=1)
+    resolved = resolve_monitor_paths(
+        output_path=tmp_path / "canonical.json",
+        checkpoint_path=tmp_path / "canonical.checkpoints.jsonl",
+        pid_path=tmp_path / "canonical.pid",
+        log_path=tmp_path / "canonical.log",
+        discover_latest_rerun=True,
+        rerun_search_root=tmp_path,
+    )
+
+    payload = build_heartbeat_payload(
+        **resolved["paths"],
+        watchdog_pid_path=tmp_path / "watchdog.pid",
+        source_selection=resolved["source_selection"],
+    )
+
+    assert payload["progress_status"] == "PAUSED_RESUMABLE"
+    assert payload["source_selection"]["selected_source"] == "latest_discovered_rerun"
+    assert (
+        payload["source_selection"]["discovered_latest_rerun"]["checkpoint_path"]
+        == str(checkpoint)
+    )
     assert validate_heartbeat_payload(payload) == []
 
 

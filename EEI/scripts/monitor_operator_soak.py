@@ -30,6 +30,13 @@ DEFAULT_24H_OUTPUT = ROOT / "artifacts/tests/a209/t1307_operator_soak_24h.json"
 DEFAULT_24H_CHECKPOINT = ROOT / "artifacts/tests/a209/t1307_operator_soak_24h.checkpoints.jsonl"
 DEFAULT_24H_PID = ROOT / "artifacts/tests/a209/t1307_operator_soak_24h.pid"
 DEFAULT_24H_LOG = ROOT / "artifacts/tests/a209/t1307_operator_soak_24h.log"
+DEFAULT_RERUN_SEARCH_ROOT = Path("/private/tmp")
+DEFAULT_RERUN_GLOB = "eei-a209-rerun-*"
+RERUN_OUTPUT_NAME = "operator_soak_24h.json"
+RERUN_CHECKPOINT_NAME = "operator_soak_24h.checkpoints.jsonl"
+RERUN_PID_NAME = "operator_soak_24h.pid"
+RERUN_LOG_NAME = "operator_soak_24h.log"
+PROCESS_MAY_BE_RUNNING_STATUSES = {"RUNNING", "UNKNOWN_PERMISSION_DENIED"}
 
 
 def utc_now() -> str:
@@ -79,6 +86,72 @@ def process_status(pid_path: Path) -> dict[str, Any]:
     return result
 
 
+def process_may_be_running(status: str | None) -> bool:
+    return status in PROCESS_MAY_BE_RUNNING_STATUSES
+
+
+def file_mtime_ns(path: Path) -> int:
+    try:
+        return path.stat().st_mtime_ns
+    except FileNotFoundError:
+        return -1
+
+
+def discover_latest_rerun_paths(
+    search_root: Path = DEFAULT_RERUN_SEARCH_ROOT,
+) -> dict[str, Path] | None:
+    """Find the newest detached A209 rerun without mutating or promoting it."""
+    candidates: list[tuple[int, str, dict[str, Path]]] = []
+    for directory in search_root.glob(DEFAULT_RERUN_GLOB):
+        if not directory.is_dir():
+            continue
+        paths = {
+            "output_path": directory / RERUN_OUTPUT_NAME,
+            "checkpoint_path": directory / RERUN_CHECKPOINT_NAME,
+            "pid_path": directory / RERUN_PID_NAME,
+            "log_path": directory / RERUN_LOG_NAME,
+        }
+        if not paths["checkpoint_path"].exists():
+            continue
+        newest_mtime = max(file_mtime_ns(path) for path in paths.values())
+        candidates.append((newest_mtime, str(directory), paths))
+    if not candidates:
+        return None
+    return max(candidates, key=lambda row: (row[0], row[1]))[2]
+
+
+def resolve_monitor_paths(
+    *,
+    output_path: Path,
+    checkpoint_path: Path,
+    pid_path: Path,
+    log_path: Path,
+    discover_latest_rerun: bool = False,
+    rerun_search_root: Path = DEFAULT_RERUN_SEARCH_ROOT,
+) -> dict[str, Any]:
+    resolved = {
+        "output_path": output_path,
+        "checkpoint_path": checkpoint_path,
+        "pid_path": pid_path,
+        "log_path": log_path,
+    }
+    selection: dict[str, Any] = {
+        "selected_source": "explicit_or_default",
+        "discover_latest_rerun": discover_latest_rerun,
+        "rerun_search_root": display_path(rerun_search_root),
+        "discovered_latest_rerun": None,
+    }
+    if discover_latest_rerun:
+        discovered = discover_latest_rerun_paths(rerun_search_root)
+        if discovered is not None:
+            resolved = discovered
+            selection["selected_source"] = "latest_discovered_rerun"
+            selection["discovered_latest_rerun"] = {
+                key: display_path(value) for key, value in discovered.items()
+            }
+    return {"paths": resolved, "source_selection": selection}
+
+
 def checkpoint_window(entry: dict[str, Any]) -> dict[str, Any]:
     window = entry.get("window")
     return window if isinstance(window, dict) else {}
@@ -95,6 +168,7 @@ def build_progress_payload(
     pid_path: Path = DEFAULT_24H_PID,
     log_path: Path = DEFAULT_24H_LOG,
     parameters: dict[str, float] | None = None,
+    source_selection: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     parameters = parameters or read_parameters()
     target_seconds = parameters["soak.long_duration_hours"] * 3600
@@ -124,7 +198,7 @@ def build_progress_payload(
         and completed_seconds >= target_seconds
     ):
         status = "COMPLETE_READY_FOR_EVIDENCE_VALIDATION"
-    elif windows_completed > 0 and pid["status"] == "RUNNING":
+    elif windows_completed > 0 and process_may_be_running(pid["status"]):
         status = "RUNNING_PARTIAL"
     elif windows_completed > 0:
         status = "PAUSED_RESUMABLE"
@@ -161,6 +235,13 @@ def build_progress_payload(
             "checkpoint_jsonl_present": checkpoint_path.exists(),
         },
         "process": pid,
+        "source_selection": source_selection
+        or {
+            "selected_source": "explicit_or_default",
+            "discover_latest_rerun": False,
+            "rerun_search_root": display_path(DEFAULT_RERUN_SEARCH_ROOT),
+            "discovered_latest_rerun": None,
+        },
         "resume_command": (
             "node scripts/run_operator_soak.mjs --mode operator_24h --duration-hours 24 "
             "--window-seconds 300 --output artifacts/tests/a209/t1307_operator_soak_24h.json "
@@ -198,6 +279,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--pid-file", default=str(DEFAULT_24H_PID))
     parser.add_argument("--log-file", default=str(DEFAULT_24H_LOG))
     parser.add_argument("--write-output", default=str(DEFAULT_OUTPUT))
+    parser.add_argument("--discover-latest-rerun", action="store_true")
+    parser.add_argument("--rerun-search-root", type=Path, default=DEFAULT_RERUN_SEARCH_ROOT)
     parser.add_argument("--no-write", action="store_true")
     parser.add_argument("--quiet", action="store_true")
     return parser.parse_args()
@@ -205,11 +288,17 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
-    payload = build_progress_payload(
+    resolved = resolve_monitor_paths(
         output_path=Path(args.output_json),
         checkpoint_path=Path(args.checkpoint),
         pid_path=Path(args.pid_file),
         log_path=Path(args.log_file),
+        discover_latest_rerun=args.discover_latest_rerun,
+        rerun_search_root=args.rerun_search_root,
+    )
+    payload = build_progress_payload(
+        **resolved["paths"],
+        source_selection=resolved["source_selection"],
     )
     if not args.no_write:
         write_payload(Path(args.write_output), payload)
