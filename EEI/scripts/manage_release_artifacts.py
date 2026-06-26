@@ -12,19 +12,24 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 
-MANIFEST = Path("manifest.txt")
-DIRECTORY_TREE = Path("DIRECTORY_TREE.txt")
-CHECKSUMS = Path("CHECKSUMS.sha256")
-RELEASE_EVIDENCE = Path("artifacts/release_evidence_t1211.json")
-OPERATION_LOG = Path("artifacts/release_operation_log_t1211.jsonl")
+MANIFEST_ID = "manifest.txt"
+DIRECTORY_TREE_ID = "DIRECTORY_TREE.txt"
+CHECKSUMS_ID = "CHECKSUMS.sha256"
+RELEASE_EVIDENCE_ID = "artifacts/release_evidence_t1211.json"
+OPERATION_LOG_ID = "artifacts/release_operation_log_t1211.jsonl"
+MANIFEST = Path(MANIFEST_ID)
+DIRECTORY_TREE = Path(DIRECTORY_TREE_ID)
+CHECKSUMS = Path(CHECKSUMS_ID)
+RELEASE_EVIDENCE = Path(RELEASE_EVIDENCE_ID)
+OPERATION_LOG = Path(OPERATION_LOG_ID)
 BINARY_SUFFIXES = {".gif", ".gz", ".ico", ".jpg", ".jpeg", ".pdf", ".png", ".webp", ".zip"}
 
 REQUIRED_RELEASE_PATHS = {
-    str(MANIFEST),
-    str(DIRECTORY_TREE),
-    str(CHECKSUMS),
-    str(RELEASE_EVIDENCE),
-    str(OPERATION_LOG),
+    MANIFEST_ID,
+    DIRECTORY_TREE_ID,
+    CHECKSUMS_ID,
+    RELEASE_EVIDENCE_ID,
+    OPERATION_LOG_ID,
     "scripts/manage_release_artifacts.py",
 }
 
@@ -32,7 +37,7 @@ TRACKED_PATH_EXCLUDES = {
     "apps/web/next-env.d.ts",
 }
 
-CHECKSUM_EXCLUDES = {str(CHECKSUMS)}
+CHECKSUM_EXCLUDES = {CHECKSUMS_ID}
 
 
 def run_git(*args: str) -> str:
@@ -193,11 +198,11 @@ def operation_log_entries() -> list[dict[str, Any]]:
 
 def ensure_operation_log_entry() -> None:
     entries = operation_log_entries()
-    if any(
-        entry.get("operation_id") == "release-t1211-publish-reproducible-artifacts"
+    entries = [
+        entry
         for entry in entries
-    ):
-        return
+        if entry.get("operation_id") != "release-t1211-publish-reproducible-artifacts"
+    ]
     entries.append(operation_log_entry())
     payload = "\n".join(json.dumps(entry, ensure_ascii=False, sort_keys=True) for entry in entries)
     write_text(OPERATION_LOG, payload + "\n")
@@ -218,8 +223,8 @@ def generate(args: argparse.Namespace) -> None:
                 "generated": True,
                 "manifest_paths": len(paths),
                 "checksum_paths": len(paths) - len(CHECKSUM_EXCLUDES),
-                "release_evidence": str(RELEASE_EVIDENCE),
-                "operation_log": str(OPERATION_LOG),
+                "release_evidence": path_id(RELEASE_EVIDENCE),
+                "operation_log": path_id(OPERATION_LOG),
             },
             ensure_ascii=False,
             indent=2,
