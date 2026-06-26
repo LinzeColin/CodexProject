@@ -1,0 +1,37 @@
+{
+  "manifest_id": "ADP-USER-CENTER-TOTAL-CANDIDATE-POOL-20260626",
+  "project": "arxiv-daily-push",
+  "task_id": "USER-CENTER-TOTAL-CANDIDATE-POOL",
+  "timestamp": "2026-06-26T19:32:20+10:00",
+  "status": "local_validation_pending_main_push",
+  "summary": "Expose the owner-facing 截至今日总候选池 on shallow GitHub user-center pages, add a 30-row report/mail-preview status index, publish the existing ranking formula and weights, and add regression tests so summaries cannot collapse back to an 11-item runtime queue.",
+  "facts": {
+    "total_candidate_pool": 299,
+    "generated_report_or_preview": 30,
+    "pending_candidates": 269,
+    "current_runtime_queue": 11,
+    "open_pr_count": 0
+  },
+  "no_production_side_effects": {
+    "smtp_enabled": false,
+    "scheduler_enabled": false,
+    "release_uploaded": false,
+    "current_or_v7_contract_changed": false,
+    "p0_p1_closed": false,
+    "stage2_production_accepted": false
+  },
+  "evidence_refs": [
+    "arxiv-daily-push/用户中心/截至今日候选池.md",
+    "arxiv-daily-push/用户中心/已生成报告与邮件预览.md",
+    "arxiv-daily-push/模型参数文件",
+    "arxiv-daily-push/tests/test_user_center_candidate_pool.py",
+    "arxiv-daily-push/docs/owner/CONTENT_LEDGER.csv"
+  ],
+  "validation": [
+    "focused user-center/local-runner tests: 10 OK",
+    "full arxiv-daily-push unittest: 491 OK",
+    "project governance: 0 errors / 0 warnings",
+    "git diff --check: PASS",
+    "open_pr_count: 0"
+  ]
+}

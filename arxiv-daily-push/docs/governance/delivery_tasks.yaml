@@ -2408,3 +2408,21 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "USER-CENTER-TOTAL-CANDIDATE-POOL"
+    phase: "S2PI/S2PJ"
+    objective: "Expose the owner-facing total candidate pool on shallow GitHub user-center pages and prevent regression to an 11-item runtime queue sample."
+    scope: "Shallow user-center total candidate pool page, report/mail-preview status index, summary page wording, public ranking formula explanation, regression test, and governance records."
+    non_scope: "No SMTP enablement, no scheduler install or enablement, no Release, no production restore, no public schema change, no DB migration, no production queue mutation, no ranking algorithm change, no source adapter change, no CURRENT or V7 contract edit, no inherited P0/P1 closure, no DAILY_OPERATION, and no integrated production acceptance."
+    status: "completed"
+    dependencies: ["LOCAL-RUNNER-USER-CENTER-SYNC-GATE", "S2PIT01"]
+    required_files: ["arxiv-daily-push/用户中心/截至今日候选池.md", "arxiv-daily-push/用户中心/已生成报告与邮件预览.md", "arxiv-daily-push/模型参数文件", "arxiv-daily-push/tests/test_user_center_candidate_pool.py"]
+    acceptance_ids: ["ACC-S2PIT01-USER-CENTER"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_uc_focus2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_user_center_candidate_pool.py arxiv-daily-push/tests/test_local_runner.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_uc_all PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_uc_gov2 PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push", "git diff --check"]
+    test_results: ["focused user-center/local-runner tests: 10 OK", "full arxiv-daily-push unittest: 491 OK", "ADP project governance: 0 errors / 0 warnings", "git diff --check: PASS", "open_pr_count: 0"]
+    evidence_refs: ["arxiv-daily-push/用户中心/截至今日候选池.md", "arxiv-daily-push/用户中心/已生成报告与邮件预览.md", "arxiv-daily-push/模型参数文件", "arxiv-daily-push/tests/test_user_center_candidate_pool.py", "governance/run_manifests/ADP-USER-CENTER-TOTAL-CANDIDATE-POOL-20260626.json"]
+    risk: "The total candidate pool can be misread as sent mail volume; the page explicitly separates 299 total candidate records, 30 generated report/mail-preview records, 269 pending candidates, and the current runtime queue of 11."
+    rollback: "Revert shallow user-center candidate pool pages, scoring disclosure text, regression test, manifest, and governance records; no production runtime state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

@@ -17,7 +17,7 @@ dimensions:
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
     checked_active_parameters: 879
-    total_active_parameters: 886
+    total_active_parameters: 890
     checked_active_formulas: 107
     total_active_formulas: 108
     unresolved_fact_ids: []
@@ -28,7 +28,7 @@ dimensions:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
     checked_active_parameters: 879
-    total_active_parameters: 886
+    total_active_parameters: 890
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
   methodological_rationale:

@@ -5509,7 +5509,7 @@ models:
   -
     model_id: "MOD-ADP-106"
     name: "Local runner GitHub user-center sync gate model"
-    purpose: "Require the daily local runner to synchronize the shallow GitHub user-center learning snapshot before a daily report can pass or real SMTP can proceed, so owner-facing review/action/asset/ROI state cannot remain local-only or pending while the run is marked ready."
+    purpose: "Require the daily local runner to synchronize the shallow GitHub user-center learning snapshot and planned M1-M4 mail-send denominator before a daily report can pass or real SMTP can proceed, so owner-facing review/action/asset/ROI and mail status cannot remain local-only or pending while the run is marked ready."
     owner: "arxiv-daily-push"
     status: "active"
     assumption_ids:
@@ -5524,15 +5524,22 @@ models:
       - "PARAM-ADP-901"
       - "PARAM-ADP-902"
       - "PARAM-ADP-903"
+      - "PARAM-ADP-904"
+      - "PARAM-ADP-905"
+      - "PARAM-ADP-906"
+      - "PARAM-ADP-907"
     inputs:
       - "local daily runner state directory"
       - "S2PJT02 review schedule report"
       - "S2PJT03 action asset ROI ledger report"
       - "shallow GitHub user center learning page"
+      - "shallow GitHub mail status pages"
+      - "Email V1 M1-M4 mail product contract"
       - "SMTP send intent"
     outputs:
       - "user_center_sync report object"
       - "user_center_sync_ready flag"
+      - "planned_mail_delivery report object"
       - "daily runner blocked/degraded state when sync is missing"
       - "real SMTP block when user-center sync is missing"
     code_refs:
