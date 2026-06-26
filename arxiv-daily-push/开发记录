@@ -1,19 +1,19 @@
 # 开发记录
 
-本文件是 ADP 的中文开发基线。它保留路线图、任务、门禁、验收和关键事件；不把机器字段原样倾倒给用户。任务编号、PR、提交、文件名和命令名保留原文，是为了审查和跳转。
+本文件是 ADP 的中文开发基线。它保留路线图、任务、门禁、验收和关键事件；不把机器字段原样倾倒给用户。任务编号、PR、提交、文件名、命令名和括号中的治理校验定位码保留原文，是为了审查和跳转。
 
 ## 摘要
 
 | 字段 | 当前值 |
 |---|---|
-| project_id | arxiv-daily-push |
-| current_contract | ADP-PRODUCT-CONTRACT-V7.2 |
-| previous_contract | ADP-PRODUCT-CONTRACT-V7.1 |
-| previous_lock | V7_1_ROOT_LOCK.yaml |
-| stage1_gate | ARXIV_PRODUCTION_ACCEPTED |
-| current_task | S2PMT07 |
-| Stage -> Phase -> Task | Stage 2 -> S2PM -> S2PMT07 |
-| stop_gate | inherited P0/P1 zero, S2PLT04 complete, final bundle present, independent S2PMT07 signoff |
+| 项目标识 | arxiv-daily-push |
+| 当前合同 | ADP-PRODUCT-CONTRACT-V7.2 |
+| 历史合同 | ADP-PRODUCT-CONTRACT-V7.1 |
+| 历史锁定文件 | V7_1_ROOT_LOCK.yaml |
+| 第一阶段门禁 | ARXIV_PRODUCTION_ACCEPTED |
+| 当前任务 | S2PMT07 |
+| 阶段路径（`Stage -> Phase -> Task`） | Stage 2 -> S2PM -> S2PMT07 |
+| 停止门（`stop_gate`） | 继承 P0/P1 清零、S2PLT04 完成、最终包存在、S2PMT07 独立签署 |
 
 ## 当前状态
 
@@ -22,7 +22,7 @@
 | 当前开发主线 | Stage 2 仍在推进，正式生产验收未通过 |
 | 用户中心修复状态 | 已把 GitHub 用户中心改为唯一入口、中文优先、证据可跳转、字段可决策 |
 | 本次修复边界 | 只改 S2PMT07 审计收据、三基说明和运行清单；不改生产代码、公共结构、队列、计划任务或 SMTP |
-| 当前最有价值下一步 | 独立 reviewer 逐项复核 8 个历史 P0；同时真实 daily runner 必须证明 GitHub 用户中心同步成功后才可称 pass |
+| 当前最有价值下一步 | 独立复审者逐项复核 8 个历史 P0；同时真实每日运行器必须证明 GitHub 用户中心同步成功后才可称通过 |
 | 当前禁止结论 | 不能宣称 Stage 2 正式生产通过，不能宣称每日运行已验收 |
 
 ## 本次用户中心修复记录
@@ -31,18 +31,19 @@
 |---|---|---|---|---|
 | 2026-06-26 16:27 Australia/Sydney | GitHub 用户中心补齐 | 建立浅层用户中心、一看三查、邮件状态、复习行动收益、路线图和决策页面 | 未启用生产发送、未改公共结构 | [ADP-USER-CENTER-ONE-LOOK-THREE-CHECK](../governance/run_manifests/ADP-USER-CENTER-ONE-LOOK-THREE-CHECK-20260626.json) |
 | 2026-06-26 17:17 Australia/Sydney | 中文可读性修复 | 将页面改为中文、结论优先、动作优先 | 未改变运行器和队列 | [ADP-USER-CENTER-READABLE-CN](../governance/run_manifests/ADP-USER-CENTER-READABLE-CN-20260626.json) |
-| 2026-06-26 18:01 Australia/Sydney | 邮件状态与模板预览修复 | 增加 UI/UX 模板预览、历史发送记录、候选池 Code 列和真实时间戳脚本 | 未改邮件生产代码和 SMTP | [ADP-MAIL-STATUS-LONGTERM-TEMPLATE](../governance/run_manifests/ADP-MAIL-STATUS-LONGTERM-TEMPLATE-20260626.json) |
+| 2026-06-26 18:01 Australia/Sydney | 邮件状态与模板预览修复 | 增加界面模板预览、历史发送记录、候选池领域代码列和真实时间戳脚本 | 未改邮件生产代码和 SMTP | [ADP-MAIL-STATUS-LONGTERM-TEMPLATE](../governance/run_manifests/ADP-MAIL-STATUS-LONGTERM-TEMPLATE-20260626.json) |
 | 2026-06-26 18:27 Australia/Sydney | 用户中心复习行动收益修复 | 删除重复索引；README 成为唯一入口；复习页改为字段、证据链和今日快照待写入；新增学习快照同步脚本；三基文件改为中文可读基线 | 未伪造今日复习、行动、资产或收益数量 | [用户中心 README](用户中心/README.md) / [复习行动与收益](用户中心/复习行动与收益.md) / [学习快照脚本](scripts/update_user_center_learning_snapshot.py) |
 | 2026-06-26 18:45 Australia/Sydney | S2PMT07 P0 复审收据 | 把 8 个历史 P0 的证据位置和仍需独立判定的事项写入审计收据 | 未关闭 P0/P1、未提供独立签署、未启用任何生产动作 | [S2PMT07 P0 收据](docs/phase_records/PHASE_S2PMT07_P0_INDEPENDENT_REVIEW_RECEIPT.md) / [运行清单](../governance/run_manifests/ADP-S2PMT07-P0-INDEPENDENT-REVIEW-RECEIPT-20260626.json) |
-| 2026-06-26 18:45 Australia/Sydney | 本地 runner 用户中心同步硬门 | daily runner pass 必须同步浅层 GitHub 用户中心复习、行动、资产、收益快照；缺失或仍为待写入时阻断，且真实 SMTP 不发送 | 未启用 scheduler、SMTP、Release 或 daily operation | [同步硬门记录](docs/phase_records/PHASE_LOCAL_RUNNER_USER_CENTER_SYNC_GATE.md) / [运行清单](../governance/run_manifests/ADP-LOCAL-RUNNER-USER-CENTER-SYNC-GATE-20260626.json) |
-| 2026-06-26 19:26 Australia/Sydney | 截至今日总候选池和评分公开 | 公开 299 条总候选记录、30 条报告/邮件预览索引、269 条待处理候选；公开 ranking.py 评分公式、8 个权重、eligibility、空值处理和 tie-breaker；新增回归测试防止退回 11 条样本 | 未改排序算法、生产队列、SMTP、scheduler、Release、CURRENT/V7 合同或 P0/P1 状态 | [截至今日候选池](用户中心/截至今日候选池.md) / [已生成报告与邮件预览](用户中心/已生成报告与邮件预览.md) / [模型参数文件](模型参数文件) |
-| 2026-06-26 19:42 Australia/Sydney | 候选队列前20精选和库存流转规则 | 将 owner 候选入口改为候选队列前20精选；每篇精选写出评分；新增每日库存流转公式、指标流转表和板块期末候选数验收口径 | 未伪造日级板块流转账本；未改排序算法、生产队列、SMTP、scheduler、Release、CURRENT/V7 合同或 P0/P1 状态 | [截至今日候选池](用户中心/截至今日候选池.md) / [模型参数文件](模型参数文件) |
+| 2026-06-26 18:45 Australia/Sydney | 本地运行器用户中心同步硬门 | 每日运行器通过前必须同步浅层 GitHub 用户中心复习、行动、资产、收益快照；缺失或仍为待写入时阻断，且真实 SMTP 不发送 | 未启用计划任务、SMTP、Release 或每日生产运行 | [同步硬门记录](docs/phase_records/PHASE_LOCAL_RUNNER_USER_CENTER_SYNC_GATE.md) / [运行清单](../governance/run_manifests/ADP-LOCAL-RUNNER-USER-CENTER-SYNC-GATE-20260626.json) |
+| 2026-06-26 19:26 Australia/Sydney | 截至今日总候选池和评分公开 | 公开 299 条总候选记录、30 条报告/邮件预览索引、269 条待处理候选；公开 `ranking.py` 评分公式、8 个权重、入选资格、空值处理和同分排序规则；新增回归测试防止退回 11 条样本 | 未改排序算法、生产队列、SMTP、scheduler、Release、CURRENT/V7 合同或 P0/P1 状态 | [截至今日候选池](用户中心/截至今日候选池.md) / [已生成报告与邮件预览](用户中心/已生成报告与邮件预览.md) / [模型参数文件](模型参数文件) |
+| 2026-06-26 19:42 Australia/Sydney | 候选队列前20精选和库存流转规则 | 将用户候选入口改为候选队列前20精选；每篇精选写出评分；新增每日库存流转公式、指标流转表和板块期末候选数验收口径 | 未伪造日级板块流转账本；未改排序算法、生产队列、SMTP、scheduler、Release、CURRENT/V7 合同或 P0/P1 状态 | [截至今日候选池](用户中心/截至今日候选池.md) / [模型参数文件](模型参数文件) |
+| 2026-06-26 19:54 Australia/Sydney | 全局中文和 Rank 列修复 | 三基文件和用户中心改为中文优先；候选池和前20精选删除 Rank 展示列；测试新增防回归检查 | 未改邮件生产代码、公共 Schema、SMTP、scheduler、Release、CURRENT/V7 合同或 P0/P1 状态 | [截至今日候选池](用户中心/截至今日候选池.md) / [用户中心 README](用户中心/README.md) / [候选池测试](tests/test_user_center_candidate_pool.py) |
 
 ## 当前路线图
 
 | 阶段 | 目标 | 当前状态 | 工时 | 占比 | 停止门 |
 |---|---|---|---:|---:|---|
-| S2 Stage 2 多来源证据推进 | 在不破坏 Stage 1 arXiv accepted 和本机 local runner 策略的前提下，逐来源推进真实数据链路、队列、账本、邮件预览和影子证据 | 进行中 | 6.50 | 61.90% | 未通过最终生产门前，禁止宣称 Stage 2 正式生产通过 |
+| S2 Stage 2 多来源证据推进 | 在不破坏 Stage 1 arXiv 已验收状态和本地运行器策略的前提下，逐来源推进真实数据链路、队列、账本、邮件预览和影子证据 | 进行中 | 6.50 | 61.90% | 未通过最终生产门前，禁止宣称 Stage 2 正式生产通过 |
 | S5 项目迁移与三文件重建 | 把治理真相保留下来，把治理计算从每次开发动作中移出去 | 进行中 | 4.00 | 38.10% | 每个项目必须保留可读三基文件，不能只做索引页 |
 
 ## Stage 2 任务
@@ -89,8 +90,8 @@
 | 2026-06-26 | 周报和月报证据 | 本地周报、月报证据完成，不代表正式生产周期报告通过 | [S2PJT04 清单](../governance/run_manifests/ADP-S2PJT04-WEEKLY-REPORT-20260626.json) / [S2PJT05 清单](../governance/run_manifests/ADP-S2PJT05-MONTHLY-REPORT-20260626.json) |
 | 2026-06-26 | M1-M4 邮件合同证据 | Email V1 M1-M4 本地合同证据完成，不代表生产发送全部通过 | [S2PKT01 清单](../governance/run_manifests/ADP-S2PKT01-MAIL-CONTRACT-20260626.json) |
 | 2026-06-26 | Stage 2 最终门预检 | 仍被独立复审、历史阻断、最终包等要求阻断 | [路线图与停止门](用户中心/路线图与停止门.md) |
-| 2026-06-26 | S2PMT07 P0 复审准备 | 已整理 8 个历史 P0 的证据表和独立 reviewer 待判定项；P0=8/P1=37 仍保持阻断 | [S2PMT07 P0 收据](docs/phase_records/PHASE_S2PMT07_P0_INDEPENDENT_REVIEW_RECEIPT.md) |
-| 2026-06-26 | 用户中心同步进入 daily pass 硬门 | 本地 daily report 只有在 `user_center_sync_ready=true` 时才能 pass；同步缺失会阻断真实 SMTP | [同步硬门记录](docs/phase_records/PHASE_LOCAL_RUNNER_USER_CENTER_SYNC_GATE.md) |
+| 2026-06-26 | S2PMT07 P0 复审准备 | 已整理 8 个历史 P0 的证据表和独立复审者待判定项；P0=8/P1=37 仍保持阻断 | [S2PMT07 P0 收据](docs/phase_records/PHASE_S2PMT07_P0_INDEPENDENT_REVIEW_RECEIPT.md) |
+| 2026-06-26 | 用户中心同步进入每日通过硬门 | 本地每日报告只有在 `user_center_sync_ready=true` 时才能通过；同步缺失会阻断真实 SMTP | [同步硬门记录](docs/phase_records/PHASE_LOCAL_RUNNER_USER_CENTER_SYNC_GATE.md) |
 
 ## 验收和回滚
 
