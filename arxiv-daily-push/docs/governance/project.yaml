@@ -462,6 +462,7 @@ features:
       - "EVID-ADP-S2PMT05-B006"
       - "EVID-ADP-S2PMT05-B009"
       - "EVID-ADP-S2PMT05-B010"
+      - "EVID-ADP-S2PMT05-B012"
       - "EVID-ADP-S2PMT05-B013"
       - "EVID-ADP-S2PMT05-B014"
       - "EVID-ADP-S2P1T01-PREPRINT"
@@ -10209,6 +10210,11 @@ evidence_refs:
     evidence_id: "EVID-ADP-S2PMT05-B010"
     kind: "manifest"
     ref: "governance/run_manifests/ADP-S2PMT05-TIME-POLICY-B010-20260627.json"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-ADP-S2PMT05-B012"
+    kind: "manifest"
+    ref: "governance/run_manifests/ADP-S2PMT05-E2E-B012-20260627.json"
     fact_level: "EXTRACTED"
   -
     evidence_id: "EVID-ADP-S2PMT05-B013"

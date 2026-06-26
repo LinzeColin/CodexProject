@@ -21,7 +21,7 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 151
+- task_count: 152
 - acceptance_count: 122
 
 ## Delivery Tasks
@@ -231,6 +231,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PMT05-CAPACITY-BASELINE-B006 | Formal capacity baseline gate | completed_local_validation | `ACC-S2PMT05-STRESS-E2E` | Local B-006 remediation: capacity baseline now requires load/stress/spike/soak rows, 1x/2x/5x multipliers, throughput/latency/queue/memory/disk/error metrics, bounded recoverable queue age, local 24h accelerated soak, and rebuildable-only spike shedding; no SMTP/scheduler/production side effects. |
 | S2PMT05-FAULT-INJECTION-B009 | Systematic fault injection recovery gate | completed_local_validation | `ACC-S2PMT05-STRESS-E2E` | Local B-009 remediation: fault injection now requires ENOSPC, read-only target, SQLITE_BUSY, corrupt JSON/PDF/backup, backup path collision, explicit recovery states, no partial artifact commits, and fail-closed durable evidence; no SMTP/scheduler/production side effects. |
 | S2PMT05-TIME-POLICY-B010 | Structured DST misfire catch-up gate | completed_local_validation | `ACC-S2PMT05-STRESS-E2E` | Local B-010 remediation: time policy now requires Australia/Sydney 05:00 structured schedule, 3600-second misfire grace, one-cycle catch-up bound, DST fold/gap, 8h sleep recovery, NTP forward/backward clock-jump cases, and no duplicate M4 watermark; no scheduler/SMTP/production side effects. |
+| S2PMT05-E2E-B012 | 35-day E2E audit bundle gate | completed_local_validation | `ACC-S2PMT05-STRESS-E2E` | Local B-012 remediation: 35-day E2E now requires an auditable run bundle, section artifacts, deterministic bundle hash, count conservation for daily 3+1/weekly/monthly/review/action/ROI, and reachable review/action/ROI links; no SMTP/scheduler/production side effects. |
 | S2PMT05-RESULT-VALIDITY-B013 | Result validity semantic evidence gate | completed_local_validation | `ACC-S2PMT05-STRESS-E2E` | Local B-013 remediation: result validity now requires semantic alignment, claim/evidence refs, mechanism/action specificity, non-template variance, and unsupported P0 negative controls; no SMTP/scheduler/production side effects. |
 | S2PMT05-BACKPRESSURE-B014 | Backpressure priority SLO gate | completed_local_validation | `ACC-S2PMT05-STRESS-E2E` | Local B-014 remediation: backpressure now requires 2x/5x peak profiles, high-priority SLO protection, explicit low-priority delay/drop reason codes, and durable evidence preservation; no SMTP/scheduler/production side effects. |
 | S2PMT06 | Chinese owner UX and safe controls | completed_local_validation | `ACC-S2PMT06-UX` | Local-only Chinese owner first screen, fixed navigation, status feedback, error cards, safe config changes, queue views, safe actions, accessibility, C-001 through C-015 coverage, and no production side effects. |

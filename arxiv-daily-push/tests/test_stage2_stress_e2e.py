@@ -28,6 +28,7 @@ from arxiv_daily_push.stage2_stress_e2e import (
     build_time_policy_cases,
     build_time_schedule_policy,
     build_workload_profile,
+    evaluate_35_day_e2e_bundle,
     evaluate_backpressure_policy,
     evaluate_capacity_baseline_model,
     evaluate_dst_clock_policy,
@@ -205,6 +206,45 @@ class Stage2StressE2ETests(unittest.TestCase):
         self.assertGreaterEqual(sections["monthly_report"]["report_count"], 1)
         self.assertEqual(sections["review"]["records"], sections["action"]["linked_review_records"])
         self.assertEqual(sections["action"]["records"], sections["roi"]["linked_action_records"])
+        self.assertEqual(len(fixture["daily_mail_rows"]), 140)
+        self.assertEqual(fixture["audit_bundle"]["ledger_counts"]["daily_mail_rows"], 140)
+        self.assertEqual(fixture["audit_bundle"]["ledger_counts"]["review_rows"], 105)
+        self.assertTrue(fixture["checks"]["audit_bundle_present"])
+        self.assertTrue(fixture["checks"]["section_artifacts_present"])
+        self.assertTrue(fixture["checks"]["bundle_links_reachable"])
+        self.assertTrue(fixture["checks"]["review_action_roi_links_reachable"])
+        self.assertTrue(fixture["checks"]["deterministic_bundle_hash_present"])
+        self.assertFalse(fixture["audit_bundle"]["production_side_effects_enabled"])
+        self.assertFalse(fixture["audit_bundle"]["real_smtp_sent"])
+        self.assertFalse(fixture["audit_bundle"]["scheduler_enabled"])
+
+    def test_35_day_e2e_bundle_blocks_orphan_links_and_count_drift(self) -> None:
+        fixture = build_35_day_e2e_fixture()
+        bundle = dict(fixture["audit_bundle"])
+        orphan_target = bundle["link_graph"][0]["target"]
+        bundle["artifact_index"] = [ref for ref in bundle["artifact_index"] if ref != orphan_target]
+
+        evaluation = evaluate_35_day_e2e_bundle(
+            days=fixture["days"],
+            sections=fixture["sections"],
+            audit_bundle=bundle,
+        )
+
+        self.assertEqual(evaluation["status"], "blocked")
+        self.assertFalse(evaluation["checks"]["bundle_links_reachable"])
+
+        sections = dict(fixture["sections"])
+        sections["action"] = dict(sections["action"])
+        sections["action"]["linked_review_records"] -= 1
+
+        count_evaluation = evaluate_35_day_e2e_bundle(
+            days=fixture["days"],
+            sections=sections,
+            audit_bundle=fixture["audit_bundle"],
+        )
+
+        self.assertEqual(count_evaluation["status"], "blocked")
+        self.assertFalse(count_evaluation["checks"]["review_action_roi_counts_conserved"])
 
     def test_result_validity_gate_requires_semantic_evidence_and_non_template_output(self) -> None:
         fixture = build_result_validity_fixture(generated_at="2026-07-04T06:00:00+10:00")
@@ -299,6 +339,12 @@ class Stage2StressE2ETests(unittest.TestCase):
         self.assertTrue(report["dst_clock_policy"]["checks"]["misfire_within_grace_runs_once"])
         self.assertTrue(report["dst_clock_policy"]["checks"]["sleep_8h_catchup_bounded"])
         self.assertTrue(report["dst_clock_policy"]["checks"]["ntp_forward_over_tolerance_blocks"])
+        self.assertTrue(report["gates"]["thirty_five_day_e2e"])
+        self.assertEqual(report["findings_covered"]["B-012"], ["thirty_five_day_e2e"])
+        self.assertTrue(report["thirty_five_day_e2e"]["checks"]["audit_bundle_present"])
+        self.assertTrue(report["thirty_five_day_e2e"]["checks"]["section_artifacts_present"])
+        self.assertTrue(report["thirty_five_day_e2e"]["checks"]["bundle_links_reachable"])
+        self.assertTrue(report["thirty_five_day_e2e"]["checks"]["review_action_roi_links_reachable"])
         self.assertTrue(report["gates"]["result_validity_semantic_evidence"])
         self.assertEqual(report["findings_covered"]["B-013"], ["result_validity_semantic_evidence"])
         self.assertTrue(report["backpressure_degradation"]["checks"]["covers_2x_and_5x_peak_profiles"])

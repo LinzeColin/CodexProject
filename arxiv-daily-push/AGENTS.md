@@ -54,7 +54,8 @@ This project follows the root `AGENTS.md` and `docs/governance/STANDARD.md`.
   states, structured Australia/Sydney 05:00 schedule, DST fold/gap, 3600-second
   misfire grace, bounded one-cycle catch-up, 8h sleep recovery, NTP
   backward/forward clock-jump policy, and no duplicate M4 watermark, 35-day
-  3+1/weekly/monthly/review/action/ROI E2E count conservation,
+  3+1/weekly/monthly/review/action/ROI E2E audit bundle, section artifacts,
+  deterministic bundle hash, count conservation, reachable review/action/ROI links,
   semantic/evidence-bound non-template result validity, 2x/5x
   priority-aware backpressure/degradation with high-priority SLO and
   low-priority reason codes, deterministic isolation, and no production side
