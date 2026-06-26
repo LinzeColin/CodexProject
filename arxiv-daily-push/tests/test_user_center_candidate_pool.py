@@ -7,10 +7,12 @@ from arxiv_daily_push.owner_controls import load_owner_controls
 
 
 ROOT = Path(__file__).resolve().parents[1]
+REPO_ROOT = ROOT.parent
 LEDGER = ROOT / "docs" / "owner" / "CONTENT_LEDGER.csv"
 CONTROLS = ROOT / "config" / "owner_controls.yaml"
 SOURCE_CATALOG = ROOT / "docs" / "owner" / "SOURCE_CATALOG.md"
 USER_CENTER = ROOT / "用户中心"
+ROOT_AGENTS = REPO_ROOT / "AGENTS.md"
 PROJECT_AGENTS = ROOT / "AGENTS.md"
 PROJECT_README = ROOT / "README.md"
 CANDIDATE_POOL_PAGE = USER_CENTER / "截至今日候选池.md"
@@ -175,9 +177,13 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("[数据源与板块健康](用户中心/数据源与板块健康.md)", model_params)
 
     def test_future_source_changes_are_bound_to_user_center_sync_gate(self):
+        root_agents = ROOT_AGENTS.read_text(encoding="utf-8")
         agents = PROJECT_AGENTS.read_text(encoding="utf-8")
         readme = PROJECT_README.read_text(encoding="utf-8")
 
+        self.assertIn("source or board addition, deletion", root_agents)
+        self.assertIn("user-center sync gate", root_agents)
+        self.assertIn("must not change only", root_agents)
         self.assertIn("新增、删除、重命名、启用或停用任何板块或数据源", agents)
         required_paths = (
             "用户中心/数据源与板块健康.md",
