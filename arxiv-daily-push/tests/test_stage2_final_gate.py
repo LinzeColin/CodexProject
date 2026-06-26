@@ -182,7 +182,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         manifest_path = REPO_ROOT / "governance/run_manifests/ADP-S2PMT07-P1-INDEPENDENT-REVIEW-RECEIPT-20260626.json"
         refresh_manifest_path = (
             REPO_ROOT
-            / "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A010-A016-20260627.json"
+            / "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A015-20260627.json"
         )
         receipt = receipt_path.read_text(encoding="utf-8")
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
@@ -208,6 +208,7 @@ class Stage2FinalGateTests(unittest.TestCase):
             "A-012": ("PHASE_S2PMT01_INPUT_URL_SAFETY_A012.md", "ADP-S2PMT01-INPUT-URL-SAFETY-A012-20260626.json"),
             "A-013": ("PHASE_S2PMT04_SCHEDULER_TEMPLATE_A013.md", "ADP-S2PMT04-SCHEDULER-TEMPLATE-A013-20260626.json"),
             "A-014": ("PHASE_S2PMT02_SUPPORTING_FILE_COLLISION.md", "ADP-S2PMT02-SUPPORTING-FILE-COLLISION-20260626.json"),
+            "A-015": ("PHASE_S2PMT05_FUTURE_HEARTBEAT_A015.md", "ADP-S2PMT05-FUTURE-HEARTBEAT-A015-20260627.json"),
             "A-016": ("PHASE_S2PMT03_LESSON_REVISION_A016.md", "ADP-S2PMT03-LESSON-REVISION-A016-20260626.json"),
             "A-017": ("PHASE_S2PMT03_SMTP_IDENTITY_A017.md", "ADP-S2PMT03-SMTP-IDENTITY-A017-20260626.json"),
             "A-018": ("PHASE_S2PAT05_ROI_DISCLOSURE_A018.md", "ADP-S2PAT05-ROI-DISCLOSURE-A018-20260626.json"),
@@ -247,6 +248,7 @@ class Stage2FinalGateTests(unittest.TestCase):
                 "PHASE_S2PMT02_RESTORE_SAFETY_REMEDIATION.md",
                 "ADP-S2PMT02-ATOMIC-RECOVERY-20260626.json",
             ),
+            "A-015": ("PHASE_S2PMT05_STRESS_E2E.md", "ADP-S2PMT05-STRESS-E2E-20260626.json"),
             "A-016": ("PHASE_S2PMT03_LEASE_FENCING.md", "ADP-S2PMT03-LEASE-FENCING-20260626.json"),
             "A-017": ("ADP-S2PMT03-LEASE-FENCING-20260626.json",),
             "A-018": ("PHASE_S2PKT01_MAIL_CONTRACT.md",),
@@ -269,7 +271,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(manifest["refreshed_findings"], list(expected_current_refs))
         self.assertEqual(
             manifest["refresh_manifest"],
-            "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A010-A016-20260627.json",
+            "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A015-20260627.json",
         )
         self.assertIn(
             "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-20260627.json",

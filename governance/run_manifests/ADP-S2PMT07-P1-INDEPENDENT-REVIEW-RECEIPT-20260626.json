@@ -187,17 +187,18 @@
     },
     {
       "finding_id": "A-015",
-      "fix_task": "S2PMT05",
+      "fix_task": "S2PMT05-FUTURE-HEARTBEAT-A015",
       "track": "A_安全代码并发",
       "severity": "P1",
       "title": "未来时间戳被钳制为 age=0，时钟漂移可长期伪装新鲜",
-      "preliminary_review_state": "evidence_surface_located_independent_review_required_closure_not_claimed",
+      "preliminary_review_state": "refreshed_current_evidence_located_independent_review_required_closure_not_claimed",
       "evidence_refs": [
-        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_STRESS_E2E.md",
-        "governance/run_manifests/ADP-S2PMT05-STRESS-E2E-20260626.json",
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_FUTURE_HEARTBEAT_A015.md",
+        "governance/run_manifests/ADP-S2PMT05-FUTURE-HEARTBEAT-A015-20260627.json",
         "arxiv-daily-push/tests/test_stage2_stress_e2e.py"
       ],
-      "reviewer_decision_required": "Verify V7.1 fix/test requirement: 未来 5 分钟以上 heartbeat 阻塞；DST 不影响 lease 计算"
+      "reviewer_decision_required": "Verify V7.1 fix/test requirement: 未来 5 分钟以上 heartbeat 阻塞；DST 不影响 lease 计算",
+      "receipt_refreshed_at": "2026-06-27T04:00:50+10:00"
     },
     {
       "finding_id": "A-016",
@@ -628,7 +629,7 @@
   },
   "rollback": "Remove the S2PMT07 P1 review receipt phase record, manifest, and references; no production runtime state was changed.",
   "next_task": "S2PMT07_INDEPENDENT_REVIEWER_SIGNOFF_OR_P1_EVIDENCE_REPAIR",
-  "refreshed_at": "2026-06-27T03:42:54+10:00",
+  "refreshed_at": "2026-06-27T04:00:50+10:00",
   "refreshed_findings": [
     "A-006",
     "A-007",
@@ -639,6 +640,7 @@
     "A-012",
     "A-013",
     "A-014",
+    "A-015",
     "A-016",
     "A-017",
     "A-018",
@@ -656,10 +658,11 @@
     "B-014",
     "B-015"
   ],
-  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A010-A016-20260627.json",
+  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A015-20260627.json",
   "refresh_manifests": [
     "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A006-A009-20260627.json",
-    "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A010-A016-20260627.json"
+    "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A010-A016-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A015-20260627.json"
   ]
 }
