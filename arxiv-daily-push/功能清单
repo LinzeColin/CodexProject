@@ -2,9 +2,9 @@
 
 ## 中文速读
 
-- 本次新增 `S2PMT06-RECOVERABLE-ERROR-C005` 专项证据：把 C-005 “错误和阻塞信息缺少恢复动作、负责人和安全重试入口”从 S2PMT06 汇总证据切到专用可恢复错误门。
-- 专用门要求 P0/P1 错误卡具备负责人、runbook、证据、CTA、安全 retry 预览、确认和 receipt；缺 owner 或 retry 会产生生产副作用时测试失败。
-- 本条只刷新 P1 复审证据路由，不关闭 C-005，不启用 SMTP、scheduler、Release、生产恢复、队列变更、公共 Schema 或 Stage2 生产验收。
+- 本次新增 `S2PMT06-SAFE-CONFIG-C006` 与 `S2PMT06-APPEND-ONLY-AUDIT-C007` 专项证据：把 C-006/C-007 从 S2PMT06 汇总证据切到安全配置变更和 append-only 审计门。
+- C-006 要求配置修改必须有 preview、diff、影响分析、schema/range 校验、确认和 rollback；C-007 要求每次有效修改都有 revision，结果产物记录使用的 revision。
+- 本条只刷新 P1 复审证据路由，不关闭 C-006/C-007，不启用 SMTP、scheduler、Release、生产恢复、队列变更、公共 Schema 或 Stage2 生产验收。
 
 ## 摘要
 
@@ -14,7 +14,7 @@
 - current_phase: `S2PC`
 - current_task: `S2PCT02`
 - progress: `80.95%`
-- capability_count: `11`
+- capability_count: `12`
 - blockers: `none`
 - next_gate: `S2PC-GATE-V7-2-REVALIDATION`
 - next_unique_task: `S2PCT02 Science main-journal metadata-only no-send shadow evidence (planned)`
@@ -38,6 +38,7 @@
 | FEAT-ADP-009 | Review9 Lean v2 owner-readable governance | proposed | 把已有 ADP 治理事实压缩为 canonical project/roadmap/events 与三个人类入口；不搬运治理计算到每次开发动作。 | PROPOSED |
 | FEAT-ADP-010 | S2PIT02 用户中心邮件与队列状态计数门 | completed | C-002 证据现在读取 GitHub 浅层用户中心邮件与队列状态页，校验今日发送数、总应发送数、总候选池、已生成报告或邮件预览、待处理候选的守恒关系，并明确复习、行动、能力资产和 ROI 日级快照仍待接入。 | EXTRACTED |
 | FEAT-ADP-011 | S2PMT06 C-005 可恢复错误门 | completed | C-005 证据现在使用专用 report/validator/test，要求 P0/P1 错误具备负责人、runbook、证据、CTA、安全 retry preview、确认和 receipt；缺 owner 或 retry 产生生产副作用时阻断。 | EXTRACTED |
+| FEAT-ADP-012 | S2PMT06 C-006/C-007 安全配置与审计门 | completed | C-006/C-007 证据现在使用专用 report/validator/test，要求配置修改有 preview、diff、校验、影响分析、确认、rollback，并要求 append-only revision ledger 与结果产物 revision 绑定。 | EXTRACTED |
 
 ## V7.2 CURRENT 产品合同
 

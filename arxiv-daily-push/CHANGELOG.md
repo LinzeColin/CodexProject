@@ -513,3 +513,4 @@
 - Added shallow GitHub user-center total candidate pool disclosure: 299 total candidates, 30 report/mail-preview index entries, 269 pending candidates, public ranking formula/weights, and regression tests; no production side effects.
 - Added S2PMT01 A-020 local supply-chain machine gate for workflow permissions, GitHub Action references, and high/critical vulnerability exception approvals without production side effects.
 - Added S2PMT06 C-005 dedicated recoverable-error evidence and S2PMT07 P1 receipt refresh without closing P1 or enabling production side effects.
+- Added S2PMT06 C-006/C-007 dedicated safe-config and append-only audit evidence with S2PMT07 P1 receipt refresh, without closing P1 or enabling production side effects.
