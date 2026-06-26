@@ -1,36 +1,40 @@
 schema: CodexProjectGovernanceV1
 last_updated: 2026-06-27
 projects:
-  - id: pfi_os
-    name: PFI OS
-    path: PFI_OS
+  - id: pfi
+    name: PFI
+    path: PFI
     owner_entry_files:
-      - PFI_OS/AGENTS.md
-      - PFI_OS/README.md
-      - PFI_OS/HANDOFF.md
-      - PFI_OS/功能清单
-      - PFI_OS/开发记录
-      - PFI_OS/模型参数文件
-    stage0_contract:
-      - PFI_OS/docs/pfi_v02/STAGE0_COMPATIBILITY_AUDIT.md
-      - PFI_OS/src/pfi_os/ui_contracts/pfi_v02_stage0.py
-      - PFI_OS/tests/contract/test_pfi_v02_stage0_compatibility.py
+      - PFI/AGENTS.md
+      - PFI/README.md
+      - PFI/HANDOFF.md
+      - PFI/功能清单
+      - PFI/开发记录
+      - PFI/模型参数文件
+    compatibility_entries:
+      - path: PFI/大数据模拟器
+        maps_to: 投资管理 > 策略实验室 / 大数据模拟器
+        active_runtime: PFI/大数据模拟器/qbvs
+        move_policy: do_not_move_during_stage1
+    stage1_contract:
+      - PFI/docs/pfi_v02/STAGE1_CORE_SKELETON.md
+      - PFI/src/pfi_v02/stage1_ia.py
+      - PFI/tests/test_stage1_ia_contract.py
     changed_scope_check:
       base_ref: origin/main
       paths:
-        - PFI_OS
+        - PFI
         - AGENTS.md
         - README.md
         - governance/projects.yaml
       commands:
-        - git diff --name-only origin/main...HEAD -- PFI_OS AGENTS.md README.md governance/projects.yaml
+        - git diff --name-only origin/main...HEAD -- PFI AGENTS.md README.md governance/projects.yaml
         - git diff --check
     validation:
-      - cd PFI_OS && PYTHONDONTWRITEBYTECODE=1 PYTEST_ADDOPTS='-p no:cacheprovider' .venv/bin/python -m pytest tests/contract/test_pfi_v02_stage0_compatibility.py tests/test_pfi_product_contracts.py -q
-      - cd PFI_OS && scripts/devReadyCheck.sh --summary-json
-      - cd PFI_OS && scripts/secretScan.sh
+      - cd PFI && PYTHONPATH=src python3 -B -m unittest tests.test_stage1_ia_contract -q
+      - cd PFI/大数据模拟器 && PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q
 boundaries:
-  pfi_stage0_no_runtime_move: true
+  pfi_stage1_no_runtime_move: true
   pfi_no_trading_password: true
   pfi_no_automatic_real_money_orders: true
   pfi_excluded_external_payment_project_dependency: false

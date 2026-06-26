@@ -1,0 +1,138 @@
+{
+  "created_at": "2026-06-05",
+  "purpose": "Moomoo/OpenD batch81-140 retry and replacement plan for QBVS real-tradable validation expansion.",
+  "inputs": {
+    "attempts_csv": "outputs/quant_behavior_validation_system/runs/moomoo_batch81_140_cache_attempts.csv",
+    "summary_json": "outputs/quant_behavior_validation_system/runs/moomoo_batch81_140_cache_summary.json",
+    "current_cache100_index": "outputs/quant_behavior_validation_system/config/moomoo_batch100_cache_index.csv"
+  },
+  "boundary": {
+    "writes_quantlab_database": false,
+    "writes_quantlab_source": false,
+    "starts_background_processes": false,
+    "does_not_refetch_opend_now": true
+  },
+  "source_summary": {
+    "universe": "config/tradable_universe_seed_220.csv",
+    "cache_dir": "data_cache_moomoo_batch81_140",
+    "attempts_output": "runs/moomoo_batch81_140_cache_attempts.csv",
+    "cache_index": "data_cache_moomoo_batch81_140/cache_index.csv",
+    "offset": 80,
+    "limit": 60,
+    "requested_rows": 60,
+    "success": 20,
+    "failed": 40,
+    "cached_rows": 20,
+    "starts_background_processes": false,
+    "writes_quantlab_database": false,
+    "writes_quantlab_source": false
+  },
+  "attempt_rows": 60,
+  "success_rows": 20,
+  "failed_rows": 40,
+  "classification_counts": [
+    {
+      "classification": "opend_quota_exhausted",
+      "recommended_action": "retry_after_quota_release",
+      "count": 39
+    },
+    {
+      "classification": "success_cached",
+      "recommended_action": "already_cached",
+      "count": 20
+    },
+    {
+      "classification": "symbol_mapping_required",
+      "recommended_action": "fix_symbol_then_probe_one",
+      "count": 1
+    }
+  ],
+  "classification_by_asset_class": [
+    {
+      "classification": "opend_quota_exhausted",
+      "asset_class": "STOCK",
+      "count": 39
+    },
+    {
+      "classification": "success_cached",
+      "asset_class": "ETF",
+      "count": 2
+    },
+    {
+      "classification": "success_cached",
+      "asset_class": "STOCK",
+      "count": 18
+    },
+    {
+      "classification": "symbol_mapping_required",
+      "asset_class": "STOCK",
+      "count": 1
+    }
+  ],
+  "classification_by_market": [
+    {
+      "classification": "opend_quota_exhausted",
+      "market": "US_STOCK",
+      "count": 39
+    },
+    {
+      "classification": "success_cached",
+      "market": "US_ETF",
+      "count": 2
+    },
+    {
+      "classification": "success_cached",
+      "market": "US_STOCK",
+      "count": 18
+    },
+    {
+      "classification": "symbol_mapping_required",
+      "market": "US_STOCK",
+      "count": 1
+    }
+  ],
+  "current_cache100_distribution": [
+    {
+      "market": "US_ETF",
+      "asset_class": "BOND",
+      "count": 12
+    },
+    {
+      "market": "US_ETF",
+      "asset_class": "COMMODITY",
+      "count": 10
+    },
+    {
+      "market": "US_ETF",
+      "asset_class": "ETF",
+      "count": 57
+    },
+    {
+      "market": "US_ETF",
+      "asset_class": "FX",
+      "count": 3
+    },
+    {
+      "market": "US_STOCK",
+      "asset_class": "STOCK",
+      "count": 18
+    }
+  ],
+  "retry_policy": [
+    "Do not rerun all failed symbols immediately while OpenD reports historical K-line quota exhaustion.",
+    "First fix symbol-format failures such as BRK-B with a one-symbol probe, then add only if metadata and quality gates pass.",
+    "For quota failures, retry after quota release or use a shorter history window only if the resulting bars still support rolling validation.",
+    "Prefer adding replacement symbols from unused seed universe to reach 200 real-tradable targets rather than repeatedly hammering exhausted symbols.",
+    "Every newly cached symbol must be appended through cache index generation and quality scoring before entering exact validation manifests."
+  ],
+  "acceptance_impact": {
+    "current_real_moomoo_symbols": 100,
+    "target_real_moomoo_symbols": 200,
+    "additional_symbols_needed": 100,
+    "batch81_140_remaining_potential_after_successes": 40
+  },
+  "outputs": {
+    "retry_plan_csv": "outputs/quant_behavior_validation_system/runs/moomoo_batch81_140_retry_plan_20260605.csv",
+    "retry_plan_json": "outputs/quant_behavior_validation_system/runs/moomoo_batch81_140_retry_plan_20260605.json"
+  }
+}

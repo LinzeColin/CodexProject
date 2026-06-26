@@ -1,0 +1,68 @@
+{
+  "schema_version": "qbvs-current-stage-rule-card-v1",
+  "created_at": "2026-06-06T09:23:02",
+  "approval_state": "review_only_not_approved_for_live_trading",
+  "primary_candidate": "bw99_boll_or_rsi_none_ma_trend_full_none",
+  "control_candidate": "bw99_none_none_ma_trend_full_none",
+  "conservative_candidate": "bw98_boll_or_rsi_none_ma_trend_full_none",
+  "behavior_strategy_not_portfolio_strategy": true,
+  "rule_description": {
+    "base_weight": "99% baseline exposure for the primary candidate.",
+    "dip_refill": "If RSI < 35 or price breaks below the Bollinger lower band, refill toward 100%.",
+    "trend_participation": "If MA20 > MA60, keep or restore full participation.",
+    "sell_rule": "Do not automatically sell only because price has risen; selling requires trend break, risk event, cash need, or separate user confirmation."
+  },
+  "metric_definitions": {
+    "total_return_gap": "strategy_total_return - buy_hold_total_return",
+    "annualized_return_gap": "strategy_annualized_return - buy_hold_annualized_return",
+    "drawdown_improvement": "strategy_max_drawdown - buy_hold_max_drawdown; positive means strategy drawdown is less severe."
+  },
+  "latest_exact_evidence": {
+    "run_dir": "runs/current_stage_bw99_3candidates_200symbols_20windows_exact_20260605",
+    "tasks_completed": 12000,
+    "result_rows": 12000,
+    "symbols": 200,
+    "strategies": 3,
+    "candidate_summary": [
+      {
+        "strategy_id": "bw99_boll_or_rsi_none_ma_trend_full_none",
+        "samples": 4000,
+        "pass_rate": "99.850%",
+        "avg_total_gap": "-0.0827%",
+        "avg_annualized_gap": "-0.0052%",
+        "avg_drawdown_improvement": "0.1310%",
+        "role": "主候选：99% 基础仓位，RSI/BOLL 补仓，MA 趋势参与，不因上涨自动卖出"
+      },
+      {
+        "strategy_id": "bw99_none_none_ma_trend_full_none",
+        "samples": 4000,
+        "pass_rate": "99.775%",
+        "avg_total_gap": "-0.0700%",
+        "avg_annualized_gap": "0.0135%",
+        "avg_drawdown_improvement": "0.2493%",
+        "role": "对照候选：数值略强，解释性较弱"
+      },
+      {
+        "strategy_id": "bw98_boll_or_rsi_none_ma_trend_full_none",
+        "samples": 4000,
+        "pass_rate": "99.400%",
+        "avg_total_gap": "-0.1654%",
+        "avg_annualized_gap": "-0.0107%",
+        "avg_drawdown_improvement": "0.2470%",
+        "role": "保守候选：多 1% 现金缓冲"
+      }
+    ]
+  },
+  "boundaries": {
+    "writes_quantlab_database": false,
+    "writes_quantlab_source": false,
+    "approved_strategy_library_write": false,
+    "live_trading": false,
+    "uses_opend_batch_history_refetch": false
+  },
+  "remaining_gaps": [
+    "OpenD historical K-line quota still blocks full 200-symbol Moomoo historical expansion.",
+    "Alipay real fund NAV and detailed subscription/redemption rules still need stronger source data.",
+    "The original million-tests-per-strategy target is not yet satisfied."
+  ]
+}

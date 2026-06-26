@@ -10,7 +10,8 @@ It is no longer a submodule-only index.
 | Path | Repository |
 | --- | --- |
 | `Alpha` | https://github.com/LinzeColin/Alpha |
-| `PFI_OS` | `LinzeColin/CodexProject/PFI_OS` |
+| `PFI` | `LinzeColin/CodexProject/PFI` |
+| `PFI_OS` | Legacy local app workspace retained for compatibility |
 | `OpenAIDatabase` | https://github.com/LinzeColin/OpenAIDatabase |
 | `FIFA` | https://github.com/LinzeColin/FIFA |
 | `OpMe_System` | https://github.com/LinzeColin/OpMe_System |
@@ -22,10 +23,10 @@ Root agent contract: `AGENTS.md`.
 
 Project registry: `governance/projects.yaml`.
 
-Registered PFI path: `PFI_OS/`.
+Registered PFI path: `PFI/`.
 
-PFI V0.2 Stage 0 contract:
-`PFI_OS/docs/pfi_v02/STAGE0_COMPATIBILITY_AUDIT.md`.
+PFI V0.2 Stage 1 contract:
+`PFI/docs/pfi_v02/STAGE1_CORE_SKELETON.md`.
 
 ## Clone
 

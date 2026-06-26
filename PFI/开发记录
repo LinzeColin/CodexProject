@@ -1,0 +1,34 @@
+# PFI 开发记录
+
+更新时间：2026-06-27
+
+## Stage 1：核心骨架
+
+目标：建立 PFI V0.2 的核心骨架，让账户、资产、数据源、账本、投资、消费、建议、报告共用同一套事实层。
+
+## Path 修正
+
+- 当前 GitHub / 本机开发根：`CodexProject/PFI`。
+- 旧公开路径：`PFI/大数据模拟器`。
+- 处理方式：旧路径保留为兼容入口，不作为新 Stage 1 根；新合同和 owner 文件写入 `PFI/` 根。
+- active QBVS runtime：`PFI/大数据模拟器/qbvs`，本阶段不移动。
+
+## Phase 1A 记录
+
+- 新增 `src/pfi_v02/stage1_ia.py`。
+- 新增 `tests/test_stage1_ia_contract.py`。
+- 新增 `docs/pfi_v02/STAGE1_CORE_SKELETON.md`。
+- 新增 `AGENTS.md`、`README.md`、`HANDOFF.md`、`功能清单`、`模型参数文件`。
+- 验证命令：
+
+```bash
+PYTHONPATH=src python3 -B -m unittest tests.test_stage1_ia_contract -q
+cd 大数据模拟器 && PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q
+```
+
+- 验证结果：IA contract `Ran 7 tests / OK`；旧 QBVS lifecycle smoke `Ran 1 test / OK`；排除项 grep 无输出；`git diff --check` 通过。
+
+## 待完成
+
+- Phase 1B：DataSource / CredentialRef、Account / AssetInstrument、ImportBatch / RawRecord、NormalizedTransaction / LedgerEvent、Snapshot models。
+- Phase 1C：转账、基金、贵金属、信用卡还款分类规则 fixture。

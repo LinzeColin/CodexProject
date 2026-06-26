@@ -1,0 +1,14 @@
+{
+  "quality_score":75.0,
+  "quality_grade":"C",
+  "bars":61,
+  "missing_close_ratio":0.0,
+  "duplicate_datetime_count":0,
+  "non_positive_close_count":0,
+  "max_abs_daily_return":0.0206954808,
+  "median_abs_daily_return":0.0043256032,
+  "gap_ratio":0.0,
+  "warnings":[
+    "too_few_bars_lt_120"
+  ]
+}

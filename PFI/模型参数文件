@@ -1,0 +1,46 @@
+# PFI 模型参数文件
+
+更新时间：2026-06-27
+
+## Stage 1 参数域
+
+| 参数域 | 当前值 |
+| --- | --- |
+| project_root | `CodexProject/PFI` |
+| legacy_compatibility_entry | `PFI/大数据模拟器` |
+| legacy_runtime | `PFI/大数据模拟器/qbvs` |
+| stage1_ia_contract | `src/pfi_v02/stage1_ia.py` |
+| stage1_record | `docs/pfi_v02/STAGE1_CORE_SKELETON.md` |
+| execution_mode | local-first, research-only, review-first |
+| live_trading | disabled |
+| trading_password | forbidden |
+| automatic_real_money_order | forbidden |
+
+## V0.2 Target IA
+
+1. 首页总览
+2. 账户与资产
+3. 账本流水
+4. 投资管理
+5. 消费管理
+6. 数据源与同步
+7. 建议与复盘
+8. 报告与洞察
+
+## Core Separation Rule
+
+```text
+DataSource = 从哪里读取数据
+Account = 钱在哪里
+AssetInstrument = 持有什么资产
+LedgerEvent = 钱发生了什么
+```
+
+## Stage 1 Acceptance Parameters
+
+- 首页总览必须覆盖净资产、账户地图、投资快照、消费快照、数据健康、今日建议。
+- 投资管理必须覆盖 Moomoo、支付宝基金、中国券商、ABC Bullion、QBVS 策略实验室。
+- 消费管理必须覆盖支付宝、微信、CBA、银行卡、信用卡、订阅，并确保转账不计普通消费。
+- 数据源与同步必须覆盖数据源、凭证、同步、导入、对账、待复核和外部只读接口。
+- 建议与复盘必须覆盖证据、动作、状态、复盘和失效条件。
+- 报告与洞察必须覆盖月度、投资、消费、数据质量、Context Export 和证据链。

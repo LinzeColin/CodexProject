@@ -1,0 +1,77 @@
+# PFI V0.2 Stage 1 Core Skeleton
+
+更新时间：2026-06-27 Australia/Sydney
+
+## Goal
+
+建立 PFI V0.2 的核心骨架，让账户、资产、数据源、账本、投资、消费、建议、报告共用同一套事实层。
+
+## Path Decision
+
+Current project root is `CodexProject/PFI`.
+
+The old public path `PFI/大数据模拟器` remains a compatibility entry for the
+QBVS runtime and maps to `投资管理 > 策略实验室 / 大数据模拟器`.
+
+## Phase Status
+
+| Phase | Status | Evidence |
+| --- | --- | --- |
+| Phase 1A: 8 first-level IA contract | Verified | `src/pfi_v02/stage1_ia.py`, `tests/test_stage1_ia_contract.py`, `7 tests OK` |
+| Phase 1B: Core object models | Pending | To be implemented in this Stage 1 run |
+| Phase 1C: Classification rules | Pending | To be implemented in this Stage 1 run |
+
+## Phase 1A Contract Summary
+
+PFI V0.2 first-level entries:
+
+1. 首页总览
+2. 账户与资产
+3. 账本流水
+4. 投资管理
+5. 消费管理
+6. 数据源与同步
+7. 建议与复盘
+8. 报告与洞察
+
+Acceptance coverage:
+
+| Entry | Required Stage 1 markers |
+| --- | --- |
+| 首页总览 | 净资产、账户地图、投资快照、消费快照、数据健康、今日建议 |
+| 账户与资产 | DataSource / Account / AssetInstrument 分离、账户对账、跨币种 |
+| 账本流水 | 消费、投资、转账、退款、费用、估值、汇率、证据链 |
+| 投资管理 | Moomoo、支付宝基金、中国券商、ABC Bullion、QBVS 策略实验室 |
+| 消费管理 | 支付宝、微信、CBA、银行卡、信用卡、订阅、转账不计消费 |
+| 数据源与同步 | 数据源列表、凭证、同步、导入、对账、待复核、外部只读接口 |
+| 建议与复盘 | 建议有证据、动作、状态、复盘、失效条件 |
+| 报告与洞察 | 月度、投资、消费、数据质量、Context Export、证据链 |
+
+## Boundaries
+
+- No automatic real-money trading.
+- No trading password.
+- No broker-order or payment submission.
+- No Alpha product page or first-level entry inside PFI.
+- No system/development product first-level entry.
+- `PFI/大数据模拟器/qbvs` remains accessible and unmoved.
+
+## Validation
+
+Phase 1A:
+
+```bash
+cd PFI
+PYTHONPATH=src python3 -B -m unittest tests.test_stage1_ia_contract -q
+```
+
+Observed: `Ran 7 tests` / `OK`.
+
+Legacy compatibility smoke:
+
+```bash
+cd PFI/大数据模拟器
+PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q
+```
+
+Observed: `Ran 1 test` / `OK`.

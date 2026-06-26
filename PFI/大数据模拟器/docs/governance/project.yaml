@@ -1,0 +1,5944 @@
+schema_version: "codexproject.project.v1"
+project_id: "PFI_BIG_DATA_SIMULATOR"
+project_name: "PFI 大数据模拟器"
+summary: "PFI 大数据模拟器是策略族、技术指标、回测、压力模拟、快速筛选、campaign、fund rules、QuantLab 证据和 provider probe 研究系统；本迁移保留策略/阈值/验证治理真相，不把模拟胜出、fast screening 或 evidence bundle 写成实盘有效或生产交付。"
+version: "0.1.0"
+fact_level: "EXTRACTED"
+owner_role: "model_owner + risk_owner + research_owner"
+current_status: "unverified_delivery_readiness"
+limitations:
+  -
+    statement: "实现一致性为 PARTIAL：211/213 active parameters 和 15/15 active formulas 有机器抽取/指纹证据；2 个 active parameters（PARAM-110/PARAM-111）仍为 HUMAN_REVIEW_REQUIRED。"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-PFI-ASSURANCE-STATUS"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+      - "EVID-PFI-PARAMETER-REGISTRY"
+    unknown_task_ids:
+      - "GOV-SEMANTIC-PFI-001"
+  -
+    statement: "delivery_readiness 仍为 UNVERIFIED；TASK-PFI-B-001/B-002/B-003/B-004 等因校准、OOS、多重检验、数据源和运行证据未闭合而 blocked。"
+    fact_level: "UNKNOWN"
+    evidence_refs:
+      - "EVID-PFI-ASSURANCE-STATUS"
+      - "EVID-PFI-DELIVERY-TASKS"
+      - "EVID-PFI-OWNER-STATUS"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+      - "TASK-PFI-B-002"
+      - "TASK-PFI-B-003"
+      - "TASK-PFI-B-004"
+  -
+    statement: "本迁移不改策略规则、指标、回测、压力模拟、fast screening、quality gate、campaign、finalists、fund rules、QuantLab adapter、provider probe、配置、数据、测试 fixture、脚本或运行行为。"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-PFI-DEVELOPMENT-EVENTS"
+      - "EVID-REVIEW9-S5PBT04-MANIFEST"
+    unknown_task_ids: []
+features:
+  -
+    feature_id: "FEAT-PFI-001"
+    name: "策略族与技术指标规则"
+    description: "生成行为策略规格并把 OHLCV bars 转成目标权重；技术指标和规则常量仍需要校准证据。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-001"
+      - "MOD-002"
+    formula_ids:
+      - "FORM-001"
+      - "FORM-002"
+    parameter_ids:
+      - "PARAM-001"
+      - "PARAM-002"
+      - "PARAM-003"
+      - "PARAM-004"
+      - "PARAM-005"
+      - "PARAM-006"
+      - "PARAM-007"
+      - "PARAM-008"
+      - "PARAM-009"
+      - "PARAM-010"
+      - "PARAM-011"
+      - "PARAM-012"
+      - "PARAM-013"
+      - "PARAM-014"
+      - "PARAM-015"
+      - "PARAM-016"
+      - "PARAM-017"
+      - "PARAM-018"
+      - "PARAM-019"
+      - "PARAM-020"
+      - "PARAM-021"
+      - "PARAM-022"
+      - "PARAM-023"
+      - "PARAM-024"
+      - "PARAM-025"
+      - "PARAM-026"
+      - "PARAM-027"
+      - "PARAM-028"
+      - "PARAM-029"
+      - "PARAM-030"
+      - "PARAM-031"
+      - "PARAM-032"
+      - "PARAM-033"
+      - "PARAM-034"
+      - "PARAM-035"
+      - "PARAM-036"
+      - "PARAM-037"
+      - "PARAM-038"
+      - "PARAM-039"
+      - "PARAM-040"
+      - "PARAM-041"
+      - "PARAM-042"
+      - "PARAM-043"
+      - "PARAM-044"
+      - "PARAM-045"
+    requirement_ids:
+      - "REQ-PFI-001"
+      - "REQ-PFI-002"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/strategies.py:13"
+      - "PFI/大数据模拟器/qbvs/indicators.py:6"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:61"
+      - "PFI/大数据模拟器/tests/test_core.py:65"
+    evidence_refs:
+      - "EVID-PFI-TRACEABILITY-MATRIX"
+      - "EVID-PFI-ASSURANCE-STATUS"
+  -
+    feature_id: "FEAT-PFI-002"
+    name: "精确回测、买持比较与随机压力验证"
+    description: "执行 target-weight 回测、买持比较、随机路径压力和 rolling/event-window 验证；不能把模拟胜出写成实盘有效。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-003"
+      - "MOD-004"
+      - "MOD-005"
+      - "MOD-006"
+    formula_ids:
+      - "FORM-003"
+      - "FORM-004"
+      - "FORM-005"
+      - "FORM-006"
+    parameter_ids:
+      - "PARAM-046"
+      - "PARAM-047"
+      - "PARAM-048"
+      - "PARAM-049"
+      - "PARAM-050"
+      - "PARAM-051"
+      - "PARAM-052"
+      - "PARAM-053"
+      - "PARAM-054"
+      - "PARAM-055"
+      - "PARAM-056"
+      - "PARAM-057"
+      - "PARAM-058"
+      - "PARAM-059"
+      - "PARAM-060"
+      - "PARAM-061"
+      - "PARAM-062"
+      - "PARAM-063"
+      - "PARAM-064"
+      - "PARAM-065"
+      - "PARAM-066"
+      - "PARAM-067"
+      - "PARAM-068"
+      - "PARAM-069"
+      - "PARAM-070"
+      - "PARAM-071"
+      - "PARAM-072"
+      - "PARAM-073"
+      - "PARAM-074"
+      - "PARAM-075"
+      - "PARAM-076"
+      - "PARAM-077"
+      - "PARAM-078"
+      - "PARAM-079"
+      - "PARAM-080"
+      - "PARAM-081"
+      - "PARAM-082"
+      - "PARAM-083"
+      - "PARAM-084"
+      - "PARAM-085"
+      - "PARAM-086"
+      - "PARAM-087"
+      - "PARAM-088"
+      - "PARAM-089"
+      - "PARAM-090"
+      - "PARAM-091"
+      - "PARAM-092"
+      - "PARAM-093"
+      - "PARAM-094"
+      - "PARAM-095"
+      - "PARAM-096"
+      - "PARAM-097"
+      - "PARAM-098"
+      - "PARAM-099"
+      - "PARAM-100"
+      - "PARAM-101"
+      - "PARAM-102"
+      - "PARAM-103"
+      - "PARAM-104"
+      - "PARAM-105"
+      - "PARAM-056"
+      - "PARAM-057"
+      - "PARAM-058"
+      - "PARAM-059"
+      - "PARAM-060"
+      - "PARAM-061"
+      - "PARAM-062"
+      - "PARAM-063"
+      - "PARAM-064"
+      - "PARAM-065"
+      - "PARAM-066"
+      - "PARAM-067"
+      - "PARAM-068"
+      - "PARAM-069"
+      - "PARAM-070"
+      - "PARAM-071"
+      - "PARAM-072"
+      - "PARAM-073"
+      - "PARAM-074"
+      - "PARAM-075"
+      - "PARAM-076"
+      - "PARAM-077"
+      - "PARAM-078"
+      - "PARAM-079"
+      - "PARAM-080"
+      - "PARAM-081"
+      - "PARAM-082"
+      - "PARAM-083"
+      - "PARAM-084"
+      - "PARAM-085"
+      - "PARAM-086"
+      - "PARAM-087"
+      - "PARAM-088"
+      - "PARAM-089"
+      - "PARAM-090"
+      - "PARAM-091"
+      - "PARAM-092"
+      - "PARAM-093"
+      - "PARAM-094"
+      - "PARAM-095"
+      - "PARAM-096"
+      - "PARAM-097"
+      - "PARAM-098"
+      - "PARAM-099"
+      - "PARAM-100"
+      - "PARAM-101"
+      - "PARAM-102"
+      - "PARAM-103"
+      - "PARAM-104"
+      - "PARAM-105"
+      - "PARAM-106"
+      - "PARAM-107"
+      - "PARAM-108"
+      - "PARAM-109"
+      - "PARAM-110"
+    requirement_ids:
+      - "REQ-PFI-003"
+      - "REQ-PFI-004"
+      - "REQ-PFI-005"
+      - "REQ-PFI-006"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/backtest.py:11"
+      - "PFI/大数据模拟器/qbvs/backtest.py:122"
+      - "PFI/大数据模拟器/qbvs/simulation.py:10"
+      - "PFI/大数据模拟器/qbvs/validation.py:33"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:65"
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+      - "PFI/大数据模拟器/tests/test_core.py:84"
+    evidence_refs:
+      - "EVID-PFI-TRACEABILITY-MATRIX"
+      - "EVID-PFI-ASSURANCE-STATUS"
+  -
+    feature_id: "FEAT-PFI-003"
+    name: "快速筛选、质量门禁与可恢复任务"
+    description: "为大规模筛选提供快速近似、OHLCV 质量门禁、任务 manifest、cache 和 skip gate；fast result 仍需 exact validation。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-007"
+      - "MOD-008"
+      - "MOD-009"
+    formula_ids:
+      - "FORM-007"
+      - "FORM-008"
+      - "FORM-009"
+    parameter_ids:
+      - "PARAM-051"
+      - "PARAM-052"
+      - "PARAM-053"
+      - "PARAM-054"
+      - "PARAM-055"
+      - "PARAM-056"
+      - "PARAM-057"
+      - "PARAM-058"
+      - "PARAM-059"
+      - "PARAM-060"
+      - "PARAM-061"
+      - "PARAM-062"
+      - "PARAM-063"
+      - "PARAM-064"
+      - "PARAM-065"
+      - "PARAM-066"
+      - "PARAM-067"
+      - "PARAM-068"
+      - "PARAM-069"
+      - "PARAM-070"
+      - "PARAM-071"
+      - "PARAM-072"
+      - "PARAM-073"
+      - "PARAM-074"
+      - "PARAM-075"
+      - "PARAM-076"
+      - "PARAM-077"
+      - "PARAM-078"
+      - "PARAM-079"
+      - "PARAM-080"
+      - "PARAM-081"
+      - "PARAM-082"
+      - "PARAM-083"
+      - "PARAM-084"
+      - "PARAM-085"
+      - "PARAM-086"
+      - "PARAM-087"
+      - "PARAM-088"
+      - "PARAM-089"
+      - "PARAM-090"
+      - "PARAM-091"
+      - "PARAM-092"
+      - "PARAM-093"
+      - "PARAM-094"
+      - "PARAM-095"
+      - "PARAM-096"
+      - "PARAM-097"
+      - "PARAM-098"
+      - "PARAM-099"
+      - "PARAM-100"
+      - "PARAM-101"
+      - "PARAM-102"
+      - "PARAM-103"
+      - "PARAM-104"
+      - "PARAM-105"
+      - "PARAM-106"
+      - "PARAM-107"
+      - "PARAM-108"
+      - "PARAM-109"
+      - "PARAM-110"
+      - "PARAM-111"
+      - "PARAM-112"
+      - "PARAM-113"
+      - "PARAM-114"
+      - "PARAM-115"
+      - "PARAM-116"
+      - "PARAM-117"
+      - "PARAM-118"
+      - "PARAM-119"
+      - "PARAM-120"
+      - "PARAM-121"
+      - "PARAM-122"
+      - "PARAM-123"
+      - "PARAM-124"
+      - "PARAM-125"
+      - "PARAM-126"
+      - "PARAM-127"
+      - "PARAM-128"
+      - "PARAM-129"
+      - "PARAM-130"
+      - "PARAM-131"
+      - "PARAM-132"
+      - "PARAM-133"
+      - "PARAM-134"
+      - "PARAM-135"
+      - "PARAM-136"
+      - "PARAM-137"
+      - "PARAM-138"
+      - "PARAM-139"
+      - "PARAM-140"
+      - "PARAM-141"
+      - "PARAM-142"
+    requirement_ids:
+      - "REQ-PFI-007"
+      - "REQ-PFI-008"
+      - "REQ-PFI-009"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/fast.py:14"
+      - "PFI/大数据模拟器/qbvs/quality.py:12"
+      - "PFI/大数据模拟器/qbvs/tasks.py:18"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:359"
+      - "PFI/大数据模拟器/tests/test_core.py:219"
+      - "PFI/大数据模拟器/tests/test_core.py:95"
+    evidence_refs:
+      - "EVID-PFI-TRACEABILITY-MATRIX"
+      - "EVID-PFI-ASSURANCE-STATUS"
+  -
+    feature_id: "FEAT-PFI-004"
+    name: "长跑 campaign 与 finalist 策略选择"
+    description: "拆分长跑 campaign、估算 budget、生成手工运行命令并筛选 finalist 策略；仍受样本、pass rate 和 return/drawdown floors 约束。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-010"
+      - "MOD-011"
+    formula_ids:
+      - "FORM-010"
+      - "FORM-011"
+    parameter_ids:
+      - "PARAM-143"
+      - "PARAM-144"
+      - "PARAM-145"
+      - "PARAM-146"
+      - "PARAM-147"
+      - "PARAM-148"
+      - "PARAM-149"
+      - "PARAM-150"
+      - "PARAM-151"
+      - "PARAM-152"
+      - "PARAM-153"
+      - "PARAM-154"
+      - "PARAM-155"
+      - "PARAM-156"
+      - "PARAM-157"
+      - "PARAM-158"
+      - "PARAM-159"
+      - "PARAM-160"
+      - "PARAM-161"
+      - "PARAM-162"
+      - "PARAM-163"
+      - "PARAM-164"
+      - "PARAM-165"
+      - "PARAM-166"
+      - "PARAM-167"
+    requirement_ids:
+      - "REQ-PFI-010"
+      - "REQ-PFI-011"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/campaign.py:18"
+      - "PFI/大数据模拟器/qbvs/finalists.py:13"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:219"
+      - "PFI/大数据模拟器/tests/test_core.py:912"
+    evidence_refs:
+      - "EVID-PFI-TRACEABILITY-MATRIX"
+      - "EVID-PFI-ASSURANCE-STATUS"
+  -
+    feature_id: "FEAT-PFI-005"
+    name: "Alipay fund 与 QuantLab 证据包"
+    description: "迁移 Alipay fund NAV/trading rule 和 QuantLab evidence/handshake/read-only adapter 事实；不启用外部写入。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-012"
+      - "MOD-013"
+    formula_ids:
+      - "FORM-012"
+      - "FORM-013"
+    parameter_ids:
+      - "PARAM-168"
+      - "PARAM-169"
+      - "PARAM-170"
+      - "PARAM-171"
+      - "PARAM-172"
+      - "PARAM-173"
+      - "PARAM-174"
+      - "PARAM-175"
+      - "PARAM-176"
+      - "PARAM-177"
+      - "PARAM-178"
+      - "PARAM-179"
+      - "PARAM-180"
+      - "PARAM-181"
+      - "PARAM-182"
+      - "PARAM-183"
+      - "PARAM-184"
+      - "PARAM-185"
+      - "PARAM-186"
+      - "PARAM-187"
+      - "PARAM-188"
+      - "PARAM-189"
+      - "PARAM-190"
+    requirement_ids:
+      - "REQ-PFI-012"
+      - "REQ-PFI-013"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/datasources.py:63"
+      - "PFI/大数据模拟器/qbvs/quantlab_bundle.py:19"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:572"
+      - "PFI/大数据模拟器/tests/test_core.py:307"
+    evidence_refs:
+      - "EVID-PFI-TRACEABILITY-MATRIX"
+      - "EVID-PFI-ASSURANCE-STATUS"
+  -
+    feature_id: "FEAT-PFI-006"
+    name: "目标就绪审计、universe seed 与 provider probe"
+    description: "审计原始目标就绪度并构建 tradable universe/provider probe/Moomoo batch cache gate；provider/OOS 证据仍未闭合。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-014"
+      - "MOD-015"
+    formula_ids:
+      - "FORM-014"
+      - "FORM-015"
+    parameter_ids:
+      - "PARAM-191"
+      - "PARAM-192"
+      - "PARAM-193"
+      - "PARAM-194"
+      - "PARAM-195"
+      - "PARAM-196"
+      - "PARAM-197"
+      - "PARAM-198"
+      - "PARAM-199"
+      - "PARAM-200"
+      - "PARAM-201"
+      - "PARAM-202"
+      - "PARAM-203"
+      - "PARAM-204"
+      - "PARAM-205"
+      - "PARAM-206"
+      - "PARAM-207"
+      - "PARAM-208"
+      - "PARAM-209"
+      - "PARAM-210"
+      - "PARAM-211"
+      - "PARAM-212"
+      - "PARAM-213"
+    requirement_ids:
+      - "REQ-PFI-014"
+      - "REQ-PFI-015"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/goal_audit.py:17"
+      - "PFI/大数据模拟器/qbvs/universe_seed.py:13"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:701"
+      - "PFI/大数据模拟器/tests/test_core.py:504"
+    evidence_refs:
+      - "EVID-PFI-TRACEABILITY-MATRIX"
+      - "EVID-PFI-ASSURANCE-STATUS"
+models:
+  -
+    model_id: "MOD-001"
+    name: "Behavior Strategy Catalog and Signal Rule Engine"
+    purpose: "Generate behavior strategy specifications and convert OHLCV bars into target weights using dip, trend, sell and risk rules."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    formula_ids:
+      - "FORM-001"
+    parameter_ids:
+      - "PARAM-001"
+      - "PARAM-002"
+      - "PARAM-003"
+      - "PARAM-004"
+      - "PARAM-005"
+      - "PARAM-006"
+      - "PARAM-007"
+      - "PARAM-008"
+      - "PARAM-009"
+      - "PARAM-010"
+      - "PARAM-011"
+      - "PARAM-012"
+      - "PARAM-013"
+      - "PARAM-014"
+      - "PARAM-015"
+      - "PARAM-016"
+      - "PARAM-017"
+      - "PARAM-018"
+      - "PARAM-019"
+      - "PARAM-020"
+      - "PARAM-021"
+      - "PARAM-022"
+      - "PARAM-023"
+      - "PARAM-024"
+      - "PARAM-025"
+      - "PARAM-026"
+      - "PARAM-027"
+      - "PARAM-028"
+      - "PARAM-029"
+      - "PARAM-030"
+      - "PARAM-031"
+      - "PARAM-032"
+      - "PARAM-033"
+      - "PARAM-034"
+      - "PARAM-035"
+      - "PARAM-036"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/strategies.py:13"
+      - "PFI/大数据模拟器/qbvs/strategies.py:31"
+      - "PFI/大数据模拟器/qbvs/strategies.py:77"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:61"
+      - "PFI/大数据模拟器/tests/test_core.py:65"
+    evidence_refs:
+      - "EVID-PFI-MODEL-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    model_id: "MOD-002"
+    name: "Technical Indicator Transform Library"
+    purpose: "Compute SMA, RSI, Bollinger bands, MACD and ATR transforms used by strategy rules."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    formula_ids:
+      - "FORM-002"
+    parameter_ids:
+      - "PARAM-037"
+      - "PARAM-038"
+      - "PARAM-039"
+      - "PARAM-040"
+      - "PARAM-041"
+      - "PARAM-042"
+      - "PARAM-043"
+      - "PARAM-044"
+      - "PARAM-045"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/indicators.py:6"
+      - "PFI/大数据模拟器/qbvs/indicators.py:10"
+      - "PFI/大数据模拟器/qbvs/indicators.py:18"
+      - "PFI/大数据模拟器/qbvs/indicators.py:25"
+      - "PFI/大数据模拟器/qbvs/indicators.py:35"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:65"
+    evidence_refs:
+      - "EVID-PFI-MODEL-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    model_id: "MOD-003"
+    name: "Exact Target-Weight Backtest and Metrics Engine"
+    purpose: "Normalize OHLCV data, execute shifted target weights with cost/slippage assumptions, compute equity, drawdown and performance metrics."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    formula_ids:
+      - "FORM-003"
+    parameter_ids:
+      - "PARAM-046"
+      - "PARAM-047"
+      - "PARAM-048"
+      - "PARAM-049"
+      - "PARAM-050"
+      - "PARAM-061"
+      - "PARAM-062"
+      - "PARAM-063"
+      - "PARAM-064"
+      - "PARAM-065"
+      - "PARAM-066"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/backtest.py:11"
+      - "PFI/大数据模拟器/qbvs/backtest.py:19"
+      - "PFI/大数据模拟器/qbvs/backtest.py:49"
+      - "PFI/大数据模拟器/qbvs/backtest.py:134"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:65"
+    evidence_refs:
+      - "EVID-PFI-MODEL-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    model_id: "MOD-004"
+    name: "Buy-Hold Comparison and User-Floor Gate"
+    purpose: "Compare strategy metrics with buy-and-hold and decide whether user return/drawdown floors are satisfied."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    formula_ids:
+      - "FORM-004"
+    parameter_ids:
+      - "PARAM-067"
+      - "PARAM-068"
+      - "PARAM-069"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/backtest.py:122"
+      - "PFI/大数据模拟器/qbvs/backtest.py:163"
+      - "PFI/大数据模拟器/qbvs/validation.py:133"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+      - "PFI/大数据模拟器/tests/test_core.py:625"
+    evidence_refs:
+      - "EVID-PFI-MODEL-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    model_id: "MOD-005"
+    name: "Random Path Stress Simulator"
+    purpose: "Generate synthetic OHLCV paths across bull, bear, sideways, crash, high-vol and rotation regimes for stress testing."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    formula_ids:
+      - "FORM-005"
+    parameter_ids:
+      - "PARAM-070"
+      - "PARAM-071"
+      - "PARAM-072"
+      - "PARAM-073"
+      - "PARAM-074"
+      - "PARAM-075"
+      - "PARAM-076"
+      - "PARAM-077"
+      - "PARAM-078"
+      - "PARAM-079"
+      - "PARAM-080"
+      - "PARAM-081"
+      - "PARAM-082"
+      - "PARAM-083"
+      - "PARAM-084"
+      - "PARAM-085"
+      - "PARAM-086"
+      - "PARAM-087"
+      - "PARAM-088"
+      - "PARAM-089"
+      - "PARAM-090"
+      - "PARAM-091"
+      - "PARAM-092"
+      - "PARAM-093"
+      - "PARAM-094"
+      - "PARAM-095"
+      - "PARAM-096"
+      - "PARAM-097"
+      - "PARAM-098"
+      - "PARAM-099"
+      - "PARAM-100"
+      - "PARAM-101"
+      - "PARAM-102"
+      - "PARAM-103"
+      - "PARAM-104"
+      - "PARAM-105"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/simulation.py:10"
+      - "PFI/大数据模拟器/qbvs/simulation.py:17"
+      - "PFI/大数据模拟器/qbvs/simulation.py:27"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+      - "PFI/大数据模拟器/tests/test_core.py:84"
+    evidence_refs:
+      - "EVID-PFI-MODEL-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    model_id: "MOD-006"
+    name: "Universe Validation, Rolling Windows and Summary Ranking"
+    purpose: "Run full, rolling or event-window validation over universes and rank strategy summaries by pass rate and return/drawdown gaps."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    formula_ids:
+      - "FORM-006"
+    parameter_ids:
+      - "PARAM-056"
+      - "PARAM-057"
+      - "PARAM-058"
+      - "PARAM-059"
+      - "PARAM-060"
+      - "PARAM-106"
+      - "PARAM-107"
+      - "PARAM-108"
+      - "PARAM-109"
+      - "PARAM-110"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/validation.py:33"
+      - "PFI/大数据模拟器/qbvs/validation.py:88"
+      - "PFI/大数据模拟器/qbvs/validation.py:103"
+      - "PFI/大数据模拟器/qbvs/windows.py:19"
+      - "PFI/大数据模拟器/qbvs/windows.py:56"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:84"
+      - "PFI/大数据模拟器/tests/test_core.py:95"
+    evidence_refs:
+      - "EVID-PFI-MODEL-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    model_id: "MOD-007"
+    name: "Fast Screening Approximation and Exact Benchmark"
+    purpose: "Approximate target-weight returns for large-scale screening, compare against exact backtest, and mark fast candidates as requiring exact validation."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    formula_ids:
+      - "FORM-007"
+    parameter_ids:
+      - "PARAM-051"
+      - "PARAM-052"
+      - "PARAM-053"
+      - "PARAM-054"
+      - "PARAM-055"
+      - "PARAM-111"
+      - "PARAM-112"
+      - "PARAM-113"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/fast.py:14"
+      - "PFI/大数据模拟器/qbvs/fast.py:25"
+      - "PFI/大数据模拟器/qbvs/fast.py:150"
+      - "PFI/大数据模拟器/qbvs/fast.py:215"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:359"
+      - "PFI/大数据模拟器/tests/test_core.py:418"
+    evidence_refs:
+      - "EVID-PFI-MODEL-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    model_id: "MOD-008"
+    name: "OHLCV Quality and Tradability Classification Gate"
+    purpose: "Score OHLCV data quality, assign grades, infer asset class and infer tradability labels for validation inputs."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    formula_ids:
+      - "FORM-008"
+    parameter_ids:
+      - "PARAM-114"
+      - "PARAM-115"
+      - "PARAM-116"
+      - "PARAM-117"
+      - "PARAM-118"
+      - "PARAM-119"
+      - "PARAM-120"
+      - "PARAM-121"
+      - "PARAM-122"
+      - "PARAM-123"
+      - "PARAM-124"
+      - "PARAM-125"
+      - "PARAM-126"
+      - "PARAM-127"
+      - "PARAM-128"
+      - "PARAM-129"
+      - "PARAM-130"
+      - "PARAM-131"
+      - "PARAM-132"
+      - "PARAM-133"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/quality.py:12"
+      - "PFI/大数据模拟器/qbvs/quality.py:28"
+      - "PFI/大数据模拟器/qbvs/quality.py:94"
+      - "PFI/大数据模拟器/qbvs/quality.py:111"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:219"
+      - "PFI/大数据模拟器/tests/test_core.py:273"
+    evidence_refs:
+      - "EVID-PFI-MODEL-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    model_id: "MOD-009"
+    name: "Resumable Task Manifest and Quality Skip Gate"
+    purpose: "Build deterministic task manifests, run/cached/skipped task states, aggregate task results and enforce optional minimum quality score skip logic."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    formula_ids:
+      - "FORM-009"
+    parameter_ids:
+      - "PARAM-134"
+      - "PARAM-135"
+      - "PARAM-136"
+      - "PARAM-137"
+      - "PARAM-138"
+      - "PARAM-139"
+      - "PARAM-140"
+      - "PARAM-141"
+      - "PARAM-142"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/tasks.py:18"
+      - "PFI/大数据模拟器/qbvs/tasks.py:110"
+      - "PFI/大数据模拟器/qbvs/tasks.py:189"
+      - "PFI/大数据模拟器/qbvs/tasks.py:209"
+      - "PFI/大数据模拟器/qbvs/tasks.py:269"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:95"
+      - "PFI/大数据模拟器/tests/test_core.py:273"
+    evidence_refs:
+      - "EVID-PFI-MODEL-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    model_id: "MOD-010"
+    name: "Long-Run Campaign, Budget and Promotion Gate"
+    purpose: "Split large manifests, estimate runtime budget, generate manual run commands, verify campaign artifacts, and promote external candidates using floor thresholds."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    formula_ids:
+      - "FORM-010"
+    parameter_ids:
+      - "PARAM-143"
+      - "PARAM-144"
+      - "PARAM-145"
+      - "PARAM-146"
+      - "PARAM-147"
+      - "PARAM-148"
+      - "PARAM-149"
+      - "PARAM-150"
+      - "PARAM-151"
+      - "PARAM-152"
+      - "PARAM-153"
+      - "PARAM-154"
+      - "PARAM-155"
+      - "PARAM-156"
+      - "PARAM-157"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/campaign.py:18"
+      - "PFI/大数据模拟器/qbvs/campaign.py:41"
+      - "PFI/大数据模拟器/qbvs/campaign.py:92"
+      - "PFI/大数据模拟器/qbvs/campaign.py:139"
+      - "PFI/大数据模拟器/qbvs/planning.py:9"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:219"
+      - "PFI/大数据模拟器/tests/test_core.py:625"
+    evidence_refs:
+      - "EVID-PFI-MODEL-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    model_id: "MOD-011"
+    name: "Finalist Strategy Selection and Pair Manifest Builder"
+    purpose: "Filter strategy summaries by sample/pass/return/drawdown thresholds and build ranked finalist cache-pair manifests."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    formula_ids:
+      - "FORM-011"
+    parameter_ids:
+      - "PARAM-158"
+      - "PARAM-159"
+      - "PARAM-160"
+      - "PARAM-161"
+      - "PARAM-162"
+      - "PARAM-163"
+      - "PARAM-164"
+      - "PARAM-165"
+      - "PARAM-166"
+      - "PARAM-167"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/finalists.py:13"
+      - "PFI/大数据模拟器/qbvs/finalists.py:22"
+      - "PFI/大数据模拟器/qbvs/finalists.py:48"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:912"
+    evidence_refs:
+      - "EVID-PFI-MODEL-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    model_id: "MOD-012"
+    name: "Alipay Fund NAV and Trading Rule Execution Model"
+    purpose: "Normalize Alipay fund NAV CSVs and backtest target weights with subscription/redemption fees, confirmation delays, settlement delays and holding rules."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    formula_ids:
+      - "FORM-012"
+    parameter_ids:
+      - "PARAM-168"
+      - "PARAM-169"
+      - "PARAM-170"
+      - "PARAM-171"
+      - "PARAM-172"
+      - "PARAM-173"
+      - "PARAM-174"
+      - "PARAM-175"
+      - "PARAM-176"
+      - "PARAM-177"
+      - "PARAM-178"
+      - "PARAM-179"
+      - "PARAM-180"
+      - "PARAM-181"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/datasources.py:63"
+      - "PFI/大数据模拟器/qbvs/datasources.py:96"
+      - "PFI/大数据模拟器/qbvs/fund_rules.py:14"
+      - "PFI/大数据模拟器/qbvs/fund_rules.py:53"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:572"
+      - "PFI/大数据模拟器/tests/test_core.py:592"
+      - "PFI/大数据模拟器/tests/test_core.py:615"
+    evidence_refs:
+      - "EVID-PFI-MODEL-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    model_id: "MOD-013"
+    name: "QuantLab Evidence Bundle, Handshake and ReadOnly Adapter Gate"
+    purpose: "Export/verify QuantLab external evidence bundles, verify handshake ACKs, and generate read-only adapter packs with no database/source writes."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    formula_ids:
+      - "FORM-013"
+    parameter_ids:
+      - "PARAM-182"
+      - "PARAM-183"
+      - "PARAM-184"
+      - "PARAM-185"
+      - "PARAM-186"
+      - "PARAM-187"
+      - "PARAM-188"
+      - "PARAM-189"
+      - "PARAM-190"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/quantlab_bundle.py:19"
+      - "PFI/大数据模拟器/qbvs/quantlab_bundle.py:27"
+      - "PFI/大数据模拟器/qbvs/quantlab_bundle.py:73"
+      - "PFI/大数据模拟器/qbvs/handshake.py:9"
+      - "PFI/大数据模拟器/qbvs/handshake.py:115"
+      - "PFI/大数据模拟器/qbvs/quantlab_adapter.py:10"
+      - "PFI/大数据模拟器/qbvs/quantlab_adapter.py:53"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:307"
+      - "PFI/大数据模拟器/tests/test_core.py:375"
+      - "PFI/大数据模拟器/tests/test_core.py:681"
+    evidence_refs:
+      - "EVID-PFI-MODEL-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    model_id: "MOD-014"
+    name: "Goal Readiness Audit Scoring Model"
+    purpose: "Score original strategy-validation goal readiness across scope, user floors, data-provider gates, handshake and scale targets."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    formula_ids:
+      - "FORM-014"
+    parameter_ids:
+      - "PARAM-191"
+      - "PARAM-192"
+      - "PARAM-193"
+      - "PARAM-194"
+      - "PARAM-195"
+      - "PARAM-196"
+      - "PARAM-197"
+      - "PARAM-198"
+      - "PARAM-199"
+      - "PARAM-200"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/goal_audit.py:17"
+      - "PFI/大数据模拟器/qbvs/goal_audit.py:26"
+      - "PFI/大数据模拟器/qbvs/goal_audit.py:82"
+      - "PFI/大数据模拟器/qbvs/goal_audit.py:248"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:701"
+    evidence_refs:
+      - "EVID-PFI-MODEL-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    model_id: "MOD-015"
+    name: "Universe Seed, Provider Probe and Moomoo Batch Cache Gate"
+    purpose: "Build/validate tradable-candidate universes, generate cache plans, probe Moomoo/OpenD readiness and record batch cache attempts."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    formula_ids:
+      - "FORM-015"
+    parameter_ids:
+      - "PARAM-201"
+      - "PARAM-202"
+      - "PARAM-203"
+      - "PARAM-204"
+      - "PARAM-205"
+      - "PARAM-206"
+      - "PARAM-207"
+      - "PARAM-208"
+      - "PARAM-209"
+      - "PARAM-210"
+      - "PARAM-211"
+      - "PARAM-212"
+      - "PARAM-213"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/universe_seed.py:13"
+      - "PFI/大数据模拟器/qbvs/universe_seed.py:43"
+      - "PFI/大数据模拟器/qbvs/universe_seed.py:55"
+      - "PFI/大数据模拟器/qbvs/datasources.py:32"
+      - "PFI/大数据模拟器/qbvs/moomoo_batch.py:16"
+      - "PFI/大数据模拟器/qbvs/moomoo_batch.py:31"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:504"
+      - "PFI/大数据模拟器/tests/test_core.py:772"
+      - "PFI/大数据模拟器/tests/test_core.py:975"
+    evidence_refs:
+      - "EVID-PFI-MODEL-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+formulas:
+  -
+    formula_id: "FORM-001"
+    model_id: "MOD-001"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "target_weight starts at base_weight; dip rule may set 1.0; trend rule may set 1.0; sell rule multiplies selected targets by 0.85; risk rules cap target to 0.96 or 0.90; final target is forward-filled and clipped to [0,1]."
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/strategies.py:13"
+      - "PFI/大数据模拟器/qbvs/strategies.py:31"
+      - "PFI/大数据模拟器/qbvs/strategies.py:77"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:61"
+      - "PFI/大数据模拟器/tests/test_core.py:65"
+    evidence_refs:
+      - "EVID-PFI-FORMULA-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    formula_id: "FORM-002"
+    model_id: "MOD-002"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "SMA is rolling mean; RSI=100-100/(1+avg_gain/avg_loss) with neutral fill 50; Bollinger upper/lower=mid +/- num_std*std; MACD=EMA_fast-EMA_slow with signal EMA; ATR is rolling mean true range."
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/indicators.py:6"
+      - "PFI/大数据模拟器/qbvs/indicators.py:10"
+      - "PFI/大数据模拟器/qbvs/indicators.py:18"
+      - "PFI/大数据模拟器/qbvs/indicators.py:25"
+      - "PFI/大数据模拟器/qbvs/indicators.py:35"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:65"
+    evidence_refs:
+      - "EVID-PFI-FORMULA-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    formula_id: "FORM-003"
+    model_id: "MOD-003"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "Execution uses previous-day target weight. trade_value=equity_before*target_weight-current_position_value; slip_price=open*(1+side*(slippage_bps+market_impact_bps)/10000); equity=cash+quantity*close; metrics derive total return, annualized return, drawdown, volatility, Sharpe, VaR and CVaR."
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/backtest.py:11"
+      - "PFI/大数据模拟器/qbvs/backtest.py:19"
+      - "PFI/大数据模拟器/qbvs/backtest.py:49"
+      - "PFI/大数据模拟器/qbvs/backtest.py:134"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:65"
+    evidence_refs:
+      - "EVID-PFI-FORMULA-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    formula_id: "FORM-004"
+    model_id: "MOD-004"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "total_gap=strategy_total_return-buy_hold_total_return; annualized_gap=strategy_annualized_return-buy_hold_annualized_return; drawdown_improvement=strategy_max_drawdown-buy_hold_max_drawdown; passes when gaps meet configured floors."
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/backtest.py:122"
+      - "PFI/大数据模拟器/qbvs/backtest.py:163"
+      - "PFI/大数据模拟器/qbvs/validation.py:133"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+      - "PFI/大数据模拟器/tests/test_core.py:625"
+    evidence_refs:
+      - "EVID-PFI-FORMULA-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    formula_id: "FORM-005"
+    model_id: "MOD-005"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "For each path choose regime; daily return=normal(mu,sigma)+jump_mask*normal(jump_mu,jump_sigma), clipped to [-0.35,0.35]; close=start_price*exp(cumulative returns); OHLC generated around close/open."
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/simulation.py:10"
+      - "PFI/大数据模拟器/qbvs/simulation.py:17"
+      - "PFI/大数据模拟器/qbvs/simulation.py:27"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+      - "PFI/大数据模拟器/tests/test_core.py:84"
+    evidence_refs:
+      - "EVID-PFI-FORMULA-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    formula_id: "FORM-006"
+    model_id: "MOD-006"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "Validation runs each strategy and symbol/window, records metrics and errors, then groups by strategy_id and sorts by pass_rate, avg_annualized_gap, avg_drawdown_improvement and avg_total_gap descending."
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/validation.py:33"
+      - "PFI/大数据模拟器/qbvs/validation.py:88"
+      - "PFI/大数据模拟器/qbvs/validation.py:103"
+      - "PFI/大数据模拟器/qbvs/windows.py:19"
+      - "PFI/大数据模拟器/qbvs/windows.py:56"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:84"
+      - "PFI/大数据模拟器/tests/test_core.py:95"
+    evidence_refs:
+      - "EVID-PFI-FORMULA-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    formula_id: "FORM-007"
+    model_id: "MOD-007"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "Fast returns use shifted target_weight*close_return minus turnover*(commission_rate+(slippage_bps+market_impact_bps)/10000), cumprod equity, and same comparison floor; benchmark summary reports abs differences versus exact engine."
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/fast.py:14"
+      - "PFI/大数据模拟器/qbvs/fast.py:25"
+      - "PFI/大数据模拟器/qbvs/fast.py:150"
+      - "PFI/大数据模拟器/qbvs/fast.py:215"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:359"
+      - "PFI/大数据模拟器/tests/test_core.py:418"
+    evidence_refs:
+      - "EVID-PFI-FORMULA-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    formula_id: "FORM-008"
+    model_id: "MOD-008"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "Quality starts at 100 and subtracts penalties for too few bars, missing close, duplicate datetime, non-positive close, extreme daily return and calendar gaps; score is clamped [0,100] and mapped to grade A/B/C/D/F."
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/quality.py:12"
+      - "PFI/大数据模拟器/qbvs/quality.py:28"
+      - "PFI/大数据模拟器/qbvs/quality.py:94"
+      - "PFI/大数据模拟器/qbvs/quality.py:111"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:219"
+      - "PFI/大数据模拟器/tests/test_core.py:273"
+    evidence_refs:
+      - "EVID-PFI-FORMULA-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    formula_id: "FORM-009"
+    model_id: "MOD-009"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "task_id is first 24 hex chars of sha256 over source/window/strategy payload; run_task_manifest returns cached if result exists, skipped_quality if quality score is below minimum and skip flag is enabled, otherwise completed or failed."
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/tasks.py:18"
+      - "PFI/大数据模拟器/qbvs/tasks.py:110"
+      - "PFI/大数据模拟器/qbvs/tasks.py:189"
+      - "PFI/大数据模拟器/qbvs/tasks.py:209"
+      - "PFI/大数据模拟器/qbvs/tasks.py:269"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:95"
+      - "PFI/大数据模拟器/tests/test_core.py:273"
+    evidence_refs:
+      - "EVID-PFI-FORMULA-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    formula_id: "FORM-010"
+    model_id: "MOD-010"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "Campaign splits manifest by chunk_size, estimates total_seconds=tasks*million_test_multiplier*seconds_per_task and wall_seconds=total_seconds/workers, writes manual commands; promotion filters candidate summaries by sample/pass/return/drawdown thresholds."
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/campaign.py:18"
+      - "PFI/大数据模拟器/qbvs/campaign.py:41"
+      - "PFI/大数据模拟器/qbvs/campaign.py:92"
+      - "PFI/大数据模拟器/qbvs/campaign.py:139"
+      - "PFI/大数据模拟器/qbvs/planning.py:9"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:219"
+      - "PFI/大数据模拟器/tests/test_core.py:625"
+    evidence_refs:
+      - "EVID-PFI-FORMULA-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    formula_id: "FORM-011"
+    model_id: "MOD-011"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "Finalists require samples, pass_rate, avg_total_gap, avg_annualized_gap and avg_drawdown_improvement above thresholds; sorted by pass_rate and gaps; top_n assigned finalist_rank and expanded to cache-pair manifest windows."
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/finalists.py:13"
+      - "PFI/大数据模拟器/qbvs/finalists.py:22"
+      - "PFI/大数据模拟器/qbvs/finalists.py:48"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:912"
+    evidence_refs:
+      - "EVID-PFI-FORMULA-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    formula_id: "FORM-012"
+    model_id: "MOD-012"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "Fund buy subscription invests gross_cash/(1+subscription_fee_rate) after buy_confirmation_days; redemptions sell eligible lots with short/long redemption fee, settle cash after sell_cash_delay_days, and compute normal performance metrics plus fee totals."
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/datasources.py:63"
+      - "PFI/大数据模拟器/qbvs/datasources.py:96"
+      - "PFI/大数据模拟器/qbvs/fund_rules.py:14"
+      - "PFI/大数据模拟器/qbvs/fund_rules.py:53"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:572"
+      - "PFI/大数据模拟器/tests/test_core.py:592"
+      - "PFI/大数据模拟器/tests/test_core.py:615"
+    evidence_refs:
+      - "EVID-PFI-FORMULA-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    formula_id: "FORM-013"
+    model_id: "MOD-013"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "Bundle verification requires manifest/payload/candidate artifacts, schema match, writes_quantlab_database=false, writes_quantlab_source=false, ingestion_mode=external_evidence_only; handshake ACK must match protocol/source/target and accepted=true."
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/quantlab_bundle.py:19"
+      - "PFI/大数据模拟器/qbvs/quantlab_bundle.py:27"
+      - "PFI/大数据模拟器/qbvs/quantlab_bundle.py:73"
+      - "PFI/大数据模拟器/qbvs/handshake.py:9"
+      - "PFI/大数据模拟器/qbvs/handshake.py:115"
+      - "PFI/大数据模拟器/qbvs/quantlab_adapter.py:10"
+      - "PFI/大数据模拟器/qbvs/quantlab_adapter.py:53"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:307"
+      - "PFI/大数据模拟器/tests/test_core.py:375"
+      - "PFI/大数据模拟器/tests/test_core.py:681"
+    evidence_refs:
+      - "EVID-PFI-FORMULA-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    formula_id: "FORM-014"
+    model_id: "MOD-014"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "Goal audit builds requirement items with statuses passed/partial/blocked/missing; readiness_score=sum(status_weight)/item_count where passed=1, partial=0.5, blocked=0.25, missing=0."
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/goal_audit.py:17"
+      - "PFI/大数据模拟器/qbvs/goal_audit.py:26"
+      - "PFI/大数据模拟器/qbvs/goal_audit.py:82"
+      - "PFI/大数据模拟器/qbvs/goal_audit.py:248"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:701"
+    evidence_refs:
+      - "EVID-PFI-FORMULA-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    formula_id: "FORM-015"
+    model_id: "MOD-015"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    expression: "Seed validation requires columns and symbol count, warns on market/asset coverage below thresholds; Moomoo probe is ready only if socket is reachable and futu or moomoo SDK is available; batch cache records success/failure counts without QuantLab writes."
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/universe_seed.py:13"
+      - "PFI/大数据模拟器/qbvs/universe_seed.py:43"
+      - "PFI/大数据模拟器/qbvs/universe_seed.py:55"
+      - "PFI/大数据模拟器/qbvs/datasources.py:32"
+      - "PFI/大数据模拟器/qbvs/moomoo_batch.py:16"
+      - "PFI/大数据模拟器/qbvs/moomoo_batch.py:31"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:504"
+      - "PFI/大数据模拟器/tests/test_core.py:772"
+      - "PFI/大数据模拟器/tests/test_core.py:975"
+    evidence_refs:
+      - "EVID-PFI-FORMULA-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+parameters:
+  -
+    parameter_id: "PARAM-001"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "base_weight_0.92"
+    name: "Strategy base weight 0.92"
+    value: "0.92"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/strategies.py:31"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:61"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-002"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "base_weight_0.95"
+    name: "Strategy base weight 0.95"
+    value: "0.95"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/strategies.py:31"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:61"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-003"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "base_weight_0.98"
+    name: "Strategy base weight 0.98"
+    value: "0.98"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/strategies.py:31"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:61"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-004"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "base_weight_0.99"
+    name: "Strategy base weight 0.99"
+    value: "0.99"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/strategies.py:31"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:61"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-005"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "base_weight_1.0"
+    name: "Strategy base weight 1.0"
+    value: "1.0"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/strategies.py:31"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:61"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-006"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "dip_trigger_none"
+    name: "Dip trigger option none"
+    value: "none"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/strategies.py:33"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:61"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-007"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "dip_trigger_boll_lower"
+    name: "Dip trigger option boll_lower"
+    value: "boll_lower"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/strategies.py:33"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:61"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-008"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "dip_trigger_rsi_35"
+    name: "Dip trigger option rsi_35"
+    value: "rsi_35"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/strategies.py:33"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:61"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-009"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "dip_trigger_boll_or_rsi"
+    name: "Dip trigger option boll_or_rsi"
+    value: "boll_or_rsi"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/strategies.py:33"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:61"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-010"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "dip_trigger_ma20_pullback"
+    name: "Dip trigger option ma20_pullback"
+    value: "ma20_pullback"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/strategies.py:33"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:61"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-011"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "dip_trigger_two_day_drop"
+    name: "Dip trigger option two_day_drop"
+    value: "two_day_drop"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/strategies.py:33"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:61"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-012"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "sell_trigger_none"
+    name: "Sell trigger option none"
+    value: "none"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/strategies.py:34"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:61"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-013"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "sell_trigger_rsi_high_trim"
+    name: "Sell trigger option rsi_high_trim"
+    value: "rsi_high_trim"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/strategies.py:34"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:61"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-014"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "sell_trigger_boll_upper_trim"
+    name: "Sell trigger option boll_upper_trim"
+    value: "boll_upper_trim"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/strategies.py:34"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:61"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-015"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "sell_trigger_weak_trend_trim"
+    name: "Sell trigger option weak_trend_trim"
+    value: "weak_trend_trim"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/strategies.py:34"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:61"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-016"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "trend_rule_none"
+    name: "Trend rule option none"
+    value: "none"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/strategies.py:35"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:61"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-017"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "trend_rule_strong_trend_full"
+    name: "Trend rule option strong_trend_full"
+    value: "strong_trend_full"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/strategies.py:35"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:61"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-018"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "trend_rule_ma_trend_full"
+    name: "Trend rule option ma_trend_full"
+    value: "ma_trend_full"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/strategies.py:35"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:61"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-019"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "trend_rule_macd_trend_full"
+    name: "Trend rule option macd_trend_full"
+    value: "macd_trend_full"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/strategies.py:35"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:61"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-020"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "risk_rule_none"
+    name: "Risk rule option none"
+    value: "none"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/strategies.py:36"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:61"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-021"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "risk_rule_atr_96"
+    name: "Risk rule option atr_96"
+    value: "atr_96"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/strategies.py:36"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:61"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-022"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "risk_rule_ma60_break_90"
+    name: "Risk rule option ma60_break_90"
+    value: "ma60_break_90"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/strategies.py:36"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:61"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-023"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "risk_rule_drawdown_90"
+    name: "Risk rule option drawdown_90"
+    value: "drawdown_90"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/strategies.py:36"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:61"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-024"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "boll_std"
+    name: "Bollinger standard deviation multiplier"
+    value: "2.2"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/strategies.py:20"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:61"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-025"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "rsi_buy"
+    name: "RSI buy threshold"
+    value: "35"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/strategies.py:21"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:61"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-026"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "rsi_sell"
+    name: "RSI sell threshold"
+    value: "75"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/strategies.py:22"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:61"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-027"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "fast_ma"
+    name: "Fast moving average window"
+    value: "20"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/strategies.py:23"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:61"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-028"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "slow_ma"
+    name: "Slow moving average window"
+    value: "60"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/strategies.py:24"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:61"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-029"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "atr_window"
+    name: "ATR window"
+    value: "14"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/strategies.py:25"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:61"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-030"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "sell_trim_multiplier"
+    name: "Sell trim multiplier"
+    value: "0.85"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/strategies.py:162"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:61"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-031"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "atr_cap"
+    name: "ATR risk cap"
+    value: "0.96"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/strategies.py:176"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:61"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-032"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "ma60_break_cap"
+    name: "MA60 break cap"
+    value: "0.9"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/strategies.py:179"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:61"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-033"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "drawdown_cap"
+    name: "Drawdown risk cap"
+    value: "0.9"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/strategies.py:183"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:61"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-034"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "drawdown_trigger"
+    name: "Drawdown risk trigger"
+    value: "-0.15"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/strategies.py:182"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:61"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-035"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "atr_quantile"
+    name: "ATR high-vol quantile"
+    value: "0.85"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/strategies.py:175"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:61"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-036"
+    model_id: "MOD-001"
+    formula_id: "FORM-001"
+    symbol: "atr_quantile_window"
+    name: "ATR quantile rolling window"
+    value: "120"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/strategies.py:175"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:61"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-037"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "sma_min_periods_divisor"
+    name: "SMA min_periods divisor"
+    value: "2"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/indicators.py:7"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:65"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-038"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "rsi_window"
+    name: "RSI default window"
+    value: "14"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/indicators.py:10"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:65"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-039"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "rsi_neutral_fill"
+    name: "RSI neutral fill"
+    value: "50"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/indicators.py:16"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:65"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-040"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "bollinger_window"
+    name: "Bollinger default window"
+    value: "20"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/indicators.py:18"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:65"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-041"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "bollinger_num_std_default"
+    name: "Bollinger default num_std"
+    value: "2.0"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/indicators.py:18"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:65"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-042"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "macd_fast"
+    name: "MACD fast EMA span"
+    value: "12"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/indicators.py:25"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:65"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-043"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "macd_slow"
+    name: "MACD slow EMA span"
+    value: "26"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/indicators.py:25"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:65"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-044"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "macd_signal"
+    name: "MACD signal EMA span"
+    value: "9"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/indicators.py:25"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:65"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-045"
+    model_id: "MOD-002"
+    formula_id: "FORM-002"
+    symbol: "atr_window_default"
+    name: "ATR default window"
+    value: "14"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-001"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/indicators.py:35"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:65"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-046"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "initial_cash"
+    name: "CostModel initial_cash"
+    value: "100000.0"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-002"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/backtest.py:12"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:65"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-047"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "commission_rate"
+    name: "CostModel commission_rate"
+    value: "0.001"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-002"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/backtest.py:13"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:65"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-048"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "slippage_bps"
+    name: "CostModel slippage_bps"
+    value: "5.0"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-002"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/backtest.py:14"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:65"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-049"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "market_impact_bps"
+    name: "CostModel market_impact_bps"
+    value: "0.0"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-002"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/backtest.py:15"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:65"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-050"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "annualization"
+    name: "CostModel annualization"
+    value: "252"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-002"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/backtest.py:16"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:65"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-051"
+    model_id: "MOD-007"
+    formula_id: "FORM-007"
+    symbol: "initial_cash"
+    name: "FastScreenConfig initial_cash"
+    value: "100000.0"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-004"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/fast.py:15"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:359"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-052"
+    model_id: "MOD-007"
+    formula_id: "FORM-007"
+    symbol: "commission_rate"
+    name: "FastScreenConfig commission_rate"
+    value: "0.001"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-004"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/fast.py:16"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:359"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-053"
+    model_id: "MOD-007"
+    formula_id: "FORM-007"
+    symbol: "slippage_bps"
+    name: "FastScreenConfig slippage_bps"
+    value: "5.0"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-004"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/fast.py:17"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:359"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-054"
+    model_id: "MOD-007"
+    formula_id: "FORM-007"
+    symbol: "market_impact_bps"
+    name: "FastScreenConfig market_impact_bps"
+    value: "0.0"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-004"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/fast.py:18"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:359"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-055"
+    model_id: "MOD-007"
+    formula_id: "FORM-007"
+    symbol: "annualization"
+    name: "FastScreenConfig annualization"
+    value: "252"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-004"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/fast.py:19"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:359"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-056"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "initial_cash"
+    name: "ValidationConfig initial_cash"
+    value: "100000.0"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-002"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/validation.py:17"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:84"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-057"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "commission_rate"
+    name: "ValidationConfig commission_rate"
+    value: "0.001"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-002"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/validation.py:18"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:84"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-058"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "slippage_bps"
+    name: "ValidationConfig slippage_bps"
+    value: "5.0"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-002"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/validation.py:19"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:84"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-059"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "market_impact_bps"
+    name: "ValidationConfig market_impact_bps"
+    value: "0.0"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-002"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/validation.py:20"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:84"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-060"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "annualization"
+    name: "ValidationConfig annualization"
+    value: "252"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-002"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/validation.py:21"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:84"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-061"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "target_weight_min"
+    name: "target_weight_min"
+    value: "0.0"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-002"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/backtest.py:58"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:65"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-062"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "target_weight_max"
+    name: "target_weight_max"
+    value: "1.0"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-002"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/backtest.py:58"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:65"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-063"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "min_bars_normalize"
+    name: "min_bars_normalize"
+    value: "30"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-002"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/backtest.py:45"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:65"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-064"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "trade_value_epsilon"
+    name: "trade_value_epsilon"
+    value: "1e-08"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-002"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/backtest.py:75"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:65"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-065"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "sharpe_vol_epsilon"
+    name: "sharpe_vol_epsilon"
+    value: "1e-12"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-002"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/backtest.py:146"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:65"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-066"
+    model_id: "MOD-003"
+    formula_id: "FORM-003"
+    symbol: "var_quantile"
+    name: "var_quantile"
+    value: "0.05"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-002"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/backtest.py:147"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:65"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-067"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "min_total_return_gap"
+    name: "min_total_return_gap"
+    value: "-0.08"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-002"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/backtest.py:170"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-068"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "min_annualized_gap"
+    name: "min_annualized_gap"
+    value: "-0.03"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-002"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/backtest.py:170"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-069"
+    model_id: "MOD-004"
+    formula_id: "FORM-004"
+    symbol: "min_drawdown_improvement"
+    name: "min_drawdown_improvement"
+    value: "-0.005"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-002"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/backtest.py:170"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-070"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "paths"
+    name: "paths"
+    value: "10000"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-003"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/simulation.py:11"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-071"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "days"
+    name: "days"
+    value: "252"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-003"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/simulation.py:12"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-072"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "seed"
+    name: "seed"
+    value: "42"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-003"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/simulation.py:13"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-073"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "start_price"
+    name: "start_price"
+    value: "100.0"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-003"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/simulation.py:14"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-074"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "return_clip_min"
+    name: "return_clip_min"
+    value: "-0.35"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-003"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/simulation.py:39"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-075"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "return_clip_max"
+    name: "return_clip_max"
+    value: "0.35"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-003"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/simulation.py:39"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-076"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "bull_mu"
+    name: "bull regime mu"
+    value: "0.00075"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-003"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/simulation.py:17"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-077"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "bull_sigma"
+    name: "bull regime sigma"
+    value: "0.012"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-003"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/simulation.py:17"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-078"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "bull_jump_p"
+    name: "bull regime jump_p"
+    value: "0.002"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-003"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/simulation.py:17"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-079"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "bull_jump_mu"
+    name: "bull regime jump_mu"
+    value: "-0.02"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-003"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/simulation.py:17"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-080"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "bull_jump_sigma"
+    name: "bull regime jump_sigma"
+    value: "0.025"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-003"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/simulation.py:17"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-081"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "bear_mu"
+    name: "bear regime mu"
+    value: "-0.00035"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-003"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/simulation.py:17"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-082"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "bear_sigma"
+    name: "bear regime sigma"
+    value: "0.016"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-003"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/simulation.py:17"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-083"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "bear_jump_p"
+    name: "bear regime jump_p"
+    value: "0.004"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-003"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/simulation.py:17"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-084"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "bear_jump_mu"
+    name: "bear regime jump_mu"
+    value: "-0.03"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-003"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/simulation.py:17"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-085"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "bear_jump_sigma"
+    name: "bear regime jump_sigma"
+    value: "0.035"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-003"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/simulation.py:17"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-086"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "sideways_mu"
+    name: "sideways regime mu"
+    value: "5e-05"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-003"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/simulation.py:17"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-087"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "sideways_sigma"
+    name: "sideways regime sigma"
+    value: "0.01"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-003"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/simulation.py:17"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-088"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "sideways_jump_p"
+    name: "sideways regime jump_p"
+    value: "0.002"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-003"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/simulation.py:17"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-089"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "sideways_jump_mu"
+    name: "sideways regime jump_mu"
+    value: "0.0"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-003"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/simulation.py:17"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-090"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "sideways_jump_sigma"
+    name: "sideways regime jump_sigma"
+    value: "0.02"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-003"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/simulation.py:17"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-091"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "crash_mu"
+    name: "crash regime mu"
+    value: "-0.0012"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-003"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/simulation.py:17"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-092"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "crash_sigma"
+    name: "crash regime sigma"
+    value: "0.024"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-003"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/simulation.py:17"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-093"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "crash_jump_p"
+    name: "crash regime jump_p"
+    value: "0.015"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-003"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/simulation.py:17"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-094"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "crash_jump_mu"
+    name: "crash regime jump_mu"
+    value: "-0.055"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-003"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/simulation.py:17"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-095"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "crash_jump_sigma"
+    name: "crash regime jump_sigma"
+    value: "0.045"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-003"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/simulation.py:17"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-096"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "highvol_mu"
+    name: "highvol regime mu"
+    value: "0.00015"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-003"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/simulation.py:17"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-097"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "highvol_sigma"
+    name: "highvol regime sigma"
+    value: "0.026"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-003"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/simulation.py:17"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-098"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "highvol_jump_p"
+    name: "highvol regime jump_p"
+    value: "0.008"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-003"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/simulation.py:17"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-099"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "highvol_jump_mu"
+    name: "highvol regime jump_mu"
+    value: "-0.015"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-003"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/simulation.py:17"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-100"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "highvol_jump_sigma"
+    name: "highvol regime jump_sigma"
+    value: "0.055"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-003"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/simulation.py:17"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-101"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "rotation_mu"
+    name: "rotation regime mu"
+    value: "0.00025"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-003"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/simulation.py:17"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-102"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "rotation_sigma"
+    name: "rotation regime sigma"
+    value: "0.018"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-003"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/simulation.py:17"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-103"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "rotation_jump_p"
+    name: "rotation regime jump_p"
+    value: "0.004"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-003"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/simulation.py:17"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-104"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "rotation_jump_mu"
+    name: "rotation regime jump_mu"
+    value: "0.0"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-003"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/simulation.py:17"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-105"
+    model_id: "MOD-005"
+    formula_id: "FORM-005"
+    symbol: "rotation_jump_sigma"
+    name: "rotation regime jump_sigma"
+    value: "0.04"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-003"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/simulation.py:17"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:76"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-106"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "rolling_lengths"
+    name: "rolling_lengths"
+    value: "252;504;756;1260"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-002"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/validation.py:91"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:84"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-107"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "rolling_step"
+    name: "rolling_step"
+    value: "63"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-002"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/validation.py:92"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:84"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-108"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "rolling_min_bars"
+    name: "rolling_min_bars"
+    value: "120"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-002"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/validation.py:93"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:84"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-109"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "event_min_bars"
+    name: "event_min_bars"
+    value: "30"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-002"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/validation.py:107"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:84"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-110"
+    model_id: "MOD-006"
+    formula_id: "FORM-006"
+    symbol: "summary_sort_keys"
+    name: "summary_sort_keys"
+    value: "pass_rate;avg_annualized_gap;avg_drawdown_improvement;avg_total_gap"
+    source: "EXTRACTED from implementation, but list-order aggregation requires human review until a structured list selector exists"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-PFI-B-002"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/validation.py:158"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:84"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-111"
+    model_id: "MOD-007"
+    formula_id: "FORM-007"
+    symbol: "cost_rate_transform"
+    name: "cost_rate_transform"
+    value: "commission_rate+(slippage_bps+market_impact_bps)/10000"
+    source: "EXTRACTED from implementation, but derived cost transform requires human review because it is formula semantics rather than a scalar default"
+    fact_level: "EXTRACTED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    unknown_task_ids:
+      - "TASK-PFI-B-004"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/fast.py:40"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:359"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-112"
+    model_id: "MOD-007"
+    formula_id: "FORM-007"
+    symbol: "return_floor_clip"
+    name: "return_floor_clip"
+    value: "-0.999999"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-004"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/fast.py:41"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:359"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-113"
+    model_id: "MOD-007"
+    formula_id: "FORM-007"
+    symbol: "fast_exact_diff_pass_threshold"
+    name: "fast_exact_diff_pass_threshold"
+    value: "0.05"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-004"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/fast.py:222"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:359"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-114"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "quality_start_score"
+    name: "quality_start_score"
+    value: "100.0"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-005"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/quality.py:28"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:219"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-115"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "few_bars_threshold"
+    name: "few_bars_threshold"
+    value: "120"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-005"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/quality.py:48"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:219"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-116"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "few_bars_penalty"
+    name: "few_bars_penalty"
+    value: "25"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-005"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/quality.py:50"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:219"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-117"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "short_history_threshold"
+    name: "short_history_threshold"
+    value: "252"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-005"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/quality.py:51"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:219"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-118"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "short_history_penalty"
+    name: "short_history_penalty"
+    value: "10"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-005"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/quality.py:53"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:219"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-119"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "missing_close_penalty_cap"
+    name: "missing_close_penalty_cap"
+    value: "30.0"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-005"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/quality.py:56"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:219"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-120"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "duplicate_penalty_cap"
+    name: "duplicate_penalty_cap"
+    value: "20.0"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-005"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/quality.py:59"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:219"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-121"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "duplicate_penalty_per_row"
+    name: "duplicate_penalty_per_row"
+    value: "2"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-005"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/quality.py:59"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:219"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-122"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "non_positive_penalty_cap"
+    name: "non_positive_penalty_cap"
+    value: "30.0"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-005"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/quality.py:62"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:219"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-123"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "non_positive_penalty_per_row"
+    name: "non_positive_penalty_per_row"
+    value: "5"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-005"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/quality.py:62"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:219"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-124"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "extreme_return_threshold"
+    name: "extreme_return_threshold"
+    value: "0.35"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-005"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/quality.py:63"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:219"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-125"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "extreme_return_penalty"
+    name: "extreme_return_penalty"
+    value: "15"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-005"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/quality.py:65"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:219"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-126"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "large_gap_threshold"
+    name: "large_gap_threshold"
+    value: "0.35"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-005"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/quality.py:66"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:219"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-127"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "large_gap_penalty"
+    name: "large_gap_penalty"
+    value: "20"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-005"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/quality.py:68"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:219"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-128"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "moderate_gap_threshold"
+    name: "moderate_gap_threshold"
+    value: "0.2"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-005"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/quality.py:69"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:219"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-129"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "moderate_gap_penalty"
+    name: "moderate_gap_penalty"
+    value: "8"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-005"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/quality.py:71"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:219"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-130"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "grade_A_threshold"
+    name: "grade_A_threshold"
+    value: "90"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-005"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/quality.py:146"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:219"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-131"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "grade_B_threshold"
+    name: "grade_B_threshold"
+    value: "80"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-005"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/quality.py:148"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:219"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-132"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "grade_C_threshold"
+    name: "grade_C_threshold"
+    value: "70"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-005"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/quality.py:150"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:219"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-133"
+    model_id: "MOD-008"
+    formula_id: "FORM-008"
+    symbol: "grade_D_threshold"
+    name: "grade_D_threshold"
+    value: "60"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-005"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/quality.py:152"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:219"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-134"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "csv_window_lengths"
+    name: "csv_window_lengths"
+    value: "252;504;756"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-005"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/tasks.py:24"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:95"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-135"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "csv_step"
+    name: "csv_step"
+    value: "63"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-005"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/tasks.py:25"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:95"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-136"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "csv_min_bars"
+    name: "csv_min_bars"
+    value: "120"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-005"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/tasks.py:26"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:95"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-137"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "pair_step"
+    name: "pair_step"
+    value: "126"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-005"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/tasks.py:115"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:95"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-138"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "windows_per_pair"
+    name: "windows_per_pair"
+    value: "1"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-005"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/tasks.py:118"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:95"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-139"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "task_id_hash_length"
+    name: "task_id_hash_length"
+    value: "24"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-005"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/tasks.py:205"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:95"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-140"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "resume_default"
+    name: "resume_default"
+    value: "True"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-005"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/tasks.py:214"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:95"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-141"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "skip_low_quality_default"
+    name: "skip_low_quality_default"
+    value: "False"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-005"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/tasks.py:216"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:95"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-142"
+    model_id: "MOD-009"
+    formula_id: "FORM-009"
+    symbol: "min_quality_score_default"
+    name: "min_quality_score_default"
+    value: "None"
+    source: "EXTRACTED from implementation default None; quality threshold disabled unless caller supplies a value"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-005"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/tasks.py:215"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:95"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-143"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "chunk_size"
+    name: "chunk_size"
+    value: "10000"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-006"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/campaign.py:19"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:219"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-144"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "workers"
+    name: "workers"
+    value: "1"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-006"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/campaign.py:20"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:219"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-145"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "seconds_per_task"
+    name: "seconds_per_task"
+    value: "0.05"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-006"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/campaign.py:21"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:219"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-146"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "campaign_min_quality_score"
+    name: "campaign_min_quality_score"
+    value: "70.0"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-006"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/campaign.py:22"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:219"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-147"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "campaign_skip_low_quality"
+    name: "campaign_skip_low_quality"
+    value: "True"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-006"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/campaign.py:23"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:219"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-148"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "million_test_multiplier"
+    name: "million_test_multiplier"
+    value: "1"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-006"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/campaign.py:24"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:219"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-149"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "target_symbols"
+    name: "target_symbols"
+    value: "200"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-006"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/campaign.py:25"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:219"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-150"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "target_strategies"
+    name: "target_strategies"
+    value: "200"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-006"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/campaign.py:26"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:219"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-151"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "target_tests_per_strategy"
+    name: "target_tests_per_strategy"
+    value: "1000000"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-006"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/campaign.py:27"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:219"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-152"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "promotion_top_n"
+    name: "promotion_top_n"
+    value: "20"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-006"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/campaign.py:33"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:219"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-153"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "promotion_min_samples"
+    name: "promotion_min_samples"
+    value: "1"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-006"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/campaign.py:34"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:219"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-154"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "promotion_min_pass_rate"
+    name: "promotion_min_pass_rate"
+    value: "0.6"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-006"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/campaign.py:35"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:219"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-155"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "promotion_min_avg_total_gap"
+    name: "promotion_min_avg_total_gap"
+    value: "-0.08"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-006"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/campaign.py:36"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:219"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-156"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "promotion_min_avg_annualized_gap"
+    name: "promotion_min_avg_annualized_gap"
+    value: "-0.03"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-006"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/campaign.py:37"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:219"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-157"
+    model_id: "MOD-010"
+    formula_id: "FORM-010"
+    symbol: "promotion_min_avg_drawdown_improvement"
+    name: "promotion_min_avg_drawdown_improvement"
+    value: "-0.005"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-006"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/campaign.py:38"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:219"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-158"
+    model_id: "MOD-011"
+    formula_id: "FORM-011"
+    symbol: "finalist_top_n"
+    name: "finalist_top_n"
+    value: "20"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-006"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/finalists.py:14"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:912"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-159"
+    model_id: "MOD-011"
+    formula_id: "FORM-011"
+    symbol: "finalist_min_samples"
+    name: "finalist_min_samples"
+    value: "150"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-006"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/finalists.py:15"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:912"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-160"
+    model_id: "MOD-011"
+    formula_id: "FORM-011"
+    symbol: "finalist_min_pass_rate"
+    name: "finalist_min_pass_rate"
+    value: "0.6"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-006"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/finalists.py:16"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:912"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-161"
+    model_id: "MOD-011"
+    formula_id: "FORM-011"
+    symbol: "finalist_min_avg_total_gap"
+    name: "finalist_min_avg_total_gap"
+    value: "-0.08"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-006"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/finalists.py:17"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:912"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-162"
+    model_id: "MOD-011"
+    formula_id: "FORM-011"
+    symbol: "finalist_min_avg_annualized_gap"
+    name: "finalist_min_avg_annualized_gap"
+    value: "-0.03"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-006"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/finalists.py:18"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:912"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-163"
+    model_id: "MOD-011"
+    formula_id: "FORM-011"
+    symbol: "finalist_min_avg_drawdown_improvement"
+    name: "finalist_min_avg_drawdown_improvement"
+    value: "-0.005"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-006"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/finalists.py:19"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:912"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-164"
+    model_id: "MOD-011"
+    formula_id: "FORM-011"
+    symbol: "finalist_window_lengths"
+    name: "finalist_window_lengths"
+    value: "252;504;756"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-006"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/finalists.py:54"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:912"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-165"
+    model_id: "MOD-011"
+    formula_id: "FORM-011"
+    symbol: "finalist_step"
+    name: "finalist_step"
+    value: "63"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-006"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/finalists.py:55"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:912"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-166"
+    model_id: "MOD-011"
+    formula_id: "FORM-011"
+    symbol: "finalist_min_bars"
+    name: "finalist_min_bars"
+    value: "120"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-006"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/finalists.py:56"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:912"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-167"
+    model_id: "MOD-011"
+    formula_id: "FORM-011"
+    symbol: "finalist_windows_per_pair"
+    name: "finalist_windows_per_pair"
+    value: "5"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-006"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/finalists.py:58"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:912"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-168"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "fund_initial_cash"
+    name: "fund_initial_cash"
+    value: "100000.0"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-007"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/fund_rules.py:15"
+    config_refs:
+      - "PFI/大数据模拟器/config/alipay_fund_rule_template.json"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:572"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-169"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "subscription_fee_rate"
+    name: "subscription_fee_rate"
+    value: "0.0015"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-007"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/fund_rules.py:16"
+    config_refs:
+      - "PFI/大数据模拟器/config/alipay_fund_rule_template.json"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:572"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-170"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "redemption_fee_rate_short"
+    name: "redemption_fee_rate_short"
+    value: "0.015"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-007"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/fund_rules.py:17"
+    config_refs:
+      - "PFI/大数据模拟器/config/alipay_fund_rule_template.json"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:572"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-171"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "redemption_fee_rate_long"
+    name: "redemption_fee_rate_long"
+    value: "0.005"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-007"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/fund_rules.py:18"
+    config_refs:
+      - "PFI/大数据模拟器/config/alipay_fund_rule_template.json"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:572"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-172"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "short_holding_days"
+    name: "short_holding_days"
+    value: "7"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-007"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/fund_rules.py:19"
+    config_refs:
+      - "PFI/大数据模拟器/config/alipay_fund_rule_template.json"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:572"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-173"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "min_holding_days"
+    name: "min_holding_days"
+    value: "0"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-007"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/fund_rules.py:20"
+    config_refs:
+      - "PFI/大数据模拟器/config/alipay_fund_rule_template.json"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:572"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-174"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "buy_confirmation_days"
+    name: "buy_confirmation_days"
+    value: "1"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-007"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/fund_rules.py:21"
+    config_refs:
+      - "PFI/大数据模拟器/config/alipay_fund_rule_template.json"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:572"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-175"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "sell_cash_delay_days"
+    name: "sell_cash_delay_days"
+    value: "2"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-007"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/fund_rules.py:22"
+    config_refs:
+      - "PFI/大数据模拟器/config/alipay_fund_rule_template.json"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:572"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-176"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "fund_annualization"
+    name: "fund_annualization"
+    value: "252"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-007"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/fund_rules.py:23"
+    config_refs:
+      - "PFI/大数据模拟器/config/alipay_fund_rule_template.json"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:572"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-177"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "date_col"
+    name: "date_col"
+    value: "date"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-007"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/datasources.py:68"
+    config_refs:
+      - "PFI/大数据模拟器/config/alipay_fund_rule_template.json"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:572"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-178"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "nav_col"
+    name: "nav_col"
+    value: "nav"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-007"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/datasources.py:69"
+    config_refs:
+      - "PFI/大数据模拟器/config/alipay_fund_rule_template.json"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:572"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-179"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "fund_market"
+    name: "fund_market"
+    value: "ALIPAY_FUND"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-007"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/datasources.py:70"
+    config_refs:
+      - "PFI/大数据模拟器/config/alipay_fund_rule_template.json"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:572"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-180"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "fund_currency"
+    name: "fund_currency"
+    value: "CNY"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-007"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/datasources.py:71"
+    config_refs:
+      - "PFI/大数据模拟器/config/alipay_fund_rule_template.json"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:572"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-181"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "fund_timezone"
+    name: "fund_timezone"
+    value: "Asia/Shanghai"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-007"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/datasources.py:72"
+    config_refs:
+      - "PFI/大数据模拟器/config/alipay_fund_rule_template.json"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:572"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-182"
+    model_id: "MOD-013"
+    formula_id: "FORM-013"
+    symbol: "bundle_top_n"
+    name: "bundle_top_n"
+    value: "20"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-008"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/quantlab_bundle.py:20"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:307"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-183"
+    model_id: "MOD-013"
+    formula_id: "FORM-013"
+    symbol: "bundle_min_pass_rate"
+    name: "bundle_min_pass_rate"
+    value: "0.6"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-008"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/quantlab_bundle.py:21"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:307"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-184"
+    model_id: "MOD-013"
+    formula_id: "FORM-013"
+    symbol: "bundle_min_avg_total_gap"
+    name: "bundle_min_avg_total_gap"
+    value: "-0.08"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-008"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/quantlab_bundle.py:22"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:307"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-185"
+    model_id: "MOD-013"
+    formula_id: "FORM-013"
+    symbol: "bundle_min_avg_annualized_gap"
+    name: "bundle_min_avg_annualized_gap"
+    value: "-0.03"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-008"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/quantlab_bundle.py:23"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:307"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-186"
+    model_id: "MOD-013"
+    formula_id: "FORM-013"
+    symbol: "bundle_min_avg_drawdown_improvement"
+    name: "bundle_min_avg_drawdown_improvement"
+    value: "-0.005"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-008"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/quantlab_bundle.py:24"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:307"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-187"
+    model_id: "MOD-013"
+    formula_id: "FORM-013"
+    symbol: "bundle_schema"
+    name: "bundle_schema"
+    value: "qbvs-quantlab-evidence-bundle-v1"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-008"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/quantlab_bundle.py:15"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:307"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-188"
+    model_id: "MOD-013"
+    formula_id: "FORM-013"
+    symbol: "protocol_version"
+    name: "protocol_version"
+    value: "qbvs-quantlab-handshake-v1"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-008"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/handshake.py:9"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:307"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-189"
+    model_id: "MOD-013"
+    formula_id: "FORM-013"
+    symbol: "system_name"
+    name: "system_name"
+    value: "quant_behavior_validation_system"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-008"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/handshake.py:10"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:307"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-190"
+    model_id: "MOD-013"
+    formula_id: "FORM-013"
+    symbol: "adapter_schema"
+    name: "adapter_schema"
+    value: "qbvs-quantlab-readonly-adapter-pack-v1"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-008"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/quantlab_adapter.py:10"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:307"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-191"
+    model_id: "MOD-014"
+    formula_id: "FORM-014"
+    symbol: "audit_target_symbols"
+    name: "audit_target_symbols"
+    value: "200"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-009"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/goal_audit.py:18"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:701"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-192"
+    model_id: "MOD-014"
+    formula_id: "FORM-014"
+    symbol: "audit_target_strategies"
+    name: "audit_target_strategies"
+    value: "200"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-009"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/goal_audit.py:19"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:701"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-193"
+    model_id: "MOD-014"
+    formula_id: "FORM-014"
+    symbol: "audit_target_tests_per_strategy"
+    name: "audit_target_tests_per_strategy"
+    value: "1000000"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-009"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/goal_audit.py:20"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:701"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-194"
+    model_id: "MOD-014"
+    formula_id: "FORM-014"
+    symbol: "audit_min_avg_total_gap"
+    name: "audit_min_avg_total_gap"
+    value: "-0.08"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-009"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/goal_audit.py:21"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:701"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-195"
+    model_id: "MOD-014"
+    formula_id: "FORM-014"
+    symbol: "audit_min_avg_annualized_gap"
+    name: "audit_min_avg_annualized_gap"
+    value: "-0.03"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-009"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/goal_audit.py:22"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:701"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-196"
+    model_id: "MOD-014"
+    formula_id: "FORM-014"
+    symbol: "audit_min_avg_drawdown_improvement"
+    name: "audit_min_avg_drawdown_improvement"
+    value: "-0.005"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-009"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/goal_audit.py:23"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:701"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-197"
+    model_id: "MOD-014"
+    formula_id: "FORM-014"
+    symbol: "score_passed"
+    name: "score_passed"
+    value: "1.0"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-009"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/goal_audit.py:249"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:701"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-198"
+    model_id: "MOD-014"
+    formula_id: "FORM-014"
+    symbol: "score_partial"
+    name: "score_partial"
+    value: "0.5"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-009"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/goal_audit.py:249"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:701"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-199"
+    model_id: "MOD-014"
+    formula_id: "FORM-014"
+    symbol: "score_blocked"
+    name: "score_blocked"
+    value: "0.25"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-009"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/goal_audit.py:249"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:701"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-200"
+    model_id: "MOD-014"
+    formula_id: "FORM-014"
+    symbol: "score_missing"
+    name: "score_missing"
+    value: "0.0"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-009"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/goal_audit.py:249"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:701"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-201"
+    model_id: "MOD-015"
+    formula_id: "FORM-015"
+    symbol: "seed_limit"
+    name: "seed_limit"
+    value: "220"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-010"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/universe_seed.py:43"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:504"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-202"
+    model_id: "MOD-015"
+    formula_id: "FORM-015"
+    symbol: "seed_min_symbols"
+    name: "seed_min_symbols"
+    value: "200"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-010"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/universe_seed.py:55"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:504"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-203"
+    model_id: "MOD-015"
+    formula_id: "FORM-015"
+    symbol: "min_market_coverage"
+    name: "min_market_coverage"
+    value: "4"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-010"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/universe_seed.py:80"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:504"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-204"
+    model_id: "MOD-015"
+    formula_id: "FORM-015"
+    symbol: "min_asset_class_coverage"
+    name: "min_asset_class_coverage"
+    value: "5"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-010"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/universe_seed.py:82"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:504"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-205"
+    model_id: "MOD-015"
+    formula_id: "FORM-015"
+    symbol: "seed_start"
+    name: "seed_start"
+    value: "2000-01-01"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-010"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/universe_seed.py:106"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:504"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-206"
+    model_id: "MOD-015"
+    formula_id: "FORM-015"
+    symbol: "seed_end"
+    name: "seed_end"
+    value: "2026-06-05"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-010"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/universe_seed.py:107"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:504"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-207"
+    model_id: "MOD-015"
+    formula_id: "FORM-015"
+    symbol: "yahoo_cache_source"
+    name: "yahoo_cache_source"
+    value: "yahoo_public_chart"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-010"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/universe_seed.py:242"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:504"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-208"
+    model_id: "MOD-015"
+    formula_id: "FORM-015"
+    symbol: "moomoo_host"
+    name: "moomoo_host"
+    value: "127.0.0.1"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-010"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/datasources.py:32"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:504"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-209"
+    model_id: "MOD-015"
+    formula_id: "FORM-015"
+    symbol: "moomoo_port"
+    name: "moomoo_port"
+    value: "11111"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-010"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/datasources.py:32"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:504"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-210"
+    model_id: "MOD-015"
+    formula_id: "FORM-015"
+    symbol: "moomoo_timeout"
+    name: "moomoo_timeout"
+    value: "2.0"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-010"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/datasources.py:32"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:504"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-211"
+    model_id: "MOD-015"
+    formula_id: "FORM-015"
+    symbol: "moomoo_ktype"
+    name: "moomoo_ktype"
+    value: "K_DAY"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-010"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/datasources.py:132"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:504"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-212"
+    model_id: "MOD-015"
+    formula_id: "FORM-015"
+    symbol: "moomoo_autype"
+    name: "moomoo_autype"
+    value: "QFQ"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-010"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/datasources.py:133"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:504"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+  -
+    parameter_id: "PARAM-213"
+    model_id: "MOD-015"
+    formula_id: "FORM-015"
+    symbol: "batch_offset"
+    name: "batch_offset"
+    value: "0"
+    source: "EXTRACTED from implementation default"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    unknown_task_ids:
+      - "TASK-PFI-B-010"
+    code_refs:
+      - "PFI/大数据模拟器/qbvs/moomoo_batch.py:23"
+    config_refs:
+      - "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    test_refs:
+      - "PFI/大数据模拟器/tests/test_core.py:504"
+    evidence_refs:
+      - "EVID-PFI-PARAMETER-REGISTRY"
+      - "EVID-SEMANTIC-PFI-MANIFEST"
+strategies:
+  -
+    strategy_id: "STRAT-PFI-001"
+    name: "oos_multiple_testing_required"
+    status: "blocked"
+    fact_level: "UNKNOWN"
+    description: "需要预注册、walk-forward、FDR/Reality Check、成本压力和跨市场 OOS 后，才能排名或批准策略。"
+    evidence_refs:
+      - "EVID-PFI-OWNER-STATUS"
+      - "EVID-PFI-ASSURANCE-STATUS"
+  -
+    strategy_id: "STRAT-PFI-002"
+    name: "research_simulation_not_live_trading"
+    status: "active"
+    fact_level: "EXTRACTED"
+    description: "当前迁移只保留研究/模拟/证据包事实，不改变交易、provider、adapter 或外部系统写入行为。"
+    evidence_refs:
+      - "EVID-PFI-DELIVERY-TASKS"
+      - "EVID-PFI-TRACEABILITY-MATRIX"
+validations:
+  -
+    validation_id: "VAL-PFI-STRUCTURAL-COMPLETENESS"
+    name: "structural_completeness"
+    status: "VERIFIED"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-PFI-ASSURANCE-STATUS"
+  -
+    validation_id: "VAL-PFI-IMPLEMENTATION-CONGRUENCE"
+    name: "implementation_congruence"
+    status: "PARTIAL"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-PFI-ASSURANCE-STATUS"
+  -
+    validation_id: "VAL-PFI-PARAMETER-SOURCE-QUALITY"
+    name: "parameter_source_quality"
+    status: "PARTIAL"
+    fact_level: "UNKNOWN"
+    evidence_refs:
+      - "EVID-PFI-ASSURANCE-STATUS"
+  -
+    validation_id: "VAL-PFI-METHODOLOGICAL-RATIONALE"
+    name: "methodological_rationale"
+    status: "UNVERIFIED"
+    fact_level: "UNKNOWN"
+    evidence_refs:
+      - "EVID-PFI-ASSURANCE-STATUS"
+  -
+    validation_id: "VAL-PFI-EMPIRICAL-VALIDATION"
+    name: "empirical_validation"
+    status: "UNVERIFIED"
+    fact_level: "UNKNOWN"
+    evidence_refs:
+      - "EVID-PFI-ASSURANCE-STATUS"
+  -
+    validation_id: "VAL-PFI-OPERATIONAL-VALIDATION"
+    name: "operational_validation"
+    status: "FAILED"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-PFI-ASSURANCE-STATUS"
+  -
+    validation_id: "VAL-PFI-DELIVERY-EVIDENCE"
+    name: "delivery_evidence"
+    status: "UNVERIFIED"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-PFI-ASSURANCE-STATUS"
+  -
+    validation_id: "VAL-PFI-EVIDENCE-FRESHNESS"
+    name: "evidence_freshness"
+    status: "PARTIAL"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-PFI-ASSURANCE-STATUS"
+delivery_readiness:
+  status: "UNVERIFIED"
+  release_gate: "GOV-SEMANTIC-PFI-in-progress"
+  owner_decision_required: true
+  next_executable_task: "TASK-PFI-B-001"
+  active_requirements: 15
+  evidence_refs:
+    - "EVID-PFI-ASSURANCE-STATUS"
+    - "EVID-PFI-TRACEABILITY-MATRIX"
+evidence_refs:
+  -
+    evidence_id: "EVID-PFI-MODEL-REGISTRY"
+    kind: "file"
+    ref: "PFI/大数据模拟器/docs/governance/model_registry.yaml"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-PFI-FORMULA-REGISTRY"
+    kind: "file"
+    ref: "PFI/大数据模拟器/docs/governance/formula_registry.yaml"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-PFI-PARAMETER-REGISTRY"
+    kind: "file"
+    ref: "PFI/大数据模拟器/docs/governance/parameter_registry.csv"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-PFI-TRACEABILITY-MATRIX"
+    kind: "file"
+    ref: "PFI/大数据模拟器/docs/governance/TRACEABILITY_MATRIX.csv"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-PFI-ASSURANCE-STATUS"
+    kind: "file"
+    ref: "PFI/大数据模拟器/docs/governance/ASSURANCE_STATUS.yaml"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-PFI-DELIVERY-TASKS"
+    kind: "file"
+    ref: "PFI/大数据模拟器/docs/governance/delivery_tasks.yaml"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-PFI-DEVELOPMENT-EVENTS"
+    kind: "file"
+    ref: "PFI/大数据模拟器/docs/governance/development_events.jsonl"
+    fact_level: "RECONSTRUCTED"
+  -
+    evidence_id: "EVID-PFI-OWNER-STATUS"
+    kind: "file"
+    ref: "PFI/大数据模拟器/docs/governance/OWNER_STATUS.md"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-SEMANTIC-PFI-MANIFEST"
+    kind: "manifest"
+    ref: "governance/run_manifests/GOV-SEMANTIC-PFI-EXTRACT-001.json"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-REVIEW9-S5PBT04-MANIFEST"
+    kind: "manifest"
+    ref: "governance/run_manifests/GOV-REVIEW9-S5PBT04-PFI-BIG-DATA-SIMULATOR-CANONICAL-RENDER-20260624.json"
+    fact_level: "PROPOSED"
