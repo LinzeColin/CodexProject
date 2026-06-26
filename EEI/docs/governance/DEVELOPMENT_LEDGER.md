@@ -49,6 +49,37 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Remaining risks: host sleep or browser/runtime failures can still interrupt the 24h rerun; the /private/tmp evidence must be preserved before promotion.
 - Rollback: stop only PID `80478` and watchdog PID `80732` if the isolated run is wrong, leaving canonical failed evidence untouched.
 
+## EVENT-20260626-004 - T1307/A209 isolated rerun heartbeat/preflight refresh
+
+- Timestamp: 2026-06-26T10:05:00+10:00
+- Fact level: EXTRACTED
+- Base commit: `86785e7c8cf6ca5ecefc5bcfec452bb8f6a0dd20`
+- Scope: refresh repository-local A209 background heartbeat from the isolated rerun checkpoint at `/private/tmp/eei-a209-rerun-20260626-0918/`, then regenerate dependent A209 finalization, A203 production API, A204/A205 release-manager, MVP release-gate and external release-evidence preflight artifacts.
+- Non-claims: this does not promote `/private/tmp` evidence to canonical 24h release evidence, does not close A209, does not close A202/A210/A026/A027, and does not activate release-manager or MVP readiness.
+- A209 state: canonical repository evidence remains failed at `7/288`; refreshed background heartbeat reports `BACKGROUND_SOAK_RUNNING_WITH_WATCHDOG`, `11/288` PASS windows, `0` failed, operator PID `80478`, watchdog PID `80732`, and `release_gate_closed_by_background_heartbeat=false`.
+- Validation: heartbeat validate PASS; A209 finalization preflight validate PASS with `A209_FINALIZATION_OPERATOR_INTERVENTION_REQUIRED`; release-manager, A203 production API, MVP release-gate, external release bundle and operator intake packet validators PASS; clean-room/release artifact validation PASS after regeneration.
+- Next step: continue monitoring the isolated rerun until `288/288` zero-failure evidence exists; only then promote and run `scripts/validate_operator_soak_evidence.py validate --require-release-ready`.
+
+## ITER-20260626-004 - A209 isolated rerun progress heartbeat and blocked release preflight refresh
+
+- Date: 2026-06-26
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `86785e7c8cf6ca5ecefc5bcfec452bb8f6a0dd20`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1307`, with dependent blocked release evidence for `TASK-T1302` and `TASK-T1303`.
+- Acceptance IDs: `A209`, with dependent blocked `A203`, `A204`, `A205` and external release packet references.
+- Goal: keep repository governance aligned with the live isolated A209 rerun while preserving the failed canonical 7/288 chain as incident evidence and keeping all release gates fail-closed.
+- Files changed: A209 heartbeat/finalization artifacts, dependent A203/A205 release preflights, external release operator packet, release-manager unit-test expectation, clean-room/release artifacts and required governance companion files.
+- Model changes: no scoring formula, graph traversal formula, extraction model, model weight, business threshold, API schema, database schema, frontend route or publication policy changed.
+- Parameter changes: no active model parameter value changed; `operator-soak-heartbeat` profile advanced to `10` to track the `11/288` isolated-rerun progress snapshot while `counts_as_release_ready=false` remains invariant.
+- Commands run: A209 heartbeat generate/validate; A209 finalization generate/validate; release-manager/A203/MVP/external release preflight generate/validate; clean-room/release artifact generate/validate; V5 readiness and governance consistency validation.
+- Test results: heartbeat `BACKGROUND_SOAK_RUNNING_WITH_WATCHDOG` at `11/288`, `0` failed; finalization `A209_FINALIZATION_OPERATOR_INTERVENTION_REQUIRED`; release-manager `RELEASE_MANAGER_ACTIVATION_BLOCKED`; release-manager unit test now asserts canonical 24h evidence remains failed while the fresh background heartbeat is running and `counts_as_release_ready=false`; A203 `A203_PRODUCTION_API_RELEASE_BLOCKED`; MVP `MVP_RELEASE_BLOCKED`; external packet `WAITING_FOR_OPERATOR_INPUTS`.
+- Remaining risks: isolated `/private/tmp` evidence can be lost; long-run browser/runtime failures can recur; partial heartbeat evidence can be misread as release-ready if validators are bypassed.
+- Rollback: revert the heartbeat/preflight refresh and companion governance files, regenerate clean-room/release artifacts, and keep both the canonical failed checkpoint and isolated rerun files untouched unless operator-authorized recovery is required.
+- Next step: commit/push this governance heartbeat refresh, bind CI, and keep A209 running in the background.
+
 ## EVENT-20260626-002 - T1307/A209 failed-evidence validator sync
 
 - Timestamp: 2026-06-26T09:18:00+10:00

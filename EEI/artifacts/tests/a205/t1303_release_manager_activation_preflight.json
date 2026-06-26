@@ -38,18 +38,18 @@
       "status": "FAILED_OPERATOR_EVIDENCE"
     },
     "operator_soak_background_heartbeat": {
-      "completion_percent": 2.08,
+      "completion_percent": 3.82,
       "counts_as_release_ready": false,
-      "latest_successful_window_index": 6,
-      "operator_process_status": "NOT_RUNNING",
-      "progress_status": "FAILED_WINDOW",
+      "latest_successful_window_index": 11,
+      "operator_process_status": "RUNNING",
+      "progress_status": "RUNNING_PARTIAL",
       "release_gate_closed_by_background_heartbeat": false,
-      "status": "BACKGROUND_SOAK_OPERATOR_INTERVENTION_REQUIRED",
+      "status": "BACKGROUND_SOAK_RUNNING_WITH_WATCHDOG",
       "target_windows": 288,
       "watchdog_process_status": "RUNNING",
-      "windows_completed": 6,
-      "windows_failed": 1,
-      "windows_remaining": 282
+      "windows_completed": 11,
+      "windows_failed": 0,
+      "windows_remaining": 277
     },
     "relationship_gold": {
       "expected_acceptance_id": "A027",
@@ -71,7 +71,7 @@
       "signed_decision_complete": true
     }
   },
-  "generated_at": "2026-06-25T22:51:33Z",
+  "generated_at": "2026-06-25T23:59:14Z",
   "missing_gates": [
     {
       "gate_id": "A202_source_license_reviews",
@@ -103,7 +103,7 @@
     },
     {
       "gate_id": "A209_24h_operator_soak",
-      "reason": "24h operator soak evidence is missing or not release-ready; background heartbeat reports 6/288 windows, 1 failed, FAILED_WINDOW"
+      "reason": "24h operator soak evidence is missing or not release-ready; background heartbeat reports 11/288 windows, 0 failed, RUNNING_PARTIAL"
     }
   ],
   "non_claims": [
@@ -135,7 +135,7 @@
     "operator_soak_evidence": "artifacts/tests/a209/t1307_operator_soak_evidence_validation.json",
     "operator_soak_evidence_sha256": "f5dc124f5e8beb4389163e5e171bbddc9743cfcb3a223af0798a74c9234cc53b",
     "operator_soak_heartbeat": "artifacts/tests/a209/t1307_operator_soak_background_progress.json",
-    "operator_soak_heartbeat_sha256": "3aa3d9ff19898d2043c00faa0ca7c9a08a085ea76629d5945d7d6ac61de166bb",
+    "operator_soak_heartbeat_sha256": "8f29de58a774531b2c708da05b5fc31a43b88a0bf5fb5033e081c2a48995f900",
     "relationship_gold_evaluation": "artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json",
     "relationship_gold_evaluation_sha256": "d695948385a5fba50ccbbf57c7adebe6a5f4bfffc1322e3ab57fb48a3fedcb64",
     "release_decision_contract": "artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json",

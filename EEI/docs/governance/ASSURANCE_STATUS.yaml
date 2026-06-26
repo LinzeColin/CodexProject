@@ -1,11 +1,11 @@
 project_id: "EEI"
-as_of_event_id: "EVENT-20260625-023"
+as_of_event_id: "EVENT-20260626-004"
 source_snapshot_hash: "sha256:7c54a3c5bccbba28955e4bbf5c06815c44996965b66c98fe91c7f1069d328342"
-source_base_commit: "12df22b6347fd881d42545afe387ac9e41e56fb4"
+source_base_commit: "86785e7c8cf6ca5ecefc5bcfec452bb8f6a0dd20"
 source_tree_hash: "00e27599461403192b998e8f9a3f7f0e769e5d8f"
-snapshot_event_time: "2026-06-25T19:26:47Z"
+snapshot_event_time: "2026-06-26T00:05:00Z"
 generator_version: "4.0.0"
-final_commit_binding: "CI_ATTESTED:236d25354db7d8f9774d1f91981ae30d69b0234e https://github.com/LinzeColin/CodexProject/actions/runs/28194420774"
+final_commit_binding: "PENDING:86785e7c8cf6ca5ecefc5bcfec452bb8f6a0dd20; A209 heartbeat/preflight refresh awaiting commit, push and CI"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -69,7 +69,7 @@ dimensions:
       - "EEI/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "FAILED"
-  release_gate: "TASK-T1301-A202-OPERATOR-REVIEW-PACKET-FRESHNESS-CI-ATTESTED-RELEASE-BLOCKED"
+  release_gate: "TASK-T1307-A209-ISOLATED-24H-RERUN-11-288-HEARTBEAT"
   blocker_ids:
     - "FACT-EEI-EMPIRICAL-EVIDENCE"
     - "FACT-EEI-OPERATIONAL-EVIDENCE"
@@ -77,7 +77,7 @@ delivery_readiness:
     - "TASK-T1301"
     - "TASK-T1307"
 next_executable_task:
-  task_id: "TASK-T1301"
+  task_id: "TASK-T1307"
   status: "in_progress"
   reason: "Implement real data ingestion, entity resolution and evidence chain for the Golden Vertical"
   acceptance_ids:

@@ -55,12 +55,12 @@
     "operator_soak_finalization": {
       "a209_evidence_ready_for_release_manager": false,
       "downstream_release_gate_refresh_allowed": false,
-      "progress_status": "FAILED_WINDOW",
+      "progress_status": "RUNNING_PARTIAL",
       "release_gate_closed_by_finalizer": false,
       "status": "A209_FINALIZATION_OPERATOR_INTERVENTION_REQUIRED",
       "target_windows": 288,
-      "windows_completed": 6,
-      "windows_failed": 1
+      "windows_completed": 11,
+      "windows_failed": 0
     },
     "relationship_gold": {
       "expected_acceptance_id": "A027",
@@ -80,7 +80,7 @@
       "status": "PENDING_SIGNED_DECISIONS"
     }
   },
-  "generated_at": "2026-06-25T22:51:35Z",
+  "generated_at": "2026-06-25T23:59:17Z",
   "missing_input_ids": [
     "A202_source_license_passage_owner_legal_release",
     "A210_brand_legal_market_clearance_or_risk_waiver",
@@ -206,7 +206,7 @@
     },
     {
       "acceptance_id": "A209",
-      "blocking_reason": "A209 finalization does not allow downstream refresh at 6/288 windows",
+      "blocking_reason": "A209 finalization does not allow downstream refresh at 11/288 windows",
       "completion_criteria": [
         "288/288 five-minute windows pass",
         "0 failed windows",
@@ -218,7 +218,7 @@
       "label": "A209 24h operator soak finalization evidence",
       "required_source": {
         "path": "artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json",
-        "sha256": "f2b6aeb95d35a5945092167cb32b0fe1bb1f7ce9cb40fd4e44c56fc60637ccd4"
+        "sha256": "dee5f91cd466353ce5261f7aff2e22f607ec15ef98d807e7f864cd6ad8b04b58"
       },
       "supporting_sources": [],
       "template_or_partial_evidence_counts_as_clearance": false,
@@ -245,7 +245,7 @@
     },
     "a209_operator_soak_finalization_preflight": {
       "path": "artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json",
-      "sha256": "f2b6aeb95d35a5945092167cb32b0fe1bb1f7ce9cb40fd4e44c56fc60637ccd4"
+      "sha256": "dee5f91cd466353ce5261f7aff2e22f607ec15ef98d807e7f864cd6ad8b04b58"
     },
     "a210_brand_clearance_intake_template": {
       "path": "artifacts/tests/a210/t1309_brand_clearance_intake_template.json",
@@ -253,7 +253,7 @@
     },
     "external_release_evidence_bundle_preflight": {
       "path": "artifacts/tests/a205/t1303_external_release_evidence_bundle_preflight.json",
-      "sha256": "0712c943866a42378c2f637442bdd6356b1c85ab7cf58dee606f8327480c1be9"
+      "sha256": "1a0a052e3ca9e86a7d4ed2c5326cb12989ee48d202fe5fa9f17f37d757821806"
     }
   },
   "system_en_name": "Enterprise Ecosystem Intelligence",

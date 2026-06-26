@@ -67,6 +67,7 @@
 - `EVENT-20260626-001`: Recorded the clean A209 24h run failure at `7/288` with `child_status=NO_OUTPUT`, hardened the browser soak child harness with short slices and structured measurement errors, and added a T904/A026-A027 source-bound operator labeling packet with 50 entity slots and 100 relationship slots; A209, A026 and A027 remain open.
 - `EVENT-20260626-002`: Synchronized A209 failed-evidence validation semantics so the current `7/288` failed chain validates as `FAILED_OPERATOR_EVIDENCE` / `BACKGROUND_SOAK_OPERATOR_INTERVENTION_REQUIRED` / `A209_FINALIZATION_OPERATOR_INTERVENTION_REQUIRED` while `--require-release-ready` remains blocked until a fresh `288/288` zero-failure 24h run exists.
 - `EVENT-20260626-003`: Started an isolated detached A209 24h rerun under `/private/tmp/eei-a209-rerun-20260626-0918/` without overwriting the failed canonical `7/288` evidence; first observed checkpoint is `1/288` PASS with `0` failed, operator PID `80478`, watchdog PID `80732`, and A209 remains open until `288/288` zero-failure release-ready validation passes.
+- `EVENT-20260626-004`: Refreshed the A209 isolated rerun heartbeat and dependent release preflights to `11/288` PASS, `0` failed and `3.82%` completion while keeping canonical failed evidence, A209 finalization, release-manager activation, external release bundle and MVP release readiness blocked.
 
 ## Legacy Task Pack v4.2.0 - 2026-06-19
 

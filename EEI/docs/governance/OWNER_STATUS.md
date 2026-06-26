@@ -2,7 +2,7 @@
 
 ## 1. 当前结论
 
-EEI 当前治理结论：实现一致性为 `VERIFIED`，方法/实证为 `UNVERIFIED` / `PARTIAL`，交付状态为 `FAILED`；A209 24h 证据仍未完成，isolated rerun 正在后台运行；这不是生产上线声明。
+EEI 当前治理结论：实现一致性为 `VERIFIED`，方法/实证为 `UNVERIFIED` / `PARTIAL`，交付状态为 `FAILED`；A209 24h 证据仍未完成，isolated rerun 正在后台运行，最新治理 heartbeat 为 `11/288` PASS、`0` failed、`3.82%` completion；这不是生产上线声明。
 
 ## 2. 本次运行改变了什么
 
@@ -78,11 +78,11 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `TASK-T1307-A209-ISOLATED-24H-RERUN-STARTED`
+- release_gate: `TASK-T1307-A209-ISOLATED-24H-RERUN-11-288-HEARTBEAT`
 
 ## 14. Evidence Freshness
 
-- final_commit_binding: `PENDING:064caf7f32e4ff612fb95d4b15f24944fd9da0c6; Project Governance #690 failed changed-only companion validation and is being repaired`
+- final_commit_binding: `PENDING:86785e7c8cf6ca5ecefc5bcfec452bb8f6a0dd20; A209 heartbeat/preflight refresh awaiting commit, push and CI`
 - tree_bound_events: `0`
 - commit_bound_events: `18`
 - legacy_unbound_events: `19`
@@ -98,7 +98,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - source_base_commit: `058c792f8376312842784533016d8716f9177dae`
 - source_tree_hash: `00e27599461403192b998e8f9a3f7f0e769e5d8f`
 - source_snapshot_hash: `sha256:7c54a3c5bccbba28955e4bbf5c06815c44996965b66c98fe91c7f1069d328342`
-- snapshot_event_time: `2026-06-26T09:18:00+10:00`
+- snapshot_event_time: `2026-06-26T10:05:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.1.0`
 - phase/gate: `D / TASK-T1307-A209-ISOLATED-24H-RERUN-STARTED`

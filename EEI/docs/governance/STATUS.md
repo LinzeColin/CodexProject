@@ -5,16 +5,16 @@
 - source_base_commit: `058c792f8376312842784533016d8716f9177dae`
 - source_tree_hash: `00e27599461403192b998e8f9a3f7f0e769e5d8f`
 - source_snapshot_hash: `sha256:7c54a3c5bccbba28955e4bbf5c06815c44996965b66c98fe91c7f1069d328342`
-- snapshot_event_time: `2026-06-26T09:18:00+10:00`
+- snapshot_event_time: `2026-06-26T10:05:00+10:00`
 - generator_version: `4.0.0`
-- final_commit_binding: `PENDING:064caf7f32e4ff612fb95d4b15f24944fd9da0c6; Project Governance #690 failed changed-only companion validation and is being repaired`
+- final_commit_binding: `PENDING:86785e7c8cf6ca5ecefc5bcfec452bb8f6a0dd20; A209 heartbeat/preflight refresh awaiting commit, push and CI`
 
 ## Current State
 
 - Project: `EEI`
 - Path: `EEI`
 - Product version: `0.1.0`
-- Phase/Gate: `D / TASK-T1307-A209-ISOLATED-24H-RERUN-STARTED`
+- Phase/Gate: `D / TASK-T1307-A209-ISOLATED-24H-RERUN-11-288-HEARTBEAT`
 - Models/Formulas/Parameters total: `12 / 12 / 88`
 - Active formulas/parameters: `11 / 88`
 - Machine checked formulas/parameters: `11 / 88`
@@ -35,9 +35,9 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `TASK-T1307-A209-ISOLATED-24H-RERUN-STARTED`
+- Release gate: `TASK-T1307-A209-ISOLATED-24H-RERUN-11-288-HEARTBEAT`
 - Next executable task: `TASK-T1307`
-- Pending/stale events: `100`
+- Pending/stale events: `101`
 - Tree-bound events: `0`
 - Commit-bound events: `18`
 - Legacy unbound events: `19`

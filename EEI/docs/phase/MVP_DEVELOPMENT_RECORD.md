@@ -6161,3 +6161,47 @@ Status: BACKGROUND RERUN STARTED; A209 STILL IN PROGRESS; RELEASE-READY MODE STI
 
 - If this isolated rerun is invalid, stop only operator PID `80478` and watchdog PID `80732` after explicit operator authorization.
 - Leave the canonical failed `7/288` evidence untouched and rerun from a new isolated checkpoint path.
+
+## 2026-06-26 - T1307/A209 isolated rerun heartbeat/preflight refresh
+
+Status: LOCAL FOCUSED VALIDATED; A209 STILL IN PROGRESS; RELEASE-READY MODE STILL BLOCKED
+
+### Scope
+
+- Refreshed `artifacts/tests/a209/t1307_operator_soak_background_progress.json` from `/private/tmp/eei-a209-rerun-20260626-0918/`.
+- Regenerated A209 finalization, A203 production API release, release-manager activation, MVP release-gate and external release-evidence packet/preflight artifacts from the refreshed heartbeat.
+- Regenerated clean-room and release artifacts after the preflight hash changes.
+
+### Acceptance Mapping
+
+- T1307 -> A209 for background progress evidence only.
+- Dependent blocked preflights keep A203/A204/A205 visible but do not close them.
+- This refresh does not close A209; completion still requires `288/288` successful windows, zero failed windows, canonical promotion and `validate_operator_soak_evidence.py validate --require-release-ready` PASS.
+
+### Runtime Evidence
+
+- Isolated checkpoint: `/private/tmp/eei-a209-rerun-20260626-0918/operator_soak_24h.checkpoints.jsonl`.
+- Repository heartbeat: `BACKGROUND_SOAK_RUNNING_WITH_WATCHDOG`.
+- Current progress captured in repository artifacts: `11/288` PASS, `0` failed, `277` remaining, `3.82%` completion.
+- Operator PID: `80478`; watchdog PID: `80732`.
+- Canonical repository checkpoint remains failed at `7/288` and is preserved as incident evidence.
+
+### Validation
+
+- `scripts/record_operator_soak_heartbeat.py validate`: PASS.
+- `scripts/finalize_operator_soak_evidence.py validate`: PASS, status `A209_FINALIZATION_OPERATOR_INTERVENTION_REQUIRED`.
+- `scripts/validate_release_manager_activation.py validate`: PASS, status `RELEASE_MANAGER_ACTIVATION_BLOCKED`.
+- `tests/unit/test_release_manager_activation.py`: updated to assert the current split state: canonical 24h evidence remains failed while fresh background heartbeat is running with `counts_as_release_ready=false`.
+- `scripts/validate_production_api_release_preflight.py validate`: PASS, status `A203_PRODUCTION_API_RELEASE_BLOCKED`.
+- `scripts/validate_mvp_release_gate.py validate`: PASS, status `MVP_RELEASE_BLOCKED`.
+- `scripts/validate_external_release_evidence_bundle.py validate` and `validate-packet`: PASS.
+- `scripts/manage_clean_room_release.py validate` and `scripts/manage_release_artifacts.py validate`: PASS after regeneration.
+
+### Remaining Gaps
+
+- A209 remains open until the isolated rerun reaches `288/288` PASS windows with `0` failed and is explicitly promoted/validated.
+- A202 source/license/passage/owner/legal release, A210 brand clearance or waiver, A026/A027 production gold labels and A204/A205 release-manager activation remain separate blockers.
+
+### Rollback
+
+- Revert this heartbeat/preflight refresh and governance companion records, regenerate release artifacts, and keep both the canonical failed checkpoint and isolated rerun checkpoint/log/PID files preserved.
