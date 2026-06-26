@@ -182,7 +182,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         manifest_path = REPO_ROOT / "governance/run_manifests/ADP-S2PMT07-P1-INDEPENDENT-REVIEW-RECEIPT-20260626.json"
         refresh_manifest_path = (
             REPO_ROOT
-            / "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C002-20260627.json"
+            / "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C005-20260627.json"
         )
         receipt = receipt_path.read_text(encoding="utf-8")
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
@@ -234,6 +234,10 @@ class Stage2FinalGateTests(unittest.TestCase):
             "C-002": (
                 "PHASE_S2PIT02_OWNER_STATUS_C002.md",
                 "ADP-S2PIT02-OWNER-STATUS-C002-20260627.json",
+            ),
+            "C-005": (
+                "PHASE_S2PMT06_RECOVERABLE_ERROR_C005.md",
+                "ADP-S2PMT06-RECOVERABLE-ERROR-C005-20260627.json",
             ),
         }
         stale_refs = {
@@ -287,13 +291,14 @@ class Stage2FinalGateTests(unittest.TestCase):
                 "ADP-S2PIT02-RUNTIME-DASHBOARD-20260625.json",
                 "docs/owner/00_用户中心/01_当前状态.md",
             ),
+            "C-005": ("PHASE_S2PMT06_OWNER_UX.md", "ADP-S2PMT06-OWNER-UX-20260626.json"),
         }
 
         findings = {finding["finding_id"]: finding for finding in manifest["p1_findings"]}
         self.assertEqual(manifest["refreshed_findings"], list(expected_current_refs))
         self.assertEqual(
             manifest["refresh_manifest"],
-            "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C002-20260627.json",
+            "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C005-20260627.json",
         )
         self.assertIn(
             "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-20260627.json",

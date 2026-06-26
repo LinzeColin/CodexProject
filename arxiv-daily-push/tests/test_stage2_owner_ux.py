@@ -14,11 +14,13 @@ from arxiv_daily_push.stage2_owner_ux import (
     build_navigation_contract,
     build_owner_first_screen,
     build_queue_view_contract,
+    build_s2pmt06_c005_recoverable_error_report,
     build_s2pmt06_report,
     build_safe_action_preview,
     build_safe_config_change,
     build_status_state_matrix,
     validate_error_card,
+    validate_s2pmt06_c005_recoverable_error_report,
     validate_s2pmt06_report,
 )
 
@@ -105,6 +107,44 @@ class Stage2OwnerUXTests(unittest.TestCase):
 
         blocked = build_safe_action_preview(action="delete")
         self.assertEqual(blocked["status"], "blocked")
+
+    def test_c005_report_requires_recoverable_p1_error_with_safe_retry_gate(self) -> None:
+        report = build_s2pmt06_c005_recoverable_error_report(generated_at="2026-06-27T06:08:55+10:00")
+
+        self.assertEqual(report["status"], "pass")
+        self.assertEqual(report["finding_id"], "C-005")
+        self.assertEqual(report["subtask_id"], "S2PMT06-RECOVERABLE-ERROR-C005")
+        self.assertFalse(report["production_acceptance_claimed"])
+        self.assertFalse(report["inherited_p0_p1_closed"])
+        self.assertFalse(report["independent_review_signoff_present"])
+        for flag in S2PMT06_PRODUCTION_FALSE_FLAGS:
+            self.assertFalse(report[flag])
+        card = report["p0_p1_error_cards"][0]
+        self.assertEqual(card["severity"], "P1")
+        self.assertTrue(card["owner"])
+        self.assertTrue(card["runbook"])
+        self.assertGreaterEqual(len(card["evidence"]), 1)
+        self.assertTrue(card["cta"])
+        retry = report["safe_actions"]["retry"]
+        self.assertEqual(retry["status"], "pass")
+        self.assertTrue(retry["preview_required"])
+        self.assertTrue(retry["confirmation_required"])
+        self.assertTrue(retry["receipt_required"])
+        self.assertFalse(retry["production_mutation_applied"])
+        self.assertEqual(validate_s2pmt06_c005_recoverable_error_report(report), [])
+
+    def test_c005_report_blocks_missing_owner_or_unsafe_retry(self) -> None:
+        report = build_s2pmt06_c005_recoverable_error_report(generated_at="2026-06-27T06:08:55+10:00")
+        tampered = dict(report)
+        tampered["p0_p1_error_cards"] = [dict(report["p0_p1_error_cards"][0], owner="")]
+
+        owner_errors = validate_s2pmt06_c005_recoverable_error_report(tampered)
+        self.assertIn("p0_p1_error_cards[0] must include owner, runbook, evidence, cta, and retry_safe", owner_errors)
+
+        unsafe = build_s2pmt06_c005_recoverable_error_report(generated_at="2026-06-27T06:08:55+10:00")
+        unsafe["safe_actions"]["retry"] = dict(unsafe["safe_actions"]["retry"], production_mutation_applied=True)
+        retry_errors = validate_s2pmt06_c005_recoverable_error_report(unsafe)
+        self.assertIn("safe_actions.retry must be a no-production safe retry preview with confirmation and receipt", retry_errors)
 
     def test_accessibility_matrix_covers_a11y_responsive_and_mail_client_requirements(self) -> None:
         matrix = build_accessibility_matrix()
