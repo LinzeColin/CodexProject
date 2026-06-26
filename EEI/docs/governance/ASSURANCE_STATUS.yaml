@@ -1,11 +1,11 @@
 project_id: "EEI"
-as_of_event_id: "EVENT-20260626-004"
+as_of_event_id: "EVENT-20260626-005"
 source_snapshot_hash: "sha256:7c54a3c5bccbba28955e4bbf5c06815c44996965b66c98fe91c7f1069d328342"
 source_base_commit: "86785e7c8cf6ca5ecefc5bcfec452bb8f6a0dd20"
 source_tree_hash: "00e27599461403192b998e8f9a3f7f0e769e5d8f"
 snapshot_event_time: "2026-06-26T00:05:00Z"
 generator_version: "4.0.0"
-final_commit_binding: "PENDING:86785e7c8cf6ca5ecefc5bcfec452bb8f6a0dd20; A209 heartbeat/preflight refresh awaiting commit, push and CI"
+final_commit_binding: "PENDING:702394c0263235f0462d375506231a3231d488a6; A209 isolated-rerun promotion bridge awaiting commit, push and CI"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -69,7 +69,7 @@ dimensions:
       - "EEI/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "FAILED"
-  release_gate: "TASK-T1307-A209-ISOLATED-24H-RERUN-11-288-HEARTBEAT"
+  release_gate: "TASK-T1307-A209-ISOLATED-RERUN-PROMOTION-BRIDGE"
   blocker_ids:
     - "FACT-EEI-EMPIRICAL-EVIDENCE"
     - "FACT-EEI-OPERATIONAL-EVIDENCE"
@@ -79,12 +79,12 @@ delivery_readiness:
 next_executable_task:
   task_id: "TASK-T1307"
   status: "in_progress"
-  reason: "Implement real data ingestion, entity resolution and evidence chain for the Golden Vertical"
+  reason: "Continue the isolated A209 24h operator soak, then promote only after 288/288 zero-failure release-ready validation"
   acceptance_ids:
-    - "ACC-A202"
+    - "ACC-A209"
   owner: "product_owner + data_owner + risk_owner"
   human_owner_role: "product_owner + data_owner + risk_owner"
-  unblock_condition: "Run `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check scripts/load_curated_ingestion_anchors.py scripts/check_database_schema.py tests/integration/test_database_migrations.py` and attach the listed evidence refs."
+  unblock_condition: "Complete the isolated 24h operator soak with `288/288` PASS windows, `0` failed windows, run `promote-rerun`, then run `scripts/validate_operator_soak_evidence.py validate --require-release-ready`."
   stale_candidates: []
 owner_decision:
   required: true

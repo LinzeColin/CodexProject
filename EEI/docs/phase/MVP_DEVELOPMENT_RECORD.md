@@ -6205,3 +6205,43 @@ Status: LOCAL FOCUSED VALIDATED; A209 STILL IN PROGRESS; RELEASE-READY MODE STIL
 ### Rollback
 
 - Revert this heartbeat/preflight refresh and governance companion records, regenerate release artifacts, and keep both the canonical failed checkpoint and isolated rerun checkpoint/log/PID files preserved.
+
+## 2026-06-26 - T1307/A209 isolated rerun promotion bridge
+
+Status: LOCAL FOCUSED VALIDATED; A209 STILL IN PROGRESS; PROMOTION NOT EXECUTED
+
+### Scope
+
+- Extended `scripts/finalize_operator_soak_evidence.py` with a fail-closed `promote-rerun` path for the active isolated A209 24h rerun.
+- The bridge validates the existing 4h canonical evidence plus the supplied isolated 24h source output/checkpoint before any canonical write.
+- If and only if the combined evidence is `EVIDENCE_READY_FOR_RELEASE_MANAGER_REVIEW`, it archives prior canonical 24h output/checkpoint into an incident directory, rewrites promoted runner paths to canonical destinations, writes a promotion manifest, regenerates evidence validation and leaves `release_gate_closed_by_promotion=false`.
+- It requires explicit `--source-output` and `--source-checkpoint` and refuses source/destination path equality.
+
+### Acceptance Mapping
+
+- T1307 -> A209.
+- This does not close A209. It only prepares the deterministic bridge needed after the isolated rerun reaches `288/288` PASS windows with `0` failures.
+
+### Runtime Evidence
+
+- Active isolated checkpoint observed during this iteration: `/private/tmp/eei-a209-rerun-20260626-0918/operator_soak_24h.checkpoints.jsonl`.
+- Latest live observation before governance sync: `18/288` PASS, `0` failed, latest checkpoint `2026-06-26T00:31:18Z`, `6.25%` completion.
+- Repository committed heartbeat remains the earlier `11/288` progress artifact until intentionally refreshed; partial heartbeat evidence still does not count as release readiness.
+
+### Validation
+
+- `PYTHONDONTWRITEBYTECODE=1 python3 -m py_compile scripts/finalize_operator_soak_evidence.py tests/unit/test_operator_soak_evidence.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a209-promotion-pycache .venv/bin/python -m pytest -q tests/unit/test_operator_soak_evidence.py -p no:cacheprovider`: PASS, `23 passed`.
+- `PYTHONDONTWRITEBYTECODE=1 RUFF_CACHE_DIR=/private/tmp/eei-a209-promotion-ruff .venv/bin/ruff check scripts/finalize_operator_soak_evidence.py tests/unit/test_operator_soak_evidence.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/private/tmp/eei-a209-promotion-pycache make generate-clean-room-release generate-release-artifacts`: PASS, `package_paths=439`, `manifest_paths=446`, `checksum_paths=445`, `remote_status=PENDING`.
+
+### Remaining Gaps
+
+- A209 still requires the live isolated rerun to reach `288/288` successful windows with `0` failed windows.
+- Promotion must not be run while the source is incomplete or failed.
+- A202 source/license/passage/owner/legal release, A210 brand clearance or waiver, A026/A027 production gold labels and A204/A205 release-manager activation remain separate blockers.
+
+### Rollback
+
+- Revert `scripts/finalize_operator_soak_evidence.py`, `tests/unit/test_operator_soak_evidence.py` and this governance sync.
+- Preserve the canonical failed `7/288` evidence and the isolated rerun runtime files unless explicit operator recovery is authorized.

@@ -11,13 +11,44 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version: `0.1.0`
 - Product version status: `provisional`
 - Current phase: `D`
-- Current gate: `TASK-T1307-A209-ISOLATED-24H-RERUN-STARTED`
+- Current gate: `TASK-T1307-A209-ISOLATED-RERUN-PROMOTION-BRIDGE`
 - Confirmed iteration count: 39
-- Reconstructed development event count: 4
-- Current task: `TASK-T1307/A209 isolated 24h rerun background evidence task`
+- Reconstructed development event count: 5
+- Current task: `TASK-T1307/A209 isolated 24h rerun background evidence and promotion bridge task`
 - Current A209 point-in-time heartbeat: the clean 24h operator soak attempt launched at `2026-06-25T21:33:19Z` failed at checkpoint window `7/288`; `6` windows passed, `1` failed, latest checkpoint time is `2026-06-25T22:08:58Z`, `child_status=NO_OUTPUT`, `exit_status=1`, and stderr reports `page.evaluate: Target page, context or browser has been closed`. No `run_operator_soak` or `run_soak_smoke` process was found during the 2026-06-26 check. A209 remains `IN_PROGRESS` and has no release-ready 24h evidence.
-- Current isolated rerun: `/private/tmp/eei-a209-rerun-20260626-0918/` was started without overwriting the failed canonical checkpoint; operator PID `80478` and watchdog PID `80732` are recorded, first checkpoint window `1/288` PASS at `2026-06-25T23:04:42Z`, `0` failed, `browser_slices_completed=20`, `browser_measurement_error=null`, and monitor status is `RUNNING_PARTIAL`.
+- Current isolated rerun: `/private/tmp/eei-a209-rerun-20260626-0918/` was started without overwriting the failed canonical checkpoint; operator PID `80478` and watchdog PID `80732` are recorded, first checkpoint window `1/288` PASS at `2026-06-25T23:04:42Z`, and the latest live check during this iteration observed `18/288` PASS windows, `0` failed, latest checkpoint time `2026-06-26T00:31:18Z`, and `6.25%` completion.
 - Blockers: T1301/A202 is still `IN_PROGRESS`; the refreshed operator review packet is freshness-correct supporting review evidence only and does not create source-license review, passage-level human approval, production owner approval, legal release clearance, brand clearance, release-manager activation or final public relationship publication. T1307/A209 is still `IN_PROGRESS`; failed `7/288` evidence plus short repair probes are non-closure evidence only and a new 24h chain must reach `288/288` successful windows with zero failures before finalization. A204/A205 release-manager activation preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED` until A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence pass. A026 still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%. The new T904 operator labeling packet is a source-bound worksheet with blank `OPERATOR_TO_LABEL` slots and is not production gold evidence. A210 still needs formal brand legal/market clearance or signed risk waiver. The T1303 external release operator intake packet lists the exact A202/A210/A026/A027/A209 operator inputs and keeps `release_gate_closed_by_operator_packet=false`; it is a checklist/hash manifest, not clearance.
+
+## EVENT-20260626-005 - T1307/A209 isolated-rerun promotion bridge
+
+- Timestamp: 2026-06-26T10:35:00+10:00
+- Fact level: EXTRACTED
+- Base commit: `702394c0263235f0462d375506231a3231d488a6`
+- Scope: extend `scripts/finalize_operator_soak_evidence.py` with a fail-closed `promote-rerun` path that can later promote a completed isolated 24h rerun into canonical A209 evidence without manual file surgery.
+- Non-claims: this does not execute promotion now, does not overwrite the current failed canonical `7/288` evidence, does not close A209, and does not replace `validate_operator_soak_evidence.py validate --require-release-ready`.
+- A209 state: the isolated live rerun was observed at `18/288` PASS windows with `0` failed; the committed repository heartbeat remains the earlier point-in-time `11/288` progress artifact until intentionally refreshed.
+- Validation: `py_compile` PASS for `scripts/finalize_operator_soak_evidence.py` and `tests/unit/test_operator_soak_evidence.py`; `tests/unit/test_operator_soak_evidence.py` PASS `23/23`; focused `ruff` PASS.
+- Next step: keep the isolated rerun running; after `288/288` zero-failure completion, run `promote-rerun` with the isolated source output/checkpoint, regenerate finalization and downstream release-gate artifacts, then run full verification and CI.
+
+## ITER-20260626-005 - A209 isolated-rerun promotion bridge hardening
+
+- Date: 2026-06-26
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `702394c0263235f0462d375506231a3231d488a6`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1307`
+- Acceptance IDs: `A209`
+- Goal: remove the remaining manual bridge between `/private/tmp` isolated 24h rerun evidence and canonical repository A209 evidence, while preserving failed canonical incident evidence.
+- Files changed: `scripts/finalize_operator_soak_evidence.py`, `tests/unit/test_operator_soak_evidence.py`, changelog, governance ledgers, traceability/status files, MVP development record, clean-room ZIP/evidence, release evidence and checksums.
+- Model changes: none.
+- Parameter changes: no active model, formula, threshold or parameter value changed; `operator-soak-finalization` profile version advances to `3` for the promotion bridge behavior.
+- Commands run: `python3 -m py_compile scripts/finalize_operator_soak_evidence.py tests/unit/test_operator_soak_evidence.py`; `pytest -q tests/unit/test_operator_soak_evidence.py`; `ruff check scripts/finalize_operator_soak_evidence.py tests/unit/test_operator_soak_evidence.py`.
+- Test results: incomplete source rerun is rejected before any promotion writes; complete source rerun archives prior canonical output/checkpoint, rewrites promoted runner paths, writes promotion manifest, validates promoted evidence as `EVIDENCE_READY_FOR_RELEASE_MANAGER_REVIEW`, and keeps `release_gate_closed_by_promotion=false`; clean-room/release artifact generation passes with `package_paths=439`, `manifest_paths=446`, `checksum_paths=445` and `remote_status=PENDING`.
+- Decision: promotion requires explicit source paths and refuses source/destination path equality to prevent accidental overwrite of live or canonical evidence.
+- Remaining risks: if the 24h isolated rerun fails before `288/288`, promotion must not be run; if `/private/tmp` evidence is lost before completion, a new isolated rerun is required.
+- Rollback: revert the finalizer promotion functions, the two A209 promotion unit tests and this governance sync; preserve live rerun and canonical failed evidence.
 
 ## EVENT-20260626-003 - T1307/A209 isolated 24h rerun started
 

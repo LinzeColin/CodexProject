@@ -78,11 +78,11 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `TASK-T1307-A209-ISOLATED-24H-RERUN-11-288-HEARTBEAT`
+- release_gate: `TASK-T1307-A209-ISOLATED-RERUN-PROMOTION-BRIDGE`
 
 ## 14. Evidence Freshness
 
-- final_commit_binding: `PENDING:86785e7c8cf6ca5ecefc5bcfec452bb8f6a0dd20; A209 heartbeat/preflight refresh awaiting commit, push and CI`
+- final_commit_binding: `PENDING:702394c0263235f0462d375506231a3231d488a6; A209 isolated-rerun promotion bridge awaiting commit, push and CI`
 - tree_bound_events: `0`
 - commit_bound_events: `18`
 - legacy_unbound_events: `19`

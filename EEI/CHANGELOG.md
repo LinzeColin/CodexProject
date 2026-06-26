@@ -68,6 +68,7 @@
 - `EVENT-20260626-002`: Synchronized A209 failed-evidence validation semantics so the current `7/288` failed chain validates as `FAILED_OPERATOR_EVIDENCE` / `BACKGROUND_SOAK_OPERATOR_INTERVENTION_REQUIRED` / `A209_FINALIZATION_OPERATOR_INTERVENTION_REQUIRED` while `--require-release-ready` remains blocked until a fresh `288/288` zero-failure 24h run exists.
 - `EVENT-20260626-003`: Started an isolated detached A209 24h rerun under `/private/tmp/eei-a209-rerun-20260626-0918/` without overwriting the failed canonical `7/288` evidence; first observed checkpoint is `1/288` PASS with `0` failed, operator PID `80478`, watchdog PID `80732`, and A209 remains open until `288/288` zero-failure release-ready validation passes.
 - `EVENT-20260626-004`: Refreshed the A209 isolated rerun heartbeat and dependent release preflights to `11/288` PASS, `0` failed and `3.82%` completion while keeping canonical failed evidence, A209 finalization, release-manager activation, external release bundle and MVP release readiness blocked.
+- `EVENT-20260626-005`: Added a fail-closed A209 isolated-rerun promotion bridge to `finalize_operator_soak_evidence.py`; it refuses incomplete source evidence, preserves prior canonical evidence in an incident archive, rewrites promoted runner paths only after release-ready validation, and keeps `release_gate_closed_by_promotion=false`.
 
 ## Legacy Task Pack v4.2.0 - 2026-06-19
 

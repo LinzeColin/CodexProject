@@ -8,6 +8,7 @@ whether downstream release-gate artifacts may be regenerated.
 from __future__ import annotations
 
 import argparse
+import copy
 import hashlib
 import json
 import sys
@@ -30,6 +31,8 @@ from scripts.validate_operator_soak_evidence import (  # noqa: E402
     DEFAULT_OUTPUT as DEFAULT_EVIDENCE,
 )
 from scripts.validate_operator_soak_evidence import (  # noqa: E402
+    REQUIRED_RUNS,
+    SoakRequirement,
     build_validation_payload,
     display_path,
     read_parameters,
@@ -39,6 +42,8 @@ from scripts.validate_operator_soak_evidence import (  # noqa: E402
 ROOT = PROJECT_ROOT
 SCHEMA_VERSION = "eei-a209-operator-soak-finalization-preflight-v1"
 DEFAULT_OUTPUT = ROOT / "artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json"
+DEFAULT_PROMOTION_MANIFEST = ROOT / "artifacts/tests/a209/t1307_operator_soak_24h_promotion.json"
+DEFAULT_INCIDENT_DIR = ROOT / "artifacts/tests/a209/incidents"
 
 
 def utc_now() -> str:
@@ -66,6 +71,10 @@ def sha256_file(path: Path) -> str:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def sanitize_timestamp(value: str) -> str:
+    return value.replace(":", "").replace("-", "").replace("+", "Z")
 
 
 def summarize_evidence(evidence: dict[str, Any]) -> dict[str, Any]:
@@ -279,12 +288,242 @@ def refresh_upstream_artifacts() -> None:
     write_payload(DEFAULT_EVIDENCE, build_validation_payload(parameters=read_parameters()))
 
 
+def promotable_required_runs(
+    *,
+    source_output: Path,
+    source_checkpoint: Path,
+    short_output: Path = REQUIRED_RUNS[0].output_path,
+    short_checkpoint: Path = REQUIRED_RUNS[0].checkpoint_path,
+) -> tuple[SoakRequirement, SoakRequirement]:
+    short = SoakRequirement(
+        label="operator_4h",
+        mode="operator_4h",
+        output_path=short_output,
+        checkpoint_path=short_checkpoint,
+        parameter_key="soak.short_duration_hours",
+        coverage_key="covers_4h_target",
+    )
+    long = SoakRequirement(
+        label="operator_24h",
+        mode="operator_24h",
+        output_path=source_output,
+        checkpoint_path=source_checkpoint,
+        parameter_key="soak.long_duration_hours",
+        coverage_key="covers_24h_target",
+    )
+    return (short, long)
+
+
+def build_promotable_source_validation_payload(
+    *,
+    source_output: Path,
+    source_checkpoint: Path,
+    short_output: Path = REQUIRED_RUNS[0].output_path,
+    short_checkpoint: Path = REQUIRED_RUNS[0].checkpoint_path,
+    parameters: dict[str, float] | None = None,
+) -> dict[str, Any]:
+    return build_validation_payload(
+        parameters=parameters or read_parameters(),
+        required_runs=promotable_required_runs(
+            source_output=source_output,
+            source_checkpoint=source_checkpoint,
+            short_output=short_output,
+            short_checkpoint=short_checkpoint,
+        ),
+    )
+
+
+def archive_existing_artifact(
+    path: Path,
+    *,
+    incident_dir: Path,
+    promoted_at: str,
+) -> dict[str, Any] | None:
+    if not path.exists():
+        return None
+    incident_dir.mkdir(parents=True, exist_ok=True)
+    archive_path = incident_dir / f"{sanitize_timestamp(promoted_at)}_{path.name}"
+    archive_path.write_bytes(path.read_bytes())
+    return {
+        "original_path": display_path(path),
+        "archive_path": display_path(archive_path),
+        "sha256": sha256_file(archive_path),
+    }
+
+
+def rewrite_promoted_runner_paths(
+    *,
+    source_payload: dict[str, Any],
+    source_output: Path,
+    source_checkpoint: Path,
+    destination_output: Path,
+    destination_checkpoint: Path,
+    promoted_at: str,
+    archived_previous: list[dict[str, Any]],
+) -> dict[str, Any]:
+    payload = copy.deepcopy(source_payload)
+    runner = payload.get("runner")
+    if not isinstance(runner, dict):
+        raise ValueError("source output runner must be an object")
+    runner["output_path"] = display_path(destination_output)
+    runner["checkpoint_path"] = display_path(destination_checkpoint)
+    payload["promotion"] = {
+        "schema_version": "eei-a209-operator-soak-rerun-promotion-v1",
+        "promoted_at": promoted_at,
+        "promoted_by": "scripts/finalize_operator_soak_evidence.py promote-rerun",
+        "source_output_path": display_path(source_output),
+        "source_output_sha256": sha256_file(source_output),
+        "source_checkpoint_path": display_path(source_checkpoint),
+        "source_checkpoint_sha256": sha256_file(source_checkpoint),
+        "destination_output_path": display_path(destination_output),
+        "destination_checkpoint_path": display_path(destination_checkpoint),
+        "archived_previous_artifacts": archived_previous,
+        "release_gate_closed_by_promotion": False,
+        "reason": (
+            "Promote an isolated 24h rerun after the existing 4h evidence and "
+            "the isolated 24h source both validate as release-manager review ready."
+        ),
+    }
+    return payload
+
+
+def promote_rerun_source(
+    *,
+    source_output: Path,
+    source_checkpoint: Path,
+    destination_output: Path = REQUIRED_RUNS[1].output_path,
+    destination_checkpoint: Path = REQUIRED_RUNS[1].checkpoint_path,
+    short_output: Path = REQUIRED_RUNS[0].output_path,
+    short_checkpoint: Path = REQUIRED_RUNS[0].checkpoint_path,
+    evidence_output: Path = DEFAULT_EVIDENCE,
+    promotion_manifest: Path = DEFAULT_PROMOTION_MANIFEST,
+    incident_dir: Path = DEFAULT_INCIDENT_DIR,
+    parameters: dict[str, float] | None = None,
+    generated_at: str | None = None,
+) -> dict[str, Any]:
+    if source_output.resolve() == destination_output.resolve():
+        raise ValueError("source_output must differ from destination_output")
+    if source_checkpoint.resolve() == destination_checkpoint.resolve():
+        raise ValueError("source_checkpoint must differ from destination_checkpoint")
+
+    effective_parameters = parameters or read_parameters()
+    source_validation = build_promotable_source_validation_payload(
+        source_output=source_output,
+        source_checkpoint=source_checkpoint,
+        short_output=short_output,
+        short_checkpoint=short_checkpoint,
+        parameters=effective_parameters,
+    )
+    if source_validation["status"] != "EVIDENCE_READY_FOR_RELEASE_MANAGER_REVIEW":
+        raise ValueError(f"source rerun is not promotable: {source_validation['status']}")
+
+    promoted_at = generated_at or utc_now()
+    archived_previous = [
+        archive
+        for archive in (
+            archive_existing_artifact(
+                destination_output,
+                incident_dir=incident_dir,
+                promoted_at=promoted_at,
+            ),
+            archive_existing_artifact(
+                destination_checkpoint,
+                incident_dir=incident_dir,
+                promoted_at=promoted_at,
+            ),
+        )
+        if archive is not None
+    ]
+    source_payload = read_json(source_output)
+    promoted_payload = rewrite_promoted_runner_paths(
+        source_payload=source_payload,
+        source_output=source_output,
+        source_checkpoint=source_checkpoint,
+        destination_output=destination_output,
+        destination_checkpoint=destination_checkpoint,
+        promoted_at=promoted_at,
+        archived_previous=archived_previous,
+    )
+    write_json(destination_output, promoted_payload)
+    destination_checkpoint.parent.mkdir(parents=True, exist_ok=True)
+    destination_checkpoint.write_text(
+        source_checkpoint.read_text(encoding="utf-8"),
+        encoding="utf-8",
+    )
+
+    promoted_validation = build_validation_payload(
+        parameters=effective_parameters,
+        required_runs=promotable_required_runs(
+            source_output=destination_output,
+            source_checkpoint=destination_checkpoint,
+            short_output=short_output,
+            short_checkpoint=short_checkpoint,
+        ),
+    )
+    if promoted_validation["status"] != "EVIDENCE_READY_FOR_RELEASE_MANAGER_REVIEW":
+        raise ValueError(
+            "promoted canonical evidence did not validate: "
+            f"{promoted_validation['status']}"
+        )
+    write_payload(evidence_output, promoted_validation)
+
+    manifest = {
+        "schema_version": "eei-a209-operator-soak-rerun-promotion-manifest-v1",
+        "artifact_id": "t1307-a209-operator-soak-24h-promotion",
+        "generated_at": promoted_at,
+        "system_name": "EEI",
+        "task_id": "T1307",
+        "acceptance_ids": ["A209"],
+        "status": "PROMOTED_CANONICAL_24H_EVIDENCE_READY_FOR_FINALIZER",
+        "release_gate_closed_by_promotion": False,
+        "source_validation_status": source_validation["status"],
+        "promoted_validation_status": promoted_validation["status"],
+        "source_files": {
+            "source_output": display_path(source_output),
+            "source_output_sha256": sha256_file(source_output),
+            "source_checkpoint": display_path(source_checkpoint),
+            "source_checkpoint_sha256": sha256_file(source_checkpoint),
+            "destination_output": display_path(destination_output),
+            "destination_output_sha256": sha256_file(destination_output),
+            "destination_checkpoint": display_path(destination_checkpoint),
+            "destination_checkpoint_sha256": sha256_file(destination_checkpoint),
+            "evidence_validation": display_path(evidence_output),
+            "evidence_validation_sha256": sha256_file(evidence_output),
+        },
+        "archived_previous_artifacts": archived_previous,
+        "next_commands": [
+            "python scripts/finalize_operator_soak_evidence.py generate",
+            "make generate-production-api-release-preflight",
+            "make generate-release-manager-activation-artifact",
+            "make generate-mvp-release-gate-preflight",
+            "make verify",
+        ],
+        "non_claims": [
+            "This promotion does not close A209 by itself.",
+            "This promotion does not replace finalizer validation.",
+            "This promotion does not replace A202, A210, A026 or A027 evidence.",
+        ],
+    }
+    write_json(promotion_manifest, manifest)
+    return manifest
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("generate", "validate"))
+    parser.add_argument("command", choices=("generate", "validate", "promote-rerun"))
     parser.add_argument("--heartbeat", type=Path, default=DEFAULT_HEARTBEAT)
     parser.add_argument("--evidence-validation", type=Path, default=DEFAULT_EVIDENCE)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument("--source-output", type=Path)
+    parser.add_argument("--source-checkpoint", type=Path)
+    parser.add_argument("--destination-output", type=Path, default=REQUIRED_RUNS[1].output_path)
+    parser.add_argument(
+        "--destination-checkpoint",
+        type=Path,
+        default=REQUIRED_RUNS[1].checkpoint_path,
+    )
+    parser.add_argument("--promotion-manifest", type=Path, default=DEFAULT_PROMOTION_MANIFEST)
+    parser.add_argument("--incident-dir", type=Path, default=DEFAULT_INCIDENT_DIR)
     parser.add_argument(
         "--refresh-upstream",
         action="store_true",
@@ -311,7 +550,7 @@ def main() -> int:
         write_json(args.output, payload)
         if not args.quiet:
             print(json.dumps({"generated": True, "artifact": display_path(args.output)}))
-    else:
+    elif args.command == "validate":
         validate_preflight(
             read_json(args.output),
             heartbeat_path=args.heartbeat,
@@ -319,6 +558,28 @@ def main() -> int:
         )
         if not args.quiet:
             print(json.dumps({"valid": True, "artifact": display_path(args.output)}))
+    else:
+        if args.source_output is None or args.source_checkpoint is None:
+            raise SystemExit("promote-rerun requires --source-output and --source-checkpoint")
+        manifest = promote_rerun_source(
+            source_output=args.source_output,
+            source_checkpoint=args.source_checkpoint,
+            destination_output=args.destination_output,
+            destination_checkpoint=args.destination_checkpoint,
+            evidence_output=args.evidence_validation,
+            promotion_manifest=args.promotion_manifest,
+            incident_dir=args.incident_dir,
+        )
+        if not args.quiet:
+            print(
+                json.dumps(
+                    {
+                        "promoted": True,
+                        "artifact": display_path(args.promotion_manifest),
+                        "status": manifest["status"],
+                    }
+                )
+            )
     return 0
 
 

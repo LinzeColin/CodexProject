@@ -7,14 +7,14 @@
 - source_snapshot_hash: `sha256:7c54a3c5bccbba28955e4bbf5c06815c44996965b66c98fe91c7f1069d328342`
 - snapshot_event_time: `2026-06-26T10:05:00+10:00`
 - generator_version: `4.0.0`
-- final_commit_binding: `PENDING:86785e7c8cf6ca5ecefc5bcfec452bb8f6a0dd20; A209 heartbeat/preflight refresh awaiting commit, push and CI`
+- final_commit_binding: `PENDING:702394c0263235f0462d375506231a3231d488a6; A209 isolated-rerun promotion bridge awaiting commit, push and CI`
 
 ## Current State
 
 - Project: `EEI`
 - Path: `EEI`
 - Product version: `0.1.0`
-- Phase/Gate: `D / TASK-T1307-A209-ISOLATED-24H-RERUN-11-288-HEARTBEAT`
+- Phase/Gate: `D / TASK-T1307-A209-ISOLATED-RERUN-PROMOTION-BRIDGE`
 - Models/Formulas/Parameters total: `12 / 12 / 88`
 - Active formulas/parameters: `11 / 88`
 - Machine checked formulas/parameters: `11 / 88`
@@ -35,7 +35,7 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `TASK-T1307-A209-ISOLATED-24H-RERUN-11-288-HEARTBEAT`
+- Release gate: `TASK-T1307-A209-ISOLATED-RERUN-PROMOTION-BRIDGE`
 - Next executable task: `TASK-T1307`
 - Pending/stale events: `101`
 - Tree-bound events: `0`

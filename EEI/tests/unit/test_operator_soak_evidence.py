@@ -6,6 +6,10 @@ from pathlib import Path
 
 import pytest
 
+from scripts.finalize_operator_soak_evidence import (
+    build_promotable_source_validation_payload,
+    promote_rerun_source,
+)
 from scripts.monitor_operator_soak import build_progress_payload
 from scripts.record_operator_soak_heartbeat import (
     build_heartbeat_payload,
@@ -247,6 +251,99 @@ def test_complete_operator_soak_evidence_is_ready_for_release_review(tmp_path: P
     assert payload["status"] == "EVIDENCE_READY_FOR_RELEASE_MANAGER_REVIEW"
     assert {result["status"] for result in payload["results"]} == {"PASS"}
     assert payload["a209_task_status_required"] == "IN_PROGRESS"
+
+
+def test_operator_soak_rerun_promotion_rejects_incomplete_source(tmp_path: Path) -> None:
+    short = requirement(tmp_path, "operator_4h", "soak.short_duration_hours", "covers_4h_target")
+    source = requirement(
+        tmp_path,
+        "operator_24h",
+        "soak.long_duration_hours",
+        "covers_24h_target",
+    )
+    write_run(short, target_seconds=4 * 3600, completed_seconds=4 * 3600)
+    write_run(source, target_seconds=24 * 3600, completed_seconds=300)
+
+    payload = build_promotable_source_validation_payload(
+        source_output=source.output_path,
+        source_checkpoint=source.checkpoint_path,
+        short_output=short.output_path,
+        short_checkpoint=short.checkpoint_path,
+        parameters=PARAMETERS,
+    )
+
+    assert payload["status"] == "FAIL"
+    assert "completed duration is below target" in payload["results"][1]["errors"]
+    with pytest.raises(ValueError, match="source rerun is not promotable"):
+        promote_rerun_source(
+            source_output=source.output_path,
+            source_checkpoint=source.checkpoint_path,
+            destination_output=tmp_path / "canonical_24h.json",
+            destination_checkpoint=tmp_path / "canonical_24h.checkpoints.jsonl",
+            short_output=short.output_path,
+            short_checkpoint=short.checkpoint_path,
+            evidence_output=tmp_path / "evidence.json",
+            promotion_manifest=tmp_path / "promotion.json",
+            incident_dir=tmp_path / "incidents",
+            parameters=PARAMETERS,
+        )
+
+
+def test_operator_soak_rerun_promotion_archives_failed_canonical(
+    tmp_path: Path,
+) -> None:
+    short = requirement(tmp_path, "operator_4h", "soak.short_duration_hours", "covers_4h_target")
+    source = requirement(
+        tmp_path / "source",
+        "operator_24h",
+        "soak.long_duration_hours",
+        "covers_24h_target",
+    )
+    canonical = requirement(
+        tmp_path / "canonical",
+        "operator_24h",
+        "soak.long_duration_hours",
+        "covers_24h_target",
+    )
+    source.output_path.parent.mkdir()
+    canonical.output_path.parent.mkdir()
+    write_run(short, target_seconds=4 * 3600, completed_seconds=4 * 3600)
+    write_run(source, target_seconds=24 * 3600, completed_seconds=24 * 3600)
+    write_declared_failed_run(canonical)
+
+    manifest = promote_rerun_source(
+        source_output=source.output_path,
+        source_checkpoint=source.checkpoint_path,
+        destination_output=canonical.output_path,
+        destination_checkpoint=canonical.checkpoint_path,
+        short_output=short.output_path,
+        short_checkpoint=short.checkpoint_path,
+        evidence_output=tmp_path / "evidence.json",
+        promotion_manifest=tmp_path / "promotion.json",
+        incident_dir=tmp_path / "incidents",
+        parameters=PARAMETERS,
+        generated_at="2026-06-26T00:00:00Z",
+    )
+
+    promoted = json.loads(canonical.output_path.read_text(encoding="utf-8"))
+    evidence = json.loads((tmp_path / "evidence.json").read_text(encoding="utf-8"))
+    saved_manifest = json.loads((tmp_path / "promotion.json").read_text(encoding="utf-8"))
+    assert promoted["runner"]["output_path"] == str(canonical.output_path)
+    assert promoted["runner"]["checkpoint_path"] == str(canonical.checkpoint_path)
+    assert promoted["promotion"]["source_output_path"] == str(source.output_path)
+    assert promoted["promotion"]["release_gate_closed_by_promotion"] is False
+    assert evidence["status"] == "EVIDENCE_READY_FOR_RELEASE_MANAGER_REVIEW"
+    assert manifest["status"] == "PROMOTED_CANONICAL_24H_EVIDENCE_READY_FOR_FINALIZER"
+    assert (
+        saved_manifest["promoted_validation_status"]
+        == "EVIDENCE_READY_FOR_RELEASE_MANAGER_REVIEW"
+    )
+    assert len(saved_manifest["archived_previous_artifacts"]) == 2
+    assert all(
+        (tmp_path / "incidents" / Path(row["archive_path"]).name).exists()
+        for row in saved_manifest["archived_previous_artifacts"]
+    )
+    assert saved_manifest["release_gate_closed_by_promotion"] is False
 
 
 def write_checkpoint(path: Path, *, index: int, status: str = "PASS") -> None:
