@@ -288,9 +288,9 @@ def audit_acceptance(repo_root: Path, publish_dir: Path | None = None, require_l
         checks,
         atlas.get("visual_layers", {}).get("primary") == "galaxy"
         and set(atlas.get("visual_layers", {}).get("secondary", []))
-        >= {"notion_map", "roi_dashboard", "obsidian_graph", "timeline", "contribution_grid", "summary_iteration"},
+        >= {"data_guide", "roi_dashboard", "obsidian_graph", "timeline", "contribution_grid", "summary_iteration"},
         "visual_layers_declared",
-        "galaxy primary plus Notion/ROI/Obsidian/timeline/contribution/summary secondary layers",
+        "galaxy primary plus data guide/ROI/Obsidian/timeline/contribution/summary secondary layers",
         "visual_layers missing required modes",
     )
     require(

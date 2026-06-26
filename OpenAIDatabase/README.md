@@ -1,23 +1,3 @@
-# OpenAIDatabase 中文 Owner 快速入口
-
-- S6PAT02 中文 Owner 快速入口：用户可读优先；中文优先，默认全局中文。
-- 本轮 Owner-flow 治理任务：`S6PAT02` / `ACC-S6PAT02`，只补 Owner 路径，不改产品 canonical current_task；下一 Gate：`S6PA-GATE` 仍在进行中。
-- 本轮边界：只补 Owner 可读路径，不改运行代码，不移动文件，不读取或展开 raw/private 内容，不触发外部自动化。
-- 默认入口：先读 `OpenAIDatabase/AGENTS.md` 和 `scripts/route_agent_resources.py`；Memory Atlas 只读 redacted derived snapshot，不读 raw export、private import、cookies、sessions 或 plaintext secrets。
-
-| Owner 判断项 | 当前路径 | 安全状态 |
-|---|---|---|
-| app layer | `apps/memory-atlas/` | 只读 `data/derived/visualization/memory_atlas.json` |
-| skill layer | `skills/openai-memory-analysis/` | 分析工具，不是 private export 默认存放地 |
-| context layer | `context/`、`config/context_sources/`、`data/derived/agent_context/` | 只提供 routeable context pack 和脱敏 derived 输出 |
-| private exports | `data/raw/`、`data/raw_encrypted/`、`data/private_imports/`、`private_exports/`、`exports/private/`、`data/private/` | 外部优先、加密或 gitignored；不进入 tracked plaintext path |
-
-- 安全确认：不展示值，只展示路径/标记、数量、checksum 和策略；104 个 OpenAIDatabase privacy candidates 继续由 `governance/stage_gates/s5pa/privacy_manifest.md` 和 Wave2 manifest 绑定。
-- 最小验证路径：进入 `OpenAIDatabase/` 后运行 `python -B -m unittest tests.test_s3pdt01_privacy -q`、`python -B -m unittest tests.test_agent_context_pack -q`、`python -B -m unittest tests.test_codex_memory_sync -q`；本轮实测结果分别为 `Ran 3 tests` / `OK`、`Ran 1 test` / `OK`、`Ran 1 test` / `OK`。
-- pytest 全量路径：`python -B -m pytest OpenAIDatabase/tests -q` 仍需要安装 pytest；若出现 `No module named pytest`，先恢复开发依赖，不要改隐私边界绕过测试。
-- 失败去向：隐私断言失败先查 `OpenAIDatabase/docs/OpenAIDatabase_structure_report.md`、`OpenAIDatabase/.gitignore` 和 `governance/stage_gates/s5pa/privacy_manifest.md`；context 断言失败再查 `data/derived/agent_context/` 与 `scripts/route_agent_resources.py`。
-- 回滚：revert S6PAT02 OpenAIDatabase README 提交即可；本轮不改运行代码、不移动文件、不读取 raw/private 内容、不触发外部自动化。
-
 # OpenAIDatabase
 
 Local-first personal memory database for ChatGPT/Codex exports.
@@ -186,7 +166,7 @@ interactive memory visualization. It is not an Obsidian/Notion/Chrome plugin.
 The app is one merged platform with multiple selectable data-source slices.
 The homepage data-source selector must expose exactly three choices:
 `总数据源` (all data sources together), `ChatGPT`, and `Codex`. Galaxy,
-Notion Map, ROI, Obsidian Graph, Timeline, Contribution Grid, Word Cloud,
+数据导图, ROI, Obsidian Graph, Timeline, Contribution Grid, Word Cloud,
 Search, Summary & Iteration, and recommendations all share the same visual
 shell; only the selected analysis source changes.
 
@@ -237,7 +217,7 @@ Current visualization modes:
 
 - Visual density rule: every navigation page must keep 视觉化程度 80%+ as the
   default reading surface. Lists and text can exist as drill-down, but Galaxy,
-  Notion Map, ROI Dashboard, Obsidian Graph, Timeline, Contribution Grid, Word
+  数据导图, ROI Dashboard, Obsidian Graph, Timeline, Contribution Grid, Word
   Cloud, Search, and Summary & Iteration must all expose evidence-bearing visual
   marks, charts, graphs, grids, timelines, or signal cards synchronized with the
   current filters.
@@ -247,7 +227,7 @@ Current visualization modes:
   controls. Filter chips clear individual filters without mutating the memory
   database; theme focus only changes the current browser view.
 - Galaxy: Three.js scene. WebGL 正常时不叠加 HTML 点层，并使用不透明 WebGL 背景和逐帧清屏，避免 2D 残影；WebGL 内部程序化星云纹理负责旋臂、核心辉光、尘埃带和星云云团，避免退回只有光点的点云；只有 WebGL fallback 才启用可点击点层。Galaxy 支持 hover 最近星体预览、点击选中后相机自动飞近并聚焦、关联边高亮、关联邻居节点脉冲高亮、右上角视角重置和缩放按钮；hover 只做预览，点击才同步右侧 Inspector。聚焦后必须使用局部邻域布局：高权重邻居进入内环 primary layer，次级邻居进入外环 secondary layer；高连接主题节点只显示 Top 局部邻居和有限焦点边线，其余显示为折叠数量，避免一次性拉出过多边线。选中节点后，画布边缘显示内环邻居小型详情卡，卡片包含标签、层级/分类、权重排名，并可点击跳转到对应邻居节点。
-- Notion Map: project/document nodes linked through atlas edges. 顶部保留简短状态条，说明当前图谱按主题簇、节点详情和项目/决策关系读取。
+- 数据导图: 用框架导图格式展示来源、画像、项目决策和行动机会四层。顶部保留简短状态条，说明当前图谱按数据源/主题、个人画像/偏好、项目/决策/工作流、行动/机会读取；导图卡片可点击并同步右侧 Inspector。
 - ROI Dashboard: memories sorted by `metrics.roi.leverage_score`. It must show
   synchronized mini-bar visual summaries for level assets, topic categories, and
   recommended actions so the page is not just numeric cards plus a list.
@@ -341,7 +321,7 @@ Real Codex local data sync:
   from the Application Support runtime source it skips Git backup so local
   refresh does not fail on a missing `.git` directory.
 
-Notion Map 的图内节点不渲染文字标签；详情通过 title、aria 和 Inspector 查看。
+数据导图使用框架卡片显示节点名称、类型和摘要状态；详情通过点击卡片、title、aria 和 Inspector 查看。
 Obsidian Graph 按 Obsidian Graph View 的文字淡出阈值显示节点标签：默认保持克制，
 缩放、悬停、选中或高连接节点才显示标签，同时通过 hover 邻接高亮和 Inspector 保留
 具体信息入口。记忆节点标签统一显示为 `层级 · 主题 · 关键词`，关键词不能重复层级或
@@ -518,32 +498,6 @@ apps/memory-atlas/
 `active_memory.jsonl` stores all three tiers with retrieval weights. Core
 profile is high weight, important mid/long-term is medium weight, and general
 short-term is low weight. SQLite is a derived read index.
-
-## S5PBT02 Structure Boundary
-
-OpenAIDatabase now treats app, skill, context, and private export layers as
-separate defaults:
-
-- App layer: `apps/memory-atlas/` is the Memory Atlas UI/runtime. It consumes
-  `data/derived/visualization/memory_atlas.json` and redacted derived context
-  outputs only.
-- Skill layer: `skills/openai-memory-analysis/` contains reusable analysis
-  tooling and must not become the default place for private exports.
-- Context layer: `context/`, `config/context_sources/`, and
-  `data/derived/agent_context/` provide routeable context packs. Agents should
-  use `scripts/route_agent_resources.py` and repository-relative entries.
-- Private export layer: raw OpenAI exports, private imports, cookies, sessions,
-  and plaintext secrets are external-first. Local copies must be encrypted,
-  ignored, or kept under ignored paths such as `data/raw/`,
-  `data/raw_encrypted/`, `data/private_imports/`, `private_exports/`,
-  `exports/private/`, and `data/private/`.
-
-S5PBT02 does not move tracked personal-memory evidence. It binds the current
-paths to Review9 Wave 2 checksum evidence and keeps private values out of the
-ordinary development loop.
-
-Local absolute paths may appear only as historical examples or test fixtures;
-they are not default entry points for agents, app builds, or CI.
 
 `data/derived/profile/CORE_PROFILE.md` is the quickest personalization entry
 for future agents. It is generated from active memory plus
