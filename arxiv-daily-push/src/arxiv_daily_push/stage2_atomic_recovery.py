@@ -49,6 +49,39 @@ S2PMT02_REQUIRED_DISABLED_ENV_FLAGS = (
     "ADP_ALLOW_SMTP_SEND",
     "ADP_ALLOW_RELEASE_UPLOAD",
 )
+S2PMT02_RESTORE_PATH_SAFETY_MODEL_ID = "adp-s2pmt02-restore-path-safety-a001-v1"
+S2PMT02_RESTORE_PATH_SAFETY_TASK_ID = "S2PMT02-RESTORE-PATH-SAFETY-A001"
+S2PMT02_RESTORE_PATH_SAFETY_FINDING_ID = "A-001"
+S2PMT02_RESTORE_PATH_SAFETY_REQUIRED_PROBES = (
+    "relative_path_traversal",
+    "absolute_path_escape",
+    "symlink_escape",
+    "target_preserved_on_block",
+)
+S2PMT02_RESTORE_PATH_SAFETY_EXPECTED_REASONS = {
+    "relative_path_traversal": "backup database path traversal is not allowed",
+    "absolute_path_escape": "backup database path traversal is not allowed",
+    "symlink_escape": "backup database path escapes backup root",
+    "target_preserved_on_block": "restored database",
+}
+S2PMT02_RESTORE_PATH_SAFETY_REQUIRED_GATES = (
+    "required_probe_coverage",
+    "path_traversal_blocked",
+    "absolute_path_blocked",
+    "symlink_escape_blocked",
+    "target_preserved_on_block",
+    "no_production_side_effect",
+)
+S2PMT02_RESTORE_PATH_SAFETY_REQUIRED_PRODUCTION_FALSE_FLAGS = (
+    "production_side_effects_enabled",
+    "production_restore_executed",
+    "real_smtp_sent",
+    "real_scheduler_installed",
+    "real_release_uploaded",
+    "public_schema_changed",
+    "queue_mutation_allowed",
+    "db_migration_executed",
+)
 
 
 class Stage2AtomicRecoveryError(ValueError):
@@ -270,6 +303,144 @@ def run_restore_drill(
     )
 
 
+def build_restore_path_safety_report(
+    *,
+    generated_at: str,
+    probes: list[Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Build A-001 evidence from real Stage 1 restore safety probes."""
+
+    probe_rows = [dict(row) for row in probes]
+    by_id = {str(row.get("probe_id") or ""): row for row in probe_rows}
+    blocking_reasons: list[str] = []
+
+    missing = [probe_id for probe_id in S2PMT02_RESTORE_PATH_SAFETY_REQUIRED_PROBES if probe_id not in by_id]
+    if missing:
+        blocking_reasons.append("missing required restore path safety probes: " + ", ".join(missing))
+
+    expected_reason_observed: dict[str, bool] = {}
+    blocked_as_expected: dict[str, bool] = {}
+    target_preserved = False
+    no_side_effect = True
+    for probe_id in S2PMT02_RESTORE_PATH_SAFETY_REQUIRED_PROBES:
+        row = by_id.get(probe_id, {})
+        reasons = [str(reason) for reason in row.get("blocking_reasons") or []]
+        expected_reason = S2PMT02_RESTORE_PATH_SAFETY_EXPECTED_REASONS[probe_id]
+        reason_observed = any(expected_reason in reason for reason in reasons)
+        status_blocked = row.get("observed_status") == "blocked"
+        expected_reason_observed[probe_id] = reason_observed
+        blocked_as_expected[probe_id] = status_blocked and reason_observed
+        if not blocked_as_expected[probe_id]:
+            blocking_reasons.append(f"{probe_id} did not block with expected reason")
+        if probe_id in {"relative_path_traversal", "absolute_path_escape", "symlink_escape"} and row.get("target_exists_after") is not False:
+            blocking_reasons.append(f"{probe_id} must not create a restore target")
+        if probe_id == "target_preserved_on_block":
+            target_preserved = row.get("target_exists_after") is True and row.get("target_sha256_preserved") is True
+            if not target_preserved:
+                blocking_reasons.append("target_preserved_on_block must preserve the existing target bytes")
+        for flag in S2PMT02_RESTORE_PATH_SAFETY_REQUIRED_PRODUCTION_FALSE_FLAGS:
+            if row.get(flag, False) is not False:
+                no_side_effect = False
+                blocking_reasons.append(f"{probe_id}.{flag} must be false")
+
+    gates = {
+        "required_probe_coverage": not missing,
+        "path_traversal_blocked": blocked_as_expected.get("relative_path_traversal", False),
+        "absolute_path_blocked": blocked_as_expected.get("absolute_path_escape", False),
+        "symlink_escape_blocked": blocked_as_expected.get("symlink_escape", False),
+        "target_preserved_on_block": target_preserved,
+        "no_production_side_effect": no_side_effect,
+    }
+
+    report: dict[str, Any] = {
+        "model_id": S2PMT02_RESTORE_PATH_SAFETY_MODEL_ID,
+        "schema_version": S2PMT02_SCHEMA_VERSION,
+        "task_id": S2PMT02_RESTORE_PATH_SAFETY_TASK_ID,
+        "parent_task_id": S2PMT02_TASK_ID,
+        "acceptance_id": S2PMT02_ACCEPTANCE_ID,
+        "finding_id": S2PMT02_RESTORE_PATH_SAFETY_FINDING_ID,
+        "generated_at": generated_at,
+        "status": "blocked" if blocking_reasons else "pass",
+        "blocking_reasons": blocking_reasons,
+        "required_probes": list(S2PMT02_RESTORE_PATH_SAFETY_REQUIRED_PROBES),
+        "probe_count": len(probe_rows),
+        "probes": probe_rows,
+        "expected_reason_observed": expected_reason_observed,
+        "gates": gates,
+        "production_side_effects_enabled": False,
+        "production_restore_executed": False,
+        "real_smtp_sent": False,
+        "real_scheduler_installed": False,
+        "real_release_uploaded": False,
+        "public_schema_changed": False,
+        "queue_mutation_allowed": False,
+        "db_migration_executed": False,
+        "current_pointer_changed": False,
+        "v7_1_baseline_changed": False,
+        "v7_2_contract_files_changed": False,
+        "p0_closure_claimed": False,
+        "p1_closure_claimed": False,
+        "stage2_integrated_production_accepted": False,
+    }
+    report["restore_path_safety_hash"] = _restore_path_safety_hash(report)
+    return report
+
+
+def validate_restore_path_safety_report(report: Mapping[str, Any]) -> list[str]:
+    """Validate A-001 restore path safety evidence."""
+
+    errors: list[str] = []
+    if report.get("model_id") != S2PMT02_RESTORE_PATH_SAFETY_MODEL_ID:
+        errors.append("A-001 report model_id is invalid")
+    if report.get("schema_version") != S2PMT02_SCHEMA_VERSION:
+        errors.append("A-001 report schema_version must be 1")
+    if report.get("task_id") != S2PMT02_RESTORE_PATH_SAFETY_TASK_ID:
+        errors.append("A-001 report task_id is invalid")
+    if report.get("parent_task_id") != S2PMT02_TASK_ID:
+        errors.append("A-001 report parent_task_id is invalid")
+    if report.get("acceptance_id") != S2PMT02_ACCEPTANCE_ID:
+        errors.append("A-001 report acceptance_id is invalid")
+    if report.get("finding_id") != S2PMT02_RESTORE_PATH_SAFETY_FINDING_ID:
+        errors.append("A-001 report finding_id must be A-001")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("A-001 report status must be pass or blocked")
+    if report.get("status") == "blocked" and not report.get("blocking_reasons"):
+        errors.append("blocked A-001 report requires blocking_reasons")
+    if tuple(report.get("required_probes") or ()) != S2PMT02_RESTORE_PATH_SAFETY_REQUIRED_PROBES:
+        errors.append("A-001 report required_probes mismatch")
+    probes = report.get("probes")
+    if not isinstance(probes, list):
+        errors.append("A-001 report probes must be a list")
+        probes = []
+    probe_ids = {str(row.get("probe_id") or "") for row in probes if isinstance(row, Mapping)}
+    missing = [probe_id for probe_id in S2PMT02_RESTORE_PATH_SAFETY_REQUIRED_PROBES if probe_id not in probe_ids]
+    if missing:
+        errors.append("A-001 report missing probes: " + ", ".join(missing))
+    gates = report.get("gates")
+    if not isinstance(gates, Mapping):
+        errors.append("A-001 report gates must be a mapping")
+        gates = {}
+    for gate in S2PMT02_RESTORE_PATH_SAFETY_REQUIRED_GATES:
+        if gate not in gates:
+            errors.append(f"A-001 report missing gate {gate}")
+        if report.get("status") == "pass" and gates.get(gate) is not True:
+            errors.append(f"passing A-001 report requires {gate}=true")
+    for flag in (
+        *S2PMT02_RESTORE_PATH_SAFETY_REQUIRED_PRODUCTION_FALSE_FLAGS,
+        "current_pointer_changed",
+        "v7_1_baseline_changed",
+        "v7_2_contract_files_changed",
+        "p0_closure_claimed",
+        "p1_closure_claimed",
+        "stage2_integrated_production_accepted",
+    ):
+        if report.get(flag) is not False:
+            errors.append(f"{flag} must be false for A-001 restore path safety evidence")
+    if report.get("restore_path_safety_hash") != _restore_path_safety_hash(report):
+        errors.append("A-001 restore_path_safety_hash mismatch")
+    return errors
+
+
 def validate_atomic_recovery_report(report: Mapping[str, Any]) -> list[str]:
     """Validate S2PMT02 package, verify, or restore-drill reports."""
 
@@ -339,6 +510,18 @@ def _base_report(
         "local_side_effect_scope": "explicit_artifact_or_restore_drill_paths_only",
         **dict(extra),
     }
+
+
+def _restore_path_safety_hash(report: Mapping[str, Any]) -> str:
+    payload = {
+        "finding_id": report.get("finding_id"),
+        "gates": report.get("gates"),
+        "probe_count": report.get("probe_count"),
+        "probes": report.get("probes"),
+        "required_probes": report.get("required_probes"),
+    }
+    encoded = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return "sha256:" + hashlib.sha256(encoded.encode("utf-8")).hexdigest()
 
 
 def _manifest_payload(*, package_id: str, generated_at: str, root: Path, files: list[dict[str, Any]]) -> dict[str, Any]:

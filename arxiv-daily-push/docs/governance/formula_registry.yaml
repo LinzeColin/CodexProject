@@ -6381,3 +6381,59 @@ formulas:
     evidence_hash: "PENDING_MAIN_COMMIT"
     last_verified_commit: "PRECOMMIT"
     verified_at: "2026-06-27T07:40:20+10:00"
+
+
+  -
+    formula_id: "FORM-ADP-112"
+    model_id: "MOD-ADP-110"
+    assumption_ids:
+      - "ASM-ADP-035"
+    status: "active"
+    expression: "A-001 restore path safety evidence passes only when required_probe_coverage, path_traversal_blocked, absolute_path_blocked, symlink_escape_blocked, target_preserved_on_block, and no_production_side_effect are all true; each probe must be produced by the real Stage 1 restore path, expected blocking reasons must be observed, restore escape targets must not be created, invalid restore attempts must preserve existing target bytes, and every production, schema, queue, V7, P0/P1 closure, and integrated-production flag remains false."
+    variables:
+      -
+        name: "required_probe_coverage"
+        data_type: "boolean"
+        unit: "gate flag"
+        input_domain: "all required A-001 probes present"
+      -
+        name: "blocked_as_expected"
+        data_type: "object"
+        unit: "probe flags"
+        input_domain: "relative traversal, absolute escape, symlink escape, target preservation"
+      -
+        name: "target_sha256_preserved"
+        data_type: "boolean"
+        unit: "hash equality"
+        input_domain: "pre-existing restore target"
+      -
+        name: "production_side_effect_flags"
+        data_type: "object"
+        unit: "boolean flags"
+        input_domain: "false"
+    constraints: "This is current local P0 A-001 evidence only; it must not execute production restore, send SMTP, install scheduler, upload Release, mutate public schema or production queue, edit CURRENT or V7.1/V7.2 contracts, close inherited P0/P1, or claim Stage2 integrated production acceptance."
+    missing_policy: "Missing required probe, unexpected restore pass, missing expected blocking reason, restore escape target creation, target hash drift on blocked overwrite, or any forbidden side-effect flag blocks the report."
+    output_range: "A-001 restore path safety report with status pass or blocked, gate states, expected reason observations, probe rows, deterministic restore_path_safety_hash, validation errors, and all production/schema/queue/V7/closure side-effect flags false."
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_atomic_recovery.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_atomic_recovery.py"
+      - "arxiv-daily-push/tests/test_stage2_final_gate.py"
+      - "arxiv-daily-push/tests/test_user_center_candidate_pool.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_RESTORE_PATH_SAFETY_A001.md"
+      - "governance/run_manifests/ADP-S2PMT02-RESTORE-PATH-SAFETY-A001-20260627.json"
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_atomic_recovery.py::S2PMT02_RESTORE_PATH_SAFETY_MODEL_ID"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_atomic_recovery.py::S2PMT02_RESTORE_PATH_SAFETY_REQUIRED_PROBES"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_atomic_recovery.py::S2PMT02_RESTORE_PATH_SAFETY_EXPECTED_REASONS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_atomic_recovery.py::S2PMT02_RESTORE_PATH_SAFETY_REQUIRED_GATES"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_atomic_recovery.py::S2PMT02_RESTORE_PATH_SAFETY_REQUIRED_PRODUCTION_FALSE_FLAGS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_atomic_recovery.py::build_restore_path_safety_report"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_atomic_recovery.py::validate_restore_path_safety_report"
+    implementation_fingerprint: "PENDING_MAIN_COMMIT"
+    evidence_hash: "PENDING_MAIN_COMMIT"
+    last_verified_commit: "PRECOMMIT"
+    verified_at: "2026-06-27T08:05:48+10:00"

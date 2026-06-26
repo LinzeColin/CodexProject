@@ -5720,3 +5720,46 @@ models:
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PAT05_LEGACY_MAIL_SCAN_C011.md"
       - "governance/run_manifests/ADP-S2PAT05-LEGACY-MAIL-SCAN-C011-20260627.json"
       - "arxiv-daily-push/用户中心/旧邮件标识兼容扫描.md"
+
+
+  -
+    model_id: "MOD-ADP-110"
+    name: "S2PMT02 restore path safety A-001 model"
+    purpose: "Refresh inherited P0 A-001 evidence with dedicated current restore probes proving relative path traversal, absolute path escape, symlink escape, and invalid restore target overwrite attempts are blocked or preserve existing bytes without production restore side effects."
+    owner: "arxiv-daily-push"
+    status: "active"
+    assumption_ids:
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-112"
+    parameter_ids:
+      - "PARAM-ADP-935"
+      - "PARAM-ADP-936"
+      - "PARAM-ADP-937"
+      - "PARAM-ADP-938"
+      - "PARAM-ADP-939"
+    inputs:
+      - "real Stage 1 restore safety probes"
+      - "backup manifest path policy"
+      - "restore target preservation hash"
+      - "production side-effect flags"
+    outputs:
+      - "required_probe_coverage"
+      - "path_traversal_blocked"
+      - "absolute_path_blocked"
+      - "symlink_escape_blocked"
+      - "target_preserved_on_block"
+      - "restore_path_safety_hash"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_atomic_recovery.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_atomic_recovery.py"
+      - "arxiv-daily-push/tests/test_stage2_final_gate.py"
+      - "arxiv-daily-push/tests/test_user_center_candidate_pool.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_RESTORE_PATH_SAFETY_A001.md"
+      - "governance/run_manifests/ADP-S2PMT02-RESTORE-PATH-SAFETY-A001-20260627.json"
+      - "arxiv-daily-push/用户中心/恢复路径安全扫描.md"

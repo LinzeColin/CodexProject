@@ -1,20 +1,160 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import tempfile
 import unittest
 from pathlib import Path
 
+from arxiv_daily_push.stage1_runtime import restore_runtime_backup
 from arxiv_daily_push.stage2_atomic_recovery import (
     S2PMT02_MANIFEST_FILENAME,
+    build_restore_path_safety_report,
     build_atomic_recovery_package,
     run_restore_drill,
     validate_atomic_recovery_report,
+    validate_restore_path_safety_report,
     verify_atomic_recovery_manifest,
 )
+from arxiv_daily_push.storage import migrate_database
+
+
+def _a001_probe(
+    probe_id: str,
+    restore: dict[str, object],
+    target: Path,
+    *,
+    before_sha: str | None = None,
+) -> dict[str, object]:
+    after_sha = hashlib.sha256(target.read_bytes()).hexdigest() if target.exists() else None
+    return {
+        "probe_id": probe_id,
+        "observed_status": restore.get("status"),
+        "blocking_reasons": restore.get("blocking_reasons") or [],
+        "target_exists_after": target.exists(),
+        "target_sha256_preserved": bool(before_sha and after_sha == before_sha),
+        "production_side_effects_enabled": restore.get("production_side_effects_enabled"),
+        "production_restore_executed": False,
+        "real_smtp_sent": restore.get("real_smtp_sent"),
+        "real_scheduler_installed": restore.get("real_scheduler_installed"),
+        "real_release_uploaded": restore.get("real_release_uploaded"),
+        "public_schema_changed": False,
+        "queue_mutation_allowed": False,
+        "db_migration_executed": False,
+    }
 
 
 class Stage2AtomicRecoveryTests(unittest.TestCase):
+    def test_restore_path_safety_a001_uses_real_restore_probes_without_production_side_effects(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            outside_db = root / "outside.sqlite3"
+            migrate_database(outside_db)
+            outside_sha = hashlib.sha256(outside_db.read_bytes()).hexdigest()
+            probes: list[dict[str, object]] = []
+
+            for probe_id, manifest_path_value in (
+                ("relative_path_traversal", "../outside.sqlite3"),
+                ("absolute_path_escape", str(outside_db)),
+            ):
+                backup_root = root / probe_id
+                backup_root.mkdir()
+                manifest_path = backup_root / "backup_manifest.json"
+                manifest_path.write_text(
+                    json.dumps(
+                        {
+                            "model_id": "adp-stage1-local-runtime-recovery-v1",
+                            "files": [{"role": "database", "path": manifest_path_value, "sha256": outside_sha}],
+                        }
+                    ),
+                    encoding="utf-8",
+                )
+                target = root / f"{probe_id}.sqlite3"
+                restore = restore_runtime_backup(
+                    manifest_path=manifest_path,
+                    target_db_path=target,
+                    generated_at="2026-07-02T06:10:00+10:00",
+                    confirm_restore=True,
+                )
+                probes.append(_a001_probe(probe_id, restore, target))
+
+            symlink_root = root / "symlink_escape"
+            symlink_root.mkdir()
+            symlink = symlink_root / "adp.sqlite3"
+            symlink.symlink_to(outside_db)
+            symlink_manifest = symlink_root / "backup_manifest.json"
+            symlink_manifest.write_text(
+                json.dumps(
+                    {
+                        "model_id": "adp-stage1-local-runtime-recovery-v1",
+                        "files": [{"role": "database", "path": "adp.sqlite3", "sha256": outside_sha}],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            symlink_target = root / "symlink-restored.sqlite3"
+            symlink_restore = restore_runtime_backup(
+                manifest_path=symlink_manifest,
+                target_db_path=symlink_target,
+                generated_at="2026-07-02T06:11:00+10:00",
+                confirm_restore=True,
+            )
+            probes.append(_a001_probe("symlink_escape", symlink_restore, symlink_target))
+
+            preserve_root = root / "target_preserved_on_block"
+            preserve_root.mkdir()
+            target = root / "existing.sqlite3"
+            migrate_database(target)
+            before_sha = hashlib.sha256(target.read_bytes()).hexdigest()
+            invalid_backup = preserve_root / "adp.sqlite3"
+            invalid_backup.write_text("not a sqlite database", encoding="utf-8")
+            preserve_manifest = preserve_root / "backup_manifest.json"
+            preserve_manifest.write_text(
+                json.dumps(
+                    {
+                        "model_id": "adp-stage1-local-runtime-recovery-v1",
+                        "files": [
+                            {
+                                "role": "database",
+                                "path": "adp.sqlite3",
+                                "sha256": hashlib.sha256(invalid_backup.read_bytes()).hexdigest(),
+                            }
+                        ],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            preserve_restore = restore_runtime_backup(
+                manifest_path=preserve_manifest,
+                target_db_path=target,
+                generated_at="2026-07-02T06:12:00+10:00",
+                confirm_restore=True,
+                allow_overwrite=True,
+            )
+            probes.append(_a001_probe("target_preserved_on_block", preserve_restore, target, before_sha=before_sha))
+
+            report = build_restore_path_safety_report(
+                generated_at="2026-07-02T06:13:00+10:00",
+                probes=probes,
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertEqual(report["finding_id"], "A-001")
+            self.assertEqual(report["task_id"], "S2PMT02-RESTORE-PATH-SAFETY-A001")
+            self.assertEqual(report["probe_count"], 4)
+            for gate, value in report["gates"].items():
+                self.assertTrue(value, gate)
+            self.assertFalse(report["production_restore_executed"])
+            self.assertFalse(report["p0_closure_claimed"])
+            self.assertFalse(report["stage2_integrated_production_accepted"])
+            self.assertFalse(validate_restore_path_safety_report(report))
+
+            tampered = {**report, "production_restore_executed": True}
+            self.assertIn(
+                "production_restore_executed must be false for A-001 restore path safety evidence",
+                validate_restore_path_safety_report(tampered),
+            )
+
     def test_package_verify_and_restore_drill_without_production_side_effects(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             artifact_dir = Path(tmp) / "artifacts"

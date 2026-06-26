@@ -9,7 +9,7 @@
 - status: `review_receipt_ready_no_closure_claim`
 - V7.2 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - created_at: `2026-06-26 18:45:19 Australia/Sydney`
-- refreshed_at: `2026-06-27 02:43:09 Australia/Sydney`
+- refreshed_at: `2026-06-27 08:05:48 Australia/Sydney`
 
 This receipt organizes the inherited V7.1 P0 evidence set for later independent
 review. It is not an independent reviewer signoff, does not close any P0/P1
@@ -35,7 +35,7 @@ pointer change, no V7.1/V7.2 contract-file edit, no `DAILY_OPERATION`, and no
 
 | finding_id | fix task | current evidence surface | receipt state | independent reviewer decision still required |
 |---|---|---|---|---|
-| `A-001` | `S2PMT02` | `PHASE_S2PMT02_ATOMIC_RECOVERY.md`, `PHASE_S2PMT02_RESTORE_SAFETY_REMEDIATION.md`, `ADP-S2PMT02-ATOMIC-RECOVERY-20260626.json` | evidence located; closure not claimed | Verify path traversal, absolute path, symlink escape, and TOCTOU restore behavior against current code and tests. |
+| `A-001` | `S2PMT02-RESTORE-PATH-SAFETY-A001` | `PHASE_S2PMT02_RESTORE_PATH_SAFETY_A001.md`, `ADP-S2PMT02-RESTORE-PATH-SAFETY-A001-20260627.json`, `用户中心/恢复路径安全扫描.md`, `test_stage2_atomic_recovery.py` | refreshed current evidence located; closure not claimed | Verify path traversal, absolute path, symlink escape, blocked invalid restore target preservation, and TOCTOU-adjacent atomic restore behavior against current code and tests. |
 | `A-002` | `S2PMT02` | `PHASE_S2PMT02_ATOMIC_RECOVERY.md`, `PHASE_S2PMT02_RESTORE_SAFETY_REMEDIATION.md`, `PHASE_S2PMT02_ARTIFACT_ATOMIC_PUBLISH.md` | evidence located; closure not claimed | Verify invalid backup restore preserves original database bytes and atomic replacement semantics. |
 | `A-003` | `S2PMT03` | `PHASE_S2PMT03_LEASE_FENCING.md`, `ADP-S2PMT03-LEASE-FENCING-20260626.json` | evidence located; closure not claimed | Verify transactional outbox, idempotent `Message-ID`, and at-least-once semantics; exactly-once delivery is not claimed. |
 | `A-004` | `S2PMT01` | `PHASE_S2PMT01_SECURITY_BOUNDARY.md`, `ADP-S2PMT01-SECURITY-BOUNDARY-20260626.json` | evidence located; closure not claimed | Verify typed frontstage statement rules bind facts/inferences/actions to evidence and block unsupported foreground claims. |
@@ -43,6 +43,18 @@ pointer change, no V7.1/V7.2 contract-file edit, no `DAILY_OPERATION`, and no
 | `B-001` | `S2PMT04` | `PHASE_S2PMT04_LIFECYCLE_CACHE.md`, `PHASE_S2PMT04_SCHEDULER_TEMPLATE_A013.md`, `ADP-S2PMT04-LIFECYCLE-CACHE-20260626.json` | local evidence located; closure not claimed | Decide whether current local scheduler/lifecycle rehearsal is sufficient, or whether a real target install/run/uninstall proof is still required. |
 | `B-007` | `S2PMT05-DUPLICATE-TRIGGER-B007` | `PHASE_S2PMT05_DUPLICATE_TRIGGER_B007.md`, `ADP-S2PMT05-DUPLICATE-TRIGGER-B007-20260627.json`, `test_stage2_stress_e2e.py` | refreshed current evidence located; closure not claimed | Verify four actor sources, M1-M4 x 100 attempts, one active revision per product, reason-coded duplicate blocks, lease/fencing receipts, and no scheduler side effects; decide whether multi-host/real scheduler duplicate-trigger proof is still required. |
 | `B-008` | `S2PMT05-SMTP-CRASH-WINDOW-B008` | `PHASE_S2PMT05_SMTP_CRASH_WINDOW_B008.md`, `ADP-S2PMT05-SMTP-CRASH-WINDOW-B008-20260627.json`, `test_stage2_stress_e2e.py` | refreshed current evidence located; closure not claimed | Verify outbox claim before SMTP acceptance, `ACCEPTED_PENDING_COMMIT`, stable idempotent `message_id`, provider accept ref finalization, blocked unsafe resend, and no real SMTP side effects; decide whether runner-level fake SMTP kill/restart proof is still required. |
+
+## Preserved Blockers
+
+## Evidence Refresh 2026-06-27
+
+This refresh updates the P0 receipt to point `A-001` at dedicated restore path safety evidence instead of aggregate S2PMT02 restore records. It does not close any P0 finding and does not provide independent review signoff.
+
+- refreshed_findings: `A-001`, `B-007`, `B-008`
+- refresh_manifest: `governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A001-20260627.json`
+- previous_refresh_manifest: `governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B007-B008-20260627.json`
+- closure_claimed: `false`
+- independent_review_signoff_present: `false`
 
 ## Preserved Blockers
 

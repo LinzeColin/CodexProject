@@ -21,7 +21,7 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 175
+- task_count: 177
 - acceptance_count: 125
 
 ## Delivery Tasks
@@ -263,3 +263,5 @@ The machine-readable task source is `delivery_tasks.yaml`.
 
 | S2PAT05-LEGACY-MAIL-SCAN-C011 | S2PA | completed_local_validation | `ACC-S2PAT05-LEGACY-MAIL-SCAN` | Local C-011 evidence: legacy B1-B5/five-mail/English visible-mail markers are classified across current scan scopes, active legacy runtime/owner/unclassified counts are zero, current mail contract remains EMAIL_LEARNING_V1 M1-M4, and M4 keeps `legacy_five_mail_active=false`; no production side effects. |
 | S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C011 | S2PM | completed | `ACC-S2PMT07-FINAL-REVIEW` | Refreshes C-011 so the old mail naming row points to dedicated S2PAT05 scan evidence instead of aggregate Email V1/owner UX records; this does not provide independent signoff, close P0/P1, complete S2PLT04, execute final commands, or change production state. |
+| S2PMT02-RESTORE-PATH-SAFETY-A001 | S2PM | completed_local_validation | `ACC-S2PMT02-ATOMIC-RECOVERY` | Local A-001 evidence: real Stage 1 restore probes block relative path traversal, absolute path escape, and symlink escape, preserve existing target bytes on invalid overwrite, and keep all production restore/schema/queue/SMTP/scheduler/Release side effects false. |
+| S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A001 | S2PM | completed | `ACC-S2PMT07-FINAL-REVIEW` | Refreshes A-001 so the P0 independent-review receipt points to dedicated S2PMT02 restore path safety evidence instead of aggregate atomic recovery records; this does not provide independent signoff, close P0/P1, complete S2PLT04, execute final commands, or change production state. |

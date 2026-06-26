@@ -2,9 +2,9 @@
 
 ## 中文速读
 
-- 本次 C-011 旧邮件标识扫描门新增本地证据模型 `MOD-ADP-109` / `adp-s2pat05-legacy-mail-identifier-scan-v1`，不新增生产排序算法、收益评分公式或邮件 runtime 行为。
-- C-011 的关键可验证字段是扫描范围、标识组、分类、允许原因、活跃旧运行命中数、当前邮件产品和 `legacy_five_mail_active`。
-- C-011 要求当前邮件合同仍为 `EMAIL_LEARNING_V1` / `M1-M4`，旧标识只能作为过滤器、负例测试、历史/compat 或治理证据存在；本条只刷新 P1 receipt 路由，不关闭 P1，不启用生产。
+- 本次 A-001 恢复路径安全门新增本地证据模型 `MOD-ADP-110` / `adp-s2pmt02-restore-path-safety-a001-v1`，不新增生产排序算法、收益评分公式或邮件 runtime 行为。
+- A-001 的关键可验证字段是四个真实 restore probe、预期阻断原因、目标文件是否创建、原目标库 SHA-256 是否保留、以及生产恢复/SMTP/scheduler/Release/Schema/队列副作用是否全为 false。
+- A-001 只刷新 P0 receipt 路由，不关闭 P0，不执行生产恢复，不启用生产。
 
 ## 摘要
 
@@ -13,9 +13,9 @@
 - current_stage: `S2`
 - current_phase: `S2PC`
 - current_task: `S2PCT02`
-- active_model_count: `54`
-- active_formula_count: `56`
-- active_parameter_count: `374`
+- active_model_count: `55`
+- active_formula_count: `57`
+- active_parameter_count: `379`
 - blockers: `none`
 - next_gate: `S2PC-GATE-V7-2-REVALIDATION`
 - next_unique_task: `S2PCT02 Science main-journal metadata-only no-send shadow evidence (planned)`
@@ -66,6 +66,22 @@
 - `ARXIV_PRODUCTION_ACCEPTED_MAINTAINED` 只保持 Stage 1 arXiv 单源验收，不代表 Stage 2 已生产验收。
 - `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION` 只允许在 P0/P1 清零且 `S2PMT07` 独立复审通过后声明。
 - `S2PCT01` 是当前 Stage2 任务；`S2PBT01` 保留为已通过的来源 Shadow 线程任务。
+
+## S2PMT02 A-001 恢复路径安全门
+
+| 项目 | 当前口径 |
+|---|---|
+| 模型 | `MOD-ADP-110` / `adp-s2pmt02-restore-path-safety-a001-v1` |
+| 公式 | `FORM-ADP-112` |
+| 参数版本 | `adp-s2pmt02-restore-path-safety-a001-parameters-v1` |
+| 适用范围 | P0 A-001 复审证据刷新；验证恢复路径不能穿越 backup root、不能跟随逃逸符号链接、不能在阻断时破坏已有目标库 |
+| 数据来源 | [stage2_atomic_recovery.py](src/arxiv_daily_push/stage2_atomic_recovery.py)、[stage1_runtime.py](src/arxiv_daily_push/stage1_runtime.py)、[恢复路径安全扫描](用户中心/恢复路径安全扫描.md) |
+| 通过公式 | `restore_path_safety_ready = required_probe_coverage && path_traversal_blocked && absolute_path_blocked && symlink_escape_blocked && target_preserved_on_block && no_production_side_effect` |
+| 必填探针 | `relative_path_traversal`、`absolute_path_escape`、`symlink_escape`、`target_preserved_on_block` |
+| 预期阻断原因 | 路径穿越与绝对路径逃逸必须命中 `backup database path traversal is not allowed`；符号链接逃逸必须命中 `backup database path escapes backup root`；非法覆盖阻断必须命中 `restored database` 并保持原目标库 SHA-256 不变 |
+| 必须为 false 的副作用 | `production_side_effects_enabled`、`production_restore_executed`、`real_smtp_sent`、`real_scheduler_installed`、`real_release_uploaded`、`public_schema_changed`、`queue_mutation_allowed`、`db_migration_executed` |
+| 新增参数 | `PARAM-ADP-935` required probes；`PARAM-ADP-936` expected reasons；`PARAM-ADP-937` required gates；`PARAM-ADP-938` production false flags；`PARAM-ADP-939` finding id `A-001` |
+| 禁止误读 | 本模型只刷新 P0 证据路由，不关闭 A-001 或 P0，不声明独立复审通过，不执行生产恢复，不启用 SMTP、scheduler、Release、DB/schema、队列、ranking、source adapter 或 Stage2 production |
 
 ## S2PAT05 C-010 功能任务测试证据追踪链门
 
