@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import html
+import hashlib
 import json
 import re
 from collections.abc import Mapping, Sequence
@@ -459,7 +460,8 @@ def _write_artifacts(package: Mapping[str, Any], artifact_dir: Path) -> dict[str
         data = path.read_bytes()
         refs[key] = {
             "path": str(path),
-            "sha256": stable_content_hash({"content": contents[key]}),
+            "sha256": hashlib.sha256(data).hexdigest(),
+            "content_hash": stable_content_hash({"content": contents[key]}),
             "size_bytes": len(data),
         }
     return refs

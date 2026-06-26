@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+import hashlib
 import io
 import json
 import tempfile
@@ -140,6 +141,22 @@ class Stage1B1ReportTests(unittest.TestCase):
             self.assertTrue(Path(payload["artifact_files"]["report_markdown"]["path"]).is_file())
             self.assertTrue(Path(payload["artifact_files"]["email_html"]["path"]).is_file())
             self.assertTrue(Path(payload["artifact_files"]["audit_json"]["path"]).is_file())
+
+    def test_written_artifact_manifest_sha256_matches_file_bytes(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            package = build_b1_report_email_package(
+                daily_input_report(),
+                generated_at="2026-07-01T05:15:00+10:00",
+                artifact_dir=tmp,
+                write=True,
+            )
+
+            self.assertEqual(package["status"], "pass")
+            for artifact in package["artifact_files"].values():
+                path = Path(artifact["path"])
+                self.assertTrue(path.is_file())
+                self.assertEqual(artifact["sha256"], hashlib.sha256(path.read_bytes()).hexdigest())
+                self.assertIn("content_hash", artifact)
 
 
 if __name__ == "__main__":

@@ -6,7 +6,7 @@ arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTI
 
 ## 2. 本次运行改变了什么
 
-本次运行只加固 `S2PMT02` backup supporting-file 路径：不同目录中同名辅助文件会写入 source-hash-prefixed manifest path，不再静默覆盖。
+本次运行只加固 `S2PMT02` B1 artifact manifest 哈希语义：`artifact_files.sha256` 现在等于落盘文件字节 SHA-256，原 canonical 内容哈希保留为 `content_hash`。
 
 ## 3. 为什么重要
 
@@ -21,7 +21,7 @@ arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTI
 
 ## 5. 默认建议
 
-- current_recommendation: A: accept this as implementation remediation evidence for A-014 only, keep V7.2 as CURRENT product contract, keep V7.1 read-only, keep inherited P0/P1 open until S2PMT07 independent review, and continue only no-production Stage2 work.
+- current_recommendation: A: accept this as implementation remediation evidence for A-011 only, keep V7.2 as CURRENT product contract, keep V7.1 read-only, keep inherited P0/P1 open until S2PMT07 independent review, and continue only no-production Stage2 work.
 - estimated_effort: P0/P1; contract hash, AGENTS, 三基文件, validator/test, no production side effect
 - estimated_cost_or_resource: local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner
 
@@ -34,7 +34,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - next_task_id: `S2PMT07_AFTER_REMAINING_P0_P1_AND_S2PLT04`
 - responsible_role: `content_owner + product_owner`
 - acceptance_ids: `ACC-S2PMT02-ATOMIC-RECOVERY`; `ACC-S2PMT07-FINAL-REVIEW`
-- unblock_condition: A-001/A-002/A-014 implementation remediation evidence is recorded, but inherited P0/P1 remain open until independent S2PMT07 review reruns probes and closes findings; missing full replay, missing mail preview proof, missing terminal source-state proof, and missing S2PLT04 still block S2PLT01, S2PMT07, and integrated production acceptance.
+- unblock_condition: A-001/A-002/A-014/A-011 implementation remediation evidence is recorded, but inherited P0/P1 remain open until independent S2PMT07 review reruns probes and closes findings; missing full replay, missing mail preview proof, missing terminal source-state proof, missing S2PLT04, and remaining A-010 still block S2PLT01, S2PMT07, and integrated production acceptance.
 
 ## 8. 九层 Assurance 状态
 
@@ -52,7 +52,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 | Decision Item | Current Recommendation | Choice A | Choice B | Choice C | No Decision Consequence |
 |---|---|---|---|---|---|
-| `DEC-ADP-V7-2-CURRENT-20260624` | A: accept this as implementation remediation evidence for A-014 only, keep V7.2 as CURRENT product contract, keep V7.1 read-only, keep inherited P0/P1 open until S2PMT07 independent review, and continue only no-production Stage2 work. | 继续 inherited P0/P1 修复与 S2PLT04 证据准备。 | 暂停所有 Stage2 任务等待额外 Email V1 生产启用；会不必要阻塞无冲突 Shadow 来源。 | 把本次修复误读为 P0/P1 归零或生产 backup/restore/SMTP/scheduler 可启用；禁止。 | Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract drift. |
+| `DEC-ADP-V7-2-CURRENT-20260624` | A: accept this as implementation remediation evidence for A-011 only, keep V7.2 as CURRENT product contract, keep V7.1 read-only, keep inherited P0/P1 open until S2PMT07 independent review, and continue only no-production Stage2 work. | 继续 inherited P0/P1 修复与 S2PLT04 证据准备。 | 暂停所有 Stage2 任务等待额外 Email V1 生产启用；会不必要阻塞无冲突 Shadow 来源。 | 把本次修复误读为 P0/P1 归零或生产 backup/restore/SMTP/scheduler 可启用；禁止。 | Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract drift. |
 
 ## 10. Current Blockers
 
@@ -78,7 +78,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PMT02_SUPPORTING_FILE_COLLISION_REMEDIATION_NO_PRODUCTION`
+- release_gate: `S2PMT02_ARTIFACT_SHA256_REMEDIATION_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
@@ -98,10 +98,10 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
 - source_snapshot_hash: `sha256:a01366ac421f1644e991a43b9be31d6337ef64195248c96a48ecf93d4112159a`
-- snapshot_event_time: `2026-06-26T19:30:00+10:00`
+- snapshot_event_time: `2026-06-26T20:20:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.0`
-- phase/gate: `S2PM / S2PMT02_SUPPORTING_FILE_COLLISION_REMEDIATION_NO_PRODUCTION`
+- phase/gate: `S2PM / S2PMT02_ARTIFACT_SHA256_REMEDIATION_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 
