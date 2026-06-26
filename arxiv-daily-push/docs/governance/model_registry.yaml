@@ -5033,7 +5033,7 @@ models:
   -
     model_id: "MOD-ADP-096"
     name: "S2PMT03 local lease fencing and transactional outbox model"
-    purpose: "Validate local S2PMT03 row_version compare-and-swap, lease expiry, fencing token, state-history consistency, idempotent transactional outbox, watchdog stale-lock recovery safety, SMTP accept crash-window handling, M4 cycle watermark, and no production side effects under V7.2."
+    purpose: "Validate local S2PMT03 row_version compare-and-swap, lease expiry, fencing token, state-history consistency, idempotent transactional outbox, watchdog stale-lock recovery safety, SMTP accept crash-window handling, M4 cycle watermark failure/timeout/late-data/rerun behavior, and no production side effects under V7.2."
     owner: "arxiv-daily-push"
     status: "active"
     assumption_ids:
@@ -5058,14 +5058,14 @@ models:
       - "local outbox messages"
       - "local watchdog stale-lock recovery decisions"
       - "SMTP accept crash-window fixture"
-      - "M1-M3 terminal mail watermarks"
+      - "M1-M3 terminal mail watermarks with failure, timeout, late-data, rerun, and cross-cycle fixtures"
     outputs:
       - "lease claim report"
       - "fenced state transition report"
       - "transactional outbox identity"
       - "watchdog stale-lock recovery decision evidence"
       - "SMTP accept crash-window reconciliation report"
-      - "M4 cycle watermark report"
+      - "M4 cycle watermark report with ready/waiting/degraded and late-data ignored evidence"
       - "no production side-effect gate"
     code_refs:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py"
@@ -5080,8 +5080,10 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PMT03-LEASE-FENCING-20260626.json"
       - "governance/run_manifests/ADP-S2PMT03-WATCHDOG-RECOVERY-B003-20260626.json"
+      - "governance/run_manifests/ADP-S2PMT03-M4-WATERMARK-B011-20260626.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_LEASE_FENCING.md"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_WATCHDOG_RECOVERY_B003.md"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_M4_WATERMARK_B011.md"
   -
     model_id: "MOD-ADP-097"
     name: "S2PMT04 local lifecycle and cache-cleanup model"

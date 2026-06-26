@@ -343,31 +343,67 @@ def build_m4_cycle_watermark(
     terminal_mails: list[Mapping[str, Any]],
     generated_at: str,
     deadline_passed: bool = False,
+    previous_watermark: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Validate that M4 is keyed to one cycle and terminal M1-M3 states."""
 
-    by_product = {str(item.get("product_id") or ""): item for item in terminal_mails}
+    previous_finalized = isinstance(previous_watermark, Mapping) and previous_watermark.get("status") in {"ready", "degraded"}
+    previous_finalized_at = str(previous_watermark.get("watermark_finalized_at") or "") if previous_finalized else ""
+    by_product: dict[str, Mapping[str, Any]] = {}
+    duplicate_products: list[str] = []
+    ignored_late_terminal_mails: list[dict[str, Any]] = []
+    for item in sorted(terminal_mails, key=lambda value: str(value.get("observed_at") or value.get("generated_at") or "")):
+        product_id = str(item.get("product_id") or "")
+        observed_at = str(item.get("observed_at") or item.get("generated_at") or generated_at)
+        if previous_finalized_at and observed_at > previous_finalized_at:
+            ignored_late_terminal_mails.append(
+                {
+                    "product_id": product_id,
+                    "cycle_id": str(item.get("cycle_id") or ""),
+                    "status": str(item.get("status") or ""),
+                    "observed_at": observed_at,
+                    "reason": "terminal mail arrived after M4 watermark was finalized",
+                }
+            )
+            continue
+        if product_id in by_product:
+            duplicate_products.append(product_id)
+            continue
+        by_product[product_id] = item
     reasons: list[str] = []
     for product_id in S2PMT03_REQUIRED_TERMINAL_MAILS:
         item = by_product.get(product_id)
         if not item:
-            reasons.append(f"{product_id} terminal mail is missing")
+            suffix = " after deadline" if deadline_passed else ""
+            reasons.append(f"{product_id} terminal mail is missing{suffix}")
             continue
         if item.get("cycle_id") != cycle_id:
             reasons.append(f"{product_id} cycle_id does not match")
-        if item.get("status") not in {"SENT", "DEGRADED"}:
+        terminal_status = str(item.get("status") or "")
+        if terminal_status == "FAILED":
+            reasons.append(f"{product_id} terminal status failed")
+        elif terminal_status == "TIMEOUT":
+            reasons.append(f"{product_id} terminal status timed out")
+        elif terminal_status not in {"SENT", "DEGRADED"}:
             reasons.append(f"{product_id} terminal status is invalid")
+    for product_id in sorted(set(duplicate_products)):
+        reasons.append(f"{product_id} duplicate terminal mail ignored")
     status = "ready" if not reasons else "degraded" if deadline_passed else "waiting"
     return {
         "cycle_id": cycle_id,
         "generated_at": generated_at,
         "status": status,
         "deadline_passed": deadline_passed,
+        "watermark_finalized_at": generated_at if status in {"ready", "degraded"} else "",
+        "previous_watermark_status": str(previous_watermark.get("status") or "") if isinstance(previous_watermark, Mapping) else "",
         "required_terminal_mails": list(S2PMT03_REQUIRED_TERMINAL_MAILS),
         "observed_terminal_mails": sorted(by_product),
+        "ignored_late_terminal_mails": ignored_late_terminal_mails,
         "blocking_reasons": reasons,
         "m4_ready": status == "ready",
         "m4_cycle_watermark": status in {"ready", "degraded"},
+        "retry_safe": status == "waiting",
+        "late_data_ignored": bool(ignored_late_terminal_mails),
     }
 
 
