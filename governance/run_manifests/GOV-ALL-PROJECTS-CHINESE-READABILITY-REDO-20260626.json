@@ -19,7 +19,7 @@
   "content_tree_hash": "sha256-changed-files-excluding-this-manifest:PRECOMMIT_PENDING_FINAL_DIFF_HASH",
   "binding_status": "PRECOMMIT_TREE_BOUND",
   "ci_attestation_subject": "All-project Chinese readability redo for README and human-entry files, with renderer and validator enforcement",
-  "ci_run_reference": "LOCAL_PASS_CHANGED_ONLY_CI latest_observed_evidence_id=ec6f1dafc90a non_binding_self_reference; PENDING_PR_AND_MAIN_CI",
+  "ci_run_reference": "LOCAL_PASS_CHANGED_ONLY_CI latest_observed_evidence_id=7999efd813e9 non_binding_self_reference; PR_Project_Governance_783 failed because PR merge-ref checkout counted base-branch drift; fixed by checking out pull_request.head.sha for changed-only PR path; PENDING_RERUN",
   "owner_readable_summary": "本轮按“所有项目的中文可读都是 0 分，重做”处理，把 10 个项目的 README、功能清单、开发记录、模型参数文件全部改成中文 Owner 首屏优先；随后按“清理瘦身但不影响运行和开发”继续压缩重复说明，把机器键名改为中文标签，并把旧兼容 token 移到末尾注释，避免后续 agent 或 render 命令把入口重新降级成英文键名、路径列表或机器字段页。",
   "stop_condition_and_gate": {
     "global_chinese_first": true,
@@ -53,6 +53,7 @@
     "tests_touched": true
   },
   "changed_files_declared": [
+    ".github/workflows/project-governance.yml",
     "Alpha/README.md",
     "Alpha/功能清单",
     "Alpha/开发记录",
@@ -97,6 +98,7 @@
     "arxiv-daily-push/开发记录",
     "arxiv-daily-push/模型参数文件",
     "governance/run_manifests/GOV-ALL-PROJECTS-CHINESE-READABILITY-REDO-20260626.json",
+    "scripts/governance_setup_doctor.py",
     "scripts/lean_governance.py",
     "scripts/validate_project_governance.py",
     "tests/governance/test_project_governance_validator.py",
@@ -106,6 +108,7 @@
     "whkmSalary/模型参数文件"
   ],
   "changed_files_actual": [
+    ".github/workflows/project-governance.yml",
     "Alpha/README.md",
     "Alpha/功能清单",
     "Alpha/开发记录",
@@ -150,6 +153,7 @@
     "arxiv-daily-push/开发记录",
     "arxiv-daily-push/模型参数文件",
     "governance/run_manifests/GOV-ALL-PROJECTS-CHINESE-READABILITY-REDO-20260626.json",
+    "scripts/governance_setup_doctor.py",
     "scripts/lean_governance.py",
     "scripts/validate_project_governance.py",
     "tests/governance/test_project_governance_validator.py",
@@ -159,13 +163,17 @@
     "whkmSalary/模型参数文件"
   ],
   "required_governance_files": [
+    ".github/workflows/project-governance.yml",
     "governance/run_manifests/GOV-ALL-PROJECTS-CHINESE-READABILITY-REDO-20260626.json",
+    "scripts/governance_setup_doctor.py",
     "scripts/lean_governance.py",
     "scripts/validate_project_governance.py",
     "tests/governance/test_project_governance_validator.py"
   ],
   "updated_governance_files": [
+    ".github/workflows/project-governance.yml",
     "governance/run_manifests/GOV-ALL-PROJECTS-CHINESE-READABILITY-REDO-20260626.json",
+    "scripts/governance_setup_doctor.py",
     "scripts/lean_governance.py",
     "scripts/validate_project_governance.py",
     "tests/governance/test_project_governance_validator.py"
@@ -176,6 +184,7 @@
     "EEI/artifacts/release_evidence_t1211.json",
     "EEI/artifacts/release_operation_log_t1211.jsonl",
     "scripts/lean_governance.py",
+    "scripts/governance_setup_doctor.py",
     "scripts/validate_project_governance.py",
     "tests/governance/test_project_governance_validator.py",
     "governance/run_manifests/GOV-ALL-PROJECTS-CHINESE-READABILITY-REDO-20260626.json",
@@ -191,6 +200,7 @@
     "EEI\\.venv\\Scripts\\python.exe -B EEI\\scripts\\manage_release_artifacts.py validate",
     "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
     "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review6_setup_doctor_reports_entry_gate_contract tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_review9_pr_governance_keeps_full_computation_out_of_pr_path -q",
     "git diff --check"
   ],
   "test_results": [
@@ -227,7 +237,17 @@
     {
       "command": "changed-only compact CI",
       "result": "PASS",
-      "observed": "decision=SHIP; legacy_exit_code=0; process_exit_code=0; zero_tracked_write=true; changed_file_count=51; latest observed evidence_id=ec6f1dafc90a."
+      "observed": "decision=SHIP; legacy_exit_code=0; process_exit_code=0; zero_tracked_write=true; changed_file_count=53; latest observed evidence_id=7999efd813e9."
+    },
+    {
+      "command": "PR merge-ref CI root cause",
+      "result": "FIXED_LOCALLY_PENDING_REMOTE",
+      "observed": "Project Governance #783 failed on GitHub because checkout used the PR merge ref while changed-only diff used pull_request.base.sha, expanding changed_file_count to 124; workflow now checks out pull_request.head.sha so the PR path matches the 51-file branch diff."
+    },
+    {
+      "command": "workflow setup doctor contract tests",
+      "result": "PASS",
+      "observed": "Ran 2 workflow contract tests in 0.022s; OK. setup doctor workflow_entry_gates status=PASS after checking pull_request.head.sha checkout and actions/upload-artifact@v7 attestation upload."
     },
     {
       "command": "git diff --check",
@@ -242,7 +262,7 @@
     "notes": "本轮只改项目文档入口、治理渲染器、治理校验器、测试和 manifest；不改业务运行逻辑、不触发外部服务。"
   },
   "unresolved_risks": [
-    "Remote PR and main GitHub Actions run ids remain pending until this branch is pushed and CI completes.",
+    "Remote Project Governance rerun remains pending after fixing PR head checkout.",
     "Line-ending warnings are Git working-copy normalization warnings, not diff whitespace errors."
   ],
   "next_unique_task": "Push branch, open PR, and bind PR/main Project Governance CI run ids after remote validation.",

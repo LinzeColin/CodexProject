@@ -5073,6 +5073,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         checks = report["checks"]
         for check_name in {
             "pull_request_changed_only_enforce_sync_semantic",
+            "pull_request_changed_only_checks_out_head_sha",
             "pull_request_skips_full_governance_tests",
             "main_push_changed_only_uses_event_before",
             "pull_request_skips_information_quality",
@@ -5132,6 +5133,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("github.event_name == 'pull_request'", workflow)
         self.assertIn("types: [opened, synchronize, reopened, ready_for_review]", workflow)
         self.assertIn("github.event.pull_request.base.sha", workflow)
+        self.assertIn("github.event.pull_request.head.sha", workflow)
+        self.assertIn("ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}", workflow)
         self.assertIn("scripts/lean_governance.py ci --changed-only", workflow)
         self.assertNotIn("scripts/validate_project_governance.py --changed-only", workflow)
         self.assertIn("Run full governance validator tests", workflow)

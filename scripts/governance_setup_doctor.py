@@ -97,6 +97,9 @@ def workflow_entry_gate_status() -> dict[str, Any]:
             and "github.event.pull_request.base.sha" in text
             and "--base-ref \"${GOVERNANCE_BASE_REF}\"" in text
         ),
+        "pull_request_changed_only_checks_out_head_sha": (
+            "ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}" in text
+        ),
         "pull_request_skips_full_governance_tests": (
             "Run full governance validator tests" in text
             and "github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'all')" in text
@@ -130,7 +133,7 @@ def workflow_entry_gate_status() -> dict[str, Any]:
             and "github.event_name == 'workflow_dispatch' && inputs.scope == 'all'" in text
         ),
         "ci_attestation_uploaded_as_artifact": (
-            "actions/upload-artifact@v4" in text
+            "actions/upload-artifact@v7" in text
             and "project-governance-ci-attestation-" in text
             and "if-no-files-found: error" in text
             and "github.event_name == 'workflow_dispatch' && inputs.scope == 'all'" in text
