@@ -79,6 +79,8 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │   └── t501_structure_type_separation.json
 │   │   ├── a063
 │   │   │   └── t501_commercial_empire_not_control.json
+│   │   ├── a072
+│   │   │   └── t504_strategic_signal_panel_contract.json
 │   │   ├── a119
 │   │   │   └── t905_migration_rollback_rehearsal.json
 │   │   ├── a120
