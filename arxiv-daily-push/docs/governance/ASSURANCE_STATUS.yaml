@@ -1,5 +1,5 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260626-ADP-S2PLT01-REPLAY-EVIDENCE-GATE-001"
+as_of_event_id: "EVENT-20260626-ADP-S2PLT01-REPLAY-PAYLOAD-CONTRACT-001"
 source_snapshot_hash: "sha256:4ca48457b1a8b9168b36cfdfe3967d0342a90f0e279ba2bcfab522573b5c7cb7"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
@@ -16,8 +16,8 @@ dimensions:
     status: "VERIFIED"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 851
-    total_active_parameters: 851
+    checked_active_parameters: 852
+    total_active_parameters: 852
     checked_active_formulas: 104
     total_active_formulas: 104
     unresolved_fact_ids: []
@@ -27,8 +27,8 @@ dimensions:
   parameter_source_quality:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 851
-    total_active_parameters: 851
+    checked_active_parameters: 852
+    total_active_parameters: 852
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -66,7 +66,7 @@ dimensions:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "VERIFIED"
-  release_gate: "S2PLT01_REPLAY_EVIDENCE_GATE_NO_PRODUCTION"
+  release_gate: "S2PLT01_REPLAY_PAYLOAD_CONTRACT_NO_PRODUCTION"
   blocker_ids:
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
@@ -84,7 +84,7 @@ delivery_readiness:
 next_executable_task:
   task_id: "S2PLT01"
   status: "blocked"
-  reason: "Keep S2PLT01 fail-closed until inherited P0/P1, full replay, 120 mail previews, and D1-D4 terminal source states are proven under V7.2 and S2PMT07 blocked boundaries."
+  reason: "Keep S2PLT01 fail-closed until inherited P0/P1, actual full replay payload execution, 120 mail previews, D1-D4 terminal source states, and independent review are proven under V7.2 and S2PMT07 blocked boundaries."
   acceptance_ids:
     - "ACC-S2PLT01-30D"
   owner: "content_owner + product_owner"

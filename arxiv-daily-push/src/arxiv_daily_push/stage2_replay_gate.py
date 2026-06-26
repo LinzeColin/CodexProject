@@ -10,6 +10,7 @@ from typing import Any
 
 
 S2PLT01_ENTRY_PRECHECK_MODEL_ID = "adp-s2plt01-entry-precheck-v1"
+S2PLT01_REPLAY_PAYLOAD_CONTRACT_ID = "adp-s2plt01-replay-payload-v1"
 S2PLT01_ACCEPTANCE_ID = "ACC-S2PLT01-30D"
 S2PLT01_TASK_ID = "S2PLT01"
 S2PLT01_SCHEMA_VERSION = 1
@@ -216,6 +217,98 @@ def build_s2plt01_replay_evidence_from_records(
     }
 
 
+def build_s2plt01_replay_payload(
+    *,
+    payload_id: str,
+    generated_at: str,
+    generated_by: str,
+    evidence_mode: str,
+    replay_records: list[Mapping[str, Any]],
+    mail_preview_records: list[Mapping[str, Any]],
+    source_terminal_states: list[Mapping[str, Any]],
+    evidence_refs: list[str],
+) -> dict[str, Any]:
+    """Build a no-production S2PLT01 replay payload envelope from explicit evidence records."""
+
+    validation_errors = _validate_s2plt01_replay_payload_inputs(
+        payload_id=payload_id,
+        generated_at=generated_at,
+        generated_by=generated_by,
+        evidence_mode=evidence_mode,
+        replay_records=replay_records,
+        mail_preview_records=mail_preview_records,
+        source_terminal_states=source_terminal_states,
+        evidence_refs=evidence_refs,
+    )
+    replay_evidence = build_s2plt01_replay_evidence_from_records(
+        replay_records=replay_records,
+        mail_preview_records=mail_preview_records,
+        source_terminal_states=source_terminal_states,
+    )
+    status = "pass" if not validation_errors and replay_evidence["status"] == "pass" else "blocked"
+    payload = {
+        "contract_id": S2PLT01_REPLAY_PAYLOAD_CONTRACT_ID,
+        "schema_version": S2PLT01_SCHEMA_VERSION,
+        "task_id": S2PLT01_TASK_ID,
+        "acceptance_id": S2PLT01_ACCEPTANCE_ID,
+        "payload_id": payload_id,
+        "generated_at": generated_at,
+        "generated_by": generated_by,
+        "evidence_mode": evidence_mode,
+        "status": status,
+        "scope": "no_production_replay_payload_contract",
+        "validation_errors": validation_errors,
+        "replay_evidence": replay_evidence,
+        "evidence_refs": list(evidence_refs),
+        "payload_hash": "",
+        **{flag: False for flag in S2PLT01_FORBIDDEN_FLAGS},
+    }
+    payload["payload_hash"] = _stable_hash({key: value for key, value in payload.items() if key != "payload_hash"})
+    return payload
+
+
+def validate_s2plt01_replay_payload(payload: Mapping[str, Any]) -> list[str]:
+    """Validate an S2PLT01 no-production replay payload envelope."""
+
+    errors: list[str] = []
+    if payload.get("contract_id") != S2PLT01_REPLAY_PAYLOAD_CONTRACT_ID:
+        errors.append("S2PLT01 replay payload contract_id is invalid")
+    if payload.get("schema_version") != S2PLT01_SCHEMA_VERSION:
+        errors.append("S2PLT01 replay payload schema_version must be 1")
+    if payload.get("task_id") != S2PLT01_TASK_ID:
+        errors.append("S2PLT01 replay payload task_id is invalid")
+    if payload.get("acceptance_id") != S2PLT01_ACCEPTANCE_ID:
+        errors.append("S2PLT01 replay payload acceptance_id is invalid")
+    if not str(payload.get("payload_id") or "").strip():
+        errors.append("S2PLT01 replay payload_id is required")
+    if not str(payload.get("generated_at") or "").strip():
+        errors.append("S2PLT01 replay payload generated_at is required")
+    if not str(payload.get("generated_by") or "").strip():
+        errors.append("S2PLT01 replay payload generated_by is required")
+    if payload.get("evidence_mode") not in {"actual_replay_evidence", "fixture_replay_contract"}:
+        errors.append("S2PLT01 replay payload evidence_mode is invalid")
+    if payload.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PLT01 replay payload status must be pass or blocked")
+    if not _has_evidence_refs(payload):
+        errors.append("S2PLT01 replay payload evidence_refs are required")
+    for flag in S2PLT01_FORBIDDEN_FLAGS:
+        if payload.get(flag) is not False:
+            errors.append(f"{flag} must be false")
+    replay = _mapping(payload.get("replay_evidence"))
+    if replay.get("required_replay_days") != S2PLT01_REQUIRED_REPLAY_DAYS:
+        errors.append("S2PLT01 replay payload must require 30 replay days")
+    if replay.get("required_mail_previews") != S2PLT01_REQUIRED_MAIL_PREVIEWS:
+        errors.append("S2PLT01 replay payload must require 120 mail previews")
+    expected_hash = _stable_hash({key: value for key, value in payload.items() if key != "payload_hash"})
+    if payload.get("payload_hash") != expected_hash:
+        errors.append("S2PLT01 replay payload_hash does not match payload content")
+    if payload.get("status") == "pass" and replay.get("status") != "pass":
+        errors.append("passing S2PLT01 replay payload requires passing replay evidence")
+    if payload.get("status") == "blocked" and not (payload.get("validation_errors") or replay.get("blocking_reasons")):
+        errors.append("blocked S2PLT01 replay payload must include validation errors or replay blocking reasons")
+    return errors
+
+
 def build_s2plt01_entry_precheck_report(
     *,
     generated_at: str,
@@ -328,6 +421,37 @@ def validate_s2plt01_entry_precheck_report(report: Mapping[str, Any]) -> list[st
         for gate_name, reason in gate_reason_pairs:
             if gates.get(gate_name) is False and reason not in blocking_reasons:
                 errors.append(f"blocked S2PLT01 precheck with {gate_name}=false must include {reason}")
+    return errors
+
+
+def _validate_s2plt01_replay_payload_inputs(
+    *,
+    payload_id: str,
+    generated_at: str,
+    generated_by: str,
+    evidence_mode: str,
+    replay_records: list[Mapping[str, Any]],
+    mail_preview_records: list[Mapping[str, Any]],
+    source_terminal_states: list[Mapping[str, Any]],
+    evidence_refs: list[str],
+) -> list[str]:
+    errors: list[str] = []
+    if not str(payload_id or "").strip():
+        errors.append("payload_id_required")
+    if not str(generated_at or "").strip():
+        errors.append("generated_at_required")
+    if not str(generated_by or "").strip():
+        errors.append("generated_by_required")
+    if evidence_mode not in {"actual_replay_evidence", "fixture_replay_contract"}:
+        errors.append("invalid_evidence_mode")
+    if not replay_records:
+        errors.append("replay_records_required")
+    if not mail_preview_records:
+        errors.append("mail_preview_records_required")
+    if not source_terminal_states:
+        errors.append("source_terminal_states_required")
+    if not evidence_refs or not all(str(ref).strip() for ref in evidence_refs):
+        errors.append("evidence_refs_required")
     return errors
 
 

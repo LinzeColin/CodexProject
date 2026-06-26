@@ -71,14 +71,14 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - model_count: `102`
 - total_formulas: `104`
 - active_formulas: `104`
-- total_parameters: `868`
-- active_parameters: `851`
+- total_parameters: `869`
+- active_parameters: `852`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PLT01_REPLAY_EVIDENCE_GATE_NO_PRODUCTION`
+- release_gate: `S2PLT01_REPLAY_PAYLOAD_CONTRACT_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
@@ -101,9 +101,9 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - snapshot_event_time: `2026-06-26T21:30:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.0`
-- phase/gate: `S2PL / S2PLT01_REPLAY_EVIDENCE_GATE_NO_PRODUCTION`
+- phase/gate: `S2PL / S2PLT01_REPLAY_PAYLOAD_CONTRACT_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 
 - task_id: `S2PLT01`
-- reason: Keep S2PLT01 fail-closed until inherited P0/P1, full replay, 120 mail previews, and D1-D4 terminal source states are proven under V7.2 and S2PMT07 blocked boundaries.
+- reason: Keep S2PLT01 fail-closed until inherited P0/P1, actual full replay payload execution, 120 mail previews, D1-D4 terminal source states, and independent review are proven under V7.2 and S2PMT07 blocked boundaries.
