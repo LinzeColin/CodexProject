@@ -21,8 +21,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 123
-- acceptance_count: 117
+- task_count: 124
+- acceptance_count: 118
 
 ## Delivery Tasks
 
@@ -218,4 +218,5 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PMT04 | Automatic lifecycle and cache cleanup | completed_local_validation | `ACC-S2PMT04-LIFECYCLE` | Local-only disabled wake dry-run, lifecycle drain/checkpoint/cleanup, startup reconciliation, shutdown receipt, safe cache cleanup, parseable launchd plist, and no production side effects. |
 | S2PMT05 | Pressure fault time and E2E | completed_local_validation | `ACC-S2PMT05-STRESS-E2E` | Local-only load/stress/spike, accelerated 24h soak, dual scheduler race, SMTP crash-window, fault injection, DST/clock skew, 35-day 3+1/weekly/monthly/review/action/ROI, backpressure, deterministic isolation, and no production side effects. |
 | S2PMT06 | Chinese owner UX and safe controls | completed_local_validation | `ACC-S2PMT06-UX` | Local-only Chinese owner first screen, fixed navigation, status feedback, error cards, safe config changes, queue views, safe actions, accessibility, C-001 through C-015 coverage, and no production side effects. |
+| S2PLT01 | Full-system 30-day replay entry precheck | blocked | `ACC-S2PLT01-30D` | Fail-closed replay entry precheck; missing S2PBT05, inherited P0/P1, full 30-day replay, 120 mail previews, and terminal source-state proof still block S2PLT01, S2PLT04, S2PMT07, and integrated production acceptance. |
 | S2PMT07 | Final gate precheck | blocked | `ACC-S2PMT07-FINAL-REVIEW` | Fail-closed final gate precheck; independent reviewer proof, inherited P0/P1 zero state, S2PLT04 completion, final acceptance bundle, independent signoff, and final command execution are still missing, so integrated production acceptance remains false. |

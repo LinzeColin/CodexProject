@@ -4,7 +4,7 @@
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:890922e68eb2b4fc7e0e467b1b0154d253cf01e5dcc1b247bd5c26f7c750acb5`
+- source_snapshot_hash: `sha256:53d8ca6383287e500b59b7c9c59210ecbd859cb17fdc66535732a37052090a73`
 - snapshot_event_time: `2026-06-26T17:00:00+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
@@ -15,9 +15,9 @@
 - Path: `arxiv-daily-push`
 - Product version: `0.23.0`
 - Phase/Gate: `S2PM / S2PMT07_FINAL_GATE_PRECHECK_BLOCKED`
-- Models/Formulas/Parameters total: `100 / 102 / 842`
-- Active formulas/parameters: `102 / 825`
-- Machine checked formulas/parameters: `102 / 825`
+- Models/Formulas/Parameters total: `101 / 103 / 855`
+- Active formulas/parameters: `103 / 838`
+- Machine checked formulas/parameters: `103 / 838`
 
 ## Assurance
 
@@ -48,8 +48,8 @@
 - Next governance task: `S2PMT07`
 - Parallel shadow source task: `NONE_WHILE_S2PMT07_BLOCKED`
 - Next executable task: `NONE`
-- Pending/stale events: `142`
+- Pending/stale events: `143`
 - Tree-bound events: `0`
 - Commit-bound events: `1`
-- Legacy unbound events: `103`
+- Legacy unbound events: `104`
 - Unresolved fact IDs: `0`
