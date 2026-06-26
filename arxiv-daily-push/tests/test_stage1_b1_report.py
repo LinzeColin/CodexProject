@@ -8,10 +8,12 @@ import tempfile
 import unittest
 from contextlib import redirect_stdout
 from pathlib import Path
+from unittest.mock import patch
 
 from arxiv_daily_push.arxiv_adapter import ArxivQuery
 from arxiv_daily_push.cli import main
 from arxiv_daily_push.daily_input import build_daily_input_package
+import arxiv_daily_push.stage1_b1_report as b1_report
 from arxiv_daily_push.source_ingest import ingest_latest_arxiv
 from arxiv_daily_push.stage1_b1_report import (
     STAGE1_B1_REPORT_MODEL_ID,
@@ -157,6 +159,40 @@ class Stage1B1ReportTests(unittest.TestCase):
                 self.assertTrue(path.is_file())
                 self.assertEqual(artifact["sha256"], hashlib.sha256(path.read_bytes()).hexdigest())
                 self.assertIn("content_hash", artifact)
+
+    def test_b1_report_validation_failure_writes_no_formal_artifacts(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            artifact_dir = Path(tmp) / "artifacts"
+
+            with patch.object(b1_report, "validate_b1_report_email_package", return_value=["forced validation failure"]):
+                package = build_b1_report_email_package(
+                    daily_input_report(),
+                    generated_at="2026-07-01T05:15:00+10:00",
+                    artifact_dir=artifact_dir,
+                    write=True,
+                )
+
+            self.assertEqual(package["status"], "blocked")
+            self.assertIn("forced validation failure", package["blocking_reasons"])
+            self.assertEqual(list(artifact_dir.rglob("*")) if artifact_dir.exists() else [], [])
+
+    def test_b1_report_publish_failure_leaves_no_half_published_package(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            artifact_dir = Path(tmp) / "artifacts"
+
+            with patch.object(b1_report, "_atomic_publish_artifact_tree", side_effect=RuntimeError("publish failed")):
+                with self.assertRaisesRegex(RuntimeError, "publish failed"):
+                    build_b1_report_email_package(
+                        daily_input_report(),
+                        generated_at="2026-07-01T05:15:00+10:00",
+                        artifact_dir=artifact_dir,
+                        write=True,
+                    )
+
+            published = artifact_dir / "packages"
+            staging = artifact_dir / ".b1_staging"
+            self.assertEqual(list(published.rglob("*")) if published.exists() else [], [])
+            self.assertEqual(list(staging.rglob("*")) if staging.exists() else [], [])
 
 
 if __name__ == "__main__":

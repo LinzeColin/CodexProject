@@ -2193,7 +2193,7 @@ formulas:
       - "ASM-ADP-002"
       - "ASM-ADP-040"
     status: "active"
-    expression: "A Stage 1 B1/arXiv report-email package passes only when daily_input contains a valid arXiv SourceItem and supported claims, Claim Ledger blocks are empty, critical P0/P1 claim coverage is 100%, the report keeps machine-readable claim references, the user-facing email is rendered through EMAIL_LEARNING_V1 and follows YYYYMMDD -- Project Name -- Mail Product -- Plain Theme, candidate queue summary is present, ROI/backend policy/Claim Ledger/video markers are absent from the email foreground, artifact writes are explicit dry-run files only, artifact_files.sha256 is the SHA-256 of the written file bytes with canonical content_hash preserved separately, and side-effect policy confirms no real SMTP, Release upload, network fetch, video generation, or secret logging."
+    expression: "A Stage 1 B1/arXiv report-email package passes only when daily_input contains a valid arXiv SourceItem and supported claims, Claim Ledger blocks are empty, critical P0/P1 claim coverage is 100%, the report keeps machine-readable claim references, the user-facing email is rendered through EMAIL_LEARNING_V1 and follows YYYYMMDD -- Project Name -- Mail Product -- Plain Theme, candidate queue summary is present, ROI/backend policy/Claim Ledger/video markers are absent from the email foreground, package validation completes before any formal artifact write, artifact writes are staged under .b1_staging and published as one complete package directory only after staged byte-hash verification, artifact_files.sha256 is the SHA-256 of the written file bytes with canonical content_hash preserved separately, and side-effect policy confirms no real SMTP, Release upload, network fetch, video generation, or secret logging."
     variables:
       -
         name: "daily_input"
@@ -2219,9 +2219,9 @@ formulas:
         name: "artifact_files"
         data_type: "object"
         unit: "file refs"
-        input_domain: "Markdown, HTML, plain text, HTML email, and audit JSON only when --write is explicit; sha256 must match the written file bytes"
-    constraints: "The builder is text-first for Stage 1 and does not generate media, attach video, enable production schedule, send SMTP, upload GitHub Releases, perform live network fetch, or log secrets. Artifact manifest sha256 fields are byte-level file hashes; canonical content hashes are stored separately as content_hash."
-    missing_policy: "Missing daily input, invalid SourceItem, unsupported P0/P1 claims, missing candidate queue summary, non-contract subject, non-Chinese email, visible backend markers, or any side-effect flag set true returns blocked status."
+        input_domain: "Markdown, HTML, plain text, HTML email, and audit JSON only when --write is explicit; sha256 must match the written file bytes after atomic package publish"
+    constraints: "The builder is text-first for Stage 1 and does not generate media, attach video, enable production schedule, send SMTP, upload GitHub Releases, perform live network fetch, or log secrets. Package validation must complete before formal artifact writes; artifacts are staged under .b1_staging and published as a complete package directory after staged byte-hash verification. Artifact manifest sha256 fields are byte-level file hashes; canonical content hashes are stored separately as content_hash."
+    missing_policy: "Missing daily input, invalid SourceItem, unsupported P0/P1 claims, missing candidate queue summary, non-contract subject, non-Chinese email, visible backend markers, failed validation before write, publish failure, or any side-effect flag set true returns blocked status or raises before any formal package is published."
     output_range: "B1 report/email package with status pass or blocked, report Markdown/HTML, email plain/HTML, claim audit, content ledger update, and optional artifact file refs"
     code_refs:
       - "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py"
@@ -2232,6 +2232,7 @@ formulas:
     evidence_refs:
       - "governance/run_manifests/ADP-S1-07-B1-REPORT-EMAIL-TEXT-20260622.json"
       - "governance/run_manifests/ADP-S2PMT02-ARTIFACT-SHA256-20260626.json"
+      - "governance/run_manifests/ADP-S2PMT02-ARTIFACT-ATOMIC-PUBLISH-20260626.json"
       - "arxiv-daily-push/tests/test_stage1_b1_report.py"
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs:
@@ -2243,10 +2244,10 @@ formulas:
       - "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py::_write_artifacts"
       - "arxiv-daily-push/src/arxiv_daily_push/mail_templates.py::render_email_learning_v1"
       - "arxiv-daily-push/src/arxiv_daily_push/cli.py::main"
-    implementation_fingerprint: "sha256:e5e0b845b6401c763434bd90247e5bb242bac3979c75e8fca45e1ecae166a8aa"
-    last_verified_commit: "fa7aec028ab0813f02667f72c062df0a78011864"
-    verified_at: "2026-06-26T20:20:00+10:00"
-    evidence_hash: "sha256:537855fcc755e96a826a912f8dc9affacc62ff3744cff78a4ac3074651f0de11"
+    implementation_fingerprint: "sha256:090d7530fc212a0f49fdc2d5dce6dc2b833b88151130f1afc6ed5c30b4920665"
+    last_verified_commit: "8312bd876ea88753c29ceb3ccad42fd84b6eee75"
+    verified_at: "2026-06-26T11:55:00+10:00"
+    evidence_hash: "sha256:1c5372ac9151833b739cdedd22e31891410f01a55e405e130eaf6c37bb91874c"
   -
     formula_id: "FORM-ADP-043"
     model_id: "MOD-ADP-041"
