@@ -5309,10 +5309,12 @@ models:
       - "remaining S2PLT01 blockers after S2PBT05: inherited P0/P1, actual full replay payload, mail preview proof, terminal source states, and independent review"
       - "V7.1 inherited audit blocker counts"
       - "replay payload metadata, evidence mode, evidence refs, payload hash, and forbidden side-effect flags"
+      - "replay payload execution package, entry precheck binding, validation errors, and execution hash"
       - "full-system replay evidence records and output requirements"
     outputs:
       - "blocked S2PLT01 entry precheck report"
       - "S2PLT01 no-production replay payload envelope"
+      - "S2PLT01 no-production replay payload execution package"
       - "dependency and replay evidence state"
       - "blocking reason list"
       - "forbidden production flag state"
@@ -5327,9 +5329,11 @@ models:
       - "governance/run_manifests/ADP-S2PLT01-ENTRY-PRECHECK-20260626.json"
       - "governance/run_manifests/ADP-S2PLT01-REPLAY-EVIDENCE-GATE-20260626.json"
       - "governance/run_manifests/ADP-S2PLT01-REPLAY-PAYLOAD-CONTRACT-20260626.json"
+      - "governance/run_manifests/ADP-S2PLT01-REPLAY-PAYLOAD-EXECUTION-20260626.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT01_ENTRY_PRECHECK.md"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT01_REPLAY_EVIDENCE_GATE.md"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT01_REPLAY_PAYLOAD_CONTRACT.md"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT01_REPLAY_PAYLOAD_EXECUTION.md"
 
   -
     model_id: "MOD-ADP-102"

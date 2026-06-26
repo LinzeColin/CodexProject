@@ -1,20 +1,41 @@
 # DEVELOPMENT_LEDGER
 
 Project: `arxiv-daily-push`
-Active product version: `0.23.0`
+Active product version: `0.23.1`
 Governance spec version: `1.0.0`
 
 The append-only machine record is `development_events.jsonl`.
 
 ## Current State
 
-- Product version: 0.23.0
+- Product version: 0.23.1
 - Current phase: S2PL
-- Current gate: S2PLT01_REPLAY_PAYLOAD_CONTRACT_NO_PRODUCTION
-- Confirmed iteration count: 122
+- Current gate: S2PLT01_REPLAY_PAYLOAD_EXECUTION_NO_PRODUCTION
+- Confirmed iteration count: 123
 - Reconstructed event count: 0
-- Current task: `S2PLT01-REPLAY-PAYLOAD-CONTRACT` adds a no-production replay payload envelope for explicit S2PLT01 evidence records before they enter the existing replay evidence and entry precheck gates. The payload contract requires payload metadata, evidence mode, evidence refs, deterministic `payload_hash`, 30-day replay evidence, 120 M1-M4 `EMAIL_LEARNING_V1` previews, D1-D4 terminal source states, D1-D4/B1-B6 coverage, zero future leakage, zero replay P0/P1 counters, and all production/CURRENT/V7 side-effect flags false. `S2PLT01` is not accepted by this run because no actual full replay payload is executed here and inherited V7.1 P0=8/P1=37 remain open until independent S2PMT07 review closes them. Prior `S2PLT01-REPLAY-EVIDENCE-GATE`, `S2PMT02-ARTIFACT-ATOMIC-PUBLISH`, `S2PMT02-ARTIFACT-SHA256`, `S2PMT02-SUPPORTING-FILE-COLLISION`, and `S2PMT02-RESTORE-SAFETY` remediation evidence remains unchanged. `S2PMT07` remains the final production gate and is still blocked by missing S2PLT04, final bundle, independent signoff, and independent final command execution. No CURRENT, V7.1/V7.2 contract file, real production backup/restore/email, real SMTP, scheduler installation, Release, DB migration, public schema, production queue, source adapter, ranking, inherited P0/P1 closure, DAILY_OPERATION, or integrated production acceptance state changed. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
+- Current task: `S2PLT01-REPLAY-PAYLOAD-EXECUTION` adds a no-production replay payload execution package for explicit S2PLT01 evidence records. The package validates the replay payload, binds it to the S2PLT01 entry precheck, records payload/precheck validation errors, blocking reasons, and deterministic `execution_hash`, and keeps all production/CURRENT/V7 side-effect flags false. The payload execution package can pass while the overall report remains blocked by inherited V7.1 P0=8/P1=37. Prior `S2PLT01-REPLAY-PAYLOAD-CONTRACT`, `S2PLT01-REPLAY-EVIDENCE-GATE`, `S2PMT04-SCHEDULER-TEMPLATE-A013`, and S2PMT02 remediation evidence remains unchanged. `S2PLT01` is not accepted by this run; `S2PMT07` remains the final production gate and is still blocked by missing S2PLT04, final bundle, independent signoff, and independent final command execution. No CURRENT, V7.1/V7.2 contract file, production replay, real production backup/restore/email, real SMTP, scheduler installation, Release, DB migration, public schema, production queue, source adapter, ranking, inherited P0/P1 closure, DAILY_OPERATION, or integrated production acceptance state changed. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
+
+### `ITER-20260626-ADP-S2PLT01-REPLAY-PAYLOAD-EXECUTION`
+
+- Timestamp: `2026-06-27T00:05:00+10:00`
+- Fact level: EXTRACTED from S2PLT01 replay payload execution code, CLI route, focused tests, FORM-ADP-103 semantic refresh, phase record, and run manifest.
+- Base commit: `633ebbf5259168e3d23fb861496f50aa155c535b`
+- Product version: `0.23.1`
+- Status: local validation passed, PR/CI pending.
+- Phase: S2PL
+- Task IDs: `S2PLT01-REPLAY-PAYLOAD-EXECUTION`; parent `S2PLT01`; acceptance `ACC-S2PLT01-30D`.
+- Goal: Add a machine-verifiable no-production replay payload execution package that consumes explicit replay/mail/source-terminal evidence records and emits validated payload, entry precheck, validation errors, blocking reasons, and deterministic execution hash.
+- Files changed: S2PLT01 replay gate helper, CLI command, focused S2PLT01 tests, FORM-ADP-103 refresh, phase record, run manifest, changelog/status/owner/traceability/delivery/event records, and this ledger entry.
+- Model changes: Reused `MOD-ADP-101`; existing S2PLT01 replay entry precheck model now includes replay payload execution package output.
+- Formula changes: Refreshed `FORM-ADP-103` to cover `build_s2plt01_replay_payload_execution_report`, `validate_s2plt01_replay_payload_execution_report`, payload/precheck binding, validation-error mirroring, blocked precheck semantics, and execution hash validation.
+- Parameter changes: No new parameter ID; reused `PARAM-ADP-869` for the existing replay payload contract ID.
+- Validation: py_compile PASS; focused `test_stage2_replay_gate.py` 16 OK; full arxiv-daily-push unittest 478 OK; V7.2 validator PASS; ADP project governance 0 errors / 0 warnings; changed-only semantic governance 0 errors / 0 warnings; lean check-render drift_count 0 reference_issue_count 0; YAML/JSON/JSONL/CSV parse OK; git diff --check PASS; production-side-effect forbidden scan no true/enabling hits; full semantic extractor NOT COMPLETED after local interrupt at >150 seconds during full-table AST parsing.
+- Decisions: This is a local no-production execution package only. It does not accept S2PLT01, execute production replay, complete S2PLT04, enable SMTP, install scheduler, upload Release, mutate public schema/DB/production queue, change source adapters or ranking, close inherited P0/P1, enable DAILY_OPERATION, or claim integrated production acceptance.
+- Remaining risks: Inherited V7.1 P0=8/P1=37 remain open until S2PMT07 independent review reruns and closes findings. The CLI returns success for a structurally valid package even though the entry precheck remains blocked by inherited findings.
+- Rollback: Revert S2PLT01 replay payload execution code, CLI command, focused tests, FORM-ADP-103 refresh, phase record, manifest, changelog/status/owner/traceability/delivery/event records, and this ledger entry; no runtime production state was changed.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PLT01_REPLAY_PAYLOAD_EXECUTION.md`; `governance/run_manifests/ADP-S2PLT01-REPLAY-PAYLOAD-EXECUTION-20260626.json`; `arxiv-daily-push/tests/test_stage2_replay_gate.py`.
+- Next step: Run final validation, commit, push, and open PR for S2PLT01 replay payload execution package.
 
 ### `ITER-20260626-ADP-S2PMT04-SCHEDULER-TEMPLATE-A013`
 

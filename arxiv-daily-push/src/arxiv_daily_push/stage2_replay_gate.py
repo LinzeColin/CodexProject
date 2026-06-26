@@ -309,6 +309,130 @@ def validate_s2plt01_replay_payload(payload: Mapping[str, Any]) -> list[str]:
     return errors
 
 
+def build_s2plt01_replay_payload_execution_report(
+    *,
+    execution_id: str,
+    generated_at: str,
+    generated_by: str,
+    evidence_mode: str,
+    replay_records: list[Mapping[str, Any]],
+    mail_preview_records: list[Mapping[str, Any]],
+    source_terminal_states: list[Mapping[str, Any]],
+    evidence_refs: list[str],
+) -> dict[str, Any]:
+    """Build a no-production S2PLT01 payload execution package from explicit evidence."""
+
+    payload = build_s2plt01_replay_payload(
+        payload_id=execution_id,
+        generated_at=generated_at,
+        generated_by=generated_by,
+        evidence_mode=evidence_mode,
+        replay_records=replay_records,
+        mail_preview_records=mail_preview_records,
+        source_terminal_states=source_terminal_states,
+        evidence_refs=evidence_refs,
+    )
+    payload_errors = validate_s2plt01_replay_payload(payload)
+    entry_precheck = build_s2plt01_entry_precheck_report(
+        generated_at=generated_at,
+        replay_evidence=payload["replay_evidence"],
+    )
+    entry_precheck_errors = validate_s2plt01_entry_precheck_report(entry_precheck)
+    payload_execution_package_passed = payload["status"] == "pass" and not payload_errors
+    entry_precheck_passed = entry_precheck["status"] == "pass" and not entry_precheck_errors
+    blocking_reasons = sorted(
+        {
+            *payload_errors,
+            *entry_precheck_errors,
+            *payload["validation_errors"],
+            *payload["replay_evidence"].get("blocking_reasons", []),
+            *entry_precheck["blocking_reasons"],
+        }
+    )
+    if not payload_execution_package_passed:
+        blocking_reasons.append("replay_payload_execution_package_not_passed")
+        blocking_reasons = sorted(set(blocking_reasons))
+    report = {
+        "model_id": S2PLT01_ENTRY_PRECHECK_MODEL_ID,
+        "schema_version": S2PLT01_SCHEMA_VERSION,
+        "task_id": S2PLT01_TASK_ID,
+        "acceptance_id": S2PLT01_ACCEPTANCE_ID,
+        "execution_id": execution_id,
+        "generated_at": generated_at,
+        "generated_by": generated_by,
+        "evidence_mode": evidence_mode,
+        "status": "pass" if payload_execution_package_passed and entry_precheck_passed else "blocked",
+        "scope": "no_production_replay_payload_execution_package",
+        "payload_execution_package_passed": payload_execution_package_passed,
+        "entry_precheck_passed": entry_precheck_passed,
+        "payload": payload,
+        "entry_precheck": entry_precheck,
+        "payload_errors": payload_errors,
+        "entry_precheck_errors": entry_precheck_errors,
+        "blocking_reasons": blocking_reasons,
+        "evidence_refs": list(evidence_refs),
+        "execution_hash": "",
+        **{flag: False for flag in S2PLT01_FORBIDDEN_FLAGS},
+    }
+    report["execution_hash"] = _stable_hash({key: value for key, value in report.items() if key != "execution_hash"})
+    return report
+
+
+def validate_s2plt01_replay_payload_execution_report(report: Mapping[str, Any]) -> list[str]:
+    """Validate an S2PLT01 no-production payload execution package."""
+
+    errors: list[str] = []
+    if report.get("model_id") != S2PLT01_ENTRY_PRECHECK_MODEL_ID:
+        errors.append("S2PLT01 replay payload execution model_id is invalid")
+    if report.get("schema_version") != S2PLT01_SCHEMA_VERSION:
+        errors.append("S2PLT01 replay payload execution schema_version must be 1")
+    if report.get("task_id") != S2PLT01_TASK_ID:
+        errors.append("S2PLT01 replay payload execution task_id is invalid")
+    if report.get("acceptance_id") != S2PLT01_ACCEPTANCE_ID:
+        errors.append("S2PLT01 replay payload execution acceptance_id is invalid")
+    if not str(report.get("execution_id") or "").strip():
+        errors.append("S2PLT01 replay payload execution_id is required")
+    if not str(report.get("generated_at") or "").strip():
+        errors.append("S2PLT01 replay payload execution generated_at is required")
+    if not str(report.get("generated_by") or "").strip():
+        errors.append("S2PLT01 replay payload execution generated_by is required")
+    if report.get("evidence_mode") not in {"actual_replay_evidence", "fixture_replay_contract"}:
+        errors.append("S2PLT01 replay payload execution evidence_mode is invalid")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PLT01 replay payload execution status must be pass or blocked")
+    if not _has_evidence_refs(report):
+        errors.append("S2PLT01 replay payload execution evidence_refs are required")
+    for flag in S2PLT01_FORBIDDEN_FLAGS:
+        if report.get(flag) is not False:
+            errors.append(f"{flag} must be false")
+
+    payload = _mapping(report.get("payload"))
+    payload_errors = validate_s2plt01_replay_payload(payload)
+    entry_precheck = _mapping(report.get("entry_precheck"))
+    entry_precheck_errors = validate_s2plt01_entry_precheck_report(entry_precheck)
+    declared_payload_errors = list(report.get("payload_errors") or [])
+    declared_entry_errors = list(report.get("entry_precheck_errors") or [])
+    if declared_payload_errors != payload_errors:
+        errors.append("S2PLT01 replay payload execution payload_errors must match payload validation")
+    if declared_entry_errors != entry_precheck_errors:
+        errors.append("S2PLT01 replay payload execution entry_precheck_errors must match precheck validation")
+    if report.get("payload_execution_package_passed") is True and (payload.get("status") != "pass" or payload_errors):
+        errors.append("payload_execution_package_passed requires a valid passing replay payload")
+    if report.get("entry_precheck_passed") is True and (entry_precheck.get("status") != "pass" or entry_precheck_errors):
+        errors.append("entry_precheck_passed requires a valid passing entry precheck")
+    if report.get("status") == "pass":
+        if report.get("payload_execution_package_passed") is not True or report.get("entry_precheck_passed") is not True:
+            errors.append("passing S2PLT01 replay payload execution requires payload and entry precheck pass")
+        if report.get("blocking_reasons"):
+            errors.append("passing S2PLT01 replay payload execution must not have blocking reasons")
+    if report.get("status") == "blocked" and not report.get("blocking_reasons"):
+        errors.append("blocked S2PLT01 replay payload execution must include blocking reasons")
+    expected_hash = _stable_hash({key: value for key, value in report.items() if key != "execution_hash"})
+    if report.get("execution_hash") != expected_hash:
+        errors.append("S2PLT01 replay payload execution_hash does not match report content")
+    return errors
+
+
 def build_s2plt01_entry_precheck_report(
     *,
     generated_at: str,
