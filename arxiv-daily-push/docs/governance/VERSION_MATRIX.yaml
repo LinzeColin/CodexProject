@@ -212,7 +212,7 @@ parameter_profile_versions:
   adp-owner-center-entry-rule: "adp-owner-center-entry-rule-v1"
   adp-owner-center-entry-rule-parameters: "adp-owner-center-entry-rule-parameters-v1"
 data_snapshot_version: "fixture_arxiv_atom_to_daily_dry_run_v1"
-current_iteration: "ITER-20260626-ADP-OWNER-CENTER-ENTRY-RULE"
+current_iteration: "ITER-20260626-ADP-USER-CENTER-ONE-LOOK-THREE-CHECK-BINDING"
 current_phase: "S2PL"
 current_gate: "S2PLT02_LIVE_2D_PRECHECK_BLOCKED_NO_PRODUCTION"
 current_v6_task_id: "NOT_APPLICABLE"

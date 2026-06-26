@@ -3217,3 +3217,17 @@ None for this new project baseline.
 - Rollback: Revert this AGENTS rule, phase record, manifest, `VERSION_MATRIX.current_iteration`, generated status refresh, and this ledger entry; no runtime production state was changed.
 - Evidence: `arxiv-daily-push/AGENTS.md`; `arxiv-daily-push/docs/phase_records/PHASE_OWNER_CENTER_ENTRY_RULE.md`; `governance/run_manifests/ADP-OWNER-CENTER-ENTRY-RULE-20260626.json`.
 - Next step: Revise or review PR #240 so the actual owner pages use `arxiv-daily-push/用户中心/` as the shallow GitHub owner entry and summarize runtime evidence directly.
+
+### `ITER-20260626-ADP-USER-CENTER-ONE-LOOK-THREE-CHECK-BINDING`
+
+- Timestamp: `2026-06-26T17:13:59+10:00`
+- Actor: Codex
+- Fact level: EXTRACTED from `origin/main` merge commit metadata, the merged complete GitHub user center, and the seven shallow GitHub user-center pages.
+- Status: main merge attested, no production side effects.
+- Task IDs: `USER-CENTER-ONE-LOOK-THREE-CHECK-BINDING`, `USER-CENTER-ONE-LOOK-THREE-CHECK`, `OWNER-CENTER-ENTRY-RULE`, `S2PIT01`, `S2PMT06`, `EMAIL_LEARNING_V1`.
+- Goal: Bind the complete ADP GitHub user center baseline to merged `main` commit `fd068a9453e1dd9b0346e8047f6c57bcbe2f24bf` and PR #243 without modifying the original append-only rule event.
+- Decisions: This receipt does not replay email, send SMTP, enable scheduler, upload Release assets, change public schema/DB/production queues, change source adapters or ranking, edit CURRENT or V7.1/V7.2 contracts, close inherited P0/P1, enable DAILY_OPERATION, or claim integrated production acceptance.
+- Remaining risks: S2PMT07, S2PLT02, S2PLT04, inherited P0/P1, final bundle, real scheduler/SMTP proof, and integrated production acceptance remain blocked; `gh` CLI was unavailable locally, so CI run ids are not recorded in this binding manifest.
+- Rollback: Revert this binding receipt event, manifest, `VERSION_MATRIX.current_iteration`, generated status refresh, and this ledger entry; no runtime production state was changed.
+- Evidence: `governance/run_manifests/ADP-USER-CENTER-ONE-LOOK-THREE-CHECK-BINDING-20260626.json`; `https://github.com/LinzeColin/CodexProject/pull/243`; `arxiv-daily-push/用户中心/README.md`; `arxiv-daily-push/用户中心/人类可读信息索引.md`.
+- Next step: Keep owner-facing status updates on the shallow GitHub user center and continue S2PMT07/S2PLT blocked-gate evidence work without production enablement.
