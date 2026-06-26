@@ -355,9 +355,45 @@ test("selects node context without changing subject and supports primary inspect
   await expect(page.getByTestId("node-action-status")).toHaveText("path:foundry");
   await actions.getByTestId("node-action-evidence").click();
   await expect(page.getByTestId("node-action-status")).toHaveText("evidence:foundry");
+  await expect(page.getByTestId("evidence-detail-drawer")).toBeVisible();
+  await page.getByTestId("close-evidence-drawer").click();
+  await expect(page.getByTestId("evidence-detail-drawer")).toBeHidden();
 
   await actions.getByTestId("primary-set-center").click();
   await expect(page.getByTestId("current-focus-title")).toHaveText("Synthetic Advanced Foundry");
+});
+
+test("traps focus in the evidence detail drawer and restores the trigger", async ({ page }) => {
+  await page.goto("/");
+
+  await page.getByTestId("graph-node-foundry").click();
+  const evidenceAction = page.getByTestId("node-action-evidence");
+  await evidenceAction.focus();
+  await expect(evidenceAction).toBeFocused();
+  await page.keyboard.press("Enter");
+
+  const drawer = page.getByTestId("evidence-detail-drawer");
+  await expect(drawer).toBeVisible();
+  await expect(page.getByRole("dialog", { name: "Synthetic Advanced Foundry" })).toBeVisible();
+  await expect(drawer).toHaveAttribute("aria-modal", "true");
+  await expect(drawer).toHaveAttribute("data-focus-trap", "active");
+  await expect(page.getByTestId("evidence-center")).toHaveAttribute("inert", "");
+  await expect(page.getByTestId("visual-canvas")).toHaveAttribute("aria-hidden", "true");
+
+  const closeButton = page.getByTestId("close-evidence-drawer");
+  await expect(closeButton).toBeFocused();
+  await page.keyboard.down("Shift");
+  await page.keyboard.press("Tab");
+  await page.keyboard.up("Shift");
+  await expect(page.getByTestId("refresh-evidence-drawer")).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(closeButton).toBeFocused();
+
+  await page.keyboard.press("Escape");
+  await expect(drawer).toBeHidden();
+  await expect(evidenceAction).toBeFocused();
+  await expect(page.getByTestId("evidence-center")).not.toHaveAttribute("inert", "");
+  await expect(page.getByTestId("visual-canvas")).not.toHaveAttribute("aria-hidden", "true");
 });
 
 test("switches lenses on the persistent canvas while preserving exploration state", async ({

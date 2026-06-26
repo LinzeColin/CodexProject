@@ -6,6 +6,7 @@ source_policy: "Canonical CodexProject governance source generated from EEI data
 # 2026-06-25 audit: T1302/A203 implementation closure and A209 35/288 heartbeat refresh update release evidence only; model definitions, scoring behavior, formulas, weights and active thresholds are unchanged.
 # 2026-06-25 audit: T1302/A203 E2E CI repair updates status-screen evidence expectations only; model definitions, scoring behavior, formulas, weights and active thresholds are unchanged.
 # 2026-06-25 audit: T1303/A204-A205 external release operator intake packet organizes external gate inputs only; model definitions, scoring behavior, formulas, weights and active thresholds are unchanged.
+# 2026-06-26 audit: T1308/A211 evidence drawer focus-trap hardening updates frontend accessibility behavior only; model definitions, scoring behavior, formulas, weights and active thresholds are unchanged.
 assumptions:
   - assumption_id: "ASM-001"
     statement: "Scores are research prioritization and explanation aids, not investment return probabilities."

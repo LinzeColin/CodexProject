@@ -1247,6 +1247,134 @@ dd {
   line-height: 1.35;
 }
 
+.evidenceDrawerLayer {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  justify-content: flex-end;
+  background: rgba(24, 32, 29, 0.42);
+}
+
+.evidenceDrawer {
+  display: grid;
+  grid-template-rows: auto auto auto minmax(0, 1fr) auto;
+  gap: 14px;
+  width: min(440px, calc(100vw - 32px));
+  height: 100vh;
+  overflow: auto;
+  border-left: 1px solid #9fb5ab;
+  background: var(--panel);
+  box-shadow: -18px 0 40px rgba(24, 32, 29, 0.18);
+  padding: 18px;
+}
+
+.evidenceDrawer:focus {
+  outline: none;
+}
+
+.evidenceDrawerHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.evidenceDrawerHeader h2 {
+  margin: 3px 0 0;
+  font-size: 20px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.evidenceDrawerHeader button {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-color: #b9c9f5;
+  color: #134aa1;
+}
+
+.drawerStatus {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.drawerEvidenceMeta {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fbfcfc;
+  padding: 12px;
+}
+
+.drawerEvidenceMeta div {
+  display: grid;
+  gap: 4px;
+  border-top: 1px solid var(--line);
+  padding-top: 8px;
+}
+
+.drawerEvidenceMeta div:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.drawerEvidenceMeta dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.drawerEvidenceList {
+  display: grid;
+  gap: 10px;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.drawerEvidenceList li {
+  display: grid;
+  gap: 5px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f7faf9;
+  padding: 10px;
+}
+
+.drawerEvidenceList span {
+  color: #1f6f5b;
+  font-size: 12px;
+  font-weight: 720;
+}
+
+.drawerEvidenceList small {
+  color: var(--muted);
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.evidenceDrawerActions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.evidenceDrawerActions button {
+  min-height: 38px;
+  gap: 8px;
+  border-color: #b9c9f5;
+  color: #134aa1;
+  font-weight: 720;
+}
+
 .statusStrip {
   display: grid;
   gap: 8px;

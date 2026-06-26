@@ -13,9 +13,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 127
-- acceptance_count: 191
-- completed_task_count: 52
+- task_count: 128
+- acceptance_count: 192
+- completed_task_count: 53
 - planned_task_count: 69
 - in_progress_task_count: 6
 
@@ -37,7 +37,7 @@ Machine source: `delivery_tasks.yaml`. Completed tasks are only marked `complete
 
 | Status | Count | Evidence |
 |---|---:|---|
-| completed | 52 | DONE task plus DONE acceptance trace rows |
+| completed | 53 | DONE task plus DONE acceptance trace rows |
 | in_progress | 6 | T1301/A202 source/legal/owner clearance pending; T1302/A203 production-approved edges pending; T1303/A204-A205 refresh/wake/soak evidence pending; T1307/A209 24h operator soak running as background gate with heartbeat `58/288` PASS and watchdog PID `62233`; T1309/A210 formal brand clearance pending |
 | planned | 69 | Legacy NOT STARTED tasks |
 

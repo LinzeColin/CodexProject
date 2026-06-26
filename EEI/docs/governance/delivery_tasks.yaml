@@ -3812,6 +3812,45 @@ tasks:
     completed_version: ""
     fact_level: "EXTRACTED"
     unknown_task_ids: []
+  - task_id: "TASK-T1308"
+    legacy_task_id: "T1308"
+    phase: "G5"
+    objective: "Componentize production frontend routes and wire real controls to API, state and persistence"
+    scope: "This iteration implements the remaining A211 evidence detail drawer focus-trap hardening for the existing Evidence Center action: role=dialog, aria-modal, sibling inert/aria-hidden, Tab and Shift+Tab trapping, Escape/close handling and trigger focus restoration."
+    non_scope: "Does not change scoring formulas, graph traversal, extraction models, model weights, business thresholds, API schema, database schema, publication policy, A202/A209/A210/A026/A027 evidence status, release-manager activation or MVP release readiness."
+    status: "completed"
+    dependencies:
+      - "TASK-T1302"
+    required_files:
+      - "EEI/apps/web/src/app/page.tsx"
+      - "EEI/apps/web/src/app/globals.css"
+      - "EEI/tests/e2e/home.spec.ts"
+      - "EEI/data/review_issue_register.csv"
+      - "EEI/docs/governance/TRACEABILITY_MATRIX.csv"
+    acceptance_ids:
+      - "ACC-A211"
+    test_commands:
+      - "pnpm --filter @eei/web typecheck"
+      - "PLAYWRIGHT_BROWSERS_PATH=/private/tmp/eei-ms-playwright ./node_modules/.bin/playwright test --config=../../playwright.config.ts home.spec.ts --grep \"evidence detail drawer\" --workers=1"
+      - "PLAYWRIGHT_BROWSERS_PATH=/private/tmp/eei-ms-playwright ./node_modules/.bin/playwright test --config=../../playwright.config.ts home.spec.ts --workers=1"
+    test_results:
+      - "local frontend typecheck PASS"
+      - "local target evidence drawer E2E PASS 1/1"
+      - "local full home.spec.ts PASS 18/18"
+      - "local full make verify PASS after regenerated governance/release artifacts"
+    evidence_refs:
+      - "EEI/apps/web/src/app/page.tsx"
+      - "EEI/apps/web/src/app/globals.css"
+      - "EEI/tests/e2e/home.spec.ts"
+      - "EEI/data/review_issue_register.csv"
+      - "EEI/docs/governance/development_events.jsonl"
+      - "EEI/docs/phase/MVP_DEVELOPMENT_RECORD.md"
+    risk: "A211 can be overclaimed if the drawer focus-trap regression is treated as release readiness; external source/legal/gold/brand/soak gates remain open."
+    rollback: "Revert the drawer focus logic, CSS, E2E additions, A11Y-002 status change and companion governance records; do not stop, restart or promote A209 runtime files."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
+    fact_level: "EXTRACTED"
+    unknown_task_ids: []
   - task_id: "TASK-T1309"
     legacy_task_id: "T1309"
     phase: "E"

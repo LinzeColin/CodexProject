@@ -11,14 +11,45 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version: `0.1.0`
 - Product version status: `provisional`
 - Current phase: `D`
-- Current gate: `TASK-T1303-A204-A205-OPERATOR-SUBMISSION-TARGETS`
+- Current gate: `TASK-T1308-A211-EVIDENCE-DRAWER-FOCUS-TRAP`
 - Confirmed iteration count: 39
 - Reconstructed development event count: 6
-- Current task: `TASK-T1303/A204-A205 external operator submission target contract`
+- Current task: `TASK-T1308/A211 evidence detail drawer focus-trap hardening`
 - Current A209 point-in-time heartbeat: the clean 24h operator soak attempt launched at `2026-06-25T21:33:19Z` failed at checkpoint window `7/288`; `6` windows passed, `1` failed, latest checkpoint time is `2026-06-25T22:08:58Z`, `child_status=NO_OUTPUT`, `exit_status=1`, and stderr reports `page.evaluate: Target page, context or browser has been closed`. No `run_operator_soak` or `run_soak_smoke` process was found during the 2026-06-26 check. A209 remains `IN_PROGRESS` and has no release-ready 24h evidence.
 - Current isolated rerun: `/private/tmp/eei-a209-rerun-20260626-0918/` was started without overwriting the failed canonical checkpoint; operator PID `80478` and watchdog PID `80732` are recorded, first checkpoint window `1/288` PASS at `2026-06-25T23:04:42Z`, and the latest repository heartbeat refresh during this iteration observed `55/288` PASS windows, `0` failed, latest checkpoint time `2026-06-26T03:38:38Z`, and `19.10%` completion.
 - Blockers: T1301/A202 is still `IN_PROGRESS`; the refreshed operator review packet is freshness-correct supporting review evidence only and does not create source-license review, passage-level human approval, production owner approval, legal release clearance, brand clearance, release-manager activation or final public relationship publication. T1307/A209 is still `IN_PROGRESS`; failed `7/288` evidence plus short repair probes are non-closure evidence only and the isolated rerun must reach `288/288` successful windows with zero failures before promotion/finalization can allow downstream release-gate refresh. A204/A205 release-manager activation preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED` until A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence pass. A026 still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%. The new T904 operator labeling packet is a source-bound worksheet with blank `OPERATOR_TO_LABEL` slots and is not production gold evidence. A210 still needs formal brand legal/market clearance or signed risk waiver. The T1303 external release operator intake packet now uses schema `eei-external-release-operator-intake-packet-v2`, lists exact submission targets under `artifacts/operator_inputs/`, and keeps `release_gate_closed_by_operator_packet=false`; it is a checklist/hash manifest, not clearance.
+- Frontend hardening: T1308/A211 now includes an evidence detail drawer with `role=dialog`, `aria-modal=true`, sibling `inert`/`aria-hidden`, Tab/Shift+Tab focus trapping, Escape/close handling and trigger focus restoration. This fixes review issue `A11Y-002` without changing release readiness, publication policy, model formulas, API schema or A209 state.
 
+
+## EVENT-20260626-014 - T1308/A211 evidence drawer focus trap
+
+- Timestamp: 2026-06-26T14:45:38+10:00
+- Fact level: EXTRACTED
+- Base commit: `3cbc8d60ba485809f9373b5ad60e40ba62a761ee`
+- Scope: implement production frontend evidence detail drawer accessibility for the existing Evidence Center action.
+- Behavior: `打开证据` opens a real `role=dialog` drawer; background workspace siblings are set to `inert` and `aria-hidden`; focus moves into the drawer close control; Tab/Shift+Tab cycle within drawer controls; Escape or close restores focus to the triggering evidence button.
+- Acceptance mapping: `TASK-T1308` -> `A211`; review issue `A11Y-002` moves from `PARTIAL_V5` to `FIXED_IN_V5`.
+- Validation: frontend typecheck PASS; target Playwright drawer E2E PASS `1/1`; full `home.spec.ts` PASS `18/18` with `PLAYWRIGHT_BROWSERS_PATH=/private/tmp/eei-ms-playwright`.
+- Non-claims: this does not close A202, A209, A210, A026/A027, release-manager activation, MVP release readiness, legal clearance or production relationship publication.
+- Rollback: revert the drawer state/focus logic, CSS, E2E additions and this governance sync; keep A209 runtime files untouched.
+
+## ITER-20260626-014 - Evidence drawer focus trap hardening
+
+- Date: 2026-06-26
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `3cbc8d60ba485809f9373b5ad60e40ba62a761ee`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1308`
+- Acceptance IDs: `A211`
+- Goal: close the remaining production frontend detail-drawer focus-trap gap without widening release claims.
+- Files changed: `apps/web/src/app/page.tsx`, `apps/web/src/app/globals.css`, `tests/e2e/home.spec.ts`, `data/review_issue_register.csv`, traceability/version/governance records and development/changelog records.
+- Model changes: none; `MODEL_SPEC.md`, `model_registry.yaml` and `formula_registry.yaml` record this as a frontend accessibility hardening audit only.
+- Parameter changes: no active value changed; `parameter_registry.csv` records this against the existing frontend UI guard audit trail without adding a scoring, threshold or release parameter.
+- Commands run: `pnpm --filter @eei/web typecheck`; direct Playwright target drawer test; direct Playwright full `home.spec.ts`.
+- Test results: typecheck PASS; target drawer E2E PASS `1/1`; full home E2E PASS `18/18`.
+- Rollback: revert this iteration's frontend and governance files; no database migration or release artifact rollback is required.
 
 ## EVENT-20260626-013 - T1303/A204-A205 operator submission target contract
 

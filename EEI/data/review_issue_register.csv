@@ -9,7 +9,7 @@ OPS-001,A,运维,HIGH,YES,YES,FIXED_IN_V5,自主运行缺少 timeout、checkpoin
 STATE-001,A,可维护性,MEDIUM,NO,YES,FIXED_IN_V5,auditLog 和历史状态无界增长，localStorage quota 失败静默,日志上限 100、历史上限 50、保存失败提示,日志上限和存储失败测试,G0
 TRUTH-001,A,产品真实性,HIGH,YES,YES,FIXED_IN_V5,Ops 页面把 fixture 指标表达为生产服务健康,改为原型状态、0 生产 API/管线、明确生产阻塞项,文案与 DOM 检查,G0
 A11Y-001,A,可访问性,MEDIUM,NO,YES,FIXED_IN_V5,SVG 边声明 role=button 但无键盘激活,Enter/Space 激活与 aria-label,键盘关系详情测试,G0
-A11Y-002,A,可访问性,MEDIUM,NO,YES,PARTIAL_V5,详情抽屉关闭后焦点恢复不完整，缺少完整 focus trap,保存触发源并恢复；生产组件仍需 focus trap/inert,键盘 E2E 待生产实现,G4
+A11Y-002,A,可访问性,MEDIUM,NO,YES,FIXED_IN_V5,详情抽屉关闭后焦点恢复不完整，缺少完整 focus trap,保存触发源并恢复；生产证据详情 drawer 已实现 focus trap/inert/trigger focus restore,键盘 E2E 已覆盖 evidence detail drawer,G4
 MAINT-001,A,可维护性,MEDIUM,NO,YES,FIXED_IN_V5,品牌名渗透 UI、数据库名、存储键和导出名,中性工作名、品牌策略、自动扫描；保留单一历史迁移键,brand policy validator,G0
 ARCH-001,A,架构,CRITICAL,NO,YES,OPEN_PRODUCTION,当前仍是单文件 fixture 原型，无生产数据库,按 DDL/迁移实现 PostgreSQL，事实/证据/时间/版本分层,迁移、回滚、完整性与数据追溯测试,G2
 ARCH-002,A,架构,CRITICAL,NO,YES,OPEN_PRODUCTION,无生产 API、图查询、评分和刷新服务,实现受契约约束的 API/graph query/scoring/config snapshot 服务,契约、集成、并发与回滚测试,G3-G5

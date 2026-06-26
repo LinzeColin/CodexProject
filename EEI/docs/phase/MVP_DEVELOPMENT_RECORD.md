@@ -6493,3 +6493,34 @@ Status: REMOTE CI ATTESTED FOR COMMIT `f1b89fc30e6b87fc21f8d75527e8cbc5f2b74298`
 - EEI validation run `28210071130` / job `83569239684`: PASS, including G2 PostgreSQL integration, browser E2E and live FastAPI/PostgreSQL E2E.
 - Release artifacts regenerated with `remote_status=PASS`; clean-room package SHA256 `bbeb69ea7ee6ec26e9656684982200b8f87a11040fa190addfe0f89007dae4d9`.
 - A209 isolated rerun observed at `23/288` PASS, `0` failed during this sync; no release gate closed.
+
+## 2026-06-26 - T1308/A211 evidence drawer focus trap hardening
+
+Status: LOCAL VALIDATED; A211 FRONTEND HARDENING; RELEASE GATES STILL BLOCKED
+
+### Scope
+
+- Added a production frontend evidence detail drawer for the existing Evidence Center `打开证据` action.
+- The drawer uses `role=dialog`, `aria-modal=true`, a labelled title, sibling background `inert`/`aria-hidden`, Tab and Shift+Tab focus trapping, Escape/close handling, and trigger focus restoration.
+- Updated the existing inspector-action E2E path so it closes the drawer before continuing with center-changing actions.
+- Moved review issue `A11Y-002` from `PARTIAL_V5` to `FIXED_IN_V5` for the evidence detail drawer focus trap/inert/restore path.
+
+### Acceptance Mapping
+
+- T1308 -> A211.
+- This is a frontend accessibility hardening slice for the already closed A211 production frontend scope.
+
+### Validation
+
+- `/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm --filter @eei/web typecheck`: PASS.
+- `PLAYWRIGHT_BROWSERS_PATH=/private/tmp/eei-ms-playwright ./node_modules/.bin/playwright test --config=../../playwright.config.ts home.spec.ts --grep "evidence detail drawer" --workers=1`: PASS, `1/1`.
+- `PLAYWRIGHT_BROWSERS_PATH=/private/tmp/eei-ms-playwright ./node_modules/.bin/playwright test --config=../../playwright.config.ts home.spec.ts --workers=1`: PASS, `18/18`.
+
+### Non-Claims
+
+- This does not close A202 source/license/passage/owner/legal clearance, A209 24h operator soak, A210 brand/legal clearance, A026/A027 production gold labels, release-manager activation or MVP v0.1 release readiness.
+- No scoring formula, graph traversal formula, extraction model, model weight, API schema, database schema, publication policy or model parameter value changed.
+
+### Rollback
+
+- Revert `apps/web/src/app/page.tsx`, `apps/web/src/app/globals.css`, `tests/e2e/home.spec.ts`, `data/review_issue_register.csv`, traceability/version/governance records and this development-record section.

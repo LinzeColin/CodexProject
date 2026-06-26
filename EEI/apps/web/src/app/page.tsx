@@ -14,7 +14,8 @@ import {
   Search,
   RotateCcw,
   Save,
-  Star
+  Star,
+  X
 } from "lucide-react";
 import {
   ACTIVE_ANALYSIS_CONTEXT,
@@ -448,6 +449,14 @@ const SAVED_VIEW_VERSION = "saved-view-v1";
 const WORKSPACE_LAYOUT_GRAMMAR =
   "upstream-left focus-center downstream-right capital-top policy-bottom";
 const DEFAULT_GRAPH_BUDGET = { max_nodes: 42, max_edges: 64, expand_nodes: 12 } as const;
+const DRAWER_FOCUSABLE_SELECTOR = [
+  "a[href]",
+  "button:not([disabled])",
+  "input:not([disabled])",
+  "select:not([disabled])",
+  "textarea:not([disabled])",
+  "[tabindex]:not([tabindex='-1'])"
+].join(",");
 
 const focusEntityIds: Record<FocusKey, string> = {
   materials: "00000000-0000-4000-8000-000000000023",
@@ -1062,6 +1071,13 @@ function relationshipLabel(value: string) {
   return value.replaceAll("_", " ");
 }
 
+function drawerFocusableElements(container: HTMLElement | null) {
+  if (!container) return [];
+  return Array.from(container.querySelectorAll<HTMLElement>(DRAWER_FOCUSABLE_SELECTOR)).filter(
+    (element) => !element.hasAttribute("disabled") && element.getAttribute("aria-hidden") !== "true"
+  );
+}
+
 function shortServerLabel(value: string) {
   const words = value.split(/\s+/).filter(Boolean);
   const compact = words.slice(0, 3).join(" ");
@@ -1481,12 +1497,17 @@ export default function Home() {
   const [comparisonNodeKeys, setComparisonNodeKeys] = useState<NodeKey[]>([]);
   const [watchlistNodeKeys, setWatchlistNodeKeys] = useState<NodeKey[]>([]);
   const [tableLensFilter, setTableLensFilter] = useState<LensKey>("all");
+  const [evidenceDrawerOpen, setEvidenceDrawerOpen] = useState(false);
   const [nodeActionStatus, setNodeActionStatus] = useState("ready");
   const [navActionStatus, setNavActionStatus] = useState("ready");
   const [stateReady, setStateReady] = useState(false);
   const restoringHistoryState = useRef(false);
   const hasWrittenHistoryState = useRef(false);
   const hydratedProductionGraphKey = useRef("");
+  const evidenceDrawerRef = useRef<HTMLElement | null>(null);
+  const evidenceDrawerCloseRef = useRef<HTMLButtonElement | null>(null);
+  const evidenceDrawerTriggerRef = useRef<HTMLElement | null>(null);
+  const previousEvidenceDrawerOpen = useRef(false);
   const scenario = scenarios[focusKey];
   const workspaceState = useMemo<WorkspaceState>(
     () => ({ focusKey, selectedKey, path, activeLens, semanticZoom, asOf }),
@@ -2193,10 +2214,45 @@ export default function Home() {
 
   function openSelectedEvidence() {
     setNodeActionStatus(`evidence:${selectedGraphNode.key}`);
+    evidenceDrawerTriggerRef.current =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    setEvidenceDrawerOpen(true);
     void hydrateProductionData(
       "evidence_center_open",
       productionSampleCandidate?.id || productionScoreTargetId || productionEvidenceDetail?.object_id || null
     );
+  }
+
+  function closeEvidenceDrawer() {
+    setEvidenceDrawerOpen(false);
+    setNodeActionStatus(`evidence_closed:${selectedGraphNode.key}`);
+  }
+
+  function handleEvidenceDrawerKeyDown(event: KeyboardEvent<HTMLElement>) {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      closeEvidenceDrawer();
+      return;
+    }
+    if (event.key !== "Tab") return;
+
+    const focusable = drawerFocusableElements(evidenceDrawerRef.current);
+    if (focusable.length === 0) {
+      event.preventDefault();
+      evidenceDrawerRef.current?.focus({ preventScroll: true });
+      return;
+    }
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    const active = document.activeElement;
+    if (event.shiftKey && active === first) {
+      event.preventDefault();
+      last.focus({ preventScroll: true });
+    } else if (!event.shiftKey && active === last) {
+      event.preventDefault();
+      first.focus({ preventScroll: true });
+    }
   }
 
   function handleNodeKeyDown(event: KeyboardEvent<SVGGElement>, nextSelected: GraphRenderNode) {
@@ -2262,6 +2318,55 @@ export default function Home() {
   useEffect(() => {
     void hydrateModelContext(undefined, "initial_hydration");
   }, []);
+
+  useEffect(() => {
+    const shell = document.querySelector<HTMLElement>('[data-testid="workspace-shell"]');
+    const drawer = document.querySelector<HTMLElement>('[data-testid="evidence-detail-drawer"]');
+    if (!shell) return;
+
+    const backgroundSiblings = Array.from(shell.children).filter(
+      (child) => child !== drawer && (!drawer || !child.contains(drawer))
+    );
+    if (evidenceDrawerOpen) {
+      for (const child of backgroundSiblings) {
+        const element = child as HTMLElement & { inert?: boolean };
+        element.inert = true;
+        element.setAttribute("inert", "");
+        element.setAttribute("aria-hidden", "true");
+      }
+      return () => {
+        for (const child of backgroundSiblings) {
+          const element = child as HTMLElement & { inert?: boolean };
+          element.inert = false;
+          element.removeAttribute("inert");
+          element.removeAttribute("aria-hidden");
+        }
+      };
+    }
+
+    for (const child of backgroundSiblings) {
+      const element = child as HTMLElement & { inert?: boolean };
+      element.inert = false;
+      element.removeAttribute("inert");
+      element.removeAttribute("aria-hidden");
+    }
+  }, [evidenceDrawerOpen]);
+
+  useEffect(() => {
+    if (!evidenceDrawerOpen) return;
+    const frame = window.requestAnimationFrame(() => {
+      evidenceDrawerCloseRef.current?.focus({ preventScroll: true });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [evidenceDrawerOpen]);
+
+  useEffect(() => {
+    if (previousEvidenceDrawerOpen.current && !evidenceDrawerOpen) {
+      evidenceDrawerTriggerRef.current?.focus({ preventScroll: true });
+      evidenceDrawerTriggerRef.current = null;
+    }
+    previousEvidenceDrawerOpen.current = evidenceDrawerOpen;
+  }, [evidenceDrawerOpen]);
 
   useEffect(() => {
     if (!stateReady) return;
@@ -3601,6 +3706,97 @@ export default function Home() {
           </span>
         </div>
       </aside>
+
+      {evidenceDrawerOpen ? (
+        <div className="evidenceDrawerLayer" data-testid="evidence-drawer-layer">
+          <aside
+            aria-describedby="evidence-drawer-summary"
+            aria-labelledby="evidence-drawer-title"
+            aria-modal="true"
+            className="evidenceDrawer"
+            data-focus-trap="active"
+            data-restore-focus-target="node-action-evidence"
+            data-testid="evidence-detail-drawer"
+            onKeyDown={handleEvidenceDrawerKeyDown}
+            ref={evidenceDrawerRef}
+            role="dialog"
+            tabIndex={-1}
+          >
+            <header className="evidenceDrawerHeader">
+              <div>
+                <p className="eyebrow">Evidence detail</p>
+                <h2 id="evidence-drawer-title">{selectedGraphNode.label}</h2>
+              </div>
+              <button
+                aria-label="关闭证据详情"
+                data-testid="close-evidence-drawer"
+                onClick={closeEvidenceDrawer}
+                ref={evidenceDrawerCloseRef}
+                type="button"
+              >
+                <X size={18} aria-hidden="true" />
+              </button>
+            </header>
+            <p id="evidence-drawer-summary" className="drawerStatus">
+              {productionEvidenceSyncMode} / {productionEvidenceSyncReason} /{" "}
+              {productionEvidenceDetail?.evidence_count ?? 0} sources
+            </p>
+            <dl className="drawerEvidenceMeta" data-testid="evidence-drawer-contract">
+              <div>
+                <dt>Object</dt>
+                <dd>
+                  {productionEvidenceDetail?.object_id ||
+                    productionScoreTargetId ||
+                    productionSampleCandidate?.id ||
+                    selectedGraphNode.key}
+                </dd>
+              </div>
+              <div>
+                <dt>Endpoint</dt>
+                <dd>{productionEvidenceEndpoint || "local-fixture"}</dd>
+              </div>
+              <div>
+                <dt>Documents</dt>
+                <dd>{productionEvidenceDetail?.source_document_count ?? 0}</dd>
+              </div>
+            </dl>
+            <ol className="drawerEvidenceList" data-testid="evidence-drawer-snippets">
+              {(productionEvidenceDetail?.evidence ?? []).slice(0, 5).map((item, index) => (
+                <li data-testid={`evidence-drawer-snippet-${index}`} key={item.evidence_id}>
+                  <strong>{item.title ?? item.publisher ?? item.source_document_id}</strong>
+                  <span>{item.role}</span>
+                  <small>{item.snippet.text ?? item.support_excerpt ?? "snippet-missing"}</small>
+                </li>
+              ))}
+              {(productionEvidenceDetail?.evidence ?? []).length === 0 ? (
+                <li data-testid="evidence-drawer-empty">
+                  <strong>Evidence pending</strong>
+                  <span>{productionEvidenceSyncMode}</span>
+                  <small>{productionEvidenceSyncReason}</small>
+                </li>
+              ) : null}
+            </ol>
+            <div className="evidenceDrawerActions">
+              <button
+                data-testid="refresh-evidence-drawer"
+                onClick={() =>
+                  void hydrateProductionData(
+                    "drawer_refresh",
+                    productionEvidenceDetail?.object_id ||
+                      productionScoreTargetId ||
+                      productionSampleCandidate?.id ||
+                      null
+                  )
+                }
+                type="button"
+              >
+                <FileSearch size={16} aria-hidden="true" />
+                <span>刷新证据</span>
+              </button>
+            </div>
+          </aside>
+        </div>
+      ) : null}
     </main>
     </WorkspaceContextProvider>
   );
