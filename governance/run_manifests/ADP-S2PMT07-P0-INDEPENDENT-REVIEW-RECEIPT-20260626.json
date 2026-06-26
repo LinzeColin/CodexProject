@@ -17,7 +17,12 @@
     "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A002-20260627.json",
     "arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_RESTORE_ATOMIC_REPLACEMENT_A002.md",
     "governance/run_manifests/ADP-S2PMT02-RESTORE-ATOMIC-REPLACEMENT-A002-20260627.json",
-    "arxiv-daily-push/用户中心/恢复原子替换扫描.md"
+    "arxiv-daily-push/用户中心/恢复原子替换扫描.md",
+    "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A003-20260627.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_OUTBOX_DELIVERY_A003.md",
+    "governance/run_manifests/ADP-S2PMT03-OUTBOX-DELIVERY-A003-20260627.json",
+    "arxiv-daily-push/用户中心/事务发件箱与消息ID扫描.md",
+    "arxiv-daily-push/tests/test_stage2_lease_fencing.py"
   ],
   "final_acceptance_bundle_present": false,
   "forbidden_side_effects": {
@@ -74,12 +79,16 @@
     },
     {
       "evidence_refs": [
-        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_LEASE_FENCING.md",
-        "governance/run_manifests/ADP-S2PMT03-LEASE-FENCING-20260626.json"
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_OUTBOX_DELIVERY_A003.md",
+        "governance/run_manifests/ADP-S2PMT03-OUTBOX-DELIVERY-A003-20260627.json",
+        "arxiv-daily-push/用户中心/事务发件箱与消息ID扫描.md",
+        "arxiv-daily-push/tests/test_stage2_lease_fencing.py"
       ],
       "finding_id": "A-003",
-      "fix_task": "S2PMT03",
+      "fix_task": "S2PMT03-OUTBOX-DELIVERY-A003",
+      "independent_reviewer_decision_still_required": "Verify stable same-revision Message-ID, changed revision rekeying, one outbox claim under 100 attempts, SMTP accepted-before-commit fail-closed behavior, provider-ref finalization without resend, and no exactly-once claim.",
       "preliminary_review_state": "evidence_located_independent_review_required",
+      "receipt_state": "refreshed current evidence located; closure not claimed",
       "reviewer_decision_required": "Verify transactional outbox, sender lease, reconciliation, idempotent Message-ID, and at-least-once semantics; exactly-once delivery is not claimed.",
       "severity": "P0"
     },
@@ -152,18 +161,20 @@
     "independent_final_signoff_missing",
     "independent_final_command_execution_missing"
   ],
-  "previous_refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A001-20260627.json",
+  "previous_refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A002-20260627.json",
   "project_id": "arxiv-daily-push",
-  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A002-20260627.json",
+  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A003-20260627.json",
   "refresh_manifests": [
     "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B007-B008-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A001-20260627.json",
-    "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A002-20260627.json"
+    "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A002-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A003-20260627.json"
   ],
-  "refreshed_at": "2026-06-27T08:34:18+10:00",
+  "refreshed_at": "2026-06-27T09:28:57+10:00",
   "refreshed_findings": [
     "A-001",
     "A-002",
+    "A-003",
     "B-007",
     "B-008"
   ],

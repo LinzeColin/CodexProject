@@ -6,15 +6,18 @@ import unittest
 
 from arxiv_daily_push.stage2_lease_fencing import (
     LocalLeaseClaimRepository,
+    LocalOutboxClaimRepository,
     apply_fenced_state_transition,
     build_lease_fencing_report,
     build_m4_cycle_watermark,
+    build_outbox_delivery_a003_report,
     build_outbox_message,
     claim_leased_item,
     claim_outbox_message,
     decide_watchdog_stale_lock_recovery,
     reconcile_smtp_accept_crash,
     validate_lease_fencing_report,
+    validate_outbox_delivery_a003_report,
 )
 
 
@@ -127,6 +130,42 @@ class Stage2LeaseFencingTests(unittest.TestCase):
         self.assertEqual(claimed["status"], "pass")
         self.assertEqual(claimed["message"]["status"], "CLAIMED")
         self.assertEqual(blocked_second_sender["status"], "blocked")
+
+    def test_outbox_claim_allows_only_one_of_100_concurrent_senders(self) -> None:
+        claimant_count = 100
+        message = build_outbox_message(
+            cycle_id="2026-07-02",
+            product_id="M1",
+            recipient="linzezhang35@gmail.com",
+            content_revision_id="rev-1",
+            body="body",
+            generated_at="2026-07-02T06:00:00+10:00",
+        )
+        repo = LocalOutboxClaimRepository(message)
+        barrier = threading.Barrier(claimant_count + 1)
+
+        def claim(index: int) -> dict[str, object]:
+            barrier.wait(timeout=5)
+            return repo.claim(owner_id=f"sender-{index:03d}", expected_row_version=0, now_ms=1000 + index)
+
+        with ThreadPoolExecutor(max_workers=claimant_count) as executor:
+            futures = [executor.submit(claim, index) for index in range(claimant_count)]
+            barrier.wait(timeout=5)
+            results = [future.result(timeout=5) for future in futures]
+
+        passed = [result for result in results if result["status"] == "pass"]
+        blocked = [result for result in results if result["status"] == "blocked"]
+
+        self.assertEqual(len(passed), 1)
+        self.assertEqual(len(blocked), claimant_count - 1)
+        self.assertEqual(passed[0]["affected_rows"], 1)
+        self.assertEqual(repo.snapshot()["status"], "CLAIMED")
+        self.assertEqual(repo.snapshot()["row_version"], 1)
+        self.assertEqual(repo.snapshot()["send_attempts"], 1)
+        self.assertEqual(len(repo.events()), claimant_count)
+        self.assertEqual(sum(1 for event in repo.events() if event["affected_rows"] == 1), 1)
+        self.assertTrue(all(result["affected_rows"] == 0 for result in blocked))
+        self.assertTrue(all("row_version compare-and-swap failed" in result["blocking_reasons"] for result in blocked))
 
     def test_smtp_accept_crash_window_requires_provider_ref_before_resolution(self) -> None:
         message = build_outbox_message(
@@ -300,6 +339,34 @@ class Stage2LeaseFencingTests(unittest.TestCase):
         self.assertFalse(report["queue_mutation_allowed"])
         self.assertTrue(report["gates"]["watchdog_stale_lock_recovery"])
         self.assertEqual(validate_lease_fencing_report(report), [])
+
+    def test_outbox_delivery_a003_report_passes_without_exactly_once_or_smtp(self) -> None:
+        report = build_outbox_delivery_a003_report(generated_at="2026-07-02T06:00:00+10:00")
+
+        self.assertEqual(report["status"], "pass")
+        self.assertEqual(report["finding_id"], "A-003")
+        self.assertEqual(report["delivery_semantics"], "at_least_once_with_idempotent_message_id")
+        self.assertFalse(report["exactly_once_claimed"])
+        self.assertFalse(report["real_smtp_sent"])
+        self.assertFalse(report["scheduler_enabled"])
+        self.assertFalse(report["source_adapter_changed"])
+        self.assertEqual(report["claim_contention"]["claim_attempts"], 100)
+        self.assertEqual(report["claim_contention"]["passed_claims"], 1)
+        self.assertEqual(report["claim_contention"]["blocked_claims"], 99)
+        self.assertTrue(report["probes"]["message_identity_same_revision"])
+        self.assertTrue(report["probes"]["message_identity_revision_change"])
+        self.assertTrue(report["gates"]["provider_accept_finalizes_without_resend"])
+        self.assertEqual(validate_outbox_delivery_a003_report(report), [])
+
+    def test_outbox_delivery_a003_report_blocks_exactly_once_or_missing_gate(self) -> None:
+        report = build_outbox_delivery_a003_report(generated_at="2026-07-02T06:00:00+10:00")
+        report["exactly_once_claimed"] = True
+        report["gates"]["single_outbox_claim_under_contention"] = False
+
+        errors = validate_outbox_delivery_a003_report(report)
+
+        self.assertIn("S2PMT03 A-003 report must not claim exactly-once delivery", errors)
+        self.assertIn("passing S2PMT03 A-003 report requires all gates true", errors)
 
 
 if __name__ == "__main__":
