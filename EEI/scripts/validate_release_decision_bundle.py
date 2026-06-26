@@ -93,6 +93,23 @@ EXACT_SIGNED_COVERAGE_REJECTION_PREFIXES = (
     "production_owner_signoffs reference unknown relationship candidates",
     "production_owner_signoffs missing relationship candidates",
 )
+INTAKE_VALIDATION_POLICY = {
+    "template_only_counts_as_clearance": False,
+    "signed_intake_required_for_a202_closure": True,
+    "signed_intake_must_cover_all_candidate_source_anchors": True,
+    "signed_intake_must_include_counter_evidence_review": True,
+    "signed_intake_counts_as_release_ready": False,
+    "a209_24h_operator_soak_required_separately": True,
+    "a210_brand_clearance_required_separately": True,
+}
+INTAKE_NON_CLAIMS = [
+    "This template is not source-license approval.",
+    "This template is not passage-level relationship approval.",
+    "This template is not production owner approval.",
+    "This template is not legal release clearance.",
+    "This template does not publish relationship facts or graph edges.",
+    "This template does not close A202, A209, A210 or release-manager activation.",
+]
 
 
 def utc_now() -> str:
@@ -357,23 +374,8 @@ def build_intake_template(
             "signed_at": "",
             "signature": "",
         },
-        "validation_policy": {
-            "template_only_counts_as_clearance": False,
-            "signed_intake_required_for_a202_closure": True,
-            "signed_intake_must_cover_all_candidate_source_anchors": True,
-            "signed_intake_must_include_counter_evidence_review": True,
-            "signed_intake_counts_as_release_ready": False,
-            "a209_24h_operator_soak_required_separately": True,
-            "a210_brand_clearance_required_separately": True,
-        },
-        "non_claims": [
-            "This template is not source-license approval.",
-            "This template is not passage-level relationship approval.",
-            "This template is not production owner approval.",
-            "This template is not legal release clearance.",
-            "This template does not publish relationship facts or graph edges.",
-            "This template does not close A202, A209, A210 or release-manager activation.",
-        ],
+        "validation_policy": dict(INTAKE_VALIDATION_POLICY),
+        "non_claims": list(INTAKE_NON_CLAIMS),
     }
 
 
@@ -703,6 +705,8 @@ def validate_signed_intake_bundle(
         "source_files",
         "decision_scope",
         "candidate_source_anchor_requirements",
+        "validation_policy",
+        "non_claims",
     ):
         if payload.get(key) != expected_template.get(key):
             raise ValueError(f"A202 signed intake field drift: {key}")

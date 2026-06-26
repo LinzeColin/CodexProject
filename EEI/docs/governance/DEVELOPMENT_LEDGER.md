@@ -2161,6 +2161,20 @@ Status: LOCAL FULL VERIFIED; A209 STILL IN PROGRESS; 24H SOAK AND WATCHDOG RUNNI
 - Risks: A209 can still fail before 288 windows; A202/A210/A026/A027 remain external evidence blockers; release gate can be misread if heartbeat/template/fixture evidence is treated as clearance.
 - Rollback: revert the T1303 MVP release-gate preflight files and governance rows, regenerate release artifacts, and preserve live A209 checkpoint/log files.
 
+## EVENT-20260626-018 - T1301/A202 signed-intake policy drift hardening
+
+- Timestamp: `2026-06-26T17:44:43+10:00`
+- Base commit: `df69b8f1a96319ad721d153c8c88800164779604`
+- Scope: hardened A202 signed-intake validation so `validation_policy` and `non_claims` cannot be changed by a future signed operator intake to imply release readiness.
+- Files changed: `scripts/validate_release_decision_bundle.py`, `tests/unit/test_release_decision_bundle.py`, `CHANGELOG.md`, `docs/phase/MVP_DEVELOPMENT_RECORD.md`, governance ledger/events/version records.
+- Acceptance IDs: `A202`.
+- Model changes: no scoring formula, extraction model, model weight, threshold, graph query, API schema, database schema or frontend behavior changed.
+- Parameter changes: no active model parameter value changed; the existing A202 signed-input integrity contract is stricter.
+- Test results: target A202 unit tests PASS `19/19`; focused ruff PASS; release decision bundle validate PASS; A202 signed-intake preflight validate PASS; Task Pack validation PASS.
+- A209 status: not modified by this event; isolated rerun remains a background gate and still requires `288/288` zero-failure evidence before promotion/finalization.
+- Risks: A202 still depends on real operator-supplied source/license/passage/owner/legal evidence; future signed bundles must keep fail-closed policy text unchanged.
+- Rollback: revert the validator/test patch plus this governance record and rerun A202 contract validators.
+
 ## Reconstructed Development Events
 
 - `EVENT-RECON-20260619-001`: Task Pack v4.2.0 catalog baseline reconstructed from legacy files and validators.

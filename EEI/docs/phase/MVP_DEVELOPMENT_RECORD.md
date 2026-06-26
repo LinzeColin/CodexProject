@@ -6616,3 +6616,36 @@ Status: LOCAL VALIDATED; A072 FRONTEND CONTRACT DONE; PRODUCTION SIGNAL INGESTIO
 ### Rollback
 
 - Revert `apps/web/src/app/page.tsx`, `apps/web/src/app/workspace-context.tsx`, `apps/web/src/app/globals.css`, `tests/e2e/home.spec.ts`, `artifacts/tests/a072/t504_strategic_signal_panel_contract.json`, A072 catalog/status rows and companion governance records.
+
+## 2026-06-26 - T1301/A202 signed-intake policy drift hardening
+
+Status: LOCAL FOCUSED VALIDATED; A202 STILL IN PROGRESS; RELEASE GATES STILL BLOCKED
+
+### Scope
+
+- Hardened `scripts/validate_release_decision_bundle.py` so a future signed A202 operator intake must keep the template-bound `validation_policy` and `non_claims` unchanged.
+- Added regression tests proving a signed intake cannot claim `signed_intake_counts_as_release_ready=true` or replace non-claims with release-ready language.
+- Fixed template construction to copy fail-closed policy/non-claim constants per payload, preventing validator/test mutation from leaking across generated bundles.
+
+### Acceptance Mapping
+
+- T1301 -> A202.
+- This is a signed-input integrity hardening slice only. It does not close A202.
+
+### Validation
+
+- `PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m pytest -q -p no:cacheprovider tests/unit/test_release_decision_bundle.py tests/unit/test_a202_signed_intake_preflight.py`: PASS, `19/19`.
+- `PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m ruff check scripts/validate_release_decision_bundle.py tests/unit/test_release_decision_bundle.py tests/unit/test_a202_signed_intake_preflight.py`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 .venv/bin/python scripts/validate_release_decision_bundle.py validate`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 .venv/bin/python scripts/validate_a202_signed_intake_preflight.py validate --quiet`: PASS.
+- `PYTHONDONTWRITEBYTECODE=1 .venv/bin/python scripts/validate_task_pack.py`: PASS.
+
+### Non-Claims
+
+- This does not create source-license approval, passage-level relationship approval, production owner approval, legal clearance, relationship publication, A202 closure or MVP release readiness.
+- A209 still requires a clean `288/288` zero-failure 24h operator soak and finalization.
+- A210, A026/A027 and A204/A205 release-manager activation remain separate gates.
+
+### Rollback
+
+- Revert `scripts/validate_release_decision_bundle.py`, `tests/unit/test_release_decision_bundle.py`, this record, changelog and governance event updates; rerun the A202 contract validators.

@@ -178,6 +178,30 @@ def test_signed_a202_intake_validates_but_is_not_release_ready(
     )
 
 
+def test_signed_a202_intake_rejects_release_ready_policy_claim() -> None:
+    payload = signed_a202_intake_from_template()
+    payload["validation_policy"]["signed_intake_counts_as_release_ready"] = True
+
+    with pytest.raises(
+        ValueError,
+        match="A202 signed intake field drift: validation_policy",
+    ):
+        bundle.validate_signed_intake_bundle(payload)
+
+
+def test_signed_a202_intake_rejects_non_claim_drift() -> None:
+    payload = signed_a202_intake_from_template()
+    payload["non_claims"] = [
+        "This signed intake closes A202 and release readiness."
+    ]
+
+    with pytest.raises(
+        ValueError,
+        match="A202 signed intake field drift: non_claims",
+    ):
+        bundle.validate_signed_intake_bundle(payload)
+
+
 def test_signed_a202_intake_rejects_repository_fixture_path() -> None:
     fixture_like_path = (
         bundle.ROOT / "tests/fixtures/release_decision_bundle/signed-a202-intake.json"
