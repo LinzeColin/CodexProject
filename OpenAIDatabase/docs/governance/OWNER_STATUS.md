@@ -2,13 +2,11 @@
 
 ## 1. 当前结论
 
-OpenAIDatabase 当前治理结论：实现一致性为 `PARTIAL`，方法/实证为 `UNVERIFIED` / `UNVERIFIED`，交付状态为 `FAILED`；Memory Atlas 本轮本地发布验收通过，但 Cloudflare live 部署仍被认证/环境变量阻塞，这不是生产上线声明。
+OpenAIDatabase 当前治理结论：实现一致性为 `PARTIAL`，方法/实证为 `UNVERIFIED` / `UNVERIFIED`，交付状态为 `FAILED`；这不是生产上线声明。
 
 ## 2. 本次运行改变了什么
 
-Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 或 S3PDT01 合成隐私测试误读为模型有效、安全记忆运行或可上线。
-
-本轮额外完成：`Notion 关系地图` 更名为 `数据导图` 并改为框架导图；主线快照刷新；Codex 自动更新计划记录为每周一/五 03:00；本地 release/visual/acceptance/Cloudflare preflight/unit tests 通过。未完成：Cloudflare Pages live upload、Access challenge、allowed-user load 和 `/memory_atlas.json` 线上抓取验证。
+Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。
 
 ## 3. 为什么重要
 
@@ -33,19 +31,19 @@ OpenAIDatabase remains FAILED for delivery readiness and cannot claim safe memor
 
 ## 7. 下一行动、责任角色和验收证据
 
-- next_task_id: `TASK-OAI-D-002`
+- next_task_id: `TASK-OAI-B-001`
 - responsible_role: `privacy_owner + product_owner`
-- acceptance_ids: `ACC-OAI-D-002`
-- unblock_condition: Configure Wrangler login or Cloudflare API token/account/access env vars, then run live Pages upload and Access verification without committing secrets.
+- acceptance_ids: `ACC-OAI-B-001`
+- unblock_condition: Heuristic constants may be mistaken for calibrated values.
 
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `PARTIAL` (28/92 active parameters, 10/11 active formulas)
+- implementation_congruence: `PARTIAL` (28/94 active parameters, 10/11 active formulas)
 - parameter_source_quality: `PARTIAL`
 - methodological_rationale: `UNVERIFIED`
 - empirical_validation: `UNVERIFIED`
-- operational_validation: `FAILED` (local Memory Atlas release/visual/acceptance/Cloudflare preflight passed; live Cloudflare deployment and production privacy safety remain unverified)
+- operational_validation: `FAILED`
 - delivery_evidence: `FAILED`
 - evidence_freshness: `PARTIAL`
 - delivery_readiness: `FAILED`
@@ -60,9 +58,7 @@ OpenAIDatabase remains FAILED for delivery readiness and cannot claim safe memor
 
 1. remaining semantic review
 2. calibration/source evidence
-3. Cloudflare Pages live deploy is blocked by absent Wrangler authentication and absent live environment variables.
-4. privacy_owner + product_owner must provide project-specific evidence before readiness can improve.
-5. S3PDT01 uses synthetic data only and does not replace owner-approved gold-set leakage testing.
+3. privacy_owner + product_owner must provide project-specific evidence before readiness can improve.
 
 ## 11. Evidence Required To Unblock
 
@@ -82,34 +78,32 @@ OpenAIDatabase remains FAILED for delivery readiness and cannot claim safe memor
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `MEMORY-ATLAS-CLOUDFLARE-LIVE-AUTH-REQUIRED`
-- latest_remediation_task: `TASK-OAI-D-001`
-- latest_remediation_result: local release/visual/acceptance/Cloudflare preflight gates passed; live deploy blocked by authentication/env; no delivery readiness promotion
+- release_gate: `S5PB-GATE-IN-PROGRESS; MEMORY-ATLAS-CLOUDFLARE-LIVE-AUTH-REQUIRED`
 
 ## 14. Evidence Freshness
 
-- final_commit_binding: `CI_ATTESTED:governance/run_manifests/GOV-REVIEW6-FINAL-PORTFOLIO-001.json`
+- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `0`
 - commit_bound_events: `1`
 - legacy_unbound_events: `6`
-- precommit_pending_events: `0`
-- pending_or_stale_events: `7`
+- precommit_pending_events: `2`
+- pending_or_stale_events: `9`
 
 ## 15. UNKNOWN
 
-- unresolved_fact_ids: `6`
+- unresolved_fact_ids: `7`
 
 ## 16. 技术元数据
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:7ded278950b6c173d70973ec00eb0c80286b8ff28900e1ed583c31a93b4491f3`
-- snapshot_event_time: `2026-06-22T00:24:25Z`
+- source_snapshot_hash: `sha256:bbec5b8736622a8f1e07d68e21e6d78e4c05d1ac941d8664304a25c5fa98c84e`
+- snapshot_event_time: `2026-06-26T21:56:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.2.0`
-- phase/gate: `D / MEMORY-ATLAS-CLOUDFLARE-LIVE-AUTH-REQUIRED`
+- phase/gate: `D / S5PB-GATE-IN-PROGRESS; MEMORY-ATLAS-CLOUDFLARE-LIVE-AUTH-REQUIRED`
 
 ## 17. Next Unique Task
 
-- task_id: `TASK-OAI-D-002`
-- reason: Execute authorized Cloudflare Pages upload and Access verification after credentials/env are available.
+- task_id: `TASK-OAI-B-001`
+- reason: Resolve UNKNOWN calibration evidence for heuristic weights and thresholds.

@@ -4,17 +4,17 @@
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:530356704dc42bfb7daf833344320167bde1a78e4623046130ddc691d6d6f76a`
-- snapshot_event_time: `2026-06-22T00:24:25Z`
+- source_snapshot_hash: `sha256:0d38f9c46f563aea165f54162ab9b4b7dd72d00051446ba2924efea10771f778`
+- snapshot_event_time: `2026-06-24T22:05:00+10:00`
 - generator_version: `4.0.0`
-- final_commit_binding: `CI_ATTESTED:governance/run_manifests/GOV-REVIEW6-FINAL-PORTFOLIO-001.json`
+- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
 ## Current State
 
 - Project: `FIFA`
 - Path: `FIFA`
 - Product version: `0.1.0`
-- Phase/Gate: `S3PD / S3PD-FIFA-fail-closed-in-progress; GOV-SEMANTIC-FIFA-in-progress`
+- Phase/Gate: `S3PD / S3PD-GATE-IN-PROGRESS; S5PB-GATE-IN-PROGRESS`
 - Models/Formulas/Parameters total: `11 / 11 / 118`
 - Active formulas/parameters: `10 / 109`
 - Machine checked formulas/parameters: `10 / 92`
@@ -35,17 +35,10 @@
 ## Delivery
 
 - Readiness: `UNVERIFIED`
-- Release gate: `S3PD-FIFA-fail-closed-in-progress; GOV-SEMANTIC-FIFA-in-progress`
-- Latest remediation task: `S3PDT02` completed with focused synthetic fail-closed evidence only
+- Release gate: `S3PD-GATE-IN-PROGRESS; S5PB-GATE-IN-PROGRESS`
 - Next executable task: `TASK-FIFA-C-001`
-- Pending/stale events: `4`
+- Pending/stale events: `5`
 - Tree-bound events: `0`
 - Commit-bound events: `5`
 - Legacy unbound events: `3`
 - Unresolved fact IDs: `6`
-
-## Latest Other8 Evidence
-
-- `S3PDT02`: raw parse failure and validation/automation gate failure now fail closed by default and do not publish recommendation JSON, Markdown report, or previous baseline success deliverables.
-- Evidence ref: `governance/stage_gates/s3pd/fifa_fail_closed_tests.log`.
-- Boundary: synthetic fixtures only; no real TAB public raw access, private My Bets snapshot, wagering action, Bet Slip mutation, owner authorization, or production delivery-readiness approval was used or implied.

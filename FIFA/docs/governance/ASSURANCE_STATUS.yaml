@@ -1,11 +1,11 @@
 project_id: "FIFA"
-as_of_event_id: "EVT-REVIEW6-FINAL-FIFA-001"
-source_snapshot_hash: "sha256:530356704dc42bfb7daf833344320167bde1a78e4623046130ddc691d6d6f76a"
+as_of_event_id: "ITER-20260624-FIFA-S3PDT02"
+source_snapshot_hash: "sha256:0d38f9c46f563aea165f54162ab9b4b7dd72d00051446ba2924efea10771f778"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
-snapshot_event_time: "2026-06-22T00:24:25Z"
+snapshot_event_time: "2026-06-24T22:05:00+10:00"
 generator_version: "4.0.0"
-final_commit_binding: "CI_ATTESTED:governance/run_manifests/GOV-REVIEW6-FINAL-PORTFOLIO-001.json"
+final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -65,12 +65,12 @@ dimensions:
     tree_bound_events: 0
     commit_bound_events: 5
     legacy_unbound_events: 3
-    precommit_pending_events: 0
+    precommit_pending_events: 1
     evidence_refs:
       - "FIFA/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "UNVERIFIED"
-  release_gate: "S3PD-FIFA-fail-closed-in-progress; GOV-SEMANTIC-FIFA-in-progress"
+  release_gate: "S3PD-GATE-IN-PROGRESS; S5PB-GATE-IN-PROGRESS"
   blocker_ids:
     - "FACT-FIFA-EMPIRICAL-EVIDENCE"
     - "FACT-FIFA-IMPLEMENTATION-PARAMETER-REVIEW"

@@ -6,7 +6,7 @@ whkmSalary 当前治理结论：实现一致性为 `PARTIAL`，方法/实证为 
 
 ## 2. 本次运行改变了什么
 
-Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。S3PAT01 只把结算、开票、回款工作日低于 1 的输入改为显式拒绝；S3PAT02 只把权重单一来源和键/非负/总和校验落到代码中；S3PAT03 只把金额输出舍入到分的技术口径显式化。S4PCT02 只把代码入口整理为 `src/whkm_salary/` + 根目录兼容 wrapper，并新增结构合同；这些都不代表工资政策、权重依据、税务或舍入法规已获批准。
+Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。
 
 ## 3. 为什么重要
 
@@ -58,9 +58,7 @@ whkmSalary remains FAILED and must not be used for production payroll.
 
 1. policy source evidence
 2. jurisdiction/effective date evidence
-3. zero-day work item business meaning and approved exception handling
-4. weight policy source and total-weight approval evidence
-5. payroll_owner + legal_or_policy_owner + product_owner must provide project-specific evidence before readiness can improve.
+3. payroll_owner + legal_or_policy_owner + product_owner must provide project-specific evidence before readiness can improve.
 
 ## 11. Evidence Required To Unblock
 
@@ -76,24 +74,20 @@ whkmSalary remains FAILED and must not be used for production payroll.
 - total_parameters: `80`
 - active_parameters: `80`
 - active_values_changed_by_this_view: `0`
-- S3PAT01 technical boundary: workday inputs below 1 are rejected in code/UI; this is not a payroll policy approval.
-- S3PAT02 technical boundary: weight keys, non-negative finite values, and total 1.0 are enforced from the single code source; this is not a weight policy approval.
-- S3PAT03 technical boundary: money outputs are rounded to cents with Decimal ROUND_HALF_UP; this is not statutory payroll/tax rounding approval.
-- S4PCT02 structure boundary: runtime code lives under `src/whkm_salary/`, root files are compatibility wrappers, and `config/` is structure-only; active salary values are unchanged.
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S3PA-GATE-owner-blocked`
+- release_gate: `S4PC-GATE-in-progress`
 
 ## 14. Evidence Freshness
 
-- final_commit_binding: `CI_ATTESTED:governance/run_manifests/GOV-REVIEW6-FINAL-PORTFOLIO-001.json`
-- tree_bound_events: `0`
+- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+- tree_bound_events: `4`
 - commit_bound_events: `1`
 - legacy_unbound_events: `4`
 - precommit_pending_events: `0`
-- pending_or_stale_events: `4`
+- pending_or_stale_events: `8`
 
 ## 15. UNKNOWN
 
@@ -103,13 +97,13 @@ whkmSalary remains FAILED and must not be used for production payroll.
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:b190230ef658988d8c88a0d5f6e1d3d4c388c3d60ee185a96f7dbf2bbcf64359`
-- snapshot_event_time: `2026-06-22T00:24:25Z`
+- source_snapshot_hash: `sha256:e50caa7ad2aec3d44f5b788fd0d357ace57d7fff8fd4aee20f85cc583c08b094`
+- snapshot_event_time: `2026-06-25T00:00:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.0.0`
-- phase/gate: `S4PC / S4PC-GATE-in-progress`; delivery remains `S3PA-GATE-owner-blocked`
+- phase/gate: `S4PC / S4PC-GATE-in-progress`
 
 ## 17. Next Unique Task
 
 - task_id: `TASK-WHKM-B-001`
-- reason: Resolve salary policy source, jurisdiction, effective date, tax basis, zero-day business meaning, weight policy approval, and rounding policy evidence.
+- reason: Resolve salary policy source, jurisdiction, effective date, tax basis, boundary behavior, and rounding policy evidence.

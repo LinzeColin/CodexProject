@@ -2,11 +2,11 @@
 
 ## 1. 当前结论
 
-EEI 当前治理结论：实现一致性为 `VERIFIED`，方法/实证为 `UNVERIFIED` / `PARTIAL`，交付状态为 `FAILED`；A209 24h 证据仍未完成，isolated rerun 正在后台运行；这不是生产上线声明。
+EEI 当前治理结论：实现一致性为 `VERIFIED`，方法/实证为 `UNVERIFIED` / `PARTIAL`，交付状态为 `FAILED`；这不是生产上线声明。
 
 ## 2. 本次运行改变了什么
 
-Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，并明确 A209 failed evidence / isolated rerun 只是不闭合的运行证据，避免把 `MACHINE_VERIFIED` 或 partial soak 误读为模型有效或可上线。
+Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。
 
 ## 3. 为什么重要
 
@@ -31,10 +31,10 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 ## 7. 下一行动、责任角色和验收证据
 
-- next_task_id: `TASK-T1307`
+- next_task_id: `TASK-T1301`
 - responsible_role: `product_owner + data_owner + risk_owner`
-- acceptance_ids: `ACC-A209`
-- unblock_condition: Complete the isolated 24h operator soak with `288/288` PASS windows, `0` failed windows, preserve/promote the checkpoint evidence, and run `scripts/validate_operator_soak_evidence.py validate --require-release-ready`.
+- acceptance_ids: `ACC-A202`
+- unblock_condition: Run `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check scripts/load_curated_ingestion_anchors.py scripts/check_database_schema.py tests/integration/test_database_migrations.py` and attach the listed evidence refs.
 
 ## 8. 九层 Assurance 状态
 
@@ -82,12 +82,12 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 ## 14. Evidence Freshness
 
-- final_commit_binding: `PENDING:064caf7f32e4ff612fb95d4b15f24944fd9da0c6; Project Governance #690 failed changed-only companion validation and is being repaired`
+- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `0`
 - commit_bound_events: `18`
 - legacy_unbound_events: `19`
-- precommit_pending_events: `79`
-- pending_or_stale_events: `100`
+- precommit_pending_events: `82`
+- pending_or_stale_events: `103`
 
 ## 15. UNKNOWN
 
@@ -95,9 +95,9 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 ## 16. 技术元数据
 
-- source_base_commit: `058c792f8376312842784533016d8716f9177dae`
+- source_base_commit: `12df22b6347fd881d42545afe387ac9e41e56fb4`
 - source_tree_hash: `00e27599461403192b998e8f9a3f7f0e769e5d8f`
-- source_snapshot_hash: `sha256:7c54a3c5bccbba28955e4bbf5c06815c44996965b66c98fe91c7f1069d328342`
+- source_snapshot_hash: `sha256:c1ac83658310a4704bb9924c2ce78f5e63627d4593bcbc3ee40d5d9ca2bb0b3e`
 - snapshot_event_time: `2026-06-26T09:18:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.1.0`
@@ -105,5 +105,5 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 ## 17. Next Unique Task
 
-- task_id: `TASK-T1307`
-- reason: Complete and validate the isolated A209 24h operator soak without treating partial or failed evidence as release-ready
+- task_id: `TASK-T1301`
+- reason: Implement real data ingestion, entity resolution and evidence chain for the Golden Vertical

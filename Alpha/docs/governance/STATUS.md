@@ -4,10 +4,10 @@
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:ccc4c719f6239884bb0a1cfcdb22864b65a8d1dd7b2ee27f2d30763eb8b953f5`
-- snapshot_event_time: `2026-06-22T00:24:25Z`
+- source_snapshot_hash: `sha256:29f122fad6497014bb26f65ef7488255d0735cb560e92fa1359a98a0db415737`
+- snapshot_event_time: `2026-06-24T00:00:00+10:00`
 - generator_version: `4.0.0`
-- final_commit_binding: `CI_ATTESTED:governance/run_manifests/GOV-REVIEW6-FINAL-PORTFOLIO-001.json`
+- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
 ## Current State
 
@@ -37,33 +37,8 @@
 - Readiness: `FAILED`
 - Release gate: `S3PB-GATE-complete-technical`
 - Next executable task: `TASK-ALPHA-B-001`
-- Pending/stale events: `5`
-- Tree-bound events: `0`
+- Pending/stale events: `8`
+- Tree-bound events: `3`
 - Commit-bound events: `1`
 - Legacy unbound events: `5`
 - Unresolved fact IDs: `5`
-
-## S3PBT01 Atomic Storage Update
-
-- Scope: ApprovalQueue and PaperBroker persisted JSON storage only.
-- Result: threaded and Windows cross-process smoke passed for concurrent queue enqueue and persisted broker submit.
-- Atomicity: simulated `os.replace` failure preserves existing queue/broker JSON and removes temporary files.
-- Local pytest: blocked by missing `pytest`; repository tests were added but not executed in this environment.
-- Not covered: AutoPaperAgent cancellation, start/stop PID cleanup, force termination, write-after-stop, broker paper API, or live trading readiness.
-
-## S3PBT02 Runtime Lifecycle Update
-
-- Scope: AutoPaperAgent stop truthfulness and dashboard start/stop PID lifecycle.
-- Result: `stop()` drains the current cycle before reporting `stopped`; timeout reports `stop_timeout` with `task_running=true`.
-- Scripts: start/stop scripts validate stale PID files, write PID atomically, escalate TERM to KILL after timeout, and preserve PID files if a process remains active.
-- Shell portability: `.gitattributes` pins `Alpha/scripts/*.sh` to LF so bash syntax checks remain stable under Windows `core.autocrlf=true`.
-- Local pytest: blocked by missing `pytest`; runtime/lifecycle tests were added but not executed by pytest in this environment.
-## S3PBT03 Shutdown Fault-Injection Update
-
-- Scope: disk replace failure, forced writer termination, stop-after-stopped writes, and stale-PID process reuse.
-- Result: S3PBT03 fault-injection unittest passed 5 tests without pytest.
-- Atomicity: injected replace failure and forced termination before replace both preserve the previous valid JSON target.
-- Runtime stop: a write-producing loop makes no further writes after `stop()` returns `stopped` and a wait window elapses.
-- Scripts: start/stop scripts now require active PID command identity to match the Alpha uvicorn dashboard before trusting or terminating a PID.
-- Local pytest: blocked by missing `pytest`; repository tests were added but not executed by pytest in this environment.
-- Still not covered: real uvicorn termination in this Windows workspace, production database durability, broker paper integration, production validation, or live trading readiness.
