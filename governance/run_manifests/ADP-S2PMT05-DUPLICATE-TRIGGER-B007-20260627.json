@@ -1,0 +1,155 @@
+{
+  "schema_version": 1,
+  "manifest_id": "ADP-S2PMT05-DUPLICATE-TRIGGER-B007-20260627",
+  "project_id": "arxiv-daily-push",
+  "generated_at": "2026-06-27T02:13:32+10:00",
+  "actor": "Codex",
+  "base_commit": "821632a50624ffc370d9360e227a65db6f5d3261",
+  "task_id": "S2PMT05-DUPLICATE-TRIGGER-B007",
+  "task_ids": [
+    "S2PMT05-DUPLICATE-TRIGGER-B007",
+    "S2PMT05",
+    "B-007",
+    "ACC-S2PMT05-STRESS-E2E"
+  ],
+  "phase": "S2PM",
+  "acceptance_id": "ACC-S2PMT05-STRESS-E2E",
+  "inherited_findings_targeted": [
+    "B-007"
+  ],
+  "inherited_v7_1_open_p0_findings": 8,
+  "inherited_v7_1_open_p1_findings": 37,
+  "inherited_p0_p1_closed": false,
+  "stage2_integrated_production_accepted": false,
+  "production_acceptance_claimed": false,
+  "result": "local_validation_passed_pending_main_push",
+  "report_status": "pass",
+  "report_hash": "f2aae1359cd7497e4a1962f2731a8dd99cea0a99a748cf742b394acfbf70cfb7",
+  "model_ids_changed": [
+    "MOD-ADP-098"
+  ],
+  "formula_ids_changed": [
+    "FORM-ADP-100"
+  ],
+  "parameter_ids_changed": [
+    "PARAM-ADP-812",
+    "PARAM-ADP-814"
+  ],
+  "duplicate_trigger_race": {
+    "status": "pass",
+    "cycle_id": "2026-07-04",
+    "actor_sources": [
+      "github_schedule",
+      "local_launchd",
+      "manual_retry",
+      "restart_catchup"
+    ],
+    "mail_products": [
+      "M1",
+      "M2",
+      "M3",
+      "M4"
+    ],
+    "trigger_count_per_product": 100,
+    "attempted_revisions": 400,
+    "active_revisions": 4,
+    "blocked_duplicate_attempts": 396,
+    "duplicate_active_revisions": 0,
+    "blocking_reason": "MAIL_KEY_ALREADY_CLAIMED",
+    "checks": {
+      "trigger_count_at_least_100": true,
+      "actor_sources_covered": true,
+      "mail_products_covered": true,
+      "one_active_revision_per_product": true,
+      "blocked_duplicate_attempts_conserved": true,
+      "blocked_attempts_have_reason_codes": true,
+      "lease_fencing_receipts_present": true,
+      "no_scheduler_side_effects": true
+    },
+    "negative_controls": [
+      "duplicate active revision blocks B-007",
+      "weak actor-source coverage blocks B-007"
+    ]
+  },
+  "files_changed": [
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py",
+    "arxiv-daily-push/tests/test_stage2_stress_e2e.py",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "scripts/lean_governance.py",
+    "arxiv-daily-push/docs/governance/project.yaml",
+    "arxiv-daily-push/docs/governance/events.jsonl",
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/AGENTS.md",
+    "arxiv-daily-push/docs/governance/DELIVERY_PLAN.md",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/governance/MODEL_SPEC.md",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_DUPLICATE_TRIGGER_B007.md",
+    "governance/run_manifests/ADP-S2PMT05-DUPLICATE-TRIGGER-B007-20260627.json"
+  ],
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_DUPLICATE_TRIGGER_B007.md",
+    "governance/run_manifests/ADP-S2PMT05-DUPLICATE-TRIGGER-B007-20260627.json",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py",
+    "arxiv-daily-push/tests/test_stage2_stress_e2e.py"
+  ],
+  "tests_run": [
+    "python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py arxiv-daily-push/tests/test_stage2_stress_e2e.py scripts/lean_governance.py",
+    "python3 -m unittest arxiv-daily-push/tests/test_stage2_stress_e2e.py -q",
+    "python3 -m unittest arxiv-daily-push/tests/test_user_center_candidate_pool.py arxiv-daily-push/tests/test_owner_controls.py -q",
+    "python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2",
+    "validate_project_governance.py --project arxiv-daily-push",
+    "lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "validate_governance_sync.py --changed-only --semantic --base-ref origin/main",
+    "lean_governance.py check-render --project arxiv-daily-push",
+    "git diff --check",
+    "YAML/JSON/JSONL/CSV parse over changed and untracked structured files",
+    "production-side-effect forbidden scan over changed and untracked files"
+  ],
+  "test_results": [
+    "py_compile PASS",
+    "focused S2PMT05 tests: 18 OK",
+    "source/board user-center root gate regression: 14 OK",
+    "full arxiv-daily-push unittest: 545 OK",
+    "V7.2 validator: PASS",
+    "ADP project governance: 0 errors / 0 warnings",
+    "changed-only governance semantic: 0 errors / 0 warnings",
+    "governance sync validator: 0 errors / 0 warnings",
+    "lean check-render: drift_count 0 / reference_issue_count 0",
+    "YAML/JSON/JSONL/CSV parse: OK",
+    "git diff --check: PASS",
+    "production-side-effect forbidden scan: OK"
+  ],
+  "production_boundary": {
+    "formal_production_inclusion": false,
+    "full_replay_executed": false,
+    "large_replay_executed": false,
+    "live_source_fetch_executed": false,
+    "mail_production_code_changed": false,
+    "production_restore_executed": false,
+    "production_schedule_enabled": false,
+    "public_schema_changed": false,
+    "queue_mutation_allowed": false,
+    "queue_schema_changed": false,
+    "ranking_algorithm_changed": false,
+    "real_release_uploaded": false,
+    "real_smtp_sent": false,
+    "release_changed": false,
+    "scheduler_changed": false,
+    "smtp_changed": false,
+    "source_adapter_changed": false,
+    "current_pointer_changed": false,
+    "v7_1_baseline_changed": false,
+    "v7_2_contract_files_changed": false
+  },
+  "risks": [
+    "B-007 local evidence must not be interpreted as live scheduler readiness, inherited P0/P1 closure, S2PMT07 pass, or production readiness.",
+    "S2PLT04, final bundle, and S2PMT07 independent review remain blocked."
+  ],
+  "rollback": "Revert S2PMT05 B-007 code/tests, FORM-ADP-100 and MOD-ADP-098 semantic refresh, phase record, manifest, traceability/delivery/event records, generated status refresh, and this manifest; no runtime production state was changed."
+}

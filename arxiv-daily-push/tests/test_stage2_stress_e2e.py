@@ -31,6 +31,7 @@ from arxiv_daily_push.stage2_stress_e2e import (
     evaluate_35_day_e2e_bundle,
     evaluate_backpressure_policy,
     evaluate_capacity_baseline_model,
+    evaluate_dual_scheduler_race,
     evaluate_dst_clock_policy,
     evaluate_fault_injection_matrix,
     evaluate_load_stress_spike_soak,
@@ -92,10 +93,40 @@ class Stage2StressE2ETests(unittest.TestCase):
         self.assertEqual(race["status"], "pass")
         self.assertFalse(race["scheduler_installed"])
         self.assertFalse(race["scheduler_enabled"])
+        self.assertEqual(set(race["actor_sources"]), {"github_schedule", "local_launchd", "manual_retry", "restart_catchup"})
         self.assertEqual(race["attempted_revisions"], 400)
         self.assertEqual(race["blocked_race_attempts"], 396)
         self.assertEqual(race["duplicate_active_revisions"], 0)
         self.assertEqual([row["product_id"] for row in race["active_revisions"]], list(S2PMT05_REQUIRED_MAIL_PRODUCTS))
+        self.assertTrue(race["checks"]["trigger_count_at_least_100"])
+        self.assertTrue(race["checks"]["actor_sources_covered"])
+        self.assertTrue(race["checks"]["blocked_duplicate_attempts_conserved"])
+        self.assertTrue(race["checks"]["blocked_attempts_have_reason_codes"])
+        self.assertTrue(race["checks"]["lease_fencing_receipts_present"])
+        self.assertTrue(all(row["blocking_reason"] == "MAIL_KEY_ALREADY_CLAIMED" for row in race["blocked_attempts"]))
+        self.assertTrue(all(row["fencing_token"] for row in race["active_revisions"]))
+
+    def test_dual_scheduler_race_blocks_duplicate_active_revision_and_weak_actor_coverage(self) -> None:
+        race = simulate_dual_scheduler_race(cycle_id="2026-07-04", trigger_count=100)
+        duplicated = dict(race)
+        duplicated["active_revisions"] = [dict(row) for row in race["active_revisions"]]
+        duplicated["active_revisions"].append({**duplicated["active_revisions"][0], "fencing_token": "duplicate-fencing"})
+        duplicated["duplicate_active_revisions"] = 1
+
+        duplicate_eval = evaluate_dual_scheduler_race(duplicated)
+
+        self.assertEqual(duplicate_eval["status"], "blocked")
+        self.assertFalse(duplicate_eval["checks"]["one_active_revision_per_product"])
+        self.assertFalse(duplicate_eval["checks"]["blocked_duplicate_attempts_conserved"])
+
+        weak_actors = simulate_dual_scheduler_race(
+            cycle_id="2026-07-04",
+            trigger_count=100,
+            actor_sources=("local_launchd",),
+        )
+
+        self.assertEqual(weak_actors["status"], "blocked")
+        self.assertFalse(weak_actors["checks"]["actor_sources_covered"])
 
     def test_smtp_crash_window_blocks_resend_without_provider_reference(self) -> None:
         crash = simulate_smtp_crash_window(generated_at="2026-07-04T06:00:00+10:00")

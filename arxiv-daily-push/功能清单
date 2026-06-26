@@ -12,7 +12,7 @@
 - blockers: `none`
 - next_gate: `S2PC-GATE-V7-2-REVALIDATION`
 - next_unique_task: `S2PCT02 Science main-journal metadata-only no-send shadow evidence (planned)`
-- evidence_ref_count: `24`
+- evidence_ref_count: `25`
 - roadmap_test_command_count: `10`
 - roadmap_gate_count: `5`
 - evidence_status: `EXTRACTED`
@@ -88,6 +88,7 @@
 | EVID-ADP-S2PBT01-REAL-REPLAY-SHADOW | manifest | governance/run_manifests/ADP-S2PBT01-REAL-REPLAY-SHADOW-EVIDENCE-20260624.json | EXTRACTED |
 | EVID-ADP-S2PCT01-NATURE | manifest | governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json | EXTRACTED |
 | EVID-ADP-S2PMT04-B005 | manifest | governance/run_manifests/ADP-S2PMT04-CACHE-LOW-DISK-B005-20260626.json | EXTRACTED |
+| EVID-ADP-S2PMT05-B007 | manifest | governance/run_manifests/ADP-S2PMT05-DUPLICATE-TRIGGER-B007-20260627.json | EXTRACTED |
 | EVID-ADP-S2PMT05-B006 | manifest | governance/run_manifests/ADP-S2PMT05-CAPACITY-BASELINE-B006-20260627.json | EXTRACTED |
 | EVID-ADP-S2PMT05-B009 | manifest | governance/run_manifests/ADP-S2PMT05-FAULT-INJECTION-B009-20260627.json | EXTRACTED |
 | EVID-ADP-S2PMT05-B010 | manifest | governance/run_manifests/ADP-S2PMT05-TIME-POLICY-B010-20260627.json | EXTRACTED |
