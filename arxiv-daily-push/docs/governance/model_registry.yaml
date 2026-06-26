@@ -5471,3 +5471,37 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PLT02-LIVE-2D-PRECHECK-20260626.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_LIVE_2D_PRECHECK.md"
+
+  -
+    model_id: "MOD-ADP-105"
+    name: "Owner center GitHub entry governance model"
+    purpose: "Record the rule that ADP owner-facing status, mail, queue, review, action, and ROI summaries use GitHub-rendered shallow user-center Markdown as the primary human-readable surface while local .adp runtime files remain evidence sources only."
+    owner: "arxiv-daily-push"
+    status: "active"
+    assumption_ids:
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-107"
+    parameter_ids:
+      - "PARAM-ADP-893"
+      - "PARAM-ADP-894"
+      - "PARAM-ADP-895"
+      - "PARAM-ADP-896"
+    inputs:
+      - "owner UX scope correction"
+      - "PR #240 draft path review"
+      - "ADP project AGENTS rule"
+    outputs:
+      - "owner primary GitHub surface rule"
+      - "shallow user-center entry requirement"
+      - "local runtime evidence-only policy"
+      - "sent/blocked/queued summary requirement"
+    code_refs:
+      - "arxiv-daily-push/AGENTS.md"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "NOT_APPLICABLE"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_OWNER_CENTER_ENTRY_RULE.md"
+      - "governance/run_manifests/ADP-OWNER-CENTER-ENTRY-RULE-20260626.json"

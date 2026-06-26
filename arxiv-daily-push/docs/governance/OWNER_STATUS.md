@@ -39,7 +39,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (875/875 active parameters, 106/106 active formulas)
+- implementation_congruence: `VERIFIED` (879/879 active parameters, 107/107 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `VERIFIED`
 - empirical_validation: `VERIFIED`
@@ -68,11 +68,11 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 12. Model Formula Parameter Change
 
-- model_count: `104`
-- total_formulas: `106`
-- active_formulas: `106`
-- total_parameters: `892`
-- active_parameters: `875`
+- model_count: `105`
+- total_formulas: `107`
+- active_formulas: `107`
+- total_parameters: `896`
+- active_parameters: `879`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
@@ -82,12 +82,12 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 14. Evidence Freshness
 
-- final_commit_binding: `CI_ATTESTED:369b04d4bf6b4d5aa2a5be44513a83bf04fed3e2 PR-239 Project Governance 28221547506 success; Stage 1 bootstrap 28221543007 success; real 30-day backfill 28221543022 success; live all-ArXiv dry-run 28221543004 success`
+- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `0`
 - commit_bound_events: `3`
-- legacy_unbound_events: `119`
+- legacy_unbound_events: `120`
 - precommit_pending_events: `40`
-- pending_or_stale_events: `158`
+- pending_or_stale_events: `159`
 
 ## 15. UNKNOWN
 
@@ -97,7 +97,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:3bbadbcd959c7035ceb97b9b3b8abbb017e232fa65dec62ee1f0ea19e59a3bf9`
+- source_snapshot_hash: `sha256:f0525836e64f22bb62ec0aa8f210cecf38d9a908833d0902a2bddf064f86af40`
 - snapshot_event_time: `2026-06-27T00:30:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`

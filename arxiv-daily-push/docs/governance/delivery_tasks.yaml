@@ -2372,3 +2372,21 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "OWNER-CENTER-ENTRY-RULE"
+    phase: "S2PI/S2PM"
+    objective: "Record the owner-facing entry rule that GitHub-rendered shallow user-center Markdown is the primary human-readable surface for ADP status, mail, queue, review, action, and ROI summaries."
+    scope: "Project AGENTS rule, model/formula/parameter registration, traceability row, phase record, run manifest, delivery/event records, and generated status refresh."
+    non_scope: "No PR #240 owner-page migration, no SMTP send or replay, no scheduler install or enablement, no Release, no production restore, no public schema change, no DB migration, no production queue mutation, no ranking change, no source adapter change, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no inherited P0/P1 closure, no S2PLT02 acceptance, no integrated production acceptance, and no daily-operation enablement."
+    status: "completed"
+    dependencies: ["S2PIT01", "S2PMT06", "EMAIL_LEARNING_V1"]
+    required_files: ["arxiv-daily-push/AGENTS.md", "arxiv-daily-push/docs/phase_records/PHASE_OWNER_CENTER_ENTRY_RULE.md", "governance/run_manifests/ADP-OWNER-CENTER-ENTRY-RULE-20260626.json"]
+    acceptance_ids: ["ACC-S2PIT01-USER-CENTER", "ACC-S2PMT06-UX"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_owner_entry_rule_gov PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_owner_entry_rule_changed PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_owner_entry_rule_render PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/lean_governance.py check-render --project arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_owner_entry_rule_v72 PYTHONPATH=arxiv-daily-push/src python3 arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2", "JSONL/YAML/manifest parse", "git diff --check"]
+    test_results: ["V7.2 validator PASS", "ADP project governance 0 errors / 0 warnings", "changed-only governance semantic 0 errors / 0 warnings", "root project governance after changed-only 0 errors / 0 warnings", "lean check-render drift_count 0 reference_issue_count 0", "JSONL/YAML/manifest parse OK", "git diff --check PASS"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_OWNER_CENTER_ENTRY_RULE.md", "governance/run_manifests/ADP-OWNER-CENTER-ENTRY-RULE-20260626.json", "arxiv-daily-push/AGENTS.md"]
+    risk: "This rule can be misread as completion of the actual owner-page migration; PR #240 still needs revision to use the shallow GitHub user-center entry."
+    rollback: "Revert AGENTS rule, model/formula/parameter registrations, traceability/delivery/event records, phase record, manifest, and rendered governance sync; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

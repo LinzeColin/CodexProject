@@ -6016,3 +6016,49 @@ formulas:
     evidence_hash: "sha256:e5366499d0842e8b4d26fc30e5c2814e4c4f462222641b7ea6b174a2534603f0"
     last_verified_commit: "PRECOMMIT"
     verified_at: "2026-06-26T19:00:00+10:00"
+
+  -
+    formula_id: "FORM-ADP-107"
+    model_id: "MOD-ADP-105"
+    assumption_ids:
+      - "ASM-ADP-035"
+    status: "active"
+    expression: "Owner-facing ADP status and mail UX is compliant only when GitHub-rendered Markdown is the primary human-readable surface; a shallow arxiv-daily-push/用户中心/ entry exists or is the required target; local .adp runtime files, SMTP reports, run JSON, and candidate queues are treated as evidence sources only; and owner pages directly summarize sent, blocked/not sent, and queued states without requiring local absolute-path navigation."
+    variables:
+      -
+        name: "owner_primary_surface"
+        data_type: "string"
+        unit: "surface"
+        input_domain: "GitHub-rendered Markdown"
+      -
+        name: "owner_primary_entry"
+        data_type: "string"
+        unit: "repository path"
+        input_domain: "arxiv-daily-push/用户中心/README.md and adjacent pages"
+      -
+        name: "local_runtime_files_policy"
+        data_type: "string"
+        unit: "evidence policy"
+        input_domain: ".adp, SMTP reports, run JSON, candidate queue JSON"
+      -
+        name: "mail_status_summary_states"
+        data_type: "list[str]"
+        unit: "owner-visible states"
+        input_domain: "sent, blocked/not sent, queued"
+    constraints: "This rule must not be implemented by sending SMTP, replaying email, enabling scheduler, uploading Release, mutating queues, changing public schema or DB, changing source adapters or ranking, changing CURRENT, changing V7.1/V7.2 contracts, closing inherited P0/P1, accepting S2PLT02, enabling DAILY_OPERATION, or claiming integrated production acceptance."
+    missing_policy: "If owner-facing pages require local absolute-path navigation or only exist as deep docs/owner pages without a shallow GitHub user-center entry, owner UX remains incomplete for this rule."
+    output_range: "governance rule recorded / owner page migration still required"
+    code_refs:
+      - "arxiv-daily-push/AGENTS.md"
+    test_refs:
+      - "NOT_APPLICABLE"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_OWNER_CENTER_ENTRY_RULE.md"
+      - "governance/run_manifests/ADP-OWNER-CENTER-ENTRY-RULE-20260626.json"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    implementation_refs:
+      - "arxiv-daily-push/AGENTS.md"
+    implementation_fingerprint: "PENDING_PR_COMMIT"
+    evidence_hash: "PENDING_PR_COMMIT"
+    last_verified_commit: "PRECOMMIT"
+    verified_at: "2026-06-26T16:55:00+10:00"

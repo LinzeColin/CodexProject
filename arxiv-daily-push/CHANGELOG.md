@@ -484,3 +484,4 @@
 - Added S2PLT01 replay payload contract evidence without replay execution or production side effects.
 - Added S2PMT03 A-016 lesson revision identity hardening with stable `lesson_key`, immutable content/evidence-sensitive `lesson_revision_id`, and no production side effects.
 - Added S2PLT02 fail-closed live 2-day readiness precheck for the 2 natural day / 8 M1-M4 real-email requirement without starting live operation, SMTP, scheduler, Release, schema, DB, queue, source adapter, ranking, CURRENT, or V7 contract side effects.
+- Added owner-center entry governance rule requiring shallow GitHub-rendered `用户中心` pages as the primary owner-readable surface, with local `.adp` runtime files treated as evidence only.
