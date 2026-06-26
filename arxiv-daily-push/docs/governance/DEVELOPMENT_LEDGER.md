@@ -3150,3 +3150,20 @@ None for this new project baseline.
 - Rollback: Revert S2PLT02 precheck code, tests, governance registrations, phase record, manifest, traceability/delivery/event records, rendered governance sync, and this ledger entry; no runtime production state was changed.
 - Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_LIVE_2D_PRECHECK.md`; `governance/run_manifests/ADP-S2PLT02-LIVE-2D-PRECHECK-20260626.json`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.
 - Next step: Commit, push, and open PR for S2PLT02 live 2-day readiness precheck.
+
+### `ITER-20260626-ADP-S2PLT02-MAIN-MERGE-ATTESTATION`
+
+- Timestamp: `2026-06-26T16:20:00+10:00`
+- Actor: Codex
+- Fact level: EXTRACTED from PR #237 merge metadata, workflow run status, post-merge local validation, and S2PLT02 precheck records.
+- Status: main merge attested, no production side effects.
+- Branch/PR: `codex/adp-s2plt02-live-2d-precheck-20260626`, PR #237.
+- Task IDs: `S2PLT02-MAIN-MERGE-ATTESTATION`, `S2PLT02`; acceptance `ACC-S2PLT02-2D` remains not accepted.
+- Goal: Record that S2PLT02 live 2-day readiness precheck PR #237 was marked ready, CI passed, and merged to main at `018c50a8e2fd181e137f099accafe05673422946`.
+- CI evidence: Project Governance runs `28220851343` and `28220717836` success; Stage 1 bootstrap `28220717865` success; live all-arXiv cloud dry-run `28220717840` success; real 30-day backfill `28220717829` success.
+- Post-merge validation: V7.2 validator PASS; ADP project governance 0 errors / 0 warnings; lean check-render drift_count 0 reference_issue_count 0; focused final-gate tests 11 OK; full arxiv-daily-push unittest 487 OK; YAML/JSON/JSONL/CSV parse OK.
+- Decisions: This attestation does not accept `S2PLT02`, start live two-day operation, send SMTP, enable scheduler, upload Release assets, change public schema/DB/production queues, change source adapters or ranking, edit CURRENT or V7.1/V7.2 contracts, close inherited P0/P1, enable DAILY_OPERATION, or claim integrated production acceptance.
+- Remaining risks: S2PLT02 readiness precheck can be misread as live operation or acceptance; S2PLT01 acceptance, real scheduler/SMTP proof, 8 real M1-M4 emails, M4 watermark proof, inherited P0/P1 zero state, S2PLT03, S2PLT04, final bundle, and S2PMT07 remain blocked.
+- Rollback: Revert this attestation event, manifest, generated status refresh, and ledger entry; no runtime production state was changed.
+- Evidence: `governance/run_manifests/ADP-S2PLT02-MAIN-MERGE-ATTESTATION-20260626.json`; `https://github.com/LinzeColin/CodexProject/pull/237`.
+- Next step: Continue only with no-production evidence work until S2PLT02 acceptance prerequisites and final S2PMT07 production stop gates are proven.

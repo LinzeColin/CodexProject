@@ -6,7 +6,7 @@ arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTI
 
 ## 2. 本次运行改变了什么
 
-本次新增 `S2PLT02` 本地 no-production live 2-day readiness precheck：它记录 S2PLT01 acceptance 未证明、连续 2 个真实自然日未证明、8 封真实 M1-M4 邮件未证明、真实 scheduler/SMTP 证据未证明、M4 watermark 未证明、inherited V7.1 P0=8/P1=37 仍 open；当前仍为 blocked，不启动真实两日运行，不发送 SMTP，不启用 scheduler，不接受 `ACC-S2PLT02-2D`。
+Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。
 
 ## 3. 为什么重要
 
@@ -21,7 +21,7 @@ arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTI
 
 ## 5. 默认建议
 
-- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PLT04 integration candidate precheck as local no-production blocked evidence only, keep S2PLT04 blocked until S2PLT01/S2PLT02/S2PLT03, inherited P0/P1, final bundle, and S2PMT07 final review are proven, and require S2PMT07 independent review before any inherited P0/P1 closure or production acceptance claim.
+- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PLT02 live 2-day readiness precheck as local no-production blocked evidence only, keep S2PLT02 blocked until S2PLT01 acceptance, inherited P0/P1 zero state, real scheduler/SMTP proof, 8 real M1-M4 emails, M4 watermark proof, and final production stop gates close, and require S2PMT07 independent final review before any inherited P0/P1 closure or production acceptance claim.
 - estimated_effort: P0/P1; contract hash, AGENTS, 三基文件, validator/test, no production side effect
 - estimated_cost_or_resource: local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner
 
@@ -31,10 +31,10 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 7. 下一行动、责任角色和验收证据
 
-- next_task_id: `S2PLT03_EVIDENCE_AFTER_S2PLT02_ACCEPTANCE`
+- next_task_id: `S2PLT01`
 - responsible_role: `content_owner + product_owner`
-- acceptance_ids: `ACC-S2PLT02-2D`
-- unblock_condition: S2PLT02 live 2-day precheck can be misread as S2PLT02 acceptance or live operation; S2PLT01 acceptance, real two-day scheduler/SMTP evidence, 8 M1-M4 emails, M4 watermark proof, inherited P0/P1, S2PLT03, final acceptance bundle, S2PMT07 independent final review, and final production stop gates still block S2PLT04 and integrated production acceptance.
+- acceptance_ids: `ACC-S2PLT01-30D`
+- unblock_condition: S2PLT01 replay payload execution package can be misread as S2PLT01 acceptance; inherited P0/P1, S2PLT04, S2PMT07 final independent review, and final production stop gates still block S2PLT01 and integrated production acceptance.
 
 ## 8. 九层 Assurance 状态
 
@@ -52,7 +52,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 | Decision Item | Current Recommendation | Choice A | Choice B | Choice C | No Decision Consequence |
 |---|---|---|---|---|---|
-| `DEC-ADP-V7-2-CURRENT-20260624` | A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PLT02 live 2-day readiness precheck as local no-production blocked evidence only, and require S2PMT07 independent final review before inherited P0/P1 closure. | 继续补齐 S2PLT02/S2PLT04 blockers 的 no-production evidence。 | 暂停所有 Stage2 任务等待真实 scheduler/SMTP 生产启用；会不必要阻塞无冲突证据工作。 | 越过 S2PMT07 直接声称 P0/P1 关闭或启用 scheduler/SMTP；禁止。 | Stage2 agents may overstate local evidence as production acceptance, increasing contract drift. |
+| `DEC-ADP-V7-2-CURRENT-20260624` | A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PLT02 live 2-day readiness precheck as local no-production blocked evidence only, keep S2PLT02 blocked until S2PLT01 acceptance, inherited P0/P1 zero state, real scheduler/SMTP proof, 8 real M1-M4 emails, M4 watermark proof, and final production stop gates close, and require S2PMT07 independent final review before any inherited P0/P1 closure or production acceptance claim. | 继续 S2PLT02 no-production readiness evidence work under V7.2 boundaries。 | 暂停所有 Stage2 任务等待真实 scheduler/SMTP 生产启用；会不必要阻塞无冲突证据工作。 | 越过 S2PMT07 直接声称 P0/P1 关闭或启用 scheduler/SMTP；禁止。 | Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract drift. |
 
 ## 10. Current Blockers
 
@@ -63,14 +63,14 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 11. Evidence Required To Unblock
 
 - evidence_required: S2PMT07 independent final review, inherited P0/P1 closure proof, S2PLT04 completion, governance validator, lean render proof, and no-production-side-effect evidence
-- principal_risks: 将 S2PLT04 integration candidate precheck 误读为 S2PLT04 completion 或 S2_INTEGRATION_CANDIDATE_READY、绕过 S2PMT07 独立复审或生产 stop gate
+- principal_risks: 将 S2PLT02 live 2-day readiness precheck 误读为 S2PLT02 acceptance 或真实两日运行、绕过 S2PMT07 独立复审或生产 stop gate
 - generated_from_refs: `arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml, arxiv-daily-push/docs/governance/delivery_tasks.yaml`
 
 ## 12. Model Formula Parameter Change
 
 - model_count: `104`
 - total_formulas: `106`
-- active_formulas: `105`
+- active_formulas: `106`
 - total_parameters: `892`
 - active_parameters: `875`
 - active_values_changed_by_this_view: `0`
@@ -82,12 +82,12 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 14. Evidence Freshness
 
-- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+- final_commit_binding: `CI_ATTESTED:018c50a8e2fd181e137f099accafe05673422946 PR-237 Project Governance 28220851343 success; Project Governance 28220717836 success; Stage 1 bootstrap 28220717865 success; live all-ArXiv dry-run 28220717840 success; real 30-day backfill 28220717829 success`
 - tree_bound_events: `0`
-- commit_bound_events: `1`
-- legacy_unbound_events: `111`
-- precommit_pending_events: `41`
-- pending_or_stale_events: `151`
+- commit_bound_events: `2`
+- legacy_unbound_events: `118`
+- precommit_pending_events: `40`
+- pending_or_stale_events: `157`
 
 ## 15. UNKNOWN
 
@@ -97,13 +97,13 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:4ca48457b1a8b9168b36cfdfe3967d0342a90f0e279ba2bcfab522573b5c7cb7`
-- snapshot_event_time: `2026-06-26T21:30:00+10:00`
+- source_snapshot_hash: `sha256:4a649ef17a0c68bc17e6afafcd61a7babad485a470db835aad7902f3d3dfee5b`
+- snapshot_event_time: `2026-06-27T00:30:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
 - phase/gate: `S2PL / S2PLT02_LIVE_2D_PRECHECK_BLOCKED_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 
-- task_id: `S2PLT03_EVIDENCE_AFTER_S2PLT02_ACCEPTANCE`
-- reason: Keep S2PLT02 and S2PLT04 fail-closed until S2PLT01 acceptance, real two-day scheduler/SMTP evidence, 8 real M1-M4 emails, M4 watermark proof, S2PLT03 completion, inherited P0/P1 zero state, final bundle, S2PMT07 independent final review, and final production stop gates are proven under V7.2 blocked boundaries.
+- task_id: `S2PLT01`
+- reason: Keep S2PLT01 fail-closed until inherited P0/P1, full replay, 120 mail previews, D1-D4 terminal source states, and independent review are proven under V7.2 and S2PMT07 blocked boundaries.
