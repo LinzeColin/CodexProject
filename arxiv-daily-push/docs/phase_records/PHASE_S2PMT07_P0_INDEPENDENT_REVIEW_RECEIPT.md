@@ -9,6 +9,7 @@
 - status: `review_receipt_ready_no_closure_claim`
 - V7.2 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - created_at: `2026-06-26 18:45:19 Australia/Sydney`
+- refreshed_at: `2026-06-27 02:43:09 Australia/Sydney`
 
 This receipt organizes the inherited V7.1 P0 evidence set for later independent
 review. It is not an independent reviewer signoff, does not close any P0/P1
@@ -40,8 +41,8 @@ pointer change, no V7.1/V7.2 contract-file edit, no `DAILY_OPERATION`, and no
 | `A-004` | `S2PMT01` | `PHASE_S2PMT01_SECURITY_BOUNDARY.md`, `ADP-S2PMT01-SECURITY-BOUNDARY-20260626.json` | evidence located; closure not claimed | Verify typed frontstage statement rules bind facts/inferences/actions to evidence and block unsupported foreground claims. |
 | `A-005` | `S2PMT01` | `PHASE_S2PMT01_SECURITY_BOUNDARY.md`, `ADP-S2PMT01-SECURITY-BOUNDARY-20260626.json` | evidence located; closure not claimed | Verify `UNTRUSTED_DATA` isolation, tool boundary, safe rendering, and prompt-injection refusal behavior. |
 | `B-001` | `S2PMT04` | `PHASE_S2PMT04_LIFECYCLE_CACHE.md`, `PHASE_S2PMT04_SCHEDULER_TEMPLATE_A013.md`, `ADP-S2PMT04-LIFECYCLE-CACHE-20260626.json` | local evidence located; closure not claimed | Decide whether current local scheduler/lifecycle rehearsal is sufficient, or whether a real target install/run/uninstall proof is still required. |
-| `B-007` | `S2PMT05` | `PHASE_S2PMT05_STRESS_E2E.md`, `ADP-S2PMT05-STRESS-E2E-20260626.json` | local evidence located; closure not claimed | Decide whether current multiprocess race evidence is sufficient, or whether multi-host/real scheduler duplicate-trigger proof is still required. |
-| `B-008` | `S2PMT05` | `PHASE_S2PMT05_STRESS_E2E.md`, `ADP-S2PMT05-STRESS-E2E-20260626.json` | local evidence located; closure not claimed | Decide whether current fake/local SMTP crash-window evidence is sufficient, or whether runner-level fake SMTP kill/restart proof is still required. |
+| `B-007` | `S2PMT05-DUPLICATE-TRIGGER-B007` | `PHASE_S2PMT05_DUPLICATE_TRIGGER_B007.md`, `ADP-S2PMT05-DUPLICATE-TRIGGER-B007-20260627.json`, `test_stage2_stress_e2e.py` | refreshed current evidence located; closure not claimed | Verify four actor sources, M1-M4 x 100 attempts, one active revision per product, reason-coded duplicate blocks, lease/fencing receipts, and no scheduler side effects; decide whether multi-host/real scheduler duplicate-trigger proof is still required. |
+| `B-008` | `S2PMT05-SMTP-CRASH-WINDOW-B008` | `PHASE_S2PMT05_SMTP_CRASH_WINDOW_B008.md`, `ADP-S2PMT05-SMTP-CRASH-WINDOW-B008-20260627.json`, `test_stage2_stress_e2e.py` | refreshed current evidence located; closure not claimed | Verify outbox claim before SMTP acceptance, `ACCEPTED_PENDING_COMMIT`, stable idempotent `message_id`, provider accept ref finalization, blocked unsafe resend, and no real SMTP side effects; decide whether runner-level fake SMTP kill/restart proof is still required. |
 
 ## Preserved Blockers
 

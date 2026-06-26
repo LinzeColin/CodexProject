@@ -1,0 +1,136 @@
+{
+  "schema_version": 1,
+  "manifest_id": "ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B007-B008-20260627",
+  "project_id": "arxiv-daily-push",
+  "generated_at": "2026-06-27T02:43:09+10:00",
+  "actor": "Codex",
+  "base_commit": "463d50fc30fe6afc738c11cd6c8ec7d3e25eac54",
+  "task_id": "S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B007-B008",
+  "task_ids": [
+    "S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B007-B008",
+    "S2PMT07",
+    "B-007",
+    "B-008",
+    "ACC-S2PMT07-FINAL-REVIEW"
+  ],
+  "phase": "S2PM",
+  "acceptance_id": "ACC-S2PMT07-FINAL-REVIEW",
+  "contract_version": "ADP-PRODUCT-CONTRACT-V7.2",
+  "status": "completed",
+  "result": "blocked_receipt_refreshed_pending_main_push",
+  "summary": "Refreshes the S2PMT07 P0 review receipt so inherited P0 findings B-007 and B-008 point to their current dedicated local evidence records instead of the older S2PMT05 stress-E2E summary.",
+  "refreshed_findings": [
+    {
+      "finding_id": "B-007",
+      "current_task_id": "S2PMT05-DUPLICATE-TRIGGER-B007",
+      "current_evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_DUPLICATE_TRIGGER_B007.md",
+        "governance/run_manifests/ADP-S2PMT05-DUPLICATE-TRIGGER-B007-20260627.json",
+        "arxiv-daily-push/tests/test_stage2_stress_e2e.py"
+      ],
+      "obsolete_review_refs_removed": [
+        "governance/run_manifests/ADP-S2PMT05-STRESS-E2E-20260626.json"
+      ]
+    },
+    {
+      "finding_id": "B-008",
+      "current_task_id": "S2PMT05-SMTP-CRASH-WINDOW-B008",
+      "current_evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_SMTP_CRASH_WINDOW_B008.md",
+        "governance/run_manifests/ADP-S2PMT05-SMTP-CRASH-WINDOW-B008-20260627.json",
+        "arxiv-daily-push/tests/test_stage2_stress_e2e.py"
+      ],
+      "obsolete_review_refs_removed": [
+        "governance/run_manifests/ADP-S2PMT05-STRESS-E2E-20260626.json"
+      ]
+    }
+  ],
+  "reviewer_independence_claimed": false,
+  "independent_review_signoff_present": false,
+  "independent_final_command_execution_present": false,
+  "closure_claimed": false,
+  "p0_closure_claimed": false,
+  "p1_closure_claimed": false,
+  "inherited_v7_1_open_p0_findings_before": 8,
+  "inherited_v7_1_open_p0_findings_after": 8,
+  "inherited_v7_1_open_p1_findings_before": 37,
+  "inherited_v7_1_open_p1_findings_after": 37,
+  "s2plt04_completed": false,
+  "final_acceptance_bundle_present": false,
+  "stage2_integrated_production_accepted": false,
+  "daily_operation_enabled": false,
+  "files_changed": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_INDEPENDENT_REVIEW_RECEIPT.md",
+    "governance/run_manifests/ADP-S2PMT07-P0-INDEPENDENT-REVIEW-RECEIPT-20260626.json",
+    "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B007-B008-20260627.json",
+    "arxiv-daily-push/tests/test_stage2_final_gate.py",
+    "arxiv-daily-push/docs/governance/DELIVERY_PLAN.md",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/governance/events.jsonl"
+  ],
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_INDEPENDENT_REVIEW_RECEIPT.md",
+    "governance/run_manifests/ADP-S2PMT07-P0-INDEPENDENT-REVIEW-RECEIPT-20260626.json",
+    "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B007-B008-20260627.json",
+    "arxiv-daily-push/tests/test_stage2_final_gate.py"
+  ],
+  "tests_run": [
+    "python3 -m py_compile arxiv-daily-push/tests/test_stage2_final_gate.py",
+    "python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q",
+    "python3 -m unittest arxiv-daily-push/tests/test_user_center_candidate_pool.py arxiv-daily-push/tests/test_owner_controls.py -q",
+    "python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2",
+    "validate_project_governance.py --project arxiv-daily-push",
+    "lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "validate_governance_sync.py --changed-only --semantic --base-ref origin/main",
+    "lean_governance.py check-render --project arxiv-daily-push",
+    "git diff --check",
+    "YAML/JSON/JSONL/CSV parse over changed and untracked structured files",
+    "production-side-effect forbidden scan over changed and untracked files"
+  ],
+  "test_results": [
+    "py_compile PASS",
+    "focused S2PMT07 final-gate tests: 12 OK",
+    "source/board user-center root gate regression: 14 OK",
+    "full arxiv-daily-push unittest: 547 OK",
+    "V7.2 validator: PASS",
+    "ADP project governance: 0 errors / 0 warnings",
+    "changed-only governance semantic: 0 errors / 0 warnings",
+    "governance sync validator: 0 errors / 0 warnings",
+    "lean check-render: drift_count 0 / reference_issue_count 0",
+    "YAML/JSON/JSONL/CSV parse: OK",
+    "git diff --check: PASS",
+    "production-side-effect forbidden scan: OK"
+  ],
+  "production_boundary": {
+    "formal_production_inclusion": false,
+    "full_replay_executed": false,
+    "large_replay_executed": false,
+    "live_source_fetch_executed": false,
+    "mail_production_code_changed": false,
+    "production_restore_executed": false,
+    "production_schedule_enabled": false,
+    "public_schema_changed": false,
+    "queue_mutation_allowed": false,
+    "queue_schema_changed": false,
+    "ranking_algorithm_changed": false,
+    "real_release_uploaded": false,
+    "real_smtp_sent": false,
+    "release_changed": false,
+    "scheduler_changed": false,
+    "smtp_changed": false,
+    "source_adapter_changed": false,
+    "current_pointer_changed": false,
+    "v7_1_baseline_changed": false,
+    "v7_2_contract_files_changed": false
+  },
+  "risks": [
+    "This refresh only improves independent-review routing; it is not independent signoff and does not close B-007, B-008, P0, or P1.",
+    "S2PLT04, final bundle, independent final command execution, and S2PMT07 independent review remain blocked."
+  ],
+  "rollback": "Revert the P0 review receipt refresh, regression test, run manifest, traceability/delivery/event records, and generated status refresh; no runtime production state was changed."
+}
