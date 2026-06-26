@@ -50,8 +50,9 @@ This project follows the root `AGENTS.md` and `docs/governance/STANDARD.md`.
   dual scheduler race protection, SMTP crash-window handling, ENOSPC/read-only/
   SQLITE_BUSY/corrupt-artifact fault injection, Australia/Sydney DST and clock
   skew policy, 35-day 3+1/weekly/monthly/review/action/ROI E2E count
-  conservation, backpressure/degradation, deterministic isolation, and no
-  production side effects. `S2PMT06` local owner UX evidence covers the Chinese
+  conservation, semantic/evidence-bound non-template result validity,
+  backpressure/degradation, deterministic isolation, and no production side
+  effects. `S2PMT06` local owner UX evidence covers the Chinese
   first screen, fixed navigation, status feedback states, recoverable error
   cards, safe config-change flow, append-only revision ledger, queue
   search/filter/export/drilldown, safe manual actions, feedback visibility,

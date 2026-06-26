@@ -664,6 +664,18 @@ def render_model_parameters(project_facts: dict[str, Any], roadmap: dict[str, An
                 "| 降载动作 | 低磁盘时阻断新下载、阻断可重建缓存写入、保留 durable evidence、保持 cleanup dry-run |",
                 "| 禁止动作 | 不应用删除、不删除 durable evidence、不改队列、不安装/启用 scheduler、不发送 SMTP、不上传 Release |",
                 "| 证据入口 | [PHASE_S2PMT04_CACHE_LOW_DISK_B005.md](docs/phase_records/PHASE_S2PMT04_CACHE_LOW_DISK_B005.md)；[ADP-S2PMT04-CACHE-LOW-DISK-B005-20260626.json](../governance/run_manifests/ADP-S2PMT04-CACHE-LOW-DISK-B005-20260626.json) |",
+                "",
+                "## S2PMT05 本地结果有效性门",
+                "",
+                "| 项目 | 当前口径 |",
+                "|---|---|",
+                "| 模型 | `MOD-ADP-098` / `adp-s2pmt05-stress-fault-time-e2e-v1` |",
+                "| 公式 | `FORM-ADP-100` |",
+                "| 参数 | `PARAM-ADP-813` / `S2PMT05_REQUIRED_FINDINGS`; `PARAM-ADP-814` / `S2PMT05_REQUIRED_GATES` |",
+                "| 新增门 | `result_validity_semantic_evidence` |",
+                "| B-013 判定 | 结果不能只通过结构存在性；必须同时具备语义对齐、Claim Ledger 引用、证据引用、机制/行动具体性、非模板输出差异和 unsupported P0 负例阻断 |",
+                "| 禁止动作 | 不发送 SMTP、不安装/启用 scheduler、不上传 Release、不改 schema/DB/queue/source/ranking、不关闭 P0/P1 |",
+                "| 证据入口 | [PHASE_S2PMT05_RESULT_VALIDITY_B013.md](docs/phase_records/PHASE_S2PMT05_RESULT_VALIDITY_B013.md)；[ADP-S2PMT05-RESULT-VALIDITY-B013-20260626.json](../governance/run_manifests/ADP-S2PMT05-RESULT-VALIDITY-B013-20260626.json) |",
             ]
         )
     lines.extend(["", "## 模型"])

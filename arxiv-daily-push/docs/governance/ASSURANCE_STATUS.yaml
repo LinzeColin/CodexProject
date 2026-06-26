@@ -1,6 +1,6 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260626-ADP-S2PMT04-CACHE-LOW-DISK-B005-001"
-source_snapshot_hash: "sha256:c093055fe4a1f8c1435ed74b024787209284768388653baeb1f3aa7c5dac9cd0"
+as_of_event_id: "EVENT-20260626-ADP-S2PMT05-RESULT-VALIDITY-B013-001"
+source_snapshot_hash: "sha256:a98bece82a65f98bcc2618e0820fafee145164ee89f85dee8efef1ed9b211d4f"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
 snapshot_event_time: "2026-06-27T00:30:00+10:00"
@@ -60,13 +60,13 @@ dimensions:
     fact_level: "EXTRACTED"
     tree_bound_events: 0
     commit_bound_events: 4
-    legacy_unbound_events: 130
+    legacy_unbound_events: 131
     precommit_pending_events: 40
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "VERIFIED"
-  release_gate: "S2PMT04_B005_CACHE_LOW_DISK_DEGRADATION_LOCAL_VALIDATION_NO_PRODUCTION"
+  release_gate: "S2PMT05_B013_RESULT_VALIDITY_LOCAL_VALIDATION_NO_PRODUCTION"
   blocker_ids:
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"

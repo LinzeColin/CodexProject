@@ -5145,7 +5145,7 @@ models:
   -
     model_id: "MOD-ADP-098"
     name: "S2PMT05 local stress fault time and E2E model"
-    purpose: "Validate local S2PMT05 load, stress, spike, accelerated 24h soak, dual scheduler race, SMTP crash-window, ENOSPC/EACCES/SQLITE_BUSY/corrupt-artifact fault injection, Australia/Sydney DST and clock-skew policy, 35-day 3+1/weekly/monthly/review/action/ROI E2E flow, backpressure degradation, deterministic isolation, and no production side effects under V7.2."
+    purpose: "Validate local S2PMT05 load, stress, spike, accelerated 24h soak, dual scheduler race, SMTP crash-window, ENOSPC/EACCES/SQLITE_BUSY/corrupt-artifact fault injection, Australia/Sydney DST and clock-skew policy, 35-day 3+1/weekly/monthly/review/action/ROI E2E flow, semantic/evidence-bound non-template result validity, backpressure degradation, deterministic isolation, and no production side effects under V7.2."
     owner: "arxiv-daily-push"
     status: "active"
     assumption_ids:
@@ -5175,6 +5175,7 @@ models:
       - "fault injection scenario matrix"
       - "Australia/Sydney DST and clock-skew cases"
       - "35-day local E2E fixture"
+      - "semantic/evidence/non-template result validity fixture"
       - "backpressure queue-depth fixture"
     outputs:
       - "load stress spike soak evaluation"
@@ -5183,6 +5184,7 @@ models:
       - "fault injection matrix"
       - "DST and clock-skew policy evidence"
       - "35-day E2E flow evidence"
+      - "result validity semantic evidence"
       - "backpressure degradation evidence"
       - "no production side-effect gate"
     code_refs:
@@ -5194,7 +5196,9 @@ models:
       - "arxiv-daily-push/tests/test_stage2_stress_e2e.py"
     evidence_refs:
       - "governance/run_manifests/ADP-S2PMT05-STRESS-E2E-20260626.json"
+      - "governance/run_manifests/ADP-S2PMT05-RESULT-VALIDITY-B013-20260626.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_STRESS_E2E.md"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_RESULT_VALIDITY_B013.md"
 
   -
     model_id: "MOD-ADP-099"
