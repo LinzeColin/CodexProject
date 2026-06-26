@@ -202,6 +202,19 @@ def test_signed_a202_intake_rejects_non_claim_drift() -> None:
         bundle.validate_signed_intake_bundle(payload)
 
 
+def test_signed_a202_intake_rejects_internal_review_as_public_release() -> None:
+    payload = signed_a202_intake_from_template()
+    payload["source_license_reviews"][0][
+        "source_license_status"
+    ] = "approved_for_internal_review"
+
+    with pytest.raises(
+        ValueError,
+        match="unsupported source license status: approved_for_internal_review",
+    ):
+        bundle.validate_signed_intake_bundle(payload)
+
+
 def test_signed_a202_intake_rejects_repository_fixture_path() -> None:
     fixture_like_path = (
         bundle.ROOT / "tests/fixtures/release_decision_bundle/signed-a202-intake.json"

@@ -14,7 +14,7 @@
 - Project: `EEI`
 - Path: `EEI`
 - Product version: `0.1.0`
-- Phase/Gate: `D / TASK-T1303-OPERATOR-INPUT-STATUS`
+- Phase/Gate: `D / TASK-T1301-A202-PUBLIC-SOURCE-LICENSE-BOUNDARY`
 - Models/Formulas/Parameters total: `12 / 12 / 94`
 - Active formulas/parameters: `11 / 94`
 - Machine checked formulas/parameters: `11 / 94`
@@ -35,7 +35,7 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `TASK-T1215-A200-CLEAN-ROOM-TRACKED-KIT-SYNC`
+- Release gate: `TASK-T1301-A202-PUBLIC-SOURCE-LICENSE-BOUNDARY`
 - Next executable task: `TASK-T1301`
 - Pending/stale events: `126`
 - Tree-bound events: `0`

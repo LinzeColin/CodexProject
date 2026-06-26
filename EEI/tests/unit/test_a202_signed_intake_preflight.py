@@ -185,6 +185,14 @@ def test_operator_intake_gap_packet_lists_exact_a202_missing_tasks(
         "GV-SNAPSHOT-003",
         "GV-SNAPSHOT-004",
     ]
+    assert all(
+        item["accepted_statuses"] == ["approved_for_public_release"]
+        for item in packet["source_license_review_tasks"]
+    )
+    assert all(
+        "approved_for_internal_review" not in " ".join(item["completion_criteria"])
+        for item in packet["source_license_review_tasks"]
+    )
     assert [
         item["candidate_key"]
         for item in packet["passage_level_relationship_review_tasks"]

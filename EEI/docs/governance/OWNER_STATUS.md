@@ -6,7 +6,7 @@ EEI 当前治理结论：实现一致性为 `VERIFIED`，方法/实证为 `UNVER
 
 ## 2. 本次运行改变了什么
 
-Owner 视图现在记录 T1303/A204-A205 operator input status：`artifacts/operator_inputs/operator_input_status.json` 已验证为 `WAITING_FOR_OPERATOR_INPUTS`，6 个 A202/A210/A026/A027/A209 外部输入均缺失，template copy 会被拒绝，release-manager/MVP refresh 仍被阻断。
+Owner 视图现在记录 T1301/A202 source-license 发布边界：签署的 release-decision/source-license evidence 只接受 `approved_for_public_release`，`approved_for_internal_review` 不足以支持公开关系发布或 A202 release gate closure；A202/A210/A026/A027/A209 外部输入仍缺失，release-manager/MVP refresh 仍被阻断。
 
 ## 3. 为什么重要
 
@@ -78,7 +78,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `TASK-T1303-OPERATOR-INPUT-STATUS`
+- release_gate: `TASK-T1301-A202-PUBLIC-SOURCE-LICENSE-BOUNDARY`
 
 ## 14. Evidence Freshness
 
@@ -101,9 +101,9 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - snapshot_event_time: `2026-06-27T01:17:20+10:00`
 - generator_version: `4.0.0`
 - version: `0.1.0`
-- phase/gate: `D / TASK-T1303-OPERATOR-INPUT-STATUS`
+- phase/gate: `D / TASK-T1301-A202-PUBLIC-SOURCE-LICENSE-BOUNDARY`
 
 ## 17. Next Unique Task
 
 - task_id: `TASK-T1307`
-- reason: Authorize and run a clean A209 24h operator soak after browser recovery hardening and failed-evidence preservation
+- reason: Continue background A209 clean rerun monitoring while A202/A210/A026/A027 operator inputs remain missing

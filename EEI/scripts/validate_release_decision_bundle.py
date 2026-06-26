@@ -67,7 +67,7 @@ REQUIRED_SECTIONS = {
         "signature",
     ],
 }
-SIGNED_SOURCE_LICENSE_STATUSES = {"approved_for_public_release", "approved_for_internal_review"}
+SIGNED_SOURCE_LICENSE_STATUSES = {"approved_for_public_release"}
 SIGNED_PASSAGE_DECISIONS = {"approved_for_publication"}
 SIGNED_LEGAL_CLEARANCE_STATUSES = {"CLEARED", "RISK_WAIVER_ACCEPTED"}
 SIGNED_BRAND_DECISIONS = {"CLEARED", "RISK_WAIVER_ACCEPTED"}

@@ -328,8 +328,7 @@ def build_source_license_tasks(
             "required_fields": decisions.REQUIRED_SECTIONS["source_license_reviews"],
             "accepted_statuses": sorted(decisions.SIGNED_SOURCE_LICENSE_STATUSES),
             "completion_criteria": [
-                "source_license_status is approved_for_public_release "
-                "or approved_for_internal_review",
+                "source_license_status is approved_for_public_release",
                 "allowed_use_scope explains EEI publication/review scope",
                 "evidence_uri points to the signed legal/source review record",
                 "reviewer, reviewed_at and signature are non-empty",

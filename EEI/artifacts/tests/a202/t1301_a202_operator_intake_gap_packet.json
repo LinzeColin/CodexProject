@@ -18,7 +18,7 @@
       "signature"
     ]
   },
-  "generated_at": "2026-06-26T10:55:34Z",
+  "generated_at": "2026-06-26T15:59:40Z",
   "legal_release_clearance_task": {
     "accepted_statuses": [
       "CLEARED",
@@ -218,7 +218,7 @@
     },
     "a202_signed_intake_preflight": {
       "path": "artifacts/tests/a202/t1301_a202_signed_intake_preflight.json",
-      "sha256": "05da532995047121c791a9d57f271f8cc39dc597fd65f86a424c50595f8303fe"
+      "sha256": "fbc8dac980f8f34fcee5834e2fac6a7827d453fe151eced620514cbe917e58f6"
     },
     "golden_vertical_fact_candidates": {
       "path": "data/golden_vertical_fact_candidates.json",
@@ -232,12 +232,11 @@
   "source_license_review_tasks": [
     {
       "accepted_statuses": [
-        "approved_for_internal_review",
         "approved_for_public_release"
       ],
       "anchor_id": "GV-SNAPSHOT-001",
       "completion_criteria": [
-        "source_license_status is approved_for_public_release or approved_for_internal_review",
+        "source_license_status is approved_for_public_release",
         "allowed_use_scope explains EEI publication/review scope",
         "evidence_uri points to the signed legal/source review record",
         "reviewer, reviewed_at and signature are non-empty"
@@ -259,12 +258,11 @@
     },
     {
       "accepted_statuses": [
-        "approved_for_internal_review",
         "approved_for_public_release"
       ],
       "anchor_id": "GV-SNAPSHOT-002",
       "completion_criteria": [
-        "source_license_status is approved_for_public_release or approved_for_internal_review",
+        "source_license_status is approved_for_public_release",
         "allowed_use_scope explains EEI publication/review scope",
         "evidence_uri points to the signed legal/source review record",
         "reviewer, reviewed_at and signature are non-empty"
@@ -286,12 +284,11 @@
     },
     {
       "accepted_statuses": [
-        "approved_for_internal_review",
         "approved_for_public_release"
       ],
       "anchor_id": "GV-SNAPSHOT-003",
       "completion_criteria": [
-        "source_license_status is approved_for_public_release or approved_for_internal_review",
+        "source_license_status is approved_for_public_release",
         "allowed_use_scope explains EEI publication/review scope",
         "evidence_uri points to the signed legal/source review record",
         "reviewer, reviewed_at and signature are non-empty"
@@ -313,12 +310,11 @@
     },
     {
       "accepted_statuses": [
-        "approved_for_internal_review",
         "approved_for_public_release"
       ],
       "anchor_id": "GV-SNAPSHOT-004",
       "completion_criteria": [
-        "source_license_status is approved_for_public_release or approved_for_internal_review",
+        "source_license_status is approved_for_public_release",
         "allowed_use_scope explains EEI publication/review scope",
         "evidence_uri points to the signed legal/source review record",
         "reviewer, reviewed_at and signature are non-empty"

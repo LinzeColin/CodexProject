@@ -1,5 +1,39 @@
 # MVP Development Record
 
+## 2026-06-27 - T1301/A202 public-only source-license release boundary
+
+Status: LOCAL TARGET VALIDATED; A202 STILL IN PROGRESS; RELEASE GATES STILL BLOCKED
+
+### Scope
+
+- Tightened signed A202/A210 release-decision validation so `approved_for_internal_review` cannot satisfy source-license evidence for public relationship publication.
+- Updated the A202 operator intake gap packet to show `approved_for_public_release` as the only accepted source-license status.
+- Added regression coverage for the rejected internal-review status and for the public-only operator packet guidance.
+
+### Acceptance Mapping
+
+- T1301 -> A202.
+- This is a release-boundary hardening slice only; it does not close A202.
+
+### Validation
+
+- `python -m py_compile scripts/validate_release_decision_bundle.py scripts/validate_a202_signed_intake_preflight.py tests/unit/test_release_decision_bundle.py tests/unit/test_a202_signed_intake_preflight.py`: PASS.
+- `ruff check scripts/validate_release_decision_bundle.py scripts/validate_a202_signed_intake_preflight.py tests/unit/test_release_decision_bundle.py tests/unit/test_a202_signed_intake_preflight.py`: PASS.
+- `pytest -q tests/unit/test_release_decision_bundle.py tests/unit/test_a202_signed_intake_preflight.py`: PASS `22/22`.
+- `scripts/validate_release_decision_bundle.py validate`: PASS.
+- `scripts/validate_a202_signed_intake_preflight.py validate`: PASS.
+- `scripts/validate_a202_signed_intake_preflight.py validate-packet`: PASS.
+
+### Non-Claims
+
+- This does not create real source-license approval, passage-level relationship approval, production owner approval, legal clearance, relationship publication, A202 closure or MVP release readiness.
+- A209 still requires a clean `288/288` zero-failure 24h operator soak and finalization.
+- A210, A026/A027 and A204/A205 release-manager activation remain separate gates.
+
+### Rollback
+
+- Revert the A202/A210 validator/test changes, refreshed A202 artifacts, this record and companion governance sync; regenerate release artifacts from the previous source-license policy.
+
 ## 2026-06-27 - T1303/A204-A205 operator input status manifest
 
 Status: LOCAL TARGET VALIDATED; WAITING FOR OPERATOR INPUTS; RELEASE GATES STILL BLOCKED
