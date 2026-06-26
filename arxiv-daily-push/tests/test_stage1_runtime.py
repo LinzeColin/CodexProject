@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import configparser
 import io
 import hashlib
 import json
@@ -355,6 +356,62 @@ class Stage1RuntimeTests(unittest.TestCase):
             self.assertNotIn("/bin/sh", arguments)
             self.assertNotIn("-lc", arguments)
             self.assertIn("A&amp;B;中文", template)
+            self.assertFalse(validate_stage1_runtime_report(install))
+
+    def test_linux_scheduler_template_uses_structured_unit_and_environment_file(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            project_root = root / "repo A&B;中文"
+            state_dir = root / "state A&B;中文"
+
+            install = build_scheduler_plan(
+                action="scheduler_install",
+                platform="linux",
+                project_root=project_root,
+                state_dir=state_dir,
+                generated_at="2026-07-01T05:00:00+10:00",
+            )
+
+            self.assertEqual(install["status"], "pass")
+            templates = {item["filename"]: item["content"] for item in install["templates"]}
+            service = templates["adp-stage1-tick.service"]
+            env = templates["adp-stage1.env"]
+            parser = configparser.ConfigParser(interpolation=None)
+            parser.optionxform = str
+            parser.read_string(service)
+
+            self.assertEqual(parser["Service"]["Type"], "oneshot")
+            self.assertEqual(parser["Service"]["WorkingDirectory"], f'"{project_root}"')
+            self.assertEqual(parser["Service"]["EnvironmentFile"], "%h/.config/arxiv-daily-push/adp-stage1.env")
+            self.assertIn(f'"{state_dir}"', parser["Service"]["ExecStart"])
+            self.assertIn("EnvironmentFile=", service)
+            self.assertNotIn("PYTHONPATH=arxiv-daily-push/src", parser["Service"]["ExecStart"])
+            self.assertIn(f'PYTHONPATH="{project_root / "arxiv-daily-push" / "src"}"', env)
+            self.assertIn("ADP_GENERATED_AT=2026-07-01T05:00:00+10:00", env)
+            self.assertFalse(validate_stage1_runtime_report(install))
+
+    def test_windows_scheduler_template_uses_argument_array_for_special_paths(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            state_dir = root / "state A&B;中文"
+
+            install = build_scheduler_plan(
+                action="scheduler_install",
+                platform="windows",
+                project_root=root / "repo A&B;中文",
+                state_dir=state_dir,
+                generated_at="2026-07-01T05:00:00+10:00",
+            )
+
+            self.assertEqual(install["status"], "pass")
+            script = install["templates"][0]["content"]
+            self.assertIn("$ArgumentList = @(", script)
+            self.assertIn("'--state-dir',", script)
+            self.assertIn("'" + str(state_dir).replace("'", "''") + "',", script)
+            self.assertIn("'$env:ADP_GENERATED_AT',", script)
+            self.assertIn("'--json'\n)", script)
+            self.assertIn("Join-CommandArgument $ArgumentList", script)
+            self.assertNotIn("-Argument '-m arxiv_daily_push tick", script)
             self.assertFalse(validate_stage1_runtime_report(install))
 
     def test_cli_tick_watchdog_backup_restore_and_scheduler(self) -> None:
