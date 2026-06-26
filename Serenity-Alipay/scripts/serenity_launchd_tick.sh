@@ -1,7 +1,7 @@
 #!/bin/zsh
 set -u
 
-ROOT="/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5"
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 PYTHON="/opt/anaconda3/bin/python"
 OUT="$ROOT/data/serenity_launchd.out.log"
 ERR="$ROOT/data/serenity_launchd.err.log"

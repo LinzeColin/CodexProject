@@ -59,6 +59,21 @@ rules in `docs/governance/STANDARD.md`.
   `TBD` placeholders.
 - Hotfix or rollback work requires a concrete incident ID, affected version,
   target rollback version, and evidence. Do not invent incidents.
+- Local checkout rule: `LinzeColin/CodexProject` has one canonical local working
+  checkout. On this machine it is
+  `/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject`.
+  Do not create parallel `CodexProject*`, `PFI_OS`, `EVA_OS`, or project-specific
+  shadow clones for active work. Temporary recovery copies must stay outside the
+  product root, be named as backups, and must not become app launcher targets.
+- App launcher rule: before editing, deleting, moving, or cleaning any local
+  project directory, inspect `.app` launchers, LaunchAgents, PID files, and
+  listening process cwd for affected projects. PFI, EEI, Alpha, Serenity,
+  OpenAIDatabase/Memory Atlas, and arxiv-daily-push must resolve to the
+  canonical checkout above unless a newer root contract explicitly supersedes it.
+- GitHub source-of-truth rule: persistent product changes must be committed and
+  pushed under this repository. Local `.app` packages, runtime state, caches,
+  SQLite WAL/SHM files, and temporary recovery folders are operational artifacts,
+  not alternate product roots.
 
 ## Run Modes
 

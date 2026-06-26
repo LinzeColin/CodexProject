@@ -8,6 +8,21 @@ Active Codex-related project hub for LinzeColin.
 - Lean v2 standard: [docs/governance/STANDARD.md](docs/governance/STANDARD.md)
 - Project human-entry files: `功能清单.md`, `开发记录.md`, `模型参数文件.md`
 
+## Canonical Local Root
+
+On Linze's machine, active work for this GitHub product hub must use one local
+checkout:
+
+```text
+/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject
+```
+
+Do not treat duplicate `CodexProject*`, `PFI_OS`, `EVA_OS`, or per-project
+shadow folders as product roots. Before cleanup or migration, verify `.app`
+launchers, LaunchAgents, PID files, and listening process cwd so PFI, EEI,
+Alpha, Serenity, OpenAIDatabase/Memory Atlas, and arxiv-daily-push continue to
+resolve to this checkout.
+
 ## Assurance Vocabulary
 
 - `structural_completeness`: required governance files parse and cross-reference.
