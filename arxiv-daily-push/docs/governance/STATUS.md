@@ -4,10 +4,10 @@
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:c43d591f84570ebabebdf12ce413827e5ff7ec516b74c7d49bd39fa7ea3d1da6`
+- source_snapshot_hash: `sha256:3bbadbcd959c7035ceb97b9b3b8abbb017e232fa65dec62ee1f0ea19e59a3bf9`
 - snapshot_event_time: `2026-06-27T00:30:00+10:00`
 - generator_version: `4.0.0`
-- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+- final_commit_binding: `CI_ATTESTED:369b04d4bf6b4d5aa2a5be44513a83bf04fed3e2 PR-239 Project Governance 28221547506 success; Stage 1 bootstrap 28221543007 success; real 30-day backfill 28221543022 success; live all-ArXiv dry-run 28221543004 success`
 
 ## Current State
 
@@ -50,6 +50,6 @@
 - Next executable task: `S2PLT01`
 - Pending/stale events: `158`
 - Tree-bound events: `0`
-- Commit-bound events: `2`
+- Commit-bound events: `3`
 - Legacy unbound events: `119`
 - Unresolved fact IDs: `0`
