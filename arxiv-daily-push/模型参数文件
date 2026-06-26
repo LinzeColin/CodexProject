@@ -1225,3 +1225,17 @@
 | PARAM-ADP-379 | SUPPORTED_TOP_JOURNALS | S2PCT01 supported top journals | nature | EXTRACTED from top_journal_adapter.py | EXTRACTED |
 | PARAM-ADP-380 | S2P2_QUEUE_FILENAME | S2PCT01 top-journal shadow queue filename | stage2_s2p2_top_journal_queue.json | EXTRACTED from stage2_sources.py | EXTRACTED |
 | PARAM-ADP-381 | S2P2_LEDGER_FILENAME | S2PCT01 top-journal shadow ledger filename | stage2_s2p2_top_journal_ledger.jsonl | EXTRACTED from stage2_sources.py | EXTRACTED |
+
+## 用户中心人类可读参数补充
+
+| 参数 ID | 名称 | 当前值 | 来源 | 状态 |
+|---|---|---|---|---|
+| PARAM-ADP-USER-CENTER-001 | Owner 主阅读入口 | `arxiv-daily-push/用户中心/README.md` | AGENTS owner center entry rule | EXTRACTED |
+| PARAM-ADP-USER-CENTER-002 | 一看三查入口 | `arxiv-daily-push/用户中心/一看三查.md` | V7.1/V7.2 人类可读要求 | EXTRACTED |
+| PARAM-ADP-USER-CENTER-003 | 今日已发送数量 | `2` | 2026-06-26 runtime ledger snapshot | EXTRACTED |
+| PARAM-ADP-USER-CENTER-004 | 今日未发送/阻断数量 | `0` | 2026-06-26 runtime ledger snapshot | EXTRACTED |
+| PARAM-ADP-USER-CENTER-005 | 今日真实候选队列数量 | `11` | 2026-06-26 candidate queue snapshot | EXTRACTED |
+| PARAM-ADP-USER-CENTER-006 | GitHub 内容账本总行数 | `299` | `docs/owner/CONTENT_LEDGER.csv` | EXTRACTED |
+| PARAM-ADP-USER-CENTER-007 | GitHub 已讲解/报告生成数量 | `30` | `docs/owner/CONTENT_LEDGER.csv` `explanation_state=report_generated` | EXTRACTED |
+| PARAM-ADP-USER-CENTER-008 | GitHub 内容账本仍排队数量 | `269` | `docs/owner/CONTENT_LEDGER.csv` `queue_state=queued` | EXTRACTED |
+| PARAM-ADP-USER-CENTER-009 | 复习行动 ROI 每日 GitHub 数量自动刷新 | `not_connected` | S2PJT02/S2PJT03/S2PIT04 local evidence vs user-center requirement | EXTRACTED_GAP |
