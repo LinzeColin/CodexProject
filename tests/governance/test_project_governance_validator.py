@@ -551,7 +551,13 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
 
         self.assertIn('if [ "${{ github.event_name }}" = "push" ]; then', workflow)
         self.assertIn("git rev-parse HEAD^", workflow)
-        self.assertIn("python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic", workflow)
+        self.assertIn("PYTHONDONTWRITEBYTECODE=1", workflow)
+        self.assertIn(
+            'python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref "${GOVERNANCE_BASE_REF}"',
+            workflow,
+        )
+        self.assertIn("Project Governance changed-scope failure", workflow)
+        self.assertIn("::error title=Project Governance changed-scope::", workflow)
 
     def test_review8_manifest_only_root_change_does_not_require_test_marker(self) -> None:
         sync = load_sync_module()

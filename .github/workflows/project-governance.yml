@@ -60,11 +60,28 @@ jobs:
         env:
           GOVERNANCE_BASE_REF: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before || inputs.base_ref || '' }}
         run: |
+          export PYTHONDONTWRITEBYTECODE=1
           if [ "${{ github.event_name }}" = "push" ]; then
             GOVERNANCE_BASE_REF="$(git rev-parse HEAD^)"
             export GOVERNANCE_BASE_REF
           fi
-          python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic
+          set +e
+          output="$(python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic --base-ref "${GOVERNANCE_BASE_REF}" 2>&1)"
+          status="$?"
+          printf '%s\n' "$output"
+          if [ "$status" -ne 0 ]; then
+            {
+              echo "### Project Governance changed-scope failure"
+              echo
+              echo '```text'
+              printf '%s\n' "$output" | tail -n 80
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+            summary="$(printf '%s\n' "$output" | tail -n 20 | tr '\r\n' '  ' | cut -c1-1800)"
+            summary="${summary//'%'/'%25'}"
+            echo "::error title=Project Governance changed-scope::${summary}"
+            exit "$status"
+          fi
       - name: Validate information quality
         if: github.event_name == 'workflow_dispatch' && inputs.scope == 'changed-only'
         env:
