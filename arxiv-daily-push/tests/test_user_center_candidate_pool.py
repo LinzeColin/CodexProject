@@ -19,6 +19,7 @@ CANDIDATE_POOL_PAGE = USER_CENTER / "截至今日候选池.md"
 DATA_SOURCE_PAGE = USER_CENTER / "数据源与板块健康.md"
 REPORT_PREVIEW_INDEX_PAGE = USER_CENTER / "已生成报告与邮件预览.md"
 TRACEABILITY_CHAIN_PAGE = USER_CENTER / "功能任务测试证据追踪链.md"
+RESTORE_PATH_SAFETY_PAGE = USER_CENTER / "恢复路径安全扫描.md"
 LEGACY_MAIL_SCAN_PAGE = USER_CENTER / "旧邮件标识兼容扫描.md"
 TRACEABILITY_MATRIX = ROOT / "docs" / "governance" / "TRACEABILITY_MATRIX.csv"
 MODEL_PARAMS_PAGE = ROOT / "模型参数文件"
@@ -142,6 +143,24 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertNotIn("/Users/", page)
         self.assertNotIn("file://", page)
         self.assertIn("[旧邮件标识兼容扫描](./旧邮件标识兼容扫描.md)", readme)
+
+    def test_restore_path_safety_page_exposes_a001_current_evidence(self):
+        page = RESTORE_PATH_SAFETY_PAGE.read_text(encoding="utf-8")
+        readme = (USER_CENTER / "README.md").read_text(encoding="utf-8")
+
+        self.assertTrue(page.startswith("# 恢复路径安全扫描\n"))
+        self.assertRegex(page, r"更新时间：\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} Australia/Sydney")
+        self.assertIn("P0 `A-001`", page)
+        self.assertIn("相对路径穿越 | 已阻断", page)
+        self.assertIn("绝对路径逃逸 | 已阻断", page)
+        self.assertIn("符号链接逃逸 | 已阻断", page)
+        self.assertIn("阻断时保留原目标库 | 已验证", page)
+        self.assertIn("[A-001 运行清单](../../governance/run_manifests/ADP-S2PMT02-RESTORE-PATH-SAFETY-A001-20260627.json)", page)
+        self.assertIn("[A-001 阶段记录](../docs/phase_records/PHASE_S2PMT02_RESTORE_PATH_SAFETY_A001.md)", page)
+        self.assertIn("[P0 复审 receipt](../docs/phase_records/PHASE_S2PMT07_P0_INDEPENDENT_REVIEW_RECEIPT.md)", page)
+        self.assertNotIn("/Users/", page)
+        self.assertNotIn("file://", page)
+        self.assertIn("[恢复路径安全扫描](./恢复路径安全扫描.md)", readme)
 
     def test_user_center_pages_keep_chinese_facing_labels(self):
         forbidden = (

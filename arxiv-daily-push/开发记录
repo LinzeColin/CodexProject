@@ -2,9 +2,9 @@
 
 ## 中文速读
 
-- 本轮只刷新 `S2PAT05` / C-011 的当前证据和 P1 receipt 路由：新证据指向专用旧邮件标识兼容扫描 gate 和浅层 GitHub 用户中心页面。
-- 已完成 C-011 report/validator、focused 正负例测试、旧标识扫描摘要页面、phase record、run manifests、P1 receipt JSON/Markdown 和 final-gate 回归断言。
-- 未完成项仍是 C-011 的独立复审充分性判断；本条不关闭 P1，不改邮件 runtime，不启用 SMTP、scheduler、Release、生产恢复、公共 Schema、队列变更或 Stage2 生产验收。
+- 本轮只刷新 `S2PMT02` / A-001 的当前证据和 P0 receipt 路由：新证据指向专用恢复路径安全 gate 和浅层 GitHub 用户中心页面。
+- 已完成 A-001 report/validator、真实 Stage 1 restore probes、恢复路径安全摘要页面、phase record、run manifests、P0 receipt JSON/Markdown 和 final-gate 回归断言。
+- 未完成项仍是 A-001 的独立复审充分性判断；本条不关闭 P0，不执行生产恢复，不启用 SMTP、scheduler、Release、公共 Schema、队列变更或 Stage2 生产验收。
 
 ## 摘要
 
@@ -26,6 +26,15 @@
 - roadmap_test_command_count: `10`
 - roadmap_evidence_ref_count: `21`
 - evidence_status: `EXTRACTED`
+
+## 2026-06-27 08:05:48 Australia/Sydney - S2PMT02 A-001 恢复路径安全证据刷新
+
+- 任务：`S2PMT02-RESTORE-PATH-SAFETY-A001` 与 `S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A001`。
+- 已完成：新增 `build_restore_path_safety_report` / `validate_restore_path_safety_report`，用真实 `restore_runtime_backup` 路径验证相对路径穿越、绝对路径逃逸、符号链接逃逸和非法覆盖阻断时目标库 SHA-256 保留。
+- 用户中心：新增 [恢复路径安全扫描](用户中心/恢复路径安全扫描.md)，并从 [用户中心 README](用户中心/README.md) 公开入口。
+- 治理证据：新增 [PHASE_S2PMT02_RESTORE_PATH_SAFETY_A001.md](docs/phase_records/PHASE_S2PMT02_RESTORE_PATH_SAFETY_A001.md)、[ADP-S2PMT02-RESTORE-PATH-SAFETY-A001-20260627.json](../governance/run_manifests/ADP-S2PMT02-RESTORE-PATH-SAFETY-A001-20260627.json) 和 [ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A001-20260627.json](../governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A001-20260627.json)。
+- 边界：不关闭 A-001/P0，不执行生产恢复，不启用 SMTP/scheduler/Release，不改 CURRENT/V7.1/V7.2 合同，不声明 `INTEGRATED_PRODUCTION_ACCEPTED`。
+- 验证：focused atomic recovery test 已本地 6 OK；完整验证结果将在 run manifest 最终回填。
 
 ## Roadmap
 

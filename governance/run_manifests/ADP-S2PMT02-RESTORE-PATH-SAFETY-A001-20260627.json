@@ -1,0 +1,163 @@
+{
+  "acceptance_id": "ACC-S2PMT02-ATOMIC-RECOVERY",
+  "blocking_reasons": [],
+  "change_type": "stage2_p0_a001_restore_path_safety_evidence",
+  "current_pointer_changed": false,
+  "db_migration_executed": false,
+  "evidence_refs": [
+    "arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_atomic_recovery.py",
+    "arxiv-daily-push/tests/test_stage2_atomic_recovery.py",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_RESTORE_PATH_SAFETY_A001.md"
+  ],
+  "expected_reason_observed": {
+    "absolute_path_escape": true,
+    "relative_path_traversal": true,
+    "symlink_escape": true,
+    "target_preserved_on_block": true
+  },
+  "finding_id": "A-001",
+  "gates": {
+    "absolute_path_blocked": true,
+    "no_production_side_effect": true,
+    "path_traversal_blocked": true,
+    "required_probe_coverage": true,
+    "symlink_escape_blocked": true,
+    "target_preserved_on_block": true
+  },
+  "generated_at": "2026-06-27T08:05:48+10:00",
+  "manifest_id": "ADP-S2PMT02-RESTORE-PATH-SAFETY-A001-20260627",
+  "model_id": "adp-s2pmt02-restore-path-safety-a001-v1",
+  "p0_closure_claimed": false,
+  "p1_closure_claimed": false,
+  "parent_task_id": "S2PMT02",
+  "phase": "S2PM",
+  "probe_count": 4,
+  "probes": [
+    {
+      "blocking_reasons": [
+        "backup database path traversal is not allowed"
+      ],
+      "db_migration_executed": false,
+      "observed_status": "blocked",
+      "probe_id": "relative_path_traversal",
+      "production_restore_executed": false,
+      "production_side_effects_enabled": false,
+      "public_schema_changed": false,
+      "queue_mutation_allowed": false,
+      "real_release_uploaded": false,
+      "real_scheduler_installed": false,
+      "real_smtp_sent": false,
+      "target_exists_after": false,
+      "target_sha256_preserved": false
+    },
+    {
+      "blocking_reasons": [
+        "backup database path traversal is not allowed"
+      ],
+      "db_migration_executed": false,
+      "observed_status": "blocked",
+      "probe_id": "absolute_path_escape",
+      "production_restore_executed": false,
+      "production_side_effects_enabled": false,
+      "public_schema_changed": false,
+      "queue_mutation_allowed": false,
+      "real_release_uploaded": false,
+      "real_scheduler_installed": false,
+      "real_smtp_sent": false,
+      "target_exists_after": false,
+      "target_sha256_preserved": false
+    },
+    {
+      "blocking_reasons": [
+        "backup database path escapes backup root"
+      ],
+      "db_migration_executed": false,
+      "observed_status": "blocked",
+      "probe_id": "symlink_escape",
+      "production_restore_executed": false,
+      "production_side_effects_enabled": false,
+      "public_schema_changed": false,
+      "queue_mutation_allowed": false,
+      "real_release_uploaded": false,
+      "real_scheduler_installed": false,
+      "real_smtp_sent": false,
+      "target_exists_after": false,
+      "target_sha256_preserved": false
+    },
+    {
+      "blocking_reasons": [
+        "restored database inspection failed: file is not a database"
+      ],
+      "db_migration_executed": false,
+      "observed_status": "blocked",
+      "probe_id": "target_preserved_on_block",
+      "production_restore_executed": false,
+      "production_side_effects_enabled": false,
+      "public_schema_changed": false,
+      "queue_mutation_allowed": false,
+      "real_release_uploaded": false,
+      "real_scheduler_installed": false,
+      "real_smtp_sent": false,
+      "target_exists_after": true,
+      "target_sha256_preserved": true
+    }
+  ],
+  "production_restore_executed": false,
+  "production_side_effects_enabled": false,
+  "project_id": "arxiv-daily-push",
+  "public_schema_changed": false,
+  "queue_mutation_allowed": false,
+  "real_release_uploaded": false,
+  "real_scheduler_installed": false,
+  "real_smtp_sent": false,
+  "required_probes": [
+    "relative_path_traversal",
+    "absolute_path_escape",
+    "symlink_escape",
+    "target_preserved_on_block"
+  ],
+  "restore_path_safety_hash": "sha256:ea652d5e9343b6960fff11cebdef1038da4bda644b7c3610e11ba072657a2447",
+  "result": "completed_local_validation_no_production",
+  "risks": [
+    "This is local restore safety evidence only and does not execute production restore or close P0 without independent S2PMT07 review."
+  ],
+  "rollback": "Revert the A-001 restore path safety helper/test, phase record, manifest, P0 receipt refresh, and governance registry updates; no production restore state was changed.",
+  "schema_version": 1,
+  "stage2_integrated_production_accepted": false,
+  "status": "pass",
+  "summary": "A-001 restore path safety evidence uses real Stage 1 restore probes to verify relative traversal, absolute path escape, symlink escape, and blocked invalid restore target preservation without production side effects.",
+  "task_id": "S2PMT02-RESTORE-PATH-SAFETY-A001",
+  "test_results": [
+    "py_compile PASS",
+    "user-center timestamp check: validated 13 pages",
+    "targeted A-001 tests: 32 OK",
+    "source/board user-center gate tests: 17 OK",
+    "full arxiv-daily-push unittest: 574 OK",
+    "V7.2 validator PASS",
+    "V7.2 unittest: 4 OK",
+    "project governance: errors 0 warnings 0",
+    "governance sync: errors 0 warnings 0",
+    "lean governance check-render: drift_count 0 reference_issue_count 0",
+    "structured parse: JSON 3 OK; YAML 5 OK; JSONL 2 OK; parameter_registry.csv 939 rows width 36; TRACEABILITY_MATRIX.csv 251 rows width 12",
+    "git diff --check PASS",
+    "semantic extractor: timed out after 60s; non-blocking validation not completed and not claimed as passed"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_a001_compile2 PYTHONPATH=arxiv-daily-push/src python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_atomic_recovery.py arxiv-daily-push/tests/test_stage2_atomic_recovery.py arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_user_center_candidate_pool.py",
+    "PYTHONPATH=arxiv-daily-push/src python3 arxiv-daily-push/scripts/update_user_center_timestamps.py --check",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_a001_target PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_atomic_recovery.py arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_user_center_candidate_pool.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_a001_source_gate PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_user_center_candidate_pool.py arxiv-daily-push/tests/test_owner_controls.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_a001_full PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "python3 arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_a001_v72 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/docs/pursuing_goal/v7_2/tests -q",
+    "PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push",
+    "PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_governance_sync.py",
+    "PYTHONPATH=arxiv-daily-push/src python3 scripts/lean_governance.py check-render --project arxiv-daily-push",
+    "structured JSON/YAML/JSONL/CSV parse check",
+    "git diff --check",
+    "python3 scripts/validate_semantic_extractors.py arxiv-daily-push with 60s wrapper timeout"
+  ],
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false
+}

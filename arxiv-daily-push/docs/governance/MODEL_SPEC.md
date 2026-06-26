@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 109
-- formula_count: 111
-- parameter_count: 934
+- model_count: 110
+- formula_count: 112
+- parameter_count: 939
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -61,6 +61,16 @@ Fact levels follow `docs/governance/STANDARD.md`.
   mutate queues, change source adapters or ranking, edit CURRENT or V7.1/V7.2
   contracts, close inherited P0/P1, enable DAILY_OPERATION, or claim
   integrated production acceptance.
+
+- `S2PMT02-RESTORE-PATH-SAFETY-A001` adds `MOD-ADP-110` and
+  `FORM-ADP-112`. It refreshes inherited P0 A-001 with dedicated current
+  restore probes for relative path traversal, absolute path escape, symlink
+  escape, and blocked invalid restore overwrites while proving escaped targets
+  are not created and existing target bytes are preserved. It does not execute
+  production restore, enable SMTP, install scheduler, upload Release, change
+  public schema or DB, mutate queues, change source adapters or ranking, edit
+  CURRENT or V7.1/V7.2 contracts, close inherited P0/P1, enable
+  DAILY_OPERATION, or claim integrated production acceptance.
 
 - `S2PMT05-DUPLICATE-TRIGGER-B007` refreshes `MOD-ADP-098` and
   `FORM-ADP-100`. It adds a local multi-actor duplicate-trigger gate for

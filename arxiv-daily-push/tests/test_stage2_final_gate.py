@@ -139,17 +139,25 @@ class Stage2FinalGateTests(unittest.TestCase):
         cleared = build_audit_blocker_state(inherited_p0=0, inherited_p1=0)
         self.assertEqual(cleared["status"], "pass")
 
-    def test_p0_review_receipt_uses_current_b007_b008_evidence(self) -> None:
+    def test_p0_review_receipt_uses_refreshed_current_evidence(self) -> None:
         receipt_path = REPO_ROOT / "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_INDEPENDENT_REVIEW_RECEIPT.md"
         manifest_path = REPO_ROOT / "governance/run_manifests/ADP-S2PMT07-P0-INDEPENDENT-REVIEW-RECEIPT-20260626.json"
+        refresh_manifest_path = (
+            REPO_ROOT
+            / "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A001-20260627.json"
+        )
         receipt = receipt_path.read_text(encoding="utf-8")
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         receipt_rows = {
             line.split("|", 3)[1].strip(" `"): line
             for line in receipt.splitlines()
-            if line.startswith("| `B-00")
+            if line.startswith("| `")
         }
 
+        self.assertIn("PHASE_S2PMT02_RESTORE_PATH_SAFETY_A001.md", receipt_rows["A-001"])
+        self.assertIn("ADP-S2PMT02-RESTORE-PATH-SAFETY-A001-20260627.json", receipt_rows["A-001"])
+        self.assertIn("用户中心/恢复路径安全扫描.md", receipt_rows["A-001"])
+        self.assertNotIn("PHASE_S2PMT02_ATOMIC_RECOVERY.md", receipt_rows["A-001"])
         self.assertIn("PHASE_S2PMT05_DUPLICATE_TRIGGER_B007.md", receipt_rows["B-007"])
         self.assertIn("ADP-S2PMT05-DUPLICATE-TRIGGER-B007-20260627.json", receipt_rows["B-007"])
         self.assertNotIn("ADP-S2PMT05-STRESS-E2E-20260626.json", receipt_rows["B-007"])
@@ -158,6 +166,28 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertNotIn("ADP-S2PMT05-STRESS-E2E-20260626.json", receipt_rows["B-008"])
 
         findings = {finding["finding_id"]: finding for finding in manifest["p0_findings"]}
+        self.assertEqual(manifest["refreshed_findings"], ["A-001", "B-007", "B-008"])
+        self.assertEqual(
+            manifest["refresh_manifest"],
+            "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A001-20260627.json",
+        )
+        self.assertIn(manifest["refresh_manifest"], manifest["refresh_manifests"])
+        self.assertTrue(refresh_manifest_path.exists())
+        self.assertFalse(manifest["p0_closure_claimed"])
+        self.assertFalse(manifest["stage2_integrated_production_accepted"])
+        self.assertIn(
+            "arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_RESTORE_PATH_SAFETY_A001.md",
+            findings["A-001"]["evidence_refs"],
+        )
+        self.assertIn(
+            "governance/run_manifests/ADP-S2PMT02-RESTORE-PATH-SAFETY-A001-20260627.json",
+            findings["A-001"]["evidence_refs"],
+        )
+        self.assertIn(
+            "arxiv-daily-push/用户中心/恢复路径安全扫描.md",
+            findings["A-001"]["evidence_refs"],
+        )
+        self.assertNotIn("arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_ATOMIC_RECOVERY.md", findings["A-001"]["evidence_refs"])
         self.assertIn(
             "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_DUPLICATE_TRIGGER_B007.md",
             findings["B-007"]["evidence_refs"],

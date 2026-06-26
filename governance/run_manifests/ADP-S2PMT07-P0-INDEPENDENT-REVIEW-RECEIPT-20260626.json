@@ -1,28 +1,9 @@
 {
-  "manifest_id": "ADP-S2PMT07-P0-INDEPENDENT-REVIEW-RECEIPT-20260626",
-  "project_id": "arxiv-daily-push",
-  "task_id": "S2PMT07",
   "acceptance_id": "ACC-S2PMT07-FINAL-REVIEW",
+  "change_type": "stage2_p0_independent_review_receipt",
+  "closure_claimed": false,
   "contract_version": "ADP-PRODUCT-CONTRACT-V7.2",
   "created_at": "2026-06-26T18:45:19+10:00",
-  "refreshed_at": "2026-06-27T02:43:09+10:00",
-  "change_type": "stage2_p0_independent_review_receipt",
-  "status": "review_receipt_ready_no_closure_claim",
-  "result": "blocked_receipt_recorded",
-  "summary": "Records the inherited V7.1 P0 evidence surface for later independent S2PMT07 review without claiming independent signoff, P0/P1 closure, S2PLT04 completion, or integrated production acceptance.",
-  "reviewer_independence_claimed": false,
-  "independent_review_signoff_present": false,
-  "independent_final_command_execution_present": false,
-  "closure_claimed": false,
-  "p0_closure_claimed": false,
-  "p1_closure_claimed": false,
-  "inherited_v7_1_open_p0_findings_before": 8,
-  "inherited_v7_1_open_p0_findings_after": 8,
-  "inherited_v7_1_open_p1_findings_before": 37,
-  "inherited_v7_1_open_p1_findings_after": 37,
-  "s2plt04_completed": false,
-  "final_acceptance_bundle_present": false,
-  "stage2_integrated_production_accepted": false,
   "daily_operation_enabled": false,
   "evidence_refs": [
     "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_INDEPENDENT_REVIEW_RECEIPT.md",
@@ -34,101 +15,129 @@
     "arxiv-daily-push/docs/pursuing_goal/v7_1/09_并行审查/并行审查汇总与合并结论.md",
     "arxiv-daily-push/docs/pursuing_goal/v7_1/09_并行审查/问题清单.csv"
   ],
+  "final_acceptance_bundle_present": false,
+  "forbidden_side_effects": {
+    "current_pointer_changed": false,
+    "daily_operation_enabled": false,
+    "db_migration_executed": false,
+    "integrated_production_accepted": false,
+    "production_queue_mutated": false,
+    "production_restore_enabled": false,
+    "public_schema_changed": false,
+    "ranking_algorithm_changed": false,
+    "real_smtp_sent": false,
+    "release_packaging_enabled": false,
+    "scheduler_install_enabled": false,
+    "source_adapter_changed": false,
+    "v7_1_baseline_changed": false,
+    "v7_2_contract_files_changed": false
+  },
+  "independent_final_command_execution_present": false,
+  "independent_review_signoff_present": false,
+  "inherited_v7_1_open_p0_findings_after": 8,
+  "inherited_v7_1_open_p0_findings_before": 8,
+  "inherited_v7_1_open_p1_findings_after": 37,
+  "inherited_v7_1_open_p1_findings_before": 37,
+  "manifest_id": "ADP-S2PMT07-P0-INDEPENDENT-REVIEW-RECEIPT-20260626",
+  "next_task": "S2PMT07_INDEPENDENT_REVIEWER_SIGNOFF_OR_P0_EVIDENCE_REPAIR",
+  "p0_closure_claimed": false,
   "p0_findings": [
     {
-      "finding_id": "A-001",
-      "fix_task": "S2PMT02",
-      "severity": "P0",
-      "preliminary_review_state": "evidence_located_independent_review_required",
       "evidence_refs": [
-        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_ATOMIC_RECOVERY.md",
-        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_RESTORE_SAFETY_REMEDIATION.md",
-        "governance/run_manifests/ADP-S2PMT02-ATOMIC-RECOVERY-20260626.json"
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_RESTORE_PATH_SAFETY_A001.md",
+        "governance/run_manifests/ADP-S2PMT02-RESTORE-PATH-SAFETY-A001-20260627.json",
+        "arxiv-daily-push/用户中心/恢复路径安全扫描.md",
+        "arxiv-daily-push/tests/test_stage2_atomic_recovery.py"
       ],
-      "reviewer_decision_required": "Verify restore path traversal, absolute path, symlink escape, TOCTOU, and atomic restore behavior."
+      "finding_id": "A-001",
+      "fix_task": "S2PMT02-RESTORE-PATH-SAFETY-A001",
+      "preliminary_review_state": "refreshed_current_evidence_located_independent_review_required_closure_not_claimed",
+      "reviewer_decision_required": "Verify relative traversal, absolute path escape, symlink escape, blocked invalid restore target preservation, and TOCTOU-adjacent atomic restore behavior; decide whether this dedicated local evidence is sufficient for A-001 closure.",
+      "severity": "P0"
     },
     {
-      "finding_id": "A-002",
-      "fix_task": "S2PMT02",
-      "severity": "P0",
-      "preliminary_review_state": "evidence_located_independent_review_required",
       "evidence_refs": [
         "arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_ATOMIC_RECOVERY.md",
         "arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_RESTORE_SAFETY_REMEDIATION.md",
         "arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_ARTIFACT_ATOMIC_PUBLISH.md"
       ],
-      "reviewer_decision_required": "Verify failed restore leaves the original database unchanged and only complete validated artifacts are atomically published."
+      "finding_id": "A-002",
+      "fix_task": "S2PMT02",
+      "preliminary_review_state": "evidence_located_independent_review_required",
+      "reviewer_decision_required": "Verify failed restore leaves the original database unchanged and only complete validated artifacts are atomically published.",
+      "severity": "P0"
     },
     {
-      "finding_id": "A-003",
-      "fix_task": "S2PMT03",
-      "severity": "P0",
-      "preliminary_review_state": "evidence_located_independent_review_required",
       "evidence_refs": [
         "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_LEASE_FENCING.md",
         "governance/run_manifests/ADP-S2PMT03-LEASE-FENCING-20260626.json"
       ],
-      "reviewer_decision_required": "Verify transactional outbox, sender lease, reconciliation, idempotent Message-ID, and at-least-once semantics; exactly-once delivery is not claimed."
+      "finding_id": "A-003",
+      "fix_task": "S2PMT03",
+      "preliminary_review_state": "evidence_located_independent_review_required",
+      "reviewer_decision_required": "Verify transactional outbox, sender lease, reconciliation, idempotent Message-ID, and at-least-once semantics; exactly-once delivery is not claimed.",
+      "severity": "P0"
     },
     {
+      "evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT01_SECURITY_BOUNDARY.md",
+        "governance/run_manifests/ADP-S2PMT01-SECURITY-BOUNDARY-20260626.json"
+      ],
       "finding_id": "A-004",
       "fix_task": "S2PMT01",
-      "severity": "P0",
       "preliminary_review_state": "evidence_located_independent_review_required",
+      "reviewer_decision_required": "Verify typed frontstage statements bind fact, inference, hypothesis, and action fields to evidence and block unsupported foreground claims.",
+      "severity": "P0"
+    },
+    {
       "evidence_refs": [
         "arxiv-daily-push/docs/phase_records/PHASE_S2PMT01_SECURITY_BOUNDARY.md",
         "governance/run_manifests/ADP-S2PMT01-SECURITY-BOUNDARY-20260626.json"
       ],
-      "reviewer_decision_required": "Verify typed frontstage statements bind fact, inference, hypothesis, and action fields to evidence and block unsupported foreground claims."
-    },
-    {
       "finding_id": "A-005",
       "fix_task": "S2PMT01",
-      "severity": "P0",
       "preliminary_review_state": "evidence_located_independent_review_required",
-      "evidence_refs": [
-        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT01_SECURITY_BOUNDARY.md",
-        "governance/run_manifests/ADP-S2PMT01-SECURITY-BOUNDARY-20260626.json"
-      ],
-      "reviewer_decision_required": "Verify UNTRUSTED_DATA isolation, tool allowlist boundaries, safe rendering, and prompt-injection refusal behavior."
+      "reviewer_decision_required": "Verify UNTRUSTED_DATA isolation, tool allowlist boundaries, safe rendering, and prompt-injection refusal behavior.",
+      "severity": "P0"
     },
     {
-      "finding_id": "B-001",
-      "fix_task": "S2PMT04",
-      "severity": "P0",
-      "preliminary_review_state": "local_evidence_located_independent_review_required",
       "evidence_refs": [
         "arxiv-daily-push/docs/phase_records/PHASE_S2PMT04_LIFECYCLE_CACHE.md",
         "arxiv-daily-push/docs/phase_records/PHASE_S2PMT04_SCHEDULER_TEMPLATE_A013.md",
         "governance/run_manifests/ADP-S2PMT04-LIFECYCLE-CACHE-20260626.json"
       ],
-      "reviewer_decision_required": "Decide whether local scheduler/lifecycle rehearsal is sufficient, or whether real target install-run-uninstall proof remains required."
+      "finding_id": "B-001",
+      "fix_task": "S2PMT04",
+      "preliminary_review_state": "local_evidence_located_independent_review_required",
+      "reviewer_decision_required": "Decide whether local scheduler/lifecycle rehearsal is sufficient, or whether real target install-run-uninstall proof remains required.",
+      "severity": "P0"
     },
     {
-      "finding_id": "B-007",
-      "fix_task": "S2PMT05-DUPLICATE-TRIGGER-B007",
-      "severity": "P0",
-      "preliminary_review_state": "refreshed_current_local_evidence_located_independent_review_required",
       "evidence_refs": [
         "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_DUPLICATE_TRIGGER_B007.md",
         "governance/run_manifests/ADP-S2PMT05-DUPLICATE-TRIGGER-B007-20260627.json",
         "arxiv-daily-push/tests/test_stage2_stress_e2e.py"
       ],
-      "reviewer_decision_required": "Verify four actor sources, M1-M4 x 100 attempts, one active revision per product, reason-coded duplicate blocks, lease/fencing receipts, and no scheduler side effects; decide whether multi-host or real scheduler proof remains required."
+      "finding_id": "B-007",
+      "fix_task": "S2PMT05-DUPLICATE-TRIGGER-B007",
+      "preliminary_review_state": "refreshed_current_local_evidence_located_independent_review_required",
+      "reviewer_decision_required": "Verify four actor sources, M1-M4 x 100 attempts, one active revision per product, reason-coded duplicate blocks, lease/fencing receipts, and no scheduler side effects; decide whether multi-host or real scheduler proof remains required.",
+      "severity": "P0"
     },
     {
-      "finding_id": "B-008",
-      "fix_task": "S2PMT05-SMTP-CRASH-WINDOW-B008",
-      "severity": "P0",
-      "preliminary_review_state": "refreshed_current_local_evidence_located_independent_review_required",
       "evidence_refs": [
         "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_SMTP_CRASH_WINDOW_B008.md",
         "governance/run_manifests/ADP-S2PMT05-SMTP-CRASH-WINDOW-B008-20260627.json",
         "arxiv-daily-push/tests/test_stage2_stress_e2e.py"
       ],
-      "reviewer_decision_required": "Verify outbox claim before SMTP acceptance, ACCEPTED_PENDING_COMMIT, stable idempotent message_id, provider accept ref finalization, blocked unsafe resend, and no real SMTP side effects; decide whether runner-level fake SMTP kill/restart proof remains required."
+      "finding_id": "B-008",
+      "fix_task": "S2PMT05-SMTP-CRASH-WINDOW-B008",
+      "preliminary_review_state": "refreshed_current_local_evidence_located_independent_review_required",
+      "reviewer_decision_required": "Verify outbox claim before SMTP acceptance, ACCEPTED_PENDING_COMMIT, stable idempotent message_id, provider accept ref finalization, blocked unsafe resend, and no real SMTP side effects; decide whether runner-level fake SMTP kill/restart proof remains required.",
+      "severity": "P0"
     }
   ],
+  "p1_closure_claimed": false,
   "preserved_blockers": [
     "reviewer_independence_not_proven",
     "p0_closure_not_claimed",
@@ -138,22 +147,25 @@
     "independent_final_signoff_missing",
     "independent_final_command_execution_missing"
   ],
-  "forbidden_side_effects": {
-    "real_smtp_sent": false,
-    "scheduler_install_enabled": false,
-    "release_packaging_enabled": false,
-    "production_restore_enabled": false,
-    "daily_operation_enabled": false,
-    "integrated_production_accepted": false,
-    "current_pointer_changed": false,
-    "v7_1_baseline_changed": false,
-    "v7_2_contract_files_changed": false,
-    "public_schema_changed": false,
-    "db_migration_executed": false,
-    "production_queue_mutated": false,
-    "source_adapter_changed": false,
-    "ranking_algorithm_changed": false
-  },
+  "previous_refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B007-B008-20260627.json",
+  "project_id": "arxiv-daily-push",
+  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A001-20260627.json",
+  "refresh_manifests": [
+    "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B007-B008-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A001-20260627.json"
+  ],
+  "refreshed_at": "2026-06-27T08:05:48+10:00",
+  "refreshed_findings": [
+    "A-001",
+    "B-007",
+    "B-008"
+  ],
+  "result": "blocked_receipt_recorded",
+  "reviewer_independence_claimed": false,
   "rollback": "Remove the S2PMT07 P0 review receipt phase record, manifest, and three-base-file references; no production runtime state was changed.",
-  "next_task": "S2PMT07_INDEPENDENT_REVIEWER_SIGNOFF_OR_P0_EVIDENCE_REPAIR"
+  "s2plt04_completed": false,
+  "stage2_integrated_production_accepted": false,
+  "status": "review_receipt_ready_no_closure_claim",
+  "summary": "Records the inherited V7.1 P0 evidence surface for later independent S2PMT07 review without claiming independent signoff, P0/P1 closure, S2PLT04 completion, or integrated production acceptance.",
+  "task_id": "S2PMT07"
 }
