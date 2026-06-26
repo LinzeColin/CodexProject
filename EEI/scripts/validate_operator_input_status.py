@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from datetime import UTC, datetime
 from pathlib import Path
@@ -33,6 +34,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 STATUS_SCHEMA_VERSION = "eei-external-release-operator-input-status-v1"
 SUBMISSION_PREFLIGHT_SCHEMA_VERSION = "eei-operator-input-submission-preflight-v1"
+SUBMISSION_RECEIPT_SCHEMA_VERSION = "eei-operator-input-submission-receipt-v1"
 DEFAULT_OUTPUT = ROOT / "artifacts/operator_inputs/operator_input_status.json"
 VALIDATOR_CONTRACTS: dict[str, dict[str, Any]] = {
     "A202_source_license_passage_owner_legal_release": {
@@ -382,6 +384,98 @@ def build_submission_preflight(
             "A204, A205 or MVP release gates.",
         ],
     }
+
+
+def build_submission_receipt(
+    payload: dict[str, Any],
+    *,
+    input_id: str,
+    submitted_sha256: str,
+    submitted_by: str,
+    submission_note: str | None = None,
+    generated_at: str | None = None,
+) -> dict[str, Any]:
+    actor = submitted_by.strip()
+    if not actor:
+        raise ValueError("operator input receipt requires submitted_by")
+
+    received_at = generated_at or utc_now()
+    preflight = build_submission_preflight(
+        payload,
+        input_id=input_id,
+        submitted_sha256=submitted_sha256,
+        dry_run=True,
+    )
+    preflight_status = preflight["status"]
+    hash_matches = preflight["submitted_hash_matches_observed"] is True
+    accepted = (
+        preflight_status == "READY_FOR_DEDICATED_VALIDATOR_DISPATCH"
+        and hash_matches
+        and preflight["validator_dispatch_allowed"] is True
+    )
+    if accepted:
+        receipt_status = "RECEIPT_RECORDED_PENDING_DEDICATED_VALIDATOR"
+        reason = "operator input target hash matches and is ready for manual validator dispatch"
+    elif preflight_status == "SUBMISSION_HASH_MISMATCH":
+        receipt_status = "RECEIPT_REJECTED_HASH_MISMATCH"
+        reason = preflight["reason"]
+    elif preflight_status == "SUBMISSION_TARGET_MISSING":
+        receipt_status = "RECEIPT_REJECTED_TARGET_MISSING"
+        reason = preflight["reason"]
+    elif preflight_status == "REJECTED_UNKNOWN_OPERATOR_INPUT":
+        receipt_status = "RECEIPT_REJECTED_UNKNOWN_OPERATOR_INPUT"
+        reason = preflight["reason"]
+    elif preflight_status == "SUBMISSION_REJECTED":
+        receipt_status = "RECEIPT_REJECTED_OPERATOR_INPUT"
+        reason = preflight["reason"]
+    else:
+        receipt_status = "RECEIPT_REJECTED_NOT_DISPATCHABLE"
+        reason = preflight["reason"]
+
+    receipt: dict[str, Any] = {
+        "schema_version": SUBMISSION_RECEIPT_SCHEMA_VERSION,
+        "artifact_id": "t1303-operator-input-submission-receipt",
+        "generated_at": received_at,
+        "system_name": "EEI",
+        "system_en_name": "Enterprise Ecosystem Intelligence",
+        "system_zh_name": "商域图谱",
+        "task_id": "T1303",
+        "input_id": preflight["input_id"],
+        "acceptance_id": preflight["acceptance_id"],
+        "status": receipt_status,
+        "reason": reason,
+        "submitted_by": actor,
+        "submission_note": (submission_note or "").strip(),
+        "submitted_sha256": preflight["submitted_sha256"],
+        "observed_sha256": preflight["observed_sha256"],
+        "submitted_hash_matches_observed": preflight["submitted_hash_matches_observed"],
+        "submission_target": preflight["submission_target"],
+        "submission_target_exists": preflight["submission_target_exists"],
+        "receipt_accepted": accepted,
+        "validator_dispatch_allowed": accepted,
+        "validator_dispatch_mode": "manual_command_only",
+        "validator_contract": preflight["validator_contract"],
+        "next_validation_command": preflight["next_validation_command"] if accepted else "",
+        "expected_artifacts": preflight["expected_artifacts"] if accepted else [],
+        "source_status_artifact_id": payload.get("artifact_id", ""),
+        "source_status_generated_at": payload.get("generated_at", ""),
+        "source_status_schema_version": payload.get("schema_version", ""),
+        "release_gate_closure_allowed": False,
+        "release_manager_preflight_refresh_allowed": False,
+        "mvp_release_gate_refresh_allowed": False,
+        "non_claims": [
+            "This receipt does not write or modify operator input files.",
+            "This receipt does not execute validator commands.",
+            "This receipt does not certify signed operator evidence.",
+            "This receipt does not close A202, A209, A210, A026, A027, "
+            "A204, A205 or MVP release gates.",
+        ],
+    }
+    canonical = json.dumps(receipt, sort_keys=True, separators=(",", ":"))
+    receipt["receipt_id"] = "sha256:" + hashlib.sha256(
+        canonical.encode("utf-8")
+    ).hexdigest()
+    return receipt
 
 
 def validate_status(

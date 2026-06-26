@@ -7229,3 +7229,41 @@ Status: LOCAL FOCUSED VALIDATED; A202 STILL IN PROGRESS; RELEASE GATES STILL BLO
 ### Rollback
 
 - Revert `scripts/validate_a202_signed_intake_preflight.py`, `tests/unit/test_a202_signed_intake_preflight.py`, `Makefile`, `artifacts/tests/a202/t1301_a202_operator_intake_gap_packet.json`, this record and companion governance sync; regenerate A202 signed-intake preflight and release artifacts from the previous template-only state.
+
+## 2026-06-27 - T1303/A204-A205 operator input submission receipt
+
+Status: LOCAL FOCUSED VALIDATED; RELEASE GATES STILL BLOCKED
+
+### Scope
+
+- Added `eei-operator-input-submission-receipt-v1` as a hash-bound server-side receipt contract for registered operator inputs.
+- Added `POST /v1/release/operator-input-submission-receipt`.
+- Receipt generation accepts only a registered input id, a 64-character submitted SHA-256, and an operator actor string.
+- A receipt is accepted only when the operator input target already exists and the submitted hash matches the observed target hash.
+- Missing targets, unknown input ids, rejected/template targets and hash mismatches remain fail-closed.
+
+### Acceptance Mapping
+
+- T1303 -> A204/A205.
+- This is an intake/audit contract only. It does not close A202, A210, A026, A027, A209, A204, A205 or MVP release readiness.
+
+### Validation
+
+- `PYTHONPYCACHEPREFIX=/private/tmp/eei-operator-receipt-pycache .venv/bin/python -m py_compile scripts/validate_operator_input_status.py apps/api/app/domain.py tests/unit/test_operator_input_status.py tests/unit/test_api_health.py`: PASS.
+- `TMPDIR=/private/tmp RUFF_CACHE_DIR=/private/tmp/eei-operator-receipt-ruff .venv/bin/ruff check scripts/validate_operator_input_status.py apps/api/app/domain.py tests/unit/test_operator_input_status.py tests/unit/test_api_health.py`: PASS.
+- `TMPDIR=/private/tmp PYTHONPYCACHEPREFIX=/private/tmp/eei-operator-receipt-pycache .venv/bin/python -m pytest -q tests/unit/test_operator_input_status.py tests/unit/test_api_health.py -q -p no:cacheprovider`: PASS, `35/35`.
+- `TMPDIR=/private/tmp PYTHONPYCACHEPREFIX=/private/tmp/eei-operator-receipt-pycache .venv/bin/python scripts/validate_contracts.py`: PASS.
+- `TMPDIR=/private/tmp PYTHONPYCACHEPREFIX=/private/tmp/eei-release-artifacts-pycache MAKEFLAGS= make generate-clean-room-release validate-clean-room-release generate-release-artifacts validate-release-artifacts`: PASS, `package_paths=456`, `manifest_paths=463`, `checksum_paths=462`.
+- `TMPDIR=/private/tmp PYTHONPYCACHEPREFIX=/private/tmp/eei-make-verify-receipt-pycache MAKEFLAGS= PLAYWRIGHT_BROWSERS_PATH=/private/tmp/eei-ms-playwright make verify`: PASS, unit tests `163/163`.
+
+### Non-Claims
+
+- This receipt does not write or modify operator input files.
+- This receipt does not execute validator commands.
+- This receipt does not certify signed operator evidence.
+- This receipt does not close release gates or refresh release-manager/MVP preflights.
+- A209 remains a separate background 24h soak gate.
+
+### Rollback
+
+- Revert `scripts/validate_operator_input_status.py`, `apps/api/app/domain.py`, `specs/api_contract.yaml`, focused tests, this record and companion governance sync; preserve any real signed operator files under `artifacts/operator_inputs/`.

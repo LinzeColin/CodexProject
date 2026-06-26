@@ -14,7 +14,10 @@ from fastapi import APIRouter, Depends, Header, HTTPException, Query, Request, R
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
-from scripts.validate_operator_input_status import build_submission_preflight
+from scripts.validate_operator_input_status import (
+    build_submission_preflight,
+    build_submission_receipt,
+)
 
 from .domain_repository import (
     CatalogRepository,
@@ -221,6 +224,17 @@ class OperatorInputSubmissionPreflightRequest(BaseModel):
     dry_run: Literal[True] = True
 
 
+class OperatorInputSubmissionReceiptRequest(BaseModel):
+    input_id: str = Field(min_length=1, max_length=160)
+    submitted_sha256: str = Field(pattern=r"^[A-Fa-f0-9]{64}$")
+    submitted_by: str = Field(
+        min_length=1,
+        max_length=160,
+        pattern=r"^[A-Za-z0-9][A-Za-z0-9_.:@ -]{0,159}$",
+    )
+    submission_note: str | None = Field(default=None, max_length=500)
+
+
 def get_repository() -> DomainRepository:
     settings = get_settings()
     if not settings.database_url:
@@ -256,6 +270,28 @@ def preflight_operator_input_submission(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail={
                 "reason": "operator_input_submission_preflight_rejected",
+                "message": str(exc),
+            },
+        ) from exc
+
+
+@router.post("/release/operator-input-submission-receipt")
+def receipt_operator_input_submission(
+    request: OperatorInputSubmissionReceiptRequest,
+) -> dict[str, Any]:
+    try:
+        return build_submission_receipt(
+            _read_operator_input_status(),
+            input_id=request.input_id,
+            submitted_sha256=request.submitted_sha256,
+            submitted_by=request.submitted_by,
+            submission_note=request.submission_note,
+        )
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={
+                "reason": "operator_input_submission_receipt_rejected",
                 "message": str(exc),
             },
         ) from exc

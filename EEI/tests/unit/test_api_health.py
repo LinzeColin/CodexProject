@@ -295,6 +295,41 @@ def test_operator_input_submission_preflight_rejects_non_dry_run() -> None:
     assert response.status_code == 422
 
 
+def test_operator_input_submission_receipt_fails_closed_for_missing_target() -> None:
+    response = TestClient(app).post(
+        "/v1/release/operator-input-submission-receipt",
+        json={
+            "input_id": "A202_source_license_passage_owner_legal_release",
+            "submitted_sha256": "0" * 64,
+            "submitted_by": "release.operator",
+            "submission_note": "operator file not present yet",
+        },
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["schema_version"] == "eei-operator-input-submission-receipt-v1"
+    assert payload["status"] == "RECEIPT_REJECTED_TARGET_MISSING"
+    assert payload["receipt_accepted"] is False
+    assert payload["validator_dispatch_allowed"] is False
+    assert payload["release_gate_closure_allowed"] is False
+    assert payload["release_manager_preflight_refresh_allowed"] is False
+    assert payload["mvp_release_gate_refresh_allowed"] is False
+
+
+def test_operator_input_submission_receipt_rejects_invalid_actor() -> None:
+    response = TestClient(app).post(
+        "/v1/release/operator-input-submission-receipt",
+        json={
+            "input_id": "A202_source_license_passage_owner_legal_release",
+            "submitted_sha256": "0" * 64,
+            "submitted_by": " bad actor",
+        },
+    )
+
+    assert response.status_code == 422
+
+
 def test_scoring_profile_draft_requires_weights() -> None:
     with pytest.raises(ValidationError):
         ScoringProfileDraftCreate.model_validate(

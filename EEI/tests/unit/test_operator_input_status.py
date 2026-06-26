@@ -8,6 +8,7 @@ import pytest
 from scripts.validate_operator_input_status import (
     build_status,
     build_submission_preflight,
+    build_submission_receipt,
     validate_status,
 )
 
@@ -273,3 +274,70 @@ def test_submission_preflight_rejects_unknown_input_id(tmp_path: Path) -> None:
     assert payload["status"] == "REJECTED_UNKNOWN_OPERATOR_INPUT"
     assert payload["validator_dispatch_allowed"] is False
     assert payload["validator_contract"] is None
+
+
+def test_submission_receipt_records_present_target_pending_validator(
+    tmp_path: Path,
+) -> None:
+    template = write_json(tmp_path / "kit" / "a202.template.json", {"template_only": True})
+    target = write_json(
+        tmp_path / "operator_inputs" / "a202" / "signed.json",
+        {"signed_by": "operator", "template_only": False},
+    )
+    manifest = kit_manifest(tmp_path, target=target, template=template)
+    patch_manifest_template_sha(manifest, template)
+    status_payload = build_status(
+        kit_manifest_path=manifest,
+        generated_at="2026-06-27T00:00:00Z",
+    )
+    observed_sha = status_payload["input_statuses"][0]["submission_target_sha256"]
+
+    payload = build_submission_receipt(
+        status_payload,
+        input_id="A202_source_license_passage_owner_legal_release",
+        submitted_sha256=observed_sha,
+        submitted_by="release.operator",
+        submission_note="source-license packet placed in approved operator-input path",
+        generated_at="2026-06-27T00:01:00Z",
+    )
+
+    assert payload["schema_version"] == "eei-operator-input-submission-receipt-v1"
+    assert payload["receipt_id"].startswith("sha256:")
+    assert payload["status"] == "RECEIPT_RECORDED_PENDING_DEDICATED_VALIDATOR"
+    assert payload["receipt_accepted"] is True
+    assert payload["validator_dispatch_allowed"] is True
+    assert payload["validator_dispatch_mode"] == "manual_command_only"
+    assert payload["next_validation_command"] == (
+        "make generate-a202-signed-intake-preflight validate-a202-signed-intake-preflight"
+    )
+    assert payload["release_gate_closure_allowed"] is False
+    assert payload["release_manager_preflight_refresh_allowed"] is False
+    assert payload["mvp_release_gate_refresh_allowed"] is False
+
+
+def test_submission_receipt_rejects_hash_mismatch(tmp_path: Path) -> None:
+    template = write_json(tmp_path / "kit" / "a202.template.json", {"template_only": True})
+    target = write_json(
+        tmp_path / "operator_inputs" / "a202" / "signed.json",
+        {"signed_by": "operator", "template_only": False},
+    )
+    manifest = kit_manifest(tmp_path, target=target, template=template)
+    patch_manifest_template_sha(manifest, template)
+    status_payload = build_status(
+        kit_manifest_path=manifest,
+        generated_at="2026-06-27T00:00:00Z",
+    )
+
+    payload = build_submission_receipt(
+        status_payload,
+        input_id="A202_source_license_passage_owner_legal_release",
+        submitted_sha256="0" * 64,
+        submitted_by="release.operator",
+        generated_at="2026-06-27T00:01:00Z",
+    )
+
+    assert payload["status"] == "RECEIPT_REJECTED_HASH_MISMATCH"
+    assert payload["receipt_accepted"] is False
+    assert payload["validator_dispatch_allowed"] is False
+    assert payload["next_validation_command"] == ""
+    assert payload["expected_artifacts"] == []

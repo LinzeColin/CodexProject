@@ -6,7 +6,7 @@ EEI 当前治理结论：实现一致性为 `VERIFIED`，方法/实证为 `UNVER
 
 ## 2. 本次运行改变了什么
 
-Owner 视图现在记录 T1303/A204-A205 operator input submission preflight：`/v1/release/operator-input-submission-preflight` 可对已登记的 A202/A210/A026/A027/A209 输入返回 dry-run/manual-command-only validator dispatch plan；`/v1/release/operator-input-status` 和 `/development-status` 仍显示 6 个必需外部输入全部缺失、6 个专用 validator contract 已注册但尚未运行，release-manager/MVP refresh 仍被阻断。A209 live-rerun monitor hardening 仍保留为背景稳定性证据；本次不停止、重启、resume、promote 或 finalize A209。
+Owner 视图现在记录 T1303/A204-A205 operator input submission preflight 与 receipt：`/v1/release/operator-input-submission-preflight` 可对已登记的 A202/A210/A026/A027/A209 输入返回 dry-run/manual-command-only validator dispatch plan；`/v1/release/operator-input-submission-receipt` 可在 operator 文件已放置且 hash 匹配时返回 hash-bound receipt，但仍不写文件、不执行 validators、不关闭 release gate。`/v1/release/operator-input-status` 和 `/development-status` 仍显示 6 个必需外部输入全部缺失、6 个专用 validator contract 已注册但尚未运行，release-manager/MVP refresh 仍被阻断。A209 live-rerun monitor hardening 仍保留为背景稳定性证据；本次不停止、重启、resume、promote 或 finalize A209。
 
 ## 3. 为什么重要
 

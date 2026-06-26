@@ -55,6 +55,26 @@ paths:
           description: Operator-input submission preflight rejected.
         '422':
           description: Request validation failed.
+  /v1/release/operator-input-submission-receipt:
+    post:
+      operationId: receiptOperatorInputSubmission
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OperatorInputSubmissionReceiptRequest'
+      responses:
+        '200':
+          description: Hash-bound receipt for a placed operator input target.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperatorInputSubmissionReceipt'
+        '400':
+          description: Operator-input submission receipt rejected.
+        '422':
+          description: Request validation failed.
   /v1/entities:
     get:
       operationId: searchEntities
@@ -1564,6 +1584,128 @@ components:
           type: array
           items:
             type: string
+        release_gate_closure_allowed:
+          type: boolean
+        release_manager_preflight_refresh_allowed:
+          type: boolean
+        mvp_release_gate_refresh_allowed:
+          type: boolean
+        non_claims:
+          type: array
+          items:
+            type: string
+    OperatorInputSubmissionReceiptRequest:
+      type: object
+      required:
+      - input_id
+      - submitted_sha256
+      - submitted_by
+      properties:
+        input_id:
+          type: string
+          minLength: 1
+          maxLength: 160
+        submitted_sha256:
+          type: string
+          pattern: ^[A-Fa-f0-9]{64}$
+        submitted_by:
+          type: string
+          minLength: 1
+          maxLength: 160
+          pattern: ^[A-Za-z0-9][A-Za-z0-9_.:@ -]{0,159}$
+        submission_note:
+          type:
+          - string
+          - 'null'
+          maxLength: 500
+    OperatorInputSubmissionReceipt:
+      type: object
+      required:
+      - schema_version
+      - artifact_id
+      - receipt_id
+      - generated_at
+      - input_id
+      - acceptance_id
+      - status
+      - receipt_accepted
+      - validator_dispatch_allowed
+      - validator_dispatch_mode
+      - submitted_sha256
+      - observed_sha256
+      - submission_target
+      - submission_target_exists
+      - release_gate_closure_allowed
+      - release_manager_preflight_refresh_allowed
+      - mvp_release_gate_refresh_allowed
+      properties:
+        schema_version:
+          type: string
+          enum:
+          - eei-operator-input-submission-receipt-v1
+        artifact_id:
+          type: string
+        receipt_id:
+          type: string
+          pattern: ^sha256:[a-f0-9]{64}$
+        generated_at:
+          type: string
+          format: date-time
+        input_id:
+          type: string
+        acceptance_id:
+          type: string
+        status:
+          type: string
+          enum:
+          - RECEIPT_RECORDED_PENDING_DEDICATED_VALIDATOR
+          - RECEIPT_REJECTED_HASH_MISMATCH
+          - RECEIPT_REJECTED_TARGET_MISSING
+          - RECEIPT_REJECTED_UNKNOWN_OPERATOR_INPUT
+          - RECEIPT_REJECTED_OPERATOR_INPUT
+          - RECEIPT_REJECTED_NOT_DISPATCHABLE
+        reason:
+          type: string
+        submitted_by:
+          type: string
+        submission_note:
+          type: string
+        submitted_sha256:
+          type: string
+        observed_sha256:
+          type: string
+        submitted_hash_matches_observed:
+          type:
+          - boolean
+          - 'null'
+        submission_target:
+          type: string
+        submission_target_exists:
+          type: boolean
+        receipt_accepted:
+          type: boolean
+        validator_dispatch_allowed:
+          type: boolean
+        validator_dispatch_mode:
+          type: string
+          enum:
+          - manual_command_only
+        validator_contract:
+          oneOf:
+          - $ref: '#/components/schemas/OperatorInputValidatorContract'
+          - type: 'null'
+        next_validation_command:
+          type: string
+        expected_artifacts:
+          type: array
+          items:
+            type: string
+        source_status_artifact_id:
+          type: string
+        source_status_generated_at:
+          type: string
+        source_status_schema_version:
+          type: string
         release_gate_closure_allowed:
           type: boolean
         release_manager_preflight_refresh_allowed:
