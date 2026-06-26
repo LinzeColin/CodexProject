@@ -3261,3 +3261,21 @@ None for this new project baseline.
 - Boundaries: This run does not enable SMTP, install or enable scheduler, upload Release assets, change public schema or DB, mutate production queues, change source adapters or ranking, edit CURRENT or V7.1/V7.2 contracts, close inherited P0/P1, enable DAILY_OPERATION, or claim integrated production acceptance.
 - Evidence: `arxiv-daily-push/用户中心/截至今日候选池.md`; `arxiv-daily-push/用户中心/已生成报告与邮件预览.md`; `arxiv-daily-push/模型参数文件`; `arxiv-daily-push/tests/test_user_center_candidate_pool.py`; `governance/run_manifests/ADP-USER-CENTER-TOTAL-CANDIDATE-POOL-20260626.json`.
 - Next step: Continue S2PMT07/P0/P1 independent review and final production-gate evidence without treating the total candidate pool disclosure as production acceptance.
+
+### `ITER-20260626-ADP-S2PMT01-SUPPLY-CHAIN-A020`
+
+- Timestamp: `2026-06-26T21:36:39+10:00`
+- Actor: Codex
+- Fact level: EXTRACTED from static workflow contents, local vulnerability-gate fixtures, focused tests, V7.2 validator, project governance, and generated-view checks.
+- Status: local supply-chain machine gate recorded, no production side effects.
+- Task IDs: `S2PMT01-SUPPLY-CHAIN-A020`, `S2PMT01`, `A-020`; acceptance `ACC-S2PMT01-SECURITY` remains local evidence only.
+- Goal: Remediate inherited P1 finding `A-020` locally by making the S2PMT01 supply-chain baseline fail closed on workflow permission drift, unapproved mutable GitHub Action references, and unapproved high/critical dependency vulnerability findings.
+- Decisions: `build_supply_chain_baseline` now embeds a static workflow audit, approved mutable action reference policy, and dependency vulnerability exception gate. The audit does not execute workflows, read secrets, query online vulnerability databases, generate a full SBOM, or enable production.
+- Current workflow evidence: ADP/Governance workflow audit passed for 9 workflow files, 44 Action references, 13 permission references, and 0 issues.
+- Validation: py_compile PASS; focused security-boundary tests 7 OK; focused security/user-center tests 14 OK after generator-regression repair; full arxiv-daily-push unittest 522 OK; V7.2 validator PASS; ADP project governance 0 errors / 0 warnings; changed-only governance semantic 0 errors / 0 warnings; governance sync validator 0 errors / 0 warnings; lean check-render drift_count 0 reference_issue_count 0; YAML/JSON/JSONL/CSV/manifest parse OK; git diff --check PASS.
+- Related generator repair: `lean_governance.py` now preserves the latest `adp-roi-semantic-rubric-v2` owner scoring disclosure in `模型参数文件`, preventing generated-view drift from erasing the user-center scoring standard.
+- Boundaries: This run does not enable SMTP, install or enable scheduler, upload Release assets, change workflow behavior, generate a full SBOM, migrate all Action refs to commit SHAs, run online vulnerability lookups, change public schema or DB, mutate production queues, change source adapters or ranking, edit CURRENT or V7.1/V7.2 contracts, close inherited P0/P1, enable DAILY_OPERATION, or claim integrated production acceptance.
+- Remaining risks: Complete SBOM generation, online vulnerability database audit, Action commit-SHA migration, CI enforcement, inherited P0/P1 closure, S2PLT04, final bundle, and S2PMT07 independent review remain separate gates.
+- Rollback: Revert S2PMT01 supply-chain gate code/tests, generator repair, phase record, manifest, traceability/delivery/event records, generated status refresh, and this ledger entry; no runtime production state was changed.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PMT01_SUPPLY_CHAIN_A020.md`; `governance/run_manifests/ADP-S2PMT01-SUPPLY-CHAIN-A020-20260626.json`; `arxiv-daily-push/src/arxiv_daily_push/security_boundary.py`; `arxiv-daily-push/tests/test_security_boundary.py`.
+- Next step: Continue inherited P0/P1 remediation or independent review only under V7.2 no-production boundaries.

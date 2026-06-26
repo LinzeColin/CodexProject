@@ -1,9 +1,12 @@
 from __future__ import annotations
 
 import unittest
+from pathlib import Path
 
 from arxiv_daily_push.security_boundary import (
+    audit_workflow_supply_chain,
     build_supply_chain_baseline,
+    build_dependency_vulnerability_gate,
     build_trust_boundary_receipt,
     sanitize_public_url,
     typed_fact,
@@ -12,6 +15,12 @@ from arxiv_daily_push.security_boundary import (
     validate_trust_boundary_receipt,
     validate_typed_frontstage,
 )
+
+
+ROOT = Path(__file__).resolve().parents[2]
+ADP_WORKFLOWS = sorted((ROOT / ".github" / "workflows").glob("arxiv-daily-push-*.yml")) + [
+    ROOT / ".github" / "workflows" / "project-governance.yml"
+]
 
 
 class SecurityBoundaryTests(unittest.TestCase):
@@ -60,13 +69,71 @@ class SecurityBoundaryTests(unittest.TestCase):
         self.assertIn("unknown claim ids", " ".join(validate_typed_frontstage(frontstage, allowed_claim_ids=["claim:1"])))
 
     def test_supply_chain_baseline_declares_local_controls_without_side_effects(self) -> None:
+        workflow_contents = {str(path.relative_to(ROOT)): path.read_text(encoding="utf-8") for path in ADP_WORKFLOWS}
         baseline = build_supply_chain_baseline(
-            workflow_files=[".github/workflows/project-governance.yml"],
+            workflow_files=sorted(workflow_contents),
             dependency_files=["arxiv-daily-push/pyproject.toml"],
+            workflow_contents=workflow_contents,
+            vulnerability_findings=[],
+            approved_vulnerability_exceptions=[],
         )
 
         self.assertFalse(baseline["production_side_effects"])
+        self.assertEqual(baseline["controls"]["workflow_audit"]["status"], "pass")
+        self.assertGreaterEqual(baseline["controls"]["workflow_audit"]["workflow_count"], 9)
         self.assertFalse(validate_supply_chain_baseline(baseline))
+
+    def test_supply_chain_audit_blocks_write_permissions_and_unknown_mutable_actions(self) -> None:
+        audit = audit_workflow_supply_chain(
+            {
+                ".github/workflows/bad.yml": """
+name: bad
+permissions:
+  contents: write
+jobs:
+  test:
+    steps:
+      - uses: third-party/example-action@v1
+"""
+            }
+        )
+
+        self.assertEqual(audit["status"], "blocked")
+        self.assertIn("contents: write", " ".join(audit["issues"]))
+        self.assertIn("not SHA-pinned or approved", " ".join(audit["issues"]))
+
+    def test_dependency_vulnerability_gate_blocks_unapproved_high_findings(self) -> None:
+        gate = build_dependency_vulnerability_gate(
+            [{"finding_id": "PYSEC-TEST-001", "severity": "high", "package": "example"}],
+            approved_exceptions=[],
+        )
+
+        self.assertEqual(gate["status"], "blocked")
+        self.assertIn("has no approved exception", " ".join(gate["issues"]))
+        baseline = build_supply_chain_baseline(
+            workflow_files=[".github/workflows/project-governance.yml"],
+            dependency_files=["arxiv-daily-push/pyproject.toml"],
+            workflow_contents={".github/workflows/project-governance.yml": "permissions:\n  contents: read\nsteps:\n  - uses: actions/checkout@v5\n"},
+            vulnerability_findings=[{"finding_id": "PYSEC-TEST-001", "severity": "high", "package": "example"}],
+            approved_vulnerability_exceptions=[],
+        )
+        self.assertIn("dependency_vulnerability_gate", " ".join(validate_supply_chain_baseline(baseline)))
+
+    def test_dependency_vulnerability_gate_accepts_complete_exception(self) -> None:
+        gate = build_dependency_vulnerability_gate(
+            [{"finding_id": "PYSEC-TEST-001", "severity": "critical", "package": "example"}],
+            approved_exceptions=[
+                {
+                    "finding_id": "PYSEC-TEST-001",
+                    "approved_by": "security-reviewer",
+                    "expires_at": "2026-07-01",
+                    "rationale": "test-only fixture exception",
+                }
+            ],
+        )
+
+        self.assertEqual(gate["status"], "pass")
+        self.assertEqual(gate["issues"], [])
 
 
 if __name__ == "__main__":

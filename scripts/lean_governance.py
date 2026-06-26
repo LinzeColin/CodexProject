@@ -625,6 +625,33 @@ def render_model_parameters(project_facts: dict[str, Any], roadmap: dict[str, An
                 f"- `{text_or_na(stage2.get('current_task_id'))}` 是当前 Stage2 任务；`{text_or_na(stage2.get('current_shadow_source_task'))}` 保留为已通过的来源 Shadow 线程任务。",
             ]
         )
+    if str(project_facts.get("project_id") or "") == "arxiv-daily-push":
+        lines.extend(
+            [
+                "",
+                "## 评分和排序标准",
+                "",
+                "| 项目 | 当前口径 |",
+                "|---|---|",
+                "| 模型名称 | ROI 候选排序 |",
+                "| 当前用户中心分数来源 | 历史账本分数读取 [CONTENT_LEDGER.csv](docs/owner/CONTENT_LEDGER.csv) 的 `current_score`；后续每日运行新候选使用 `adp-roi-semantic-rubric-v2` 生成六因子明细 |",
+                "| 实现入口 | [global_scan.py](src/arxiv_daily_push/global_scan.py) 的 `ROI_COMPONENT_WEIGHTS`、`ROI_SEMANTIC_RUBRIC`、`RUBRIC_KEYWORD_HIT_WEIGHT`、`_roi_signals`、`_candidate_from_source_item` |",
+                "| 公式 | `roi_total_score = 相关性信号 x 15 + 学习价值信号 x 20 + 经济转化率信号 x 25 + ROI信号 x 20 + 跨学科价值信号 x 10 + 可解释性信号 x 10`；用户可读表头写成 15% / 20% / 25% / 10%，表示该因子占总分权重 |",
+                "| 因子权重 | 相关性 15%；学习价值 20%；经济转化率 25%；ROI 20%；跨学科价值 10%；可解释性 10%；总和 100% |",
+                "| 公开语义评分 rubric | 相关性看是否服务 ADP 关注的 AI agent、模型、决策、控制、风险、金融、市场、政策、仿真或统计主题；学习价值看方法、算法、数据集、基准、评估、理论或综述价值；经济转化率看成本、效率、自动化、金融、交易、组合、风险、隐私、安全、供应链、能源或健康等可转化场景；ROI 综合经济转化率、相关性、学习价值和可解释性；跨学科价值看 arXiv 分类组覆盖；可解释性看摘要是否适合人类复述和邮件讲解 |",
+                "| 命中增量 | 相关性、学习价值、经济转化率三项使用公开语义 rubric 的证据命中；每命中一个公开证据项统一增加 7%，即 `RUBRIC_KEYWORD_HIT_WEIGHT = 0.07`；不再使用旧的 8% / 7% / 9% 三套增量 |",
+                "| 信号计算 | 语义 rubric 的当前实现使用标题、摘要、主分类和副分类作为公开证据；学习价值和可解释性包含摘要长度奖励；跨学科价值来自分类组覆盖；ROI 因子由经济转化率、相关性、学习价值、可解释性加权合成 |",
+                "| 逐项分公式 | 每个分项贡献 = 归一化信号 x 该因子权重；前20精选必须公开每篇文章的六个分项贡献、总分和账本核对状态 |",
+                "| 入选资格 | 来源项结构有效；arXiv Atom 摘要和分类可读；来源标识、标题、链接和元数据可被验证；近期已选项按任务规则去重或避重 |",
+                "| 空值处理 | 缺少来源项、摘要、分类、标题或无法生成 ROI 信号时不得补分；该项必须阻断或标为明细缺失，不得只展示总分 |",
+                "| 非法值处理 | 评分信号必须为 0 到 1 的数字；权重合计必须为 100；不能用比例拆分总分来伪造分项 |",
+                "| 同分排序规则 | `roi_total_score` 降序；同分时按 `source_id` 升序；用户中心前20再按论文标识去重 |",
+                "| 用户可见解释 | 分数用于确定性排序和追踪，不是收益承诺；“高价值”必须同时给出总分、分项贡献、公式和证据链接 |",
+                "| 前20精选解释 | 用户中心前20精选读取来源账本中的总分字段，同一论文标识去重后取最高分/稳定记录；页面必须展示六因子评分明细，不代表只剩 20 条候选 |",
+                "| 旧八因子口径 | [ranking.py](src/arxiv_daily_push/ranking.py) 的前沿信号、证据可靠性、新颖性、迁移价值、问题重要性、分类优先级、等待时间、多样性仍保留为历史/底层审计口径，但不能被写成当前前20总分来源 |",
+                "| 治理引用 | [parameter_registry.csv](docs/governance/parameter_registry.csv) 的 `ROI_COMPONENT_WEIGHTS`；[formula_registry.yaml](docs/governance/formula_registry.yaml) 的 ROI 排序表达式；[global_scan.py](src/arxiv_daily_push/global_scan.py) 的实现 |",
+            ]
+        )
     lines.extend(["", "## 模型"])
     for model in models:
         lines.extend(
