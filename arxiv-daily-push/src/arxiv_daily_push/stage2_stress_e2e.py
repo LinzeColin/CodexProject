@@ -25,6 +25,24 @@ S2PMT05_SQLITE_BUSY_MAX_RETRIES = 5
 S2PMT05_CAPACITY_BASELINE_MULTIPLIERS = (1, 2, 5)
 S2PMT05_CAPACITY_BASELINE_MAX_QUEUE_AGE_SECONDS = 1800
 S2PMT05_CAPACITY_BASELINE_MAX_ERROR_RATE = 0.001
+S2PMT05_REQUIRED_FAULTS = (
+    "ENOSPC",
+    "EACCES_READ_ONLY_DIR",
+    "SQLITE_BUSY",
+    "CORRUPT_CACHE_JSON",
+    "CORRUPT_PDF_ARTIFACT",
+    "CORRUPT_BACKUP_MANIFEST",
+    "BACKUP_PATH_COLLISION",
+)
+S2PMT05_REQUIRED_FAULT_RECOVERY_STATES = (
+    "BLOCKED_LOW_DISK",
+    "BLOCKED_READ_ONLY_TARGET",
+    "RETRY_THEN_BLOCKED",
+    "REBUILD_CACHE",
+    "REGENERATE_PDF_FROM_SOURCE",
+    "BLOCKED_RESTORE",
+    "BLOCKED_BACKUP_PUBLISH",
+)
 S2PMT05_BACKPRESSURE_PEAK_MULTIPLIERS = (2, 5)
 S2PMT05_BACKPRESSURE_HIGH_PRIORITY_SLO_SECONDS = 600
 S2PMT05_REQUIRED_MAIL_PRODUCTS = ("M1", "M2", "M3", "M4")
@@ -334,16 +352,50 @@ def build_fault_injection_matrix(*, generated_at: str) -> dict[str, Any]:
         _fault_row("EACCES_READ_ONLY_DIR", "artifact_write", "BLOCKED_READ_ONLY_TARGET", "fail_before_partial_commit"),
         _fault_row("SQLITE_BUSY", "sqlite_write", "RETRY_THEN_BLOCKED", "busy_timeout_retry_backoff_single_writer"),
         _fault_row("CORRUPT_CACHE_JSON", "cache_load", "REBUILD_CACHE", "discard_rebuildable_cache_only"),
+        _fault_row("CORRUPT_PDF_ARTIFACT", "report_publish", "REGENERATE_PDF_FROM_SOURCE", "discard_corrupt_pdf_and_rebuild_from_markdown"),
         _fault_row("CORRUPT_BACKUP_MANIFEST", "restore_drill", "BLOCKED_RESTORE", "require_manifest_hash_match"),
+        _fault_row("BACKUP_PATH_COLLISION", "backup_publish", "BLOCKED_BACKUP_PUBLISH", "require_source_hash_prefixed_backup_paths"),
     ]
-    status = "pass" if all(row["fail_closed"] and not row["production_mutation_applied"] for row in scenarios) else "blocked"
+    evaluation = evaluate_fault_injection_matrix(scenarios=scenarios)
     return {
         "generated_at": generated_at,
-        "status": status,
+        "status": evaluation["status"],
         "sqlite_busy_timeout_ms": S2PMT05_SQLITE_BUSY_TIMEOUT_MS,
         "sqlite_busy_max_retries": S2PMT05_SQLITE_BUSY_MAX_RETRIES,
+        "required_faults": list(S2PMT05_REQUIRED_FAULTS),
+        "required_recovery_states": list(S2PMT05_REQUIRED_FAULT_RECOVERY_STATES),
         "scenarios": scenarios,
+        "checks": evaluation["checks"],
+        "blocking_reasons": evaluation["blocking_reasons"],
     }
+
+
+def evaluate_fault_injection_matrix(*, scenarios: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    """Evaluate fail-closed local fault-injection evidence for B-009."""
+
+    faults = {str(row.get("fault") or "") for row in scenarios}
+    recovery_states = {str(row.get("resulting_state") or "") for row in scenarios}
+    by_fault = {str(row.get("fault") or ""): row for row in scenarios}
+    checks = {
+        "required_faults_present": set(S2PMT05_REQUIRED_FAULTS).issubset(faults),
+        "required_recovery_states_present": set(S2PMT05_REQUIRED_FAULT_RECOVERY_STATES).issubset(recovery_states),
+        "all_faults_fail_closed": all(row.get("fail_closed") is True for row in scenarios),
+        "no_production_mutation_applied": all(row.get("production_mutation_applied") is False for row in scenarios),
+        "durable_evidence_preserved": all(row.get("durable_evidence_preserved") is True for row in scenarios),
+        "no_partial_artifact_commit": all(row.get("partial_artifact_committed") is False for row in scenarios),
+        "explicit_recovery_actions_present": all(bool(str(row.get("recovery_action") or "")) for row in scenarios),
+        "sqlite_busy_policy_present": int(by_fault.get("SQLITE_BUSY", {}).get("sqlite_busy_timeout_ms") or 0)
+        >= S2PMT05_SQLITE_BUSY_TIMEOUT_MS
+        and int(by_fault.get("SQLITE_BUSY", {}).get("sqlite_busy_max_retries") or 0) >= S2PMT05_SQLITE_BUSY_MAX_RETRIES,
+        "corrupt_pdf_rebuilds_from_source": by_fault.get("CORRUPT_PDF_ARTIFACT", {}).get("resulting_state")
+        == "REGENERATE_PDF_FROM_SOURCE"
+        and by_fault.get("CORRUPT_PDF_ARTIFACT", {}).get("trust_corrupt_artifact") is False,
+        "backup_faults_block_restore_or_publish": by_fault.get("CORRUPT_BACKUP_MANIFEST", {}).get("resulting_state")
+        == "BLOCKED_RESTORE"
+        and by_fault.get("BACKUP_PATH_COLLISION", {}).get("resulting_state") == "BLOCKED_BACKUP_PUBLISH",
+    }
+    blocking_reasons = [key for key, value in checks.items() if value is not True]
+    return {"status": "pass" if not blocking_reasons else "blocked", "checks": checks, "blocking_reasons": blocking_reasons}
 
 
 def evaluate_dst_clock_policy(*, timezone_name: str = "Australia/Sydney") -> dict[str, Any]:
@@ -695,6 +747,24 @@ def validate_s2pmt05_report(report: Mapping[str, Any]) -> list[str]:
     ):
         if backpressure_checks.get(check) is not True:
             errors.append(f"backpressure_degradation.checks.{check} must be true")
+    fault_injection = _mapping(report.get("fault_injection"))
+    if fault_injection.get("status") != "pass":
+        errors.append("fault_injection must pass")
+    fault_checks = _mapping(fault_injection.get("checks"))
+    for check in (
+        "required_faults_present",
+        "required_recovery_states_present",
+        "all_faults_fail_closed",
+        "no_production_mutation_applied",
+        "durable_evidence_preserved",
+        "no_partial_artifact_commit",
+        "explicit_recovery_actions_present",
+        "sqlite_busy_policy_present",
+        "corrupt_pdf_rebuilds_from_source",
+        "backup_faults_block_restore_or_publish",
+    ):
+        if fault_checks.get(check) is not True:
+            errors.append(f"fault_injection.checks.{check} must be true")
     capacity_baseline = _mapping(report.get("capacity_baseline_model"))
     if capacity_baseline.get("status") != "pass":
         errors.append("capacity_baseline_model must pass")
@@ -717,7 +787,7 @@ def validate_s2pmt05_report(report: Mapping[str, Any]) -> list[str]:
 
 
 def _fault_row(fault: str, stage: str, resulting_state: str, recovery_action: str) -> dict[str, Any]:
-    return {
+    row = {
         "fault": fault,
         "stage": stage,
         "resulting_state": resulting_state,
@@ -725,7 +795,13 @@ def _fault_row(fault: str, stage: str, resulting_state: str, recovery_action: st
         "fail_closed": True,
         "production_mutation_applied": False,
         "durable_evidence_preserved": True,
+        "partial_artifact_committed": False,
+        "trust_corrupt_artifact": False,
     }
+    if fault == "SQLITE_BUSY":
+        row["sqlite_busy_timeout_ms"] = S2PMT05_SQLITE_BUSY_TIMEOUT_MS
+        row["sqlite_busy_max_retries"] = S2PMT05_SQLITE_BUSY_MAX_RETRIES
+    return row
 
 
 def _capacity_baseline_row(

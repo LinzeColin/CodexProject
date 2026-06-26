@@ -5145,7 +5145,7 @@ models:
   -
     model_id: "MOD-ADP-098"
     name: "S2PMT05 local stress fault time and E2E model"
-    purpose: "Validate local S2PMT05 formal capacity baseline, load, stress, spike, accelerated 24h soak, dual scheduler race, SMTP crash-window, ENOSPC/EACCES/SQLITE_BUSY/corrupt-artifact fault injection, Australia/Sydney DST and clock-skew policy, 35-day 3+1/weekly/monthly/review/action/ROI E2E flow, semantic/evidence-bound non-template result validity, backpressure degradation, deterministic isolation, and no production side effects under V7.2."
+    purpose: "Validate local S2PMT05 formal capacity baseline, load, stress, spike, accelerated 24h soak, dual scheduler race, SMTP crash-window, ENOSPC/EACCES/SQLITE_BUSY/corrupt JSON/PDF/backup fault injection, Australia/Sydney DST and clock-skew policy, 35-day 3+1/weekly/monthly/review/action/ROI E2E flow, semantic/evidence-bound non-template result validity, backpressure degradation, deterministic isolation, and no production side effects under V7.2."
     owner: "arxiv-daily-push"
     status: "active"
     assumption_ids:
@@ -5169,6 +5169,8 @@ models:
       - "PARAM-ADP-910"
       - "PARAM-ADP-911"
       - "PARAM-ADP-912"
+      - "PARAM-ADP-913"
+      - "PARAM-ADP-914"
       - "PARAM-ADP-815"
       - "PARAM-ADP-816"
       - "PARAM-ADP-908"
@@ -5178,7 +5180,7 @@ models:
       - "deterministic workload profile"
       - "local dual scheduler trigger fixture"
       - "local transactional outbox crash-window fixture"
-      - "fault injection scenario matrix"
+      - "systematic fault injection scenario and recovery-state matrix"
       - "Australia/Sydney DST and clock-skew cases"
       - "35-day local E2E fixture"
       - "semantic/evidence/non-template result validity fixture"
@@ -5188,7 +5190,7 @@ models:
       - "load stress spike soak evaluation"
       - "dual scheduler race evidence"
       - "SMTP crash-window evidence"
-      - "fault injection matrix"
+      - "fault injection matrix with explicit recovery states"
       - "DST and clock-skew policy evidence"
       - "35-day E2E flow evidence"
       - "result validity semantic evidence"
@@ -5206,10 +5208,12 @@ models:
       - "governance/run_manifests/ADP-S2PMT05-RESULT-VALIDITY-B013-20260626.json"
       - "governance/run_manifests/ADP-S2PMT05-BACKPRESSURE-B014-20260627.json"
       - "governance/run_manifests/ADP-S2PMT05-CAPACITY-BASELINE-B006-20260627.json"
+      - "governance/run_manifests/ADP-S2PMT05-FAULT-INJECTION-B009-20260627.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_STRESS_E2E.md"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_RESULT_VALIDITY_B013.md"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_BACKPRESSURE_B014.md"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_CAPACITY_BASELINE_B006.md"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_FAULT_INJECTION_B009.md"
 
   -
     model_id: "MOD-ADP-099"

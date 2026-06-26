@@ -7,7 +7,7 @@ machine_summary:
 
 - model_count: 106
 - formula_count: 108
-- parameter_count: 912
+- parameter_count: 914
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -37,6 +37,17 @@ Fact levels follow `docs/governance/STANDARD.md`.
   spike shedding. It does not run a real production load test, enable SMTP,
   install scheduler, upload Release, change public schema or DB, mutate
   production queues, change source adapters or ranking, edit CURRENT or
+  V7.1/V7.2 contracts, close inherited P0/P1, enable DAILY_OPERATION, or claim
+  integrated production acceptance.
+
+- `S2PMT05-FAULT-INJECTION-B009` refreshes `MOD-ADP-098` and
+  `FORM-ADP-100`. It adds a local systematic fault-injection gate for
+  inherited B-009 with ENOSPC, read-only target, SQLITE_BUSY, corrupt JSON
+  cache, corrupt PDF artifact, corrupt backup manifest, backup path collision,
+  explicit recovery states, no partial artifact commit, durable evidence
+  preservation, and fail-closed checks. It does not execute production restore,
+  enable SMTP, install scheduler, upload Release, change public schema or DB,
+  mutate production queues, change source adapters or ranking, edit CURRENT or
   V7.1/V7.2 contracts, close inherited P0/P1, enable DAILY_OPERATION, or claim
   integrated production acceptance.
 

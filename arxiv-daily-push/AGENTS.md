@@ -50,8 +50,8 @@ This project follows the root `AGENTS.md` and `docs/governance/STANDARD.md`.
   accelerated local 24h soak coverage, bounded recoverable queue age, 1x/2x/5x
   multipliers, throughput/latency/memory/disk/error-budget evidence, dual
   scheduler race protection, SMTP crash-window handling, ENOSPC/read-only/
-  SQLITE_BUSY/corrupt-artifact fault injection, Australia/Sydney DST and clock
-  skew policy, 35-day 3+1/weekly/monthly/review/action/ROI E2E count
+  SQLITE_BUSY/corrupt JSON/PDF/backup fault injection with explicit recovery
+  states, Australia/Sydney DST and clock skew policy, 35-day 3+1/weekly/monthly/review/action/ROI E2E count
   conservation, semantic/evidence-bound non-template result validity, 2x/5x
   priority-aware backpressure/degradation with high-priority SLO and
   low-priority reason codes, deterministic isolation, and no production side
