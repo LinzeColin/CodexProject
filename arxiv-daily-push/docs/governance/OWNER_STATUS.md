@@ -2,7 +2,7 @@
 
 ## 1. 当前结论
 
-arxiv-daily-push 当前治理结论：实现一致性为 `VERIFIED`，方法/实证为 `VERIFIED` / `VERIFIED`，交付状态为 `BLOCKED_PRECHECK`；这不是生产上线声明。
+arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTION_ACCEPTED`，`ADP-S1P5T05` 已完成本机 Codex/local runner 与 2026-06-30 迁移准备；GitHub 只保留代码、PR/CI、证据、状态和备份角色，不作为每日生产 runner。
 
 ## 2. 本次运行改变了什么
 
@@ -31,22 +31,22 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 7. 下一行动、责任角色和验收证据
 
-- next_task_id: `NONE`
-- responsible_role: `project_owner`
-- acceptance_ids: `none`
-- unblock_condition: Define a ready/in_progress/blocked task with completed dependencies, Acceptance IDs, and evidence policy.
+- next_task_id: `S2PLT01`
+- responsible_role: `content_owner + product_owner`
+- acceptance_ids: `ACC-S2PLT01-30D`
+- unblock_condition: S2PLT01 entry precheck can be misread as full replay execution or acceptance; missing S2PBT05, inherited P0/P1, missing full replay, missing mail preview proof, and missing terminal source-state proof still block S2PLT01, S2PLT04, S2PMT07, and integrated production acceptance.
 
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (838/838 active parameters, 103/103 active formulas)
+- implementation_congruence: `VERIFIED` (851/851 active parameters, 104/104 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `VERIFIED`
 - empirical_validation: `VERIFIED`
 - operational_validation: `VERIFIED`
 - delivery_evidence: `VERIFIED`
 - evidence_freshness: `PARTIAL`
-- delivery_readiness: `BLOCKED_PRECHECK`
+- delivery_readiness: `VERIFIED`
 
 ## 9. A/B/C Choice Matrix
 
@@ -68,26 +68,26 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 12. Model Formula Parameter Change
 
-- model_count: `101`
-- total_formulas: `103`
-- active_formulas: `103`
-- total_parameters: `855`
-- active_parameters: `838`
+- model_count: `102`
+- total_formulas: `104`
+- active_formulas: `104`
+- total_parameters: `868`
+- active_parameters: `851`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PMT07_FINAL_GATE_PRECHECK_BLOCKED`
+- release_gate: `S2PBT05_D1_QUALIFICATION_PASSED_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `0`
 - commit_bound_events: `1`
-- legacy_unbound_events: `104`
+- legacy_unbound_events: `105`
 - precommit_pending_events: `40`
-- pending_or_stale_events: `143`
+- pending_or_stale_events: `144`
 
 ## 15. UNKNOWN
 
@@ -97,13 +97,13 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:53d8ca6383287e500b59b7c9c59210ecbd859cb17fdc66535732a37052090a73`
-- snapshot_event_time: `2026-06-26T17:00:00+10:00`
+- source_snapshot_hash: `sha256:245d4d517861f9e8d6c49e7319a67ff45e743db8b28dea9cca06e00dfe6e7e51`
+- snapshot_event_time: `2026-06-26T18:40:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.0`
-- phase/gate: `S2PM / S2PMT07_FINAL_GATE_PRECHECK_BLOCKED`
+- phase/gate: `S2PB / S2PBT05_D1_QUALIFICATION_PASSED_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 
-- task_id: `NONE`
-- reason: No ready or in_progress task has completed dependencies, Acceptance IDs, and test commands.
+- task_id: `S2PLT01`
+- reason: Record fail-closed entry precheck for full-system 30 independent historical-day replay under V7.2 and S2PMT07 blocked boundaries.

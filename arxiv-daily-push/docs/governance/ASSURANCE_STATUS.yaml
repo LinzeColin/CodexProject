@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260626-ADP-S2PLT01-ENTRY-PRECHECK-001"
-source_snapshot_hash: "sha256:53d8ca6383287e500b59b7c9c59210ecbd859cb17fdc66535732a37052090a73"
+as_of_event_id: "EVENT-20260626-ADP-S2PBT05-D1-QUALIFICATION-001"
+source_snapshot_hash: "sha256:245d4d517861f9e8d6c49e7319a67ff45e743db8b28dea9cca06e00dfe6e7e51"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
-snapshot_event_time: "2026-06-26T17:00:00+10:00"
+snapshot_event_time: "2026-06-26T18:40:00+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -16,10 +16,10 @@ dimensions:
     status: "VERIFIED"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 838
-    total_active_parameters: 838
-    checked_active_formulas: 103
-    total_active_formulas: 103
+    checked_active_parameters: 851
+    total_active_parameters: 851
+    checked_active_formulas: 104
+    total_active_formulas: 104
     unresolved_fact_ids: []
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
@@ -27,8 +27,8 @@ dimensions:
   parameter_source_quality:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 838
-    total_active_parameters: 838
+    checked_active_parameters: 851
+    total_active_parameters: 851
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -60,13 +60,13 @@ dimensions:
     fact_level: "EXTRACTED"
     tree_bound_events: 0
     commit_bound_events: 1
-    legacy_unbound_events: 104
+    legacy_unbound_events: 105
     precommit_pending_events: 40
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "BLOCKED_PRECHECK"
-  release_gate: "S2PMT07_FINAL_GATE_PRECHECK_BLOCKED"
+  status: "VERIFIED"
+  release_gate: "S2PBT05_D1_QUALIFICATION_PASSED_NO_PRODUCTION"
   blocker_ids:
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
@@ -82,13 +82,14 @@ delivery_readiness:
   parallel_shadow_source_task: "NONE_WHILE_S2PMT07_BLOCKED"
   current_v7_task_id: "S2PMT07"
 next_executable_task:
-  task_id: "NONE"
-  status: "not_applicable"
-  reason: "No ready or in_progress task has completed dependencies, Acceptance IDs, and test commands."
-  acceptance_ids: []
-  owner: "project owner"
-  human_owner_role: "project_owner"
-  unblock_condition: "Define a ready/in_progress/blocked task with completed dependencies, Acceptance IDs, and evidence policy."
+  task_id: "S2PLT01"
+  status: "blocked"
+  reason: "Record fail-closed entry precheck for full-system 30 independent historical-day replay under V7.2 and S2PMT07 blocked boundaries."
+  acceptance_ids:
+    - "ACC-S2PLT01-30D"
+  owner: "content_owner + product_owner"
+  human_owner_role: "content_owner + product_owner"
+  unblock_condition: "S2PLT01 entry precheck can be misread as full replay execution or acceptance; missing S2PBT05, inherited P0/P1, missing full replay, missing mail preview proof, and missing terminal source-state proof still block S2PLT01, S2PLT04, S2PMT07, and integrated production acceptance."
   stale_candidates:
     -
       task_id: "ADP-PHASE11-PRODUCTION-TRIAL-START-022"

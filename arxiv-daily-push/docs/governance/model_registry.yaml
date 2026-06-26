@@ -5320,3 +5320,48 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PLT01-ENTRY-PRECHECK-20260626.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT01_ENTRY_PRECHECK.md"
+
+  -
+    model_id: "MOD-ADP-102"
+    name: "S2PBT05 D1 source-domain qualification receipt model"
+    purpose: "Convert completed S2PBT01/S2P1T01 bioRxiv/medRxiv real replay and shadow evidence into a D1 terminal qualification receipt consumable by S2PLT01 without enabling formal production inclusion."
+    owner: "arxiv-daily-push"
+    status: "active"
+    assumption_ids:
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-104"
+    parameter_ids:
+      - "PARAM-ADP-856"
+      - "PARAM-ADP-857"
+      - "PARAM-ADP-858"
+      - "PARAM-ADP-859"
+      - "PARAM-ADP-860"
+      - "PARAM-ADP-861"
+      - "PARAM-ADP-862"
+      - "PARAM-ADP-863"
+      - "PARAM-ADP-864"
+      - "PARAM-ADP-865"
+      - "PARAM-ADP-866"
+      - "PARAM-ADP-867"
+      - "PARAM-ADP-868"
+    inputs:
+      - "S2PBT01 and S2P1T01 alias evidence"
+      - "30-date bioRxiv/medRxiv real no-send replay summary"
+      - "720-hour accelerated shadow summary"
+      - "source-gate ready flags"
+      - "no-production side-effect flags"
+    outputs:
+      - "passing S2PBT05 D1 qualification receipt"
+      - "D1 source-domain terminal state for S2PLT01 dependency checks"
+      - "deterministic report hash"
+      - "forbidden production flag state"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_d1_gate.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_d1_gate.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PBT05-D1-QUALIFICATION-20260626.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PBT05_D1_QUALIFICATION.md"

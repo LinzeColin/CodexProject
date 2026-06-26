@@ -9,11 +9,11 @@ The append-only machine record is `development_events.jsonl`.
 ## Current State
 
 - Product version: 0.23.0
-- Current phase: S2PL
-- Current gate: S2PLT01_ENTRY_PRECHECK_BLOCKED
-- Confirmed iteration count: 115
+- Current phase: S2PB
+- Current gate: S2PBT05_D1_QUALIFICATION_PASSED_NO_PRODUCTION
+- Confirmed iteration count: 116
 - Reconstructed event count: 0
-- Current task: `S2PLT01` full-system replay entry precheck is blocked. `S2PBT05` is missing, inherited V7.1 P0=8 and P1=37 remain open, full 30-day replay has not been executed, 120 mail previews are not proven, and terminal source states are not proven. `S2PMT07` remains the final production gate and is still blocked by missing S2PLT04, final bundle, independent signoff, and independent final command execution. No CURRENT, V7.1/V7.2 contract file, real SMTP, scheduler installation, Release, DB migration, public schema, production queue, source adapter, ranking, inherited P0/P1 closure, DAILY_OPERATION, or integrated production acceptance state changed. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
+- Current task: `S2PBT05` D1 source-domain qualification receipt is complete from completed `S2PBT01` / legacy `S2P1T01` bioRxiv and medRxiv real no-send replay/shadow evidence. `S2PLT01` no longer has the `s2pbt05_missing` blocker, but inherited V7.1 P0=8 and P1=37 remain open, full 30-day replay has not been executed, 120 mail previews are not proven, and terminal source states are not proven. `S2PMT07` remains the final production gate and is still blocked by missing S2PLT04, final bundle, independent signoff, and independent final command execution. No CURRENT, V7.1/V7.2 contract file, real SMTP, scheduler installation, Release, DB migration, public schema, production queue, source adapter, ranking, inherited P0/P1 closure, DAILY_OPERATION, or integrated production acceptance state changed. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
 ## Phase Matrix
@@ -39,6 +39,26 @@ The append-only machine record is `development_events.jsonl`.
 
 ## Iteration Records
 
+### `ITER-20260626-ADP-S2PBT05-D1-QUALIFICATION`
+
+- Timestamp: `2026-06-26T18:40:00+10:00`
+- Fact level: EXTRACTED from completed S2PBT01/S2P1T01 bioRxiv and medRxiv real no-send replay/shadow evidence, S2PBT05 D1 gate code, focused tests, model/formula/parameter registry diff, phase record, manifest, and S2PLT01 dependency update.
+- Base commit: `3404523324c12a710a618d8d1801aece1b960fcc`
+- Status: completed local validation.
+- Phase: S2PB
+- Task IDs: `S2PBT05`; acceptance `ACC-S2PBT05-D1`.
+- Goal: Record a machine-verifiable D1 source-domain qualification receipt from completed S2PBT01/S2P1T01 evidence and remove only the `s2pbt05_missing` S2PLT01 blocker.
+- Files changed: S2PBT05 D1 gate helper, focused tests, S2PLT01 replay-gate dependency state, phase records, run manifest, model/formula/parameter registries, traceability/status files, delivery task, rendered governance inputs, and this ledger entry.
+- Model changes: Added `MOD-ADP-102` D1 source-domain qualification receipt model.
+- Formula changes: Added `FORM-ADP-104` with machine-verifiable AST references bound to S2PBT05 D1 qualification implementations and updated `FORM-ADP-103` after the S2PLT01 dependency blocker was removed.
+- Parameter changes: Added `PARAM-ADP-856` through `PARAM-ADP-868` for S2PBT05 identifiers, alias tasks, source servers, replay/shadow requirements, selected-record threshold, zero counters, ready flags, and forbidden production/change flags; updated `PARAM-ADP-855` after removing `s2pbt05_missing`.
+- Validation: py_compile PASS; focused S2PBT05/S2PLT01 tests 7 OK; full arxiv-daily-push unittest 454 OK; V7.2 validator PASS; ADP project governance 0 errors / 0 warnings; changed-only governance semantic 0 errors / 0 warnings; lean check-render drift_count 0 reference_issue_count 0; YAML/JSONL/CSV/manifest parse OK; git diff --check PASS; forbidden production path scan clean; forbidden production true-flag scan found only false/no-production governance evidence; full semantic extractor NOT COMPLETED after local interrupt during full-table AST parsing, so changed-only semantic governance is the S2PBT05 local gate used for this run.
+- Decisions: `ACC-S2PBT05-D1` is accepted as a qualification receipt only. This does not execute S2PLT01 full replay, does not prove 120 mail previews, does not prove terminal source states, does not enable formal D1 production inclusion, and does not claim Stage 2 production acceptance, integrated production acceptance, or DAILY_OPERATION.
+- Remaining risks: Inherited V7.1 P0=8/P1=37, missing full 30-day replay, missing 120 mail previews, missing D1-D4 terminal source states, S2PLT04, and S2PMT07 remain blocking.
+- Rollback: Revert S2PBT05 D1 gate helper, tests, S2PLT01 dependency update, governance registrations, phase record, manifest, events, rendered governance sync, and this ledger entry; no runtime production state was changed.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PBT05_D1_QUALIFICATION.md`; `governance/run_manifests/ADP-S2PBT05-D1-QUALIFICATION-20260626.json`; `arxiv-daily-push/tests/test_stage2_d1_gate.py`; `arxiv-daily-push/tests/test_stage2_replay_gate.py`.
+- Next step: Resolve inherited P0/P1 blockers, execute full S2PLT01 replay, prove 120 mail previews, and prove terminal source states before S2PLT01 acceptance.
+
 ### `ITER-20260626-ADP-S2PLT01-ENTRY-PRECHECK`
 
 - Timestamp: `2026-06-26T10:00:00+10:00`
@@ -53,11 +73,11 @@ The append-only machine record is `development_events.jsonl`.
 - Formula changes: Added `FORM-ADP-103` with machine-verifiable AST references bound to S2PLT01 replay entry precheck implementations.
 - Parameter changes: Added `PARAM-ADP-843` through `PARAM-ADP-855` for S2PLT01 identifiers, inherited P0/P1 blocker counts, dependencies, replay-day and mail-preview requirements, source domains, reading boards, required outputs, forbidden flags, and blocking reasons.
 - Validation: py_compile PASS; focused S2PLT01 replay gate tests 4 OK; full arxiv-daily-push unittest 451 OK; V7.2 validator PASS; ADP project governance 0 errors / 0 warnings; changed-only governance semantic 0 errors / 0 warnings; lean check-render drift_count 0 reference_issue_count 0; YAML/JSONL/CSV/manifest parse OK; git diff --check PASS; forbidden production enablement diff scan no true/enabling hits; full semantic extractor NOT COMPLETED after local interrupt during full-table AST parsing, so changed-only semantic governance is the S2PLT01 local gate used for this run.
-- Decisions: `ACC-S2PLT01-30D` is not accepted. The current precheck is blocked by missing `S2PBT05`, inherited V7.1 P0/P1 blockers, missing full 30-day replay execution, missing 120 mail previews, and missing terminal source-state proof. Real SMTP, scheduler installation, launchd bootstrap, Release, public schema, DB migration, production queue mutation, ranking, source adapter changes, workflow enforcement, Stage 2 production acceptance, inherited P0/P1 closure, integrated production acceptance, DAILY_OPERATION, and production operation remain false/disabled.
+- Decisions: `ACC-S2PLT01-30D` is not accepted. The precheck was originally blocked by missing `S2PBT05`, inherited V7.1 P0/P1 blockers, missing full 30-day replay execution, missing 120 mail previews, and missing terminal source-state proof; after S2PBT05, the remaining blockers are inherited P0/P1, missing full replay execution, missing 120 mail previews, and missing terminal source-state proof. Real SMTP, scheduler installation, launchd bootstrap, Release, public schema, DB migration, production queue mutation, ranking, source adapter changes, workflow enforcement, Stage 2 production acceptance, inherited P0/P1 closure, integrated production acceptance, DAILY_OPERATION, and production operation remain false/disabled.
 - Remaining risks: This does not execute a 30-day full-system replay, does not prove 120 mail previews, does not complete S2PLT04, and does not replace S2PMT07 independent final review.
 - Rollback: Revert S2PLT01 replay-gate helper, tests, governance registrations, phase record, manifest, events, rendered governance sync, and this ledger entry; no runtime production state was changed.
 - Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PLT01_ENTRY_PRECHECK.md`; `governance/run_manifests/ADP-S2PLT01-ENTRY-PRECHECK-20260626.json`; `arxiv-daily-push/tests/test_stage2_replay_gate.py`.
-- Next step: Resolve `S2PBT05` and inherited P0/P1 blockers before executing S2PLT01 replay, then continue toward S2PLT04 and S2PMT07.
+- Next step: Resolve inherited P0/P1 blockers, execute S2PLT01 replay, prove 120 mail previews, and prove terminal source states before S2PLT01 acceptance, then continue toward S2PLT04 and S2PMT07.
 
 ### `ITER-20260626-ADP-S2PM-S2PMT07-FINAL-GATE-PRECHECK`
 

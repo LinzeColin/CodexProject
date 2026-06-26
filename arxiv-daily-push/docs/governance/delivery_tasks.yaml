@@ -1174,6 +1174,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.0"
     unknown_task_ids: []
+  - task_id: "S2PBT05"
+    phase: "S2PB"
+    objective: "Record D1 source-domain qualification receipt from completed S2PBT01/S2P1T01 bioRxiv and medRxiv real replay/shadow evidence so S2PLT01 can consume D1 as a completed dependency."
+    scope: "D1 qualification helper, no-production receipt report, S2PLT01 dependency update, focused tests, model/formula/parameter registration, traceability row, phase record, run manifest, and append-only event."
+    non_scope: "No live source fetch, no formal bioRxiv/medRxiv production inclusion, no S2PLT01 full replay execution, no S2PLT01/S2PLT04/S2PMT07 acceptance, no real SMTP send, no scheduler install, no Release, no DB migration, no public schema change, no production queue mutation, no source adapter/ranking change, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no DAILY_OPERATION, and no integrated production acceptance."
+    status: "completed"
+    dependencies: ["S2PBT01", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_d1_gate.py", "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py", "arxiv-daily-push/tests/test_stage2_d1_gate.py", "arxiv-daily-push/tests/test_stage2_replay_gate.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PBT05_D1_QUALIFICATION.md"]
+    acceptance_ids: ["ACC-S2PBT05-D1"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pbt05_compile PYTHONPATH=arxiv-daily-push/src python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_d1_gate.py arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py arxiv-daily-push/tests/test_stage2_d1_gate.py arxiv-daily-push/tests/test_stage2_replay_gate.py", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pbt05_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_d1_gate.py arxiv-daily-push/tests/test_stage2_replay_gate.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pbt05_full PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pbt05_v72 PYTHONPATH=scripts:arxiv-daily-push/src python3 arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pbt05_gov PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pbt05_changed_sem PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pbt05_check_render PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/lean_governance.py check-render --project arxiv-daily-push", "git diff --check"]
+    test_results: ["py_compile PASS", "focused S2PBT05/S2PLT01 tests: 7 OK", "full arxiv-daily-push unittest: 454 OK", "V7.2 validator: PASS", "ADP project governance: 0 errors / 0 warnings", "changed-only governance semantic: 0 errors / 0 warnings", "lean check-render: drift_count 0 reference_issue_count 0", "YAML/JSONL/CSV/manifest parse: OK", "git diff --check: PASS", "forbidden production path scan clean; true-flag scan found only false/no-production governance evidence", "full semantic extractor: NOT COMPLETED after local interrupt during full-table AST parsing; changed-only semantic governance is the S2PBT05 local gate used for this run"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PBT01-REAL-REPLAY-SHADOW-EVIDENCE-20260624.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PBT05_D1_QUALIFICATION.md", "governance/run_manifests/ADP-S2PBT05-D1-QUALIFICATION-20260626.json", "arxiv-daily-push/tests/test_stage2_d1_gate.py"]
+    risk: "S2PBT05 local D1 qualification can be misread as formal bioRxiv/medRxiv production inclusion or S2PLT01 acceptance; inherited P0/P1, missing full replay, missing 120 mail previews, and missing terminal source states still block S2PLT01, S2PLT04, S2PMT07, and integrated production acceptance."
+    rollback: "Revert S2PBT05 D1 qualification helper, S2PLT01 dependency update, focused tests, governance registrations, phase record, manifest, and event; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
   - task_id: "S2P1T01"
     phase: "S2P1"
     objective: "Legacy alias for V7 S2PBT01 bioRxiv/medRxiv source promotion."

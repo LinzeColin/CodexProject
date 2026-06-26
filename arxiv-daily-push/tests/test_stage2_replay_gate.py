@@ -17,13 +17,13 @@ from arxiv_daily_push.stage2_replay_gate import (
 
 
 class Stage2ReplayGateTests(unittest.TestCase):
-    def test_dependency_state_blocks_missing_d1_domain_qualification(self) -> None:
+    def test_dependency_state_includes_completed_d1_domain_qualification(self) -> None:
         state = build_s2plt01_dependency_state()
 
-        self.assertEqual(state["status"], "blocked")
+        self.assertEqual(state["status"], "pass")
         self.assertEqual(tuple(state["required_dependencies"]), S2PLT01_REQUIRED_DEPENDENCIES)
-        self.assertIn("S2PBT05", state["missing_dependencies"])
-        for task_id in ("S2PCT07", "S2PDT04", "S2PET04", "S2PFT05", "S2PKT05"):
+        self.assertEqual(state["missing_dependencies"], [])
+        for task_id in ("S2PBT05", "S2PCT07", "S2PDT04", "S2PET04", "S2PFT05", "S2PKT05"):
             self.assertIn(task_id, state["completed_dependencies"])
 
     def test_audit_blocker_state_blocks_current_inherited_p0_p1(self) -> None:
@@ -59,6 +59,7 @@ class Stage2ReplayGateTests(unittest.TestCase):
             self.assertFalse(report[flag])
         for reason in S2PLT01_BLOCKING_REASONS:
             self.assertIn(reason, report["blocking_reasons"])
+        self.assertNotIn("s2pbt05_missing", report["blocking_reasons"])
         self.assertEqual(validate_s2plt01_entry_precheck_report(report), [])
 
         tampered = dict(report)

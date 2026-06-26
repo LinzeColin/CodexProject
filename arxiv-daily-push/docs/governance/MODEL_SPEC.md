@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 101
-- formula_count: 103
-- parameter_count: 855
+- model_count: 102
+- formula_count: 104
+- parameter_count: 868
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -909,5 +909,11 @@ Uncovered planned scenarios:
 ## S2PLT01 Full Replay Entry Precheck
 
 - `MOD-ADP-101` / `FORM-ADP-103` define the fail-closed entry precheck for S2PLT01 full-system 30 independent historical-day replay.
-- Passing S2PLT01 is not claimed by this run. The current precheck remains blocked because `S2PBT05` is missing, inherited V7.1 P0=8 and P1=37 are open, full 30-day replay has not been executed, 120 mail previews are not proven, and terminal source states are not proven.
+- Passing S2PLT01 is not claimed by this run. After S2PBT05, the current precheck remains blocked because inherited V7.1 P0=8 and P1=37 are open, full 30-day replay has not been executed, 120 mail previews are not proven, and terminal source states are not proven.
 - S2PLT01 precheck does not execute replay, accept S2PLT01, complete S2PLT04, enable SMTP, install scheduler, upload Release assets, run production restore, migrate DB/public schema, mutate production queues, change source adapters or ranking, change CURRENT or V7.1/V7.2 contracts, close inherited P0/P1, enable DAILY_OPERATION, or claim integrated production acceptance.
+
+## S2PBT05 D1 Qualification Receipt
+
+- `MOD-ADP-102` / `FORM-ADP-104` define the D1 source-domain qualification receipt that turns completed `S2PBT01` / legacy `S2P1T01` bioRxiv and medRxiv evidence into a terminal D1 dependency for S2PLT01.
+- The receipt relies on existing real no-send replay and shadow evidence: 30/30 historical dates, 30 real preprint source IDs, duplicate selected/canonical count 0, future leakage 0, queue continuity breaks 0, P0/P1 0, and shadow_hours 720.0.
+- S2PBT05 does not enable formal bioRxiv/medRxiv production inclusion, live source fetch, SMTP, scheduler, Release, DB/public schema migration, production queue mutation, source adapter/ranking change, CURRENT or V7.1/V7.2 contract-file edits, DAILY_OPERATION, or integrated production acceptance.
