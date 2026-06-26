@@ -78,7 +78,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `TASK-T1307-A209-RECOVERY-AUTHORIZATION-PACKET`
+- release_gate: `TASK-T1307-A209-RECOVERY-CLEAN-CHECKOUT-PRESERVATION-FIX`
 
 ## 14. Evidence Freshness
 
@@ -86,8 +86,8 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - tree_bound_events: `0`
 - commit_bound_events: `21`
 - legacy_unbound_events: `19`
-- precommit_pending_events: `102`
-- pending_or_stale_events: `123`
+- precommit_pending_events: `103`
+- pending_or_stale_events: `124`
 
 ## 15. UNKNOWN
 
@@ -97,11 +97,11 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 - source_base_commit: `047b4094d56fb7b3162b24265501e985690296f0`
 - source_tree_hash: `8737d055c5c24cf2e160003744e375aba6f6145b`
-- source_snapshot_hash: `sha256:53fa71e2df920dd3ab836bcab904164eb33248d2522e5ece7b0a96cfd5060c1b`
-- snapshot_event_time: `2026-06-26T21:58:00+10:00`
+- source_snapshot_hash: `sha256:3766a59318eda4a31a7419c08dbd4482203f0a47f1bb3a81e1ef65e24b0d3624`
+- snapshot_event_time: `2026-06-26T22:27:24+10:00`
 - generator_version: `4.0.0`
 - version: `0.1.0`
-- phase/gate: `D / TASK-T1307-A209-RECOVERY-AUTHORIZATION-PACKET`
+- phase/gate: `D / TASK-T1307-A209-RECOVERY-CLEAN-CHECKOUT-PRESERVATION-FIX`
 
 ## 17. Next Unique Task
 

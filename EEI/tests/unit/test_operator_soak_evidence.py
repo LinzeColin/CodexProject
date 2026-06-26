@@ -418,9 +418,25 @@ def test_operator_soak_recovery_packet_requires_preservation_and_authorization(
     )
     runtime_sources = packet["failed_evidence_preservation"]["runtime_sources_to_preserve"]
     assert any(
+        source["role"] == "canonical_failed_24h_summary"
+        and source["path"] == str(req_24h.output_path)
+        and source["hash_bound_in_ci"] is False
+        for source in runtime_sources
+    )
+    assert any(
+        source["role"] == "canonical_failed_24h_checkpoint"
+        and source["path"] == str(req_24h.checkpoint_path)
+        and source["hash_bound_in_ci"] is False
+        for source in runtime_sources
+    )
+    assert any(
         source["role"] == "inferred_failed_window_output"
         and source["path"] == "/private/tmp/eei-operator-soak-test-2.json"
         for source in runtime_sources
+    )
+    assert all(
+        source["role"] not in {"canonical_24h_summary", "canonical_24h_checkpoint"}
+        for source in packet["failed_evidence_preservation"]["repository_sources"]
     )
     assert packet["operator_authorization_contract"]["authorization_required_before_start"] is True
     validate_recovery_authorization_packet(

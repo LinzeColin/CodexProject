@@ -298,13 +298,16 @@ def build_recovery_authorization_packet(
                 repository_source_entry("background_heartbeat", heartbeat_path),
                 repository_source_entry("evidence_validation", evidence_path),
                 repository_source_entry("finalization_preflight", finalization_path),
-                repository_source_entry("canonical_24h_summary", ROOT / canonical["output_path"]),
-                repository_source_entry(
-                    "canonical_24h_checkpoint",
-                    ROOT / canonical["checkpoint_path"],
-                ),
             ],
             "runtime_sources_to_preserve": [
+                runtime_source_entry(
+                    "canonical_failed_24h_summary",
+                    canonical.get("output_path"),
+                ),
+                runtime_source_entry(
+                    "canonical_failed_24h_checkpoint",
+                    canonical.get("checkpoint_path"),
+                ),
                 runtime_source_entry(
                     "isolated_rerun_summary",
                     artifacts.get("operator_output_path"),

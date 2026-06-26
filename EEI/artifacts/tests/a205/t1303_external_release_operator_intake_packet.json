@@ -80,7 +80,7 @@
       "status": "PENDING_SIGNED_DECISIONS"
     }
   },
-  "generated_at": "2026-06-26T11:56:09Z",
+  "generated_at": "2026-06-26T12:27:12Z",
   "missing_input_ids": [
     "A202_source_license_passage_owner_legal_release",
     "A210_brand_legal_market_clearance_or_risk_waiver",
@@ -311,7 +311,7 @@
       "supporting_sources": [
         {
           "path": "artifacts/tests/a209/t1307_operator_soak_recovery_authorization_packet.json",
-          "sha256": "a92e065b70bbeba93eaa735e184af35958b1d3d0a2e988bd6eb7cda93e58b289"
+          "sha256": "f65dfbc4ab1566e46475305e6e6ddb9b04cf20e22c8f2013d67fa4a2ee935af7"
         }
       ],
       "template_or_partial_evidence_counts_as_clearance": false,
@@ -346,7 +346,7 @@
     },
     "a209_operator_soak_recovery_authorization_packet": {
       "path": "artifacts/tests/a209/t1307_operator_soak_recovery_authorization_packet.json",
-      "sha256": "a92e065b70bbeba93eaa735e184af35958b1d3d0a2e988bd6eb7cda93e58b289"
+      "sha256": "f65dfbc4ab1566e46475305e6e6ddb9b04cf20e22c8f2013d67fa4a2ee935af7"
     },
     "a210_brand_clearance_intake_template": {
       "path": "artifacts/tests/a210/t1309_brand_clearance_intake_template.json",
@@ -354,7 +354,7 @@
     },
     "external_release_evidence_bundle_preflight": {
       "path": "artifacts/tests/a205/t1303_external_release_evidence_bundle_preflight.json",
-      "sha256": "8514d21688e9a5f53a586670e3376fe2b128ffa6fff21a665471bb29edc49ba7"
+      "sha256": "09702b732adcd69753a10706edd1e8608f6de509ff51cb9f48eedfccdd06058b"
     }
   },
   "system_en_name": "Enterprise Ecosystem Intelligence",

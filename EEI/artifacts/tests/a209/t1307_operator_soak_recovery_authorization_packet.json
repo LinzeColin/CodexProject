@@ -99,26 +99,28 @@
         "repository_managed": true,
         "role": "finalization_preflight",
         "sha256": "4276b3c728ca6d3e81769635b17e9880b7233cc9da8e5951fdbd162b18af5346"
-      },
-      {
-        "hash_bound_in_ci": true,
-        "path": "artifacts/tests/a209/t1307_operator_soak_24h.json",
-        "preservation_required_before_clean_rerun": true,
-        "repository_managed": true,
-        "role": "canonical_24h_summary",
-        "sha256": "44ee42e4ae25c4a0f52b4de83c41b152f58592339f16cb4e3007bf8b1ef0a8f6"
-      },
-      {
-        "hash_bound_in_ci": true,
-        "path": "artifacts/tests/a209/t1307_operator_soak_24h.checkpoints.jsonl",
-        "preservation_required_before_clean_rerun": true,
-        "repository_managed": true,
-        "role": "canonical_24h_checkpoint",
-        "sha256": "0f6a65b70350755a5e0b1bfc9a766719bcd0b16e00a8666cdb776d85db73bba3"
       }
     ],
     "required_before_clean_rerun": true,
     "runtime_sources_to_preserve": [
+      {
+        "hash_bound_in_ci": false,
+        "path": "artifacts/tests/a209/t1307_operator_soak_24h.json",
+        "preservation_required_before_clean_rerun": true,
+        "repository_managed": false,
+        "role": "canonical_failed_24h_summary",
+        "sha256": null,
+        "validation_scope": "operator must preserve and attest this external runtime file"
+      },
+      {
+        "hash_bound_in_ci": false,
+        "path": "artifacts/tests/a209/t1307_operator_soak_24h.checkpoints.jsonl",
+        "preservation_required_before_clean_rerun": true,
+        "repository_managed": false,
+        "role": "canonical_failed_24h_checkpoint",
+        "sha256": null,
+        "validation_scope": "operator must preserve and attest this external runtime file"
+      },
       {
         "hash_bound_in_ci": false,
         "path": "/private/tmp/eei-a209-rerun-20260626-0918/operator_soak_24h.json",
@@ -227,7 +229,7 @@
       "windows_remaining": 159
     }
   },
-  "generated_at": "2026-06-26T11:56:07Z",
+  "generated_at": "2026-06-26T12:27:12Z",
   "non_claims": [
     "This recovery packet does not start, stop, resume, or restart A209.",
     "This recovery packet does not close A209 or any release gate.",

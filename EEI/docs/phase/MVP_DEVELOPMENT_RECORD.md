@@ -1,5 +1,26 @@
 # MVP Development Record
 
+## 2026-06-26 - T1307/A209 recovery packet clean-checkout preservation fix
+
+Status: LOCAL TARGET VALIDATED; CI FIX PENDING; A209 OPERATOR AUTHORIZATION REQUIRED; RELEASE GATES STILL BLOCKED
+
+### Scope
+
+- Fixed the recovery packet validator after GitHub EEI validation run `28237745149` failed in a clean checkout because untracked canonical 24h runtime files were absent.
+- Canonical failed 24h summary/checkpoint paths are now recorded as runtime sources that require operator preservation and attestation, not as CI hash-bound repository sources.
+- The packet still source-hashes repository-managed heartbeat, evidence-validation and finalization artifacts.
+- No soak process was started, stopped, resumed, promoted or finalized.
+
+### Validation
+
+- `make generate-operator-soak-recovery-authorization-packet validate-operator-soak-recovery-authorization-packet generate-external-release-evidence-bundle validate-external-release-evidence-bundle`: PASS.
+
+### Non-Claims
+
+- This does not authorize a clean rerun.
+- This does not convert failed or partial runtime evidence into release-ready evidence.
+- This does not close A209 or MVP v0.1 readiness.
+
 ## 2026-06-26 - T1307/A209 recovery authorization packet
 
 Status: LOCAL TARGET VALIDATED; A209 OPERATOR AUTHORIZATION REQUIRED; RELEASE GATES STILL BLOCKED
@@ -7,8 +28,8 @@ Status: LOCAL TARGET VALIDATED; A209 OPERATOR AUTHORIZATION REQUIRED; RELEASE GA
 ### Scope
 
 - Added `artifacts/tests/a209/t1307_operator_soak_recovery_authorization_packet.json`.
-- The packet source-hashes repository A209 heartbeat, evidence-validation, finalization and canonical failed 24h evidence.
-- The packet records external runtime evidence paths from the failed isolated rerun, including checkpoint, log, latest successful window output and inferred failed window output.
+- The packet source-hashes repository A209 heartbeat, evidence-validation and finalization evidence.
+- The packet records canonical failed 24h and external isolated runtime evidence paths, including checkpoint, log, latest successful window output and inferred failed window output, as operator-preserved runtime sources.
 - Added `artifacts/operator_inputs/a209/clean-rerun-authorization.json` as the explicit signed authorization target before any clean 24h rerun.
 - Source-hashed the recovery packet into `artifacts/tests/a205/t1303_external_release_operator_intake_packet.json` as supporting A209 evidence.
 - No soak process was started, stopped, resumed, promoted or finalized.
