@@ -3167,3 +3167,23 @@ None for this new project baseline.
 - Rollback: Revert this attestation event, manifest, generated status refresh, and ledger entry; no runtime production state was changed.
 - Evidence: `governance/run_manifests/ADP-S2PLT02-MAIN-MERGE-ATTESTATION-20260626.json`; `https://github.com/LinzeColin/CodexProject/pull/237`.
 - Next step: Continue only with no-production evidence work until S2PLT02 acceptance prerequisites and final S2PMT07 production stop gates are proven.
+
+### `ITER-20260626-ADP-EMAIL-V1-LOCAL-RUNNER-ATTESTATION`
+
+- Timestamp: `2026-06-26T16:30:00+10:00`
+- Actor: Codex
+- Fact level: EXTRACTED from launchctl print output, local runner checkout state, health/watchdog readiness JSON, historical SMTP report, no-write daily smoke, and targeted Email V1 tests.
+- Status: local runner runtime attested, no replay.
+- Task IDs: `EMAIL-V1-LOCAL-RUNNER-ATTESTATION`, `S2PK`, `EMAIL_LEARNING_V1`.
+- Root cause: The 2026-06-26 real SMTP email used the old template because launchd was still pointed at `/Users/linzezhang/Documents/Codex/2026-06-21/readme-first-md-01-execution-contract/work/CodexProject_adp_stage1_daily_operation`, an old checkout without `EMAIL_LEARNING_V1`.
+- Current runtime: daily/health/watchdog launchd ProgramArguments point at `/Users/linzezhang/Documents/Codex/2026-06-21/readme-first-md-01-execution-contract/work/CodexProject_adp_local_runner_current`, currently `2eaa872033147a13a0c54d1ca097d146e8d7602c`, with certifi `SSL_CERT_FILE`.
+- Health evidence: `/Users/linzezhang/.adp/arxiv-daily-push/health/latest-preflight.json` status `pass`, generated at `2026-06-26T06:18:04Z`, project_root is the new runner checkout.
+- Watchdog evidence: `/Users/linzezhang/.adp/arxiv-daily-push/watchdog/latest-readiness.json` status `pass`, generated at `2026-06-26T06:19:51Z`, project_root is the new runner checkout.
+- Historical SMTP evidence: `/Users/linzezhang/.adp/arxiv-daily-push/runs/20260626/adp-smtp-delivery-report.json` status `sent`, generated at `2026-06-25T19:00:05Z`; this old-template email was not replayed or corrected by duplicate SMTP.
+- No-write smoke: with launchd-equivalent certifi CA, `local-runner daily --no-write --json` produced `preflight_status=pass`, `daily_input_ready=true`, `real_smtp_sent=false`, `email_template_contract=EMAIL_LEARNING_V1`, `mail_product_id=M1`, `mail_products_supported=M1/M2/M3/M4`; overall smoke status remains blocked because no write/send was allowed.
+- Tests: Email V1 targeted tests 21 OK.
+- Decisions: This attestation does not accept `S2PLT02`, start a live two-day run, send SMTP, enable new production switches, change SMTP/scheduler code, upload Release assets, change public schema/DB/production queues, change source adapters or ranking, edit CURRENT or V7.1/V7.2 contracts, close inherited P0/P1, enable DAILY_OPERATION, or claim integrated production acceptance.
+- Remaining risks: The next real scheduled email still needs observation to prove an actual Email V1 SMTP delivery; S2PLT02/S2PLT03/S2PLT04/S2PMT07 and inherited P0/P1 remain blocked.
+- Rollback: Revert this attestation event, manifest, generated status refresh, and ledger entry; local launchd runtime state is external to the repository and must be managed separately.
+- Evidence: `governance/run_manifests/ADP-EMAIL-V1-LOCAL-RUNNER-ATTESTATION-20260626.json`.
+- Next step: Observe the next scheduled real SMTP delivery for Email V1 without sending a duplicate 2026-06-26 email.
