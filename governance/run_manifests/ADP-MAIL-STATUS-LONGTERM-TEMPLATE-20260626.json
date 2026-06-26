@@ -1,0 +1,51 @@
+{
+  "run_id": "ADP-MAIL-STATUS-LONGTERM-TEMPLATE-20260626",
+  "project": "arxiv-daily-push",
+  "timestamp": "2026-06-26T17:42:00+10:00",
+  "task_type": "owner_readable_mail_status_template_update",
+  "objective": "Convert the GitHub user-center mail status page from a one-day resend snapshot into a long-term production-style status template.",
+  "changed_scope": {
+    "mail_status_page": [
+      "今日已发送 / 总应发送",
+      "邮件发送模板 with source and V7.2 overlay links",
+      "historical send records",
+      "截至今日候选队列",
+      "GitHub 内容账本解释",
+      "持续更新规则 and fixed GitHub destination"
+    ],
+    "synced_owner_pages": [
+      "arxiv-daily-push/用户中心/README.md",
+      "arxiv-daily-push/用户中心/一看三查.md",
+      "arxiv-daily-push/用户中心/关键结论与用户决策.md",
+      "arxiv-daily-push/用户中心/人类可读信息索引.md"
+    ],
+    "three_baseline_files": [
+      "arxiv-daily-push/功能清单",
+      "arxiv-daily-push/开发记录",
+      "arxiv-daily-push/模型参数文件"
+    ]
+  },
+  "mail_status_contract": {
+    "primary_destination": "arxiv-daily-push/用户中心/邮件发送与队列状态.md",
+    "count_format": "sent / expected",
+    "example_format": "3 / 5",
+    "current_snapshot": "2 / 4",
+    "template_source": "arxiv-daily-push/src/arxiv_daily_push/mail_templates.py",
+    "template_overlay": "arxiv-daily-push/docs/pursuing_goal/v7_2/machine_readable/email_learning_frontstage_overlay_v1.yaml"
+  },
+  "no_production_side_effects": {
+    "mail_runtime_code_changed": false,
+    "public_schema_changed": false,
+    "scheduler_changed": false,
+    "queue_changed": false,
+    "smtp_settings_changed": false,
+    "current_contract_switched": false
+  },
+  "validation_plan": [
+    "git diff --check",
+    "JSON parse for this manifest",
+    "Markdown relative-link validation for user center and project README",
+    "Scan removed short-term wording such as 今天最新补发 and 今天最新未发送/阻断",
+    "Scan for old English owner-center filenames"
+  ]
+}
