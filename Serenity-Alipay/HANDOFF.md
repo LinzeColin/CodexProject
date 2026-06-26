@@ -1,5 +1,19 @@
 # HANDOFF: Serenity Daily Analysis
 
+Timestamp: 20260627 - 07:54 CST / 20260627 - 09:54 AEST
+
+## 最新交接摘要
+
+- 本轮目标：检查当前 Serenity 是否可用，并按跨线程协调要求核验本机 app、GitHub main、benchmark/Alpha-Beta fail-closed、历史完整性边界。
+- 当前入口状态：本机服务 `http://127.0.0.1:8765/api/health` 返回 `ok`；服务进程 PID `21801`，工作目录为 `/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Serenity-Alipay`。
+- 当前 app 状态：`~/Downloads/Serenity 每日分析.app` 与 `/Applications/Serenity 每日分析.app` 都存在，launcher 均指向 GitHub 权威路径 `LinzeColin/CodexProject/Serenity-Alipay` 对应的本机 checkout；脚本只打开最终 `http://127.0.0.1:$PORT/`，无 `downloads-entry.html`。
+- 当前 GitHub 状态：权威仓库为 `LinzeColin/CodexProject/Serenity-Alipay`；本机 checkout 的 `HEAD` 与远端 `origin/main` 均为 `e8a80658 Restore canonical project launcher routing`。
+- 当前调度状态：`/api/scheduler/status` 返回 app 内置 scheduler `not_started`，因为当前服务以 `--disable-autoscheduler` 启动；launchd label `com.serenity.daily-analysis` 存在，今日 tick 日志为 `non_business_day`，下一真实 slot 为 `2026-06-29T08:30:00+08:00`。
+- 当前数据状态：`/api/manual-review` 返回 `status=pass` 且 `records={}`；最近真实 run 仍停留在历史验证数据，未在本轮新增 run、未发邮件、未启动/关闭 OpenD/MooMoo。
+- 发现并修复的阻断点：目标回归测试最初失败在 `test_asset_pool_entry_keeps_first_holding_pool_entry`，说明 `record_asset_pool_entries()` 可能在后续 run 中把首次进入持仓池事实写成本轮。已修复为写入前先从历史 `recommendation_snapshot + run_log` 找该资产首次进入候选池/持仓池/观察池的真实 run，再 `INSERT OR IGNORE` 固化，避免覆盖首次入池事实。
+- 验证：失败用例单测通过；完整目标集 `/opt/anaconda3/bin/python -m pytest -q tests/test_application_server.py tests/test_reporting_ui.py tests/test_benchmark_smoke.py tests/test_indicator_discipline.py tests/test_history_integrity.py` 为 36 passed。
+- 历史保护：本轮未运行会写 `outputs/audit/*latest*` 的 `history-integrity` CLI；未修改 SQLite 历史数据、旧快照、旧报告、创建时间、首次入池时间或 prior analysis。Git 工作树仍有运行态 SQLite/WAL/lock 文件变化，不应提交。
+
 Timestamp: 20260624 - 14:58 CST / 20260624 - 16:58 AEST
 
 ## 最新交接摘要
