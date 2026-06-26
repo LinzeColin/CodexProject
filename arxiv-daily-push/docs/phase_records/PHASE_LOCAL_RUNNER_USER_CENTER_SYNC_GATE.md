@@ -13,11 +13,19 @@ synchronization as a pass condition. A daily run cannot report `pass` unless
 the shallow `用户中心/复习行动与收益.md` page is synchronized from real
 S2PJT02/S2PJT03 review/action/asset/ROI reports.
 
+The same synchronization gate also requires every generated, selected, or
+queued candidate in the daily input report to carry six-factor ROI score
+details. Missing `roi_signals`, missing `roi_component_weights`, or a
+`roi_total_score` that cannot be recomputed from the six factors keeps
+`user_center_sync_ready=false` and blocks real SMTP.
+
 ## Scope
 
 - Add a local runner fail-closed gate for `user_center_sync_ready`.
 - Block real SMTP before send when user-center synchronization is missing or
   incomplete.
+- Require six-factor ROI score details for generated, selected, and queued
+  candidates before user-center synchronization can pass.
 - Keep dry-run preview generation possible, but mark the daily report blocked
   when the owner-facing GitHub page is not synchronized.
 - Add focused tests for successful sync and missing-sync blocked behavior.
@@ -35,6 +43,12 @@ enablement, and no integrated production acceptance claim.
 `user_center_sync_ready=true`. When sync inputs are missing, stale, or still
 contain `待今日运行快照写入`, the local daily report remains blocked and real
 SMTP send is not attempted.
+
+Candidate score detail is part of the same gate. The local runner checks
+`relevance`, `learning_value`, `economic_conversion_rate`, `roi`,
+`interdisciplinary_value`, and `explainability` against their configured
+weights and the candidate `roi_total_score`. The gate fails closed instead of
+accepting a total-only score.
 
 ## Evidence
 

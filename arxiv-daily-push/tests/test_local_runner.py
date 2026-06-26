@@ -8,6 +8,7 @@ from contextlib import redirect_stdout
 from email.message import EmailMessage
 from pathlib import Path
 
+import arxiv_daily_push.local_runner as local_runner_module
 from arxiv_daily_push.cli import main
 from arxiv_daily_push.global_scan import ALL_ARXIV_ARCHIVES
 from arxiv_daily_push.local_runner import (
@@ -233,6 +234,22 @@ class LocalRunnerTests(unittest.TestCase):
             self.assertEqual(report["planned_mail_delivery"]["planned_mail_products"], ["M1", "M2", "M3", "M4"])
             self.assertIn("【先把论文讲成人话】", Path(report["email_preview_paths"]["plain"]).read_text(encoding="utf-8"))
             self.assertTrue(report["user_center_sync_ready"])
+            score_gate = report["user_center_sync"]["candidate_score_detail_gate"]
+            self.assertEqual(score_gate["status"], "pass")
+            self.assertTrue(report["user_center_sync"]["candidate_score_detail_ready"])
+            self.assertEqual(
+                score_gate["required_components"],
+                [
+                    "relevance",
+                    "learning_value",
+                    "economic_conversion_rate",
+                    "roi",
+                    "interdisciplinary_value",
+                    "explainability",
+                ],
+            )
+            self.assertEqual(score_gate["checked_candidate_count"], score_gate["candidate_count"])
+            self.assertTrue(score_gate["candidate_score_details"])
             self.assertIn("| 今日到期复习 | 1 项 |", (root / USER_CENTER_LEARNING_PAGE).read_text(encoding="utf-8"))
             for mail_status_page in USER_CENTER_MAIL_STATUS_PAGES:
                 page_text = (root / mail_status_page).read_text(encoding="utf-8")
@@ -381,6 +398,76 @@ class LocalRunnerTests(unittest.TestCase):
             self.assertEqual(report["status"], "blocked")
             self.assertFalse(report["user_center_sync_ready"])
             self.assertIn("user center sync missing required files", " ".join(report["blocking_reasons"]))
+            self.assertEqual(report["notification_report"]["status"], "blocked")
+            self.assertFalse(report["notification_report"]["real_send_attempted"])
+            self.assertEqual(FakeSMTP.sent_messages, [])
+            self.assertTrue(validate_local_runner_report(report) == [])
+
+    def test_local_daily_blocks_when_candidate_score_detail_missing(self) -> None:
+        class FakeSMTP:
+            sent_messages: list[EmailMessage] = []
+
+            def __init__(self, host, port, timeout): pass
+            def __enter__(self): return self
+            def __exit__(self, exc_type, exc, traceback): return False
+            def starttls(self): return None
+            def login(self, username, password): return None
+            def send_message(self, message):
+                FakeSMTP.sent_messages.append(message)
+                return {}
+
+        candidate = source_item(
+            "arxiv:2606.24006",
+            "Score detail gate for candidate queue synchronization",
+            "cs.AI",
+            ["cs.AI", "q-fin.PM"],
+        )
+        original_builder = local_runner_module.build_all_arxiv_daily_input
+
+        def builder_without_score_detail(*args, **kwargs):
+            report = original_builder(*args, **kwargs)
+            selection = report.get("selection")
+            if isinstance(selection, dict) and isinstance(selection.get("selected"), dict):
+                selection["selected"].pop("roi_signals", None)
+            scan = report.get("scan")
+            if isinstance(scan, dict):
+                for item in scan.get("candidates") or []:
+                    if isinstance(item, dict):
+                        item.pop("roi_signals", None)
+            queue = report.get("candidate_queue")
+            if isinstance(queue, dict):
+                for item in queue.get("items") or []:
+                    if isinstance(item, dict):
+                        item.pop("roi_signals", None)
+            return report
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "repo"
+            root.mkdir()
+            state = Path(tmp) / "state"
+            write_user_center_sync_inputs(root, state)
+            local_runner_module.build_all_arxiv_daily_input = builder_without_score_detail
+            try:
+                report = run_local_daily(
+                    project_root=root,
+                    state_dir=state,
+                    date="2026-06-24",
+                    generated_at=GENERATED_AT,
+                    env=smtp_env(),
+                    allow_smtp_send=True,
+                    source_batches=source_batches(**{"cs": [candidate]}),
+                    command_resolver=command_resolver,
+                    disk_free_gib=120.0,
+                    memory_total_gib=16.0,
+                    smtp_factory=FakeSMTP,
+                )
+            finally:
+                local_runner_module.build_all_arxiv_daily_input = original_builder
+
+            self.assertEqual(report["status"], "blocked")
+            self.assertFalse(report["user_center_sync_ready"])
+            self.assertFalse(report["user_center_sync"]["candidate_score_detail_ready"])
+            self.assertIn("missing roi_signals six-factor detail", " ".join(report["blocking_reasons"]))
             self.assertEqual(report["notification_report"]["status"], "blocked")
             self.assertFalse(report["notification_report"]["real_send_attempted"])
             self.assertEqual(FakeSMTP.sent_messages, [])

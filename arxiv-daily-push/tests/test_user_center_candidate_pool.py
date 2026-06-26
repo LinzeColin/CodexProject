@@ -65,10 +65,10 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
 
         self.assertEqual(len(detail_rows), 20)
         self.assertIn("adp-roi-ranking-v1", detail_section)
-        self.assertIn("分项贡献 = 归一化信号 x 权重", detail_section)
+        self.assertIn("单元格只展示归一化信号百分比", detail_section)
         self.assertIn("[global_scan.py](../src/arxiv_daily_push/global_scan.py)", detail_section)
-        self.assertIn("| 序号 | 领域代码 | 论文 | 总分 | 相关性 20 | 学习价值 20 | 经济转化率 20 | ROI 20 | 跨学科价值 10 | 可解释性 10 | 核对 | 证据 |", detail_section)
-        self.assertIn("| 1 | cs.AI | [arXiv:2606.22716](https://arxiv.org/abs/2606.22716) | 65.51 | 15.00 = 0.75 x 20 | 17.60 = 0.88 x 20 | 8.60 = 0.43 x 20 | 12.51 = 0.6255 x 20 | 4.30 = 0.43 x 10 | 7.50 = 0.75 x 10 | 一致 |", detail_section)
+        self.assertIn("| 序号 | 领域代码 | 论文 | 总分 | 相关性 20% | 学习价值 20% | 经济转化率 20% | ROI 20% | 跨学科价值 10% | 可解释性 10% | 核对 | 证据 |", detail_section)
+        self.assertIn("| 1 | cs.AI | [arXiv:2606.22716](https://arxiv.org/abs/2606.22716) | 65.51 | 75% | 88% | 43% | 62.55% | 43% | 75% | 一致 |", detail_section)
         self.assertIn("| 20 | cs.CR | [arXiv:2606.08372](https://arxiv.org/abs/2606.08372) | 57.91 |", detail_section)
         self.assertEqual(detail_section.count("一致 | [CONTENT_LEDGER.csv](../docs/owner/CONTENT_LEDGER.csv)"), 20)
 
@@ -136,7 +136,7 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("当前用户中心分数来源", text)
         self.assertIn("adp-roi-ranking-v1", text)
         self.assertIn("ROI 候选排序", text)
-        self.assertIn("相关性 20；学习价值 20；经济转化率 20；ROI 20；跨学科价值 10；可解释性 10；总和 100", text)
+        self.assertIn("相关性 20%；学习价值 20%；经济转化率 20%；ROI 20%；跨学科价值 10%；可解释性 10%；总和 100%", text)
         self.assertIn("每个分项贡献 = 归一化信号 x 该因子权重", text)
         self.assertIn("不能用比例拆分总分来伪造分项", text)
         self.assertIn("旧八因子口径", text)
