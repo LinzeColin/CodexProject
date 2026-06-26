@@ -5605,3 +5605,40 @@ models:
     evidence_refs:
       - "arxiv-daily-push/docs/phase_records/PHASE_LOCAL_RUNNER_USER_CENTER_SYNC_GATE.md"
       - "governance/run_manifests/ADP-LOCAL-RUNNER-USER-CENTER-SYNC-GATE-20260626.json"
+
+  -
+    model_id: "MOD-ADP-107"
+    name: "S2PIT05 four-check freshness and drift alarm model"
+    purpose: "Refresh inherited P1 C-003 evidence by requiring the four shallow GitHub owner-check views to expose freshness, data-as-of, fact-source references, drift state, CI alarm expectation, page alarm expectation, owner-visible status, and no production side effects."
+    owner: "arxiv-daily-push"
+    status: "active"
+    assumption_ids:
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-109"
+    parameter_ids:
+      - "PARAM-ADP-922"
+      - "PARAM-ADP-923"
+      - "PARAM-ADP-924"
+      - "PARAM-ADP-925"
+    inputs:
+      - "shallow GitHub owner-center pages"
+      - "CONTENT_LEDGER.csv"
+      - "SOURCE_CATALOG.md"
+      - "owner_controls.yaml"
+      - "simulated stale/fact-source/count drift probe"
+    outputs:
+      - "four_check_views"
+      - "drift_probe"
+      - "four_check_freshness_hash"
+      - "s2pit05_four_check_freshness_ready"
+      - "blocking_reasons"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PIT05_FOUR_CHECK_FRESHNESS_C003.md"
+      - "governance/run_manifests/ADP-S2PIT05-FOUR-CHECK-FRESHNESS-C003-20260627.json"

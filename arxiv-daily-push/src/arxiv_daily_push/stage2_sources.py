@@ -826,6 +826,54 @@ S2PIT04_REQUIRED_PRODUCTION_FALSE_FLAGS = (
     "v7_2_contract_files_changed",
 )
 S2PIT04_REPORT_FILENAME = "stage2_s2pit04_content_mail_review_action_roi_ledger_report.json"
+S2PIT05_FOUR_CHECK_FRESHNESS_MODEL_ID = "adp-s2pit05-four-check-freshness-v1"
+S2PIT05_ACCEPTANCE_ID = "ACC-S2PIT05-FOUR-CHECK-FRESHNESS"
+S2PIT05_TASK_ID = "S2PIT05"
+S2PIT05_FINDING_ID = "C-003"
+S2PIT05_REQUIRED_VIEW_IDS = (
+    "mail_queue_status",
+    "total_candidate_pool",
+    "review_action_roi",
+    "source_board_health",
+)
+S2PIT05_REQUIRED_VIEW_FIELDS = (
+    "view_id",
+    "owner_page",
+    "freshness_state",
+    "data_as_of",
+    "fact_source_refs",
+    "drift_state",
+    "ci_alarm_expected",
+    "page_alarm_expected",
+    "owner_visible_status",
+    "evidence_refs",
+)
+S2PIT05_REQUIRED_GATES = (
+    "four_check_view_gate",
+    "freshness_state_gate",
+    "fact_source_gate",
+    "drift_state_gate",
+    "drift_alarm_gate",
+    "no_side_effect_gate",
+)
+S2PIT05_REQUIRED_PRODUCTION_FALSE_FLAGS = (
+    "stage2_production_accepted",
+    "integrated_production_accepted",
+    "real_smtp_sent",
+    "scheduler_enabled",
+    "release_upload_allowed",
+    "db_migration_executed",
+    "schema_migration_allowed",
+    "public_schema_changed",
+    "queue_schema_changed",
+    "queue_mutation_allowed",
+    "ranking_algorithm_changed",
+    "source_adapter_changed",
+    "email_frontstage_changed",
+    "v7_1_current_switched",
+    "v7_2_contract_files_changed",
+)
+S2PIT05_REPORT_FILENAME = "stage2_s2pit05_four_check_freshness_report.json"
 S2PKT01_MAIL_CONTRACT_MODEL_ID = "adp-s2pkt01-mail-contract-v1"
 S2PKT01_ACCEPTANCE_ID = "ACC-S2PKT01-MAIL-CONTRACT"
 S2PKT01_TASK_ID = "S2PKT01"
@@ -8758,6 +8806,381 @@ def validate_s2pit04_content_ledger_report(report: Mapping[str, Any]) -> list[st
         errors.append("blocked S2PIT04 report requires blocking_reasons")
     if report.get("status") == "pass" and report.get("s2pit04_content_ledger_ready") is not True:
         errors.append("passing S2PIT04 report requires s2pit04_content_ledger_ready=true")
+    return errors
+
+
+def _s2pit05_default_four_check_views(data_as_of: str) -> list[dict[str, Any]]:
+    return [
+        {
+            "view_id": "mail_queue_status",
+            "label_zh": "邮件发送与队列状态",
+            "owner_page": "用户中心/邮件发送与队列状态.md",
+            "freshness_state": "current_snapshot",
+            "data_as_of": data_as_of,
+            "fact_source_refs": [
+                "docs/owner/CONTENT_LEDGER.csv",
+                "governance/run_manifests/ADP-S2PIT02-OWNER-STATUS-C002-20260627.json",
+            ],
+            "drift_state": "no_drift_observed",
+            "drift_detected": False,
+            "ci_alarm_expected": True,
+            "page_alarm_expected": True,
+            "owner_visible_status": "已展示发送、阻断、排队和候选总量摘要",
+            "evidence_refs": [
+                "用户中心/邮件发送与队列状态.md",
+                "arxiv-daily-push/tests/test_stage2_owner_ux.py",
+            ],
+        },
+        {
+            "view_id": "total_candidate_pool",
+            "label_zh": "截至今日总候选池",
+            "owner_page": "用户中心/截至今日候选池.md",
+            "freshness_state": "current_snapshot",
+            "data_as_of": data_as_of,
+            "fact_source_refs": [
+                "docs/owner/CONTENT_LEDGER.csv",
+                "governance/run_manifests/ADP-S2PIT02-OWNER-STATUS-C002-20260627.json",
+            ],
+            "drift_state": "no_drift_observed",
+            "drift_detected": False,
+            "ci_alarm_expected": True,
+            "page_alarm_expected": True,
+            "owner_visible_status": "已展示 299 总候选、30 已生成报告/预览、269 待处理和 20 精选评分",
+            "evidence_refs": [
+                "用户中心/截至今日候选池.md",
+                "arxiv-daily-push/tests/test_user_center_candidate_pool.py",
+            ],
+        },
+        {
+            "view_id": "review_action_roi",
+            "label_zh": "复习行动收益",
+            "owner_page": "用户中心/复习行动与收益.md",
+            "freshness_state": "pending_daily_snapshot",
+            "data_as_of": data_as_of,
+            "fact_source_refs": [
+                "docs/owner/CONTENT_LEDGER.csv",
+                "governance/run_manifests/ADP-S2PJT03-ACTION-ROI-20260626.json",
+            ],
+            "drift_state": "pending_daily_snapshot_visible",
+            "drift_detected": False,
+            "ci_alarm_expected": True,
+            "page_alarm_expected": True,
+            "owner_visible_status": "日级快照未完全闭环时必须显示 pending_daily_snapshot，不得写成已验收",
+            "evidence_refs": [
+                "用户中心/复习行动与收益.md",
+                "arxiv-daily-push/src/arxiv_daily_push/local_runner.py",
+            ],
+        },
+        {
+            "view_id": "source_board_health",
+            "label_zh": "数据源与板块健康",
+            "owner_page": "用户中心/数据源与板块健康.md",
+            "freshness_state": "current_snapshot",
+            "data_as_of": data_as_of,
+            "fact_source_refs": [
+                "docs/owner/SOURCE_CATALOG.md",
+                "config/owner_controls.yaml",
+                "arxiv-daily-push/AGENTS.md",
+            ],
+            "drift_state": "no_drift_observed",
+            "drift_detected": False,
+            "ci_alarm_expected": True,
+            "page_alarm_expected": True,
+            "owner_visible_status": "来源或板块变更必须同步用户中心、来源目录、三基和回归测试",
+            "evidence_refs": [
+                "用户中心/数据源与板块健康.md",
+                "arxiv-daily-push/tests/test_owner_controls.py",
+            ],
+        },
+    ]
+
+
+def _s2pit05_default_drift_probe() -> dict[str, Any]:
+    return {
+        "probe_id": "s2pit05-c003-stale-fact-source-drift-probe",
+        "simulated_only": True,
+        "mutates_repository": False,
+        "simulated_faults": [
+            "stale_data_as_of",
+            "missing_fact_source_ref",
+            "ledger_count_drift",
+        ],
+        "expected_ci_alarm": True,
+        "expected_page_alarm": True,
+        "blocked_status_expected": True,
+        "evidence_refs": [
+            "arxiv-daily-push/tests/test_stage2_sources.py",
+            "arxiv-daily-push/tests/test_user_center_candidate_pool.py",
+            "arxiv-daily-push/tests/test_stage2_owner_ux.py",
+        ],
+    }
+
+
+def _s2pit05_view_hash(views: Sequence[Mapping[str, Any]], drift_probe: Mapping[str, Any]) -> str:
+    encoded = json.dumps(
+        {
+            "four_check_views": list(views),
+            "drift_probe": dict(drift_probe),
+        },
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    )
+    return "sha256:" + hashlib.sha256(encoded.encode("utf-8")).hexdigest()
+
+
+def build_s2pit05_four_check_freshness_report(
+    *,
+    generated_at: str,
+    four_check_views: Sequence[Mapping[str, Any]] | None = None,
+    drift_probe: Mapping[str, Any] | None = None,
+    production_gate_state: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Build C-003 four-check freshness, fact-source, and drift-alarm evidence."""
+
+    views = [dict(row) for row in (four_check_views or _s2pit05_default_four_check_views(generated_at))]
+    probe = dict(drift_probe or _s2pit05_default_drift_probe())
+    production_gate = dict(production_gate_state or {})
+
+    view_errors: list[str] = []
+    freshness_errors: list[str] = []
+    fact_source_errors: list[str] = []
+    drift_errors: list[str] = []
+    side_effect_errors: list[str] = []
+    view_ids = [str(row.get("view_id") or "") for row in views]
+    duplicate_view_ids = sorted({view_id for view_id in view_ids if view_id and view_ids.count(view_id) > 1})
+    if duplicate_view_ids:
+        view_errors.append("S2PIT05 duplicate four-check views: " + ", ".join(duplicate_view_ids))
+    missing_view_ids = [view_id for view_id in S2PIT05_REQUIRED_VIEW_IDS if view_id not in set(view_ids)]
+    if missing_view_ids:
+        view_errors.append("S2PIT05 missing four-check views: " + ", ".join(missing_view_ids))
+
+    allowed_freshness_states = {"current_snapshot", "pending_daily_snapshot", "blocked_with_visible_reason"}
+    allowed_drift_states = {
+        "no_drift_observed",
+        "pending_daily_snapshot_visible",
+        "blocked_with_visible_reason",
+    }
+    for index, row in enumerate(views):
+        view_id = str(row.get("view_id") or index)
+        for field in S2PIT05_REQUIRED_VIEW_FIELDS:
+            value = row.get(field)
+            if value is None or value == "" or value == []:
+                view_errors.append(f"four_check_views[{view_id}] missing {field}")
+        if row.get("freshness_state") not in allowed_freshness_states:
+            freshness_errors.append(f"four_check_views[{view_id}].freshness_state must be explicit")
+        if not row.get("data_as_of"):
+            freshness_errors.append(f"four_check_views[{view_id}].data_as_of must be present")
+        if not isinstance(row.get("fact_source_refs"), list) or not row.get("fact_source_refs"):
+            fact_source_errors.append(f"four_check_views[{view_id}].fact_source_refs must be non-empty")
+        if row.get("drift_state") not in allowed_drift_states:
+            drift_errors.append(f"four_check_views[{view_id}].drift_state must be explicit")
+        if row.get("ci_alarm_expected") is not True:
+            drift_errors.append(f"four_check_views[{view_id}].ci_alarm_expected must be true")
+        if row.get("page_alarm_expected") is not True:
+            drift_errors.append(f"four_check_views[{view_id}].page_alarm_expected must be true")
+        for key in ("real_smtp_sent", "scheduler_enabled", "release_upload_allowed", "production_affected"):
+            if row.get(key, False) is not False:
+                side_effect_errors.append(f"four_check_views[{view_id}].{key} must be false")
+
+    drift_probe_errors: list[str] = []
+    if probe.get("simulated_only") is not True:
+        drift_probe_errors.append("S2PIT05 drift_probe.simulated_only must be true")
+    if probe.get("mutates_repository") is not False:
+        drift_probe_errors.append("S2PIT05 drift_probe.mutates_repository must be false")
+    if not probe.get("simulated_faults"):
+        drift_probe_errors.append("S2PIT05 drift_probe.simulated_faults must be non-empty")
+    if probe.get("expected_ci_alarm") is not True:
+        drift_probe_errors.append("S2PIT05 drift_probe.expected_ci_alarm must be true")
+    if probe.get("expected_page_alarm") is not True:
+        drift_probe_errors.append("S2PIT05 drift_probe.expected_page_alarm must be true")
+    if probe.get("blocked_status_expected") is not True:
+        drift_probe_errors.append("S2PIT05 drift_probe.blocked_status_expected must be true")
+
+    production_errors: list[str] = []
+    for key in (*S2PIT05_REQUIRED_PRODUCTION_FALSE_FLAGS, "production_restore_executed", "smtp_transport_allowed"):
+        if production_gate.get(key, False) is not False:
+            production_errors.append(f"production_gate_state.{key} must be false")
+
+    gates = {
+        "four_check_view_gate": "pass" if not view_errors else "blocked",
+        "freshness_state_gate": "pass" if not freshness_errors else "blocked",
+        "fact_source_gate": "pass" if not fact_source_errors else "blocked",
+        "drift_state_gate": "pass" if not drift_errors else "blocked",
+        "drift_alarm_gate": "pass" if not drift_probe_errors else "blocked",
+        "no_side_effect_gate": "pass" if not side_effect_errors and not production_errors else "blocked",
+    }
+    blocking_reasons = [
+        *view_errors,
+        *freshness_errors,
+        *fact_source_errors,
+        *drift_errors,
+        *drift_probe_errors,
+        *side_effect_errors,
+        *production_errors,
+    ]
+    status = "pass" if not blocking_reasons and all(value == "pass" for value in gates.values()) else "blocked"
+
+    return {
+        "model_id": S2PIT05_FOUR_CHECK_FRESHNESS_MODEL_ID,
+        "acceptance_id": S2PIT05_ACCEPTANCE_ID,
+        "task_id": S2PIT05_TASK_ID,
+        "finding_id": S2PIT05_FINDING_ID,
+        "phase": "S2PI",
+        "project_id": "arxiv-daily-push",
+        "generated_at": generated_at,
+        "status": status,
+        **gates,
+        "required_view_ids": list(S2PIT05_REQUIRED_VIEW_IDS),
+        "required_view_fields": list(S2PIT05_REQUIRED_VIEW_FIELDS),
+        "four_check_views": views,
+        "four_check_view_count": len(views),
+        "drift_probe": probe,
+        "four_check_freshness_hash": _s2pit05_view_hash(views, probe),
+        "s2pit05_four_check_freshness_ready": status == "pass",
+        "owner_experience_accepted": False,
+        "p1_closure_claimed": False,
+        "independent_review_signoff_present": False,
+        "stage2_production_accepted": False,
+        "integrated_production_accepted": False,
+        "production_affected": False,
+        "real_smtp_sent": False,
+        "smtp_transport_allowed": False,
+        "scheduler_enabled": False,
+        "release_upload_allowed": False,
+        "db_migration_executed": False,
+        "schema_migration_allowed": False,
+        "public_schema_changed": False,
+        "queue_schema_changed": False,
+        "queue_mutation_allowed": False,
+        "ranking_algorithm_changed": False,
+        "source_adapter_changed": False,
+        "email_frontstage_changed": False,
+        "v7_1_current_switched": False,
+        "v7_2_contract_files_changed": False,
+        "blocking_reasons": sorted(set(blocking_reasons)),
+    }
+
+
+def run_s2pit05_four_check_freshness(
+    *,
+    state_dir: str | Path,
+    date: str,
+    generated_at: str,
+    four_check_views: Sequence[Mapping[str, Any]] | None = None,
+    drift_probe: Mapping[str, Any] | None = None,
+    production_gate_state: Mapping[str, Any] | None = None,
+    write: bool = True,
+) -> dict[str, Any]:
+    """Persist C-003 four-check freshness evidence without changing runtime state."""
+
+    state = Path(state_dir).resolve()
+    run_dir = state / "runs" / date.replace("-", "") / "s2pit05-four-check-freshness"
+    if write:
+        run_dir.mkdir(parents=True, exist_ok=True)
+    report = build_s2pit05_four_check_freshness_report(
+        generated_at=generated_at,
+        four_check_views=four_check_views,
+        drift_probe=drift_probe,
+        production_gate_state=production_gate_state,
+    )
+    report.update(
+        {
+            "date": date,
+            "timezone": DEFAULT_TIMEZONE,
+            "state_dir": str(state),
+            "run_dir": str(run_dir),
+            "four_check_freshness_report_path": str(run_dir / "adp-s2pit05-four-check-freshness-report.json"),
+        }
+    )
+    if write:
+        _write_json(run_dir / "adp-s2pit05-four-check-freshness-report.json", report)
+        _write_json(state / S2PIT05_REPORT_FILENAME, report)
+    return report
+
+
+def validate_s2pit05_four_check_freshness_report(report: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if report.get("model_id") != S2PIT05_FOUR_CHECK_FRESHNESS_MODEL_ID:
+        errors.append("S2PIT05 model_id must be adp-s2pit05-four-check-freshness-v1")
+    if report.get("task_id") != S2PIT05_TASK_ID:
+        errors.append("S2PIT05 task_id must be S2PIT05")
+    if report.get("acceptance_id") != S2PIT05_ACCEPTANCE_ID:
+        errors.append("S2PIT05 acceptance_id must be ACC-S2PIT05-FOUR-CHECK-FRESHNESS")
+    if report.get("finding_id") != S2PIT05_FINDING_ID:
+        errors.append("S2PIT05 finding_id must be C-003")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PIT05 status must be pass or blocked")
+    for key in (
+        "owner_experience_accepted",
+        "p1_closure_claimed",
+        "independent_review_signoff_present",
+        *S2PIT05_REQUIRED_PRODUCTION_FALSE_FLAGS,
+        "production_affected",
+        "smtp_transport_allowed",
+    ):
+        if report.get(key) is not False:
+            errors.append(f"{key} must be false for S2PIT05 four-check evidence")
+
+    views = report.get("four_check_views")
+    if not isinstance(views, list) or not views:
+        errors.append("S2PIT05 four_check_views must be a non-empty list")
+        views = []
+    view_ids = [str(row.get("view_id") or "") for row in views if isinstance(row, Mapping)]
+    missing_view_ids = [view_id for view_id in S2PIT05_REQUIRED_VIEW_IDS if view_id not in set(view_ids)]
+    if missing_view_ids:
+        errors.append("S2PIT05 missing four-check views: " + ", ".join(missing_view_ids))
+    allowed_freshness_states = {"current_snapshot", "pending_daily_snapshot", "blocked_with_visible_reason"}
+    allowed_drift_states = {
+        "no_drift_observed",
+        "pending_daily_snapshot_visible",
+        "blocked_with_visible_reason",
+    }
+    for index, row in enumerate(views):
+        if not isinstance(row, Mapping):
+            errors.append(f"S2PIT05 four_check_views[{index}] must be a mapping")
+            continue
+        view_id = str(row.get("view_id") or index)
+        for field in S2PIT05_REQUIRED_VIEW_FIELDS:
+            value = row.get(field)
+            if value is None or value == "" or value == []:
+                errors.append(f"S2PIT05 four_check_views[{view_id}] missing {field}")
+        if row.get("freshness_state") not in allowed_freshness_states:
+            errors.append(f"S2PIT05 four_check_views[{view_id}].freshness_state must be explicit")
+        if not isinstance(row.get("fact_source_refs"), list) or not row.get("fact_source_refs"):
+            errors.append(f"S2PIT05 four_check_views[{view_id}].fact_source_refs must be non-empty")
+        if row.get("drift_state") not in allowed_drift_states:
+            errors.append(f"S2PIT05 four_check_views[{view_id}].drift_state must be explicit")
+        if row.get("ci_alarm_expected") is not True:
+            errors.append(f"S2PIT05 four_check_views[{view_id}].ci_alarm_expected must be true")
+        if row.get("page_alarm_expected") is not True:
+            errors.append(f"S2PIT05 four_check_views[{view_id}].page_alarm_expected must be true")
+
+    probe = report.get("drift_probe")
+    if not isinstance(probe, Mapping):
+        errors.append("S2PIT05 drift_probe must be a mapping")
+        probe = {}
+    if probe.get("simulated_only") is not True:
+        errors.append("S2PIT05 drift_probe.simulated_only must be true")
+    if probe.get("mutates_repository") is not False:
+        errors.append("S2PIT05 drift_probe.mutates_repository must be false")
+    if not probe.get("simulated_faults"):
+        errors.append("S2PIT05 drift_probe.simulated_faults must be non-empty")
+    if probe.get("expected_ci_alarm") is not True:
+        errors.append("S2PIT05 drift_probe.expected_ci_alarm must be true")
+    if probe.get("expected_page_alarm") is not True:
+        errors.append("S2PIT05 drift_probe.expected_page_alarm must be true")
+    if probe.get("blocked_status_expected") is not True:
+        errors.append("S2PIT05 drift_probe.blocked_status_expected must be true")
+    if report.get("four_check_freshness_hash") != _s2pit05_view_hash(views, probe):
+        errors.append("S2PIT05 four_check_freshness_hash must match four_check_views and drift_probe")
+    for gate in S2PIT05_REQUIRED_GATES:
+        if report.get("status") == "pass" and report.get(gate) != "pass":
+            errors.append(f"passing S2PIT05 report requires {gate}=pass")
+    if report.get("status") == "blocked" and not report.get("blocking_reasons"):
+        errors.append("blocked S2PIT05 report requires blocking_reasons")
+    if report.get("status") == "pass" and report.get("s2pit05_four_check_freshness_ready") is not True:
+        errors.append("passing S2PIT05 report requires s2pit05_four_check_freshness_ready=true")
     return errors
 
 

@@ -2,9 +2,9 @@
 
 ## 中文速读
 
-- 本次 C-012 安全手动动作门不新增生产算法、评分公式或公开参数；它复用 `S2PMT06` 现有 owner UX / safe-control 模型。
-- C-012 的关键可验证字段是 `action`、`idempotency_key`、`allowed_current_states`、`preview_required`、`impact_visible`、`confirmation_required`、`receipt_required` 和 `production_mutation_applied=false`。
-- C-012 还要求重复点击策略显式为不重复发送、不改生产队列并复用 receipt；非法状态动作必须 `disabled=true` 且有 owner explanation。本条只刷新 P1 receipt 路由，不关闭 P1，不启用生产。
+- 本次 C-003 四查 freshness 门新增本地证据模型 `MOD-ADP-107` / `adp-s2pit05-four-check-freshness-v1`，不新增生产排序算法或收益评分公式。
+- C-003 的关键可验证字段是 `view_id`、`owner_page`、`freshness_state`、`data_as_of`、`fact_source_refs`、`drift_state`、`ci_alarm_expected`、`page_alarm_expected` 和 `owner_visible_status`。
+- C-003 还要求模拟过期、事实源缺失或账本数量漂移时 CI 和页面同时报警；本条只刷新 P1 receipt 路由，不关闭 P1，不启用生产。
 
 ## 摘要
 
@@ -13,9 +13,9 @@
 - current_stage: `S2`
 - current_phase: `S2PC`
 - current_task: `S2PCT02`
-- active_model_count: `52`
-- active_formula_count: `54`
-- active_parameter_count: `366`
+- active_model_count: `53`
+- active_formula_count: `55`
+- active_parameter_count: `370`
 - blockers: `none`
 - next_gate: `S2PC-GATE-V7-2-REVALIDATION`
 - next_unique_task: `S2PCT02 Science main-journal metadata-only no-send shadow evidence (planned)`
@@ -104,6 +104,19 @@
 | 未完成快照 | 复习、行动、能力资产、ROI 日级快照仍为 `pending_daily_snapshot`，不得自动改写成已完成 |
 | 禁止动作 | 不发送 SMTP、不安装或启用 scheduler、不上传 Release、不改公共 schema、不关闭 P0/P1、不声明 Stage2 production accepted |
 | 证据入口 | [PHASE_S2PIT02_OWNER_STATUS_C002.md](docs/phase_records/PHASE_S2PIT02_OWNER_STATUS_C002.md)；[ADP-S2PIT02-OWNER-STATUS-C002-20260627.json](../governance/run_manifests/ADP-S2PIT02-OWNER-STATUS-C002-20260627.json) |
+
+## S2PIT05 四查 freshness 与漂移告警门
+
+| 项目 | 当前口径 |
+|---|---|
+| 模型 | `MOD-ADP-107` / `adp-s2pit05-four-check-freshness-v1` |
+| 公式 | `FORM-ADP-109` |
+| 新增参数 | `PARAM-ADP-922` / `S2PIT05_REQUIRED_VIEW_IDS`; `PARAM-ADP-923` / `S2PIT05_REQUIRED_VIEW_FIELDS`; `PARAM-ADP-924` / `S2PIT05_REQUIRED_GATES`; `PARAM-ADP-925` / `S2PIT05_REQUIRED_PRODUCTION_FALSE_FLAGS` |
+| 四查视图 | 邮件发送与队列状态；截至今日总候选池；复习行动收益；数据源与板块健康 |
+| 必填字段 | `view_id`; `owner_page`; `freshness_state`; `data_as_of`; `fact_source_refs`; `drift_state`; `ci_alarm_expected`; `page_alarm_expected`; `owner_visible_status`; `evidence_refs` |
+| 漂移探针 | 模拟过期时间、事实源缺失、账本数量漂移；必须 `simulated_only=true`、`mutates_repository=false`、`expected_ci_alarm=true`、`expected_page_alarm=true` |
+| 生产边界 | 该门不读取或修改生产队列，不启用 SMTP，不启用 scheduler，不上传 Release，不改公共 Schema、DB、来源适配器、排序算法、Email frontstage、CURRENT 或 V7 合同 |
+| 证据入口 | [PHASE_S2PIT05_FOUR_CHECK_FRESHNESS_C003.md](docs/phase_records/PHASE_S2PIT05_FOUR_CHECK_FRESHNESS_C003.md)；[ADP-S2PIT05-FOUR-CHECK-FRESHNESS-C003-20260627.json](../governance/run_manifests/ADP-S2PIT05-FOUR-CHECK-FRESHNESS-C003-20260627.json) |
 
 ## S2PMT04 本地生命周期与缓存门
 

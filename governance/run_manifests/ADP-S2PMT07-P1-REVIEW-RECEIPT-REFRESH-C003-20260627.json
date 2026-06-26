@@ -1,0 +1,109 @@
+{
+  "acceptance_id": "ACC-S2PMT07-FINAL-REVIEW",
+  "closure_claimed": false,
+  "current_contract": "ADP-PRODUCT-CONTRACT-V7.2",
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_INDEPENDENT_REVIEW_RECEIPT.md",
+    "governance/run_manifests/ADP-S2PMT07-P1-INDEPENDENT-REVIEW-RECEIPT-20260626.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C003-20260627.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PIT05_FOUR_CHECK_FRESHNESS_C003.md",
+    "governance/run_manifests/ADP-S2PIT05-FOUR-CHECK-FRESHNESS-C003-20260627.json",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py",
+    "arxiv-daily-push/tests/test_stage2_sources.py",
+    "arxiv-daily-push/tests/test_stage2_final_gate.py"
+  ],
+  "final_acceptance_bundle_present": false,
+  "formula_ids_changed": [
+    "FORM-ADP-109",
+    "FORM-ADP-102"
+  ],
+  "generated_at": "2026-06-27T06:45:31+10:00",
+  "independent_final_command_execution_present": false,
+  "independent_review_signoff_present": false,
+  "inherited_p0_p1_closed": false,
+  "inherited_v7_1_open_p0_findings_after": 8,
+  "inherited_v7_1_open_p1_findings_after": 37,
+  "manifest_id": "ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C003-20260627",
+  "model_ids_changed": [
+    "MOD-ADP-107",
+    "MOD-ADP-100"
+  ],
+  "p0_closure_claimed": false,
+  "p1_closure_claimed": false,
+  "parameter_ids_changed": [
+    "PARAM-ADP-922",
+    "PARAM-ADP-923",
+    "PARAM-ADP-924",
+    "PARAM-ADP-925",
+    "PARAM-ADP-831"
+  ],
+  "parent_task_id": "S2PMT07",
+  "previous_refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C012-20260627.json",
+  "production_boundary": {
+    "current_pointer_changed": false,
+    "daily_operation_enabled": false,
+    "db_migration_executed": false,
+    "email_frontstage_changed": false,
+    "inherited_p0_p1_closed": false,
+    "integrated_production_accepted": false,
+    "production_acceptance_claimed": false,
+    "production_restore_executed": false,
+    "production_schedule_enabled": false,
+    "public_schema_changed": false,
+    "queue_mutation_allowed": false,
+    "queue_schema_changed": false,
+    "ranking_algorithm_changed": false,
+    "real_smtp_sent": false,
+    "release_upload_allowed": false,
+    "scheduler_enabled": false,
+    "source_adapter_changed": false,
+    "stage2_integrated_production_accepted": false,
+    "stage2_production_accepted": false,
+    "v7_1_baseline_changed": false,
+    "v7_2_contract_files_changed": false
+  },
+  "project_id": "arxiv-daily-push",
+  "refreshed_findings": [
+    "C-003"
+  ],
+  "required_final_commands_executed": false,
+  "result": "p1_c003_receipt_refreshed_no_closure_no_production",
+  "risks": [
+    "This refresh can be misread as C-003 P1 closure, owner-experience final acceptance, or independent review signoff; it only updates evidence and receipt routing.",
+    "Inherited P0/P1, S2PLT04, final bundle, independent final command execution, independent signoff, and S2PMT07 acceptance remain blocked."
+  ],
+  "rollback": "Revert S2PIT05 four-check freshness code/tests, C-003 phase record and manifest, P1 review receipt refresh, run manifests, traceability/delivery/event records, and generated status refresh; no runtime production state was changed.",
+  "s2plt04_completed": false,
+  "schema_version": 1,
+  "stage2_integrated_production_accepted": false,
+  "status": "completed_no_closure_no_production",
+  "summary": "Refreshed S2PMT07 P1 review receipt routing for C-003 so four-check freshness, fact-source, and drift-alarm evidence points to dedicated S2PIT05 evidence instead of aggregate S2PMT06 owner UX evidence.",
+  "task_id": "S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C003",
+  "test_results": [
+    "py_compile PASS",
+    "target Stage2 source/final-gate tests: 185 OK",
+    "source/board user-center gate tests: 14 OK",
+    "full ADP unittest discover: 563 OK",
+    "V7.2 contract validator PASS",
+    "project governance errors 0 warnings 0",
+    "changed-only semantic governance errors 0 warnings 0",
+    "lean governance drift 0 reference issues 0",
+    "YAML/JSON/JSONL/CSV parse OK",
+    "git diff --check PASS",
+    "GitHub REST API open_pr_count 0"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_c003_py_compile python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py arxiv-daily-push/tests/test_stage2_sources.py",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_c003_s2pit05 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_c003_target PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py arxiv-daily-push/tests/test_stage2_final_gate.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_c003_source_gate PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_user_center_candidate_pool.py arxiv-daily-push/tests/test_owner_controls.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_c003_full_unittest PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_c003_v72 PYTHONPATH=arxiv-daily-push/src python3 arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_c003_project_gov PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_c003_gov_sync PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_governance_sync.py --changed-only --semantic --base-ref origin/main",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_c003_lean PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/lean_governance.py check-render --project arxiv-daily-push",
+    "YAML/JSON/JSONL/CSV parse over changed structured files",
+    "git diff --check",
+    "GitHub REST API open PR count"
+  ]
+}

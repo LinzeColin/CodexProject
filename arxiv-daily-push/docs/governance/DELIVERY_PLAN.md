@@ -21,8 +21,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 169
-- acceptance_count: 122
+- task_count: 171
+- acceptance_count: 123
 
 ## Delivery Tasks
 

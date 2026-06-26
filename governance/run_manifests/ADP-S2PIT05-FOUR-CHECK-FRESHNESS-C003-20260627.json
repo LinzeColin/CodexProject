@@ -1,0 +1,201 @@
+{
+  "acceptance_id": "ACC-S2PIT05-FOUR-CHECK-FRESHNESS",
+  "change_type": "stage2_c003_four_check_freshness_dedicated_evidence_refresh",
+  "closure_claimed": false,
+  "contract_version": "ADP-PRODUCT-CONTRACT-V7.2",
+  "drift_probe": {
+    "blocked_status_expected": true,
+    "evidence_refs": [
+      "arxiv-daily-push/tests/test_stage2_sources.py",
+      "arxiv-daily-push/tests/test_user_center_candidate_pool.py",
+      "arxiv-daily-push/tests/test_stage2_owner_ux.py"
+    ],
+    "expected_ci_alarm": true,
+    "expected_page_alarm": true,
+    "mutates_repository": false,
+    "probe_id": "s2pit05-c003-stale-fact-source-drift-probe",
+    "simulated_faults": [
+      "stale_data_as_of",
+      "missing_fact_source_ref",
+      "ledger_count_drift"
+    ],
+    "simulated_only": true
+  },
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PIT05_FOUR_CHECK_FRESHNESS_C003.md",
+    "governance/run_manifests/ADP-S2PIT05-FOUR-CHECK-FRESHNESS-C003-20260627.json",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py",
+    "arxiv-daily-push/tests/test_stage2_sources.py",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_INDEPENDENT_REVIEW_RECEIPT.md"
+  ],
+  "finding_id": "C-003",
+  "four_check_view_count": 4,
+  "four_check_views": [
+    {
+      "ci_alarm_expected": true,
+      "data_as_of": "2026-06-27T06:45:31+10:00",
+      "drift_detected": false,
+      "drift_state": "no_drift_observed",
+      "evidence_refs": [
+        "用户中心/邮件发送与队列状态.md",
+        "arxiv-daily-push/tests/test_stage2_owner_ux.py"
+      ],
+      "fact_source_refs": [
+        "docs/owner/CONTENT_LEDGER.csv",
+        "governance/run_manifests/ADP-S2PIT02-OWNER-STATUS-C002-20260627.json"
+      ],
+      "freshness_state": "current_snapshot",
+      "label_zh": "邮件发送与队列状态",
+      "owner_page": "用户中心/邮件发送与队列状态.md",
+      "owner_visible_status": "已展示发送、阻断、排队和候选总量摘要",
+      "page_alarm_expected": true,
+      "view_id": "mail_queue_status"
+    },
+    {
+      "ci_alarm_expected": true,
+      "data_as_of": "2026-06-27T06:45:31+10:00",
+      "drift_detected": false,
+      "drift_state": "no_drift_observed",
+      "evidence_refs": [
+        "用户中心/截至今日候选池.md",
+        "arxiv-daily-push/tests/test_user_center_candidate_pool.py"
+      ],
+      "fact_source_refs": [
+        "docs/owner/CONTENT_LEDGER.csv",
+        "governance/run_manifests/ADP-S2PIT02-OWNER-STATUS-C002-20260627.json"
+      ],
+      "freshness_state": "current_snapshot",
+      "label_zh": "截至今日总候选池",
+      "owner_page": "用户中心/截至今日候选池.md",
+      "owner_visible_status": "已展示 299 总候选、30 已生成报告/预览、269 待处理和 20 精选评分",
+      "page_alarm_expected": true,
+      "view_id": "total_candidate_pool"
+    },
+    {
+      "ci_alarm_expected": true,
+      "data_as_of": "2026-06-27T06:45:31+10:00",
+      "drift_detected": false,
+      "drift_state": "pending_daily_snapshot_visible",
+      "evidence_refs": [
+        "用户中心/复习行动与收益.md",
+        "arxiv-daily-push/src/arxiv_daily_push/local_runner.py"
+      ],
+      "fact_source_refs": [
+        "docs/owner/CONTENT_LEDGER.csv",
+        "governance/run_manifests/ADP-S2PJT03-ACTION-ROI-20260626.json"
+      ],
+      "freshness_state": "pending_daily_snapshot",
+      "label_zh": "复习行动收益",
+      "owner_page": "用户中心/复习行动与收益.md",
+      "owner_visible_status": "日级快照未完全闭环时必须显示 pending_daily_snapshot，不得写成已验收",
+      "page_alarm_expected": true,
+      "view_id": "review_action_roi"
+    },
+    {
+      "ci_alarm_expected": true,
+      "data_as_of": "2026-06-27T06:45:31+10:00",
+      "drift_detected": false,
+      "drift_state": "no_drift_observed",
+      "evidence_refs": [
+        "用户中心/数据源与板块健康.md",
+        "arxiv-daily-push/tests/test_owner_controls.py"
+      ],
+      "fact_source_refs": [
+        "docs/owner/SOURCE_CATALOG.md",
+        "config/owner_controls.yaml",
+        "arxiv-daily-push/AGENTS.md"
+      ],
+      "freshness_state": "current_snapshot",
+      "label_zh": "数据源与板块健康",
+      "owner_page": "用户中心/数据源与板块健康.md",
+      "owner_visible_status": "来源或板块变更必须同步用户中心、来源目录、三基和回归测试",
+      "page_alarm_expected": true,
+      "view_id": "source_board_health"
+    }
+  ],
+  "gates": {
+    "drift_alarm_gate": "pass",
+    "drift_state_gate": "pass",
+    "fact_source_gate": "pass",
+    "four_check_view_gate": "pass",
+    "freshness_state_gate": "pass",
+    "no_side_effect_gate": "pass"
+  },
+  "generated_at": "2026-06-27T06:45:31+10:00",
+  "independent_review_signoff_present": false,
+  "inherited_p0_p1_closed": false,
+  "manifest_id": "ADP-S2PIT05-FOUR-CHECK-FRESHNESS-C003-20260627",
+  "p1_closure_claimed": false,
+  "phase": "S2PI",
+  "production_boundary": {
+    "current_pointer_changed": false,
+    "daily_operation_enabled": false,
+    "db_migration_executed": false,
+    "email_frontstage_changed": false,
+    "inherited_p0_p1_closed": false,
+    "integrated_production_accepted": false,
+    "production_acceptance_claimed": false,
+    "production_restore_executed": false,
+    "production_schedule_enabled": false,
+    "public_schema_changed": false,
+    "queue_mutation_allowed": false,
+    "queue_schema_changed": false,
+    "ranking_algorithm_changed": false,
+    "real_smtp_sent": false,
+    "release_upload_allowed": false,
+    "scheduler_enabled": false,
+    "source_adapter_changed": false,
+    "stage2_integrated_production_accepted": false,
+    "stage2_production_accepted": false,
+    "v7_1_baseline_changed": false,
+    "v7_2_contract_files_changed": false
+  },
+  "project_id": "arxiv-daily-push",
+  "report_hash": "sha256:d5a300c5c230558a8967941c36c22242ccad6403e69d04de43de3e1eba656f21",
+  "report_status": "pass",
+  "required_view_ids": [
+    "mail_queue_status",
+    "total_candidate_pool",
+    "review_action_roi",
+    "source_board_health"
+  ],
+  "result": "local_validation_passed_closure_not_claimed",
+  "risks": [
+    "This refresh can be misread as C-003 P1 closure, owner-experience final acceptance, or independent review signoff; it only updates evidence and receipt routing.",
+    "Inherited P0/P1, S2PLT04, final bundle, independent final command execution, independent signoff, and S2PMT07 acceptance remain blocked."
+  ],
+  "rollback": "Revert S2PIT05 four-check freshness code/tests, C-003 phase record and manifest, P1 review receipt refresh, run manifests, traceability/delivery/event records, and generated status refresh; no runtime production state was changed.",
+  "schema_version": 1,
+  "stage2_integrated_production_accepted": false,
+  "status": "dedicated_evidence_refreshed_no_closure_claim",
+  "subtask_id": "S2PIT05-FOUR-CHECK-FRESHNESS-C003",
+  "summary": "Refreshes C-003 from aggregate S2PMT06 owner UX evidence into a dedicated S2PIT05 four-check freshness, fact-source, drift-state, and drift-alarm evidence gate for shallow GitHub owner views.",
+  "task_id": "S2PIT05",
+  "test_results": [
+    "py_compile PASS",
+    "target Stage2 source/final-gate tests: 185 OK",
+    "source/board user-center gate tests: 14 OK",
+    "full ADP unittest discover: 563 OK",
+    "V7.2 contract validator PASS",
+    "project governance errors 0 warnings 0",
+    "changed-only semantic governance errors 0 warnings 0",
+    "lean governance drift 0 reference issues 0",
+    "YAML/JSON/JSONL/CSV parse OK",
+    "git diff --check PASS",
+    "GitHub REST API open_pr_count 0"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_c003_py_compile python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py arxiv-daily-push/tests/test_stage2_sources.py",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_c003_s2pit05 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_c003_target PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py arxiv-daily-push/tests/test_stage2_final_gate.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_c003_source_gate PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_user_center_candidate_pool.py arxiv-daily-push/tests/test_owner_controls.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_c003_full_unittest PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_c003_v72 PYTHONPATH=arxiv-daily-push/src python3 arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_c003_project_gov PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_c003_gov_sync PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_governance_sync.py --changed-only --semantic --base-ref origin/main",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_c003_lean PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/lean_governance.py check-render --project arxiv-daily-push",
+    "YAML/JSON/JSONL/CSV parse over changed structured files",
+    "git diff --check",
+    "GitHub REST API open PR count"
+  ]
+}

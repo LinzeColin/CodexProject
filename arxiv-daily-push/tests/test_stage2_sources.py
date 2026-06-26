@@ -57,6 +57,8 @@ from arxiv_daily_push.stage2_sources import (
     S2PIT03_REQUIRED_SOURCE_DOMAINS,
     S2PIT03_SOURCE_MODEL_VIEW_MODEL_ID,
     S2PIT04_CONTENT_LEDGER_MODEL_ID,
+    S2PIT05_FOUR_CHECK_FRESHNESS_MODEL_ID,
+    S2PIT05_REQUIRED_VIEW_IDS,
     S2PJT01_LIFECYCLE_STATE_MODEL_ID,
     S2PJT01_REQUIRED_LEDGER_TYPES,
     S2PJT01_REQUIRED_STATES,
@@ -106,6 +108,7 @@ from arxiv_daily_push.stage2_sources import (
     build_s2pit02_runtime_dashboard_report,
     build_s2pit03_source_model_view_report,
     build_s2pit04_content_ledger_report,
+    build_s2pit05_four_check_freshness_report,
     build_s2pkt01_mail_contract_report,
     build_s2pkt02_m1_mail_report,
     build_s2pkt03_m2_mail_report,
@@ -149,6 +152,7 @@ from arxiv_daily_push.stage2_sources import (
     run_s2pit02_runtime_dashboard,
     run_s2pit03_source_model_view,
     run_s2pit04_content_ledger,
+    run_s2pit05_four_check_freshness,
     run_s2pkt01_mail_contract,
     run_s2pkt02_m1_mail,
     run_s2pkt03_m2_mail,
@@ -190,6 +194,7 @@ from arxiv_daily_push.stage2_sources import (
     validate_s2pit02_runtime_dashboard_report,
     validate_s2pit03_source_model_view_report,
     validate_s2pit04_content_ledger_report,
+    validate_s2pit05_four_check_freshness_report,
     validate_s2pkt01_mail_contract_report,
     validate_s2pkt02_m1_mail_report,
     validate_s2pkt03_m2_mail_report,
@@ -423,6 +428,92 @@ def s2pit02_runtime_dashboard_report() -> dict:
         production_gate_state=s2pit02_production_gate_state(),
         owner_status_summary=s2pit02_owner_status_summary(),
     )
+
+
+def s2pit05_four_check_views(**overrides: object) -> list[dict]:
+    views = [
+        {
+            "view_id": "mail_queue_status",
+            "label_zh": "邮件发送与队列状态",
+            "owner_page": "用户中心/邮件发送与队列状态.md",
+            "freshness_state": "current_snapshot",
+            "data_as_of": "2026-06-26 20:52:29 Australia/Sydney",
+            "fact_source_refs": [
+                "docs/owner/CONTENT_LEDGER.csv",
+                "governance/run_manifests/ADP-S2PIT02-OWNER-STATUS-C002-20260627.json",
+            ],
+            "drift_state": "no_drift_observed",
+            "drift_detected": False,
+            "ci_alarm_expected": True,
+            "page_alarm_expected": True,
+            "owner_visible_status": "已展示发送、阻断、排队和候选总量摘要",
+            "evidence_refs": ["用户中心/邮件发送与队列状态.md"],
+        },
+        {
+            "view_id": "total_candidate_pool",
+            "label_zh": "截至今日总候选池",
+            "owner_page": "用户中心/截至今日候选池.md",
+            "freshness_state": "current_snapshot",
+            "data_as_of": "2026-06-26 20:52:29 Australia/Sydney",
+            "fact_source_refs": ["docs/owner/CONTENT_LEDGER.csv"],
+            "drift_state": "no_drift_observed",
+            "drift_detected": False,
+            "ci_alarm_expected": True,
+            "page_alarm_expected": True,
+            "owner_visible_status": "已展示 299 总候选和 20 精选评分",
+            "evidence_refs": ["用户中心/截至今日候选池.md"],
+        },
+        {
+            "view_id": "review_action_roi",
+            "label_zh": "复习行动收益",
+            "owner_page": "用户中心/复习行动与收益.md",
+            "freshness_state": "pending_daily_snapshot",
+            "data_as_of": "2026-06-26 20:52:29 Australia/Sydney",
+            "fact_source_refs": ["docs/owner/CONTENT_LEDGER.csv"],
+            "drift_state": "pending_daily_snapshot_visible",
+            "drift_detected": False,
+            "ci_alarm_expected": True,
+            "page_alarm_expected": True,
+            "owner_visible_status": "日级快照未闭环时显示 pending_daily_snapshot",
+            "evidence_refs": ["用户中心/复习行动与收益.md"],
+        },
+        {
+            "view_id": "source_board_health",
+            "label_zh": "数据源与板块健康",
+            "owner_page": "用户中心/数据源与板块健康.md",
+            "freshness_state": "current_snapshot",
+            "data_as_of": "2026-06-26 20:52:29 Australia/Sydney",
+            "fact_source_refs": ["docs/owner/SOURCE_CATALOG.md", "config/owner_controls.yaml"],
+            "drift_state": "no_drift_observed",
+            "drift_detected": False,
+            "ci_alarm_expected": True,
+            "page_alarm_expected": True,
+            "owner_visible_status": "来源或板块变更必须同步用户中心和三基",
+            "evidence_refs": ["用户中心/数据源与板块健康.md"],
+        },
+    ]
+    for row in views:
+        if row["view_id"] in overrides:
+            row.update(overrides[row["view_id"]])  # type: ignore[index]
+    return views
+
+
+def s2pit05_drift_probe(**overrides: object) -> dict:
+    probe = {
+        "probe_id": "s2pit05-c003-stale-fact-source-drift-probe",
+        "simulated_only": True,
+        "mutates_repository": False,
+        "simulated_faults": ["stale_data_as_of", "missing_fact_source_ref", "ledger_count_drift"],
+        "expected_ci_alarm": True,
+        "expected_page_alarm": True,
+        "blocked_status_expected": True,
+        "evidence_refs": [
+            "arxiv-daily-push/tests/test_stage2_sources.py",
+            "arxiv-daily-push/tests/test_user_center_candidate_pool.py",
+        ],
+    }
+    probe.update(overrides)
+    return probe
 
 
 def s2pit03_source_domains() -> list[dict]:
@@ -5865,6 +5956,108 @@ class Stage2SourceTests(unittest.TestCase):
             self.assertFalse(report["queue_mutation_allowed"])
             self.assertTrue(Path(report["content_ledger_report_path"]).is_file())
             self.assertTrue((Path(tmp) / "stage2_s2pit04_content_mail_review_action_roi_ledger_report.json").is_file())
+
+    def test_s2pit05_four_check_freshness_passes_fact_source_drift_and_no_production_gates(self) -> None:
+        report = build_s2pit05_four_check_freshness_report(
+            generated_at=GENERATED_AT,
+            four_check_views=s2pit05_four_check_views(),
+            drift_probe=s2pit05_drift_probe(),
+            production_gate_state=s2pit02_production_gate_state(),
+        )
+
+        self.assertEqual(report["model_id"], S2PIT05_FOUR_CHECK_FRESHNESS_MODEL_ID)
+        self.assertEqual(report["acceptance_id"], "ACC-S2PIT05-FOUR-CHECK-FRESHNESS")
+        self.assertEqual(report["task_id"], "S2PIT05")
+        self.assertEqual(report["finding_id"], "C-003")
+        self.assertEqual(report["status"], "pass")
+        self.assertEqual(set(report["required_view_ids"]), set(S2PIT05_REQUIRED_VIEW_IDS))
+        self.assertEqual({row["view_id"] for row in report["four_check_views"]}, set(S2PIT05_REQUIRED_VIEW_IDS))
+        self.assertEqual(report["four_check_view_gate"], "pass")
+        self.assertEqual(report["freshness_state_gate"], "pass")
+        self.assertEqual(report["fact_source_gate"], "pass")
+        self.assertEqual(report["drift_state_gate"], "pass")
+        self.assertEqual(report["drift_alarm_gate"], "pass")
+        self.assertEqual(report["no_side_effect_gate"], "pass")
+        self.assertTrue(report["s2pit05_four_check_freshness_ready"])
+        self.assertTrue(report["four_check_freshness_hash"].startswith("sha256:"))
+        for view in report["four_check_views"]:
+            self.assertTrue(view["owner_page"].startswith("用户中心/"))
+            self.assertTrue(view["fact_source_refs"])
+            self.assertIn(view["freshness_state"], {"current_snapshot", "pending_daily_snapshot"})
+            self.assertIn(view["drift_state"], {"no_drift_observed", "pending_daily_snapshot_visible"})
+            self.assertTrue(view["ci_alarm_expected"])
+            self.assertTrue(view["page_alarm_expected"])
+        self.assertTrue(report["drift_probe"]["simulated_only"])
+        self.assertFalse(report["drift_probe"]["mutates_repository"])
+        self.assertTrue(report["drift_probe"]["expected_ci_alarm"])
+        self.assertTrue(report["drift_probe"]["expected_page_alarm"])
+        self.assertFalse(report["p1_closure_claimed"])
+        self.assertFalse(report["independent_review_signoff_present"])
+        self.assertFalse(report["stage2_production_accepted"])
+        self.assertFalse(report["integrated_production_accepted"])
+        self.assertFalse(report["real_smtp_sent"])
+        self.assertFalse(report["scheduler_enabled"])
+        self.assertFalse(report["release_upload_allowed"])
+        self.assertFalse(report["public_schema_changed"])
+        self.assertFalse(report["queue_schema_changed"])
+        self.assertFalse(report["source_adapter_changed"])
+        self.assertFalse(validate_s2pit05_four_check_freshness_report(report))
+
+    def test_s2pit05_four_check_freshness_blocks_missing_fact_source_and_drift_alarm(self) -> None:
+        views = s2pit05_four_check_views(total_candidate_pool={"fact_source_refs": []})
+        probe = s2pit05_drift_probe(expected_page_alarm=False)
+        report = build_s2pit05_four_check_freshness_report(
+            generated_at=GENERATED_AT,
+            four_check_views=views,
+            drift_probe=probe,
+            production_gate_state=s2pit02_production_gate_state(),
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["fact_source_gate"], "blocked")
+        self.assertEqual(report["drift_alarm_gate"], "blocked")
+        joined = " ".join(report["blocking_reasons"])
+        self.assertIn("fact_source_refs", joined)
+        self.assertIn("expected_page_alarm", joined)
+        validation_errors = " ".join(validate_s2pit05_four_check_freshness_report(report))
+        self.assertIn("fact_source_refs must be non-empty", validation_errors)
+        self.assertIn("expected_page_alarm must be true", validation_errors)
+
+    def test_s2pit05_four_check_freshness_blocks_missing_view_and_production_gate(self) -> None:
+        views = [view for view in s2pit05_four_check_views() if view["view_id"] != "review_action_roi"]
+        report = build_s2pit05_four_check_freshness_report(
+            generated_at=GENERATED_AT,
+            four_check_views=views,
+            drift_probe=s2pit05_drift_probe(),
+            production_gate_state=s2pit02_production_gate_state(public_schema_changed=True),
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["four_check_view_gate"], "blocked")
+        self.assertEqual(report["no_side_effect_gate"], "blocked")
+        joined = " ".join(report["blocking_reasons"])
+        self.assertIn("missing four-check views: review_action_roi", joined)
+        self.assertIn("production_gate_state.public_schema_changed", joined)
+        self.assertTrue(validate_s2pit05_four_check_freshness_report(report))
+
+    def test_s2pit05_four_check_freshness_persists_report_without_production_side_effects(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = run_s2pit05_four_check_freshness(
+                state_dir=tmp,
+                date="2026-06-27",
+                generated_at=GENERATED_AT,
+                four_check_views=s2pit05_four_check_views(),
+                drift_probe=s2pit05_drift_probe(),
+                production_gate_state=s2pit02_production_gate_state(),
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertFalse(validate_s2pit05_four_check_freshness_report(report))
+            self.assertFalse(report["real_smtp_sent"])
+            self.assertFalse(report["scheduler_enabled"])
+            self.assertFalse(report["queue_mutation_allowed"])
+            self.assertTrue(Path(report["four_check_freshness_report_path"]).is_file())
+            self.assertTrue((Path(tmp) / "stage2_s2pit05_four_check_freshness_report.json").is_file())
 
     def test_s2pkt01_mail_contract_passes_shared_contract_board_hash_and_no_send_gates(self) -> None:
         report = build_s2pkt01_mail_contract_report(
