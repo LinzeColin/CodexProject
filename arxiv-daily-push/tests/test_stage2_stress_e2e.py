@@ -3,6 +3,8 @@ from __future__ import annotations
 import unittest
 
 from arxiv_daily_push.stage2_stress_e2e import (
+    S2PMT05_BACKPRESSURE_HIGH_PRIORITY_SLO_SECONDS,
+    S2PMT05_BACKPRESSURE_PEAK_MULTIPLIERS,
     S2PMT05_CLOCK_SKEW_TOLERANCE_SECONDS,
     S2PMT05_REPLAY_DAYS_REQUIRED,
     S2PMT05_REQUIRED_FINDINGS,
@@ -128,9 +130,47 @@ class Stage2StressE2ETests(unittest.TestCase):
 
         self.assertEqual(policy["status"], "pass")
         self.assertEqual(policy["shed_count"], 5000)
+        self.assertEqual(set(policy["required_peak_multipliers"]), set(S2PMT05_BACKPRESSURE_PEAK_MULTIPLIERS))
+        self.assertEqual(policy["high_priority_slo_seconds"], S2PMT05_BACKPRESSURE_HIGH_PRIORITY_SLO_SECONDS)
+        self.assertTrue(policy["checks"]["covers_2x_and_5x_peak_profiles"])
+        self.assertTrue(policy["checks"]["high_priority_slo_met"])
+        self.assertTrue(policy["checks"]["low_priority_delay_or_drop_has_reasons"])
         self.assertTrue(policy["checks"]["keeps_durable_evidence"])
         self.assertTrue(policy["checks"]["opens_circuit_breaker_on_repeated_faults"])
         self.assertTrue(policy["checks"]["deadline_aware_degradation"])
+        high_priority = [row for row in policy["peak_profiles"] if row["priority"] == "high"]
+        low_priority = [row for row in policy["peak_profiles"] if row["priority"] == "low"]
+        self.assertEqual({row["peak_multiplier"] for row in high_priority}, {2, 5})
+        self.assertTrue(all(row["p95_latency_seconds"] <= S2PMT05_BACKPRESSURE_HIGH_PRIORITY_SLO_SECONDS for row in high_priority))
+        self.assertEqual({row["reason_code"] for row in low_priority}, {"LOW_PRIORITY_DELAYED", "REBUILDABLE_CACHE_SHED"})
+
+    def test_backpressure_policy_blocks_missing_reasons_and_high_priority_slo_breach(self) -> None:
+        policy = evaluate_backpressure_policy(queue_depth=15000, capacity=10000)
+        peak_profiles = [dict(row) for row in policy["peak_profiles"]]
+        peak_profiles[0]["p95_latency_seconds"] = S2PMT05_BACKPRESSURE_HIGH_PRIORITY_SLO_SECONDS + 1
+        for row in peak_profiles:
+            if row["priority"] == "low":
+                row["reason_code"] = ""
+
+        evaluation = evaluate_backpressure_policy(queue_depth=15000, capacity=10000, peak_profiles=peak_profiles)
+
+        self.assertEqual(evaluation["status"], "blocked")
+        self.assertTrue(evaluation["checks"]["covers_2x_and_5x_peak_profiles"])
+        self.assertFalse(evaluation["checks"]["high_priority_slo_met"])
+        self.assertFalse(evaluation["checks"]["low_priority_delay_or_drop_has_reasons"])
+
+    def test_backpressure_policy_blocks_missing_low_priority_peak_profile(self) -> None:
+        policy = evaluate_backpressure_policy(queue_depth=15000, capacity=10000)
+        peak_profiles = [
+            dict(row)
+            for row in policy["peak_profiles"]
+            if not (row["priority"] == "low" and row["peak_multiplier"] == 5)
+        ]
+
+        evaluation = evaluate_backpressure_policy(queue_depth=15000, capacity=10000, peak_profiles=peak_profiles)
+
+        self.assertEqual(evaluation["status"], "blocked")
+        self.assertFalse(evaluation["checks"]["covers_2x_and_5x_peak_profiles"])
 
     def test_full_s2pmt05_report_validates_without_production_side_effects(self) -> None:
         report = build_s2pmt05_report(generated_at="2026-07-04T06:00:00+10:00")
@@ -141,6 +181,9 @@ class Stage2StressE2ETests(unittest.TestCase):
         self.assertEqual(set(report["findings_covered"]), set(S2PMT05_REQUIRED_FINDINGS))
         self.assertTrue(report["gates"]["result_validity_semantic_evidence"])
         self.assertEqual(report["findings_covered"]["B-013"], ["result_validity_semantic_evidence"])
+        self.assertTrue(report["backpressure_degradation"]["checks"]["covers_2x_and_5x_peak_profiles"])
+        self.assertTrue(report["backpressure_degradation"]["checks"]["high_priority_slo_met"])
+        self.assertTrue(report["backpressure_degradation"]["checks"]["low_priority_delay_or_drop_has_reasons"])
         for flag in S2PMT05_REQUIRED_PRODUCTION_FALSE_FLAGS:
             self.assertFalse(report[flag])
         self.assertEqual(validate_s2pmt05_report(report), [])

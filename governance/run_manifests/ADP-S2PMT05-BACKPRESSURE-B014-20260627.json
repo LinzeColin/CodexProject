@@ -1,0 +1,142 @@
+{
+  "acceptance_id": "ACC-S2PMT05-STRESS-E2E",
+  "actor": "Codex",
+  "base_commit": "1412224e11cc63eb86444b1552fc18a45097ad8a",
+  "binding_status": "local_validation_passed_pending_main_push",
+  "change_type": "stage2_backpressure_priority_b014",
+  "current_pointer_changed": false,
+  "db_migration_executed": false,
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_BACKPRESSURE_B014.md",
+    "governance/run_manifests/ADP-S2PMT05-BACKPRESSURE-B014-20260627.json",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py",
+    "arxiv-daily-push/tests/test_stage2_stress_e2e.py"
+  ],
+  "fact_level": "EXTRACTED",
+  "formal_production_inclusion": false,
+  "formula_ids_changed": [
+    "FORM-ADP-100"
+  ],
+  "full_replay_executed": false,
+  "generated_at": "2026-06-27T00:19:38+10:00",
+  "inherited_findings_targeted": [
+    "B-014"
+  ],
+  "inherited_p0_p1_closed": false,
+  "inherited_v7_1_open_p0_findings": 8,
+  "inherited_v7_1_open_p1_findings": 37,
+  "integrated_production_accepted": false,
+  "large_replay_executed": false,
+  "live_source_fetch_executed": false,
+  "mail_production_code_changed": false,
+  "model_ids_changed": [
+    "MOD-ADP-098"
+  ],
+  "no_production_side_effects": true,
+  "parameter_ids_changed": [
+    "PARAM-ADP-908",
+    "PARAM-ADP-909"
+  ],
+  "phase": "S2PM",
+  "production_acceptance_claimed": false,
+  "production_boundary": {
+    "current_pointer_changed": false,
+    "db_migration_executed": false,
+    "public_schema_changed": false,
+    "queue_mutation_allowed": false,
+    "queue_schema_changed": false,
+    "ranking_algorithm_changed": false,
+    "real_release_uploaded": false,
+    "real_smtp_sent": false,
+    "scheduler_enabled": false,
+    "scheduler_installed": false,
+    "source_adapter_changed": false,
+    "v7_1_baseline_changed": false,
+    "v7_2_contract_files_changed": false
+  },
+  "public_schema_changed": false,
+  "queue_mutation_allowed": false,
+  "queue_schema_changed": false,
+  "ranking_algorithm_changed": false,
+  "real_release_uploaded": false,
+  "real_smtp_sent": false,
+  "release_changed": false,
+  "report_hash": "ac923c74172327ba2724f433f102332aa4e0b2ca8815f8424791ae488b8dd9f5",
+  "report_status": "pass",
+  "result": "local_validation_passed_pending_main_push",
+  "scheduler_changed": false,
+  "smtp_changed": false,
+  "source_adapter_changed": false,
+  "stage2_integrated_production_accepted": false,
+  "stage2_production_accepted": false,
+  "summary": "Added local B-014 backpressure priority evidence covering 2x and 5x peak profiles, high-priority work within a 600 second SLO, explicit low-priority delay/drop reason codes, durable evidence preservation, rebuildable-only shedding, circuit breaker behavior, and deadline-aware degradation.",
+  "task_id": "S2PMT05-BACKPRESSURE-B014",
+  "task_ids": [
+    "S2PMT05-BACKPRESSURE-B014",
+    "S2PMT05",
+    "B-014",
+    "ACC-S2PMT05-STRESS-E2E"
+  ],
+  "validation": {
+    "backpressure_degradation": true,
+    "checks": {
+      "covers_2x_and_5x_peak_profiles": true,
+      "deadline_aware_degradation": true,
+      "detects_overload": true,
+      "high_priority_slo_met": true,
+      "keeps_durable_evidence": true,
+      "low_priority_delay_or_drop_has_reasons": true,
+      "opens_circuit_breaker_on_repeated_faults": true,
+      "sheds_only_low_roi_rebuildable_work": true
+    },
+    "high_priority_slo_seconds": 600,
+    "peak_profiles": [
+      {
+        "high_priority_reason_code": "HIGH_PRIORITY_SLO_PROTECTED",
+        "low_priority_reason_code": "LOW_PRIORITY_DELAYED",
+        "multiplier": 2
+      },
+      {
+        "high_priority_reason_code": "HIGH_PRIORITY_SLO_PROTECTED",
+        "low_priority_reason_code": "REBUILDABLE_CACHE_SHED",
+        "multiplier": 5
+      }
+    ],
+    "required_peak_multipliers": [
+      2,
+      5
+    ]
+  },
+  "test_results": [
+    "py_compile PASS",
+    "focused S2PMT05 stress/E2E tests 12 OK",
+    "source/board user-center root gate regression 14 OK",
+    "full ADP unittest 539 OK",
+    "V7.2 validator PASS",
+    "ADP project governance 0 errors / 0 warnings",
+    "changed-only governance semantic 0 errors / 0 warnings",
+    "governance sync validator 0 errors / 0 warnings",
+    "lean check-render drift_count 0 reference_issue_count 0",
+    "YAML/JSON/JSONL/CSV parse OK",
+    "git diff --check PASS",
+    "production-side-effect forbidden scan OK"
+  ],
+  "tests_run": [
+    "python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py arxiv-daily-push/tests/test_stage2_stress_e2e.py",
+    "python3 -m unittest arxiv-daily-push/tests/test_stage2_stress_e2e.py -q",
+    "python3 -m unittest arxiv-daily-push/tests/test_user_center_candidate_pool.py arxiv-daily-push/tests/test_owner_controls.py -q",
+    "python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "validate_v7_2_contract.py",
+    "validate_project_governance.py --project arxiv-daily-push",
+    "lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "validate_governance_sync.py --changed-only --semantic --base-ref origin/main",
+    "lean_governance.py check-render --project arxiv-daily-push",
+    "Ruby YAML parse plus Python JSON/JSONL/CSV parse",
+    "git diff --check",
+    "production-side-effect forbidden scan"
+  ],
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false,
+  "version_after": "0.23.1",
+  "version_before": "0.23.1"
+}

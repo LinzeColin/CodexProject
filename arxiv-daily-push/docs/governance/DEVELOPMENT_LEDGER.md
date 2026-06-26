@@ -10,11 +10,32 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.1
 - Current phase: S2PM
-- Current gate: S2PMT05_B013_RESULT_VALIDITY_LOCAL_VALIDATION_NO_PRODUCTION
-- Confirmed iteration count: 126
+- Current gate: S2PMT05_B014_BACKPRESSURE_PRIORITY_LOCAL_VALIDATION_NO_PRODUCTION
+- Confirmed iteration count: 127
 - Reconstructed event count: 0
-- Current task: `S2PMT05-RESULT-VALIDITY-B013` records local inherited P1 B-013 remediation evidence. S2PMT05 result validity now requires semantic alignment, Claim Ledger references, evidence references, mechanism/action specificity, non-template output variance, and unsupported P0 negative controls that block publication. This does not close inherited P0/P1, does not change live mail production, and does not supersede later S2PL blocked prechecks. `S2PMT07` remains the final production gate and is still blocked by inherited P0/P1, S2PLT04, final bundle, independent signoff, and independent final command execution. No CURRENT, V7.1/V7.2 contract file, production replay, real production backup/restore/email, real SMTP, scheduler installation, Release, DB migration, public schema, production queue, source adapter, ranking, inherited P0/P1 closure, DAILY_OPERATION, or integrated production acceptance state changed. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
+- Current task: `S2PMT05-BACKPRESSURE-B014` records local inherited P1 B-014 remediation evidence. S2PMT05 backpressure now requires 2x/5x peak profiles, high-priority work inside a 600 second SLO, explicit low-priority delay/drop reason codes, durable evidence preservation, and rebuildable-only shedding. This does not close inherited P0/P1, does not change live mail production, and does not supersede later S2PL blocked prechecks. `S2PMT07` remains the final production gate and is still blocked by inherited P0/P1, S2PLT04, final bundle, independent signoff, and independent final command execution. No CURRENT, V7.1/V7.2 contract file, production replay, real production backup/restore/email, real SMTP, scheduler installation, Release, DB migration, public schema, production queue, source adapter, ranking, inherited P0/P1 closure, DAILY_OPERATION, or integrated production acceptance state changed. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
+
+### `ITER-20260627-ADP-S2PMT05-BACKPRESSURE-B014`
+
+- Timestamp: `2026-06-27T00:19:38+10:00`
+- Fact level: EXTRACTED from S2PMT05 backpressure code, focused tests, FORM-ADP-100 semantic refresh, PARAM-ADP-908/PARAM-ADP-909 registration, phase record, and run manifest.
+- Base commit: `1412224e11cc63eb86444b1552fc18a45097ad8a`
+- Product version: `0.23.1`
+- Status: local validation passed pending main push.
+- Phase: S2PM
+- Task IDs: `S2PMT05-BACKPRESSURE-B014`; parent `S2PMT05`; inherited finding `B-014`; acceptance `ACC-S2PMT05-STRESS-E2E`.
+- Goal: Remediate inherited B-014 locally by making S2PMT05 backpressure require 2x/5x peak profiles, high-priority SLO protection, explicit low-priority delay/drop reason codes, durable evidence preservation, and rebuildable-only shedding.
+- Files changed: S2PMT05 stress/fault/time/E2E helper, focused tests, MOD-ADP-098/FORM-ADP-100/PARAM-ADP-908/PARAM-ADP-909 refresh, phase record, run manifest, changelog/status/owner/traceability/delivery/event records, and this ledger entry.
+- Model changes: Reused `MOD-ADP-098`; existing S2PMT05 local stress/fault/time/E2E model now includes priority-aware backpressure SLO evidence.
+- Formula changes: Refreshed `FORM-ADP-100` to require 2x/5x peak backpressure profiles, high-priority SLO evidence, low-priority delay/drop reason codes, durable evidence preservation, and rebuildable-only shedding.
+- Parameter changes: Added `PARAM-ADP-908` for required peak multipliers `2;5`; added `PARAM-ADP-909` for high-priority SLO seconds `600`.
+- Validation: py_compile PASS; focused `test_stage2_stress_e2e.py` 12 OK; source/board user-center root gate regression 14 OK; full arxiv-daily-push unittest 539 OK; V7.2 validator PASS; ADP project governance 0 errors / 0 warnings; changed-only semantic governance 0 errors / 0 warnings; governance sync validator 0 errors / 0 warnings; lean check-render drift_count 0 reference_issue_count 0; YAML/JSON/JSONL/CSV parse OK; git diff --check PASS; production-side-effect forbidden scan OK.
+- Decisions: This is a local B-014 remediation gate only. It does not enable SMTP, install scheduler, upload Release, mutate public schema/DB/production queue, change source adapters or ranking, edit CURRENT or V7.1/V7.2 contracts, close inherited P0/P1, enable DAILY_OPERATION, or claim integrated production acceptance.
+- Remaining risks: Independent review must still verify B-014 closure. Inherited V7.1 P0=8/P1=37 remain open until S2PMT07 closes them with final independent evidence.
+- Rollback: Revert S2PMT05 backpressure code/tests, FORM-ADP-100/PARAM-ADP-908/PARAM-ADP-909 refresh, phase record, manifest, changelog/status/owner/traceability/delivery/event records, and this ledger entry; no runtime production state was changed.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_BACKPRESSURE_B014.md`; `governance/run_manifests/ADP-S2PMT05-BACKPRESSURE-B014-20260627.json`; `arxiv-daily-push/tests/test_stage2_stress_e2e.py`.
+- Next step: Run final validation, commit, push directly to `main` if safe, and continue inherited P0/P1 remediation or S2PMT07 independent review under no-production boundaries.
 
 ### `ITER-20260626-ADP-S2PMT05-RESULT-VALIDITY-B013`
 
