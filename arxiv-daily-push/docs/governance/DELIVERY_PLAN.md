@@ -21,7 +21,7 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 154
+- task_count: 155
 - acceptance_count: 122
 
 ## Delivery Tasks
@@ -245,3 +245,4 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PLT04 | Integration candidate precheck | blocked | `ACC-S2PLT04-INTEGRATION-CANDIDATE` | Fail-closed integration candidate precheck summarizing S2PLT01 review evidence, missing S2PLT02/S2PLT03 completion, local state/content evidence, inherited P0/P1 blockers, missing final bundle, and blocked S2PMT07; does not complete S2PLT04 or produce `S2_INTEGRATION_CANDIDATE_READY`. |
 | OWNER-CENTER-ENTRY-RULE | Owner center shallow GitHub entry rule | completed | `ACC-S2PIT01-USER-CENTER`, `ACC-S2PMT06-UX` | Records that owner-facing status/mail/queue pages must use GitHub-rendered shallow `用户中心` Markdown as the primary reading surface and summarize sent/blocked/queued states directly; local `.adp` runtime files remain evidence only and this does not migrate PR #240 pages or enable production. |
 | S2PMT07 | Final gate precheck | blocked | `ACC-S2PMT07-FINAL-REVIEW` | Fail-closed final gate precheck; independent reviewer proof, inherited P0/P1 zero state, S2PLT04 completion, final acceptance bundle, independent signoff, and final command execution are still missing, so integrated production acceptance remains false. |
+| S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B007-B008 | P0 review receipt evidence refresh | completed | `ACC-S2PMT07-FINAL-REVIEW` | Refreshes the P0 independent-review receipt so B-007/B-008 point to their dedicated 20260627 evidence records; this does not provide independent signoff, close P0/P1, complete S2PLT04, or change production state. |

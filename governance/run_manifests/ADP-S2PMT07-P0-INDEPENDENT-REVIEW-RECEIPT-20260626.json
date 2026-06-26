@@ -5,6 +5,7 @@
   "acceptance_id": "ACC-S2PMT07-FINAL-REVIEW",
   "contract_version": "ADP-PRODUCT-CONTRACT-V7.2",
   "created_at": "2026-06-26T18:45:19+10:00",
+  "refreshed_at": "2026-06-27T02:43:09+10:00",
   "change_type": "stage2_p0_independent_review_receipt",
   "status": "review_receipt_ready_no_closure_claim",
   "result": "blocked_receipt_recorded",
@@ -26,6 +27,10 @@
   "evidence_refs": [
     "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_INDEPENDENT_REVIEW_RECEIPT.md",
     "governance/run_manifests/ADP-S2PMT07-P0-INDEPENDENT-REVIEW-RECEIPT-20260626.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_DUPLICATE_TRIGGER_B007.md",
+    "governance/run_manifests/ADP-S2PMT05-DUPLICATE-TRIGGER-B007-20260627.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_SMTP_CRASH_WINDOW_B008.md",
+    "governance/run_manifests/ADP-S2PMT05-SMTP-CRASH-WINDOW-B008-20260627.json",
     "arxiv-daily-push/docs/pursuing_goal/v7_1/09_并行审查/并行审查汇总与合并结论.md",
     "arxiv-daily-push/docs/pursuing_goal/v7_1/09_并行审查/问题清单.csv"
   ],
@@ -101,25 +106,27 @@
     },
     {
       "finding_id": "B-007",
-      "fix_task": "S2PMT05",
+      "fix_task": "S2PMT05-DUPLICATE-TRIGGER-B007",
       "severity": "P0",
-      "preliminary_review_state": "local_multiprocess_evidence_located_independent_review_required",
+      "preliminary_review_state": "refreshed_current_local_evidence_located_independent_review_required",
       "evidence_refs": [
-        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_STRESS_E2E.md",
-        "governance/run_manifests/ADP-S2PMT05-STRESS-E2E-20260626.json"
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_DUPLICATE_TRIGGER_B007.md",
+        "governance/run_manifests/ADP-S2PMT05-DUPLICATE-TRIGGER-B007-20260627.json",
+        "arxiv-daily-push/tests/test_stage2_stress_e2e.py"
       ],
-      "reviewer_decision_required": "Decide whether local multiprocess duplicate-trigger evidence is sufficient, or whether multi-host or real scheduler proof remains required."
+      "reviewer_decision_required": "Verify four actor sources, M1-M4 x 100 attempts, one active revision per product, reason-coded duplicate blocks, lease/fencing receipts, and no scheduler side effects; decide whether multi-host or real scheduler proof remains required."
     },
     {
       "finding_id": "B-008",
-      "fix_task": "S2PMT05",
+      "fix_task": "S2PMT05-SMTP-CRASH-WINDOW-B008",
       "severity": "P0",
-      "preliminary_review_state": "local_fake_smtp_evidence_located_independent_review_required",
+      "preliminary_review_state": "refreshed_current_local_evidence_located_independent_review_required",
       "evidence_refs": [
-        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_STRESS_E2E.md",
-        "governance/run_manifests/ADP-S2PMT05-STRESS-E2E-20260626.json"
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_SMTP_CRASH_WINDOW_B008.md",
+        "governance/run_manifests/ADP-S2PMT05-SMTP-CRASH-WINDOW-B008-20260627.json",
+        "arxiv-daily-push/tests/test_stage2_stress_e2e.py"
       ],
-      "reviewer_decision_required": "Decide whether local fake SMTP crash-window evidence is sufficient, or whether runner-level fake SMTP kill/restart proof remains required."
+      "reviewer_decision_required": "Verify outbox claim before SMTP acceptance, ACCEPTED_PENDING_COMMIT, stable idempotent message_id, provider accept ref finalization, blocked unsafe resend, and no real SMTP side effects; decide whether runner-level fake SMTP kill/restart proof remains required."
     }
   ],
   "preserved_blockers": [

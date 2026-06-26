@@ -4,8 +4,8 @@
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:affedd06cac42aa5f6964c030a2291d0ddc5437f1bebce896ba705eaa3011396`
-- snapshot_event_time: `2026-06-27T02:27:51+10:00`
+- source_snapshot_hash: `sha256:3843d2091144af34ad9f793e7209a827479a3ddc9b3d5ce6555c12c8ef223087`
+- snapshot_event_time: `2026-06-27T02:43:09+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -14,7 +14,7 @@
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - Product version: `0.23.1`
-- Phase/Gate: `S2PM / S2PMT05_B008_SMTP_CRASH_WINDOW_LOCAL_VALIDATION_NO_PRODUCTION`
+- Phase/Gate: `S2PM / S2PMT07_P0_REVIEW_RECEIPT_REFRESH_NO_CLOSURE_NO_PRODUCTION`
 - Models/Formulas/Parameters total: `106 / 108 / 919`
 - Active formulas/parameters: `108 / 902`
 - Machine checked formulas/parameters: `108 / 902`
@@ -35,7 +35,7 @@
 ## Delivery
 
 - Readiness: `VERIFIED`
-- Release gate: `S2PMT05_B008_SMTP_CRASH_WINDOW_LOCAL_VALIDATION_NO_PRODUCTION`
+- Release gate: `S2PMT07_P0_REVIEW_RECEIPT_REFRESH_NO_CLOSURE_NO_PRODUCTION`
 - V7 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - V7 contract hash: `a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d`
 - V7 roadmap hash: `7c5f2d842d4f6b909343c953fe39b4a4aa540d168199747a9f7decdb1aad9bd1`
@@ -48,8 +48,8 @@
 - Next governance task: `S2PMT07`
 - Parallel shadow source task: `NONE_WHILE_S2PMT07_BLOCKED`
 - Next executable task: `S2PLT01`
-- Pending/stale events: `177`
+- Pending/stale events: `178`
 - Tree-bound events: `0`
 - Commit-bound events: `4`
-- Legacy unbound events: `138`
+- Legacy unbound events: `139`
 - Unresolved fact IDs: `0`

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+from pathlib import Path
 import unittest
 
 from arxiv_daily_push.stage2_final_gate import (
@@ -35,6 +37,8 @@ from arxiv_daily_push.stage2_final_gate import (
     validate_s2plt04_integration_candidate_report,
     validate_s2pmt07_precheck_report,
 )
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
 class Stage2FinalGateTests(unittest.TestCase):
@@ -134,6 +138,44 @@ class Stage2FinalGateTests(unittest.TestCase):
 
         cleared = build_audit_blocker_state(inherited_p0=0, inherited_p1=0)
         self.assertEqual(cleared["status"], "pass")
+
+    def test_p0_review_receipt_uses_current_b007_b008_evidence(self) -> None:
+        receipt_path = REPO_ROOT / "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_INDEPENDENT_REVIEW_RECEIPT.md"
+        manifest_path = REPO_ROOT / "governance/run_manifests/ADP-S2PMT07-P0-INDEPENDENT-REVIEW-RECEIPT-20260626.json"
+        receipt = receipt_path.read_text(encoding="utf-8")
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        receipt_rows = {
+            line.split("|", 3)[1].strip(" `"): line
+            for line in receipt.splitlines()
+            if line.startswith("| `B-00")
+        }
+
+        self.assertIn("PHASE_S2PMT05_DUPLICATE_TRIGGER_B007.md", receipt_rows["B-007"])
+        self.assertIn("ADP-S2PMT05-DUPLICATE-TRIGGER-B007-20260627.json", receipt_rows["B-007"])
+        self.assertNotIn("ADP-S2PMT05-STRESS-E2E-20260626.json", receipt_rows["B-007"])
+        self.assertIn("PHASE_S2PMT05_SMTP_CRASH_WINDOW_B008.md", receipt_rows["B-008"])
+        self.assertIn("ADP-S2PMT05-SMTP-CRASH-WINDOW-B008-20260627.json", receipt_rows["B-008"])
+        self.assertNotIn("ADP-S2PMT05-STRESS-E2E-20260626.json", receipt_rows["B-008"])
+
+        findings = {finding["finding_id"]: finding for finding in manifest["p0_findings"]}
+        self.assertIn(
+            "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_DUPLICATE_TRIGGER_B007.md",
+            findings["B-007"]["evidence_refs"],
+        )
+        self.assertIn(
+            "governance/run_manifests/ADP-S2PMT05-DUPLICATE-TRIGGER-B007-20260627.json",
+            findings["B-007"]["evidence_refs"],
+        )
+        self.assertIn(
+            "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_SMTP_CRASH_WINDOW_B008.md",
+            findings["B-008"]["evidence_refs"],
+        )
+        self.assertIn(
+            "governance/run_manifests/ADP-S2PMT05-SMTP-CRASH-WINDOW-B008-20260627.json",
+            findings["B-008"]["evidence_refs"],
+        )
+        self.assertNotIn("governance/run_manifests/ADP-S2PMT05-STRESS-E2E-20260626.json", findings["B-007"]["evidence_refs"])
+        self.assertNotIn("governance/run_manifests/ADP-S2PMT05-STRESS-E2E-20260626.json", findings["B-008"]["evidence_refs"])
 
     def test_dependency_state_requires_s2plt04_and_records_missing_completion(self) -> None:
         state = build_dependency_state()

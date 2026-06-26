@@ -10,11 +10,30 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.1
 - Current phase: S2PM
-- Current gate: S2PMT05_B008_SMTP_CRASH_WINDOW_LOCAL_VALIDATION_NO_PRODUCTION
-- Confirmed iteration count: 133
+- Current gate: S2PMT07_P0_REVIEW_RECEIPT_REFRESH_NO_CLOSURE_NO_PRODUCTION
+- Confirmed iteration count: 134
 - Reconstructed event count: 0
-- Current task: `S2PMT05-SMTP-CRASH-WINDOW-B008` records local inherited P0 B-008 remediation evidence. S2PMT05 SMTP crash-window evidence now requires outbox claim before SMTP acceptance, explicit `ACCEPTED_PENDING_COMMIT`, idempotent `message_id`, blocked resend without provider accept ref, local finalization with `smtp-accept://...` provider ref, and no real SMTP side effects. This does not send real SMTP, close inherited P0/P1, change live mail production, or supersede later S2PL blocked prechecks. `S2PMT07` remains the final production gate and is still blocked by inherited P0/P1, S2PLT04, final bundle, independent signoff, and independent final command execution. No CURRENT, V7.1/V7.2 contract file, production replay, real production backup/restore/email, real SMTP, scheduler installation, Release, DB migration, public schema, production queue, source adapter, ranking, inherited P0/P1 closure, DAILY_OPERATION, or integrated production acceptance state changed. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
+- Current task: `S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B007-B008` refreshes the P0 independent-review receipt so B-007 and B-008 point to their dedicated 20260627 phase records and run manifests instead of the older S2PMT05 stress-E2E summary. This does not provide independent signoff, close inherited P0/P1, complete S2PLT04, create a final acceptance bundle, run final commands, or supersede later S2PL blocked prechecks. `S2PMT07` remains the final production gate and is still blocked by inherited P0/P1, S2PLT04, final bundle, independent signoff, and independent final command execution. No CURRENT, V7.1/V7.2 contract file, production replay, real production backup/restore/email, real SMTP, scheduler installation, Release, DB migration, public schema, production queue, source adapter, ranking, inherited P0/P1 closure, DAILY_OPERATION, or integrated production acceptance state changed. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
+
+### `ITER-20260627-ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B007-B008`
+
+- Timestamp: `2026-06-27T02:43:09+10:00`
+- Fact level: EXTRACTED from S2PMT07 P0 review receipt, B-007/B-008 phase records and manifests, focused final-gate regression test, current-run manifest, and no-production boundary scan.
+- Base commit: `463d50fc30fe6afc738c11cd6c8ec7d3e25eac54`
+- Product version: `0.23.1`
+- Status: review receipt refreshed pending main push; no closure claim.
+- Task IDs: `S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B007-B008`; parent `S2PMT07`; inherited findings `B-007`, `B-008`; acceptance `ACC-S2PMT07-FINAL-REVIEW`.
+- Goal: Refresh the P0 independent-review receipt so B-007/B-008 point to their current dedicated local evidence records instead of the older S2PMT05 stress-E2E summary.
+- Files changed: P0 review receipt, P0 review receipt manifest, current-run manifest, final-gate regression test, changelog/status/traceability/delivery/event records, generated status refresh, and this ledger entry.
+- Model changes: Reused `MOD-ADP-100`; no model algorithm change.
+- Formula changes: Reused `FORM-ADP-102`; no formula semantic change.
+- Parameter changes: Reused `PARAM-ADP-830`; no new parameter values.
+- Validation: py_compile PASS; focused S2PMT07 final-gate tests: 12 OK; source/board user-center root gate regression: 14 OK; full arxiv-daily-push unittest: 547 OK; V7.2 validator: PASS; ADP project governance: 0 errors / 0 warnings; changed-only governance semantic: 0 errors / 0 warnings; governance sync validator: 0 errors / 0 warnings; lean check-render: drift_count 0 / reference_issue_count 0; YAML/JSON/JSONL/CSV parse: OK; git diff --check: PASS; production-side-effect forbidden scan: OK.
+- Decisions: This is review-routing evidence only. It does not provide independent signoff, close B-007/B-008/P0/P1, complete S2PLT04, create the final bundle, run final commands, enable SMTP/scheduler/Release, mutate schema/DB/queues, change sources or ranking, edit V7 baselines, or claim integrated production acceptance.
+- Risks: The refreshed P0 receipt can be misread as P0 closure; independent review plus S2PMT07 still control closure and production acceptance. S2PLT04, final bundle, and independent final command execution remain blocked.
+- Rollback: Revert the P0 review receipt refresh, regression test, run manifest, traceability/delivery/event records, generated status refresh, and this ledger entry; no runtime production state was changed.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_INDEPENDENT_REVIEW_RECEIPT.md`; `governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B007-B008-20260627.json`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.
 
 ### `ITER-20260627-ADP-S2PMT05-SMTP-CRASH-WINDOW-B008`
 

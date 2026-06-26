@@ -2517,6 +2517,24 @@ tasks:
     completed_version: "0.23.0"
     unknown_task_ids: []
 
+  - task_id: "S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B007-B008"
+    phase: "S2PM"
+    objective: "Refresh the S2PMT07 P0 independent-review receipt so B-007/B-008 point to their current dedicated local evidence records."
+    scope: "P0 review receipt row update, P0 review receipt manifest refresh, current-run manifest, final-gate regression test, traceability/delivery/event records, and no-production evidence."
+    non_scope: "No independent signoff, no P0/P1 closure, no S2PLT04 completion, no final acceptance bundle creation, no real SMTP send, no scheduler install, no launchd bootstrap, no Release, no production restore, no public schema change, no DB migration, no production queue mutation, no ranking change, no source adapter change, no workflow enforcement, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no integrated production acceptance, and no daily-operation enablement."
+    status: "completed"
+    dependencies: ["S2PMT05-DUPLICATE-TRIGGER-B007", "S2PMT05-SMTP-CRASH-WINDOW-B008", "S2PMT07", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_INDEPENDENT_REVIEW_RECEIPT.md", "governance/run_manifests/ADP-S2PMT07-P0-INDEPENDENT-REVIEW-RECEIPT-20260626.json", "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B007-B008-20260627.json", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pmt07_p0_refresh_compile PYTHONPATH=arxiv-daily-push/src python3 -m py_compile arxiv-daily-push/tests/test_stage2_final_gate.py", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pmt07_p0_refresh_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q"]
+    test_results: ["py_compile PASS", "focused S2PMT07 final-gate tests: 12 OK", "source/board user-center root gate regression: 14 OK", "full arxiv-daily-push unittest: 547 OK", "V7.2 validator: PASS", "ADP project governance: 0 errors / 0 warnings", "changed-only governance semantic: 0 errors / 0 warnings", "governance sync validator: 0 errors / 0 warnings", "lean check-render: drift_count 0 / reference_issue_count 0", "YAML/JSON/JSONL/CSV parse: OK", "git diff --check: PASS", "production-side-effect forbidden scan: OK"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_INDEPENDENT_REVIEW_RECEIPT.md", "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B007-B008-20260627.json", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
+    risk: "This refresh can be misread as P0 closure or independent review signoff; it only updates evidence routing and leaves inherited P0/P1, S2PLT04, final bundle, final command execution, and S2PMT07 acceptance blocked."
+    rollback: "Revert the P0 review receipt refresh, regression test, manifests, traceability/delivery/event records, and generated status refresh; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
+
   - task_id: "S2PLT04"
     phase: "S2PL"
     objective: "Record a fail-closed no-production integration candidate precheck that summarizes S2PLT01 replay review evidence, missing S2PLT02/S2PLT03 completion, local state/content evidence, inherited P0/P1 blockers, missing final bundle, and blocked S2PMT07."
