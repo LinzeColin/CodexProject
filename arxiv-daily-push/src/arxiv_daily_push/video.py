@@ -233,6 +233,8 @@ def _lesson_stub_from_narration(narration: Mapping[str, Any]) -> dict[str, Any]:
                 )
     return {
         "lesson_id": narration.get("lesson_id", ""),
+        "lesson_key": narration.get("lesson_key", f"lesson-key:{narration.get('lesson_id', '')}"),
+        "lesson_revision_id": narration.get("lesson_revision_id", narration.get("lesson_id", "")),
         "source_item_id": narration.get("lesson_id", ""),
         "language": narration.get("language", "zh-CN"),
         "title": "Narration source lesson",

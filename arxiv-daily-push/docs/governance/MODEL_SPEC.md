@@ -7,7 +7,7 @@ machine_summary:
 
 - model_count: 102
 - formula_count: 104
-- parameter_count: 869
+- parameter_count: 872
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -215,7 +215,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 | MOD-ADP-005 | arXiv Atom source adapter | deterministic source adapter | Build bounded arXiv API URLs and map Atom entries into generic SourceItem records | active | adp-arxiv-adapter-v1 | `src/arxiv_daily_push/arxiv_adapter.py` |
 | MOD-ADP-002 | 100-point arXiv selection score | deterministic scoring model | Select the daily learning item from eligible arXiv candidates | active | adp-ranking-v1 | `src/arxiv_daily_push/ranking.py` |
 | MOD-ADP-003 | Claim Ledger publication gate | deterministic evidence gate | Block publication when key claims lack source locators or metadata is conflicted | active | adp-claim-gate-v1 | `src/arxiv_daily_push/evidence_gate.py` |
-| MOD-ADP-006 | Evidence-linked Chinese lesson generator | deterministic lesson generator | Generate text-only Chinese Lesson JSON from supported Claim Ledger evidence | active | adp-lesson-v1 | `src/arxiv_daily_push/lesson.py` |
+| MOD-ADP-006 | Evidence-linked Chinese lesson generator | deterministic lesson generator | Generate text-only Chinese Lesson JSON from supported Claim Ledger evidence with stable grouping and revision-sensitive identity | active | adp-lesson-v1 | `src/arxiv_daily_push/lesson.py` |
 | MOD-ADP-007 | Narration and TTS dry-run gate | deterministic narration planner | Generate narration/TTS-ready dry-run JSON from Lesson objects while blocking media artifacts | active | adp-narration-v1 | `src/arxiv_daily_push/narration.py` |
 | MOD-ADP-008 | Storyboard and video dry-run media gate | deterministic storyboard planner | Generate Storyboard JSON while blocking render/write/download media outputs | active | adp-video-dry-run-v1 | `src/arxiv_daily_push/video.py` |
 | MOD-ADP-009 | Local daily dry-run pipeline | deterministic orchestration pipeline | Run a local daily dry-run through publication, Lesson, Narration, Storyboard, RunRecord completion, and email preview | active | adp-local-pipeline-v1 | `src/arxiv_daily_push/pipeline.py` |
@@ -349,7 +349,7 @@ The machine-readable source is `formula_registry.yaml`.
 - FORM-ADP-007 maps arXiv Atom metadata into generic `SourceItem` records with bounded query parameters.
 - FORM-ADP-003 applies the active 100-point ranking weights and evidence/metadata eligibility gate.
 - FORM-ADP-004 applies the active Claim Ledger publication hard-block rules.
-- FORM-ADP-008 generates and validates Lesson JSON only from supported Claim Ledger claim IDs.
+- FORM-ADP-008 generates and validates Lesson JSON only from supported Claim Ledger claim IDs, with stable `lesson_key` and immutable content/evidence/model-sensitive `lesson_revision_id`.
 - FORM-ADP-009 generates narration dry-run JSON while blocking real TTS synthesis, audio writes, and model downloads.
 - FORM-ADP-010 generates Storyboard dry-run JSON while blocking video rendering, media writes, and asset downloads.
 - FORM-ADP-011 runs the local dry-run pipeline through the required RunRecord state sequence.
@@ -430,7 +430,7 @@ The canonical parameter catalog is `parameter_registry.csv`.
 - Active Phase 3 arXiv adapter parameters: PARAM-ADP-029 through PARAM-ADP-034.
 - Active Phase 4 ranking weights: PARAM-ADP-009 through PARAM-ADP-016.
 - Active Phase 5 evidence gate parameters: PARAM-ADP-017 through PARAM-ADP-018.
-- Active Phase 6 lesson parameters: PARAM-ADP-035 through PARAM-ADP-036.
+- Active Phase 6/S2PMT03 lesson parameters: PARAM-ADP-035 through PARAM-ADP-036 and PARAM-ADP-870 through PARAM-ADP-872.
 - Active Phase 7 narration/TTS dry-run parameters: PARAM-ADP-037 through PARAM-ADP-040.
 - Active Phase 8 video dry-run parameters: PARAM-ADP-041 through PARAM-ADP-044.
 - Active Phase 9 local pipeline parameters: PARAM-ADP-045 through PARAM-ADP-047.

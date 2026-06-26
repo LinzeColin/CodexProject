@@ -1,7 +1,7 @@
-product_version: "0.23.0"
+product_version: "0.23.1"
 product_version_status: "provisional"
 governance_spec_version: "1.0.0"
-schema_version: "2.1.0"
+schema_version: "2.1.1"
 model_versions:
   MOD-ADP-001: "adp-foundation-v1"
   MOD-ADP-004: "adp-contracts-v1"
@@ -205,7 +205,7 @@ parameter_profile_versions:
   adp-s2pbt05-d1-qualification: "adp-s2pbt05-d1-qualification-v1"
   adp-s2pbt05-d1-qualification-parameters: "adp-s2pbt05-d1-qualification-parameters-v1"
 data_snapshot_version: "fixture_arxiv_atom_to_daily_dry_run_v1"
-current_iteration: "ITER-20260626-ADP-S2PLT01-REPLAY-PAYLOAD-CONTRACT"
+current_iteration: "ITER-20260626-ADP-S2PMT03-LESSON-REVISION-A016"
 current_phase: "S2PL"
 current_gate: "S2PLT01_REPLAY_PAYLOAD_CONTRACT_NO_PRODUCTION"
 current_v6_task_id: "NOT_APPLICABLE"

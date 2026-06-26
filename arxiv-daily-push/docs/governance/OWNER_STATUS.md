@@ -39,7 +39,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (851/851 active parameters, 104/104 active formulas)
+- implementation_congruence: `VERIFIED` (855/855 active parameters, 104/104 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `VERIFIED`
 - empirical_validation: `VERIFIED`
@@ -71,14 +71,14 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - model_count: `102`
 - total_formulas: `104`
 - active_formulas: `104`
-- total_parameters: `869`
-- active_parameters: `852`
+- total_parameters: `872`
+- active_parameters: `855`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PLT01_REPLAY_PAYLOAD_CONTRACT_NO_PRODUCTION`
+- release_gate: `S2PMT03_LESSON_REVISION_A016_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
@@ -100,8 +100,8 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - source_snapshot_hash: `sha256:4ca48457b1a8b9168b36cfdfe3967d0342a90f0e279ba2bcfab522573b5c7cb7`
 - snapshot_event_time: `2026-06-26T21:30:00+10:00`
 - generator_version: `4.0.0`
-- version: `0.23.0`
-- phase/gate: `S2PL / S2PLT01_REPLAY_PAYLOAD_CONTRACT_NO_PRODUCTION`
+- version: `0.23.1`
+- phase/gate: `S2PM / S2PMT03_LESSON_REVISION_A016_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 

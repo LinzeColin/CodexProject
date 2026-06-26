@@ -21,6 +21,9 @@ from .security_boundary import (
 
 DEFAULT_LANGUAGE = "zh-CN"
 MIN_SUPPORTED_CLAIMS = 1
+LESSON_MODEL_VERSION = "adp-lesson-v1"
+LESSON_PROMPT_CONTRACT_VERSION = "lesson-frontstage-s2pmt01-v1"
+LESSON_REVISION_CONTRACT_VERSION = "lesson-revision-s2pmt03-a016-v1"
 
 
 class LessonGenerationError(ValueError):
@@ -47,8 +50,18 @@ def generate_lesson(
         raise LessonGenerationError("Lesson requires at least one supported claim")
     source_id = str(source_item["source_id"])
     lesson_claim_ids = [str(claim["claim_id"]) for claim in supported_claims]
+    lesson_key = f"lesson-key:{source_id}:{stable_content_hash({'claim_ids': lesson_claim_ids, 'language': language})[:12]}"
+    lesson_revision_hash = _lesson_revision_hash(
+        source_item,
+        supported_claims,
+        claim_ids=lesson_claim_ids,
+        language=language,
+    )
+    lesson_revision_id = f"lesson:{source_id}:rev:{lesson_revision_hash[:12]}"
     lesson = {
-        "lesson_id": f"lesson:{source_id}:{stable_content_hash({'claim_ids': lesson_claim_ids, 'language': language})[:12]}",
+        "lesson_id": lesson_revision_id,
+        "lesson_key": lesson_key,
+        "lesson_revision_id": lesson_revision_id,
         "source_item_id": source_id,
         "language": language,
         "title": f"今日论文学习：{source_item['title']}",
@@ -63,6 +76,50 @@ def generate_lesson(
     return lesson
 
 
+def _lesson_revision_hash(
+    source_item: Mapping[str, Any],
+    supported_claims: Sequence[Mapping[str, Any]],
+    *,
+    claim_ids: Sequence[str],
+    language: str,
+) -> str:
+    metadata = source_item.get("metadata") if isinstance(source_item.get("metadata"), Mapping) else {}
+    content_refs = source_item.get("content_refs") if isinstance(source_item.get("content_refs"), list) else []
+    revision_payload = {
+        "revision_contract_version": LESSON_REVISION_CONTRACT_VERSION,
+        "lesson_model_version": LESSON_MODEL_VERSION,
+        "prompt_contract_version": LESSON_PROMPT_CONTRACT_VERSION,
+        "language": language,
+        "source": {
+            "source_id": str(source_item.get("source_id") or ""),
+            "source_type": str(source_item.get("source_type") or ""),
+            "source_adapter": str(source_item.get("source_adapter") or ""),
+            "stable_id": str(source_item.get("stable_id") or ""),
+            "canonical_url": str(source_item.get("canonical_url") or ""),
+            "metadata_hash": stable_content_hash({"metadata": metadata}),
+            "content_refs_hash": stable_content_hash({"content_refs": content_refs}),
+        },
+        "claim_ids": list(claim_ids),
+        "claims": [_claim_revision_payload(claim) for claim in supported_claims],
+    }
+    return stable_content_hash(revision_payload)
+
+
+def _claim_revision_payload(claim: Mapping[str, Any]) -> dict[str, Any]:
+    return {
+        "claim_id": str(claim.get("claim_id") or ""),
+        "claim_type": str(claim.get("claim_type") or ""),
+        "priority": str(claim.get("priority") or ""),
+        "statement": str(claim.get("statement") or ""),
+        "locator_hash": stable_content_hash(
+            {"locator": claim.get("locator") if isinstance(claim.get("locator"), Mapping) else {}}
+        ),
+        "support_status": str(claim.get("support_status") or ""),
+        "source_id": str(claim.get("source_id") or ""),
+        "extracted_at": str(claim.get("extracted_at") or ""),
+    }
+
+
 def validate_lesson_against_ledger(lesson: Mapping[str, Any], ledger: Mapping[str, Any]) -> list[str]:
     """Validate lesson contract plus Claim Ledger coverage."""
 
@@ -74,6 +131,8 @@ def validate_lesson_against_ledger(lesson: Mapping[str, Any], ledger: Mapping[st
     }
     if ledger.get("status") != "pass":
         errors.append("Lesson Claim Ledger status must be pass")
+    if lesson.get("lesson_id") != lesson.get("lesson_revision_id"):
+        errors.append("Lesson.lesson_id must equal Lesson.lesson_revision_id")
     if lesson.get("source_item_id") != ledger.get("source_id"):
         errors.append("Lesson.source_item_id must match Claim Ledger source_id")
     lesson_claim_ids = [str(claim_id) for claim_id in lesson.get("claim_ids", []) if claim_id]

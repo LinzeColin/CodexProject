@@ -2246,6 +2246,24 @@ tasks:
     completed_version: "0.23.0"
     unknown_task_ids: []
 
+  - task_id: "S2PMT03-LESSON-REVISION-A016"
+    phase: "S2PM"
+    objective: "Remediate inherited audit finding A-016 locally by distinguishing stable Lesson.lesson_key from immutable content/evidence/model-sensitive Lesson.lesson_revision_id."
+    scope: "Lesson generation revision hash, Lesson runtime/schema contract, narration/video dry-run propagation, focused regression tests, FORM-ADP-008 refresh, PARAM-ADP-870 through PARAM-ADP-872, phase record, run manifest, and no-production side-effect evidence."
+    non_scope: "No inherited P0/P1 closure, no independent S2PMT07 signoff, no real SMTP send, no scheduler install, no Release, no production restore, no DB migration, no production queue mutation, no source adapter change, no ranking change, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no integrated production acceptance, and no daily-operation enablement."
+    status: "completed"
+    dependencies: ["S2PMT03", "S2PMT01", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/lesson.py", "arxiv-daily-push/src/arxiv_daily_push/contracts.py", "arxiv-daily-push/schemas/lesson.schema.json", "arxiv-daily-push/tests/test_lesson.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_LESSON_REVISION_A016.md"]
+    acceptance_ids: ["ACC-S2PMT03-CONCURRENCY-OUTBOX"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_lesson_a016_compile2 PYTHONPATH=arxiv-daily-push/src python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/lesson.py arxiv-daily-push/src/arxiv_daily_push/contracts.py arxiv-daily-push/src/arxiv_daily_push/narration.py arxiv-daily-push/src/arxiv_daily_push/video.py arxiv-daily-push/tests/test_lesson.py", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_lesson_a016_focus3 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_lesson.py arxiv-daily-push/tests/test_narration.py arxiv-daily-push/tests/test_video.py arxiv-daily-push/tests/test_contracts.py -q"]
+    test_results: ["py_compile PASS", "focused lesson/narration/video/contracts tests: 28 OK", "full arxiv-daily-push unittest: 472 OK", "V7.2 validator: PASS", "project governance: 0 errors / 0 warnings", "changed-only governance semantic: 0 errors / 0 warnings", "lean check-render: drift_count 0 reference_issue_count 0", "JSONL/CSV/YAML/manifest parse: OK", "git diff --check: PASS"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_LESSON_REVISION_A016.md", "governance/run_manifests/ADP-S2PMT03-LESSON-REVISION-A016-20260626.json", "arxiv-daily-push/tests/test_lesson.py"]
+    risk: "This run provides local A-016 remediation evidence only; inherited P0/P1 counters remain open until independent S2PMT07 review closes them."
+    rollback: "Revert Lesson revision code/schema/test changes, FORM-ADP-008 refresh, PARAM-ADP-870 through PARAM-ADP-872, phase record, manifest, traceability/delivery/event records, and rendered governance sync; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
+
 
   - task_id: "S2PMT07"
     phase: "S2PM"

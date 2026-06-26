@@ -21,8 +21,8 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 131
-- acceptance_count: 119
+- task_count: 132
+- acceptance_count: 120
 
 ## Delivery Tasks
 
@@ -139,6 +139,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | Phase 4 ranking tests | golden score, evidence gate, metadata conflict gate, duplicate gate | pass |
 | Phase 5 Claim Ledger gate tests | P0 locator, unsupported P0, metadata conflict, peer-review claim gate | pass |
 | Phase 6 lesson linkage tests | supported claim IDs, unregistered claim rejection, visible claim markers | pass |
+| S2PMT03 A-016 lesson revision identity | stable `lesson_key`, content/evidence/model-sensitive `lesson_revision_id`, revision mismatch rejection, and dry-run propagation | pass for local remediation evidence; inherited P0/P1 still require independent closure review |
 | Phase 7 narration/TTS dry-run gate | dry-run narration JSON, blocked real TTS, no audio paths | pass |
 | Phase 8 storyboard/video dry-run gate | dry-run storyboard JSON, blocked render/write/download | pass |
 | Phase 9 local dry-run pipeline | completed RunRecord, publication gate, Lesson, Narration, Storyboard, email preview | pass |
@@ -217,6 +218,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PMT02 | Atomic storage and recovery | completed_local_validation | `ACC-S2PMT02-ATOMIC-RECOVERY` | Local-only atomic artifact writes, manifest hash verification, tamper detection, explicit restore drill, staging cleanup, and no production side effects. |
 | S2PMT02-ARTIFACT-ATOMIC-PUBLISH | S2PMT02 A-010 remediation | completed_local_validation | `ACC-S2PMT02-ATOMIC-RECOVERY` | Stage 1 B1 report/email artifacts validate before formal writes, stage under `.b1_staging`, verify byte SHA-256 refs, publish one complete package directory, and leave no half-published package on failure. |
 | S2PMT03 | Lease fencing and transactional outbox | completed_local_validation | `ACC-S2PMT03-LEASE-FENCING-OUTBOX` | Local-only row_version CAS, lease/fencing, state-history consistency, idempotent outbox Message-ID, SMTP accept crash-window, M4 cycle watermark, and no production side effects. |
+| S2PMT03-LESSON-REVISION-A016 | Lesson revision identity hardening | completed_local_validation | `ACC-S2PMT03-CONCURRENCY-OUTBOX` | Local A-016 remediation: stable `lesson_key`, immutable content/evidence/model-sensitive `lesson_revision_id`, `lesson_id` preserved as revision-sensitive compatibility field, focused regression tests, and no production side effects. |
 | S2PMT04 | Automatic lifecycle and cache cleanup | completed_local_validation | `ACC-S2PMT04-LIFECYCLE` | Local-only disabled wake dry-run, lifecycle drain/checkpoint/cleanup, startup reconciliation, shutdown receipt, safe cache cleanup, parseable launchd plist, and no production side effects. |
 | S2PMT05 | Pressure fault time and E2E | completed_local_validation | `ACC-S2PMT05-STRESS-E2E` | Local-only load/stress/spike, accelerated 24h soak, dual scheduler race, SMTP crash-window, fault injection, DST/clock skew, 35-day 3+1/weekly/monthly/review/action/ROI, backpressure, deterministic isolation, and no production side effects. |
 | S2PMT06 | Chinese owner UX and safe controls | completed_local_validation | `ACC-S2PMT06-UX` | Local-only Chinese owner first screen, fixed navigation, status feedback, error cards, safe config changes, queue views, safe actions, accessibility, C-001 through C-015 coverage, and no production side effects. |

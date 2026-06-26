@@ -604,7 +604,7 @@ models:
     model_id: "MOD-ADP-006"
     name: "Evidence-linked Chinese lesson generator"
     kind: "deterministic lesson generator"
-    purpose: "Generate text-only Chinese Lesson JSON from supported Claim Ledger evidence while blocking unsupported or unregistered claim references."
+    purpose: "Generate text-only Chinese Lesson JSON from supported Claim Ledger evidence while blocking unsupported or unregistered claim references and assigning content/evidence-sensitive immutable lesson revisions."
     owner: "arxiv-daily-push"
     status: "active"
     fact_level: "EXTRACTED"
@@ -617,6 +617,9 @@ models:
     parameter_ids:
       - "PARAM-ADP-035"
       - "PARAM-ADP-036"
+      - "PARAM-ADP-870"
+      - "PARAM-ADP-871"
+      - "PARAM-ADP-872"
     inputs:
       - "SourceItem"
       - "EvidenceClaim"
