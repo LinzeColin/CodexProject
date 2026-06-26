@@ -18,6 +18,13 @@ rules in `docs/governance/STANDARD.md`.
   explicitly requests another language, agent-facing responses, governance
   summaries, PR descriptions, CI-facing summaries, owner-facing docs, and
   project human-entry files should use Chinese by default.
+- For `arxiv-daily-push`, any future source or board addition, deletion,
+  rename, enablement, or disablement must follow the project source/board
+  user-center sync gate in `arxiv-daily-push/AGENTS.md`: update the GitHub
+  user-center source page, related user-center summaries, generated source
+  catalog, project human-entry files, and pass the required user-center and
+  owner-controls tests in the same delivery. Agents must not change only
+  config or code and then claim the source/board change is complete.
 - `开发记录` must directly contain the project's full Roadmap: Stage -> Phase ->
   Task, a task ID matching `^S[1-9][0-9]*P[A-Z]T[0-9]{2}$`, estimated hours,
   derived percentages, Stop Conditions, Stop Gates, required evidence, and
