@@ -555,6 +555,48 @@ def decision_policy_for(project_id: str, next_task: dict[str, Any]) -> dict[str,
                 "no_decision": "S2PCT03 Lancet remains completed as no-send shadow evidence, but D2 top-journal work stops before profile/retraction modeling.",
             }
         )
+    if project_id == "arxiv-daily-push" and task_id == "S2PCT05":
+        policy.update(
+            {
+                "decision_id": "DEC-ADP-S2PCT05-ENGINEERING-SIGNALS-001",
+                "review_id": "REVIEW8",
+                "owner_role": "content_owner + product_owner",
+                "assignment": "CODEX_CAN_CONTINUE_WITH_STAGE2_CONTRACT",
+                "question": "是否继续 S2PCT05 工程开源、代码、基准和标准公开信号框架，同时保持 D2 source-domain acceptance 与 production inclusion false。",
+                "recommendation": "A: continue S2PCT05 engineering public-signal framework after completed top-journal profile/relation shadow evidence",
+                "option_a": "继续工程信号 taxonomy、官方性检查、仓库/版本/论文关系和复现状态测试，不影响现有 arXiv 本地生产路径。",
+                "option_b": "暂停在 S2PCT04，只保留顶刊 profile/relation shadow evidence；风险更低但 B2 工程证据缺口仍在。",
+                "option_c": "越过 D2 source gate 或 V7 3+1 合同直接放进正式邮件；禁止。",
+                "effort": "P1/P2; engineering signal taxonomy, officiality/version checks, repository-paper relation metadata, focused tests, semantic governance, changed-only project validation",
+                "resource": "local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner",
+                "benefit": "在保持 arXiv 稳定运行的前提下，把 D2 shadow 从顶刊理解层扩展到代码、基准、模型卡、官方发布和标准信号的可审计工程证据。",
+                "risks": "非官方镜像冒充原始源、版本不可追溯、仓库/论文关系错误、营销材料冒充工程证据、shadow 数据影响正式 arXiv 邮件",
+                "evidence": "engineering signal fixtures, officiality checks, repository/version/paper relation tests, semantic extractor, project governance validator, arXiv no-regression evidence",
+                "priority": "P1",
+                "no_decision": "S2PCT04 profile/relation remains completed as no-send shadow evidence, but D2 engineering public-signal coverage is deferred.",
+            }
+        )
+    if project_id == "arxiv-daily-push" and task_id == "S2PCT06":
+        policy.update(
+            {
+                "decision_id": "DEC-ADP-S2PCT06-REPORTS-001",
+                "review_id": "REVIEW8",
+                "owner_role": "content_owner + product_owner",
+                "assignment": "CODEX_CAN_CONTINUE_WITH_STAGE2_CONTRACT",
+                "question": "是否继续 S2PCT06 权威研究机构与产业技术报告框架，同时保持 D2 source-domain acceptance 与 production inclusion false。",
+                "recommendation": "A: continue S2PCT06 authoritative report framework after completed engineering public-signal shadow evidence",
+                "option_a": "继续报告类型 taxonomy、发布主体身份、利益关系和证据级别测试，不影响现有 arXiv 本地生产路径。",
+                "option_b": "暂停在 S2PCT05，只保留工程公开信号 shadow evidence；风险更低但 D2 报告来源缺口仍在。",
+                "option_c": "越过 D2 source gate 或 V7 3+1 合同直接放进正式邮件；禁止。",
+                "effort": "P1/P2; report type taxonomy, publisher identity checks, interest relation metadata, evidence-level tests, semantic governance, changed-only project validation",
+                "resource": "local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner",
+                "benefit": "在保持 arXiv 稳定运行的前提下，把 D2 shadow 从顶刊和工程信号扩展到研究机构、实验室和企业技术报告的可审计证据层。",
+                "risks": "营销材料冒充研究、发布主体身份错误、利益关系不透明、证据级别误判、shadow 数据影响正式 arXiv 邮件",
+                "evidence": "report source fixtures, publisher identity checks, interest relation tests, semantic extractor, project governance validator, arXiv no-regression evidence",
+                "priority": "P1",
+                "no_decision": "S2PCT05 engineering public-signal remains completed as no-send shadow evidence, but D2 report source coverage is deferred.",
+            }
+        )
     if project_id == "arxiv-daily-push" and task_id == "ADP-PHASE12-EMAIL-HUMAN-FORMAT-036":
         policy.update(
             {

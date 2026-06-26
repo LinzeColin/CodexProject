@@ -3029,3 +3029,95 @@ models:
       - "arxiv-daily-push/tests/test_global_scan.py"
     evidence_refs:
       - "governance/run_manifests/ADP-S2PCT03-LANCET-SHADOW-EVIDENCE-20260624.json"
+  -
+    model_id: "MOD-ADP-057"
+    name: "S2PCT04 top-journal profile and publication relation shadow"
+    kind: "deterministic metadata-only profile and relation model"
+    purpose: "Classify completed Nature, Science, and The Lancet metadata-only SourceItems into top-journal profile kinds, build publication relation edges, and force correction/retraction updates to prior conclusions without production inclusion or external side effects."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2pct04-top-journal-profile-v1"
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-059"
+    parameter_ids:
+      - "PARAM-ADP-394"
+      - "PARAM-ADP-395"
+      - "PARAM-ADP-396"
+      - "PARAM-ADP-397"
+      - "PARAM-ADP-398"
+      - "PARAM-ADP-399"
+    inputs:
+      - "Nature SourceBatch"
+      - "Science SourceBatch"
+      - "The Lancet SourceBatch"
+      - "publication relation events"
+      - "prior profile state"
+    outputs:
+      - "top-journal source profiles"
+      - "publication relation edges"
+      - "correction forced-update rows"
+      - "retraction forced-update rows"
+      - "profile report"
+      - "profile ledger"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+      - "arxiv-daily-push/tests/fixtures/top_journal_publication_events.json"
+      - "arxiv-daily-push/tests/fixtures/top_journal_prior_profile_state.json"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PCT04-JOURNAL-PROFILE-EVIDENCE-20260624.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PCT04_JOURNAL_PROFILE_EVIDENCE.md"
+  -
+    model_id: "MOD-ADP-058"
+    name: "S2PCT05 engineering public-signal shadow"
+    kind: "deterministic metadata-only engineering signal model"
+    purpose: "Validate paper-linked official code repositories, releases, model cards, benchmark results, and standards/specifications against top-journal profile evidence without production inclusion or external side effects."
+    owner: "arxiv-daily-push"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "adp-s2pct05-engineering-signals-v1"
+    assumption_ids:
+      - "ASM-ADP-003"
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-060"
+    parameter_ids:
+      - "PARAM-ADP-400"
+      - "PARAM-ADP-401"
+      - "PARAM-ADP-402"
+      - "PARAM-ADP-403"
+      - "PARAM-ADP-404"
+      - "PARAM-ADP-405"
+      - "PARAM-ADP-406"
+    inputs:
+      - "passing S2PCT04 top-journal profile report"
+      - "engineering signal metadata"
+      - "date"
+      - "generated_at"
+      - "state_dir"
+    outputs:
+      - "engineering signal report"
+      - "officiality gate"
+      - "version traceability gate"
+      - "paper relation gate"
+      - "reproducibility state gate"
+      - "engineering signal ledger"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_sources.py"
+      - "arxiv-daily-push/tests/fixtures/top_journal_engineering_signals.json"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PCT05-ENGINEERING-SIGNALS-EVIDENCE-20260624.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PCT05_ENGINEERING_SIGNALS_EVIDENCE.md"

@@ -2,6 +2,13 @@
 
 ## Unreleased - 2026-06-24
 
+- Completed `S2PCT05` engineering open-source, code, benchmark, model-card, release, and standards public-signal metadata-only no-send shadow evidence.
+- Added `adp stage2-engineering-signals-shadow`, engineering signal fixtures, officiality/version/paper-relation/reproducibility gates, model/formula/parameter governance registrations, and S2PCT05 manifest/phase evidence while keeping D2 source-domain acceptance, Stage 2 production acceptance, SMTP, Release, schedule, video, PDF/full-text download, paid API use, repository clone, and paywall bypass disabled.
+- Advanced V7.1 root routing to `S2PCT06` authoritative research institution and industry technical report framework.
+- Completed `S2PCT04` / legacy `S2P2T04` top-journal profile, publication relation, correction, and retraction metadata-only no-send shadow evidence across Nature, Science, and The Lancet shadow batches.
+- Added profile taxonomy for research, review, editorial, news, correction, and retraction; relation edges for original publication, discusses, corrects, and retracts; and forced-event updates where correction requires revision and retraction invalidates prior conclusions.
+- Added `adp stage2-top-journal-profile-shadow`, profile relation fixtures, prior state fixtures, model/formula/parameter governance registrations, and S2PCT04 manifest/phase evidence while keeping D2 source-domain acceptance, Stage 2 production acceptance, SMTP, Release, schedule, video, PDF/full-text download, and paywall bypass disabled.
+- Advanced V7.1 root routing to `S2PCT05` engineering open-source, code, benchmark, model-card, release, and standards public-signal framework.
 - Completed `S2PCT03` / legacy `S2P2T03` The Lancet main-journal metadata-only no-send shadow evidence using official public Lancet Online First RSS and current issue RSS cross-checks.
 - Added Lancet medical article-type gates, DOI-query-ready PubMed relation metadata, duplicate DOI/source handling, separate Lancet shadow queue/ledger/email preview persistence, and `adp stage2-lancet-shadow-daily`.
 - Verified focused top-journal/stage2 tests, semantic governance preparation, and a live Lancet RSS no-send canary while keeping D2 source-domain acceptance, Stage 2 production acceptance, SMTP, Release, schedule, video, PubMed full-record harvesting, PDF/full-text download, and paywall bypass disabled.

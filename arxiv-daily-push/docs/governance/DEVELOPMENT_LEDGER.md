@@ -2025,3 +2025,43 @@ None for this new project baseline.
 - Remaining risks: S2PCT04 profile/correction/retraction modeling is not implemented yet; V7.1 P0/P1 and S2PMT07 still block any formal source-domain or integrated production acceptance.
 - Rollback: Revert Lancet code, fixture/tests, governance registrations, phase record, manifest, events, root-lock pointer, and rendered governance sync.
 - Next step: Implement S2PCT04 journal profile, publication relation, correction, and retraction forced-event modeling with focused tests and governance validation.
+
+### `ITER-20260624-ADP-S2PCT04-JOURNAL-PROFILE`
+
+- Date: 2026-06-24
+- Fact level: EXTRACTED from top-journal profile fixtures, prior state fixtures, model/formula/parameter registry diff, and local S2PCT04 validation.
+- Version before: 0.23.0
+- Version after: 0.23.0
+- Base commit: f33cbce7b5cf67f966a6478b502a138afed25e94
+- Result commit: PENDING
+- Task IDs: `S2PCT04`, legacy alias `S2P2T04`; next task `S2PCT05`
+- Goal: Complete top-journal profile taxonomy, publication relation, correction, and retraction metadata-only no-send shadow evidence after Nature, Science, and Lancet, register S2PCT04 governance entries, and route the next S2PC task to engineering public signals without claiming D2 or Stage2 production acceptance.
+- Files changed: profile/relation shadow code, CLI, publication event and prior state fixtures, focused tests, phase record, run manifest, model/formula/parameter registries, project/roadmap/delivery tasks, root lock, and rendered governance inputs.
+- Model changes: Added `MOD-ADP-057` top-journal profile and publication relation shadow path.
+- Formula changes: Added `FORM-ADP-059` with machine-verifiable AST fingerprints bound to the S2PCT04 implementation.
+- Parameter changes: Added `PARAM-ADP-394` through `PARAM-ADP-399` for profile model id, required journals, required profile kinds, forced event types, ledger filename, and acceptance id.
+- Test results: focused top-journal/stage2 tests 32 OK; CLI fixture canary passed with empty validation errors, all profile kinds observed, four relation types present, forced_event_update_count 2, and all production flags false.
+- Decisions: `ACC-S2PCT04-JOURNAL-PROFILE` is accepted only as metadata-only no-send shadow evidence. `D2_SOURCE_DOMAIN_ACCEPTED`, `STAGE2_PRODUCTION_ACCEPTED`, `INTEGRATED_PRODUCTION_ACCEPTED`, SMTP, Release upload, GitHub production schedule, video, PDF/full-text download, and paywall bypass all remain false/disabled.
+- Remaining risks: S2PCT05 engineering public-signal framework is not implemented yet; V7.1 P0/P1 and S2PMT07 still block any formal source-domain or integrated production acceptance.
+- Rollback: Revert S2PCT04 code, fixture/tests, governance registrations, phase record, manifest, events, root-lock pointer, and rendered governance sync.
+- Next step: Implement S2PCT05 engineering open-source, code, benchmark, model-card, release, and standards public-signal framework with focused tests and governance validation.
+
+### `ITER-20260624-ADP-S2PCT05-ENGINEERING-SIGNALS`
+
+- Date: 2026-06-24
+- Fact level: EXTRACTED from engineering signal fixtures, S2PCT04 profile report fixtures, model/formula/parameter registry diff, and local S2PCT05 validation.
+- Version before: 0.23.0
+- Version after: 0.23.0
+- Base commit: f96f78c96498754dcccdd362d663db58bb3dcc8f
+- Result commit: PENDING
+- Task IDs: `S2PCT05`; no legacy alias; next task `S2PCT06`
+- Goal: Complete engineering open-source, code, benchmark, model-card, release, and standards public-signal metadata-only no-send shadow evidence after S2PCT04 profile/relation evidence, register S2PCT05 governance entries, and route the next S2PC task to authoritative report sources without claiming D2 or Stage2 production acceptance.
+- Files changed: engineering signal shadow code, CLI, engineering signal fixture, focused tests, phase record, run manifest, model/formula/parameter registries, project/roadmap/delivery tasks, root lock, and rendered governance inputs.
+- Model changes: Added `MOD-ADP-058` engineering public-signal shadow path.
+- Formula changes: Added `FORM-ADP-060` with machine-verifiable AST fingerprints bound to the S2PCT05 implementation.
+- Parameter changes: Added `PARAM-ADP-400` through `PARAM-ADP-406` for engineering signal model id, required signal types, allowed relation types, accepted officiality states, accepted reproducibility states, ledger filename, and acceptance id.
+- Test results: focused top-journal/stage2 tests 36 OK; CLI fixture canary passed with empty validation errors, all five signal types observed, engineering_signal_count 5, known_document_count 13, officiality/version/relation/reproducibility gates pass, and all production flags false.
+- Decisions: `ACC-S2PCT05-ENGINEERING-SIGNALS` is accepted only as metadata-only no-send shadow evidence. `D2_SOURCE_DOMAIN_ACCEPTED`, `STAGE2_PRODUCTION_ACCEPTED`, `INTEGRATED_PRODUCTION_ACCEPTED`, SMTP, Release upload, GitHub production schedule, video, repository clone, PDF/full-text download, paid API use, and paywall bypass all remain false/disabled.
+- Remaining risks: S2PCT06 authoritative research institution and industry technical report framework is not implemented yet; V7.1 P0/P1 and S2PMT07 still block any formal source-domain or integrated production acceptance.
+- Rollback: Revert S2PCT05 code, fixture/tests, governance registrations, phase record, manifest, events, root-lock pointer, and rendered governance sync.
+- Next step: Implement S2PCT06 authoritative research institution and industry technical report framework with focused tests and governance validation.
