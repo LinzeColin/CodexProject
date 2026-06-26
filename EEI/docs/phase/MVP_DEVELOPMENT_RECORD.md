@@ -1,5 +1,41 @@
 # MVP Development Record
 
+## 2026-06-27 - T1303/A204-A205 operator input status API and frontend binding
+
+Status: LOCAL TARGET VALIDATED; WAITING FOR OPERATOR INPUTS; RELEASE GATES STILL BLOCKED
+
+### Scope
+
+- Added `GET /v1/release/operator-input-status` to expose the existing fail-closed operator input status artifact.
+- Added OpenAPI schemas for `OperatorInputStatus` and `OperatorInputStatusItem`.
+- Added `/development-status` Release Operator Gates visibility with `0/6` ready inputs, direct artifact link and per-gate A202/A210/A026/A027/A209 status rows.
+- Added unit and Playwright coverage proving the API and frontend continue to show missing operator inputs instead of release readiness.
+
+### Acceptance Mapping
+
+- T1303 -> A204/A205.
+- This is release-gate visibility and operator workflow control only. It does not close A204/A205.
+
+### Validation
+
+- `PYTHONPYCACHEPREFIX=/private/tmp/eei-pycache PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m py_compile apps/api/app/domain.py tests/unit/test_api_health.py`: PASS.
+- `TMPDIR=/private/tmp RUFF_CACHE_DIR=/private/tmp/eei-ruff-cache .venv/bin/ruff check apps/api/app/domain.py tests/unit/test_api_health.py`: PASS.
+- `TMPDIR=/private/tmp PYTHONPYCACHEPREFIX=/private/tmp/eei-pycache .venv/bin/python -m pytest -q tests/unit/test_api_health.py -q`: PASS, `20/20`.
+- `PYTHONDONTWRITEBYTECODE=1 .venv/bin/python scripts/validate_contracts.py`: PASS.
+- `NEXT_TELEMETRY_DISABLED=1 ./node_modules/.bin/next typegen`: PASS.
+- `./node_modules/.bin/tsc --noEmit`: PASS.
+- `PLAYWRIGHT_BROWSERS_PATH=/private/tmp/eei-ms-playwright ./apps/web/node_modules/.bin/playwright test --config=playwright.config.ts tests/e2e/development-status.spec.ts --workers=1`: PASS, `2/2`.
+
+### Non-Claims
+
+- This does not create signed A202 evidence, A210 brand clearance, A026/A027 production gold labels, A209 finalization, release-manager activation or MVP readiness.
+- No database schema, scoring formula, graph traversal formula, extraction model, model weight, threshold, publication policy or active parameter value changed.
+
+### Rollback
+
+- Revert `apps/api/app/domain.py`, `specs/api_contract.yaml`, `apps/web/src/app/development-status/page.tsx`, `apps/web/src/app/globals.css`, `tests/unit/test_api_health.py`, `tests/e2e/development-status.spec.ts` and companion governance records.
+- Preserve `artifacts/operator_inputs/operator_input_status.json` and any future signed operator submissions.
+
 ## 2026-06-27 - T1307/A209 live rerun discovery and safe PID handling
 
 Status: LOCAL TARGET VALIDATED; A209 STILL IN PROGRESS; RELEASE GATES STILL BLOCKED

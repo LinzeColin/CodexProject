@@ -2,9 +2,11 @@ from __future__ import annotations
 
 import hashlib
 import hmac
+import json
 import re
 import time
 from datetime import datetime
+from pathlib import Path
 from typing import Annotated, Any, Literal
 from uuid import UUID
 
@@ -24,6 +26,12 @@ from .settings import get_settings
 router = APIRouter(prefix="/v1", tags=["domain"])
 SAVED_VIEW_PRINCIPAL_PATTERN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.:@-]{0,119}$")
 SAVED_VIEW_GATEWAY_SIGNATURE_VERSION = "eei-saved-view-gateway-v1"
+OPERATOR_INPUT_STATUS_PATH = (
+    Path(__file__).resolve().parents[3]
+    / "artifacts"
+    / "operator_inputs"
+    / "operator_input_status.json"
+)
 
 EntityType = Literal[
     "legal_entity",
@@ -214,6 +222,37 @@ def get_repository() -> DomainRepository:
 
 RepositoryDependency = Annotated[DomainRepository, Depends(get_repository)]
 CatalogRepositoryDependency = Annotated[CatalogRepository, Depends(CatalogRepository)]
+
+
+@router.get("/release/operator-input-status")
+def get_operator_input_status() -> dict[str, Any]:
+    try:
+        payload = json.loads(OPERATOR_INPUT_STATUS_PATH.read_text(encoding="utf-8"))
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail={
+                "reason": "operator_input_status_missing",
+                "message": "Operator input status artifact is not available.",
+            },
+        ) from exc
+    except json.JSONDecodeError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={
+                "reason": "operator_input_status_invalid_json",
+                "message": "Operator input status artifact is not valid JSON.",
+            },
+        ) from exc
+    if payload.get("schema_version") != "eei-external-release-operator-input-status-v1":
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={
+                "reason": "operator_input_status_schema_mismatch",
+                "message": "Operator input status artifact has an unexpected schema version.",
+            },
+        )
+    return payload
 
 
 def _normalize_saved_view_header(value: str | None, *, default: str) -> str:

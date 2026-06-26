@@ -1672,7 +1672,7 @@ dd {
 }
 
 .statusSummary {
-  grid-template-columns: repeat(4, minmax(130px, 1fr));
+  grid-template-columns: repeat(5, minmax(130px, 1fr));
 }
 
 .statusSummary div,
@@ -1715,7 +1715,7 @@ dd {
 
 .evidenceLinks {
   display: grid;
-  grid-template-columns: repeat(4, minmax(150px, 1fr));
+  grid-template-columns: repeat(5, minmax(150px, 1fr));
   gap: 10px;
 }
 

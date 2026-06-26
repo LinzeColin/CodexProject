@@ -14,7 +14,7 @@
 - Project: `EEI`
 - Path: `EEI`
 - Product version: `0.1.0`
-- Phase/Gate: `D / TASK-T1307-A209-LIVE-RERUN-MONITOR-HARDENING`
+- Phase/Gate: `D / TASK-T1303-OPERATOR-INPUT-STATUS-API-FRONTEND-BINDING`
 - Models/Formulas/Parameters total: `12 / 12 / 94`
 - Active formulas/parameters: `11 / 94`
 - Machine checked formulas/parameters: `11 / 94`
@@ -35,8 +35,9 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `TASK-T1307-A209-LIVE-RERUN-MONITOR-HARDENING`
-- Next executable task: `TASK-T1307`
+- Release gate: `TASK-T1303-OPERATOR-INPUT-STATUS-API-FRONTEND-BINDING`
+- Next executable task: `TASK-T1303`
+- Latest non-closure product binding: `EVENT-20260627-016` exposes missing operator gates through API/frontend while release readiness remains blocked.
 - Pending/stale events: `126`
 - Tree-bound events: `0`
 - Commit-bound events: `21`

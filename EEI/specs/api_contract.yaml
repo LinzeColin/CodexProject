@@ -21,6 +21,20 @@ paths:
           description: Required dependencies ready
         '503':
           description: Not ready
+  /v1/release/operator-input-status:
+    get:
+      operationId: getOperatorInputStatus
+      responses:
+        '200':
+          description: Fail-closed external operator-input gate status for MVP release.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperatorInputStatus'
+        '500':
+          description: Operator-input artifact is invalid.
+        '503':
+          description: Operator-input artifact is missing.
   /v1/entities:
     get:
       operationId: searchEntities
@@ -1340,6 +1354,63 @@ paths:
           description: Proposal rejected; operation logged and active profile changed only when accepted
 components:
   schemas:
+    OperatorInputStatus:
+      type: object
+      required:
+      - schema_version
+      - status
+      - input_statuses
+      - required_input_count
+      - missing_count
+      - release_gate_closed_by_input_status
+      - operator_inputs_ready_for_release_manager
+      properties:
+        schema_version:
+          type: string
+          enum:
+          - eei-external-release-operator-input-status-v1
+        status:
+          type: string
+        required_input_count:
+          type: integer
+          minimum: 0
+        missing_count:
+          type: integer
+          minimum: 0
+        release_gate_closed_by_input_status:
+          type: boolean
+        operator_inputs_ready_for_release_manager:
+          type: boolean
+        input_statuses:
+          type: array
+          items:
+            $ref: '#/components/schemas/OperatorInputStatusItem'
+    OperatorInputStatusItem:
+      type: object
+      required:
+      - acceptance_id
+      - input_id
+      - status
+      - release_gate_closure_allowed
+      - submission_target
+      - template_counts_as_clearance
+      properties:
+        acceptance_id:
+          type: string
+        input_id:
+          type: string
+        status:
+          type: string
+        reason:
+          type: string
+        release_gate_closure_allowed:
+          type: boolean
+        submission_target:
+          type: string
+        template_counts_as_clearance:
+          type: boolean
+        validation_command:
+          type: string
     EntityType:
       type: string
       enum:

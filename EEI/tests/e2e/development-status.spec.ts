@@ -30,6 +30,7 @@ test("shows development status navigation with separated state classes", async (
   await expect(page.getByTestId("status-task-count")).toHaveText("130");
   await expect(page.getByTestId("status-acceptance-done")).not.toHaveText("0");
   await expect(page.getByTestId("status-open-risks")).not.toHaveText("0");
+  await expect(page.getByTestId("status-operator-input-count")).toContainText("0/6");
 });
 
 test("links tasks risks controls and acceptance evidence from the status screen", async ({
@@ -41,6 +42,7 @@ test("links tasks risks controls and acceptance evidence from the status screen"
   await expect(page.getByTestId("status-linked-evidence")).toContainText("risks");
   await expect(page.getByTestId("status-linked-evidence")).toContainText("controls");
   await expect(page.getByTestId("status-linked-evidence")).toContainText("acceptance evidence");
+  await expect(page.getByTestId("status-linked-evidence")).toContainText("operator gates");
   await expect(page.getByTestId("status-link-tasks")).toHaveAttribute("href", /task_backlog\.csv/);
   await expect(page.getByTestId("status-link-risks")).toHaveAttribute("href", /risk_register\.csv/);
   await expect(page.getByTestId("status-link-controls")).toHaveAttribute(
@@ -51,7 +53,20 @@ test("links tasks risks controls and acceptance evidence from the status screen"
     "href",
     /acceptance_traceability\.csv/
   );
+  await expect(page.getByTestId("status-link-operator-inputs")).toHaveAttribute(
+    "href",
+    /operator_input_status\.json/
+  );
 
+  await expect(page.getByTestId("status-operator-gates-panel")).toContainText("A202");
+  await expect(page.getByTestId("status-operator-gates-panel")).toContainText("A210");
+  await expect(page.getByTestId("status-operator-gates-panel")).toContainText("A026");
+  await expect(page.getByTestId("status-operator-gates-panel")).toContainText("A027");
+  await expect(page.getByTestId("status-operator-gates-panel")).toContainText("A209");
+  await expect(page.getByTestId("status-operator-gates-panel")).toContainText("MISSING");
+  await expect(page.getByTestId("status-operator-gates-panel")).toContainText(
+    "operator input target is missing"
+  );
   await expect(page.getByTestId("status-ledger-panel")).toContainText("FUN-EXP-01");
   await expect(page.getByTestId("status-ledger-panel")).toContainText("LOCAL_E2E_VALIDATED");
   await expect(page.getByTestId("status-task-T1302")).toContainText(

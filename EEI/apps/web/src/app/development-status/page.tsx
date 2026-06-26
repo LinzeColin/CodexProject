@@ -24,8 +24,28 @@ type StatusLane = {
   description: string;
 };
 
+type OperatorInputStatusItem = {
+  acceptance_id: string;
+  input_id: string;
+  reason: string;
+  release_gate_closure_allowed: boolean;
+  status: string;
+  submission_target: string;
+};
+
+type OperatorInputStatus = {
+  input_statuses: OperatorInputStatusItem[];
+  missing_count: number;
+  operator_inputs_ready_for_release_manager: boolean;
+  release_gate_closed_by_input_status: boolean;
+  required_input_count: number;
+  status: string;
+};
+
 const dataRoot = resolve(process.cwd(), "../../data");
+const artifactsRoot = resolve(process.cwd(), "../../artifacts");
 const githubDataRoot = "https://github.com/LinzeColin/CodexProject/blob/main/EEI/data";
+const githubArtifactRoot = "https://github.com/LinzeColin/CodexProject/blob/main/EEI/artifacts";
 
 function parseCsv(text: string): CsvRow[] {
   const rows: string[][] = [];
@@ -76,6 +96,10 @@ function readCsv(path: string): CsvRow[] {
   return parseCsv(readFileSync(resolve(dataRoot, path), "utf8"));
 }
 
+function readArtifactJson<T>(path: string): T {
+  return JSON.parse(readFileSync(resolve(artifactsRoot, path), "utf8")) as T;
+}
+
 function countRows(rows: CsvRow[], predicate: (row: CsvRow) => boolean) {
   return rows.filter(predicate).length;
 }
@@ -88,6 +112,9 @@ export default function DevelopmentStatusPage() {
   const risks = readCsv("risk_register.csv");
   const riskControls = readCsv("risk_control_traceability.csv");
   const gates = readCsv("release_gate_catalog.csv");
+  const operatorInputs = readArtifactJson<OperatorInputStatus>(
+    "operator_inputs/operator_input_status.json"
+  );
 
   const lanes: StatusLane[] = [
     {
@@ -146,6 +173,8 @@ export default function DevelopmentStatusPage() {
     .filter((row) => row.status === "DONE")
     .slice(-12)
     .reverse();
+  const operatorInputsReady =
+    operatorInputs.required_input_count - operatorInputs.missing_count;
 
   return (
     <main
@@ -217,6 +246,12 @@ export default function DevelopmentStatusPage() {
             <dt>Open risks</dt>
             <dd data-testid="status-open-risks">{openRisks.length}</dd>
           </div>
+          <div data-testid="status-operator-input-count">
+            <dt>Operator inputs</dt>
+            <dd>
+              {operatorInputsReady}/{operatorInputs.required_input_count}
+            </dd>
+          </div>
         </section>
 
         <section className="statusLanes" aria-label="状态分类" data-testid="status-lanes">
@@ -253,9 +288,36 @@ export default function DevelopmentStatusPage() {
             <FileCheck2 size={16} aria-hidden="true" />
             <span>acceptance evidence</span>
           </a>
+          <a
+            data-testid="status-link-operator-inputs"
+            href={`${githubArtifactRoot}/operator_inputs/operator_input_status.json`}
+          >
+            <ShieldAlert size={16} aria-hidden="true" />
+            <span>operator gates</span>
+          </a>
         </section>
 
         <section className="statusPanels">
+          <article data-testid="status-operator-gates-panel">
+            <header>
+              <ShieldAlert size={18} aria-hidden="true" />
+              <h2>Release Operator Gates</h2>
+            </header>
+            <div className="statusTable">
+              {operatorInputs.input_statuses.map((row) => (
+                <div
+                  data-testid={`status-operator-gate-${row.input_id}`}
+                  key={row.input_id}
+                >
+                  <strong>{row.acceptance_id}</strong>
+                  <span>{row.input_id}</span>
+                  <em>{row.status}</em>
+                  <small>{row.release_gate_closure_allowed ? "release allowed" : row.reason}</small>
+                </div>
+              ))}
+            </div>
+          </article>
+
           <article data-testid="status-ledger-panel">
             <header>
               <CheckCircle2 size={18} aria-hidden="true" />

@@ -6,11 +6,11 @@ EEI 当前治理结论：实现一致性为 `VERIFIED`，方法/实证为 `UNVER
 
 ## 2. 本次运行改变了什么
 
-Owner 视图现在记录 T1307/A209 live-rerun monitor hardening：monitor/heartbeat 可显式发现最新 detached `/private/tmp/eei-a209-rerun-*` 链，supervisor 将 `UNKNOWN_PERMISSION_DENIED` PID 状态视为不可替换的可能运行进程，避免双启动 live soak；这不停止、重启、resume、promote 或 finalize A209，A202/A210/A026/A027/A209 外部输入仍缺失，release-manager/MVP refresh 仍被阻断。
+Owner 视图现在记录 T1303/A204-A205 operator input status API/frontend binding：`/v1/release/operator-input-status` 和 `/development-status` Release Operator Gates panel 显示 6 个必需外部输入全部缺失、release-manager/MVP refresh 仍被阻断。A209 live-rerun monitor hardening 仍保留为背景稳定性证据；本次不停止、重启、resume、promote 或 finalize A209。
 
 ## 3. 为什么重要
 
-降低 live A209 rerun 被旧 canonical checkpoint 掩盖、或权限未知 PID 被误判成可恢复暂停并双启动的风险。
+降低 release gate 状态只存在于原始 artifact 中、操作方误读 A202/A210/A026/A027/A209 缺口或把 template/status manifest 当成清权证据的风险。
 
 ## 4. 需要人类决定什么
 
@@ -31,10 +31,10 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 ## 7. 下一行动、责任角色和验收证据
 
-- next_task_id: `TASK-T1307`
+- next_task_id: `TASK-T1303`
 - responsible_role: `product_owner + data_owner + risk_owner`
-- acceptance_ids: `ACC-A209`
-- unblock_condition: Preserve failed A209 evidence, provide signed clean-rerun authorization, run a fresh 24h operator soak to `288/288` successful windows with `0` failed, and pass release-ready A209 validation.
+- acceptance_ids: `ACC-A204, ACC-A205`
+- unblock_condition: Provide signed A202/A210/A026/A027/A209 operator inputs under approved `artifacts/operator_inputs/` targets, preserve failed A209 evidence, complete a fresh 24h operator soak to `288/288` successful windows with `0` failed, and pass release-manager/MVP release validation.
 
 ## 8. 九层 Assurance 状态
 
@@ -78,7 +78,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `TASK-T1307-A209-LIVE-RERUN-MONITOR-HARDENING`
+- release_gate: `TASK-T1303-OPERATOR-INPUT-STATUS-API-FRONTEND-BINDING`
 
 ## 14. Evidence Freshness
 
@@ -101,9 +101,9 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - snapshot_event_time: `2026-06-27T01:17:20+10:00`
 - generator_version: `4.0.0`
 - version: `0.1.0`
-- phase/gate: `D / TASK-T1307-A209-LIVE-RERUN-MONITOR-HARDENING`
+- phase/gate: `D / TASK-T1303-OPERATOR-INPUT-STATUS-API-FRONTEND-BINDING`
 
 ## 17. Next Unique Task
 
-- task_id: `TASK-T1307`
-- reason: Continue background A209 clean rerun monitoring while A202/A210/A026/A027 operator inputs remain missing
+- task_id: `TASK-T1303`
+- reason: Keep missing A202/A210/A026/A027/A209 operator gates visible through API/frontend while A209 continues as a background evidence task

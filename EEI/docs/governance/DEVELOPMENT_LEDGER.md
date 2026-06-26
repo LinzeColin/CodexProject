@@ -11,10 +11,10 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version: `0.1.0`
 - Product version status: `provisional`
 - Current phase: `D`
-- Current gate: `TASK-T1307-A209-LIVE-RERUN-MONITOR-HARDENING`
+- Current gate: `TASK-T1303-OPERATOR-INPUT-STATUS-API-FRONTEND-BINDING`
 - Confirmed iteration count: 39
 - Reconstructed development event count: 6
-- Current task: `TASK-T1307/A209 live rerun discovery and safe PID handling`
+- Current task: `TASK-T1303/A204-A205 operator input status API and frontend binding`
 - Current A209 point-in-time heartbeat: the clean 24h operator soak attempt launched at `2026-06-25T21:33:19Z` failed at checkpoint window `7/288`; `6` windows passed, `1` failed, latest checkpoint time is `2026-06-25T22:08:58Z`, `child_status=NO_OUTPUT`, `exit_status=1`, and stderr reports `page.evaluate: Target page, context or browser has been closed`. No `run_operator_soak` or `run_soak_smoke` process was found during the 2026-06-26 check. A209 remains `IN_PROGRESS` and has no release-ready 24h evidence.
 - Current isolated rerun: `/private/tmp/eei-a209-rerun-20260626-0918/` was started without overwriting the failed canonical checkpoint and then failed at checkpoint window `130/288`; `129` windows passed, `1` failed, latest successful checkpoint ended `2026-06-26T09:58:08Z`, failed checkpoint time is `2026-06-26T10:03:11Z`, and the failure path is `/private/tmp/eei-operator-soak-80478-130.json`. Repository heartbeat reports `BACKGROUND_SOAK_OPERATOR_INTERVENTION_REQUIRED`, finalization reports `A209_FINALIZATION_OPERATOR_INTERVENTION_REQUIRED`, and recorded operator/watchdog PIDs `80478`/`80732` are not running. A209 remains `IN_PROGRESS` and requires explicit operator-authorized clean rerun/recovery before any promotion or finalization.
 - Current A209 recovery packet: `artifacts/tests/a209/t1307_operator_soak_recovery_authorization_packet.json` is generated and validated. It source-hashes repository-managed heartbeat/evidence/finalization evidence, records canonical failed 24h plus isolated `/private/tmp` evidence paths as operator-preserved runtime sources, requires signed operator authorization at `artifacts/operator_inputs/a209/clean-rerun-authorization.json` before any clean 24h rerun, and keeps `clean_rerun_authorized_by_packet=false` plus `release_gate_closed_by_recovery_packet=false`.
@@ -23,6 +23,7 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Current A209 harness hardening: `scripts/run_soak_smoke.mjs` now treats a transient Playwright target close as a bounded browser-slice recovery event, rebuilds the page/browser for the same slice, records `browser_recoveries_observed`, `browser_recovery_errors` and `max_browser_slice_recoveries=2`, and still fails closed if the recovery budget is exceeded. `scripts/run_operator_soak.mjs` writes the recovery count into each checkpoint window, and `scripts/validate_operator_soak_evidence.py` rejects recovery counts above budget. This is short-window recovery evidence only; A209 still requires an operator-authorized clean 24h rerun reaching `288/288` successful windows with zero failures.
 - Current T1303 operator input kit: `artifacts/operator_input_kit/operator_input_kit_manifest.json` is generated and validated. It source-hashes template-only A202/A210/A026-A027/A209 worksheets, keeps them outside signed `artifacts/operator_inputs/` targets, requires `target_path_is_template_path=false` for every item, and keeps `release_gate_closure_allowed=false`.
 - Current T1303 operator input status: `artifacts/operator_inputs/operator_input_status.json` is generated and validated with schema `eei-external-release-operator-input-status-v1`. It reports `WAITING_FOR_OPERATOR_INPUTS`, `required_input_count=6`, `missing_count=6`, `rejected_count=0`, `present_requiring_validator_count=0`, `release_gate_closed_by_input_status=false`, `release_manager_preflight_refresh_allowed=false` and `mvp_release_gate_refresh_allowed=false`.
+- Current T1303 operator input API/frontend binding: `/v1/release/operator-input-status` now exposes the same fail-closed status artifact, and `/development-status` shows the Release Operator Gates panel with `0/6` ready inputs, six `MISSING` gates and direct evidence linkage to `artifacts/operator_inputs/operator_input_status.json`.
 - Current A202 source-license publication boundary: signed A202/A210 release-decision evidence now accepts only `approved_for_public_release` source-license status. `approved_for_internal_review` remains insufficient for relationship publication or release-gate clearance, and the A202 operator intake gap packet now shows public-only source-license accepted statuses.
 - Current T1303 external release evidence bundle drift repair: GitHub EEI validation run `28250383732` failed at `make verify` because `scripts/validate_external_release_evidence_bundle.py validate` detected `external release evidence bundle drift: source_files` after the A202 public-only source-license artifact refresh. The external bundle, operator intake packet, operator input kit/status, release-manager preflight, MVP release gate, clean-room ZIP and release checksum artifacts have been regenerated and validated locally; all release gates remain blocked.
 - Blockers: T1301/A202 is still `IN_PROGRESS`; the refreshed operator review packet is freshness-correct supporting review evidence only and does not create source-license review, passage-level human approval, production owner approval, legal release clearance, brand clearance, release-manager activation or final public relationship publication. T1307/A209 is still `IN_PROGRESS`; failed `7/288` evidence plus short repair probes, the recovery authorization packet and the operator input kit are non-closure evidence only, and a fresh clean rerun must reach `288/288` successful windows with zero failures before promotion/finalization can allow downstream release-gate refresh. A204/A205 release-manager activation preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED` until A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence pass. A026 still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%. The new T904 operator labeling packet is a source-bound worksheet with blank `OPERATOR_TO_LABEL` slots and is not production gold evidence. A210 still needs formal brand legal/market clearance or signed risk waiver. The T1303 external release operator intake packet uses schema `eei-external-release-operator-intake-packet-v2`, lists exact submission targets under `artifacts/operator_inputs/`, now includes the A209 recovery packet as supporting evidence, and keeps `release_gate_closed_by_operator_packet=false`; it is a checklist/hash manifest, not clearance. The operator input kit is a fillable template pack only, not signed operator evidence.
@@ -33,6 +34,36 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Live official-source validation: T1301/A202 now validates selected live NVIDIA official capture evidence through `--validate-only` without PostgreSQL writes and requires `source_health.retry_outcome` terminal/dead-letter metadata on every anchor; this remains review input only and does not close source/license/passage/owner/legal clearance or relationship publication.
 
 
+
+## EVENT-20260627-016 - T1303/A204-A205 operator input status API and frontend binding
+
+- Timestamp: 2026-06-27T04:20:00+10:00
+- Fact level: EXTRACTED
+- Base commit: `dc8add6a02d77c22d0579b55f6b25f5fd6b2ff1e`
+- Scope: expose the existing fail-closed operator input status manifest through the production API contract and the production componentized `/development-status` frontend so operators and reviewers can see A202/A209/A210/A026/A027/A204-A205 gate blockers without reading raw artifacts.
+- Implementation: `apps/api/app/domain.py` adds `GET /v1/release/operator-input-status` with missing/invalid/schema-mismatch fail-closed responses; `specs/api_contract.yaml` documents the route and schemas; `apps/web/src/app/development-status/page.tsx` reads `artifacts/operator_inputs/operator_input_status.json`, shows `0/6` operator inputs and renders a Release Operator Gates panel; focused unit and Playwright tests cover the API and panel.
+- Validation: API py_compile PASS; focused ruff PASS; `tests/unit/test_api_health.py` PASS `20/20`; `scripts/validate_contracts.py` PASS; Next typegen and `tsc --noEmit` PASS; targeted Playwright `tests/e2e/development-status.spec.ts` PASS `2/2`.
+- Non-claims: this does not create signed operator evidence, A202 source/license/passage/owner/legal clearance, A210 brand clearance, A026/A027 production gold labels, A209 finalization, release-manager activation or MVP release readiness; it does not change database schema, model weights, thresholds, formulas, graph traversal, extraction logic or publication policy.
+- Rollback: revert the API route, OpenAPI schemas, development-status panel/test updates and this governance event; preserve `artifacts/operator_inputs/operator_input_status.json` and any future real signed operator files under `artifacts/operator_inputs/`.
+
+## ITER-20260627-016 - Operator input status API/frontend binding
+
+- Date: 2026-06-27
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `dc8add6a02d77c22d0579b55f6b25f5fd6b2ff1e`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1303`
+- Acceptance IDs: `A204`, `A205`
+- Goal: expose the fail-closed operator input status manifest through production API and frontend status surfaces without treating missing operator evidence as release readiness.
+- Files changed: API route, OpenAPI contract, development-status page, development-status styles, unit/E2E tests, T1303 traceability records, MOD-012/FORM-012/PARAM-094 governance companion records, clean-room package/evidence, release evidence and checksums.
+- Model changes: no scoring formula, extraction model, graph traversal formula, database schema, model weight, threshold, release-manager activation rule or publication policy changed; API schema and frontend visibility changed to expose the existing fail-closed status artifact.
+- Parameter changes: no active parameter value changed; `PARAM-094` remains `eei-external-release-operator-input-status-v1`.
+- Commands run: focused API py_compile; focused ruff; `pytest tests/unit/test_api_health.py`; `scripts/validate_contracts.py`; Next typegen; web `tsc --noEmit`; targeted Playwright development-status E2E; clean-room/release artifact generation/validation; full `make verify`.
+- Test results: API unit tests PASS `20/20`; targeted Playwright development-status PASS `2/2`; clean-room package validates with `package_paths=456`; release evidence validates with `manifest_paths=463`; full `make verify` PASS with unit tests `152/152`.
+- Rollback: revert the route, contract, UI/test, governance companion and regenerated artifact changes while preserving real future signed operator files under `artifacts/operator_inputs/`.
+- Next step: push and confirm Project Governance plus EEI validation CI; continue A209 background monitoring separately until `288/288` zero-failure evidence can be finalized.
 
 ## EVENT-20260627-009 - T1307/A209 live rerun discovery and safe PID handling
 

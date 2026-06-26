@@ -227,6 +227,22 @@ def test_domain_api_fails_closed_without_database(monkeypatch) -> None:
     assert response.json()["detail"] == "DATABASE_URL is required for domain API endpoints"
 
 
+def test_operator_input_status_endpoint_exposes_fail_closed_release_gates() -> None:
+    response = TestClient(app).get("/v1/release/operator-input-status")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["schema_version"] == "eei-external-release-operator-input-status-v1"
+    assert payload["status"] == "WAITING_FOR_OPERATOR_INPUTS"
+    assert payload["release_gate_closed_by_input_status"] is False
+    assert payload["operator_inputs_ready_for_release_manager"] is False
+    assert payload["required_input_count"] == len(payload["input_statuses"])
+    assert {"A202", "A209", "A210", "A026", "A027"}.issubset(
+        {item["acceptance_id"] for item in payload["input_statuses"]}
+    )
+    assert all(item["template_counts_as_clearance"] is False for item in payload["input_statuses"])
+
+
 def test_scoring_profile_draft_requires_weights() -> None:
     with pytest.raises(ValidationError):
         ScoringProfileDraftCreate.model_validate(
