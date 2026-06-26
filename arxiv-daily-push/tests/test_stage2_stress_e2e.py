@@ -32,6 +32,7 @@ from arxiv_daily_push.stage2_stress_e2e import (
     evaluate_backpressure_policy,
     evaluate_capacity_baseline_model,
     evaluate_dual_scheduler_race,
+    evaluate_smtp_crash_window,
     evaluate_dst_clock_policy,
     evaluate_fault_injection_matrix,
     evaluate_load_stress_spike_soak,
@@ -134,9 +135,45 @@ class Stage2StressE2ETests(unittest.TestCase):
         self.assertEqual(crash["status"], "pass")
         self.assertFalse(crash["real_smtp_sent"])
         self.assertFalse(crash["resend_without_provider_ref_allowed"])
+        self.assertFalse(crash["resend_after_provider_ref_required"])
+        self.assertEqual(crash["outbox_claim"]["status"], "pass")
+        self.assertEqual(crash["accepted_pending_commit"]["status"], "ACCEPTED_PENDING_COMMIT")
+        self.assertEqual(crash["message_id"], crash["retry_same_revision_message_id"])
+        self.assertNotEqual(crash["message_id"], crash["revised_content_message_id"])
         self.assertEqual(crash["accepted_without_commit"]["status"], "blocked")
+        self.assertFalse(crash["accepted_without_commit"]["message"]["retry_safe"])
         self.assertIn("provider_accept_ref is required", crash["accepted_without_commit"]["blocking_reasons"][0])
         self.assertEqual(crash["accepted_with_provider_ref"]["message"]["status"], "SENT")
+        self.assertEqual(crash["accepted_with_provider_ref"]["message"]["provider_accept_ref"], "smtp-accept://local/s2pmt05/2026-07-04/M1")
+        self.assertFalse(crash["accepted_with_provider_ref"]["message"]["retry_safe"])
+        for check in (
+            "outbox_claimed_before_smtp",
+            "accepted_pending_commit_reproduced",
+            "idempotent_message_identity_stable",
+            "resend_without_provider_ref_blocked",
+            "provider_accept_ref_required_before_resolution",
+            "provider_accept_ref_finalizes_without_resend",
+            "no_real_smtp_side_effect",
+        ):
+            self.assertTrue(crash["checks"][check])
+
+    def test_smtp_crash_window_blocks_missing_provider_ref_and_unstable_identity(self) -> None:
+        crash = simulate_smtp_crash_window(generated_at="2026-07-04T06:00:00+10:00")
+        missing_ref = dict(crash)
+        missing_ref["accepted_with_provider_ref"] = dict(crash["accepted_without_commit"])
+
+        missing_ref_eval = evaluate_smtp_crash_window(missing_ref)
+
+        self.assertEqual(missing_ref_eval["status"], "blocked")
+        self.assertFalse(missing_ref_eval["checks"]["provider_accept_ref_finalizes_without_resend"])
+
+        unstable_identity = dict(crash)
+        unstable_identity["retry_same_revision_message_id"] = "changed-message-id"
+
+        unstable_eval = evaluate_smtp_crash_window(unstable_identity)
+
+        self.assertEqual(unstable_eval["status"], "blocked")
+        self.assertFalse(unstable_eval["checks"]["idempotent_message_identity_stable"])
 
     def test_fault_injection_matrix_covers_storage_sqlite_and_corrupt_artifacts(self) -> None:
         matrix = build_fault_injection_matrix(generated_at="2026-07-04T06:00:00+10:00")

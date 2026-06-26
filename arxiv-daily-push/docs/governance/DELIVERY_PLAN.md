@@ -21,7 +21,7 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 153
+- task_count: 154
 - acceptance_count: 122
 
 ## Delivery Tasks
@@ -229,6 +229,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PMT04-CACHE-LOW-DISK-B005 | Cache low-disk degradation gate | completed_local_validation | `ACC-S2PMT04-LIFECYCLE` | Local B-005 remediation: low disk pressure enters degraded mode, blocks new downloads and rebuildable cache writes, preserves durable evidence, keeps cleanup dry-run, and avoids queue/delete side effects; no scheduler/SMTP/production side effects. |
 | S2PMT05 | Pressure fault time and E2E | completed_local_validation | `ACC-S2PMT05-STRESS-E2E` | Local-only load/stress/spike, accelerated 24h soak, dual scheduler race, SMTP crash-window, fault injection, DST/clock skew, 35-day 3+1/weekly/monthly/review/action/ROI, backpressure, deterministic isolation, and no production side effects. |
 | S2PMT05-DUPLICATE-TRIGGER-B007 | Multi-actor duplicate-trigger race gate | completed_local_validation | `ACC-S2PMT05-STRESS-E2E` | Local B-007 remediation: duplicate-trigger race evidence now requires four actor sources, M1-M4 x 100 attempts, `mail_key`/`lease_owner`/`fencing_token` receipts, exactly one active revision per product, reason-coded blocked attempts, count conservation, and no scheduler side effects; no SMTP/scheduler/production side effects. |
+| S2PMT05-SMTP-CRASH-WINDOW-B008 | SMTP accepted-before-commit crash-window gate | completed_local_validation | `ACC-S2PMT05-STRESS-E2E` | Local B-008 remediation: SMTP crash-window evidence now requires outbox claim before SMTP acceptance, explicit `ACCEPTED_PENDING_COMMIT`, idempotent `message_id`, blocked resend without provider accept ref, local finalization with `smtp-accept://...` provider ref, and no real SMTP side effects. |
 | S2PMT05-CAPACITY-BASELINE-B006 | Formal capacity baseline gate | completed_local_validation | `ACC-S2PMT05-STRESS-E2E` | Local B-006 remediation: capacity baseline now requires load/stress/spike/soak rows, 1x/2x/5x multipliers, throughput/latency/queue/memory/disk/error metrics, bounded recoverable queue age, local 24h accelerated soak, and rebuildable-only spike shedding; no SMTP/scheduler/production side effects. |
 | S2PMT05-FAULT-INJECTION-B009 | Systematic fault injection recovery gate | completed_local_validation | `ACC-S2PMT05-STRESS-E2E` | Local B-009 remediation: fault injection now requires ENOSPC, read-only target, SQLITE_BUSY, corrupt JSON/PDF/backup, backup path collision, explicit recovery states, no partial artifact commits, and fail-closed durable evidence; no SMTP/scheduler/production side effects. |
 | S2PMT05-TIME-POLICY-B010 | Structured DST misfire catch-up gate | completed_local_validation | `ACC-S2PMT05-STRESS-E2E` | Local B-010 remediation: time policy now requires Australia/Sydney 05:00 structured schedule, 3600-second misfire grace, one-cycle catch-up bound, DST fold/gap, 8h sleep recovery, NTP forward/backward clock-jump cases, and no duplicate M4 watermark; no scheduler/SMTP/production side effects. |
