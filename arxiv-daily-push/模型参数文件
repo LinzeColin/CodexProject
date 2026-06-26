@@ -1,122 +1,1227 @@
 # 模型参数文件
 
-本文件是 ADP 的中文模型和参数基线。它说明排序、门禁、邮件、复习、行动、收益如何取数和解释；不把完整机器注册表直接转成用户阅读页。完整机器清单见 [model_registry.yaml](docs/governance/model_registry.yaml)、[formula_registry.yaml](docs/governance/formula_registry.yaml) 和 [parameter_registry.csv](docs/governance/parameter_registry.csv)。括号中的英文为治理校验定位码，不作为用户阅读标签。
-
 ## 摘要
 
-| 字段 | 当前值 |
-|---|---|
-| 项目标识 | arxiv-daily-push |
-| 当前合同 | ADP-PRODUCT-CONTRACT-V7.2 |
-| 历史合同 | ADP-PRODUCT-CONTRACT-V7.1 |
-| 历史锁定文件 | V7_1_ROOT_LOCK.yaml |
-| 第一阶段门禁 | ARXIV_PRODUCTION_ACCEPTED |
-| 当前任务 | S2PMT07 |
-| 有效模型数量（`active_model_count`） | 见 docs/governance/model_registry.yaml |
-| 有效公式数量（`active_formula_count`） | 见 docs/governance/formula_registry.yaml |
-| 有效参数数量（`active_parameter_count`） | 见 docs/governance/parameter_registry.csv |
-| 已完成影子任务 | S2PCT01 / S2P2T01 / S2PBT01 |
+- project_id: `arxiv-daily-push`
+- product_version: `0.23.0`
+- current_stage: `S2`
+- current_phase: `S2PC`
+- current_task: `S2PCT02`
+- active_model_count: `52`
+- active_formula_count: `54`
+- active_parameter_count: `364`
+- blockers: `none`
+- next_gate: `S2PC-GATE-V7-2-REVALIDATION`
+- next_unique_task: `S2PCT02 Science main-journal metadata-only no-send shadow evidence (planned)`
+- evidence_ref_count: `17`
+- roadmap_test_command_count: `10`
+- roadmap_gate_count: `5`
+- evidence_status: `EXTRACTED`
 
-## 总览
+## V7.2 CURRENT 产品合同
 
-| 问题 | 当前结论 |
-|---|---|
-| 这个文件说明什么 | ADP 如何排序论文、控制发送边界、生成邮件、安排复习、提出行动、记录能力资产和复盘收益 |
-| 用户最该关心什么 | 排序分数不是收益承诺；真实发送、计划任务、复习数量和收益数字都必须有证据来源 |
-| 当前最大风险 | 把本地证据、影子来源、邮件补发或测试样例误读为正式生产验收 |
-| 与用户中心的关系 | [用户中心](用户中心/README.md) 给结论；本文件给模型、参数和口径 |
-| 与 M1-M4 邮件模板的关系 | 模板升级必须同步 [邮件发送与队列状态](用户中心/邮件发送与队列状态.md)、[邮件模板预览](用户中心/邮件模板预览.md)、三基文件和运行清单 |
+- contract_version: `ADP-PRODUCT-CONTRACT-V7.2`
+- root_lock: `docs/pursuing_goal/v7_2/V7_2_ROOT_LOCK.yaml`
+- product_contract: `docs/pursuing_goal/v7_2/machine_readable/product_contract_v7_2.yaml`
+- contract_sha256: `a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d`
+- roadmap_version: `ADP-ROADMAP-V7.2`
+- roadmap_sha256: `7c5f2d842d4f6b909343c953fe39b4a4aa540d168199747a9f7decdb1aad9bd1`
+- migration_matrix_sha256: `08696d0211878131b5ddaaef1a8a963b8870e9e844f7d5c70beb6412a5f4c7fc`
+- final_review_sha256: `571b3dbbc78d6dac01bd18472a0358f5ce4c51ac3d590c10d0c02e6453a7ea6c`
+- previous_read_only_contract: `ADP-PRODUCT-CONTRACT-V7.1`
+- previous_read_only_root_lock: `docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml`
+- global_current_task: `S2PMT07`
+- email_v1_workstream_next: `EMAIL_LEARNING_V1_MERGED_TO_MAIN_NO_PRODUCTION_SIDE_EFFECTS`
+- v7_contract_remediation_next: `NONE_AFTER_EMAIL_V1_MAIN_MERGE_STATUS`
+- shadow_source_next: `NONE_WHILE_S2PMT07_BLOCKED`
+- agent_revalidation_required: `true`
 
-## 关键模型
+## V7.1 只读历史根治理锁
 
-| 模型 | 当前作用 | 关键参数 | 输出 | 证据 |
-|---|---|---|---|---|
-| arXiv 来源读取 | 读取候选论文元数据 | 来源、日期、条数、去重标识 | 候选论文记录 | [model_registry.yaml](docs/governance/model_registry.yaml) |
-| ROI 候选排序 | 对候选论文进行确定性排序，并写入当前候选池公开分数 | 6 个 ROI 因子权重、摘要关键词、摘要长度、分类覆盖 | 候选分数、排序和逐项评分明细 | [global_scan.py](src/arxiv_daily_push/global_scan.py) / [CONTENT_LEDGER.csv](docs/owner/CONTENT_LEDGER.csv) |
-| 旧八因子排序 | 历史/底层排序审计口径，不作为当前 GitHub 候选池前20总分来源 | 8 个因子权重、入选资格、同分排序规则 | 旧口径候选分数和审计结果 | [ranking.py](src/arxiv_daily_push/ranking.py) / [FORM-ADP-003](docs/governance/formula_registry.yaml) |
-| 证据门禁 | 阻断无来源、无定位或冲突结论 | 来源定位、证据标签、冲突状态 | 可发布或阻断 | [formula_registry.yaml](docs/governance/formula_registry.yaml) |
-| Email V1 邮件合同 | 约束 M1、M2、M3、M4 前台阅读结构 | 三层阅读、证据标签、行动窗口、反馈动作 | 用户可读学习邮件 | [模板规则](docs/pursuing_goal/v7_2/machine_readable/email_learning_frontstage_overlay_v1.yaml) |
-| 复习计划 | 计算到期、未来、逾期和完成状态 | 1、3、7、14、30、90 天间隔 | 今日复习快照 | [S2PJT02](../governance/run_manifests/ADP-S2PJT02-REVIEW-SCHEDULE-20260626.json) |
-| 行动收益账本 | 生成行动、资产和收益复盘 | 15 分钟、2 小时、7 天、30 天行动窗口 | 行动数量、资产数量、收益状态 | [S2PJT03](../governance/run_manifests/ADP-S2PJT03-ACTION-ASSET-ROI-20260626.json) |
-| 周报 | 汇总一周学习质量和下周重点 | 本周时间范围、完成项、证据链 | 周报证据 | [S2PJT04](../governance/run_manifests/ADP-S2PJT04-WEEKLY-REPORT-20260626.json) |
-| 月报 | 汇总月度认知变化、能力增长和转化 | 月初、月末、转化证据、预测复盘 | 月报证据 | [S2PJT05](../governance/run_manifests/ADP-S2PJT05-MONTHLY-REPORT-20260626.json) |
-| 生产前置门 | 阻断不安全的生产动作 | SMTP、计划任务、Release、环境密钥、最终门 | 允许或阻断 | [路线图与停止门](用户中心/路线图与停止门.md) |
-| S2PMT07 P0 复审收据 | 把历史 P0 的证据和待判定项交给独立复审者 | 8 个 P0、37 个 P1、独立签署状态、生产禁用标志 | 复审准备；不是关闭 | [S2PMT07 P0 收据](docs/phase_records/PHASE_S2PMT07_P0_INDEPENDENT_REVIEW_RECEIPT.md) |
+- contract_version: `ADP-PRODUCT-CONTRACT-V7.1`
+- contract_lock: `docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml`
+- contract_sha256: `e51f306755629870f5a3693a50191c2291131d2224b91a8f3ef976e272eec7ad`
+- roadmap_version: `ADP-ROADMAP-V7.1`
+- roadmap_sha256: `b3e9860042fcbbf67ef5c49c12d3da30dbf0ae217ff1fe44bd25580a52f7c1a6`
+- audit_version: `ADP-PARALLEL-AUDIT-V7.1`
+- stage1_gate: `ARXIV_PRODUCTION_ACCEPTED_MAINTAINED`
+- stage2_current_task: `S2PCT01`
+- stage2_shadow_source_task: `S2PBT01`
+- legacy_alias: `S2PBT01 -> S2P1T01; S2PCT01 -> S2P2T01`
+- stage2_final_task: `S2PMT07`
+- stage2_stop_gate: `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`
+- stage2_integrated_production_accepted: `false`
+- production_forbidden_until: `inherited V7.1 P0=0; inherited V7.1 P1=0; S2PMT07 independent review passed`
+- forbidden_actions: `real_smtp_send, automatic_scheduler_install, daily_operation_enablement, production_restore, release_packaging, final_video_claim`
 
-## 邮件参数
+## V7.1 只读历史根治理说明
 
-| 参数 | 当前值或口径 | 说明 |
-|---|---|---|
-| 邮件产品 | M1、M2、M3、M4 | 四类学习邮件共用 Email V1 前台合同 |
-| 模板入口 | [邮件模板预览](用户中心/邮件模板预览.md) | 用户看界面预览，不看源码 |
-| 今日已发送 / 总应发送 | 2 / 4 | 总应发送来自 Email V1 每日 3+1（M1、M2、M3、M4）计划目标；不是 Stage 2 生产验收声明 |
-| 历史发送记录 | 4 条 | 包含已发送、补发、阻断和未发送记录 |
-| 截至今日总候选池 | 299 条总候选记录 | 来源为 [CONTENT_LEDGER.csv](docs/owner/CONTENT_LEDGER.csv)，表示累计进入 ADP 候选池/内容账本、可被报告与邮件链路处理的全部候选记录 |
-| 已生成报告 / 邮件预览 | 30 条 | 状态索引见 [已生成报告与邮件预览](用户中心/已生成报告与邮件预览.md)，索引不是完整报告正文 |
-| 待生成 / 待处理候选 | 269 条 | 仍在总候选池中，不能从候选池中扣掉 |
-| 候选队列前20精选 | 20 篇 | 来源为 [截至今日候选池](用户中心/截至今日候选池.md)；同一篇文章去重后按公开分数抽取，每篇必须显示总分和六因子评分明细 |
-| 每日库存流转 | 已公开公式，日级板块账本待接入 | `总候选池 = 已处理 + 待处理`；日级新增、完成、剔除和板块期末池必须由后续日级库存账本写入 |
+- V7.1 根治理锁是产品/治理合同，不新增 active model、formula 或 parameter。
+- `ARXIV_PRODUCTION_ACCEPTED_MAINTAINED` 只保持 Stage 1 arXiv 单源验收，不代表 Stage 2 已生产验收。
+- `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION` 只允许在 P0/P1 清零且 `S2PMT07` 独立复审通过后声明。
+- `S2PCT01` 是当前 Stage2 任务；`S2PBT01` 保留为已通过的来源 Shadow 线程任务。
 
-## 评分和排序标准
+## 模型
 
-| 项目 | 当前口径 |
-|---|---|
-| 当前用户中心分数来源 | [CONTENT_LEDGER.csv](docs/owner/CONTENT_LEDGER.csv) 的 `current_score`，由 S1P5T03-R 真实 arXiv 回放中的 `adp-roi-ranking-v1` 生成 |
-| 实现入口 | [global_scan.py](src/arxiv_daily_push/global_scan.py) 的 `ROI_COMPONENT_WEIGHTS`、`_roi_signals`、`_candidate_from_source_item` |
-| 公式 | `roi_total_score = 相关性信号 x 20 + 学习价值信号 x 20 + 经济转化率信号 x 20 + ROI信号 x 20 + 跨学科价值信号 x 10 + 可解释性信号 x 10`；用户可读表头写成 20% / 10%，表示该因子占总分权重 |
-| 因子权重 | 相关性 20%；学习价值 20%；经济转化率 20%；ROI 20%；跨学科价值 10%；可解释性 10%；总和 100% |
-| 信号计算 | 相关性、学习价值、经济转化率来自标题、摘要和分类的关键词命中；学习价值和可解释性包含摘要长度奖励；跨学科价值来自分类组覆盖；ROI 因子由经济转化率、相关性、学习价值、可解释性加权合成 |
-| 逐项分公式 | 每个分项贡献 = 归一化信号 x 该因子权重；前20精选必须公开每篇文章的六个分项贡献、总分和账本核对状态 |
-| 入选资格 | 来源项结构有效；arXiv Atom 摘要和分类可读；来源标识、标题、链接和元数据可被验证；近期已选项按任务规则去重或避重 |
-| 空值处理 | 缺少来源项、摘要、分类、标题或无法生成 ROI 信号时不得补分；该项必须阻断或标为明细缺失，不得只展示总分 |
-| 非法值处理 | 评分信号必须为 0 到 1 的数字；权重合计必须为 100；不能用比例拆分总分来伪造分项 |
-| 同分排序规则 | `roi_total_score` 降序；同分时按 `source_id` 升序；用户中心前20再按论文标识去重 |
-| 用户可见解释 | 分数用于确定性排序和追踪，不是收益承诺；“高价值”必须同时给出总分、分项贡献、公式和证据链接 |
-| 前20精选解释 | 用户中心前20精选读取来源账本中的总分字段，同一论文标识去重后取最高分/稳定记录；页面必须展示六因子评分明细，不代表只剩 20 条候选 |
-| 旧八因子口径 | [ranking.py](src/arxiv_daily_push/ranking.py) 的前沿信号、证据可靠性、新颖性、迁移价值、问题重要性、分类优先级、等待时间、多样性仍保留为历史/底层审计口径，但不能被写成当前前20总分来源 |
-| 治理引用 | [parameter_registry.csv](docs/governance/parameter_registry.csv) 的 `ROI_COMPONENT_WEIGHTS`；[formula_registry.yaml](docs/governance/formula_registry.yaml) 的 ROI 排序表达式；[global_scan.py](src/arxiv_daily_push/global_scan.py) 的实现 |
+### MOD-ADP-001 Phase 1 readiness and notification dry-run gate
 
-## 复习、行动、资产、收益参数
+- purpose: `Classify local Phase 1 readiness and render non-secret dry-run email notifications.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-001, FORM-ADP-002`
+- parameter_refs: `PARAM-ADP-001, PARAM-ADP-002, PARAM-ADP-003, PARAM-ADP-004, PARAM-ADP-005, PARAM-ADP-006, PARAM-ADP-007, PARAM-ADP-008`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
 
-| 参数 | 当前值或口径 | 写入位置 |
-|---|---|---|
-| 复习间隔 | 1、3、7、14、30、90 天 | [复习行动与收益](用户中心/复习行动与收益.md) |
-| 复习计数字段 | 今日到期、未来 7 天、已逾期、已完成 | [复习行动与收益](用户中心/复习行动与收益.md) |
-| 行动窗口 | 15 分钟、2 小时、7 天、30 天 | [复习行动与收益](用户中心/复习行动与收益.md) |
-| 能力资产字段 | 新增能力资产数量和可追踪资产条目 | 当日运行快照写入用户中心 |
-| 预期收益 | 基于假设、置信度和行动窗口 | 可写估计，但必须标明是预期 |
-| 实际收益 | 必须同时具备成本、收益和证据 | 没有证据不得填数字 |
-| 今日真实数量 | 待今日运行快照写入 | 不能用测试样例、旧报告或人工猜数代替 |
-| 同步脚本 | [update_user_center_learning_snapshot.py](scripts/update_user_center_learning_snapshot.py) | 只读取真实报告 JSON；报告不存在或未通过时保留待写入状态 |
-| 运行器同步硬门 | `user_center_sync_ready=true` | 本地每日报告的通过条件；同步缺失、未通过、仍有待写入字段、候选缺六因子评分明细、权重不全或总分无法由明细重算时阻断，并且真实 SMTP 不发送 |
+### MOD-ADP-004 Generic data contract and RunRecord state gate
 
-## 生产和安全边界
+- purpose: `Validate SourceItem, EvidenceClaim, Lesson, Storyboard, Publication, and RunRecord boundaries without network or media side effects.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-005, FORM-ADP-006`
+- parameter_refs: `PARAM-ADP-020, PARAM-ADP-021, PARAM-ADP-022, PARAM-ADP-023, PARAM-ADP-024, PARAM-ADP-025, PARAM-ADP-026, PARAM-ADP-027, PARAM-ADP-028`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
 
-| 边界 | 当前规则 |
-|---|---|
-| SMTP 真实发送 | 只有独立任务和验收允许时才能启用 |
-| 计划任务 | 本轮不安装、不启用、不改变 |
-| 公共 Schema | 本轮不修改 |
-| 队列和排序 | 本轮不修改生产队列和排序算法 |
-| CURRENT 产品合同 | 本轮不切换 |
-| Stage 2 正式生产 | S2PMT07 最终门未通过前禁止宣称完成 |
-| 历史 P0/P1 | 当前仍按 P0=8、P1=37 处理，除非独立复审逐项签署关闭 |
+### MOD-ADP-005 arXiv Atom source adapter
 
-## 时间和真实性规则
+- purpose: `Build bounded arXiv API URLs and map Atom entries into generic SourceItem records.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-007`
+- parameter_refs: `PARAM-ADP-029, PARAM-ADP-030, PARAM-ADP-031, PARAM-ADP-032, PARAM-ADP-033, PARAM-ADP-034`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
 
-| 规则 | 原因 |
-|---|---|
-| 用户中心更新时间由脚本写入 | 避免人工写出未来时间或静态时间漂移 |
-| 今日数量必须来自当日运行快照 | 避免把测试样例、旧数据或聊天结论当成事实 |
-| 证据位置必须是 Markdown 跳转链接 | 用户在 GitHub 上才能快速核查 |
-| README 是唯一用户中心索引 | 避免重复入口造成信息漂移 |
+### MOD-ADP-002 100-point arXiv selection score
 
-## 禁止误读
+- purpose: `Score eligible arXiv candidates and select the daily learning item.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-003`
+- parameter_refs: `PARAM-ADP-009, PARAM-ADP-010, PARAM-ADP-011, PARAM-ADP-012, PARAM-ADP-013, PARAM-ADP-014, PARAM-ADP-015, PARAM-ADP-016`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
 
-| 看到的内容 | 正确解释 |
-|---|---|
-| 排序分数 | 学习价值排序，不是收益承诺 |
-| 预期收益 | 假设驱动的估计，不是已经实现的收益 |
-| 实际收益为空或待写入 | 当前没有足够证据，不得补数字 |
-| 本地阶段清单通过 | 本地能力有证据，不等于正式生产每日运行 |
-| 邮件模板预览存在 | 界面模板已可读，不等于所有 M1-M4 生产发送已验收 |
+### MOD-ADP-003 Claim Ledger publication gate
+
+- purpose: `Block publication when claims lack source locators or conflict with source metadata.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-004`
+- parameter_refs: `PARAM-ADP-017, PARAM-ADP-018`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
+
+### MOD-ADP-006 Evidence-linked Chinese lesson generator
+
+- purpose: `Generate text-only Chinese Lesson JSON from supported Claim Ledger evidence while blocking unsupported or unregistered claim references.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-008`
+- parameter_refs: `PARAM-ADP-035, PARAM-ADP-036`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
+
+### MOD-ADP-007 Narration and TTS dry-run gate
+
+- purpose: `Generate narration/TTS-ready dry-run JSON from Lesson objects while blocking real audio synthesis and retained media artifacts.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-009`
+- parameter_refs: `PARAM-ADP-037, PARAM-ADP-038, PARAM-ADP-039, PARAM-ADP-040`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
+
+### MOD-ADP-008 Storyboard and video dry-run media gate
+
+- purpose: `Generate video storyboard dry-run JSON from narration segments while blocking rendering, media writes, and asset downloads.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-010`
+- parameter_refs: `PARAM-ADP-041, PARAM-ADP-042, PARAM-ADP-043, PARAM-ADP-044`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
+
+### MOD-ADP-009 Local daily dry-run pipeline
+
+- purpose: `Run a single local daily dry-run from SourceItem and EvidenceClaim inputs through publication gate, Lesson, Narration, Storyboard, RunRecord completion, and email preview.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-011`
+- parameter_refs: `PARAM-ADP-045, PARAM-ADP-046, PARAM-ADP-047`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
+
+### MOD-ADP-010 Runner release email dry-run handoff
+
+- purpose: `Build a Phase 10 handoff preview from a completed daily dry-run payload while blocking all external side effects.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-012`
+- parameter_refs: `PARAM-ADP-048, PARAM-ADP-049, PARAM-ADP-050`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
+
+### MOD-ADP-011 Final acceptance and handoff readiness gate
+
+- purpose: `Build a final handoff package that separates dry-run readiness from production acceptance and accepts production evidence only from a validated 30-day trial report.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-013`
+- parameter_refs: `PARAM-ADP-051, PARAM-ADP-052, PARAM-ADP-053, PARAM-ADP-054, PARAM-ADP-055, PARAM-ADP-056, PARAM-ADP-064`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
+
+### MOD-ADP-012 Thirty-day operational trial evidence validator
+
+- purpose: `Validate the 30-day run evidence package before it can feed production acceptance.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-014`
+- parameter_refs: `PARAM-ADP-057, PARAM-ADP-058, PARAM-ADP-059, PARAM-ADP-060, PARAM-ADP-061, PARAM-ADP-062, PARAM-ADP-063`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
+
+### MOD-ADP-013 Production preflight fail-closed gate
+
+- purpose: `Block scheduled production execution unless local runtime, secret-key presence, resource, Git artifact, and cache gates pass.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-015`
+- parameter_refs: `PARAM-ADP-065, PARAM-ADP-066, PARAM-ADP-067, PARAM-ADP-068, PARAM-ADP-069, PARAM-ADP-070`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
+
+### MOD-ADP-014 Manual production trial bootstrap gate
+
+- purpose: `Validate the manual GitHub trial bootstrap workflow and runbook before any real 30-day trial startup.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-016`
+- parameter_refs: `PARAM-ADP-071, PARAM-ADP-072, PARAM-ADP-073, PARAM-ADP-074`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
+
+### MOD-ADP-015 Live arXiv latest source ingest
+
+- purpose: `Fetch latest arXiv Atom SourceItems, validate generic SourceItem records, and filter already-seen source IDs before ranking.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-017`
+- parameter_refs: `PARAM-ADP-075, PARAM-ADP-076, PARAM-ADP-077, PARAM-ADP-078, PARAM-ADP-079, PARAM-ADP-080`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
+
+### MOD-ADP-016 SMTP notification delivery boundary
+
+- purpose: `Render notification evidence and send real SMTP mail only when explicit allow-send, recipient, environment-key, TLS, login, and delivery checks pass.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-018`
+- parameter_refs: `PARAM-ADP-081, PARAM-ADP-082, PARAM-ADP-083, PARAM-ADP-084, PARAM-ADP-085`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
+
+### MOD-ADP-017 GitHub Release delivery boundary
+
+- purpose: `Render Release delivery evidence and create a real GitHub Release only when explicit allow-upload, target, deduplicated safe assets, gh, and no-clobber checks pass.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-019`
+- parameter_refs: `PARAM-ADP-086, PARAM-ADP-087, PARAM-ADP-088, PARAM-ADP-089, PARAM-ADP-090, PARAM-ADP-091, PARAM-ADP-185`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
+
+### MOD-ADP-018 Scheduled production workflow gate
+
+- purpose: `Validate the timezone-aware GitHub Actions production scheduler contract while keeping scheduled production, SMTP, and Release side effects disabled by default.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-020`
+- parameter_refs: `PARAM-ADP-092, PARAM-ADP-093, PARAM-ADP-094, PARAM-ADP-095, PARAM-ADP-096, PARAM-ADP-160`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
+
+### MOD-ADP-019 Scheduled execution driver
+
+- purpose: `Run one scheduled health-check, daily-run, or watchdog mode after preflight and produce evidence without counting dry-run side effects as production acceptance.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-021`
+- parameter_refs: `PARAM-ADP-097, PARAM-ADP-098, PARAM-ADP-099, PARAM-ADP-100, PARAM-ADP-101`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
+
+### MOD-ADP-020 Daily input builder
+
+- purpose: `Convert a passing arXiv SourceBatch into ranked daily pipeline input using Atom summary and metadata claims only.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-022`
+- parameter_refs: `PARAM-ADP-102, PARAM-ADP-103, PARAM-ADP-104, PARAM-ADP-105, PARAM-ADP-106, PARAM-ADP-107`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
+
+### MOD-ADP-021 Trial evidence ledger update
+
+- purpose: `Append one production-ready scheduled daily-run report into the 30-day trial evidence ledger without claiming acceptance early.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-023`
+- parameter_refs: `PARAM-ADP-108, PARAM-ADP-109, PARAM-ADP-110, PARAM-ADP-111, PARAM-ADP-112`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
+
+### MOD-ADP-022 Trial ledger state persistence
+
+- purpose: `Restore and upload small trial evidence ledger state artifacts across scheduled GitHub Actions runs.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-024`
+- parameter_refs: `PARAM-ADP-113, PARAM-ADP-114, PARAM-ADP-115, PARAM-ADP-116, PARAM-ADP-117`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
+
+### MOD-ADP-023 Trial operational evidence annotation
+
+- purpose: `Merge explicit weekly/monthly replay, recovery drill, scheduler, Release, SMTP, and resource refs into trial evidence without hand-editing JSON.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-025`
+- parameter_refs: `PARAM-ADP-118, PARAM-ADP-119, PARAM-ADP-120, PARAM-ADP-121, PARAM-ADP-122`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
+
+### MOD-ADP-024 Trial replay evidence builder
+
+- purpose: `Build weekly/monthly replay evidence from production-ready daily trial entries and block missing durable refs or incomplete coverage.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-026`
+- parameter_refs: `PARAM-ADP-123, PARAM-ADP-124, PARAM-ADP-125, PARAM-ADP-126, PARAM-ADP-127`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
+
+### MOD-ADP-025 Trial recovery evidence builder
+
+- purpose: `Build recovery drill evidence from a failed, blocked, or degraded scheduled daily-run plus a recovered production-ready rerun while blocking dry-run notifications or missing durable refs.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-027`
+- parameter_refs: `PARAM-ADP-128, PARAM-ADP-129, PARAM-ADP-130, PARAM-ADP-131, PARAM-ADP-132`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
+
+### MOD-ADP-026 Trial resource telemetry evidence builder
+
+- purpose: `Build resource pressure evidence from daily trial resource refs and passing production preflight reports while blocking static or unmatched refs.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-028`
+- parameter_refs: `PARAM-ADP-133, PARAM-ADP-134, PARAM-ADP-135, PARAM-ADP-136, PARAM-ADP-137`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
+
+### MOD-ADP-027 Trial start readiness gate
+
+- purpose: `Aggregate preflight, bootstrap, scheduler, live source, SMTP, Release, and durable-ref evidence before a real 30-day production trial can be marked start-ready.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-029`
+- parameter_refs: `PARAM-ADP-138, PARAM-ADP-139, PARAM-ADP-140, PARAM-ADP-141, PARAM-ADP-142, PARAM-ADP-143`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
+
+### MOD-ADP-028 Trial start evidence workflow validator
+
+- purpose: `Validate the manual GitHub workflow that collects default-branch trial start preflight, production refs, launch readiness, source, SMTP, Release, and start-gate artifacts on the private runner.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-030`
+- parameter_refs: `PARAM-ADP-144, PARAM-ADP-145, PARAM-ADP-146, PARAM-ADP-147, PARAM-ADP-148, PARAM-ADP-161, PARAM-ADP-164`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
+
+### MOD-ADP-029 Production launch readiness gate
+
+- purpose: `Block default-branch trial start workflow dispatch until the PR is merged and non-draft, expected head SHA matches, workflow contract is ready, and external runner, secret, Release target, and variable refs are durable.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-031`
+- parameter_refs: `PARAM-ADP-149, PARAM-ADP-150, PARAM-ADP-151, PARAM-ADP-152, PARAM-ADP-153`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
+
+### MOD-ADP-030 Production refs readiness bundle
+
+- purpose: `Generate a no-secret owner-fillable refs input template, discover GitHub Actions metadata, expose a GitHub-hosted provisioning audit workflow, and review downloaded audit artifacts before launch readiness can consume refs.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-032`
+- parameter_refs: `PARAM-ADP-154, PARAM-ADP-155, PARAM-ADP-156, PARAM-ADP-157, PARAM-ADP-158, PARAM-ADP-159, PARAM-ADP-162, PARAM-ADP-163, PARAM-ADP-165, PARAM-ADP-166`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
+
+### MOD-ADP-031 Two-day simulation acceptance gate
+
+- purpose: `Run and validate the updated Phase 11 two-day simulation path without real SMTP, real Release upload, network fetch, retained media/cache artifacts, or production acceptance claim.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-033`
+- parameter_refs: `PARAM-ADP-167, PARAM-ADP-168, PARAM-ADP-169`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
+
+### MOD-ADP-032 All-arXiv Phase 12 scan queue delivery gate
+
+- purpose: `Build all-arXiv daily input from bounded primary archive scans, persist ROI-ranked candidate queue state, require Release-hosted video artifact links in email delivery, and keep production side effects disabled until verified.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-034`
+- parameter_refs: `PARAM-ADP-170, PARAM-ADP-171, PARAM-ADP-172, PARAM-ADP-173, PARAM-ADP-174, PARAM-ADP-175, PARAM-ADP-176`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
+
+### MOD-ADP-033 Phase 12 cloud production enablement gate
+
+- purpose: `Move Phase 12 verification to GitHub-hosted runners, require live all-arXiv dry-run coverage across all 20 primary archive buckets, render a real lightweight MP4 artifact, and keep production schedule, SMTP, and Release uploads disabled until manual evidence passes.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-035`
+- parameter_refs: `PARAM-ADP-177, PARAM-ADP-178, PARAM-ADP-179, PARAM-ADP-180`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
+
+### MOD-ADP-034 Phase 12 manual Release and SMTP delivery test gate
+
+- purpose: `Prepare a default-branch-only manual workflow that scans all arXiv, renders a real MP4, creates a GitHub Release with deduplicated asset names, and sends one Gmail SMTP test email where the human-scannable Chinese lesson text is the reading entry point, the subject follows YYYYMMDD -- Project Name -- arXiv Group -- Theme, Release remains backend evidence/download storage, video is only an optional file link, the V2 decision-first email frontstage is consumed, backend ROI and numeric score labels are hidden from email and MP4 transcript, and scheduled production stays disabled.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-036`
+- parameter_refs: `PARAM-ADP-181, PARAM-ADP-182, PARAM-ADP-183, PARAM-ADP-184, PARAM-ADP-186, PARAM-ADP-267`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
+
+### MOD-ADP-035 Review8 V4 owner controls and generated owner views
+
+- purpose: `Validate the single owner-editable `config/owner_controls.yaml`, preview non-side-effect impact, and generate four owner-readable files from machine facts without enabling production behavior.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-037`
+- parameter_refs: `PARAM-ADP-187, PARAM-ADP-188, PARAM-ADP-189, PARAM-ADP-190, PARAM-ADP-191, PARAM-ADP-192, PARAM-ADP-193, PARAM-ADP-194, PARAM-ADP-195, PARAM-ADP-196, PARAM-ADP-197, PARAM-ADP-198, PARAM-ADP-199, PARAM-ADP-200, PARAM-ADP-201, PARAM-ADP-202, PARAM-ADP-203, PARAM-ADP-204, PARAM-ADP-205, PARAM-ADP-206, PARAM-ADP-207, PARAM-ADP-208, PARAM-ADP-209, PARAM-ADP-210, PARAM-ADP-211, PARAM-ADP-212, PARAM-ADP-213, PARAM-ADP-214, PARAM-ADP-215, PARAM-ADP-216, PARAM-ADP-217, PARAM-ADP-218, PARAM-ADP-219, PARAM-ADP-220, PARAM-ADP-221, PARAM-ADP-222, PARAM-ADP-223, PARAM-ADP-224, PARAM-ADP-225, PARAM-ADP-226, PARAM-ADP-227, PARAM-ADP-228, PARAM-ADP-229, PARAM-ADP-230, PARAM-ADP-231, PARAM-ADP-232, PARAM-ADP-233, PARAM-ADP-234, PARAM-ADP-235, PARAM-ADP-236, PARAM-ADP-237, PARAM-ADP-238, PARAM-ADP-239, PARAM-ADP-240, PARAM-ADP-241, PARAM-ADP-242, PARAM-ADP-243, PARAM-ADP-244, PARAM-ADP-245, PARAM-ADP-246, PARAM-ADP-247, PARAM-ADP-248, PARAM-ADP-249, PARAM-ADP-250, PARAM-ADP-251, PARAM-ADP-252, PARAM-ADP-253, PARAM-ADP-254, PARAM-ADP-255, PARAM-ADP-256, PARAM-ADP-257, PARAM-ADP-258, PARAM-ADP-259, PARAM-ADP-260, PARAM-ADP-261, PARAM-ADP-262, PARAM-ADP-263, PARAM-ADP-264, PARAM-ADP-265, PARAM-ADP-266`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
+
+### MOD-ADP-036 Review8 Stage 1 SQLite document and event data model
+
+- purpose: `Create, inspect, validate, populate, search, and rollback the low-resource local SQLite/WAL/FTS5 document/event model required before the Stage 1 connector, queue, ledger, runtime recovery, and migration tasks.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-038`
+- parameter_refs: `PARAM-ADP-268, PARAM-ADP-269, PARAM-ADP-270, PARAM-ADP-271, PARAM-ADP-272, PARAM-ADP-273, PARAM-ADP-274, PARAM-ADP-275`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
+
+### MOD-ADP-037 Phase 12 email decision UI V2
+
+- purpose: `Render a Chinese, decision-first HTML email plus concise plain-text fallback from the all-arXiv daily package with YYYYMMDD -- Project Name -- arXiv Group -- Theme subject and no foreground numeric score labels, while keeping backend ROI and Claim Ledger evidence out of the user-facing foreground.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-039`
+- parameter_refs: `PARAM-ADP-276, PARAM-ADP-277, PARAM-ADP-278, PARAM-ADP-279`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
+
+### MOD-ADP-038 Review8 Stage 1 source registry and arXiv connector contract
+
+- purpose: `Bind the Stage 1 source registry to the single owner controls fact source, prove SRC-ARXIV/arxiv.atom.v1 is the only active connector, cap online canaries at 10 metadata records, and fail closed without PDFs, bulk harvest, secrets, production scheduler enablement, SMTP, Release upload, or production acceptance claims.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-040`
+- parameter_refs: `PARAM-ADP-280, PARAM-ADP-281, PARAM-ADP-282, PARAM-ADP-283, PARAM-ADP-284, PARAM-ADP-285, PARAM-ADP-286`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
+
+### MOD-ADP-039 Review8 Stage 1 scoring, queue, and content ledger contract
+
+- purpose: `Score explicit Stage 1 research signals using frozen owner-controls weights, rank eligible items into a deterministic active queue capped at 10000 items and 365 event-age days, enforce multi-source share caps when feasible, preserve soft-quota borrowing evidence, and emit canonical CONTENT_LEDGER rows with reason codes for every non-active item.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-041`
+- parameter_refs: `PARAM-ADP-287, PARAM-ADP-288, PARAM-ADP-289, PARAM-ADP-290, PARAM-ADP-291, PARAM-ADP-292, PARAM-ADP-293, PARAM-ADP-294, PARAM-ADP-295, PARAM-ADP-296, PARAM-ADP-297, PARAM-ADP-298, PARAM-ADP-299, PARAM-ADP-300, PARAM-ADP-301, PARAM-ADP-302, PARAM-ADP-303, PARAM-ADP-304, PARAM-ADP-305, PARAM-ADP-306, PARAM-ADP-307, PARAM-ADP-308, PARAM-ADP-309`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
+
+### MOD-ADP-040 Review8 Stage 1 B1/arXiv report and email text package
+
+- purpose: `Render the Stage 1 B1/arXiv daily teaching artifact from supported daily input claims into Markdown/HTML report, Chinese plain/HTML email preview, claim audit, candidate queue summary, and content ledger update without production side effects.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-042`
+- parameter_refs: `PARAM-ADP-310, PARAM-ADP-311, PARAM-ADP-312, PARAM-ADP-313, PARAM-ADP-314, PARAM-ADP-315`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
+
+### MOD-ADP-041 Review8 Stage 1 local runtime recovery controls
+
+- purpose: `Provide low-resource tick, watchdog, backup, restore, runtime audit, and scheduler install/uninstall dry-run controls with explicit state/artifact paths and no production side effects.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-043`
+- parameter_refs: `PARAM-ADP-316, PARAM-ADP-317, PARAM-ADP-318, PARAM-ADP-319, PARAM-ADP-320, PARAM-ADP-321, PARAM-ADP-322, PARAM-ADP-323, PARAM-ADP-324, PARAM-ADP-325`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
+
+### MOD-ADP-042 Review8 Stage 1 migration package and transfer checklist
+
+- purpose: `Export and verify a low-resource Stage 1 migration package with source-file hashes, SQLite/runtime smoke evidence, restore instructions, and secret-name-only checklist while preserving disabled production side effects.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-044`
+- parameter_refs: `PARAM-ADP-326, PARAM-ADP-327, PARAM-ADP-328, PARAM-ADP-329, PARAM-ADP-330, PARAM-ADP-331`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
+
+### MOD-ADP-043 Review8 Stage 1 post-migration bootstrap gate
+
+- purpose: `Verify the post-migration target machine or GitHub-hosted cloud runner boundary before historical B1 previews and live-day evidence, while preserving no-production-side-effect constraints.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-045`
+- parameter_refs: `PARAM-ADP-332, PARAM-ADP-333, PARAM-ADP-334, PARAM-ADP-335, PARAM-ADP-336, PARAM-ADP-337, PARAM-ADP-338, PARAM-ADP-339`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
+
+### MOD-ADP-044 Review8 Stage 1 historical B1 preview batch
+
+- purpose: `Generate 30 independent B1/arXiv historical report/email preview packages before live-day delivery, while preserving all no-production-side-effect constraints.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-046`
+- parameter_refs: `PARAM-ADP-340, PARAM-ADP-341, PARAM-ADP-342, PARAM-ADP-343, PARAM-ADP-344, PARAM-ADP-345, PARAM-ADP-346, PARAM-ADP-347, PARAM-ADP-348`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
+
+### MOD-ADP-045 S1P5T04 accelerated real arXiv acceptance evidence
+
+- purpose: `Build Stage 1 ARXIV_PRODUCTION_ACCEPTED readiness evidence from a passing live all-arXiv cloud dry-run, at least 30 real arXiv candidates, and controlled Gmail SMTP refs while keeping production scheduling disabled.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-047`
+- parameter_refs: `NOT_APPLICABLE`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
+
+### MOD-ADP-046 S1P5T03-R real arXiv 30 as-of-date replay
+
+- purpose: `Reopen the strict Stage 1 historical evidence gate by replaying 30 past as-of dates from real arXiv Atom submittedDate windows, generating daily inputs, B1 teaching reports, Chinese email previews, queue ledgers, and persistent CONTENT_LEDGER rows without production side effects.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-048`
+- parameter_refs: `PARAM-ADP-352, PARAM-ADP-353, PARAM-ADP-354, PARAM-ADP-355, PARAM-ADP-356, PARAM-ADP-357, PARAM-ADP-358, PARAM-ADP-359`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-DEVELOPMENT-EVENTS`
+
+### MOD-ADP-047 Stage 2 bioRxiv/medRxiv preprint metadata ingest
+
+- purpose: `Fetch bounded public bioRxiv/medRxiv details API metadata and map it into generic preprint SourceItem records without PDF, full-text, scheduler, SMTP, Release, video, or secret side effects.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-049`
+- parameter_refs: `PARAM-ADP-360, PARAM-ADP-361, PARAM-ADP-362, PARAM-ADP-363`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-S2P1T01-PREPRINT`
+
+### MOD-ADP-048 S2P1T01 preprint source promotion gate
+
+- purpose: `Require bioRxiv and medRxiv identity, version, license, 30-date replay, and 48h shadow evidence before any formal production inclusion.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-050`
+- parameter_refs: `PARAM-ADP-364, PARAM-ADP-366, PARAM-ADP-367, PARAM-ADP-368, PARAM-ADP-369`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-S2P1T01-PREPRINT`
+
+### MOD-ADP-049 S2P1 preprint shadow daily path
+
+- purpose: `Build separate bioRxiv/medRxiv daily input, queue, ledger, report, and email preview artifacts in no-send shadow mode without affecting Stage 1 arXiv local production.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-051`
+- parameter_refs: `PARAM-ADP-365, PARAM-ADP-370, PARAM-ADP-371`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-S2P1T01-PREPRINT`
+
+### MOD-ADP-050 S2P1T01 preprint replay and 48h shadow evidence
+
+- purpose: `Run 30 historical bioRxiv/medRxiv preprint dates through the no-send shadow path, persist local queue/ledger/report/email preview artifacts, build 48h shadow evidence, and keep Stage 2 production acceptance false.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-052`
+- parameter_refs: `PARAM-ADP-372, PARAM-ADP-373, PARAM-ADP-374, PARAM-ADP-375, PARAM-ADP-376`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-S2PBT01-REAL-REPLAY-SHADOW`
+
+### MOD-ADP-051 S2PCT01 Nature/top-journal metadata ingest
+
+- purpose: `Fetch a small official public Nature RSS metadata window, filter to main-journal s41586 research article URLs, map records into generic SourceItems, and fail closed without PDF, full-text, paywall, scheduler, SMTP, Release, video, or secret side effects.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-053`
+- parameter_refs: `PARAM-ADP-377, PARAM-ADP-378, PARAM-ADP-379`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-S2PCT01-NATURE`
+
+### MOD-ADP-052 S2PCT01 top-journal shadow daily path
+
+- purpose: `Build a separate Nature/top-journal daily input, ROI candidate queue, ledger, dry-run package, and email preview path in shadow mode without affecting the accepted Stage 1 arXiv local runner or claiming D2/Stage2 production acceptance.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-054`
+- parameter_refs: `PARAM-ADP-379, PARAM-ADP-380, PARAM-ADP-381`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-S2PCT01-NATURE`
+
+## 公式
+
+### FORM-ADP-001
+
+- model_id: `MOD-ADP-001`
+- expression_or_pseudocode: `If any Phase 1 required command is missing, status is blocked. Else if any future runtime command is missing or free disk is below the video/TTS threshold, status is warn. Else status is pass.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-002
+
+- model_id: `MOD-ADP-001`
+- expression_or_pseudocode: `subject = [arXiv Daily Push][STATUS][date] summary. Body is a fixed key-value report containing project, run_id, date, timezone, status, phase, stage, claim_gate, publication, release_url, report_path, queue_health, degradation, next_action, and sha256.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-005
+
+- model_id: `MOD-ADP-004`
+- expression_or_pseudocode: `Each contract object must include required fields and use the allowed enum set for its type; P0 EvidenceClaim records must include a stable locator such as stable_url, page, section, table, figure, or quote.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-006
+
+- model_id: `MOD-ADP-004`
+- expression_or_pseudocode: `A RunRecord transition is valid only when next_state belongs to ALLOWED_TRANSITIONS[current_state]; completed, blocked, and failed are terminal.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-007
+
+- model_id: `MOD-ADP-005`
+- expression_or_pseudocode: `Build URL = ARXIV_API_BASE_URL + encoded search_query, start, max_results, sortBy, sortOrder where 1 <= max_results <= 50; parse each Atom entry into SourceItem with arXiv-specific metadata under metadata.arxiv.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-003
+
+- model_id: `MOD-ADP-002`
+- expression_or_pseudocode: `selection_score = sum(normalized_component_signal * component_weight) across frontier_signal, evidence_reliability, novelty, transfer_value, problem_importance, taxonomy_priority, waiting_time, and diversity; weights sum to 100.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-004
+
+- model_id: `MOD-ADP-003`
+- expression_or_pseudocode: `Publish is allowed only if every P0 claim has a Claim ID, source locator, supported status, and compatible metadata; arXiv preprint peer-review status cannot be upgraded without independent non-arXiv evidence.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-008
+
+- model_id: `MOD-ADP-006`
+- expression_or_pseudocode: `A Lesson can be generated only when the Claim Ledger status is pass, at least one supported claim exists, Lesson.claim_ids are all supported Claim Ledger claim IDs, every section claim_id is present in Lesson.claim_ids, and every section body includes visible [claim_id] markers.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-009
+
+- model_id: `MOD-ADP-007`
+- expression_or_pseudocode: `Narration can be generated only in dry_run mode; audio_synthesis_allowed, audio_write_allowed, and model_download_allowed must be false; each narration segment must map to one Lesson section and use only Lesson claim IDs.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-010
+
+- model_id: `MOD-ADP-008`
+- expression_or_pseudocode: `Storyboard can be generated only as dry-run JSON; video_render_allowed, media_write_allowed, and asset_download_allowed must be false; each scene must map to narration claim IDs.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-011
+
+- model_id: `MOD-ADP-009`
+- expression_or_pseudocode: `The dry-run pipeline succeeds only when the publication gate passes and RunRecord transitions follow created > health_checked > source_collected > evidence_bound > lesson_ready > storyboard_ready > publication_ready > notified > completed.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-012
+
+- model_id: `MOD-ADP-010`
+- expression_or_pseudocode: `A Phase 10 handoff is valid only when the input RunRecord current_state is completed and scheduler_enabled, github_actions_runner_enabled, unattended_execution_allowed, release_upload_allowed, and real_smtp_send_enabled are all false; otherwise the handoff is blocked.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-013
+
+- model_id: `MOD-ADP-011`
+- expression_or_pseudocode: `A Phase 11 acceptance package is valid when the Phase 10 handoff is valid; production acceptance is pass only if evidence comes from the adp-trial-evidence-v1 report and the 30-day trial, scheduler, Stage 1 text artifact, SMTP, and resource requirements all pass, and each passed requirement has a non-empty evidence_ref. If any production requirement, evidence_ref, or validator marker is missing, accepted_for_production must be false and blocking_reasons must be non-empty.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-014
+
+- model_id: `MOD-ADP-012`
+- expression_or_pseudocode: `A trial evidence report passes only when either calendar-day mode has at least 30 unique daily dates or accelerated_real_data_replay mode has at least 30 unique replay slots backed by real arXiv source IDs; source_id and publication_id values are unique; every daily run is succeeded or degraded; every P0 claim is traceable; no duplicate or unsupported publication is recorded; no misleading failure output is published; every daily run has RunRecord, Stage 1 text artifact, SMTP, and resource refs; the scheduler records 05:00 target and 04:45 health check with manual rerun evidence through either an enabled scheduler or a verified cloud schedule contract that keeps scheduled production disabled; weekly and monthly replay evidence exists; recovery drill evidence exists; real SMTP targets linzezhang35@gmail.com; and resource pressure evidence covers disk, memory, cache, Git artifacts, and secrets.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-015
+
+- model_id: `MOD-ADP-013`
+- expression_or_pseudocode: `Production preflight passes only when all required runtime commands are available, required SMTP secret environment keys are present without logging values, free disk is at least 8 GiB, memory is at least 8 GiB, Git tracked/untracked files contain no forbidden media/model/secret artifacts or oversized files, and local cache/staging/render/media/model/voice/release asset directories are empty.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-016
+
+- model_id: `MOD-ADP-014`
+- expression_or_pseudocode: `A production trial bootstrap plan passes only when the workflow and runbook exist, workflow_dispatch is present without schedule, confirm_production_trial is required before self-hosted execution, production preflight appears before project tests, the preflight JSON artifact is uploaded, required GitHub secret names and Release target variable are mapped, Codex auth is not referenced, and Release/SMTP side effects are absent.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-017
+
+- model_id: `MOD-ADP-015`
+- expression_or_pseudocode: `A live arXiv source batch passes only when a small Atom query fetch succeeds, all parsed entries validate as SourceItem objects, at least one item is not in seen_source_ids, PDF download and bulk harvest are disabled, and TLS/network/API/Atom errors are absent. If all fetched items are already seen or any fetch/parse/validation error occurs, the batch is blocked with reasons.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-018
+
+- model_id: `MOD-ADP-016`
+- expression_or_pseudocode: `SMTP delivery evidence is dry-run by default. A real SMTP send is attempted only when allow_send is true, the recipient is the configured user email, all required SMTP environment keys are present, ADP_SMTP_PORT parses to 1..65535, TLS starts, login succeeds, and send_message returns no refused recipients. The report blocks on missing keys, invalid port, wrong recipient, SMTP exception, or refused recipient, and never logs SMTP secret values or email body text; if html_body is present it is sent as an HTML alternative and only html_body_sha256 is recorded.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-019
+
+- model_id: `MOD-ADP-017`
+- expression_or_pseudocode: `Release delivery evidence is dry-run by default. A real GitHub Release creation is attempted only when allow_upload is true, a tag/title/notes are provided, at least one deduplicated safe asset exists, ADP_RELEASE_TARGET or --target is present, gh is available, and no clobber upload is used. The report blocks on missing target, missing gh, missing/empty/oversized/secret-like/model assets or conflicting duplicate Release asset names, missing metadata, or gh nonzero exit, and never logs Release notes text, secret values, gh stdout, or gh stderr.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-020
+
+- model_id: `MOD-ADP-018`
+- expression_or_pseudocode: `The production scheduler contract passes only when the GitHub workflow declares Australia/Sydney health-check, daily-run, and watchdog slots, supports manual rerun with explicit confirmation, skips scheduled work unless ADP_PRODUCTION_ENABLED is true, targets GitHub-hosted ubuntu-latest, runs production preflight before scheduled execution work, uploads preflight and scheduled execution evidence, builds and uploads all-arXiv daily input plus Stage 1 text artifacts for daily-run, maps secret names without reading Codex auth, keeps contents permission read-only, requires no Release target, and contains no --allow-send, --allow-upload, or direct gh Release command flags. Any missing schedule, missing gate, missing preflight ordering, missing text artifact upload, unexpected Release write permission, secret/auth violation, or unsafe direct side-effect command blocks the scheduler plan.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-021
+
+- model_id: `MOD-ADP-019`
+- expression_or_pseudocode: `A scheduled execution report succeeds for health-check when production preflight passes. Daily-run is blocked unless ADP_SCHEDULED_RUN_ENABLED is true and a daily input package is supplied. Daily-run is production_evidence_ready only when the daily pipeline completes, the Stage 1 text artifact ref exists, SMTP delivery returns an email delivery_ref, and the preflight resource gate provides a resource_gate_ref. Dry-run SMTP or missing text-delivery evidence creates degraded evidence with exit_code 2 and cannot feed Phase 11 production acceptance. Watchdog succeeds only when previous daily execution evidence is production_evidence_ready.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-022
+
+- model_id: `MOD-ADP-020`
+- expression_or_pseudocode: `A daily input builder report passes only when the source batch validates as adp-live-arxiv-ingest-v1 with at least one new item, each selected candidate has an arXiv Atom summary, P0 evidence claims cite only the Atom summary locator, PDF download and bulk harvest are disabled, and the ranking selection audit returns a selected eligible candidate not present in recent_source_ids. Blocked source batches, missing summaries, metadata conflicts, recent duplicate selections, or ineligible ranking output produce a blocked daily input builder report.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-023
+
+- model_id: `MOD-ADP-021`
+- expression_or_pseudocode: `A trial ledger update appends exactly one daily entry only when the scheduled execution report validates as adp-scheduled-execution-v1, mode is daily-run, production_evidence_ready is true, daily_run_report contains date, run_id, source_id, publication_id, P0 traceability true, unsupported/misleading publication flags false, evidence_refs contains daily_run_ref, text_artifact_ref, email_ref, and resource_gate_ref, and no existing daily_runs entry duplicates the new date, source_id, or publication_id. The updated evidence is immediately re-evaluated by adp-trial-evidence-v1; the ledger update can pass while production acceptance remains blocked.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-024
+
+- model_id: `MOD-ADP-022`
+- expression_or_pseudocode: `For scheduled daily-run, trial ledger state is resolved from ADP_TRIAL_EVIDENCE_INPUT_PATH when that file exists; otherwise the workflow uses gh run download to fetch the latest successful adp-trial-evidence-ledger artifact from prior scheduled workflow runs. After update-trial-ledger runs, export-trial-ledger-state writes the trial_evidence object only when ledger_updated is true. The workflow uploads a replacement adp-trial-evidence-ledger artifact only after that export exits 0.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-025
+
+- model_id: `MOD-ADP-023`
+- expression_or_pseudocode: `A trial ops annotation passes only when at least one operational evidence update is requested and every verified operational flag has a non-empty evidence ref. Stage 1 text artifact refs require the text artifact verification flag, weekly/monthly replay refs require at least one replay verification flag, recovery refs require a recovery verification flag, and blocked annotations cannot be exported as replacement trial evidence state. The updated evidence is re-evaluated by adp-trial-evidence-v1; the ops annotation can pass while production acceptance remains blocked.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-026
+
+- model_id: `MOD-ADP-024`
+- expression_or_pseudocode: `A trial replay evidence report passes only when at least one replay mode is requested, a durable replay_ref is supplied, every daily entry has production run, Release, SMTP, and resource refs, daily dates/source IDs/publication IDs are unique, weekly replay has at least 7 consecutive daily entries, and monthly replay has at least 30 consecutive daily entries regardless of any lower period.expected_days value. Blocked replay reports cannot be used as weekly_monthly_ref annotation evidence.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-027
+
+- model_id: `MOD-ADP-025`
+- expression_or_pseudocode: `A trial recovery evidence report passes only when the failure report validates as adp-scheduled-execution-v1 daily-run with status blocked, failed, or degraded, exit_code 2, production_evidence_ready false, blocking reasons, and a real sent notification; the recovery report validates as adp-scheduled-execution-v1 daily-run with status succeeded, exit_code 0, production_evidence_ready true, a real sent notification, daily run, Release, SMTP, and resource refs, and no unsupported or misleading publication flags; both failure_ref and recovery_ref must be durable refs. When both reports include daily_run_report.date, the dates must match. Blocked recovery reports cannot be used as recovery_ref annotation evidence.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-028
+
+- model_id: `MOD-ADP-026`
+- expression_or_pseudocode: `A trial resource evidence report passes only when the trial evidence contains at least 30 unique daily resource_gate_ref values, every daily resource ref is matched by a production preflight report whose adp-production-preflight-v1 validation passes, production_run_allowed is true, resource_evidence.resource_pressure_ok is true, disk_pressure, memory_pressure, git_artifact_hygiene, local_artifact_cache, and secret_environment gates pass, and a durable resource_ref is supplied. Blocked resource reports cannot be used as resource_ref annotation evidence.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-029
+
+- model_id: `MOD-ADP-027`
+- expression_or_pseudocode: `A trial start readiness report passes only when confirm_start is true, all required durable refs contain a scheme separator, production preflight validates and allows production, the bootstrap and scheduler plans validate as ready, the all-arXiv Stage 1 source report passes with text artifacts and no PDF or bulk harvest behavior, the SMTP report is real sent evidence whose delivery_ref matches smtp_ref, Release upload is not required, and the gate performs no side effects or production acceptance claim.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-030
+
+- model_id: `MOD-ADP-028`
+- expression_or_pseudocode: `A trial start workflow plan passes only when the workflow is manual-only, requires confirm_trial_start before GitHub-hosted runner work, targets ubuntu-latest, runs preflight, production refs discovery, and production launch readiness before live source and delivery probes, runs all-arXiv source and Stage 1 text artifact generation before the SMTP probe, invokes plan-trial-start with --confirm-start and all durable ref arguments, uploads the complete trial start artifact set, maps only secret names without reading Codex auth, keeps contents permission read-only, and exposes real SMTP only through explicit ADP_ALLOW_SMTP_SEND GitHub variable.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-031
+
+- model_id: `MOD-ADP-029`
+- expression_or_pseudocode: `A production launch readiness report passes only when confirm_launch is true, current PR metadata is present, the PR is non-draft and merged into main, the observed head_sha equals the expected head SHA, the trial start workflow contract validates as ready, default branch, runner, SMTP secrets, workflow variable, and trial start workflow refs are durable, and the gate performs no side effects, reads no Codex auth, logs no secret values, and claims no production acceptance.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-032
+
+- model_id: `MOD-ADP-030`
+- expression_or_pseudocode: `A production refs input template contains only runner, SMTP secrets, and workflow variable sections with ready=false defaults, required secret and variable names, and no secret values. GitHub metadata discovery may build the same no-secret input from gh api runner labels/status, secret names, and variable names without printing gh stdout/stderr, either on a provisioned runner or through the GitHub-hosted provisioning audit workflow. A production refs report passes only when those readiness sections are explicitly ready, required SMTP secret names and workflow variable names are present, every readiness ref is durable, suspicious secret-value keys or values are absent, and the gate performs no side effects, reads no Codex auth, dispatches no trial-start workflow, logs no secret values, and claims no production acceptance. A provisioning audit review passes only when the downloaded production refs report itself passes and durable workflow_run_ref plus artifact_ref are supplied.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-033
+
+- model_id: `MOD-ADP-031`
+- expression_or_pseudocode: `A two-day simulation report passes only when start_date resolves to two consecutive local dates, a simulated production preflight passes, both scheduled daily-run executions succeed with mocked SMTP and mocked Release evidence, both ledger updates append unique dates/source IDs/publication IDs, no configured SMTP password appears in the report, and accepted_for_production, production_acceptance_claimed, side_effects_performed, real_smtp_sent, real_release_uploaded, secret_values_logged, codex_auth_read, and network_fetch_performed all remain false.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-034
+
+- model_id: `MOD-ADP-032`
+- expression_or_pseudocode: `A Phase 12 all-arXiv daily input report passes only when the scan plan covers the primary archive set and does not collapse to cat:cs.AI, per-archive Atom source ingest avoids PDF download and bulk harvest, candidates are scored by relevance, learning value, economic conversion rate, ROI, interdisciplinary value, and explainability, one lead paper is selected, high-value unselected papers are persisted in the candidate queue, queued candidates can be consumed when no new high-value candidate exists, Stage 1 text artifacts are written as GitHub Actions artifacts, and real SMTP can count only when the email package contains Chinese lesson content, HTML/plain text bodies, and candidate queue summary.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-035
+
+- model_id: `MOD-ADP-033`
+- expression_or_pseudocode: `Phase 12 cloud enablement passes only when GitHub-hosted workflows avoid self-hosted runner targeting, live dry-run verifies all 20 arXiv primary archive buckets with at least one SourceItem each after bounded transient 429/timeout retries, a sample daily input and Stage 1 text artifacts are available, and production schedule/SMTP/Release side effects remain disabled unless explicit manual gates are later enabled.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-036
+
+- model_id: `MOD-ADP-034`
+- expression_or_pseudocode: `Manual delivery testing may perform real SMTP only after an explicit workflow_dispatch confirmation on the default branch; the workflow must use GitHub-hosted ubuntu-latest, build all-arXiv daily input and Stage 1 text artifacts, run scheduled daily-run delivery without Release/video requirements, send exactly to the configured recipient, render the decision-first Chinese email frontstage with responsive HTML plus plain-text fallback, format the subject as YYYYMMDD -- Project Name -- arXiv Group -- Theme, hide backend ROI/Claim Ledger foreground details and frontstage numeric score labels, and avoid enabling scheduled production.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-037
+
+- model_id: `MOD-ADP-035`
+- expression_or_pseudocode: `Owner controls validation passes only when `config/owner_controls.yaml` has schema_version 1, required sections, production and production_acceptance flags false, no paid API/cloud/model allowance, no token-like values, canonical generated owner view paths, Window A resource caps within limits, and every source, board, research scoring, queue-priority, cross-board, and US-attention weight group sums to 100 within tolerance. Impact preview is no-side-effect and marks replay/ranking deltas as not computed until S1-06 replay data exists. Owner docs are generated from the config and validation output only.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-038
+
+- model_id: `MOD-ADP-036`
+- expression_or_pseudocode: `Given a local SQLite path, migration first requires FTS5 support, sets PRAGMA journal_mode=wal, creates schema_migrations plus 18 object tables and the document_fts virtual table, records schema version 1, and returns pass only when schema_version=1, WAL mode is active, all object tables exist, and document_fts exists. Inspection is read-only and returns blocked if the database file is absent or if the migrated schema/WAL/FTS5 checks fail. Rollback accepts only target_version=0 and drops document_fts, the 18 object tables, and schema_migrations. SourceItem storage validates the generic SourceItem first, then idempotently writes source_definitions, fetch_runs, raw_records, canonical_documents, document_versions, and document_fts rows keyed by stable source and SHA256 hashes; invalid SourceItem or unmigrated schema raises StorageError. No network fetch, PDF download, source expansion, SMTP send, Release upload, scheduler enablement, or production acceptance claim is performed.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-039
+
+- model_id: `MOD-ADP-037`
+- expression_or_pseudocode: `The Phase 12 V2 email is acceptable only when the daily package produces a multipart email with a concise Chinese plain-text fallback and responsive HTML alternative; the subject uses YYYYMMDD -- Project Name -- arXiv Group -- Theme; the first screen surfaces read/skim/skip, evidence level, estimated reading time, and one-line conclusion without numeric x/5 foreground scoring; the body uses a first-principles causal chain, finance/decision mapping, three key questions, evidence gaps, and a minimal experiment; video links are not required for Stage 1; q-fin emails hide irrelevant quant-ph/q-bio candidates unless an explicit finance/market mapping reason exists; user-visible body hides Claim Ledger IDs, backend ROI score, delivery policy, Release landing-page clutter, and repeated English summary; SMTP evidence stores hashes only, not body content.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-040
+
+- model_id: `MOD-ADP-038`
+- expression_or_pseudocode: `A Stage 1 source registry report passes only when `config/owner_controls.yaml` is the single editable source registry, exactly one enabled source exists and it is SRC-ARXIV, SRC-ARXIV remains bound to board B1 with access_method official_atom_api and adapter arxiv.atom.v1, the connector contract requires SourceItem and SourceBatch outputs plus explicit fail-closed reason classes, PDF download/bulk harvest/paid API/secret requirements are false, max_canary_results <= 10, SOURCE_INGEST_MAX_RESULTS == 10, fixture Atom parsing validates all SourceItems, project.production_enabled is false, and production_acceptance_claimed is false. Any violation returns status blocked with blocking_reasons and performs no network, PDF, repository write, SMTP, Release, scheduler, or production side effect.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-041
+
+- model_id: `MOD-ADP-039`
+- expression_or_pseudocode: `For each Stage 1 item, research_score = sum(normalized_signal_i * research_weight_i) where each signal is clamped to [0,1] and missing signals contribute 0. queue_priority_score = quality * 55 + event_delta * 15 + urgency * 10 + cross_board_linkage * 10 + waiting_credit * 5 + source_balance * 5, where quality = research_score / 100 and waiting_credit = min(max(waiting_days / 365, 0), 1). Items older than 365 days are evicted with EVICTED_AGE; exactly 365 days remains eligible. Retracted or superseded items are non-active with lifecycle reason codes. Eligible items are stably sorted by queue_priority_score descending, research_score descending, then input order; only the first 10000 remain queued and later items receive EVICTED_CAPACITY. Multi-source board groups enforce source_share_cap_per_board when feasible; one-source Stage 1 arXiv groups are reported without fabricated alternate sources. Every input item emits exactly one canonical CONTENT_LEDGER row.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-042
+
+- model_id: `MOD-ADP-040`
+- expression_or_pseudocode: `A Stage 1 B1/arXiv report-email package passes only when daily_input contains a valid arXiv SourceItem and supported claims, Claim Ledger blocks are empty, critical P0/P1 claim coverage is 100%, the report keeps machine-readable claim references, the user-facing email is Chinese-first and follows YYYYMMDD -- Project Name -- arXiv Group -- Theme, candidate queue summary is present, ROI/backend policy/Claim Ledger/video markers are absent from the email foreground, artifact writes are explicit dry-run files only, and side-effect policy confirms no real SMTP, Release upload, network fetch, video generation, or secret logging.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-043
+
+- model_id: `MOD-ADP-041`
+- expression_or_pseudocode: `A Stage 1 local runtime recovery report passes only when tick writes explicit heartbeat/checkpoint state, watchdog rejects stale heartbeat or stale locks, backup copies a passing SQLite/WAL/FTS5 database and small supporting files into a SHA256 manifest below the backup byte cap, restore requires explicit confirmation and verifies the restored database, runtime audit blocks enabled production flags, and scheduler install/uninstall outputs dry-run templates only without applying OS scheduler changes.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-044
+
+- model_id: `MOD-ADP-042`
+- expression_or_pseudocode: `A Stage 1 migration package passes only when required Stage 1 source and governance files exist with SHA256 inventory, the SQLite storage inspection passes, runtime audit/tick/watchdog pass with explicit state paths, a small backup manifest is created under the package byte cap, package files verify by hash, only secret names are listed, no possible secret values are detected, and all production side effects including scheduler enablement, real SMTP, Release upload, video generation, and large replay remain false.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-045
+
+- model_id: `MOD-ADP-043`
+- expression_or_pseudocode: `A Stage 1 post-migration bootstrap passes only when the S1-09 migration manifest verifies by hash, target_environment is an allowed explicit value, production side-effect flags are false, Python is at least 3.11, the checkout is a Git worktree, SSL default context can be created, SQLite/WAL/FTS5 storage inspection passes, optional GitHub-hosted runner evidence matches a non-self-hosted workflow and GitHub Actions environment, optional arXiv HTTPS probe passes when explicitly required, required SMTP secret names are reported without values, and runtime audit/tick/watchdog smoke reports pass.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-046
+
+- model_id: `MOD-ADP-044`
+- expression_or_pseudocode: `S1-11 passes only when exactly 30 B1/arXiv historical preview packages are generated through the B1 report/email builder from supported JSON array, JSONL, object-wrapper, or deterministic synthetic inputs; every package passes validation; dates, source IDs, content hashes, and email IDs are unique; future information leakage count is zero; critical claim evidence coverage is 100 percent; content ledger rows match the preview count; optional artifact writes produce five files per preview plus a manifest; and production side effects including SMTP send, Release upload, scheduler enablement, network fetch, secret logging, and video generation remain false.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-047
+
+- model_id: `MOD-ADP-045`
+- expression_or_pseudocode: `S1P5T04 accelerated acceptance evidence passes only when the live all-arXiv cloud dry-run passes with all 20 primary archives verified, at least 30 unique real arXiv candidates are available, two controlled Gmail SMTP artifacts are recorded as sent and production-ready, the generated trial evidence uses accelerated_real_data_replay with unique replay slots and real source IDs, production scheduling remains disabled, no new email is sent, no GitHub Release upload or video is required, and the embedded trial report validates as accepted_for_production.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-048
+
+- model_id: `MOD-ADP-046`
+- expression_or_pseudocode: `S1P5T03 real arXiv as-of replay passes only when exactly 30 historical as-of dates are replayed from arXiv Atom submittedDate windows, every day produces a daily_input, B1 teaching report, Chinese email preview, and queue ledger, all selected source IDs are real arXiv IDs, selected arXiv published/updated timestamps are not after the as-of date, lead papers are unique, queue-before and previous queue-after hashes match across the whole run, unsupported P0/P1 claim count is zero, and production side effects remain disabled.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
+
+### FORM-ADP-049
+
+- model_id: `MOD-ADP-047`
+- expression_or_pseudocode: `Stage 2 preprint SourceBatch passes only for metadata-only biorxiv or medrxiv details API records that map to valid preprint SourceItems with no PDF, full-text, bulk harvest, SMTP, Release, scheduler, video, or production side effects.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-ADP-S2P1T01-PREPRINT`
+
+### FORM-ADP-050
+
+- model_id: `MOD-ADP-048`
+- expression_or_pseudocode: `S2P1T01 preprint source promotion passes only when both servers pass source gates, replay proves at least 30 unique historical dates with no leakage or duplicate lead, shadow proves at least 48 hours, and all formal production side effects remain false.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-ADP-S2P1T01-PREPRINT`
+
+### FORM-ADP-051
+
+- model_id: `MOD-ADP-049`
+- expression_or_pseudocode: `S2P1 preprint shadow daily builds ROI-ranked candidates, selected daily input, separate queue, separate ledger, and plain/HTML email previews without SMTP, Release, GitHub schedule, production inclusion, video, or mutation of Stage 1 arXiv state.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-ADP-S2P1T01-PREPRINT`
+
+### FORM-ADP-052
+
+- model_id: `MOD-ADP-050`
+- expression_or_pseudocode: `S2P1T01 replay-shadow evidence passes only when 30 historical as-of dates produce passing no-send shadow daily runs, persisted queue/ledger/report/email artifacts, unique selected source and canonical IDs, no future leakage, no P0/P1 blockers, no queue continuity breaks, shadow_hours >= 48, and all production side effects false.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-ADP-S2PBT01-REAL-REPLAY-SHADOW`
+
+### FORM-ADP-053
+
+- model_id: `MOD-ADP-051`
+- expression_or_pseudocode: `S2PCT01 Nature/top-journal ingest passes only when a supported top journal is Nature, the official public Nature RSS URL is used, max_records is within the canary limit, records are filtered to main-journal s41586 article URLs, duplicate source IDs are separated from new items, generated SourceItems validate, and PDF/full-text/bulk/paywall side effects remain disabled.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-ADP-S2PCT01-NATURE`
+
+### FORM-ADP-054
+
+- model_id: `MOD-ADP-052`
+- expression_or_pseudocode: `A S2PCT01 top-journal shadow daily run builds ROI-ranked candidates from passing Nature SourceItems, selects one shadow daily input, updates a separate top-journal queue, writes a separate JSONL shadow ledger, generates plain and HTML email previews, and runs the existing dry-run pipeline without real SMTP, Release upload, GitHub cloud schedule, production inclusion, video generation, or mutation of the accepted Stage 1 arXiv local production path.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-ADP-S2PCT01-NATURE`
+
+## 参数
+
+| 参数 ID | 符号 | 名称 | 当前值 | 来源 | 事实等级 |
+|---|---|---|---|---|---|
+| PARAM-ADP-001 | PY_MIN_MAJOR | Minimum Python major version | 3 | EXTRACTED from requires-python and system runtime | EXTRACTED |
+| PARAM-ADP-002 | PY_MIN_MINOR | Minimum Python minor version | 9 | EXTRACTED from pyproject | EXTRACTED |
+| PARAM-ADP-003 | REQ_CMD_PYTHON3 | Phase 1 python command | python3 | EXTRACTED from config.py | EXTRACTED |
+| PARAM-ADP-004 | REQ_CMD_GIT | Phase 1 git command | git | EXTRACTED from config.py | EXTRACTED |
+| PARAM-ADP-005 | FUTURE_COMMANDS | Later phase runtime command list | node;npm;gh;ffmpeg;docker | EXTRACTED from config.py | EXTRACTED |
+| PARAM-ADP-006 | MIN_VIDEO_TTS_DISK_GIB | Minimum free disk for video and TTS phases | 80 | EXTRACTED from config.py and Phase 0 resource policy | EXTRACTED |
+| PARAM-ADP-007 | EMAIL_RECIPIENT | Notification recipient | linzezhang35@gmail.com | EXTRACTED from user requirement and config.py | EXTRACTED |
+| PARAM-ADP-008 | TIMEZONE | Runtime timezone | Australia/Sydney | EXTRACTED from goal baseline and config.py | EXTRACTED |
+| PARAM-ADP-009 | W_FRONTIER_SIGNAL | Frontier signal weight | 20 | EXTRACTED from pursuing goal baseline and ranking.py | EXTRACTED |
+| PARAM-ADP-010 | W_EVIDENCE_RELIABILITY | Evidence reliability weight | 20 | EXTRACTED from pursuing goal baseline and ranking.py | EXTRACTED |
+| PARAM-ADP-011 | W_NOVELTY | Method novelty weight | 15 | EXTRACTED from pursuing goal baseline and ranking.py | EXTRACTED |
+| PARAM-ADP-012 | W_TRANSFER_VALUE | Transfer value weight | 15 | EXTRACTED from pursuing goal baseline and ranking.py | EXTRACTED |
+| PARAM-ADP-013 | W_PROBLEM_IMPORTANCE | Problem importance weight | 10 | EXTRACTED from pursuing goal baseline and ranking.py | EXTRACTED |
+| PARAM-ADP-014 | W_TAXONOMY_PRIORITY | Taxonomy priority weight | 10 | EXTRACTED from pursuing goal baseline and ranking.py | EXTRACTED |
+| PARAM-ADP-015 | W_WAITING_TIME | Waiting time weight | 5 | EXTRACTED from pursuing goal baseline and ranking.py | EXTRACTED |
+| PARAM-ADP-016 | W_DIVERSITY | Diversity weight | 5 | EXTRACTED from pursuing goal baseline and ranking.py | EXTRACTED |
+| PARAM-ADP-017 | P0_LOCATOR_REQUIRED | Locator required for P0 claims | true | EXTRACTED from pursuing goal baseline and evidence_gate.py | EXTRACTED |
+| PARAM-ADP-018 | PEER_REVIEW_EVIDENCE_REQUIRED | Independent evidence required for peer reviewed claim | true | EXTRACTED from pursuing goal baseline and evidence_gate.py | EXTRACTED |
+| PARAM-ADP-020 | SOURCE_TYPES | Allowed source type set | arxiv;rss;github;standard;industry_report;web;book;course;podcast;user_document | EXTRACTED from contracts.py and source_item schema | EXTRACTED |
+| PARAM-ADP-021 | CLAIM_TYPES | Allowed claim type set | reported_result;author_claim;system_inference;analogy;uncertainty;metadata | EXTRACTED from contracts.py and evidence_claim schema | EXTRACTED |
+| PARAM-ADP-022 | CLAIM_PRIORITIES | Allowed claim priority set | P0;P1;P2 | EXTRACTED from contracts.py and evidence_claim schema | EXTRACTED |
+| PARAM-ADP-023 | SUPPORT_STATUSES | Allowed support status set | supported;unsupported;conflict;unverified | EXTRACTED from contracts.py and evidence_claim schema | EXTRACTED |
+| PARAM-ADP-024 | P0_LOCATOR_RUNTIME_REQUIRED | Runtime P0 locator requirement | true | EXTRACTED from contracts.py | EXTRACTED |
+| PARAM-ADP-025 | RUN_STATES | Allowed RunRecord states | created;health_checked;source_collected;evidence_bound;lesson_ready;storyboard_ready;publication_ready;notified;completed;blocked;failed | EXTRACTED from state_machine.py and run_record schema | EXTRACTED |
+| PARAM-ADP-026 | ALLOWED_TRANSITIONS | RunRecord transition graph | created>health_checked;health_checked>source_collected;source_collected>evidence_bound;evidence_bound>lesson_ready;lesson_ready>storyboard_ready|publication_ready;storyboard_ready>publication_ready;publication_ready>notified|completed;notified>completed | EXTRACTED from state_machine.py | EXTRACTED |
+| PARAM-ADP-027 | RUN_STATUSES | Allowed RunRecord statuses | created;running;blocked;failed;degraded;succeeded | EXTRACTED from state_machine.py and run_record schema | EXTRACTED |
+| PARAM-ADP-028 | STAGE_STATUSES | Allowed stage statuses | not_started;running;passed;blocked;failed;skipped | EXTRACTED from state_machine.py and run_record schema | EXTRACTED |
+| PARAM-ADP-029 | ARXIV_API_BASE_URL | arXiv API base URL | https://export.arxiv.org/api/query | EXTRACTED from arxiv API docs and config | EXTRACTED |
+| PARAM-ADP-030 | ARXIV_MAX_RESULTS_PHASE3 | Phase 3 max results per call | 50 | EXTRACTED from local low pressure policy | EXTRACTED |
+| PARAM-ADP-031 | ARXIV_DEFAULT_SORT_BY | Default arXiv sort field | submittedDate | EXTRACTED from adapter default | EXTRACTED |
+| PARAM-ADP-032 | ARXIV_DEFAULT_SORT_ORDER | Default arXiv sort order | descending | EXTRACTED from adapter default | EXTRACTED |
+| PARAM-ADP-033 | ARXIV_SOURCE_ADAPTER_ID | arXiv source adapter id | arxiv.atom.v1 | EXTRACTED from adapter output | EXTRACTED |
+| PARAM-ADP-034 | ARXIV_ACKNOWLEDGEMENT | arXiv data usage acknowledgement | Thank you to arXiv for use of its open access interoperability. | EXTRACTED from arxiv API access docs | EXTRACTED |
+| PARAM-ADP-035 | LESSON_MIN_SUPPORTED_CLAIMS | Minimum supported claims for lesson generation | 1 | EXTRACTED from lesson.py and Phase 6 scope | EXTRACTED |
+| PARAM-ADP-036 | LESSON_BODY_CLAIM_MARKERS_REQUIRED | Visible claim markers required in lesson section body | true | EXTRACTED from lesson.py and evidence traceability requirement | EXTRACTED |
+| PARAM-ADP-037 | TTS_REQUIRED_COMMANDS | TTS dry-run resource command list | ffmpeg | EXTRACTED from config.py and narration.py | EXTRACTED |
+| PARAM-ADP-038 | REAL_TTS_SYNTHESIS_ENABLED | Real TTS synthesis enabled | false | EXTRACTED from narration.py dry-run boundary | EXTRACTED |
+| PARAM-ADP-039 | AUDIO_WRITE_ALLOWED | Audio write allowed in Phase 7 | false | EXTRACTED from narration.py local pressure policy | EXTRACTED |
+| PARAM-ADP-040 | MODEL_DOWNLOAD_ALLOWED | Model download allowed in Phase 7 | false | EXTRACTED from narration.py local pressure policy | EXTRACTED |
+| PARAM-ADP-041 | VIDEO_REQUIRED_COMMANDS | Video dry-run resource command list | ffmpeg | EXTRACTED from video.py | EXTRACTED |
+| PARAM-ADP-042 | VIDEO_RENDER_ALLOWED | Video render allowed in Phase 8 | false | EXTRACTED from video.py dry-run boundary | EXTRACTED |
+| PARAM-ADP-043 | MEDIA_WRITE_ALLOWED | Media write allowed in Phase 8 | false | EXTRACTED from video.py local pressure policy | EXTRACTED |
+| PARAM-ADP-044 | ASSET_DOWNLOAD_ALLOWED | Asset download allowed in Phase 8 | false | EXTRACTED from video.py local pressure policy | EXTRACTED |
+| PARAM-ADP-045 | DAILY_DRY_RUN_STATE_SEQUENCE | Daily dry-run required state sequence | created>health_checked>source_collected>evidence_bound>lesson_ready>storyboard_ready>publication_ready>notified>completed | EXTRACTED from pipeline.py | EXTRACTED |
+| PARAM-ADP-046 | REAL_SMTP_SEND_ENABLED | Real SMTP send enabled in Phase 9 | false | EXTRACTED from pipeline.py and notifications.py | EXTRACTED |
+| PARAM-ADP-047 | SCHEDULER_EXECUTION_ENABLED | Scheduler execution enabled in Phase 9 | false | EXTRACTED from pipeline.py scope | EXTRACTED |
+| PARAM-ADP-048 | HANDOFF_SCHEDULER_ENABLED | Scheduler enabled in Phase 10 handoff | false | EXTRACTED from handoff.py dry-run boundary | EXTRACTED |
+| PARAM-ADP-049 | RELEASE_UPLOAD_ALLOWED | Release upload allowed in Phase 10 handoff | false | EXTRACTED from handoff.py dry-run boundary | EXTRACTED |
+| PARAM-ADP-050 | HANDOFF_REAL_SMTP_SEND_ENABLED | Real SMTP send enabled in Phase 10 handoff | false | EXTRACTED from handoff.py and notification policy | EXTRACTED |
+| PARAM-ADP-051 | THIRTY_DAY_TRIAL_REQUIRED | 30-day trial evidence required for production acceptance | true | EXTRACTED from pursuing goal completion condition | EXTRACTED |
+| PARAM-ADP-052 | SCHEDULER_OPERATIONAL_REQUIRED | Scheduler and rerun evidence required for production acceptance | true | EXTRACTED from pursuing goal scheduler requirement | EXTRACTED |
+| PARAM-ADP-053 | RELEASE_UPLOAD_VERIFIED_REQUIRED | Private Release evidence required for production acceptance | false | EXTRACTED from pursuing goal Release requirement | EXTRACTED |
+| PARAM-ADP-054 | REAL_SMTP_VERIFIED_REQUIRED | Real SMTP evidence required for production acceptance | true | EXTRACTED from pursuing goal email requirement | EXTRACTED |
+| PARAM-ADP-055 | RESOURCE_PRESSURE_OK_REQUIRED | Resource pressure evidence required for production acceptance | true | EXTRACTED from pursuing goal resource policy | EXTRACTED |
+| PARAM-ADP-056 | EVIDENCE_REF_REQUIRED | Non-empty evidence reference required for each production pass requirement | true | EXTRACTED from completion audit hardening | EXTRACTED |
+| PARAM-ADP-057 | TRIAL_DAYS_REQUIRED | Minimum unique daily trial days required | 30 | EXTRACTED from pursuing goal completion condition | EXTRACTED |
+| PARAM-ADP-058 | TRIAL_TARGET_LOCAL_TIME | Required daily scheduler local time | 05:00 | EXTRACTED from pursuing goal daily cadence | EXTRACTED |
+| PARAM-ADP-059 | TRIAL_UNIQUE_PUBLICATION_REQUIRED | Unique source and publication IDs required across trial | true | EXTRACTED from no duplicate publication requirement | EXTRACTED |
+| PARAM-ADP-060 | TRIAL_P0_TRACEABILITY_REQUIRED | P0 claim traceability required for every daily run | true | EXTRACTED from evidence traceability completion condition | EXTRACTED |
+| PARAM-ADP-061 | TRIAL_WEEKLY_MONTHLY_REPLAY_REQUIRED | Weekly and monthly replay evidence required | true | EXTRACTED from pursuing goal weekly monthly completion condition | EXTRACTED |
+| PARAM-ADP-062 | TRIAL_RECOVERY_DRILL_REQUIRED | Failure recovery drill evidence required | true | EXTRACTED from recovery drill completion condition | EXTRACTED |
+| PARAM-ADP-063 | TRIAL_RESOURCE_SECRET_HYGIENE_REQUIRED | Resource and secret hygiene evidence required | true | EXTRACTED from local pressure policy | EXTRACTED |
+| PARAM-ADP-064 | VALIDATED_TRIAL_REPORT_REQUIRED | Production acceptance evidence must come from validated trial report | true | EXTRACTED from Phase 11 trial validator hardening | EXTRACTED |
+| PARAM-ADP-065 | PRODUCTION_REQUIRED_COMMANDS | Required production runtime command list | python3;git;gh | EXTRACTED from GitHub-hosted Phase 12 cloud preflight runtime profile | EXTRACTED |
+| PARAM-ADP-066 | PRODUCTION_SECRET_ENV_KEYS_REQUIRED | Required production secret environment key presence | ADP_SMTP_HOST;ADP_SMTP_PORT;ADP_SMTP_USERNAME;ADP_SMTP_PASSWORD | EXTRACTED from cloud SMTP and Release env requirements without self-hosted runner secret | EXTRACTED |
+| PARAM-ADP-067 | PRODUCTION_MIN_FREE_DISK_GIB | Minimum free disk before production run | 80 | EXTRACTED from local pressure policy | EXTRACTED |
+| PARAM-ADP-068 | PRODUCTION_MIN_MEMORY_GIB | Minimum total memory before production run | 8 | EXTRACTED from Phase 0 local machine audit and resource policy | EXTRACTED |
+| PARAM-ADP-069 | PRODUCTION_FORBIDDEN_GIT_ARTIFACTS | Forbidden Git artifact and secret suffixes | .mp4;.mov;.wav;.flac;.m4a;.safetensors;.ckpt;.pt;.pth;.pem;.key;.env;auth.json | EXTRACTED from Git storage and secret policy | EXTRACTED |
+| PARAM-ADP-070 | PRODUCTION_LOCAL_ARTIFACT_DIRS_EMPTY | Local artifact and cache directories must be empty | .cache;tmp;staging;renders;media;models;model_weights;voice_samples;release_assets | EXTRACTED from local pressure policy | EXTRACTED |
+| PARAM-ADP-071 | TRIAL_BOOTSTRAP_WORKFLOW_PATH | Manual trial bootstrap workflow path | .github/workflows/arxiv-daily-push-production-trial.yml | EXTRACTED from workflow bootstrap implementation | EXTRACTED |
+| PARAM-ADP-072 | TRIAL_BOOTSTRAP_CONFIRMATION_REQUIRED | Manual confirmation required before self-hosted preflight | true | EXTRACTED from workflow bootstrap guard | EXTRACTED |
+| PARAM-ADP-073 | TRIAL_BOOTSTRAP_PREFLIGHT_FIRST | Production preflight must run before tests or trial work | true | EXTRACTED from workflow bootstrap ordering | EXTRACTED |
+| PARAM-ADP-074 | TRIAL_BOOTSTRAP_SIDE_EFFECTS_DISABLED | Bootstrap side effects disabled | true | EXTRACTED from bootstrap boundary | EXTRACTED |
+| PARAM-ADP-075 | SOURCE_INGEST_MAX_RESULTS | Maximum arXiv results per live ingest call | 10 | EXTRACTED from Review8 Window A canary cap and source_ingest.py constant | EXTRACTED |
+| PARAM-ADP-076 | SOURCE_INGEST_LEGACY_DEBUG_QUERY | Legacy debug arXiv query for manual source-ingest tests | cat:cs.AI | EXTRACTED from source config legacy_debug_query retained for backward-compatible manual ingest tests | EXTRACTED |
+| PARAM-ADP-077 | SOURCE_INGEST_PDF_DOWNLOAD_ENABLED | PDF download allowed during source ingest | false | EXTRACTED from low storage and evidence-first policy | EXTRACTED |
+| PARAM-ADP-078 | SOURCE_INGEST_BULK_HARVEST_ENABLED | Bulk harvest allowed during source ingest | false | EXTRACTED from low pressure source policy | EXTRACTED |
+| PARAM-ADP-079 | SOURCE_INGEST_DUPLICATE_FILTER_REQUIRED | Duplicate source ID filtering required | true | EXTRACTED from no duplicate publication requirement | EXTRACTED |
+| PARAM-ADP-080 | SOURCE_INGEST_TLS_VERIFY_REQUIRED | TLS certificate verification required for arXiv HTTPS fetch | true | EXTRACTED from secure source ingest policy | EXTRACTED |
+| PARAM-ADP-081 | SMTP_SECRET_ENV_KEYS | SMTP environment key names required for real send | ADP_SMTP_HOST;ADP_SMTP_PORT;ADP_SMTP_USERNAME;ADP_SMTP_PASSWORD | EXTRACTED from SMTP delivery implementation | EXTRACTED |
+| PARAM-ADP-082 | SMTP_DRY_RUN_DEFAULT | Dry-run default for notification delivery | true | EXTRACTED from fail-closed notification policy | EXTRACTED |
+| PARAM-ADP-083 | SMTP_ALLOW_SEND_EXPLICIT_REQUIRED | Explicit allow-send flag required for real SMTP | true | EXTRACTED from production notification safety policy | EXTRACTED |
+| PARAM-ADP-084 | SMTP_TLS_REQUIRED | TLS required for real SMTP send | true | EXTRACTED from SMTP delivery implementation | EXTRACTED |
+| PARAM-ADP-085 | SMTP_TIMEOUT_SECONDS | SMTP connection timeout seconds | 30 | EXTRACTED from SMTP delivery implementation | EXTRACTED |
+| PARAM-ADP-086 | RELEASE_TARGET_ENV_KEY | Release target environment key | ADP_RELEASE_TARGET | EXTRACTED from Release delivery implementation | EXTRACTED |
+| PARAM-ADP-087 | RELEASE_DRY_RUN_DEFAULT | Dry-run default for Release delivery | true | EXTRACTED from fail-closed Release policy | EXTRACTED |
+| PARAM-ADP-088 | RELEASE_ALLOW_UPLOAD_EXPLICIT_REQUIRED | Explicit allow-upload flag required for real Release creation | true | EXTRACTED from production Release safety policy | EXTRACTED |
+| PARAM-ADP-089 | MAX_RELEASE_ASSET_MIB | Maximum Release asset size for this delivery boundary | 20 | EXTRACTED from low storage release policy | EXTRACTED |
+| PARAM-ADP-090 | FORBIDDEN_RELEASE_ASSET_PATTERNS | Secret-like and model-weight Release assets blocked by default | .env;auth.json;id_ed25519;id_rsa;.ckpt;.key;.pem;.pt;.pth;.safetensors | EXTRACTED from secret and model artifact policy | EXTRACTED |
+| PARAM-ADP-091 | RELEASE_NO_CLOBBER_AND_NO_OUTPUT_LOGGING | No clobber upload and no gh output logging | true | EXTRACTED from Release evidence safety policy | EXTRACTED |
+| PARAM-ADP-092 | SCHEDULER_TIMEZONE_AND_SLOTS | Timezone-aware scheduled production slots | Australia/Sydney:04:45;05:00;05:10 | EXTRACTED from scheduled workflow and GitHub Actions docs | EXTRACTED |
+| PARAM-ADP-093 | SCHEDULER_PRODUCTION_ENABLED_VAR | GitHub variable required before scheduled self-hosted work runs | ADP_PRODUCTION_ENABLED | EXTRACTED from fail-closed scheduled workflow | EXTRACTED |
+| PARAM-ADP-094 | SCHEDULER_RUN_ENABLED_VAR | GitHub variable required before scheduled mode side effects continue | ADP_SCHEDULED_RUN_ENABLED | EXTRACTED from scheduler gate workflow | EXTRACTED |
+| PARAM-ADP-095 | SCHEDULER_PREFLIGHT_FIRST_ARTIFACT | Preflight-first scheduled evidence artifact | adp-scheduled-preflight | EXTRACTED from scheduler workflow ordering | EXTRACTED |
+| PARAM-ADP-096 | SCHEDULER_SIDE_EFFECTS_DISABLED | SMTP and Release side effects disabled in scheduler gate | true | EXTRACTED from scheduler side-effect boundary | EXTRACTED |
+| PARAM-ADP-097 | SCHEDULED_EXECUTION_MODES | Allowed scheduled execution modes | health-check;daily-run;watchdog | EXTRACTED from scheduled_execution.py | EXTRACTED |
+| PARAM-ADP-098 | SCHEDULED_EXECUTION_RUN_ENABLED_VAR | Environment variable required before daily scheduled execution | ADP_SCHEDULED_RUN_ENABLED | EXTRACTED from scheduled execution driver | EXTRACTED |
+| PARAM-ADP-099 | SCHEDULED_EXECUTION_SMTP_SEND_VAR | Environment variable required for real SMTP from scheduler | ADP_ALLOW_SMTP_SEND | EXTRACTED from scheduled execution driver | EXTRACTED |
+| PARAM-ADP-100 | SCHEDULED_EXECUTION_RELEASE_UPLOAD_VAR | Environment variable required for real Release from scheduler | ADP_ALLOW_RELEASE_UPLOAD | EXTRACTED from scheduled execution driver | EXTRACTED |
+| PARAM-ADP-101 | SCHEDULED_EXECUTION_PRODUCTION_REFS_REQUIRED | Production evidence refs required for daily scheduled execution | daily_run_ref;text_artifact_ref;email_ref;resource_gate_ref | EXTRACTED from scheduled execution validation | EXTRACTED |
+| PARAM-ADP-102 | DAILY_INPUT_CLAIM_SOURCE | Allowed claim source for automatic daily input builder | arxiv_atom_summary_only | EXTRACTED from daily_input.py and arXiv Atom API docs | EXTRACTED |
+| PARAM-ADP-103 | DAILY_INPUT_PDF_DOWNLOAD_ENABLED | PDF download allowed during daily input building | false | EXTRACTED from low pressure daily input policy | EXTRACTED |
+| PARAM-ADP-104 | DAILY_INPUT_BULK_HARVEST_ENABLED | Bulk harvest allowed during daily input building | false | EXTRACTED from low pressure daily input policy | EXTRACTED |
+| PARAM-ADP-105 | DAILY_INPUT_REQUIRED_SUMMARY | Atom summary required before automatic daily input | true | EXTRACTED from daily_input.py and evidence-first claim policy | EXTRACTED |
+| PARAM-ADP-106 | DAILY_INPUT_PRIORITY_CATEGORIES | Priority arXiv categories for default daily input signals | cs.AI;cs.CL;cs.LG;stat.ML | EXTRACTED from first arXiv architecture scope | EXTRACTED |
+| PARAM-ADP-107 | DAILY_INPUT_RECENT_SELECTION_GATE | Recent source ID duplicate gate for daily input builder | true | EXTRACTED from duplicate publication prevention policy | EXTRACTED |
+| PARAM-ADP-108 | TRIAL_LEDGER_MODEL_ID | Trial ledger update model identifier | adp-trial-ledger-v1 | EXTRACTED from trial ledger implementation | EXTRACTED |
+| PARAM-ADP-109 | TRIAL_LEDGER_PRODUCTION_READY_REQUIRED | Production-ready scheduled execution required before append | true | EXTRACTED from Phase 11 no fabricated evidence policy | EXTRACTED |
+| PARAM-ADP-110 | TRIAL_LEDGER_REQUIRED_DAILY_REFS | Daily evidence refs required before append | daily_run_ref;text_artifact_ref;email_ref;resource_gate_ref | EXTRACTED from trial evidence validator requirements | EXTRACTED |
+| PARAM-ADP-111 | TRIAL_LEDGER_DEGRADATION_FLAGS_EXPLICIT_REQUIRED | Text and video degradation path flags must be explicit | true | EXTRACTED from trial validator and CLI defaults | EXTRACTED |
+| PARAM-ADP-112 | TRIAL_LEDGER_ARTIFACT_NAME | Scheduled workflow trial ledger artifact name | adp-trial-ledger-update | EXTRACTED from scheduled workflow wiring | EXTRACTED |
+| PARAM-ADP-113 | TRIAL_LEDGER_STATE_ARTIFACT_NAME | Carry-forward trial evidence ledger artifact name | adp-trial-evidence-ledger | EXTRACTED from scheduled workflow state bridge | EXTRACTED |
+| PARAM-ADP-114 | TRIAL_LEDGER_STATE_GH_DOWNLOAD_ENABLED | Previous state restored with GitHub run artifact download | true | EXTRACTED from cross-run persistence implementation | EXTRACTED |
+| PARAM-ADP-115 | TRIAL_LEDGER_STATE_ACTIONS_READ_PERMISSION | GitHub Actions read permission required for previous artifact restore | actions:read | EXTRACTED from GitHub artifact restore requirement | EXTRACTED |
+| PARAM-ADP-116 | TRIAL_LEDGER_STATE_EXPORT_COMMAND | CLI command that exports trial evidence state | export-trial-ledger-state | EXTRACTED from CLI implementation | EXTRACTED |
+| PARAM-ADP-117 | TRIAL_LEDGER_STATE_NO_BLOCKED_REPLACEMENT | Blocked ledger update must not replace state artifact | false | EXTRACTED from fail-closed state persistence policy | EXTRACTED |
+| PARAM-ADP-118 | TRIAL_OPS_MODEL_ID | Trial ops evidence annotation model identifier | adp-trial-ops-evidence-v1 | EXTRACTED from trial ops implementation | EXTRACTED |
+| PARAM-ADP-119 | TRIAL_OPS_EXPLICIT_UPDATE_REQUIRED | At least one operational evidence update must be requested | true | EXTRACTED from fail-closed annotation policy | EXTRACTED |
+| PARAM-ADP-120 | TRIAL_OPS_WEEKLY_MONTHLY_REF_REQUIRED | Weekly or monthly replay verification requires evidence ref | true | EXTRACTED from Phase 11 replay evidence policy | EXTRACTED |
+| PARAM-ADP-121 | TRIAL_OPS_RECOVERY_REF_REQUIRED | Recovery drill verification requires evidence ref | true | EXTRACTED from Phase 11 recovery evidence policy | EXTRACTED |
+| PARAM-ADP-122 | TRIAL_OPS_NO_BLOCKED_EXPORT | Blocked ops annotation must not export replacement state | true | EXTRACTED from state safety policy | EXTRACTED |
+| PARAM-ADP-123 | TRIAL_REPLAY_MODEL_ID | Trial replay evidence model identifier | adp-trial-replay-v1 | EXTRACTED from trial replay implementation | EXTRACTED |
+| PARAM-ADP-124 | TRIAL_REPLAY_WEEKLY_DAYS_REQUIRED | Consecutive daily entries required for weekly replay | 7 | EXTRACTED from weekly replay evidence policy | EXTRACTED |
+| PARAM-ADP-125 | TRIAL_REPLAY_MONTHLY_DAYS_REQUIRED | Consecutive daily entries required for monthly replay | 30 | EXTRACTED from 30-day Phase 11 monthly replay policy | EXTRACTED |
+| PARAM-ADP-126 | TRIAL_REPLAY_REF_REQUIRED | Durable replay evidence ref required | true | EXTRACTED from evidence ref policy | EXTRACTED |
+| PARAM-ADP-127 | TRIAL_REPLAY_DAILY_PRODUCTION_REFS_REQUIRED | Production refs required for every replayed daily entry | run_record_ref;release_ref;email_ref;resource_gate_ref | EXTRACTED from daily production evidence policy | EXTRACTED |
+| PARAM-ADP-128 | TRIAL_RECOVERY_MODEL_ID | Trial recovery evidence model identifier | adp-trial-recovery-v1 | EXTRACTED from trial recovery implementation | EXTRACTED |
+| PARAM-ADP-129 | TRIAL_RECOVERY_FAILURE_STATUSES | Failure statuses eligible for recovery drill evidence | blocked;failed;degraded | EXTRACTED from recovery drill policy | EXTRACTED |
+| PARAM-ADP-130 | TRIAL_RECOVERY_SENT_NOTIFICATIONS_REQUIRED | Failure and recovery notifications must be real sent SMTP evidence | true | EXTRACTED from SMTP evidence policy | EXTRACTED |
+| PARAM-ADP-131 | TRIAL_RECOVERY_PRODUCTION_REFS_REQUIRED | Recovery rerun production refs required | daily_run_ref;text_artifact_ref;email_ref;resource_gate_ref | EXTRACTED from scheduled execution production evidence policy | EXTRACTED |
+| PARAM-ADP-132 | TRIAL_RECOVERY_DURABLE_REFS_REQUIRED | Durable failure and recovery evidence refs required | true | EXTRACTED from evidence ref policy | EXTRACTED |
+| PARAM-ADP-133 | TRIAL_RESOURCE_MODEL_ID | Trial resource evidence model identifier | adp-trial-resource-v1 | EXTRACTED from trial resource implementation | EXTRACTED |
+| PARAM-ADP-134 | TRIAL_RESOURCE_UNIQUE_DAILY_REFS_REQUIRED | Unique daily resource refs required for 30-day telemetry | 30 | EXTRACTED from Phase 11 resource evidence policy | EXTRACTED |
+| PARAM-ADP-135 | TRIAL_RESOURCE_REQUIRED_PREFLIGHT_GATES | Preflight gates required for resource evidence | disk_pressure;memory_pressure;git_artifact_hygiene;local_artifact_cache;secret_environment | EXTRACTED from production preflight resource policy | EXTRACTED |
+| PARAM-ADP-136 | TRIAL_RESOURCE_MATCHING_POLICY | Daily resource refs must match preflight resource refs | true | EXTRACTED from resource telemetry traceability policy | EXTRACTED |
+| PARAM-ADP-137 | TRIAL_RESOURCE_DURABLE_REF_REQUIRED | Durable resource telemetry evidence ref required | true | EXTRACTED from evidence ref policy | EXTRACTED |
+| PARAM-ADP-138 | TRIAL_START_MODEL_ID | Trial start gate model identifier | adp-trial-start-v1 | EXTRACTED from trial start implementation | EXTRACTED |
+| PARAM-ADP-139 | TRIAL_START_CONFIRMATION_REQUIRED | Explicit confirmation required before start-ready status | true | EXTRACTED from controlled start policy | EXTRACTED |
+| PARAM-ADP-140 | TRIAL_START_DURABLE_REFS_REQUIRED | Durable refs required before trial start | default_branch_ref;runner_ref;preflight_ref;source_ingest_ref;smtp_ref;scheduler_ref;trial_state_ref;trial_start_ref | EXTRACTED from evidence ref policy | EXTRACTED |
+| PARAM-ADP-141 | TRIAL_START_UPSTREAM_REPORTS_REQUIRED | Upstream readiness reports required before trial start | adp-production-preflight-v1;adp-trial-bootstrap-v1;adp-production-scheduler-v1;adp-live-arxiv-ingest-v1 | EXTRACTED from Phase 11 start readiness policy | EXTRACTED |
+| PARAM-ADP-142 | TRIAL_START_REAL_DELIVERY_PROBES_REQUIRED | Real SMTP and Release probes required before trial start | false | EXTRACTED from production side effect readiness policy | EXTRACTED |
+| PARAM-ADP-143 | TRIAL_START_NO_SIDE_EFFECTS | Start gate performs no side effects and claims no acceptance | true | EXTRACTED from fail-closed start gate implementation | EXTRACTED |
+| PARAM-ADP-144 | TRIAL_START_WORKFLOW_MODEL_ID | Trial start workflow validator identifier | adp-trial-start-workflow-v1 | EXTRACTED from workflow validator implementation | EXTRACTED |
+| PARAM-ADP-145 | TRIAL_START_WORKFLOW_ARTIFACTS_REQUIRED | Required trial start workflow artifacts | adp-trial-start-preflight;adp-trial-start-production-refs;adp-trial-start-launch-readiness;adp-trial-start-bootstrap-plan;adp-trial-start-scheduler-plan;adp-trial-start-all-arxiv-daily-input;adp-trial-start-phase12-artifacts;adp-trial-start-candidate-queue;adp-trial-start-smtp-delivery;adp-trial-start-gate | EXTRACTED from trial start workflow artifact policy | EXTRACTED |
+| PARAM-ADP-146 | TRIAL_START_WORKFLOW_CONFIRMATION_REQUIRED | Manual confirmation required before runner job | true | EXTRACTED from workflow guard policy | EXTRACTED |
+| PARAM-ADP-147 | TRIAL_START_WORKFLOW_SIDE_EFFECT_VARS_REQUIRED | SMTP side effect requires explicit GitHub variable | ADP_ALLOW_SMTP_SEND | EXTRACTED from controlled side effect policy | EXTRACTED |
+| PARAM-ADP-148 | TRIAL_START_WORKFLOW_DURABLE_REF_ARGS_REQUIRED | All start gate durable ref args required in workflow | default-branch-ref;runner-ref;preflight-ref;source-ingest-ref;smtp-ref;scheduler-ref;trial-state-ref;trial-start-ref | EXTRACTED from durable ref start policy | EXTRACTED |
+| PARAM-ADP-149 | PRODUCTION_LAUNCH_MODEL_ID | Production launch readiness model identifier | adp-production-launch-readiness-v1 | EXTRACTED from production launch implementation | EXTRACTED |
+| PARAM-ADP-150 | PRODUCTION_LAUNCH_PR_MERGED_REQUIRED | PR must be non-draft and merged into main before launch | true | EXTRACTED from default branch launch policy | EXTRACTED |
+| PARAM-ADP-151 | PRODUCTION_LAUNCH_HEAD_SHA_BINDING_REQUIRED | Expected PR head SHA must match current PR metadata | true | EXTRACTED from launch audit binding policy | EXTRACTED |
+| PARAM-ADP-152 | PRODUCTION_LAUNCH_DURABLE_REFS_REQUIRED | Durable refs required for launch prerequisites | default_branch_ref;runner_ref;smtp_secret_ref;workflow_vars_ref;trial_start_workflow_ref | EXTRACTED from launch readiness policy | EXTRACTED |
+| PARAM-ADP-153 | PRODUCTION_LAUNCH_NO_SIDE_EFFECTS | Launch readiness gate performs no side effects and claims no acceptance | true | EXTRACTED from fail-closed launch readiness implementation | EXTRACTED |
+| PARAM-ADP-154 | PRODUCTION_REFS_VALIDATOR_ID | Production refs readiness validator identifier | adp-production-refs-v1 | EXTRACTED from production refs implementation | EXTRACTED |
+| PARAM-ADP-155 | PRODUCTION_REFS_REQUIRED_SMTP_SECRET_NAMES | Required SMTP GitHub secret names for production refs | ADP_SMTP_HOST;ADP_SMTP_PORT;ADP_SMTP_USERNAME;ADP_SMTP_PASSWORD | EXTRACTED from production refs implementation | EXTRACTED |
+| PARAM-ADP-156 | PRODUCTION_REFS_REQUIRED_WORKFLOW_VAR_NAMES | Required GitHub workflow variable names for production refs | ADP_ALLOW_SMTP_SEND | EXTRACTED from production refs implementation | EXTRACTED |
+| PARAM-ADP-157 | PRODUCTION_REFS_REQUIRED_REF_KEYS | Required production readiness ref keys | runner_ref;smtp_secret_ref;workflow_vars_ref | EXTRACTED from production refs implementation | EXTRACTED |
+| PARAM-ADP-158 | PRODUCTION_REFS_SECRET_VALUE_KEY_BLOCKLIST | Secret-like readiness input keys blocked by production refs gate | password;token;secret_value;private_key;auth_json | EXTRACTED from production refs implementation | EXTRACTED |
+| PARAM-ADP-159 | PRODUCTION_REFS_NO_SIDE_EFFECTS | Production refs gate performs no side effects and claims no acceptance | true | EXTRACTED from fail-closed production refs implementation | EXTRACTED |
+| PARAM-ADP-160 | SCHEDULER_RELEASE_WRITE_PERMISSION | Scheduled workflow permission required for controlled Release uploads | false | EXTRACTED from GitHub Release permission hardening | EXTRACTED |
+| PARAM-ADP-161 | TRIAL_START_WORKFLOW_RELEASE_WRITE_PERMISSION | Trial start workflow permission required for controlled Release probe | false | EXTRACTED from GitHub Release permission hardening | EXTRACTED |
+| PARAM-ADP-162 | PRODUCTION_REFS_TEMPLATE_REQUIRED_SECTIONS | Required no-secret production refs template sections | runner;smtp_secrets;workflow_vars | EXTRACTED from production refs template implementation | EXTRACTED |
+| PARAM-ADP-163 | PRODUCTION_REFS_DEFAULT_GITHUB_REPO | Default GitHub repository for production refs metadata discovery | LinzeColin/CodexProject | EXTRACTED from production refs GitHub metadata discovery implementation | EXTRACTED |
+| PARAM-ADP-164 | TRIAL_START_WORKFLOW_LAUNCH_PREFLIGHT_REQUIRED | Trial start workflow requires production refs and launch precheck before side effects | true | EXTRACTED from trial start workflow launch precheck ordering | EXTRACTED |
+| PARAM-ADP-165 | PRODUCTION_PROVISIONING_AUDIT_WORKFLOW_REQUIRED | GitHub-hosted provisioning audit workflow required before trial start dispatch | true | EXTRACTED from GitHub-hosted no-secret provisioning audit workflow | EXTRACTED |
+| PARAM-ADP-166 | PROVISIONING_AUDIT_REVIEW_ID | Provisioning audit review validator identifier | adp-provisioning-audit-review-v1 | EXTRACTED from provisioning audit review implementation | EXTRACTED |
+| PARAM-ADP-167 | TWO_DAY_SIMULATION_MODEL_ID | Two-day simulation validator identifier | adp-two-day-simulation-v1 | EXTRACTED from two-day simulation implementation | EXTRACTED |
+| PARAM-ADP-168 | TWO_DAY_SIMULATION_DAYS_REQUIRED | Required simulated daily run count | 2 | EXTRACTED from updated user objective and simulation implementation | EXTRACTED |
+| PARAM-ADP-169 | TWO_DAY_SIMULATION_NO_PRODUCTION_CLAIM | Two-day simulation must not claim production or perform real side effects | true | EXTRACTED from simulation safety policy | EXTRACTED |
+| PARAM-ADP-170 | ALL_ARXIV_SCAN_MODEL_ID | All-arXiv scan model identifier | adp-all-arxiv-scan-v1 | EXTRACTED from Phase 12 implementation | EXTRACTED |
+| PARAM-ADP-171 | ALL_ARXIV_ARCHIVE_COUNT | Required primary archive bucket count for Phase 12 scan | 20 | EXTRACTED from arXiv taxonomy-backed scan plan | EXTRACTED |
+| PARAM-ADP-172 | ALL_ARXIV_MAX_RESULTS_PER_CATEGORY | Default latest-window results per primary archive | 3 | EXTRACTED from Phase 12 implementation and workflow env | EXTRACTED |
+| PARAM-ADP-173 | CANDIDATE_QUEUE_MAX_ITEMS | Maximum persisted candidate queue items | 40 | EXTRACTED from Phase 12 implementation | EXTRACTED |
+| PARAM-ADP-174 | ROI_SELECTION_THRESHOLDS | New high-value minimum selection and queue thresholds | 65.0;50.0;55.0 | EXTRACTED from Phase 12 ROI ranking implementation | EXTRACTED |
+| PARAM-ADP-175 | ROI_COMPONENT_WEIGHTS | Phase 12 ROI ranking component weights | relevance:20.0;learning_value:20.0;economic_conversion_rate:20.0;roi:20.0;interdisciplinary_value:10.0;explainability:10.0 | EXTRACTED from user criteria and implementation | EXTRACTED |
+| PARAM-ADP-176 | MAIL_VIDEO_LINK_REQUIRED | Daily email requires Release-hosted video link and forbids video attachments | true | EXTRACTED from Phase 12 delivery package implementation | EXTRACTED |
+| PARAM-ADP-177 | LIVE_ALL_ARXIV_DRY_RUN_MODEL_ID | Live all-arXiv dry-run validator identifier | adp-live-all-arxiv-dry-run-v1 | EXTRACTED from Phase 12 cloud dry-run implementation | EXTRACTED |
+| PARAM-ADP-178 | REAL_MP4_RENDER_MODEL_ID | Real lightweight MP4 render report identifier | adp-real-mp4-render-v1 | EXTRACTED from real MP4 render implementation | EXTRACTED |
+| PARAM-ADP-179 | MIN_PRODUCTION_FREE_DISK_GIB | Minimum free disk for GitHub-hosted lightweight MP4 production preflight | 8.0 | EXTRACTED from production preflight cloud profile | EXTRACTED |
+| PARAM-ADP-180 | GITHUB_HOSTED_RUNNER_REQUIRED | Phase 12 active workflows must use GitHub-hosted ubuntu-latest instead of self-hosted runner labels | true | EXTRACTED from active workflow migration | EXTRACTED |
+| PARAM-ADP-181 | MANUAL_DELIVERY_CONFIRM_STRING | Manual delivery workflow confirmation string | SEND_TEST_EMAIL_TO_LINZEZHANG35_GMAIL_COM | EXTRACTED from manual workflow contract | EXTRACTED |
+| PARAM-ADP-182 | MANUAL_DELIVERY_DEFAULT_BRANCH_ONLY | Manual delivery workflow requires default branch | true | EXTRACTED from manual workflow contract | EXTRACTED |
+| PARAM-ADP-183 | MANUAL_DELIVERY_REAL_SIDE_EFFECT_FLAGS | Manual delivery workflow explicitly enables one test Release and SMTP send | false | EXTRACTED from manual workflow contract | EXTRACTED |
+| PARAM-ADP-184 | MANUAL_DELIVERY_RELEASE_BACKED_EMAIL_PATH | Manual delivery email must be backed by deduplicated Release MP4 assets | false | EXTRACTED from manual workflow contract | EXTRACTED |
+| PARAM-ADP-185 | RELEASE_ASSET_PATH_DEDUPE_REQUIRED | Release delivery must deduplicate identical asset paths before gh upload | true | EXTRACTED from second manual delivery failure 27927785092 and release delivery implementation | EXTRACTED |
+| PARAM-ADP-186 | MANUAL_EMAIL_HUMAN_FRONTEND_FORMAT | Daily manual email front-end prioritizes Chinese text owner subject contract and keeps Release out of the reading path | true | EXTRACTED from owner email UI requirement and manual run 27934320671 | EXTRACTED |
+| PARAM-ADP-187 | OWNER_SCHEMA_VERSION | Owner controls schema version | 1 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-188 | OWNER_CONFIG_VERSION | Owner controls config version | owner-controls-v1 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-189 | OWNER_DISPLAY_TIMEZONE | Owner display timezone | Australia/Sydney | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-190 | OWNER_PRODUCTION_ENABLED | Owner production enablement flag | false | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-191 | OWNER_PAID_DATA_API_ALLOWED | Paid data API allowance | false | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-192 | OWNER_PAID_CLOUD_COMPUTE_ALLOWED | Paid cloud compute allowance | false | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-193 | OWNER_PAID_OPENAI_API_ALLOWED | Paid OpenAI API allowance | false | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-194 | OWNER_MAX_FETCH_CONCURRENCY | Owner max fetch concurrency | 6 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-195 | OWNER_MAX_TEMP_CACHE_GB | Owner max temp cache | 2 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-196 | OWNER_WINDOW_A_MAX_ONLINE_ARXIV_METADATA | Window A online arXiv metadata cap | 10 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-198 | OWNER_QUEUE_MAX_ACTIVE_ITEMS | Owner queue max active items | 10000 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-199 | OWNER_SOURCE_SHARE_CAP_PER_BOARD | Owner source share cap per board | 0.4 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-200 | OWNER_EMAIL_ENABLED | Owner email enabled flag | true | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-202 | OWNER_DOC_FILE_SET | Generated owner doc file set | docs/owner/OWNER_CONSOLE.md;docs/owner/SOURCE_CATALOG.md;docs/owner/MODEL_AND_QUEUE.md;docs/owner/CONTENT_LEDGER.csv | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-203 | OWNER_SOURCE_WEIGHT_ARXIV | Owner source weight SRC-ARXIV | 100 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-204 | OWNER_SOURCE_WEIGHT_TOP_JOURNALS | Owner source weight SRC-TOP-JOURNALS | 0 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-205 | OWNER_SOURCE_WEIGHT_CHINA_POLICY | Owner source weight SRC-CHINA-POLICY | 0 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-206 | OWNER_SOURCE_WEIGHT_US_OFFICIAL | Owner source weight SRC-US-OFFICIAL | 0 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-207 | OWNER_BOARD_WEIGHT_B1 | Owner board weight B1 | 25 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-208 | OWNER_BOARD_WEIGHT_B2 | Owner board weight B2 | 20 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-209 | OWNER_BOARD_WEIGHT_B3 | Owner board weight B3 | 25 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-210 | OWNER_BOARD_WEIGHT_B4 | Owner board weight B4 | 20 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-211 | OWNER_BOARD_WEIGHT_B5 | Owner board weight B5 | 10 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-212 | OWNER_RESEARCH_WEIGHT_RELEVANCE | Owner Research weight relevance | 22 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-213 | OWNER_RESEARCH_WEIGHT_NOVELTY | Owner Research weight novelty | 16 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-214 | OWNER_RESEARCH_WEIGHT_EVIDENCE_QUALITY | Owner Research weight evidence_quality | 16 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-215 | OWNER_RESEARCH_WEIGHT_TECHNICAL_BREAKTHROUGH | Owner Research weight technical_breakthrough | 16 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-216 | OWNER_RESEARCH_WEIGHT_CONVERSION_ECONOMIC_VALUE | Owner Research weight conversion_economic_value | 14 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-217 | OWNER_RESEARCH_WEIGHT_IMPACT_SCALE | Owner Research weight impact_scale | 8 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-218 | OWNER_RESEARCH_WEIGHT_TIMELINESS_VERSION_CHANGE | Owner Research weight timeliness_version_change | 5 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-219 | OWNER_RESEARCH_WEIGHT_DIVERSITY_COVERAGE | Owner Research weight diversity_coverage | 3 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-220 | OWNER_CHINA_POLICY_WEIGHT_AUTHORITY_LEGAL_EFFECT | Owner China Policy weight authority_legal_effect | 18 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-221 | OWNER_CHINA_POLICY_WEIGHT_POLICY_DELTA | Owner China Policy weight policy_delta | 16 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-222 | OWNER_CHINA_POLICY_WEIGHT_TECHNOLOGY_INDUSTRY_RELEVANCE | Owner China Policy weight technology_industry_relevance | 16 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-223 | OWNER_CHINA_POLICY_WEIGHT_ECONOMIC_IMPACT | Owner China Policy weight economic_impact | 14 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-224 | OWNER_CHINA_POLICY_WEIGHT_SCOPE | Owner China Policy weight scope | 10 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-225 | OWNER_CHINA_POLICY_WEIGHT_URGENCY | Owner China Policy weight urgency | 10 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-226 | OWNER_CHINA_POLICY_WEIGHT_REGIONAL_RELEVANCE | Owner China Policy weight regional_relevance | 8 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-227 | OWNER_CHINA_POLICY_WEIGHT_ACTIONABILITY | Owner China Policy weight actionability | 5 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-228 | OWNER_CHINA_POLICY_WEIGHT_COMPLETENESS_CONFIDENCE | Owner China Policy weight completeness_confidence | 3 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-229 | OWNER_US_OFFICIAL_WEIGHT_INNOVATION_BREAKTHROUGH | Owner Us Official weight innovation_breakthrough | 20 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-230 | OWNER_US_OFFICIAL_WEIGHT_REGULATORY_MARKET_IMPACT | Owner Us Official weight regulatory_market_impact | 18 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-231 | OWNER_US_OFFICIAL_WEIGHT_AUTHORITY_EVIDENCE | Owner Us Official weight authority_evidence | 14 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-232 | OWNER_US_OFFICIAL_WEIGHT_NOVELTY_DELTA | Owner Us Official weight novelty_delta | 14 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-233 | OWNER_US_OFFICIAL_WEIGHT_ENTITY_ASSET_SCOPE | Owner Us Official weight entity_asset_scope | 12 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-234 | OWNER_US_OFFICIAL_WEIGHT_URGENCY | Owner Us Official weight urgency | 10 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-235 | OWNER_US_OFFICIAL_WEIGHT_COMMERCIALIZATION | Owner Us Official weight commercialization | 8 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-236 | OWNER_US_OFFICIAL_WEIGHT_ACTIONABILITY | Owner Us Official weight actionability | 4 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-237 | OWNER_CROSS_BOARD_WEIGHT_NORMALIZED_QUALITY | Owner Cross Board weight normalized_quality | 40 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-238 | OWNER_CROSS_BOARD_WEIGHT_CROSS_BOARD_LINKAGE | Owner Cross Board weight cross_board_linkage | 20 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-239 | OWNER_CROSS_BOARD_WEIGHT_DECISION_IMPACT | Owner Cross Board weight decision_impact | 15 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-240 | OWNER_CROSS_BOARD_WEIGHT_URGENCY | Owner Cross Board weight urgency | 10 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-241 | OWNER_CROSS_BOARD_WEIGHT_CONFIDENCE | Owner Cross Board weight confidence | 10 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-242 | OWNER_CROSS_BOARD_WEIGHT_DIVERSITY | Owner Cross Board weight diversity | 5 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-243 | OWNER_QUEUE_PRIORITY_WEIGHT_QUALITY | Owner Queue Priority weight quality | 55 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-244 | OWNER_QUEUE_PRIORITY_WEIGHT_EVENT_DELTA | Owner Queue Priority weight event_delta | 15 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-245 | OWNER_QUEUE_PRIORITY_WEIGHT_URGENCY | Owner Queue Priority weight urgency | 10 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-246 | OWNER_QUEUE_PRIORITY_WEIGHT_CROSS_BOARD_LINKAGE | Owner Queue Priority weight cross_board_linkage | 10 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-247 | OWNER_QUEUE_PRIORITY_WEIGHT_WAITING_CREDIT | Owner Queue Priority weight waiting_credit | 5 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-248 | OWNER_QUEUE_PRIORITY_WEIGHT_SOURCE_BALANCE | Owner Queue Priority weight source_balance | 5 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-263 | OWNER_US_ATTENTION_WEIGHT_INNOVATION_BREAKTHROUGH | Owner Us Attention weight innovation_breakthrough | 35 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-264 | OWNER_US_ATTENTION_WEIGHT_FINANCE_MARKET_MACRO | Owner Us Attention weight finance_market_macro | 30 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-265 | OWNER_US_ATTENTION_WEIGHT_TECHNOLOGY_POLICY_INDUSTRY_RULES | Owner Us Attention weight technology_policy_industry_rules | 20 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-266 | OWNER_US_ATTENTION_WEIGHT_CROSS_AGENCY_LEGAL_BACKBONE | Owner Us Attention weight cross_agency_legal_backbone | 15 | EXTRACTED from Review8 V4 baseline and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-267 | MANUAL_VIDEO_TRANSCRIPT_ROI_SCORE_HIDDEN | Manual MP4 transcript must not expose backend ROI score | true | EXTRACTED from owner frontend requirement and manual run 27934320671 | EXTRACTED |
+| PARAM-ADP-268 | STORAGE_SCHEMA_VERSION | Storage schema version | 1 | EXTRACTED from storage.py constant and migration tests | EXTRACTED |
+| PARAM-ADP-269 | STORAGE_DEFAULT_DB_FILENAME | Storage default database filename | adp.sqlite3 | EXTRACTED from storage.py constant | EXTRACTED |
+| PARAM-ADP-270 | STORAGE_JOURNAL_MODE | Storage SQLite journal mode | wal | EXTRACTED from storage.py constant and migration report tests | EXTRACTED |
+| PARAM-ADP-271 | STORAGE_FTS5_REQUIRED | Storage FTS5 requirement | true | EXTRACTED from storage.py constant and migration tests | EXTRACTED |
+| PARAM-ADP-272 | STORAGE_ROLLBACK_TARGET_VERSION | Storage rollback target version | 0 | EXTRACTED from storage.py constant and rollback tests | EXTRACTED |
+| PARAM-ADP-273 | STORAGE_OBJECT_TABLE_COUNT | Storage object table count | 18 | EXTRACTED from STORAGE_OBJECT_TABLES tuple and migration tests | EXTRACTED |
+| PARAM-ADP-274 | STORAGE_RELATION_TYPE_COUNT | Storage relation type count | 25 | EXTRACTED from STORAGE_RELATION_TYPES tuple and schema CHECK constraint | EXTRACTED |
+| PARAM-ADP-275 | STORAGE_TIME_FIELD_COUNT | Storage time field count | 9 | EXTRACTED from STORAGE_TIME_FIELDS tuple and storage report tests | EXTRACTED |
+| PARAM-ADP-276 | EMAIL_HTML_ALTERNATIVE_PRESENT | Decision email HTML alternative is present | true | HTML alternative required for owner V2 UI/UX quality | EXTRACTED |
+| PARAM-ADP-277 | EMAIL_PLAIN_TEXT_MAX_CHARS | Decision email plain text maximum length | 1500 | Plain text must stay high-density for mobile/email scanning | EXTRACTED |
+| PARAM-ADP-278 | QFIN_FRONTSTAGE_CANDIDATE_FILTER | Quant finance email filters irrelevant cross-domain candidates | true | Owner rejected low-value candidate pollution in the human email frontstage | EXTRACTED |
+| PARAM-ADP-279 | LESSON_FRONTSTAGE_REQUIRED | Lesson includes human-frontstage payload for email rendering | true | Frontstage separates human UI from backend Claim Ledger and ROI audit details | EXTRACTED |
+| PARAM-ADP-280 | SOURCE_REGISTRY_SCHEMA_VERSION | Source registry report schema version | 1 | EXTRACTED from source_registry.py constant and source registry tests | EXTRACTED |
+| PARAM-ADP-281 | CONNECTOR_CONTRACT_VERSION | Source connector contract version | source-connector-contract-v1 | EXTRACTED from source_registry.py constant and source registry tests | EXTRACTED |
+| PARAM-ADP-282 | SOURCE_REGISTRY_CANONICAL_CONFIG | Canonical source registry configuration path | config/owner_controls.yaml | EXTRACTED from source_registry.py constant and owner controls baseline | EXTRACTED |
+| PARAM-ADP-283 | STAGE1_ACTIVE_SOURCE_ID | Stage 1 active source identifier | SRC-ARXIV | EXTRACTED from source_registry.py constant and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-284 | STAGE1_ACTIVE_ADAPTER_ID | Stage 1 active source adapter identifier | arxiv.atom.v1 | EXTRACTED from source_registry.py constant and owner_controls.yaml | EXTRACTED |
+| PARAM-ADP-285 | STAGE1_MAX_CANARY_RESULTS | Stage 1 maximum online canary metadata records | 10 | EXTRACTED from Review8 Window A resource limit and source_registry.py constant | EXTRACTED |
+| PARAM-ADP-286 | STAGE1_ALLOWED_ENABLED_SOURCE_COUNT | Stage 1 allowed enabled source count | 1 | EXTRACTED from source_registry.py tuple and source registry tests | EXTRACTED |
+| PARAM-ADP-287 | STAGE1_QUEUE_SCHEMA_VERSION | Stage 1 queue report schema version | 1 | EXTRACTED from stage1_queue.py constant and tests | EXTRACTED |
+| PARAM-ADP-288 | STAGE1_MAX_ACTIVE_ITEMS | Stage 1 maximum active queue items | 10000 | EXTRACTED from owner_controls.yaml queue.max_active_items | EXTRACTED |
+| PARAM-ADP-289 | STAGE1_MAX_EVENT_AGE_DAYS | Stage 1 maximum event age | 365 | EXTRACTED from owner_controls.yaml queue.max_event_age_days | EXTRACTED |
+| PARAM-ADP-290 | STAGE1_SOURCE_SHARE_CAP_PER_BOARD | Stage 1 source share cap per board | 0.40 | EXTRACTED from owner_controls.yaml queue.source_share_cap_per_board | EXTRACTED |
+| PARAM-ADP-291 | STAGE1_SOFT_QUOTA_B1 | Stage 1 B1 soft quota | 3500 | EXTRACTED from owner_controls.yaml queue.soft_quotas.B1 | EXTRACTED |
+| PARAM-ADP-292 | STAGE1_SOFT_QUOTA_B2 | Stage 1 B2 soft quota | 1500 | EXTRACTED from owner_controls.yaml queue.soft_quotas.B2 | EXTRACTED |
+| PARAM-ADP-293 | STAGE1_SOFT_QUOTA_B3 | Stage 1 B3 soft quota | 3000 | EXTRACTED from owner_controls.yaml queue.soft_quotas.B3 | EXTRACTED |
+| PARAM-ADP-294 | STAGE1_SOFT_QUOTA_B4 | Stage 1 B4 soft quota | 2000 | EXTRACTED from owner_controls.yaml queue.soft_quotas.B4 | EXTRACTED |
+| PARAM-ADP-295 | STAGE1_RESEARCH_RELEVANCE | Stage 1 research relevance weight | 22 | EXTRACTED from owner_controls.yaml scoring.research.relevance | EXTRACTED |
+| PARAM-ADP-296 | STAGE1_RESEARCH_NOVELTY | Stage 1 research novelty weight | 16 | EXTRACTED from owner_controls.yaml scoring.research.novelty | EXTRACTED |
+| PARAM-ADP-297 | STAGE1_RESEARCH_EVIDENCE_QUALITY | Stage 1 research evidence quality weight | 16 | EXTRACTED from owner_controls.yaml scoring.research.evidence_quality | EXTRACTED |
+| PARAM-ADP-298 | STAGE1_RESEARCH_TECHNICAL_BREAKTHROUGH | Stage 1 research technical breakthrough weight | 16 | EXTRACTED from owner_controls.yaml scoring.research.technical_breakthrough | EXTRACTED |
+| PARAM-ADP-299 | STAGE1_RESEARCH_CONVERSION_VALUE | Stage 1 research conversion economic value weight | 14 | EXTRACTED from owner_controls.yaml scoring.research.conversion_economic_value | EXTRACTED |
+| PARAM-ADP-300 | STAGE1_RESEARCH_IMPACT_SCALE | Stage 1 research impact scale weight | 8 | EXTRACTED from owner_controls.yaml scoring.research.impact_scale | EXTRACTED |
+| PARAM-ADP-301 | STAGE1_RESEARCH_TIMELINESS_VERSION_CHANGE | Stage 1 research timeliness version change weight | 5 | EXTRACTED from owner_controls.yaml scoring.research.timeliness_version_change | EXTRACTED |
+| PARAM-ADP-302 | STAGE1_RESEARCH_DIVERSITY_COVERAGE | Stage 1 research diversity coverage weight | 3 | EXTRACTED from owner_controls.yaml scoring.research.diversity_coverage | EXTRACTED |
+| PARAM-ADP-303 | STAGE1_QUEUE_PRIORITY_QUALITY | Stage 1 queue priority quality weight | 55 | EXTRACTED from owner_controls.yaml scoring.queue_priority.quality | EXTRACTED |
+| PARAM-ADP-304 | STAGE1_QUEUE_PRIORITY_EVENT_DELTA | Stage 1 queue priority event delta weight | 15 | EXTRACTED from owner_controls.yaml scoring.queue_priority.event_delta | EXTRACTED |
+| PARAM-ADP-305 | STAGE1_QUEUE_PRIORITY_URGENCY | Stage 1 queue priority urgency weight | 10 | EXTRACTED from owner_controls.yaml scoring.queue_priority.urgency | EXTRACTED |
+| PARAM-ADP-306 | STAGE1_QUEUE_PRIORITY_CROSS_BOARD_LINKAGE | Stage 1 queue priority cross board linkage weight | 10 | EXTRACTED from owner_controls.yaml scoring.queue_priority.cross_board_linkage | EXTRACTED |
+| PARAM-ADP-307 | STAGE1_QUEUE_PRIORITY_WAITING_CREDIT | Stage 1 queue priority waiting credit weight | 5 | EXTRACTED from owner_controls.yaml scoring.queue_priority.waiting_credit | EXTRACTED |
+| PARAM-ADP-308 | STAGE1_QUEUE_PRIORITY_SOURCE_BALANCE | Stage 1 queue priority source balance weight | 5 | EXTRACTED from owner_controls.yaml scoring.queue_priority.source_balance | EXTRACTED |
+| PARAM-ADP-309 | STAGE1_CONTENT_LEDGER_COLUMN_COUNT | Stage 1 content ledger column count | 29 | EXTRACTED from stage1_queue.py and owner controls tests | EXTRACTED |
+| PARAM-ADP-310 | STAGE1_B1_REPORT_SCHEMA_VERSION | Stage 1 B1 report schema version | 1 | EXTRACTED from stage1_b1_report.py constant and tests | EXTRACTED |
+| PARAM-ADP-311 | STAGE1_B1_BOARD_ID | Stage 1 B1 board ID | B1 | EXTRACTED from stage1_b1_report.py constant and tests | EXTRACTED |
+| PARAM-ADP-312 | STAGE1_B1_BOARD_NAME | Stage 1 B1 board name | 研究前沿 | EXTRACTED from stage1_b1_report.py constant and tests | EXTRACTED |
+| PARAM-ADP-313 | STAGE1_B1_SUBJECT_CONTRACT | Stage 1 B1 email subject contract | YYYYMMDD -- Project Name -- arXiv Group -- Theme | EXTRACTED from owner requirement and stage1_b1_report.py | EXTRACTED |
+| PARAM-ADP-314 | STAGE1_B1_REQUIRED_CRITICAL_CLAIM_COVERAGE | Stage 1 B1 required critical claim coverage | 100.0 | EXTRACTED from stage1_b1_report.py constant and tests | EXTRACTED |
+| PARAM-ADP-315 | STAGE1_B1_PROHIBITED_EMAIL_MARKER_COUNT | Stage 1 B1 prohibited email marker count | 9 | EXTRACTED from stage1_b1_report.py constant and tests | EXTRACTED |
+| PARAM-ADP-316 | STAGE1_RUNTIME_SCHEMA_VERSION | Stage 1 runtime report schema version | 1 | EXTRACTED from stage1_runtime.py constant and tests | EXTRACTED |
+| PARAM-ADP-317 | STAGE1_RUNTIME_ACCEPTANCE_ID | Stage 1 runtime acceptance ID | ADP-ACC-S1-08-LOCAL-RUNTIME-RECOVERY | EXTRACTED from stage1_runtime.py constant and tests | EXTRACTED |
+| PARAM-ADP-318 | STAGE1_RUNTIME_ACTION_COUNT | Stage 1 runtime action count | 7 | EXTRACTED from stage1_runtime.py actions tuple | EXTRACTED |
+| PARAM-ADP-319 | STAGE1_RUNTIME_MAX_BACKUP_BYTES | Stage 1 runtime max backup bytes | 104857600 | EXTRACTED from stage1_runtime.py byte cap | EXTRACTED |
+| PARAM-ADP-320 | STAGE1_RUNTIME_STALE_AFTER_SECONDS | Stage 1 runtime stale heartbeat seconds | 5400 | EXTRACTED from stage1_runtime.py watchdog timeout | EXTRACTED |
+| PARAM-ADP-321 | STAGE1_RUNTIME_DISABLED_FLAG_COUNT | Stage 1 runtime disabled production flag count | 4 | EXTRACTED from stage1_runtime.py disabled flag tuple | EXTRACTED |
+| PARAM-ADP-322 | STAGE1_RUNTIME_OS_TASK_COUNT | Stage 1 runtime OS task count | 3 | EXTRACTED from stage1_runtime.py task tuple | EXTRACTED |
+| PARAM-ADP-323 | STAGE1_RUNTIME_SUPPORTED_SCHEDULER_PLATFORMS | Stage 1 runtime supported scheduler platforms | macos;linux;windows | EXTRACTED from stage1_runtime.py platform tuple | EXTRACTED |
+| PARAM-ADP-324 | STAGE1_RUNTIME_HEARTBEAT_FILENAME | Stage 1 runtime heartbeat filename | heartbeat.json | EXTRACTED from stage1_runtime.py constant | EXTRACTED |
+| PARAM-ADP-325 | STAGE1_RUNTIME_LOCK_FILENAME | Stage 1 runtime lock filename | runtime.lock | EXTRACTED from stage1_runtime.py constant | EXTRACTED |
+| PARAM-ADP-326 | STAGE1_MIGRATION_SCHEMA_VERSION | Stage 1 migration package schema version | 1 | EXTRACTED from stage1_migration.py constant and tests | EXTRACTED |
+| PARAM-ADP-327 | STAGE1_MIGRATION_ACCEPTANCE_ID | Stage 1 migration package acceptance ID | ADP-ACC-S1-09-MIGRATION-PACKAGE | EXTRACTED from stage1_migration.py constant and tests | EXTRACTED |
+| PARAM-ADP-328 | STAGE1_MIGRATION_MAX_PACKAGE_BYTES | Stage 1 migration package max input bytes | 104857600 | EXTRACTED from stage1_migration.py byte cap | EXTRACTED |
+| PARAM-ADP-329 | STAGE1_MIGRATION_REQUIRED_SECRET_NAME_COUNT | Stage 1 migration required secret name count | 5 | EXTRACTED from stage1_migration.py secret-name tuple | EXTRACTED |
+| PARAM-ADP-330 | STAGE1_MIGRATION_REQUIRED_RELATIVE_PATH_COUNT | Stage 1 migration required source path count | 15 | EXTRACTED from stage1_migration.py required source tuple | EXTRACTED |
+| PARAM-ADP-331 | STAGE1_MIGRATION_PACKAGE_FILE_COUNT | Stage 1 migration package file count | 6 | EXTRACTED from stage1_migration.py package file tuple | EXTRACTED |
+| PARAM-ADP-332 | STAGE1_BOOTSTRAP_SCHEMA_VERSION | Stage 1 bootstrap schema version | 1 | EXTRACTED from stage1_bootstrap.py constant and focused bootstrap tests | EXTRACTED |
+| PARAM-ADP-333 | STAGE1_BOOTSTRAP_ACCEPTANCE_ID | Stage 1 bootstrap acceptance ID | ADP-ACC-S1-10-POST-MIGRATION-BOOTSTRAP | EXTRACTED from stage1_bootstrap.py constant and focused bootstrap tests | EXTRACTED |
+| PARAM-ADP-334 | STAGE1_BOOTSTRAP_TARGET_ENVIRONMENT_COUNT | Stage 1 bootstrap supported target environment count | 2 | EXTRACTED from stage1_bootstrap.py constant and focused bootstrap tests | EXTRACTED |
+| PARAM-ADP-335 | STAGE1_BOOTSTRAP_REQUIRED_SECRET_NAME_COUNT | Stage 1 bootstrap required SMTP secret name count | 5 | EXTRACTED from stage1_bootstrap.py constant and focused bootstrap tests | EXTRACTED |
+| PARAM-ADP-336 | STAGE1_BOOTSTRAP_GITHUB_ENV_NAME_COUNT | Stage 1 bootstrap GitHub runner env name count | 7 | EXTRACTED from stage1_bootstrap.py constant and focused bootstrap tests | EXTRACTED |
+| PARAM-ADP-337 | STAGE1_BOOTSTRAP_MIN_PYTHON_VERSION | Stage 1 bootstrap minimum Python version | 3.11 | EXTRACTED from stage1_bootstrap.py constant and focused bootstrap tests | EXTRACTED |
+| PARAM-ADP-338 | STAGE1_BOOTSTRAP_NETWORK_TIMEOUT_SECONDS | Stage 1 bootstrap explicit network probe timeout | 15 | EXTRACTED from stage1_bootstrap.py constant and focused bootstrap tests | EXTRACTED |
+| PARAM-ADP-339 | STAGE1_BOOTSTRAP_NETWORK_PROBE_URL | Stage 1 bootstrap explicit arXiv network probe URL | https://export.arxiv.org/api/query?search_query=all:electron&start=0&max_results=1 | EXTRACTED from stage1_bootstrap.py constant and focused bootstrap tests | EXTRACTED |
+| PARAM-ADP-340 | STAGE1_HISTORICAL_PREVIEW_SCHEMA_VERSION | Stage 1 historical preview schema version | 1 | EXTRACTED from stage1_historical_previews.py constant and focused tests | EXTRACTED |
+| PARAM-ADP-341 | STAGE1_HISTORICAL_PREVIEW_ACCEPTANCE_ID | Stage 1 historical preview acceptance ID | ADP-ACC-S1-11-HISTORICAL-B1-PREVIEWS | EXTRACTED from stage1_historical_previews.py constant and focused tests | EXTRACTED |
+| PARAM-ADP-342 | STAGE1_HISTORICAL_PREVIEW_REQUIRED_COUNT | Stage 1 historical preview required count | 30 | EXTRACTED from stage1_historical_previews.py constant and focused tests | EXTRACTED |
+| PARAM-ADP-343 | STAGE1_HISTORICAL_PREVIEW_MIN_UNIQUE_SOURCE_IDS | Stage 1 historical preview minimum unique source IDs | 30 | EXTRACTED from stage1_historical_previews.py constant and focused tests | EXTRACTED |
+| PARAM-ADP-344 | STAGE1_HISTORICAL_PREVIEW_ARTIFACT_KIND_COUNT | Stage 1 historical preview artifact kind count | 5 | EXTRACTED from stage1_historical_previews.py constant and focused tests | EXTRACTED |
+| PARAM-ADP-345 | STAGE1_HISTORICAL_PREVIEW_SOURCE_TYPE | Stage 1 historical preview source type | arxiv | EXTRACTED from stage1_historical_previews.py constant and focused tests | EXTRACTED |
+| PARAM-ADP-346 | STAGE1_HISTORICAL_PREVIEW_MIN_UNIQUE_DATES | Stage 1 historical preview minimum unique dates | 30 | EXTRACTED from stage1_historical_previews.py constant and focused tests | EXTRACTED |
+| PARAM-ADP-347 | STAGE1_HISTORICAL_PREVIEW_SUPPORTED_INPUT_FORMAT_COUNT | Stage 1 historical preview supported input format count | 3 | EXTRACTED from stage1_historical_previews.py supported input tuple and focused tests | EXTRACTED |
+| PARAM-ADP-348 | STAGE1_HISTORICAL_PREVIEW_SIDE_EFFECT_KEY_COUNT | Stage 1 historical preview disabled side-effect key count | 6 | EXTRACTED from stage1_historical_previews.py side-effect key tuple and focused tests | EXTRACTED |
+| PARAM-ADP-349 | STAGE1_ACCELERATED_ACCEPTANCE_MODEL_ID | Stage 1 accelerated acceptance model id | adp-stage1-accelerated-acceptance-v1 | EXTRACTED from stage1_accelerated_acceptance.py constant and focused tests | EXTRACTED |
+| PARAM-ADP-350 | STAGE1_ACCELERATED_ACCEPTANCE_ID | Stage 1 accelerated acceptance id | ADP-ACC-S1P5T04-ACCELERATED-REAL-ARXIV | EXTRACTED from stage1_accelerated_acceptance.py constant and focused tests | EXTRACTED |
+| PARAM-ADP-351 | STAGE1_ACCELERATED_ACCEPTANCE_REQUIRED_SAMPLES | Stage 1 accelerated acceptance required real candidate samples | 30 | EXTRACTED from stage1_accelerated_acceptance.py constant and focused tests | EXTRACTED |
+| PARAM-ADP-352 | STAGE1_REAL_REPLAY_MODEL_ID | Stage 1 real arXiv replay model id | adp-stage1-real-arxiv-30-asof-replay-v1 | EXTRACTED from stage1_real_replay.py constant and focused tests | EXTRACTED |
+| PARAM-ADP-353 | STAGE1_REAL_REPLAY_SCHEMA_VERSION | Stage 1 real arXiv replay schema version | 1 | EXTRACTED from stage1_real_replay.py constant and focused tests | EXTRACTED |
+| PARAM-ADP-354 | STAGE1_REAL_REPLAY_ACCEPTANCE_ID | Stage 1 real arXiv replay acceptance id | ADP-ACC-S1P5T03-REAL-ARXIV-30-ASOF-REPLAY | EXTRACTED from stage1_real_replay.py constant and focused tests | EXTRACTED |
+| PARAM-ADP-355 | STAGE1_REAL_REPLAY_REQUIRED_COUNT | Stage 1 real arXiv replay required day count | 30 | EXTRACTED from stage1_real_replay.py constant and focused tests | EXTRACTED |
+| PARAM-ADP-356 | STAGE1_REAL_REPLAY_DEFAULT_LOOKBACK_DAYS | Stage 1 real arXiv replay default lookback days | 7 | EXTRACTED from stage1_real_replay.py constant and focused tests | EXTRACTED |
+| PARAM-ADP-357 | STAGE1_REAL_REPLAY_DEFAULT_MAX_RESULTS | Stage 1 real arXiv replay default max results per date window | 10 | EXTRACTED from stage1_real_replay.py constant and focused tests | EXTRACTED |
+| PARAM-ADP-358 | STAGE1_REAL_REPLAY_ARTIFACT_FILE_COUNT | Stage 1 real arXiv replay aggregate artifact file count | 7 | EXTRACTED from stage1_real_replay.py constant and focused tests | EXTRACTED |
+| PARAM-ADP-359 | STAGE1_REAL_REPLAY_QUERY_POLICY | Stage 1 real arXiv replay query policy | submittedDate:[YYYYMMDD0000 TO YYYYMMDD2359] | EXTRACTED from stage1_real_replay.py constant and focused tests | EXTRACTED |
+| PARAM-ADP-360 | PREPRINT_INGEST_MODEL_ID | Stage 2 preprint ingest model id | adp-stage2-preprint-ingest-v1 | EXTRACTED from preprint_adapter.py | EXTRACTED |
+| PARAM-ADP-361 | SUPPORTED_PREPRINT_SERVERS | Supported Stage 2 preprint servers | biorxiv;medrxiv | EXTRACTED from preprint_adapter.py | EXTRACTED |
+| PARAM-ADP-362 | PREPRINT_MAX_CANARY_RECORDS | Preprint ingest canary max records | 10 | EXTRACTED from preprint_adapter.py | EXTRACTED |
+| PARAM-ADP-363 | PREPRINT_DETAILS_BASE_URL | Preprint details API base URL | https://api.biorxiv.org/details | EXTRACTED from preprint_adapter.py | EXTRACTED |
+| PARAM-ADP-364 | S2P1_PREPRINT_PROMOTION_MODEL_ID | S2P1 preprint promotion gate model id | adp-s2p1-preprint-source-promotion-v1 | EXTRACTED from stage2_sources.py | EXTRACTED |
+| PARAM-ADP-365 | S2P1_PREPRINT_SHADOW_MODEL_ID | S2P1 preprint shadow daily model id | adp-s2p1-preprint-shadow-daily-v1 | EXTRACTED from stage2_sources.py | EXTRACTED |
+| PARAM-ADP-366 | S2P1_ACCEPTANCE_ID | S2P1 source promotion acceptance id | ADP-ACC-S2P1T01-SOURCE-PROMOTION | EXTRACTED from stage2_sources.py | EXTRACTED |
+| PARAM-ADP-367 | S2P1_REQUIRED_SERVERS | S2P1 required preprint servers | biorxiv;medrxiv | EXTRACTED from stage2_sources.py | EXTRACTED |
+| PARAM-ADP-368 | S2P1_REPLAY_REQUIRED_DATES | S2P1 terminal replay required dates | 30 | EXTRACTED from stage2_sources.py | EXTRACTED |
+| PARAM-ADP-369 | S2P1_SHADOW_REQUIRED_HOURS | S2P1 shadow-mode required hours | 48 | EXTRACTED from stage2_sources.py | EXTRACTED |
+| PARAM-ADP-370 | S2P1_QUEUE_FILENAME | S2P1 shadow queue filename | stage2_s2p1_preprint_queue.json | EXTRACTED from stage2_sources.py | EXTRACTED |
+| PARAM-ADP-371 | S2P1_LEDGER_FILENAME | S2P1 shadow ledger filename | stage2_s2p1_preprint_ledger.jsonl | EXTRACTED from stage2_sources.py | EXTRACTED |
+| PARAM-ADP-372 | S2P1_PREPRINT_REPLAY_MODEL_ID | S2P1 preprint replay aggregate model id | adp-s2p1-preprint-terminal-replay-v1 | EXTRACTED from stage2_sources.py | EXTRACTED |
+| PARAM-ADP-373 | S2P1_PREPRINT_SHADOW_EVIDENCE_MODEL_ID | S2P1 preprint shadow evidence model id | adp-s2p1-preprint-shadow-evidence-v1 | EXTRACTED from stage2_sources.py | EXTRACTED |
+| PARAM-ADP-374 | S2P1_REPLAY_REPORT_FILENAME | S2P1 replay report filename | stage2_s2p1_preprint_replay_report.json | EXTRACTED from stage2_sources.py | EXTRACTED |
+| PARAM-ADP-375 | S2P1_SHADOW_EVIDENCE_FILENAME | S2P1 48h shadow evidence filename | stage2_s2p1_preprint_shadow_48h_report.json | EXTRACTED from stage2_sources.py | EXTRACTED |
+| PARAM-ADP-376 | S2P1_PROMOTION_REPORT_FILENAME | S2P1 promotion report filename | stage2_s2p1_preprint_promotion_report.json | EXTRACTED from stage2_sources.py | EXTRACTED |
+| PARAM-ADP-377 | TOP_JOURNAL_INGEST_MODEL_ID | Top-journal ingest model id | adp-stage2-top-journal-ingest-v1 | EXTRACTED from top_journal_adapter.py | EXTRACTED |
+| PARAM-ADP-378 | TOP_JOURNAL_MAX_CANARY_RECORDS | Top-journal max canary records per call | 10 | EXTRACTED from top_journal_adapter.py | EXTRACTED |
+| PARAM-ADP-379 | SUPPORTED_TOP_JOURNALS | S2PCT01 supported top journals | nature | EXTRACTED from top_journal_adapter.py | EXTRACTED |
+| PARAM-ADP-380 | S2P2_QUEUE_FILENAME | S2PCT01 top-journal shadow queue filename | stage2_s2p2_top_journal_queue.json | EXTRACTED from stage2_sources.py | EXTRACTED |
+| PARAM-ADP-381 | S2P2_LEDGER_FILENAME | S2PCT01 top-journal shadow ledger filename | stage2_s2p2_top_journal_ledger.jsonl | EXTRACTED from stage2_sources.py | EXTRACTED |
