@@ -34,7 +34,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - next_task_id: `S2PLT01`
 - responsible_role: `content_owner + product_owner`
 - acceptance_ids: `ACC-S2PLT01-30D`
-- unblock_condition: S2PLT01 entry precheck can be misread as full replay execution or acceptance; missing S2PBT05, inherited P0/P1, missing full replay, missing mail preview proof, and missing terminal source-state proof still block S2PLT01, S2PLT04, S2PMT07, and integrated production acceptance.
+- unblock_condition: S2PLT01 entry precheck can be misread as full replay execution or acceptance; after S2PBT05, inherited P0/P1, missing full replay, missing mail preview proof, and missing terminal source-state proof still block S2PLT01, S2PLT04, S2PMT07, and integrated production acceptance.
 
 ## 8. 九层 Assurance 状态
 
@@ -78,16 +78,16 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PBT05_D1_QUALIFICATION_PASSED_NO_PRODUCTION`
+- release_gate: `S2PBT05_STATUS_DRIFT_SYNC_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `0`
 - commit_bound_events: `1`
-- legacy_unbound_events: `105`
+- legacy_unbound_events: `106`
 - precommit_pending_events: `40`
-- pending_or_stale_events: `144`
+- pending_or_stale_events: `145`
 
 ## 15. UNKNOWN
 
@@ -97,13 +97,13 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:245d4d517861f9e8d6c49e7319a67ff45e743db8b28dea9cca06e00dfe6e7e51`
-- snapshot_event_time: `2026-06-26T18:40:00+10:00`
+- source_snapshot_hash: `sha256:a01366ac421f1644e991a43b9be31d6337ef64195248c96a48ecf93d4112159a`
+- snapshot_event_time: `2026-06-26T21:30:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.0`
-- phase/gate: `S2PB / S2PBT05_D1_QUALIFICATION_PASSED_NO_PRODUCTION`
+- phase/gate: `S2PB / S2PBT05_STATUS_DRIFT_SYNC_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 
 - task_id: `S2PLT01`
-- reason: Record fail-closed entry precheck for full-system 30 independent historical-day replay under V7.2 and S2PMT07 blocked boundaries.
+- reason: Keep S2PLT01 fail-closed until inherited P0/P1, full replay, 120 mail previews, and D1-D4 terminal source states are proven under V7.2 and S2PMT07 blocked boundaries.

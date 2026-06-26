@@ -5301,8 +5301,8 @@ models:
       - "PARAM-ADP-855"
     inputs:
       - "S2PLT01 required dependency set"
-      - "completed governance evidence for S2PCT07, S2PDT04, S2PET04, S2PFT05, and S2PKT05"
-      - "missing S2PBT05 D1 domain qualification evidence"
+      - "completed governance evidence for S2PBT05, S2PCT07, S2PDT04, S2PET04, S2PFT05, and S2PKT05"
+      - "remaining S2PLT01 blockers after S2PBT05: inherited P0/P1, full replay, mail preview proof, and terminal source states"
       - "V7.1 inherited audit blocker counts"
       - "full-system replay output requirements"
     outputs:
