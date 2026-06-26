@@ -273,6 +273,132 @@ def build_safe_action_preview(*, action: str = "retry") -> dict[str, Any]:
     }
 
 
+def build_s2pmt06_c005_recoverable_error_report(*, generated_at: str) -> dict[str, Any]:
+    """Build C-005 dedicated evidence for recoverable P0/P1 owner errors."""
+
+    error_cards = [build_error_card()]
+    safe_retry = build_safe_action_preview(action="retry")
+    recovery_matrix = [
+        {
+            "code": card["code"],
+            "severity": card["severity"],
+            "owner": card["owner"],
+            "recovery_action": "safe_retry_preview" if card["retry_safe"] else "manual_owner_gate",
+            "safe_retry_preview": safe_retry if card["retry_safe"] else None,
+            "manual_gate": "Open the runbook and owner decision gate before retry.",
+        }
+        for card in error_cards
+    ]
+    gates = {
+        "p0_p1_errors_enumerated": all(card["severity"] in {"P0", "P1"} for card in error_cards),
+        "recovery_owner_runbook_evidence_present": all(_c005_card_has_recovery_metadata(card) for card in error_cards),
+        "safe_retry_preview_present": _c005_safe_retry_passes(safe_retry),
+        "manual_gate_present": all(row["manual_gate"] for row in recovery_matrix),
+        "no_production_side_effect": True,
+    }
+    status = "pass" if all(gates.values()) else "blocked"
+    report = {
+        "model_id": S2PMT06_OWNER_UX_MODEL_ID,
+        "schema_version": S2PMT06_SCHEMA_VERSION,
+        "task_id": S2PMT06_TASK_ID,
+        "acceptance_id": S2PMT06_ACCEPTANCE_ID,
+        "finding_id": "C-005",
+        "subtask_id": "S2PMT06-RECOVERABLE-ERROR-C005",
+        "generated_at": generated_at,
+        "status": status,
+        "blocking_reasons": [] if status == "pass" else [key for key, value in gates.items() if value is not True],
+        "scope": "dedicated_c005_recoverable_error_evidence_only",
+        "production_acceptance_claimed": False,
+        "inherited_p0_p1_closed": False,
+        "independent_review_signoff_present": False,
+        "gates": gates,
+        "p0_p1_error_cards": error_cards,
+        "safe_actions": {"retry": safe_retry},
+        "recovery_matrix": recovery_matrix,
+        "evidence_refs": [
+            "arxiv-daily-push/docs/phase_records/PHASE_S2PMT06_RECOVERABLE_ERROR_C005.md",
+            "governance/run_manifests/ADP-S2PMT06-RECOVERABLE-ERROR-C005-20260627.json",
+            "arxiv-daily-push/tests/test_stage2_owner_ux.py",
+        ],
+        "report_hash": "",
+        "production_side_effects_enabled": False,
+        "real_smtp_sent": False,
+        "scheduler_installed": False,
+        "scheduler_enabled": False,
+        "release_upload_allowed": False,
+        "production_restore_executed": False,
+        "public_schema_changed": False,
+        "queue_schema_changed": False,
+        "queue_mutation_allowed": False,
+        "db_migration_executed": False,
+        "current_pointer_changed": False,
+        "v7_1_baseline_changed": False,
+        "v7_2_contract_files_changed": False,
+    }
+    report["report_hash"] = _stable_hash({key: value for key, value in report.items() if key != "report_hash"})
+    return report
+
+
+def validate_s2pmt06_c005_recoverable_error_report(report: Mapping[str, Any]) -> list[str]:
+    """Validate C-005 recoverable-error evidence without closing P1 blockers."""
+
+    errors: list[str] = []
+    if report.get("model_id") != S2PMT06_OWNER_UX_MODEL_ID:
+        errors.append("C-005 report model_id is invalid")
+    if report.get("schema_version") != S2PMT06_SCHEMA_VERSION:
+        errors.append("C-005 report schema_version must be 1")
+    if report.get("task_id") != S2PMT06_TASK_ID:
+        errors.append("C-005 report task_id is invalid")
+    if report.get("acceptance_id") != S2PMT06_ACCEPTANCE_ID:
+        errors.append("C-005 report acceptance_id is invalid")
+    if report.get("finding_id") != "C-005":
+        errors.append("C-005 report finding_id must be C-005")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("C-005 report status must be pass or blocked")
+    if report.get("production_acceptance_claimed") is not False:
+        errors.append("C-005 report must not claim production acceptance")
+    if report.get("inherited_p0_p1_closed") is not False:
+        errors.append("C-005 report must not close inherited P0/P1 before S2PMT07")
+    if report.get("independent_review_signoff_present") is not False:
+        errors.append("C-005 report must not self-sign independent review")
+    for key in S2PMT06_PRODUCTION_FALSE_FLAGS:
+        if report.get(key) is not False:
+            errors.append(f"{key} must be false")
+    gates = _mapping(report.get("gates"))
+    for gate in (
+        "p0_p1_errors_enumerated",
+        "recovery_owner_runbook_evidence_present",
+        "safe_retry_preview_present",
+        "manual_gate_present",
+        "no_production_side_effect",
+    ):
+        if gate not in gates:
+            errors.append(f"gates.{gate} is required")
+    if report.get("status") == "pass" and not all(gates.values()):
+        errors.append("passing C-005 report requires all gates true")
+    cards = _sequence(report.get("p0_p1_error_cards"))
+    if not cards:
+        errors.append("p0_p1_error_cards must contain at least one error card")
+    for index, card_value in enumerate(cards):
+        card = _mapping(card_value)
+        if card.get("severity") not in {"P0", "P1"}:
+            errors.append(f"p0_p1_error_cards[{index}].severity must be P0 or P1")
+        for error in validate_error_card(card):
+            errors.append(f"p0_p1_error_cards[{index}].{error}")
+        if not _c005_card_has_recovery_metadata(card):
+            errors.append(f"p0_p1_error_cards[{index}] must include owner, runbook, evidence, cta, and retry_safe")
+    safe_retry = _mapping(_mapping(report.get("safe_actions")).get("retry"))
+    if not _c005_safe_retry_passes(safe_retry):
+        errors.append("safe_actions.retry must be a no-production safe retry preview with confirmation and receipt")
+    recovery_rows = _sequence(report.get("recovery_matrix"))
+    covered_codes = {str(_mapping(row).get("code")) for row in recovery_rows}
+    for card_value in cards:
+        card = _mapping(card_value)
+        if str(card.get("code")) not in covered_codes:
+            errors.append(f"recovery_matrix must cover {card.get('code')}")
+    return errors
+
+
 def build_feedback_loop_contract() -> dict[str, Any]:
     """Build visible feedback-to-ranking/profile/content improvement evidence."""
 
@@ -474,6 +600,30 @@ def validate_s2pmt06_report(report: Mapping[str, Any]) -> list[str]:
         if _mapping(safe_actions.get(action)).get("status") != "pass":
             errors.append(f"safe_actions.{action} must pass")
     return errors
+
+
+def _c005_card_has_recovery_metadata(card: Mapping[str, Any]) -> bool:
+    evidence = card.get("evidence")
+    return (
+        bool(card.get("owner"))
+        and bool(card.get("runbook"))
+        and isinstance(evidence, Sequence)
+        and not isinstance(evidence, (str, bytes))
+        and len(evidence) > 0
+        and bool(card.get("cta"))
+        and card.get("retry_safe") is True
+    )
+
+
+def _c005_safe_retry_passes(preview: Mapping[str, Any]) -> bool:
+    return (
+        preview.get("status") == "pass"
+        and preview.get("action") == "retry"
+        and preview.get("preview_required") is True
+        and preview.get("confirmation_required") is True
+        and preview.get("receipt_required") is True
+        and preview.get("production_mutation_applied") is False
+    )
 
 
 def _allowed_states_for_action(action: str) -> list[str]:
