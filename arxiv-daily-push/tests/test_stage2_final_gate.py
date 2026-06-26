@@ -181,7 +181,8 @@ class Stage2FinalGateTests(unittest.TestCase):
         receipt_path = REPO_ROOT / "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_INDEPENDENT_REVIEW_RECEIPT.md"
         manifest_path = REPO_ROOT / "governance/run_manifests/ADP-S2PMT07-P1-INDEPENDENT-REVIEW-RECEIPT-20260626.json"
         refresh_manifest_path = (
-            REPO_ROOT / "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-20260627.json"
+            REPO_ROOT
+            / "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A006-A009-20260627.json"
         )
         receipt = receipt_path.read_text(encoding="utf-8")
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
@@ -192,6 +193,16 @@ class Stage2FinalGateTests(unittest.TestCase):
         }
 
         expected_current_refs = {
+            "A-006": ("PHASE_S2PMT03_RUNTIME_LOCK_A006.md", "ADP-S2PMT03-RUNTIME-LOCK-A006-20260626.json"),
+            "A-007": ("PHASE_S2PMT03_STATE_HISTORY_A007.md", "ADP-S2PMT03-STATE-HISTORY-A007-20260626.json"),
+            "A-008": (
+                "PHASE_S2PMT03_STATE_CONSISTENCY_A008.md",
+                "ADP-S2PMT03-STATE-CONSISTENCY-A008-20260626.json",
+            ),
+            "A-009": (
+                "PHASE_S2PMT03_OPTIMISTIC_FENCING_A009.md",
+                "ADP-S2PMT03-OPTIMISTIC-FENCING-A009-20260626.json",
+            ),
             "A-012": ("PHASE_S2PMT01_INPUT_URL_SAFETY_A012.md", "ADP-S2PMT01-INPUT-URL-SAFETY-A012-20260626.json"),
             "A-017": ("PHASE_S2PMT03_SMTP_IDENTITY_A017.md", "ADP-S2PMT03-SMTP-IDENTITY-A017-20260626.json"),
             "A-018": ("PHASE_S2PAT05_ROI_DISCLOSURE_A018.md", "ADP-S2PAT05-ROI-DISCLOSURE-A018-20260626.json"),
@@ -210,6 +221,10 @@ class Stage2FinalGateTests(unittest.TestCase):
             "B-015": ("PHASE_S2PMT04_TRANSACTION_COMPLETION_B015.md", "ADP-S2PMT04-TRANSACTION-COMPLETION-B015-20260626.json"),
         }
         stale_refs = {
+            "A-006": ("PHASE_S2PMT03_LEASE_FENCING.md", "ADP-S2PMT03-LEASE-FENCING-20260626.json"),
+            "A-007": ("PHASE_S2PMT03_LEASE_FENCING.md", "ADP-S2PMT03-LEASE-FENCING-20260626.json"),
+            "A-008": ("PHASE_S2PMT03_LEASE_FENCING.md", "ADP-S2PMT03-LEASE-FENCING-20260626.json"),
+            "A-009": ("PHASE_S2PMT03_LEASE_FENCING.md", "ADP-S2PMT03-LEASE-FENCING-20260626.json"),
             "A-012": ("ADP-S2PMT01-SECURITY-BOUNDARY-20260626.json",),
             "A-017": ("ADP-S2PMT03-LEASE-FENCING-20260626.json",),
             "A-018": ("PHASE_S2PKT01_MAIL_CONTRACT.md",),
@@ -232,8 +247,13 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(manifest["refreshed_findings"], list(expected_current_refs))
         self.assertEqual(
             manifest["refresh_manifest"],
-            "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-20260627.json",
+            "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A006-A009-20260627.json",
         )
+        self.assertIn(
+            "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-20260627.json",
+            manifest["refresh_manifests"],
+        )
+        self.assertIn(manifest["refresh_manifest"], manifest["refresh_manifests"])
         self.assertTrue(refresh_manifest_path.exists())
         self.assertFalse(manifest["p1_closure_claimed"])
         self.assertFalse(manifest["independent_review_signoff_present"])
