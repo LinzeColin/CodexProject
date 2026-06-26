@@ -460,6 +460,7 @@ features:
       - "EVID-ADP-DELIVERY-TASKS"
       - "EVID-ADP-S2PMT04-B005"
       - "EVID-ADP-S2PMT05-B007"
+      - "EVID-ADP-S2PMT05-B008"
       - "EVID-ADP-S2PMT05-B006"
       - "EVID-ADP-S2PMT05-B009"
       - "EVID-ADP-S2PMT05-B010"
@@ -10201,6 +10202,11 @@ evidence_refs:
     evidence_id: "EVID-ADP-S2PMT05-B007"
     kind: "manifest"
     ref: "governance/run_manifests/ADP-S2PMT05-DUPLICATE-TRIGGER-B007-20260627.json"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-ADP-S2PMT05-B008"
+    kind: "manifest"
+    ref: "governance/run_manifests/ADP-S2PMT05-SMTP-CRASH-WINDOW-B008-20260627.json"
     fact_level: "EXTRACTED"
   -
     evidence_id: "EVID-ADP-S2PMT05-B006"

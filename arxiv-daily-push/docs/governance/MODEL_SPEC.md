@@ -41,6 +41,18 @@ Fact levels follow `docs/governance/STANDARD.md`.
   close inherited P0/P1, enable DAILY_OPERATION, or claim integrated
   production acceptance.
 
+- `S2PMT05-SMTP-CRASH-WINDOW-B008` refreshes `MOD-ADP-098` and
+  `FORM-ADP-100`. It adds a local SMTP accepted-before-local-commit
+  crash-window gate for inherited B-008 with outbox claim before SMTP
+  acceptance, explicit `ACCEPTED_PENDING_COMMIT`, stable same-revision
+  `message_id`, changed `message_id` for changed content revision, blocked
+  resend without durable `provider_accept_ref`, local finalization with
+  `smtp-accept://...` provider ref, and no real SMTP side effects. It does not
+  send SMTP, install scheduler, trigger real catch-up, upload Release, change
+  public schema or DB, mutate production queues, change source adapters or
+  ranking, edit CURRENT or V7.1/V7.2 contracts, close inherited P0/P1, enable
+  DAILY_OPERATION, or claim integrated production acceptance.
+
 - `S2PMT05-CAPACITY-BASELINE-B006` refreshes `MOD-ADP-098` and
   `FORM-ADP-100`. It adds a local formal capacity baseline gate for inherited
   B-006 with load/stress/spike/soak rows, 1x/2x/5x multipliers,
@@ -957,8 +969,9 @@ Uncovered planned scenarios:
 ## S2PMT05 Stress Fault Time And E2E
 
 - `MOD-ADP-098` / `FORM-ADP-100` define local pressure, fault, time, and E2E hardening evidence for S2PMT05.
-- Passing S2PMT05 local validation requires deterministic load/stress/spike profiles, accelerated local 24h soak coverage, multi-actor duplicate-trigger race protection with `mail_key`/`lease_owner`/`fencing_token` receipts and reason-coded blocked attempts, SMTP crash-window handling, ENOSPC/read-only/SQLITE_BUSY/corrupt-artifact fault injection, Australia/Sydney DST and clock-skew policy, 35-day 3+1/weekly/monthly/review/action/ROI count conservation with an auditable run bundle and reachable review/action/ROI links, semantic/evidence-bound non-template result validity, 2x/5x priority-aware backpressure with high-priority SLO and low-priority delay/drop reason codes, deterministic isolation, required audit finding coverage, and all production side-effect flags false.
+- Passing S2PMT05 local validation requires deterministic load/stress/spike profiles, accelerated local 24h soak coverage, multi-actor duplicate-trigger race protection with `mail_key`/`lease_owner`/`fencing_token` receipts and reason-coded blocked attempts, SMTP accepted-before-local-commit crash-window handling with outbox claim before SMTP acceptance, `ACCEPTED_PENDING_COMMIT`, stable idempotent `message_id`, provider accept ref finalization, blocked unsafe resend, and no real SMTP side effect, ENOSPC/read-only/SQLITE_BUSY/corrupt-artifact fault injection, Australia/Sydney DST and clock-skew policy, 35-day 3+1/weekly/monthly/review/action/ROI count conservation with an auditable run bundle and reachable review/action/ROI links, semantic/evidence-bound non-template result validity, 2x/5x priority-aware backpressure with high-priority SLO and low-priority delay/drop reason codes, deterministic isolation, required audit finding coverage, and all production side-effect flags false.
 - B-007 duplicate-trigger evidence requires github_schedule/local_launchd/manual_retry/restart_catchup actor coverage, M1-M4 x 100 attempts, exactly one active revision per product and mail key, `MAIL_KEY_ALREADY_CLAIMED` reason codes for blocked duplicate attempts, active plus blocked count conservation, lease/fencing receipts, and no scheduler side effects.
+- B-008 SMTP crash-window evidence requires outbox claim before SMTP acceptance, explicit `ACCEPTED_PENDING_COMMIT`, stable same-revision `message_id`, changed `message_id` when content revision changes, blocked resend without durable `provider_accept_ref`, local finalization with `smtp-accept://...` provider ref, and no real SMTP side effects.
 - B-012 E2E evidence requires a local audit bundle with section artifacts, artifact index, link graph, deterministic bundle hash, daily 3+1 mail count conservation, weekly/monthly report coverage, and review/action/ROI link reachability.
 - B-013 result validity requires semantic alignment scores, claim-ledger refs, evidence refs, specific mechanism/action summaries, non-template output variance, and unsupported P0 claim negative controls that block publication.
 - B-014 backpressure requires 2x and 5x peak profiles, high-priority work within the configured SLO, low-priority delay/drop reason codes, durable evidence preservation, and rebuildable-only shedding.

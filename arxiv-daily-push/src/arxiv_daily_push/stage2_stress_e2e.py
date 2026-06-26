@@ -9,7 +9,7 @@ from datetime import date, datetime, timedelta, timezone
 from typing import Any
 from zoneinfo import ZoneInfo
 
-from .stage2_lease_fencing import build_outbox_message, reconcile_smtp_accept_crash
+from .stage2_lease_fencing import build_outbox_message, claim_outbox_message, reconcile_smtp_accept_crash
 
 
 S2PMT05_STRESS_E2E_MODEL_ID = "adp-s2pmt05-stress-fault-time-e2e-v1"
@@ -405,20 +405,82 @@ def simulate_smtp_crash_window(*, generated_at: str) -> dict[str, Any]:
         body="local S2PMT05 evidence mail body",
         generated_at=generated_at,
     )
-    accepted = dict(outbox)
+    retry_same_revision = build_outbox_message(
+        cycle_id="2026-07-04",
+        product_id="M1",
+        recipient="owner@example.test",
+        content_revision_id="rev-s2pmt05",
+        body="local S2PMT05 evidence mail body",
+        generated_at=generated_at,
+    )
+    revised_content = build_outbox_message(
+        cycle_id="2026-07-04",
+        product_id="M1",
+        recipient="owner@example.test",
+        content_revision_id="rev-s2pmt05-v2",
+        body="local S2PMT05 evidence mail body revised",
+        generated_at=generated_at,
+    )
+    claim = claim_outbox_message(outbox, owner_id="sender-a", now_ms=1000)
+    accepted = dict(claim["message"])
     accepted["status"] = "ACCEPTED_PENDING_COMMIT"
     without_ref = reconcile_smtp_accept_crash(accepted)
     with_ref = reconcile_smtp_accept_crash(accepted, provider_accept_ref="smtp-accept://local/s2pmt05/2026-07-04/M1")
-    status = "pass" if without_ref["status"] == "blocked" and with_ref["status"] == "pass" else "blocked"
-    return {
-        "status": status,
+    crash = {
+        "generated_at": generated_at,
         "mail_key": outbox["mail_key"],
         "message_id": outbox["message_id"],
+        "retry_same_revision_message_id": retry_same_revision["message_id"],
+        "revised_content_message_id": revised_content["message_id"],
+        "outbox_claim": claim,
+        "accepted_pending_commit": accepted,
         "accepted_without_commit": without_ref,
         "accepted_with_provider_ref": with_ref,
         "real_smtp_sent": False,
         "resend_without_provider_ref_allowed": False,
+        "resend_after_provider_ref_required": False,
     }
+    evaluation = evaluate_smtp_crash_window(crash)
+    return {**crash, "status": evaluation["status"], "checks": evaluation["checks"], "blocking_reasons": evaluation["blocking_reasons"]}
+
+
+def evaluate_smtp_crash_window(crash: Mapping[str, Any]) -> dict[str, Any]:
+    """Evaluate B-008 SMTP accepted-before-local-commit crash-window evidence."""
+
+    claim = _mapping(crash.get("outbox_claim"))
+    accepted = _mapping(crash.get("accepted_pending_commit"))
+    without_ref = _mapping(crash.get("accepted_without_commit"))
+    without_ref_message = _mapping(without_ref.get("message"))
+    with_ref = _mapping(crash.get("accepted_with_provider_ref"))
+    with_ref_message = _mapping(with_ref.get("message"))
+    provider_accept_ref = str(with_ref_message.get("provider_accept_ref") or "")
+    checks = {
+        "outbox_claimed_before_smtp": claim.get("status") == "pass"
+        and _mapping(claim.get("message")).get("status") == "CLAIMED"
+        and bool(crash.get("mail_key"))
+        and bool(crash.get("message_id")),
+        "accepted_pending_commit_reproduced": accepted.get("status") == "ACCEPTED_PENDING_COMMIT"
+        and accepted.get("mail_key") == crash.get("mail_key")
+        and accepted.get("message_id") == crash.get("message_id"),
+        "idempotent_message_identity_stable": crash.get("message_id") == crash.get("retry_same_revision_message_id")
+        and crash.get("message_id") != crash.get("revised_content_message_id"),
+        "resend_without_provider_ref_blocked": without_ref.get("status") == "blocked"
+        and without_ref_message.get("retry_safe") is False
+        and without_ref_message.get("real_smtp_sent") is False
+        and crash.get("resend_without_provider_ref_allowed") is False,
+        "provider_accept_ref_required_before_resolution": any(
+            "provider_accept_ref is required" in str(reason) for reason in without_ref.get("blocking_reasons") or []
+        ),
+        "provider_accept_ref_finalizes_without_resend": with_ref.get("status") == "pass"
+        and with_ref_message.get("status") == "SENT"
+        and provider_accept_ref.startswith("smtp-accept://")
+        and with_ref_message.get("retry_safe") is False
+        and with_ref_message.get("real_smtp_sent") is False
+        and crash.get("resend_after_provider_ref_required") is False,
+        "no_real_smtp_side_effect": crash.get("real_smtp_sent") is False,
+    }
+    blocking_reasons = [key for key, value in checks.items() if value is not True]
+    return {"status": "pass" if not blocking_reasons else "blocked", "checks": checks, "blocking_reasons": blocking_reasons}
 
 
 def build_fault_injection_matrix(*, generated_at: str) -> dict[str, Any]:
@@ -1164,6 +1226,21 @@ def validate_s2pmt05_report(report: Mapping[str, Any]) -> list[str]:
     ):
         if dual_scheduler_checks.get(check) is not True:
             errors.append(f"dual_scheduler_race.checks.{check} must be true")
+    smtp_crash = _mapping(report.get("smtp_crash_window"))
+    if smtp_crash.get("status") != "pass":
+        errors.append("smtp_crash_window must pass")
+    smtp_crash_checks = _mapping(smtp_crash.get("checks"))
+    for check in (
+        "outbox_claimed_before_smtp",
+        "accepted_pending_commit_reproduced",
+        "idempotent_message_identity_stable",
+        "resend_without_provider_ref_blocked",
+        "provider_accept_ref_required_before_resolution",
+        "provider_accept_ref_finalizes_without_resend",
+        "no_real_smtp_side_effect",
+    ):
+        if smtp_crash_checks.get(check) is not True:
+            errors.append(f"smtp_crash_window.checks.{check} must be true")
     e2e = _mapping(report.get("thirty_five_day_e2e"))
     if e2e.get("status") != "pass":
         errors.append("thirty_five_day_e2e must pass")

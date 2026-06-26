@@ -51,7 +51,8 @@ This project follows the root `AGENTS.md` and `docs/governance/STANDARD.md`.
   multipliers, throughput/latency/memory/disk/error-budget evidence,
   multi-actor duplicate-trigger race protection with `mail_key`,
   `lease_owner`, `fencing_token`, and reason-coded blocked attempts, SMTP
-  crash-window handling, ENOSPC/read-only/
+  accepted-before-local-commit crash-window handling with idempotent
+  `message_id`, provider accept ref, and no-resend proof, ENOSPC/read-only/
   SQLITE_BUSY/corrupt JSON/PDF/backup fault injection with explicit recovery
   states, structured Australia/Sydney 05:00 schedule, DST fold/gap, 3600-second
   misfire grace, bounded one-cycle catch-up, 8h sleep recovery, NTP

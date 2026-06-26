@@ -13,7 +13,7 @@
 - blockers: `none`
 - next_gate: `S2PC-GATE-V7-2-REVALIDATION`
 - next_unique_task: `S2PCT02 Science main-journal metadata-only no-send shadow evidence (planned)`
-- evidence_ref_count: `25`
+- evidence_ref_count: `26`
 - roadmap_test_command_count: `10`
 - roadmap_gate_count: `5`
 - evidence_status: `EXTRACTED`
@@ -108,6 +108,18 @@
 | B-007 判定 | 重复触发证据必须覆盖 `github_schedule`、`local_launchd`、`manual_retry`、`restart_catchup` 四类触发来源；M1-M4 每个产品各 100 次尝试，合计 400 次；每个产品仅保留 1 个 active revision；396 次重复触发以 `MAIL_KEY_ALREADY_CLAIMED` 阻断；active 和 blocked 数量守恒；active revision 必须带 `mail_key`、`lease_owner`、`fencing_token`；scheduler 安装和启用标志必须为 false |
 | 禁止动作 | 不安装/启用 scheduler、不触发真实补跑、不发送 SMTP、不上传 Release、不改 schema/DB/queue/source/ranking、不关闭 P0/P1 |
 | 证据入口 | [PHASE_S2PMT05_DUPLICATE_TRIGGER_B007.md](docs/phase_records/PHASE_S2PMT05_DUPLICATE_TRIGGER_B007.md)；[ADP-S2PMT05-DUPLICATE-TRIGGER-B007-20260627.json](../governance/run_manifests/ADP-S2PMT05-DUPLICATE-TRIGGER-B007-20260627.json) |
+
+## S2PMT05 本地 SMTP 崩溃窗口门
+
+| 项目 | 当前口径 |
+|---|---|
+| 模型 | `MOD-ADP-098` / `adp-s2pmt05-stress-fault-time-e2e-v1` |
+| 公式 | `FORM-ADP-100` |
+| 参数 | `PARAM-ADP-814` / `S2PMT05_REQUIRED_GATES` |
+| 新增门 | `outbox_claimed_before_smtp`; `accepted_pending_commit_reproduced`; `idempotent_message_identity_stable`; `resend_without_provider_ref_blocked`; `provider_accept_ref_required_before_resolution`; `provider_accept_ref_finalizes_without_resend`; `no_real_smtp_side_effect` |
+| B-008 判定 | SMTP accepted-before-local-commit 证据必须先 claim outbox，再进入 `ACCEPTED_PENDING_COMMIT`；同一内容修订的 `message_id` 必须稳定，内容修订变化时 `message_id` 必须变化；缺少 durable `provider_accept_ref` 时必须阻断重发；出现 `smtp-accept://...` provider ref 后只能本地 finalization，不能再次发送真实 SMTP |
+| 禁止动作 | 不发送真实 SMTP、不安装/启用 scheduler、不触发真实补跑、不上传 Release、不改 schema/DB/queue/source/ranking、不关闭 P0/P1 |
+| 证据入口 | [PHASE_S2PMT05_SMTP_CRASH_WINDOW_B008.md](docs/phase_records/PHASE_S2PMT05_SMTP_CRASH_WINDOW_B008.md)；[ADP-S2PMT05-SMTP-CRASH-WINDOW-B008-20260627.json](../governance/run_manifests/ADP-S2PMT05-SMTP-CRASH-WINDOW-B008-20260627.json) |
 
 ## S2PMT05 本地容量基线门
 
