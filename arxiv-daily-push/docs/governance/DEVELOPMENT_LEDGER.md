@@ -10,11 +10,32 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.1
 - Current phase: S2PL
-- Current gate: S2PLT01_INDEPENDENT_REPLAY_REVIEW_NO_PRODUCTION
-- Confirmed iteration count: 124
+- Current gate: S2PLT04_INTEGRATION_CANDIDATE_PRECHECK_BLOCKED_NO_PRODUCTION
+- Confirmed iteration count: 125
 - Reconstructed event count: 0
-- Current task: `S2PLT01-INDEPENDENT-REPLAY-REVIEW` adds a no-production independent replay review receipt for the S2PLT01 replay payload execution package. The review verifies reviewer identity, reviewer role, reviewer independence, CI/evidence refs, valid execution report binding, retained inherited P0/P1 blockers, deterministic `review_hash`, and false production/CURRENT/V7 side-effect flags. The review package can pass while the overall report remains blocked by inherited V7.1 P0=8/P1=37. Prior `S2PLT01-REPLAY-PAYLOAD-EXECUTION`, `S2PLT01-REPLAY-PAYLOAD-CONTRACT`, `S2PLT01-REPLAY-EVIDENCE-GATE`, `S2PMT04-SCHEDULER-TEMPLATE-A013`, and S2PMT02 remediation evidence remains unchanged. `S2PLT01` is not accepted by this run; `S2PMT07` remains the final production gate and is still blocked by missing S2PLT04, final bundle, independent signoff, and independent final command execution. No CURRENT, V7.1/V7.2 contract file, production replay, real production backup/restore/email, real SMTP, scheduler installation, Release, DB migration, public schema, production queue, source adapter, ranking, inherited P0/P1 closure, DAILY_OPERATION, or integrated production acceptance state changed. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
+- Current task: `S2PLT04` records a no-production integration candidate precheck. The precheck summarizes available S2PLT01 independent replay review evidence, missing S2PLT02/S2PLT03 authoritative completion, local state/content evidence, inherited V7.1 P0=8/P1=37, missing final acceptance bundle, and blocked embedded S2PMT07 precheck. It remains `blocked`, does not complete S2PLT04, and does not produce `S2_INTEGRATION_CANDIDATE_READY`. Prior S2PLT01 replay/review evidence and S2PM local hardening evidence remain unchanged. `S2PMT07` remains the final production gate and is still blocked by inherited P0/P1, S2PLT04, final bundle, independent signoff, and independent final command execution. No CURRENT, V7.1/V7.2 contract file, production replay, real production backup/restore/email, real SMTP, scheduler installation, Release, DB migration, public schema, production queue, source adapter, ranking, inherited P0/P1 closure, DAILY_OPERATION, or integrated production acceptance state changed. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
+
+### `ITER-20260626-ADP-S2PLT04-INTEGRATION-CANDIDATE-PRECHECK`
+
+- Timestamp: `2026-06-26T18:00:00+10:00`
+- Fact level: EXTRACTED from S2PLT04 final gate code, focused tests, FORM-ADP-105 registration, PARAM-ADP-874 through PARAM-ADP-881 registration, phase record, and run manifest.
+- Base commit: `e6dcd5d5d2e3140ae10b27305f06b0c46595de66`
+- Product version: `0.23.1`
+- Status: blocked precheck recorded.
+- Phase: S2PL
+- Task IDs: `S2PLT04`; acceptance `ACC-S2PLT04-INTEGRATION-CANDIDATE`.
+- Goal: Add a machine-verifiable no-production integration candidate precheck that summarizes S2PLT01 review evidence, missing S2PLT02/S2PLT03 authoritative completion, local state/content evidence, inherited P0/P1 blockers, missing final bundle, and blocked S2PMT07.
+- Files changed: S2PLT04/S2PMT07 final gate helper, focused final-gate tests, MOD-ADP-103, FORM-ADP-105, PARAM-ADP-874 through PARAM-ADP-881, phase record, run manifest, changelog/status/owner/traceability/delivery/event records, and this ledger entry.
+- Model changes: Added `MOD-ADP-103`.
+- Formula changes: Added `FORM-ADP-105`.
+- Parameter changes: Added `PARAM-ADP-874` through `PARAM-ADP-881`.
+- Validation: py_compile PASS; focused `test_stage2_final_gate.py` 8 OK; full arxiv-daily-push unittest 484 OK; V7.2 validator PASS; ADP project governance 0 errors / 0 warnings; changed-only semantic governance 0 errors / 0 warnings; lean check-render drift_count 0 reference_issue_count 0; YAML/JSON/JSONL/CSV parse OK; git diff --check PASS; production-side-effect forbidden scan no true/enabling hits; full semantic extractor NOT COMPLETED after local interrupt at >150 seconds during full-table AST parsing.
+- Decisions: This is a local no-production blocked precheck only. It does not complete S2PLT04, produce `S2_INTEGRATION_CANDIDATE_READY`, close inherited P0/P1, create final bundle, provide S2PMT07 final independent production signoff, enable SMTP, install scheduler, upload Release, mutate public schema/DB/production queue, change source adapters or ranking, enable DAILY_OPERATION, or claim integrated production acceptance.
+- Remaining risks: S2PLT04 precheck can be misread as S2PLT04 completion. S2PLT01/S2PLT02/S2PLT03 completion, inherited V7.1 P0=8/P1=37, final bundle, and S2PMT07 still control integrated production acceptance.
+- Rollback: Revert S2PLT04 precheck code, focused tests, MOD-ADP-103/FORM-ADP-105/PARAM-ADP-874..881 registrations, phase record, manifest, changelog/status/owner/traceability/delivery/event records, and this ledger entry; no runtime production state was changed.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PLT04_INTEGRATION_CANDIDATE_PRECHECK.md`; `governance/run_manifests/ADP-S2PLT04-INTEGRATION-CANDIDATE-PRECHECK-20260626.json`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.
+- Next step: Run full validation, commit, push, and open PR for S2PLT04 integration candidate precheck.
 
 ### `ITER-20260626-ADP-S2PLT01-INDEPENDENT-REPLAY-REVIEW`
 
