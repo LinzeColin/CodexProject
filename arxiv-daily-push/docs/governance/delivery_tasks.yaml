@@ -2172,6 +2172,24 @@ tasks:
     completed_version: "0.23.0"
     unknown_task_ids: []
 
+  - task_id: "S2PMT05-RESULT-VALIDITY-B013"
+    phase: "S2PM"
+    objective: "Remediate inherited B-013 locally by adding semantic, evidence-bound, non-template result validity gates to S2PMT05."
+    scope: "Result validity fixture, semantic alignment threshold, claim-ledger refs, evidence refs, mechanism/action specificity, non-template variance, unsupported P0 negative control, focused tests, governance registry refresh, phase record, and run manifest."
+    non_scope: "No real 24h production soak, no scheduler install, no launchd bootstrap, no real SMTP send, no Release, no production restore, no public schema change, no DB migration, no production queue mutation, no ranking change, no source adapter change, no live source fetch, no workflow change, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no inherited P0/P1 closure claim before independent review, and no integrated production acceptance."
+    status: "completed"
+    dependencies: ["S2PMT05", "S2PMT07", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py", "arxiv-daily-push/tests/test_stage2_stress_e2e.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_RESULT_VALIDITY_B013.md", "governance/run_manifests/ADP-S2PMT05-RESULT-VALIDITY-B013-20260626.json"]
+    acceptance_ids: ["ACC-S2PMT05-STRESS-E2E"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b013_compile PYTHONPATH=arxiv-daily-push/src python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py arxiv-daily-push/tests/test_stage2_stress_e2e.py", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b013_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_stress_e2e.py -q"]
+    test_results: ["py_compile PASS", "focused S2PMT05 tests: 10 OK", "source/board user-center root gate regression: 14 OK", "full arxiv-daily-push unittest: 537 OK", "V7.2 validator: PASS", "ADP project governance: 0 errors / 0 warnings", "changed-only governance semantic: 0 errors / 0 warnings", "governance sync validator: 0 errors / 0 warnings", "lean check-render: drift_count 0 reference_issue_count 0", "JSONL/YAML/CSV/manifest parse: OK", "git diff --check: PASS"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_RESULT_VALIDITY_B013.md", "governance/run_manifests/ADP-S2PMT05-RESULT-VALIDITY-B013-20260626.json", "arxiv-daily-push/tests/test_stage2_stress_e2e.py"]
+    risk: "B-013 local evidence can be misread as semantic production acceptance, inherited P0/P1 closure, live mail quality signoff, or integrated production acceptance; independent review plus S2PMT07 still control production acceptance."
+    rollback: "Revert S2PMT05 result-validity code/tests, required gate and semantic registry refresh, phase record, manifest, traceability/delivery/event records, generated status refresh, and this task entry; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
+
 
   - task_id: "S2PMT06"
     phase: "S2PM"

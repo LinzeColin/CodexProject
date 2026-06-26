@@ -11,11 +11,13 @@ from arxiv_daily_push.stage2_stress_e2e import (
     S2PMT05_SOAK_HOURS_REQUIRED,
     build_35_day_e2e_fixture,
     build_fault_injection_matrix,
+    build_result_validity_fixture,
     build_s2pmt05_report,
     build_workload_profile,
     evaluate_backpressure_policy,
     evaluate_dst_clock_policy,
     evaluate_load_stress_spike_soak,
+    evaluate_result_validity,
     simulate_dual_scheduler_race,
     simulate_smtp_crash_window,
     validate_s2pmt05_report,
@@ -93,6 +95,34 @@ class Stage2StressE2ETests(unittest.TestCase):
         self.assertEqual(sections["review"]["records"], sections["action"]["linked_review_records"])
         self.assertEqual(sections["action"]["records"], sections["roi"]["linked_action_records"])
 
+    def test_result_validity_gate_requires_semantic_evidence_and_non_template_output(self) -> None:
+        fixture = build_result_validity_fixture(generated_at="2026-07-04T06:00:00+10:00")
+
+        self.assertEqual(fixture["status"], "pass")
+        self.assertEqual(len(fixture["publish_records"]), 3)
+        self.assertTrue(fixture["checks"]["semantic_alignment_threshold"])
+        self.assertTrue(fixture["checks"]["claim_ledger_refs_present"])
+        self.assertTrue(fixture["checks"]["evidence_refs_present"])
+        self.assertTrue(fixture["checks"]["mechanism_and_action_specific"])
+        self.assertTrue(fixture["checks"]["non_template_variance"])
+        self.assertTrue(fixture["checks"]["unsupported_claims_blocked"])
+
+    def test_result_validity_gate_blocks_missing_evidence_and_template_reuse(self) -> None:
+        fixture = build_result_validity_fixture(generated_at="2026-07-04T06:00:00+10:00")
+        publish_records = [dict(row) for row in fixture["publish_records"]]
+        publish_records[0]["evidence_refs"] = []
+        for row in publish_records:
+            row["template_signature"] = "same-template"
+
+        evaluation = evaluate_result_validity(
+            publish_records=publish_records,
+            negative_controls=fixture["negative_controls"],
+        )
+
+        self.assertEqual(evaluation["status"], "blocked")
+        self.assertIn("evidence_refs_present", evaluation["blocking_reasons"])
+        self.assertIn("non_template_variance", evaluation["blocking_reasons"])
+
     def test_backpressure_policy_sheds_without_dropping_durable_evidence(self) -> None:
         policy = evaluate_backpressure_policy(queue_depth=15000, capacity=10000)
 
@@ -109,6 +139,8 @@ class Stage2StressE2ETests(unittest.TestCase):
         self.assertFalse(report["production_acceptance_claimed"])
         self.assertFalse(report["inherited_p0_p1_closed"])
         self.assertEqual(set(report["findings_covered"]), set(S2PMT05_REQUIRED_FINDINGS))
+        self.assertTrue(report["gates"]["result_validity_semantic_evidence"])
+        self.assertEqual(report["findings_covered"]["B-013"], ["result_validity_semantic_evidence"])
         for flag in S2PMT05_REQUIRED_PRODUCTION_FALSE_FLAGS:
             self.assertFalse(report[flag])
         self.assertEqual(validate_s2pmt05_report(report), [])

@@ -1,0 +1,85 @@
+{
+  "acceptance_id": "ACC-S2PMT05-STRESS-E2E",
+  "arxiv_production_acceptance_label": "ARXIV_PRODUCTION_ACCEPTED_MAINTAINED",
+  "base_commit": "b81f5d39bec7c69640c92769d29f59b93dadb1b3",
+  "branch": "HEAD",
+  "change_type": "adp_s2pmt05_result_validity_b013",
+  "commit": "PENDING",
+  "fact_level": "EXTRACTED",
+  "files_changed": [
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py",
+    "arxiv-daily-push/tests/test_stage2_stress_e2e.py",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_RESULT_VALIDITY_B013.md",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv"
+  ],
+  "finding_id": "B-013",
+  "formula_id": "FORM-ADP-100",
+  "formula_ids_changed": [
+    "FORM-ADP-100"
+  ],
+  "generated_at": "2026-06-26T23:50:40+10:00",
+  "gates": {
+    "claim_ledger_refs_present": true,
+    "evidence_refs_present": true,
+    "mechanism_and_action_specific": true,
+    "non_template_variance": true,
+    "result_validity_semantic_evidence": true,
+    "semantic_alignment_threshold": true,
+    "unsupported_claims_blocked": true
+  },
+  "inherited_findings_targeted": [
+    "B-013"
+  ],
+  "inherited_p0_p1_closed": false,
+  "inherited_v7_1_open_p0_findings": 8,
+  "inherited_v7_1_open_p1_findings": 37,
+  "integrated_production_accepted": false,
+  "model_id": "MOD-ADP-098",
+  "model_ids_changed": [
+    "MOD-ADP-098"
+  ],
+  "negative_controls": 1,
+  "parameter_ids_changed": [
+    "PARAM-ADP-813",
+    "PARAM-ADP-814"
+  ],
+  "parent_task_id": "S2PMT05",
+  "phase": "S2PM",
+  "production_boundary": {
+    "db_migration_executed": false,
+    "public_schema_changed": false,
+    "queue_mutation_allowed": false,
+    "queue_schema_changed": false,
+    "real_smtp_sent": false,
+    "release_upload_allowed": false,
+    "scheduler_enabled": false,
+    "scheduler_installed": false,
+    "production_restore_executed": false,
+    "production_side_effects_enabled": false
+  },
+  "publish_records": 3,
+  "report_hash": "3cbab3f919b78de9603bd4fc69e8a3081d00d9c330d405d614c556f69b76f618",
+  "required_findings_covered": [
+    "B-013"
+  ],
+  "result": "local_validation_passed_pending_main_push",
+  "scope": "Local-only S2PMT05 B-013 result validity evidence under V7.2 no-production boundaries.",
+  "stage2_integrated_production_accepted": false,
+  "task_id": "S2PMT05-RESULT-VALIDITY-B013",
+  "tests": {
+    "py_compile": "PASS",
+    "focused_s2pmt05": "10 OK",
+    "source_board_user_center_root_gate": "14 OK",
+    "full_arxiv_daily_push_unittest": "537 OK",
+    "v7_2_validator": "PASS",
+    "project_governance": "0 errors / 0 warnings",
+    "changed_only_governance_semantic": "0 errors / 0 warnings",
+    "governance_sync": "0 errors / 0 warnings",
+    "lean_check_render": "drift_count 0 reference_issue_count 0",
+    "parse": "OK",
+    "git_diff_check": "PASS"
+  },
+  "v7_contract": "ADP-PRODUCT-CONTRACT-V7.2"
+}

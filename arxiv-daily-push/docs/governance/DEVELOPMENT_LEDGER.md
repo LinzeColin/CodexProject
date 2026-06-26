@@ -9,12 +9,33 @@ The append-only machine record is `development_events.jsonl`.
 ## Current State
 
 - Product version: 0.23.1
-- Current phase: S2PL
-- Current gate: S2PLT04_INTEGRATION_CANDIDATE_PRECHECK_BLOCKED_NO_PRODUCTION
-- Confirmed iteration count: 125
+- Current phase: S2PM
+- Current gate: S2PMT05_B013_RESULT_VALIDITY_LOCAL_VALIDATION_NO_PRODUCTION
+- Confirmed iteration count: 126
 - Reconstructed event count: 0
-- Current task: `S2PLT04` records a no-production integration candidate precheck. The precheck summarizes available S2PLT01 independent replay review evidence, missing S2PLT02/S2PLT03 authoritative completion, local state/content evidence, inherited V7.1 P0=8/P1=37, missing final acceptance bundle, and blocked embedded S2PMT07 precheck. It remains `blocked`, does not complete S2PLT04, and does not produce `S2_INTEGRATION_CANDIDATE_READY`. Prior S2PLT01 replay/review evidence and S2PM local hardening evidence remain unchanged. `S2PMT07` remains the final production gate and is still blocked by inherited P0/P1, S2PLT04, final bundle, independent signoff, and independent final command execution. No CURRENT, V7.1/V7.2 contract file, production replay, real production backup/restore/email, real SMTP, scheduler installation, Release, DB migration, public schema, production queue, source adapter, ranking, inherited P0/P1 closure, DAILY_OPERATION, or integrated production acceptance state changed. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
+- Current task: `S2PMT05-RESULT-VALIDITY-B013` records local inherited P1 B-013 remediation evidence. S2PMT05 result validity now requires semantic alignment, Claim Ledger references, evidence references, mechanism/action specificity, non-template output variance, and unsupported P0 negative controls that block publication. This does not close inherited P0/P1, does not change live mail production, and does not supersede later S2PL blocked prechecks. `S2PMT07` remains the final production gate and is still blocked by inherited P0/P1, S2PLT04, final bundle, independent signoff, and independent final command execution. No CURRENT, V7.1/V7.2 contract file, production replay, real production backup/restore/email, real SMTP, scheduler installation, Release, DB migration, public schema, production queue, source adapter, ranking, inherited P0/P1 closure, DAILY_OPERATION, or integrated production acceptance state changed. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
+
+### `ITER-20260626-ADP-S2PMT05-RESULT-VALIDITY-B013`
+
+- Timestamp: `2026-06-26T23:50:40+10:00`
+- Fact level: EXTRACTED from S2PMT05 result-validity code, focused tests, FORM-ADP-100 semantic refresh, PARAM-ADP-813/PARAM-ADP-814 refresh, phase record, and run manifest.
+- Base commit: `b81f5d39bec7c69640c92769d29f59b93dadb1b3`
+- Product version: `0.23.1`
+- Status: local validation passed pending main push.
+- Phase: S2PM
+- Task IDs: `S2PMT05-RESULT-VALIDITY-B013`; parent `S2PMT05`; inherited finding `B-013`; acceptance `ACC-S2PMT05-STRESS-E2E`.
+- Goal: Remediate inherited B-013 locally by making S2PMT05 result validity require semantic alignment, claim/evidence references, mechanism/action specificity, non-template variance, and unsupported P0 negative controls.
+- Files changed: S2PMT05 stress/fault/time/E2E helper, focused tests, MOD-ADP-098/FORM-ADP-100/PARAM-ADP-813/PARAM-ADP-814 refresh, phase record, run manifest, changelog/status/owner/traceability/delivery/event records, and this ledger entry.
+- Model changes: Reused `MOD-ADP-098`; existing S2PMT05 local stress/fault/time/E2E model now includes semantic/evidence-bound non-template result validity.
+- Formula changes: Refreshed `FORM-ADP-100` to cover `build_result_validity_fixture`, `evaluate_result_validity`, semantic alignment threshold, claim/evidence refs, specific mechanism/action summaries, non-template variance, unsupported P0 blocking, and no-production flags.
+- Parameter changes: Refreshed `PARAM-ADP-813` to include inherited finding `B-013`; refreshed `PARAM-ADP-814` to include `result_validity_semantic_evidence`.
+- Validation: py_compile PASS; focused `test_stage2_stress_e2e.py` 10 OK; source/board user-center root gate regression 14 OK; full arxiv-daily-push unittest 537 OK; V7.2 validator PASS; ADP project governance 0 errors / 0 warnings; changed-only semantic governance 0 errors / 0 warnings; governance sync validator 0 errors / 0 warnings; lean check-render drift_count 0 reference_issue_count 0; YAML/JSON/JSONL/CSV parse OK; git diff --check PASS.
+- Decisions: This is a local B-013 remediation gate only. It does not enable SMTP, install scheduler, upload Release, mutate public schema/DB/production queue, change source adapters or ranking, edit CURRENT or V7.1/V7.2 contracts, close inherited P0/P1, enable DAILY_OPERATION, or claim integrated production acceptance.
+- Remaining risks: Independent review must still verify B-013 closure. Inherited V7.1 P0=8/P1=37 remain open until S2PMT07 closes them with final independent evidence.
+- Rollback: Revert S2PMT05 result-validity code/tests, FORM-ADP-100/PARAM-ADP-813/PARAM-ADP-814 refresh, phase record, manifest, changelog/status/owner/traceability/delivery/event records, and this ledger entry; no runtime production state was changed.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_RESULT_VALIDITY_B013.md`; `governance/run_manifests/ADP-S2PMT05-RESULT-VALIDITY-B013-20260626.json`; `arxiv-daily-push/tests/test_stage2_stress_e2e.py`.
+- Next step: Run final validation, commit, push directly to `main` if safe, and continue inherited P0/P1 remediation or S2PMT07 independent review under no-production boundaries.
 
 ### `ITER-20260626-ADP-S2PLT04-INTEGRATION-CANDIDATE-PRECHECK`
 

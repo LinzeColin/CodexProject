@@ -23,7 +23,19 @@ S2PMT05_CLOCK_SKEW_TOLERANCE_SECONDS = 300
 S2PMT05_SQLITE_BUSY_TIMEOUT_MS = 5000
 S2PMT05_SQLITE_BUSY_MAX_RETRIES = 5
 S2PMT05_REQUIRED_MAIL_PRODUCTS = ("M1", "M2", "M3", "M4")
-S2PMT05_REQUIRED_FINDINGS = ("A-015", "A-022", "B-006", "B-007", "B-008", "B-009", "B-010", "B-012", "B-014", "B-016")
+S2PMT05_REQUIRED_FINDINGS = (
+    "A-015",
+    "A-022",
+    "B-006",
+    "B-007",
+    "B-008",
+    "B-009",
+    "B-010",
+    "B-012",
+    "B-013",
+    "B-014",
+    "B-016",
+)
 S2PMT05_REQUIRED_GATES = (
     "load_stress_spike_soak",
     "dual_scheduler_race",
@@ -31,6 +43,7 @@ S2PMT05_REQUIRED_GATES = (
     "fault_injection",
     "dst_clock_policy",
     "thirty_five_day_e2e",
+    "result_validity_semantic_evidence",
     "backpressure_degradation",
     "deterministic_test_isolation",
     "no_production_side_effect",
@@ -275,6 +288,92 @@ def build_35_day_e2e_fixture(*, start_date: str = "2026-07-01", days: int = S2PM
     }
 
 
+def build_result_validity_fixture(*, generated_at: str) -> dict[str, Any]:
+    """Build local semantic/evidence/non-template result validity evidence."""
+
+    publish_records = [
+        _result_validity_publish_record(
+            result_id="rv-m1-frontier",
+            product_id="M1",
+            title="Bayesian optimizer stability under distribution shift",
+            semantic_alignment_score=0.94,
+            template_signature="mechanism-risk-transfer",
+            mechanism_summary="Posterior contraction, stress-test priors, and drawdown guardrails are tied to supported claims.",
+            action_summary="Keep as review item, compare against portfolio-risk notebooks, and require supported evidence before action.",
+        ),
+        _result_validity_publish_record(
+            result_id="rv-m2-method",
+            product_id="M2",
+            title="Graph retrieval calibration for frontier literature maps",
+            semantic_alignment_score=0.91,
+            template_signature="method-flow-boundary",
+            mechanism_summary="Retrieval recall, evidence freshness, and source-board routing constraints are separately explained.",
+            action_summary="Extract reusable retrieval checks and add them to the capability ledger only after reviewer confirmation.",
+        ),
+        _result_validity_publish_record(
+            result_id="rv-m4-roi",
+            product_id="M4",
+            title="Policy signal transfer into ROI learning queues",
+            semantic_alignment_score=0.89,
+            template_signature="roi-boundary-review",
+            mechanism_summary="Policy signal strength, confidence limits, and cross-board transfer are bound to explicit evidence.",
+            action_summary="Queue for weekly review, keep low-confidence transfer blocked, and preserve owner decision evidence.",
+        ),
+    ]
+    negative_controls = [
+        {
+            "result_id": "rv-negative-unsupported-p0",
+            "product_id": "M1",
+            "unsupported_p0_claims": 1,
+            "publication_allowed": False,
+            "blocking_reason": "unsupported_p0_claim",
+            "evidence_refs": [],
+            "claim_ledger_refs": [],
+        }
+    ]
+    evaluation = evaluate_result_validity(publish_records=publish_records, negative_controls=negative_controls)
+    return {
+        "generated_at": generated_at,
+        "status": evaluation["status"],
+        "publish_records": publish_records,
+        "negative_controls": negative_controls,
+        "checks": evaluation["checks"],
+        "blocking_reasons": evaluation["blocking_reasons"],
+    }
+
+
+def evaluate_result_validity(
+    *,
+    publish_records: Sequence[Mapping[str, Any]],
+    negative_controls: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Evaluate semantic, evidence-bound, non-template result validity gates."""
+
+    signatures = [str(row.get("template_signature") or "") for row in publish_records]
+    checks = {
+        "semantic_alignment_threshold": all(float(row.get("semantic_alignment_score") or 0.0) >= 0.85 for row in publish_records),
+        "claim_ledger_refs_present": all(bool(row.get("claim_ledger_refs")) for row in publish_records),
+        "evidence_refs_present": all(bool(row.get("evidence_refs")) for row in publish_records),
+        "mechanism_and_action_specific": all(
+            _word_count(row.get("mechanism_summary")) >= 8 and _word_count(row.get("action_summary")) >= 8
+            for row in publish_records
+        ),
+        "non_template_variance": len(publish_records) >= 3 and len(set(signatures)) == len(signatures),
+        "unsupported_claims_blocked": any(
+            int(row.get("unsupported_p0_claims") or 0) > 0
+            and row.get("publication_allowed") is False
+            and row.get("blocking_reason") == "unsupported_p0_claim"
+            for row in negative_controls
+        ),
+    }
+    blocking_reasons = [key for key, value in checks.items() if value is not True]
+    return {
+        "status": "pass" if not blocking_reasons else "blocked",
+        "checks": checks,
+        "blocking_reasons": blocking_reasons,
+    }
+
+
 def evaluate_backpressure_policy(*, queue_depth: int = 15000, capacity: int = 10000) -> dict[str, Any]:
     """Evaluate local backpressure, circuit breaker, and degradation rules."""
 
@@ -307,6 +406,7 @@ def build_s2pmt05_report(*, generated_at: str) -> dict[str, Any]:
     fault_matrix = build_fault_injection_matrix(generated_at=generated_at)
     time_policy = evaluate_dst_clock_policy()
     e2e = build_35_day_e2e_fixture()
+    result_validity = build_result_validity_fixture(generated_at=generated_at)
     backpressure = evaluate_backpressure_policy()
     gates = {
         "load_stress_spike_soak": workload_eval["status"] == "pass",
@@ -315,6 +415,7 @@ def build_s2pmt05_report(*, generated_at: str) -> dict[str, Any]:
         "fault_injection": fault_matrix["status"] == "pass",
         "dst_clock_policy": time_policy["status"] == "pass",
         "thirty_five_day_e2e": e2e["status"] == "pass",
+        "result_validity_semantic_evidence": result_validity["status"] == "pass",
         "backpressure_degradation": backpressure["status"] == "pass",
         "deterministic_test_isolation": workload["random_seed"] == S2PMT05_DEFAULT_RANDOM_SEED and workload["accelerated_simulation"] is True,
         "no_production_side_effect": True,
@@ -328,6 +429,7 @@ def build_s2pmt05_report(*, generated_at: str) -> dict[str, Any]:
         "B-009": ["fault_injection"],
         "B-010": ["dst_clock_policy"],
         "B-012": ["thirty_five_day_e2e"],
+        "B-013": ["result_validity_semantic_evidence"],
         "B-014": ["backpressure_degradation"],
         "B-016": ["deterministic_test_isolation"],
     }
@@ -352,6 +454,7 @@ def build_s2pmt05_report(*, generated_at: str) -> dict[str, Any]:
         "fault_injection": fault_matrix,
         "dst_clock_policy": time_policy,
         "thirty_five_day_e2e": e2e,
+        "result_validity_semantic_evidence": result_validity,
         "backpressure_degradation": backpressure,
         "report_hash": "",
         "production_side_effects_enabled": False,
@@ -405,6 +508,20 @@ def validate_s2pmt05_report(report: Mapping[str, Any]) -> list[str]:
     for section in S2PMT05_REQUIRED_E2E_SECTIONS:
         if section not in sections:
             errors.append(f"thirty_five_day_e2e.sections.{section} is required")
+    result_validity = _mapping(report.get("result_validity_semantic_evidence"))
+    if result_validity.get("status") != "pass":
+        errors.append("result_validity_semantic_evidence must pass")
+    result_checks = _mapping(result_validity.get("checks"))
+    for check in (
+        "semantic_alignment_threshold",
+        "claim_ledger_refs_present",
+        "evidence_refs_present",
+        "mechanism_and_action_specific",
+        "non_template_variance",
+        "unsupported_claims_blocked",
+    ):
+        if result_checks.get(check) is not True:
+            errors.append(f"result_validity_semantic_evidence.checks.{check} must be true")
     if _mapping(report.get("workload")).get("real_24h_wall_clock_run") is not False:
         errors.append("S2PMT05 report must explicitly mark local accelerated soak as not real 24h wall-clock")
     return errors
@@ -422,6 +539,31 @@ def _fault_row(fault: str, stage: str, resulting_state: str, recovery_action: st
     }
 
 
+def _result_validity_publish_record(
+    *,
+    result_id: str,
+    product_id: str,
+    title: str,
+    semantic_alignment_score: float,
+    template_signature: str,
+    mechanism_summary: str,
+    action_summary: str,
+) -> dict[str, Any]:
+    return {
+        "result_id": result_id,
+        "product_id": product_id,
+        "title": title,
+        "semantic_alignment_score": semantic_alignment_score,
+        "claim_ledger_refs": [f"claim-ledger://s2pmt05/{result_id}/p0-supported"],
+        "evidence_refs": [f"evidence://s2pmt05/{result_id}/source", f"evidence://s2pmt05/{result_id}/method"],
+        "mechanism_summary": mechanism_summary,
+        "action_summary": action_summary,
+        "template_signature": template_signature,
+        "unsupported_p0_claims": 0,
+        "publication_allowed": True,
+    }
+
+
 def _time_case(case_id: str, local_time: datetime) -> dict[str, Any]:
     utc_time = local_time.astimezone(timezone.utc)
     return {
@@ -436,6 +578,10 @@ def _time_case(case_id: str, local_time: datetime) -> dict[str, Any]:
 
 def _mapping(value: Any) -> Mapping[str, Any]:
     return value if isinstance(value, Mapping) else {}
+
+
+def _word_count(value: Any) -> int:
+    return len(str(value or "").split())
 
 
 def _stable_hash(value: Mapping[str, Any]) -> str:
