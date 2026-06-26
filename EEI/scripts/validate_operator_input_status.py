@@ -32,6 +32,7 @@ except ModuleNotFoundError:  # pragma: no cover - used when imported as scripts.
 ROOT = Path(__file__).resolve().parents[1]
 
 STATUS_SCHEMA_VERSION = "eei-external-release-operator-input-status-v1"
+SUBMISSION_PREFLIGHT_SCHEMA_VERSION = "eei-operator-input-submission-preflight-v1"
 DEFAULT_OUTPUT = ROOT / "artifacts/operator_inputs/operator_input_status.json"
 VALIDATOR_CONTRACTS: dict[str, dict[str, Any]] = {
     "A202_source_license_passage_owner_legal_release": {
@@ -131,6 +132,10 @@ def validator_status_for(input_status: str) -> str:
     if input_status == "PRESENT_REQUIRES_VALIDATOR":
         return "PENDING_DEDICATED_VALIDATOR"
     return "UNKNOWN_OPERATOR_INPUT_STATUS"
+
+
+def normalize_sha256(value: str | None) -> str:
+    return (value or "").strip().lower()
 
 
 def status_for_input(item: dict[str, Any]) -> dict[str, Any]:
@@ -259,6 +264,122 @@ def build_status(
             "A027, A204, A205 or MVP release.",
             "Release-manager refresh still requires every dedicated validator "
             "to pass on real operator inputs.",
+        ],
+    }
+
+
+def build_submission_preflight(
+    payload: dict[str, Any],
+    *,
+    input_id: str,
+    submitted_sha256: str | None = None,
+    dry_run: bool = True,
+) -> dict[str, Any]:
+    if payload.get("schema_version") != STATUS_SCHEMA_VERSION:
+        raise ValueError("operator input status artifact has an unexpected schema version")
+    if dry_run is not True:
+        raise ValueError("operator input submission preflight is dry-run only")
+
+    normalized_input_id = input_id.strip()
+    item = next(
+        (
+            candidate
+            for candidate in payload.get("input_statuses", [])
+            if isinstance(candidate, dict) and candidate.get("input_id") == normalized_input_id
+        ),
+        None,
+    )
+    submitted = normalize_sha256(submitted_sha256)
+    if item is None:
+        return {
+            "schema_version": SUBMISSION_PREFLIGHT_SCHEMA_VERSION,
+            "artifact_id": "t1303-operator-input-submission-preflight",
+            "input_id": normalized_input_id,
+            "acceptance_id": "",
+            "status": "REJECTED_UNKNOWN_OPERATOR_INPUT",
+            "reason": "operator input id is not registered in the current status manifest",
+            "dry_run": True,
+            "validator_dispatch_allowed": False,
+            "validator_dispatch_mode": "manual_command_only",
+            "submitted_sha256": submitted,
+            "observed_sha256": "",
+            "submitted_hash_matches_observed": False if submitted else None,
+            "submission_target": "",
+            "submission_target_exists": False,
+            "validator_contract": None,
+            "next_validation_command": "",
+            "expected_artifacts": [],
+            "release_gate_closure_allowed": False,
+            "release_manager_preflight_refresh_allowed": False,
+            "mvp_release_gate_refresh_allowed": False,
+            "non_claims": [
+                "This preflight does not write operator input files.",
+                "This preflight does not execute validator commands.",
+                "This preflight does not close release gates.",
+            ],
+        }
+
+    observed = normalize_sha256(str(item.get("submission_target_sha256", "")))
+    input_status = str(item.get("status", ""))
+    target_exists = bool(item.get("submission_target_exists"))
+    hash_matches = (submitted == observed) if submitted and observed else None
+
+    if submitted and observed and submitted != observed:
+        status = "SUBMISSION_HASH_MISMATCH"
+        reason = "submitted_sha256 does not match the current operator input target"
+        dispatch_allowed = False
+    elif not target_exists:
+        status = "SUBMISSION_TARGET_MISSING"
+        reason = "operator input target is missing"
+        dispatch_allowed = False
+    elif input_status.startswith("REJECTED_"):
+        status = "SUBMISSION_REJECTED"
+        reason = str(item.get("reason", "operator input target is rejected"))
+        dispatch_allowed = False
+    elif input_status == "PRESENT_REQUIRES_VALIDATOR":
+        status = "READY_FOR_DEDICATED_VALIDATOR_DISPATCH"
+        reason = "operator input target is present and can be sent to its dedicated validator"
+        dispatch_allowed = True
+    else:
+        status = "SUBMISSION_NOT_DISPATCHABLE"
+        reason = str(item.get("reason", "operator input target is not dispatchable"))
+        dispatch_allowed = False
+
+    contract = item.get("validator_contract")
+    if not isinstance(contract, dict):
+        contract = None
+        dispatch_allowed = False
+        if status == "READY_FOR_DEDICATED_VALIDATOR_DISPATCH":
+            status = "SUBMISSION_NOT_DISPATCHABLE"
+            reason = "operator input item is missing its dedicated validator contract"
+
+    return {
+        "schema_version": SUBMISSION_PREFLIGHT_SCHEMA_VERSION,
+        "artifact_id": "t1303-operator-input-submission-preflight",
+        "input_id": normalized_input_id,
+        "acceptance_id": item.get("acceptance_id", ""),
+        "status": status,
+        "reason": reason,
+        "dry_run": True,
+        "validator_dispatch_allowed": dispatch_allowed,
+        "validator_dispatch_mode": "manual_command_only",
+        "submitted_sha256": submitted,
+        "observed_sha256": observed,
+        "submitted_hash_matches_observed": hash_matches,
+        "submission_target": item.get("submission_target", ""),
+        "submission_target_exists": target_exists,
+        "validator_contract": contract,
+        "next_validation_command": contract.get("command", "") if contract else "",
+        "expected_artifacts": contract.get("expected_artifacts", []) if contract else [],
+        "release_gate_closure_allowed": False,
+        "release_manager_preflight_refresh_allowed": False,
+        "mvp_release_gate_refresh_allowed": False,
+        "non_claims": [
+            "This preflight does not write operator input files.",
+            "This preflight does not execute validator commands.",
+            "This preflight does not certify signed operator evidence.",
+            "This preflight does not close A202, A209, A210, A026, A027, "
+            "A204, A205 or MVP release gates.",
         ],
     }
 

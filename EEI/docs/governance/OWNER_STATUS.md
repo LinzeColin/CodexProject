@@ -6,11 +6,11 @@ EEI 当前治理结论：实现一致性为 `VERIFIED`，方法/实证为 `UNVER
 
 ## 2. 本次运行改变了什么
 
-Owner 视图现在记录 T1303/A204-A205 operator input validator contracts：`/v1/release/operator-input-status` 和 `/development-status` Release Operator Gates panel 显示 6 个必需外部输入全部缺失、6 个专用 validator contract 已注册但尚未运行，release-manager/MVP refresh 仍被阻断。A209 live-rerun monitor hardening 仍保留为背景稳定性证据；本次不停止、重启、resume、promote 或 finalize A209。
+Owner 视图现在记录 T1303/A204-A205 operator input submission preflight：`/v1/release/operator-input-submission-preflight` 可对已登记的 A202/A210/A026/A027/A209 输入返回 dry-run/manual-command-only validator dispatch plan；`/v1/release/operator-input-status` 和 `/development-status` 仍显示 6 个必需外部输入全部缺失、6 个专用 validator contract 已注册但尚未运行，release-manager/MVP refresh 仍被阻断。A209 live-rerun monitor hardening 仍保留为背景稳定性证据；本次不停止、重启、resume、promote 或 finalize A209。
 
 ## 3. 为什么重要
 
-降低 release gate 状态只存在于原始 artifact 中、操作方误读 A202/A210/A026/A027/A209 缺口、找不到提交后 validator，或把 template/status manifest 当成清权证据的风险。
+降低 release gate 状态只存在于原始 artifact 中、操作方误读 A202/A210/A026/A027/A209 缺口、找不到提交后 validator、提交 hash 漂移后继续人工验证，或把 template/status manifest 当成清权证据的风险。
 
 ## 4. 需要人类决定什么
 
@@ -71,8 +71,8 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - model_count: `12`
 - total_formulas: `12`
 - active_formulas: `11`
-- total_parameters: `94`
-- active_parameters: `94`
+- total_parameters: `95`
+- active_parameters: `95`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance

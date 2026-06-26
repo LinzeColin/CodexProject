@@ -14,6 +14,8 @@ from fastapi import APIRouter, Depends, Header, HTTPException, Query, Request, R
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
+from scripts.validate_operator_input_status import build_submission_preflight
+
 from .domain_repository import (
     CatalogRepository,
     ConflictError,
@@ -210,6 +212,15 @@ class DataSnapshotRefreshRequest(BaseModel):
     )
 
 
+class OperatorInputSubmissionPreflightRequest(BaseModel):
+    input_id: str = Field(min_length=1, max_length=160)
+    submitted_sha256: str | None = Field(
+        default=None,
+        pattern=r"^[A-Fa-f0-9]{64}$",
+    )
+    dry_run: Literal[True] = True
+
+
 def get_repository() -> DomainRepository:
     settings = get_settings()
     if not settings.database_url:
@@ -226,6 +237,31 @@ CatalogRepositoryDependency = Annotated[CatalogRepository, Depends(CatalogReposi
 
 @router.get("/release/operator-input-status")
 def get_operator_input_status() -> dict[str, Any]:
+    return _read_operator_input_status()
+
+
+@router.post("/release/operator-input-submission-preflight")
+def preflight_operator_input_submission(
+    request: OperatorInputSubmissionPreflightRequest,
+) -> dict[str, Any]:
+    try:
+        return build_submission_preflight(
+            _read_operator_input_status(),
+            input_id=request.input_id,
+            submitted_sha256=request.submitted_sha256,
+            dry_run=request.dry_run,
+        )
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={
+                "reason": "operator_input_submission_preflight_rejected",
+                "message": str(exc),
+            },
+        ) from exc
+
+
+def _read_operator_input_status() -> dict[str, Any]:
     try:
         payload = json.loads(OPERATOR_INPUT_STATUS_PATH.read_text(encoding="utf-8"))
     except FileNotFoundError as exc:

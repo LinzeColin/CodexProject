@@ -259,6 +259,42 @@ def test_operator_input_status_endpoint_exposes_fail_closed_release_gates() -> N
     )
 
 
+def test_operator_input_submission_preflight_returns_fail_closed_dispatch_plan() -> None:
+    response = TestClient(app).post(
+        "/v1/release/operator-input-submission-preflight",
+        json={
+            "input_id": "A202_source_license_passage_owner_legal_release",
+            "dry_run": True,
+        },
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["schema_version"] == "eei-operator-input-submission-preflight-v1"
+    assert payload["status"] == "SUBMISSION_TARGET_MISSING"
+    assert payload["validator_dispatch_allowed"] is False
+    assert payload["validator_dispatch_mode"] == "manual_command_only"
+    assert payload["release_gate_closure_allowed"] is False
+    assert payload["release_manager_preflight_refresh_allowed"] is False
+    assert payload["mvp_release_gate_refresh_allowed"] is False
+    assert payload["validator_contract"]["validator_id"] == "VAL-A202-SIGNED-INTAKE-PREFLIGHT"
+    assert payload["next_validation_command"] == (
+        "make generate-a202-signed-intake-preflight validate-a202-signed-intake-preflight"
+    )
+
+
+def test_operator_input_submission_preflight_rejects_non_dry_run() -> None:
+    response = TestClient(app).post(
+        "/v1/release/operator-input-submission-preflight",
+        json={
+            "input_id": "A202_source_license_passage_owner_legal_release",
+            "dry_run": False,
+        },
+    )
+
+    assert response.status_code == 422
+
+
 def test_scoring_profile_draft_requires_weights() -> None:
     with pytest.raises(ValidationError):
         ScoringProfileDraftCreate.model_validate(

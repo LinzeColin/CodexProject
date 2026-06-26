@@ -5,7 +5,11 @@ from pathlib import Path
 
 import pytest
 
-from scripts.validate_operator_input_status import build_status, validate_status
+from scripts.validate_operator_input_status import (
+    build_status,
+    build_submission_preflight,
+    validate_status,
+)
 
 
 def write_json(path: Path, payload: dict) -> Path:
@@ -172,3 +176,100 @@ def test_status_requires_known_validator_contract(tmp_path: Path) -> None:
             kit_manifest_path=manifest,
             generated_at="2026-06-27T00:00:00Z",
         )
+
+
+def test_submission_preflight_reports_missing_target_as_not_dispatchable(
+    tmp_path: Path,
+) -> None:
+    template = write_json(tmp_path / "kit" / "a202.template.json", {"template_only": True})
+    target = tmp_path / "operator_inputs" / "a202" / "signed.json"
+    manifest = kit_manifest(tmp_path, target=target, template=template)
+    patch_manifest_template_sha(manifest, template)
+    status_payload = build_status(
+        kit_manifest_path=manifest,
+        generated_at="2026-06-27T00:00:00Z",
+    )
+
+    payload = build_submission_preflight(
+        status_payload,
+        input_id="A202_source_license_passage_owner_legal_release",
+    )
+
+    assert payload["schema_version"] == "eei-operator-input-submission-preflight-v1"
+    assert payload["status"] == "SUBMISSION_TARGET_MISSING"
+    assert payload["validator_dispatch_allowed"] is False
+    assert payload["release_gate_closure_allowed"] is False
+    assert payload["next_validation_command"] == (
+        "make generate-a202-signed-intake-preflight validate-a202-signed-intake-preflight"
+    )
+
+
+def test_submission_preflight_allows_manual_validator_dispatch_for_present_target(
+    tmp_path: Path,
+) -> None:
+    template = write_json(tmp_path / "kit" / "a202.template.json", {"template_only": True})
+    target = write_json(
+        tmp_path / "operator_inputs" / "a202" / "signed.json",
+        {"signed_by": "operator", "template_only": False},
+    )
+    manifest = kit_manifest(tmp_path, target=target, template=template)
+    patch_manifest_template_sha(manifest, template)
+    status_payload = build_status(
+        kit_manifest_path=manifest,
+        generated_at="2026-06-27T00:00:00Z",
+    )
+    observed_sha = status_payload["input_statuses"][0]["submission_target_sha256"]
+
+    payload = build_submission_preflight(
+        status_payload,
+        input_id="A202_source_license_passage_owner_legal_release",
+        submitted_sha256=observed_sha.upper(),
+    )
+
+    assert payload["status"] == "READY_FOR_DEDICATED_VALIDATOR_DISPATCH"
+    assert payload["validator_dispatch_allowed"] is True
+    assert payload["validator_dispatch_mode"] == "manual_command_only"
+    assert payload["submitted_hash_matches_observed"] is True
+    assert payload["validator_contract"]["validator_id"] == "VAL-A202-SIGNED-INTAKE-PREFLIGHT"
+    assert payload["release_manager_preflight_refresh_allowed"] is False
+
+
+def test_submission_preflight_blocks_hash_mismatch(tmp_path: Path) -> None:
+    template = write_json(tmp_path / "kit" / "a202.template.json", {"template_only": True})
+    target = write_json(
+        tmp_path / "operator_inputs" / "a202" / "signed.json",
+        {"signed_by": "operator", "template_only": False},
+    )
+    manifest = kit_manifest(tmp_path, target=target, template=template)
+    patch_manifest_template_sha(manifest, template)
+    status_payload = build_status(
+        kit_manifest_path=manifest,
+        generated_at="2026-06-27T00:00:00Z",
+    )
+
+    payload = build_submission_preflight(
+        status_payload,
+        input_id="A202_source_license_passage_owner_legal_release",
+        submitted_sha256="0" * 64,
+    )
+
+    assert payload["status"] == "SUBMISSION_HASH_MISMATCH"
+    assert payload["validator_dispatch_allowed"] is False
+    assert payload["submitted_hash_matches_observed"] is False
+
+
+def test_submission_preflight_rejects_unknown_input_id(tmp_path: Path) -> None:
+    template = write_json(tmp_path / "kit" / "a202.template.json", {"template_only": True})
+    target = tmp_path / "operator_inputs" / "a202" / "signed.json"
+    manifest = kit_manifest(tmp_path, target=target, template=template)
+    patch_manifest_template_sha(manifest, template)
+    status_payload = build_status(
+        kit_manifest_path=manifest,
+        generated_at="2026-06-27T00:00:00Z",
+    )
+
+    payload = build_submission_preflight(status_payload, input_id="UNKNOWN_OPERATOR_INPUT")
+
+    assert payload["status"] == "REJECTED_UNKNOWN_OPERATOR_INPUT"
+    assert payload["validator_dispatch_allowed"] is False
+    assert payload["validator_contract"] is None

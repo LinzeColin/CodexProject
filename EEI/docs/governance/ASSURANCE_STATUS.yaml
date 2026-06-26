@@ -16,8 +16,8 @@ dimensions:
     status: "VERIFIED"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 94
-    total_active_parameters: 94
+    checked_active_parameters: 95
+    total_active_parameters: 95
     checked_active_formulas: 11
     total_active_formulas: 11
     unresolved_fact_ids: []
@@ -27,8 +27,8 @@ dimensions:
   parameter_source_quality:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 94
-    total_active_parameters: 94
+    checked_active_parameters: 95
+    total_active_parameters: 95
     evidence_refs:
       - "EEI/docs/governance/parameter_registry.csv"
   methodological_rationale:

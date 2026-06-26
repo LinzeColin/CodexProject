@@ -14,10 +14,10 @@
 - Project: `EEI`
 - Path: `EEI`
 - Product version: `0.1.0`
-- Phase/Gate: `D / TASK-T1303-OPERATOR-INPUT-STATUS-API-FRONTEND-BINDING`
-- Models/Formulas/Parameters total: `12 / 12 / 94`
-- Active formulas/parameters: `11 / 94`
-- Machine checked formulas/parameters: `11 / 94`
+- Phase/Gate: `D / TASK-T1303-OPERATOR-INPUT-SUBMISSION-PREFLIGHT`
+- Models/Formulas/Parameters total: `12 / 12 / 95`
+- Active formulas/parameters: `11 / 95`
+- Machine checked formulas/parameters: `11 / 95`
 
 ## Assurance
 
@@ -35,9 +35,9 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `TASK-T1303-OPERATOR-INPUT-VALIDATOR-CONTRACTS`
+- Release gate: `TASK-T1303-OPERATOR-INPUT-SUBMISSION-PREFLIGHT`
 - Next executable task: `TASK-T1303`
-- Latest non-closure product binding: `EVENT-20260627-017` adds machine-readable validator contracts for missing operator inputs while release readiness remains blocked.
+- Latest non-closure product binding: `EVENT-20260627-018` adds a dry-run operator-input submission preflight/validator dispatch plan while release readiness remains blocked.
 - Pending/stale events: `126`
 - Tree-bound events: `0`
 - Commit-bound events: `21`

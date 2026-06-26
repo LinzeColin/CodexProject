@@ -35,6 +35,26 @@ paths:
           description: Operator-input artifact is invalid.
         '503':
           description: Operator-input artifact is missing.
+  /v1/release/operator-input-submission-preflight:
+    post:
+      operationId: preflightOperatorInputSubmission
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OperatorInputSubmissionPreflightRequest'
+      responses:
+        '200':
+          description: Dry-run dispatch plan for a required external operator input.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperatorInputSubmissionPreflight'
+        '400':
+          description: Operator-input submission preflight rejected.
+        '422':
+          description: Request validation failed.
   /v1/entities:
     get:
       operationId: searchEntities
@@ -1457,6 +1477,103 @@ components:
           type: boolean
         counts_as_release_ready_without_success:
           type: boolean
+    OperatorInputSubmissionPreflightRequest:
+      type: object
+      required:
+      - input_id
+      - dry_run
+      properties:
+        input_id:
+          type: string
+          minLength: 1
+          maxLength: 160
+        submitted_sha256:
+          type:
+          - string
+          - 'null'
+          pattern: ^[A-Fa-f0-9]{64}$
+        dry_run:
+          type: boolean
+          const: true
+    OperatorInputSubmissionPreflight:
+      type: object
+      required:
+      - schema_version
+      - artifact_id
+      - input_id
+      - acceptance_id
+      - status
+      - dry_run
+      - validator_dispatch_allowed
+      - validator_dispatch_mode
+      - submission_target
+      - submission_target_exists
+      - release_gate_closure_allowed
+      - release_manager_preflight_refresh_allowed
+      - mvp_release_gate_refresh_allowed
+      properties:
+        schema_version:
+          type: string
+          enum:
+          - eei-operator-input-submission-preflight-v1
+        artifact_id:
+          type: string
+        input_id:
+          type: string
+        acceptance_id:
+          type: string
+        status:
+          type: string
+          enum:
+          - REJECTED_UNKNOWN_OPERATOR_INPUT
+          - SUBMISSION_TARGET_MISSING
+          - SUBMISSION_REJECTED
+          - SUBMISSION_HASH_MISMATCH
+          - READY_FOR_DEDICATED_VALIDATOR_DISPATCH
+          - SUBMISSION_NOT_DISPATCHABLE
+        reason:
+          type: string
+        dry_run:
+          type: boolean
+          const: true
+        validator_dispatch_allowed:
+          type: boolean
+        validator_dispatch_mode:
+          type: string
+          enum:
+          - manual_command_only
+        submitted_sha256:
+          type: string
+        observed_sha256:
+          type: string
+        submitted_hash_matches_observed:
+          type:
+          - boolean
+          - 'null'
+        submission_target:
+          type: string
+        submission_target_exists:
+          type: boolean
+        validator_contract:
+          oneOf:
+          - $ref: '#/components/schemas/OperatorInputValidatorContract'
+          - type: 'null'
+        next_validation_command:
+          type: string
+        expected_artifacts:
+          type: array
+          items:
+            type: string
+        release_gate_closure_allowed:
+          type: boolean
+        release_manager_preflight_refresh_allowed:
+          type: boolean
+        mvp_release_gate_refresh_allowed:
+          type: boolean
+        non_claims:
+          type: array
+          items:
+            type: string
     EntityType:
       type: string
       enum:
