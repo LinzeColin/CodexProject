@@ -63,9 +63,29 @@ def test_status_reports_missing_operator_inputs(tmp_path: Path) -> None:
     assert payload["status"] == "WAITING_FOR_OPERATOR_INPUTS"
     assert payload["missing_count"] == 1
     assert payload["rejected_count"] == 0
+    assert payload["dedicated_validator_count"] == 1
+    assert payload["blocked_validator_count"] == 1
+    assert payload["pending_dedicated_validator_count"] == 0
+    assert payload["dedicated_validators_ready_for_release_manager"] is False
     assert payload["operator_inputs_ready_for_release_manager"] is False
     assert payload["release_gate_closed_by_input_status"] is False
     assert payload["input_statuses"][0]["status"] == "MISSING"
+    assert payload["input_statuses"][0]["validator_status"] == "NOT_RUN_INPUT_MISSING"
+    assert payload["input_statuses"][0]["validator_contract"] == {
+        "validator_id": "VAL-A202-SIGNED-INTAKE-PREFLIGHT",
+        "validator_type": "signed_release_decision_intake",
+        "command": (
+            "make generate-a202-signed-intake-preflight "
+            "validate-a202-signed-intake-preflight"
+        ),
+        "expected_artifacts": [
+            "artifacts/tests/a202/t1301_a202_signed_intake_preflight.json",
+            "artifacts/tests/a202/t1301_a202_operator_intake_gap_packet.json",
+        ],
+        "success_statuses": ["A202_OPERATOR_INTAKE_READY_FOR_RELEASE_PREFLIGHT"],
+        "required_before_release_manager": True,
+        "counts_as_release_ready_without_success": False,
+    }
     validate_status(payload, kit_manifest_path=manifest)
 
 
@@ -86,7 +106,9 @@ def test_status_rejects_template_copy_at_submission_target(tmp_path: Path) -> No
     assert payload["status"] == "OPERATOR_INPUTS_REJECTED"
     assert payload["missing_count"] == 0
     assert payload["rejected_count"] == 1
+    assert payload["blocked_validator_count"] == 1
     assert payload["input_statuses"][0]["status"] == "REJECTED_TEMPLATE_COPY"
+    assert payload["input_statuses"][0]["validator_status"] == "BLOCKED_REJECTED_INPUT"
     assert payload["input_statuses"][0]["template_counts_as_clearance"] is False
     validate_status(payload, kit_manifest_path=manifest)
 
@@ -107,8 +129,17 @@ def test_status_reports_present_inputs_as_requiring_validators(tmp_path: Path) -
 
     assert payload["status"] == "OPERATOR_INPUTS_PRESENT_REQUIRING_VALIDATION"
     assert payload["present_requiring_validator_count"] == 1
+    assert payload["blocked_validator_count"] == 0
+    assert payload["pending_dedicated_validator_count"] == 1
     assert payload["release_manager_preflight_refresh_allowed"] is False
     assert payload["input_statuses"][0]["status"] == "PRESENT_REQUIRES_VALIDATOR"
+    assert payload["input_statuses"][0]["validator_status"] == "PENDING_DEDICATED_VALIDATOR"
+    assert (
+        payload["input_statuses"][0]["validator_contract"][
+            "counts_as_release_ready_without_success"
+        ]
+        is False
+    )
     validate_status(payload, kit_manifest_path=manifest)
 
 
@@ -125,3 +156,19 @@ def test_validation_detects_operator_input_status_drift(tmp_path: Path) -> None:
 
     with pytest.raises(ValueError, match="operator input status drift"):
         validate_status(payload, kit_manifest_path=manifest)
+
+
+def test_status_requires_known_validator_contract(tmp_path: Path) -> None:
+    template = write_json(tmp_path / "kit" / "unknown.template.json", {"template_only": True})
+    target = tmp_path / "operator_inputs" / "unknown" / "signed.json"
+    manifest = kit_manifest(tmp_path, target=target, template=template)
+    patch_manifest_template_sha(manifest, template)
+    payload = json.loads(manifest.read_text(encoding="utf-8"))
+    payload["kit_items"][0]["input_id"] = "UNKNOWN_OPERATOR_INPUT"
+    manifest.write_text(json.dumps(payload, sort_keys=True), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="missing validator contract"):
+        build_status(
+            kit_manifest_path=manifest,
+            generated_at="2026-06-27T00:00:00Z",
+        )

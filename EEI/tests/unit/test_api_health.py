@@ -237,10 +237,26 @@ def test_operator_input_status_endpoint_exposes_fail_closed_release_gates() -> N
     assert payload["release_gate_closed_by_input_status"] is False
     assert payload["operator_inputs_ready_for_release_manager"] is False
     assert payload["required_input_count"] == len(payload["input_statuses"])
+    assert payload["dedicated_validator_count"] == payload["required_input_count"]
+    assert payload["dedicated_validators_ready_for_release_manager"] is False
+    assert payload["blocked_validator_count"] == payload["missing_count"]
+    assert payload["pending_dedicated_validator_count"] == 0
     assert {"A202", "A209", "A210", "A026", "A027"}.issubset(
         {item["acceptance_id"] for item in payload["input_statuses"]}
     )
     assert all(item["template_counts_as_clearance"] is False for item in payload["input_statuses"])
+    assert all(
+        item["validator_status"] == "NOT_RUN_INPUT_MISSING"
+        for item in payload["input_statuses"]
+    )
+    assert all(
+        item["validator_contract"]["required_before_release_manager"] is True
+        for item in payload["input_statuses"]
+    )
+    assert all(
+        item["validator_contract"]["counts_as_release_ready_without_success"] is False
+        for item in payload["input_statuses"]
+    )
 
 
 def test_scoring_profile_draft_requires_weights() -> None:

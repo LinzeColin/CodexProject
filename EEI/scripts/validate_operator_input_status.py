@@ -33,6 +33,59 @@ ROOT = Path(__file__).resolve().parents[1]
 
 STATUS_SCHEMA_VERSION = "eei-external-release-operator-input-status-v1"
 DEFAULT_OUTPUT = ROOT / "artifacts/operator_inputs/operator_input_status.json"
+VALIDATOR_CONTRACTS: dict[str, dict[str, Any]] = {
+    "A202_source_license_passage_owner_legal_release": {
+        "validator_id": "VAL-A202-SIGNED-INTAKE-PREFLIGHT",
+        "validator_type": "signed_release_decision_intake",
+        "expected_artifacts": [
+            "artifacts/tests/a202/t1301_a202_signed_intake_preflight.json",
+            "artifacts/tests/a202/t1301_a202_operator_intake_gap_packet.json",
+        ],
+        "success_statuses": ["A202_OPERATOR_INTAKE_READY_FOR_RELEASE_PREFLIGHT"],
+    },
+    "A210_brand_legal_market_clearance_or_risk_waiver": {
+        "validator_id": "VAL-A210-BRAND-CLEARANCE",
+        "validator_type": "brand_legal_market_clearance",
+        "expected_artifacts": [
+            "artifacts/tests/a210/t1309_brand_clearance_preflight_contract.json",
+        ],
+        "success_statuses": ["READY_FOR_RELEASE_PREFLIGHT"],
+    },
+    "A026_entity_resolution_production_gold_set": {
+        "validator_id": "VAL-A026-PRODUCTION-GOLD-ENTITY",
+        "validator_type": "production_gold_quality",
+        "expected_artifacts": [
+            "artifacts/tests/a026/t904_entity_resolution_gold_evaluation_contract.json",
+        ],
+        "success_statuses": ["PRODUCTION_ENTITY_GOLD_READY"],
+    },
+    "A027_relationship_extraction_production_gold_set": {
+        "validator_id": "VAL-A027-PRODUCTION-GOLD-RELATIONSHIP",
+        "validator_type": "production_gold_quality",
+        "expected_artifacts": [
+            "artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json",
+        ],
+        "success_statuses": ["PRODUCTION_RELATIONSHIP_GOLD_READY"],
+    },
+    "A209_clean_rerun_authorization": {
+        "validator_id": "VAL-A209-CLEAN-RERUN-AUTHORIZATION",
+        "validator_type": "operator_soak_recovery_authorization",
+        "expected_artifacts": [
+            "artifacts/tests/a209/t1307_operator_soak_recovery_authorization_packet.json",
+        ],
+        "success_statuses": ["A209_RECOVERY_AUTHORIZATION_READY"],
+    },
+    "A209_24h_operator_soak_finalization": {
+        "validator_id": "VAL-A209-24H-SOAK-FINALIZATION",
+        "validator_type": "operator_soak_finalization",
+        "expected_artifacts": [
+            "artifacts/tests/a209/t1307_operator_soak_evidence_validation.json",
+            "artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json",
+            "artifacts/tests/a209/t1307_operator_soak_recovery_authorization_packet.json",
+        ],
+        "success_statuses": ["A209_FINALIZATION_READY_FOR_RELEASE_MANAGER"],
+    },
+}
 
 
 def utc_now() -> str:
@@ -49,6 +102,35 @@ def resolve_repo_path(path_value: str) -> Path:
 def is_template_path(path_value: str) -> bool:
     normalized = Path(path_value).as_posix()
     return normalized.startswith("artifacts/operator_input_kit/")
+
+
+def validator_contract_for(item: dict[str, Any]) -> dict[str, Any]:
+    input_id = str(item.get("input_id", ""))
+    command = str(item.get("validation_command", ""))
+    base = VALIDATOR_CONTRACTS.get(input_id)
+    if not base:
+        raise ValueError(f"operator input status missing validator contract: {input_id}")
+    if not command:
+        raise ValueError(f"operator input status missing validation command: {input_id}")
+    return {
+        "validator_id": base["validator_id"],
+        "validator_type": base["validator_type"],
+        "command": command,
+        "expected_artifacts": base["expected_artifacts"],
+        "success_statuses": base["success_statuses"],
+        "required_before_release_manager": True,
+        "counts_as_release_ready_without_success": False,
+    }
+
+
+def validator_status_for(input_status: str) -> str:
+    if input_status == "MISSING":
+        return "NOT_RUN_INPUT_MISSING"
+    if input_status.startswith("REJECTED_"):
+        return "BLOCKED_REJECTED_INPUT"
+    if input_status == "PRESENT_REQUIRES_VALIDATOR":
+        return "PENDING_DEDICATED_VALIDATOR"
+    return "UNKNOWN_OPERATOR_INPUT_STATUS"
 
 
 def status_for_input(item: dict[str, Any]) -> dict[str, Any]:
@@ -83,6 +165,7 @@ def status_for_input(item: dict[str, Any]) -> dict[str, Any]:
         "input_id": input_id,
         "acceptance_id": acceptance_id,
         "status": status,
+        "validator_status": validator_status_for(status),
         "reason": reason,
         "submission_target": submission_target,
         "submission_target_resolved": target_display,
@@ -93,6 +176,7 @@ def status_for_input(item: dict[str, Any]) -> dict[str, Any]:
         "template_counts_as_clearance": False,
         "release_gate_closure_allowed": False,
         "validation_command": item.get("validation_command"),
+        "validator_contract": validator_contract_for(item),
         "completion_criteria": item.get("completion_criteria", []),
     }
 
@@ -119,6 +203,8 @@ def build_status(
     present_requiring_validator_count = sum(
         1 for item in items if item["status"] == "PRESENT_REQUIRES_VALIDATOR"
     )
+    blocked_validator_count = missing_count + rejected_count
+    pending_dedicated_validator_count = present_requiring_validator_count
 
     if rejected_count:
         status = "OPERATOR_INPUTS_REJECTED"
@@ -142,6 +228,10 @@ def build_status(
         "missing_count": missing_count,
         "rejected_count": rejected_count,
         "present_requiring_validator_count": present_requiring_validator_count,
+        "dedicated_validator_count": len(items),
+        "blocked_validator_count": blocked_validator_count,
+        "pending_dedicated_validator_count": pending_dedicated_validator_count,
+        "dedicated_validators_ready_for_release_manager": False,
         "operator_inputs_ready_for_release_manager": False,
         "release_manager_preflight_refresh_allowed": False,
         "mvp_release_gate_refresh_allowed": False,
@@ -156,7 +246,9 @@ def build_status(
         "validation_policy": {
             "missing_inputs_block_release": True,
             "template_copies_rejected": True,
+            "dedicated_validator_contract_required": True,
             "present_inputs_still_require_dedicated_validators": True,
+            "dedicated_validators_must_pass_before_release_manager": True,
             "status_manifest_closes_release_gate": False,
         },
         "post_submission_commands": manifest.get("post_submission_commands", []),
@@ -192,6 +284,10 @@ def validate_status(
         "missing_count",
         "rejected_count",
         "present_requiring_validator_count",
+        "dedicated_validator_count",
+        "blocked_validator_count",
+        "pending_dedicated_validator_count",
+        "dedicated_validators_ready_for_release_manager",
         "operator_inputs_ready_for_release_manager",
         "release_manager_preflight_refresh_allowed",
         "mvp_release_gate_refresh_allowed",
@@ -216,6 +312,13 @@ def validate_status(
             raise ValueError("operator input templates must not count as clearance")
         if item.get("release_gate_closure_allowed") is not False:
             raise ValueError("operator input status item must not close release gates")
+        contract = item.get("validator_contract")
+        if not isinstance(contract, dict):
+            raise ValueError("operator input status item must include validator contract")
+        if contract.get("required_before_release_manager") is not True:
+            raise ValueError("operator input validators must be required before release manager")
+        if contract.get("counts_as_release_ready_without_success") is not False:
+            raise ValueError("operator input validators cannot count as ready without success")
 
 
 def parse_args() -> argparse.Namespace:

@@ -31,6 +31,7 @@ test("shows development status navigation with separated state classes", async (
   await expect(page.getByTestId("status-acceptance-done")).not.toHaveText("0");
   await expect(page.getByTestId("status-open-risks")).not.toHaveText("0");
   await expect(page.getByTestId("status-operator-input-count")).toContainText("0/6");
+  await expect(page.getByTestId("status-validator-count")).toContainText("0/6");
 });
 
 test("links tasks risks controls and acceptance evidence from the status screen", async ({
@@ -64,6 +65,12 @@ test("links tasks risks controls and acceptance evidence from the status screen"
   await expect(page.getByTestId("status-operator-gates-panel")).toContainText("A027");
   await expect(page.getByTestId("status-operator-gates-panel")).toContainText("A209");
   await expect(page.getByTestId("status-operator-gates-panel")).toContainText("MISSING");
+  await expect(page.getByTestId("status-operator-gates-panel")).toContainText(
+    "VAL-A202-SIGNED-INTAKE-PREFLIGHT"
+  );
+  await expect(page.getByTestId("status-operator-gates-panel")).toContainText(
+    "NOT_RUN_INPUT_MISSING"
+  );
   await expect(page.getByTestId("status-operator-gates-panel")).toContainText(
     "operator input target is missing"
   );

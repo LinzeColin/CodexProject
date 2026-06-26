@@ -1362,6 +1362,9 @@ components:
       - input_statuses
       - required_input_count
       - missing_count
+      - dedicated_validator_count
+      - pending_dedicated_validator_count
+      - dedicated_validators_ready_for_release_manager
       - release_gate_closed_by_input_status
       - operator_inputs_ready_for_release_manager
       properties:
@@ -1377,6 +1380,14 @@ components:
         missing_count:
           type: integer
           minimum: 0
+        dedicated_validator_count:
+          type: integer
+          minimum: 0
+        pending_dedicated_validator_count:
+          type: integer
+          minimum: 0
+        dedicated_validators_ready_for_release_manager:
+          type: boolean
         release_gate_closed_by_input_status:
           type: boolean
         operator_inputs_ready_for_release_manager:
@@ -1391,6 +1402,8 @@ components:
       - acceptance_id
       - input_id
       - status
+      - validator_status
+      - validator_contract
       - release_gate_closure_allowed
       - submission_target
       - template_counts_as_clearance
@@ -1400,6 +1413,8 @@ components:
         input_id:
           type: string
         status:
+          type: string
+        validator_status:
           type: string
         reason:
           type: string
@@ -1411,6 +1426,37 @@ components:
           type: boolean
         validation_command:
           type: string
+        validator_contract:
+          $ref: '#/components/schemas/OperatorInputValidatorContract'
+    OperatorInputValidatorContract:
+      type: object
+      required:
+      - validator_id
+      - validator_type
+      - command
+      - expected_artifacts
+      - success_statuses
+      - required_before_release_manager
+      - counts_as_release_ready_without_success
+      properties:
+        validator_id:
+          type: string
+        validator_type:
+          type: string
+        command:
+          type: string
+        expected_artifacts:
+          type: array
+          items:
+            type: string
+        success_statuses:
+          type: array
+          items:
+            type: string
+        required_before_release_manager:
+          type: boolean
+        counts_as_release_ready_without_success:
+          type: boolean
     EntityType:
       type: string
       enum:

@@ -9,7 +9,10 @@
     "A027"
   ],
   "artifact_id": "t1303-external-release-operator-input-status",
-  "generated_at": "2026-06-26T16:14:27Z",
+  "blocked_validator_count": 6,
+  "dedicated_validator_count": 6,
+  "dedicated_validators_ready_for_release_manager": false,
+  "generated_at": "2026-06-26T18:30:25Z",
   "input_statuses": [
     {
       "acceptance_id": "A202",
@@ -30,7 +33,22 @@
       "submission_target_resolved": "artifacts/operator_inputs/a202/signed-release-decision-intake.json",
       "submission_target_sha256": "",
       "template_counts_as_clearance": false,
-      "validation_command": "make generate-a202-signed-intake-preflight validate-a202-signed-intake-preflight"
+      "validation_command": "make generate-a202-signed-intake-preflight validate-a202-signed-intake-preflight",
+      "validator_contract": {
+        "command": "make generate-a202-signed-intake-preflight validate-a202-signed-intake-preflight",
+        "counts_as_release_ready_without_success": false,
+        "expected_artifacts": [
+          "artifacts/tests/a202/t1301_a202_signed_intake_preflight.json",
+          "artifacts/tests/a202/t1301_a202_operator_intake_gap_packet.json"
+        ],
+        "required_before_release_manager": true,
+        "success_statuses": [
+          "A202_OPERATOR_INTAKE_READY_FOR_RELEASE_PREFLIGHT"
+        ],
+        "validator_id": "VAL-A202-SIGNED-INTAKE-PREFLIGHT",
+        "validator_type": "signed_release_decision_intake"
+      },
+      "validator_status": "NOT_RUN_INPUT_MISSING"
     },
     {
       "acceptance_id": "A210",
@@ -50,7 +68,21 @@
       "submission_target_resolved": "artifacts/operator_inputs/a210/signed-brand-clearance.json",
       "submission_target_sha256": "",
       "template_counts_as_clearance": false,
-      "validation_command": "make generate-brand-clearance-artifact validate-brand-clearance"
+      "validation_command": "make generate-brand-clearance-artifact validate-brand-clearance",
+      "validator_contract": {
+        "command": "make generate-brand-clearance-artifact validate-brand-clearance",
+        "counts_as_release_ready_without_success": false,
+        "expected_artifacts": [
+          "artifacts/tests/a210/t1309_brand_clearance_preflight_contract.json"
+        ],
+        "required_before_release_manager": true,
+        "success_statuses": [
+          "READY_FOR_RELEASE_PREFLIGHT"
+        ],
+        "validator_id": "VAL-A210-BRAND-CLEARANCE",
+        "validator_type": "brand_legal_market_clearance"
+      },
+      "validator_status": "NOT_RUN_INPUT_MISSING"
     },
     {
       "acceptance_id": "A026",
@@ -70,7 +102,21 @@
       "submission_target_resolved": "artifacts/operator_inputs/a026_a027/production-gold-labels.json",
       "submission_target_sha256": "",
       "template_counts_as_clearance": false,
-      "validation_command": "make generate-gold-quality-evaluation-artifacts validate-gold-quality-evaluation"
+      "validation_command": "make generate-gold-quality-evaluation-artifacts validate-gold-quality-evaluation",
+      "validator_contract": {
+        "command": "make generate-gold-quality-evaluation-artifacts validate-gold-quality-evaluation",
+        "counts_as_release_ready_without_success": false,
+        "expected_artifacts": [
+          "artifacts/tests/a026/t904_entity_resolution_gold_evaluation_contract.json"
+        ],
+        "required_before_release_manager": true,
+        "success_statuses": [
+          "PRODUCTION_ENTITY_GOLD_READY"
+        ],
+        "validator_id": "VAL-A026-PRODUCTION-GOLD-ENTITY",
+        "validator_type": "production_gold_quality"
+      },
+      "validator_status": "NOT_RUN_INPUT_MISSING"
     },
     {
       "acceptance_id": "A027",
@@ -90,7 +136,21 @@
       "submission_target_resolved": "artifacts/operator_inputs/a026_a027/production-gold-labels.json",
       "submission_target_sha256": "",
       "template_counts_as_clearance": false,
-      "validation_command": "make generate-gold-quality-evaluation-artifacts validate-gold-quality-evaluation"
+      "validation_command": "make generate-gold-quality-evaluation-artifacts validate-gold-quality-evaluation",
+      "validator_contract": {
+        "command": "make generate-gold-quality-evaluation-artifacts validate-gold-quality-evaluation",
+        "counts_as_release_ready_without_success": false,
+        "expected_artifacts": [
+          "artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json"
+        ],
+        "required_before_release_manager": true,
+        "success_statuses": [
+          "PRODUCTION_RELATIONSHIP_GOLD_READY"
+        ],
+        "validator_id": "VAL-A027-PRODUCTION-GOLD-RELATIONSHIP",
+        "validator_type": "production_gold_quality"
+      },
+      "validator_status": "NOT_RUN_INPUT_MISSING"
     },
     {
       "acceptance_id": "A209",
@@ -110,7 +170,21 @@
       "submission_target_resolved": "artifacts/operator_inputs/a209/clean-rerun-authorization.json",
       "submission_target_sha256": "",
       "template_counts_as_clearance": false,
-      "validation_command": "make generate-operator-soak-recovery-authorization-packet validate-operator-soak-recovery-authorization-packet"
+      "validation_command": "make generate-operator-soak-recovery-authorization-packet validate-operator-soak-recovery-authorization-packet",
+      "validator_contract": {
+        "command": "make generate-operator-soak-recovery-authorization-packet validate-operator-soak-recovery-authorization-packet",
+        "counts_as_release_ready_without_success": false,
+        "expected_artifacts": [
+          "artifacts/tests/a209/t1307_operator_soak_recovery_authorization_packet.json"
+        ],
+        "required_before_release_manager": true,
+        "success_statuses": [
+          "A209_RECOVERY_AUTHORIZATION_READY"
+        ],
+        "validator_id": "VAL-A209-CLEAN-RERUN-AUTHORIZATION",
+        "validator_type": "operator_soak_recovery_authorization"
+      },
+      "validator_status": "NOT_RUN_INPUT_MISSING"
     },
     {
       "acceptance_id": "A209",
@@ -133,7 +207,23 @@
       "submission_target_resolved": "artifacts/operator_inputs/a209/promoted-operator-soak-finalization.json",
       "submission_target_sha256": "",
       "template_counts_as_clearance": false,
-      "validation_command": "make generate-operator-soak-finalization-preflight generate-operator-soak-recovery-authorization-packet validate-operator-soak-finalization-preflight validate-operator-soak-recovery-authorization-packet"
+      "validation_command": "make generate-operator-soak-finalization-preflight generate-operator-soak-recovery-authorization-packet validate-operator-soak-finalization-preflight validate-operator-soak-recovery-authorization-packet",
+      "validator_contract": {
+        "command": "make generate-operator-soak-finalization-preflight generate-operator-soak-recovery-authorization-packet validate-operator-soak-finalization-preflight validate-operator-soak-recovery-authorization-packet",
+        "counts_as_release_ready_without_success": false,
+        "expected_artifacts": [
+          "artifacts/tests/a209/t1307_operator_soak_evidence_validation.json",
+          "artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json",
+          "artifacts/tests/a209/t1307_operator_soak_recovery_authorization_packet.json"
+        ],
+        "required_before_release_manager": true,
+        "success_statuses": [
+          "A209_FINALIZATION_READY_FOR_RELEASE_MANAGER"
+        ],
+        "validator_id": "VAL-A209-24H-SOAK-FINALIZATION",
+        "validator_type": "operator_soak_finalization"
+      },
+      "validator_status": "NOT_RUN_INPUT_MISSING"
     }
   ],
   "missing_count": 6,
@@ -145,6 +235,7 @@
     "Release-manager refresh still requires every dedicated validator to pass on real operator inputs."
   ],
   "operator_inputs_ready_for_release_manager": false,
+  "pending_dedicated_validator_count": 0,
   "post_submission_commands": [
     "make generate-external-release-evidence-bundle validate-external-release-evidence-bundle",
     "make generate-release-manager-activation-artifact validate-release-manager-activation",
@@ -176,6 +267,8 @@
     "T904"
   ],
   "validation_policy": {
+    "dedicated_validator_contract_required": true,
+    "dedicated_validators_must_pass_before_release_manager": true,
     "missing_inputs_block_release": true,
     "present_inputs_still_require_dedicated_validators": true,
     "status_manifest_closes_release_gate": false,

@@ -8,6 +8,7 @@ project_id: "EEI"
 # 2026-06-26 audit: T1308/A211 evidence drawer focus-trap hardening changes no formula expressions, weights, thresholds or extraction logic.
 # 2026-06-26 audit: T504/A072 strategic-signal panel changes no formula expressions, weights, thresholds or extraction logic.
 # 2026-06-26 audit: T1308/A211 app icon and BrandMark refresh changes no formula expressions, weights, thresholds or extraction logic.
+# 2026-06-27 audit: T1303/A204-A205 operator input validator contracts change no formula expressions, weights, thresholds or extraction logic.
 formulas:
   - formula_id: "FORM-001"
     legacy_formula_id: "F-NP-001"
@@ -679,7 +680,7 @@ formulas:
       - "ASM-004"
     status: "active"
     expression: "value = configured_value if present and within [min_value,max_value] else default_value; activation requires validation and manual gate where configured."
-    description: "Operational deterministic lookup for threshold, motion, visual, refresh, calibration, frontend hydration guard, signed-intake source-boundary, gold-quality gate, external release operator intake and operator input status visibility parameters without a scoring formula."
+    description: "Operational deterministic lookup for threshold, motion, visual, refresh, calibration, frontend hydration guard, signed-intake source-boundary, gold-quality gate, external release operator intake and operator input status/validator-contract parameters without a scoring formula."
     variables:
       - name: "configured_value"
         data_type: "number|string|boolean"
@@ -711,6 +712,7 @@ formulas:
       - "A202 signed-intake closure rejects repository fixtures, templates, docs, config, data and test sources unless under approved operator input paths"
       - "external release operator intake packet cannot close release gates directly"
       - "operator input status API and frontend visibility cannot close release gates directly"
+      - "operator input validator contracts cannot count as release readiness without dedicated validator success"
     missing_policy: "fallback_to_default_or_UNKNOWN_with_task"
     normalization: "NOT_APPLICABLE: deterministic configuration lookup, not a score aggregation."
     output_range: "parameter_specific"

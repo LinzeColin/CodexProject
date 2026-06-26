@@ -31,12 +31,19 @@ type OperatorInputStatusItem = {
   release_gate_closure_allowed: boolean;
   status: string;
   submission_target: string;
+  validator_status: string;
+  validator_contract: {
+    validator_id: string;
+  };
 };
 
 type OperatorInputStatus = {
+  dedicated_validator_count: number;
+  dedicated_validators_ready_for_release_manager: boolean;
   input_statuses: OperatorInputStatusItem[];
   missing_count: number;
   operator_inputs_ready_for_release_manager: boolean;
+  pending_dedicated_validator_count: number;
   release_gate_closed_by_input_status: boolean;
   required_input_count: number;
   status: string;
@@ -252,6 +259,13 @@ export default function DevelopmentStatusPage() {
               {operatorInputsReady}/{operatorInputs.required_input_count}
             </dd>
           </div>
+          <div data-testid="status-validator-count">
+            <dt>Validator contracts</dt>
+            <dd>
+              {operatorInputs.pending_dedicated_validator_count}/
+              {operatorInputs.dedicated_validator_count}
+            </dd>
+          </div>
         </section>
 
         <section className="statusLanes" aria-label="状态分类" data-testid="status-lanes">
@@ -312,7 +326,11 @@ export default function DevelopmentStatusPage() {
                   <strong>{row.acceptance_id}</strong>
                   <span>{row.input_id}</span>
                   <em>{row.status}</em>
-                  <small>{row.release_gate_closure_allowed ? "release allowed" : row.reason}</small>
+                  <small>
+                    {row.release_gate_closure_allowed
+                      ? "release allowed"
+                      : `${row.validator_contract.validator_id}: ${row.validator_status} - ${row.reason}`}
+                  </small>
                 </div>
               ))}
             </div>

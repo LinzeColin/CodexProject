@@ -1,5 +1,44 @@
 # MVP Development Record
 
+## 2026-06-27 - T1303/A204-A205 operator input validator contracts
+
+Status: LOCAL TARGET VALIDATED; WAITING FOR OPERATOR INPUTS; RELEASE GATES STILL BLOCKED
+
+### Scope
+
+- Added a validator contract registry to `scripts/validate_operator_input_status.py` for every required A202/A210/A026/A027/A209 operator input.
+- Regenerated `artifacts/operator_inputs/operator_input_status.json` with `dedicated_validator_count=6`, `blocked_validator_count=6`, `pending_dedicated_validator_count=0`, per-input `validator_status=NOT_RUN_INPUT_MISSING`, and per-input validator ids, expected artifacts and success statuses.
+- Updated `/development-status` to display validator-contract progress and per-gate validator status.
+- Updated OpenAPI, unit tests and Playwright coverage for the stronger operator-input contract.
+
+### Acceptance Mapping
+
+- T1303 -> A204/A205.
+- This improves release-manager input validation readiness only. It does not close A204/A205.
+
+### Validation
+
+- `make generate-operator-input-status validate-operator-input-status`: PASS.
+- `PYTHONPYCACHEPREFIX=/private/tmp/eei-operator-input-validator-pycache PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m py_compile scripts/validate_operator_input_status.py tests/unit/test_operator_input_status.py tests/unit/test_api_health.py`: PASS.
+- `TMPDIR=/private/tmp RUFF_CACHE_DIR=/private/tmp/eei-operator-input-validator-ruff .venv/bin/ruff check scripts/validate_operator_input_status.py tests/unit/test_operator_input_status.py tests/unit/test_api_health.py`: PASS.
+- `TMPDIR=/private/tmp PYTHONPYCACHEPREFIX=/private/tmp/eei-operator-input-validator-pycache .venv/bin/python -m pytest -q tests/unit/test_operator_input_status.py tests/unit/test_api_health.py -q`: PASS, `25/25`.
+- `PYTHONDONTWRITEBYTECODE=1 .venv/bin/python scripts/validate_contracts.py`: PASS.
+- `NEXT_TELEMETRY_DISABLED=1 ./node_modules/.bin/next typegen` from `apps/web`: PASS.
+- `./node_modules/.bin/tsc --noEmit` from `apps/web`: PASS.
+- `PLAYWRIGHT_BROWSERS_PATH=/private/tmp/eei-ms-playwright ./apps/web/node_modules/.bin/playwright test --config=playwright.config.ts tests/e2e/development-status.spec.ts --workers=1`: PASS, `2/2`.
+- `make generate-clean-room-release validate-clean-room-release generate-release-artifacts validate-release-artifacts`: PASS, `package_paths=456`, `manifest_paths=463`, `checksum_paths=462`.
+- `make verify`: PASS, unit tests `153/153`.
+
+### Non-Claims
+
+- This does not create signed A202 evidence, A210 brand clearance, A026/A027 production gold labels, A209 clean-rerun authorization, A209 finalization, release-manager activation or MVP readiness.
+- No database schema, scoring formula, graph traversal formula, extraction model, model weight, threshold, publication policy or active parameter value changed.
+
+### Rollback
+
+- Revert `scripts/validate_operator_input_status.py`, `artifacts/operator_inputs/operator_input_status.json`, `specs/api_contract.yaml`, `apps/web/src/app/development-status/page.tsx`, `tests/unit/test_operator_input_status.py`, `tests/unit/test_api_health.py`, `tests/e2e/development-status.spec.ts` and companion governance/release artifact changes.
+- Preserve any future signed operator submissions under `artifacts/operator_inputs/`.
+
 ## 2026-06-27 - T1303/A204-A205 operator input status API and frontend binding
 
 Status: LOCAL TARGET VALIDATED; WAITING FOR OPERATOR INPUTS; RELEASE GATES STILL BLOCKED

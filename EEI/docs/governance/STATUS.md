@@ -35,9 +35,9 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `TASK-T1303-OPERATOR-INPUT-STATUS-API-FRONTEND-BINDING`
+- Release gate: `TASK-T1303-OPERATOR-INPUT-VALIDATOR-CONTRACTS`
 - Next executable task: `TASK-T1303`
-- Latest non-closure product binding: `EVENT-20260627-016` exposes missing operator gates through API/frontend while release readiness remains blocked.
+- Latest non-closure product binding: `EVENT-20260627-017` adds machine-readable validator contracts for missing operator inputs while release readiness remains blocked.
 - Pending/stale events: `126`
 - Tree-bound events: `0`
 - Commit-bound events: `21`
