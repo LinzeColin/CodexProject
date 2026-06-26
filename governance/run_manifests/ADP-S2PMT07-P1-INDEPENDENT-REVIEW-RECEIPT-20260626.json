@@ -56,7 +56,10 @@
     "arxiv-daily-push/docs/phase_records/PHASE_S2PMT06_SAFE_CONFIG_C006.md",
     "governance/run_manifests/ADP-S2PMT06-SAFE-CONFIG-C006-20260627.json",
     "arxiv-daily-push/docs/phase_records/PHASE_S2PMT06_APPEND_ONLY_AUDIT_C007.md",
-    "governance/run_manifests/ADP-S2PMT06-APPEND-ONLY-AUDIT-C007-20260627.json"
+    "governance/run_manifests/ADP-S2PMT06-APPEND-ONLY-AUDIT-C007-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C012-20260627.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT06_SAFE_MANUAL_ACTION_C012.md",
+    "governance/run_manifests/ADP-S2PMT06-SAFE-MANUAL-ACTION-C012-20260627.json"
   ],
   "p1_findings": [
     {
@@ -602,17 +605,18 @@
     },
     {
       "finding_id": "C-012",
-      "fix_task": "S2PMT06",
+      "fix_task": "S2PMT06-SAFE-MANUAL-ACTION-C012",
       "track": "C_UI交互架构",
       "severity": "P1",
       "title": "缺少手动重试、取消、重新排队、跳过和重新生成的安全交互",
-      "preliminary_review_state": "evidence_surface_located_independent_review_required_closure_not_claimed",
+      "preliminary_review_state": "refreshed_current_evidence_located_independent_review_required_closure_not_claimed",
       "evidence_refs": [
-        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT06_OWNER_UX.md",
-        "governance/run_manifests/ADP-S2PMT06-OWNER-UX-20260626.json",
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT06_SAFE_MANUAL_ACTION_C012.md",
+        "governance/run_manifests/ADP-S2PMT06-SAFE-MANUAL-ACTION-C012-20260627.json",
         "arxiv-daily-push/tests/test_stage2_owner_ux.py"
       ],
-      "reviewer_decision_required": "Verify V7.1 fix/test requirement: 重复点击不重复发送；非法状态动作被禁用并解释原因"
+      "reviewer_decision_required": "Verify V7.1 fix/test requirement: 重复点击不重复发送；非法状态动作被禁用并解释原因",
+      "receipt_refreshed_at": "2026-06-27T06:34:47+10:00"
     }
   ],
   "preserved_blockers": [
@@ -642,7 +646,7 @@
   },
   "rollback": "Remove the S2PMT07 P1 review receipt phase record, manifest, and references; no production runtime state was changed.",
   "next_task": "S2PMT07_INDEPENDENT_REVIEWER_SIGNOFF_OR_P1_EVIDENCE_REPAIR",
-  "refreshed_at": "2026-06-27T06:19:53+10:00",
+  "refreshed_at": "2026-06-27T06:34:47+10:00",
   "refreshed_findings": [
     "A-006",
     "A-007",
@@ -676,9 +680,10 @@
     "C-002",
     "C-005",
     "C-006",
-    "C-007"
+    "C-007",
+    "C-012"
   ],
-  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C006-C007-20260627.json",
+  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C012-20260627.json",
   "refresh_manifests": [
     "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A006-A009-20260627.json",
@@ -689,7 +694,8 @@
     "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C001-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C002-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C005-20260627.json",
-    "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C006-C007-20260627.json"
+    "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C006-C007-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C012-20260627.json"
   ],
-  "previous_refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C005-20260627.json"
+  "previous_refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C006-C007-20260627.json"
 }

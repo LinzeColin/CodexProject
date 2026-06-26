@@ -17,6 +17,7 @@ from arxiv_daily_push.stage2_owner_ux import (
     build_s2pmt06_c005_recoverable_error_report,
     build_s2pmt06_c006_safe_config_report,
     build_s2pmt06_c007_append_only_audit_report,
+    build_s2pmt06_c012_safe_manual_action_report,
     build_s2pmt06_report,
     build_safe_action_preview,
     build_safe_config_change,
@@ -25,6 +26,7 @@ from arxiv_daily_push.stage2_owner_ux import (
     validate_s2pmt06_c005_recoverable_error_report,
     validate_s2pmt06_c006_safe_config_report,
     validate_s2pmt06_c007_append_only_audit_report,
+    validate_s2pmt06_c012_safe_manual_action_report,
     validate_s2pmt06_report,
 )
 
@@ -223,6 +225,56 @@ class Stage2OwnerUXTests(unittest.TestCase):
         self.assertIn(
             "result_artifact must record the latest config revision id",
             validate_s2pmt06_c007_append_only_audit_report(mismatch),
+        )
+
+    def test_c012_report_requires_safe_manual_actions_and_no_mutation(self) -> None:
+        report = build_s2pmt06_c012_safe_manual_action_report(generated_at="2026-06-27T06:34:47+10:00")
+
+        self.assertEqual(report["status"], "pass")
+        self.assertEqual(report["finding_id"], "C-012")
+        self.assertEqual(report["subtask_id"], "S2PMT06-SAFE-MANUAL-ACTION-C012")
+        self.assertEqual(set(report["safe_actions"]), set(S2PMT06_SAFE_ACTIONS))
+        self.assertEqual(report["unsupported_action_probe"]["status"], "blocked")
+        self.assertFalse(report["duplicate_click_policy"]["duplicate_click_creates_new_send"])
+        self.assertFalse(report["duplicate_click_policy"]["duplicate_click_creates_new_queue_mutation"])
+        self.assertTrue(report["duplicate_click_policy"]["receipt_reused"])
+        self.assertEqual(len(report["illegal_state_matrix"]), len(S2PMT06_SAFE_ACTIONS))
+        for action, preview in report["safe_actions"].items():
+            with self.subTest(action=action):
+                self.assertEqual(preview["status"], "pass")
+                self.assertTrue(preview["idempotency_key"])
+                self.assertTrue(preview["allowed_current_states"])
+                self.assertTrue(preview["preview_required"])
+                self.assertTrue(preview["impact_visible"])
+                self.assertTrue(preview["confirmation_required"])
+                self.assertTrue(preview["receipt_required"])
+                self.assertFalse(preview["production_mutation_applied"])
+        for flag in S2PMT06_PRODUCTION_FALSE_FLAGS:
+            self.assertFalse(report[flag])
+        self.assertEqual(validate_s2pmt06_c012_safe_manual_action_report(report), [])
+
+    def test_c012_report_blocks_missing_action_duplicate_key_or_mutation(self) -> None:
+        report = build_s2pmt06_c012_safe_manual_action_report(generated_at="2026-06-27T06:34:47+10:00")
+        missing_action = dict(report)
+        missing_action["safe_actions"] = dict(report["safe_actions"])
+        missing_action["safe_actions"].pop("retry")
+        self.assertIn("safe_actions.retry is required", validate_s2pmt06_c012_safe_manual_action_report(missing_action))
+
+        duplicate_key = build_s2pmt06_c012_safe_manual_action_report(generated_at="2026-06-27T06:34:47+10:00")
+        duplicate_key["safe_actions"]["cancel"] = dict(
+            duplicate_key["safe_actions"]["cancel"],
+            idempotency_key=duplicate_key["safe_actions"]["retry"]["idempotency_key"],
+        )
+        self.assertIn(
+            "safe_actions idempotency_key values must be unique",
+            validate_s2pmt06_c012_safe_manual_action_report(duplicate_key),
+        )
+
+        mutating = build_s2pmt06_c012_safe_manual_action_report(generated_at="2026-06-27T06:34:47+10:00")
+        mutating["safe_actions"]["requeue"] = dict(mutating["safe_actions"]["requeue"], production_mutation_applied=True)
+        self.assertIn(
+            "safe_actions.requeue must not mutate production queue or send mail",
+            validate_s2pmt06_c012_safe_manual_action_report(mutating),
         )
 
     def test_accessibility_matrix_covers_a11y_responsive_and_mail_client_requirements(self) -> None:

@@ -182,7 +182,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         manifest_path = REPO_ROOT / "governance/run_manifests/ADP-S2PMT07-P1-INDEPENDENT-REVIEW-RECEIPT-20260626.json"
         refresh_manifest_path = (
             REPO_ROOT
-            / "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C006-C007-20260627.json"
+            / "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C012-20260627.json"
         )
         receipt = receipt_path.read_text(encoding="utf-8")
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
@@ -247,6 +247,10 @@ class Stage2FinalGateTests(unittest.TestCase):
                 "PHASE_S2PMT06_APPEND_ONLY_AUDIT_C007.md",
                 "ADP-S2PMT06-APPEND-ONLY-AUDIT-C007-20260627.json",
             ),
+            "C-012": (
+                "PHASE_S2PMT06_SAFE_MANUAL_ACTION_C012.md",
+                "ADP-S2PMT06-SAFE-MANUAL-ACTION-C012-20260627.json",
+            ),
         }
         stale_refs = {
             "A-006": ("PHASE_S2PMT03_LEASE_FENCING.md", "ADP-S2PMT03-LEASE-FENCING-20260626.json"),
@@ -302,13 +306,14 @@ class Stage2FinalGateTests(unittest.TestCase):
             "C-005": ("PHASE_S2PMT06_OWNER_UX.md", "ADP-S2PMT06-OWNER-UX-20260626.json"),
             "C-006": ("PHASE_S2PMT06_OWNER_UX.md", "ADP-S2PMT06-OWNER-UX-20260626.json"),
             "C-007": ("PHASE_S2PMT06_OWNER_UX.md", "ADP-S2PMT06-OWNER-UX-20260626.json"),
+            "C-012": ("PHASE_S2PMT06_OWNER_UX.md", "ADP-S2PMT06-OWNER-UX-20260626.json"),
         }
 
         findings = {finding["finding_id"]: finding for finding in manifest["p1_findings"]}
         self.assertEqual(manifest["refreshed_findings"], list(expected_current_refs))
         self.assertEqual(
             manifest["refresh_manifest"],
-            "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C006-C007-20260627.json",
+            "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C012-20260627.json",
         )
         self.assertIn(
             "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-20260627.json",
