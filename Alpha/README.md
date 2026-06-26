@@ -1,6 +1,6 @@
 # Alpha 中文 Owner 快速入口
 
-- 产品 canonical 当前状态：`S5` / `S5PA` / `S5PAT01`，下一 Gate 为 `S5PA-GATE-IN-PROGRESS`；事实源以 `docs/governance/roadmap.yaml`、`功能清单`、`开发记录` 为准。
+- 产品 canonical 当前状态：`S5` / `S5PA` / `S5PAT01`，下一 Gate 为 `S5PA-GATE-IN-PROGRESS`；事实源以 `docs/governance/roadmap.yaml`、`功能清单.md`、`开发记录.md` 为准。
 - 本轮 Owner-flow 治理任务：`S6PAT02` / `ACC-S6PAT02`，只补 Owner 路径，不改产品 canonical current_task。
 - 验收口径：用户可读优先；中文优先，默认全局中文。
 - 当前状态：主动源码仍在 `Alpha/backend/`，测试在 `Alpha/tests/`，配置在 `Alpha/configs/`。
@@ -97,7 +97,7 @@ Canonical governance files live in `docs/governance/`:
 - `VERSION_MATRIX.yaml`
 - `TRACEABILITY_MATRIX.csv`
 
-中文人类入口：`功能清单`、`开发记录`、`模型参数文件`。这三份文件必须直接保留
+中文人类入口：`功能清单.md`、`开发记录.md`、`模型参数文件.md`。这三份文件必须直接保留
 owner 可读的功能摘要、Roadmap/任务、模型/参数、证据状态、限制和下一步门禁；
 它们不是跳转页，也不是第二套可编辑机器事实源。机器真相仍以
 `docs/governance/` 下的 Lean v2 文件为准。

@@ -15,7 +15,7 @@ Governance spec version: `1.0.0`
 - `docs/governance/delivery_tasks.yaml`
 - `docs/governance/TRACEABILITY_MATRIX.csv`
 
-Legacy files `功能清单`, `开发记录`, and `模型参数文件` are compatibility indexes only.
+Legacy files `功能清单.md`, `开发记录.md`, and `模型参数文件.md` are compatibility indexes only.
 
 ## Model Overview
 

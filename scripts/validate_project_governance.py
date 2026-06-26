@@ -142,19 +142,21 @@ PRODUCT_ROADMAP_KIND = "product"
 ADP_V72_CURRENT_TASK_ID = "S2PMT07"
 ADP_V72_SHADOW_SOURCE_NEXT = "NONE_WHILE_S2PMT07_BLOCKED"
 HUMAN_ENTRY_QUALITY_CONTRACTS = {
-    "功能清单": {
+    "功能清单.md": {
         "title": "# 功能清单",
         "required_tokens": ("## 摘要", "project_id", "current_stage", "current_task", "evidence_status"),
     },
-    "开发记录": {
+    "开发记录.md": {
         "title": "# 开发记录",
         "required_tokens": ("## 摘要", "Stage -> Phase -> Task", "stop_gate"),
     },
-    "模型参数文件": {
+    "模型参数文件.md": {
         "title": "# 模型参数文件",
         "required_tokens": ("## 摘要", "active_model_count", "active_formula_count", "active_parameter_count"),
     },
 }
+HUMAN_ENTRY_MARKDOWN_FILES = ("功能清单.md", "开发记录.md", "模型参数文件.md")
+HUMAN_ENTRY_EXTENSIONLESS_FILES = ("功能清单", "开发记录", "模型参数文件")
 HUMAN_ENTRY_FORBIDDEN_MARKERS = (
     "compatibility index",
     "compatibility indexes",
@@ -641,7 +643,7 @@ def validate_arxiv_daily_push_v7_root_lock(
         if needle not in text:
             validation.add(required, scope, f"{label} missing V7 reference: {needle}")
 
-    for rel_path in ("功能清单", "开发记录", "模型参数文件"):
+    for rel_path in HUMAN_ENTRY_MARKDOWN_FILES:
         text = (project_path / rel_path).read_text(encoding="utf-8") if (project_path / rel_path).exists() else ""
         for needle in ("ADP-PRODUCT-CONTRACT-V7.1", "V7_1_ROOT_LOCK.yaml", "ARXIV_PRODUCTION_ACCEPTED", "S2PCT01", "S2P2T01", "S2PBT01"):
             if needle not in text:
@@ -789,9 +791,9 @@ def validate_arxiv_daily_push_v7_root_lock(
     current_tokens = (
         ("docs/pursuing_goal/CURRENT.yaml", project_agent, "arxiv-daily-push/AGENTS.md"),
         ("docs/pursuing_goal/v7_2/V7_2_ROOT_LOCK.yaml", project_agent, "arxiv-daily-push/AGENTS.md"),
-        ("ADP-PRODUCT-CONTRACT-V7.2", (project_path / "功能清单").read_text(encoding="utf-8"), "功能清单"),
-        ("ADP-PRODUCT-CONTRACT-V7.2", (project_path / "开发记录").read_text(encoding="utf-8"), "开发记录"),
-        ("ADP-PRODUCT-CONTRACT-V7.2", (project_path / "模型参数文件").read_text(encoding="utf-8"), "模型参数文件"),
+        ("ADP-PRODUCT-CONTRACT-V7.2", (project_path / "功能清单.md").read_text(encoding="utf-8"), "功能清单.md"),
+        ("ADP-PRODUCT-CONTRACT-V7.2", (project_path / "开发记录.md").read_text(encoding="utf-8"), "开发记录.md"),
+        ("ADP-PRODUCT-CONTRACT-V7.2", (project_path / "模型参数文件.md").read_text(encoding="utf-8"), "模型参数文件.md"),
     )
     for needle, text, label in current_tokens:
         if needle not in text:
@@ -1345,6 +1347,24 @@ def validate_assurance_status(validation: Validation, project: dict[str, Any]) -
         validation.error(scope, f"{rel(path)} active formula count drift")
 
 
+def validate_markdown_human_entry_filenames(
+    validation: Validation,
+    project_path: Path,
+    required: bool,
+    scope: str,
+) -> None:
+    for filename in HUMAN_ENTRY_MARKDOWN_FILES:
+        check_file_nonempty(validation, project_path / filename, required, scope)
+    for filename in HUMAN_ENTRY_EXTENSIONLESS_FILES:
+        path = project_path / filename
+        if path.exists():
+            validation.add(
+                required,
+                scope,
+                f"Extensionless human entry file is forbidden; use {filename}.md: {rel(path)}",
+            )
+
+
 def validate_root(validation: Validation, config: dict[str, Any]) -> None:
     root_config = config.get("root_governance") if isinstance(config, dict) else {}
     if not isinstance(root_config, dict):
@@ -1397,6 +1417,7 @@ def validate_project(
     if not project_path.exists():
         validation.add(required, scope, f"Project path missing: {rel(project_path)}")
         return
+    validate_markdown_human_entry_filenames(validation, project_path, required, scope)
     for rel_path in project_files:
         check_file_nonempty(validation, project_path / rel_path, required, scope)
     check_human_entry_quality(validation, project_path, required, scope)

@@ -6,7 +6,7 @@ Active Codex-related project hub for LinzeColin.
 
 - Execution contract: [AGENTS.md](AGENTS.md)
 - Lean v2 standard: [docs/governance/STANDARD.md](docs/governance/STANDARD.md)
-- Project human-entry files: `功能清单`, `开发记录`, `模型参数文件`
+- Project human-entry files: `功能清单.md`, `开发记录.md`, `模型参数文件.md`
 
 ## Assurance Vocabulary
 

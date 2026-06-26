@@ -430,9 +430,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             governance_path.mkdir(parents=True)
             project_governance_path.mkdir(parents=True)
             (tmp_path / "AGENTS.md").write_text("root contract\n", encoding="utf-8")
-            (project_path / "功能清单").write_text("features\n", encoding="utf-8")
-            (project_path / "开发记录").write_text("roadmap\n", encoding="utf-8")
-            (project_path / "模型参数文件").write_text("models\n", encoding="utf-8")
+            (project_path / "功能清单.md").write_text("features\n", encoding="utf-8")
+            (project_path / "开发记录.md").write_text("roadmap\n", encoding="utf-8")
+            (project_path / "模型参数文件.md").write_text("models\n", encoding="utf-8")
             (project_path / "VERSION").write_text("0.1.0\n", encoding="utf-8")
             (project_path / "CHANGELOG.md").write_text("change\n", encoding="utf-8")
             (project_governance_path / "project.yaml").write_text("project_id: ProjectA\n", encoding="utf-8")
@@ -642,7 +642,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             ],
         }
 
-        unicode_selection = validator.changed_scope_selection(config, ["中文项目/开发记录"])
+        unicode_selection = validator.changed_scope_selection(config, ["中文项目/开发记录.md"])
         delete_selection = validator.changed_scope_selection(config, ["Alpha/obsolete.py"])
 
         self.assertEqual([project["project_id"] for project in unicode_selection["projects"]], ["中文项目"])
@@ -847,11 +847,11 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             )
             dry = cli.render_registered_project("ProjectA", write=False, root=tmp_path, projects_file=tmp_path / "governance" / "projects.yaml")
             self.assertFalse(dry["write"])
-            for path in ("功能清单", "开发记录", "模型参数文件"):
+            for path in ("功能清单.md", "开发记录.md", "模型参数文件.md"):
                 self.assertFalse((project_root / path).exists(), path)
             written = cli.render_registered_project("ProjectA", write=True, root=tmp_path, projects_file=tmp_path / "governance" / "projects.yaml")
             self.assertTrue(written["write"])
-            dev_record = (project_root / "开发记录").read_text(encoding="utf-8")
+            dev_record = (project_root / "开发记录.md").read_text(encoding="utf-8")
         self.assertIn("progress: `25.00%`", dev_record)
         self.assertIn("| S1PAT02 | Next | planned | 3.00 | 75.00%", dev_record)
 
@@ -947,11 +947,11 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 encoding="utf-8",
             )
             cli.render_project_files(project_root, write=True)
-            before = (project_root / "开发记录").read_text(encoding="utf-8")
+            before = (project_root / "开发记录.md").read_text(encoding="utf-8")
             clean = cli.check_render_project_files(project_root)
-            (project_root / "开发记录").write_text(before + "\nmanual drift\n", encoding="utf-8")
+            (project_root / "开发记录.md").write_text(before + "\nmanual drift\n", encoding="utf-8")
             drifted = cli.check_render_project_files(project_root)
-            after = (project_root / "开发记录").read_text(encoding="utf-8")
+            after = (project_root / "开发记录.md").read_text(encoding="utf-8")
         self.assertEqual(clean["drift_count"], 0)
         self.assertEqual(clean["reference_issue_count"], 1)
         self.assertEqual(drifted["drift_count"], 1)
@@ -1483,7 +1483,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             }
         }
         scope = {
-            "changed_files": ["Alpha/开发记录"],
+            "changed_files": ["Alpha/开发记录.md"],
             "root_governance_changed": False,
             "selected_required_project_count": 1,
             "required_project_count": 1,
@@ -1537,7 +1537,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         }
         check_render = {
             "write": False,
-            "drift": [{"path": "开发记录"}],
+            "drift": [{"path": "开发记录.md"}],
             "drift_count": 1,
             "reference_issues": [],
             "reference_issue_count": 0,
@@ -2099,9 +2099,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(result["drift_count"], 0, result["drift"])
         self.assertEqual(result["reference_issue_count"], 0, result["reference_issues"])
 
-        feature_text = (ROOT / "Serenity-Alipay" / "功能清单").read_text(encoding="utf-8")
-        dev_text = (ROOT / "Serenity-Alipay" / "开发记录").read_text(encoding="utf-8")
-        model_text = (ROOT / "Serenity-Alipay" / "模型参数文件").read_text(encoding="utf-8")
+        feature_text = (ROOT / "Serenity-Alipay" / "功能清单.md").read_text(encoding="utf-8")
+        dev_text = (ROOT / "Serenity-Alipay" / "开发记录.md").read_text(encoding="utf-8")
+        model_text = (ROOT / "Serenity-Alipay" / "模型参数文件.md").read_text(encoding="utf-8")
         self.assertIn("# 功能清单", feature_text)
         self.assertIn("Stage -> Phase -> Task", dev_text)
         self.assertIn("S4PBT03", dev_text)
@@ -2114,7 +2114,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         completed = SimpleNamespace(stdout=" M Serenity-Alipay/功能清单\n", stderr="", returncode=0)
         with patch.object(cli.subprocess, "run", return_value=completed) as run:
             lines = cli.git_status_porcelain(ROOT)
-        self.assertEqual(lines, [" M Serenity-Alipay/功能清单"])
+        self.assertEqual(lines, [" M Serenity-Alipay/功能清单.md"])
         kwargs = run.call_args.kwargs
         self.assertEqual(kwargs["encoding"], "utf-8")
         self.assertEqual(kwargs["errors"], "replace")
@@ -2164,9 +2164,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "Serenity-Alipay/docs/governance/project.yaml",
             "Serenity-Alipay/docs/governance/roadmap.yaml",
             "Serenity-Alipay/docs/governance/events.jsonl",
-            "Serenity-Alipay/功能清单",
-            "Serenity-Alipay/开发记录",
-            "Serenity-Alipay/模型参数文件",
+            "Serenity-Alipay/功能清单.md",
+            "Serenity-Alipay/开发记录.md",
+            "Serenity-Alipay/模型参数文件.md",
             "scripts/lean_governance.py",
             "scripts/validate_governance_sync.py",
             "tests/governance/test_project_governance_validator.py",
@@ -2391,9 +2391,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(result["drift_count"], 0, result["drift"])
         self.assertEqual(result["reference_issue_count"], 0, result["reference_issues"])
 
-        feature_text = (ROOT / "Alpha" / "功能清单").read_text(encoding="utf-8")
-        dev_text = (ROOT / "Alpha" / "开发记录").read_text(encoding="utf-8")
-        model_text = (ROOT / "Alpha" / "模型参数文件").read_text(encoding="utf-8")
+        feature_text = (ROOT / "Alpha" / "功能清单.md").read_text(encoding="utf-8")
+        dev_text = (ROOT / "Alpha" / "开发记录.md").read_text(encoding="utf-8")
+        model_text = (ROOT / "Alpha" / "模型参数文件.md").read_text(encoding="utf-8")
         self.assertIn("# 功能清单", feature_text)
         self.assertIn("FEAT-ALPHA-003", feature_text)
         self.assertIn("Stage -> Phase -> Task", dev_text)
@@ -2416,9 +2416,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 "Alpha/docs/governance/project.yaml",
                 "Alpha/docs/governance/roadmap.yaml",
                 "Alpha/docs/governance/events.jsonl",
-                "Alpha/功能清单",
-                "Alpha/开发记录",
-                "Alpha/模型参数文件",
+                "Alpha/功能清单.md",
+                "Alpha/开发记录.md",
+                "Alpha/模型参数文件.md",
             ],
         )
         self.assertEqual(len(changes), 1)
@@ -2455,9 +2455,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "Alpha/docs/governance/project.yaml",
             "Alpha/docs/governance/roadmap.yaml",
             "Alpha/docs/governance/events.jsonl",
-            "Alpha/功能清单",
-            "Alpha/开发记录",
-            "Alpha/模型参数文件",
+            "Alpha/功能清单.md",
+            "Alpha/开发记录.md",
+            "Alpha/模型参数文件.md",
             "tests/governance/test_project_governance_validator.py",
             "governance/run_manifests/GOV-REVIEW9-S5PAT01-ALPHA-CANONICAL-RENDER-20260624.json",
         }:
@@ -2554,9 +2554,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(result["drift_count"], 0, result["drift"])
         self.assertEqual(result["reference_issue_count"], 0, result["reference_issues"])
 
-        feature_text = (ROOT / "EVA_OS" / "功能清单").read_text(encoding="utf-8")
-        dev_text = (ROOT / "EVA_OS" / "开发记录").read_text(encoding="utf-8")
-        model_text = (ROOT / "EVA_OS" / "模型参数文件").read_text(encoding="utf-8")
+        feature_text = (ROOT / "EVA_OS" / "功能清单.md").read_text(encoding="utf-8")
+        dev_text = (ROOT / "EVA_OS" / "开发记录.md").read_text(encoding="utf-8")
+        model_text = (ROOT / "EVA_OS" / "模型参数文件.md").read_text(encoding="utf-8")
         self.assertIn("# 功能清单", feature_text)
         self.assertIn("FEAT-EVA-004", feature_text)
         self.assertIn("Stage -> Phase -> Task", dev_text)
@@ -2579,9 +2579,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 "EVA_OS/docs/governance/project.yaml",
                 "EVA_OS/docs/governance/roadmap.yaml",
                 "EVA_OS/docs/governance/events.jsonl",
-                "EVA_OS/功能清单",
-                "EVA_OS/开发记录",
-                "EVA_OS/模型参数文件",
+                "EVA_OS/功能清单.md",
+                "EVA_OS/开发记录.md",
+                "EVA_OS/模型参数文件.md",
             ],
         )
         self.assertEqual(len(changes), 1)
@@ -2618,9 +2618,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "EVA_OS/docs/governance/project.yaml",
             "EVA_OS/docs/governance/roadmap.yaml",
             "EVA_OS/docs/governance/events.jsonl",
-            "EVA_OS/功能清单",
-            "EVA_OS/开发记录",
-            "EVA_OS/模型参数文件",
+            "EVA_OS/功能清单.md",
+            "EVA_OS/开发记录.md",
+            "EVA_OS/模型参数文件.md",
             "tests/governance/test_project_governance_validator.py",
             "governance/run_manifests/GOV-REVIEW9-S5PAT02-EVA-OS-CANONICAL-RENDER-20260624.json",
         }:
@@ -2724,9 +2724,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(result["drift_count"], 0, result["drift"])
         self.assertEqual(result["reference_issue_count"], 0, result["reference_issues"])
 
-        feature_text = (ROOT / "OpMe_System" / "功能清单").read_text(encoding="utf-8")
-        dev_text = (ROOT / "OpMe_System" / "开发记录").read_text(encoding="utf-8")
-        model_text = (ROOT / "OpMe_System" / "模型参数文件").read_text(encoding="utf-8")
+        feature_text = (ROOT / "OpMe_System" / "功能清单.md").read_text(encoding="utf-8")
+        dev_text = (ROOT / "OpMe_System" / "开发记录.md").read_text(encoding="utf-8")
+        model_text = (ROOT / "OpMe_System" / "模型参数文件.md").read_text(encoding="utf-8")
         self.assertIn("# 功能清单", feature_text)
         self.assertIn("FEAT-OPME-005", feature_text)
         self.assertIn("Stage -> Phase -> Task", dev_text)
@@ -2749,9 +2749,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 "OpMe_System/docs/governance/project.yaml",
                 "OpMe_System/docs/governance/roadmap.yaml",
                 "OpMe_System/docs/governance/events.jsonl",
-                "OpMe_System/功能清单",
-                "OpMe_System/开发记录",
-                "OpMe_System/模型参数文件",
+                "OpMe_System/功能清单.md",
+                "OpMe_System/开发记录.md",
+                "OpMe_System/模型参数文件.md",
             ],
         )
         self.assertEqual(len(changes), 1)
@@ -2788,9 +2788,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "OpMe_System/docs/governance/project.yaml",
             "OpMe_System/docs/governance/roadmap.yaml",
             "OpMe_System/docs/governance/events.jsonl",
-            "OpMe_System/功能清单",
-            "OpMe_System/开发记录",
-            "OpMe_System/模型参数文件",
+            "OpMe_System/功能清单.md",
+            "OpMe_System/开发记录.md",
+            "OpMe_System/模型参数文件.md",
             "tests/governance/test_project_governance_validator.py",
             "governance/run_manifests/GOV-REVIEW9-S5PAT03-OPME-SYSTEM-CANONICAL-RENDER-20260624.json",
         }:
@@ -2920,9 +2920,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(result["drift_count"], 0, result["drift"])
         self.assertEqual(result["reference_issue_count"], 0, result["reference_issues"])
 
-        feature_text = (ROOT / "whkmSalary" / "功能清单").read_text(encoding="utf-8")
-        dev_text = (ROOT / "whkmSalary" / "开发记录").read_text(encoding="utf-8")
-        model_text = (ROOT / "whkmSalary" / "模型参数文件").read_text(encoding="utf-8")
+        feature_text = (ROOT / "whkmSalary" / "功能清单.md").read_text(encoding="utf-8")
+        dev_text = (ROOT / "whkmSalary" / "开发记录.md").read_text(encoding="utf-8")
+        model_text = (ROOT / "whkmSalary" / "模型参数文件.md").read_text(encoding="utf-8")
         self.assertIn("# 功能清单", feature_text)
         self.assertIn("FEAT-WHKM-005", feature_text)
         self.assertIn("Stage -> Phase -> Task", dev_text)
@@ -2945,9 +2945,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 "whkmSalary/docs/governance/project.yaml",
                 "whkmSalary/docs/governance/roadmap.yaml",
                 "whkmSalary/docs/governance/events.jsonl",
-                "whkmSalary/功能清单",
-                "whkmSalary/开发记录",
-                "whkmSalary/模型参数文件",
+                "whkmSalary/功能清单.md",
+                "whkmSalary/开发记录.md",
+                "whkmSalary/模型参数文件.md",
             ],
         )
         self.assertEqual(len(changes), 1)
@@ -2984,9 +2984,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "whkmSalary/docs/governance/project.yaml",
             "whkmSalary/docs/governance/roadmap.yaml",
             "whkmSalary/docs/governance/events.jsonl",
-            "whkmSalary/功能清单",
-            "whkmSalary/开发记录",
-            "whkmSalary/模型参数文件",
+            "whkmSalary/功能清单.md",
+            "whkmSalary/开发记录.md",
+            "whkmSalary/模型参数文件.md",
             "tests/governance/test_project_governance_validator.py",
             "governance/run_manifests/GOV-REVIEW9-S5PAT04-WHKM-SALARY-CANONICAL-RENDER-20260624.json",
         }:
@@ -3100,9 +3100,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(result["drift_count"], 0, result["drift"])
         self.assertEqual(result["reference_issue_count"], 0, result["reference_issues"])
 
-        feature_text = (ROOT / "EEI" / "功能清单").read_text(encoding="utf-8")
-        dev_text = (ROOT / "EEI" / "开发记录").read_text(encoding="utf-8")
-        model_text = (ROOT / "EEI" / "模型参数文件").read_text(encoding="utf-8")
+        feature_text = (ROOT / "EEI" / "功能清单.md").read_text(encoding="utf-8")
+        dev_text = (ROOT / "EEI" / "开发记录.md").read_text(encoding="utf-8")
+        model_text = (ROOT / "EEI" / "模型参数文件.md").read_text(encoding="utf-8")
         self.assertIn("# 功能清单", feature_text)
         self.assertIn("FEAT-EEI-005", feature_text)
         self.assertIn("Stage -> Phase -> Task", dev_text)
@@ -3125,9 +3125,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 "EEI/docs/governance/project.yaml",
                 "EEI/docs/governance/roadmap.yaml",
                 "EEI/docs/governance/events.jsonl",
-                "EEI/功能清单",
-                "EEI/开发记录",
-                "EEI/模型参数文件",
+                "EEI/功能清单.md",
+                "EEI/开发记录.md",
+                "EEI/模型参数文件.md",
             ],
         )
         self.assertEqual(len(changes), 1)
@@ -3173,9 +3173,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "EEI/scripts/manage_clean_room_release.py",
             "EEI/scripts/manage_release_artifacts.py",
             "EEI/tests/unit/test_clean_room_release_paths.py",
-            "EEI/功能清单",
-            "EEI/开发记录",
-            "EEI/模型参数文件",
+            "EEI/功能清单.md",
+            "EEI/开发记录.md",
+            "EEI/模型参数文件.md",
             "scripts/validate_governance_sync.py",
             "tests/governance/test_project_governance_validator.py",
             "governance/run_manifests/GOV-REVIEW9-S5PBT01-EEI-CANONICAL-RENDER-20260624.json",
@@ -3293,9 +3293,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(result["drift_count"], 0, result["drift"])
         self.assertEqual(result["reference_issue_count"], 0, result["reference_issues"])
 
-        feature_text = (ROOT / "FIFA" / "功能清单").read_text(encoding="utf-8")
-        dev_text = (ROOT / "FIFA" / "开发记录").read_text(encoding="utf-8")
-        model_text = (ROOT / "FIFA" / "模型参数文件").read_text(encoding="utf-8")
+        feature_text = (ROOT / "FIFA" / "功能清单.md").read_text(encoding="utf-8")
+        dev_text = (ROOT / "FIFA" / "开发记录.md").read_text(encoding="utf-8")
+        model_text = (ROOT / "FIFA" / "模型参数文件.md").read_text(encoding="utf-8")
         self.assertIn("# 功能清单", feature_text)
         self.assertIn("FEAT-FIFA-006", feature_text)
         self.assertIn("ai_controlled_access_rejected", feature_text)
@@ -3320,9 +3320,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 "FIFA/docs/governance/roadmap.yaml",
                 "FIFA/docs/governance/events.jsonl",
                 "FIFA/docs/governance/VERSION_MATRIX.yaml",
-                "FIFA/功能清单",
-                "FIFA/开发记录",
-                "FIFA/模型参数文件",
+                "FIFA/功能清单.md",
+                "FIFA/开发记录.md",
+                "FIFA/模型参数文件.md",
             ],
         )
         self.assertEqual(len(changes), 1)
@@ -3361,9 +3361,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "FIFA/docs/governance/roadmap.yaml",
             "FIFA/docs/governance/events.jsonl",
             "FIFA/docs/governance/VERSION_MATRIX.yaml",
-            "FIFA/功能清单",
-            "FIFA/开发记录",
-            "FIFA/模型参数文件",
+            "FIFA/功能清单.md",
+            "FIFA/开发记录.md",
+            "FIFA/模型参数文件.md",
             "tests/governance/test_project_governance_validator.py",
             "governance/run_manifests/GOV-REVIEW9-S5PBT02-FIFA-CANONICAL-RENDER-20260624.json",
         }:
@@ -3480,9 +3480,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(result["drift_count"], 0, result["drift"])
         self.assertEqual(result["reference_issue_count"], 0, result["reference_issues"])
 
-        feature_text = (ROOT / "OpenAIDatabase" / "功能清单").read_text(encoding="utf-8")
-        dev_text = (ROOT / "OpenAIDatabase" / "开发记录").read_text(encoding="utf-8")
-        model_text = (ROOT / "OpenAIDatabase" / "模型参数文件").read_text(encoding="utf-8")
+        feature_text = (ROOT / "OpenAIDatabase" / "功能清单.md").read_text(encoding="utf-8")
+        dev_text = (ROOT / "OpenAIDatabase" / "开发记录.md").read_text(encoding="utf-8")
+        model_text = (ROOT / "OpenAIDatabase" / "模型参数文件.md").read_text(encoding="utf-8")
         self.assertIn("# 功能清单", feature_text)
         self.assertIn("FEAT-OAIDB-005", feature_text)
         self.assertIn("FORM-010", feature_text)
@@ -3507,9 +3507,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 "OpenAIDatabase/docs/governance/roadmap.yaml",
                 "OpenAIDatabase/docs/governance/events.jsonl",
                 "OpenAIDatabase/docs/governance/VERSION_MATRIX.yaml",
-                "OpenAIDatabase/功能清单",
-                "OpenAIDatabase/开发记录",
-                "OpenAIDatabase/模型参数文件",
+                "OpenAIDatabase/功能清单.md",
+                "OpenAIDatabase/开发记录.md",
+                "OpenAIDatabase/模型参数文件.md",
             ],
         )
         self.assertEqual(len(changes), 1)
@@ -3548,9 +3548,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "OpenAIDatabase/docs/governance/roadmap.yaml",
             "OpenAIDatabase/docs/governance/events.jsonl",
             "OpenAIDatabase/docs/governance/VERSION_MATRIX.yaml",
-            "OpenAIDatabase/功能清单",
-            "OpenAIDatabase/开发记录",
-            "OpenAIDatabase/模型参数文件",
+            "OpenAIDatabase/功能清单.md",
+            "OpenAIDatabase/开发记录.md",
+            "OpenAIDatabase/模型参数文件.md",
             "tests/governance/test_project_governance_validator.py",
             "governance/run_manifests/GOV-REVIEW9-S5PBT03-OPENAIDATABASE-CANONICAL-RENDER-20260624.json",
         }:
@@ -3670,9 +3670,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(result["drift_count"], 0, result["drift"])
         self.assertEqual(result["reference_issue_count"], 0, result["reference_issues"])
 
-        feature_text = (pfi_root / "功能清单").read_text(encoding="utf-8")
-        dev_text = (pfi_root / "开发记录").read_text(encoding="utf-8")
-        model_text = (pfi_root / "模型参数文件").read_text(encoding="utf-8")
+        feature_text = (pfi_root / "功能清单.md").read_text(encoding="utf-8")
+        dev_text = (pfi_root / "开发记录.md").read_text(encoding="utf-8")
+        model_text = (pfi_root / "模型参数文件.md").read_text(encoding="utf-8")
         self.assertIn("# 功能清单", feature_text)
         self.assertIn("FEAT-PFI-006", feature_text)
         self.assertIn("provider/OOS", feature_text)
@@ -3698,9 +3698,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 "PFI/大数据模拟器/docs/governance/roadmap.yaml",
                 "PFI/大数据模拟器/docs/governance/events.jsonl",
                 "PFI/大数据模拟器/docs/governance/VERSION_MATRIX.yaml",
-                "PFI/大数据模拟器/功能清单",
-                "PFI/大数据模拟器/开发记录",
-                "PFI/大数据模拟器/模型参数文件",
+                "PFI/大数据模拟器/功能清单.md",
+                "PFI/大数据模拟器/开发记录.md",
+                "PFI/大数据模拟器/模型参数文件.md",
             ],
         )
         self.assertEqual(len(changes), 1)
@@ -3739,9 +3739,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "PFI/大数据模拟器/docs/governance/roadmap.yaml",
             "PFI/大数据模拟器/docs/governance/events.jsonl",
             "PFI/大数据模拟器/docs/governance/VERSION_MATRIX.yaml",
-            "PFI/大数据模拟器/功能清单",
-            "PFI/大数据模拟器/开发记录",
-            "PFI/大数据模拟器/模型参数文件",
+            "PFI/大数据模拟器/功能清单.md",
+            "PFI/大数据模拟器/开发记录.md",
+            "PFI/大数据模拟器/模型参数文件.md",
             "tests/governance/test_project_governance_validator.py",
             "governance/run_manifests/GOV-REVIEW9-S5PBT04-PFI-BIG-DATA-SIMULATOR-CANONICAL-RENDER-20260624.json",
         }:
@@ -3908,9 +3908,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(result["drift_count"], 0, result["drift"])
         self.assertEqual(result["reference_issue_count"], 0, result["reference_issues"])
 
-        feature_text = (arxiv_root / "功能清单").read_text(encoding="utf-8")
-        dev_text = (arxiv_root / "开发记录").read_text(encoding="utf-8")
-        model_text = (arxiv_root / "模型参数文件").read_text(encoding="utf-8")
+        feature_text = (arxiv_root / "功能清单.md").read_text(encoding="utf-8")
+        dev_text = (arxiv_root / "开发记录.md").read_text(encoding="utf-8")
+        model_text = (arxiv_root / "模型参数文件.md").read_text(encoding="utf-8")
         self.assertIn("# 功能清单", feature_text)
         self.assertIn("FEAT-ADP-008", feature_text)
         self.assertIn("bioRxiv/medRxiv", feature_text)
@@ -3938,9 +3938,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 "arxiv-daily-push/docs/governance/roadmap.yaml",
                 "arxiv-daily-push/docs/governance/events.jsonl",
                 "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
-                "arxiv-daily-push/功能清单",
-                "arxiv-daily-push/开发记录",
-                "arxiv-daily-push/模型参数文件",
+                "arxiv-daily-push/功能清单.md",
+                "arxiv-daily-push/开发记录.md",
+                "arxiv-daily-push/模型参数文件.md",
             ],
         )
         self.assertEqual(len(changes), 1)
@@ -3983,9 +3983,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "arxiv-daily-push/docs/governance/roadmap.yaml",
             "arxiv-daily-push/docs/governance/events.jsonl",
             "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
-            "arxiv-daily-push/功能清单",
-            "arxiv-daily-push/开发记录",
-            "arxiv-daily-push/模型参数文件",
+            "arxiv-daily-push/功能清单.md",
+            "arxiv-daily-push/开发记录.md",
+            "arxiv-daily-push/模型参数文件.md",
             "tests/governance/test_project_governance_validator.py",
             "governance/run_manifests/GOV-REVIEW9-S5PBT05-ARXIV-DAILY-PUSH-CANONICAL-RENDER-20260624.json",
         }:
@@ -4013,7 +4013,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             self.assertEqual(result["drift_count"], 0, f"{project_id}: {result['drift']}")
             self.assertEqual(result["reference_issue_count"], 0, f"{project_id}: {result['reference_issues']}")
 
-            for filename in ("功能清单", "开发记录", "模型参数文件"):
+            for filename in ("功能清单.md", "开发记录.md", "模型参数文件.md"):
                 text = (project_root / filename).read_text(encoding="utf-8")
                 self.assertTrue(text.startswith("# "), f"{project_id}: {filename} is not a readable document")
                 self.assertNotIn("docs/governance/", text.splitlines()[0], f"{project_id}: {filename} is an index page")
@@ -4021,7 +4021,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
 
             roadmap = validator.load_yaml(governance_root / "roadmap.yaml")
             self.assertTrue(roadmap["stages"], f"{project_id}: roadmap has no stages")
-            self.assertIn("Stage -> Phase -> Task", (project_root / "开发记录").read_text(encoding="utf-8"))
+            self.assertIn("Stage -> Phase -> Task", (project_root / "开发记录.md").read_text(encoding="utf-8"))
 
     def test_review9_s5_gate_manifest_closes_stage5_without_promoting_required(self) -> None:
         manifest_path = ROOT / "governance" / "run_manifests" / "GOV-REVIEW9-S5-GATE-CLOSED-20260624.json"
@@ -4202,7 +4202,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             self.assertTrue((project_root / "docs" / "governance" / "project.yaml").is_file(), project_id)
             self.assertTrue((project_root / "docs" / "governance" / "roadmap.yaml").is_file(), project_id)
             self.assertTrue((project_root / "docs" / "governance" / "events.jsonl").is_file(), project_id)
-            for human_file in ("功能清单", "开发记录", "模型参数文件"):
+            for human_file in ("功能清单.md", "开发记录.md", "模型参数文件.md"):
                 self.assertTrue((project_root / human_file).is_file(), f"{project_id}:{human_file}")
             self.assertEqual(matrix[project_id]["ci_mode_after"], "required")
             self.assertEqual(matrix[project_id]["migration_version_after"], "lean-v2")
@@ -5717,7 +5717,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "OpenAIDatabase/docs/governance/STATUS.md",
             "OpenAIDatabase/docs/governance/events.jsonl",
             "OpenAIDatabase/docs/governance/development_events.jsonl",
-            "OpenAIDatabase/开发记录",
+            "OpenAIDatabase/开发记录.md",
             "tests/governance/test_project_governance_validator.py",
         }:
             self.assertIn(path, changed)
@@ -5784,9 +5784,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "FIFA/docs/governance/formula_registry.yaml",
             "FIFA/docs/governance/model_registry.yaml",
             "FIFA/docs/governance/parameter_registry.csv",
-            "FIFA/功能清单",
-            "FIFA/开发记录",
-            "FIFA/模型参数文件",
+            "FIFA/功能清单.md",
+            "FIFA/开发记录.md",
+            "FIFA/模型参数文件.md",
             "governance/stage_gates/s3pd/fifa_fail_closed_tests.log",
             "tests/governance/test_project_governance_validator.py",
         }:
@@ -6438,7 +6438,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertTrue((ROOT / "whkmSalary" / "src" / "whkm_salary" / "streamlit_app.py").is_file())
         self.assertTrue((ROOT / "whkmSalary" / "tests" / "test_salary_logic_weights.py").is_file())
         self.assertTrue((ROOT / "whkmSalary" / "config" / "structure_contract.yaml").is_file())
-        for name in ("功能清单", "开发记录", "模型参数文件"):
+        for name in ("功能清单.md", "开发记录.md", "模型参数文件.md"):
             self.assertTrue((ROOT / "whkmSalary" / name).is_file(), name)
 
         root_logic = (ROOT / "whkmSalary" / "salary_logic.py").read_text(encoding="utf-8")
@@ -6457,7 +6457,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "OLD_TO_NEW_MAP",
             "whkmSalary/src/whkm_salary/salary_logic.py",
             "whkmSalary/config/structure_contract.yaml",
-            "whkmSalary/功能清单",
+            "whkmSalary/功能清单.md",
             "Startup command changed without README sync",
         }:
             self.assertIn(required, report_text)
@@ -8971,8 +8971,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "`S5` / `S5PA` / `S5PAT01`",
             "`S5PA-GATE-IN-PROGRESS`",
             "docs/governance/roadmap.yaml",
-            "功能清单",
-            "开发记录",
+            "功能清单.md",
+            "开发记录.md",
             "本轮 Owner-flow 治理任务",
             "不改产品 canonical current_task",
             "S6PA-GATE",
@@ -9362,9 +9362,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
     def test_review9_s2_root_agents_declares_lean_v2_entry_contract(self) -> None:
         text = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
         for required in {
-            "功能清单",
-            "开发记录",
-            "模型参数文件",
+            "功能清单.md",
+            "开发记录.md",
+            "模型参数文件.md",
             "compatibility indexes",
             "Stage -> Phase ->",
             "^S[1-9][0-9]*P[A-Z]T[0-9]{2}$",
@@ -9393,9 +9393,9 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         text = (ROOT / "docs" / "governance" / "STANDARD.md").read_text(encoding="utf-8")
         for required in {
             "Lean Project Governance Standard v2.0",
-            "功能清单",
-            "开发记录",
-            "模型参数文件",
+            "功能清单.md",
+            "开发记录.md",
+            "模型参数文件.md",
             "docs/governance/project.yaml",
             "docs/governance/roadmap.yaml",
             "docs/governance/events.jsonl",
@@ -10367,11 +10367,11 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
 
     def test_arxiv_project_root_human_entry_files_include_v6_roadmap(self) -> None:
         project_dir = ROOT / "arxiv-daily-push"
-        for name in ("功能清单", "开发记录", "模型参数文件"):
+        for name in ("功能清单.md", "开发记录.md", "模型参数文件.md"):
             text = (project_dir / name).read_text(encoding="utf-8")
             self.assertIn("arxiv-daily-push", text)
             self.assertNotIn("TODO", text)
-        ledger = (project_dir / "开发记录").read_text(encoding="utf-8")
+        ledger = (project_dir / "开发记录.md").read_text(encoding="utf-8")
         for required in {
             "S1P5T04",
             "ARXIV_PRODUCTION_ACCEPTED",
@@ -11353,7 +11353,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout)
         self.assertIn("errors: 0", result.stdout)
 
-        for relative in ("功能清单", "开发记录", "模型参数文件"):
+        for relative in ("功能清单.md", "开发记录.md", "模型参数文件.md"):
             text = (ROOT / "arxiv-daily-push" / relative).read_text(encoding="utf-8")
             self.assertIn("ADP-PRODUCT-CONTRACT-V7.1", text)
             self.assertIn("V7_1_ROOT_LOCK.yaml", text)
@@ -11404,7 +11404,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
     def test_review9_s6pat03_root_entry_points_only_to_human_files_and_standard(self) -> None:
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
         entry = readme.split("## Governance Entry", 1)[1].split("##", 1)[0]
-        for required in ("AGENTS.md", "docs/governance/STANDARD.md", "功能清单", "开发记录", "模型参数文件"):
+        for required in ("AGENTS.md", "docs/governance/STANDARD.md", "功能清单.md", "开发记录.md", "模型参数文件.md"):
             self.assertIn(required, entry)
         for forbidden in ("governance/projects.yaml", "GOVERNANCE_DASHBOARD.md", "OWNER_PORTFOLIO.md"):
             self.assertNotIn(forbidden, entry)
@@ -11423,7 +11423,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             },
         )
         entry = rendered.split("## Governance Entry", 1)[1].split("##", 1)[0]
-        for required in ("AGENTS.md", "docs/governance/STANDARD.md", "功能清单", "开发记录", "模型参数文件"):
+        for required in ("AGENTS.md", "docs/governance/STANDARD.md", "功能清单.md", "开发记录.md", "模型参数文件.md"):
             self.assertIn(required, entry)
         for forbidden in ("governance/projects.yaml", "GOVERNANCE_DASHBOARD.md", "OWNER_PORTFOLIO.md"):
             self.assertNotIn(forbidden, entry)
@@ -11469,7 +11469,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
                 text = readme_path.read_text(encoding="utf-8")
                 self.assertIn("中文人类入口", text)
                 self.assertIn("docs/governance/", text)
-                for human_entry in ("功能清单", "开发记录", "模型参数文件"):
+                for human_entry in ("功能清单.md", "开发记录.md", "模型参数文件.md"):
                     self.assertIn(human_entry, text)
                 for forbidden in ("compatibility index", "compatibility indexes", "兼容索引"):
                     self.assertNotIn(forbidden, text.lower())
@@ -11478,7 +11478,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         validator = load_validator_module()
         with tempfile.TemporaryDirectory() as tmp:
             project_path = Path(tmp)
-            for filename in ("功能清单", "开发记录", "模型参数文件"):
+            for filename in ("功能清单.md", "开发记录.md", "模型参数文件.md"):
                 (project_path / filename).write_text(
                     f"# {filename}\n\n详见 docs/governance/project.yaml\ncompatibility indexes only\n",
                     encoding="utf-8",
@@ -11561,7 +11561,7 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             ROOT / "whkmSalary",
         ]:
             with self.subTest(project=str(project_path.relative_to(ROOT))):
-                text = (project_path / "开发记录").read_text(encoding="utf-8")
+                text = (project_path / "开发记录.md").read_text(encoding="utf-8")
                 self.assertNotIn("portfolio_remediation", text)
                 self.assertNotIn("CodexProject_Other8_Remediation_Roadmap", text)
 
@@ -11750,22 +11750,22 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             (governance_root / "events.jsonl").write_text("", encoding="utf-8")
 
             first = cli.render_project_files(project_root, write=True, view="development-record")
-            self.assertEqual(first["view"], "开发记录")
+            self.assertEqual(first["view"], "开发记录.md")
             self.assertEqual(first["updated_count"], 1)
             self.assertEqual(first["unchanged_count"], 0)
-            self.assertTrue((project_root / "开发记录").exists())
-            self.assertFalse((project_root / "功能清单").exists())
-            self.assertFalse((project_root / "模型参数文件").exists())
-            before = (project_root / "开发记录").read_text(encoding="utf-8")
+            self.assertTrue((project_root / "开发记录.md").exists())
+            self.assertFalse((project_root / "功能清单.md").exists())
+            self.assertFalse((project_root / "模型参数文件.md").exists())
+            before = (project_root / "开发记录.md").read_text(encoding="utf-8")
 
             second = cli.render_project_files(project_root, write=True, view="development-record")
-            after = (project_root / "开发记录").read_text(encoding="utf-8")
+            after = (project_root / "开发记录.md").read_text(encoding="utf-8")
             self.assertEqual(before, after)
             self.assertEqual(second["updated_count"], 0)
             self.assertEqual(second["unchanged_count"], 1)
 
             checked = cli.check_render_project_files(project_root, view="development-record")
-            self.assertEqual(checked["view"], "开发记录")
+            self.assertEqual(checked["view"], "开发记录.md")
             self.assertEqual(checked["drift_count"], 0)
 
             with self.assertRaisesRegex(ValueError, "Unknown render view"):

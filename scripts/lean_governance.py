@@ -25,14 +25,14 @@ if hasattr(sys.stdout, "reconfigure"):
 
 ROOT = governance.ROOT
 PROJECTS_FILE = governance.PROJECTS_FILE
-HUMAN_ENTRY_FILES = ["功能清单", "开发记录", "模型参数文件", "VERSION", "CHANGELOG.md"]
+HUMAN_ENTRY_FILES = ["功能清单.md", "开发记录.md", "模型参数文件.md", "VERSION", "CHANGELOG.md"]
 RENDER_VIEW_ALIASES = {
-    "feature-list": "功能清单",
-    "功能清单": "功能清单",
-    "development-record": "开发记录",
-    "开发记录": "开发记录",
-    "model-parameters": "模型参数文件",
-    "模型参数文件": "模型参数文件",
+    "feature-list": "功能清单.md",
+    "功能清单.md": "功能清单.md",
+    "development-record": "开发记录.md",
+    "开发记录.md": "开发记录.md",
+    "model-parameters": "模型参数文件.md",
+    "模型参数文件.md": "模型参数文件.md",
 }
 LEAN_CANONICAL_FILES = [
     "docs/governance/project.yaml",
@@ -801,9 +801,9 @@ def render_model_parameters(project_facts: dict[str, Any], roadmap: dict[str, An
 
 def rendered_project_texts(project_facts: dict[str, Any], roadmap: dict[str, Any], events: list[dict[str, Any]]) -> dict[str, str]:
     return {
-        "功能清单": render_feature_list(project_facts, roadmap),
-        "开发记录": render_development_record(project_facts, roadmap, events),
-        "模型参数文件": render_model_parameters(project_facts, roadmap),
+        "功能清单.md": render_feature_list(project_facts, roadmap),
+        "开发记录.md": render_development_record(project_facts, roadmap, events),
+        "模型参数文件.md": render_model_parameters(project_facts, roadmap),
     }
 
 
@@ -886,7 +886,7 @@ def check_render_project_files(project_root: Path, view: str | None = None) -> d
     for rel_path, expected in rendered.items():
         path = project_root / rel_path
         actual = path.read_text(encoding="utf-8") if path.exists() else ""
-        if project_id == "arxiv-daily-push" and rel_path in {"功能清单", "开发记录", "模型参数文件"}:
+        if project_id == "arxiv-daily-push" and rel_path in {"功能清单.md", "开发记录.md", "模型参数文件.md"}:
             # ADP keeps these three root files owner-readable in Chinese. They
             # may intentionally differ from the compact machine render, but the
             # project validator still enforces required traceability tokens.
