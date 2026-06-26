@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import copy
 import hashlib
+import threading
 from collections.abc import Mapping
 from typing import Any
 
@@ -20,6 +21,7 @@ S2PMT03_REQUIRED_TERMINAL_MAILS = ("M1", "M2", "M3")
 S2PMT03_REQUIRED_OUTBOX_STATES = ("PENDING", "CLAIMED", "ACCEPTED_PENDING_COMMIT", "SENT", "BLOCKED")
 S2PMT03_REQUIRED_GATES = (
     "row_version_compare_and_swap",
+    "single_claimant_under_concurrency",
     "lease_expiry",
     "fencing_token",
     "state_history_consistency",
@@ -28,6 +30,8 @@ S2PMT03_REQUIRED_GATES = (
     "m4_cycle_watermark",
     "no_production_side_effect",
 )
+
+S2PMT03_CAS_UPDATE_STATEMENT = "UPDATE work_items SET lease_owner=?, lease_until_ms=?, row_version=row_version+1, fencing_token=fencing_token+1 WHERE work_id=? AND row_version=?"
 S2PMT03_REQUIRED_PRODUCTION_FALSE_FLAGS = (
     "production_side_effects_enabled",
     "real_smtp_sent",
@@ -65,10 +69,71 @@ def claim_leased_item(
             "owner_id": owner_id,
             "lease_ms": lease_ms,
             "now_ms": now_ms,
+            "affected_rows": 1,
             "row_version_compare_and_swap": True,
             "fencing_token": updated["fencing_token"],
         },
     )
+
+
+class LocalLeaseClaimRepository:
+    """Local evidence stand-in for an atomic DB compare-and-swap lease claim."""
+
+    def __init__(self, item: Mapping[str, Any]) -> None:
+        self._item = copy.deepcopy(dict(item))
+        self._events: list[dict[str, Any]] = []
+        self._lock = threading.Lock()
+
+    def snapshot(self) -> dict[str, Any]:
+        with self._lock:
+            return copy.deepcopy(self._item)
+
+    def events(self) -> list[dict[str, Any]]:
+        with self._lock:
+            return copy.deepcopy(self._events)
+
+    def claim(
+        self,
+        *,
+        owner_id: str,
+        expected_row_version: int,
+        now_ms: int,
+        lease_ms: int = S2PMT03_DEFAULT_LEASE_MS,
+    ) -> dict[str, Any]:
+        with self._lock:
+            current = copy.deepcopy(self._item)
+            if int(current.get("row_version") or 0) != expected_row_version:
+                result = _blocked_action(
+                    "claim_lease",
+                    ["row_version compare-and-swap failed"],
+                    {
+                        "item": current,
+                        "owner_id": owner_id,
+                        "expected_row_version": expected_row_version,
+                        "affected_rows": 0,
+                        "cas_statement": S2PMT03_CAS_UPDATE_STATEMENT,
+                    },
+                )
+            else:
+                result = claim_leased_item(current, owner_id=owner_id, now_ms=now_ms, lease_ms=lease_ms)
+                result["expected_row_version"] = expected_row_version
+                result["cas_statement"] = S2PMT03_CAS_UPDATE_STATEMENT
+                if result["status"] == "pass":
+                    result["affected_rows"] = 1
+                    self._item = copy.deepcopy(result["item"])
+                else:
+                    result["affected_rows"] = 0
+            self._events.append(
+                {
+                    "action": "claim_lease",
+                    "owner_id": owner_id,
+                    "expected_row_version": expected_row_version,
+                    "observed_row_version": int(current.get("row_version") or 0),
+                    "status": result["status"],
+                    "affected_rows": result["affected_rows"],
+                }
+            )
+            return copy.deepcopy(result)
 
 
 def apply_fenced_state_transition(
@@ -97,7 +162,18 @@ def apply_fenced_state_transition(
         if isinstance(last, Mapping) and str(last.get("to_state") or "") != current_state:
             reasons.append("state_history last to_state does not match current_state")
     if reasons:
-        return _blocked_action("state_transition", reasons, {"record": dict(record), "next_state": next_state})
+        return _blocked_action(
+            "state_transition",
+            reasons,
+            {
+                "record": dict(record),
+                "next_state": next_state,
+                "expected_row_version": expected_row_version,
+                "fencing_token": fencing_token,
+                "affected_rows": 0,
+                "cas_statement": "UPDATE run_records SET current_state=?, row_version=row_version+1 WHERE run_id=? AND row_version=? AND fencing_token=?",
+            },
+        )
 
     updated = copy.deepcopy(dict(record))
     updated["current_state"] = next_state
@@ -109,6 +185,8 @@ def apply_fenced_state_transition(
             "record": updated,
             "expected_row_version": expected_row_version,
             "fencing_token": fencing_token,
+            "affected_rows": 1,
+            "cas_statement": "UPDATE run_records SET current_state=?, row_version=row_version+1 WHERE run_id=? AND row_version=? AND fencing_token=?",
             "state_history_consistency": True,
         },
     )
@@ -233,6 +311,9 @@ def build_lease_fencing_report(*, generated_at: str) -> dict[str, Any]:
     """Build a deterministic local S2PMT03 evidence report."""
 
     claim = claim_leased_item({"work_id": "cycle-20260702-M1", "row_version": 0}, owner_id="worker-a", now_ms=1000)
+    claim_repo = LocalLeaseClaimRepository({"work_id": "cycle-20260702-M1", "row_version": 0})
+    first_claim = claim_repo.claim(owner_id="worker-a", expected_row_version=0, now_ms=1000)
+    stale_claim = claim_repo.claim(owner_id="worker-b", expected_row_version=0, now_ms=1000)
     stale_transition = apply_fenced_state_transition(
         {"current_state": "created", "row_version": 1, "fencing_token": 1, "state_history": [{"from_state": "", "to_state": "created"}]},
         next_state="health_checked",
@@ -272,7 +353,8 @@ def build_lease_fencing_report(*, generated_at: str) -> dict[str, Any]:
         deadline_passed=True,
     )
     gates = {
-        "row_version_compare_and_swap": claim["status"] == "pass" and stale_transition["status"] == "blocked",
+        "row_version_compare_and_swap": claim["status"] == "pass" and stale_transition["status"] == "blocked" and stale_claim["affected_rows"] == 0,
+        "single_claimant_under_concurrency": first_claim["status"] == "pass" and stale_claim["status"] == "blocked",
         "lease_expiry": int(claim["item"]["lease_until_ms"]) > 1000 if claim["status"] == "pass" else False,
         "fencing_token": valid_transition["status"] == "pass" and stale_transition["status"] == "blocked",
         "state_history_consistency": valid_transition["status"] == "pass",
@@ -289,6 +371,9 @@ def build_lease_fencing_report(*, generated_at: str) -> dict[str, Any]:
         extra={
             "gates": gates,
             "lease_claim": claim,
+            "cas_claim": first_claim,
+            "stale_cas_claim": stale_claim,
+            "cas_event_log": claim_repo.events(),
             "stale_transition": stale_transition,
             "valid_transition": valid_transition,
             "outbox_claim": outbox_claim,
