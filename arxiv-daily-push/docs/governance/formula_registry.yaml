@@ -5579,7 +5579,7 @@ formulas:
     assumption_ids:
       - "ASM-ADP-035"
     status: "active"
-    expression: "S2PMT05 local stress/fault/time/E2E evidence passes only when a formal local capacity baseline contains load, stress, spike, and soak rows with 1x, 2x, and 5x coverage, throughput, latency, bounded recoverable queue age, memory, disk, error-budget, accelerated 24h soak, and rebuildable-only spike shedding evidence; deterministic local load, stress, spike, and accelerated 24h soak profiles stay inside duplicate, error, SQLite busy retry, backpressure, and leak budgets; repeated dual scheduler triggers produce one active M1-M4 revision per cycle without installing or enabling a scheduler; SMTP accepted-before-local-commit crash windows block resend without provider refs; ENOSPC, read-only target, SQLITE_BUSY, corrupt cache, and corrupt backup scenarios fail closed; Australia/Sydney DST folds/gaps and future clock skew are bounded by UTC watermarks and owner-review blocks; a 35-day 3+1, weekly, monthly, review, action, and ROI fixture conserves counts and links; result validity checks require semantic alignment scores, claim-ledger refs, evidence refs, specific mechanism/action summaries, non-template output variance, and unsupported P0 claim negative controls that block publication; backpressure must cover 2x and 5x peak profiles, keep high-priority work inside SLO, attach explicit delay/drop reason codes to low-priority work, preserve durable evidence, and shed only rebuildable noncritical work; deterministic test isolation is declared; production acceptance and inherited P0/P1 closure are not claimed; and all SMTP, scheduler, Release, schema, queue, DB, restore, and production side-effect flags remain false."
+    expression: "S2PMT05 local stress/fault/time/E2E evidence passes only when a formal local capacity baseline contains load, stress, spike, and soak rows with 1x, 2x, and 5x coverage, throughput, latency, bounded recoverable queue age, memory, disk, error-budget, accelerated 24h soak, and rebuildable-only spike shedding evidence; deterministic local load, stress, spike, and accelerated 24h soak profiles stay inside duplicate, error, SQLite busy retry, backpressure, and leak budgets; repeated dual scheduler triggers produce one active M1-M4 revision per cycle without installing or enabling a scheduler; SMTP accepted-before-local-commit crash windows block resend without provider refs; ENOSPC, read-only target, SQLITE_BUSY, corrupt cache JSON, corrupt PDF, corrupt backup manifest, and backup path collision scenarios fail closed, preserve durable evidence, avoid partial artifact commits, and expose explicit recovery states; Australia/Sydney DST folds/gaps and future clock skew are bounded by UTC watermarks and owner-review blocks; a 35-day 3+1, weekly, monthly, review, action, and ROI fixture conserves counts and links; result validity checks require semantic alignment scores, claim-ledger refs, evidence refs, specific mechanism/action summaries, non-template output variance, and unsupported P0 claim negative controls that block publication; backpressure must cover 2x and 5x peak profiles, keep high-priority work inside SLO, attach explicit delay/drop reason codes to low-priority work, preserve durable evidence, and shed only rebuildable noncritical work; deterministic test isolation is declared; production acceptance and inherited P0/P1 closure are not claimed; and all SMTP, scheduler, Release, schema, queue, DB, restore, and production side-effect flags remain false."
     variables:
       -
         name: "capacity_baseline_model"
@@ -5600,7 +5600,7 @@ formulas:
         name: "fault_injection_matrix"
         data_type: "object"
         unit: "fault scenario matrix"
-        input_domain: "ENOSPC, EACCES_READ_ONLY_DIR, SQLITE_BUSY, CORRUPT_CACHE_JSON, CORRUPT_BACKUP_MANIFEST"
+        input_domain: "ENOSPC, EACCES_READ_ONLY_DIR, SQLITE_BUSY, CORRUPT_CACHE_JSON, CORRUPT_PDF_ARTIFACT, CORRUPT_BACKUP_MANIFEST, BACKUP_PATH_COLLISION"
       -
         name: "time_policy"
         data_type: "object"
@@ -5622,8 +5622,8 @@ formulas:
         unit: "2x/5x peak backpressure priority and reason-code validation"
         input_domain: "queue depth, capacity, peak multipliers, high-priority SLO seconds, high/low priority rows, delayed/dropped counts, reason codes"
     constraints: "S2PMT05 is local hardening evidence only. It must not run a real 24h wall-clock soak, install or enable a scheduler, send SMTP, upload Release assets, execute production restore, migrate DB/public schema, mutate production queues, change source adapters or ranking, touch V7.1/V7.2 contract files, close inherited P0/P1 without S2PMT07, or claim integrated production acceptance."
-    missing_policy: "Missing capacity baseline model, missing 1x/2x/5x coverage, unbounded queue age, missing memory/disk/error-budget metrics, missing workload profile, duplicate active scheduler revisions, missing SMTP crash-window block, missing required fault scenario, missing DST/clock-skew case, replay days below 35, missing 3+1/weekly/monthly/review/action/ROI section, missing result-validity semantic/evidence/non-template gate, missing backpressure 2x/5x priority SLO and reason-code evidence, missing required finding coverage, or any production side-effect flag blocks the report."
-    output_range: "S2PMT05 local report with pass or blocked status, required gates, covered A/B findings, formal capacity baseline evidence, workload, race, SMTP crash-window, fault, DST/clock, E2E, result-validity semantic evidence, backpressure 2x/5x priority SLO evidence, deterministic report hash, production_acceptance_claimed false, inherited_p0_p1_closed false, and all production side-effect flags false."
+    missing_policy: "Missing capacity baseline model, missing 1x/2x/5x coverage, unbounded queue age, missing memory/disk/error-budget metrics, missing workload profile, duplicate active scheduler revisions, missing SMTP crash-window block, missing required fault scenario, missing required recovery state, missing corrupt PDF rebuild path, missing backup publish/restore block, partial artifact commit, missing DST/clock-skew case, replay days below 35, missing 3+1/weekly/monthly/review/action/ROI section, missing result-validity semantic/evidence/non-template gate, missing backpressure 2x/5x priority SLO and reason-code evidence, missing required finding coverage, or any production side-effect flag blocks the report."
+    output_range: "S2PMT05 local report with pass or blocked status, required gates, covered A/B findings, formal capacity baseline evidence, workload, race, SMTP crash-window, fault/recovery, DST/clock, E2E, result-validity semantic evidence, backpressure 2x/5x priority SLO evidence, deterministic report hash, production_acceptance_claimed false, inherited_p0_p1_closed false, and all production side-effect flags false."
     code_refs:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py"
@@ -5634,10 +5634,12 @@ formulas:
       - "governance/run_manifests/ADP-S2PMT05-RESULT-VALIDITY-B013-20260626.json"
       - "governance/run_manifests/ADP-S2PMT05-BACKPRESSURE-B014-20260627.json"
       - "governance/run_manifests/ADP-S2PMT05-CAPACITY-BASELINE-B006-20260627.json"
+      - "governance/run_manifests/ADP-S2PMT05-FAULT-INJECTION-B009-20260627.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_STRESS_E2E.md"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_RESULT_VALIDITY_B013.md"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_BACKPRESSURE_B014.md"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_CAPACITY_BASELINE_B006.md"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_FAULT_INJECTION_B009.md"
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py::S2PMT05_STRESS_E2E_MODEL_ID"
@@ -5653,6 +5655,8 @@ formulas:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py::S2PMT05_CAPACITY_BASELINE_MULTIPLIERS"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py::S2PMT05_CAPACITY_BASELINE_MAX_QUEUE_AGE_SECONDS"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py::S2PMT05_CAPACITY_BASELINE_MAX_ERROR_RATE"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py::S2PMT05_REQUIRED_FAULTS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py::S2PMT05_REQUIRED_FAULT_RECOVERY_STATES"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py::S2PMT05_REQUIRED_MAIL_PRODUCTS"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py::S2PMT05_REQUIRED_FINDINGS"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py::S2PMT05_REQUIRED_GATES"
@@ -5665,6 +5669,8 @@ formulas:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py::simulate_dual_scheduler_race"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py::simulate_smtp_crash_window"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py::build_fault_injection_matrix"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py::evaluate_fault_injection_matrix"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py::_fault_row"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py::evaluate_dst_clock_policy"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py::build_35_day_e2e_fixture"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py::build_result_validity_fixture"
@@ -5675,10 +5681,10 @@ formulas:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py::build_s2pmt05_report"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py::validate_s2pmt05_report"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py::reconcile_smtp_accept_crash"
-    implementation_fingerprint: "sha256:64aed67b404f4e2c99fe22d441145c98c3d2e79c7e27aad46e3a5c6e37ecd197"
-    evidence_hash: "sha256:b937c00e05e35a71629bdc6855d0675182a5c5b716082ea4789c55963ceb5d98"
+    implementation_fingerprint: "sha256:2623b7a6f7d550abedc27393606cbbb590171c8011378768515fb4abd0afd151"
+    evidence_hash: "sha256:9fdd889064f7df2956c38f183c5f4a3c6d783e0bba465a3352f19251f087f106"
     last_verified_commit: "PRECOMMIT"
-    verified_at: "2026-06-27T00:40:36+10:00"
+    verified_at: "2026-06-27T01:03:21+10:00"
 
   -
     formula_id: "FORM-ADP-101"

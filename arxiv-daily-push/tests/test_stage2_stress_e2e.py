@@ -9,6 +9,8 @@ from arxiv_daily_push.stage2_stress_e2e import (
     S2PMT05_CAPACITY_BASELINE_MULTIPLIERS,
     S2PMT05_CLOCK_SKEW_TOLERANCE_SECONDS,
     S2PMT05_REPLAY_DAYS_REQUIRED,
+    S2PMT05_REQUIRED_FAULTS,
+    S2PMT05_REQUIRED_FAULT_RECOVERY_STATES,
     S2PMT05_REQUIRED_FINDINGS,
     S2PMT05_REQUIRED_MAIL_PRODUCTS,
     S2PMT05_REQUIRED_PRODUCTION_FALSE_FLAGS,
@@ -22,6 +24,7 @@ from arxiv_daily_push.stage2_stress_e2e import (
     evaluate_backpressure_policy,
     evaluate_capacity_baseline_model,
     evaluate_dst_clock_policy,
+    evaluate_fault_injection_matrix,
     evaluate_load_stress_spike_soak,
     evaluate_result_validity,
     simulate_dual_scheduler_race,
@@ -98,15 +101,39 @@ class Stage2StressE2ETests(unittest.TestCase):
     def test_fault_injection_matrix_covers_storage_sqlite_and_corrupt_artifacts(self) -> None:
         matrix = build_fault_injection_matrix(generated_at="2026-07-04T06:00:00+10:00")
         faults = {row["fault"] for row in matrix["scenarios"]}
+        recovery_states = {row["resulting_state"] for row in matrix["scenarios"]}
 
         self.assertEqual(matrix["status"], "pass")
-        self.assertEqual(
-            faults,
-            {"ENOSPC", "EACCES_READ_ONLY_DIR", "SQLITE_BUSY", "CORRUPT_CACHE_JSON", "CORRUPT_BACKUP_MANIFEST"},
-        )
+        self.assertEqual(faults, set(S2PMT05_REQUIRED_FAULTS))
+        self.assertEqual(recovery_states, set(S2PMT05_REQUIRED_FAULT_RECOVERY_STATES))
         self.assertGreaterEqual(matrix["sqlite_busy_timeout_ms"], 5000)
+        self.assertTrue(matrix["checks"]["required_faults_present"])
+        self.assertTrue(matrix["checks"]["required_recovery_states_present"])
+        self.assertTrue(matrix["checks"]["no_partial_artifact_commit"])
+        self.assertTrue(matrix["checks"]["corrupt_pdf_rebuilds_from_source"])
+        self.assertTrue(matrix["checks"]["backup_faults_block_restore_or_publish"])
         self.assertTrue(all(row["fail_closed"] for row in matrix["scenarios"]))
         self.assertTrue(all(not row["production_mutation_applied"] for row in matrix["scenarios"]))
+
+    def test_fault_injection_matrix_blocks_missing_pdf_backup_and_partial_commit(self) -> None:
+        matrix = build_fault_injection_matrix(generated_at="2026-07-04T06:00:00+10:00")
+        scenarios = [
+            dict(row)
+            for row in matrix["scenarios"]
+            if row["fault"] not in {"CORRUPT_PDF_ARTIFACT", "BACKUP_PATH_COLLISION"}
+        ]
+        scenarios[0]["partial_artifact_committed"] = True
+        scenarios[1]["production_mutation_applied"] = True
+
+        evaluation = evaluate_fault_injection_matrix(scenarios=scenarios)
+
+        self.assertEqual(evaluation["status"], "blocked")
+        self.assertFalse(evaluation["checks"]["required_faults_present"])
+        self.assertFalse(evaluation["checks"]["required_recovery_states_present"])
+        self.assertFalse(evaluation["checks"]["no_partial_artifact_commit"])
+        self.assertFalse(evaluation["checks"]["no_production_mutation_applied"])
+        self.assertFalse(evaluation["checks"]["corrupt_pdf_rebuilds_from_source"])
+        self.assertFalse(evaluation["checks"]["backup_faults_block_restore_or_publish"])
 
     def test_dst_and_clock_skew_policy_blocks_future_heartbeat_and_handles_folds(self) -> None:
         policy = evaluate_dst_clock_policy()
@@ -215,6 +242,10 @@ class Stage2StressE2ETests(unittest.TestCase):
         self.assertEqual(set(report["findings_covered"]), set(S2PMT05_REQUIRED_FINDINGS))
         self.assertTrue(report["gates"]["capacity_baseline_model"])
         self.assertEqual(report["findings_covered"]["B-006"], ["capacity_baseline_model", "load_stress_spike_soak"])
+        self.assertTrue(report["gates"]["fault_injection"])
+        self.assertEqual(report["findings_covered"]["B-009"], ["fault_injection"])
+        self.assertTrue(report["fault_injection"]["checks"]["corrupt_pdf_rebuilds_from_source"])
+        self.assertTrue(report["fault_injection"]["checks"]["backup_faults_block_restore_or_publish"])
         self.assertTrue(report["gates"]["result_validity_semantic_evidence"])
         self.assertEqual(report["findings_covered"]["B-013"], ["result_validity_semantic_evidence"])
         self.assertTrue(report["backpressure_degradation"]["checks"]["covers_2x_and_5x_peak_profiles"])

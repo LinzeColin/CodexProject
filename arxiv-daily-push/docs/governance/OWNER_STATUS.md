@@ -39,7 +39,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (895/895 active parameters, 108/108 active formulas)
+- implementation_congruence: `VERIFIED` (897/897 active parameters, 108/108 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `VERIFIED`
 - empirical_validation: `VERIFIED`
@@ -71,23 +71,23 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - model_count: `106`
 - total_formulas: `108`
 - active_formulas: `108`
-- total_parameters: `912`
-- active_parameters: `895`
+- total_parameters: `914`
+- active_parameters: `897`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PMT05_B006_CAPACITY_BASELINE_LOCAL_VALIDATION_NO_PRODUCTION`
+- release_gate: `S2PMT05_B009_FAULT_INJECTION_LOCAL_VALIDATION_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `0`
 - commit_bound_events: `4`
-- legacy_unbound_events: `133`
+- legacy_unbound_events: `134`
 - precommit_pending_events: `40`
-- pending_or_stale_events: `172`
+- pending_or_stale_events: `173`
 
 ## 15. UNKNOWN
 
@@ -97,11 +97,11 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:8d974f9e57dd389b83a28e5c0a81bca3004a59970b29c71cf0aefd13a5f280e9`
-- snapshot_event_time: `2026-06-27T00:40:36+10:00`
+- source_snapshot_hash: `sha256:cc80113ed025ca006700ac2791376d31f47b17a3b8c53f9daffeabf5967d03de`
+- snapshot_event_time: `2026-06-27T01:03:21+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PM / S2PMT05_B006_CAPACITY_BASELINE_LOCAL_VALIDATION_NO_PRODUCTION`
+- phase/gate: `S2PM / S2PMT05_B009_FAULT_INJECTION_LOCAL_VALIDATION_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 
