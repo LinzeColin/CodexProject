@@ -13,7 +13,11 @@
     "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_SMTP_CRASH_WINDOW_B008.md",
     "governance/run_manifests/ADP-S2PMT05-SMTP-CRASH-WINDOW-B008-20260627.json",
     "arxiv-daily-push/docs/pursuing_goal/v7_1/09_并行审查/并行审查汇总与合并结论.md",
-    "arxiv-daily-push/docs/pursuing_goal/v7_1/09_并行审查/问题清单.csv"
+    "arxiv-daily-push/docs/pursuing_goal/v7_1/09_并行审查/问题清单.csv",
+    "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A002-20260627.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_RESTORE_ATOMIC_REPLACEMENT_A002.md",
+    "governance/run_manifests/ADP-S2PMT02-RESTORE-ATOMIC-REPLACEMENT-A002-20260627.json",
+    "arxiv-daily-push/用户中心/恢复原子替换扫描.md"
   ],
   "final_acceptance_bundle_present": false,
   "forbidden_side_effects": {
@@ -57,14 +61,15 @@
     },
     {
       "evidence_refs": [
-        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_ATOMIC_RECOVERY.md",
-        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_RESTORE_SAFETY_REMEDIATION.md",
-        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_ARTIFACT_ATOMIC_PUBLISH.md"
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_RESTORE_ATOMIC_REPLACEMENT_A002.md",
+        "governance/run_manifests/ADP-S2PMT02-RESTORE-ATOMIC-REPLACEMENT-A002-20260627.json",
+        "arxiv-daily-push/用户中心/恢复原子替换扫描.md",
+        "arxiv-daily-push/tests/test_stage2_atomic_recovery.py"
       ],
       "finding_id": "A-002",
-      "fix_task": "S2PMT02",
-      "preliminary_review_state": "evidence_located_independent_review_required",
-      "reviewer_decision_required": "Verify failed restore leaves the original database unchanged and only complete validated artifacts are atomically published.",
+      "fix_task": "S2PMT02-RESTORE-ATOMIC-REPLACEMENT-A002",
+      "preliminary_review_state": "refreshed_current_evidence_located_independent_review_required_closure_not_claimed",
+      "reviewer_decision_required": "Verify valid new-target restore, valid overwrite restore with previous-target backup preservation, invalid overwrite target preservation, temporary-file cleanup, and no-production flags; decide whether this dedicated local evidence is sufficient for A-002 closure.",
       "severity": "P0"
     },
     {
@@ -147,16 +152,18 @@
     "independent_final_signoff_missing",
     "independent_final_command_execution_missing"
   ],
-  "previous_refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B007-B008-20260627.json",
+  "previous_refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A001-20260627.json",
   "project_id": "arxiv-daily-push",
-  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A001-20260627.json",
+  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A002-20260627.json",
   "refresh_manifests": [
     "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B007-B008-20260627.json",
-    "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A001-20260627.json"
+    "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A001-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A002-20260627.json"
   ],
-  "refreshed_at": "2026-06-27T08:05:48+10:00",
+  "refreshed_at": "2026-06-27T08:34:18+10:00",
   "refreshed_findings": [
     "A-001",
+    "A-002",
     "B-007",
     "B-008"
   ],

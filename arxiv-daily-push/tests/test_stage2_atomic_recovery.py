@@ -2,21 +2,24 @@ from __future__ import annotations
 
 import hashlib
 import json
+import sqlite3
 import tempfile
 import unittest
 from pathlib import Path
 
-from arxiv_daily_push.stage1_runtime import restore_runtime_backup
+from arxiv_daily_push.stage1_runtime import create_runtime_backup, restore_runtime_backup
 from arxiv_daily_push.stage2_atomic_recovery import (
     S2PMT02_MANIFEST_FILENAME,
+    build_restore_atomic_replacement_report,
     build_restore_path_safety_report,
     build_atomic_recovery_package,
     run_restore_drill,
     validate_atomic_recovery_report,
+    validate_restore_atomic_replacement_report,
     validate_restore_path_safety_report,
     verify_atomic_recovery_manifest,
 )
-from arxiv_daily_push.storage import migrate_database
+from arxiv_daily_push.storage import inspect_database, migrate_database
 
 
 def _a001_probe(
@@ -33,6 +36,62 @@ def _a001_probe(
         "blocking_reasons": restore.get("blocking_reasons") or [],
         "target_exists_after": target.exists(),
         "target_sha256_preserved": bool(before_sha and after_sha == before_sha),
+        "production_side_effects_enabled": restore.get("production_side_effects_enabled"),
+        "production_restore_executed": False,
+        "real_smtp_sent": restore.get("real_smtp_sent"),
+        "real_scheduler_installed": restore.get("real_scheduler_installed"),
+        "real_release_uploaded": restore.get("real_release_uploaded"),
+        "public_schema_changed": False,
+        "queue_mutation_allowed": False,
+        "db_migration_executed": False,
+    }
+
+
+def _stamp_database(path: Path, marker: str) -> str:
+    migrate_database(path)
+    conn = sqlite3.connect(path)
+    try:
+        conn.execute(
+            "INSERT OR REPLACE INTO development_iterations(iteration_id, task_id, status, evidence_ref, created_at) VALUES (?, ?, ?, ?, ?)",
+            (f"iter-{marker}", f"task-{marker}", "pass", f"evidence-{marker}", "2026-07-02T06:00:00+10:00"),
+        )
+        conn.commit()
+    finally:
+        conn.close()
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _temp_restore_files(target: Path) -> list[Path]:
+    return sorted(target.parent.glob(f".{target.name}.*.tmp"))
+
+
+def _a002_probe(
+    probe_id: str,
+    restore: dict[str, object],
+    target: Path,
+    *,
+    backup_sha: str | None = None,
+    before_sha: str | None = None,
+) -> dict[str, object]:
+    after_sha = hashlib.sha256(target.read_bytes()).hexdigest() if target.exists() else None
+    previous_backup_path = restore.get("previous_target_backup_path")
+    previous_backup = Path(str(previous_backup_path)) if previous_backup_path else None
+    previous_backup_sha = hashlib.sha256(previous_backup.read_bytes()).hexdigest() if previous_backup and previous_backup.exists() else None
+    storage_report = inspect_database(target) if target.exists() else {"status": "missing"}
+    return {
+        "probe_id": probe_id,
+        "observed_status": restore.get("status"),
+        "blocking_reasons": restore.get("blocking_reasons") or [],
+        "restored_database_ready": restore.get("restored_database_ready"),
+        "target_exists_after": target.exists(),
+        "target_sha256": after_sha,
+        "target_sha256_matches_backup": bool(backup_sha and after_sha == backup_sha),
+        "target_sha256_changed_from_before": bool(before_sha and after_sha and after_sha != before_sha),
+        "target_sha256_preserved": bool(before_sha and after_sha == before_sha),
+        "previous_target_backup_created": bool(previous_backup and previous_backup.exists()),
+        "previous_target_backup_sha256_preserved": bool(before_sha and previous_backup_sha == before_sha),
+        "storage_report_status": storage_report.get("status"),
+        "temp_files_remaining": len(_temp_restore_files(target)),
         "production_side_effects_enabled": restore.get("production_side_effects_enabled"),
         "production_restore_executed": False,
         "real_smtp_sent": restore.get("real_smtp_sent"),
@@ -153,6 +212,109 @@ class Stage2AtomicRecoveryTests(unittest.TestCase):
             self.assertIn(
                 "production_restore_executed must be false for A-001 restore path safety evidence",
                 validate_restore_path_safety_report(tampered),
+            )
+
+    def test_restore_atomic_replacement_a002_uses_real_restore_probes_without_production_side_effects(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source_db = root / "source.sqlite3"
+            backup_sha = _stamp_database(source_db, "source")
+            backup = create_runtime_backup(
+                db_path=source_db,
+                backup_dir=root / "backups",
+                generated_at="2026-07-02T06:20:00+10:00",
+            )
+            self.assertEqual(backup["status"], "pass")
+            backup_sha = backup["files"][0]["sha256"]
+            probes: list[dict[str, object]] = []
+
+            new_target = root / "new-target.sqlite3"
+            new_restore = restore_runtime_backup(
+                manifest_path=backup["backup_manifest_path"],
+                target_db_path=new_target,
+                generated_at="2026-07-02T06:21:00+10:00",
+                confirm_restore=True,
+            )
+            probes.append(_a002_probe("valid_restore_new_target", new_restore, new_target, backup_sha=backup_sha))
+
+            overwrite_target = root / "overwrite.sqlite3"
+            before_sha = _stamp_database(overwrite_target, "old")
+            overwrite_restore = restore_runtime_backup(
+                manifest_path=backup["backup_manifest_path"],
+                target_db_path=overwrite_target,
+                generated_at="2026-07-02T06:22:00+10:00",
+                confirm_restore=True,
+                allow_overwrite=True,
+            )
+            probes.append(
+                _a002_probe(
+                    "valid_overwrite_with_previous_backup",
+                    overwrite_restore,
+                    overwrite_target,
+                    backup_sha=backup_sha,
+                    before_sha=before_sha,
+                )
+            )
+
+            invalid_root = root / "invalid"
+            invalid_root.mkdir()
+            invalid_target = root / "invalid-target.sqlite3"
+            invalid_before_sha = _stamp_database(invalid_target, "keep")
+            invalid_backup = invalid_root / "adp.sqlite3"
+            invalid_backup.write_text("not a sqlite database", encoding="utf-8")
+            invalid_manifest = invalid_root / "backup_manifest.json"
+            invalid_manifest.write_text(
+                json.dumps(
+                    {
+                        "model_id": "adp-stage1-local-runtime-recovery-v1",
+                        "files": [
+                            {
+                                "role": "database",
+                                "path": "adp.sqlite3",
+                                "sha256": hashlib.sha256(invalid_backup.read_bytes()).hexdigest(),
+                            }
+                        ],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            invalid_restore = restore_runtime_backup(
+                manifest_path=invalid_manifest,
+                target_db_path=invalid_target,
+                generated_at="2026-07-02T06:23:00+10:00",
+                confirm_restore=True,
+                allow_overwrite=True,
+            )
+            probes.append(
+                _a002_probe(
+                    "invalid_overwrite_preserves_target",
+                    invalid_restore,
+                    invalid_target,
+                    backup_sha=backup_sha,
+                    before_sha=invalid_before_sha,
+                )
+            )
+
+            report = build_restore_atomic_replacement_report(
+                generated_at="2026-07-02T06:24:00+10:00",
+                probes=probes,
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertEqual(report["finding_id"], "A-002")
+            self.assertEqual(report["task_id"], "S2PMT02-RESTORE-ATOMIC-REPLACEMENT-A002")
+            self.assertEqual(report["probe_count"], 3)
+            for gate, value in report["gates"].items():
+                self.assertTrue(value, gate)
+            self.assertFalse(report["production_restore_executed"])
+            self.assertFalse(report["p0_closure_claimed"])
+            self.assertFalse(report["stage2_integrated_production_accepted"])
+            self.assertFalse(validate_restore_atomic_replacement_report(report))
+
+            tampered = {**report, "p0_closure_claimed": True}
+            self.assertIn(
+                "p0_closure_claimed must be false for A-002 restore atomic replacement evidence",
+                validate_restore_atomic_replacement_report(tampered),
             )
 
     def test_package_verify_and_restore_drill_without_production_side_effects(self) -> None:
