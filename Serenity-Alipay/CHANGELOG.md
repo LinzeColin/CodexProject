@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased - Immutable Pool Entry Guard
+
+- Fixed `record_asset_pool_entries()` so first candidate/holding/observation pool entry facts are resolved from historical `recommendation_snapshot + run_log` before insertion, instead of blindly using the current run.
+- Restored the regression expectation that a fund first entering Top5 in an older run keeps the original `first_run_id`, `first_rank`, `first_run_time_bj`, and `first_run_created_at` even when later runs rank it higher.
+- Verified the focused app/UI/benchmark/indicator/history test set passes without running production analysis, sending mail, starting OpenD/MooMoo, or modifying historical SQLite rows.
+
+No historical snapshot, report, immutable creation timestamp, first pool entry timestamp, or prior analysis record was rewritten by this change.
+
 ## Unreleased - Other8 S3PCT03 Lifecycle Evidence
 
 - Added focused S3PCT03 lifecycle coverage for mocked OpenD auto-wake ownership, tool-owned cleanup, user-owned OpenD protection, delivery package atomic failure recovery, and launchd tick wrapper behavior.

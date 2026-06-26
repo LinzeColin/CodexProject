@@ -438,6 +438,45 @@ def _pool_kinds_for_rank(rank: int | None) -> list[str]:
     return kinds
 
 
+def _first_pool_entry_fact(
+    conn: sqlite3.Connection,
+    *,
+    asset_id: str,
+    pool_kind: str,
+    fallback: dict[str, Any],
+) -> dict[str, Any]:
+    rank_clause_by_pool = {
+        "candidate_pool": "r.rank BETWEEN 1 AND 10",
+        "holding_pool": "r.rank BETWEEN 1 AND 5",
+        "observation_pool": "r.rank BETWEEN 6 AND 10",
+    }
+    rank_clause = rank_clause_by_pool.get(pool_kind)
+    if not rank_clause:
+        return fallback
+    row = conn.execute(
+        f"""
+        SELECT r.run_id, r.rank,
+               l.run_time_bj, l.run_time_au, l.created_at AS run_created_at
+        FROM recommendation_snapshot r
+        JOIN run_log l ON l.run_id=r.run_id
+        WHERE r.asset_id=? AND {rank_clause}
+        ORDER BY l.created_at ASC, l.run_time_bj ASC, r.id ASC
+        LIMIT 1
+        """,
+        (asset_id,),
+    ).fetchone()
+    if not row:
+        return fallback
+    return {
+        "run_id": row["run_id"],
+        "rank": row["rank"],
+        "run_time_bj": row["run_time_bj"],
+        "run_time_au": row["run_time_au"],
+        "run_created_at": row["run_created_at"],
+        "created_at": row["run_created_at"],
+    }
+
+
 def record_asset_pool_entries(
     conn: sqlite3.Connection,
     *,
@@ -451,6 +490,19 @@ def record_asset_pool_entries(
 ) -> None:
     """Persist first pool-entry facts without rewriting earlier membership."""
     for pool_kind in _pool_kinds_for_rank(rank):
+        first_fact = _first_pool_entry_fact(
+            conn,
+            asset_id=asset_id,
+            pool_kind=pool_kind,
+            fallback={
+                "run_id": run_id,
+                "rank": rank,
+                "run_time_bj": run_time_bj,
+                "run_time_au": run_time_au,
+                "run_created_at": run_created_at,
+                "created_at": created_at,
+            },
+        )
         conn.execute(
             """
             INSERT OR IGNORE INTO asset_pool_entry (
@@ -463,12 +515,12 @@ def record_asset_pool_entries(
             (
                 asset_id,
                 pool_kind,
-                run_id,
-                rank,
-                run_time_bj,
-                run_time_au,
-                run_created_at,
-                created_at,
+                first_fact["run_id"],
+                first_fact["rank"],
+                first_fact["run_time_bj"],
+                first_fact["run_time_au"],
+                first_fact["run_created_at"],
+                first_fact["created_at"],
             ),
         )
 

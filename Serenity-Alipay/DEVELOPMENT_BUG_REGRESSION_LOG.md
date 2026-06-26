@@ -11,6 +11,7 @@ Purpose: record repeated production UX/runtime bugs that must not regress in fut
 3. The macOS `.app` launcher must open exactly one final local homepage tab and then exit. It must not keep an `open-serenity` shell process alive.
 4. OpenD/MooMoo lifecycle changes must preserve ownership: user-opened processes are never cleaned up; tool-opened processes are cleaned only after the relevant task completes and only when socket readiness/lifecycle state proves it is safe.
 5. Manual Review / data quality degradation / no-new-order informational states must not create noisy production email unless the configured urgent action threshold is met.
+6. First pool entry facts must be resolved from historical recommendations before insertion. Later runs must not change a fund's original candidate/holding/observation pool entry time, rank, or run id.
 
 ## Repeated Bug 1: Manual Review Saved But Todo Remained
 
@@ -66,14 +67,30 @@ Purpose: record repeated production UX/runtime bugs that must not regress in fut
   - `tests/test_application_server.py` and `tests/test_reporting_ui.py` target the API/UI path.
   - `history-integrity --require-pass --json` must stay `status=pass`.
 
+## Related Stability Fix: Immutable First Pool Entry Facts
+
+- Symptom: a later run could write `asset_pool_entry.first_run_id`, `first_rank`, `first_run_time_bj`, and `first_run_created_at` using the current run even when the asset had already appeared in the same pool historically.
+- Root cause: `record_asset_pool_entries()` used only the current `run_id/rank/run_time` before inserting with `INSERT OR IGNORE`; if the backfill path had not already populated the row, the later run became the recorded first entry.
+- Correct behavior: before inserting, resolve the earliest matching historical recommendation from `recommendation_snapshot + run_log` for the target pool kind:
+  - `candidate_pool`: rank 1-10.
+  - `holding_pool`: rank 1-5.
+  - `observation_pool`: rank 6-10.
+- Fix record:
+  - `app/db.py::_first_pool_entry_fact()` now selects the earliest historical fact for the asset and pool kind.
+  - `record_asset_pool_entries()` inserts that historical fact and still uses `INSERT OR IGNORE`, so existing immutable rows are not rewritten.
+- Regression shield:
+  - `tests/test_history_integrity.py::test_asset_pool_entry_keeps_first_holding_pool_entry`.
+- Future agent warning: never "repair" first-entry timestamps by recalculating them from the latest run. If historical truth changes because older data is newly imported, handle it through an explicit migration/audit contract, not through normal runtime writes.
+
 ## Required Verification Before Marking This Cluster Fixed
 
 Run at minimum:
 
 ```bash
 python -m py_compile app/db.py app/core/application_server.py app/core/application_portal.py app/core/pipeline.py tests/test_application_server.py tests/test_reporting_ui.py
-pytest -q tests/test_reporting_ui.py tests/test_application_server.py
-python -m app.cli history-integrity --require-pass --json
+pytest -q tests/test_reporting_ui.py tests/test_application_server.py tests/test_history_integrity.py
 ```
+
+Only run `python -m app.cli history-integrity --require-pass --json` when explicitly validating the real historical database, and do not commit the generated `outputs/audit/*latest*` files unless that is the intended deliverable.
 
 For real UI acceptance, verify the installed app opens one homepage tab, no long-lived `open-serenity` process remains, and saving a review item removes it from the visible pending list immediately after SQLite success.
