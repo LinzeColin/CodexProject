@@ -1,0 +1,43 @@
+{
+  "acceptance_ids": [
+    "A209"
+  ],
+  "artifact_id": "t1307-a209-clean-rerun-authorization-template",
+  "authorization_status": "TEMPLATE_ONLY_NOT_AUTHORIZED",
+  "clean_rerun_authorized": false,
+  "generated_at": "2026-06-26T13:47:16Z",
+  "non_claims": [
+    "This template does not authorize a clean rerun.",
+    "This template does not start, stop, resume, promote or finalize A209.",
+    "A signed authorization must set every required boolean to true after failed evidence is preserved.",
+    "A clean rerun still requires 288/288 passing windows and release-ready validation."
+  ],
+  "operator_fields_to_complete": {
+    "acknowledge_previous_failed_window": false,
+    "allow_clean_rerun": false,
+    "allowed_output_dir": "/private/tmp/eei-a209-clean-rerun-YYYYMMDD-HHMM/",
+    "authorized_at": "OPERATOR_TO_FILL_UTC",
+    "authorized_by": "OPERATOR_TO_FILL",
+    "failed_evidence_preserved": false,
+    "preserved_evidence_manifest_sha256": "OPERATOR_TO_FILL",
+    "reason": "OPERATOR_TO_FILL",
+    "schema_version": "eei-a209-clean-rerun-authorization-v1"
+  },
+  "release_gate_closure_allowed": false,
+  "required_boolean_values_when_signed": {
+    "acknowledge_previous_failed_window": true,
+    "allow_clean_rerun": true,
+    "failed_evidence_preserved": true
+  },
+  "schema_version": "eei-a209-clean-rerun-authorization-v1",
+  "source_recovery_packet": {
+    "path": "artifacts/tests/a209/t1307_operator_soak_recovery_authorization_packet.json",
+    "sha256": "f65dfbc4ab1566e46475305e6e6ddb9b04cf20e22c8f2013d67fa4a2ee935af7"
+  },
+  "submission_target": "artifacts/operator_inputs/a209/clean-rerun-authorization.json",
+  "system_en_name": "Enterprise Ecosystem Intelligence",
+  "system_name": "EEI",
+  "system_zh_name": "商域图谱",
+  "task_id": "T1307",
+  "template_only": true
+}

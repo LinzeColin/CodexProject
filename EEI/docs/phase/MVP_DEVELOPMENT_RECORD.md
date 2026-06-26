@@ -1,5 +1,33 @@
 # MVP Development Record
 
+## 2026-06-26 - T1303/A204-A205 operator input kit
+
+Status: LOCAL TARGET VALIDATED; TEMPLATE KIT READY; RELEASE GATES STILL BLOCKED
+
+### Scope
+
+- Added `artifacts/operator_input_kit/operator_input_kit_manifest.json`.
+- Added template-only operator worksheets for A202 signed source/license/passage/owner/legal review, A210 brand clearance, A026/A027 production gold labels, A209 clean-rerun authorization and A209 promoted finalization.
+- Wired `generate-kit` / `validate-kit` into `scripts/validate_external_release_evidence_bundle.py`, `Makefile`, `make generate-external-release-evidence-bundle`, `make validate-external-release-evidence-bundle` and `make verify`.
+- Registered `PARAM-093` for `eei-external-release-operator-input-kit-v1`.
+
+### Validation
+
+- `scripts/validate_external_release_evidence_bundle.py validate-kit`: PASS.
+- `ruff check scripts/validate_external_release_evidence_bundle.py tests/unit/test_external_release_evidence_bundle.py`: PASS.
+- `pytest -q -p no:cacheprovider tests/unit/test_external_release_evidence_bundle.py`: PASS `9/9`.
+
+### Non-Claims
+
+- The kit is not signed operator evidence.
+- The kit does not authorize A209 clean rerun, promote A209 evidence, approve source/legal/brand clearance, or supply production gold labels.
+- This does not close A202, A209, A210, A026, A027, A204, A205 or MVP v0.1 readiness.
+
+### Rollback
+
+- Revert the operator input kit artifacts, `PARAM-093`, Makefile targets, validator/test changes and companion governance records.
+- Preserve existing signed-input targets under `artifacts/operator_inputs/` and failed A209 runtime evidence.
+
 ## 2026-06-26 - T1307/A209 recovery packet clean-checkout preservation fix
 
 Status: LOCAL TARGET VALIDATED; CI FIX PENDING; A209 OPERATOR AUTHORIZATION REQUIRED; RELEASE GATES STILL BLOCKED

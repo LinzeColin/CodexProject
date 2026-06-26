@@ -19,6 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 SCHEMA_VERSION = "eei-external-release-evidence-bundle-preflight-v1"
 PACKET_SCHEMA_VERSION = "eei-external-release-operator-intake-packet-v2"
+INPUT_KIT_SCHEMA_VERSION = "eei-external-release-operator-input-kit-v1"
 DEFAULT_RELEASE_DECISION_CONTRACT = (
     ROOT / "artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json"
 )
@@ -58,6 +59,10 @@ DEFAULT_OPERATOR_SOAK_RECOVERY_PACKET = (
 DEFAULT_OUTPUT = ROOT / "artifacts/tests/a205/t1303_external_release_evidence_bundle_preflight.json"
 DEFAULT_PACKET_OUTPUT = (
     ROOT / "artifacts/tests/a205/t1303_external_release_operator_intake_packet.json"
+)
+DEFAULT_OPERATOR_INPUT_KIT_DIR = ROOT / "artifacts/operator_input_kit"
+DEFAULT_OPERATOR_INPUT_KIT_MANIFEST = (
+    DEFAULT_OPERATOR_INPUT_KIT_DIR / "operator_input_kit_manifest.json"
 )
 
 REQUIRED_TASK_IDS = ["T1301", "T1303", "T1307", "T1309", "T904"]
@@ -155,6 +160,11 @@ def sha256_file(path: Path) -> str:
 
 def source_ref(path: Path) -> dict[str, str]:
     return {"path": display_path(path), "sha256": sha256_file(path)}
+
+
+def write_raw_template(source_path: Path, destination_path: Path) -> None:
+    destination_path.parent.mkdir(parents=True, exist_ok=True)
+    destination_path.write_bytes(source_path.read_bytes())
 
 
 def release_decision_summary(payload: dict[str, Any]) -> dict[str, Any]:
@@ -684,6 +694,457 @@ def build_operator_intake_packet(
     }
 
 
+def build_clean_rerun_authorization_template(
+    *,
+    recovery_packet: dict[str, Any],
+    recovery_packet_path: Path,
+    generated_at: str,
+) -> dict[str, Any]:
+    authorization = recovery_packet.get("operator_authorization_contract")
+    if not isinstance(authorization, dict):
+        raise ValueError("A209 recovery packet missing operator_authorization_contract")
+    clean_rerun = recovery_packet.get("clean_rerun_contract")
+    if not isinstance(clean_rerun, dict):
+        clean_rerun = {}
+    required_boolean_values = authorization.get("required_boolean_values")
+    if not isinstance(required_boolean_values, dict):
+        required_boolean_values = {}
+    return {
+        "schema_version": authorization.get(
+            "required_schema_version", "eei-a209-clean-rerun-authorization-v1"
+        ),
+        "artifact_id": "t1307-a209-clean-rerun-authorization-template",
+        "generated_at": generated_at,
+        "system_name": "EEI",
+        "system_en_name": "Enterprise Ecosystem Intelligence",
+        "system_zh_name": "商域图谱",
+        "task_id": "T1307",
+        "acceptance_ids": ["A209"],
+        "template_only": True,
+        "authorization_status": "TEMPLATE_ONLY_NOT_AUTHORIZED",
+        "release_gate_closure_allowed": False,
+        "clean_rerun_authorized": False,
+        "submission_target": authorization.get("authorization_file"),
+        "required_boolean_values_when_signed": required_boolean_values,
+        "operator_fields_to_complete": {
+            "schema_version": authorization.get(
+                "required_schema_version", "eei-a209-clean-rerun-authorization-v1"
+            ),
+            "authorized_by": "OPERATOR_TO_FILL",
+            "authorized_at": "OPERATOR_TO_FILL_UTC",
+            "reason": "OPERATOR_TO_FILL",
+            "failed_evidence_preserved": False,
+            "preserved_evidence_manifest_sha256": "OPERATOR_TO_FILL",
+            "allow_clean_rerun": False,
+            "allowed_output_dir": clean_rerun.get(
+                "recommended_output_dir_template",
+                "/private/tmp/eei-a209-clean-rerun-YYYYMMDD-HHMM/",
+            ),
+            "acknowledge_previous_failed_window": False,
+        },
+        "source_recovery_packet": source_ref(recovery_packet_path),
+        "non_claims": [
+            "This template does not authorize a clean rerun.",
+            "This template does not start, stop, resume, promote or finalize A209.",
+            "A signed authorization must set every required boolean to true after "
+            "failed evidence is preserved.",
+            "A clean rerun still requires 288/288 passing windows and release-ready validation.",
+        ],
+    }
+
+
+def build_promoted_finalization_template(
+    *,
+    finalization: dict[str, Any],
+    generated_at: str,
+) -> dict[str, Any]:
+    return {
+        "schema_version": "eei-a209-promoted-operator-soak-finalization-intake-v1",
+        "artifact_id": "t1307-a209-promoted-operator-soak-finalization-template",
+        "generated_at": generated_at,
+        "system_name": "EEI",
+        "system_en_name": "Enterprise Ecosystem Intelligence",
+        "system_zh_name": "商域图谱",
+        "task_id": "T1307",
+        "acceptance_ids": ["A209"],
+        "template_only": True,
+        "finalization_status": "TEMPLATE_ONLY_NOT_FINALIZED",
+        "release_gate_closure_allowed": False,
+        "submission_target": OPERATOR_INPUT_TARGETS["A209_24h_operator_soak_finalization"][
+            "primary_path"
+        ],
+        "required_release_ready_values": {
+            "status": "A209_FINALIZATION_READY_FOR_RELEASE_GATE_REGEN",
+            "a209_evidence_ready_for_release_manager": True,
+            "downstream_release_gate_refresh_allowed": True,
+            "release_gate_closed_by_finalizer": False,
+            "target_windows": 288,
+            "windows_failed": 0,
+        },
+        "current_finalization_status": {
+            "status": finalization.get("status"),
+            "a209_evidence_ready_for_release_manager": finalization.get(
+                "a209_evidence_ready_for_release_manager"
+            ),
+            "downstream_release_gate_refresh_allowed": finalization.get(
+                "downstream_release_gate_refresh_allowed"
+            ),
+            "release_gate_closed_by_finalizer": finalization.get(
+                "release_gate_closed_by_finalizer"
+            ),
+        },
+        "operator_fields_to_complete_after_successful_promote": {
+            "promoted_operator_soak_summary": "OPERATOR_TO_FILL",
+            "promoted_operator_soak_checkpoint": "OPERATOR_TO_FILL",
+            "promotion_manifest_sha256": "OPERATOR_TO_FILL",
+            "finalized_by": "OPERATOR_TO_FILL",
+            "finalized_at": "OPERATOR_TO_FILL_UTC",
+            "signature": "OPERATOR_TO_FILL",
+        },
+        "non_claims": [
+            "This template is not A209 finalization evidence.",
+            "This template does not promote partial or failed 24h runtime evidence.",
+            "This template does not close A209 or downstream release gates.",
+            "Finalization requires a promoted 288/288 zero-failure run and "
+            "release-ready validator status.",
+        ],
+    }
+
+
+def operator_input_kit_template_specs(
+    *,
+    kit_dir: Path,
+    packet: dict[str, Any],
+    a202_intake_template_path: Path,
+    brand_intake_template_path: Path,
+    gold_intake_template_path: Path,
+    operator_soak_finalization_path: Path,
+    operator_soak_recovery_packet_path: Path,
+    generated_at: str,
+) -> list[dict[str, Any]]:
+    recovery_packet = read_json(operator_soak_recovery_packet_path)
+    finalization = read_json(operator_soak_finalization_path)
+    required_inputs = {
+        item.get("input_id"): item
+        for item in packet.get("required_operator_inputs", [])
+        if isinstance(item, dict)
+    }
+    specs: list[dict[str, Any]] = []
+
+    def intake(input_id: str) -> dict[str, Any]:
+        item = required_inputs.get(input_id)
+        if not isinstance(item, dict):
+            raise ValueError(f"operator input kit missing intake item {input_id}")
+        return item
+
+    for input_id, source_path, relative_path in (
+        (
+            "A202_source_license_passage_owner_legal_release",
+            a202_intake_template_path,
+            "a202/signed-release-decision-intake.template.json",
+        ),
+        (
+            "A210_brand_legal_market_clearance_or_risk_waiver",
+            brand_intake_template_path,
+            "a210/signed-brand-clearance.template.json",
+        ),
+        (
+            "A026_entity_resolution_production_gold_set",
+            gold_intake_template_path,
+            "a026_a027/production-gold-labels.template.json",
+        ),
+    ):
+        item = intake(input_id)
+        specs.append(
+            {
+                "input_id": input_id,
+                "acceptance_id": item.get("acceptance_id"),
+                "template_mode": "source_template_copy",
+                "source_template_path": source_path,
+                "kit_template_path": kit_dir / relative_path,
+                "submission_target": item.get("submission_target"),
+                "validation_command": item.get("validation_command"),
+                "completion_criteria": item.get("completion_criteria", []),
+            }
+        )
+
+    relationship_item = intake("A027_relationship_extraction_production_gold_set")
+    specs.append(
+        {
+            "input_id": "A027_relationship_extraction_production_gold_set",
+            "acceptance_id": relationship_item.get("acceptance_id"),
+            "template_mode": "shared_source_template_copy",
+            "source_template_path": gold_intake_template_path,
+            "kit_template_path": kit_dir / "a026_a027/production-gold-labels.template.json",
+            "submission_target": relationship_item.get("submission_target"),
+            "validation_command": relationship_item.get("validation_command"),
+            "completion_criteria": relationship_item.get("completion_criteria", []),
+        }
+    )
+
+    specs.append(
+        {
+            "input_id": "A209_clean_rerun_authorization",
+            "acceptance_id": "A209",
+            "template_mode": "generated_authorization_template",
+            "source_template_path": operator_soak_recovery_packet_path,
+            "kit_template_path": kit_dir / "a209/clean-rerun-authorization.template.json",
+            "submission_target": recovery_packet.get("operator_authorization_contract", {}).get(
+                "authorization_file"
+            ),
+            "validation_command": (
+                "make generate-operator-soak-recovery-authorization-packet "
+                "validate-operator-soak-recovery-authorization-packet"
+            ),
+            "completion_criteria": [
+                "failed runtime evidence is preserved before any clean rerun",
+                "signed operator authorization is supplied before starting a new 24h run",
+                "authorization explicitly acknowledges the failed window",
+            ],
+            "template_payload": build_clean_rerun_authorization_template(
+                recovery_packet=recovery_packet,
+                recovery_packet_path=operator_soak_recovery_packet_path,
+                generated_at=generated_at,
+            ),
+        }
+    )
+
+    finalization_item = intake("A209_24h_operator_soak_finalization")
+    specs.append(
+        {
+            "input_id": "A209_24h_operator_soak_finalization",
+            "acceptance_id": "A209",
+            "template_mode": "generated_finalization_template",
+            "source_template_path": operator_soak_finalization_path,
+            "kit_template_path": kit_dir / "a209/promoted-operator-soak-finalization.template.json",
+            "submission_target": finalization_item.get("submission_target"),
+            "validation_command": finalization_item.get("validation_command"),
+            "completion_criteria": finalization_item.get("completion_criteria", []),
+            "template_payload": build_promoted_finalization_template(
+                finalization=finalization,
+                generated_at=generated_at,
+            ),
+        }
+    )
+    return specs
+
+
+def write_operator_input_kit(
+    *,
+    packet_path: Path = DEFAULT_PACKET_OUTPUT,
+    kit_dir: Path = DEFAULT_OPERATOR_INPUT_KIT_DIR,
+    a202_intake_template_path: Path = DEFAULT_A202_INTAKE_TEMPLATE,
+    brand_intake_template_path: Path = DEFAULT_BRAND_INTAKE_TEMPLATE,
+    gold_intake_template_path: Path = DEFAULT_GOLD_INTAKE_TEMPLATE,
+    operator_soak_finalization_path: Path = DEFAULT_OPERATOR_SOAK_FINALIZATION,
+    operator_soak_recovery_packet_path: Path = DEFAULT_OPERATOR_SOAK_RECOVERY_PACKET,
+    generated_at: str | None = None,
+) -> dict[str, Any]:
+    generated_at = generated_at or utc_now()
+    packet = read_json(packet_path)
+    specs = operator_input_kit_template_specs(
+        kit_dir=kit_dir,
+        packet=packet,
+        a202_intake_template_path=a202_intake_template_path,
+        brand_intake_template_path=brand_intake_template_path,
+        gold_intake_template_path=gold_intake_template_path,
+        operator_soak_finalization_path=operator_soak_finalization_path,
+        operator_soak_recovery_packet_path=operator_soak_recovery_packet_path,
+        generated_at=generated_at,
+    )
+    written: set[Path] = set()
+    for spec in specs:
+        path = spec["kit_template_path"]
+        if path in written:
+            continue
+        if spec["template_mode"] in {
+            "source_template_copy",
+            "shared_source_template_copy",
+        }:
+            write_raw_template(spec["source_template_path"], path)
+        else:
+            write_json(path, spec["template_payload"])
+        written.add(path)
+    manifest = build_operator_input_kit_manifest(
+        packet_path=packet_path,
+        kit_dir=kit_dir,
+        a202_intake_template_path=a202_intake_template_path,
+        brand_intake_template_path=brand_intake_template_path,
+        gold_intake_template_path=gold_intake_template_path,
+        operator_soak_finalization_path=operator_soak_finalization_path,
+        operator_soak_recovery_packet_path=operator_soak_recovery_packet_path,
+        generated_at=generated_at,
+    )
+    write_json(kit_dir / "operator_input_kit_manifest.json", manifest)
+    return manifest
+
+
+def build_operator_input_kit_manifest(
+    *,
+    packet_path: Path = DEFAULT_PACKET_OUTPUT,
+    kit_dir: Path = DEFAULT_OPERATOR_INPUT_KIT_DIR,
+    a202_intake_template_path: Path = DEFAULT_A202_INTAKE_TEMPLATE,
+    brand_intake_template_path: Path = DEFAULT_BRAND_INTAKE_TEMPLATE,
+    gold_intake_template_path: Path = DEFAULT_GOLD_INTAKE_TEMPLATE,
+    operator_soak_finalization_path: Path = DEFAULT_OPERATOR_SOAK_FINALIZATION,
+    operator_soak_recovery_packet_path: Path = DEFAULT_OPERATOR_SOAK_RECOVERY_PACKET,
+    generated_at: str | None = None,
+) -> dict[str, Any]:
+    generated_at = generated_at or utc_now()
+    packet = read_json(packet_path)
+    specs = operator_input_kit_template_specs(
+        kit_dir=kit_dir,
+        packet=packet,
+        a202_intake_template_path=a202_intake_template_path,
+        brand_intake_template_path=brand_intake_template_path,
+        gold_intake_template_path=gold_intake_template_path,
+        operator_soak_finalization_path=operator_soak_finalization_path,
+        operator_soak_recovery_packet_path=operator_soak_recovery_packet_path,
+        generated_at=generated_at,
+    )
+    items: list[dict[str, Any]] = []
+    seen_paths: set[str] = set()
+    for spec in specs:
+        kit_template_path = spec["kit_template_path"]
+        template_display = display_path(kit_template_path)
+        if template_display.startswith("artifacts/operator_inputs/"):
+            raise ValueError("operator input kit templates must not use signed input targets")
+        source_template_ref = source_ref(spec["source_template_path"])
+        kit_template_sha = sha256_file(kit_template_path) if kit_template_path.exists() else ""
+        copied_source = spec["template_mode"] in {
+            "source_template_copy",
+            "shared_source_template_copy",
+        }
+        if copied_source and kit_template_path.exists() and kit_template_sha != source_template_ref[
+            "sha256"
+        ]:
+            raise ValueError(f"operator input kit source-template drift: {template_display}")
+        items.append(
+            {
+                "input_id": spec["input_id"],
+                "acceptance_id": spec["acceptance_id"],
+                "kit_template_path": template_display,
+                "kit_template_sha256": kit_template_sha,
+                "source_template": source_template_ref,
+                "submission_target": spec["submission_target"],
+                "target_path_is_template_path": spec["submission_target"] == template_display,
+                "template_mode": spec["template_mode"],
+                "template_only": True,
+                "release_gate_closure_allowed": False,
+                "template_counts_as_clearance": False,
+                "validation_command": spec["validation_command"],
+                "completion_criteria": spec["completion_criteria"],
+            }
+        )
+        seen_paths.add(template_display)
+    return {
+        "schema_version": INPUT_KIT_SCHEMA_VERSION,
+        "artifact_id": "t1303-external-release-operator-input-kit",
+        "generated_at": generated_at,
+        "system_name": "EEI",
+        "system_en_name": "Enterprise Ecosystem Intelligence",
+        "system_zh_name": "商域图谱",
+        "task_id": "T1303",
+        "task_ids": REQUIRED_TASK_IDS,
+        "acceptance_ids": REQUIRED_ACCEPTANCE_IDS,
+        "kit_status": "TEMPLATE_KIT_READY_RELEASE_GATES_BLOCKED",
+        "template_only": True,
+        "release_gate_closure_allowed": False,
+        "mvp_release_gate_refresh_allowed": False,
+        "source_files": {
+            "external_release_operator_intake_packet": source_ref(packet_path),
+            "a202_release_decision_intake_template": source_ref(a202_intake_template_path),
+            "a210_brand_clearance_intake_template": source_ref(brand_intake_template_path),
+            "a026_a027_gold_label_intake_template": source_ref(gold_intake_template_path),
+            "a209_operator_soak_finalization_preflight": source_ref(
+                operator_soak_finalization_path
+            ),
+            "a209_operator_soak_recovery_authorization_packet": source_ref(
+                operator_soak_recovery_packet_path
+            ),
+        },
+        "formal_submission_targets": packet.get("operator_submission_targets"),
+        "kit_items": items,
+        "unique_template_paths": sorted(seen_paths),
+        "post_submission_commands": packet.get("post_submission_commands"),
+        "validation_policy": {
+            "templates_must_not_live_under_signed_operator_input_targets": True,
+            "templates_count_as_clearance": False,
+            "operator_input_kit_closes_release_gate": False,
+            "all_required_operator_inputs_must_be_ready": True,
+            "partial_a209_checkpoint_counts_as_clearance": False,
+        },
+        "non_claims": [
+            "This kit is a fillable template pack, not signed operator evidence.",
+            "This kit does not close A202, A209, A210, A026, A027, A204, A205 or MVP release.",
+            "Files under artifacts/operator_input_kit/ must not be submitted as-is to close gates.",
+            "Formal submissions must use the exact artifacts/operator_inputs/ targets "
+            "and pass fail-closed validators.",
+        ],
+    }
+
+
+def validate_operator_input_kit(
+    payload: dict[str, Any],
+    *,
+    packet_path: Path = DEFAULT_PACKET_OUTPUT,
+    kit_dir: Path = DEFAULT_OPERATOR_INPUT_KIT_DIR,
+    a202_intake_template_path: Path = DEFAULT_A202_INTAKE_TEMPLATE,
+    brand_intake_template_path: Path = DEFAULT_BRAND_INTAKE_TEMPLATE,
+    gold_intake_template_path: Path = DEFAULT_GOLD_INTAKE_TEMPLATE,
+    operator_soak_finalization_path: Path = DEFAULT_OPERATOR_SOAK_FINALIZATION,
+    operator_soak_recovery_packet_path: Path = DEFAULT_OPERATOR_SOAK_RECOVERY_PACKET,
+) -> None:
+    expected = build_operator_input_kit_manifest(
+        packet_path=packet_path,
+        kit_dir=kit_dir,
+        a202_intake_template_path=a202_intake_template_path,
+        brand_intake_template_path=brand_intake_template_path,
+        gold_intake_template_path=gold_intake_template_path,
+        operator_soak_finalization_path=operator_soak_finalization_path,
+        operator_soak_recovery_packet_path=operator_soak_recovery_packet_path,
+        generated_at=payload.get("generated_at"),
+    )
+    checked_fields = (
+        "schema_version",
+        "artifact_id",
+        "system_name",
+        "task_id",
+        "task_ids",
+        "acceptance_ids",
+        "kit_status",
+        "template_only",
+        "release_gate_closure_allowed",
+        "mvp_release_gate_refresh_allowed",
+        "source_files",
+        "formal_submission_targets",
+        "kit_items",
+        "unique_template_paths",
+        "post_submission_commands",
+        "validation_policy",
+        "non_claims",
+    )
+    for key in checked_fields:
+        if payload.get(key) != expected.get(key):
+            raise ValueError(f"operator input kit drift: {key}")
+    if payload.get("release_gate_closure_allowed") is not False:
+        raise ValueError("operator input kit must not close release gates")
+    if payload.get("template_only") is not True:
+        raise ValueError("operator input kit must be template-only")
+    for item in payload.get("kit_items", []):
+        if not isinstance(item, dict):
+            raise ValueError("operator input kit item must be an object")
+        if item.get("target_path_is_template_path") is not False:
+            raise ValueError("operator input kit template path must differ from submission target")
+        if item.get("release_gate_closure_allowed") is not False:
+            raise ValueError("operator input kit item must not close release gates")
+        template_path = str(item.get("kit_template_path", ""))
+        if template_path.startswith("artifacts/operator_inputs/"):
+            raise ValueError("operator input kit templates must not live under operator_inputs")
+        if not (ROOT / template_path).exists():
+            raise ValueError(f"operator input kit template missing: {template_path}")
+
+
 def validate_preflight(
     payload: dict[str, Any],
     *,
@@ -866,11 +1327,19 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "command",
-        choices=("generate", "validate", "generate-packet", "validate-packet"),
+        choices=(
+            "generate",
+            "validate",
+            "generate-packet",
+            "validate-packet",
+            "generate-kit",
+            "validate-kit",
+        ),
     )
     add_common_args(parser)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--packet-output", type=Path, default=DEFAULT_PACKET_OUTPUT)
+    parser.add_argument("--kit-dir", type=Path, default=DEFAULT_OPERATOR_INPUT_KIT_DIR)
     parser.add_argument("--quiet", action="store_true")
     return parser.parse_args()
 
@@ -937,7 +1406,7 @@ def main() -> int:
         write_json(args.packet_output, payload)
         if not args.quiet:
             print(json.dumps({"generated": True, "artifact": display_path(args.packet_output)}))
-    else:
+    elif args.command == "validate-packet":
         validate_operator_intake_packet(
             read_json(args.packet_output),
             preflight_path=args.output,
@@ -952,6 +1421,49 @@ def main() -> int:
         )
         if not args.quiet:
             print(json.dumps({"valid": True, "artifact": display_path(args.packet_output)}))
+    elif args.command == "generate-kit":
+        payload = write_operator_input_kit(
+            packet_path=args.packet_output,
+            kit_dir=args.kit_dir,
+            a202_intake_template_path=args.a202_intake_template,
+            brand_intake_template_path=args.brand_intake_template,
+            gold_intake_template_path=args.gold_intake_template,
+            operator_soak_finalization_path=args.operator_soak_finalization,
+            operator_soak_recovery_packet_path=args.operator_soak_recovery_packet,
+        )
+        validate_operator_input_kit(
+            payload,
+            packet_path=args.packet_output,
+            kit_dir=args.kit_dir,
+            a202_intake_template_path=args.a202_intake_template,
+            brand_intake_template_path=args.brand_intake_template,
+            gold_intake_template_path=args.gold_intake_template,
+            operator_soak_finalization_path=args.operator_soak_finalization,
+            operator_soak_recovery_packet_path=args.operator_soak_recovery_packet,
+        )
+        if not args.quiet:
+            print(
+                json.dumps(
+                    {
+                        "generated": True,
+                        "artifact": display_path(args.kit_dir / "operator_input_kit_manifest.json"),
+                    }
+                )
+            )
+    else:
+        manifest_path = args.kit_dir / "operator_input_kit_manifest.json"
+        validate_operator_input_kit(
+            read_json(manifest_path),
+            packet_path=args.packet_output,
+            kit_dir=args.kit_dir,
+            a202_intake_template_path=args.a202_intake_template,
+            brand_intake_template_path=args.brand_intake_template,
+            gold_intake_template_path=args.gold_intake_template,
+            operator_soak_finalization_path=args.operator_soak_finalization,
+            operator_soak_recovery_packet_path=args.operator_soak_recovery_packet,
+        )
+        if not args.quiet:
+            print(json.dumps({"valid": True, "artifact": display_path(manifest_path)}))
     return 0
 
 

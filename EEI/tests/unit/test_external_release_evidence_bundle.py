@@ -8,8 +8,10 @@ import pytest
 from scripts.validate_external_release_evidence_bundle import (
     build_operator_intake_packet,
     build_preflight,
+    validate_operator_input_kit,
     validate_operator_intake_packet,
     validate_preflight,
+    write_operator_input_kit,
 )
 
 
@@ -219,6 +221,22 @@ def packet_paths(tmp_path: Path, *, ready: bool) -> dict[str, Path]:
                 "status": "A209_RECOVERY_OPERATOR_AUTHORIZATION_REQUIRED",
                 "clean_rerun_authorized_by_packet": False,
                 "release_gate_closed_by_recovery_packet": False,
+                "operator_authorization_contract": {
+                    "authorization_file": (
+                        "artifacts/operator_inputs/a209/clean-rerun-authorization.json"
+                    ),
+                    "required_schema_version": "eei-a209-clean-rerun-authorization-v1",
+                    "required_boolean_values": {
+                        "failed_evidence_preserved": True,
+                        "allow_clean_rerun": True,
+                        "acknowledge_previous_failed_window": True,
+                    },
+                },
+                "clean_rerun_contract": {
+                    "recommended_output_dir_template": (
+                        "/private/tmp/eei-a209-clean-rerun-YYYYMMDD-HHMM/"
+                    )
+                },
             },
         ),
         "a202_intake_template_path": write_json(
@@ -383,6 +401,119 @@ def test_operator_intake_packet_validation_detects_template_hash_drift(
             a202_intake_template_path=input_paths["a202_intake_template_path"],
             a202_operator_review_packet_path=input_paths["a202_operator_review_packet_path"],
             a202_operator_gap_packet_path=input_paths["a202_operator_gap_packet_path"],
+            brand_intake_template_path=input_paths["brand_intake_template_path"],
+            gold_intake_template_path=input_paths["gold_intake_template_path"],
+            operator_soak_finalization_path=input_paths["operator_soak_finalization_path"],
+            operator_soak_recovery_packet_path=input_paths[
+                "operator_soak_recovery_packet_path"
+            ],
+        )
+
+
+def test_operator_input_kit_generates_non_closing_templates(tmp_path: Path) -> None:
+    input_paths = packet_paths(tmp_path, ready=False)
+    packet = build_operator_intake_packet(
+        generated_at="2026-06-24T00:00:00Z",
+        preflight_path=input_paths["preflight_path"],
+        a202_intake_template_path=input_paths["a202_intake_template_path"],
+        a202_operator_review_packet_path=input_paths["a202_operator_review_packet_path"],
+        a202_operator_gap_packet_path=input_paths["a202_operator_gap_packet_path"],
+        brand_intake_template_path=input_paths["brand_intake_template_path"],
+        gold_intake_template_path=input_paths["gold_intake_template_path"],
+        operator_soak_finalization_path=input_paths["operator_soak_finalization_path"],
+        operator_soak_recovery_packet_path=input_paths["operator_soak_recovery_packet_path"],
+    )
+    packet_path = write_json(tmp_path / "operator_intake_packet.json", packet)
+    kit_dir = tmp_path / "operator_input_kit"
+
+    manifest = write_operator_input_kit(
+        generated_at="2026-06-24T00:00:00Z",
+        packet_path=packet_path,
+        kit_dir=kit_dir,
+        a202_intake_template_path=input_paths["a202_intake_template_path"],
+        brand_intake_template_path=input_paths["brand_intake_template_path"],
+        gold_intake_template_path=input_paths["gold_intake_template_path"],
+        operator_soak_finalization_path=input_paths["operator_soak_finalization_path"],
+        operator_soak_recovery_packet_path=input_paths["operator_soak_recovery_packet_path"],
+    )
+
+    assert manifest["schema_version"] == "eei-external-release-operator-input-kit-v1"
+    assert manifest["kit_status"] == "TEMPLATE_KIT_READY_RELEASE_GATES_BLOCKED"
+    assert manifest["template_only"] is True
+    assert manifest["release_gate_closure_allowed"] is False
+    assert manifest["mvp_release_gate_refresh_allowed"] is False
+    assert len(manifest["kit_items"]) == 6
+    assert all(item["target_path_is_template_path"] is False for item in manifest["kit_items"])
+    assert all(item["template_counts_as_clearance"] is False for item in manifest["kit_items"])
+    assert all(
+        not item["kit_template_path"].startswith("artifacts/operator_inputs/")
+        for item in manifest["kit_items"]
+    )
+    clean_auth = next(
+        item
+        for item in manifest["kit_items"]
+        if item["input_id"] == "A209_clean_rerun_authorization"
+    )
+    clean_auth_payload = json.loads(
+        (kit_dir / "a209/clean-rerun-authorization.template.json").read_text()
+    )
+    assert (
+        clean_auth["submission_target"]
+        == "artifacts/operator_inputs/a209/clean-rerun-authorization.json"
+    )
+    assert clean_auth_payload["authorization_status"] == "TEMPLATE_ONLY_NOT_AUTHORIZED"
+    assert clean_auth_payload["operator_fields_to_complete"]["allow_clean_rerun"] is False
+    assert clean_auth_payload["operator_fields_to_complete"]["failed_evidence_preserved"] is False
+    finalization_payload = json.loads(
+        (kit_dir / "a209/promoted-operator-soak-finalization.template.json").read_text()
+    )
+    assert finalization_payload["finalization_status"] == "TEMPLATE_ONLY_NOT_FINALIZED"
+    assert finalization_payload["required_release_ready_values"]["target_windows"] == 288
+    validate_operator_input_kit(
+        manifest,
+        packet_path=packet_path,
+        kit_dir=kit_dir,
+        a202_intake_template_path=input_paths["a202_intake_template_path"],
+        brand_intake_template_path=input_paths["brand_intake_template_path"],
+        gold_intake_template_path=input_paths["gold_intake_template_path"],
+        operator_soak_finalization_path=input_paths["operator_soak_finalization_path"],
+        operator_soak_recovery_packet_path=input_paths["operator_soak_recovery_packet_path"],
+    )
+
+
+def test_operator_input_kit_validation_detects_template_drift(tmp_path: Path) -> None:
+    input_paths = packet_paths(tmp_path, ready=False)
+    packet = build_operator_intake_packet(
+        generated_at="2026-06-24T00:00:00Z",
+        preflight_path=input_paths["preflight_path"],
+        a202_intake_template_path=input_paths["a202_intake_template_path"],
+        a202_operator_review_packet_path=input_paths["a202_operator_review_packet_path"],
+        a202_operator_gap_packet_path=input_paths["a202_operator_gap_packet_path"],
+        brand_intake_template_path=input_paths["brand_intake_template_path"],
+        gold_intake_template_path=input_paths["gold_intake_template_path"],
+        operator_soak_finalization_path=input_paths["operator_soak_finalization_path"],
+        operator_soak_recovery_packet_path=input_paths["operator_soak_recovery_packet_path"],
+    )
+    packet_path = write_json(tmp_path / "operator_intake_packet.json", packet)
+    kit_dir = tmp_path / "operator_input_kit"
+    manifest = write_operator_input_kit(
+        generated_at="2026-06-24T00:00:00Z",
+        packet_path=packet_path,
+        kit_dir=kit_dir,
+        a202_intake_template_path=input_paths["a202_intake_template_path"],
+        brand_intake_template_path=input_paths["brand_intake_template_path"],
+        gold_intake_template_path=input_paths["gold_intake_template_path"],
+        operator_soak_finalization_path=input_paths["operator_soak_finalization_path"],
+        operator_soak_recovery_packet_path=input_paths["operator_soak_recovery_packet_path"],
+    )
+    write_json(kit_dir / "a210/signed-brand-clearance.template.json", {"changed": True})
+
+    with pytest.raises(ValueError, match="operator input kit source-template drift"):
+        validate_operator_input_kit(
+            manifest,
+            packet_path=packet_path,
+            kit_dir=kit_dir,
+            a202_intake_template_path=input_paths["a202_intake_template_path"],
             brand_intake_template_path=input_paths["brand_intake_template_path"],
             gold_intake_template_path=input_paths["gold_intake_template_path"],
             operator_soak_finalization_path=input_paths["operator_soak_finalization_path"],

@@ -1,0 +1,266 @@
+{
+  "acceptance_ids": [
+    "A202",
+    "A204",
+    "A205",
+    "A209",
+    "A210",
+    "A026",
+    "A027"
+  ],
+  "artifact_id": "t1303-external-release-operator-input-kit",
+  "formal_submission_targets": {
+    "A026_entity_resolution_production_gold_set": {
+      "allowed_paths": [
+        "artifacts/operator_inputs/a026_a027/",
+        "operator_inputs/a026_a027/",
+        "work/operator_inputs/a026_a027/",
+        "external operator file outside repository"
+      ],
+      "primary_path": "artifacts/operator_inputs/a026_a027/production-gold-labels.json"
+    },
+    "A027_relationship_extraction_production_gold_set": {
+      "allowed_paths": [
+        "artifacts/operator_inputs/a026_a027/",
+        "operator_inputs/a026_a027/",
+        "work/operator_inputs/a026_a027/",
+        "external operator file outside repository"
+      ],
+      "primary_path": "artifacts/operator_inputs/a026_a027/production-gold-labels.json"
+    },
+    "A202_source_license_passage_owner_legal_release": {
+      "allowed_paths": [
+        "artifacts/operator_inputs/a202/",
+        "operator_inputs/a202/",
+        "work/operator_inputs/a202/",
+        "external operator file outside repository"
+      ],
+      "primary_path": "artifacts/operator_inputs/a202/signed-release-decision-intake.json"
+    },
+    "A209_24h_operator_soak_finalization": {
+      "allowed_paths": [
+        "artifacts/operator_inputs/a209/",
+        "operator_inputs/a209/",
+        "work/operator_inputs/a209/",
+        "external operator file outside repository"
+      ],
+      "primary_path": "artifacts/operator_inputs/a209/promoted-operator-soak-finalization.json"
+    },
+    "A210_brand_legal_market_clearance_or_risk_waiver": {
+      "allowed_paths": [
+        "artifacts/operator_inputs/a210/",
+        "operator_inputs/a210/",
+        "work/operator_inputs/a210/",
+        "external operator file outside repository"
+      ],
+      "primary_path": "artifacts/operator_inputs/a210/signed-brand-clearance.json"
+    }
+  },
+  "generated_at": "2026-06-26T13:47:16Z",
+  "kit_items": [
+    {
+      "acceptance_id": "A202",
+      "completion_criteria": [
+        "source-license reviews cover every required Golden Vertical source anchor",
+        "passage-level relationship reviews cover every Golden Vertical relationship candidate",
+        "production owner signoffs cover every candidate without duplicates or unknowns",
+        "legal release clearance is signed and hash-bound"
+      ],
+      "input_id": "A202_source_license_passage_owner_legal_release",
+      "kit_template_path": "artifacts/operator_input_kit/a202/signed-release-decision-intake.template.json",
+      "kit_template_sha256": "27b34274a0e379162f51867620e129a242c63189374c5456625c33e296ee7747",
+      "release_gate_closure_allowed": false,
+      "source_template": {
+        "path": "artifacts/tests/a202/t1301_a202_release_decision_intake_template.json",
+        "sha256": "27b34274a0e379162f51867620e129a242c63189374c5456625c33e296ee7747"
+      },
+      "submission_target": "artifacts/operator_inputs/a202/signed-release-decision-intake.json",
+      "target_path_is_template_path": false,
+      "template_counts_as_clearance": false,
+      "template_mode": "source_template_copy",
+      "template_only": true,
+      "validation_command": "make generate-a202-signed-intake-preflight validate-a202-signed-intake-preflight"
+    },
+    {
+      "acceptance_id": "A210",
+      "completion_criteria": [
+        "every required brand surface and jurisdiction is reviewed",
+        "formal clearance or risk waiver has accepted signed status",
+        "public launch decision scope is explicit"
+      ],
+      "input_id": "A210_brand_legal_market_clearance_or_risk_waiver",
+      "kit_template_path": "artifacts/operator_input_kit/a210/signed-brand-clearance.template.json",
+      "kit_template_sha256": "e6f28191c387cfd4bf167d9f8ed2c94f25dda65babc4722fa66b86e9a3facbb8",
+      "release_gate_closure_allowed": false,
+      "source_template": {
+        "path": "artifacts/tests/a210/t1309_brand_clearance_intake_template.json",
+        "sha256": "e6f28191c387cfd4bf167d9f8ed2c94f25dda65babc4722fa66b86e9a3facbb8"
+      },
+      "submission_target": "artifacts/operator_inputs/a210/signed-brand-clearance.json",
+      "target_path_is_template_path": false,
+      "template_counts_as_clearance": false,
+      "template_mode": "source_template_copy",
+      "template_only": true,
+      "validation_command": "make generate-brand-clearance-artifact validate-brand-clearance"
+    },
+    {
+      "acceptance_id": "A026",
+      "completion_criteria": [
+        "at least 50 operator-supplied non-fixture entity-resolution cases",
+        "precision is at least 95%",
+        "source-license and passage-review references are present"
+      ],
+      "input_id": "A026_entity_resolution_production_gold_set",
+      "kit_template_path": "artifacts/operator_input_kit/a026_a027/production-gold-labels.template.json",
+      "kit_template_sha256": "d2b665985ef8f89a10b7899dadd2d786821b90875da81ad7604ac60204669b94",
+      "release_gate_closure_allowed": false,
+      "source_template": {
+        "path": "artifacts/tests/a026/t904_a026_a027_production_gold_label_intake_template.json",
+        "sha256": "d2b665985ef8f89a10b7899dadd2d786821b90875da81ad7604ac60204669b94"
+      },
+      "submission_target": "artifacts/operator_inputs/a026_a027/production-gold-labels.json",
+      "target_path_is_template_path": false,
+      "template_counts_as_clearance": false,
+      "template_mode": "source_template_copy",
+      "template_only": true,
+      "validation_command": "make generate-gold-quality-evaluation-artifacts validate-gold-quality-evaluation"
+    },
+    {
+      "acceptance_id": "A027",
+      "completion_criteria": [
+        "at least 100 operator-supplied non-fixture relationship cases",
+        "precision is at least 90%",
+        "source-license and passage-review references are present"
+      ],
+      "input_id": "A027_relationship_extraction_production_gold_set",
+      "kit_template_path": "artifacts/operator_input_kit/a026_a027/production-gold-labels.template.json",
+      "kit_template_sha256": "d2b665985ef8f89a10b7899dadd2d786821b90875da81ad7604ac60204669b94",
+      "release_gate_closure_allowed": false,
+      "source_template": {
+        "path": "artifacts/tests/a026/t904_a026_a027_production_gold_label_intake_template.json",
+        "sha256": "d2b665985ef8f89a10b7899dadd2d786821b90875da81ad7604ac60204669b94"
+      },
+      "submission_target": "artifacts/operator_inputs/a026_a027/production-gold-labels.json",
+      "target_path_is_template_path": false,
+      "template_counts_as_clearance": false,
+      "template_mode": "shared_source_template_copy",
+      "template_only": true,
+      "validation_command": "make generate-gold-quality-evaluation-artifacts validate-gold-quality-evaluation"
+    },
+    {
+      "acceptance_id": "A209",
+      "completion_criteria": [
+        "failed runtime evidence is preserved before any clean rerun",
+        "signed operator authorization is supplied before starting a new 24h run",
+        "authorization explicitly acknowledges the failed window"
+      ],
+      "input_id": "A209_clean_rerun_authorization",
+      "kit_template_path": "artifacts/operator_input_kit/a209/clean-rerun-authorization.template.json",
+      "kit_template_sha256": "8bd2e9f79626886eea5e27977f987f5e8e2880723ff23649914d57c59b968f18",
+      "release_gate_closure_allowed": false,
+      "source_template": {
+        "path": "artifacts/tests/a209/t1307_operator_soak_recovery_authorization_packet.json",
+        "sha256": "f65dfbc4ab1566e46475305e6e6ddb9b04cf20e22c8f2013d67fa4a2ee935af7"
+      },
+      "submission_target": "artifacts/operator_inputs/a209/clean-rerun-authorization.json",
+      "target_path_is_template_path": false,
+      "template_counts_as_clearance": false,
+      "template_mode": "generated_authorization_template",
+      "template_only": true,
+      "validation_command": "make generate-operator-soak-recovery-authorization-packet validate-operator-soak-recovery-authorization-packet"
+    },
+    {
+      "acceptance_id": "A209",
+      "completion_criteria": [
+        "failed runtime evidence is preserved before any clean rerun",
+        "operator clean-rerun authorization is signed before starting a new 24h run",
+        "288/288 five-minute windows pass",
+        "0 failed windows",
+        "operator soak evidence validation reports release-ready status",
+        "downstream release-gate refresh is explicitly allowed by finalization preflight"
+      ],
+      "input_id": "A209_24h_operator_soak_finalization",
+      "kit_template_path": "artifacts/operator_input_kit/a209/promoted-operator-soak-finalization.template.json",
+      "kit_template_sha256": "079a4561889783719457fc4e4912a03eab861d619f58871de8e3ae99b387d426",
+      "release_gate_closure_allowed": false,
+      "source_template": {
+        "path": "artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json",
+        "sha256": "4276b3c728ca6d3e81769635b17e9880b7233cc9da8e5951fdbd162b18af5346"
+      },
+      "submission_target": "artifacts/operator_inputs/a209/promoted-operator-soak-finalization.json",
+      "target_path_is_template_path": false,
+      "template_counts_as_clearance": false,
+      "template_mode": "generated_finalization_template",
+      "template_only": true,
+      "validation_command": "make generate-operator-soak-finalization-preflight generate-operator-soak-recovery-authorization-packet validate-operator-soak-finalization-preflight validate-operator-soak-recovery-authorization-packet"
+    }
+  ],
+  "kit_status": "TEMPLATE_KIT_READY_RELEASE_GATES_BLOCKED",
+  "mvp_release_gate_refresh_allowed": false,
+  "non_claims": [
+    "This kit is a fillable template pack, not signed operator evidence.",
+    "This kit does not close A202, A209, A210, A026, A027, A204, A205 or MVP release.",
+    "Files under artifacts/operator_input_kit/ must not be submitted as-is to close gates.",
+    "Formal submissions must use the exact artifacts/operator_inputs/ targets and pass fail-closed validators."
+  ],
+  "post_submission_commands": [
+    "make generate-external-release-evidence-bundle validate-external-release-evidence-bundle",
+    "make generate-release-manager-activation-artifact validate-release-manager-activation",
+    "make generate-mvp-release-gate-preflight validate-mvp-release-gate-preflight",
+    "make verify"
+  ],
+  "release_gate_closure_allowed": false,
+  "schema_version": "eei-external-release-operator-input-kit-v1",
+  "source_files": {
+    "a026_a027_gold_label_intake_template": {
+      "path": "artifacts/tests/a026/t904_a026_a027_production_gold_label_intake_template.json",
+      "sha256": "d2b665985ef8f89a10b7899dadd2d786821b90875da81ad7604ac60204669b94"
+    },
+    "a202_release_decision_intake_template": {
+      "path": "artifacts/tests/a202/t1301_a202_release_decision_intake_template.json",
+      "sha256": "27b34274a0e379162f51867620e129a242c63189374c5456625c33e296ee7747"
+    },
+    "a209_operator_soak_finalization_preflight": {
+      "path": "artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json",
+      "sha256": "4276b3c728ca6d3e81769635b17e9880b7233cc9da8e5951fdbd162b18af5346"
+    },
+    "a209_operator_soak_recovery_authorization_packet": {
+      "path": "artifacts/tests/a209/t1307_operator_soak_recovery_authorization_packet.json",
+      "sha256": "f65dfbc4ab1566e46475305e6e6ddb9b04cf20e22c8f2013d67fa4a2ee935af7"
+    },
+    "a210_brand_clearance_intake_template": {
+      "path": "artifacts/tests/a210/t1309_brand_clearance_intake_template.json",
+      "sha256": "e6f28191c387cfd4bf167d9f8ed2c94f25dda65babc4722fa66b86e9a3facbb8"
+    },
+    "external_release_operator_intake_packet": {
+      "path": "artifacts/tests/a205/t1303_external_release_operator_intake_packet.json",
+      "sha256": "0fac5c3968be05d63d7f871b48e3a80ae98dffb23740e55ba7c2d6cd2a6d3580"
+    }
+  },
+  "system_en_name": "Enterprise Ecosystem Intelligence",
+  "system_name": "EEI",
+  "system_zh_name": "商域图谱",
+  "task_id": "T1303",
+  "task_ids": [
+    "T1301",
+    "T1303",
+    "T1307",
+    "T1309",
+    "T904"
+  ],
+  "template_only": true,
+  "unique_template_paths": [
+    "artifacts/operator_input_kit/a026_a027/production-gold-labels.template.json",
+    "artifacts/operator_input_kit/a202/signed-release-decision-intake.template.json",
+    "artifacts/operator_input_kit/a209/clean-rerun-authorization.template.json",
+    "artifacts/operator_input_kit/a209/promoted-operator-soak-finalization.template.json",
+    "artifacts/operator_input_kit/a210/signed-brand-clearance.template.json"
+  ],
+  "validation_policy": {
+    "all_required_operator_inputs_must_be_ready": true,
+    "operator_input_kit_closes_release_gate": false,
+    "partial_a209_checkpoint_counts_as_clearance": false,
+    "templates_count_as_clearance": false,
+    "templates_must_not_live_under_signed_operator_input_targets": true
+  }
+}

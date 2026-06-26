@@ -1,0 +1,44 @@
+{
+  "acceptance_ids": [
+    "A209"
+  ],
+  "artifact_id": "t1307-a209-promoted-operator-soak-finalization-template",
+  "current_finalization_status": {
+    "a209_evidence_ready_for_release_manager": false,
+    "downstream_release_gate_refresh_allowed": false,
+    "release_gate_closed_by_finalizer": false,
+    "status": "A209_FINALIZATION_OPERATOR_INTERVENTION_REQUIRED"
+  },
+  "finalization_status": "TEMPLATE_ONLY_NOT_FINALIZED",
+  "generated_at": "2026-06-26T13:47:16Z",
+  "non_claims": [
+    "This template is not A209 finalization evidence.",
+    "This template does not promote partial or failed 24h runtime evidence.",
+    "This template does not close A209 or downstream release gates.",
+    "Finalization requires a promoted 288/288 zero-failure run and release-ready validator status."
+  ],
+  "operator_fields_to_complete_after_successful_promote": {
+    "finalized_at": "OPERATOR_TO_FILL_UTC",
+    "finalized_by": "OPERATOR_TO_FILL",
+    "promoted_operator_soak_checkpoint": "OPERATOR_TO_FILL",
+    "promoted_operator_soak_summary": "OPERATOR_TO_FILL",
+    "promotion_manifest_sha256": "OPERATOR_TO_FILL",
+    "signature": "OPERATOR_TO_FILL"
+  },
+  "release_gate_closure_allowed": false,
+  "required_release_ready_values": {
+    "a209_evidence_ready_for_release_manager": true,
+    "downstream_release_gate_refresh_allowed": true,
+    "release_gate_closed_by_finalizer": false,
+    "status": "A209_FINALIZATION_READY_FOR_RELEASE_GATE_REGEN",
+    "target_windows": 288,
+    "windows_failed": 0
+  },
+  "schema_version": "eei-a209-promoted-operator-soak-finalization-intake-v1",
+  "submission_target": "artifacts/operator_inputs/a209/promoted-operator-soak-finalization.json",
+  "system_en_name": "Enterprise Ecosystem Intelligence",
+  "system_name": "EEI",
+  "system_zh_name": "商域图谱",
+  "task_id": "T1307",
+  "template_only": true
+}

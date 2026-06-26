@@ -39,7 +39,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (92/92 active parameters, 11/11 active formulas)
+- implementation_congruence: `VERIFIED` (93/93 active parameters, 11/11 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `UNVERIFIED`
 - empirical_validation: `PARTIAL`
@@ -71,14 +71,14 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - model_count: `12`
 - total_formulas: `12`
 - active_formulas: `11`
-- total_parameters: `92`
-- active_parameters: `92`
+- total_parameters: `93`
+- active_parameters: `93`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `TASK-T1307-A209-RECOVERY-CLEAN-CHECKOUT-PRESERVATION-FIX`
+- release_gate: `TASK-T1303-A204-A205-OPERATOR-INPUT-KIT`
 
 ## 14. Evidence Freshness
 
@@ -86,8 +86,8 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - tree_bound_events: `0`
 - commit_bound_events: `21`
 - legacy_unbound_events: `19`
-- precommit_pending_events: `103`
-- pending_or_stale_events: `124`
+- precommit_pending_events: `104`
+- pending_or_stale_events: `125`
 
 ## 15. UNKNOWN
 
@@ -97,11 +97,11 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 - source_base_commit: `047b4094d56fb7b3162b24265501e985690296f0`
 - source_tree_hash: `8737d055c5c24cf2e160003744e375aba6f6145b`
-- source_snapshot_hash: `sha256:3766a59318eda4a31a7419c08dbd4482203f0a47f1bb3a81e1ef65e24b0d3624`
-- snapshot_event_time: `2026-06-26T22:27:24+10:00`
+- source_snapshot_hash: `sha256:e9ff24716437a754b9804be7259211470ba0a37a07e6e2cbdbd32116e8ac41bc`
+- snapshot_event_time: `2026-06-26T23:36:02+10:00`
 - generator_version: `4.0.0`
 - version: `0.1.0`
-- phase/gate: `D / TASK-T1307-A209-RECOVERY-CLEAN-CHECKOUT-PRESERVATION-FIX`
+- phase/gate: `D / TASK-T1303-A204-A205-OPERATOR-INPUT-KIT`
 
 ## 17. Next Unique Task
 
