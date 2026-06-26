@@ -1,5 +1,76 @@
 # MVP Development Record
 
+## 2026-06-26 - T1307/A209 isolated rerun failed-window sync
+
+Status: LOCAL FOCUSED GENERATED; A209 OPERATOR INTERVENTION REQUIRED; RELEASE GATES STILL BLOCKED
+
+### Scope
+
+- Refreshed repository A209 background heartbeat from `/private/tmp/eei-a209-rerun-20260626-0918/` after the isolated rerun failed at checkpoint window `130/288`.
+- Regenerated A209 finalization, A203 production API release preflight, external release-evidence bundle, external release operator intake packet, release-manager activation preflight and MVP release-gate preflight from the failed-window heartbeat.
+- Updated release-manager activation unit coverage so repository-state assertions expect `BACKGROUND_SOAK_OPERATOR_INTERVENTION_REQUIRED`, `FAILED_WINDOW`, `1` failed heartbeat window and non-running operator/watchdog processes.
+- Regenerated clean-room and release artifacts after the preflight hash changes.
+- No product API, database schema, scoring formula, model weight, frontend route, promotion bridge or public-release policy changed.
+
+### Current Evidence
+
+- Repository heartbeat reports `BACKGROUND_SOAK_OPERATOR_INTERVENTION_REQUIRED`, `129` successful windows, `1` failed window, `159` remaining and `44.79%` completion.
+- Latest successful window is `129`, ending `2026-06-26T09:58:08Z`; failed checkpoint window `130` is timestamped `2026-06-26T10:03:11Z`.
+- Failed window output path: `/private/tmp/eei-operator-soak-80478-130.json`.
+- Browser failure: `page.evaluate: Target page, context or browser has been closed`; Chromium headless logs show repeated GPU process failures and final `SIGTRAP`. Worker jobs completed `12/12`.
+- A209 finalization reports `A209_FINALIZATION_OPERATOR_INTERVENTION_REQUIRED`.
+- `downstream_release_gate_refresh_allowed=false`, `a209_evidence_ready_for_release_manager=false`, and `release_gate_closed_by_finalizer=false`.
+
+### Validation
+
+- `make validate-operator-soak-background-heartbeat generate-operator-soak-finalization-preflight validate-operator-soak-finalization-preflight generate-production-api-release-preflight validate-production-api-release-preflight generate-external-release-evidence-bundle validate-external-release-evidence-bundle generate-release-manager-activation-artifact validate-release-manager-activation generate-mvp-release-gate-preflight validate-mvp-release-gate-preflight`: PASS.
+- `pytest tests/unit/test_release_manager_activation.py`: PASS `2/2` after expectation update.
+
+### Non-Claims
+
+- This does not promote isolated `/private/tmp` evidence into canonical 24h release evidence.
+- This does not stop, restart or modify the A209 operator process or watchdog.
+- This does not close A209, A202, A210, A026, A027, A204, A205, A203 release readiness or MVP v0.1 readiness.
+
+### Rollback
+
+- Revert the failed-window heartbeat/preflight artifact refresh and companion governance records, then regenerate release artifacts from the previous committed state.
+- Preserve `/private/tmp/eei-a209-rerun-20260626-0918/operator_soak_24h.checkpoints.jsonl`, `/private/tmp/eei-a209-rerun-20260626-0918/operator_soak_24h.log` and `/private/tmp/eei-operator-soak-80478-130.json` unless explicit operator recovery is authorized.
+
+## 2026-06-26 - T1307/A209 isolated rerun heartbeat freshness sync to 128/288
+
+Status: LOCAL FOCUSED GENERATED; A209 STILL IN PROGRESS; RELEASE GATES STILL BLOCKED
+
+### Scope
+
+- Refreshed repository A209 background heartbeat from `/private/tmp/eei-a209-rerun-20260626-0918/` to `128/288` PASS windows, `0` failed, `160` remaining and `44.44%` completion.
+- Regenerated A209 finalization, A203 production API release preflight, external release-evidence bundle, external release operator intake packet, release-manager activation preflight and MVP release-gate preflight from the refreshed heartbeat.
+- Regenerated clean-room and release artifacts after the preflight hash changes.
+- No product API, database schema, scoring formula, model weight, frontend route, promotion bridge or public-release policy changed.
+
+### Current Evidence
+
+- Latest reflected checkpoint is window `128` ending `2026-06-26T09:53:00Z`.
+- A209 finalization remains `A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL`.
+- `downstream_release_gate_refresh_allowed=false`, `a209_evidence_ready_for_release_manager=false`, and `release_gate_closed_by_finalizer=false`.
+- Canonical 24h checkpoint evidence remains failed at `7/288`; the isolated rerun is background progress evidence until it reaches `288/288` zero-failure evidence and is explicitly promoted/finalized.
+
+### Validation
+
+- `make validate-operator-soak-background-heartbeat generate-operator-soak-finalization-preflight validate-operator-soak-finalization-preflight generate-production-api-release-preflight validate-production-api-release-preflight generate-external-release-evidence-bundle validate-external-release-evidence-bundle generate-release-manager-activation-artifact validate-release-manager-activation generate-mvp-release-gate-preflight validate-mvp-release-gate-preflight`: PASS.
+- `make generate-clean-room-release validate-clean-room-release generate-release-artifacts validate-release-artifacts`: PASS with `package_paths=445`, `manifest_paths=452`, `checksum_paths=451` and `remote_status=PENDING`.
+
+### Non-Claims
+
+- This does not promote isolated `/private/tmp` evidence into canonical 24h release evidence.
+- This does not stop, restart or modify the live A209 operator process or watchdog.
+- This does not close A209, A202, A210, A026, A027, A204, A205, A203 release readiness or MVP v0.1 readiness.
+
+### Rollback
+
+- Revert the heartbeat/preflight artifact refresh and companion governance records, then regenerate release artifacts from the previous committed state.
+- Do not stop, restart, delete or promote live A209 checkpoint/PID/log files without explicit operator authorization.
+
 ## 2026-06-26 - T1308/A211 app icon and BrandMark refresh
 
 Status: LOCAL TARGET VALIDATED; RELEASE GATES STILL BLOCKED

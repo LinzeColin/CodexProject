@@ -4,8 +4,8 @@
 
 - source_base_commit: `047b4094d56fb7b3162b24265501e985690296f0`
 - source_tree_hash: `8737d055c5c24cf2e160003744e375aba6f6145b`
-- source_snapshot_hash: `sha256:c32fb1c4ff733015edc9ab464a4c7ae85741c63fda9819178da79ccef8319b8b`
-- snapshot_event_time: `2026-06-26T19:26:03+10:00`
+- source_snapshot_hash: `sha256:d64aeed2db2a925d3d23061d433ddd2bf546fd6b9270f74c525e88094ef7d705`
+- snapshot_event_time: `2026-06-26T20:25:24+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -14,7 +14,7 @@
 - Project: `EEI`
 - Path: `EEI`
 - Product version: `0.1.0`
-- Phase/Gate: `C / TASK-T1301-A202-LIVE-CAPTURE-VALIDATE-ONLY`
+- Phase/Gate: `D / TASK-T1307-A209-FAILED-WINDOW-130-INTERVENTION`
 - Models/Formulas/Parameters total: `12 / 12 / 90`
 - Active formulas/parameters: `11 / 90`
 - Machine checked formulas/parameters: `11 / 90`
@@ -35,9 +35,9 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `TASK-T1301-A202-LIVE-CAPTURE-VALIDATE-ONLY`
+- Release gate: `TASK-T1307-A209-FAILED-WINDOW-130-INTERVENTION`
 - Next executable task: `TASK-T1301`
-- Pending/stale events: `117`
+- Pending/stale events: `120`
 - Tree-bound events: `0`
 - Commit-bound events: `21`
 - Legacy unbound events: `19`

@@ -1,9 +1,9 @@
 project_id: "EEI"
-as_of_event_id: "EVENT-20260626-021"
-source_snapshot_hash: "sha256:c32fb1c4ff733015edc9ab464a4c7ae85741c63fda9819178da79ccef8319b8b"
+as_of_event_id: "EVENT-20260626-023"
+source_snapshot_hash: "sha256:d64aeed2db2a925d3d23061d433ddd2bf546fd6b9270f74c525e88094ef7d705"
 source_base_commit: "047b4094d56fb7b3162b24265501e985690296f0"
 source_tree_hash: "8737d055c5c24cf2e160003744e375aba6f6145b"
-snapshot_event_time: "2026-06-26T19:26:03+10:00"
+snapshot_event_time: "2026-06-26T20:25:24+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -64,12 +64,12 @@ dimensions:
     tree_bound_events: 0
     commit_bound_events: 21
     legacy_unbound_events: 19
-    precommit_pending_events: 96
+    precommit_pending_events: 99
     evidence_refs:
       - "EEI/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "FAILED"
-  release_gate: "TASK-T1301-A202-LIVE-CAPTURE-VALIDATE-ONLY"
+  release_gate: "TASK-T1307-A209-FAILED-WINDOW-130-INTERVENTION"
   blocker_ids:
     - "FACT-EEI-EMPIRICAL-EVIDENCE"
     - "FACT-EEI-OPERATIONAL-EVIDENCE"
@@ -119,4 +119,4 @@ owner_decision:
   generated_from_refs:
     - "EEI/docs/governance/ASSURANCE_STATUS.yaml"
     - "EEI/docs/governance/delivery_tasks.yaml"
-  last_reviewed_at: "2026-06-26T18:49:21+10:00"
+  last_reviewed_at: "2026-06-26T20:25:24+10:00"

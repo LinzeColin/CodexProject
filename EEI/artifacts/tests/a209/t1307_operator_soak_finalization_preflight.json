@@ -13,7 +13,7 @@
     "make verify"
   ],
   "downstream_release_gate_refresh_allowed": false,
-  "generated_at": "2026-06-26T08:29:55Z",
+  "generated_at": "2026-06-26T10:25:46Z",
   "non_claims": [
     "This finalizer does not close A209 by itself.",
     "This finalizer does not replace validate_operator_soak_evidence.py.",
@@ -21,8 +21,8 @@
     "This finalizer does not replace A202, A210, A026 or A027 evidence."
   ],
   "operator_next_actions": [
-    "Keep the detached 24h soak and watchdog running.",
-    "Refresh heartbeat again after more windows complete."
+    "Inspect heartbeat_validation_errors and evidence result errors.",
+    "Do not auto-resume if any failed window is present."
   ],
   "release_gate_closed_by_finalizer": false,
   "rollback": [
@@ -35,7 +35,7 @@
     "evidence_validation": "artifacts/tests/a209/t1307_operator_soak_evidence_validation.json",
     "evidence_validation_sha256": "f5dc124f5e8beb4389163e5e171bbddc9743cfcb3a223af0798a74c9234cc53b",
     "heartbeat": "artifacts/tests/a209/t1307_operator_soak_background_progress.json",
-    "heartbeat_sha256": "d65396133c4d35c4b68c9c71194bf7148f2c9e6ce890d44e4fbd283876807365"
+    "heartbeat_sha256": "de242a1c30043cb115dd72bbae05b82eda91acf48979b4cc02374486b459d9d3"
   },
   "source_statuses": {
     "evidence_validation": {
@@ -76,22 +76,22 @@
       "status": "FAILED_OPERATOR_EVIDENCE"
     },
     "heartbeat": {
-      "completion_percent": 38.54,
+      "completion_percent": 44.79,
       "operator_pid": 80478,
-      "operator_process_status": "RUNNING",
-      "progress_status": "RUNNING_PARTIAL",
+      "operator_process_status": "NOT_RUNNING",
+      "progress_status": "FAILED_WINDOW",
       "release_gate_closed_by_background_heartbeat": false,
-      "status": "BACKGROUND_SOAK_RUNNING_WITH_WATCHDOG",
+      "status": "BACKGROUND_SOAK_OPERATOR_INTERVENTION_REQUIRED",
       "target_windows": 288,
       "watchdog_pid": 80732,
-      "watchdog_process_status": "RUNNING",
-      "windows_completed": 111,
-      "windows_failed": 0,
-      "windows_remaining": 177
+      "watchdog_process_status": "NOT_RUNNING",
+      "windows_completed": 129,
+      "windows_failed": 1,
+      "windows_remaining": 159
     },
     "heartbeat_validation_errors": []
   },
-  "status": "A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL",
+  "status": "A209_FINALIZATION_OPERATOR_INTERVENTION_REQUIRED",
   "system_en_name": "Enterprise Ecosystem Intelligence",
   "system_name": "EEI",
   "task_id": "T1307"
