@@ -78,16 +78,16 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PMT07_P1_A006_A009_REVIEW_RECEIPT_REFRESH_NO_CLOSURE_NO_PRODUCTION`
+- release_gate: `S2PMT07_P1_A010_A016_REVIEW_RECEIPT_REFRESH_NO_CLOSURE_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `0`
 - commit_bound_events: `4`
-- legacy_unbound_events: `142`
+- legacy_unbound_events: `143`
 - precommit_pending_events: `40`
-- pending_or_stale_events: `181`
+- pending_or_stale_events: `182`
 
 ## 15. UNKNOWN
 
@@ -97,11 +97,11 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:c7dbea9de0120cf10fbafaf4e465685ea6390c95d61aa40e8b440a4f9499e4ab`
+- source_snapshot_hash: `sha256:e7079ea418c4a221b608b5532a8a4bd8851c9b058086772c7f8941d47d713ff6`
 - snapshot_event_time: `2026-06-27T04:14:36+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PM / S2PMT07_P1_A006_A009_REVIEW_RECEIPT_REFRESH_NO_CLOSURE_NO_PRODUCTION`
+- phase/gate: `S2PM / S2PMT07_P1_A010_A016_REVIEW_RECEIPT_REFRESH_NO_CLOSURE_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 
