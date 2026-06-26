@@ -223,6 +223,74 @@ class Stage2LeaseFencingTests(unittest.TestCase):
         self.assertEqual(wrong_cycle["status"], "degraded")
         self.assertIn("M2 cycle_id does not match", wrong_cycle["blocking_reasons"])
 
+    def test_m4_watermark_degrades_m2_failed_and_m3_timeout_after_deadline(self) -> None:
+        watermark = build_m4_cycle_watermark(
+            cycle_id="2026-07-02",
+            generated_at="2026-07-02T22:30:00+10:00",
+            terminal_mails=[
+                {"cycle_id": "2026-07-02", "product_id": "M1", "status": "SENT"},
+                {"cycle_id": "2026-07-02", "product_id": "M2", "status": "FAILED"},
+                {"cycle_id": "2026-07-02", "product_id": "M3", "status": "TIMEOUT"},
+            ],
+            deadline_passed=True,
+        )
+
+        self.assertEqual(watermark["status"], "degraded")
+        self.assertFalse(watermark["m4_ready"])
+        self.assertTrue(watermark["m4_cycle_watermark"])
+        self.assertIn("M2 terminal status failed", watermark["blocking_reasons"])
+        self.assertIn("M3 terminal status timed out", watermark["blocking_reasons"])
+        self.assertFalse(watermark["retry_safe"])
+        self.assertEqual(watermark["watermark_finalized_at"], "2026-07-02T22:30:00+10:00")
+
+    def test_m4_watermark_waits_before_deadline_and_is_idempotent_on_rerun(self) -> None:
+        kwargs = {
+            "cycle_id": "2026-07-02",
+            "generated_at": "2026-07-02T20:00:00+10:00",
+            "terminal_mails": [
+                {"cycle_id": "2026-07-02", "product_id": "M1", "status": "SENT"},
+                {"cycle_id": "2026-07-02", "product_id": "M2", "status": "SENT"},
+            ],
+            "deadline_passed": False,
+        }
+
+        first = build_m4_cycle_watermark(**kwargs)
+        rerun = build_m4_cycle_watermark(**kwargs)
+
+        self.assertEqual(first, rerun)
+        self.assertEqual(first["status"], "waiting")
+        self.assertTrue(first["retry_safe"])
+        self.assertFalse(first["m4_cycle_watermark"])
+        self.assertIn("M3 terminal mail is missing", first["blocking_reasons"])
+
+    def test_m4_watermark_ignores_late_terminal_after_finalized_degradation(self) -> None:
+        degraded = build_m4_cycle_watermark(
+            cycle_id="2026-07-02",
+            generated_at="2026-07-02T22:00:00+10:00",
+            terminal_mails=[
+                {"cycle_id": "2026-07-02", "product_id": "M1", "status": "SENT", "observed_at": "2026-07-02T21:00:00+10:00"},
+                {"cycle_id": "2026-07-02", "product_id": "M2", "status": "SENT", "observed_at": "2026-07-02T21:01:00+10:00"},
+            ],
+            deadline_passed=True,
+        )
+        late = build_m4_cycle_watermark(
+            cycle_id="2026-07-02",
+            generated_at="2026-07-02T22:05:00+10:00",
+            terminal_mails=[
+                {"cycle_id": "2026-07-02", "product_id": "M1", "status": "SENT", "observed_at": "2026-07-02T21:00:00+10:00"},
+                {"cycle_id": "2026-07-02", "product_id": "M2", "status": "SENT", "observed_at": "2026-07-02T21:01:00+10:00"},
+                {"cycle_id": "2026-07-02", "product_id": "M3", "status": "SENT", "observed_at": "2026-07-02T22:03:00+10:00"},
+            ],
+            deadline_passed=True,
+            previous_watermark=degraded,
+        )
+
+        self.assertEqual(degraded["status"], "degraded")
+        self.assertEqual(late["status"], "degraded")
+        self.assertTrue(late["late_data_ignored"])
+        self.assertEqual(late["ignored_late_terminal_mails"][0]["product_id"], "M3")
+        self.assertIn("M3 terminal mail is missing after deadline", late["blocking_reasons"])
+
     def test_lease_fencing_report_passes_without_production_side_effects(self) -> None:
         report = build_lease_fencing_report(generated_at="2026-07-02T06:00:00+10:00")
 

@@ -2282,6 +2282,24 @@ tasks:
     completed_version: "0.23.1"
     unknown_task_ids: []
 
+  - task_id: "S2PMT03-M4-WATERMARK-B011"
+    phase: "S2PM"
+    objective: "Remediate inherited P1 B-011 locally by making M4 cycle watermark decisions deterministic for failures, timeouts, late terminal data, reruns, and cross-cycle leakage."
+    scope: "S2PMT03 M4 cycle watermark helper, focused regression tests, phase record, run manifest, traceability row, delivery/event records, FORM-ADP-098 semantic refresh, and no-production evidence."
+    non_scope: "No real M4 email send, no SMTP enablement, no scheduler install or enablement, no Release upload, no public schema or DB migration, no production queue mutation, no source adapter or ranking change, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no inherited P0/P1 closure, no DAILY_OPERATION, and no integrated production acceptance."
+    status: "completed"
+    dependencies: ["S2PMT03", "S2PKT05", "S2PMT07", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py", "arxiv-daily-push/tests/test_stage2_lease_fencing.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_M4_WATERMARK_B011.md"]
+    acceptance_ids: ["ACC-S2PMT03-LEASE-FENCING-OUTBOX"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b011_compile PYTHONPATH=arxiv-daily-push/src python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py arxiv-daily-push/tests/test_stage2_lease_fencing.py", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b011_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_lease_fencing.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b011_source_gate PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_user_center_candidate_pool.py arxiv-daily-push/tests/test_owner_controls.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b011_all PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b011_v72 PYTHONPATH=arxiv-daily-push/src python3 arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b011_gov PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b011_changed PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b011_sync PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_governance_sync.py --changed-only --semantic --base-ref origin/main", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b011_render PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/lean_governance.py check-render --project arxiv-daily-push", "JSON/JSONL/CSV/YAML parse via repository loader", "git diff --check"]
+    test_results: ["py_compile PASS", "focused S2PMT03 lease-fencing tests: 12 OK", "source/board user-center root gate regression: 14 OK", "full arxiv-daily-push unittest: 529 OK", "V7.2 validator: PASS", "ADP project governance: 0 errors / 0 warnings", "changed-only governance semantic: 0 errors / 0 warnings", "governance sync validator: 0 errors / 0 warnings", "lean check-render: drift_count 0 reference_issue_count 0", "JSON/JSONL/CSV/YAML parse: OK", "git diff --check: PASS"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_M4_WATERMARK_B011.md", "governance/run_manifests/ADP-S2PMT03-M4-WATERMARK-B011-20260626.json", "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py", "arxiv-daily-push/tests/test_stage2_lease_fencing.py"]
+    risk: "B-011 local evidence can be misread as live M4 production delivery or inherited P0/P1 closure; those remain separate gates under S2PMT07 and final production acceptance."
+    rollback: "Revert S2PMT03 M4 watermark code/tests, phase record, manifest, traceability/delivery/event records, FORM-ADP-098 refresh, generated status refresh, and this task entry; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
+
   - task_id: "S2PLT01-INDEPENDENT-REPLAY-REVIEW"
     phase: "S2PL"
     objective: "Add a machine-verifiable no-production independent replay review receipt for the S2PLT01 replay payload execution package without accepting S2PLT01."
