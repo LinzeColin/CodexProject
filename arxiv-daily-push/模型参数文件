@@ -61,6 +61,21 @@
 - `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION` 只允许在 P0/P1 清零且 `S2PMT07` 独立复审通过后声明。
 - `S2PCT01` 是当前 Stage2 任务；`S2PBT01` 保留为已通过的来源 Shadow 线程任务。
 
+## 数据源与板块公开口径
+
+| 项目 | 当前口径 |
+|---|---|
+| 用户中心入口 | [数据源与板块健康](用户中心/数据源与板块健康.md) |
+| 机器事实来源 | [config/owner_controls.yaml](config/owner_controls.yaml) |
+| 深层生成证据 | [SOURCE_CATALOG.md](docs/owner/SOURCE_CATALOG.md) |
+| 板块覆盖 | `B1` 研究前沿；`B2` 顶级期刊；`B3` 中国政策法规；`B4` 美国科技金融官方信号；`B5` 跨板块总览 |
+| 数据源覆盖 | `SRC-ARXIV`；`SRC-BIORXIV`；`SRC-MEDRXIV`；`SRC-TOP-JOURNALS`；`SRC-CHINA-POLICY`；`SRC-US-OFFICIAL` |
+| 当前生产启用来源 | 只有 `SRC-ARXIV`，权重 100，健康状态 `active` |
+| 影子测试来源 | `SRC-BIORXIV`、`SRC-MEDRXIV`，权重 0，健康状态 `stage2_test` |
+| 规划来源 | `SRC-TOP-JOURNALS`、`SRC-CHINA-POLICY`、`SRC-US-OFFICIAL`，权重 0，健康状态 `planned` |
+| 禁止误读 | 数据源被登记不等于生产启用；B5 是跨板块总览，不直接采集独立来源 |
+| 更新门 | 新增、删除、启用或重命名来源时，必须同步用户中心、来源目录、功能清单、开发记录，并通过用户中心覆盖测试 |
+
 ## 评分和排序标准
 
 | 项目 | 当前口径 |
