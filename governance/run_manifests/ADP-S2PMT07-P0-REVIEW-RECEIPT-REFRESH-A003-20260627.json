@@ -1,0 +1,104 @@
+{
+  "acceptance_id": "ACC-S2PMT07-FINAL-REVIEW",
+  "base_commit": "e8a8065892f9968815dfa49926309cd41fb0f4ed",
+  "current_contract": "ADP-PRODUCT-CONTRACT-V7.2",
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_INDEPENDENT_REVIEW_RECEIPT.md",
+    "governance/run_manifests/ADP-S2PMT07-P0-INDEPENDENT-REVIEW-RECEIPT-20260626.json",
+    "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A003-20260627.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_OUTBOX_DELIVERY_A003.md",
+    "governance/run_manifests/ADP-S2PMT03-OUTBOX-DELIVERY-A003-20260627.json",
+    "arxiv-daily-push/用户中心/事务发件箱与消息ID扫描.md",
+    "arxiv-daily-push/tests/test_stage2_final_gate.py",
+    "arxiv-daily-push/tests/test_stage2_lease_fencing.py",
+    "arxiv-daily-push/tests/test_user_center_candidate_pool.py"
+  ],
+  "final_acceptance_bundle_present": false,
+  "formula_ids_changed": [
+    "FORM-ADP-114",
+    "FORM-ADP-102"
+  ],
+  "generated_at": "2026-06-27T09:28:57+10:00",
+  "independent_final_command_execution_present": false,
+  "independent_review_signoff_present": false,
+  "inherited_p0_p1_closed": false,
+  "inherited_v7_1_open_p0_findings_after": 8,
+  "inherited_v7_1_open_p1_findings_after": 37,
+  "manifest_id": "ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A003-20260627",
+  "model_ids_changed": [
+    "MOD-ADP-112",
+    "MOD-ADP-100"
+  ],
+  "p0_closure_claimed": false,
+  "p1_closure_claimed": false,
+  "parameter_ids_changed": [
+    "PARAM-ADP-945",
+    "PARAM-ADP-946",
+    "PARAM-ADP-947",
+    "PARAM-ADP-948",
+    "PARAM-ADP-949",
+    "PARAM-ADP-830"
+  ],
+  "parent_task_id": "S2PMT07",
+  "previous_refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A002-20260627.json",
+  "production_boundary": {
+    "current_pointer_changed": false,
+    "production_restore_executed": false,
+    "public_schema_changed": false,
+    "queue_mutation_allowed": false,
+    "ranking_algorithm_changed": false,
+    "real_smtp_sent": false,
+    "release_upload_allowed": false,
+    "scheduler_enabled": false,
+    "source_adapter_changed": false,
+    "v7_1_baseline_changed": false,
+    "v7_2_contract_files_changed": false
+  },
+  "project_id": "arxiv-daily-push",
+  "refreshed_findings": [
+    "A-003"
+  ],
+  "required_final_commands_executed": false,
+  "result": "p0_a003_receipt_refreshed_no_closure_no_production",
+  "risks": [
+    "This receipt refresh can be misread as A-003/P0 closure; independent review plus S2PMT07 still control closure and production acceptance."
+  ],
+  "rollback": "Revert the A-003 P0 review receipt refresh, outbox delivery manifest, phase record, user-center page, tests, traceability/delivery/event records, and this manifest; no runtime production state was changed.",
+  "s2plt04_completed": false,
+  "schema_version": "codexproject.run_manifest.v1",
+  "stage2_integrated_production_accepted": false,
+  "status": "completed_no_closure_no_production",
+  "summary": "Refreshed inherited P0 A-003 receipt routing to dedicated S2PMT03 transactional outbox delivery evidence; no P0 closure or production side effects claimed.",
+  "target_finding": "A-003",
+  "task_id": "S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A003",
+  "test_results": [
+    "py_compile PASS",
+    "user-center timestamp check: validated 15 pages",
+    "targeted A-003 tests: 43 OK",
+    "source/board user-center gate tests: 19 OK",
+    "full arxiv-daily-push unittest: 580 OK",
+    "V7.2 validator PASS",
+    "V7.2 unittest: 4 OK",
+    "project governance: errors 0 warnings 0",
+    "governance sync: errors 0 warnings 0",
+    "lean governance check-render: drift_count 0 reference_issue_count 0",
+    "structured parse: JSON 3 OK; JSONL 2 OK; parameter_registry.csv 949 rows width 36; TRACEABILITY_MATRIX.csv 255 rows width 12",
+    "git diff --check PASS",
+    "semantic extractor: timed out after 60s; non-blocking validation not completed and not claimed as passed"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_a003_compile2 PYTHONPATH=arxiv-daily-push/src python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py arxiv-daily-push/tests/test_stage2_lease_fencing.py arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_user_center_candidate_pool.py",
+    "PYTHONPATH=arxiv-daily-push/src python3 arxiv-daily-push/scripts/update_user_center_timestamps.py --check",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_a003_target PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_lease_fencing.py arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_user_center_candidate_pool.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_a003_source_gate PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_user_center_candidate_pool.py arxiv-daily-push/tests/test_owner_controls.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_a003_full PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "python3 arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_a003_v72 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/docs/pursuing_goal/v7_2/tests -q",
+    "PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push",
+    "PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_governance_sync.py",
+    "PYTHONPATH=arxiv-daily-push/src python3 scripts/lean_governance.py check-render --project arxiv-daily-push",
+    "structured JSON/JSONL/CSV parse check",
+    "git diff --check",
+    "python3 scripts/validate_semantic_extractors.py arxiv-daily-push with 60s wrapper timeout"
+  ]
+}

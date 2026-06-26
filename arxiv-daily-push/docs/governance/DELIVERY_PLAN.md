@@ -21,7 +21,7 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 179
+- task_count: 181
 - acceptance_count: 125
 
 ## Delivery Tasks
@@ -267,3 +267,5 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A001 | S2PM | completed | `ACC-S2PMT07-FINAL-REVIEW` | Refreshes A-001 so the P0 independent-review receipt points to dedicated S2PMT02 restore path safety evidence instead of aggregate atomic recovery records; this does not provide independent signoff, close P0/P1, complete S2PLT04, execute final commands, or change production state. |
 | S2PMT02-RESTORE-ATOMIC-REPLACEMENT-A002 | S2PM | completed_local_validation | `ACC-S2PMT02-ATOMIC-RECOVERY` | Local A-002 evidence: real Stage 1 backup/restore probes verify new-target restore, overwrite restore with previous-target backup preservation, invalid overwrite target preservation, temporary-file cleanup, and all production restore/schema/queue/SMTP/scheduler/Release side effects false. |
 | S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A002 | S2PM | completed | `ACC-S2PMT07-FINAL-REVIEW` | Refreshes A-002 so the P0 independent-review receipt points to dedicated S2PMT02 restore atomic replacement evidence instead of aggregate atomic recovery records; this does not provide independent signoff, close P0/P1, complete S2PLT04, execute final commands, or change production state. |
+| S2PMT03-OUTBOX-DELIVERY-A003 | S2PM | completed_local_validation | `ACC-S2PMT03-LEASE-FENCING-OUTBOX` | Local A-003 evidence: transactional outbox probes verify stable same-revision Message-ID, changed-revision rekeying, exactly one outbox claim under 100 attempts, SMTP accepted-before-commit fail-closed behavior, provider-ref finalization without resend, and at-least-once semantics without exactly-once claims; no SMTP/scheduler/production side effects. |
+| S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A003 | S2PM | completed | `ACC-S2PMT07-FINAL-REVIEW` | Refreshes A-003 so the P0 independent-review receipt points to dedicated S2PMT03 transactional outbox delivery evidence instead of aggregate lease-fencing records; this does not provide independent signoff, close P0/P1, complete S2PLT04, execute final commands, or change production state. |

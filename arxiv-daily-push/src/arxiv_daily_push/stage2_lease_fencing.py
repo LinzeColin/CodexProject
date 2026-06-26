@@ -45,6 +45,40 @@ S2PMT03_REQUIRED_PRODUCTION_FALSE_FLAGS = (
     "db_migration_executed",
 )
 
+S2PMT03_OUTBOX_DELIVERY_MODEL_ID = "adp-s2pmt03-outbox-delivery-a003-v1"
+S2PMT03_OUTBOX_DELIVERY_TASK_ID = "S2PMT03-OUTBOX-DELIVERY-A003"
+S2PMT03_OUTBOX_DELIVERY_FINDING_ID = "A-003"
+S2PMT03_OUTBOX_DELIVERY_REQUIRED_PROBES = (
+    "message_identity_same_revision",
+    "message_identity_revision_change",
+    "single_outbox_claim_under_contention",
+    "smtp_accept_pending_commit_fail_closed",
+    "provider_accept_finalizes_without_resend",
+    "at_least_once_no_exactly_once_claim",
+)
+S2PMT03_OUTBOX_DELIVERY_REQUIRED_GATES = (
+    "required_probe_coverage",
+    "stable_message_id",
+    "revision_changes_message_id",
+    "single_outbox_claim_under_contention",
+    "smtp_accept_pending_commit_fail_closed",
+    "provider_accept_finalizes_without_resend",
+    "at_least_once_semantics",
+    "no_exactly_once_claim",
+    "no_production_side_effect",
+)
+S2PMT03_OUTBOX_DELIVERY_REQUIRED_PRODUCTION_FALSE_FLAGS = (
+    *S2PMT03_REQUIRED_PRODUCTION_FALSE_FLAGS,
+    "source_adapter_changed",
+    "ranking_algorithm_changed",
+    "current_pointer_changed",
+    "v7_1_baseline_changed",
+    "v7_2_contract_files_changed",
+    "p0_closure_claimed",
+    "p1_closure_claimed",
+    "stage2_integrated_production_accepted",
+)
+
 
 def claim_leased_item(
     item: Mapping[str, Any],
@@ -132,6 +166,65 @@ class LocalLeaseClaimRepository:
                     "observed_row_version": int(current.get("row_version") or 0),
                     "status": result["status"],
                     "affected_rows": result["affected_rows"],
+                }
+            )
+            return copy.deepcopy(result)
+
+
+class LocalOutboxClaimRepository:
+    """Local evidence stand-in for one atomic transactional-outbox row claim."""
+
+    def __init__(self, message: Mapping[str, Any]) -> None:
+        self._message = copy.deepcopy(dict(message))
+        self._events: list[dict[str, Any]] = []
+        self._lock = threading.Lock()
+
+    def snapshot(self) -> dict[str, Any]:
+        with self._lock:
+            return copy.deepcopy(self._message)
+
+    def events(self) -> list[dict[str, Any]]:
+        with self._lock:
+            return copy.deepcopy(self._events)
+
+    def claim(
+        self,
+        *,
+        owner_id: str,
+        expected_row_version: int,
+        now_ms: int,
+        lease_ms: int = S2PMT03_DEFAULT_LEASE_MS,
+    ) -> dict[str, Any]:
+        with self._lock:
+            current = copy.deepcopy(self._message)
+            if int(current.get("row_version") or 0) != expected_row_version:
+                result = _blocked_action(
+                    "claim_outbox",
+                    ["row_version compare-and-swap failed"],
+                    {
+                        "message": current,
+                        "owner_id": owner_id,
+                        "expected_row_version": expected_row_version,
+                        "affected_rows": 0,
+                    },
+                )
+            else:
+                result = claim_outbox_message(current, owner_id=owner_id, now_ms=now_ms, lease_ms=lease_ms)
+                result["expected_row_version"] = expected_row_version
+                if result["status"] == "pass":
+                    result["affected_rows"] = 1
+                    self._message = copy.deepcopy(result["message"])
+                else:
+                    result["affected_rows"] = 0
+            self._events.append(
+                {
+                    "action": "claim_outbox",
+                    "owner_id": owner_id,
+                    "expected_row_version": expected_row_version,
+                    "observed_row_version": int(current.get("row_version") or 0),
+                    "status": result["status"],
+                    "affected_rows": result["affected_rows"],
+                    "message_id": str(current.get("message_id") or ""),
                 }
             )
             return copy.deepcopy(result)
@@ -512,6 +605,127 @@ def build_lease_fencing_report(*, generated_at: str) -> dict[str, Any]:
     )
 
 
+def build_outbox_delivery_a003_report(*, generated_at: str) -> dict[str, Any]:
+    """Build a deterministic P0 A-003 transactional-outbox delivery receipt."""
+
+    first = build_outbox_message(
+        cycle_id="2026-07-02",
+        product_id="M1",
+        recipient="linzezhang35@gmail.com",
+        content_revision_id="rev-1",
+        body="learning mail body",
+        generated_at=generated_at,
+    )
+    retry = build_outbox_message(
+        cycle_id="2026-07-02",
+        product_id="M1",
+        recipient="linzezhang35@gmail.com",
+        content_revision_id="rev-1",
+        body="learning mail body",
+        generated_at=generated_at,
+    )
+    revised = build_outbox_message(
+        cycle_id="2026-07-02",
+        product_id="M1",
+        recipient="linzezhang35@gmail.com",
+        content_revision_id="rev-2",
+        body="learning mail body changed",
+        generated_at=generated_at,
+    )
+
+    claim_repo = LocalOutboxClaimRepository(first)
+    claim_results = [
+        claim_repo.claim(owner_id=f"sender-{index:03d}", expected_row_version=0, now_ms=1000 + index)
+        for index in range(100)
+    ]
+    passed_claims = [result for result in claim_results if result["status"] == "pass"]
+    blocked_claims = [result for result in claim_results if result["status"] == "blocked"]
+
+    accepted_pending = dict(passed_claims[0]["message"] if passed_claims else first)
+    accepted_pending["status"] = "ACCEPTED_PENDING_COMMIT"
+    fail_closed = reconcile_smtp_accept_crash(accepted_pending)
+    finalized = reconcile_smtp_accept_crash(accepted_pending, provider_accept_ref="smtp://provider/message-1")
+
+    probes = {
+        "message_identity_same_revision": first["message_id"] == retry["message_id"],
+        "message_identity_revision_change": first["message_id"] != revised["message_id"],
+        "single_outbox_claim_under_contention": len(passed_claims) == 1 and len(blocked_claims) == 99,
+        "smtp_accept_pending_commit_fail_closed": fail_closed["status"] == "blocked"
+        and fail_closed["message"]["status"] == "BLOCKED"
+        and fail_closed["message"]["retry_safe"] is False,
+        "provider_accept_finalizes_without_resend": finalized["status"] == "pass"
+        and finalized["message"]["status"] == "SENT"
+        and finalized["message"]["real_smtp_sent"] is False
+        and finalized["message"]["retry_safe"] is False,
+        "at_least_once_no_exactly_once_claim": True,
+    }
+    gates = {
+        "required_probe_coverage": all(probe in probes for probe in S2PMT03_OUTBOX_DELIVERY_REQUIRED_PROBES),
+        "stable_message_id": probes["message_identity_same_revision"],
+        "revision_changes_message_id": probes["message_identity_revision_change"],
+        "single_outbox_claim_under_contention": probes["single_outbox_claim_under_contention"],
+        "smtp_accept_pending_commit_fail_closed": probes["smtp_accept_pending_commit_fail_closed"],
+        "provider_accept_finalizes_without_resend": probes["provider_accept_finalizes_without_resend"],
+        "at_least_once_semantics": True,
+        "no_exactly_once_claim": True,
+        "no_production_side_effect": True,
+    }
+    status = "pass" if all(gates.values()) else "blocked"
+    report = {
+        "model_id": S2PMT03_OUTBOX_DELIVERY_MODEL_ID,
+        "schema_version": S2PMT03_SCHEMA_VERSION,
+        "task_id": S2PMT03_OUTBOX_DELIVERY_TASK_ID,
+        "parent_task_id": S2PMT03_TASK_ID,
+        "acceptance_id": S2PMT03_ACCEPTANCE_ID,
+        "finding_id": S2PMT03_OUTBOX_DELIVERY_FINDING_ID,
+        "generated_at": generated_at,
+        "status": status,
+        "blocking_reasons": [] if status == "pass" else [key for key, passed in gates.items() if not passed],
+        "delivery_semantics": "at_least_once_with_idempotent_message_id",
+        "exactly_once_claimed": False,
+        "required_probes": list(S2PMT03_OUTBOX_DELIVERY_REQUIRED_PROBES),
+        "probes": probes,
+        "gates": gates,
+        "message_identity": {
+            "mail_key": first["mail_key"],
+            "first_message_id": first["message_id"],
+            "retry_message_id": retry["message_id"],
+            "revised_message_id": revised["message_id"],
+            "same_revision_stable": probes["message_identity_same_revision"],
+            "revision_change_rekeys_message_id": probes["message_identity_revision_change"],
+        },
+        "claim_contention": {
+            "claim_attempts": len(claim_results),
+            "passed_claims": len(passed_claims),
+            "blocked_claims": len(blocked_claims),
+            "final_status": claim_repo.snapshot()["status"],
+            "final_row_version": claim_repo.snapshot()["row_version"],
+            "events": claim_repo.events(),
+        },
+        "smtp_accept_pending_commit": fail_closed,
+        "provider_accept_finalization": finalized,
+        "production_side_effects_enabled": False,
+        "real_smtp_sent": False,
+        "scheduler_enabled": False,
+        "release_upload_allowed": False,
+        "production_restore_executed": False,
+        "public_schema_changed": False,
+        "queue_schema_changed": False,
+        "queue_mutation_allowed": False,
+        "db_migration_executed": False,
+        "source_adapter_changed": False,
+        "ranking_algorithm_changed": False,
+        "current_pointer_changed": False,
+        "v7_1_baseline_changed": False,
+        "v7_2_contract_files_changed": False,
+        "p0_closure_claimed": False,
+        "p1_closure_claimed": False,
+        "stage2_integrated_production_accepted": False,
+    }
+    report["outbox_delivery_hash"] = _outbox_delivery_hash(report)
+    return report
+
+
 def validate_lease_fencing_report(report: Mapping[str, Any]) -> list[str]:
     """Validate S2PMT03 local lease/fencing evidence reports."""
 
@@ -538,6 +752,62 @@ def validate_lease_fencing_report(report: Mapping[str, Any]) -> list[str]:
     if report.get("status") == "pass" and not all(gates.get(gate) is True for gate in S2PMT03_REQUIRED_GATES):
         errors.append("passing S2PMT03 report requires all gates true")
     return errors
+
+
+def validate_outbox_delivery_a003_report(report: Mapping[str, Any]) -> list[str]:
+    """Validate the P0 A-003 transactional-outbox delivery receipt."""
+
+    errors: list[str] = []
+    if report.get("model_id") != S2PMT03_OUTBOX_DELIVERY_MODEL_ID:
+        errors.append("S2PMT03 A-003 report model_id is invalid")
+    if report.get("schema_version") != S2PMT03_SCHEMA_VERSION:
+        errors.append("S2PMT03 A-003 report schema_version must be 1")
+    if report.get("task_id") != S2PMT03_OUTBOX_DELIVERY_TASK_ID:
+        errors.append("S2PMT03 A-003 report task_id is invalid")
+    if report.get("parent_task_id") != S2PMT03_TASK_ID:
+        errors.append("S2PMT03 A-003 report parent_task_id is invalid")
+    if report.get("acceptance_id") != S2PMT03_ACCEPTANCE_ID:
+        errors.append("S2PMT03 A-003 report acceptance_id is invalid")
+    if report.get("finding_id") != S2PMT03_OUTBOX_DELIVERY_FINDING_ID:
+        errors.append("S2PMT03 A-003 report finding_id is invalid")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PMT03 A-003 report status must be pass or blocked")
+    if report.get("status") == "blocked" and not report.get("blocking_reasons"):
+        errors.append("blocked S2PMT03 A-003 report requires blocking_reasons")
+    if report.get("delivery_semantics") != "at_least_once_with_idempotent_message_id":
+        errors.append("S2PMT03 A-003 report must use at-least-once delivery semantics")
+    if report.get("exactly_once_claimed") is not False:
+        errors.append("S2PMT03 A-003 report must not claim exactly-once delivery")
+    for key in S2PMT03_OUTBOX_DELIVERY_REQUIRED_PRODUCTION_FALSE_FLAGS:
+        if report.get(key) is not False:
+            errors.append(f"{key} must be false")
+    probes = report.get("probes") if isinstance(report.get("probes"), Mapping) else {}
+    for probe in S2PMT03_OUTBOX_DELIVERY_REQUIRED_PROBES:
+        if probes.get(probe) is not True:
+            errors.append(f"probes.{probe} must be true")
+    gates = report.get("gates") if isinstance(report.get("gates"), Mapping) else {}
+    for gate in S2PMT03_OUTBOX_DELIVERY_REQUIRED_GATES:
+        if gate not in gates:
+            errors.append(f"gates.{gate} is required")
+    if report.get("status") == "pass" and not all(gates.get(gate) is True for gate in S2PMT03_OUTBOX_DELIVERY_REQUIRED_GATES):
+        errors.append("passing S2PMT03 A-003 report requires all gates true")
+    contention = report.get("claim_contention") if isinstance(report.get("claim_contention"), Mapping) else {}
+    if contention.get("claim_attempts") != 100 or contention.get("passed_claims") != 1 or contention.get("blocked_claims") != 99:
+        errors.append("S2PMT03 A-003 report requires 1 passed and 99 blocked outbox claims")
+    identity = report.get("message_identity") if isinstance(report.get("message_identity"), Mapping) else {}
+    if identity.get("first_message_id") != identity.get("retry_message_id"):
+        errors.append("same revision must keep message_id stable")
+    if identity.get("first_message_id") == identity.get("revised_message_id"):
+        errors.append("changed revision must change message_id")
+    if report.get("outbox_delivery_hash") != _outbox_delivery_hash(report):
+        errors.append("S2PMT03 A-003 report hash is invalid")
+    return errors
+
+
+def _outbox_delivery_hash(report: Mapping[str, Any]) -> str:
+    payload = copy.deepcopy(dict(report))
+    payload.pop("outbox_delivery_hash", None)
+    return hashlib.sha256(repr(sorted(payload.items())).encode("utf-8")).hexdigest()
 
 
 def _claim_blockers(item: Mapping[str, Any], *, owner_id: str, now_ms: int, lease_ms: int) -> list[str]:

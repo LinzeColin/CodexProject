@@ -5806,3 +5806,46 @@ models:
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_RESTORE_ATOMIC_REPLACEMENT_A002.md"
       - "governance/run_manifests/ADP-S2PMT02-RESTORE-ATOMIC-REPLACEMENT-A002-20260627.json"
       - "arxiv-daily-push/用户中心/恢复原子替换扫描.md"
+
+
+  -
+    model_id: "MOD-ADP-112"
+    name: "S2PMT03 outbox delivery A-003 model"
+    purpose: "Refresh inherited P0 A-003 evidence with dedicated current transactional-outbox probes proving stable same-revision Message-ID, changed-revision rekeying, exactly one outbox claim under contention, SMTP accepted-before-local-commit fail-closed behavior, provider-ref finalization without resend, and no exactly-once claim."
+    owner: "arxiv-daily-push"
+    status: "active"
+    assumption_ids:
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-114"
+    parameter_ids:
+      - "PARAM-ADP-945"
+      - "PARAM-ADP-946"
+      - "PARAM-ADP-947"
+      - "PARAM-ADP-948"
+      - "PARAM-ADP-949"
+    inputs:
+      - "local transactional outbox message rows"
+      - "content revision and body hash observations"
+      - "row_version compare-and-swap claim outcomes"
+      - "SMTP accepted-before-local-commit crash-window observations"
+      - "production side-effect flags"
+    outputs:
+      - "message_identity_same_revision"
+      - "message_identity_revision_change"
+      - "single_outbox_claim_under_contention"
+      - "smtp_accept_pending_commit_fail_closed"
+      - "provider_accept_finalizes_without_resend"
+      - "outbox_delivery_hash"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_lease_fencing.py"
+      - "arxiv-daily-push/tests/test_stage2_final_gate.py"
+      - "arxiv-daily-push/tests/test_user_center_candidate_pool.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_OUTBOX_DELIVERY_A003.md"
+      - "governance/run_manifests/ADP-S2PMT03-OUTBOX-DELIVERY-A003-20260627.json"
+      - "arxiv-daily-push/用户中心/事务发件箱与消息ID扫描.md"

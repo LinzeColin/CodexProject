@@ -3129,3 +3129,40 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+
+  - task_id: "S2PMT03-OUTBOX-DELIVERY-A003"
+    phase: "S2PM"
+    objective: "Refresh inherited P0 A-003 local evidence with dedicated transactional outbox delivery probes."
+    scope: "S2PMT03 outbox delivery report builder/validator, Message-ID identity probes, outbox claim contention evidence, SMTP accepted-before-commit fail-closed handling, shallow user-center page, phase record, run manifest, semantic registry refresh, traceability/delivery/event records, and no-production evidence."
+    non_scope: "No SMTP transport send, scheduler install or enablement, Release upload, public schema or DB migration, production queue mutation, ranking/source-adapter change, CURRENT pointer change, V7.1/V7.2 contract-file edit, inherited P0/P1 closure, DAILY_OPERATION, or integrated production acceptance."
+    status: "completed"
+    dependencies: ["S2PMT03", "S2PMT07", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py", "arxiv-daily-push/tests/test_stage2_lease_fencing.py", "arxiv-daily-push/用户中心/事务发件箱与消息ID扫描.md", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_OUTBOX_DELIVERY_A003.md"]
+    acceptance_ids: ["ACC-S2PMT03-LEASE-FENCING-OUTBOX"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_a003_lease_test PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_lease_fencing.py -q"]
+    test_results: ["py_compile PASS", "user-center timestamp check: validated 15 pages", "targeted A-003 tests: 43 OK", "source/board user-center gate tests: 19 OK", "full arxiv-daily-push unittest: 580 OK", "V7.2 validator PASS", "V7.2 unittest: 4 OK", "project governance: errors 0 warnings 0", "governance sync: errors 0 warnings 0", "lean governance check-render: drift_count 0 reference_issue_count 0", "structured parse: JSON 3 OK; JSONL 2 OK; parameter_registry.csv 949 rows width 36; TRACEABILITY_MATRIX.csv 255 rows width 12", "git diff --check PASS", "semantic extractor: timed out after 60s; non-blocking validation not completed and not claimed as passed"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_OUTBOX_DELIVERY_A003.md", "governance/run_manifests/ADP-S2PMT03-OUTBOX-DELIVERY-A003-20260627.json", "arxiv-daily-push/用户中心/事务发件箱与消息ID扫描.md", "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py", "arxiv-daily-push/tests/test_stage2_lease_fencing.py"]
+    risk: "A-003 local evidence can be misread as SMTP production enablement, exactly-once delivery proof, inherited P0 closure, or S2PMT07 pass; independent review still controls closure and production acceptance."
+    rollback: "Revert A-003 outbox delivery code/tests, user-center page, phase record, manifest, semantic registry updates, traceability/delivery/event records, generated status refresh, and this task entry; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
+
+  - task_id: "S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A003"
+    phase: "S2PM"
+    objective: "Refresh S2PMT07 P0 independent-review receipt row A-003 so it points to dedicated S2PMT03 transactional outbox delivery evidence."
+    scope: "A-003 P0 review receipt row, P0 receipt manifest, refreshed A-003 receipt manifest, focused final-gate regression tests, traceability/delivery/event records, and no-production evidence."
+    non_scope: "No independent final signoff, final command execution, inherited P0/P1 closure, S2PLT04 completion, final acceptance bundle creation, SMTP transport, scheduler install or enablement, Release upload, public schema or DB migration, production queue mutation, ranking/source-adapter change, CURRENT pointer change, V7.1/V7.2 contract-file edit, DAILY_OPERATION, or integrated production acceptance."
+    status: "completed"
+    dependencies: ["S2PMT07", "S2PMT03-OUTBOX-DELIVERY-A003", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_INDEPENDENT_REVIEW_RECEIPT.md", "governance/run_manifests/ADP-S2PMT07-P0-INDEPENDENT-REVIEW-RECEIPT-20260626.json", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_a003_target PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_lease_fencing.py arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_user_center_candidate_pool.py -q"]
+    test_results: ["py_compile PASS", "user-center timestamp check: validated 15 pages", "targeted A-003 tests: 43 OK", "source/board user-center gate tests: 19 OK", "full arxiv-daily-push unittest: 580 OK", "V7.2 validator PASS", "V7.2 unittest: 4 OK", "project governance: errors 0 warnings 0", "governance sync: errors 0 warnings 0", "lean governance check-render: drift_count 0 reference_issue_count 0", "structured parse: JSON 3 OK; JSONL 2 OK; parameter_registry.csv 949 rows width 36; TRACEABILITY_MATRIX.csv 255 rows width 12", "git diff --check PASS", "semantic extractor: timed out after 60s; non-blocking validation not completed and not claimed as passed"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_INDEPENDENT_REVIEW_RECEIPT.md", "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A003-20260627.json", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
+    risk: "This receipt refresh can be misread as A-003/P0 closure; independent review plus S2PMT07 still control closure and production acceptance."
+    rollback: "Revert the A-003 P0 review receipt refresh, run manifests, final-gate regression extension, traceability/delivery/event records, generated status refresh, and this task entry; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

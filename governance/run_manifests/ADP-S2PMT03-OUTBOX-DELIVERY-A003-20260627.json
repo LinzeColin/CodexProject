@@ -1,0 +1,1113 @@
+{
+  "acceptance_id": "ACC-S2PMT03-LEASE-FENCING-OUTBOX",
+  "base_commit": "e8a8065892f9968815dfa49926309cd41fb0f4ed",
+  "current_contract": "ADP-PRODUCT-CONTRACT-V7.2",
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_OUTBOX_DELIVERY_A003.md",
+    "governance/run_manifests/ADP-S2PMT03-OUTBOX-DELIVERY-A003-20260627.json",
+    "arxiv-daily-push/用户中心/事务发件箱与消息ID扫描.md",
+    "arxiv-daily-push/tests/test_stage2_lease_fencing.py"
+  ],
+  "finding_id": "A-003",
+  "formula_id": "FORM-ADP-114",
+  "generated_at": "2026-06-27T09:28:57+10:00",
+  "manifest_id": "ADP-S2PMT03-OUTBOX-DELIVERY-A003-20260627",
+  "model_id": "MOD-ADP-112",
+  "outbox_delivery_report": {
+    "acceptance_id": "ACC-S2PMT03-LEASE-FENCING-OUTBOX",
+    "blocking_reasons": [],
+    "claim_contention": {
+      "blocked_claims": 99,
+      "claim_attempts": 100,
+      "events": [
+        {
+          "action": "claim_outbox",
+          "affected_rows": 1,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 0,
+          "owner_id": "sender-000",
+          "status": "pass"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-001",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-002",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-003",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-004",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-005",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-006",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-007",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-008",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-009",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-010",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-011",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-012",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-013",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-014",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-015",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-016",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-017",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-018",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-019",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-020",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-021",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-022",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-023",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-024",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-025",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-026",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-027",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-028",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-029",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-030",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-031",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-032",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-033",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-034",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-035",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-036",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-037",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-038",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-039",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-040",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-041",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-042",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-043",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-044",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-045",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-046",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-047",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-048",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-049",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-050",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-051",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-052",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-053",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-054",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-055",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-056",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-057",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-058",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-059",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-060",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-061",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-062",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-063",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-064",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-065",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-066",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-067",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-068",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-069",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-070",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-071",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-072",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-073",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-074",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-075",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-076",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-077",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-078",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-079",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-080",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-081",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-082",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-083",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-084",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-085",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-086",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-087",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-088",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-089",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-090",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-091",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-092",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-093",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-094",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-095",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-096",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-097",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-098",
+          "status": "blocked"
+        },
+        {
+          "action": "claim_outbox",
+          "affected_rows": 0,
+          "expected_row_version": 0,
+          "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+          "observed_row_version": 1,
+          "owner_id": "sender-099",
+          "status": "blocked"
+        }
+      ],
+      "final_row_version": 1,
+      "final_status": "CLAIMED",
+      "passed_claims": 1
+    },
+    "current_pointer_changed": false,
+    "db_migration_executed": false,
+    "delivery_semantics": "at_least_once_with_idempotent_message_id",
+    "exactly_once_claimed": false,
+    "finding_id": "A-003",
+    "gates": {
+      "at_least_once_semantics": true,
+      "no_exactly_once_claim": true,
+      "no_production_side_effect": true,
+      "provider_accept_finalizes_without_resend": true,
+      "required_probe_coverage": true,
+      "revision_changes_message_id": true,
+      "single_outbox_claim_under_contention": true,
+      "smtp_accept_pending_commit_fail_closed": true,
+      "stable_message_id": true
+    },
+    "generated_at": "2026-06-27T09:28:57+10:00",
+    "message_identity": {
+      "first_message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+      "mail_key": "2026-07-02|M1|linzezhang35@gmail.com",
+      "retry_message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+      "revised_message_id": "adp-30243b0f2b5b6562de56e1b9@arxiv-daily-push.local",
+      "revision_change_rekeys_message_id": true,
+      "same_revision_stable": true
+    },
+    "model_id": "adp-s2pmt03-outbox-delivery-a003-v1",
+    "outbox_delivery_hash": "4f367780aa03614cc193c3a9475e79f30690fc625ccf37f5f24b0b4753caf58b",
+    "p0_closure_claimed": false,
+    "p1_closure_claimed": false,
+    "parent_task_id": "S2PMT03",
+    "probes": {
+      "at_least_once_no_exactly_once_claim": true,
+      "message_identity_revision_change": true,
+      "message_identity_same_revision": true,
+      "provider_accept_finalizes_without_resend": true,
+      "single_outbox_claim_under_contention": true,
+      "smtp_accept_pending_commit_fail_closed": true
+    },
+    "production_restore_executed": false,
+    "production_side_effects_enabled": false,
+    "provider_accept_finalization": {
+      "action": "smtp_accept_crash",
+      "blocking_reasons": [],
+      "message": {
+        "body_sha256": "a2fdc03011ff17d224c8fca2bc6da64b1b455dfc0f714c06518ad411304fa768",
+        "content_revision_id": "rev-1",
+        "cycle_id": "2026-07-02",
+        "fencing_token": 1,
+        "generated_at": "2026-06-27T09:28:57+10:00",
+        "lease_owner": "sender-000",
+        "lease_until_ms": 301000,
+        "mail_key": "2026-07-02|M1|linzezhang35@gmail.com",
+        "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+        "product_id": "M1",
+        "provider_accept_ref": "smtp://provider/message-1",
+        "real_smtp_sent": false,
+        "recipient": "linzezhang35@gmail.com",
+        "retry_safe": false,
+        "row_version": 1,
+        "send_attempts": 1,
+        "smtp_accept_crash_window_reproduced": true,
+        "status": "SENT"
+      },
+      "smtp_accept_crash_window": true,
+      "status": "pass"
+    },
+    "public_schema_changed": false,
+    "queue_mutation_allowed": false,
+    "queue_schema_changed": false,
+    "ranking_algorithm_changed": false,
+    "real_smtp_sent": false,
+    "release_upload_allowed": false,
+    "required_probes": [
+      "message_identity_same_revision",
+      "message_identity_revision_change",
+      "single_outbox_claim_under_contention",
+      "smtp_accept_pending_commit_fail_closed",
+      "provider_accept_finalizes_without_resend",
+      "at_least_once_no_exactly_once_claim"
+    ],
+    "scheduler_enabled": false,
+    "schema_version": 1,
+    "smtp_accept_pending_commit": {
+      "action": "smtp_accept_crash",
+      "blocking_reasons": [
+        "provider_accept_ref is required before any resend decision"
+      ],
+      "message": {
+        "body_sha256": "a2fdc03011ff17d224c8fca2bc6da64b1b455dfc0f714c06518ad411304fa768",
+        "content_revision_id": "rev-1",
+        "cycle_id": "2026-07-02",
+        "fencing_token": 1,
+        "generated_at": "2026-06-27T09:28:57+10:00",
+        "lease_owner": "sender-000",
+        "lease_until_ms": 301000,
+        "mail_key": "2026-07-02|M1|linzezhang35@gmail.com",
+        "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+        "product_id": "M1",
+        "real_smtp_sent": false,
+        "recipient": "linzezhang35@gmail.com",
+        "retry_safe": false,
+        "row_version": 1,
+        "send_attempts": 1,
+        "smtp_accept_crash_window_reproduced": true,
+        "status": "BLOCKED"
+      },
+      "smtp_accept_crash_window": true,
+      "status": "blocked"
+    },
+    "source_adapter_changed": false,
+    "stage2_integrated_production_accepted": false,
+    "status": "pass",
+    "task_id": "S2PMT03-OUTBOX-DELIVERY-A003",
+    "v7_1_baseline_changed": false,
+    "v7_2_contract_files_changed": false
+  },
+  "p0_closure_claimed": false,
+  "p1_closure_claimed": false,
+  "parameter_ids": [
+    "PARAM-ADP-945",
+    "PARAM-ADP-946",
+    "PARAM-ADP-947",
+    "PARAM-ADP-948",
+    "PARAM-ADP-949"
+  ],
+  "parent_task_id": "S2PMT03",
+  "probe_summary": {
+    "blocked_claims": 99,
+    "claim_attempts": 100,
+    "delivery_semantics": "at_least_once_with_idempotent_message_id",
+    "exactly_once_claimed": false,
+    "outbox_delivery_hash": "4f367780aa03614cc193c3a9475e79f30690fc625ccf37f5f24b0b4753caf58b",
+    "passed_claims": 1,
+    "required_probe_count": 6
+  },
+  "production_boundary": {
+    "current_pointer_changed": false,
+    "production_restore_executed": false,
+    "public_schema_changed": false,
+    "queue_mutation_allowed": false,
+    "ranking_algorithm_changed": false,
+    "real_smtp_sent": false,
+    "release_upload_allowed": false,
+    "scheduler_enabled": false,
+    "source_adapter_changed": false,
+    "v7_1_baseline_changed": false,
+    "v7_2_contract_files_changed": false
+  },
+  "project_id": "arxiv-daily-push",
+  "rollback": "Revert the A-003 outbox delivery helper/tests, phase record, run manifest, user-center page, P0 receipt refresh, registries, traceability/delivery/event records, and generated status refresh; no runtime production state was changed.",
+  "schema_version": "codexproject.run_manifest.v1",
+  "stage2_integrated_production_accepted": false,
+  "status": "completed_local_validation_no_production",
+  "summary": "Dedicated local P0 A-003 evidence verifies transactional outbox idempotent message identity, one successful outbox claim under 100 attempts, SMTP accepted-before-local-commit fail-closed behavior, provider-ref finalization without resend, and at-least-once semantics without exactly-once claims.",
+  "task_id": "S2PMT03-OUTBOX-DELIVERY-A003",
+  "test_results": [
+    "py_compile PASS",
+    "user-center timestamp check: validated 15 pages",
+    "targeted A-003 tests: 43 OK",
+    "source/board user-center gate tests: 19 OK",
+    "full arxiv-daily-push unittest: 580 OK",
+    "V7.2 validator PASS",
+    "V7.2 unittest: 4 OK",
+    "project governance: errors 0 warnings 0",
+    "governance sync: errors 0 warnings 0",
+    "lean governance check-render: drift_count 0 reference_issue_count 0",
+    "structured parse: JSON 3 OK; JSONL 2 OK; parameter_registry.csv 949 rows width 36; TRACEABILITY_MATRIX.csv 255 rows width 12",
+    "git diff --check PASS",
+    "semantic extractor: timed out after 60s; non-blocking validation not completed and not claimed as passed"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_a003_compile2 PYTHONPATH=arxiv-daily-push/src python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py arxiv-daily-push/tests/test_stage2_lease_fencing.py arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_user_center_candidate_pool.py",
+    "PYTHONPATH=arxiv-daily-push/src python3 arxiv-daily-push/scripts/update_user_center_timestamps.py --check",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_a003_target PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_lease_fencing.py arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_user_center_candidate_pool.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_a003_source_gate PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_user_center_candidate_pool.py arxiv-daily-push/tests/test_owner_controls.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_a003_full PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "python3 arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_a003_v72 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/docs/pursuing_goal/v7_2/tests -q",
+    "PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push",
+    "PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_governance_sync.py",
+    "PYTHONPATH=arxiv-daily-push/src python3 scripts/lean_governance.py check-render --project arxiv-daily-push",
+    "structured JSON/JSONL/CSV parse check",
+    "git diff --check",
+    "python3 scripts/validate_semantic_extractors.py arxiv-daily-push with 60s wrapper timeout"
+  ]
+}

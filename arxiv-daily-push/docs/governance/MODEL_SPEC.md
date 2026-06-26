@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 111
-- formula_count: 113
-- parameter_count: 944
+- model_count: 112
+- formula_count: 114
+- parameter_count: 949
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -81,6 +81,17 @@ Fact levels follow `docs/governance/STANDARD.md`.
   or DB, mutate queues, change source adapters or ranking, edit CURRENT or
   V7.1/V7.2 contracts, close inherited P0/P1, enable DAILY_OPERATION, or claim
   integrated production acceptance.
+
+- `S2PMT03-OUTBOX-DELIVERY-A003` adds `MOD-ADP-112` and
+  `FORM-ADP-114`. It refreshes inherited P0 A-003 with dedicated current
+  transactional-outbox probes for stable same-revision Message-ID,
+  changed-revision rekeying, exactly one successful claim under 100 attempts,
+  SMTP accepted-before-local-commit fail-closed behavior, provider-ref
+  finalization without resend, and explicit at-least-once/no-exactly-once
+  semantics. It does not send SMTP, install scheduler, upload Release, change
+  public schema or DB, mutate queues, change source adapters or ranking, edit
+  CURRENT or V7.1/V7.2 contracts, close inherited P0/P1, enable
+  DAILY_OPERATION, or claim integrated production acceptance.
 
 - `S2PMT05-DUPLICATE-TRIGGER-B007` refreshes `MOD-ADP-098` and
   `FORM-ADP-100`. It adds a local multi-actor duplicate-trigger gate for

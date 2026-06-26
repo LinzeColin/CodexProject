@@ -21,9 +21,10 @@ REPORT_PREVIEW_INDEX_PAGE = USER_CENTER / "已生成报告与邮件预览.md"
 TRACEABILITY_CHAIN_PAGE = USER_CENTER / "功能任务测试证据追踪链.md"
 RESTORE_PATH_SAFETY_PAGE = USER_CENTER / "恢复路径安全扫描.md"
 RESTORE_ATOMIC_REPLACEMENT_PAGE = USER_CENTER / "恢复原子替换扫描.md"
+OUTBOX_DELIVERY_PAGE = USER_CENTER / "事务发件箱与消息ID扫描.md"
 LEGACY_MAIL_SCAN_PAGE = USER_CENTER / "旧邮件标识兼容扫描.md"
 TRACEABILITY_MATRIX = ROOT / "docs" / "governance" / "TRACEABILITY_MATRIX.csv"
-MODEL_PARAMS_PAGE = ROOT / "模型参数文件"
+MODEL_PARAMS_PAGE = ROOT / "模型参数文件.md"
 SUMMARY_PAGES = (
     USER_CENTER / "README.md",
     USER_CENTER / "邮件发送与队列状态.md",
@@ -184,6 +185,32 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertNotIn("file://", page)
         self.assertIn("[恢复原子替换扫描](./恢复原子替换扫描.md)", readme)
 
+    def test_outbox_delivery_page_exposes_a003_current_evidence(self):
+        page = OUTBOX_DELIVERY_PAGE.read_text(encoding="utf-8")
+        readme = (USER_CENTER / "README.md").read_text(encoding="utf-8")
+
+        self.assertTrue(page.startswith("# 事务发件箱与消息ID扫描\n"))
+        self.assertRegex(page, r"更新时间：\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} Australia/Sydney")
+        self.assertIn("P0 `A-003`", page)
+        self.assertIn("同 revision 消息 ID 稳定 | 已验证", page)
+        self.assertIn("内容修订后消息 ID 变化 | 已验证", page)
+        self.assertIn("同一发件箱记录 100 次 claim | 1 成功 / 99 阻断", page)
+        self.assertIn("SMTP accepted-before-commit 无 provider ref | fail-closed", page)
+        self.assertIn("Provider accept ref 后本地 finalize | 已验证", page)
+        self.assertIn("`at_least_once_with_idempotent_message_id`", page)
+        self.assertIn("exactly-once 声明 | `false`", page)
+        self.assertIn("真实 SMTP 发送 | `false`", page)
+        self.assertIn(
+            "[A-003 运行清单](../../governance/run_manifests/ADP-S2PMT03-OUTBOX-DELIVERY-A003-20260627.json)",
+            page,
+        )
+        self.assertIn("[A-003 阶段记录](../docs/phase_records/PHASE_S2PMT03_OUTBOX_DELIVERY_A003.md)", page)
+        self.assertIn("[P0 复审 receipt](../docs/phase_records/PHASE_S2PMT07_P0_INDEPENDENT_REVIEW_RECEIPT.md)", page)
+        self.assertIn("[聚焦测试](../tests/test_stage2_lease_fencing.py)", page)
+        self.assertNotIn("/Users/", page)
+        self.assertNotIn("file://", page)
+        self.assertIn("[事务发件箱与消息ID扫描](./事务发件箱与消息ID扫描.md)", readme)
+
     def test_user_center_pages_keep_chinese_facing_labels(self):
         forbidden = (
             "| Rank |",
@@ -274,9 +301,9 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
             "用户中心/一看三查.md",
             "用户中心/关键结论与用户决策.md",
             "docs/owner/SOURCE_CATALOG.md",
-            "模型参数文件",
-            "功能清单",
-            "开发记录",
+            "模型参数文件.md",
+            "功能清单.md",
+            "开发记录.md",
             "arxiv-daily-push/tests/test_user_center_candidate_pool.py",
             "arxiv-daily-push/tests/test_owner_controls.py",
         )

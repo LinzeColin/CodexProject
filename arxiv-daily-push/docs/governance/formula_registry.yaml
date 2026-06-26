@@ -6492,3 +6492,57 @@ formulas:
     evidence_hash: "PENDING_MAIN_COMMIT"
     last_verified_commit: "PRECOMMIT"
     verified_at: "2026-06-27T08:34:18+10:00"
+
+
+  -
+    formula_id: "FORM-ADP-114"
+    model_id: "MOD-ADP-112"
+    assumption_ids:
+      - "ASM-ADP-035"
+    status: "active"
+    expression: "A-003 transactional outbox delivery evidence passes only when required_probe_coverage, stable_message_id, revision_changes_message_id, single_outbox_claim_under_contention, smtp_accept_pending_commit_fail_closed, provider_accept_finalizes_without_resend, at_least_once_semantics, no_exactly_once_claim, and no_production_side_effect are all true; same content revision must keep message_id stable, changed content revision/body must change message_id, 100 same-row-version claims must produce exactly 1 pass and 99 blocked attempts, SMTP accepted-before-local-commit without provider ref must fail closed, provider accept ref may finalize local state without resend, and all production/schema/queue/V7/closure flags remain false."
+    variables:
+      -
+        name: "message_identity"
+        data_type: "object"
+        unit: "message_id comparisons"
+        input_domain: "same revision retry and changed revision/body"
+      -
+        name: "claim_contention"
+        data_type: "object"
+        unit: "claim attempt counts"
+        input_domain: "100 attempts, 1 pass, 99 blocked"
+      -
+        name: "smtp_accept_pending_commit"
+        data_type: "object"
+        unit: "fail-closed state"
+        input_domain: "ACCEPTED_PENDING_COMMIT with and without provider accept ref"
+      -
+        name: "production_side_effect_flags"
+        data_type: "object"
+        unit: "boolean flags"
+        input_domain: "false"
+    constraints: "This is current local P0 A-003 evidence only; it must not send SMTP, install scheduler, upload Release, mutate public schema or production queue, edit CURRENT or V7.1/V7.2 contracts, close inherited P0/P1, or claim Stage2 integrated production acceptance."
+    missing_policy: "Missing required probe, unstable same-revision message ID, unchanged changed-revision message ID, more than one successful claim, unsafe resend without provider ref, exactly-once claim, or any forbidden side-effect flag blocks the report."
+    output_range: "A-003 transactional outbox delivery report with status pass or blocked, gate states, claim contention summary, deterministic outbox_delivery_hash, validation errors, and all production/schema/queue/V7/closure side-effect flags false."
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_lease_fencing.py"
+      - "arxiv-daily-push/tests/test_stage2_final_gate.py"
+      - "arxiv-daily-push/tests/test_user_center_candidate_pool.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_OUTBOX_DELIVERY_A003.md"
+      - "governance/run_manifests/ADP-S2PMT03-OUTBOX-DELIVERY-A003-20260627.json"
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py::S2PMT03_OUTBOX_DELIVERY_MODEL_ID"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py::S2PMT03_OUTBOX_DELIVERY_REQUIRED_PROBES"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py::S2PMT03_OUTBOX_DELIVERY_REQUIRED_GATES"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py::S2PMT03_OUTBOX_DELIVERY_REQUIRED_PRODUCTION_FALSE_FLAGS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py::build_outbox_delivery_a003_report"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py::validate_outbox_delivery_a003_report"
+    implementation_fingerprint: "PENDING_MAIN_COMMIT"
+    evidence_hash: "PENDING_MAIN_COMMIT"
+    last_verified_commit: "PRECOMMIT"
+    verified_at: "2026-06-27T09:28:57+10:00"
