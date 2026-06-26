@@ -19,7 +19,7 @@
   "content_tree_hash": "sha256-changed-files-excluding-this-manifest:PRECOMMIT_PENDING_FINAL_DIFF_HASH",
   "binding_status": "PRECOMMIT_TREE_BOUND",
   "ci_attestation_subject": "All-project Chinese readability redo for README and human-entry files, with renderer and validator enforcement",
-  "ci_run_reference": "LOCAL_PASS_CHANGED_ONLY_CI evidence_id=dcf53e32d132; PENDING_PR_AND_MAIN_CI",
+  "ci_run_reference": "LOCAL_PASS_CHANGED_ONLY_CI latest_observed_evidence_id=9a815126a435 non_binding_self_reference; PENDING_PR_AND_MAIN_CI",
   "owner_readable_summary": "本轮按“所有项目的中文可读都是 0 分，重做”处理，把 10 个项目的 README、功能清单、开发记录、模型参数文件全部改成中文 Owner 首屏优先；同时把规则固化到渲染器、项目治理校验器和回归测试，避免后续 agent 或 render 命令把入口重新降级成英文键名、路径列表或机器字段页。",
   "stop_condition_and_gate": {
     "global_chinese_first": true,
@@ -43,6 +43,7 @@
     ],
     "project_entry_file_count": 40,
     "eei_clean_room_artifacts_touched": true,
+    "eei_clean_room_release_script_touched": true,
     "business_logic_touched": false,
     "governance_logic_touched": true,
     "renderer_touched": true,
@@ -57,6 +58,7 @@
     "EEI/README.md",
     "EEI/artifacts/tests/a200/Enterprise_Ecosystem_Intelligence_clean_room_t1215.zip",
     "EEI/artifacts/tests/a200/t1215_clean_room_release.json",
+    "EEI/scripts/manage_clean_room_release.py",
     "EEI/功能清单",
     "EEI/开发记录",
     "EEI/模型参数文件",
@@ -105,6 +107,7 @@
     "EEI/README.md",
     "EEI/artifacts/tests/a200/Enterprise_Ecosystem_Intelligence_clean_room_t1215.zip",
     "EEI/artifacts/tests/a200/t1215_clean_room_release.json",
+    "EEI/scripts/manage_clean_room_release.py",
     "EEI/功能清单",
     "EEI/开发记录",
     "EEI/模型参数文件",
@@ -158,11 +161,12 @@
     "tests/governance/test_project_governance_validator.py"
   ],
   "evidence_refs": [
+    "EEI/scripts/manage_clean_room_release.py",
     "scripts/lean_governance.py",
     "scripts/validate_project_governance.py",
     "tests/governance/test_project_governance_validator.py",
     "governance/run_manifests/GOV-ALL-PROJECTS-CHINESE-READABILITY-REDO-20260626.json",
-    ".git/codex-review/lean-governance/ci-1782432426978-3988-dcf53e32d132-24c84ca5.json"
+    ".git/codex-review/lean-governance/ci-1782433613210-18108-9a815126a435-322ccffd.json"
   ],
   "test_commands": [
     "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_chinese_readability_rejects_keyword_only_link_pages tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_chinese_readability_gate_rejects_latin_dominant_entry tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_all_projects_chinese_readability_entries_score_above_gate tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s2pat03_current_human_entries_pass_quality_contract tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_other8_s2pat02_target_readmes_use_chinese_human_entry_navigation -q",
@@ -193,7 +197,7 @@
     {
       "command": "EEI clean-room release regenerate and validate",
       "result": "PASS",
-      "observed": "package_paths=419; package_sha256=1b91c50a55ee799f628eb8e0536ae7b471a351dae2373a664f7b0c2a917d5c92; fixed remote EEI validation stale README artifact."
+      "observed": "package_paths=446; package_sha256=435aec4ba10f496ad6751204e62a58d135b8916ec45f67b680c1e22a89d2e6cb; fixed remote EEI validation stale README artifact and Windows/POSIX release path handling."
     },
     {
       "command": "changed-only governance sync before manifest",
@@ -203,7 +207,7 @@
     {
       "command": "changed-only compact CI",
       "result": "PASS",
-      "observed": "decision=SHIP; legacy_exit_code=0; process_exit_code=0; zero_tracked_write=true; evidence_id=dcf53e32d132."
+      "observed": "decision=SHIP; legacy_exit_code=0; process_exit_code=0; zero_tracked_write=true; latest observed evidence_id=9a815126a435."
     },
     {
       "command": "git diff --check",
