@@ -6,10 +6,10 @@
 - product_version: `0.23.0`
 - current_stage: `S2`
 - current_phase: `S2PC`
-- current_task: `S2PCT05`
-- active_model_count: `57`
-- active_formula_count: `59`
-- active_parameter_count: `382`
+- current_task: `S2PCT06`
+- active_model_count: `58`
+- active_formula_count: `60`
+- active_parameter_count: `389`
 - blockers: `NOT_APPLICABLE`
 - next_gate: `S2PC-GATE-V7-CONTRACT-BLOCKED`
 - next_unique_task: `NOT_APPLICABLE`
@@ -24,7 +24,7 @@
 - roadmap_sha256: `b3e9860042fcbbf67ef5c49c12d3da30dbf0ae217ff1fe44bd25580a52f7c1a6`
 - audit_version: `ADP-PARALLEL-AUDIT-V7.1`
 - stage1_gate: `ARXIV_PRODUCTION_ACCEPTED_MAINTAINED`
-- stage2_current_task: `S2PCT05`
+- stage2_current_task: `S2PCT06`
 - stage2_shadow_source_task: `S2PBT01`
 - legacy_alias: `S2PBT01 -> S2P1T01; S2PCT01 -> S2P2T01; S2PCT02 -> S2P2T02; S2PCT03 -> S2P2T03; S2PCT04 -> S2P2T04`
 - stage2_final_task: `S2PMT07`
@@ -38,7 +38,7 @@
 - V7.1 根治理锁是产品/治理合同，不新增 active model、formula 或 parameter。
 - `ARXIV_PRODUCTION_ACCEPTED_MAINTAINED` 只保持 Stage 1 arXiv 单源验收，不代表 Stage 2 已生产验收。
 - `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION` 只允许在 P0/P1 清零且 `S2PMT07` 独立复审通过后声明。
-- `S2PCT05` 是当前 Stage2 任务；`S2PBT01` 保留为已通过的来源 Shadow 线程任务。
+- `S2PCT06` 是当前 Stage2 任务；`S2PBT01` 保留为已通过的来源 Shadow 线程任务。
 
 ## 模型
 
@@ -555,6 +555,15 @@
 - parameter_refs: `PARAM-ADP-394, PARAM-ADP-395, PARAM-ADP-396, PARAM-ADP-397, PARAM-ADP-398, PARAM-ADP-399`
 - evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-S2PCT04-PROFILE`
 
+### MOD-ADP-058 S2PCT05 engineering public-signal shadow
+
+- purpose: `Build a metadata-only no-send engineering signal report from official code repositories, releases, model cards, benchmark results, and standards/specifications linked to known S2PCT04 canonical papers without claiming D2/Stage2/integrated production acceptance.`
+- status: `active`
+- fact_level: `EXTRACTED`
+- formula_refs: `FORM-ADP-060`
+- parameter_refs: `PARAM-ADP-400, PARAM-ADP-401, PARAM-ADP-402, PARAM-ADP-403, PARAM-ADP-404, PARAM-ADP-405, PARAM-ADP-406`
+- evidence_refs: `EVID-ADP-MODEL-REGISTRY, EVID-ADP-S2PCT05-ENGINEERING`
+
 ## 公式
 
 ### FORM-ADP-001
@@ -910,6 +919,12 @@
 - model_id: `MOD-ADP-057`
 - expression_or_pseudocode: `A S2PCT04 top-journal profile report passes only when completed Nature, Science, and Lancet metadata-only SourceBatches validate; profile taxonomy observes research, review, editorial, news, correction, and retraction; publication relation edges include original_publication, discusses, corrects, and retracts; correction and retraction forced events update known prior targets; and D2 source-domain acceptance, Stage2/integrated production, SMTP, Release, scheduler, video, PDF/full-text, and paywall side effects remain false.`
 - evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-ADP-S2PCT04-PROFILE`
+
+### FORM-ADP-060
+
+- model_id: `MOD-ADP-058`
+- expression_or_pseudocode: `A S2PCT05 engineering signal report passes only when the S2PCT04 profile report passes, all required signal types are observed, every signal traces to a known canonical paper, officiality/version/relation/reproducibility gates pass, and D2 source-domain acceptance, Stage2/integrated production, SMTP, Release, scheduler, video, PDF/full-text, paid API, and paywall side effects remain false.`
+- evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-ADP-S2PCT05-ENGINEERING`
 
 ## 参数
 
@@ -1297,3 +1312,10 @@
 | PARAM-ADP-397 | S2PCT04_FORCED_EVENT_TYPES | S2PCT04 forced event types | correction;retraction | EXTRACTED from code constant and focused tests | EXTRACTED |
 | PARAM-ADP-398 | S2PCT04_LEDGER_FILENAME | S2PCT04 profile shadow ledger filename | stage2_s2pct04_profile_ledger.jsonl | EXTRACTED from code constant and focused tests | EXTRACTED |
 | PARAM-ADP-399 | S2PCT04_ACCEPTANCE_ID | S2PCT04 acceptance id | ACC-S2PCT04-JOURNAL-PROFILE | EXTRACTED from code constant and focused tests | EXTRACTED |
+| PARAM-ADP-400 | S2PCT05_ENGINEERING_SIGNAL_MODEL_ID | S2PCT05 engineering signal model id | adp-s2pct05-engineering-signals-v1 | EXTRACTED from code constant and focused tests | EXTRACTED |
+| PARAM-ADP-401 | S2PCT05_REQUIRED_SIGNAL_TYPES | S2PCT05 required engineering signal types | official_code_repository;official_release;model_card;benchmark_result;standard_or_spec | EXTRACTED from code constant and focused tests | EXTRACTED |
+| PARAM-ADP-402 | S2PCT05_ALLOWED_RELATION_TYPES | S2PCT05 allowed paper relation types | implements_paper;version_of;documents_model;evaluates;standardizes | EXTRACTED from code constant and focused tests | EXTRACTED |
+| PARAM-ADP-403 | S2PCT05_ALLOWED_OFFICIALITY_STATES | S2PCT05 accepted officiality states | official;publisher_linked;standards_body | EXTRACTED from code constant and focused tests | EXTRACTED |
+| PARAM-ADP-404 | S2PCT05_ALLOWED_REPRODUCIBILITY_STATES | S2PCT05 accepted reproducibility states | reproducible;partial;claimed;not_applicable | EXTRACTED from code constant and focused tests | EXTRACTED |
+| PARAM-ADP-405 | S2PCT05_LEDGER_FILENAME | S2PCT05 engineering signal ledger filename | stage2_s2pct05_engineering_signal_ledger.jsonl | EXTRACTED from code constant and focused tests | EXTRACTED |
+| PARAM-ADP-406 | S2PCT05_ACCEPTANCE_ID | S2PCT05 acceptance id | ACC-S2PCT05-ENGINEERING-SIGNALS | EXTRACTED from code constant and focused tests | EXTRACTED |

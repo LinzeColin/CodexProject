@@ -109,11 +109,13 @@ from .stage1_runtime import (
 from .stage2_sources import (
     build_s2p1_preprint_replay_shadow_evidence,
     build_s2p1_preprint_promotion_report,
+    run_s2pct05_engineering_signal_shadow,
     run_s2pct04_top_journal_profile_shadow,
     run_s2pct03_lancet_shadow_daily,
     run_s2pct02_science_shadow_daily,
     run_s2p2_top_journal_shadow_daily,
     run_s2p1_preprint_shadow_daily,
+    validate_s2pct05_engineering_signal_report,
     validate_s2pct04_top_journal_profile_report,
     validate_s2pct03_lancet_shadow_report,
     validate_s2pct02_science_shadow_report,
@@ -510,6 +512,18 @@ def build_parser() -> argparse.ArgumentParser:
     s2pct04_profile.add_argument("--prior-profile-state", help="Optional prior profile state JSON for forced updates.")
     s2pct04_profile.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
     s2pct04_profile.add_argument("--json", action="store_true", help="Print JSON profile report.")
+
+    s2pct05_engineering = subparsers.add_parser(
+        "stage2-engineering-signals-shadow",
+        help="Run S2PCT05 engineering open-source/code/benchmark/standards shadow evidence.",
+    )
+    s2pct05_engineering.add_argument("--state-dir", required=True, help="Local ADP state directory.")
+    s2pct05_engineering.add_argument("--date", required=True, help="Sydney service date YYYY-MM-DD.")
+    s2pct05_engineering.add_argument("--generated-at", required=True, help="Evidence timestamp.")
+    s2pct05_engineering.add_argument("--profile-report", required=True, help="Passing S2PCT04 top-journal profile report JSON.")
+    s2pct05_engineering.add_argument("--engineering-signals", required=True, help="Engineering signal metadata JSON list or object with signals.")
+    s2pct05_engineering.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
+    s2pct05_engineering.add_argument("--json", action="store_true", help="Print JSON engineering signal report.")
 
     all_arxiv_plan = subparsers.add_parser("plan-all-arxiv-scan", help="Print the Phase 12 all-arXiv scan plan.")
     all_arxiv_plan.add_argument("--max-results-per-category", type=int, default=ALL_ARXIV_MAX_RESULTS_PER_CATEGORY)
@@ -1584,6 +1598,35 @@ def main(argv: list[str] | None = None) -> int:
             print(report["status"])
             print(f"- profile_kinds_observed: {', '.join(report.get('profile_kinds_observed', []))}")
             print(f"- forced_event_update_count: {report.get('forced_event_update_count')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if report["status"] == "pass" and not errors else 2
+    if args.command == "stage2-engineering-signals-shadow":
+        profile_report = load_json_mapping(args.profile_report)
+        signal_payload = json.loads(Path(args.engineering_signals).read_text(encoding="utf-8"))
+        if isinstance(signal_payload, dict) and isinstance(signal_payload.get("signals"), list):
+            engineering_signals = signal_payload["signals"]
+        elif isinstance(signal_payload, list):
+            engineering_signals = signal_payload
+        else:
+            engineering_signals = []
+        report = run_s2pct05_engineering_signal_shadow(
+            state_dir=args.state_dir,
+            date=args.date,
+            generated_at=args.generated_at,
+            profile_report=profile_report,
+            engineering_signals=engineering_signals,
+            write=not args.no_write,
+        )
+        errors = validate_s2pct05_engineering_signal_report(report)
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- signal_types_observed: {', '.join(report.get('signal_types_observed', []))}")
+            print(f"- engineering_signal_count: {report.get('engineering_signal_count')}")
             for reason in report.get("blocking_reasons", []):
                 print(f"- blocked: {reason}")
             for error in errors:

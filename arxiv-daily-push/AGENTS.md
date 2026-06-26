@@ -12,11 +12,13 @@ This project follows the root `AGENTS.md` and `docs/governance/STANDARD.md`.
   current execution contract. V5/V6/V7.0 files remain historical evidence and
   alias references; they no longer override V7.1.
 - Every implementation closeout must state the current V7.1 Task ID and any
-  legacy alias. Current development entry is `S2PCT05` engineering open-source,
-  code, benchmark, model-card, release, and standards public-signal framework;
-  it has no legacy alias in V7.1. `S2PCT04` (`S2P2T04` legacy alias)
-  top-journal Profile、发表关系、更正撤回 metadata-only no-send shadow evidence is
-  completed. `S2PCT03` (`S2P2T03` legacy alias) The Lancet/top-journal medical
+  legacy alias. Current development entry is `S2PCT06` authoritative research
+  institution and industry technical report framework; it has no legacy alias
+  in V7.1. `S2PCT05` engineering open-source、代码、基准、模型卡、发布和标准公开信号
+  metadata-only no-send shadow evidence is completed and has no legacy alias in
+  V7.1. `S2PCT04` (`S2P2T04` legacy alias) top-journal Profile、发表关系、更正撤回
+  metadata-only no-send shadow evidence is completed. `S2PCT03`
+  (`S2P2T03` legacy alias) The Lancet/top-journal medical
   metadata-only no-send shadow evidence, `S2PCT02` (`S2P2T02` legacy alias)
   Science/top-journal metadata-only no-send shadow evidence, and `S2PCT01`
   (`S2P2T01` legacy alias) Nature/top-journal metadata-only no-send shadow
@@ -37,8 +39,8 @@ This project follows the root `AGENTS.md` and `docs/governance/STANDARD.md`.
   boards only after the V7 contract is readable, hashes match, and source-level
   gates pass, and P0/P1 audit findings are zero. Stage 2 is not complete until
   `S2PMT07 -> INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`.
-- Legacy `S2P2T04` maps to V7.1 `S2PCT04`; `S2PCT05` has no legacy alias.
-  Legacy `S2P2T03` maps to V7.1
+- Legacy `S2P2T04` maps to V7.1 `S2PCT04`; `S2PCT05` and `S2PCT06` have no
+  legacy alias. Legacy `S2P2T03` maps to V7.1
   `S2PCT03`; legacy `S2P2T02` maps to V7.1 `S2PCT02`; legacy `S2P2T01` maps
   to V7.1 `S2PCT01`; legacy `S2P1T01` maps to V7 `S2PBT01`. Preserve both
   canonical and legacy IDs in events, PR summaries, and closeouts until the
