@@ -2100,6 +2100,24 @@ tasks:
     completed_version: "0.23.0"
     unknown_task_ids: []
 
+  - task_id: "S2PMT02-ARTIFACT-ATOMIC-PUBLISH"
+    phase: "S2PM"
+    objective: "Remediate Stage 1 B1 report/email formal artifact write-before-validation and half-publish risk for inherited A-010 under S2PMT02 without enabling production email or changing public schema."
+    scope: "Pre-write package validation, .b1_staging artifact writes, staged byte-level SHA256 verification, package-directory atomic publish, publish-failure staging cleanup, regression tests proving validation failure writes no formal artifacts and publish exception leaves no half-published package, FORM-ADP-042 fingerprint refresh, phase record, and run manifest."
+    non_scope: "No production email, no SMTP, no scheduler install, no Release, no public schema change, no DB migration, no queue mutation, no ranking change, no source adapter change, no live source fetch, no workflow change, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no inherited P0/P1 closure claim before independent review, and no integrated production acceptance."
+    status: "completed"
+    dependencies: ["S2PMT02", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py", "arxiv-daily-push/tests/test_stage1_b1_report.py"]
+    acceptance_ids: ["ACC-S2PMT02-ATOMIC-RECOVERY"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage1_b1_report.py -q"]
+    test_results: ["py_compile PASS", "focused test_stage1_b1_report.py: 8 OK", "full arxiv-daily-push unittest: 461 OK", "V7.2 validator: PASS", "ADP project governance: 0 errors / 0 warnings", "changed-only semantic governance: 0 errors / 0 warnings", "lean check-render: drift_count 0 reference_issue_count 0", "JSONL/manifest parse: OK", "git diff --check: PASS", "full semantic extractor interrupted after 90 seconds during full-table AST parsing"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_ARTIFACT_ATOMIC_PUBLISH.md", "governance/run_manifests/ADP-S2PMT02-ARTIFACT-ATOMIC-PUBLISH-20260626.json", "arxiv-daily-push/tests/test_stage1_b1_report.py"]
+    risk: "Artifact atomic publish implementation evidence can be misread as inherited P0/P1 closure or production email readiness; independent review plus S2PMT07 still control production acceptance."
+    rollback: "Revert artifact atomic publish code, focused tests, FORM-ADP-042 refresh, phase record, manifest, changelog/version/status/event records, and this task entry; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.0"
+    unknown_task_ids: []
+
   - task_id: "S2PMT03"
     phase: "S2PM"
     objective: "Implement local-only lease fencing, state concurrency, and transactional outbox evidence under V7.2 no-production boundaries."

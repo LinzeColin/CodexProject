@@ -5,7 +5,9 @@ from __future__ import annotations
 import html
 import hashlib
 import json
+import os
 import re
+import shutil
 from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any
@@ -167,13 +169,13 @@ def build_b1_report_email_package(
         ),
         "blocking_reasons": [],
     }
+    validation_errors = validate_b1_report_email_package(package)
+    if validation_errors:
+        return {**package, "status": "blocked", "blocking_reasons": validation_errors}
     if write:
         if artifact_dir is None:
             return _blocked_package(generated_at=generated_at, reasons=["artifact_dir is required when write is true"])
         package["artifact_files"] = _write_artifacts(package, Path(artifact_dir))
-    validation_errors = validate_b1_report_email_package(package)
-    if validation_errors:
-        return {**package, "status": "blocked", "blocking_reasons": validation_errors}
     return package
 
 
@@ -429,14 +431,84 @@ def _markdown_to_simple_html(markdown: str, *, title: str) -> str:
 
 def _write_artifacts(package: Mapping[str, Any], artifact_dir: Path) -> dict[str, dict[str, Any]]:
     stem = f"b1_{package['date']}_{_safe_id(str(package['source_id']))}"
-    targets = {
-        "report_markdown": artifact_dir / "reports" / f"{stem}.md",
-        "report_html": artifact_dir / "reports" / f"{stem}.html",
-        "email_plain": artifact_dir / "emails" / f"{stem}.txt",
-        "email_html": artifact_dir / "emails" / f"{stem}.html",
-        "audit_json": artifact_dir / "audit" / f"{stem}.json",
+    package_hash = stable_content_hash(
+        {
+            "report_id": package["report_id"],
+            "email_id": package["email_id"],
+            "content_hash": package["content_hash"],
+        }
+    )[:12]
+    package_dir_name = f"{stem}_{package_hash}"
+    final_root = artifact_dir / "packages" / package_dir_name
+    staging_parent = artifact_dir / ".b1_staging"
+    staging_root = staging_parent / package_dir_name
+    if final_root.exists():
+        return _artifact_refs(package, final_root)
+    if staging_root.exists():
+        shutil.rmtree(staging_root)
+    try:
+        _write_artifact_payloads(package, staging_root)
+        _verify_artifact_refs(_artifact_refs(package, staging_root))
+        final_root.parent.mkdir(parents=True, exist_ok=True)
+        _atomic_publish_artifact_tree(staging_root, final_root)
+        return _artifact_refs(package, final_root)
+    except Exception:
+        shutil.rmtree(staging_root, ignore_errors=True)
+        raise
+    finally:
+        try:
+            staging_parent.rmdir()
+        except OSError:
+            pass
+
+
+def _write_artifact_payloads(package: Mapping[str, Any], root: Path) -> None:
+    contents = _artifact_contents(package)
+    for key, path in _artifact_targets(package, root).items():
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(contents[key], encoding="utf-8")
+
+
+def _atomic_publish_artifact_tree(staging_root: Path, final_root: Path) -> None:
+    os.replace(staging_root, final_root)
+
+
+def _artifact_refs(package: Mapping[str, Any], root: Path) -> dict[str, dict[str, Any]]:
+    contents = _artifact_contents(package)
+    refs: dict[str, dict[str, Any]] = {}
+    for key, path in _artifact_targets(package, root).items():
+        data = path.read_bytes()
+        refs[key] = {
+            "path": str(path),
+            "sha256": hashlib.sha256(data).hexdigest(),
+            "content_hash": stable_content_hash({"content": contents[key]}),
+            "size_bytes": len(data),
+        }
+    return refs
+
+
+def _verify_artifact_refs(refs: Mapping[str, Mapping[str, Any]]) -> None:
+    for key, artifact in refs.items():
+        path = Path(str(artifact.get("path") or ""))
+        if not path.is_file():
+            raise FileNotFoundError(f"artifact {key} was not staged: {path}")
+        if artifact.get("sha256") != hashlib.sha256(path.read_bytes()).hexdigest():
+            raise ValueError(f"artifact {key} sha256 mismatch before publish")
+
+
+def _artifact_targets(package: Mapping[str, Any], root: Path) -> dict[str, Path]:
+    stem = f"b1_{package['date']}_{_safe_id(str(package['source_id']))}"
+    return {
+        "report_markdown": root / "reports" / f"{stem}.md",
+        "report_html": root / "reports" / f"{stem}.html",
+        "email_plain": root / "emails" / f"{stem}.txt",
+        "email_html": root / "emails" / f"{stem}.html",
+        "audit_json": root / "audit" / f"{stem}.json",
     }
-    contents = {
+
+
+def _artifact_contents(package: Mapping[str, Any]) -> dict[str, str]:
+    return {
         "report_markdown": str(package["report_markdown"]),
         "report_html": str(package["report_html"]),
         "email_plain": str(package["email_plain"]),
@@ -453,18 +525,6 @@ def _write_artifacts(package: Mapping[str, Any], artifact_dir: Path) -> dict[str
         )
         + "\n",
     }
-    refs: dict[str, dict[str, Any]] = {}
-    for key, path in targets.items():
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(contents[key], encoding="utf-8")
-        data = path.read_bytes()
-        refs[key] = {
-            "path": str(path),
-            "sha256": hashlib.sha256(data).hexdigest(),
-            "content_hash": stable_content_hash({"content": contents[key]}),
-            "size_bytes": len(data),
-        }
-    return refs
 
 
 def _content_ledger_update(
