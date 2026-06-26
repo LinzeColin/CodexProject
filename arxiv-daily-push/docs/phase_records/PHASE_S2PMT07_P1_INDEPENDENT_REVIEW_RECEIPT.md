@@ -52,10 +52,10 @@ No P0/P1 closure, no independent final signoff, no S2PLT04 completion, no final 
 
 | finding_id | fix task | title | current evidence surface | receipt state | independent reviewer decision still required |
 |---|---|---|---|---|---|
-| `A-006` | `S2PMT03` | tick 写入异常时 runtime.lock 永久残留 | `PHASE_S2PMT03_LEASE_FENCING.md`, `ADP-S2PMT03-LEASE-FENCING-20260626.json`, `test_stage2_lease_fencing.py` | evidence surface located; independent review required; closure not claimed | Verify V7.1 fix/test requirement: heartbeat/checkpoint 任一步异常后无残锁 \| 模拟死进程后仅新 fencing token 可接管 |
-| `A-007` | `S2PMT03` | 状态历史不验证声明的 from_state | `PHASE_S2PMT03_LEASE_FENCING.md`, `ADP-S2PMT03-LEASE-FENCING-20260626.json`, `test_stage2_lease_fencing.py` | evidence surface located; independent review required; closure not claimed | Verify V7.1 fix/test requirement: 篡改 from_state 必须失败 \| 缺 reason/at 或时间倒序必须失败 |
-| `A-008` | `S2PMT03` | current_state 与 state_history 末态可不一致 | `PHASE_S2PMT03_LEASE_FENCING.md`, `ADP-S2PMT03-LEASE-FENCING-20260626.json`, `test_stage2_lease_fencing.py` | evidence surface located; independent review required; closure not claimed | Verify V7.1 fix/test requirement: 末态不一致和 status 不一致均失败 |
-| `A-009` | `S2PMT03` | 状态转换缺少乐观并发控制与 fencing token | `PHASE_S2PMT03_LEASE_FENCING.md`, `ADP-S2PMT03-LEASE-FENCING-20260626.json`, `test_stage2_lease_fencing.py` | evidence surface located; independent review required; closure not claimed | Verify V7.1 fix/test requirement: 100 个并发 claimant 仅一个获得同一任务 \| 过期 worker 的写入被 fencing token 拒绝 |
+| `A-006` | `S2PMT03-RUNTIME-LOCK-A006` | tick 写入异常时 runtime.lock 永久残留 | `PHASE_S2PMT03_RUNTIME_LOCK_A006.md`, `ADP-S2PMT03-RUNTIME-LOCK-A006-20260626.json`, `test_stage1_runtime.py` | refreshed current evidence located; independent review required; closure not claimed | 模拟死进程后仅新 fencing token 可接管 |
+| `A-007` | `S2PMT03-STATE-HISTORY-A007` | 状态历史不验证声明的 from_state | `PHASE_S2PMT03_STATE_HISTORY_A007.md`, `ADP-S2PMT03-STATE-HISTORY-A007-20260626.json`, `test_state_machine.py` | refreshed current evidence located; independent review required; closure not claimed | 缺 reason/at 或时间倒序必须失败 |
+| `A-008` | `S2PMT03-STATE-CONSISTENCY-A008` | current_state 与 state_history 末态可不一致 | `PHASE_S2PMT03_STATE_CONSISTENCY_A008.md`, `ADP-S2PMT03-STATE-CONSISTENCY-A008-20260626.json`, `test_state_machine.py` | refreshed current evidence located; independent review required; closure not claimed | Verify V7.1 fix/test requirement: 末态不一致和 status 不一致均失败 |
+| `A-009` | `S2PMT03-OPTIMISTIC-FENCING-A009` | 状态转换缺少乐观并发控制与 fencing token | `PHASE_S2PMT03_OPTIMISTIC_FENCING_A009.md`, `ADP-S2PMT03-OPTIMISTIC-FENCING-A009-20260626.json`, `test_stage2_lease_fencing.py` | refreshed current evidence located; independent review required; closure not claimed | 过期 worker 的写入被 fencing token 拒绝 |
 | `A-010` | `S2PMT02` | 报告文件在质量验证前写入正式目录 | `PHASE_S2PMT02_ARTIFACT_ATOMIC_PUBLISH.md`, `ADP-S2PMT02-ARTIFACT-ATOMIC-PUBLISH-20260626.json`, `PHASE_S2PMT02_ATOMIC_RECOVERY.md`, `PHASE_S2PMT02_RESTORE_SAFETY_REMEDIATION.md` | evidence surface located; independent review required; closure not claimed | Verify V7.1 fix/test requirement: 强制验证失败时正式目录 0 新文件 \| 中途异常后无半发布 package |
 | `A-011` | `S2PMT02` | artifact_files.sha256 字段不是文件字节 SHA-256 | `PHASE_S2PMT02_ARTIFACT_SHA256.md`, `ADP-S2PMT02-ARTIFACT-SHA256-20260626.json`, `PHASE_S2PMT02_ATOMIC_RECOVERY.md`, `PHASE_S2PMT02_RESTORE_SAFETY_REMEDIATION.md` | evidence surface located; independent review required; closure not claimed | Verify V7.1 fix/test requirement: 每个 artifact manifest SHA 与 sha256sum 完全相同 |
 | `A-012` | `S2PMT01` | 邮件原文链接未限制 URL scheme | `PHASE_S2PMT01_INPUT_URL_SAFETY_A012.md`, `ADP-S2PMT01-INPUT-URL-SAFETY-A012-20260626.json`, `test_security_boundary.py` | refreshed current evidence located; independent review required; closure not claimed | Verify V7.1 fix/test requirement: javascript/data/file/带凭据 URL 均拒绝或降级为无链接文本 |
@@ -94,8 +94,9 @@ No P0/P1 closure, no independent final signoff, no S2PLT04 completion, no final 
 
 This refresh updates the P1 receipt to point completed P1 remediation rows at their dedicated phase records and manifests instead of older aggregate evidence surfaces. It does not close any P1 finding and does not provide independent review signoff.
 
-- refreshed_findings: `A-012`, `A-017`, `A-018`, `A-020`, `A-021`, `B-003`, `B-004`, `B-005`, `B-006`, `B-009`, `B-010`, `B-011`, `B-012`, `B-013`, `B-014`, `B-015`
-- refresh_manifest: `governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-20260627.json`
+- refreshed_findings: `A-006`, `A-007`, `A-008`, `A-009`, `A-012`, `A-017`, `A-018`, `A-020`, `A-021`, `B-003`, `B-004`, `B-005`, `B-006`, `B-009`, `B-010`, `B-011`, `B-012`, `B-013`, `B-014`, `B-015`
+- refresh_manifest: `governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A006-A009-20260627.json`
+- previous_refresh_manifest: `governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-20260627.json`
 - closure_claimed: `false`
 - independent_review_signoff_present: `false`
 

@@ -21,7 +21,7 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 157
+- task_count: 158
 - acceptance_count: 122
 
 ## Delivery Tasks
@@ -248,3 +248,4 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B007-B008 | P0 review receipt evidence refresh | completed | `ACC-S2PMT07-FINAL-REVIEW` | Refreshes the P0 independent-review receipt so B-007/B-008 point to their dedicated 20260627 evidence records; this does not provide independent signoff, close P0/P1, complete S2PLT04, or change production state. |
 | S2PMT07-FINAL-COMMAND-BLOCKER-SYNC | Final command execution blocker sync | completed | `ACC-S2PMT07-FINAL-REVIEW` | Aligns the S2PMT07 fail-closed machine blockers with the V7.2/formula contract by adding `independent_final_command_execution_missing` to the report, phase record, manifest, semantic parameter refresh, and regression tests; no independent signoff, final command execution claim, closure, or production state is changed. |
 | S2PMT07-P1-REVIEW-RECEIPT-REFRESH | P1 review receipt evidence refresh | completed | `ACC-S2PMT07-FINAL-REVIEW` | Refreshes 16 P1 independent-review receipt rows so completed local remediations point to dedicated phase records/manifests, including B-013 routed to `S2PMT05-RESULT-VALIDITY-B013`; this does not provide independent signoff, close P0/P1, complete S2PLT04, execute final commands, or change production state. |
+| S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A006-A009 | P1 A-006 through A-009 review receipt evidence refresh | completed | `ACC-S2PMT07-FINAL-REVIEW` | Refreshes A-006 through A-009 so runtime-lock, state-history, state-consistency, and optimistic-fencing rows point to dedicated S2PMT03 evidence instead of the aggregate lease-fencing record; this does not provide independent signoff, close P0/P1, complete S2PLT04, execute final commands, or change production state. |
