@@ -3093,3 +3093,39 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PMT02-RESTORE-ATOMIC-REPLACEMENT-A002"
+    phase: "S2PM"
+    objective: "Refresh inherited P0 A-002 local evidence with dedicated real restore atomic replacement probes."
+    scope: "Stage 1 backup/restore new-target restore, overwrite restore with previous-target backup preservation, invalid overwrite target preservation, temporary-file cleanup, A-002 report builder/validator, shallow user-center page, phase record, run manifest, semantic registry refresh, traceability/delivery/event records, and no-production evidence."
+    non_scope: "No production restore, SMTP transport, scheduler install or enablement, Release upload, public schema or DB migration, production queue mutation, ranking/source-adapter change, CURRENT pointer change, V7.1/V7.2 contract-file edit, inherited P0/P1 closure, DAILY_OPERATION, or integrated production acceptance."
+    status: "completed"
+    dependencies: ["S2PMT02", "S2PMT07", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_atomic_recovery.py", "arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py", "arxiv-daily-push/tests/test_stage2_atomic_recovery.py", "arxiv-daily-push/用户中心/恢复原子替换扫描.md", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_RESTORE_ATOMIC_REPLACEMENT_A002.md"]
+    acceptance_ids: ["ACC-S2PMT02-ATOMIC-RECOVERY"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_a002_compile PYTHONPATH=arxiv-daily-push/src python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_atomic_recovery.py arxiv-daily-push/tests/test_stage2_atomic_recovery.py arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_user_center_candidate_pool.py", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_a002_target PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_atomic_recovery.py arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_user_center_candidate_pool.py -q"]
+    test_results: ["py_compile PASS", "user-center timestamp check: validated 14 pages", "targeted A-002 tests: 34 OK", "source/board user-center gate tests: 18 OK", "full arxiv-daily-push unittest: 576 OK", "V7.2 validator PASS", "V7.2 unittest: 4 OK", "project governance: errors 0 warnings 0", "governance sync: errors 0 warnings 0", "lean governance check-render: drift_count 0 reference_issue_count 0", "structured parse: JSON 3 OK; JSONL 2 OK; parameter_registry.csv 944 rows width 36; TRACEABILITY_MATRIX.csv 253 rows width 12", "git diff --check PASS", "semantic extractor: timed out after 60s; non-blocking validation not completed and not claimed as passed"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_RESTORE_ATOMIC_REPLACEMENT_A002.md", "governance/run_manifests/ADP-S2PMT02-RESTORE-ATOMIC-REPLACEMENT-A002-20260627.json", "arxiv-daily-push/用户中心/恢复原子替换扫描.md", "arxiv-daily-push/src/arxiv_daily_push/stage2_atomic_recovery.py", "arxiv-daily-push/tests/test_stage2_atomic_recovery.py"]
+    risk: "A-002 local evidence can be misread as production restore enablement, inherited P0 closure, or S2PMT07 pass; independent review still controls closure and production acceptance."
+    rollback: "Revert A-002 restore atomic replacement code/tests, user-center page, phase record, manifest, semantic registry updates, traceability/delivery/event records, generated status refresh, and this task entry; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
+
+  - task_id: "S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A002"
+    phase: "S2PM"
+    objective: "Refresh S2PMT07 P0 independent-review receipt row A-002 so it points to dedicated S2PMT02 restore atomic replacement evidence."
+    scope: "A-002 P0 review receipt row, P0 receipt manifest, refreshed A-002 receipt manifest, focused final-gate regression tests, traceability/delivery/event records, and no-production evidence."
+    non_scope: "No independent final signoff, final command execution, inherited P0/P1 closure, S2PLT04 completion, final acceptance bundle creation, SMTP transport, scheduler install or enablement, Release upload, public schema or DB migration, production queue mutation, ranking/source-adapter change, CURRENT pointer change, V7.1/V7.2 contract-file edit, DAILY_OPERATION, or integrated production acceptance."
+    status: "completed"
+    dependencies: ["S2PMT07", "S2PMT02-RESTORE-ATOMIC-REPLACEMENT-A002", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_INDEPENDENT_REVIEW_RECEIPT.md", "governance/run_manifests/ADP-S2PMT07-P0-INDEPENDENT-REVIEW-RECEIPT-20260626.json", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_a002_target PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_atomic_recovery.py arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_user_center_candidate_pool.py -q"]
+    test_results: ["py_compile PASS", "user-center timestamp check: validated 14 pages", "targeted A-002 tests: 34 OK", "source/board user-center gate tests: 18 OK", "full arxiv-daily-push unittest: 576 OK", "V7.2 validator PASS", "V7.2 unittest: 4 OK", "project governance: errors 0 warnings 0", "governance sync: errors 0 warnings 0", "lean governance check-render: drift_count 0 reference_issue_count 0", "structured parse: JSON 3 OK; JSONL 2 OK; parameter_registry.csv 944 rows width 36; TRACEABILITY_MATRIX.csv 253 rows width 12", "git diff --check PASS", "semantic extractor: timed out after 60s; non-blocking validation not completed and not claimed as passed"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_INDEPENDENT_REVIEW_RECEIPT.md", "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A002-20260627.json", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
+    risk: "This receipt refresh can be misread as A-002/P0 closure; independent review plus S2PMT07 still control closure and production acceptance."
+    rollback: "Revert the A-002 P0 review receipt refresh, run manifests, final-gate regression extension, traceability/delivery/event records, generated status refresh, and this task entry; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
