@@ -3343,3 +3343,19 @@ None for this new project baseline.
 - Rollback: Revert S2PMT04 startup convergence code/tests, required gate and semantic registry refresh, phase record, manifest, traceability/delivery/event records, generated status refresh, and this ledger entry; no runtime production state was changed.
 - Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PMT04_STARTUP_CONVERGENCE_B004.md`; `governance/run_manifests/ADP-S2PMT04-STARTUP-CONVERGENCE-B004-20260626.json`; `arxiv-daily-push/src/arxiv_daily_push/stage2_lifecycle_cache.py`; `arxiv-daily-push/tests/test_stage2_lifecycle_cache.py`.
 - Next step: Continue inherited P0/P1 remediation or independent review only under V7.2 no-production boundaries.
+
+### `ITER-20260626-ADP-S2PMT04-CACHE-LOW-DISK-B005`
+
+- Timestamp: `2026-06-26T23:25:20+10:00`
+- Actor: Codex
+- Fact level: EXTRACTED from S2PMT04 lifecycle/cache implementation, focused low-disk cache degradation regression tests, V7.2 no-production boundaries, and B-005 inherited finding review.
+- Status: completed local validation; no production side effects.
+- Task IDs: `S2PMT04-CACHE-LOW-DISK-B005`, `S2PMT04`, `B-005`; acceptance `ACC-S2PMT04-LIFECYCLE` remains local evidence only.
+- Goal: Remediate inherited P1 finding `B-005` locally by proving low disk pressure degrades cache work instead of deleting durable evidence.
+- Decisions: `build_cache_low_disk_degradation_receipt` and `validate_cache_low_disk_degradation_receipt` are pure local evidence helpers. They do not read real disk state, delete files, install a scheduler, or mutate production queues. The S2PMT04 report now requires `cache_low_disk_degradation`.
+- Validation: py_compile PASS; focused S2PMT04 lifecycle/cache tests 12 OK; source/board user-center root gate regression 14 OK; full ADP unittest 535 OK; V7.2 validator PASS; ADP project governance 0 errors / 0 warnings; changed-only governance semantic 0 errors / 0 warnings; governance sync validator 0 errors / 0 warnings; lean check-render drift_count 0 reference_issue_count 0; JSON/JSONL/CSV/YAML parse OK; git diff --check PASS. Non-blocking full semantic extractor was terminated after more than 90 seconds and is not claimed as passed.
+- Boundaries: This run does not enable SMTP, install or enable scheduler, upload Release assets, change public schema or DB, mutate production queues, change source adapters or ranking, edit CURRENT or V7.1/V7.2 contracts, close inherited P0/P1, enable DAILY_OPERATION, or claim integrated production acceptance.
+- Remaining risks: This is local evidence only. Inherited P0=8/P1=37, S2PLT04, final bundle, and S2PMT07 independent review remain blocked.
+- Rollback: Revert S2PMT04 low-disk degradation code/tests, required gate and semantic registry refresh, phase record, manifest, traceability/delivery/event records, generated status refresh, and this ledger entry; no runtime production state was changed.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PMT04_CACHE_LOW_DISK_B005.md`; `governance/run_manifests/ADP-S2PMT04-CACHE-LOW-DISK-B005-20260626.json`; `arxiv-daily-push/src/arxiv_daily_push/stage2_lifecycle_cache.py`; `arxiv-daily-push/tests/test_stage2_lifecycle_cache.py`.
+- Next step: Commit, direct push to main if remote remains unchanged, and continue inherited P0/P1 remediation or independent review only under V7.2 no-production boundaries.

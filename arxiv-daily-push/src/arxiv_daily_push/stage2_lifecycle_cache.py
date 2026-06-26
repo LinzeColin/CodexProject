@@ -54,6 +54,7 @@ S2PMT04_REQUIRED_GATES = (
     "startup_convergence_count_conservation",
     "shutdown_receipt",
     "transaction_completion_signal",
+    "cache_low_disk_degradation",
     "cache_cleanup_safety",
     "launchd_plist_parseable",
     "no_production_side_effect",
@@ -497,6 +498,83 @@ def build_cache_cleanup_plan(
     }
 
 
+def build_cache_low_disk_degradation_receipt(
+    *,
+    cleanup_plan: Mapping[str, Any],
+    free_disk_bytes: int,
+    low_disk_threshold_bytes: int,
+    generated_at: str,
+) -> dict[str, Any]:
+    """Prove low-disk cache pressure degrades work instead of deleting evidence."""
+
+    free_bytes = int(free_disk_bytes)
+    threshold_bytes = int(low_disk_threshold_bytes)
+    low_disk_pressure = free_bytes < threshold_bytes
+    degradation_actions = []
+    if low_disk_pressure:
+        degradation_actions = [
+            "block_new_downloads",
+            "block_rebuildable_cache_writes",
+            "preserve_durable_evidence",
+            "keep_cleanup_dry_run",
+        ]
+    receipt = {
+        "generated_at": generated_at,
+        "free_disk_bytes": free_bytes,
+        "low_disk_threshold_bytes": threshold_bytes,
+        "low_disk_pressure": low_disk_pressure,
+        "degradation_mode": "low_disk_degraded" if low_disk_pressure else "normal",
+        "degradation_actions": degradation_actions,
+        "candidate_count": int(cleanup_plan.get("candidate_count") or 0),
+        "delete_bytes_dry_run": int(cleanup_plan.get("delete_bytes_dry_run") or 0),
+        "cleanup_dry_run_preserved": cleanup_plan.get("dry_run") is True,
+        "durable_evidence_delete_allowed": False,
+        "delete_apply_allowed": False,
+        "new_downloads_allowed": False if low_disk_pressure else True,
+        "rebuildable_cache_writes_allowed": False if low_disk_pressure else True,
+        "queue_mutation_allowed": False,
+        "status": "pass",
+        "blocking_reasons": [],
+    }
+    blocking_reasons = validate_cache_low_disk_degradation_receipt(receipt)
+    receipt["status"] = "pass" if not blocking_reasons else "blocked"
+    receipt["blocking_reasons"] = blocking_reasons
+    return receipt
+
+
+def validate_cache_low_disk_degradation_receipt(receipt: Mapping[str, Any]) -> list[str]:
+    """Validate low-disk degradation keeps caches safe and evidence durable."""
+
+    errors: list[str] = []
+    free_bytes = int(receipt.get("free_disk_bytes") or 0)
+    threshold_bytes = int(receipt.get("low_disk_threshold_bytes") or 0)
+    low_disk_pressure = free_bytes < threshold_bytes
+    if receipt.get("low_disk_pressure") is not low_disk_pressure:
+        errors.append("low_disk_pressure must match free disk threshold comparison")
+    if low_disk_pressure:
+        if receipt.get("degradation_mode") != "low_disk_degraded":
+            errors.append("low disk pressure must enter low_disk_degraded mode")
+        actions = receipt.get("degradation_actions") if isinstance(receipt.get("degradation_actions"), list) else []
+        for action in ("block_new_downloads", "block_rebuildable_cache_writes", "preserve_durable_evidence"):
+            if action not in actions:
+                errors.append(f"low disk degradation action {action} is required")
+        if receipt.get("new_downloads_allowed") is not False:
+            errors.append("low disk pressure must block new downloads")
+        if receipt.get("rebuildable_cache_writes_allowed") is not False:
+            errors.append("low disk pressure must block rebuildable cache writes")
+    if receipt.get("cleanup_dry_run_preserved") is not True:
+        errors.append("cache cleanup must remain dry-run under degradation evidence")
+    if receipt.get("durable_evidence_delete_allowed") is not False:
+        errors.append("durable evidence must never be deleted under low disk pressure")
+    if receipt.get("delete_apply_allowed") is not False:
+        errors.append("low disk degradation evidence must not apply deletes")
+    if receipt.get("queue_mutation_allowed") is not False:
+        errors.append("low disk degradation evidence must not mutate queues")
+    if receipt.get("status") == "pass" and receipt.get("blocking_reasons"):
+        errors.append("passing low disk degradation receipt must not have blocking_reasons")
+    return errors
+
+
 def build_launchd_plist_payload(
     *,
     label: str,
@@ -600,6 +678,12 @@ def build_lifecycle_cache_report(*, generated_at: str, cache_root: str | Path | 
         whitelist_roots=[root],
         dry_run=True,
     )
+    cache_degradation = build_cache_low_disk_degradation_receipt(
+        cleanup_plan=cleanup,
+        free_disk_bytes=128 * 1024 * 1024,
+        low_disk_threshold_bytes=512 * 1024 * 1024,
+        generated_at=generated_at,
+    )
     plist_payload = build_launchd_plist_payload(
         label=S2PMT04_LAUNCHD_LABEL,
         program_arguments=("/bin/zsh", "-lc", "ADP_LOCAL_DAILY_RUN_ENABLED=true python3 -m arxiv_daily_push local-runner daily"),
@@ -613,6 +697,8 @@ def build_lifecycle_cache_report(*, generated_at: str, cache_root: str | Path | 
         "shutdown_receipt": shutdown["status"] == "pass",
         "transaction_completion_signal": transaction_receipt["status"] == "pass"
         and validate_transaction_completion_receipt(transaction_receipt) == [],
+        "cache_low_disk_degradation": cache_degradation["status"] == "pass"
+        and validate_cache_low_disk_degradation_receipt(cache_degradation) == [],
         "cache_cleanup_safety": cleanup["cleanup_safe"] is True and cleanup["durable_evidence_delete_allowed"] is False,
         "launchd_plist_parseable": validate_launchd_plist_payload(plist_payload) == [],
         "no_production_side_effect": True,
@@ -633,6 +719,7 @@ def build_lifecycle_cache_report(*, generated_at: str, cache_root: str | Path | 
         "shutdown_receipt": shutdown,
         "transaction_completion_receipt": transaction_receipt,
         "cache_cleanup_plan": cleanup,
+        "cache_low_disk_degradation_receipt": cache_degradation,
         "launchd_plist_sha256": hashlib.sha256(plist_payload).hexdigest(),
         "report_hash": "",
         "production_side_effects_enabled": False,
@@ -690,6 +777,11 @@ def validate_lifecycle_cache_report(report: Mapping[str, Any]) -> list[str]:
         errors.append("transaction_completion_receipt is required")
     else:
         errors.extend(validate_transaction_completion_receipt(transaction_receipt))
+    cache_degradation = report.get("cache_low_disk_degradation_receipt")
+    if not isinstance(cache_degradation, Mapping):
+        errors.append("cache_low_disk_degradation_receipt is required")
+    else:
+        errors.extend(validate_cache_low_disk_degradation_receipt(cache_degradation))
     return errors
 
 
