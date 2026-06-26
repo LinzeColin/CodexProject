@@ -4,8 +4,8 @@
 
 - source_base_commit: `047b4094d56fb7b3162b24265501e985690296f0`
 - source_tree_hash: `8737d055c5c24cf2e160003744e375aba6f6145b`
-- source_snapshot_hash: `sha256:fc1d80898581b3738ef2c3be19127b7421809c9bc3450b5a0e69f442ed67b8ba`
-- snapshot_event_time: `2026-06-26T16:31:15+10:00`
+- source_snapshot_hash: `sha256:29c77e77a9c8f6cca51694ef5000d00586a14b7c090daf076df9548275c119a5`
+- snapshot_event_time: `2026-06-26T17:08:08+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -14,7 +14,7 @@
 - Project: `EEI`
 - Path: `EEI`
 - Product version: `0.1.0`
-- Phase/Gate: `D / TASK-T1308-A211-EVIDENCE-DRAWER-E2E-SEQUENCING`
+- Phase/Gate: `D / TASK-T1307-A209-BACKGROUND-HEARTBEAT-FRESHNESS-SYNC`
 - Models/Formulas/Parameters total: `12 / 12 / 90`
 - Active formulas/parameters: `11 / 90`
 - Machine checked formulas/parameters: `11 / 90`
@@ -35,9 +35,9 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `TASK-T1308-A211-EVIDENCE-DRAWER-E2E-SEQUENCING`
+- Release gate: `TASK-T1307-A209-BACKGROUND-HEARTBEAT-FRESHNESS-SYNC`
 - Next executable task: `TASK-T1301`
-- Pending/stale events: `113`
+- Pending/stale events: `114`
 - Tree-bound events: `0`
 - Commit-bound events: `21`
 - Legacy unbound events: `19`

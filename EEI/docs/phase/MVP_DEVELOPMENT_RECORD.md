@@ -1,5 +1,39 @@
 # MVP Development Record
 
+## 2026-06-26 - T1307/A209 isolated rerun heartbeat freshness sync to 95/288
+
+Status: LOCAL FOCUSED GENERATED; A209 STILL IN PROGRESS; RELEASE GATES STILL BLOCKED
+
+### Scope
+
+- Refreshed repository A209 background heartbeat from `/private/tmp/eei-a209-rerun-20260626-0918/` to `95/288` PASS windows, `0` failed, `193` remaining and `32.99%` completion.
+- Regenerated A209 finalization, A203 production API release preflight, external release-evidence bundle, external release operator intake packet, release-manager activation preflight and MVP release-gate preflight from the refreshed heartbeat.
+- No product API, database schema, scoring formula, model weight, frontend route, promotion bridge or public-release policy changed.
+
+### Current Evidence
+
+- Latest reflected checkpoint is window `95` ending `2026-06-26T07:03:24Z`.
+- A209 finalization remains `A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL`.
+- `downstream_release_gate_refresh_allowed=false`, `a209_evidence_ready_for_release_manager=false`, and `release_gate_closed_by_finalizer=false`.
+- Canonical 24h checkpoint evidence remains failed at `7/288`; the isolated rerun is background progress evidence until it reaches `288/288` zero-failure evidence and is explicitly promoted/finalized.
+
+### Validation
+
+- A209 heartbeat validation passed for `artifacts/tests/a209/t1307_operator_soak_background_progress.json`.
+- A209 evidence/finalization and dependent A203/A205/MVP preflight generation completed locally.
+- Follow-up validators, governance consistency checks, clean-room/release artifact refresh and full `make verify` are required before commit/push.
+
+### Non-Claims
+
+- This does not promote isolated `/private/tmp` evidence into canonical 24h release evidence.
+- This does not stop, restart or modify the live A209 operator process or watchdog.
+- This does not close A209, A202, A210, A026, A027, A204, A205, A203 release readiness or MVP v0.1 readiness.
+
+### Rollback
+
+- Revert the heartbeat/preflight artifact refresh and companion governance records, then regenerate release artifacts from the previous committed state.
+- Do not stop, restart, delete or promote live A209 checkpoint/PID/log files without explicit operator authorization.
+
 ## 2026-06-26 - T1308/A211 evidence drawer E2E sequencing repair
 
 Status: LOCAL TARGET VALIDATED; RELEASE GATES STILL BLOCKED; A209 CONTINUES AS BACKGROUND GATE

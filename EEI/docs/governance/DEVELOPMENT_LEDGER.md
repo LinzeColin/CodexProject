@@ -11,18 +11,47 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version: `0.1.0`
 - Product version status: `provisional`
 - Current phase: `D`
-- Current gate: `TASK-T1308-A211-EVIDENCE-DRAWER-E2E-SEQUENCING`
+- Current gate: `TASK-T1307-A209-BACKGROUND-HEARTBEAT-FRESHNESS-SYNC`
 - Confirmed iteration count: 39
 - Reconstructed development event count: 6
-- Current task: `TASK-T1308/A211 evidence drawer E2E sequencing repair`
+- Current task: `TASK-T1307/A209 background heartbeat freshness sync`
 - Current A209 point-in-time heartbeat: the clean 24h operator soak attempt launched at `2026-06-25T21:33:19Z` failed at checkpoint window `7/288`; `6` windows passed, `1` failed, latest checkpoint time is `2026-06-25T22:08:58Z`, `child_status=NO_OUTPUT`, `exit_status=1`, and stderr reports `page.evaluate: Target page, context or browser has been closed`. No `run_operator_soak` or `run_soak_smoke` process was found during the 2026-06-26 check. A209 remains `IN_PROGRESS` and has no release-ready 24h evidence.
-- Current isolated rerun: `/private/tmp/eei-a209-rerun-20260626-0918/` was started without overwriting the failed canonical checkpoint; operator PID `80478` and watchdog PID `80732` are recorded, first checkpoint window `1/288` PASS at `2026-06-25T23:04:42Z`, and the latest repository heartbeat refresh during this iteration observed `55/288` PASS windows, `0` failed, latest checkpoint time `2026-06-26T03:38:38Z`, and `19.10%` completion.
+- Current isolated rerun: `/private/tmp/eei-a209-rerun-20260626-0918/` was started without overwriting the failed canonical checkpoint; operator PID `80478` and watchdog PID `80732` are recorded, first checkpoint window `1/288` PASS at `2026-06-25T23:04:42Z`, and the latest repository heartbeat refresh during this iteration observed `95/288` PASS windows, `0` failed, latest checkpoint time `2026-06-26T07:03:24Z`, and `32.99%` completion.
 - Blockers: T1301/A202 is still `IN_PROGRESS`; the refreshed operator review packet is freshness-correct supporting review evidence only and does not create source-license review, passage-level human approval, production owner approval, legal release clearance, brand clearance, release-manager activation or final public relationship publication. T1307/A209 is still `IN_PROGRESS`; failed `7/288` evidence plus short repair probes are non-closure evidence only and the isolated rerun must reach `288/288` successful windows with zero failures before promotion/finalization can allow downstream release-gate refresh. A204/A205 release-manager activation preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED` until A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence pass. A026 still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%. The new T904 operator labeling packet is a source-bound worksheet with blank `OPERATOR_TO_LABEL` slots and is not production gold evidence. A210 still needs formal brand legal/market clearance or signed risk waiver. The T1303 external release operator intake packet now uses schema `eei-external-release-operator-intake-packet-v2`, lists exact submission targets under `artifacts/operator_inputs/`, and keeps `release_gate_closed_by_operator_packet=false`; it is a checklist/hash manifest, not clearance.
 - Frontend hardening: T1308/A211 now includes an evidence detail drawer with `role=dialog`, `aria-modal=true`, sibling `inert`/`aria-hidden`, Tab/Shift+Tab focus trapping, Escape/close handling and trigger focus restoration. This fixes review issue `A11Y-002` without changing release readiness, publication policy, model formulas, API schema or A209 state.
 - E2E sequencing repair: the A203/A211 production graph hydration regression now closes the A211 evidence drawer before graph lens switching, preserving modal behavior while preventing the drawer from intercepting subsequent lens clicks.
 - Strategic-signal panel: T504/A072 now exposes support, contradiction, alternative hypothesis, half-life/time-decay policy and `F-SS-001@balanced-v2` rule version in the Watchlist-first workspace. FUN-EXP-07 is `PARTIAL` because real strategic-signal ingestion, production API and human content review remain open under T803/T805/T1301/T1302.
 
 
+
+## EVENT-20260626-017 - T1307/A209 heartbeat freshness sync to 95/288
+
+- Timestamp: 2026-06-26T17:08:08+10:00
+- Fact level: EXTRACTED
+- Base commit: `9c0a5315dda16d86c381581ab53c8ad014f1516f`
+- Scope: refresh repository-local point-in-time A209 heartbeat and dependent A203/A205/MVP preflight artifacts from the live isolated rerun without promotion, restart or release finalization.
+- A209 background state: isolated rerun repository heartbeat refreshed to `95/288` PASS windows, `0` failed, latest checkpoint `2026-06-26T07:03:24Z`, `193` remaining and `32.99%` completion.
+- Downstream refresh: A209 finalization, A203 production API release, external release-evidence bundle, external release operator intake packet, release-manager activation and MVP release-gate artifacts regenerated; all release gates remain blocked.
+- Non-claims: this does not promote `/private/tmp` evidence, does not close A209 and does not close A202/A210/A026/A027/A204/A205/A203 release readiness or MVP v0.1 readiness.
+- Next step: keep the isolated A209 rerun running in the background, refresh progress evidence later, and only run promotion/final validation after `288/288` zero-failure evidence exists.
+
+## ITER-20260626-017 - A209 heartbeat freshness and release preflight sync
+
+- Date: 2026-06-26
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `9c0a5315dda16d86c381581ab53c8ad014f1516f`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1307`, `TASK-T1302`, `TASK-T1303`
+- Acceptance IDs: `A209`, `A203`, `A204`, `A205`
+- Goal: keep A209 background recovery evidence current while preserving fail-closed MVP release gates.
+- Files changed: A209 heartbeat/finalization artifacts, A203/A205 release preflights, changelog, handoff, MVP development record, delivery task record, version matrix, append-only event, parameter evidence narrative and regenerated release artifacts.
+- Model changes: none; no formula, weight, threshold, graph traversal, extraction model, API schema, database schema, frontend route or score publication rule changed.
+- Parameter changes: no active model parameter value changed; `operator-soak-heartbeat` profile version advances to `13` for the `95/288` point-in-time evidence snapshot.
+- Commands run: A209 heartbeat/evidence/finalization generators; A203/A205 release preflight generators; focused validators pending before commit.
+- Test results: A209 heartbeat reports `95/288` PASS, `0` failed and `32.99%` completion; finalization remains `A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL`; all release gates remain blocked.
+- Rollback: revert the heartbeat/preflight artifact refresh and companion governance records; regenerate release artifacts from the previous committed state and keep live A209 checkpoint/PID/log files untouched unless operator recovery is explicitly authorized.
 
 ## EVENT-20260626-016 - T1308/A211 evidence drawer E2E sequencing repair
 

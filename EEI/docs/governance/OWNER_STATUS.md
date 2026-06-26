@@ -78,7 +78,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `TASK-T1308-A211-EVIDENCE-DRAWER-E2E-SEQUENCING`
+- release_gate: `TASK-T1307-A209-BACKGROUND-HEARTBEAT-FRESHNESS-SYNC`
 
 ## 14. Evidence Freshness
 
@@ -86,8 +86,8 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - tree_bound_events: `0`
 - commit_bound_events: `21`
 - legacy_unbound_events: `19`
-- precommit_pending_events: `92`
-- pending_or_stale_events: `113`
+- precommit_pending_events: `93`
+- pending_or_stale_events: `114`
 
 ## 15. UNKNOWN
 
@@ -97,11 +97,11 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 - source_base_commit: `047b4094d56fb7b3162b24265501e985690296f0`
 - source_tree_hash: `8737d055c5c24cf2e160003744e375aba6f6145b`
-- source_snapshot_hash: `sha256:fc1d80898581b3738ef2c3be19127b7421809c9bc3450b5a0e69f442ed67b8ba`
-- snapshot_event_time: `2026-06-26T16:31:15+10:00`
+- source_snapshot_hash: `sha256:29c77e77a9c8f6cca51694ef5000d00586a14b7c090daf076df9548275c119a5`
+- snapshot_event_time: `2026-06-26T17:08:08+10:00`
 - generator_version: `4.0.0`
 - version: `0.1.0`
-- phase/gate: `D / TASK-T1308-A211-EVIDENCE-DRAWER-E2E-SEQUENCING`
+- phase/gate: `D / TASK-T1307-A209-BACKGROUND-HEARTBEAT-FRESHNESS-SYNC`
 
 ## 17. Next Unique Task
 
