@@ -135,6 +135,9 @@ class Stage1B1ReportTests(unittest.TestCase):
         )
 
         self.assertEqual(package["status"], "blocked")
+        self.assertEqual(package["claim_evidence_audit"]["critical_claim_count"], 0)
+        self.assertEqual(package["claim_evidence_audit"]["critical_claim_coverage_percent"], 0.0)
+        self.assertIn("critical claim count must be greater than 0", " ".join(package["blocking_reasons"]))
         self.assertIn("critical claim evidence coverage must be 100.0", " ".join(package["blocking_reasons"]))
 
     def test_b1_report_validation_rejects_unsafe_source_url(self) -> None:

@@ -9,7 +9,7 @@
 - status: `review_receipt_ready_no_closure_claim`
 - V7.2 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - created_at: `2026-06-26 19:51:01 Australia/Sydney`
-- refreshed_at: `2026-06-27 04:00:50 Australia/Sydney`
+- refreshed_at: `2026-06-27 04:21:48 Australia/Sydney`
 
 This receipt organizes the inherited V7.1 P1 evidence set for later independent review. It is not an independent reviewer signoff, does not close any P0/P1 finding, and does not unblock integrated production acceptance.
 
@@ -65,7 +65,7 @@ No P0/P1 closure, no independent final signoff, no S2PLT04 completion, no final 
 | `A-016` | `S2PMT03-LESSON-REVISION-A016` | lesson_id 只依赖 claim_id，不依赖内容/证据/模型版本 | `PHASE_S2PMT03_LESSON_REVISION_A016.md`, `ADP-S2PMT03-LESSON-REVISION-A016-20260626.json`, `test_lesson.py` | refreshed current evidence located; independent review required; closure not claimed | Verify V7.1 fix/test requirement: 任一证据或内容变更导致 revision 变化，stable key 不变 |
 | `A-017` | `S2PMT03` | SMTP delivery_id 不含正文/内容版本，且缺标准 Message-ID | `PHASE_S2PMT03_SMTP_IDENTITY_A017.md`, `ADP-S2PMT03-SMTP-IDENTITY-A017-20260626.json`, `test_smtp_delivery.py` | refreshed current evidence located; independent review required; closure not claimed | Verify V7.1 fix/test requirement: 同 revision 重试 Message-ID 不变；内容修订 revision 变化且需显式 supersede/resend |
 | `A-018` | `S2PAT05` | V7 要求展示 ROI，但旧邮件验证明确禁止 ROI | `PHASE_S2PAT05_ROI_DISCLOSURE_A018.md`, `ADP-S2PAT05-ROI-DISCLOSURE-A018-20260626.json`, `TRACEABILITY_MATRIX.csv` | refreshed current evidence located; sufficiency/gap review required; closure not claimed | Verify V7.1 fix/test requirement: V7.1 合法 ROI 可发布；无成本/概率/证据的收益声明被拒绝 |
-| `A-019` | `S2PMT01` | 零关键 Claim 时覆盖率被计算为 100% | `PHASE_S2PMT01_SECURITY_BOUNDARY.md`, `ADP-S2PMT01-SECURITY-BOUNDARY-20260626.json`, `test_security_boundary.py` | evidence surface located; independent review required; closure not claimed | Verify V7.1 fix/test requirement: 0 critical claim 不能通过关键证据门 |
+| `A-019` | `S2PMT01-ZERO-CRITICAL-CLAIM-A019` | 零关键 Claim 时覆盖率被计算为 100% | `PHASE_S2PMT01_ZERO_CRITICAL_CLAIM_A019.md`, `ADP-S2PMT01-ZERO-CRITICAL-CLAIM-A019-20260627.json`, `test_stage1_b1_report.py` | refreshed current evidence located; independent review required; closure not claimed | Verify V7.1 fix/test requirement: 0 critical claim 不能通过关键证据门 |
 | `A-020` | `S2PMT01` | 依赖、CI Action、SBOM 与权限最小化未形成供应链基线 | `PHASE_S2PMT01_SUPPLY_CHAIN_A020.md`, `ADP-S2PMT01-SUPPLY-CHAIN-A020-20260626.json`, `test_security_boundary.py` | refreshed current evidence located; sufficiency/gap review required; closure not claimed | Verify V7.1 fix/test requirement: CI 自动审计依赖和 Action 引用；高危漏洞按例外审批流程阻断 |
 | `A-021` | `S2PAT05` | Roadmap 依赖为空、Stop Code 混用自由文本，机器门不可可靠执行 | `PHASE_S2PAT05_ROADMAP_STOP_CODE_A021.md`, `ADP-S2PAT05-ROADMAP-STOP-CODE-A021-20260626.json`, `test_v7_2_roadmap_machine_gate.py` | refreshed current evidence located; sufficiency/gap review required; closure not claimed | Verify V7.1 fix/test requirement: 任务图无缺失引用/环；所有 stop condition 均在 registry |
 | `B-002` | `S2PMT04` | 缺少统一进程生命周期：STARTING/RUNNING/DRAINING/CHECKPOINTING/STOPPED | `PHASE_S2PMT04_LIFECYCLE_CACHE.md`, `ADP-S2PMT04-LIFECYCLE-CACHE-20260626.json`, `test_stage2_lifecycle_cache.py` | evidence surface located; independent review required; closure not claimed | Verify V7.1 fix/test requirement: 每个阶段注入 SIGTERM/SIGINT，重启后无丢失/重复不可控副作用 |
@@ -94,9 +94,9 @@ No P0/P1 closure, no independent final signoff, no S2PLT04 completion, no final 
 
 This refresh updates the P1 receipt to point completed P1 remediation rows at their dedicated phase records and manifests instead of older aggregate evidence surfaces. It does not close any P1 finding and does not provide independent review signoff.
 
-- refreshed_findings: `A-006`, `A-007`, `A-008`, `A-009`, `A-010`, `A-011`, `A-012`, `A-013`, `A-014`, `A-015`, `A-016`, `A-017`, `A-018`, `A-020`, `A-021`, `B-003`, `B-004`, `B-005`, `B-006`, `B-009`, `B-010`, `B-011`, `B-012`, `B-013`, `B-014`, `B-015`
-- refresh_manifest: `governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A015-20260627.json`
-- previous_refresh_manifest: `governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A010-A016-20260627.json`
+- refreshed_findings: `A-006`, `A-007`, `A-008`, `A-009`, `A-010`, `A-011`, `A-012`, `A-013`, `A-014`, `A-015`, `A-016`, `A-017`, `A-018`, `A-019`, `A-020`, `A-021`, `B-003`, `B-004`, `B-005`, `B-006`, `B-009`, `B-010`, `B-011`, `B-012`, `B-013`, `B-014`, `B-015`
+- refresh_manifest: `governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A019-20260627.json`
+- previous_refresh_manifest: `governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A015-20260627.json`
 - closure_claimed: `false`
 - independent_review_signoff_present: `false`
 
