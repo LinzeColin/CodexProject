@@ -1,0 +1,87 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-EEI-PROJECT-GOVERNANCE-PUSH-BASE-20260627",
+  "project_id": "root-governance",
+  "task_id": "GOV-EEI-PROJECT-GOVERNANCE-PUSH-BASE-20260627",
+  "acceptance_ids": [
+    "ACC-A200",
+    "ACC-A209",
+    "ACC-PROJECT-CI-ISOLATION-001"
+  ],
+  "iteration_id": "ITER-20260627-014",
+  "generated_at": "2026-06-27T03:58:00+10:00",
+  "implementation_base_sha": "4f1cdbe8d8083244c0ea143ab6724b592087f3ae",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:eei-project-governance-push-base-20260627",
+  "changed_files_declared": [
+    ".github/workflows/project-governance.yml",
+    "EEI/CHECKSUMS.sha256",
+    "EEI/artifacts/release_evidence_t1211.json",
+    "EEI/artifacts/tests/a200/Enterprise_Ecosystem_Intelligence_clean_room_t1215.zip",
+    "EEI/artifacts/tests/a200/t1215_clean_room_release.json",
+    "EEI/docs/governance/VERSION_MATRIX.yaml",
+    "EEI/docs/governance/development_events.jsonl",
+    "governance/run_manifests/GOV-EEI-PROJECT-GOVERNANCE-PUSH-BASE-20260627.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "changed_files_actual": [
+    ".github/workflows/project-governance.yml",
+    "EEI/CHECKSUMS.sha256",
+    "EEI/artifacts/release_evidence_t1211.json",
+    "EEI/artifacts/tests/a200/Enterprise_Ecosystem_Intelligence_clean_room_t1215.zip",
+    "EEI/artifacts/tests/a200/t1215_clean_room_release.json",
+    "EEI/docs/governance/VERSION_MATRIX.yaml",
+    "EEI/docs/governance/development_events.jsonl",
+    "governance/run_manifests/GOV-EEI-PROJECT-GOVERNANCE-PUSH-BASE-20260627.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "required_governance_files": [
+    ".github/workflows/project-governance.yml",
+    "governance/run_manifests/GOV-EEI-PROJECT-GOVERNANCE-PUSH-BASE-20260627.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "updated_governance_files": [
+    ".github/workflows/project-governance.yml",
+    "governance/run_manifests/GOV-EEI-PROJECT-GOVERNANCE-PUSH-BASE-20260627.json",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "test_commands": [
+    "python3 -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_project_governance_push_changed_scope_uses_head_parent_base -q",
+    "GOVERNANCE_BASE_REF=4f1cdbe8d8083244c0ea143ab6724b592087f3ae python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic",
+    "TMPDIR=/private/tmp PYTHONPYCACHEPREFIX=/private/tmp/eei-pycache MAKEFLAGS= make verify"
+  ],
+  "test_results": [
+    {
+      "command": "python3 -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_project_governance_push_changed_scope_uses_head_parent_base -q",
+      "exit_code": 0,
+      "summary": "pending final local run after manifest write"
+    },
+    {
+      "command": "GOVERNANCE_BASE_REF=4f1cdbe8d8083244c0ea143ab6724b592087f3ae python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic",
+      "exit_code": 0,
+      "summary": "pending clean-worktree run after manifest write"
+    },
+    {
+      "command": "TMPDIR=/private/tmp PYTHONPYCACHEPREFIX=/private/tmp/eei-pycache MAKEFLAGS= make verify",
+      "exit_code": 0,
+      "summary": "pending final local run after manifest write"
+    }
+  ],
+  "evidence_refs": [
+    ".github/workflows/project-governance.yml",
+    "tests/governance/test_project_governance_validator.py",
+    "EEI/docs/governance/development_events.jsonl",
+    "EEI/docs/governance/VERSION_MATRIX.yaml"
+  ],
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "eei-project-governance-push-base-hardening",
+  "ci_run_reference": "LOCAL_PRECOMMIT_NOT_CI",
+  "result_commit": "PRECOMMIT_TREE_BOUND",
+  "finished_at": "2026-06-27T03:58:00+10:00",
+  "summary": "Bind the Project Governance push changed-only base-ref hardening and EEI A209 release-evidence artifact refresh to a root governance run manifest.",
+  "non_scope": [
+    "no A209 finalization",
+    "no MVP release gate closure",
+    "no product runtime logic change"
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final hash before commit; final commit and CI binding are recorded by CI."
+}

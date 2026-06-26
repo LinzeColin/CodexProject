@@ -59,7 +59,12 @@ jobs:
         if: github.event_name == 'pull_request' || github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'changed-only')
         env:
           GOVERNANCE_BASE_REF: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before || inputs.base_ref || '' }}
-        run: python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            GOVERNANCE_BASE_REF="$(git rev-parse HEAD^)"
+            export GOVERNANCE_BASE_REF
+          fi
+          python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic
       - name: Validate information quality
         if: github.event_name == 'workflow_dispatch' && inputs.scope == 'changed-only'
         env:

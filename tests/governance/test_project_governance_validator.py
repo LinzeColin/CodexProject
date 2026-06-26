@@ -546,6 +546,13 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         sync.root_sync_requirements(validation, ["governance/projects.yaml"], covered)
         self.assertFalse(validation.errors)
 
+    def test_project_governance_push_changed_scope_uses_head_parent_base(self) -> None:
+        workflow = (ROOT / ".github" / "workflows" / "project-governance.yml").read_text(encoding="utf-8")
+
+        self.assertIn('if [ "${{ github.event_name }}" = "push" ]; then', workflow)
+        self.assertIn("git rev-parse HEAD^", workflow)
+        self.assertIn("python3 scripts/validate_project_governance.py --changed-only --enforce-sync --semantic", workflow)
+
     def test_review8_manifest_only_root_change_does_not_require_test_marker(self) -> None:
         sync = load_sync_module()
         changed = ["governance/run_manifests/GOV-REVIEW8-TEST.json"]
