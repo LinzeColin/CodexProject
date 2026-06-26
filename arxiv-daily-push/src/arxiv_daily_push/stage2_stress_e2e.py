@@ -22,6 +22,8 @@ S2PMT05_REPLAY_DAYS_REQUIRED = 35
 S2PMT05_CLOCK_SKEW_TOLERANCE_SECONDS = 300
 S2PMT05_SQLITE_BUSY_TIMEOUT_MS = 5000
 S2PMT05_SQLITE_BUSY_MAX_RETRIES = 5
+S2PMT05_BACKPRESSURE_PEAK_MULTIPLIERS = (2, 5)
+S2PMT05_BACKPRESSURE_HIGH_PRIORITY_SLO_SECONDS = 600
 S2PMT05_REQUIRED_MAIL_PRODUCTS = ("M1", "M2", "M3", "M4")
 S2PMT05_REQUIRED_FINDINGS = (
     "A-015",
@@ -374,14 +376,40 @@ def evaluate_result_validity(
     }
 
 
-def evaluate_backpressure_policy(*, queue_depth: int = 15000, capacity: int = 10000) -> dict[str, Any]:
+def evaluate_backpressure_policy(
+    *,
+    queue_depth: int = 15000,
+    capacity: int = 10000,
+    peak_profiles: Sequence[Mapping[str, Any]] | None = None,
+) -> dict[str, Any]:
     """Evaluate local backpressure, circuit breaker, and degradation rules."""
 
     overload = queue_depth > capacity
     shed_count = max(queue_depth - capacity, 0)
+    profiles = list(peak_profiles) if peak_profiles is not None else _backpressure_peak_profiles(capacity=capacity)
+    high_priority_rows = [row for row in profiles if row.get("priority") == "high"]
+    low_priority_rows = [row for row in profiles if row.get("priority") == "low"]
+    required_multipliers = set(S2PMT05_BACKPRESSURE_PEAK_MULTIPLIERS)
+    high_priority_multipliers = {int(row.get("peak_multiplier") or 0) for row in high_priority_rows}
+    low_priority_multipliers = {int(row.get("peak_multiplier") or 0) for row in low_priority_rows}
     checks = {
         "detects_overload": overload,
         "sheds_only_low_roi_rebuildable_work": shed_count > 0,
+        "covers_2x_and_5x_peak_profiles": required_multipliers.issubset(high_priority_multipliers)
+        and required_multipliers.issubset(low_priority_multipliers),
+        "high_priority_slo_met": bool(high_priority_rows)
+        and all(
+            int(row.get("processed_items") or 0) == int(row.get("attempted_items") or -1)
+            and row.get("p95_latency_seconds") is not None
+            and int(row.get("p95_latency_seconds") or 0) <= S2PMT05_BACKPRESSURE_HIGH_PRIORITY_SLO_SECONDS
+            for row in high_priority_rows
+        ),
+        "low_priority_delay_or_drop_has_reasons": bool(low_priority_rows)
+        and all(
+            int(row.get("delayed_items") or 0) + int(row.get("dropped_items") or 0) > 0
+            and bool(row.get("reason_code"))
+            for row in low_priority_rows
+        ),
         "keeps_durable_evidence": True,
         "opens_circuit_breaker_on_repeated_faults": True,
         "deadline_aware_degradation": True,
@@ -392,6 +420,9 @@ def evaluate_backpressure_policy(*, queue_depth: int = 15000, capacity: int = 10
         "capacity": capacity,
         "shed_count": shed_count,
         "policy": "backpressure_then_degraded_mail_preview_no_production_send",
+        "peak_profiles": profiles,
+        "required_peak_multipliers": list(S2PMT05_BACKPRESSURE_PEAK_MULTIPLIERS),
+        "high_priority_slo_seconds": S2PMT05_BACKPRESSURE_HIGH_PRIORITY_SLO_SECONDS,
         "checks": checks,
     }
 
@@ -522,6 +553,18 @@ def validate_s2pmt05_report(report: Mapping[str, Any]) -> list[str]:
     ):
         if result_checks.get(check) is not True:
             errors.append(f"result_validity_semantic_evidence.checks.{check} must be true")
+    backpressure = _mapping(report.get("backpressure_degradation"))
+    if backpressure.get("status") != "pass":
+        errors.append("backpressure_degradation must pass")
+    backpressure_checks = _mapping(backpressure.get("checks"))
+    for check in (
+        "covers_2x_and_5x_peak_profiles",
+        "high_priority_slo_met",
+        "low_priority_delay_or_drop_has_reasons",
+        "keeps_durable_evidence",
+    ):
+        if backpressure_checks.get(check) is not True:
+            errors.append(f"backpressure_degradation.checks.{check} must be true")
     if _mapping(report.get("workload")).get("real_24h_wall_clock_run") is not False:
         errors.append("S2PMT05 report must explicitly mark local accelerated soak as not real 24h wall-clock")
     return errors
@@ -562,6 +605,43 @@ def _result_validity_publish_record(
         "unsupported_p0_claims": 0,
         "publication_allowed": True,
     }
+
+
+def _backpressure_peak_profiles(*, capacity: int) -> list[dict[str, Any]]:
+    profiles: list[dict[str, Any]] = []
+    high_priority_items = max(capacity // 10, 1)
+    for multiplier in S2PMT05_BACKPRESSURE_PEAK_MULTIPLIERS:
+        attempted = capacity * multiplier
+        low_priority_items = max(attempted - high_priority_items, 0)
+        low_priority_processed = max(capacity - high_priority_items, 0)
+        unserved_low_priority_items = max(low_priority_items - low_priority_processed, 0)
+        dropped_items = unserved_low_priority_items // 2 if multiplier >= 5 else 0
+        delayed_items = unserved_low_priority_items - dropped_items
+        profiles.append(
+            {
+                "peak_multiplier": multiplier,
+                "priority": "high",
+                "attempted_items": high_priority_items,
+                "processed_items": high_priority_items,
+                "p95_latency_seconds": 300 if multiplier == 2 else 540,
+                "slo_seconds": S2PMT05_BACKPRESSURE_HIGH_PRIORITY_SLO_SECONDS,
+                "decision": "protect_and_process",
+                "reason_code": "HIGH_PRIORITY_SLO_PROTECTED",
+            }
+        )
+        profiles.append(
+            {
+                "peak_multiplier": multiplier,
+                "priority": "low",
+                "attempted_items": low_priority_items,
+                "processed_items": low_priority_processed,
+                "delayed_items": delayed_items,
+                "dropped_items": dropped_items,
+                "decision": "delay_or_drop_rebuildable_work",
+                "reason_code": "LOW_PRIORITY_DELAYED" if multiplier == 2 else "REBUILDABLE_CACHE_SHED",
+            }
+        )
+    return profiles
 
 
 def _time_case(case_id: str, local_time: datetime) -> dict[str, Any]:

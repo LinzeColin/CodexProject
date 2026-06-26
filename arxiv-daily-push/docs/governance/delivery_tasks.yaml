@@ -2190,6 +2190,24 @@ tasks:
     completed_version: "0.23.1"
     unknown_task_ids: []
 
+  - task_id: "S2PMT05-BACKPRESSURE-B014"
+    phase: "S2PM"
+    objective: "Remediate inherited B-014 locally by adding peak-load priority SLO and explicit delay/drop reason-code gates to S2PMT05 backpressure evidence."
+    scope: "Backpressure peak fixture, 2x/5x peak profiles, high-priority SLO seconds, low-priority delay/drop reason codes, durable evidence preservation, focused tests, governance registry refresh, phase record, and run manifest."
+    non_scope: "No real 24h production soak, no scheduler install, no launchd bootstrap, no real SMTP send, no Release, no production restore, no public schema change, no DB migration, no production queue mutation, no ranking change, no source adapter change, no live source fetch, no workflow change, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no inherited P0/P1 closure claim before independent review, and no integrated production acceptance."
+    status: "completed"
+    dependencies: ["S2PMT05", "S2PMT07", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py", "arxiv-daily-push/tests/test_stage2_stress_e2e.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_BACKPRESSURE_B014.md", "governance/run_manifests/ADP-S2PMT05-BACKPRESSURE-B014-20260627.json"]
+    acceptance_ids: ["ACC-S2PMT05-STRESS-E2E"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b014_compile PYTHONPATH=arxiv-daily-push/src python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py arxiv-daily-push/tests/test_stage2_stress_e2e.py scripts/lean_governance.py", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b014_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_stress_e2e.py -q"]
+    test_results: ["py_compile PASS", "focused S2PMT05 tests: 12 OK", "source/board user-center root gate regression: 14 OK", "full arxiv-daily-push unittest: 539 OK", "V7.2 validator: PASS", "ADP project governance: 0 errors / 0 warnings", "changed-only governance semantic: 0 errors / 0 warnings", "governance sync validator: 0 errors / 0 warnings", "lean check-render: drift_count 0 reference_issue_count 0", "YAML/JSON/JSONL/CSV parse: OK", "git diff --check: PASS", "production-side-effect forbidden scan: OK"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_BACKPRESSURE_B014.md", "governance/run_manifests/ADP-S2PMT05-BACKPRESSURE-B014-20260627.json", "arxiv-daily-push/tests/test_stage2_stress_e2e.py"]
+    risk: "B-014 local evidence can be misread as real peak-load production readiness, live backpressure SLO acceptance, inherited P0/P1 closure, S2PMT07 pass, or integrated production acceptance; independent review plus S2PMT07 still control production acceptance."
+    rollback: "Revert S2PMT05 backpressure code/tests, required gate and semantic registry refresh, phase record, manifest, traceability/delivery/event records, generated status refresh, and this task entry; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
+
 
   - task_id: "S2PMT06"
     phase: "S2PM"

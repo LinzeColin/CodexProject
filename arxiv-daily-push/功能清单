@@ -12,7 +12,7 @@
 - blockers: `none`
 - next_gate: `S2PC-GATE-V7-2-REVALIDATION`
 - next_unique_task: `S2PCT02 Science main-journal metadata-only no-send shadow evidence (planned)`
-- evidence_ref_count: `19`
+- evidence_ref_count: `20`
 - roadmap_test_command_count: `10`
 - roadmap_gate_count: `5`
 - evidence_status: `EXTRACTED`
@@ -89,4 +89,5 @@
 | EVID-ADP-S2PCT01-NATURE | manifest | governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json | EXTRACTED |
 | EVID-ADP-S2PMT04-B005 | manifest | governance/run_manifests/ADP-S2PMT04-CACHE-LOW-DISK-B005-20260626.json | EXTRACTED |
 | EVID-ADP-S2PMT05-B013 | manifest | governance/run_manifests/ADP-S2PMT05-RESULT-VALIDITY-B013-20260626.json | EXTRACTED |
+| EVID-ADP-S2PMT05-B014 | manifest | governance/run_manifests/ADP-S2PMT05-BACKPRESSURE-B014-20260627.json | EXTRACTED |
 | EVID-REVIEW9-S5PBT05-MANIFEST | manifest | governance/run_manifests/GOV-REVIEW9-S5PBT05-ARXIV-DAILY-PUSH-CANONICAL-RENDER-20260624.json | PROPOSED |

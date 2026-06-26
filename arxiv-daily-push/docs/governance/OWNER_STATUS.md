@@ -39,7 +39,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (890/890 active parameters, 108/108 active formulas)
+- implementation_congruence: `VERIFIED` (892/892 active parameters, 108/108 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `VERIFIED`
 - empirical_validation: `VERIFIED`
@@ -71,23 +71,23 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - model_count: `106`
 - total_formulas: `108`
 - active_formulas: `108`
-- total_parameters: `907`
-- active_parameters: `890`
+- total_parameters: `909`
+- active_parameters: `892`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PMT05_B013_RESULT_VALIDITY_LOCAL_VALIDATION_NO_PRODUCTION`
+- release_gate: `S2PMT05_B014_BACKPRESSURE_PRIORITY_LOCAL_VALIDATION_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `0`
 - commit_bound_events: `4`
-- legacy_unbound_events: `131`
+- legacy_unbound_events: `132`
 - precommit_pending_events: `40`
-- pending_or_stale_events: `170`
+- pending_or_stale_events: `171`
 
 ## 15. UNKNOWN
 
@@ -97,11 +97,11 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:a98bece82a65f98bcc2618e0820fafee145164ee89f85dee8efef1ed9b211d4f`
+- source_snapshot_hash: `sha256:36056e03a357373bc6abd481047a5691d8c733f1bce07aab874408d73f198ca8`
 - snapshot_event_time: `2026-06-27T00:30:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PM / S2PMT05_B013_RESULT_VALIDITY_LOCAL_VALIDATION_NO_PRODUCTION`
+- phase/gate: `S2PM / S2PMT05_B014_BACKPRESSURE_PRIORITY_LOCAL_VALIDATION_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 

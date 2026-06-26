@@ -7,7 +7,7 @@ machine_summary:
 
 - model_count: 106
 - formula_count: 108
-- parameter_count: 907
+- parameter_count: 909
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -902,8 +902,9 @@ Uncovered planned scenarios:
 ## S2PMT05 Stress Fault Time And E2E
 
 - `MOD-ADP-098` / `FORM-ADP-100` define local pressure, fault, time, and E2E hardening evidence for S2PMT05.
-- Passing S2PMT05 local validation requires deterministic load/stress/spike profiles, accelerated local 24h soak coverage, dual scheduler race protection, SMTP crash-window handling, ENOSPC/read-only/SQLITE_BUSY/corrupt-artifact fault injection, Australia/Sydney DST and clock-skew policy, 35-day 3+1/weekly/monthly/review/action/ROI count conservation, semantic/evidence-bound non-template result validity, backpressure/degradation, deterministic isolation, required audit finding coverage, and all production side-effect flags false.
+- Passing S2PMT05 local validation requires deterministic load/stress/spike profiles, accelerated local 24h soak coverage, dual scheduler race protection, SMTP crash-window handling, ENOSPC/read-only/SQLITE_BUSY/corrupt-artifact fault injection, Australia/Sydney DST and clock-skew policy, 35-day 3+1/weekly/monthly/review/action/ROI count conservation, semantic/evidence-bound non-template result validity, 2x/5x priority-aware backpressure with high-priority SLO and low-priority delay/drop reason codes, deterministic isolation, required audit finding coverage, and all production side-effect flags false.
 - B-013 result validity requires semantic alignment scores, claim-ledger refs, evidence refs, specific mechanism/action summaries, non-template output variance, and unsupported P0 claim negative controls that block publication.
+- B-014 backpressure requires 2x and 5x peak profiles, high-priority work within the configured SLO, low-priority delay/drop reason codes, durable evidence preservation, and rebuildable-only shedding.
 - S2PMT05 local evidence does not execute a real 24h wall-clock production soak, install or enable a scheduler, send SMTP, upload Release assets, run production restore, migrate DB/public schema, mutate production queues, change source adapters or ranking, change V7.1/V7.2 contracts, close inherited P0/P1 before S2PMT07, or claim integrated production acceptance.
 
 ## S2PMT06 Owner UX And Safe Controls

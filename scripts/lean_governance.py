@@ -676,6 +676,18 @@ def render_model_parameters(project_facts: dict[str, Any], roadmap: dict[str, An
                 "| B-013 判定 | 结果不能只通过结构存在性；必须同时具备语义对齐、Claim Ledger 引用、证据引用、机制/行动具体性、非模板输出差异和 unsupported P0 负例阻断 |",
                 "| 禁止动作 | 不发送 SMTP、不安装/启用 scheduler、不上传 Release、不改 schema/DB/queue/source/ranking、不关闭 P0/P1 |",
                 "| 证据入口 | [PHASE_S2PMT05_RESULT_VALIDITY_B013.md](docs/phase_records/PHASE_S2PMT05_RESULT_VALIDITY_B013.md)；[ADP-S2PMT05-RESULT-VALIDITY-B013-20260626.json](../governance/run_manifests/ADP-S2PMT05-RESULT-VALIDITY-B013-20260626.json) |",
+                "",
+                "## S2PMT05 本地背压优先级门",
+                "",
+                "| 项目 | 当前口径 |",
+                "|---|---|",
+                "| 模型 | `MOD-ADP-098` / `adp-s2pmt05-stress-fault-time-e2e-v1` |",
+                "| 公式 | `FORM-ADP-100` |",
+                "| 参数 | `PARAM-ADP-908` / `S2PMT05_BACKPRESSURE_PEAK_MULTIPLIERS`; `PARAM-ADP-909` / `S2PMT05_BACKPRESSURE_HIGH_PRIORITY_SLO_SECONDS` |",
+                "| 新增门 | `covers_2x_and_5x_peak_profiles`; `high_priority_slo_met`; `low_priority_delay_or_drop_has_reasons` |",
+                "| B-014 判定 | 背压证据必须覆盖 2x 和 5x 峰值；高优先级工作必须在 600 秒 SLO 内完成；低优先级延后或丢弃必须有明确原因码；durable evidence 必须保留 |",
+                "| 禁止动作 | 不发送 SMTP、不安装/启用 scheduler、不上传 Release、不改 schema/DB/queue/source/ranking、不关闭 P0/P1 |",
+                "| 证据入口 | [PHASE_S2PMT05_BACKPRESSURE_B014.md](docs/phase_records/PHASE_S2PMT05_BACKPRESSURE_B014.md)；[ADP-S2PMT05-BACKPRESSURE-B014-20260627.json](../governance/run_manifests/ADP-S2PMT05-BACKPRESSURE-B014-20260627.json) |",
             ]
         )
     lines.extend(["", "## 模型"])

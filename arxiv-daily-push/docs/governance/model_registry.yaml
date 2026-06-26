@@ -5168,6 +5168,8 @@ models:
       - "PARAM-ADP-814"
       - "PARAM-ADP-815"
       - "PARAM-ADP-816"
+      - "PARAM-ADP-908"
+      - "PARAM-ADP-909"
     inputs:
       - "deterministic workload profile"
       - "local dual scheduler trigger fixture"
@@ -5176,7 +5178,7 @@ models:
       - "Australia/Sydney DST and clock-skew cases"
       - "35-day local E2E fixture"
       - "semantic/evidence/non-template result validity fixture"
-      - "backpressure queue-depth fixture"
+      - "backpressure queue-depth and 2x/5x peak priority fixture"
     outputs:
       - "load stress spike soak evaluation"
       - "dual scheduler race evidence"
@@ -5185,7 +5187,7 @@ models:
       - "DST and clock-skew policy evidence"
       - "35-day E2E flow evidence"
       - "result validity semantic evidence"
-      - "backpressure degradation evidence"
+      - "backpressure degradation and priority SLO evidence"
       - "no production side-effect gate"
     code_refs:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py"
@@ -5197,8 +5199,10 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PMT05-STRESS-E2E-20260626.json"
       - "governance/run_manifests/ADP-S2PMT05-RESULT-VALIDITY-B013-20260626.json"
+      - "governance/run_manifests/ADP-S2PMT05-BACKPRESSURE-B014-20260627.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_STRESS_E2E.md"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_RESULT_VALIDITY_B013.md"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_BACKPRESSURE_B014.md"
 
   -
     model_id: "MOD-ADP-099"
