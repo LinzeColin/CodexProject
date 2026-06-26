@@ -3279,3 +3279,19 @@ None for this new project baseline.
 - Rollback: Revert S2PMT01 supply-chain gate code/tests, generator repair, phase record, manifest, traceability/delivery/event records, generated status refresh, and this ledger entry; no runtime production state was changed.
 - Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PMT01_SUPPLY_CHAIN_A020.md`; `governance/run_manifests/ADP-S2PMT01-SUPPLY-CHAIN-A020-20260626.json`; `arxiv-daily-push/src/arxiv_daily_push/security_boundary.py`; `arxiv-daily-push/tests/test_security_boundary.py`.
 - Next step: Continue inherited P0/P1 remediation or independent review only under V7.2 no-production boundaries.
+
+### `ITER-20260626-ADP-S2PMT03-WATCHDOG-RECOVERY-B003`
+
+- Timestamp: `2026-06-26T21:52:49+10:00`
+- Actor: Codex
+- Fact level: EXTRACTED from S2PMT03 lease/fencing implementation, focused watchdog recovery tests, V7.2 no-production boundaries, and B-003 inherited finding review.
+- Status: completed local validation; no production side effects.
+- Task IDs: `S2PMT03-WATCHDOG-RECOVERY-B003`, `S2PMT03`, `B-003`; acceptance `ACC-S2PMT03-LEASE-FENCING-OUTBOX` remains local evidence only.
+- Goal: Remediate inherited P1 finding `B-003` locally by proving watchdog stale-lock recovery is blocked for live owners, blocked for unexpired leases, and allowed for expired dead-owner leases only through row-version and fencing-token claim semantics.
+- Decisions: `decide_watchdog_stale_lock_recovery` is a pure local decision helper. It does not kill slow workers, install or change a real watchdog/launchd service, or mutate production queues. Safe takeover must reuse `claim_leased_item` and therefore inherits the same row-version and fencing-token semantics as normal claims.
+- Validation: py_compile PASS; focused S2PMT03 lease-fencing tests 9 OK; source/board user-center root gate regression 14 OK; full arxiv-daily-push unittest 526 OK; V7.2 validator PASS; ADP project governance 0 errors / 0 warnings; changed-only governance semantic 0 errors / 0 warnings; governance sync validator 0 errors / 0 warnings; lean check-render drift_count 0 reference_issue_count 0; JSON/JSONL/CSV/YAML parse OK; git diff --check PASS. Full semantic extractor was not completed after local interrupt at more than 60 seconds.
+- Boundaries: This run does not enable SMTP, install or enable scheduler, upload Release assets, change a real watchdog or launchd service, change public schema or DB, mutate production queues, change source adapters or ranking, edit CURRENT or V7.1/V7.2 contracts, close inherited P0/P1, enable DAILY_OPERATION, or claim integrated production acceptance.
+- Remaining risks: This is local evidence only. Inherited P0=8/P1=37, S2PLT04, final bundle, and S2PMT07 independent review remain blocked.
+- Rollback: Revert S2PMT03 watchdog recovery code/tests, phase record, manifest, traceability/delivery/event records, generated status refresh, and this ledger entry; no runtime production state was changed.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_WATCHDOG_RECOVERY_B003.md`; `governance/run_manifests/ADP-S2PMT03-WATCHDOG-RECOVERY-B003-20260626.json`; `arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py`; `arxiv-daily-push/tests/test_stage2_lease_fencing.py`.
+- Next step: Continue inherited P0/P1 remediation or independent review only under V7.2 no-production boundaries.

@@ -635,6 +635,7 @@ def render_model_parameters(project_facts: dict[str, Any], roadmap: dict[str, An
                 "|---|---|",
                 "| 模型名称 | ROI 候选排序 |",
                 "| 当前用户中心分数来源 | 历史账本分数读取 [CONTENT_LEDGER.csv](docs/owner/CONTENT_LEDGER.csv) 的 `current_score`；后续每日运行新候选使用 `adp-roi-semantic-rubric-v2` 生成六因子明细 |",
+                "| 数据源与板块健康 | [数据源与板块健康](用户中心/数据源与板块健康.md) 是来源、板块、生产启用状态和影子来源边界的用户可读入口；来源或板块新增、删除、重命名、启用、停用时必须同步该页和相关测试 |",
                 "| 实现入口 | [global_scan.py](src/arxiv_daily_push/global_scan.py) 的 `ROI_COMPONENT_WEIGHTS`、`ROI_SEMANTIC_RUBRIC`、`RUBRIC_KEYWORD_HIT_WEIGHT`、`_roi_signals`、`_candidate_from_source_item` |",
                 "| 公式 | `roi_total_score = 相关性信号 x 15 + 学习价值信号 x 20 + 经济转化率信号 x 25 + ROI信号 x 20 + 跨学科价值信号 x 10 + 可解释性信号 x 10`；用户可读表头写成 15% / 20% / 25% / 10%，表示该因子占总分权重 |",
                 "| 因子权重 | 相关性 15%；学习价值 20%；经济转化率 25%；ROI 20%；跨学科价值 10%；可解释性 10%；总和 100% |",

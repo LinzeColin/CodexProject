@@ -5033,7 +5033,7 @@ models:
   -
     model_id: "MOD-ADP-096"
     name: "S2PMT03 local lease fencing and transactional outbox model"
-    purpose: "Validate local S2PMT03 row_version compare-and-swap, lease expiry, fencing token, state-history consistency, idempotent transactional outbox, SMTP accept crash-window handling, M4 cycle watermark, and no production side effects under V7.2."
+    purpose: "Validate local S2PMT03 row_version compare-and-swap, lease expiry, fencing token, state-history consistency, idempotent transactional outbox, watchdog stale-lock recovery safety, SMTP accept crash-window handling, M4 cycle watermark, and no production side effects under V7.2."
     owner: "arxiv-daily-push"
     status: "active"
     assumption_ids:
@@ -5056,12 +5056,14 @@ models:
       - "local work item lease rows"
       - "RunRecord state rows"
       - "local outbox messages"
+      - "local watchdog stale-lock recovery decisions"
       - "SMTP accept crash-window fixture"
       - "M1-M3 terminal mail watermarks"
     outputs:
       - "lease claim report"
       - "fenced state transition report"
       - "transactional outbox identity"
+      - "watchdog stale-lock recovery decision evidence"
       - "SMTP accept crash-window reconciliation report"
       - "M4 cycle watermark report"
       - "no production side-effect gate"
@@ -5077,7 +5079,9 @@ models:
       - "arxiv-daily-push/tests/test_smtp_delivery.py"
     evidence_refs:
       - "governance/run_manifests/ADP-S2PMT03-LEASE-FENCING-20260626.json"
+      - "governance/run_manifests/ADP-S2PMT03-WATCHDOG-RECOVERY-B003-20260626.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_LEASE_FENCING.md"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_WATCHDOG_RECOVERY_B003.md"
   -
     model_id: "MOD-ADP-097"
     name: "S2PMT04 local lifecycle and cache-cleanup model"

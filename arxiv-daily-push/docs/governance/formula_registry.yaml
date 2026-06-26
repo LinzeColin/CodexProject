@@ -5396,7 +5396,7 @@ formulas:
     assumption_ids:
       - "ASM-ADP-035"
     status: "active"
-    expression: "S2PMT03 local lease fencing and transactional outbox evidence passes only when work claims use row_version compare-and-swap, unexpired foreign leases block competing owners, stale fencing tokens cannot write state, state_history from_state and current_state remain consistent, outbox mail identity is idempotent by cycle_id/product/recipient/content_revision, SMTP accepted-before-local-commit crash windows block resend decisions without a durable provider ref, M4 watermarks are scoped to one cycle_id, exactly-once is not claimed, and all production SMTP, scheduler, Release, schema, queue, DB, and restore side-effect flags remain false."
+    expression: "S2PMT03 local lease fencing and transactional outbox evidence passes only when work claims use row_version compare-and-swap, unexpired foreign leases block competing owners, stale fencing tokens cannot write state, state_history from_state and current_state remain consistent, outbox mail identity is idempotent by cycle_id/product/recipient/content_revision, watchdog stale-lock recovery blocks live-owner takeover and only recovers expired dead-owner locks through the same row-version and fencing-token claim path, SMTP accepted-before-local-commit crash windows block resend decisions without a durable provider ref, M4 watermarks are scoped to one cycle_id, exactly-once is not claimed, and all production SMTP, scheduler, Release, schema, queue, DB, and restore side-effect flags remain false."
     variables:
       -
         name: "lease_row"
@@ -5418,9 +5418,14 @@ formulas:
         data_type: "object"
         unit: "cycle-scoped mail watermark"
         input_domain: "M1-M3 terminal states keyed to one cycle_id"
+      -
+        name: "watchdog_lock"
+        data_type: "object"
+        unit: "local stale-lock recovery decision"
+        input_domain: "lease_owner, live_owner_ids, lease_until_ms, row_version, and fencing_token"
     constraints: "S2PMT03 is local hardening evidence only. It must not send SMTP, install a scheduler, upload Release assets, migrate DB/public schema, mutate production queues, change source adapters or ranking, touch V7.1/V7.2 contract files, or claim exactly-once or integrated production acceptance."
-    missing_policy: "Missing row_version, missing owner_id, too-short lease, unexpired foreign lease, stale fencing token, invalid transition, state-history drift, invalid outbox state, missing provider_accept_ref after SMTP accept crash, cross-cycle terminal mail, missing M1-M3 terminal state, or any production side-effect flag blocks the report."
-    output_range: "S2PMT03 local report with pass or blocked status, lease and fencing action evidence, transactional outbox identity, SMTP accept crash-window evidence, M4 cycle watermark state, at-least-once semantics, exactly_once_claimed false, and all production side-effect flags false."
+    missing_policy: "Missing row_version, missing owner_id, too-short lease, unexpired foreign lease, live-owner watchdog takeover attempt, unexpired watchdog recovery attempt, stale fencing token, invalid transition, state-history drift, invalid outbox state, missing provider_accept_ref after SMTP accept crash, cross-cycle terminal mail, missing M1-M3 terminal state, or any production side-effect flag blocks the report."
+    output_range: "S2PMT03 local report with pass or blocked status, lease and fencing action evidence, transactional outbox identity, watchdog stale-lock recovery decision evidence, SMTP accept crash-window evidence, M4 cycle watermark state, at-least-once semantics, exactly_once_claimed false, and all production side-effect flags false."
     code_refs:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py"
       - "arxiv-daily-push/src/arxiv_daily_push/state_machine.py"
@@ -5431,7 +5436,9 @@ formulas:
       - "arxiv-daily-push/tests/test_smtp_delivery.py"
     evidence_refs:
       - "governance/run_manifests/ADP-S2PMT03-LEASE-FENCING-20260626.json"
+      - "governance/run_manifests/ADP-S2PMT03-WATCHDOG-RECOVERY-B003-20260626.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_LEASE_FENCING.md"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_WATCHDOG_RECOVERY_B003.md"
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py::S2PMT03_LEASE_FENCING_MODEL_ID"
@@ -5448,19 +5455,20 @@ formulas:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py::apply_fenced_state_transition"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py::build_outbox_message"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py::claim_outbox_message"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py::decide_watchdog_stale_lock_recovery"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py::reconcile_smtp_accept_crash"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py::build_m4_cycle_watermark"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py::build_lease_fencing_report"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py::validate_lease_fencing_report"
       - "arxiv-daily-push/src/arxiv_daily_push/state_machine.py::validate_run_record"
       - "arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py::SMTP_MESSAGE_ID_DOMAIN"
-      - "arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py::_delivery_id"
+      - "arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py::_delivery_identity"
       - "arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py::_message_id_local_part"
       - "arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py::_email_message"
-    implementation_fingerprint: "sha256:3bef3ae77ff4293c6d1c5b6d4413d6768da73d37d3541b10a226661f613481c3"
-    evidence_hash: "sha256:3969bde8302cef607de4a61992d2700705915a187838a10bd79f5473f6e0ab6b"
-    last_verified_commit: "5c5c34f68ead6194f3beb71fad9abdf5df4a65a3"
-    verified_at: "2026-06-26T13:20:00+10:00"
+    implementation_fingerprint: "sha256:457aa473e7915f1ee4086cabdf45ff67fac0074c296f155ce6f26fa22c21b411"
+    evidence_hash: "sha256:9f77cea1523b2e951f2af54d2f961175f06b0a7580c00438e69f29002f7b0c5d"
+    last_verified_commit: "14c332e6f24de44ac2be0e6a680256ae00a1f86d"
+    verified_at: "2026-06-26T21:52:49+10:00"
   -
     formula_id: "FORM-ADP-099"
     model_id: "MOD-ADP-097"

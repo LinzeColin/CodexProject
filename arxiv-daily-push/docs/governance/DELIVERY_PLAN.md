@@ -21,7 +21,7 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 141
+- task_count: 142
 - acceptance_count: 122
 
 ## Delivery Tasks
@@ -219,6 +219,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PMT02 | Atomic storage and recovery | completed_local_validation | `ACC-S2PMT02-ATOMIC-RECOVERY` | Local-only atomic artifact writes, manifest hash verification, tamper detection, explicit restore drill, staging cleanup, and no production side effects. |
 | S2PMT02-ARTIFACT-ATOMIC-PUBLISH | S2PMT02 A-010 remediation | completed_local_validation | `ACC-S2PMT02-ATOMIC-RECOVERY` | Stage 1 B1 report/email artifacts validate before formal writes, stage under `.b1_staging`, verify byte SHA-256 refs, publish one complete package directory, and leave no half-published package on failure. |
 | S2PMT03 | Lease fencing and transactional outbox | completed_local_validation | `ACC-S2PMT03-LEASE-FENCING-OUTBOX` | Local-only row_version CAS, lease/fencing, state-history consistency, idempotent outbox Message-ID, SMTP accept crash-window, M4 cycle watermark, and no production side effects. |
+| S2PMT03-WATCHDOG-RECOVERY-B003 | Watchdog stale-lock recovery gate | completed_local_validation | `ACC-S2PMT03-LEASE-FENCING-OUTBOX` | Local B-003 remediation: watchdog recovery blocks live-owner takeover, blocks unexpired leases, and only permits expired dead-owner takeover through row-version and fencing-token claim semantics; no real watchdog/launchd or production side effects. |
 | S2PMT03-LESSON-REVISION-A016 | Lesson revision identity hardening | completed_local_validation | `ACC-S2PMT03-CONCURRENCY-OUTBOX` | Local A-016 remediation: stable `lesson_key`, immutable content/evidence/model-sensitive `lesson_revision_id`, `lesson_id` preserved as revision-sensitive compatibility field, focused regression tests, and no production side effects. |
 | S2PMT04 | Automatic lifecycle and cache cleanup | completed_local_validation | `ACC-S2PMT04-LIFECYCLE` | Local-only disabled wake dry-run, lifecycle drain/checkpoint/cleanup, startup reconciliation, shutdown receipt, safe cache cleanup, parseable launchd plist, and no production side effects. |
 | S2PMT04-SCHEDULER-TEMPLATE-A013 | S2PMT04 A-013 scheduler template hardening | completed_local_validation | `ACC-S2PMT04-LIFECYCLE` | Local A-013 remediation: macOS scheduler dry-run launchd template is `plistlib` generated, parseable, argument-structured, and safe for special-character paths; no scheduler install or production side effects. |

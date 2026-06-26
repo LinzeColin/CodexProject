@@ -8,11 +8,11 @@
 - current_phase: `S2PC`
 - current_task: `S2PCT02`
 - progress: `80.95%`
-- capability_count: `10`
+- capability_count: `9`
 - blockers: `none`
 - next_gate: `S2PC-GATE-V7-2-REVALIDATION`
 - next_unique_task: `S2PCT02 Science main-journal metadata-only no-send shadow evidence (planned)`
-- evidence_ref_count: `18`
+- evidence_ref_count: `17`
 - roadmap_test_command_count: `10`
 - roadmap_gate_count: `5`
 - evidence_status: `EXTRACTED`
@@ -30,7 +30,6 @@
 | FEAT-ADP-007 | Stage 2 bioRxiv/medRxiv shadow source evidence | completed | S2PBT01/S2P1T01 已完成 metadata-only details API adapter、SourceItem preprint、disabled source entries、promotion gate、separate shadow queue/ledger/email preview、30-date replay/48h shadow builder、live canary 和真实 no-send replay；正式生产纳入仍被 V7/root contract gates 阻断。 | EXTRACTED |
 | FEAT-ADP-008 | Stage 2 Nature/top-journal shadow source evidence | completed | S2PCT01/S2P2T01 已完成 official Nature RSS metadata-only adapter、s41586 主刊 research article filter、top-journal SourceItem、separate shadow queue/ledger/email preview、live Nature no-send canary 和 PR #119 main merge；正式 D2 source-domain acceptance 与 Stage2 production 仍被 P0/P1 与 S2PMT07 阻断。 | EXTRACTED |
 | FEAT-ADP-009 | Review9 Lean v2 owner-readable governance | proposed | 把已有 ADP 治理事实压缩为 canonical project/roadmap/events 与三个人类入口；不搬运治理计算到每次开发动作。 | PROPOSED |
-| FEAT-ADP-010 | GitHub 用户中心数据源与板块健康 | completed | 用户中心浅层公开 5 个板块、6 个数据源、启用状态、影子测试/规划状态、B5 汇总边界和证据链接；不启用生产发送、调度或公共 Schema。 | EXTRACTED |
 
 ## V7.2 CURRENT 产品合同
 
@@ -89,4 +88,3 @@
 | EVID-ADP-S2PBT01-REAL-REPLAY-SHADOW | manifest | governance/run_manifests/ADP-S2PBT01-REAL-REPLAY-SHADOW-EVIDENCE-20260624.json | EXTRACTED |
 | EVID-ADP-S2PCT01-NATURE | manifest | governance/run_manifests/ADP-S2P2T01-TOP-JOURNAL-SHADOW-FOUNDATION-20260624.json | EXTRACTED |
 | EVID-REVIEW9-S5PBT05-MANIFEST | manifest | governance/run_manifests/GOV-REVIEW9-S5PBT05-ARXIV-DAILY-PUSH-CANONICAL-RENDER-20260624.json | PROPOSED |
-| EVID-ADP-USER-CENTER-SOURCES | file | arxiv-daily-push/用户中心/数据源与板块健康.md | EXTRACTED |
