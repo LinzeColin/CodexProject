@@ -12,7 +12,7 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version status: `provisional`
 - Current phase: `D`
 - Current gate: `TASK-T904-A026-A027-GOLD-LABEL-SOURCE-BOUNDARY`
-- Confirmed iteration count: 40
+- Confirmed iteration count: 39
 - Reconstructed development event count: 6
 - Current task: `TASK-T904/A026-A027 production gold-label source-boundary hardening`
 - Current A209 point-in-time heartbeat: the clean 24h operator soak attempt launched at `2026-06-25T21:33:19Z` failed at checkpoint window `7/288`; `6` windows passed, `1` failed, latest checkpoint time is `2026-06-25T22:08:58Z`, `child_status=NO_OUTPUT`, `exit_status=1`, and stderr reports `page.evaluate: Target page, context or browser has been closed`. No `run_operator_soak` or `run_soak_smoke` process was found during the 2026-06-26 check. A209 remains `IN_PROGRESS` and has no release-ready 24h evidence.
