@@ -52,6 +52,7 @@ S2PMT04_REQUIRED_GATES = (
     "lifecycle_transition_chain",
     "startup_reconciliation",
     "shutdown_receipt",
+    "transaction_completion_signal",
     "cache_cleanup_safety",
     "launchd_plist_parseable",
     "no_production_side_effect",
@@ -228,6 +229,109 @@ def validate_shutdown_receipt_steps(steps: Mapping[str, Any]) -> list[str]:
     return errors
 
 
+def build_transaction_completion_receipt(
+    *,
+    cycle_id: str,
+    steps: Sequence[Mapping[str, Any]],
+    interrupted_after_step: str | None,
+    generated_at: str,
+) -> dict[str, Any]:
+    """Build observable transaction boundaries for shutdown save/cleanup steps."""
+
+    required = set(S2PMT04_REQUIRED_SHUTDOWN_RECEIPT_STEPS)
+    observed_steps: list[dict[str, Any]] = []
+    recovery_actions: list[dict[str, Any]] = []
+    blocking_reasons: list[str] = []
+    interruption_seen = False
+
+    for index, raw_step in enumerate(steps):
+        step_id = str(raw_step.get("step_id") or "")
+        committed = bool(raw_step.get("committed"))
+        durable_ref = str(raw_step.get("durable_ref") or "")
+        rollback_ref = str(raw_step.get("rollback_ref") or "")
+        if step_id not in required:
+            blocking_reasons.append(f"transaction step {step_id or '<empty>'} is not a required shutdown step")
+        if committed and not durable_ref:
+            blocking_reasons.append(f"transaction step {step_id} committed without durable_ref")
+        if not committed and not rollback_ref:
+            blocking_reasons.append(f"transaction step {step_id} lacks rollback_ref for recovery")
+        if interrupted_after_step and interruption_seen and committed:
+            blocking_reasons.append(f"transaction step {step_id} committed after interruption point")
+        observed_steps.append(
+            {
+                "step_id": step_id,
+                "sequence": index + 1,
+                "transaction_state": "COMMITTED" if committed else "PENDING_ROLLBACK",
+                "durable_ref": durable_ref,
+                "rollback_ref": rollback_ref,
+                "completion_signal": f"{cycle_id}:{step_id}:{'committed' if committed else 'pending_rollback'}",
+                "observable": bool(durable_ref or rollback_ref),
+            }
+        )
+        if not committed:
+            recovery_actions.append(
+                {
+                    "step_id": step_id,
+                    "resume_action": "rollback_then_retry_from_receipt",
+                    "rollback_ref": rollback_ref,
+                    "new_work_claim_allowed": False,
+                }
+            )
+        if interrupted_after_step and step_id == interrupted_after_step:
+            interruption_seen = True
+
+    missing = sorted(required.difference({step["step_id"] for step in observed_steps}))
+    for step_id in missing:
+        blocking_reasons.append(f"transaction step {step_id} is missing")
+        recovery_actions.append(
+            {
+                "step_id": step_id,
+                "resume_action": "reconstruct_from_previous_checkpoint_before_retry",
+                "rollback_ref": "",
+                "new_work_claim_allowed": False,
+            }
+        )
+    completed = not blocking_reasons and not recovery_actions
+    interrupted_recoverable = bool(interrupted_after_step) and bool(recovery_actions) and not any(
+        reason.endswith("committed after interruption point") for reason in blocking_reasons
+    )
+    return {
+        "cycle_id": cycle_id,
+        "generated_at": generated_at,
+        "interrupted_after_step": interrupted_after_step or "",
+        "steps": observed_steps,
+        "missing_steps": missing,
+        "recovery_actions": recovery_actions,
+        "completed": completed,
+        "interrupted_recoverable": interrupted_recoverable,
+        "new_work_claim_allowed": False if recovery_actions else True,
+        "completion_signal_observable": all(step["observable"] for step in observed_steps) and not missing,
+        "status": "pass" if (completed or interrupted_recoverable) and not blocking_reasons else "blocked",
+        "blocking_reasons": sorted(set(blocking_reasons)),
+    }
+
+
+def validate_transaction_completion_receipt(receipt: Mapping[str, Any]) -> list[str]:
+    """Validate observable shutdown transaction boundaries and recovery signals."""
+
+    errors: list[str] = []
+    steps = receipt.get("steps") if isinstance(receipt.get("steps"), list) else []
+    observed = {str(step.get("step_id") or "") for step in steps if isinstance(step, Mapping)}
+    for step_id in S2PMT04_REQUIRED_SHUTDOWN_RECEIPT_STEPS:
+        if step_id not in observed:
+            errors.append(f"transaction step {step_id} is missing")
+    if receipt.get("completion_signal_observable") is not True:
+        errors.append("transaction completion signal must be observable")
+    if receipt.get("status") == "pass":
+        if receipt.get("completed") is not True and receipt.get("interrupted_recoverable") is not True:
+            errors.append("passing transaction receipt must be completed or interrupted_recoverable")
+        if receipt.get("blocking_reasons"):
+            errors.append("passing transaction receipt must not have blocking_reasons")
+    if receipt.get("recovery_actions") and receipt.get("new_work_claim_allowed") is not False:
+        errors.append("recovery actions must block new work claims")
+    return errors
+
+
 def build_cache_cleanup_plan(
     *,
     cache_entries: Sequence[Mapping[str, Any]],
@@ -378,6 +482,19 @@ def build_lifecycle_cache_report(*, generated_at: str, cache_root: str | Path | 
         graceful_elapsed_seconds=120,
         generated_at=generated_at,
     )
+    transaction_receipt = build_transaction_completion_receipt(
+        cycle_id="2026-07-03",
+        generated_at=generated_at,
+        interrupted_after_step="cleanup",
+        steps=[
+            {"step_id": "inflight", "committed": True, "durable_ref": "receipt://local/s2pmt04/inflight"},
+            {"step_id": "outbox", "committed": True, "durable_ref": "receipt://local/s2pmt04/outbox"},
+            {"step_id": "checkpoint", "committed": True, "durable_ref": "receipt://local/s2pmt04/checkpoint"},
+            {"step_id": "cleanup", "committed": True, "durable_ref": "receipt://local/s2pmt04/cleanup"},
+            {"step_id": "backup", "committed": False, "rollback_ref": "rollback://local/s2pmt04/backup"},
+            {"step_id": "lease_release", "committed": False, "rollback_ref": "rollback://local/s2pmt04/lease_release"},
+        ],
+    )
     cleanup = build_cache_cleanup_plan(
         cache_entries=[
             {
@@ -406,6 +523,8 @@ def build_lifecycle_cache_report(*, generated_at: str, cache_root: str | Path | 
         "lifecycle_transition_chain": transition_plan["transition_chain_valid"] is True,
         "startup_reconciliation": startup["reconciliation_ready"] is True,
         "shutdown_receipt": shutdown["status"] == "pass",
+        "transaction_completion_signal": transaction_receipt["status"] == "pass"
+        and validate_transaction_completion_receipt(transaction_receipt) == [],
         "cache_cleanup_safety": cleanup["cleanup_safe"] is True and cleanup["durable_evidence_delete_allowed"] is False,
         "launchd_plist_parseable": validate_launchd_plist_payload(plist_payload) == [],
         "no_production_side_effect": True,
@@ -423,6 +542,7 @@ def build_lifecycle_cache_report(*, generated_at: str, cache_root: str | Path | 
         "transition_plan": transition_plan,
         "startup_reconciliation": startup,
         "shutdown_receipt": shutdown,
+        "transaction_completion_receipt": transaction_receipt,
         "cache_cleanup_plan": cleanup,
         "launchd_plist_sha256": hashlib.sha256(plist_payload).hexdigest(),
         "report_hash": "",
@@ -471,6 +591,11 @@ def validate_lifecycle_cache_report(report: Mapping[str, Any]) -> list[str]:
         errors.append("durable evidence cache class must never be auto-deleted")
     if cleanup.get("dry_run") is not True:
         errors.append("S2PMT04 evidence report cache cleanup must remain dry-run")
+    transaction_receipt = report.get("transaction_completion_receipt")
+    if not isinstance(transaction_receipt, Mapping):
+        errors.append("transaction_completion_receipt is required")
+    else:
+        errors.extend(validate_transaction_completion_receipt(transaction_receipt))
     return errors
 
 

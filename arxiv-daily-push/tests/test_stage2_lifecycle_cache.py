@@ -13,9 +13,11 @@ from arxiv_daily_push.stage2_lifecycle_cache import (
     build_lifecycle_transition_plan,
     build_shutdown_receipt,
     build_startup_reconciliation,
+    build_transaction_completion_receipt,
     validate_launchd_plist_payload,
     validate_lifecycle_cache_report,
     validate_lifecycle_transition,
+    validate_transaction_completion_receipt,
 )
 
 
@@ -74,6 +76,49 @@ class Stage2LifecycleCacheTests(unittest.TestCase):
         self.assertEqual(blocked["exit_code"], 2)
         self.assertIn("checkpoint must be written", blocked["blocking_reasons"])
         self.assertIn("lease release must be recorded", blocked["blocking_reasons"])
+
+    def test_transaction_completion_receipt_allows_precise_restart_after_kill(self) -> None:
+        receipt = build_transaction_completion_receipt(
+            cycle_id="2026-07-03",
+            generated_at="2026-07-03T06:00:00+10:00",
+            interrupted_after_step="cleanup",
+            steps=[
+                {"step_id": "inflight", "committed": True, "durable_ref": "receipt://inflight"},
+                {"step_id": "outbox", "committed": True, "durable_ref": "receipt://outbox"},
+                {"step_id": "checkpoint", "committed": True, "durable_ref": "receipt://checkpoint"},
+                {"step_id": "cleanup", "committed": True, "durable_ref": "receipt://cleanup"},
+                {"step_id": "backup", "committed": False, "rollback_ref": "rollback://backup"},
+                {"step_id": "lease_release", "committed": False, "rollback_ref": "rollback://lease_release"},
+            ],
+        )
+
+        self.assertEqual(receipt["status"], "pass")
+        self.assertFalse(receipt["completed"])
+        self.assertTrue(receipt["interrupted_recoverable"])
+        self.assertFalse(receipt["new_work_claim_allowed"])
+        self.assertTrue(receipt["completion_signal_observable"])
+        self.assertEqual([action["step_id"] for action in receipt["recovery_actions"]], ["backup", "lease_release"])
+        self.assertEqual(validate_transaction_completion_receipt(receipt), [])
+
+    def test_transaction_completion_receipt_blocks_invisible_or_post_kill_commit(self) -> None:
+        blocked = build_transaction_completion_receipt(
+            cycle_id="2026-07-03",
+            generated_at="2026-07-03T06:00:00+10:00",
+            interrupted_after_step="checkpoint",
+            steps=[
+                {"step_id": "inflight", "committed": True, "durable_ref": "receipt://inflight"},
+                {"step_id": "outbox", "committed": True, "durable_ref": "receipt://outbox"},
+                {"step_id": "checkpoint", "committed": True, "durable_ref": "receipt://checkpoint"},
+                {"step_id": "cleanup", "committed": True, "durable_ref": "receipt://cleanup"},
+                {"step_id": "backup", "committed": False},
+                {"step_id": "lease_release", "committed": False, "rollback_ref": "rollback://lease_release"},
+            ],
+        )
+
+        self.assertEqual(blocked["status"], "blocked")
+        self.assertIn("transaction step cleanup committed after interruption point", blocked["blocking_reasons"])
+        self.assertIn("transaction step backup lacks rollback_ref for recovery", blocked["blocking_reasons"])
+        self.assertIn("transaction completion signal must be observable", validate_transaction_completion_receipt(blocked))
 
     def test_cache_cleanup_keeps_durable_evidence_and_blocks_unsafe_paths(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -143,6 +188,8 @@ class Stage2LifecycleCacheTests(unittest.TestCase):
         self.assertFalse(report["real_smtp_sent"])
         self.assertFalse(report["scheduler_installed"])
         self.assertFalse(report["queue_mutation_allowed"])
+        self.assertTrue(report["gates"]["transaction_completion_signal"])
+        self.assertTrue(report["transaction_completion_receipt"]["interrupted_recoverable"])
         self.assertTrue(report["gates"]["cache_cleanup_safety"])
         self.assertEqual(validate_lifecycle_cache_report(report), [])
 

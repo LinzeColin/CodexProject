@@ -2463,6 +2463,24 @@ tasks:
     completed_version: "0.23.1"
     unknown_task_ids: []
 
+  - task_id: "S2PMT04-TRANSACTION-COMPLETION-B015"
+    phase: "S2PM"
+    objective: "Remediate inherited P1 B-015 locally by making shutdown save/cleanup transaction boundaries and completion signals observable and recoverable."
+    scope: "S2PMT04 transaction completion receipt helper, focused regression tests, required gate extension, FORM-ADP-099/PARAM-ADP-800 semantic refresh, phase record, run manifest, traceability row, delivery/event records, and no-production evidence."
+    non_scope: "No scheduler install or enablement, no real SMTP send, no Release upload, no public schema or DB migration, no production queue mutation, no source adapter or ranking change, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no inherited P0/P1 closure, no DAILY_OPERATION, and no integrated production acceptance."
+    status: "completed"
+    dependencies: ["S2PMT04", "S2PMT07", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_lifecycle_cache.py", "arxiv-daily-push/tests/test_stage2_lifecycle_cache.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT04_TRANSACTION_COMPLETION_B015.md"]
+    acceptance_ids: ["ACC-S2PMT04-LIFECYCLE"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b015_compile PYTHONPATH=arxiv-daily-push/src python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_lifecycle_cache.py arxiv-daily-push/tests/test_stage2_lifecycle_cache.py", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b015_focus2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_lifecycle_cache.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b015_source_gate PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_user_center_candidate_pool.py arxiv-daily-push/tests/test_owner_controls.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b015_all PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b015_v72 PYTHONPATH=arxiv-daily-push/src python3 arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b015_gov PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b015_changed PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b015_sync PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_governance_sync.py --changed-only --semantic --base-ref origin/main", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b015_render PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/lean_governance.py check-render --project arxiv-daily-push", "JSON/JSONL/CSV/YAML parse via repository loader", "git diff --check"]
+    test_results: ["py_compile PASS", "focused S2PMT04 lifecycle/cache tests: 8 OK", "source/board user-center root gate regression: 14 OK", "full arxiv-daily-push unittest: 531 OK", "V7.2 validator: PASS", "ADP project governance: 0 errors / 0 warnings", "changed-only governance semantic: 0 errors / 0 warnings", "governance sync validator: 0 errors / 0 warnings", "lean check-render: drift_count 0 reference_issue_count 0", "JSON/JSONL/CSV/YAML parse: OK", "git diff --check: PASS"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PMT04_TRANSACTION_COMPLETION_B015.md", "governance/run_manifests/ADP-S2PMT04-TRANSACTION-COMPLETION-B015-20260626.json", "arxiv-daily-push/src/arxiv_daily_push/stage2_lifecycle_cache.py", "arxiv-daily-push/tests/test_stage2_lifecycle_cache.py"]
+    risk: "B-015 local evidence can be misread as a live shutdown kill drill or inherited P0/P1 closure; those remain separate gates under S2PMT07 and final production acceptance."
+    rollback: "Revert S2PMT04 transaction completion code/tests, required gate and semantic registry refresh, phase record, manifest, traceability/delivery/event records, generated status refresh, and this task entry; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
+
   - task_id: "S2PMT01-SUPPLY-CHAIN-A020"
     phase: "S2PM"
     objective: "Remediate inherited P1 A-020 locally by making the S2PMT01 supply-chain baseline fail closed on workflow permission drift, unapproved mutable GitHub Action references, and unapproved high/critical dependency vulnerability findings."
