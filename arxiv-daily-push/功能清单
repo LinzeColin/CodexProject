@@ -16,10 +16,13 @@
 ## 摘要
 
 - 项目：`arxiv-daily-push`
+- project_id: `arxiv-daily-push`
 - 产品版本：`0.23.0`
 - 当前阶段：`S2`
+- current_stage: `S2`
 - 当前分支阶段：`S2PC`
 - 当前任务：`S2PCT02`
+- current_task: `S2PCT02`
 - 进度：`80.95%`
 - 功能数量：`11`
 - 当前阻断：无公开阻断；Stage 2 最终门仍未通过
@@ -29,6 +32,7 @@
 - 路线图测试命令数量：`10`
 - 路线图门禁数量：`5`
 - 证据状态：已抽取
+- evidence_status: `EXTRACTED`
 
 ## 功能概览
 
