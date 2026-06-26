@@ -18,7 +18,7 @@ QBVS runtime and maps to `投资管理 > 策略实验室 / 大数据模拟器`.
 | Phase | Status | Evidence |
 | --- | --- | --- |
 | Phase 1A: 8 first-level IA contract | Verified | `src/pfi_v02/stage1_ia.py`, `tests/test_stage1_ia_contract.py`, `7 tests OK` |
-| Phase 1B: Core object models | Pending | To be implemented in this Stage 1 run |
+| Phase 1B: Core object models | Verified | `src/pfi_v02/core_models.py`, `tests/test_stage1_core_models.py`, `9 tests OK` |
 | Phase 1C: Classification rules | Pending | To be implemented in this Stage 1 run |
 
 ## Phase 1A Contract Summary
@@ -56,6 +56,31 @@ Acceptance coverage:
 - No system/development product first-level entry.
 - `PFI/大数据模拟器/qbvs` remains accessible and unmoved.
 
+## Phase 1B Contract Summary
+
+Core model contracts:
+
+| Model | Boundary |
+| --- | --- |
+| CredentialRef | Non-trading credential pointer with read/import scopes only. |
+| DataSource | Where data is read from; read-only by default. |
+| Account | Where money or liability is held. |
+| AssetInstrument | What asset is held. |
+| ImportBatch | Dedupe and parser-version boundary for each ingest. |
+| RawRecord | Source evidence pointer. |
+| NormalizedTransaction | Normalized financial fact. |
+| LedgerEvent | Fact used by investment, consumption, recommendation, and reports. |
+| AccountSnapshot | Point-in-time account balance. |
+| HoldingSnapshot | Point-in-time position state. |
+| ValuationSnapshot | Point-in-time price or valuation state. |
+
+Required coverage:
+
+- Data sources: Alipay daily, Alipay fund, Moomoo AU, China broker, ABC Bullion, CBA, WeChat.
+- Event types: CASH, TRANSFER, BUY_ASSET, SELL_ASSET, FUND, FEE, TAX, FX, REFUND, VALUATION.
+- Account types: payment, bank, brokerage, fund platform, bullion platform, credit card, cash, liability.
+- Asset types: cash, equity, ETF, fund, bullion, credit, FX.
+
 ## Validation
 
 Phase 1A:
@@ -75,3 +100,12 @@ PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q
 ```
 
 Observed: `Ran 1 test` / `OK`.
+
+Phase 1B:
+
+```bash
+cd PFI
+PYTHONPATH=src python3 -B -m unittest tests.test_stage1_core_models -q
+```
+
+Observed: `Ran 9 tests` / `OK`.

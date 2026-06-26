@@ -11,10 +11,13 @@ from pfi_v02.stage1_ia import (
     build_stage1_ia_contract,
     primary_entry_labels,
 )
+from pfi_v02.core_models import build_stage1_model_contract, default_stage1_sources
 
 __all__ = [
     "PRIMARY_ENTRIES",
     "Stage1Entry",
+    "build_stage1_model_contract",
     "build_stage1_ia_contract",
+    "default_stage1_sources",
     "primary_entry_labels",
 ]

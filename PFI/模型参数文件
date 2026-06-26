@@ -10,6 +10,7 @@
 | legacy_compatibility_entry | `PFI/大数据模拟器` |
 | legacy_runtime | `PFI/大数据模拟器/qbvs` |
 | stage1_ia_contract | `src/pfi_v02/stage1_ia.py` |
+| stage1_core_model_contract | `src/pfi_v02/core_models.py` |
 | stage1_record | `docs/pfi_v02/STAGE1_CORE_SKELETON.md` |
 | execution_mode | local-first, research-only, review-first |
 | live_trading | disabled |
@@ -44,3 +45,10 @@ LedgerEvent = 钱发生了什么
 - 数据源与同步必须覆盖数据源、凭证、同步、导入、对账、待复核和外部只读接口。
 - 建议与复盘必须覆盖证据、动作、状态、复盘和失效条件。
 - 报告与洞察必须覆盖月度、投资、消费、数据质量、Context Export 和证据链。
+
+## Core Model Parameters
+
+- Credential scopes are read/import only: READ_PROFILE, READ_STATEMENT, READ_BALANCE, READ_POSITIONS, READ_ORDERS, READ_FILLS, IMPORT_FILE.
+- Acquisition modes include CSV, ZIP, Excel, PDF, HTML, statement, read-only API/OpenD, watch folder, browser-assisted read and manual snapshot.
+- Ledger event types include CASH, TRANSFER, BUY_ASSET, SELL_ASSET, FUND, FEE, TAX, FX, REFUND and VALUATION.
+- Snapshots are point-in-time facts and must not overwrite ledger history.
