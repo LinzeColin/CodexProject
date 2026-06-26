@@ -4485,13 +4485,18 @@ formulas:
     assumption_ids:
       - "ASM-ADP-035"
     status: "active"
-    expression: "S2PIT02 passes only when the S2PIT01 user-center report passes, runtime_audit and watchdog Stage 1 runtime reports pass with production side effects false, the read-only SQLite storage inspect report passes, required dashboard sections owner_center, runtime, storage, production_boundaries, and next_actions are present, and all owner-experience, production, SMTP, scheduler, Release, schema, queue, ranking, source-adapter, email-frontstage, V7.1 CURRENT, and V7.2 contract side-effect flags remain false."
+    expression: "S2PIT02 passes only when the S2PIT01 user-center report passes, the shallow GitHub owner status summary is present with sent_today <= expected_today, total_candidate_pool = generated_report_or_preview_count + pending_candidate_count, sent/blocked_not_sent/queued_or_pending states visible, review/action/asset/ROI daily counts explicitly marked pending_daily_snapshot until real reports sync, runtime_audit and watchdog Stage 1 runtime reports pass with production side effects false, the read-only SQLite storage inspect report passes, required dashboard sections owner_center, runtime, storage, production_boundaries, and next_actions are present, and all owner-experience, production, SMTP, scheduler, Release, schema, queue, ranking, source-adapter, email-frontstage, V7.1 CURRENT, and V7.2 contract side-effect flags remain false."
     variables:
       -
         name: "user_center_report"
         data_type: "object"
         unit: "S2PIT01 report"
         input_domain: "passing S2PIT01 user-center evidence"
+      -
+        name: "owner_status_summary"
+        data_type: "object"
+        unit: "shallow GitHub owner status snapshot"
+        input_domain: "用户中心/邮件发送与队列状态.md counts and status states"
       -
         name: "runtime_reports"
         data_type: "list[object]"
@@ -4508,8 +4513,8 @@ formulas:
         unit: "production boundary flags"
         input_domain: "all production side-effect flags false"
     constraints: "S2PIT02 is local dashboard evidence only. It must not probe live services, migrate DB, mutate queues, change ranking or source adapters, change Email V1 frontstage, send SMTP, enable schedules, upload Releases, change V7.1 or V7.2 contract files, or claim owner-experience, Stage2, or integrated production acceptance."
-    missing_policy: "Missing passing S2PIT01 report, missing passing runtime_audit or watchdog report, missing passing storage inspect report, missing dashboard section, or any production/schema/email side-effect flag blocks the report."
-    output_range: "S2PIT02 runtime dashboard report with status pass or blocked, gate states, dashboard sections, owner status path, validation errors, and all production/schema/email side-effect flags false."
+    missing_policy: "Missing passing S2PIT01 report, missing shallow owner status summary, candidate count mismatch, sent_today above expected_today, missing sent/blocked/queued status visibility, non-pending review/action daily snapshot without real reports, missing passing runtime_audit or watchdog report, missing passing storage inspect report, missing dashboard section, or any production/schema/email side-effect flag blocks the report."
+    output_range: "S2PIT02 runtime dashboard report with status pass or blocked, gate states, dashboard sections, shallow owner status path, owner status summary, validation errors, and all production/schema/email side-effect flags false."
     code_refs:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
       - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
@@ -4517,7 +4522,9 @@ formulas:
       - "arxiv-daily-push/tests/test_stage2_sources.py"
     evidence_refs:
       - "governance/run_manifests/ADP-S2PIT02-RUNTIME-DASHBOARD-20260625.json"
+      - "governance/run_manifests/ADP-S2PIT02-OWNER-STATUS-C002-20260627.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PIT02_RUNTIME_DASHBOARD.md"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PIT02_OWNER_STATUS_C002.md"
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::S2PIT02_RUNTIME_DASHBOARD_MODEL_ID"
@@ -4527,15 +4534,17 @@ formulas:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::S2PIT02_REQUIRED_RUNTIME_ACTIONS"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::S2PIT02_REQUIRED_PRODUCTION_FALSE_FLAGS"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::S2PIT02_OWNER_STATUS_PATH"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::S2PIT02_REQUIRED_OWNER_STATUS_SUMMARY_FIELDS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::S2PIT02_REQUIRED_OWNER_STATUS_STATES"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::S2PIT02_REPORT_FILENAME"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::build_s2pit02_runtime_dashboard_report"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::run_s2pit02_runtime_dashboard"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::validate_s2pit02_runtime_dashboard_report"
       - "arxiv-daily-push/src/arxiv_daily_push/cli.py::main"
-    implementation_fingerprint: "sha256:a08bba7c2f93ee8e3b8ffc0c2575c063037e9120ec37b2499a3976ec26fe15ae"
-    evidence_hash: "sha256:0561e95c4396756a4c9e57161e232213ab6bff97c8415d9fe923c29e1fd214d5"
-    last_verified_commit: "a7527c77ff38ac558d3c8e0b1805871348060bf3"
-    verified_at: "2026-06-26T06:20:00+10:00"
+    implementation_fingerprint: "sha256:411e92a67d98ad049ace9913a0653ad1165ceb9a3fce252682dc01a5e8a8b8b0"
+    evidence_hash: "sha256:ed2ffce7397259e5e2f59167dea90528d33e260a7a1337478f32a2fd2f4a5338"
+    last_verified_commit: "aa95fd8096473ea223955a3cc8532cefb4fca26f"
+    verified_at: "2026-06-27T05:25:16+10:00"
   -
     formula_id: "FORM-ADP-083"
     model_id: "MOD-ADP-081"

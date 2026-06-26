@@ -720,7 +720,21 @@ S2PIT02_REQUIRED_PRODUCTION_FALSE_FLAGS = (
     "queue_schema_changed",
     "v7_2_contract_files_changed",
 )
-S2PIT02_OWNER_STATUS_PATH = "docs/owner/00_用户中心/01_当前状态.md"
+S2PIT02_OWNER_STATUS_PATH = "用户中心/邮件发送与队列状态.md"
+S2PIT02_REQUIRED_OWNER_STATUS_SUMMARY_FIELDS = (
+    "sent_today",
+    "expected_today",
+    "total_candidate_pool",
+    "generated_report_or_preview_count",
+    "pending_candidate_count",
+    "historical_send_record_count",
+    "review_action_snapshot_state",
+)
+S2PIT02_REQUIRED_OWNER_STATUS_STATES = (
+    "sent",
+    "blocked_not_sent",
+    "queued_or_pending",
+)
 S2PIT02_REPORT_FILENAME = "stage2_s2pit02_runtime_dashboard_report.json"
 S2PIT03_SOURCE_MODEL_VIEW_MODEL_ID = "adp-s2pit03-source-model-view-v1"
 S2PIT03_ACCEPTANCE_ID = "ACC-S2PIT03-SOURCE-MODEL"
@@ -7791,6 +7805,61 @@ def validate_s2pit01_user_center_report(report: Mapping[str, Any]) -> list[str]:
     return errors
 
 
+def _s2pit02_owner_status_summary(owner_status_summary: Mapping[str, Any] | None) -> dict[str, Any]:
+    summary = dict(owner_status_summary or {})
+    summary["status_states_observed"] = list(summary.get("status_states_observed") or [])
+    summary["status_states_not_proven"] = list(summary.get("status_states_not_proven") or [])
+    summary["evidence_refs"] = list(summary.get("evidence_refs") or [])
+    return summary
+
+
+def _validate_s2pit02_owner_status_summary(summary: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    missing_fields = [field for field in S2PIT02_REQUIRED_OWNER_STATUS_SUMMARY_FIELDS if field not in summary]
+    if missing_fields:
+        errors.append("S2PIT02 owner status summary missing fields: " + ", ".join(missing_fields))
+
+    numeric_fields = (
+        "sent_today",
+        "expected_today",
+        "total_candidate_pool",
+        "generated_report_or_preview_count",
+        "pending_candidate_count",
+        "historical_send_record_count",
+        "selected_candidate_count",
+        "review_action_pending_field_count",
+    )
+    numbers: dict[str, int] = {}
+    for field in numeric_fields:
+        if field not in summary:
+            continue
+        value = summary.get(field)
+        if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+            errors.append(f"S2PIT02 owner status summary {field} must be a non-negative integer")
+            continue
+        numbers[field] = value
+
+    if {"total_candidate_pool", "generated_report_or_preview_count", "pending_candidate_count"} <= set(numbers):
+        if numbers["total_candidate_pool"] != (
+            numbers["generated_report_or_preview_count"] + numbers["pending_candidate_count"]
+        ):
+            errors.append("S2PIT02 owner status candidate counts must conserve total_candidate_pool")
+    if {"sent_today", "expected_today"} <= set(numbers) and numbers["sent_today"] > numbers["expected_today"]:
+        errors.append("S2PIT02 owner status sent_today must not exceed expected_today")
+
+    observed_states = set(summary.get("status_states_observed") or [])
+    missing_states = [state for state in S2PIT02_REQUIRED_OWNER_STATUS_STATES if state not in observed_states]
+    if missing_states:
+        errors.append("S2PIT02 owner status summary missing status states: " + ", ".join(missing_states))
+
+    if summary.get("review_action_snapshot_state") != "pending_daily_snapshot":
+        errors.append("S2PIT02 owner status review_action_snapshot_state must be pending_daily_snapshot until real daily reports sync")
+    evidence_refs = set(summary.get("evidence_refs") or [])
+    if S2PIT02_OWNER_STATUS_PATH not in evidence_refs:
+        errors.append(f"S2PIT02 owner status evidence_refs must include {S2PIT02_OWNER_STATUS_PATH}")
+    return errors
+
+
 def build_s2pit02_runtime_dashboard_report(
     *,
     generated_at: str,
@@ -7799,10 +7868,14 @@ def build_s2pit02_runtime_dashboard_report(
     watchdog_report: Mapping[str, Any],
     storage_inspect_report: Mapping[str, Any],
     production_gate_state: Mapping[str, Any] | None = None,
+    owner_status_summary: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Build local-only S2PIT02 runtime/state dashboard evidence."""
 
     production_gate = dict(production_gate_state or {})
+    owner_summary = _s2pit02_owner_status_summary(owner_status_summary)
+    owner_status_errors = _validate_s2pit02_owner_status_summary(owner_summary)
+    owner_status_gate = "pass" if not owner_status_errors else "blocked"
     user_errors = validate_s2pit01_user_center_report(user_center_report)
     user_gate = "pass" if user_center_report.get("status") == "pass" and not user_errors else "blocked"
     runtime_errors: list[str] = []
@@ -7846,6 +7919,7 @@ def build_s2pit02_runtime_dashboard_report(
             "status": user_center_report.get("status"),
             "single_editable_fact_source": user_center_report.get("single_editable_fact_source"),
             "owner_status_path": S2PIT02_OWNER_STATUS_PATH,
+            "owner_status_summary": owner_summary,
         },
         "runtime": {
             "runtime_audit_status": runtime_audit_report.get("status"),
@@ -7877,6 +7951,7 @@ def build_s2pit02_runtime_dashboard_report(
     section_gate = "pass" if not missing_sections else "blocked"
     blocking_reasons = [
         *user_errors,
+        *owner_status_errors,
         *runtime_errors,
         *storage_errors,
         *production_errors,
@@ -7884,6 +7959,7 @@ def build_s2pit02_runtime_dashboard_report(
     ]
     gates = {
         "owner_center_gate": user_gate,
+        "owner_status_count_gate": owner_status_gate,
         "runtime_state_gate": runtime_gate,
         "storage_state_gate": storage_gate,
         "production_boundary_gate": production_gate_status,
@@ -7903,6 +7979,7 @@ def build_s2pit02_runtime_dashboard_report(
         "required_runtime_actions": list(S2PIT02_REQUIRED_RUNTIME_ACTIONS),
         "dashboard_sections": sections,
         "owner_status_path": S2PIT02_OWNER_STATUS_PATH,
+        "owner_status_summary": owner_summary,
         "s2pit02_runtime_dashboard_ready": status == "pass",
         "owner_experience_accepted": False,
         "stage2_production_accepted": False,
@@ -7935,6 +8012,7 @@ def run_s2pit02_runtime_dashboard(
     watchdog_report: Mapping[str, Any],
     storage_inspect_report: Mapping[str, Any],
     production_gate_state: Mapping[str, Any] | None = None,
+    owner_status_summary: Mapping[str, Any] | None = None,
     write: bool = True,
 ) -> dict[str, Any]:
     """Persist S2PIT02 local runtime dashboard evidence without runtime side effects."""
@@ -7950,6 +8028,7 @@ def run_s2pit02_runtime_dashboard(
         watchdog_report=watchdog_report,
         storage_inspect_report=storage_inspect_report,
         production_gate_state=production_gate_state,
+        owner_status_summary=owner_status_summary,
     )
     report.update(
         {
@@ -8003,9 +8082,15 @@ def validate_s2pit02_runtime_dashboard_report(report: Mapping[str, Any]) -> list
     if missing_actions:
         errors.append("S2PIT02 missing runtime actions: " + ", ".join(missing_actions))
     if report.get("owner_status_path") != S2PIT02_OWNER_STATUS_PATH:
-        errors.append("S2PIT02 owner_status_path must be docs/owner/00_用户中心/01_当前状态.md")
+        errors.append(f"S2PIT02 owner_status_path must be {S2PIT02_OWNER_STATUS_PATH}")
+    owner_summary = report.get("owner_status_summary")
+    if not isinstance(owner_summary, Mapping):
+        errors.append("S2PIT02 owner_status_summary must be a mapping")
+    else:
+        errors.extend(_validate_s2pit02_owner_status_summary(owner_summary))
     for gate in (
         "owner_center_gate",
+        "owner_status_count_gate",
         "runtime_state_gate",
         "storage_state_gate",
         "production_boundary_gate",

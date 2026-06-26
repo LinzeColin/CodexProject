@@ -182,7 +182,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         manifest_path = REPO_ROOT / "governance/run_manifests/ADP-S2PMT07-P1-INDEPENDENT-REVIEW-RECEIPT-20260626.json"
         refresh_manifest_path = (
             REPO_ROOT
-            / "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C001-20260627.json"
+            / "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C002-20260627.json"
         )
         receipt = receipt_path.read_text(encoding="utf-8")
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
@@ -231,6 +231,10 @@ class Stage2FinalGateTests(unittest.TestCase):
                 "PHASE_S2PIT01_SHALLOW_USER_CENTER_C001.md",
                 "ADP-S2PIT01-SHALLOW-USER-CENTER-C001-20260627.json",
             ),
+            "C-002": (
+                "PHASE_S2PIT02_OWNER_STATUS_C002.md",
+                "ADP-S2PIT02-OWNER-STATUS-C002-20260627.json",
+            ),
         }
         stale_refs = {
             "A-006": ("PHASE_S2PMT03_LEASE_FENCING.md", "ADP-S2PMT03-LEASE-FENCING-20260626.json"),
@@ -278,13 +282,18 @@ class Stage2FinalGateTests(unittest.TestCase):
                 "ADP-S2PIT01-USER-CENTER-20260625.json",
                 "docs/owner/00_用户中心/00_开始这里.md",
             ),
+            "C-002": (
+                "PHASE_S2PIT02_RUNTIME_DASHBOARD.md",
+                "ADP-S2PIT02-RUNTIME-DASHBOARD-20260625.json",
+                "docs/owner/00_用户中心/01_当前状态.md",
+            ),
         }
 
         findings = {finding["finding_id"]: finding for finding in manifest["p1_findings"]}
         self.assertEqual(manifest["refreshed_findings"], list(expected_current_refs))
         self.assertEqual(
             manifest["refresh_manifest"],
-            "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C001-20260627.json",
+            "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C002-20260627.json",
         )
         self.assertIn(
             "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-20260627.json",

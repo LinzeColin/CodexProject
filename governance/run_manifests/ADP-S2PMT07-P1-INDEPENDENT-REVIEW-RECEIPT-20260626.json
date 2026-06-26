@@ -487,15 +487,14 @@
     },
     {
       "finding_id": "C-002",
-      "fix_task": "S2PIT02",
+      "fix_task": "S2PIT02-OWNER-STATUS-C002",
       "track": "C_UI交互架构",
       "severity": "P1",
       "title": "总控台偏配置容量，缺真实排队/讲解/发送/复习/行动数量",
-      "preliminary_review_state": "evidence_surface_located_sufficiency/gap_review_required_closure_not_claimed",
+      "preliminary_review_state": "refreshed_current_evidence_located_sufficiency/gap_review_required_closure_not_claimed",
       "evidence_refs": [
-        "arxiv-daily-push/docs/phase_records/PHASE_S2PIT02_RUNTIME_DASHBOARD.md",
-        "arxiv-daily-push/用户中心/邮件发送与队列状态.md",
-        "governance/run_manifests/ADP-S2PIT02-RUNTIME-DASHBOARD-20260625.json",
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PIT02_OWNER_STATUS_C002.md",
+        "governance/run_manifests/ADP-S2PIT02-OWNER-STATUS-C002-20260627.json",
         "arxiv-daily-push/tests/test_stage2_sources.py"
       ],
       "reviewer_decision_required": "Verify V7.1 fix/test requirement: 各分项与总数守恒；空/延迟/失败状态正确显示"
@@ -631,7 +630,7 @@
   },
   "rollback": "Remove the S2PMT07 P1 review receipt phase record, manifest, and references; no production runtime state was changed.",
   "next_task": "S2PMT07_INDEPENDENT_REVIEWER_SIGNOFF_OR_P1_EVIDENCE_REPAIR",
-  "refreshed_at": "2026-06-27T04:55:54+10:00",
+  "refreshed_at": "2026-06-27T05:25:16+10:00",
   "refreshed_findings": [
     "A-006",
     "A-007",
@@ -661,9 +660,10 @@
     "B-013",
     "B-014",
     "B-015",
-    "C-001"
+    "C-001",
+    "C-002"
   ],
-  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C001-20260627.json",
+  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C002-20260627.json",
   "refresh_manifests": [
     "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A006-A009-20260627.json",
@@ -671,6 +671,8 @@
     "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A015-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A019-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-B002-20260627.json",
-    "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C001-20260627.json"
-  ]
+    "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C001-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C002-20260627.json"
+  ],
+  "previous_refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C001-20260627.json"
 }

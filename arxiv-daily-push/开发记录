@@ -1,5 +1,11 @@
 # 开发记录
 
+## 中文速读
+
+- 本轮只刷新 `S2PIT02` / C-002 的当前证据和 P1 receipt 路由：新证据指向 GitHub 浅层用户中心，不再依赖旧深层 owner 页面作为用户主入口。
+- 已完成本地代码门、CLI 输入、focused 测试、phase record、run manifest、模型/公式/参数注册表、traceability、delivery tasks 和三基同步。
+- 未完成项仍是 C-002 的独立复审充分性判断，以及复习、行动、能力资产、ROI 日级快照的真实接入；不关闭 P1，不启用生产。
+
 ## 摘要
 
 - project_id: `arxiv-daily-push`
@@ -239,3 +245,5 @@ Task detail fields:
 | 2026-06-27T04:31:05+10:00 | stage2_p1_review_receipt_refresh_b002 | Refreshed S2PMT07 P1 review receipt routing for B-002 so process lifecycle signal handling points to dedicated S2PMT04 evidence instead of aggregate lifecycle/cache evidence. | S2PMT07-P1-REVIEW-RECEIPT-REFRESH-B002 | EXTRACTED |
 | 2026-06-27T04:55:54+10:00 | stage2_shallow_user_center_c001 | Recorded dedicated local C-001 evidence that S2PIT01 now requires shallow GitHub user-center README and one-look-three-check paths and blocks old deep-only owner paths. | S2PIT01-SHALLOW-USER-CENTER-C001 | EXTRACTED |
 | 2026-06-27T04:55:54+10:00 | stage2_p1_review_receipt_refresh_c001 | Refreshed S2PMT07 P1 review receipt routing for C-001 so the user-center first-screen finding points to dedicated shallow GitHub user-center evidence instead of older deep owner-doc evidence. | S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C001 | EXTRACTED |
+| 2026-06-27T05:25:16+10:00 | stage2_owner_status_counts_c002 | Recorded dedicated local C-002 evidence that S2PIT02 now requires shallow GitHub mail/queue status counts, candidate-pool conservation, and explicit pending daily review/action snapshot fields. | S2PIT02-OWNER-STATUS-C002 | EXTRACTED |
+| 2026-06-27T05:25:16+10:00 | stage2_p1_review_receipt_refresh_c002 | Refreshed S2PMT07 P1 review receipt routing for C-002 so runtime dashboard count evidence points to dedicated shallow GitHub mail/queue status evidence instead of older deep owner-doc evidence. | S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C002 | EXTRACTED |

@@ -50,6 +50,7 @@ from arxiv_daily_push.stage2_sources import (
     S2PET03_US_FM_BACKBONE_MODEL_ID,
     S2PET04_US_TP_D4_QUALIFICATION_MODEL_ID,
     S2PIT01_REQUIRED_CONTROL_DOMAINS,
+    S2PIT02_OWNER_STATUS_PATH,
     S2PIT02_RUNTIME_DASHBOARD_MODEL_ID,
     S2PIT01_USER_CENTER_MODEL_ID,
     S2PIT03_REQUIRED_READING_BOARDS,
@@ -385,6 +386,33 @@ def s2pit02_production_gate_state(**overrides: object) -> dict:
     return state
 
 
+def s2pit02_owner_status_summary(**overrides: object) -> dict:
+    state = {
+        "snapshot_source": S2PIT02_OWNER_STATUS_PATH,
+        "snapshot_only": True,
+        "data_as_of": "2026-06-26 20:52:29 Australia/Sydney",
+        "sent_today": 2,
+        "expected_today": 4,
+        "total_candidate_pool": 299,
+        "generated_report_or_preview_count": 30,
+        "pending_candidate_count": 269,
+        "historical_send_record_count": 4,
+        "selected_candidate_count": 20,
+        "review_action_snapshot_state": "pending_daily_snapshot",
+        "review_action_pending_field_count": 10,
+        "status_states_observed": ["sent", "blocked_not_sent", "queued_or_pending"],
+        "status_states_not_proven": ["empty", "delayed", "failed"],
+        "evidence_refs": [
+            S2PIT02_OWNER_STATUS_PATH,
+            "用户中心/截至今日候选池.md",
+            "用户中心/复习行动与收益.md",
+            "docs/owner/CONTENT_LEDGER.csv",
+        ],
+    }
+    state.update(overrides)
+    return state
+
+
 def s2pit02_runtime_dashboard_report() -> dict:
     return build_s2pit02_runtime_dashboard_report(
         generated_at=GENERATED_AT,
@@ -393,6 +421,7 @@ def s2pit02_runtime_dashboard_report() -> dict:
         watchdog_report=s2pit02_runtime_report("watchdog"),
         storage_inspect_report=s2pit01_storage_inspect(),
         production_gate_state=s2pit02_production_gate_state(),
+        owner_status_summary=s2pit02_owner_status_summary(),
     )
 
 
@@ -5530,6 +5559,7 @@ class Stage2SourceTests(unittest.TestCase):
             watchdog_report=s2pit02_runtime_report("watchdog"),
             storage_inspect_report=s2pit01_storage_inspect(),
             production_gate_state=s2pit02_production_gate_state(),
+            owner_status_summary=s2pit02_owner_status_summary(),
         )
 
         self.assertEqual(report["model_id"], S2PIT02_RUNTIME_DASHBOARD_MODEL_ID)
@@ -5540,11 +5570,22 @@ class Stage2SourceTests(unittest.TestCase):
         self.assertEqual(report["runtime_state_gate"], "pass")
         self.assertEqual(report["storage_state_gate"], "pass")
         self.assertEqual(report["production_boundary_gate"], "pass")
+        self.assertEqual(report["owner_status_count_gate"], "pass")
         self.assertEqual(report["dashboard_section_gate"], "pass")
         self.assertTrue(report["s2pit02_runtime_dashboard_ready"])
         self.assertIn("runtime", report["dashboard_sections"])
         self.assertIn("watchdog", report["dashboard_sections"]["runtime"]["runtime_actions_observed"])
-        self.assertEqual(report["owner_status_path"], "docs/owner/00_用户中心/01_当前状态.md")
+        self.assertEqual(report["owner_status_path"], S2PIT02_OWNER_STATUS_PATH)
+        owner_summary = report["owner_status_summary"]
+        self.assertEqual(owner_summary["total_candidate_pool"], 299)
+        self.assertEqual(
+            owner_summary["total_candidate_pool"],
+            owner_summary["generated_report_or_preview_count"] + owner_summary["pending_candidate_count"],
+        )
+        self.assertEqual(owner_summary["sent_today"], 2)
+        self.assertEqual(owner_summary["expected_today"], 4)
+        self.assertEqual(owner_summary["review_action_snapshot_state"], "pending_daily_snapshot")
+        self.assertIn("empty", owner_summary["status_states_not_proven"])
         self.assertFalse(report["stage2_production_accepted"])
         self.assertFalse(report["integrated_production_accepted"])
         self.assertFalse(report["real_smtp_sent"])
@@ -5552,6 +5593,22 @@ class Stage2SourceTests(unittest.TestCase):
         self.assertFalse(report["release_upload_allowed"])
         self.assertFalse(report["public_schema_changed"])
         self.assertFalse(validate_s2pit02_runtime_dashboard_report(report))
+
+    def test_s2pit02_runtime_dashboard_requires_explicit_owner_status_summary(self) -> None:
+        report = build_s2pit02_runtime_dashboard_report(
+            generated_at=GENERATED_AT,
+            user_center_report=s2pit01_user_center_report(),
+            runtime_audit_report=s2pit02_runtime_report("runtime_audit"),
+            watchdog_report=s2pit02_runtime_report("watchdog"),
+            storage_inspect_report=s2pit01_storage_inspect(),
+            production_gate_state=s2pit02_production_gate_state(),
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["owner_status_count_gate"], "blocked")
+        joined = " ".join(report["blocking_reasons"])
+        self.assertIn("owner status summary missing fields", joined)
+        self.assertTrue(validate_s2pit02_runtime_dashboard_report(report))
 
     def test_s2pit02_runtime_dashboard_blocks_stale_runtime_and_production_side_effect(self) -> None:
         report = build_s2pit02_runtime_dashboard_report(
@@ -5561,6 +5618,10 @@ class Stage2SourceTests(unittest.TestCase):
             watchdog_report=s2pit02_runtime_report("heartbeat"),
             storage_inspect_report=s2pit01_storage_inspect("blocked"),
             production_gate_state=s2pit02_production_gate_state(real_smtp_sent=True),
+            owner_status_summary=s2pit02_owner_status_summary(
+                total_candidate_pool=300,
+                status_states_observed=["sent"],
+            ),
         )
 
         self.assertEqual(report["status"], "blocked")
@@ -5568,7 +5629,10 @@ class Stage2SourceTests(unittest.TestCase):
         self.assertEqual(report["runtime_state_gate"], "blocked")
         self.assertEqual(report["storage_state_gate"], "blocked")
         self.assertEqual(report["production_boundary_gate"], "blocked")
+        self.assertEqual(report["owner_status_count_gate"], "blocked")
         joined = " ".join(report["blocking_reasons"])
+        self.assertIn("candidate counts must conserve", joined)
+        self.assertIn("missing status states", joined)
         self.assertIn("runtime_audit report must pass", joined)
         self.assertIn("real_scheduler_installed", joined)
         self.assertIn("watchdog report action must be watchdog", joined)
@@ -5586,6 +5650,7 @@ class Stage2SourceTests(unittest.TestCase):
                 watchdog_report=s2pit02_runtime_report("watchdog"),
                 storage_inspect_report=s2pit01_storage_inspect(),
                 production_gate_state=s2pit02_production_gate_state(),
+                owner_status_summary=s2pit02_owner_status_summary(),
             )
 
             self.assertEqual(report["status"], "pass")
@@ -8447,11 +8512,16 @@ class Stage2SourceTests(unittest.TestCase):
             watchdog_path = tmp_path / "watchdog.json"
             storage_path = tmp_path / "storage-inspect.json"
             gate_path = tmp_path / "production-gate.json"
+            owner_status_path = tmp_path / "owner-status-summary.json"
             user_center_path.write_text(json.dumps(s2pit01_user_center_report(), ensure_ascii=False), encoding="utf-8")
             runtime_path.write_text(json.dumps(s2pit02_runtime_report("runtime_audit"), ensure_ascii=False), encoding="utf-8")
             watchdog_path.write_text(json.dumps(s2pit02_runtime_report("watchdog"), ensure_ascii=False), encoding="utf-8")
             storage_path.write_text(json.dumps(s2pit01_storage_inspect(), ensure_ascii=False), encoding="utf-8")
             gate_path.write_text(json.dumps(s2pit02_production_gate_state(), ensure_ascii=False), encoding="utf-8")
+            owner_status_path.write_text(
+                json.dumps(s2pit02_owner_status_summary(), ensure_ascii=False),
+                encoding="utf-8",
+            )
             with redirect_stdout(buffer):
                 result = main([
                     "stage2-runtime-dashboard",
@@ -8471,6 +8541,8 @@ class Stage2SourceTests(unittest.TestCase):
                     str(storage_path),
                     "--production-gate-state",
                     str(gate_path),
+                    "--owner-status-summary",
+                    str(owner_status_path),
                     "--no-write",
                     "--json",
                 ])
@@ -8482,6 +8554,8 @@ class Stage2SourceTests(unittest.TestCase):
         self.assertEqual(payload["status"], "pass")
         self.assertEqual(payload["runtime_state_gate"], "pass")
         self.assertEqual(payload["production_boundary_gate"], "pass")
+        self.assertEqual(payload["owner_status_count_gate"], "pass")
+        self.assertEqual(payload["owner_status_summary"]["total_candidate_pool"], 299)
         self.assertTrue(payload["s2pit02_runtime_dashboard_ready"])
         self.assertFalse(payload["integrated_production_accepted"])
 

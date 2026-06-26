@@ -7,7 +7,7 @@ machine_summary:
 
 - model_count: 106
 - formula_count: 108
-- parameter_count: 919
+- parameter_count: 921
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -905,6 +905,14 @@ Uncovered planned scenarios:
 - The only editable fact source is `config/owner_controls.yaml`; shallow GitHub `用户中心/README.md` and `用户中心/一看三查.md` are the required owner-facing entry paths; `docs/owner/00_用户中心/*` and generated owner views are compatibility pointers or read-only render artifacts.
 - Passing S2PIT01 requires owner_controls validation, read-only storage inspect status, four control domains, shallow GitHub user-center paths, two-click reachability, compatible config compilation, and all production/schema/email side-effect flags false. Missing required shallow user-center paths blocks the report.
 - S2PIT01 does not claim `OWNER_EXPERIENCE_ACCEPTED`, `STAGE2_PRODUCTION_ACCEPTED`, `INTEGRATED_PRODUCTION_ACCEPTED`, SMTP, scheduler, Release, public schema, DB migration, queue mutation, source-adapter change, or Email V1 runtime change.
+
+## S2PIT02 Runtime Dashboard Owner Status Evidence
+
+- `MOD-ADP-080` / `FORM-ADP-082` now bind S2PIT02 to the shallow GitHub owner status page `用户中心/邮件发送与队列状态.md` instead of the historical deep owner-status page.
+- Passing S2PIT02 requires the owner status summary to expose `sent_today`, `expected_today`, `total_candidate_pool`, `generated_report_or_preview_count`, `pending_candidate_count`, `historical_send_record_count`, and `review_action_snapshot_state`.
+- The current C-002 snapshot requires `2 <= 4` for sent/expected mail count and `299 = 30 + 269` for total candidate-pool conservation. It also requires sent, blocked-not-sent, and queued-or-pending status visibility.
+- Review/action/asset/ROI daily quantities remain `pending_daily_snapshot` until real daily reports sync into GitHub 用户中心; this evidence records the gap and does not fabricate those numbers.
+- S2PIT02 still does not claim C-002 closure, independent signoff, `OWNER_EXPERIENCE_ACCEPTED`, `STAGE2_PRODUCTION_ACCEPTED`, `INTEGRATED_PRODUCTION_ACCEPTED`, SMTP, scheduler, Release, public schema, DB migration, queue mutation, source-adapter change, ranking change, or Email V1 runtime change.
 
 ## S2PHT05 Content Quality Gate Evidence
 

@@ -897,6 +897,11 @@ def build_parser() -> argparse.ArgumentParser:
     s2pit02_dashboard.add_argument("--watchdog-report", required=True, help="Passing watchdog report JSON.")
     s2pit02_dashboard.add_argument("--storage-inspect-report", required=True, help="Passing read-only storage inspect report JSON.")
     s2pit02_dashboard.add_argument("--production-gate-state", help="Optional production gate state JSON; all production side-effect flags must be false.")
+    s2pit02_dashboard.add_argument(
+        "--owner-status-summary",
+        required=True,
+        help="Required shallow GitHub user-center mail/queue status summary JSON.",
+    )
     s2pit02_dashboard.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
     s2pit02_dashboard.add_argument("--json", action="store_true", help="Print JSON runtime dashboard report.")
 
@@ -2793,6 +2798,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0 if report["status"] == "pass" and not errors else 2
     if args.command == "stage2-runtime-dashboard":
         production_gate_state = load_json_mapping(args.production_gate_state) if args.production_gate_state else {}
+        owner_status_summary = load_json_mapping(args.owner_status_summary)
         report = run_s2pit02_runtime_dashboard(
             state_dir=args.state_dir,
             date=args.date,
@@ -2802,6 +2808,7 @@ def main(argv: list[str] | None = None) -> int:
             watchdog_report=load_json_mapping(args.watchdog_report),
             storage_inspect_report=load_json_mapping(args.storage_inspect_report),
             production_gate_state=production_gate_state,
+            owner_status_summary=owner_status_summary,
             write=not args.no_write,
         )
         errors = validate_s2pit02_runtime_dashboard_report(report)
@@ -2810,6 +2817,7 @@ def main(argv: list[str] | None = None) -> int:
         else:
             print(report["status"])
             print(f"- owner_center_gate: {report.get('owner_center_gate')}")
+            print(f"- owner_status_count_gate: {report.get('owner_status_count_gate')}")
             print(f"- runtime_state_gate: {report.get('runtime_state_gate')}")
             print(f"- storage_state_gate: {report.get('storage_state_gate')}")
             print(f"- production_boundary_gate: {report.get('production_boundary_gate')}")
