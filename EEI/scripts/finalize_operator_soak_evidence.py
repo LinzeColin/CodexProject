@@ -41,9 +41,16 @@ from scripts.validate_operator_soak_evidence import (  # noqa: E402
 
 ROOT = PROJECT_ROOT
 SCHEMA_VERSION = "eei-a209-operator-soak-finalization-preflight-v1"
+RECOVERY_PACKET_SCHEMA_VERSION = "eei-a209-operator-soak-recovery-authorization-packet-v1"
 DEFAULT_OUTPUT = ROOT / "artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json"
 DEFAULT_PROMOTION_MANIFEST = ROOT / "artifacts/tests/a209/t1307_operator_soak_24h_promotion.json"
+DEFAULT_RECOVERY_PACKET = (
+    ROOT / "artifacts/tests/a209/t1307_operator_soak_recovery_authorization_packet.json"
+)
 DEFAULT_INCIDENT_DIR = ROOT / "artifacts/tests/a209/incidents"
+DEFAULT_RECOVERY_AUTHORIZATION_TARGET = (
+    "artifacts/operator_inputs/a209/clean-rerun-authorization.json"
+)
 
 
 def utc_now() -> str:
@@ -73,6 +80,29 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
+def repository_source_entry(role: str, path: Path) -> dict[str, Any]:
+    return {
+        "role": role,
+        "path": display_path(path),
+        "repository_managed": True,
+        "sha256": sha256_file(path),
+        "preservation_required_before_clean_rerun": True,
+        "hash_bound_in_ci": True,
+    }
+
+
+def runtime_source_entry(role: str, path: str | None) -> dict[str, Any]:
+    return {
+        "role": role,
+        "path": path or "UNKNOWN_OPERATOR_RUNTIME_PATH",
+        "repository_managed": False,
+        "sha256": None,
+        "preservation_required_before_clean_rerun": True,
+        "hash_bound_in_ci": False,
+        "validation_scope": "operator must preserve and attest this external runtime file",
+    }
+
+
 def sanitize_timestamp(value: str) -> str:
     return value.replace(":", "").replace("-", "").replace("+", "Z")
 
@@ -99,6 +129,76 @@ def summarize_evidence(evidence: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def evidence_result(evidence: dict[str, Any], label: str) -> dict[str, Any]:
+    for row in evidence.get("results", []):
+        if isinstance(row, dict) and row.get("label") == label:
+            return row
+    return {}
+
+
+def canonical_failed_evidence_summary(evidence: dict[str, Any]) -> dict[str, Any]:
+    result = evidence_result(evidence, "operator_24h")
+    return {
+        "label": "operator_24h",
+        "status": result.get("status"),
+        "output_path": result.get("output_path"),
+        "checkpoint_path": result.get("checkpoint_path"),
+        "windows_completed": result.get("windows_completed"),
+        "windows_failed": result.get("windows_failed"),
+        "checkpoint_windows": result.get("checkpoint_windows"),
+        "failed_checkpoint_windows": result.get("failed_checkpoint_windows"),
+        "failed_windows": result.get("failed_windows", []),
+        "errors": result.get("errors", []),
+    }
+
+
+def isolated_rerun_failure_summary(heartbeat: dict[str, Any]) -> dict[str, Any]:
+    progress = heartbeat.get("progress") if isinstance(heartbeat.get("progress"), dict) else {}
+    latest_success = (
+        progress.get("latest_successful_window")
+        if isinstance(progress.get("latest_successful_window"), dict)
+        else {}
+    )
+    failed_index = None
+    if isinstance(latest_success.get("index"), int) and progress.get("windows_failed"):
+        failed_index = latest_success["index"] + 1
+    elif isinstance(progress.get("windows_completed"), int) and progress.get("windows_failed"):
+        failed_index = progress["windows_completed"] + progress.get("windows_failed", 0)
+    return {
+        "status": heartbeat.get("status"),
+        "progress_status": heartbeat.get("progress_status"),
+        "target_windows": progress.get("target_windows"),
+        "windows_completed": progress.get("windows_completed"),
+        "windows_failed": progress.get("windows_failed"),
+        "windows_remaining": progress.get("windows_remaining"),
+        "completion_percent": progress.get("completion_percent"),
+        "latest_successful_window_index": latest_success.get("index"),
+        "latest_successful_window_ended_at": latest_success.get("ended_at"),
+        "inferred_failed_window_index": failed_index,
+        "inferred_failed_window_output_path": infer_failed_window_output_path(
+            latest_success.get("output_path"),
+            latest_success.get("index"),
+            failed_index,
+        ),
+    }
+
+
+def infer_failed_window_output_path(
+    latest_output_path: str | None,
+    latest_index: Any,
+    failed_index: int | None,
+) -> str:
+    if (
+        latest_output_path
+        and isinstance(latest_index, int)
+        and isinstance(failed_index, int)
+    ):
+        suffix = f"-{latest_index}.json"
+        if latest_output_path.endswith(suffix):
+            return f"{latest_output_path.removesuffix(suffix)}-{failed_index}.json"
+    return "UNKNOWN_OPERATOR_RUNTIME_PATH: inspect checkpoint/log failed window output_path"
+
+
 def summarize_heartbeat(heartbeat: dict[str, Any]) -> dict[str, Any]:
     progress = heartbeat.get("progress") if isinstance(heartbeat.get("progress"), dict) else {}
     contract = (
@@ -121,6 +221,178 @@ def summarize_heartbeat(heartbeat: dict[str, Any]) -> dict[str, Any]:
         "windows_failed": progress.get("windows_failed"),
         "windows_remaining": progress.get("windows_remaining"),
         "completion_percent": progress.get("completion_percent"),
+    }
+
+
+def build_recovery_authorization_packet(
+    *,
+    heartbeat_path: Path = DEFAULT_HEARTBEAT,
+    evidence_path: Path = DEFAULT_EVIDENCE,
+    finalization_path: Path = DEFAULT_OUTPUT,
+    generated_at: str | None = None,
+) -> dict[str, Any]:
+    heartbeat = read_json(heartbeat_path)
+    evidence = read_json(evidence_path)
+    finalization = read_json(finalization_path)
+    heartbeat_summary = summarize_heartbeat(heartbeat)
+    evidence_summary = summarize_evidence(evidence)
+    finalization_status_value = finalization.get("status")
+    recovery_required = (
+        heartbeat.get("progress_status") == "FAILED_WINDOW"
+        or evidence.get("status") in {"FAIL", "FAILED_OPERATOR_EVIDENCE"}
+        or finalization_status_value == "A209_FINALIZATION_OPERATOR_INTERVENTION_REQUIRED"
+    )
+    artifacts = heartbeat.get("artifacts") if isinstance(heartbeat.get("artifacts"), dict) else {}
+    progress = heartbeat.get("progress") if isinstance(heartbeat.get("progress"), dict) else {}
+    latest_success = (
+        progress.get("latest_successful_window")
+        if isinstance(progress.get("latest_successful_window"), dict)
+        else {}
+    )
+    canonical = canonical_failed_evidence_summary(evidence)
+    clean_dir = "/private/tmp/eei-a209-clean-rerun-YYYYMMDD-HHMM"
+    clean_output = f"{clean_dir}/operator_soak_24h.json"
+    clean_checkpoint = f"{clean_dir}/operator_soak_24h.checkpoints.jsonl"
+    return {
+        "schema_version": RECOVERY_PACKET_SCHEMA_VERSION,
+        "artifact_id": "t1307-a209-operator-soak-recovery-authorization-packet",
+        "generated_at": generated_at or utc_now(),
+        "system_name": "EEI",
+        "system_en_name": "Enterprise Ecosystem Intelligence",
+        "task_id": "T1307",
+        "acceptance_ids": ["A209"],
+        "status": "A209_RECOVERY_OPERATOR_AUTHORIZATION_REQUIRED"
+        if recovery_required
+        else "A209_RECOVERY_NOT_REQUIRED",
+        "a209_task_status_required": "IN_PROGRESS",
+        "release_gate_closed_by_recovery_packet": False,
+        "clean_rerun_authorized_by_packet": False,
+        "source_files": {
+            "heartbeat": display_path(heartbeat_path),
+            "heartbeat_sha256": sha256_file(heartbeat_path),
+            "evidence_validation": display_path(evidence_path),
+            "evidence_validation_sha256": sha256_file(evidence_path),
+            "finalization_preflight": display_path(finalization_path),
+            "finalization_preflight_sha256": sha256_file(finalization_path),
+        },
+        "current_gate_state": {
+            "heartbeat": heartbeat_summary,
+            "evidence_validation": evidence_summary,
+            "finalization_status": finalization_status_value,
+            "downstream_release_gate_refresh_allowed": finalization.get(
+                "downstream_release_gate_refresh_allowed"
+            ),
+            "release_gate_closed_by_finalizer": finalization.get(
+                "release_gate_closed_by_finalizer"
+            ),
+        },
+        "failed_evidence_summary": {
+            "canonical_failed_operator_evidence": canonical,
+            "latest_isolated_rerun_failure": isolated_rerun_failure_summary(heartbeat),
+        },
+        "failed_evidence_preservation": {
+            "required_before_clean_rerun": recovery_required,
+            "operator_attestation_required": True,
+            "authorization_target": DEFAULT_RECOVERY_AUTHORIZATION_TARGET,
+            "repository_sources": [
+                repository_source_entry("background_heartbeat", heartbeat_path),
+                repository_source_entry("evidence_validation", evidence_path),
+                repository_source_entry("finalization_preflight", finalization_path),
+                repository_source_entry("canonical_24h_summary", ROOT / canonical["output_path"]),
+                repository_source_entry(
+                    "canonical_24h_checkpoint",
+                    ROOT / canonical["checkpoint_path"],
+                ),
+            ],
+            "runtime_sources_to_preserve": [
+                runtime_source_entry(
+                    "isolated_rerun_summary",
+                    artifacts.get("operator_output_path"),
+                ),
+                runtime_source_entry(
+                    "isolated_rerun_checkpoint",
+                    artifacts.get("operator_checkpoint_path"),
+                ),
+                runtime_source_entry("isolated_rerun_log", artifacts.get("operator_log_path")),
+                runtime_source_entry("isolated_rerun_pid", artifacts.get("operator_pid_path")),
+                runtime_source_entry(
+                    "latest_successful_window_output",
+                    latest_success.get("output_path"),
+                ),
+                runtime_source_entry(
+                    "inferred_failed_window_output",
+                    isolated_rerun_failure_summary(heartbeat).get(
+                        "inferred_failed_window_output_path"
+                    ),
+                ),
+            ],
+        },
+        "operator_authorization_contract": {
+            "authorization_required_before_start": True,
+            "authorization_file": DEFAULT_RECOVERY_AUTHORIZATION_TARGET,
+            "required_schema_version": "eei-a209-clean-rerun-authorization-v1",
+            "required_fields": [
+                "schema_version",
+                "authorized_by",
+                "authorized_at",
+                "reason",
+                "failed_evidence_preserved",
+                "preserved_evidence_manifest_sha256",
+                "allow_clean_rerun",
+                "allowed_output_dir",
+                "acknowledge_previous_failed_window",
+            ],
+            "required_boolean_values": {
+                "failed_evidence_preserved": True,
+                "allow_clean_rerun": True,
+                "acknowledge_previous_failed_window": True,
+            },
+        },
+        "clean_rerun_contract": {
+            "may_start_without_authorization": False,
+            "recommended_output_dir_template": f"{clean_dir}/",
+            "operator_command_template": (
+                "node scripts/run_operator_soak.mjs --mode operator_24h "
+                "--duration-hours 24 --window-seconds 300 "
+                f"--output {clean_output} "
+                f"--checkpoint {clean_checkpoint} --fail-on-budget --quiet"
+            ),
+            "watchdog_command_template": (
+                "python scripts/watch_operator_soak.py --detach --execute --auto-resume "
+                "--cycles 300 --interval-seconds 300 "
+                f"--write-output {clean_dir}/watchdog.json"
+            ),
+            "post_rerun_validation_commands": [
+                "python scripts/finalize_operator_soak_evidence.py promote-rerun "
+                f"--source-output {clean_output} --source-checkpoint {clean_checkpoint}",
+                "make generate-operator-soak-background-heartbeat "
+                "generate-operator-soak-evidence-artifact "
+                "generate-operator-soak-finalization-preflight",
+                "make validate-operator-soak-background-heartbeat "
+                "validate-operator-soak-evidence "
+                "validate-operator-soak-finalization-preflight",
+            ],
+        },
+        "operator_next_actions": [
+            "Preserve every listed repository and runtime evidence file before any clean rerun.",
+            "Write a signed clean-rerun authorization file only after preservation is complete.",
+            "Start a clean 24h rerun in a new output directory only after authorization.",
+            "Promote a rerun only after 288/288 windows pass, zero failures, "
+            "and validator release-ready status.",
+        ],
+        "non_claims": [
+            "This recovery packet does not start, stop, resume, or restart A209.",
+            "This recovery packet does not close A209 or any release gate.",
+            "This recovery packet does not promote failed or partial runtime evidence.",
+            "This recovery packet does not replace the final 24h evidence validator.",
+        ],
+        "rollback": [
+            "Regenerate this packet from heartbeat, evidence-validation and "
+            "finalization artifacts.",
+            "Do not delete failed runtime evidence during rollback.",
+            "If a clean rerun was started without authorization, discard it as "
+            "non-release evidence.",
+        ],
     }
 
 
@@ -292,6 +564,58 @@ def validate_preflight(
     if payload.get("downstream_release_gate_refresh_allowed") is True:
         if payload.get("status") != "A209_FINALIZATION_READY_FOR_RELEASE_GATE_REGEN":
             raise ValueError("downstream refresh requires ready finalization status")
+
+
+def validate_recovery_authorization_packet(
+    payload: dict[str, Any],
+    *,
+    heartbeat_path: Path = DEFAULT_HEARTBEAT,
+    evidence_path: Path = DEFAULT_EVIDENCE,
+    finalization_path: Path = DEFAULT_OUTPUT,
+) -> None:
+    expected = build_recovery_authorization_packet(
+        heartbeat_path=heartbeat_path,
+        evidence_path=evidence_path,
+        finalization_path=finalization_path,
+        generated_at=payload.get("generated_at"),
+    )
+    checked_fields = (
+        "schema_version",
+        "artifact_id",
+        "system_name",
+        "task_id",
+        "acceptance_ids",
+        "status",
+        "a209_task_status_required",
+        "release_gate_closed_by_recovery_packet",
+        "clean_rerun_authorized_by_packet",
+        "source_files",
+        "current_gate_state",
+        "failed_evidence_summary",
+        "failed_evidence_preservation",
+        "operator_authorization_contract",
+        "clean_rerun_contract",
+        "operator_next_actions",
+        "non_claims",
+    )
+    for key in checked_fields:
+        if payload.get(key) != expected.get(key):
+            raise ValueError(f"A209 recovery authorization packet drift: {key}")
+    if payload.get("release_gate_closed_by_recovery_packet") is not False:
+        raise ValueError("A209 recovery packet must not close release gates")
+    if payload.get("clean_rerun_authorized_by_packet") is not False:
+        raise ValueError("A209 recovery packet must not authorize a clean rerun by itself")
+    if payload.get("status") == "A209_RECOVERY_OPERATOR_AUTHORIZATION_REQUIRED":
+        preservation = payload.get("failed_evidence_preservation")
+        if not isinstance(preservation, dict):
+            raise ValueError("A209 recovery packet missing preservation contract")
+        if preservation.get("required_before_clean_rerun") is not True:
+            raise ValueError("A209 recovery packet must require preservation before rerun")
+        authorization = payload.get("operator_authorization_contract")
+        if not isinstance(authorization, dict):
+            raise ValueError("A209 recovery packet missing authorization contract")
+        if authorization.get("authorization_required_before_start") is not True:
+            raise ValueError("A209 recovery packet must require operator authorization")
 
 
 def refresh_upstream_artifacts() -> None:
@@ -525,10 +849,21 @@ def promote_rerun_source(
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("generate", "validate", "promote-rerun"))
+    parser.add_argument(
+        "command",
+        choices=(
+            "generate",
+            "validate",
+            "generate-recovery-packet",
+            "validate-recovery-packet",
+            "promote-rerun",
+        ),
+    )
     parser.add_argument("--heartbeat", type=Path, default=DEFAULT_HEARTBEAT)
     parser.add_argument("--evidence-validation", type=Path, default=DEFAULT_EVIDENCE)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument("--finalization-preflight", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument("--recovery-output", type=Path, default=DEFAULT_RECOVERY_PACKET)
     parser.add_argument("--source-output", type=Path)
     parser.add_argument("--source-checkpoint", type=Path)
     parser.add_argument("--destination-output", type=Path, default=REQUIRED_RUNS[1].output_path)
@@ -573,6 +908,38 @@ def main() -> int:
         )
         if not args.quiet:
             print(json.dumps({"valid": True, "artifact": display_path(args.output)}))
+    elif args.command == "generate-recovery-packet":
+        payload = build_recovery_authorization_packet(
+            heartbeat_path=args.heartbeat,
+            evidence_path=args.evidence_validation,
+            finalization_path=args.finalization_preflight,
+        )
+        validate_recovery_authorization_packet(
+            payload,
+            heartbeat_path=args.heartbeat,
+            evidence_path=args.evidence_validation,
+            finalization_path=args.finalization_preflight,
+        )
+        write_json(args.recovery_output, payload)
+        if not args.quiet:
+            print(
+                json.dumps(
+                    {
+                        "generated": True,
+                        "artifact": display_path(args.recovery_output),
+                        "status": payload["status"],
+                    }
+                )
+            )
+    elif args.command == "validate-recovery-packet":
+        validate_recovery_authorization_packet(
+            read_json(args.recovery_output),
+            heartbeat_path=args.heartbeat,
+            evidence_path=args.evidence_validation,
+            finalization_path=args.finalization_preflight,
+        )
+        if not args.quiet:
+            print(json.dumps({"valid": True, "artifact": display_path(args.recovery_output)}))
     else:
         if args.source_output is None or args.source_checkpoint is None:
             raise SystemExit("promote-rerun requires --source-output and --source-checkpoint")

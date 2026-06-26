@@ -11,13 +11,14 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version: `0.1.0`
 - Product version status: `provisional`
 - Current phase: `D`
-- Current gate: `TASK-T1307-A209-FAILED-WINDOW-130-INTERVENTION`
+- Current gate: `TASK-T1307-A209-RECOVERY-AUTHORIZATION-PACKET`
 - Confirmed iteration count: 39
 - Reconstructed development event count: 6
-- Current task: `TASK-T1307/A209 isolated rerun failed-window evidence sync and recovery gate`
+- Current task: `TASK-T1307/A209 recovery authorization packet and failed evidence preservation gate`
 - Current A209 point-in-time heartbeat: the clean 24h operator soak attempt launched at `2026-06-25T21:33:19Z` failed at checkpoint window `7/288`; `6` windows passed, `1` failed, latest checkpoint time is `2026-06-25T22:08:58Z`, `child_status=NO_OUTPUT`, `exit_status=1`, and stderr reports `page.evaluate: Target page, context or browser has been closed`. No `run_operator_soak` or `run_soak_smoke` process was found during the 2026-06-26 check. A209 remains `IN_PROGRESS` and has no release-ready 24h evidence.
 - Current isolated rerun: `/private/tmp/eei-a209-rerun-20260626-0918/` was started without overwriting the failed canonical checkpoint and then failed at checkpoint window `130/288`; `129` windows passed, `1` failed, latest successful checkpoint ended `2026-06-26T09:58:08Z`, failed checkpoint time is `2026-06-26T10:03:11Z`, and the failure path is `/private/tmp/eei-operator-soak-80478-130.json`. Repository heartbeat reports `BACKGROUND_SOAK_OPERATOR_INTERVENTION_REQUIRED`, finalization reports `A209_FINALIZATION_OPERATOR_INTERVENTION_REQUIRED`, and recorded operator/watchdog PIDs `80478`/`80732` are not running. A209 remains `IN_PROGRESS` and requires explicit operator-authorized clean rerun/recovery before any promotion or finalization.
-- Blockers: T1301/A202 is still `IN_PROGRESS`; the refreshed operator review packet is freshness-correct supporting review evidence only and does not create source-license review, passage-level human approval, production owner approval, legal release clearance, brand clearance, release-manager activation or final public relationship publication. T1307/A209 is still `IN_PROGRESS`; failed `7/288` evidence plus short repair probes are non-closure evidence only and the isolated rerun must reach `288/288` successful windows with zero failures before promotion/finalization can allow downstream release-gate refresh. A204/A205 release-manager activation preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED` until A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence pass. A026 still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%. The new T904 operator labeling packet is a source-bound worksheet with blank `OPERATOR_TO_LABEL` slots and is not production gold evidence. A210 still needs formal brand legal/market clearance or signed risk waiver. The T1303 external release operator intake packet now uses schema `eei-external-release-operator-intake-packet-v2`, lists exact submission targets under `artifacts/operator_inputs/`, and keeps `release_gate_closed_by_operator_packet=false`; it is a checklist/hash manifest, not clearance.
+- Current A209 recovery packet: `artifacts/tests/a209/t1307_operator_soak_recovery_authorization_packet.json` is generated and validated. It records failed repository/runtime evidence paths, requires signed operator authorization at `artifacts/operator_inputs/a209/clean-rerun-authorization.json` before any clean 24h rerun, and keeps `clean_rerun_authorized_by_packet=false` plus `release_gate_closed_by_recovery_packet=false`.
+- Blockers: T1301/A202 is still `IN_PROGRESS`; the refreshed operator review packet is freshness-correct supporting review evidence only and does not create source-license review, passage-level human approval, production owner approval, legal release clearance, brand clearance, release-manager activation or final public relationship publication. T1307/A209 is still `IN_PROGRESS`; failed `7/288` evidence plus short repair probes and the recovery authorization packet are non-closure evidence only, and a fresh clean rerun must reach `288/288` successful windows with zero failures before promotion/finalization can allow downstream release-gate refresh. A204/A205 release-manager activation preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED` until A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence pass. A026 still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%. The new T904 operator labeling packet is a source-bound worksheet with blank `OPERATOR_TO_LABEL` slots and is not production gold evidence. A210 still needs formal brand legal/market clearance or signed risk waiver. The T1303 external release operator intake packet uses schema `eei-external-release-operator-intake-packet-v2`, lists exact submission targets under `artifacts/operator_inputs/`, now includes the A209 recovery packet as supporting evidence, and keeps `release_gate_closed_by_operator_packet=false`; it is a checklist/hash manifest, not clearance.
 - Frontend hardening: T1308/A211 now includes an evidence detail drawer with `role=dialog`, `aria-modal=true`, sibling `inert`/`aria-hidden`, Tab/Shift+Tab focus trapping, Escape/close handling and trigger focus restoration. This fixes review issue `A11Y-002` without changing release readiness, publication policy, model formulas, API schema or A209 state.
 - E2E sequencing repair: the A203/A211 production graph hydration regression now closes the A211 evidence drawer before graph lens switching, preserving modal behavior while preventing the drawer from intercepting subsequent lens clicks.
 - Strategic-signal panel: T504/A072 now exposes support, contradiction, alternative hypothesis, half-life/time-decay policy and `F-SS-001@balanced-v2` rule version in the Watchlist-first workspace. FUN-EXP-07 is `PARTIAL` because real strategic-signal ingestion, production API and human content review remain open under T803/T805/T1301/T1302.
@@ -25,6 +26,35 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Live official-source validation: T1301/A202 now validates selected live NVIDIA official capture evidence through `--validate-only` without PostgreSQL writes and requires `source_health.retry_outcome` terminal/dead-letter metadata on every anchor; this remains review input only and does not close source/license/passage/owner/legal clearance or relationship publication.
 
 
+
+## EVENT-20260626-026 - T1307/A209 recovery authorization packet
+
+- Timestamp: 2026-06-26T21:58:00+10:00
+- Fact level: EXTRACTED
+- Base commit: `e6e7d508472fa1863d6b489d12559248669c8a62`
+- Scope: add a machine-validated recovery authorization packet after the A209 isolated rerun failed, without starting, stopping, resuming, promoting or finalizing any soak process.
+- Recovery contract: `artifacts/tests/a209/t1307_operator_soak_recovery_authorization_packet.json` records repository failed evidence hashes, external runtime paths, clean-rerun command templates and `artifacts/operator_inputs/a209/clean-rerun-authorization.json` as the required signed operator authorization target.
+- A205 linkage: the external release operator intake packet source-hashes the recovery packet as supporting A209 evidence while keeping `WAITING_FOR_OPERATOR_INPUTS`.
+- Non-claims: this does not authorize a clean rerun by itself, does not convert failed runtime evidence into release-ready evidence, and does not close A209 or MVP release readiness.
+- Validation: recovery packet generate/validate PASS; external release evidence bundle generate/validate PASS; focused ruff PASS; focused unit tests PASS `31/31`; v5 production readiness sync PASS.
+
+## ITER-20260626-026 - A209 recovery authorization and evidence preservation packet
+
+- Date: 2026-06-26
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `e6e7d508472fa1863d6b489d12559248669c8a62`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1307`, `TASK-T1303`
+- Acceptance IDs: `A209`, `A204`, `A205`
+- Goal: make A209 failed-window recovery explicit, hash-bound and operator-authorized while preserving fail-closed release gates.
+- Files changed: recovery packet code/test/Makefile target, recovery artifact, A205 external release operator packet, operator input README, v5 sync, parameter registry, traceability, delivery task record, changelog and MVP development record.
+- Model changes: none; no formula, weight, threshold, graph traversal, extraction model, API schema, database schema, frontend route or score publication rule changed.
+- Parameter changes: added `PARAM-092` for `soak.recovery_authorization_packet_schema_version`.
+- Commands run: recovery packet generate/validate; external release bundle generate/validate; focused ruff; focused unit tests; v5 production readiness sync.
+- Test results: recovery packet status `A209_RECOVERY_OPERATOR_AUTHORIZATION_REQUIRED`; `clean_rerun_authorized_by_packet=false`; `release_gate_closed_by_recovery_packet=false`; A205 operator intake remains `WAITING_FOR_OPERATOR_INPUTS`.
+- Rollback: revert the recovery packet implementation/artifact and companion governance records; regenerate A205 operator packet without the recovery supporting source; preserve failed A209 runtime evidence unless explicit operator recovery is authorized.
 
 ## EVENT-20260626-023 - T1307/A209 isolated rerun failed at window 130
 

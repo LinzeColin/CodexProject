@@ -4,8 +4,8 @@
 
 - source_base_commit: `047b4094d56fb7b3162b24265501e985690296f0`
 - source_tree_hash: `8737d055c5c24cf2e160003744e375aba6f6145b`
-- source_snapshot_hash: `sha256:5f80b7ba472c2c36fef4983596a966ca3b9abece196d115a446c49db4a77019a`
-- snapshot_event_time: `2026-06-26T21:05:00+10:00`
+- source_snapshot_hash: `sha256:53fa71e2df920dd3ab836bcab904164eb33248d2522e5ece7b0a96cfd5060c1b`
+- snapshot_event_time: `2026-06-26T21:58:00+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -14,10 +14,10 @@
 - Project: `EEI`
 - Path: `EEI`
 - Product version: `0.1.0`
-- Phase/Gate: `D / TASK-T1307-A209-FAILED-WINDOW-130-INTERVENTION`
-- Models/Formulas/Parameters total: `12 / 12 / 91`
-- Active formulas/parameters: `11 / 91`
-- Machine checked formulas/parameters: `11 / 91`
+- Phase/Gate: `D / TASK-T1307-A209-RECOVERY-AUTHORIZATION-PACKET`
+- Models/Formulas/Parameters total: `12 / 12 / 92`
+- Active formulas/parameters: `11 / 92`
+- Machine checked formulas/parameters: `11 / 92`
 
 ## Assurance
 
@@ -35,9 +35,9 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `TASK-T1307-A209-FAILED-WINDOW-130-INTERVENTION`
+- Release gate: `TASK-T1307-A209-RECOVERY-AUTHORIZATION-PACKET`
 - Next executable task: `TASK-T1301`
-- Pending/stale events: `121`
+- Pending/stale events: `123`
 - Tree-bound events: `0`
 - Commit-bound events: `21`
 - Legacy unbound events: `19`

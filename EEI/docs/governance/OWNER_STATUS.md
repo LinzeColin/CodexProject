@@ -39,7 +39,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (91/91 active parameters, 11/11 active formulas)
+- implementation_congruence: `VERIFIED` (92/92 active parameters, 11/11 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `UNVERIFIED`
 - empirical_validation: `PARTIAL`
@@ -71,14 +71,14 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - model_count: `12`
 - total_formulas: `12`
 - active_formulas: `11`
-- total_parameters: `91`
-- active_parameters: `91`
+- total_parameters: `92`
+- active_parameters: `92`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `TASK-T1307-A209-FAILED-WINDOW-130-INTERVENTION`
+- release_gate: `TASK-T1307-A209-RECOVERY-AUTHORIZATION-PACKET`
 
 ## 14. Evidence Freshness
 
@@ -86,8 +86,8 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - tree_bound_events: `0`
 - commit_bound_events: `21`
 - legacy_unbound_events: `19`
-- precommit_pending_events: `100`
-- pending_or_stale_events: `121`
+- precommit_pending_events: `102`
+- pending_or_stale_events: `123`
 
 ## 15. UNKNOWN
 
@@ -97,11 +97,11 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 - source_base_commit: `047b4094d56fb7b3162b24265501e985690296f0`
 - source_tree_hash: `8737d055c5c24cf2e160003744e375aba6f6145b`
-- source_snapshot_hash: `sha256:5f80b7ba472c2c36fef4983596a966ca3b9abece196d115a446c49db4a77019a`
-- snapshot_event_time: `2026-06-26T21:05:00+10:00`
+- source_snapshot_hash: `sha256:53fa71e2df920dd3ab836bcab904164eb33248d2522e5ece7b0a96cfd5060c1b`
+- snapshot_event_time: `2026-06-26T21:58:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.1.0`
-- phase/gate: `D / TASK-T1307-A209-FAILED-WINDOW-130-INTERVENTION`
+- phase/gate: `D / TASK-T1307-A209-RECOVERY-AUTHORIZATION-PACKET`
 
 ## 17. Next Unique Task
 

@@ -8,7 +8,9 @@ import pytest
 
 from scripts.finalize_operator_soak_evidence import (
     build_promotable_source_validation_payload,
+    build_recovery_authorization_packet,
     promote_rerun_source,
+    validate_recovery_authorization_packet,
 )
 from scripts.monitor_operator_soak import build_progress_payload
 from scripts.record_operator_soak_heartbeat import (
@@ -344,6 +346,98 @@ def test_operator_soak_rerun_promotion_archives_failed_canonical(
         for row in saved_manifest["archived_previous_artifacts"]
     )
     assert saved_manifest["release_gate_closed_by_promotion"] is False
+
+
+def test_operator_soak_recovery_packet_requires_preservation_and_authorization(
+    tmp_path: Path,
+) -> None:
+    req_4h = requirement(tmp_path, "operator_4h", "soak.short_duration_hours", "covers_4h_target")
+    req_24h = requirement(tmp_path, "operator_24h", "soak.long_duration_hours", "covers_24h_target")
+    write_run(req_4h, target_seconds=4 * 3600, completed_seconds=4 * 3600)
+    write_declared_failed_run(req_24h)
+    evidence = build_validation_payload(parameters=PARAMETERS, required_runs=(req_4h, req_24h))
+    evidence_path = tmp_path / "evidence.json"
+    evidence_path.write_text(json.dumps(evidence), encoding="utf-8")
+    heartbeat = {
+        "schema_version": "eei-a209-operator-soak-background-heartbeat-v1",
+        "status": "BACKGROUND_SOAK_OPERATOR_INTERVENTION_REQUIRED",
+        "progress_status": "FAILED_WINDOW",
+        "release_gate_closed_by_background_heartbeat": False,
+        "background_resolution_contract": {
+            "operator_process_status": "NOT_RUNNING",
+            "operator_pid": 123,
+            "watchdog_process_status": "NOT_RUNNING",
+            "watchdog_pid": 456,
+        },
+        "progress": {
+            "target_windows": 288,
+            "windows_completed": 1,
+            "windows_failed": 1,
+            "windows_remaining": 286,
+            "completion_percent": 0.69,
+            "latest_successful_window": {
+                "index": 1,
+                "ended_at": "2026-06-26T00:05:00Z",
+                "output_path": "/private/tmp/eei-operator-soak-test-1.json",
+            },
+        },
+        "artifacts": {
+            "operator_output_path": "/private/tmp/eei-a209-clean/operator_soak_24h.json",
+            "operator_checkpoint_path": (
+                "/private/tmp/eei-a209-clean/operator_soak_24h.checkpoints.jsonl"
+            ),
+            "operator_pid_path": "/private/tmp/eei-a209-clean/operator_soak_24h.pid",
+            "operator_log_path": "/private/tmp/eei-a209-clean/operator_soak_24h.log",
+        },
+    }
+    heartbeat_path = tmp_path / "heartbeat.json"
+    heartbeat_path.write_text(json.dumps(heartbeat), encoding="utf-8")
+    finalization = {
+        "status": "A209_FINALIZATION_OPERATOR_INTERVENTION_REQUIRED",
+        "downstream_release_gate_refresh_allowed": False,
+        "release_gate_closed_by_finalizer": False,
+    }
+    finalization_path = tmp_path / "finalization.json"
+    finalization_path.write_text(json.dumps(finalization), encoding="utf-8")
+
+    packet = build_recovery_authorization_packet(
+        heartbeat_path=heartbeat_path,
+        evidence_path=evidence_path,
+        finalization_path=finalization_path,
+        generated_at="2026-06-26T00:00:00Z",
+    )
+
+    assert packet["status"] == "A209_RECOVERY_OPERATOR_AUTHORIZATION_REQUIRED"
+    assert packet["release_gate_closed_by_recovery_packet"] is False
+    assert packet["clean_rerun_authorized_by_packet"] is False
+    assert (
+        packet["failed_evidence_summary"]["latest_isolated_rerun_failure"][
+            "inferred_failed_window_index"
+        ]
+        == 2
+    )
+    runtime_sources = packet["failed_evidence_preservation"]["runtime_sources_to_preserve"]
+    assert any(
+        source["role"] == "inferred_failed_window_output"
+        and source["path"] == "/private/tmp/eei-operator-soak-test-2.json"
+        for source in runtime_sources
+    )
+    assert packet["operator_authorization_contract"]["authorization_required_before_start"] is True
+    validate_recovery_authorization_packet(
+        packet,
+        heartbeat_path=heartbeat_path,
+        evidence_path=evidence_path,
+        finalization_path=finalization_path,
+    )
+
+    packet["clean_rerun_authorized_by_packet"] = True
+    with pytest.raises(ValueError, match="recovery authorization packet drift"):
+        validate_recovery_authorization_packet(
+            packet,
+            heartbeat_path=heartbeat_path,
+            evidence_path=evidence_path,
+            finalization_path=finalization_path,
+        )
 
 
 def write_checkpoint(path: Path, *, index: int, status: str = "PASS") -> None:

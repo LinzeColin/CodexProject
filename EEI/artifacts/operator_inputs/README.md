@@ -18,6 +18,10 @@ Expected MVP input paths:
 - `a209/promoted-operator-soak-finalization.json`
   - Acceptance: A209
   - Validator: `make generate-operator-soak-finalization-preflight validate-operator-soak-finalization-preflight`
+- `a209/clean-rerun-authorization.json`
+  - Acceptance: A209
+  - Validator: `make generate-operator-soak-recovery-authorization-packet validate-operator-soak-recovery-authorization-packet`
+  - Purpose: operator authorization for a fresh 24h rerun after failed evidence is preserved
 
 Do not place source text, secrets, API keys, private credentials, or unsigned
 drafts here. Templates, fixtures, screenshots, partial A209 checkpoints, and

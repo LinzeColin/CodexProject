@@ -80,7 +80,7 @@
       "status": "PENDING_SIGNED_DECISIONS"
     }
   },
-  "generated_at": "2026-06-26T11:06:12Z",
+  "generated_at": "2026-06-26T11:56:09Z",
   "missing_input_ids": [
     "A202_source_license_passage_owner_legal_release",
     "A210_brand_legal_market_clearance_or_risk_waiver",
@@ -293,6 +293,8 @@
       ],
       "blocking_reason": "A209 finalization does not allow downstream refresh at 129/288 windows",
       "completion_criteria": [
+        "failed runtime evidence is preserved before any clean rerun",
+        "operator clean-rerun authorization is signed before starting a new 24h run",
         "288/288 five-minute windows pass",
         "0 failed windows",
         "operator soak evidence validation reports release-ready status",
@@ -306,9 +308,14 @@
         "sha256": "4276b3c728ca6d3e81769635b17e9880b7233cc9da8e5951fdbd162b18af5346"
       },
       "submission_target": "artifacts/operator_inputs/a209/promoted-operator-soak-finalization.json",
-      "supporting_sources": [],
+      "supporting_sources": [
+        {
+          "path": "artifacts/tests/a209/t1307_operator_soak_recovery_authorization_packet.json",
+          "sha256": "a92e065b70bbeba93eaa735e184af35958b1d3d0a2e988bd6eb7cda93e58b289"
+        }
+      ],
       "template_or_partial_evidence_counts_as_clearance": false,
-      "validation_command": "make generate-operator-soak-finalization-preflight validate-operator-soak-finalization-preflight"
+      "validation_command": "make generate-operator-soak-finalization-preflight generate-operator-soak-recovery-authorization-packet validate-operator-soak-finalization-preflight validate-operator-soak-recovery-authorization-packet"
     }
   ],
   "schema_version": "eei-external-release-operator-intake-packet-v2",
@@ -337,13 +344,17 @@
       "path": "artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json",
       "sha256": "4276b3c728ca6d3e81769635b17e9880b7233cc9da8e5951fdbd162b18af5346"
     },
+    "a209_operator_soak_recovery_authorization_packet": {
+      "path": "artifacts/tests/a209/t1307_operator_soak_recovery_authorization_packet.json",
+      "sha256": "a92e065b70bbeba93eaa735e184af35958b1d3d0a2e988bd6eb7cda93e58b289"
+    },
     "a210_brand_clearance_intake_template": {
       "path": "artifacts/tests/a210/t1309_brand_clearance_intake_template.json",
       "sha256": "e6f28191c387cfd4bf167d9f8ed2c94f25dda65babc4722fa66b86e9a3facbb8"
     },
     "external_release_evidence_bundle_preflight": {
       "path": "artifacts/tests/a205/t1303_external_release_evidence_bundle_preflight.json",
-      "sha256": "27166ef93c99b36148b949803c4698b21173e7de5afba747b55461a3a17f8b39"
+      "sha256": "8514d21688e9a5f53a586670e3376fe2b128ffa6fff21a665471bb29edc49ba7"
     }
   },
   "system_en_name": "Enterprise Ecosystem Intelligence",

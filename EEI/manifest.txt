@@ -146,6 +146,7 @@ artifacts/tests/a209/t1307_operator_soak_evidence_validation.json
 artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json
 artifacts/tests/a209/t1307_operator_soak_readiness.checkpoints.jsonl
 artifacts/tests/a209/t1307_operator_soak_readiness.json
+artifacts/tests/a209/t1307_operator_soak_recovery_authorization_packet.json
 artifacts/tests/a209/t1307_soak_smoke.json
 artifacts/tests/a210/t1309_brand_clearance_intake_template.json
 artifacts/tests/a210/t1309_brand_clearance_preflight_contract.json

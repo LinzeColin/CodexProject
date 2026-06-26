@@ -47,7 +47,7 @@
   },
   "traceability": {
     "function_rows": 17,
-    "traceability_rows": 235,
+    "traceability_rows": 236,
     "p0_functions_checked": 15,
     "p0_functions_with_trace": 15
   },

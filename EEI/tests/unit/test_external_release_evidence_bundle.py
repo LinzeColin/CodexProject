@@ -212,6 +212,15 @@ def packet_paths(tmp_path: Path, *, ready: bool) -> dict[str, Path]:
     return {
         **input_paths,
         "preflight_path": write_json(tmp_path / "preflight.json", preflight),
+        "operator_soak_recovery_packet_path": write_json(
+            tmp_path / "a209_recovery_packet.json",
+            {
+                "schema_version": "eei-a209-operator-soak-recovery-authorization-packet-v1",
+                "status": "A209_RECOVERY_OPERATOR_AUTHORIZATION_REQUIRED",
+                "clean_rerun_authorized_by_packet": False,
+                "release_gate_closed_by_recovery_packet": False,
+            },
+        ),
         "a202_intake_template_path": write_json(
             tmp_path / "a202_template.json",
             {"bundle_status": "TEMPLATE_ONLY", "template": "a202"},
@@ -243,6 +252,7 @@ def test_operator_intake_packet_lists_required_blocked_inputs(tmp_path: Path) ->
         brand_intake_template_path=input_paths["brand_intake_template_path"],
         gold_intake_template_path=input_paths["gold_intake_template_path"],
         operator_soak_finalization_path=input_paths["operator_soak_finalization_path"],
+        operator_soak_recovery_packet_path=input_paths["operator_soak_recovery_packet_path"],
     )
 
     assert payload["task_id"] == "T1303"
@@ -280,6 +290,15 @@ def test_operator_intake_packet_lists_required_blocked_inputs(tmp_path: Path) ->
     assert payload["operator_submission_targets"]["A209_24h_operator_soak_finalization"][
         "primary_path"
     ] == "artifacts/operator_inputs/a209/promoted-operator-soak-finalization.json"
+    a209_item = next(
+        item
+        for item in payload["required_operator_inputs"]
+        if item["input_id"] == "A209_24h_operator_soak_finalization"
+    )
+    assert a209_item["supporting_sources"] == [
+        payload["source_files"]["a209_operator_soak_recovery_authorization_packet"]
+    ]
+    assert "recovery" in a209_item["supporting_sources"][0]["path"]
     a202_item = payload["required_operator_inputs"][0]
     assert a202_item["input_id"] == "A202_source_license_passage_owner_legal_release"
     assert (
@@ -300,6 +319,7 @@ def test_operator_intake_packet_lists_required_blocked_inputs(tmp_path: Path) ->
         brand_intake_template_path=input_paths["brand_intake_template_path"],
         gold_intake_template_path=input_paths["gold_intake_template_path"],
         operator_soak_finalization_path=input_paths["operator_soak_finalization_path"],
+        operator_soak_recovery_packet_path=input_paths["operator_soak_recovery_packet_path"],
     )
 
 
@@ -317,6 +337,7 @@ def test_operator_intake_packet_allows_preflight_only_after_all_inputs_ready(
         brand_intake_template_path=input_paths["brand_intake_template_path"],
         gold_intake_template_path=input_paths["gold_intake_template_path"],
         operator_soak_finalization_path=input_paths["operator_soak_finalization_path"],
+        operator_soak_recovery_packet_path=input_paths["operator_soak_recovery_packet_path"],
     )
 
     assert payload["packet_status"] == "READY_FOR_RELEASE_MANAGER_PREFLIGHT"
@@ -331,6 +352,7 @@ def test_operator_intake_packet_allows_preflight_only_after_all_inputs_ready(
         brand_intake_template_path=input_paths["brand_intake_template_path"],
         gold_intake_template_path=input_paths["gold_intake_template_path"],
         operator_soak_finalization_path=input_paths["operator_soak_finalization_path"],
+        operator_soak_recovery_packet_path=input_paths["operator_soak_recovery_packet_path"],
     )
 
 
@@ -347,6 +369,7 @@ def test_operator_intake_packet_validation_detects_template_hash_drift(
         brand_intake_template_path=input_paths["brand_intake_template_path"],
         gold_intake_template_path=input_paths["gold_intake_template_path"],
         operator_soak_finalization_path=input_paths["operator_soak_finalization_path"],
+        operator_soak_recovery_packet_path=input_paths["operator_soak_recovery_packet_path"],
     )
     write_json(
         input_paths["gold_intake_template_path"],
@@ -363,4 +386,7 @@ def test_operator_intake_packet_validation_detects_template_hash_drift(
             brand_intake_template_path=input_paths["brand_intake_template_path"],
             gold_intake_template_path=input_paths["gold_intake_template_path"],
             operator_soak_finalization_path=input_paths["operator_soak_finalization_path"],
+            operator_soak_recovery_packet_path=input_paths[
+                "operator_soak_recovery_packet_path"
+            ],
         )

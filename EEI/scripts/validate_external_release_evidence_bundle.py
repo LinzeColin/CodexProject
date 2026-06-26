@@ -52,6 +52,9 @@ DEFAULT_GOLD_OPERATOR_LABELING_PACKET = (
 DEFAULT_OPERATOR_SOAK_FINALIZATION = (
     ROOT / "artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json"
 )
+DEFAULT_OPERATOR_SOAK_RECOVERY_PACKET = (
+    ROOT / "artifacts/tests/a209/t1307_operator_soak_recovery_authorization_packet.json"
+)
 DEFAULT_OUTPUT = ROOT / "artifacts/tests/a205/t1303_external_release_evidence_bundle_preflight.json"
 DEFAULT_PACKET_OUTPUT = (
     ROOT / "artifacts/tests/a205/t1303_external_release_operator_intake_packet.json"
@@ -494,6 +497,7 @@ def build_operator_intake_packet(
     gold_intake_template_path: Path = DEFAULT_GOLD_INTAKE_TEMPLATE,
     gold_operator_labeling_packet_path: Path = DEFAULT_GOLD_OPERATOR_LABELING_PACKET,
     operator_soak_finalization_path: Path = DEFAULT_OPERATOR_SOAK_FINALIZATION,
+    operator_soak_recovery_packet_path: Path = DEFAULT_OPERATOR_SOAK_RECOVERY_PACKET,
     generated_at: str | None = None,
 ) -> dict[str, Any]:
     preflight = read_json(preflight_path)
@@ -579,11 +583,16 @@ def build_operator_intake_packet(
             acceptance_id="A209",
             label="A209 24h operator soak finalization evidence",
             required_source=source_ref(operator_soak_finalization_path),
+            supporting_sources=[source_ref(operator_soak_recovery_packet_path)],
             validation_command=(
                 "make generate-operator-soak-finalization-preflight "
-                "validate-operator-soak-finalization-preflight"
+                "generate-operator-soak-recovery-authorization-packet "
+                "validate-operator-soak-finalization-preflight "
+                "validate-operator-soak-recovery-authorization-packet"
             ),
             completion_criteria=[
+                "failed runtime evidence is preserved before any clean rerun",
+                "operator clean-rerun authorization is signed before starting a new 24h run",
                 "288/288 five-minute windows pass",
                 "0 failed windows",
                 "operator soak evidence validation reports release-ready status",
@@ -634,6 +643,9 @@ def build_operator_intake_packet(
             ),
             "a209_operator_soak_finalization_preflight": source_ref(
                 operator_soak_finalization_path
+            ),
+            "a209_operator_soak_recovery_authorization_packet": source_ref(
+                operator_soak_recovery_packet_path
             ),
         },
         "gate_statuses": gate_statuses,
@@ -736,6 +748,7 @@ def validate_operator_intake_packet(
     gold_intake_template_path: Path = DEFAULT_GOLD_INTAKE_TEMPLATE,
     gold_operator_labeling_packet_path: Path = DEFAULT_GOLD_OPERATOR_LABELING_PACKET,
     operator_soak_finalization_path: Path = DEFAULT_OPERATOR_SOAK_FINALIZATION,
+    operator_soak_recovery_packet_path: Path = DEFAULT_OPERATOR_SOAK_RECOVERY_PACKET,
 ) -> None:
     expected = build_operator_intake_packet(
         preflight_path=preflight_path,
@@ -746,6 +759,7 @@ def validate_operator_intake_packet(
         gold_intake_template_path=gold_intake_template_path,
         gold_operator_labeling_packet_path=gold_operator_labeling_packet_path,
         operator_soak_finalization_path=operator_soak_finalization_path,
+        operator_soak_recovery_packet_path=operator_soak_recovery_packet_path,
         generated_at=payload.get("generated_at"),
     )
     checked_fields = (
@@ -810,6 +824,11 @@ def add_common_args(parser: argparse.ArgumentParser) -> None:
         "--operator-soak-finalization",
         type=Path,
         default=DEFAULT_OPERATOR_SOAK_FINALIZATION,
+    )
+    parser.add_argument(
+        "--operator-soak-recovery-packet",
+        type=Path,
+        default=DEFAULT_OPERATOR_SOAK_RECOVERY_PACKET,
     )
     parser.add_argument(
         "--a202-intake-template",
@@ -901,6 +920,7 @@ def main() -> int:
             gold_intake_template_path=args.gold_intake_template,
             gold_operator_labeling_packet_path=args.gold_operator_labeling_packet,
             operator_soak_finalization_path=args.operator_soak_finalization,
+            operator_soak_recovery_packet_path=args.operator_soak_recovery_packet,
         )
         validate_operator_intake_packet(
             payload,
@@ -912,6 +932,7 @@ def main() -> int:
             gold_intake_template_path=args.gold_intake_template,
             gold_operator_labeling_packet_path=args.gold_operator_labeling_packet,
             operator_soak_finalization_path=args.operator_soak_finalization,
+            operator_soak_recovery_packet_path=args.operator_soak_recovery_packet,
         )
         write_json(args.packet_output, payload)
         if not args.quiet:
@@ -927,6 +948,7 @@ def main() -> int:
             gold_intake_template_path=args.gold_intake_template,
             gold_operator_labeling_packet_path=args.gold_operator_labeling_packet,
             operator_soak_finalization_path=args.operator_soak_finalization,
+            operator_soak_recovery_packet_path=args.operator_soak_recovery_packet,
         )
         if not args.quiet:
             print(json.dumps({"valid": True, "artifact": display_path(args.packet_output)}))

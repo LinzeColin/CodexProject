@@ -1,5 +1,46 @@
 # MVP Development Record
 
+## 2026-06-26 - T1307/A209 recovery authorization packet
+
+Status: LOCAL TARGET VALIDATED; A209 OPERATOR AUTHORIZATION REQUIRED; RELEASE GATES STILL BLOCKED
+
+### Scope
+
+- Added `artifacts/tests/a209/t1307_operator_soak_recovery_authorization_packet.json`.
+- The packet source-hashes repository A209 heartbeat, evidence-validation, finalization and canonical failed 24h evidence.
+- The packet records external runtime evidence paths from the failed isolated rerun, including checkpoint, log, latest successful window output and inferred failed window output.
+- Added `artifacts/operator_inputs/a209/clean-rerun-authorization.json` as the explicit signed authorization target before any clean 24h rerun.
+- Source-hashed the recovery packet into `artifacts/tests/a205/t1303_external_release_operator_intake_packet.json` as supporting A209 evidence.
+- No soak process was started, stopped, resumed, promoted or finalized.
+
+### Current Evidence
+
+- Recovery packet status: `A209_RECOVERY_OPERATOR_AUTHORIZATION_REQUIRED`.
+- `clean_rerun_authorized_by_packet=false`.
+- `release_gate_closed_by_recovery_packet=false`.
+- Required external authorization target: `artifacts/operator_inputs/a209/clean-rerun-authorization.json`.
+- A205 operator packet still reports `WAITING_FOR_OPERATOR_INPUTS`; A209 remains `IN_PROGRESS`.
+
+### Validation
+
+- `make generate-operator-soak-recovery-authorization-packet validate-operator-soak-recovery-authorization-packet`: PASS.
+- `make generate-external-release-evidence-bundle validate-external-release-evidence-bundle`: PASS.
+- `ruff check scripts/finalize_operator_soak_evidence.py scripts/validate_external_release_evidence_bundle.py tests/unit/test_operator_soak_evidence.py tests/unit/test_external_release_evidence_bundle.py`: PASS.
+- `pytest -q tests/unit/test_operator_soak_evidence.py tests/unit/test_external_release_evidence_bundle.py -p no:cacheprovider`: PASS `31/31`.
+- `scripts/validate_v5_production_readiness_sync.py`: PASS.
+
+### Non-Claims
+
+- This does not authorize a clean rerun by itself.
+- This does not convert failed or partial runtime evidence into release-ready evidence.
+- This does not close A209, A202, A210, A026, A027, A204, A205, A203 release readiness or MVP v0.1 readiness.
+
+### Rollback
+
+- Revert the recovery packet script/test/Makefile/artifact changes plus `PARAM-092` and companion governance records.
+- Regenerate the A205 external release operator packet without the recovery supporting source.
+- Preserve failed A209 runtime files unless explicit operator recovery is authorized.
+
 ## 2026-06-26 - T1307/A209 isolated rerun failed-window sync
 
 Status: LOCAL FOCUSED GENERATED; A209 OPERATOR INTERVENTION REQUIRED; RELEASE GATES STILL BLOCKED

@@ -17,7 +17,7 @@ machine_summary:
 
 - model_count: 12
 - formula_count: 12
-- parameter_count: 91
+- parameter_count: 92
 
 The counts above are generated from the canonical machine registries in this directory. Legacy Markdown files are indexes and must not be edited as independent count sources.
 
@@ -48,6 +48,7 @@ The counts above are generated from the canonical machine registries in this dir
 - 2026-06-26 T1309/A210 signed brand-clearance bundle source-boundary hardening adds `PARAM-089` for disallowed repository fixture/source prefixes; signed A210 bundle validation now rejects repository fixtures, templates, docs, config, data, tests and brand-research paths unless the file is outside the repository or under an approved operator-input directory. No scoring model, graph traversal formula, extraction formula, formula weight, business threshold or public-launch policy changed.
 - 2026-06-26 T904/A026-A027 production gold-label source-boundary hardening adds `PARAM-090` for disallowed repository label-source prefixes; production gold-label files must be external operator files or approved operator-input repository paths before A026/A027 can close. No scoring model, graph traversal formula, extraction formula, formula weight, precision threshold, source-coverage threshold or publication policy changed.
 - 2026-06-26 T1301/A202 operator intake gap packet adds `PARAM-091` for the A202 operator gap-packet schema version; it expands signed source/license/passage/owner/legal attestation work into 10 exact operator review items and does not close A202, relationship publication, release-manager activation or MVP release readiness.
+- 2026-06-26 T1307/A209 recovery authorization packet adds `PARAM-092` for the A209 recovery-packet schema version; it preserves failed runtime evidence paths, requires operator authorization before any clean 24h rerun, and does not close A209, release-manager activation or MVP release readiness.
 - 2026-06-25 T1302/A203 API implementation contract closure marks A203 implementation coverage DONE and refreshes A209 heartbeat to `35/288`; no scoring model, graph traversal formula, extraction formula, formula weight, business threshold, API schema, database schema, frontend behavior or publication policy changed.
 - 2026-06-25 T1302/A203 E2E CI repair updates development-status evidence expectations and generated release artifacts only; no scoring model, graph traversal formula, extraction formula, formula weight, business threshold, API schema, database schema, frontend behavior or publication policy changed.
 - 2026-06-26 T1308/A211 evidence drawer focus-trap hardening adds frontend dialog/focus/inert behavior and E2E coverage only; no scoring model, graph traversal formula, extraction formula, formula weight, business threshold, API schema, database schema, publication policy or active parameter value changed.

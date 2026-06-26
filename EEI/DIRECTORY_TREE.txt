@@ -146,6 +146,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │   ├── t1307_operator_soak_finalization_preflight.json
 │   │   │   ├── t1307_operator_soak_readiness.checkpoints.jsonl
 │   │   │   ├── t1307_operator_soak_readiness.json
+│   │   │   ├── t1307_operator_soak_recovery_authorization_packet.json
 │   │   │   └── t1307_soak_smoke.json
 │   │   ├── a210
 │   │   │   ├── t1309_brand_clearance_intake_template.json

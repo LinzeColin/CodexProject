@@ -1,0 +1,283 @@
+{
+  "a209_task_status_required": "IN_PROGRESS",
+  "acceptance_ids": [
+    "A209"
+  ],
+  "artifact_id": "t1307-a209-operator-soak-recovery-authorization-packet",
+  "clean_rerun_authorized_by_packet": false,
+  "clean_rerun_contract": {
+    "may_start_without_authorization": false,
+    "operator_command_template": "node scripts/run_operator_soak.mjs --mode operator_24h --duration-hours 24 --window-seconds 300 --output /private/tmp/eei-a209-clean-rerun-YYYYMMDD-HHMM/operator_soak_24h.json --checkpoint /private/tmp/eei-a209-clean-rerun-YYYYMMDD-HHMM/operator_soak_24h.checkpoints.jsonl --fail-on-budget --quiet",
+    "post_rerun_validation_commands": [
+      "python scripts/finalize_operator_soak_evidence.py promote-rerun --source-output /private/tmp/eei-a209-clean-rerun-YYYYMMDD-HHMM/operator_soak_24h.json --source-checkpoint /private/tmp/eei-a209-clean-rerun-YYYYMMDD-HHMM/operator_soak_24h.checkpoints.jsonl",
+      "make generate-operator-soak-background-heartbeat generate-operator-soak-evidence-artifact generate-operator-soak-finalization-preflight",
+      "make validate-operator-soak-background-heartbeat validate-operator-soak-evidence validate-operator-soak-finalization-preflight"
+    ],
+    "recommended_output_dir_template": "/private/tmp/eei-a209-clean-rerun-YYYYMMDD-HHMM/",
+    "watchdog_command_template": "python scripts/watch_operator_soak.py --detach --execute --auto-resume --cycles 300 --interval-seconds 300 --write-output /private/tmp/eei-a209-clean-rerun-YYYYMMDD-HHMM/watchdog.json"
+  },
+  "current_gate_state": {
+    "downstream_release_gate_refresh_allowed": false,
+    "evidence_validation": {
+      "a209_task_status_required": "IN_PROGRESS",
+      "release_gate_closed_by_validator": false,
+      "results": {
+        "operator_24h": {
+          "checkpoint_windows": 6,
+          "completed_duration_seconds": 1800,
+          "errors": [
+            "run status must be PASS",
+            "completed duration is below target",
+            "windows_failed must be 0",
+            "covers_24h_target false",
+            "window duration sum below target",
+            "checkpoint duration sum below target",
+            "window 7 status must be PASS",
+            "window 7 child_status must be PASS or PARTIAL",
+            "window 7 measured_duration_seconds must be positive",
+            "window 7 elapsed_wall_seconds exceeds parallel window budget",
+            "window 7 browser_heap_growth_bytes exceeds budget",
+            "window 7 browser_dom_node_growth exceeds budget",
+            "window 7 worker_event_loop_lag_p95_ms exceeds budget"
+          ],
+          "missing": [],
+          "status": "FAILED_RUN",
+          "windows_completed": 6
+        },
+        "operator_4h": {
+          "checkpoint_windows": 48,
+          "completed_duration_seconds": 14400,
+          "errors": [],
+          "missing": [],
+          "status": "PASS",
+          "windows_completed": 48
+        }
+      },
+      "status": "FAILED_OPERATOR_EVIDENCE"
+    },
+    "finalization_status": "A209_FINALIZATION_OPERATOR_INTERVENTION_REQUIRED",
+    "heartbeat": {
+      "completion_percent": 44.79,
+      "operator_pid": 80478,
+      "operator_process_status": "NOT_RUNNING",
+      "progress_status": "FAILED_WINDOW",
+      "release_gate_closed_by_background_heartbeat": false,
+      "status": "BACKGROUND_SOAK_OPERATOR_INTERVENTION_REQUIRED",
+      "target_windows": 288,
+      "watchdog_pid": 80732,
+      "watchdog_process_status": "NOT_RUNNING",
+      "windows_completed": 129,
+      "windows_failed": 1,
+      "windows_remaining": 159
+    },
+    "release_gate_closed_by_finalizer": false
+  },
+  "failed_evidence_preservation": {
+    "authorization_target": "artifacts/operator_inputs/a209/clean-rerun-authorization.json",
+    "operator_attestation_required": true,
+    "repository_sources": [
+      {
+        "hash_bound_in_ci": true,
+        "path": "artifacts/tests/a209/t1307_operator_soak_background_progress.json",
+        "preservation_required_before_clean_rerun": true,
+        "repository_managed": true,
+        "role": "background_heartbeat",
+        "sha256": "de242a1c30043cb115dd72bbae05b82eda91acf48979b4cc02374486b459d9d3"
+      },
+      {
+        "hash_bound_in_ci": true,
+        "path": "artifacts/tests/a209/t1307_operator_soak_evidence_validation.json",
+        "preservation_required_before_clean_rerun": true,
+        "repository_managed": true,
+        "role": "evidence_validation",
+        "sha256": "f5dc124f5e8beb4389163e5e171bbddc9743cfcb3a223af0798a74c9234cc53b"
+      },
+      {
+        "hash_bound_in_ci": true,
+        "path": "artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json",
+        "preservation_required_before_clean_rerun": true,
+        "repository_managed": true,
+        "role": "finalization_preflight",
+        "sha256": "4276b3c728ca6d3e81769635b17e9880b7233cc9da8e5951fdbd162b18af5346"
+      },
+      {
+        "hash_bound_in_ci": true,
+        "path": "artifacts/tests/a209/t1307_operator_soak_24h.json",
+        "preservation_required_before_clean_rerun": true,
+        "repository_managed": true,
+        "role": "canonical_24h_summary",
+        "sha256": "44ee42e4ae25c4a0f52b4de83c41b152f58592339f16cb4e3007bf8b1ef0a8f6"
+      },
+      {
+        "hash_bound_in_ci": true,
+        "path": "artifacts/tests/a209/t1307_operator_soak_24h.checkpoints.jsonl",
+        "preservation_required_before_clean_rerun": true,
+        "repository_managed": true,
+        "role": "canonical_24h_checkpoint",
+        "sha256": "0f6a65b70350755a5e0b1bfc9a766719bcd0b16e00a8666cdb776d85db73bba3"
+      }
+    ],
+    "required_before_clean_rerun": true,
+    "runtime_sources_to_preserve": [
+      {
+        "hash_bound_in_ci": false,
+        "path": "/private/tmp/eei-a209-rerun-20260626-0918/operator_soak_24h.json",
+        "preservation_required_before_clean_rerun": true,
+        "repository_managed": false,
+        "role": "isolated_rerun_summary",
+        "sha256": null,
+        "validation_scope": "operator must preserve and attest this external runtime file"
+      },
+      {
+        "hash_bound_in_ci": false,
+        "path": "/private/tmp/eei-a209-rerun-20260626-0918/operator_soak_24h.checkpoints.jsonl",
+        "preservation_required_before_clean_rerun": true,
+        "repository_managed": false,
+        "role": "isolated_rerun_checkpoint",
+        "sha256": null,
+        "validation_scope": "operator must preserve and attest this external runtime file"
+      },
+      {
+        "hash_bound_in_ci": false,
+        "path": "/private/tmp/eei-a209-rerun-20260626-0918/operator_soak_24h.log",
+        "preservation_required_before_clean_rerun": true,
+        "repository_managed": false,
+        "role": "isolated_rerun_log",
+        "sha256": null,
+        "validation_scope": "operator must preserve and attest this external runtime file"
+      },
+      {
+        "hash_bound_in_ci": false,
+        "path": "/private/tmp/eei-a209-rerun-20260626-0918/operator_soak_24h.pid",
+        "preservation_required_before_clean_rerun": true,
+        "repository_managed": false,
+        "role": "isolated_rerun_pid",
+        "sha256": null,
+        "validation_scope": "operator must preserve and attest this external runtime file"
+      },
+      {
+        "hash_bound_in_ci": false,
+        "path": "/private/tmp/eei-operator-soak-80478-129.json",
+        "preservation_required_before_clean_rerun": true,
+        "repository_managed": false,
+        "role": "latest_successful_window_output",
+        "sha256": null,
+        "validation_scope": "operator must preserve and attest this external runtime file"
+      },
+      {
+        "hash_bound_in_ci": false,
+        "path": "/private/tmp/eei-operator-soak-80478-130.json",
+        "preservation_required_before_clean_rerun": true,
+        "repository_managed": false,
+        "role": "inferred_failed_window_output",
+        "sha256": null,
+        "validation_scope": "operator must preserve and attest this external runtime file"
+      }
+    ]
+  },
+  "failed_evidence_summary": {
+    "canonical_failed_operator_evidence": {
+      "checkpoint_path": "artifacts/tests/a209/t1307_operator_soak_24h.checkpoints.jsonl",
+      "checkpoint_windows": 6,
+      "errors": [
+        "run status must be PASS",
+        "completed duration is below target",
+        "windows_failed must be 0",
+        "covers_24h_target false",
+        "window duration sum below target",
+        "checkpoint duration sum below target",
+        "window 7 status must be PASS",
+        "window 7 child_status must be PASS or PARTIAL",
+        "window 7 measured_duration_seconds must be positive",
+        "window 7 elapsed_wall_seconds exceeds parallel window budget",
+        "window 7 browser_heap_growth_bytes exceeds budget",
+        "window 7 browser_dom_node_growth exceeds budget",
+        "window 7 worker_event_loop_lag_p95_ms exceeds budget"
+      ],
+      "failed_checkpoint_windows": 1,
+      "failed_windows": [
+        {
+          "child_status": "NO_OUTPUT",
+          "ended_at": "2026-06-25T22:08:58Z",
+          "exit_status": 1,
+          "index": 7,
+          "output_path": "/private/tmp/eei-operator-soak-61143-7.json",
+          "started_at": "2026-06-25T22:03:57Z",
+          "status": "FAIL",
+          "stderr_tail": "page.evaluate: Target page, context or browser has been closed\n    at runBrowserSoak (/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/CodexProject_eei_mvp_dev_fresh/EEI/scripts/run_soak_smoke.mjs:145:23)\n    at async main (/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/CodexProject_eei_mvp_dev_fresh/EEI/scripts/run_soak_smoke.mjs:325:41) {\n  log: []\n}\n"
+        }
+      ],
+      "label": "operator_24h",
+      "output_path": "artifacts/tests/a209/t1307_operator_soak_24h.json",
+      "status": "FAILED_RUN",
+      "windows_completed": 6,
+      "windows_failed": 1
+    },
+    "latest_isolated_rerun_failure": {
+      "completion_percent": 44.79,
+      "inferred_failed_window_index": 130,
+      "inferred_failed_window_output_path": "/private/tmp/eei-operator-soak-80478-130.json",
+      "latest_successful_window_ended_at": "2026-06-26T09:58:08Z",
+      "latest_successful_window_index": 129,
+      "progress_status": "FAILED_WINDOW",
+      "status": "BACKGROUND_SOAK_OPERATOR_INTERVENTION_REQUIRED",
+      "target_windows": 288,
+      "windows_completed": 129,
+      "windows_failed": 1,
+      "windows_remaining": 159
+    }
+  },
+  "generated_at": "2026-06-26T11:56:07Z",
+  "non_claims": [
+    "This recovery packet does not start, stop, resume, or restart A209.",
+    "This recovery packet does not close A209 or any release gate.",
+    "This recovery packet does not promote failed or partial runtime evidence.",
+    "This recovery packet does not replace the final 24h evidence validator."
+  ],
+  "operator_authorization_contract": {
+    "authorization_file": "artifacts/operator_inputs/a209/clean-rerun-authorization.json",
+    "authorization_required_before_start": true,
+    "required_boolean_values": {
+      "acknowledge_previous_failed_window": true,
+      "allow_clean_rerun": true,
+      "failed_evidence_preserved": true
+    },
+    "required_fields": [
+      "schema_version",
+      "authorized_by",
+      "authorized_at",
+      "reason",
+      "failed_evidence_preserved",
+      "preserved_evidence_manifest_sha256",
+      "allow_clean_rerun",
+      "allowed_output_dir",
+      "acknowledge_previous_failed_window"
+    ],
+    "required_schema_version": "eei-a209-clean-rerun-authorization-v1"
+  },
+  "operator_next_actions": [
+    "Preserve every listed repository and runtime evidence file before any clean rerun.",
+    "Write a signed clean-rerun authorization file only after preservation is complete.",
+    "Start a clean 24h rerun in a new output directory only after authorization.",
+    "Promote a rerun only after 288/288 windows pass, zero failures, and validator release-ready status."
+  ],
+  "release_gate_closed_by_recovery_packet": false,
+  "rollback": [
+    "Regenerate this packet from heartbeat, evidence-validation and finalization artifacts.",
+    "Do not delete failed runtime evidence during rollback.",
+    "If a clean rerun was started without authorization, discard it as non-release evidence."
+  ],
+  "schema_version": "eei-a209-operator-soak-recovery-authorization-packet-v1",
+  "source_files": {
+    "evidence_validation": "artifacts/tests/a209/t1307_operator_soak_evidence_validation.json",
+    "evidence_validation_sha256": "f5dc124f5e8beb4389163e5e171bbddc9743cfcb3a223af0798a74c9234cc53b",
+    "finalization_preflight": "artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json",
+    "finalization_preflight_sha256": "4276b3c728ca6d3e81769635b17e9880b7233cc9da8e5951fdbd162b18af5346",
+    "heartbeat": "artifacts/tests/a209/t1307_operator_soak_background_progress.json",
+    "heartbeat_sha256": "de242a1c30043cb115dd72bbae05b82eda91acf48979b4cc02374486b459d9d3"
+  },
+  "status": "A209_RECOVERY_OPERATOR_AUTHORIZATION_REQUIRED",
+  "system_en_name": "Enterprise Ecosystem Intelligence",
+  "system_name": "EEI",
+  "task_id": "T1307"
+}

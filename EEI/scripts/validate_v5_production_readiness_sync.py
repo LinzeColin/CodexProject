@@ -200,6 +200,7 @@ PARTIAL_EVIDENCE = {
         "artifacts/tests/a204/t1303_transactional_model_activation_contract.json",
         "artifacts/tests/a205/t1303_atomic_refresh_context_contract.json",
         "artifacts/tests/a205/t1303_external_release_evidence_bundle_preflight.json",
+        "artifacts/tests/a205/t1303_external_release_operator_intake_packet.json",
         "artifacts/tests/a205/t1303_release_manager_activation_preflight.json",
         "artifacts/tests/a205/t1303_mvp_release_gate_preflight.json",
         "scripts/validate_external_release_evidence_bundle.py",
@@ -219,6 +220,7 @@ PARTIAL_EVIDENCE = {
         "artifacts/tests/a209/t1307_operator_soak_evidence_validation.json",
         "artifacts/tests/a209/t1307_operator_soak_background_progress.json",
         "artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json",
+        "artifacts/tests/a209/t1307_operator_soak_recovery_authorization_packet.json",
     },
     "T1309": {
         "config/brand_policy.yaml",
