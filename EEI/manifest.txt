@@ -448,6 +448,6 @@ wireframes/recursive_focus_explorer.svg
 wireframes/visual_first_workspace.png
 wireframes/visual_first_workspace.svg
 wireframes/visual_first_workspace_screenshot.png
-功能清单
-开发记录
-模型参数文件
+功能清单.md
+开发记录.md
+模型参数文件.md

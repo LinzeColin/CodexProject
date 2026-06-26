@@ -29,9 +29,9 @@ Stage 1 source files:
 | --- | --- |
 | IA contract | `src/pfi_v02/stage1_ia.py` |
 | Stage 1 record | `docs/pfi_v02/STAGE1_CORE_SKELETON.md` |
-| Owner feature list | `功能清单` |
-| Development record | `开发记录` |
-| Model and parameter file | `模型参数文件` |
+| Owner feature list | `功能清单.md` |
+| Development record | `开发记录.md` |
+| Model and parameter file | `模型参数文件.md` |
 | Legacy compatibility runtime | `modules/qbvs_lab/qbvs` |
 
 ## Stage 2

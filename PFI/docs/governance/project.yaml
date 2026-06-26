@@ -1,0 +1,22 @@
+schema_version: "codexproject.project.v1"
+project_id: "PFI"
+project_name: "Personal Financial Intelligence"
+summary: "PFI V0.2 是本地优先个人金融中枢；当前证据覆盖 Stage 1 信息架构和 Stage 2 多数据源合同，不声明生产就绪或实盘执行能力。"
+version: "0.2.0"
+fact_level: "EXTRACTED"
+owner_role: "owner"
+current_status: "partial_governance_verified_not_production_ready"
+features:
+  - feature_id: "FEAT-PFI-001"
+    name: "PFI V0.2 产品根"
+    status: "active"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "PFI/README.md"
+      - "PFI/docs/pfi_v02/STAGE1_CORE_SKELETON.md"
+      - "PFI/docs/pfi_v02/STAGE2_DATA_SYNC_MVP.md"
+limitations:
+  - statement: "生产联通、真实账户凭证、实盘执行、自动付款或券商提交动作未验证。"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "PFI/README.md"

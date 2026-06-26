@@ -1,0 +1,65 @@
+project_id: "PFI"
+as_of_event_id: "EVENT-PFI-20260627-MD-GOVERNANCE"
+source_snapshot_hash: "sha256:precommit-pending"
+source_base_commit: "0a9e19c1"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+snapshot_event_time: "2026-06-27T09:45:00+10:00"
+generator_version: "manual-minimal-root-governance-v1"
+final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+dimensions:
+  structural_completeness:
+    status: "PARTIAL"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "PFI/docs/governance"
+  implementation_congruence:
+    status: "PARTIAL"
+    fact_level: "EXTRACTED"
+    total_active_parameters: 3
+    total_active_formulas: 1
+    evidence_refs:
+      - "PFI/docs/governance/parameter_registry.csv"
+      - "PFI/docs/governance/formula_registry.yaml"
+  parameter_source_quality:
+    status: "PARTIAL"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "PFI/docs/governance/parameter_registry.csv"
+  methodological_rationale:
+    status: "UNVERIFIED"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "PFI/docs/governance/MODEL_SPEC.md"
+  empirical_validation:
+    status: "UNVERIFIED"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "PFI/docs/governance/delivery_tasks.yaml"
+  operational_validation:
+    status: "FAILED"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "PFI/docs/governance/development_events.jsonl"
+  delivery_evidence:
+    status: "FAILED"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "PFI/docs/governance/delivery_tasks.yaml"
+  evidence_freshness:
+    status: "PARTIAL"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "PFI/docs/governance/development_events.jsonl"
+delivery_readiness:
+  status: "FAILED"
+  release_gate: "PFI-GOV-GATE"
+  blocker_ids:
+    - "PFI-VAL-001"
+next_executable_task:
+  task_id: "PFI-VAL-001"
+  status: "planned"
+  reason: "补充真实环境验证证据前不能声明生产就绪。"
+  acceptance_ids:
+    - "ACC-PFI-VAL-001"
+  owner: "owner"
+  unblock_condition: "真实数据、真实账户和生产运行边界验证完成。"

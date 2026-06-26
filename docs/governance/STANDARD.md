@@ -15,9 +15,9 @@ acceptance gates behind it.
 Every active registered project must have these exact project-root human entry
 files:
 
-- `功能清单`
-- `开发记录`
-- `模型参数文件`
+- `功能清单.md`
+- `开发记录.md`
+- `模型参数文件.md`
 - `VERSION`
 - `CHANGELOG.md`
 
@@ -52,7 +52,7 @@ Lean v2 migration gate.
 
 ## Roadmap Contract
 
-`开发记录` must directly render a complete owner-readable Roadmap.
+`开发记录.md` must directly render a complete owner-readable Roadmap.
 
 Structure:
 
@@ -111,7 +111,7 @@ evidence, and a completion version or commit.
 
 ## Human Views
 
-`功能清单` first screen: version, current Stage/Phase/Task, capability count,
+`功能清单.md` first screen: version, current Stage/Phase/Task, capability count,
 blockers, next Gate, and next unique task. Capabilities include value, scope,
 non-scope, implementation refs, test refs, evidence, limitations, and current
 status.
@@ -121,7 +121,7 @@ human view. It starts with summary fields, then owner decisions, capability
 overview, evidence, limitations, and feature detail. It must not degrade into a
 link page.
 
-`开发记录` first screen: version, current Stage/Phase/Task, total and completed
+`开发记录.md` first screen: version, current Stage/Phase/Task, total and completed
 hours, progress, blockers, next Gate, and next unique task. It renders the full
 Roadmap and recent meaningful events.
 
@@ -135,7 +135,7 @@ template. It directly renders Stage, Phase, Task, Stop Gate, Acceptance, and
 Evidence sections, while derived calculations remain deterministic validator
 work rather than manual governance computation.
 
-`模型参数文件` records active models, assumptions, inputs, outputs, formulas or
+`模型参数文件.md` records active models, assumptions, inputs, outputs, formulas or
 pseudocode, variables, units, domains, missing-value behavior, fallback behavior,
 parameters, defaults, priors, active values, ranges, weights, sources,
 calibration, validation, limitations, stop conditions, and code/config/test

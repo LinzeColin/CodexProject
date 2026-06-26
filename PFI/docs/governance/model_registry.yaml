@@ -1,0 +1,49 @@
+governance_spec_version: "1.0.0"
+project_id: "PFI"
+assumptions:
+  - assumption_id: "ASM-PFI-001"
+    statement: "PFI 根目录是当前注册项目根；PFI/modules/qbvs_lab 是迁移后的兼容模块。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "governance/projects.yaml"
+      - "PFI/README.md"
+  - assumption_id: "ASM-PFI-002"
+    statement: "PFI 当前不允许自动实盘下单、交易密码、支付提交或券商提交动作。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "PFI/README.md"
+models:
+  - model_id: "MOD-PFI-001"
+    name: "PFI V0.2 local finance hub contract"
+    kind: "deterministic_contract_model"
+    purpose: "记录 PFI V0.2 的账户、资产、账本、数据源、建议和报告边界。"
+    owner: "PFI"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "pfi-v0.2-root-contract"
+    assumptions:
+      - "ASM-PFI-001"
+      - "ASM-PFI-002"
+    formula_ids:
+      - "FORM-PFI-001"
+    parameter_ids:
+      - "PARAM-PFI-001"
+      - "PARAM-PFI-002"
+      - "PARAM-PFI-003"
+    inputs:
+      - "Stage 1/2 contract files"
+    outputs:
+      - "owner-readable scope and blocked production status"
+    code_refs:
+      - "PFI/src/pfi_v02/stage1_ia.py"
+      - "PFI/src/pfi_v02/stage2_registry.py"
+      - "PFI/src/pfi_v02/stage2_import.py"
+      - "PFI/src/pfi_v02/stage2_contracts.py"
+    test_refs:
+      - "PFI/tests/test_stage1_ia_contract.py"
+      - "PFI/tests/test_stage2_data_source_registry.py"
+    evidence_refs:
+      - "PFI/docs/pfi_v02/STAGE1_CORE_SKELETON.md"
+      - "PFI/docs/pfi_v02/STAGE2_DATA_SYNC_MVP.md"

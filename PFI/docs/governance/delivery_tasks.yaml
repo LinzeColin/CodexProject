@@ -1,0 +1,35 @@
+governance_spec_version: "1.0.0"
+project_id: "PFI"
+tasks:
+  - task_id: "PFI-MD-001"
+    phase: "S2P"
+    objective: "把当前注册 PFI 根项目三基入口改成 Markdown，并补齐最小治理事实文件。"
+    scope:
+      - "PFI 三基入口"
+      - "PFI/docs/governance"
+    non_scope:
+      - "运行代码"
+      - "实盘交易"
+      - "真实凭证"
+    status: "completed"
+    dependencies: []
+    required_files:
+      - "PFI/功能清单.md"
+      - "PFI/开发记录.md"
+      - "PFI/模型参数文件.md"
+      - "PFI/docs/governance/MODEL_SPEC.md"
+    acceptance_ids:
+      - "ACC-PFI-MD-001"
+    test_commands:
+      - "python scripts/validate_project_governance.py --project PFI"
+      - "python -m unittest tests.governance.test_human_entry_markdown_contract -q"
+    test_results:
+      - "To be rerun in this PR after file creation."
+    evidence_refs:
+      - "PFI/docs/governance/project.yaml"
+      - "PFI/docs/governance/roadmap.yaml"
+      - "PFI/docs/governance/model_registry.yaml"
+    risk: "不能把治理补齐误写成生产就绪或实盘可用。"
+    rollback: "Revert this PR."
+    target_version: "0.2.0"
+    completed_version: "0.2.0"
