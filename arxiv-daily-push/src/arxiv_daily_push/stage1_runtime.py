@@ -240,6 +240,15 @@ def create_runtime_backup(
     for path in small_paths:
         if not path.exists():
             blocking_reasons.append(f"include path does not exist: {path}")
+    supporting_targets: dict[Path, Path] = {}
+    seen_supporting_targets: set[Path] = set()
+    for path in small_paths:
+        if path.exists() and path.is_file():
+            copied = target_dir / "files" / _supporting_file_backup_name(path)
+            if copied in seen_supporting_targets:
+                blocking_reasons.append(f"duplicate supporting file backup path: {copied.relative_to(target_dir)}")
+            supporting_targets[path] = copied
+            seen_supporting_targets.add(copied)
     total_input_size = (db.stat().st_size if db.exists() else 0) + sum(path.stat().st_size for path in small_paths if path.exists() and path.is_file())
     if total_input_size > STAGE1_RUNTIME_MAX_BACKUP_BYTES:
         blocking_reasons.append(f"backup input is {total_input_size} bytes, above {STAGE1_RUNTIME_MAX_BACKUP_BYTES}")
@@ -266,7 +275,7 @@ def create_runtime_backup(
     files = [_manifest_file("database", backup_db, source_path=db)]
     for path in small_paths:
         if path.is_file():
-            copied = target_dir / "files" / path.name
+            copied = supporting_targets[path]
             copied.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(path, copied)
             files.append(_manifest_file("supporting_file", copied, source_path=path))
@@ -591,6 +600,12 @@ def _sha256_file(path: Path) -> str:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def _supporting_file_backup_name(path: Path) -> str:
+    source_key = str(path.resolve())
+    digest = hashlib.sha256(source_key.encode("utf-8")).hexdigest()[:12]
+    return f"{digest}-{path.name}"
 
 
 def _safe_manifest_backup_path(raw_path: Any, *, backup_root: Path) -> Path:
