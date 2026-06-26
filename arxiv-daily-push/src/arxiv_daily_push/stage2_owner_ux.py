@@ -399,6 +399,189 @@ def validate_s2pmt06_c005_recoverable_error_report(report: Mapping[str, Any]) ->
     return errors
 
 
+def build_s2pmt06_c006_safe_config_report(*, generated_at: str) -> dict[str, Any]:
+    """Build C-006 dedicated evidence for safe owner config changes."""
+
+    safe_config_change = build_safe_config_change(generated_at=generated_at)
+    gates = {
+        "preview_present": bool(safe_config_change.get("preview")),
+        "diff_impact_present": _c006_diff_impact_present(_mapping(safe_config_change.get("diff_impact"))),
+        "validation_present": _c006_validation_passes(_mapping(safe_config_change.get("validation"))),
+        "confirmation_required": safe_config_change.get("confirmation_required") is True,
+        "rollback_verified": _c006_rollback_verified(safe_config_change),
+        "no_production_mutation": _c006_no_production_mutation(safe_config_change),
+    }
+    status = "pass" if all(gates.values()) else "blocked"
+    report = {
+        "model_id": S2PMT06_OWNER_UX_MODEL_ID,
+        "schema_version": S2PMT06_SCHEMA_VERSION,
+        "task_id": S2PMT06_TASK_ID,
+        "acceptance_id": S2PMT06_ACCEPTANCE_ID,
+        "finding_id": "C-006",
+        "subtask_id": "S2PMT06-SAFE-CONFIG-C006",
+        "generated_at": generated_at,
+        "status": status,
+        "blocking_reasons": [] if status == "pass" else [key for key, value in gates.items() if value is not True],
+        "scope": "dedicated_c006_safe_config_evidence_only",
+        "production_acceptance_claimed": False,
+        "inherited_p0_p1_closed": False,
+        "independent_review_signoff_present": False,
+        "gates": gates,
+        "safe_config_change": safe_config_change,
+        "evidence_refs": [
+            "arxiv-daily-push/docs/phase_records/PHASE_S2PMT06_SAFE_CONFIG_C006.md",
+            "governance/run_manifests/ADP-S2PMT06-SAFE-CONFIG-C006-20260627.json",
+            "arxiv-daily-push/tests/test_stage2_owner_ux.py",
+        ],
+        "report_hash": "",
+        "production_side_effects_enabled": False,
+        "real_smtp_sent": False,
+        "scheduler_installed": False,
+        "scheduler_enabled": False,
+        "release_upload_allowed": False,
+        "production_restore_executed": False,
+        "public_schema_changed": False,
+        "queue_schema_changed": False,
+        "queue_mutation_allowed": False,
+        "db_migration_executed": False,
+        "current_pointer_changed": False,
+        "v7_1_baseline_changed": False,
+        "v7_2_contract_files_changed": False,
+    }
+    report["report_hash"] = _stable_hash({key: value for key, value in report.items() if key != "report_hash"})
+    return report
+
+
+def validate_s2pmt06_c006_safe_config_report(report: Mapping[str, Any]) -> list[str]:
+    """Validate C-006 safe-config evidence without applying changes."""
+
+    errors = _validate_dedicated_report_shell(report, finding_id="C-006")
+    gates = _mapping(report.get("gates"))
+    for gate in (
+        "preview_present",
+        "diff_impact_present",
+        "validation_present",
+        "confirmation_required",
+        "rollback_verified",
+        "no_production_mutation",
+    ):
+        if gate not in gates:
+            errors.append(f"gates.{gate} is required")
+    if report.get("status") == "pass" and not all(gates.values()):
+        errors.append("passing C-006 report requires all gates true")
+    safe_config = _mapping(report.get("safe_config_change"))
+    if not safe_config.get("preview"):
+        errors.append("safe_config_change.preview is required")
+    if not _c006_diff_impact_present(_mapping(safe_config.get("diff_impact"))):
+        errors.append("safe_config_change.diff_impact must include before, after, and impact")
+    if not _c006_validation_passes(_mapping(safe_config.get("validation"))):
+        errors.append("safe_config_change.validation must pass schema and range checks")
+    if safe_config.get("confirmation_required") is not True:
+        errors.append("safe_config_change.confirmation_required must be true")
+    if not _c006_rollback_verified(safe_config):
+        errors.append("safe_config_change.rollback must be verified and tied to the receipt token")
+    if not _c006_no_production_mutation(safe_config):
+        errors.append("safe_config_change must not apply production mutation or runtime config changes")
+    return errors
+
+
+def build_s2pmt06_c007_append_only_audit_report(*, generated_at: str) -> dict[str, Any]:
+    """Build C-007 dedicated evidence for append-only owner-control audit history."""
+
+    safe_config_change = build_safe_config_change(generated_at=generated_at)
+    revision_ledger = list(_sequence(safe_config_change.get("append_only_revision_ledger")))
+    latest_revision = _mapping(revision_ledger[-1]) if revision_ledger else {}
+    result_artifact = {
+        "artifact_id": "OWNER_CONTROL_PREVIEW-S2PMT06-0001",
+        "config_revision_id": latest_revision.get("revision_id"),
+        "artifact_uses_revision": bool(latest_revision.get("revision_id")),
+        "runtime_applied": False,
+    }
+    gates = {
+        "append_only_revision_ledger_present": len(revision_ledger) >= 1,
+        "revision_entries_complete": all(_c007_revision_entry_complete(_mapping(row)) for row in revision_ledger),
+        "result_artifact_records_revision": _c007_result_records_revision(result_artifact, latest_revision),
+        "runtime_application_disabled": all(_mapping(row).get("applied_to_runtime") is False for row in revision_ledger),
+        "no_production_side_effect": True,
+    }
+    status = "pass" if all(gates.values()) else "blocked"
+    report = {
+        "model_id": S2PMT06_OWNER_UX_MODEL_ID,
+        "schema_version": S2PMT06_SCHEMA_VERSION,
+        "task_id": S2PMT06_TASK_ID,
+        "acceptance_id": S2PMT06_ACCEPTANCE_ID,
+        "finding_id": "C-007",
+        "subtask_id": "S2PMT06-APPEND-ONLY-AUDIT-C007",
+        "generated_at": generated_at,
+        "status": status,
+        "blocking_reasons": [] if status == "pass" else [key for key, value in gates.items() if value is not True],
+        "scope": "dedicated_c007_append_only_audit_evidence_only",
+        "production_acceptance_claimed": False,
+        "inherited_p0_p1_closed": False,
+        "independent_review_signoff_present": False,
+        "gates": gates,
+        "revision_ledger": revision_ledger,
+        "result_artifact": result_artifact,
+        "evidence_refs": [
+            "arxiv-daily-push/docs/phase_records/PHASE_S2PMT06_APPEND_ONLY_AUDIT_C007.md",
+            "governance/run_manifests/ADP-S2PMT06-APPEND-ONLY-AUDIT-C007-20260627.json",
+            "arxiv-daily-push/tests/test_stage2_owner_ux.py",
+        ],
+        "report_hash": "",
+        "production_side_effects_enabled": False,
+        "real_smtp_sent": False,
+        "scheduler_installed": False,
+        "scheduler_enabled": False,
+        "release_upload_allowed": False,
+        "production_restore_executed": False,
+        "public_schema_changed": False,
+        "queue_schema_changed": False,
+        "queue_mutation_allowed": False,
+        "db_migration_executed": False,
+        "current_pointer_changed": False,
+        "v7_1_baseline_changed": False,
+        "v7_2_contract_files_changed": False,
+    }
+    report["report_hash"] = _stable_hash({key: value for key, value in report.items() if key != "report_hash"})
+    return report
+
+
+def validate_s2pmt06_c007_append_only_audit_report(report: Mapping[str, Any]) -> list[str]:
+    """Validate C-007 append-only audit evidence without applying changes."""
+
+    errors = _validate_dedicated_report_shell(report, finding_id="C-007")
+    gates = _mapping(report.get("gates"))
+    for gate in (
+        "append_only_revision_ledger_present",
+        "revision_entries_complete",
+        "result_artifact_records_revision",
+        "runtime_application_disabled",
+        "no_production_side_effect",
+    ):
+        if gate not in gates:
+            errors.append(f"gates.{gate} is required")
+    if report.get("status") == "pass" and not all(gates.values()):
+        errors.append("passing C-007 report requires all gates true")
+    ledger = _sequence(report.get("revision_ledger"))
+    if not ledger:
+        errors.append("revision_ledger must contain at least one append-only revision")
+    revision_ids: set[str] = set()
+    for index, row_value in enumerate(ledger):
+        row = _mapping(row_value)
+        revision_id = str(row.get("revision_id") or "")
+        if not _c007_revision_entry_complete(row):
+            errors.append(f"revision_ledger[{index}] must include revision_id, hashes, timestamp, field, and rollback token")
+        if revision_id in revision_ids:
+            errors.append(f"revision_ledger[{index}].revision_id must be unique")
+        revision_ids.add(revision_id)
+        if row.get("applied_to_runtime") is not False:
+            errors.append(f"revision_ledger[{index}].applied_to_runtime must be false")
+    latest_revision = _mapping(ledger[-1]) if ledger else {}
+    if not _c007_result_records_revision(_mapping(report.get("result_artifact")), latest_revision):
+        errors.append("result_artifact must record the latest config revision id")
+    return errors
+
+
 def build_feedback_loop_contract() -> dict[str, Any]:
     """Build visible feedback-to-ranking/profile/content improvement evidence."""
 
@@ -600,6 +783,78 @@ def validate_s2pmt06_report(report: Mapping[str, Any]) -> list[str]:
         if _mapping(safe_actions.get(action)).get("status") != "pass":
             errors.append(f"safe_actions.{action} must pass")
     return errors
+
+
+def _validate_dedicated_report_shell(report: Mapping[str, Any], *, finding_id: str) -> list[str]:
+    errors: list[str] = []
+    if report.get("model_id") != S2PMT06_OWNER_UX_MODEL_ID:
+        errors.append(f"{finding_id} report model_id is invalid")
+    if report.get("schema_version") != S2PMT06_SCHEMA_VERSION:
+        errors.append(f"{finding_id} report schema_version must be 1")
+    if report.get("task_id") != S2PMT06_TASK_ID:
+        errors.append(f"{finding_id} report task_id is invalid")
+    if report.get("acceptance_id") != S2PMT06_ACCEPTANCE_ID:
+        errors.append(f"{finding_id} report acceptance_id is invalid")
+    if report.get("finding_id") != finding_id:
+        errors.append(f"{finding_id} report finding_id must be {finding_id}")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append(f"{finding_id} report status must be pass or blocked")
+    if report.get("production_acceptance_claimed") is not False:
+        errors.append(f"{finding_id} report must not claim production acceptance")
+    if report.get("inherited_p0_p1_closed") is not False:
+        errors.append(f"{finding_id} report must not close inherited P0/P1 before S2PMT07")
+    if report.get("independent_review_signoff_present") is not False:
+        errors.append(f"{finding_id} report must not self-sign independent review")
+    for key in S2PMT06_PRODUCTION_FALSE_FLAGS:
+        if report.get(key) is not False:
+            errors.append(f"{key} must be false")
+    return errors
+
+
+def _c006_diff_impact_present(diff: Mapping[str, Any]) -> bool:
+    return bool(diff.get("field")) and "before" in diff and "after" in diff and len(_sequence(diff.get("impact"))) >= 1
+
+
+def _c006_validation_passes(validation: Mapping[str, Any]) -> bool:
+    return (
+        validation.get("status") == "pass"
+        and validation.get("schema_checked") is True
+        and validation.get("range_checked") is True
+    )
+
+
+def _c006_rollback_verified(safe_config: Mapping[str, Any]) -> bool:
+    receipt = _mapping(safe_config.get("receipt"))
+    rollback = _mapping(safe_config.get("rollback"))
+    return bool(receipt.get("rollback_token")) and rollback.get("verified") is True and rollback.get("token") == receipt.get(
+        "rollback_token"
+    )
+
+
+def _c006_no_production_mutation(safe_config: Mapping[str, Any]) -> bool:
+    apply_result = _mapping(safe_config.get("apply"))
+    receipt = _mapping(safe_config.get("receipt"))
+    return apply_result.get("production_mutation_applied") is False and receipt.get("applied_to_runtime") is False
+
+
+def _c007_revision_entry_complete(row: Mapping[str, Any]) -> bool:
+    return (
+        bool(row.get("revision_id"))
+        and bool(row.get("generated_at"))
+        and bool(row.get("field"))
+        and bool(row.get("before_hash"))
+        and bool(row.get("after_hash"))
+        and bool(row.get("rollback_token"))
+    )
+
+
+def _c007_result_records_revision(result_artifact: Mapping[str, Any], latest_revision: Mapping[str, Any]) -> bool:
+    return (
+        bool(latest_revision.get("revision_id"))
+        and result_artifact.get("config_revision_id") == latest_revision.get("revision_id")
+        and result_artifact.get("artifact_uses_revision") is True
+        and result_artifact.get("runtime_applied") is False
+    )
 
 
 def _c005_card_has_recovery_metadata(card: Mapping[str, Any]) -> bool:

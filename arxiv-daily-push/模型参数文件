@@ -2,9 +2,9 @@
 
 ## 中文速读
 
-- 本次 C-005 可恢复错误门不新增生产算法、评分公式或公开参数；它复用 `S2PMT06` 现有 owner UX / safe-control 模型。
-- 关键可验证字段是错误卡 `code/severity/impact/owner/retry_safe/runbook/evidence/cta`，以及安全 retry preview 的 `preview_required/confirmation_required/receipt_required/production_mutation_applied=false`。
-- `PARAM-ADP-827` 和 `PARAM-ADP-828` 仍是当前注册参数来源；本条只新增 C-005 专项 report/validator/test 和 P1 receipt 路由，不关闭 P1，不启用生产。
+- 本次 C-006/C-007 安全配置与 append-only 审计门不新增生产算法、评分公式或公开参数；它复用 `S2PMT06` 现有 owner UX / safe-control 模型。
+- C-006 的关键可验证字段是 `preview`、`diff_impact.before/after/impact`、`validation.schema_checked/range_checked`、`confirmation_required`、`rollback.token` 和 `production_mutation_applied=false`。
+- C-007 的关键可验证字段是 `revision_id`、`before_hash`、`after_hash`、`rollback_token`、`applied_to_runtime=false`，以及结果产物的 `config_revision_id` 必须绑定最新 revision；本条只刷新 P1 receipt 路由，不关闭 P1，不启用生产。
 
 ## 摘要
 

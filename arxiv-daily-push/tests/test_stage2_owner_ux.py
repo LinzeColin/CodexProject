@@ -15,12 +15,16 @@ from arxiv_daily_push.stage2_owner_ux import (
     build_owner_first_screen,
     build_queue_view_contract,
     build_s2pmt06_c005_recoverable_error_report,
+    build_s2pmt06_c006_safe_config_report,
+    build_s2pmt06_c007_append_only_audit_report,
     build_s2pmt06_report,
     build_safe_action_preview,
     build_safe_config_change,
     build_status_state_matrix,
     validate_error_card,
     validate_s2pmt06_c005_recoverable_error_report,
+    validate_s2pmt06_c006_safe_config_report,
+    validate_s2pmt06_c007_append_only_audit_report,
     validate_s2pmt06_report,
 )
 
@@ -145,6 +149,81 @@ class Stage2OwnerUXTests(unittest.TestCase):
         unsafe["safe_actions"]["retry"] = dict(unsafe["safe_actions"]["retry"], production_mutation_applied=True)
         retry_errors = validate_s2pmt06_c005_recoverable_error_report(unsafe)
         self.assertIn("safe_actions.retry must be a no-production safe retry preview with confirmation and receipt", retry_errors)
+
+    def test_c006_report_requires_preview_diff_validation_rollback_and_no_mutation(self) -> None:
+        report = build_s2pmt06_c006_safe_config_report(generated_at="2026-06-27T06:19:53+10:00")
+        change = report["safe_config_change"]
+
+        self.assertEqual(report["status"], "pass")
+        self.assertEqual(report["finding_id"], "C-006")
+        self.assertEqual(report["subtask_id"], "S2PMT06-SAFE-CONFIG-C006")
+        self.assertTrue(change["preview"])
+        self.assertEqual(change["diff_impact"]["before"], 3)
+        self.assertEqual(change["diff_impact"]["after"], 4)
+        self.assertGreaterEqual(len(change["diff_impact"]["impact"]), 1)
+        self.assertEqual(change["validation"]["status"], "pass")
+        self.assertTrue(change["confirmation_required"])
+        self.assertTrue(change["rollback"]["verified"])
+        self.assertEqual(change["rollback"]["token"], change["receipt"]["rollback_token"])
+        self.assertFalse(change["apply"]["production_mutation_applied"])
+        self.assertFalse(change["receipt"]["applied_to_runtime"])
+        for flag in S2PMT06_PRODUCTION_FALSE_FLAGS:
+            self.assertFalse(report[flag])
+        self.assertEqual(validate_s2pmt06_c006_safe_config_report(report), [])
+
+    def test_c006_report_blocks_missing_diff_or_production_mutation(self) -> None:
+        report = build_s2pmt06_c006_safe_config_report(generated_at="2026-06-27T06:19:53+10:00")
+        no_diff = dict(report)
+        no_diff["safe_config_change"] = dict(report["safe_config_change"], diff_impact={})
+        self.assertIn(
+            "safe_config_change.diff_impact must include before, after, and impact",
+            validate_s2pmt06_c006_safe_config_report(no_diff),
+        )
+
+        mutating = build_s2pmt06_c006_safe_config_report(generated_at="2026-06-27T06:19:53+10:00")
+        mutating["safe_config_change"]["apply"] = dict(
+            mutating["safe_config_change"]["apply"],
+            production_mutation_applied=True,
+        )
+        self.assertIn(
+            "safe_config_change must not apply production mutation or runtime config changes",
+            validate_s2pmt06_c006_safe_config_report(mutating),
+        )
+
+    def test_c007_report_requires_append_only_revision_and_result_binding(self) -> None:
+        report = build_s2pmt06_c007_append_only_audit_report(generated_at="2026-06-27T06:19:53+10:00")
+        revision = report["revision_ledger"][0]
+
+        self.assertEqual(report["status"], "pass")
+        self.assertEqual(report["finding_id"], "C-007")
+        self.assertEqual(report["subtask_id"], "S2PMT06-APPEND-ONLY-AUDIT-C007")
+        self.assertTrue(revision["revision_id"])
+        self.assertTrue(revision["before_hash"])
+        self.assertTrue(revision["after_hash"])
+        self.assertTrue(revision["rollback_token"])
+        self.assertFalse(revision["applied_to_runtime"])
+        self.assertEqual(report["result_artifact"]["config_revision_id"], revision["revision_id"])
+        self.assertTrue(report["result_artifact"]["artifact_uses_revision"])
+        self.assertFalse(report["result_artifact"]["runtime_applied"])
+        for flag in S2PMT06_PRODUCTION_FALSE_FLAGS:
+            self.assertFalse(report[flag])
+        self.assertEqual(validate_s2pmt06_c007_append_only_audit_report(report), [])
+
+    def test_c007_report_blocks_missing_revision_or_result_revision_mismatch(self) -> None:
+        report = build_s2pmt06_c007_append_only_audit_report(generated_at="2026-06-27T06:19:53+10:00")
+        missing_revision = dict(report)
+        missing_revision["revision_ledger"] = []
+        self.assertIn(
+            "revision_ledger must contain at least one append-only revision",
+            validate_s2pmt06_c007_append_only_audit_report(missing_revision),
+        )
+
+        mismatch = build_s2pmt06_c007_append_only_audit_report(generated_at="2026-06-27T06:19:53+10:00")
+        mismatch["result_artifact"] = dict(mismatch["result_artifact"], config_revision_id="CFGREV-WRONG")
+        self.assertIn(
+            "result_artifact must record the latest config revision id",
+            validate_s2pmt06_c007_append_only_audit_report(mismatch),
+        )
 
     def test_accessibility_matrix_covers_a11y_responsive_and_mail_client_requirements(self) -> None:
         matrix = build_accessibility_matrix()
