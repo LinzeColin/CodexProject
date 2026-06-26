@@ -3187,3 +3187,18 @@ None for this new project baseline.
 - Rollback: Revert this attestation event, manifest, generated status refresh, and ledger entry; local launchd runtime state is external to the repository and must be managed separately.
 - Evidence: `governance/run_manifests/ADP-EMAIL-V1-LOCAL-RUNNER-ATTESTATION-20260626.json`.
 - Next step: Observe the next scheduled real SMTP delivery for Email V1 without sending a duplicate 2026-06-26 email.
+
+### `ITER-20260626-ADP-EMAIL-V1-LOCAL-RUNNER-BINDING`
+
+- Timestamp: `2026-06-26T16:40:00+10:00`
+- Actor: Codex
+- Fact level: EXTRACTED from PR #239 merge metadata, successful CI runs, and the prior append-only Email V1 local runner attestation.
+- Status: PR #239 result commit and CI bound, no replay, no production side effects.
+- Task IDs: `EMAIL-V1-LOCAL-RUNNER-BINDING`, `EMAIL-V1-LOCAL-RUNNER-ATTESTATION`, `S2PK`, `EMAIL_LEARNING_V1`.
+- Goal: Bind the Email V1 local runner attestation to merged `main` commit `369b04d4bf6b4d5aa2a5be44513a83bf04fed3e2` and PR #239 CI evidence without modifying the original append-only attestation event.
+- CI evidence: PR #239 Project Governance `28221547506` success; Stage 1 bootstrap `28221543007` success; real 30-day backfill `28221543022` success; live all-ArXiv cloud dry-run `28221543004` success.
+- Decisions: This receipt does not replay the 2026-06-26 old-template email, accept `S2PLT02`, start live two-day operation, send SMTP, enable scheduler, upload Release assets, change public schema/DB/production queues, change source adapters or ranking, edit CURRENT or V7.1/V7.2 contracts, close inherited P0/P1, enable DAILY_OPERATION, or claim integrated production acceptance.
+- Remaining risks: The next real scheduled email still needs observation to prove an actual Email V1 SMTP delivery; S2PLT02/S2PLT03/S2PLT04/S2PMT07 and inherited P0/P1 remain blocked.
+- Rollback: Revert this binding receipt event, manifest, `VERSION_MATRIX.current_iteration`, generated status refresh, and this ledger entry; no runtime production state was changed.
+- Evidence: `governance/run_manifests/ADP-EMAIL-V1-LOCAL-RUNNER-BINDING-20260626.json`; `https://github.com/LinzeColin/CodexProject/pull/239`.
+- Next step: Observe the next scheduled real SMTP delivery for Email V1 without sending a duplicate 2026-06-26 email.
