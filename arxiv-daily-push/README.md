@@ -1,5 +1,9 @@
 # arXiv Daily Push
 
+Owner 人类可读入口在 GitHub 浅层目录：[用户中心](./用户中心/README.md)。
+已发送、未发送、排队信息直接看：[邮件发送与队列状态](./用户中心/邮件发送与队列状态.md)。
+不要要求 owner 去本机 `.adp` 目录或深层 `docs/owner` 目录里找状态。
+
 `arXiv 日报推送 / arXiv Daily Push` is a private, evidence-first daily teaching
 pipeline. V5 Stage 1 for the B1/arXiv single-source vertical slice is recorded
 as `ARXIV_PRODUCTION_ACCEPTED`. `ADP-S1P5T05` completed local production and
