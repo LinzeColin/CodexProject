@@ -14,10 +14,10 @@
 - Project: `EEI`
 - Path: `EEI`
 - Product version: `0.1.0`
-- Phase/Gate: `D / TASK-T1307-A209-ISOLATED-RERUN-PROMOTION-BRIDGE`
-- Models/Formulas/Parameters total: `12 / 12 / 88`
-- Active formulas/parameters: `11 / 88`
-- Machine checked formulas/parameters: `11 / 88`
+- Phase/Gate: `D / TASK-T1309-A210-SIGNED-BUNDLE-SOURCE-BOUNDARY`
+- Models/Formulas/Parameters total: `12 / 12 / 89`
+- Active formulas/parameters: `11 / 89`
+- Machine checked formulas/parameters: `11 / 89`
 
 ## Assurance
 
@@ -35,8 +35,8 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `TASK-T1307-A209-ISOLATED-RERUN-PROMOTION-BRIDGE`
-- Next executable task: `TASK-T1307`
+- Release gate: `TASK-T1309-A210-SIGNED-BUNDLE-SOURCE-BOUNDARY`
+- Next executable task: `TASK-T1309`
 - Pending/stale events: `101`
 - Tree-bound events: `0`
 - Commit-bound events: `18`

@@ -110,8 +110,58 @@ def test_signed_brand_clearance_bundle_validates_but_is_not_release_ready(
     assert result["valid"] is True
     assert result["a210_clearance_complete"] is True
     assert result["release_ready"] is False
+    assert result["signed_bundle_source_boundary"]["source_kind"] == "external_operator_file"
+    assert result["signed_bundle_source_boundary"]["closure_allowed"] is True
     assert "A209_24h_operator_soak" in result["remaining_external_gates"]
     assert result["trademark_jurisdictions"] == sorted(
         brand.REQUIRED_TRADEMARK_JURISDICTIONS
     )
     assert result["market_surfaces"] == sorted(brand.REQUIRED_SURFACES)
+
+
+def test_signed_brand_clearance_bundle_allows_operator_input_repo_path(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    monkeypatch.setattr(brand, "ROOT", tmp_path)
+    payload = signed_bundle_from_template()
+    path = tmp_path / "artifacts/operator_inputs/a210/signed-brand-clearance.json"
+    path.parent.mkdir(parents=True)
+    path.write_text(json.dumps(payload), encoding="utf-8")
+
+    brand.validate_signed_bundle(path)
+
+    result = json.loads(capsys.readouterr().out)
+    assert result["valid"] is True
+    assert result["signed_bundle_source_boundary"]["source_kind"] == "repository_operator_input"
+    assert result["signed_bundle_source_boundary"]["repository_relative"] == (
+        "artifacts/operator_inputs/a210/signed-brand-clearance.json"
+    )
+    assert result["signed_bundle_source_boundary"]["closure_allowed"] is True
+    assert result["release_ready"] is False
+
+
+def test_signed_brand_clearance_bundle_rejects_repository_template_path(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(brand, "ROOT", tmp_path)
+    payload = signed_bundle_from_template()
+    path = tmp_path / brand.INTAKE_TEMPLATE_PATH
+    path.parent.mkdir(parents=True)
+    path.write_text(json.dumps(payload), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="repository_template"):
+        brand.validate_signed_bundle(path)
+
+
+def test_signed_brand_clearance_bundle_rejects_repository_fixture_path() -> None:
+    path = (
+        brand.ROOT
+        / "tests/fixtures/release_decision_bundle/"
+        "a202_a210_signed_decision_bundle_contract_test.json"
+    )
+
+    with pytest.raises(ValueError, match="repository_fixture_or_source"):
+        brand.validate_signed_bundle(path)

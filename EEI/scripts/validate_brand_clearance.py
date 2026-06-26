@@ -53,6 +53,19 @@ REQUIRED_SURFACES = {
     "pypi",
 }
 SIGNED_CLEARANCE_STATUSES = {"CLEARED", "RISK_WAIVER_ACCEPTED"}
+SIGNED_BUNDLE_ALLOWED_REPO_PREFIXES = (
+    "artifacts/operator_inputs/",
+    "operator_inputs/",
+    "work/operator_inputs/",
+)
+SIGNED_BUNDLE_DISALLOWED_REPO_PREFIXES = (
+    "artifacts/tests/",
+    "data/",
+    "tests/",
+    "docs/",
+    "config/",
+    "brand/",
+)
 
 
 def require(condition: bool, message: str) -> None:
@@ -400,6 +413,68 @@ def validate_signed_intake_bundle(payload: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def signed_bundle_source_boundary(path: Path) -> dict[str, Any]:
+    resolved = path.resolve()
+    root = ROOT.resolve()
+    try:
+        repo_relative = resolved.relative_to(root).as_posix()
+    except ValueError:
+        return {
+            "path": resolved.as_posix(),
+            "source_kind": "external_operator_file",
+            "repository_relative": None,
+            "closure_allowed": True,
+            "reason": "signed A210 bundle is outside the repository fixture/template tree",
+        }
+    if resolved == (ROOT / INTAKE_TEMPLATE_PATH).resolve():
+        return {
+            "path": repo_relative,
+            "source_kind": "repository_template",
+            "repository_relative": repo_relative,
+            "closure_allowed": False,
+            "reason": "default A210 intake template is not signed brand clearance evidence",
+        }
+    if repo_relative.startswith(SIGNED_BUNDLE_ALLOWED_REPO_PREFIXES):
+        return {
+            "path": repo_relative,
+            "source_kind": "repository_operator_input",
+            "repository_relative": repo_relative,
+            "closure_allowed": True,
+            "reason": "signed A210 bundle is under an approved operator input directory",
+        }
+    if repo_relative.startswith(SIGNED_BUNDLE_DISALLOWED_REPO_PREFIXES):
+        return {
+            "path": repo_relative,
+            "source_kind": "repository_fixture_or_source",
+            "repository_relative": repo_relative,
+            "closure_allowed": False,
+            "reason": (
+                "repository fixtures, templates, configs, docs, brand research "
+                "and data cannot close A210"
+            ),
+        }
+    return {
+        "path": repo_relative,
+        "source_kind": "repository_unapproved_path",
+        "repository_relative": repo_relative,
+        "closure_allowed": False,
+        "reason": (
+            "signed A210 bundle must be outside the repository or under "
+            "artifacts/operator_inputs"
+        ),
+    }
+
+
+def validate_signed_bundle_source_path(path: Path) -> dict[str, Any]:
+    boundary = signed_bundle_source_boundary(path)
+    if boundary["closure_allowed"] is not True:
+        raise ValueError(
+            "A210 signed brand clearance bundle must be operator-supplied, not "
+            f"{boundary['source_kind']}: {boundary['path']}"
+        )
+    return boundary
+
+
 def build_payload() -> dict[str, Any]:
     policy = read_policy()
     conflicts = read_conflicts()
@@ -443,6 +518,13 @@ def build_payload() -> dict[str, Any]:
             "risk_waiver_allowed": True,
             "legal_counsel_or_owner_signature_required": True,
             "public_launch_must_fail_closed_without_clearance": True,
+        },
+        "signed_bundle_source_boundary": {
+            "external_operator_file_allowed": True,
+            "approved_repository_prefixes": list(SIGNED_BUNDLE_ALLOWED_REPO_PREFIXES),
+            "disallowed_repository_prefixes": list(SIGNED_BUNDLE_DISALLOWED_REPO_PREFIXES),
+            "default_template_counts_as_clearance": False,
+            "repository_fixtures_count_as_clearance": False,
         },
         "current_clearance_status": {
             "formal_legal_clearance": "NOT_COMPLETE",
@@ -503,6 +585,29 @@ def validate_payload(payload: dict[str, Any]) -> None:
     require(
         clearance.get("public_launch_must_fail_closed_without_clearance") is True,
         "public launch must fail closed",
+    )
+    source_boundary = payload.get("signed_bundle_source_boundary") or {}
+    require(
+        source_boundary.get("external_operator_file_allowed") is True,
+        "external operator A210 bundle must remain allowed",
+    )
+    require(
+        source_boundary.get("approved_repository_prefixes")
+        == list(SIGNED_BUNDLE_ALLOWED_REPO_PREFIXES),
+        "approved signed-bundle repository prefixes drift",
+    )
+    require(
+        source_boundary.get("disallowed_repository_prefixes")
+        == list(SIGNED_BUNDLE_DISALLOWED_REPO_PREFIXES),
+        "disallowed signed-bundle repository prefixes drift",
+    )
+    require(
+        source_boundary.get("default_template_counts_as_clearance") is False,
+        "default template must not count as A210 clearance",
+    )
+    require(
+        source_boundary.get("repository_fixtures_count_as_clearance") is False,
+        "repository fixtures must not count as A210 clearance",
     )
 
     current = payload.get("current_clearance_status") or {}
@@ -573,6 +678,7 @@ def validate_template() -> None:
 
 
 def validate_signed_bundle(path: Path) -> None:
+    source_boundary = validate_signed_bundle_source_path(path)
     payload = json.loads(path.read_text(encoding="utf-8"))
     summary = validate_signed_intake_bundle(payload)
     print(
@@ -582,6 +688,7 @@ def validate_signed_bundle(path: Path) -> None:
                 "bundle": str(path),
                 "a210_clearance_complete": True,
                 "release_ready": False,
+                "signed_bundle_source_boundary": source_boundary,
                 "remaining_external_gates": [
                     "A202_source_license_owner_legal_release",
                     "A026_A027_production_gold_labels",
@@ -622,7 +729,7 @@ def main() -> int:
             validate_template()
         else:
             validate_signed_bundle(args.bundle)
-    except (AssertionError, json.JSONDecodeError, KeyError) as exc:
+    except (AssertionError, json.JSONDecodeError, KeyError, ValueError) as exc:
         print(f"Brand clearance validation: FAIL - {exc}")
         return 1
     return 0

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "artifact_id": "t1309-brand-clearance-preflight-contract",
-  "generated_at": "2026-06-21T02:19:48+00:00",
+  "generated_at": "2026-06-26T01:22:10+00:00",
   "task_id": "T1309",
   "acceptance_ids": [
     "A210"
@@ -16,7 +16,8 @@
     "brand_policy": "config/brand_policy.yaml",
     "conflict_register": "data/brand_name_conflict_register.csv",
     "competitive_landscape": "data/competitive_product_landscape.csv",
-    "research_summary": "brand/BRAND_AND_COMPETITIVE_LANDSCAPE_RESEARCH.md"
+    "research_summary": "brand/BRAND_AND_COMPETITIVE_LANDSCAPE_RESEARCH.md",
+    "brand_clearance_intake_template": "artifacts/tests/a210/t1309_brand_clearance_intake_template.json"
   },
   "release_gate": {
     "id": "BRAND-G1",
@@ -77,6 +78,24 @@
     "risk_waiver_allowed": true,
     "legal_counsel_or_owner_signature_required": true,
     "public_launch_must_fail_closed_without_clearance": true
+  },
+  "signed_bundle_source_boundary": {
+    "external_operator_file_allowed": true,
+    "approved_repository_prefixes": [
+      "artifacts/operator_inputs/",
+      "operator_inputs/",
+      "work/operator_inputs/"
+    ],
+    "disallowed_repository_prefixes": [
+      "artifacts/tests/",
+      "data/",
+      "tests/",
+      "docs/",
+      "config/",
+      "brand/"
+    ],
+    "default_template_counts_as_clearance": false,
+    "repository_fixtures_count_as_clearance": false
   },
   "current_clearance_status": {
     "formal_legal_clearance": "NOT_COMPLETE",

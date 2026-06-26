@@ -1,4 +1,5 @@
 # Changelog
+- `EVENT-20260626-007`: Hardened T1309/A210 signed brand-clearance bundle source boundaries so repository fixtures/templates/docs/config/data/tests/brand-research paths cannot close A210; A210 remains blocked pending real legal/market clearance or signed risk waiver.
 - `EVENT-20260626-006`: Bound the A209 isolated-rerun promotion bridge to remote CI evidence: Project Governance `28210071092` PASS and EEI validation `28210071130` PASS for commit `f1b89fc3`; A209 remains open.
 
 ## 0.1.0 - 2026-06-20

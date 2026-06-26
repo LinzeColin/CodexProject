@@ -1,5 +1,43 @@
 # MVP Development Record
 
+## 2026-06-26 - T1309/A210 signed brand-clearance bundle source-boundary hardening
+
+Status: LOCAL FOCUSED VALIDATED; CI PENDING; A210 STILL IN PROGRESS; A209 ISOLATED RERUN CONTINUES IN BACKGROUND
+
+### Scope
+
+- Hardened `scripts/validate_brand_clearance.py validate-signed --bundle` so signed A210 brand/legal/market clearance or risk-waiver evidence must be operator-supplied.
+- Allowed signed bundle sources: external operator files and approved repository operator-input paths under `artifacts/operator_inputs/`, `operator_inputs/` or `work/operator_inputs/`.
+- Rejected signed bundle sources: repository fixtures, templates, docs, config, data, tests and brand-research paths including `artifacts/tests/`, `data/`, `tests/`, `docs/`, `config/` and `brand/`.
+- Added `PARAM-089` / `brand_clearance.signed_bundle_source_boundary` to bind this policy into machine-verified governance.
+
+### Current Evidence
+
+- A210 preflight artifact now emits `signed_bundle_source_boundary` with approved and disallowed repository prefixes.
+- Focused tests prove external operator files and approved operator-input repository paths validate, while repository template and fixture paths fail closed before content can be treated as clearance.
+- A209 isolated rerun was read-only observed at `27/288` PASS windows with `0` failed; no A209 promotion, restart or finalization was performed.
+
+### Acceptance Mapping
+
+- T1309 -> A210 for formal brand legal/market clearance or signed risk waiver.
+- This source-boundary hardening is a false-closure control only; it does not close A210.
+
+### Validation
+
+- `py_compile` for `scripts/validate_brand_clearance.py` and `tests/unit/test_brand_clearance.py`: PASS.
+- `ruff check scripts/validate_brand_clearance.py tests/unit/test_brand_clearance.py`: PASS.
+- `pytest -q tests/unit/test_brand_clearance.py -p no:cacheprovider`: PASS, `6/6`.
+- `make generate-brand-clearance-artifact validate-brand-clearance`: PASS.
+
+### Remaining Gaps
+
+- A210 still requires real dated trademark knockout evidence, market-surface searches, phonetic/semantic review and legal counsel sign-off or owner risk waiver.
+- A202 signed source/license/owner/legal clearance, A026/A027 production gold labels, A209 24h final evidence and release-manager activation remain incomplete external gates.
+
+### Rollback
+
+- Revert the A210 source-boundary validator/test/artifact changes, remove `PARAM-089`, restore the prior T1309 governance records, regenerate release artifacts, and keep live A209 checkpoint/log files untouched unless operator recovery is explicitly authorized.
+
 ## 2026-06-25 - T1301/A202 operator review packet freshness remote CI binding
 
 Status: REMOTE CI ATTESTED FOR COMMIT `236d25354db7d8f9774d1f91981ae30d69b0234e`; A202 STILL IN PROGRESS; A209 WAS RUNNING AT CI-BINDING TIME BUT WAS SUPERSEDED BY THE 2026-06-26 `7/288` FAILURE; DOWNSTREAM RELEASE GATES STILL BLOCKED

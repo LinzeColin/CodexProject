@@ -2,11 +2,11 @@
 
 ## 1. 当前结论
 
-EEI 当前治理结论：实现一致性为 `VERIFIED`，方法/实证为 `UNVERIFIED` / `PARTIAL`，交付状态为 `FAILED`；A209 24h 证据仍未完成，isolated rerun 正在后台运行，最新治理 heartbeat 为 `11/288` PASS、`0` failed、`3.82%` completion；这不是生产上线声明。
+EEI 当前治理结论：实现一致性为 `VERIFIED`，方法/实证为 `UNVERIFIED` / `PARTIAL`，交付状态为 `FAILED`；本轮新增 A210 signed bundle source-boundary 控制，A210 仍缺正式法律/市场清权或签署风险豁免；A209 24h 证据仍未完成，isolated rerun 正在后台运行；这不是生产上线声明。
 
 ## 2. 本次运行改变了什么
 
-Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，并明确 A209 failed evidence / isolated rerun 只是不闭合的运行证据，避免把 `MACHINE_VERIFIED` 或 partial soak 误读为模型有效或可上线。
+Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，并明确 A210 source-boundary PASS、A209 failed evidence / isolated rerun 都是不闭合的运行或证据完整性控制，避免把 `MACHINE_VERIFIED`、source-boundary PASS 或 partial soak 误读为模型有效、法律清权完成或可上线。
 
 ## 3. 为什么重要
 
@@ -31,15 +31,15 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 ## 7. 下一行动、责任角色和验收证据
 
-- next_task_id: `TASK-T1307`
+- next_task_id: `TASK-T1309`
 - responsible_role: `product_owner + data_owner + risk_owner`
-- acceptance_ids: `ACC-A209`
-- unblock_condition: Complete the isolated 24h operator soak with `288/288` PASS windows, `0` failed windows, preserve/promote the checkpoint evidence, and run `scripts/validate_operator_soak_evidence.py validate --require-release-ready`.
+- acceptance_ids: `ACC-A210`
+- unblock_condition: Attach real signed A210 brand legal/market clearance or risk-waiver evidence from an external or approved operator-input source; source-boundary validation alone is not clearance.
 
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (88/88 active parameters, 11/11 active formulas)
+- implementation_congruence: `VERIFIED` (89/89 active parameters, 11/11 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `UNVERIFIED`
 - empirical_validation: `PARTIAL`
@@ -56,7 +56,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 ## 10. Current Blockers
 
-1. 24h operator soak evidence
+1. formal A210 brand legal/market clearance or signed risk waiver
 2. historical event binding backlog
 3. product_owner + data_owner + risk_owner must provide project-specific evidence before readiness can improve.
 
@@ -71,14 +71,14 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - model_count: `12`
 - total_formulas: `12`
 - active_formulas: `11`
-- total_parameters: `88`
-- active_parameters: `88`
+- total_parameters: `89`
+- active_parameters: `89`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `TASK-T1307-A209-ISOLATED-RERUN-PROMOTION-BRIDGE`
+- release_gate: `TASK-T1309-A210-SIGNED-BUNDLE-SOURCE-BOUNDARY`
 
 ## 14. Evidence Freshness
 
@@ -87,7 +87,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - commit_bound_events: `18`
 - legacy_unbound_events: `19`
 - precommit_pending_events: `79`
-- pending_or_stale_events: `100`
+- pending_or_stale_events: `101`
 
 ## 15. UNKNOWN
 
@@ -101,9 +101,9 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - snapshot_event_time: `2026-06-26T10:05:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.1.0`
-- phase/gate: `D / TASK-T1307-A209-ISOLATED-24H-RERUN-STARTED`
+- phase/gate: `D / TASK-T1309-A210-SIGNED-BUNDLE-SOURCE-BOUNDARY`
 
 ## 17. Next Unique Task
 
-- task_id: `TASK-T1307`
-- reason: Complete and validate the isolated A209 24h operator soak without treating partial or failed evidence as release-ready
+- task_id: `TASK-T1309`
+- reason: Complete and validate A210 formal brand legal/market clearance or signed risk waiver without treating repository fixtures/templates as clearance
