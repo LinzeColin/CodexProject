@@ -59,7 +59,7 @@
       "release_gate_closed_by_finalizer": false,
       "status": "A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL",
       "target_windows": 288,
-      "windows_completed": 49,
+      "windows_completed": 55,
       "windows_failed": 0
     },
     "relationship_gold": {
@@ -80,7 +80,7 @@
       "status": "PENDING_SIGNED_DECISIONS"
     }
   },
-  "generated_at": "2026-06-26T03:13:57Z",
+  "generated_at": "2026-06-26T03:40:31Z",
   "missing_input_ids": [
     "A202_source_license_passage_owner_legal_release",
     "A210_brand_legal_market_clearance_or_risk_waiver",
@@ -206,7 +206,7 @@
     },
     {
       "acceptance_id": "A209",
-      "blocking_reason": "A209 finalization does not allow downstream refresh at 49/288 windows",
+      "blocking_reason": "A209 finalization does not allow downstream refresh at 55/288 windows",
       "completion_criteria": [
         "288/288 five-minute windows pass",
         "0 failed windows",
@@ -218,7 +218,7 @@
       "label": "A209 24h operator soak finalization evidence",
       "required_source": {
         "path": "artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json",
-        "sha256": "2a6f1b3bf9cbb57204fc80a89608eb6d286cffab41a43a2c1d5043857f8c8ace"
+        "sha256": "75bfce6b467affbd708e3abb640590d799f56a28f088cdc9b8c4e6b76f8de0f8"
       },
       "supporting_sources": [],
       "template_or_partial_evidence_counts_as_clearance": false,
@@ -245,7 +245,7 @@
     },
     "a209_operator_soak_finalization_preflight": {
       "path": "artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json",
-      "sha256": "2a6f1b3bf9cbb57204fc80a89608eb6d286cffab41a43a2c1d5043857f8c8ace"
+      "sha256": "75bfce6b467affbd708e3abb640590d799f56a28f088cdc9b8c4e6b76f8de0f8"
     },
     "a210_brand_clearance_intake_template": {
       "path": "artifacts/tests/a210/t1309_brand_clearance_intake_template.json",
@@ -253,7 +253,7 @@
     },
     "external_release_evidence_bundle_preflight": {
       "path": "artifacts/tests/a205/t1303_external_release_evidence_bundle_preflight.json",
-      "sha256": "4a9e9d8088a7dfa56be9217bf5c319db6f6a2e3a1932a970513f28b56357a606"
+      "sha256": "55c61f6b04e39b179d051e045fe84e7e3f0c2da4c007d97e0f5e6b0b08db110c"
     }
   },
   "system_en_name": "Enterprise Ecosystem Intelligence",

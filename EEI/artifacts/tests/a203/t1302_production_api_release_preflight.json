@@ -42,15 +42,15 @@
       "status": "FAILED_OPERATOR_EVIDENCE"
     },
     "operator_soak_background_heartbeat": {
-      "completion_percent": 17.01,
+      "completion_percent": 19.1,
       "counts_as_release_ready": false,
       "progress_status": "RUNNING_PARTIAL",
       "release_gate_closed_by_background_heartbeat": false,
       "status": "BACKGROUND_SOAK_RUNNING_WITH_WATCHDOG",
       "target_windows": 288,
-      "windows_completed": 49,
+      "windows_completed": 55,
       "windows_failed": 0,
-      "windows_remaining": 239
+      "windows_remaining": 233
     },
     "release_decision": {
       "public_brand_launch_allowed": false,
@@ -75,7 +75,7 @@
       "status": "RELEASE_MANAGER_ACTIVATION_BLOCKED"
     }
   },
-  "generated_at": "2026-06-26T03:14:21Z",
+  "generated_at": "2026-06-26T03:46:51Z",
   "missing_gates": [
     {
       "gate_id": "A202_relationship_publication_clearance",
@@ -107,11 +107,11 @@
     "operator_soak_evidence": "artifacts/tests/a209/t1307_operator_soak_evidence_validation.json",
     "operator_soak_evidence_sha256": "f5dc124f5e8beb4389163e5e171bbddc9743cfcb3a223af0798a74c9234cc53b",
     "operator_soak_heartbeat": "artifacts/tests/a209/t1307_operator_soak_background_progress.json",
-    "operator_soak_heartbeat_sha256": "99b467912ee34041140b441f5b12691caec2c67fd9b58f9cc1b45dc91ee2d382",
+    "operator_soak_heartbeat_sha256": "8b8ffe27a8575b5f73f27fbf4387ddc762c52021cfa124b5aa04ca0e29cea89b",
     "release_decision_contract": "artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json",
     "release_decision_contract_sha256": "471f0aa9dbb1ea6854807b674a1a1c8a1fb405c99e29440497ce3c5064c409c7",
     "release_manager_preflight": "artifacts/tests/a205/t1303_release_manager_activation_preflight.json",
-    "release_manager_preflight_sha256": "642b0caf3c456e911e1c00fb063a1a8359c29c8296896c0c094440b7b521dae0"
+    "release_manager_preflight_sha256": "ad723c16550437cee9fa20d6da2cebe3618142978d010d92da08204baccd0766"
   },
   "status": "A203_PRODUCTION_API_RELEASE_BLOCKED",
   "system_en_name": "Enterprise Ecosystem Intelligence",

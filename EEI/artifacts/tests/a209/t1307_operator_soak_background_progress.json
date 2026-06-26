@@ -7,7 +7,7 @@
   "acceptance_ids": [
     "A209"
   ],
-  "generated_at": "2026-06-26T03:13:21Z",
+  "generated_at": "2026-06-26T03:40:16Z",
   "status": "BACKGROUND_SOAK_RUNNING_WITH_WATCHDOG",
   "progress_status": "RUNNING_PARTIAL",
   "release_gate_closed_by_background_heartbeat": false,
@@ -27,28 +27,28 @@
     "target_seconds": 86400.0,
     "target_windows": 288,
     "operator_window_seconds": 300.0,
-    "windows_completed": 49,
+    "windows_completed": 55,
     "windows_failed": 0,
-    "windows_remaining": 239,
-    "completed_duration_seconds": 14700.0,
-    "completion_percent": 17.01,
+    "windows_remaining": 233,
+    "completed_duration_seconds": 16500.0,
+    "completion_percent": 19.1,
     "latest_successful_window": {
-      "index": 49,
+      "index": 55,
       "status": "PASS",
       "child_status": "PARTIAL",
       "requested_duration_seconds": 300,
       "measured_duration_seconds": 300,
-      "elapsed_wall_seconds": 302.8788,
-      "started_at": "2026-06-26T03:03:18Z",
-      "ended_at": "2026-06-26T03:08:21Z",
-      "output_path": "/private/tmp/eei-operator-soak-80478-49.json",
-      "browser_heap_growth_bytes": 612135,
+      "elapsed_wall_seconds": 302.7837,
+      "started_at": "2026-06-26T03:33:35Z",
+      "ended_at": "2026-06-26T03:38:38Z",
+      "output_path": "/private/tmp/eei-operator-soak-80478-55.json",
+      "browser_heap_growth_bytes": 612411,
       "browser_dom_node_growth": 0,
       "browser_slices_completed": 20,
       "browser_measurement_error": null,
       "worker_jobs_completed": 12,
       "worker_jobs_total": 12,
-      "worker_event_loop_lag_p95_ms": 2.2074
+      "worker_event_loop_lag_p95_ms": 2.2155
     }
   },
   "artifacts": {
