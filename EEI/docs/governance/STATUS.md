@@ -4,8 +4,8 @@
 
 - source_base_commit: `2a9afde825a2819da337e27b16f31201d2150f3e`
 - source_tree_hash: `9657d04d30d592c81ed3a9d6ffbd0deda0478c3c`
-- source_snapshot_hash: `sha256:11fcb06e99f7783744581d0a43e7443f0bf9f749741f09f1b934478044e5e37e`
-- snapshot_event_time: `2026-06-26T14:45:38+10:00`
+- source_snapshot_hash: `sha256:2f6ade2a9d4ce89ccd82395ebf3880d1c96a12510cf6a25d1a7b9eff2b39113a`
+- snapshot_event_time: `2026-06-26T15:26:23+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -14,7 +14,7 @@
 - Project: `EEI`
 - Path: `EEI`
 - Product version: `0.1.0`
-- Phase/Gate: `D / TASK-T1308-A211-EVIDENCE-DRAWER-FOCUS-TRAP`
+- Phase/Gate: `D / TASK-T504-A072-STRATEGIC-SIGNAL-PANEL`
 - Models/Formulas/Parameters total: `12 / 12 / 90`
 - Active formulas/parameters: `11 / 90`
 - Machine checked formulas/parameters: `11 / 90`
@@ -35,9 +35,9 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `TASK-T1308-A211-EVIDENCE-DRAWER-FOCUS-TRAP`
+- Release gate: `TASK-T504-A072-STRATEGIC-SIGNAL-PANEL`
 - Next executable task: `TASK-T1301`
-- Pending/stale events: `111`
+- Pending/stale events: `112`
 - Tree-bound events: `0`
 - Commit-bound events: `21`
 - Legacy unbound events: `19`

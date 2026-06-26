@@ -74,7 +74,7 @@ test("A211 exposes WorkspaceContext routes controls disabled entries and persist
   await expect(context).toHaveAttribute("data-saved-view-storage-key", "eei.savedView.current.v1");
   await expect(context).toHaveAttribute(
     "data-disabled-unfinished",
-    "ma_transactions,control_relationships,strategic_signals"
+    "ma_transactions,control_relationships"
   );
   const serverEndpoints = await context.getAttribute("data-server-endpoints");
   expect(serverEndpoints).toContain("/v1/saved-views");
@@ -118,10 +118,54 @@ test("A211 exposes WorkspaceContext routes controls disabled entries and persist
     /Requires reviewed M&A transaction facts/
   );
   await expect(page.getByTestId("main-nav-control_relationships")).toBeDisabled();
-  await expect(page.getByTestId("main-nav-strategic_signals")).toBeDisabled();
+  await page.getByTestId("main-nav-strategic_signals").click();
+  await expect(page.getByTestId("workspace-shell")).toHaveAttribute(
+    "data-last-nav-action",
+    "section:strategic_signals:strategic-signal-panel"
+  );
 
   await page.getByTestId("main-nav-system_status").click();
   await expect(page).toHaveURL(/\/development-status$/);
+});
+
+test("shows strategic signal support contradiction alternatives decay and rule version", async ({
+  page
+}) => {
+  await page.goto("/");
+
+  await page.getByTestId("main-nav-strategic_signals").click();
+  const panel = page.getByTestId("strategic-signal-panel");
+  await expect(panel).toBeVisible();
+  await expect(panel).toHaveAttribute("data-support-count", "1");
+  await expect(panel).toHaveAttribute("data-contradiction-count", "1");
+  await expect(panel).toHaveAttribute("data-alternative-count", "1");
+  await expect(panel).toHaveAttribute("data-rule-version", "F-SS-001@balanced-v2");
+  await expect(panel).toHaveAttribute("data-decay-policy", /half_life_days/);
+
+  await expect(page.getByTestId("strategic-signal-contract")).toContainText("Support");
+  await expect(page.getByTestId("strategic-signal-contract")).toContainText("Contradiction");
+  await expect(page.getByTestId("strategic-signal-contract")).toContainText("Alternatives");
+  await expect(page.getByTestId("strategic-signal-contract")).toContainText("Time decay");
+  await expect(page.getByTestId("strategic-signal-contract")).toContainText(
+    "F-SS-001@balanced-v2"
+  );
+
+  await expect(page.getByTestId("strategic-signal-ai-capacity")).toHaveAttribute(
+    "data-signal-stance",
+    "support"
+  );
+  await expect(page.getByTestId("strategic-signal-export-control")).toHaveAttribute(
+    "data-signal-stance",
+    "contradiction"
+  );
+  await expect(page.getByTestId("strategic-signal-edge-inference")).toHaveAttribute(
+    "data-signal-stance",
+    "alternative"
+  );
+  await expect(page.getByTestId("strategic-signal-ai-capacity")).toHaveAttribute(
+    "data-half-life",
+    "365d"
+  );
 });
 
 test("exposes eight company layers and separates structure object types", async ({ page }) => {

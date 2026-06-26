@@ -11,15 +11,38 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version: `0.1.0`
 - Product version status: `provisional`
 - Current phase: `D`
-- Current gate: `TASK-T1308-A211-EVIDENCE-DRAWER-FOCUS-TRAP`
+- Current gate: `TASK-T504-A072-STRATEGIC-SIGNAL-PANEL`
 - Confirmed iteration count: 39
 - Reconstructed development event count: 6
-- Current task: `TASK-T1308/A211 evidence detail drawer focus-trap hardening`
+- Current task: `TASK-T504/A072 strategic-signal frontend contract panel`
 - Current A209 point-in-time heartbeat: the clean 24h operator soak attempt launched at `2026-06-25T21:33:19Z` failed at checkpoint window `7/288`; `6` windows passed, `1` failed, latest checkpoint time is `2026-06-25T22:08:58Z`, `child_status=NO_OUTPUT`, `exit_status=1`, and stderr reports `page.evaluate: Target page, context or browser has been closed`. No `run_operator_soak` or `run_soak_smoke` process was found during the 2026-06-26 check. A209 remains `IN_PROGRESS` and has no release-ready 24h evidence.
 - Current isolated rerun: `/private/tmp/eei-a209-rerun-20260626-0918/` was started without overwriting the failed canonical checkpoint; operator PID `80478` and watchdog PID `80732` are recorded, first checkpoint window `1/288` PASS at `2026-06-25T23:04:42Z`, and the latest repository heartbeat refresh during this iteration observed `55/288` PASS windows, `0` failed, latest checkpoint time `2026-06-26T03:38:38Z`, and `19.10%` completion.
 - Blockers: T1301/A202 is still `IN_PROGRESS`; the refreshed operator review packet is freshness-correct supporting review evidence only and does not create source-license review, passage-level human approval, production owner approval, legal release clearance, brand clearance, release-manager activation or final public relationship publication. T1307/A209 is still `IN_PROGRESS`; failed `7/288` evidence plus short repair probes are non-closure evidence only and the isolated rerun must reach `288/288` successful windows with zero failures before promotion/finalization can allow downstream release-gate refresh. A204/A205 release-manager activation preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED` until A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence pass. A026 still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%. The new T904 operator labeling packet is a source-bound worksheet with blank `OPERATOR_TO_LABEL` slots and is not production gold evidence. A210 still needs formal brand legal/market clearance or signed risk waiver. The T1303 external release operator intake packet now uses schema `eei-external-release-operator-intake-packet-v2`, lists exact submission targets under `artifacts/operator_inputs/`, and keeps `release_gate_closed_by_operator_packet=false`; it is a checklist/hash manifest, not clearance.
 - Frontend hardening: T1308/A211 now includes an evidence detail drawer with `role=dialog`, `aria-modal=true`, sibling `inert`/`aria-hidden`, Tab/Shift+Tab focus trapping, Escape/close handling and trigger focus restoration. This fixes review issue `A11Y-002` without changing release readiness, publication policy, model formulas, API schema or A209 state.
+- Strategic-signal panel: T504/A072 now exposes support, contradiction, alternative hypothesis, half-life/time-decay policy and `F-SS-001@balanced-v2` rule version in the Watchlist-first workspace. FUN-EXP-07 is `PARTIAL` because real strategic-signal ingestion, production API and human content review remain open under T803/T805/T1301/T1302.
 
+
+
+## EVENT-20260626-015 - T504/A072 strategic signal panel contract
+
+- Timestamp: 2026-06-26T15:26:23+10:00
+- Fact level: EXTRACTED
+- Base commit: `c49030b2c6502a5079e28f678151862af8fc96ea`
+- Scope: expose a frontend strategic-signal contract panel in the Watchlist-first workspace.
+- Behavior: the `战略信号` navigation section scrolls/focuses to a panel showing support, contradiction, alternatives, half-life time decay and `F-SS-001@balanced-v2` rule version.
+- Acceptance mapping: `TASK-T504` -> `A072`; FUN-EXP-07 implementation becomes `PARTIAL` while real ingestion/API/review work remains open.
+- Validation: frontend typecheck PASS; target strategic-signal Playwright E2E PASS `1/1`; full `home.spec.ts` PASS `19/19` with `PLAYWRIGHT_BROWSERS_PATH=/private/tmp/eei-ms-playwright`.
+- Non-claims: this does not close A202, A209, A210, A026/A027, A204/A205, real production signal ingestion, production fact publication or MVP release readiness.
+- Model/parameter impact: no scoring formula, graph traversal formula, extraction model, model weight, business threshold, API schema, database schema, publication policy or active parameter value changed.
+- Rollback: revert the strategic-signal panel, WorkspaceContext section activation, E2E assertions, A072 artifact and companion governance rows.
+
+## ITER-20260626-015 - Strategic signal frontend contract validation
+
+- Date: 2026-06-26
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Result: A072 frontend contract locally validated; FUN-EXP-07 remains partially implemented because T803/T805 and production signal ingestion remain open.
 
 ## EVENT-20260626-014 - T1308/A211 evidence drawer focus trap
 

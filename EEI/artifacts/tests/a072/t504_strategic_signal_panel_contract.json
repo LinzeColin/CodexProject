@@ -1,0 +1,38 @@
+{
+  "schema_version": "eei-a072-strategic-signal-panel-contract-v1",
+  "task_id": "T504",
+  "acceptance_ids": [
+    "A072"
+  ],
+  "status": "PASS",
+  "generated_at": "2026-06-26T15:26:23+10:00",
+  "scope": "frontend_strategic_signal_contract_panel",
+  "non_claims": [
+    "does_not_publish_real_production_signal_facts",
+    "does_not_change_scoring_formula_or_parameter_values",
+    "does_not_close_A202_A209_A210_A026_A027_A204_A205"
+  ],
+  "required_contract": {
+    "support_visible": true,
+    "contradiction_visible": true,
+    "alternatives_visible": true,
+    "time_decay_visible": true,
+    "rule_version_visible": true,
+    "rule_version": "F-SS-001@balanced-v2",
+    "execution_instruction_language_present": false
+  },
+  "ui_evidence": {
+    "panel_test_id": "strategic-signal-panel",
+    "contract_test_id": "strategic-signal-contract",
+    "list_test_id": "strategic-signal-list",
+    "support_count": 1,
+    "contradiction_count": 1,
+    "alternative_count": 1,
+    "decay_policy": "half_life_days.control_change=730;half_life_days.policy_regulatory=270;half_life_days.product_partnership=180"
+  },
+  "tests": [
+    "pnpm --filter @eei/web typecheck PASS",
+    "Playwright strategic signal target E2E PASS 1/1",
+    "Playwright home.spec.ts PASS 19/19"
+  ]
+}

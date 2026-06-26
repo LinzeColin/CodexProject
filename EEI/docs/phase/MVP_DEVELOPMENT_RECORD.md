@@ -6524,3 +6524,34 @@ Status: LOCAL VALIDATED; A211 FRONTEND HARDENING; RELEASE GATES STILL BLOCKED
 ### Rollback
 
 - Revert `apps/web/src/app/page.tsx`, `apps/web/src/app/globals.css`, `tests/e2e/home.spec.ts`, `data/review_issue_register.csv`, traceability/version/governance records and this development-record section.
+
+
+## 2026-06-26 - T504/A072 strategic signal panel contract
+
+Status: LOCAL VALIDATED; A072 FRONTEND CONTRACT DONE; PRODUCTION SIGNAL INGESTION STILL OPEN
+
+### Scope
+
+- Enabled the `战略信号` workspace navigation entry as a section target instead of a disabled planned item.
+- Added a strategic-signal panel that visibly separates support, contradiction, alternative hypotheses, time decay policy and rule version.
+- Bound the displayed contract to `F-SS-001@balanced-v2` and existing `weights.strategic_signal` parameter context without changing active model values.
+
+### Acceptance Mapping
+
+- T504 -> A072.
+- FUN-EXP-07 moves from `NOT_STARTED` to `PARTIAL` implementation because T803/T805 and real production signal ingestion remain open.
+
+### Validation
+
+- `/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/pnpm --filter @eei/web typecheck`: PASS.
+- `PLAYWRIGHT_BROWSERS_PATH=/private/tmp/eei-ms-playwright ./node_modules/.bin/playwright test --config=../../playwright.config.ts home.spec.ts --grep "strategic signal" --workers=1`: PASS, `1/1`.
+- `PLAYWRIGHT_BROWSERS_PATH=/private/tmp/eei-ms-playwright ./node_modules/.bin/playwright test --config=../../playwright.config.ts home.spec.ts --workers=1`: PASS, `19/19`.
+
+### Non-Claims
+
+- This does not implement real strategic-signal ingestion, production signal facts, database signal tables, production `/v1/entities/{entityId}/signals` API, public release clearance or MVP release readiness.
+- No scoring formula, graph traversal formula, extraction model, model weight, API schema, database schema, publication policy or active parameter value changed.
+
+### Rollback
+
+- Revert `apps/web/src/app/page.tsx`, `apps/web/src/app/workspace-context.tsx`, `apps/web/src/app/globals.css`, `tests/e2e/home.spec.ts`, `artifacts/tests/a072/t504_strategic_signal_panel_contract.json`, A072 catalog/status rows and companion governance records.

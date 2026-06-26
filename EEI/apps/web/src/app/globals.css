@@ -993,6 +993,53 @@ dd {
   line-height: 1.35;
 }
 
+.strategicSignalPanel:focus {
+  outline: 2px solid #1f7a4a;
+  outline-offset: 2px;
+}
+
+.signalList {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.signalList li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 6px 8px;
+  align-items: center;
+  border-top: 1px solid #cfe6d8;
+  padding-top: 8px;
+}
+
+.signalList strong,
+.signalList small {
+  grid-column: 1 / -1;
+}
+
+.signalList strong {
+  color: #184c35;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.signalList span,
+.signalList em,
+.signalList small {
+  color: #38624e;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.signalList em {
+  justify-self: end;
+  font-style: normal;
+  font-weight: 760;
+}
+
 .graphTablePanel {
   display: grid;
   gap: 10px;

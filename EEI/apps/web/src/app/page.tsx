@@ -630,6 +630,39 @@ const homeChanges: HomeChangeEntry[] = [
   { key: "cloud", label: "Customer-demand path changed", severity: "watch", target: "cloud" }
 ];
 
+const strategicSignalRows = [
+  {
+    key: "ai-capacity",
+    stance: "support",
+    theme: "AI infrastructure capacity",
+    evidence: "Capex and long-contract signals support accelerated infrastructure buildout.",
+    contribution: "28%",
+    decay: "0.96",
+    halfLife: "365d",
+    ruleVersion: "F-SS-001@balanced-v2"
+  },
+  {
+    key: "export-control",
+    stance: "contradiction",
+    theme: "Unconstrained global demand",
+    evidence: "Policy and export-control records reduce confidence in a single global-growth thesis.",
+    contribution: "-14%",
+    decay: "0.88",
+    halfLife: "270d",
+    ruleVersion: "F-SS-001@balanced-v2"
+  },
+  {
+    key: "edge-inference",
+    stance: "alternative",
+    theme: "Edge inference capacity",
+    evidence: "Patent, product and system-maker signals remain an alternative research hypothesis.",
+    contribution: "10%",
+    decay: "0.74",
+    halfLife: "180d",
+    ruleVersion: "F-SS-001@balanced-v2"
+  }
+];
+
 const homeFreshness = {
   status: "synthetic_fixture",
   latestRelationshipObservedAt: ACTIVE_ANALYSIS_CONTEXT.defaultAsOf,
@@ -3381,6 +3414,67 @@ export default function Home() {
               </button>
             ) : null}
           </div>
+        </section>
+
+        <section
+          className="strategicSignalPanel graphPolicyPanel"
+          data-alternative-count={
+            strategicSignalRows.filter((signal) => signal.stance === "alternative").length
+          }
+          data-contradiction-count={
+            strategicSignalRows.filter((signal) => signal.stance === "contradiction").length
+          }
+          data-decay-policy="half_life_days.control_change=730;half_life_days.policy_regulatory=270;half_life_days.product_partnership=180"
+          data-rule-version="F-SS-001@balanced-v2"
+          data-support-count={
+            strategicSignalRows.filter((signal) => signal.stance === "support").length
+          }
+          data-testid="strategic-signal-panel"
+          tabIndex={-1}
+        >
+          <header>
+            <p className="eyebrow">Strategic Signals</p>
+            <strong>Research hypothesis panel</strong>
+          </header>
+          <dl data-testid="strategic-signal-contract">
+            <div>
+              <dt>Support</dt>
+              <dd>Positive contribution rows must keep source evidence and rule version visible.</dd>
+            </div>
+            <div>
+              <dt>Contradiction</dt>
+              <dd>Counter-signal rows reduce confidence and remain visible beside supporting signals.</dd>
+            </div>
+            <div>
+              <dt>Alternatives</dt>
+              <dd>Alternative themes stay separate from the primary hypothesis instead of being merged.</dd>
+            </div>
+            <div>
+              <dt>Time decay</dt>
+              <dd>Half-life policy is disclosed per signal family and never hidden inside node size.</dd>
+            </div>
+            <div>
+              <dt>Rule version</dt>
+              <dd>F-SS-001@balanced-v2; research ordering only, no execution instruction.</dd>
+            </div>
+          </dl>
+          <ol className="signalList" data-testid="strategic-signal-list">
+            {strategicSignalRows.map((signal) => (
+              <li
+                data-decay-score={signal.decay}
+                data-half-life={signal.halfLife}
+                data-rule-version={signal.ruleVersion}
+                data-signal-stance={signal.stance}
+                data-testid={`strategic-signal-${signal.key}`}
+                key={signal.key}
+              >
+                <strong>{signal.theme}</strong>
+                <span>{signal.stance}</span>
+                <em>{signal.contribution}</em>
+                <small>{signal.evidence}</small>
+              </li>
+            ))}
+          </ol>
         </section>
 
         <ol className="pathList">

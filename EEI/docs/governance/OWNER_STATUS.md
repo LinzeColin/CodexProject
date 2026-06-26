@@ -78,7 +78,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `TASK-T1308-A211-EVIDENCE-DRAWER-FOCUS-TRAP`
+- release_gate: `TASK-T504-A072-STRATEGIC-SIGNAL-PANEL`
 
 ## 14. Evidence Freshness
 
@@ -86,8 +86,8 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - tree_bound_events: `0`
 - commit_bound_events: `21`
 - legacy_unbound_events: `19`
-- precommit_pending_events: `90`
-- pending_or_stale_events: `111`
+- precommit_pending_events: `91`
+- pending_or_stale_events: `112`
 
 ## 15. UNKNOWN
 
@@ -97,11 +97,11 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 - source_base_commit: `2a9afde825a2819da337e27b16f31201d2150f3e`
 - source_tree_hash: `9657d04d30d592c81ed3a9d6ffbd0deda0478c3c`
-- source_snapshot_hash: `sha256:11fcb06e99f7783744581d0a43e7443f0bf9f749741f09f1b934478044e5e37e`
-- snapshot_event_time: `2026-06-26T14:45:38+10:00`
+- source_snapshot_hash: `sha256:2f6ade2a9d4ce89ccd82395ebf3880d1c96a12510cf6a25d1a7b9eff2b39113a`
+- snapshot_event_time: `2026-06-26T15:26:23+10:00`
 - generator_version: `4.0.0`
 - version: `0.1.0`
-- phase/gate: `D / TASK-T1308-A211-EVIDENCE-DRAWER-FOCUS-TRAP`
+- phase/gate: `D / TASK-T504-A072-STRATEGIC-SIGNAL-PANEL`
 
 ## 17. Next Unique Task
 

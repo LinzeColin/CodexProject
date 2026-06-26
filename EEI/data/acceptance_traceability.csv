@@ -108,7 +108,7 @@ TR-FUN-EXP-06-A137,FUN-EXP-06,A137,T1103,Fixture E2E,artifacts/tests/a137/,NOT_S
 TR-FUN-EXP-06-A138,FUN-EXP-06,A138,T1104,Screenshot assertion,artifacts/tests/a138/,NOT_STARTED,derived_from_task,Codex implementation,docs/05_DATA_SOURCES_AND_PROVENANCE.md
 TR-FUN-EXP-06-A139,FUN-EXP-06,A139,T1104,Screenshot assertion,artifacts/tests/a139/,NOT_STARTED,derived_from_task,Codex implementation,docs/05_DATA_SOURCES_AND_PROVENANCE.md
 TR-FUN-EXP-06-A140,FUN-EXP-06,A140,T1104,DOM/SVG assertion,artifacts/tests/a140/,NOT_STARTED,derived_from_task,Codex implementation,docs/05_DATA_SOURCES_AND_PROVENANCE.md
-TR-FUN-EXP-07-A072,FUN-EXP-07,A072,T504,Unit/E2E,artifacts/tests/a072/,NOT_STARTED,derived_from_task,Codex implementation,docs/15_SCORING_MODEL_AND_USER_TUNING.md
+TR-FUN-EXP-07-A072,FUN-EXP-07,A072,T504,Unit/E2E,apps/web/src/app/page.tsx;apps/web/src/app/workspace-context.tsx;apps/web/src/app/globals.css;tests/e2e/home.spec.ts;artifacts/tests/a072/t504_strategic_signal_panel_contract.json,DONE,strategic_signal_frontend_contract_local_e2e_validated,Codex implementation,docs/15_SCORING_MODEL_AND_USER_TUNING.md
 TR-FUN-EXP-07-A112,FUN-EXP-07,A112,"T803,T805",Content scan/review,artifacts/tests/a112/,NOT_STARTED,derived_from_task,Codex implementation,docs/15_SCORING_MODEL_AND_USER_TUNING.md
 TR-FUN-EXP-07-A160,FUN-EXP-07,A160,T1113,E2E,apps/web/src/app/page.tsx;tests/e2e/state-contract.spec.ts,DONE,derived_from_task,Codex implementation,docs/15_SCORING_MODEL_AND_USER_TUNING.md
 TR-FUN-EXP-07-A174,FUN-EXP-07,A174,T1205,E2E + link integrity,apps/web/src/app/development-status/page.tsx;tests/e2e/development-status.spec.ts,DONE,derived_from_task,Codex implementation,docs/15_SCORING_MODEL_AND_USER_TUNING.md

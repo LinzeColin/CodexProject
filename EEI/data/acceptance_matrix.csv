@@ -70,7 +70,7 @@ A068,P0,supply_chain,User can reroot from NVIDIA fixture to foundry/equipment/ma
 A069,P0,capital,"Capital and M&A layers distinguish investment, debt, acquisition, commitment, capex, buyback and dividend semantics",Unit/UI,NOT STARTED
 A070,P0,policy,"Policy layer distinguishes awards, obligations, ceilings, regulation, lobbying and trade restrictions",Unit/UI,NOT STARTED
 A071,P0,technology,"Technology/data layer distinguishes IP, standards, data access, integration, cloud and compute",API/UI,NOT STARTED
-A072,P0,signals,"Strategic signals show support, contradiction, alternatives, time decay and rule version",Unit/E2E,NOT STARTED
+A072,P0,signals,"Strategic signals show support, contradiction, alternatives, time decay and rule version",Unit/E2E,DONE
 A073,P0,evidence,Every edge/detail opens evidence drawer with source and all relevant dates,E2E,NOT STARTED
 A074,P0,timeline,As-of reconstruction shows historical validity and supersession,Integration/E2E,NOT STARTED
 A075,P0,export,"Export includes exploration state, path, IDs, scores and provenance links",Export test,NOT STARTED

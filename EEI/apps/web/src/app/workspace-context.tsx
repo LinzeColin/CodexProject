@@ -154,10 +154,11 @@ export const WORKSPACE_MODULES: readonly WorkspaceModuleDefinition[] = [
     id: "strategic_signals",
     label: "战略信号",
     subtitle: "招聘、资本支出、专利、合作和管理层表态",
-    controlKind: "planned",
-    routeState: "planned",
-    disabledReason: "Requires signal ingestion handlers and source review before activation.",
-    acceptanceIds: ["A202", "A206", "A211"]
+    controlKind: "section",
+    sectionTestId: "strategic-signal-panel",
+    routeState: "partial",
+    apiEndpoints: ["/v1/scoring/explain/relationship/{objectId}"],
+    acceptanceIds: ["A072", "A112", "A211"]
   },
   {
     id: "time_evolution",
