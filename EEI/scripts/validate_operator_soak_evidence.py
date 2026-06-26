@@ -16,6 +16,7 @@ DEFAULT_BUDGETS = {
     "max_heap_growth_bytes": 8 * 1024 * 1024,
     "max_dom_growth_nodes": 12,
     "max_event_loop_lag_ms": 250,
+    "max_browser_slice_recoveries": 2,
 }
 
 
@@ -243,6 +244,7 @@ def validate_window_metrics(
     heap_growth = number(window.get("browser_heap_growth_bytes"))
     dom_growth = number(window.get("browser_dom_node_growth"))
     lag_p95 = number(window.get("worker_event_loop_lag_p95_ms"))
+    browser_recoveries = number(window.get("browser_recoveries_observed"))
     require(
         errors,
         heap_growth is not None and heap_growth <= float(budgets["max_heap_growth_bytes"]),
@@ -258,6 +260,12 @@ def validate_window_metrics(
         lag_p95 is not None and lag_p95 <= float(budgets["max_event_loop_lag_ms"]),
         f"window {index} worker_event_loop_lag_p95_ms exceeds budget",
     )
+    if browser_recoveries is not None:
+        require(
+            errors,
+            browser_recoveries <= float(budgets["max_browser_slice_recoveries"]),
+            f"window {index} browser_recoveries_observed exceeds budget",
+        )
     require(
         errors,
         window.get("worker_jobs_completed") == window.get("worker_jobs_total"),

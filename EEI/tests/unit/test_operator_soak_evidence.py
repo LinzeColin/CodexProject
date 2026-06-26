@@ -46,6 +46,7 @@ def write_run(
     target_seconds: int,
     completed_seconds: int,
     elapsed_wall_seconds: int | None = None,
+    browser_recoveries_observed: int = 0,
 ) -> None:
     windows = [
         {
@@ -57,6 +58,7 @@ def write_run(
             "elapsed_wall_seconds": elapsed_wall_seconds or completed_seconds,
             "browser_heap_growth_bytes": 1000,
             "browser_dom_node_growth": 0,
+            "browser_recoveries_observed": browser_recoveries_observed,
             "worker_jobs_completed": 12,
             "worker_jobs_total": 12,
             "worker_event_loop_lag_p95_ms": 2.0,
@@ -96,6 +98,7 @@ def write_run(
                 "max_heap_growth_bytes": 8 * 1024 * 1024,
                 "max_dom_growth_nodes": 12,
                 "max_event_loop_lag_ms": 250,
+                "max_browser_slice_recoveries": 2,
             }
         },
     }
@@ -240,6 +243,22 @@ def test_serialized_wall_clock_soak_window_fails_closed(tmp_path: Path) -> None:
     assert payload["status"] == "FAIL"
     assert any(
         "elapsed_wall_seconds exceeds parallel window budget" in error
+        for error in payload["results"][0]["errors"]
+    )
+
+
+def test_browser_slice_recovery_count_is_budgeted(tmp_path: Path) -> None:
+    req_4h = requirement(tmp_path, "operator_4h", "soak.short_duration_hours", "covers_4h_target")
+    write_run(
+        req_4h,
+        target_seconds=4 * 3600,
+        completed_seconds=4 * 3600,
+        browser_recoveries_observed=3,
+    )
+    payload = build_validation_payload(parameters=PARAMETERS, required_runs=(req_4h,))
+    assert payload["status"] == "FAIL"
+    assert any(
+        "browser_recoveries_observed exceeds budget" in error
         for error in payload["results"][0]["errors"]
     )
 

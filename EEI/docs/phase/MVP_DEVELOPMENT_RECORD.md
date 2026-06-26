@@ -1,5 +1,44 @@
 # MVP Development Record
 
+## 2026-06-27 - T1307/A209 browser recovery hardening
+
+Status: LOCAL TARGET VALIDATED; A209 STILL IN PROGRESS; 24H EVIDENCE STILL FAILED
+
+### Scope
+
+- Hardened `scripts/run_soak_smoke.mjs` so transient Playwright `page/context/browser closed` errors rebuild the browser/page and retry the same browser slice within a bounded recovery budget.
+- Added evidence fields `browser_recoveries_observed`, `browser_recovery_errors` and `max_browser_slice_recoveries=2` to soak output.
+- Updated `scripts/run_operator_soak.mjs` so operator checkpoint windows carry `browser_recoveries_observed`.
+- Updated `scripts/validate_operator_soak_evidence.py` and A209 unit coverage so recovery counts above budget fail closed.
+
+### Current Evidence
+
+- Canonical 24h evidence remains failed at `7/288`.
+- Isolated rerun `/private/tmp/eei-a209-rerun-20260626-0918/` remains failed at `130/288` after `129` passed windows.
+- Injected short recovery smoke reports `browser_recoveries_observed=1`, `max_browser_slice_recoveries=2` and preserves the Playwright target-close error summary.
+- Operator short smoke reports `PASS`, `browser_recoveries_observed=0` and `windows_failed=0`.
+
+### Validation
+
+- `node scripts/run_soak_smoke.mjs --mode ci_smoke --duration-seconds 1 --browser-slice-seconds 1 --output /tmp/eei-soak-smoke-normal.json --fail-on-budget --quiet`: PASS.
+- `EEI_SOAK_TEST_CLOSE_BROWSER_ON_SLICE=1 node scripts/run_soak_smoke.mjs --mode ci_smoke_recovery --duration-seconds 1 --browser-slice-seconds 1 --output /tmp/eei-soak-smoke-recovery.json --fail-on-budget --quiet`: PASS.
+- `node scripts/run_operator_soak.mjs --mode ci_smoke --duration-seconds 1 --window-seconds 1 --output /tmp/eei-operator-soak-smoke.json --checkpoint /tmp/eei-operator-soak-smoke.checkpoints.jsonl --fail-on-budget --quiet`: PASS.
+- `.venv/bin/python -m pytest tests/unit/test_operator_soak_evidence.py -q`: PASS `25/25`.
+- `make validate-soak-smoke validate-operator-soak-runner validate-operator-soak-evidence`: PASS.
+- `.venv/bin/python scripts/validate_task_pack.py`: PASS.
+- `.venv/bin/ruff check scripts/validate_operator_soak_evidence.py tests/unit/test_operator_soak_evidence.py`: PASS.
+
+### Non-Claims
+
+- This does not restart, resume, promote or finalize any A209 24h run.
+- This does not convert the failed `7/288` canonical evidence or failed `130/288` isolated rerun into release-ready evidence.
+- A209 still requires explicit operator authorization, a clean `288/288` zero-failure 24h run and release-ready validation before promotion/finalization.
+
+### Rollback
+
+- Revert the A209 harness/runner/validator/test/governance changes.
+- Preserve canonical failed 24h evidence, isolated failed rerun evidence and recovery authorization records.
+
 ## 2026-06-26 - T1303/A204-A205 operator input kit
 
 Status: LOCAL TARGET VALIDATED; TEMPLATE KIT READY; RELEASE GATES STILL BLOCKED

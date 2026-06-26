@@ -200,6 +200,7 @@ function summarizeChildPayload(payload) {
       browser_heap_growth_bytes: null,
       browser_dom_node_growth: null,
       browser_slices_completed: null,
+      browser_recoveries_observed: null,
       browser_measurement_error: null,
       worker_jobs_completed: null,
       worker_jobs_total: null,
@@ -212,6 +213,7 @@ function summarizeChildPayload(payload) {
     browser_heap_growth_bytes: payload.browser?.heap_growth_bytes ?? null,
     browser_dom_node_growth: payload.browser?.dom_node_growth ?? null,
     browser_slices_completed: payload.browser?.slices_completed ?? null,
+    browser_recoveries_observed: payload.browser?.browser_recoveries_observed ?? null,
     browser_measurement_error: payload.browser?.measurement_error?.message ?? null,
     worker_jobs_completed: payload.worker?.jobs_completed ?? null,
     worker_jobs_total: payload.worker?.jobs_total ?? null,
@@ -271,6 +273,7 @@ async function runWindow({ args, index, durationSeconds }) {
       browser_heap_growth_bytes: childSummary.browser_heap_growth_bytes,
       browser_dom_node_growth: childSummary.browser_dom_node_growth,
       browser_slices_completed: childSummary.browser_slices_completed,
+      browser_recoveries_observed: childSummary.browser_recoveries_observed,
       browser_measurement_error: childSummary.browser_measurement_error,
       worker_jobs_completed: childSummary.worker_jobs_completed,
       worker_jobs_total: childSummary.worker_jobs_total,
@@ -291,6 +294,14 @@ async function runWindow({ args, index, durationSeconds }) {
           mode: childPayload.mode,
           budgets: childPayload.budgets,
           coverage: childPayload.coverage,
+          browser: childPayload.browser
+            ? {
+                slices_completed: childPayload.browser.slices_completed,
+                browser_recoveries_observed: childPayload.browser.browser_recoveries_observed,
+                max_browser_slice_recoveries: childPayload.browser.max_browser_slice_recoveries,
+                measurement_error: childPayload.browser.measurement_error
+              }
+            : null,
           worker_supervisor_binding: childPayload.worker_supervisor_binding
         }
       : null
@@ -402,6 +413,7 @@ function buildSummary({ args, parameters, checkpointPath, outputPath, windows, s
       browser_heap_growth_bytes: window.browser_heap_growth_bytes,
       browser_dom_node_growth: window.browser_dom_node_growth,
       browser_slices_completed: window.browser_slices_completed,
+      browser_recoveries_observed: window.browser_recoveries_observed,
       browser_measurement_error: window.browser_measurement_error,
       worker_jobs_completed: window.worker_jobs_completed,
       worker_jobs_total: window.worker_jobs_total,

@@ -19,9 +19,16 @@ const MAX_DOM_GROWTH_NODES = 12;
 const MAX_TIMER_LEAKS = 0;
 const MAX_LISTENER_LEAKS = 0;
 const MAX_EVENT_LOOP_LAG_MS = 250;
+const MAX_BROWSER_SLICE_RECOVERIES = 2;
 const WORKER_BINDING_ARTIFACT = path.join(
   ROOT,
   "artifacts/tests/a206/t1304_worker_deployment_binding_contract.json"
+);
+const forcedBrowserCloseSlices = new Set(
+  (process.env.EEI_SOAK_TEST_CLOSE_BROWSER_ON_SLICE || "")
+    .split(",")
+    .map((item) => Number.parseInt(item.trim(), 10))
+    .filter((item) => Number.isInteger(item) && item > 0)
 );
 
 function parseArgs(argv) {
@@ -307,30 +314,65 @@ function mergeBrowserSlices(slices, sliceSeconds) {
     ),
     slices_completed: slices.length,
     slice_seconds: sliceSeconds,
+    browser_recoveries_observed: 0,
+    browser_recovery_errors: [],
+    max_browser_slice_recoveries: MAX_BROWSER_SLICE_RECOVERIES,
     measurement_error: null
   };
 }
 
-async function runBrowserSoak(durationSeconds, browserSliceSeconds) {
+async function openBrowserPage() {
   const browser = await getChromium().launch({
     headless: true,
     args: ["--disable-dev-shm-usage", "--disable-gpu", "--enable-precise-memory-info", "--no-sandbox"]
   });
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  await page.setContent("<!doctype html><meta charset='utf-8'><div id='soak-root'></div>");
+  return { browser, page };
+}
+
+async function runBrowserSoak(durationSeconds, browserSliceSeconds) {
+  let session = await openBrowserPage();
+  let recoveries = 0;
+  const recoveryErrors = [];
   try {
-    const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-    await page.setContent("<!doctype html><meta charset='utf-8'><div id='soak-root'></div>");
     const slices = [];
     let measuredMs = 0;
+    let sliceIndex = 1;
     const durationMs = durationSeconds * 1000;
     const browserSliceMs = Math.min(browserSliceSeconds * 1000, durationMs);
     while (measuredMs < durationMs) {
       const sliceMs = Math.min(browserSliceMs, durationMs - measuredMs);
-      slices.push(await runBrowserSoakSlice(page, sliceMs));
+      if (forcedBrowserCloseSlices.has(sliceIndex)) {
+        forcedBrowserCloseSlices.delete(sliceIndex);
+        await session.page.close().catch(() => undefined);
+      }
+      try {
+        slices.push(await runBrowserSoakSlice(session.page, sliceMs));
+      } catch (error) {
+        if (!isRecoverableBrowserClose(error) || recoveries >= MAX_BROWSER_SLICE_RECOVERIES) {
+          error.browserRecoverySummary = {
+            browser_recoveries_observed: recoveries,
+            browser_recovery_errors: recoveryErrors
+          };
+          throw error;
+        }
+        recoveries += 1;
+        recoveryErrors.push(describeError(error));
+        await session.browser.close().catch(() => undefined);
+        session = await openBrowserPage();
+        continue;
+      }
       measuredMs += sliceMs;
+      sliceIndex += 1;
     }
-    return mergeBrowserSlices(slices, browserSliceSeconds);
+    return applyBrowserRecoveryMetadata(
+      mergeBrowserSlices(slices, browserSliceSeconds),
+      recoveries,
+      recoveryErrors
+    );
   } finally {
-    await browser.close().catch(() => undefined);
+    await session.browser.close().catch(() => undefined);
   }
 }
 
@@ -345,7 +387,27 @@ function describeError(error) {
   };
 }
 
+function isRecoverableBrowserClose(error) {
+  const message = `${error?.message || ""}\n${error?.stack || ""}`;
+  return [
+    "Target page, context or browser has been closed",
+    "Target closed",
+    "Browser has been disconnected",
+    "Protocol error"
+  ].some((pattern) => message.includes(pattern));
+}
+
+function applyBrowserRecoveryMetadata(result, recoveries, recoveryErrors) {
+  return {
+    ...result,
+    browser_recoveries_observed: recoveries,
+    browser_recovery_errors: recoveryErrors,
+    max_browser_slice_recoveries: MAX_BROWSER_SLICE_RECOVERIES
+  };
+}
+
 function failedBrowserResult(error, browserSliceSeconds) {
+  const recovery = error?.browserRecoverySummary || {};
   return {
     heap_sample_available: false,
     heap_growth_bytes: null,
@@ -359,7 +421,10 @@ function failedBrowserResult(error, browserSliceSeconds) {
     max_long_task_ms: 0,
     slices_completed: 0,
     slice_seconds: browserSliceSeconds,
-    measurement_error: describeError(error)
+    measurement_error: describeError(error),
+    browser_recoveries_observed: recovery.browser_recoveries_observed || 0,
+    browser_recovery_errors: recovery.browser_recovery_errors || [],
+    max_browser_slice_recoveries: MAX_BROWSER_SLICE_RECOVERIES
   };
 }
 
@@ -449,7 +514,8 @@ function evaluate(browserResult, workerResult) {
       max_dom_growth_nodes: MAX_DOM_GROWTH_NODES,
       max_timer_leaks: MAX_TIMER_LEAKS,
       max_listener_leaks: MAX_LISTENER_LEAKS,
-      max_event_loop_lag_ms: MAX_EVENT_LOOP_LAG_MS
+      max_event_loop_lag_ms: MAX_EVENT_LOOP_LAG_MS,
+      max_browser_slice_recoveries: MAX_BROWSER_SLICE_RECOVERIES
     },
     browser_frame_delta_ms: frame
   };
@@ -556,6 +622,9 @@ async function main() {
       max_long_task_ms: Number(browserResult.max_long_task_ms.toFixed(4)),
       slices_completed: browserResult.slices_completed,
       slice_seconds: browserResult.slice_seconds,
+      browser_recoveries_observed: browserResult.browser_recoveries_observed,
+      browser_recovery_errors: browserResult.browser_recovery_errors,
+      max_browser_slice_recoveries: browserResult.max_browser_slice_recoveries,
       measurement_error: browserResult.measurement_error
     },
     worker: workerResult,

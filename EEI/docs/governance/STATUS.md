@@ -5,7 +5,7 @@
 - source_base_commit: `047b4094d56fb7b3162b24265501e985690296f0`
 - source_tree_hash: `8737d055c5c24cf2e160003744e375aba6f6145b`
 - source_snapshot_hash: `sha256:dc2a4a1c2bacbef78381d8487eb70aa4f04eefe3766dc6e4f3e407f1d61bbe15`
-- snapshot_event_time: `2026-06-27T00:15:00+10:00`
+- snapshot_event_time: `2026-06-27T00:35:05+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -14,7 +14,7 @@
 - Project: `EEI`
 - Path: `EEI`
 - Product version: `0.1.0`
-- Phase/Gate: `D / TASK-T1215-A200-CLEAN-ROOM-TRACKED-KIT-SYNC`
+- Phase/Gate: `D / TASK-T1307-A209-BROWSER-RECOVERY-HARDENING`
 - Models/Formulas/Parameters total: `12 / 12 / 93`
 - Active formulas/parameters: `11 / 93`
 - Machine checked formulas/parameters: `11 / 93`

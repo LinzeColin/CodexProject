@@ -11,13 +11,14 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version: `0.1.0`
 - Product version status: `provisional`
 - Current phase: `D`
-- Current gate: `TASK-T1215-A200-CLEAN-ROOM-TRACKED-KIT-SYNC`
-- Confirmed iteration count: 39
+- Current gate: `TASK-T1307-A209-BROWSER-RECOVERY-HARDENING`
+- Confirmed iteration count: 40
 - Reconstructed development event count: 6
-- Current task: `TASK-T1215/A200 clean-room tracked operator input kit sync`
+- Current task: `TASK-T1307/A209 browser recovery hardening`
 - Current A209 point-in-time heartbeat: the clean 24h operator soak attempt launched at `2026-06-25T21:33:19Z` failed at checkpoint window `7/288`; `6` windows passed, `1` failed, latest checkpoint time is `2026-06-25T22:08:58Z`, `child_status=NO_OUTPUT`, `exit_status=1`, and stderr reports `page.evaluate: Target page, context or browser has been closed`. No `run_operator_soak` or `run_soak_smoke` process was found during the 2026-06-26 check. A209 remains `IN_PROGRESS` and has no release-ready 24h evidence.
 - Current isolated rerun: `/private/tmp/eei-a209-rerun-20260626-0918/` was started without overwriting the failed canonical checkpoint and then failed at checkpoint window `130/288`; `129` windows passed, `1` failed, latest successful checkpoint ended `2026-06-26T09:58:08Z`, failed checkpoint time is `2026-06-26T10:03:11Z`, and the failure path is `/private/tmp/eei-operator-soak-80478-130.json`. Repository heartbeat reports `BACKGROUND_SOAK_OPERATOR_INTERVENTION_REQUIRED`, finalization reports `A209_FINALIZATION_OPERATOR_INTERVENTION_REQUIRED`, and recorded operator/watchdog PIDs `80478`/`80732` are not running. A209 remains `IN_PROGRESS` and requires explicit operator-authorized clean rerun/recovery before any promotion or finalization.
 - Current A209 recovery packet: `artifacts/tests/a209/t1307_operator_soak_recovery_authorization_packet.json` is generated and validated. It source-hashes repository-managed heartbeat/evidence/finalization evidence, records canonical failed 24h plus isolated `/private/tmp` evidence paths as operator-preserved runtime sources, requires signed operator authorization at `artifacts/operator_inputs/a209/clean-rerun-authorization.json` before any clean 24h rerun, and keeps `clean_rerun_authorized_by_packet=false` plus `release_gate_closed_by_recovery_packet=false`.
+- Current A209 harness hardening: `scripts/run_soak_smoke.mjs` now treats a transient Playwright target close as a bounded browser-slice recovery event, rebuilds the page/browser for the same slice, records `browser_recoveries_observed`, `browser_recovery_errors` and `max_browser_slice_recoveries=2`, and still fails closed if the recovery budget is exceeded. `scripts/run_operator_soak.mjs` writes the recovery count into each checkpoint window, and `scripts/validate_operator_soak_evidence.py` rejects recovery counts above budget. This is short-window recovery evidence only; A209 still requires an operator-authorized clean 24h rerun reaching `288/288` successful windows with zero failures.
 - Current T1303 operator input kit: `artifacts/operator_input_kit/operator_input_kit_manifest.json` is generated and validated. It source-hashes template-only A202/A210/A026-A027/A209 worksheets, keeps them outside signed `artifacts/operator_inputs/` targets, requires `target_path_is_template_path=false` for every item, and keeps `release_gate_closure_allowed=false`.
 - Blockers: T1301/A202 is still `IN_PROGRESS`; the refreshed operator review packet is freshness-correct supporting review evidence only and does not create source-license review, passage-level human approval, production owner approval, legal release clearance, brand clearance, release-manager activation or final public relationship publication. T1307/A209 is still `IN_PROGRESS`; failed `7/288` evidence plus short repair probes, the recovery authorization packet and the operator input kit are non-closure evidence only, and a fresh clean rerun must reach `288/288` successful windows with zero failures before promotion/finalization can allow downstream release-gate refresh. A204/A205 release-manager activation preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED` until A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence pass. A026 still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%. The new T904 operator labeling packet is a source-bound worksheet with blank `OPERATOR_TO_LABEL` slots and is not production gold evidence. A210 still needs formal brand legal/market clearance or signed risk waiver. The T1303 external release operator intake packet uses schema `eei-external-release-operator-intake-packet-v2`, lists exact submission targets under `artifacts/operator_inputs/`, now includes the A209 recovery packet as supporting evidence, and keeps `release_gate_closed_by_operator_packet=false`; it is a checklist/hash manifest, not clearance. The operator input kit is a fillable template pack only, not signed operator evidence.
 - Frontend hardening: T1308/A211 now includes an evidence detail drawer with `role=dialog`, `aria-modal=true`, sibling `inert`/`aria-hidden`, Tab/Shift+Tab focus trapping, Escape/close handling and trigger focus restoration. This fixes review issue `A11Y-002` without changing release readiness, publication policy, model formulas, API schema or A209 state.
@@ -27,6 +28,35 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Live official-source validation: T1301/A202 now validates selected live NVIDIA official capture evidence through `--validate-only` without PostgreSQL writes and requires `source_health.retry_outcome` terminal/dead-letter metadata on every anchor; this remains review input only and does not close source/license/passage/owner/legal clearance or relationship publication.
 
 
+
+## EVENT-20260627-002 - T1307/A209 browser recovery hardening
+
+- Timestamp: 2026-06-27T00:35:05+10:00
+- Fact level: EXTRACTED
+- Base commit: `86c1a70696d93279edf8d08d40f1ad67bf663f46`
+- Scope: harden the A209 browser soak child harness against transient Playwright target closure without hiding real browser instability.
+- Implementation: `run_soak_smoke.mjs` can rebuild the browser/page for the same slice after recoverable `page/context/browser closed` errors, records recovery count and error summaries, and caps recovery at `max_browser_slice_recoveries=2`; `run_operator_soak.mjs` carries `browser_recoveries_observed` into checkpoint windows; `validate_operator_soak_evidence.py` rejects recovery counts above budget.
+- Non-claims: this does not restart, stop, resume, promote or finalize any 24h soak; it does not convert the failed `7/288` canonical evidence or failed `130/288` isolated rerun into release-ready evidence; A209 and MVP readiness remain blocked.
+- Validation: normal short smoke PASS; injected page-close recovery smoke PASS with `browser_recoveries_observed=1` and preserved error summary; operator runner short smoke PASS with `windows_failed=0`; A209 unit tests PASS `25/25`; A209 Make targets PASS; Task Pack validation PASS; focused ruff PASS.
+
+## ITER-20260627-002 - A209 browser recovery hardening
+
+- Date: 2026-06-27
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `86c1a70696d93279edf8d08d40f1ad67bf663f46`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1307`
+- Acceptance IDs: `A209`
+- Goal: reduce false 5-minute window loss from transient Playwright browser/page closure while keeping repeated browser instability visible and fail-closed.
+- Files changed: `scripts/run_soak_smoke.mjs`, `scripts/run_operator_soak.mjs`, `scripts/validate_operator_soak_evidence.py`, `tests/unit/test_operator_soak_evidence.py`, governance status/owner/version/traceability records, development traceability artifact, clean-room package/evidence, release evidence and checksums.
+- Model changes: none; no scoring formula, graph traversal formula, extraction model, API schema, database schema, frontend route, model weight or publication policy changed.
+- Parameter changes: no governance model parameter value changed; the A209 harness budget is emitted as `max_browser_slice_recoveries=2` in soak evidence budgets.
+- Commands run: normal and injected A209 short smoke; operator runner short smoke; `pytest tests/unit/test_operator_soak_evidence.py -q`; `make validate-soak-smoke validate-operator-soak-runner validate-operator-soak-evidence`; `python scripts/validate_task_pack.py`; focused `ruff check`.
+- Test results: injected recovery output reports `status=PARTIAL`, `browser_recoveries_observed=1`, `max_browser_slice_recoveries=2` and the preserved Playwright target-close message; operator runner short output reports `PASS`, `browser_recoveries_observed=0`, `windows_failed=0`.
+- Rollback: revert the A209 harness/validator/test/governance changes; keep canonical failed `7/288` and isolated failed `130/288` runtime evidence preserved.
+- Next step: obtain explicit operator authorization for a clean A209 rerun after preserving failed evidence, then run a fresh 24h soak to `288/288` zero failures and validate release-ready evidence.
 
 ## EVENT-20260627-001 - T1215/A200 clean-room tracked operator input kit sync
 
