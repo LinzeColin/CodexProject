@@ -3,9 +3,21 @@
   "$id": "https://github.com/LinzeColin/CodexProject/arxiv-daily-push/schemas/lesson.schema.json",
   "title": "Lesson",
   "type": "object",
-  "required": ["lesson_id", "source_item_id", "language", "title", "sections", "claim_ids", "generated_at"],
+  "required": [
+    "lesson_id",
+    "lesson_key",
+    "lesson_revision_id",
+    "source_item_id",
+    "language",
+    "title",
+    "sections",
+    "claim_ids",
+    "generated_at"
+  ],
   "properties": {
     "lesson_id": {"type": "string", "minLength": 1},
+    "lesson_key": {"type": "string", "minLength": 1},
+    "lesson_revision_id": {"type": "string", "minLength": 1},
     "source_item_id": {"type": "string", "minLength": 1},
     "language": {"type": "string", "enum": ["zh-CN", "zh-Hans", "en"]},
     "title": {"type": "string", "minLength": 1},

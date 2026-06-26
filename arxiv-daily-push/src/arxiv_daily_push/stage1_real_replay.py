@@ -288,22 +288,34 @@ def build_submitted_date_query(as_of: date, *, lookback_days: int) -> str:
     return f"submittedDate:[{start:%Y%m%d}0000 TO {as_of:%Y%m%d}2359]"
 
 
-def fetch_atom_with_curl(query: ArxivQuery, *, timeout_seconds: int = 30) -> str:
+def fetch_atom_with_curl(
+    query: ArxivQuery,
+    *,
+    timeout_seconds: int = 45,
+    retry_count: int = 3,
+    retry_delay_seconds: float = 10.0,
+) -> str:
     """Fetch arXiv Atom through curl for hosts whose Python CA store is broken."""
 
     url = build_query_url(query)
-    result = subprocess.run(
-        ["curl", "-fsSL", "--max-time", str(int(timeout_seconds)), url],
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-    if result.returncode != 0:
+    attempts = max(1, int(retry_count) + 1)
+    last_detail = ""
+    for attempt in range(1, attempts + 1):
+        result = subprocess.run(
+            ["curl", "-fsSL", "--max-time", str(int(timeout_seconds)), url],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if result.returncode == 0 and result.stdout.strip():
+            return result.stdout
         detail = (result.stderr or result.stdout or "curl returned no output").strip().splitlines()
-        raise RuntimeError(f"curl arXiv fetch failed: {detail[0] if detail else result.returncode}")
-    if not result.stdout.strip():
+        last_detail = detail[0] if detail else str(result.returncode)
+        if attempt < attempts:
+            time.sleep(max(0.0, float(retry_delay_seconds)))
+    if last_detail == "curl returned no output":
         raise RuntimeError("curl arXiv fetch returned an empty response")
-    return result.stdout
+    raise RuntimeError(f"curl arXiv fetch failed after {attempts} attempts: {last_detail}")
 
 
 def fetch_atom_with_urllib(query: ArxivQuery) -> str:

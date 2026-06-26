@@ -13,11 +13,11 @@
 
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
-- Product version: `0.23.0`
-- Phase/Gate: `S2PL / S2PLT01_REPLAY_PAYLOAD_CONTRACT_NO_PRODUCTION`
-- Models/Formulas/Parameters total: `102 / 104 / 869`
-- Active formulas/parameters: `104 / 852`
-- Machine checked formulas/parameters: `104 / 852`
+- Product version: `0.23.1`
+- Phase/Gate: `S2PM / S2PMT03_LESSON_REVISION_A016_NO_PRODUCTION`
+- Models/Formulas/Parameters total: `102 / 104 / 872`
+- Active formulas/parameters: `104 / 855`
+- Machine checked formulas/parameters: `104 / 855`
 
 ## Assurance
 
@@ -35,7 +35,7 @@
 ## Delivery
 
 - Readiness: `VERIFIED`
-- Release gate: `S2PLT01_REPLAY_PAYLOAD_CONTRACT_NO_PRODUCTION`
+- Release gate: `S2PMT03_LESSON_REVISION_A016_NO_PRODUCTION`
 - V7 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - V7 contract hash: `a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d`
 - V7 roadmap hash: `7c5f2d842d4f6b909343c953fe39b4a4aa540d168199747a9f7decdb1aad9bd1`

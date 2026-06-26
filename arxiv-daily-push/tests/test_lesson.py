@@ -26,12 +26,45 @@ class LessonGenerationTests(unittest.TestCase):
         ledger = build_claim_ledger(data["source_item"], data["claims"], extracted_at=data["generated_at"])
 
         self.assertEqual(lesson["language"], "zh-CN")
-        self.assertTrue(lesson["lesson_id"].startswith("lesson:arxiv:2401.00001:"))
+        self.assertTrue(lesson["lesson_key"].startswith("lesson-key:arxiv:2401.00001:"))
+        self.assertTrue(lesson["lesson_revision_id"].startswith("lesson:arxiv:2401.00001:rev:"))
+        self.assertEqual(lesson["lesson_id"], lesson["lesson_revision_id"])
         self.assertFalse(validate_lesson_against_ledger(lesson, ledger))
         for section in lesson["sections"]:
             for claim_id in section["claim_ids"]:
                 self.assertIn(claim_id, lesson["claim_ids"])
                 self.assertIn(f"[{claim_id}]", section["body"])
+
+    def test_lesson_revision_changes_when_claim_content_changes_but_key_is_stable(self) -> None:
+        data = load_fixture()
+        for index, claim in enumerate(data["claims"]):
+            claim["claim_id"] = f"claim:stable:{index}"
+        baseline = generate_lesson(data["source_item"], data["claims"], generated_at=data["generated_at"])
+
+        changed = load_fixture()
+        for index, claim in enumerate(changed["claims"]):
+            claim["claim_id"] = f"claim:stable:{index}"
+        changed["claims"][0]["statement"] = "The abstract reports a revised evidence-grounded AI system."
+        revised = generate_lesson(changed["source_item"], changed["claims"], generated_at=changed["generated_at"])
+
+        self.assertEqual(baseline["lesson_key"], revised["lesson_key"])
+        self.assertNotEqual(baseline["lesson_revision_id"], revised["lesson_revision_id"])
+        self.assertEqual(revised["lesson_id"], revised["lesson_revision_id"])
+
+    def test_lesson_revision_changes_when_evidence_locator_changes_but_key_is_stable(self) -> None:
+        data = load_fixture()
+        for index, claim in enumerate(data["claims"]):
+            claim["claim_id"] = f"claim:stable:{index}"
+        baseline = generate_lesson(data["source_item"], data["claims"], generated_at=data["generated_at"])
+
+        changed = load_fixture()
+        for index, claim in enumerate(changed["claims"]):
+            claim["claim_id"] = f"claim:stable:{index}"
+        changed["claims"][0]["locator"]["section"] = "methods"
+        revised = generate_lesson(changed["source_item"], changed["claims"], generated_at=changed["generated_at"])
+
+        self.assertEqual(baseline["lesson_key"], revised["lesson_key"])
+        self.assertNotEqual(baseline["lesson_revision_id"], revised["lesson_revision_id"])
 
     def test_generate_lesson_adds_human_frontstage_without_claim_ledger_copy(self) -> None:
         data = load_fixture()
@@ -110,6 +143,16 @@ class LessonGenerationTests(unittest.TestCase):
         errors = validate_lesson_against_ledger(lesson, ledger)
 
         self.assertIn("frontstage.typed_statements", " ".join(errors))
+
+    def test_lesson_validation_rejects_revision_mismatch(self) -> None:
+        data = load_fixture()
+        lesson = generate_lesson(data["source_item"], data["claims"], generated_at=data["generated_at"])
+        ledger = build_claim_ledger(data["source_item"], data["claims"], extracted_at=data["generated_at"])
+        lesson["lesson_revision_id"] = "lesson:arxiv:2401.00001:rev:tampered"
+
+        errors = validate_lesson_against_ledger(lesson, ledger)
+
+        self.assertIn("Lesson.lesson_id must equal Lesson.lesson_revision_id", errors)
 
     def test_prompt_injection_text_remains_untrusted_data_not_tool_instruction(self) -> None:
         data = load_fixture()

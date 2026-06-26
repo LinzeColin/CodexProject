@@ -2,12 +2,15 @@ from __future__ import annotations
 
 import io
 import json
+import subprocess
 import tempfile
 import unittest
 from contextlib import redirect_stdout
 from datetime import date, timedelta
 from pathlib import Path
+from unittest.mock import patch
 
+from arxiv_daily_push.arxiv_adapter import ArxivQuery
 from arxiv_daily_push.cli import main
 from arxiv_daily_push.source_ingest import SOURCE_INGEST_MODEL_ID
 from arxiv_daily_push.stage1_real_replay import (
@@ -15,6 +18,7 @@ from arxiv_daily_push.stage1_real_replay import (
     STAGE1_REAL_REPLAY_MODEL_ID,
     build_real_historical_arxiv_replay,
     build_submitted_date_query,
+    fetch_atom_with_curl,
     validate_real_historical_arxiv_replay_report,
 )
 
@@ -178,6 +182,24 @@ class Stage1RealReplayTests(unittest.TestCase):
         self.assertEqual(result, 2)
         self.assertEqual(payload["status"], "blocked")
         self.assertIn("date range must produce exactly 30 dates", " ".join(payload["blocking_reasons"]))
+
+    def test_curl_fetch_retries_transient_arxiv_rate_limit(self) -> None:
+        results = [
+            subprocess.CompletedProcess(args=["curl"], returncode=56, stdout="", stderr="curl: (56) HTTP 429"),
+            subprocess.CompletedProcess(args=["curl"], returncode=0, stdout="<feed></feed>", stderr=""),
+        ]
+
+        with patch("arxiv_daily_push.stage1_real_replay.subprocess.run", side_effect=results) as run:
+            with patch("arxiv_daily_push.stage1_real_replay.time.sleep") as sleep:
+                payload = fetch_atom_with_curl(
+                    ArxivQuery(search_query="cat:cs.AI", max_results=1),
+                    retry_count=1,
+                    retry_delay_seconds=0.01,
+                )
+
+        self.assertEqual(payload, "<feed></feed>")
+        self.assertEqual(run.call_count, 2)
+        sleep.assert_called_once()
 
     def test_real_backfill_workflow_runs_on_cloud_without_production_side_effects(self) -> None:
         workflow = Path(".github/workflows/arxiv-daily-push-real-backfill.yml").read_text(encoding="utf-8")

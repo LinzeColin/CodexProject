@@ -478,3 +478,4 @@
 
 - Added S2PMT03 local lease fencing, state concurrency, transactional outbox, SMTP crash-window, and M4 watermark evidence without production side effects.
 - Added S2PLT01 replay payload contract evidence without replay execution or production side effects.
+- Added S2PMT03 A-016 lesson revision identity hardening with stable `lesson_key`, immutable content/evidence-sensitive `lesson_revision_id`, and no production side effects.

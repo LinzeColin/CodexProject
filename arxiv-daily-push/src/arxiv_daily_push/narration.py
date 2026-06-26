@@ -56,6 +56,8 @@ def generate_narration_plan(
     narration = {
         "narration_id": f"narration:{lesson['lesson_id']}:{stable_content_hash({'segments': segments})[:12]}",
         "lesson_id": lesson["lesson_id"],
+        "lesson_key": lesson["lesson_key"],
+        "lesson_revision_id": lesson["lesson_revision_id"],
         "language": lesson["language"],
         "tts_mode": tts_mode,
         "audio_synthesis_allowed": False,
