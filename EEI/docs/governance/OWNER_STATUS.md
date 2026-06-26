@@ -78,7 +78,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `TASK-T1303-A204-A205-OPERATOR-INPUT-KIT`
+- release_gate: `TASK-T1215-A200-CLEAN-ROOM-TRACKED-KIT-SYNC`
 
 ## 14. Evidence Freshness
 
@@ -86,8 +86,8 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - tree_bound_events: `0`
 - commit_bound_events: `21`
 - legacy_unbound_events: `19`
-- precommit_pending_events: `104`
-- pending_or_stale_events: `125`
+- precommit_pending_events: `105`
+- pending_or_stale_events: `126`
 
 ## 15. UNKNOWN
 
@@ -97,11 +97,11 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 - source_base_commit: `047b4094d56fb7b3162b24265501e985690296f0`
 - source_tree_hash: `8737d055c5c24cf2e160003744e375aba6f6145b`
-- source_snapshot_hash: `sha256:e9ff24716437a754b9804be7259211470ba0a37a07e6e2cbdbd32116e8ac41bc`
-- snapshot_event_time: `2026-06-26T23:36:02+10:00`
+- source_snapshot_hash: `sha256:dc2a4a1c2bacbef78381d8487eb70aa4f04eefe3766dc6e4f3e407f1d61bbe15`
+- snapshot_event_time: `2026-06-27T00:15:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.1.0`
-- phase/gate: `D / TASK-T1303-A204-A205-OPERATOR-INPUT-KIT`
+- phase/gate: `D / TASK-T1215-A200-CLEAN-ROOM-TRACKED-KIT-SYNC`
 
 ## 17. Next Unique Task
 

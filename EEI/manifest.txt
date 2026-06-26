@@ -83,6 +83,12 @@ artifacts/README.md
 artifacts/development_status_summary_t1213.json
 artifacts/governance_blueprint_v42_source.html
 artifacts/model_config_import_preview.json
+artifacts/operator_input_kit/a026_a027/production-gold-labels.template.json
+artifacts/operator_input_kit/a202/signed-release-decision-intake.template.json
+artifacts/operator_input_kit/a209/clean-rerun-authorization.template.json
+artifacts/operator_input_kit/a209/promoted-operator-soak-finalization.template.json
+artifacts/operator_input_kit/a210/signed-brand-clearance.template.json
+artifacts/operator_input_kit/operator_input_kit_manifest.json
 artifacts/operator_inputs/README.md
 artifacts/pdf_contact_sheet.png
 artifacts/release_evidence_t1211.json

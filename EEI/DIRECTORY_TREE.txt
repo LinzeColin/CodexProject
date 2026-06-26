@@ -64,6 +64,17 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   └── __init__.py
 │   └── __init__.py
 ├── artifacts
+│   ├── operator_input_kit
+│   │   ├── a026_a027
+│   │   │   └── production-gold-labels.template.json
+│   │   ├── a202
+│   │   │   └── signed-release-decision-intake.template.json
+│   │   ├── a209
+│   │   │   ├── clean-rerun-authorization.template.json
+│   │   │   └── promoted-operator-soak-finalization.template.json
+│   │   ├── a210
+│   │   │   └── signed-brand-clearance.template.json
+│   │   └── operator_input_kit_manifest.json
 │   ├── operator_inputs
 │   │   └── README.md
 │   ├── tests

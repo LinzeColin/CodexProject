@@ -4,8 +4,8 @@
 
 - source_base_commit: `047b4094d56fb7b3162b24265501e985690296f0`
 - source_tree_hash: `8737d055c5c24cf2e160003744e375aba6f6145b`
-- source_snapshot_hash: `sha256:e9ff24716437a754b9804be7259211470ba0a37a07e6e2cbdbd32116e8ac41bc`
-- snapshot_event_time: `2026-06-26T23:36:02+10:00`
+- source_snapshot_hash: `sha256:dc2a4a1c2bacbef78381d8487eb70aa4f04eefe3766dc6e4f3e407f1d61bbe15`
+- snapshot_event_time: `2026-06-27T00:15:00+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -14,7 +14,7 @@
 - Project: `EEI`
 - Path: `EEI`
 - Product version: `0.1.0`
-- Phase/Gate: `D / TASK-T1303-A204-A205-OPERATOR-INPUT-KIT`
+- Phase/Gate: `D / TASK-T1215-A200-CLEAN-ROOM-TRACKED-KIT-SYNC`
 - Models/Formulas/Parameters total: `12 / 12 / 93`
 - Active formulas/parameters: `11 / 93`
 - Machine checked formulas/parameters: `11 / 93`
@@ -35,9 +35,9 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `TASK-T1303-A204-A205-OPERATOR-INPUT-KIT`
+- Release gate: `TASK-T1215-A200-CLEAN-ROOM-TRACKED-KIT-SYNC`
 - Next executable task: `TASK-T1301`
-- Pending/stale events: `125`
+- Pending/stale events: `126`
 - Tree-bound events: `0`
 - Commit-bound events: `21`
 - Legacy unbound events: `19`

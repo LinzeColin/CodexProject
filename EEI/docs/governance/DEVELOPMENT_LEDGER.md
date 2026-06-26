@@ -11,10 +11,10 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version: `0.1.0`
 - Product version status: `provisional`
 - Current phase: `D`
-- Current gate: `TASK-T1303-A204-A205-OPERATOR-INPUT-KIT`
+- Current gate: `TASK-T1215-A200-CLEAN-ROOM-TRACKED-KIT-SYNC`
 - Confirmed iteration count: 39
 - Reconstructed development event count: 6
-- Current task: `TASK-T1303/A204-A205 operator input kit`
+- Current task: `TASK-T1215/A200 clean-room tracked operator input kit sync`
 - Current A209 point-in-time heartbeat: the clean 24h operator soak attempt launched at `2026-06-25T21:33:19Z` failed at checkpoint window `7/288`; `6` windows passed, `1` failed, latest checkpoint time is `2026-06-25T22:08:58Z`, `child_status=NO_OUTPUT`, `exit_status=1`, and stderr reports `page.evaluate: Target page, context or browser has been closed`. No `run_operator_soak` or `run_soak_smoke` process was found during the 2026-06-26 check. A209 remains `IN_PROGRESS` and has no release-ready 24h evidence.
 - Current isolated rerun: `/private/tmp/eei-a209-rerun-20260626-0918/` was started without overwriting the failed canonical checkpoint and then failed at checkpoint window `130/288`; `129` windows passed, `1` failed, latest successful checkpoint ended `2026-06-26T09:58:08Z`, failed checkpoint time is `2026-06-26T10:03:11Z`, and the failure path is `/private/tmp/eei-operator-soak-80478-130.json`. Repository heartbeat reports `BACKGROUND_SOAK_OPERATOR_INTERVENTION_REQUIRED`, finalization reports `A209_FINALIZATION_OPERATOR_INTERVENTION_REQUIRED`, and recorded operator/watchdog PIDs `80478`/`80732` are not running. A209 remains `IN_PROGRESS` and requires explicit operator-authorized clean rerun/recovery before any promotion or finalization.
 - Current A209 recovery packet: `artifacts/tests/a209/t1307_operator_soak_recovery_authorization_packet.json` is generated and validated. It source-hashes repository-managed heartbeat/evidence/finalization evidence, records canonical failed 24h plus isolated `/private/tmp` evidence paths as operator-preserved runtime sources, requires signed operator authorization at `artifacts/operator_inputs/a209/clean-rerun-authorization.json` before any clean 24h rerun, and keeps `clean_rerun_authorized_by_packet=false` plus `release_gate_closed_by_recovery_packet=false`.
@@ -27,6 +27,35 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Live official-source validation: T1301/A202 now validates selected live NVIDIA official capture evidence through `--validate-only` without PostgreSQL writes and requires `source_health.retry_outcome` terminal/dead-letter metadata on every anchor; this remains review input only and does not close source/license/passage/owner/legal clearance or relationship publication.
 
 
+
+## EVENT-20260627-001 - T1215/A200 clean-room tracked operator input kit sync
+
+- Timestamp: 2026-06-27T00:15:00+10:00
+- Fact level: EXTRACTED
+- Base commit: `28361d40fb898528c6899a7082cd2d7988941280`
+- CI finding: EEI validation run `28243081772` failed because the operator input kit files became tracked after commit, changing clean-room package path and JSON category counts in CI clean checkout.
+- Scope: regenerate clean-room and release artifacts from the tracked operator-input-kit state and bind the CI clean-checkout artifact sync as append-only governance evidence.
+- Evidence sync: clean-room release now includes tracked operator input kit files with `package_paths=453` and JSON category count `97`; release artifacts now report `manifest_paths=460` and `checksum_paths=459`.
+- Non-claims: this does not change model parameters, scoring formulas, API/database schema, frontend behavior, signed operator evidence, A209 status or MVP release readiness.
+- Validation: clean-room/release artifact generate/validate PASS; full `make verify` PASS locally with `142` unit tests and one third-party deprecation warning.
+
+## ITER-20260627-001 - Clean-room tracked operator kit release sync
+
+- Date: 2026-06-27
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `28361d40fb898528c6899a7082cd2d7988941280`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1215`, `TASK-T1303`
+- Acceptance IDs: `A200`, `A204`, `A205`
+- Goal: make the clean-room/release evidence reproducible in CI clean checkout after tracking the operator input kit files.
+- Files changed: clean-room release evidence/package, release evidence/checksums/manifest/tree and companion governance records.
+- Model changes: none; no formula, weight, threshold, graph traversal, extraction model, API schema, database schema, frontend route or score publication rule changed.
+- Parameter changes: none; `PARAM-093` remains the operator input kit schema version.
+- Commands run: clean-room/release artifact generate/validate; full `make verify`; root changed-only governance validation.
+- Test results: clean-room validates with `453` package paths and JSON category count `97`; release validates with `460` manifest paths and `459` checksum paths; local full verification passed.
+- Rollback: revert this clean-room/release artifact sync and regenerate artifacts from the previous tracked-file state; keep operator input templates non-signed and fail-closed.
 
 ## EVENT-20260626-028 - T1303/A204-A205 operator input kit
 
