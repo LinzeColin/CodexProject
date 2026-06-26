@@ -1,4 +1,4 @@
-"""S2PMT07 fail-closed final production gate precheck helpers."""
+"""S2PL/S2PM fail-closed final production gate precheck helpers."""
 
 from __future__ import annotations
 
@@ -54,6 +54,208 @@ S2PMT07_BLOCKING_REASONS = (
     "final_acceptance_bundle_missing",
     "independent_review_signoff_missing",
 )
+S2PLT04_INTEGRATION_CANDIDATE_MODEL_ID = "adp-s2plt04-integration-candidate-precheck-v1"
+S2PLT04_ACCEPTANCE_ID = "ACC-S2PLT04-INTEGRATION-CANDIDATE"
+S2PLT04_TASK_ID = "S2PLT04"
+S2PLT04_SCHEMA_VERSION = 1
+S2PLT04_REQUIRED_DEPENDENCIES = (
+    "S2PLT01",
+    "S2PLT02",
+    "S2PLT03",
+)
+S2PLT04_AVAILABLE_LOCAL_EVIDENCE = (
+    "S2PLT01-INDEPENDENT-REPLAY-REVIEW",
+    "S2PMT01",
+    "S2PMT02",
+    "S2PMT03",
+    "S2PMT04",
+    "S2PMT05",
+    "S2PMT06",
+    "S2PMT07",
+)
+S2PLT04_REQUIRED_EVIDENCE = (
+    "S2PLT01_ACCEPTED",
+    "S2PLT02_2D_REAL_RUN",
+    "S2PLT03_RESILIENCE_DRILL",
+    "STATE_CONSISTENCY_EVIDENCE",
+    "CONTENT_EVIDENCE",
+    "FINAL_ACCEPTANCE_BUNDLE/",
+)
+S2PLT04_FORBIDDEN_FLAGS = (
+    "s2_integration_candidate_ready",
+    "s2plt04_completed",
+    "integrated_production_accepted",
+    "daily_operation_enabled",
+    "real_smtp_sent",
+    "scheduler_enabled",
+    "release_uploaded",
+    "production_restore_executed",
+    "production_queue_mutated",
+    "public_schema_changed",
+    "db_migration_executed",
+    "source_adapter_changed",
+    "ranking_algorithm_changed",
+    "current_pointer_changed",
+    "v7_1_baseline_changed",
+    "v7_2_contract_files_changed",
+)
+S2PLT04_BLOCKING_REASONS = (
+    "s2plt01_not_accepted",
+    "s2plt02_not_completed",
+    "s2plt03_not_completed",
+    "final_acceptance_bundle_missing",
+    "inherited_v7_1_p0_findings_open",
+    "inherited_v7_1_p1_findings_open",
+)
+
+
+def build_s2plt04_dependency_state() -> dict[str, Any]:
+    """Build current S2PLT04 dependency state without accepting upstream tasks."""
+
+    available_local_evidence = {
+        task_id: "local_evidence_present_not_terminal_acceptance"
+        for task_id in S2PLT04_AVAILABLE_LOCAL_EVIDENCE
+    }
+    return {
+        "status": "blocked",
+        "required_dependencies": list(S2PLT04_REQUIRED_DEPENDENCIES),
+        "completed_dependencies": {},
+        "unmet_dependencies": list(S2PLT04_REQUIRED_DEPENDENCIES),
+        "available_local_evidence": available_local_evidence,
+        "s2plt01_acceptance_status": "blocked_by_inherited_p0_p1_and_final_gates",
+        "s2plt02_status": "missing_authoritative_completion_evidence",
+        "s2plt03_status": "missing_authoritative_completion_evidence",
+    }
+
+
+def build_s2plt04_evidence_state() -> dict[str, Any]:
+    """Build current S2PLT04 evidence state from local governance facts."""
+
+    available = {
+        "S2PLT01_ACCEPTED": False,
+        "S2PLT02_2D_REAL_RUN": False,
+        "S2PLT03_RESILIENCE_DRILL": False,
+        "STATE_CONSISTENCY_EVIDENCE": True,
+        "CONTENT_EVIDENCE": True,
+        "FINAL_ACCEPTANCE_BUNDLE/": False,
+    }
+    return {
+        "status": "blocked",
+        "required_evidence": list(S2PLT04_REQUIRED_EVIDENCE),
+        "available_evidence": available,
+        "missing_evidence": [item for item, present in available.items() if not present],
+        "state_consistency_basis": "S2PMT02_through_S2PMT06_local_validation",
+        "content_evidence_basis": "S2PHT05_S2PIT04_S2PKT05_local_validation",
+        "production_evidence_basis": "not_present",
+    }
+
+
+def build_s2plt04_integration_candidate_report(*, generated_at: str) -> dict[str, Any]:
+    """Build a deterministic fail-closed S2PLT04 integration-candidate precheck."""
+
+    dependencies = build_s2plt04_dependency_state()
+    evidence = build_s2plt04_evidence_state()
+    audit_blockers = build_audit_blocker_state()
+    s2pmt07 = build_s2pmt07_precheck_report(generated_at=generated_at)
+    gates = {
+        "dependencies_complete": dependencies["status"] == "pass",
+        "s2plt01_accepted": "S2PLT01" in dependencies["completed_dependencies"],
+        "s2plt02_completed": "S2PLT02" in dependencies["completed_dependencies"],
+        "s2plt03_completed": "S2PLT03" in dependencies["completed_dependencies"],
+        "state_consistency_evidence_present": evidence["available_evidence"]["STATE_CONSISTENCY_EVIDENCE"],
+        "content_evidence_present": evidence["available_evidence"]["CONTENT_EVIDENCE"],
+        "final_acceptance_bundle_present": evidence["available_evidence"]["FINAL_ACCEPTANCE_BUNDLE/"],
+        "p0_zero": audit_blockers["checks"]["P0_zero"],
+        "p1_zero": audit_blockers["checks"]["P1_zero"],
+        "s2pmt07_precheck_passed": s2pmt07["status"] == "pass",
+        "no_production_side_effect": True,
+    }
+    blocking_reasons: list[str] = []
+    if not gates["s2plt01_accepted"]:
+        blocking_reasons.append("s2plt01_not_accepted")
+    if not gates["s2plt02_completed"]:
+        blocking_reasons.append("s2plt02_not_completed")
+    if not gates["s2plt03_completed"]:
+        blocking_reasons.append("s2plt03_not_completed")
+    if not gates["final_acceptance_bundle_present"]:
+        blocking_reasons.append("final_acceptance_bundle_missing")
+    if not gates["p0_zero"]:
+        blocking_reasons.append("inherited_v7_1_p0_findings_open")
+    if not gates["p1_zero"]:
+        blocking_reasons.append("inherited_v7_1_p1_findings_open")
+    if not gates["s2pmt07_precheck_passed"]:
+        blocking_reasons.append("s2pmt07_final_gate_precheck_blocked")
+    report = {
+        "model_id": S2PLT04_INTEGRATION_CANDIDATE_MODEL_ID,
+        "schema_version": S2PLT04_SCHEMA_VERSION,
+        "task_id": S2PLT04_TASK_ID,
+        "acceptance_id": S2PLT04_ACCEPTANCE_ID,
+        "generated_at": generated_at,
+        "status": "pass" if not blocking_reasons and all(gates.values()) else "blocked",
+        "scope": "no_production_integration_candidate_precheck_only",
+        "gates": gates,
+        "dependencies": dependencies,
+        "evidence": evidence,
+        "audit_blockers": audit_blockers,
+        "s2pmt07_precheck": s2pmt07,
+        "blocking_reasons": blocking_reasons,
+        "production_acceptance_claimed": False,
+        "inherited_p0_p1_closed": False,
+        "candidate_hash": "",
+        **{flag: False for flag in S2PLT04_FORBIDDEN_FLAGS},
+    }
+    report["candidate_hash"] = _stable_hash({key: value for key, value in report.items() if key != "candidate_hash"})
+    return report
+
+
+def validate_s2plt04_integration_candidate_report(report: Mapping[str, Any]) -> list[str]:
+    """Validate S2PLT04 integration-candidate precheck reports."""
+
+    errors: list[str] = []
+    if report.get("model_id") != S2PLT04_INTEGRATION_CANDIDATE_MODEL_ID:
+        errors.append("S2PLT04 report model_id is invalid")
+    if report.get("schema_version") != S2PLT04_SCHEMA_VERSION:
+        errors.append("S2PLT04 report schema_version must be 1")
+    if report.get("task_id") != S2PLT04_TASK_ID:
+        errors.append("S2PLT04 report task_id is invalid")
+    if report.get("acceptance_id") != S2PLT04_ACCEPTANCE_ID:
+        errors.append("S2PLT04 report acceptance_id is invalid")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PLT04 report status must be pass or blocked")
+    if report.get("production_acceptance_claimed") is not False:
+        errors.append("S2PLT04 precheck must not claim production acceptance")
+    if report.get("inherited_p0_p1_closed") is not False:
+        errors.append("S2PLT04 precheck must not close inherited P0/P1")
+    for flag in S2PLT04_FORBIDDEN_FLAGS:
+        if report.get(flag) is not False:
+            errors.append(f"{flag} must be false")
+
+    dependencies = _mapping(report.get("dependencies"))
+    for task_id in S2PLT04_REQUIRED_DEPENDENCIES:
+        if task_id not in dependencies.get("required_dependencies", []):
+            errors.append(f"dependencies.required_dependencies must include {task_id}")
+    evidence = _mapping(report.get("evidence"))
+    for item in S2PLT04_REQUIRED_EVIDENCE:
+        if item not in evidence.get("required_evidence", []):
+            errors.append(f"evidence.required_evidence must include {item}")
+    s2pmt07 = _mapping(report.get("s2pmt07_precheck"))
+    s2pmt07_errors = validate_s2pmt07_precheck_report(s2pmt07)
+    if s2pmt07_errors:
+        errors.append("S2PLT04 embedded S2PMT07 precheck is invalid")
+    if report.get("status") == "pass":
+        gates = _mapping(report.get("gates"))
+        if not all(gates.values()):
+            errors.append("passing S2PLT04 report requires every gate true")
+        if report.get("blocking_reasons"):
+            errors.append("passing S2PLT04 report must not have blocking reasons")
+    else:
+        for reason in S2PLT04_BLOCKING_REASONS:
+            if reason not in report.get("blocking_reasons", []):
+                errors.append(f"blocked S2PLT04 precheck must include {reason}")
+    expected_hash = _stable_hash({key: value for key, value in report.items() if key != "candidate_hash"})
+    if report.get("candidate_hash") != expected_hash:
+        errors.append("S2PLT04 candidate_hash does not match report content")
+    return errors
 
 
 def build_dependency_state() -> dict[str, Any]:

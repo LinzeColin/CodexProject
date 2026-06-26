@@ -5904,3 +5904,60 @@ formulas:
     evidence_hash: "sha256:958be37692fb1eb26658b7c4a8ed23f3caf2b03e8d517842af7ad78e65d66874"
     last_verified_commit: "3404523324c12a710a618d8d1801aece1b960fcc"
     verified_at: "2026-06-26T18:40:00+10:00"
+
+  -
+    formula_id: "FORM-ADP-105"
+    model_id: "MOD-ADP-103"
+    assumption_ids:
+      - "ASM-ADP-035"
+    status: "active"
+    expression: "S2PLT04 integration candidate readiness remains blocked unless S2PLT01, S2PLT02, and S2PLT03 are all authoritatively completed; state and content evidence are present; final acceptance bundle is present; inherited V7.1 P0 and P1 findings are zero; S2PMT07 precheck passes; and every production, scheduler, SMTP, Release, restore, queue, schema, DB, source-adapter, ranking, CURRENT, V7.1, and V7.2 side-effect flag is false."
+    variables:
+      -
+        name: "dependency_state"
+        data_type: "object"
+        unit: "S2PLT01 through S2PLT03 dependency completion state"
+        input_domain: "S2PLT01, S2PLT02, S2PLT03"
+      -
+        name: "evidence_state"
+        data_type: "object"
+        unit: "integration candidate evidence"
+        input_domain: "S2PL replay, real-run, resilience, state, content, and final bundle evidence"
+      -
+        name: "audit_blocker_state"
+        data_type: "object"
+        unit: "inherited V7.1 P0/P1 blocker counts"
+        input_domain: "open P0 and P1 findings"
+      -
+        name: "s2pmt07_precheck_state"
+        data_type: "object"
+        unit: "final gate precheck state"
+        input_domain: "S2PMT07 fail-closed precheck"
+    constraints: "S2PLT04 integration candidate precheck must not complete S2PLT04, produce S2_INTEGRATION_CANDIDATE_READY, claim INTEGRATED_PRODUCTION_ACCEPTED or DAILY_OPERATION, send SMTP, enable scheduler, upload Release, execute production restore, mutate production queues, change public schema or DB, change source adapters or ranking, change CURRENT, change V7.1 baseline, or edit V7.2 contract files."
+    missing_policy: "Missing S2PLT01/S2PLT02/S2PLT03 completion, missing final acceptance bundle, nonzero inherited P0/P1, blocked S2PMT07 precheck, or any forbidden side-effect flag blocks S2PLT04."
+    output_range: "S2PLT04 integration candidate precheck report with pass or blocked status, dependency state, evidence state, audit blocker state, embedded S2PMT07 precheck, blocking reasons, deterministic candidate_hash, production_acceptance_claimed false, inherited_p0_p1_closed false, and all forbidden flags false."
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_final_gate.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PLT04-INTEGRATION-CANDIDATE-PRECHECK-20260626.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT04_INTEGRATION_CANDIDATE_PRECHECK.md"
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT04_INTEGRATION_CANDIDATE_MODEL_ID"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT04_ACCEPTANCE_ID"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT04_TASK_ID"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT04_SCHEMA_VERSION"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT04_REQUIRED_DEPENDENCIES"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT04_REQUIRED_EVIDENCE"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT04_FORBIDDEN_FLAGS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT04_BLOCKING_REASONS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_s2plt04_dependency_state"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_s2plt04_evidence_state"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_s2plt04_integration_candidate_report"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::validate_s2plt04_integration_candidate_report"
+    implementation_fingerprint: "sha256:e918cd4f11a0bfae70b7d4c2c89e6a93a86b226fe1984b3b64b3dad984ad0505"
+    evidence_hash: "sha256:e918cd4f11a0bfae70b7d4c2c89e6a93a86b226fe1984b3b64b3dad984ad0505"
+    last_verified_commit: "PRECOMMIT"
+    verified_at: "2026-06-26T18:00:00+10:00"

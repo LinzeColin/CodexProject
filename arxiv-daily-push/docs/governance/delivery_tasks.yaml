@@ -2336,3 +2336,21 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.0"
     unknown_task_ids: []
+
+  - task_id: "S2PLT04"
+    phase: "S2PL"
+    objective: "Record a fail-closed no-production integration candidate precheck that summarizes S2PLT01 replay review evidence, missing S2PLT02/S2PLT03 completion, local state/content evidence, inherited P0/P1 blockers, missing final bundle, and blocked S2PMT07."
+    scope: "S2PLT04 integration-candidate helper, focused tests, model/formula/parameter registration, traceability row, blocked phase record, run manifest, and no-production side-effect evidence."
+    non_scope: "No S2PLT04 completion, no S2_INTEGRATION_CANDIDATE_READY claim, no inherited P0/P1 closure, no final acceptance bundle creation, no independent S2PMT07 signoff, no real SMTP send, no scheduler install, no launchd bootstrap, no Release, no production restore, no public schema change, no DB migration, no production queue mutation, no ranking change, no source adapter change, no workflow enforcement, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no integrated production acceptance, and no daily-operation enablement."
+    status: "blocked"
+    dependencies: ["S2PLT01", "S2PLT02", "S2PLT03", "S2PMT07", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT04_INTEGRATION_CANDIDATE_PRECHECK.md"]
+    acceptance_ids: ["ACC-S2PLT04-INTEGRATION-CANDIDATE"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt04_compile python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py arxiv-daily-push/tests/test_stage2_final_gate.py", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt04_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q"]
+    test_results: ["py_compile PASS", "focused S2PLT04/S2PMT07 final-gate tests: 8 OK", "full arxiv-daily-push unittest: 484 OK", "V7.2 validator: PASS", "ADP project governance: 0 errors / 0 warnings", "changed-only governance semantic: 0 errors / 0 warnings", "lean check-render: drift_count 0 reference_issue_count 0", "YAML/JSON/JSONL/CSV/manifest parse: OK", "git diff --check: PASS", "production-side-effect forbidden scan: no true/enabling hits", "full semantic extractor: NOT COMPLETED after local interrupt at >150 seconds during full-table AST parsing"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PLT04_INTEGRATION_CANDIDATE_PRECHECK.md", "governance/run_manifests/ADP-S2PLT04-INTEGRATION-CANDIDATE-PRECHECK-20260626.json", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
+    risk: "S2PLT04 precheck can be misread as S2PLT04 completion or S2_INTEGRATION_CANDIDATE_READY; inherited P0/P1, S2PLT01/S2PLT02/S2PLT03, final bundle, and S2PMT07 final review still block integrated production acceptance."
+    rollback: "Revert S2PLT04 precheck code, tests, governance registrations, phase record, manifest, and events; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
