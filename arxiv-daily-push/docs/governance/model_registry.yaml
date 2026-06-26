@@ -4142,7 +4142,7 @@ models:
     model_id: "MOD-ADP-079"
     name: "S2PIT01 Chinese user center one-edit entry"
     kind: "deterministic owner-experience evidence model"
-    purpose: "Validate the Chinese 00_用户中心 first screen, one-edit owner controls entry, four separated control domains, two-click reachability, compatible config compilation, read-only storage inspect input, and disabled production side-effect flags before any broader owner-experience acceptance."
+    purpose: "Validate the shallow GitHub Chinese user-center first screen, one-edit owner controls entry, four separated control domains, two-click reachability, compatible config compilation, read-only storage inspect input, and disabled production side-effect flags before any broader owner-experience acceptance."
     owner: "arxiv-daily-push"
     status: "active"
     fact_level: "EXTRACTED"
@@ -4188,8 +4188,8 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PIT01-USER-CENTER-20260625.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PIT01_USER_CENTER.md"
-      - "arxiv-daily-push/docs/owner/00_用户中心/00_开始这里.md"
-      - "arxiv-daily-push/docs/owner/00_用户中心/00_只改这里.md"
+      - "arxiv-daily-push/用户中心/README.md"
+      - "arxiv-daily-push/用户中心/一看三查.md"
   -
     model_id: "MOD-ADP-080"
     name: "S2PIT02 local runtime dashboard"

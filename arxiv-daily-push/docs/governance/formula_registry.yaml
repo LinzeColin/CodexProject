@@ -4429,7 +4429,7 @@ formulas:
     assumption_ids:
       - "ASM-ADP-035"
     status: "active"
-    expression: "S2PIT01 passes only when owner_controls validation passes, the read-only SQLite storage inspect report passes, exactly one editable fact source remains config/owner_controls.yaml, the four Chinese control domains profile, mail_review, source_boards, and budget_schedule are present, common controls are reachable within two clicks, every control domain compiles back to config/owner_controls.yaml and covers the required owner-control sections, the Chinese user-center start and one-edit paths are visible, and all production, SMTP, scheduler, Release, schema, queue, ranking, source-adapter, email-frontstage, V7.1 CURRENT, and V7.2 contract side-effect flags remain false."
+    expression: "S2PIT01 passes only when owner_controls validation passes, the read-only SQLite storage inspect report passes, exactly one editable fact source remains config/owner_controls.yaml, the four Chinese control domains profile, mail_review, source_boards, and budget_schedule are present, common controls are reachable within two clicks, every control domain compiles back to config/owner_controls.yaml and covers the required owner-control sections, the shallow GitHub user-center README and one-look-three-check paths are visible, and all production, SMTP, scheduler, Release, schema, queue, ranking, source-adapter, email-frontstage, V7.1 CURRENT, and V7.2 contract side-effect flags remain false."
     variables:
       -
         name: "owner_controls"
@@ -4447,7 +4447,7 @@ formulas:
         unit: "Chinese user-center control domains"
         input_domain: "profile, mail_review, source_boards, budget_schedule"
     constraints: "S2PIT01 is owner-experience evidence only. It must not edit public schema, migrate DB, mutate queues, change ranking, change source adapters, change Email V1 frontstage, send SMTP, enable schedules, upload Releases, change V7.1 or V7.2 contract files, or claim owner-experience, Stage2, or integrated production acceptance."
-    missing_policy: "Missing owner validation pass, missing read-only storage inspect pass, duplicate editable fact sources, missing control domain, click depth above two, missing compatible config section, missing user-center path, editable generated view, or any production/schema/email side-effect flag blocks the report."
+    missing_policy: "Missing owner validation pass, missing read-only storage inspect pass, duplicate editable fact sources, missing control domain, click depth above two, missing compatible config section, missing shallow user-center path, editable generated view, or any production/schema/email side-effect flag blocks the report."
     output_range: "S2PIT01 user-center report with status pass or blocked, gate states, observed control domains, user-center paths, editable fact source, max click depth, validation errors, and all production/schema/email side-effect flags false."
     code_refs:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py"
@@ -4455,6 +4455,8 @@ formulas:
     test_refs:
       - "arxiv-daily-push/tests/test_stage2_sources.py"
     evidence_refs:
+      - "governance/run_manifests/ADP-S2PIT01-SHALLOW-USER-CENTER-C001-20260627.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PIT01_SHALLOW_USER_CENTER_C001.md"
       - "governance/run_manifests/ADP-S2PIT01-USER-CENTER-20260625.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PIT01_USER_CENTER.md"
     semantic_status: "MACHINE_VERIFIED"
@@ -4473,10 +4475,10 @@ formulas:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::run_s2pit01_user_center"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py::validate_s2pit01_user_center_report"
       - "arxiv-daily-push/src/arxiv_daily_push/cli.py::main"
-    implementation_fingerprint: "sha256:be51e5589238d2322fa64aa1bb8c56a296362764ac240ffe13e3033880953512"
-    evidence_hash: "sha256:853ecf0854eeaaadf2e9c82cd174643a7672dbf053a110906696c6667ad39e9f"
-    last_verified_commit: "a7527c77ff38ac558d3c8e0b1805871348060bf3"
-    verified_at: "2026-06-26T06:20:00+10:00"
+    implementation_fingerprint: "sha256:dd91692a78d77b3396988de38be57a17217418ae7fde47e779cb0a04668d58f9"
+    evidence_hash: "sha256:6700946a7f631b4f2d1c0b8b03a6c02792c79bce6472b0589ca075e6efbdf5f8"
+    last_verified_commit: "b098f9ef065c83031b69e1c1de98ab0cc64d3b7a"
+    verified_at: "2026-06-27T05:10:00+10:00"
   -
     formula_id: "FORM-ADP-082"
     model_id: "MOD-ADP-080"

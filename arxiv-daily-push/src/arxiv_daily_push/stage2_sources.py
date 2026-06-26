@@ -690,8 +690,8 @@ S2PIT01_REQUIRED_CONFIG_SECTIONS = (
     "validation",
 )
 S2PIT01_REQUIRED_USER_CENTER_PATHS = (
-    "docs/owner/00_用户中心/00_开始这里.md",
-    "docs/owner/00_用户中心/00_只改这里.md",
+    "用户中心/README.md",
+    "用户中心/一看三查.md",
 )
 S2PIT01_REQUIRED_GATES = (
     "owner_controls_gate",
@@ -7597,6 +7597,15 @@ def build_s2pit01_user_center_report(
     control_errors = list(row_errors)
     if missing_domains:
         control_errors.append("S2PIT01 missing control domains: " + ", ".join(missing_domains))
+    user_center_paths_observed = sorted(
+        {path for row in rows for path in row.get("user_center_paths", []) if isinstance(path, str)}
+    )
+    missing_user_center_paths = [
+        path for path in S2PIT01_REQUIRED_USER_CENTER_PATHS if path not in set(user_center_paths_observed)
+    ]
+    path_errors = [
+        "S2PIT01 missing user-center paths: " + ", ".join(missing_user_center_paths)
+    ] if missing_user_center_paths else []
     sections_observed = sorted({section for row in rows for section in row.get("config_sections", []) if isinstance(section, str)})
     missing_sections = [section for section in S2PIT01_REQUIRED_CONFIG_SECTIONS if section not in sections_observed]
     missing_control_keys = [section for section in S2PIT01_REQUIRED_CONFIG_SECTIONS if section not in controls]
@@ -7617,6 +7626,7 @@ def build_s2pit01_user_center_report(
         *storage_reasons,
         *one_edit_errors,
         *control_errors,
+        *path_errors,
         *compatible_errors,
         *click_errors,
         *no_side_effect_errors,
@@ -7646,7 +7656,7 @@ def build_s2pit01_user_center_report(
         "required_config_sections": list(S2PIT01_REQUIRED_CONFIG_SECTIONS),
         "config_sections_observed": sections_observed,
         "required_user_center_paths": list(S2PIT01_REQUIRED_USER_CENTER_PATHS),
-        "user_center_paths_observed": sorted({path for row in rows for path in row.get("user_center_paths", []) if isinstance(path, str)}),
+        "user_center_paths_observed": user_center_paths_observed,
         "editable_fact_sources": editable_sources,
         "single_editable_fact_source": editable_sources[0] if len(editable_sources) == 1 else "",
         "max_click_depth": max_click_depth,
@@ -17779,7 +17789,7 @@ def _s2pit01_default_control_entries() -> list[dict[str, Any]]:
         {
             "domain_id": "profile",
             "label_zh": "画像与目标",
-            "click_path": ["00_用户中心", "画像与目标"],
+            "click_path": ["用户中心", "画像与目标"],
             "editable_fact_source": S2PIT01_EDITABLE_FACT_SOURCE,
             "compiled_config_path": S2PIT01_EDITABLE_FACT_SOURCE,
             "config_sections": ["project", "cost_policy", "intelligence_provider", "validation"],
@@ -17790,7 +17800,7 @@ def _s2pit01_default_control_entries() -> list[dict[str, Any]]:
         {
             "domain_id": "mail_review",
             "label_zh": "邮件与复习",
-            "click_path": ["00_用户中心", "邮件与复习"],
+            "click_path": ["用户中心", "邮件与复习"],
             "editable_fact_source": S2PIT01_EDITABLE_FACT_SOURCE,
             "compiled_config_path": S2PIT01_EDITABLE_FACT_SOURCE,
             "config_sections": ["email", "outputs", "iteration"],
@@ -17801,7 +17811,7 @@ def _s2pit01_default_control_entries() -> list[dict[str, Any]]:
         {
             "domain_id": "source_boards",
             "label_zh": "来源与板块",
-            "click_path": ["00_用户中心", "来源与板块"],
+            "click_path": ["用户中心", "来源与板块"],
             "editable_fact_source": S2PIT01_EDITABLE_FACT_SOURCE,
             "compiled_config_path": S2PIT01_EDITABLE_FACT_SOURCE,
             "config_sections": ["sources", "boards", "source_defaults"],
@@ -17812,7 +17822,7 @@ def _s2pit01_default_control_entries() -> list[dict[str, Any]]:
         {
             "domain_id": "budget_schedule",
             "label_zh": "预算与调度",
-            "click_path": ["00_用户中心", "预算与调度"],
+            "click_path": ["用户中心", "预算与调度"],
             "editable_fact_source": S2PIT01_EDITABLE_FACT_SOURCE,
             "compiled_config_path": S2PIT01_EDITABLE_FACT_SOURCE,
             "config_sections": ["runtime", "queue", "scoring", "validation"],

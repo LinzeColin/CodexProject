@@ -472,18 +472,18 @@
     },
     {
       "finding_id": "C-001",
-      "fix_task": "S2PIT01",
+      "fix_task": "S2PIT01-SHALLOW-USER-CENTER-C001",
       "track": "C_UI交互架构",
       "severity": "P1",
       "title": "当前仓库未落地唯一中文 00_用户中心首屏",
-      "preliminary_review_state": "evidence_surface_located_sufficiency/gap_review_required_closure_not_claimed",
+      "preliminary_review_state": "refreshed_current_evidence_located_sufficiency_gap_review_required_closure_not_claimed",
       "evidence_refs": [
-        "arxiv-daily-push/docs/phase_records/PHASE_S2PIT01_USER_CENTER.md",
-        "arxiv-daily-push/用户中心/README.md",
-        "governance/run_manifests/ADP-USER-CENTER-TOTAL-CANDIDATE-POOL-20260626.json",
-        "governance/run_manifests/ADP-S2PIT01-USER-CENTER-20260625.json"
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PIT01_SHALLOW_USER_CENTER_C001.md",
+        "governance/run_manifests/ADP-S2PIT01-SHALLOW-USER-CENTER-C001-20260627.json",
+        "arxiv-daily-push/tests/test_stage2_sources.py"
       ],
-      "reviewer_decision_required": "Verify V7.1 fix/test requirement: 从项目根两次点击内完成所有常用操作"
+      "reviewer_decision_required": "Verify V7.1 fix/test requirement: 从项目根两次点击内完成所有常用操作",
+      "receipt_refreshed_at": "2026-06-27T04:55:54+10:00"
     },
     {
       "finding_id": "C-002",
@@ -631,7 +631,7 @@
   },
   "rollback": "Remove the S2PMT07 P1 review receipt phase record, manifest, and references; no production runtime state was changed.",
   "next_task": "S2PMT07_INDEPENDENT_REVIEWER_SIGNOFF_OR_P1_EVIDENCE_REPAIR",
-  "refreshed_at": "2026-06-27T04:31:05+10:00",
+  "refreshed_at": "2026-06-27T04:55:54+10:00",
   "refreshed_findings": [
     "A-006",
     "A-007",
@@ -660,15 +660,17 @@
     "B-012",
     "B-013",
     "B-014",
-    "B-015"
+    "B-015",
+    "C-001"
   ],
-  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-B002-20260627.json",
+  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C001-20260627.json",
   "refresh_manifests": [
     "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A006-A009-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A010-A016-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A015-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A019-20260627.json",
-    "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-B002-20260627.json"
+    "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-B002-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C001-20260627.json"
   ]
 }
