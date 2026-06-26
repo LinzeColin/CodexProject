@@ -61,6 +61,28 @@
 - `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION` 只允许在 P0/P1 清零且 `S2PMT07` 独立复审通过后声明。
 - `S2PCT01` 是当前 Stage2 任务；`S2PBT01` 保留为已通过的来源 Shadow 线程任务。
 
+## 评分和排序标准
+
+| 项目 | 当前口径 |
+|---|---|
+| 模型名称 | ROI 候选排序 |
+| 当前用户中心分数来源 | 历史账本分数读取 [CONTENT_LEDGER.csv](docs/owner/CONTENT_LEDGER.csv) 的 `current_score`；后续每日运行新候选使用 `adp-roi-semantic-rubric-v2` 生成六因子明细 |
+| 实现入口 | [global_scan.py](src/arxiv_daily_push/global_scan.py) 的 `ROI_COMPONENT_WEIGHTS`、`ROI_SEMANTIC_RUBRIC`、`RUBRIC_KEYWORD_HIT_WEIGHT`、`_roi_signals`、`_candidate_from_source_item` |
+| 公式 | `roi_total_score = 相关性信号 x 15 + 学习价值信号 x 20 + 经济转化率信号 x 25 + ROI信号 x 20 + 跨学科价值信号 x 10 + 可解释性信号 x 10`；用户可读表头写成 15% / 20% / 25% / 10%，表示该因子占总分权重 |
+| 因子权重 | 相关性 15%；学习价值 20%；经济转化率 25%；ROI 20%；跨学科价值 10%；可解释性 10%；总和 100% |
+| 公开语义评分 rubric | 相关性看是否服务 ADP 关注的 AI agent、模型、决策、控制、风险、金融、市场、政策、仿真或统计主题；学习价值看方法、算法、数据集、基准、评估、理论或综述价值；经济转化率看成本、效率、自动化、金融、交易、组合、风险、隐私、安全、供应链、能源或健康等可转化场景；ROI 综合经济转化率、相关性、学习价值和可解释性；跨学科价值看 arXiv 分类组覆盖；可解释性看摘要是否适合人类复述和邮件讲解 |
+| 命中增量 | 相关性、学习价值、经济转化率三项使用公开语义 rubric 的证据命中；每命中一个公开证据项统一增加 7%，即 `RUBRIC_KEYWORD_HIT_WEIGHT = 0.07`；不再使用旧的 8% / 7% / 9% 三套增量 |
+| 信号计算 | 语义 rubric 的当前实现使用标题、摘要、主分类和副分类作为公开证据；学习价值和可解释性包含摘要长度奖励；跨学科价值来自分类组覆盖；ROI 因子由经济转化率、相关性、学习价值、可解释性加权合成 |
+| 逐项分公式 | 每个分项贡献 = 归一化信号 x 该因子权重；前20精选必须公开每篇文章的六个分项贡献、总分和账本核对状态 |
+| 入选资格 | 来源项结构有效；arXiv Atom 摘要和分类可读；来源标识、标题、链接和元数据可被验证；近期已选项按任务规则去重或避重 |
+| 空值处理 | 缺少来源项、摘要、分类、标题或无法生成 ROI 信号时不得补分；该项必须阻断或标为明细缺失，不得只展示总分 |
+| 非法值处理 | 评分信号必须为 0 到 1 的数字；权重合计必须为 100；不能用比例拆分总分来伪造分项 |
+| 同分排序规则 | `roi_total_score` 降序；同分时按 `source_id` 升序；用户中心前20再按论文标识去重 |
+| 用户可见解释 | 分数用于确定性排序和追踪，不是收益承诺；“高价值”必须同时给出总分、分项贡献、公式和证据链接 |
+| 前20精选解释 | 用户中心前20精选读取来源账本中的总分字段，同一论文标识去重后取最高分/稳定记录；页面必须展示六因子评分明细，不代表只剩 20 条候选 |
+| 旧八因子口径 | [ranking.py](src/arxiv_daily_push/ranking.py) 的前沿信号、证据可靠性、新颖性、迁移价值、问题重要性、分类优先级、等待时间、多样性仍保留为历史/底层审计口径，但不能被写成当前前20总分来源 |
+| 治理引用 | [parameter_registry.csv](docs/governance/parameter_registry.csv) 的 `ROI_COMPONENT_WEIGHTS`；[formula_registry.yaml](docs/governance/formula_registry.yaml) 的 ROI 排序表达式；[global_scan.py](src/arxiv_daily_push/global_scan.py) 的实现 |
+
 ## 模型
 
 ### MOD-ADP-001 Phase 1 readiness and notification dry-run gate
@@ -344,7 +366,7 @@
 
 ### MOD-ADP-032 All-arXiv Phase 12 scan queue delivery gate
 
-- purpose: `Build all-arXiv daily input from bounded primary archive scans, persist ROI-ranked candidate queue state, require Release-hosted video artifact links in email delivery, and keep production side effects disabled until verified.`
+- purpose: `Build all-arXiv daily input from bounded primary archive scans, score candidates with the public adp-roi-semantic-rubric-v2 six-factor model, persist ROI-ranked candidate queue state, require Release-hosted video artifact links in email delivery, and keep production side effects disabled until verified.`
 - status: `active`
 - fact_level: `EXTRACTED`
 - formula_refs: `FORM-ADP-034`
@@ -734,7 +756,7 @@
 ### FORM-ADP-034
 
 - model_id: `MOD-ADP-032`
-- expression_or_pseudocode: `A Phase 12 all-arXiv daily input report passes only when the scan plan covers the primary archive set and does not collapse to cat:cs.AI, per-archive Atom source ingest avoids PDF download and bulk harvest, candidates are scored by relevance, learning value, economic conversion rate, ROI, interdisciplinary value, and explainability, one lead paper is selected, high-value unselected papers are persisted in the candidate queue, queued candidates can be consumed when no new high-value candidate exists, Stage 1 text artifacts are written as GitHub Actions artifacts, and real SMTP can count only when the email package contains Chinese lesson content, HTML/plain text bodies, and candidate queue summary.`
+- expression_or_pseudocode: `A Phase 12 all-arXiv daily input report passes only when the scan plan covers the primary archive set and does not collapse to cat:cs.AI, per-archive Atom source ingest avoids PDF download and bulk harvest, candidates are scored by the public adp-roi-semantic-rubric-v2 six-factor model with weights relevance 15, learning value 20, economic conversion rate 25, ROI 20, interdisciplinary value 10, explainability 10, keyword-hit increments are capped at 0.07 per rubric hit where keyword evidence is used, one lead paper is selected, high-value unselected papers are persisted in the candidate queue, queued candidates can be consumed when no new high-value candidate exists, Stage 1 text artifacts are written as GitHub Actions artifacts, and real SMTP can count only when the email package contains Chinese lesson content, HTML/plain text bodies, and candidate queue summary.`
 - evidence_refs: `EVID-ADP-FORMULA-REGISTRY, EVID-SEMANTIC-ADP-MANIFEST`
 
 ### FORM-ADP-035
@@ -1034,7 +1056,7 @@
 | PARAM-ADP-172 | ALL_ARXIV_MAX_RESULTS_PER_CATEGORY | Default latest-window results per primary archive | 3 | EXTRACTED from Phase 12 implementation and workflow env | EXTRACTED |
 | PARAM-ADP-173 | CANDIDATE_QUEUE_MAX_ITEMS | Maximum persisted candidate queue items | 40 | EXTRACTED from Phase 12 implementation | EXTRACTED |
 | PARAM-ADP-174 | ROI_SELECTION_THRESHOLDS | New high-value minimum selection and queue thresholds | 65.0;50.0;55.0 | EXTRACTED from Phase 12 ROI ranking implementation | EXTRACTED |
-| PARAM-ADP-175 | ROI_COMPONENT_WEIGHTS | Phase 12 ROI ranking component weights | relevance:20.0;learning_value:20.0;economic_conversion_rate:20.0;roi:20.0;interdisciplinary_value:10.0;explainability:10.0 | EXTRACTED from user criteria and implementation | EXTRACTED |
+| PARAM-ADP-175 | ROI_COMPONENT_WEIGHTS | Phase 12 ROI ranking component weights | relevance:15.0;learning_value:20.0;economic_conversion_rate:25.0;roi:20.0;interdisciplinary_value:10.0;explainability:10.0 | EXTRACTED from user criteria and implementation | EXTRACTED |
 | PARAM-ADP-176 | MAIL_VIDEO_LINK_REQUIRED | Daily email requires Release-hosted video link and forbids video attachments | true | EXTRACTED from Phase 12 delivery package implementation | EXTRACTED |
 | PARAM-ADP-177 | LIVE_ALL_ARXIV_DRY_RUN_MODEL_ID | Live all-arXiv dry-run validator identifier | adp-live-all-arxiv-dry-run-v1 | EXTRACTED from Phase 12 cloud dry-run implementation | EXTRACTED |
 | PARAM-ADP-178 | REAL_MP4_RENDER_MODEL_ID | Real lightweight MP4 render report identifier | adp-real-mp4-render-v1 | EXTRACTED from real MP4 render implementation | EXTRACTED |

@@ -11,6 +11,10 @@ from arxiv_daily_push.cli import main
 from arxiv_daily_push.global_scan import (
     ALL_ARXIV_ARCHIVES,
     ALL_ARXIV_SCAN_MODEL_ID,
+    ROI_COMPONENT_WEIGHTS,
+    ROI_RANKING_MODEL_ID,
+    ROI_SEMANTIC_RUBRIC,
+    RUBRIC_KEYWORD_HIT_WEIGHT,
     build_all_arxiv_daily_input,
     build_live_all_arxiv_dry_run,
     build_all_arxiv_scan_plan,
@@ -150,6 +154,43 @@ class GlobalScanTests(unittest.TestCase):
         self.assertNotEqual(queries["q-fin"], "cat:q-fin")
         self.assertNotEqual(queries["stat"], "cat:stat")
         self.assertFalse(validate_all_arxiv_scan_plan(plan))
+
+    def test_roi_semantic_rubric_v2_exposes_weights_and_score_details(self) -> None:
+        self.assertEqual(ROI_RANKING_MODEL_ID, "adp-roi-semantic-rubric-v2")
+        self.assertEqual(
+            ROI_COMPONENT_WEIGHTS,
+            {
+                "relevance": 15.0,
+                "learning_value": 20.0,
+                "economic_conversion_rate": 25.0,
+                "roi": 20.0,
+                "interdisciplinary_value": 10.0,
+                "explainability": 10.0,
+            },
+        )
+        self.assertEqual(RUBRIC_KEYWORD_HIT_WEIGHT, 0.07)
+        self.assertIn("可转化场景", ROI_SEMANTIC_RUBRIC["economic_conversion_rate"]["rubric"])
+
+        finance = source_item(
+            "arxiv:2607.00001",
+            "Foundation model agents for portfolio risk optimization and market automation",
+            high_roi_summary("quantitative finance and trading"),
+            "q-fin.PM",
+            ["q-fin.PM", "cs.AI", "stat.ML"],
+        )
+        report = build_all_arxiv_daily_input(
+            date="2026-07-01",
+            generated_at=GENERATED_AT,
+            source_batches=source_batches(**{"q-fin": [finance]}),
+        )
+
+        self.assertFalse(validate_all_arxiv_daily_input_report(report))
+        selected = report["selection"]["selected"]
+        self.assertEqual(selected["score_model_id"], "adp-roi-semantic-rubric-v2")
+        self.assertEqual(selected["score_rubric_id"], "adp-roi-semantic-rubric-v2")
+        self.assertEqual(selected["roi_component_weights"], ROI_COMPONENT_WEIGHTS)
+        self.assertEqual(selected["roi_signals"]["economic_conversion_rate"], 1.0)
+        self.assertEqual(selected["roi_total_score"], 94.85)
 
     def test_daily_input_selects_highest_roi_and_persists_queue_artifacts(self) -> None:
         finance = source_item(

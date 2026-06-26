@@ -24,7 +24,7 @@ from .source_ingest import FetchAtom, ingest_latest_arxiv, validate_source_batch
 
 ALL_ARXIV_SCAN_MODEL_ID = "adp-all-arxiv-scan-v1"
 CANDIDATE_QUEUE_MODEL_ID = "adp-candidate-queue-v1"
-ROI_RANKING_MODEL_ID = "adp-roi-ranking-v1"
+ROI_RANKING_MODEL_ID = "adp-roi-semantic-rubric-v2"
 MAIL_VIDEO_LINK_MODEL_ID = "adp-mail-video-link-v1"
 MAIL_TEXT_DELIVERY_MODEL_ID = "adp-mail-text-delivery-v1"
 LIVE_ALL_ARXIV_DRY_RUN_MODEL_ID = "adp-live-all-arxiv-dry-run-v1"
@@ -37,6 +37,7 @@ CANDIDATE_QUEUE_MAX_ITEMS = 40
 ROI_NEW_HIGH_VALUE_THRESHOLD = 65.0
 ROI_SELECTION_MIN_SCORE = 50.0
 ROI_QUEUE_MIN_SCORE = 55.0
+RUBRIC_KEYWORD_HIT_WEIGHT = 0.07
 
 ALL_ARXIV_ARCHIVES: tuple[dict[str, str], ...] = (
     {
@@ -74,9 +75,9 @@ ALL_ARXIV_ARCHIVES: tuple[dict[str, str], ...] = (
 )
 
 ROI_COMPONENT_WEIGHTS: dict[str, float] = {
-    "relevance": 20.0,
+    "relevance": 15.0,
     "learning_value": 20.0,
-    "economic_conversion_rate": 20.0,
+    "economic_conversion_rate": 25.0,
     "roi": 20.0,
     "interdisciplinary_value": 10.0,
     "explainability": 10.0,
@@ -128,6 +129,49 @@ _ECONOMIC_KEYWORDS = (
     "supply",
     "trading",
 )
+
+ROI_SEMANTIC_RUBRIC: dict[str, dict[str, Any]] = {
+    "relevance": {
+        "weight_percent": ROI_COMPONENT_WEIGHTS["relevance"],
+        "baseline": 0.35,
+        "keyword_hit_weight": RUBRIC_KEYWORD_HIT_WEIGHT,
+        "rubric": (
+            "直接服务 ADP 关注的 AI agent、模型、决策、控制、风险、金融、市场、政策、仿真或统计主题；"
+            "标题、摘要、主分类和副分类均可作为公开证据。"
+        ),
+    },
+    "learning_value": {
+        "weight_percent": ROI_COMPONENT_WEIGHTS["learning_value"],
+        "baseline": 0.40,
+        "keyword_hit_weight": RUBRIC_KEYWORD_HIT_WEIGHT,
+        "rubric": (
+            "能提供可学习的方法、算法、数据集、基准、评估框架、理论或综述；"
+            "摘要长度适中时增加可学习性奖励。"
+        ),
+    },
+    "economic_conversion_rate": {
+        "weight_percent": ROI_COMPONENT_WEIGHTS["economic_conversion_rate"],
+        "baseline": 0.25,
+        "keyword_hit_weight": RUBRIC_KEYWORD_HIT_WEIGHT,
+        "rubric": (
+            "能映射到成本、效率、自动化、金融、交易、组合、风险、隐私、安全、供应链、能源或健康等"
+            "可转化场景。"
+        ),
+    },
+    "roi": {
+        "weight_percent": ROI_COMPONENT_WEIGHTS["roi"],
+        "formula": "0.45 x 经济转化率 + 0.25 x 相关性 + 0.15 x 学习价值 + 0.15 x 可解释性",
+        "rubric": "综合商业转化、主题相关、学习收益和可解释性，不单独依赖关键词命中。",
+    },
+    "interdisciplinary_value": {
+        "weight_percent": ROI_COMPONENT_WEIGHTS["interdisciplinary_value"],
+        "rubric": "按 arXiv 分类组覆盖和多分类覆盖计分；跨计算机、金融、统计、工程、物理等组别时提高。",
+    },
+    "explainability": {
+        "weight_percent": ROI_COMPONENT_WEIGHTS["explainability"],
+        "rubric": "摘要长度、结构和可复述程度越适合人类阅读与邮件解释，分数越高。",
+    },
+}
 
 
 def build_all_arxiv_scan_plan(
@@ -843,6 +887,7 @@ def _candidate_from_source_item(source_item: Mapping[str, Any], *, generated_at:
             "roi_component_weights": dict(ROI_COMPONENT_WEIGHTS),
             "roi_total_score": total,
             "score_model_id": ROI_RANKING_MODEL_ID,
+            "score_rubric_id": ROI_RANKING_MODEL_ID,
         },
         [],
     )
@@ -915,9 +960,9 @@ def _roi_signals(source_item: Mapping[str, Any], *, profile: Mapping[str, Any]) 
     categories = [str(category) for category in profile.get("categories") or [] if category]
     primary = str(profile.get("primary_category") or "")
     text = " ".join([str(source_item.get("title") or ""), summary, " ".join(categories), primary]).lower()
-    relevance = min(1.0, 0.35 + _keyword_score(text, _RELEVANCE_KEYWORDS, per_hit=0.08))
-    learning = min(1.0, 0.40 + _keyword_score(text, _LEARNING_KEYWORDS, per_hit=0.07) + _length_bonus(summary))
-    economic = min(1.0, 0.25 + _keyword_score(text, _ECONOMIC_KEYWORDS, per_hit=0.09))
+    relevance = _semantic_rubric_signal(text, _RELEVANCE_KEYWORDS, baseline=0.35)
+    learning = _semantic_rubric_signal(text, _LEARNING_KEYWORDS, baseline=0.40, bonus=_length_bonus(summary))
+    economic = _semantic_rubric_signal(text, _ECONOMIC_KEYWORDS, baseline=0.25)
     interdisciplinary = min(1.0, 0.35 + 0.15 * max(0, len(set(_category_groups(categories + [primary]))) - 1) + 0.08 * max(0, len(set(categories)) - 1))
     explainability = min(1.0, 0.40 + _length_bonus(summary) + (0.15 if len(summary.split()) <= 260 else 0.0))
     if profile.get("source_family") == "top_journal":
@@ -934,6 +979,10 @@ def _roi_signals(source_item: Mapping[str, Any], *, profile: Mapping[str, Any]) 
         "interdisciplinary_value": round(interdisciplinary, 4),
         "explainability": round(explainability, 4),
     }
+
+
+def _semantic_rubric_signal(text: str, keywords: Sequence[str], *, baseline: float, bonus: float = 0.0) -> float:
+    return min(1.0, baseline + _keyword_score(text, keywords, per_hit=RUBRIC_KEYWORD_HIT_WEIGHT) + bonus)
 
 
 def _daily_input_from_selection(
