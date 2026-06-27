@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"
+  role="img" aria-label="Enterprise Ecosystem Intelligence app icon">
+  <defs>
+    <linearGradient id="bg" x1="80" y1="80" x2="944" y2="944" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#06192a"/>
+      <stop offset="0.55" stop-color="#073e49"/>
+      <stop offset="1" stop-color="#096869"/>
+    </linearGradient>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="22" stdDeviation="24" flood-color="#00101c" flood-opacity="0.42"/>
+    </filter>
+  </defs>
+  <rect x="44" y="44" width="936" height="936" rx="218" fill="url(#bg)"/>
+  <circle cx="512" cy="512" r="352" fill="none" stroke="#60e8de" stroke-width="13" opacity="0.33"/>
+  <circle cx="512" cy="512" r="260" fill="none" stroke="#ffbe58" stroke-width="8" opacity="0.22"/>
+  <g stroke-linecap="round" fill="none">
+    <path d="M244 354 512 512 778 318" stroke="#5be9dc" stroke-width="13" opacity="0.42"/>
+    <path d="M254 710 512 512 770 720" stroke="#ffbe58" stroke-width="13" opacity="0.47"/>
+    <path d="M244 354 778 318" stroke="#92b5ff" stroke-width="13" opacity="0.24"/>
+    <path d="M254 710 770 720" stroke="#92b5ff" stroke-width="13" opacity="0.22"/>
+  </g>
+  <g filter="url(#softShadow)">
+    <rect x="315" y="248" width="103" height="495" rx="42" fill="#eafaf7"/>
+    <rect x="374" y="248" width="340" height="89" rx="42" fill="#eafaf7"/>
+    <rect x="374" y="451" width="276" height="88" rx="42" fill="#75f4e1"/>
+    <rect x="374" y="653" width="366" height="90" rx="42" fill="#eafaf7"/>
+  </g>
+  <g>
+    <circle cx="244" cy="354" r="39" fill="#5be9dc"/>
+    <circle cx="778" cy="318" r="43" fill="#ffbe58"/>
+    <circle cx="512" cy="512" r="48" fill="#eafaf7"/>
+    <circle cx="254" cy="710" r="38" fill="#92b5ff"/>
+    <circle cx="770" cy="720" r="42" fill="#ffbe58"/>
+  </g>
+  <rect x="260" y="818" width="504" height="32" rx="16" fill="#ffbe58" opacity="0.72"/>
+  <rect x="330" y="870" width="364" height="22" rx="11" fill="#5be9dc" opacity="0.48"/>
+</svg>

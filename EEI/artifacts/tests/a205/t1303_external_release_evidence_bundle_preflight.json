@@ -59,7 +59,7 @@
       "release_gate_closed_by_finalizer": false,
       "status": "A209_FINALIZATION_OPERATOR_INTERVENTION_REQUIRED",
       "target_windows": 288,
-      "windows_completed": 6,
+      "windows_completed": 31,
       "windows_failed": 1
     },
     "relationship_gold": {
@@ -80,7 +80,7 @@
       "status": "PENDING_SIGNED_DECISIONS"
     }
   },
-  "generated_at": "2026-06-27T02:51:52Z",
+  "generated_at": "2026-06-27T07:04:51Z",
   "missing_external_inputs": [
     {
       "acceptance_id": "A202",
@@ -105,7 +105,7 @@
     {
       "acceptance_id": "A209",
       "input_id": "A209_24h_operator_soak_finalization",
-      "reason": "A209 finalization does not allow downstream refresh at 6/288 windows"
+      "reason": "A209 finalization does not allow downstream refresh at 31/288 windows"
     }
   ],
   "mvp_release_gate_refresh_allowed": false,
@@ -140,15 +140,15 @@
     "a202_operator_review_packet": "artifacts/tests/a202/t1301_operator_review_packet_contract.json",
     "a202_operator_review_packet_sha256": "cedc5ae7056c85acf249f5b1ef50da4067223d8170608fa5913efc7631d4ca7b",
     "brand_preflight": "artifacts/tests/a210/t1309_brand_clearance_preflight_contract.json",
-    "brand_preflight_sha256": "e7de29ff58a187a45a768b76c17f3c318fe315f33b70c93c15498331cd8c70db",
+    "brand_preflight_sha256": "c7f1b58ae0646b5f246be1c6a55d0b7808e227138f5294fbb40293f30459cf88",
     "entity_gold_evaluation": "artifacts/tests/a026/t904_entity_resolution_gold_evaluation_contract.json",
     "entity_gold_evaluation_sha256": "e34cf6e5b57500ce827a6db92a2bc533d66f4b64320021657c5e7fd6614d14d3",
     "operator_soak_finalization": "artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json",
-    "operator_soak_finalization_sha256": "f2b6aeb95d35a5945092167cb32b0fe1bb1f7ce9cb40fd4e44c56fc60637ccd4",
+    "operator_soak_finalization_sha256": "635d729cb1e158bfcfdb0e1877d96b321d97b8bdfe6805126399c6ee7af97898",
     "relationship_gold_evaluation": "artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json",
     "relationship_gold_evaluation_sha256": "d695948385a5fba50ccbbf57c7adebe6a5f4bfffc1322e3ab57fb48a3fedcb64",
     "release_decision_contract": "artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json",
-    "release_decision_contract_sha256": "11cc15699d7636d99319cd2cf87c45084a36f41828a76458a348019c4f256706"
+    "release_decision_contract_sha256": "259ef18a154f2d9c3026ebf9828b598822e7dd0c670764ce249f30be99fb127b"
   },
   "status": "EXTERNAL_RELEASE_EVIDENCE_BUNDLE_BLOCKED",
   "system_en_name": "Enterprise Ecosystem Intelligence",

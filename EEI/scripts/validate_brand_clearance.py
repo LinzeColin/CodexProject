@@ -71,6 +71,12 @@ SIGNED_BUNDLE_DISALLOWED_REPO_PREFIXES = (
 )
 
 
+def signed_bundle_source_boundary_policy_value() -> str:
+    allowed = "|".join(SIGNED_BUNDLE_ALLOWED_REPO_PREFIXES)
+    disallowed = "|".join(SIGNED_BUNDLE_DISALLOWED_REPO_PREFIXES)
+    return f"allow:{allowed};disallow:{disallowed}"
+
+
 def require(condition: bool, message: str) -> None:
     if not condition:
         raise AssertionError(message)
@@ -557,6 +563,7 @@ def build_payload() -> dict[str, Any]:
         "signed_bundle_source_boundary_policy": {
             "signed_bundle_source_must_be_operator_supplied": True,
             "repository_fixtures_and_templates_count_as_clearance": False,
+            "policy_value": signed_bundle_source_boundary_policy_value(),
             "allowed_repository_prefixes": list(SIGNED_BUNDLE_ALLOWED_REPO_PREFIXES),
             "disallowed_repository_prefixes": list(SIGNED_BUNDLE_DISALLOWED_REPO_PREFIXES),
             "default_template_source_kind": "repository_template",
@@ -669,6 +676,11 @@ def validate_payload(payload: dict[str, Any]) -> None:
         tuple(source_boundary_policy.get("disallowed_repository_prefixes") or ())
         == SIGNED_BUNDLE_DISALLOWED_REPO_PREFIXES,
         "disallowed signed-bundle prefixes drift",
+    )
+    require(
+        source_boundary_policy.get("policy_value")
+        == signed_bundle_source_boundary_policy_value(),
+        "signed-bundle policy value drift",
     )
     if (ROOT / INTAKE_TEMPLATE_PATH).is_file():
         validate_intake_template(json.loads((ROOT / INTAKE_TEMPLATE_PATH).read_text()))

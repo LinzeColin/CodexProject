@@ -11,13 +11,78 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version: `0.1.0`
 - Product version status: `provisional`
 - Current phase: `D`
-- Current gate: `TASK-T1307-A209-ISOLATED-24H-RERUN-STARTED`
+- Current gate: `TASK-T1308-A211-APP-ICON-SHELL-SYNC`
 - Confirmed iteration count: 39
-- Reconstructed development event count: 4
-- Current task: `TASK-T1307/A209 isolated 24h rerun background evidence task`
-- Current A209 point-in-time heartbeat: the clean 24h operator soak attempt launched at `2026-06-25T21:33:19Z` failed at checkpoint window `7/288`; `6` windows passed, `1` failed, latest checkpoint time is `2026-06-25T22:08:58Z`, `child_status=NO_OUTPUT`, `exit_status=1`, and stderr reports `page.evaluate: Target page, context or browser has been closed`. No `run_operator_soak` or `run_soak_smoke` process was found during the 2026-06-26 check. A209 remains `IN_PROGRESS` and has no release-ready 24h evidence.
-- Current isolated rerun: `/private/tmp/eei-a209-rerun-20260626-0918/` was started without overwriting the failed canonical checkpoint; operator PID `80478` and watchdog PID `80732` are recorded, first checkpoint window `1/288` PASS at `2026-06-25T23:04:42Z`, `0` failed, `browser_slices_completed=20`, `browser_measurement_error=null`, and monitor status is `RUNNING_PARTIAL`.
-- Blockers: T1301/A202 is still `IN_PROGRESS`; the refreshed operator review packet is freshness-correct supporting review evidence only and does not create source-license review, passage-level human approval, production owner approval, legal release clearance, brand clearance, release-manager activation or final public relationship publication. T1307/A209 is still `IN_PROGRESS`; failed `7/288` evidence plus short repair probes are non-closure evidence only and a new 24h chain must reach `288/288` successful windows with zero failures before finalization. A204/A205 release-manager activation preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED` until A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence pass. A026 still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%. The new T904 operator labeling packet is a source-bound worksheet with blank `OPERATOR_TO_LABEL` slots and is not production gold evidence. A210 still needs formal brand legal/market clearance or signed risk waiver. The T1303 external release operator intake packet lists the exact A202/A210/A026/A027/A209 operator inputs and keeps `release_gate_closed_by_operator_packet=false`; it is a checklist/hash manifest, not clearance.
+- Reconstructed development event count: 8
+- Current task: `TASK-T1308/A211 app icon shell sync with A209 origin/main rerun requiring operator intervention`
+- Current A209 point-in-time heartbeat: the current active origin/main 24h operator soak rerun under `/private/tmp/eei-a209-rerun-20260627-originmain-8d5a3916/` reports `31` PASS windows and `1` FAIL window at window `32`; latest failed `generated_at` / `ended_at` is `2026-06-27T06:16:44Z`, operator PID `37871` is `NOT_RUNNING`, watchdog PID `38400` is `RUNNING` and reporting `OPERATOR_INTERVENTION_REQUIRED`, and `completion_percent=10.76`. This is failed progress/incident evidence only; A209 remains `IN_PROGRESS` and has no release-ready 24h evidence.
+- Current isolated rerun: the older `/private/tmp/eei-a209-rerun-20260626-150051-b6c63687/` chain is historical failed/stale comparison evidence with `85` windows, `84` PASS and `1` FAIL. It is not the active rerun and must not be overwritten by partial progress.
+- Current app icon state: `scripts/generate_app_icon.py` deterministically generates `assets/app_icon/EEIAppIcon.svg`, `assets/app_icon/EEIAppIcon.png`, `assets/app_icon/EEIAppIcon.icns`, and web public icon assets; `/Applications/EEI.app` has `Contents/Resources/EEIAppIcon.icns`, `CFBundleIconFile=EEIAppIcon`, and `CFBundleIconName=EEIAppIcon`.
+- Blockers: T1301/A202 is still `IN_PROGRESS`; review packets and selected official-source captures do not create source-license review, passage-level human approval, production owner approval, legal release clearance, brand clearance, release-manager activation or final public relationship publication. T1307/A209 is still `IN_PROGRESS`; the current origin/main heartbeat is failed/intervention evidence (`31` PASS, `1` FAIL at window `32`) and a future chain must reach `288/288` successful windows with zero failures before finalization can refresh downstream release gates. A204/A205 release-manager activation preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED` until A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence pass. A026 still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%. A210 still needs formal brand legal/market clearance or signed risk waiver; app icon installation is a visual shell asset and not legal or market clearance.
+
+## EVENT-20260627-007 - T1308/A211 app icon shell sync
+
+- Timestamp: 2026-06-27T16:14:00+10:00
+- Fact level: EXTRACTED
+- Base commit: `3d7a83703d467972132a3e9109dff6f0b2a0a18a`
+- Scope: add a deterministic EEI app icon generation pipeline, generate SVG/PNG/ICNS source assets, connect Next metadata to matching web icon assets, and install `EEIAppIcon.icns` into `/Applications/EEI.app`.
+- Non-claims: this does not close A210 brand legal/market clearance, does not change the product name, does not alter API/database/model behavior, does not close A209, and does not make MVP release-ready.
+- App icon state: `/Applications/EEI.app/Contents/Resources/EEIAppIcon.icns` exists with `668708` bytes; `Info.plist` sets `CFBundleIconFile=EEIAppIcon` and `CFBundleIconName=EEIAppIcon`; LaunchServices registration and Quick Look cache refresh completed.
+- Asset evidence: `assets/app_icon/EEIAppIcon.icns` sha256 `3240b37241910c7bbc42ea6dfded26f85c7016ad4dec59c403e57214ae69feba`; `assets/app_icon/EEIAppIcon.png` sha256 `1ef61b3fe2c7fcd1140529c752f69799532d47a66133e646c5db43c73b6937bd`; `assets/app_icon/EEIAppIcon.svg` sha256 `beafbbf9842a9468835a87bd7d73262e23990936425b221ae2abe8af96add60d`.
+- Validation: `python3 scripts/generate_app_icon.py --install-app /Applications/EEI.app --verify-app /Applications/EEI.app` PASS, `plutil -lint /Applications/EEI.app/Contents/Info.plist` PASS, visual inspection of `assets/app_icon/EEIAppIcon.png` PASS, `python3 -m py_compile scripts/generate_app_icon.py` PASS, `ruff check` PASS for changed Python scripts/tests, `NEXT_TELEMETRY_DISABLED=1 node_modules/.bin/next build` PASS, A209 heartbeat/finalization fixed point reports operator intervention required, clean-room release validates with `package_paths=454`, release artifacts validate with `manifest_paths=461` / `checksum_paths=460`, semantic extractor checks `11` formulas and `90` parameters, direct changed-only Project Governance reports `errors=0` / `warnings=0`, and lean governance candidate wrapper stops on report-only `required_scope_gap` while legacy validation exit is `0`.
+- Next step: run changed-only Project Governance, run final local verification subset, commit/push, verify GitHub CI, and keep A209 background monitoring active.
+
+## ITER-20260627-007 - EEI app shell icon asset pipeline
+
+- Date: 2026-06-27
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `3d7a83703d467972132a3e9109dff6f0b2a0a18a`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1302`, `TASK-T1308`, `TASK-T1309`
+- Acceptance IDs: `A203`, `A211`, `A210`
+- Goal: give EEI a branded app icon in the local macOS launcher and web app metadata while preserving formal brand-clearance and release-gate boundaries.
+- Files changed: icon generation script, app icon assets, web public icon assets, Next metadata, traceability, delivery task evidence, human-facing governance files and generated release evidence.
+- Model changes: no scoring formula, graph traversal formula, extraction model, model weight, business threshold, API schema, database schema, frontend route behavior or publication policy changed.
+- Parameter changes: no active model or threshold value changed; `frontend-app-icon` profile version records the visual asset pipeline version only.
+- Commands run: icon generation/install/verify, LaunchServices registration, Quick Look cache refresh, `plutil -lint`, visual inspection, py_compile, ruff, Next build, clean-room release generation/validation and release artifact generation/validation.
+- Test results: installed app icon verification PASS; web metadata references generated SVG/PNG icon assets; clean-room package includes the icon assets; release manifest/checksum includes the icon assets; A210 remains `IN_PROGRESS` pending formal signed clearance.
+- Decision: keep icon work as product-shell visual polish, not legal clearance or release readiness.
+- Remaining risks: macOS Finder/Dock icon cache can require user-side refresh; GitHub CI still needs to validate the committed EEI-only diff; the active A209 origin/main rerun has failed at window `32/288` and needs operator recovery/new zero-failure 24h evidence before A209 can close.
+- Rollback: remove generated icon assets and `scripts/generate_app_icon.py`, restore `apps/web/src/app/layout.tsx`, remove `EEIAppIcon.icns` and `CFBundleIconFile/CFBundleIconName` from `/Applications/EEI.app`, then rerun governance/release artifact validation.
+
+## EVENT-20260627-006 - T1307/A209 running-partial finalization and A210 policy selector sync
+
+- Timestamp: 2026-06-27T15:10:29+10:00
+- Fact level: EXTRACTED
+- Base commit: `3d7a83703d467972132a3e9109dff6f0b2a0a18a`
+- Scope: refresh the active origin/main A209 heartbeat to `20/288` PASS windows, classify a healthy running partial rerun separately from historical failed operator evidence, expose the A210 signed-bundle source-boundary policy as a repo-local machine-readable preflight value, and regenerate dependent A202/A203/A205/A210/release evidence.
+- Non-claims: this does not close A209, does not promote the historical failed canonical 24h evidence, does not create A202/A210 legal clearance, does not activate release-manager, and does not make MVP release-ready.
+- A209 state: `artifacts/tests/a209/t1307_operator_soak_background_progress.json` reports `20/288` windows, `0` failed, operator PID `37871` RUNNING and watchdog PID `38400` RUNNING; `artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json` reports `A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL` with downstream release-gate refresh still disallowed.
+- A210 state: `artifacts/tests/a210/t1309_brand_clearance_preflight_contract.json` now exposes `signed_bundle_source_boundary_policy.policy_value`; `PARAM-089` reads that value through a `json_path` selector and still keeps A210 blocked until real signed brand clearance or waiver evidence exists.
+- Validation: focused A209 finalization tests PASS `5/5`; focused A210 brand-clearance tests PASS `7/7`; ruff on changed scripts/tests PASS; semantic extraction checks `11` formulas and `90` parameters; clean-room release validation PASS with `package_paths=446`; release artifact validation PASS with `manifest_paths=453` and `checksum_paths=452`.
+- Next step: rerun changed-only Project Governance, run full local verification or direct equivalent where `.venv/bin/uv` is absent, commit/push this EEI-only sync, bind remote CI, and continue A209 background monitoring until `288/288` zero-failure evidence exists.
+
+## ITER-20260627-006 - A209 running-partial heartbeat sync and A210 policy selector binding
+
+- Date: 2026-06-27
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `3d7a83703d467972132a3e9109dff6f0b2a0a18a`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1307`, `TASK-T1303`, `TASK-T1309`
+- Acceptance IDs: `A209`, `A204`, `A205`, `A210`
+- Goal: keep A209 progress truthful while preventing stale failed evidence from masking the current running partial rerun, and make A210 source-boundary policy extraction machine-checkable without changing release semantics.
+- Files changed: A209 heartbeat/finalization artifacts, A202/A203/A205/A210 dependent preflights, A209/A210 scripts and tests, parameter registry, traceability, delivery tasks, status views, human-facing governance records, clean-room package and release checksums.
+- Model changes: no scoring formula, graph traversal formula, extraction model, model weight, business threshold, API schema, database schema, frontend route or publication policy changed.
+- Parameter changes: no active parameter value changed; `PARAM-089` and `PARAM-090` selectors/evidence hashes were refreshed to bind existing values to machine-checkable sources.
+- Commands run: A209 heartbeat/finalization generation, A210 brand clearance generation/validation, A202/A203/A205 dependent preflight generation, semantic extractor validation, focused A209/A210 pytest subsets, ruff on changed scripts/tests, clean-room and release artifact generation/validation.
+- Test results: A209 heartbeat is `20/288` PASS and progress-only; A209 finalization remains blocked running partial; release-manager and MVP gates remain blocked; A210 policy source-boundary validation remains blocked pending real operator/legal evidence.
+- Decision: do not overwrite historical failed A209 evidence with partial rerun progress; do not treat heartbeat evidence as release readiness; keep A210 fail-closed until signed external clearance exists.
+- Remaining risks: the live A209 rerun can still fail before `288/288`; repository heartbeat artifacts can lag the live checkpoint; A202/A210/A026/A027 external gates still block MVP release readiness.
+- Rollback: revert this EEI-only event, finalization status change, A210 policy-value field, parameter selector refresh and regenerated artifacts; preserve live and failed A209 evidence.
 
 ## EVENT-20260626-003 - T1307/A209 isolated 24h rerun started
 

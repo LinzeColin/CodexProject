@@ -58,6 +58,9 @@ apps/api/app/scoring.py
 apps/api/app/settings.py
 apps/web/next.config.ts
 apps/web/package.json
+apps/web/public/apple-touch-icon.png
+apps/web/public/eei-app-icon.png
+apps/web/public/eei-app-icon.svg
 apps/web/src/app/analysis-contract.ts
 apps/web/src/app/development-status/page.tsx
 apps/web/src/app/explore-api-client.ts
@@ -144,6 +147,10 @@ artifacts/tests/a209/t1307_soak_smoke.json
 artifacts/tests/a210/t1309_brand_clearance_intake_template.json
 artifacts/tests/a210/t1309_brand_clearance_preflight_contract.json
 artifacts/tests/a211/t1308_frontend_workspace_context_contract.json
+assets/app_icon/EEIAppIcon.icns
+assets/app_icon/EEIAppIcon.png
+assets/app_icon/EEIAppIcon.svg
+assets/app_icon/design_notes.md
 brand/BRAND_AND_COMPETITIVE_LANDSCAPE_RESEARCH.md
 config/brand_policy.yaml
 config/model_profiles/balanced-v2.json
@@ -345,6 +352,7 @@ scripts/db_tools.py
 scripts/env_doctor.py
 scripts/fetch_official_source_full_text.py
 scripts/finalize_operator_soak_evidence.py
+scripts/generate_app_icon.py
 scripts/generate_governance_pdf.py
 scripts/job_scheduler.py
 scripts/load_curated_ingestion_anchors.py
