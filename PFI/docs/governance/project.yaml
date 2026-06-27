@@ -1,7 +1,7 @@
 schema_version: "codexproject.project.v1"
 project_id: "PFI"
 project_name: "Personal Financial Intelligence"
-summary: "PFI V0.2 是本地优先个人金融中枢；当前证据覆盖 Stage 1 信息架构、Stage 2 多数据源合同、Stage 3 首页/账户/账本可读 MVP 和 Stage 4 投资/消费智能分析 MVP，不声明生产就绪或实盘执行能力。"
+summary: "PFI V0.2 是本地优先个人金融中枢；当前证据覆盖 Stage 1 信息架构、Stage 2 多数据源合同、Stage 3 首页/账户/账本可读 MVP、Stage 4 投资/消费智能分析 MVP 和 Stage 5 建议/报告/Alpha 只读出口 MVP，不声明生产就绪或实盘执行能力。"
 version: "0.2.0"
 fact_level: "EXTRACTED"
 owner_role: "owner"
@@ -17,8 +17,13 @@ features:
       - "PFI/docs/pfi_v02/STAGE2_DATA_SYNC_MVP.md"
       - "PFI/docs/pfi_v02/STAGE3_READABLE_MVP.md"
       - "PFI/docs/pfi_v02/STAGE4_ANALYSIS_MVP.md"
+      - "PFI/docs/pfi_v02/STAGE5_ADVICE_REPORT_ALPHA_EXPORT.md"
 limitations:
   - statement: "生产联通、真实账户凭证、实盘执行、自动付款或券商提交动作未验证。"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "PFI/README.md"
+  - statement: "Stage 5 Alpha 只读出口不修改 Alpha repo，不新增 Alpha/Ralpha/System 一级入口。"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "PFI/docs/pfi_v02/STAGE5_ADVICE_REPORT_ALPHA_EXPORT.md"

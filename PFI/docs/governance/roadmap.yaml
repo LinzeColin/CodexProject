@@ -1,12 +1,12 @@
 schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "PFI"
-total_estimated_hours: 12
-completed_estimated_hours: 12
-current_stage_id: "S4"
-current_phase_id: "S4P"
-current_task_id: "S4PZT01"
-next_gate_id: "S5-START-GATE"
+total_estimated_hours: 16
+completed_estimated_hours: 16
+current_stage_id: "S5"
+current_phase_id: "S5P"
+current_task_id: "S5PZT01"
+next_gate_id: "S6-START-GATE"
 stages:
   - stage_id: "S2"
     name: "数据源与低操作自动同步 MVP"
@@ -284,4 +284,97 @@ stages:
               - "Stage 4 分析使用 synthetic/local fixtures，不是正式投资建议。"
             rollback: "Revert the Stage 4 closeout commit; keep QBVS runtime path unchanged."
             current_result: "Stage 4 local analysis MVP acceptance complete; production readiness not claimed."
+            completed_version: "0.2.0"
+  - stage_id: "S5"
+    name: "建议、报告、Alpha 只读出口"
+    person_goal: "Owner 能看到可复盘建议、可导出报告，并把 PFI 只读 context 提供给外部 Alpha 消费。"
+    status: "completed"
+    estimated_hours: 4
+    estimated_pct: 100
+    stop_conditions:
+      - "无证据建议"
+      - "建议无法复盘"
+      - "首页建议噪音过多"
+      - "报告不可复现导出"
+      - "修改 Alpha repo"
+      - "新增 Alpha、Ralpha、System 或 Development 一级入口"
+      - "出现交易密码、实盘提交或支付授权"
+    stop_gate:
+      gate_id: "PFI-S5-ADVICE-REPORT-ALPHA-EXPORT-GATE"
+      pass_criteria:
+        - "Stage 5 5A/5B/5C acceptance matrix 全部 PASS"
+        - "Stage 5 contract test 通过"
+        - "Web shell 建议与复盘、报告与洞察显示 Stage 5 能力"
+        - "Alpha context export 只读且不修改 Alpha repository"
+        - "本地 PFI.app 入口指向 canonical PFI"
+      evidence:
+        - "PFI/docs/pfi_v02/STAGE5_ADVICE_REPORT_ALPHA_EXPORT.md"
+        - "PFI/src/pfi_v02/stage5_advice_report_alpha.py"
+      failure_action: "blocked"
+    phases:
+      - phase_id: "S5P"
+        name: "建议生命周期、报告导出、只读 context"
+        objective: "提供本地只读建议、报告和 Alpha context export MVP，不新增真实同步、支付或实盘执行。"
+        status: "completed"
+        estimated_hours: 4
+        estimated_pct: 100
+        stop_conditions:
+          - "无证据建议"
+          - "建议缺少 decision/effect measurement"
+          - "报告缺少 evidence chain"
+          - "Alpha context 缺少约束字段"
+        stop_gate:
+          gate_id: "PFI-S5-ADVICE-REPORT-ALPHA-EXPORT-GATE"
+          pass_criteria:
+            - "S5 delivery model 覆盖 5A/5B/5C"
+            - "Top N 建议只进入首页摘要"
+            - "导出中心支持 Markdown/JSON/CSV 并可复现"
+            - "Alpha 只读 context 保持 live_trade_submission_authorized=false"
+          evidence:
+            - "PFI/docs/pfi_v02/STAGE5_ADVICE_REPORT_ALPHA_EXPORT.md"
+            - "PFI/tests/test_stage5_advice_report_alpha.py"
+          failure_action: "fix_and_rerun"
+        tasks:
+          - task_id: "S5PZT01"
+            name: "Stage 5 closeout、本机入口刷新与缓存清理"
+            objective: "证明 Stage 5 建议、报告和 Alpha 只读出口 acceptance、stop condition、validation、入口和缓存清理均完成。"
+            status: "completed"
+            estimated_hours: 4
+            estimated_pct: 100
+            dependencies:
+              - "S4PZT01"
+            acceptance_ids:
+              - "ACC-PFI-S5-ADVICE-REPORT-ALPHA-EXPORT"
+            acceptance:
+              - acceptance_id: "ACC-PFI-S5-ADVICE-REPORT-ALPHA-EXPORT"
+                description: "Stage 5 所有 phase/task 的本地只读建议、报告、导出、Alpha context、Web shell、治理验证、本机入口和缓存清理通过。"
+                evidence_refs:
+                  - "PFI/docs/pfi_v02/STAGE5_ADVICE_REPORT_ALPHA_EXPORT.md"
+                  - "PFI/tests/test_stage5_advice_report_alpha.py"
+            test_commands:
+              - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -B -m unittest tests.test_stage1_ia_contract tests.test_stage1_core_models tests.test_stage1_classification_rules tests.test_stage2_data_source_registry tests.test_stage2_cba_csv_import tests.test_stage2_alipay_import tests.test_stage2_non_csv_contracts tests.test_stage3_readable_mvp tests.test_stage4_analysis_mvp tests.test_stage5_advice_report_alpha -q"
+              - "cd PFI/modules/qbvs_lab && PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q"
+              - "node --check PFI/web/app/shell.js"
+              - "python3 scripts/validate_project_governance.py --project PFI"
+              - "python3 -B -m unittest tests.governance.test_human_entry_markdown_contract -q"
+            test_results:
+              - "Stage 1+2+3+4+5 contracts: Ran 85 tests / OK"
+              - "Legacy QBVS lifecycle smoke: Ran 1 test / OK"
+              - "Project governance validation: errors 0 / warnings 0"
+              - "Human-entry Markdown contract: Ran 2 tests / OK"
+              - "Stage 5 contract: Ran 14 tests / OK"
+              - "Python compile: OK"
+              - "Web shell syntax: OK"
+              - "macOS app acceptance lite: 29 pass / 0 fail / 2 info"
+              - "Browser validation: labels and workspace switches OK"
+              - "git diff --check -- PFI: OK"
+            evidence_refs:
+              - "PFI/docs/pfi_v02/STAGE5_ADVICE_REPORT_ALPHA_EXPORT.md"
+              - "PFI/HANDOFF.md"
+            risks:
+              - "真实账户联通、真实凭证、生产运行和实盘执行仍未验证。"
+              - "Stage 5 建议使用 synthetic/local fixtures，不是自动执行投资建议。"
+              - "Alpha 只读 context 尚未在 Alpha repo 内独立消费验证。"
+            rollback: "Revert the Stage 5 closeout commit; keep Alpha repository untouched and QBVS runtime path unchanged."
+            current_result: "Stage 5 local advice/report/context export MVP acceptance complete; production readiness not claimed."
             completed_version: "0.2.0"

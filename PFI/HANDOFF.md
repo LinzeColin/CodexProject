@@ -4,7 +4,7 @@ Last updated: 2026-06-27 Australia/Sydney
 
 ## Current Goal
 
-PFI V0.2 Stage 4 investment and consumption analysis MVP closeout and Stage 5 readiness.
+PFI V0.2 Stage 5 advice, reports, and Alpha read-only export closeout and Stage 6 readiness.
 
 ## Current Status
 
@@ -32,7 +32,10 @@ PFI V0.2 Stage 4 investment and consumption analysis MVP closeout and Stage 5 re
 - Stage 4 analysis read-model is implemented in `src/pfi_v02/stage4_analysis_mvp.py`.
 - Stage 4 record is `docs/pfi_v02/STAGE4_ANALYSIS_MVP.md`.
 - Stage 4 local analysis MVP acceptance is complete for phases 4A-4B.
-- Web shell default homepage consumes Stage 4 analysis read-model, keeps the V0.2 8 first-level entries, and shows investment/consumption analysis under 投资管理 and 消费管理.
+- Stage 5 advice/report/export model is implemented in `src/pfi_v02/stage5_advice_report_alpha.py`.
+- Stage 5 record is `docs/pfi_v02/STAGE5_ADVICE_REPORT_ALPHA_EXPORT.md`.
+- Stage 5 local advice/report/Alpha-read-only export acceptance is complete for phases 5A-5C.
+- Web shell default homepage consumes Stage 5 top recommendations, keeps the V0.2 8 first-level entries, and shows recommendation lifecycle under 建议与复盘 plus reports/context export under 报告与洞察.
 
 ## Decisions
 
@@ -48,11 +51,14 @@ PFI V0.2 Stage 4 investment and consumption analysis MVP closeout and Stage 5 re
 - Stage 4 attribution values are deterministic local estimates. If evidence is insufficient, PFI must show `estimate/需要复核` rather than precise conclusions.
 - Stage 4 consumption analysis excludes transfers and investment records from living consumption.
 - Stage 4 cashflow forecast separates life cash from investment cash.
+- Stage 5 recommendations are review queue items. They are not orders, payment actions, or automatic real-money decisions.
+- Stage 5 Alpha export is only `pfi_context_snapshot_v1`; it does not add Alpha/Ralpha/System first-level entries and does not modify the Alpha repository.
+- Stage 5 context constraints keep `trading_password_available=false` and `live_trade_submission_authorized=false`.
 
 ## Validation Commands
 
 ```bash
-PYTHONPATH=src python3 -B -m unittest tests.test_stage1_ia_contract tests.test_stage1_core_models tests.test_stage1_classification_rules tests.test_stage2_data_source_registry tests.test_stage2_cba_csv_import tests.test_stage2_alipay_import tests.test_stage2_non_csv_contracts tests.test_stage3_readable_mvp tests.test_stage4_analysis_mvp -q
+PYTHONPATH=src python3 -B -m unittest tests.test_stage1_ia_contract tests.test_stage1_core_models tests.test_stage1_classification_rules tests.test_stage2_data_source_registry tests.test_stage2_cba_csv_import tests.test_stage2_alipay_import tests.test_stage2_non_csv_contracts tests.test_stage3_readable_mvp tests.test_stage4_analysis_mvp tests.test_stage5_advice_report_alpha -q
 cd modules/qbvs_lab && PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pfi_os.examples.macos_app_acceptance_lite --project-root . --summary-json
 node --check web/app/shell.js
@@ -63,8 +69,9 @@ Latest Stage 2 target result: `Ran 22 tests / OK`.
 Latest closeout result: Stage 1+2 contracts `Ran 45 tests / OK`; legacy QBVS smoke `Ran 1 test / OK`; project governance validation `errors 0 / warnings 0`; human-entry Markdown contract `Ran 2 tests / OK`; PFI.app resolves to `CodexProject/PFI`; port 8501 is served by canonical PFI `.venv`; no PFI LaunchAgent found.
 Latest Stage 3 closeout result: Stage 1+2+3 contracts `Ran 59 tests / OK`; legacy QBVS lifecycle smoke `Ran 1 test / OK`; project governance validation `errors 0 / warnings 0`; human-entry Markdown contract `Ran 2 tests / OK`; Python compile `OK`; Web shell syntax `OK`.
 Latest Stage 4 closeout result: Stage 1+2+3+4 contracts `Ran 71 tests / OK`; legacy QBVS lifecycle smoke `Ran 1 test / OK`; project governance validation `errors 0 / warnings 0`; human-entry Markdown contract `Ran 2 tests / OK`; Stage 4 contract `Ran 12 tests / OK`; Python compile `OK`; Web shell syntax `OK`; `git diff --check -- PFI` `OK`.
+Latest Stage 5 closeout result: Stage 1+2+3+4+5 contracts `Ran 85 tests / OK`; legacy QBVS lifecycle smoke `Ran 1 test / OK`; project governance validation `errors 0 / warnings 0`; human-entry Markdown contract `Ran 2 tests / OK`; Stage 5 contract `Ran 14 tests / OK`; Python compile `OK`; Web shell syntax `OK`; `git diff --check -- PFI` `OK`; macOS app acceptance lite `29 pass / 0 fail / 2 info`; browser validation screenshot `/tmp/pfi-stage5-browser-verified.png`.
 
 ## Next
 
-1. Stage 5 can build recommendation lifecycle, reports, and Alpha read-only context export on top of Stage 4 analysis contracts.
+1. Stage 6 can build the next roadmap gate on top of Stage 5 advice/report/context export contracts.
 2. Real account credentials, production sync, payment submission, broker order submission, and live trading remain separate gates.
