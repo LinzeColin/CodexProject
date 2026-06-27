@@ -23,6 +23,7 @@ RESTORE_PATH_SAFETY_PAGE = USER_CENTER / "恢复路径安全扫描.md"
 RESTORE_ATOMIC_REPLACEMENT_PAGE = USER_CENTER / "恢复原子替换扫描.md"
 OUTBOX_DELIVERY_PAGE = USER_CENTER / "事务发件箱与消息ID扫描.md"
 FRONTSTAGE_EVIDENCE_PAGE = USER_CENTER / "前台陈述证据绑定扫描.md"
+TRUST_BOUNDARY_PAGE = USER_CENTER / "来源信任边界扫描.md"
 LEGACY_MAIL_SCAN_PAGE = USER_CENTER / "旧邮件标识兼容扫描.md"
 TRACEABILITY_MATRIX = ROOT / "docs" / "governance" / "TRACEABILITY_MATRIX.csv"
 MODEL_PARAMS_PAGE = ROOT / "模型参数文件.md"
@@ -235,6 +236,32 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertNotIn("/Users/", page)
         self.assertNotIn("file://", page)
         self.assertIn("[前台陈述证据绑定扫描](./前台陈述证据绑定扫描.md)", readme)
+
+    def test_trust_boundary_page_exposes_a005_current_evidence(self):
+        page = TRUST_BOUNDARY_PAGE.read_text(encoding="utf-8")
+        readme = (USER_CENTER / "README.md").read_text(encoding="utf-8")
+
+        self.assertTrue(page.startswith("# 来源信任边界扫描\n"))
+        self.assertRegex(page, r"更新时间：\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} Australia/Sydney")
+        self.assertIn("P0 `A-005`", page)
+        self.assertIn("来源内容标签 | `UNTRUSTED_DATA`", page)
+        self.assertIn("unsafe URL scheme | fail-closed", page)
+        self.assertIn("unapproved host | fail-closed", page)
+        self.assertIn("来源内容请求工具 | fail-closed", page)
+        self.assertIn("密钥读取 | fail-closed", page)
+        self.assertIn("仓库写入 | fail-closed", page)
+        self.assertIn("邮件发送 | fail-closed", page)
+        self.assertIn("真实 SMTP 发送 | `false`", page)
+        self.assertIn("P0 关闭声明 | `false`", page)
+        self.assertIn(
+            "[A-005 运行清单](../../governance/run_manifests/ADP-S2PMT01-TRUST-BOUNDARY-A005-20260627.json)",
+            page,
+        )
+        self.assertIn("[A-005 阶段记录](../docs/phase_records/PHASE_S2PMT01_TRUST_BOUNDARY_A005.md)", page)
+        self.assertIn("[聚焦测试](../tests/test_security_boundary.py)", page)
+        self.assertNotIn("/Users/", page)
+        self.assertNotIn("file://", page)
+        self.assertIn("[来源信任边界扫描](./来源信任边界扫描.md)", readme)
 
     def test_user_center_pages_keep_chinese_facing_labels(self):
         forbidden = (
