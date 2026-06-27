@@ -1,3 +1,4 @@
 requirement_id,model_id,assumption_id,formula_id,parameter_id,task_id,acceptance_id,code_ref,config_ref,test_ref,evidence_ref,status
 REQ-PFI-ROOT-001,MOD-PFI-001,ASM-PFI-001,FORM-PFI-001,PARAM-PFI-001,PFI-MD-001,ACC-PFI-MD-001,PFI/src/pfi_v02/stage1_ia.py,NOT_APPLICABLE,PFI/tests/test_stage1_ia_contract.py,PFI/docs/pfi_v02/STAGE1_CORE_SKELETON.md,active
 REQ-PFI-ROOT-002,MOD-PFI-001,ASM-PFI-002,FORM-PFI-001,PARAM-PFI-003,PFI-MD-001,ACC-PFI-MD-001,PFI/README.md,NOT_APPLICABLE,PFI/tests/test_stage2_non_csv_contracts.py,PFI/README.md,active
+REQ-PFI-S2-001,MOD-PFI-001,ASM-PFI-002,FORM-PFI-001,PARAM-PFI-003,S2PZT01,ACC-PFI-S2-CLOSEOUT,PFI/src/pfi_v02/stage2_registry.py,NOT_APPLICABLE,PFI/tests/test_stage2_data_source_registry.py,PFI/docs/pfi_v02/STAGE2_ACCEPTANCE_AUDIT.md,active

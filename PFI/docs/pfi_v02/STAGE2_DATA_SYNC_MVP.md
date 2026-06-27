@@ -2,6 +2,9 @@
 
 Updated: 2026-06-27 Australia/Sydney
 
+Closeout status: local contract acceptance complete. See
+`docs/pfi_v02/STAGE2_ACCEPTANCE_AUDIT.md`.
+
 ## Goal
 
 Reduce manual entry by establishing a shared, testable data-source registry,
@@ -138,6 +141,8 @@ Observed closeout result:
 ```text
 Stage 1+2 contracts: Ran 45 tests / OK
 Legacy QBVS lifecycle smoke: Ran 1 test / OK
+Project governance validation: errors 0 / warnings 0
+Human-entry Markdown contract: Ran 2 tests / OK
 Scoped exclusion grep: no output
 git diff --check: no output
 Local cache scan: no .pyc, __pycache__, .pytest_cache, .mypy_cache or .DS_Store found under PFI
