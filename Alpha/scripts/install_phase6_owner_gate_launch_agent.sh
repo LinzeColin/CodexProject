@@ -10,6 +10,7 @@ LABEL="${ALPHA_PHASE6_OWNER_GATE_LABEL:-com.linze.alpha.phase6-owner-gate-sample
 AGENT_DIR="${ALPHA_LAUNCH_AGENT_DIR:-$HOME/Library/LaunchAgents}"
 PLIST_PATH="$AGENT_DIR/${LABEL}.plist"
 INTERVAL_SECONDS="${ALPHA_PHASE6_OWNER_GATE_INTERVAL_SECONDS:-300}"
+EVIDENCE_ROOT="${ALPHA_PHASE6_OWNER_GATE_EVIDENCE_ROOT:-$ROOT/runtime/phase6_owner_gate_latest}"
 LOG_DIR="${ALPHA_LAUNCH_AGENT_LOG_DIR:-$HOME/Library/Logs/Alpha}"
 STDOUT_LOG="$LOG_DIR/phase6_owner_gate_sampler.out.log"
 STDERR_LOG="$LOG_DIR/phase6_owner_gate_sampler.err.log"
@@ -22,7 +23,7 @@ if [[ ! -x "$APP_PY" ]]; then
   "$APP_PY" -m pip install -e "$ROOT"
 fi
 
-"$APP_PY" - "$PLIST_PATH" "$LABEL" "$ROOT" "$INTERVAL_SECONDS" "$STDOUT_LOG" "$STDERR_LOG" <<'PY'
+"$APP_PY" - "$PLIST_PATH" "$LABEL" "$ROOT" "$INTERVAL_SECONDS" "$STDOUT_LOG" "$STDERR_LOG" "$EVIDENCE_ROOT" <<'PY'
 from __future__ import annotations
 
 import os
@@ -31,12 +32,16 @@ import shlex
 import sys
 from pathlib import Path
 
-plist_path, label, root, interval_seconds, stdout_log, stderr_log = sys.argv[1:]
+plist_path, label, root, interval_seconds, stdout_log, stderr_log, evidence_root = sys.argv[1:]
 home = str(Path.home())
 path_env = os.environ.get("PATH", "/usr/bin:/bin:/usr/sbin:/sbin")
 python_bin = str(Path(root) / ".venv" / "bin" / "python")
 script = str(Path(root) / "scripts" / "build_phase6_owner_gate_evidence.py")
-command = f"cd {shlex.quote(root)} && exec {shlex.quote(python_bin)} {shlex.quote(script)} --sample-count 1"
+command = (
+    f"cd {shlex.quote(root)} && "
+    f"exec {shlex.quote(python_bin)} {shlex.quote(script)} "
+    f"--sample-count 1 --evidence-root {shlex.quote(evidence_root)}"
+)
 payload = {
     "Label": label,
     "ProgramArguments": ["/bin/zsh", "-lc", command],

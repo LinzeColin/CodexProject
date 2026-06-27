@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -105,3 +107,55 @@ def test_soak_history_appends_jsonl_samples(tmp_path):
     assert sample["fail_count"] == 0
     assert len(samples) == 1
     assert samples[0]["paper_shadow_report"]["status"] == "pass"
+
+
+def test_owner_gate_status_cli_reports_ready_from_runtime_evidence(tmp_path, monkeypatch, capsys):
+    from scripts import check_phase6_owner_gate_status
+
+    run = _paper_run(tmp_path)
+    evidence_root = tmp_path / "phase6_owner_gate_latest"
+    history_path = tmp_path / "soak.jsonl"
+    paper_shadow = build_paper_shadow_report(
+        run_result=run,
+        output_path=evidence_root / "paper_shadow_report_latest.json",
+    )
+    constraints = build_shadow_live_constraints_report(
+        live_authorization_path=tmp_path / "LIVE_AUTHORIZATION.json",
+        output_path=evidence_root / "shadow_live_constraints_latest.json",
+    )
+    start = datetime.now(timezone.utc).replace(microsecond=0)
+    samples = [
+        {
+            "generated_at": start.isoformat(),
+            "fail_count": 0,
+            "paper_shadow_report": paper_shadow,
+            "shadow_live_constraints": constraints,
+        },
+        {
+            "generated_at": (start + timedelta(hours=48)).isoformat(),
+            "fail_count": 0,
+            "paper_shadow_report": paper_shadow,
+            "shadow_live_constraints": constraints,
+        },
+    ]
+    history_path.write_text("\n".join(json.dumps(sample) for sample in samples) + "\n", encoding="utf-8")
+    monkeypatch.setattr(check_phase6_owner_gate_status, "ROOT", tmp_path)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "check_phase6_owner_gate_status.py",
+            "--evidence-root",
+            str(evidence_root),
+            "--history-path",
+            str(history_path),
+            "--duration-hours",
+            "48",
+            "--require-ready",
+        ],
+    )
+
+    assert check_phase6_owner_gate_status.main() == 0
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["status"] == "ready_for_owner_gate"
+    assert payload["live_authorization_absent"] is True

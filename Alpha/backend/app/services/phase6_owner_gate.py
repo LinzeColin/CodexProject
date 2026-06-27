@@ -10,6 +10,7 @@ from backend.app.services.approval_queue import annotate_ticket_freshness
 
 ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_EVIDENCE_ROOT = ROOT / "docs" / "evidence" / "phase6_closeout_latest"
+DEFAULT_RUNTIME_EVIDENCE_ROOT = ROOT / "runtime" / "phase6_owner_gate_latest"
 DEFAULT_SOAK_HISTORY_PATH = ROOT / "runtime" / "phase6_soak_history.jsonl"
 
 
