@@ -9,7 +9,10 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-import yaml
+try:
+    import yaml
+except ModuleNotFoundError:  # pragma: no cover - exercised on minimal operator hosts
+    yaml = None
 
 ROOT = Path(__file__).resolve().parents[1]
 POLICY_PATH = Path("config/brand_policy.yaml")
@@ -60,8 +63,56 @@ def require(condition: bool, message: str) -> None:
         raise AssertionError(message)
 
 
+def parse_brand_policy_fallback(text: str) -> dict[str, Any]:
+    """Parse the small checked-in brand policy when PyYAML is unavailable."""
+    payload: dict[str, Any] = {}
+    current_key: str | None = None
+    nested_key: str | None = None
+    for raw_line in text.splitlines():
+        if not raw_line.strip() or raw_line.lstrip().startswith("#"):
+            continue
+        indent = len(raw_line) - len(raw_line.lstrip(" "))
+        line = raw_line.strip()
+        if indent == 0:
+            nested_key = None
+            if line.endswith(":"):
+                current_key = line[:-1]
+                payload[current_key] = []
+                continue
+            key, separator, value = line.partition(":")
+            require(bool(separator), f"unsupported brand policy line: {raw_line}")
+            current_key = key
+            payload[key] = value.strip()
+        elif indent == 2 and line.startswith("- "):
+            require(current_key is not None, f"orphan list item: {raw_line}")
+            require(isinstance(payload.get(current_key), list), f"{current_key} must be a list")
+            payload[current_key].append(line[2:].strip())
+        elif indent == 2:
+            require(current_key is not None, f"orphan nested key: {raw_line}")
+            if not isinstance(payload.get(current_key), dict):
+                payload[current_key] = {}
+            key, separator, value = line.partition(":")
+            require(bool(separator), f"unsupported nested brand policy line: {raw_line}")
+            nested_key = key
+            payload[current_key][key] = [] if not value.strip() else value.strip()
+        elif indent == 4 and line.startswith("- "):
+            require(
+                current_key is not None and nested_key is not None,
+                f"orphan nested list item: {raw_line}",
+            )
+            section = payload[current_key]
+            require(isinstance(section, dict), f"{current_key} must be a mapping")
+            values = section.get(nested_key)
+            require(isinstance(values, list), f"{current_key}.{nested_key} must be a list")
+            values.append(line[2:].strip())
+        else:
+            raise AssertionError(f"unsupported brand policy YAML structure: {raw_line}")
+    return payload
+
+
 def read_policy() -> dict[str, Any]:
-    payload = yaml.safe_load((ROOT / POLICY_PATH).read_text(encoding="utf-8"))
+    text = (ROOT / POLICY_PATH).read_text(encoding="utf-8")
+    payload = yaml.safe_load(text) if yaml else parse_brand_policy_fallback(text)
     require(isinstance(payload, dict), "brand policy must be a mapping")
     return payload
 

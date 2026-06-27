@@ -19,6 +19,7 @@ const MAX_DOM_GROWTH_NODES = 12;
 const MAX_TIMER_LEAKS = 0;
 const MAX_LISTENER_LEAKS = 0;
 const MAX_EVENT_LOOP_LAG_MS = 250;
+const MAX_BROWSER_SLICE_RECOVERIES = 2;
 const WORKER_BINDING_ARTIFACT = path.join(
   ROOT,
   "artifacts/tests/a206/t1304_worker_deployment_binding_contract.json"
@@ -311,7 +312,7 @@ function mergeBrowserSlices(slices, sliceSeconds) {
   };
 }
 
-async function runBrowserSoak(durationSeconds, browserSliceSeconds) {
+async function launchBrowserPage() {
   const browser = await getChromium().launch({
     headless: true,
     args: ["--disable-dev-shm-usage", "--disable-gpu", "--enable-precise-memory-info", "--no-sandbox"]
@@ -319,19 +320,43 @@ async function runBrowserSoak(durationSeconds, browserSliceSeconds) {
   try {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
     await page.setContent("<!doctype html><meta charset='utf-8'><div id='soak-root'></div>");
-    const slices = [];
-    let measuredMs = 0;
-    const durationMs = durationSeconds * 1000;
-    const browserSliceMs = Math.min(browserSliceSeconds * 1000, durationMs);
-    while (measuredMs < durationMs) {
-      const sliceMs = Math.min(browserSliceMs, durationMs - measuredMs);
-      slices.push(await runBrowserSoakSlice(page, sliceMs));
-      measuredMs += sliceMs;
-    }
-    return mergeBrowserSlices(slices, browserSliceSeconds);
-  } finally {
+    return { browser, page };
+  } catch (error) {
     await browser.close().catch(() => undefined);
+    throw error;
   }
+}
+
+async function runBrowserSoak(durationSeconds, browserSliceSeconds) {
+  const slices = [];
+  let recoveriesObserved = 0;
+  let measuredMs = 0;
+  const durationMs = durationSeconds * 1000;
+  const browserSliceMs = Math.min(browserSliceSeconds * 1000, durationMs);
+  while (measuredMs < durationMs) {
+    const sliceMs = Math.min(browserSliceMs, durationMs - measuredMs);
+    let sliceComplete = false;
+    while (!sliceComplete) {
+      let context = null;
+      try {
+        context = await launchBrowserPage();
+        slices.push(await runBrowserSoakSlice(context.page, sliceMs));
+        sliceComplete = true;
+      } catch (error) {
+        recoveriesObserved += 1;
+        if (recoveriesObserved > MAX_BROWSER_SLICE_RECOVERIES) {
+          throw error;
+        }
+      } finally {
+        await context?.browser.close().catch(() => undefined);
+      }
+    }
+    measuredMs += sliceMs;
+  }
+  return {
+    ...mergeBrowserSlices(slices, browserSliceSeconds),
+    recoveries_observed: recoveriesObserved
+  };
 }
 
 function describeError(error) {
@@ -359,6 +384,7 @@ function failedBrowserResult(error, browserSliceSeconds) {
     max_long_task_ms: 0,
     slices_completed: 0,
     slice_seconds: browserSliceSeconds,
+    recoveries_observed: MAX_BROWSER_SLICE_RECOVERIES,
     measurement_error: describeError(error)
   };
 }
@@ -449,7 +475,8 @@ function evaluate(browserResult, workerResult) {
       max_dom_growth_nodes: MAX_DOM_GROWTH_NODES,
       max_timer_leaks: MAX_TIMER_LEAKS,
       max_listener_leaks: MAX_LISTENER_LEAKS,
-      max_event_loop_lag_ms: MAX_EVENT_LOOP_LAG_MS
+      max_event_loop_lag_ms: MAX_EVENT_LOOP_LAG_MS,
+      max_browser_slice_recoveries: MAX_BROWSER_SLICE_RECOVERIES
     },
     browser_frame_delta_ms: frame
   };
@@ -556,6 +583,7 @@ async function main() {
       max_long_task_ms: Number(browserResult.max_long_task_ms.toFixed(4)),
       slices_completed: browserResult.slices_completed,
       slice_seconds: browserResult.slice_seconds,
+      recoveries_observed: browserResult.recoveries_observed || 0,
       measurement_error: browserResult.measurement_error
     },
     worker: workerResult,
