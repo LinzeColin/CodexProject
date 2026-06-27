@@ -17,7 +17,7 @@ machine_summary:
 
 - model_count: 12
 - formula_count: 12
-- parameter_count: 88
+- parameter_count: 90
 
 The counts above are generated from the canonical machine registries in this directory. Legacy Markdown files are indexes and must not be edited as independent count sources.
 
@@ -47,6 +47,7 @@ The counts above are generated from the canonical machine registries in this dir
 - 2026-06-25 T1301/A202 signed-intake source-boundary hardening adds `PARAM-088` for disallowed repository fixture/source prefixes; signed intake closure now rejects repository fixtures, templates, docs, config, data and test sources unless the file is outside the repository or under an approved operator-input directory. No scoring model, graph traversal formula, extraction formula, formula weight, business threshold or publication policy changed.
 - 2026-06-25 T1302/A203 API implementation contract closure marks A203 implementation coverage DONE and refreshes A209 heartbeat to `35/288`; no scoring model, graph traversal formula, extraction formula, formula weight, business threshold, API schema, database schema, frontend behavior or publication policy changed.
 - 2026-06-25 T1302/A203 E2E CI repair updates development-status evidence expectations and generated release artifacts only; no scoring model, graph traversal formula, extraction formula, formula weight, business threshold, API schema, database schema, frontend behavior or publication policy changed.
+- 2026-06-27 T1309/A210 signed brand-clearance source-boundary and T1307/A209 Playwright runtime repair add `PARAM-089` and `PARAM-090`; repository brand-clearance fixtures/templates still cannot close A210, short runtime smoke evidence does not close A209, and no scoring model, graph traversal formula, extraction formula, formula weight, business threshold, API schema, database schema, frontend behavior or publication policy changed.
 
 ## A. Model Overview
 
@@ -251,7 +252,7 @@ The counts above are generated from the canonical machine registries in this dir
 ### `MOD-012` - 运行、视觉与校准阈值控制
 
 - Kind: `deterministic_configuration_rule`
-- Purpose: Provide non-scoring operational thresholds for refresh, visual coverage, motion timing, calibration controls, soak runner execution windows, fail-closed A202 review-packet gates, A202 release-decision intake, signed-intake preflight and signed-intake source-boundary gates, A202/A210 release-decision bundle schema validation/publication binding, A026/A027 gold-quality/intake gates, A209 background heartbeat controls, A210 brand-clearance intake gates and T1303 external release operator intake packet gates.
+- Purpose: Provide non-scoring operational thresholds for refresh, visual coverage, motion timing, calibration controls, soak runner execution windows and browser runtime fallback, fail-closed A202 review-packet gates, A202 release-decision intake, signed-intake preflight and signed-intake source-boundary gates, A202/A210 release-decision bundle schema validation/publication binding, A026/A027 gold-quality/intake gates, A209 background heartbeat controls, A210 brand-clearance intake/source-boundary gates and T1303 external release operator intake packet gates.
 - Owner: model owner
 - Status: `active`
 - Model version: `operational-controls-v1`
@@ -261,9 +262,9 @@ The counts above are generated from the canonical machine registries in this dir
 - Use cases: research prioritization, explainable visual focus, governance validation, and bounded exploration support.
 - Non-use cases: investment return prediction, live trading signal generation, hidden-truth inference, or production factual claims without evidence.
 - Formula IDs: FORM-012
-- Parameter IDs: PARAM-042, PARAM-043, PARAM-044, PARAM-045, PARAM-046, PARAM-047, PARAM-048, PARAM-049, PARAM-050, PARAM-051, PARAM-052, PARAM-053, PARAM-054, PARAM-055, PARAM-056, PARAM-057, PARAM-058, PARAM-059, PARAM-060, PARAM-061, PARAM-062, PARAM-063, PARAM-064, PARAM-065, PARAM-066, PARAM-067, PARAM-068, PARAM-069, PARAM-070, PARAM-071, PARAM-072, PARAM-073, PARAM-074, PARAM-075, PARAM-076, PARAM-077, PARAM-078, PARAM-079, PARAM-080, PARAM-081, PARAM-082, PARAM-083, PARAM-084, PARAM-085, PARAM-086, PARAM-087, PARAM-088
+- Parameter IDs: PARAM-042, PARAM-043, PARAM-044, PARAM-045, PARAM-046, PARAM-047, PARAM-048, PARAM-049, PARAM-050, PARAM-051, PARAM-052, PARAM-053, PARAM-054, PARAM-055, PARAM-056, PARAM-057, PARAM-058, PARAM-059, PARAM-060, PARAM-061, PARAM-062, PARAM-063, PARAM-064, PARAM-065, PARAM-066, PARAM-067, PARAM-068, PARAM-069, PARAM-070, PARAM-071, PARAM-072, PARAM-073, PARAM-074, PARAM-075, PARAM-076, PARAM-077, PARAM-078, PARAM-079, PARAM-080, PARAM-081, PARAM-082, PARAM-083, PARAM-084, PARAM-085, PARAM-086, PARAM-087, PARAM-088, PARAM-089, PARAM-090
 - Test references: EEI/scripts/validate_model_config.py:49-71, EEI/scripts/validate_governance.py:108-121, EEI/scripts/run_operator_soak.mjs, EEI/scripts/validate_v5_production_readiness_sync.py, EEI/scripts/validate_a202_operator_review_packet.py, EEI/scripts/validate_release_decision_bundle.py, EEI/scripts/validate_gold_quality_evaluation.py, EEI/scripts/record_operator_soak_heartbeat.py, EEI/scripts/validate_brand_clearance.py, EEI/scripts/validate_external_release_evidence_bundle.py, EEI/tests/unit/test_official_source_live_capture.py, EEI/tests/unit/test_release_decision_bundle.py, EEI/tests/unit/test_gold_quality_evaluation.py, EEI/tests/unit/test_operator_soak_evidence.py, EEI/tests/unit/test_brand_clearance.py, EEI/tests/unit/test_external_release_evidence_bundle.py
-- Evidence references: EEI/data/parameter_catalog.csv:43-84, EEI/config/thresholds/default-v2.json:1, EEI/config/model_runtime_defaults.yaml:1, EEI/artifacts/tests/a209/t1307_operator_soak_readiness.json, EEI/artifacts/tests/a209/t1307_operator_soak_background_progress.json, EEI/artifacts/tests/a202/t1301_operator_review_packet_contract.json, EEI/artifacts/tests/a202/t1301_a202_release_decision_intake_template.json, EEI/artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json, EEI/artifacts/tests/a026/t904_a026_a027_production_gold_label_intake_template.json, EEI/artifacts/tests/a026/t904_entity_resolution_gold_evaluation_contract.json, EEI/artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json, EEI/artifacts/tests/a210/t1309_brand_clearance_intake_template.json, EEI/artifacts/tests/a205/t1303_external_release_operator_intake_packet.json
+- Evidence references: EEI/data/parameter_catalog.csv:43-84, EEI/docs/governance/parameter_registry.csv:PARAM-089, EEI/docs/governance/parameter_registry.csv:PARAM-090, EEI/config/thresholds/default-v2.json:1, EEI/config/model_runtime_defaults.yaml:1, EEI/artifacts/tests/a209/t1307_operator_soak_readiness.json, EEI/artifacts/tests/a209/t1307_operator_soak_background_progress.json, EEI/artifacts/tests/a202/t1301_operator_review_packet_contract.json, EEI/artifacts/tests/a202/t1301_a202_release_decision_intake_template.json, EEI/artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json, EEI/artifacts/tests/a026/t904_a026_a027_production_gold_label_intake_template.json, EEI/artifacts/tests/a026/t904_entity_resolution_gold_evaluation_contract.json, EEI/artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json, EEI/artifacts/tests/a210/t1309_brand_clearance_intake_template.json, EEI/artifacts/tests/a205/t1303_external_release_operator_intake_packet.json
 - Failure modes: missing runtime motion config; threshold out of schema range; auto activation enabled
 
 ## B. Assumptions

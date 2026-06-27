@@ -6,7 +6,7 @@ EEI 当前治理结论：实现一致性为 `VERIFIED`，方法/实证为 `UNVER
 
 ## 2. 本次运行改变了什么
 
-Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。
+Owner 视图现在记录 A210 signed brand-clearance bundle source-boundary 和 A209 Playwright runtime fallback 参数；这只是 fail-closed 治理同步，不是 legal clearance、A209 closure 或 MVP ready 声明。
 
 ## 3. 为什么重要
 
@@ -39,7 +39,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (88/88 active parameters, 11/11 active formulas)
+- implementation_congruence: `VERIFIED` (90/90 active parameters, 11/11 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `UNVERIFIED`
 - empirical_validation: `PARTIAL`
@@ -71,14 +71,14 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - model_count: `12`
 - total_formulas: `12`
 - active_formulas: `11`
-- total_parameters: `88`
-- active_parameters: `88`
+- total_parameters: `90`
+- active_parameters: `90`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `TASK-T1307-A209-ISOLATED-24H-RERUN-STARTED`
+- release_gate: `TASK-T1307-A209-RUNTIME-REPAIR-A210-SOURCE-BOUNDARY-SYNC`
 
 ## 14. Evidence Freshness
 
@@ -98,10 +98,10 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - source_base_commit: `12df22b6347fd881d42545afe387ac9e41e56fb4`
 - source_tree_hash: `00e27599461403192b998e8f9a3f7f0e769e5d8f`
 - source_snapshot_hash: `sha256:c1ac83658310a4704bb9924c2ce78f5e63627d4593bcbc3ee40d5d9ca2bb0b3e`
-- snapshot_event_time: `2026-06-26T09:18:00+10:00`
+- snapshot_event_time: `2026-06-27T12:30:10+10:00`
 - generator_version: `4.0.0`
 - version: `0.1.0`
-- phase/gate: `D / TASK-T1307-A209-ISOLATED-24H-RERUN-STARTED`
+- phase/gate: `D / TASK-T1307-A209-RUNTIME-REPAIR-A210-SOURCE-BOUNDARY-SYNC`
 
 ## 17. Next Unique Task
 
