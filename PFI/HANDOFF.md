@@ -4,7 +4,7 @@ Last updated: 2026-06-27 Australia/Sydney
 
 ## Current Goal
 
-PFI V0.2 Stage 1-5 delivery acceptance audit: prove phase/task acceptance criteria, stop conditions, validation commands, V0.1/V0.2 entry compatibility, QBVS independence, MetaDatabase registration, and read-only safety boundaries.
+PFI v0.2.1 前端优化 Stage 0 准备：读取 roadmap，锁定 HTML Web Shell 为正式 UI 目标，建立 CNY 基准、CNY/AUD 06:00 顶栏汇率、统一导航、多模态反馈设置页归属和后续 P0-P8 stage/task 验收合同。
 
 ## Current Status
 
@@ -41,6 +41,10 @@ PFI V0.2 Stage 1-5 delivery acceptance audit: prove phase/task acceptance criter
 - Stage 6 local synthetic E2E, regression governance, delivery rollback, 20 gate audit, and ACC-* taskpack audit acceptance is complete for phases 6A-6C.
 - Stage 0 preparation audit is `docs/pfi_v02/STAGE0_PREPARATION_AUDIT_20260627.md`.
 - Stage 1-5 acceptance audit is `docs/pfi_v02/STAGE1_5_ACCEPTANCE_AUDIT_20260627.md`.
+- v0.2.1 前端优化准备记录是 `docs/pfi_v02/STAGE_V021_FRONTEND_OPTIMIZATION.md`。
+- v0.2.1 Stage 0 合同是 `src/pfi_v02/stage_v021_frontend_contract.py`，测试是 `tests/test_v021_stage0_frontend_contract.py`。
+- v0.2.1 UI 货币基准已锁定为 CNY；所有页面顶部右上角必须显示 `CNY/AUD=4.70（YYYYMMDD--HH:MM）`，读取当日 06:00 Australia/Sydney 汇率快照。
+- v0.2.1 正式前端目标是 `PFI/web` HTML Web Shell；多模态反馈、触感、声音、视觉、通知和运行反馈控制台后续必须收敛到设置页。
 - Web shell default homepage consumes Stage 6 closeout status, keeps the V0.2 8 first-level entries, shows recommendation lifecycle under 建议与复盘, and shows reports/context export plus Stage 6 closeout under 报告与洞察.
 - 2026-06-27验收退回纠偏：默认 8501 顶部已新增 PFI 本机数据上传；真实支付宝导出 CSV parser 已支持说明区/中间表头/GB18030/尾随空列；旧支付宝原始账单 4 份已导入 `~/.pfi/runtime/imports/alipay_daily`，覆盖 `2022-06-06` 至 `2026-06-03`，`8815` 条标准化流水，`406` 条待复核；Web Shell 动态英文状态已中文化，8 个一级入口浏览器点击验证通过。
 - 2026-06-27二次纠偏：QBVS 已从 `PFI/` 内部分离为顶层 `QBVS/`；PFI 合同改为 `qbvs_independent_system=true`；Web Shell 补回 V0.1 六入口；`MetaDatabase/` 保存支付宝原始 CSV、manifest 和标准化流水，供 GitHub 验收。
@@ -91,3 +95,4 @@ Latest验收退回纠偏 result: `tests.test_stage2_alipay_import` `Ran 7 tests 
 1. Merge `codex/pfi-stage6-meta-qbvs-sync` into `main` if the user wants GitHub default branch to show Stage 0/1-5/6 delivery directly.
 2. Run final changed-scope governance after merge candidate is prepared, because this branch also contains unrelated existing local dirty files outside PFI/QBVS/MetaDatabase that must not be staged.
 3. Next implementation work must be a separate post-V0.2 gate for real account credentials, production sync, PDF/ZIP package, external context consumer, CDR/Open Banking, payment submission, broker order submission, or live trading evidence.
+4. Next v0.2.1 pursuing goal should start with P1/S1 navigation merge unless the user explicitly changes order.

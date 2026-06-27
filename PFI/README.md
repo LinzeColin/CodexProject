@@ -7,6 +7,25 @@ PFI V0.2 is the Personal Financial Intelligence project under
 under `LinzeColin/CodexProject/QBVS`; PFI investment management does not own
 or cover QBVS.
 
+## v0.2.1 前端优化 Stage 0
+
+`v0.2.1 前端优化` 已进入 Stage 0 准备轮。本轮只锁定前端优化范围、CNY 基准、HTML Web Shell 目标、统一导航、设置页反馈归属和后续 stage 验收合同，不提前实现 Stage 1+。
+
+Stage 0 source files:
+
+| Purpose | Path |
+| --- | --- |
+| v0.2.1 record | `docs/pfi_v02/STAGE_V021_FRONTEND_OPTIMIZATION.md` |
+| Frontend contract | `src/pfi_v02/stage_v021_frontend_contract.py` |
+| Stage 0 test | `tests/test_v021_stage0_frontend_contract.py` |
+
+Currency and header contract:
+
+- Base currency is `CNY`.
+- Every page must keep a top-right exchange badge in this format: `CNY/AUD=4.70（YYYYMMDD--HH:MM）`.
+- The badge reads the current local day's `06:00 Australia/Sydney` exchange snapshot.
+- Missing exchange data must show `汇率数据待更新`; PFI must not invent a live rate.
+
 ## Stage 1
 
 Stage 1 builds the common skeleton for accounts, assets, data sources, ledger,
