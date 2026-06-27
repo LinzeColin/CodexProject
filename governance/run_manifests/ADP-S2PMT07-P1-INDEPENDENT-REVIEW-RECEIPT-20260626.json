@@ -28,7 +28,9 @@
     "arxiv-daily-push/docs/phase_records/PHASE_S2PIT05_FOUR_CHECK_FRESHNESS_C003.md",
     "governance/run_manifests/ADP-S2PIT05-FOUR-CHECK-FRESHNESS-C003-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-B003-B011-TECHNICAL-REVIEW-20260627.json",
-    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_B003_B011_TECHNICAL_REVIEW.md"
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_B003_B011_TECHNICAL_REVIEW.md",
+    "governance/run_manifests/ADP-S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW-20260627.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_C001_C003_C005_C006_C007_C010_C011_C012_TECHNICAL_REVIEW.md"
   ],
   "final_acceptance_bundle_present": false,
   "forbidden_side_effects": {
@@ -615,16 +617,20 @@
       "evidence_refs": [
         "arxiv-daily-push/docs/phase_records/PHASE_S2PIT01_SHALLOW_USER_CENTER_C001.md",
         "governance/run_manifests/ADP-S2PIT01-SHALLOW-USER-CENTER-C001-20260627.json",
-        "arxiv-daily-push/tests/test_stage2_sources.py"
+        "arxiv-daily-push/tests/test_stage2_sources.py",
+        "governance/run_manifests/ADP-S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW-20260627.json"
       ],
       "finding_id": "C-001",
       "fix_task": "S2PIT01-SHALLOW-USER-CENTER-C001",
-      "preliminary_review_state": "refreshed_current_evidence_located_sufficiency_gap_review_required_closure_not_claimed",
+      "preliminary_review_state": "finding_level_technical_review_passed_no_p1_closure_no_production",
       "receipt_refreshed_at": "2026-06-27T04:55:54+10:00",
-      "reviewer_decision_required": "Verify V7.1 fix/test requirement: 从项目根两次点击内完成所有常用操作",
+      "reviewer_decision_required": "Carry into later P1 closure package; verify independent final signoff before reducing counters",
       "severity": "P1",
       "title": "当前仓库未落地唯一中文 00_用户中心首屏",
-      "track": "C_UI交互架构"
+      "track": "C_UI交互架构",
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "technical_closure_candidate": true,
+      "finding_level_technical_review_receipt": "governance/run_manifests/ADP-S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW-20260627.json"
     },
     {
       "evidence_refs": [
@@ -634,8 +640,8 @@
       ],
       "finding_id": "C-002",
       "fix_task": "S2PIT02-OWNER-STATUS-C002",
-      "preliminary_review_state": "refreshed_current_evidence_located_sufficiency/gap_review_required_closure_not_claimed",
-      "reviewer_decision_required": "Verify V7.1 fix/test requirement: 各分项与总数守恒；空/延迟/失败状态正确显示",
+      "preliminary_review_state": "refreshed_current_evidence_located_status_state_gap_review_required_closure_not_claimed",
+      "reviewer_decision_required": "Do not mark as technical closure candidate until empty, delayed, and failed runtime display states are proven with negative tests",
       "severity": "P1",
       "title": "总控台偏配置容量，缺真实排队/讲解/发送/复习/行动数量",
       "track": "C_UI交互架构"
@@ -649,11 +655,12 @@
       "evidence_refs": [
         "arxiv-daily-push/docs/phase_records/PHASE_S2PIT05_FOUR_CHECK_FRESHNESS_C003.md",
         "governance/run_manifests/ADP-S2PIT05-FOUR-CHECK-FRESHNESS-C003-20260627.json",
-        "arxiv-daily-push/tests/test_stage2_sources.py"
+        "arxiv-daily-push/tests/test_stage2_sources.py",
+        "governance/run_manifests/ADP-S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW-20260627.json"
       ],
       "finding_id": "C-003",
       "fix_task": "S2PIT05-FOUR-CHECK-FRESHNESS-C003",
-      "preliminary_review_state": "refreshed_current_evidence_located_independent_review_required_closure_not_claimed",
+      "preliminary_review_state": "finding_level_technical_review_passed_no_p1_closure_no_production",
       "previous_evidence_surface": [
         "PHASE_S2PMT06_OWNER_UX.md",
         "ADP-S2PMT06-OWNER-UX-20260626.json",
@@ -661,55 +668,70 @@
       ],
       "receipt_refreshed_at": "2026-06-27T06:45:31+10:00",
       "receipt_state": "refreshed current evidence located; independent review required; closure not claimed",
-      "reviewer_decision_required": "Verify V7.1 fix/test requirement: 故意制造漂移/过期时 CI 和页面同时报警",
+      "reviewer_decision_required": "Carry into later P1 closure package; verify independent final signoff before reducing counters",
       "severity": "P1",
       "title": "四查视图缺统一 freshness、事实源与漂移状态",
-      "track": "C_UI交互架构"
+      "track": "C_UI交互架构",
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "technical_closure_candidate": true,
+      "finding_level_technical_review_receipt": "governance/run_manifests/ADP-S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW-20260627.json"
     },
     {
       "evidence_refs": [
         "arxiv-daily-push/docs/phase_records/PHASE_S2PMT06_RECOVERABLE_ERROR_C005.md",
         "governance/run_manifests/ADP-S2PMT06-RECOVERABLE-ERROR-C005-20260627.json",
-        "arxiv-daily-push/tests/test_stage2_owner_ux.py"
+        "arxiv-daily-push/tests/test_stage2_owner_ux.py",
+        "governance/run_manifests/ADP-S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW-20260627.json"
       ],
       "finding_id": "C-005",
       "fix_task": "S2PMT06-RECOVERABLE-ERROR-C005",
-      "preliminary_review_state": "refreshed_current_evidence_located_independent_review_required_closure_not_claimed",
+      "preliminary_review_state": "finding_level_technical_review_passed_no_p1_closure_no_production",
       "receipt_refreshed_at": "2026-06-27T06:08:55+10:00",
-      "reviewer_decision_required": "Verify V7.1 fix/test requirement: 每个 P0/P1 错误至少一个可执行恢复动作或明确人工门",
+      "reviewer_decision_required": "Carry into later P1 closure package; verify independent final signoff before reducing counters",
       "severity": "P1",
       "title": "错误和阻塞信息缺少恢复动作、负责人和安全重试入口",
-      "track": "C_UI交互架构"
+      "track": "C_UI交互架构",
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "technical_closure_candidate": true,
+      "finding_level_technical_review_receipt": "governance/run_manifests/ADP-S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW-20260627.json"
     },
     {
       "evidence_refs": [
         "arxiv-daily-push/docs/phase_records/PHASE_S2PMT06_SAFE_CONFIG_C006.md",
         "governance/run_manifests/ADP-S2PMT06-SAFE-CONFIG-C006-20260627.json",
-        "arxiv-daily-push/tests/test_stage2_owner_ux.py"
+        "arxiv-daily-push/tests/test_stage2_owner_ux.py",
+        "governance/run_manifests/ADP-S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW-20260627.json"
       ],
       "finding_id": "C-006",
       "fix_task": "S2PMT06-SAFE-CONFIG-C006",
-      "preliminary_review_state": "refreshed_current_evidence_located_independent_review_required_closure_not_claimed",
+      "preliminary_review_state": "finding_level_technical_review_passed_no_p1_closure_no_production",
       "receipt_refreshed_at": "2026-06-27T06:19:53+10:00",
-      "reviewer_decision_required": "Verify V7.1 fix/test requirement: 非法配置无法应用；应用后可回滚到上个 revision",
+      "reviewer_decision_required": "Carry into later P1 closure package; verify independent final signoff before reducing counters",
       "severity": "P1",
       "title": "修改配置缺少预览、diff、校验、影响分析和一键回滚",
-      "track": "C_UI交互架构"
+      "track": "C_UI交互架构",
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "technical_closure_candidate": true,
+      "finding_level_technical_review_receipt": "governance/run_manifests/ADP-S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW-20260627.json"
     },
     {
       "evidence_refs": [
         "arxiv-daily-push/docs/phase_records/PHASE_S2PMT06_APPEND_ONLY_AUDIT_C007.md",
         "governance/run_manifests/ADP-S2PMT06-APPEND-ONLY-AUDIT-C007-20260627.json",
-        "arxiv-daily-push/tests/test_stage2_owner_ux.py"
+        "arxiv-daily-push/tests/test_stage2_owner_ux.py",
+        "governance/run_manifests/ADP-S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW-20260627.json"
       ],
       "finding_id": "C-007",
       "fix_task": "S2PMT06-APPEND-ONLY-AUDIT-C007",
-      "preliminary_review_state": "refreshed_current_evidence_located_independent_review_required_closure_not_claimed",
+      "preliminary_review_state": "finding_level_technical_review_passed_no_p1_closure_no_production",
       "receipt_refreshed_at": "2026-06-27T06:19:53+10:00",
-      "reviewer_decision_required": "Verify V7.1 fix/test requirement: 每次有效修改都有 revision；结果产物记录使用的 revision",
+      "reviewer_decision_required": "Carry into later P1 closure package; verify independent final signoff before reducing counters",
       "severity": "P1",
       "title": "用户控制修改缺少 append-only 审计历史",
-      "track": "C_UI交互架构"
+      "track": "C_UI交互架构",
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "technical_closure_candidate": true,
+      "finding_level_technical_review_receipt": "governance/run_manifests/ADP-S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW-20260627.json"
     },
     {
       "current_evidence_surface": [
@@ -724,11 +746,12 @@
         "governance/run_manifests/ADP-S2PAT05-TRACEABILITY-CHAIN-C010-20260627.json",
         "arxiv-daily-push/用户中心/功能任务测试证据追踪链.md",
         "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
-        "arxiv-daily-push/tests/test_stage2_sources.py"
+        "arxiv-daily-push/tests/test_stage2_sources.py",
+        "governance/run_manifests/ADP-S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW-20260627.json"
       ],
       "finding_id": "C-010",
       "fix_task": "S2PAT05-TRACEABILITY-CHAIN-C010",
-      "preliminary_review_state": "refreshed_current_evidence_located_independent_review_required_closure_not_claimed",
+      "preliminary_review_state": "finding_level_technical_review_passed_no_p1_closure_no_production",
       "previous_evidence_surface": [
         "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
         "arxiv-daily-push/功能清单",
@@ -736,10 +759,13 @@
         "arxiv-daily-push/docs/pursuing_goal/v7_1/09_并行审查/并行审查汇总与合并结论.md",
         "arxiv-daily-push/docs/pursuing_goal/v7_1/09_并行审查/问题清单.csv"
       ],
-      "reviewer_decision_required": "Verify V7.1 fix/test requirement: 每个 required feature 追踪覆盖 100%，无孤儿 Task/测试/证据",
+      "reviewer_decision_required": "Carry into later P1 closure package; verify independent final signoff before reducing counters",
       "severity": "P1",
       "title": "功能→Task→测试→运行证据在 UI 中没有可点击追踪链",
-      "track": "C_UI交互架构"
+      "track": "C_UI交互架构",
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "technical_closure_candidate": true,
+      "finding_level_technical_review_receipt": "governance/run_manifests/ADP-S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW-20260627.json"
     },
     {
       "current_evidence_surface": [
@@ -754,11 +780,12 @@
         "governance/run_manifests/ADP-S2PAT05-LEGACY-MAIL-SCAN-C011-20260627.json",
         "arxiv-daily-push/用户中心/旧邮件标识兼容扫描.md",
         "arxiv-daily-push/src/arxiv_daily_push/mail_templates.py",
-        "arxiv-daily-push/tests/test_stage2_sources.py"
+        "arxiv-daily-push/tests/test_stage2_sources.py",
+        "governance/run_manifests/ADP-S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW-20260627.json"
       ],
       "finding_id": "C-011",
       "fix_task": "S2PAT05-LEGACY-MAIL-SCAN-C011",
-      "preliminary_review_state": "refreshed_current_evidence_located_independent_review_required_closure_not_claimed",
+      "preliminary_review_state": "finding_level_technical_review_passed_no_p1_closure_no_production",
       "previous_evidence_surface": [
         "arxiv-daily-push/docs/phase_records/PHASE_S2PHT01V1_1_T01_EMAIL_PATH_AUDIT.md",
         "arxiv-daily-push/docs/phase_records/PHASE_S2PHT01V1_1_T02_T04_EMAIL_V1_RENDERER.md",
@@ -768,25 +795,32 @@
         "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv"
       ],
       "receipt_refreshed_at": "2026-06-27T07:40:20+10:00",
-      "reviewer_decision_required": "Verify V7.1 fix/test requirement: 全仓扫描旧标识仅允许在 archive/compat 列表出现",
+      "reviewer_decision_required": "Carry into later P1 closure package; verify independent final signoff before reducing counters",
       "severity": "P1",
       "title": "旧 B1–B5/五邮件/英文名称与新 3+1 合同并存",
-      "track": "C_UI交互架构"
+      "track": "C_UI交互架构",
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "technical_closure_candidate": true,
+      "finding_level_technical_review_receipt": "governance/run_manifests/ADP-S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW-20260627.json"
     },
     {
       "evidence_refs": [
         "arxiv-daily-push/docs/phase_records/PHASE_S2PMT06_SAFE_MANUAL_ACTION_C012.md",
         "governance/run_manifests/ADP-S2PMT06-SAFE-MANUAL-ACTION-C012-20260627.json",
-        "arxiv-daily-push/tests/test_stage2_owner_ux.py"
+        "arxiv-daily-push/tests/test_stage2_owner_ux.py",
+        "governance/run_manifests/ADP-S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW-20260627.json"
       ],
       "finding_id": "C-012",
       "fix_task": "S2PMT06-SAFE-MANUAL-ACTION-C012",
-      "preliminary_review_state": "refreshed_current_evidence_located_independent_review_required_closure_not_claimed",
+      "preliminary_review_state": "finding_level_technical_review_passed_no_p1_closure_no_production",
       "receipt_refreshed_at": "2026-06-27T06:34:47+10:00",
-      "reviewer_decision_required": "Verify V7.1 fix/test requirement: 重复点击不重复发送；非法状态动作被禁用并解释原因",
+      "reviewer_decision_required": "Carry into later P1 closure package; verify independent final signoff before reducing counters",
       "severity": "P1",
       "title": "缺少手动重试、取消、重新排队、跳过和重新生成的安全交互",
-      "track": "C_UI交互架构"
+      "track": "C_UI交互架构",
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "technical_closure_candidate": true,
+      "finding_level_technical_review_receipt": "governance/run_manifests/ADP-S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW-20260627.json"
     }
   ],
   "p1_findings_by_task": {
@@ -808,7 +842,14 @@
     "C_UI交互架构": 9
   },
   "p1_latest_technical_review_candidate_findings": [
-    "A-020"
+    "C-001",
+    "C-003",
+    "C-005",
+    "C-006",
+    "C-007",
+    "C-010",
+    "C-011",
+    "C-012"
   ],
   "p1_technical_review_candidate_findings": [
     "A-006",
@@ -838,9 +879,17 @@
     "B-012",
     "B-013",
     "B-014",
-    "A-020"
+    "A-020",
+    "C-001",
+    "C-003",
+    "C-005",
+    "C-006",
+    "C-007",
+    "C-010",
+    "C-011",
+    "C-012"
   ],
-  "p1_technical_review_candidate_manifest": "governance/run_manifests/ADP-S2PMT07-P1-A020-TECHNICAL-REVIEW-20260627.json",
+  "p1_technical_review_candidate_manifest": "governance/run_manifests/ADP-S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW-20260627.json",
   "p1_technical_review_candidate_manifests": [
     "governance/run_manifests/ADP-S2PMT07-P1-A006-A009-TECHNICAL-REVIEW-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-A010-A016-TECHNICAL-REVIEW-20260627.json",
@@ -849,7 +898,8 @@
     "governance/run_manifests/ADP-S2PMT07-P1-B002-B004-B005-B015-TECHNICAL-REVIEW-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-B003-B011-TECHNICAL-REVIEW-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json",
-    "governance/run_manifests/ADP-S2PMT07-P1-A020-TECHNICAL-REVIEW-20260627.json"
+    "governance/run_manifests/ADP-S2PMT07-P1-A020-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW-20260627.json"
   ],
   "preserved_blockers": [
     "reviewer_independence_not_proven",
@@ -860,15 +910,16 @@
     "independent_final_signoff_missing",
     "independent_final_command_execution_missing"
   ],
-  "previous_refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json",
+  "previous_refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-A020-TECHNICAL-REVIEW-20260627.json",
   "project_id": "arxiv-daily-push",
-  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-A020-TECHNICAL-REVIEW-20260627.json",
+  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW-20260627.json",
   "refresh_manifest_history": [
     "governance/run_manifests/ADP-S2PMT07-P1-A006-A009-TECHNICAL-REVIEW-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-A010-A016-TECHNICAL-REVIEW-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-B003-B011-TECHNICAL-REVIEW-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json",
-    "governance/run_manifests/ADP-S2PMT07-P1-A020-TECHNICAL-REVIEW-20260627.json"
+    "governance/run_manifests/ADP-S2PMT07-P1-A020-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW-20260627.json"
   ],
   "refresh_manifests": [
     "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-20260627.json",
@@ -892,9 +943,10 @@
     "governance/run_manifests/ADP-S2PMT07-P1-B002-B004-B005-B015-TECHNICAL-REVIEW-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-B003-B011-TECHNICAL-REVIEW-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json",
-    "governance/run_manifests/ADP-S2PMT07-P1-A020-TECHNICAL-REVIEW-20260627.json"
+    "governance/run_manifests/ADP-S2PMT07-P1-A020-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW-20260627.json"
   ],
-  "refreshed_at": "2026-06-27T23:31:39+10:00",
+  "refreshed_at": "2026-06-27 23:58:35 Australia/Sydney",
   "refreshed_findings": [
     "A-006",
     "A-007",

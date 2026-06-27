@@ -1,0 +1,260 @@
+{
+  "schema_version": 1,
+  "manifest_id": "ADP-S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW-20260627",
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW",
+  "parent_task_id": "S2PMT07",
+  "acceptance_id": "ACC-S2PMT07-FINAL-REVIEW",
+  "contract_version": "ADP-PRODUCT-CONTRACT-V7.2",
+  "generated_at": "2026-06-27T23:58:35+10:00",
+  "status": "finding_level_technical_review_passed_no_p1_closure_no_production",
+  "summary": "Finding-level technical review for inherited P1 C-001, C-003, C-005, C-006, C-007, C-010, C-011, and C-012 confirms the current owner-facing user-center, freshness, recoverable-error, safe-config, append-only audit, traceability, legacy-mail scan, and safe-manual-action evidence as technical closure candidates. C-002 is explicitly excluded because its phase record still lists unproven empty/delayed/failed daily runtime states. This is not independent final signoff and does not close P1.",
+  "review_scope": "local_code_and_governance_evidence_only",
+  "finding_ids": [
+    "C-001",
+    "C-003",
+    "C-005",
+    "C-006",
+    "C-007",
+    "C-010",
+    "C-011",
+    "C-012"
+  ],
+  "excluded_findings": [
+    "C-002"
+  ],
+  "exclusion_rationale": {
+    "C-002": "PHASE_S2PIT02_OWNER_STATUS_C002.md still states that empty, delayed, and failed daily runtime states are not all proven; therefore C-002 remains a P1 review gap and is not a technical closure candidate in this package."
+  },
+  "reviewed_findings": [
+    {
+      "finding_id": "C-001",
+      "finding_title": "当前仓库未落地唯一中文 00_用户中心首屏",
+      "severity": "P1",
+      "fix_task": "S2PIT01-SHALLOW-USER-CENTER-C001",
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "technical_closure_candidate": true,
+      "independent_final_closure_decision_required": true,
+      "evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PIT01_SHALLOW_USER_CENTER_C001.md",
+        "governance/run_manifests/ADP-S2PIT01-SHALLOW-USER-CENTER-C001-20260627.json",
+        "arxiv-daily-push/用户中心/README.md",
+        "arxiv-daily-push/用户中心/一看三查.md",
+        "arxiv-daily-push/tests/test_stage2_sources.py"
+      ],
+      "verified_checks": [
+        "shallow_github_user_center_readme_required",
+        "one_look_three_check_page_required",
+        "old_deep_only_owner_path_blocked",
+        "max_click_depth_two_preserved",
+        "single_editable_fact_source_preserved",
+        "no_production_side_effects"
+      ]
+    },
+    {
+      "finding_id": "C-003",
+      "finding_title": "四查视图缺统一 freshness、事实源与漂移状态",
+      "severity": "P1",
+      "fix_task": "S2PIT05-FOUR-CHECK-FRESHNESS-C003",
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "technical_closure_candidate": true,
+      "independent_final_closure_decision_required": true,
+      "evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PIT05_FOUR_CHECK_FRESHNESS_C003.md",
+        "governance/run_manifests/ADP-S2PIT05-FOUR-CHECK-FRESHNESS-C003-20260627.json",
+        "arxiv-daily-push/tests/test_stage2_sources.py"
+      ],
+      "verified_checks": [
+        "four_owner_views_include_freshness_state",
+        "fact_source_refs_required",
+        "drift_state_required",
+        "ci_and_page_drift_alarm_required",
+        "stale_or_missing_view_blocks",
+        "no_production_side_effects"
+      ]
+    },
+    {
+      "finding_id": "C-005",
+      "finding_title": "错误和阻塞信息缺少恢复动作、负责人和安全重试入口",
+      "severity": "P1",
+      "fix_task": "S2PMT06-RECOVERABLE-ERROR-C005",
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "technical_closure_candidate": true,
+      "independent_final_closure_decision_required": true,
+      "evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT06_RECOVERABLE_ERROR_C005.md",
+        "governance/run_manifests/ADP-S2PMT06-RECOVERABLE-ERROR-C005-20260627.json",
+        "arxiv-daily-push/tests/test_stage2_owner_ux.py"
+      ],
+      "verified_checks": [
+        "recoverable_p1_error_has_owner",
+        "recovery_action_required",
+        "safe_retry_gate_required",
+        "missing_owner_or_unsafe_retry_blocks",
+        "no_production_side_effects"
+      ]
+    },
+    {
+      "finding_id": "C-006",
+      "finding_title": "修改配置缺少预览、diff、校验、影响分析和一键回滚",
+      "severity": "P1",
+      "fix_task": "S2PMT06-SAFE-CONFIG-C006",
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "technical_closure_candidate": true,
+      "independent_final_closure_decision_required": true,
+      "evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT06_SAFE_CONFIG_C006.md",
+        "governance/run_manifests/ADP-S2PMT06-SAFE-CONFIG-C006-20260627.json",
+        "arxiv-daily-push/tests/test_stage2_owner_ux.py"
+      ],
+      "verified_checks": [
+        "config_preview_required",
+        "diff_impact_required",
+        "validation_required",
+        "rollback_revision_required",
+        "runtime_mutation_blocked",
+        "no_production_side_effects"
+      ]
+    },
+    {
+      "finding_id": "C-007",
+      "finding_title": "用户控制修改缺少 append-only 审计历史",
+      "severity": "P1",
+      "fix_task": "S2PMT06-APPEND-ONLY-AUDIT-C007",
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "technical_closure_candidate": true,
+      "independent_final_closure_decision_required": true,
+      "evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT06_APPEND_ONLY_AUDIT_C007.md",
+        "governance/run_manifests/ADP-S2PMT06-APPEND-ONLY-AUDIT-C007-20260627.json",
+        "arxiv-daily-push/tests/test_stage2_owner_ux.py"
+      ],
+      "verified_checks": [
+        "append_only_revision_ledger_required",
+        "effective_revision_recorded",
+        "result_artifact_records_latest_revision",
+        "revision_mismatch_blocks",
+        "no_production_side_effects"
+      ]
+    },
+    {
+      "finding_id": "C-010",
+      "finding_title": "功能→Task→测试→运行证据在 UI 中没有可点击追踪链",
+      "severity": "P1",
+      "fix_task": "S2PAT05-TRACEABILITY-CHAIN-C010",
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "technical_closure_candidate": true,
+      "independent_final_closure_decision_required": true,
+      "evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PAT05_TRACEABILITY_CHAIN_C010.md",
+        "governance/run_manifests/ADP-S2PAT05-TRACEABILITY-CHAIN-C010-20260627.json",
+        "arxiv-daily-push/用户中心/功能任务测试证据追踪链.md",
+        "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+        "arxiv-daily-push/tests/test_stage2_sources.py"
+      ],
+      "verified_checks": [
+        "traceability_row_count_covered",
+        "coverage_percent_100",
+        "clickable_owner_chain_refs_required",
+        "raw_path_link_blocks",
+        "orphan_status_blocks",
+        "no_production_side_effects"
+      ]
+    },
+    {
+      "finding_id": "C-011",
+      "finding_title": "旧 B1–B5/五邮件/英文名称与新 3+1 合同并存",
+      "severity": "P1",
+      "fix_task": "S2PAT05-LEGACY-MAIL-SCAN-C011",
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "technical_closure_candidate": true,
+      "independent_final_closure_decision_required": true,
+      "evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PAT05_LEGACY_MAIL_SCAN_C011.md",
+        "governance/run_manifests/ADP-S2PAT05-LEGACY-MAIL-SCAN-C011-20260627.json",
+        "arxiv-daily-push/用户中心/旧邮件标识兼容扫描.md",
+        "arxiv-daily-push/src/arxiv_daily_push/mail_templates.py",
+        "arxiv-daily-push/tests/test_stage2_sources.py"
+      ],
+      "verified_checks": [
+        "email_v1_m1_m4_contract_active",
+        "legacy_five_mail_active_false",
+        "old_identifiers_absent_from_active_runtime_or_isolated",
+        "visible_frontstage_marker_gate_present",
+        "no_production_side_effects"
+      ]
+    },
+    {
+      "finding_id": "C-012",
+      "finding_title": "缺少手动重试、取消、重新排队、跳过和重新生成的安全交互",
+      "severity": "P1",
+      "fix_task": "S2PMT06-SAFE-MANUAL-ACTION-C012",
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "technical_closure_candidate": true,
+      "independent_final_closure_decision_required": true,
+      "evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT06_SAFE_MANUAL_ACTION_C012.md",
+        "governance/run_manifests/ADP-S2PMT06-SAFE-MANUAL-ACTION-C012-20260627.json",
+        "arxiv-daily-push/tests/test_stage2_owner_ux.py"
+      ],
+      "verified_checks": [
+        "retry_cancel_requeue_skip_regenerate_actions_present",
+        "preview_confirmation_and_receipt_required",
+        "idempotency_keys_unique",
+        "illegal_state_actions_disabled",
+        "production_mutation_blocked",
+        "no_production_side_effects"
+      ]
+    }
+  ],
+  "technical_review_checks": {
+    "all_eight_reviewed_findings_present": true,
+    "all_evidence_files_exist": true,
+    "all_technical_review_verdicts_pass_no_production": true,
+    "c001_two_click_user_center_gate_present": true,
+    "c003_four_check_freshness_and_drift_alarm_present": true,
+    "c005_recoverable_error_action_owner_retry_gate_present": true,
+    "c006_safe_config_preview_diff_rollback_gate_present": true,
+    "c007_append_only_revision_audit_gate_present": true,
+    "c010_clickable_traceability_chain_gate_present": true,
+    "c011_legacy_mail_identifier_scan_gate_present": true,
+    "c012_safe_manual_action_gate_present": true,
+    "c002_explicitly_excluded_as_status_state_gap": true,
+    "p1_counter_preserved_open": true,
+    "independent_final_signoff_present": false,
+    "s2pmt07_final_gate_still_blocked": true
+  },
+  "preserved_blockers": [
+    "p1_closure_not_claimed",
+    "c002_status_state_gap_not_resolved",
+    "independent_final_signoff_missing",
+    "independent_final_command_execution_missing",
+    "s2plt04_not_completed",
+    "final_acceptance_bundle_missing"
+  ],
+  "inherited_v7_1_open_p0_findings_before": 8,
+  "inherited_v7_1_open_p0_findings_after": 8,
+  "inherited_v7_1_open_p1_findings_before": 37,
+  "inherited_v7_1_open_p1_findings_after": 37,
+  "p0_closure_claimed": false,
+  "p1_closure_claimed": false,
+  "closure_claimed": false,
+  "reviewer_independence_for_final_gate_claimed": false,
+  "s2pmt07_final_pass_claimed": false,
+  "stage2_integrated_production_accepted": false,
+  "real_smtp_sent": false,
+  "scheduler_install_enabled": false,
+  "release_packaging_enabled": false,
+  "production_restore_enabled": false,
+  "daily_operation_enabled": false,
+  "public_schema_changed": false,
+  "db_migration_executed": false,
+  "production_queue_mutation_allowed": false,
+  "ranking_changed": false,
+  "source_adapter_changed": false,
+  "current_pointer_changed": false,
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false,
+  "next_task": "repair_or_review_c002_status_state_gap_then_prepare_final_p1_candidate_package_without_closing_p1_or_enabling_production",
+  "rollback": "Remove this manifest, phase record, P1 receipt updates, traceability row, rendered owner page, delivery/event/status records, and tests; no production state was changed."
+}

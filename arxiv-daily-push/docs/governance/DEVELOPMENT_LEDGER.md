@@ -10,12 +10,27 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.1
 - Current phase: S2PM
-- Current gate: S2PMT07_P1_A020_TECHNICAL_REVIEW_NO_CLOSURE_NO_PRODUCTION
-- Confirmed iteration count: 156
+- Current gate: S2PMT07_P1_C_GROUP_TECHNICAL_REVIEW_NO_CLOSURE_NO_PRODUCTION
+- Confirmed iteration count: 157
 - Reconstructed event count: 0
-- Current task: `S2PMT07-P1-A020-TECHNICAL-REVIEW` records finding-level technical review for inherited A-020 supply-chain SBOM, CI enforcement, workflow/action policy, and vulnerability exception evidence. No CURRENT, V7.1/V7.2 contract file, real SMTP, scheduler, Release, production restore, public schema, DB migration, production queue, source adapter, ranking, DAILY_OPERATION, or integrated production acceptance state changed.
+- Current task: `S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW` records finding-level technical review for inherited C-001/C-003/C-005/C-006/C-007/C-010/C-011/C-012 owner-facing evidence while explicitly excluding C-002 status-state gaps. No CURRENT, V7.1/V7.2 contract file, real SMTP, scheduler, Release, production restore, public schema, DB migration, production queue, source adapter, ranking, DAILY_OPERATION, or integrated production acceptance state changed.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
+
+
+### `ITER-20260627-ADP-S2PMT07-P1-C-GROUP-TECHNICAL-REVIEW`
+
+- Timestamp: `2026-06-27T23:58:35+10:00`
+- Fact level: EXTRACTED from C-group owner-facing evidence manifests, refreshed S2PMT07 P1 receipt, traceability row, rendered user-center evidence chain, and source/owner/final-gate/user-center regression tests.
+- Base commit: `5222294f7f0f35a18b3f8d3cb3342d07f2d83540`
+- Product version: `0.23.1`
+- Status: C-001, C-003, C-005, C-006, C-007, C-010, C-011, and C-012 finding-level technical review passed as technical closure candidates; C-002 remains excluded; P0/P1 closure and production acceptance are not claimed.
+- Task IDs: `S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW`; parent `S2PMT07`; inherited findings `C-001`, `C-003`, `C-005`, `C-006`, `C-007`, `C-010`, `C-011`, `C-012`; excluded `C-002`; acceptance `ACC-S2PMT07-FINAL-REVIEW`.
+- Goal: Record the C-group technical review inside GitHub source-of-truth evidence surfaces, without relying on chat context or lowering any global stop gate.
+- Files changed: C-group technical review manifest and phase record, P1 review receipt manifest and phase record, final-gate/user-center regression tests, traceability matrix, rendered user-center traceability page, delivery task, development event, status summaries, and 三基 notes.
+- Decisions: The verdict is `PASS_WITH_NO_PRODUCTION_ACCEPTANCE`. It is finding-level technical evidence only and does not provide final S2PMT07 signoff, close these findings/P1/P0, complete S2PLT04, create the final bundle, run final commands, enable SMTP/scheduler/Release, mutate schema/DB/queues, change sources or ranking, edit V7 baselines, or claim integrated production acceptance.
+- Risks: This receipt can be misread as P1 closure; C-002 remains outside the candidate set until empty/delayed/failed runtime display states are proven. S2PMT07 final acceptance still requires the full P0/P1 closure package, S2PLT04, final bundle, independent final signoff, and final command execution.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW-20260627.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_C001_C003_C005_C006_C007_C010_C011_C012_TECHNICAL_REVIEW.md`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_INDEPENDENT_REVIEW_RECEIPT.md`; `arxiv-daily-push/tests/test_stage2_sources.py`; `arxiv-daily-push/tests/test_stage2_owner_ux.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.
 
 
 ### `ITER-20260627-ADP-S2PMT07-P1-A020-TECHNICAL-REVIEW`

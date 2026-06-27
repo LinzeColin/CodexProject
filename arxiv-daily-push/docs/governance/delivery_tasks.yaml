@@ -3315,3 +3315,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW"
+    phase: "S2PM"
+    objective: "Record finding-level technical review for inherited P1 C-group findings C-001/C-003/C-005/C-006/C-007/C-010/C-011/C-012 without claiming P1 closure or production acceptance."
+    scope: "C-group evidence review, P1 receipt manifest and phase record refresh, dedicated technical review manifest and phase record, traceability row, rendered user-center traceability page, focused regression tests, and no-production evidence."
+    non_scope: "No independent final signoff, final command execution, inherited P0/P1 closure, S2PLT04 completion, final acceptance bundle creation, SMTP transport, scheduler install or enablement, Release upload, public schema or DB migration, production queue mutation, ranking/source-adapter change, CURRENT pointer change, V7.1/V7.2 contract-file edit, DAILY_OPERATION, or integrated production acceptance."
+    status: "completed"
+    dependencies: ["S2PMT07", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    risk_tier: "T2"
+    required_files: ["arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_C001_C003_C005_C006_C007_C010_C011_C012_TECHNICAL_REVIEW.md", "governance/run_manifests/ADP-S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW-20260627.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_INDEPENDENT_REVIEW_RECEIPT.md", "governance/run_manifests/ADP-S2PMT07-P1-INDEPENDENT-REVIEW-RECEIPT-20260626.json", "arxiv-daily-push/tests/test_stage2_sources.py", "arxiv-daily-push/tests/test_stage2_owner_ux.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_user_center_candidate_pool.py"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_cgroup_target PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_user_center_candidate_pool.py arxiv-daily-push/tests/test_stage2_sources.py arxiv-daily-push/tests/test_stage2_owner_ux.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_cgroup_full PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_cgroup_v72 PYTHONPATH=arxiv-daily-push/src python3 arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_cgroup_project PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_cgroup_sync PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_governance_sync.py"]
+    test_results: ["target final-gate/user-center/stage2-source/owner-ux tests: 226 OK", "full arxiv-daily-push unittest: 596 OK", "V7.2 validator PASS", "V7.2 unittest: 4 OK", "project governance: errors 0 warnings 0", "governance sync: errors 0 warnings 0"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW-20260627.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_C001_C003_C005_C006_C007_C010_C011_C012_TECHNICAL_REVIEW.md", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_INDEPENDENT_REVIEW_RECEIPT.md", "arxiv-daily-push/tests/test_stage2_sources.py", "arxiv-daily-push/tests/test_stage2_owner_ux.py", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
+    result: "C-001/C-003/C-005/C-006/C-007/C-010/C-011/C-012 finding-level technical review passed without P1 closure or production side effects; C-002 remains excluded pending runtime status-state evidence."
+    risk: "This receipt can be misread as C-group/P1 closure; independent final S2PMT07 review, full P0/P1 closure package, S2PLT04, final bundle, final command execution, and the C-002 status-state gap still control closure and production acceptance."
+    rollback: "Revert the C-group technical review manifest/phase record, P1 receipt refresh, traceability row, rendered user-center traceability page, delivery/event/status records, and regression test extensions; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
