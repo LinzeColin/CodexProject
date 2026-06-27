@@ -117,7 +117,7 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         readme = (USER_CENTER / "README.md").read_text(encoding="utf-8")
 
         self.assertGreaterEqual(len(matrix_rows), 245)
-        self.assertEqual(len(matrix_rows), 265)
+        self.assertEqual(len(matrix_rows), 266)
         self.assertEqual(len(table_rows), len(matrix_rows))
         self.assertTrue(page.startswith("# 功能任务测试证据追踪链\n"))
         self.assertRegex(page, r"更新时间：\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} Australia/Sydney")
@@ -126,7 +126,10 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("[运行清单](../../governance/run_manifests/ADP-S2PAT05-TRACEABILITY-CHAIN-C010-20260627.json)", page)
         self.assertIn("| 序号 | 需求 | 任务 | 验收 | 代码 | 配置 | 测试 | 运行证据 | 状态 |", page)
         self.assertIn("[test_stage2_sources.py](../tests/test_stage2_sources.py)", page)
-        self.assertIn("TRACEABILITY_MATRIX 行数 | 265", page)
+        self.assertIn("TRACEABILITY_MATRIX 行数 | 266", page)
+        self.assertIn("REQ-ADP-V7-039-P0-A003-REVIEW", page)
+        self.assertIn("S2PMT07-A003-INDEPENDENT-TECHNICAL-REVIEW", page)
+        self.assertIn("ADP-S2PMT07-A003-INDEPENDENT-TECHNICAL-REVIEW-20260627.json", page)
         self.assertIn("REQ-ADP-V7-039-P0-A002-REVIEW", page)
         self.assertIn("S2PMT07-A002-INDEPENDENT-TECHNICAL-REVIEW", page)
         self.assertIn("ADP-S2PMT07-A002-INDEPENDENT-TECHNICAL-REVIEW-20260627.json", page)
@@ -214,12 +217,21 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("内容修订后消息 ID 变化 | 已验证", page)
         self.assertIn("同一发件箱记录 100 次 claim | 1 成功 / 99 阻断", page)
         self.assertIn("SMTP accepted-before-commit 无 provider ref | fail-closed", page)
+        self.assertIn("fail-closed 后不可重 claim | 已验证", page)
         self.assertIn("Provider accept ref 后本地 finalize | 已验证", page)
+        self.assertIn("finalize 后不可重 claim | 已验证", page)
+        self.assertIn("独立技术复审 | `PASS_WITH_NO_PRODUCTION_ACCEPTANCE` / 技术关闭候选", page)
         self.assertIn("`at_least_once_with_idempotent_message_id`", page)
         self.assertIn("exactly-once 声明 | `false`", page)
         self.assertIn("真实 SMTP 发送 | `false`", page)
+        self.assertIn("`fail_closed_not_retry_safe_not_reclaimed`", page)
+        self.assertIn("`provider_finalized_not_reclaimed`", page)
         self.assertIn(
             "[A-003 运行清单](../../governance/run_manifests/ADP-S2PMT03-OUTBOX-DELIVERY-A003-20260627.json)",
+            page,
+        )
+        self.assertIn(
+            "[A-003 独立技术复审 receipt](../../governance/run_manifests/ADP-S2PMT07-A003-INDEPENDENT-TECHNICAL-REVIEW-20260627.json)",
             page,
         )
         self.assertIn("[A-003 阶段记录](../docs/phase_records/PHASE_S2PMT03_OUTBOX_DELIVERY_A003.md)", page)

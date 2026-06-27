@@ -11,9 +11,9 @@
 - formula_id: `FORM-ADP-114`
 - parameter_ids: `PARAM-ADP-945` through `PARAM-ADP-949`
 - status: `completed_local_validation_no_production`
-- generated_at: `2026-06-27T09:28:57+10:00`
+- generated_at: `2026-06-27T17:14:45+10:00`
 
-This record refreshes inherited P0 finding `A-003` with dedicated current evidence. It verifies transactional outbox delivery behavior locally without sending SMTP, enabling scheduler, mutating production queue state, or claiming exactly-once delivery.
+This record refreshes inherited P0 finding `A-003` with dedicated current evidence. It verifies transactional outbox delivery behavior locally without sending SMTP, enabling scheduler, mutating production queue state, or claiming exactly-once delivery. The current evidence also covers the independent-review regression that terminal or `retry_safe=false` outbox rows must not be reclaimed after lease expiry.
 
 ## Probe Results
 
@@ -23,7 +23,9 @@ This record refreshes inherited P0 finding `A-003` with dedicated current eviden
 | `message_identity_revision_change` | Changed content revision/body changes `message_id` | pass |
 | `single_outbox_claim_under_contention` | 100 claim attempts against one outbox row produce exactly 1 success and 99 blocked attempts | pass |
 | `smtp_accept_pending_commit_fail_closed` | `ACCEPTED_PENDING_COMMIT` without provider accept ref is blocked and not safe to resend | pass |
+| `fail_closed_not_retry_safe_not_reclaimed` | `BLOCKED` + `retry_safe=false` rows cannot be claimed again after lease expiry | pass |
 | `provider_accept_finalizes_without_resend` | Durable provider accept ref finalizes local state without real SMTP resend | pass |
+| `provider_finalized_not_reclaimed` | `SENT` + `retry_safe=false` rows cannot be claimed again after lease expiry | pass |
 | `at_least_once_no_exactly_once_claim` | Delivery semantics stay at-least-once with idempotent message ID; exactly-once is false | pass |
 
 ## Evidence
@@ -40,4 +42,12 @@ No SMTP was sent, no scheduler was installed or enabled, no Release assets were 
 
 ## Remaining Gate
 
-`A-003` remains open until S2PMT07 independent review inspects or reruns this evidence and explicitly closes the finding. This local evidence refresh does not change inherited P0/P1 counters.
+`A-003` now has finding-level independent technical review verdict `PASS_WITH_NO_PRODUCTION_ACCEPTANCE` and is a technical closure candidate. It remains open until the later P0 closure package and final S2PMT07 gate explicitly close the finding. This local evidence refresh does not change inherited P0/P1 counters.
+
+## Independent Technical Review 2026-06-27 17:14:45 Australia/Sydney
+
+- review_receipt: `governance/run_manifests/ADP-S2PMT07-A003-INDEPENDENT-TECHNICAL-REVIEW-20260627.json`
+- reviewer_verdict: `PASS_WITH_NO_PRODUCTION_ACCEPTANCE`
+- technical_closure_candidate: `true`
+- p0_closure_claimed: `false`
+- stage2_integrated_production_accepted: `false`

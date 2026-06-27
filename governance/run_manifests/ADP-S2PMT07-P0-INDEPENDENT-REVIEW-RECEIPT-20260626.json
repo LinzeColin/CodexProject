@@ -27,7 +27,8 @@
     "governance/run_manifests/ADP-S2PMT04-INSTALL-LIFECYCLE-B001-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-B001-ISOLATED-PROOF-RECONCILIATION-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-ISOLATED-PROOF-20260627.json",
-    "governance/run_manifests/ADP-S2PMT07-A001-INDEPENDENT-TECHNICAL-REVIEW-20260627.json"
+    "governance/run_manifests/ADP-S2PMT07-A001-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-A003-INDEPENDENT-TECHNICAL-REVIEW-20260627.json"
   ],
   "final_acceptance_bundle_present": false,
   "forbidden_side_effects": {
@@ -92,15 +93,17 @@
       "evidence_refs": [
         "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_OUTBOX_DELIVERY_A003.md",
         "governance/run_manifests/ADP-S2PMT03-OUTBOX-DELIVERY-A003-20260627.json",
+        "governance/run_manifests/ADP-S2PMT07-A003-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
         "arxiv-daily-push/用户中心/事务发件箱与消息ID扫描.md",
         "arxiv-daily-push/tests/test_stage2_lease_fencing.py"
       ],
       "finding_id": "A-003",
+      "finding_level_independent_review_receipt": "governance/run_manifests/ADP-S2PMT07-A003-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
       "fix_task": "S2PMT03-OUTBOX-DELIVERY-A003",
-      "independent_reviewer_decision_still_required": "Verify stable same-revision Message-ID, changed revision rekeying, one outbox claim under 100 attempts, SMTP accepted-before-commit fail-closed behavior, provider-ref finalization without resend, and no exactly-once claim.",
-      "preliminary_review_state": "evidence_located_independent_review_required",
-      "receipt_state": "refreshed current evidence located; closure not claimed",
-      "reviewer_decision_required": "Verify transactional outbox, sender lease, reconciliation, idempotent Message-ID, and at-least-once semantics; exactly-once delivery is not claimed.",
+      "preliminary_review_state": "finding_level_independent_review_passed_technical_closure_candidate_no_p0_closure",
+      "receipt_state": "finding-level independent technical review passed; closure not claimed",
+      "reviewer_decision_required": "Carry A-003 into the later P0 closure package as a technical closure candidate; do not lower P0/P1 counters or claim S2PMT07 final pass until the full independent final gate signs off.",
+      "reviewer_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
       "severity": "P0"
     },
     {
@@ -140,8 +143,8 @@
         "governance/run_manifests/ADP-S2PMT07-B001-INDEPENDENT-TECHNICAL-REVIEW-20260627.json"
       ],
       "finding_id": "B-001",
-      "fix_task": "S2PMT04-INSTALL-LIFECYCLE-B001",
       "finding_level_independent_review_receipt": "governance/run_manifests/ADP-S2PMT07-B001-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+      "fix_task": "S2PMT04-INSTALL-LIFECYCLE-B001",
       "preliminary_review_state": "finding_level_independent_review_passed_technical_closure_candidate_no_p0_closure",
       "reviewer_decision_required": "B-001 finding-level independent technical review passed as PASS_WITH_NO_PRODUCTION_ACCEPTANCE. Carry this into the later P0 closure package, but do not lower P0/P1 counters or claim S2PMT07 final pass until the full independent final gate signs off.",
       "reviewer_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
@@ -200,7 +203,7 @@
     "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-ISOLATED-PROOF-20260627.json"
   ],
-  "refreshed_at": "2026-06-27 15:08:53 Australia/Sydney",
+  "refreshed_at": "2026-06-27 17:14:45 Australia/Sydney",
   "refreshed_findings": [
     "A-001",
     "A-002",
@@ -217,6 +220,6 @@
   "s2plt04_completed": false,
   "stage2_integrated_production_accepted": false,
   "status": "review_receipt_ready_no_closure_claim",
-  "summary": "S2PMT07 P0 review receipt routes all eight inherited P0 findings to current evidence surfaces; B-001 now includes an isolated launchd proof reconciliation manifest but still requires independent review before closure.",
+  "summary": "S2PMT07 P0 review receipt routes all eight inherited P0 findings to current evidence surfaces; A-001, A-002, A-003, and B-001 now have finding-level independent technical review receipts, but P0/P1 closure and final production gates remain blocked.",
   "task_id": "S2PMT07"
 }

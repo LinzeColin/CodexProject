@@ -87,7 +87,8 @@ Fact levels follow `docs/governance/STANDARD.md`.
   transactional-outbox probes for stable same-revision Message-ID,
   changed-revision rekeying, exactly one successful claim under 100 attempts,
   SMTP accepted-before-local-commit fail-closed behavior, provider-ref
-  finalization without resend, and explicit at-least-once/no-exactly-once
+  finalization without resend, non-reclaim of fail-closed or finalized
+  `retry_safe=false` rows, and explicit at-least-once/no-exactly-once
   semantics. It does not send SMTP, install scheduler, upload Release, change
   public schema or DB, mutate queues, change source adapters or ranking, edit
   CURRENT or V7.1/V7.2 contracts, close inherited P0/P1, enable

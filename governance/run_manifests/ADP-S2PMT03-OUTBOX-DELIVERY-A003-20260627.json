@@ -1,6 +1,6 @@
 {
   "acceptance_id": "ACC-S2PMT03-LEASE-FENCING-OUTBOX",
-  "base_commit": "e8a8065892f9968815dfa49926309cd41fb0f4ed",
+  "base_commit": "e96fab3b1424c5e64355fdf4b22bebd712114b01",
   "current_contract": "ADP-PRODUCT-CONTRACT-V7.2",
   "evidence_refs": [
     "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_OUTBOX_DELIVERY_A003.md",
@@ -10,7 +10,7 @@
   ],
   "finding_id": "A-003",
   "formula_id": "FORM-ADP-114",
-  "generated_at": "2026-06-27T09:28:57+10:00",
+  "generated_at": "2026-06-27T17:14:45+10:00",
   "manifest_id": "ADP-S2PMT03-OUTBOX-DELIVERY-A003-20260627",
   "model_id": "MOD-ADP-112",
   "outbox_delivery_report": {
@@ -932,16 +932,18 @@
     "finding_id": "A-003",
     "gates": {
       "at_least_once_semantics": true,
+      "fail_closed_not_retry_safe_not_reclaimed": true,
       "no_exactly_once_claim": true,
       "no_production_side_effect": true,
       "provider_accept_finalizes_without_resend": true,
+      "provider_finalized_not_reclaimed": true,
       "required_probe_coverage": true,
       "revision_changes_message_id": true,
       "single_outbox_claim_under_contention": true,
       "smtp_accept_pending_commit_fail_closed": true,
       "stable_message_id": true
     },
-    "generated_at": "2026-06-27T09:28:57+10:00",
+    "generated_at": "2026-06-27T17:14:45+10:00",
     "message_identity": {
       "first_message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
       "mail_key": "2026-07-02|M1|linzezhang35@gmail.com",
@@ -951,15 +953,17 @@
       "same_revision_stable": true
     },
     "model_id": "adp-s2pmt03-outbox-delivery-a003-v1",
-    "outbox_delivery_hash": "4f367780aa03614cc193c3a9475e79f30690fc625ccf37f5f24b0b4753caf58b",
+    "outbox_delivery_hash": "41b0caeaa9bec90bcf775c3838907617848d516768b2b67ba8b838ffdaf72406",
     "p0_closure_claimed": false,
     "p1_closure_claimed": false,
     "parent_task_id": "S2PMT03",
     "probes": {
       "at_least_once_no_exactly_once_claim": true,
+      "fail_closed_not_retry_safe_not_reclaimed": true,
       "message_identity_revision_change": true,
       "message_identity_same_revision": true,
       "provider_accept_finalizes_without_resend": true,
+      "provider_finalized_not_reclaimed": true,
       "single_outbox_claim_under_contention": true,
       "smtp_accept_pending_commit_fail_closed": true
     },
@@ -973,7 +977,7 @@
         "content_revision_id": "rev-1",
         "cycle_id": "2026-07-02",
         "fencing_token": 1,
-        "generated_at": "2026-06-27T09:28:57+10:00",
+        "generated_at": "2026-06-27T17:14:45+10:00",
         "lease_owner": "sender-000",
         "lease_until_ms": 301000,
         "mail_key": "2026-07-02|M1|linzezhang35@gmail.com",
@@ -991,6 +995,33 @@
       "smtp_accept_crash_window": true,
       "status": "pass"
     },
+    "provider_accept_finalization_reclaim": {
+      "action": "claim_outbox",
+      "blocking_reasons": [
+        "outbox row is marked not retry safe"
+      ],
+      "message": {
+        "body_sha256": "a2fdc03011ff17d224c8fca2bc6da64b1b455dfc0f714c06518ad411304fa768",
+        "content_revision_id": "rev-1",
+        "cycle_id": "2026-07-02",
+        "fencing_token": 1,
+        "generated_at": "2026-06-27T17:14:45+10:00",
+        "lease_owner": "sender-000",
+        "lease_until_ms": 301000,
+        "mail_key": "2026-07-02|M1|linzezhang35@gmail.com",
+        "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+        "product_id": "M1",
+        "provider_accept_ref": "smtp://provider/message-1",
+        "real_smtp_sent": false,
+        "recipient": "linzezhang35@gmail.com",
+        "retry_safe": false,
+        "row_version": 1,
+        "send_attempts": 1,
+        "smtp_accept_crash_window_reproduced": true,
+        "status": "SENT"
+      },
+      "status": "blocked"
+    },
     "public_schema_changed": false,
     "queue_mutation_allowed": false,
     "queue_schema_changed": false,
@@ -1002,7 +1033,9 @@
       "message_identity_revision_change",
       "single_outbox_claim_under_contention",
       "smtp_accept_pending_commit_fail_closed",
+      "fail_closed_not_retry_safe_not_reclaimed",
       "provider_accept_finalizes_without_resend",
+      "provider_finalized_not_reclaimed",
       "at_least_once_no_exactly_once_claim"
     ],
     "scheduler_enabled": false,
@@ -1017,7 +1050,7 @@
         "content_revision_id": "rev-1",
         "cycle_id": "2026-07-02",
         "fencing_token": 1,
-        "generated_at": "2026-06-27T09:28:57+10:00",
+        "generated_at": "2026-06-27T17:14:45+10:00",
         "lease_owner": "sender-000",
         "lease_until_ms": 301000,
         "mail_key": "2026-07-02|M1|linzezhang35@gmail.com",
@@ -1032,6 +1065,32 @@
         "status": "BLOCKED"
       },
       "smtp_accept_crash_window": true,
+      "status": "blocked"
+    },
+    "smtp_accept_pending_commit_reclaim": {
+      "action": "claim_outbox",
+      "blocking_reasons": [
+        "outbox row is marked not retry safe"
+      ],
+      "message": {
+        "body_sha256": "a2fdc03011ff17d224c8fca2bc6da64b1b455dfc0f714c06518ad411304fa768",
+        "content_revision_id": "rev-1",
+        "cycle_id": "2026-07-02",
+        "fencing_token": 1,
+        "generated_at": "2026-06-27T17:14:45+10:00",
+        "lease_owner": "sender-000",
+        "lease_until_ms": 301000,
+        "mail_key": "2026-07-02|M1|linzezhang35@gmail.com",
+        "message_id": "adp-afbbce24fdeecd2ac9f94d33@arxiv-daily-push.local",
+        "product_id": "M1",
+        "real_smtp_sent": false,
+        "recipient": "linzezhang35@gmail.com",
+        "retry_safe": false,
+        "row_version": 1,
+        "send_attempts": 1,
+        "smtp_accept_crash_window_reproduced": true,
+        "status": "BLOCKED"
+      },
       "status": "blocked"
     },
     "source_adapter_changed": false,
@@ -1056,9 +1115,11 @@
     "claim_attempts": 100,
     "delivery_semantics": "at_least_once_with_idempotent_message_id",
     "exactly_once_claimed": false,
-    "outbox_delivery_hash": "4f367780aa03614cc193c3a9475e79f30690fc625ccf37f5f24b0b4753caf58b",
+    "fail_closed_reclaim_status": "blocked",
+    "outbox_delivery_hash": "41b0caeaa9bec90bcf775c3838907617848d516768b2b67ba8b838ffdaf72406",
     "passed_claims": 1,
-    "required_probe_count": 6
+    "provider_finalized_reclaim_status": "blocked",
+    "required_probe_count": 8
   },
   "production_boundary": {
     "current_pointer_changed": false,
@@ -1074,40 +1135,36 @@
     "v7_2_contract_files_changed": false
   },
   "project_id": "arxiv-daily-push",
-  "rollback": "Revert the A-003 outbox delivery helper/tests, phase record, run manifest, user-center page, P0 receipt refresh, registries, traceability/delivery/event records, and generated status refresh; no runtime production state was changed.",
+  "rollback": "Revert the A-003 outbox claim retry-safety fix, regression tests, refreshed outbox manifest, independent review receipt, P0 receipt references, user-center and governance records; no runtime production state was changed.",
   "schema_version": "codexproject.run_manifest.v1",
   "stage2_integrated_production_accepted": false,
   "status": "completed_local_validation_no_production",
-  "summary": "Dedicated local P0 A-003 evidence verifies transactional outbox idempotent message identity, one successful outbox claim under 100 attempts, SMTP accepted-before-local-commit fail-closed behavior, provider-ref finalization without resend, and at-least-once semantics without exactly-once claims.",
+  "summary": "Dedicated local P0 A-003 evidence verifies transactional outbox idempotent message identity, one successful outbox claim under 100 attempts, SMTP accepted-before-local-commit fail-closed behavior, fail-closed and finalized rows cannot be reclaimed, provider-ref finalization without resend, and at-least-once semantics without exactly-once claims.",
   "task_id": "S2PMT03-OUTBOX-DELIVERY-A003",
   "test_results": [
-    "py_compile PASS",
-    "user-center timestamp check: validated 15 pages",
-    "targeted A-003 tests: 43 OK",
-    "source/board user-center gate tests: 19 OK",
-    "full arxiv-daily-push unittest: 580 OK",
-    "V7.2 validator PASS",
-    "V7.2 unittest: 4 OK",
+    "local focused lease/fencing test after reclaim fix: 16 OK",
+    "independent reviewer second-pass verdict: PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+    "focused closeout unittest: 47 OK",
+    "full ADP unittest discover: 590 OK",
+    "V7.2 validator: PASS",
     "project governance: errors 0 warnings 0",
     "governance sync: errors 0 warnings 0",
-    "lean governance check-render: drift_count 0 reference_issue_count 0",
-    "structured parse: JSON 3 OK; JSONL 2 OK; parameter_registry.csv 949 rows width 36; TRACEABILITY_MATRIX.csv 255 rows width 12",
-    "git diff --check PASS",
-    "semantic extractor: timed out after 60s; non-blocking validation not completed and not claimed as passed"
+    "lean check-render: drift_count 0 reference_issue_count 0",
+    "structured JSON/CSV/JSONL/YAML parse: OK",
+    "git diff --check: PASS"
   ],
   "tests_run": [
-    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_a003_compile2 PYTHONPATH=arxiv-daily-push/src python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py arxiv-daily-push/tests/test_stage2_lease_fencing.py arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_user_center_candidate_pool.py",
-    "PYTHONPATH=arxiv-daily-push/src python3 arxiv-daily-push/scripts/update_user_center_timestamps.py --check",
-    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_a003_target PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_lease_fencing.py arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_user_center_candidate_pool.py -q",
-    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_a003_source_gate PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_user_center_candidate_pool.py arxiv-daily-push/tests/test_owner_controls.py -q",
-    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_a003_full PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q",
-    "python3 arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2",
-    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_a003_v72 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/docs/pursuing_goal/v7_2/tests -q",
-    "PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push",
-    "PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_governance_sync.py",
-    "PYTHONPATH=arxiv-daily-push/src python3 scripts/lean_governance.py check-render --project arxiv-daily-push",
-    "structured JSON/JSONL/CSV parse check",
-    "git diff --check",
-    "python3 scripts/validate_semantic_extractors.py arxiv-daily-push with 60s wrapper timeout"
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_a003_reclaim_fix PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_lease_fencing.py -q",
+    "reviewer second-pass read-only tests: test_stage2_lease_fencing.py and test_stage2_final_gate.py",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_a003_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_lease_fencing.py arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_user_center_candidate_pool.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_a003_all PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest discover -s arxiv-daily-push/tests -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_a003_v72 python3 arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_a003_gov python3 scripts/validate_project_governance.py --project arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_a003_sync python3 scripts/validate_governance_sync.py",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_a003_lean python3 scripts/lean_governance.py check-render --project arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_a003_ts PYTHONPATH=arxiv-daily-push/src python3 arxiv-daily-push/scripts/update_user_center_timestamps.py --check",
+    "ruby -e 'require \"yaml\"; require \"json\"; Dir[\"arxiv-daily-push/docs/governance/*.yaml\", \"arxiv-daily-push/docs/pursuing_goal/**/*.yaml\"].each { |p| YAML.load_file(p) }; puts \"yaml_parse_ok\"'",
+    "python3 structured JSON/CSV/JSONL parse check",
+    "git diff --check"
   ]
 }
