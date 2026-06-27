@@ -288,14 +288,18 @@
       "evidence_refs": [
         "arxiv-daily-push/docs/phase_records/PHASE_S2PAT05_ROI_DISCLOSURE_A018.md",
         "governance/run_manifests/ADP-S2PAT05-ROI-DISCLOSURE-A018-20260626.json",
-        "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv"
+        "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+        "governance/run_manifests/ADP-S2PMT07-P1-A018-A021-TECHNICAL-REVIEW-20260627.json"
       ],
       "finding_id": "A-018",
+      "finding_level_technical_review_receipt": "governance/run_manifests/ADP-S2PMT07-P1-A018-A021-TECHNICAL-REVIEW-20260627.json",
       "fix_task": "S2PAT05",
-      "preliminary_review_state": "refreshed_current_evidence_located_sufficiency_gap_review_required_closure_not_claimed",
-      "receipt_refreshed_at": "2026-06-27T03:37:12+10:00",
-      "reviewer_decision_required": "Verify V7.1 fix/test requirement: V7.1 合法 ROI 可发布；无成本/概率/证据的收益声明被拒绝",
+      "preliminary_review_state": "finding_level_technical_review_passed_technical_closure_candidate_no_p1_closure",
+      "receipt_refreshed_at": "2026-06-27T19:36:09+10:00",
+      "reviewer_decision_required": "Carry this finding into the later P1 closure package as a technical closure candidate; do not lower P0/P1 counters or claim S2PMT07 final pass until the full independent final gate signs off.",
       "severity": "P1",
+      "technical_closure_candidate": true,
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
       "title": "V7 要求展示 ROI，但旧邮件验证明确禁止 ROI",
       "track": "A_安全代码并发"
     },
@@ -326,9 +330,9 @@
       ],
       "finding_id": "A-020",
       "fix_task": "S2PMT01",
-      "preliminary_review_state": "refreshed_current_evidence_located_sufficiency_gap_review_required_closure_not_claimed",
+      "preliminary_review_state": "sufficiency_gap_review_required_closure_not_claimed_a020_supply_chain_gap_preserved",
       "receipt_refreshed_at": "2026-06-27T03:37:12+10:00",
-      "reviewer_decision_required": "Verify V7.1 fix/test requirement: CI 自动审计依赖和 Action 引用；高危漏洞按例外审批流程阻断",
+      "reviewer_decision_required": "Repair A-020 supply-chain sufficiency gap before technical closure: complete SBOM generation, online vulnerability database audit or equivalent attestation, Action commit-SHA migration/exception policy, and CI enforcement are not yet proven by current evidence.",
       "severity": "P1",
       "title": "依赖、CI Action、SBOM 与权限最小化未形成供应链基线",
       "track": "A_安全代码并发"
@@ -337,14 +341,18 @@
       "evidence_refs": [
         "arxiv-daily-push/docs/phase_records/PHASE_S2PAT05_ROADMAP_STOP_CODE_A021.md",
         "governance/run_manifests/ADP-S2PAT05-ROADMAP-STOP-CODE-A021-20260626.json",
-        "arxiv-daily-push/tests/test_v7_2_roadmap_machine_gate.py"
+        "arxiv-daily-push/tests/test_v7_2_roadmap_machine_gate.py",
+        "governance/run_manifests/ADP-S2PMT07-P1-A018-A021-TECHNICAL-REVIEW-20260627.json"
       ],
       "finding_id": "A-021",
+      "finding_level_technical_review_receipt": "governance/run_manifests/ADP-S2PMT07-P1-A018-A021-TECHNICAL-REVIEW-20260627.json",
       "fix_task": "S2PAT05",
-      "preliminary_review_state": "refreshed_current_evidence_located_sufficiency_gap_review_required_closure_not_claimed",
-      "receipt_refreshed_at": "2026-06-27T03:37:12+10:00",
-      "reviewer_decision_required": "Verify V7.1 fix/test requirement: 任务图无缺失引用/环；所有 stop condition 均在 registry",
+      "preliminary_review_state": "finding_level_technical_review_passed_technical_closure_candidate_no_p1_closure",
+      "receipt_refreshed_at": "2026-06-27T19:36:09+10:00",
+      "reviewer_decision_required": "Carry this finding into the later P1 closure package as a technical closure candidate; do not lower P0/P1 counters or claim S2PMT07 final pass until the full independent final gate signs off.",
       "severity": "P1",
+      "technical_closure_candidate": true,
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
       "title": "Roadmap 依赖为空、Stop Code 混用自由文本，机器门不可可靠执行",
       "track": "A_安全代码并发"
     },
@@ -725,8 +733,8 @@
     "C_UI交互架构": 9
   },
   "p1_latest_technical_review_candidate_findings": [
-    "A-017",
-    "A-019"
+    "A-018",
+    "A-021"
   ],
   "p1_technical_review_candidate_findings": [
     "A-006",
@@ -741,13 +749,16 @@
     "A-015",
     "A-016",
     "A-017",
-    "A-019"
+    "A-019",
+    "A-018",
+    "A-021"
   ],
-  "p1_technical_review_candidate_manifest": "governance/run_manifests/ADP-S2PMT07-P1-A017-A019-TECHNICAL-REVIEW-20260627.json",
+  "p1_technical_review_candidate_manifest": "governance/run_manifests/ADP-S2PMT07-P1-A018-A021-TECHNICAL-REVIEW-20260627.json",
   "p1_technical_review_candidate_manifests": [
     "governance/run_manifests/ADP-S2PMT07-P1-A006-A009-TECHNICAL-REVIEW-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-A010-A016-TECHNICAL-REVIEW-20260627.json",
-    "governance/run_manifests/ADP-S2PMT07-P1-A017-A019-TECHNICAL-REVIEW-20260627.json"
+    "governance/run_manifests/ADP-S2PMT07-P1-A017-A019-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-A018-A021-TECHNICAL-REVIEW-20260627.json"
   ],
   "preserved_blockers": [
     "reviewer_independence_not_proven",
@@ -758,9 +769,9 @@
     "independent_final_signoff_missing",
     "independent_final_command_execution_missing"
   ],
-  "previous_refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-A010-A016-TECHNICAL-REVIEW-20260627.json",
+  "previous_refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-A017-A019-TECHNICAL-REVIEW-20260627.json",
   "project_id": "arxiv-daily-push",
-  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-A017-A019-TECHNICAL-REVIEW-20260627.json",
+  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-A018-A021-TECHNICAL-REVIEW-20260627.json",
   "refresh_manifest_history": [
     "governance/run_manifests/ADP-S2PMT07-P1-A006-A009-TECHNICAL-REVIEW-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-A010-A016-TECHNICAL-REVIEW-20260627.json"
@@ -782,9 +793,10 @@
     "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C011-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-A006-A009-TECHNICAL-REVIEW-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-A010-A016-TECHNICAL-REVIEW-20260627.json",
-    "governance/run_manifests/ADP-S2PMT07-P1-A017-A019-TECHNICAL-REVIEW-20260627.json"
+    "governance/run_manifests/ADP-S2PMT07-P1-A017-A019-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-A018-A021-TECHNICAL-REVIEW-20260627.json"
   ],
-  "refreshed_at": "2026-06-27 19:27:01 Australia/Sydney",
+  "refreshed_at": "2026-06-27 19:36:09 Australia/Sydney",
   "refreshed_findings": [
     "A-006",
     "A-007",

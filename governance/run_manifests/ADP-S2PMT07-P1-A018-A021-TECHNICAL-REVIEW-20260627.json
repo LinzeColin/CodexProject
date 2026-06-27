@@ -1,0 +1,117 @@
+{
+  "acceptance_id": "ACC-S2PMT07-FINAL-REVIEW",
+  "closure_claimed": false,
+  "contract_version": "ADP-PRODUCT-CONTRACT-V7.2",
+  "current_pointer_changed": false,
+  "daily_operation_enabled": false,
+  "db_migration_executed": false,
+  "excluded_findings": [
+    {
+      "finding_id": "A-020",
+      "reason": "current evidence records workflow/action/vulnerability exception gate but explicitly leaves complete SBOM generation, online vulnerability database audit, Action commit-SHA migration, and CI enforcement as separate future gates; not eligible for technical pass in this batch"
+    }
+  ],
+  "finding_ids": [
+    "A-018",
+    "A-021"
+  ],
+  "generated_at": "2026-06-27T19:36:09+10:00",
+  "inherited_v7_1_open_p0_findings_after": 8,
+  "inherited_v7_1_open_p0_findings_before": 8,
+  "inherited_v7_1_open_p1_findings_after": 37,
+  "inherited_v7_1_open_p1_findings_before": 37,
+  "manifest_id": "ADP-S2PMT07-P1-A018-A021-TECHNICAL-REVIEW-20260627",
+  "next_task": "repair_a020_supply_chain_sufficiency_gap_or_continue_b_track_p1_reviews",
+  "p0_closure_claimed": false,
+  "p1_closure_claimed": false,
+  "parent_task_id": "S2PMT07",
+  "preserved_blockers": [
+    "p1_closure_not_claimed",
+    "independent_final_signoff_missing",
+    "independent_final_command_execution_missing",
+    "s2plt04_not_completed",
+    "final_acceptance_bundle_missing",
+    "a020_supply_chain_sufficiency_gap_not_resolved"
+  ],
+  "production_queue_mutation_allowed": false,
+  "production_restore_enabled": false,
+  "project_id": "arxiv-daily-push",
+  "public_schema_changed": false,
+  "ranking_changed": false,
+  "real_smtp_sent": false,
+  "release_packaging_enabled": false,
+  "review_scope": "local_code_and_governance_evidence_only",
+  "reviewed_findings": [
+    {
+      "evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PAT05_ROI_DISCLOSURE_A018.md",
+        "governance/run_manifests/ADP-S2PAT05-ROI-DISCLOSURE-A018-20260626.json",
+        "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py",
+        "arxiv-daily-push/tests/test_stage1_b1_report.py"
+      ],
+      "finding_id": "A-018",
+      "finding_title": "V7 要求展示 ROI，但旧邮件验证明确禁止 ROI",
+      "fix_task": "S2PAT05",
+      "independent_final_closure_decision_required": true,
+      "severity": "P1",
+      "technical_closure_candidate": true,
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "verified_checks": [
+        "typed_expected_roi_disclosure_allowed",
+        "expected_roi_requires_assumptions_evidence_cost_probability",
+        "actual_roi_not_calculable_without_verifiable_cost_benefit_evidence",
+        "guaranteed_profit_claims_blocked",
+        "email_runtime_internal_roi_score_not_exposed",
+        "no_production_side_effects"
+      ]
+    },
+    {
+      "evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PAT05_ROADMAP_STOP_CODE_A021.md",
+        "governance/run_manifests/ADP-S2PAT05-ROADMAP-STOP-CODE-A021-20260626.json",
+        "arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py",
+        "arxiv-daily-push/tests/test_v7_2_roadmap_machine_gate.py"
+      ],
+      "finding_id": "A-021",
+      "finding_title": "Roadmap 依赖为空、Stop Code 混用自由文本，机器门不可可靠执行",
+      "fix_task": "S2PAT05",
+      "independent_final_closure_decision_required": true,
+      "severity": "P1",
+      "technical_closure_candidate": true,
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "verified_checks": [
+        "registered_stop_conditions_required",
+        "free_text_stop_conditions_rejected",
+        "dependencies_must_be_lists",
+        "dependency_references_must_resolve",
+        "self_dependencies_and_cycles_rejected",
+        "roadmap_machine_gate_passes_current_v7_2",
+        "no_production_side_effects"
+      ]
+    }
+  ],
+  "reviewer_independence_for_final_gate_claimed": false,
+  "rollback": "Remove this manifest, phase record, P1 receipt updates, traceability row, rendered owner page, and tests; no production state was changed.",
+  "s2pmt07_final_pass_claimed": false,
+  "scheduler_install_enabled": false,
+  "schema_version": "codexproject.run_manifest.v1",
+  "source_adapter_changed": false,
+  "stage2_integrated_production_accepted": false,
+  "status": "finding_level_technical_review_passed_no_p1_closure_no_production",
+  "summary": "Finding-level technical review for P1 A-018 and A-021 confirms local ROI disclosure and roadmap stop-code machine-gate evidence as technical closure candidates. A-020 remains a supply-chain sufficiency gap and is explicitly not reviewed as passed in this batch. This is not independent final signoff and does not close P1.",
+  "task_id": "S2PMT07-P1-A018-A021-TECHNICAL-REVIEW",
+  "technical_review_checks": {
+    "a020_explicitly_excluded_as_supply_chain_sufficiency_gap": true,
+    "all_evidence_files_exist": true,
+    "all_technical_review_verdicts_pass_no_production": true,
+    "all_two_reviewed_findings_present": true,
+    "independent_final_signoff_present": false,
+    "p1_counter_preserved_open": true,
+    "s2pmt07_final_gate_still_blocked": true
+  },
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false,
+  "validation_commands_planned": [
+    "python3 -m unittest arxiv-daily-push/tests/test_stage1_b1_report.py arxiv-daily-push/tests/test_v7_2_roadmap_machine_gate.py arxiv-daily-push/tests/test_stage2_final_gate.py -q"
+  ]
+}
