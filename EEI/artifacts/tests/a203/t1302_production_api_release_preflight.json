@@ -36,10 +36,10 @@
       }
     },
     "operator_soak": {
-      "operator_24h": "FAILED_RUN",
+      "operator_24h": "MISSING",
       "operator_4h": "PASS",
       "release_gate_closed_by_validator": false,
-      "status": "FAILED_OPERATOR_EVIDENCE"
+      "status": "PARTIAL_OPERATOR_EVIDENCE"
     },
     "operator_soak_background_heartbeat": {
       "completion_percent": 10.76,
@@ -75,7 +75,7 @@
       "status": "RELEASE_MANAGER_ACTIVATION_BLOCKED"
     }
   },
-  "generated_at": "2026-06-27T07:04:51Z",
+  "generated_at": "2026-06-27T11:38:06Z",
   "missing_gates": [
     {
       "gate_id": "A202_relationship_publication_clearance",
@@ -105,13 +105,13 @@
     "a203_contract": "artifacts/tests/a203/t1302_production_api_graph_scoring_contract.json",
     "a203_contract_sha256": "49dcfacb16721a74305a88bb8619fa522cf24b8c9793b16a060a1b5398b7ae0c",
     "operator_soak_evidence": "artifacts/tests/a209/t1307_operator_soak_evidence_validation.json",
-    "operator_soak_evidence_sha256": "f5dc124f5e8beb4389163e5e171bbddc9743cfcb3a223af0798a74c9234cc53b",
+    "operator_soak_evidence_sha256": "22002cee32e692707b3a18e756a6bc9ec81b17d9c41eac53c236fa2f285f36f3",
     "operator_soak_heartbeat": "artifacts/tests/a209/t1307_operator_soak_background_progress.json",
     "operator_soak_heartbeat_sha256": "555f5f0c86df491d144991a539c34c583b1c5778045348960c472e4f118f0be8",
     "release_decision_contract": "artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json",
-    "release_decision_contract_sha256": "259ef18a154f2d9c3026ebf9828b598822e7dd0c670764ce249f30be99fb127b",
+    "release_decision_contract_sha256": "25c3aa1fb4cd8d87da26c7ce538e54ff28900821f7a6a93e95e682cc1982f7c8",
     "release_manager_preflight": "artifacts/tests/a205/t1303_release_manager_activation_preflight.json",
-    "release_manager_preflight_sha256": "9e80dedf84b9e10a23db4abb3c1e5544dba9bf44621aa9093dd6677ea66023d8"
+    "release_manager_preflight_sha256": "888f9f4586bd7e673ed7da5e634dfc7a3e600f0bde1076dc87cf6d3f0c24968f"
   },
   "status": "A203_PRODUCTION_API_RELEASE_BLOCKED",
   "system_en_name": "Enterprise Ecosystem Intelligence",

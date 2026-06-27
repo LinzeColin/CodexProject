@@ -225,6 +225,8 @@ features:
       - "PARAM-088"
       - "PARAM-089"
       - "PARAM-090"
+      - "PARAM-091"
+      - "PARAM-092"
     code_refs:
       - "EEI/data/parameter_catalog.csv:43-61"
       - "EEI/config/thresholds/default-v2.json"
@@ -252,6 +254,8 @@ features:
       - "PARAM-079"
       - "PARAM-082"
       - "PARAM-090"
+      - "PARAM-091"
+      - "PARAM-092"
     code_refs:
       - "EEI/scripts/run_operator_soak.mjs"
       - "EEI/scripts/run_soak_smoke.mjs"
@@ -2106,6 +2110,38 @@ parameters:
     name: "A209 Playwright browser runtime path"
     value: "/private/tmp/eei-ms-playwright"
     source: "EXTRACTED from EEI/scripts/run_soak_smoke.mjs LOCAL_PLAYWRIGHT_BROWSERS_PATH fallback and 2026-06-27 operator smoke evidence"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids:
+      - "TASK-T1307"
+  -
+    parameter_id: "PARAM-091"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "soak.window_wall_clock_grace_seconds"
+    name: "A209 operator wall-clock grace seconds"
+    value: "180"
+    source: "EXTRACTED from EEI/scripts/run_operator_soak.mjs WALL_CLOCK_GRACE_SECONDS and mirrored in validate_operator_soak_evidence.py; permits bounded host scheduling and browser process overhead while retaining serialized-window rejection."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids:
+      - "TASK-T1307"
+  -
+    parameter_id: "PARAM-092"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "soak.window_wall_clock_grace_ratio"
+    name: "A209 operator wall-clock grace ratio"
+    value: "0.5"
+    source: "EXTRACTED from EEI/scripts/run_operator_soak.mjs WALL_CLOCK_GRACE_RATIO and mirrored in validate_operator_soak_evidence.py; permits bounded host scheduling and browser process overhead while retaining serialized-window rejection."
     status: "active"
     fact_level: "EXTRACTED"
     semantic_status: "MACHINE_VERIFIED"

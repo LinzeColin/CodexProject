@@ -32,10 +32,10 @@
       "threshold_result": "FAIL_CLOSED"
     },
     "operator_soak": {
-      "operator_24h": "FAILED_RUN",
+      "operator_24h": "MISSING",
       "operator_4h": "PASS",
       "release_gate_closed_by_validator": false,
-      "status": "FAILED_OPERATOR_EVIDENCE"
+      "status": "PARTIAL_OPERATOR_EVIDENCE"
     },
     "operator_soak_background_heartbeat": {
       "completion_percent": 10.76,
@@ -71,7 +71,7 @@
       "signed_decision_complete": true
     }
   },
-  "generated_at": "2026-06-27T09:17:15Z",
+  "generated_at": "2026-06-27T11:38:06Z",
   "missing_gates": [
     {
       "gate_id": "A202_source_license_reviews",
@@ -133,7 +133,7 @@
     "entity_gold_evaluation": "artifacts/tests/a026/t904_entity_resolution_gold_evaluation_contract.json",
     "entity_gold_evaluation_sha256": "e34cf6e5b57500ce827a6db92a2bc533d66f4b64320021657c5e7fd6614d14d3",
     "operator_soak_evidence": "artifacts/tests/a209/t1307_operator_soak_evidence_validation.json",
-    "operator_soak_evidence_sha256": "f5dc124f5e8beb4389163e5e171bbddc9743cfcb3a223af0798a74c9234cc53b",
+    "operator_soak_evidence_sha256": "22002cee32e692707b3a18e756a6bc9ec81b17d9c41eac53c236fa2f285f36f3",
     "operator_soak_heartbeat": "artifacts/tests/a209/t1307_operator_soak_background_progress.json",
     "operator_soak_heartbeat_sha256": "555f5f0c86df491d144991a539c34c583b1c5778045348960c472e4f118f0be8",
     "relationship_gold_evaluation": "artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json",

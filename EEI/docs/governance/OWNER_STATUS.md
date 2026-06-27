@@ -39,7 +39,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (90/90 active parameters, 11/11 active formulas)
+- implementation_congruence: `VERIFIED` (92/92 active parameters, 11/11 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `UNVERIFIED`
 - empirical_validation: `PARTIAL`
@@ -71,8 +71,8 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - model_count: `12`
 - total_formulas: `12`
 - active_formulas: `11`
-- total_parameters: `90`
-- active_parameters: `90`
+- total_parameters: `92`
+- active_parameters: `92`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
@@ -86,8 +86,8 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - tree_bound_events: `0`
 - commit_bound_events: `18`
 - legacy_unbound_events: `19`
-- precommit_pending_events: `91`
-- pending_or_stale_events: `112`
+- precommit_pending_events: `92`
+- pending_or_stale_events: `113`
 
 ## 15. UNKNOWN
 
@@ -97,8 +97,8 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 - source_base_commit: `0175e2b9616fa77d50ae06bcf0cd68ce9d015f7d`
 - source_tree_hash: `356fcd0bb5d3b892b331d28351fe9e99a64c8457`
-- source_snapshot_hash: `sha256:0aca7308792067310a98a33c5200f7a551e034e4565dcfa250be586487fa1866`
-- snapshot_event_time: `2026-06-27T19:13:36+10:00`
+- source_snapshot_hash: `sha256:d3cdd49fd2633da88e616b04320e5b9ba5dff5f313c7efc3bfa21b6a51ef4def`
+- snapshot_event_time: `2026-06-27T21:27:32+10:00`
 - generator_version: `4.0.0`
 - version: `0.1.0`
 - phase/gate: `D / TASK-T1301-A202-LIVE-OFFICIAL-CAPTURE-FRESHNESS`
