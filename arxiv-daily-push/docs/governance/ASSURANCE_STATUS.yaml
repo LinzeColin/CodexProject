@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260628-ADP-S2PLT04-STATE-CONTENT-EVIDENCE-BUNDLE-SYNC"
-source_snapshot_hash: "sha256:c4bb9c9191c0e2d448318f6fae5221a94462f574ca4cc5ebefab3b30e7a9069d"
-source_base_commit: "afc31872ff4acd8b21f30c84e0f3876e9b8a97cf"
+as_of_event_id: "EVENT-20260628-ADP-S2PLT04-FINAL-BUNDLE-READINESS-SYNC"
+source_snapshot_hash: "sha256:b46b66adca9fff016c8699d25d2f20031291631ddbc6e9ee00fc360126a9647f"
+source_base_commit: "0408db0f6049105282b771c01216566057db763c"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
-snapshot_event_time: "2026-06-28T03:26:05+10:00"
+snapshot_event_time: "2026-06-28T03:51:22+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -62,12 +62,12 @@ dimensions:
     tree_bound_events: 0
     commit_bound_events: 4
     legacy_unbound_events: 188
-    precommit_pending_events: 41
+    precommit_pending_events: 42
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "VERIFIED"
-  release_gate: "S2PLT04_STATE_CONTENT_EVIDENCE_BUNDLE_SYNC_BLOCKED_NO_PRODUCTION"
+  release_gate: "S2PLT04_FINAL_BUNDLE_READINESS_SYNC_BLOCKED_NO_PRODUCTION"
   blocker_ids:
     - "FACT-arxiv-daily-push-IMPLEMENTATION-PARAMETER-REVIEW"
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
@@ -105,7 +105,7 @@ owner_decision:
   question: "是否接受 V7.2 作为 CURRENT 产品合同，保留 V7.1 为只读历史基线，并要求所有 Stage2 agent 先按 V7.2 复审已完成工作，不满足的先修复，再继续新任务。"
   human_owner_role: "content_owner + engineering_owner"
   human_assignment_status: "CODEX_CAN_CONTINUE_WITH_STAGE2_CONTRACT"
-  current_recommendation: "A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PLT02 live 2-day readiness precheck as local no-production blocked evidence only, keep S2PLT02 blocked until S2PLT01 acceptance, inherited P0/P1 zero state, real scheduler/SMTP proof, 8 real M1-M4 emails, M4 watermark proof, and final production stop gates close, and require S2PMT07 independent final review before any inherited P0/P1 closure or production acceptance claim."
+  current_recommendation: "A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PLT04 final bundle readiness detail as local no-production blocked evidence only, keep S2PLT02 blocked until S2PLT01 acceptance, inherited P0/P1 zero state, real scheduler/SMTP proof, 8 real M1-M4 emails, M4 watermark proof, and final production stop gates close, and require S2PMT07 independent final review before any inherited P0/P1 closure or production acceptance claim."
   option_a: "继续 S2PLT02 no-production readiness evidence work under V7.2 boundaries。"
   option_b: "暂停所有 Stage2 任务等待真实 scheduler/SMTP 生产启用；会不必要阻塞无冲突证据工作。"
   option_c: "越过 S2PMT07 直接声称 P0/P1 关闭或启用 scheduler/SMTP；禁止。"

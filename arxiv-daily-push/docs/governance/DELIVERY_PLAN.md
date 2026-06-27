@@ -21,7 +21,7 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 200
+- task_count: 201
 - acceptance_count: 126
 
 ## Delivery Tasks
@@ -127,6 +127,8 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | ADP-PHASE12-EMAIL-FRONTSTAGE-QUALITY-037 | E | deprecated | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | superseded by `S2PHT01V1.1-T02-T04` EMAIL_LEARNING_V1; do not resume the older front-stage path while V7.2 Email V1 is current | `docs/phase_records/PHASE_12_EMAIL_FRONTSTAGE_QUALITY.md`; `docs/phase_records/PHASE_S2PHT01V1_1_T02_T04_EMAIL_V1_RENDERER.md` |
 | ADP-PHASE12-EMAIL-DECISION-UI-V2-038 | E | deprecated | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | superseded by `S2PHT01V1.1-T02-T04` EMAIL_LEARNING_V1; the older V2 decision UI renderer must not be the next executable mail-template path | `docs/phase_records/PHASE_12_EMAIL_DECISION_UI_V2.md`; `docs/phase_records/PHASE_S2PHT01V1_1_T02_T04_EMAIL_V1_RENDERER.md` |
 | ADP-PHASE11-PRODUCTION-TRIAL-START-022 | E | blocked | ADP-ACC-PHASE11-PRODUCTION-TRIAL-START | precheck recorded PR #32/main CI, default_branch_ref, and trial_start_workflow_ref; still missing launch confirmation, runner, SMTP, Release, and workflow-vars refs | `docs/phase_records/PHASE_11_PRODUCTION_TRIAL_START_PRECHECK.md` |
+
+| S2PLT04-FINAL-BUNDLE-READINESS-SYNC | S2PL | blocked | `ACC-S2PLT04-INTEGRATION-CANDIDATE` | focused final-gate tests 24 OK; final bundle readiness detail remains blocked/no-production | `docs/phase_records/PHASE_S2PLT04_FINAL_BUNDLE_READINESS_SYNC.md`; `governance/run_manifests/ADP-S2PLT04-FINAL-BUNDLE-READINESS-SYNC-20260628.json` |
 
 ## Release Gates
 
