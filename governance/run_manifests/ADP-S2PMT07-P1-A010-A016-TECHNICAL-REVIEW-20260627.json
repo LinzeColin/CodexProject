@@ -1,0 +1,223 @@
+{
+  "acceptance_id": "ACC-S2PMT07-FINAL-REVIEW",
+  "closure_claimed": false,
+  "contract_version": "ADP-PRODUCT-CONTRACT-V7.2",
+  "current_pointer_changed": false,
+  "daily_operation_enabled": false,
+  "db_migration_executed": false,
+  "finding_ids": [
+    "A-010",
+    "A-011",
+    "A-012",
+    "A-013",
+    "A-014",
+    "A-015",
+    "A-016"
+  ],
+  "generated_at": "2026-06-27T19:11:53+10:00",
+  "inherited_v7_1_open_p0_findings_after": 8,
+  "inherited_v7_1_open_p0_findings_before": 8,
+  "inherited_v7_1_open_p1_findings_after": 37,
+  "inherited_v7_1_open_p1_findings_before": 37,
+  "manifest_id": "ADP-S2PMT07-P1-A010-A016-TECHNICAL-REVIEW-20260627",
+  "next_task": "continue_p1_finding_level_technical_reviews_or_independent_final_gate_after_all_candidates",
+  "p0_closure_claimed": false,
+  "p1_closure_claimed": false,
+  "parent_task_id": "S2PMT07",
+  "preserved_blockers": [
+    "p1_closure_not_claimed",
+    "independent_final_signoff_missing",
+    "independent_final_command_execution_missing",
+    "s2plt04_not_completed",
+    "final_acceptance_bundle_missing"
+  ],
+  "production_queue_mutation_allowed": false,
+  "production_restore_enabled": false,
+  "project_id": "arxiv-daily-push",
+  "public_schema_changed": false,
+  "ranking_changed": false,
+  "real_smtp_sent": false,
+  "release_packaging_enabled": false,
+  "review_scope": "local_code_and_governance_evidence_only",
+  "reviewed_findings": [
+    {
+      "evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_ARTIFACT_ATOMIC_PUBLISH.md",
+        "governance/run_manifests/ADP-S2PMT02-ARTIFACT-ATOMIC-PUBLISH-20260626.json",
+        "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py",
+        "arxiv-daily-push/tests/test_stage1_b1_report.py"
+      ],
+      "finding_id": "A-010",
+      "finding_title": "报告文件在质量验证前写入正式目录",
+      "fix_task": "S2PMT02-ARTIFACT-ATOMIC-PUBLISH",
+      "independent_final_closure_decision_required": true,
+      "severity": "P1",
+      "technical_closure_candidate": true,
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "verified_checks": [
+        "validated_staging_before_formal_publish",
+        "failure_writes_no_formal_artifacts",
+        "atomic_publish_failure_leaves_no_half_package",
+        "artifact_manifest_written_after_validation",
+        "no_production_side_effects"
+      ]
+    },
+    {
+      "evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_ARTIFACT_SHA256.md",
+        "governance/run_manifests/ADP-S2PMT02-ARTIFACT-SHA256-20260626.json",
+        "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py",
+        "arxiv-daily-push/tests/test_stage1_b1_report.py"
+      ],
+      "finding_id": "A-011",
+      "finding_title": "artifact_files.sha256 字段不是文件字节 SHA-256",
+      "fix_task": "S2PMT02-ARTIFACT-SHA256",
+      "independent_final_closure_decision_required": true,
+      "severity": "P1",
+      "technical_closure_candidate": true,
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "verified_checks": [
+        "artifact_files_sha256_matches_written_file_bytes",
+        "content_hash_preserved_as_canonical_content_hash",
+        "sha256_recomputed_from_bytes",
+        "no_production_side_effects"
+      ]
+    },
+    {
+      "evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT01_INPUT_URL_SAFETY_A012.md",
+        "governance/run_manifests/ADP-S2PMT01-INPUT-URL-SAFETY-A012-20260626.json",
+        "arxiv-daily-push/src/arxiv_daily_push/security_boundary.py",
+        "arxiv-daily-push/tests/test_security_boundary.py",
+        "arxiv-daily-push/tests/test_stage1_b1_report.py"
+      ],
+      "finding_id": "A-012",
+      "finding_title": "邮件原文链接未限制 URL scheme",
+      "fix_task": "S2PMT01",
+      "independent_final_closure_decision_required": true,
+      "severity": "P1",
+      "technical_closure_candidate": true,
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "verified_checks": [
+        "javascript_data_file_urls_blocked",
+        "credentialed_urls_blocked",
+        "unsafe_refs_fail_closed_before_payload",
+        "safe_http_https_mailto_refs_preserved",
+        "no_production_side_effects"
+      ]
+    },
+    {
+      "evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT04_SCHEDULER_TEMPLATE_A013.md",
+        "governance/run_manifests/ADP-S2PMT04-SCHEDULER-TEMPLATE-A013-20260626.json",
+        "arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py",
+        "arxiv-daily-push/tests/test_stage1_runtime.py"
+      ],
+      "finding_id": "A-013",
+      "finding_title": "调度模板路径未结构化转义，macOS plist 甚至不可解析",
+      "fix_task": "S2PMT04-SCHEDULER-TEMPLATE-A013",
+      "independent_final_closure_decision_required": true,
+      "severity": "P1",
+      "technical_closure_candidate": true,
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "verified_checks": [
+        "plistlib_structured_program_arguments",
+        "paths_with_spaces_chinese_semicolon_ampersand_parse",
+        "working_directory_and_pythonpath_structured",
+        "dry_run_template_only",
+        "no_scheduler_install_side_effects"
+      ]
+    },
+    {
+      "evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_SUPPORTING_FILE_COLLISION.md",
+        "governance/run_manifests/ADP-S2PMT02-SUPPORTING-FILE-COLLISION-20260626.json",
+        "arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py",
+        "arxiv-daily-push/tests/test_stage1_runtime.py"
+      ],
+      "finding_id": "A-014",
+      "finding_title": "备份辅助文件同名时静默覆盖",
+      "fix_task": "S2PMT02-SUPPORTING-FILE-COLLISION",
+      "independent_final_closure_decision_required": true,
+      "severity": "P1",
+      "technical_closure_candidate": true,
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "verified_checks": [
+        "supporting_files_use_source_path_hash_prefix",
+        "same_basename_from_different_dirs_preserved",
+        "duplicate_target_paths_fail_closed",
+        "manifest_paths_unique",
+        "no_production_restore_side_effects"
+      ]
+    },
+    {
+      "evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_FUTURE_HEARTBEAT_A015.md",
+        "governance/run_manifests/ADP-S2PMT05-FUTURE-HEARTBEAT-A015-20260627.json",
+        "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py",
+        "arxiv-daily-push/tests/test_stage2_stress_e2e.py"
+      ],
+      "finding_id": "A-015",
+      "finding_title": "未来时间戳被钳制为 age=0，时钟漂移可长期伪装新鲜",
+      "fix_task": "S2PMT05-FUTURE-HEARTBEAT-A015",
+      "independent_final_closure_decision_required": true,
+      "severity": "P1",
+      "technical_closure_candidate": true,
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "verified_checks": [
+        "future_heartbeat_over_300_seconds_blocks_owner_review",
+        "future_checkpoint_over_300_seconds_blocks_owner_review",
+        "dst_ntp_time_policy_deterministic",
+        "scheduler_side_effects_disabled",
+        "no_production_side_effects"
+      ]
+    },
+    {
+      "evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_LESSON_REVISION_A016.md",
+        "governance/run_manifests/ADP-S2PMT03-LESSON-REVISION-A016-20260626.json",
+        "arxiv-daily-push/src/arxiv_daily_push/lesson.py",
+        "arxiv-daily-push/src/arxiv_daily_push/contracts.py",
+        "arxiv-daily-push/tests/test_lesson.py"
+      ],
+      "finding_id": "A-016",
+      "finding_title": "lesson_id 只依赖 claim_id，不依赖内容/证据/模型版本",
+      "fix_task": "S2PMT03-LESSON-REVISION-A016",
+      "independent_final_closure_decision_required": true,
+      "severity": "P1",
+      "technical_closure_candidate": true,
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "verified_checks": [
+        "lesson_key_stable_across_content_revision",
+        "lesson_revision_changes_on_claim_content_change",
+        "lesson_revision_changes_on_evidence_locator_change",
+        "revision_mismatch_rejected",
+        "lesson_id_compatibility_bound_to_revision",
+        "no_production_side_effects"
+      ]
+    }
+  ],
+  "reviewer_independence_for_final_gate_claimed": false,
+  "rollback": "Remove this manifest, phase record, P1 receipt updates, traceability row, rendered owner pages, and tests; no production state was changed.",
+  "s2pmt07_final_pass_claimed": false,
+  "scheduler_install_enabled": false,
+  "schema_version": "codexproject.run_manifest.v1",
+  "source_adapter_changed": false,
+  "stage2_integrated_production_accepted": false,
+  "status": "finding_level_technical_review_passed_no_p1_closure_no_production",
+  "summary": "Finding-level technical review for P1 A-010 through A-016 confirms local artifact atomic publish, artifact SHA-256, URL safety, scheduler template, supporting-file collision, future heartbeat, and lesson revision evidence as technical closure candidates. This is not independent final signoff and does not close P1.",
+  "task_id": "S2PMT07-P1-A010-A016-TECHNICAL-REVIEW",
+  "technical_review_checks": {
+    "all_evidence_files_exist": true,
+    "all_seven_findings_present": true,
+    "all_technical_review_verdicts_pass_no_production": true,
+    "independent_final_signoff_present": false,
+    "p1_counter_preserved_open": true,
+    "s2pmt07_final_gate_still_blocked": true
+  },
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false,
+  "validation_commands_planned": [
+    "python3 -m unittest arxiv-daily-push/tests/test_stage1_b1_report.py arxiv-daily-push/tests/test_security_boundary.py arxiv-daily-push/tests/test_stage1_runtime.py arxiv-daily-push/tests/test_stage2_stress_e2e.py arxiv-daily-push/tests/test_lesson.py arxiv-daily-push/tests/test_stage2_final_gate.py -q"
+  ]
+}
