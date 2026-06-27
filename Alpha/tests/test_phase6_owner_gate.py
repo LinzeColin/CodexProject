@@ -77,6 +77,8 @@ def test_soak_validation_observes_until_48h_coverage(tmp_path):
 
     assert report["status"] == "pass"
     assert report["observed_hours"] == 48.0
+    assert report["window_start"] == start.isoformat()
+    assert report["window_end"] == (start + timedelta(hours=48)).isoformat()
 
 
 def test_owner_gate_closeout_blocks_until_all_acceptance_pass(tmp_path):

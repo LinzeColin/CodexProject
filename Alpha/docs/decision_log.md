@@ -48,6 +48,14 @@ Reason: Alpha needs to distinguish "all evidence artifacts are present and inter
 
 Consequence: The verifier can pass package integrity while still reporting `owner_gate_status=blocked_not_ready_for_owner_gate`. Running it with `--require-ready` must fail until `phase6_closeout.json` is truly `ready_for_owner_gate`.
 
+## 2026-06-27: Phase 6 Soak Evidence Must Show Observation Window
+
+Decision: `soak_validation_latest.json` records `window_start` and `window_end` from the first and latest accepted Paper/Shadow samples.
+
+Reason: OWNER-GATE review needs the concrete observed time window, not only elapsed hours, so the 48-hour natural-day claim can be inspected without reconstructing JSONL history.
+
+Consequence: Runtime and committed evidence can remain `blocked_not_ready_for_owner_gate` while still showing exactly how much of the 48-hour observation window has accrued.
+
 ## 2026-06-13: Execution Boundary
 
 Decision: Alpha will automate paper trading, risk checks, approval queues, and broker-ready order tickets. It will not autonomously submit real-money broker orders.

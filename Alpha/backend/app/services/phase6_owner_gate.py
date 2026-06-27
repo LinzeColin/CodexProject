@@ -175,6 +175,8 @@ def build_soak_validation_report(
         "generated_at": utc_now_iso(),
         "status": "pass" if all(item["status"] == "pass" for item in checks) else "observing",
         "duration_hours_required": duration_hours,
+        "window_start": first.isoformat() if first else None,
+        "window_end": latest.isoformat() if latest else None,
         "observed_seconds": observed_seconds,
         "observed_hours": round(observed_seconds / 3600, 4),
         "sample_count": len(sorted_samples),
