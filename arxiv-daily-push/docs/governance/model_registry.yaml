@@ -5358,6 +5358,9 @@ models:
       - "PARAM-ADP-1031"
       - "PARAM-ADP-1032"
       - "PARAM-ADP-1033"
+      - "PARAM-ADP-1034"
+      - "PARAM-ADP-1035"
+      - "PARAM-ADP-1036"
     inputs:
       - "S2PMT01 through S2PMT06 local validation receipts"
       - "S2PLT04 completion evidence"
@@ -5375,6 +5378,7 @@ models:
       - "no-production side-effect attestation artifact payload"
       - "next-agent handoff artifact payload"
       - "final bundle prerequisite plan state"
+      - "P0/P1 zero-proof assembly state"
     outputs:
       - "blocked S2PMT07 precheck report"
       - "blocked final acceptance bundle readiness state"
@@ -5388,6 +5392,7 @@ models:
       - "blocked or passing no-production side-effect attestation validation state"
       - "blocked or passing next-agent handoff validation state"
       - "blocked final bundle prerequisite plan state"
+      - "blocked P0/P1 zero-proof assembly state"
       - "blocking reason list"
       - "forbidden production flag state"
       - "deterministic report hash"
@@ -5409,6 +5414,8 @@ models:
       - "governance/run_manifests/ADP-S2PMT07-INDEPENDENT-REVIEW-SIGNOFF-VALIDATOR-20260628.json"
       - "governance/run_manifests/ADP-S2PMT07-NO-PRODUCTION-SIDE-EFFECT-ATTESTATION-VALIDATOR-20260628.json"
       - "governance/run_manifests/ADP-S2PMT07-NEXT-AGENT-HANDOFF-VALIDATOR-20260628.json"
+      - "governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-PREREQUISITE-PLAN-20260628.json"
+      - "governance/run_manifests/ADP-S2PMT07-P0-P1-ZERO-PROOF-ASSEMBLY-20260628.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_GATE_PRECHECK.md"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_ACCEPTANCE_BUNDLE_READINESS.md"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_P1_TECHNICAL_CANDIDATE_READINESS.md"
@@ -5420,6 +5427,8 @@ models:
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_VALIDATOR.md"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_NO_PRODUCTION_SIDE_EFFECT_ATTESTATION_VALIDATOR.md"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_NEXT_AGENT_HANDOFF_VALIDATOR.md"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN.md"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_P1_ZERO_PROOF_ASSEMBLY.md"
 
   -
     model_id: "MOD-ADP-101"

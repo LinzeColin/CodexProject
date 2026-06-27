@@ -6,7 +6,7 @@ arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTI
 
 ## 2. 本次运行改变了什么
 
-S2PMT07 现在有最终包前置计划：系统会按固定顺序列出 `P0/P1 zero proof`、`S2PLT04 completion report`、`final command execution`、`no-production attestation`、`next-agent handoff`、`independent review signoff`、`final bundle manifest` 七个缺失 artifact，并保持 `blocked`，直到真实 artifact 存在且逐项通过。当前 next-agent handoff、no-production attestation、independent signoff、final command execution artifact、completion report、manifest、zero-proof artifact 和 final bundle 仍缺失，inherited P0/P1 仍为 `8 / 37`。该计划只是后续最终包工作的 fail-closed 排序证据，不是交接文件已创建、无生产副作用最终签署、P0/P1 归零证明、最终包已创建、S2PLT04 完成、P0/P1 关闭或生产验收。
+S2PMT07 现在有 P0/P1 zero-proof assembly 状态：系统会把 8 个 P0 与 37 个 P1 技术候选、manifest refs、当前 open blocker count 和 no-production flags 装配为未来独立终审的机器输入。当前 independent final closure decision、next-agent handoff、no-production attestation、independent signoff、final command execution artifact、completion report、manifest、zero-proof artifact 和 final bundle 仍缺失，inherited P0/P1 仍为 `8 / 37`。该 assembly 只是后续最终包工作的 blocked prebundle evidence，不是 P0/P1 归零证明、最终包已创建、S2PLT04 完成、P0/P1 关闭或生产验收。
 
 ## 3. 为什么重要
 
@@ -21,7 +21,7 @@ S2PMT07 现在有最终包前置计划：系统会按固定顺序列出 `P0/P1 z
 
 ## 5. 默认建议
 
-- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, require valid `FINAL_ACCEPTANCE_BUNDLE/manifest.json`, valid `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json`, S2PLT04 completion proof, independent final signoff, final command execution proof, no-production attestation, and next-agent handoff before inherited P0/P1 can be treated as zero or any production acceptance claim can be made.
+- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, require independent final closure decision plus valid `FINAL_ACCEPTANCE_BUNDLE/manifest.json`, valid `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json`, S2PLT04 completion proof, independent final signoff, final command execution proof, no-production attestation, and next-agent handoff before inherited P0/P1 can be treated as zero or any production acceptance claim can be made.
 - estimated_effort: P0/P1; contract hash, AGENTS, 三基文件, validator/test, no production side effect
 - estimated_cost_or_resource: local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner
 
@@ -31,7 +31,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 7. 下一行动、责任角色和验收证据
 
-- next_task_id: `S2PMT07-FINAL-BUNDLE-PREREQUISITES`
+- next_task_id: `S2PMT07-INDEPENDENT-FINAL-CLOSURE-DECISION`
 - responsible_role: `content_owner + product_owner`
 - acceptance_ids: `ACC-S2PLT04-INTEGRATION-CANDIDATE`
 - unblock_condition: S2PLT01 replay payload execution package can be misread as S2PLT01 acceptance; inherited P0/P1, S2PLT04, S2PMT07 final independent review, and final production stop gates still block S2PLT01 and integrated production acceptance.
@@ -39,7 +39,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `PARTIAL` (1001/1016 active parameters, 119/119 active formulas)
+- implementation_congruence: `PARTIAL` (1004/1019 active parameters, 119/119 active formulas)
 - parameter_source_quality: `PARTIAL`
 - methodological_rationale: `VERIFIED`
 - empirical_validation: `VERIFIED`
@@ -71,14 +71,14 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - model_count: `117`
 - total_formulas: `119`
 - active_formulas: `119`
-- total_parameters: `1033`
-- active_parameters: `1016`
+- total_parameters: `1036`
+- active_parameters: `1019`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_BLOCKED_NO_PRODUCTION`
+- release_gate: `S2PMT07_P0_P1_ZERO_PROOF_ASSEMBLY_BLOCKED_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
@@ -86,8 +86,8 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - tree_bound_events: `0`
 - commit_bound_events: `4`
 - legacy_unbound_events: `188`
-- precommit_pending_events: `46`
-- pending_or_stale_events: `232`
+- precommit_pending_events: `47`
+- pending_or_stale_events: `233`
 
 ## 15. UNKNOWN
 
@@ -98,10 +98,10 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - source_base_commit: `12e91a8e1b84fe29724f43229131bd43f8fa31cd`
 - source_tree_hash: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - source_snapshot_hash: `sha256:b46b66adca9fff016c8699d25d2f20031291631ddbc6e9ee00fc360126a9647f`
-- snapshot_event_time: `2026-06-28T07:41:22+10:00`
+- snapshot_event_time: `2026-06-28T07:56:58+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PM / S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_BLOCKED_NO_PRODUCTION`
+- phase/gate: `S2PM / S2PMT07_P0_P1_ZERO_PROOF_ASSEMBLY_BLOCKED_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 
