@@ -56,6 +56,29 @@ Stage 2 source files:
 | Stage 2 record | `docs/pfi_v02/STAGE2_DATA_SYNC_MVP.md` |
 | Stage 2 tests | `tests/test_stage2_*.py` |
 
+## Stage 3
+
+Stage 3 builds the owner-readable homepage/account/ledger MVP. It adds:
+
+- homepage financial status cards: 净资产、现金、投资资产、本月支出、数据健康
+- account map for 支付宝、支付宝基金、Moomoo AU、中国券商、ABC Bullion、CBA、微信
+- account and asset list across investment、daily、cash、asset、liability categories
+- AUD/CNY/USD/HKD fixture-based cross-currency view
+- platform balance vs PFI ledger reconciliation status
+- normalized ledger rows with batch/raw/parser evidence chains
+- A/B/C/D owner review queue for low-confidence transactions
+- sync-all plan that does not execute external login, payment, broker order, or real account mutation
+- Web shell target 8 first-level entries
+
+Stage 3 source files:
+
+| Purpose | Path |
+| --- | --- |
+| Readable MVP read-model | `src/pfi_v02/stage3_read_mvp.py` |
+| Stage 3 record | `docs/pfi_v02/STAGE3_READABLE_MVP.md` |
+| Stage 3 tests | `tests/test_stage3_readable_mvp.py` |
+| Web shell | `web/index.html`, `web/app/shell.js` |
+
 ## Boundaries
 
 - No automatic real-money trading.
@@ -68,6 +91,7 @@ Stage 2 source files:
 
 ```bash
 PYTHONPATH=src python3 -B -m unittest tests.test_stage1_ia_contract -q
-PYTHONPATH=src python3 -B -m unittest tests.test_stage2_data_source_registry tests.test_stage2_cba_csv_import tests.test_stage2_alipay_import tests.test_stage2_non_csv_contracts -q
-cd modules/qbvs_lab && PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q
+PYTHONPATH=src python3 -B -m unittest tests.test_stage2_data_source_registry tests.test_stage2_cba_csv_import tests.test_stage2_alipay_import tests.test_stage2_non_csv_contracts tests.test_stage3_readable_mvp -q
+node --check web/app/shell.js
+(cd modules/qbvs_lab && PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q)
 ```

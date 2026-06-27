@@ -68,21 +68,23 @@
         </div>
       </header>
 
-      <nav class="side-nav" aria-label="一级工作区" data-primary-workspaces="6">
-        <button class="nav-item is-active" type="button" data-workspace="home">首页</button>
-        <button class="nav-item" type="button" data-workspace="market">市场</button>
-        <button class="nav-item" type="button" data-workspace="research">研究</button>
-        <button class="nav-item" type="button" data-workspace="portfolio">持仓</button>
-        <button class="nav-item" type="button" data-workspace="strategy">策略实验室</button>
-        <button class="nav-item" type="button" data-workspace="data">数据与系统</button>
+      <nav class="side-nav" aria-label="一级工作区" data-primary-workspaces="8">
+        <button class="nav-item is-active" type="button" data-workspace="home">首页总览</button>
+        <button class="nav-item" type="button" data-workspace="accounts">账户与资产</button>
+        <button class="nav-item" type="button" data-workspace="ledger">账本流水</button>
+        <button class="nav-item" type="button" data-workspace="investment">投资管理</button>
+        <button class="nav-item" type="button" data-workspace="consumption">消费管理</button>
+        <button class="nav-item" type="button" data-workspace="sync">数据源与同步</button>
+        <button class="nav-item" type="button" data-workspace="recommendations">建议与复盘</button>
+        <button class="nav-item" type="button" data-workspace="insights">报告与洞察</button>
       </nav>
 
       <main id="main-workspace" class="workspace" tabindex="-1" data-active-workspace="home">
         <section class="workspace-header" aria-labelledby="workspace-title">
           <div>
             <p class="workspace-kicker" id="workspace-kicker">今日总览</p>
-            <h1 id="workspace-title">首页</h1>
-            <p id="workspace-conclusion">今日可用缓存已加载；先处理数据新鲜度和证据阻塞，再进入研究或策略实验室。</p>
+            <h1 id="workspace-title">首页总览</h1>
+            <p id="workspace-conclusion">先看净资产、现金、投资资产、本月支出和数据健康，再处理同步、复核、建议和报告。</p>
           </div>
           <div class="sync-status" aria-live="polite">
             <span class="status-dot status-ready" aria-hidden="true"></span>
@@ -111,6 +113,11 @@
             <span>策略运行</span>
             <strong data-card-value>0</strong>
             <small data-card-detail>来源：证据记录 · 更新缺失 · 状态待补</small>
+          </article>
+          <article class="metric-tile" data-home-card="data_health" data-card-source="pfi_v02:stage3_read_model">
+            <span>数据健康</span>
+            <strong data-card-value>需要同步</strong>
+            <small data-card-detail>来源：数据源与同步 · 状态需要同步</small>
           </article>
         </section>
 

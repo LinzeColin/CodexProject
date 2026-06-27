@@ -33,17 +33,20 @@ models:
       - "PARAM-PFI-002"
       - "PARAM-PFI-003"
     inputs:
-      - "Stage 1/2 contract files"
+      - "Stage 1/2/3 contract files"
     outputs:
-      - "owner-readable scope and blocked production status"
+      - "owner-readable scope, readable MVP state, and blocked production status"
     code_refs:
       - "PFI/src/pfi_v02/stage1_ia.py"
       - "PFI/src/pfi_v02/stage2_registry.py"
       - "PFI/src/pfi_v02/stage2_import.py"
       - "PFI/src/pfi_v02/stage2_contracts.py"
+      - "PFI/src/pfi_v02/stage3_read_mvp.py"
     test_refs:
       - "PFI/tests/test_stage1_ia_contract.py"
       - "PFI/tests/test_stage2_data_source_registry.py"
+      - "PFI/tests/test_stage3_readable_mvp.py"
     evidence_refs:
       - "PFI/docs/pfi_v02/STAGE1_CORE_SKELETON.md"
       - "PFI/docs/pfi_v02/STAGE2_DATA_SYNC_MVP.md"
+      - "PFI/docs/pfi_v02/STAGE3_READABLE_MVP.md"
