@@ -35,6 +35,10 @@ STAGE6_TASK_IDS = (
     "V021-P6-S6-T02",
     "V021-P6-S6-T03",
 )
+STAGE7_TASK_IDS = (
+    "V021-P7-S7-T01",
+    "V021-P7-S7-T02",
+)
 BASE_CURRENCY = "CNY"
 UI_TARGET = "PFI/web HTML shell"
 
@@ -554,6 +558,63 @@ def build_v021_stage6_contract() -> dict[str, object]:
             "持仓前端必须能编辑数量和价格，保存后刷新或重开 HTML Web Shell 仍保留。",
             "持仓持久化不连接真实券商、不提交订单、不支付、不执行实盘自动下单。",
             "私有持仓和 SQLite runtime 数据不进入公共 Git。",
+        ),
+    }
+
+
+def build_v021_stage7_contract() -> dict[str, object]:
+    return {
+        "schema": "PFIV021FrontendOptimizationStage7ContractV1",
+        "version_name": VERSION_NAME,
+        "stage": "S7 流畅度",
+        "task_ids": STAGE7_TASK_IDS,
+        "project_root": "CodexProject/PFI",
+        "ui_target": UI_TARGET,
+        "click_safe_contract": {
+            "scope": (
+                "15 个一级入口",
+                "V0.1 兼容入口",
+                "顶部操作按钮",
+                "工作区功能按钮",
+                "功能面板按钮",
+                "上传 / 导入 / 持仓按钮",
+                "任务中心按钮",
+                "证据抽屉按钮",
+                "命令面板按钮",
+                "表格控制按钮",
+            ),
+            "required_routes": tuple(entry.route for entry in NAVIGATION_ENTRIES),
+            "required_functions": (
+                "applyRouteFromLocation",
+                "bindClickSafeFeedback",
+                "buildClickSafeInventory",
+                "buttonReadableLabel",
+                "setActionFeedback",
+                "showToast",
+            ),
+            "browser_validation": "automatic traversal clicks every visible button on desktop and mobile with zero console errors",
+            "dead_button_definition": "visible enabled button click produces no route change, panel state change, or unified feedback state",
+        },
+        "feedback_contract": {
+            "surface_marker": "data-action-feedback",
+            "toast_marker": "data-toast",
+            "region_marker": "data-feedback-region",
+            "states": ("progress", "success", "failure"),
+            "visible_labels": ("进行中", "成功", "失败"),
+            "state_attribute": "data-feedback-state",
+            "aria": {
+                "region": "aria-live",
+                "toast_role": "status",
+                "feedback_role": "status",
+            },
+            "business_page_default": "feedback region is available but settings console remains in settings page",
+        },
+        "acceptance": (
+            "所有可见、未禁用按钮必须能被浏览器自动遍历点击，且无 console error。",
+            "一级入口和 V0.1 兼容入口点击后必须进入对应 route 或功能面板。",
+            "页面必须统一展示进行中、成功、失败三类反馈，不允许静默失败。",
+            "反馈必须可被读屏读取，并保留中文用户可读文案。",
+            "Stage 7 不新增交易、支付、券商提交或实盘自动下单能力。",
         ),
     }
 

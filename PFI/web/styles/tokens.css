@@ -1185,6 +1185,7 @@ button:active {
 }
 
 .inline-error,
+.action-feedback,
 .toast {
   display: flex;
   gap: 10px;
@@ -1197,6 +1198,32 @@ button:active {
 
 .inline-error span {
   color: var(--pfi-muted);
+}
+
+.action-feedback {
+  margin-top: 8px;
+  border-color: var(--pfi-blue);
+}
+
+.action-feedback[data-feedback-state="success"] {
+  border-color: var(--pfi-teal);
+}
+
+.action-feedback[data-feedback-state="failure"] {
+  border-color: var(--pfi-red);
+}
+
+.action-feedback[data-feedback-state="progress"] {
+  border-color: var(--pfi-blue);
+}
+
+.action-feedback strong {
+  white-space: nowrap;
+}
+
+.action-feedback span {
+  color: var(--pfi-muted);
+  overflow-wrap: anywhere;
 }
 
 .toast {
@@ -1312,6 +1339,24 @@ button:active {
   .side-nav {
     flex-direction: row;
     overflow-x: auto;
+  }
+
+  .side-nav {
+    gap: 8px;
+    padding: 8px 12px;
+    border-right: 0;
+    border-bottom: 1px solid var(--pfi-border);
+    scroll-snap-type: x proximity;
+  }
+
+  .nav-item {
+    width: auto;
+    min-width: max-content;
+    flex: 0 0 auto;
+    padding: 0 14px;
+    text-align: center;
+    white-space: nowrap;
+    scroll-snap-align: start;
   }
 
   .workspace-header,

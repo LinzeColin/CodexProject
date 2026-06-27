@@ -5,6 +5,12 @@ const FEEDBACK_SLA_MS = {
   stepped: 1000,
   background: 10000,
 };
+const FEEDBACK_STATES = {
+  progress: "进行中",
+  success: "成功",
+  failure: "失败",
+};
+const FEEDBACK_STATE_ORDER = ["progress", "success", "failure"];
 
 const STATUS_LABELS = {
   ready: "可用",
@@ -282,6 +288,8 @@ const SEARCH_ALIASES = {
 
 const SEARCH_DEFAULT_LIMIT = 10;
 let globalSearchState = { items: [], results: [], activeIndex: 0 };
+let clickFeedbackSerial = 0;
+let clickSafeBound = false;
 
 const UPLOAD_ALLOWED_EXTENSIONS = [".csv", ".zip", ".xls", ".xlsx"];
 const UPLOAD_MAX_FILE_MB = 50;
@@ -1401,10 +1409,32 @@ function localDateValue(date) {
   return local.toISOString().slice(0, 10);
 }
 
-function showToast(message) {
+function setActionFeedback(state, message, options = {}) {
+  const feedback = document.querySelector("[data-action-feedback]");
+  const normalizedState = Object.prototype.hasOwnProperty.call(FEEDBACK_STATES, state) ? state : "success";
+  if (!feedback) return;
+  const title = feedback.querySelector("[data-action-feedback-title]");
+  const body = feedback.querySelector("[data-action-feedback-message]");
+  feedback.hidden = false;
+  feedback.dataset.feedbackState = normalizedState;
+  feedback.dataset.feedbackUpdatedAt = new Date().toISOString();
+  if (options.serial !== undefined) {
+    feedback.dataset.feedbackSerial = String(options.serial);
+  } else {
+    delete feedback.dataset.feedbackSerial;
+  }
+  if (title) title.textContent = FEEDBACK_STATES[normalizedState];
+  if (body) body.textContent = message || "操作已响应";
+  const shell = document.querySelector(".app-shell");
+  if (shell) shell.dataset.feedbackState = normalizedState;
+}
+
+function showToast(message, state = "success") {
   const toast = document.querySelector("[data-toast]");
+  setActionFeedback(state, message);
   if (!toast) return;
   toast.textContent = message;
+  toast.dataset.toastState = state;
   toast.hidden = false;
   window.setTimeout(() => {
     toast.hidden = true;
@@ -2286,6 +2316,7 @@ function renderWorkspace(workspaceId, options = {}) {
   renderHoldingsPersistencePanel(workspaceId, routeForState);
   applyEvidenceDrawer(workspace.evidence);
   drawTrendChart(workspace.trend || legacyChartToTrend(workspace));
+  refreshClickSafeInventory();
   if (!options.keepFunctionDetail) hideFunctionDetail();
   const nextContext = { ...previousContext, workspace: workspaceId };
   if (routeForState) {
@@ -2638,6 +2669,7 @@ function showWorkflowEvidence(card) {
     "Raw document": "缓存摘要",
   });
   setEvidenceDrawer(true);
+  setActionFeedback("success", `已打开${card.title || "功能"}证据`);
 }
 
 function applyEvidenceDrawer(drawer) {
@@ -2676,6 +2708,69 @@ function setPressedFeedback(element) {
     element.classList.remove("is-pressed");
     element.removeAttribute("aria-busy");
   }, 120);
+}
+
+function buttonReadableLabel(button) {
+  const clean = String(button?.textContent || button?.getAttribute("aria-label") || button?.title || "").trim();
+  if (clean) return clean.replace(/\s+/g, " ").slice(0, 48);
+  return "按钮";
+}
+
+function isClickSafeVisible(button) {
+  if (!button || button.disabled || button.hidden) return false;
+  const style = window.getComputedStyle(button);
+  if (style.display === "none" || style.visibility === "hidden" || style.pointerEvents === "none") return false;
+  const rect = button.getBoundingClientRect();
+  return rect.width > 0 && rect.height > 0;
+}
+
+function clickSafeId(button, index) {
+  if (!button.dataset.clickSafeId) {
+    const label = buttonReadableLabel(button).replace(/[^\p{L}\p{N}]+/gu, "-").replace(/^-|-$/g, "").slice(0, 28) || "button";
+    button.dataset.clickSafeId = `pfi-click-${index + 1}-${label}`;
+  }
+  button.dataset.clickSafe = "true";
+  return button.dataset.clickSafeId;
+}
+
+function buildClickSafeInventory(root = document) {
+  return [...root.querySelectorAll("button")]
+    .filter(isClickSafeVisible)
+    .map((button, index) => ({
+      id: clickSafeId(button, index),
+      label: buttonReadableLabel(button),
+      disabled: button.disabled,
+      feedbackStates: FEEDBACK_STATE_ORDER,
+    }));
+}
+
+function refreshClickSafeInventory() {
+  const inventory = buildClickSafeInventory();
+  const shell = document.querySelector(".app-shell");
+  if (shell) shell.dataset.clickSafeVisibleButtons = String(inventory.length);
+  return inventory;
+}
+
+function bindClickSafeFeedback() {
+  if (clickSafeBound) return;
+  clickSafeBound = true;
+  document.addEventListener("click", (event) => {
+    const button = event.target.closest("button");
+    if (!button || button.disabled) return;
+    const label = buttonReadableLabel(button);
+    const serial = clickFeedbackSerial + 1;
+    clickFeedbackSerial = serial;
+    clickSafeId(button, serial);
+    setPressedFeedback(button);
+    setActionFeedback("progress", `${label} · 正在处理`, { serial });
+    window.setTimeout(() => {
+      const feedback = document.querySelector("[data-action-feedback]");
+      if (!feedback) return;
+      if (feedback.dataset.feedbackSerial === String(serial) && feedback.dataset.feedbackState === "progress") {
+        setActionFeedback("success", `${label} · 已响应`, { serial });
+      }
+    }, 180);
+  }, true);
 }
 
 function setActiveWorkspace(workspaceId, options = {}) {
@@ -2721,6 +2816,19 @@ function syncBrowserRoute(routeAlias) {
   }
 }
 
+function applyRouteFromLocation() {
+  const routeTarget = workspaceTargetFromRoute(routeAliasFromLocation());
+  if (routeTarget?.view) {
+    openFunctionView(routeTarget.view, { silent: true, routeAlias: routeTarget.routeAlias });
+    return true;
+  }
+  if (routeTarget?.workspace) {
+    renderWorkspace(routeTarget.workspace, { routeAlias: routeTarget.routeAlias, silent: true, preserveFocus: true });
+    return true;
+  }
+  return false;
+}
+
 function openCommandPalette() {
   const dialog = document.querySelector("[data-command-palette]");
   const input = document.querySelector("[data-command-input]");
@@ -2731,6 +2839,8 @@ function openCommandPalette() {
     dialog.setAttribute("open", "");
   }
   if (input) input.focus();
+  refreshClickSafeInventory();
+  setActionFeedback("success", "命令面板已打开");
 }
 
 function closeCommandPalette() {
@@ -2741,6 +2851,7 @@ function closeCommandPalette() {
   } else {
     dialog.removeAttribute("open");
   }
+  setActionFeedback("success", "命令面板已关闭");
 }
 
 function setEvidenceDrawer(open) {
@@ -2748,12 +2859,14 @@ function setEvidenceDrawer(open) {
   if (!drawer) return;
   drawer.classList.toggle("is-open", open);
   drawer.setAttribute("aria-expanded", open ? "true" : "false");
+  setActionFeedback("success", open ? "证据抽屉已打开" : "证据抽屉已关闭");
 }
 
 function toggleTaskCenter() {
   const taskCenter = document.querySelector("[data-task-center]");
   if (!taskCenter) return;
-  taskCenter.toggleAttribute("hidden");
+  const hidden = taskCenter.toggleAttribute("hidden");
+  setActionFeedback("success", hidden ? "任务中心已关闭" : "任务中心已打开");
 }
 
 function focusGlobalSearch() {
@@ -2953,6 +3066,7 @@ function renderGlobalSearchResults(query) {
   panel.hidden = false;
   input.setAttribute("aria-expanded", "true");
   input.setAttribute("aria-activedescendant", globalSearchState.results.length ? `global-search-option-${globalSearchState.activeIndex}` : "");
+  refreshClickSafeInventory();
 }
 
 function closeGlobalSearchResults() {
@@ -3007,6 +3121,7 @@ function runCachedRefresh() {
   const taskPhase = document.querySelector("#task-phase");
   const jobLabel = document.querySelector("#background-job-label");
   if (errorBanner) errorBanner.hidden = true;
+  setActionFeedback("progress", "正在刷新缓存切片");
 
   window.setTimeout(() => {
     if (skeleton) skeleton.hidden = false;
@@ -3023,7 +3138,7 @@ function runCachedRefresh() {
   window.setTimeout(() => {
     if (skeleton) skeleton.hidden = true;
     if (taskPhase) taskPhase.textContent = "第 3/3 步 · 缓存切片已准备";
-    showToast("缓存切片已刷新");
+    showToast("缓存切片已刷新", "success");
   }, 1350);
 }
 
@@ -3031,7 +3146,7 @@ function showRecoverableError() {
   const errorBanner = document.querySelector("[data-error-banner]");
   if (!errorBanner) return;
   errorBanner.hidden = false;
-  showToast("已切换到缓存兜底");
+  showToast("刷新失败 · 已切换到缓存兜底", "failure");
 }
 
 function legacyChartToTrend(workspace) {
@@ -3277,6 +3392,7 @@ function englishNoise(value) {
 }
 
 function bindEvents() {
+  bindClickSafeFeedback();
   document.querySelectorAll("[data-workspace]").forEach((button) => {
     button.addEventListener("click", () => {
       setPressedFeedback(button);
@@ -3366,6 +3482,7 @@ function bindEvents() {
         setActiveWorkspace(button.dataset.commandWorkspace, { routeAlias });
       }
       closeCommandPalette();
+      showToast(`已打开${button.textContent.trim()}`, "success");
     });
   });
 
@@ -3416,27 +3533,29 @@ function bindEvents() {
   });
 }
 
+window.PFI_STAGE7_CLICK_SAFE = {
+  buildClickSafeInventory,
+  refreshClickSafeInventory,
+  feedbackStates: FEEDBACK_STATE_ORDER,
+};
+
 document.addEventListener("DOMContentLoaded", () => {
   restoreContext();
   bindEvents();
   applyHomeSummary(readHomeSummary());
   const params = initialSearchParams();
   const requestedFeature = params.get("view") || readContext().feature_view || "";
-  const routeTarget = workspaceTargetFromRoute(routeAliasFromLocation());
-  if (routeTarget?.view) {
-    openFunctionView(routeTarget.view, { silent: true, routeAlias: routeTarget.routeAlias });
-    return;
-  }
-  if (routeTarget?.workspace) {
-    renderWorkspace(routeTarget.workspace, { routeAlias: routeTarget.routeAlias, silent: true, preserveFocus: true });
-    return;
-  }
+  if (applyRouteFromLocation()) return;
   if (Object.prototype.hasOwnProperty.call(FUNCTION_VIEWS, requestedFeature)) {
     openFunctionView(requestedFeature, { silent: true });
     return;
   }
   const requestedWorkspace = readContext().workspace || "home";
   renderWorkspace(WORKSPACES[requestedWorkspace] ? requestedWorkspace : "home", { silent: true, preserveFocus: true });
+});
+
+window.addEventListener("hashchange", () => {
+  applyRouteFromLocation();
 });
 
 function initialSearchParams() {
