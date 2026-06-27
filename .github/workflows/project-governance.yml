@@ -98,6 +98,11 @@ jobs:
               python3 scripts/lean_governance.py ci --changed-only
             fi
           fi
+      - name: Run ADP supply-chain A-020 gate
+        if: github.event_name == 'pull_request' || github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'changed-only')
+        run: |
+          PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX="${RUNNER_TEMP}/adp-supply-chain-pycache" PYTHONPATH=arxiv-daily-push/src \
+            python3 -m unittest arxiv-daily-push/tests/test_security_boundary.py -q
       - name: Upload changed-only governance evidence artifact
         if: always() && (github.event_name == 'pull_request' || github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'changed-only'))
         uses: actions/upload-artifact@v7

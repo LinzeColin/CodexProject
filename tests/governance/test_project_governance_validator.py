@@ -5170,6 +5170,15 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("github.event_name }}-${{ github.event_name == 'workflow_dispatch' && inputs.scope || 'default' }}", workflow)
         self.assertIn("cancel-in-progress: ${{ !(github.event_name == 'schedule'", workflow)
 
+    def test_project_governance_workflow_runs_adp_a020_supply_chain_gate(self) -> None:
+        workflow = (ROOT / ".github" / "workflows" / "project-governance.yml").read_text(encoding="utf-8")
+
+        self.assertIn("Run ADP supply-chain A-020 gate", workflow)
+        self.assertIn("arxiv-daily-push/tests/test_security_boundary.py", workflow)
+        self.assertIn("PYTHONPATH=arxiv-daily-push/src", workflow)
+        self.assertIn("github.event_name == 'pull_request' || github.event_name == 'push'", workflow)
+        self.assertIn("inputs.scope == 'changed-only'", workflow)
+
     def test_other8_s2pct02_budget_guard_contract_passes(self) -> None:
         hook_text = STOP_HOOK.read_text(encoding="utf-8")
         self.assertIn("budget_policy", hook_text)

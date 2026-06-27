@@ -9,6 +9,11 @@ from collections.abc import Mapping, Sequence
 from typing import Any
 from urllib.parse import urlsplit, urlunsplit
 
+try:
+    import tomllib
+except ModuleNotFoundError:  # pragma: no cover - Python 3.9/3.10 fallback.
+    tomllib = None
+
 
 S2PMT01_SECURITY_MODEL_ID = "adp-s2pmt01-security-boundary-v1"
 S2PMT01_FRONTSTAGE_A004_MODEL_ID = "adp-s2pmt01-frontstage-evidence-a004-v1"
@@ -115,11 +120,13 @@ S2PMT01_REQUIRED_BOUNDARY_FLAGS = (
 )
 S2PMT01_REQUIRED_SUPPLY_CHAIN_CONTROLS = (
     "dependency_inventory",
+    "dependency_sbom",
     "workflow_permission_review",
     "action_reference_inventory",
     "workflow_audit",
     "action_reference_policy",
     "dependency_vulnerability_gate",
+    "ci_enforcement_gate",
     "secret_exposure_boundary",
     "artifact_provenance_required",
 )
@@ -640,6 +647,7 @@ def build_supply_chain_baseline(
     workflow_files: Sequence[str],
     dependency_files: Sequence[str],
     workflow_contents: Mapping[str, str] | None = None,
+    dependency_contents: Mapping[str, str] | None = None,
     vulnerability_findings: Sequence[Mapping[str, Any]] | None = None,
     approved_vulnerability_exceptions: Sequence[Mapping[str, Any]] | None = None,
     approved_mutable_action_refs: Mapping[str, str] | None = None,
@@ -648,6 +656,8 @@ def build_supply_chain_baseline(
     if approved_mutable_action_refs:
         action_policy.update({str(ref): str(reason) for ref, reason in approved_mutable_action_refs.items()})
     workflow_audit = audit_workflow_supply_chain(workflow_contents or {}, approved_mutable_action_refs=action_policy)
+    dependency_sbom = build_dependency_sbom(dependency_contents or {})
+    ci_enforcement_gate = audit_supply_chain_ci_enforcement(workflow_contents or {})
     vulnerability_gate = build_dependency_vulnerability_gate(
         vulnerability_findings or [],
         approved_exceptions=approved_vulnerability_exceptions or [],
@@ -658,6 +668,7 @@ def build_supply_chain_baseline(
         "acceptance_id": S2PMT01_ACCEPTANCE_ID,
         "controls": {
             "dependency_inventory": sorted(str(path) for path in dependency_files),
+            "dependency_sbom": dependency_sbom,
             "workflow_permission_review": sorted(str(path) for path in workflow_files),
             "action_reference_inventory": sorted(str(path) for path in workflow_files),
             "workflow_audit": workflow_audit,
@@ -667,6 +678,7 @@ def build_supply_chain_baseline(
                 "approved_mutable_action_refs": action_policy,
             },
             "dependency_vulnerability_gate": vulnerability_gate,
+            "ci_enforcement_gate": ci_enforcement_gate,
             "secret_exposure_boundary": "secrets are never printed, committed, or copied into generated evidence",
             "artifact_provenance_required": True,
         },
@@ -680,6 +692,11 @@ def validate_supply_chain_baseline(baseline: Mapping[str, Any]) -> list[str]:
     for key in S2PMT01_REQUIRED_SUPPLY_CHAIN_CONTROLS:
         if not controls.get(key):
             errors.append(f"supply_chain.controls.{key} is required")
+    dependency_sbom = controls.get("dependency_sbom") if isinstance(controls.get("dependency_sbom"), Mapping) else {}
+    for issue in dependency_sbom.get("issues") or []:
+        errors.append(f"supply_chain.dependency_sbom: {issue}")
+    if dependency_sbom.get("status") not in {None, "pass"}:
+        errors.append("supply_chain.dependency_sbom.status must be pass")
     workflow_audit = controls.get("workflow_audit") if isinstance(controls.get("workflow_audit"), Mapping) else {}
     for issue in workflow_audit.get("issues") or []:
         errors.append(f"supply_chain.workflow_audit: {issue}")
@@ -694,9 +711,82 @@ def validate_supply_chain_baseline(baseline: Mapping[str, Any]) -> list[str]:
         errors.append(f"supply_chain.dependency_vulnerability_gate: {issue}")
     if vulnerability_gate.get("status") not in {None, "pass"}:
         errors.append("supply_chain.dependency_vulnerability_gate.status must be pass")
+    ci_enforcement_gate = (
+        controls.get("ci_enforcement_gate")
+        if isinstance(controls.get("ci_enforcement_gate"), Mapping)
+        else {}
+    )
+    for issue in ci_enforcement_gate.get("issues") or []:
+        errors.append(f"supply_chain.ci_enforcement_gate: {issue}")
+    if ci_enforcement_gate.get("status") not in {None, "pass"}:
+        errors.append("supply_chain.ci_enforcement_gate.status must be pass")
     if baseline.get("production_side_effects") is not False:
         errors.append("supply chain baseline must not create production side effects")
     return errors
+
+
+def build_dependency_sbom(dependency_contents: Mapping[str, str]) -> dict[str, Any]:
+    """Build a deterministic local dependency SBOM summary without network access."""
+
+    components: list[dict[str, Any]] = []
+    issues: list[str] = []
+    if not dependency_contents:
+        issues.append("dependency contents are required to build local SBOM")
+    for path, raw_text in sorted((str(path), str(text)) for path, text in dependency_contents.items()):
+        if path.endswith("pyproject.toml"):
+            components.extend(_components_from_pyproject(path, raw_text, issues))
+        elif path.endswith(".txt"):
+            components.extend(_components_from_requirements(path, raw_text))
+        else:
+            issues.append(f"unsupported dependency file for SBOM: {path}")
+    components = sorted(components, key=lambda item: (item["scope"], item["name"], item["version_spec"], item["source_file"]))
+    payload = {
+        "sbom_format": "adp-local-sbom-v1",
+        "components": components,
+    }
+    sbom_hash = hashlib.sha256(
+        json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+    return {
+        "status": "pass" if not issues else "blocked",
+        "sbom_format": "adp-local-sbom-v1",
+        "component_count": len(components),
+        "runtime_dependency_count": len([item for item in components if item["scope"] == "runtime"]),
+        "build_dependency_count": len([item for item in components if item["scope"] == "build"]),
+        "components": components,
+        "sbom_hash": sbom_hash,
+        "issues": issues,
+    }
+
+
+def audit_supply_chain_ci_enforcement(workflow_contents: Mapping[str, str]) -> dict[str, Any]:
+    """Verify that CI runs the A-020 supply-chain unit gate on push/PR paths."""
+
+    matches: list[dict[str, Any]] = []
+    issues: list[str] = []
+    for path, text in sorted((str(path), str(text)) for path, text in workflow_contents.items()):
+        if "test_security_boundary.py" not in text:
+            continue
+        if "arxiv-daily-push/src" not in text:
+            continue
+        for line_number, line in enumerate(text.splitlines(), start=1):
+            if "test_security_boundary.py" in line:
+                matches.append(
+                    {
+                        "path": path,
+                        "line": line_number,
+                        "command_fragment": _clean_text(line),
+                    }
+                )
+                break
+    if not matches:
+        issues.append("project CI must run arxiv-daily-push/tests/test_security_boundary.py for A-020")
+    return {
+        "status": "pass" if not issues else "blocked",
+        "required_test": "arxiv-daily-push/tests/test_security_boundary.py",
+        "matches": matches,
+        "issues": issues,
+    }
 
 
 def audit_workflow_supply_chain(
@@ -789,6 +879,47 @@ def build_dependency_vulnerability_gate(
         "findings": normalized_findings,
         "approved_exceptions": normalized_exceptions,
         "issues": issues,
+    }
+
+
+def _components_from_pyproject(path: str, raw_text: str, issues: list[str]) -> list[dict[str, Any]]:
+    if tomllib is None:
+        issues.append("tomllib unavailable; cannot parse pyproject.toml for SBOM")
+        return []
+    try:
+        data = tomllib.loads(raw_text)
+    except tomllib.TOMLDecodeError as exc:
+        issues.append(f"{path} is not parseable TOML: {exc}")
+        return []
+    components: list[dict[str, Any]] = []
+    project = data.get("project") if isinstance(data.get("project"), Mapping) else {}
+    for requirement in project.get("dependencies") or []:
+        components.append(_component_from_requirement(path, str(requirement), "runtime"))
+    build_system = data.get("build-system") if isinstance(data.get("build-system"), Mapping) else {}
+    for requirement in build_system.get("requires") or []:
+        components.append(_component_from_requirement(path, str(requirement), "build"))
+    return components
+
+
+def _components_from_requirements(path: str, raw_text: str) -> list[dict[str, Any]]:
+    components: list[dict[str, Any]] = []
+    for raw_line in raw_text.splitlines():
+        line = raw_line.split("#", 1)[0].strip()
+        if not line or line.startswith(("-", "--")):
+            continue
+        components.append(_component_from_requirement(path, line, "runtime"))
+    return components
+
+
+def _component_from_requirement(path: str, requirement: str, scope: str) -> dict[str, Any]:
+    name_match = re.match(r"^\s*([A-Za-z0-9_.-]+)", requirement)
+    name = (name_match.group(1) if name_match else requirement).lower().replace("_", "-")
+    version_spec = requirement[len(name_match.group(1)) :].strip() if name_match else ""
+    return {
+        "name": name,
+        "version_spec": version_spec or "UNPINNED",
+        "scope": scope,
+        "source_file": path,
     }
 
 

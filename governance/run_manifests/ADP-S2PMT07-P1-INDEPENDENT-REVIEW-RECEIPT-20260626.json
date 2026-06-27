@@ -328,16 +328,33 @@
       "evidence_refs": [
         "arxiv-daily-push/docs/phase_records/PHASE_S2PMT01_SUPPLY_CHAIN_A020.md",
         "governance/run_manifests/ADP-S2PMT01-SUPPLY-CHAIN-A020-20260626.json",
-        "arxiv-daily-push/tests/test_security_boundary.py"
+        "governance/run_manifests/ADP-S2PMT01-SUPPLY-CHAIN-A020-SBOM-CI-20260627.json",
+        "arxiv-daily-push/src/arxiv_daily_push/security_boundary.py",
+        "arxiv-daily-push/tests/test_security_boundary.py",
+        ".github/workflows/project-governance.yml",
+        "governance/run_manifests/ADP-S2PMT07-P1-A020-TECHNICAL-REVIEW-20260627.json"
       ],
       "finding_id": "A-020",
-      "fix_task": "S2PMT01",
-      "preliminary_review_state": "sufficiency_gap_review_required_closure_not_claimed_a020_supply_chain_gap_preserved",
+      "fix_task": "S2PMT01-SUPPLY-CHAIN-A020-SBOM-CI",
+      "preliminary_review_state": "finding_level_technical_review_passed_no_p1_closure_no_production",
       "receipt_refreshed_at": "2026-06-27T03:37:12+10:00",
-      "reviewer_decision_required": "Repair A-020 supply-chain sufficiency gap before technical closure: complete SBOM generation, online vulnerability database audit or equivalent attestation, Action commit-SHA migration/exception policy, and CI enforcement are not yet proven by current evidence.",
+      "reviewer_decision_required": "Carry A-020 into final P1 closure package; independent final signoff, final command execution, S2PLT04, final bundle, and inherited P0/P1 zero-state still required before any closure or production acceptance.",
       "severity": "P1",
       "title": "依赖、CI Action、SBOM 与权限最小化未形成供应链基线",
-      "track": "A_安全代码并发"
+      "track": "A_安全代码并发",
+      "finding_title": "依赖、CI Action、SBOM 与权限最小化未形成供应链基线",
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "technical_closure_candidate": true,
+      "independent_final_closure_decision_required": true,
+      "verified_checks": [
+        "local_dependency_sbom_generated",
+        "ci_enforcement_runs_security_boundary_test",
+        "workflow_permission_audit_passes",
+        "action_reference_policy_present",
+        "dependency_vulnerability_gate_fails_closed",
+        "no_production_side_effects"
+      ],
+      "finding_level_technical_review_receipt": "governance/run_manifests/ADP-S2PMT07-P1-A020-TECHNICAL-REVIEW-20260627.json"
     },
     {
       "evidence_refs": [
@@ -791,12 +808,7 @@
     "C_UI交互架构": 9
   },
   "p1_latest_technical_review_candidate_findings": [
-    "B-006",
-    "B-009",
-    "B-010",
-    "B-012",
-    "B-013",
-    "B-014"
+    "A-020"
   ],
   "p1_technical_review_candidate_findings": [
     "A-006",
@@ -825,9 +837,10 @@
     "B-010",
     "B-012",
     "B-013",
-    "B-014"
+    "B-014",
+    "A-020"
   ],
-  "p1_technical_review_candidate_manifest": "governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json",
+  "p1_technical_review_candidate_manifest": "governance/run_manifests/ADP-S2PMT07-P1-A020-TECHNICAL-REVIEW-20260627.json",
   "p1_technical_review_candidate_manifests": [
     "governance/run_manifests/ADP-S2PMT07-P1-A006-A009-TECHNICAL-REVIEW-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-A010-A016-TECHNICAL-REVIEW-20260627.json",
@@ -835,7 +848,8 @@
     "governance/run_manifests/ADP-S2PMT07-P1-A018-A021-TECHNICAL-REVIEW-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-B002-B004-B005-B015-TECHNICAL-REVIEW-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-B003-B011-TECHNICAL-REVIEW-20260627.json",
-    "governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json"
+    "governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-A020-TECHNICAL-REVIEW-20260627.json"
   ],
   "preserved_blockers": [
     "reviewer_independence_not_proven",
@@ -846,14 +860,15 @@
     "independent_final_signoff_missing",
     "independent_final_command_execution_missing"
   ],
-  "previous_refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-B003-B011-TECHNICAL-REVIEW-20260627.json",
+  "previous_refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json",
   "project_id": "arxiv-daily-push",
-  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json",
+  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-A020-TECHNICAL-REVIEW-20260627.json",
   "refresh_manifest_history": [
     "governance/run_manifests/ADP-S2PMT07-P1-A006-A009-TECHNICAL-REVIEW-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-A010-A016-TECHNICAL-REVIEW-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-B003-B011-TECHNICAL-REVIEW-20260627.json",
-    "governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json"
+    "governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-A020-TECHNICAL-REVIEW-20260627.json"
   ],
   "refresh_manifests": [
     "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-20260627.json",
@@ -876,9 +891,10 @@
     "governance/run_manifests/ADP-S2PMT07-P1-A018-A021-TECHNICAL-REVIEW-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-B002-B004-B005-B015-TECHNICAL-REVIEW-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-B003-B011-TECHNICAL-REVIEW-20260627.json",
-    "governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json"
+    "governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-A020-TECHNICAL-REVIEW-20260627.json"
   ],
-  "refreshed_at": "2026-06-27T23:08:31+10:00",
+  "refreshed_at": "2026-06-27T23:31:39+10:00",
   "refreshed_findings": [
     "A-006",
     "A-007",
@@ -924,6 +940,6 @@
   "s2plt04_completed": false,
   "stage2_integrated_production_accepted": false,
   "status": "review_receipt_ready_no_closure_claim",
-  "summary": "Records the inherited V7.1 P1 evidence surface for later independent S2PMT07 review without claiming independent signoff, P0/P1 closure, S2PLT04 completion, or integrated production acceptance.",
+  "summary": "Records the inherited V7.1 P1 evidence surface and adds A-020 finding-level technical review candidate evidence; no independent signoff, P0/P1 closure, S2PLT04 completion, final bundle, or integrated production acceptance is claimed.",
   "task_id": "S2PMT07"
 }

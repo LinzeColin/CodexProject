@@ -66,7 +66,7 @@ No P0/P1 closure, no independent final signoff, no S2PLT04 completion, no final 
 | `A-017` | `P1` | SMTP delivery_id 不含正文/内容版本，且缺标准 Message-ID | `S2PMT03` | `PHASE_S2PMT03_SMTP_IDENTITY_A017.md`, `ADP-S2PMT03-SMTP-IDENTITY-A017-20260626.json`; `ADP-S2PMT07-P1-A017-A019-TECHNICAL-REVIEW-20260627.json` | finding-level technical review passed; independent final closure not claimed | carry into later P1 closure package; counters remain P0=8/P1=37 |
 | `A-018` | `P1` | V7 要求展示 ROI，但旧邮件验证明确禁止 ROI | `S2PAT05` | `PHASE_S2PAT05_ROI_DISCLOSURE_A018.md`, `ADP-S2PAT05-ROI-DISCLOSURE-A018-20260626.json`; `ADP-S2PMT07-P1-A018-A021-TECHNICAL-REVIEW-20260627.json` | finding-level technical review passed; independent final closure not claimed | carry into later P1 closure package; counters remain P0=8/P1=37 |
 | `A-019` | `P1` | 零关键 Claim 时覆盖率被计算为 100% | `S2PMT01-ZERO-CRITICAL-CLAIM-A019` | `PHASE_S2PMT01_ZERO_CRITICAL_CLAIM_A019.md`, `ADP-S2PMT01-ZERO-CRITICAL-CLAIM-A019-20260627.json`; `ADP-S2PMT07-P1-A017-A019-TECHNICAL-REVIEW-20260627.json` | finding-level technical review passed; independent final closure not claimed | carry into later P1 closure package; counters remain P0=8/P1=37 |
-| `A-020` | `S2PMT01` | 依赖、CI Action、SBOM 与权限最小化未形成供应链基线 | `S2PMT01` | `PHASE_S2PMT01_SUPPLY_CHAIN_A020.md`, `ADP-S2PMT01-SUPPLY-CHAIN-A020-20260626.json`, `test_security_boundary.py` | sufficiency gap preserved; technical closure not claimed | repair SBOM/vulnerability/action pinning/CI enforcement evidence before technical closure |
+| `A-020` | `S2PMT01` | 依赖、CI Action、SBOM 与权限最小化未形成供应链基线 | `S2PMT01-SUPPLY-CHAIN-A020-SBOM-CI` | `PHASE_S2PMT01_SUPPLY_CHAIN_A020.md`, `ADP-S2PMT01-SUPPLY-CHAIN-A020-20260626.json`, `ADP-S2PMT01-SUPPLY-CHAIN-A020-SBOM-CI-20260627.json`, `ADP-S2PMT07-P1-A020-TECHNICAL-REVIEW-20260627.json`, `test_security_boundary.py`, `project-governance.yml` | finding-level technical review passed; P1 closure not claimed | Carry to final P1 closure package; verify independent final signoff before reducing counters |
 | `A-021` | `P1` | Roadmap 依赖为空、Stop Code 混用自由文本，机器门不可可靠执行 | `S2PAT05` | `PHASE_S2PAT05_ROADMAP_STOP_CODE_A021.md`, `ADP-S2PAT05-ROADMAP-STOP-CODE-A021-20260626.json`; `ADP-S2PMT07-P1-A018-A021-TECHNICAL-REVIEW-20260627.json` | finding-level technical review passed; independent final closure not claimed | carry into later P1 closure package; counters remain P0=8/P1=37 |
 | `B-002` | `S2PMT04-PROCESS-LIFECYCLE-B002` | 缺少统一进程生命周期：STARTING/RUNNING/DRAINING/CHECKPOINTING/STOPPED | `PHASE_S2PMT04_PROCESS_LIFECYCLE_B002.md`, `ADP-S2PMT04-PROCESS-LIFECYCLE-B002-20260627.json`, `test_stage2_lifecycle_cache.py` | finding-level technical review passed; P1 closure not claimed | Carry to final P1 closure package; verify independent final signoff before reducing counters |
 | `B-003` | `S2PMT03-WATCHDOG-RECOVERY-B003` | watchdog 只报告 stale lock，不执行可证明安全的恢复 | `PHASE_S2PMT03_WATCHDOG_RECOVERY_B003.md`, `ADP-S2PMT03-WATCHDOG-RECOVERY-B003-20260626.json`, `test_stage2_lease_fencing.py`; `ADP-S2PMT07-P1-B003-B011-TECHNICAL-REVIEW-20260627.json` | finding-level technical review passed; P1 closure not claimed | Carry to final P1 closure package; verify independent final signoff before reducing counters |
@@ -141,7 +141,7 @@ not change inherited counters, and does not provide independent final signoff.
 - manifest: [`ADP-S2PMT07-P1-A018-A021-TECHNICAL-REVIEW-20260627.json`](../../../governance/run_manifests/ADP-S2PMT07-P1-A018-A021-TECHNICAL-REVIEW-20260627.json)
 - phase record: [`PHASE_S2PMT07_P1_A018_A021_TECHNICAL_REVIEW.md`](./PHASE_S2PMT07_P1_A018_A021_TECHNICAL_REVIEW.md)
 - reviewed findings: `A-018`, `A-021`
-- excluded finding: `A-020` remains supply-chain sufficiency gap
+- prior excluded finding `A-020` has a later dedicated technical review receipt; P1 closure is still not claimed
 - verdict: `PASS_WITH_NO_PRODUCTION_ACCEPTANCE` for finding-level technical evidence only
 - preserved counters: P0 remains `8`, P1 remains `37`
 - final closure: not claimed; independent final signoff, final command execution, S2PLT04, and final acceptance bundle remain required
@@ -174,16 +174,16 @@ An independent reviewer must re-run or inspect the referenced evidence, decide e
 
 ## Finding-Level Technical Review 2026-06-27 B002-B004-B005-B015
 
-`S2PMT07-P1-B002-B004-B005-B015-TECHNICAL-REVIEW` reviewed lifecycle/cache/transaction findings `B-002`, `B-004`, `B-005`, and `B-015` against current local code, phase records, manifests, and `test_stage2_lifecycle_cache.py`. All four are technical closure candidates only. P1 closure is not claimed; inherited counters remain P0=`8`, P1=`37`; `A-020`, S2PLT04, final bundle, independent final signoff, and independent final command execution still block Stage 2 integrated production acceptance.
+`S2PMT07-P1-B002-B004-B005-B015-TECHNICAL-REVIEW` reviewed lifecycle/cache/transaction findings `B-002`, `B-004`, `B-005`, and `B-015` against current local code, phase records, manifests, and `test_stage2_lifecycle_cache.py`. All four are technical closure candidates only. P1 closure is not claimed; inherited counters remain P0=`8`, P1=`37`; S2PLT04, final bundle, independent final signoff, independent final command execution, and inherited P0/P1 zero-state still block Stage 2 integrated production acceptance.
 
 ## Finding-Level Technical Review 2026-06-27 B003-B011
 
-`S2PMT07-P1-B003-B011-TECHNICAL-REVIEW` reviewed S2PMT03 watchdog stale-lock recovery and M4 cycle-watermark findings `B-003` and `B-011` against current local code, phase records, manifests, and `test_stage2_lease_fencing.py`. Both are technical closure candidates only. P1 closure is not claimed; inherited counters remain P0=`8`, P1=`37`; `A-020`, S2PLT04, final bundle, independent final signoff, and independent final command execution still block Stage 2 integrated production acceptance.
+`S2PMT07-P1-B003-B011-TECHNICAL-REVIEW` reviewed S2PMT03 watchdog stale-lock recovery and M4 cycle-watermark findings `B-003` and `B-011` against current local code, phase records, manifests, and `test_stage2_lease_fencing.py`. Both are technical closure candidates only. P1 closure is not claimed; inherited counters remain P0=`8`, P1=`37`; S2PLT04, final bundle, independent final signoff, independent final command execution, and inherited P0/P1 zero-state still block Stage 2 integrated production acceptance.
 
 
 ## Finding-Level Technical Review 2026-06-27 B006-B009-B010-B012-B013-B014
 
-`S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW` reviewed S2PMT05 capacity, fault-injection, time-policy, 35-day E2E, result-validity, and backpressure findings `B-006`, `B-009`, `B-010`, `B-012`, `B-013`, and `B-014` against current local code, phase records, manifests, and `test_stage2_stress_e2e.py`. All six are technical closure candidates only. P1 closure is not claimed; inherited counters remain P0=`8`, P1=`37`; `A-020`, S2PLT04, final bundle, independent final signoff, and independent final command execution still block Stage 2 integrated production acceptance.
+`S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW` reviewed S2PMT05 capacity, fault-injection, time-policy, 35-day E2E, result-validity, and backpressure findings `B-006`, `B-009`, `B-010`, `B-012`, `B-013`, and `B-014` against current local code, phase records, manifests, and `test_stage2_stress_e2e.py`. All six are technical closure candidates only. P1 closure is not claimed; inherited counters remain P0=`8`, P1=`37`; S2PLT04, final bundle, independent final signoff, independent final command execution, and inherited P0/P1 zero-state still block Stage 2 integrated production acceptance.
 
 - manifest: [`ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json`](../../../governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json)
 - phase record: [`PHASE_S2PMT07_P1_B006_B009_B010_B012_B013_B014_TECHNICAL_REVIEW.md`](./PHASE_S2PMT07_P1_B006_B009_B010_B012_B013_B014_TECHNICAL_REVIEW.md)
@@ -191,3 +191,13 @@ An independent reviewer must re-run or inspect the referenced evidence, decide e
 - verdict: `PASS_WITH_NO_PRODUCTION_ACCEPTANCE` for finding-level technical evidence only
 - preserved counters: P0 remains `8`, P1 remains `37`
 - final closure: not claimed; independent final signoff, final command execution, S2PLT04, and final acceptance bundle remain required
+
+
+## 2026-06-27 A-020 Technical Review Refresh
+
+`S2PMT07-P1-A020-TECHNICAL-REVIEW` reviewed the current S2PMT01 supply-chain baseline after the SBOM and CI enforcement refresh. `A-020` is now a finding-level technical closure candidate only. P1 closure is not claimed; inherited counters remain P0=`8`, P1=`37`; S2PLT04, final bundle, independent final signoff, independent final command execution, and inherited P0/P1 zero-state still block Stage 2 integrated production acceptance.
+
+- reviewed findings: `A-020`
+- latest technical review manifest: `governance/run_manifests/ADP-S2PMT07-P1-A020-TECHNICAL-REVIEW-20260627.json`
+- SBOM/CI evidence manifest: `governance/run_manifests/ADP-S2PMT01-SUPPLY-CHAIN-A020-SBOM-CI-20260627.json`
+- production side effects: `false`

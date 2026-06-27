@@ -4,7 +4,9 @@ import unittest
 from pathlib import Path
 
 from arxiv_daily_push.security_boundary import (
+    audit_supply_chain_ci_enforcement,
     audit_workflow_supply_chain,
+    build_dependency_sbom,
     build_frontstage_evidence_a004_report,
     build_trust_boundary_a005_report,
     build_supply_chain_baseline,
@@ -141,18 +143,101 @@ class SecurityBoundaryTests(unittest.TestCase):
 
     def test_supply_chain_baseline_declares_local_controls_without_side_effects(self) -> None:
         workflow_contents = {str(path.relative_to(ROOT)): path.read_text(encoding="utf-8") for path in ADP_WORKFLOWS}
+        dependency_contents = {
+            "arxiv-daily-push/pyproject.toml": (ROOT / "arxiv-daily-push" / "pyproject.toml").read_text(
+                encoding="utf-8"
+            )
+        }
         baseline = build_supply_chain_baseline(
             workflow_files=sorted(workflow_contents),
             dependency_files=["arxiv-daily-push/pyproject.toml"],
             workflow_contents=workflow_contents,
+            dependency_contents=dependency_contents,
             vulnerability_findings=[],
             approved_vulnerability_exceptions=[],
         )
 
         self.assertFalse(baseline["production_side_effects"])
         self.assertEqual(baseline["controls"]["workflow_audit"]["status"], "pass")
+        self.assertEqual(baseline["controls"]["dependency_sbom"]["status"], "pass")
+        self.assertEqual(baseline["controls"]["dependency_sbom"]["runtime_dependency_count"], 0)
+        self.assertGreaterEqual(baseline["controls"]["dependency_sbom"]["build_dependency_count"], 1)
+        self.assertEqual(baseline["controls"]["ci_enforcement_gate"]["status"], "pass")
         self.assertGreaterEqual(baseline["controls"]["workflow_audit"]["workflow_count"], 9)
         self.assertFalse(validate_supply_chain_baseline(baseline))
+
+    def test_dependency_sbom_extracts_pyproject_runtime_and_build_dependencies(self) -> None:
+        sbom = build_dependency_sbom(
+            {
+                "arxiv-daily-push/pyproject.toml": """
+[project]
+dependencies = ["requests>=2"]
+
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+"""
+            }
+        )
+
+        self.assertEqual(sbom["status"], "pass")
+        self.assertEqual(sbom["component_count"], 3)
+        self.assertEqual(sbom["runtime_dependency_count"], 1)
+        self.assertEqual(sbom["build_dependency_count"], 2)
+        self.assertIn(
+            {
+                "name": "requests",
+                "version_spec": ">=2",
+                "scope": "runtime",
+                "source_file": "arxiv-daily-push/pyproject.toml",
+            },
+            sbom["components"],
+        )
+        self.assertTrue(sbom["sbom_hash"])
+
+    def test_supply_chain_baseline_blocks_missing_sbom_and_ci_enforcement(self) -> None:
+        baseline = build_supply_chain_baseline(
+            workflow_files=[".github/workflows/project-governance.yml"],
+            dependency_files=["arxiv-daily-push/pyproject.toml"],
+            workflow_contents={
+                ".github/workflows/project-governance.yml": """
+permissions:
+  contents: read
+jobs:
+  governance:
+    steps:
+      - uses: actions/checkout@v5
+"""
+            },
+            dependency_contents={},
+            vulnerability_findings=[],
+            approved_vulnerability_exceptions=[],
+        )
+
+        errors = "\n".join(validate_supply_chain_baseline(baseline))
+        self.assertIn("dependency_sbom", errors)
+        self.assertIn("ci_enforcement_gate", errors)
+
+    def test_supply_chain_ci_enforcement_requires_security_boundary_test(self) -> None:
+        blocked = audit_supply_chain_ci_enforcement(
+            {
+                ".github/workflows/project-governance.yml": """
+steps:
+  - run: python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q
+"""
+            }
+        )
+        passed = audit_supply_chain_ci_enforcement(
+            {
+                ".github/workflows/project-governance.yml": """
+steps:
+  - run: PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_security_boundary.py -q
+"""
+            }
+        )
+
+        self.assertEqual(blocked["status"], "blocked")
+        self.assertEqual(passed["status"], "pass")
+        self.assertEqual(passed["matches"][0]["path"], ".github/workflows/project-governance.yml")
 
     def test_supply_chain_audit_blocks_write_permissions_and_unknown_mutable_actions(self) -> None:
         audit = audit_workflow_supply_chain(
@@ -185,6 +270,9 @@ jobs:
             workflow_files=[".github/workflows/project-governance.yml"],
             dependency_files=["arxiv-daily-push/pyproject.toml"],
             workflow_contents={".github/workflows/project-governance.yml": "permissions:\n  contents: read\nsteps:\n  - uses: actions/checkout@v5\n"},
+            dependency_contents={
+                "arxiv-daily-push/pyproject.toml": "[build-system]\nrequires = ['setuptools>=61']\n"
+            },
             vulnerability_findings=[{"finding_id": "PYSEC-TEST-001", "severity": "high", "package": "example"}],
             approved_vulnerability_exceptions=[],
         )

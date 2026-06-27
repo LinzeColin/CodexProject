@@ -3297,3 +3297,21 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PMT07-P1-A020-TECHNICAL-REVIEW"
+    phase: "S2PM"
+    objective: "Record finding-level technical review for inherited P1 finding A-020 supply-chain SBOM and CI enforcement without claiming P1 closure or production acceptance."
+    scope: "A-020 supply-chain SBOM/CI evidence review, P1 receipt manifest and phase record refresh, dedicated technical review manifest and phase record, traceability row, rendered user-center traceability page, focused regression tests, and no-production evidence."
+    non_scope: "No independent final signoff, final command execution, inherited P0/P1 closure, S2PLT04 completion, final acceptance bundle creation, SMTP transport, scheduler install or enablement, Release upload, public schema or DB migration, production queue mutation, ranking/source-adapter change, CURRENT pointer change, V7.1/V7.2 contract-file edit, DAILY_OPERATION, or integrated production acceptance."
+    status: "completed"
+    dependencies: ["S2PMT07", "S2PMT01-SUPPLY-CHAIN-A020", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_A020_TECHNICAL_REVIEW.md", "governance/run_manifests/ADP-S2PMT07-P1-A020-TECHNICAL-REVIEW-20260627.json", "governance/run_manifests/ADP-S2PMT01-SUPPLY-CHAIN-A020-SBOM-CI-20260627.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_INDEPENDENT_REVIEW_RECEIPT.md", "governance/run_manifests/ADP-S2PMT07-P1-INDEPENDENT-REVIEW-RECEIPT-20260626.json", "arxiv-daily-push/tests/test_security_boundary.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_user_center_candidate_pool.py"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_a020_target PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_security_boundary.py arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_user_center_candidate_pool.py -q"]
+    test_results: ["py_compile PASS", "target security/final-gate/user-center tests: 45 OK", "root governance A-020 workflow test: 1 OK", "full arxiv-daily-push unittest: 596 OK", "V7.2 validator PASS", "V7.2 unittest: 4 OK", "changed-only governance semantic: errors 0 warnings 0", "project governance: errors 0 warnings 0", "governance sync: errors 0 warnings 0", "lean check-render: drift_count 0 reference_issue_count 0", "structured parse: JSON/JSONL/YAML/CSV OK", "git diff --check PASS"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-P1-A020-TECHNICAL-REVIEW-20260627.json", "governance/run_manifests/ADP-S2PMT01-SUPPLY-CHAIN-A020-SBOM-CI-20260627.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_A020_TECHNICAL_REVIEW.md", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT01_SUPPLY_CHAIN_A020.md", "arxiv-daily-push/tests/test_security_boundary.py", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
+    risk: "This receipt can be misread as A-020/P1 closure; independent final S2PMT07 review, full P0/P1 closure package, S2PLT04, final bundle, and final command execution still control closure and production acceptance."
+    rollback: "Revert the A-020 SBOM/CI and technical review manifests/phase records, project-governance CI gate, P1 receipt refresh, traceability row, rendered user-center traceability page, delivery/event/status records, and regression test extensions; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

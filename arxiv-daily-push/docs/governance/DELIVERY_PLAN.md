@@ -21,7 +21,7 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 189
+- task_count: 190
 - acceptance_count: 125
 
 ## Delivery Tasks
@@ -215,7 +215,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PKT04 | M3 policy/capital/geopolitical frontier mail | completed_local_validation | `ACC-S2PKT04-M3` | Local-only M3/B3 mail evidence with legal status, capital impact, geopolitical context, personal impact, 2h/30d actions, deterministic hash, and no production side effects. |
 | S2PKT05 | M4 cross-board 3+1 mail orchestration | completed_local_validation | `ACC-S2PKT05-M4` | Local-only M4/B1-B6 orchestration evidence with terminal M1/M2/M3 inputs, 07:30/11:30/17:00/21:30 windows, cycle watermark, duplicate 0, silent-drop 0, cross-board summary sections, review/action traceability, deterministic hash, and no production side effects. |
 | S2PMT01 | Security and evidence boundary | completed_local_validation | `ACC-S2PMT01-SECURITY` | Local-only security boundary evidence for UNTRUSTED_DATA source content, typed frontstage statements, safe URL rendering, zero-critical-claim blocking, supply-chain baseline receipt, and no production side effects. |
-| S2PMT01-SUPPLY-CHAIN-A020 | S2PMT01 A-020 supply-chain machine gate | completed | `ACC-S2PMT01-SECURITY` | Local A-020 remediation evidence completed: static workflow permission audit, approved mutable GitHub Action reference policy, and high/critical dependency vulnerability exception gate; no workflow execution, complete SBOM generation, online vulnerability scan, production side effects, or inherited P0/P1 closure. |
+| S2PMT01-SUPPLY-CHAIN-A020 | S2PMT01 A-020 supply-chain machine gate | completed | `ACC-S2PMT01-SECURITY` | Local A-020 remediation evidence completed: static workflow permission audit, approved mutable GitHub Action reference policy, high/critical dependency vulnerability exception gate, deterministic local SBOM summary, and CI enforcement through project-governance; no real SMTP/scheduler/Release, production side effects, or inherited P0/P1 closure. |
 | S2PMT02 | Atomic storage and recovery | completed_local_validation | `ACC-S2PMT02-ATOMIC-RECOVERY` | Local-only atomic artifact writes, manifest hash verification, tamper detection, explicit restore drill, staging cleanup, and no production side effects. |
 | S2PMT02-ARTIFACT-ATOMIC-PUBLISH | S2PMT02 A-010 remediation | completed_local_validation | `ACC-S2PMT02-ATOMIC-RECOVERY` | Stage 1 B1 report/email artifacts validate before formal writes, stage under `.b1_staging`, verify byte SHA-256 refs, publish one complete package directory, and leave no half-published package on failure. |
 | S2PMT03 | Lease fencing and transactional outbox | completed_local_validation | `ACC-S2PMT03-LEASE-FENCING-OUTBOX` | Local-only row_version CAS, lease/fencing, state-history consistency, idempotent outbox Message-ID, SMTP accept crash-window, M4 cycle watermark, and no production side effects. |
@@ -284,6 +284,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PMT07-B008-INDEPENDENT-TECHNICAL-REVIEW | S2PM | finding_level_review_passed_no_closure_no_production | `ACC-S2PMT07-FINAL-REVIEW` | Records read-only finding-level technical review verdict `PASS_WITH_NO_PRODUCTION_ACCEPTANCE` for B-008 fake SMTP crash-window evidence; this does not close P0/P1, pass S2PMT07, complete S2PLT04, execute final commands, or change production state. |
 | S2PMT07-P1-B003-B011-TECHNICAL-REVIEW | S2PM | finding_level_review_passed_no_p1_closure_no_production | `ACC-S2PMT07-FINAL-REVIEW` | Records finding-level technical review verdict `PASS_WITH_NO_PRODUCTION_ACCEPTANCE` for B-003 watchdog recovery and B-011 M4 watermark evidence; this does not close P1/P0, pass S2PMT07, complete S2PLT04, execute final commands, or change production state. |
 | S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW | S2PM | finding_level_review_passed_no_p1_closure_no_production | `ACC-S2PMT07-FINAL-REVIEW` | Records finding-level technical review verdict `PASS_WITH_NO_PRODUCTION_ACCEPTANCE` for S2PMT05 B-006/B-009/B-010/B-012/B-013/B-014 evidence; this does not close P1/P0, pass S2PMT07, complete S2PLT04, execute final commands, or change production state. |
+| S2PMT07-P1-A020-TECHNICAL-REVIEW | S2PM | finding_level_review_passed_no_p1_closure_no_production | `ACC-S2PMT07-FINAL-REVIEW` | Records finding-level technical review verdict `PASS_WITH_NO_PRODUCTION_ACCEPTANCE` for A-020 supply-chain SBOM/CI evidence; this does not close P1/P0, pass S2PMT07, complete S2PLT04, execute final commands, or change production state. |
 
 ## 2026-06-27 18:52:57 Australia/Sydney - S2PMT07 P0 technical closure candidate package
 
@@ -309,3 +310,11 @@ The machine-readable task source is `delivery_tasks.yaml`.
 - Added manifest `governance/run_manifests/ADP-S2PMT07-P1-B003-B011-TECHNICAL-REVIEW-20260627.json`.
 - Added phase record `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_B003_B011_TECHNICAL_REVIEW.md`.
 - B-003/B-011 are technical closure candidates only; P1 remains open, P0 remains open, and production remains disabled.
+
+
+## 2026-06-27 23:31:39 Australia/Sydney - S2PMT07 P1 A020 technical review
+
+- Added manifest `governance/run_manifests/ADP-S2PMT07-P1-A020-TECHNICAL-REVIEW-20260627.json`.
+- Added SBOM/CI evidence manifest `governance/run_manifests/ADP-S2PMT01-SUPPLY-CHAIN-A020-SBOM-CI-20260627.json`.
+- Added phase record `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_A020_TECHNICAL_REVIEW.md`.
+- A-020 is a technical closure candidate only; P1 remains open, P0 remains open, and production remains disabled.

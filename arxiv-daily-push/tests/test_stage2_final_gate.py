@@ -912,6 +912,18 @@ class Stage2FinalGateTests(unittest.TestCase):
             REPO_ROOT
             / "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_B006_B009_B010_B012_B013_B014_TECHNICAL_REVIEW.md"
         )
+        a020_sbom_ci_manifest_path = (
+            REPO_ROOT
+            / "governance/run_manifests/ADP-S2PMT01-SUPPLY-CHAIN-A020-SBOM-CI-20260627.json"
+        )
+        a020_review_manifest_path = (
+            REPO_ROOT
+            / "governance/run_manifests/ADP-S2PMT07-P1-A020-TECHNICAL-REVIEW-20260627.json"
+        )
+        a020_review_phase_path = (
+            REPO_ROOT
+            / "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_A020_TECHNICAL_REVIEW.md"
+        )
         receipt = receipt_path.read_text(encoding="utf-8")
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         receipt_rows = {
@@ -941,7 +953,12 @@ class Stage2FinalGateTests(unittest.TestCase):
             "A-017": ("PHASE_S2PMT03_SMTP_IDENTITY_A017.md", "ADP-S2PMT03-SMTP-IDENTITY-A017-20260626.json"),
             "A-018": ("PHASE_S2PAT05_ROI_DISCLOSURE_A018.md", "ADP-S2PAT05-ROI-DISCLOSURE-A018-20260626.json"),
             "A-019": ("PHASE_S2PMT01_ZERO_CRITICAL_CLAIM_A019.md", "ADP-S2PMT01-ZERO-CRITICAL-CLAIM-A019-20260627.json"),
-            "A-020": ("PHASE_S2PMT01_SUPPLY_CHAIN_A020.md", "ADP-S2PMT01-SUPPLY-CHAIN-A020-20260626.json"),
+            "A-020": (
+                "PHASE_S2PMT01_SUPPLY_CHAIN_A020.md",
+                "ADP-S2PMT01-SUPPLY-CHAIN-A020-20260626.json",
+                "ADP-S2PMT01-SUPPLY-CHAIN-A020-SBOM-CI-20260627.json",
+                "ADP-S2PMT07-P1-A020-TECHNICAL-REVIEW-20260627.json",
+            ),
             "A-021": ("PHASE_S2PAT05_ROADMAP_STOP_CODE_A021.md", "ADP-S2PAT05-ROADMAP-STOP-CODE-A021-20260626.json"),
             "B-002": ("PHASE_S2PMT04_PROCESS_LIFECYCLE_B002.md", "ADP-S2PMT04-PROCESS-LIFECYCLE-B002-20260627.json"),
             "B-003": ("PHASE_S2PMT03_WATCHDOG_RECOVERY_B003.md", "ADP-S2PMT03-WATCHDOG-RECOVERY-B003-20260626.json"),
@@ -1064,11 +1081,11 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(manifest["refreshed_findings"], list(expected_current_refs))
         self.assertEqual(
             manifest["refresh_manifest"],
-            "governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json",
+            "governance/run_manifests/ADP-S2PMT07-P1-A020-TECHNICAL-REVIEW-20260627.json",
         )
         self.assertEqual(
             manifest["previous_refresh_manifest"],
-            "governance/run_manifests/ADP-S2PMT07-P1-B003-B011-TECHNICAL-REVIEW-20260627.json",
+            "governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json",
         )
         self.assertIn(
             "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-20260627.json",
@@ -1090,6 +1107,9 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertTrue(b003_b011_review_phase_path.exists())
         self.assertTrue(b006_b009_b010_b012_b013_b014_review_manifest_path.exists())
         self.assertTrue(b006_b009_b010_b012_b013_b014_review_phase_path.exists())
+        self.assertTrue(a020_sbom_ci_manifest_path.exists())
+        self.assertTrue(a020_review_manifest_path.exists())
+        self.assertTrue(a020_review_phase_path.exists())
         self.assertEqual(
             set(manifest["p1_technical_review_candidate_findings"]),
             {
@@ -1107,6 +1127,7 @@ class Stage2FinalGateTests(unittest.TestCase):
                 "A-017",
                 "A-018",
                 "A-019",
+                "A-020",
                 "A-021",
                 "B-002",
                 "B-003",
@@ -1124,11 +1145,11 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertEqual(
             manifest["p1_latest_technical_review_candidate_findings"],
-            ["B-006", "B-009", "B-010", "B-012", "B-013", "B-014"],
+            ["A-020"],
         )
         self.assertEqual(
             manifest["p1_technical_review_candidate_manifest"],
-            "governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json",
+            "governance/run_manifests/ADP-S2PMT07-P1-A020-TECHNICAL-REVIEW-20260627.json",
         )
         self.assertIn(
             "governance/run_manifests/ADP-S2PMT07-P1-A006-A009-TECHNICAL-REVIEW-20260627.json",
@@ -1156,6 +1177,10 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertIn(
             "governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json",
+            manifest["p1_technical_review_candidate_manifests"],
+        )
+        self.assertIn(
+            "governance/run_manifests/ADP-S2PMT07-P1-A020-TECHNICAL-REVIEW-20260627.json",
             manifest["p1_technical_review_candidate_manifests"],
         )
         self.assertFalse(manifest["p1_closure_claimed"])
@@ -1188,6 +1213,7 @@ class Stage2FinalGateTests(unittest.TestCase):
                 "A-017",
                 "A-018",
                 "A-019",
+                "A-020",
                 "A-021",
                 "B-002",
                 "B-003",
@@ -1207,24 +1233,28 @@ class Stage2FinalGateTests(unittest.TestCase):
                     "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
                 )
                 expected_receipt = (
-                    "governance/run_manifests/ADP-S2PMT07-P1-A006-A009-TECHNICAL-REVIEW-20260627.json"
-                    if finding_id in {"A-006", "A-007", "A-008", "A-009"}
+                    "governance/run_manifests/ADP-S2PMT07-P1-A020-TECHNICAL-REVIEW-20260627.json"
+                    if finding_id == "A-020"
                     else (
-                        "governance/run_manifests/ADP-S2PMT07-P1-A010-A016-TECHNICAL-REVIEW-20260627.json"
-                        if finding_id in {"A-010", "A-011", "A-012", "A-013", "A-014", "A-015", "A-016"}
+                        "governance/run_manifests/ADP-S2PMT07-P1-A006-A009-TECHNICAL-REVIEW-20260627.json"
+                        if finding_id in {"A-006", "A-007", "A-008", "A-009"}
                         else (
-                            "governance/run_manifests/ADP-S2PMT07-P1-A017-A019-TECHNICAL-REVIEW-20260627.json"
-                            if finding_id in {"A-017", "A-019"}
+                            "governance/run_manifests/ADP-S2PMT07-P1-A010-A016-TECHNICAL-REVIEW-20260627.json"
+                            if finding_id in {"A-010", "A-011", "A-012", "A-013", "A-014", "A-015", "A-016"}
                             else (
-                                "governance/run_manifests/ADP-S2PMT07-P1-A018-A021-TECHNICAL-REVIEW-20260627.json"
-                                if finding_id in {"A-018", "A-021"}
+                                "governance/run_manifests/ADP-S2PMT07-P1-A017-A019-TECHNICAL-REVIEW-20260627.json"
+                                if finding_id in {"A-017", "A-019"}
                                 else (
-                                    "governance/run_manifests/ADP-S2PMT07-P1-B003-B011-TECHNICAL-REVIEW-20260627.json"
-                                    if finding_id in {"B-003", "B-011"}
+                                    "governance/run_manifests/ADP-S2PMT07-P1-A018-A021-TECHNICAL-REVIEW-20260627.json"
+                                    if finding_id in {"A-018", "A-021"}
                                     else (
-                                        "governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json"
-                                        if finding_id in {"B-006", "B-009", "B-010", "B-012", "B-013", "B-014"}
-                                        else "governance/run_manifests/ADP-S2PMT07-P1-B002-B004-B005-B015-TECHNICAL-REVIEW-20260627.json"
+                                        "governance/run_manifests/ADP-S2PMT07-P1-B003-B011-TECHNICAL-REVIEW-20260627.json"
+                                        if finding_id in {"B-003", "B-011"}
+                                        else (
+                                            "governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json"
+                                            if finding_id in {"B-006", "B-009", "B-010", "B-012", "B-013", "B-014"}
+                                            else "governance/run_manifests/ADP-S2PMT07-P1-B002-B004-B005-B015-TECHNICAL-REVIEW-20260627.json"
+                                        )
                                     )
                                 )
                             )
@@ -1524,6 +1554,57 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertIn("B-006", b006_b009_b010_b012_b013_b014_phase)
         self.assertIn("B-014", b006_b009_b010_b012_b013_b014_phase)
+
+        a020_sbom_ci = json.loads(a020_sbom_ci_manifest_path.read_text(encoding="utf-8"))
+        self.assertEqual(a020_sbom_ci["status"], "completed_local_validation_no_production")
+        self.assertEqual(a020_sbom_ci["finding_id"], "A-020")
+        self.assertFalse(a020_sbom_ci["production_side_effects"])
+        self.assertTrue(a020_sbom_ci["supply_chain_gate"]["dependency_sbom"]["status"] == "pass")
+        self.assertEqual(a020_sbom_ci["supply_chain_gate"]["dependency_sbom"]["runtime_dependency_count"], 0)
+        self.assertGreaterEqual(a020_sbom_ci["supply_chain_gate"]["dependency_sbom"]["build_dependency_count"], 1)
+        self.assertEqual(a020_sbom_ci["supply_chain_gate"]["ci_enforcement_gate"]["status"], "pass")
+        self.assertEqual(
+            a020_sbom_ci["supply_chain_gate"]["ci_enforcement_gate"]["required_test"],
+            "arxiv-daily-push/tests/test_security_boundary.py",
+        )
+        self.assertFalse(a020_sbom_ci["real_smtp_enabled"])
+        self.assertFalse(a020_sbom_ci["scheduler_enabled"])
+        self.assertFalse(a020_sbom_ci["stage2_integrated_production_accepted"])
+
+        a020_review = json.loads(a020_review_manifest_path.read_text(encoding="utf-8"))
+        self.assertEqual(
+            a020_review["status"],
+            "finding_level_technical_review_passed_no_p1_closure_no_production",
+        )
+        self.assertEqual(a020_review["finding_ids"], ["A-020"])
+        self.assertFalse(a020_review["reviewer_independence_for_final_gate_claimed"])
+        self.assertTrue(a020_review["technical_review_checks"]["sbom_generated"])
+        self.assertTrue(a020_review["technical_review_checks"]["ci_enforcement_present"])
+        self.assertTrue(a020_review["technical_review_checks"]["vulnerability_gate_fail_closed"])
+        self.assertTrue(a020_review["technical_review_checks"]["action_reference_policy_present"])
+        self.assertTrue(a020_review["technical_review_checks"]["all_evidence_files_exist"])
+        self.assertFalse(a020_review["technical_review_checks"]["independent_final_signoff_present"])
+        self.assertEqual(a020_review["inherited_v7_1_open_p0_findings_after"], 8)
+        self.assertEqual(a020_review["inherited_v7_1_open_p1_findings_after"], 37)
+        self.assertFalse(a020_review["p1_closure_claimed"])
+        self.assertFalse(a020_review["s2pmt07_final_pass_claimed"])
+        self.assertFalse(a020_review["stage2_integrated_production_accepted"])
+        self.assertFalse(a020_review["real_smtp_sent"])
+        self.assertFalse(a020_review["scheduler_install_enabled"])
+        self.assertFalse(a020_review["release_packaging_enabled"])
+        self.assertFalse(a020_review["production_restore_enabled"])
+        self.assertFalse(a020_review["current_pointer_changed"])
+        self.assertFalse(a020_review["v7_1_baseline_changed"])
+        self.assertFalse(a020_review["v7_2_contract_files_changed"])
+        reviewed = {finding["finding_id"]: finding for finding in a020_review["reviewed_findings"]}
+        self.assertEqual(set(reviewed), {"A-020"})
+        self.assertEqual(reviewed["A-020"]["technical_review_verdict"], "PASS_WITH_NO_PRODUCTION_ACCEPTANCE")
+        self.assertTrue(reviewed["A-020"]["technical_closure_candidate"])
+        self.assertTrue(reviewed["A-020"]["independent_final_closure_decision_required"])
+        a020_phase = a020_review_phase_path.read_text(encoding="utf-8")
+        self.assertIn("A-020", a020_phase)
+        self.assertIn("SBOM", a020_phase)
+        self.assertIn("CI", a020_phase)
 
     def test_dependency_state_requires_s2plt04_and_records_missing_completion(self) -> None:
         state = build_dependency_state()
