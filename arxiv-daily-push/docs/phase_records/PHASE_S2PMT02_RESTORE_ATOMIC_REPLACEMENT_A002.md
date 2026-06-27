@@ -37,4 +37,12 @@ No production restore was executed. This record does not send SMTP, install or e
 
 ## Remaining Gate
 
-`A-002` remains open until S2PMT07 independent review inspects or reruns this evidence and explicitly closes the finding. This local evidence refresh does not change inherited P0/P1 counters.
+`A-002` now has finding-level independent technical review verdict `PASS_WITH_NO_PRODUCTION_ACCEPTANCE` and is a technical closure candidate. It remains open until the later P0 closure package and final S2PMT07 gate explicitly close the finding. This local evidence refresh does not change inherited P0/P1 counters.
+
+## Independent Technical Review 2026-06-27 16:41:52 Australia/Sydney
+
+- review_receipt: `governance/run_manifests/ADP-S2PMT07-A002-INDEPENDENT-TECHNICAL-REVIEW-20260627.json`
+- reviewer_verdict: `PASS_WITH_NO_PRODUCTION_ACCEPTANCE`
+- technical_closure_candidate: `true`
+- p0_closure_claimed: `false`
+- stage2_integrated_production_accepted: `false`

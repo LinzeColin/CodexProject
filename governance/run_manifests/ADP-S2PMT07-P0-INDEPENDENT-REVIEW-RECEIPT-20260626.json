@@ -18,6 +18,7 @@
     "arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_RESTORE_ATOMIC_REPLACEMENT_A002.md",
     "governance/run_manifests/ADP-S2PMT02-RESTORE-ATOMIC-REPLACEMENT-A002-20260627.json",
     "arxiv-daily-push/用户中心/恢复原子替换扫描.md",
+    "governance/run_manifests/ADP-S2PMT07-A002-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A003-20260627.json",
     "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_OUTBOX_DELIVERY_A003.md",
     "governance/run_manifests/ADP-S2PMT03-OUTBOX-DELIVERY-A003-20260627.json",
@@ -75,13 +76,16 @@
       "evidence_refs": [
         "arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_RESTORE_ATOMIC_REPLACEMENT_A002.md",
         "governance/run_manifests/ADP-S2PMT02-RESTORE-ATOMIC-REPLACEMENT-A002-20260627.json",
+        "governance/run_manifests/ADP-S2PMT07-A002-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
         "arxiv-daily-push/用户中心/恢复原子替换扫描.md",
         "arxiv-daily-push/tests/test_stage2_atomic_recovery.py"
       ],
       "finding_id": "A-002",
+      "finding_level_independent_review_receipt": "governance/run_manifests/ADP-S2PMT07-A002-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
       "fix_task": "S2PMT02-RESTORE-ATOMIC-REPLACEMENT-A002",
-      "preliminary_review_state": "refreshed_current_evidence_located_independent_review_required_closure_not_claimed",
-      "reviewer_decision_required": "Verify valid new-target restore, valid overwrite restore with previous-target backup preservation, invalid overwrite target preservation, temporary-file cleanup, and no-production flags; decide whether this dedicated local evidence is sufficient for A-002 closure.",
+      "preliminary_review_state": "finding_level_independent_review_passed_technical_closure_candidate_no_p0_closure",
+      "reviewer_decision_required": "Carry A-002 into the later P0 closure package as a technical closure candidate; do not lower P0/P1 counters or claim S2PMT07 final pass until the full independent final gate signs off.",
+      "reviewer_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
       "severity": "P0"
     },
     {
