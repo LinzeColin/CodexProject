@@ -3924,6 +3924,25 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         for text in (feature_text, dev_text, model_text):
             self.assertNotIn("docs/governance/", text.splitlines()[0])
 
+    def test_adp_markdown_human_files_can_extend_lean_render_with_chinese_summary(self) -> None:
+        cli = load_lean_governance_module()
+        arxiv_root = ROOT / "arxiv-daily-push"
+
+        for filename, title in (
+            ("功能清单.md", "# 功能清单"),
+            ("开发记录.md", "# 开发记录"),
+            ("模型参数文件.md", "# 模型参数文件"),
+        ):
+            text = (arxiv_root / filename).read_text(encoding="utf-8")
+            self.assertTrue(text.startswith(title), filename)
+            self.assertIn("## 中文速读", text, filename)
+            self.assertIn("## 摘要", text, filename)
+
+        result = cli.check_render_project_files(arxiv_root)
+
+        self.assertEqual(result["drift_count"], 0, result["drift"])
+        self.assertEqual(result["reference_issue_count"], 0, result["reference_issues"])
+
     def test_review9_s5pbt05_files_are_project_governance_only(self) -> None:
         sync = load_sync_module()
         project = {

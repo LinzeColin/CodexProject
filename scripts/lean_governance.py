@@ -917,7 +917,8 @@ def check_render_project_files(project_root: Path, view: str | None = None) -> d
             # ADP keeps these three root files owner-readable in Chinese. They
             # may intentionally differ from the compact machine render, but the
             # project validator still enforces required traceability tokens.
-            if actual.startswith(f"# {rel_path}") and "## 中文速读" in actual and "## 摘要" in actual:
+            readable_title = Path(rel_path).stem
+            if actual.startswith(f"# {readable_title}") and "## 中文速读" in actual and "## 摘要" in actual:
                 continue
         if actual != expected:
             drift.append(

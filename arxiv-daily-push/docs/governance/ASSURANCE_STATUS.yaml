@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260627-ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-001"
-source_snapshot_hash: "sha256:d39c8be3fed272f236414566df58c4d9dd650fe2106c2ebccc7a8e04af51a66b"
+as_of_event_id: "EVENT-20260628-ADP-S2PLT03-RESILIENCE-PRECHECK"
+source_snapshot_hash: "sha256:cdbdbff29ee0ed27c06cc23c716b5ee0a934a8261b11b16513cdf4af84aae77c"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
-snapshot_event_time: "2026-06-27T09:28:57+10:00"
+snapshot_event_time: "2026-06-28T01:30:57+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -13,22 +13,23 @@ dimensions:
     evidence_refs:
       - "scripts/validate_project_governance.py"
   implementation_congruence:
-    status: "VERIFIED"
+    status: "PARTIAL"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 950
-    total_active_parameters: 950
-    checked_active_formulas: 117
-    total_active_formulas: 117
-    unresolved_fact_ids: []
+    checked_active_parameters: 953
+    total_active_parameters: 958
+    checked_active_formulas: 118
+    total_active_formulas: 118
+    unresolved_fact_ids:
+      - "FACT-arxiv-daily-push-IMPLEMENTATION-PARAMETER-REVIEW"
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
       - "arxiv-daily-push/docs/governance/formula_registry.yaml"
   parameter_source_quality:
-    status: "VERIFIED"
-    fact_level: "EXTRACTED"
-    checked_active_parameters: 950
-    total_active_parameters: 950
+    status: "PARTIAL"
+    fact_level: "UNKNOWN"
+    checked_active_parameters: 953
+    total_active_parameters: 958
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -60,14 +61,15 @@ dimensions:
     fact_level: "EXTRACTED"
     tree_bound_events: 0
     commit_bound_events: 4
-    legacy_unbound_events: 148
-    precommit_pending_events: 52
+    legacy_unbound_events: 184
+    precommit_pending_events: 40
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "VERIFIED"
-  release_gate: "S2PMT07_P0_B001_REVIEW_RECEIPT_REFRESH_NO_CLOSURE_NO_PRODUCTION"
+  release_gate: "S2PMT07_FINAL_ACCEPTANCE_BUNDLE_READINESS_BLOCKED_NO_PRODUCTION"
   blocker_ids:
+    - "FACT-arxiv-daily-push-IMPLEMENTATION-PARAMETER-REVIEW"
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
   v7_contract_hash: "a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d"

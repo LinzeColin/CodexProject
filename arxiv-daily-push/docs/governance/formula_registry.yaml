@@ -6136,6 +6136,58 @@ formulas:
     verified_at: "2026-06-26T19:00:00+10:00"
 
   -
+    formula_id: "FORM-ADP-118"
+    model_id: "MOD-ADP-116"
+    assumption_ids:
+      - "ASM-ADP-035"
+    status: "active"
+    expression: "S2PLT03 resilience readiness remains blocked unless S2PLT02 is accepted; rate-limit, parser-drift, restart-recovery, disk-pressure, backup restore-point, executable rollback, and ledger count conservation evidence are all proven; inherited V7.1 P0 and P1 findings are zero; and every S2PLT03 production, scheduler, SMTP, Release, restore, queue, schema, DB, source-adapter, ranking, CURRENT, V7.1, and V7.2 side-effect flag is false."
+    variables:
+      -
+        name: "dependency_state"
+        data_type: "object"
+        unit: "S2PLT02 dependency completion state"
+        input_domain: "S2PLT02"
+      -
+        name: "resilience_evidence_state"
+        data_type: "object"
+        unit: "resilience drill and rollback evidence"
+        input_domain: "rate limit, parser drift, restart, disk pressure, backup restore point, rollback executable, and ledger count conservation"
+      -
+        name: "audit_blocker_state"
+        data_type: "object"
+        unit: "inherited V7.1 P0/P1 blocker counts"
+        input_domain: "open P0 and P1 findings"
+    constraints: "S2PLT03 precheck must not accept S2PLT03, claim drill completion, claim INTEGRATED_PRODUCTION_ACCEPTED or DAILY_OPERATION, send SMTP, enable scheduler, upload Release, execute production restore, mutate production queues, change public schema or DB, change source adapters or ranking, change CURRENT, change V7.1 baseline, or edit V7.2 contract files."
+    missing_policy: "Missing S2PLT02 acceptance, missing resilience drill evidence, missing backup restore-point proof, missing executable rollback proof, missing ledger count conservation, nonzero inherited P0/P1, or any forbidden side-effect flag blocks S2PLT03."
+    output_range: "S2PLT03 resilience readiness precheck report with pass or blocked status, dependency state, resilience evidence state, audit blocker state, blocking reasons, deterministic report_hash, production_acceptance_claimed false, inherited_p0_p1_closed false, and all forbidden flags false."
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_final_gate.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PLT03-RESILIENCE-PRECHECK-20260628.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT03_RESILIENCE_PRECHECK.md"
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT03_RESILIENCE_PRECHECK_MODEL_ID"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT03_ACCEPTANCE_ID"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT03_TASK_ID"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT03_SCHEMA_VERSION"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT03_REQUIRED_DEPENDENCIES"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT03_REQUIRED_EVIDENCE"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT03_FORBIDDEN_FLAGS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT03_BLOCKING_REASONS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_s2plt03_dependency_state"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_s2plt03_resilience_evidence_state"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_s2plt03_resilience_precheck_report"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::validate_s2plt03_resilience_precheck_report"
+    implementation_fingerprint: "sha256:74a0ec7f721e630a29c166cf90b4ca84b2faa49d71dc5fd3bad2c8a02714d0c3"
+    evidence_hash: "sha256:74a0ec7f721e630a29c166cf90b4ca84b2faa49d71dc5fd3bad2c8a02714d0c3"
+    last_verified_commit: "PRECOMMIT"
+    verified_at: "2026-06-28T01:30:57+10:00"
+
+  -
     formula_id: "FORM-ADP-107"
     model_id: "MOD-ADP-105"
     assumption_ids:

@@ -5,13 +5,24 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 115
-- formula_count: 117
-- parameter_count: 967
+- model_count: 116
+- formula_count: 118
+- parameter_count: 975
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
 ## Governance Notes
+
+- `S2PLT03` adds `MOD-ADP-116`, `FORM-ADP-118`, and `PARAM-ADP-968`
+  through `PARAM-ADP-975`. It records a fail-closed no-production resilience,
+  capacity, rollback, and state-count precheck requiring S2PLT02 acceptance,
+  rate-limit, parser-drift, restart-recovery, disk-pressure, backup
+  restore-point, executable rollback, ledger count conservation, and inherited
+  P0/P1 zero proof before S2PLT03 can pass. It does not run live drills,
+  execute production restore, send SMTP, enable scheduler, upload Release,
+  mutate queues/schema/DB, change source adapters or ranking, edit CURRENT or
+  V7 contracts, close P0/P1, enable DAILY_OPERATION, or claim integrated
+  production acceptance.
 
 - `S1-02-BASELINE-LOCK-TRACEABILITY-001` locked the Review8 V4 two-stage
   pursuing-goal baseline and repaired version metadata drift only. It did not
