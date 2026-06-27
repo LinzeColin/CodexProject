@@ -6,7 +6,7 @@ arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTI
 
 ## 2. 本次运行改变了什么
 
-S2PMT07 现在有独立的 independent review signoff validator：未来 `FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml` 必须通过 schema version、no-production signoff decision、reviewer independence、required artifact validations、closure-state booleans、final bundle refs、no-production flags 和 signoff hash 校验。当前 signoff、completion report、manifest、zero-proof artifact 和 final bundle 仍缺失，inherited P0/P1 仍为 `8 / 37`。既有 validator 只是未来 artifact 的校验门，不是 P0/P1 归零证明、最终包已创建、S2PLT04 完成、P0/P1 关闭或生产验收。
+S2PMT07 现在有独立的 no-production side-effect attestation validator：未来 `FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json` 必须通过 schema version、no-production attestation decision、required evidence refs、final-bundle scope、no-production flags、closure-state booleans 和 attestation hash 校验。当前 no-production attestation、independent signoff、final command execution artifact、completion report、manifest、zero-proof artifact 和 final bundle 仍缺失，inherited P0/P1 仍为 `8 / 37`。既有 validator 只是未来 artifact 的校验门，不是无生产副作用最终签署、P0/P1 归零证明、最终包已创建、S2PLT04 完成、P0/P1 关闭或生产验收。
 
 ## 3. 为什么重要
 
@@ -71,8 +71,8 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - model_count: `117`
 - total_formulas: `119`
 - active_formulas: `119`
-- total_parameters: `1019`
-- active_parameters: `1002`
+- total_parameters: `1024`
+- active_parameters: `1007`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
@@ -98,10 +98,10 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - source_base_commit: `f49b645d9a35857605eff53a26bed0ea7e15816a`
 - source_tree_hash: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - source_snapshot_hash: `sha256:b46b66adca9fff016c8699d25d2f20031291631ddbc6e9ee00fc360126a9647f`
-- snapshot_event_time: `2026-06-28T05:57:25+10:00`
+- snapshot_event_time: `2026-06-28T06:48:44+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PM / S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_VALIDATOR_BLOCKED_NO_PRODUCTION`
+- phase/gate: `S2PM / S2PMT07_NO_PRODUCTION_ATTESTATION_VALIDATOR_BLOCKED_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 

@@ -7,12 +7,25 @@ machine_summary:
 
 - model_count: 117
 - formula_count: 119
-- parameter_count: 1019
+- parameter_count: 1024
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
 ## Governance Notes
 
+- `S2PMT07-NO-PRODUCTION-SIDE-EFFECT-ATTESTATION-VALIDATOR` adds
+  `PARAM-ADP-1020` through `PARAM-ADP-1024` under `MOD-ADP-100` /
+  `FORM-ADP-102`. It validates a future
+  `FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json` payload for schema
+  version, exact no-production attestation decision, final-bundle scope,
+  required evidence refs, no-production flags, closure-state proof, and
+  attestation hash binding while keeping the current attestation missing,
+  inherited P0=8/P1=37 open, closure flags false, and every production
+  side-effect flag false. It does not create no-production attestation, create
+  independent final signoff, execute final commands, create the final bundle,
+  create P0/P1 zero proof, close P0/P1, complete S2PLT04, enable
+  SMTP/scheduler/Release/restore, mutate production state, change
+  sources/ranking/CURRENT/V7, or claim integrated production acceptance.
 - `S2PMT07-INDEPENDENT-REVIEW-SIGNOFF-VALIDATOR` adds `PARAM-ADP-1015` through `PARAM-ADP-1019` under `MOD-ADP-100` / `FORM-ADP-102`. It validates a future `FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml` payload for schema version, exact no-production signoff decision, independent reviewer proof, exact required artifact validations, closure-state proof, exact final bundle refs, no-production flags, and signoff hash binding while keeping the current signoff missing, inherited P0=8/P1=37 open, closure flags false, and every production side-effect flag false. It does not create independent final signoff, execute final commands, create the final bundle, create P0/P1 zero proof, close P0/P1, complete S2PLT04, enable SMTP/scheduler/Release/restore, mutate production state, change sources/ranking/CURRENT/V7, or claim integrated production acceptance.
 - `S2PMT07-FINAL-COMMAND-EXECUTION-VALIDATOR` adds `PARAM-ADP-1011` through `PARAM-ADP-1014` under `MOD-ADP-100` / `FORM-ADP-102`. It validates a future `FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json` payload for schema version, exact no-production execution decision, independent final reviewer proof, exact required command set, passing command results with evidence refs, exact final bundle refs, no-production flags, and execution hash binding while keeping the current artifact missing, final commands unexecuted, inherited P0=8/P1=37 open, closure flags false, and every production side-effect flag false. It does not execute final commands, create the final bundle, create P0/P1 zero proof, close P0/P1, complete S2PLT04, enable SMTP/scheduler/Release/restore, mutate production state, change sources/ranking/CURRENT/V7, or claim integrated production acceptance.
 - `S2PMT07-S2PLT04-COMPLETION-REPORT-VALIDATOR` adds `PARAM-ADP-1006` through `PARAM-ADP-1010` under `MOD-ADP-100` / `FORM-ADP-102`. It validates a future `FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json` payload for schema version, exact no-production S2PLT04 completion decision, S2PLT01/S2PLT02/S2PLT03/P0-P1-zero/final-manifest source refs, terminal dependency booleans, exact final bundle refs, no-production flags, and report hash binding while keeping the current report missing, inherited P0=8/P1=37 open, S2PLT04 incomplete, closure flags false, and every production side-effect flag false. It does not create the completion report, create the final bundle, create P0/P1 zero proof, close P0/P1, complete S2PLT04, enable SMTP/scheduler/Release/restore, mutate production state, change sources/ranking/CURRENT/V7, or claim integrated production acceptance.

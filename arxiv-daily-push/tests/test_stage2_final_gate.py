@@ -34,6 +34,11 @@ from arxiv_daily_push.stage2_final_gate import (
     S2PMT07_FINAL_COMMAND_EXECUTION_NO_PRODUCTION_FLAGS,
     S2PMT07_FINAL_COMMAND_EXECUTION_REQUIRED_FIELDS,
     S2PMT07_FINAL_COMMAND_EXECUTION_SCHEMA_VERSION,
+    S2PMT07_NO_PRODUCTION_SIDE_EFFECT_ATTESTATION_DECISION,
+    S2PMT07_NO_PRODUCTION_SIDE_EFFECT_ATTESTATION_NO_PRODUCTION_FLAGS,
+    S2PMT07_NO_PRODUCTION_SIDE_EFFECT_ATTESTATION_REQUIRED_EVIDENCE_REFS,
+    S2PMT07_NO_PRODUCTION_SIDE_EFFECT_ATTESTATION_REQUIRED_FIELDS,
+    S2PMT07_NO_PRODUCTION_SIDE_EFFECT_ATTESTATION_SCHEMA_VERSION,
     S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_DECISION,
     S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_NO_PRODUCTION_FLAGS,
     S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_REQUIRED_ARTIFACT_VALIDATIONS,
@@ -54,6 +59,8 @@ from arxiv_daily_push.stage2_final_gate import (
     build_final_acceptance_bundle_readiness_state,
     build_final_command_execution_hash,
     build_final_command_execution_validation_state,
+    build_no_production_side_effect_attestation_hash,
+    build_no_production_side_effect_attestation_validation_state,
     build_independent_review_signoff_hash,
     build_independent_review_signoff_validation_state,
     build_final_acceptance_bundle_manifest_hash,
@@ -86,6 +93,7 @@ from arxiv_daily_push.stage2_final_gate import (
     validate_s2plt04_integration_candidate_report,
     validate_final_acceptance_bundle_readiness_state,
     validate_final_command_execution_artifact,
+    validate_no_production_side_effect_attestation,
     validate_independent_review_signoff_artifact,
     validate_final_acceptance_bundle_manifest,
     validate_p0_p1_zero_proof_artifact,
@@ -2467,6 +2475,98 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(final_command["command_execution_present"])
         self.assertFalse(state["available_prebundle_evidence"]["FINAL_COMMAND_EXECUTION_VALIDATION"])
         self.assertIn("final_command_execution_missing", final_command["validation_errors"])
+        self.assertEqual(validate_final_acceptance_bundle_readiness_state(state), [])
+
+    def _valid_no_production_side_effect_attestation_payload(self) -> dict[str, object]:
+        payload: dict[str, object] = {
+            "schema_version": S2PMT07_NO_PRODUCTION_SIDE_EFFECT_ATTESTATION_SCHEMA_VERSION,
+            "contract_id": "ADP-PRODUCT-CONTRACT-V7.2",
+            "generated_at": "2026-06-28T08:40:00+10:00",
+            "attestation_decision": S2PMT07_NO_PRODUCTION_SIDE_EFFECT_ATTESTATION_DECISION,
+            "attestation_scope": {
+                "task_id": "S2PMT07",
+                "scope": "no_production_side_effect_attestation_validation_only_no_production_acceptance",
+                "required_bundle_items": list(S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS),
+            },
+            "verified_evidence_refs": {
+                ref: {
+                    "status": "pass",
+                    "evidence_ref": f"governance/final_review/{ref.lower()}.json",
+                }
+                for ref in S2PMT07_NO_PRODUCTION_SIDE_EFFECT_ATTESTATION_REQUIRED_EVIDENCE_REFS
+            },
+            "no_production_side_effects": {
+                flag: False
+                for flag in S2PMT07_NO_PRODUCTION_SIDE_EFFECT_ATTESTATION_NO_PRODUCTION_FLAGS
+            },
+            "closure_state": {
+                "no_production_side_effects_proven": True,
+                "production_acceptance_claimed": False,
+                "integrated_production_accepted": False,
+                "daily_operation_enabled": False,
+            },
+        }
+        payload["attestation_hash"] = build_no_production_side_effect_attestation_hash(payload)
+        return payload
+
+    def test_no_production_side_effect_attestation_accepts_only_exact_hash_bound_payload(self) -> None:
+        payload = self._valid_no_production_side_effect_attestation_payload()
+        state = build_no_production_side_effect_attestation_validation_state(payload)
+
+        self.assertEqual(validate_no_production_side_effect_attestation(payload), [])
+        self.assertEqual(tuple(payload), S2PMT07_NO_PRODUCTION_SIDE_EFFECT_ATTESTATION_REQUIRED_FIELDS)
+        self.assertEqual(state["status"], "pass")
+        self.assertTrue(state["attestation_present"])
+        self.assertTrue(state["all_required_evidence_refs_passed"])
+        self.assertTrue(state["no_production_side_effects_proven_by_payload"])
+        self.assertFalse(state["production_acceptance_claimed"])
+        self.assertFalse(state["integrated_production_accepted"])
+
+        tampered = json.loads(json.dumps(payload))
+        tampered["verified_evidence_refs"]["FULL_ADP_UNITTEST"]["status"] = "blocked"
+        self.assertIn(
+            "verified_evidence_refs.FULL_ADP_UNITTEST.status must be pass",
+            validate_no_production_side_effect_attestation(tampered),
+        )
+
+        tampered_hash = json.loads(json.dumps(payload))
+        tampered_hash["attestation_hash"] = "sha256:not-the-attestation-hash"
+        self.assertIn(
+            "attestation_hash does not match payload content",
+            validate_no_production_side_effect_attestation(tampered_hash),
+        )
+
+    def test_no_production_side_effect_attestation_fails_closed_on_missing_or_production_flags(self) -> None:
+        missing_state = build_no_production_side_effect_attestation_validation_state(None)
+
+        self.assertEqual(missing_state["status"], "blocked")
+        self.assertFalse(missing_state["attestation_present"])
+        self.assertIn("no_production_side_effect_attestation_missing", missing_state["validation_errors"])
+        self.assertFalse(missing_state["all_required_evidence_refs_passed"])
+        self.assertFalse(missing_state["no_production_side_effects_proven_by_payload"])
+
+        payload = self._valid_no_production_side_effect_attestation_payload()
+        payload["no_production_side_effects"]["release_uploaded"] = True
+        self.assertIn(
+            "no_production_side_effects.release_uploaded must be false",
+            validate_no_production_side_effect_attestation(payload),
+        )
+
+        payload = self._valid_no_production_side_effect_attestation_payload()
+        del payload["verified_evidence_refs"]["OPEN_PR_COUNT_ZERO"]
+        self.assertIn(
+            "verified_evidence_refs must include OPEN_PR_COUNT_ZERO",
+            validate_no_production_side_effect_attestation(payload),
+        )
+
+    def test_final_acceptance_bundle_readiness_embeds_no_production_attestation_validation_as_blocked(self) -> None:
+        state = build_final_acceptance_bundle_readiness_state()
+        attestation = state["no_production_side_effect_attestation_validation"]
+
+        self.assertEqual(attestation["status"], "blocked")
+        self.assertFalse(attestation["attestation_present"])
+        self.assertFalse(state["available_prebundle_evidence"]["NO_PRODUCTION_SIDE_EFFECT_ATTESTATION_VALIDATION"])
+        self.assertIn("no_production_side_effect_attestation_missing", attestation["validation_errors"])
         self.assertEqual(validate_final_acceptance_bundle_readiness_state(state), [])
 
     def _valid_independent_review_signoff_payload(self) -> dict[str, object]:

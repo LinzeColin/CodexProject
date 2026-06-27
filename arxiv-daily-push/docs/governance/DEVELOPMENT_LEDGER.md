@@ -4198,3 +4198,13 @@ None for this new project baseline.
 - Production boundary: no independent signoff, no P0/P1 closure, no S2PLT04 completion, no final bundle creation, no SMTP/scheduler/Release/restore, no public schema/DB/queue/source/ranking/CURRENT/V7 change, and no integrated production acceptance.
 - Rollback: Revert independent review signoff validator code/test changes, registry updates, phase record, manifest, traceability/delivery/event records, generated views, and this ledger entry; no runtime production state was changed.
 - Evidence: `governance/run_manifests/ADP-S2PMT07-INDEPENDENT-REVIEW-SIGNOFF-VALIDATOR-20260628.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_VALIDATOR.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.
+
+### `ITER-20260628-ADP-S2PMT07-NO-PRODUCTION-SIDE-EFFECT-ATTESTATION-VALIDATOR`
+
+- Timestamp: `2026-06-28T06:48:44+10:00`
+- Task IDs: `S2PMT07-NO-PRODUCTION-SIDE-EFFECT-ATTESTATION-VALIDATOR`; parent `S2PMT07`; acceptance `ACC-S2PMT07-FINAL-REVIEW`.
+- Decisions: A valid future no-production side-effect attestation artifact must match schema version `adp.no_production_side_effect_attestation.v1`, use decision `NO_PRODUCTION_SIDE_EFFECTS_PROVEN_NO_PRODUCTION_ACCEPTANCE`, include exact final-bundle scope, include required evidence refs with passing statuses and evidence refs, keep no-production flags false, include closure-state proof, and bind `attestation_hash` to payload content. Current no-production attestation validation remains `blocked` because no real artifact exists.
+- Files changed: S2PMT07 final gate helper, final-gate regression tests, `PARAM-ADP-1020..1024` / `FORM-ADP-102` semantic refresh, phase record, run manifest, traceability/delivery/event records, user-center traceability page, and three base files.
+- Production boundary: no no-production attestation artifact, no independent signoff, no final command execution, no P0/P1 closure, no S2PLT04 completion, no final bundle creation, no SMTP/scheduler/Release/restore, no public schema/DB/queue/source/ranking/CURRENT/V7 change, and no integrated production acceptance.
+- Rollback: Revert no-production side-effect attestation validator code/test changes, registry updates, phase record, manifest, traceability/delivery/event records, generated views, and this ledger entry; no runtime production state was changed.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-NO-PRODUCTION-SIDE-EFFECT-ATTESTATION-VALIDATOR-20260628.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_NO_PRODUCTION_SIDE_EFFECT_ATTESTATION_VALIDATOR.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.
