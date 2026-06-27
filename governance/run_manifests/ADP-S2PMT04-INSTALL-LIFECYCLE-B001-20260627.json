@@ -1,0 +1,92 @@
+{
+  "acceptance_id": "ACC-S2PMT04-LIFECYCLE",
+  "b001_blocking_reasons": [
+    "isolated_target_install_run_uninstall_proof_missing"
+  ],
+  "b001_gates": {
+    "install_status_uninstall_contract": true,
+    "isolated_trigger_proof_present": false,
+    "no_production_side_effect": true,
+    "owner_enable_required": true,
+    "platform_adapter_contract": true,
+    "smtp_disabled_by_default": true,
+    "uninstall_receipt_required": true
+  },
+  "b001_launchd_plist_sha256": "1ae748c2d26b50f84f9201826e4079925f9db1c63a04716ede84855c97a50cf6",
+  "b001_platforms": [
+    "macos_launchd",
+    "linux_systemd",
+    "windows_task_scheduler"
+  ],
+  "b001_report_hash": "2569879cb00f61d4b9346c9e4113a8134cf842cc7e19cbc5d70f6572f2460b91",
+  "b001_report_status": "blocked",
+  "b001_required_states": [
+    "install",
+    "status",
+    "trigger_probe",
+    "uninstall"
+  ],
+  "base_commit": "0686def98c810372bcd4e5cde481318353e7c3e4",
+  "change_type": "stage2_install_lifecycle_b001",
+  "contract_version": "ADP-PRODUCT-CONTRACT-V7.2",
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT04_INSTALL_LIFECYCLE_B001.md",
+    "governance/run_manifests/ADP-S2PMT04-INSTALL-LIFECYCLE-B001-20260627.json",
+    "arxiv-daily-push/用户中心/自动唤醒安装生命周期扫描.md",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_lifecycle_cache.py",
+    "arxiv-daily-push/tests/test_stage2_lifecycle_cache.py"
+  ],
+  "generated_at": "2026-06-27T11:26:15+10:00",
+  "independent_review_signoff_present": false,
+  "inherited_finding": "B-001",
+  "manifest_id": "ADP-S2PMT04-INSTALL-LIFECYCLE-B001-20260627",
+  "p0_closure_claimed": false,
+  "p1_closure_claimed": false,
+  "parent_task_id": "S2PMT04",
+  "production_boundary": {
+    "current_pointer_changed": false,
+    "db_migration_executed": false,
+    "formal_production_inclusion": false,
+    "production_restore_executed": false,
+    "production_schedule_enabled": false,
+    "public_schema_changed": false,
+    "queue_mutation_allowed": false,
+    "queue_schema_changed": false,
+    "ranking_algorithm_changed": false,
+    "real_release_uploaded": false,
+    "real_smtp_sent": false,
+    "scheduler_changed": false,
+    "source_adapter_changed": false,
+    "v7_1_baseline_changed": false,
+    "v7_2_contract_files_changed": false
+  },
+  "project_id": "arxiv-daily-push",
+  "result": "dedicated_b001_current_evidence_recorded_no_closure_no_production",
+  "rollback": "Revert B-001 install lifecycle helper/test, phase record, run manifests, P0 receipt refresh, user-center page, traceability/delivery/event records, and generated status refresh; no runtime production state was changed.",
+  "stage2_integrated_production_accepted": false,
+  "status": "blocked_dedicated_current_evidence_no_closure",
+  "summary": "Dedicated B-001 evidence records controlled install/status/trigger/uninstall lifecycle gates and intentionally remains blocked because no real isolated target install-run-status-uninstall proof is present.",
+  "task_id": "S2PMT04-INSTALL-LIFECYCLE-B001",
+  "test_results": [
+    "py_compile PASS",
+    "focused B-001/final-gate/user-center tests: 46 OK",
+    "full arxiv-daily-push unittest: 589 OK",
+    "V7.2 validator PASS",
+    "V7.2 unittest: 4 OK",
+    "project governance: errors 0 warnings 0",
+    "governance sync: errors 0 warnings 0",
+    "lean governance check-render: drift_count 0 reference_issue_count 0",
+    "user-center timestamp check: validated 18 pages"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b001_compile2 PYTHONPATH=arxiv-daily-push/src python3 -m py_compile scripts/lean_governance.py arxiv-daily-push/src/arxiv_daily_push/stage2_lifecycle_cache.py arxiv-daily-push/tests/test_stage2_lifecycle_cache.py arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_user_center_candidate_pool.py",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b001_target2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_lifecycle_cache.py arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_user_center_candidate_pool.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b001_full2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "python3 arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b001_v72_2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/docs/pursuing_goal/v7_2/tests -q",
+    "PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push",
+    "PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_governance_sync.py",
+    "PYTHONPATH=arxiv-daily-push/src python3 scripts/lean_governance.py check-render --project arxiv-daily-push",
+    "PYTHONPATH=arxiv-daily-push/src python3 arxiv-daily-push/scripts/update_user_center_timestamps.py --check"
+  ]
+}

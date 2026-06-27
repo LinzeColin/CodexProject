@@ -3231,3 +3231,33 @@ tasks:
     evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_INDEPENDENT_REVIEW_RECEIPT.md", "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A005-20260627.json", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
     risk: "This refresh can be misread as A-005 P0 closure or independent review signoff; it only updates evidence routing and leaves inherited P0/P1, S2PLT04, final bundle, final command execution, and S2PMT07 acceptance blocked."
     rollback: "Revert the A-005 P0 review receipt refresh, run manifest, regression test extension, traceability/delivery/event records, generated status refresh, and this task entry; no runtime production state was changed."
+
+  - task_id: "S2PMT04-INSTALL-LIFECYCLE-B001"
+    phase: "S2PM"
+    status: "blocked"
+    acceptance_id: "ACC-S2PMT04-LIFECYCLE"
+    acceptance_ids: ["ACC-S2PMT04-LIFECYCLE"]
+    completed_version: "0.23.1"
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b001_lifecycle PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_lifecycle_cache.py -q"]
+    test_results: ["py_compile PASS", "focused B-001/final-gate/user-center tests: 46 OK", "full arxiv-daily-push unittest: 589 OK", "project governance: errors 0 warnings 0", "governance sync: errors 0 warnings 0", "lean governance check-render: drift_count 0 reference_issue_count 0"]
+    objective: "Record dedicated current evidence for inherited P0 B-001 install/status/trigger/uninstall lifecycle, preserving the missing real isolated trigger proof blocker."
+    scope: "S2PMT04 install lifecycle helper, focused regression, phase record, run manifest, shallow user-center page, semantic registry refresh, traceability/delivery/event records, and no-production evidence."
+    non_scope: "No independent signoff, no final acceptance bundle creation, no inherited P0/P1 closure, no S2PLT04 completion claim, no final command execution claim, no real SMTP send, no scheduler install, no launchd bootstrap, no systemd timer enablement, no Windows scheduled task enablement, no Release, no production restore, no public schema change, no DB migration, no production queue mutation, no ranking change, no source adapter change, no workflow enforcement, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no integrated production acceptance, and no daily-operation enablement."
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PMT04_INSTALL_LIFECYCLE_B001.md", "governance/run_manifests/ADP-S2PMT04-INSTALL-LIFECYCLE-B001-20260627.json", "arxiv-daily-push/用户中心/自动唤醒安装生命周期扫描.md", "arxiv-daily-push/tests/test_stage2_lifecycle_cache.py"]
+    risk: "B-001 dedicated evidence can be misread as real scheduler install/run/uninstall proof or P0 closure; it intentionally keeps the missing isolated target proof blocker visible."
+    rollback: "Revert the B-001 install lifecycle helper/test, phase record, run manifest, user-center page, semantic registry updates, traceability/delivery/event records, generated status refresh, and this task entry; no runtime production state was changed."
+
+  - task_id: "S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001"
+    phase: "S2PM"
+    status: "completed"
+    acceptance_id: "ACC-S2PMT07-FINAL-REVIEW"
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW"]
+    completed_version: "0.23.1"
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b001_final PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_lifecycle_cache.py arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_user_center_candidate_pool.py -q"]
+    test_results: ["py_compile PASS", "focused B-001/final-gate/user-center tests: 46 OK", "full arxiv-daily-push unittest: 589 OK", "V7.2 validator PASS", "V7.2 unittest: 4 OK", "project governance: errors 0 warnings 0", "governance sync: errors 0 warnings 0", "lean governance check-render: drift_count 0 reference_issue_count 0"]
+    objective: "Refresh the S2PMT07 P0 independent-review receipt so B-001 points to dedicated current S2PMT04 install lifecycle evidence."
+    scope: "P0 B-001 receipt routing refresh, focused lifecycle/final-gate/user-center regression test extension, current-run manifest, and governance traceability records."
+    non_scope: "No independent signoff, no final acceptance bundle creation, no inherited P0/P1 closure, no S2PLT04 completion claim, no final command execution claim, no real SMTP send, no scheduler install, no launchd bootstrap, no systemd timer enablement, no Windows scheduled task enablement, no Release, no production restore, no public schema change, no DB migration, no production queue mutation, no ranking change, no source adapter change, no workflow enforcement, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no integrated production acceptance, and no daily-operation enablement."
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_INDEPENDENT_REVIEW_RECEIPT.md", "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-20260627.json", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
+    risk: "This refresh can be misread as B-001 P0 closure or independent review signoff; it only updates evidence routing and leaves inherited P0/P1, S2PLT04, final bundle, final command execution, and S2PMT07 acceptance blocked."
+    rollback: "Revert the B-001 P0 review receipt refresh, run manifest, regression test extension, traceability/delivery/event records, generated status refresh, and this task entry; no runtime production state was changed."

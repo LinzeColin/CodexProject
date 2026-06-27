@@ -10,6 +10,7 @@ from arxiv_daily_push.stage2_lifecycle_cache import (
     build_cache_low_disk_degradation_receipt,
     build_cache_cleanup_plan,
     build_launchd_plist_payload,
+    build_install_lifecycle_b001_report,
     build_lifecycle_cache_report,
     build_lifecycle_interrupt_matrix,
     build_lifecycle_transition_plan,
@@ -19,6 +20,7 @@ from arxiv_daily_push.stage2_lifecycle_cache import (
     build_transaction_completion_receipt,
     validate_launchd_plist_payload,
     validate_cache_low_disk_degradation_receipt,
+    validate_install_lifecycle_b001_report,
     validate_lifecycle_cache_report,
     validate_lifecycle_interrupt_matrix,
     validate_lifecycle_transition,
@@ -306,6 +308,45 @@ class Stage2LifecycleCacheTests(unittest.TestCase):
         self.assertEqual(parsed["ProgramArguments"][0], "/bin/zsh")
         self.assertIn("A&B", parsed["ProgramArguments"][2])
         self.assertNotIn("EnvironmentVariables", parsed)
+
+    def test_b001_install_lifecycle_evidence_blocks_without_isolated_trigger_proof(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = build_install_lifecycle_b001_report(
+                generated_at="2026-06-27T12:00:00+10:00",
+                project_root=tmp,
+            )
+
+        self.assertEqual(report["task_id"], "S2PMT04-INSTALL-LIFECYCLE-B001")
+        self.assertEqual(report["finding_id"], "B-001")
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["required_states"], ["install", "status", "trigger_probe", "uninstall"])
+        self.assertFalse(report["isolated_trigger_proof_present"])
+        self.assertIn("isolated_target_install_run_uninstall_proof_missing", report["blocking_reasons"])
+        self.assertFalse(report["real_smtp_sent"])
+        self.assertFalse(report["scheduler_installed"])
+        self.assertFalse(report["scheduler_enabled"])
+        self.assertFalse(report["launchd_bootstrap_executed"])
+        self.assertFalse(report["p0_closure_claimed"])
+        self.assertFalse(report["stage2_integrated_production_accepted"])
+        self.assertEqual(validate_install_lifecycle_b001_report(report), [])
+
+        for adapter in report["platform_adapters"]:
+            self.assertTrue(adapter["owner_enable_required"])
+            self.assertFalse(adapter["apply_allowed"])
+
+    def test_b001_install_lifecycle_validator_blocks_false_pass(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = build_install_lifecycle_b001_report(
+                generated_at="2026-06-27T12:00:00+10:00",
+                project_root=tmp,
+            )
+        report["status"] = "pass"
+        report["scheduler_enabled"] = True
+
+        errors = validate_install_lifecycle_b001_report(report)
+
+        self.assertIn("B-001 pass requires isolated trigger proof", errors)
+        self.assertIn("B-001 forbidden production flag must be false: scheduler_enabled", errors)
 
     def test_lifecycle_cache_report_passes_without_production_side_effects(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

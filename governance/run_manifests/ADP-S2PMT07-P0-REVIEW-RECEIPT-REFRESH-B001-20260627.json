@@ -1,0 +1,79 @@
+{
+  "acceptance_id": "ACC-S2PMT07-FINAL-REVIEW",
+  "base_commit": "0686def98c810372bcd4e5cde481318353e7c3e4",
+  "created_at": "2026-06-27T11:26:15+10:00",
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_INDEPENDENT_REVIEW_RECEIPT.md",
+    "governance/run_manifests/ADP-S2PMT07-P0-INDEPENDENT-REVIEW-RECEIPT-20260626.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT04_INSTALL_LIFECYCLE_B001.md",
+    "governance/run_manifests/ADP-S2PMT04-INSTALL-LIFECYCLE-B001-20260627.json"
+  ],
+  "final_acceptance_bundle_present": false,
+  "forbidden_side_effects": {
+    "current_pointer_changed": false,
+    "production_restore_executed": false,
+    "public_schema_changed": false,
+    "queue_mutation_allowed": false,
+    "real_smtp_sent": false,
+    "release_uploaded": false,
+    "scheduler_enabled": false,
+    "v7_1_baseline_changed": false,
+    "v7_2_contract_files_changed": false
+  },
+  "independent_final_command_execution_present": false,
+  "independent_review_signoff_present": false,
+  "manifest_id": "ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-20260627",
+  "p0_closure_claimed": false,
+  "p1_closure_claimed": false,
+  "project_id": "arxiv-daily-push",
+  "refreshed_findings": [
+    "A-001",
+    "A-002",
+    "A-003",
+    "A-004",
+    "A-005",
+    "B-001",
+    "B-007",
+    "B-008"
+  ],
+  "result": "local_validation_passed_no_closure_no_production",
+  "s2plt04_completed": false,
+  "stage2_integrated_production_accepted": false,
+  "status": "blocked_receipt_recorded",
+  "summary": "Refreshes the P0 independent-review receipt so B-001 points to dedicated current S2PMT04 install lifecycle evidence instead of aggregate lifecycle/cache records; no closure or production state is claimed.",
+  "target_finding": "B-001",
+  "task_id": "S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001",
+  "test_results": [
+    "py_compile PASS",
+    "focused B-001/final-gate/user-center tests: 46 OK",
+    "full arxiv-daily-push unittest: 589 OK",
+    "V7.2 validator PASS",
+    "V7.2 unittest: 4 OK",
+    "project governance: errors 0 warnings 0",
+    "governance sync: errors 0 warnings 0",
+    "lean governance check-render: drift_count 0 reference_issue_count 0",
+    "user-center timestamp check: validated 18 pages"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b001_compile2 PYTHONPATH=arxiv-daily-push/src python3 -m py_compile scripts/lean_governance.py arxiv-daily-push/src/arxiv_daily_push/stage2_lifecycle_cache.py arxiv-daily-push/tests/test_stage2_lifecycle_cache.py arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_user_center_candidate_pool.py",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b001_target2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_lifecycle_cache.py arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_user_center_candidate_pool.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b001_full2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "python3 arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b001_v72_2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/docs/pursuing_goal/v7_2/tests -q",
+    "PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push",
+    "PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_governance_sync.py",
+    "PYTHONPATH=arxiv-daily-push/src python3 scripts/lean_governance.py check-render --project arxiv-daily-push",
+    "PYTHONPATH=arxiv-daily-push/src python3 arxiv-daily-push/scripts/update_user_center_timestamps.py --check"
+  ],
+  "validation": [
+    "py_compile PASS",
+    "focused B-001/final-gate/user-center tests: 46 OK",
+    "full arxiv-daily-push unittest: 589 OK",
+    "V7.2 validator PASS",
+    "V7.2 unittest: 4 OK",
+    "project governance: errors 0 warnings 0",
+    "governance sync: errors 0 warnings 0",
+    "lean governance check-render: drift_count 0 reference_issue_count 0",
+    "user-center timestamp check: validated 18 pages"
+  ]
+}

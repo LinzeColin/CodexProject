@@ -11,8 +11,11 @@ from typing import Any
 
 
 S2PMT04_LIFECYCLE_CACHE_MODEL_ID = "adp-s2pmt04-lifecycle-cache-cleanup-v1"
+S2PMT04_INSTALL_LIFECYCLE_B001_MODEL_ID = "adp-s2pmt04-install-lifecycle-b001-v1"
 S2PMT04_ACCEPTANCE_ID = "ACC-S2PMT04-LIFECYCLE"
 S2PMT04_TASK_ID = "S2PMT04"
+S2PMT04_INSTALL_LIFECYCLE_B001_TASK_ID = "S2PMT04-INSTALL-LIFECYCLE-B001"
+S2PMT04_INSTALL_LIFECYCLE_B001_FINDING_ID = "B-001"
 S2PMT04_SCHEMA_VERSION = 1
 S2PMT04_DEFAULT_CACHE_TTL_SECONDS = 604800
 S2PMT04_DEFAULT_CACHE_CAP_BYTES = 1073741824
@@ -70,6 +73,37 @@ S2PMT04_REQUIRED_PRODUCTION_FALSE_FLAGS = (
     "queue_schema_changed",
     "queue_mutation_allowed",
     "db_migration_executed",
+)
+S2PMT04_B001_REQUIRED_STATES = ("install", "status", "trigger_probe", "uninstall")
+S2PMT04_B001_REQUIRED_GATES = (
+    "install_status_uninstall_contract",
+    "platform_adapter_contract",
+    "owner_enable_required",
+    "smtp_disabled_by_default",
+    "isolated_trigger_proof_present",
+    "uninstall_receipt_required",
+    "no_production_side_effect",
+)
+S2PMT04_B001_REQUIRED_PRODUCTION_FALSE_FLAGS = (
+    "production_side_effects_enabled",
+    "real_smtp_sent",
+    "scheduler_installed",
+    "scheduler_enabled",
+    "launchd_bootstrap_executed",
+    "systemd_timer_enabled",
+    "windows_task_enabled",
+    "release_upload_allowed",
+    "production_restore_executed",
+    "public_schema_changed",
+    "queue_schema_changed",
+    "queue_mutation_allowed",
+    "db_migration_executed",
+    "current_pointer_changed",
+    "v7_1_baseline_changed",
+    "v7_2_contract_files_changed",
+    "p0_closure_claimed",
+    "p1_closure_claimed",
+    "stage2_integrated_production_accepted",
 )
 
 
@@ -717,6 +751,203 @@ def validate_launchd_plist_payload(payload: bytes) -> list[str]:
         errors.append("launchd plist ProgramArguments must be a non-empty array")
     if "EnvironmentVariables" in parsed:
         errors.append("launchd plist must not embed environment variables or secrets")
+    return errors
+
+
+def build_install_lifecycle_b001_report(
+    *,
+    generated_at: str,
+    project_root: str | Path,
+    owner_enabled: bool = False,
+    isolated_trigger_proof_present: bool = False,
+) -> dict[str, Any]:
+    """Build B-001 install/status/trigger/uninstall evidence without enabling schedulers."""
+
+    root = Path(project_root).resolve()
+    launchd_payload = build_launchd_plist_payload(
+        label=S2PMT04_LAUNCHD_LABEL,
+        program_arguments=(
+            "/bin/zsh",
+            "-lc",
+            f"cd {root} && ADP_LOCAL_DAILY_RUN_ENABLED=false python3 -m arxiv_daily_push local-runner daily --no-smtp",
+        ),
+    )
+    platform_adapters = [
+        {
+            "platform": "macos_launchd",
+            "adapter_ref": "launchd.plist.dry_run",
+            "install_state": "planned_disabled",
+            "status_state": "parseable_disabled_template",
+            "uninstall_state": "receipt_required_before_enablement",
+            "trigger_probe_state": "isolated_trigger_proof_required",
+            "owner_enable_required": True,
+            "apply_allowed": False,
+            "validation_errors": validate_launchd_plist_payload(launchd_payload),
+        },
+        {
+            "platform": "linux_systemd",
+            "adapter_ref": "systemd.timer.contract",
+            "install_state": "contract_only_disabled",
+            "status_state": "parser_validation_required_before_enablement",
+            "uninstall_state": "receipt_required_before_enablement",
+            "trigger_probe_state": "isolated_trigger_proof_required",
+            "owner_enable_required": True,
+            "apply_allowed": False,
+            "validation_errors": [],
+        },
+        {
+            "platform": "windows_task_scheduler",
+            "adapter_ref": "windows.task.contract",
+            "install_state": "contract_only_disabled",
+            "status_state": "parser_validation_required_before_enablement",
+            "uninstall_state": "receipt_required_before_enablement",
+            "trigger_probe_state": "isolated_trigger_proof_required",
+            "owner_enable_required": True,
+            "apply_allowed": False,
+            "validation_errors": [],
+        },
+    ]
+    state_rows = [
+        {
+            "state": "install",
+            "required_evidence": "controlled adapter install command and disabled-by-default receipt",
+            "current_evidence": "dry_run_contract_only",
+            "apply_allowed": False,
+        },
+        {
+            "state": "status",
+            "required_evidence": "machine-readable status command proves disabled/enabled state",
+            "current_evidence": "parseable disabled launchd template",
+            "apply_allowed": False,
+        },
+        {
+            "state": "trigger_probe",
+            "required_evidence": "isolated install then one real dry-run trigger then captured receipt",
+            "current_evidence": "missing_real_isolated_trigger_proof",
+            "apply_allowed": False,
+        },
+        {
+            "state": "uninstall",
+            "required_evidence": "controlled uninstall command and post-uninstall status receipt",
+            "current_evidence": "contract_only_receipt_required",
+            "apply_allowed": False,
+        },
+    ]
+    gates = {
+        "install_status_uninstall_contract": True,
+        "platform_adapter_contract": all(not adapter["validation_errors"] for adapter in platform_adapters),
+        "owner_enable_required": owner_enabled is False,
+        "smtp_disabled_by_default": True,
+        "isolated_trigger_proof_present": bool(isolated_trigger_proof_present),
+        "uninstall_receipt_required": True,
+        "no_production_side_effect": True,
+    }
+    blocking_reasons = []
+    if not gates["isolated_trigger_proof_present"]:
+        blocking_reasons.append("isolated_target_install_run_uninstall_proof_missing")
+    for key, value in gates.items():
+        if value is not True and key != "isolated_trigger_proof_present":
+            blocking_reasons.append(key)
+    report = {
+        "model_id": S2PMT04_INSTALL_LIFECYCLE_B001_MODEL_ID,
+        "schema_version": S2PMT04_SCHEMA_VERSION,
+        "task_id": S2PMT04_INSTALL_LIFECYCLE_B001_TASK_ID,
+        "parent_task_id": S2PMT04_TASK_ID,
+        "finding_id": S2PMT04_INSTALL_LIFECYCLE_B001_FINDING_ID,
+        "acceptance_id": S2PMT04_ACCEPTANCE_ID,
+        "generated_at": generated_at,
+        "status": "pass" if not blocking_reasons else "blocked",
+        "review_state": "dedicated_current_evidence_independent_review_required",
+        "blocking_reasons": sorted(set(blocking_reasons)),
+        "required_states": list(S2PMT04_B001_REQUIRED_STATES),
+        "state_rows": state_rows,
+        "platform_adapters": platform_adapters,
+        "gates": gates,
+        "launchd_plist_sha256": hashlib.sha256(launchd_payload).hexdigest(),
+        "owner_enabled": bool(owner_enabled),
+        "isolated_trigger_proof_present": bool(isolated_trigger_proof_present),
+        "reviewer_decision_required": (
+            "Decide whether a real isolated target install-run-status-uninstall proof is still required "
+            "before B-001 can close."
+        ),
+        "report_hash": "",
+        "production_side_effects_enabled": False,
+        "real_smtp_sent": False,
+        "scheduler_installed": False,
+        "scheduler_enabled": False,
+        "launchd_bootstrap_executed": False,
+        "systemd_timer_enabled": False,
+        "windows_task_enabled": False,
+        "release_upload_allowed": False,
+        "production_restore_executed": False,
+        "public_schema_changed": False,
+        "queue_schema_changed": False,
+        "queue_mutation_allowed": False,
+        "db_migration_executed": False,
+        "current_pointer_changed": False,
+        "v7_1_baseline_changed": False,
+        "v7_2_contract_files_changed": False,
+        "p0_closure_claimed": False,
+        "p1_closure_claimed": False,
+        "stage2_integrated_production_accepted": False,
+    }
+    report["report_hash"] = _stable_hash({key: value for key, value in report.items() if key != "report_hash"})
+    return report
+
+
+def validate_install_lifecycle_b001_report(report: Mapping[str, Any]) -> list[str]:
+    """Validate B-001 scheduler install lifecycle evidence without accepting production enablement."""
+
+    errors: list[str] = []
+    if report.get("model_id") != S2PMT04_INSTALL_LIFECYCLE_B001_MODEL_ID:
+        errors.append("B-001 report model_id is invalid")
+    if report.get("schema_version") != S2PMT04_SCHEMA_VERSION:
+        errors.append("B-001 report schema_version must be 1")
+    if report.get("task_id") != S2PMT04_INSTALL_LIFECYCLE_B001_TASK_ID:
+        errors.append("B-001 report task_id is invalid")
+    if report.get("finding_id") != S2PMT04_INSTALL_LIFECYCLE_B001_FINDING_ID:
+        errors.append("B-001 report finding_id is invalid")
+    if report.get("acceptance_id") != S2PMT04_ACCEPTANCE_ID:
+        errors.append("B-001 report acceptance_id is invalid")
+    states = tuple(report.get("required_states") or ())
+    if states != S2PMT04_B001_REQUIRED_STATES:
+        errors.append("B-001 report required_states must match install/status/trigger/uninstall")
+    observed_states = {
+        str(row.get("state") or "")
+        for row in report.get("state_rows", [])
+        if isinstance(row, Mapping)
+    }
+    missing_states = sorted(set(S2PMT04_B001_REQUIRED_STATES).difference(observed_states))
+    if missing_states:
+        errors.append(f"B-001 report missing lifecycle states: {missing_states}")
+    adapters = report.get("platform_adapters") if isinstance(report.get("platform_adapters"), list) else []
+    if not adapters:
+        errors.append("B-001 report requires platform adapter rows")
+    for adapter in adapters:
+        if not isinstance(adapter, Mapping):
+            errors.append("B-001 platform adapter row must be an object")
+            continue
+        if adapter.get("owner_enable_required") is not True:
+            errors.append(f"B-001 adapter {adapter.get('platform')} must require owner enablement")
+        if adapter.get("apply_allowed") is not False:
+            errors.append(f"B-001 adapter {adapter.get('platform')} must not allow apply in this evidence run")
+        if adapter.get("validation_errors"):
+            errors.append(f"B-001 adapter {adapter.get('platform')} has validation errors")
+    gates = report.get("gates") if isinstance(report.get("gates"), Mapping) else {}
+    for gate in S2PMT04_B001_REQUIRED_GATES:
+        if gate not in gates:
+            errors.append(f"B-001 gate {gate} is missing")
+    if report.get("status") == "pass" and gates.get("isolated_trigger_proof_present") is not True:
+        errors.append("B-001 pass requires isolated trigger proof")
+    if report.get("status") == "blocked" and not report.get("blocking_reasons"):
+        errors.append("B-001 blocked report requires blocking_reasons")
+    if gates.get("isolated_trigger_proof_present") is False and "isolated_target_install_run_uninstall_proof_missing" not in (
+        report.get("blocking_reasons") or []
+    ):
+        errors.append("B-001 missing isolated trigger proof must be explicit")
+    for flag in S2PMT04_B001_REQUIRED_PRODUCTION_FALSE_FLAGS:
+        if report.get(flag) is not False:
+            errors.append(f"B-001 forbidden production flag must be false: {flag}")
     return errors
 
 
