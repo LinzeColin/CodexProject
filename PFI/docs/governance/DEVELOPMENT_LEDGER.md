@@ -3,9 +3,9 @@
 product_version: 0.2.0
 model_count: 1
 formula_count: 1
-parameter_count: 17
-task_count: 5
-acceptance_count: 5
+parameter_count: 22
+task_count: 6
+acceptance_count: 6
 
 ## 2026-06-27
 
@@ -15,4 +15,5 @@ acceptance_count: 5
 - 完成 PFI V0.2 Stage 3 首页、账户、账本可读 MVP，本地只读 read-model 和 Web shell 8 入口刷新。
 - 完成 PFI V0.2 Stage 4 投资与消费智能分析 MVP，本地只读 analysis read-model 和 Web shell 投资/消费分析刷新。
 - 完成 PFI V0.2 Stage 5 建议、报告、Alpha 只读出口 MVP，本地只读 delivery model 和 Web shell 建议/报告入口刷新。
+- 完成 PFI V0.2 Stage 6 端到端验收与稳定化，本地 synthetic E2E、20 gate audit、ACC-* audit、回归治理和回滚计划刷新。
 - 不新增生产或实盘能力声明；同步全部只生成计划，不执行外部动作。

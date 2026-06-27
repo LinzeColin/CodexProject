@@ -9,6 +9,6 @@ model_versions:
 parameter_profile_versions:
   pfi_root_contract: "pfi-v0.2-root-contract"
 data_snapshot_version: "not_applicable_contract_only"
-current_iteration: "ITER-20260627-PFI-S5-ADVICE-REPORT-ALPHA-EXPORT"
-current_phase: "S5P"
-current_gate: "PFI-S5-ADVICE-REPORT-ALPHA-EXPORT-GATE"
+current_iteration: "ITER-20260627-PFI-S6-E2E-STABILIZATION"
+current_phase: "S6P"
+current_gate: "PFI-S6-E2E-STABILIZATION-GATE"

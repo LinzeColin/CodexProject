@@ -10,6 +10,7 @@ from pfi_os.application.workflow_runtime_read_model import build_workflow_runtim
 from pfi_v02.stage3_read_mvp import build_stage3_read_model
 from pfi_v02.stage4_analysis_mvp import build_stage4_analysis_model
 from pfi_v02.stage5_advice_report_alpha import build_stage5_delivery_model
+from pfi_v02.stage6_e2e_stabilization import build_stage6_e2e_stabilization_model
 
 RETIRED_PUBLIC_FRAGMENTS = (
     "Token" + " ROI",
@@ -34,6 +35,12 @@ def build_homepage_summary(store: OperationalStore | None = None, *, now: dateti
     stage3_dashboard = build_stage3_read_model(now=now)
     stage4_dashboard = build_stage4_analysis_model(stage3_dashboard=stage3_dashboard, now=now)
     stage5_dashboard = build_stage5_delivery_model(stage3_dashboard=stage3_dashboard, stage4_dashboard=stage4_dashboard, now=now)
+    stage6_dashboard = build_stage6_e2e_stabilization_model(
+        stage3_dashboard=stage3_dashboard,
+        stage4_dashboard=stage4_dashboard,
+        stage5_dashboard=stage5_dashboard,
+        now=now,
+    )
     source_registry = SourceRegistry(operational_store)
     source_summary = _without_retired_source_rows(source_registry.summary(now=now))
     sources = _without_retired_rows(operational_store.table_rows("source_records"))
@@ -58,10 +65,12 @@ def build_homepage_summary(store: OperationalStore | None = None, *, now: dateti
         "source_registry": source_summary,
         "metric_cards": cards,
         "decision_rows": decision_rows,
-        "evidence_drawer": _stage5_evidence_drawer(stage5_dashboard)
+        "evidence_drawer": _stage6_evidence_drawer(stage6_dashboard)
+        or _stage5_evidence_drawer(stage5_dashboard)
         or _stage4_evidence_drawer(stage4_dashboard)
         or _stage3_evidence_drawer(stage3_dashboard)
         or _evidence_drawer(evidence, sources),
+        "stage6_dashboard": _sanitize_public_payload(stage6_dashboard),
         "stage5_dashboard": _sanitize_public_payload(stage5_dashboard),
         "stage4_dashboard": _sanitize_public_payload(stage4_dashboard),
         "stage3_dashboard": _sanitize_public_payload(stage3_dashboard),
@@ -76,6 +85,11 @@ def empty_homepage_summary() -> dict[str, Any]:
     stage3_dashboard = build_stage3_read_model()
     stage4_dashboard = build_stage4_analysis_model(stage3_dashboard=stage3_dashboard)
     stage5_dashboard = build_stage5_delivery_model(stage3_dashboard=stage3_dashboard, stage4_dashboard=stage4_dashboard)
+    stage6_dashboard = build_stage6_e2e_stabilization_model(
+        stage3_dashboard=stage3_dashboard,
+        stage4_dashboard=stage4_dashboard,
+        stage5_dashboard=stage5_dashboard,
+    )
     return {
         "schema": "PFIOSHomeSummaryV1",
         "generated_at": "",
@@ -91,7 +105,8 @@ def empty_homepage_summary() -> dict[str, Any]:
         },
         "metric_cards": _stage4_metric_cards(stage4_dashboard),
         "decision_rows": _stage5_decision_rows(stage5_dashboard),
-        "evidence_drawer": _stage5_evidence_drawer(stage5_dashboard),
+        "evidence_drawer": _stage6_evidence_drawer(stage6_dashboard),
+        "stage6_dashboard": _sanitize_public_payload(stage6_dashboard),
         "stage5_dashboard": _sanitize_public_payload(stage5_dashboard),
         "stage4_dashboard": _sanitize_public_payload(stage4_dashboard),
         "stage3_dashboard": _sanitize_public_payload(stage3_dashboard),
@@ -208,6 +223,22 @@ def _stage5_evidence_drawer(stage5_dashboard: dict[str, Any]) -> dict[str, str]:
         "Parameters": f"top_n={len(stage5_dashboard.get('top_recommendations', []))}; export_formats={', '.join(export_center.get('preferred_formats', ())) or 'markdown/json/csv'}; context_schema={alpha_context.get('schema', 'pfi_context_snapshot_v1')}",
         "Data lineage": "Stage3 account/ledger read-model + Stage4 analysis read-model -> Stage5 recommendation/report/context export.",
         "Raw document": "PFI/docs/pfi_v02/STAGE5_ADVICE_REPORT_ALPHA_EXPORT.md",
+    }
+
+
+def _stage6_evidence_drawer(stage6_dashboard: dict[str, Any]) -> dict[str, str]:
+    phase_6a = stage6_dashboard.get("phase_6a", {})
+    source_count = len(phase_6a.get("source_fixture_matrix", ())) if isinstance(phase_6a, dict) else 0
+    total_gates = stage6_dashboard.get("total_acceptance_gate", ())
+    taskpack_audit = stage6_dashboard.get("taskpack_acceptance_audit", ())
+    return {
+        "title": "PFI Stage 6 · Stage 5 · Stage 4 inputs · 端到端验收与稳定化",
+        "Evidence": "Stage 6 使用本地 synthetic/read-only 模型验证多数据源、首页、账本、建议生命周期、回归治理、交付回滚和 TaskPack acceptance gates。",
+        "Source": "pfi_v02.stage6_e2e_stabilization",
+        "Model": str(stage6_dashboard.get("schema", "PFIV02Stage6E2EStabilizationV1")),
+        "Parameters": f"core_sources={source_count}; total_gates={len(total_gates)}; acceptance_checks={len(taskpack_audit)}; live_trade_submission_authorized=false",
+        "Data lineage": "Stage2 contracts + Stage3 account/ledger read-model + Stage4 analysis + Stage5 recommendations/reports/context export -> Stage6 E2E closeout.",
+        "Raw document": "PFI/docs/pfi_v02/STAGE6_E2E_STABILIZATION.md",
     }
 
 

@@ -4,7 +4,7 @@ Last updated: 2026-06-27 Australia/Sydney
 
 ## Current Goal
 
-PFI V0.2 Stage 5 advice, reports, and Alpha read-only export closeout and Stage 6 readiness.
+PFI V0.2 Stage 6 synthetic E2E stabilization, regression governance, delivery rollback, and post-V0.2 follow-up readiness.
 
 ## Current Status
 
@@ -35,7 +35,10 @@ PFI V0.2 Stage 5 advice, reports, and Alpha read-only export closeout and Stage 
 - Stage 5 advice/report/export model is implemented in `src/pfi_v02/stage5_advice_report_alpha.py`.
 - Stage 5 record is `docs/pfi_v02/STAGE5_ADVICE_REPORT_ALPHA_EXPORT.md`.
 - Stage 5 local advice/report/Alpha-read-only export acceptance is complete for phases 5A-5C.
-- Web shell default homepage consumes Stage 5 top recommendations, keeps the V0.2 8 first-level entries, and shows recommendation lifecycle under 建议与复盘 plus reports/context export under 报告与洞察.
+- Stage 6 E2E stabilization model is implemented in `src/pfi_v02/stage6_e2e_stabilization.py`.
+- Stage 6 record is `docs/pfi_v02/STAGE6_E2E_STABILIZATION.md`.
+- Stage 6 local synthetic E2E, regression governance, delivery rollback, 20 gate audit, and ACC-* taskpack audit acceptance is complete for phases 6A-6C.
+- Web shell default homepage consumes Stage 6 closeout status, keeps the V0.2 8 first-level entries, shows recommendation lifecycle under 建议与复盘, and shows reports/context export plus Stage 6 closeout under 报告与洞察.
 
 ## Decisions
 
@@ -54,11 +57,13 @@ PFI V0.2 Stage 5 advice, reports, and Alpha read-only export closeout and Stage 
 - Stage 5 recommendations are review queue items. They are not orders, payment actions, or automatic real-money decisions.
 - Stage 5 Alpha export is only `pfi_context_snapshot_v1`; it does not add Alpha/Ralpha/System first-level entries and does not modify the Alpha repository.
 - Stage 5 context constraints keep `trading_password_available=false` and `live_trade_submission_authorized=false`.
+- Stage 6 is synthetic/read-only E2E only. It proves local V0.2 can run, verify, and rollback; it does not prove real account production connectivity.
+- Stage 6 follow-ups are separate gates: external Alpha context consumer, real account data connection, PDF/ZIP package, CDR/Open Banking, and production release evidence.
 
 ## Validation Commands
 
 ```bash
-PYTHONPATH=src python3 -B -m unittest tests.test_stage1_ia_contract tests.test_stage1_core_models tests.test_stage1_classification_rules tests.test_stage2_data_source_registry tests.test_stage2_cba_csv_import tests.test_stage2_alipay_import tests.test_stage2_non_csv_contracts tests.test_stage3_readable_mvp tests.test_stage4_analysis_mvp tests.test_stage5_advice_report_alpha -q
+PYTHONPATH=src python3 -B -m unittest tests.test_stage1_ia_contract tests.test_stage1_core_models tests.test_stage1_classification_rules tests.test_stage2_data_source_registry tests.test_stage2_cba_csv_import tests.test_stage2_alipay_import tests.test_stage2_non_csv_contracts tests.test_stage3_readable_mvp tests.test_stage4_analysis_mvp tests.test_stage5_advice_report_alpha tests.test_stage6_e2e_stabilization -q
 cd modules/qbvs_lab && PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pfi_os.examples.macos_app_acceptance_lite --project-root . --summary-json
 node --check web/app/shell.js
@@ -70,8 +75,9 @@ Latest closeout result: Stage 1+2 contracts `Ran 45 tests / OK`; legacy QBVS smo
 Latest Stage 3 closeout result: Stage 1+2+3 contracts `Ran 59 tests / OK`; legacy QBVS lifecycle smoke `Ran 1 test / OK`; project governance validation `errors 0 / warnings 0`; human-entry Markdown contract `Ran 2 tests / OK`; Python compile `OK`; Web shell syntax `OK`.
 Latest Stage 4 closeout result: Stage 1+2+3+4 contracts `Ran 71 tests / OK`; legacy QBVS lifecycle smoke `Ran 1 test / OK`; project governance validation `errors 0 / warnings 0`; human-entry Markdown contract `Ran 2 tests / OK`; Stage 4 contract `Ran 12 tests / OK`; Python compile `OK`; Web shell syntax `OK`; `git diff --check -- PFI` `OK`.
 Latest Stage 5 closeout result: Stage 1+2+3+4+5 contracts `Ran 85 tests / OK`; legacy QBVS lifecycle smoke `Ran 1 test / OK`; project governance validation `errors 0 / warnings 0`; human-entry Markdown contract `Ran 2 tests / OK`; Stage 5 contract `Ran 14 tests / OK`; Python compile `OK`; Web shell syntax `OK`; `git diff --check -- PFI` `OK`; macOS app acceptance lite `29 pass / 0 fail / 2 info`; browser validation screenshot `/tmp/pfi-stage5-browser-verified.png`.
+Latest Stage 6 closeout result: Stage 1+2+3+4+5+6 contracts `Ran 95 tests / OK`; legacy QBVS lifecycle smoke `Ran 1 test / OK`; project governance validation `errors 0 / warnings 0`; human-entry Markdown contract `Ran 2 tests / OK`; Stage 6 contract `Ran 10 tests / OK`; Python compile `OK`; Web shell syntax `OK`; `git diff --check -- PFI` `OK`; macOS app acceptance lite `29 pass / 0 fail / 2 info`; browser validation screenshot `/tmp/pfi-stage6-browser-verified.png`.
 
 ## Next
 
-1. Stage 6 can build the next roadmap gate on top of Stage 5 advice/report/context export contracts.
-2. Real account credentials, production sync, payment submission, broker order submission, and live trading remain separate gates.
+1. Final push should use a clean PFI-only worktree because the active root checkout also contains unrelated EEI/ADP/Alpha/runtime changes.
+2. After Stage 6 commit, next work must be a separate post-V0.2 gate for real account credentials, production sync, PDF/ZIP package, external context consumer, CDR/Open Banking, payment submission, broker order submission, or live trading evidence.

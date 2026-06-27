@@ -2,13 +2,13 @@
 
 model_count: 1
 formula_count: 1
-parameter_count: 17
-task_count: 5
-acceptance_count: 5
+parameter_count: 22
+task_count: 6
+acceptance_count: 6
 
 ## 当前模型
 
-`MOD-PFI-001` 记录 PFI V0.2 根项目合同：账户、资产、账本、数据源、投资分析、消费分析、建议、报告和 Alpha 只读 context export 边界。证据来自 `PFI/README.md`、`PFI/docs/pfi_v02/STAGE1_CORE_SKELETON.md`、`PFI/docs/pfi_v02/STAGE2_DATA_SYNC_MVP.md`、`PFI/docs/pfi_v02/STAGE2_ACCEPTANCE_AUDIT.md`、`PFI/docs/pfi_v02/STAGE3_READABLE_MVP.md`、`PFI/docs/pfi_v02/STAGE4_ANALYSIS_MVP.md` 和 `PFI/docs/pfi_v02/STAGE5_ADVICE_REPORT_ALPHA_EXPORT.md`。
+`MOD-PFI-001` 记录 PFI V0.2 根项目合同：账户、资产、账本、数据源、投资分析、消费分析、建议、报告、Alpha 只读 context export、Stage 6 synthetic E2E 和 rollback 边界。证据来自 `PFI/README.md`、`PFI/docs/pfi_v02/STAGE1_CORE_SKELETON.md`、`PFI/docs/pfi_v02/STAGE2_DATA_SYNC_MVP.md`、`PFI/docs/pfi_v02/STAGE2_ACCEPTANCE_AUDIT.md`、`PFI/docs/pfi_v02/STAGE3_READABLE_MVP.md`、`PFI/docs/pfi_v02/STAGE4_ANALYSIS_MVP.md`、`PFI/docs/pfi_v02/STAGE5_ADVICE_REPORT_ALPHA_EXPORT.md` 和 `PFI/docs/pfi_v02/STAGE6_E2E_STABILIZATION.md`。
 
 ## 边界
 
