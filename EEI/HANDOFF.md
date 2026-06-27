@@ -1,6 +1,6 @@
 # HANDOFF
 
-Updated: 2026-06-26 Australia/Sydney
+Updated: 2026-06-27 Australia/Sydney
 
 ## Current Goal
 
@@ -12,9 +12,10 @@ Updated: 2026-06-26 Australia/Sydney
 - 2026-06-26 A209 repair update: the clean 24h operator soak restarted at `2026-06-25T21:33:19Z` / `2026-06-26 07:33 AEST` failed at checkpoint window `7/288`.
 - Latest A209 failure evidence: `artifacts/tests/a209/t1307_operator_soak_24h.checkpoints.jsonl` has 7 rows, 6 PASS windows and 1 FAIL window; window 7 reports `child_status=NO_OUTPUT`, `exit_status=1`, and `page.evaluate: Target page, context or browser has been closed`; `/private/tmp/eei-operator-soak-61143-7.json` is missing.
 - No `run_operator_soak` or `run_soak_smoke` process was found during the 2026-06-26 check. A209 remains `IN_PROGRESS`; finalization cannot run until a new 24h chain reaches `288/288` windows with zero failures and validates.
-- A209 runner hardening is locally validated: `scripts/run_soak_smoke.mjs` now uses short browser measurement slices, structured `measurement_error` payloads, local `/private/tmp/eei-ms-playwright` fallback before lazy Playwright load, and `Promise.allSettled` browser/worker collection; `scripts/run_operator_soak.mjs` surfaces `browser_slices_completed` and `browser_measurement_error` in checkpoints.
+- 2026-06-27 GitHub sync: `origin/main` was fast-forwarded by GitHub connector to `2d11f2d3becb8ba586b311aaadf58c86f8af6548` with an EEI-only diff covering `run_soak_smoke.mjs`, `run_operator_soak.mjs`, `validate_brand_clearance.py`, `功能清单.md`, `开发记录.md`, and `模型参数文件.md`. Status checks/workflow runs were not yet visible through the connector at handoff time.
+- A209 runner hardening is locally validated: `scripts/run_soak_smoke.mjs` now uses short browser measurement slices, structured `measurement_error` payloads, local `/private/tmp/eei-ms-playwright` fallback before lazy Playwright load, `Promise.allSettled` browser/worker collection, per-slice browser page/session isolation, and bounded browser slice recovery count `MAX_BROWSER_SLICE_RECOVERIES=2`; `scripts/run_operator_soak.mjs` surfaces `browser_slices_completed`, `browser_recoveries_observed`, and `browser_measurement_error` in checkpoints.
 - A209 failed-state governance is locally synchronized: `t1307_operator_soak_evidence_validation.json` reports `FAILED_OPERATOR_EVIDENCE`, `t1307_operator_soak_background_progress.json` reports `BACKGROUND_SOAK_OPERATOR_INTERVENTION_REQUIRED`, and `t1307_operator_soak_finalization_preflight.json` reports `A209_FINALIZATION_OPERATOR_INTERVENTION_REQUIRED`; `validate_operator_soak_evidence.py validate --require-release-ready` still fails as required.
-- A209 isolated rerun is running in the background outside the repo at `/private/tmp/eei-a209-rerun-20260626-0918/`; it preserves the failed canonical `7/288` evidence and first observed checkpoint is `1/288` PASS with `0` failed, operator PID `80478`, watchdog PID `80732`, and checkpoint `/private/tmp/eei-a209-rerun-20260626-0918/operator_soak_24h.checkpoints.jsonl`.
+- A209 isolated rerun `/private/tmp/eei-a209-rerun-20260626-150051-b6c63687/` failed at checkpoint `85/288`: `84` PASS, `1` FAIL, latest `ended_at/generated_at=2026-06-26T22:11:52Z`, `browser_recoveries_observed=2`, error `page.evaluate: Target page, context or browser has been closed`; `operator_soak_24h.pid=84287` and `watchdog.pid=84286` are not alive. This evidence must be preserved as failed rerun evidence and must not be promoted to A209 finalization.
 - Local short-window probes and focused A209 tests passed after the repair: direct child harness `3s` with `--browser-slice-seconds 1` produced 3 slices and `measurement_error=null`; operator runner `3s` produced `1/1` PASS window with `wall_clock_within_budget=true`; A209 focused unit tests pass `25/25`. These probes are repair evidence only, not A209 closure.
 - Quarantine/recovery evidence is outside the repo at `/Users/linzezhang/Downloads/codex_crash_recovery_eei_20260626_0716/a209_invalid_wall_budget_run_20260626T0731AEST/`.
 - GitHub target: `LinzeColin/CodexProject/EEI`
@@ -55,7 +56,7 @@ Updated: 2026-06-26 Australia/Sydney
 - Added persistent analysis lenses, semantic zoom L0-L3, grouped synthetic system-maker list expansion, bounded first-screen graph budget checks, directional grammar assertions, and nonblank reroot fallback behavior.
 - Completed T1105, T1106, and T1109 with A141-A145 and A151-A152 by GitHub Actions run `27826081868`.
 - Added the T1203 CSV-backed taxonomy and object-scope API with catalog inventory, catalog detail, CSV export, object-scope coverage counts, and A169 local verification.
-- Completed T1203 and A169 by GitHub Actions run `27826870509`; G2 task list is complete, but G2 remains `IN PROGRESS` pending acceptance audit for unresolved G2-linked IDs.
+- Completed T1203 and A169 by GitHub Actions run `27826870509`; G2 task list is complete, but G2 remains `IN_PROGRESS` pending acceptance audit for unresolved G2-linked IDs.
 - Completed G2 acceptance audit pass 1 locally: A015-A022, A024, and A028 now have explicit validator/integration evidence; A012-A014, A026-A027, and A170 remain open.
 - Completed G2 acceptance audit pass 1 remote CI by GitHub Actions run `27827498238`; job `82355514060` passed static/contract/lint/typecheck/unit plus G2 PostgreSQL migrations and E2E.
 - Added T1204 `/objects-scope` visible navigation screen and marked A170 done locally.
@@ -76,7 +77,7 @@ Updated: 2026-06-26 Australia/Sydney
 - Added model config validation to Task Pack validation and closed T1110, T1111, T1112, T1113, T1201, and T1206 locally.
 - Marked A154, A155, A156, A157, A158, A159, A160, A171, and A178 as `DONE` with local E2E/model-validation evidence.
 - Completed the remaining G3 state/history/saved-view/timeline/model-context batch by GitHub Actions run `27835479352`; job `82382357217` passed.
-- Closed G3 as `PASS` and started G4 as `IN PROGRESS`.
+- Closed G3 as `PASS` and started G4 as `IN_PROGRESS`.
 - Added T1205 `/development-status` navigation screen with six delivery status lanes, tasks/risks/controls/acceptance evidence links, function status, task evidence, acceptance evidence, and risk-control panels.
 - Completed T1205 with A173/A174 by GitHub Actions run `27836121209`; job `82384436376` passed static/contract/lint/typecheck/unit plus PostgreSQL migrations and E2E.
 - Added T400 bounded `/v1/explore` query defaults, hard limits, truncation metadata, continuation metadata, OpenAPI contract updates, and integration assertions for A041-A044.
@@ -95,7 +96,7 @@ Updated: 2026-06-26 Australia/Sydney
 - Completed T1308/A211 production frontend live cross-route coverage: live FastAPI/PostgreSQL E2E now loads curated ingestion anchors and verifies production graph hydration, catalog inventory, relationship_fact_candidate score explanation, evidence snippets, supply-chain lens, evidence center refresh, Objects and Scope, Industries and System Status routes.
 - Completed T1308/A211 by GitHub Actions run `27876091338`; job `82495713946` passed static/contract/lint/typecheck/unit plus G2 PostgreSQL integration, browser E2E and live FastAPI/PostgreSQL E2E.
 - Advanced T1301/A202 with an explicit reviewed-publication mechanism: `scripts/publish_reviewed_relationship_facts.py` consumes a review decision file, enforces fixture-review opt-in, writes deterministic reviewed `relationships`, copies `relationship_evidence`, activates a `data_snapshots` row, writes `fact_versions`/`fact_version_evidence`, resolves `manual_review_queue`, and remains idempotent by contract.
-- Added `tests/fixtures/golden_vertical_review_decisions.json` as fixture-only review evidence; A202 is still `IN PROGRESS` because this is not production owner approval, second-source verification, live/full-text ingestion, or source health/retry/dead-letter proof.
+- Added `tests/fixtures/golden_vertical_review_decisions.json` as fixture-only review evidence; A202 is still `IN_PROGRESS` because this is not production owner approval, second-source verification, live/full-text ingestion, or source health/retry/dead-letter proof.
 - Advanced T1301/A202 with a production owner sign-off contract slice: fixture review and owner sign-off are mutually exclusive, owner sign-off requires `--allow-production-owner-signoff`, owner decisions require actor/role/scope/signature, and `owner_signature_hash` is persisted into snapshot metadata, relationship qualifiers, relationship evidence and fact-version payloads. GitHub Actions run `27880295243` / job `82506543351` proves this under remote G2 PostgreSQL/browser/live FastAPI PostgreSQL steps. A202 remains `IN_PROGRESS` until real operator-supplied owner decision or second-source closure, live/full-text ingestion and source health/retry coverage are complete.
 - Advanced T1301/A202 with official-source full-text dry-run plumbing: `scripts/fetch_official_source_full_text.py` validates the NVIDIA official anchor registry against `tests/fixtures/official_source_full_text/nvidia_official_full_text_dry_run.json`, writes dry-run `raw_source_snapshots`, `source_documents`, `entity_resolution_candidates` and context-only `ingestion_evidence_chain` rows with `source_health`, `retry_policy`, `attempts`, `live_retrieval=false` and `release_clearance=false`. A202/A206 remain `IN_PROGRESS`; this is not live official retrieval, production approval, or 4h/24h dead-letter soak proof.
 - Advanced T1302/A203 with `relationship` scoring explanations: `/v1/scoring/explain/relationship/{objectId}` now scores published relationship records from `relationships`, `relationship_evidence`, `fact_versions`, `data_snapshots`, publication qualifiers and production context.
@@ -172,7 +173,7 @@ Run from `work/EEI`:
 - 2026-06-19 update: local `make verify` passed after T303 Watchlist persistence breadth and explicit DELETE 204 response fix.
 - 2026-06-19 update: local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q` passed with 1 expected skip after T303.
 - 2026-06-19 update: GitHub Actions run `27832285368` failed because `DELETE /v1/watchlists/{watchlistId}/items` returned a response object with no status code.
-- 2026-06-19 update: GitHub Actions run `27832504683` passed; job `82372497975` proved T303 Watchlist CRUD/restore/item-type persistence under PostgreSQL after returning an explicit 204 response.
+- 2026-06-19 update: GitHub Actions run `27832504683` passed; job `82372497975` proved T303 Watchlist CRUD/restore/item-type persistence under PostgreSQL after returning an explicit `Response(status_code=204)` from the Watchlist item delete route.
 - 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e` passed 12 tests after T304 home page entry controls.
 - 2026-06-19 update: local `make verify` passed after T304; governance trace count is now 215 after adding missing A039/A040 traceability rows.
 - 2026-06-19 update: GitHub Actions run `27833468626` passed; job `82375686964` proved T304 user-oriented home entry and updated governance count on remote CI.
@@ -226,33 +227,33 @@ Run from `work/EEI`:
 - 2026-06-19 update: local `env -u DATABASE_URL .venv/bin/uv run pytest tests/integration -q` passed with 1 expected skip after T403 because this host has no configured PostgreSQL.
 - 2026-06-19 update: local `git diff --check` passed after T403.
 - 2026-06-19 update: GitHub Actions run `27839023906` passed; job `82393647163` proved T403 remotely.
-- 2026-06-19 update: GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests` passed.
+- 2026-06-19 update: GitHub Actions step 7 `Verify static, contract, lint,typecheck and unit tests` passed.
 - 2026-06-19 update: GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E` passed.
 - 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web typecheck` passed after T404.
 - 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e -- tests/e2e/state-contract.spec.ts` passed 21 tests after T404.
 - 2026-06-19 update: local `make verify` passed after T404.
 - 2026-06-19 update: local `git diff --check` passed after T404.
 - 2026-06-19 update: GitHub Actions run `27839493483` passed; job `82395103164` proved T404 remotely.
-- 2026-06-19 update: GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests` passed.
+- 2026-06-19 update: GitHub Actions step 7 `Verify static, contract, lint,typecheck and unit tests` passed.
 - 2026-06-19 update: GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E` passed.
 - 2026-06-19 update: local `npx --yes pnpm@11.8.0 --filter @eei/web test:e2e -- tests/e2e/state-contract.spec.ts` passed 26 tests after T1207 model preview propagation.
 - 2026-06-19 update: local `make verify` passed after T1207.
 - 2026-06-19 update: local `git diff --check` passed after T1207.
 - 2026-06-19 update: GitHub Actions run `27843659754` passed; job `82408058091` proved T1207 remotely.
-- 2026-06-19 update: GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests` passed.
+- 2026-06-19 update: GitHub Actions step 7 `Verify static, contract, lint,typecheck and unit tests` passed.
 - 2026-06-19 update: GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E` passed.
 - 2026-06-19 update: local `./node_modules/.bin/playwright test --config=../../playwright.config.ts state-contract.spec.ts --grep "reports one active model profile" --workers=1` passed 1 test after T1208.
 - 2026-06-19 update: local `./node_modules/.bin/playwright test --config=../../playwright.config.ts --workers=1` passed 26 tests after T1208; a prior parallel local run hit host timeout/residual-server noise, then passed serially after cleanup.
 - 2026-06-19 update: local `make verify` passed after T1208.
 - 2026-06-19 update: local `git diff --check` passed after T1208.
 - 2026-06-19 update: GitHub Actions run `27844479321` passed; job `82410608346` proved T1208 remotely.
-- 2026-06-19 update: GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests` passed.
+- 2026-06-19 update: GitHub Actions step 7 `Verify static, contract, lint,typecheck and unit tests` passed.
 - 2026-06-19 update: GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E` passed.
 - 2026-06-19 update: local `.venv/bin/uv run python scripts/validate_prototype_parity.py` passed after T1209 with canonical hash `7f06f96c917ff14fc42c94de09b0e5f89f622a22a44a0dd64da3941429486719`.
 - 2026-06-19 update: local `make verify` passed after T1209.
 - 2026-06-19 update: local `git diff --check` passed after T1209.
 - 2026-06-19 update: GitHub Actions run `27844984873` passed; job `82412132613` proved T1209 remotely.
-- 2026-06-19 update: GitHub Actions step 7 `Verify static, contract, lint, typecheck and unit tests` passed.
+- 2026-06-19 update: GitHub Actions step 7 `Verify static, contract, lint,typecheck and unit tests` passed.
 - 2026-06-19 update: GitHub Actions step 8 `Verify G2 PostgreSQL migrations and E2E` passed.
 
 Remote verification:
