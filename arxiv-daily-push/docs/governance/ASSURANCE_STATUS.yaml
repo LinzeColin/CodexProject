@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260628-ADP-S2PLT04-S2PLT01-REPLAY-REVIEW-EVIDENCE-SYNC"
-source_snapshot_hash: "sha256:f8cd7fffef937dc7c94bed4db3cca1bfdcd8c96e1070364dcf7ef13fc0dddc15"
-source_base_commit: "61c262d6445002035a21ffd289c801519caab2c3"
-source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
-snapshot_event_time: "2026-06-28T03:07:28+10:00"
+as_of_event_id: "EVENT-20260628-ADP-S2PLT04-STATE-CONTENT-EVIDENCE-BUNDLE-SYNC"
+source_snapshot_hash: "sha256:c4bb9c9191c0e2d448318f6fae5221a94462f574ca4cc5ebefab3b30e7a9069d"
+source_base_commit: "afc31872ff4acd8b21f30c84e0f3876e9b8a97cf"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+snapshot_event_time: "2026-06-28T03:26:05+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -16,8 +16,8 @@ dimensions:
     status: "PARTIAL"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 963
-    total_active_parameters: 968
+    checked_active_parameters: 957
+    total_active_parameters: 972
     checked_active_formulas: 119
     total_active_formulas: 119
     unresolved_fact_ids:
@@ -28,8 +28,8 @@ dimensions:
   parameter_source_quality:
     status: "PARTIAL"
     fact_level: "UNKNOWN"
-    checked_active_parameters: 963
-    total_active_parameters: 968
+    checked_active_parameters: 957
+    total_active_parameters: 972
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -62,12 +62,12 @@ dimensions:
     tree_bound_events: 0
     commit_bound_events: 4
     legacy_unbound_events: 188
-    precommit_pending_events: 40
+    precommit_pending_events: 41
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "VERIFIED"
-  release_gate: "S2PLT04_S2PLT01_REPLAY_REVIEW_EVIDENCE_SYNC_BLOCKED_NO_PRODUCTION"
+  release_gate: "S2PLT04_STATE_CONTENT_EVIDENCE_BUNDLE_SYNC_BLOCKED_NO_PRODUCTION"
   blocker_ids:
     - "FACT-arxiv-daily-push-IMPLEMENTATION-PARAMETER-REVIEW"
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"

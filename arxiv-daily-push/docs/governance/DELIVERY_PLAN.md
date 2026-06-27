@@ -21,7 +21,7 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 199
+- task_count: 200
 - acceptance_count: 126
 
 ## Delivery Tasks
@@ -249,6 +249,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PLT04 | Integration candidate precheck | blocked | `ACC-S2PLT04-INTEGRATION-CANDIDATE` | Fail-closed integration candidate precheck summarizing S2PLT01 review evidence, missing S2PLT02/S2PLT03 completion, local state/content evidence, inherited P0/P1 blockers, missing final bundle, and blocked S2PMT07; does not complete S2PLT04 or produce `S2_INTEGRATION_CANDIDATE_READY`. |
 | S2PLT04-S2PLT02-PRECHECK-EVIDENCE-SYNC | S2PLT02 readiness evidence sync into S2PLT04 | blocked | `ACC-S2PLT04-INTEGRATION-CANDIDATE` | Exposes the existing S2PLT02 live two-day readiness precheck inside S2PLT04 as non-terminal local evidence only; does not satisfy `S2PLT02_2D_REAL_RUN`, accept S2PLT02, complete S2PLT04, create the final bundle, or change production state. |
 | S2PLT04-S2PLT01-REPLAY-REVIEW-EVIDENCE-SYNC | S2PLT01 replay review evidence sync into S2PLT04 | blocked | `ACC-S2PLT04-INTEGRATION-CANDIDATE` | Exposes the existing S2PLT01 independent replay review receipt inside S2PLT04 as non-terminal local evidence only; does not satisfy `S2PLT01_ACCEPTED`, accept S2PLT01, complete S2PLT04, create the final bundle, or change production state. |
+| S2PLT04-STATE-CONTENT-EVIDENCE-BUNDLE-SYNC | S2PLT04 state/content evidence bundle sync | blocked | `ACC-S2PLT04-INTEGRATION-CANDIDATE` | Binds local state-consistency and content evidence to hash-bound no-production bundles inside S2PLT04; does not complete S2PLT04, create final bundle, close P0/P1, or change production state. |
 | OWNER-CENTER-ENTRY-RULE | Owner center shallow GitHub entry rule | completed | `ACC-S2PIT01-USER-CENTER`, `ACC-S2PMT06-UX` | Records that owner-facing status/mail/queue pages must use GitHub-rendered shallow `用户中心` Markdown as the primary reading surface and summarize sent/blocked/queued states directly; local `.adp` runtime files remain evidence only and this does not migrate PR #240 pages or enable production. |
 | S2PMT07 | Final gate precheck | blocked | `ACC-S2PMT07-FINAL-REVIEW` | Fail-closed final gate precheck; independent reviewer proof, inherited P0/P1 zero state, S2PLT04 completion, final acceptance bundle, independent signoff, and final command execution are still missing, so integrated production acceptance remains false. |
 | S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B007-B008 | P0 review receipt evidence refresh | completed | `ACC-S2PMT07-FINAL-REVIEW` | Refreshes the P0 independent-review receipt so B-007/B-008 point to their dedicated 20260627 evidence records; this does not provide independent signoff, close P0/P1, complete S2PLT04, or change production state. |
@@ -355,3 +356,10 @@ The machine-readable task source is `delivery_tasks.yaml`.
 - Added manifest `governance/run_manifests/ADP-S2PLT04-S2PLT01-REPLAY-REVIEW-EVIDENCE-SYNC-20260628.json`.
 - Added phase record `arxiv-daily-push/docs/phase_records/PHASE_S2PLT04_S2PLT01_REPLAY_REVIEW_EVIDENCE_SYNC.md`.
 - S2PLT04 can now see S2PLT01 independent replay review evidence as non-terminal local evidence only; S2PLT01 acceptance, S2PLT04 completion, final bundle, S2PMT07, inherited P0/P1 zero state, SMTP, scheduler, Release, restore, schema, DB, queue, source, ranking, CURRENT, V7 contract, daily operation, and production acceptance remain blocked.
+
+
+## 2026-06-28 03:26:05 Australia/Sydney - S2PLT04 state/content evidence bundle sync
+
+- Added manifest `governance/run_manifests/ADP-S2PLT04-STATE-CONTENT-EVIDENCE-BUNDLE-SYNC-20260628.json`.
+- Added phase record `arxiv-daily-push/docs/phase_records/PHASE_S2PLT04_STATE_CONTENT_EVIDENCE_BUNDLE_SYNC.md`.
+- S2PLT04 can now see state/content evidence as deterministic no-production bundles; S2PLT04 completion, final bundle, S2PMT07, inherited P0/P1 zero state, SMTP, scheduler, Release, restore, schema, DB, queue, source, ranking, CURRENT, V7 contract, daily operation, and production acceptance remain blocked.

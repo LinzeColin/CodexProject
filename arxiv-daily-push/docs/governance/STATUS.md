@@ -2,10 +2,10 @@
 
 ## Snapshot Metadata
 
-- source_base_commit: `61c262d6445002035a21ffd289c801519caab2c3`
-- source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:f8cd7fffef937dc7c94bed4db3cca1bfdcd8c96e1070364dcf7ef13fc0dddc15`
-- snapshot_event_time: `2026-06-28T03:07:28+10:00`
+- source_base_commit: `afc31872ff4acd8b21f30c84e0f3876e9b8a97cf`
+- source_tree_hash: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+- source_snapshot_hash: `sha256:c4bb9c9191c0e2d448318f6fae5221a94462f574ca4cc5ebefab3b30e7a9069d`
+- snapshot_event_time: `2026-06-28T03:26:05+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -14,10 +14,10 @@
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - Product version: `0.23.1`
-- Phase/Gate: `S2PL / S2PLT04_S2PLT01_REPLAY_REVIEW_EVIDENCE_SYNC_BLOCKED_NO_PRODUCTION`
-- Models/Formulas/Parameters total: `117 / 119 / 985`
-- Active formulas/parameters: `119 / 968`
-- Machine checked formulas/parameters: `119 / 963`
+- Phase/Gate: `S2PL / S2PLT04_STATE_CONTENT_EVIDENCE_BUNDLE_SYNC_BLOCKED_NO_PRODUCTION`
+- Models/Formulas/Parameters total: `117 / 119 / 989`
+- Active formulas/parameters: `119 / 972`
+- Machine checked formulas/parameters: `119 / 957`
 
 ## Assurance
 
@@ -35,7 +35,7 @@
 ## Delivery
 
 - Readiness: `VERIFIED`
-- Release gate: `S2PLT04_S2PLT01_REPLAY_REVIEW_EVIDENCE_SYNC_BLOCKED_NO_PRODUCTION`
+- Release gate: `S2PLT04_STATE_CONTENT_EVIDENCE_BUNDLE_SYNC_BLOCKED_NO_PRODUCTION`
 - V7 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - V7 contract hash: `a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d`
 - V7 roadmap hash: `7c5f2d842d4f6b909343c953fe39b4a4aa540d168199747a9f7decdb1aad9bd1`

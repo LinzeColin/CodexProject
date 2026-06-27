@@ -212,6 +212,30 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(state["available_evidence"]["S2PLT03_RESILIENCE_DRILL"])
         self.assertFalse(state["available_evidence"]["FINAL_ACCEPTANCE_BUNDLE/"])
 
+    def test_s2plt04_binds_state_and_content_evidence_bundles_without_terminal_acceptance(self) -> None:
+        report = build_s2plt04_integration_candidate_report(generated_at="2026-06-28T03:26:05+10:00")
+
+        state_bundle = report["evidence"]["state_consistency_evidence_bundle"]
+        content_bundle = report["evidence"]["content_evidence_bundle"]
+        self.assertEqual(state_bundle["status"], "pass")
+        self.assertEqual(content_bundle["status"], "pass")
+        self.assertEqual(
+            state_bundle["source_tasks"],
+            ["S2PMT02", "S2PMT03", "S2PMT04", "S2PMT05", "S2PMT06"],
+        )
+        self.assertEqual(content_bundle["source_tasks"], ["S2PHT05", "S2PIT04", "S2PKT05"])
+        self.assertTrue(state_bundle["no_production_side_effects"])
+        self.assertTrue(content_bundle["no_production_side_effects"])
+        self.assertEqual(len(state_bundle["evidence_refs"]), 5)
+        self.assertEqual(len(content_bundle["evidence_refs"]), 3)
+        self.assertRegex(state_bundle["bundle_hash"], r"^[0-9a-f]{64}$")
+        self.assertRegex(content_bundle["bundle_hash"], r"^[0-9a-f]{64}$")
+        self.assertTrue(report["gates"]["state_consistency_evidence_present"])
+        self.assertTrue(report["gates"]["content_evidence_present"])
+        self.assertFalse(report["gates"]["final_acceptance_bundle_present"])
+        self.assertIn("final_acceptance_bundle_missing", report["blocking_reasons"])
+        self.assertEqual(validate_s2plt04_integration_candidate_report(report), [])
+
     def test_s2plt04_consumes_s2plt03_local_drill_as_nonterminal_evidence(self) -> None:
         report = build_s2plt04_integration_candidate_report(generated_at="2026-06-28T02:24:54+10:00")
 
