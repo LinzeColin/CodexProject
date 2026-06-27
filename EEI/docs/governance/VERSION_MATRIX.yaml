@@ -34,7 +34,7 @@ parameter_profile_versions:
   release-decision-intake: "3"
   release-decision-bundle: "2"
 data_snapshot_version: "task-pack-v4.2.0-2026-06-19"
-current_iteration: "ITER-20260627-004"
+current_iteration: "ITER-20260627-005"
 current_phase: "D"
 current_gate: "TASK-T1307-A209-WATCHDOG-STALE-HEARTBEAT"
 version_file_value: "0.1.0"
