@@ -174,6 +174,10 @@ class Stage2FinalGateTests(unittest.TestCase):
             REPO_ROOT
             / "governance/run_manifests/ADP-S2PMT07-A005-INDEPENDENT-TECHNICAL-REVIEW-20260627.json"
         )
+        b007_independent_review_manifest_path = (
+            REPO_ROOT
+            / "governance/run_manifests/ADP-S2PMT07-B007-INDEPENDENT-TECHNICAL-REVIEW-20260627.json"
+        )
         receipt = receipt_path.read_text(encoding="utf-8")
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         receipt_rows = {
@@ -228,6 +232,9 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertIn("ADP-S2PMT05-DUPLICATE-TRIGGER-B007-20260627.json", receipt_rows["B-007"])
         self.assertIn("PHASE_S2PMT07_B007_MULTIPROCESS_RACE_EVIDENCE.md", receipt_rows["B-007"])
         self.assertIn("ADP-S2PMT07-B007-MULTIPROCESS-RACE-EVIDENCE-20260627.json", receipt_rows["B-007"])
+        self.assertIn("ADP-S2PMT07-B007-INDEPENDENT-TECHNICAL-REVIEW-20260627.json", receipt_rows["B-007"])
+        self.assertIn("stage2_stress_e2e.py", receipt_rows["B-007"])
+        self.assertIn("stage2_lease_fencing.py", receipt_rows["B-007"])
         self.assertNotIn("ADP-S2PMT05-STRESS-E2E-20260626.json", receipt_rows["B-007"])
         self.assertIn("PHASE_S2PMT05_SMTP_CRASH_WINDOW_B008.md", receipt_rows["B-008"])
         self.assertIn("ADP-S2PMT05-SMTP-CRASH-WINDOW-B008-20260627.json", receipt_rows["B-008"])
@@ -242,11 +249,11 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertEqual(
             manifest["refresh_manifest"],
-            "governance/run_manifests/ADP-S2PMT07-A005-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+            "governance/run_manifests/ADP-S2PMT07-B007-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
         )
         self.assertEqual(
             manifest["previous_refresh_manifest"],
-            "governance/run_manifests/ADP-S2PMT07-A004-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+            "governance/run_manifests/ADP-S2PMT07-A005-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
         )
         self.assertIn(manifest["refresh_manifest"], manifest["refresh_manifests"])
         self.assertIn(
@@ -265,6 +272,10 @@ class Stage2FinalGateTests(unittest.TestCase):
             "governance/run_manifests/ADP-S2PMT07-A005-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
             manifest["refresh_manifest_history"],
         )
+        self.assertIn(
+            "governance/run_manifests/ADP-S2PMT07-B007-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+            manifest["refresh_manifest_history"],
+        )
         self.assertTrue(refresh_manifest_path.exists())
         self.assertTrue(isolated_proof_manifest_path.exists())
         self.assertTrue(independent_review_manifest_path.exists())
@@ -273,6 +284,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertTrue(a003_independent_review_manifest_path.exists())
         self.assertTrue(a004_independent_review_manifest_path.exists())
         self.assertTrue(a005_independent_review_manifest_path.exists())
+        self.assertTrue(b007_independent_review_manifest_path.exists())
         self.assertFalse(manifest["p0_closure_claimed"])
         self.assertFalse(manifest["stage2_integrated_production_accepted"])
         self.assertIn(
@@ -446,6 +458,21 @@ class Stage2FinalGateTests(unittest.TestCase):
             "governance/run_manifests/ADP-S2PMT05-DUPLICATE-TRIGGER-B007-20260627.json",
             findings["B-007"]["evidence_refs"],
         )
+        self.assertIn("arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_B007_MULTIPROCESS_RACE_EVIDENCE.md", findings["B-007"]["evidence_refs"])
+        self.assertIn("governance/run_manifests/ADP-S2PMT07-B007-MULTIPROCESS-RACE-EVIDENCE-20260627.json", findings["B-007"]["evidence_refs"])
+        self.assertIn(
+            "governance/run_manifests/ADP-S2PMT07-B007-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+            findings["B-007"]["evidence_refs"],
+        )
+        self.assertIn("arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py", findings["B-007"]["evidence_refs"])
+        self.assertIn("arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py", findings["B-007"]["evidence_refs"])
+        self.assertIn("arxiv-daily-push/tests/test_stage2_lease_fencing.py", findings["B-007"]["evidence_refs"])
+        self.assertEqual(findings["B-007"]["reviewer_verdict"], "PASS_WITH_NO_PRODUCTION_ACCEPTANCE")
+        self.assertEqual(
+            findings["B-007"]["finding_level_independent_review_receipt"],
+            "governance/run_manifests/ADP-S2PMT07-B007-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+        )
+        self.assertIn("finding_level_independent_review_passed", findings["B-007"]["preliminary_review_state"])
         self.assertIn(
             "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_SMTP_CRASH_WINDOW_B008.md",
             findings["B-008"]["evidence_refs"],
@@ -663,6 +690,42 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(a005_independent_review["current_pointer_changed"])
         self.assertFalse(a005_independent_review["v7_1_baseline_changed"])
         self.assertFalse(a005_independent_review["v7_2_contract_files_changed"])
+
+        b007_independent_review = json.loads(b007_independent_review_manifest_path.read_text(encoding="utf-8"))
+        self.assertEqual(b007_independent_review["reviewer_verdict"], "PASS_WITH_NO_PRODUCTION_ACCEPTANCE")
+        self.assertEqual(b007_independent_review["finding_id"], "B-007")
+        self.assertTrue(b007_independent_review["technical_closure_candidate"])
+        self.assertTrue(b007_independent_review["multiprocess_race_harness_verified"])
+        self.assertTrue(b007_independent_review["dual_scheduler_race_verified"])
+        self.assertTrue(b007_independent_review["four_actor_sources_verified"])
+        self.assertEqual(b007_independent_review["process_count"], 4)
+        self.assertEqual(b007_independent_review["trigger_count"], 100)
+        self.assertEqual(b007_independent_review["attempted_revisions"], 400)
+        self.assertEqual(b007_independent_review["observed_active_revisions"], 4)
+        self.assertEqual(b007_independent_review["observed_blocked_duplicate_attempts"], 396)
+        self.assertTrue(b007_independent_review["one_active_revision_per_mail_product_verified"])
+        self.assertTrue(b007_independent_review["reason_coded_duplicate_blocks_verified"])
+        self.assertTrue(b007_independent_review["lease_fencing_receipts_verified"])
+        self.assertTrue(b007_independent_review["scheduler_side_effects_absent"])
+        self.assertTrue(b007_independent_review["false_pass_guard_verified"])
+        self.assertFalse(b007_independent_review["p0_closure_claimed"])
+        self.assertFalse(b007_independent_review["p1_closure_claimed"])
+        self.assertFalse(b007_independent_review["closure_claimed"])
+        self.assertFalse(b007_independent_review["s2pmt07_final_pass_claimed"])
+        self.assertFalse(b007_independent_review["s2plt04_completed"])
+        self.assertFalse(b007_independent_review["stage2_integrated_production_accepted"])
+        self.assertFalse(b007_independent_review["production_side_effects_enabled"])
+        self.assertFalse(b007_independent_review["scheduler_install_enabled"])
+        self.assertFalse(b007_independent_review["real_scheduler_installed"])
+        self.assertFalse(b007_independent_review["real_smtp_sent"])
+        self.assertFalse(b007_independent_review["real_release_uploaded"])
+        self.assertFalse(b007_independent_review["daily_operation_enabled"])
+        self.assertFalse(b007_independent_review["public_schema_changed"])
+        self.assertFalse(b007_independent_review["db_migration_executed"])
+        self.assertFalse(b007_independent_review["queue_mutation_allowed"])
+        self.assertFalse(b007_independent_review["current_pointer_changed"])
+        self.assertFalse(b007_independent_review["v7_1_baseline_changed"])
+        self.assertFalse(b007_independent_review["v7_2_contract_files_changed"])
 
     def test_p1_review_receipt_uses_refreshed_current_evidence(self) -> None:
         receipt_path = REPO_ROOT / "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_INDEPENDENT_REVIEW_RECEIPT.md"
