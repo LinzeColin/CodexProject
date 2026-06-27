@@ -31,6 +31,7 @@ SNAPSHOT_OUTPUT = Path("data/processed/codex/codex_activity_snapshot.json")
 RECOMMENDATION_OUTPUT = Path("data/derived/codex/codex_agent_recommendations.json")
 REPORT_OUTPUT = Path("data/derived/codex/codex_behavior_report.md")
 SYNC_LOG_DIR = Path("data/run_logs/sync_runs")
+SESSION_CACHE_VERSION = "codex_session_manifest.cache.v1"
 
 SECRET_PATTERNS = [
     re.compile(r"sk-[A-Za-z0-9_\-]{16,}"),
@@ -208,6 +209,45 @@ def source_bucket(path: Path, codex_home: Path) -> str:
     return first or "unknown"
 
 
+def session_file_signature(path: Path) -> dict[str, Any]:
+    try:
+        stat_result = path.stat()
+    except OSError:
+        return {
+            "source_file_hash": stable_hash(str(path)),
+            "source_mtime_ns": 0,
+            "source_size_bytes": 0,
+        }
+    return {
+        "source_file_hash": stable_hash(str(path)),
+        "source_mtime_ns": int(stat_result.st_mtime_ns),
+        "source_size_bytes": int(stat_result.st_size),
+    }
+
+
+def cached_session_rows(database_dir: Path) -> dict[str, dict[str, Any]]:
+    rows: dict[str, dict[str, Any]] = {}
+    for row in read_jsonl(database_dir / SESSION_OUTPUT):
+        key = str(row.get("source_file_hash") or "")
+        if key:
+            rows[key] = row
+    return rows
+
+
+def cache_hit_for_session(path: Path, cached: dict[str, dict[str, Any]]) -> dict[str, Any] | None:
+    signature = session_file_signature(path)
+    row = cached.get(str(signature["source_file_hash"]))
+    if not row:
+        return None
+    if row.get("cache_version") != SESSION_CACHE_VERSION:
+        return None
+    if int(row.get("source_mtime_ns") or 0) != signature["source_mtime_ns"]:
+        return None
+    if int(row.get("source_size_bytes") or 0) != signature["source_size_bytes"]:
+        return None
+    return row
+
+
 def parse_session_file(path: Path, codex_home: Path, index: dict[str, dict[str, Any]]) -> dict[str, Any] | None:
     started_at: datetime | None = None
     updated_at: datetime | None = None
@@ -299,15 +339,19 @@ def parse_session_file(path: Path, codex_home: Path, index: dict[str, dict[str, 
         + counters.get("error_event_count", 0) * 2
     )
 
+    signature = session_file_signature(path)
     return {
         "schema_version": "codex_session_manifest.v1",
+        "cache_version": SESSION_CACHE_VERSION,
         "session_id": session_id,
         "thread_name": thread_name,
         "started_at": started_at.isoformat().replace("+00:00", "Z") if started_at else "",
         "updated_at": updated_at.isoformat().replace("+00:00", "Z") if updated_at else "",
         "day": day_key(updated_at or started_at),
         "source_bucket": source_bucket(path, codex_home),
-        "source_file_hash": stable_hash(str(path)),
+        "source_file_hash": signature["source_file_hash"],
+        "source_mtime_ns": signature["source_mtime_ns"],
+        "source_size_bytes": signature["source_size_bytes"],
         "content_sha256": file_digest.hexdigest(),
         "cwd_label": cwd_info["cwd_label"],
         "cwd_hash": cwd_info["cwd_hash"],
@@ -615,11 +659,26 @@ def sync_codex_data(
     build_atlas: bool,
     commit: bool,
     push: bool,
+    force_full_scan: bool = False,
 ) -> dict[str, Any]:
     database_dir = database_dir.resolve()
     codex_home = codex_home.expanduser().resolve()
     index = load_session_index(codex_home)
-    session_rows = [row for path in iter_session_files(codex_home) if (row := parse_session_file(path, codex_home, index))]
+    cache = {} if force_full_scan else cached_session_rows(database_dir)
+    session_rows: list[dict[str, Any]] = []
+    cache_stats = {"cached": 0, "parsed": 0, "skipped": 0}
+    for path in iter_session_files(codex_home):
+        row = None if force_full_scan else cache_hit_for_session(path, cache)
+        if row is not None:
+            session_rows.append(row)
+            cache_stats["cached"] += 1
+            continue
+        row = parse_session_file(path, codex_home, index)
+        if row is None:
+            cache_stats["skipped"] += 1
+            continue
+        session_rows.append(row)
+        cache_stats["parsed"] += 1
     session_rows.sort(key=lambda row: (row.get("updated_at") or row.get("started_at") or "", row.get("session_id") or ""))
     daily_rows = build_daily(session_rows)
     recommendations = build_recommendations(session_rows, database_dir / RECOMMENDATION_OUTPUT)
@@ -677,6 +736,7 @@ def sync_codex_data(
         "range_end": snapshot["range_end"],
         "message_count": snapshot["message_count"],
         "tool_call_count": snapshot["tool_call_count"],
+        "cache": cache_stats,
         "outputs": {
             "sessions": str(SESSION_OUTPUT),
             "daily": str(DAILY_OUTPUT),
@@ -700,6 +760,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--build-atlas", action="store_true", help="Rebuild data/derived/visualization/memory_atlas.json after sync.")
     parser.add_argument("--commit", action="store_true", help="Commit changed Codex derived data and Memory Atlas snapshot.")
     parser.add_argument("--push", action="store_true", help="Push after committing. Implies --commit.")
+    parser.add_argument("--force-full-scan", action="store_true", help="Ignore cached per-session summaries and parse every Codex session file.")
     return parser.parse_args(argv)
 
 
@@ -711,6 +772,7 @@ def main(argv: list[str] | None = None) -> int:
         build_atlas=args.build_atlas,
         commit=args.commit or args.push,
         push=args.push,
+        force_full_scan=args.force_full_scan,
     )
     print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
     return 0
