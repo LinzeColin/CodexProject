@@ -1,0 +1,119 @@
+{
+  "acceptance_id": "ACC-S2PMT07-FINAL-REVIEW",
+  "closure_claimed": false,
+  "contract_version": "ADP-PRODUCT-CONTRACT-V7.2",
+  "current_pointer_changed": false,
+  "daily_operation_enabled": false,
+  "db_migration_executed": false,
+  "excluded_findings": [
+    {
+      "finding_id": "A-018",
+      "reason": "receipt marks this finding as sufficiency_gap_review_required_closure_not_claimed; not eligible for technical pass in this batch"
+    }
+  ],
+  "finding_ids": [
+    "A-017",
+    "A-019"
+  ],
+  "generated_at": "2026-06-27T19:27:01+10:00",
+  "inherited_v7_1_open_p0_findings_after": 8,
+  "inherited_v7_1_open_p0_findings_before": 8,
+  "inherited_v7_1_open_p1_findings_after": 37,
+  "inherited_v7_1_open_p1_findings_before": 37,
+  "manifest_id": "ADP-S2PMT07-P1-A017-A019-TECHNICAL-REVIEW-20260627",
+  "next_task": "continue_p1_finding_level_technical_reviews_for_independent_review_required_items_or_repair_sufficiency_gaps",
+  "p0_closure_claimed": false,
+  "p1_closure_claimed": false,
+  "parent_task_id": "S2PMT07",
+  "preserved_blockers": [
+    "p1_closure_not_claimed",
+    "independent_final_signoff_missing",
+    "independent_final_command_execution_missing",
+    "s2plt04_not_completed",
+    "final_acceptance_bundle_missing",
+    "a018_sufficiency_gap_not_resolved",
+    "a020_sufficiency_gap_not_resolved",
+    "a021_sufficiency_gap_not_resolved"
+  ],
+  "production_queue_mutation_allowed": false,
+  "production_restore_enabled": false,
+  "project_id": "arxiv-daily-push",
+  "public_schema_changed": false,
+  "ranking_changed": false,
+  "real_smtp_sent": false,
+  "release_packaging_enabled": false,
+  "review_scope": "local_code_and_governance_evidence_only",
+  "reviewed_findings": [
+    {
+      "evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_SMTP_IDENTITY_A017.md",
+        "governance/run_manifests/ADP-S2PMT03-SMTP-IDENTITY-A017-20260626.json",
+        "arxiv-daily-push/src/arxiv_daily_push/smtp_delivery.py",
+        "arxiv-daily-push/src/arxiv_daily_push/scheduled_execution.py",
+        "arxiv-daily-push/src/arxiv_daily_push/local_runner.py",
+        "arxiv-daily-push/tests/test_smtp_delivery.py"
+      ],
+      "finding_id": "A-017",
+      "finding_title": "SMTP delivery_id 不含正文/内容版本，且缺标准 Message-ID",
+      "fix_task": "S2PMT03",
+      "independent_final_closure_decision_required": true,
+      "severity": "P1",
+      "technical_closure_candidate": true,
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "verified_checks": [
+        "delivery_id_stable_for_same_revision",
+        "content_revision_change_rekeys_delivery_id",
+        "standard_message_id_present",
+        "mail_key_and_content_revision_headers_present",
+        "resend_policy_requires_supersede_or_resend",
+        "no_real_smtp_side_effects"
+      ]
+    },
+    {
+      "evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT01_ZERO_CRITICAL_CLAIM_A019.md",
+        "governance/run_manifests/ADP-S2PMT01-ZERO-CRITICAL-CLAIM-A019-20260627.json",
+        "arxiv-daily-push/src/arxiv_daily_push/stage1_b1_report.py",
+        "arxiv-daily-push/tests/test_stage1_b1_report.py"
+      ],
+      "finding_id": "A-019",
+      "finding_title": "零关键 Claim 时覆盖率被计算为 100%",
+      "fix_task": "S2PMT01-ZERO-CRITICAL-CLAIM-A019",
+      "independent_final_closure_decision_required": true,
+      "severity": "P1",
+      "technical_closure_candidate": true,
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "verified_checks": [
+        "zero_critical_claim_count_blocks",
+        "critical_claim_coverage_zero_for_empty_denominator",
+        "minimum_critical_claim_count_required",
+        "critical_claim_coverage_must_be_100",
+        "no_production_side_effects"
+      ]
+    }
+  ],
+  "reviewer_independence_for_final_gate_claimed": false,
+  "rollback": "Remove this manifest, phase record, P1 receipt updates, traceability row, rendered owner page, and tests; no production state was changed.",
+  "s2pmt07_final_pass_claimed": false,
+  "scheduler_install_enabled": false,
+  "schema_version": "codexproject.run_manifest.v1",
+  "source_adapter_changed": false,
+  "stage2_integrated_production_accepted": false,
+  "status": "finding_level_technical_review_passed_no_p1_closure_no_production",
+  "summary": "Finding-level technical review for P1 A-017 and A-019 confirms local SMTP identity and zero-critical-claim evidence as technical closure candidates. A-018 remains a sufficiency gap and is explicitly not reviewed as passed in this batch. This is not independent final signoff and does not close P1.",
+  "task_id": "S2PMT07-P1-A017-A019-TECHNICAL-REVIEW",
+  "technical_review_checks": {
+    "a018_explicitly_excluded_as_sufficiency_gap": true,
+    "all_evidence_files_exist": true,
+    "all_technical_review_verdicts_pass_no_production": true,
+    "all_two_reviewed_findings_present": true,
+    "independent_final_signoff_present": false,
+    "p1_counter_preserved_open": true,
+    "s2pmt07_final_gate_still_blocked": true
+  },
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false,
+  "validation_commands_planned": [
+    "python3 -m unittest arxiv-daily-push/tests/test_smtp_delivery.py arxiv-daily-push/tests/test_stage1_b1_report.py arxiv-daily-push/tests/test_stage2_final_gate.py -q"
+  ]
+}
