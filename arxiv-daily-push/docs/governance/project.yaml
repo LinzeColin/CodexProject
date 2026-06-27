@@ -470,6 +470,7 @@ features:
       - "EVID-ADP-S2PMT05-B007"
       - "EVID-ADP-S2PMT07-B007-MULTIPROCESS"
       - "EVID-ADP-S2PMT05-B008"
+      - "EVID-ADP-S2PMT07-B008-FAKE-SMTP"
       - "EVID-ADP-S2PMT05-B006"
       - "EVID-ADP-S2PMT05-B009"
       - "EVID-ADP-S2PMT05-B010"
@@ -10228,6 +10229,11 @@ evidence_refs:
     evidence_id: "EVID-ADP-S2PMT05-B008"
     kind: "manifest"
     ref: "governance/run_manifests/ADP-S2PMT05-SMTP-CRASH-WINDOW-B008-20260627.json"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-ADP-S2PMT07-B008-FAKE-SMTP"
+    kind: "manifest"
+    ref: "governance/run_manifests/ADP-S2PMT07-B008-FAKE-SMTP-CRASH-WINDOW-EVIDENCE-20260627.json"
     fact_level: "EXTRACTED"
   -
     evidence_id: "EVID-ADP-S2PMT05-B006"

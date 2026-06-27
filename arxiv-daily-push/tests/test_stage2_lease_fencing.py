@@ -16,6 +16,7 @@ from arxiv_daily_push.stage2_lease_fencing import (
     claim_outbox_message,
     decide_watchdog_stale_lock_recovery,
     reconcile_smtp_accept_crash,
+    simulate_fake_smtp_accept_after_kill,
     validate_lease_fencing_report,
     validate_outbox_delivery_a003_report,
 )
@@ -233,6 +234,48 @@ class Stage2LeaseFencingTests(unittest.TestCase):
         self.assertEqual(sent_repo.snapshot()["status"], "SENT")
         self.assertEqual(sent_repo.snapshot()["send_attempts"], 1)
 
+    def test_fake_smtp_accept_after_kill_blocks_restart_without_provider_ref(self) -> None:
+        harness = simulate_fake_smtp_accept_after_kill(
+            cycle_id="2026-07-02",
+            product_id="M1",
+            recipient="linzezhang35@gmail.com",
+            content_revision_id="rev-1",
+            body="body",
+            generated_at="2026-07-02T06:00:00+10:00",
+        )
+
+        self.assertEqual(harness["status"], "blocked")
+        self.assertFalse(harness["real_smtp_sent"])
+        self.assertFalse(harness["duplicate_resend_allowed"])
+        self.assertFalse(harness["crash_marker"]["provider_accept_ref_recorded"])
+        self.assertTrue(harness["crash_marker"]["runner_killed"])
+        self.assertTrue(harness["message_id_stable"])
+        self.assertTrue(harness["mail_key_stable"])
+        self.assertIn("provider_accept_ref is required", harness["blocking_reasons"][0])
+
+    def test_fake_smtp_accept_after_kill_reconciles_with_provider_ref_without_retry(self) -> None:
+        harness = simulate_fake_smtp_accept_after_kill(
+            cycle_id="2026-07-02",
+            product_id="M1",
+            recipient="linzezhang35@gmail.com",
+            content_revision_id="rev-1",
+            body="body",
+            generated_at="2026-07-02T06:00:00+10:00",
+            provider_accept_ref="smtp-accept://fake-provider/message-1",
+        )
+
+        self.assertEqual(harness["status"], "pass")
+        self.assertFalse(harness["real_smtp_sent"])
+        self.assertFalse(harness["duplicate_resend_allowed"])
+        self.assertFalse(harness["retry_safe"])
+        self.assertTrue(harness["crash_marker"]["provider_accept_ref_recorded"])
+        self.assertTrue(harness["message_id_stable"])
+        self.assertEqual(harness["restart_reconciliation"]["message"]["status"], "SENT")
+        self.assertEqual(
+            harness["restart_reconciliation"]["message"]["provider_accept_ref"],
+            "smtp-accept://fake-provider/message-1",
+        )
+
     def test_watchdog_recovery_blocks_live_owner_and_recovers_dead_stale_lock(self) -> None:
         stale_lock = {
             "work_id": "cycle-20260702-M2",
@@ -280,6 +323,7 @@ class Stage2LeaseFencingTests(unittest.TestCase):
         self.assertEqual(active_lease["status"], "blocked")
         self.assertEqual(active_lease["affected_rows"], 0)
         self.assertIn("lease has not expired", active_lease["blocking_reasons"])
+
 
     def test_m4_watermark_is_cycle_scoped_and_degrades_after_deadline(self) -> None:
         ready = build_m4_cycle_watermark(

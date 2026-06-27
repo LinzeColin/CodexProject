@@ -1,0 +1,77 @@
+{
+  "manifest_id": "ADP-S2PMT07-B008-FAKE-SMTP-CRASH-WINDOW-EVIDENCE-20260627",
+  "project": "arxiv-daily-push",
+  "task_id": "S2PMT07",
+  "evidence_scope": "B-008_fake_smtp_crash_window_evidence",
+  "date": "2026-06-27",
+  "status": "fake_smtp_crash_window_evidence_ready_independent_review_required_no_closure",
+  "closure_claimed": false,
+  "production_acceptance_claimed": false,
+  "inherited_p0_count_before": 8,
+  "inherited_p0_count_after": 8,
+  "inherited_p1_count_before": 37,
+  "inherited_p1_count_after": 37,
+  "finding": {
+    "finding_id": "B-008",
+    "severity": "P0",
+    "source_tasks": [
+      "S2PMT03",
+      "S2PMT05",
+      "S2PMT07"
+    ],
+    "concern": "Missing crash-window test for SMTP accepted but local state not committed.",
+    "evidence_state": "fake_smtp_runner_boundary_evidence_ready_for_independent_review",
+    "implementation_refs": [
+      "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py::simulate_fake_smtp_accept_after_kill",
+      "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py::reconcile_smtp_accept_crash",
+      "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py::build_outbox_message",
+      "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py::claim_outbox_message"
+    ],
+    "test_refs": [
+      "arxiv-daily-push/tests/test_stage2_lease_fencing.py::test_fake_smtp_accept_after_kill_blocks_restart_without_provider_ref",
+      "arxiv-daily-push/tests/test_stage2_lease_fencing.py::test_fake_smtp_accept_after_kill_reconciles_with_provider_ref_without_retry",
+      "arxiv-daily-push/tests/test_stage2_stress_e2e.py::test_smtp_crash_window_blocks_resend_without_provider_reference",
+      "arxiv-daily-push/tests/test_smtp_delivery.py"
+    ],
+    "closure_claimed": false,
+    "required_next_gate": "independent_S2PMT07_review"
+  },
+  "evidence_docs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_B008_FAKE_SMTP_CRASH_WINDOW_EVIDENCE.md",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_SMTP_CRASH_WINDOW_B008.md",
+    "governance/run_manifests/ADP-S2PMT05-SMTP-CRASH-WINDOW-B008-20260627.json"
+  ],
+  "validation": [
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b008_focus PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_lease_fencing.py arxiv-daily-push/tests/test_stage2_stress_e2e.py arxiv-daily-push/tests/test_smtp_delivery.py -q",
+      "result": "pass",
+      "observed": "Ran 41 tests in 2.210s OK"
+    }
+  ],
+  "forbidden_side_effects": {
+    "smtp_transport_changed": false,
+    "real_smtp_sent": false,
+    "scheduler_changed": false,
+    "scheduler_installed": false,
+    "scheduler_enabled": false,
+    "launchd_bootstrap_changed": false,
+    "release_upload_changed": false,
+    "public_schema_changed": false,
+    "queue_or_ledger_schema_changed": false,
+    "production_queue_mutated": false,
+    "source_adapters_changed": false,
+    "ranking_or_roi_changed": false,
+    "current_contract_pointer_changed": false,
+    "v7_1_historical_baseline_changed": false,
+    "v7_2_contract_files_changed": false,
+    "production_flags_changed": false
+  },
+  "next_gate": "independent_S2PMT07_review_must_decide_whether_B_008_fake_smtp_crash_window_evidence_is_sufficient_for_closure",
+  "generated_at": "2026-06-27T18:08:09+10:00",
+  "base_commit": "cdf1c8334159a14716c6b3e10b182916cfceff66",
+  "p0_closure_claimed": false,
+  "p1_closure_claimed": false,
+  "stage2_integrated_production_accepted": false,
+  "daily_operation_enabled": false,
+  "summary": "Records local fake SMTP accept-after-kill crash-window evidence for B-008. This proves local restart reconciliation blocks duplicate resend without provider_accept_ref and finalizes with a durable fake provider ref without real SMTP. It does not close P0/P1 or enable production."
+}
