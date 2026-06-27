@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "manifest_id": "ADP-S2PMT07-P0-P1-TECHNICAL-CANDIDATE-READINESS-20260628",
+  "project_id": "arxiv-daily-push",
+  "generated_at": "2026-06-28T04:13:16+10:00",
+  "actor": "Codex",
+  "base_commit": "989b481dcc32d5a754281ae5863551fdae89da55",
+  "task_id": "S2PMT07-P0-P1-TECHNICAL-CANDIDATE-READINESS",
+  "task_ids": [
+    "S2PMT07-P0-P1-TECHNICAL-CANDIDATE-READINESS",
+    "S2PMT07",
+    "ACC-S2PMT07-FINAL-REVIEW"
+  ],
+  "phase": "S2PM",
+  "acceptance_id": "ACC-S2PMT07-FINAL-REVIEW",
+  "contract_version": "ADP-PRODUCT-CONTRACT-V7.2",
+  "iteration_id": "ITER-20260628-ADP-S2PMT07-P0-P1-TECHNICAL-CANDIDATE-READINESS",
+  "status": "blocked_candidate_ready_no_closure",
+  "result": "p0_p1_technical_candidates_visible_but_no_zero_proof_no_production",
+  "summary": "Binds existing 8 P0 and 37 P1 finding-level technical closure candidates into S2PMT07 final acceptance bundle readiness as prebundle evidence only while keeping P0/P1 zero proof, closure, S2PLT04, final bundle, SMTP, scheduler, Release, restore, and integrated production acceptance blocked.",
+  "candidate_state": {
+    "status": "blocked_candidate_ready_no_closure",
+    "p0_candidate_count": 8,
+    "p1_candidate_count": 37,
+    "p0_candidate_package": "governance/run_manifests/ADP-S2PMT07-P0-TECHNICAL-CLOSURE-CANDIDATE-PACKAGE-20260627.json",
+    "p1_candidate_receipt": "governance/run_manifests/ADP-S2PMT07-P1-INDEPENDENT-REVIEW-RECEIPT-20260626.json",
+    "p0_p1_zero_proof_present": false,
+    "independent_final_closure_decision_present": false,
+    "p0_closure_claimed": false,
+    "p1_closure_claimed": false,
+    "s2pmt07_closure_claimed": false,
+    "production_acceptance_claimed": false,
+    "integrated_production_accepted": false,
+    "inherited_v7_1_open_p0_count": 8,
+    "inherited_v7_1_open_p1_count": 37,
+    "state_hash": "cb754c3bbace0b003277026091a3591b77990c73c8f143b4a53c7e5e3d07a1ea"
+  },
+  "final_acceptance_bundle_readiness_state": {
+    "status": "blocked",
+    "p0_p1_zero_proof_present": false,
+    "p0_p1_technical_closure_candidates_available": true,
+    "bundle_claimed_ready": false,
+    "production_acceptance_claimed": false,
+    "integrated_production_accepted": false,
+    "state_hash": "36ad9d11e5c50ab7b54f3d5bfd24861eb4e62ac01a6afc55f50d7ca6abddc9ba"
+  },
+  "parameter_ids_changed": [
+    "PARAM-ADP-990",
+    "PARAM-ADP-991",
+    "PARAM-ADP-992",
+    "PARAM-ADP-993",
+    "PARAM-ADP-994",
+    "PARAM-ADP-995"
+  ],
+  "formula_ids_changed": [
+    "FORM-ADP-102"
+  ],
+  "model_ids_changed": [
+    "MOD-ADP-100"
+  ],
+  "files_changed": [
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py",
+    "arxiv-daily-push/tests/test_stage2_final_gate.py",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_P1_TECHNICAL_CANDIDATE_READINESS.md",
+    "arxiv-daily-push/用户中心/功能任务测试证据追踪链.md",
+    "governance/run_manifests/ADP-S2PMT07-P0-P1-TECHNICAL-CANDIDATE-READINESS-20260628.json"
+  ],
+  "evidence_refs": [
+    "governance/run_manifests/ADP-S2PMT07-P0-P1-TECHNICAL-CANDIDATE-READINESS-20260628.json",
+    "governance/run_manifests/ADP-S2PMT07-P0-TECHNICAL-CLOSURE-CANDIDATE-PACKAGE-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-INDEPENDENT-REVIEW-RECEIPT-20260626.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_P1_TECHNICAL_CANDIDATE_READINESS.md",
+    "arxiv-daily-push/tests/test_stage2_final_gate.py"
+  ],
+  "validation": {
+    "focused_stage2_final_gate_and_user_center_tests": "43 OK",
+    "full_adp_unittest": "610 OK",
+    "v7_2_validator": "PASS",
+    "project_governance": "errors 0 warnings 0",
+    "changed_only_semantic_governance": "errors 0 warnings 0",
+    "governance_sync": "errors 0 warnings 0",
+    "lean_check_render": "drift_count 0 reference_issue_count 0",
+    "user_center_timestamp_check": "18 pages validated",
+    "py_compile": "PASS",
+    "json_jsonl_csv_parse": "PASS",
+    "git_diff_check": "PASS",
+    "production_false_flag_scan": "PASS",
+    "open_pr_count": 0,
+    "remote_adp_arxiv_s2p_branch_matches": 0,
+    "pycache_residue": 0,
+    "full_semantic_extractor": "not run in this iteration and not claimed as passed"
+  },
+  "production_boundary": {
+    "formal_production_inclusion": false,
+    "final_acceptance_bundle_created": false,
+    "p0_p1_zero_proof_present": false,
+    "p0_closure_claimed": false,
+    "p1_closure_claimed": false,
+    "s2plt04_completed": false,
+    "independent_final_signoff_present": false,
+    "independent_final_command_execution_present": false,
+    "stage2_integrated_production_accepted": false,
+    "daily_operation_enabled": false,
+    "real_smtp_sent": false,
+    "real_smtp_send_enabled": false,
+    "scheduler_install_enabled": false,
+    "release_packaging_enabled": false,
+    "production_restore_enabled": false,
+    "current_pointer_changed": false,
+    "v7_1_baseline_changed": false,
+    "v7_2_contract_files_changed": false
+  },
+  "blocking_reasons": [
+    "p0_p1_zero_proof_missing",
+    "independent_final_closure_decision_missing",
+    "final_acceptance_bundle_missing"
+  ],
+  "risks": [
+    "Candidate technical evidence can be misread as P0/P1 closure. This manifest records the opposite: inherited P0=8 and P1=37 remain open until zero proof and final independent closure exist.",
+    "Final acceptance bundle readiness remains blocked and must not be treated as final bundle creation or production acceptance."
+  ],
+  "rollback": "Revert the P0/P1 technical candidate readiness helper/tests, registry updates, traceability row, phase record, user-center traceability update, delivery/event/status records, and this manifest; no runtime production state was changed.",
+  "next_task": "CONTINUE_S2PMT07_OR_S2PLT04_ONLY_AFTER_ZERO_PROOF_FINAL_BUNDLE_AND_INDEPENDENT_REVIEW_EXIST"
+}

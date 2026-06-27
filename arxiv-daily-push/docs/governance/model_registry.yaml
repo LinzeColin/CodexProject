@@ -5314,6 +5314,12 @@ models:
       - "PARAM-ADP-965"
       - "PARAM-ADP-966"
       - "PARAM-ADP-967"
+      - "PARAM-ADP-990"
+      - "PARAM-ADP-991"
+      - "PARAM-ADP-992"
+      - "PARAM-ADP-993"
+      - "PARAM-ADP-994"
+      - "PARAM-ADP-995"
     inputs:
       - "S2PMT01 through S2PMT06 local validation receipts"
       - "S2PLT04 completion evidence"
@@ -5321,9 +5327,11 @@ models:
       - "independent reviewer proof"
       - "final acceptance bundle and signoff files"
       - "final required command coverage"
+      - "P0/P1 technical closure candidate receipts"
     outputs:
       - "blocked S2PMT07 precheck report"
       - "blocked final acceptance bundle readiness state"
+      - "blocked P0/P1 technical closure candidate readiness state"
       - "blocking reason list"
       - "forbidden production flag state"
       - "deterministic report hash"
@@ -5336,8 +5344,10 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PMT07-FINAL-GATE-PRECHECK-20260626.json"
       - "governance/run_manifests/ADP-S2PMT07-FINAL-ACCEPTANCE-BUNDLE-READINESS-20260628.json"
+      - "governance/run_manifests/ADP-S2PMT07-P0-P1-TECHNICAL-CANDIDATE-READINESS-20260628.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_GATE_PRECHECK.md"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_ACCEPTANCE_BUNDLE_READINESS.md"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_P1_TECHNICAL_CANDIDATE_READINESS.md"
 
   -
     model_id: "MOD-ADP-101"

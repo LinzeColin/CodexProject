@@ -90,6 +90,78 @@ S2PMT07_FINAL_ACCEPTANCE_BUNDLE_FORBIDDEN_FLAGS = (
     "release_packaging_enabled",
     "production_restore_enabled",
 )
+S2PMT07_P0_TECHNICAL_CLOSURE_CANDIDATE_PACKAGE = (
+    "governance/run_manifests/ADP-S2PMT07-P0-TECHNICAL-CLOSURE-CANDIDATE-PACKAGE-20260627.json"
+)
+S2PMT07_P1_TECHNICAL_CLOSURE_CANDIDATE_RECEIPT = (
+    "governance/run_manifests/ADP-S2PMT07-P1-INDEPENDENT-REVIEW-RECEIPT-20260626.json"
+)
+S2PMT07_P0_TECHNICAL_CLOSURE_CANDIDATE_FINDINGS = (
+    "A-001",
+    "A-002",
+    "A-003",
+    "A-004",
+    "A-005",
+    "B-001",
+    "B-007",
+    "B-008",
+)
+S2PMT07_P1_TECHNICAL_CLOSURE_CANDIDATE_FINDINGS = (
+    "A-006",
+    "A-007",
+    "A-008",
+    "A-009",
+    "A-010",
+    "A-011",
+    "A-012",
+    "A-013",
+    "A-014",
+    "A-015",
+    "A-016",
+    "A-017",
+    "A-019",
+    "A-018",
+    "A-021",
+    "B-002",
+    "B-004",
+    "B-005",
+    "B-015",
+    "B-003",
+    "B-011",
+    "B-006",
+    "B-009",
+    "B-010",
+    "B-012",
+    "B-013",
+    "B-014",
+    "A-020",
+    "C-001",
+    "C-003",
+    "C-005",
+    "C-006",
+    "C-007",
+    "C-010",
+    "C-011",
+    "C-012",
+    "C-002",
+)
+S2PMT07_P1_TECHNICAL_CLOSURE_CANDIDATE_MANIFESTS = (
+    "governance/run_manifests/ADP-S2PMT07-P1-A006-A009-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-A010-A016-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-A017-A019-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-A018-A021-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-B002-B004-B005-B015-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-B003-B011-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-A020-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-C002-TECHNICAL-REVIEW-20260628.json",
+)
+S2PMT07_P0_P1_TECHNICAL_CANDIDATE_BLOCKING_REASONS = (
+    "p0_p1_zero_proof_missing",
+    "independent_final_closure_decision_missing",
+    "final_acceptance_bundle_missing",
+)
 S2PLT02_LIVE_2D_PRECHECK_MODEL_ID = "adp-s2plt02-live-2d-precheck-v1"
 S2PLT02_ACCEPTANCE_ID = "ACC-S2PLT02-2D"
 S2PLT02_TASK_ID = "S2PLT02"
@@ -1236,17 +1308,118 @@ def build_test_gate_state() -> dict[str, Any]:
     }
 
 
+def build_p0_p1_technical_closure_candidate_state() -> dict[str, Any]:
+    """Build P0/P1 technical candidate state without closing inherited findings."""
+
+    candidate_manifest_refs = [
+        S2PMT07_P0_TECHNICAL_CLOSURE_CANDIDATE_PACKAGE,
+        S2PMT07_P1_TECHNICAL_CLOSURE_CANDIDATE_RECEIPT,
+        *S2PMT07_P1_TECHNICAL_CLOSURE_CANDIDATE_MANIFESTS,
+    ]
+    state = {
+        "status": "blocked_candidate_ready_no_closure",
+        "scope": "technical_closure_candidate_reviews_only_not_p0_p1_zero_proof",
+        "p0_candidate_package_manifest": S2PMT07_P0_TECHNICAL_CLOSURE_CANDIDATE_PACKAGE,
+        "p1_candidate_receipt_manifest": S2PMT07_P1_TECHNICAL_CLOSURE_CANDIDATE_RECEIPT,
+        "candidate_manifest_refs": candidate_manifest_refs,
+        "p0_candidate_findings": list(S2PMT07_P0_TECHNICAL_CLOSURE_CANDIDATE_FINDINGS),
+        "p1_candidate_findings": list(S2PMT07_P1_TECHNICAL_CLOSURE_CANDIDATE_FINDINGS),
+        "p0_candidate_count": len(S2PMT07_P0_TECHNICAL_CLOSURE_CANDIDATE_FINDINGS),
+        "p1_candidate_count": len(S2PMT07_P1_TECHNICAL_CLOSURE_CANDIDATE_FINDINGS),
+        "p0_candidate_package_present": True,
+        "p1_candidate_receipt_present": True,
+        "all_p0_candidate_reviews_passed_no_production_acceptance": True,
+        "all_p1_candidate_reviews_passed_no_production_acceptance": True,
+        "p0_p1_zero_proof_present": False,
+        "independent_final_closure_decision_present": False,
+        "p0_closure_claimed": False,
+        "p1_closure_claimed": False,
+        "closure_claimed": False,
+        "inherited_v7_1_open_p0_findings": S2PMT07_INHERITED_V7_1_OPEN_P0_FINDINGS,
+        "inherited_v7_1_open_p1_findings": S2PMT07_INHERITED_V7_1_OPEN_P1_FINDINGS,
+        "production_acceptance_claimed": False,
+        "integrated_production_accepted": False,
+        "blocking_reasons": list(S2PMT07_P0_P1_TECHNICAL_CANDIDATE_BLOCKING_REASONS),
+        "state_hash": "",
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
+def validate_p0_p1_technical_closure_candidate_state(state: Mapping[str, Any]) -> list[str]:
+    """Validate P0/P1 technical candidate evidence without accepting closure."""
+
+    errors: list[str] = []
+    if state.get("status") != "blocked_candidate_ready_no_closure":
+        errors.append("P0/P1 technical candidate status must remain blocked_candidate_ready_no_closure")
+    if state.get("scope") != "technical_closure_candidate_reviews_only_not_p0_p1_zero_proof":
+        errors.append("P0/P1 technical candidate scope is invalid")
+    if tuple(state.get("p0_candidate_findings", [])) != S2PMT07_P0_TECHNICAL_CLOSURE_CANDIDATE_FINDINGS:
+        errors.append("P0 technical candidate finding list is invalid")
+    if tuple(state.get("p1_candidate_findings", [])) != S2PMT07_P1_TECHNICAL_CLOSURE_CANDIDATE_FINDINGS:
+        errors.append("P1 technical candidate finding list is invalid")
+    if state.get("p0_candidate_count") != len(S2PMT07_P0_TECHNICAL_CLOSURE_CANDIDATE_FINDINGS):
+        errors.append("P0 technical candidate count is invalid")
+    if state.get("p1_candidate_count") != len(S2PMT07_P1_TECHNICAL_CLOSURE_CANDIDATE_FINDINGS):
+        errors.append("P1 technical candidate count is invalid")
+    refs = state.get("candidate_manifest_refs", [])
+    for ref in (
+        S2PMT07_P0_TECHNICAL_CLOSURE_CANDIDATE_PACKAGE,
+        S2PMT07_P1_TECHNICAL_CLOSURE_CANDIDATE_RECEIPT,
+        *S2PMT07_P1_TECHNICAL_CLOSURE_CANDIDATE_MANIFESTS,
+    ):
+        if ref not in refs:
+            errors.append(f"P0/P1 technical candidate refs must include {ref}")
+    if state.get("p0_candidate_package_present") is not True:
+        errors.append("P0 technical candidate package must be present")
+    if state.get("p1_candidate_receipt_present") is not True:
+        errors.append("P1 technical candidate receipt must be present")
+    if state.get("all_p0_candidate_reviews_passed_no_production_acceptance") is not True:
+        errors.append("P0 candidate reviews must pass with no production acceptance")
+    if state.get("all_p1_candidate_reviews_passed_no_production_acceptance") is not True:
+        errors.append("P1 candidate reviews must pass with no production acceptance")
+    if state.get("p0_p1_zero_proof_present") is not False:
+        errors.append("P0/P1 technical candidate must not claim zero proof")
+    if state.get("independent_final_closure_decision_present") is not False:
+        errors.append("P0/P1 technical candidate must not claim independent final closure decision")
+    for flag in ("p0_closure_claimed", "p1_closure_claimed", "closure_claimed"):
+        if state.get(flag) is not False:
+            errors.append(f"{flag} must be false")
+    if state.get("production_acceptance_claimed") is not False:
+        errors.append("P0/P1 technical candidate must not claim production acceptance")
+    if state.get("integrated_production_accepted") is not False:
+        errors.append("P0/P1 technical candidate must not claim integrated production acceptance")
+    if state.get("inherited_v7_1_open_p0_findings") != S2PMT07_INHERITED_V7_1_OPEN_P0_FINDINGS:
+        errors.append("P0 inherited open finding count must remain unchanged")
+    if state.get("inherited_v7_1_open_p1_findings") != S2PMT07_INHERITED_V7_1_OPEN_P1_FINDINGS:
+        errors.append("P1 inherited open finding count must remain unchanged")
+    for reason in S2PMT07_P0_P1_TECHNICAL_CANDIDATE_BLOCKING_REASONS:
+        if reason not in state.get("blocking_reasons", []):
+            errors.append(f"P0/P1 technical candidate must include blocker {reason}")
+    expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    if state.get("state_hash") != expected_hash:
+        errors.append("P0/P1 technical candidate state_hash does not match state content")
+    return errors
+
+
 def build_final_acceptance_bundle_readiness_state() -> dict[str, Any]:
     """Build the current final acceptance bundle readiness state without packaging."""
 
     available_items = {item: False for item in S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS}
+    p0_p1_technical_candidate_state = build_p0_p1_technical_closure_candidate_state()
     state = {
         "status": "blocked",
         "scope": "final_acceptance_bundle_readiness_precheck_only",
         "required_items": list(S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS),
         "available_items": available_items,
+        "available_prebundle_evidence": {
+            "P0_P1_TECHNICAL_CLOSURE_CANDIDATES": not validate_p0_p1_technical_closure_candidate_state(
+                p0_p1_technical_candidate_state
+            ),
+        },
         "missing_items": [item for item, present in available_items.items() if not present],
         "blocking_reasons": list(S2PMT07_FINAL_ACCEPTANCE_BUNDLE_BLOCKING_REASONS),
+        "p0_p1_technical_closure_candidate_state": p0_p1_technical_candidate_state,
         "bundle_present": False,
         "bundle_claimed_ready": False,
         "production_acceptance_claimed": False,
@@ -1274,6 +1447,14 @@ def validate_final_acceptance_bundle_readiness_state(state: Mapping[str, Any]) -
     for item in S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS:
         if item not in available:
             errors.append(f"available_items must include {item}")
+    if available.get("FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json") is not False:
+        errors.append("final acceptance bundle readiness must not expose p0_p1_zero_proof before final bundle exists")
+    prebundle = _mapping(state.get("available_prebundle_evidence"))
+    if prebundle.get("P0_P1_TECHNICAL_CLOSURE_CANDIDATES") is not True:
+        errors.append("final acceptance bundle readiness must expose P0/P1 technical closure candidates")
+    p0_p1_candidate = _mapping(state.get("p0_p1_technical_closure_candidate_state"))
+    if validate_p0_p1_technical_closure_candidate_state(p0_p1_candidate):
+        errors.append("final acceptance bundle readiness P0/P1 technical candidate state is invalid")
     for flag in S2PMT07_FINAL_ACCEPTANCE_BUNDLE_FORBIDDEN_FLAGS:
         if state.get(flag) is not False:
             errors.append(f"{flag} must be false")
