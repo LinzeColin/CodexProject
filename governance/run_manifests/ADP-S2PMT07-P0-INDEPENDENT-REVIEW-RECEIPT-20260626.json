@@ -154,12 +154,14 @@
       "evidence_refs": [
         "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_DUPLICATE_TRIGGER_B007.md",
         "governance/run_manifests/ADP-S2PMT05-DUPLICATE-TRIGGER-B007-20260627.json",
-        "arxiv-daily-push/tests/test_stage2_stress_e2e.py"
+        "arxiv-daily-push/tests/test_stage2_stress_e2e.py",
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_B007_MULTIPROCESS_RACE_EVIDENCE.md",
+        "governance/run_manifests/ADP-S2PMT07-B007-MULTIPROCESS-RACE-EVIDENCE-20260627.json"
       ],
       "finding_id": "B-007",
       "fix_task": "S2PMT05-DUPLICATE-TRIGGER-B007",
-      "preliminary_review_state": "refreshed_current_local_evidence_located_independent_review_required",
-      "reviewer_decision_required": "Verify four actor sources, M1-M4 x 100 attempts, one active revision per product, reason-coded duplicate blocks, lease/fencing receipts, and no scheduler side effects; decide whether multi-host or real scheduler proof remains required.",
+      "preliminary_review_state": "refreshed_current_local_and_multiprocess_evidence_located_independent_review_required",
+      "reviewer_decision_required": "Verify four actor sources, M1-M4 x 100 attempts, one active revision per product, reason-coded duplicate blocks, lease/fencing receipts, local multiprocessing runner-boundary proof, and no scheduler side effects; decide whether real scheduler or multi-host proof remains required.",
       "severity": "P0"
     },
     {
@@ -187,11 +189,12 @@
   ],
   "previous_refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-20260627.json",
   "project_id": "arxiv-daily-push",
-  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-ISOLATED-PROOF-20260627.json",
+  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-B007-MULTIPROCESS-RACE-EVIDENCE-20260627.json",
   "refresh_manifest_history": [
     "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A005-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-20260627.json",
-    "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-ISOLATED-PROOF-20260627.json"
+    "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-ISOLATED-PROOF-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-B007-MULTIPROCESS-RACE-EVIDENCE-20260627.json"
   ],
   "refresh_manifests": [
     "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B007-B008-20260627.json",
@@ -201,7 +204,8 @@
     "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A004-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A005-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-20260627.json",
-    "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-ISOLATED-PROOF-20260627.json"
+    "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-ISOLATED-PROOF-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-B007-MULTIPROCESS-RACE-EVIDENCE-20260627.json"
   ],
   "refreshed_at": "2026-06-27 17:14:45 Australia/Sydney",
   "refreshed_findings": [
@@ -220,6 +224,6 @@
   "s2plt04_completed": false,
   "stage2_integrated_production_accepted": false,
   "status": "review_receipt_ready_no_closure_claim",
-  "summary": "S2PMT07 P0 review receipt routes all eight inherited P0 findings to current evidence surfaces; A-001, A-002, A-003, and B-001 now have finding-level independent technical review receipts, but P0/P1 closure and final production gates remain blocked.",
+  "summary": "S2PMT07 P0 review receipt routes all eight inherited P0 findings to current evidence surfaces; B-007 now includes local multiprocessing runner-boundary race evidence, A-001/A-002/A-003/B-001 have finding-level independent technical review receipts, but P0/P1 closure and final production gates remain blocked.",
   "task_id": "S2PMT07"
 }

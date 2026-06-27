@@ -1,0 +1,89 @@
+{
+  "base_commit": "c4d5897e23c07bfb1875b08d788bfdf39f182f02",
+  "closure_claimed": false,
+  "daily_operation_enabled": false,
+  "date": "2026-06-27",
+  "evidence_docs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_B007_MULTIPROCESS_RACE_EVIDENCE.md",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_DUPLICATE_TRIGGER_B007.md",
+    "governance/run_manifests/ADP-S2PMT05-DUPLICATE-TRIGGER-B007-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-B007-MULTIPROCESS-RACE-EVIDENCE-20260627.json"
+  ],
+  "evidence_scope": "B-007_multiprocess_dual_scheduler_race_evidence",
+  "finding": {
+    "closure_claimed": false,
+    "concern": "Missing production-grade race test for dual scheduler, dual worker, and repeated triggers.",
+    "evidence_state": "ready_for_independent_review_no_closure",
+    "evidence_summary": {
+      "attempted_revisions": 400,
+      "cycle_id": "2026-07-04",
+      "expected_active_revisions": 4,
+      "expected_blocked_duplicate_attempts": 396,
+      "process_count": 4,
+      "scheduler_enabled": false,
+      "scheduler_installed": false,
+      "trigger_count": 100
+    },
+    "finding_id": "B-007",
+    "implementation_refs": [
+      "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py::simulate_multiprocess_dual_scheduler_race",
+      "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py::simulate_dual_scheduler_race",
+      "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py::claim_leased_item",
+      "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py::apply_fenced_state_transition"
+    ],
+    "required_next_gate": "independent_S2PMT07_review",
+    "severity": "P0",
+    "source_tasks": [
+      "S2PMT03",
+      "S2PMT05",
+      "S2PMT07"
+    ],
+    "test_refs": [
+      "arxiv-daily-push/tests/test_stage2_stress_e2e.py::test_multiprocess_dual_scheduler_race_keeps_one_active_revision_per_mail_product",
+      "arxiv-daily-push/tests/test_stage2_stress_e2e.py::test_dual_scheduler_race_keeps_one_active_revision_per_mail_product",
+      "arxiv-daily-push/tests/test_stage2_lease_fencing.py::test_lease_claim_blocks_unexpired_foreign_owner_and_allows_expired_takeover",
+      "arxiv-daily-push/tests/test_stage2_lease_fencing.py::test_fenced_transition_blocks_stale_row_version_and_token"
+    ]
+  },
+  "forbidden_side_effects": {
+    "current_contract_pointer_changed": false,
+    "launchd_bootstrap_changed": false,
+    "production_flags_changed": false,
+    "production_queue_mutated": false,
+    "public_schema_changed": false,
+    "queue_or_ledger_schema_changed": false,
+    "ranking_or_roi_changed": false,
+    "real_smtp_sent": false,
+    "release_upload_changed": false,
+    "scheduler_changed": false,
+    "scheduler_enabled": false,
+    "scheduler_installed": false,
+    "smtp_transport_changed": false,
+    "source_adapters_changed": false,
+    "v7_1_historical_baseline_changed": false,
+    "v7_2_contract_files_changed": false
+  },
+  "generated_at": "2026-06-27T18:10:00+10:00",
+  "inherited_p0_count_after": 8,
+  "inherited_p0_count_before": 8,
+  "inherited_p1_count_after": 37,
+  "inherited_p1_count_before": 37,
+  "manifest_id": "ADP-S2PMT07-B007-MULTIPROCESS-RACE-EVIDENCE-20260627",
+  "next_gate": "independent_S2PMT07_review_must_decide_whether_B_007_multiprocess_race_evidence_is_sufficient_for_closure",
+  "p0_closure_claimed": false,
+  "p1_closure_claimed": false,
+  "production_acceptance_claimed": false,
+  "project": "arxiv-daily-push",
+  "rollback": "Revert the B-007 multiprocess harness code/test, phase record, manifest, P0 receipt references, traceability/project/event records, and rendered governance files; no runtime production state was changed.",
+  "stage2_integrated_production_accepted": false,
+  "status": "multiprocess_race_evidence_ready_independent_review_required_no_closure",
+  "summary": "Adds local multiprocessing runner-boundary evidence for B-007 repeated-trigger races while preserving no scheduler install, no SMTP, no P0/P1 closure, and no Stage2 production acceptance.",
+  "task_id": "S2PMT07",
+  "validation": [
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b007_absorb PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_stress_e2e.py -q",
+      "observed": "Ran 20 tests OK",
+      "result": "pass"
+    }
+  ]
+}

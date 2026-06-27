@@ -39,6 +39,7 @@ from arxiv_daily_push.stage2_stress_e2e import (
     evaluate_result_validity,
     evaluate_time_policy_cases,
     simulate_dual_scheduler_race,
+    simulate_multiprocess_dual_scheduler_race,
     simulate_smtp_crash_window,
     validate_s2pmt05_report,
 )
@@ -128,6 +129,20 @@ class Stage2StressE2ETests(unittest.TestCase):
 
         self.assertEqual(weak_actors["status"], "blocked")
         self.assertFalse(weak_actors["checks"]["actor_sources_covered"])
+
+    def test_multiprocess_dual_scheduler_race_keeps_one_active_revision_per_mail_product(self) -> None:
+        race = simulate_multiprocess_dual_scheduler_race(cycle_id="2026-07-04", trigger_count=100, process_count=4)
+
+        self.assertEqual(race["status"], "pass")
+        self.assertTrue(race["runner_boundary_simulated"])
+        self.assertFalse(race["scheduler_installed"])
+        self.assertFalse(race["scheduler_enabled"])
+        self.assertEqual(race["attempted_revisions"], 400)
+        self.assertEqual(race["observed_results"], 400)
+        self.assertEqual(race["blocked_race_attempts"], 396)
+        self.assertEqual(race["duplicate_active_revisions"], 0)
+        self.assertEqual([row["product_id"] for row in race["active_revisions"]], list(S2PMT05_REQUIRED_MAIL_PRODUCTS))
+        self.assertTrue(all(code == 0 for code in race["worker_exit_codes"]))
 
     def test_smtp_crash_window_blocks_resend_without_provider_reference(self) -> None:
         crash = simulate_smtp_crash_window(generated_at="2026-07-04T06:00:00+10:00")
