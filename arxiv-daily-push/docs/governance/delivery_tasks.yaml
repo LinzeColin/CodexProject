@@ -3555,3 +3555,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PMT07-P0-P1-ZERO-PROOF-READINESS"
+    phase: "S2PM"
+    objective: "Define the required P0/P1 zero-proof final-bundle artifact path, required fields, and fail-closed blockers without accepting closure."
+    scope: "S2PMT07 final-gate helper, focused regression test, phase record, run manifest, semantic parameter refresh, traceability row, delivery/event records, user-center traceability page, and three base files."
+    non_scope: "No P0/P1 closure, no final acceptance bundle creation, no S2PLT04 completion, no S2PMT07 pass, no SMTP transport, no scheduler install or enablement, no Release upload, no public schema or DB migration, no production queue mutation, no ranking/source-adapter change, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no DAILY_OPERATION, and no integrated production acceptance."
+    status: "blocked"
+    dependencies: ["S2PMT07", "S2PMT07-P0-P1-TECHNICAL-CANDIDATE-READINESS", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_P1_ZERO_PROOF_READINESS.md", "governance/run_manifests/ADP-S2PMT07-P0-P1-ZERO-PROOF-READINESS-20260628.json", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_user_center_candidate_pool.py"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_zero_proof_refactor PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q"]
+    test_results: ["TDD red reproduced missing zero-proof readiness API", "focused final-gate tests: 28 OK"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-P0-P1-ZERO-PROOF-READINESS-20260628.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_P1_ZERO_PROOF_READINESS.md", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
+    result: "S2PMT07 final acceptance bundle readiness now embeds a blocked zero-proof readiness schema requiring FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json while inherited P0=8/P1=37 remain open."
+    risk: "This readiness record can be misread as P0/P1 closure; it deliberately keeps zero_proof_artifact_present false, p0_zero_proven false, p1_zero_proven false, and all closure/production flags false."
+    rollback: "Revert the zero-proof readiness helper/test, registry updates, phase record, run manifest, traceability row, delivery/event records, generated views, and three base file updates; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

@@ -27,10 +27,12 @@ from arxiv_daily_push.stage2_final_gate import (
     S2PMT07_FINAL_ACCEPTANCE_BUNDLE_FORBIDDEN_FLAGS,
     S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS,
     S2PMT07_FORBIDDEN_PASS_FLAGS,
+    S2PMT07_P0_P1_ZERO_PROOF_REQUIRED_FIELDS,
     S2PMT07_REQUIRED_DEPENDENCIES,
     S2PMT07_REQUIRED_EVIDENCE,
     S2PMT07_REQUIRED_TEST_COMMANDS,
     build_final_acceptance_bundle_readiness_state,
+    build_p0_p1_zero_proof_readiness_state,
     build_p0_p1_technical_closure_candidate_state,
     build_s2plt02_dependency_state,
     build_s2plt02_live_2d_precheck_report,
@@ -53,6 +55,7 @@ from arxiv_daily_push.stage2_final_gate import (
     validate_s2plt03_resilience_precheck_report,
     validate_s2plt04_integration_candidate_report,
     validate_final_acceptance_bundle_readiness_state,
+    validate_p0_p1_zero_proof_readiness_state,
     validate_p0_p1_technical_closure_candidate_state,
     validate_s2pmt07_precheck_report,
 )
@@ -2046,6 +2049,50 @@ class Stage2FinalGateTests(unittest.TestCase):
         tampered = json.loads(json.dumps(candidate))
         tampered["p1_closure_claimed"] = True
         self.assertIn("p1_closure_claimed must be false", validate_p0_p1_technical_closure_candidate_state(tampered))
+
+    def test_p0_p1_zero_proof_readiness_fails_closed_until_independent_zero_artifact_exists(self) -> None:
+        state = build_p0_p1_zero_proof_readiness_state()
+
+        self.assertEqual(state["status"], "blocked")
+        self.assertEqual(state["scope"], "p0_p1_zero_proof_readiness_schema_only_no_closure")
+        self.assertFalse(state["zero_proof_artifact_present"])
+        self.assertEqual(state["zero_proof_artifact_path"], "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json")
+        self.assertEqual(tuple(state["required_zero_severities"]), ("P0", "P1"))
+        self.assertEqual(tuple(state["required_fields"]), S2PMT07_P0_P1_ZERO_PROOF_REQUIRED_FIELDS)
+        self.assertEqual(state["required_open_p0_findings"], 0)
+        self.assertEqual(state["required_open_p1_findings"], 0)
+        self.assertEqual(state["observed_open_p0_findings"], 8)
+        self.assertEqual(state["observed_open_p1_findings"], 37)
+        self.assertFalse(state["independent_final_closure_decision_present"])
+        self.assertFalse(state["p0_zero_proven"])
+        self.assertFalse(state["p1_zero_proven"])
+        self.assertFalse(state["closure_claimed"])
+        self.assertIn("p0_p1_zero_proof_artifact_missing", state["blocking_reasons"])
+        self.assertIn("independent_final_closure_decision_missing", state["blocking_reasons"])
+        self.assertIn("inherited_v7_1_p0_findings_open", state["blocking_reasons"])
+        self.assertIn("inherited_v7_1_p1_findings_open", state["blocking_reasons"])
+        self.assertEqual(validate_p0_p1_zero_proof_readiness_state(state), [])
+
+        tampered = json.loads(json.dumps(state))
+        tampered["observed_open_p0_findings"] = 0
+        tampered["p0_zero_proven"] = True
+        self.assertIn(
+            "P0/P1 zero proof readiness must preserve inherited open P0 count until artifact exists",
+            validate_p0_p1_zero_proof_readiness_state(tampered),
+        )
+
+    def test_final_acceptance_bundle_readiness_embeds_zero_proof_readiness_not_closure(self) -> None:
+        state = build_final_acceptance_bundle_readiness_state()
+        zero_proof = state["p0_p1_zero_proof_readiness"]
+
+        self.assertEqual(zero_proof["status"], "blocked")
+        self.assertFalse(zero_proof["zero_proof_artifact_present"])
+        self.assertFalse(zero_proof["p0_zero_proven"])
+        self.assertFalse(zero_proof["p1_zero_proven"])
+        self.assertFalse(state["available_prebundle_evidence"]["P0_P1_ZERO_PROOF_READINESS"])
+        self.assertIn("p0_p1_zero_proof_artifact_missing", zero_proof["blocking_reasons"])
+        self.assertEqual(validate_p0_p1_zero_proof_readiness_state(zero_proof), [])
+        self.assertEqual(validate_final_acceptance_bundle_readiness_state(state), [])
 
     def test_p0_p1_technical_candidate_builder_fails_closed_without_closure(self) -> None:
         state = build_p0_p1_technical_closure_candidate_state()

@@ -7,12 +7,13 @@ machine_summary:
 
 - model_count: 117
 - formula_count: 119
-- parameter_count: 995
+- parameter_count: 998
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
 ## Governance Notes
 
+- `S2PMT07-P0-P1-ZERO-PROOF-READINESS` adds `PARAM-ADP-996` through `PARAM-ADP-998` under `MOD-ADP-100` / `FORM-ADP-102`. It defines the required `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json` artifact path, required fields, and blocking reasons while keeping the artifact missing, inherited P0=8/P1=37 open, closure flags false, and every production side-effect flag false. It does not create P0/P1 zero proof, close P0/P1, complete S2PLT04, create the final bundle, enable SMTP/scheduler/Release/restore, mutate production state, change sources/ranking/CURRENT/V7, or claim integrated production acceptance.
 - `S2PMT07-P0-P1-TECHNICAL-CANDIDATE-READINESS` adds `PARAM-ADP-990` through `PARAM-ADP-995` under `MOD-ADP-100` / `FORM-ADP-102`. It exposes existing 8 P0 and 37 P1 technical closure candidates to S2PMT07 final acceptance bundle readiness as prebundle evidence only. It does not create P0/P1 zero proof, close P0/P1, complete S2PLT04, create the final bundle, enable SMTP/scheduler/Release/restore, mutate production state, change sources/ranking/CURRENT/V7, or claim integrated production acceptance.
 - `S2PLT04-FINAL-BUNDLE-READINESS-SYNC` reuses existing `PARAM-ADP-965` through `PARAM-ADP-967` under `MOD-ADP-103` / `FORM-ADP-105` to embed the fail-closed final acceptance bundle readiness detail inside S2PLT04 evidence. It does not create the final bundle, satisfy S2PLT04, close P0/P1, enable SMTP/scheduler/Release/restore, mutate production state, change sources/ranking/CURRENT/V7, or claim integrated production acceptance.
 - `S2PLT03` adds `MOD-ADP-116`, `FORM-ADP-118`, and `PARAM-ADP-968`
@@ -1091,6 +1092,7 @@ Uncovered planned scenarios:
 - `MOD-ADP-100` / `FORM-ADP-102` define the fail-closed final production gate precheck for S2PMT07.
 - Passing S2PMT07 is not claimed by this run. The current precheck remains blocked because reviewer independence is not proven, inherited V7.1 P0=8 and P1=37 are open, S2PLT04 completion is missing, the final acceptance bundle is missing, the independent signoff is missing, and final required command execution by an independent reviewer is not proven.
 - The final acceptance bundle readiness sub-gate now enumerates the required bundle items: `manifest.json`, P0/P1 zero proof, S2PLT04 completion report, independent review signoff, final command execution, no-production-side-effect attestation, and handoff. In the current state every item is missing, `bundle_present=false`, `bundle_claimed_ready=false`, and the gate remains blocked.
+- The P0/P1 zero-proof readiness sub-gate defines `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json`, required schema fields, and missing-artifact blockers. It currently remains `blocked`, `zero_proof_artifact_present=false`, `p0_zero_proven=false`, `p1_zero_proven=false`, and inherited P0/P1 stay `8 / 37`.
 - S2PMT07 precheck does not enable SMTP, install scheduler, upload Release assets, run production restore, migrate DB/public schema, mutate production queues, change source adapters or ranking, change CURRENT or V7.1/V7.2 contracts, close inherited P0/P1, enable DAILY_OPERATION, or claim integrated production acceptance.
 
 ## S2PLT01 Full Replay Entry Precheck

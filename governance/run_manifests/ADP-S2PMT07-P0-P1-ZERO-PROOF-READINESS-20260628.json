@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PMT07-P0-P1-ZERO-PROOF-READINESS",
+  "acceptance_id": "ACC-S2PMT07-FINAL-REVIEW",
+  "generated_at": "2026-06-28T04:36:58+10:00",
+  "status": "blocked_zero_proof_schema_ready_no_closure_no_production",
+  "zero_proof_artifact_path": "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
+  "zero_proof_artifact_present": false,
+  "required_fields": [
+    "schema_version",
+    "contract_id",
+    "generated_at",
+    "reviewer_independence",
+    "source_candidate_refs",
+    "finding_counts",
+    "zero_severity_counts",
+    "independent_closure_decision",
+    "final_bundle_refs",
+    "no_production_side_effects",
+    "decision_hash"
+  ],
+  "required_zero_severities": [
+    "P0",
+    "P1"
+  ],
+  "required_open_p0_findings": 0,
+  "required_open_p1_findings": 0,
+  "observed_open_p0_findings": 8,
+  "observed_open_p1_findings": 37,
+  "p0_zero_proven": false,
+  "p1_zero_proven": false,
+  "independent_final_closure_decision_present": false,
+  "p0_closure_claimed": false,
+  "p1_closure_claimed": false,
+  "closure_claimed": false,
+  "final_acceptance_bundle_present": false,
+  "s2plt04_completed": false,
+  "integrated_production_accepted": false,
+  "daily_operation_enabled": false,
+  "real_smtp_sent": false,
+  "real_smtp_send_enabled": false,
+  "scheduler_enabled": false,
+  "scheduler_install_enabled": false,
+  "release_uploaded": false,
+  "release_packaging_enabled": false,
+  "production_restore_enabled": false,
+  "public_schema_changed": false,
+  "db_migration_executed": false,
+  "production_queue_mutated": false,
+  "source_adapter_changed": false,
+  "ranking_algorithm_changed": false,
+  "current_pointer_changed": false,
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false,
+  "blocking_reasons": [
+    "p0_p1_zero_proof_artifact_missing",
+    "independent_final_closure_decision_missing",
+    "inherited_v7_1_p0_findings_open",
+    "inherited_v7_1_p1_findings_open"
+  ],
+  "zero_proof_state_hash": "694d5a601a7421952c86d1e940e05cc04784319c228a1ef211aef3a180c63dc0",
+  "final_acceptance_bundle_readiness_hash": "d7ca0e0e1bf083416e1368b055c51f3d9bbd39df04ce7da34350cd9e693cf695",
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_P1_ZERO_PROOF_READINESS.md",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py",
+    "arxiv-daily-push/tests/test_stage2_final_gate.py"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_zero_proof_red2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_zero_proof_refactor PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q"
+  ],
+  "test_results": [
+    "TDD red reproduced missing zero-proof readiness API as focused assertion failures",
+    "focused final-gate tests: 28 OK"
+  ],
+  "notes": "This is a fail-closed readiness schema only. It does not create the final acceptance bundle, close P0/P1, pass S2PMT07, complete S2PLT04, execute final commands, send SMTP, install or enable scheduler, upload Release, change schema/DB/production queues/ranking/source adapters, edit CURRENT or V7 contracts, enable DAILY_OPERATION, or grant integrated production acceptance."
+}
