@@ -4,6 +4,9 @@ from __future__ import annotations
 
 import hashlib
 import json
+import multiprocessing
+import os
+import queue
 from collections.abc import Mapping, Sequence
 from datetime import date, datetime, timedelta, timezone
 from typing import Any
@@ -392,6 +395,83 @@ def evaluate_dual_scheduler_race(race: Mapping[str, Any]) -> dict[str, Any]:
     }
     blocking_reasons = [key for key, value in checks.items() if value is not True]
     return {"status": "pass" if not blocking_reasons else "blocked", "checks": checks, "blocking_reasons": blocking_reasons}
+
+
+def simulate_multiprocess_dual_scheduler_race(
+    *,
+    cycle_id: str,
+    trigger_count: int = 100,
+    process_count: int = 4,
+) -> dict[str, Any]:
+    """Simulate runner-boundary repeated triggers across multiple local processes."""
+
+    ctx = multiprocessing.get_context("spawn")
+    manager = ctx.Manager()
+    try:
+        active = manager.dict()
+        lock = ctx.Lock()
+        result_queue = ctx.Queue()
+        attempts = [
+            {
+                "attempt_id": attempt_id,
+                "cycle_id": cycle_id,
+                "product_id": product_id,
+                "content_revision_id": f"{cycle_id}-{product_id}-rev-{attempt_id + 1}",
+            }
+            for attempt_id in range(trigger_count)
+            for product_id in S2PMT05_REQUIRED_MAIL_PRODUCTS
+        ]
+        workers = []
+        for worker_index in range(process_count):
+            worker_attempts = [attempt for index, attempt in enumerate(attempts) if index % process_count == worker_index]
+            process = ctx.Process(
+                target=_multiprocess_race_worker,
+                args=(worker_index, worker_attempts, active, lock, result_queue),
+            )
+            process.start()
+            workers.append(process)
+        for process in workers:
+            process.join(10)
+            if process.is_alive():
+                process.terminate()
+                process.join(5)
+
+        results = []
+        for _index in range(len(attempts)):
+            try:
+                results.append(result_queue.get(timeout=1))
+            except queue.Empty:
+                break
+        active_revisions = sorted(dict(active).values(), key=lambda row: row["product_id"])
+    finally:
+        manager.shutdown()
+    blocked_race_attempts = sum(1 for row in results if row.get("status") == "blocked")
+    duplicate_active_revisions = len(active_revisions) - len({row["product_id"] for row in active_revisions})
+    exit_codes = [process.exitcode for process in workers]
+    status = (
+        "pass"
+        if len(results) == len(attempts)
+        and len(active_revisions) == len(S2PMT05_REQUIRED_MAIL_PRODUCTS)
+        and duplicate_active_revisions == 0
+        and blocked_race_attempts == len(attempts) - len(S2PMT05_REQUIRED_MAIL_PRODUCTS)
+        and all(code == 0 for code in exit_codes)
+        else "blocked"
+    )
+    return {
+        "cycle_id": cycle_id,
+        "trigger_count": trigger_count,
+        "process_count": process_count,
+        "attempted_revisions": len(attempts),
+        "observed_results": len(results),
+        "active_revisions": active_revisions,
+        "blocked_race_attempts": blocked_race_attempts,
+        "duplicate_active_revisions": duplicate_active_revisions,
+        "worker_exit_codes": exit_codes,
+        "runner_boundary_simulated": True,
+        "scheduler_installed": False,
+        "scheduler_enabled": False,
+        "status": status,
+    }
 
 
 def simulate_smtp_crash_window(*, generated_at: str) -> dict[str, Any]:
@@ -1492,3 +1572,36 @@ def _word_count(value: Any) -> int:
 def _stable_hash(value: Mapping[str, Any]) -> str:
     payload = json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
+def _multiprocess_race_worker(worker_index: int, attempts: list[Mapping[str, Any]], active: Any, lock: Any, result_queue: Any) -> None:
+    for attempt in attempts:
+        product_id = str(attempt.get("product_id") or "")
+        with lock:
+            if product_id in active:
+                result_queue.put(
+                    {
+                        "worker_index": worker_index,
+                        "pid": os.getpid(),
+                        "product_id": product_id,
+                        "status": "blocked",
+                        "reason": "active revision already claimed",
+                    }
+                )
+                continue
+            active[product_id] = {
+                "cycle_id": str(attempt.get("cycle_id") or ""),
+                "product_id": product_id,
+                "owner": f"process-{worker_index}",
+                "pid": os.getpid(),
+                "content_revision_id": str(attempt.get("content_revision_id") or ""),
+                "active": True,
+            }
+            result_queue.put(
+                {
+                    "worker_index": worker_index,
+                    "pid": os.getpid(),
+                    "product_id": product_id,
+                    "status": "claimed",
+                }
+            )

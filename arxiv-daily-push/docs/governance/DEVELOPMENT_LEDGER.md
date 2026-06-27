@@ -10,12 +10,26 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.1
 - Current phase: S2PM
-- Current gate: S2PMT07_A003_INDEPENDENT_TECHNICAL_REVIEW_NO_CLOSURE_NO_PRODUCTION
-- Confirmed iteration count: 149
+- Current gate: S2PMT07_B007_MULTIPROCESS_RACE_EVIDENCE_NO_CLOSURE_NO_PRODUCTION
+- Confirmed iteration count: 150
 - Reconstructed event count: 0
-- Current task: `S2PMT07-A003-INDEPENDENT-TECHNICAL-REVIEW` records a read-only independent reviewer verdict for A-003 after the first review found terminal/not-retry-safe outbox rows could be reclaimed after lease expiry. The implemented fix blocks `ACCEPTED_PENDING_COMMIT` direct claim, blocks `retry_safe=false`, blocks `SENT`/`BLOCKED` terminal claim, and preserves at-least-once retry for `PENDING` and expired `CLAIMED`. The second reviewer verdict is `PASS_WITH_NO_PRODUCTION_ACCEPTANCE`, making A-003 a finding-level technical closure candidate only. This does not provide final S2PMT07 signoff, run final commands, close inherited P0/P1, complete S2PLT04, create a final acceptance bundle, or supersede later S2PL blocked prechecks. `S2PMT07` remains the final production gate and is still blocked by inherited P0/P1, S2PLT04, final bundle, independent final signoff, and independent final command execution. No CURRENT, V7.1/V7.2 contract file, production replay, real production backup/restore/email, real SMTP, scheduler installation, Release, DB migration, public schema, production queue, source adapter, ranking, inherited P0/P1 closure, DAILY_OPERATION, or integrated production acceptance state changed. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
+- Current task: `S2PMT07-B007-MULTIPROCESS-RACE-EVIDENCE` records a local multiprocess runner-boundary proof for inherited B-007: 4 worker processes, 400 observed M1-M4 attempts, 4 active revisions, 396 blocked duplicate attempts, and all worker exit codes equal to zero. This refreshes evidence routing for the P0 review receipt only. It does not provide final S2PMT07 signoff, run final commands, close inherited P0/P1, complete S2PLT04, create a final acceptance bundle, or supersede later S2PL blocked prechecks. `S2PMT07` remains the final production gate and is still blocked by inherited P0/P1, S2PLT04, final bundle, independent final signoff, and independent final command execution. No CURRENT, V7.1/V7.2 contract file, production replay, real production backup/restore/email, real SMTP, scheduler installation, Release, DB migration, public schema, production queue, source adapter, ranking, inherited P0/P1 closure, DAILY_OPERATION, or integrated production acceptance state changed. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
+
+### `ITER-20260627-ADP-S2PMT07-B007-MULTIPROCESS-RACE-EVIDENCE`
+
+- Timestamp: `2026-06-27T17:53:03+10:00`
+- Fact level: EXTRACTED from local multiprocess race harness, refreshed B-007 phase record, refreshed B-007 manifest, S2PMT07 P0 receipt, traceability row, and stress/user-center regression tests.
+- Base commit: `c4d5897e23c07bfb1875b08d788bfdf39f182f02`
+- Product version: `0.23.1`
+- Status: B-007 multiprocess runner-boundary evidence is ready for independent review; P0/P1 closure and production acceptance are not claimed.
+- Task IDs: `S2PMT07-B007-MULTIPROCESS-RACE-EVIDENCE`; parent `S2PMT07`; inherited finding `B-007`; acceptance `ACC-S2PMT07-FINAL-REVIEW`.
+- Goal: Preserve the B-007 multiprocess repeated-trigger proof inside GitHub source-of-truth evidence surfaces, without relying on stale remote work branches or chat context.
+- Files changed: stress E2E helper and tests, B-007 phase record and manifest, P0 review receipt manifest and phase record, project governance evidence refs, traceability matrix/user-center page, changelog, delivery plan, model-parameter source/rendered output, and regression tests.
+- Decisions: The evidence proves local runner-boundary duplicate-trigger behavior only. It does not install or enable a scheduler, execute a real multi-host scheduler run, send SMTP, close B-007/P0/P1, complete S2PLT04, run final commands, enable Release, mutate schema/DB/queues, change sources or ranking, edit V7 baselines, or claim integrated production acceptance.
+- Risks: This receipt can be misread as P0 closure; S2PMT07 final acceptance still requires the full P0/P1 closure package, S2PLT04, final bundle, independent final signoff, and final command execution.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-B007-MULTIPROCESS-RACE-EVIDENCE-20260627.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_B007_MULTIPROCESS_RACE_EVIDENCE.md`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_INDEPENDENT_REVIEW_RECEIPT.md`; `arxiv-daily-push/tests/test_stage2_stress_e2e.py`; `arxiv-daily-push/用户中心/功能任务测试证据追踪链.md`.
 
 ### `ITER-20260627-ADP-S2PMT07-A003-INDEPENDENT-TECHNICAL-REVIEW`
 

@@ -214,6 +214,8 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertNotIn("ADP-S2PMT04-LIFECYCLE-CACHE-20260626.json", receipt_rows["B-001"])
         self.assertIn("PHASE_S2PMT05_DUPLICATE_TRIGGER_B007.md", receipt_rows["B-007"])
         self.assertIn("ADP-S2PMT05-DUPLICATE-TRIGGER-B007-20260627.json", receipt_rows["B-007"])
+        self.assertIn("PHASE_S2PMT07_B007_MULTIPROCESS_RACE_EVIDENCE.md", receipt_rows["B-007"])
+        self.assertIn("ADP-S2PMT07-B007-MULTIPROCESS-RACE-EVIDENCE-20260627.json", receipt_rows["B-007"])
         self.assertNotIn("ADP-S2PMT05-STRESS-E2E-20260626.json", receipt_rows["B-007"])
         self.assertIn("PHASE_S2PMT05_SMTP_CRASH_WINDOW_B008.md", receipt_rows["B-008"])
         self.assertIn("ADP-S2PMT05-SMTP-CRASH-WINDOW-B008-20260627.json", receipt_rows["B-008"])
@@ -226,13 +228,17 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertEqual(
             manifest["refresh_manifest"],
-            "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-ISOLATED-PROOF-20260627.json",
+            "governance/run_manifests/ADP-S2PMT07-B007-MULTIPROCESS-RACE-EVIDENCE-20260627.json",
         )
         self.assertEqual(
             manifest["previous_refresh_manifest"],
             "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-20260627.json",
         )
         self.assertIn(manifest["refresh_manifest"], manifest["refresh_manifests"])
+        self.assertIn(
+            "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-ISOLATED-PROOF-20260627.json",
+            manifest["refresh_manifest_history"],
+        )
         self.assertTrue(refresh_manifest_path.exists())
         self.assertTrue(isolated_proof_manifest_path.exists())
         self.assertTrue(independent_review_manifest_path.exists())

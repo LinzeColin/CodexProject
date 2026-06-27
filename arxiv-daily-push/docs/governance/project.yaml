@@ -468,6 +468,7 @@ features:
       - "EVID-ADP-S2PMT04-B001"
       - "EVID-ADP-S2PMT04-B005"
       - "EVID-ADP-S2PMT05-B007"
+      - "EVID-ADP-S2PMT07-B007-MULTIPROCESS"
       - "EVID-ADP-S2PMT05-B008"
       - "EVID-ADP-S2PMT05-B006"
       - "EVID-ADP-S2PMT05-B009"
@@ -10217,6 +10218,11 @@ evidence_refs:
     evidence_id: "EVID-ADP-S2PMT05-B007"
     kind: "manifest"
     ref: "governance/run_manifests/ADP-S2PMT05-DUPLICATE-TRIGGER-B007-20260627.json"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-ADP-S2PMT07-B007-MULTIPROCESS"
+    kind: "manifest"
+    ref: "governance/run_manifests/ADP-S2PMT07-B007-MULTIPROCESS-RACE-EVIDENCE-20260627.json"
     fact_level: "EXTRACTED"
   -
     evidence_id: "EVID-ADP-S2PMT05-B008"
