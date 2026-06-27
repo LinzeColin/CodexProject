@@ -479,6 +479,7 @@ features:
       - "EVID-ADP-S2PMT05-B014"
       - "EVID-ADP-S2PMT03-A003"
       - "EVID-ADP-S2PMT07-A003-REVIEW"
+      - "EVID-ADP-S2PMT07-A004-REVIEW"
       - "EVID-ADP-S2P1T01-PREPRINT"
       - "EVID-ADP-S2PBT01-REAL-REPLAY-SHADOW"
   -
@@ -10274,6 +10275,11 @@ evidence_refs:
     evidence_id: "EVID-ADP-S2PMT07-A003-REVIEW"
     kind: "manifest"
     ref: "governance/run_manifests/ADP-S2PMT07-A003-INDEPENDENT-TECHNICAL-REVIEW-20260627.json"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-ADP-S2PMT07-A004-REVIEW"
+    kind: "manifest"
+    ref: "governance/run_manifests/ADP-S2PMT07-A004-INDEPENDENT-TECHNICAL-REVIEW-20260627.json"
     fact_level: "EXTRACTED"
   -
     evidence_id: "EVID-REVIEW9-S5PBT05-MANIFEST"
