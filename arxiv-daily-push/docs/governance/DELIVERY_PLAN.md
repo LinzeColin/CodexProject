@@ -21,7 +21,7 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 205
+- task_count: 206
 - acceptance_count: 126
 
 ## Delivery Tasks
@@ -129,6 +129,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | ADP-PHASE11-PRODUCTION-TRIAL-START-022 | E | blocked | ADP-ACC-PHASE11-PRODUCTION-TRIAL-START | precheck recorded PR #32/main CI, default_branch_ref, and trial_start_workflow_ref; still missing launch confirmation, runner, SMTP, Release, and workflow-vars refs | `docs/phase_records/PHASE_11_PRODUCTION_TRIAL_START_PRECHECK.md` |
 
 | S2PLT04-FINAL-BUNDLE-READINESS-SYNC | S2PL | blocked | `ACC-S2PLT04-INTEGRATION-CANDIDATE` | focused final-gate tests 24 OK; final bundle readiness detail remains blocked/no-production | `docs/phase_records/PHASE_S2PLT04_FINAL_BUNDLE_READINESS_SYNC.md`; `governance/run_manifests/ADP-S2PLT04-FINAL-BUNDLE-READINESS-SYNC-20260628.json` |
+| S2PMT07-S2PLT04-COMPLETION-REPORT-VALIDATOR | S2PM | blocked | `ACC-S2PMT07-FINAL-REVIEW` | TDD red failed on missing API; focused final-gate tests 36 OK; completion report remains missing/no-production | `docs/phase_records/PHASE_S2PMT07_S2PLT04_COMPLETION_REPORT_VALIDATOR.md`; `governance/run_manifests/ADP-S2PMT07-S2PLT04-COMPLETION-REPORT-VALIDATOR-20260628.json` |
 
 ## Release Gates
 

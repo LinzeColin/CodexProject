@@ -14,10 +14,10 @@
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - Product version: `0.23.1`
-- Phase/Gate: `S2PM / S2PMT07_FINAL_BUNDLE_MANIFEST_VALIDATOR_BLOCKED_NO_PRODUCTION`
-- Models/Formulas/Parameters total: `117 / 119 / 1005`
-- Active formulas/parameters: `119 / 988`
-- Machine checked formulas/parameters: `119 / 973`
+- Phase/Gate: `S2PM / S2PMT07_S2PLT04_COMPLETION_REPORT_VALIDATOR_BLOCKED_NO_PRODUCTION`
+- Models/Formulas/Parameters total: `117 / 119 / 1010`
+- Active formulas/parameters: `119 / 993`
+- Machine checked formulas/parameters: `119 / 978`
 
 ## Assurance
 
@@ -35,7 +35,7 @@
 ## Delivery
 
 - Readiness: `VERIFIED`
-- Release gate: `S2PMT07_FINAL_BUNDLE_MANIFEST_VALIDATOR_BLOCKED_NO_PRODUCTION`
+- Release gate: `S2PMT07_S2PLT04_COMPLETION_REPORT_VALIDATOR_BLOCKED_NO_PRODUCTION`
 - V7 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - V7 contract hash: `a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d`
 - V7 roadmap hash: `7c5f2d842d4f6b909343c953fe39b4a4aa540d168199747a9f7decdb1aad9bd1`
@@ -48,7 +48,7 @@
 - Next governance task: `S2PMT07`
 - Parallel shadow source task: `NONE_WHILE_S2PMT07_BLOCKED`
 - Next executable task: `S2PMT07 final closure decision or S2PLT04 final-bundle prerequisite work`
-- Pending/stale events: `230`
+- Pending/stale events: `231`
 - Tree-bound events: `0`
 - Commit-bound events: `4`
 - Legacy unbound events: `188`

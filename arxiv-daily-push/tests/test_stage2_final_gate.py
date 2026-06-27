@@ -38,12 +38,18 @@ from arxiv_daily_push.stage2_final_gate import (
     S2PMT07_REQUIRED_DEPENDENCIES,
     S2PMT07_REQUIRED_EVIDENCE,
     S2PMT07_REQUIRED_TEST_COMMANDS,
+    S2PMT07_S2PLT04_COMPLETION_REPORT_DECISION,
+    S2PMT07_S2PLT04_COMPLETION_REPORT_NO_PRODUCTION_FLAGS,
+    S2PMT07_S2PLT04_COMPLETION_REPORT_REQUIRED_TERMINAL_DEPENDENCIES,
+    S2PMT07_S2PLT04_COMPLETION_REPORT_SCHEMA_VERSION,
     build_final_acceptance_bundle_readiness_state,
     build_final_acceptance_bundle_manifest_hash,
     build_final_acceptance_bundle_manifest_validation_state,
     build_p0_p1_zero_proof_artifact_validation_state,
     build_p0_p1_zero_proof_decision_hash,
     build_p0_p1_zero_proof_readiness_state,
+    build_s2plt04_completion_report_hash,
+    build_s2plt04_completion_report_validation_state,
     build_p0_p1_technical_closure_candidate_state,
     build_s2plt02_dependency_state,
     build_s2plt02_live_2d_precheck_report,
@@ -69,6 +75,7 @@ from arxiv_daily_push.stage2_final_gate import (
     validate_final_acceptance_bundle_manifest,
     validate_p0_p1_zero_proof_artifact,
     validate_p0_p1_zero_proof_readiness_state,
+    validate_s2plt04_completion_report,
     validate_p0_p1_technical_closure_candidate_state,
     validate_s2pmt07_precheck_report,
 )
@@ -2258,6 +2265,102 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(manifest_validation["manifest_present"])
         self.assertFalse(state["available_prebundle_evidence"]["FINAL_ACCEPTANCE_BUNDLE_MANIFEST_VALIDATION"])
         self.assertIn("final_acceptance_bundle_manifest_missing", manifest_validation["validation_errors"])
+        self.assertEqual(validate_final_acceptance_bundle_readiness_state(state), [])
+
+    def _valid_s2plt04_completion_report_payload(self) -> dict[str, object]:
+        payload: dict[str, object] = {
+            "schema_version": S2PMT07_S2PLT04_COMPLETION_REPORT_SCHEMA_VERSION,
+            "contract_id": "ADP-PRODUCT-CONTRACT-V7.2",
+            "generated_at": "2026-06-28T05:42:10+10:00",
+            "s2plt04_decision": S2PMT07_S2PLT04_COMPLETION_REPORT_DECISION,
+            "source_evidence_refs": {
+                "S2PLT01_REPLAY_REVIEW": {
+                    "status": "pass",
+                    "artifact_ref": "governance/run_manifests/ADP-S2PLT01-INDEPENDENT-REPLAY-REVIEW-20260626.json",
+                },
+                "S2PLT02_LIVE_2D_PROOF": {
+                    "status": "pass",
+                    "artifact_ref": "governance/run_manifests/ADP-S2PLT02-LIVE-2D-PROOF-20260628.json",
+                },
+                "S2PLT03_RESILIENCE_PROOF": {
+                    "status": "pass",
+                    "artifact_ref": "governance/run_manifests/ADP-S2PLT03-RESILIENCE-PROOF-20260628.json",
+                },
+                "P0_P1_ZERO_PROOF": {
+                    "status": "pass",
+                    "artifact_ref": "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
+                },
+                "FINAL_BUNDLE_MANIFEST": {
+                    "status": "pass",
+                    "artifact_ref": "FINAL_ACCEPTANCE_BUNDLE/manifest.json",
+                },
+            },
+            "terminal_dependency_state": {
+                dependency: True
+                for dependency in S2PMT07_S2PLT04_COMPLETION_REPORT_REQUIRED_TERMINAL_DEPENDENCIES
+            },
+            "final_bundle_refs": list(S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS),
+            "no_production_side_effects": {
+                flag: False for flag in S2PMT07_S2PLT04_COMPLETION_REPORT_NO_PRODUCTION_FLAGS
+            },
+        }
+        payload["report_hash"] = build_s2plt04_completion_report_hash(payload)
+        return payload
+
+    def test_s2plt04_completion_report_validator_accepts_only_exact_hash_bound_payload(self) -> None:
+        payload = self._valid_s2plt04_completion_report_payload()
+        state = build_s2plt04_completion_report_validation_state(payload)
+
+        self.assertEqual(validate_s2plt04_completion_report(payload), [])
+        self.assertEqual(state["status"], "pass")
+        self.assertTrue(state["report_present"])
+        self.assertTrue(state["s2plt04_completed_by_report"])
+        self.assertTrue(state["terminal_dependencies_passed"])
+        self.assertFalse(state["production_acceptance_claimed"])
+        self.assertFalse(state["integrated_production_accepted"])
+
+        tampered = json.loads(json.dumps(payload))
+        tampered["terminal_dependency_state"]["S2PLT02_ACCEPTED"] = False
+        self.assertIn(
+            "terminal_dependency_state.S2PLT02_ACCEPTED must be true",
+            validate_s2plt04_completion_report(tampered),
+        )
+
+        tampered_hash = json.loads(json.dumps(payload))
+        tampered_hash["report_hash"] = "sha256:not-the-report-hash"
+        self.assertIn("report_hash does not match payload content", validate_s2plt04_completion_report(tampered_hash))
+
+    def test_s2plt04_completion_report_validator_fails_closed_on_missing_or_production_flags(self) -> None:
+        missing_state = build_s2plt04_completion_report_validation_state(None)
+
+        self.assertEqual(missing_state["status"], "blocked")
+        self.assertFalse(missing_state["report_present"])
+        self.assertIn("s2plt04_completion_report_missing", missing_state["validation_errors"])
+        self.assertFalse(missing_state["s2plt04_completed_by_report"])
+        self.assertFalse(missing_state["terminal_dependencies_passed"])
+
+        payload = self._valid_s2plt04_completion_report_payload()
+        payload["no_production_side_effects"]["release_uploaded"] = True
+        self.assertIn(
+            "no_production_side_effects.release_uploaded must be false",
+            validate_s2plt04_completion_report(payload),
+        )
+
+        payload = self._valid_s2plt04_completion_report_payload()
+        del payload["source_evidence_refs"]["S2PLT03_RESILIENCE_PROOF"]
+        self.assertIn(
+            "source_evidence_refs must include S2PLT03_RESILIENCE_PROOF",
+            validate_s2plt04_completion_report(payload),
+        )
+
+    def test_final_acceptance_bundle_readiness_embeds_s2plt04_completion_report_validation_as_blocked(self) -> None:
+        state = build_final_acceptance_bundle_readiness_state()
+        completion_report = state["s2plt04_completion_report_validation"]
+
+        self.assertEqual(completion_report["status"], "blocked")
+        self.assertFalse(completion_report["report_present"])
+        self.assertFalse(state["available_prebundle_evidence"]["S2PLT04_COMPLETION_REPORT_VALIDATION"])
+        self.assertIn("s2plt04_completion_report_missing", completion_report["validation_errors"])
         self.assertEqual(validate_final_acceptance_bundle_readiness_state(state), [])
 
     def test_p0_p1_technical_candidate_builder_fails_closed_without_closure(self) -> None:
