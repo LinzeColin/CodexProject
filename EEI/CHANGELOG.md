@@ -68,6 +68,7 @@
 - `EVENT-20260626-002`: Synchronized A209 failed-evidence validation semantics so the current `7/288` failed chain validates as `FAILED_OPERATOR_EVIDENCE` / `BACKGROUND_SOAK_OPERATOR_INTERVENTION_REQUIRED` / `A209_FINALIZATION_OPERATOR_INTERVENTION_REQUIRED` while `--require-release-ready` remains blocked until a fresh `288/288` zero-failure 24h run exists.
 - `EVENT-20260626-003`: Started an isolated detached A209 24h rerun under `/private/tmp/eei-a209-rerun-20260626-0918/` without overwriting the failed canonical `7/288` evidence; first observed checkpoint is `1/288` PASS with `0` failed, operator PID `80478`, watchdog PID `80732`, and A209 remains open until `288/288` zero-failure release-ready validation passes.
 - `EVENT-20260627-001`: Added A210 signed brand-clearance bundle source-boundary validation and A209 Playwright browser runtime parameter evidence; local short browser/operator probes pass after the runtime repair, but the active 24h rerun evidence remains failed/stale and A209 stays open.
+- `EVENT-20260627-002`: Refreshed the A202/A210 release-decision bundle, A205 external release bundle, release-manager activation, MVP gate, clean-room package and release evidence after A210 preflight hash drift; local `make verify` passes with 133 unit tests while release readiness remains blocked.
 
 ## Legacy Task Pack v4.2.0 - 2026-06-19
 

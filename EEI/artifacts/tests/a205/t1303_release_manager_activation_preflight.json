@@ -71,7 +71,7 @@
       "signed_decision_complete": true
     }
   },
-  "generated_at": "2026-06-25T22:51:33Z",
+  "generated_at": "2026-06-27T02:52:53Z",
   "missing_gates": [
     {
       "gate_id": "A202_source_license_reviews",
@@ -129,7 +129,7 @@
   "schema_version": "eei-release-manager-activation-preflight-v1",
   "source_files": {
     "brand_preflight": "artifacts/tests/a210/t1309_brand_clearance_preflight_contract.json",
-    "brand_preflight_sha256": "f7a63f8d651a965c94c61a73b957b0df87fbdf5425efb735d55cf1f048c7aec4",
+    "brand_preflight_sha256": "e7de29ff58a187a45a768b76c17f3c318fe315f33b70c93c15498331cd8c70db",
     "entity_gold_evaluation": "artifacts/tests/a026/t904_entity_resolution_gold_evaluation_contract.json",
     "entity_gold_evaluation_sha256": "e34cf6e5b57500ce827a6db92a2bc533d66f4b64320021657c5e7fd6614d14d3",
     "operator_soak_evidence": "artifacts/tests/a209/t1307_operator_soak_evidence_validation.json",
@@ -139,7 +139,7 @@
     "relationship_gold_evaluation": "artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json",
     "relationship_gold_evaluation_sha256": "d695948385a5fba50ccbbf57c7adebe6a5f4bfffc1322e3ab57fb48a3fedcb64",
     "release_decision_contract": "artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json",
-    "release_decision_contract_sha256": "b9c8bbf84300ad15d69b9d6d4b1b089b8948a75f8f28dc970498b641424a7c53",
+    "release_decision_contract_sha256": "11cc15699d7636d99319cd2cf87c45084a36f41828a76458a348019c4f256706",
     "signed_decision_bundle": "tests/fixtures/release_decision_bundle/a202_a210_signed_decision_bundle_contract_test.json",
     "signed_decision_bundle_sha256": "20bece9164778e85dcc0ff155d30344d9d304586f647375891bcd7660ae023ad"
   },

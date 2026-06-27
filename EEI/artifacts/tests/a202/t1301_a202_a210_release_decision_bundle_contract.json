@@ -30,7 +30,7 @@
       "GV-SNAPSHOT-004"
     ]
   },
-  "generated_at": "2026-06-25T18:48:45Z",
+  "generated_at": "2026-06-27T02:50:41Z",
   "non_claims": [
     "This contract does not certify legal clearance.",
     "This contract does not certify trademark or market clearance.",
@@ -126,7 +126,7 @@
     "a202_release_decision_intake_template": "artifacts/tests/a202/t1301_a202_release_decision_intake_template.json",
     "a202_release_decision_intake_template_sha256": "6885e82f97cf59e3f0d99ec1dc64a7c1b248043002edc9d0ec14f8638fcdf138",
     "a210_brand_preflight": "artifacts/tests/a210/t1309_brand_clearance_preflight_contract.json",
-    "a210_brand_preflight_sha256": "f7a63f8d651a965c94c61a73b957b0df87fbdf5425efb735d55cf1f048c7aec4",
+    "a210_brand_preflight_sha256": "e7de29ff58a187a45a768b76c17f3c318fe315f33b70c93c15498331cd8c70db",
     "decision_bundle_template": "tests/fixtures/release_decision_bundle/a202_a210_release_decision_bundle_template.json",
     "decision_bundle_template_sha256": "72121e1349f136017a108d771b808ede120b3d2ec6331e688bf686c0921b69d6",
     "golden_vertical_fact_candidates": "data/golden_vertical_fact_candidates.json",

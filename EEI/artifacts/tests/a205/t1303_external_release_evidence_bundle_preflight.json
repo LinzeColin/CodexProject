@@ -80,7 +80,7 @@
       "status": "PENDING_SIGNED_DECISIONS"
     }
   },
-  "generated_at": "2026-06-25T22:51:35Z",
+  "generated_at": "2026-06-27T02:51:52Z",
   "missing_external_inputs": [
     {
       "acceptance_id": "A202",
@@ -140,7 +140,7 @@
     "a202_operator_review_packet": "artifacts/tests/a202/t1301_operator_review_packet_contract.json",
     "a202_operator_review_packet_sha256": "cedc5ae7056c85acf249f5b1ef50da4067223d8170608fa5913efc7631d4ca7b",
     "brand_preflight": "artifacts/tests/a210/t1309_brand_clearance_preflight_contract.json",
-    "brand_preflight_sha256": "f7a63f8d651a965c94c61a73b957b0df87fbdf5425efb735d55cf1f048c7aec4",
+    "brand_preflight_sha256": "e7de29ff58a187a45a768b76c17f3c318fe315f33b70c93c15498331cd8c70db",
     "entity_gold_evaluation": "artifacts/tests/a026/t904_entity_resolution_gold_evaluation_contract.json",
     "entity_gold_evaluation_sha256": "e34cf6e5b57500ce827a6db92a2bc533d66f4b64320021657c5e7fd6614d14d3",
     "operator_soak_finalization": "artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json",
@@ -148,7 +148,7 @@
     "relationship_gold_evaluation": "artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json",
     "relationship_gold_evaluation_sha256": "d695948385a5fba50ccbbf57c7adebe6a5f4bfffc1322e3ab57fb48a3fedcb64",
     "release_decision_contract": "artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json",
-    "release_decision_contract_sha256": "b9c8bbf84300ad15d69b9d6d4b1b089b8948a75f8f28dc970498b641424a7c53"
+    "release_decision_contract_sha256": "11cc15699d7636d99319cd2cf87c45084a36f41828a76458a348019c4f256706"
   },
   "status": "EXTERNAL_RELEASE_EVIDENCE_BUNDLE_BLOCKED",
   "system_en_name": "Enterprise Ecosystem Intelligence",
