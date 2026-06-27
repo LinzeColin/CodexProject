@@ -33,7 +33,8 @@
     "governance/run_manifests/ADP-S2PMT07-B008-FAKE-SMTP-CRASH-WINDOW-EVIDENCE-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-A004-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-A005-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
-    "governance/run_manifests/ADP-S2PMT07-B007-INDEPENDENT-TECHNICAL-REVIEW-20260627.json"
+    "governance/run_manifests/ADP-S2PMT07-B007-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-B008-INDEPENDENT-TECHNICAL-REVIEW-20260627.json"
   ],
   "final_acceptance_bundle_present": false,
   "forbidden_side_effects": {
@@ -189,13 +190,20 @@
         "governance/run_manifests/ADP-S2PMT05-SMTP-CRASH-WINDOW-B008-20260627.json",
         "arxiv-daily-push/tests/test_stage2_stress_e2e.py",
         "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_B008_FAKE_SMTP_CRASH_WINDOW_EVIDENCE.md",
-        "governance/run_manifests/ADP-S2PMT07-B008-FAKE-SMTP-CRASH-WINDOW-EVIDENCE-20260627.json"
+        "governance/run_manifests/ADP-S2PMT07-B008-FAKE-SMTP-CRASH-WINDOW-EVIDENCE-20260627.json",
+        "governance/run_manifests/ADP-S2PMT07-B008-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+        "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py",
+        "arxiv-daily-push/tests/test_stage2_lease_fencing.py",
+        "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py",
+        "arxiv-daily-push/tests/test_smtp_delivery.py"
       ],
       "finding_id": "B-008",
       "fix_task": "S2PMT05-SMTP-CRASH-WINDOW-B008",
-      "preliminary_review_state": "refreshed_current_local_and_fake_smtp_runner_boundary_evidence_located_independent_review_required",
-      "reviewer_decision_required": "Verify outbox claim before SMTP acceptance, ACCEPTED_PENDING_COMMIT, stable idempotent message_id, fake SMTP accept-after-kill restart reconciliation, blocked duplicate resend without provider_accept_ref, finalization with durable fake provider ref, and no real SMTP side effects; decide whether this local runner-boundary proof is sufficient for B-008 closure.",
-      "severity": "P0"
+      "preliminary_review_state": "finding_level_independent_review_passed_technical_closure_candidate_no_p0_closure",
+      "reviewer_decision_required": "Carry B-008 into the later P0 closure package as a technical closure candidate; do not lower P0/P1 counters or claim S2PMT07 final pass until the full independent final gate signs off.",
+      "severity": "P0",
+      "finding_level_independent_review_receipt": "governance/run_manifests/ADP-S2PMT07-B008-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+      "reviewer_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE"
     }
   ],
   "p1_closure_claimed": false,
@@ -208,9 +216,9 @@
     "independent_final_signoff_missing",
     "independent_final_command_execution_missing"
   ],
-  "previous_refresh_manifest": "governance/run_manifests/ADP-S2PMT07-A005-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+  "previous_refresh_manifest": "governance/run_manifests/ADP-S2PMT07-B007-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
   "project_id": "arxiv-daily-push",
-  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-B007-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-B008-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
   "refresh_manifest_history": [
     "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A005-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-20260627.json",
@@ -219,7 +227,8 @@
     "governance/run_manifests/ADP-S2PMT07-B008-FAKE-SMTP-CRASH-WINDOW-EVIDENCE-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-A004-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-A005-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
-    "governance/run_manifests/ADP-S2PMT07-B007-INDEPENDENT-TECHNICAL-REVIEW-20260627.json"
+    "governance/run_manifests/ADP-S2PMT07-B007-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-B008-INDEPENDENT-TECHNICAL-REVIEW-20260627.json"
   ],
   "refresh_manifests": [
     "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B007-B008-20260627.json",
@@ -234,9 +243,10 @@
     "governance/run_manifests/ADP-S2PMT07-B008-FAKE-SMTP-CRASH-WINDOW-EVIDENCE-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-A004-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-A005-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
-    "governance/run_manifests/ADP-S2PMT07-B007-INDEPENDENT-TECHNICAL-REVIEW-20260627.json"
+    "governance/run_manifests/ADP-S2PMT07-B007-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-B008-INDEPENDENT-TECHNICAL-REVIEW-20260627.json"
   ],
-  "refreshed_at": "2026-06-27T18:37:56+10:00",
+  "refreshed_at": "2026-06-27T18:44:28+10:00",
   "refreshed_findings": [
     "A-001",
     "A-002",
