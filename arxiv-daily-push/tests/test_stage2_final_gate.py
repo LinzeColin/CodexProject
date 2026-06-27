@@ -39,6 +39,12 @@ from arxiv_daily_push.stage2_final_gate import (
     S2PMT07_NO_PRODUCTION_SIDE_EFFECT_ATTESTATION_REQUIRED_EVIDENCE_REFS,
     S2PMT07_NO_PRODUCTION_SIDE_EFFECT_ATTESTATION_REQUIRED_FIELDS,
     S2PMT07_NO_PRODUCTION_SIDE_EFFECT_ATTESTATION_SCHEMA_VERSION,
+    S2PMT07_NEXT_AGENT_HANDOFF_DECISION,
+    S2PMT07_NEXT_AGENT_HANDOFF_NO_PRODUCTION_FLAGS,
+    S2PMT07_NEXT_AGENT_HANDOFF_REQUIRED_ARTIFACT_VALIDATIONS,
+    S2PMT07_NEXT_AGENT_HANDOFF_REQUIRED_FIELDS,
+    S2PMT07_NEXT_AGENT_HANDOFF_REQUIRED_READER_FILES,
+    S2PMT07_NEXT_AGENT_HANDOFF_SCHEMA_VERSION,
     S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_DECISION,
     S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_NO_PRODUCTION_FLAGS,
     S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_REQUIRED_ARTIFACT_VALIDATIONS,
@@ -61,6 +67,8 @@ from arxiv_daily_push.stage2_final_gate import (
     build_final_command_execution_validation_state,
     build_no_production_side_effect_attestation_hash,
     build_no_production_side_effect_attestation_validation_state,
+    build_next_agent_handoff_hash,
+    build_next_agent_handoff_validation_state,
     build_independent_review_signoff_hash,
     build_independent_review_signoff_validation_state,
     build_final_acceptance_bundle_manifest_hash,
@@ -94,6 +102,7 @@ from arxiv_daily_push.stage2_final_gate import (
     validate_final_acceptance_bundle_readiness_state,
     validate_final_command_execution_artifact,
     validate_no_production_side_effect_attestation,
+    validate_next_agent_handoff,
     validate_independent_review_signoff_artifact,
     validate_final_acceptance_bundle_manifest,
     validate_p0_p1_zero_proof_artifact,
@@ -2567,6 +2576,101 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(attestation["attestation_present"])
         self.assertFalse(state["available_prebundle_evidence"]["NO_PRODUCTION_SIDE_EFFECT_ATTESTATION_VALIDATION"])
         self.assertIn("no_production_side_effect_attestation_missing", attestation["validation_errors"])
+        self.assertEqual(validate_final_acceptance_bundle_readiness_state(state), [])
+
+    def _valid_next_agent_handoff_payload(self) -> dict[str, object]:
+        payload: dict[str, object] = {
+            "schema_version": S2PMT07_NEXT_AGENT_HANDOFF_SCHEMA_VERSION,
+            "contract_id": "ADP-PRODUCT-CONTRACT-V7.2",
+            "generated_at": "2026-06-28T09:16:00+10:00",
+            "handoff_decision": S2PMT07_NEXT_AGENT_HANDOFF_DECISION,
+            "handoff_scope": {
+                "task_id": "S2PMT07",
+                "scope": "next_agent_handoff_validation_only_no_production_acceptance",
+                "required_reader_files": list(S2PMT07_NEXT_AGENT_HANDOFF_REQUIRED_READER_FILES),
+            },
+            "required_reader_files": list(S2PMT07_NEXT_AGENT_HANDOFF_REQUIRED_READER_FILES),
+            "required_artifact_validations": {
+                validation: {
+                    "status": "pass",
+                    "evidence_ref": f"governance/final_review/{validation.lower()}.json",
+                }
+                for validation in S2PMT07_NEXT_AGENT_HANDOFF_REQUIRED_ARTIFACT_VALIDATIONS
+            },
+            "required_bundle_refs": list(S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS),
+            "blocking_state": {
+                "p0_zero_proven": True,
+                "p1_zero_proven": True,
+                "s2plt04_completed": True,
+                "final_commands_executed": True,
+                "no_production_side_effects_proven": True,
+                "production_acceptance_claimed": False,
+                "integrated_production_accepted": False,
+                "daily_operation_enabled": False,
+            },
+            "no_production_side_effects": {
+                flag: False for flag in S2PMT07_NEXT_AGENT_HANDOFF_NO_PRODUCTION_FLAGS
+            },
+        }
+        payload["handoff_hash"] = build_next_agent_handoff_hash(payload)
+        return payload
+
+    def test_next_agent_handoff_validator_accepts_only_exact_hash_bound_payload(self) -> None:
+        payload = self._valid_next_agent_handoff_payload()
+        state = build_next_agent_handoff_validation_state(payload)
+
+        self.assertEqual(validate_next_agent_handoff(payload), [])
+        self.assertEqual(tuple(payload), S2PMT07_NEXT_AGENT_HANDOFF_REQUIRED_FIELDS)
+        self.assertEqual(state["status"], "pass")
+        self.assertTrue(state["handoff_present"])
+        self.assertTrue(state["all_required_artifact_validations_passed"])
+        self.assertTrue(state["all_required_reader_files_declared"])
+        self.assertTrue(state["next_agent_handoff_ready_by_payload"])
+        self.assertFalse(state["production_acceptance_claimed"])
+        self.assertFalse(state["integrated_production_accepted"])
+
+        tampered = json.loads(json.dumps(payload))
+        tampered["required_reader_files"] = []
+        self.assertIn(
+            "required_reader_files must exactly match next-agent handoff required reader files",
+            validate_next_agent_handoff(tampered),
+        )
+
+        tampered_hash = json.loads(json.dumps(payload))
+        tampered_hash["handoff_hash"] = "sha256:not-the-handoff-hash"
+        self.assertIn("handoff_hash does not match payload content", validate_next_agent_handoff(tampered_hash))
+
+    def test_next_agent_handoff_validator_fails_closed_on_missing_or_production_flags(self) -> None:
+        missing_state = build_next_agent_handoff_validation_state(None)
+
+        self.assertEqual(missing_state["status"], "blocked")
+        self.assertFalse(missing_state["handoff_present"])
+        self.assertIn("next_agent_handoff_missing", missing_state["validation_errors"])
+        self.assertFalse(missing_state["all_required_artifact_validations_passed"])
+        self.assertFalse(missing_state["next_agent_handoff_ready_by_payload"])
+
+        payload = self._valid_next_agent_handoff_payload()
+        payload["no_production_side_effects"]["daily_operation_enabled"] = True
+        self.assertIn(
+            "no_production_side_effects.daily_operation_enabled must be false",
+            validate_next_agent_handoff(payload),
+        )
+
+        payload = self._valid_next_agent_handoff_payload()
+        del payload["required_artifact_validations"]["NO_PRODUCTION_SIDE_EFFECT_ATTESTATION"]
+        self.assertIn(
+            "required_artifact_validations must include NO_PRODUCTION_SIDE_EFFECT_ATTESTATION",
+            validate_next_agent_handoff(payload),
+        )
+
+    def test_final_acceptance_bundle_readiness_embeds_next_agent_handoff_validation_as_blocked(self) -> None:
+        state = build_final_acceptance_bundle_readiness_state()
+        handoff = state["next_agent_handoff_validation"]
+
+        self.assertEqual(handoff["status"], "blocked")
+        self.assertFalse(handoff["handoff_present"])
+        self.assertFalse(state["available_prebundle_evidence"]["NEXT_AGENT_HANDOFF_VALIDATION"])
+        self.assertIn("next_agent_handoff_missing", handoff["validation_errors"])
         self.assertEqual(validate_final_acceptance_bundle_readiness_state(state), [])
 
     def _valid_independent_review_signoff_payload(self) -> dict[str, object]:

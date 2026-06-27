@@ -1,4 +1,5 @@
 # Changelog
+- 2026-06-28 07:13:17 Australia/Sydney: Added S2PMT07 next-agent handoff artifact validator; current handoff remains missing and no production gates changed.
 - 2026-06-28 06:48:44 Australia/Sydney: Added S2PMT07 no-production side-effect attestation artifact validator; current attestation remains missing and no production gates changed.
 - 2026-06-28 06:18:50 Australia/Sydney: Added S2PMT07 independent review signoff artifact validator; current signoff remains missing and no production gates changed.
 - 2026-06-28 05:57:25 Australia/Sydney: Added S2PMT07 final command execution artifact validator; current artifact remains missing and no production gates changed.

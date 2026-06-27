@@ -7,12 +7,25 @@ machine_summary:
 
 - model_count: 117
 - formula_count: 119
-- parameter_count: 1024
+- parameter_count: 1030
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
 ## Governance Notes
 
+- `S2PMT07-NEXT-AGENT-HANDOFF-VALIDATOR` adds `PARAM-ADP-1025`
+  through `PARAM-ADP-1030` under `MOD-ADP-100` / `FORM-ADP-102`.
+  It validates a future `HANDOFF/00_下一Agent先读.md` payload for schema
+  version, exact handoff decision, required V7.2 reader files, prerequisite
+  artifact validations, final bundle refs, blocking-state proof,
+  no-production flags, and handoff hash binding while keeping the current
+  handoff missing, inherited P0=8/P1=37 open, closure flags false, and every
+  production side-effect flag false. It does not create next-agent handoff,
+  create no-production attestation, create independent final signoff, execute
+  final commands, create the final bundle, create P0/P1 zero proof, close
+  P0/P1, complete S2PLT04, enable SMTP/scheduler/Release/restore, mutate
+  production state, change sources/ranking/CURRENT/V7, or claim integrated
+  production acceptance.
 - `S2PMT07-NO-PRODUCTION-SIDE-EFFECT-ATTESTATION-VALIDATOR` adds
   `PARAM-ADP-1020` through `PARAM-ADP-1024` under `MOD-ADP-100` /
   `FORM-ADP-102`. It validates a future
