@@ -403,3 +403,49 @@ git diff --check -- PFI
 ## Stage 6 后续顺序
 
 下一轮 pursuing goal 应从 `P7 / S7 流畅度` 开始，优先完成所有入口和按钮自动遍历、成功/失败/进行中反馈统一。不得跳到 Stage 8 最终验收，除非用户明确改变阶段顺序。
+
+## Stage 7 完成记录
+
+本轮完成 `P7 / S7 流畅度`，覆盖任务：
+
+- `V021-P7-S7-T01`：所有入口和按钮可点击，建立点击安全清单和自动遍历合同。
+- `V021-P7-S7-T02`：成功、失败、进行中反馈统一，按钮不再静默无响应。
+
+当前交付：
+
+- 新增 `build_v021_stage7_contract()` 和 `tests/test_v021_stage7_clicksafe_feedback.py`。
+- `PFI/web/app/shell.js` 新增 `buildClickSafeInventory()`、`bindClickSafeFeedback()`、`setActionFeedback()`、`applyRouteFromLocation()`。
+- 所有可见按钮进入 `data-click-safe` 清单；点击后统一显示 `进行中/成功/失败` 中文状态。
+- `hashchange` 路由变化会同步工作区和左侧导航高亮，直接打开或浏览器前进后退不会残留旧入口状态。
+- 移动端一级入口改为横向滚动、不可竖排，避免中文入口被压缩成单字排列。
+- 本轮不新增交易、支付、券商提交、实盘自动下单或外部上传执行能力。
+
+Stage 7 已通过的目标验收命令：
+
+```bash
+node --check PFI/web/app/shell.js
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m unittest PFI.tests.test_v021_stage7_clicksafe_feedback -q
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m unittest PFI.tests.test_v021_stage0_frontend_contract PFI.tests.test_v021_stage1_navigation_contract PFI.tests.test_v021_stage2_copy_cleanup_contract PFI.tests.test_v021_stage3_settings_search_contract PFI.tests.test_v021_stage4_trend_contract PFI.tests.test_v021_stage5_upload_import_contract PFI.tests.test_v021_stage6_holdings_persistence PFI.tests.test_v021_stage7_clicksafe_feedback -q
+```
+
+当前结果：Web Shell 语法检查通过；Stage 7 目标合同 `Ran 5 tests / OK`；Stage 0/1/2/3/4/5/6/7 前端合同 `Ran 42 tests / OK`。
+
+Stage 7 closeout 验收命令：
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -B -m unittest discover -s tests -q
+python3 scripts/validate_project_governance.py --project PFI
+git diff --check -- PFI
+```
+
+当前结果：完整 PFI 单测 `Ran 142 tests / OK`；治理 `errors 0 / warnings 0`；`git diff --check -- PFI` 通过。
+
+浏览器验收：
+
+- Chrome headless desktop 1440x1100 + mobile 390x920：15 个一级入口、14 个唯一路由、40 个代表按钮、15 个命令入口、`progress/success/failure` 三态反馈全部通过；console errors `0`。
+- 移动端额外检查一级入口按钮比例，未发现中文竖排入口。
+- 截图：`/tmp/pfi-v021-stage7-clicksafe-desktop-verified.png`、`/tmp/pfi-v021-stage7-clicksafe-mobile-verified.png`。
+
+## Stage 7 后续顺序
+
+下一轮 pursuing goal 应从 `P8 / S8 最终验收` 开始，做最终回归、交付包、入口刷新和验收审计。Stage 7 不提前声明 P8 完成。
