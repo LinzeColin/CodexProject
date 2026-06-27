@@ -58,6 +58,10 @@ def test_dashboard_state_exposes_agent_portfolio_strategy_and_queue(tmp_path, mo
     assert state["strategy_tournament"]["validation_summary"]["validated_count"] > 0
     assert "hit_rate" in state["strategy_tournament"]["winner"]
     assert state["approval_queue"]["count"] == 1
+    assert state["owner_base_files_readability"]["status"] == "pass"
+    assert state["owner_base_files_readability"]["score_text"] == "100/100"
+    assert {item["filename"] for item in state["owner_base_files_readability"]["files"]} == {"功能清单", "开发记录", "模型参数文件"}
+    assert all(item["score_text"] == "100/100" for item in state["owner_base_files_readability"]["files"])
     assert state["phase6_owner_gate"]["status"] == "blocked_not_ready_for_owner_gate"
     assert state["phase6_owner_gate"]["paper_shadow_status"] == "pass"
     assert state["phase6_owner_gate"]["sampler_freshness_status"] == "pass"
@@ -82,6 +86,8 @@ def test_dashboard_html_contains_phase6_owner_gate_panel():
     html = routes.dashboard()
 
     assert "Phase 6 OWNER-GATE" in html
+    assert "三基文件中文可读性" in html
+    assert "renderOwnerBaseFiles" in html
     assert "renderPhase6" in html
     assert "连续观察" in html
     assert "剩余观察" in html

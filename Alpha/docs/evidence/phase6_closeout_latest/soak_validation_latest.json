@@ -36,13 +36,13 @@
       "status": "pass"
     }
   ],
-  "continuous_sample_count": 38,
+  "continuous_sample_count": 40,
   "duration_hours_required": 48,
   "estimated_ready_at": "2026-06-29T06:14:28+00:00",
   "fail_count": 1,
   "failed_sample_count": 27,
   "gap_violation_count": 1,
-  "generated_at": "2026-06-27T09:25:42+00:00",
+  "generated_at": "2026-06-27T09:39:35+00:00",
   "invalid_sample_count": 0,
   "last_failed_sample_at": "2026-06-27T06:09:49+00:00",
   "last_gap_violation": {
@@ -52,19 +52,19 @@
   },
   "max_observed_gap_seconds": 3100,
   "max_sample_gap_seconds": 900,
-  "observed_hours": 3.1603,
-  "observed_seconds": 11377,
-  "remaining_hours": 44.8397,
-  "remaining_seconds": 161423,
+  "observed_hours": 3.3347,
+  "observed_seconds": 12005,
+  "remaining_hours": 44.6653,
+  "remaining_seconds": 160795,
   "safety_boundary": {
     "broker_mutation_allowed": false,
     "live_authorization_file_must_be_absent": true,
     "live_trading_enabled": false,
     "mode": "research_paper_order_intent_review"
   },
-  "sample_count": 114,
+  "sample_count": 116,
   "schema_version": "2026-06-27.alpha.phase6.soak_validation",
   "status": "observing",
-  "window_end": "2026-06-27T09:24:05+00:00",
+  "window_end": "2026-06-27T09:34:33+00:00",
   "window_start": "2026-06-27T06:14:28+00:00"
 }

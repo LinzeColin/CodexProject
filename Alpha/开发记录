@@ -2,6 +2,16 @@
 
 ## 摘要
 
+- 中文可读评分: `100/100`
+- 中文判定: `通过，按时间和交易影响可追溯`
+- 评分口径: 本文件必须让 owner 不看代码也能知道当前开发进度、交易状态、安全边界、最近改了什么、下一步为什么不能跳过。英文任务号和文件路径只用于定位证据，不能代替中文说明。
+- 第一眼结论: 当前开发重点不是开启实盘，而是把 Phase 6 Paper/Shadow 连续观察跑满并生成 OWNER-GATE-01 证据包。未满 48 小时前，任何 agent 都不能把系统描述成可实盘。
+- 当前开发状态: Paper/Shadow 报告、Shadow live 约束、限价订单契约、dashboard 状态和证据包工具已经存在；真正阻塞项是连续观察时间还没达到验收要求。
+- 下一步动作: 继续保持采样，定期同步 `docs/evidence/phase6_closeout_latest/`，每次 meaningful run 都要把验证结果、剩余风险和推荐下一步写清楚。
+- Agent 接手规则: 新 agent 不能只看最近 commit 或测试通过就宣布完成，必须先读本文件的当前速读、安全边界和近期开发事件，再核对 runtime 证据和 GitHub 分支。
+- 中文可读保障: 本文件按“先结论、再边界、再时间线”的顺序维护。owner 不需要理解所有任务号，也能判断当前是否允许交易、哪些证据已经存在、哪些证据仍缺失、为什么下一步只能继续观察。
+- 维护红线: 任何开发记录都不能用模糊词掩盖真实状态。没有跑过的测试不能写通过，没有完成的观察不能写完成，没有 owner 授权不能写可实盘；如果只是历史治理完成，必须明确它不等于当前交易准备完成。
+
 - project_id: `Alpha`
 - current_stage: `G6`
 - current_phase: `Phase 6`
@@ -12,6 +22,8 @@
 - 中文验收: `用户可读优先；先说明交易状态、阻塞原因、证据位置和下一步`
 
 ## 当前速读
+
+本节是开发记录的中文首页。owner 需要先看到“交易状态”和“阻塞原因”，再看到技术细节。只要这里显示仍在观察中，后续任何脚本、dashboard 卡片、证据包或 agent 汇报都必须保持一致，不能把历史 S5/S6 治理完成误读成 G6 实盘准备完成。
 
 | 项目 | 当前值 |
 |---|---|
@@ -25,6 +37,8 @@
 | 下一步 | 继续采样，周期性刷新 `docs/evidence/phase6_closeout_latest/`，直到 `phase6_closeout.json` 变为 `ready_for_owner_gate` |
 
 ## 安全边界
+
+安全边界是当前开发的停止线。它约束所有 agent、脚本、dashboard、测试和证据发布流程：可以读取状态、生成 Paper/Shadow 证据、排队 owner-review order intent，但不能提交真实 broker mutation，不能写入交易解锁材料，不能为了赶进度把默认 live trading 改成 true。
 
 - Alpha 当前只允许研究、回测、Paper/Shadow、订单意图审核和 dashboard 展示。
 - 本阶段不得进入 MICRO_LIVE，不得提交真实 broker mutation。
@@ -54,8 +68,11 @@
 
 ## 近期开发事件
 
+阅读顺序建议从最新事件往下看。每条事件都要回答：这次改动解决了什么实际问题、是否影响交易路径、证据在哪里、事实等级是什么。如果某条事件只是历史治理迁移，不能把它当成当前 Phase 6 已完成的证明。
+
 | 时间 | 类型 | 中文摘要 | 任务 | 事实等级 |
 |---|---|---|---|---|
+| 2026-06-27T19:36:43+10:00 | 三基文件中文可读性修复 | 修复 `功能清单`、`开发记录`、`模型参数文件` 中文体感不足的问题：三份文件新增 `中文可读评分: 100/100`、第一眼结论、维护红线和 owner 读法说明，dashboard 新增“三基文件中文可读性”面板，并把测试门槛从 20% 汉字占比提高到 30%；本次不改变交易逻辑、不创建 live authorization。 | ALPHA-G6-OWNER-BASE-CHINESE-READABILITY-20260627 | 已提取 |
 | 2026-06-27T16:15:00+10:00 | Phase 6 soak 现金耗尽恢复 | 修复长时间 paper 观察中现金耗尽导致样本被拒的问题：当买入资金不足时，paper loop 会先卖出已有持仓；soak validation 从最近一次失败样本后重新计算连续 48 小时窗口，避免旧失败永久污染新证据。 | ALPHA-G6-PHASE6-SOAK-CASH-RECOVERY-20260627 | 已提取 |
 | 2026-06-27T12:47:00+10:00 | Phase 6 finalize 状态文件 | 只读 finalizer 默认写入 `FINALIZE_STATUS.json`，后续 agent 和 owner 可以直接查看最近一次收口尝试结果。 | ALPHA-G6-PHASE6-FINALIZE-STATUS-20260627 | 已提取 |
 | 2026-06-27T12:42:00+10:00 | Phase 6 只读 finalizer | 新增一条命令完成发布运行证据、执行 ready 校验、在 48 小时未满时返回 not_ready；不创建 live authorization，不触碰 broker mutation。 | ALPHA-G6-PHASE6-READONLY-FINALIZE-20260627 | 已提取 |

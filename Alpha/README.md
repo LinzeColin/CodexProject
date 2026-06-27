@@ -1,7 +1,7 @@
 # Alpha 中文 Owner 快速入口
 
-- 产品 canonical 当前状态：`S5` / `S5PA` / `S5PAT01`，下一 Gate 为 `S5PA-GATE-IN-PROGRESS`；事实源以 `docs/governance/roadmap.yaml`、`功能清单`、`开发记录` 为准。
-- 本轮 Owner-flow 治理任务：`S6PAT02` / `ACC-S6PAT02`，只补 Owner 路径，不改产品 canonical current_task。
+- 产品当前状态：`G6` / `Phase 6` / `OWNER-GATE-01 前 48 小时 Paper/Shadow 观察`；事实源以 `功能清单`、`开发记录`、`模型参数文件` 和 `docs/evidence/phase6_closeout_latest/` 为准。
+- 当前 Owner-flow 任务：继续累计 Phase 6 证据，尚未 ready_for_owner_gate；不创建 `runtime/LIVE_AUTHORIZATION.json`，不进入 MICRO_LIVE。
 - 验收口径：用户可读优先；中文优先，默认全局中文。
 - 当前状态：主动源码仍在 `Alpha/backend/`，测试在 `Alpha/tests/`，配置在 `Alpha/configs/`。
 - 历史输出边界：旧 `Alpha/outputs/**` 和旧 `Alpha/HANDOFF.md` 已归档到 `governance/archive/other8_wave1_pending/Alpha/`，不要把它们重新当作主动源码。

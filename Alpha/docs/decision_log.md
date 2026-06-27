@@ -1,5 +1,13 @@
 # Alpha Decision Log
 
+## 2026-06-27: Owner Base Files Must Be Chinese-Readable, Not Merely Present
+
+Decision: `功能清单`, `开发记录`, and `模型参数文件` must include explicit Chinese readability scoring, first-screen conclusions, safety limits, owner next-step guidance, and at least 30% Chinese character density.
+
+Reason: The previous 20% threshold allowed files with heavy English IDs, paths, and technical tokens to pass while still feeling like "Chinese score 0" to the owner.
+
+Consequence: `tests/test_owner_base_files.py` now enforces the stronger threshold and required Chinese-readable sections. Future updates to the three base files must preserve owner-first Chinese explanations while keeping technical identifiers only as evidence anchors.
+
 ## 2026-06-13: GitHub Is Authoritative
 
 Decision: Superseded on 2026-06-27. Use `https://github.com/LinzeColin/CodexProject`, project path `Alpha/`, as the authoritative project backup and continuity surface.

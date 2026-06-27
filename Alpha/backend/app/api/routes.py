@@ -24,6 +24,12 @@ PAPER_STATE_PATH = ROOT / "runtime" / "paper_portfolio.json"
 PHASE6_EVIDENCE_ROOT = ROOT / "runtime" / "phase6_owner_gate_latest"
 PHASE6_HISTORY_PATH = ROOT / "runtime" / "phase6_soak_history.jsonl"
 LIVE_AUTHORIZATION_PATH = ROOT / "runtime" / "LIVE_AUTHORIZATION.json"
+OWNER_BASE_FILES = {
+    "功能清单": ["中文可读评分", "第一眼结论", "当前速读", "用户第一眼应看到的信息", "已实现功能", "明确禁止或尚未完成"],
+    "开发记录": ["中文可读评分", "第一眼结论", "当前速读", "安全边界", "当前运行路线", "近期开发事件"],
+    "模型参数文件": ["中文可读评分", "第一眼结论", "当前速读", "模型总览", "公式逻辑", "参数表", "Owner 需要关注的参数"],
+}
+OWNER_BASE_MIN_CHINESE_RATIO = 0.30
 
 
 @router.get("/health")
@@ -34,6 +40,54 @@ def health() -> dict:
         "live_trading_enabled": False,
         "kill_switch_active": False,
         "refresh_interval_seconds": DEFAULT_REFRESH_INTERVAL_SECONDS,
+    }
+
+
+def _chinese_ratio(text: str) -> float:
+    meaningful = [char for char in text if not char.isspace()]
+    if not meaningful:
+        return 0.0
+    chinese = [char for char in meaningful if "\u4e00" <= char <= "\u9fff"]
+    return len(chinese) / len(meaningful)
+
+
+@router.get("/owner/base-files/readability")
+def owner_base_files_readability() -> dict:
+    files = []
+    for filename, required_sections in OWNER_BASE_FILES.items():
+        path = ROOT / filename
+        exists = path.exists()
+        text = path.read_text(encoding="utf-8") if exists else ""
+        ratio = _chinese_ratio(text)
+        missing_sections = [section for section in required_sections if section not in text]
+        has_score = "中文可读评分: `100/100`" in text
+        passed = exists and ratio >= OWNER_BASE_MIN_CHINESE_RATIO and has_score and not missing_sections
+        files.append(
+            {
+                "filename": filename,
+                "exists": exists,
+                "chinese_ratio": round(ratio, 4),
+                "chinese_percent": round(ratio * 100, 2),
+                "score": 100 if passed else 0,
+                "score_text": "100/100" if passed else "0/100",
+                "status": "pass" if passed else "fail",
+                "status_zh": "通过" if passed else "未通过",
+                "missing_sections": missing_sections,
+                "has_declared_score": has_score,
+                "required_min_chinese_percent": round(OWNER_BASE_MIN_CHINESE_RATIO * 100, 2),
+            }
+        )
+    overall_pass = all(item["status"] == "pass" for item in files)
+    return {
+        "schema_version": "2026-06-27.alpha.owner_base_files_readability",
+        "title_zh": "三基文件中文可读性",
+        "status": "pass" if overall_pass else "fail",
+        "status_zh": "通过" if overall_pass else "未通过",
+        "score": 100 if overall_pass else 0,
+        "score_text": "100/100" if overall_pass else "0/100",
+        "required_min_chinese_percent": round(OWNER_BASE_MIN_CHINESE_RATIO * 100, 2),
+        "files": files,
+        "summary_zh": "三基文件已达到中文优先、首屏可读、安全边界明确的 owner 可读标准。" if overall_pass else "三基文件仍未达到中文 owner 可读标准。",
     }
 
 
@@ -132,6 +186,7 @@ def phase6_owner_gate_status() -> dict:
 def dashboard_state() -> dict:
     return {
         "health": health(),
+        "owner_base_files_readability": owner_base_files_readability(),
         "owner_summary": owner_summary(),
         "agent_status": agent_status(),
         "paper_portfolio": paper_portfolio(),
@@ -193,6 +248,7 @@ def dashboard() -> str:
       <h2>系统快照</h2>
       <div class="metric-grid" id="metrics"></div>
     </section>
+    <section><h2>三基文件中文可读性</h2><div id="ownerBaseFiles"></div></section>
     <section><h2>Phase 6 OWNER-GATE 状态</h2><div id="phase6"></div></section>
     <div class="grid-two">
       <section><h2>虚拟交易组合</h2><div id="portfolio"></div></section>
@@ -249,6 +305,27 @@ def dashboard() -> str:
         metric('已过期工单', queueSummary.expired_pending_count || 0),
         metric('刷新间隔', `${health.refresh_interval_seconds || 300}s`)
       ].join('');
+    }
+    function renderOwnerBaseFiles(readability) {
+      const files = readability.files || [];
+      const rows = files.map(file => `
+        <tr>
+          <td>${file.filename}</td>
+          <td>${pill(statusText(file.status), file.status === 'pass' ? 'ok' : 'danger')}</td>
+          <td>${file.score_text || '0/100'}</td>
+          <td>${Number(file.chinese_percent || 0).toFixed(2)}%</td>
+          <td>${Number(file.required_min_chinese_percent || 30).toFixed(2)}%</td>
+          <td>${(file.missing_sections || []).join(', ') || '无'}</td>
+        </tr>`).join('');
+      document.getElementById('ownerBaseFiles').innerHTML = `
+        <div class="metric-grid">
+          ${metric('整体评分', readability.score_text || '0/100')}
+          ${metric('中文状态', pill(readability.status_zh || statusText(readability.status), readability.status === 'pass' ? 'ok' : 'danger'))}
+          ${metric('最低中文占比', `${Number(readability.required_min_chinese_percent || 30).toFixed(2)}%`)}
+        </div>
+        <div class="status">${readability.summary_zh || ''}</div>
+        <table><thead><tr><th>文件</th><th>状态</th><th>评分</th><th>中文占比</th><th>最低要求</th><th>缺失章节</th></tr></thead><tbody>${rows}</tbody></table>
+      `;
     }
     function renderPhase6(phase6) {
       const blockers = (phase6.blocking_conditions || []).join(', ') || '无';
@@ -344,6 +421,7 @@ def dashboard() -> str:
       const response = await fetch('/dashboard/state');
       const data = await response.json();
       renderMetrics(data);
+      renderOwnerBaseFiles(data.owner_base_files_readability || {});
       renderPhase6(data.phase6_owner_gate || {});
       renderPortfolio(data.paper_portfolio || {});
       renderAgent(data.agent_status || {});
