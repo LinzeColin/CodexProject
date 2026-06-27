@@ -250,6 +250,36 @@ S2PMT07_NO_PRODUCTION_SIDE_EFFECT_ATTESTATION_REQUIRED_EVIDENCE_REFS = (
 S2PMT07_NO_PRODUCTION_SIDE_EFFECT_ATTESTATION_NO_PRODUCTION_FLAGS = (
     S2PMT07_FINAL_ACCEPTANCE_BUNDLE_NO_PRODUCTION_FLAGS
 )
+S2PMT07_NEXT_AGENT_HANDOFF_SCHEMA_VERSION = "adp.next_agent_handoff.v1"
+S2PMT07_NEXT_AGENT_HANDOFF_DECISION = "NEXT_AGENT_HANDOFF_READY_NO_PRODUCTION_ACCEPTANCE"
+S2PMT07_NEXT_AGENT_HANDOFF_REQUIRED_FIELDS = (
+    "schema_version",
+    "contract_id",
+    "generated_at",
+    "handoff_decision",
+    "handoff_scope",
+    "required_reader_files",
+    "required_artifact_validations",
+    "required_bundle_refs",
+    "blocking_state",
+    "no_production_side_effects",
+    "handoff_hash",
+)
+S2PMT07_NEXT_AGENT_HANDOFF_REQUIRED_READER_FILES = (
+    "docs/pursuing_goal/CURRENT.yaml",
+    "docs/pursuing_goal/v7_2/V7_2_ROOT_LOCK.yaml",
+    "docs/pursuing_goal/v7_2/HANDOFF/00_下一Agent先读.md",
+    "docs/pursuing_goal/v7_2/machine_readable/product_contract_v7_2.yaml",
+    "docs/pursuing_goal/v7_2/machine_readable/migration_matrix_v7_1_to_v7_2.yaml",
+    "docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml",
+)
+S2PMT07_NEXT_AGENT_HANDOFF_REQUIRED_ARTIFACT_VALIDATIONS = (
+    "P0_P1_ZERO_PROOF_ARTIFACT",
+    "S2PLT04_COMPLETION_REPORT",
+    "FINAL_COMMAND_EXECUTION",
+    "NO_PRODUCTION_SIDE_EFFECT_ATTESTATION",
+)
+S2PMT07_NEXT_AGENT_HANDOFF_NO_PRODUCTION_FLAGS = S2PMT07_FINAL_ACCEPTANCE_BUNDLE_NO_PRODUCTION_FLAGS
 S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_SCHEMA_VERSION = "adp.independent_review_signoff.v1"
 S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_DECISION = "INDEPENDENT_REVIEW_SIGNED_OFF_NO_PRODUCTION_ACCEPTANCE"
 S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_REQUIRED_FIELDS = (
@@ -2162,6 +2192,123 @@ def build_no_production_side_effect_attestation_validation_state(
     return state
 
 
+def build_next_agent_handoff_hash(payload: Mapping[str, Any]) -> str:
+    """Return the canonical next-agent handoff hash excluding its hash field."""
+
+    payload_without_hash = {key: value for key, value in payload.items() if key != "handoff_hash"}
+    return f"sha256:{_stable_hash(payload_without_hash)}"
+
+
+def validate_next_agent_handoff(payload: Mapping[str, Any] | None) -> list[str]:
+    """Validate a future next-agent handoff artifact without accepting production."""
+
+    if payload is None:
+        return ["next_agent_handoff_missing"]
+    errors: list[str] = []
+    for field in S2PMT07_NEXT_AGENT_HANDOFF_REQUIRED_FIELDS:
+        if field not in payload:
+            errors.append(f"{field} is required")
+    if tuple(payload.keys()) != S2PMT07_NEXT_AGENT_HANDOFF_REQUIRED_FIELDS:
+        errors.append("next-agent handoff field order is invalid")
+    if payload.get("schema_version") != S2PMT07_NEXT_AGENT_HANDOFF_SCHEMA_VERSION:
+        errors.append("schema_version is invalid")
+    if payload.get("contract_id") != "ADP-PRODUCT-CONTRACT-V7.2":
+        errors.append("contract_id must be ADP-PRODUCT-CONTRACT-V7.2")
+    if not isinstance(payload.get("generated_at"), str) or not payload.get("generated_at"):
+        errors.append("generated_at must be a non-empty string")
+    if payload.get("handoff_decision") != S2PMT07_NEXT_AGENT_HANDOFF_DECISION:
+        errors.append("handoff_decision is invalid")
+
+    handoff_scope = _mapping(payload.get("handoff_scope"))
+    if handoff_scope.get("task_id") != S2PMT07_TASK_ID:
+        errors.append("handoff_scope.task_id must be S2PMT07")
+    if handoff_scope.get("scope") != "next_agent_handoff_validation_only_no_production_acceptance":
+        errors.append("handoff_scope.scope is invalid")
+    if (
+        tuple(handoff_scope.get("required_reader_files", []))
+        != S2PMT07_NEXT_AGENT_HANDOFF_REQUIRED_READER_FILES
+    ):
+        errors.append("handoff_scope.required_reader_files must exactly match required reader files")
+
+    if tuple(payload.get("required_reader_files", [])) != S2PMT07_NEXT_AGENT_HANDOFF_REQUIRED_READER_FILES:
+        errors.append("required_reader_files must exactly match next-agent handoff required reader files")
+
+    artifact_validations = _mapping(payload.get("required_artifact_validations"))
+    for validation in S2PMT07_NEXT_AGENT_HANDOFF_REQUIRED_ARTIFACT_VALIDATIONS:
+        result = _mapping(artifact_validations.get(validation))
+        if validation not in artifact_validations:
+            errors.append(f"required_artifact_validations must include {validation}")
+            continue
+        if result.get("status") != "pass":
+            errors.append(f"required_artifact_validations.{validation}.status must be pass")
+        if not isinstance(result.get("evidence_ref"), str) or not result.get("evidence_ref"):
+            errors.append(f"required_artifact_validations.{validation}.evidence_ref must be a non-empty string")
+
+    if tuple(payload.get("required_bundle_refs", [])) != S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS:
+        errors.append("required_bundle_refs must exactly match final acceptance bundle required items")
+
+    blocking_state = _mapping(payload.get("blocking_state"))
+    for flag in (
+        "p0_zero_proven",
+        "p1_zero_proven",
+        "s2plt04_completed",
+        "final_commands_executed",
+        "no_production_side_effects_proven",
+    ):
+        if blocking_state.get(flag) is not True:
+            errors.append(f"blocking_state.{flag} must be true")
+    for flag in ("production_acceptance_claimed", "integrated_production_accepted", "daily_operation_enabled"):
+        if blocking_state.get(flag) is not False:
+            errors.append(f"blocking_state.{flag} must be false")
+
+    no_production = _mapping(payload.get("no_production_side_effects"))
+    for flag in S2PMT07_NEXT_AGENT_HANDOFF_NO_PRODUCTION_FLAGS:
+        if no_production.get(flag) is not False:
+            errors.append(f"no_production_side_effects.{flag} must be false")
+
+    if payload.get("handoff_hash") != build_next_agent_handoff_hash(payload):
+        errors.append("handoff_hash does not match payload content")
+    return errors
+
+
+def build_next_agent_handoff_validation_state(payload: Mapping[str, Any] | None) -> dict[str, Any]:
+    """Build a validation report for future next-agent handoff evidence."""
+
+    errors = validate_next_agent_handoff(payload)
+    artifact_validations = _mapping(payload.get("required_artifact_validations")) if payload is not None else {}
+    all_required_artifact_validations_passed = all(
+        _mapping(artifact_validations.get(validation)).get("status") == "pass"
+        for validation in S2PMT07_NEXT_AGENT_HANDOFF_REQUIRED_ARTIFACT_VALIDATIONS
+    )
+    required_reader_files = tuple(payload.get("required_reader_files", [])) if payload is not None else ()
+    state = {
+        "status": "pass" if not errors else "blocked",
+        "scope": "next_agent_handoff_validation_only_no_production_acceptance",
+        "artifact_path": "HANDOFF/00_下一Agent先读.md",
+        "handoff_present": payload is not None,
+        "validation_errors": errors,
+        "required_reader_files": list(S2PMT07_NEXT_AGENT_HANDOFF_REQUIRED_READER_FILES),
+        "all_required_reader_files_declared": (
+            payload is not None and required_reader_files == S2PMT07_NEXT_AGENT_HANDOFF_REQUIRED_READER_FILES
+        ),
+        "required_artifact_validations": list(S2PMT07_NEXT_AGENT_HANDOFF_REQUIRED_ARTIFACT_VALIDATIONS),
+        "all_required_artifact_validations_passed": (
+            payload is not None and all_required_artifact_validations_passed
+        ),
+        "next_agent_handoff_ready_by_payload": not errors and payload is not None,
+        "production_acceptance_claimed": False,
+        "integrated_production_accepted": False,
+        "daily_operation_enabled": False,
+        "real_smtp_send_enabled": False,
+        "scheduler_install_enabled": False,
+        "release_packaging_enabled": False,
+        "production_restore_enabled": False,
+        "state_hash": "",
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
 def build_independent_review_signoff_hash(payload: Mapping[str, Any]) -> str:
     """Return the canonical independent-review signoff hash excluding its hash field."""
 
@@ -2296,6 +2443,7 @@ def build_final_acceptance_bundle_readiness_state() -> dict[str, Any]:
     no_production_side_effect_attestation_validation = (
         build_no_production_side_effect_attestation_validation_state(None)
     )
+    next_agent_handoff_validation = build_next_agent_handoff_validation_state(None)
     independent_review_signoff_validation = build_independent_review_signoff_validation_state(None)
     state = {
         "status": "blocked",
@@ -2316,6 +2464,7 @@ def build_final_acceptance_bundle_readiness_state() -> dict[str, Any]:
             "NO_PRODUCTION_SIDE_EFFECT_ATTESTATION_VALIDATION": (
                 no_production_side_effect_attestation_validation["status"] == "pass"
             ),
+            "NEXT_AGENT_HANDOFF_VALIDATION": next_agent_handoff_validation["status"] == "pass",
             "INDEPENDENT_REVIEW_SIGNOFF_VALIDATION": independent_review_signoff_validation["status"] == "pass",
         },
         "missing_items": [item for item, present in available_items.items() if not present],
@@ -2327,6 +2476,7 @@ def build_final_acceptance_bundle_readiness_state() -> dict[str, Any]:
         "s2plt04_completion_report_validation": s2plt04_completion_report_validation,
         "final_command_execution_validation": final_command_execution_validation,
         "no_production_side_effect_attestation_validation": no_production_side_effect_attestation_validation,
+        "next_agent_handoff_validation": next_agent_handoff_validation,
         "independent_review_signoff_validation": independent_review_signoff_validation,
         "bundle_present": False,
         "bundle_claimed_ready": False,
@@ -2374,6 +2524,8 @@ def validate_final_acceptance_bundle_readiness_state(state: Mapping[str, Any]) -
         errors.append(
             "final acceptance bundle readiness must not expose no-production side-effect attestation validation as passing"
         )
+    if prebundle.get("NEXT_AGENT_HANDOFF_VALIDATION") is not False:
+        errors.append("final acceptance bundle readiness must not expose next-agent handoff validation as passing")
     if prebundle.get("INDEPENDENT_REVIEW_SIGNOFF_VALIDATION") is not False:
         errors.append("final acceptance bundle readiness must not expose independent review signoff validation as passing")
     p0_p1_candidate = _mapping(state.get("p0_p1_technical_closure_candidate_state"))
@@ -2399,6 +2551,9 @@ def validate_final_acceptance_bundle_readiness_state(state: Mapping[str, Any]) -
         errors.append(
             "final acceptance bundle readiness no-production side-effect attestation validation must remain blocked"
         )
+    next_agent_handoff = _mapping(state.get("next_agent_handoff_validation"))
+    if next_agent_handoff.get("status") != "blocked":
+        errors.append("final acceptance bundle readiness next-agent handoff validation must remain blocked")
     independent_signoff = _mapping(state.get("independent_review_signoff_validation"))
     if independent_signoff.get("status") != "blocked":
         errors.append("final acceptance bundle readiness independent review signoff validation must remain blocked")

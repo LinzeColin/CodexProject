@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260628-ADP-S2PMT07-NO-PRODUCTION-SIDE-EFFECT-ATTESTATION-VALIDATOR"
+as_of_event_id: "EVENT-20260628-ADP-S2PMT07-NEXT-AGENT-HANDOFF-VALIDATOR"
 source_snapshot_hash: "sha256:b46b66adca9fff016c8699d25d2f20031291631ddbc6e9ee00fc360126a9647f"
-source_base_commit: "f49b645d9a35857605eff53a26bed0ea7e15816a"
+source_base_commit: "a44ae935bc59e0a297e60bf98f9dbdfcc3eee4ea"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
-snapshot_event_time: "2026-06-28T06:48:44+10:00"
+snapshot_event_time: "2026-06-28T07:13:17+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -16,8 +16,8 @@ dimensions:
     status: "PARTIAL"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 992
-    total_active_parameters: 1007
+    checked_active_parameters: 998
+    total_active_parameters: 1013
     checked_active_formulas: 119
     total_active_formulas: 119
     unresolved_fact_ids:
@@ -28,8 +28,8 @@ dimensions:
   parameter_source_quality:
     status: "PARTIAL"
     fact_level: "UNKNOWN"
-    checked_active_parameters: 992
-    total_active_parameters: 1007
+    checked_active_parameters: 998
+    total_active_parameters: 1013
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -62,12 +62,12 @@ dimensions:
     tree_bound_events: 0
     commit_bound_events: 4
     legacy_unbound_events: 188
-    precommit_pending_events: 44
+    precommit_pending_events: 45
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "VERIFIED"
-  release_gate: "S2PMT07_NO_PRODUCTION_ATTESTATION_VALIDATOR_BLOCKED_NO_PRODUCTION"
+  release_gate: "S2PMT07_NEXT_AGENT_HANDOFF_VALIDATOR_BLOCKED_NO_PRODUCTION"
   blocker_ids:
     - "FACT-arxiv-daily-push-IMPLEMENTATION-PARAMETER-REVIEW"
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"

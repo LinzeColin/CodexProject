@@ -21,7 +21,7 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 209
+- task_count: 210
 - acceptance_count: 126
 
 ## Delivery Tasks
@@ -296,6 +296,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PMT07-FINAL-COMMAND-EXECUTION-VALIDATOR | S2PM | blocked | `ACC-S2PMT07-FINAL-REVIEW` | Defines and validates the future `FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json` artifact contract; current artifact remains missing, final commands are not executed, P0/P1 and production gates remain blocked. |
 | S2PMT07-INDEPENDENT-REVIEW-SIGNOFF-VALIDATOR | S2PM | blocked | `ACC-S2PMT07-FINAL-REVIEW` | Defines and validates the future `FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml` artifact contract; current signoff remains missing, P0/P1 and production gates remain blocked. |
 | S2PMT07-NO-PRODUCTION-SIDE-EFFECT-ATTESTATION-VALIDATOR | S2PM | blocked | `ACC-S2PMT07-FINAL-REVIEW` | Defines and validates the future `FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json` artifact contract; current attestation remains missing, no-production proof is not accepted, P0/P1 and production gates remain blocked. |
+| S2PMT07-NEXT-AGENT-HANDOFF-VALIDATOR | S2PM | blocked | `ACC-S2PMT07-FINAL-REVIEW` | Defines and validates the future `HANDOFF/00_下一Agent先读.md` artifact contract; current handoff remains missing, no handoff readiness is accepted, P0/P1 and production gates remain blocked. |
 
 ## 2026-06-27 18:52:57 Australia/Sydney - S2PMT07 P0 technical closure candidate package
 
