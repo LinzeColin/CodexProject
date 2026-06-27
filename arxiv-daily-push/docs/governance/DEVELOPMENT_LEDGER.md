@@ -10,11 +10,26 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.1
 - Current phase: S2PM
-- Current gate: S2PMT07_A004_INDEPENDENT_TECHNICAL_REVIEW_NO_CLOSURE_NO_PRODUCTION
-- Confirmed iteration count: 152
+- Current gate: S2PMT07_A005_INDEPENDENT_TECHNICAL_REVIEW_NO_CLOSURE_NO_PRODUCTION
+- Confirmed iteration count: 153
 - Reconstructed event count: 0
-- Current task: `S2PMT07-A004-INDEPENDENT-TECHNICAL-REVIEW` records finding-level technical review for inherited A-004 typed frontstage evidence. It verifies typed fact/inference/hypothesis/action statement bindings and fail-closed invalid foreground claims, while preserving inherited P0/P1 `8/37`, S2PMT07 final-pass blockers, and all production-stop gates. No CURRENT, V7.1/V7.2 contract file, real SMTP, scheduler, Release, production restore, public schema, DB migration, production queue, source adapter, ranking, DAILY_OPERATION, or integrated production acceptance state changed.
+- Current task: `S2PMT07-A005-INDEPENDENT-TECHNICAL-REVIEW` records finding-level technical review for inherited A-005 trust-boundary evidence. It verifies `UNTRUSTED_DATA` isolation, safe URL rendering, blocked tool/secret/repository-write/email boundaries, and preserves inherited P0/P1 `8/37`, S2PMT07 final-pass blockers, and all production-stop gates. No CURRENT, V7.1/V7.2 contract file, real SMTP, scheduler, Release, production restore, public schema, DB migration, production queue, source adapter, ranking, DAILY_OPERATION, or integrated production acceptance state changed.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
+
+
+### `ITER-20260627-ADP-S2PMT07-A005-INDEPENDENT-TECHNICAL-REVIEW`
+
+- Timestamp: `2026-06-27T18:31:33+10:00`
+- Fact level: EXTRACTED from A-005 trust-boundary evidence, finding-level review receipt, S2PMT07 P0 receipt, traceability row, rendered user-center evidence chain, and final-gate/security/user-center regression tests.
+- Base commit: `13883ba54afa98688f1b127c535a41667c9b7be9`
+- Product version: `0.23.1`
+- Status: A-005 finding-level independent technical review passed as a technical closure candidate; P0/P1 closure and production acceptance are not claimed.
+- Task IDs: `S2PMT07-A005-INDEPENDENT-TECHNICAL-REVIEW`; parent `S2PMT07`; inherited finding `A-005`; acceptance `ACC-S2PMT07-FINAL-REVIEW`.
+- Goal: Preserve the technical review decision for A-005 inside GitHub source-of-truth evidence surfaces, without relying on chat context or lowering any global stop gate.
+- Files changed: A-005 independent technical review manifest, P0 review receipt manifest and phase record, final-gate/user-center regression tests, traceability/delivery/event records, changelog, and generated model-parameter/user-center status.
+- Decisions: The verdict is `PASS_WITH_NO_PRODUCTION_ACCEPTANCE`. It is finding-level technical evidence only and does not provide final S2PMT07 signoff, close A-005/P0/P1, complete S2PLT04, create the final bundle, run final commands, enable SMTP/scheduler/Release, mutate schema/DB/queues, change sources or ranking, edit V7 baselines, or claim integrated production acceptance.
+- Risks: This receipt can be misread as P0 closure; S2PMT07 final acceptance still requires the full P0/P1 closure package, S2PLT04, final bundle, independent final signoff, and final command execution.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-A005-INDEPENDENT-TECHNICAL-REVIEW-20260627.json`; `governance/run_manifests/ADP-S2PMT01-TRUST-BOUNDARY-A005-20260627.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_INDEPENDENT_REVIEW_RECEIPT.md`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT01_TRUST_BOUNDARY_A005.md`; `arxiv-daily-push/用户中心/来源信任边界扫描.md`.
 
 
 ### `ITER-20260627-ADP-S2PMT07-A004-INDEPENDENT-TECHNICAL-REVIEW`

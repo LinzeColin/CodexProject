@@ -170,6 +170,10 @@ class Stage2FinalGateTests(unittest.TestCase):
             REPO_ROOT
             / "governance/run_manifests/ADP-S2PMT07-A004-INDEPENDENT-TECHNICAL-REVIEW-20260627.json"
         )
+        a005_independent_review_manifest_path = (
+            REPO_ROOT
+            / "governance/run_manifests/ADP-S2PMT07-A005-INDEPENDENT-TECHNICAL-REVIEW-20260627.json"
+        )
         receipt = receipt_path.read_text(encoding="utf-8")
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         receipt_rows = {
@@ -206,7 +210,9 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertNotIn("ADP-S2PMT01-SECURITY-BOUNDARY-20260626.json", receipt_rows["A-004"])
         self.assertIn("PHASE_S2PMT01_TRUST_BOUNDARY_A005.md", receipt_rows["A-005"])
         self.assertIn("ADP-S2PMT01-TRUST-BOUNDARY-A005-20260627.json", receipt_rows["A-005"])
+        self.assertIn("ADP-S2PMT07-A005-INDEPENDENT-TECHNICAL-REVIEW-20260627.json", receipt_rows["A-005"])
         self.assertIn("用户中心/来源信任边界扫描.md", receipt_rows["A-005"])
+        self.assertIn("security_boundary.py", receipt_rows["A-005"])
         self.assertIn("test_security_boundary.py", receipt_rows["A-005"])
         self.assertNotIn("PHASE_S2PMT01_SECURITY_BOUNDARY.md", receipt_rows["A-005"])
         self.assertNotIn("ADP-S2PMT01-SECURITY-BOUNDARY-20260626.json", receipt_rows["A-005"])
@@ -236,11 +242,11 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertEqual(
             manifest["refresh_manifest"],
-            "governance/run_manifests/ADP-S2PMT07-A004-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+            "governance/run_manifests/ADP-S2PMT07-A005-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
         )
         self.assertEqual(
             manifest["previous_refresh_manifest"],
-            "governance/run_manifests/ADP-S2PMT07-B008-FAKE-SMTP-CRASH-WINDOW-EVIDENCE-20260627.json",
+            "governance/run_manifests/ADP-S2PMT07-A004-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
         )
         self.assertIn(manifest["refresh_manifest"], manifest["refresh_manifests"])
         self.assertIn(
@@ -255,6 +261,10 @@ class Stage2FinalGateTests(unittest.TestCase):
             "governance/run_manifests/ADP-S2PMT07-A004-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
             manifest["refresh_manifest_history"],
         )
+        self.assertIn(
+            "governance/run_manifests/ADP-S2PMT07-A005-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+            manifest["refresh_manifest_history"],
+        )
         self.assertTrue(refresh_manifest_path.exists())
         self.assertTrue(isolated_proof_manifest_path.exists())
         self.assertTrue(independent_review_manifest_path.exists())
@@ -262,6 +272,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertTrue(a002_independent_review_manifest_path.exists())
         self.assertTrue(a003_independent_review_manifest_path.exists())
         self.assertTrue(a004_independent_review_manifest_path.exists())
+        self.assertTrue(a005_independent_review_manifest_path.exists())
         self.assertFalse(manifest["p0_closure_claimed"])
         self.assertFalse(manifest["stage2_integrated_production_accepted"])
         self.assertIn(
@@ -377,10 +388,24 @@ class Stage2FinalGateTests(unittest.TestCase):
             findings["A-005"]["evidence_refs"],
         )
         self.assertIn(
+            "governance/run_manifests/ADP-S2PMT07-A005-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+            findings["A-005"]["evidence_refs"],
+        )
+        self.assertIn(
+            "arxiv-daily-push/src/arxiv_daily_push/security_boundary.py",
+            findings["A-005"]["evidence_refs"],
+        )
+        self.assertIn(
             "arxiv-daily-push/用户中心/来源信任边界扫描.md",
             findings["A-005"]["evidence_refs"],
         )
         self.assertIn("arxiv-daily-push/tests/test_security_boundary.py", findings["A-005"]["evidence_refs"])
+        self.assertEqual(findings["A-005"]["reviewer_verdict"], "PASS_WITH_NO_PRODUCTION_ACCEPTANCE")
+        self.assertEqual(
+            findings["A-005"]["finding_level_independent_review_receipt"],
+            "governance/run_manifests/ADP-S2PMT07-A005-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+        )
+        self.assertIn("finding_level_independent_review_passed", findings["A-005"]["preliminary_review_state"])
         self.assertNotIn("arxiv-daily-push/docs/phase_records/PHASE_S2PMT01_SECURITY_BOUNDARY.md", findings["A-005"]["evidence_refs"])
         self.assertNotIn("governance/run_manifests/ADP-S2PMT01-SECURITY-BOUNDARY-20260626.json", findings["A-005"]["evidence_refs"])
         self.assertEqual(findings["B-001"]["fix_task"], "S2PMT04-INSTALL-LIFECYCLE-B001")
@@ -602,6 +627,42 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(a004_independent_review["current_pointer_changed"])
         self.assertFalse(a004_independent_review["v7_1_baseline_changed"])
         self.assertFalse(a004_independent_review["v7_2_contract_files_changed"])
+
+        a005_independent_review = json.loads(a005_independent_review_manifest_path.read_text(encoding="utf-8"))
+        self.assertEqual(a005_independent_review["reviewer_verdict"], "PASS_WITH_NO_PRODUCTION_ACCEPTANCE")
+        self.assertEqual(a005_independent_review["finding_id"], "A-005")
+        self.assertTrue(a005_independent_review["technical_closure_candidate"])
+        self.assertTrue(a005_independent_review["untrusted_source_content_verified"])
+        self.assertTrue(a005_independent_review["safe_url_rendering_verified"])
+        self.assertTrue(a005_independent_review["unsafe_url_schemes_blocked"])
+        self.assertTrue(a005_independent_review["unsafe_hosts_blocked"])
+        self.assertTrue(a005_independent_review["source_content_tool_requests_blocked"])
+        self.assertTrue(a005_independent_review["secret_access_blocked"])
+        self.assertTrue(a005_independent_review["repository_write_blocked"])
+        self.assertTrue(a005_independent_review["email_send_blocked"])
+        self.assertTrue(a005_independent_review["tool_and_secret_boundary_enforced"])
+        self.assertTrue(a005_independent_review["trust_receipt_schema_enforced"])
+        self.assertTrue(a005_independent_review["false_pass_guard_verified"])
+        self.assertTrue(a005_independent_review["tampered_boundary_blocks"])
+        self.assertEqual(a005_independent_review["required_probe_count"], 7)
+        self.assertFalse(a005_independent_review["p0_closure_claimed"])
+        self.assertFalse(a005_independent_review["p1_closure_claimed"])
+        self.assertFalse(a005_independent_review["closure_claimed"])
+        self.assertFalse(a005_independent_review["s2pmt07_final_pass_claimed"])
+        self.assertFalse(a005_independent_review["s2plt04_completed"])
+        self.assertFalse(a005_independent_review["stage2_integrated_production_accepted"])
+        self.assertFalse(a005_independent_review["production_side_effects_enabled"])
+        self.assertFalse(a005_independent_review["scheduler_install_enabled"])
+        self.assertFalse(a005_independent_review["real_scheduler_installed"])
+        self.assertFalse(a005_independent_review["real_smtp_sent"])
+        self.assertFalse(a005_independent_review["real_release_uploaded"])
+        self.assertFalse(a005_independent_review["daily_operation_enabled"])
+        self.assertFalse(a005_independent_review["public_schema_changed"])
+        self.assertFalse(a005_independent_review["db_migration_executed"])
+        self.assertFalse(a005_independent_review["queue_mutation_allowed"])
+        self.assertFalse(a005_independent_review["current_pointer_changed"])
+        self.assertFalse(a005_independent_review["v7_1_baseline_changed"])
+        self.assertFalse(a005_independent_review["v7_2_contract_files_changed"])
 
     def test_p1_review_receipt_uses_refreshed_current_evidence(self) -> None:
         receipt_path = REPO_ROOT / "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_INDEPENDENT_REVIEW_RECEIPT.md"
