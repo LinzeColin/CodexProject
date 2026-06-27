@@ -3413,3 +3413,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PLT03-LOCAL-RESILIENCE-DRILL"
+    phase: "S2PL"
+    objective: "Record deterministic local no-production S2PLT03 resilience drill evidence without claiming S2PLT03 acceptance or production readiness."
+    scope: "S2PLT03 final-gate helper, focused regression tests, local drill model/formula/parameter registry, phase record, run manifest, traceability row, rendered user-center traceability page, and no-production evidence."
+    non_scope: "No S2PLT03 acceptance, no S2PLT02 acceptance, no inherited P0/P1 closure, no S2PLT04 completion, no final acceptance bundle creation, no SMTP transport, no scheduler install or enablement, no Release upload, no public schema or DB migration, no production queue mutation, no ranking/source-adapter change, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no DAILY_OPERATION, and no integrated production acceptance."
+    status: "blocked"
+    dependencies: ["S2PLT03", "S2PLT02", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/docs/phase_records/PHASE_S2PLT03_LOCAL_RESILIENCE_DRILL.md", "governance/run_manifests/ADP-S2PLT03-LOCAL-RESILIENCE-DRILL-20260628.json", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_user_center_candidate_pool.py"]
+    acceptance_ids: ["ACC-S2PLT03-RESILIENCE"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt03_drill_target PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_user_center_candidate_pool.py -q"]
+    test_results: ["focused final-gate/user-center tests: 36 OK", "full ADP unittest: 603 OK", "project governance: 0 errors / 0 warnings", "changed-only semantic governance: 0 errors / 0 warnings", "V7.2 validator PASS", "lean check-render drift 0 reference issues 0", "JSON/JSONL/CSV/YAML parse OK", "git diff --check PASS", "open PR count 0", "remote ADP/arxiv/s2p branch grep no matches"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PLT03-LOCAL-RESILIENCE-DRILL-20260628.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT03_LOCAL_RESILIENCE_DRILL.md", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
+    result: "Local no-production resilience drill bundle passed, while terminal S2PLT03 remains blocked by S2PLT02 and inherited P0/P1."
+    risk: "This local drill can be misread as S2PLT03 acceptance; it only proves deterministic local mechanics and preserves all final production stop gates."
+    rollback: "Revert local drill helper/tests, registry updates, phase record, run manifest, traceability row, rendered user-center traceability page, delivery/event/status records, and three base file updates; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 116
-- formula_count: 118
-- parameter_count: 975
+- model_count: 117
+- formula_count: 119
+- parameter_count: 979
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -23,6 +23,8 @@ Fact levels follow `docs/governance/STANDARD.md`.
   mutate queues/schema/DB, change source adapters or ranking, edit CURRENT or
   V7 contracts, close P0/P1, enable DAILY_OPERATION, or claim integrated
   production acceptance.
+
+- `S2PLT03-LOCAL-RESILIENCE-DRILL` adds `MOD-ADP-117`, `FORM-ADP-119`, and `PARAM-ADP-976` through `PARAM-ADP-979`. It records deterministic local no-production drill evidence for rate limit, parser drift, restart recovery, disk pressure, backup restore-point, rollback dry-run, and ledger count conservation. It does not accept S2PLT03, close P0/P1, enable SMTP/scheduler/Release/restore, mutate production state, or claim integrated production acceptance.
 
 - `S1-02-BASELINE-LOCK-TRACEABILITY-001` locked the Review8 V4 two-stage
   pursuing-goal baseline and repaired version metadata drift only. It did not

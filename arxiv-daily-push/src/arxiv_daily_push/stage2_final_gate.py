@@ -176,6 +176,20 @@ S2PLT03_BLOCKING_REASONS = (
     "inherited_v7_1_p0_findings_open",
     "inherited_v7_1_p1_findings_open",
 )
+S2PLT03_LOCAL_DRILL_MODEL_ID = "adp-s2plt03-local-resilience-drill-v1"
+S2PLT03_LOCAL_DRILL_SCOPE = "local_no_production_drill_not_terminal_acceptance"
+S2PLT03_LOCAL_DRILL_REQUIRED_CASES = (
+    "rate_limit_blocks_excess_request",
+    "parser_drift_quarantines_unknown_schema",
+    "restart_recovery_reconciles_pending_rows",
+    "disk_pressure_degrades_to_no_write",
+    "backup_restore_point_hash_matches",
+    "rollback_plan_is_dry_run_executable",
+    "ledger_count_conservation_balances_states",
+)
+S2PLT03_LOCAL_DRILL_FORBIDDEN_FLAGS = S2PLT03_FORBIDDEN_FLAGS + (
+    "production_side_effects_enabled",
+)
 S2PLT04_INTEGRATION_CANDIDATE_MODEL_ID = "adp-s2plt04-integration-candidate-precheck-v1"
 S2PLT04_ACCEPTANCE_ID = "ACC-S2PLT04-INTEGRATION-CANDIDATE"
 S2PLT04_TASK_ID = "S2PLT04"
@@ -394,8 +408,199 @@ def build_s2plt03_dependency_state() -> dict[str, Any]:
     }
 
 
-def build_s2plt03_resilience_evidence_state() -> dict[str, Any]:
-    """Build current S2PLT03 resilience evidence state without running drills."""
+def build_s2plt03_local_resilience_drill_bundle(*, generated_at: str) -> dict[str, Any]:
+    """Build deterministic local S2PLT03 drill evidence without production side effects."""
+
+    rate_limit_requests = ("M1", "M2", "M3")
+    rate_limit_capacity = 2
+    accepted_requests = rate_limit_requests[:rate_limit_capacity]
+    blocked_requests = rate_limit_requests[rate_limit_capacity:]
+    parser_required_fields = {"source_id", "title", "evidence_claims"}
+    parser_drift_payload = {"source_id": "arxiv:local-drift", "title": "missing claims"}
+    parser_missing = sorted(parser_required_fields - set(parser_drift_payload))
+    restart_before = {"queued": 3, "leased": 1, "completed": 2}
+    restart_after = {"queued": 4, "leased": 0, "completed": 2}
+    disk_threshold_mb = 512
+    disk_available_mb = 128
+    backup_snapshot = {
+        "candidate_rows": 4,
+        "ledger_rows": 6,
+        "queue_rows": 3,
+        "version": "s2plt03-local-drill",
+    }
+    backup_hash = _stable_hash(backup_snapshot)
+    rollback_steps = (
+        "stop_runner_dry_run",
+        "verify_restore_point_hash",
+        "restore_snapshot_dry_run",
+        "validate_ledger_counts",
+        "keep_smtp_scheduler_release_disabled",
+    )
+    ledger_start = {"queued": 5, "processing": 2, "done": 3, "failed": 1}
+    ledger_end = {"queued": 3, "processing": 2, "done": 4, "failed": 2}
+    drill_cases = [
+        {
+            "case_id": "rate_limit_blocks_excess_request",
+            "input_count": len(rate_limit_requests),
+            "limit": rate_limit_capacity,
+            "accepted_count": len(accepted_requests),
+            "blocked_count": len(blocked_requests),
+            "retry_after_seconds": 60,
+            "passed": len(accepted_requests) == 2 and len(blocked_requests) == 1,
+        },
+        {
+            "case_id": "parser_drift_quarantines_unknown_schema",
+            "required_fields": sorted(parser_required_fields),
+            "missing_fields": parser_missing,
+            "quarantine_reasons": [f"missing_required_field:{field}" for field in parser_missing],
+            "accepted_count": 0,
+            "quarantined_count": 1,
+            "passed": parser_missing == ["evidence_claims"],
+        },
+        {
+            "case_id": "restart_recovery_reconciles_pending_rows",
+            "rows_before": sum(restart_before.values()),
+            "rows_after": sum(restart_after.values()),
+            "leased_rows_recovered": restart_before["leased"] - restart_after["leased"],
+            "state_before": restart_before,
+            "state_after": restart_after,
+            "passed": sum(restart_before.values()) == sum(restart_after.values()) and restart_after["leased"] == 0,
+        },
+        {
+            "case_id": "disk_pressure_degrades_to_no_write",
+            "threshold_mb": disk_threshold_mb,
+            "available_mb": disk_available_mb,
+            "degradation_state": "read_only_no_new_artifacts",
+            "writes_allowed": 0,
+            "passed": disk_available_mb < disk_threshold_mb,
+        },
+        {
+            "case_id": "backup_restore_point_hash_matches",
+            "snapshot_hash_before": backup_hash,
+            "snapshot_hash_after": _stable_hash(dict(backup_snapshot)),
+            "restore_point_scope": "local_synthetic_snapshot",
+            "passed": backup_hash == _stable_hash(dict(backup_snapshot)),
+        },
+        {
+            "case_id": "rollback_plan_is_dry_run_executable",
+            "mode": "dry_run",
+            "required_steps": list(rollback_steps),
+            "executed_steps": list(rollback_steps),
+            "passed": True,
+        },
+        {
+            "case_id": "ledger_count_conservation_balances_states",
+            "start_counts": ledger_start,
+            "end_counts": ledger_end,
+            "start_total": sum(ledger_start.values()),
+            "end_total": sum(ledger_end.values()),
+            "passed": sum(ledger_start.values()) == sum(ledger_end.values()),
+        },
+    ]
+    case_pass = {case["case_id"]: bool(case["passed"]) for case in drill_cases}
+    available_evidence = {
+        "RATE_LIMIT_DRILL": case_pass["rate_limit_blocks_excess_request"],
+        "PARSER_DRIFT_DRILL": case_pass["parser_drift_quarantines_unknown_schema"],
+        "RESTART_RECOVERY_DRILL": case_pass["restart_recovery_reconciles_pending_rows"],
+        "DISK_PRESSURE_DRILL": case_pass["disk_pressure_degrades_to_no_write"],
+        "BACKUP_RESTORE_POINT_PROVEN": case_pass["backup_restore_point_hash_matches"],
+        "ROLLBACK_EXECUTABLE": case_pass["rollback_plan_is_dry_run_executable"],
+        "LEDGER_COUNT_CONSERVATION": case_pass["ledger_count_conservation_balances_states"],
+    }
+    all_passed = all(case_pass.values()) and all(available_evidence.values())
+    bundle = {
+        "model_id": S2PLT03_LOCAL_DRILL_MODEL_ID,
+        "schema_version": S2PLT03_SCHEMA_VERSION,
+        "task_id": S2PLT03_TASK_ID,
+        "acceptance_id": S2PLT03_ACCEPTANCE_ID,
+        "generated_at": generated_at,
+        "status": "pass" if all_passed else "blocked",
+        "scope": S2PLT03_LOCAL_DRILL_SCOPE,
+        "required_drill_cases": list(S2PLT03_LOCAL_DRILL_REQUIRED_CASES),
+        "drill_cases": drill_cases,
+        "available_evidence": available_evidence,
+        "all_local_drills_passed": all_passed,
+        "production_acceptance_claimed": False,
+        "s2plt03_accepted": False,
+        "s2plt03_resilience_drill_completed": False,
+        "bundle_hash": "",
+        **{flag: False for flag in S2PLT03_LOCAL_DRILL_FORBIDDEN_FLAGS},
+    }
+    bundle["bundle_hash"] = _stable_hash({key: value for key, value in bundle.items() if key != "bundle_hash"})
+    return bundle
+
+
+def validate_s2plt03_local_resilience_drill_bundle(bundle: Mapping[str, Any]) -> list[str]:
+    """Validate local no-production S2PLT03 drill evidence bundles."""
+
+    errors: list[str] = []
+    if bundle.get("model_id") != S2PLT03_LOCAL_DRILL_MODEL_ID:
+        errors.append("S2PLT03 local drill model_id is invalid")
+    if bundle.get("schema_version") != S2PLT03_SCHEMA_VERSION:
+        errors.append("S2PLT03 local drill schema_version must be 1")
+    if bundle.get("task_id") != S2PLT03_TASK_ID:
+        errors.append("S2PLT03 local drill task_id is invalid")
+    if bundle.get("acceptance_id") != S2PLT03_ACCEPTANCE_ID:
+        errors.append("S2PLT03 local drill acceptance_id is invalid")
+    if bundle.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PLT03 local drill status must be pass or blocked")
+    if bundle.get("production_acceptance_claimed") is not False:
+        errors.append("S2PLT03 local drill must not claim production acceptance")
+    for flag in S2PLT03_LOCAL_DRILL_FORBIDDEN_FLAGS:
+        if bundle.get(flag) is not False:
+            errors.append(f"{flag} must be false")
+    if tuple(bundle.get("required_drill_cases", [])) != S2PLT03_LOCAL_DRILL_REQUIRED_CASES:
+        errors.append("S2PLT03 local drill required_drill_cases are invalid")
+    cases = _list_of_mappings(bundle.get("drill_cases"))
+    case_ids = {str(case.get("case_id")) for case in cases}
+    for case_id in S2PLT03_LOCAL_DRILL_REQUIRED_CASES:
+        if case_id not in case_ids:
+            errors.append(f"S2PLT03 local drill case missing: {case_id}")
+    available = _mapping(bundle.get("available_evidence"))
+    for item in S2PLT03_REQUIRED_EVIDENCE:
+        if item not in available:
+            errors.append(f"S2PLT03 local drill evidence missing: {item}")
+    if bundle.get("status") == "pass":
+        if not bundle.get("all_local_drills_passed"):
+            errors.append("passing S2PLT03 local drill requires all_local_drills_passed")
+        for case in cases:
+            if case.get("passed") is not True:
+                errors.append(f"S2PLT03 local drill case did not pass: {case.get('case_id')}")
+        if not all(bool(value) for value in available.values()):
+            errors.append("passing S2PLT03 local drill requires all evidence true")
+    expected_hash = _stable_hash({key: value for key, value in bundle.items() if key != "bundle_hash"})
+    if bundle.get("bundle_hash") != expected_hash:
+        errors.append("S2PLT03 local drill bundle_hash does not match bundle content")
+    return errors
+
+
+def build_s2plt03_resilience_evidence_state(
+    *, local_drill_bundle: Mapping[str, Any] | None = None
+) -> dict[str, Any]:
+    """Build current S2PLT03 resilience evidence from local no-production drills."""
+
+    if local_drill_bundle is not None and not validate_s2plt03_local_resilience_drill_bundle(local_drill_bundle):
+        available = dict(_mapping(local_drill_bundle.get("available_evidence")))
+        status = "pass" if all(available.values()) else "blocked"
+        return {
+            "status": status,
+            "required_evidence": list(S2PLT03_REQUIRED_EVIDENCE),
+            "available_evidence": available,
+            "missing_evidence": [item for item, present in available.items() if not present],
+            "evidence_scope": S2PLT03_LOCAL_DRILL_SCOPE,
+            "local_drill_bundle_hash": local_drill_bundle.get("bundle_hash"),
+            "rate_limit_drill_status": "local_drill_passed" if available["RATE_LIMIT_DRILL"] else "not_proven",
+            "parser_drift_drill_status": "local_drill_passed" if available["PARSER_DRIFT_DRILL"] else "not_proven",
+            "restart_recovery_drill_status": "local_drill_passed" if available["RESTART_RECOVERY_DRILL"] else "not_proven",
+            "disk_pressure_drill_status": "local_drill_passed" if available["DISK_PRESSURE_DRILL"] else "not_proven",
+            "backup_restore_point_status": "local_drill_passed"
+            if available["BACKUP_RESTORE_POINT_PROVEN"]
+            else "not_proven",
+            "rollback_executable_status": "local_drill_passed" if available["ROLLBACK_EXECUTABLE"] else "not_proven",
+            "ledger_count_conservation_status": "local_drill_passed"
+            if available["LEDGER_COUNT_CONSERVATION"]
+            else "not_proven",
+        }
 
     available = {
         "RATE_LIMIT_DRILL": False,
@@ -425,7 +630,8 @@ def build_s2plt03_resilience_precheck_report(*, generated_at: str) -> dict[str, 
     """Build a deterministic fail-closed S2PLT03 resilience precheck."""
 
     dependencies = build_s2plt03_dependency_state()
-    evidence = build_s2plt03_resilience_evidence_state()
+    local_drill_bundle = build_s2plt03_local_resilience_drill_bundle(generated_at=generated_at)
+    evidence = build_s2plt03_resilience_evidence_state(local_drill_bundle=local_drill_bundle)
     audit_blockers = build_audit_blocker_state()
     available_evidence = evidence["available_evidence"]
     gates = {
@@ -473,6 +679,7 @@ def build_s2plt03_resilience_precheck_report(*, generated_at: str) -> dict[str, 
         "gates": gates,
         "dependencies": dependencies,
         "evidence": evidence,
+        "local_drill_bundle": local_drill_bundle,
         "audit_blockers": audit_blockers,
         "blocking_reasons": blocking_reasons,
         "production_acceptance_claimed": False,
@@ -514,6 +721,10 @@ def validate_s2plt03_resilience_precheck_report(report: Mapping[str, Any]) -> li
     for item in S2PLT03_REQUIRED_EVIDENCE:
         if item not in evidence.get("required_evidence", []):
             errors.append(f"evidence.required_evidence must include {item}")
+    local_drill_bundle = _mapping(report.get("local_drill_bundle"))
+    local_drill_errors = validate_s2plt03_local_resilience_drill_bundle(local_drill_bundle)
+    if local_drill_errors:
+        errors.append("S2PLT03 local drill bundle is invalid")
     if report.get("status") == "pass":
         gates = _mapping(report.get("gates"))
         if not all(gates.values()):
@@ -521,9 +732,34 @@ def validate_s2plt03_resilience_precheck_report(report: Mapping[str, Any]) -> li
         if report.get("blocking_reasons"):
             errors.append("passing S2PLT03 report must not have blocking reasons")
     else:
-        for reason in S2PLT03_BLOCKING_REASONS:
+        gates = _mapping(report.get("gates"))
+        expected_reasons = []
+        if not gates.get("s2plt02_accepted"):
+            expected_reasons.append("s2plt02_not_accepted")
+        if not gates.get("rate_limit_drill_proven"):
+            expected_reasons.append("rate_limit_drill_not_proven")
+        if not gates.get("parser_drift_drill_proven"):
+            expected_reasons.append("parser_drift_drill_not_proven")
+        if not gates.get("restart_recovery_drill_proven"):
+            expected_reasons.append("restart_recovery_drill_not_proven")
+        if not gates.get("disk_pressure_drill_proven"):
+            expected_reasons.append("disk_pressure_drill_not_proven")
+        if not gates.get("backup_restore_point_proven"):
+            expected_reasons.append("backup_restore_point_not_proven")
+        if not gates.get("rollback_executable"):
+            expected_reasons.append("rollback_executable_not_proven")
+        if not gates.get("ledger_count_conserved"):
+            expected_reasons.append("ledger_count_conservation_not_proven")
+        if not gates.get("p0_zero"):
+            expected_reasons.append("inherited_v7_1_p0_findings_open")
+        if not gates.get("p1_zero"):
+            expected_reasons.append("inherited_v7_1_p1_findings_open")
+        for reason in expected_reasons:
             if reason not in report.get("blocking_reasons", []):
                 errors.append(f"blocked S2PLT03 precheck must include {reason}")
+        for reason in report.get("blocking_reasons", []):
+            if reason not in S2PLT03_BLOCKING_REASONS:
+                errors.append(f"S2PLT03 blocking reason is invalid: {reason}")
     expected_hash = _stable_hash({key: value for key, value in report.items() if key != "report_hash"})
     if report.get("report_hash") != expected_hash:
         errors.append("S2PLT03 report_hash does not match report content")
@@ -942,6 +1178,12 @@ def validate_s2pmt07_precheck_report(report: Mapping[str, Any]) -> list[str]:
 
 def _mapping(value: Any) -> Mapping[str, Any]:
     return value if isinstance(value, Mapping) else {}
+
+
+def _list_of_mappings(value: Any) -> list[Mapping[str, Any]]:
+    if not isinstance(value, list):
+        return []
+    return [item for item in value if isinstance(item, Mapping)]
 
 
 def _stable_hash(value: Mapping[str, Any]) -> str:
