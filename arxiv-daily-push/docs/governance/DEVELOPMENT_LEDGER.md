@@ -4085,6 +4085,18 @@ None for this new project baseline.
 - Evidence: `arxiv-daily-push/docs/phase_records/PHASE_S2PMT04_CACHE_LOW_DISK_B005.md`; `governance/run_manifests/ADP-S2PMT04-CACHE-LOW-DISK-B005-20260626.json`; `arxiv-daily-push/src/arxiv_daily_push/stage2_lifecycle_cache.py`; `arxiv-daily-push/tests/test_stage2_lifecycle_cache.py`.
 - Next step: Commit, direct push to main if remote remains unchanged, and continue inherited P0/P1 remediation or independent review only under V7.2 no-production boundaries.
 
+### `ITER-20260628-ADP-S2PMT07-FINAL-BUNDLE-MANIFEST-VALIDATOR`
+
+- Time: 2026-06-28 05:18:27 Australia/Sydney.
+- Fact level: EXTRACTED from S2PMT07 final-gate code, focused TDD regression tests, semantic registries, phase record, and run manifest.
+- Task IDs: `S2PMT07-FINAL-BUNDLE-MANIFEST-VALIDATOR`; parent `S2PMT07`; acceptance `ACC-S2PMT07-FINAL-REVIEW`.
+- Goal: Add a strict validator for future `FINAL_ACCEPTANCE_BUNDLE/manifest.json` payloads without creating the final bundle or accepting production.
+- Decisions: A valid future manifest must match schema version `adp.final_acceptance_bundle_manifest.v1`, include exact bundle items, sha256 item hashes, passing artifact validations, closure-state proof, no-production flags, and manifest hash binding. Current manifest validation remains `blocked` because no real manifest exists.
+- Validation so far: TDD red failed because the manifest validator API was missing; focused final-gate tests 33 OK. Full project validation is still pending in this run.
+- Boundaries: No P0/P1 closure, no final acceptance bundle creation, no S2PLT04 completion, no S2PMT07 pass, no SMTP, scheduler, Release, production restore, public schema, DB, production queue, source adapter, ranking, CURRENT/V7 contract, V7.1 baseline, DAILY_OPERATION, or integrated production acceptance changed.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-MANIFEST-VALIDATOR-20260628.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_MANIFEST_VALIDATOR.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.
+- Next step: Keep S2PMT07 blocked until a real final bundle contains a valid manifest, valid zero-proof artifact, S2PLT04 completion proof, independent final signoff, final command execution proof, and no-production attestation.
+
 ### `ITER-20260627-ADP-S2PMT07-P0-TECHNICAL-CLOSURE-CANDIDATE-PACKAGE`
 
 - Time: 2026-06-27 18:52:57 Australia/Sydney.

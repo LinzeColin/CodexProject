@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PMT07-FINAL-BUNDLE-MANIFEST-VALIDATOR",
+  "acceptance_id": "ACC-S2PMT07-FINAL-REVIEW",
+  "generated_at": "2026-06-28T05:18:27+10:00",
+  "source_base_commit": "f49b645d9a35857605eff53a26bed0ea7e15816a",
+  "status": "blocked",
+  "result": "blocked_manifest_validator_ready_manifest_missing_no_closure_no_production",
+  "scope": "future FINAL_ACCEPTANCE_BUNDLE/manifest.json validator only",
+  "manifest_path": "FINAL_ACCEPTANCE_BUNDLE/manifest.json",
+  "manifest_present": false,
+  "final_acceptance_bundle_present": false,
+  "manifest_schema_version": "adp.final_acceptance_bundle_manifest.v1",
+  "manifest_decision": "FINAL_ACCEPTANCE_BUNDLE_READY_NO_PRODUCTION_ACCEPTANCE",
+  "required_artifact_validations": [
+    "P0_P1_ZERO_PROOF_ARTIFACT",
+    "S2PLT04_COMPLETION_REPORT",
+    "INDEPENDENT_REVIEW_SIGNOFF",
+    "FINAL_COMMAND_EXECUTION",
+    "NO_PRODUCTION_SIDE_EFFECT_ATTESTATION",
+    "NEXT_AGENT_HANDOFF"
+  ],
+  "required_no_production_flags_false": [
+    "integrated_production_accepted",
+    "daily_operation_enabled",
+    "real_smtp_sent",
+    "real_smtp_send_enabled",
+    "scheduler_enabled",
+    "scheduler_install_enabled",
+    "release_uploaded",
+    "release_packaging_enabled",
+    "production_restore_enabled",
+    "production_restore_executed",
+    "public_schema_changed",
+    "db_migration_executed",
+    "production_queue_mutated",
+    "source_adapter_changed",
+    "ranking_algorithm_changed",
+    "current_pointer_changed",
+    "v7_1_baseline_changed",
+    "v7_2_contract_files_changed"
+  ],
+  "validation_status_without_manifest": "blocked",
+  "validation_errors_without_manifest": [
+    "final_acceptance_bundle_manifest_missing"
+  ],
+  "manifest_missing_state_hash": "3b3ecc8417d458a56e2a5dce5764f04eabfa44e7df3113fbbb88808d1115907b",
+  "final_acceptance_bundle_readiness_hash": "13d008aa5e13bd9012032ca645bb03f2cb0152c1c1b826ca4d9842fb89ff3fb8",
+  "closure_state": {
+    "p0_zero_proven": false,
+    "p1_zero_proven": false,
+    "s2plt04_completed": false,
+    "independent_final_review_passed": false,
+    "final_commands_executed": false,
+    "production_acceptance_claimed": false,
+    "integrated_production_accepted": false
+  },
+  "inherited_v7_1_open_p0_findings": 8,
+  "inherited_v7_1_open_p1_findings": 37,
+  "no_production_side_effects": {
+    "integrated_production_accepted": false,
+    "daily_operation_enabled": false,
+    "real_smtp_sent": false,
+    "real_smtp_send_enabled": false,
+    "scheduler_enabled": false,
+    "scheduler_install_enabled": false,
+    "release_uploaded": false,
+    "release_packaging_enabled": false,
+    "production_restore_enabled": false,
+    "production_restore_executed": false,
+    "public_schema_changed": false,
+    "db_migration_executed": false,
+    "production_queue_mutated": false,
+    "source_adapter_changed": false,
+    "ranking_algorithm_changed": false,
+    "current_pointer_changed": false,
+    "v7_1_baseline_changed": false,
+    "v7_2_contract_files_changed": false
+  },
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_MANIFEST_VALIDATOR.md",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py",
+    "arxiv-daily-push/tests/test_stage2_final_gate.py"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_final_manifest_red PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_final_manifest_green1 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q"
+  ],
+  "test_results": [
+    "TDD red failed because final bundle manifest validator API was missing",
+    "focused final-gate tests: 33 OK"
+  ],
+  "boundary": {
+    "p0_closure_claimed": false,
+    "p1_closure_claimed": false,
+    "s2plt04_completed": false,
+    "s2pmt07_passed": false,
+    "integrated_production_accepted": false,
+    "daily_operation_enabled": false
+  }
+}
