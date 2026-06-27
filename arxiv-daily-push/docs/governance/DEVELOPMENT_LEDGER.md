@@ -4126,3 +4126,15 @@ None for this new project baseline.
 - Boundaries: No SMTP, scheduler, Release, production restore, public schema, DB, production queue, source adapter, ranking, CURRENT/V7 contract, V7.1 baseline, P0/P1 closure, DAILY_OPERATION, or integrated production acceptance changed.
 - Evidence: `governance/run_manifests/ADP-S2PLT03-LOCAL-RESILIENCE-DRILL-20260628.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PLT03_LOCAL_RESILIENCE_DRILL.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.
 - Next step: Keep S2PLT03 blocked until S2PLT02/P0/P1/S2PLT04/final-bundle/S2PMT07 gates are real evidence.
+
+### `ITER-20260628-ADP-S2PMT07-P0-P1-ZERO-PROOF-READINESS`
+
+- Time: 2026-06-28 04:36:58 Australia/Sydney.
+- Fact level: EXTRACTED from S2PMT07 final-gate code, focused regression tests, semantic registries, phase record, and run manifest.
+- Task IDs: `S2PMT07-P0-P1-ZERO-PROOF-READINESS`; parent `S2PMT07`; acceptance `ACC-S2PMT07-FINAL-REVIEW`.
+- Goal: Define the final-bundle P0/P1 zero-proof artifact path, required fields, and fail-closed blockers before any later independent final closure decision can treat inherited P0/P1 as zero.
+- Decisions: `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json` is now the required future P0/P1 zero-proof artifact. The artifact is currently missing; independent final closure decision is missing; inherited P0=8 and P1=37 remain open. Technical closure candidates remain prebundle evidence only.
+- Validation so far: TDD red reproduced the missing zero-proof readiness API; focused final-gate tests 28 OK. Full project validation is still pending in this run.
+- Boundaries: No P0/P1 closure, no final acceptance bundle creation, no S2PLT04 completion, no S2PMT07 pass, no SMTP, scheduler, Release, production restore, public schema, DB, production queue, source adapter, ranking, CURRENT/V7 contract, V7.1 baseline, DAILY_OPERATION, or integrated production acceptance changed.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-P0-P1-ZERO-PROOF-READINESS-20260628.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_P1_ZERO_PROOF_READINESS.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.
+- Next step: Keep S2PMT07 blocked until the final bundle contains real P0/P1 zero proof, S2PLT04 completion proof, independent final signoff, final command execution proof, and no-production attestation.

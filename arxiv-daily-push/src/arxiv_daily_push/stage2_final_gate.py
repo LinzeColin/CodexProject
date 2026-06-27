@@ -62,9 +62,29 @@ S2PMT07_BLOCKING_REASONS = (
     "independent_review_signoff_missing",
     "independent_final_command_execution_missing",
 )
+S2PMT07_P0_P1_ZERO_PROOF_ARTIFACT_PATH = "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json"
+S2PMT07_P0_P1_ZERO_PROOF_REQUIRED_FIELDS = (
+    "schema_version",
+    "contract_id",
+    "generated_at",
+    "reviewer_independence",
+    "source_candidate_refs",
+    "finding_counts",
+    "zero_severity_counts",
+    "independent_closure_decision",
+    "final_bundle_refs",
+    "no_production_side_effects",
+    "decision_hash",
+)
+S2PMT07_P0_P1_ZERO_PROOF_BLOCKING_REASONS = (
+    "p0_p1_zero_proof_artifact_missing",
+    "independent_final_closure_decision_missing",
+    "inherited_v7_1_p0_findings_open",
+    "inherited_v7_1_p1_findings_open",
+)
 S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS = (
     "FINAL_ACCEPTANCE_BUNDLE/manifest.json",
-    "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
+    S2PMT07_P0_P1_ZERO_PROOF_ARTIFACT_PATH,
     "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json",
     "FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml",
     "FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json",
@@ -1402,11 +1422,109 @@ def validate_p0_p1_technical_closure_candidate_state(state: Mapping[str, Any]) -
     return errors
 
 
+def build_p0_p1_zero_proof_readiness_state() -> dict[str, Any]:
+    """Build a fail-closed schema contract for the future P0/P1 zero proof artifact."""
+
+    state = {
+        "status": "blocked",
+        "scope": "p0_p1_zero_proof_readiness_schema_only_no_closure",
+        "zero_proof_artifact_path": S2PMT07_P0_P1_ZERO_PROOF_ARTIFACT_PATH,
+        "zero_proof_artifact_present": False,
+        "required_zero_severities": list(S2PMT07_REQUIRED_ZERO_FINDING_SEVERITIES),
+        "required_fields": list(S2PMT07_P0_P1_ZERO_PROOF_REQUIRED_FIELDS),
+        "required_open_p0_findings": 0,
+        "required_open_p1_findings": 0,
+        "observed_open_p0_findings": S2PMT07_INHERITED_V7_1_OPEN_P0_FINDINGS,
+        "observed_open_p1_findings": S2PMT07_INHERITED_V7_1_OPEN_P1_FINDINGS,
+        "candidate_evidence_refs": [
+            S2PMT07_P0_TECHNICAL_CLOSURE_CANDIDATE_PACKAGE,
+            S2PMT07_P1_TECHNICAL_CLOSURE_CANDIDATE_RECEIPT,
+            *S2PMT07_P1_TECHNICAL_CLOSURE_CANDIDATE_MANIFESTS,
+        ],
+        "candidate_evidence_only": True,
+        "independent_final_closure_decision_present": False,
+        "p0_zero_proven": False,
+        "p1_zero_proven": False,
+        "closure_claimed": False,
+        "production_acceptance_claimed": False,
+        "integrated_production_accepted": False,
+        "daily_operation_enabled": False,
+        "real_smtp_send_enabled": False,
+        "scheduler_install_enabled": False,
+        "release_packaging_enabled": False,
+        "production_restore_enabled": False,
+        "blocking_reasons": list(S2PMT07_P0_P1_ZERO_PROOF_BLOCKING_REASONS),
+        "state_hash": "",
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
+def validate_p0_p1_zero_proof_readiness_state(state: Mapping[str, Any]) -> list[str]:
+    """Validate P0/P1 zero-proof readiness without accepting closure."""
+
+    errors: list[str] = []
+    if state.get("status") != "blocked":
+        errors.append("P0/P1 zero proof readiness status must remain blocked")
+    if state.get("scope") != "p0_p1_zero_proof_readiness_schema_only_no_closure":
+        errors.append("P0/P1 zero proof readiness scope is invalid")
+    if state.get("zero_proof_artifact_path") != S2PMT07_P0_P1_ZERO_PROOF_ARTIFACT_PATH:
+        errors.append("P0/P1 zero proof readiness artifact path is invalid")
+    if state.get("zero_proof_artifact_present") is not False:
+        errors.append("P0/P1 zero proof readiness must not claim artifact presence")
+    if tuple(state.get("required_zero_severities", [])) != S2PMT07_REQUIRED_ZERO_FINDING_SEVERITIES:
+        errors.append("P0/P1 zero proof readiness required zero severities are invalid")
+    if tuple(state.get("required_fields", [])) != S2PMT07_P0_P1_ZERO_PROOF_REQUIRED_FIELDS:
+        errors.append("P0/P1 zero proof readiness required fields are invalid")
+    if state.get("required_open_p0_findings") != 0:
+        errors.append("P0/P1 zero proof readiness required open P0 findings must be zero")
+    if state.get("required_open_p1_findings") != 0:
+        errors.append("P0/P1 zero proof readiness required open P1 findings must be zero")
+    if state.get("observed_open_p0_findings") != S2PMT07_INHERITED_V7_1_OPEN_P0_FINDINGS:
+        errors.append("P0/P1 zero proof readiness must preserve inherited open P0 count until artifact exists")
+    if state.get("observed_open_p1_findings") != S2PMT07_INHERITED_V7_1_OPEN_P1_FINDINGS:
+        errors.append("P0/P1 zero proof readiness must preserve inherited open P1 count until artifact exists")
+    refs = state.get("candidate_evidence_refs", [])
+    for ref in (
+        S2PMT07_P0_TECHNICAL_CLOSURE_CANDIDATE_PACKAGE,
+        S2PMT07_P1_TECHNICAL_CLOSURE_CANDIDATE_RECEIPT,
+        *S2PMT07_P1_TECHNICAL_CLOSURE_CANDIDATE_MANIFESTS,
+    ):
+        if ref not in refs:
+            errors.append(f"P0/P1 zero proof readiness refs must include {ref}")
+    if state.get("candidate_evidence_only") is not True:
+        errors.append("P0/P1 zero proof readiness must label candidate evidence as non-closure")
+    if state.get("independent_final_closure_decision_present") is not False:
+        errors.append("P0/P1 zero proof readiness must not claim independent final closure decision")
+    for flag in (
+        "p0_zero_proven",
+        "p1_zero_proven",
+        "closure_claimed",
+        "production_acceptance_claimed",
+        "integrated_production_accepted",
+        "daily_operation_enabled",
+        "real_smtp_send_enabled",
+        "scheduler_install_enabled",
+        "release_packaging_enabled",
+        "production_restore_enabled",
+    ):
+        if state.get(flag) is not False:
+            errors.append(f"{flag} must be false")
+    for reason in S2PMT07_P0_P1_ZERO_PROOF_BLOCKING_REASONS:
+        if reason not in state.get("blocking_reasons", []):
+            errors.append(f"P0/P1 zero proof readiness must include blocker {reason}")
+    expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    if state.get("state_hash") != expected_hash:
+        errors.append("P0/P1 zero proof readiness state_hash does not match state content")
+    return errors
+
+
 def build_final_acceptance_bundle_readiness_state() -> dict[str, Any]:
     """Build the current final acceptance bundle readiness state without packaging."""
 
     available_items = {item: False for item in S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS}
     p0_p1_technical_candidate_state = build_p0_p1_technical_closure_candidate_state()
+    p0_p1_zero_proof_readiness = build_p0_p1_zero_proof_readiness_state()
     state = {
         "status": "blocked",
         "scope": "final_acceptance_bundle_readiness_precheck_only",
@@ -1416,10 +1534,12 @@ def build_final_acceptance_bundle_readiness_state() -> dict[str, Any]:
             "P0_P1_TECHNICAL_CLOSURE_CANDIDATES": not validate_p0_p1_technical_closure_candidate_state(
                 p0_p1_technical_candidate_state
             ),
+            "P0_P1_ZERO_PROOF_READINESS": p0_p1_zero_proof_readiness["status"] == "pass",
         },
         "missing_items": [item for item, present in available_items.items() if not present],
         "blocking_reasons": list(S2PMT07_FINAL_ACCEPTANCE_BUNDLE_BLOCKING_REASONS),
         "p0_p1_technical_closure_candidate_state": p0_p1_technical_candidate_state,
+        "p0_p1_zero_proof_readiness": p0_p1_zero_proof_readiness,
         "bundle_present": False,
         "bundle_claimed_ready": False,
         "production_acceptance_claimed": False,
@@ -1452,9 +1572,14 @@ def validate_final_acceptance_bundle_readiness_state(state: Mapping[str, Any]) -
     prebundle = _mapping(state.get("available_prebundle_evidence"))
     if prebundle.get("P0_P1_TECHNICAL_CLOSURE_CANDIDATES") is not True:
         errors.append("final acceptance bundle readiness must expose P0/P1 technical closure candidates")
+    if prebundle.get("P0_P1_ZERO_PROOF_READINESS") is not False:
+        errors.append("final acceptance bundle readiness must not expose P0/P1 zero proof readiness as passing")
     p0_p1_candidate = _mapping(state.get("p0_p1_technical_closure_candidate_state"))
     if validate_p0_p1_technical_closure_candidate_state(p0_p1_candidate):
         errors.append("final acceptance bundle readiness P0/P1 technical candidate state is invalid")
+    p0_p1_zero_proof = _mapping(state.get("p0_p1_zero_proof_readiness"))
+    if validate_p0_p1_zero_proof_readiness_state(p0_p1_zero_proof):
+        errors.append("final acceptance bundle readiness P0/P1 zero proof readiness state is invalid")
     for flag in S2PMT07_FINAL_ACCEPTANCE_BUNDLE_FORBIDDEN_FLAGS:
         if state.get(flag) is not False:
             errors.append(f"{flag} must be false")
