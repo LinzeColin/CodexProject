@@ -446,6 +446,56 @@ def reconcile_smtp_accept_crash(
     return _pass_action("smtp_accept_crash", {"message": updated, "smtp_accept_crash_window": True})
 
 
+def simulate_fake_smtp_accept_after_kill(
+    *,
+    cycle_id: str,
+    product_id: str,
+    recipient: str,
+    content_revision_id: str,
+    body: str,
+    generated_at: str,
+    provider_accept_ref: str | None = None,
+) -> dict[str, Any]:
+    """Simulate SMTP accept followed by runner kill before local commit."""
+
+    outbox = build_outbox_message(
+        cycle_id=cycle_id,
+        product_id=product_id,
+        recipient=recipient,
+        content_revision_id=content_revision_id,
+        body=body,
+        generated_at=generated_at,
+    )
+    claimed = claim_outbox_message(outbox, owner_id="fake-smtp-sender", now_ms=1000)
+    if claimed["status"] != "pass":
+        return _blocked_action("fake_smtp_accept_after_kill", list(claimed.get("blocking_reasons") or []), {"outbox": outbox})
+    accepted_pending = copy.deepcopy(dict(claimed["message"]))
+    accepted_pending["status"] = "ACCEPTED_PENDING_COMMIT"
+    crash_marker = {
+        "crash_point": "after_smtp_accept_before_local_commit",
+        "runner_killed": True,
+        "provider_accept_ref_recorded": bool(provider_accept_ref),
+        "message_id": accepted_pending["message_id"],
+        "mail_key": accepted_pending["mail_key"],
+    }
+    restart_reconciliation = reconcile_smtp_accept_crash(accepted_pending, provider_accept_ref=provider_accept_ref)
+    reconciled_message = _mapping(restart_reconciliation.get("message"))
+    return {
+        "action": "fake_smtp_accept_after_kill",
+        "status": "pass" if restart_reconciliation["status"] == "pass" else "blocked",
+        "blocking_reasons": list(restart_reconciliation.get("blocking_reasons") or []),
+        "outbox_before_send": outbox,
+        "accepted_pending_commit": accepted_pending,
+        "crash_marker": crash_marker,
+        "restart_reconciliation": restart_reconciliation,
+        "duplicate_resend_allowed": False,
+        "retry_safe": bool(reconciled_message.get("retry_safe")),
+        "real_smtp_sent": False,
+        "message_id_stable": outbox["message_id"] == accepted_pending["message_id"] == reconciled_message.get("message_id"),
+        "mail_key_stable": outbox["mail_key"] == accepted_pending["mail_key"] == reconciled_message.get("mail_key"),
+    }
+
+
 def build_m4_cycle_watermark(
     *,
     cycle_id: str,
@@ -879,3 +929,7 @@ def _pass_action(action: str, extra: Mapping[str, Any]) -> dict[str, Any]:
 
 def _blocked_action(action: str, reasons: list[str], extra: Mapping[str, Any]) -> dict[str, Any]:
     return {"action": action, "status": "blocked", "blocking_reasons": sorted(set(reasons)), **dict(extra)}
+
+
+def _mapping(value: Any) -> Mapping[str, Any]:
+    return value if isinstance(value, Mapping) else {}

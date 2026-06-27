@@ -144,7 +144,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         manifest_path = REPO_ROOT / "governance/run_manifests/ADP-S2PMT07-P0-INDEPENDENT-REVIEW-RECEIPT-20260626.json"
         refresh_manifest_path = (
             REPO_ROOT
-            / "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-ISOLATED-PROOF-20260627.json"
+            / "governance/run_manifests/ADP-S2PMT07-B008-FAKE-SMTP-CRASH-WINDOW-EVIDENCE-20260627.json"
         )
         isolated_proof_manifest_path = (
             REPO_ROOT
@@ -219,6 +219,8 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertNotIn("ADP-S2PMT05-STRESS-E2E-20260626.json", receipt_rows["B-007"])
         self.assertIn("PHASE_S2PMT05_SMTP_CRASH_WINDOW_B008.md", receipt_rows["B-008"])
         self.assertIn("ADP-S2PMT05-SMTP-CRASH-WINDOW-B008-20260627.json", receipt_rows["B-008"])
+        self.assertIn("PHASE_S2PMT07_B008_FAKE_SMTP_CRASH_WINDOW_EVIDENCE.md", receipt_rows["B-008"])
+        self.assertIn("ADP-S2PMT07-B008-FAKE-SMTP-CRASH-WINDOW-EVIDENCE-20260627.json", receipt_rows["B-008"])
         self.assertNotIn("ADP-S2PMT05-STRESS-E2E-20260626.json", receipt_rows["B-008"])
 
         findings = {finding["finding_id"]: finding for finding in manifest["p0_findings"]}
@@ -228,7 +230,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertEqual(
             manifest["refresh_manifest"],
-            "governance/run_manifests/ADP-S2PMT07-B007-MULTIPROCESS-RACE-EVIDENCE-20260627.json",
+            "governance/run_manifests/ADP-S2PMT07-B008-FAKE-SMTP-CRASH-WINDOW-EVIDENCE-20260627.json",
         )
         self.assertEqual(
             manifest["previous_refresh_manifest"],
@@ -237,6 +239,10 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertIn(manifest["refresh_manifest"], manifest["refresh_manifests"])
         self.assertIn(
             "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-ISOLATED-PROOF-20260627.json",
+            manifest["refresh_manifest_history"],
+        )
+        self.assertIn(
+            "governance/run_manifests/ADP-S2PMT07-B007-MULTIPROCESS-RACE-EVIDENCE-20260627.json",
             manifest["refresh_manifest_history"],
         )
         self.assertTrue(refresh_manifest_path.exists())
@@ -399,6 +405,8 @@ class Stage2FinalGateTests(unittest.TestCase):
             findings["B-008"]["evidence_refs"],
         )
         self.assertNotIn("governance/run_manifests/ADP-S2PMT05-STRESS-E2E-20260626.json", findings["B-007"]["evidence_refs"])
+        self.assertIn("arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_B008_FAKE_SMTP_CRASH_WINDOW_EVIDENCE.md", findings["B-008"]["evidence_refs"])
+        self.assertIn("governance/run_manifests/ADP-S2PMT07-B008-FAKE-SMTP-CRASH-WINDOW-EVIDENCE-20260627.json", findings["B-008"]["evidence_refs"])
         self.assertNotIn("governance/run_manifests/ADP-S2PMT05-STRESS-E2E-20260626.json", findings["B-008"]["evidence_refs"])
 
         isolated_manifest = json.loads(isolated_proof_manifest_path.read_text(encoding="utf-8"))
