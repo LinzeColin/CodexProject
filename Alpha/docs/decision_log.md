@@ -32,6 +32,14 @@ Reason: The owner needs a human-readable closeout report, not only raw JSON, and
 
 Consequence: Running `scripts/build_phase6_owner_gate_evidence.py` refreshes the closeout report alongside JSON evidence and `OWNER_DECISION.md`. The report must continue to state that Alpha is not ready when 48-hour natural-day soak coverage is incomplete.
 
+## 2026-06-27: Phase 6 Evidence Manifest Must Hash Required Artifacts
+
+Decision: `docs/evidence/phase6_closeout_latest/EVIDENCE_MANIFEST.json` is generated with every Phase 6 OWNER-GATE evidence build and records required artifact presence, SHA-256 hashes, acceptance status, soak progress, and live authorization absence.
+
+Reason: OWNER-GATE handoff needs a machine-checkable package index so future agents can verify evidence integrity without guessing from filenames or partial reports.
+
+Consequence: Missing artifacts, changed hashes, incomplete soak coverage, or a present `runtime/LIVE_AUTHORIZATION.json` must remain visible before owner review. The manifest does not promote Alpha to MICRO_LIVE.
+
 ## 2026-06-13: Execution Boundary
 
 Decision: Alpha will automate paper trading, risk checks, approval queues, and broker-ready order tickets. It will not autonomously submit real-money broker orders.

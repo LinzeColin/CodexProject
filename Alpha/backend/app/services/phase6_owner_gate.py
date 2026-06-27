@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -477,6 +478,71 @@ def build_phase6_closeout_report_markdown(
     return document
 
 
+def build_phase6_evidence_manifest(
+    *,
+    evidence_root: str | Path,
+    closeout: dict,
+    soak_validation: dict,
+    paper_shadow_report: dict,
+    shadow_live_constraints: dict,
+    output_path: str | Path | None = None,
+) -> dict:
+    root = Path(evidence_root)
+    artifacts = [
+        ("phase6_closeout", "phase6_closeout.json"),
+        ("paper_shadow_report", "paper_shadow_report_latest.json"),
+        ("shadow_live_constraints", "shadow_live_constraints_latest.json"),
+        ("soak_validation", "soak_validation_latest.json"),
+        ("owner_decision", "OWNER_DECISION.md"),
+        ("closeout_report", "PHASE6_CLOSEOUT_REPORT.md"),
+    ]
+    artifact_checks = []
+    for artifact_id, relative_path in artifacts:
+        path = root / relative_path
+        artifact_checks.append(
+            {
+                "id": artifact_id,
+                "path": relative_path,
+                "exists": path.exists(),
+                "sha256": _sha256(path) if path.exists() else None,
+            }
+        )
+    acceptance = closeout.get("acceptance", [])
+    report = {
+        "schema_version": "2026-06-27.alpha.phase6.evidence_manifest",
+        "generated_at": utc_now_iso(),
+        "status": closeout.get("status", "blocked_not_ready_for_owner_gate"),
+        "evidence_root": str(root),
+        "artifact_checks": artifact_checks,
+        "all_artifacts_present": all(item["exists"] for item in artifact_checks),
+        "acceptance": acceptance,
+        "blocking_conditions": closeout.get("blocking_conditions", []),
+        "soak": {
+            "status": soak_validation.get("status"),
+            "sample_count": soak_validation.get("sample_count"),
+            "observed_hours": soak_validation.get("observed_hours"),
+            "duration_hours_required": soak_validation.get("duration_hours_required"),
+        },
+        "paper_shadow": {
+            "status": paper_shadow_report.get("status"),
+            "schema_status": _aggregate_check_status(paper_shadow_report.get("schema_checks", [])),
+            "hard_gate_status": _aggregate_check_status(paper_shadow_report.get("hard_gate_checks", [])),
+            "trading_day": paper_shadow_report.get("trading_day"),
+            "order_type": (paper_shadow_report.get("shadow") or {}).get("order_type"),
+        },
+        "shadow_live_constraints": {
+            "status": shadow_live_constraints.get("status"),
+            "live_trading_enabled": (shadow_live_constraints.get("health") or {}).get("live_trading_enabled"),
+            "kill_switch_active": (shadow_live_constraints.get("health") or {}).get("kill_switch_active"),
+        },
+        "safety_boundary": _safety_boundary(),
+        "live_authorization_absent": not (ROOT / "runtime" / "LIVE_AUTHORIZATION.json").exists(),
+    }
+    if output_path:
+        _write_json(output_path, report)
+    return report
+
+
 def _limit_order_contract_passed(report: dict) -> bool:
     return report.get("status") == "pass" and report.get("shadow", {}).get("order_type") == "limit"
 
@@ -501,6 +567,16 @@ def _nested_get(payload: dict, path: tuple[str, ...]) -> Any:
             return None
         current = current[key]
     return current
+
+
+def _aggregate_check_status(checks: list[dict]) -> str:
+    if not checks:
+        return "missing"
+    return "pass" if all(item.get("status") == "pass" for item in checks) else "fail"
+
+
+def _sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def _safety_boundary() -> dict:

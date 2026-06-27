@@ -9,6 +9,7 @@ from backend.app.services.approval_queue import ApprovalQueue
 from backend.app.services.paper_trading_loop import PaperTradingLoop
 from backend.app.services.phase6_owner_gate import (
     append_soak_sample,
+    build_phase6_evidence_manifest,
     build_owner_decision_markdown,
     build_owner_gate_closeout,
     build_phase6_closeout_report_markdown,
@@ -151,6 +152,63 @@ def test_phase6_closeout_report_maps_acceptance_to_evidence(tmp_path):
     assert "OWNER_DECISION.md 可供 owner 选择 A/B/C" in document
     assert "停在 OWNER-GATE-01，不进入 MICRO_LIVE" in document
     assert "尚不可提交 OWNER-GATE-01" in document
+
+
+def test_phase6_evidence_manifest_checks_artifacts_and_status(tmp_path):
+    run = _paper_run(tmp_path)
+    evidence_root = tmp_path / "phase6_closeout_latest"
+    paper_shadow = build_paper_shadow_report(
+        run_result=run,
+        output_path=evidence_root / "paper_shadow_report_latest.json",
+    )
+    constraints = build_shadow_live_constraints_report(
+        live_authorization_path=tmp_path / "LIVE_AUTHORIZATION.json",
+        output_path=evidence_root / "shadow_live_constraints_latest.json",
+    )
+    soak = build_soak_validation_report(samples=[], output_path=evidence_root / "soak_validation_latest.json")
+    closeout = build_owner_gate_closeout(
+        soak_validation=soak,
+        paper_shadow_report=paper_shadow,
+        shadow_live_constraints=constraints,
+        output_path=evidence_root / "phase6_closeout.json",
+    )
+    build_owner_decision_markdown(
+        closeout=closeout,
+        soak_validation=soak,
+        paper_shadow_report=paper_shadow,
+        shadow_live_constraints=constraints,
+        output_path=evidence_root / "OWNER_DECISION.md",
+    )
+    build_phase6_closeout_report_markdown(
+        closeout=closeout,
+        soak_validation=soak,
+        paper_shadow_report=paper_shadow,
+        shadow_live_constraints=constraints,
+        output_path=evidence_root / "PHASE6_CLOSEOUT_REPORT.md",
+    )
+
+    manifest = build_phase6_evidence_manifest(
+        evidence_root=evidence_root,
+        closeout=closeout,
+        soak_validation=soak,
+        paper_shadow_report=paper_shadow,
+        shadow_live_constraints=constraints,
+        output_path=evidence_root / "EVIDENCE_MANIFEST.json",
+    )
+
+    assert manifest["status"] == "blocked_not_ready_for_owner_gate"
+    assert manifest["all_artifacts_present"] is True
+    assert {item["path"] for item in manifest["artifact_checks"]} == {
+        "OWNER_DECISION.md",
+        "PHASE6_CLOSEOUT_REPORT.md",
+        "paper_shadow_report_latest.json",
+        "phase6_closeout.json",
+        "shadow_live_constraints_latest.json",
+        "soak_validation_latest.json",
+    }
+    assert all(item["sha256"] for item in manifest["artifact_checks"])
+    assert manifest["paper_shadow"]["schema_status"] == "pass"
+    assert manifest["paper_shadow"]["hard_gate_status"] == "pass"
 
 
 def test_soak_history_appends_jsonl_samples(tmp_path):
