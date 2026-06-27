@@ -4187,3 +4187,14 @@ None for this new project baseline.
 - Boundaries: No P0/P1 closure, no final acceptance bundle creation, no S2PLT04 completion, no S2PMT07 pass, no SMTP, scheduler, Release, production restore, public schema, DB, production queue, source adapter, ranking, CURRENT/V7 contract, V7.1 baseline, DAILY_OPERATION, or integrated production acceptance changed.
 - Evidence: `governance/run_manifests/ADP-S2PMT07-P0-P1-ZERO-PROOF-VALIDATOR-20260628.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_P1_ZERO_PROOF_VALIDATOR.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.
 - Next step: Keep S2PMT07 blocked until a real final bundle contains a valid zero-proof artifact, S2PLT04 completion proof, independent final signoff, final command execution proof, and no-production attestation.
+
+
+### `ITER-20260628-ADP-S2PMT07-INDEPENDENT-REVIEW-SIGNOFF-VALIDATOR`
+
+- Timestamp: `2026-06-28T06:18:50+10:00`
+- Task IDs: `S2PMT07-INDEPENDENT-REVIEW-SIGNOFF-VALIDATOR`; parent `S2PMT07`; acceptance `ACC-S2PMT07-FINAL-REVIEW`.
+- Decisions: A valid future independent review signoff artifact must match schema version `adp.independent_review_signoff.v1`, use decision `INDEPENDENT_REVIEW_SIGNED_OFF_NO_PRODUCTION_ACCEPTANCE`, prove an independent final reviewer, include exact required artifact validations with passing statuses and evidence refs, include exact final bundle refs, keep no-production flags false, and bind `signoff_hash` to payload content. Current independent review signoff validation remains `blocked` because no real artifact exists.
+- Files changed: S2PMT07 final gate helper, final-gate regression tests, PARAM-ADP-1015..1019/FORM-ADP-102 semantic refresh, phase record, run manifest, traceability/delivery/event records, user-center traceability page, and three base files.
+- Production boundary: no independent signoff, no P0/P1 closure, no S2PLT04 completion, no final bundle creation, no SMTP/scheduler/Release/restore, no public schema/DB/queue/source/ranking/CURRENT/V7 change, and no integrated production acceptance.
+- Rollback: Revert independent review signoff validator code/test changes, registry updates, phase record, manifest, traceability/delivery/event records, generated views, and this ledger entry; no runtime production state was changed.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-INDEPENDENT-REVIEW-SIGNOFF-VALIDATOR-20260628.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_VALIDATOR.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.

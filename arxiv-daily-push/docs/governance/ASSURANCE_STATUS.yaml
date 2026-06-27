@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260628-ADP-S2PMT07-FINAL-COMMAND-EXECUTION-VALIDATOR"
+as_of_event_id: "EVENT-20260628-ADP-S2PMT07-INDEPENDENT-REVIEW-SIGNOFF-VALIDATOR"
 source_snapshot_hash: "sha256:b46b66adca9fff016c8699d25d2f20031291631ddbc6e9ee00fc360126a9647f"
 source_base_commit: "f49b645d9a35857605eff53a26bed0ea7e15816a"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
-snapshot_event_time: "2026-06-28T05:57:25+10:00"
+snapshot_event_time: "2026-06-28T06:18:50+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -16,8 +16,8 @@ dimensions:
     status: "PARTIAL"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 982
-    total_active_parameters: 997
+    checked_active_parameters: 987
+    total_active_parameters: 1002
     checked_active_formulas: 119
     total_active_formulas: 119
     unresolved_fact_ids:
@@ -28,8 +28,8 @@ dimensions:
   parameter_source_quality:
     status: "PARTIAL"
     fact_level: "UNKNOWN"
-    checked_active_parameters: 982
-    total_active_parameters: 997
+    checked_active_parameters: 987
+    total_active_parameters: 1002
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -67,7 +67,7 @@ dimensions:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "VERIFIED"
-  release_gate: "S2PMT07_FINAL_COMMAND_EXECUTION_VALIDATOR_BLOCKED_NO_PRODUCTION"
+  release_gate: "S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_VALIDATOR_BLOCKED_NO_PRODUCTION"
   blocker_ids:
     - "FACT-arxiv-daily-push-IMPLEMENTATION-PARAMETER-REVIEW"
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
