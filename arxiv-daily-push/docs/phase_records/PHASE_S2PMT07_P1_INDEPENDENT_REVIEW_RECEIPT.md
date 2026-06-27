@@ -63,9 +63,9 @@ No P0/P1 closure, no independent final signoff, no S2PLT04 completion, no final 
 | `A-014` | `P1` | 备份辅助文件同名时静默覆盖 | `S2PMT02-SUPPORTING-FILE-COLLISION` | `PHASE_S2PMT02_SUPPORTING_FILE_COLLISION.md`, `ADP-S2PMT02-SUPPORTING-FILE-COLLISION-20260626.json`; `ADP-S2PMT07-P1-A010-A016-TECHNICAL-REVIEW-20260627.json` | finding-level technical review passed; independent final closure not claimed | carry into later P1 closure package; counters remain P0=8/P1=37 |
 | `A-015` | `P1` | 未来时间戳被钳制为 age=0，时钟漂移可长期伪装新鲜 | `S2PMT05-FUTURE-HEARTBEAT-A015` | `PHASE_S2PMT05_FUTURE_HEARTBEAT_A015.md`, `ADP-S2PMT05-FUTURE-HEARTBEAT-A015-20260627.json`; `ADP-S2PMT07-P1-A010-A016-TECHNICAL-REVIEW-20260627.json` | finding-level technical review passed; independent final closure not claimed | carry into later P1 closure package; counters remain P0=8/P1=37 |
 | `A-016` | `P1` | lesson_id 只依赖 claim_id，不依赖内容/证据/模型版本 | `S2PMT03-LESSON-REVISION-A016` | `PHASE_S2PMT03_LESSON_REVISION_A016.md`, `ADP-S2PMT03-LESSON-REVISION-A016-20260626.json`; `ADP-S2PMT07-P1-A010-A016-TECHNICAL-REVIEW-20260627.json` | finding-level technical review passed; independent final closure not claimed | carry into later P1 closure package; counters remain P0=8/P1=37 |
-| `A-017` | `S2PMT03` | SMTP delivery_id 不含正文/内容版本，且缺标准 Message-ID | `PHASE_S2PMT03_SMTP_IDENTITY_A017.md`, `ADP-S2PMT03-SMTP-IDENTITY-A017-20260626.json`, `test_smtp_delivery.py` | refreshed current evidence located; independent review required; closure not claimed | Verify V7.1 fix/test requirement: 同 revision 重试 Message-ID 不变；内容修订 revision 变化且需显式 supersede/resend |
+| `A-017` | `P1` | SMTP delivery_id 不含正文/内容版本，且缺标准 Message-ID | `S2PMT03` | `PHASE_S2PMT03_SMTP_IDENTITY_A017.md`, `ADP-S2PMT03-SMTP-IDENTITY-A017-20260626.json`; `ADP-S2PMT07-P1-A017-A019-TECHNICAL-REVIEW-20260627.json` | finding-level technical review passed; independent final closure not claimed | carry into later P1 closure package; counters remain P0=8/P1=37 |
 | `A-018` | `S2PAT05` | V7 要求展示 ROI，但旧邮件验证明确禁止 ROI | `PHASE_S2PAT05_ROI_DISCLOSURE_A018.md`, `ADP-S2PAT05-ROI-DISCLOSURE-A018-20260626.json`, `TRACEABILITY_MATRIX.csv` | refreshed current evidence located; sufficiency/gap review required; closure not claimed | Verify V7.1 fix/test requirement: V7.1 合法 ROI 可发布；无成本/概率/证据的收益声明被拒绝 |
-| `A-019` | `S2PMT01-ZERO-CRITICAL-CLAIM-A019` | 零关键 Claim 时覆盖率被计算为 100% | `PHASE_S2PMT01_ZERO_CRITICAL_CLAIM_A019.md`, `ADP-S2PMT01-ZERO-CRITICAL-CLAIM-A019-20260627.json`, `test_stage1_b1_report.py` | refreshed current evidence located; independent review required; closure not claimed | Verify V7.1 fix/test requirement: 0 critical claim 不能通过关键证据门 |
+| `A-019` | `P1` | 零关键 Claim 时覆盖率被计算为 100% | `S2PMT01-ZERO-CRITICAL-CLAIM-A019` | `PHASE_S2PMT01_ZERO_CRITICAL_CLAIM_A019.md`, `ADP-S2PMT01-ZERO-CRITICAL-CLAIM-A019-20260627.json`; `ADP-S2PMT07-P1-A017-A019-TECHNICAL-REVIEW-20260627.json` | finding-level technical review passed; independent final closure not claimed | carry into later P1 closure package; counters remain P0=8/P1=37 |
 | `A-020` | `S2PMT01` | 依赖、CI Action、SBOM 与权限最小化未形成供应链基线 | `PHASE_S2PMT01_SUPPLY_CHAIN_A020.md`, `ADP-S2PMT01-SUPPLY-CHAIN-A020-20260626.json`, `test_security_boundary.py` | refreshed current evidence located; sufficiency/gap review required; closure not claimed | Verify V7.1 fix/test requirement: CI 自动审计依赖和 Action 引用；高危漏洞按例外审批流程阻断 |
 | `A-021` | `S2PAT05` | Roadmap 依赖为空、Stop Code 混用自由文本，机器门不可可靠执行 | `PHASE_S2PAT05_ROADMAP_STOP_CODE_A021.md`, `ADP-S2PAT05-ROADMAP-STOP-CODE-A021-20260626.json`, `test_v7_2_roadmap_machine_gate.py` | refreshed current evidence located; sufficiency/gap review required; closure not claimed | Verify V7.1 fix/test requirement: 任务图无缺失引用/环；所有 stop condition 均在 registry |
 | `B-002` | `S2PMT04-PROCESS-LIFECYCLE-B002` | 缺少统一进程生命周期：STARTING/RUNNING/DRAINING/CHECKPOINTING/STOPPED | `PHASE_S2PMT04_PROCESS_LIFECYCLE_B002.md`, `ADP-S2PMT04-PROCESS-LIFECYCLE-B002-20260627.json`, `test_stage2_lifecycle_cache.py` | refreshed current evidence located; independent review required; closure not claimed | Verify V7.1 fix/test requirement: 每个阶段注入 SIGTERM/SIGINT，重启后无丢失/重复不可控副作用 |
@@ -120,6 +120,17 @@ not change inherited counters, and does not provide independent final signoff.
 - manifest: [`ADP-S2PMT07-P1-A010-A016-TECHNICAL-REVIEW-20260627.json`](../../../governance/run_manifests/ADP-S2PMT07-P1-A010-A016-TECHNICAL-REVIEW-20260627.json)
 - phase record: [`PHASE_S2PMT07_P1_A010_A016_TECHNICAL_REVIEW.md`](./PHASE_S2PMT07_P1_A010_A016_TECHNICAL_REVIEW.md)
 - reviewed findings: `A-010`, `A-011`, `A-012`, `A-013`, `A-014`, `A-015`, `A-016`
+- verdict: `PASS_WITH_NO_PRODUCTION_ACCEPTANCE` for finding-level technical evidence only
+- preserved counters: P0 remains `8`, P1 remains `37`
+- final closure: not claimed; independent final signoff, final command execution, S2PLT04, and final acceptance bundle remain required
+
+
+## Finding-Level Technical Review 2026-06-27 A017-A019
+
+- manifest: [`ADP-S2PMT07-P1-A017-A019-TECHNICAL-REVIEW-20260627.json`](../../../governance/run_manifests/ADP-S2PMT07-P1-A017-A019-TECHNICAL-REVIEW-20260627.json)
+- phase record: [`PHASE_S2PMT07_P1_A017_A019_TECHNICAL_REVIEW.md`](./PHASE_S2PMT07_P1_A017_A019_TECHNICAL_REVIEW.md)
+- reviewed findings: `A-017`, `A-019`
+- excluded finding: `A-018` remains sufficiency/gap review required
 - verdict: `PASS_WITH_NO_PRODUCTION_ACCEPTANCE` for finding-level technical evidence only
 - preserved counters: P0 remains `8`, P1 remains `37`
 - final closure: not claimed; independent final signoff, final command execution, S2PLT04, and final acceptance bundle remain required
