@@ -7,12 +7,14 @@ machine_summary:
 
 - model_count: 117
 - formula_count: 119
-- parameter_count: 1030
+- parameter_count: 1033
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
 ## Governance Notes
 
+- `S2PMT07-FINAL-BUNDLE-PREREQUISITE-PLAN` adds `PARAM-ADP-1031`
+  through `PARAM-ADP-1033` under `MOD-ADP-100` / `FORM-ADP-102`.
 - `S2PMT07-NEXT-AGENT-HANDOFF-VALIDATOR` adds `PARAM-ADP-1025`
   through `PARAM-ADP-1030` under `MOD-ADP-100` / `FORM-ADP-102`.
   It validates a future `HANDOFF/00_下一Agent先读.md` payload for schema
