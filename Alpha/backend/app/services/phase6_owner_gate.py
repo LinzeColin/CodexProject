@@ -543,6 +543,81 @@ def build_phase6_evidence_manifest(
     return report
 
 
+def verify_phase6_evidence_package(
+    *,
+    evidence_root: str | Path = DEFAULT_EVIDENCE_ROOT,
+    live_authorization_path: str | Path | None = None,
+    require_ready: bool = False,
+    output_path: str | Path | None = None,
+) -> dict:
+    root = Path(evidence_root)
+    auth_path = Path(live_authorization_path or ROOT / "runtime" / "LIVE_AUTHORIZATION.json")
+    manifest = _read_json(root / "EVIDENCE_MANIFEST.json")
+    closeout = _read_json(root / "phase6_closeout.json")
+    paper_shadow = _read_json(root / "paper_shadow_report_latest.json")
+    shadow_constraints = _read_json(root / "shadow_live_constraints_latest.json")
+    soak = _read_json(root / "soak_validation_latest.json")
+    checks = []
+
+    required_files = [
+        "EVIDENCE_MANIFEST.json",
+        "OWNER_DECISION.md",
+        "PHASE6_CLOSEOUT_REPORT.md",
+        "paper_shadow_report_latest.json",
+        "phase6_closeout.json",
+        "shadow_live_constraints_latest.json",
+        "soak_validation_latest.json",
+    ]
+    for relative_path in required_files:
+        checks.append(_check(f"artifact_exists.{relative_path}", (root / relative_path).exists(), relative_path))
+
+    manifest_artifacts = manifest.get("artifact_checks", []) if isinstance(manifest, dict) else []
+    for artifact in manifest_artifacts:
+        path = root / str(artifact.get("path"))
+        expected_hash = artifact.get("sha256")
+        checks.append(_check(f"artifact_hash.{artifact.get('id')}", path.exists() and _sha256(path) == expected_hash, str(artifact.get("path"))))
+
+    checks.extend(
+        [
+            _check("manifest_all_artifacts_present", manifest.get("all_artifacts_present") is True, "manifest all artifacts present"),
+            _check("manifest_status_matches_closeout", manifest.get("status") == closeout.get("status"), "manifest status matches closeout"),
+            _check("acceptance_matches_closeout", manifest.get("acceptance") == closeout.get("acceptance"), "manifest acceptance matches closeout"),
+            _check("paper_shadow_pass", paper_shadow.get("status") == "pass", "Paper/Shadow report pass"),
+            _check("paper_schema_pass", _aggregate_check_status(paper_shadow.get("schema_checks", [])) == "pass", "Paper/Shadow schema pass"),
+            _check("paper_hard_gates_pass", _aggregate_check_status(paper_shadow.get("hard_gate_checks", [])) == "pass", "Paper/Shadow hard gates pass"),
+            _check("limit_order_contract", (paper_shadow.get("shadow") or {}).get("order_type") == "limit", "limit order contract"),
+            _check("shadow_constraints_pass", shadow_constraints.get("status") == "pass", "Shadow live constraints pass"),
+            _check("live_trading_disabled", (shadow_constraints.get("health") or {}).get("live_trading_enabled") is False, "live trading disabled"),
+            _check("live_authorization_absent", not auth_path.exists(), "LIVE_AUTHORIZATION.json absent"),
+            _check("soak_samples_present", int(soak.get("sample_count") or 0) > 0, "soak samples present"),
+            _check("soak_no_failed_samples", _check_status(soak, "no_failed_samples") == "pass", "soak has no failed samples"),
+            _check("soak_duration_pass", soak.get("status") == "pass", "48h natural-day soak pass"),
+            _check("closeout_ready", closeout.get("status") == "ready_for_owner_gate", "closeout ready for owner gate"),
+        ]
+    )
+
+    if not require_ready:
+        non_required = {"soak_duration_pass", "closeout_ready"}
+        verification_checks = [item for item in checks if item["id"] not in non_required]
+    else:
+        verification_checks = checks
+    verification_passed = all(item["status"] == "pass" for item in verification_checks)
+    report = {
+        "schema_version": "2026-06-27.alpha.phase6.evidence_package_verification",
+        "generated_at": utc_now_iso(),
+        "verification_status": "pass" if verification_passed else "fail",
+        "owner_gate_status": closeout.get("status", "missing"),
+        "require_ready": require_ready,
+        "blocking_conditions": closeout.get("blocking_conditions", []),
+        "checks": checks,
+        "evidence_root": str(root),
+        "live_authorization_absent": not auth_path.exists(),
+    }
+    if output_path:
+        _write_json(output_path, report)
+    return report
+
+
 def _limit_order_contract_passed(report: dict) -> bool:
     return report.get("status") == "pass" and report.get("shadow", {}).get("order_type") == "limit"
 
@@ -573,6 +648,19 @@ def _aggregate_check_status(checks: list[dict]) -> str:
     if not checks:
         return "missing"
     return "pass" if all(item.get("status") == "pass" for item in checks) else "fail"
+
+
+def _check_status(report: dict, check_id: str) -> str:
+    for item in report.get("checks", []):
+        if item.get("id") == check_id:
+            return str(item.get("status"))
+    return "missing"
+
+
+def _read_json(path: Path) -> dict:
+    if not path.exists():
+        return {}
+    return json.loads(path.read_text(encoding="utf-8"))
 
 
 def _sha256(path: Path) -> str:

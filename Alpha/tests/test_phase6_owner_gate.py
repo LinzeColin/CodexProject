@@ -17,6 +17,7 @@ from backend.app.services.phase6_owner_gate import (
     build_shadow_live_constraints_report,
     build_soak_validation_report,
     read_soak_samples,
+    verify_phase6_evidence_package,
 )
 from backend.app.services.policy import GovernorPolicy
 
@@ -165,7 +166,13 @@ def test_phase6_evidence_manifest_checks_artifacts_and_status(tmp_path):
         live_authorization_path=tmp_path / "LIVE_AUTHORIZATION.json",
         output_path=evidence_root / "shadow_live_constraints_latest.json",
     )
-    soak = build_soak_validation_report(samples=[], output_path=evidence_root / "soak_validation_latest.json")
+    sample = {
+        "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
+        "fail_count": 0,
+        "paper_shadow_report": paper_shadow,
+        "shadow_live_constraints": constraints,
+    }
+    soak = build_soak_validation_report(samples=[sample], output_path=evidence_root / "soak_validation_latest.json")
     closeout = build_owner_gate_closeout(
         soak_validation=soak,
         paper_shadow_report=paper_shadow,
@@ -209,6 +216,70 @@ def test_phase6_evidence_manifest_checks_artifacts_and_status(tmp_path):
     assert all(item["sha256"] for item in manifest["artifact_checks"])
     assert manifest["paper_shadow"]["schema_status"] == "pass"
     assert manifest["paper_shadow"]["hard_gate_status"] == "pass"
+
+
+def test_phase6_evidence_package_verifier_preserves_owner_gate_block(tmp_path):
+    run = _paper_run(tmp_path)
+    evidence_root = tmp_path / "phase6_closeout_latest"
+    paper_shadow = build_paper_shadow_report(
+        run_result=run,
+        output_path=evidence_root / "paper_shadow_report_latest.json",
+    )
+    constraints = build_shadow_live_constraints_report(
+        live_authorization_path=tmp_path / "LIVE_AUTHORIZATION.json",
+        output_path=evidence_root / "shadow_live_constraints_latest.json",
+    )
+    sample = {
+        "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
+        "fail_count": 0,
+        "paper_shadow_report": paper_shadow,
+        "shadow_live_constraints": constraints,
+    }
+    soak = build_soak_validation_report(samples=[sample], output_path=evidence_root / "soak_validation_latest.json")
+    closeout = build_owner_gate_closeout(
+        soak_validation=soak,
+        paper_shadow_report=paper_shadow,
+        shadow_live_constraints=constraints,
+        output_path=evidence_root / "phase6_closeout.json",
+    )
+    build_owner_decision_markdown(
+        closeout=closeout,
+        soak_validation=soak,
+        paper_shadow_report=paper_shadow,
+        shadow_live_constraints=constraints,
+        output_path=evidence_root / "OWNER_DECISION.md",
+    )
+    build_phase6_closeout_report_markdown(
+        closeout=closeout,
+        soak_validation=soak,
+        paper_shadow_report=paper_shadow,
+        shadow_live_constraints=constraints,
+        output_path=evidence_root / "PHASE6_CLOSEOUT_REPORT.md",
+    )
+    build_phase6_evidence_manifest(
+        evidence_root=evidence_root,
+        closeout=closeout,
+        soak_validation=soak,
+        paper_shadow_report=paper_shadow,
+        shadow_live_constraints=constraints,
+        output_path=evidence_root / "EVIDENCE_MANIFEST.json",
+    )
+
+    report = verify_phase6_evidence_package(
+        evidence_root=evidence_root,
+        live_authorization_path=tmp_path / "LIVE_AUTHORIZATION.json",
+        output_path=evidence_root / "EVIDENCE_PACKAGE_VERIFICATION.json",
+    )
+    ready_report = verify_phase6_evidence_package(
+        evidence_root=evidence_root,
+        live_authorization_path=tmp_path / "LIVE_AUTHORIZATION.json",
+        require_ready=True,
+    )
+
+    assert report["verification_status"] == "pass"
+    assert report["owner_gate_status"] == "blocked_not_ready_for_owner_gate"
+    assert (evidence_root / "EVIDENCE_PACKAGE_VERIFICATION.json").exists()
+    assert ready_report["verification_status"] == "fail"
 
 
 def test_soak_history_appends_jsonl_samples(tmp_path):

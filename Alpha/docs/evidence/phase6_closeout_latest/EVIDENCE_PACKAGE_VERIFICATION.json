@@ -1,0 +1,149 @@
+{
+  "blocking_conditions": [
+    "phase6_48h_soak_validation"
+  ],
+  "checks": [
+    {
+      "id": "artifact_exists.EVIDENCE_MANIFEST.json",
+      "message": "EVIDENCE_MANIFEST.json",
+      "status": "pass"
+    },
+    {
+      "id": "artifact_exists.OWNER_DECISION.md",
+      "message": "OWNER_DECISION.md",
+      "status": "pass"
+    },
+    {
+      "id": "artifact_exists.PHASE6_CLOSEOUT_REPORT.md",
+      "message": "PHASE6_CLOSEOUT_REPORT.md",
+      "status": "pass"
+    },
+    {
+      "id": "artifact_exists.paper_shadow_report_latest.json",
+      "message": "paper_shadow_report_latest.json",
+      "status": "pass"
+    },
+    {
+      "id": "artifact_exists.phase6_closeout.json",
+      "message": "phase6_closeout.json",
+      "status": "pass"
+    },
+    {
+      "id": "artifact_exists.shadow_live_constraints_latest.json",
+      "message": "shadow_live_constraints_latest.json",
+      "status": "pass"
+    },
+    {
+      "id": "artifact_exists.soak_validation_latest.json",
+      "message": "soak_validation_latest.json",
+      "status": "pass"
+    },
+    {
+      "id": "artifact_hash.phase6_closeout",
+      "message": "phase6_closeout.json",
+      "status": "pass"
+    },
+    {
+      "id": "artifact_hash.paper_shadow_report",
+      "message": "paper_shadow_report_latest.json",
+      "status": "pass"
+    },
+    {
+      "id": "artifact_hash.shadow_live_constraints",
+      "message": "shadow_live_constraints_latest.json",
+      "status": "pass"
+    },
+    {
+      "id": "artifact_hash.soak_validation",
+      "message": "soak_validation_latest.json",
+      "status": "pass"
+    },
+    {
+      "id": "artifact_hash.owner_decision",
+      "message": "OWNER_DECISION.md",
+      "status": "pass"
+    },
+    {
+      "id": "artifact_hash.closeout_report",
+      "message": "PHASE6_CLOSEOUT_REPORT.md",
+      "status": "pass"
+    },
+    {
+      "id": "manifest_all_artifacts_present",
+      "message": "manifest all artifacts present",
+      "status": "pass"
+    },
+    {
+      "id": "manifest_status_matches_closeout",
+      "message": "manifest status matches closeout",
+      "status": "pass"
+    },
+    {
+      "id": "acceptance_matches_closeout",
+      "message": "manifest acceptance matches closeout",
+      "status": "pass"
+    },
+    {
+      "id": "paper_shadow_pass",
+      "message": "Paper/Shadow report pass",
+      "status": "pass"
+    },
+    {
+      "id": "paper_schema_pass",
+      "message": "Paper/Shadow schema pass",
+      "status": "pass"
+    },
+    {
+      "id": "paper_hard_gates_pass",
+      "message": "Paper/Shadow hard gates pass",
+      "status": "pass"
+    },
+    {
+      "id": "limit_order_contract",
+      "message": "limit order contract",
+      "status": "pass"
+    },
+    {
+      "id": "shadow_constraints_pass",
+      "message": "Shadow live constraints pass",
+      "status": "pass"
+    },
+    {
+      "id": "live_trading_disabled",
+      "message": "live trading disabled",
+      "status": "pass"
+    },
+    {
+      "id": "live_authorization_absent",
+      "message": "LIVE_AUTHORIZATION.json absent",
+      "status": "pass"
+    },
+    {
+      "id": "soak_samples_present",
+      "message": "soak samples present",
+      "status": "pass"
+    },
+    {
+      "id": "soak_no_failed_samples",
+      "message": "soak has no failed samples",
+      "status": "pass"
+    },
+    {
+      "id": "soak_duration_pass",
+      "message": "48h natural-day soak pass",
+      "status": "fail"
+    },
+    {
+      "id": "closeout_ready",
+      "message": "closeout ready for owner gate",
+      "status": "fail"
+    }
+  ],
+  "evidence_root": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Alpha/docs/evidence/phase6_closeout_latest",
+  "generated_at": "2026-06-27T01:42:12+00:00",
+  "live_authorization_absent": true,
+  "owner_gate_status": "blocked_not_ready_for_owner_gate",
+  "require_ready": false,
+  "schema_version": "2026-06-27.alpha.phase6.evidence_package_verification",
+  "verification_status": "pass"
+}

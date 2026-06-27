@@ -21,6 +21,7 @@ from backend.app.services.phase6_owner_gate import (  # noqa: E402
     build_shadow_live_constraints_report,
     build_soak_validation_report,
     read_soak_samples,
+    verify_phase6_evidence_package,
 )
 
 
@@ -85,6 +86,10 @@ def main() -> int:
         paper_shadow_report=latest_report,
         shadow_live_constraints=latest_constraints,
         output_path=evidence_root / "EVIDENCE_MANIFEST.json",
+    )
+    verify_phase6_evidence_package(
+        evidence_root=evidence_root,
+        output_path=evidence_root / "EVIDENCE_PACKAGE_VERIFICATION.json",
     )
     print(json.dumps(closeout, ensure_ascii=False, indent=2, sort_keys=True))
     return 0

@@ -40,6 +40,14 @@ Reason: OWNER-GATE handoff needs a machine-checkable package index so future age
 
 Consequence: Missing artifacts, changed hashes, incomplete soak coverage, or a present `runtime/LIVE_AUTHORIZATION.json` must remain visible before owner review. The manifest does not promote Alpha to MICRO_LIVE.
 
+## 2026-06-27: Phase 6 Evidence Package Verification Is Separate From Readiness
+
+Decision: `scripts/verify_phase6_evidence_package.py` and `docs/evidence/phase6_closeout_latest/EVIDENCE_PACKAGE_VERIFICATION.json` verify package integrity independently from OWNER-GATE readiness.
+
+Reason: Alpha needs to distinguish "all evidence artifacts are present and internally consistent" from "48-hour soak is complete and closeout is ready." These are related but not identical gates.
+
+Consequence: The verifier can pass package integrity while still reporting `owner_gate_status=blocked_not_ready_for_owner_gate`. Running it with `--require-ready` must fail until `phase6_closeout.json` is truly `ready_for_owner_gate`.
+
 ## 2026-06-13: Execution Boundary
 
 Decision: Alpha will automate paper trading, risk checks, approval queues, and broker-ready order tickets. It will not autonomously submit real-money broker orders.
