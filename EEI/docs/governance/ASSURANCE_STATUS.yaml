@@ -1,9 +1,9 @@
 project_id: "EEI"
-as_of_event_id: "EVENT-20260627-002"
+as_of_event_id: "EVENT-20260627-003"
 source_snapshot_hash: "sha256:c1ac83658310a4704bb9924c2ce78f5e63627d4593bcbc3ee40d5d9ca2bb0b3e"
 source_base_commit: "12df22b6347fd881d42545afe387ac9e41e56fb4"
 source_tree_hash: "00e27599461403192b998e8f9a3f7f0e769e5d8f"
-snapshot_event_time: "2026-06-27T13:10:00+10:00"
+snapshot_event_time: "2026-06-27T14:15:00+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -69,7 +69,7 @@ dimensions:
       - "EEI/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "FAILED"
-  release_gate: "TASK-T1303-A205-RELEASE-EVIDENCE-HASH-SYNC"
+  release_gate: "TASK-T1307-A209-WATCHDOG-STALE-HEARTBEAT"
   blocker_ids:
     - "FACT-EEI-EMPIRICAL-EVIDENCE"
     - "FACT-EEI-OPERATIONAL-EVIDENCE"
