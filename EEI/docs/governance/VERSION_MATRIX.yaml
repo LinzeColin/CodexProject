@@ -34,9 +34,9 @@ parameter_profile_versions:
   release-decision-intake: "3"
   release-decision-bundle: "2"
 data_snapshot_version: "task-pack-v4.2.0-2026-06-19"
-current_iteration: "ITER-20260627-001"
+current_iteration: "ITER-20260627-002"
 current_phase: "D"
-current_gate: "TASK-T1307-A209-RUNTIME-REPAIR-A210-SOURCE-BOUNDARY-SYNC"
+current_gate: "TASK-T1303-A205-RELEASE-EVIDENCE-HASH-SYNC"
 version_file_value: "0.1.0"
 legacy_version_labels:
   - "v4.2.0"

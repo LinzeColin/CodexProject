@@ -80,7 +80,7 @@
       "status": "PENDING_SIGNED_DECISIONS"
     }
   },
-  "generated_at": "2026-06-25T22:51:35Z",
+  "generated_at": "2026-06-27T02:51:53Z",
   "missing_input_ids": [
     "A202_source_license_passage_owner_legal_release",
     "A210_brand_legal_market_clearance_or_risk_waiver",
@@ -150,7 +150,7 @@
       "label": "A210 formal brand legal/market clearance or signed risk waiver",
       "required_source": {
         "path": "artifacts/tests/a210/t1309_brand_clearance_intake_template.json",
-        "sha256": "e6f28191c387cfd4bf167d9f8ed2c94f25dda65babc4722fa66b86e9a3facbb8"
+        "sha256": "ec889e48eb27e41c2123d0d198514600bc72eecdd683938b57ab25834a003db0"
       },
       "supporting_sources": [],
       "template_or_partial_evidence_counts_as_clearance": false,
@@ -249,11 +249,11 @@
     },
     "a210_brand_clearance_intake_template": {
       "path": "artifacts/tests/a210/t1309_brand_clearance_intake_template.json",
-      "sha256": "e6f28191c387cfd4bf167d9f8ed2c94f25dda65babc4722fa66b86e9a3facbb8"
+      "sha256": "ec889e48eb27e41c2123d0d198514600bc72eecdd683938b57ab25834a003db0"
     },
     "external_release_evidence_bundle_preflight": {
       "path": "artifacts/tests/a205/t1303_external_release_evidence_bundle_preflight.json",
-      "sha256": "0712c943866a42378c2f637442bdd6356b1c85ab7cf58dee606f8327480c1be9"
+      "sha256": "125e68b30c1efc0c1811e6e70206bc360bcaa9a61ad9b5c87eed9f32354eee48"
     }
   },
   "system_en_name": "Enterprise Ecosystem Intelligence",
