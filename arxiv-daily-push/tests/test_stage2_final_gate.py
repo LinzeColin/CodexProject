@@ -856,6 +856,14 @@ class Stage2FinalGateTests(unittest.TestCase):
             REPO_ROOT
             / "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C011-20260627.json"
         )
+        a006_a009_review_manifest_path = (
+            REPO_ROOT
+            / "governance/run_manifests/ADP-S2PMT07-P1-A006-A009-TECHNICAL-REVIEW-20260627.json"
+        )
+        a006_a009_review_phase_path = (
+            REPO_ROOT
+            / "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_A006_A009_TECHNICAL_REVIEW.md"
+        )
         receipt = receipt_path.read_text(encoding="utf-8")
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         receipt_rows = {
@@ -1008,6 +1016,10 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(manifest["refreshed_findings"], list(expected_current_refs))
         self.assertEqual(
             manifest["refresh_manifest"],
+            "governance/run_manifests/ADP-S2PMT07-P1-A006-A009-TECHNICAL-REVIEW-20260627.json",
+        )
+        self.assertEqual(
+            manifest["previous_refresh_manifest"],
             "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C011-20260627.json",
         )
         self.assertIn(
@@ -1016,6 +1028,16 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertIn(manifest["refresh_manifest"], manifest["refresh_manifests"])
         self.assertTrue(refresh_manifest_path.exists())
+        self.assertTrue(a006_a009_review_manifest_path.exists())
+        self.assertTrue(a006_a009_review_phase_path.exists())
+        self.assertEqual(
+            manifest["p1_technical_review_candidate_findings"],
+            ["A-006", "A-007", "A-008", "A-009"],
+        )
+        self.assertEqual(
+            manifest["p1_technical_review_candidate_manifest"],
+            "governance/run_manifests/ADP-S2PMT07-P1-A006-A009-TECHNICAL-REVIEW-20260627.json",
+        )
         self.assertFalse(manifest["p1_closure_claimed"])
         self.assertFalse(manifest["independent_review_signoff_present"])
         self.assertFalse(manifest["stage2_integrated_production_accepted"])
@@ -1031,7 +1053,50 @@ class Stage2FinalGateTests(unittest.TestCase):
             for stale_ref in stale_refs[finding_id]:
                 self.assertNotIn(stale_ref, row)
                 self.assertNotIn(stale_ref, finding_refs)
-            self.assertIn("refreshed_current_evidence_located", findings[finding_id]["preliminary_review_state"])
+            if finding_id in {"A-006", "A-007", "A-008", "A-009"}:
+                self.assertEqual(
+                    findings[finding_id]["technical_review_verdict"],
+                    "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+                )
+                self.assertEqual(
+                    findings[finding_id]["finding_level_technical_review_receipt"],
+                    "governance/run_manifests/ADP-S2PMT07-P1-A006-A009-TECHNICAL-REVIEW-20260627.json",
+                )
+                self.assertTrue(findings[finding_id]["technical_closure_candidate"])
+                self.assertIn("finding_level_technical_review_passed", findings[finding_id]["preliminary_review_state"])
+            else:
+                self.assertIn("refreshed_current_evidence_located", findings[finding_id]["preliminary_review_state"])
+
+        a006_a009_review = json.loads(a006_a009_review_manifest_path.read_text(encoding="utf-8"))
+        self.assertEqual(
+            a006_a009_review["status"],
+            "finding_level_technical_review_passed_no_p1_closure_no_production",
+        )
+        self.assertEqual(a006_a009_review["finding_ids"], ["A-006", "A-007", "A-008", "A-009"])
+        self.assertFalse(a006_a009_review["reviewer_independence_for_final_gate_claimed"])
+        self.assertTrue(a006_a009_review["technical_review_checks"]["all_four_findings_present"])
+        self.assertTrue(a006_a009_review["technical_review_checks"]["all_evidence_files_exist"])
+        self.assertTrue(a006_a009_review["technical_review_checks"]["all_technical_review_verdicts_pass_no_production"])
+        self.assertFalse(a006_a009_review["technical_review_checks"]["independent_final_signoff_present"])
+        self.assertEqual(a006_a009_review["inherited_v7_1_open_p0_findings_after"], 8)
+        self.assertEqual(a006_a009_review["inherited_v7_1_open_p1_findings_after"], 37)
+        self.assertFalse(a006_a009_review["p1_closure_claimed"])
+        self.assertFalse(a006_a009_review["s2pmt07_final_pass_claimed"])
+        self.assertFalse(a006_a009_review["stage2_integrated_production_accepted"])
+        self.assertFalse(a006_a009_review["real_smtp_sent"])
+        self.assertFalse(a006_a009_review["scheduler_install_enabled"])
+        self.assertFalse(a006_a009_review["release_packaging_enabled"])
+        self.assertFalse(a006_a009_review["production_restore_enabled"])
+        self.assertFalse(a006_a009_review["current_pointer_changed"])
+        self.assertFalse(a006_a009_review["v7_1_baseline_changed"])
+        self.assertFalse(a006_a009_review["v7_2_contract_files_changed"])
+        reviewed = {finding["finding_id"]: finding for finding in a006_a009_review["reviewed_findings"]}
+        self.assertEqual(set(reviewed), {"A-006", "A-007", "A-008", "A-009"})
+        for finding in reviewed.values():
+            self.assertEqual(finding["technical_review_verdict"], "PASS_WITH_NO_PRODUCTION_ACCEPTANCE")
+            self.assertTrue(finding["technical_closure_candidate"])
+            self.assertTrue(finding["independent_final_closure_decision_required"])
+        self.assertIn("A-006", a006_a009_review_phase_path.read_text(encoding="utf-8"))
 
     def test_dependency_state_requires_s2plt04_and_records_missing_completion(self) -> None:
         state = build_dependency_state()

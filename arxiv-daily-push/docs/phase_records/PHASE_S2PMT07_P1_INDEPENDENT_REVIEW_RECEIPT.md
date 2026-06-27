@@ -52,10 +52,10 @@ No P0/P1 closure, no independent final signoff, no S2PLT04 completion, no final 
 
 | finding_id | fix task | title | current evidence surface | receipt state | independent reviewer decision still required |
 |---|---|---|---|---|---|
-| `A-006` | `S2PMT03-RUNTIME-LOCK-A006` | tick 写入异常时 runtime.lock 永久残留 | `PHASE_S2PMT03_RUNTIME_LOCK_A006.md`, `ADP-S2PMT03-RUNTIME-LOCK-A006-20260626.json`, `test_stage1_runtime.py` | refreshed current evidence located; independent review required; closure not claimed | 模拟死进程后仅新 fencing token 可接管 |
-| `A-007` | `S2PMT03-STATE-HISTORY-A007` | 状态历史不验证声明的 from_state | `PHASE_S2PMT03_STATE_HISTORY_A007.md`, `ADP-S2PMT03-STATE-HISTORY-A007-20260626.json`, `test_state_machine.py` | refreshed current evidence located; independent review required; closure not claimed | 缺 reason/at 或时间倒序必须失败 |
-| `A-008` | `S2PMT03-STATE-CONSISTENCY-A008` | current_state 与 state_history 末态可不一致 | `PHASE_S2PMT03_STATE_CONSISTENCY_A008.md`, `ADP-S2PMT03-STATE-CONSISTENCY-A008-20260626.json`, `test_state_machine.py` | refreshed current evidence located; independent review required; closure not claimed | Verify V7.1 fix/test requirement: 末态不一致和 status 不一致均失败 |
-| `A-009` | `S2PMT03-OPTIMISTIC-FENCING-A009` | 状态转换缺少乐观并发控制与 fencing token | `PHASE_S2PMT03_OPTIMISTIC_FENCING_A009.md`, `ADP-S2PMT03-OPTIMISTIC-FENCING-A009-20260626.json`, `test_stage2_lease_fencing.py` | refreshed current evidence located; independent review required; closure not claimed | 过期 worker 的写入被 fencing token 拒绝 |
+| `A-006` | `S2PMT03-RUNTIME-LOCK-A006` | tick 写入异常时 runtime.lock 永久残留 | `PHASE_S2PMT03_RUNTIME_LOCK_A006.md`, `ADP-S2PMT03-RUNTIME-LOCK-A006-20260626.json`, `test_stage1_runtime.py` | finding-level technical review passed; independent final closure not claimed | 模拟死进程后仅新 fencing token 可接管 |
+| `A-007` | `S2PMT03-STATE-HISTORY-A007` | 状态历史不验证声明的 from_state | `PHASE_S2PMT03_STATE_HISTORY_A007.md`, `ADP-S2PMT03-STATE-HISTORY-A007-20260626.json`, `test_state_machine.py` | finding-level technical review passed; independent final closure not claimed | 缺 reason/at 或时间倒序必须失败 |
+| `A-008` | `S2PMT03-STATE-CONSISTENCY-A008` | current_state 与 state_history 末态可不一致 | `PHASE_S2PMT03_STATE_CONSISTENCY_A008.md`, `ADP-S2PMT03-STATE-CONSISTENCY-A008-20260626.json`, `test_state_machine.py` | finding-level technical review passed; independent final closure not claimed | Carry into later P1 closure package; verify final-gate requirement: 末态不一致和 status 不一致均失败 |
+| `A-009` | `S2PMT03-OPTIMISTIC-FENCING-A009` | 状态转换缺少乐观并发控制与 fencing token | `PHASE_S2PMT03_OPTIMISTIC_FENCING_A009.md`, `ADP-S2PMT03-OPTIMISTIC-FENCING-A009-20260626.json`, `test_stage2_lease_fencing.py` | finding-level technical review passed; independent final closure not claimed | 过期 worker 的写入被 fencing token 拒绝 |
 | `A-010` | `S2PMT02-ARTIFACT-ATOMIC-PUBLISH` | 报告文件在质量验证前写入正式目录 | `PHASE_S2PMT02_ARTIFACT_ATOMIC_PUBLISH.md`, `ADP-S2PMT02-ARTIFACT-ATOMIC-PUBLISH-20260626.json`, `test_stage1_b1_report.py` | refreshed current evidence located; independent review required; closure not claimed | Verify V7.1 fix/test requirement: 强制验证失败时正式目录 0 新文件 \| 中途异常后无半发布 package |
 | `A-011` | `S2PMT02-ARTIFACT-SHA256` | artifact_files.sha256 字段不是文件字节 SHA-256 | `PHASE_S2PMT02_ARTIFACT_SHA256.md`, `ADP-S2PMT02-ARTIFACT-SHA256-20260626.json`, `test_stage1_b1_report.py` | refreshed current evidence located; independent review required; closure not claimed | Verify V7.1 fix/test requirement: 每个 artifact manifest SHA 与 sha256sum 完全相同 |
 | `A-012` | `S2PMT01` | 邮件原文链接未限制 URL scheme | `PHASE_S2PMT01_INPUT_URL_SAFETY_A012.md`, `ADP-S2PMT01-INPUT-URL-SAFETY-A012-20260626.json`, `test_security_boundary.py` | refreshed current evidence located; independent review required; closure not claimed | Verify V7.1 fix/test requirement: javascript/data/file/带凭据 URL 均拒绝或降级为无链接文本 |
@@ -99,6 +99,20 @@ This refresh updates the P1 receipt to point completed P1 remediation rows at th
 - previous_refresh_manifest: `governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C010-20260627.json`
 - closure_claimed: `false`
 - independent_review_signoff_present: `false`
+
+
+## Finding-Level Technical Review 2026-06-27 19:01:16 Australia/Sydney
+
+P1 findings `A-006`, `A-007`, `A-008`, and `A-009` now have a finding-level
+technical review verdict `PASS_WITH_NO_PRODUCTION_ACCEPTANCE` and are technical
+closure candidates for a later P1 closure package. This does not close P1, does
+not change inherited counters, and does not provide independent final signoff.
+
+- review_manifest: `governance/run_manifests/ADP-S2PMT07-P1-A006-A009-TECHNICAL-REVIEW-20260627.json`
+- review_phase_record: `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_A006_A009_TECHNICAL_REVIEW.md`
+- reviewed_findings: `A-006`, `A-007`, `A-008`, `A-009`
+- p1_closure_claimed: `false`
+- stage2_integrated_production_accepted: `false`
 
 ## Preserved Blockers
 

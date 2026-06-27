@@ -3894,3 +3894,12 @@ None for this new project baseline.
 - Goal: Aggregate A-001/A-002/A-003/A-004/A-005/B-001/B-007/B-008 into one final-gate candidate package without closing P0/P1.
 - Decisions: Package is ready for later final-gate review; inherited P0 remains 8 and P1 remains 37. No production side effects, no CURRENT/V7 contract edits, no SMTP, scheduler, Release, restore, schema, DB, queue, source adapter, or ranking changes.
 - Evidence: `governance/run_manifests/ADP-S2PMT07-P0-TECHNICAL-CLOSURE-CANDIDATE-PACKAGE-20260627.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_TECHNICAL_CLOSURE_CANDIDATE_PACKAGE.md`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.
+
+### `ITER-20260627-ADP-S2PMT07-P1-A006-A009-TECHNICAL-REVIEW`
+
+- Time: 2026-06-27 19:01:16 Australia/Sydney.
+- Fact level: EXTRACTED from A-006/A-007/A-008/A-009 phase records, manifests, current code, and focused tests.
+- Task IDs: `S2PMT07-P1-A006-A009-TECHNICAL-REVIEW`; parent `S2PMT07`; acceptance `ACC-S2PMT07-FINAL-REVIEW`.
+- Goal: Move the first S2PMT03 P1 group from evidence-located to finding-level technical review candidate without closing P1.
+- Decisions: Verdict `PASS_WITH_NO_PRODUCTION_ACCEPTANCE`; inherited P0 remains 8 and P1 remains 37. No production side effects, no CURRENT/V7 contract edits, no SMTP, scheduler, Release, restore, schema, DB, queue, source adapter, or ranking changes.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-P1-A006-A009-TECHNICAL-REVIEW-20260627.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_A006_A009_TECHNICAL_REVIEW.md`; `arxiv-daily-push/tests/test_stage1_runtime.py`; `arxiv-daily-push/tests/test_state_machine.py`; `arxiv-daily-push/tests/test_stage2_lease_fencing.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.

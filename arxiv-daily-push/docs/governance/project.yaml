@@ -1,7 +1,7 @@
 schema_version: "codexproject.project.v1"
 project_id: "arxiv-daily-push"
 project_name: "arXiv 日报推送 / arXiv Daily Push"
-summary: "arxiv-daily-push 已完成 Stage 1 B1/arXiv accepted、真实 30 天 backfill、test10 Gmail SMTP 证据和本机 Codex/local runner 迁移准备；V7.2 已作为当前产品合同发布到本分支，V7.1 保持只读历史基线，EMAIL_LEARNING_V1 已完成 T01-T05 并以 no-production-side-effects 状态合入 main；S2PBT01/S2P1T01 bioRxiv/medRxiv metadata-only shadow source 与 S2PCT02 Science metadata-only no-send shadow evidence 均为已完成历史记录；当前全局入口为 S2PMT07 final gate precheck blocked；P0 技术关闭候选包已聚合 8 个 finding-level PASS_WITH_NO_PRODUCTION_ACCEPTANCE 收据，但仍不得宣称 Stage 2 或 integrated production accepted。"
+summary: "arxiv-daily-push 已完成 Stage 1 B1/arXiv accepted、真实 30 天 backfill、test10 Gmail SMTP 证据和本机 Codex/local runner 迁移准备；V7.2 已作为当前产品合同发布到本分支，V7.1 保持只读历史基线，EMAIL_LEARNING_V1 已完成 T01-T05 并以 no-production-side-effects 状态合入 main；S2PBT01/S2P1T01 bioRxiv/medRxiv metadata-only shadow source 与 S2PCT02 Science metadata-only no-send shadow evidence 均为已完成历史记录；当前全局入口为 S2PMT07 final gate precheck blocked；P0 技术关闭候选包已聚合 8 个 finding-level PASS_WITH_NO_PRODUCTION_ACCEPTANCE 收据，P1 A-006/A-007/A-008/A-009 已进入 finding-level 技术复审候选；但仍不得宣称 Stage 2 或 integrated production accepted。"
 version: "0.23.0"
 fact_level: "EXTRACTED"
 owner_role: "content_owner + engineering_owner"
