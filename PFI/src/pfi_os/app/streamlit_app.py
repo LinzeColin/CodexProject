@@ -398,7 +398,7 @@ ACTIVE_PFI_VIEW_OPTIONS = {
     "tools": "数据与系统｜数据中心",
 }
 
-PFI_PRIMARY_NAV_LABELS = ("首页", "市场", "研究", "持仓", "策略实验室", "数据与系统")
+PFI_PRIMARY_NAV_LABELS = ("首页总览", "账户与资产", "账本流水", "投资管理", "消费管理", "数据源与同步", "建议与复盘", "报告与洞察")
 
 TERM_HELP = {
     "数据源": "行情数据来源。真实研究优先使用已配置并可验证的数据源；Sample 只用于演示和功能检查。",
@@ -1197,8 +1197,8 @@ def navigation_view() -> str:
         requested = "command"
     keys = list(ACTIVE_PFI_VIEW_OPTIONS)
     with st.sidebar:
-        st.markdown("### PFI 六入口")
-        st.caption("首页 / 市场 / 研究 / 持仓 / 策略实验室 / 数据与系统；只保留当前 PFI 核心功能。")
+        st.markdown("### PFI V0.2 入口")
+        st.caption("首页总览 / 账户与资产 / 账本流水 / 投资管理 / 消费管理 / 数据源与同步 / 建议与复盘 / 报告与洞察；旧研究和策略入口保持兼容。")
         selected_label = st.radio(
             "功能区",
             options=[ACTIVE_PFI_VIEW_OPTIONS[key] for key in keys],

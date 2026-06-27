@@ -7,4 +7,7 @@
 - 补齐最小治理文件，记录 Stage 1/2 合同事实和生产未验证边界。
 - 完成 PFI V0.2 Stage 2 本地合同验收，覆盖 phases 2A-2H。
 - 新增 `docs/pfi_v02/STAGE2_ACCEPTANCE_AUDIT.md`，记录 phase/task evidence、stop-condition checks、validation results、本地 app-entry evidence 和缓存清理证据。
-- 生产联通、真实账户凭证、支付提交、券商下单和实盘交易仍为独立后续 gate，未在 Stage 2 声明就绪。
+- 完成 PFI V0.2 Stage 3 本地可读 MVP，覆盖首页总览、账户地图、账本流水、待复核、同步全部、建议和报告入口。
+- 新增 `src/pfi_v02/stage3_read_mvp.py` 与 `tests/test_stage3_readable_mvp.py`，将 Stage 3 3A-3D acceptance 固化为本地合同测试。
+- Web shell 默认首页接入 Stage 3 read-model，左侧显示 V0.2 8 个一级入口；旧策略回测、盘感训练、大数据模拟器和 QBVS 兼容入口保留。
+- 生产联通、真实账户凭证、支付提交、券商下单和实盘交易仍为独立后续 gate，未在 Stage 3 声明就绪。

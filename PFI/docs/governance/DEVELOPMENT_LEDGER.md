@@ -3,13 +3,14 @@
 product_version: 0.2.0
 model_count: 1
 formula_count: 1
-parameter_count: 3
-task_count: 2
-acceptance_count: 2
+parameter_count: 7
+task_count: 3
+acceptance_count: 3
 
 ## 2026-06-27
 
 - PFI 根项目三基入口统一为 Markdown 文件名。
 - 补齐 PFI 根最小治理文件。
 - 完成 PFI V0.2 Stage 2 本地合同验收、入口验收和缓存清理记录。
-- 不改变运行代码，不新增生产或实盘能力声明。
+- 完成 PFI V0.2 Stage 3 首页、账户、账本可读 MVP，本地只读 read-model 和 Web shell 8 入口刷新。
+- 不新增生产或实盘能力声明；同步全部只生成计划，不执行外部动作。

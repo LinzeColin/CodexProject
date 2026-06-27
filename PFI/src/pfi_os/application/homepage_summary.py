@@ -7,6 +7,7 @@ from typing import Any
 from pfi_os.application.operational_store import OperationalStore
 from pfi_os.application.source_registry import SourceRegistry
 from pfi_os.application.workflow_runtime_read_model import build_workflow_runtime_read_model, empty_workflow_runtime_read_model
+from pfi_v02.stage3_read_mvp import build_stage3_read_model
 
 RETIRED_PUBLIC_FRAGMENTS = (
     "Token" + " ROI",
@@ -28,6 +29,7 @@ SAFE_METADATA_KEYS = (
 
 def build_homepage_summary(store: OperationalStore | None = None, *, now: datetime | None = None) -> dict[str, Any]:
     operational_store = store or OperationalStore()
+    stage3_dashboard = build_stage3_read_model(now=now)
     source_registry = SourceRegistry(operational_store)
     source_summary = _without_retired_source_rows(source_registry.summary(now=now))
     sources = _without_retired_rows(operational_store.table_rows("source_records"))
@@ -38,33 +40,8 @@ def build_homepage_summary(store: OperationalStore | None = None, *, now: dateti
 
     generated_at = (now or datetime.now(timezone.utc)).isoformat(timespec="seconds")
     latest_as_of = _latest_text([row.get("as_of", "") for row in [*sources, *evidence, *jobs, *tasks, *holdings]])
-    cards = [
-        {
-            "key": "open_tasks",
-            "label": "Open tasks",
-            "value": str(sum(1 for row in tasks if str(row.get("status", "")).lower() in {"open", "queued", "running"})),
-            "detail": _card_detail("task_records", latest_as_of, _status_from_count(len(tasks))),
-        },
-        {
-            "key": "market_events",
-            "label": "Market events",
-            "value": str(_count_market_sources(sources, evidence)),
-            "detail": _card_detail("source_records", _latest_text(row.get("as_of", "") for row in sources), _freshest_status(source_summary)),
-        },
-        {
-            "key": "portfolio_risk",
-            "label": "Portfolio risk",
-            "value": "Review" if holdings else "Missing",
-            "detail": _card_detail("holding_snapshots", _latest_text(row.get("as_of", "") for row in holdings), "Human review" if holdings else "Needs data"),
-        },
-        {
-            "key": "strategy_runs",
-            "label": "Strategy runs",
-            "value": str(_count_strategy_records(evidence, jobs)),
-            "detail": _card_detail("evidence_records", _latest_text(row.get("as_of", "") for row in evidence), _status_from_count(len(evidence))),
-        },
-    ]
-    decision_rows = _decision_rows(tasks, jobs, evidence)
+    cards = _stage3_metric_cards(stage3_dashboard)
+    decision_rows = _stage3_decision_rows(stage3_dashboard) or _decision_rows(tasks, jobs, evidence)
     return {
         "schema": "PFIOSHomeSummaryV1",
         "generated_at": generated_at,
@@ -72,7 +49,8 @@ def build_homepage_summary(store: OperationalStore | None = None, *, now: dateti
         "source_registry": source_summary,
         "metric_cards": cards,
         "decision_rows": decision_rows,
-        "evidence_drawer": _evidence_drawer(evidence, sources),
+        "evidence_drawer": _stage3_evidence_drawer(stage3_dashboard) or _evidence_drawer(evidence, sources),
+        "stage3_dashboard": _sanitize_public_payload(stage3_dashboard),
         "workflow_runtime": _sanitize_public_payload(build_workflow_runtime_read_model(operational_store, now=now)),
         "read_model": "OperationalStore -> SourceRegistry -> PFIOSHomeSummaryV1",
         "cache_policy": "Web shell consumes this compact summary; it does not read provider JSON, ResearchBus tables, or private source files directly.",
@@ -81,6 +59,7 @@ def build_homepage_summary(store: OperationalStore | None = None, *, now: dateti
 
 
 def empty_homepage_summary() -> dict[str, Any]:
+    stage3_dashboard = build_stage3_read_model()
     return {
         "schema": "PFIOSHomeSummaryV1",
         "generated_at": "",
@@ -94,26 +73,53 @@ def empty_homepage_summary() -> dict[str, Any]:
             "private_uri_policy": "Private, private-derived, and secret source URIs are redacted by default.",
             "truth_role": "Operational source_records table is the source registry; ResearchBus remains compatibility events only.",
         },
-        "metric_cards": [
-            {"key": "open_tasks", "label": "Open tasks", "value": "0", "detail": "source: task_records · updated missing · status Missing"},
-            {"key": "market_events", "label": "Market events", "value": "0", "detail": "source: source_records · updated missing · status Missing"},
-            {"key": "portfolio_risk", "label": "Portfolio risk", "value": "Missing", "detail": "source: holding_snapshots · updated missing · status Needs data"},
-            {"key": "strategy_runs", "label": "Strategy runs", "value": "0", "detail": "source: evidence_records · updated missing · status Missing"},
-        ],
-        "decision_rows": [],
-        "evidence_drawer": {
-            "title": "No evidence selected",
-            "Evidence": "No operational evidence records are available.",
-            "Source": "Operational Store is empty.",
-            "Model": "DisabledProvider",
-            "Parameters": "",
-            "Data lineage": "No lineage yet.",
-            "Raw document": "No source record.",
-        },
+        "metric_cards": _stage3_metric_cards(stage3_dashboard),
+        "decision_rows": _stage3_decision_rows(stage3_dashboard),
+        "evidence_drawer": _stage3_evidence_drawer(stage3_dashboard),
+        "stage3_dashboard": _sanitize_public_payload(stage3_dashboard),
         "workflow_runtime": empty_workflow_runtime_read_model(),
         "read_model": "OperationalStore -> SourceRegistry -> PFIOSHomeSummaryV1",
         "cache_policy": "Web shell consumes this compact summary; it does not read provider JSON, ResearchBus tables, or private source files directly.",
         "safety_boundary": "Decision support only; no live automatic orders, broker submission, payments, betting, or unattended execution.",
+    }
+
+
+def _stage3_metric_cards(stage3_dashboard: dict[str, Any]) -> list[dict[str, str]]:
+    cards = stage3_dashboard.get("home", {}).get("financial_status_cards", [])
+    return [_sanitize_public_payload(card) for card in cards[:5] if isinstance(card, dict)]
+
+
+def _stage3_decision_rows(stage3_dashboard: dict[str, Any]) -> list[dict[str, str]]:
+    rows: list[dict[str, str]] = []
+    for item in stage3_dashboard.get("recommendations", [])[:4]:
+        if not isinstance(item, dict):
+            continue
+        evidence_refs = item.get("evidence_refs", [])
+        if isinstance(evidence_refs, (list, tuple)):
+            evidence = ", ".join(str(ref) for ref in evidence_refs[:2])
+        else:
+            evidence = str(evidence_refs)
+        rows.append(
+            {
+                "priority": f"P{item.get('priority', 9)}",
+                "object": str(item.get("target_entry", "首页总览")),
+                "evidence": evidence or str(item.get("recommendation_id", "")),
+                "action": str(item.get("action", "查看建议")),
+                "status": str(item.get("status", "有建议")),
+            }
+        )
+    return rows
+
+
+def _stage3_evidence_drawer(stage3_dashboard: dict[str, Any]) -> dict[str, str]:
+    return {
+        "title": "PFI Stage 3 · 首页、账户、账本",
+        "Evidence": "Stage 3 使用本地 synthetic/read-only read-model 验证首页、账户地图、账本流水、待复核和同步全部计划。",
+        "Source": "pfi_v02.stage3_read_mvp",
+        "Model": str(stage3_dashboard.get("schema", "PFIV02Stage3ReadableMVPV1")),
+        "Parameters": "FX fixture AUD/CNY/USD/HKD; no live market rate; no real credential.",
+        "Data lineage": "Stage2 import fixtures -> Stage3 account/ledger/recommendation read-model.",
+        "Raw document": "PFI/docs/pfi_v02/STAGE3_READABLE_MVP.md",
     }
 
 

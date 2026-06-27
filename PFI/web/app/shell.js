@@ -27,6 +27,13 @@ const GENERIC_WORKFLOW_DESCRIPTION = "查看该工作流的来源、任务和证
 
 const WORKSPACE_LABELS = {
   home: "首页",
+  accounts: "账户与资产",
+  ledger: "账本流水",
+  investment: "投资管理",
+  consumption: "消费管理",
+  sync: "数据源与同步",
+  recommendations: "建议与复盘",
+  insights: "报告与洞察",
   market: "市场",
   markets: "市场",
   research: "研究",
@@ -35,6 +42,14 @@ const WORKSPACE_LABELS = {
   strategy: "策略实验室",
   strategy_lab: "策略实验室",
   data: "数据与系统",
+  首页总览: "首页总览",
+  账户与资产: "账户与资产",
+  账本流水: "账本流水",
+  投资管理: "投资管理",
+  消费管理: "消费管理",
+  数据源与同步: "数据源与同步",
+  建议与复盘: "建议与复盘",
+  报告与洞察: "报告与洞察",
 };
 
 const CARD_LABELS = {
@@ -42,6 +57,11 @@ const CARD_LABELS = {
   market_events: "市场事件",
   portfolio_risk: "持仓风险",
   strategy_runs: "策略运行",
+  net_worth: "净资产",
+  cash: "现金",
+  investment_assets: "投资资产",
+  monthly_spending: "本月支出",
+  data_health: "数据健康",
 };
 
 const CARD_SOURCES = {
@@ -49,6 +69,11 @@ const CARD_SOURCES = {
   market_events: "来源登记",
   portfolio_risk: "持仓快照",
   strategy_runs: "证据记录",
+  net_worth: "账户账本",
+  cash: "账户地图",
+  investment_assets: "账户与资产",
+  monthly_spending: "账本流水",
+  data_health: "数据源与同步",
 };
 
 const FEATURE_TARGETS = {
@@ -93,6 +118,12 @@ const FEATURE_TARGETS = {
   持仓: { view: "holdings", label: "打开持仓" },
   数据中心: { view: "tools", label: "打开数据" },
   策略库: { view: "library", label: "打开策略库" },
+  同步全部: { workspace: "sync", label: "同步计划" },
+  处理待复核: { workspace: "ledger", label: "处理复核" },
+  查看建议: { workspace: "recommendations", label: "查看建议" },
+  生成报告: { workspace: "insights", label: "生成报告" },
+  账户地图: { workspace: "accounts", label: "查看账户" },
+  账本流水: { workspace: "ledger", label: "查看账本" },
   来源登记: { view: "source_registry", label: "打开来源" },
   任务监控: { view: "task_monitor", label: "打开任务" },
   隐私边界: { view: "privacy_boundary", label: "打开隐私" },
@@ -460,25 +491,23 @@ const DEFAULT_WORKSPACES = {
     freshness: "更新 08:45",
     runtime: "快速路径：待复核 · 目标 60 秒",
     cards: [
-      ["待处理", "0", "来源：任务表 · 状态待补"],
-      ["市场事件", "0", "来源：来源登记 · 状态待补"],
-      ["持仓风险", "待补", "来源：持仓快照 · 需要人工数据"],
-      ["策略运行", "0", "来源：证据记录 · 状态待补"],
+      ["净资产", "待补", "来源：账户账本 · 状态需要同步"],
+      ["现金", "待补", "来源：账户地图 · 状态需要同步"],
+      ["投资资产", "待补", "来源：账户与资产 · 状态需要同步"],
+      ["本月支出", "待补", "来源：账本流水 · 状态需要同步"],
     ],
     features: [
+      feature("同步全部", "需要同步", "数据源与同步", "生成可执行前的本地同步/导入计划，不登录、不下单、不支付。"),
+      feature("处理待复核", "需要复核", "账本流水", "用 A/B/C/D 选择处理低置信度流水，避免 unknown 静默入账。"),
+      feature("查看建议", "有建议", "建议与复盘", "查看带证据、动作、状态、预期效果和 tradeoff 的 Top N 建议。"),
+      feature("生成报告", "有建议", "报告与洞察", "生成本地只读报告草稿，保留首页、账户、账本和证据链。"),
       feature("单标的回测", "可用", "回测证据", "运行单标的策略回测，查看收益、回撤、交易和报告。"),
-      feature("参数扫描", "可用", "参数稳定性", "比较参数网格、Train-Test 和 Walk-Forward 结果。"),
       feature("盘感训练", "可用", "训练记录", "保留读图训练和限时判断，不输出实盘信号。"),
-      feature("热点分析", "可用", "市场热度", "查看指数、ETF、主题和自选对象的强弱扩散。"),
-      feature("报告中心", "可用", "研究档案", "查看、筛选、下载和复核研究产物。"),
-      feature("持仓", "复核", "持仓边界", "查看正式持仓、候选持仓、暴露和质量检查。"),
-      feature("政策雷达", "复核", "权威来源", "登记政策来源、影响路径和人工行动队列。"),
-      feature("数据中心", "复核", "系统诊断", "检查来源、任务、隐私边界和备份状态。"),
     ],
     rows: [
-      row("P0", "数据新鲜度", "来源时间", "复核缓存兜底是否仍可用。", "复核"),
-      row("P1", "市场简报", "事件摘要", "查看今日可用市场证据。", "可用"),
-      row("P1", "策略运行", "回测元数据", "确认策略结果是否可复现。", "观察"),
+      row("P1", "数据源与同步", "账户状态", "先同步或扫描本地导入文件。", "需要同步"),
+      row("P2", "账本流水", "待复核记录", "处理低置信度流水。", "需要复核"),
+      row("P3", "报告与洞察", "首页证据链", "生成本地报告草稿。", "有建议"),
     ],
     tasks: [
       task("数据新鲜度复核", "可用 · 缓存兜底已准备", "ready"),
@@ -664,6 +693,101 @@ const DEFAULT_WORKSPACES = {
 };
 
 const WORKSPACES = structuredClone(DEFAULT_WORKSPACES);
+installStage3WorkspaceAliases();
+
+function installStage3WorkspaceAliases() {
+  WORKSPACES.home.label = "首页总览";
+  WORKSPACES.home.conclusion = "先看净资产、现金、投资资产、本月支出和数据健康，再处理同步、复核、建议和报告。";
+  WORKSPACES.accounts = {
+    ...structuredClone(DEFAULT_WORKSPACES.portfolio),
+    label: "账户与资产",
+    kicker: "账户地图",
+    conclusion: "统一查看支付宝、基金、Moomoo、中国券商、ABC、CBA、微信和其他账户状态。",
+    freshness: "账户状态来自本地 read-model",
+    runtime: "账户与资产：跨币种折算 · 对账可见",
+    cards: [
+      ["账户来源", "7", "支付宝、基金、券商、银行、微信"],
+      ["币种", "4", "AUD / CNY / USD / HKD"],
+      ["对账状态", "复核", "平台余额 vs PFI 账本余额"],
+      ["凭证边界", "只读", "不需要交易密码"],
+    ],
+    features: [
+      feature("账户地图", "可用", "账户与资产", "查看全部账户、来源状态、币种和对账差异。", { workspace: "accounts", label: "查看账户" }),
+      feature("导入对账", "需要复核", "平台余额", "核对平台余额和 PFI 账本余额差异。", { view: "portfolio_reconciliation", label: "打开对账" }),
+      feature("持仓", "可用", "投资账户", "兼容旧持仓复核入口，仍然只读。", { view: "holdings", label: "打开持仓" }),
+    ],
+  };
+  WORKSPACES.ledger = {
+    ...structuredClone(DEFAULT_WORKSPACES.data),
+    label: "账本流水",
+    kicker: "流水事实层",
+    conclusion: "查看 normalized transactions、待分类流水、转账匹配和每条流水的原始证据链。",
+    freshness: "账本来自本地导入 fixture",
+    runtime: "账本流水：证据链优先 · unknown 不静默入账",
+    cards: [
+      ["全部流水", "可查", "normalized transactions"],
+      ["待分类", "复核", "低置信度进入队列"],
+      ["转账匹配", "可确认", "确认/拒绝/修改"],
+      ["证据链", "开启", "batch/raw/parser"],
+    ],
+    features: [
+      feature("处理待复核", "需要复核", "A/B/C/D", "用选择题处理低置信度流水。", { workspace: "ledger", label: "处理复核" }),
+      feature("账本流水", "可用", "原始证据链", "查看 batch、raw record 和 parser version。", { workspace: "ledger", label: "查看流水" }),
+      feature("导入对账", "需要复核", "转账匹配", "确认、拒绝或修改疑似转账，防止计入消费。", { view: "portfolio_reconciliation", label: "打开对账" }),
+    ],
+  };
+  WORKSPACES.investment = {
+    ...structuredClone(DEFAULT_WORKSPACES.strategy),
+    label: "投资管理",
+    kicker: "投资与策略",
+    conclusion: "保留策略回测、盘感训练和大数据模拟器；账户事实来自账户与资产。",
+    runtime: "投资管理：策略实验室 / 大数据模拟器 / 盘感训练",
+  };
+  WORKSPACES.consumption = {
+    ...structuredClone(DEFAULT_WORKSPACES.data),
+    label: "消费管理",
+    kicker: "消费与成本",
+    conclusion: "消费流水、预算、订阅、异常消费和成本控制都必须排除转账与投资事件。",
+    freshness: "消费视图来自账本流水",
+    runtime: "消费管理：转账不计消费 · 低置信度先复核",
+    cards: [
+      ["本月支出", "可读", "来自已分类消费流水"],
+      ["待分类", "复核", "unknown 不静默入账"],
+      ["订阅", "后续", "Stage 4 扩展"],
+      ["异常消费", "后续", "Stage 4 扩展"],
+    ],
+    features: [
+      feature("处理待复核", "需要复核", "消费分类", "复核低置信度消费流水。", { workspace: "ledger", label: "处理复核" }),
+      feature("账本流水", "可用", "消费证据", "查看消费、退款、转账和费用的证据链。", { workspace: "ledger", label: "查看流水" }),
+    ],
+  };
+  WORKSPACES.sync = {
+    ...structuredClone(DEFAULT_WORKSPACES.data),
+    label: "数据源与同步",
+    kicker: "同步与导入",
+    conclusion: "一键生成可执行前的同步/导入计划；真实登录、支付和券商操作必须另走 owner gate。",
+    runtime: "同步全部：只生成计划 · 不执行外部动作",
+    features: [
+      feature("同步全部", "需要同步", "7 个来源", "扫描本地导入收件箱或生成只读预检，不登录、不下单、不支付。", { workspace: "sync", label: "同步计划" }),
+      feature("来源登记", "复核", "数据源状态", "查看数据源新鲜度、失败原因和 parser 合同。"),
+      feature("隐私边界", "可用", "本地数据", "私有数据和凭证不进入公共 Git。"),
+    ],
+  };
+  WORKSPACES.recommendations = {
+    ...structuredClone(DEFAULT_WORKSPACES.home),
+    label: "建议与复盘",
+    kicker: "建议生命周期",
+    conclusion: "建议必须有 domain、evidence、expected effect、tradeoff、action 和 decision 状态。",
+    runtime: "建议与复盘：Top N · 人工决策",
+  };
+  WORKSPACES.insights = {
+    ...structuredClone(DEFAULT_WORKSPACES.research),
+    label: "报告与洞察",
+    kicker: "报告出口",
+    conclusion: "月度、投资、消费、数据质量和 PFI Context Export 必须保留证据链。",
+    runtime: "报告与洞察：Markdown / JSON / CSV 优先",
+  };
+}
 
 function feature(title, status, evidence, description, target = null) {
   return { title, status, evidence, description, target: target || featureTarget(title) };
@@ -793,15 +917,17 @@ function readHomeSummary() {
 function applyHomeSummary(summary) {
   if (!summary) return;
   const home = WORKSPACES.home;
+  const cards = (summary.metric_cards || []).slice(0, 5);
   const cardByKey = {};
-  (summary.metric_cards || []).forEach((card) => {
+  cards.forEach((card) => {
     cardByKey[card.key] = card;
   });
-  home.cards = ["open_tasks", "market_events", "portfolio_risk", "strategy_runs"].map((key, index) => {
+  const orderedKeys = cards.length ? cards.map((card) => card.key) : ["open_tasks", "market_events", "portfolio_risk", "strategy_runs"];
+  home.cards = orderedKeys.slice(0, 5).map((key, index) => {
     const card = cardByKey[key] || {};
-    const fallback = DEFAULT_WORKSPACES.home.cards[index];
+    const fallback = DEFAULT_WORKSPACES.home.cards[index] || ["数据健康", "待补", "来源：数据源与同步 · 状态待补"];
     return [
-      CARD_LABELS[key] || fallback[0],
+      safeUserText(card.label, CARD_LABELS[key] || fallback[0]),
       safeUserText(card.value, fallback[1]),
       localizedCardDetail(key, card, fallback[2]),
     ];
@@ -820,13 +946,40 @@ function applyHomeSummary(summary) {
   if (mappedRows.length) home.rows = mappedRows;
 
   home.evidence = localizedEvidence(summary.evidence_drawer || {}, home.evidence);
+  applyStage3Dashboard(summary.stage3_dashboard || {});
   applyWorkflowRuntime(summary.workflow_runtime || {});
+}
+
+function applyStage3Dashboard(dashboard) {
+  if (!dashboard || dashboard.schema !== "PFIV02Stage3ReadableMVPV1") return;
+  const actions = (dashboard.quick_actions || []).slice(0, 6).map((item) => {
+    const title = safeUserText(item.label, "PFI 操作");
+    return feature(
+      title,
+      safeUserText(item.status, "复核"),
+      safeUserText(item.target_entry, "Stage 3"),
+      `证据 ${Number(item.evidence_count || 0)} 项 · ${safeUserText(item.target_entry, "首页总览")}`,
+      FEATURE_TARGETS[title] || { workspace: "home", label: "打开入口" },
+    );
+  });
+  if (actions.length) {
+    WORKSPACES.home.features = actions;
+  }
+  const reviewCount = Number((dashboard.review_queue || []).length || 0);
+  const syncCount = Number((dashboard.sync_all_plan || []).length || 0);
+  WORKSPACES.home.tasks = [
+    task("同步全部", `${syncCount} 个来源 · 只生成同步/导入计划`, syncCount ? "review" : "ready"),
+    task("待复核选择题", `${reviewCount} 条流水 · A/B/C/D 处理`, reviewCount ? "review" : "ready"),
+    task("简单状态语言", "正常 / 需要同步 / 需要复核 / 有异常 / 有建议", "ready"),
+  ];
+  WORKSPACES.home.runtime = "Stage 3：同步、复核、建议、报告 · 只读本地 MVP";
 }
 
 function localizedCardDetail(key, card, fallback) {
   if (!card || (!card.detail && !card.value)) return fallback;
   const source = CARD_SOURCES[key] || "运行库";
   const detail = safeUserText(card.detail, "");
+  if (detail && !englishNoise(detail)) return `来源：${source} · ${detail}`;
   const status = localizeStatus(detail.match(/status\s+([A-Za-z]+)/)?.[1] || "");
   return `来源：${source} · ${status ? `状态${status}` : "状态待复核"}`;
 }
