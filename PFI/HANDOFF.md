@@ -4,7 +4,7 @@ Last updated: 2026-06-28 Australia/Sydney
 
 ## Current Goal
 
-PFI v0.2.2 数据库治理 Stage 0 准备：按新版 Stage -> Phase -> Task roadmap 补做任务锁定与文件定位，生成中文 baseline report，锁定 v0.2.2 后续 Stage 1-13 的数据治理、参数治理、Interconnection、标签持久化、Runtime Diff、可视化、测试和后置触发复核路线。v0.2.1 HTML Web Shell 仍是 UIUX 基线，本轮不修改前端显示。
+PFI v0.2.2 数据库治理 Stage 1：完成模型参数文件重构，建立中文参数总目录、机器可读参数 YAML 和参数一致性测试。v0.2.1 HTML Web Shell 仍是 UIUX 基线，本轮不修改前端显示；后续 Stage 2 才实现 CNY/Fx 有效日和本地汇率快照读取。
 
 ## Current Status
 
@@ -59,6 +59,10 @@ PFI v0.2.2 数据库治理 Stage 0 准备：按新版 Stage -> Phase -> Task roa
 - v0.2.2 Stage 0 task IDs 是 `S0-P1-T1`、`S0-P1-T2`、`S0-P1-T3`、`S0-P2-T1`、`S0-P2-T2`。
 - v0.2.2 Stage 0 合同是 `src/pfi_v02/stage_v022_database_governance.py::build_v022_stage0_contract()`；测试是 `tests/test_v022_stage0_database_governance.py`。
 - v0.2.2 Stage 0 已新增参数变更记录 `config/parameter_changelog.md`；后续参数、公式、阈值、分类、标签、Interconnection 和汇率规则变化必须记录旧值、新值、原因和影响范围。
+- v0.2.2 Stage 1 task IDs 是 `S1-P1-T1`、`S1-P1-T2`、`S1-P1-T3`、`S1-P2-T1`、`S1-P2-T2`、`S1-P2-T3`。
+- v0.2.2 Stage 1 合同是 `src/pfi_v02/stage_v022_database_governance.py::build_v022_stage1_contract()`；机器参数读取函数是 `load_v022_parameter_catalog()`。
+- v0.2.2 Stage 1 机器可读参数源是 `config/pfi_parameters.yaml`；参数草案中的 `config/pfi_v022_parameters.yaml` 已作为 draft alias 记录，不新增第二个漂移文件。
+- v0.2.2 Stage 1 验收报告是 `docs/pfi_v022/STAGE1_PARAMETER_GOVERNANCE.md`；一致性测试是 `tests/test_pfi_parameters_consistency.py`。
 - `PFI_v0.2.2_UIUX_Logic_Review_Template.html` 只是后续逻辑审查页参考；Stage 0 不修改 `PFI/web/index.html`、`PFI/web/app/shell.js` 或新增审查页。
 - 2026-06-27验收退回纠偏：默认 8501 顶部已新增 PFI 本机数据上传；真实支付宝导出 CSV parser 已支持说明区/中间表头/GB18030/尾随空列；旧支付宝原始账单 4 份已导入 `~/.pfi/runtime/imports/alipay_daily`，覆盖 `2022-06-06` 至 `2026-06-03`，`8815` 条标准化流水，`406` 条待复核；Web Shell 动态英文状态已中文化，8 个一级入口浏览器点击验证通过。
 - 2026-06-27二次纠偏：QBVS 已从 `PFI/` 内部分离为顶层 `QBVS/`；PFI 合同改为 `qbvs_independent_system=true`；Web Shell 补回 V0.1 六入口；`MetaDatabase/` 保存支付宝原始 CSV、manifest 和标准化流水，供 GitHub 验收。
@@ -75,6 +79,7 @@ PFI v0.2.2 数据库治理 Stage 0 准备：按新版 Stage -> Phase -> Task roa
 - 2026-06-28 v0.2.2 Stage 0：读取 v0.2.2 roadmap、Task Pack、参数草案、6 Agent 交叉验证草案、HTML 审查模板和新版 Stage -> Phase -> Task roadmap；生成 `docs/pfi_v022/STAGE0_BASELINE_REPORT.md`，列出现有参数、硬编码阈值、消费/投资/现金流/建议口径、数据源、账户角色、Stage 6 基线和 v0.2.2 冲突清单；合同测试锁定本轮不改 v0.2.1 前端显示。
 - 2026-06-28 v0.2.2 Stage 0 补做：按 `S0-P1-T1..S0-P2-T2` 补齐开发记录任务章节、文件定位、非目标清单、`task_name`、`parameter_version` 和 `config/parameter_changelog.md`。
 - 2026-06-28 v0.2.2 Stage 0 验证：Stage 0 合同 `Ran 9 tests / OK`；完整 PFI 单测 `Ran 156 tests / OK`；项目治理 `errors 0 / warnings 0`；`node --check PFI/web/app/shell.js` 通过；`git diff --check -- PFI` 通过；`PFI/web` 无 diff。
+- 2026-06-28 v0.2.2 Stage 1：新增 `config/pfi_parameters.yaml`、`docs/pfi_v022/STAGE1_PARAMETER_GOVERNANCE.md`、`tests/test_pfi_parameters_consistency.py`；`模型参数文件.md` 补中文参数总目录、公式解释、阈值说明和变量别名；`config/parameter_changelog.md` 记录 `S1-P1-T1..S1-P2-T3` 参数变更。
 
 ## Decisions
 
@@ -127,5 +132,5 @@ Latest v0.2.1 Stage 8 target result: Stage 0/1/2/3/4/5/6/7/8 frontend contracts 
 
 ## Next
 
-1. 完成 v0.2.2 Stage 0 closeout 验证、GitHub main 同步和 canonical PFI 同步。
-2. 下一轮 pursuing goal 应从 v0.2.2 Stage 1 `模型参数文件重构` 开始：重构 `PFI/模型参数文件.md`、新增机器可读参数 YAML、补参数一致性测试；不得提前实现 Stage 2-13。
+1. 完成 v0.2.2 Stage 1 closeout 验证、GitHub main 同步和 canonical PFI 同步。
+2. 下一轮 pursuing goal 应从 v0.2.2 Stage 2 `CNY 基准与汇率规则` 开始：实现 CNY 主显示、原币辅助、06:00 有效汇率日、本地汇率快照和不默认联网规则；不得提前实现 Stage 3-13。

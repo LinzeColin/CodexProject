@@ -1,0 +1,204 @@
+{
+  "schema": "PFIParametersV022Stage1",
+  "project_id": "PFI",
+  "task_name": "PFI v0.2.2 E2E 逻辑优化",
+  "parameter_version": "v0.2.2",
+  "current_stage": "Stage 1 - 模型参数文件重构",
+  "canonical_parameter_file": "PFI/config/pfi_parameters.yaml",
+  "machine_format": "JSON-compatible YAML",
+  "uiux_baseline": "v0.2.1 HTML Web Shell",
+  "stage1_task_ids": ["S1-P1-T1", "S1-P1-T2", "S1-P1-T3", "S1-P2-T1", "S1-P2-T2", "S1-P2-T3"],
+  "naming_decision": {
+    "draft_requested_file": "PFI/config/pfi_v022_parameters.yaml",
+    "canonical_file": "PFI/config/pfi_parameters.yaml",
+    "reason_zh": "Stage -> Phase -> Task roadmap 和 Stage 0 文件定位均指定 pfi_parameters.yaml；Stage 1 只保留一个机器可读参数源，避免两个 YAML 文件漂移。"
+  },
+  "domains": [
+    {"key": "currency", "label_zh": "货币", "description_zh": "定义系统主货币、原币保留方式和用户可见金额口径。"},
+    {"key": "fx", "label_zh": "汇率", "description_zh": "定义汇率显示、有效日和本地快照读取规则。"},
+    {"key": "time", "label_zh": "时间", "description_zh": "定义本地时区、夜间窗口、现金流窗口和快照时间。"},
+    {"key": "data_sources", "label_zh": "数据源", "description_zh": "定义支付宝、微信、银行、券商、基金和贵金属等来源能力。"},
+    {"key": "account_roles", "label_zh": "账户角色", "description_zh": "定义一个账户可同时承担的钱包、消费、收入、投资入金和负债角色。"},
+    {"key": "event_types", "label_zh": "事件类型", "description_zh": "定义真实资金流、估值、费用、退款、还款和转账事件。"},
+    {"key": "interconnection", "label_zh": "关联机制 Interconnection", "description_zh": "定义多来源记录如何归并为同一经济事件并防止重复计算。"},
+    {"key": "consumption_categories", "label_zh": "消费分类", "description_zh": "定义消费主分类、中分类数量上限和后续合并字段。"},
+    {"key": "tags", "label_zh": "标签", "description_zh": "定义默认标签、自定义标签、赋值、规则和变更历史。"},
+    {"key": "confidence", "label_zh": "置信度", "description_zh": "定义 100 分制评分项和复核阈值。"},
+    {"key": "consumption_model", "label_zh": "消费模型", "description_zh": "定义消费总流出、生活消费、大额、夜间和退款抵消规则。"},
+    {"key": "investment_model", "label_zh": "投资模型", "description_zh": "定义市值、成本、收益、集中度和交易行为复盘规则。"},
+    {"key": "cashflow", "label_zh": "现金流", "description_zh": "定义未来余额、储备金安全线和投资入金挤压规则。"},
+    {"key": "visualization", "label_zh": "可视化", "description_zh": "定义参数中心、图表数据状态和指标下钻要求。"},
+    {"key": "testing", "label_zh": "测试", "description_zh": "定义参数一致性、分类数量、现金流窗口和前端显示一致性验收。"}
+  ],
+  "parameters": {
+    "currency": {
+      "base_currency": {"value": "CNY", "label_zh": "主货币", "description_zh": "首页、投资、消费、现金流和报告的核心指标以人民币为主显示。", "impact_surfaces": ["首页总览", "投资管理", "消费管理", "报告与洞察"], "user_editable": false},
+      "preserve_original_currency": {"value": true, "label_zh": "保留原币", "description_zh": "每条账本保留原始金额和原始币种，CNY 只是主口径折算。", "impact_surfaces": ["账本流水", "报告与洞察"], "user_editable": false},
+      "frontend_fx_badge_pair": {"value": "CNY/AUD", "label_zh": "当前前端汇率徽标币种对", "description_zh": "v0.2.1 顶栏现有显示格式，Stage 1 不改前端。", "impact_surfaces": ["所有页面顶部右上角"], "user_editable": false}
+    },
+    "fx": {
+      "frontend_badge_example_rate": {"value": 4.70, "label_zh": "当前前端徽标示例值", "description_zh": "用于校验现有 HTML/合同显示 CNY/AUD=4.70，不代表实时汇率。", "impact_surfaces": ["所有页面顶部右上角"], "user_editable": false},
+      "frontend_badge_format": {"value": "CNY/AUD=4.70（YYYYMMDD--HH:MM）", "label_zh": "当前前端徽标格式", "description_zh": "用户已指定的常态化顶部显示格式。", "impact_surfaces": ["所有页面顶部右上角"], "user_editable": false},
+      "stage2_target_pair": {"value": "AUD/CNY", "label_zh": "Stage 2 目标语义币种对", "description_zh": "后续汇率治理会统一为 1 AUD 对应多少 CNY 的有效日快照；Stage 1 只登记，不改 UI。", "impact_surfaces": ["汇率快照", "账本折算", "报告"], "user_editable": false},
+      "stage2_target_example_rate": {"value": 4.81, "label_zh": "Stage 2 目标草案示例值", "description_zh": "来自 v0.2.2 参数草案的示例，不作为本轮运行汇率。", "impact_surfaces": ["Stage 2 汇率治理"], "user_editable": false},
+      "snapshot_time_local": {"value": "06:00", "label_zh": "每日有效汇率读取时间", "description_zh": "本地时间 06:00 后使用当天有效快照，06:00 前使用前一日快照。", "impact_surfaces": ["账本折算", "趋势图", "报告"], "user_editable": false},
+      "default_network_refresh": {"value": false, "label_zh": "普通运行是否联网抓汇率", "description_zh": "普通运行只读本地有效汇率快照，避免重复联网和 token 浪费。", "impact_surfaces": ["运行刷新", "汇率快照"], "user_editable": false}
+    },
+    "time": {
+      "timezone": {"value": "Australia/Sydney", "label_zh": "用户本地时区", "description_zh": "汇率有效日、夜间消费和运行刷新默认按该时区判断。", "impact_surfaces": ["汇率", "消费模型", "现金流"], "user_editable": true},
+      "night_window": {"value": "22:00-06:00", "label_zh": "夜间消费窗口", "description_zh": "本地时间落入该窗口的消费进入夜间复盘标签。", "impact_surfaces": ["消费管理", "建议与复盘"], "user_editable": true},
+      "cashflow_windows_days": {"value": [7, 21, 30, 60, 90, 180, 360], "label_zh": "现金流预测窗口", "description_zh": "用于短期到长期生活现金压力和投资入金挤压分析。", "impact_surfaces": ["消费管理", "报告与洞察"], "user_editable": true}
+    },
+    "data_sources": {
+      "required_source_ids": {"value": ["alipay_daily", "alipay_fund", "moomoo_au", "cn_broker", "abc_bullion", "cba_bank", "wechat_pay", "other_connector"], "label_zh": "当前数据源 ID", "description_zh": "Stage 2 已登记的来源集合，Stage 3 后续会迁移成通用 profile schema。", "impact_surfaces": ["数据源与上传", "账本流水"], "user_editable": false},
+      "source_capabilities": {"value": ["现金流水", "投资交易", "基金交易", "黄金交易", "余额快照", "费用", "退款", "转账"], "label_zh": "数据源能力枚举", "description_zh": "新增来源必须描述能力，不能靠 source 名称硬编码公式。", "impact_surfaces": ["数据源与上传", "Interconnection"], "user_editable": false}
+    },
+    "account_roles": {
+      "multiple_roles_per_account": {"value": true, "label_zh": "账户可多角色", "description_zh": "一个账户可同时是主钱包、消费账户、收入账户或投资入金来源。", "impact_surfaces": ["账户与资产", "现金流"], "user_editable": false},
+      "role_effective_fields": {"value": ["role_effective_from", "role_effective_to"], "label_zh": "角色生效字段", "description_zh": "账户角色变化必须有生效期，避免历史账本被当前角色误解释。", "impact_surfaces": ["账户与资产", "账本流水"], "user_editable": false},
+      "role_registry": {"value": ["primary_wallet", "consumption_account", "income_account", "investment_funding_source", "investment_account", "credit_liability", "bullion_account", "reserve_cash"], "label_zh": "账户角色枚举", "description_zh": "后续所有计算按角色和事件类型判断，不按 source 名称判断。", "impact_surfaces": ["账户与资产", "现金流", "报告"], "user_editable": true}
+    },
+    "event_types": {
+      "ledger_event_types": {"value": ["consumption", "investment_deposit", "fund_subscription", "bullion_purchase", "investment_buy", "investment_sell", "refund", "fee", "credit_card_repayment", "internal_transfer", "income", "valuation", "fx_conversion"], "label_zh": "统一账本事件类型", "description_zh": "覆盖普通消费、投资、退款、费用、还款、内部转账、收入、估值和汇率兑换。", "impact_surfaces": ["账本流水", "消费管理", "投资管理", "报告"], "user_editable": false}
+    },
+    "interconnection": {
+      "canonical_chain": {"value": ["raw_record", "normalized_transaction", "interconnection_group", "economic_event", "ledger_event", "metric"], "label_zh": "事实链路", "description_zh": "多来源记录先进入关联组，再归并为经济事件，最后影响指标。", "impact_surfaces": ["账本流水", "报告与洞察"], "user_editable": false},
+      "no_double_count_rule": {"value": "同一 economic_event 在同一 metric 口径只能计算一次", "label_zh": "单次计算规则", "description_zh": "允许多处展示，但不得在同一口径重复计入金额。", "impact_surfaces": ["首页总览", "消费管理", "投资管理", "报告"], "user_editable": false}
+    },
+    "consumption_categories": {
+      "max_l1_categories": {"value": 12, "label_zh": "消费大类上限", "description_zh": "主分类不超过 12 个，避免用户看不懂和维护成本过高。", "impact_surfaces": ["消费管理", "报告与洞察"], "user_editable": true},
+      "max_l2_per_l1": {"value": 5, "label_zh": "每个大类中类上限", "description_zh": "每个 L1 最多 5 个 L2，保持分类可读。", "impact_surfaces": ["消费管理", "报告与洞察"], "user_editable": true},
+      "max_l2_total": {"value": 50, "label_zh": "中类总数上限", "description_zh": "全局 L2 总数最多 50 个，后续可压缩到 10 个大类。", "impact_surfaces": ["消费管理", "报告与洞察"], "user_editable": true},
+      "primary_category_per_transaction": {"value": 1, "label_zh": "每笔交易主分类数量", "description_zh": "每笔交易只能有一个主分类，标签用于多维补充。", "impact_surfaces": ["账本流水", "消费管理"], "user_editable": false}
+    },
+    "tags": {
+      "default_tag_groups": {"value": ["通用", "消费", "投资", "数据质量", "现金流", "复盘"], "label_zh": "默认标签组", "description_zh": "默认标签覆盖跨板块筛选、异常复盘、数据质量和行动建议。", "impact_surfaces": ["账本流水", "建议与复盘", "报告与洞察"], "user_editable": true},
+      "custom_tag_lifecycle": {"value": ["新增", "重命名", "停用", "删除", "恢复"], "label_zh": "自定义标签生命周期", "description_zh": "用户标签必须可变更且写入历史，不能只存在浏览器临时状态。", "impact_surfaces": ["账本流水", "设置", "报告"], "user_editable": true}
+    },
+    "confidence": {
+      "score_total": {"value": 100, "label_zh": "置信度满分", "description_zh": "分类和匹配置信度统一为 100 分制。", "impact_surfaces": ["账本流水", "待复核"], "user_editable": false},
+      "review_threshold": {"value": 70, "label_zh": "统一复核阈值", "description_zh": "低于 70 分的分类、匹配或关联必须进入人工复核。", "impact_surfaces": ["账本流水", "建议与复盘"], "user_editable": true},
+      "score_weights": {"value": {"字段完整度": 30, "金额方向": 10, "规则命中": 20, "商户对手方": 15, "Interconnection": 15, "历史一致性": 10}, "label_zh": "置信度评分权重", "description_zh": "六项合计 100 分；扣分项只能降低分数，不能突破满分。", "impact_surfaces": ["账本流水", "数据质量报告"], "user_editable": true}
+    },
+    "consumption_model": {
+      "gross_consumption_includes": {"value": ["生活消费", "投资入金", "基金申购", "黄金申购", "投资买入", "金融费用"], "label_zh": "消费总流出包含项", "description_zh": "衡量现金从用户体系流出的总压力，投资相关流出也进入该口径。", "impact_surfaces": ["首页总览", "消费管理", "报告"], "user_editable": false},
+      "living_consumption_excludes": {"value": ["投资入金", "基金申购", "黄金申购", "投资买入", "内部转账", "信用卡还款"], "label_zh": "生活消费排除项", "description_zh": "生活消费只看普通生活支出，避免投资入金污染消费习惯判断。", "impact_surfaces": ["消费管理", "报告"], "user_editable": false},
+      "large_spend_cny_threshold": {"value": 2000, "label_zh": "大额消费 CNY 阈值", "description_zh": "CNY 金额达到或超过 2000 时进入大额标签和复核。", "impact_surfaces": ["消费管理", "建议与复盘"], "user_editable": true},
+      "large_spend_aud_original_threshold": {"value": 500, "label_zh": "大额消费 AUD 原币阈值", "description_zh": "AUD 原币达到或超过 500 时进入大额标签；与当前前端/测试阈值保持一致。", "impact_surfaces": ["消费管理", "建议与复盘"], "user_editable": true},
+      "electronics_impulse_independent_rule": {"value": "removed", "label_zh": "电子产品冲动独立规则", "description_zh": "独立电子产品冲动阈值删除，后续并入夜间或大额标签组合。", "impact_surfaces": ["消费管理"], "user_editable": false}
+    },
+    "investment_model": {
+      "market_value_formula": {"value": "quantity * latest_price * fx_to_cny", "label_zh": "投资市值公式", "description_zh": "持仓数量乘最新价格，再按有效汇率折算为 CNY。", "impact_surfaces": ["投资管理", "报告与洞察"], "user_editable": false},
+      "concentration_watch_threshold_pct": {"value": 35, "label_zh": "单一持仓观察阈值", "description_zh": "单一持仓占比达到 35% 进入观察，不直接等于必须减仓。", "impact_surfaces": ["投资管理", "建议与复盘"], "user_editable": true},
+      "concentration_high_risk_threshold_pct": {"value": 50, "label_zh": "单一持仓高风险阈值", "description_zh": "单一持仓占比达到 50% 标为高风险复核。", "impact_surfaces": ["投资管理", "建议与复盘"], "user_editable": true},
+      "buy_chase_lookback_days": {"value": 5, "label_zh": "追涨回看天数", "description_zh": "买入前 5 天价格变化用于识别追涨候选。", "impact_surfaces": ["投资管理", "建议与复盘"], "user_editable": true},
+      "buy_chase_pct_threshold": {"value": 3, "label_zh": "买入前涨幅阈值", "description_zh": "买入前涨幅达到 3% 进入追涨候选标签。", "impact_surfaces": ["投资管理", "建议与复盘"], "user_editable": true},
+      "sell_panic_lookback_days": {"value": 5, "label_zh": "杀跌回看天数", "description_zh": "卖出前 5 天价格变化用于识别杀跌候选。", "impact_surfaces": ["投资管理", "建议与复盘"], "user_editable": true},
+      "sell_panic_pct_threshold": {"value": -5, "label_zh": "卖出前跌幅阈值", "description_zh": "卖出前跌幅达到 -5% 进入杀跌候选标签。", "impact_surfaces": ["投资管理", "建议与复盘"], "user_editable": true},
+      "short_holding_days_threshold": {"value": 3, "label_zh": "短持阈值", "description_zh": "持仓时间不超过 3 天进入短持复盘。", "impact_surfaces": ["投资管理", "建议与复盘"], "user_editable": true},
+      "frequent_trading_window_days": {"value": 30, "label_zh": "频繁交易窗口", "description_zh": "30 天窗口内统计交易频率。", "impact_surfaces": ["投资管理", "建议与复盘"], "user_editable": true},
+      "frequent_trading_count_threshold": {"value": 6, "label_zh": "频繁交易次数阈值", "description_zh": "30 天内 6 次及以上交易进入频繁交易复盘。", "impact_surfaces": ["投资管理", "建议与复盘"], "user_editable": true},
+      "turnover_rate_threshold_pct": {"value": 50, "label_zh": "换手率阈值", "description_zh": "换手率达到 50% 进入投资风格复盘。", "impact_surfaces": ["投资管理", "报告"], "user_editable": true}
+    },
+    "cashflow": {
+      "forecast_formula": {"value": "current_life_cash + expected_income + expected_refund - expected_fixed_spend - expected_flexible_spend - expected_repayment - planned_investment_deposit + planned_investment_return", "label_zh": "未来现金余额公式", "description_zh": "按窗口预测生活现金是否被固定支出、还款或投资入金挤压。", "impact_surfaces": ["消费管理", "报告"], "user_editable": false},
+      "reserve_floor_mode": {"value": "user_defined_or_fixed_spend_months", "label_zh": "储备金安全线模式", "description_zh": "可用用户自定义底线，也可按固定支出月数推导。", "impact_surfaces": ["现金流", "建议与复盘"], "user_editable": true}
+    },
+    "visualization": {
+      "parameter_center_required": {"value": true, "label_zh": "后续参数中心", "description_zh": "Stage 9 后用户应能查看参数、阈值、公式、分类、标签和影响范围。", "impact_surfaces": ["设置", "参数中心"], "user_editable": false},
+      "metric_quality_fields": {"value": ["confidence", "match_rate", "last_updated", "compute_time", "cache_status", "parameter_hash"], "label_zh": "指标质量字段", "description_zh": "每个核心指标后续需要展示来源、及时性、性能和参数版本。", "impact_surfaces": ["首页总览", "报告与洞察"], "user_editable": false}
+    },
+    "testing": {
+      "parameter_consistency_test": {"value": "PFI/tests/test_pfi_parameters_consistency.py", "label_zh": "参数一致性测试", "description_zh": "验证 Markdown、YAML、前端合同和 HTML 中的核心阈值一致。", "impact_surfaces": ["测试", "治理"], "user_editable": false},
+      "classification_limits_test_required": {"value": true, "label_zh": "分类上限测试要求", "description_zh": "后续分类落地后必须测试 L1 <= 12、单个 L2 <= 5、总 L2 <= 50。", "impact_surfaces": ["测试", "消费管理"], "user_editable": false}
+    }
+  },
+  "formulas": [
+    {
+      "formula_id": "amount_cny",
+      "name_zh": "金额折算为人民币",
+      "purpose_zh": "把不同原币金额统一成 CNY 主口径。",
+      "inputs": ["original_amount", "original_currency", "fx_to_cny_rate", "fx_snapshot_id"],
+      "outputs": ["amount_cny"],
+      "logic_zh": "金额_CNY = 原始金额 × 原币兑 CNY 汇率。",
+      "example_zh": "例如：500 AUD × 4.70 = 2350 CNY。",
+      "variable_aliases": {"original_amount": "原始金额", "original_currency": "原始币种", "fx_to_cny_rate": "原币兑 CNY 汇率", "fx_snapshot_id": "汇率快照 ID", "amount_cny": "CNY 金额"}
+    },
+    {
+      "formula_id": "gross_consumption_cny",
+      "name_zh": "消费总流出金额",
+      "purpose_zh": "衡量现金从用户体系流出的总压力。",
+      "inputs": ["living_consumption_cny", "investment_deposit_cny", "fund_subscription_cny", "bullion_purchase_cny", "investment_buy_cny", "financial_fee_cny", "refund_offset_cny"],
+      "outputs": ["gross_consumption_cny"],
+      "logic_zh": "消费总流出 = 生活消费 + 投资入金 + 基金申购 + 黄金申购 + 投资买入 + 金融费用 - 退款抵消。",
+      "example_zh": "生活消费 1200 + 基金申购 800 - 退款 100 = 消费总流出 1900 CNY。",
+      "variable_aliases": {"gross_consumption_cny": "消费总流出金额", "living_consumption_cny": "生活消费金额", "investment_deposit_cny": "投资入金金额", "fund_subscription_cny": "基金申购金额", "bullion_purchase_cny": "黄金申购金额", "investment_buy_cny": "投资买入金额", "financial_fee_cny": "金融费用", "refund_offset_cny": "退款抵消金额"}
+    },
+    {
+      "formula_id": "living_consumption_cny",
+      "name_zh": "生活消费金额",
+      "purpose_zh": "衡量普通生活支出，不让投资入金污染生活消费判断。",
+      "inputs": ["ordinary_life_spend_cny", "excluded_investment_flow_cny", "excluded_internal_transfer_cny"],
+      "outputs": ["living_consumption_cny"],
+      "logic_zh": "生活消费只包含普通生活消费，排除投资入金、基金申购、投资买入、内部转账和信用卡还款。",
+      "example_zh": "餐饮 80 + 交通 20，基金申购 800 排除，生活消费 = 100 CNY。",
+      "variable_aliases": {"ordinary_life_spend_cny": "普通生活支出", "excluded_investment_flow_cny": "排除的投资流出", "excluded_internal_transfer_cny": "排除的内部转账", "living_consumption_cny": "生活消费金额"}
+    },
+    {
+      "formula_id": "confidence_score",
+      "name_zh": "置信度评分",
+      "purpose_zh": "决定分类、匹配和关联是否可自动接受或需要人工复核。",
+      "inputs": ["field_completeness", "amount_direction", "rule_hit", "merchant_counterparty", "interconnection_match", "history_consistency", "penalty"],
+      "outputs": ["confidence_score"],
+      "logic_zh": "置信度 = 字段完整度 30 + 金额方向 10 + 规则命中 20 + 商户/对手方 15 + Interconnection 15 + 历史一致性 10 - 扣分项。",
+      "example_zh": "字段 25 + 方向 10 + 规则 15 + 商户 10 + 关联 0 + 历史 8 = 68，低于 70 进入复核。",
+      "variable_aliases": {"confidence_score": "置信度评分", "field_completeness": "字段完整度分", "amount_direction": "金额方向分", "rule_hit": "规则命中分", "merchant_counterparty": "商户/对手方分", "interconnection_match": "关联匹配分", "history_consistency": "历史一致性分", "penalty": "扣分项"}
+    },
+    {
+      "formula_id": "future_cash_balance",
+      "name_zh": "未来现金余额",
+      "purpose_zh": "预测生活现金是否能覆盖支出、还款和计划投资入金。",
+      "inputs": ["current_life_cash", "expected_income", "expected_refund", "expected_fixed_spend", "expected_flexible_spend", "expected_repayment", "planned_investment_deposit", "planned_investment_return"],
+      "outputs": ["future_cash_balance"],
+      "logic_zh": "未来现金余额 = 当前生活现金 + 预计收入 + 预计退款/报销 - 预计固定支出 - 预计弹性支出 - 预计还款 - 计划投资入金 + 计划投资回流。",
+      "example_zh": "当前现金 10000 + 收入 5000 - 固定支出 4000 - 投资入金 3000 = 8000 CNY。",
+      "variable_aliases": {"current_life_cash": "当前生活现金", "expected_income": "预计收入", "expected_refund": "预计退款/报销", "expected_fixed_spend": "预计固定支出", "expected_flexible_spend": "预计弹性支出", "expected_repayment": "预计还款", "planned_investment_deposit": "计划投资入金", "planned_investment_return": "计划投资回流", "future_cash_balance": "未来现金余额"}
+    },
+    {
+      "formula_id": "investment_market_value_cny",
+      "name_zh": "投资市值",
+      "purpose_zh": "把持仓数量、价格和汇率转换成 CNY 投资资产口径。",
+      "inputs": ["quantity", "latest_price", "price_currency", "fx_to_cny_rate"],
+      "outputs": ["investment_market_value_cny"],
+      "logic_zh": "投资市值_CNY = 持仓数量 × 最新价格 × 原币兑 CNY 汇率。",
+      "example_zh": "10 股 × 100 AUD × 4.70 = 4700 CNY。",
+      "variable_aliases": {"quantity": "持仓数量", "latest_price": "最新价格", "price_currency": "价格币种", "fx_to_cny_rate": "原币兑 CNY 汇率", "investment_market_value_cny": "投资市值"}
+    },
+    {
+      "formula_id": "recommendation_score",
+      "name_zh": "行动建议评分",
+      "purpose_zh": "把建议排序为可复盘任务，不生成自动买卖指令。",
+      "inputs": ["financial_impact", "risk_reduction", "urgency", "confidence", "reversibility", "execution_cost_inverse", "learning_value"],
+      "outputs": ["recommendation_score"],
+      "logic_zh": "行动建议评分 = 财务影响 25% + 风险降低 20% + 紧急程度 15% + 置信度 15% + 可逆性 10% + 执行成本反比 10% + 学习价值 5%。",
+      "example_zh": "一条可逆、低成本、高置信的订阅复核建议会比低置信投资动作排得更前。",
+      "variable_aliases": {"recommendation_score": "行动建议评分", "financial_impact": "财务影响", "risk_reduction": "风险降低", "urgency": "紧急程度", "confidence": "置信度", "reversibility": "可逆性", "execution_cost_inverse": "执行成本反比", "learning_value": "学习价值"}
+    }
+  ],
+  "threshold_index": [
+    {"key": "confidence.review_threshold", "current_value": "70 分", "why_zh": "低置信记录必须先复核，降低误分类成本。", "impact_surfaces": ["账本流水", "数据质量报告"], "user_editable": true},
+    {"key": "consumption_model.large_spend_cny_threshold", "current_value": "CNY 2000", "why_zh": "人民币主口径下的大额消费提示线。", "impact_surfaces": ["消费管理", "建议与复盘"], "user_editable": true},
+    {"key": "consumption_model.large_spend_aud_original_threshold", "current_value": "AUD 500", "why_zh": "保持与现有前端/测试 fixture 的大额消费阈值一致。", "impact_surfaces": ["消费管理", "建议与复盘"], "user_editable": true},
+    {"key": "time.night_window", "current_value": "22:00-06:00", "why_zh": "夜间交易更需要行为复盘。", "impact_surfaces": ["消费管理", "建议与复盘"], "user_editable": true},
+    {"key": "time.cashflow_windows_days", "current_value": "7/21/30/60/90/180/360 天", "why_zh": "覆盖一周、三周、月度、双月、季度、半年和年度现金压力。", "impact_surfaces": ["消费管理", "报告"], "user_editable": true},
+    {"key": "investment_model.concentration_watch_threshold_pct", "current_value": "35%", "why_zh": "达到观察线时提示复核，但不等于必须卖出。", "impact_surfaces": ["投资管理", "建议与复盘"], "user_editable": true},
+    {"key": "investment_model.concentration_high_risk_threshold_pct", "current_value": "50%", "why_zh": "集中度过高可能让单一持仓主导净值波动。", "impact_surfaces": ["投资管理", "报告"], "user_editable": true},
+    {"key": "investment_model.buy_chase_pct_threshold", "current_value": "3%", "why_zh": "买入前短期上涨较多时进入追涨候选。", "impact_surfaces": ["投资管理", "建议与复盘"], "user_editable": true},
+    {"key": "investment_model.sell_panic_pct_threshold", "current_value": "-5%", "why_zh": "卖出前短期下跌较多时进入杀跌候选。", "impact_surfaces": ["投资管理", "建议与复盘"], "user_editable": true},
+    {"key": "investment_model.short_holding_days_threshold", "current_value": "3 天", "why_zh": "短持可能带来行为和交易成本复盘需求。", "impact_surfaces": ["投资管理", "建议与复盘"], "user_editable": true},
+    {"key": "investment_model.frequent_trading_count_threshold", "current_value": "30 天 6 次", "why_zh": "高频交易需要复盘成本、胜率和冲动交易。", "impact_surfaces": ["投资管理", "报告"], "user_editable": true},
+    {"key": "investment_model.turnover_rate_threshold_pct", "current_value": "50%", "why_zh": "换手过高可能提示风格漂移或成本拖累。", "impact_surfaces": ["投资管理", "报告"], "user_editable": true},
+    {"key": "fx.snapshot_time_local", "current_value": "06:00", "why_zh": "用固定有效时间避免一天内反复抓取汇率。", "impact_surfaces": ["汇率", "账本折算", "报告"], "user_editable": false},
+    {"key": "fx.default_network_refresh", "current_value": "false", "why_zh": "普通运行不联网，减少成本并保证可复现。", "impact_surfaces": ["运行刷新", "汇率"], "user_editable": false}
+  ]
+}

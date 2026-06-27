@@ -17,7 +17,7 @@ Roadmap 形态：`Stage -> Phase -> Task`
 | Stage | 名称 | 本轮状态 | 说明 |
 | --- | --- | --- | --- |
 | Stage 0 | 任务锁定与文件定位 | 本轮补做 | 完成 `S0-P1-T1..S0-P2-T2`。 |
-| Stage 1 | 模型参数文件重构 | 待 owner 开启 | 中文参数总目录、机器可读 YAML、一致性测试。 |
+| Stage 1 | 模型参数文件重构 | 本轮完成 | 中文参数总目录、机器可读 YAML、一致性测试。 |
 | Stage 2 | CNY 基准与汇率规则 | 待 owner 开启 | CNY 主显示、原币辅助、06:00 有效汇率日。 |
 | Stage 3 | 数据源、账户角色与可扩展结构 | 待 owner 开启 | Source Profile、capabilities、账户角色重叠和生效期。 |
 | Stage 4 | Economic Event 与 Interconnection 逻辑 | 待 owner 开启 | economic_event_id、interconnection_group_id、Matrix。 |
@@ -65,6 +65,48 @@ Roadmap 形态：`Stage -> Phase -> Task`
 
 ```bash
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m unittest PFI.tests.test_v022_stage0_database_governance -q
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m unittest discover -s PFI/tests -q
+node --check PFI/web/app/shell.js
+python3 scripts/validate_project_governance.py --project PFI
+git diff --check -- PFI
+```
+
+## Stage 1 Task Lock
+
+| Task ID | Phase | 交付物 | 状态 |
+| --- | --- | --- | --- |
+| `S1-P1-T1` | Phase 1.1 | `PFI/模型参数文件.md` 中文参数目录 | 本轮完成 |
+| `S1-P1-T2` | Phase 1.1 | `PFI/config/pfi_parameters.yaml` | 本轮完成 |
+| `S1-P1-T3` | Phase 1.1 | `PFI/tests/test_pfi_parameters_consistency.py` | 本轮完成 |
+| `S1-P2-T1` | Phase 1.2 | 公式中文解释 | 本轮完成 |
+| `S1-P2-T2` | Phase 1.2 | 阈值说明表 | 本轮完成 |
+| `S1-P2-T3` | Phase 1.2 | 公式变量中文别名 | 本轮完成 |
+
+## Stage 1 Acceptance Criteria
+
+- `模型参数文件.md` 已包含货币、汇率、时间、数据源、账户角色、事件类型、Interconnection、消费分类、标签、置信度、消费模型、投资模型、现金流、可视化、测试。
+- 已新增机器可读参数文件 `PFI/config/pfi_parameters.yaml`。
+- `pfi_parameters.yaml` 与 Markdown 参数含义一致，字段中文说明可在 Markdown 查到。
+- 已新增 `PFI/tests/test_pfi_parameters_consistency.py`。
+- 测试能确认 Markdown、YAML、前端合同和 HTML 显示中的核心参数一致。
+- 每个核心公式有中文名称、用途、输入、输出、计算逻辑和示例。
+- 每个核心阈值有当前值、为什么存在、触发后影响哪些页面、能否用户修改。
+- 公式变量有中文别名，例如 `gross_consumption_cny = 消费总流出金额`。
+
+## Stage 1 Stop Condition
+
+- 参数仍散落在代码和文档中且没有统一目录。
+- Markdown 和 YAML 核心参数不一致。
+- 核心阈值多处不一致且没有明确标记为后续阶段差异。
+- 公式只有英文变量或代码名，用户无法理解。
+
+当前检查结论：以上停止条件均未触发。
+
+## Stage 1 Validation
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m unittest PFI.tests.test_pfi_parameters_consistency -q
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m unittest PFI.tests.test_v022_stage0_database_governance PFI.tests.test_pfi_parameters_consistency -q
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m unittest discover -s PFI/tests -q
 node --check PFI/web/app/shell.js
 python3 scripts/validate_project_governance.py --project PFI
