@@ -3473,3 +3473,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PLT04-S2PLT01-REPLAY-REVIEW-EVIDENCE-SYNC"
+    phase: "S2PL"
+    objective: "Expose the existing S2PLT01 independent replay review receipt inside the S2PLT04 integration-candidate precheck as non-terminal local evidence."
+    scope: "S2PLT04 final-gate helper, focused regression test, phase record, run manifest, semantic parameter refresh, traceability row, delivery/event records, and three base files."
+    non_scope: "No S2PLT04 completion, no S2_INTEGRATION_CANDIDATE_READY, no S2PLT01 acceptance, no real two-day live run, no real SMTP send, no scheduler install or enablement, no S2PLT03 acceptance, no inherited P0/P1 closure, no final acceptance bundle creation, no Release upload, no public schema or DB migration, no production queue mutation, no ranking/source-adapter change, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no DAILY_OPERATION, and no integrated production acceptance."
+    status: "blocked"
+    dependencies: ["S2PLT04", "S2PLT01", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/docs/phase_records/PHASE_S2PLT04_S2PLT01_REPLAY_REVIEW_EVIDENCE_SYNC.md", "governance/run_manifests/ADP-S2PLT04-S2PLT01-REPLAY-REVIEW-EVIDENCE-SYNC-20260628.json", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
+    acceptance_ids: ["ACC-S2PLT04-INTEGRATION-CANDIDATE"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s2plt04_s2plt01_green PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q"]
+    test_results: ["TDD red reproduced missing S2PLT01_INDEPENDENT_REPLAY_REVIEW in S2PLT04 available_nonterminal_evidence", "focused final-gate tests: 22 OK"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PLT04-S2PLT01-REPLAY-REVIEW-EVIDENCE-SYNC-20260628.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT04_S2PLT01_REPLAY_REVIEW_EVIDENCE_SYNC.md", "governance/run_manifests/ADP-S2PLT01-INDEPENDENT-REPLAY-REVIEW-20260626.json", "governance/run_manifests/ADP-S2PLT01-REPLAY-PAYLOAD-EXECUTION-20260626.json", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
+    result: "S2PLT04 precheck now records S2PLT01 independent replay review evidence under available_nonterminal_evidence while S2PLT01_ACCEPTED and S2PLT04 completion remain false."
+    risk: "This sync can be misread as S2PLT01 acceptance or S2PLT04 completion; it only consumes non-terminal review evidence and keeps all final production stop gates closed."
+    rollback: "Revert the S2PLT04 S2PLT01 replay review evidence sync helper/test, registry updates, phase record, run manifest, traceability row, delivery/event records, and three base file updates; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

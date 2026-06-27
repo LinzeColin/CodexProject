@@ -5469,9 +5469,12 @@ models:
       - "PARAM-ADP-981"
       - "PARAM-ADP-982"
       - "PARAM-ADP-983"
+      - "PARAM-ADP-984"
+      - "PARAM-ADP-985"
     inputs:
       - "S2PLT01 independent replay review receipt state"
       - "S2PLT02 and S2PLT03 authoritative completion state"
+      - "S2PLT01 independent replay review receipt as non-terminal evidence"
       - "S2PLT02 live two-day readiness precheck as non-terminal evidence"
       - "S2PLT03 local drill bundle as non-terminal evidence"
       - "S2PMT01 through S2PMT07 local hardening/precheck state"
@@ -5481,6 +5484,7 @@ models:
     outputs:
       - "blocked S2PLT04 integration candidate precheck report"
       - "S2PLT04 dependency and evidence state"
+      - "S2PLT01 independent replay review non-terminal evidence state"
       - "S2PLT02 readiness precheck non-terminal evidence state"
       - "S2PLT03 local drill non-terminal evidence state"
       - "embedded S2PMT07 precheck state"
@@ -5499,6 +5503,8 @@ models:
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT04_LOCAL_DRILL_EVIDENCE_SYNC.md"
       - "governance/run_manifests/ADP-S2PLT04-S2PLT02-PRECHECK-EVIDENCE-SYNC-20260628.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT04_S2PLT02_PRECHECK_EVIDENCE_SYNC.md"
+      - "governance/run_manifests/ADP-S2PLT04-S2PLT01-REPLAY-REVIEW-EVIDENCE-SYNC-20260628.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT04_S2PLT01_REPLAY_REVIEW_EVIDENCE_SYNC.md"
 
   -
     model_id: "MOD-ADP-104"
