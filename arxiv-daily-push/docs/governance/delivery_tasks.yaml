@@ -3595,3 +3595,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PMT07-FINAL-BUNDLE-MANIFEST-VALIDATOR"
+    phase: "S2PM"
+    objective: "Add a strict validator for the future final acceptance bundle manifest without creating the final bundle or accepting production."
+    scope: "S2PMT07 final-gate manifest validator, focused TDD regression tests, phase record, run manifest, semantic parameter refresh, traceability row, user-center traceability page, delivery/event records, and three base files."
+    non_scope: "No final acceptance bundle creation, no P0/P1 closure, no zero-proof artifact creation, no S2PLT04 completion, no S2PMT07 pass, no SMTP transport, no scheduler install or enablement, no Release upload, no public schema or DB migration, no production queue mutation, no ranking/source-adapter change, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no DAILY_OPERATION, and no integrated production acceptance."
+    status: "blocked"
+    dependencies: ["S2PMT07", "S2PMT07-P0-P1-ZERO-PROOF-VALIDATOR", "S2PMT07-FINAL-ACCEPTANCE-BUNDLE-READINESS", "S2PLT04-FINAL-BUNDLE-READINESS-SYNC", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_MANIFEST_VALIDATOR.md", "governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-MANIFEST-VALIDATOR-20260628.json", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_user_center_candidate_pool.py"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_final_manifest_red PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_final_manifest_green1 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q"]
+    test_results: ["TDD red failed because final bundle manifest validator API was missing", "focused final-gate tests: 33 OK"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-MANIFEST-VALIDATOR-20260628.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_MANIFEST_VALIDATOR.md", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
+    result: "S2PMT07 now has strict final bundle manifest payload validation while current manifest remains missing, final bundle is absent, S2PLT04 is incomplete, and inherited P0=8/P1=37 remain open."
+    risk: "This validator can be misread as final bundle readiness or production acceptance; current missing-manifest validation state remains blocked and all closure/production flags remain false."
+    rollback: "Revert final bundle manifest validator helpers/tests, registry updates, phase record, run manifest, traceability row, delivery/event records, generated views, and three base file updates; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

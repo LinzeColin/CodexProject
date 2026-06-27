@@ -132,6 +132,50 @@ S2PMT07_FINAL_ACCEPTANCE_BUNDLE_FORBIDDEN_FLAGS = (
     "release_packaging_enabled",
     "production_restore_enabled",
 )
+S2PMT07_FINAL_ACCEPTANCE_BUNDLE_MANIFEST_SCHEMA_VERSION = "adp.final_acceptance_bundle_manifest.v1"
+S2PMT07_FINAL_ACCEPTANCE_BUNDLE_MANIFEST_DECISION = (
+    "FINAL_ACCEPTANCE_BUNDLE_READY_NO_PRODUCTION_ACCEPTANCE"
+)
+S2PMT07_FINAL_ACCEPTANCE_BUNDLE_MANIFEST_REQUIRED_FIELDS = (
+    "schema_version",
+    "contract_id",
+    "generated_at",
+    "final_bundle_decision",
+    "bundle_items",
+    "bundle_item_hashes",
+    "artifact_validations",
+    "closure_state",
+    "no_production_side_effects",
+    "manifest_hash",
+)
+S2PMT07_FINAL_ACCEPTANCE_BUNDLE_MANIFEST_REQUIRED_ARTIFACT_VALIDATIONS = (
+    "P0_P1_ZERO_PROOF_ARTIFACT",
+    "S2PLT04_COMPLETION_REPORT",
+    "INDEPENDENT_REVIEW_SIGNOFF",
+    "FINAL_COMMAND_EXECUTION",
+    "NO_PRODUCTION_SIDE_EFFECT_ATTESTATION",
+    "NEXT_AGENT_HANDOFF",
+)
+S2PMT07_FINAL_ACCEPTANCE_BUNDLE_NO_PRODUCTION_FLAGS = (
+    "integrated_production_accepted",
+    "daily_operation_enabled",
+    "real_smtp_sent",
+    "real_smtp_send_enabled",
+    "scheduler_enabled",
+    "scheduler_install_enabled",
+    "release_uploaded",
+    "release_packaging_enabled",
+    "production_restore_enabled",
+    "production_restore_executed",
+    "public_schema_changed",
+    "db_migration_executed",
+    "production_queue_mutated",
+    "source_adapter_changed",
+    "ranking_algorithm_changed",
+    "current_pointer_changed",
+    "v7_1_baseline_changed",
+    "v7_2_contract_files_changed",
+)
 S2PMT07_P0_TECHNICAL_CLOSURE_CANDIDATE_PACKAGE = (
     "governance/run_manifests/ADP-S2PMT07-P0-TECHNICAL-CLOSURE-CANDIDATE-PACKAGE-20260627.json"
 )
@@ -1635,6 +1679,105 @@ def build_p0_p1_zero_proof_artifact_validation_state(payload: Mapping[str, Any] 
     return state
 
 
+def build_final_acceptance_bundle_manifest_hash(payload: Mapping[str, Any]) -> str:
+    """Return the canonical final-bundle manifest hash excluding its hash field."""
+
+    payload_without_hash = {key: value for key, value in payload.items() if key != "manifest_hash"}
+    return f"sha256:{_stable_hash(payload_without_hash)}"
+
+
+def validate_final_acceptance_bundle_manifest(payload: Mapping[str, Any] | None) -> list[str]:
+    """Validate a future final acceptance bundle manifest without accepting production."""
+
+    if payload is None:
+        return ["final_acceptance_bundle_manifest_missing"]
+    errors: list[str] = []
+    for field in S2PMT07_FINAL_ACCEPTANCE_BUNDLE_MANIFEST_REQUIRED_FIELDS:
+        if field not in payload:
+            errors.append(f"{field} is required")
+    if payload.get("schema_version") != S2PMT07_FINAL_ACCEPTANCE_BUNDLE_MANIFEST_SCHEMA_VERSION:
+        errors.append("schema_version is invalid")
+    if payload.get("contract_id") != "ADP-PRODUCT-CONTRACT-V7.2":
+        errors.append("contract_id must be ADP-PRODUCT-CONTRACT-V7.2")
+    if not isinstance(payload.get("generated_at"), str) or not payload.get("generated_at"):
+        errors.append("generated_at must be a non-empty string")
+    if payload.get("final_bundle_decision") != S2PMT07_FINAL_ACCEPTANCE_BUNDLE_MANIFEST_DECISION:
+        errors.append("final_bundle_decision is invalid")
+
+    if tuple(payload.get("bundle_items", [])) != S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS:
+        errors.append("bundle_items must exactly match final acceptance bundle required items")
+    item_hashes = _mapping(payload.get("bundle_item_hashes"))
+    for item in S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS:
+        value = item_hashes.get(item)
+        if not isinstance(value, str) or not value.startswith("sha256:"):
+            errors.append(f"bundle_item_hashes.{item} must be a sha256 hash")
+
+    artifact_validations = _mapping(payload.get("artifact_validations"))
+    for validation in S2PMT07_FINAL_ACCEPTANCE_BUNDLE_MANIFEST_REQUIRED_ARTIFACT_VALIDATIONS:
+        validation_state = _mapping(artifact_validations.get(validation))
+        if validation_state.get("status") != "pass":
+            errors.append(f"artifact_validations.{validation}.status must be pass")
+
+    closure_state = _mapping(payload.get("closure_state"))
+    required_true_closure_flags = (
+        "p0_zero_proven",
+        "p1_zero_proven",
+        "s2plt04_completed",
+        "independent_final_review_passed",
+        "final_commands_executed",
+    )
+    for flag in required_true_closure_flags:
+        if closure_state.get(flag) is not True:
+            errors.append(f"closure_state.{flag} must be true")
+    for flag in ("production_acceptance_claimed", "integrated_production_accepted"):
+        if closure_state.get(flag) is not False:
+            errors.append(f"closure_state.{flag} must be false")
+
+    no_production = _mapping(payload.get("no_production_side_effects"))
+    for flag in S2PMT07_FINAL_ACCEPTANCE_BUNDLE_NO_PRODUCTION_FLAGS:
+        if no_production.get(flag) is not False:
+            errors.append(f"no_production_side_effects.{flag} must be false")
+
+    if payload.get("manifest_hash") != build_final_acceptance_bundle_manifest_hash(payload):
+        errors.append("manifest_hash does not match payload content")
+    return errors
+
+
+def build_final_acceptance_bundle_manifest_validation_state(payload: Mapping[str, Any] | None) -> dict[str, Any]:
+    """Build a validation report for a future final-bundle manifest."""
+
+    errors = validate_final_acceptance_bundle_manifest(payload)
+    bundle_items = tuple(payload.get("bundle_items", [])) if payload is not None else ()
+    artifact_validations = _mapping(payload.get("artifact_validations")) if payload is not None else {}
+    closure_state = _mapping(payload.get("closure_state")) if payload is not None else {}
+    all_artifacts_pass = all(
+        _mapping(artifact_validations.get(validation)).get("status") == "pass"
+        for validation in S2PMT07_FINAL_ACCEPTANCE_BUNDLE_MANIFEST_REQUIRED_ARTIFACT_VALIDATIONS
+    )
+    state = {
+        "status": "pass" if not errors else "blocked",
+        "scope": "final_acceptance_bundle_manifest_validation_only_no_production_acceptance",
+        "manifest_path": "FINAL_ACCEPTANCE_BUNDLE/manifest.json",
+        "manifest_present": payload is not None,
+        "validation_errors": errors,
+        "bundle_items_complete": bundle_items == S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS,
+        "all_artifact_validations_passed": payload is not None and all_artifacts_pass,
+        "p0_zero_proven_by_manifest": not errors and closure_state.get("p0_zero_proven") is True,
+        "p1_zero_proven_by_manifest": not errors and closure_state.get("p1_zero_proven") is True,
+        "s2plt04_completed_by_manifest": not errors and closure_state.get("s2plt04_completed") is True,
+        "production_acceptance_claimed": False,
+        "integrated_production_accepted": False,
+        "daily_operation_enabled": False,
+        "real_smtp_send_enabled": False,
+        "scheduler_install_enabled": False,
+        "release_packaging_enabled": False,
+        "production_restore_enabled": False,
+        "state_hash": "",
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
 def build_final_acceptance_bundle_readiness_state() -> dict[str, Any]:
     """Build the current final acceptance bundle readiness state without packaging."""
 
@@ -1642,6 +1785,7 @@ def build_final_acceptance_bundle_readiness_state() -> dict[str, Any]:
     p0_p1_technical_candidate_state = build_p0_p1_technical_closure_candidate_state()
     p0_p1_zero_proof_readiness = build_p0_p1_zero_proof_readiness_state()
     p0_p1_zero_proof_artifact_validation = build_p0_p1_zero_proof_artifact_validation_state(None)
+    final_acceptance_bundle_manifest_validation = build_final_acceptance_bundle_manifest_validation_state(None)
     state = {
         "status": "blocked",
         "scope": "final_acceptance_bundle_readiness_precheck_only",
@@ -1653,12 +1797,16 @@ def build_final_acceptance_bundle_readiness_state() -> dict[str, Any]:
             ),
             "P0_P1_ZERO_PROOF_READINESS": p0_p1_zero_proof_readiness["status"] == "pass",
             "P0_P1_ZERO_PROOF_ARTIFACT_VALIDATION": p0_p1_zero_proof_artifact_validation["status"] == "pass",
+            "FINAL_ACCEPTANCE_BUNDLE_MANIFEST_VALIDATION": (
+                final_acceptance_bundle_manifest_validation["status"] == "pass"
+            ),
         },
         "missing_items": [item for item, present in available_items.items() if not present],
         "blocking_reasons": list(S2PMT07_FINAL_ACCEPTANCE_BUNDLE_BLOCKING_REASONS),
         "p0_p1_technical_closure_candidate_state": p0_p1_technical_candidate_state,
         "p0_p1_zero_proof_readiness": p0_p1_zero_proof_readiness,
         "p0_p1_zero_proof_artifact_validation": p0_p1_zero_proof_artifact_validation,
+        "final_acceptance_bundle_manifest_validation": final_acceptance_bundle_manifest_validation,
         "bundle_present": False,
         "bundle_claimed_ready": False,
         "production_acceptance_claimed": False,
@@ -1695,6 +1843,8 @@ def validate_final_acceptance_bundle_readiness_state(state: Mapping[str, Any]) -
         errors.append("final acceptance bundle readiness must not expose P0/P1 zero proof readiness as passing")
     if prebundle.get("P0_P1_ZERO_PROOF_ARTIFACT_VALIDATION") is not False:
         errors.append("final acceptance bundle readiness must not expose P0/P1 zero proof artifact validation as passing")
+    if prebundle.get("FINAL_ACCEPTANCE_BUNDLE_MANIFEST_VALIDATION") is not False:
+        errors.append("final acceptance bundle readiness must not expose final bundle manifest validation as passing")
     p0_p1_candidate = _mapping(state.get("p0_p1_technical_closure_candidate_state"))
     if validate_p0_p1_technical_closure_candidate_state(p0_p1_candidate):
         errors.append("final acceptance bundle readiness P0/P1 technical candidate state is invalid")
@@ -1704,6 +1854,9 @@ def validate_final_acceptance_bundle_readiness_state(state: Mapping[str, Any]) -
     p0_p1_zero_proof_artifact = _mapping(state.get("p0_p1_zero_proof_artifact_validation"))
     if p0_p1_zero_proof_artifact.get("status") != "blocked":
         errors.append("final acceptance bundle readiness P0/P1 zero proof artifact validation must remain blocked")
+    manifest_validation = _mapping(state.get("final_acceptance_bundle_manifest_validation"))
+    if manifest_validation.get("status") != "blocked":
+        errors.append("final acceptance bundle readiness manifest validation must remain blocked")
     for flag in S2PMT07_FINAL_ACCEPTANCE_BUNDLE_FORBIDDEN_FLAGS:
         if state.get(flag) is not False:
             errors.append(f"{flag} must be false")
