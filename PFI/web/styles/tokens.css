@@ -186,7 +186,22 @@ button:active {
 
 .top-actions {
   display: flex;
+  align-items: center;
   gap: 8px;
+}
+
+.fx-badge {
+  min-height: var(--pfi-target);
+  display: inline-grid;
+  place-items: center;
+  padding: 0 10px;
+  border: 1px solid var(--pfi-border);
+  border-radius: 8px;
+  background: var(--pfi-surface-muted);
+  color: var(--pfi-ink);
+  font-size: 0.82rem;
+  font-weight: 760;
+  white-space: nowrap;
 }
 
 .icon-button {
@@ -224,23 +239,7 @@ button:active {
   color: var(--pfi-ink);
 }
 
-.legacy-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-top: 8px;
-  padding-top: 10px;
-  border-top: 1px solid var(--pfi-border);
-}
-
-.legacy-nav-label {
-  padding: 0 12px;
-  color: var(--pfi-muted);
-  font-size: 0.72rem;
-  font-weight: 780;
-}
-
-.legacy-nav-item {
+.nav-alias {
   min-height: 38px;
   font-size: 0.9rem;
 }

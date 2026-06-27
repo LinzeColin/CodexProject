@@ -50,12 +50,13 @@
             <span>日期</span>
             <input data-context-field="as_of" type="date" value="2026-06-19" aria-label="截至日期" />
           </label>
-          <input type="hidden" data-context-field="currency" value="USD" />
+          <input type="hidden" data-context-field="currency" value="CNY" />
           <input type="hidden" data-context-field="research_task" value="daily_brief" />
           <input type="hidden" data-context-field="evidence_set" value="cached_home" />
           <input type="hidden" data-context-field="simulation_scenario" value="base" />
         </form>
         <div class="top-actions" aria-label="工作台操作">
+          <span class="fx-badge" data-fx-badge data-context-field="fx_badge">汇率数据待更新</span>
           <button class="icon-button" type="button" data-command-open aria-label="打开命令面板">命令</button>
           <button class="icon-button" type="button" data-task-toggle aria-label="打开任务中心">
             <span aria-hidden="true">任务</span>
@@ -69,24 +70,22 @@
         </div>
       </header>
 
-      <nav class="side-nav" aria-label="一级工作区" data-primary-workspaces="8">
-        <button class="nav-item is-active" type="button" data-primary-entry="true" data-workspace="home">首页总览</button>
-        <button class="nav-item" type="button" data-primary-entry="true" data-workspace="accounts">账户与资产</button>
-        <button class="nav-item" type="button" data-primary-entry="true" data-workspace="ledger">账本流水</button>
-        <button class="nav-item" type="button" data-primary-entry="true" data-workspace="investment">投资管理</button>
-        <button class="nav-item" type="button" data-primary-entry="true" data-workspace="consumption">消费管理</button>
-        <button class="nav-item" type="button" data-primary-entry="true" data-workspace="sync">数据源与同步</button>
-        <button class="nav-item" type="button" data-primary-entry="true" data-workspace="recommendations">建议与复盘</button>
-        <button class="nav-item" type="button" data-primary-entry="true" data-workspace="insights">报告与洞察</button>
-        <div class="legacy-nav" aria-label="V0.1 兼容入口" data-v01-workspaces="6">
-          <span class="legacy-nav-label">V0.1 兼容入口</span>
-          <button class="nav-item legacy-nav-item" type="button" data-v01-entry="true" data-workspace="home">首页</button>
-          <button class="nav-item legacy-nav-item" type="button" data-v01-entry="true" data-workspace="market">市场</button>
-          <button class="nav-item legacy-nav-item" type="button" data-v01-entry="true" data-workspace="research">研究</button>
-          <button class="nav-item legacy-nav-item" type="button" data-v01-entry="true" data-workspace="portfolio">持仓</button>
-          <button class="nav-item legacy-nav-item" type="button" data-v01-entry="true" data-workspace="strategy">策略实验室</button>
-          <button class="nav-item legacy-nav-item" type="button" data-v01-entry="true" data-workspace="data">数据与系统</button>
-        </div>
+      <nav class="side-nav" aria-label="一级工作区" data-primary-workspaces="15">
+        <button class="nav-item is-active" type="button" data-primary-entry="true" data-nav-index="1" data-workspace="home" data-route-alias="/home">首页总览</button>
+        <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="2" data-workspace="accounts" data-route-alias="/accounts">账户与资产</button>
+        <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="3" data-workspace="ledger" data-route-alias="/ledger">账本流水</button>
+        <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="4" data-workspace="investment" data-route-alias="/investment">投资管理</button>
+        <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="5" data-workspace="consumption" data-route-alias="/consumption">消费管理</button>
+        <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="6" data-workspace="sync" data-route-alias="/sources-upload">数据源与上传</button>
+        <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="7" data-workspace="recommendations" data-route-alias="/review">建议与复盘</button>
+        <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="8" data-workspace="insights" data-route-alias="/reports">报告与洞察</button>
+        <button class="nav-item nav-alias" type="button" data-primary-entry="true" data-nav-index="9" data-workspace="home" data-route-alias="/home" data-entry-type="v01_alias">首页</button>
+        <button class="nav-item nav-alias" type="button" data-primary-entry="true" data-nav-index="10" data-workspace="investment" data-route-alias="/investment?tab=market" data-entry-type="v01_alias">市场</button>
+        <button class="nav-item nav-alias" type="button" data-primary-entry="true" data-nav-index="11" data-workspace="investment" data-route-alias="/investment?tab=research" data-entry-type="v01_alias">研究</button>
+        <button class="nav-item nav-alias" type="button" data-primary-entry="true" data-nav-index="12" data-workspace="investment" data-route-alias="/investment?tab=holdings" data-entry-type="v01_alias">持仓</button>
+        <button class="nav-item nav-alias" type="button" data-primary-entry="true" data-nav-index="13" data-workspace="investment" data-route-alias="/investment/strategy-lab" data-entry-type="v01_alias" data-feature-view="single">策略实验室</button>
+        <button class="nav-item nav-alias" type="button" data-primary-entry="true" data-nav-index="14" data-workspace="settings" data-route-alias="/settings?tab=data-system" data-entry-type="v01_alias">数据与系统</button>
+        <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="15" data-workspace="settings" data-route-alias="/settings">设置</button>
       </nav>
 
       <main id="main-workspace" class="workspace" tabindex="-1" data-active-workspace="home">
@@ -375,9 +374,16 @@
           <button type="button" role="option" data-command-workspace="ledger">账本流水</button>
           <button type="button" role="option" data-command-workspace="investment">投资管理</button>
           <button type="button" role="option" data-command-workspace="consumption">消费管理</button>
-          <button type="button" role="option" data-command-workspace="sync">数据源与同步</button>
+          <button type="button" role="option" data-command-workspace="sync">数据源与上传</button>
           <button type="button" role="option" data-command-workspace="recommendations">建议与复盘</button>
           <button type="button" role="option" data-command-workspace="insights">报告与洞察</button>
+          <button type="button" role="option" data-command-workspace="home" data-command-route="/home">首页</button>
+          <button type="button" role="option" data-command-workspace="investment" data-command-route="/investment?tab=market">市场</button>
+          <button type="button" role="option" data-command-workspace="investment" data-command-route="/investment?tab=research">研究</button>
+          <button type="button" role="option" data-command-workspace="investment" data-command-route="/investment?tab=holdings">持仓</button>
+          <button type="button" role="option" data-command-workspace="investment" data-command-route="/investment/strategy-lab">策略实验室</button>
+          <button type="button" role="option" data-command-workspace="settings" data-command-route="/settings?tab=data-system">数据与系统</button>
+          <button type="button" role="option" data-command-workspace="settings" data-command-route="/settings">设置</button>
         </div>
       </form>
     </dialog>

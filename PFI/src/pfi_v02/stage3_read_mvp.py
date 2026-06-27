@@ -395,7 +395,7 @@ def _recommendations(
             "有建议",
             "补齐过期或待同步来源，减少首页待补状态。",
             "只生成同步计划；真实登录仍需 owner 确认。",
-            "数据源与同步",
+            "数据源与上传",
             1,
         ),
         Stage3Recommendation(
@@ -441,7 +441,7 @@ def _quick_actions(
     recommendations: tuple[Stage3Recommendation, ...],
 ) -> tuple[dict[str, object], ...]:
     return (
-        {"label": "同步全部", "target_entry": "数据源与同步", "status": "需要同步", "evidence_count": len(sync_plan)},
+        {"label": "同步全部", "target_entry": "数据源与上传", "status": "需要同步", "evidence_count": len(sync_plan)},
         {"label": "处理待复核", "target_entry": "账本流水", "status": "需要复核" if review_checklist else "正常", "evidence_count": len(review_checklist)},
         {"label": "查看建议", "target_entry": "建议与复盘", "status": "有建议", "evidence_count": len(recommendations)},
         {"label": "生成报告", "target_entry": "报告与洞察", "status": "有建议", "evidence_count": 2},

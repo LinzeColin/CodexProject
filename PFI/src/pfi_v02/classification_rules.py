@@ -66,6 +66,69 @@ CREDIT_REPAYMENT_MARKERS = (
     "还款",
 )
 
+CLASSIFICATION_RULE_STANDARD: tuple[dict[str, object], ...] = (
+    {
+        "rule_id": "LCS-001",
+        "priority": 10,
+        "name": "信用卡还款去重",
+        "event_type": LedgerEventType.TRANSFER.value,
+        "affects_consumption": False,
+        "affects_investment": False,
+        "asset_type": AssetType.CREDIT.value,
+        "review_state": "ACCEPTED",
+        "dedupe_required": True,
+        "reason": "信用卡还款是负债账户之间的资金转移，不是新的生活消费。",
+    },
+    {
+        "rule_id": "LCS-002",
+        "priority": 20,
+        "name": "自有账户转账",
+        "event_type": LedgerEventType.TRANSFER.value,
+        "affects_consumption": False,
+        "affects_investment": "brokerage_transfer_only",
+        "asset_type": None,
+        "review_state": "ACCEPTED",
+        "dedupe_required": True,
+        "reason": "自有账户间移动资金不计入普通消费；券商入金只影响投资现金流。",
+    },
+    {
+        "rule_id": "LCS-003",
+        "priority": 30,
+        "name": "基金申购赎回",
+        "event_type": LedgerEventType.FUND.value,
+        "affects_consumption": False,
+        "affects_investment": True,
+        "asset_type": AssetType.FUND.value,
+        "review_state": "ACCEPTED",
+        "dedupe_required": False,
+        "reason": "基金申购、赎回和余额宝类记录属于投资基金事件，不计生活消费。",
+    },
+    {
+        "rule_id": "LCS-004",
+        "priority": 40,
+        "name": "贵金属资产买卖",
+        "event_type": f"{LedgerEventType.BUY_ASSET.value}/{LedgerEventType.SELL_ASSET.value}",
+        "affects_consumption": False,
+        "affects_investment": True,
+        "asset_type": AssetType.BULLION.value,
+        "review_state": "ACCEPTED",
+        "dedupe_required": False,
+        "reason": "ABC Bullion 黄金、白银买卖是投资资产事件，不是购物消费。",
+    },
+    {
+        "rule_id": "LCS-005",
+        "priority": 90,
+        "name": "默认现金事件",
+        "event_type": LedgerEventType.CASH.value,
+        "affects_consumption": "negative_amount_only",
+        "affects_investment": False,
+        "asset_type": AssetType.CASH.value,
+        "review_state": "NEEDS_REVIEW when abs(amount) >= 1000 else ACCEPTED",
+        "dedupe_required": False,
+        "reason": "没有命中更强规则时才落入现金事件；大额或低信息记录必须进入人工复核。",
+    },
+)
+
 
 def classify_transaction(item: ClassificationInput) -> ClassificationResult:
     text = " ".join([item.source_id, item.description, item.account_hint, item.counterparty_hint]).lower()
@@ -133,3 +196,7 @@ def stage1_classification_fixtures() -> tuple[ClassificationInput, ...]:
         ClassificationInput("abc_bullion", "ABC Bullion gold purchase", -1200.0, "AUD", "ABC Bullion", "Gold"),
         ClassificationInput("cba_bank", "Credit card repayment from CBA account", -2200.0, "AUD", "CBA", "Credit Card"),
     )
+
+
+def build_ledger_classification_standard() -> tuple[dict[str, object], ...]:
+    return CLASSIFICATION_RULE_STANDARD

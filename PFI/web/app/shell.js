@@ -42,9 +42,10 @@ const WORKSPACE_LABELS = {
   ledger: "账本流水",
   investment: "投资管理",
   consumption: "消费管理",
-  sync: "数据源与同步",
+  sync: "数据源与上传",
   recommendations: "建议与复盘",
   insights: "报告与洞察",
+  settings: "设置",
   market: "市场",
   markets: "市场",
   research: "研究",
@@ -58,9 +59,10 @@ const WORKSPACE_LABELS = {
   账本流水: "账本流水",
   投资管理: "投资管理",
   消费管理: "消费管理",
-  数据源与同步: "数据源与同步",
+  数据源与上传: "数据源与上传",
   建议与复盘: "建议与复盘",
   报告与洞察: "报告与洞察",
+  设置: "设置",
 };
 
 const CARD_LABELS = {
@@ -89,7 +91,7 @@ const CARD_SOURCES = {
   cash: "账户地图",
   investment_assets: "账户与资产",
   monthly_spending: "账本流水",
-  data_health: "数据源与同步",
+  data_health: "数据源与上传",
   investment_market_value: "投资管理",
   investment_pnl: "收益归因",
   month_spend: "消费管理",
@@ -101,7 +103,7 @@ const FEATURE_TARGETS = {
   市场快照: { view: "hotspots", label: "打开热点" },
   研究队列: { view: "reports", label: "打开报告" },
   持仓复核: { view: "holdings", label: "打开持仓" },
-  策略实验室: { workspace: "strategy", label: "打开策略" },
+  策略实验室: { view: "single", label: "打开策略" },
   指数与ETF: { view: "index_etf", label: "打开指数" },
   主题催化: { view: "theme_catalyst", label: "打开主题" },
   自选监控: { view: "watchlist_monitor", label: "打开自选" },
@@ -140,6 +142,7 @@ const FEATURE_TARGETS = {
   数据中心: { view: "tools", label: "打开数据" },
   策略库: { view: "library", label: "打开策略库" },
   上传支付宝账单: { workspace: "sync", label: "打开上传" },
+  导入中心: { workspace: "sync", label: "打开导入" },
   同步全部: { workspace: "sync", label: "同步计划" },
   处理待复核: { workspace: "ledger", label: "处理复核" },
   查看建议: { workspace: "recommendations", label: "查看建议" },
@@ -185,7 +188,7 @@ const FUNCTION_VIEWS = {
   single: functionView(
     "single",
     "单标的回测",
-    "strategy",
+    "investment",
     "运行回测",
     "选择标的、数据源、周期、策略和成本假设，输出收益、回撤、交易、风险闸门和报告证据。",
     ["可用：单策略回测和双策略对比", "验收：费用、时间区间、数据质量和策略版本必须显示", "边界：只生成研究结果，不生成实盘订单"],
@@ -193,7 +196,7 @@ const FUNCTION_VIEWS = {
   scan: functionView(
     "scan",
     "参数扫描",
-    "strategy",
+    "investment",
     "运行参数扫描",
     "比较参数网格、样本内外表现、稳定性和过拟合风险，用于判断策略是否值得继续研究。",
     ["可用：参数网格和稳定性摘要", "验收：记录样本区间、参数范围和评分口径", "边界：扫描结果不能直接转成交易指令"],
@@ -201,7 +204,7 @@ const FUNCTION_VIEWS = {
   strategy_slice: functionView(
     "strategy_slice",
     "策略垂直切片",
-    "strategy",
+    "investment",
     "生成策略复核",
     "从固定 PIT 样本、回测哈希、样本外验证、滚动验证、策略注册和人工复核任务形成完整策略证据链。",
     ["可用：PIT 回测、样本外验证、滚动验证和策略注册", "验收：固定样本哈希、没有未来数据、运行可取消恢复", "边界：不生成实盘信号，不提交订单"],
@@ -210,7 +213,7 @@ const FUNCTION_VIEWS = {
   pit_backtest: functionView(
     "pit_backtest",
     "PIT回测",
-    "strategy",
+    "investment",
     "查看 PIT 回测",
     "查看固定样本哈希、回测参数、成本假设、公司行动调整和退市样本排除证据。",
     ["可用：行情校验和、复现哈希和下一根K线执行模型", "验收：公司行动和退市样本必须显式记录", "边界：回测不是交易信号"],
@@ -219,7 +222,7 @@ const FUNCTION_VIEWS = {
   train_test_validation: functionView(
     "train_test_validation",
     "样本外验证",
-    "strategy",
+    "investment",
     "查看样本外验证",
     "核对训练期和测试期的时间切分，确认训练结束早于测试开始，没有未来数据泄漏。",
     ["可用：切分时间、训练样本数、测试样本数和泛化比例", "验收：训练窗口不得覆盖测试窗口", "边界：验证结果只进入人工复核"],
@@ -228,7 +231,7 @@ const FUNCTION_VIEWS = {
   walk_forward_validation: functionView(
     "walk_forward_validation",
     "滚动验证",
-    "strategy",
+    "investment",
     "查看滚动验证",
     "检查多个滚动训练/测试窗口，确认每个窗口的训练结束早于测试开始。",
     ["可用：窗口数量、通过数量和平均泛化比例", "验收：每个滚动窗口都必须没有未来数据", "边界：滚动通过也不允许自动下单"],
@@ -237,7 +240,7 @@ const FUNCTION_VIEWS = {
   strategy_registry: functionView(
     "strategy_registry",
     "策略注册",
-    "strategy",
+    "investment",
     "打开策略注册",
     "把策略候选登记为只读研究模型，保留版本、参数、哈希、验证状态和人工复核要求。",
     ["可用：模型编号、策略版本、样本外验证状态和滚动验证状态", "验收：订单开关和实盘信号开关必须保持关闭", "边界：注册不等于上线，不提交订单"],
@@ -246,7 +249,7 @@ const FUNCTION_VIEWS = {
   market_feel: functionView(
     "market_feel",
     "盘感训练",
-    "strategy",
+    "investment",
     "生成盘感训练",
     "保留读图训练、限时判断、隐藏答案和复盘记录，训练人工判断，不输出实盘信号。",
     ["可用：大盘对象、持仓对象和自选代码训练", "验收：训练窗口、答案窗口、超时和复盘必须记录", "边界：训练结果不得作为自动买卖依据"],
@@ -254,7 +257,7 @@ const FUNCTION_VIEWS = {
   big_data: functionView(
     "big_data",
     "模拟实验",
-    "strategy",
+    "investment",
     "打开模拟实验",
     "组合策略、情景压力和假设实验，用于研究策略在不同市场状态下的表现。",
     ["可用：模拟和压力情景入口", "验收：假设、参数和输出路径必须可追溯", "边界：仅研究模拟，不连接券商"],
@@ -619,7 +622,7 @@ const FUNCTION_VIEWS = {
   tools: functionView(
     "tools",
     "数据中心",
-    "data",
+    "settings",
     "检查数据源",
     "查看数据源、代码格式、质量报告、缓存、隐私边界和系统诊断。",
     ["可用：数据源状态和代码助手", "验收：来源、新鲜度、失败原因必须显示", "边界：不提交 secrets 或私有数据"],
@@ -627,7 +630,7 @@ const FUNCTION_VIEWS = {
   source_registry: functionView(
     "source_registry",
     "来源登记",
-    "data",
+    "settings",
     "打开来源登记",
     "登记数据来源、使用限制、新鲜度、失败原因和复核状态，作为后续研究的来源台账。",
     ["可用：来源名称、更新时间、限制条件和失败原因", "验收：来源必须能追溯到登记记录", "边界：不保存密钥，不复制私有原始数据"],
@@ -636,7 +639,7 @@ const FUNCTION_VIEWS = {
   task_monitor: functionView(
     "task_monitor",
     "任务监控",
-    "data",
+    "settings",
     "打开任务监控",
     "查看任务队列、重试、失败、产物和人工复核状态，定位系统运行问题。",
     ["可用：任务状态、重试次数、失败原因和产物路径", "验收：失败任务必须有下一步处理建议", "边界：监控不触发实盘执行"],
@@ -645,7 +648,7 @@ const FUNCTION_VIEWS = {
   privacy_boundary: functionView(
     "privacy_boundary",
     "隐私边界",
-    "data",
+    "settings",
     "检查隐私边界",
     "检查私有数据目录、公共提交目录、密钥排除和本机运行边界，避免隐私数据进入 Git。",
     ["可用：私有目录、公有目录和密钥排除规则", "验收：不得把私有持仓、密钥或原始账本提交到公共仓库", "边界：只读检查，不复制私有数据"],
@@ -654,7 +657,7 @@ const FUNCTION_VIEWS = {
   backup_restore: functionView(
     "backup_restore",
     "备份恢复",
-    "data",
+    "settings",
     "检查备份恢复",
     "检查备份、校验和、恢复路径和恢复演练状态，确保运行资料可追溯。",
     ["可用：备份路径、校验和和恢复演练状态", "验收：恢复路径必须可定位且可复核", "边界：恢复演练不覆盖真实私有数据"],
@@ -663,7 +666,7 @@ const FUNCTION_VIEWS = {
   library: functionView(
     "library",
     "策略库",
-    "strategy",
+    "investment",
     "打开策略库",
     "管理候选策略、确认状态、风险说明和版本证据，避免未确认策略进入正式研究。",
     ["可用：策略模板和候选策略审查", "验收：策略版本、参数和风险说明必须保留", "边界：未确认策略不能进入正式回测"],
@@ -685,7 +688,7 @@ const DEFAULT_WORKSPACES = {
     ],
     features: [
       feature("上传支付宝账单", "可用", "CSV / ZIP 原始账单", "页面顶部有真实上传控件，可接入已发现的三年支付宝原始数据。", { workspace: "sync", label: "打开上传" }),
-      feature("同步全部", "需要同步", "数据源与同步", "生成可执行前的本地同步/导入计划，不登录、不下单、不支付。"),
+      feature("同步全部", "需要同步", "数据源与上传", "生成可执行前的本地同步/导入计划，不登录、不下单、不支付。"),
       feature("处理待复核", "需要复核", "账本流水", "用 A/B/C/D 选择处理低置信度流水，避免 unknown 静默入账。"),
       feature("查看建议", "有建议", "建议与复盘", "查看带证据、动作、状态、预期效果和 tradeoff 的 Top N 建议。"),
       feature("生成报告", "有建议", "报告与洞察", "生成本地只读报告草稿，保留首页、账户、账本和证据链。"),
@@ -693,7 +696,7 @@ const DEFAULT_WORKSPACES = {
       feature("盘感训练", "可用", "训练记录", "保留读图训练和限时判断，不输出实盘信号。"),
     ],
     rows: [
-      row("P1", "数据源与同步", "账户状态", "先同步或扫描本地导入文件。", "需要同步"),
+      row("P1", "数据源与上传", "账户状态", "先同步或扫描本地导入文件。", "需要同步"),
       row("P2", "账本流水", "待复核记录", "处理低置信度流水。", "需要复核"),
       row("P3", "报告与洞察", "首页证据链", "生成本地报告草稿。", "有建议"),
     ],
@@ -941,7 +944,7 @@ function installStage3WorkspaceAliases() {
       feature("收益归因", "需要复核", "估计归因", "把收益拆为市场、主动决策、费用、汇率和现金拖累；数据不足不输出精确结论。", { workspace: "investment", label: "查看归因" }),
       feature("风险分析", "有建议", "风险证据", "查看集中度、回撤、币种暴露和流动性。", { workspace: "investment", label: "查看风险" }),
       feature("行为复盘", "有建议", "交易证据", "识别追涨、杀跌、频繁交易和持有周期。", { workspace: "investment", label: "查看复盘" }),
-      feature("策略实验室", "可用", "PFI 策略实验室", "保留 PFI 策略回测、参数扫描、盘感训练和大数据模拟器；QBVS 是顶层独立系统。", { workspace: "strategy", label: "打开策略" }),
+      feature("策略实验室", "可用", "PFI 策略实验室", "保留 PFI 策略回测、参数扫描、盘感训练和大数据模拟器；QBVS 是顶层独立系统。", { view: "single", label: "打开策略" }),
     ],
   };
   WORKSPACES.consumption = {
@@ -969,7 +972,7 @@ function installStage3WorkspaceAliases() {
   };
   WORKSPACES.sync = {
     ...structuredClone(DEFAULT_WORKSPACES.data),
-    label: "数据源与同步",
+    label: "数据源与上传",
     kicker: "同步与导入",
     conclusion: "一键生成可执行前的同步/导入计划；真实登录、支付和券商操作必须另走 owner gate。",
     runtime: "同步全部：只生成计划 · 不执行外部动作",
@@ -981,6 +984,7 @@ function installStage3WorkspaceAliases() {
     ],
     features: [
       feature("上传支付宝账单", "可用", "本机上传", "使用页面顶部上传控件，或接入已发现的旧支付宝原始账单。", { workspace: "sync", label: "查看上传" }),
+      feature("导入中心", "可用", "批次摘要", "查看导入批次、导入摘要、失败原因和账本复核入口。", { workspace: "sync", label: "打开导入" }),
       feature("同步全部", "需要同步", "7 个来源", "扫描本地导入收件箱或生成只读预检，不登录、不下单、不支付。", { workspace: "sync", label: "同步计划" }),
       feature("来源登记", "复核", "数据源状态", "查看数据源新鲜度、失败原因和 parser 合同。"),
       feature("隐私边界", "可用", "本地数据", "私有数据和凭证不进入公共 Git。"),
@@ -995,6 +999,38 @@ function installStage3WorkspaceAliases() {
       task("旧数据接入", "可用 · 发现旧支付宝原始文件后可一键导入", "ready"),
       task("账本复核", "导入后处理低置信度分类", "review"),
     ],
+  };
+  WORKSPACES.settings = {
+    ...structuredClone(DEFAULT_WORKSPACES.data),
+    label: "设置",
+    kicker: "系统设置",
+    conclusion: "集中管理数据与系统、运行反馈、多模态反馈、触感、声音、视觉、通知和备份恢复设置。",
+    freshness: "设置项本地保存",
+    runtime: "设置：只改本机偏好 · 不触发外部动作",
+    cards: [
+      ["数据与系统", "可用", "来源、任务、隐私、备份"],
+      ["运行反馈", "可配置", "视觉、声音、触感、通知"],
+      ["汇率徽标", "待更新", "CNY/AUD 06:00 快照"],
+      ["隐私边界", "开启", "原始数据按 MetaDatabase 备份规则管理"],
+    ],
+    features: [
+      feature("数据中心", "可用", "系统诊断", "检查数据源、代码格式、质量报告、缓存和隐私边界。", { workspace: "settings", label: "打开数据与系统" }),
+      feature("来源登记", "复核", "数据源状态", "查看来源、时间、质量和限制条件。", { workspace: "settings", label: "查看来源" }),
+      feature("任务监控", "可用", "任务中心", "查看队列、重试、失败和产物。", { workspace: "settings", label: "查看任务" }),
+      feature("多模态反馈", "可配置", "设置页", "管理触感反馈强度、声音反馈、视觉反馈、通知反馈和反馈测试。", { workspace: "settings", label: "打开反馈设置" }),
+      feature("备份恢复", "复核", "恢复演练", "检查备份、校验和恢复路径。", { workspace: "settings", label: "查看备份" }),
+    ],
+    rows: [
+      row("P0", "汇率徽标", "CNY/AUD", "读取当日 06:00 快照；缺失时显示中文待更新。", "复核"),
+      row("P0", "隐私边界", "目录策略", "确认私有数据与 secrets 不进入公共 Git。", "可用"),
+      row("P1", "反馈设置", "本机偏好", "业务页默认不常驻反馈控制台。", "可用"),
+    ],
+    tasks: [
+      task("数据与系统入口", "可用 · 旧入口映射到设置页", "ready"),
+      task("反馈设置归口", "可配置 · 触感/声音/视觉/通知集中管理", "ready"),
+      task("汇率数据", "复核 · 等待 06:00 快照源接入", "review"),
+    ],
+    evidence: evidence("设置证据", "数据与系统、反馈和备份", "本地设置合同", "设置入口不触发外部执行。"),
   };
   WORKSPACES.recommendations = {
     ...structuredClone(DEFAULT_WORKSPACES.home),
@@ -1197,7 +1233,7 @@ function applyHomeSummary(summary) {
   const orderedKeys = cards.length ? cards.map((card) => card.key) : ["open_tasks", "market_events", "portfolio_risk", "strategy_runs"];
   home.cards = orderedKeys.slice(0, 5).map((key, index) => {
     const card = cardByKey[key] || {};
-    const fallback = DEFAULT_WORKSPACES.home.cards[index] || ["数据健康", "待补", "来源：数据源与同步 · 状态待补"];
+    const fallback = DEFAULT_WORKSPACES.home.cards[index] || ["数据健康", "待补", "来源：数据源与上传 · 状态待补"];
     return [
       safeUserText(card.label, CARD_LABELS[key] || fallback[0]),
       safeUserText(card.value, fallback[1]),
@@ -1574,9 +1610,15 @@ function renderWorkspace(workspaceId, options = {}) {
   const conclusion = document.querySelector("#workspace-conclusion");
   const freshness = document.querySelector("#freshness-label");
   const runtimeTarget = document.querySelector("[data-runtime-target]");
+  const previousContext = currentContext();
+  const activeRoute = Object.prototype.hasOwnProperty.call(options, "routeAlias") ? options.routeAlias : "";
 
   document.querySelectorAll("[data-workspace]").forEach((button) => {
-    const active = button.dataset.workspace === workspaceId;
+    const isAlias = button.dataset.entryType === "v01_alias" || button.hasAttribute("data-feature-view");
+    const routeAlias = button.dataset.routeAlias || "";
+    const active = activeRoute
+      ? button.dataset.workspace === workspaceId && routeAlias === activeRoute
+      : button.dataset.workspace === workspaceId && !isAlias;
     button.classList.toggle("is-active", active);
     button.setAttribute("aria-current", active ? "page" : "false");
   });
@@ -1596,7 +1638,12 @@ function renderWorkspace(workspaceId, options = {}) {
   applyEvidenceDrawer(workspace.evidence);
   drawSparkline(workspace.chart);
   if (!options.keepFunctionDetail) hideFunctionDetail();
-  const nextContext = { ...currentContext(), workspace: workspaceId };
+  const nextContext = { ...previousContext, workspace: workspaceId };
+  if (activeRoute) {
+    nextContext.route_alias = activeRoute;
+  } else {
+    delete nextContext.route_alias;
+  }
   if (!options.keepFunctionDetail) delete nextContext.feature_view;
   writeContext(nextContext);
 
@@ -1675,11 +1722,11 @@ function featureTarget(title) {
   if (Object.prototype.hasOwnProperty.call(FEATURE_TARGETS, raw)) return FEATURE_TARGETS[raw];
   const compact = raw.replace(/\s+/g, "");
   if (Object.prototype.hasOwnProperty.call(FEATURE_TARGETS, compact)) return FEATURE_TARGETS[compact];
-  if (/回测|参数|盘感|策略|模拟/.test(compact)) return { workspace: "strategy", label: "打开策略" };
-  if (/持仓|订单|组合|纪律/.test(compact)) return { workspace: "portfolio", label: "打开持仓" };
-  if (/研究|政策|报告|证据/.test(compact)) return { workspace: "research", label: "打开研究" };
-  if (/数据|来源|任务|隐私|备份|系统/.test(compact)) return { workspace: "data", label: "打开系统" };
-  if (/市场|指数|主题|自选/.test(compact)) return { workspace: "market", label: "打开市场" };
+  if (/回测|参数|盘感|策略|模拟/.test(compact)) return { workspace: "investment", label: "打开投资" };
+  if (/持仓|订单|组合|纪律/.test(compact)) return { workspace: "investment", label: "打开投资" };
+  if (/研究|政策|报告|证据/.test(compact)) return { workspace: "insights", label: "打开报告" };
+  if (/数据|来源|任务|隐私|备份|系统/.test(compact)) return { workspace: "settings", label: "打开设置" };
+  if (/市场|指数|主题|自选/.test(compact)) return { workspace: "investment", label: "打开投资" };
   return { workspace: "home", label: "打开入口" };
 }
 
@@ -1704,7 +1751,8 @@ function featureOpenControl(card) {
 
 function openFunctionView(view, options = {}) {
   const detail = FUNCTION_VIEWS[view] || FUNCTION_VIEWS.single;
-  renderWorkspace(detail.workspace, { silent: true, preserveFocus: true, keepFunctionDetail: true });
+  const routeAlias = options.routeAlias || (view === "single" ? "/investment/strategy-lab" : "");
+  renderWorkspace(detail.workspace, { silent: true, preserveFocus: true, keepFunctionDetail: true, routeAlias });
   renderFunctionDetail(detail);
   writeContext({ ...currentContext(), workspace: detail.workspace, feature_view: detail.view });
   if (!options.silent) showToast(`已打开${detail.title}`);
@@ -1978,8 +2026,8 @@ function setPressedFeedback(element) {
   }, 120);
 }
 
-function setActiveWorkspace(workspaceId) {
-  renderWorkspace(workspaceId);
+function setActiveWorkspace(workspaceId, options = {}) {
+  renderWorkspace(workspaceId, options);
 }
 
 function openCommandPalette() {
@@ -2171,7 +2219,10 @@ function bindEvents() {
   document.querySelectorAll("[data-workspace]").forEach((button) => {
     button.addEventListener("click", () => {
       setPressedFeedback(button);
-      setActiveWorkspace(button.dataset.workspace);
+      const routeAlias = button.dataset.entryType === "v01_alias" || button.hasAttribute("data-feature-view")
+        ? button.dataset.routeAlias || ""
+        : "";
+      setActiveWorkspace(button.dataset.workspace, { routeAlias });
     });
   });
 
@@ -2180,14 +2231,14 @@ function bindEvents() {
     if (featureControl) {
       event.preventDefault();
       setPressedFeedback(featureControl);
-      openFunctionView(featureControl.dataset.featureView);
+      openFunctionView(featureControl.dataset.featureView, { routeAlias: featureControl.dataset.routeAlias || "" });
       return;
     }
     const workspaceControl = event.target.closest("[data-feature-workspace]");
     if (workspaceControl) {
       event.preventDefault();
       setPressedFeedback(workspaceControl);
-      setActiveWorkspace(workspaceControl.dataset.featureWorkspace || "home");
+      setActiveWorkspace(workspaceControl.dataset.featureWorkspace || "home", { routeAlias: workspaceControl.dataset.routeAlias || "" });
       return;
     }
     const functionAction = event.target.closest("[data-function-action]");
@@ -2220,7 +2271,12 @@ function bindEvents() {
 
   document.querySelectorAll("[data-command-workspace]").forEach((button) => {
     button.addEventListener("click", () => {
-      setActiveWorkspace(button.dataset.commandWorkspace);
+      const routeAlias = button.dataset.commandRoute || "";
+      if (routeAlias === "/investment/strategy-lab") {
+        openFunctionView("single", { routeAlias });
+      } else {
+        setActiveWorkspace(button.dataset.commandWorkspace, { routeAlias });
+      }
       closeCommandPalette();
     });
   });
@@ -2228,7 +2284,7 @@ function bindEvents() {
   document.querySelectorAll("[data-settings-open]").forEach((button) => {
     button.addEventListener("click", () => {
       setPressedFeedback(button);
-      setActiveWorkspace("data");
+      setActiveWorkspace("settings", { routeAlias: "/settings" });
     });
   });
 

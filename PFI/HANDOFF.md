@@ -4,7 +4,7 @@ Last updated: 2026-06-27 Australia/Sydney
 
 ## Current Goal
 
-PFI v0.2.1 前端优化 Stage 0 准备：读取 roadmap，锁定 HTML Web Shell 为正式 UI 目标，建立 CNY 基准、CNY/AUD 06:00 顶栏汇率、统一导航、多模态反馈设置页归属和后续 P0-P8 stage/task 验收合同。
+PFI v0.2.1 前端优化 Stage 1 已完成：统一 15 个一级入口，删除新旧入口分组标题，用户可见命名改为 `数据源与上传` 和 `导入中心`，`策略实验室` 收口到 `投资管理` 同一状态源，并补齐三基文件定位与账本分类逻辑标准。
 
 ## Current Status
 
@@ -41,15 +41,16 @@ PFI v0.2.1 前端优化 Stage 0 准备：读取 roadmap，锁定 HTML Web Shell 
 - Stage 6 local synthetic E2E, regression governance, delivery rollback, 20 gate audit, and ACC-* taskpack audit acceptance is complete for phases 6A-6C.
 - Stage 0 preparation audit is `docs/pfi_v02/STAGE0_PREPARATION_AUDIT_20260627.md`.
 - Stage 1-5 acceptance audit is `docs/pfi_v02/STAGE1_5_ACCEPTANCE_AUDIT_20260627.md`.
-- v0.2.1 前端优化准备记录是 `docs/pfi_v02/STAGE_V021_FRONTEND_OPTIMIZATION.md`。
-- v0.2.1 Stage 0 合同是 `src/pfi_v02/stage_v021_frontend_contract.py`，测试是 `tests/test_v021_stage0_frontend_contract.py`。
+- v0.2.1 前端优化记录是 `docs/pfi_v02/STAGE_V021_FRONTEND_OPTIMIZATION.md`。
+- v0.2.1 Stage 0/1 合同是 `src/pfi_v02/stage_v021_frontend_contract.py`，测试是 `tests/test_v021_stage0_frontend_contract.py` 和 `tests/test_v021_stage1_navigation_contract.py`。
 - v0.2.1 UI 货币基准已锁定为 CNY；所有页面顶部右上角必须显示 `CNY/AUD=4.70（YYYYMMDD--HH:MM）`，读取当日 06:00 Australia/Sydney 汇率快照。
 - v0.2.1 正式前端目标是 `PFI/web` HTML Web Shell；多模态反馈、触感、声音、视觉、通知和运行反馈控制台后续必须收敛到设置页。
-- Web shell default homepage consumes Stage 6 closeout status, keeps the V0.2 8 first-level entries, shows recommendation lifecycle under 建议与复盘, and shows reports/context export plus Stage 6 closeout under 报告与洞察.
+- Web shell default homepage consumes Stage 6 closeout status and now shows one unified 15-entry navigation list: 首页总览、账户与资产、账本流水、投资管理、消费管理、数据源与上传、建议与复盘、报告与洞察、首页、市场、研究、持仓、策略实验室、数据与系统、设置.
 - 2026-06-27验收退回纠偏：默认 8501 顶部已新增 PFI 本机数据上传；真实支付宝导出 CSV parser 已支持说明区/中间表头/GB18030/尾随空列；旧支付宝原始账单 4 份已导入 `~/.pfi/runtime/imports/alipay_daily`，覆盖 `2022-06-06` 至 `2026-06-03`，`8815` 条标准化流水，`406` 条待复核；Web Shell 动态英文状态已中文化，8 个一级入口浏览器点击验证通过。
 - 2026-06-27二次纠偏：QBVS 已从 `PFI/` 内部分离为顶层 `QBVS/`；PFI 合同改为 `qbvs_independent_system=true`；Web Shell 补回 V0.1 六入口；`MetaDatabase/` 保存支付宝原始 CSV、manifest 和标准化流水，供 GitHub 验收。
 - 当前 GitHub 分支 `codex/pfi-stage6-meta-qbvs-sync` 已推送 commit `d0d0a4b8f50231e2c63293396a1fee8e03de7fda`；PFI/QBVS/MetaDatabase 相关工作区在该 commit 后干净。
 - 2026-06-27 Stage 1-5 acceptance audit：根 `README.md` 和 `governance/projects.yaml` 已登记 `QBVS` 和 `MetaDatabase`；`MetaDatabase` 补三基和最小治理；PFI Stage 1-5 contracts `Ran 89 tests / OK`；QBVS smoke `Ran 1 test / OK`；PFI/QBVS/MetaDatabase governance `errors 0 / warnings 0`；Web Shell Chrome 点击验收 `14/14`、console errors `0`。
+- 2026-06-27 v0.2.1 Stage 1：HTML Web Shell 左侧导航已改为 15 个统一入口；`数据与系统` 映射设置页；策略实验室旧入口和投资管理卡片都打开投资管理下的策略实验室状态；新增 `docs/pfi_v02/LEDGER_CLASSIFICATION_STANDARD.md`；三基文件已明确功能目录、开发日志、参数依据三种定位。
 
 ## Decisions
 
@@ -57,7 +58,9 @@ PFI v0.2.1 前端优化 Stage 0 准备：读取 roadmap，锁定 HTML Web Shell 
 - Any future QBVS change must happen under `CodexProject/QBVS`.
 - Put new shared PFI V0.2 contracts at the `PFI/` root.
 - Keep PFI strategy backtesting, 盘感训练 and 大数据模拟器 under PFI `投资管理`.
-- Keep V0.1 compatibility entries visible: 首页、市场、研究、持仓、策略实验室、数据与系统.
+- Keep V0.1 compatibility entries visible as aliases in the same navigation list: 首页、市场、研究、持仓、策略实验室、数据与系统.
+- Do not recreate a separate `strategy` product workspace; PFI strategy backtesting, 盘感训练 and simulator stay under `投资管理`.
+- Do not recreate visible new/old navigation group titles.
 - Keep PFI research-only: no trading password, no automatic real-money orders.
 - Non-CSV sources are first-class: 支付宝基金、中国大陆券商、ABC Bullion do not rely on CSV as the primary contract.
 - Low-confidence OCR/screenshot/recording input is candidate-only and must enter review before acceptance.
@@ -89,10 +92,10 @@ Latest Stage 4 closeout result: Stage 1+2+3+4 contracts `Ran 71 tests / OK`; leg
 Latest Stage 5 closeout result: Stage 1+2+3+4+5 contracts `Ran 85 tests / OK`; legacy QBVS lifecycle smoke `Ran 1 test / OK`; project governance validation `errors 0 / warnings 0`; human-entry Markdown contract `Ran 2 tests / OK`; Stage 5 contract `Ran 14 tests / OK`; Python compile `OK`; Web shell syntax `OK`; `git diff --check -- PFI` `OK`; macOS app acceptance lite `29 pass / 0 fail / 2 info`; browser validation screenshot `/tmp/pfi-stage5-browser-verified.png`.
 Latest Stage 6 closeout result: Stage 1+2+3+4+5+6 contracts `Ran 95 tests / OK`; legacy QBVS lifecycle smoke `Ran 1 test / OK`; project governance validation `errors 0 / warnings 0`; human-entry Markdown contract `Ran 2 tests / OK`; Stage 6 contract `Ran 10 tests / OK`; Python compile `OK`; Web shell syntax `OK`; `git diff --check -- PFI` `OK`; macOS app acceptance lite `29 pass / 0 fail / 2 info`; browser validation screenshot `/tmp/pfi-stage6-browser-verified.png`.
 Latest验收退回纠偏 result: `tests.test_stage2_alipay_import` `Ran 7 tests / OK`; Stage 1 classification + Stage 2 targeted contracts `Ran 32 tests / OK`; Python compile `OK`; Web shell syntax `OK`; real old Alipay import `4/4 files`, `8815` records, `406` review; browser validation `upload panel true`, `private ledger true`, `file input 1`, `navCount 8`, all primary entry clicks OK, no raw `ready`/`Synthetic E2E`; screenshot `/tmp/pfi-alipay-upload-verified-v2.png`.
+Latest v0.2.1 Stage 1 target result: Stage 1 target contracts `Ran 22 tests / OK`; full PFI unittest discover `Ran 112 tests / OK`; `node --check web/app/shell.js` OK; governance `errors 0 / warnings 0`; `git diff --check -- PFI` OK; Chrome headless desktop clicked `15/15` entries with screenshot `/tmp/pfi-v021-stage1-nav-verified.png`; Chrome headless mobile 390x844 validated `数据源与上传` and `策略实验室` with screenshot `/tmp/pfi-v021-stage1-mobile-verified.png`.
 
 ## Next
 
-1. Merge `codex/pfi-stage6-meta-qbvs-sync` into `main` if the user wants GitHub default branch to show Stage 0/1-5/6 delivery directly.
-2. Run final changed-scope governance after merge candidate is prepared, because this branch also contains unrelated existing local dirty files outside PFI/QBVS/MetaDatabase that must not be staged.
-3. Next implementation work must be a separate post-V0.2 gate for real account credentials, production sync, PDF/ZIP package, external context consumer, CDR/Open Banking, payment submission, broker order submission, or live trading evidence.
-4. Next v0.2.1 pursuing goal should start with P1/S1 navigation merge unless the user explicitly changes order.
+1. Finish current Stage 1 verification and push the resulting commit to GitHub `main`.
+2. Next v0.2.1 pursuing goal should start with `P2 / S2 文案清理`：全局中文化、运行边界 UI 清理、桌面手机预览框清理。
+3. Do not jump to graphing, upload center, or position persistence until the corresponding stage is opened by the user.

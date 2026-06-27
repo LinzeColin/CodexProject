@@ -5,6 +5,12 @@ from dataclasses import asdict, dataclass
 
 VERSION_NAME = "v0.2.1 前端优化"
 STAGE0_TASK_ID = "V021-P0-S0-T01"
+STAGE1_TASK_IDS = (
+    "V021-P1-S1-T01",
+    "V021-P1-S1-T02",
+    "V021-P1-S1-T03",
+    "V021-P1-S1-T04",
+)
 BASE_CURRENCY = "CNY"
 UI_TARGET = "PFI/web HTML shell"
 
@@ -166,6 +172,40 @@ def build_v021_stage0_contract() -> dict[str, object]:
             "CNY 是系统基准货币，所有页面顶部右上角显示 CNY/AUD 06:00 汇率快照",
             "UIUX 多模态反馈以 HTML Web Shell 为正式目标，并收敛到设置页",
             "不重构 QBVS，不新增 Alpha/Ralpha/System/Development 产品一级入口",
+        ),
+    }
+
+
+def build_v021_stage1_contract() -> dict[str, object]:
+    return {
+        "schema": "PFIV021FrontendOptimizationStage1ContractV1",
+        "version_name": VERSION_NAME,
+        "stage": "S1 导航合并",
+        "task_ids": STAGE1_TASK_IDS,
+        "project_root": "CodexProject/PFI",
+        "ui_target": UI_TARGET,
+        "navigation_entries": [asdict(entry) for entry in NAVIGATION_ENTRIES],
+        "visible_navigation_label_order": v021_navigation_labels(),
+        "primary_entry_count": len(NAVIGATION_ENTRIES),
+        "forbidden_visible_nav_group_labels": FORBIDDEN_VISIBLE_NAV_GROUP_LABELS,
+        "renamed_entries": {
+            "数据源与同步": "数据源与上传",
+            "低操作导入中心": "导入中心",
+        },
+        "single_route_contract": {
+            "label": "策略实验室",
+            "route": "/investment/strategy-lab",
+            "page_owner": "投资管理",
+            "workspace": "investment",
+            "creates_duplicate_workspace": False,
+        },
+        "stage1_acceptance": (
+            "不显示新旧入口分组标题",
+            "15 个一级入口按合同顺序显示",
+            "数据源与同步在用户可见 Web Shell 中改为数据源与上传",
+            "低操作导入中心在用户可见 Web Shell 中改为导入中心",
+            "策略实验室只路由到投资管理下的 /investment/strategy-lab，不创建 strategy 一级 workspace",
+            "设置入口可点击，数据与系统旧入口映射到设置页",
         ),
     }
 

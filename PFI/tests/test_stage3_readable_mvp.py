@@ -59,7 +59,7 @@ class Stage3ReadableMvpTest(unittest.TestCase):
             self.assertIn(item["status"], SIMPLE_STATUS_LANGUAGE, item["recommendation_id"])
             self.assertTrue(item["expected_effect"], item["recommendation_id"])
             self.assertTrue(item["tradeoff"], item["recommendation_id"])
-            self.assertIn(item["target_entry"], ("数据源与同步", "账本流水", "账户与资产", "报告与洞察"))
+            self.assertIn(item["target_entry"], ("数据源与上传", "账本流水", "账户与资产", "报告与洞察"))
 
     def test_accounts_cover_investment_daily_cash_asset_and_liability_without_mixing_datasources(self) -> None:
         accounts = self.model["accounts"]
@@ -146,13 +146,13 @@ class Stage3ReadableMvpTest(unittest.TestCase):
     def test_owner_review_checklist_handles_empty_queue(self) -> None:
         self.assertEqual(build_owner_review_checklist(()), [])
 
-    def test_web_shell_exposes_stage3_eight_entries_and_data_health_card(self) -> None:
+    def test_web_shell_exposes_stage3_entries_and_data_health_card(self) -> None:
         root = Path(__file__).resolve().parents[1]
         html = (root / "web" / "index.html").read_text(encoding="utf-8")
         js = (root / "web" / "app" / "shell.js").read_text(encoding="utf-8")
 
-        self.assertIn('data-primary-workspaces="8"', html)
-        for label in ("首页总览", "账户与资产", "账本流水", "投资管理", "消费管理", "数据源与同步", "建议与复盘", "报告与洞察"):
+        self.assertIn('data-primary-workspaces="15"', html)
+        for label in ("首页总览", "账户与资产", "账本流水", "投资管理", "消费管理", "数据源与上传", "建议与复盘", "报告与洞察"):
             self.assertIn(label, html + js)
         self.assertIn("data_health", html + js)
         for action in ("同步全部", "处理待复核", "查看建议", "生成报告"):

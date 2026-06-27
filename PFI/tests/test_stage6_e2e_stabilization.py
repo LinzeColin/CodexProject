@@ -110,7 +110,7 @@ class Stage6E2EStabilizationTest(unittest.TestCase):
         self.assertEqual(compatibility["primary_entry_count"], 8)
         self.assertEqual(
             tuple(compatibility["primary_entries"]),
-            ("首页总览", "账户与资产", "账本流水", "投资管理", "消费管理", "数据源与同步", "建议与复盘", "报告与洞察"),
+            ("首页总览", "账户与资产", "账本流水", "投资管理", "消费管理", "数据源与上传", "建议与复盘", "报告与洞察"),
         )
         self.assertEqual(tuple(compatibility["v01_compatibility_entries"]), ("首页", "市场", "研究", "持仓", "策略实验室", "数据与系统"))
         self.assertEqual(compatibility["legacy_compatibility_entry"]["target_location"], "独立系统：CodexProject/QBVS")
@@ -138,10 +138,10 @@ class Stage6E2EStabilizationTest(unittest.TestCase):
         html = (root / "web" / "index.html").read_text(encoding="utf-8")
         js = (root / "web" / "app" / "shell.js").read_text(encoding="utf-8")
 
-        self.assertIn('data-primary-workspaces="8"', html)
-        self.assertEqual(html.count('data-primary-entry="true"'), 8)
-        self.assertIn('data-v01-workspaces="6"', html)
-        self.assertEqual(html.count('data-v01-entry="true"'), 6)
+        self.assertIn('data-primary-workspaces="15"', html)
+        self.assertEqual(html.count('data-primary-entry="true"'), 15)
+        self.assertNotIn('data-v01-workspaces="6"', html)
+        self.assertNotIn('data-v01-entry="true"', html)
         self.assertIn('"stage6_dashboard"', html)
         for label in ("端到端验收", "合成端到端", "回归治理", "交付与回滚", "回滚计划", "后续任务"):
             self.assertIn(label, js)

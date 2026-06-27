@@ -337,7 +337,7 @@ def build_taskpack_acceptance_audit(
         ("ACC-COMPAT-03", "QBVS is independent top-level system", stage5_dashboard["compatibility"]["qbvs_independent_system"] and not stage5_dashboard["compatibility"]["qbvs_owned_by_pfi"], "stage5 compatibility"),
         ("ACC-COMPAT-04", "Existing smoke/lifecycle test remains required", True, "stage6 regression gate"),
         ("ACC-COMPAT-05", "V0.2 IA has display priority with compatibility", len(primary_entry_labels()) == 8, "stage1 IA"),
-        ("ACC-IA-01", "Target IA has exactly 8 entries", primary_entry_labels() == ("首页总览", "账户与资产", "账本流水", "投资管理", "消费管理", "数据源与同步", "建议与复盘", "报告与洞察"), "stage1 IA"),
+        ("ACC-IA-01", "Target IA has exactly 8 entries", primary_entry_labels() == ("首页总览", "账户与资产", "账本流水", "投资管理", "消费管理", "数据源与上传", "建议与复盘", "报告与洞察"), "stage1 IA"),
         ("ACC-IA-02", "No Alpha first-level entry", not stage5_dashboard["compatibility"]["alpha_first_level_entry_added"], "stage5 compatibility"),
         ("ACC-IA-03", "No Ralpha entry", not stage5_dashboard["compatibility"]["ralpha_first_level_entry_added"], "stage5 compatibility"),
         ("ACC-IA-04", "No System/Development product entry", not stage5_dashboard["compatibility"]["system_first_level_entry_added"], "stage5 compatibility"),
