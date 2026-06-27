@@ -272,8 +272,17 @@
               </div>
               <button type="button" class="secondary-action" data-run-refresh>刷新缓存切片</button>
             </div>
-            <div class="chart-strip" aria-label="新鲜度趋势图">
-              <canvas id="market-sparkline" width="760" height="116"></canvas>
+            <div class="chart-strip" data-trend-panel aria-label="统一趋势图">
+              <div class="trend-header">
+                <div>
+                  <p class="panel-kicker" data-trend-scope>统一趋势</p>
+                  <h3 data-trend-title>趋势图</h3>
+                </div>
+                <span class="trend-unit" data-trend-unit>CNY 基准</span>
+              </div>
+              <canvas id="market-sparkline" data-trend-canvas width="760" height="180"></canvas>
+              <div class="trend-legend" data-trend-legend aria-label="趋势图例"></div>
+              <p class="trend-empty" data-trend-empty hidden>趋势数据待更新</p>
             </div>
             <div class="table-toolbar" aria-label="表格控制">
               <input type="search" placeholder="筛选" aria-label="筛选表格" data-table-filter />

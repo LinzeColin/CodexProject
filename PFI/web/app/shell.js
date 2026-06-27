@@ -99,6 +99,49 @@ const CARD_SOURCES = {
   cashflow_pressure: "现金流预测",
 };
 
+const UNIFIED_TREND_PERIODS = ["1月", "2月", "3月", "4月", "5月", "6月"];
+
+const UNIFIED_TREND_DATA = {
+  accounts: {
+    scope: "账户与资产",
+    title: "现金与净资产趋势",
+    unit: "CNY",
+    source: "统一趋势合同 · 账户与资产",
+    emptyState: "趋势数据待更新",
+    periods: UNIFIED_TREND_PERIODS,
+    series: [
+      { id: "cash_cny", label: "现金", color: "--pfi-teal", values: [43200, 44500, 43800, 46200, 48100, 49300] },
+      { id: "net_worth_cny", label: "净资产", color: "--pfi-blue", values: [158000, 162500, 165800, 171200, 176900, 181600] },
+    ],
+  },
+  investment: {
+    scope: "投资管理",
+    title: "市值、总收益与现金仓位趋势",
+    unit: "CNY",
+    source: "统一趋势合同 · 投资管理",
+    emptyState: "趋势数据待更新",
+    periods: UNIFIED_TREND_PERIODS,
+    series: [
+      { id: "market_value_cny", label: "市值", color: "--pfi-blue", values: [86200, 88900, 91500, 94100, 96600, 98200] },
+      { id: "total_return_cny", label: "总收益", color: "--pfi-teal", values: [2100, 2600, 3100, 3700, 4200, 4600] },
+      { id: "cash_position_cny", label: "现金仓位", color: "--pfi-amber", values: [12800, 12100, 13700, 13200, 14800, 15100] },
+    ],
+  },
+  consumption: {
+    scope: "消费管理",
+    title: "支出、预算与现金流趋势",
+    unit: "CNY",
+    source: "统一趋势合同 · 消费管理",
+    emptyState: "趋势数据待更新",
+    periods: UNIFIED_TREND_PERIODS,
+    series: [
+      { id: "spend_cny", label: "支出", color: "--pfi-blue", values: [8200, 7600, 9100, 8700, 9400, 8900] },
+      { id: "budget_cny", label: "预算", color: "--pfi-amber", values: [9000, 9000, 9000, 9000, 9000, 9000] },
+      { id: "cashflow_cny", label: "现金流", color: "--pfi-teal", values: [14500, 15100, 13900, 15800, 14900, 16200] },
+    ],
+  },
+};
+
 const FEATURE_TARGETS = {
   市场快照: { view: "hotspots", label: "打开热点" },
   研究队列: { view: "reports", label: "打开报告" },
@@ -187,6 +230,9 @@ const FEATURE_TARGETS = {
   通知反馈: { workspace: "settings", label: "打开通知" },
   反馈测试: { workspace: "settings", label: "测试反馈" },
   无障碍反馈: { workspace: "settings", label: "打开无障碍" },
+  现金与净资产趋势: { workspace: "accounts", label: "查看趋势" },
+  投资趋势: { workspace: "investment", label: "查看趋势" },
+  消费趋势: { workspace: "consumption", label: "查看趋势" },
 };
 
 const SEARCH_ALIASES = {
@@ -195,6 +241,9 @@ const SEARCH_ALIASES = {
   账本流水: "ledger transactions zhangben liushui 账本 流水 交易 分类",
   投资管理: "investment portfolio touzi 投资 持仓 风险 收益 回测",
   消费管理: "consumption spending xiaofei xf 消费 支出 预算 订阅 异常",
+  现金与净资产趋势: "trend qushi accounts cash net worth 现金 净资产 趋势",
+  投资趋势: "trend qushi investment market value return cash position 市值 总收益 现金仓位 趋势",
+  消费趋势: "trend qushi consumption spending budget cashflow 支出 预算 现金流 趋势",
   数据源与上传: "sources upload import sync shuju yuan 上传 导入 同步 支付宝",
   建议与复盘: "review recommendations advice fupan 建议 复盘 决策",
   报告与洞察: "reports insights report baogao 报告 洞察 导出 上下文",
@@ -924,17 +973,24 @@ function installStage3WorkspaceAliases() {
     kicker: "账户地图",
     conclusion: "统一查看支付宝、基金、Moomoo、中国券商、ABC、CBA、微信和其他账户状态。",
     freshness: "账户状态来自本地 read-model",
-    runtime: "账户与资产：跨币种折算 · 对账可见",
+    runtime: "第 4 阶段：现金 / 净资产趋势 · CNY 基准",
+    trend: UNIFIED_TREND_DATA.accounts,
     cards: [
-      ["账户来源", "7", "支付宝、基金、券商、银行、微信"],
-      ["币种", "4", "AUD / CNY / USD / HKD"],
-      ["对账状态", "复核", "平台余额 vs PFI 账本余额"],
-      ["凭证边界", "只读", "不需要交易密码"],
+      ["现金趋势", "CNY 49,300", "6 个月现金余额"],
+      ["净资产趋势", "CNY 181,600", "6 个月净资产"],
+      ["统一结构", "已接入", "UNIFIED_TREND_DATA.accounts"],
+      ["数据边界", "只读", "不需要交易密码"],
     ],
     features: [
+      feature("现金与净资产趋势", "可用", "统一趋势合同", "按 CNY 基准显示现金和净资产月度折线。", { workspace: "accounts", label: "查看趋势" }),
       feature("账户地图", "可用", "账户与资产", "查看全部账户、来源状态、币种和对账差异。", { workspace: "accounts", label: "查看账户" }),
       feature("导入对账", "需要复核", "平台余额", "核对平台余额和 PFI 账本余额差异。", { view: "portfolio_reconciliation", label: "打开对账" }),
       feature("持仓", "可用", "投资账户", "兼容旧持仓复核入口，仍然只读。", { view: "holdings", label: "打开持仓" }),
+    ],
+    tasks: [
+      task("现金趋势", "可用 · CNY 月度折线", "ready"),
+      task("净资产趋势", "可用 · CNY 月度折线", "ready"),
+      task("账户对账", "复核 · 平台余额 vs PFI 账本余额", "review"),
     ],
   };
   WORKSPACES.ledger = {
@@ -961,19 +1017,26 @@ function installStage3WorkspaceAliases() {
     label: "投资管理",
     kicker: "投资分析",
     conclusion: "查看总市值、盈亏、资产配置、收益归因、风险暴露和行为复盘；策略回测、盘感训练和大数据模拟器仍保留。",
-    runtime: "第 4 阶段：投资总览 / 收益归因 / 风险分析 / 行为复盘",
+    runtime: "第 4 阶段：市值 / 总收益 / 现金仓位趋势 · CNY 基准",
+    trend: UNIFIED_TREND_DATA.investment,
     cards: [
-      ["投资总览", "可算", "总市值、盈亏、资产配置、现金仓位"],
-      ["收益归因", "复核", "市场 / 主动 / 费用 / FX / 现金拖累"],
-      ["风险分析", "可读", "集中度、回撤、币种暴露、流动性"],
-      ["行为复盘", "有建议", "追涨、杀跌、频繁交易、持有周期"],
+      ["市值趋势", "CNY 98,200", "6 个月投资市值"],
+      ["总收益趋势", "CNY 4,600", "累计总收益"],
+      ["现金仓位", "CNY 15,100", "投资账户现金"],
+      ["策略实验室", "保留", "回测、盘感训练、模拟"],
     ],
     features: [
+      feature("投资趋势", "可用", "统一趋势合同", "同一趋势结构显示市值、总收益和现金仓位。", { workspace: "investment", label: "查看趋势" }),
       feature("投资总览", "可用", "持仓事实", "查看总市值、盈亏、资产配置和现金仓位。", { workspace: "investment", label: "查看投资" }),
       feature("收益归因", "需要复核", "估计归因", "把收益拆为市场、主动决策、费用、汇率和现金拖累；数据不足不输出精确结论。", { workspace: "investment", label: "查看归因" }),
       feature("风险分析", "有建议", "风险证据", "查看集中度、回撤、币种暴露和流动性。", { workspace: "investment", label: "查看风险" }),
       feature("行为复盘", "有建议", "交易证据", "识别追涨、杀跌、频繁交易和持有周期。", { workspace: "investment", label: "查看复盘" }),
       feature("策略实验室", "可用", "PFI 策略实验室", "保留 PFI 策略回测、参数扫描、盘感训练和大数据模拟器；QBVS 是顶层独立系统。", { view: "single", label: "打开策略" }),
+    ],
+    tasks: [
+      task("市值趋势", "可用 · CNY 月度折线", "ready"),
+      task("总收益趋势", "可用 · 估计值需复核", "review"),
+      task("现金仓位趋势", "可用 · 只读分析", "ready"),
     ],
   };
   WORKSPACES.consumption = {
@@ -982,14 +1045,16 @@ function installStage3WorkspaceAliases() {
     kicker: "消费分析",
     conclusion: "查看本月支出、预算剩余、分类、订阅、异常消费和现金流预测；转账和投资事件不计生活消费。",
     freshness: "消费视图来自第 4 阶段分析读模型",
-    runtime: "第 4 阶段：消费总览 / 分类分析 / 订阅检测 / 异常消费 / 现金流预测",
+    runtime: "第 4 阶段：支出 / 预算 / 现金流趋势 · CNY 基准",
+    trend: UNIFIED_TREND_DATA.consumption,
     cards: [
-      ["消费总览", "可算", "本月支出、预算剩余、固定/弹性支出"],
-      ["分类分析", "复核", "支付宝、微信、CBA 分类"],
-      ["订阅检测", "有建议", "周期扣费和疑似订阅"],
-      ["异常消费", "需要复核", "大额、重复、夜间、周末、冲动型"],
+      ["支出趋势", "CNY 8,900", "6 个月生活支出"],
+      ["预算线", "CNY 9,000", "月度预算参考"],
+      ["现金流趋势", "CNY 16,200", "生活现金流"],
+      ["分类复核", "保留", "低置信度进入队列"],
     ],
     features: [
+      feature("消费趋势", "可用", "统一趋势合同", "同一趋势结构显示支出、预算和现金流。", { workspace: "consumption", label: "查看趋势" }),
       feature("消费总览", "可用", "预算", "查看本月支出、预算剩余和固定/弹性支出。", { workspace: "consumption", label: "查看消费" }),
       feature("分类分析", "需要复核", "三来源", "支付宝、微信、CBA 消费分类；低置信度必须进入复核。", { workspace: "consumption", label: "查看分类" }),
       feature("订阅检测", "有建议", "周期扣费", "识别周期扣费和疑似订阅，支持保留、取消或暂缓复盘。", { workspace: "consumption", label: "查看订阅" }),
@@ -997,6 +1062,11 @@ function installStage3WorkspaceAliases() {
       feature("现金流预测", "可用", "30/90/180 天", "预测支出、收入和可投资现金，生活现金与投资现金分开。", { workspace: "consumption", label: "查看现金流" }),
       feature("处理待复核", "需要复核", "消费分类", "复核低置信度消费流水。", { workspace: "ledger", label: "处理复核" }),
       feature("账本流水", "可用", "消费证据", "查看消费、退款、转账和费用的证据链。", { workspace: "ledger", label: "查看流水" }),
+    ],
+    tasks: [
+      task("支出趋势", "可用 · CNY 月度折线", "ready"),
+      task("预算趋势", "可用 · 预算参考线", "ready"),
+      task("现金流趋势", "可用 · 生活现金与投资现金分开", "ready"),
     ],
   };
   WORKSPACES.sync = {
@@ -1677,7 +1747,7 @@ function renderWorkspace(workspaceId, options = {}) {
   renderDecisionRows(workspace.rows);
   renderTasks(workspace.tasks);
   applyEvidenceDrawer(workspace.evidence);
-  drawSparkline(workspace.chart);
+  drawTrendChart(workspace.trend || legacyChartToTrend(workspace));
   if (!options.keepFunctionDetail) hideFunctionDetail();
   const nextContext = { ...previousContext, workspace: workspaceId };
   if (routeForState) {
@@ -2425,35 +2495,160 @@ function showRecoverableError() {
   showToast("已切换到缓存兜底");
 }
 
-function drawSparkline(points = DEFAULT_WORKSPACES.home.chart) {
-  const canvas = document.querySelector("#market-sparkline");
-  if (!canvas || !canvas.getContext) return;
+function legacyChartToTrend(workspace) {
+  const points = Array.isArray(workspace?.chart) ? workspace.chart : DEFAULT_WORKSPACES.home.chart;
+  return {
+    scope: workspace?.label || "首页总览",
+    title: "状态趋势",
+    unit: "指数",
+    source: "本地缓存趋势",
+    emptyState: "趋势数据待更新",
+    periods: points.map((_, index) => `${index + 1}`),
+    series: [{ id: "status_index", label: "状态", color: "--pfi-blue", values: points }],
+  };
+}
+
+function drawTrendChart(trend = legacyChartToTrend(WORKSPACES.home)) {
+  const canvas = document.querySelector("[data-trend-canvas]");
+  const panel = document.querySelector("[data-trend-panel]");
+  const title = document.querySelector("[data-trend-title]");
+  const scope = document.querySelector("[data-trend-scope]");
+  const unit = document.querySelector("[data-trend-unit]");
+  const legend = document.querySelector("[data-trend-legend]");
+  const empty = document.querySelector("[data-trend-empty]");
+  if (!canvas || !canvas.getContext || !panel) return;
+
+  const series = (trend.series || []).filter((item) => Array.isArray(item.values) && item.values.length >= 2);
+  const periods = Array.isArray(trend.periods) && trend.periods.length ? trend.periods : series[0]?.values.map((_, index) => `${index + 1}`) || [];
+  panel.dataset.trendWorkspace = trend.scope || "";
+  panel.dataset.trendSource = trend.source || "";
+  if (title) title.textContent = trend.title || "趋势图";
+  if (scope) scope.textContent = trend.scope ? `${trend.scope} · 统一趋势` : "统一趋势";
+  if (unit) unit.textContent = trend.unit ? `${trend.unit} 基准` : "CNY 基准";
+  if (empty) {
+    empty.textContent = trend.emptyState || "趋势数据待更新";
+    empty.hidden = series.length > 0;
+  }
+  renderTrendLegend(legend, series);
+
   const ctx = canvas.getContext("2d");
   const width = canvas.width;
   const height = canvas.height;
-  const step = width / (points.length - 1);
   ctx.clearRect(0, 0, width, height);
-  ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--pfi-surface-muted").trim() || "#eef2f4";
+  ctx.fillStyle = cssColor("--pfi-surface", "#ffffff");
   ctx.fillRect(0, 0, width, height);
-  ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--pfi-blue").trim() || "#215f9a";
+
+  if (!series.length) {
+    ctx.fillStyle = cssColor("--pfi-muted", "#62717a");
+    ctx.font = "16px system-ui, sans-serif";
+    ctx.fillText(trend.emptyState || "趋势数据待更新", 28, Math.round(height / 2));
+    return;
+  }
+
+  const allValues = series.flatMap((item) => item.values.map(Number).filter(Number.isFinite));
+  const min = Math.min(...allValues);
+  const max = Math.max(...allValues);
+  const spread = Math.max(max - min, 1);
+  const yMin = Math.max(0, min - spread * 0.12);
+  const yMax = max + spread * 0.16;
+  const pad = { left: 58, right: 104, top: 20, bottom: 34 };
+  const plotWidth = width - pad.left - pad.right;
+  const plotHeight = height - pad.top - pad.bottom;
+  const xFor = (index) => pad.left + (plotWidth * index) / Math.max(periods.length - 1, 1);
+  const yFor = (value) => pad.top + plotHeight - ((value - yMin) / Math.max(yMax - yMin, 1)) * plotHeight;
+
+  drawTrendGrid(ctx, width, height, pad, yMin, yMax, trend.unit);
+  series.forEach((item) => drawTrendSeries(ctx, item, xFor, yFor));
+  drawTrendPeriodLabels(ctx, periods, xFor, height, pad);
+  series.forEach((item) => drawTrendEndLabel(ctx, item, xFor, yFor, trend.unit));
+}
+
+function renderTrendLegend(legend, series) {
+  if (!legend) return;
+  legend.replaceChildren();
+  series.forEach((item) => {
+    const row = document.createElement("span");
+    const swatch = document.createElement("i");
+    swatch.style.background = trendColor(item);
+    row.append(swatch, document.createTextNode(`${item.label} · ${formatTrendValue(item.values.at(-1), item.unit || "CNY")}`));
+    legend.appendChild(row);
+  });
+}
+
+function drawTrendGrid(ctx, width, height, pad, yMin, yMax, unit) {
+  ctx.strokeStyle = cssColor("--pfi-border", "#d7dee2");
+  ctx.lineWidth = 1;
+  ctx.fillStyle = cssColor("--pfi-muted", "#62717a");
+  ctx.font = "12px system-ui, sans-serif";
+  for (let index = 0; index <= 3; index += 1) {
+    const y = pad.top + ((height - pad.top - pad.bottom) * index) / 3;
+    ctx.beginPath();
+    ctx.moveTo(pad.left, y);
+    ctx.lineTo(width - pad.right, y);
+    ctx.stroke();
+    const value = yMax - ((yMax - yMin) * index) / 3;
+    ctx.fillText(formatTrendValue(value, unit, true), 8, y + 4);
+  }
+}
+
+function drawTrendPeriodLabels(ctx, periods, xFor, height, pad) {
+  ctx.fillStyle = cssColor("--pfi-muted", "#62717a");
+  ctx.font = "12px system-ui, sans-serif";
+  const indexes = [...new Set([0, Math.floor((periods.length - 1) / 2), periods.length - 1])];
+  indexes.forEach((index) => {
+    const label = periods[index] || "";
+    const x = xFor(index);
+    ctx.fillText(label, Math.min(x, xFor(periods.length - 1) - 12), height - Math.round(pad.bottom / 2));
+  });
+}
+
+function drawTrendSeries(ctx, item, xFor, yFor) {
+  const color = trendColor(item);
+  ctx.strokeStyle = color;
   ctx.lineWidth = 3;
   ctx.beginPath();
-  points.forEach((point, index) => {
-    const x = index * step;
-    const y = height - 18 - point;
-    if (index === 0) {
-      ctx.moveTo(x, y);
-    } else {
-      ctx.lineTo(x, y);
-    }
+  item.values.forEach((value, index) => {
+    const x = xFor(index);
+    const y = yFor(Number(value));
+    if (index === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
   });
   ctx.stroke();
-  ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--pfi-teal").trim() || "#0f766e";
-  points.forEach((point, index) => {
+  item.values.forEach((value, index) => {
     ctx.beginPath();
-    ctx.arc(index * step, height - 18 - point, 4, 0, Math.PI * 2);
+    ctx.fillStyle = color;
+    ctx.arc(xFor(index), yFor(Number(value)), 3.8, 0, Math.PI * 2);
     ctx.fill();
   });
+}
+
+function drawTrendEndLabel(ctx, item, xFor, yFor, unit) {
+  const lastIndex = item.values.length - 1;
+  const value = Number(item.values[lastIndex]);
+  const x = xFor(lastIndex) + 9;
+  const y = yFor(value);
+  ctx.fillStyle = trendColor(item);
+  ctx.font = "12px system-ui, sans-serif";
+  ctx.fillText(`${item.label} ${formatTrendValue(value, item.unit || unit)}`, x, Math.max(14, Math.min(y + 4, 168)));
+}
+
+function trendColor(item) {
+  return cssColor(item.color || "--pfi-blue", "#215f9a");
+}
+
+function cssColor(name, fallback) {
+  const value = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  return value || fallback;
+}
+
+function formatTrendValue(value, unit = "CNY", compact = false) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return unit === "CNY" ? "CNY 待补" : "待补";
+  if (unit === "CNY") {
+    if (compact && Math.abs(number) >= 10000) return `CNY ${(number / 10000).toFixed(1)}万`;
+    return `CNY ${Math.round(number).toLocaleString("zh-CN")}`;
+  }
+  return compact ? String(Math.round(number)) : `${Math.round(number).toLocaleString("zh-CN")} ${unit}`;
 }
 
 function filterRows(value) {

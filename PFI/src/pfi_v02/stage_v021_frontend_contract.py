@@ -20,6 +20,12 @@ STAGE3_TASK_IDS = (
     "V021-P3-S3-T01",
     "V021-P3-S3-T02",
 )
+STAGE4_TASK_IDS = (
+    "V021-P4-S4-T01",
+    "V021-P4-S4-T02",
+    "V021-P4-S4-T03",
+    "V021-P4-S4-T04",
+)
 BASE_CURRENCY = "CNY"
 UI_TARGET = "PFI/web HTML shell"
 
@@ -340,6 +346,51 @@ def build_v021_stage3_contract() -> dict[str, object]:
             "业务页默认不展示右侧设置面板；运行反馈控制台、多模态反馈、触感、声音、视觉、通知和反馈测试进入设置页。",
             "顶部全局搜索支持跨入口、功能、任务、表格行和设置控件的模糊搜索。",
             "搜索结果必须显示分类、路径和操作提示，并支持键盘上下选择、Enter 打开、Escape 关闭。",
+        ),
+    }
+
+
+def build_v021_stage4_contract() -> dict[str, object]:
+    return {
+        "schema": "PFIV021FrontendOptimizationStage4ContractV1",
+        "version_name": VERSION_NAME,
+        "stage": "S4 趋势模型",
+        "task_ids": STAGE4_TASK_IDS,
+        "project_root": "CodexProject/PFI",
+        "ui_target": UI_TARGET,
+        "trend_data_contract": {
+            "object_name": "UNIFIED_TREND_DATA",
+            "base_currency": BASE_CURRENCY,
+            "time_grain": "month",
+            "series_shape": {
+                "id": "stable_metric_id",
+                "label": "用户可读中文指标名",
+                "unit": "CNY",
+                "values": "ordered numeric list aligned to periods",
+            },
+            "required_pages": {
+                "accounts": ("现金", "净资产"),
+                "investment": ("市值", "总收益", "现金仓位"),
+                "consumption": ("支出", "预算", "现金流"),
+            },
+            "missing_data_state": "趋势数据待更新",
+        },
+        "chart_contract": {
+            "renderer": "Canvas2D line chart",
+            "surface": "main_workspace_trend_panel",
+            "html_markers": ("data-trend-panel", "data-trend-title", "data-trend-legend", "data-trend-empty"),
+            "visible_without_hover": True,
+            "direct_labels": True,
+            "mobile_responsive": True,
+            "color_role_count": 3,
+        },
+        "acceptance": (
+            "账户与资产、投资管理、消费管理三类页面读取同一个统一趋势数据结构。",
+            "账户与资产显示现金和净资产趋势。",
+            "投资管理显示市值、总收益和现金仓位趋势。",
+            "消费管理显示支出、预算和现金流趋势。",
+            "趋势图必须有中文标题、图例、CNY 基准、中文空状态和非 hover 可读信息。",
+            "不接真实账户、不伪造实时数据、不新增交易或支付动作。",
         ),
     }
 
