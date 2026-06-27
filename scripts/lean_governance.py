@@ -25,17 +25,18 @@ if hasattr(sys.stdout, "reconfigure"):
 
 ROOT = governance.ROOT
 PROJECTS_FILE = governance.PROJECTS_FILE
-HUMAN_ENTRY_FILES = ["功能清单.md", "开发记录.md", "模型参数文件.md", "VERSION", "CHANGELOG.md"]
+HUMAN_ENTRY_STEMS = ["功能清单", "开发记录", "模型参数文件"]
+STATIC_HUMAN_ENTRY_FILES = ["VERSION", "CHANGELOG.md"]
 RENDER_VIEW_ALIASES = {
-    "feature-list": "功能清单.md",
-    "功能清单": "功能清单.md",
-    "功能清单.md": "功能清单.md",
-    "development-record": "开发记录.md",
-    "开发记录": "开发记录.md",
-    "开发记录.md": "开发记录.md",
-    "model-parameters": "模型参数文件.md",
-    "模型参数文件": "模型参数文件.md",
-    "模型参数文件.md": "模型参数文件.md",
+    "feature-list": "功能清单",
+    "功能清单": "功能清单",
+    "功能清单.md": "功能清单",
+    "development-record": "开发记录",
+    "开发记录": "开发记录",
+    "开发记录.md": "开发记录",
+    "model-parameters": "模型参数文件",
+    "模型参数文件": "模型参数文件",
+    "模型参数文件.md": "模型参数文件",
 }
 LEAN_CANONICAL_FILES = [
     "docs/governance/project.yaml",
@@ -187,10 +188,26 @@ def missing_paths(states: list[dict[str, Any]]) -> list[str]:
     return [str(item["path"]) for item in states if not item["exists"]]
 
 
+def human_entry_files_for_project(project_root: Path) -> list[str]:
+    files: list[str] = []
+    for stem in HUMAN_ENTRY_STEMS:
+        extensionless = project_root / stem
+        markdown = project_root / f"{stem}.md"
+        if extensionless.exists() and not markdown.exists():
+            files.append(stem)
+        elif markdown.exists() and not extensionless.exists():
+            files.append(f"{stem}.md")
+        elif extensionless.exists() and markdown.exists():
+            files.append(stem)
+        else:
+            files.append(stem)
+    return files + STATIC_HUMAN_ENTRY_FILES
+
+
 def project_summary(root: Path, project: dict[str, Any], legacy_files: list[str]) -> dict[str, Any]:
     project_path = str(project.get("path") or "").replace("\\", "/").rstrip("/")
     project_root = root / project_path
-    human = [file_state(project_root, path) for path in HUMAN_ENTRY_FILES]
+    human = [file_state(project_root, path) for path in human_entry_files_for_project(project_root)]
     canonical = [file_state(project_root, path) for path in LEAN_CANONICAL_FILES]
     legacy = [file_state(project_root, path) for path in legacy_files]
     return {
@@ -802,27 +819,36 @@ def render_model_parameters(project_facts: dict[str, Any], roadmap: dict[str, An
     return "\n".join(lines).rstrip() + "\n"
 
 
-def rendered_project_texts(project_facts: dict[str, Any], roadmap: dict[str, Any], events: list[dict[str, Any]]) -> dict[str, str]:
-    return {
-        "功能清单.md": render_feature_list(project_facts, roadmap),
-        "开发记录.md": render_development_record(project_facts, roadmap, events),
-        "模型参数文件.md": render_model_parameters(project_facts, roadmap),
+def rendered_project_texts(
+    project_root: Path,
+    project_facts: dict[str, Any],
+    roadmap: dict[str, Any],
+    events: list[dict[str, Any]],
+) -> dict[str, str]:
+    by_stem = {
+        "功能清单": render_feature_list(project_facts, roadmap),
+        "开发记录": render_development_record(project_facts, roadmap, events),
+        "模型参数文件": render_model_parameters(project_facts, roadmap),
     }
+    return {rel_path: by_stem[rel_path.removesuffix(".md")] for rel_path in human_entry_files_for_project(project_root)[:3]}
 
 
 def selected_rendered_texts(rendered: dict[str, str], view: str | None = None) -> dict[str, str]:
     if not view:
         return rendered
-    selected = RENDER_VIEW_ALIASES.get(view)
-    if not selected:
+    selected_stem = RENDER_VIEW_ALIASES.get(view)
+    if not selected_stem:
         allowed = ", ".join(sorted(RENDER_VIEW_ALIASES))
         raise ValueError(f"Unknown render view: {view}; expected one of {allowed}")
-    return {selected: rendered[selected]}
+    for rel_path, text in rendered.items():
+        if rel_path.removesuffix(".md") == selected_stem:
+            return {rel_path: text}
+    raise ValueError(f"Render view unavailable for project: {view}")
 
 
 def render_project_files(project_root: Path, *, write: bool = False, view: str | None = None) -> dict[str, Any]:
     project_facts, roadmap, events = load_project_facts(project_root)
-    rendered = selected_rendered_texts(rendered_project_texts(project_facts, roadmap, events), view)
+    rendered = selected_rendered_texts(rendered_project_texts(project_root, project_facts, roadmap, events), view)
     file_results: list[dict[str, Any]] = []
     if write:
         for rel_path, text in rendered.items():
@@ -883,7 +909,7 @@ def collect_reference_issues(project_facts: dict[str, Any]) -> list[dict[str, st
 
 def check_render_project_files(project_root: Path, view: str | None = None) -> dict[str, Any]:
     project_facts, roadmap, events = load_project_facts(project_root)
-    rendered = selected_rendered_texts(rendered_project_texts(project_facts, roadmap, events), view)
+    rendered = selected_rendered_texts(rendered_project_texts(project_root, project_facts, roadmap, events), view)
     drift: list[dict[str, Any]] = []
     project_id = str(project_facts.get("project_id") or "")
     for rel_path, expected in rendered.items():

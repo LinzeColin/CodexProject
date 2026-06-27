@@ -1,5 +1,15 @@
 # 功能清单
 
+## 摘要
+
+- project_id: `Alpha`
+- current_stage: `G6`
+- current_phase: `Phase 6`
+- current_task: `OWNER-GATE-01 前 48 小时 Paper/Shadow 观察`
+- evidence_status: `进行中，尚未 ready_for_owner_gate`
+- 中文验收: `用户可读优先；中文优先，默认全局中文；第一屏必须说明能不能交易、为什么不能进入实盘、下一步看哪里`
+- 当前结论: `Paper/Shadow 与 Shadow live 约束已通过；48 小时连续观察仍未完成；不得创建 LIVE_AUTHORIZATION.json`
+
 ## 当前速读
 
 | 项目 | 当前值 |

@@ -8,8 +8,10 @@ rules in `docs/governance/STANDARD.md`.
 ## Permanent Rules
 
 - Every active project must be registered in `governance/projects.yaml`.
-- Every active project must expose these exact project-root human entry files:
-  `功能清单.md`, `开发记录.md`, and `模型参数文件.md`.
+- Every active project must expose exactly one project-root human entry file
+  for each stem: `功能清单`, `开发记录`, and `模型参数文件`. Default Lean v2
+  files use the `.md` suffix; a nested project contract may require the exact
+  no-suffix paths instead. Do not keep both variants for the same stem.
 - These three Chinese files may not be replaced by English aliases, one-line
   redirects, compatibility indexes, or pages that only link to
   `docs/governance/`.
@@ -25,10 +27,11 @@ rules in `docs/governance/STANDARD.md`.
   catalog, project human-entry files, and pass the required user-center and
   owner-controls tests in the same delivery. Agents must not change only
   config or code and then claim the source/board change is complete.
-- `开发记录.md` must directly contain the project's full Roadmap: Stage -> Phase ->
-  Task, a task ID matching `^S[1-9][0-9]*P[A-Z]T[0-9]{2}$`, estimated hours,
-  derived percentages, Stop Conditions, Stop Gates, required evidence, and
-  failure actions.
+- The `开发记录` human entry, with or without the `.md` suffix according to the
+  project contract, must directly contain the project's full Roadmap:
+  Stage -> Phase -> Task, a task ID matching `^S[1-9][0-9]*P[A-Z]T[0-9]{2}$`, estimated
+  hours, derived percentages, Stop Conditions, Stop Gates, required evidence,
+  and failure actions.
 - If a project exposes `docs/pursuing_goal/**/V*_ROOT_LOCK.yaml`, that lock is
   the highest-priority project execution contract below this root file. Agents
   must read the lock, verify the referenced contract and roadmap hashes when a

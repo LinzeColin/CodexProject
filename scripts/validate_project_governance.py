@@ -142,15 +142,15 @@ PRODUCT_ROADMAP_KIND = "product"
 ADP_V72_CURRENT_TASK_ID = "S2PMT07"
 ADP_V72_SHADOW_SOURCE_NEXT = "NONE_WHILE_S2PMT07_BLOCKED"
 HUMAN_ENTRY_QUALITY_CONTRACTS = {
-    "功能清单.md": {
+    "功能清单": {
         "title": "# 功能清单",
         "required_tokens": ("## 摘要", "project_id", "current_stage", "current_task", "evidence_status"),
     },
-    "开发记录.md": {
+    "开发记录": {
         "title": "# 开发记录",
         "required_tokens": ("## 摘要", "Stage -> Phase -> Task", "stop_gate"),
     },
-    "模型参数文件.md": {
+    "模型参数文件": {
         "title": "# 模型参数文件",
         "required_tokens": ("## 摘要", "active_model_count", "active_formula_count", "active_parameter_count"),
     },
@@ -815,22 +815,48 @@ def check_file_nonempty(validation: Validation, path: Path, required: bool, scop
     return True
 
 
+def human_entry_candidates(project_path: Path, stem: str) -> list[Path]:
+    return [project_path / stem, project_path / f"{stem}.md"]
+
+
+def existing_human_entry_candidates(project_path: Path, stem: str) -> list[Path]:
+    return [path for path in human_entry_candidates(project_path, stem) if path.exists()]
+
+
+def chinese_ratio(text: str) -> float:
+    meaningful = [char for char in text if not char.isspace()]
+    if not meaningful:
+        return 0.0
+    chinese = [char for char in meaningful if "\u4e00" <= char <= "\u9fff"]
+    return len(chinese) / len(meaningful)
+
+
 def check_human_entry_quality(validation: Validation, project_path: Path, required: bool, scope: str) -> None:
-    for filename, contract in HUMAN_ENTRY_QUALITY_CONTRACTS.items():
-        path = project_path / filename
-        if not path.exists() or not path.is_file():
+    for stem, contract in HUMAN_ENTRY_QUALITY_CONTRACTS.items():
+        existing_paths = existing_human_entry_candidates(project_path, stem)
+        if not existing_paths:
+            validation.add(required, scope, f"Missing human entry file: {stem} or {stem}.md")
             continue
-        text = path.read_text(encoding="utf-8")
-        stripped = text.strip()
-        entry_head = "\n".join(stripped.splitlines()[:12]).lower()
-        if any(marker in entry_head for marker in HUMAN_ENTRY_FORBIDDEN_MARKERS):
-            validation.add(required, scope, f"{filename} must be owner-readable content, not a compatibility index or link page")
-        first_line = next((line.strip() for line in stripped.splitlines() if line.strip()), "")
-        if first_line != contract["title"]:
-            validation.add(required, scope, f"{filename} must start with {contract['title']}")
-        for token in contract["required_tokens"]:
-            if token not in text:
-                validation.add(required, scope, f"{filename} missing owner-readable token: {token}")
+        if len(existing_paths) > 1:
+            validation.add(required, scope, f"{stem} must have exactly one project-root human entry file")
+        for path in existing_paths:
+            filename = path.name
+            if not path.is_file():
+                validation.add(required, scope, f"{filename} must be a file")
+                continue
+            text = path.read_text(encoding="utf-8")
+            stripped = text.strip()
+            entry_head = "\n".join(stripped.splitlines()[:12]).lower()
+            if any(marker in entry_head for marker in HUMAN_ENTRY_FORBIDDEN_MARKERS):
+                validation.add(required, scope, f"{filename} must be owner-readable content, not a compatibility index or link page")
+            first_line = next((line.strip() for line in stripped.splitlines() if line.strip()), "")
+            if first_line != contract["title"]:
+                validation.add(required, scope, f"{filename} must start with {contract['title']}")
+            for token in contract["required_tokens"]:
+                if token not in text:
+                    validation.add(required, scope, f"{filename} missing owner-readable token: {token}")
+            if not filename.endswith(".md") and chinese_ratio(text) < 0.20:
+                validation.add(required, scope, f"{filename} 中文占比低于 20%，不能记为 owner 可读三基文件")
 
 
 def check_unique(validation: Validation, items: Iterable[dict[str, Any]], key: str, scope: str, required: bool) -> None:

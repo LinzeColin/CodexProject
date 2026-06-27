@@ -5,6 +5,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 HUMAN_ENTRY_STEMS = ("功能清单", "开发记录", "模型参数文件")
+EXTENSIONLESS_HUMAN_ENTRY_PROJECTS = {"Alpha"}
 
 
 def registered_project_paths() -> list[str]:
@@ -13,7 +14,7 @@ def registered_project_paths() -> list[str]:
 
 
 class HumanEntryMarkdownContractTests(unittest.TestCase):
-    def test_registered_projects_use_markdown_human_entries(self) -> None:
+    def test_registered_projects_use_one_human_entry_contract(self) -> None:
         paths = registered_project_paths()
         self.assertGreaterEqual(len(paths), 1)
 
@@ -22,8 +23,14 @@ class HumanEntryMarkdownContractTests(unittest.TestCase):
             with self.subTest(project=project_path):
                 self.assertTrue(project_root.is_dir(), project_path)
                 for stem in HUMAN_ENTRY_STEMS:
-                    self.assertFalse((project_root / stem).exists(), f"{project_path}/{stem}")
-                    self.assertTrue((project_root / f"{stem}.md").is_file(), f"{project_path}/{stem}.md")
+                    extensionless = project_root / stem
+                    markdown = project_root / f"{stem}.md"
+                    if project_path in EXTENSIONLESS_HUMAN_ENTRY_PROJECTS:
+                        self.assertTrue(extensionless.is_file(), f"{project_path}/{stem}")
+                        self.assertFalse(markdown.exists(), f"{project_path}/{stem}.md")
+                    else:
+                        self.assertFalse(extensionless.exists(), f"{project_path}/{stem}")
+                        self.assertTrue(markdown.is_file(), f"{project_path}/{stem}.md")
 
     def test_migrated_qbvs_lab_uses_markdown_human_entries(self) -> None:
         pfi_root = ROOT / "PFI" / "modules" / "qbvs_lab"

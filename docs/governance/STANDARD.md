@@ -12,14 +12,19 @@ acceptance gates behind it.
 
 ## Project Contract
 
-Every active registered project must have these exact project-root human entry
-files:
+Every active registered project must have exactly one project-root human entry
+file for each Chinese stem:
 
-- `功能清单.md`
-- `开发记录.md`
-- `模型参数文件.md`
+- `功能清单`
+- `开发记录`
+- `模型参数文件`
 - `VERSION`
 - `CHANGELOG.md`
+
+The default Lean v2 rendering target is the `.md` variant of each Chinese stem.
+When a nested project contract or project-local test requires the exact
+no-suffix paths, governance tools must score those paths as the authoritative
+human entries and must not create duplicate `.md` aliases.
 
 The three Chinese files are complete human views, not aliases, compatibility
 indexes, or links to `docs/governance/`.
@@ -52,7 +57,8 @@ Lean v2 migration gate.
 
 ## Roadmap Contract
 
-`开发记录.md` must directly render a complete owner-readable Roadmap.
+The `开发记录` human entry, with or without the `.md` suffix according to the
+project contract, must directly render a complete owner-readable Roadmap.
 
 Structure:
 
@@ -111,19 +117,19 @@ evidence, and a completion version or commit.
 
 ## Human Views
 
-`功能清单.md` first screen: version, current Stage/Phase/Task, capability count,
-blockers, next Gate, and next unique task. Capabilities include value, scope,
-non-scope, implementation refs, test refs, evidence, limitations, and current
-status.
+The `功能清单` human entry first screen: version, current Stage/Phase/Task,
+capability count, blockers, next Gate, and next unique task. Capabilities
+include value, scope, non-scope, implementation refs, test refs, evidence,
+limitations, and current status.
 
 `docs/governance/templates/功能清单.template.md` is the template for that
 human view. It starts with summary fields, then owner decisions, capability
 overview, evidence, limitations, and feature detail. It must not degrade into a
 link page.
 
-`开发记录.md` first screen: version, current Stage/Phase/Task, total and completed
-hours, progress, blockers, next Gate, and next unique task. It renders the full
-Roadmap and recent meaningful events.
+The `开发记录` human entry first screen: version, current Stage/Phase/Task, total
+and completed hours, progress, blockers, next Gate, and next unique task. It
+renders the full Roadmap and recent meaningful events.
 
 `docs/governance/templates/开发记录.template.md` is the template for that human
 view. It starts with summary fields, then owner decisions, progress overview,
@@ -135,11 +141,11 @@ template. It directly renders Stage, Phase, Task, Stop Gate, Acceptance, and
 Evidence sections, while derived calculations remain deterministic validator
 work rather than manual governance computation.
 
-`模型参数文件.md` records active models, assumptions, inputs, outputs, formulas or
-pseudocode, variables, units, domains, missing-value behavior, fallback behavior,
-parameters, defaults, priors, active values, ranges, weights, sources,
-calibration, validation, limitations, stop conditions, and code/config/test
-evidence refs.
+The `模型参数文件` human entry records active models, assumptions, inputs,
+outputs, formulas or pseudocode, variables, units, domains, missing-value
+behavior, fallback behavior, parameters, defaults, priors, active values,
+ranges, weights, sources, calibration, validation, limitations, stop conditions,
+and code/config/test evidence refs.
 
 `docs/governance/templates/模型参数文件.template.md` is the template for that
 human view. It starts with summary fields, then evidence, limitations, models,

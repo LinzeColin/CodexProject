@@ -1,5 +1,17 @@
 # 模型参数文件
 
+## 摘要
+
+- project_id: `Alpha`
+- current_stage: `G6`
+- current_phase: `Phase 6`
+- current_task: `OWNER-GATE-01 前 48 小时 Paper/Shadow 观察`
+- active_model_count: `9`
+- active_formula_count: `9`
+- active_parameter_count: `55`
+- evidence_status: `从代码、配置、测试和 Phase 6 evidence 提取；实盘参数仍被 owner gate 阻塞`
+- 中文验收: `用户可读优先；参数必须说明中文含义、当前值、来源和 owner 需要关注的风险`
+
 ## 当前速读
 
 | 项目 | 当前值 |

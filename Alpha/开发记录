@@ -1,5 +1,16 @@
 # 开发记录
 
+## 摘要
+
+- project_id: `Alpha`
+- current_stage: `G6`
+- current_phase: `Phase 6`
+- current_task: `OWNER-GATE-01 前 48 小时 Paper/Shadow 观察`
+- Stage -> Phase -> Task: `G6 -> Phase 6 -> OWNER-GATE-01 soak closeout`
+- stop_gate: `OWNER-GATE-01；48 小时连续观察未通过前不得进入 MICRO_LIVE`
+- evidence_status: `进行中，尚未 ready_for_owner_gate`
+- 中文验收: `用户可读优先；先说明交易状态、阻塞原因、证据位置和下一步`
+
 ## 当前速读
 
 | 项目 | 当前值 |
