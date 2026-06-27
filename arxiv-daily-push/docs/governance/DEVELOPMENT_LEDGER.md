@@ -4218,3 +4218,10 @@ None for this new project baseline.
 - Production boundary: no next-agent handoff artifact, no no-production attestation artifact, no independent signoff, no final command execution, no P0/P1 closure, no S2PLT04 completion, no final bundle creation, no SMTP/scheduler/Release/restore, no public schema/DB/queue/source/ranking/CURRENT/V7 change, and no integrated production acceptance.
 - Rollback: Revert next-agent handoff validator code/test changes, registry updates, phase record, manifest, traceability/delivery/event records, generated views, and this ledger entry; no runtime production state was changed.
 - Evidence: `governance/run_manifests/ADP-S2PMT07-NEXT-AGENT-HANDOFF-VALIDATOR-20260628.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_NEXT_AGENT_HANDOFF_VALIDATOR.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.
+### `ITER-20260628-ADP-S2PMT07-FINAL-BUNDLE-PREREQUISITE-PLAN`
+
+- Timestamp: `2026-06-28T07:41:22+10:00`
+- Task IDs: `S2PMT07-FINAL-BUNDLE-PREREQUISITE-PLAN`; parent `S2PMT07`; acceptance `ACC-S2PMT07-FINAL-REVIEW`.
+- Summary: Added an ordered fail-closed final bundle prerequisite plan and embedded it in final acceptance bundle readiness as valid blocked prebundle evidence.
+- Boundary: no final bundle artifact creation, no P0/P1 closure, no S2PLT04 completion, no SMTP/scheduler/Release/restore, no CURRENT/V7 change, and no integrated production acceptance.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-PREREQUISITE-PLAN-20260628.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.

@@ -303,6 +303,47 @@ S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_REQUIRED_ARTIFACT_VALIDATIONS = (
     "NEXT_AGENT_HANDOFF",
 )
 S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_NO_PRODUCTION_FLAGS = S2PMT07_FINAL_ACCEPTANCE_BUNDLE_NO_PRODUCTION_FLAGS
+S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_REQUIRED_STEPS = (
+    "P0_P1_ZERO_PROOF_ARTIFACT",
+    "S2PLT04_COMPLETION_REPORT",
+    "FINAL_COMMAND_EXECUTION",
+    "NO_PRODUCTION_SIDE_EFFECT_ATTESTATION",
+    "NEXT_AGENT_HANDOFF",
+    "INDEPENDENT_REVIEW_SIGNOFF",
+    "FINAL_ACCEPTANCE_BUNDLE_MANIFEST",
+)
+S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_BLOCKING_REASONS = (
+    "p0_p1_zero_proof_artifact_missing",
+    "s2plt04_completion_report_missing",
+    "final_command_execution_missing",
+    "no_production_side_effect_attestation_missing",
+    "next_agent_handoff_missing",
+    "independent_review_signoff_missing",
+    "final_acceptance_bundle_manifest_missing",
+    "inherited_v7_1_p0_findings_open",
+    "inherited_v7_1_p1_findings_open",
+)
+S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_FORBIDDEN_FLAGS = (
+    "production_acceptance_claimed",
+    "integrated_production_accepted",
+    "daily_operation_enabled",
+    "real_smtp_sent",
+    "real_smtp_send_enabled",
+    "scheduler_enabled",
+    "scheduler_install_enabled",
+    "release_uploaded",
+    "release_packaging_enabled",
+    "production_restore_enabled",
+    "production_restore_executed",
+    "public_schema_changed",
+    "db_migration_executed",
+    "production_queue_mutated",
+    "source_adapter_changed",
+    "ranking_algorithm_changed",
+    "current_pointer_changed",
+    "v7_1_baseline_changed",
+    "v7_2_contract_files_changed",
+)
 S2PMT07_P0_TECHNICAL_CLOSURE_CANDIDATE_PACKAGE = (
     "governance/run_manifests/ADP-S2PMT07-P0-TECHNICAL-CLOSURE-CANDIDATE-PACKAGE-20260627.json"
 )
@@ -2430,10 +2471,106 @@ def build_independent_review_signoff_validation_state(payload: Mapping[str, Any]
     return state
 
 
+def build_final_bundle_prerequisite_plan_state() -> dict[str, Any]:
+    """Build the current fail-closed execution order for final-bundle prerequisites."""
+
+    validation_states: dict[str, Mapping[str, Any]] = {
+        "P0_P1_ZERO_PROOF_ARTIFACT": build_p0_p1_zero_proof_artifact_validation_state(None),
+        "S2PLT04_COMPLETION_REPORT": build_s2plt04_completion_report_validation_state(None),
+        "FINAL_COMMAND_EXECUTION": build_final_command_execution_validation_state(None),
+        "NO_PRODUCTION_SIDE_EFFECT_ATTESTATION": (
+            build_no_production_side_effect_attestation_validation_state(None)
+        ),
+        "NEXT_AGENT_HANDOFF": build_next_agent_handoff_validation_state(None),
+        "INDEPENDENT_REVIEW_SIGNOFF": build_independent_review_signoff_validation_state(None),
+        "FINAL_ACCEPTANCE_BUNDLE_MANIFEST": build_final_acceptance_bundle_manifest_validation_state(None),
+    }
+    ordered_steps: list[dict[str, Any]] = []
+    artifact_keys = ("artifact_path", "report_path", "manifest_path")
+    for step_id in S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_REQUIRED_STEPS:
+        validation = validation_states[step_id]
+        artifact_ref = next(
+            (validation[key] for key in artifact_keys if isinstance(validation.get(key), str)),
+            "UNKNOWN_ARTIFACT_REF",
+        )
+        ordered_steps.append(
+            {
+                "step_id": step_id,
+                "status": validation.get("status"),
+                "artifact_ref": artifact_ref,
+                "validation_errors": list(validation.get("validation_errors", [])),
+                "default_action": "produce_artifact_then_revalidate_without_production_side_effects",
+            }
+        )
+
+    all_required_steps_passed = all(step["status"] == "pass" for step in ordered_steps)
+    state = {
+        "status": "pass" if all_required_steps_passed else "blocked",
+        "scope": "final_bundle_prerequisite_plan_only_no_production_acceptance",
+        "task_id": S2PMT07_TASK_ID,
+        "acceptance_id": S2PMT07_ACCEPTANCE_ID,
+        "required_steps": list(S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_REQUIRED_STEPS),
+        "ordered_steps": ordered_steps,
+        "next_required_step": next(
+            (step["step_id"] for step in ordered_steps if step["status"] != "pass"),
+            None,
+        ),
+        "all_required_steps_passed": all_required_steps_passed,
+        "ready_for_final_bundle_manifest": False,
+        "blocking_reasons": list(S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_BLOCKING_REASONS),
+        **{flag: False for flag in S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_FORBIDDEN_FLAGS},
+        "state_hash": "",
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
+def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> list[str]:
+    """Validate the fail-closed final-bundle prerequisite execution plan."""
+
+    errors: list[str] = []
+    if state.get("status") not in {"pass", "blocked"}:
+        errors.append("final bundle prerequisite plan status must be pass or blocked")
+    if state.get("scope") != "final_bundle_prerequisite_plan_only_no_production_acceptance":
+        errors.append("final bundle prerequisite plan scope is invalid")
+    if state.get("task_id") != S2PMT07_TASK_ID:
+        errors.append("final bundle prerequisite plan task_id is invalid")
+    if state.get("acceptance_id") != S2PMT07_ACCEPTANCE_ID:
+        errors.append("final bundle prerequisite plan acceptance_id is invalid")
+    if tuple(state.get("required_steps", [])) != S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_REQUIRED_STEPS:
+        errors.append("final bundle prerequisite plan required_steps are invalid")
+
+    ordered_steps = _list_of_mappings(state.get("ordered_steps"))
+    if tuple(step.get("step_id") for step in ordered_steps) != S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_REQUIRED_STEPS:
+        errors.append("final bundle prerequisite plan ordered_steps are invalid")
+    if any(step.get("status") == "pass" for step in ordered_steps):
+        errors.append("final bundle prerequisite plan cannot mark steps pass before artifacts exist")
+    for step in ordered_steps:
+        if not isinstance(step.get("artifact_ref"), str) or not step.get("artifact_ref"):
+            errors.append(f"{step.get('step_id', 'UNKNOWN')}.artifact_ref must be a non-empty string")
+
+    if state.get("next_required_step") != "P0_P1_ZERO_PROOF_ARTIFACT":
+        errors.append("final bundle prerequisite plan next_required_step must remain P0_P1_ZERO_PROOF_ARTIFACT")
+    if state.get("all_required_steps_passed") is not False:
+        errors.append("final bundle prerequisite plan all_required_steps_passed must remain false")
+    if state.get("ready_for_final_bundle_manifest") is not False:
+        errors.append("final bundle prerequisite plan must not be ready for final bundle manifest")
+    for reason in S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_BLOCKING_REASONS:
+        if reason not in state.get("blocking_reasons", []):
+            errors.append(f"final bundle prerequisite plan must include blocker {reason}")
+    for flag in S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_FORBIDDEN_FLAGS:
+        if state.get(flag) is not False:
+            errors.append(f"{flag} must be false")
+    if state.get("state_hash") != _stable_hash({key: value for key, value in state.items() if key != "state_hash"}):
+        errors.append("final bundle prerequisite plan state_hash does not match state content")
+    return errors
+
+
 def build_final_acceptance_bundle_readiness_state() -> dict[str, Any]:
     """Build the current final acceptance bundle readiness state without packaging."""
 
     available_items = {item: False for item in S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS}
+    final_bundle_prerequisite_plan = build_final_bundle_prerequisite_plan_state()
     p0_p1_technical_candidate_state = build_p0_p1_technical_closure_candidate_state()
     p0_p1_zero_proof_readiness = build_p0_p1_zero_proof_readiness_state()
     p0_p1_zero_proof_artifact_validation = build_p0_p1_zero_proof_artifact_validation_state(None)
@@ -2451,6 +2588,9 @@ def build_final_acceptance_bundle_readiness_state() -> dict[str, Any]:
         "required_items": list(S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS),
         "available_items": available_items,
         "available_prebundle_evidence": {
+            "FINAL_BUNDLE_PREREQUISITE_PLAN": not validate_final_bundle_prerequisite_plan_state(
+                final_bundle_prerequisite_plan
+            ),
             "P0_P1_TECHNICAL_CLOSURE_CANDIDATES": not validate_p0_p1_technical_closure_candidate_state(
                 p0_p1_technical_candidate_state
             ),
@@ -2469,6 +2609,7 @@ def build_final_acceptance_bundle_readiness_state() -> dict[str, Any]:
         },
         "missing_items": [item for item, present in available_items.items() if not present],
         "blocking_reasons": list(S2PMT07_FINAL_ACCEPTANCE_BUNDLE_BLOCKING_REASONS),
+        "final_bundle_prerequisite_plan": final_bundle_prerequisite_plan,
         "p0_p1_technical_closure_candidate_state": p0_p1_technical_candidate_state,
         "p0_p1_zero_proof_readiness": p0_p1_zero_proof_readiness,
         "p0_p1_zero_proof_artifact_validation": p0_p1_zero_proof_artifact_validation,
@@ -2508,6 +2649,8 @@ def validate_final_acceptance_bundle_readiness_state(state: Mapping[str, Any]) -
     if available.get("FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json") is not False:
         errors.append("final acceptance bundle readiness must not expose p0_p1_zero_proof before final bundle exists")
     prebundle = _mapping(state.get("available_prebundle_evidence"))
+    if prebundle.get("FINAL_BUNDLE_PREREQUISITE_PLAN") is not True:
+        errors.append("final acceptance bundle readiness must expose a valid final-bundle prerequisite plan")
     if prebundle.get("P0_P1_TECHNICAL_CLOSURE_CANDIDATES") is not True:
         errors.append("final acceptance bundle readiness must expose P0/P1 technical closure candidates")
     if prebundle.get("P0_P1_ZERO_PROOF_READINESS") is not False:
@@ -2528,6 +2671,9 @@ def validate_final_acceptance_bundle_readiness_state(state: Mapping[str, Any]) -
         errors.append("final acceptance bundle readiness must not expose next-agent handoff validation as passing")
     if prebundle.get("INDEPENDENT_REVIEW_SIGNOFF_VALIDATION") is not False:
         errors.append("final acceptance bundle readiness must not expose independent review signoff validation as passing")
+    final_bundle_prerequisite_plan = _mapping(state.get("final_bundle_prerequisite_plan"))
+    if validate_final_bundle_prerequisite_plan_state(final_bundle_prerequisite_plan):
+        errors.append("final acceptance bundle readiness final-bundle prerequisite plan is invalid")
     p0_p1_candidate = _mapping(state.get("p0_p1_technical_closure_candidate_state"))
     if validate_p0_p1_technical_closure_candidate_state(p0_p1_candidate):
         errors.append("final acceptance bundle readiness P0/P1 technical candidate state is invalid")

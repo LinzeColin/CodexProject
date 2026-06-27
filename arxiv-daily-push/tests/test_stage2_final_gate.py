@@ -29,6 +29,9 @@ from arxiv_daily_push.stage2_final_gate import (
     S2PMT07_FINAL_ACCEPTANCE_BUNDLE_MANIFEST_REQUIRED_ARTIFACT_VALIDATIONS,
     S2PMT07_FINAL_ACCEPTANCE_BUNDLE_MANIFEST_SCHEMA_VERSION,
     S2PMT07_FINAL_ACCEPTANCE_BUNDLE_NO_PRODUCTION_FLAGS,
+    S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_BLOCKING_REASONS,
+    S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_FORBIDDEN_FLAGS,
+    S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_REQUIRED_STEPS,
     S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS,
     S2PMT07_FINAL_COMMAND_EXECUTION_DECISION,
     S2PMT07_FINAL_COMMAND_EXECUTION_NO_PRODUCTION_FLAGS,
@@ -63,6 +66,7 @@ from arxiv_daily_push.stage2_final_gate import (
     S2PMT07_S2PLT04_COMPLETION_REPORT_REQUIRED_TERMINAL_DEPENDENCIES,
     S2PMT07_S2PLT04_COMPLETION_REPORT_SCHEMA_VERSION,
     build_final_acceptance_bundle_readiness_state,
+    build_final_bundle_prerequisite_plan_state,
     build_final_command_execution_hash,
     build_final_command_execution_validation_state,
     build_no_production_side_effect_attestation_hash,
@@ -100,6 +104,7 @@ from arxiv_daily_push.stage2_final_gate import (
     validate_s2plt03_resilience_precheck_report,
     validate_s2plt04_integration_candidate_report,
     validate_final_acceptance_bundle_readiness_state,
+    validate_final_bundle_prerequisite_plan_state,
     validate_final_command_execution_artifact,
     validate_no_production_side_effect_attestation,
     validate_next_agent_handoff,
@@ -2774,6 +2779,46 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(signoff["signoff_present"])
         self.assertFalse(state["available_prebundle_evidence"]["INDEPENDENT_REVIEW_SIGNOFF_VALIDATION"])
         self.assertIn("independent_review_signoff_missing", signoff["validation_errors"])
+        self.assertEqual(validate_final_acceptance_bundle_readiness_state(state), [])
+
+    def test_final_bundle_prerequisite_plan_orders_missing_artifacts_fail_closed(self) -> None:
+        plan = build_final_bundle_prerequisite_plan_state()
+
+        self.assertEqual(plan["status"], "blocked")
+        self.assertEqual(plan["scope"], "final_bundle_prerequisite_plan_only_no_production_acceptance")
+        self.assertEqual(tuple(plan["required_steps"]), S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_REQUIRED_STEPS)
+        self.assertFalse(plan["all_required_steps_passed"])
+        self.assertFalse(plan["ready_for_final_bundle_manifest"])
+        self.assertEqual(plan["next_required_step"], "P0_P1_ZERO_PROOF_ARTIFACT")
+        self.assertEqual([step["step_id"] for step in plan["ordered_steps"]], list(plan["required_steps"]))
+        for reason in S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_BLOCKING_REASONS:
+            self.assertIn(reason, plan["blocking_reasons"])
+        for flag in S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_FORBIDDEN_FLAGS:
+            self.assertFalse(plan[flag])
+        self.assertEqual(validate_final_bundle_prerequisite_plan_state(plan), [])
+
+        tampered = json.loads(json.dumps(plan))
+        tampered["ordered_steps"][0]["status"] = "pass"
+        self.assertIn(
+            "final bundle prerequisite plan cannot mark steps pass before artifacts exist",
+            validate_final_bundle_prerequisite_plan_state(tampered),
+        )
+
+        tampered_flag = json.loads(json.dumps(plan))
+        tampered_flag["real_smtp_send_enabled"] = True
+        self.assertIn(
+            "real_smtp_send_enabled must be false",
+            validate_final_bundle_prerequisite_plan_state(tampered_flag),
+        )
+
+    def test_final_acceptance_bundle_readiness_embeds_prerequisite_plan_as_valid_blocked_evidence(self) -> None:
+        state = build_final_acceptance_bundle_readiness_state()
+        plan = state["final_bundle_prerequisite_plan"]
+
+        self.assertEqual(plan["status"], "blocked")
+        self.assertFalse(plan["ready_for_final_bundle_manifest"])
+        self.assertTrue(state["available_prebundle_evidence"]["FINAL_BUNDLE_PREREQUISITE_PLAN"])
+        self.assertEqual(validate_final_bundle_prerequisite_plan_state(plan), [])
         self.assertEqual(validate_final_acceptance_bundle_readiness_state(state), [])
 
     def test_p0_p1_technical_candidate_builder_fails_closed_without_closure(self) -> None:
