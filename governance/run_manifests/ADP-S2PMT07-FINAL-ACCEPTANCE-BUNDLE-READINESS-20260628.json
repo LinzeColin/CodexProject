@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "manifest_id": "ADP-S2PMT07-FINAL-ACCEPTANCE-BUNDLE-READINESS-20260628",
+  "project_id": "arxiv-daily-push",
+  "generated_at": "2026-06-28T00:42:33+10:00",
+  "actor": "Codex",
+  "base_commit": "06c7e50162edb3e20624d69a6f407e5dd69eb208",
+  "task_id": "S2PMT07-FINAL-ACCEPTANCE-BUNDLE-READINESS",
+  "task_ids": [
+    "S2PMT07-FINAL-ACCEPTANCE-BUNDLE-READINESS",
+    "S2PMT07",
+    "ACC-S2PMT07-FINAL-REVIEW"
+  ],
+  "phase": "S2PM",
+  "acceptance_id": "ACC-S2PMT07-FINAL-REVIEW",
+  "contract_version": "ADP-PRODUCT-CONTRACT-V7.2",
+  "iteration_id": "ITER-20260628-ADP-S2PMT07-FINAL-ACCEPTANCE-BUNDLE-READINESS",
+  "status": "blocked_readiness_precheck_recorded",
+  "result": "final_acceptance_bundle_readiness_blocked_no_bundle_no_production",
+  "summary": "Adds a fail-closed final acceptance bundle readiness sub-gate that lists required bundle items and blocks S2PMT07 while manifest, P0/P1 zero proof, S2PLT04 completion, independent signoff, final command execution, no-production attestation, and handoff are missing.",
+  "readiness_state": {
+    "status": "blocked",
+    "scope": "final_acceptance_bundle_readiness_precheck_only",
+    "required_items": [
+      "FINAL_ACCEPTANCE_BUNDLE/manifest.json",
+      "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
+      "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json",
+      "FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml",
+      "FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json",
+      "FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json",
+      "HANDOFF/00_下一Agent先读.md"
+    ],
+    "missing_items": [
+      "FINAL_ACCEPTANCE_BUNDLE/manifest.json",
+      "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
+      "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json",
+      "FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml",
+      "FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json",
+      "FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json",
+      "HANDOFF/00_下一Agent先读.md"
+    ],
+    "blocking_reasons": [
+      "final_acceptance_bundle_directory_missing",
+      "final_acceptance_bundle_manifest_missing",
+      "p0_p1_zero_proof_missing",
+      "s2plt04_completion_evidence_missing",
+      "independent_review_signoff_missing",
+      "independent_final_command_execution_missing",
+      "no_production_side_effect_attestation_missing"
+    ],
+    "bundle_present": false,
+    "bundle_claimed_ready": false,
+    "production_acceptance_claimed": false,
+    "integrated_production_accepted": false,
+    "daily_operation_enabled": false,
+    "real_smtp_send_enabled": false,
+    "scheduler_install_enabled": false,
+    "release_packaging_enabled": false,
+    "production_restore_enabled": false,
+    "state_hash": "988ed71dea26fab662fd753fdc4187842b7277e14d950e755cdab3a8a1959e06"
+  },
+  "parameter_ids_changed": [
+    "PARAM-ADP-965",
+    "PARAM-ADP-966",
+    "PARAM-ADP-967"
+  ],
+  "formula_ids_changed": [
+    "FORM-ADP-102"
+  ],
+  "model_ids_changed": [
+    "MOD-ADP-100"
+  ],
+  "files_changed": [
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py",
+    "arxiv-daily-push/tests/test_stage2_final_gate.py",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "arxiv-daily-push/docs/governance/MODEL_SPEC.md",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_ACCEPTANCE_BUNDLE_READINESS.md",
+    "governance/run_manifests/ADP-S2PMT07-FINAL-ACCEPTANCE-BUNDLE-READINESS-20260628.json"
+  ],
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_ACCEPTANCE_BUNDLE_READINESS.md",
+    "governance/run_manifests/ADP-S2PMT07-FINAL-ACCEPTANCE-BUNDLE-READINESS-20260628.json",
+    "arxiv-daily-push/tests/test_stage2_final_gate.py"
+  ],
+  "production_boundary": {
+    "formal_production_inclusion": false,
+    "final_acceptance_bundle_created": false,
+    "p0_closure_claimed": false,
+    "p1_closure_claimed": false,
+    "s2plt04_completed": false,
+    "independent_final_signoff_present": false,
+    "independent_final_command_execution_present": false,
+    "stage2_integrated_production_accepted": false,
+    "daily_operation_enabled": false,
+    "real_smtp_sent": false,
+    "real_smtp_send_enabled": false,
+    "scheduler_install_enabled": false,
+    "release_packaging_enabled": false,
+    "production_restore_enabled": false,
+    "current_pointer_changed": false,
+    "v7_1_baseline_changed": false,
+    "v7_2_contract_files_changed": false
+  },
+  "risks": [
+    "This readiness gate can be misread as the final acceptance bundle itself; it only records that the bundle is missing and names the required evidence.",
+    "Inherited P0/P1, S2PLT04, final bundle, independent signoff, final command execution, and S2PMT07 acceptance remain blocked."
+  ],
+  "rollback": "Revert the final acceptance bundle readiness helper, tests, registry updates, phase record, and this manifest; no runtime production state was changed.",
+  "next_task": "CONTINUE_S2PMT07_OR_S2PLT04_ONLY_AFTER_REQUIRED_EVIDENCE_EXISTS"
+}

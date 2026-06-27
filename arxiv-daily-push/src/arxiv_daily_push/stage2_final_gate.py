@@ -55,6 +55,34 @@ S2PMT07_BLOCKING_REASONS = (
     "independent_review_signoff_missing",
     "independent_final_command_execution_missing",
 )
+S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS = (
+    "FINAL_ACCEPTANCE_BUNDLE/manifest.json",
+    "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
+    "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json",
+    "FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml",
+    "FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json",
+    "FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json",
+    "HANDOFF/00_下一Agent先读.md",
+)
+S2PMT07_FINAL_ACCEPTANCE_BUNDLE_BLOCKING_REASONS = (
+    "final_acceptance_bundle_directory_missing",
+    "final_acceptance_bundle_manifest_missing",
+    "p0_p1_zero_proof_missing",
+    "s2plt04_completion_evidence_missing",
+    "independent_review_signoff_missing",
+    "independent_final_command_execution_missing",
+    "no_production_side_effect_attestation_missing",
+)
+S2PMT07_FINAL_ACCEPTANCE_BUNDLE_FORBIDDEN_FLAGS = (
+    "bundle_claimed_ready",
+    "production_acceptance_claimed",
+    "integrated_production_accepted",
+    "daily_operation_enabled",
+    "real_smtp_send_enabled",
+    "scheduler_install_enabled",
+    "release_packaging_enabled",
+    "production_restore_enabled",
+)
 S2PLT02_LIVE_2D_PRECHECK_MODEL_ID = "adp-s2plt02-live-2d-precheck-v1"
 S2PLT02_ACCEPTANCE_ID = "ACC-S2PLT02-2D"
 S2PLT02_TASK_ID = "S2PLT02"
@@ -539,6 +567,64 @@ def build_test_gate_state() -> dict[str, Any]:
     }
 
 
+def build_final_acceptance_bundle_readiness_state() -> dict[str, Any]:
+    """Build the current final acceptance bundle readiness state without packaging."""
+
+    available_items = {item: False for item in S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS}
+    state = {
+        "status": "blocked",
+        "scope": "final_acceptance_bundle_readiness_precheck_only",
+        "required_items": list(S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS),
+        "available_items": available_items,
+        "missing_items": [item for item, present in available_items.items() if not present],
+        "blocking_reasons": list(S2PMT07_FINAL_ACCEPTANCE_BUNDLE_BLOCKING_REASONS),
+        "bundle_present": False,
+        "bundle_claimed_ready": False,
+        "production_acceptance_claimed": False,
+        "integrated_production_accepted": False,
+        "daily_operation_enabled": False,
+        "real_smtp_send_enabled": False,
+        "scheduler_install_enabled": False,
+        "release_packaging_enabled": False,
+        "production_restore_enabled": False,
+        "state_hash": "",
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
+def validate_final_acceptance_bundle_readiness_state(state: Mapping[str, Any]) -> list[str]:
+    """Validate fail-closed final acceptance bundle readiness state."""
+
+    errors: list[str] = []
+    if state.get("status") not in {"pass", "blocked"}:
+        errors.append("final acceptance bundle readiness status must be pass or blocked")
+    if tuple(state.get("required_items", [])) != S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS:
+        errors.append("final acceptance bundle readiness required_items are invalid")
+    available = _mapping(state.get("available_items"))
+    for item in S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS:
+        if item not in available:
+            errors.append(f"available_items must include {item}")
+    for flag in S2PMT07_FINAL_ACCEPTANCE_BUNDLE_FORBIDDEN_FLAGS:
+        if state.get(flag) is not False:
+            errors.append(f"{flag} must be false")
+    if state.get("status") == "pass":
+        if state.get("missing_items"):
+            errors.append("passing final acceptance bundle readiness must not have missing items")
+        if state.get("blocking_reasons"):
+            errors.append("passing final acceptance bundle readiness must not have blocking reasons")
+    else:
+        if state.get("bundle_claimed_ready") is not False:
+            errors.append("final acceptance bundle readiness must not claim ready while blocked")
+        for reason in S2PMT07_FINAL_ACCEPTANCE_BUNDLE_BLOCKING_REASONS:
+            if reason not in state.get("blocking_reasons", []):
+                errors.append(f"blocked final acceptance bundle readiness must include {reason}")
+    expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    if state.get("state_hash") != expected_hash:
+        errors.append("final acceptance bundle readiness state_hash does not match state content")
+    return errors
+
+
 def build_s2pmt07_precheck_report(*, generated_at: str) -> dict[str, Any]:
     """Build a deterministic fail-closed S2PMT07 precheck report."""
 
@@ -547,13 +633,16 @@ def build_s2pmt07_precheck_report(*, generated_at: str) -> dict[str, Any]:
     reviewer = build_reviewer_independence_state()
     evidence = build_evidence_bundle_state()
     tests = build_test_gate_state()
+    final_bundle = build_final_acceptance_bundle_readiness_state()
     gates = {
         "reviewer_independence": reviewer["status"] == "pass",
         "p0_zero": audit_blockers["checks"]["P0_zero"],
         "p1_zero": audit_blockers["checks"]["P1_zero"],
         "s2pmt01_t06_completed": all(task_id in dependencies["completed_dependencies"] for task_id in S2PMT07_REQUIRED_DEPENDENCIES[:6]),
         "s2plt04_completed": "S2PLT04" in dependencies["completed_dependencies"],
-        "final_acceptance_bundle_present": evidence["available_evidence"]["FINAL_ACCEPTANCE_BUNDLE/"],
+        "final_acceptance_bundle_present": evidence["available_evidence"]["FINAL_ACCEPTANCE_BUNDLE/"]
+        and final_bundle["bundle_present"],
+        "final_acceptance_bundle_ready": final_bundle["status"] == "pass",
         "independent_review_signoff_present": evidence["available_evidence"]["independent_review_signoff.yaml"],
         "required_final_commands_executed": tests["executed_as_final_reviewer"],
         "no_production_side_effect": True,
@@ -588,6 +677,7 @@ def build_s2pmt07_precheck_report(*, generated_at: str) -> dict[str, Any]:
         "audit_blockers": audit_blockers,
         "reviewer_independence": reviewer,
         "evidence_bundle": evidence,
+        "final_acceptance_bundle_readiness": final_bundle,
         "test_gates": tests,
         "production_acceptance_claimed": False,
         "inherited_p0_p1_closed": False,
@@ -635,6 +725,10 @@ def validate_s2pmt07_precheck_report(report: Mapping[str, Any]) -> list[str]:
     for item in S2PMT07_REQUIRED_EVIDENCE:
         if item not in evidence.get("required_evidence", []):
             errors.append(f"evidence_bundle.required_evidence must include {item}")
+    final_bundle = _mapping(report.get("final_acceptance_bundle_readiness"))
+    final_bundle_errors = validate_final_acceptance_bundle_readiness_state(final_bundle)
+    if final_bundle_errors:
+        errors.append("S2PMT07 final acceptance bundle readiness is invalid")
     tests = _mapping(report.get("test_gates"))
     for command in S2PMT07_REQUIRED_TEST_COMMANDS:
         if command not in tests.get("required_test_commands", []):

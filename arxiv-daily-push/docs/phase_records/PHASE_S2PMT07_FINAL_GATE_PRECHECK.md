@@ -30,6 +30,7 @@ No independent signoff, final acceptance bundle creation, inherited P0/P1 closur
 - `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`
 - `arxiv-daily-push/tests/test_stage2_final_gate.py`
 - `governance/run_manifests/ADP-S2PMT07-FINAL-GATE-PRECHECK-20260626.json`
+- `governance/run_manifests/ADP-S2PMT07-FINAL-ACCEPTANCE-BUNDLE-READINESS-20260628.json`
 - `governance/run_manifests/ADP-S2PMT07-FINAL-COMMAND-BLOCKER-SYNC-20260627.json`
 - `arxiv-daily-push/docs/pursuing_goal/v7_2/HANDOFF/00_下一Agent先读.md`
 - `arxiv-daily-push/docs/pursuing_goal/v7_2/V7_2_ROOT_LOCK.yaml`
@@ -37,13 +38,15 @@ No independent signoff, final acceptance bundle creation, inherited P0/P1 closur
 ## Local Report
 
 - report_status: `blocked`
-- report_hash: `20908c705964fec5ee6b06104a18cb1c9eb6d15c1922823580b7062140ff4474`
+- report_hash: `e2c3deef9595e053a094f7b51b32ddd9b7ee366e15d4f1ca285468c5ff653129`
 - completed_dependencies: `S2PMT01`, `S2PMT02`, `S2PMT03`, `S2PMT04`, `S2PMT05`, `S2PMT06`
 - missing_dependencies: `S2PLT04`
 - inherited_v7_1_open_p0_findings: `8`
 - inherited_v7_1_open_p1_findings: `37`
 - reviewer_independence_not_proven: `true`
 - final_acceptance_bundle_missing: `true`
+- final_acceptance_bundle_readiness_status: `blocked`
+- final_acceptance_bundle_readiness_state_hash: `988ed71dea26fab662fd753fdc4187842b7277e14d950e755cdab3a8a1959e06`
 - independent_review_signoff_missing: `true`
 - independent_final_command_execution_missing: `true`
 - production_acceptance_claimed: `false`

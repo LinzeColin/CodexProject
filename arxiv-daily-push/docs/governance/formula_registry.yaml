@@ -5795,7 +5795,7 @@ formulas:
     assumption_ids:
       - "ASM-ADP-035"
     status: "active"
-    expression: "S2PMT07 final gate precheck remains blocked unless reviewer independence is proven, inherited V7.1 P0/P1 findings are zero, S2PMT01 through S2PMT06 and S2PLT04 dependencies are completed, FINAL_ACCEPTANCE_BUNDLE plus HANDOFF plus independent_review_signoff evidence exists, final commands are executed by the independent reviewer, no production acceptance is claimed, inherited P0/P1 are not self-closed, and all production/CURRENT/V7 baseline side-effect flags remain false."
+    expression: "S2PMT07 final gate precheck remains blocked unless reviewer independence is proven, inherited V7.1 P0/P1 findings are zero, S2PMT01 through S2PMT06 and S2PLT04 dependencies are completed, FINAL_ACCEPTANCE_BUNDLE plus HANDOFF plus independent_review_signoff evidence exists, final acceptance bundle readiness proves manifest, P0/P1 zero proof, S2PLT04 completion report, independent signoff, final command execution, and no-production attestation are present, final commands are executed by the independent reviewer, no production acceptance is claimed, inherited P0/P1 are not self-closed, and all production/CURRENT/V7 baseline side-effect flags remain false."
     variables:
       -
         name: "dependency_state"
@@ -5818,20 +5818,27 @@ formulas:
         unit: "final acceptance bundle"
         input_domain: "FINAL_ACCEPTANCE_BUNDLE, HANDOFF, independent_review_signoff"
       -
+        name: "final_acceptance_bundle_readiness"
+        data_type: "object"
+        unit: "final acceptance bundle readiness details"
+        input_domain: "bundle manifest, P0/P1 zero proof, S2PLT04 completion, independent signoff, final commands, no-production attestation, handoff"
+      -
         name: "test_gates"
         data_type: "object"
         unit: "final required command coverage"
         input_domain: "task-pack validator, full pytest, zero P0/P1 bundle verifier"
     constraints: "S2PMT07 precheck is fail-closed only. It must not claim INTEGRATED_PRODUCTION_ACCEPTED, DAILY_OPERATION, real SMTP, scheduler installation, Release packaging, production restore, CURRENT changes, V7.1 baseline changes, V7.2 contract changes, or inherited P0/P1 closure."
-    missing_policy: "Missing independent reviewer proof, nonzero inherited P0/P1, missing S2PLT04, missing final acceptance bundle, missing independent signoff, missing required command execution, or any forbidden production flag blocks S2PMT07."
-    output_range: "S2PMT07 precheck report with pass or blocked status, required dependencies, inherited audit blocker counts, evidence bundle state, test gate state, blocking reasons, deterministic report hash, production_acceptance_claimed false, inherited_p0_p1_closed false, and all forbidden pass flags false."
+    missing_policy: "Missing independent reviewer proof, nonzero inherited P0/P1, missing S2PLT04, missing final acceptance bundle, missing final bundle manifest, missing P0/P1 zero proof, missing S2PLT04 completion report, missing independent signoff, missing required command execution, missing no-production attestation, or any forbidden production flag blocks S2PMT07."
+    output_range: "S2PMT07 precheck report with pass or blocked status, required dependencies, inherited audit blocker counts, evidence bundle state, final acceptance bundle readiness state, test gate state, blocking reasons, deterministic report hash, production_acceptance_claimed false, inherited_p0_p1_closed false, and all forbidden pass flags false."
     code_refs:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py"
     test_refs:
       - "arxiv-daily-push/tests/test_stage2_final_gate.py"
     evidence_refs:
       - "governance/run_manifests/ADP-S2PMT07-FINAL-GATE-PRECHECK-20260626.json"
+      - "governance/run_manifests/ADP-S2PMT07-FINAL-ACCEPTANCE-BUNDLE-READINESS-20260628.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_GATE_PRECHECK.md"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_ACCEPTANCE_BUNDLE_READINESS.md"
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PMT07_FINAL_GATE_MODEL_ID"
@@ -5847,10 +5854,15 @@ formulas:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PMT07_REQUIRED_TEST_COMMANDS"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PMT07_FORBIDDEN_PASS_FLAGS"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PMT07_BLOCKING_REASONS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PMT07_FINAL_ACCEPTANCE_BUNDLE_BLOCKING_REASONS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PMT07_FINAL_ACCEPTANCE_BUNDLE_FORBIDDEN_FLAGS"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_dependency_state"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_audit_blocker_state"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_reviewer_independence_state"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_evidence_bundle_state"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_final_acceptance_bundle_readiness_state"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::validate_final_acceptance_bundle_readiness_state"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_test_gate_state"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_s2pmt07_precheck_report"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::validate_s2pmt07_precheck_report"
