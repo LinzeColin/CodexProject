@@ -19,10 +19,11 @@ Updated: 2026-06-27 Australia/Sydney
 - A209 detached rerun `/private/tmp/eei-a209-rerun-20260627-canonical-0a3e820/` failed at checkpoint `1/288`: `0` PASS, `1` FAIL, latest `ended_at/generated_at=2026-06-27T01:51:36Z`, error `Cannot find module '@playwright/test'`. Watchdog PID `8314` remained alive at the last check and operator PID `8366` was defunct; this failed evidence must not be promoted.
 - A209 dependency repair was applied in canonical `work/CodexProject/EEI`: `npx --yes pnpm@11.8.0 install --frozen-lockfile` restored Node/Playwright workspace dependencies.
 - A209 detached rerun `/private/tmp/eei-a209-rerun-20260627-deps-ok-0a3e820/` then failed at checkpoint `1/288`: `0` PASS, `1` FAIL, latest `ended_at/generated_at=2026-06-27T02:04:25Z`, error `browserType.launch: Executable doesn't exist at /private/tmp/eei-ms-playwright/chromium_headless_shell-1228/.../chrome-headless-shell`. Watchdog PID `68637` remained alive at the last check and operator PID `68650` was defunct.
-- A209 Playwright browser runtime repair was applied: `PLAYWRIGHT_BROWSERS_PATH=/private/tmp/eei-ms-playwright npx playwright install chromium` downloaded Chromium, ffmpeg and headless shell to the configured path. A new isolated 24h rerun still requires explicit operator cleanup/restart authorization because failed watchdogs remain alive.
+- A209 Playwright browser runtime repair was applied: `PLAYWRIGHT_BROWSERS_PATH=/private/tmp/eei-ms-playwright npx playwright install chromium` downloaded Chromium, ffmpeg and headless shell to the configured path.
+- Active A209 isolated rerun is `/private/tmp/eei-a209-rerun-20260627-originmain-8d5a3916/`; it started from current `origin/main` EEI content, operator PID `37871` and watchdog PID `38400` are running, checkpoint `1/288` is PASS with `0` failed, latest `ended_at/generated_at=2026-06-27T03:34:47Z`, `browser_slices_completed=20`, `browser_recoveries_observed=0`, and `browser_measurement_error=null`. This is background progress evidence only; A209 remains `IN_PROGRESS` until `288/288` zero-failure evidence plus final validation exists.
 - A210 brand-clearance validator now rejects signed brand-clearance bundles from repository templates, fixtures, docs, config, data and tests; only external operator files or approved `artifacts/operator_inputs/`, `operator_inputs/`, or `work/operator_inputs/` paths can pass signed-bundle source validation. A210 remains `IN_PROGRESS` until real legal/market clearance or a signed risk waiver is supplied.
 - Local short-window probes and focused A209 tests passed after the repair: direct child harness `3s` with `--browser-slice-seconds 1` produced 3 slices and `measurement_error=null`; after browser runtime installation, `/tmp/eei-soak-smoke-playwright-browser-ok.json` produced 3 browser slices, `recoveries_observed=0`, `measurement_error=null`, and `/tmp/eei-operator-soak-playwright-browser-ok.json` produced `1/1` PASS window with `wall_clock_within_budget=true`; A209 focused unit tests pass `25/25`. These probes are repair evidence only, not A209 closure.
-- Quarantine/recovery evidence is outside the repo at `/Users/linzezhang/Downloads/codex_crash_recovery_eei_20260626_0716/a209_invalid_wall_budget_run_20260626T0731AEST/`.
+- The 2026-06-26 local-record audit is `CLOSED`; any quarantine package from that incident is historical-only and must not be repeated as current status.
 - GitHub target: `LinzeColin/CodexProject/EEI`
 - Current gate: Phase 1 / G4 - Recursive exploration and live context
 - Gate status: IN PROGRESS
@@ -39,9 +40,10 @@ Updated: 2026-06-27 Australia/Sydney
   - `3e04747` PostgreSQL readiness contract
   - `53ece4b` G1 environment doctor
   - `baa5dbd` PostgreSQL startup wait contract
-- Latest GitHub implementation commit proven by CI:
-  - `fe1d34f` fix: escape EEI fixture score queries
-  - GitHub Actions run `27879503435`, job `82504489377`: PASS; Steps 7-13 all succeeded, including G2 PostgreSQL integration, browser E2E and live FastAPI/PostgreSQL E2E for the A203 event/industry scoring slice.
+- Latest GitHub EEI commit proven by CI:
+  - `efd3592f` refresh: clean-room release package and release evidence hash sync
+  - GitHub Actions `Project Governance` run `28277040425`: PASS
+  - GitHub Actions `EEI validation` run `28277040457`: PASS; Step 7 `make verify`, G2 PostgreSQL integration, browser E2E and live FastAPI/PostgreSQL E2E all succeeded.
 
 ## Completed
 
