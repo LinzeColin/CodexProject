@@ -4,7 +4,7 @@ Last updated: 2026-06-28 Australia/Sydney
 
 ## Current Goal
 
-PFI v0.2.1 前端优化 Stage 8 已完成：最终验收合同、整体检查、桌面/手机浏览器关键路径、命令验收、GitHub main 同步、本机 app 入口刷新和本机非必要缓存清理全部纳入交付口径。
+PFI v0.2.2 数据库治理 Stage 0 准备：只做现状盘点与任务锁定，生成中文 baseline report，锁定 v0.2.2 后续 Milestone 1-8 的数据治理、参数治理、Interconnection、标签持久化、Runtime Diff 和 Agent Review 路线。v0.2.1 HTML Web Shell 仍是 UIUX 基线，本轮不修改前端显示。
 
 ## Current Status
 
@@ -53,6 +53,11 @@ PFI v0.2.1 前端优化 Stage 8 已完成：最终验收合同、整体检查、
 - v0.2.1 UI 货币基准已锁定为 CNY；所有页面顶部右上角必须显示 `CNY/AUD=4.70（YYYYMMDD--HH:MM）`，读取当日 06:00 Australia/Sydney 汇率快照。
 - v0.2.1 正式前端目标是 `PFI/web` HTML Web Shell；多模态反馈、触感、声音、视觉、通知和运行反馈控制台后续必须收敛到设置页。
 - Web shell default homepage consumes Stage 6 closeout status and now shows one unified 15-entry navigation list: 首页总览、账户与资产、账本流水、投资管理、消费管理、数据源与上传、建议与复盘、报告与洞察、首页、市场、研究、持仓、策略实验室、数据与系统、设置.
+- v0.2.2 当前路线是数据库治理和 E2E 逻辑优化，不是前端重做；Stage 0 资料区为 `docs/pfi_v022/`。
+- v0.2.2 Stage 0 baseline report 是 `docs/pfi_v022/STAGE0_BASELINE_REPORT.md`。
+- v0.2.2 roadmap lock 是 `docs/pfi_v022/ROADMAP_LOCK.md`；来源资料 manifest 是 `docs/pfi_v022/SOURCE_TASK_PACK_MANIFEST.md`。
+- v0.2.2 Stage 0 合同是 `src/pfi_v02/stage_v022_database_governance.py::build_v022_stage0_contract()`；测试是 `tests/test_v022_stage0_database_governance.py`。
+- `PFI_v0.2.2_UIUX_Logic_Review_Template.html` 只是后续逻辑审查页参考；Stage 0 不修改 `PFI/web/index.html`、`PFI/web/app/shell.js` 或新增审查页。
 - 2026-06-27验收退回纠偏：默认 8501 顶部已新增 PFI 本机数据上传；真实支付宝导出 CSV parser 已支持说明区/中间表头/GB18030/尾随空列；旧支付宝原始账单 4 份已导入 `~/.pfi/runtime/imports/alipay_daily`，覆盖 `2022-06-06` 至 `2026-06-03`，`8815` 条标准化流水，`406` 条待复核；Web Shell 动态英文状态已中文化，8 个一级入口浏览器点击验证通过。
 - 2026-06-27二次纠偏：QBVS 已从 `PFI/` 内部分离为顶层 `QBVS/`；PFI 合同改为 `qbvs_independent_system=true`；Web Shell 补回 V0.1 六入口；`MetaDatabase/` 保存支付宝原始 CSV、manifest 和标准化流水，供 GitHub 验收。
 - 当前 GitHub 分支 `codex/pfi-stage6-meta-qbvs-sync` 已推送 commit `d0d0a4b8f50231e2c63293396a1fee8e03de7fda`；PFI/QBVS/MetaDatabase 相关工作区在该 commit 后干净。
@@ -65,6 +70,8 @@ PFI v0.2.1 前端优化 Stage 8 已完成：最终验收合同、整体检查、
 - 2026-06-27 v0.2.1 Stage 6：`投资管理 > 持仓` 新增持仓编辑面板；SQLite operational database 新增 `v021_holding_snapshots` 和 `v021_position_adjustments` 合同；服务覆盖新增、读取、修改、软删除；前端保存到本机持久状态，刷新或重开 HTML Web Shell 仍保留。
 - 2026-06-27 v0.2.1 Stage 7：所有可见按钮进入点击安全清单；按钮点击统一显示 `进行中/成功/失败` 反馈；`hashchange` 同步工作区和左侧高亮；移动端一级入口横向滚动且不竖排；桌面/手机浏览器验收覆盖 15 个一级入口、40 个代表按钮、15 个命令入口和三态反馈。
 - 2026-06-28 v0.2.1 Stage 8：新增最终验收合同和审计；`V021-P8-S8-T01` 前端合同测试、`V021-P8-S8-T02` 浏览器验收、`V021-P8-S8-T03` 命令验收统一进入 `PFI-V021-S8-FINAL-ACCEPTANCE-GATE`；Stage 0-8 前端合同、完整 PFI 单测、JS、治理、diff、浏览器、GitHub main、canonical PFI、PFI.app 和缓存清理成为同一 closeout gate。
+- 2026-06-28 v0.2.2 Stage 0：读取 v0.2.2 roadmap、Task Pack、参数草案、6 Agent 交叉验证草案和 HTML 审查模板；生成 `docs/pfi_v022/STAGE0_BASELINE_REPORT.md`，列出现有参数、硬编码阈值、消费/投资/现金流/建议口径、数据源、账户角色、Stage 6 基线和 v0.2.2 冲突清单；合同测试锁定本轮不改 v0.2.1 前端显示。
+- 2026-06-28 v0.2.2 Stage 0 验证：Stage 0 合同 `Ran 7 tests / OK`；完整 PFI 单测 `Ran 154 tests / OK`；项目治理 `errors 0 / warnings 0`；`node --check PFI/web/app/shell.js` 通过；`git diff --check -- PFI` 通过；`PFI/web` 无 diff。
 
 ## Decisions
 
@@ -117,5 +124,5 @@ Latest v0.2.1 Stage 8 target result: Stage 0/1/2/3/4/5/6/7/8 frontend contracts 
 
 ## Next
 
-1. Wait for owner-approved next roadmap or next pursuing-goal stage. Do not expand into trading, payment, broker submission, QBVS, EEI, ADP, Alpha, or Serenity work from this PFI Stage 8 closeout.
-2. After Stage 8 passes, next work should start from the next owner-approved roadmap, not from hidden legacy EVA/PFI branches.
+1. 完成 v0.2.2 Stage 0 closeout 验证、GitHub main 同步和 canonical PFI 同步。
+2. 下一轮 pursuing goal 应从 v0.2.2 Milestone 1 `模型参数文件重构` 开始：重构 `PFI/模型参数文件.md`、新增 `PFI/config/pfi_v022_parameters.yaml`、参数 changelog 和一致性测试；不得提前实现 Stage 2-8。
