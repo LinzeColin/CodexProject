@@ -551,6 +551,49 @@ def test_operator_soak_heartbeat_records_background_watchdog_state(tmp_path: Pat
     assert validate_heartbeat_payload(payload) == []
 
 
+def test_operator_soak_heartbeat_reports_stale_watchdog_intervention(
+    tmp_path: Path,
+) -> None:
+    checkpoint = tmp_path / "operator_24h.checkpoints.jsonl"
+    pid_file = tmp_path / "operator_24h.pid"
+    watchdog_pid = tmp_path / "operator_24h.watchdog.pid"
+    watchdog_output = tmp_path / "watchdog.json"
+    write_checkpoint(checkpoint, index=1)
+    pid_file.write_text(f"{os.getpid()}\n", encoding="utf-8")
+    watchdog_pid.write_text(f"{os.getpid()}\n", encoding="utf-8")
+    watchdog_output.write_text(
+        json.dumps(
+            {
+                "status": "RUNNING_STALE_OPERATOR_INTERVENTION_REQUIRED",
+                "latest_cycle": {
+                    "latest_window_age_seconds": 901,
+                    "stale_after_seconds": 900,
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    payload = build_heartbeat_payload(
+        output_path=tmp_path / "operator_24h.json",
+        checkpoint_path=checkpoint,
+        pid_path=pid_file,
+        log_path=tmp_path / "operator_24h.log",
+        watchdog_pid_path=watchdog_pid,
+        watchdog_output_path=watchdog_output,
+        generated_at="2026-06-27T00:00:00Z",
+    )
+
+    assert payload["status"] == "BACKGROUND_SOAK_OPERATOR_INTERVENTION_REQUIRED"
+    assert payload["progress_status"] == "RUNNING_PARTIAL"
+    contract = payload["background_resolution_contract"]
+    assert contract["operator_process_status"] == "RUNNING"
+    assert contract["watchdog_observation_status"] == (
+        "RUNNING_STALE_OPERATOR_INTERVENTION_REQUIRED"
+    )
+    assert validate_heartbeat_payload(payload) == []
+
+
 def test_operator_soak_heartbeat_validation_fails_if_release_gate_is_closed(
     tmp_path: Path,
 ) -> None:

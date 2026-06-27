@@ -6,7 +6,7 @@ EEI 当前治理结论：实现一致性为 `VERIFIED`，方法/实证为 `UNVER
 
 ## 2. 本次运行改变了什么
 
-Owner 视图现在记录 A210 source-boundary 后触发的 release evidence hash refresh：A202/A210 bundle、A205 external bundle、release-manager、MVP gate、clean-room 和 release manifest 已重新验证；这仍不是 legal clearance、A209 closure 或 MVP ready 声明。
+Owner 视图现在记录 A209 heartbeat/watchdog stale binding：heartbeat 会读取 watchdog output，并在 checkpoint 停滞超过阈值时进入 intervention 状态；当前 live origin/main rerun probe 为 `10/288` PASS、`0` failed。这仍不是 A209 closure、legal clearance 或 MVP ready 声明。
 
 ## 3. 为什么重要
 

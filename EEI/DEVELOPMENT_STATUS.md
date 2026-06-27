@@ -25,6 +25,8 @@ entry; do not edit it as an independent machine source for governance counts.
 
 2026-06-26 最新 A209/T904 状态：A209 clean 24h run 已失败在 `7/288`，window 7 为 `child_status=NO_OUTPUT`，根因证据为 Playwright `page.evaluate` 长窗口期间 page/context/browser 被关闭；A209 不能 finalization。已修复 child harness：browser 测量拆成短 slice，失败时写结构化 `measurement_error`，Playwright 浏览器路径可回退到 `/private/tmp/eei-ms-playwright`，operator checkpoint 暴露 `browser_slices_completed` 和 `browser_measurement_error`。A209 validator 语义已同步：普通治理 artifact 当前为 `FAILED_OPERATOR_EVIDENCE`，heartbeat 为 `BACKGROUND_SOAK_OPERATOR_INTERVENTION_REQUIRED`，finalization 为 `A209_FINALIZATION_OPERATOR_INTERVENTION_REQUIRED`；`validate_operator_soak_evidence.py validate --require-release-ready` 仍按预期失败，直到新的 24h run 达到 `288/288` 且 `0` failed。新的 isolated A209 rerun 已在 `/private/tmp/eei-a209-rerun-20260626-0918/` 后台运行，未覆盖 canonical 失败证据；首次观察为 `1/288` PASS、`0` failed，operator PID `80478`、watchdog PID `80732`。短窗口 direct/operator probe 和 A209 focused tests 已通过，但这只是恢复能力/治理证据，不能替代 24h。T904/A026-A027 新增 source-bound operator labeling packet，包含 50 个 entity slots 和 100 个 relationship slots；该 packet 是人工标注工作表，不是 production gold labels，A026/A027 仍未关闭。
 
+2026-06-27 A209 heartbeat/watchdog 状态：当前 active isolated rerun `/private/tmp/eei-a209-rerun-20260627-originmain-8d5a3916/` probe 为 `10/288` PASS、`0` failed，operator/watchdog PID 均运行；`record_operator_soak_heartbeat.py` 已强化为读取 watchdog output，并在 watchdog 报告 `RUNNING_STALE_OPERATOR_INTERVENTION_REQUIRED` 时把 heartbeat 置为 `BACKGROUND_SOAK_OPERATOR_INTERVENTION_REQUIRED`，避免“PID 仍 RUNNING 但 checkpoint 已停滞”的状态被误记为正常运行。该改动不关闭 A209，不替代 288/288 release-ready validation。
+
 ## 已解决的关键决策（7）
 
 - 默认首页、递归主体探索、数据底座、模型修改流程、14 天校准、视觉覆盖目标、文档治理方式均已冻结。

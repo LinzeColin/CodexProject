@@ -5,7 +5,7 @@
 - source_base_commit: `12df22b6347fd881d42545afe387ac9e41e56fb4`
 - source_tree_hash: `00e27599461403192b998e8f9a3f7f0e769e5d8f`
 - source_snapshot_hash: `sha256:c1ac83658310a4704bb9924c2ce78f5e63627d4593bcbc3ee40d5d9ca2bb0b3e`
-- snapshot_event_time: `2026-06-27T13:10:00+10:00`
+- snapshot_event_time: `2026-06-27T14:15:00+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -14,7 +14,7 @@
 - Project: `EEI`
 - Path: `EEI`
 - Product version: `0.1.0`
-- Phase/Gate: `D / TASK-T1303-A205-RELEASE-EVIDENCE-HASH-SYNC`
+- Phase/Gate: `D / TASK-T1307-A209-WATCHDOG-STALE-HEARTBEAT`
 - Models/Formulas/Parameters total: `12 / 12 / 90`
 - Active formulas/parameters: `11 / 90`
 - Machine checked formulas/parameters: `11 / 90`
