@@ -94,13 +94,15 @@
     },
     {
       "evidence_refs": [
-        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT01_SECURITY_BOUNDARY.md",
-        "governance/run_manifests/ADP-S2PMT01-SECURITY-BOUNDARY-20260626.json"
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT01_FRONTSTAGE_EVIDENCE_A004.md",
+        "governance/run_manifests/ADP-S2PMT01-FRONTSTAGE-EVIDENCE-A004-20260627.json",
+        "arxiv-daily-push/用户中心/前台陈述证据绑定扫描.md",
+        "arxiv-daily-push/tests/test_security_boundary.py"
       ],
       "finding_id": "A-004",
-      "fix_task": "S2PMT01",
-      "preliminary_review_state": "evidence_located_independent_review_required",
-      "reviewer_decision_required": "Verify typed frontstage statements bind fact, inference, hypothesis, and action fields to evidence and block unsupported foreground claims.",
+      "fix_task": "S2PMT01-FRONTSTAGE-EVIDENCE-A004",
+      "preliminary_review_state": "refreshed_current_evidence_located_independent_review_required",
+      "reviewer_decision_required": "Verify fact, inference, hypothesis, and action frontstage statements require known claim bindings, evidence IDs, reasoning/confidence/scope, and fail closed for unknown or unsupported foreground claims.",
       "severity": "P0"
     },
     {
@@ -161,20 +163,25 @@
     "independent_final_signoff_missing",
     "independent_final_command_execution_missing"
   ],
-  "previous_refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A002-20260627.json",
+  "previous_refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A003-20260627.json",
   "project_id": "arxiv-daily-push",
-  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A003-20260627.json",
+  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A004-20260627.json",
+  "refresh_manifest_history": [
+    "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A004-20260627.json"
+  ],
   "refresh_manifests": [
     "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B007-B008-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A001-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A002-20260627.json",
-    "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A003-20260627.json"
+    "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A003-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A004-20260627.json"
   ],
   "refreshed_at": "2026-06-27T09:28:57+10:00",
   "refreshed_findings": [
     "A-001",
     "A-002",
     "A-003",
+    "A-004",
     "B-007",
     "B-008"
   ],

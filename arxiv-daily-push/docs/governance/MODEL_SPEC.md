@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 112
-- formula_count: 114
-- parameter_count: 949
+- model_count: 113
+- formula_count: 115
+- parameter_count: 954
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -92,6 +92,16 @@ Fact levels follow `docs/governance/STANDARD.md`.
   public schema or DB, mutate queues, change source adapters or ranking, edit
   CURRENT or V7.1/V7.2 contracts, close inherited P0/P1, enable
   DAILY_OPERATION, or claim integrated production acceptance.
+
+- `S2PMT01-FRONTSTAGE-EVIDENCE-A004` adds `MOD-ADP-113` and
+  `FORM-ADP-115`. It refreshes inherited P0 A-004 with dedicated current typed
+  frontstage statement probes for fact claim/evidence binding, inference
+  premise/reasoning/confidence binding, action scope binding, unknown claim
+  blocking, and unsupported foreground claim blocking. It does not send SMTP,
+  install scheduler, upload Release, change public schema or DB, mutate queues,
+  change source adapters or ranking, edit CURRENT or V7.1/V7.2 contracts, close
+  inherited P0/P1, enable DAILY_OPERATION, or claim integrated production
+  acceptance.
 
 - `S2PMT05-DUPLICATE-TRIGGER-B007` refreshes `MOD-ADP-098` and
   `FORM-ADP-100`. It adds a local multi-actor duplicate-trigger gate for

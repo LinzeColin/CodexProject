@@ -38,7 +38,7 @@ pointer change, no V7.1/V7.2 contract-file edit, no `DAILY_OPERATION`, and no
 | `A-001` | `S2PMT02-RESTORE-PATH-SAFETY-A001` | `PHASE_S2PMT02_RESTORE_PATH_SAFETY_A001.md`, `ADP-S2PMT02-RESTORE-PATH-SAFETY-A001-20260627.json`, `用户中心/恢复路径安全扫描.md`, `test_stage2_atomic_recovery.py` | refreshed current evidence located; closure not claimed | Verify path traversal, absolute path, symlink escape, blocked invalid restore target preservation, and TOCTOU-adjacent atomic restore behavior against current code and tests. |
 | `A-002` | `S2PMT02-RESTORE-ATOMIC-REPLACEMENT-A002` | `PHASE_S2PMT02_RESTORE_ATOMIC_REPLACEMENT_A002.md`, `ADP-S2PMT02-RESTORE-ATOMIC-REPLACEMENT-A002-20260627.json`, `用户中心/恢复原子替换扫描.md`, `test_stage2_atomic_recovery.py` | refreshed current evidence located; closure not claimed | Verify valid new-target restore, valid overwrite restore with previous-target backup preservation, invalid overwrite target preservation, temporary-file cleanup, and no-production flags. |
 | `A-003` | `S2PMT03-OUTBOX-DELIVERY-A003` | `PHASE_S2PMT03_OUTBOX_DELIVERY_A003.md`, `ADP-S2PMT03-OUTBOX-DELIVERY-A003-20260627.json`, `用户中心/事务发件箱与消息ID扫描.md`, `test_stage2_lease_fencing.py` | refreshed current evidence located; closure not claimed | Verify stable same-revision `Message-ID`, changed revision rekeying, one outbox claim under 100 attempts, SMTP accepted-before-commit fail-closed behavior, provider-ref finalization without resend, and no exactly-once claim. |
-| `A-004` | `S2PMT01` | `PHASE_S2PMT01_SECURITY_BOUNDARY.md`, `ADP-S2PMT01-SECURITY-BOUNDARY-20260626.json` | evidence located; closure not claimed | Verify typed frontstage statement rules bind facts/inferences/actions to evidence and block unsupported foreground claims. |
+| `A-004` | `S2PMT01-FRONTSTAGE-EVIDENCE-A004` | `PHASE_S2PMT01_FRONTSTAGE_EVIDENCE_A004.md`, `ADP-S2PMT01-FRONTSTAGE-EVIDENCE-A004-20260627.json`, `用户中心/前台陈述证据绑定扫描.md`, `test_security_boundary.py` | refreshed current evidence located; closure not claimed | Verify fact, inference, hypothesis, and action frontstage statements require known claim bindings, evidence IDs, reasoning/confidence/scope, and fail closed for unknown or unsupported foreground claims. |
 | `A-005` | `S2PMT01` | `PHASE_S2PMT01_SECURITY_BOUNDARY.md`, `ADP-S2PMT01-SECURITY-BOUNDARY-20260626.json` | evidence located; closure not claimed | Verify `UNTRUSTED_DATA` isolation, tool boundary, safe rendering, and prompt-injection refusal behavior. |
 | `B-001` | `S2PMT04` | `PHASE_S2PMT04_LIFECYCLE_CACHE.md`, `PHASE_S2PMT04_SCHEDULER_TEMPLATE_A013.md`, `ADP-S2PMT04-LIFECYCLE-CACHE-20260626.json` | local evidence located; closure not claimed | Decide whether current local scheduler/lifecycle rehearsal is sufficient, or whether a real target install/run/uninstall proof is still required. |
 | `B-007` | `S2PMT05-DUPLICATE-TRIGGER-B007` | `PHASE_S2PMT05_DUPLICATE_TRIGGER_B007.md`, `ADP-S2PMT05-DUPLICATE-TRIGGER-B007-20260627.json`, `test_stage2_stress_e2e.py` | refreshed current evidence located; closure not claimed | Verify four actor sources, M1-M4 x 100 attempts, one active revision per product, reason-coded duplicate blocks, lease/fencing receipts, and no scheduler side effects; decide whether multi-host/real scheduler duplicate-trigger proof is still required. |
@@ -48,11 +48,11 @@ pointer change, no V7.1/V7.2 contract-file edit, no `DAILY_OPERATION`, and no
 
 ## Evidence Refresh 2026-06-27
 
-This refresh updates the P0 receipt to point `A-003` at dedicated transactional outbox delivery evidence instead of aggregate S2PMT03 lease/fencing records. It does not close any P0 finding and does not provide independent review signoff.
+This refresh updates the P0 receipt to point `A-004` at dedicated frontstage statement evidence instead of aggregate S2PMT01 security-boundary records. It does not close any P0 finding and does not provide independent review signoff.
 
-- refreshed_findings: `A-001`, `A-002`, `A-003`, `B-007`, `B-008`
-- refresh_manifest: `governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A003-20260627.json`
-- previous_refresh_manifest: `governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A002-20260627.json`
+- refreshed_findings: `A-001`, `A-002`, `A-003`, `A-004`, `B-007`, `B-008`
+- refresh_manifest: `governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A004-20260627.json`
+- previous_refresh_manifest: `governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A003-20260627.json`
 - closure_claimed: `false`
 - independent_review_signoff_present: `false`
 

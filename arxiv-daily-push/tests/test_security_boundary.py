@@ -5,12 +5,14 @@ from pathlib import Path
 
 from arxiv_daily_push.security_boundary import (
     audit_workflow_supply_chain,
+    build_frontstage_evidence_a004_report,
     build_supply_chain_baseline,
     build_dependency_vulnerability_gate,
     build_trust_boundary_receipt,
     sanitize_public_url,
     typed_fact,
     typed_inference,
+    validate_frontstage_evidence_a004_report,
     validate_supply_chain_baseline,
     validate_trust_boundary_receipt,
     validate_typed_frontstage,
@@ -67,6 +69,39 @@ class SecurityBoundaryTests(unittest.TestCase):
         self.assertFalse(validate_typed_frontstage(frontstage, allowed_claim_ids=["claim:1"]))
         frontstage["typed_statements"][0]["claim_ids"] = ["claim:missing"]
         self.assertIn("unknown claim ids", " ".join(validate_typed_frontstage(frontstage, allowed_claim_ids=["claim:1"])))
+
+    def test_frontstage_evidence_a004_report_passes_with_required_blocks(self) -> None:
+        report = build_frontstage_evidence_a004_report(generated_at="2026-06-27T10:30:00+10:00")
+
+        self.assertEqual(report["status"], "pass")
+        self.assertEqual(report["finding_id"], "A-004")
+        self.assertEqual(report["task_id"], "S2PMT01-FRONTSTAGE-EVIDENCE-A004")
+        self.assertTrue(report["gates"]["typed_statement_schema_enforced"])
+        self.assertTrue(report["gates"]["evidence_binding_enforced"])
+        self.assertTrue(report["gates"]["unknown_claims_blocked"])
+        self.assertTrue(report["gates"]["unsupported_foreground_claims_blocked"])
+        self.assertFalse(report["p0_closure_claimed"])
+        self.assertFalse(report["real_smtp_sent"])
+        self.assertFalse(validate_frontstage_evidence_a004_report(report))
+
+    def test_frontstage_evidence_a004_report_blocks_tampered_gate_or_closure(self) -> None:
+        report = build_frontstage_evidence_a004_report(generated_at="2026-06-27T10:30:00+10:00")
+
+        tampered = {**report, "p0_closure_claimed": True}
+        self.assertIn(
+            "p0_closure_claimed must be false for A-004 frontstage evidence",
+            validate_frontstage_evidence_a004_report(tampered),
+        )
+        tampered = {**report, "probes": {**report["probes"], "unknown_claim_reference_blocks": False}}
+        self.assertIn("unknown_claim_reference_blocks probe must pass", validate_frontstage_evidence_a004_report(tampered))
+        tampered_invalid = {
+            **report,
+            "invalid_case_results": {
+                **report["invalid_case_results"],
+                "unsupported_foreground_claim": {"status": "pass", "errors": []},
+            },
+        }
+        self.assertIn("unsupported_foreground_claim must be blocked", validate_frontstage_evidence_a004_report(tampered_invalid))
 
     def test_supply_chain_baseline_declares_local_controls_without_side_effects(self) -> None:
         workflow_contents = {str(path.relative_to(ROOT)): path.read_text(encoding="utf-8") for path in ADP_WORKFLOWS}

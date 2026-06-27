@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import hashlib
+import json
 import re
 from collections.abc import Mapping, Sequence
 from typing import Any
@@ -9,8 +11,11 @@ from urllib.parse import urlsplit, urlunsplit
 
 
 S2PMT01_SECURITY_MODEL_ID = "adp-s2pmt01-security-boundary-v1"
+S2PMT01_FRONTSTAGE_A004_MODEL_ID = "adp-s2pmt01-frontstage-evidence-a004-v1"
 S2PMT01_ACCEPTANCE_ID = "ACC-S2PMT01-SECURITY"
 S2PMT01_TASK_ID = "S2PMT01"
+S2PMT01_FRONTSTAGE_A004_TASK_ID = "S2PMT01-FRONTSTAGE-EVIDENCE-A004"
+S2PMT01_FRONTSTAGE_A004_FINDING_ID = "A-004"
 S2PMT01_UNTRUSTED_DATA_LABEL = "UNTRUSTED_DATA"
 S2PMT01_ALLOWED_URL_SCHEMES = ("https", "http")
 S2PMT01_HTTP_UPGRADE_HOSTS = ("arxiv.org", "www.arxiv.org")
@@ -27,6 +32,40 @@ S2PMT01_ALLOWED_URL_HOST_SUFFIXES = (
     "example.test",
 )
 S2PMT01_FRONTSTAGE_STATEMENT_TYPES = ("fact", "inference", "hypothesis", "action")
+S2PMT01_FRONTSTAGE_A004_REQUIRED_PROBES = (
+    "fact_requires_claim_and_evidence_ids",
+    "inference_requires_premises_reasoning_confidence",
+    "action_requires_premise_and_scope",
+    "unknown_claim_reference_blocks",
+    "unsupported_foreground_claim_blocks",
+)
+S2PMT01_FRONTSTAGE_A004_REQUIRED_GATES = (
+    "required_probe_coverage",
+    "typed_statement_schema_enforced",
+    "evidence_binding_enforced",
+    "unknown_claims_blocked",
+    "unsupported_foreground_claims_blocked",
+    "no_production_side_effect",
+)
+S2PMT01_FRONTSTAGE_A004_REQUIRED_PRODUCTION_FALSE_FLAGS = (
+    "production_side_effects_enabled",
+    "real_smtp_sent",
+    "scheduler_enabled",
+    "release_upload_allowed",
+    "production_restore_executed",
+    "public_schema_changed",
+    "queue_schema_changed",
+    "queue_mutation_allowed",
+    "db_migration_executed",
+    "source_adapter_changed",
+    "ranking_algorithm_changed",
+    "current_pointer_changed",
+    "v7_1_baseline_changed",
+    "v7_2_contract_files_changed",
+    "p0_closure_claimed",
+    "p1_closure_claimed",
+    "stage2_integrated_production_accepted",
+)
 S2PMT01_REQUIRED_BOUNDARY_FLAGS = (
     "untrusted_source_content",
     "typed_frontstage_statements",
@@ -170,6 +209,183 @@ def validate_typed_frontstage(frontstage: Mapping[str, Any], *, allowed_claim_id
     for required_type in ("fact", "inference", "action"):
         if required_type not in seen_types:
             errors.append(f"frontstage.typed_statements must include {required_type}")
+    return errors
+
+
+def build_frontstage_evidence_a004_report(*, generated_at: str) -> dict[str, Any]:
+    """Build local A-004 evidence for typed frontstage statement boundaries."""
+
+    allowed_claim_ids = ("claim:source:primary", "claim:source:method")
+    valid_frontstage = {
+        "typed_statements": [
+            typed_fact(
+                "The source explicitly reports the primary method.",
+                claim_ids=["claim:source:primary"],
+                evidence_ids=["stable_url:https://arxiv.org/abs/2401.00001#abstract"],
+            ),
+            typed_inference(
+                "The reported method may transfer to the local review workflow.",
+                premise_claim_ids=["claim:source:primary", "claim:source:method"],
+                reasoning_version="adp-frontstage-reasoning-v1",
+                confidence=0.72,
+            ),
+            typed_hypothesis(
+                "A follow-up implementation experiment may be useful after review.",
+                premise_claim_ids=["claim:source:method"],
+                confidence=0.58,
+            ),
+            typed_action(
+                "Queue for human review only.",
+                premise_claim_ids=["claim:source:primary"],
+                action_scope="local_human_review",
+            ),
+        ]
+    }
+    valid_errors = validate_typed_frontstage(valid_frontstage, allowed_claim_ids=allowed_claim_ids)
+    invalid_cases = {
+        "missing_fact_evidence_ids": {
+            "typed_statements": [
+                {**valid_frontstage["typed_statements"][0], "evidence_ids": []},
+                valid_frontstage["typed_statements"][1],
+                valid_frontstage["typed_statements"][3],
+            ]
+        },
+        "missing_inference_reasoning_confidence": {
+            "typed_statements": [
+                valid_frontstage["typed_statements"][0],
+                {
+                    "statement_type": "inference",
+                    "text": "Unsupported inference",
+                    "premise_claim_ids": ["claim:source:primary"],
+                },
+                valid_frontstage["typed_statements"][3],
+            ]
+        },
+        "missing_action_scope": {
+            "typed_statements": [
+                valid_frontstage["typed_statements"][0],
+                valid_frontstage["typed_statements"][1],
+                {
+                    "statement_type": "action",
+                    "text": "Act without scope",
+                    "premise_claim_ids": ["claim:source:primary"],
+                },
+            ]
+        },
+        "unknown_claim_reference": {
+            "typed_statements": [
+                typed_fact(
+                    "Unknown claim must not enter the frontstage.",
+                    claim_ids=["claim:missing"],
+                    evidence_ids=["stable_url:https://arxiv.org/abs/2401.00001#abstract"],
+                ),
+                valid_frontstage["typed_statements"][1],
+                valid_frontstage["typed_statements"][3],
+            ]
+        },
+        "unsupported_foreground_claim": {
+            "typed_statements": [
+                {
+                    "statement_type": "fact",
+                    "text": "Unsupported claim presented as fact.",
+                    "claim_ids": ["claim:source:primary"],
+                    "evidence_ids": [],
+                }
+            ]
+        },
+    }
+    invalid_results = {
+        name: {
+            "status": "blocked" if errors else "pass",
+            "errors": errors,
+        }
+        for name, case in invalid_cases.items()
+        for errors in [validate_typed_frontstage(case, allowed_claim_ids=allowed_claim_ids)]
+    }
+    probes = {
+        "fact_requires_claim_and_evidence_ids": invalid_results["missing_fact_evidence_ids"]["status"] == "blocked",
+        "inference_requires_premises_reasoning_confidence": invalid_results["missing_inference_reasoning_confidence"]["status"] == "blocked",
+        "action_requires_premise_and_scope": invalid_results["missing_action_scope"]["status"] == "blocked",
+        "unknown_claim_reference_blocks": invalid_results["unknown_claim_reference"]["status"] == "blocked",
+        "unsupported_foreground_claim_blocks": invalid_results["unsupported_foreground_claim"]["status"] == "blocked",
+    }
+    side_effect_flags = {flag: False for flag in S2PMT01_FRONTSTAGE_A004_REQUIRED_PRODUCTION_FALSE_FLAGS}
+    gates = {
+        "required_probe_coverage": all(probes.get(probe) is True for probe in S2PMT01_FRONTSTAGE_A004_REQUIRED_PROBES),
+        "typed_statement_schema_enforced": not valid_errors
+        and probes["fact_requires_claim_and_evidence_ids"]
+        and probes["inference_requires_premises_reasoning_confidence"]
+        and probes["action_requires_premise_and_scope"],
+        "evidence_binding_enforced": probes["fact_requires_claim_and_evidence_ids"],
+        "unknown_claims_blocked": probes["unknown_claim_reference_blocks"],
+        "unsupported_foreground_claims_blocked": probes["unsupported_foreground_claim_blocks"],
+        "no_production_side_effect": all(value is False for value in side_effect_flags.values()),
+    }
+    blocking_reasons: list[str] = []
+    if valid_errors:
+        blocking_reasons.extend(f"valid_frontstage: {error}" for error in valid_errors)
+    for name, result in invalid_results.items():
+        if result["status"] != "blocked":
+            blocking_reasons.append(f"{name} did not block")
+    for gate, passed in gates.items():
+        if passed is not True:
+            blocking_reasons.append(f"{gate} gate failed")
+    report = {
+        "model_id": S2PMT01_FRONTSTAGE_A004_MODEL_ID,
+        "task_id": S2PMT01_FRONTSTAGE_A004_TASK_ID,
+        "parent_task_id": S2PMT01_TASK_ID,
+        "acceptance_id": S2PMT01_ACCEPTANCE_ID,
+        "finding_id": S2PMT01_FRONTSTAGE_A004_FINDING_ID,
+        "generated_at": generated_at,
+        "status": "blocked" if blocking_reasons else "pass",
+        "allowed_claim_ids": list(allowed_claim_ids),
+        "valid_frontstage_errors": valid_errors,
+        "invalid_case_results": invalid_results,
+        "probes": probes,
+        "gates": gates,
+        "blocking_reasons": blocking_reasons,
+        "production_side_effects_enabled": False,
+        **side_effect_flags,
+        "frontstage_evidence_hash": "",
+    }
+    report["frontstage_evidence_hash"] = _frontstage_a004_hash(report)
+    return report
+
+
+def validate_frontstage_evidence_a004_report(report: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if report.get("model_id") != S2PMT01_FRONTSTAGE_A004_MODEL_ID:
+        errors.append("model_id must identify S2PMT01 frontstage A-004 evidence")
+    if report.get("task_id") != S2PMT01_FRONTSTAGE_A004_TASK_ID:
+        errors.append("task_id must identify S2PMT01-FRONTSTAGE-EVIDENCE-A004")
+    if report.get("finding_id") != S2PMT01_FRONTSTAGE_A004_FINDING_ID:
+        errors.append("finding_id must be A-004")
+    probes = report.get("probes") if isinstance(report.get("probes"), Mapping) else {}
+    for probe in S2PMT01_FRONTSTAGE_A004_REQUIRED_PROBES:
+        if probes.get(probe) is not True:
+            errors.append(f"{probe} probe must pass")
+    gates = report.get("gates") if isinstance(report.get("gates"), Mapping) else {}
+    for gate in S2PMT01_FRONTSTAGE_A004_REQUIRED_GATES:
+        if gates.get(gate) is not True:
+            errors.append(f"{gate} gate must pass")
+    invalid_results = report.get("invalid_case_results") if isinstance(report.get("invalid_case_results"), Mapping) else {}
+    for name in (
+        "missing_fact_evidence_ids",
+        "missing_inference_reasoning_confidence",
+        "missing_action_scope",
+        "unknown_claim_reference",
+        "unsupported_foreground_claim",
+    ):
+        result = invalid_results.get(name) if isinstance(invalid_results.get(name), Mapping) else {}
+        if result.get("status") != "blocked":
+            errors.append(f"{name} must be blocked")
+    for flag in S2PMT01_FRONTSTAGE_A004_REQUIRED_PRODUCTION_FALSE_FLAGS:
+        if report.get(flag) is not False:
+            errors.append(f"{flag} must be false for A-004 frontstage evidence")
+    if report.get("status") != "pass":
+        errors.append("A-004 frontstage evidence report status must be pass")
+    if report.get("frontstage_evidence_hash") != _frontstage_a004_hash(report):
+        errors.append("frontstage_evidence_hash mismatch")
     return errors
 
 
@@ -414,3 +630,9 @@ def _valid_confidence(value: Any) -> bool:
 
 def _clean_text(value: str) -> str:
     return re.sub(r"\s+", " ", str(value or "")).strip()
+
+
+def _frontstage_a004_hash(report: Mapping[str, Any]) -> str:
+    payload = {key: value for key, value in report.items() if key != "frontstage_evidence_hash"}
+    encoded = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
