@@ -10,11 +10,29 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.1
 - Current phase: S2PL
-- Current gate: S2PLT04_LOCAL_DRILL_EVIDENCE_SYNC_BLOCKED_NO_PRODUCTION
-- Confirmed iteration count: 159
+- Current gate: S2PLT04_S2PLT02_PRECHECK_EVIDENCE_SYNC_BLOCKED_NO_PRODUCTION
+- Confirmed iteration count: 160
 - Reconstructed event count: 0
-- Current task: `S2PLT04-LOCAL-DRILL-EVIDENCE-SYNC` records that S2PLT04 integration-candidate precheck consumes existing S2PLT03 local no-production drill evidence as non-terminal evidence only. No S2PLT03/S2PLT04 completion, final bundle, P0/P1 closure, CURRENT, V7.1/V7.2 contract file, real SMTP, scheduler, Release, production restore, public schema, DB migration, production queue, source adapter, ranking, DAILY_OPERATION, or integrated production acceptance state changed.
+- Current task: `S2PLT04-S2PLT02-PRECHECK-EVIDENCE-SYNC` records that S2PLT04 integration-candidate precheck consumes existing S2PLT02 live two-day readiness precheck evidence as non-terminal evidence only. No S2PLT02/S2PLT04 completion, real two-day run, final bundle, P0/P1 closure, CURRENT, V7.1/V7.2 contract file, real SMTP, scheduler, Release, production restore, public schema, DB migration, production queue, source adapter, ranking, DAILY_OPERATION, or integrated production acceptance state changed.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
+
+
+### `ITER-20260628-ADP-S2PLT04-S2PLT02-PRECHECK-EVIDENCE-SYNC`
+
+- Timestamp: `2026-06-28T02:46:45+10:00`
+- Fact level: EXTRACTED from S2PLT04 final-gate implementation, S2PLT02 live two-day readiness precheck builder, focused RED/GREEN regression tests, semantic registries, traceability row, phase record, run manifest, and generated governance views.
+- Base commit: `6039fd340c73c0e5ddeb43e686bde3bc6e218443`
+- Product version: `0.23.1`
+- Status: blocked no-production precheck recorded; S2PLT04 can see the S2PLT02 readiness precheck as non-terminal evidence, but S2PLT02 authoritative completion, real two-day run proof, and S2PLT04 completion are not claimed.
+- Task IDs: `S2PLT04-S2PLT02-PRECHECK-EVIDENCE-SYNC`; parent `S2PLT04`; evidence source `S2PLT02`; acceptance `ACC-S2PLT04-INTEGRATION-CANDIDATE`.
+- Goal: Prevent S2PLT04 from treating S2PLT02 readiness precheck work as missing while still preventing that readiness precheck from satisfying terminal S2PLT02 or S2PLT04 gates.
+- Files changed: S2PLT04 final-gate helper and tests, semantic registries, traceability matrix, shallow user-center traceability page, phase record, run manifest, delivery task, development events, generated status views, VERSION_MATRIX, changelog, and 三基 notes.
+- Decisions: `S2PLT02-LIVE-2D-PRECHECK` is now listed in S2PLT04 available local evidence and exposed as `S2PLT02_LIVE_2D_PRECHECK` under `available_nonterminal_evidence`; `S2PLT02_2D_REAL_RUN`, S2PLT02 completion, S2PLT04 completion, final acceptance bundle, inherited P0/P1 zero state, and S2PMT07 remain blocked.
+- Validation so far: RED target test observed expected missing S2PLT02 readiness evidence in S2PLT04 precheck; focused S2PLT04 final-gate tests 21 OK. Final full validation remains pending in this run.
+- Boundaries: No SMTP, scheduler, Release, production restore, public schema, DB, production queue, source adapter, ranking, CURRENT/V7 contract, V7.1 baseline, P0/P1 closure, DAILY_OPERATION, or integrated production acceptance changed.
+- Risks: This evidence sync can be misread as S2PLT02 real two-day acceptance or S2PLT04 completion. It is deliberately non-terminal evidence; S2PLT02 authoritative completion, S2PLT03 authoritative completion, S2PLT04 completion, final bundle, S2PMT07, and inherited P0/P1 zero state still control production acceptance.
+- Evidence: `governance/run_manifests/ADP-S2PLT04-S2PLT02-PRECHECK-EVIDENCE-SYNC-20260628.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PLT04_S2PLT02_PRECHECK_EVIDENCE_SYNC.md`; `governance/run_manifests/ADP-S2PLT02-LIVE-2D-PRECHECK-20260626.json`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`; `arxiv-daily-push/用户中心/功能任务测试证据追踪链.md`.
+- Next step: Continue S2PLT04 prerequisite closure or final-bundle prerequisite work under S2PMT07/V7.2 boundaries, without enabling production.
 
 
 ### `ITER-20260628-ADP-S2PLT04-LOCAL-DRILL-EVIDENCE-SYNC`
