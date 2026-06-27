@@ -312,19 +312,17 @@ function mergeBrowserSlices(slices, sliceSeconds) {
   };
 }
 
-async function launchBrowserPage() {
-  const browser = await getChromium().launch({
+async function launchBrowser() {
+  return await getChromium().launch({
     headless: true,
     args: ["--disable-dev-shm-usage", "--disable-gpu", "--enable-precise-memory-info", "--no-sandbox"]
   });
-  try {
-    const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-    await page.setContent("<!doctype html><meta charset='utf-8'><div id='soak-root'></div>");
-    return { browser, page };
-  } catch (error) {
-    await browser.close().catch(() => undefined);
-    throw error;
-  }
+}
+
+async function openSoakPage(browser) {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  await page.setContent("<!doctype html><meta charset='utf-8'><div id='soak-root'></div>");
+  return page;
 }
 
 async function runBrowserSoak(durationSeconds, browserSliceSeconds) {
@@ -333,26 +331,36 @@ async function runBrowserSoak(durationSeconds, browserSliceSeconds) {
   let measuredMs = 0;
   const durationMs = durationSeconds * 1000;
   const browserSliceMs = Math.min(browserSliceSeconds * 1000, durationMs);
+  let browser = null;
+  const getBrowser = async () => {
+    if (!browser) {
+      browser = await launchBrowser();
+    }
+    return browser;
+  };
   while (measuredMs < durationMs) {
     const sliceMs = Math.min(browserSliceMs, durationMs - measuredMs);
     let sliceComplete = false;
     while (!sliceComplete) {
-      let context = null;
+      let page = null;
       try {
-        context = await launchBrowserPage();
-        slices.push(await runBrowserSoakSlice(context.page, sliceMs));
+        page = await openSoakPage(await getBrowser());
+        slices.push(await runBrowserSoakSlice(page, sliceMs));
         sliceComplete = true;
       } catch (error) {
         recoveriesObserved += 1;
+        await browser?.close().catch(() => undefined);
+        browser = null;
         if (recoveriesObserved > MAX_BROWSER_SLICE_RECOVERIES) {
           throw error;
         }
       } finally {
-        await context?.browser.close().catch(() => undefined);
+        await page?.close().catch(() => undefined);
       }
     }
     measuredMs += sliceMs;
   }
+  await browser?.close().catch(() => undefined);
   return {
     ...mergeBrowserSlices(slices, browserSliceSeconds),
     recoveries_observed: recoveriesObserved
