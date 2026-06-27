@@ -10,11 +10,12 @@
   "change_type": "stage2_full_replay_payload_contract",
   "binding_status": "local_validation_passed_pending_pr_ci",
   "blocked": true,
-  "blocking_reasons": [
-    "inherited_v7_1_p0_findings_open",
-    "inherited_v7_1_p1_findings_open",
-    "actual_s2plt01_replay_payload_not_executed_in_this_run",
-    "independent_s2plt01_review_not_completed"
+    "blocking_reasons": [
+        "inherited_v7_1_p0_findings_open",
+        "inherited_v7_1_p1_findings_open",
+        "s2plt01_not_accepted",
+        "s2plt04_not_completed",
+        "s2pmt07_not_completed"
   ],
   "summary": "Add a no-production S2PLT01 replay payload contract that wraps explicit replay, M1-M4 Email V1 preview, and source-terminal records with required metadata, evidence mode, evidence refs, deterministic payload hash, and forbidden production side-effect flags before entry precheck consumption.",
   "files_changed": [
@@ -45,8 +46,14 @@
   "model_ids_changed": ["MOD-ADP-101"],
   "formula_ids_changed": ["FORM-ADP-103"],
   "parameter_ids_changed": ["PARAM-ADP-869"],
-  "full_replay_executed": false,
-  "replay_payload_contract_added": true,
+    "full_replay_executed": false,
+    "replay_payload_contract_added": true,
+    "s2plt01_replay_payload_execution_present": true,
+    "independent_s2plt01_review_receipt_present": true,
+    "superseding_evidence_refs": [
+        "governance/run_manifests/ADP-S2PLT01-REPLAY-PAYLOAD-EXECUTION-20260626.json",
+        "governance/run_manifests/ADP-S2PLT01-INDEPENDENT-REPLAY-REVIEW-20260626.json"
+    ],
   "s2plt01_accepted": false,
   "s2plt04_completed": false,
   "production_acceptance_claimed": false,
@@ -89,10 +96,10 @@
     "production-side-effect forbidden scan: no true/enabling hits",
     "full semantic extractor: NOT COMPLETED after local interrupt at >150 seconds during full-table AST parsing; changed-only semantic governance is the S2PLT01 replay payload contract gate used for this run"
   ],
-  "risks": [
-    "This payload contract validates explicit evidence envelopes only; it does not execute the actual S2PLT01 replay payload.",
-    "S2PLT01 remains blocked until inherited V7.1 P0/P1 are zero and replay evidence is independently reviewed.",
-    "S2PLT04 and S2PMT07 remain blocked."
-  ],
+    "risks": [
+        "This payload contract validates explicit evidence envelopes only; it does not execute the actual S2PLT01 replay payload.",
+        "S2PLT01 remains blocked until inherited V7.1 P0/P1 are zero and S2PLT04/S2PMT07 final gates close.",
+        "S2PLT04 and S2PMT07 remain blocked."
+    ],
   "rollback": "Revert S2PLT01 replay payload contract code, focused tests, FORM-ADP-103 refresh, PARAM-ADP-869 registration, phase record, manifest, traceability/delivery/event records, and rendered governance sync; no runtime production state was changed."
 }

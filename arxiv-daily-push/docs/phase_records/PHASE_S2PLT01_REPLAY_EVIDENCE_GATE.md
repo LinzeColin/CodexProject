@@ -49,6 +49,12 @@ pointer change, no V7.1 baseline change, and no V7.2 contract-file change.
 
 ## Next
 
-Use this gate after actual S2PLT01 replay/mail/source evidence exists. S2PLT01
-remains blocked until inherited P0/P1 are zero and the replay evidence payload is
-provided and independently reviewed. S2PLT04 and S2PMT07 remain blocked.
+The later S2PLT01 replay payload execution package and independent replay review
+receipt now exist at:
+
+- `governance/run_manifests/ADP-S2PLT01-REPLAY-PAYLOAD-EXECUTION-20260626.json`
+- `governance/run_manifests/ADP-S2PLT01-INDEPENDENT-REPLAY-REVIEW-20260626.json`
+
+S2PLT01 is still not accepted. It remains blocked until inherited P0/P1 are
+zero, S2PLT04 completion is proven, and S2PMT07 final independent production
+gate passes.

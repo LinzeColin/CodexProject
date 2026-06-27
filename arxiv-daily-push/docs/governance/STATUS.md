@@ -21,10 +21,10 @@
 
 ## Latest Local Update
 
-- latest_task: `S2PMT07-FINAL-ACCEPTANCE-BUNDLE-READINESS`
-- latest_status: `final_acceptance_bundle_readiness_blocked_no_bundle_no_production`
-- latest_findings: `FINAL_ACCEPTANCE_BUNDLE_MISSING`
-- evidence: `governance/run_manifests/ADP-S2PMT07-FINAL-ACCEPTANCE-BUNDLE-READINESS-20260628.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_ACCEPTANCE_BUNDLE_READINESS.md`; `governance/run_manifests/ADP-S2PMT07-FINAL-GATE-PRECHECK-20260626.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_GATE_PRECHECK.md`
+- latest_task: `S2PLT01-REPLAY-REVIEW-STATUS-SYNC`
+- latest_status: `completed_no_acceptance_no_production`
+- latest_findings: `S2PLT01_INDEPENDENT_REPLAY_REVIEW_PRESENT_BUT_ACCEPTANCE_BLOCKED`
+- evidence: `governance/run_manifests/ADP-S2PLT01-REPLAY-REVIEW-STATUS-SYNC-20260628.json`; `governance/run_manifests/ADP-S2PLT01-INDEPENDENT-REPLAY-REVIEW-20260626.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PLT01_REPLAY_REVIEW_STATUS_SYNC.md`; `arxiv-daily-push/tests/test_stage2_replay_gate.py`
 - production_boundary: inherited blockers remain `P0=8 / P1=37`; `stage2_integrated_production_accepted=false`; no SMTP, scheduler, Release, CURRENT/V7 contract, public schema, DB, production queue, source adapter, or ranking change.
 
 ## Assurance

@@ -10,12 +10,11 @@
   "change_type": "stage2_full_replay_payload_execution_package",
   "binding_status": "local_validation_passed_pending_pr_ci",
   "blocked": true,
-  "blocking_reasons": [
-    "inherited_v7_1_p0_findings_open",
-    "inherited_v7_1_p1_findings_open",
-    "independent_s2plt01_review_not_completed",
-    "s2plt04_not_completed",
-    "s2pmt07_not_completed"
+    "blocking_reasons": [
+        "inherited_v7_1_p0_findings_open",
+        "inherited_v7_1_p1_findings_open",
+        "s2plt04_not_completed",
+        "s2pmt07_not_completed"
   ],
   "summary": "Add a no-production S2PLT01 replay payload execution package that consumes explicit 30-day replay records, 120 M1-M4 Email V1 preview records, and D1-D4 terminal source-state records, then emits a validated payload, entry precheck, and deterministic execution hash while keeping the overall gate blocked by inherited P0/P1.",
   "files_changed": [
@@ -45,8 +44,12 @@
   "model_ids_changed": ["MOD-ADP-101"],
   "formula_ids_changed": ["FORM-ADP-103"],
   "parameter_ids_changed": [],
-  "full_replay_executed": false,
-  "replay_payload_execution_package_added": true,
+    "full_replay_executed": false,
+    "replay_payload_execution_package_added": true,
+    "independent_s2plt01_review_receipt_present": true,
+    "superseding_evidence_refs": [
+        "governance/run_manifests/ADP-S2PLT01-INDEPENDENT-REPLAY-REVIEW-20260626.json"
+    ],
   "s2plt01_accepted": false,
   "s2plt04_completed": false,
   "production_acceptance_claimed": false,
