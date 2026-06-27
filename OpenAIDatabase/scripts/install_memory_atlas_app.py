@@ -433,6 +433,7 @@ LOG_FILE="$LOG_DIR/memory-atlas-launcher.log"
 PORT="${{MEMORY_ATLAS_PORT:-{DEFAULT_PORT}}}"
 TTL_SECONDS="${{MEMORY_ATLAS_TTL_SECONDS:-7200}}"
 IDLE_SECONDS="${{MEMORY_ATLAS_IDLE_SECONDS:-45}}"
+REFRESH_TIMEOUT_SECONDS="${{MEMORY_ATLAS_REFRESH_TIMEOUT_SECONDS:-90}}"
 URL="http://127.0.0.1:$PORT"
 
 mkdir -p "$LOG_DIR"
@@ -807,15 +808,51 @@ refresh_latest_snapshot() {{
   ensure_repo_access
   notify_status "正在刷新最新 Memory Atlas 数据快照..."
   echo "Refreshing latest Memory Atlas source data and redacted snapshot..."
-  if ! python3 scripts/sync_codex_memory_data.py \\
-    --database-dir . \\
-    --build-atlas; then
-    notify_error "Memory Atlas 无法刷新最新数据快照。请从终端重新安装运行副本：cd $ORIGINAL_REPO_ROOT && python3 scripts/install_memory_atlas_app.py"
-    exit 1
+  python3 - "$REFRESH_TIMEOUT_SECONDS" <<'PY'
+import os
+import signal
+import subprocess
+import sys
+import time
+
+timeout = int(sys.argv[1])
+command = [
+    "python3",
+    "scripts/sync_codex_memory_data.py",
+    "--database-dir",
+    ".",
+    "--build-atlas",
+]
+started_at = time.time()
+process = subprocess.Popen(command, start_new_session=True)
+try:
+    return_code = process.wait(timeout=timeout if timeout > 0 else None)
+except subprocess.TimeoutExpired:
+    elapsed = int(time.time() - started_at)
+    sys.stderr.write(f"Memory Atlas snapshot refresh exceeded {{timeout}}s after {{elapsed}}s; terminating refresh process group.\\n")
+    try:
+        os.killpg(process.pid, signal.SIGTERM)
+    except ProcessLookupError:
+        pass
+    try:
+        process.wait(timeout=5)
+    except subprocess.TimeoutExpired:
+        try:
+            os.killpg(process.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+        process.wait()
+    sys.exit(124)
+sys.exit(return_code)
+PY
+  local refresh_status=$?
+  if [[ "$refresh_status" -ne 0 ]]; then
+    echo "Memory Atlas snapshot refresh failed or timed out with status $refresh_status."
+    return "$refresh_status"
   fi
   if [[ ! -f "$SNAPSHOT" ]]; then
-    notify_error "Memory Atlas 快照刷新后仍缺少 memory_atlas.json，请查看日志：$LOG_FILE。"
-    exit 1
+    echo "Memory Atlas snapshot file is still missing after refresh: $SNAPSHOT"
+    return 1
   fi
 }}
 
@@ -855,7 +892,10 @@ copy_latest_snapshot_to_runtime() {{
   if [[ ! -f "$RUNTIME_DIR/index.html" ]]; then
     return 1
   fi
-  refresh_latest_snapshot
+  if ! refresh_latest_snapshot; then
+    echo "Memory Atlas will keep serving the existing runtime snapshot because refresh did not complete."
+    return 1
+  fi
   cp "$SNAPSHOT" "$RUNTIME_DIR/memory_atlas.json"
   write_runtime_build_info
   if ! python3 scripts/audit_memory_atlas_release.py \\
@@ -875,7 +915,10 @@ copy_latest_snapshot_to_runtime() {{
 prepare_runtime() {{
   notify_status "正在准备本地运行环境，首次启动可能需要几分钟。"
   ensure_repo_access
-  refresh_latest_snapshot
+  if ! refresh_latest_snapshot; then
+    notify_error "Memory Atlas 无法刷新最新数据快照。请从终端重新安装运行副本：cd $ORIGINAL_REPO_ROOT && python3 scripts/install_memory_atlas_app.py"
+    exit 1
+  fi
   if ! command -v npm >/dev/null 2>&1; then
     notify_error "需要 npm 才能准备 Memory Atlas 本地运行环境。"
     exit 1
@@ -950,7 +993,8 @@ if runtime_is_stale || [[ "${{MEMORY_ATLAS_REFRESH:-0}}" == "1" ]]; then
   prepare_runtime
 else
   if ! copy_latest_snapshot_to_runtime; then
-    prepare_runtime
+    echo "Using existing Memory Atlas runtime snapshot after refresh fallback."
+    notify_status "Memory Atlas 将先使用现有快照打开；最新快照刷新未完成。"
   fi
 fi
 

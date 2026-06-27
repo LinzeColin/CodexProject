@@ -62,6 +62,12 @@ The repository includes `wrangler.jsonc` with:
 }
 ```
 
+Do not treat `https://memory-atlas.pages.dev/` as the canonical Memory Atlas
+deployment unless Cloudflare project ownership and the published artifact have
+been verified. The configured Pages project is `openai-memory-atlas`; if the
+Cloudflare live hostname is unknown, prefer the local `.app` route and keep the
+Cloudflare status as external-authorization-blocked.
+
 Manual deploy after building locally:
 
 ```bash

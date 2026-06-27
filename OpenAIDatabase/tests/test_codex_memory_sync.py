@@ -85,6 +85,8 @@ class CodexMemorySyncTests(unittest.TestCase):
             self.assertEqual(result["status"], "PASS")
             self.assertEqual(result["session_count"], 1)
             self.assertEqual(result["message_count"], 1)
+            self.assertEqual(result["cache"]["parsed"], 1)
+            self.assertEqual(result["cache"]["cached"], 0)
             session_manifest = (db / module.SESSION_OUTPUT).read_text(encoding="utf-8")
             recommendations = json.loads((db / module.RECOMMENDATION_OUTPUT).read_text(encoding="utf-8"))
             report = (db / module.REPORT_OUTPUT).read_text(encoding="utf-8")
@@ -94,6 +96,47 @@ class CodexMemorySyncTests(unittest.TestCase):
         self.assertIn("真实数据优先", report)
         self.assertGreaterEqual(len(recommendations["memory"]["current"]), 1)
         self.assertGreaterEqual(len(recommendations["meta_data"]["current"]), 1)
+
+    def test_reuses_cached_session_rows_when_file_signature_is_unchanged(self):
+        module = load_module()
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            db = root / "db"
+            codex_home = root / ".codex"
+            session_id = "01999999-aaaa-bbbb-cccc-222222222222"
+            session_path = codex_home / "sessions/2026/06/18/session.jsonl"
+            write_jsonl(codex_home / "session_index.jsonl", [{"id": session_id, "thread_name": "cache test"}])
+            write_jsonl(
+                session_path,
+                [
+                    {
+                        "type": "session_meta",
+                        "timestamp": "2026-06-18T00:00:00Z",
+                        "payload": {"id": session_id},
+                    },
+                    {
+                        "type": "response_item",
+                        "timestamp": "2026-06-18T00:01:00Z",
+                        "payload": {"type": "message", "role": "user", "content": [{"text": "默认中文输出"}]},
+                    },
+                ],
+            )
+
+            first = module.sync_codex_data(db, codex_home, build_atlas=False, commit=False, push=False)
+            self.assertEqual(first["cache"], {"cached": 0, "parsed": 1, "skipped": 0})
+
+            original_parse = module.parse_session_file
+
+            def guarded_parse(path, *_args, **_kwargs):
+                if path == session_path:
+                    raise AssertionError("unchanged session should be served from cache")
+                return original_parse(path, *_args, **_kwargs)
+
+            module.parse_session_file = guarded_parse
+            second = module.sync_codex_data(db, codex_home, build_atlas=False, commit=False, push=False)
+
+        self.assertEqual(second["status"], "PASS")
+        self.assertEqual(second["cache"], {"cached": 1, "parsed": 0, "skipped": 0})
 
 
 if __name__ == "__main__":
