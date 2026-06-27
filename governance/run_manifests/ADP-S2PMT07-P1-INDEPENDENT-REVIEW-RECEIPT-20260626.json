@@ -26,7 +26,9 @@
     "governance/run_manifests/ADP-S2PMT06-SAFE-MANUAL-ACTION-C012-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C003-20260627.json",
     "arxiv-daily-push/docs/phase_records/PHASE_S2PIT05_FOUR_CHECK_FRESHNESS_C003.md",
-    "governance/run_manifests/ADP-S2PIT05-FOUR-CHECK-FRESHNESS-C003-20260627.json"
+    "governance/run_manifests/ADP-S2PIT05-FOUR-CHECK-FRESHNESS-C003-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-B003-B011-TECHNICAL-REVIEW-20260627.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_B003_B011_TECHNICAL_REVIEW.md"
   ],
   "final_acceptance_bundle_present": false,
   "forbidden_side_effects": {
@@ -383,11 +385,14 @@
         "arxiv-daily-push/tests/test_stage2_lease_fencing.py"
       ],
       "finding_id": "B-003",
+      "finding_level_technical_review_receipt": "governance/run_manifests/ADP-S2PMT07-P1-B003-B011-TECHNICAL-REVIEW-20260627.json",
       "fix_task": "S2PMT03",
-      "preliminary_review_state": "refreshed_current_evidence_located_independent_review_required_closure_not_claimed",
-      "receipt_refreshed_at": "2026-06-27T03:37:12+10:00",
-      "reviewer_decision_required": "Verify V7.1 fix/test requirement: 活进程慢任务不被误杀；死进程锁自动安全接管",
+      "preliminary_review_state": "finding_level_technical_review_passed_technical_closure_candidate_no_p1_closure",
+      "receipt_refreshed_at": "2026-06-27T22:34:54+10:00",
+      "reviewer_decision_required": "Carry this finding into the later P1 closure package as a technical closure candidate; do not lower P0/P1 counters or claim S2PMT07 final pass until the full independent final gate signs off.",
       "severity": "P1",
+      "technical_closure_candidate": true,
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
       "title": "watchdog 只报告 stale lock，不执行可证明安全的恢复",
       "track": "B_压力运行生命周期"
     },
@@ -483,11 +488,14 @@
         "arxiv-daily-push/tests/test_stage2_lease_fencing.py"
       ],
       "finding_id": "B-011",
+      "finding_level_technical_review_receipt": "governance/run_manifests/ADP-S2PMT07-P1-B003-B011-TECHNICAL-REVIEW-20260627.json",
       "fix_task": "S2PMT03",
-      "preliminary_review_state": "refreshed_current_evidence_located_independent_review_required_closure_not_claimed",
-      "receipt_refreshed_at": "2026-06-27T03:37:12+10:00",
-      "reviewer_decision_required": "Verify V7.1 fix/test requirement: M2 失败/M3 超时/迟到/重跑/跨日均生成正确 M4 状态",
+      "preliminary_review_state": "finding_level_technical_review_passed_technical_closure_candidate_no_p1_closure",
+      "receipt_refreshed_at": "2026-06-27T22:34:54+10:00",
+      "reviewer_decision_required": "Carry this finding into the later P1 closure package as a technical closure candidate; do not lower P0/P1 counters or claim S2PMT07 final pass until the full independent final gate signs off.",
       "severity": "P1",
+      "technical_closure_candidate": true,
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
       "title": "M4 水位线缺少 cycle_id、超时、迟到数据和降级策略",
       "track": "B_压力运行生命周期"
     },
@@ -753,10 +761,8 @@
     "C_UI交互架构": 9
   },
   "p1_latest_technical_review_candidate_findings": [
-    "B-002",
-    "B-004",
-    "B-005",
-    "B-015"
+    "B-003",
+    "B-011"
   ],
   "p1_technical_review_candidate_findings": [
     "A-006",
@@ -777,15 +783,18 @@
     "B-002",
     "B-004",
     "B-005",
-    "B-015"
+    "B-015",
+    "B-003",
+    "B-011"
   ],
-  "p1_technical_review_candidate_manifest": "governance/run_manifests/ADP-S2PMT07-P1-B002-B004-B005-B015-TECHNICAL-REVIEW-20260627.json",
+  "p1_technical_review_candidate_manifest": "governance/run_manifests/ADP-S2PMT07-P1-B003-B011-TECHNICAL-REVIEW-20260627.json",
   "p1_technical_review_candidate_manifests": [
     "governance/run_manifests/ADP-S2PMT07-P1-A006-A009-TECHNICAL-REVIEW-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-A010-A016-TECHNICAL-REVIEW-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-A017-A019-TECHNICAL-REVIEW-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-A018-A021-TECHNICAL-REVIEW-20260627.json",
-    "governance/run_manifests/ADP-S2PMT07-P1-B002-B004-B005-B015-TECHNICAL-REVIEW-20260627.json"
+    "governance/run_manifests/ADP-S2PMT07-P1-B002-B004-B005-B015-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-B003-B011-TECHNICAL-REVIEW-20260627.json"
   ],
   "preserved_blockers": [
     "reviewer_independence_not_proven",
@@ -796,12 +805,13 @@
     "independent_final_signoff_missing",
     "independent_final_command_execution_missing"
   ],
-  "previous_refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-A018-A021-TECHNICAL-REVIEW-20260627.json",
+  "previous_refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-B002-B004-B005-B015-TECHNICAL-REVIEW-20260627.json",
   "project_id": "arxiv-daily-push",
-  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-B002-B004-B005-B015-TECHNICAL-REVIEW-20260627.json",
+  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-B003-B011-TECHNICAL-REVIEW-20260627.json",
   "refresh_manifest_history": [
     "governance/run_manifests/ADP-S2PMT07-P1-A006-A009-TECHNICAL-REVIEW-20260627.json",
-    "governance/run_manifests/ADP-S2PMT07-P1-A010-A016-TECHNICAL-REVIEW-20260627.json"
+    "governance/run_manifests/ADP-S2PMT07-P1-A010-A016-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-B003-B011-TECHNICAL-REVIEW-20260627.json"
   ],
   "refresh_manifests": [
     "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-20260627.json",
@@ -822,7 +832,8 @@
     "governance/run_manifests/ADP-S2PMT07-P1-A010-A016-TECHNICAL-REVIEW-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-A017-A019-TECHNICAL-REVIEW-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-A018-A021-TECHNICAL-REVIEW-20260627.json",
-    "governance/run_manifests/ADP-S2PMT07-P1-B002-B004-B005-B015-TECHNICAL-REVIEW-20260627.json"
+    "governance/run_manifests/ADP-S2PMT07-P1-B002-B004-B005-B015-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-B003-B011-TECHNICAL-REVIEW-20260627.json"
   ],
   "refreshed_at": "2026-06-27 19:36:09 Australia/Sydney",
   "refreshed_findings": [

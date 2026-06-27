@@ -17,6 +17,22 @@ The append-only machine record is `development_events.jsonl`.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
 
+### `ITER-20260627-ADP-S2PMT07-P1-B003-B011-TECHNICAL-REVIEW`
+
+- Timestamp: `2026-06-27T22:44:50+10:00`
+- Fact level: EXTRACTED from B-003 watchdog recovery evidence, B-011 M4 watermark evidence, refreshed S2PMT07 P1 receipt, traceability row, rendered user-center evidence chain, and lease/final-gate/user-center regression tests.
+- Base commit: `4511e437fe2cda66b7a3fc4ddde25773f7910fe2`
+- Product version: `0.23.1`
+- Status: B-003 and B-011 finding-level technical review passed as technical closure candidates; P0/P1 closure and production acceptance are not claimed.
+- Task IDs: `S2PMT07-P1-B003-B011-TECHNICAL-REVIEW`; parent `S2PMT07`; inherited findings `B-003`, `B-011`; acceptance `ACC-S2PMT07-FINAL-REVIEW`.
+- Goal: Record the B-003 stale-lock watchdog recovery and B-011 M4 watermark evidence review inside GitHub source-of-truth evidence surfaces, without relying on chat context or lowering any global stop gate.
+- Files changed: B-003/B-011 technical review manifest and phase record, P1 review receipt manifest and phase record, final-gate/user-center regression tests, traceability matrix, rendered user-center traceability page, delivery task, development event, and governance status summaries.
+- Decisions: The verdict is `PASS_WITH_NO_PRODUCTION_ACCEPTANCE`. It is finding-level technical evidence only and does not provide final S2PMT07 signoff, close B-003/B-011/P1/P0, complete S2PLT04, create the final bundle, run final commands, enable SMTP/scheduler/Release, mutate schema/DB/queues, change sources or ranking, edit V7 baselines, or claim integrated production acceptance.
+- Validation: focused B-003/B-011 lease/final-gate/user-center tests 49 OK; full arxiv-daily-push unittest 593 OK; V7.2 validator PASS; project governance 0 errors / 0 warnings; governance sync 0 errors / 0 warnings; lean check-render drift 0 / reference issues 0; structured JSON/YAML/CSV parse OK; git diff --check PASS.
+- Risks: This receipt can be misread as P1 closure; S2PMT07 final acceptance still requires the full P0/P1 closure package, S2PLT04, final bundle, independent final signoff, and final command execution.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-P1-B003-B011-TECHNICAL-REVIEW-20260627.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_B003_B011_TECHNICAL_REVIEW.md`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_WATCHDOG_RECOVERY_B003.md`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_M4_WATERMARK_B011.md`; `arxiv-daily-push/tests/test_stage2_lease_fencing.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.
+
+
 ### `ITER-20260627-ADP-S2PMT07-B008-INDEPENDENT-TECHNICAL-REVIEW`
 
 - Timestamp: `2026-06-27T18:44:28+10:00`

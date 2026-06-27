@@ -8,6 +8,8 @@ arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTI
 
 Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。
 
+本次补充记录了 `S2PMT07-P1-B003-B011-TECHNICAL-REVIEW`：B-003 看门狗陈旧锁恢复、B-011 M4 水位线两个继承 P1 发现已完成 finding-level 技术复审候选记录，结论为 `PASS_WITH_NO_PRODUCTION_ACCEPTANCE`。这不是 P1 关闭、不是 S2PMT07 最终签收，也不是生产验收；继承阻断仍为 `P0=8 / P1=37`。
+
 ## 3. 为什么重要
 
 在保持 arXiv 稳定运行的前提下，统一 V7.1 有效要求与 V1.1 新要求，并让 Stage2 agents 在 V7.2 下继续推进无冲突来源 Shadow。
@@ -78,7 +80,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PMT07_P1_C002_REVIEW_RECEIPT_REFRESH_NO_CLOSURE_NO_PRODUCTION`
+- release_gate: `S2PMT07_P1_B003_B011_TECHNICAL_REVIEW_NO_CLOSURE_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
@@ -101,7 +103,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - snapshot_event_time: `2026-06-27T05:25:16+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PM / S2PMT07_P1_C002_REVIEW_RECEIPT_REFRESH_NO_CLOSURE_NO_PRODUCTION`
+- phase/gate: `S2PM / S2PMT07_P1_B003_B011_TECHNICAL_REVIEW_NO_CLOSURE_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 
