@@ -3809,7 +3809,7 @@ tasks:
       - "/tmp/eei-soak-smoke-playwright-browser-ok.json"
       - "/tmp/eei-operator-soak-playwright-browser-ok.json"
       - "/private/tmp/eei-a209-rerun-20260626-150051-b6c63687/operator_soak_24h.checkpoints.jsonl"
-      - "/private/tmp/eei-a209-rerun-20260627-originmain-8d5a3916/heartbeat_probe.json"
+      - "EVENT-20260627-003 live heartbeat probe summary"
     risk: "A209 can be falsely closed if 4h evidence, monitor/supervisor/watchdog/heartbeat/finalization progress, incident recovery evidence, a failed 24h run, a short slice probe, or a partial 24h checkpoint is treated as 24h evidence or final release-manager approval; watchdog stale-PID detection must not be used to kill or replace a live operator soak process without explicit operator action."
     rollback: "Stop only the detached watchdog PID if needed, remove the monitor/supervisor/watchdog/heartbeat/finalization script/Makefile/test/governance changes or invalid 4h JSON/checkpoint, regenerate the A209 evidence-validation artifact back to missing long-duration evidence, regenerate clean-room/release artifacts, and rerun make verify."
     target_version: "0.1.0"
