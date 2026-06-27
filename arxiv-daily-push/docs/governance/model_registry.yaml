@@ -5290,7 +5290,7 @@ models:
   -
     model_id: "MOD-ADP-100"
     name: "S2PMT07 final production gate precheck model"
-    purpose: "Fail closed for S2PMT07 final review until reviewer independence, inherited V7.1 P0/P1 zero state, S2PLT04 completion, final acceptance bundle, independent signoff, and final command execution are all proven under V7.2."
+    purpose: "Fail closed for S2PMT07 final review until reviewer independence, inherited V7.1 P0/P1 zero state, S2PLT04 completion, final acceptance bundle, independent signoff, final command execution, and no-production side-effect attestation are all proven under V7.2."
     owner: "arxiv-daily-push"
     status: "active"
     assumption_ids:
@@ -5344,6 +5344,11 @@ models:
       - "PARAM-ADP-1017"
       - "PARAM-ADP-1018"
       - "PARAM-ADP-1019"
+      - "PARAM-ADP-1020"
+      - "PARAM-ADP-1021"
+      - "PARAM-ADP-1022"
+      - "PARAM-ADP-1023"
+      - "PARAM-ADP-1024"
     inputs:
       - "S2PMT01 through S2PMT06 local validation receipts"
       - "S2PLT04 completion evidence"
@@ -5358,6 +5363,7 @@ models:
       - "S2PLT04 completion report payload"
       - "final command execution artifact payload"
       - "independent review signoff artifact payload"
+      - "no-production side-effect attestation artifact payload"
     outputs:
       - "blocked S2PMT07 precheck report"
       - "blocked final acceptance bundle readiness state"
@@ -5368,6 +5374,7 @@ models:
       - "blocked or passing S2PLT04 completion report validation state"
       - "blocked or passing final command execution validation state"
       - "blocked or passing independent review signoff validation state"
+      - "blocked or passing no-production side-effect attestation validation state"
       - "blocking reason list"
       - "forbidden production flag state"
       - "deterministic report hash"
@@ -5387,6 +5394,7 @@ models:
       - "governance/run_manifests/ADP-S2PMT07-S2PLT04-COMPLETION-REPORT-VALIDATOR-20260628.json"
       - "governance/run_manifests/ADP-S2PMT07-FINAL-COMMAND-EXECUTION-VALIDATOR-20260628.json"
       - "governance/run_manifests/ADP-S2PMT07-INDEPENDENT-REVIEW-SIGNOFF-VALIDATOR-20260628.json"
+      - "governance/run_manifests/ADP-S2PMT07-NO-PRODUCTION-SIDE-EFFECT-ATTESTATION-VALIDATOR-20260628.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_GATE_PRECHECK.md"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_ACCEPTANCE_BUNDLE_READINESS.md"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_P1_TECHNICAL_CANDIDATE_READINESS.md"
@@ -5396,6 +5404,7 @@ models:
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT04_COMPLETION_REPORT_VALIDATOR.md"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_COMMAND_EXECUTION_VALIDATOR.md"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_VALIDATOR.md"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_NO_PRODUCTION_SIDE_EFFECT_ATTESTATION_VALIDATOR.md"
 
   -
     model_id: "MOD-ADP-101"
