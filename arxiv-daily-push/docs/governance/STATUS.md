@@ -14,10 +14,18 @@
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - Product version: `0.23.1`
-- Phase/Gate: `S2PM / S2PMT07_P1_C002_REVIEW_RECEIPT_REFRESH_NO_CLOSURE_NO_PRODUCTION`
+- Phase/Gate: `S2PM / S2PMT07_P1_B003_B011_TECHNICAL_REVIEW_NO_CLOSURE_NO_PRODUCTION`
 - Models/Formulas/Parameters total: `106 / 108 / 921`
 - Active formulas/parameters: `108 / 904`
 - Machine checked formulas/parameters: `108 / 904`
+
+## Latest Local Update
+
+- latest_task: `S2PMT07-P1-B003-B011-TECHNICAL-REVIEW`
+- latest_status: `finding_level_technical_review_passed_no_p1_closure_no_production`
+- latest_findings: `B-003`, `B-011`
+- evidence: `governance/run_manifests/ADP-S2PMT07-P1-B003-B011-TECHNICAL-REVIEW-20260627.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_B003_B011_TECHNICAL_REVIEW.md`
+- production_boundary: inherited blockers remain `P0=8 / P1=37`; `stage2_integrated_production_accepted=false`; no SMTP, scheduler, Release, CURRENT/V7 contract, public schema, DB, production queue, source adapter, or ranking change.
 
 ## Assurance
 
@@ -35,7 +43,7 @@
 ## Delivery
 
 - Readiness: `VERIFIED`
-- Release gate: `S2PMT07_P1_C002_REVIEW_RECEIPT_REFRESH_NO_CLOSURE_NO_PRODUCTION`
+- Release gate: `S2PMT07_P1_B003_B011_TECHNICAL_REVIEW_NO_CLOSURE_NO_PRODUCTION`
 - V7 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - V7 contract hash: `a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d`
 - V7 roadmap hash: `7c5f2d842d4f6b909343c953fe39b4a4aa540d168199747a9f7decdb1aad9bd1`

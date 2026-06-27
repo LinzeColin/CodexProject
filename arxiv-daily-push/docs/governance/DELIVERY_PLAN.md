@@ -21,7 +21,7 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 187
+- task_count: 188
 - acceptance_count: 125
 
 ## Delivery Tasks
@@ -282,6 +282,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PMT07-A005-INDEPENDENT-TECHNICAL-REVIEW | S2PM | finding_level_review_passed_no_closure_no_production | `ACC-S2PMT07-FINAL-REVIEW` | Records read-only finding-level technical review verdict `PASS_WITH_NO_PRODUCTION_ACCEPTANCE` for A-005 trust-boundary evidence; this does not close P0/P1, pass S2PMT07, complete S2PLT04, execute final commands, or change production state. |
 | S2PMT07-B007-INDEPENDENT-TECHNICAL-REVIEW | S2PM | finding_level_review_passed_no_closure_no_production | `ACC-S2PMT07-FINAL-REVIEW` | Records read-only finding-level technical review verdict `PASS_WITH_NO_PRODUCTION_ACCEPTANCE` for B-007 multiprocess race evidence; this does not close P0/P1, pass S2PMT07, complete S2PLT04, execute final commands, or change production state. |
 | S2PMT07-B008-INDEPENDENT-TECHNICAL-REVIEW | S2PM | finding_level_review_passed_no_closure_no_production | `ACC-S2PMT07-FINAL-REVIEW` | Records read-only finding-level technical review verdict `PASS_WITH_NO_PRODUCTION_ACCEPTANCE` for B-008 fake SMTP crash-window evidence; this does not close P0/P1, pass S2PMT07, complete S2PLT04, execute final commands, or change production state. |
+| S2PMT07-P1-B003-B011-TECHNICAL-REVIEW | S2PM | finding_level_review_passed_no_p1_closure_no_production | `ACC-S2PMT07-FINAL-REVIEW` | Records finding-level technical review verdict `PASS_WITH_NO_PRODUCTION_ACCEPTANCE` for B-003 watchdog recovery and B-011 M4 watermark evidence; this does not close P1/P0, pass S2PMT07, complete S2PLT04, execute final commands, or change production state. |
 
 ## 2026-06-27 18:52:57 Australia/Sydney - S2PMT07 P0 technical closure candidate package
 
@@ -294,3 +295,9 @@ The machine-readable task source is `delivery_tasks.yaml`.
 - Added manifest `governance/run_manifests/ADP-S2PMT07-P1-A006-A009-TECHNICAL-REVIEW-20260627.json`.
 - Added phase record `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_A006_A009_TECHNICAL_REVIEW.md`.
 - A-006/A-007/A-008/A-009 are technical closure candidates only; P1 remains open and production remains disabled.
+
+## 2026-06-27 22:44:50 Australia/Sydney - S2PMT07 P1 B003-B011 technical review
+
+- Added manifest `governance/run_manifests/ADP-S2PMT07-P1-B003-B011-TECHNICAL-REVIEW-20260627.json`.
+- Added phase record `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_B003_B011_TECHNICAL_REVIEW.md`.
+- B-003/B-011 are technical closure candidates only; P1 remains open, P0 remains open, and production remains disabled.

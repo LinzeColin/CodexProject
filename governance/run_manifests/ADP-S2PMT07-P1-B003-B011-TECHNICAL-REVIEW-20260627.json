@@ -1,0 +1,110 @@
+{
+  "schema_version": 1,
+  "manifest_id": "ADP-S2PMT07-P1-B003-B011-TECHNICAL-REVIEW-20260627",
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PMT07-P1-B003-B011-TECHNICAL-REVIEW",
+  "parent_task_id": "S2PMT07",
+  "acceptance_id": "ACC-S2PMT07-FINAL-REVIEW",
+  "contract_version": "ADP-PRODUCT-CONTRACT-V7.2",
+  "generated_at": "2026-06-27T22:34:54+10:00",
+  "status": "finding_level_technical_review_passed_no_p1_closure_no_production",
+  "summary": "Finding-level technical review for P1 B-003 and B-011 confirms local watchdog stale-lock recovery and M4 cycle-watermark evidence as technical closure candidates. This is not independent final signoff and does not close P1.",
+  "review_scope": "local_code_and_governance_evidence_only",
+  "finding_ids": [
+    "B-003",
+    "B-011"
+  ],
+  "reviewed_findings": [
+    {
+      "finding_id": "B-003",
+      "finding_title": "watchdog 只报告 stale lock，不执行可证明安全的恢复",
+      "severity": "P1",
+      "fix_task": "S2PMT03-WATCHDOG-RECOVERY-B003",
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "technical_closure_candidate": true,
+      "independent_final_closure_decision_required": true,
+      "evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_WATCHDOG_RECOVERY_B003.md",
+        "governance/run_manifests/ADP-S2PMT03-WATCHDOG-RECOVERY-B003-20260626.json",
+        "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py",
+        "arxiv-daily-push/tests/test_stage2_lease_fencing.py"
+      ],
+      "verified_checks": [
+        "live_owner_stale_lock_recovery_blocked",
+        "dead_owner_expired_lock_recovered_only_through_claim_leased_item",
+        "unexpired_dead_owner_lock_recovery_blocked",
+        "row_version_and_fencing_token_takeover_path_preserved",
+        "no_production_side_effects"
+      ]
+    },
+    {
+      "finding_id": "B-011",
+      "finding_title": "M4 水位线缺少 cycle_id、超时、迟到数据和降级策略",
+      "severity": "P1",
+      "fix_task": "S2PMT03-M4-WATERMARK-B011",
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "technical_closure_candidate": true,
+      "independent_final_closure_decision_required": true,
+      "evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_M4_WATERMARK_B011.md",
+        "governance/run_manifests/ADP-S2PMT03-M4-WATERMARK-B011-20260626.json",
+        "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py",
+        "arxiv-daily-push/tests/test_stage2_lease_fencing.py"
+      ],
+      "verified_checks": [
+        "m4_watermark_keyed_by_cycle_id",
+        "m2_failed_and_m3_timeout_after_deadline_degrade_m4",
+        "missing_terminal_mail_before_deadline_waits_retry_safe",
+        "late_terminal_mail_after_finalized_watermark_ignored_and_recorded",
+        "same_input_rerun_is_idempotent",
+        "cross_cycle_terminal_mail_blocks_readiness_and_degrades_after_deadline",
+        "no_production_side_effects"
+      ]
+    }
+  ],
+  "technical_review_checks": {
+    "all_two_reviewed_findings_present": true,
+    "all_evidence_files_exist": true,
+    "all_technical_review_verdicts_pass_no_production": true,
+    "lease_fencing_tests_cover_watchdog_and_m4_watermark_positive_negative_paths": true,
+    "p1_counter_preserved_open": true,
+    "independent_final_signoff_present": false,
+    "s2pmt07_final_gate_still_blocked": true
+  },
+  "preserved_blockers": [
+    "p1_closure_not_claimed",
+    "independent_final_signoff_missing",
+    "independent_final_command_execution_missing",
+    "s2plt04_not_completed",
+    "final_acceptance_bundle_missing",
+    "a020_supply_chain_sufficiency_gap_not_resolved"
+  ],
+  "inherited_v7_1_open_p0_findings_before": 8,
+  "inherited_v7_1_open_p0_findings_after": 8,
+  "inherited_v7_1_open_p1_findings_before": 37,
+  "inherited_v7_1_open_p1_findings_after": 37,
+  "p0_closure_claimed": false,
+  "p1_closure_claimed": false,
+  "closure_claimed": false,
+  "reviewer_independence_for_final_gate_claimed": false,
+  "s2pmt07_final_pass_claimed": false,
+  "stage2_integrated_production_accepted": false,
+  "real_smtp_sent": false,
+  "scheduler_install_enabled": false,
+  "release_packaging_enabled": false,
+  "production_restore_enabled": false,
+  "daily_operation_enabled": false,
+  "public_schema_changed": false,
+  "db_migration_executed": false,
+  "production_queue_mutation_allowed": false,
+  "ranking_changed": false,
+  "source_adapter_changed": false,
+  "current_pointer_changed": false,
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false,
+  "validation_commands_planned": [
+    "python3 -m unittest arxiv-daily-push/tests/test_stage2_lease_fencing.py arxiv-daily-push/tests/test_stage2_final_gate.py -q"
+  ],
+  "next_task": "continue_b_track_p1_reviews_or_repair_a020_supply_chain_sufficiency_gap",
+  "rollback": "Remove this manifest, phase record, P1 receipt updates, traceability row, rendered owner page, and tests; no production state was changed."
+}
