@@ -490,6 +490,8 @@ class LocalRunnerTests(unittest.TestCase):
             plist = (Path(tmp) / "launchd" / "com.linze.adp.local.daily.plist").read_text(encoding="utf-8")
             self.assertIn("ADP_LOCAL_DAILY_RUN_ENABLED=true", plist)
             self.assertIn("local-runner daily", plist)
+            self.assertIn("--project-root", plist)
+            self.assertIn(str((Path(tmp) / "repo" / "arxiv-daily-push").resolve()), plist)
             self.assertNotIn("github-actions", plist)
             self.assertFalse(validate_local_runner_report(report))
 

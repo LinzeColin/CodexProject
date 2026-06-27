@@ -935,12 +935,14 @@ def _append_jsonl(path: Path, row: Mapping[str, Any]) -> None:
 
 
 def _local_daily_command(project_root: Path, state_dir: Path) -> str:
+    daily_project_root = project_root if project_root.name == "arxiv-daily-push" else project_root / "arxiv-daily-push"
     generated_at = '$(date -u +"%Y-%m-%dT%H:%M:%SZ")'
     service_date = '$(TZ=Australia/Sydney date +"%Y-%m-%d")'
     return (
         f"cd {shlex.quote(str(project_root))} && "
         f"ADP_LOCAL_DAILY_RUN_ENABLED=true PYTHONPATH=arxiv-daily-push/src "
         f"python3 -m arxiv_daily_push local-runner daily "
+        f"--project-root {shlex.quote(str(daily_project_root))} "
         f"--state-dir {shlex.quote(str(state_dir))} "
         f"--date \"{service_date}\" --generated-at \"{generated_at}\" --json"
     )
