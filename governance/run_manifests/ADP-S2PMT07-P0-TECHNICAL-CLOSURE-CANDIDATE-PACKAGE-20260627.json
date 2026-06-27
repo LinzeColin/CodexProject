@@ -1,0 +1,224 @@
+{
+  "acceptance_id": "ACC-S2PMT07-FINAL-REVIEW",
+  "closure_claimed": false,
+  "contract_version": "ADP-PRODUCT-CONTRACT-V7.2",
+  "current_pointer_changed": false,
+  "daily_operation_enabled": false,
+  "db_migration_executed": false,
+  "expected_p0_finding_ids": [
+    "A-001",
+    "A-002",
+    "A-003",
+    "A-004",
+    "A-005",
+    "B-001",
+    "B-007",
+    "B-008"
+  ],
+  "finding_count": 8,
+  "generated_at": "2026-06-27T18:52:57+10:00",
+  "inherited_v7_1_open_p0_findings_after": 8,
+  "inherited_v7_1_open_p0_findings_before": 8,
+  "inherited_v7_1_open_p1_findings_after": 37,
+  "inherited_v7_1_open_p1_findings_before": 37,
+  "manifest_id": "ADP-S2PMT07-P0-TECHNICAL-CLOSURE-CANDIDATE-PACKAGE-20260627",
+  "next_task": "S2PMT07_INDEPENDENT_FINAL_REVIEW_OR_P1_FINDING_LEVEL_REVIEW_CONTINUATION",
+  "p0_closure_claimed": false,
+  "p1_closure_claimed": false,
+  "package_checks": {
+    "all_8_p0_findings_present": true,
+    "all_finding_level_review_receipts_present": true,
+    "all_finding_level_verdicts_pass_with_no_production_acceptance": true,
+    "all_findings_are_technical_closure_candidates": true,
+    "final_acceptance_bundle_present": false,
+    "independent_final_command_execution_present": false,
+    "independent_final_signoff_present": false,
+    "p0_counter_preserved_open": true,
+    "p1_counter_preserved_open": true,
+    "s2plt04_completed": false,
+    "s2pmt07_final_gate_still_blocked": true
+  },
+  "packaged_findings": [
+    {
+      "evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_RESTORE_PATH_SAFETY_A001.md",
+        "governance/run_manifests/ADP-S2PMT02-RESTORE-PATH-SAFETY-A001-20260627.json",
+        "governance/run_manifests/ADP-S2PMT07-A001-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+        "arxiv-daily-push/用户中心/恢复路径安全扫描.md",
+        "arxiv-daily-push/tests/test_stage2_atomic_recovery.py"
+      ],
+      "final_gate_decision_required": "independent_final_reviewer_must_decide_explicit_closure_in_later_gate",
+      "finding_id": "A-001",
+      "finding_level_independent_review_receipt": "governance/run_manifests/ADP-S2PMT07-A001-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+      "fix_task": "S2PMT02-RESTORE-PATH-SAFETY-A001",
+      "reviewer_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "severity": "P0",
+      "technical_closure_candidate": true
+    },
+    {
+      "evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_RESTORE_ATOMIC_REPLACEMENT_A002.md",
+        "governance/run_manifests/ADP-S2PMT02-RESTORE-ATOMIC-REPLACEMENT-A002-20260627.json",
+        "governance/run_manifests/ADP-S2PMT07-A002-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+        "arxiv-daily-push/用户中心/恢复原子替换扫描.md",
+        "arxiv-daily-push/tests/test_stage2_atomic_recovery.py"
+      ],
+      "final_gate_decision_required": "independent_final_reviewer_must_decide_explicit_closure_in_later_gate",
+      "finding_id": "A-002",
+      "finding_level_independent_review_receipt": "governance/run_manifests/ADP-S2PMT07-A002-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+      "fix_task": "S2PMT02-RESTORE-ATOMIC-REPLACEMENT-A002",
+      "reviewer_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "severity": "P0",
+      "technical_closure_candidate": true
+    },
+    {
+      "evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_OUTBOX_DELIVERY_A003.md",
+        "governance/run_manifests/ADP-S2PMT03-OUTBOX-DELIVERY-A003-20260627.json",
+        "governance/run_manifests/ADP-S2PMT07-A003-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+        "arxiv-daily-push/用户中心/事务发件箱与消息ID扫描.md",
+        "arxiv-daily-push/tests/test_stage2_lease_fencing.py"
+      ],
+      "final_gate_decision_required": "independent_final_reviewer_must_decide_explicit_closure_in_later_gate",
+      "finding_id": "A-003",
+      "finding_level_independent_review_receipt": "governance/run_manifests/ADP-S2PMT07-A003-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+      "fix_task": "S2PMT03-OUTBOX-DELIVERY-A003",
+      "reviewer_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "severity": "P0",
+      "technical_closure_candidate": true
+    },
+    {
+      "evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT01_FRONTSTAGE_EVIDENCE_A004.md",
+        "governance/run_manifests/ADP-S2PMT01-FRONTSTAGE-EVIDENCE-A004-20260627.json",
+        "arxiv-daily-push/用户中心/前台陈述证据绑定扫描.md",
+        "arxiv-daily-push/tests/test_security_boundary.py",
+        "governance/run_manifests/ADP-S2PMT07-A004-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+        "arxiv-daily-push/src/arxiv_daily_push/security_boundary.py"
+      ],
+      "final_gate_decision_required": "independent_final_reviewer_must_decide_explicit_closure_in_later_gate",
+      "finding_id": "A-004",
+      "finding_level_independent_review_receipt": "governance/run_manifests/ADP-S2PMT07-A004-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+      "fix_task": "S2PMT01-FRONTSTAGE-EVIDENCE-A004",
+      "reviewer_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "severity": "P0",
+      "technical_closure_candidate": true
+    },
+    {
+      "evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT01_TRUST_BOUNDARY_A005.md",
+        "governance/run_manifests/ADP-S2PMT01-TRUST-BOUNDARY-A005-20260627.json",
+        "arxiv-daily-push/用户中心/来源信任边界扫描.md",
+        "arxiv-daily-push/tests/test_security_boundary.py",
+        "governance/run_manifests/ADP-S2PMT07-A005-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+        "arxiv-daily-push/src/arxiv_daily_push/security_boundary.py"
+      ],
+      "final_gate_decision_required": "independent_final_reviewer_must_decide_explicit_closure_in_later_gate",
+      "finding_id": "A-005",
+      "finding_level_independent_review_receipt": "governance/run_manifests/ADP-S2PMT07-A005-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+      "fix_task": "S2PMT01-TRUST-BOUNDARY-A005",
+      "reviewer_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "severity": "P0",
+      "technical_closure_candidate": true
+    },
+    {
+      "evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT04_INSTALL_LIFECYCLE_B001.md",
+        "governance/run_manifests/ADP-S2PMT04-INSTALL-LIFECYCLE-B001-20260627.json",
+        "arxiv-daily-push/用户中心/自动唤醒安装生命周期扫描.md",
+        "arxiv-daily-push/tests/test_stage2_lifecycle_cache.py",
+        "governance/run_manifests/ADP-S2PMT07-B001-ISOLATED-PROOF-RECONCILIATION-20260627.json",
+        "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-ISOLATED-PROOF-20260627.json",
+        "governance/run_manifests/ADP-S2PMT07-B001-INDEPENDENT-TECHNICAL-REVIEW-20260627.json"
+      ],
+      "final_gate_decision_required": "independent_final_reviewer_must_decide_explicit_closure_in_later_gate",
+      "finding_id": "B-001",
+      "finding_level_independent_review_receipt": "governance/run_manifests/ADP-S2PMT07-B001-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+      "fix_task": "S2PMT04-INSTALL-LIFECYCLE-B001",
+      "reviewer_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "severity": "P0",
+      "technical_closure_candidate": true
+    },
+    {
+      "evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_DUPLICATE_TRIGGER_B007.md",
+        "governance/run_manifests/ADP-S2PMT05-DUPLICATE-TRIGGER-B007-20260627.json",
+        "arxiv-daily-push/tests/test_stage2_stress_e2e.py",
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_B007_MULTIPROCESS_RACE_EVIDENCE.md",
+        "governance/run_manifests/ADP-S2PMT07-B007-MULTIPROCESS-RACE-EVIDENCE-20260627.json",
+        "governance/run_manifests/ADP-S2PMT07-B007-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+        "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py",
+        "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py",
+        "arxiv-daily-push/tests/test_stage2_lease_fencing.py"
+      ],
+      "final_gate_decision_required": "independent_final_reviewer_must_decide_explicit_closure_in_later_gate",
+      "finding_id": "B-007",
+      "finding_level_independent_review_receipt": "governance/run_manifests/ADP-S2PMT07-B007-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+      "fix_task": "S2PMT05-DUPLICATE-TRIGGER-B007",
+      "reviewer_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "severity": "P0",
+      "technical_closure_candidate": true
+    },
+    {
+      "evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_SMTP_CRASH_WINDOW_B008.md",
+        "governance/run_manifests/ADP-S2PMT05-SMTP-CRASH-WINDOW-B008-20260627.json",
+        "arxiv-daily-push/tests/test_stage2_stress_e2e.py",
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_B008_FAKE_SMTP_CRASH_WINDOW_EVIDENCE.md",
+        "governance/run_manifests/ADP-S2PMT07-B008-FAKE-SMTP-CRASH-WINDOW-EVIDENCE-20260627.json",
+        "governance/run_manifests/ADP-S2PMT07-B008-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+        "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py",
+        "arxiv-daily-push/tests/test_stage2_lease_fencing.py",
+        "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py",
+        "arxiv-daily-push/tests/test_smtp_delivery.py"
+      ],
+      "final_gate_decision_required": "independent_final_reviewer_must_decide_explicit_closure_in_later_gate",
+      "finding_id": "B-008",
+      "finding_level_independent_review_receipt": "governance/run_manifests/ADP-S2PMT07-B008-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+      "fix_task": "S2PMT05-SMTP-CRASH-WINDOW-B008",
+      "reviewer_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "severity": "P0",
+      "technical_closure_candidate": true
+    }
+  ],
+  "parent_task_id": "S2PMT07",
+  "phase_record": "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_TECHNICAL_CLOSURE_CANDIDATE_PACKAGE.md",
+  "preserved_blockers": [
+    "reviewer_independence_not_proven",
+    "p0_closure_not_claimed",
+    "p1_closure_not_claimed",
+    "s2plt04_not_completed",
+    "final_acceptance_bundle_missing",
+    "independent_final_signoff_missing",
+    "independent_final_command_execution_missing"
+  ],
+  "production_queue_mutation_allowed": false,
+  "production_restore_enabled": false,
+  "project_id": "arxiv-daily-push",
+  "public_schema_changed": false,
+  "ranking_changed": false,
+  "real_smtp_sent": false,
+  "release_packaging_enabled": false,
+  "review_receipts": [
+    "governance/run_manifests/ADP-S2PMT07-A001-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-A002-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-A003-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-A004-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-A005-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-B001-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-B007-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-B008-INDEPENDENT-TECHNICAL-REVIEW-20260627.json"
+  ],
+  "rollback": "Remove this package manifest, phase record, traceability row, event/ledger entries, rendered owner pages, and tests; no production state was changed.",
+  "s2pmt07_final_pass_claimed": false,
+  "scheduler_install_enabled": false,
+  "schema_version": "codexproject.run_manifest.v1",
+  "source_adapter_changed": false,
+  "source_receipt": "governance/run_manifests/ADP-S2PMT07-P0-INDEPENDENT-REVIEW-RECEIPT-20260626.json",
+  "stage2_integrated_production_accepted": false,
+  "status": "technical_closure_candidate_package_ready_no_p0_closure_no_production",
+  "summary": "Aggregates all eight inherited V7.1 P0 finding-level PASS_WITH_NO_PRODUCTION_ACCEPTANCE review receipts into one S2PMT07 final-gate pre-review package. This does not close P0/P1, does not lower inherited counters, and does not enable production.",
+  "task_id": "S2PMT07-P0-TECHNICAL-CLOSURE-CANDIDATE-PACKAGE",
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false
+}

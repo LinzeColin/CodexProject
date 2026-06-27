@@ -44,7 +44,20 @@ pointer change, no V7.1/V7.2 contract-file edit, no `DAILY_OPERATION`, and no
 | `B-007` | `S2PMT05-DUPLICATE-TRIGGER-B007` | `PHASE_S2PMT05_DUPLICATE_TRIGGER_B007.md`, `ADP-S2PMT05-DUPLICATE-TRIGGER-B007-20260627.json`, `PHASE_S2PMT07_B007_MULTIPROCESS_RACE_EVIDENCE.md`, `ADP-S2PMT07-B007-MULTIPROCESS-RACE-EVIDENCE-20260627.json`, `ADP-S2PMT07-B007-INDEPENDENT-TECHNICAL-REVIEW-20260627.json`, `stage2_stress_e2e.py`, `stage2_lease_fencing.py`, `test_stage2_stress_e2e.py`, `test_stage2_lease_fencing.py` | finding-level independent technical review passed; closure not claimed | Carry B-007 into the later P0 closure package as a technical closure candidate; do not lower P0/P1 counters or claim S2PMT07 final pass until the full independent final gate signs off. |
 | `B-008` | `S2PMT05-SMTP-CRASH-WINDOW-B008` | `PHASE_S2PMT05_SMTP_CRASH_WINDOW_B008.md`, `ADP-S2PMT05-SMTP-CRASH-WINDOW-B008-20260627.json`, `PHASE_S2PMT07_B008_FAKE_SMTP_CRASH_WINDOW_EVIDENCE.md`, `ADP-S2PMT07-B008-FAKE-SMTP-CRASH-WINDOW-EVIDENCE-20260627.json`, `ADP-S2PMT07-B008-INDEPENDENT-TECHNICAL-REVIEW-20260627.json`, `stage2_lease_fencing.py`, `stage2_stress_e2e.py`, `test_stage2_lease_fencing.py`, `test_stage2_stress_e2e.py`, `test_smtp_delivery.py` | finding-level independent technical review passed; closure not claimed | Carry B-008 into the later P0 closure package as a technical closure candidate; do not lower P0/P1 counters or claim S2PMT07 final pass until the full independent final gate signs off. |
 
-## Preserved Blockers
+
+## P0 Technical Closure Candidate Package 2026-06-27 18:52:57 Australia/Sydney
+
+All eight inherited V7.1 P0 findings now have finding-level technical review
+verdict `PASS_WITH_NO_PRODUCTION_ACCEPTANCE` and are packaged for later S2PMT07
+final-gate review. This package does not close P0/P1, does not change inherited
+counters, and does not enable production.
+
+- package_manifest: `governance/run_manifests/ADP-S2PMT07-P0-TECHNICAL-CLOSURE-CANDIDATE-PACKAGE-20260627.json`
+- package_phase_record: `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_TECHNICAL_CLOSURE_CANDIDATE_PACKAGE.md`
+- packaged_findings: `A-001`, `A-002`, `A-003`, `A-004`, `A-005`, `B-001`, `B-007`, `B-008`
+- p0_closure_claimed: `false`
+- p1_closure_claimed: `false`
+- stage2_integrated_production_accepted: `false`
 
 ## Evidence Refresh 2026-06-27
 

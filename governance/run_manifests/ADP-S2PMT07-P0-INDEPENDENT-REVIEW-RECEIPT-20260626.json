@@ -1,5 +1,6 @@
 {
   "acceptance_id": "ACC-S2PMT07-FINAL-REVIEW",
+  "all_p0_finding_level_reviews_passed_no_production_acceptance": true,
   "change_type": "stage2_p0_independent_review_receipt",
   "closure_claimed": false,
   "contract_version": "ADP-PRODUCT-CONTRACT-V7.2",
@@ -62,6 +63,7 @@
   "manifest_id": "ADP-S2PMT07-P0-INDEPENDENT-REVIEW-RECEIPT-20260626",
   "next_task": "S2PMT07_INDEPENDENT_REVIEWER_SIGNOFF_OR_P0_EVIDENCE_REPAIR",
   "p0_closure_claimed": false,
+  "p0_closure_package_ready_for_final_gate_review": true,
   "p0_findings": [
     {
       "evidence_refs": [
@@ -122,12 +124,12 @@
         "arxiv-daily-push/src/arxiv_daily_push/security_boundary.py"
       ],
       "finding_id": "A-004",
+      "finding_level_independent_review_receipt": "governance/run_manifests/ADP-S2PMT07-A004-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
       "fix_task": "S2PMT01-FRONTSTAGE-EVIDENCE-A004",
       "preliminary_review_state": "finding_level_independent_review_passed_technical_closure_candidate_no_p0_closure",
       "reviewer_decision_required": "Carry A-004 into the later P0 closure package as a technical closure candidate; do not lower P0/P1 counters or claim S2PMT07 final pass until the full independent final gate signs off.",
-      "severity": "P0",
-      "finding_level_independent_review_receipt": "governance/run_manifests/ADP-S2PMT07-A004-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
-      "reviewer_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE"
+      "reviewer_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "severity": "P0"
     },
     {
       "evidence_refs": [
@@ -139,12 +141,12 @@
         "arxiv-daily-push/src/arxiv_daily_push/security_boundary.py"
       ],
       "finding_id": "A-005",
+      "finding_level_independent_review_receipt": "governance/run_manifests/ADP-S2PMT07-A005-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
       "fix_task": "S2PMT01-TRUST-BOUNDARY-A005",
       "preliminary_review_state": "finding_level_independent_review_passed_technical_closure_candidate_no_p0_closure",
       "reviewer_decision_required": "Carry A-005 into the later P0 closure package as a technical closure candidate; do not lower P0/P1 counters or claim S2PMT07 final pass until the full independent final gate signs off.",
-      "severity": "P0",
-      "finding_level_independent_review_receipt": "governance/run_manifests/ADP-S2PMT07-A005-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
-      "reviewer_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE"
+      "reviewer_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "severity": "P0"
     },
     {
       "evidence_refs": [
@@ -177,12 +179,12 @@
         "arxiv-daily-push/tests/test_stage2_lease_fencing.py"
       ],
       "finding_id": "B-007",
+      "finding_level_independent_review_receipt": "governance/run_manifests/ADP-S2PMT07-B007-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
       "fix_task": "S2PMT05-DUPLICATE-TRIGGER-B007",
       "preliminary_review_state": "finding_level_independent_review_passed_technical_closure_candidate_no_p0_closure",
       "reviewer_decision_required": "Carry B-007 into the later P0 closure package as a technical closure candidate; do not lower P0/P1 counters or claim S2PMT07 final pass until the full independent final gate signs off.",
-      "severity": "P0",
-      "finding_level_independent_review_receipt": "governance/run_manifests/ADP-S2PMT07-B007-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
-      "reviewer_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE"
+      "reviewer_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "severity": "P0"
     },
     {
       "evidence_refs": [
@@ -198,12 +200,12 @@
         "arxiv-daily-push/tests/test_smtp_delivery.py"
       ],
       "finding_id": "B-008",
+      "finding_level_independent_review_receipt": "governance/run_manifests/ADP-S2PMT07-B008-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
       "fix_task": "S2PMT05-SMTP-CRASH-WINDOW-B008",
       "preliminary_review_state": "finding_level_independent_review_passed_technical_closure_candidate_no_p0_closure",
       "reviewer_decision_required": "Carry B-008 into the later P0 closure package as a technical closure candidate; do not lower P0/P1 counters or claim S2PMT07 final pass until the full independent final gate signs off.",
-      "severity": "P0",
-      "finding_level_independent_review_receipt": "governance/run_manifests/ADP-S2PMT07-B008-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
-      "reviewer_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE"
+      "reviewer_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "severity": "P0"
     }
   ],
   "p1_closure_claimed": false,
@@ -216,9 +218,9 @@
     "independent_final_signoff_missing",
     "independent_final_command_execution_missing"
   ],
-  "previous_refresh_manifest": "governance/run_manifests/ADP-S2PMT07-B007-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+  "previous_refresh_manifest": "governance/run_manifests/ADP-S2PMT07-B008-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
   "project_id": "arxiv-daily-push",
-  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-B008-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P0-TECHNICAL-CLOSURE-CANDIDATE-PACKAGE-20260627.json",
   "refresh_manifest_history": [
     "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A005-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-20260627.json",
@@ -228,7 +230,8 @@
     "governance/run_manifests/ADP-S2PMT07-A004-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-A005-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-B007-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
-    "governance/run_manifests/ADP-S2PMT07-B008-INDEPENDENT-TECHNICAL-REVIEW-20260627.json"
+    "governance/run_manifests/ADP-S2PMT07-B008-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P0-TECHNICAL-CLOSURE-CANDIDATE-PACKAGE-20260627.json"
   ],
   "refresh_manifests": [
     "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B007-B008-20260627.json",
@@ -244,9 +247,10 @@
     "governance/run_manifests/ADP-S2PMT07-A004-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-A005-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-B007-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
-    "governance/run_manifests/ADP-S2PMT07-B008-INDEPENDENT-TECHNICAL-REVIEW-20260627.json"
+    "governance/run_manifests/ADP-S2PMT07-B008-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P0-TECHNICAL-CLOSURE-CANDIDATE-PACKAGE-20260627.json"
   ],
-  "refreshed_at": "2026-06-27T18:44:28+10:00",
+  "refreshed_at": "2026-06-27 18:52:57 Australia/Sydney",
   "refreshed_findings": [
     "A-001",
     "A-002",
@@ -264,5 +268,7 @@
   "stage2_integrated_production_accepted": false,
   "status": "review_receipt_ready_no_closure_claim",
   "summary": "Refreshes the S2PMT07 P0 receipt so B-008 now includes local fake SMTP accept-after-kill restart evidence; B-007 retains multiprocess duplicate-trigger evidence. This does not close P0/P1 or change production state.",
-  "task_id": "S2PMT07"
+  "task_id": "S2PMT07",
+  "technical_closure_candidate_package": "governance/run_manifests/ADP-S2PMT07-P0-TECHNICAL-CLOSURE-CANDIDATE-PACKAGE-20260627.json",
+  "technical_closure_candidate_package_phase_record": "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_TECHNICAL_CLOSURE_CANDIDATE_PACKAGE.md"
 }
