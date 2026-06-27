@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-27T08:02:57+00:00",
+  "generated_at": "2026-06-27T08:08:19+00:00",
   "hard_gate_checks": [
     {
       "id": "paper_cycle_completed",
@@ -39,7 +39,7 @@
   ],
   "paper": {
     "latest_trade": {
-      "idempotency_key": "run_6d5c2fb64f63:momentum_TLT_20d:TLT:buy:1:2026-06-27T08:02:57+00:00",
+      "idempotency_key": "run_c6a8e09ce790:momentum_TLT_20d:TLT:buy:1:2026-06-27T08:08:19+00:00",
       "notional": 91.95,
       "price": 91.95,
       "quantity": 1.0,
@@ -48,9 +48,9 @@
     },
     "order_status": "filled",
     "total_equity": 10000.0,
-    "trade_count": 152
+    "trade_count": 154
   },
-  "run_id": "run_6d5c2fb64f63",
+  "run_id": "run_c6a8e09ce790",
   "safety_boundary": {
     "broker_mutation_allowed": false,
     "live_authorization_file_must_be_absent": true,
@@ -172,13 +172,13 @@
   "schema_version": "2026-06-27.alpha.phase6.paper_shadow_report",
   "shadow": {
     "actionability": "fresh_pending_owner_approval",
-    "client_order_id": "run_6d5c2fb64f63:momentum_TLT_20d:TLT:buy:1:2026-06-27T08:02:57+00:00",
+    "client_order_id": "run_c6a8e09ce790:momentum_TLT_20d:TLT:buy:1:2026-06-27T08:08:19+00:00",
     "estimated_notional_aud": 91.95,
     "order_type": "limit",
     "quantity": 1.0,
     "side": "buy",
     "symbol": "TLT",
-    "ticket_id": "ticket_eab7feed7a61",
+    "ticket_id": "ticket_60071f806c60",
     "time_in_force": "day"
   },
   "status": "pass",
