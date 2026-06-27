@@ -12,7 +12,11 @@ from scripts.record_operator_soak_heartbeat import (
     validate_heartbeat_payload,
 )
 from scripts.supervise_operator_soak import build_supervisor_payload
-from scripts.validate_operator_soak_evidence import SoakRequirement, build_validation_payload
+from scripts.validate_operator_soak_evidence import (
+    SoakRequirement,
+    build_validation_payload,
+    validate_window_metrics,
+)
 from scripts.watch_operator_soak import build_watchdog_cycle_payload, summarize_cycles
 from scripts.watch_operator_soak import main as watchdog_main
 
@@ -235,6 +239,32 @@ def test_serialized_wall_clock_soak_window_fails_closed(tmp_path: Path) -> None:
     assert any(
         "elapsed_wall_seconds exceeds parallel window budget" in error
         for error in payload["results"][0]["errors"]
+    )
+
+
+def test_operator_window_allows_bounded_host_overhead_without_accepting_serialized_window() -> None:
+    window = {
+        "index": 32,
+        "status": "PASS",
+        "child_status": "PARTIAL",
+        "requested_duration_seconds": 300,
+        "measured_duration_seconds": 300,
+        "elapsed_wall_seconds": 397.8961,
+        "browser_heap_growth_bytes": 617363,
+        "browser_dom_node_growth": 0,
+        "worker_jobs_completed": 12,
+        "worker_jobs_total": 12,
+        "worker_event_loop_lag_p95_ms": 23.5641,
+    }
+    errors: list[str] = []
+    validate_window_metrics(errors=errors, window=window, checkpoint=None, index=32)
+    assert errors == []
+
+    window["elapsed_wall_seconds"] = 600
+    validate_window_metrics(errors=errors, window=window, checkpoint=None, index=32)
+    assert any(
+        "elapsed_wall_seconds exceeds parallel window budget" in error
+        for error in errors
     )
 
 

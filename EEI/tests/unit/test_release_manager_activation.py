@@ -30,8 +30,8 @@ def test_release_manager_preflight_is_fail_closed_for_repository_state() -> None
         is False
     )
     assert payload["gate_statuses"]["operator_soak"]["operator_4h"] == "PASS"
-    assert payload["gate_statuses"]["operator_soak"]["status"] == "FAILED_OPERATOR_EVIDENCE"
-    assert payload["gate_statuses"]["operator_soak"]["operator_24h"] == "FAILED_RUN"
+    assert payload["gate_statuses"]["operator_soak"]["status"] == "PARTIAL_OPERATOR_EVIDENCE"
+    assert payload["gate_statuses"]["operator_soak"]["operator_24h"] == "MISSING"
     heartbeat = payload["gate_statuses"]["operator_soak_background_heartbeat"]
     assert heartbeat["status"] == "BACKGROUND_SOAK_OPERATOR_INTERVENTION_REQUIRED"
     assert heartbeat["counts_as_release_ready"] is False

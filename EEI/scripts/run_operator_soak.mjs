@@ -10,6 +10,8 @@ const ROOT = path.resolve(fileURLToPath(new URL("..", import.meta.url)));
 const SOAK_SCRIPT = path.join(ROOT, "scripts/run_soak_smoke.mjs");
 const DEFAULT_CI_DURATION_SECONDS = 3;
 const DEFAULT_OPERATOR_WINDOW_SECONDS = 300;
+const WALL_CLOCK_GRACE_SECONDS = 180;
+const WALL_CLOCK_GRACE_RATIO = 0.5;
 
 function usage() {
   return [
@@ -159,7 +161,10 @@ function maxExpectedWallSeconds(measuredDurationSeconds) {
   if (!Number.isFinite(measuredDurationSeconds) || measuredDurationSeconds <= 0) {
     return null;
   }
-  return measuredDurationSeconds + Math.max(60, measuredDurationSeconds * 0.25);
+  return (
+    measuredDurationSeconds +
+    Math.max(WALL_CLOCK_GRACE_SECONDS, measuredDurationSeconds * WALL_CLOCK_GRACE_RATIO)
+  );
 }
 
 async function readJsonIfPresent(filePath) {

@@ -1,9 +1,9 @@
 project_id: "EEI"
-as_of_event_id: "EVENT-20260627-009"
-source_snapshot_hash: "sha256:0aca7308792067310a98a33c5200f7a551e034e4565dcfa250be586487fa1866"
+as_of_event_id: "EVENT-20260627-010"
+source_snapshot_hash: "sha256:d3cdd49fd2633da88e616b04320e5b9ba5dff5f313c7efc3bfa21b6a51ef4def"
 source_base_commit: "0175e2b9616fa77d50ae06bcf0cd68ce9d015f7d"
 source_tree_hash: "356fcd0bb5d3b892b331d28351fe9e99a64c8457"
-snapshot_event_time: "2026-06-27T19:13:36+10:00"
+snapshot_event_time: "2026-06-27T21:27:32+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -16,8 +16,8 @@ dimensions:
     status: "VERIFIED"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 90
-    total_active_parameters: 90
+    checked_active_parameters: 92
+    total_active_parameters: 92
     checked_active_formulas: 11
     total_active_formulas: 11
     unresolved_fact_ids: []
@@ -27,8 +27,8 @@ dimensions:
   parameter_source_quality:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 90
-    total_active_parameters: 90
+    checked_active_parameters: 92
+    total_active_parameters: 92
     evidence_refs:
       - "EEI/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -64,7 +64,7 @@ dimensions:
     tree_bound_events: 0
     commit_bound_events: 18
     legacy_unbound_events: 19
-    precommit_pending_events: 91
+    precommit_pending_events: 92
     evidence_refs:
       - "EEI/docs/governance/development_events.jsonl"
 delivery_readiness:

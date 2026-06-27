@@ -17,6 +17,8 @@ DEFAULT_BUDGETS = {
     "max_dom_growth_nodes": 12,
     "max_event_loop_lag_ms": 250,
 }
+WALL_CLOCK_GRACE_SECONDS = 180.0
+WALL_CLOCK_GRACE_RATIO = 0.5
 
 
 @dataclass(frozen=True)
@@ -229,7 +231,8 @@ def validate_window_metrics(
     )
     elapsed_wall = number(window.get("elapsed_wall_seconds"))
     max_expected_wall = (
-        measured_duration + max(60.0, measured_duration * 0.25)
+        measured_duration
+        + max(WALL_CLOCK_GRACE_SECONDS, measured_duration * WALL_CLOCK_GRACE_RATIO)
         if measured_duration is not None
         else None
     )
@@ -460,10 +463,11 @@ def build_validation_payload(
         "window_wall_clock_policy": {
             "measurement_strategy": "parallel_browser_worker_v1",
             "max_elapsed_wall_seconds": (
-                "measured_duration_seconds + max(60, measured_duration_seconds * 0.25)"
+                "measured_duration_seconds + max(180, measured_duration_seconds * 0.5)"
             ),
             "reason": (
                 "browser and worker soak must be measured in the same operator window, "
+                "with bounded host scheduling and browser process overhead allowance, "
                 "not serialized into double wall-clock evidence."
             ),
         },

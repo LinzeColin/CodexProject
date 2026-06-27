@@ -57,7 +57,7 @@
       "downstream_release_gate_refresh_allowed": false,
       "progress_status": "FAILED_WINDOW",
       "release_gate_closed_by_finalizer": false,
-      "status": "A209_FINALIZATION_OPERATOR_INTERVENTION_REQUIRED",
+      "status": "A209_FINALIZATION_BLOCKED_MISSING_OR_PARTIAL",
       "target_windows": 288,
       "windows_completed": 31,
       "windows_failed": 1
@@ -80,7 +80,7 @@
       "status": "PENDING_SIGNED_DECISIONS"
     }
   },
-  "generated_at": "2026-06-27T09:17:14Z",
+  "generated_at": "2026-06-27T11:38:06Z",
   "missing_input_ids": [
     "A202_source_license_passage_owner_legal_release",
     "A210_brand_legal_market_clearance_or_risk_waiver",
@@ -218,7 +218,7 @@
       "label": "A209 24h operator soak finalization evidence",
       "required_source": {
         "path": "artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json",
-        "sha256": "635d729cb1e158bfcfdb0e1877d96b321d97b8bdfe6805126399c6ee7af97898"
+        "sha256": "ae14c4f128c7d9a04bece9c1454b107fe998004ec4ec56e19360e9f21def5e97"
       },
       "supporting_sources": [],
       "template_or_partial_evidence_counts_as_clearance": false,
@@ -245,7 +245,7 @@
     },
     "a209_operator_soak_finalization_preflight": {
       "path": "artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json",
-      "sha256": "635d729cb1e158bfcfdb0e1877d96b321d97b8bdfe6805126399c6ee7af97898"
+      "sha256": "ae14c4f128c7d9a04bece9c1454b107fe998004ec4ec56e19360e9f21def5e97"
     },
     "a210_brand_clearance_intake_template": {
       "path": "artifacts/tests/a210/t1309_brand_clearance_intake_template.json",
@@ -253,7 +253,7 @@
     },
     "external_release_evidence_bundle_preflight": {
       "path": "artifacts/tests/a205/t1303_external_release_evidence_bundle_preflight.json",
-      "sha256": "ccce21263831fb07b5ad2ba8df52c1855aceeb8167a981b7ec328813c4bc1464"
+      "sha256": "3c5cef637f935994b4b6e8461f2f1bbcca50f52bce641a2af838fd0ff87b7e41"
     }
   },
   "system_en_name": "Enterprise Ecosystem Intelligence",

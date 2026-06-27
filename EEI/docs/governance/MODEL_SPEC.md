@@ -17,7 +17,7 @@ machine_summary:
 
 - model_count: 12
 - formula_count: 12
-- parameter_count: 90
+- parameter_count: 92
 
 The counts above are generated from the canonical machine registries in this directory. Legacy Markdown files are indexes and must not be edited as independent count sources.
 
@@ -49,6 +49,7 @@ The counts above are generated from the canonical machine registries in this dir
 - 2026-06-25 T1302/A203 E2E CI repair updates development-status evidence expectations and generated release artifacts only; no scoring model, graph traversal formula, extraction formula, formula weight, business threshold, API schema, database schema, frontend behavior or publication policy changed.
 - 2026-06-27 T1309/A210 signed brand-clearance source-boundary and T1307/A209 Playwright runtime repair add `PARAM-089` and `PARAM-090`; repository brand-clearance fixtures/templates still cannot close A210, short runtime smoke evidence does not close A209, and no scoring model, graph traversal formula, extraction formula, formula weight, business threshold, API schema, database schema, frontend behavior or publication policy changed.
 - 2026-06-27 T1307/A209 heartbeat/watchdog stale binding changes only operational evidence interpretation: heartbeat now consumes watchdog output and maps stale live checkpoint observations to intervention; `PARAM-070` remains 900 seconds and no scoring model, graph traversal formula, extraction formula, formula weight, business threshold, API schema, database schema, frontend behavior or publication policy changed.
+- 2026-06-27 T1307/A209 wall-clock budget repair adds `PARAM-091` and `PARAM-092`; the operator runner and evidence validator now use `measured_duration_seconds + max(180, measured_duration_seconds * 0.5)` for wall-clock evidence acceptance while still rejecting serialized 300s measured / 600s elapsed windows. No scoring model, graph traversal formula, extraction formula, formula weight, business threshold, API schema, database schema, frontend behavior or publication policy changed.
 
 ## A. Model Overview
 
