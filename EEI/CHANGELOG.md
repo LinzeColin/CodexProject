@@ -73,6 +73,7 @@
 - `EVENT-20260627-006`: Refreshed the active origin/main A209 heartbeat to `20/288` PASS windows with `0` failed, separated healthy running-partial finalization from historical failed evidence, and bound A210 `PARAM-089` extraction to a repo-local policy value while keeping A209, release-manager activation and MVP release readiness blocked.
 - `EVENT-20260627-007`: Added the EEI app icon asset pipeline and installed `EEIAppIcon.icns` into `/Applications/EEI.app`; web metadata now points to matching SVG/PNG icon assets, while A210 formal brand legal/market clearance remains blocked. During the same fixed-point sync, the active A209 origin/main rerun failed at `32/288` and remains `IN_PROGRESS` / operator-intervention required.
 - `EVENT-20260627-008`: Hardened the A209 browser-soak slice runtime so short measurement slices reuse one Chromium process while still creating a fresh page per slice; the 300-second operator probe now passes with `elapsed_wall_seconds=346.5261 <= 375` after the previous attempt exposed required governance companion sync. A209 remains `IN_PROGRESS`; this is not 24h release evidence.
+- `EVENT-20260627-009`: Refreshed selected A202 live official-source capture evidence for `NVDA-ANCHOR-002..004`, regenerated the A202 review packet and dependent release evidence hashes, and kept A202, A209, release-manager activation and MVP release readiness blocked.
 
 ## Legacy Task Pack v4.2.0 - 2026-06-19
 

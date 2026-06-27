@@ -78,7 +78,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `TASK-T1307-A209-BROWSER-SLICE-REUSE`
+- release_gate: `TASK-T1301-A202-LIVE-OFFICIAL-CAPTURE-FRESHNESS`
 
 ## 14. Evidence Freshness
 
@@ -86,8 +86,8 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - tree_bound_events: `0`
 - commit_bound_events: `18`
 - legacy_unbound_events: `19`
-- precommit_pending_events: `90`
-- pending_or_stale_events: `111`
+- precommit_pending_events: `91`
+- pending_or_stale_events: `112`
 
 ## 15. UNKNOWN
 
@@ -95,13 +95,13 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 ## 16. 技术元数据
 
-- source_base_commit: `30ddce62f711f17eff18591adc4e4f315782d589`
-- source_tree_hash: `6bb27e6276f43e2f4a5e76038656e9ea0009ec6a`
-- source_snapshot_hash: `sha256:02120bccb74f1eb94afbaece541d43a4fdafc2799f147ad3b86176d7587f1e54`
-- snapshot_event_time: `2026-06-27T18:08:00+10:00`
+- source_base_commit: `0175e2b9616fa77d50ae06bcf0cd68ce9d015f7d`
+- source_tree_hash: `356fcd0bb5d3b892b331d28351fe9e99a64c8457`
+- source_snapshot_hash: `sha256:0aca7308792067310a98a33c5200f7a551e034e4565dcfa250be586487fa1866`
+- snapshot_event_time: `2026-06-27T19:13:36+10:00`
 - generator_version: `4.0.0`
 - version: `0.1.0`
-- phase/gate: `D / TASK-T1307-A209-BROWSER-SLICE-REUSE`
+- phase/gate: `D / TASK-T1301-A202-LIVE-OFFICIAL-CAPTURE-FRESHNESS`
 
 ## 17. Next Unique Task
 

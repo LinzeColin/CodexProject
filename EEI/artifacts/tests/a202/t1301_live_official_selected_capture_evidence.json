@@ -9,7 +9,7 @@
   "status": "LIVE_CAPTURE_READY_FOR_OPERATOR_REVIEW",
   "record_mode": "live",
   "parser_version": "nvidia-official-fulltext-live-v1",
-  "generated_at": "2026-06-24T23:26:47+00:00",
+  "generated_at": "2026-06-27T09:13:36+00:00",
   "source_registry": "data/nvidia_public_source_anchors.csv",
   "source_registry_sha256": "cf9013872f5b5e8a33367b583e6e5877a7c3d29cce45174728afd4d59871fc2d",
   "capture_policy": {
@@ -106,7 +106,7 @@
             "transport": "httpx",
             "status": "response",
             "http_status": 200,
-            "elapsed_ms": 341.3772,
+            "elapsed_ms": 1228.2978,
             "retryable": false,
             "truncated_by_max_bytes": false
           }
@@ -172,7 +172,7 @@
             "transport": "httpx",
             "status": "response",
             "http_status": 200,
-            "elapsed_ms": 301.6203,
+            "elapsed_ms": 782.2072,
             "retryable": false,
             "truncated_by_max_bytes": false
           }
@@ -217,7 +217,7 @@
       "source_use_limit": "May support ecosystem, deployment or government collaboration candidates only after passage-level review, owner sign-off, source-license review and release clearance.",
       "capture_status": "success",
       "last_error": null,
-      "source_text_sha256": "0ad380f0d70cd5d1ce785bc65ac7cd4f746d4f6de74df4aeda475cec09315705",
+      "source_text_sha256": "51548ebd215a63eda4afdecd4016b6dfcb7beae440ec94e1915f07219004a6bc",
       "source_text_excerpt": "NVIDIA CEO Envisions AI Infrastructure Industry Worth ‘Trillions of Dollars’ | NVIDIA Blog Skip to content NVIDIA CEO Envisions AI Infrastructure Industry Worth ‘Trillions of Dollars’ In his COMPUTEX keynote, Huang unvei",
       "source_health": {
         "status": "healthy",
@@ -228,8 +228,8 @@
           "ratio": 1.0,
           "minimum_ratio": 1.0
         },
-        "text_char_count": 7860,
-        "content_length_bytes": 113039,
+        "text_char_count": 7856,
+        "content_length_bytes": 111996,
         "http_status": 200,
         "content_type": "text/html; charset=UTF-8",
         "attempts": [
@@ -238,7 +238,7 @@
             "transport": "httpx",
             "status": "response",
             "http_status": 200,
-            "elapsed_ms": 253.7167,
+            "elapsed_ms": 243.0189,
             "retryable": false,
             "truncated_by_max_bytes": false
           }

@@ -11,14 +11,14 @@ This ledger is human-readable. The append-only machine record is `development_ev
 - Product version: `0.1.0`
 - Product version status: `provisional`
 - Current phase: `D`
-- Current gate: `TASK-T1308-A211-APP-ICON-SHELL-SYNC`
-- Confirmed iteration count: 39
+- Current gate: `TASK-T1301-A202-LIVE-OFFICIAL-CAPTURE-FRESHNESS`
+- Confirmed iteration count: 40
 - Reconstructed development event count: 8
-- Current task: `TASK-T1308/A211 app icon shell sync with A209 origin/main rerun requiring operator intervention`
-- Current A209 point-in-time heartbeat: the current active origin/main 24h operator soak rerun under `/private/tmp/eei-a209-rerun-20260627-originmain-8d5a3916/` reports `31` PASS windows and `1` FAIL window at window `32`; latest failed `generated_at` / `ended_at` is `2026-06-27T06:16:44Z`, operator PID `37871` is `NOT_RUNNING`, watchdog PID `38400` is `RUNNING` and reporting `OPERATOR_INTERVENTION_REQUIRED`, and `completion_percent=10.76`. This is failed progress/incident evidence only; A209 remains `IN_PROGRESS` and has no release-ready 24h evidence.
+- Current task: `TASK-T1301/A202 live official capture freshness and fail-closed release-evidence hash sync`
+- Current A209 point-in-time heartbeat: the active isolated rerun under `/private/tmp/eei-a209-rerun-20260627-fd66c8a0-0806/` failed at window `15/288`; the chain has `14` PASS windows and `1` FAIL window, latest failed checkpoint `generated_at=2026-06-27T09:25:40Z`, `elapsed_wall_seconds=398.4896` exceeded the `375` second wall-clock budget, operator PID `9345` is `defunct`, watchdog PID `9319` is running and reports `OPERATOR_INTERVENTION_REQUIRED`. This is failed operator evidence; A209 remains `IN_PROGRESS` and has no release-ready 24h evidence.
 - Current isolated rerun: the older `/private/tmp/eei-a209-rerun-20260626-150051-b6c63687/` chain is historical failed/stale comparison evidence with `85` windows, `84` PASS and `1` FAIL. It is not the active rerun and must not be overwritten by partial progress.
 - Current app icon state: `scripts/generate_app_icon.py` deterministically generates `assets/app_icon/EEIAppIcon.svg`, `assets/app_icon/EEIAppIcon.png`, `assets/app_icon/EEIAppIcon.icns`, and web public icon assets; `/Applications/EEI.app` has `Contents/Resources/EEIAppIcon.icns`, `CFBundleIconFile=EEIAppIcon`, and `CFBundleIconName=EEIAppIcon`.
-- Blockers: T1301/A202 is still `IN_PROGRESS`; review packets and selected official-source captures do not create source-license review, passage-level human approval, production owner approval, legal release clearance, brand clearance, release-manager activation or final public relationship publication. T1307/A209 is still `IN_PROGRESS`; the current origin/main heartbeat is failed/intervention evidence (`31` PASS, `1` FAIL at window `32`) and a future chain must reach `288/288` successful windows with zero failures before finalization can refresh downstream release gates. A204/A205 release-manager activation preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED` until A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence pass. A026 still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%. A210 still needs formal brand legal/market clearance or signed risk waiver; app icon installation is a visual shell asset and not legal or market clearance.
+- Blockers: T1301/A202 is still `IN_PROGRESS`; review packets and selected official-source captures do not create source-license review, passage-level human approval, production owner approval, legal release clearance, brand clearance, release-manager activation or final public relationship publication. T1307/A209 is still `IN_PROGRESS`; the current active isolated heartbeat is failed/intervention evidence (`14` PASS, `1` FAIL at window `15`) and a future chain must reach `288/288` successful windows with zero failures before finalization can refresh downstream release gates. A204/A205 release-manager activation preflight remains `RELEASE_MANAGER_ACTIVATION_BLOCKED` until A202 signed-decision, A026/A027 gold-quality, A209 soak and A210 brand-clearance evidence pass. A026 still requires at least 50 operator-supplied human-labeled entity-resolution cases with precision >=95%; A027 still requires at least 100 operator-supplied human-labeled relationship cases with precision >=90%. A210 still needs formal brand legal/market clearance or signed risk waiver; app icon installation is a visual shell asset and not legal or market clearance.
 
 ## EVENT-20260627-007 - T1308/A211 app icon shell sync
 
@@ -685,6 +685,30 @@ This ledger is human-readable. The append-only machine record is `development_ev
 ## Confirmed Iterations
 
 Do not infer iteration count from Git commit count.
+
+### `ITER-20260627-009`
+
+- Date: 2026-06-27
+- Fact level: EXTRACTED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `d59df188d093f51f61d01620f3b86321f119d4ac`
+- Result commit: `PENDING`
+- Task IDs: `TASK-T1301`, with dependent context for `TASK-T1303`
+- Acceptance IDs: `ACC-A202`, with blocked dependent evidence for `ACC-A204`, `ACC-A205`, `ACC-A209`, `ACC-A210`, `ACC-A026` and `ACC-A027`
+- Goal: refresh selected A202 live official-source capture evidence and downstream fail-closed release-evidence hashes without waiting for the A209 24h background gate to finish.
+- Assumptions: selected official-source capture freshness is review input only and does not provide source-license review, passage-level approval, production owner signoff, legal release clearance, relationship publication, release-manager activation, A209 closure or MVP release readiness.
+- Files changed: A202 live capture, A202 review packet, A202 release-decision and signed-intake artifacts, A205 external/release-manager/MVP preflight artifacts, clean-room/release artifacts and governance companion records.
+- Model changes: no scoring formula, graph traversal formula, extraction model, model weight, business threshold, API schema, database schema, frontend route behavior or publication policy changed.
+- Parameter changes: no active parameter value changed; `PARAM-086` evidence hash/profile was refreshed to bind the updated `release_clearance=false` live-capture policy.
+- Commands run: selected live official capture, A202 review-packet generate/validate, A202 release-decision/signed-intake generate/validate, A205 external/release-manager/MVP preflight generate/validate, clean-room/release artifact generate/validate.
+- Test results: selected live capture PASS for 3/3 anchors; `NVDA-ANCHOR-002/003/004` all returned HTTP 200 with healthy source health and no committed `source_text`; A202 review packet validates with `PENDING_OWNER_LEGAL_CLEARANCE`; dependent A205/MVP artifacts validate and remain blocked.
+- Successes: A202 official-source evidence freshness and downstream release-evidence hashes are synchronized while keeping release gates fail-closed.
+- Failures: A202 signed source/license/passage/owner/legal inputs remain missing; A209 is still a background 24h gate; A026/A027 production gold evidence and A210 brand clearance remain missing.
+- Decisions: keep A202 `IN_PROGRESS`; keep A209 as a background release gate; do not claim MVP ready from artifact freshness.
+- Remaining risks: live source content can drift again; A209 can fail before 288/288; external release inputs remain unavailable.
+- Rollback: revert the A202/A205 generated artifacts and this governance event, then regenerate clean-room/release artifacts from the previous live-capture evidence.
+- Next step: run changed-only governance, full `make verify`, commit/push and verify CI while A209 continues in background.
 
 ### `ITER-20260625-019`
 
@@ -1902,3 +1926,4 @@ Status: LOCAL FULL VERIFIED; A209 STILL IN PROGRESS; 24H SOAK AND WATCHDOG RUNNI
 - `EVENT-20260627-002` / `ITER-20260627-002`: Refreshed A202/A210 and A205 release preflight source hashes after the A210 preflight changed, then regenerated clean-room and release evidence. Local `make verify` passes, including clean-room `package_paths=446`, release `manifest_paths=453`, `checksum_paths=452`, and 133 unit tests; A209/A210/MVP release gates remain blocked.
 - `EVENT-20260627-003` / `ITER-20260627-003`: Hardened A209 background heartbeat to consume watchdog output and turn stale live checkpoint observations into `BACKGROUND_SOAK_OPERATOR_INTERVENTION_REQUIRED`. Focused A209 tests pass `22/22`; live origin/main rerun probe reports `10/288` PASS and `0` failed, which remains progress-only evidence.
 - `EVENT-20260627-008` / `ITER-20260627-008`: Hardened the A209 browser-soak runtime to reuse one Chromium process across short measurement slices while retaining a fresh page per slice. Local checks passed: `node --check scripts/run_soak_smoke.mjs`, A209 focused tests `27/27`, v5 readiness sync, 3s operator smoke, and a real 300s operator probe with `elapsed_wall_seconds=346.5261 <= 375`. A209 remains open until a fresh 288/288 zero-failure 24h run validates.
+- `EVENT-20260627-009` / `ITER-20260627-009`: Refreshed selected A202 live official-source capture evidence for `NVDA-ANCHOR-002..004`, regenerated A202/A205 fail-closed release evidence hashes, and kept A202, A209, A204/A205, A210, A026/A027 and MVP release readiness blocked.

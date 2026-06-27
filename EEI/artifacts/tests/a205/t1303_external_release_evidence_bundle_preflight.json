@@ -28,7 +28,7 @@
       "relationships_publishable": 0,
       "release_clearance": false,
       "source_capture_artifact": "artifacts/tests/a202/t1301_live_official_selected_capture_evidence.json",
-      "source_capture_artifact_sha256": "9e8e73ee58338a3d1d17206b46559019ea5d9860e50edc4bc97e142fbde3bd3d",
+      "source_capture_artifact_sha256": "ad0de30da50faab2e6ff2e9624af69e2a3c60a08c599748b38228f6e7ae924c3",
       "source_license_review_status": "missing",
       "status": "PENDING_OWNER_LEGAL_CLEARANCE"
     },
@@ -80,7 +80,7 @@
       "status": "PENDING_SIGNED_DECISIONS"
     }
   },
-  "generated_at": "2026-06-27T07:04:51Z",
+  "generated_at": "2026-06-27T09:17:14Z",
   "missing_external_inputs": [
     {
       "acceptance_id": "A202",
@@ -138,7 +138,7 @@
   "schema_version": "eei-external-release-evidence-bundle-preflight-v1",
   "source_files": {
     "a202_operator_review_packet": "artifacts/tests/a202/t1301_operator_review_packet_contract.json",
-    "a202_operator_review_packet_sha256": "cedc5ae7056c85acf249f5b1ef50da4067223d8170608fa5913efc7631d4ca7b",
+    "a202_operator_review_packet_sha256": "48a257e5771ebe0c04460a42b5c7bf401a64adf513fb86a8a25f4325cd4ad4da",
     "brand_preflight": "artifacts/tests/a210/t1309_brand_clearance_preflight_contract.json",
     "brand_preflight_sha256": "c7f1b58ae0646b5f246be1c6a55d0b7808e227138f5294fbb40293f30459cf88",
     "entity_gold_evaluation": "artifacts/tests/a026/t904_entity_resolution_gold_evaluation_contract.json",
@@ -148,7 +148,7 @@
     "relationship_gold_evaluation": "artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json",
     "relationship_gold_evaluation_sha256": "d695948385a5fba50ccbbf57c7adebe6a5f4bfffc1322e3ab57fb48a3fedcb64",
     "release_decision_contract": "artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json",
-    "release_decision_contract_sha256": "259ef18a154f2d9c3026ebf9828b598822e7dd0c670764ce249f30be99fb127b"
+    "release_decision_contract_sha256": "25c3aa1fb4cd8d87da26c7ce538e54ff28900821f7a6a93e95e682cc1982f7c8"
   },
   "status": "EXTERNAL_RELEASE_EVIDENCE_BUNDLE_BLOCKED",
   "system_en_name": "Enterprise Ecosystem Intelligence",
