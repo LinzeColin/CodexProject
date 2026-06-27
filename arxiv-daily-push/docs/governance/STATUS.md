@@ -2,10 +2,10 @@
 
 ## Snapshot Metadata
 
-- source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
+- source_base_commit: `61c262d6445002035a21ffd289c801519caab2c3`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:cdbdbff29ee0ed27c06cc23c716b5ee0a934a8261b11b16513cdf4af84aae77c`
-- snapshot_event_time: `2026-06-28T02:00:14+10:00`
+- source_snapshot_hash: `sha256:73ed330b33cec3b74b18e5b9a318435aadee45b3d027a180e9d271027b32dd78`
+- snapshot_event_time: `2026-06-28T02:24:54+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -14,10 +14,10 @@
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - Product version: `0.23.1`
-- Phase/Gate: `S2PM / S2PMT07_FINAL_ACCEPTANCE_BUNDLE_READINESS_BLOCKED_NO_PRODUCTION`
-- Models/Formulas/Parameters total: `117 / 119 / 979`
-- Active formulas/parameters: `119 / 962`
-- Machine checked formulas/parameters: `119 / 957`
+- Phase/Gate: `S2PL / S2PLT04_LOCAL_DRILL_EVIDENCE_SYNC_BLOCKED_NO_PRODUCTION`
+- Models/Formulas/Parameters total: `117 / 119 / 982`
+- Active formulas/parameters: `119 / 965`
+- Machine checked formulas/parameters: `119 / 960`
 
 ## Assurance
 
@@ -35,7 +35,7 @@
 ## Delivery
 
 - Readiness: `VERIFIED`
-- Release gate: `S2PMT07_FINAL_ACCEPTANCE_BUNDLE_READINESS_BLOCKED_NO_PRODUCTION`
+- Release gate: `S2PLT04_LOCAL_DRILL_EVIDENCE_SYNC_BLOCKED_NO_PRODUCTION`
 - V7 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - V7 contract hash: `a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d`
 - V7 roadmap hash: `7c5f2d842d4f6b909343c953fe39b4a4aa540d168199747a9f7decdb1aad9bd1`
@@ -48,8 +48,8 @@
 - Next governance task: `S2PMT07`
 - Parallel shadow source task: `NONE_WHILE_S2PMT07_BLOCKED`
 - Next executable task: `S2PLT01`
-- Pending/stale events: `223`
+- Pending/stale events: `225`
 - Tree-bound events: `0`
 - Commit-bound events: `4`
-- Legacy unbound events: `184`
+- Legacy unbound events: `186`
 - Unresolved fact IDs: `1`

@@ -212,6 +212,22 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(state["available_evidence"]["S2PLT03_RESILIENCE_DRILL"])
         self.assertFalse(state["available_evidence"]["FINAL_ACCEPTANCE_BUNDLE/"])
 
+    def test_s2plt04_consumes_s2plt03_local_drill_as_nonterminal_evidence(self) -> None:
+        report = build_s2plt04_integration_candidate_report(generated_at="2026-06-28T02:24:54+10:00")
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertIn("S2PLT03-LOCAL-RESILIENCE-DRILL", report["dependencies"]["available_local_evidence"])
+        self.assertTrue(report["evidence"]["available_nonterminal_evidence"]["S2PLT03_LOCAL_RESILIENCE_DRILL"])
+        self.assertEqual(
+            report["evidence"]["s2plt03_local_drill_scope"],
+            "local_no_production_drill_not_terminal_acceptance",
+        )
+        self.assertTrue(report["gates"]["s2plt03_local_drill_evidence_present"])
+        self.assertFalse(report["gates"]["s2plt03_completed"])
+        self.assertFalse(report["evidence"]["available_evidence"]["S2PLT03_RESILIENCE_DRILL"])
+        self.assertIn("s2plt03_not_completed", report["blocking_reasons"])
+        self.assertEqual(validate_s2plt04_integration_candidate_report(report), [])
+
     def test_s2plt04_integration_candidate_report_fails_closed_without_production_side_effects(self) -> None:
         report = build_s2plt04_integration_candidate_report(generated_at="2026-06-26T18:00:00+10:00")
 

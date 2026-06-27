@@ -39,7 +39,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `PARTIAL` (953/958 active parameters, 118/118 active formulas)
+- implementation_congruence: `PARTIAL` (960/965 active parameters, 119/119 active formulas)
 - parameter_source_quality: `PARTIAL`
 - methodological_rationale: `VERIFIED`
 - empirical_validation: `VERIFIED`
@@ -68,26 +68,26 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 12. Model Formula Parameter Change
 
-- model_count: `116`
-- total_formulas: `118`
-- active_formulas: `118`
-- total_parameters: `975`
-- active_parameters: `958`
+- model_count: `117`
+- total_formulas: `119`
+- active_formulas: `119`
+- total_parameters: `982`
+- active_parameters: `965`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PMT07_FINAL_ACCEPTANCE_BUNDLE_READINESS_BLOCKED_NO_PRODUCTION`
+- release_gate: `S2PLT04_LOCAL_DRILL_EVIDENCE_SYNC_BLOCKED_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `0`
 - commit_bound_events: `4`
-- legacy_unbound_events: `184`
+- legacy_unbound_events: `186`
 - precommit_pending_events: `40`
-- pending_or_stale_events: `223`
+- pending_or_stale_events: `225`
 
 ## 15. UNKNOWN
 
@@ -95,13 +95,13 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 16. 技术元数据
 
-- source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
+- source_base_commit: `61c262d6445002035a21ffd289c801519caab2c3`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:cdbdbff29ee0ed27c06cc23c716b5ee0a934a8261b11b16513cdf4af84aae77c`
-- snapshot_event_time: `2026-06-28T02:00:14+10:00`
+- source_snapshot_hash: `sha256:73ed330b33cec3b74b18e5b9a318435aadee45b3d027a180e9d271027b32dd78`
+- snapshot_event_time: `2026-06-28T02:24:54+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PM / S2PMT07_FINAL_ACCEPTANCE_BUNDLE_READINESS_BLOCKED_NO_PRODUCTION`
+- phase/gate: `S2PL / S2PLT04_LOCAL_DRILL_EVIDENCE_SYNC_BLOCKED_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 
