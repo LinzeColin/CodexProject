@@ -59,7 +59,7 @@
       "release_gate_closed_by_finalizer": false,
       "status": "A209_FINALIZATION_OPERATOR_INTERVENTION_REQUIRED",
       "target_windows": 288,
-      "windows_completed": 6,
+      "windows_completed": 31,
       "windows_failed": 1
     },
     "relationship_gold": {
@@ -80,7 +80,7 @@
       "status": "PENDING_SIGNED_DECISIONS"
     }
   },
-  "generated_at": "2026-06-27T02:51:53Z",
+  "generated_at": "2026-06-27T07:04:51Z",
   "missing_input_ids": [
     "A202_source_license_passage_owner_legal_release",
     "A210_brand_legal_market_clearance_or_risk_waiver",
@@ -126,7 +126,7 @@
       "label": "A202 signed source/license/passage/owner/legal release decision",
       "required_source": {
         "path": "artifacts/tests/a202/t1301_a202_release_decision_intake_template.json",
-        "sha256": "6885e82f97cf59e3f0d99ec1dc64a7c1b248043002edc9d0ec14f8638fcdf138"
+        "sha256": "4d01b4de9584da3c2d33da889119e5ce60d8f386cf94fb53bf3af6a8119d3712"
       },
       "supporting_sources": [
         {
@@ -206,7 +206,7 @@
     },
     {
       "acceptance_id": "A209",
-      "blocking_reason": "A209 finalization does not allow downstream refresh at 6/288 windows",
+      "blocking_reason": "A209 finalization does not allow downstream refresh at 31/288 windows",
       "completion_criteria": [
         "288/288 five-minute windows pass",
         "0 failed windows",
@@ -218,7 +218,7 @@
       "label": "A209 24h operator soak finalization evidence",
       "required_source": {
         "path": "artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json",
-        "sha256": "f2b6aeb95d35a5945092167cb32b0fe1bb1f7ce9cb40fd4e44c56fc60637ccd4"
+        "sha256": "635d729cb1e158bfcfdb0e1877d96b321d97b8bdfe6805126399c6ee7af97898"
       },
       "supporting_sources": [],
       "template_or_partial_evidence_counts_as_clearance": false,
@@ -241,11 +241,11 @@
     },
     "a202_release_decision_intake_template": {
       "path": "artifacts/tests/a202/t1301_a202_release_decision_intake_template.json",
-      "sha256": "6885e82f97cf59e3f0d99ec1dc64a7c1b248043002edc9d0ec14f8638fcdf138"
+      "sha256": "4d01b4de9584da3c2d33da889119e5ce60d8f386cf94fb53bf3af6a8119d3712"
     },
     "a209_operator_soak_finalization_preflight": {
       "path": "artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json",
-      "sha256": "f2b6aeb95d35a5945092167cb32b0fe1bb1f7ce9cb40fd4e44c56fc60637ccd4"
+      "sha256": "635d729cb1e158bfcfdb0e1877d96b321d97b8bdfe6805126399c6ee7af97898"
     },
     "a210_brand_clearance_intake_template": {
       "path": "artifacts/tests/a210/t1309_brand_clearance_intake_template.json",
@@ -253,7 +253,7 @@
     },
     "external_release_evidence_bundle_preflight": {
       "path": "artifacts/tests/a205/t1303_external_release_evidence_bundle_preflight.json",
-      "sha256": "125e68b30c1efc0c1811e6e70206bc360bcaa9a61ad9b5c87eed9f32354eee48"
+      "sha256": "1b2266e5ee1bb4ecec18c3b209fd3cc50614bf7b6cdd8159b4a64a2a4297e27d"
     }
   },
   "system_en_name": "Enterprise Ecosystem Intelligence",

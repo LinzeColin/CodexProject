@@ -38,18 +38,18 @@
       "status": "FAILED_OPERATOR_EVIDENCE"
     },
     "operator_soak_background_heartbeat": {
-      "completion_percent": 2.08,
+      "completion_percent": 10.76,
       "counts_as_release_ready": false,
-      "latest_successful_window_index": 6,
+      "latest_successful_window_index": 31,
       "operator_process_status": "NOT_RUNNING",
       "progress_status": "FAILED_WINDOW",
       "release_gate_closed_by_background_heartbeat": false,
       "status": "BACKGROUND_SOAK_OPERATOR_INTERVENTION_REQUIRED",
       "target_windows": 288,
       "watchdog_process_status": "RUNNING",
-      "windows_completed": 6,
+      "windows_completed": 31,
       "windows_failed": 1,
-      "windows_remaining": 282
+      "windows_remaining": 257
     },
     "relationship_gold": {
       "expected_acceptance_id": "A027",
@@ -71,7 +71,7 @@
       "signed_decision_complete": true
     }
   },
-  "generated_at": "2026-06-27T02:52:53Z",
+  "generated_at": "2026-06-27T07:04:51Z",
   "missing_gates": [
     {
       "gate_id": "A202_source_license_reviews",
@@ -103,7 +103,7 @@
     },
     {
       "gate_id": "A209_24h_operator_soak",
-      "reason": "24h operator soak evidence is missing or not release-ready; background heartbeat reports 6/288 windows, 1 failed, FAILED_WINDOW"
+      "reason": "24h operator soak evidence is missing or not release-ready; background heartbeat reports 31/288 windows, 1 failed, FAILED_WINDOW"
     }
   ],
   "non_claims": [
@@ -129,17 +129,17 @@
   "schema_version": "eei-release-manager-activation-preflight-v1",
   "source_files": {
     "brand_preflight": "artifacts/tests/a210/t1309_brand_clearance_preflight_contract.json",
-    "brand_preflight_sha256": "e7de29ff58a187a45a768b76c17f3c318fe315f33b70c93c15498331cd8c70db",
+    "brand_preflight_sha256": "c7f1b58ae0646b5f246be1c6a55d0b7808e227138f5294fbb40293f30459cf88",
     "entity_gold_evaluation": "artifacts/tests/a026/t904_entity_resolution_gold_evaluation_contract.json",
     "entity_gold_evaluation_sha256": "e34cf6e5b57500ce827a6db92a2bc533d66f4b64320021657c5e7fd6614d14d3",
     "operator_soak_evidence": "artifacts/tests/a209/t1307_operator_soak_evidence_validation.json",
     "operator_soak_evidence_sha256": "f5dc124f5e8beb4389163e5e171bbddc9743cfcb3a223af0798a74c9234cc53b",
     "operator_soak_heartbeat": "artifacts/tests/a209/t1307_operator_soak_background_progress.json",
-    "operator_soak_heartbeat_sha256": "3aa3d9ff19898d2043c00faa0ca7c9a08a085ea76629d5945d7d6ac61de166bb",
+    "operator_soak_heartbeat_sha256": "555f5f0c86df491d144991a539c34c583b1c5778045348960c472e4f118f0be8",
     "relationship_gold_evaluation": "artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json",
     "relationship_gold_evaluation_sha256": "d695948385a5fba50ccbbf57c7adebe6a5f4bfffc1322e3ab57fb48a3fedcb64",
     "release_decision_contract": "artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json",
-    "release_decision_contract_sha256": "11cc15699d7636d99319cd2cf87c45084a36f41828a76458a348019c4f256706",
+    "release_decision_contract_sha256": "259ef18a154f2d9c3026ebf9828b598822e7dd0c670764ce249f30be99fb127b",
     "signed_decision_bundle": "tests/fixtures/release_decision_bundle/a202_a210_signed_decision_bundle_contract_test.json",
     "signed_decision_bundle_sha256": "20bece9164778e85dcc0ff155d30344d9d304586f647375891bcd7660ae023ad"
   },

@@ -121,7 +121,15 @@ def finalization_status(
     evidence_summary: dict[str, Any],
     heartbeat_errors: list[str],
 ) -> str:
-    if heartbeat_errors or evidence_summary["status"] in {"FAIL", "FAILED_OPERATOR_EVIDENCE"}:
+    if heartbeat_errors or evidence_summary["status"] == "FAIL":
+        return "A209_FINALIZATION_OPERATOR_INTERVENTION_REQUIRED"
+    if (
+        heartbeat_summary.get("progress_status") == "RUNNING_PARTIAL"
+        and heartbeat_summary.get("windows_failed") == 0
+        and heartbeat_summary.get("operator_process_status") == "RUNNING"
+    ):
+        return "A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL"
+    if evidence_summary["status"] == "FAILED_OPERATOR_EVIDENCE":
         return "A209_FINALIZATION_OPERATOR_INTERVENTION_REQUIRED"
     if evidence_summary["status"] == "EVIDENCE_READY_FOR_RELEASE_MANAGER_REVIEW":
         if (
@@ -130,8 +138,6 @@ def finalization_status(
         ):
             return "A209_FINALIZATION_READY_FOR_RELEASE_GATE_REGEN"
         return "A209_FINALIZATION_EVIDENCE_READY_HEARTBEAT_STALE"
-    if heartbeat_summary.get("progress_status") == "RUNNING_PARTIAL":
-        return "A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL"
     if heartbeat_summary.get("progress_status") == "COMPLETE_SUMMARY_PENDING":
         return "A209_FINALIZATION_BLOCKED_SUMMARY_PENDING"
     return "A209_FINALIZATION_BLOCKED_MISSING_OR_PARTIAL"

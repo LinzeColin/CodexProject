@@ -6,7 +6,7 @@ EEI 当前治理结论：实现一致性为 `VERIFIED`，方法/实证为 `UNVER
 
 ## 2. 本次运行改变了什么
 
-Owner 视图现在记录 A209 heartbeat/watchdog stale binding：heartbeat 会读取 watchdog output，并在 checkpoint 停滞超过阈值时进入 intervention 状态；当前 live origin/main rerun probe 为 `10/288` PASS、`0` failed。这仍不是 A209 closure、legal clearance 或 MVP ready 声明。
+Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。
 
 ## 3. 为什么重要
 
@@ -78,7 +78,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `TASK-T1303-A205-RELEASE-EVIDENCE-HASH-SYNC`
+- release_gate: `TASK-T1308-A211-APP-ICON-SHELL-SYNC`
 
 ## 14. Evidence Freshness
 
@@ -86,22 +86,22 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - tree_bound_events: `0`
 - commit_bound_events: `18`
 - legacy_unbound_events: `19`
-- precommit_pending_events: `82`
-- pending_or_stale_events: `103`
+- precommit_pending_events: `89`
+- pending_or_stale_events: `110`
 
 ## 15. UNKNOWN
 
-- unresolved_fact_ids: `5`
+- unresolved_fact_ids: `6`
 
 ## 16. 技术元数据
 
 - source_base_commit: `12df22b6347fd881d42545afe387ac9e41e56fb4`
 - source_tree_hash: `00e27599461403192b998e8f9a3f7f0e769e5d8f`
-- source_snapshot_hash: `sha256:c1ac83658310a4704bb9924c2ce78f5e63627d4593bcbc3ee40d5d9ca2bb0b3e`
-- snapshot_event_time: `2026-06-27T13:10:00+10:00`
+- source_snapshot_hash: `sha256:7e0d8296ea40acfca3185cb63edf522b6f405da61aae12f3e1caf6ca6db523a0`
+- snapshot_event_time: `2026-06-27T16:14:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.1.0`
-- phase/gate: `D / TASK-T1303-A205-RELEASE-EVIDENCE-HASH-SYNC`
+- phase/gate: `D / TASK-T1308-A211-APP-ICON-SHELL-SYNC`
 
 ## 17. Next Unique Task
 

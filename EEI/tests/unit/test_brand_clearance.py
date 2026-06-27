@@ -88,6 +88,18 @@ def test_brand_clearance_intake_template_is_fail_closed() -> None:
         brand.validate_signed_intake_bundle(payload)
 
 
+def test_brand_clearance_preflight_exposes_machine_policy_value() -> None:
+    payload = brand.build_payload()
+    source_boundary = payload["signed_bundle_source_boundary_policy"]
+
+    assert (
+        source_boundary["policy_value"]
+        == "allow:artifacts/operator_inputs/|operator_inputs/|work/operator_inputs/;"
+        "disallow:artifacts/tests/|data/|tests/|docs/|config/|brand/"
+    )
+    brand.validate_payload(payload)
+
+
 def test_signed_brand_clearance_bundle_requires_no_blocking_conflicts() -> None:
     payload = signed_bundle_from_template()
     payload["trademark_knockout_reviews"][0]["blocking_conflicts_found"] = True

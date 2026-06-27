@@ -13,7 +13,7 @@
     "make verify"
   ],
   "downstream_release_gate_refresh_allowed": false,
-  "generated_at": "2026-06-25T22:49:25Z",
+  "generated_at": "2026-06-27T07:00:00Z",
   "non_claims": [
     "This finalizer does not close A209 by itself.",
     "This finalizer does not replace validate_operator_soak_evidence.py.",
@@ -35,7 +35,7 @@
     "evidence_validation": "artifacts/tests/a209/t1307_operator_soak_evidence_validation.json",
     "evidence_validation_sha256": "f5dc124f5e8beb4389163e5e171bbddc9743cfcb3a223af0798a74c9234cc53b",
     "heartbeat": "artifacts/tests/a209/t1307_operator_soak_background_progress.json",
-    "heartbeat_sha256": "3aa3d9ff19898d2043c00faa0ca7c9a08a085ea76629d5945d7d6ac61de166bb"
+    "heartbeat_sha256": "555f5f0c86df491d144991a539c34c583b1c5778045348960c472e4f118f0be8"
   },
   "source_statuses": {
     "evidence_validation": {
@@ -76,18 +76,18 @@
       "status": "FAILED_OPERATOR_EVIDENCE"
     },
     "heartbeat": {
-      "completion_percent": 2.08,
-      "operator_pid": 61143,
+      "completion_percent": 10.76,
+      "operator_pid": 37871,
       "operator_process_status": "NOT_RUNNING",
       "progress_status": "FAILED_WINDOW",
       "release_gate_closed_by_background_heartbeat": false,
       "status": "BACKGROUND_SOAK_OPERATOR_INTERVENTION_REQUIRED",
       "target_windows": 288,
-      "watchdog_pid": 61390,
+      "watchdog_pid": 38400,
       "watchdog_process_status": "RUNNING",
-      "windows_completed": 6,
+      "windows_completed": 31,
       "windows_failed": 1,
-      "windows_remaining": 282
+      "windows_remaining": 257
     },
     "heartbeat_validation_errors": []
   },

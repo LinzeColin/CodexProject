@@ -15,20 +15,25 @@ def write_json(path: Path, payload: dict) -> Path:
 
 
 def heartbeat(*, windows_completed: int, windows_failed: int = 0) -> dict:
+    failed = windows_failed > 0
     return {
         "schema_version": "eei-a209-operator-soak-background-heartbeat-v1",
         "artifact_id": "t1307-a209-background-operator-soak-heartbeat",
         "system_name": "EEI",
         "task_id": "T1307",
         "acceptance_ids": ["A209"],
-        "status": "BACKGROUND_SOAK_RUNNING_WITH_WATCHDOG",
+        "status": "BACKGROUND_SOAK_OPERATOR_INTERVENTION_REQUIRED"
+        if failed
+        else "BACKGROUND_SOAK_RUNNING_WITH_WATCHDOG",
         "progress_status": "RUNNING_PARTIAL"
-        if windows_completed < 288
+        if windows_completed < 288 and not failed
+        else "FAILED_WINDOW"
+        if failed
         else "COMPLETE_READY_FOR_EVIDENCE_VALIDATION",
         "release_gate_closed_by_background_heartbeat": False,
         "a209_task_status_required": "IN_PROGRESS",
         "background_resolution_contract": {
-            "operator_process_status": "RUNNING",
+            "operator_process_status": "NOT_RUNNING" if failed else "RUNNING",
             "operator_pid": 123,
             "watchdog_process_status": "RUNNING",
             "watchdog_pid": 456,
@@ -152,7 +157,10 @@ def test_finalization_requires_intervention_on_failed_evidence(tmp_path: Path) -
 def test_finalization_requires_intervention_on_failed_operator_evidence(
     tmp_path: Path,
 ) -> None:
-    heartbeat_path = write_json(tmp_path / "heartbeat.json", heartbeat(windows_completed=6))
+    heartbeat_path = write_json(
+        tmp_path / "heartbeat.json",
+        heartbeat(windows_completed=6, windows_failed=1),
+    )
     evidence_path = write_json(
         tmp_path / "evidence.json",
         evidence("FAILED_OPERATOR_EVIDENCE"),
@@ -165,6 +173,30 @@ def test_finalization_requires_intervention_on_failed_operator_evidence(
     )
 
     assert payload["status"] == "A209_FINALIZATION_OPERATOR_INTERVENTION_REQUIRED"
+    assert payload["downstream_release_gate_refresh_allowed"] is False
+    assert payload["a209_evidence_ready_for_release_manager"] is False
+    validate_preflight(payload, heartbeat_path=heartbeat_path, evidence_path=evidence_path)
+
+
+def test_finalization_treats_historical_failed_evidence_as_running_partial_when_new_soak_runs(
+    tmp_path: Path,
+) -> None:
+    heartbeat_path = write_json(tmp_path / "heartbeat.json", heartbeat(windows_completed=19))
+    evidence_path = write_json(
+        tmp_path / "evidence.json",
+        evidence("FAILED_OPERATOR_EVIDENCE"),
+    )
+
+    payload = build_preflight(
+        heartbeat_path=heartbeat_path,
+        evidence_path=evidence_path,
+        generated_at="2026-06-24T00:00:00Z",
+    )
+
+    assert payload["status"] == "A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL"
+    assert payload["source_statuses"]["evidence_validation"]["status"] == (
+        "FAILED_OPERATOR_EVIDENCE"
+    )
     assert payload["downstream_release_gate_refresh_allowed"] is False
     assert payload["a209_evidence_ready_for_release_manager"] is False
     validate_preflight(payload, heartbeat_path=heartbeat_path, evidence_path=evidence_path)

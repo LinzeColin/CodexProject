@@ -38,15 +38,15 @@
       "status": "FAILED_OPERATOR_EVIDENCE"
     },
     "operator_soak_background_heartbeat": {
-      "completion_percent": 2.08,
+      "completion_percent": 10.76,
       "counts_as_release_ready": false,
       "progress_status": "FAILED_WINDOW",
       "release_gate_closed_by_background_heartbeat": false,
       "status": "BACKGROUND_SOAK_OPERATOR_INTERVENTION_REQUIRED",
       "target_windows": 288,
-      "windows_completed": 6,
+      "windows_completed": 31,
       "windows_failed": 1,
-      "windows_remaining": 282
+      "windows_remaining": 257
     },
     "production_api": {
       "api_surface_ready": true,
@@ -94,7 +94,7 @@
       "status": "RELEASE_MANAGER_ACTIVATION_BLOCKED"
     }
   },
-  "generated_at": "2026-06-27T02:54:10Z",
+  "generated_at": "2026-06-27T07:04:52Z",
   "missing_gates": [
     {
       "gate_id": "A202_relationship_publication_clearance",
@@ -177,21 +177,21 @@
   "score_publication_allowed": false,
   "source_files": {
     "brand_preflight": "artifacts/tests/a210/t1309_brand_clearance_preflight_contract.json",
-    "brand_preflight_sha256": "e7de29ff58a187a45a768b76c17f3c318fe315f33b70c93c15498331cd8c70db",
+    "brand_preflight_sha256": "c7f1b58ae0646b5f246be1c6a55d0b7808e227138f5294fbb40293f30459cf88",
     "entity_gold_evaluation": "artifacts/tests/a026/t904_entity_resolution_gold_evaluation_contract.json",
     "entity_gold_evaluation_sha256": "e34cf6e5b57500ce827a6db92a2bc533d66f4b64320021657c5e7fd6614d14d3",
     "operator_soak_evidence": "artifacts/tests/a209/t1307_operator_soak_evidence_validation.json",
     "operator_soak_evidence_sha256": "f5dc124f5e8beb4389163e5e171bbddc9743cfcb3a223af0798a74c9234cc53b",
     "operator_soak_heartbeat": "artifacts/tests/a209/t1307_operator_soak_background_progress.json",
-    "operator_soak_heartbeat_sha256": "3aa3d9ff19898d2043c00faa0ca7c9a08a085ea76629d5945d7d6ac61de166bb",
+    "operator_soak_heartbeat_sha256": "555f5f0c86df491d144991a539c34c583b1c5778045348960c472e4f118f0be8",
     "production_api_preflight": "artifacts/tests/a203/t1302_production_api_release_preflight.json",
-    "production_api_preflight_sha256": "de3de93ae7c278e4e99afd497355732f189dadeb8f7c7c6a16709daea926288c",
+    "production_api_preflight_sha256": "1d7d88deb8f3524273f64187b4ed83dc4e32a25ffedc4b4f4dbf15d38e887c0b",
     "relationship_gold_evaluation": "artifacts/tests/a027/t904_relationship_gold_evaluation_contract.json",
     "relationship_gold_evaluation_sha256": "d695948385a5fba50ccbbf57c7adebe6a5f4bfffc1322e3ab57fb48a3fedcb64",
     "release_decision_contract": "artifacts/tests/a202/t1301_a202_a210_release_decision_bundle_contract.json",
-    "release_decision_contract_sha256": "11cc15699d7636d99319cd2cf87c45084a36f41828a76458a348019c4f256706",
+    "release_decision_contract_sha256": "259ef18a154f2d9c3026ebf9828b598822e7dd0c670764ce249f30be99fb127b",
     "release_manager_preflight": "artifacts/tests/a205/t1303_release_manager_activation_preflight.json",
-    "release_manager_preflight_sha256": "b6410d2ef86c43503736ed8ef82e31ac0a25ce480f709c4bed7aa125bbc03aab"
+    "release_manager_preflight_sha256": "f197137be584ea84ebf965e31443306f00834590e718d4b34d5a16378526e75d"
   },
   "status": "MVP_RELEASE_BLOCKED",
   "system_en_name": "Enterprise Ecosystem Intelligence",
