@@ -2,32 +2,32 @@
   "blocking_conditions": [
     "phase6_48h_soak_validation"
   ],
-  "generated_at": "2026-06-27T06:56:02+00:00",
+  "generated_at": "2026-06-27T07:21:54+00:00",
   "history_path": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Alpha/runtime/phase6_soak_history.jsonl",
   "live_authorization_absent": true,
   "publish_report": {
     "blocking_conditions": [
       "phase6_48h_soak_validation"
     ],
-    "generated_at": "2026-06-27T06:56:02+00:00",
+    "generated_at": "2026-06-27T07:21:54+00:00",
     "history_path": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Alpha/runtime/phase6_soak_history.jsonl",
     "live_authorization_absent": true,
     "schema_version": "2026-06-27.alpha.phase6.owner_gate_publish",
     "soak": {
-      "continuous_sample_count": 9,
+      "continuous_sample_count": 14,
       "duration_hours_required": 48,
       "estimated_ready_at": "2026-06-29T06:14:28+00:00",
-      "observed_hours": 0.6669,
-      "remaining_hours": 47.3331,
-      "remaining_seconds": 170399,
-      "sample_count": 85,
+      "observed_hours": 1.1031,
+      "remaining_hours": 46.8969,
+      "remaining_seconds": 168829,
+      "sample_count": 90,
       "status": "observing",
-      "window_end": "2026-06-27T06:54:29+00:00",
+      "window_end": "2026-06-27T07:20:39+00:00",
       "window_start": "2026-06-27T06:14:28+00:00"
     },
     "source_evidence_root": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Alpha/runtime/phase6_owner_gate_latest",
     "status": "blocked_not_ready_for_owner_gate",
-    "target_evidence_root": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Alpha/docs/evidence/phase6_closeout_latest",
+    "target_evidence_root": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject-alpha-g6-clean/Alpha/docs/evidence/phase6_closeout_latest",
     "verification_status": "pass"
   },
   "require_ready_verification": {
@@ -176,8 +176,8 @@
         "status": "fail"
       }
     ],
-    "evidence_root": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Alpha/docs/evidence/phase6_closeout_latest",
-    "generated_at": "2026-06-27T06:56:02+00:00",
+    "evidence_root": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject-alpha-g6-clean/Alpha/docs/evidence/phase6_closeout_latest",
+    "generated_at": "2026-06-27T07:21:54+00:00",
     "live_authorization_absent": true,
     "owner_gate_status": "blocked_not_ready_for_owner_gate",
     "require_ready": true,
@@ -188,5 +188,5 @@
   "source_evidence_root": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Alpha/runtime/phase6_owner_gate_latest",
   "status": "not_ready_for_owner_gate",
   "status_zh": "未达 OWNER-GATE-01",
-  "target_evidence_root": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Alpha/docs/evidence/phase6_closeout_latest"
+  "target_evidence_root": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject-alpha-g6-clean/Alpha/docs/evidence/phase6_closeout_latest"
 }

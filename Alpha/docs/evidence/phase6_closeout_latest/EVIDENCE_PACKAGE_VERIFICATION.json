@@ -144,8 +144,8 @@
       "status": "fail"
     }
   ],
-  "evidence_root": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Alpha/docs/evidence/phase6_closeout_latest",
-  "generated_at": "2026-06-27T06:56:02+00:00",
+  "evidence_root": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject-alpha-g6-clean/Alpha/docs/evidence/phase6_closeout_latest",
+  "generated_at": "2026-06-27T07:21:54+00:00",
   "live_authorization_absent": true,
   "owner_gate_status": "blocked_not_ready_for_owner_gate",
   "require_ready": false,
