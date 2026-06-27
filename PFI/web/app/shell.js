@@ -143,6 +143,12 @@ const FEATURE_TARGETS = {
   导出中心: { view: "export_center", label: "打开导出" },
   "PFI Context Export": { view: "pfi_context_export", label: "打开 Context" },
   "Alpha 只读出口": { view: "alpha_readonly_export", label: "查看出口" },
+  端到端验收: { view: "stage6_e2e", label: "打开验收" },
+  "Synthetic E2E": { view: "stage6_synthetic_e2e", label: "查看 E2E" },
+  回归治理: { view: "stage6_regression_governance", label: "查看治理" },
+  交付与回滚: { view: "stage6_delivery_rollback", label: "查看交付" },
+  "Rollback plan": { view: "stage6_rollback_plan", label: "查看回滚" },
+  "Follow-up list": { view: "stage6_follow_up_list", label: "查看后续" },
   账户地图: { workspace: "accounts", label: "查看账户" },
   账本流水: { workspace: "ledger", label: "查看账本" },
   投资总览: { workspace: "investment", label: "查看投资" },
@@ -546,6 +552,54 @@ const FUNCTION_VIEWS = {
     "查看 Alpha 出口边界",
     "PFI 只输出只读 context，Alpha 独立消费；PFI 不新增 Alpha 一级入口，不修改 Alpha repo。",
     ["可用：只读 context schema 和约束字段", "验收：trading_password_available=false，live_trade_submission_authorized=false", "边界：无交易密码、无实盘提交、无 Alpha 仓库变更"],
+  ),
+  stage6_e2e: functionView(
+    "stage6_e2e",
+    "端到端验收",
+    "insights",
+    "查看 Stage 6 验收",
+    "统一查看 Stage 6 的多数据源、首页、账本、建议、回归治理、交付回滚和 TaskPack acceptance gate。",
+    ["可用：20 个总验收 gate 和 ACC-* 审计", "验收：所有 gate 必须有证据引用且 PASS", "边界：只读 synthetic E2E，不连接真实账户"],
+  ),
+  stage6_synthetic_e2e: functionView(
+    "stage6_synthetic_e2e",
+    "Synthetic E2E",
+    "insights",
+    "查看 Synthetic E2E",
+    "核对支付宝、支付宝基金、Moomoo、中国券商、ABC、CBA、微信的 fixture/contract，并验证首页、账本和建议闭环。",
+    ["可用：source fixture matrix、homepage loop、ledger loop、recommendation loop", "验收：核心源不得缺失，首页必须可读，分类必须正确", "边界：不导入真实私有数据"],
+  ),
+  stage6_regression_governance: functionView(
+    "stage6_regression_governance",
+    "回归治理",
+    "insights",
+    "查看回归治理",
+    "确认 existing smoke、新增 focused tests、changed-only governance 和 no broad refactor gate 都已记录。",
+    ["可用：QBVS smoke、Stage 1-6 tests、lean governance", "验收：变更范围只在 PFI 目标文件内", "边界：不移动 QBVS runtime"],
+  ),
+  stage6_delivery_rollback: functionView(
+    "stage6_delivery_rollback",
+    "交付与回滚",
+    "insights",
+    "查看交付回滚",
+    "整理 owner docs、diff summary、rollback plan 和后续任务清单，确保 V0.2 可继续迭代。",
+    ["可用：owner docs、diff summary、rollback plan", "验收：回滚步骤可定位到文件并不影响私有数据", "边界：不做生产迁移"],
+  ),
+  stage6_rollback_plan: functionView(
+    "stage6_rollback_plan",
+    "Rollback plan",
+    "insights",
+    "查看回滚计划",
+    "查看 Stage 6 的可逆文件清单、恢复边界和无需迁移真实数据的说明。",
+    ["可用：代码、测试、文档、治理、Web Shell 回滚步骤", "验收：回滚不移动策略模拟器 runtime", "边界：无生产数据库迁移"],
+  ),
+  stage6_follow_up_list: functionView(
+    "stage6_follow_up_list",
+    "Follow-up list",
+    "insights",
+    "查看后续任务",
+    "列出 Alpha context consumer、真实数据接入、PDF/ZIP、CDR/Open Banking 和发布证据 gate 等后续工作。",
+    ["可用：分离后续任务，不并入 Stage 6", "验收：Stage 6 不越权修改外部仓库", "边界：后续任务需新 pursuing goal"],
   ),
   tools: functionView(
     "tools",
@@ -1135,6 +1189,7 @@ function applyHomeSummary(summary) {
   applyStage4Dashboard(summary.stage4_dashboard || {});
   applyWorkflowRuntime(summary.workflow_runtime || {});
   applyStage5Dashboard(summary.stage5_dashboard || {});
+  applyStage6Dashboard(summary.stage6_dashboard || {});
 }
 
 function applyStage3Dashboard(dashboard) {
@@ -1298,6 +1353,60 @@ function applyStage5Dashboard(dashboard) {
     task("报告可复现", `${exportItems.length} 个导出文件 · checksum ready`, exportItems.length ? "ready" : "review"),
     task("数据质量报告", reports.data_quality_report ? "同步、缺失、对账和 parser 错误可见" : "等待质量报告", reports.data_quality_report ? "ready" : "review"),
     task("实盘边界", constraints.trading_password_available === false ? "trading_password_available=false" : "等待约束确认", constraints.trading_password_available === false ? "ready" : "review"),
+  ];
+}
+
+function applyStage6Dashboard(dashboard) {
+  if (!dashboard || dashboard.schema !== "PFIV02Stage6E2EStabilizationV1") return;
+  const phase6a = dashboard.phase_6a || {};
+  const sourceMatrix = phase6a.source_fixture_matrix || [];
+  const homepageLoop = phase6a.homepage_loop || {};
+  const ledgerLoop = phase6a.ledger_loop || {};
+  const recommendationLoop = phase6a.recommendation_loop || {};
+  const regression = dashboard.phase_6b || {};
+  const delivery = dashboard.phase_6c || {};
+  const totalGate = dashboard.total_acceptance_gate || [];
+  const taskpackAudit = dashboard.taskpack_acceptance_audit || [];
+  const gatePassCount = totalGate.filter((item) => item.status === "PASS").length;
+  const auditPassCount = taskpackAudit.filter((item) => item.status === "PASS").length;
+  const rollbackCount = (delivery.rollback_plan || []).length;
+  const followUpCount = (delivery.follow_up_list || []).length;
+
+  WORKSPACES.home.runtime = "Stage 6：端到端验收与稳定化 · 本地只读 MVP";
+  WORKSPACES.home.features = [
+    feature("端到端验收", gatePassCount === totalGate.length ? "通过" : "复核", "stage6:total_acceptance_gate", `${gatePassCount}/${totalGate.length} 个总 gate 通过。`),
+    feature("Synthetic E2E", phase6a.status === "PASS" ? "通过" : "复核", "stage6:phase_6a", `${sourceMatrix.length} 个核心源 · 首页/账本/建议闭环。`),
+    feature("回归治理", regression.status === "PASS" ? "通过" : "复核", "stage6:phase_6b", "Existing smoke、focused tests、changed-only governance 已记录。"),
+    feature("交付与回滚", delivery.status === "PASS" ? "通过" : "复核", "stage6:phase_6c", `${rollbackCount} 步回滚计划 · ${followUpCount} 项后续任务。`),
+    feature("Rollback plan", rollbackCount >= 6 ? "可用" : "复核", "stage6:rollback", "可回滚代码、测试、文档、治理和 Web Shell 接入。"),
+    feature("Follow-up list", followUpCount ? "可用" : "待补", "stage6:follow_up", "外部 context consumer、真实数据、PDF/ZIP、CDR/Open Banking 分离跟进。"),
+  ];
+  WORKSPACES.home.tasks = [
+    task("Stage 6 总验收", `${gatePassCount}/${totalGate.length} 个 gate PASS`, gatePassCount === totalGate.length ? "ready" : "review"),
+    task("TaskPack ACC 审计", `${auditPassCount}/${taskpackAudit.length} 个 acceptance PASS`, auditPassCount === taskpackAudit.length ? "ready" : "review"),
+    task("E2E 四闭环", `sources=${sourceMatrix.length} · ledger=${(ledgerLoop.checks || []).length} · recommendations=${recommendationLoop.generated_count || 0}`, phase6a.status === "PASS" ? "ready" : "review"),
+    task("回滚计划", `${rollbackCount} 步 · 不移动 QBVS runtime，不迁移真实数据`, rollbackCount >= 6 ? "ready" : "review"),
+  ];
+
+  WORKSPACES.insights.features = [
+    feature("端到端验收", gatePassCount === totalGate.length ? "通过" : "复核", "stage6:total_acceptance_gate", `${gatePassCount}/${totalGate.length} 个总 gate 通过。`),
+    feature("Synthetic E2E", phase6a.status === "PASS" ? "通过" : "复核", "stage6:phase_6a", "多数据源、首页、账本和建议闭环。"),
+    feature("回归治理", regression.status === "PASS" ? "通过" : "复核", "stage6:phase_6b", "Existing smoke、focused tests、changed-only governance、no broad refactor。"),
+    feature("交付与回滚", delivery.status === "PASS" ? "通过" : "复核", "stage6:phase_6c", "Owner docs、diff summary、rollback plan、follow-up list。"),
+    feature("Rollback plan", rollbackCount >= 6 ? "可用" : "复核", "stage6:rollback", "可逆文件清单和无生产迁移边界。"),
+    feature("Follow-up list", followUpCount ? "可用" : "待补", "stage6:follow_up", "后续任务独立排期，不越权进入 Stage 6。"),
+  ];
+  WORKSPACES.insights.rows = [
+    row("P0", "端到端验收", "stage6:total_acceptance_gate", `${gatePassCount}/${totalGate.length} 个 gate 通过。`, gatePassCount === totalGate.length ? "通过" : "复核"),
+    row("P0", "Synthetic E2E", "stage6:phase_6a", `${sourceMatrix.length} 个核心源；首页状态 ${safeUserText(homepageLoop.status, "复核")}。`, safeUserText(phase6a.status, "复核")),
+    row("P1", "回归治理", "lean_governance.py", safeUserText((regression.changed_scope_governance || {}).expected, "运行 changed-only governance。"), safeUserText(regression.status, "复核")),
+    row("P1", "交付与回滚", "stage6:phase_6c", `${rollbackCount} 步 rollback · ${followUpCount} 项 follow-up。`, safeUserText(delivery.status, "复核")),
+  ];
+  WORKSPACES.insights.tasks = [
+    task("Stage 6 owner docs", (delivery.owner_docs || []).length ? `${delivery.owner_docs.length} 个 owner 文档已覆盖` : "等待 owner 文档", (delivery.owner_docs || []).length ? "ready" : "review"),
+    task("分类闭环", `${(ledgerLoop.checks || []).length} 个账本分类检查`, ledgerLoop.status === "PASS" ? "ready" : "review"),
+    task("建议闭环", `${recommendationLoop.generated_count || 0} 条建议 · lifecycle ${recommendationLoop.lifecycle_row_count || 0}`, recommendationLoop.status === "PASS" ? "ready" : "review"),
+    task("回归命令", regression.status === "PASS" ? "smoke / focused / governance 已记录" : "等待回归治理", regression.status === "PASS" ? "ready" : "review"),
   ];
 }
 
@@ -1529,7 +1638,9 @@ function renderFeatureCards(cards) {
 }
 
 function featureTarget(title) {
-  const compact = String(title || "").replace(/\s+/g, "");
+  const raw = String(title || "").trim();
+  if (Object.prototype.hasOwnProperty.call(FEATURE_TARGETS, raw)) return FEATURE_TARGETS[raw];
+  const compact = raw.replace(/\s+/g, "");
   if (Object.prototype.hasOwnProperty.call(FEATURE_TARGETS, compact)) return FEATURE_TARGETS[compact];
   if (/回测|参数|盘感|策略|模拟/.test(compact)) return { workspace: "strategy", label: "打开策略" };
   if (/持仓|订单|组合|纪律/.test(compact)) return { workspace: "portfolio", label: "打开持仓" };

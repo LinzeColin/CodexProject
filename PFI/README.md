@@ -126,6 +126,26 @@ Stage 5 source files:
 | Stage 5 tests | `tests/test_stage5_advice_report_alpha.py` |
 | Web shell | `web/index.html`, `web/app/shell.js` |
 
+## Stage 6
+
+Stage 6 completes the V0.2 synthetic E2E stabilization and delivery/rollback gate. It adds:
+
+- multi-source fixture/contract matrix for 支付宝、支付宝基金、Moomoo AU、中国券商、ABC Bullion、CBA、微信
+- homepage loop that must show accounts, investment, consumption, data health, and recommendations
+- ledger loop for transfer, investment buy, consumption, refund, fee, valuation, fund redemption, bullion buy, and credit-card repayment
+- recommendation loop for generate, display, accept, reject, snooze, review, and effect measurement
+- regression/governance gate covering existing smoke, Stage 6 focused tests, changed-only governance, and no broad refactor
+- delivery/rollback gate with owner docs, diff summary, rollback plan, and follow-up list
+
+Stage 6 source files:
+
+| Purpose | Path |
+| --- | --- |
+| E2E stabilization model | `src/pfi_v02/stage6_e2e_stabilization.py` |
+| Stage 6 record | `docs/pfi_v02/STAGE6_E2E_STABILIZATION.md` |
+| Stage 6 tests | `tests/test_stage6_e2e_stabilization.py` |
+| Web shell | `web/index.html`, `web/app/shell.js` |
+
 ## Boundaries
 
 - No automatic real-money trading.
@@ -134,13 +154,14 @@ Stage 5 source files:
 - No Alpha product page inside PFI.
 - No Ralpha, System, or Development product page inside PFI.
 - No Alpha repository modification in Stage 5.
+- Stage 6 does not connect real accounts, does not modify external repositories, and does not claim production release readiness.
 - `PFI/modules/qbvs_lab/qbvs` is the canonical migrated QBVS runtime path.
 
 ## Validation
 
 ```bash
 PYTHONPATH=src python3 -B -m unittest tests.test_stage1_ia_contract -q
-PYTHONPATH=src python3 -B -m unittest tests.test_stage2_data_source_registry tests.test_stage2_cba_csv_import tests.test_stage2_alipay_import tests.test_stage2_non_csv_contracts tests.test_stage3_readable_mvp tests.test_stage4_analysis_mvp tests.test_stage5_advice_report_alpha -q
+PYTHONPATH=src python3 -B -m unittest tests.test_stage2_data_source_registry tests.test_stage2_cba_csv_import tests.test_stage2_alipay_import tests.test_stage2_non_csv_contracts tests.test_stage3_readable_mvp tests.test_stage4_analysis_mvp tests.test_stage5_advice_report_alpha tests.test_stage6_e2e_stabilization -q
 node --check web/app/shell.js
 (cd modules/qbvs_lab && PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q)
 ```

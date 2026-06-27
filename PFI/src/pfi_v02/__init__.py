@@ -19,6 +19,7 @@ from pfi_v02.stage2_registry import build_stage2_registry, build_stage2_registry
 from pfi_v02.stage3_read_mvp import build_stage3_read_model, build_sync_all_plan, simple_status_language
 from pfi_v02.stage4_analysis_mvp import build_stage4_analysis_model
 from pfi_v02.stage5_advice_report_alpha import build_stage5_delivery_model
+from pfi_v02.stage6_e2e_stabilization import build_stage6_e2e_stabilization_model
 
 __all__ = [
     "ClassificationInput",
@@ -33,6 +34,7 @@ __all__ = [
     "build_stage3_read_model",
     "build_stage4_analysis_model",
     "build_stage5_delivery_model",
+    "build_stage6_e2e_stabilization_model",
     "build_sync_all_plan",
     "classify_transaction",
     "default_stage1_sources",
