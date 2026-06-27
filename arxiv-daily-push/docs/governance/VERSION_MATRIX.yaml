@@ -99,6 +99,7 @@ model_versions:
 MOD-ADP-114: "adp-s2pmt01-trust-boundary-a005-v1"
 MOD-ADP-115: "adp-s2pmt04-install-lifecycle-b001-v1"
 MOD-ADP-116: "adp-s2plt03-resilience-precheck-v1"
+MOD-ADP-117: "adp-s2plt03-local-resilience-drill-v1"
 parameter_profile_versions:
   adp-foundation-parameters: "adp-foundation-parameters-v1"
   adp-contract-parameters: "adp-contract-parameters-v1"

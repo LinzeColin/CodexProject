@@ -6188,6 +6188,54 @@ formulas:
     verified_at: "2026-06-28T01:30:57+10:00"
 
   -
+    formula_id: "FORM-ADP-119"
+    model_id: "MOD-ADP-117"
+    assumption_ids:
+      - "ASM-ADP-035"
+    task_ids:
+      - "S2PLT03-LOCAL-RESILIENCE-DRILL"
+    status: "active"
+    expression: "The S2PLT03 local drill bundle is valid only when every required local drill case passes, every required evidence flag is true, bundle_hash matches bundle content, production_acceptance_claimed is false, S2PLT03 accepted/completed flags are false, and every forbidden production side-effect flag is false."
+    variables:
+      -
+        name: "local_drill_cases"
+        data_type: "array"
+        unit: "case rows"
+        input_domain: "rate limit, parser drift, restart recovery, disk pressure, backup restore point, rollback dry-run, ledger count conservation"
+      -
+        name: "available_evidence"
+        data_type: "object"
+        unit: "evidence booleans"
+        input_domain: "S2PLT03 required evidence keys"
+      -
+        name: "production_side_effect_flags"
+        data_type: "object"
+        unit: "boolean flags"
+        input_domain: "false"
+    constraints: "This is local no-production drill evidence only; it must not accept S2PLT03, claim live resilience drill completion, send SMTP, enable scheduler, upload Release, execute production restore, mutate schema/DB/production queue, change source adapters or ranking, change CURRENT/V7 contracts, close P0/P1, enable DAILY_OPERATION, or claim integrated production acceptance."
+    missing_policy: "Missing local case, failed case, false evidence flag, hash mismatch, or any forbidden side-effect flag blocks the local drill bundle."
+    output_range: "Local drill bundle with pass or blocked status, required case list, drill case rows, available evidence map, deterministic bundle_hash, and no-production flags false."
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_final_gate.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PLT03-LOCAL-RESILIENCE-DRILL-20260628.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT03_LOCAL_RESILIENCE_DRILL.md"
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT03_LOCAL_DRILL_MODEL_ID"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT03_LOCAL_DRILL_SCOPE"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT03_LOCAL_DRILL_REQUIRED_CASES"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT03_LOCAL_DRILL_FORBIDDEN_FLAGS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_s2plt03_local_resilience_drill_bundle"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::validate_s2plt03_local_resilience_drill_bundle"
+    implementation_fingerprint: "sha256:4a17a4950b8e79dc59d6b4b095df15f43acd8b3f45a23be77683194bc32a9afa"
+    evidence_hash: "sha256:4a17a4950b8e79dc59d6b4b095df15f43acd8b3f45a23be77683194bc32a9afa"
+    last_verified_commit: "PRECOMMIT"
+    verified_at: "2026-06-28T02:00:14+10:00"
+
+  -
     formula_id: "FORM-ADP-107"
     model_id: "MOD-ADP-105"
     assumption_ids:

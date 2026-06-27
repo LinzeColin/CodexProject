@@ -5575,6 +5575,51 @@ models:
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT03_RESILIENCE_PRECHECK.md"
 
   -
+    model_id: "MOD-ADP-117"
+    name: "S2PLT03 local no-production resilience drill model"
+    purpose: "Record deterministic local S2PLT03 resilience drill evidence for rate-limit, parser drift, restart recovery, disk pressure, backup restore-point, rollback dry-run, and ledger count conservation without claiming S2PLT03 acceptance or production readiness."
+    owner: "arxiv-daily-push"
+    status: "active"
+    assumption_ids:
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-119"
+    parameter_ids:
+      - "PARAM-ADP-976"
+      - "PARAM-ADP-977"
+      - "PARAM-ADP-978"
+      - "PARAM-ADP-979"
+    inputs:
+      - "local synthetic rate-limit, parser-drift, restart, disk-pressure, backup, rollback, and ledger-count fixtures"
+      - "S2PLT03 no-production forbidden flags"
+    outputs:
+      - "local no-production resilience drill bundle"
+      - "deterministic bundle hash"
+      - "available local evidence map"
+      - "forbidden production flag state"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_final_gate.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PLT03-LOCAL-RESILIENCE-DRILL-20260628.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT03_LOCAL_RESILIENCE_DRILL.md"
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT03_LOCAL_DRILL_MODEL_ID"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT03_LOCAL_DRILL_SCOPE"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT03_LOCAL_DRILL_REQUIRED_CASES"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT03_LOCAL_DRILL_FORBIDDEN_FLAGS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_s2plt03_local_resilience_drill_bundle"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::validate_s2plt03_local_resilience_drill_bundle"
+    implementation_fingerprint: "sha256:4a17a4950b8e79dc59d6b4b095df15f43acd8b3f45a23be77683194bc32a9afa"
+    evidence_hash: "sha256:4a17a4950b8e79dc59d6b4b095df15f43acd8b3f45a23be77683194bc32a9afa"
+    last_verified_commit: "PRECOMMIT"
+    verified_at: "2026-06-28T02:00:14+10:00"
+
+  -
     model_id: "MOD-ADP-105"
     name: "Owner center GitHub entry governance model"
     purpose: "Record the rule that ADP owner-facing status, mail, queue, review, action, and ROI summaries use GitHub-rendered shallow user-center Markdown as the primary human-readable surface while local .adp runtime files remain evidence sources only."

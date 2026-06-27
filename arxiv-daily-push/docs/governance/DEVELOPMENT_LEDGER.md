@@ -4007,3 +4007,15 @@ None for this new project baseline.
 - Boundaries: No SMTP, scheduler, Release, production restore, public schema, DB, production queue, source adapter, ranking, CURRENT/V7 contract, V7.1 baseline, DAILY_OPERATION, or integrated production acceptance changed.
 - Evidence: `governance/run_manifests/ADP-S2PMT07-FINAL-ACCEPTANCE-BUNDLE-READINESS-20260628.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_ACCEPTANCE_BUNDLE_READINESS.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.
 - Next step: Keep S2PMT07 blocked until P0/P1 zero proof, S2PLT04 completion, final bundle, independent signoff, and final command execution exist as real evidence.
+
+### `ITER-20260628-ADP-S2PLT03-LOCAL-RESILIENCE-DRILL`
+
+- Time: 2026-06-28 02:00:14 Australia/Sydney.
+- Fact level: EXTRACTED from S2PLT03 final-gate implementation, focused local drill regression tests, semantic registries, phase record, and run manifest.
+- Task IDs: `S2PLT03-LOCAL-RESILIENCE-DRILL`; parent `S2PLT03`; acceptance `ACC-S2PLT03-RESILIENCE`.
+- Goal: Record deterministic local no-production drill evidence for rate-limit blocking, parser drift quarantine, restart reconciliation, disk-pressure read-only degradation, backup restore-point hash proof, rollback dry-run execution, and ledger count conservation.
+- Decisions: Local drill bundle is `pass`, but terminal S2PLT03 remains `blocked` because S2PLT02 and inherited P0/P1 zero proof are not satisfied.
+- Validation: focused final-gate/user-center tests 36 OK; full ADP unittest 603 OK; user-center timestamp check 18 pages; ADP project governance 0/0; governance sync 0/0; V7.2 validator PASS; lean check-render drift 0/reference issues 0; changed-only semantic governance 0/0; JSON/JSONL/CSV/YAML parse OK; git diff --check PASS; production true-flag scan OK; open PR count 0; remote ADP/arxiv/s2p branch grep no matches.
+- Boundaries: No SMTP, scheduler, Release, production restore, public schema, DB, production queue, source adapter, ranking, CURRENT/V7 contract, V7.1 baseline, P0/P1 closure, DAILY_OPERATION, or integrated production acceptance changed.
+- Evidence: `governance/run_manifests/ADP-S2PLT03-LOCAL-RESILIENCE-DRILL-20260628.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PLT03_LOCAL_RESILIENCE_DRILL.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.
+- Next step: Keep S2PLT03 blocked until S2PLT02/P0/P1/S2PLT04/final-bundle/S2PMT07 gates are real evidence.

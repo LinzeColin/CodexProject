@@ -21,7 +21,7 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 195
+- task_count: 196
 - acceptance_count: 126
 
 ## Delivery Tasks
@@ -334,3 +334,10 @@ The machine-readable task source is `delivery_tasks.yaml`.
 - Added phase record `arxiv-daily-push/docs/phase_records/PHASE_S2PLT01_REPLAY_REVIEW_STATUS_SYNC.md`.
 - Current S2PLT01 replay-chain records now recognize the existing local no-production replay payload execution and independent replay review receipts.
 - S2PLT01 acceptance, S2PLT04, S2PMT07, P0/P1 closure, final bundle, SMTP, scheduler, Release, CURRENT/V7 contract edits, daily operation, and integrated production acceptance remain blocked.
+
+## 2026-06-28 02:00:14 Australia/Sydney - S2PLT03 local resilience drill
+
+- Added manifest `governance/run_manifests/ADP-S2PLT03-LOCAL-RESILIENCE-DRILL-20260628.json`.
+- Added phase record `arxiv-daily-push/docs/phase_records/PHASE_S2PLT03_LOCAL_RESILIENCE_DRILL.md`.
+- Local no-production drill bundle passes for rate-limit, parser drift, restart recovery, disk pressure, backup restore-point, rollback dry-run, and ledger count conservation.
+- S2PLT03 remains blocked by S2PLT02 and inherited P0/P1; no SMTP, scheduler, Release, restore, schema, DB, queue, source, ranking, CURRENT, V7 contract, P0/P1 closure, daily operation, or production acceptance side effect is claimed.

@@ -14,6 +14,8 @@ from arxiv_daily_push.stage2_final_gate import (
     S2PLT02_REQUIRED_NATURAL_DAYS,
     S2PLT03_BLOCKING_REASONS,
     S2PLT03_FORBIDDEN_FLAGS,
+    S2PLT03_LOCAL_DRILL_FORBIDDEN_FLAGS,
+    S2PLT03_LOCAL_DRILL_REQUIRED_CASES,
     S2PLT03_REQUIRED_DEPENDENCIES,
     S2PLT03_REQUIRED_EVIDENCE,
     S2PLT04_BLOCKING_REASONS,
@@ -33,6 +35,7 @@ from arxiv_daily_push.stage2_final_gate import (
     build_s2plt02_live_2d_precheck_report,
     build_s2plt02_live_evidence_state,
     build_s2plt03_dependency_state,
+    build_s2plt03_local_resilience_drill_bundle,
     build_s2plt03_resilience_evidence_state,
     build_s2plt03_resilience_precheck_report,
     build_s2plt04_dependency_state,
@@ -45,6 +48,7 @@ from arxiv_daily_push.stage2_final_gate import (
     build_s2pmt07_precheck_report,
     build_test_gate_state,
     validate_s2plt02_live_2d_precheck_report,
+    validate_s2plt03_local_resilience_drill_bundle,
     validate_s2plt03_resilience_precheck_report,
     validate_s2plt04_integration_candidate_report,
     validate_final_acceptance_bundle_readiness_state,
@@ -107,19 +111,54 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(tuple(state["unmet_dependencies"]), S2PLT03_REQUIRED_DEPENDENCIES)
         self.assertEqual(state["s2plt02_acceptance_status"], "blocked_by_missing_real_2d_run_and_final_gates")
 
-    def test_s2plt03_resilience_evidence_state_records_missing_drill(self) -> None:
-        state = build_s2plt03_resilience_evidence_state()
+    def test_s2plt03_local_resilience_drill_bundle_passes_without_acceptance_or_side_effects(self) -> None:
+        bundle = build_s2plt03_local_resilience_drill_bundle(generated_at="2026-06-28T03:00:00+10:00")
 
-        self.assertEqual(state["status"], "blocked")
+        self.assertEqual(bundle["status"], "pass")
+        self.assertEqual(tuple(bundle["required_drill_cases"]), S2PLT03_LOCAL_DRILL_REQUIRED_CASES)
+        self.assertTrue(bundle["all_local_drills_passed"])
+        self.assertEqual(set(bundle["available_evidence"]), set(S2PLT03_REQUIRED_EVIDENCE))
+        self.assertTrue(all(bundle["available_evidence"].values()))
+        self.assertFalse(bundle["s2plt03_accepted"])
+        self.assertFalse(bundle["s2plt03_resilience_drill_completed"])
+        self.assertFalse(bundle["production_acceptance_claimed"])
+        for flag in S2PLT03_LOCAL_DRILL_FORBIDDEN_FLAGS:
+            self.assertFalse(bundle[flag])
+        self.assertEqual(validate_s2plt03_local_resilience_drill_bundle(bundle), [])
+
+        cases = {case["case_id"]: case for case in bundle["drill_cases"]}
+        self.assertTrue(cases["rate_limit_blocks_excess_request"]["passed"])
+        self.assertEqual(cases["rate_limit_blocks_excess_request"]["blocked_count"], 1)
+        self.assertTrue(cases["parser_drift_quarantines_unknown_schema"]["passed"])
+        self.assertIn("missing_required_field:evidence_claims", cases["parser_drift_quarantines_unknown_schema"]["quarantine_reasons"])
+        self.assertTrue(cases["restart_recovery_reconciles_pending_rows"]["passed"])
+        self.assertEqual(cases["restart_recovery_reconciles_pending_rows"]["rows_before"], cases["restart_recovery_reconciles_pending_rows"]["rows_after"])
+        self.assertTrue(cases["disk_pressure_degrades_to_no_write"]["passed"])
+        self.assertEqual(cases["disk_pressure_degrades_to_no_write"]["writes_allowed"], 0)
+        self.assertTrue(cases["backup_restore_point_hash_matches"]["passed"])
+        self.assertTrue(cases["rollback_plan_is_dry_run_executable"]["passed"])
+        self.assertTrue(cases["ledger_count_conservation_balances_states"]["passed"])
+
+        tampered = dict(bundle)
+        tampered["real_smtp_sent"] = True
+        self.assertIn("real_smtp_sent must be false", validate_s2plt03_local_resilience_drill_bundle(tampered))
+
+    def test_s2plt03_resilience_evidence_state_records_local_no_production_drill(self) -> None:
+        bundle = build_s2plt03_local_resilience_drill_bundle(generated_at="2026-06-28T03:00:00+10:00")
+        state = build_s2plt03_resilience_evidence_state(local_drill_bundle=bundle)
+
+        self.assertEqual(state["status"], "pass")
         self.assertEqual(tuple(state["required_evidence"]), S2PLT03_REQUIRED_EVIDENCE)
-        self.assertFalse(state["available_evidence"]["RATE_LIMIT_DRILL"])
-        self.assertFalse(state["available_evidence"]["PARSER_DRIFT_DRILL"])
-        self.assertFalse(state["available_evidence"]["RESTART_RECOVERY_DRILL"])
-        self.assertFalse(state["available_evidence"]["DISK_PRESSURE_DRILL"])
-        self.assertFalse(state["available_evidence"]["BACKUP_RESTORE_POINT_PROVEN"])
-        self.assertFalse(state["available_evidence"]["ROLLBACK_EXECUTABLE"])
-        self.assertFalse(state["available_evidence"]["LEDGER_COUNT_CONSERVATION"])
-        self.assertEqual(state["ledger_count_conservation_status"], "not_proven")
+        self.assertTrue(state["available_evidence"]["RATE_LIMIT_DRILL"])
+        self.assertTrue(state["available_evidence"]["PARSER_DRIFT_DRILL"])
+        self.assertTrue(state["available_evidence"]["RESTART_RECOVERY_DRILL"])
+        self.assertTrue(state["available_evidence"]["DISK_PRESSURE_DRILL"])
+        self.assertTrue(state["available_evidence"]["BACKUP_RESTORE_POINT_PROVEN"])
+        self.assertTrue(state["available_evidence"]["ROLLBACK_EXECUTABLE"])
+        self.assertTrue(state["available_evidence"]["LEDGER_COUNT_CONSERVATION"])
+        self.assertEqual(state["missing_evidence"], [])
+        self.assertEqual(state["evidence_scope"], "local_no_production_drill_not_terminal_acceptance")
+        self.assertEqual(state["ledger_count_conservation_status"], "local_drill_passed")
 
     def test_s2plt03_resilience_precheck_fails_closed_without_production_side_effects(self) -> None:
         report = build_s2plt03_resilience_precheck_report(generated_at="2026-06-28T01:30:57+10:00")
@@ -129,10 +168,20 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(report["inherited_p0_p1_closed"])
         for flag in S2PLT03_FORBIDDEN_FLAGS:
             self.assertFalse(report[flag])
-        for reason in S2PLT03_BLOCKING_REASONS:
-            self.assertIn(reason, report["blocking_reasons"])
+        self.assertIn("s2plt02_not_accepted", report["blocking_reasons"])
+        self.assertIn("inherited_v7_1_p0_findings_open", report["blocking_reasons"])
+        self.assertIn("inherited_v7_1_p1_findings_open", report["blocking_reasons"])
+        self.assertNotIn("rate_limit_drill_not_proven", report["blocking_reasons"])
+        self.assertNotIn("parser_drift_drill_not_proven", report["blocking_reasons"])
+        self.assertNotIn("restart_recovery_drill_not_proven", report["blocking_reasons"])
+        self.assertNotIn("disk_pressure_drill_not_proven", report["blocking_reasons"])
+        self.assertNotIn("backup_restore_point_not_proven", report["blocking_reasons"])
+        self.assertNotIn("rollback_executable_not_proven", report["blocking_reasons"])
+        self.assertNotIn("ledger_count_conservation_not_proven", report["blocking_reasons"])
         self.assertFalse(report["gates"]["s2plt02_accepted"])
-        self.assertFalse(report["gates"]["ledger_count_conserved"])
+        self.assertTrue(report["gates"]["ledger_count_conserved"])
+        self.assertTrue(report["evidence"]["available_evidence"]["RATE_LIMIT_DRILL"])
+        self.assertEqual(report["evidence"]["evidence_scope"], "local_no_production_drill_not_terminal_acceptance")
         self.assertEqual(validate_s2plt03_resilience_precheck_report(report), [])
 
         tampered = dict(report)

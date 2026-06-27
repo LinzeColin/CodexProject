@@ -1,26 +1,11 @@
 {
-  "available_evidence": {
-    "BACKUP_RESTORE_POINT_PROVEN": true,
-    "DISK_PRESSURE_DRILL": true,
-    "LEDGER_COUNT_CONSERVATION": true,
-    "PARSER_DRIFT_DRILL": true,
-    "RATE_LIMIT_DRILL": true,
-    "RESTART_RECOVERY_DRILL": true,
-    "ROLLBACK_EXECUTABLE": true
-  },
-  "blocking_reasons": [
-    "s2plt02_not_accepted",
-    "inherited_v7_1_p0_findings_open",
-    "inherited_v7_1_p1_findings_open"
-  ],
   "current_pointer_changed": false,
   "daily_operation_enabled": false,
   "db_migration_executed": false,
   "evidence_refs": [
-    "arxiv-daily-push/docs/phase_records/PHASE_S2PLT03_RESILIENCE_PRECHECK.md",
     "arxiv-daily-push/docs/phase_records/PHASE_S2PLT03_LOCAL_RESILIENCE_DRILL.md",
-    "governance/run_manifests/ADP-S2PLT03-RESILIENCE-PRECHECK-20260628.json",
     "governance/run_manifests/ADP-S2PLT03-LOCAL-RESILIENCE-DRILL-20260628.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PLT03_RESILIENCE_PRECHECK.md",
     "arxiv-daily-push/tests/test_stage2_final_gate.py"
   ],
   "files_changed": [
@@ -57,7 +42,6 @@
     "governance/run_manifests/ADP-S2PLT03-LOCAL-RESILIENCE-DRILL-20260628.json"
   ],
   "formula_ids_changed": [
-    "FORM-ADP-118",
     "FORM-ADP-119"
   ],
   "generated_at": "2026-06-28T02:00:14+10:00",
@@ -65,29 +49,171 @@
   "inherited_v7_1_open_p0_findings": 8,
   "inherited_v7_1_open_p1_findings": 37,
   "integrated_production_accepted": false,
+  "local_drill_bundle": {
+    "acceptance_id": "ACC-S2PLT03-RESILIENCE",
+    "all_local_drills_passed": true,
+    "available_evidence": {
+      "BACKUP_RESTORE_POINT_PROVEN": true,
+      "DISK_PRESSURE_DRILL": true,
+      "LEDGER_COUNT_CONSERVATION": true,
+      "PARSER_DRIFT_DRILL": true,
+      "RATE_LIMIT_DRILL": true,
+      "RESTART_RECOVERY_DRILL": true,
+      "ROLLBACK_EXECUTABLE": true
+    },
+    "bundle_hash": "4a17a4950b8e79dc59d6b4b095df15f43acd8b3f45a23be77683194bc32a9afa",
+    "current_pointer_changed": false,
+    "daily_operation_enabled": false,
+    "db_migration_executed": false,
+    "drill_cases": [
+      {
+        "accepted_count": 2,
+        "blocked_count": 1,
+        "case_id": "rate_limit_blocks_excess_request",
+        "input_count": 3,
+        "limit": 2,
+        "passed": true,
+        "retry_after_seconds": 60
+      },
+      {
+        "accepted_count": 0,
+        "case_id": "parser_drift_quarantines_unknown_schema",
+        "missing_fields": [
+          "evidence_claims"
+        ],
+        "passed": true,
+        "quarantine_reasons": [
+          "missing_required_field:evidence_claims"
+        ],
+        "quarantined_count": 1,
+        "required_fields": [
+          "evidence_claims",
+          "source_id",
+          "title"
+        ]
+      },
+      {
+        "case_id": "restart_recovery_reconciles_pending_rows",
+        "leased_rows_recovered": 1,
+        "passed": true,
+        "rows_after": 6,
+        "rows_before": 6,
+        "state_after": {
+          "completed": 2,
+          "leased": 0,
+          "queued": 4
+        },
+        "state_before": {
+          "completed": 2,
+          "leased": 1,
+          "queued": 3
+        }
+      },
+      {
+        "available_mb": 128,
+        "case_id": "disk_pressure_degrades_to_no_write",
+        "degradation_state": "read_only_no_new_artifacts",
+        "passed": true,
+        "threshold_mb": 512,
+        "writes_allowed": 0
+      },
+      {
+        "case_id": "backup_restore_point_hash_matches",
+        "passed": true,
+        "restore_point_scope": "local_synthetic_snapshot",
+        "snapshot_hash_after": "421cee48c76a123e33a408b018b3f4296a465ce9adc157480fcce008632b9d49",
+        "snapshot_hash_before": "421cee48c76a123e33a408b018b3f4296a465ce9adc157480fcce008632b9d49"
+      },
+      {
+        "case_id": "rollback_plan_is_dry_run_executable",
+        "executed_steps": [
+          "stop_runner_dry_run",
+          "verify_restore_point_hash",
+          "restore_snapshot_dry_run",
+          "validate_ledger_counts",
+          "keep_smtp_scheduler_release_disabled"
+        ],
+        "mode": "dry_run",
+        "passed": true,
+        "required_steps": [
+          "stop_runner_dry_run",
+          "verify_restore_point_hash",
+          "restore_snapshot_dry_run",
+          "validate_ledger_counts",
+          "keep_smtp_scheduler_release_disabled"
+        ]
+      },
+      {
+        "case_id": "ledger_count_conservation_balances_states",
+        "end_counts": {
+          "done": 4,
+          "failed": 2,
+          "processing": 2,
+          "queued": 3
+        },
+        "end_total": 11,
+        "passed": true,
+        "start_counts": {
+          "done": 3,
+          "failed": 1,
+          "processing": 2,
+          "queued": 5
+        },
+        "start_total": 11
+      }
+    ],
+    "generated_at": "2026-06-28T02:00:14+10:00",
+    "integrated_production_accepted": false,
+    "model_id": "adp-s2plt03-local-resilience-drill-v1",
+    "production_acceptance_claimed": false,
+    "production_queue_mutated": false,
+    "production_restore_executed": false,
+    "production_side_effects_enabled": false,
+    "public_schema_changed": false,
+    "ranking_algorithm_changed": false,
+    "real_smtp_send_enabled": false,
+    "real_smtp_sent": false,
+    "release_uploaded": false,
+    "required_drill_cases": [
+      "rate_limit_blocks_excess_request",
+      "parser_drift_quarantines_unknown_schema",
+      "restart_recovery_reconciles_pending_rows",
+      "disk_pressure_degrades_to_no_write",
+      "backup_restore_point_hash_matches",
+      "rollback_plan_is_dry_run_executable",
+      "ledger_count_conservation_balances_states"
+    ],
+    "s2plt03_accepted": false,
+    "s2plt03_resilience_drill_completed": false,
+    "scheduler_enabled": false,
+    "scheduler_install_enabled": false,
+    "schema_version": 1,
+    "scope": "local_no_production_drill_not_terminal_acceptance",
+    "source_adapter_changed": false,
+    "status": "pass",
+    "task_id": "S2PLT03",
+    "v7_1_baseline_changed": false,
+    "v7_2_contract_files_changed": false
+  },
   "local_drill_bundle_hash": "4a17a4950b8e79dc59d6b4b095df15f43acd8b3f45a23be77683194bc32a9afa",
-  "local_drill_status": "pass",
-  "manifest_id": "ADP-S2PLT03-RESILIENCE-PRECHECK-20260628",
-  "missing_evidence": [],
+  "manifest_id": "ADP-S2PLT03-LOCAL-RESILIENCE-DRILL-20260628",
   "model_ids_changed": [
-    "MOD-ADP-116",
     "MOD-ADP-117"
   ],
   "parameter_ids_changed": [
-    "PARAM-ADP-968",
-    "PARAM-ADP-969",
-    "PARAM-ADP-970",
-    "PARAM-ADP-971",
-    "PARAM-ADP-972",
-    "PARAM-ADP-973",
-    "PARAM-ADP-974",
-    "PARAM-ADP-975",
     "PARAM-ADP-976",
     "PARAM-ADP-977",
     "PARAM-ADP-978",
     "PARAM-ADP-979"
   ],
   "phase": "S2PL",
+  "precheck_blocking_reasons_after_drill": [
+    "s2plt02_not_accepted",
+    "inherited_v7_1_p0_findings_open",
+    "inherited_v7_1_p1_findings_open"
+  ],
+  "precheck_report_hash_after_drill": "a5b00e34cfea2204898dcce79a6187d0987fcd03bef22fb36d1be5ddab628baa",
+  "precheck_status_after_drill": "blocked",
   "production_acceptance_claimed": false,
   "production_queue_mutated": false,
   "production_restore_executed": false,
@@ -98,22 +224,9 @@
   "real_smtp_send_enabled": false,
   "real_smtp_sent": false,
   "release_uploaded": false,
-  "report_hash": "a5b00e34cfea2204898dcce79a6187d0987fcd03bef22fb36d1be5ddab628baa",
-  "required_dependencies": [
-    "S2PLT02"
-  ],
-  "required_evidence": [
-    "RATE_LIMIT_DRILL",
-    "PARSER_DRIFT_DRILL",
-    "RESTART_RECOVERY_DRILL",
-    "DISK_PRESSURE_DRILL",
-    "BACKUP_RESTORE_POINT_PROVEN",
-    "ROLLBACK_EXECUTABLE",
-    "LEDGER_COUNT_CONSERVATION"
-  ],
-  "result": "blocked_precheck_local_drill_available_no_production",
-  "risk": "S2PLT03 precheck can be misread as live resilience drill completion or ACC-S2PLT03 acceptance; S2PLT02 acceptance, inherited P0/P1 zero state, S2PLT04, final bundle, final command execution, S2PMT07 signoff, and production stop gates still block production acceptance.",
-  "rollback": "Revert S2PLT03 precheck code, focused tests, governance registrations, phase record, manifest, traceability/delivery/event records, and generated status refresh; no runtime production state was changed.",
+  "result": "local_drill_passed_no_production_precheck_blocked",
+  "risk": "Local drill evidence can be misread as S2PLT03 acceptance; S2PLT02, inherited P0/P1 zero proof, S2PLT04, final bundle, final command execution, S2PMT07 signoff, and production stop gates still block production acceptance.",
+  "rollback": "Revert S2PLT03 local drill code/tests, semantic registrations, phase record, manifest, traceability row, rendered user-center page, delivery/event/status records, and three base file updates; no runtime production state was changed.",
   "s2plt03_accepted": false,
   "s2plt03_resilience_drill_completed": false,
   "scheduler_enabled": false,
@@ -121,10 +234,11 @@
   "schema_version": 1,
   "source_adapter_changed": false,
   "stage2_integrated_production_accepted": false,
-  "status": "blocked",
-  "summary": "S2PLT03 resilience precheck now consumes deterministic local no-production drill evidence; the local drill passes, but terminal S2PLT03 remains blocked by missing S2PLT02 acceptance and inherited P0/P1 zero proof.",
-  "task_id": "S2PLT03",
+  "status": "pass",
+  "summary": "Record deterministic local no-production S2PLT03 resilience drill evidence for rate-limit, parser drift, restart recovery, disk pressure, backup restore-point, rollback dry-run, and ledger count conservation while keeping terminal S2PLT03 acceptance blocked.",
+  "task_id": "S2PLT03-LOCAL-RESILIENCE-DRILL",
   "task_ids": [
+    "S2PLT03-LOCAL-RESILIENCE-DRILL",
     "S2PLT03",
     "ACC-S2PLT03-RESILIENCE"
   ],
@@ -157,9 +271,6 @@
     "JSON/JSONL/CSV parse script; Ruby YAML parse; git diff --check; production true-field scan",
     "curl GitHub open pulls API",
     "git fetch --prune origin && git branch -r ADP/arxiv/s2p grep"
-  ],
-  "unmet_dependencies": [
-    "S2PLT02"
   ],
   "v7_1_baseline_changed": false,
   "v7_2_contract_files_changed": false,
