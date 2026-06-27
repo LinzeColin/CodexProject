@@ -3,9 +3,9 @@
 PFI V0.2 is the Personal Financial Intelligence project under
 `LinzeColin/CodexProject/PFI`.
 
-`PFI/` is the only active product root. The former QBVS container path has
-been migrated to `PFI/modules/qbvs_lab` so the root is no longer confused with
-one strategy-lab module.
+`PFI/` is the active PFI product root. `QBVS/` is a separate top-level system
+under `LinzeColin/CodexProject/QBVS`; PFI investment management does not own
+or cover QBVS.
 
 ## Stage 1
 
@@ -32,7 +32,8 @@ Stage 1 source files:
 | Owner feature list | `功能清单.md` |
 | Development record | `开发记录.md` |
 | Model and parameter file | `模型参数文件.md` |
-| Legacy compatibility runtime | `modules/qbvs_lab/qbvs` |
+| External QBVS system | `../QBVS/qbvs` |
+| Raw-data archive | `../MetaDatabase/PFI` |
 
 ## Stage 2
 
@@ -41,8 +42,10 @@ Stage 2 builds the data-source and low-operation sync MVP contract. It adds:
 - full registry for 支付宝日常、支付宝基金、Moomoo AU、中国券商、ABC Bullion、CBA、微信、其他平台
 - CBA CSV parser and watch folder detection
 - Alipay daily CSV/ZIP parser and low-confidence review queue
+- default local upload panel for 支付宝 CSV/ZIP bills at `http://localhost:8501`
+- private Alipay import output under `~/.pfi/runtime/imports/alipay_daily`
 - non-CSV contracts for 支付宝基金、中国券商、ABC Bullion
-- Moomoo AU read-only OpenD/API contract that reuses existing QBVS references
+- Moomoo AU read-only OpenD/API contract that records external QBVS references
 - WeChat ZIP/CSV/XLS/XLSX import contract
 - reconciliation contracts for fund and bullion triangles
 
@@ -87,7 +90,8 @@ Stage 4 builds the investment and consumption analysis MVP. It adds:
 - attribution split: market, active decision, fees, FX, cash drag
 - risk analysis: concentration, drawdown, currency exposure, liquidity
 - behavior review: chase, panic sell, frequent trading, holding period tags when trade evidence exists
-- QBVS compatibility under 投资管理 > 策略实验室 / 大数据模拟器
+- PFI strategy lab keeps strategy backtesting, parameter scan, market-feel training, and big-data simulator
+- QBVS remains independent under `../QBVS`
 - consumption summary: month spend, budget remaining, fixed/flexible spend
 - classification analysis for Alipay, WeChat, and CBA with low-confidence review
 - recurring subscription detection
@@ -134,7 +138,7 @@ Stage 6 completes the V0.2 synthetic E2E stabilization and delivery/rollback gat
 - homepage loop that must show accounts, investment, consumption, data health, and recommendations
 - ledger loop for transfer, investment buy, consumption, refund, fee, valuation, fund redemption, bullion buy, and credit-card repayment
 - recommendation loop for generate, display, accept, reject, snooze, review, and effect measurement
-- regression/governance gate covering existing smoke, Stage 6 focused tests, changed-only governance, and no broad refactor
+- regression/governance gate covering top-level QBVS smoke, Stage 6 focused tests, changed-only governance, and no broad refactor
 - delivery/rollback gate with owner docs, diff summary, rollback plan, and follow-up list
 
 Stage 6 source files:
@@ -154,8 +158,9 @@ Stage 6 source files:
 - No Alpha product page inside PFI.
 - No Ralpha, System, or Development product page inside PFI.
 - No Alpha repository modification in Stage 5.
-- Stage 6 does not connect real accounts, does not modify external repositories, and does not claim production release readiness.
-- `PFI/modules/qbvs_lab/qbvs` is the canonical migrated QBVS runtime path.
+- Stage 6 does not connect real accounts, does not submit payments or broker orders, and does not claim production release readiness.
+- `../QBVS/qbvs` is an external independent system reference, not a PFI-owned runtime.
+- User-provided raw data is archived under `../MetaDatabase` when explicitly authorized.
 
 ## Validation
 
@@ -163,5 +168,5 @@ Stage 6 source files:
 PYTHONPATH=src python3 -B -m unittest tests.test_stage1_ia_contract -q
 PYTHONPATH=src python3 -B -m unittest tests.test_stage2_data_source_registry tests.test_stage2_cba_csv_import tests.test_stage2_alipay_import tests.test_stage2_non_csv_contracts tests.test_stage3_readable_mvp tests.test_stage4_analysis_mvp tests.test_stage5_advice_report_alpha tests.test_stage6_e2e_stabilization -q
 node --check web/app/shell.js
-(cd modules/qbvs_lab && PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q)
+(cd ../QBVS && PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q)
 ```

@@ -1,0 +1,35 @@
+schema_version: "codexproject.project.v1"
+project_id: "MetaDatabase"
+project_name: "MetaDatabase"
+summary: "MetaDatabase 是 CodexProject 顶层用户原始数据归档项目；当前保存 PFI 支付宝原始账单和处理后导入证据，不做业务分析、交易、支付、券商下单或自动化决策。"
+version: "0.1.0"
+fact_level: "EXTRACTED"
+owner_role: "data_owner"
+current_status: "active_data_archive"
+limitations:
+  - statement: "当前只证明文件归档和 manifest 存在，不证明任何业务分类、投资建议、消费建议或生产同步能力。"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "MetaDatabase/MANIFEST.json"
+    unknown_task_ids: []
+features:
+  - feature_id: "FEAT-MDB-001"
+    name: "PFI Alipay data archive"
+    description: "保存 PFI 支付宝原始 CSV、导入 manifest 和标准化流水，供 GitHub 验收和后续只读导入。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids: []
+    formula_ids: []
+    parameter_ids: []
+    code_refs: []
+    test_refs:
+      - "python3 scripts/validate_project_governance.py --project MetaDatabase"
+    evidence_refs:
+      - "MetaDatabase/MANIFEST.json"
+      - "MetaDatabase/PFI/alipay_daily/raw"
+      - "MetaDatabase/PFI/alipay_daily/processed"
+evidence_refs:
+  - evidence_id: "EVID-MDB-MANIFEST"
+    path: "MetaDatabase/MANIFEST.json"
+    description: "MetaDatabase current dataset manifest."
+    fact_level: "EXTRACTED"

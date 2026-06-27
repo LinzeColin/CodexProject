@@ -12,7 +12,7 @@ file import path, low-confidence review queue, non-CSV source contracts, and
 reconciliation contracts.
 
 Stage 2 does not move or refactor the existing active QBVS runtime under
-`PFI/modules/qbvs_lab/qbvs`.
+`QBVS/qbvs`.
 
 ## Phase Status
 
@@ -93,8 +93,8 @@ success.
 
 The contract is read-only and reuses existing QBVS references:
 
-- `PFI/modules/qbvs_lab/qbvs/datasources.py`
-- `PFI/modules/qbvs_lab/qbvs/moomoo_batch.py`
+- `QBVS/qbvs/datasources.py`
+- `QBVS/qbvs/moomoo_batch.py`
 
 If OpenD or SDK is unavailable, the probe reports unavailable and does not
 fabricate data.
@@ -140,7 +140,7 @@ Observed closeout result:
 
 ```text
 Stage 1+2 contracts: Ran 45 tests / OK
-Legacy QBVS lifecycle smoke: Ran 1 test / OK
+Top-level QBVS lifecycle smoke: Ran 1 test / OK
 Project governance validation: errors 0 / warnings 0
 Human-entry Markdown contract: Ran 2 tests / OK
 Scoped exclusion grep: no output

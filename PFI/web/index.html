@@ -22,27 +22,28 @@
         </div>
         <label class="global-search">
           <span class="sr-only">全局搜索</span>
-          <input id="global-search" type="search" placeholder="搜索标的、基金、政策或证据" autocomplete="off" />
+          <input id="global-search" type="search" placeholder="搜索账户、流水、消费、持仓或报告" autocomplete="off" />
         </label>
         <form class="global-context" aria-label="全局上下文">
           <label>
-            <span>市场</span>
+            <span>数据源</span>
             <select data-context-field="market" aria-label="市场">
-              <option>美股</option>
-              <option>A股</option>
-              <option>港股</option>
+              <option>支付宝</option>
+              <option>微信</option>
+              <option>CBA</option>
+              <option>Moomoo</option>
             </select>
           </label>
           <label>
-            <span>标的</span>
-            <input data-context-field="entity" value="SPY" aria-label="标的" />
+            <span>账户</span>
+            <input data-context-field="entity" value="主账户" aria-label="账户" />
           </label>
           <label>
-            <span>组合</span>
+            <span>视图</span>
             <select data-context-field="portfolio" aria-label="组合">
-              <option>主组合</option>
-              <option>观察池</option>
-              <option>沙盒</option>
+              <option>个人财务</option>
+              <option>投资复盘</option>
+              <option>消费复盘</option>
             </select>
           </label>
           <label>
@@ -69,14 +70,23 @@
       </header>
 
       <nav class="side-nav" aria-label="一级工作区" data-primary-workspaces="8">
-        <button class="nav-item is-active" type="button" data-workspace="home">首页总览</button>
-        <button class="nav-item" type="button" data-workspace="accounts">账户与资产</button>
-        <button class="nav-item" type="button" data-workspace="ledger">账本流水</button>
-        <button class="nav-item" type="button" data-workspace="investment">投资管理</button>
-        <button class="nav-item" type="button" data-workspace="consumption">消费管理</button>
-        <button class="nav-item" type="button" data-workspace="sync">数据源与同步</button>
-        <button class="nav-item" type="button" data-workspace="recommendations">建议与复盘</button>
-        <button class="nav-item" type="button" data-workspace="insights">报告与洞察</button>
+        <button class="nav-item is-active" type="button" data-primary-entry="true" data-workspace="home">首页总览</button>
+        <button class="nav-item" type="button" data-primary-entry="true" data-workspace="accounts">账户与资产</button>
+        <button class="nav-item" type="button" data-primary-entry="true" data-workspace="ledger">账本流水</button>
+        <button class="nav-item" type="button" data-primary-entry="true" data-workspace="investment">投资管理</button>
+        <button class="nav-item" type="button" data-primary-entry="true" data-workspace="consumption">消费管理</button>
+        <button class="nav-item" type="button" data-primary-entry="true" data-workspace="sync">数据源与同步</button>
+        <button class="nav-item" type="button" data-primary-entry="true" data-workspace="recommendations">建议与复盘</button>
+        <button class="nav-item" type="button" data-primary-entry="true" data-workspace="insights">报告与洞察</button>
+        <div class="legacy-nav" aria-label="V0.1 兼容入口" data-v01-workspaces="6">
+          <span class="legacy-nav-label">V0.1 兼容入口</span>
+          <button class="nav-item legacy-nav-item" type="button" data-v01-entry="true" data-workspace="home">首页</button>
+          <button class="nav-item legacy-nav-item" type="button" data-v01-entry="true" data-workspace="market">市场</button>
+          <button class="nav-item legacy-nav-item" type="button" data-v01-entry="true" data-workspace="research">研究</button>
+          <button class="nav-item legacy-nav-item" type="button" data-v01-entry="true" data-workspace="portfolio">持仓</button>
+          <button class="nav-item legacy-nav-item" type="button" data-v01-entry="true" data-workspace="strategy">策略实验室</button>
+          <button class="nav-item legacy-nav-item" type="button" data-v01-entry="true" data-workspace="data">数据与系统</button>
+        </div>
       </nav>
 
       <main id="main-workspace" class="workspace" tabindex="-1" data-active-workspace="home">
@@ -132,61 +142,61 @@
           <div class="workflow-grid" data-workflow-cards aria-live="polite">
             <article class="workflow-card" data-workflow-card="strategy">
               <div class="workflow-card-head">
-                <strong>策略实验室</strong>
+                <strong>上传支付宝账单</strong>
                 <span class="status-pill status-review">复核</span>
               </div>
               <dl class="workflow-meta">
-                <div><dt>证据</dt><dd>回测结果</dd></div>
-                <div><dt>新鲜度</dt><dd>待补</dd></div>
-                <div><dt>任务</dt><dd>0 个待处理</dd></div>
+                <div><dt>证据</dt><dd>CSV / ZIP 原始账单</dd></div>
+                <div><dt>新鲜度</dt><dd>本机预检</dd></div>
+                <div><dt>任务</dt><dd>导入后进入账本复核</dd></div>
               </dl>
               <div class="workflow-actions">
-                <button class="workflow-open" type="button" data-feature-view="single">打开回测</button>
-                <button type="button" data-workflow-evidence="strategy">查看证据</button>
+                <button class="workflow-open" type="button" data-feature-view="source_registry">打开上传说明</button>
+                <button type="button" data-workflow-evidence="strategy">查看边界</button>
               </div>
             </article>
             <article class="workflow-card" data-workflow-card="market">
               <div class="workflow-card-head">
-                <strong>市场</strong>
+                <strong>账户与资产</strong>
                 <span class="status-pill status-review">复核</span>
               </div>
               <dl class="workflow-meta">
-                <div><dt>证据</dt><dd>市场观察</dd></div>
-                <div><dt>新鲜度</dt><dd>待补</dd></div>
-                <div><dt>任务</dt><dd>0 个待处理</dd></div>
+                <div><dt>证据</dt><dd>账户地图</dd></div>
+                <div><dt>新鲜度</dt><dd>等待导入</dd></div>
+                <div><dt>任务</dt><dd>对账差异复核</dd></div>
               </dl>
               <div class="workflow-actions">
-                <button class="workflow-open" type="button" data-feature-view="hotspots">打开热点</button>
+                <button class="workflow-open" type="button" data-feature-workspace="accounts">查看账户</button>
                 <button type="button" data-workflow-evidence="market">查看证据</button>
               </div>
             </article>
             <article class="workflow-card" data-workflow-card="research">
               <div class="workflow-card-head">
-                <strong>研究与政策</strong>
+                <strong>账本与消费</strong>
                 <span class="status-pill status-review">复核</span>
               </div>
               <dl class="workflow-meta">
-                <div><dt>证据</dt><dd>研究证据</dd></div>
-                <div><dt>新鲜度</dt><dd>待补</dd></div>
-                <div><dt>任务</dt><dd>0 个待处理</dd></div>
+                <div><dt>证据</dt><dd>标准化流水</dd></div>
+                <div><dt>新鲜度</dt><dd>导入后更新</dd></div>
+                <div><dt>任务</dt><dd>A/B/C/D 待复核</dd></div>
               </dl>
               <div class="workflow-actions">
-                <button class="workflow-open" type="button" data-feature-view="reports">打开报告</button>
+                <button class="workflow-open" type="button" data-feature-workspace="ledger">处理流水</button>
                 <button type="button" data-workflow-evidence="research">查看证据</button>
               </div>
             </article>
             <article class="workflow-card" data-workflow-card="portfolio">
               <div class="workflow-card-head">
-                <strong>持仓</strong>
+                <strong>策略回测与盘感训练</strong>
                 <span class="status-pill status-review">复核</span>
               </div>
               <dl class="workflow-meta">
-                <div><dt>证据</dt><dd>持仓复核</dd></div>
-                <div><dt>新鲜度</dt><dd>待补</dd></div>
-                <div><dt>任务</dt><dd>0 个待处理</dd></div>
+                <div><dt>证据</dt><dd>回测 / 训练记录</dd></div>
+                <div><dt>新鲜度</dt><dd>本机运行</dd></div>
+                <div><dt>任务</dt><dd>人工复盘</dd></div>
               </dl>
               <div class="workflow-actions">
-                <button class="workflow-open" type="button" data-feature-view="holdings">打开持仓</button>
+                <button class="workflow-open" type="button" data-feature-view="single">打开回测</button>
                 <button type="button" data-workflow-evidence="portfolio">查看证据</button>
               </div>
             </article>
@@ -266,23 +276,23 @@
               <tbody id="decision-rows" data-home-decision-rows>
                 <tr>
                   <td>P0</td>
-                  <td>数据新鲜度</td>
-                  <td>来源时间不一致</td>
-                  <td>复核缓存兜底</td>
+                  <td>支付宝账单</td>
+                  <td>旧原始 CSV 已发现</td>
+                  <td>接入本机私有账本</td>
                   <td><span class="status-pill status-review">复核</span></td>
                 </tr>
                 <tr>
                   <td>P1</td>
-                  <td>SPY</td>
-                  <td>市场事件摘要</td>
-                  <td>打开证据抽屉</td>
+                  <td>账本流水</td>
+                  <td>parser / raw / batch 链路</td>
+                  <td>处理低置信度记录</td>
                   <td><span class="status-pill status-ready">可用</span></td>
                 </tr>
                 <tr>
                   <td>P1</td>
-                  <td>策略运行</td>
-                  <td>回测元数据完整</td>
-                  <td>验证稳定性</td>
+                  <td>策略实验室</td>
+                  <td>回测和盘感训练</td>
+                  <td>只读研究复盘</td>
                   <td><span class="status-pill status-watch">观察</span></td>
                 </tr>
               </tbody>
@@ -299,16 +309,16 @@
             </div>
             <ol class="task-list" aria-live="polite">
               <li data-task-state="ready">
-                <strong>数据新鲜度复核</strong>
-                <span>可用 · 缓存兜底已准备</span>
+                <strong>支付宝账单导入</strong>
+                <span>可用 · 上传入口在页面顶部</span>
               </li>
               <li data-task-state="running">
-                <strong>策略验证</strong>
-                <span id="task-phase">第 1/3 步 · 等待</span>
+                <strong>账本复核</strong>
+                <span id="task-phase">第 1/3 步 · 等待导入</span>
               </li>
               <li data-task-state="queued">
-                <strong>证据导出</strong>
-                <span id="background-job-label">排队中 · 后台任务待生成</span>
+                <strong>报告生成</strong>
+                <span id="background-job-label">排队中 · 导入后可生成</span>
               </li>
             </ol>
           </aside>

@@ -1,0 +1,16 @@
+governance_spec_version: "1.0.0"
+project_id: "MetaDatabase"
+product_version: "0.1.0"
+product_version_status: "active"
+version_file_value: "0.1.0"
+schema_version: "1.0.0"
+model_versions:
+  not_applicable: "0 active models; data archive only"
+parameter_profile_versions:
+  not_applicable: "0 active parameters; data archive only"
+data_snapshot_version: "pfi_alipay_daily_20220605_20260603"
+current_iteration: "ITER-MDB-S0-20260627"
+current_phase: "S0PA"
+current_gate: "MDB-S0-GATE"
+delivery_gate: "MDB-S0-GATE"
+structure_profile_version: "metadatabase-archive-v0.1.0"

@@ -23,6 +23,17 @@ const STATUS_LABELS = {
   blocked: "阻塞",
 };
 
+const USER_TEXT_LABELS = {
+  "Synthetic E2E": "合成端到端",
+  "Rollback plan": "回滚计划",
+  "Follow-up list": "后续任务清单",
+  "Review lifecycle": "复盘生命周期",
+  "PFI Context Export": "PFI 上下文导出",
+  "Alpha 只读出口": "Alpha 只读出口",
+  "Existing smoke、focused tests、changed-only governance 已记录。": "既有 smoke、聚焦测试和变更范围治理已记录。",
+  "Owner docs、diff summary、rollback plan、follow-up list。": "用户文档、差异摘要、回滚计划和后续任务清单已记录。",
+};
+
 const GENERIC_WORKFLOW_DESCRIPTION = "查看该工作流的来源、任务和证据状态。";
 
 const WORKSPACE_LABELS = {
@@ -128,6 +139,7 @@ const FEATURE_TARGETS = {
   持仓: { view: "holdings", label: "打开持仓" },
   数据中心: { view: "tools", label: "打开数据" },
   策略库: { view: "library", label: "打开策略库" },
+  上传支付宝账单: { workspace: "sync", label: "打开上传" },
   同步全部: { workspace: "sync", label: "同步计划" },
   处理待复核: { workspace: "ledger", label: "处理复核" },
   查看建议: { workspace: "recommendations", label: "查看建议" },
@@ -144,10 +156,13 @@ const FEATURE_TARGETS = {
   "PFI Context Export": { view: "pfi_context_export", label: "打开 Context" },
   "Alpha 只读出口": { view: "alpha_readonly_export", label: "查看出口" },
   端到端验收: { view: "stage6_e2e", label: "打开验收" },
+  合成端到端: { view: "stage6_synthetic_e2e", label: "查看合成验收" },
   "Synthetic E2E": { view: "stage6_synthetic_e2e", label: "查看 E2E" },
   回归治理: { view: "stage6_regression_governance", label: "查看治理" },
   交付与回滚: { view: "stage6_delivery_rollback", label: "查看交付" },
+  回滚计划: { view: "stage6_rollback_plan", label: "查看回滚" },
   "Rollback plan": { view: "stage6_rollback_plan", label: "查看回滚" },
+  后续任务清单: { view: "stage6_follow_up_list", label: "查看后续" },
   "Follow-up list": { view: "stage6_follow_up_list", label: "查看后续" },
   账户地图: { workspace: "accounts", label: "查看账户" },
   账本流水: { workspace: "ledger", label: "查看账本" },
@@ -563,9 +578,9 @@ const FUNCTION_VIEWS = {
   ),
   stage6_synthetic_e2e: functionView(
     "stage6_synthetic_e2e",
-    "Synthetic E2E",
+    "合成端到端",
     "insights",
-    "查看 Synthetic E2E",
+    "查看合成端到端验收",
     "核对支付宝、支付宝基金、Moomoo、中国券商、ABC、CBA、微信的 fixture/contract，并验证首页、账本和建议闭环。",
     ["可用：source fixture matrix、homepage loop、ledger loop、recommendation loop", "验收：核心源不得缺失，首页必须可读，分类必须正确", "边界：不导入真实私有数据"],
   ),
@@ -575,7 +590,7 @@ const FUNCTION_VIEWS = {
     "insights",
     "查看回归治理",
     "确认 existing smoke、新增 focused tests、changed-only governance 和 no broad refactor gate 都已记录。",
-    ["可用：QBVS smoke、Stage 1-6 tests、lean governance", "验收：变更范围只在 PFI 目标文件内", "边界：不移动 QBVS runtime"],
+    ["可用：顶层 QBVS smoke、Stage 1-6 tests、lean governance", "验收：变更范围只在 PFI、QBVS、MetaDatabase 目标文件内", "边界：PFI 不覆盖 QBVS"],
   ),
   stage6_delivery_rollback: functionView(
     "stage6_delivery_rollback",
@@ -587,15 +602,15 @@ const FUNCTION_VIEWS = {
   ),
   stage6_rollback_plan: functionView(
     "stage6_rollback_plan",
-    "Rollback plan",
+    "回滚计划",
     "insights",
     "查看回滚计划",
     "查看 Stage 6 的可逆文件清单、恢复边界和无需迁移真实数据的说明。",
-    ["可用：代码、测试、文档、治理、Web Shell 回滚步骤", "验收：回滚不移动策略模拟器 runtime", "边界：无生产数据库迁移"],
+    ["可用：代码、测试、文档、治理、Web Shell 回滚步骤", "验收：回滚清楚区分 PFI 与 QBVS", "边界：无生产数据库迁移"],
   ),
   stage6_follow_up_list: functionView(
     "stage6_follow_up_list",
-    "Follow-up list",
+    "后续任务清单",
     "insights",
     "查看后续任务",
     "列出 Alpha context consumer、真实数据接入、PDF/ZIP、CDR/Open Banking 和发布证据 gate 等后续工作。",
@@ -669,6 +684,7 @@ const DEFAULT_WORKSPACES = {
       ["本月支出", "待补", "来源：账本流水 · 状态需要同步"],
     ],
     features: [
+      feature("上传支付宝账单", "可用", "CSV / ZIP 原始账单", "页面顶部有真实上传控件，可接入已发现的三年支付宝原始数据。", { workspace: "sync", label: "打开上传" }),
       feature("同步全部", "需要同步", "数据源与同步", "生成可执行前的本地同步/导入计划，不登录、不下单、不支付。"),
       feature("处理待复核", "需要复核", "账本流水", "用 A/B/C/D 选择处理低置信度流水，避免 unknown 静默入账。"),
       feature("查看建议", "有建议", "建议与复盘", "查看带证据、动作、状态、预期效果和 tradeoff 的 Top N 建议。"),
@@ -682,9 +698,9 @@ const DEFAULT_WORKSPACES = {
       row("P3", "报告与洞察", "首页证据链", "生成本地报告草稿。", "有建议"),
     ],
     tasks: [
-      task("数据新鲜度复核", "可用 · 缓存兜底已准备", "ready"),
-      task("策略验证", "第 1/3 步 · 等待", "running"),
-      task("证据导出", "排队中 · 后台任务待生成", "queued"),
+      task("支付宝账单导入", "可用 · 页面顶部上传或接入旧数据", "ready"),
+      task("账本复核", "第 1/3 步 · 等待导入结果", "running"),
+      task("报告生成", "排队中 · 导入后可生成", "queued"),
     ],
     evidence: evidence("首页运行证据", "今日缓存摘要", "运行库摘要", "首页卡片和决策队列来自本地运行库。"),
     chart: [22, 28, 24, 36, 34, 43, 39, 48, 45, 58, 52, 63, 59, 67],
@@ -925,7 +941,7 @@ function installStage3WorkspaceAliases() {
       feature("收益归因", "需要复核", "估计归因", "把收益拆为市场、主动决策、费用、汇率和现金拖累；数据不足不输出精确结论。", { workspace: "investment", label: "查看归因" }),
       feature("风险分析", "有建议", "风险证据", "查看集中度、回撤、币种暴露和流动性。", { workspace: "investment", label: "查看风险" }),
       feature("行为复盘", "有建议", "交易证据", "识别追涨、杀跌、频繁交易和持有周期。", { workspace: "investment", label: "查看复盘" }),
-      feature("策略实验室", "可用", "QBVS", "保留策略回测、参数扫描、盘感训练和大数据模拟器。", { workspace: "strategy", label: "打开策略" }),
+      feature("策略实验室", "可用", "PFI 策略实验室", "保留 PFI 策略回测、参数扫描、盘感训练和大数据模拟器；QBVS 是顶层独立系统。", { workspace: "strategy", label: "打开策略" }),
     ],
   };
   WORKSPACES.consumption = {
@@ -957,10 +973,27 @@ function installStage3WorkspaceAliases() {
     kicker: "同步与导入",
     conclusion: "一键生成可执行前的同步/导入计划；真实登录、支付和券商操作必须另走 owner gate。",
     runtime: "同步全部：只生成计划 · 不执行外部动作",
+    cards: [
+      ["支付宝账单", "可上传", "CSV / ZIP 原始账单，本机私有目录"],
+      ["旧数据", "已发现", "2022-06-05 至 2026-06-03 账单分段"],
+      ["导入结果", "待生成", "标准化流水和待复核队列"],
+      ["隐私边界", "本机", "原始账单不进入 Git"],
+    ],
     features: [
+      feature("上传支付宝账单", "可用", "本机上传", "使用页面顶部上传控件，或接入已发现的旧支付宝原始账单。", { workspace: "sync", label: "查看上传" }),
       feature("同步全部", "需要同步", "7 个来源", "扫描本地导入收件箱或生成只读预检，不登录、不下单、不支付。", { workspace: "sync", label: "同步计划" }),
       feature("来源登记", "复核", "数据源状态", "查看数据源新鲜度、失败原因和 parser 合同。"),
       feature("隐私边界", "可用", "本地数据", "私有数据和凭证不进入公共 Git。"),
+    ],
+    rows: [
+      row("P0", "支付宝原始账单", "CSV / ZIP", "上传或接入旧交接目录中的原始账单。", "可用"),
+      row("P1", "标准化流水", "parser v1", "生成私有 CSV 和 manifest 后进入账本复核。", "需要同步"),
+      row("P1", "隐私边界", "~/.pfi/runtime", "原始账单只保存在本机私有目录，不提交 Git。", "可用"),
+    ],
+    tasks: [
+      task("上传账单", "可用 · 支持多文件 CSV / ZIP", "ready"),
+      task("旧数据接入", "可用 · 发现旧支付宝原始文件后可一键导入", "ready"),
+      task("账本复核", "导入后处理低置信度分类", "review"),
     ],
   };
   WORKSPACES.recommendations = {
@@ -1375,30 +1408,30 @@ function applyStage6Dashboard(dashboard) {
   WORKSPACES.home.runtime = "Stage 6：端到端验收与稳定化 · 本地只读 MVP";
   WORKSPACES.home.features = [
     feature("端到端验收", gatePassCount === totalGate.length ? "通过" : "复核", "stage6:total_acceptance_gate", `${gatePassCount}/${totalGate.length} 个总 gate 通过。`),
-    feature("Synthetic E2E", phase6a.status === "PASS" ? "通过" : "复核", "stage6:phase_6a", `${sourceMatrix.length} 个核心源 · 首页/账本/建议闭环。`),
-    feature("回归治理", regression.status === "PASS" ? "通过" : "复核", "stage6:phase_6b", "Existing smoke、focused tests、changed-only governance 已记录。"),
+    feature("合成端到端", phase6a.status === "PASS" ? "通过" : "复核", "stage6:phase_6a", `${sourceMatrix.length} 个核心源 · 首页/账本/建议闭环。`),
+    feature("回归治理", regression.status === "PASS" ? "通过" : "复核", "stage6:phase_6b", "既有 smoke、聚焦测试和变更范围治理已记录。"),
     feature("交付与回滚", delivery.status === "PASS" ? "通过" : "复核", "stage6:phase_6c", `${rollbackCount} 步回滚计划 · ${followUpCount} 项后续任务。`),
-    feature("Rollback plan", rollbackCount >= 6 ? "可用" : "复核", "stage6:rollback", "可回滚代码、测试、文档、治理和 Web Shell 接入。"),
-    feature("Follow-up list", followUpCount ? "可用" : "待补", "stage6:follow_up", "外部 context consumer、真实数据、PDF/ZIP、CDR/Open Banking 分离跟进。"),
+    feature("回滚计划", rollbackCount >= 6 ? "可用" : "复核", "stage6:rollback", "可回滚代码、测试、文档、治理和 Web Shell 接入。"),
+    feature("后续任务清单", followUpCount ? "可用" : "待补", "stage6:follow_up", "外部 context consumer、真实数据、PDF/ZIP、CDR/Open Banking 分离跟进。"),
   ];
   WORKSPACES.home.tasks = [
     task("Stage 6 总验收", `${gatePassCount}/${totalGate.length} 个 gate PASS`, gatePassCount === totalGate.length ? "ready" : "review"),
     task("TaskPack ACC 审计", `${auditPassCount}/${taskpackAudit.length} 个 acceptance PASS`, auditPassCount === taskpackAudit.length ? "ready" : "review"),
     task("E2E 四闭环", `sources=${sourceMatrix.length} · ledger=${(ledgerLoop.checks || []).length} · recommendations=${recommendationLoop.generated_count || 0}`, phase6a.status === "PASS" ? "ready" : "review"),
-    task("回滚计划", `${rollbackCount} 步 · 不移动 QBVS runtime，不迁移真实数据`, rollbackCount >= 6 ? "ready" : "review"),
+    task("回滚计划", `${rollbackCount} 步 · QBVS 顶层独立，不迁移真实数据`, rollbackCount >= 6 ? "ready" : "review"),
   ];
 
   WORKSPACES.insights.features = [
     feature("端到端验收", gatePassCount === totalGate.length ? "通过" : "复核", "stage6:total_acceptance_gate", `${gatePassCount}/${totalGate.length} 个总 gate 通过。`),
-    feature("Synthetic E2E", phase6a.status === "PASS" ? "通过" : "复核", "stage6:phase_6a", "多数据源、首页、账本和建议闭环。"),
-    feature("回归治理", regression.status === "PASS" ? "通过" : "复核", "stage6:phase_6b", "Existing smoke、focused tests、changed-only governance、no broad refactor。"),
-    feature("交付与回滚", delivery.status === "PASS" ? "通过" : "复核", "stage6:phase_6c", "Owner docs、diff summary、rollback plan、follow-up list。"),
-    feature("Rollback plan", rollbackCount >= 6 ? "可用" : "复核", "stage6:rollback", "可逆文件清单和无生产迁移边界。"),
-    feature("Follow-up list", followUpCount ? "可用" : "待补", "stage6:follow_up", "后续任务独立排期，不越权进入 Stage 6。"),
+    feature("合成端到端", phase6a.status === "PASS" ? "通过" : "复核", "stage6:phase_6a", "多数据源、首页、账本和建议闭环。"),
+    feature("回归治理", regression.status === "PASS" ? "通过" : "复核", "stage6:phase_6b", "既有 smoke、聚焦测试、变更范围治理和无大范围重构已记录。"),
+    feature("交付与回滚", delivery.status === "PASS" ? "通过" : "复核", "stage6:phase_6c", "用户文档、差异摘要、回滚计划和后续任务清单已记录。"),
+    feature("回滚计划", rollbackCount >= 6 ? "可用" : "复核", "stage6:rollback", "可逆文件清单和无生产迁移边界。"),
+    feature("后续任务清单", followUpCount ? "可用" : "待补", "stage6:follow_up", "后续任务独立排期，不越权进入 Stage 6。"),
   ];
   WORKSPACES.insights.rows = [
     row("P0", "端到端验收", "stage6:total_acceptance_gate", `${gatePassCount}/${totalGate.length} 个 gate 通过。`, gatePassCount === totalGate.length ? "通过" : "复核"),
-    row("P0", "Synthetic E2E", "stage6:phase_6a", `${sourceMatrix.length} 个核心源；首页状态 ${safeUserText(homepageLoop.status, "复核")}。`, safeUserText(phase6a.status, "复核")),
+    row("P0", "合成端到端", "stage6:phase_6a", `${sourceMatrix.length} 个核心源；首页状态 ${safeUserText(homepageLoop.status, "复核")}。`, safeUserText(phase6a.status, "复核")),
     row("P1", "回归治理", "lean_governance.py", safeUserText((regression.changed_scope_governance || {}).expected, "运行 changed-only governance。"), safeUserText(regression.status, "复核")),
     row("P1", "交付与回滚", "stage6:phase_6c", `${rollbackCount} 步 rollback · ${followUpCount} 项 follow-up。`, safeUserText(delivery.status, "复核")),
   ];
@@ -1575,9 +1608,9 @@ function renderCards(cards) {
   document.querySelectorAll("[data-home-card]").forEach((tile, index) => {
     const card = cards[index];
     if (!card) return;
-    tile.querySelector("span").textContent = card[0];
-    tile.querySelector("[data-card-value]").textContent = card[1];
-    tile.querySelector("[data-card-detail]").textContent = card[2];
+    tile.querySelector("span").textContent = safeUserText(card[0], "指标");
+    tile.querySelector("[data-card-value]").textContent = safeUserText(card[1], "待补");
+    tile.querySelector("[data-card-detail]").textContent = safeUserText(card[2], "来源待补");
   });
 }
 
@@ -1593,7 +1626,7 @@ function renderFeatureCards(cards) {
     const head = document.createElement("div");
     head.className = "workflow-card-head";
     const title = document.createElement("strong");
-    title.textContent = card.title;
+    title.textContent = safeUserText(card.title, "功能入口");
     const status = document.createElement("span");
     status.className = `status-pill ${statusClass(card.status)}`;
     status.textContent = localizeStatus(card.status);
@@ -1859,11 +1892,11 @@ function renderTasks(tasks) {
     const li = document.createElement("li");
     li.dataset.taskState = item.state || "review";
     const title = document.createElement("strong");
-    title.textContent = item.title;
+    title.textContent = safeUserText(item.title, "任务");
     const detail = document.createElement("span");
     if (index === 1) detail.id = "task-phase";
     if (index === 2) detail.id = "background-job-label";
-    detail.textContent = item.detail;
+    detail.textContent = safeUserText(item.detail, "等待处理");
     li.appendChild(title);
     li.appendChild(detail);
     list.appendChild(li);
@@ -2118,6 +2151,8 @@ function safeUserText(value, fallback = "待补") {
   if (!clean) return fallback;
   if (clean === "{}") return "{}";
   const normalized = clean.toLowerCase().replaceAll(" ", "_");
+  if (Object.prototype.hasOwnProperty.call(USER_TEXT_LABELS, clean)) return USER_TEXT_LABELS[clean];
+  if (Object.prototype.hasOwnProperty.call(USER_TEXT_LABELS, normalized)) return USER_TEXT_LABELS[normalized];
   if (Object.prototype.hasOwnProperty.call(STATUS_LABELS, normalized)) return STATUS_LABELS[normalized];
   if (["missing", "n/a", "none", "null", "undefined"].includes(normalized)) return fallback;
   if (clean === ["Disabled", "Provider"].join("")) return "外部模型未启用";
@@ -2146,6 +2181,13 @@ function bindEvents() {
       event.preventDefault();
       setPressedFeedback(featureControl);
       openFunctionView(featureControl.dataset.featureView);
+      return;
+    }
+    const workspaceControl = event.target.closest("[data-feature-workspace]");
+    if (workspaceControl) {
+      event.preventDefault();
+      setPressedFeedback(workspaceControl);
+      setActiveWorkspace(workspaceControl.dataset.featureWorkspace || "home");
       return;
     }
     const functionAction = event.target.closest("[data-function-action]");

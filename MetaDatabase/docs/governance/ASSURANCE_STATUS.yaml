@@ -1,0 +1,62 @@
+project_id: "MetaDatabase"
+as_of_event_id: "EVENT-MDB-20260627-S0PA"
+source_snapshot_hash: "sha256:PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+source_base_commit: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+snapshot_event_time: "2026-06-27T00:00:00+10:00"
+generator_version: "manual-0.1.0"
+final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+dimensions:
+  structural_completeness:
+    status: "VERIFIED"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "MetaDatabase/docs/governance/project.yaml"
+  implementation_congruence:
+    status: "NOT_APPLICABLE"
+    fact_level: "NOT_APPLICABLE"
+    total_active_parameters: "0"
+    total_active_formulas: "0"
+    evidence_refs:
+      - "MetaDatabase/docs/governance/model_registry.yaml"
+  parameter_source_quality:
+    status: "NOT_APPLICABLE"
+    fact_level: "NOT_APPLICABLE"
+    evidence_refs:
+      - "MetaDatabase/docs/governance/parameter_registry.csv"
+  methodological_rationale:
+    status: "NOT_APPLICABLE"
+    fact_level: "NOT_APPLICABLE"
+    evidence_refs:
+      - "MetaDatabase/docs/governance/MODEL_SPEC.md"
+  empirical_validation:
+    status: "NOT_APPLICABLE"
+    fact_level: "NOT_APPLICABLE"
+    evidence_refs:
+      - "MetaDatabase/MANIFEST.json"
+  operational_validation:
+    status: "UNVERIFIED"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "MetaDatabase/README.md"
+  delivery_evidence:
+    status: "PARTIAL"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "MetaDatabase/docs/governance/delivery_tasks.yaml"
+  evidence_freshness:
+    status: "PARTIAL"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "MetaDatabase/docs/governance/development_events.jsonl"
+delivery_readiness:
+  status: "PARTIAL"
+  release_gate: "MDB-S0-GATE"
+  blocker_ids: []
+next_executable_task:
+  task_id: "TASK-MDB-S0-001"
+  status: "completed"
+  reason: "Top-level data archive registration completed."
+  acceptance_ids:
+    - "ACC-MDB-S0-001"
+  owner: "data_owner"

@@ -1,8 +1,9 @@
 """PFI V0.2 contracts.
 
 The package defines product, domain, data-source, import, and reconciliation
-contracts that later implementation stages can share without moving the legacy
-QBVS runtime under ``PFI/modules/qbvs_lab``.
+contracts. QBVS is a separate top-level system under ``CodexProject/QBVS``;
+PFI keeps its own strategy backtesting, market-feel training, and simulator
+surfaces without owning QBVS.
 """
 
 from pfi_v02.stage1_ia import (

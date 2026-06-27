@@ -6,7 +6,7 @@ from typing import Iterable
 
 from pfi_v02.classification_rules import ClassificationInput, classify_transaction
 from pfi_v02.core_models import LedgerEventType
-from pfi_v02.stage1_ia import LEGACY_COMPATIBILITY_ENTRY, primary_entry_labels
+from pfi_v02.stage1_ia import LEGACY_COMPATIBILITY_ENTRY, primary_entry_labels, v01_compatibility_entry_labels
 from pfi_v02.stage2_registry import build_stage2_registry
 from pfi_v02.stage3_read_mvp import STAGE3_REQUIRED_ACCOUNT_SOURCES, build_stage3_read_model
 from pfi_v02.stage4_analysis_mvp import build_stage4_analysis_model
@@ -89,11 +89,15 @@ def build_stage6_e2e_stabilization_model(
         "compatibility": {
             "primary_entry_count": len(primary_entry_labels()),
             "primary_entries": primary_entry_labels(),
+            "v01_compatibility_entry_count": len(v01_compatibility_entry_labels()),
+            "v01_compatibility_entries": v01_compatibility_entry_labels(),
             "legacy_compatibility_entry": LEGACY_COMPATIBILITY_ENTRY,
             "alpha_first_level_entry_added": False,
             "ralpha_first_level_entry_added": False,
             "system_development_first_level_entry_added": False,
-            "qbvs_runtime_moved": False,
+            "qbvs_independent_system": True,
+            "qbvs_owned_by_pfi": False,
+            "qbvs_runtime_moved_out_of_pfi": True,
             "product_surface_forbidden_external_dependency": False,
         },
         "boundaries": (
@@ -103,7 +107,7 @@ def build_stage6_e2e_stabilization_model(
             "no_broker_order_submission",
             "no_payment_submission",
             "live_trade_submission_authorized_false",
-            "qbvs_runtime_not_moved",
+            "qbvs_is_independent_top_level_system",
         ),
     }
 
@@ -213,7 +217,7 @@ def build_regression_governance_gate() -> dict[str, object]:
         "schema": "PFIStage6RegressionGovernanceV1",
         "status": "PASS",
         "existing_smoke": {
-            "command": "cd PFI/modules/qbvs_lab && PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q",
+            "command": "cd QBVS && PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q",
             "expected": "Ran 1 test / OK",
         },
         "new_focused_tests": {
@@ -235,7 +239,7 @@ def build_regression_governance_gate() -> dict[str, object]:
                 "PFI owner entry files",
                 "PFI/docs/governance",
             ),
-            "forbidden_scope": ("PFI/modules/qbvs_lab/qbvs", "Alpha", "EEI", "arxiv-daily-push"),
+            "forbidden_scope": ("Alpha", "EEI", "arxiv-daily-push"),
             "status": "PASS",
         },
     }
@@ -263,7 +267,7 @@ def build_delivery_and_rollback_gate() -> dict[str, object]:
             "Revert Stage 6 updates to README, CHANGELOG, HANDOFF, and owner entry files.",
             "Revert Stage 6 governance registry updates.",
             "Revert Stage 6 web shell summary additions.",
-            "Do not move or rollback QBVS runtime unless a future dedicated incident requires it.",
+            "Revert this branch if QBVS top-level separation must be rolled back as a dedicated incident.",
             "No production database migration or private data rollback is required.",
         ),
         "follow_up_list": STAGE6_FOLLOW_UPS,
@@ -285,7 +289,7 @@ def build_total_acceptance_gate(
     gate_items = (
         ("GATE-01", "现有 PFI 入口没有被删", len(primary_entry_labels()) == 8, "stage1_ia.PRIMARY_ENTRIES"),
         ("GATE-02", "PFI V0.2 IA 优先于旧 UX 假设", stage3_dashboard.get("schema") == "PFIV02Stage3ReadableMVPV1", "stage3 read-model"),
-        ("GATE-03", "QBVS 映射到投资管理策略实验室", LEGACY_COMPATIBILITY_ENTRY["target_location"] == "投资管理 > 策略实验室 / 大数据模拟器", "stage1 legacy compatibility"),
+        ("GATE-03", "QBVS 独立于 PFI 投资管理", LEGACY_COMPATIBILITY_ENTRY["existing_path"] == "QBVS" and LEGACY_COMPATIBILITY_ENTRY["current_root"] == "CodexProject/QBVS", "stage1 legacy compatibility"),
         ("GATE-04", "七个核心源全部覆盖", set(STAGE6_E2E_SOURCE_IDS).issubset(source_ids), "source fixture matrix"),
         ("GATE-05", "非 CSV 投资源是一等合同", {"alipay_fund", "cn_broker", "abc_bullion"}.issubset(non_csv), "stage2 registry"),
         ("GATE-06", "CBA CSV 是 P0 稳定源", any(row["source_id"] == "cba_bank" and "cba_csv_v1" in row["parser_contracts"] for row in source_fixture_matrix), "stage2 CBA contract"),
@@ -329,8 +333,8 @@ def build_taskpack_acceptance_audit(
     constraints = alpha_context["constraints"]
     checks = (
         ("ACC-COMPAT-01", "Existing local PFI owner entries remain accessible", True, "PFI owner entry files"),
-        ("ACC-COMPAT-02", "Existing simulator maps to strategy lab", LEGACY_COMPATIBILITY_ENTRY["target_location"] == "投资管理 > 策略实验室 / 大数据模拟器", "stage1 legacy compatibility"),
-        ("ACC-COMPAT-03", "QBVS runtime is not moved", not stage5_dashboard["compatibility"]["qbvs_runtime_moved"], "stage5 compatibility"),
+        ("ACC-COMPAT-02", "V0.1 six compatibility entries remain accessible", v01_compatibility_entry_labels() == ("首页", "市场", "研究", "持仓", "策略实验室", "数据与系统"), "stage1 compatibility"),
+        ("ACC-COMPAT-03", "QBVS is independent top-level system", stage5_dashboard["compatibility"]["qbvs_independent_system"] and not stage5_dashboard["compatibility"]["qbvs_owned_by_pfi"], "stage5 compatibility"),
         ("ACC-COMPAT-04", "Existing smoke/lifecycle test remains required", True, "stage6 regression gate"),
         ("ACC-COMPAT-05", "V0.2 IA has display priority with compatibility", len(primary_entry_labels()) == 8, "stage1 IA"),
         ("ACC-IA-01", "Target IA has exactly 8 entries", primary_entry_labels() == ("首页总览", "账户与资产", "账本流水", "投资管理", "消费管理", "数据源与同步", "建议与复盘", "报告与洞察"), "stage1 IA"),

@@ -92,7 +92,7 @@ class Stage6E2EStabilizationTest(unittest.TestCase):
         regression = self.model["phase_6b"]
         delivery = self.model["phase_6c"]
 
-        self.assertIn("qbvs_lab", regression["existing_smoke"]["command"])
+        self.assertIn("cd QBVS", regression["existing_smoke"]["command"])
         self.assertIn("test_stage6_e2e_stabilization", regression["new_focused_tests"]["command"])
         self.assertIn("lean_governance.py ci --changed-only --base-ref origin/main", regression["changed_scope_governance"]["command"])
         self.assertIn("PFI/docs/governance", regression["no_broad_refactor"]["allowed_scope"])
@@ -112,11 +112,14 @@ class Stage6E2EStabilizationTest(unittest.TestCase):
             tuple(compatibility["primary_entries"]),
             ("首页总览", "账户与资产", "账本流水", "投资管理", "消费管理", "数据源与同步", "建议与复盘", "报告与洞察"),
         )
-        self.assertEqual(compatibility["legacy_compatibility_entry"]["target_location"], "投资管理 > 策略实验室 / 大数据模拟器")
+        self.assertEqual(tuple(compatibility["v01_compatibility_entries"]), ("首页", "市场", "研究", "持仓", "策略实验室", "数据与系统"))
+        self.assertEqual(compatibility["legacy_compatibility_entry"]["target_location"], "独立系统：CodexProject/QBVS")
         self.assertFalse(compatibility["alpha_first_level_entry_added"])
         self.assertFalse(compatibility["ralpha_first_level_entry_added"])
         self.assertFalse(compatibility["system_development_first_level_entry_added"])
-        self.assertFalse(compatibility["qbvs_runtime_moved"])
+        self.assertTrue(compatibility["qbvs_independent_system"])
+        self.assertFalse(compatibility["qbvs_owned_by_pfi"])
+        self.assertTrue(compatibility["qbvs_runtime_moved_out_of_pfi"])
         self.assertFalse(compatibility["product_surface_forbidden_external_dependency"])
 
     def test_homepage_summary_exposes_stage6_without_losing_prior_stage_payloads(self) -> None:
@@ -136,8 +139,11 @@ class Stage6E2EStabilizationTest(unittest.TestCase):
         js = (root / "web" / "app" / "shell.js").read_text(encoding="utf-8")
 
         self.assertIn('data-primary-workspaces="8"', html)
+        self.assertEqual(html.count('data-primary-entry="true"'), 8)
+        self.assertIn('data-v01-workspaces="6"', html)
+        self.assertEqual(html.count('data-v01-entry="true"'), 6)
         self.assertIn('"stage6_dashboard"', html)
-        for label in ("端到端验收", "Synthetic E2E", "回归治理", "交付与回滚", "Rollback plan", "Follow-up list"):
+        for label in ("端到端验收", "合成端到端", "回归治理", "交付与回滚", "回滚计划", "后续任务"):
             self.assertIn(label, js)
         self.assertNotIn('data-workspace="alpha"', html.lower())
         self.assertNotIn('data-workspace="ralpha"', html.lower())

@@ -75,7 +75,9 @@ def build_stage5_delivery_model(
             "alpha_first_level_entry_added": False,
             "ralpha_first_level_entry_added": False,
             "system_first_level_entry_added": False,
-            "qbvs_runtime_moved": False,
+            "qbvs_independent_system": True,
+            "qbvs_owned_by_pfi": False,
+            "qbvs_runtime_moved_out_of_pfi": True,
         },
         "boundaries": (
             "recommendations_are_review_queue_items_not_orders",
@@ -86,6 +88,7 @@ def build_stage5_delivery_model(
             "no_broker_order_submission",
             "no_payment_submission",
             "live_trade_submission_authorized_false",
+            "qbvs_is_independent_top_level_system",
         ),
     }
 
@@ -145,10 +148,10 @@ def build_stage5_recommendations(stage4_dashboard: dict[str, object]) -> tuple[S
         Stage5Recommendation(
             "rec_inv_strategy_control",
             "investment",
-            ("PFI/modules/qbvs_lab/qbvs", "strategy:stage4_compatibility"),
+            ("pfi_strategy_lab:stage4_compatibility", "pfi_strategy_lab:no_live_orders"),
             "把策略上线/暂停作为人工 gate，避免分析结果直接变成订单。",
             "过度保守会降低策略迭代速度。",
-            "只允许策略实验室进入复核；上线/暂停由 owner 手动决定。",
+            "只允许 PFI 策略实验室进入复核；QBVS 是独立系统，不由 PFI 投资管理覆盖。",
             "pending",
             "有建议",
             4,

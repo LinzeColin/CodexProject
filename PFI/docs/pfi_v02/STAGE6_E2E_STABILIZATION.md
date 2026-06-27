@@ -14,8 +14,10 @@ Stage 6 将 PFI V0.2 从“本地 MVP 功能已建立”推进到“可运行、
 - `web/index.html`
 - `web/app/shell.js`
 - `PFI` owner 三基文件和 `docs/governance`
+- `QBVS/` 顶层独立系统引用
+- `MetaDatabase/` 原始数据备份
 
-不移动 `PFI/modules/qbvs_lab/qbvs`，不修改外部 Alpha repo，不新增 Alpha/Ralpha/System/Development 产品一级入口。
+QBVS 已独立为 `CodexProject/QBVS` 顶层系统；PFI 不覆盖 QBVS，不修改外部 Alpha repo，不新增 Alpha/Ralpha/System/Development 产品一级入口。
 
 ## Phase 6A：Synthetic E2E Scenario
 
@@ -30,7 +32,7 @@ Stage 6 将 PFI V0.2 从“本地 MVP 功能已建立”推进到“可运行、
 
 | Task | Acceptance Criteria | Stop Condition | Validation | Evidence |
 | --- | --- | --- | --- | --- |
-| S6PBT01 Existing smoke | QBVS lifecycle smoke 继续通过 | 旧策略实验室破坏 | `tests.test_s3pct02_lifecycle` | `phase_6b.existing_smoke` |
+| S6PBT01 Existing smoke | 顶层 QBVS lifecycle smoke 继续通过 | 外部策略验证系统破坏 | `tests.test_s3pct02_lifecycle` | `phase_6b.existing_smoke` |
 | S6PBT02 New focused tests | Stage 6 focused tests 通过 | 新合同不可运行 | `tests.test_stage6_e2e_stabilization` | `phase_6b.new_focused_tests` |
 | S6PBT03 Changed-scope governance | governed files changed 时跑 changed-only governance | governance 失败 | `scripts/lean_governance.py ci --changed-only --base-ref origin/main` | `phase_6b.changed_scope_governance` |
 | S6PBT04 No broad refactor | diff 只在 PFI Stage 6 选定范围内 | 宽重构、目录迁移、runtime 移动 | diff review + tests | `phase_6b.no_broad_refactor` |
@@ -49,7 +51,8 @@ Stage 6 将 PFI V0.2 从“本地 MVP 功能已建立”推进到“可运行、
 `build_stage6_e2e_stabilization_model().total_acceptance_gate` 固化 20 个 Gate，覆盖：
 
 - PFI 现有入口未删除，V0.2 IA 优先。
-- QBVS 保留在 `投资管理 > 策略实验室 / 大数据模拟器`。
+- QBVS 独立于 PFI 投资管理；PFI 只保留自身策略回测、盘感训练和大数据模拟器。
+- V0.1 六入口：首页、市场、研究、持仓、策略实验室、数据与系统继续可访问。
 - 七个核心数据源覆盖；支付宝基金、中国大陆券商、ABC Bullion 不假设 CSV。
 - CBA CSV P0 仍稳定。
 - 非交易凭证/个人数据只读，交易密码排除。
@@ -67,7 +70,7 @@ Stage 6 将 PFI V0.2 从“本地 MVP 功能已建立”推进到“可运行、
 ```bash
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -B -m unittest tests.test_stage6_e2e_stabilization -q
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -B -m unittest tests.test_stage1_ia_contract tests.test_stage1_core_models tests.test_stage1_classification_rules tests.test_stage2_data_source_registry tests.test_stage2_cba_csv_import tests.test_stage2_alipay_import tests.test_stage2_non_csv_contracts tests.test_stage3_readable_mvp tests.test_stage4_analysis_mvp tests.test_stage5_advice_report_alpha tests.test_stage6_e2e_stabilization -q
-cd modules/qbvs_lab && PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q
+(cd ../QBVS && PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q)
 node --check web/app/shell.js
 python3 ../scripts/validate_project_governance.py --project PFI
 python3 -B -m unittest ../tests.governance.test_human_entry_markdown_contract -q
@@ -98,7 +101,7 @@ python3 ../scripts/lean_governance.py ci --changed-only --base-ref origin/main
 4. Revert `homepage_summary.py` 的 Stage 6 payload 和 evidence drawer。
 5. Revert `web/index.html`、`web/app/shell.js` 的 Stage 6 Web 接入。
 6. Revert owner 三基和 `docs/governance` 的 Stage 6 记录。
-7. 不移动、不删除、不回滚 `PFI/modules/qbvs_lab/qbvs` runtime。
+7. 若需回滚 QBVS 顶层独立，必须单独 revert 本次分离提交，不能在 PFI 内重新嵌入 QBVS。
 8. 不需要生产数据库、私有账本或真实凭证迁移回滚。
 
 ## 后续任务

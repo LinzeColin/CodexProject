@@ -73,14 +73,16 @@ class Stage4AnalysisMvpTest(unittest.TestCase):
         self.assertEqual(empty["conclusions"], ())
         self.assertIn("缺少交易数据", empty["data_requirement"])
 
-    def test_qbvs_strategy_lab_compatibility_remains_under_investment_management(self) -> None:
+    def test_qbvs_is_external_while_pfi_strategy_lab_features_remain(self) -> None:
         compat = build_qbvs_compatibility_contract()
 
-        self.assertFalse(compat["runtime_moved"])
-        self.assertEqual(compat["legacy_runtime_path"], "PFI/modules/qbvs_lab/qbvs")
-        self.assertIn("投资管理 > 策略实验室 / 大数据模拟器", compat["target_entry"])
-        self.assertIn("盘感训练", compat["preserved_features"])
-        self.assertIn("大数据模拟器", compat["preserved_features"])
+        self.assertTrue(compat["runtime_moved_out_of_pfi"])
+        self.assertFalse(compat["pfi_owns_qbvs"])
+        self.assertEqual(compat["legacy_runtime_path"], "QBVS/qbvs")
+        self.assertIn("独立系统：CodexProject/QBVS", compat["target_entry"])
+        self.assertIn("投资管理 > PFI 策略实验室", compat["pfi_strategy_lab_entry"])
+        self.assertIn("盘感训练", compat["preserved_pfi_features"])
+        self.assertIn("大数据模拟器", compat["preserved_pfi_features"])
 
     def test_consumption_summary_excludes_transfers_and_investments_from_spending(self) -> None:
         records = build_stage4_demo_spending_records()

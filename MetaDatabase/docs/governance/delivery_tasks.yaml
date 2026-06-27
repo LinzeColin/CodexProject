@@ -1,0 +1,37 @@
+governance_spec_version: "1.0.0"
+project_id: "MetaDatabase"
+tasks:
+  - task_id: "TASK-MDB-S0-001"
+    phase: "S0PA"
+    objective: "Register MetaDatabase as a governed top-level data archive."
+    scope:
+      - "MetaDatabase/README.md"
+      - "MetaDatabase/MANIFEST.json"
+      - "MetaDatabase/docs/governance/*"
+      - "MetaDatabase/功能清单.md"
+      - "MetaDatabase/开发记录.md"
+      - "MetaDatabase/模型参数文件.md"
+    non_scope:
+      - "business classification"
+      - "investment recommendation"
+      - "payment submission"
+      - "broker order submission"
+    status: "completed"
+    dependencies: []
+    required_files:
+      - "MetaDatabase/MANIFEST.json"
+      - "MetaDatabase/docs/governance/project.yaml"
+    acceptance_ids:
+      - "ACC-MDB-S0-001"
+    test_commands:
+      - "python3 scripts/validate_project_governance.py --project MetaDatabase"
+      - "python3 -B -m unittest tests.governance.test_human_entry_markdown_contract -q"
+    test_results:
+      - "pending current validation in PFI Stage 1-5 audit"
+    evidence_refs:
+      - "MetaDatabase/MANIFEST.json"
+      - "MetaDatabase/docs/governance/project.yaml"
+    risk: "Sensitive user financial data must remain authorized, append-only, and traceable."
+    rollback: "Revert the MetaDatabase governance registration commit; do not delete raw user data without explicit approval."
+    target_version: "0.1.0"
+    completed_version: "0.1.0"
