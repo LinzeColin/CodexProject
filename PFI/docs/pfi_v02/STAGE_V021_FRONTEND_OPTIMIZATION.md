@@ -269,3 +269,48 @@ git diff --check -- PFI
 ## Stage 3 后续顺序
 
 下一轮 pursuing goal 应从 `P4 / S4 趋势模型` 开始，优先完成统一趋势数据结构、账户与资产折线图、投资管理折线图和消费管理折线图。不得跳到上传中心或持仓持久化，除非用户明确改变阶段顺序。
+
+## Stage 4 完成记录
+
+本轮完成 `P4 / S4 趋势模型`，覆盖任务：
+
+- `V021-P4-S4-T01`：新增统一趋势数据结构 `UNIFIED_TREND_DATA`。
+- `V021-P4-S4-T02`：账户与资产折线图显示 `现金` 和 `净资产`。
+- `V021-P4-S4-T03`：投资管理折线图显示 `市值`、`总收益` 和 `现金仓位`。
+- `V021-P4-S4-T04`：消费管理折线图显示 `支出`、`预算` 和 `现金流`。
+
+当前交付：
+
+- 三类页面读取同一个趋势对象形状：`scope`、`title`、`unit`、`periods`、`series[]`、`emptyState`。
+- 趋势数据以 CNY 为显示基准；当前为本地前端验收 fixture，不声明实时账户联通。
+- 趋势面板提供中文标题、中文图例、CNY 基准徽标、网格、终点直接标签和中文空状态 `趋势数据待更新`。
+- 桌面和手机都使用同一个响应式 HTML Web Shell，不新增 iframe、手机演示框或外部演示 HTML。
+- 不新增 QBVS、Alpha、Ralpha、System、Development 一级入口；不新增交易、支付或券商提交动作。
+
+Stage 4 已通过的目标验收命令：
+
+```bash
+node --check PFI/web/app/shell.js
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m unittest PFI.tests.test_v021_stage4_trend_contract PFI.tests.test_v021_stage3_settings_search_contract PFI.tests.test_v021_stage2_copy_cleanup_contract PFI.tests.test_v021_stage1_navigation_contract PFI.tests.test_v021_stage0_frontend_contract -q
+```
+
+当前结果：Web Shell 语法检查通过；Stage 0/1/2/3/4 前端合同 `Ran 26 tests / OK`。
+
+Stage 4 closeout 验收命令：
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -B -m unittest discover -s tests -q
+python3 scripts/validate_project_governance.py --project PFI
+git diff --check -- PFI
+```
+
+当前结果：完整 PFI 单测 `Ran 126 tests / OK`；治理 `errors 0 / warnings 0`；`git diff --check -- PFI` 通过。
+
+浏览器验收：
+
+- Chrome headless desktop 1440x950：`账户与资产`、`投资管理`、`消费管理` 三个路由均显示中文趋势标题、CNY 基准、图例和非空 Canvas 折线；console errors `0`；截图 `/tmp/pfi-v021-stage4-trends-desktop-verified.png`。
+- Chrome headless mobile 390x844：`消费管理` 显示 `支出、预算与现金流趋势`、CNY 基准和非空 Canvas 折线；截图 `/tmp/pfi-v021-stage4-trends-mobile-verified.png`。
+
+## Stage 4 后续顺序
+
+下一轮 pursuing goal 应从 `P5 / S5 上传中心` 开始，优先完成上传、拖拽、状态、失败反馈、导入批次、摘要和复核入口。不得跳到持仓 SQLite 持久化，除非用户明确改变阶段顺序。
