@@ -25,7 +25,8 @@
     "arxiv-daily-push/tests/test_stage2_lease_fencing.py",
     "governance/run_manifests/ADP-S2PMT04-INSTALL-LIFECYCLE-B001-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-B001-ISOLATED-PROOF-RECONCILIATION-20260627.json",
-    "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-ISOLATED-PROOF-20260627.json"
+    "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-ISOLATED-PROOF-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-A001-INDEPENDENT-TECHNICAL-REVIEW-20260627.json"
   ],
   "final_acceptance_bundle_present": false,
   "forbidden_side_effects": {
@@ -58,13 +59,16 @@
       "evidence_refs": [
         "arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_RESTORE_PATH_SAFETY_A001.md",
         "governance/run_manifests/ADP-S2PMT02-RESTORE-PATH-SAFETY-A001-20260627.json",
+        "governance/run_manifests/ADP-S2PMT07-A001-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
         "arxiv-daily-push/用户中心/恢复路径安全扫描.md",
         "arxiv-daily-push/tests/test_stage2_atomic_recovery.py"
       ],
       "finding_id": "A-001",
+      "finding_level_independent_review_receipt": "governance/run_manifests/ADP-S2PMT07-A001-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
       "fix_task": "S2PMT02-RESTORE-PATH-SAFETY-A001",
-      "preliminary_review_state": "refreshed_current_evidence_located_independent_review_required_closure_not_claimed",
-      "reviewer_decision_required": "Verify relative traversal, absolute path escape, symlink escape, blocked invalid restore target preservation, and TOCTOU-adjacent atomic restore behavior; decide whether this dedicated local evidence is sufficient for A-001 closure.",
+      "preliminary_review_state": "finding_level_independent_review_passed_technical_closure_candidate_no_p0_closure",
+      "reviewer_decision_required": "Carry A-001 into the later P0 closure package as a technical closure candidate; do not lower P0/P1 counters or claim S2PMT07 final pass until the full independent final gate signs off.",
+      "reviewer_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
       "severity": "P0"
     },
     {

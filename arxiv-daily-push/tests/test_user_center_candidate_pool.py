@@ -160,7 +160,12 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("绝对路径逃逸 | 已阻断", page)
         self.assertIn("符号链接逃逸 | 已阻断", page)
         self.assertIn("阻断时保留原目标库 | 已验证", page)
+        self.assertIn("独立技术复审 | `PASS_WITH_NO_PRODUCTION_ACCEPTANCE` / 技术关闭候选", page)
         self.assertIn("[A-001 运行清单](../../governance/run_manifests/ADP-S2PMT02-RESTORE-PATH-SAFETY-A001-20260627.json)", page)
+        self.assertIn(
+            "[A-001 独立技术复审 receipt](../../governance/run_manifests/ADP-S2PMT07-A001-INDEPENDENT-TECHNICAL-REVIEW-20260627.json)",
+            page,
+        )
         self.assertIn("[A-001 阶段记录](../docs/phase_records/PHASE_S2PMT02_RESTORE_PATH_SAFETY_A001.md)", page)
         self.assertIn("[P0 复审 receipt](../docs/phase_records/PHASE_S2PMT07_P0_INDEPENDENT_REVIEW_RECEIPT.md)", page)
         self.assertNotIn("/Users/", page)

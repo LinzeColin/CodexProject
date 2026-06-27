@@ -10,12 +10,26 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.1
 - Current phase: S2PM
-- Current gate: S2PMT07_B001_INDEPENDENT_TECHNICAL_REVIEW_NO_CLOSURE_NO_PRODUCTION
-- Confirmed iteration count: 146
+- Current gate: S2PMT07_A001_INDEPENDENT_TECHNICAL_REVIEW_NO_CLOSURE_NO_PRODUCTION
+- Confirmed iteration count: 147
 - Reconstructed event count: 0
-- Current task: `S2PMT07-B001-INDEPENDENT-TECHNICAL-REVIEW` records a read-only independent reviewer verdict for B-001: the external isolated launchd proof reconciliation is sufficient as a finding-level technical closure candidate, with `PASS_WITH_NO_PRODUCTION_ACCEPTANCE`. This does not provide final S2PMT07 signoff, run final commands, close inherited P0/P1, complete S2PLT04, create a final acceptance bundle, or supersede later S2PL blocked prechecks. `S2PMT07` remains the final production gate and is still blocked by inherited P0/P1, S2PLT04, final bundle, independent final signoff, and independent final command execution. No CURRENT, V7.1/V7.2 contract file, production replay, real production backup/restore/email, real SMTP, scheduler installation, Release, DB migration, public schema, production queue, source adapter, ranking, inherited P0/P1 closure, DAILY_OPERATION, or integrated production acceptance state changed. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
+- Current task: `S2PMT07-A001-INDEPENDENT-TECHNICAL-REVIEW` records a read-only independent reviewer verdict for A-001: restore path safety evidence is sufficient as a finding-level technical closure candidate, with `PASS_WITH_NO_PRODUCTION_ACCEPTANCE`. This does not provide final S2PMT07 signoff, run final commands, close inherited P0/P1, complete S2PLT04, create a final acceptance bundle, or supersede later S2PL blocked prechecks. `S2PMT07` remains the final production gate and is still blocked by inherited P0/P1, S2PLT04, final bundle, independent final signoff, and independent final command execution. No CURRENT, V7.1/V7.2 contract file, production replay, real production backup/restore/email, real SMTP, scheduler installation, Release, DB migration, public schema, production queue, source adapter, ranking, inherited P0/P1 closure, DAILY_OPERATION, or integrated production acceptance state changed. Stage 1 B1/arXiv remains `ARXIV_PRODUCTION_ACCEPTED`; V7.2 is the current product contract and inherited P0/P1 plus S2PMT07 still block production acceptance.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
+
+### `ITER-20260627-ADP-S2PMT07-A001-INDEPENDENT-TECHNICAL-REVIEW`
+
+- Timestamp: `2026-06-27T16:17:24+10:00`
+- Fact level: EXTRACTED from read-only independent reviewer verdict, A-001 restore path safety phase record, A-001 manifest, S2PMT07 P0 receipt, user-center page, and final-gate/user-center regression tests.
+- Base commit: `43069f1404649e8d768df2ccb9c91a80c2338922`
+- Product version: `0.23.1`
+- Status: A-001 finding-level independent technical review passed as a technical closure candidate; P0/P1 closure and production acceptance are not claimed.
+- Task IDs: `S2PMT07-A001-INDEPENDENT-TECHNICAL-REVIEW`; parent `S2PMT07`; inherited finding `A-001`; acceptance `ACC-S2PMT07-FINAL-REVIEW`.
+- Goal: Preserve the independent read-only reviewer decision for A-001 inside GitHub source-of-truth evidence surfaces, without relying on chat context or lowering any global stop gate.
+- Files changed: independent technical review manifest, P0 review receipt manifest and phase record, A-001 phase/user-center pages, final-gate/user-center regression tests, traceability/delivery/event records, changelog, and generated model-parameter status.
+- Decisions: The verdict is `PASS_WITH_NO_PRODUCTION_ACCEPTANCE`. It is finding-level technical evidence only and does not provide final S2PMT07 signoff, close A-001/P0/P1, complete S2PLT04, create the final bundle, run final commands, enable production restore/SMTP/scheduler/Release, mutate schema/DB/queues, change sources or ranking, edit V7 baselines, or claim integrated production acceptance.
+- Risks: This receipt can be misread as P0 closure; S2PMT07 final acceptance still requires the full P0/P1 closure package, S2PLT04, final bundle, independent final signoff, and final command execution.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-A001-INDEPENDENT-TECHNICAL-REVIEW-20260627.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_INDEPENDENT_REVIEW_RECEIPT.md`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_RESTORE_PATH_SAFETY_A001.md`; `arxiv-daily-push/用户中心/恢复路径安全扫描.md`.
 
 ### `ITER-20260627-ADP-S2PMT07-B001-INDEPENDENT-TECHNICAL-REVIEW`
 

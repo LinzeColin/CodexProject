@@ -35,7 +35,7 @@ pointer change, no V7.1/V7.2 contract-file edit, no `DAILY_OPERATION`, and no
 
 | finding_id | fix task | current evidence surface | receipt state | independent reviewer decision still required |
 |---|---|---|---|---|
-| `A-001` | `S2PMT02-RESTORE-PATH-SAFETY-A001` | `PHASE_S2PMT02_RESTORE_PATH_SAFETY_A001.md`, `ADP-S2PMT02-RESTORE-PATH-SAFETY-A001-20260627.json`, `用户中心/恢复路径安全扫描.md`, `test_stage2_atomic_recovery.py` | refreshed current evidence located; closure not claimed | Verify path traversal, absolute path, symlink escape, blocked invalid restore target preservation, and TOCTOU-adjacent atomic restore behavior against current code and tests. |
+| `A-001` | `S2PMT02-RESTORE-PATH-SAFETY-A001` | `PHASE_S2PMT02_RESTORE_PATH_SAFETY_A001.md`, `ADP-S2PMT02-RESTORE-PATH-SAFETY-A001-20260627.json`, `ADP-S2PMT07-A001-INDEPENDENT-TECHNICAL-REVIEW-20260627.json`, `用户中心/恢复路径安全扫描.md`, `test_stage2_atomic_recovery.py` | finding-level independent technical review passed; closure not claimed | Carry A-001 into the later P0 closure package as a technical closure candidate; do not lower P0/P1 counters or claim S2PMT07 final pass until the full independent final gate signs off. |
 | `A-002` | `S2PMT02-RESTORE-ATOMIC-REPLACEMENT-A002` | `PHASE_S2PMT02_RESTORE_ATOMIC_REPLACEMENT_A002.md`, `ADP-S2PMT02-RESTORE-ATOMIC-REPLACEMENT-A002-20260627.json`, `用户中心/恢复原子替换扫描.md`, `test_stage2_atomic_recovery.py` | refreshed current evidence located; closure not claimed | Verify valid new-target restore, valid overwrite restore with previous-target backup preservation, invalid overwrite target preservation, temporary-file cleanup, and no-production flags. |
 | `A-003` | `S2PMT03-OUTBOX-DELIVERY-A003` | `PHASE_S2PMT03_OUTBOX_DELIVERY_A003.md`, `ADP-S2PMT03-OUTBOX-DELIVERY-A003-20260627.json`, `用户中心/事务发件箱与消息ID扫描.md`, `test_stage2_lease_fencing.py` | refreshed current evidence located; closure not claimed | Verify stable same-revision `Message-ID`, changed revision rekeying, one outbox claim under 100 attempts, SMTP accepted-before-commit fail-closed behavior, provider-ref finalization without resend, and no exactly-once claim. |
 | `A-004` | `S2PMT01-FRONTSTAGE-EVIDENCE-A004` | `PHASE_S2PMT01_FRONTSTAGE_EVIDENCE_A004.md`, `ADP-S2PMT01-FRONTSTAGE-EVIDENCE-A004-20260627.json`, `用户中心/前台陈述证据绑定扫描.md`, `test_security_boundary.py` | refreshed current evidence located; closure not claimed | Verify fact, inference, hypothesis, and action frontstage statements require known claim bindings, evidence IDs, reasoning/confidence/scope, and fail closed for unknown or unsupported foreground claims. |
@@ -73,6 +73,17 @@ Independent reviewer agent `019f0786-1718-7cb0-8ac9-fe9b337e15cd` returned `PASS
 - finding: `B-001`
 - review_receipt: `governance/run_manifests/ADP-S2PMT07-B001-INDEPENDENT-TECHNICAL-REVIEW-20260627.json`
 - reviewer_verdict: `PASS_WITH_NO_PRODUCTION_ACCEPTANCE`
+
+## Finding-Level Technical Review 2026-06-27 16:17:24 Australia/Sydney
+
+Independent reviewer agent `019f07b4-fa63-7c83-a3dc-2e178d20acda` returned `PASS_WITH_NO_PRODUCTION_ACCEPTANCE` for A-001 as a technical closure candidate after read-only review of GitHub main `43069f1404649e8d768df2ccb9c91a80c2338922`, the restore path safety phase record, manifest, focused tests, and no-production flags. This does not close P0/P1 and does not provide final S2PMT07 signoff.
+
+- finding: `A-001`
+- review_receipt: `governance/run_manifests/ADP-S2PMT07-A001-INDEPENDENT-TECHNICAL-REVIEW-20260627.json`
+- reviewer_verdict: `PASS_WITH_NO_PRODUCTION_ACCEPTANCE`
+- technical_closure_candidate: `true`
+- p0_closure_claimed: `false`
+- stage2_integrated_production_accepted: `false`
 - technical_closure_candidate: `true`
 - p0_closure_claimed: `false`
 - stage2_integrated_production_accepted: `false`
