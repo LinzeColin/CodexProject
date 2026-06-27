@@ -117,6 +117,7 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         readme = (USER_CENTER / "README.md").read_text(encoding="utf-8")
 
         self.assertGreaterEqual(len(matrix_rows), 245)
+        self.assertEqual(len(matrix_rows), 265)
         self.assertEqual(len(table_rows), len(matrix_rows))
         self.assertTrue(page.startswith("# 功能任务测试证据追踪链\n"))
         self.assertRegex(page, r"更新时间：\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} Australia/Sydney")
@@ -125,6 +126,10 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("[运行清单](../../governance/run_manifests/ADP-S2PAT05-TRACEABILITY-CHAIN-C010-20260627.json)", page)
         self.assertIn("| 序号 | 需求 | 任务 | 验收 | 代码 | 配置 | 测试 | 运行证据 | 状态 |", page)
         self.assertIn("[test_stage2_sources.py](../tests/test_stage2_sources.py)", page)
+        self.assertIn("TRACEABILITY_MATRIX 行数 | 265", page)
+        self.assertIn("REQ-ADP-V7-039-P0-A002-REVIEW", page)
+        self.assertIn("S2PMT07-A002-INDEPENDENT-TECHNICAL-REVIEW", page)
+        self.assertIn("ADP-S2PMT07-A002-INDEPENDENT-TECHNICAL-REVIEW-20260627.json", page)
         self.assertNotIn("/Users/", page)
         self.assertNotIn("file://", page)
         self.assertIn("[功能任务测试证据追踪链](./功能任务测试证据追踪链.md)", readme)
@@ -183,6 +188,11 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("覆盖恢复保留旧目标备份 | 已验证", page)
         self.assertIn("无效覆盖恢复保留原目标 | 已验证", page)
         self.assertIn("临时恢复文件残留 | 0", page)
+        self.assertIn("独立技术复审 | `PASS_WITH_NO_PRODUCTION_ACCEPTANCE` / 技术关闭候选", page)
+        self.assertIn(
+            "[A-002 独立技术复审 receipt](../../governance/run_manifests/ADP-S2PMT07-A002-INDEPENDENT-TECHNICAL-REVIEW-20260627.json)",
+            page,
+        )
         self.assertIn(
             "[A-002 运行清单](../../governance/run_manifests/ADP-S2PMT02-RESTORE-ATOMIC-REPLACEMENT-A002-20260627.json)",
             page,

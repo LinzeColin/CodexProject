@@ -158,6 +158,10 @@ class Stage2FinalGateTests(unittest.TestCase):
             REPO_ROOT
             / "governance/run_manifests/ADP-S2PMT07-A001-INDEPENDENT-TECHNICAL-REVIEW-20260627.json"
         )
+        a002_independent_review_manifest_path = (
+            REPO_ROOT
+            / "governance/run_manifests/ADP-S2PMT07-A002-INDEPENDENT-TECHNICAL-REVIEW-20260627.json"
+        )
         receipt = receipt_path.read_text(encoding="utf-8")
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         receipt_rows = {
@@ -173,6 +177,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertNotIn("PHASE_S2PMT02_ATOMIC_RECOVERY.md", receipt_rows["A-001"])
         self.assertIn("PHASE_S2PMT02_RESTORE_ATOMIC_REPLACEMENT_A002.md", receipt_rows["A-002"])
         self.assertIn("ADP-S2PMT02-RESTORE-ATOMIC-REPLACEMENT-A002-20260627.json", receipt_rows["A-002"])
+        self.assertIn("ADP-S2PMT07-A002-INDEPENDENT-TECHNICAL-REVIEW-20260627.json", receipt_rows["A-002"])
         self.assertIn("用户中心/恢复原子替换扫描.md", receipt_rows["A-002"])
         self.assertNotIn("PHASE_S2PMT02_ATOMIC_RECOVERY.md", receipt_rows["A-002"])
         self.assertNotIn("PHASE_S2PMT02_RESTORE_SAFETY_REMEDIATION.md", receipt_rows["A-002"])
@@ -227,6 +232,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertTrue(isolated_proof_manifest_path.exists())
         self.assertTrue(independent_review_manifest_path.exists())
         self.assertTrue(a001_independent_review_manifest_path.exists())
+        self.assertTrue(a002_independent_review_manifest_path.exists())
         self.assertFalse(manifest["p0_closure_claimed"])
         self.assertFalse(manifest["stage2_integrated_production_accepted"])
         self.assertIn(
@@ -261,9 +267,19 @@ class Stage2FinalGateTests(unittest.TestCase):
             findings["A-002"]["evidence_refs"],
         )
         self.assertIn(
+            "governance/run_manifests/ADP-S2PMT07-A002-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+            findings["A-002"]["evidence_refs"],
+        )
+        self.assertIn(
             "arxiv-daily-push/用户中心/恢复原子替换扫描.md",
             findings["A-002"]["evidence_refs"],
         )
+        self.assertEqual(findings["A-002"]["reviewer_verdict"], "PASS_WITH_NO_PRODUCTION_ACCEPTANCE")
+        self.assertEqual(
+            findings["A-002"]["finding_level_independent_review_receipt"],
+            "governance/run_manifests/ADP-S2PMT07-A002-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+        )
+        self.assertIn("finding_level_independent_review_passed", findings["A-002"]["preliminary_review_state"])
         self.assertNotIn("arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_ATOMIC_RECOVERY.md", findings["A-002"]["evidence_refs"])
         self.assertNotIn(
             "arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_RESTORE_SAFETY_REMEDIATION.md",
@@ -428,6 +444,39 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(a001_independent_review["production_restore_enabled"])
         self.assertFalse(a001_independent_review["scheduler_install_enabled"])
         self.assertFalse(a001_independent_review["real_smtp_sent"])
+
+        a002_independent_review = json.loads(a002_independent_review_manifest_path.read_text(encoding="utf-8"))
+        self.assertEqual(a002_independent_review["reviewer_verdict"], "PASS_WITH_NO_PRODUCTION_ACCEPTANCE")
+        self.assertEqual(a002_independent_review["finding_id"], "A-002")
+        self.assertTrue(a002_independent_review["technical_closure_candidate"])
+        self.assertTrue(a002_independent_review["restore_atomic_replacement_verified"])
+        self.assertTrue(a002_independent_review["real_stage1_backup_restore_probes_verified"])
+        self.assertEqual(a002_independent_review["probe_count"], 3)
+        self.assertTrue(a002_independent_review["valid_restore_new_target_verified"])
+        self.assertTrue(a002_independent_review["valid_overwrite_previous_backup_preserved"])
+        self.assertTrue(a002_independent_review["invalid_overwrite_target_preserved"])
+        self.assertTrue(a002_independent_review["temp_files_cleaned"])
+        self.assertTrue(a002_independent_review["false_pass_guard_verified"])
+        self.assertFalse(a002_independent_review["p0_closure_claimed"])
+        self.assertFalse(a002_independent_review["p1_closure_claimed"])
+        self.assertFalse(a002_independent_review["closure_claimed"])
+        self.assertFalse(a002_independent_review["s2pmt07_final_pass_claimed"])
+        self.assertFalse(a002_independent_review["s2plt04_completed"])
+        self.assertFalse(a002_independent_review["stage2_integrated_production_accepted"])
+        self.assertFalse(a002_independent_review["production_restore_executed"])
+        self.assertFalse(a002_independent_review["production_restore_enabled"])
+        self.assertFalse(a002_independent_review["production_side_effects_enabled"])
+        self.assertFalse(a002_independent_review["scheduler_install_enabled"])
+        self.assertFalse(a002_independent_review["real_scheduler_installed"])
+        self.assertFalse(a002_independent_review["real_smtp_sent"])
+        self.assertFalse(a002_independent_review["real_release_uploaded"])
+        self.assertFalse(a002_independent_review["daily_operation_enabled"])
+        self.assertFalse(a002_independent_review["public_schema_changed"])
+        self.assertFalse(a002_independent_review["db_migration_executed"])
+        self.assertFalse(a002_independent_review["queue_mutation_allowed"])
+        self.assertFalse(a002_independent_review["current_pointer_changed"])
+        self.assertFalse(a002_independent_review["v7_1_baseline_changed"])
+        self.assertFalse(a002_independent_review["v7_2_contract_files_changed"])
 
     def test_p1_review_receipt_uses_refreshed_current_evidence(self) -> None:
         receipt_path = REPO_ROOT / "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_INDEPENDENT_REVIEW_RECEIPT.md"
