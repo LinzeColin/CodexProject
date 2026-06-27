@@ -63,6 +63,10 @@ from arxiv_daily_push.stage2_final_gate import (
     S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_REQUEST_BLOCKING_REASONS,
     S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_REQUEST_FORBIDDEN_FLAGS,
     S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_REQUEST_REQUIRED_INPUTS,
+    S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_DECISION,
+    S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_NO_PRODUCTION_FLAGS,
+    S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_REQUIRED_FIELDS,
+    S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_SCHEMA_VERSION,
     S2PMT07_P0_P1_ZERO_PROOF_CLOSURE_DECISION,
     S2PMT07_P0_P1_ZERO_PROOF_NO_PRODUCTION_FLAGS,
     S2PMT07_P0_P1_ZERO_PROOF_REQUIRED_FIELDS,
@@ -85,6 +89,8 @@ from arxiv_daily_push.stage2_final_gate import (
     build_independent_review_signoff_hash,
     build_independent_review_signoff_validation_state,
     build_independent_final_closure_decision_request_state,
+    build_independent_final_reviewer_assignment_hash,
+    build_independent_final_reviewer_assignment_validation_state,
     build_independent_final_reviewer_assignment_request_state,
     build_final_acceptance_bundle_manifest_hash,
     build_final_acceptance_bundle_manifest_validation_state,
@@ -123,6 +129,7 @@ from arxiv_daily_push.stage2_final_gate import (
     validate_independent_review_signoff_artifact,
     validate_final_acceptance_bundle_manifest,
     validate_independent_final_closure_decision_request_state,
+    validate_independent_final_reviewer_assignment_artifact,
     validate_independent_final_reviewer_assignment_request_state,
     validate_p0_p1_zero_proof_assembly_state,
     validate_p0_p1_zero_proof_artifact,
@@ -2332,6 +2339,80 @@ class Stage2FinalGateTests(unittest.TestCase):
             "real_smtp_sent must be false",
             validate_independent_final_reviewer_assignment_request_state(tampered_flag),
         )
+
+    def test_independent_final_reviewer_assignment_artifact_validator_accepts_only_exact_hash_bound_payload(self) -> None:
+        payload = {
+            "schema_version": S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_SCHEMA_VERSION,
+            "contract_id": "ADP-PRODUCT-CONTRACT-V7.2",
+            "generated_at": "2026-06-28T09:16:00+10:00",
+            "assignment_decision": S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_DECISION,
+            "reviewer_assignment": {
+                "reviewer_id": "independent-final-reviewer-001",
+                "reviewer_role": "independent_final_reviewer",
+                "assigned_by": "owner_or_coordinator",
+                "assignment_scope": "S2PMT07_P0_P1_FINAL_CLOSURE_REVIEW",
+            },
+            "reviewer_independence": {
+                "status": "verified",
+                "required_independence": "not_involved_in_S2PMT01_T06_implementation",
+                "reviewer_involved_in_s2pmt01_t06": False,
+            },
+            "review_input_refs": build_independent_final_reviewer_assignment_request_state()["review_input_refs"],
+            "no_production_side_effects": {
+                flag: False for flag in S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_NO_PRODUCTION_FLAGS
+            },
+            "assignment_hash": "",
+        }
+        payload["assignment_hash"] = build_independent_final_reviewer_assignment_hash(payload)
+
+        self.assertEqual(tuple(payload), S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_REQUIRED_FIELDS)
+        self.assertEqual(validate_independent_final_reviewer_assignment_artifact(payload), [])
+
+        state = build_independent_final_reviewer_assignment_validation_state(payload)
+        self.assertEqual(state["status"], "pass")
+        self.assertTrue(state["assignment_present"])
+        self.assertTrue(state["independent_final_reviewer_assigned_by_payload"])
+        self.assertFalse(state["production_acceptance_claimed"])
+        self.assertFalse(state["integrated_production_accepted"])
+
+    def test_independent_final_reviewer_assignment_artifact_validator_fails_closed_on_missing_self_review_or_production_flags(self) -> None:
+        state = build_independent_final_reviewer_assignment_validation_state(None)
+
+        self.assertEqual(state["status"], "blocked")
+        self.assertFalse(state["assignment_present"])
+        self.assertIn("independent_final_reviewer_assignment_missing", state["validation_errors"])
+        self.assertFalse(state["independent_final_reviewer_assigned_by_payload"])
+        self.assertFalse(state["production_acceptance_claimed"])
+
+        payload = {
+            "schema_version": S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_SCHEMA_VERSION,
+            "contract_id": "ADP-PRODUCT-CONTRACT-V7.2",
+            "generated_at": "2026-06-28T09:16:00+10:00",
+            "assignment_decision": S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_DECISION,
+            "reviewer_assignment": {
+                "reviewer_id": "codex-current-agent",
+                "reviewer_role": "independent_final_reviewer",
+                "assigned_by": "owner_or_coordinator",
+                "assignment_scope": "S2PMT07_P0_P1_FINAL_CLOSURE_REVIEW",
+            },
+            "reviewer_independence": {
+                "status": "verified",
+                "required_independence": "not_involved_in_S2PMT01_T06_implementation",
+                "reviewer_involved_in_s2pmt01_t06": True,
+            },
+            "review_input_refs": build_independent_final_reviewer_assignment_request_state()["review_input_refs"],
+            "no_production_side_effects": {
+                flag: False for flag in S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_NO_PRODUCTION_FLAGS
+            },
+            "assignment_hash": "",
+        }
+        payload["no_production_side_effects"]["real_smtp_sent"] = True
+        payload["assignment_hash"] = build_independent_final_reviewer_assignment_hash(payload)
+
+        errors = validate_independent_final_reviewer_assignment_artifact(payload)
+        self.assertIn("reviewer_independence.reviewer_involved_in_s2pmt01_t06 must be false", errors)
+        self.assertIn("reviewer_assignment.reviewer_id must not be codex-current-agent", errors)
+        self.assertIn("no_production_side_effects.real_smtp_sent must be false", errors)
 
     def _valid_zero_proof_payload(self) -> dict[str, object]:
         payload: dict[str, object] = {

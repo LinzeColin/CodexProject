@@ -558,3 +558,4 @@
 - Added `S2PMT07-FINAL-ACCEPTANCE-BUNDLE-READINESS` as a fail-closed final acceptance bundle readiness sub-gate that lists required final bundle evidence while preserving P0=8/P1=37, no final bundle, no production side effects, and no integrated production acceptance.
 - Added S2PLT03 local no-production resilience drill bundle evidence while preserving S2PLT02/P0/P1/S2PLT04/S2PMT07 blockers and all production stop gates.
 - Added S2PMT07 S2PLT04 completion report validator for future `FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json` payloads while preserving missing-report, missing-final-bundle, P0=8/P1=37, no-production, and no-integrated-acceptance blockers.
+- Added S2PMT07 independent final reviewer assignment artifact validator for future `FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json` payloads while preserving missing-artifact, missing-reviewer, P0=8/P1=37, no-production, and no-integrated-acceptance blockers.

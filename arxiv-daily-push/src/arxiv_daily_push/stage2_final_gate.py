@@ -143,6 +143,44 @@ S2PMT07_P0_P1_ZERO_PROOF_ASSEMBLY_FORBIDDEN_FLAGS = (
 S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_PATH = (
     "FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json"
 )
+S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_SCHEMA_VERSION = (
+    "adp.independent_final_reviewer_assignment.v1"
+)
+S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_DECISION = (
+    "INDEPENDENT_FINAL_REVIEWER_ASSIGNED_NO_PRODUCTION_ACCEPTANCE"
+)
+S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_REQUIRED_FIELDS = (
+    "schema_version",
+    "contract_id",
+    "generated_at",
+    "assignment_decision",
+    "reviewer_assignment",
+    "reviewer_independence",
+    "review_input_refs",
+    "no_production_side_effects",
+    "assignment_hash",
+)
+S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_NO_PRODUCTION_FLAGS = (
+    "production_acceptance_claimed",
+    "integrated_production_accepted",
+    "daily_operation_enabled",
+    "real_smtp_sent",
+    "real_smtp_send_enabled",
+    "scheduler_enabled",
+    "scheduler_install_enabled",
+    "release_uploaded",
+    "release_packaging_enabled",
+    "production_restore_enabled",
+    "production_restore_executed",
+    "public_schema_changed",
+    "db_migration_executed",
+    "production_queue_mutated",
+    "source_adapter_changed",
+    "ranking_algorithm_changed",
+    "current_pointer_changed",
+    "v7_1_baseline_changed",
+    "v7_2_contract_files_changed",
+)
 S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_REQUEST_REQUIRED_INPUTS = (
     "V7_2_CURRENT_CONTRACT_AND_ROOT_LOCK",
     "P0_P1_ZERO_PROOF_ASSEMBLY_STATE",
@@ -2016,6 +2054,99 @@ def validate_independent_final_reviewer_assignment_request_state(state: Mapping[
     return errors
 
 
+def build_independent_final_reviewer_assignment_hash(payload: Mapping[str, Any]) -> str:
+    """Return the canonical reviewer-assignment hash excluding its hash field."""
+
+    payload_without_hash = {key: value for key, value in payload.items() if key != "assignment_hash"}
+    return f"sha256:{_stable_hash(payload_without_hash)}"
+
+
+def validate_independent_final_reviewer_assignment_artifact(payload: Mapping[str, Any] | None) -> list[str]:
+    """Validate a future independent-final-reviewer assignment artifact."""
+
+    if payload is None:
+        return ["independent_final_reviewer_assignment_missing"]
+    errors: list[str] = []
+    for field in S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_REQUIRED_FIELDS:
+        if field not in payload:
+            errors.append(f"{field} is required")
+    if tuple(payload.keys()) != S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_REQUIRED_FIELDS:
+        errors.append("independent final reviewer assignment field order is invalid")
+    if payload.get("schema_version") != S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_SCHEMA_VERSION:
+        errors.append("schema_version is invalid")
+    if payload.get("contract_id") != "ADP-PRODUCT-CONTRACT-V7.2":
+        errors.append("contract_id must be ADP-PRODUCT-CONTRACT-V7.2")
+    if not isinstance(payload.get("generated_at"), str) or not payload.get("generated_at"):
+        errors.append("generated_at must be a non-empty string")
+    if payload.get("assignment_decision") != S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_DECISION:
+        errors.append("assignment_decision is invalid")
+
+    assignment = _mapping(payload.get("reviewer_assignment"))
+    reviewer_id = assignment.get("reviewer_id")
+    if not isinstance(reviewer_id, str) or not reviewer_id:
+        errors.append("reviewer_assignment.reviewer_id must be a non-empty string")
+    if reviewer_id == "codex-current-agent":
+        errors.append("reviewer_assignment.reviewer_id must not be codex-current-agent")
+    if assignment.get("reviewer_role") != "independent_final_reviewer":
+        errors.append("reviewer_assignment.reviewer_role must be independent_final_reviewer")
+    if assignment.get("assigned_by") not in {"owner_or_coordinator", "owner"}:
+        errors.append("reviewer_assignment.assigned_by must be owner_or_coordinator or owner")
+    if assignment.get("assignment_scope") != "S2PMT07_P0_P1_FINAL_CLOSURE_REVIEW":
+        errors.append("reviewer_assignment.assignment_scope is invalid")
+
+    reviewer = _mapping(payload.get("reviewer_independence"))
+    if reviewer.get("status") != "verified":
+        errors.append("reviewer_independence.status must be verified")
+    if reviewer.get("required_independence") != S2PMT07_REQUIRED_REVIEWER_INDEPENDENCE:
+        errors.append("reviewer_independence.required_independence is invalid")
+    if reviewer.get("reviewer_involved_in_s2pmt01_t06") is not False:
+        errors.append("reviewer_independence.reviewer_involved_in_s2pmt01_t06 must be false")
+
+    review_input_refs = payload.get("review_input_refs", [])
+    required_refs = build_independent_final_reviewer_assignment_request_state()["review_input_refs"]
+    if not isinstance(review_input_refs, list) or any(ref not in review_input_refs for ref in required_refs):
+        errors.append("review_input_refs must include all reviewer assignment request inputs")
+
+    no_production = _mapping(payload.get("no_production_side_effects"))
+    for flag in S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_NO_PRODUCTION_FLAGS:
+        if no_production.get(flag) is not False:
+            errors.append(f"no_production_side_effects.{flag} must be false")
+
+    if payload.get("assignment_hash") != build_independent_final_reviewer_assignment_hash(payload):
+        errors.append("assignment_hash does not match payload content")
+    return errors
+
+
+def build_independent_final_reviewer_assignment_validation_state(
+    payload: Mapping[str, Any] | None,
+) -> dict[str, Any]:
+    """Build validation state for a future independent reviewer assignment artifact."""
+
+    errors = validate_independent_final_reviewer_assignment_artifact(payload)
+    state = {
+        "status": "pass" if not errors else "blocked",
+        "scope": "independent_final_reviewer_assignment_validation_only_no_closure",
+        "artifact_path": S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_PATH,
+        "assignment_present": payload is not None,
+        "validation_errors": errors,
+        "required_fields": list(S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_REQUIRED_FIELDS),
+        "required_review_input_refs": build_independent_final_reviewer_assignment_request_state()[
+            "review_input_refs"
+        ],
+        "independent_final_reviewer_assigned_by_payload": not errors and payload is not None,
+        "production_acceptance_claimed": False,
+        "integrated_production_accepted": False,
+        "daily_operation_enabled": False,
+        "real_smtp_send_enabled": False,
+        "scheduler_install_enabled": False,
+        "release_packaging_enabled": False,
+        "production_restore_enabled": False,
+        "state_hash": "",
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
 def build_independent_final_closure_decision_request_state() -> dict[str, Any]:
     """Build the reviewer input request for the future final P0/P1 closure decision."""
 
@@ -3083,6 +3214,9 @@ def build_final_acceptance_bundle_readiness_state() -> dict[str, Any]:
     independent_final_reviewer_assignment_request = (
         build_independent_final_reviewer_assignment_request_state()
     )
+    independent_final_reviewer_assignment_validation = (
+        build_independent_final_reviewer_assignment_validation_state(None)
+    )
     independent_final_closure_decision_request = (
         build_independent_final_closure_decision_request_state()
     )
@@ -3116,6 +3250,9 @@ def build_final_acceptance_bundle_readiness_state() -> dict[str, Any]:
                     independent_final_reviewer_assignment_request
                 )
             ),
+            "INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION": (
+                independent_final_reviewer_assignment_validation["status"] == "pass"
+            ),
             "INDEPENDENT_FINAL_CLOSURE_DECISION_REQUEST": (
                 not validate_independent_final_closure_decision_request_state(
                     independent_final_closure_decision_request
@@ -3140,6 +3277,7 @@ def build_final_acceptance_bundle_readiness_state() -> dict[str, Any]:
         "p0_p1_technical_closure_candidate_state": p0_p1_technical_candidate_state,
         "p0_p1_zero_proof_assembly": p0_p1_zero_proof_assembly,
         "independent_final_reviewer_assignment_request": independent_final_reviewer_assignment_request,
+        "independent_final_reviewer_assignment_validation": independent_final_reviewer_assignment_validation,
         "independent_final_closure_decision_request": independent_final_closure_decision_request,
         "p0_p1_zero_proof_readiness": p0_p1_zero_proof_readiness,
         "p0_p1_zero_proof_artifact_validation": p0_p1_zero_proof_artifact_validation,
@@ -3187,6 +3325,10 @@ def validate_final_acceptance_bundle_readiness_state(state: Mapping[str, Any]) -
         errors.append("final acceptance bundle readiness must expose P0/P1 zero proof assembly")
     if prebundle.get("INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_REQUEST") is not True:
         errors.append("final acceptance bundle readiness must expose independent final reviewer assignment request")
+    if prebundle.get("INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION") is not False:
+        errors.append(
+            "final acceptance bundle readiness must not expose independent final reviewer assignment validation as passing"
+        )
     if prebundle.get("INDEPENDENT_FINAL_CLOSURE_DECISION_REQUEST") is not True:
         errors.append("final acceptance bundle readiness must expose independent final closure decision request")
     if prebundle.get("P0_P1_ZERO_PROOF_READINESS") is not False:
@@ -3219,6 +3361,11 @@ def validate_final_acceptance_bundle_readiness_state(state: Mapping[str, Any]) -
     reviewer_assignment_request = _mapping(state.get("independent_final_reviewer_assignment_request"))
     if validate_independent_final_reviewer_assignment_request_state(reviewer_assignment_request):
         errors.append("final acceptance bundle readiness independent final reviewer assignment request is invalid")
+    reviewer_assignment_validation = _mapping(state.get("independent_final_reviewer_assignment_validation"))
+    if reviewer_assignment_validation.get("status") != "blocked":
+        errors.append(
+            "final acceptance bundle readiness independent final reviewer assignment validation must remain blocked"
+        )
     final_closure_request = _mapping(state.get("independent_final_closure_decision_request"))
     if validate_independent_final_closure_decision_request_state(final_closure_request):
         errors.append("final acceptance bundle readiness independent final closure decision request is invalid")

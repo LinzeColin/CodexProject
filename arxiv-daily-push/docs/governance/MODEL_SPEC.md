@@ -7,12 +7,20 @@ machine_summary:
 
 - model_count: 117
 - formula_count: 119
-- parameter_count: 1042
+- parameter_count: 1046
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
 ## Governance Notes
 
+- `S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-ARTIFACT-VALIDATOR`
+  adds `PARAM-ADP-1043` through `PARAM-ADP-1046` under `MOD-ADP-100` /
+  `FORM-ADP-102`. It validates the future
+  `FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json`
+  schema, decision, required fields, reviewer independence, no-production
+  flags, and assignment hash while keeping the artifact missing, reviewer
+  assignment absent, P0/P1 open, final bundle absent, and every production
+  side-effect flag false.
 - `S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-REQUEST` adds
   `PARAM-ADP-1040` through `PARAM-ADP-1042` under `MOD-ADP-100` /
   `FORM-ADP-102`. It exposes the future independent final reviewer assignment
