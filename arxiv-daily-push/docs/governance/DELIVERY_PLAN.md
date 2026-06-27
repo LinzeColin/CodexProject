@@ -21,7 +21,7 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 190
+- task_count: 191
 - acceptance_count: 125
 
 ## Delivery Tasks
@@ -285,6 +285,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PMT07-P1-B003-B011-TECHNICAL-REVIEW | S2PM | finding_level_review_passed_no_p1_closure_no_production | `ACC-S2PMT07-FINAL-REVIEW` | Records finding-level technical review verdict `PASS_WITH_NO_PRODUCTION_ACCEPTANCE` for B-003 watchdog recovery and B-011 M4 watermark evidence; this does not close P1/P0, pass S2PMT07, complete S2PLT04, execute final commands, or change production state. |
 | S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW | S2PM | finding_level_review_passed_no_p1_closure_no_production | `ACC-S2PMT07-FINAL-REVIEW` | Records finding-level technical review verdict `PASS_WITH_NO_PRODUCTION_ACCEPTANCE` for S2PMT05 B-006/B-009/B-010/B-012/B-013/B-014 evidence; this does not close P1/P0, pass S2PMT07, complete S2PLT04, execute final commands, or change production state. |
 | S2PMT07-P1-A020-TECHNICAL-REVIEW | S2PM | finding_level_review_passed_no_p1_closure_no_production | `ACC-S2PMT07-FINAL-REVIEW` | Records finding-level technical review verdict `PASS_WITH_NO_PRODUCTION_ACCEPTANCE` for A-020 supply-chain SBOM/CI evidence; this does not close P1/P0, pass S2PMT07, complete S2PLT04, execute final commands, or change production state. |
+| S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW | S2PM | finding_level_review_passed_no_p1_closure_no_production | `ACC-S2PMT07-FINAL-REVIEW` | Records finding-level technical review verdict `PASS_WITH_NO_PRODUCTION_ACCEPTANCE` for C-001/C-003/C-005/C-006/C-007/C-010/C-011/C-012 evidence while explicitly excluding C-002; this does not close P1/P0, pass S2PMT07, complete S2PLT04, execute final commands, or change production state. |
 
 ## 2026-06-27 18:52:57 Australia/Sydney - S2PMT07 P0 technical closure candidate package
 
@@ -318,3 +319,10 @@ The machine-readable task source is `delivery_tasks.yaml`.
 - Added SBOM/CI evidence manifest `governance/run_manifests/ADP-S2PMT01-SUPPLY-CHAIN-A020-SBOM-CI-20260627.json`.
 - Added phase record `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_A020_TECHNICAL_REVIEW.md`.
 - A-020 is a technical closure candidate only; P1 remains open, P0 remains open, and production remains disabled.
+
+### S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW
+
+- Added manifest `governance/run_manifests/ADP-S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW-20260627.json`.
+- Added phase record `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_C001_C003_C005_C006_C007_C010_C011_C012_TECHNICAL_REVIEW.md`.
+- C-002 remains excluded because empty/delayed/failed runtime display states are not yet proven.
+- No P1/P0 closure, production acceptance, SMTP, scheduler, Release, schema, DB, queue, source, ranking, CURRENT, V7.1, or V7.2 contract side effect is claimed.
