@@ -541,8 +541,8 @@ def s2pit02_owner_status_summary(**overrides: object) -> dict:
         "selected_candidate_count": 20,
         "review_action_snapshot_state": "pending_daily_snapshot",
         "review_action_pending_field_count": 10,
-        "status_states_observed": ["sent", "blocked_not_sent", "queued_or_pending"],
-        "status_states_not_proven": ["empty", "delayed", "failed"],
+        "status_states_observed": ["sent", "blocked_not_sent", "queued_or_pending", "empty", "delayed", "failed"],
+        "status_states_not_proven": [],
         "evidence_refs": [
             S2PIT02_OWNER_STATUS_PATH,
             "用户中心/截至今日候选池.md",
@@ -5812,7 +5812,10 @@ class Stage2SourceTests(unittest.TestCase):
         self.assertEqual(owner_summary["sent_today"], 2)
         self.assertEqual(owner_summary["expected_today"], 4)
         self.assertEqual(owner_summary["review_action_snapshot_state"], "pending_daily_snapshot")
-        self.assertIn("empty", owner_summary["status_states_not_proven"])
+        self.assertIn("empty", owner_summary["status_states_observed"])
+        self.assertIn("delayed", owner_summary["status_states_observed"])
+        self.assertIn("failed", owner_summary["status_states_observed"])
+        self.assertEqual(owner_summary["status_states_not_proven"], [])
         self.assertFalse(report["stage2_production_accepted"])
         self.assertFalse(report["integrated_production_accepted"])
         self.assertFalse(report["real_smtp_sent"])
@@ -5864,6 +5867,34 @@ class Stage2SourceTests(unittest.TestCase):
         self.assertIn("real_scheduler_installed", joined)
         self.assertIn("watchdog report action must be watchdog", joined)
         self.assertIn("production_gate_state.real_smtp_sent", joined)
+        self.assertTrue(validate_s2pit02_runtime_dashboard_report(report))
+
+    def test_s2pit02_runtime_dashboard_requires_failed_runtime_display_state(self) -> None:
+        report = build_s2pit02_runtime_dashboard_report(
+            generated_at=GENERATED_AT,
+            user_center_report=s2pit01_user_center_report(),
+            runtime_audit_report=s2pit02_runtime_report("runtime_audit"),
+            watchdog_report=s2pit02_runtime_report("watchdog"),
+            storage_inspect_report=s2pit01_storage_inspect(),
+            production_gate_state=s2pit02_production_gate_state(),
+            owner_status_summary=s2pit02_owner_status_summary(
+                status_states_observed=[
+                    "sent",
+                    "blocked_not_sent",
+                    "queued_or_pending",
+                    "empty",
+                    "delayed",
+                ],
+                status_states_not_proven=[],
+            ),
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["owner_status_count_gate"], "blocked")
+        self.assertIn(
+            "S2PIT02 owner status summary missing status states: failed",
+            report["blocking_reasons"],
+        )
         self.assertTrue(validate_s2pit02_runtime_dashboard_report(report))
 
     def test_s2pit02_runtime_dashboard_persists_report_without_runtime_mutation(self) -> None:

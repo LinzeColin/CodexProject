@@ -932,6 +932,15 @@ class Stage2FinalGateTests(unittest.TestCase):
             REPO_ROOT
             / "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_C001_C003_C005_C006_C007_C010_C011_C012_TECHNICAL_REVIEW.md"
         )
+        c002_status_states_manifest_path = (
+            REPO_ROOT / "governance/run_manifests/ADP-S2PIT02-OWNER-STATUS-C002-RUNTIME-STATES-20260628.json"
+        )
+        c002_review_manifest_path = (
+            REPO_ROOT / "governance/run_manifests/ADP-S2PMT07-P1-C002-TECHNICAL-REVIEW-20260628.json"
+        )
+        c002_review_phase_path = (
+            REPO_ROOT / "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_C002_TECHNICAL_REVIEW.md"
+        )
         receipt = receipt_path.read_text(encoding="utf-8")
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         receipt_rows = {
@@ -988,6 +997,8 @@ class Stage2FinalGateTests(unittest.TestCase):
             "C-002": (
                 "PHASE_S2PIT02_OWNER_STATUS_C002.md",
                 "ADP-S2PIT02-OWNER-STATUS-C002-20260627.json",
+                "ADP-S2PIT02-OWNER-STATUS-C002-RUNTIME-STATES-20260628.json",
+                "ADP-S2PMT07-P1-C002-TECHNICAL-REVIEW-20260628.json",
             ),
             "C-003": (
                 "PHASE_S2PIT05_FOUR_CHECK_FRESHNESS_C003.md",
@@ -1097,11 +1108,11 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(manifest["refreshed_findings"], list(expected_current_refs))
         self.assertEqual(
             manifest["refresh_manifest"],
-            "governance/run_manifests/ADP-S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW-20260627.json",
+            "governance/run_manifests/ADP-S2PMT07-P1-C002-TECHNICAL-REVIEW-20260628.json",
         )
         self.assertEqual(
             manifest["previous_refresh_manifest"],
-            "governance/run_manifests/ADP-S2PMT07-P1-A020-TECHNICAL-REVIEW-20260627.json",
+            "governance/run_manifests/ADP-S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW-20260627.json",
         )
         self.assertIn(
             "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-20260627.json",
@@ -1128,6 +1139,9 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertTrue(a020_review_phase_path.exists())
         self.assertTrue(c_group_review_manifest_path.exists())
         self.assertTrue(c_group_review_phase_path.exists())
+        self.assertTrue(c002_status_states_manifest_path.exists())
+        self.assertTrue(c002_review_manifest_path.exists())
+        self.assertTrue(c002_review_phase_path.exists())
         self.assertEqual(
             set(manifest["p1_technical_review_candidate_findings"]),
             {
@@ -1160,6 +1174,7 @@ class Stage2FinalGateTests(unittest.TestCase):
                 "B-014",
                 "B-015",
                 "C-001",
+                "C-002",
                 "C-003",
                 "C-005",
                 "C-006",
@@ -1171,11 +1186,11 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertEqual(
             manifest["p1_latest_technical_review_candidate_findings"],
-            ["C-001", "C-003", "C-005", "C-006", "C-007", "C-010", "C-011", "C-012"],
+            ["C-002"],
         )
         self.assertEqual(
             manifest["p1_technical_review_candidate_manifest"],
-            "governance/run_manifests/ADP-S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW-20260627.json",
+            "governance/run_manifests/ADP-S2PMT07-P1-C002-TECHNICAL-REVIEW-20260628.json",
         )
         self.assertIn(
             "governance/run_manifests/ADP-S2PMT07-P1-A006-A009-TECHNICAL-REVIEW-20260627.json",
@@ -1213,7 +1228,10 @@ class Stage2FinalGateTests(unittest.TestCase):
             "governance/run_manifests/ADP-S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW-20260627.json",
             manifest["p1_technical_review_candidate_manifests"],
         )
-        self.assertNotIn("C-002", manifest["p1_technical_review_candidate_findings"])
+        self.assertIn(
+            "governance/run_manifests/ADP-S2PMT07-P1-C002-TECHNICAL-REVIEW-20260628.json",
+            manifest["p1_technical_review_candidate_manifests"],
+        )
         self.assertFalse(manifest["p1_closure_claimed"])
         self.assertFalse(manifest["independent_review_signoff_present"])
         self.assertFalse(manifest["stage2_integrated_production_accepted"])
@@ -1259,6 +1277,7 @@ class Stage2FinalGateTests(unittest.TestCase):
                 "B-014",
                 "B-015",
                 "C-001",
+                "C-002",
                 "C-003",
                 "C-005",
                 "C-006",
@@ -1293,10 +1312,23 @@ class Stage2FinalGateTests(unittest.TestCase):
                                             "governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json"
                                         if finding_id in {"B-006", "B-009", "B-010", "B-012", "B-013", "B-014"}
                                             else (
-                                                "governance/run_manifests/ADP-S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW-20260627.json"
-                                                if finding_id
-                                                in {"C-001", "C-003", "C-005", "C-006", "C-007", "C-010", "C-011", "C-012"}
-                                                else "governance/run_manifests/ADP-S2PMT07-P1-B002-B004-B005-B015-TECHNICAL-REVIEW-20260627.json"
+                                                "governance/run_manifests/ADP-S2PMT07-P1-C002-TECHNICAL-REVIEW-20260628.json"
+                                                if finding_id == "C-002"
+                                                else (
+                                                    "governance/run_manifests/ADP-S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW-20260627.json"
+                                                    if finding_id
+                                                    in {
+                                                        "C-001",
+                                                        "C-003",
+                                                        "C-005",
+                                                        "C-006",
+                                                        "C-007",
+                                                        "C-010",
+                                                        "C-011",
+                                                        "C-012",
+                                                    }
+                                                    else "governance/run_manifests/ADP-S2PMT07-P1-B002-B004-B005-B015-TECHNICAL-REVIEW-20260627.json"
+                                                )
                                             )
                                         )
                                     )
@@ -1688,6 +1720,44 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertIn("C-001", c_group_phase)
         self.assertIn("C-012", c_group_phase)
         self.assertIn("C-002 excluded", c_group_phase)
+
+        c002_states = json.loads(c002_status_states_manifest_path.read_text(encoding="utf-8"))
+        self.assertEqual(c002_states["status"], "completed_local_validation_no_closure_no_production")
+        self.assertEqual(
+            c002_states["owner_status_summary"]["status_states_observed"],
+            ["sent", "blocked_not_sent", "queued_or_pending", "empty", "delayed", "failed"],
+        )
+        self.assertEqual(c002_states["owner_status_summary"]["status_states_not_proven"], [])
+        self.assertFalse(c002_states["p1_closure_claimed"])
+        self.assertFalse(c002_states["stage2_integrated_production_accepted"])
+
+        c002_review = json.loads(c002_review_manifest_path.read_text(encoding="utf-8"))
+        self.assertEqual(
+            c002_review["status"],
+            "finding_level_technical_review_passed_no_p1_closure_no_production",
+        )
+        self.assertEqual(c002_review["finding_ids"], ["C-002"])
+        self.assertTrue(c002_review["technical_review_checks"]["empty_delayed_failed_states_required"])
+        self.assertTrue(c002_review["technical_review_checks"]["missing_required_state_blocks"])
+        self.assertTrue(c002_review["technical_review_checks"]["unproven_required_state_blocks"])
+        self.assertFalse(c002_review["technical_review_checks"]["independent_final_signoff_present"])
+        self.assertEqual(c002_review["inherited_v7_1_open_p0_findings_after"], 8)
+        self.assertEqual(c002_review["inherited_v7_1_open_p1_findings_after"], 37)
+        self.assertFalse(c002_review["p1_closure_claimed"])
+        self.assertFalse(c002_review["s2pmt07_final_pass_claimed"])
+        self.assertFalse(c002_review["stage2_integrated_production_accepted"])
+        self.assertFalse(c002_review["real_smtp_sent"])
+        self.assertFalse(c002_review["scheduler_install_enabled"])
+        self.assertFalse(c002_review["release_packaging_enabled"])
+        self.assertFalse(c002_review["production_restore_enabled"])
+        self.assertFalse(c002_review["current_pointer_changed"])
+        self.assertFalse(c002_review["v7_1_baseline_changed"])
+        self.assertFalse(c002_review["v7_2_contract_files_changed"])
+        c002_phase = c002_review_phase_path.read_text(encoding="utf-8")
+        self.assertIn("C-002", c002_phase)
+        self.assertIn("empty", c002_phase)
+        self.assertIn("delayed", c002_phase)
+        self.assertIn("failed", c002_phase)
 
     def test_dependency_state_requires_s2plt04_and_records_missing_completion(self) -> None:
         state = build_dependency_state()

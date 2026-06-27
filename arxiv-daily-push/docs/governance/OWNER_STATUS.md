@@ -8,7 +8,7 @@ arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTI
 
 Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。
 
-本次补充记录了 `S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW`：C-001/C-003/C-005/C-006/C-007/C-010/C-011/C-012 已进入 finding-level 技术复审候选，C-002 因空/延迟/失败运行状态证据仍未完全证明而明确排除。结论为 `PASS_WITH_NO_PRODUCTION_ACCEPTANCE`。这不是 P1 关闭、不是 S2PMT07 最终签收，也不是生产验收；继承阻断仍为 `P0=8 / P1=37`。
+本次补充记录了 `S2PMT07-P1-C002-TECHNICAL-REVIEW`：C-002 已在 S2PIT02 本地门中补齐 `empty`、`delayed`、`failed` 运行状态证明，并进入 finding-level 技术复审候选。结论为 `PASS_WITH_NO_PRODUCTION_ACCEPTANCE`。这不是 P1 关闭、不是 S2PMT07 最终签收，也不是生产验收；继承阻断仍为 `P0=8 / P1=37`。
 
 ## 3. 为什么重要
 

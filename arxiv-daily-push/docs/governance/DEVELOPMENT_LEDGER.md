@@ -10,12 +10,27 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.1
 - Current phase: S2PM
-- Current gate: S2PMT07_P1_C_GROUP_TECHNICAL_REVIEW_NO_CLOSURE_NO_PRODUCTION
-- Confirmed iteration count: 157
+- Current gate: S2PMT07_P1_C002_TECHNICAL_REVIEW_NO_CLOSURE_NO_PRODUCTION
+- Confirmed iteration count: 158
 - Reconstructed event count: 0
-- Current task: `S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW` records finding-level technical review for inherited C-001/C-003/C-005/C-006/C-007/C-010/C-011/C-012 owner-facing evidence while explicitly excluding C-002 status-state gaps. No CURRENT, V7.1/V7.2 contract file, real SMTP, scheduler, Release, production restore, public schema, DB migration, production queue, source adapter, ranking, DAILY_OPERATION, or integrated production acceptance state changed.
+- Current task: `S2PMT07-P1-C002-TECHNICAL-REVIEW` records finding-level technical review for inherited C-002 owner-status runtime-state evidence after S2PIT02 added required empty/delayed/failed state gates. No CURRENT, V7.1/V7.2 contract file, real SMTP, scheduler, Release, production restore, public schema, DB migration, production queue, source adapter, ranking, DAILY_OPERATION, or integrated production acceptance state changed.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
+
+
+### `ITER-20260628-ADP-S2PMT07-P1-C002-TECHNICAL-REVIEW`
+
+- Timestamp: `2026-06-28T00:18:10+10:00`
+- Fact level: EXTRACTED from S2PIT02 owner-status runtime-state gate, focused missing-state regression test, refreshed S2PMT07 P1 receipt, traceability row, rendered user-center evidence chain, and stage2-source/final-gate/user-center regression tests.
+- Base commit: `662468c333dabec9f4361ec52ea9696a210f6354`
+- Product version: `0.23.1`
+- Status: C-002 finding-level technical review passed as a technical closure candidate; P0/P1 closure and production acceptance are not claimed.
+- Task IDs: `S2PMT07-P1-C002-TECHNICAL-REVIEW`; parent `S2PMT07`; inherited finding `C-002`; acceptance `ACC-S2PMT07-FINAL-REVIEW`.
+- Goal: Record the C-002 runtime display-state review inside GitHub source-of-truth evidence surfaces, without relying on chat context or lowering any global stop gate.
+- Files changed: S2PIT02 required owner-status state constant/test, C-002 runtime-state manifest, C-002 technical review manifest and phase record, C-002 owner-status phase record, P1 review receipt manifest and phase record, semantic registries, traceability matrix, rendered user-center traceability page, delivery task, development event, status summaries, and 三基 notes.
+- Decisions: The verdict is `PASS_WITH_NO_PRODUCTION_ACCEPTANCE`. It is finding-level technical evidence only and does not provide final S2PMT07 signoff, close C-002/P1/P0, complete S2PLT04, create the final bundle, run final commands, enable SMTP/scheduler/Release, mutate schema/DB/queues, change sources or ranking, edit V7 baselines, or claim integrated production acceptance.
+- Risks: This receipt can be misread as P1 closure; S2PMT07 final acceptance still requires the full P0/P1 closure package, S2PLT04, final bundle, independent final signoff, and final command execution.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-P1-C002-TECHNICAL-REVIEW-20260628.json`; `governance/run_manifests/ADP-S2PIT02-OWNER-STATUS-C002-RUNTIME-STATES-20260628.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_C002_TECHNICAL_REVIEW.md`; `arxiv-daily-push/docs/phase_records/PHASE_S2PIT02_OWNER_STATUS_C002.md`; `arxiv-daily-push/tests/test_stage2_sources.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.
 
 
 ### `ITER-20260627-ADP-S2PMT07-P1-C-GROUP-TECHNICAL-REVIEW`

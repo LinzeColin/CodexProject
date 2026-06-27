@@ -985,7 +985,7 @@ Uncovered planned scenarios:
 
 - `MOD-ADP-080` / `FORM-ADP-082` now bind S2PIT02 to the shallow GitHub owner status page `用户中心/邮件发送与队列状态.md` instead of the historical deep owner-status page.
 - Passing S2PIT02 requires the owner status summary to expose `sent_today`, `expected_today`, `total_candidate_pool`, `generated_report_or_preview_count`, `pending_candidate_count`, `historical_send_record_count`, and `review_action_snapshot_state`.
-- The current C-002 snapshot requires `2 <= 4` for sent/expected mail count and `299 = 30 + 269` for total candidate-pool conservation. It also requires sent, blocked-not-sent, and queued-or-pending status visibility.
+- The current C-002 snapshot requires `2 <= 4` for sent/expected mail count and `299 = 30 + 269` for total candidate-pool conservation. It also requires sent, blocked-not-sent, queued-or-pending, empty, delayed, and failed status visibility; missing or still-unproven required states block S2PIT02.
 - Review/action/asset/ROI daily quantities remain `pending_daily_snapshot` until real daily reports sync into GitHub 用户中心; this evidence records the gap and does not fabricate those numbers.
 - S2PIT02 still does not claim C-002 closure, independent signoff, `OWNER_EXPERIENCE_ACCEPTED`, `STAGE2_PRODUCTION_ACCEPTED`, `INTEGRATED_PRODUCTION_ACCEPTED`, SMTP, scheduler, Release, public schema, DB migration, queue mutation, source-adapter change, ranking change, or Email V1 runtime change.
 
