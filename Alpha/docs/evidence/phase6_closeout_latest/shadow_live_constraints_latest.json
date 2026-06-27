@@ -1,0 +1,38 @@
+{
+  "checks": [
+    {
+      "id": "live_trading_disabled",
+      "message": "live trading disabled",
+      "status": "pass"
+    },
+    {
+      "id": "live_authorization_absent",
+      "message": "LIVE_AUTHORIZATION.json absent",
+      "status": "pass"
+    },
+    {
+      "id": "broker_mutation_disabled",
+      "message": "no broker mutation path used",
+      "status": "pass"
+    },
+    {
+      "id": "owner_review_required",
+      "message": "shadow orders remain owner-review tickets",
+      "status": "pass"
+    }
+  ],
+  "generated_at": "2026-06-27T01:03:19+00:00",
+  "health": {
+    "kill_switch_active": false,
+    "live_trading_enabled": false
+  },
+  "live_authorization_path": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Alpha/runtime/LIVE_AUTHORIZATION.json",
+  "safety_boundary": {
+    "broker_mutation_allowed": false,
+    "live_authorization_file_must_be_absent": true,
+    "live_trading_enabled": false,
+    "mode": "research_paper_order_intent_review"
+  },
+  "schema_version": "2026-06-27.alpha.phase6.shadow_live_constraints",
+  "status": "pass"
+}

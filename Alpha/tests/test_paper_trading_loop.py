@@ -23,6 +23,7 @@ def test_paper_loop_generates_ticket_and_fills_paper_order(tmp_path):
     assert result["approval_queue"]["ticket"]["human_action_required"] is True
     assert result["approval_queue"]["ticket"]["expires_at"] == result["intent"]["expires_at"]
     assert result["approval_queue"]["ticket"]["broker_payload"]["client_order_id"] == result["intent"]["idempotency_key"]
+    assert result["approval_queue"]["ticket"]["broker_payload"]["order_type"] == "limit"
     assert any(candidate["strategy_id"] == result["intent"]["strategy_id"] for candidate in result["strategy_tournament"]["candidates"])
     assert result["paper_portfolio"]["trade_count"] == 1
     assert state_path.exists()

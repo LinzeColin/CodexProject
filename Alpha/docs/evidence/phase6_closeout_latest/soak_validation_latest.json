@@ -1,0 +1,43 @@
+{
+  "checks": [
+    {
+      "id": "samples_present",
+      "message": "soak samples present",
+      "status": "pass"
+    },
+    {
+      "id": "duration_coverage",
+      "message": "48h natural-day coverage",
+      "status": "fail"
+    },
+    {
+      "id": "no_failed_samples",
+      "message": "no failed soak samples",
+      "status": "pass"
+    },
+    {
+      "id": "paper_shadow_reports_pass",
+      "message": "paper/shadow report passed for every sample",
+      "status": "pass"
+    },
+    {
+      "id": "shadow_constraints_pass",
+      "message": "shadow live constraints passed for every sample",
+      "status": "pass"
+    }
+  ],
+  "duration_hours_required": 48,
+  "fail_count": 1,
+  "generated_at": "2026-06-27T01:03:19+00:00",
+  "observed_hours": 0.8708,
+  "observed_seconds": 3135,
+  "safety_boundary": {
+    "broker_mutation_allowed": false,
+    "live_authorization_file_must_be_absent": true,
+    "live_trading_enabled": false,
+    "mode": "research_paper_order_intent_review"
+  },
+  "sample_count": 3,
+  "schema_version": "2026-06-27.alpha.phase6.soak_validation",
+  "status": "observing"
+}

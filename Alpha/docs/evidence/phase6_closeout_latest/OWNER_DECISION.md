@@ -7,15 +7,16 @@
 - `live_trading_enabled=false`
 - `runtime/LIVE_AUTHORIZATION.json` 不存在且不得创建
 - 不允许真实 broker mutation
-- 48 小时 Paper/Shadow soak validation 缺失
-- 合格交易日 Paper/Shadow 报告缺失
-- Shadow live constraints 仍无 canonical 通过证据
+- 48 小时 Paper/Shadow soak validation 尚未完成自然日累计
+- 合格交易日 Paper/Shadow 报告当前已通过本地 hard gate
+- Shadow live constraints 当前已通过本地安全约束检查
+- 限价订单契约当前已通过本地 hard gate
 
 ## Owner 选择
 
 ### A. 继续补齐 Phase 6 证据
 
-批准继续在 canonical `LinzeColin/CodexProject/Alpha` 内恢复或实现 Phase 6 paper/shadow 采样、报告、Shadow constraints 和 closeout 证据。仍不进入 MICRO_LIVE。
+批准继续在 canonical `LinzeColin/CodexProject/Alpha` 内通过 Phase 6 OWNER-GATE sampler 累计 paper/shadow 采样，直到 48 小时自然日 soak validation 通过。仍不进入 MICRO_LIVE。
 
 ### B. 保持研究/意图审核模式
 

@@ -122,6 +122,7 @@ class PaperTradingLoop:
             estimated_price=float(latest["close"]),
             source_run_id=run_id,
             ttl_seconds=self.refresh_interval_seconds,
+            order_type="limit",
         )
 
 
