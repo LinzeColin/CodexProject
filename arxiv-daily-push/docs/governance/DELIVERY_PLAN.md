@@ -21,7 +21,7 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 213
+- task_count: 214
 - acceptance_count: 126
 
 ## Delivery Tasks
@@ -300,6 +300,13 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PMT07-FINAL-BUNDLE-PREREQUISITE-PLAN | S2PM | blocked | `ACC-S2PMT07-FINAL-REVIEW` | Defines the ordered fail-closed prerequisite plan for final bundle artifacts; the plan is valid prebundle evidence only, current artifacts remain missing, and P0/P1 plus production gates remain blocked. |
 | S2PMT07-P0-P1-ZERO-PROOF-ASSEMBLY | S2PM | blocked | `ACC-S2PMT07-FINAL-REVIEW` | Assembles P0/P1 technical candidate inputs for future zero-proof review; independent final closure decision and zero-proof artifact remain missing, so P0/P1 plus production gates remain blocked. |
 | S2PMT07-INDEPENDENT-FINAL-CLOSURE-DECISION-REQUEST | S2PM | blocked | `ACC-S2PMT07-FINAL-REVIEW` | Defines the independent final reviewer request state for the future P0/P1 closure decision; reviewer assignment, closure decision, zero-proof artifact, P0/P1 closure, and production gates remain blocked. |
+| S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-REQUEST | S2PM | blocked | `ACC-S2PMT07-FINAL-REVIEW` | Defines the independent final reviewer assignment request state for the future P0/P1 closure decision; reviewer assignment, closure decision, zero-proof artifact, P0/P1 closure, and production gates remain blocked. |
+
+## 2026-06-28 08:48:03 Australia/Sydney - S2PMT07 independent final reviewer assignment request
+
+- Added phase record `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_REQUEST.md`.
+- Added manifest `governance/run_manifests/ADP-S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-REQUEST-20260628.json`.
+- This is blocked reviewer assignment request evidence only: reviewer assignment, independent final closure decision, zero-proof artifact, P0/P1 zero proof, S2PLT04/final bundle, and production remain blocked.
 
 ## 2026-06-28 08:21:10 Australia/Sydney - S2PMT07 independent final closure decision request
 

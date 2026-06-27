@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260628-ADP-S2PMT07-INDEPENDENT-FINAL-CLOSURE-DECISION-REQUEST"
+as_of_event_id: "EVENT-20260628-ADP-S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-REQUEST"
 source_snapshot_hash: "sha256:b46b66adca9fff016c8699d25d2f20031291631ddbc6e9ee00fc360126a9647f"
 source_base_commit: "12e91a8e1b84fe29724f43229131bd43f8fa31cd"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
-snapshot_event_time: "2026-06-28T08:21:10+10:00"
+snapshot_event_time: "2026-06-28T08:48:03+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -16,8 +16,8 @@ dimensions:
     status: "PARTIAL"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 1007
-    total_active_parameters: 1022
+    checked_active_parameters: 1010
+    total_active_parameters: 1025
     checked_active_formulas: 119
     total_active_formulas: 119
     unresolved_fact_ids:
@@ -28,8 +28,8 @@ dimensions:
   parameter_source_quality:
     status: "PARTIAL"
     fact_level: "UNKNOWN"
-    checked_active_parameters: 1007
-    total_active_parameters: 1022
+    checked_active_parameters: 1010
+    total_active_parameters: 1025
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -62,12 +62,12 @@ dimensions:
     tree_bound_events: 0
     commit_bound_events: 4
     legacy_unbound_events: 188
-    precommit_pending_events: 48
+    precommit_pending_events: 49
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "VERIFIED"
-  release_gate: "S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_REQUEST_BLOCKED_NO_PRODUCTION"
+  release_gate: "S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_REQUEST_BLOCKED_NO_PRODUCTION"
   blocker_ids:
     - "FACT-arxiv-daily-push-IMPLEMENTATION-PARAMETER-REVIEW"
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
@@ -84,11 +84,11 @@ delivery_readiness:
   parallel_shadow_source_task: "NONE_WHILE_S2PMT07_BLOCKED"
   current_v7_task_id: "S2PMT07"
 next_executable_task:
-  task_id: "S2PLT01"
+  task_id: "S2PMT07"
   status: "blocked"
-  reason: "Keep S2PLT01 fail-closed until inherited P0/P1, full replay, 120 mail previews, D1-D4 terminal source states, and independent review are proven under V7.2 and S2PMT07 blocked boundaries."
+  reason: "Keep S2PMT07 fail-closed until an independent final reviewer assignment artifact, independent final closure decision, P0/P1 zero proof, S2PLT04 completion, final bundle, final command execution, no-production attestation, next-agent handoff, and independent signoff are all proven."
   acceptance_ids:
-    - "ACC-S2PLT01-30D"
+    - "ACC-S2PMT07-FINAL-REVIEW"
   owner: "content_owner + product_owner"
   human_owner_role: "content_owner + product_owner"
   unblock_condition: "S2PLT01 replay payload execution package can be misread as S2PLT01 acceptance; inherited P0/P1, S2PLT04, S2PMT07 final independent review, and final production stop gates still block S2PLT01 and integrated production acceptance."

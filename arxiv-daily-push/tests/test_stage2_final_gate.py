@@ -60,6 +60,9 @@ from arxiv_daily_push.stage2_final_gate import (
     S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_REQUEST_BLOCKING_REASONS,
     S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_REQUEST_FORBIDDEN_FLAGS,
     S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_REQUEST_REQUIRED_INPUTS,
+    S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_REQUEST_BLOCKING_REASONS,
+    S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_REQUEST_FORBIDDEN_FLAGS,
+    S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_REQUEST_REQUIRED_INPUTS,
     S2PMT07_P0_P1_ZERO_PROOF_CLOSURE_DECISION,
     S2PMT07_P0_P1_ZERO_PROOF_NO_PRODUCTION_FLAGS,
     S2PMT07_P0_P1_ZERO_PROOF_REQUIRED_FIELDS,
@@ -82,6 +85,7 @@ from arxiv_daily_push.stage2_final_gate import (
     build_independent_review_signoff_hash,
     build_independent_review_signoff_validation_state,
     build_independent_final_closure_decision_request_state,
+    build_independent_final_reviewer_assignment_request_state,
     build_final_acceptance_bundle_manifest_hash,
     build_final_acceptance_bundle_manifest_validation_state,
     build_p0_p1_zero_proof_assembly_state,
@@ -119,6 +123,7 @@ from arxiv_daily_push.stage2_final_gate import (
     validate_independent_review_signoff_artifact,
     validate_final_acceptance_bundle_manifest,
     validate_independent_final_closure_decision_request_state,
+    validate_independent_final_reviewer_assignment_request_state,
     validate_p0_p1_zero_proof_assembly_state,
     validate_p0_p1_zero_proof_artifact,
     validate_p0_p1_zero_proof_readiness_state,
@@ -2259,6 +2264,73 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertIn(
             "real_smtp_sent must be false",
             validate_independent_final_closure_decision_request_state(tampered_flag),
+        )
+
+    def test_independent_final_reviewer_assignment_request_remains_blocked_without_assignment(self) -> None:
+        state = build_independent_final_reviewer_assignment_request_state()
+
+        self.assertEqual(state["status"], "blocked_reviewer_assignment_request_ready_no_assignment")
+        self.assertEqual(state["scope"], "independent_final_reviewer_assignment_request_only_no_assignment")
+        self.assertEqual(
+            tuple(state["required_inputs"]),
+            S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_REQUEST_REQUIRED_INPUTS,
+        )
+        self.assertEqual(
+            state["assignment_artifact_ref"],
+            "FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json",
+        )
+        self.assertEqual(state["required_reviewer_role"], "independent_final_reviewer")
+        self.assertEqual(
+            state["required_reviewer_independence"],
+            "not_involved_in_S2PMT01_T06_implementation",
+        )
+        self.assertEqual(state["p0_candidate_count"], 8)
+        self.assertEqual(state["p1_candidate_count"], 37)
+        self.assertEqual(state["candidate_total"], 45)
+        self.assertTrue(state["all_candidate_inputs_ready"])
+        self.assertTrue(state["all_candidate_refs_exist"])
+        self.assertTrue(state["assignment_request_ready"])
+        self.assertFalse(state["independent_final_reviewer_assigned"])
+        self.assertFalse(state["independent_final_closure_decision_present"])
+        self.assertFalse(state["zero_proof_artifact_present"])
+        self.assertFalse(state["p0_zero_proven"])
+        self.assertFalse(state["p1_zero_proven"])
+        self.assertFalse(state["closure_claimed"])
+        self.assertEqual(state["observed_open_p0_findings"], 8)
+        self.assertEqual(state["observed_open_p1_findings"], 37)
+        self.assertEqual(
+            state["next_required_action"],
+            "independent_final_reviewer_must_be_assigned_before_closure_decision",
+        )
+        for reason in S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_REQUEST_BLOCKING_REASONS:
+            self.assertIn(reason, state["blocking_reasons"])
+        for flag in S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_REQUEST_FORBIDDEN_FLAGS:
+            self.assertFalse(state[flag])
+        for ref in state["review_input_refs"]:
+            self.assertTrue((REPO_ROOT / ref).exists(), ref)
+        self.assertEqual(validate_independent_final_reviewer_assignment_request_state(state), [])
+
+        readiness = build_final_acceptance_bundle_readiness_state()
+        self.assertTrue(
+            readiness["available_prebundle_evidence"]["INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_REQUEST"]
+        )
+        self.assertEqual(
+            readiness["independent_final_reviewer_assignment_request"]["status"],
+            "blocked_reviewer_assignment_request_ready_no_assignment",
+        )
+
+        tampered = json.loads(json.dumps(state))
+        tampered["independent_final_reviewer_assigned"] = True
+        self.assertIn(
+            "independent_final_reviewer_assigned must be false until assignment artifact exists",
+            validate_independent_final_reviewer_assignment_request_state(tampered),
+        )
+
+        tampered_flag = json.loads(json.dumps(state))
+        tampered_flag["real_smtp_sent"] = True
+        self.assertIn(
+            "real_smtp_sent must be false",
+            validate_independent_final_reviewer_assignment_request_state(tampered_flag),
         )
 
     def _valid_zero_proof_payload(self) -> dict[str, object]:
