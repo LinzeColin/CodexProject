@@ -128,12 +128,15 @@
         "arxiv-daily-push/用户中心/自动唤醒安装生命周期扫描.md",
         "arxiv-daily-push/tests/test_stage2_lifecycle_cache.py",
         "governance/run_manifests/ADP-S2PMT07-B001-ISOLATED-PROOF-RECONCILIATION-20260627.json",
-        "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-ISOLATED-PROOF-20260627.json"
+        "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-ISOLATED-PROOF-20260627.json",
+        "governance/run_manifests/ADP-S2PMT07-B001-INDEPENDENT-TECHNICAL-REVIEW-20260627.json"
       ],
       "finding_id": "B-001",
       "fix_task": "S2PMT04-INSTALL-LIFECYCLE-B001",
-      "preliminary_review_state": "external_isolated_proof_reconciled_independent_review_required_closure_not_claimed",
-      "reviewer_decision_required": "Verify dedicated install/status/trigger/uninstall evidence plus the isolated launchd proof reconciliation manifest; decide whether this external proof is sufficient for B-001 technical closure. No P0/P1 closure is claimed until independent review signs off.",
+      "finding_level_independent_review_receipt": "governance/run_manifests/ADP-S2PMT07-B001-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+      "preliminary_review_state": "finding_level_independent_review_passed_technical_closure_candidate_no_p0_closure",
+      "reviewer_decision_required": "B-001 finding-level independent technical review passed as PASS_WITH_NO_PRODUCTION_ACCEPTANCE. Carry this into the later P0 closure package, but do not lower P0/P1 counters or claim S2PMT07 final pass until the full independent final gate signs off.",
+      "reviewer_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
       "severity": "P0"
     },
     {

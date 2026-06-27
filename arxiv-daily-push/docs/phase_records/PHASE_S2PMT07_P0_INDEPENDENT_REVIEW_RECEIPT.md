@@ -40,7 +40,7 @@ pointer change, no V7.1/V7.2 contract-file edit, no `DAILY_OPERATION`, and no
 | `A-003` | `S2PMT03-OUTBOX-DELIVERY-A003` | `PHASE_S2PMT03_OUTBOX_DELIVERY_A003.md`, `ADP-S2PMT03-OUTBOX-DELIVERY-A003-20260627.json`, `用户中心/事务发件箱与消息ID扫描.md`, `test_stage2_lease_fencing.py` | refreshed current evidence located; closure not claimed | Verify stable same-revision `Message-ID`, changed revision rekeying, one outbox claim under 100 attempts, SMTP accepted-before-commit fail-closed behavior, provider-ref finalization without resend, and no exactly-once claim. |
 | `A-004` | `S2PMT01-FRONTSTAGE-EVIDENCE-A004` | `PHASE_S2PMT01_FRONTSTAGE_EVIDENCE_A004.md`, `ADP-S2PMT01-FRONTSTAGE-EVIDENCE-A004-20260627.json`, `用户中心/前台陈述证据绑定扫描.md`, `test_security_boundary.py` | refreshed current evidence located; closure not claimed | Verify fact, inference, hypothesis, and action frontstage statements require known claim bindings, evidence IDs, reasoning/confidence/scope, and fail closed for unknown or unsupported foreground claims. |
 | `A-005` | `S2PMT01-TRUST-BOUNDARY-A005` | [A-005 trust boundary](PHASE_S2PMT01_TRUST_BOUNDARY_A005.md); [manifest](../../../governance/run_manifests/ADP-S2PMT01-TRUST-BOUNDARY-A005-20260627.json); [用户中心](../../用户中心/来源信任边界扫描.md); [test](../../tests/test_security_boundary.py) | refreshed current evidence located; closure not claimed | Verify `UNTRUSTED_DATA` isolation, tool boundary, safe rendering, and prompt-injection refusal behavior. |
-| `B-001` | `S2PMT04-INSTALL-LIFECYCLE-B001` | `PHASE_S2PMT04_INSTALL_LIFECYCLE_B001.md`, `ADP-S2PMT04-INSTALL-LIFECYCLE-B001-20260627.json`, `ADP-S2PMT07-B001-ISOLATED-PROOF-RECONCILIATION-20260627.json`, `用户中心/自动唤醒安装生命周期扫描.md`, `test_stage2_lifecycle_cache.py` | external isolated proof reconciled; closure not claimed | Verify controlled install/status/trigger/uninstall evidence plus isolated launchd proof reconciliation; decide whether this is sufficient for B-001 technical closure. |
+| `B-001` | `S2PMT04-INSTALL-LIFECYCLE-B001` | `PHASE_S2PMT04_INSTALL_LIFECYCLE_B001.md`, `ADP-S2PMT04-INSTALL-LIFECYCLE-B001-20260627.json`, `ADP-S2PMT07-B001-ISOLATED-PROOF-RECONCILIATION-20260627.json`, `ADP-S2PMT07-B001-INDEPENDENT-TECHNICAL-REVIEW-20260627.json`, `用户中心/自动唤醒安装生命周期扫描.md`, `test_stage2_lifecycle_cache.py` | finding-level independent technical review passed; closure not claimed | Carry B-001 into the later P0 closure package as a technical closure candidate; do not lower P0/P1 counters or claim S2PMT07 final pass until the full independent final gate signs off. |
 | `B-007` | `S2PMT05-DUPLICATE-TRIGGER-B007` | `PHASE_S2PMT05_DUPLICATE_TRIGGER_B007.md`, `ADP-S2PMT05-DUPLICATE-TRIGGER-B007-20260627.json`, `test_stage2_stress_e2e.py` | refreshed current evidence located; closure not claimed | Verify four actor sources, M1-M4 x 100 attempts, one active revision per product, reason-coded duplicate blocks, lease/fencing receipts, and no scheduler side effects; decide whether multi-host/real scheduler duplicate-trigger proof is still required. |
 | `B-008` | `S2PMT05-SMTP-CRASH-WINDOW-B008` | `PHASE_S2PMT05_SMTP_CRASH_WINDOW_B008.md`, `ADP-S2PMT05-SMTP-CRASH-WINDOW-B008-20260627.json`, `test_stage2_stress_e2e.py` | refreshed current evidence located; closure not claimed | Verify outbox claim before SMTP acceptance, `ACCEPTED_PENDING_COMMIT`, stable idempotent `message_id`, provider accept ref finalization, blocked unsafe resend, and no real SMTP side effects; decide whether runner-level fake SMTP kill/restart proof is still required. |
 
@@ -65,6 +65,17 @@ This refresh records that B-001 now has a GitHub source-of-truth reconciliation 
 - refresh_manifest: `governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-ISOLATED-PROOF-20260627.json`
 - closure_claimed: `false`
 - independent_review_signoff_present: `false`
+
+## Finding-Level Technical Review 2026-06-27 15:24:34 Australia/Sydney
+
+Independent reviewer agent `019f0786-1718-7cb0-8ac9-fe9b337e15cd` returned `PASS_WITH_NO_PRODUCTION_ACCEPTANCE` for B-001 as a technical closure candidate after read-only review of GitHub main `b7ad0f4e395bcd7cafaafceee737df802fcc6bc5`, the isolated proof reconciliation, tests, and owner-facing page. This does not close P0/P1 and does not provide final S2PMT07 signoff.
+
+- finding: `B-001`
+- review_receipt: `governance/run_manifests/ADP-S2PMT07-B001-INDEPENDENT-TECHNICAL-REVIEW-20260627.json`
+- reviewer_verdict: `PASS_WITH_NO_PRODUCTION_ACCEPTANCE`
+- technical_closure_candidate: `true`
+- p0_closure_claimed: `false`
+- stage2_integrated_production_accepted: `false`
 
 
 ## Preserved Blockers
