@@ -1,9 +1,11 @@
-# PFI 大数据模拟器中文 Owner 快速入口
+# QBVS 独立策略验证系统中文 Owner 快速入口
+
+QBVS 已从 PFI 内部分离为 `LinzeColin/CodexProject/QBVS` 顶层独立系统。PFI 的投资管理不覆盖 QBVS；PFI 只保留策略回测、盘感训练和大数据模拟器的本地入口，以及对 QBVS 证据包的外部引用。
 
 - S6PAT02 中文 Owner 快速入口：用户可读优先；中文优先，默认全局中文。
 - 本轮 Owner-flow 治理任务：`S6PAT02` / `ACC-S6PAT02` 仍在逐项目进行，只补 Owner 路径，不改产品 canonical current_task；S5 结构验收回看任务为 `S5PCT01` / `ACC-S5PCT01`。
 - 下一 Gate：`S6PA-GATE` 仍在进行中；S5PC/S5-GATE 的中文验收必须继续以本第一屏和 `docs/PFI_structure_report.md` 为准。
-- 本轮边界：只补 Owner 可读路径，不改运行代码，不改算法，不移动 `qbvs/`、`config/`、`tests/`、`runs/`、`reports/`，不触发外部自动化。
+- 本轮边界：只补 Owner 可读路径和顶层分离说明，不改运行代码，不改算法，不触发外部自动化。
 
 | Owner 判断项 | 当前路径 | 状态 |
 |---|---|---|
@@ -13,9 +15,9 @@
 | runs/reports | `runs/`、`reports/` | 输出证据层，不作为源码事实 |
 | contracts/tools | 根合同、`tools/` | 互操作、恢复、报告生成资料，不是默认算法入口 |
 
-- 最小验证路径：进入 `PFI/modules/qbvs_lab/`，运行 `python -B -m unittest tests.test_s3pct02_lifecycle -q`；本轮实测结果为 `Ran 1 test` / `OK`。
+- 最小验证路径：进入 `QBVS/`，运行 `python -B -m unittest tests.test_s3pct02_lifecycle -q`。
 - active qbvs smoke：`S5PCT01_PFI_ACTIVE_QBVS_SMOKE_PASS specs=240 rows=120`，证据在 `governance/stage_gates/s5pc/pfi_smoke_tests.log`。
-- 失败去向：若出现 `No module named pytest`，先按环境 blocker 处理依赖；若 lifecycle 或 active qbvs 断言失败，再查 `PFI/modules/qbvs_lab/docs/PFI_structure_report.md` 和 `tests/`。
+- 失败去向：若出现 `No module named pytest`，先按环境 blocker 处理依赖；若 lifecycle 或 active qbvs 断言失败，再查 `QBVS/docs/PFI_structure_report.md` 和 `QBVS/tests/`。
 - 回滚：revert 本次 README/报告/gate 证据提交即可；本轮不改运行代码、不改算法、不移动文件、不触发外部自动化。
 
 # 大数据模拟器（原 QBVS / Quant Behavior Validation System）
@@ -27,12 +29,12 @@ Machine-readable sources are under `docs/governance/`; `VERSION` and `CHANGELOG.
 中文人类入口：`功能清单`、`开发记录`、`模型参数文件`。这三份文件必须直接保留 owner 可读的功能摘要、Roadmap/任务、模型/参数、证据状态、限制和下一步门禁；它们不是跳转页，也不是第二套可编辑机器事实源。机器真相仍以 `docs/governance/` 下的 Lean v2 文件为准。
 
 
-GitHub 备份路径：`LinzeColin/CodexProject/PFI`
+GitHub 备份路径：`LinzeColin/CodexProject/QBVS`
 
-`PFI/modules/qbvs_lab` 是 PFI V0.2 下的兼容入口，归入
-`投资管理 > 策略实验室 / 大数据模拟器`。新合同、owner 文件和 Stage 1+
-开发记录应写入 `CodexProject/PFI` 根目录；本目录继续保留 QBVS active
-runtime，不移动 `qbvs/`。
+`QBVS/` 是独立策略验证系统根目录。PFI V0.2 的 `投资管理` 不覆盖 QBVS；
+PFI 只保留自身的策略回测、盘感训练、大数据模拟器和外部证据引用。
+QBVS 的合同、owner 文件、测试、运行证据和后续开发应写入
+`CodexProject/QBVS`。
 
 本目录是原 QBVS 的可继续开发备份。产品显示名改为“大数据模拟器”，历史模块名
 `qbvs` 暂时保留，避免破坏现有 CLI、测试、QuantLab ReviewOnly adapter 和
@@ -106,7 +108,7 @@ calculation in every development action.
 ## 快速运行
 
 ```bash
-cd /Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system
+cd /Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS
 PYTHONPATH=. python3 -m qbvs.cli list-strategies --limit 240 --output runs/strategy_catalog.csv
 PYTHONPATH=. python3 -m qbvs.cli stress-random --strategies 20 --paths 100 --days 126 --output-dir runs/random_smoke
 ```

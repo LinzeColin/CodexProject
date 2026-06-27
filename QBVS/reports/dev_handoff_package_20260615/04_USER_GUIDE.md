@@ -2,7 +2,7 @@
 
 生成时间：2026-06-15 20:22:30
 
-项目根目录：`/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system`
+项目根目录：`/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS`
 
 ## 使用者说明
 

@@ -85,7 +85,7 @@ QuantLab 侧必须回写：
 
 独立验证系统路径：
 
-`/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system`
+`/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS`
 
 QuantLab 当前路径提示：
 
@@ -353,7 +353,7 @@ QuantLab 当前路径提示：
 第一步，在独立验证系统侧生成握手请求：
 
 ```bash
-cd /Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system
+cd /Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS
 PYTHONPATH=. python3 -m qbvs.cli create-handshake \
   --output-dir handoff \
   --quantlab-root /Users/linzezhang/Documents/Codex/2026-06-04/files-mentioned-by-the-user-quantlab/outputs/CodexFinance

@@ -6,7 +6,7 @@
   "created_at": "2026-06-05T04:45:56Z",
   "created_at_local": "2026-06-05 14:45 AEST",
   "quantlab_root": "/Users/linzezhang/Documents/Codex/2026-06-04/files-mentioned-by-the-user-quantlab/outputs/CodexFinance",
-  "qbvs_root": "/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system",
+  "qbvs_root": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS",
   "accepted": true,
   "consume_mode": "external_artifact_read",
   "quantlab_entrypoint": "ReviewOnly external evidence ingestion through scripts/runIndependentValidation.sh, src/quantlab/integrations/independent_validation.py, src/quantlab/integrations/research_bus.py, and the Streamlit 大数据模拟 / 研究总线 views; QuantLab will read QBVS bundles as external evidence and will not write approved strategies without explicit user approval.",

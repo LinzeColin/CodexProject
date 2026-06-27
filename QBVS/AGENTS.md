@@ -41,7 +41,7 @@
 ## 继续开发命令
 
 ```bash
-cd PFI/modules/qbvs_lab
+cd QBVS
 PYTHONPATH=. python3 -m pytest tests -q
 PYTHONPATH=. python3 -m qbvs.cli list-strategies --limit 20 --output runs/strategy_catalog.csv
 PYTHONPATH=. python3 -m qbvs.cli verify-handshake --ack handoff/quantlab_handshake_ack.json

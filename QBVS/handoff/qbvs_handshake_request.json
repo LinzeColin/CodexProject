@@ -4,7 +4,7 @@
   "source_system": "quant_behavior_validation_system",
   "target_system": "quantlab",
   "created_at": "2026-06-05T12:08:55",
-  "qbvs_root": "/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system",
+  "qbvs_root": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS",
   "quantlab_root_hint": "/Users/linzezhang/Documents/Codex/2026-06-04/files-mentioned-by-the-user-quantlab/outputs/CodexFinance",
   "same_instruction_relay": {
     "user_instruction_cn": "写一个独立验证系统的handoff.md，并且和量化系统通话握手，做到和量化系统完全互通，我在他那边会发送完全一模一样的指令",

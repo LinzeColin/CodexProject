@@ -2,7 +2,7 @@
 
 生成时间：2026-06-15 20:22:30
 
-项目根目录：`/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system`
+项目根目录：`/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS`
 
 ## 新开发者接手指南
 
@@ -18,7 +18,7 @@
 ### 推荐续跑命令
 
 ```bash
-cd /Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system
+cd /Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS
 PYTHONPATH=. python3 tools/run_current_stage_random_stress_campaign.py --target-paths 100000 --batch-paths 500 --max-batches 20 --days 252 --output-dir runs/current_stage_bw99_random_stress_20260606
 PYTHONPATH=. python3 tools/generate_random_stress_progress_report_20260606.py
 PYTHONPATH=. python3 -m qbvs.cli verify-handshake --ack handoff/quantlab_handshake_ack.json

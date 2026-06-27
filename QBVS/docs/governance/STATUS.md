@@ -12,7 +12,7 @@
 ## Current State
 
 - Project: `PFI_BIG_DATA_SIMULATOR`
-- Path: `PFI/modules/qbvs_lab`
+- Path: `QBVS`
 - Product version: `0.1.0`
 - Phase/Gate: `B / GOV-SEMANTIC-PFI-in-progress`
 - Latest remediation task: `S3PCT02` lifecycle verification completed locally with synthetic temporary data
@@ -25,13 +25,13 @@
 | Dimension | Status | Evidence |
 |---|---|---|
 | structural_completeness | `VERIFIED` | `scripts/validate_project_governance.py` |
-| implementation_congruence | `PARTIAL` | `PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv, PFI/modules/qbvs_lab/docs/governance/formula_registry.yaml` |
-| parameter_source_quality | `PARTIAL` | `PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv` |
-| methodological_rationale | `UNVERIFIED` | `PFI/modules/qbvs_lab/docs/governance/MODEL_SPEC.md` |
-| empirical_validation | `UNVERIFIED` | `PFI/modules/qbvs_lab/docs/governance/delivery_tasks.yaml` |
+| implementation_congruence | `PARTIAL` | `QBVS/docs/governance/parameter_registry.csv, QBVS/docs/governance/formula_registry.yaml` |
+| parameter_source_quality | `PARTIAL` | `QBVS/docs/governance/parameter_registry.csv` |
+| methodological_rationale | `UNVERIFIED` | `QBVS/docs/governance/MODEL_SPEC.md` |
+| empirical_validation | `UNVERIFIED` | `QBVS/docs/governance/delivery_tasks.yaml` |
 | operational_validation | `PARTIAL` | `governance/stage_gates/s3pc/pfi_lifecycle_matrix.csv, governance/stage_gates/s3pc/pfi_process_cleanup.log, governance/stage_gates/s3pc/pfi_persistence_recovery.log` |
-| delivery_evidence | `UNVERIFIED` | `PFI/modules/qbvs_lab/docs/governance/delivery_tasks.yaml` |
-| evidence_freshness | `PARTIAL` | `PFI/modules/qbvs_lab/docs/governance/development_events.jsonl` |
+| delivery_evidence | `UNVERIFIED` | `QBVS/docs/governance/delivery_tasks.yaml` |
+| evidence_freshness | `PARTIAL` | `QBVS/docs/governance/development_events.jsonl` |
 
 ## Delivery
 

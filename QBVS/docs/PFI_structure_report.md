@@ -7,7 +7,7 @@
 
 ## 用户可读结论
 
-PFI/QBVS 的主动运行和算法代码仍在 `PFI/modules/qbvs_lab/qbvs/`。`config/` 是输入配置层，`tests/` 是验证层，根合同和 handoff 只描述 QuantLab read-only 互操作与恢复，`tools/` 下日期脚本只是报告/交接生成器，`runs/` 与 `reports/` 是输出证据层。本任务不移动文件、不改算法、不让输出反向成为源码事实。
+PFI/QBVS 的主动运行和算法代码仍在 `QBVS/qbvs/`。`config/` 是输入配置层，`tests/` 是验证层，根合同和 handoff 只描述 QuantLab read-only 互操作与恢复，`tools/` 下日期脚本只是报告/交接生成器，`runs/` 与 `reports/` 是输出证据层。本任务不移动文件、不改算法、不让输出反向成为源码事实。
 
 ## 中文验收标准
 
@@ -46,14 +46,14 @@ mode: `BOUNDARY_ONLY_NO_ALGORITHM_CHANGE`
 
 S5PCT01 把当前 PFI/QBVS 结构绑定为明确层级：
 
-- Active QBVS package: `PFI/modules/qbvs_lab/qbvs/`
-- Config layer: `PFI/modules/qbvs_lab/config/`
-- Test layer: `PFI/modules/qbvs_lab/tests/`
+- Active QBVS package: `QBVS/qbvs/`
+- Config layer: `QBVS/config/`
+- Test layer: `QBVS/tests/`
 - Root contracts and handoff：`QUANTLAB_INTEGRATION_CONTRACT.json`,
   `HANDSHAKE_PROTOCOL.json`, `HANDOFF.md`, `BACKUP_MANIFEST.md`
-- Date-stamped generator scripts：`PFI/modules/qbvs_lab/tools/`
-- Output/evidence layers：`PFI/modules/qbvs_lab/runs/` and
-  `PFI/modules/qbvs_lab/reports/`
+- Date-stamped generator scripts：`QBVS/tools/`
+- Output/evidence layers：`QBVS/runs/` and
+  `QBVS/reports/`
 
 S5PCT01 不移动文件。现有 Wave 2 manifest 记录 42 个 PFI archive/merge candidates：40 个 `ARCHIVE` 和 2 个 `MERGE`。这些候选继续由 `governance/stage_gates/s5pa/wave2_archive_manifest.json` checksum-bound。
 
@@ -68,7 +68,7 @@ S5PCT01 不移动文件。现有 Wave 2 manifest 记录 42 个 PFI archive/merge
 
 ## Smoke 证据
 
-- `python -B -m pytest "PFI/modules/qbvs_lab/tests" -q`：`未运行`，本地 Python 环境不包含 `pytest`。
+- `python -B -m pytest "QBVS/tests" -q`：`未运行`，本地 Python 环境不包含 `pytest`。
 - `python -B -m unittest tests.test_s3pct02_lifecycle -q`：`通过`，1 个测试通过。
 - Active `qbvs/` direct smoke：`通过`，生成 240 个 strategy specs，运行 backtest/buy-hold，并创建或刷新一个 OHLCV cache index。
 

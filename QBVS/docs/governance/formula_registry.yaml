@@ -31,19 +31,19 @@ formulas:
       - "ASM-002"
       - "ASM-003"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:13"
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:31"
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:77"
+      - "QBVS/qbvs/strategies.py:13"
+      - "QBVS/qbvs/strategies.py:31"
+      - "QBVS/qbvs/strategies.py:77"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:61"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:65"
+      - "QBVS/tests/test_core.py:61"
+      - "QBVS/tests/test_core.py:65"
     evidence_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/MODEL_SPEC.md"
+      - "QBVS/docs/governance/MODEL_SPEC.md"
       - "TASK-PFI-B-001"
     unknown_task_ids:
       - "TASK-PFI-B-001"
     semantic_status: "MACHINE_VERIFIED"
-    implementation_refs: ["PFI/modules/qbvs_lab/qbvs/strategies.py::BehaviorStrategySpec", "PFI/modules/qbvs_lab/qbvs/strategies.py::generate_strategy_specs", "PFI/modules/qbvs_lab/qbvs/strategies.py::select_strategy_specs_by_id", "PFI/modules/qbvs_lab/qbvs/strategies.py::named_default_specs", "PFI/modules/qbvs_lab/qbvs/strategies.py::generate_signals", "PFI/modules/qbvs_lab/qbvs/strategies.py::_apply_dip_rule", "PFI/modules/qbvs_lab/qbvs/strategies.py::_apply_trend_rule", "PFI/modules/qbvs_lab/qbvs/strategies.py::_apply_sell_rule", "PFI/modules/qbvs_lab/qbvs/strategies.py::_apply_risk_rule"]
+    implementation_refs: ["QBVS/qbvs/strategies.py::BehaviorStrategySpec", "QBVS/qbvs/strategies.py::generate_strategy_specs", "QBVS/qbvs/strategies.py::select_strategy_specs_by_id", "QBVS/qbvs/strategies.py::named_default_specs", "QBVS/qbvs/strategies.py::generate_signals", "QBVS/qbvs/strategies.py::_apply_dip_rule", "QBVS/qbvs/strategies.py::_apply_trend_rule", "QBVS/qbvs/strategies.py::_apply_sell_rule", "QBVS/qbvs/strategies.py::_apply_risk_rule"]
     implementation_fingerprint: "sha256:436d6e0deab221cf712b012bc0283b23a0617d98b586479c1b3a53ad9829edfd"
     last_verified_commit: "94478ef52caecb9d856bf4a0543719f8d50a9645"
     verified_at: "2026-06-21T12:19:34Z"
@@ -77,20 +77,20 @@ formulas:
       - "ASM-002"
       - "ASM-003"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/indicators.py:6"
-      - "PFI/modules/qbvs_lab/qbvs/indicators.py:10"
-      - "PFI/modules/qbvs_lab/qbvs/indicators.py:18"
-      - "PFI/modules/qbvs_lab/qbvs/indicators.py:25"
-      - "PFI/modules/qbvs_lab/qbvs/indicators.py:35"
+      - "QBVS/qbvs/indicators.py:6"
+      - "QBVS/qbvs/indicators.py:10"
+      - "QBVS/qbvs/indicators.py:18"
+      - "QBVS/qbvs/indicators.py:25"
+      - "QBVS/qbvs/indicators.py:35"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:65"
+      - "QBVS/tests/test_core.py:65"
     evidence_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/MODEL_SPEC.md"
+      - "QBVS/docs/governance/MODEL_SPEC.md"
       - "TASK-PFI-B-001"
     unknown_task_ids:
       - "TASK-PFI-B-001"
     semantic_status: "MACHINE_VERIFIED"
-    implementation_refs: ["PFI/modules/qbvs_lab/qbvs/indicators.py::sma", "PFI/modules/qbvs_lab/qbvs/indicators.py::rsi", "PFI/modules/qbvs_lab/qbvs/indicators.py::bollinger", "PFI/modules/qbvs_lab/qbvs/indicators.py::macd", "PFI/modules/qbvs_lab/qbvs/indicators.py::atr"]
+    implementation_refs: ["QBVS/qbvs/indicators.py::sma", "QBVS/qbvs/indicators.py::rsi", "QBVS/qbvs/indicators.py::bollinger", "QBVS/qbvs/indicators.py::macd", "QBVS/qbvs/indicators.py::atr"]
     implementation_fingerprint: "sha256:fe06a391d52bf6ef7f6340a880658030b1caf5415dfd783855908272b3177dce"
     last_verified_commit: "94478ef52caecb9d856bf4a0543719f8d50a9645"
     verified_at: "2026-06-21T12:19:34Z"
@@ -124,19 +124,19 @@ formulas:
       - "ASM-001"
       - "ASM-002"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/backtest.py:11"
-      - "PFI/modules/qbvs_lab/qbvs/backtest.py:19"
-      - "PFI/modules/qbvs_lab/qbvs/backtest.py:49"
-      - "PFI/modules/qbvs_lab/qbvs/backtest.py:134"
+      - "QBVS/qbvs/backtest.py:11"
+      - "QBVS/qbvs/backtest.py:19"
+      - "QBVS/qbvs/backtest.py:49"
+      - "QBVS/qbvs/backtest.py:134"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:65"
+      - "QBVS/tests/test_core.py:65"
     evidence_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/MODEL_SPEC.md"
+      - "QBVS/docs/governance/MODEL_SPEC.md"
       - "TASK-PFI-B-002"
     unknown_task_ids:
       - "TASK-PFI-B-002"
     semantic_status: "MACHINE_VERIFIED"
-    implementation_refs: ["PFI/modules/qbvs_lab/qbvs/backtest.py::CostModel", "PFI/modules/qbvs_lab/qbvs/backtest.py::normalize_ohlcv", "PFI/modules/qbvs_lab/qbvs/backtest.py::run_target_weight_backtest", "PFI/modules/qbvs_lab/qbvs/backtest.py::run_buy_hold", "PFI/modules/qbvs_lab/qbvs/backtest.py::drawdown", "PFI/modules/qbvs_lab/qbvs/backtest.py::performance_metrics"]
+    implementation_refs: ["QBVS/qbvs/backtest.py::CostModel", "QBVS/qbvs/backtest.py::normalize_ohlcv", "QBVS/qbvs/backtest.py::run_target_weight_backtest", "QBVS/qbvs/backtest.py::run_buy_hold", "QBVS/qbvs/backtest.py::drawdown", "QBVS/qbvs/backtest.py::performance_metrics"]
     implementation_fingerprint: "sha256:9965b8c0c950be76299c2ec713ed0535c4deb5b93fa91ba574d178faf355392e"
     last_verified_commit: "94478ef52caecb9d856bf4a0543719f8d50a9645"
     verified_at: "2026-06-21T12:19:34Z"
@@ -170,19 +170,19 @@ formulas:
       - "ASM-001"
       - "ASM-004"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/backtest.py:122"
-      - "PFI/modules/qbvs_lab/qbvs/backtest.py:163"
-      - "PFI/modules/qbvs_lab/qbvs/validation.py:133"
+      - "QBVS/qbvs/backtest.py:122"
+      - "QBVS/qbvs/backtest.py:163"
+      - "QBVS/qbvs/validation.py:133"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:625"
+      - "QBVS/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:625"
     evidence_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/MODEL_SPEC.md"
+      - "QBVS/docs/governance/MODEL_SPEC.md"
       - "TASK-PFI-B-002"
     unknown_task_ids:
       - "TASK-PFI-B-002"
     semantic_status: "MACHINE_VERIFIED"
-    implementation_refs: ["PFI/modules/qbvs_lab/qbvs/backtest.py::compare_to_buy_hold", "PFI/modules/qbvs_lab/qbvs/validation.py::summarize_results", "PFI/modules/qbvs_lab/qbvs/campaign.py::PromotionConfig", "PFI/modules/qbvs_lab/qbvs/campaign.py::promote_candidates_from_summary", "PFI/modules/qbvs_lab/qbvs/finalists.py::FinalistSelectionConfig", "PFI/modules/qbvs_lab/qbvs/finalists.py::select_finalist_strategy_ids"]
+    implementation_refs: ["QBVS/qbvs/backtest.py::compare_to_buy_hold", "QBVS/qbvs/validation.py::summarize_results", "QBVS/qbvs/campaign.py::PromotionConfig", "QBVS/qbvs/campaign.py::promote_candidates_from_summary", "QBVS/qbvs/finalists.py::FinalistSelectionConfig", "QBVS/qbvs/finalists.py::select_finalist_strategy_ids"]
     implementation_fingerprint: "sha256:6ac52709be76fc2b75fe6ccdc74a620a60ef49eea7d398bcc70066a815c76c0c"
     last_verified_commit: "94478ef52caecb9d856bf4a0543719f8d50a9645"
     verified_at: "2026-06-21T12:19:34Z"
@@ -216,19 +216,19 @@ formulas:
       - "ASM-002"
       - "ASM-004"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:10"
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:17"
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:27"
+      - "QBVS/qbvs/simulation.py:10"
+      - "QBVS/qbvs/simulation.py:17"
+      - "QBVS/qbvs/simulation.py:27"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:84"
+      - "QBVS/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:84"
     evidence_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/MODEL_SPEC.md"
+      - "QBVS/docs/governance/MODEL_SPEC.md"
       - "TASK-PFI-B-003"
     unknown_task_ids:
       - "TASK-PFI-B-003"
     semantic_status: "MACHINE_VERIFIED"
-    implementation_refs: ["PFI/modules/qbvs_lab/qbvs/simulation.py::RandomPathConfig", "PFI/modules/qbvs_lab/qbvs/simulation.py::REGIMES", "PFI/modules/qbvs_lab/qbvs/simulation.py::generate_random_paths"]
+    implementation_refs: ["QBVS/qbvs/simulation.py::RandomPathConfig", "QBVS/qbvs/simulation.py::REGIMES", "QBVS/qbvs/simulation.py::generate_random_paths"]
     implementation_fingerprint: "sha256:ef0e8ede6065ff5f55667a18cdfae2541d8cad70a570fe56079deee0796df739"
     last_verified_commit: "94478ef52caecb9d856bf4a0543719f8d50a9645"
     verified_at: "2026-06-21T12:19:34Z"
@@ -263,21 +263,21 @@ formulas:
       - "ASM-002"
       - "ASM-004"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/validation.py:33"
-      - "PFI/modules/qbvs_lab/qbvs/validation.py:88"
-      - "PFI/modules/qbvs_lab/qbvs/validation.py:103"
-      - "PFI/modules/qbvs_lab/qbvs/windows.py:19"
-      - "PFI/modules/qbvs_lab/qbvs/windows.py:56"
+      - "QBVS/qbvs/validation.py:33"
+      - "QBVS/qbvs/validation.py:88"
+      - "QBVS/qbvs/validation.py:103"
+      - "QBVS/qbvs/windows.py:19"
+      - "QBVS/qbvs/windows.py:56"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:84"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:95"
+      - "QBVS/tests/test_core.py:84"
+      - "QBVS/tests/test_core.py:95"
     evidence_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/MODEL_SPEC.md"
+      - "QBVS/docs/governance/MODEL_SPEC.md"
       - "TASK-PFI-B-002"
     unknown_task_ids:
       - "TASK-PFI-B-002"
     semantic_status: "MACHINE_VERIFIED"
-    implementation_refs: ["PFI/modules/qbvs_lab/qbvs/validation.py::ValidationConfig", "PFI/modules/qbvs_lab/qbvs/validation.py::validate_one", "PFI/modules/qbvs_lab/qbvs/validation.py::validate_universe", "PFI/modules/qbvs_lab/qbvs/validation.py::validate_windowed_universe", "PFI/modules/qbvs_lab/qbvs/validation.py::validate_rolling_universe", "PFI/modules/qbvs_lab/qbvs/validation.py::validate_event_universe", "PFI/modules/qbvs_lab/qbvs/validation.py::stress_random", "PFI/modules/qbvs_lab/qbvs/validation.py::summarize_results", "PFI/modules/qbvs_lab/qbvs/validation.py::write_run_artifacts", "PFI/modules/qbvs_lab/qbvs/windows.py::WindowedFrame", "PFI/modules/qbvs_lab/qbvs/windows.py::rolling_windows", "PFI/modules/qbvs_lab/qbvs/windows.py::load_event_windows", "PFI/modules/qbvs_lab/qbvs/windows.py::event_windows"]
+    implementation_refs: ["QBVS/qbvs/validation.py::ValidationConfig", "QBVS/qbvs/validation.py::validate_one", "QBVS/qbvs/validation.py::validate_universe", "QBVS/qbvs/validation.py::validate_windowed_universe", "QBVS/qbvs/validation.py::validate_rolling_universe", "QBVS/qbvs/validation.py::validate_event_universe", "QBVS/qbvs/validation.py::stress_random", "QBVS/qbvs/validation.py::summarize_results", "QBVS/qbvs/validation.py::write_run_artifacts", "QBVS/qbvs/windows.py::WindowedFrame", "QBVS/qbvs/windows.py::rolling_windows", "QBVS/qbvs/windows.py::load_event_windows", "QBVS/qbvs/windows.py::event_windows"]
     implementation_fingerprint: "sha256:14eb494b04451d2d31ad758460097b63a470589dc1c4a09e36c2c03595d4fd92"
     last_verified_commit: "94478ef52caecb9d856bf4a0543719f8d50a9645"
     verified_at: "2026-06-21T12:19:34Z"
@@ -312,20 +312,20 @@ formulas:
       - "ASM-002"
       - "ASM-005"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/fast.py:14"
-      - "PFI/modules/qbvs_lab/qbvs/fast.py:25"
-      - "PFI/modules/qbvs_lab/qbvs/fast.py:150"
-      - "PFI/modules/qbvs_lab/qbvs/fast.py:215"
+      - "QBVS/qbvs/fast.py:14"
+      - "QBVS/qbvs/fast.py:25"
+      - "QBVS/qbvs/fast.py:150"
+      - "QBVS/qbvs/fast.py:215"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:359"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:418"
+      - "QBVS/tests/test_core.py:359"
+      - "QBVS/tests/test_core.py:418"
     evidence_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/MODEL_SPEC.md"
+      - "QBVS/docs/governance/MODEL_SPEC.md"
       - "TASK-PFI-B-004"
     unknown_task_ids:
       - "TASK-PFI-B-004"
     semantic_status: "MACHINE_VERIFIED"
-    implementation_refs: ["PFI/modules/qbvs_lab/qbvs/fast.py::FastScreenConfig", "PFI/modules/qbvs_lab/qbvs/fast.py::fast_target_weight_backtest", "PFI/modules/qbvs_lab/qbvs/fast.py::fast_buy_hold", "PFI/modules/qbvs_lab/qbvs/fast.py::fast_performance_metrics", "PFI/modules/qbvs_lab/qbvs/fast.py::fast_validate_one", "PFI/modules/qbvs_lab/qbvs/fast.py::fast_validate_universe", "PFI/modules/qbvs_lab/qbvs/fast.py::compare_fast_to_exact", "PFI/modules/qbvs_lab/qbvs/fast.py::fast_summary", "PFI/modules/qbvs_lab/qbvs/fast.py::benchmark_summary", "PFI/modules/qbvs_lab/qbvs/fast.py::_drawdown_array"]
+    implementation_refs: ["QBVS/qbvs/fast.py::FastScreenConfig", "QBVS/qbvs/fast.py::fast_target_weight_backtest", "QBVS/qbvs/fast.py::fast_buy_hold", "QBVS/qbvs/fast.py::fast_performance_metrics", "QBVS/qbvs/fast.py::fast_validate_one", "QBVS/qbvs/fast.py::fast_validate_universe", "QBVS/qbvs/fast.py::compare_fast_to_exact", "QBVS/qbvs/fast.py::fast_summary", "QBVS/qbvs/fast.py::benchmark_summary", "QBVS/qbvs/fast.py::_drawdown_array"]
     implementation_fingerprint: "sha256:7f1bcb82c3360f78d8aba5a5922ee7261b63416fe216ea2a6b81a21ce58b8ee5"
     last_verified_commit: "94478ef52caecb9d856bf4a0543719f8d50a9645"
     verified_at: "2026-06-21T12:19:34Z"
@@ -359,20 +359,20 @@ formulas:
       - "ASM-002"
       - "ASM-006"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/quality.py:12"
-      - "PFI/modules/qbvs_lab/qbvs/quality.py:28"
-      - "PFI/modules/qbvs_lab/qbvs/quality.py:94"
-      - "PFI/modules/qbvs_lab/qbvs/quality.py:111"
+      - "QBVS/qbvs/quality.py:12"
+      - "QBVS/qbvs/quality.py:28"
+      - "QBVS/qbvs/quality.py:94"
+      - "QBVS/qbvs/quality.py:111"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:273"
+      - "QBVS/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:273"
     evidence_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/MODEL_SPEC.md"
+      - "QBVS/docs/governance/MODEL_SPEC.md"
       - "TASK-PFI-B-005"
     unknown_task_ids:
       - "TASK-PFI-B-005"
     semantic_status: "MACHINE_VERIFIED"
-    implementation_refs: ["PFI/modules/qbvs_lab/qbvs/quality.py::QualityReport", "PFI/modules/qbvs_lab/qbvs/quality.py::assess_ohlcv_quality", "PFI/modules/qbvs_lab/qbvs/quality.py::infer_asset_class", "PFI/modules/qbvs_lab/qbvs/quality.py::infer_tradability", "PFI/modules/qbvs_lab/qbvs/quality.py::_missing_close_ratio", "PFI/modules/qbvs_lab/qbvs/quality.py::_duplicate_datetime_count", "PFI/modules/qbvs_lab/qbvs/quality.py::_calendar_gap_ratio", "PFI/modules/qbvs_lab/qbvs/quality.py::_grade"]
+    implementation_refs: ["QBVS/qbvs/quality.py::QualityReport", "QBVS/qbvs/quality.py::assess_ohlcv_quality", "QBVS/qbvs/quality.py::infer_asset_class", "QBVS/qbvs/quality.py::infer_tradability", "QBVS/qbvs/quality.py::_missing_close_ratio", "QBVS/qbvs/quality.py::_duplicate_datetime_count", "QBVS/qbvs/quality.py::_calendar_gap_ratio", "QBVS/qbvs/quality.py::_grade"]
     implementation_fingerprint: "sha256:fbe9502384e06c383137b9c319dfb7a92522a35c3a069ac6c3181cc825736f63"
     last_verified_commit: "94478ef52caecb9d856bf4a0543719f8d50a9645"
     verified_at: "2026-06-21T12:19:34Z"
@@ -406,22 +406,22 @@ formulas:
       - "ASM-001"
       - "ASM-002"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/tasks.py:18"
-      - "PFI/modules/qbvs_lab/qbvs/tasks.py:110"
-      - "PFI/modules/qbvs_lab/qbvs/tasks.py:189"
-      - "PFI/modules/qbvs_lab/qbvs/tasks.py:209"
-      - "PFI/modules/qbvs_lab/qbvs/tasks.py:297"
+      - "QBVS/qbvs/tasks.py:18"
+      - "QBVS/qbvs/tasks.py:110"
+      - "QBVS/qbvs/tasks.py:189"
+      - "QBVS/qbvs/tasks.py:209"
+      - "QBVS/qbvs/tasks.py:297"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:95"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:273"
-      - "PFI/modules/qbvs_lab/tests/test_s3pct02_lifecycle.py:17"
+      - "QBVS/tests/test_core.py:95"
+      - "QBVS/tests/test_core.py:273"
+      - "QBVS/tests/test_s3pct02_lifecycle.py:17"
     evidence_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/MODEL_SPEC.md"
+      - "QBVS/docs/governance/MODEL_SPEC.md"
       - "TASK-PFI-B-005"
     unknown_task_ids:
       - "TASK-PFI-B-005"
     semantic_status: "MACHINE_VERIFIED"
-    implementation_refs: ["PFI/modules/qbvs_lab/qbvs/tasks.py::build_csv_task_manifest", "PFI/modules/qbvs_lab/qbvs/tasks.py::build_cache_task_manifest", "PFI/modules/qbvs_lab/qbvs/tasks.py::build_cache_pair_task_manifest", "PFI/modules/qbvs_lab/qbvs/tasks.py::_select_even_windows", "PFI/modules/qbvs_lab/qbvs/tasks.py::task_id", "PFI/modules/qbvs_lab/qbvs/tasks.py::run_task_manifest", "PFI/modules/qbvs_lab/qbvs/tasks.py::quality_gate_decision", "PFI/modules/qbvs_lab/qbvs/tasks.py::run_one_task", "PFI/modules/qbvs_lab/qbvs/tasks.py::aggregate_task_results"]
+    implementation_refs: ["QBVS/qbvs/tasks.py::build_csv_task_manifest", "QBVS/qbvs/tasks.py::build_cache_task_manifest", "QBVS/qbvs/tasks.py::build_cache_pair_task_manifest", "QBVS/qbvs/tasks.py::_select_even_windows", "QBVS/qbvs/tasks.py::task_id", "QBVS/qbvs/tasks.py::run_task_manifest", "QBVS/qbvs/tasks.py::quality_gate_decision", "QBVS/qbvs/tasks.py::run_one_task", "QBVS/qbvs/tasks.py::aggregate_task_results"]
     implementation_fingerprint: "sha256:62a960a91f479a436d9b731f48d34fe17ee913624585c7628df1c1103326738d"
     last_verified_commit: "4cb93442724725c78a453cf18416e641c5d7463f"
     verified_at: "2026-06-24T00:00:00Z"
@@ -455,21 +455,21 @@ formulas:
       - "ASM-001"
       - "ASM-004"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/campaign.py:18"
-      - "PFI/modules/qbvs_lab/qbvs/campaign.py:41"
-      - "PFI/modules/qbvs_lab/qbvs/campaign.py:92"
-      - "PFI/modules/qbvs_lab/qbvs/campaign.py:139"
-      - "PFI/modules/qbvs_lab/qbvs/planning.py:9"
+      - "QBVS/qbvs/campaign.py:18"
+      - "QBVS/qbvs/campaign.py:41"
+      - "QBVS/qbvs/campaign.py:92"
+      - "QBVS/qbvs/campaign.py:139"
+      - "QBVS/qbvs/planning.py:9"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:625"
+      - "QBVS/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:625"
     evidence_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/MODEL_SPEC.md"
+      - "QBVS/docs/governance/MODEL_SPEC.md"
       - "TASK-PFI-B-006"
     unknown_task_ids:
       - "TASK-PFI-B-006"
     semantic_status: "MACHINE_VERIFIED"
-    implementation_refs: ["PFI/modules/qbvs_lab/qbvs/campaign.py::CAMPAIGN_SCHEMA_VERSION", "PFI/modules/qbvs_lab/qbvs/campaign.py::CampaignConfig", "PFI/modules/qbvs_lab/qbvs/campaign.py::PromotionConfig", "PFI/modules/qbvs_lab/qbvs/campaign.py::build_long_run_campaign", "PFI/modules/qbvs_lab/qbvs/campaign.py::verify_long_run_campaign", "PFI/modules/qbvs_lab/qbvs/campaign.py::promote_candidates_from_summary", "PFI/modules/qbvs_lab/qbvs/campaign.py::_build_commands", "PFI/modules/qbvs_lab/qbvs/campaign.py::_build_plan", "PFI/modules/qbvs_lab/qbvs/planning.py::estimate_manifest_budget", "PFI/modules/qbvs_lab/qbvs/planning.py::split_manifest"]
+    implementation_refs: ["QBVS/qbvs/campaign.py::CAMPAIGN_SCHEMA_VERSION", "QBVS/qbvs/campaign.py::CampaignConfig", "QBVS/qbvs/campaign.py::PromotionConfig", "QBVS/qbvs/campaign.py::build_long_run_campaign", "QBVS/qbvs/campaign.py::verify_long_run_campaign", "QBVS/qbvs/campaign.py::promote_candidates_from_summary", "QBVS/qbvs/campaign.py::_build_commands", "QBVS/qbvs/campaign.py::_build_plan", "QBVS/qbvs/planning.py::estimate_manifest_budget", "QBVS/qbvs/planning.py::split_manifest"]
     implementation_fingerprint: "sha256:3f5166ddf6b22406f676863388c988af1dac8cf8c4e3bff142a4ee04339b8ccf"
     last_verified_commit: "94478ef52caecb9d856bf4a0543719f8d50a9645"
     verified_at: "2026-06-21T12:19:34Z"
@@ -503,18 +503,18 @@ formulas:
       - "ASM-001"
       - "ASM-004"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/finalists.py:13"
-      - "PFI/modules/qbvs_lab/qbvs/finalists.py:22"
-      - "PFI/modules/qbvs_lab/qbvs/finalists.py:48"
+      - "QBVS/qbvs/finalists.py:13"
+      - "QBVS/qbvs/finalists.py:22"
+      - "QBVS/qbvs/finalists.py:48"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:912"
+      - "QBVS/tests/test_core.py:912"
     evidence_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/MODEL_SPEC.md"
+      - "QBVS/docs/governance/MODEL_SPEC.md"
       - "TASK-PFI-B-006"
     unknown_task_ids:
       - "TASK-PFI-B-006"
     semantic_status: "MACHINE_VERIFIED"
-    implementation_refs: ["PFI/modules/qbvs_lab/qbvs/finalists.py::FinalistSelectionConfig", "PFI/modules/qbvs_lab/qbvs/finalists.py::select_finalist_strategy_ids", "PFI/modules/qbvs_lab/qbvs/finalists.py::build_finalist_cache_pair_manifest"]
+    implementation_refs: ["QBVS/qbvs/finalists.py::FinalistSelectionConfig", "QBVS/qbvs/finalists.py::select_finalist_strategy_ids", "QBVS/qbvs/finalists.py::build_finalist_cache_pair_manifest"]
     implementation_fingerprint: "sha256:42e545b4526e68e1b23db5497ddcdcd1c4080fe2d0682b003ad3e281729fef2a"
     last_verified_commit: "94478ef52caecb9d856bf4a0543719f8d50a9645"
     verified_at: "2026-06-21T12:19:34Z"
@@ -548,21 +548,21 @@ formulas:
       - "ASM-001"
       - "ASM-002"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/datasources.py:63"
-      - "PFI/modules/qbvs_lab/qbvs/datasources.py:96"
-      - "PFI/modules/qbvs_lab/qbvs/fund_rules.py:14"
-      - "PFI/modules/qbvs_lab/qbvs/fund_rules.py:53"
+      - "QBVS/qbvs/datasources.py:63"
+      - "QBVS/qbvs/datasources.py:96"
+      - "QBVS/qbvs/fund_rules.py:14"
+      - "QBVS/qbvs/fund_rules.py:53"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:572"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:592"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:615"
+      - "QBVS/tests/test_core.py:572"
+      - "QBVS/tests/test_core.py:592"
+      - "QBVS/tests/test_core.py:615"
     evidence_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/MODEL_SPEC.md"
+      - "QBVS/docs/governance/MODEL_SPEC.md"
       - "TASK-PFI-B-007"
     unknown_task_ids:
       - "TASK-PFI-B-007"
     semantic_status: "MACHINE_VERIFIED"
-    implementation_refs: ["PFI/modules/qbvs_lab/qbvs/fund_rules.py::FundTradingRule", "PFI/modules/qbvs_lab/qbvs/fund_rules.py::default_alipay_fund_rule", "PFI/modules/qbvs_lab/qbvs/fund_rules.py::run_fund_target_weight_backtest", "PFI/modules/qbvs_lab/qbvs/fund_rules.py::run_fund_buy_hold", "PFI/modules/qbvs_lab/qbvs/fund_rules.py::validate_fund_strategy", "PFI/modules/qbvs_lab/qbvs/fund_rules.py::validate_fund_universe", "PFI/modules/qbvs_lab/qbvs/fund_rules.py::summarize_fund_results", "PFI/modules/qbvs_lab/qbvs/fund_rules.py::load_fund_rule", "PFI/modules/qbvs_lab/qbvs/fund_rules.py::_release_pending_cash", "PFI/modules/qbvs_lab/qbvs/fund_rules.py::_confirm_pending_buys", "PFI/modules/qbvs_lab/qbvs/fund_rules.py::_sell_lots", "PFI/modules/qbvs_lab/qbvs/datasources.py::cache_alipay_fund_nav", "PFI/modules/qbvs_lab/qbvs/datasources.py::normalize_alipay_fund_nav_csv"]
+    implementation_refs: ["QBVS/qbvs/fund_rules.py::FundTradingRule", "QBVS/qbvs/fund_rules.py::default_alipay_fund_rule", "QBVS/qbvs/fund_rules.py::run_fund_target_weight_backtest", "QBVS/qbvs/fund_rules.py::run_fund_buy_hold", "QBVS/qbvs/fund_rules.py::validate_fund_strategy", "QBVS/qbvs/fund_rules.py::validate_fund_universe", "QBVS/qbvs/fund_rules.py::summarize_fund_results", "QBVS/qbvs/fund_rules.py::load_fund_rule", "QBVS/qbvs/fund_rules.py::_release_pending_cash", "QBVS/qbvs/fund_rules.py::_confirm_pending_buys", "QBVS/qbvs/fund_rules.py::_sell_lots", "QBVS/qbvs/datasources.py::cache_alipay_fund_nav", "QBVS/qbvs/datasources.py::normalize_alipay_fund_nav_csv"]
     implementation_fingerprint: "sha256:0da169591c23b994c8f08c6d664afd9c4317e664f63d4109b80679140677f317"
     last_verified_commit: "94478ef52caecb9d856bf4a0543719f8d50a9645"
     verified_at: "2026-06-21T12:19:34Z"
@@ -596,24 +596,24 @@ formulas:
       - "ASM-001"
       - "ASM-005"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/quantlab_bundle.py:19"
-      - "PFI/modules/qbvs_lab/qbvs/quantlab_bundle.py:27"
-      - "PFI/modules/qbvs_lab/qbvs/quantlab_bundle.py:73"
-      - "PFI/modules/qbvs_lab/qbvs/handshake.py:9"
-      - "PFI/modules/qbvs_lab/qbvs/handshake.py:115"
-      - "PFI/modules/qbvs_lab/qbvs/quantlab_adapter.py:10"
-      - "PFI/modules/qbvs_lab/qbvs/quantlab_adapter.py:53"
+      - "QBVS/qbvs/quantlab_bundle.py:19"
+      - "QBVS/qbvs/quantlab_bundle.py:27"
+      - "QBVS/qbvs/quantlab_bundle.py:73"
+      - "QBVS/qbvs/handshake.py:9"
+      - "QBVS/qbvs/handshake.py:115"
+      - "QBVS/qbvs/quantlab_adapter.py:10"
+      - "QBVS/qbvs/quantlab_adapter.py:53"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:307"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:375"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:681"
+      - "QBVS/tests/test_core.py:307"
+      - "QBVS/tests/test_core.py:375"
+      - "QBVS/tests/test_core.py:681"
     evidence_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/MODEL_SPEC.md"
+      - "QBVS/docs/governance/MODEL_SPEC.md"
       - "TASK-PFI-B-008"
     unknown_task_ids:
       - "TASK-PFI-B-008"
     semantic_status: "MACHINE_VERIFIED"
-    implementation_refs: ["PFI/modules/qbvs_lab/qbvs/quantlab_bundle.py::BUNDLE_SCHEMA_VERSION", "PFI/modules/qbvs_lab/qbvs/quantlab_bundle.py::QuantLabBundleConfig", "PFI/modules/qbvs_lab/qbvs/quantlab_bundle.py::export_quantlab_bundle", "PFI/modules/qbvs_lab/qbvs/quantlab_bundle.py::verify_quantlab_bundle", "PFI/modules/qbvs_lab/qbvs/quantlab_bundle.py::_load_run_artifacts", "PFI/modules/qbvs_lab/qbvs/quantlab_bundle.py::_select_candidates", "PFI/modules/qbvs_lab/qbvs/quantlab_bundle.py::_copy_reports", "PFI/modules/qbvs_lab/qbvs/quantlab_bundle.py::_build_manifest", "PFI/modules/qbvs_lab/qbvs/quantlab_bundle.py::_build_payload", "PFI/modules/qbvs_lab/qbvs/handshake.py::PROTOCOL_VERSION", "PFI/modules/qbvs_lab/qbvs/handshake.py::SYSTEM_NAME", "PFI/modules/qbvs_lab/qbvs/handshake.py::create_handshake_bundle", "PFI/modules/qbvs_lab/qbvs/handshake.py::verify_handshake_ack", "PFI/modules/qbvs_lab/qbvs/quantlab_adapter.py::ADAPTER_PACK_SCHEMA_VERSION", "PFI/modules/qbvs_lab/qbvs/quantlab_adapter.py::QuantLabAdapterPackConfig", "PFI/modules/qbvs_lab/qbvs/quantlab_adapter.py::build_quantlab_adapter_pack", "PFI/modules/qbvs_lab/qbvs/quantlab_adapter.py::verify_quantlab_adapter_pack"]
+    implementation_refs: ["QBVS/qbvs/quantlab_bundle.py::BUNDLE_SCHEMA_VERSION", "QBVS/qbvs/quantlab_bundle.py::QuantLabBundleConfig", "QBVS/qbvs/quantlab_bundle.py::export_quantlab_bundle", "QBVS/qbvs/quantlab_bundle.py::verify_quantlab_bundle", "QBVS/qbvs/quantlab_bundle.py::_load_run_artifacts", "QBVS/qbvs/quantlab_bundle.py::_select_candidates", "QBVS/qbvs/quantlab_bundle.py::_copy_reports", "QBVS/qbvs/quantlab_bundle.py::_build_manifest", "QBVS/qbvs/quantlab_bundle.py::_build_payload", "QBVS/qbvs/handshake.py::PROTOCOL_VERSION", "QBVS/qbvs/handshake.py::SYSTEM_NAME", "QBVS/qbvs/handshake.py::create_handshake_bundle", "QBVS/qbvs/handshake.py::verify_handshake_ack", "QBVS/qbvs/quantlab_adapter.py::ADAPTER_PACK_SCHEMA_VERSION", "QBVS/qbvs/quantlab_adapter.py::QuantLabAdapterPackConfig", "QBVS/qbvs/quantlab_adapter.py::build_quantlab_adapter_pack", "QBVS/qbvs/quantlab_adapter.py::verify_quantlab_adapter_pack"]
     implementation_fingerprint: "sha256:ec68e6b1c27979c8c3214dc6c7b7b276e38014bb85cdf41e361ac4615f74b244"
     last_verified_commit: "94478ef52caecb9d856bf4a0543719f8d50a9645"
     verified_at: "2026-06-21T12:19:34Z"
@@ -648,19 +648,19 @@ formulas:
       - "ASM-004"
       - "ASM-007"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/goal_audit.py:17"
-      - "PFI/modules/qbvs_lab/qbvs/goal_audit.py:26"
-      - "PFI/modules/qbvs_lab/qbvs/goal_audit.py:82"
-      - "PFI/modules/qbvs_lab/qbvs/goal_audit.py:248"
+      - "QBVS/qbvs/goal_audit.py:17"
+      - "QBVS/qbvs/goal_audit.py:26"
+      - "QBVS/qbvs/goal_audit.py:82"
+      - "QBVS/qbvs/goal_audit.py:248"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:701"
+      - "QBVS/tests/test_core.py:701"
     evidence_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/MODEL_SPEC.md"
+      - "QBVS/docs/governance/MODEL_SPEC.md"
       - "TASK-PFI-B-009"
     unknown_task_ids:
       - "TASK-PFI-B-009"
     semantic_status: "MACHINE_VERIFIED"
-    implementation_refs: ["PFI/modules/qbvs_lab/qbvs/goal_audit.py::GoalAuditConfig", "PFI/modules/qbvs_lab/qbvs/goal_audit.py::audit_goal_readiness", "PFI/modules/qbvs_lab/qbvs/goal_audit.py::AuditItem", "PFI/modules/qbvs_lab/qbvs/goal_audit.py::_build_audit_items", "PFI/modules/qbvs_lab/qbvs/goal_audit.py::_read_json", "PFI/modules/qbvs_lab/qbvs/goal_audit.py::_nunique", "PFI/modules/qbvs_lab/qbvs/goal_audit.py::_top_candidate", "PFI/modules/qbvs_lab/qbvs/goal_audit.py::_candidate_passes_floor", "PFI/modules/qbvs_lab/qbvs/goal_audit.py::_candidate_evidence", "PFI/modules/qbvs_lab/qbvs/goal_audit.py::_handshake_accepted", "PFI/modules/qbvs_lab/qbvs/goal_audit.py::_score_items"]
+    implementation_refs: ["QBVS/qbvs/goal_audit.py::GoalAuditConfig", "QBVS/qbvs/goal_audit.py::audit_goal_readiness", "QBVS/qbvs/goal_audit.py::AuditItem", "QBVS/qbvs/goal_audit.py::_build_audit_items", "QBVS/qbvs/goal_audit.py::_read_json", "QBVS/qbvs/goal_audit.py::_nunique", "QBVS/qbvs/goal_audit.py::_top_candidate", "QBVS/qbvs/goal_audit.py::_candidate_passes_floor", "QBVS/qbvs/goal_audit.py::_candidate_evidence", "QBVS/qbvs/goal_audit.py::_handshake_accepted", "QBVS/qbvs/goal_audit.py::_score_items"]
     implementation_fingerprint: "sha256:e70bbcd67a70f2cf0308d42b50132808e4a2e45ce491afa0dfd5c020ee98438f"
     last_verified_commit: "94478ef52caecb9d856bf4a0543719f8d50a9645"
     verified_at: "2026-06-21T12:19:34Z"
@@ -695,23 +695,23 @@ formulas:
       - "ASM-006"
       - "ASM-007"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/universe_seed.py:13"
-      - "PFI/modules/qbvs_lab/qbvs/universe_seed.py:43"
-      - "PFI/modules/qbvs_lab/qbvs/universe_seed.py:55"
-      - "PFI/modules/qbvs_lab/qbvs/datasources.py:32"
-      - "PFI/modules/qbvs_lab/qbvs/moomoo_batch.py:16"
-      - "PFI/modules/qbvs_lab/qbvs/moomoo_batch.py:31"
+      - "QBVS/qbvs/universe_seed.py:13"
+      - "QBVS/qbvs/universe_seed.py:43"
+      - "QBVS/qbvs/universe_seed.py:55"
+      - "QBVS/qbvs/datasources.py:32"
+      - "QBVS/qbvs/moomoo_batch.py:16"
+      - "QBVS/qbvs/moomoo_batch.py:31"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:504"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:772"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:975"
+      - "QBVS/tests/test_core.py:504"
+      - "QBVS/tests/test_core.py:772"
+      - "QBVS/tests/test_core.py:975"
     evidence_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/MODEL_SPEC.md"
+      - "QBVS/docs/governance/MODEL_SPEC.md"
       - "TASK-PFI-B-010"
     unknown_task_ids:
       - "TASK-PFI-B-010"
     semantic_status: "MACHINE_VERIFIED"
-    implementation_refs: ["PFI/modules/qbvs_lab/qbvs/universe_seed.py::SEED_SCHEMA_VERSION", "PFI/modules/qbvs_lab/qbvs/universe_seed.py::build_seed_universe", "PFI/modules/qbvs_lab/qbvs/universe_seed.py::validate_seed_universe", "PFI/modules/qbvs_lab/qbvs/universe_seed.py::build_seed_cache_plan", "PFI/modules/qbvs_lab/qbvs/universe_seed.py::build_seed_yahoo_universe", "PFI/modules/qbvs_lab/qbvs/universe_seed.py::build_seed_yahoo_cache_plan", "PFI/modules/qbvs_lab/qbvs/universe_seed.py::sample_universe_stratified", "PFI/modules/qbvs_lab/qbvs/datasources.py::probe_moomoo_opend", "PFI/modules/qbvs_lab/qbvs/datasources.py::cache_moomoo_history", "PFI/modules/qbvs_lab/qbvs/moomoo_batch.py::MoomooBatchConfig", "PFI/modules/qbvs_lab/qbvs/moomoo_batch.py::cache_moomoo_batch"]
+    implementation_refs: ["QBVS/qbvs/universe_seed.py::SEED_SCHEMA_VERSION", "QBVS/qbvs/universe_seed.py::build_seed_universe", "QBVS/qbvs/universe_seed.py::validate_seed_universe", "QBVS/qbvs/universe_seed.py::build_seed_cache_plan", "QBVS/qbvs/universe_seed.py::build_seed_yahoo_universe", "QBVS/qbvs/universe_seed.py::build_seed_yahoo_cache_plan", "QBVS/qbvs/universe_seed.py::sample_universe_stratified", "QBVS/qbvs/datasources.py::probe_moomoo_opend", "QBVS/qbvs/datasources.py::cache_moomoo_history", "QBVS/qbvs/moomoo_batch.py::MoomooBatchConfig", "QBVS/qbvs/moomoo_batch.py::cache_moomoo_batch"]
     implementation_fingerprint: "sha256:4872792675d4cfcc1912e93aa9fc0169f7348a57dd2a446ea885913cf01659b5"
     last_verified_commit: "94478ef52caecb9d856bf4a0543719f8d50a9645"
     verified_at: "2026-06-21T12:19:34Z"

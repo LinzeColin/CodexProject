@@ -7,6 +7,7 @@ from pfi_v02.stage1_ia import (
     LEGACY_COMPATIBILITY_ENTRY,
     build_stage1_ia_contract,
     primary_entry_labels,
+    v01_compatibility_entry_labels,
 )
 
 
@@ -58,11 +59,20 @@ class Stage1IAContractTest(unittest.TestCase):
         entries = {entry["label"]: entry for entry in build_stage1_ia_contract()["primary_entries"]}
         investment_text = " ".join(entries["投资管理"]["second_level_areas"] + entries["投资管理"]["acceptance_markers"])
 
-        for marker in ["Moomoo", "支付宝基金", "中国券商", "ABC Bullion", "QBVS", "策略实验室", "大数据模拟器"]:
+        for marker in ["Moomoo", "支付宝基金", "中国券商", "ABC Bullion", "策略实验室", "盘感训练", "大数据模拟器"]:
             self.assertIn(marker, investment_text)
-        self.assertEqual(LEGACY_COMPATIBILITY_ENTRY["existing_path"], "PFI/modules/qbvs_lab")
-        self.assertEqual(LEGACY_COMPATIBILITY_ENTRY["current_root"], "PFI")
-        self.assertEqual(LEGACY_COMPATIBILITY_ENTRY["runtime_path"], "PFI/modules/qbvs_lab/qbvs")
+        self.assertNotIn("QBVS", investment_text)
+        self.assertEqual(LEGACY_COMPATIBILITY_ENTRY["existing_path"], "QBVS")
+        self.assertEqual(LEGACY_COMPATIBILITY_ENTRY["current_root"], "CodexProject/QBVS")
+        self.assertEqual(LEGACY_COMPATIBILITY_ENTRY["runtime_path"], "QBVS/qbvs")
+        self.assertIn("independent", LEGACY_COMPATIBILITY_ENTRY["policy"].lower())
+
+    def test_v01_primary_entries_remain_as_compatibility_aliases(self) -> None:
+        self.assertEqual(v01_compatibility_entry_labels(), ("首页", "市场", "研究", "持仓", "策略实验室", "数据与系统"))
+        self.assertEqual(
+            tuple(build_stage1_ia_contract()["v01_compatibility_entries"]),
+            ("首页", "市场", "研究", "持仓", "策略实验室", "数据与系统"),
+        )
 
     def test_consumption_data_recommendation_and_report_entries_cover_stage1_acceptance(self) -> None:
         entries = {entry["label"]: entry for entry in build_stage1_ia_contract()["primary_entries"]}

@@ -34,7 +34,7 @@ Confirmed iterations are not inferred from commit count. The confirmed iteration
 - base commit: 9516776
 - result commit: PENDING
 - task IDs: GOV-BASELINE-001, TASK-PFI-A-001, TASK-PFI-A-002
-- objective: establish first auditable PFI/modules/qbvs_lab governance baseline without changing runtime behavior
+- objective: establish first auditable QBVS governance baseline without changing runtime behavior
 - assumptions: see `model_registry.yaml` ASM-001 through ASM-008
 - files read: README.md, AGENTS.md, HANDOFF.md, BACKUP_MANIFEST.md, integration/handshake contracts, targeted qbvs source and tests, scoped git log
 - files changed: PFI governance docs/registries, README governance entry, VERSION, CHANGELOG; governance/projects.yaml after P13
@@ -46,7 +46,7 @@ Confirmed iterations are not inferred from commit count. The confirmed iteration
 - failures: calibration evidence is unresolved for several heuristic constants and thresholds
 - decisions: use integration contract 0.1.0 as provisional product version; do not create legacy Chinese index files because none existed in this project path
 - remaining risks: large historical run artifacts are intentionally excluded from this governance-only audit; provider/live account checks are not run
-- rollback: remove PFI/modules/qbvs_lab/docs/governance, README governance entry, VERSION, CHANGELOG, and reset governance/projects.yaml PFI_BIG_DATA_SIMULATOR ci_mode to advisory
+- rollback: remove QBVS/docs/governance, README governance entry, VERSION, CHANGELOG, and reset governance/projects.yaml PFI_BIG_DATA_SIMULATOR ci_mode to advisory
 - next step: run P12 validation and then P13 promotion if clean
 
 ### ITER-20260620-PFI-002
@@ -58,13 +58,13 @@ Confirmed iterations are not inferred from commit count. The confirmed iteration
 - base commit: 9516776
 - result commit: PENDING
 - task IDs: TASK-PFI-A-002, TASK-PFI-A-003, TASK-PFI-A-004
-- objective: validate the PFI/modules/qbvs_lab governance baseline and promote the project from advisory to required without runtime behavior changes
+- objective: validate the QBVS governance baseline and promote the project from advisory to required without runtime behavior changes
 - assumptions: governance-only changes do not alter QBVS/PFI model/runtime behavior
 - files read: PFI governance files, focused PFI test module, `governance/projects.yaml`
 - files changed: PFI governance docs/registries and `governance/projects.yaml` PFI_BIG_DATA_SIMULATOR `ci_mode`
 - model changes: documentation-only; no runtime model behavior changed
 - parameter changes: documentation-only; no active runtime parameter values changed
-- commands: `python3 scripts/validate_project_governance.py --project 'PFI/modules/qbvs_lab'`; `PYTHONPATH=. python3 -m pytest tests/test_core.py -q`; `python3 scripts/validate_project_governance.py --all`
+- commands: `python3 scripts/validate_project_governance.py --project 'QBVS'`; `PYTHONPATH=. python3 -m pytest tests/test_core.py -q`; `python3 scripts/validate_project_governance.py --all`
 - test results: project validator exit 0 with errors 0 warnings 0; focused tests exit 0 with 32 passed in 5.76s; all-project validator exit 0 with 17 advisory warnings for EEI and Serenity-Alipay
 - successes: PFI_BIG_DATA_SIMULATOR required validator passed and project was promoted to required
 - failures: no focused test failures in this run
@@ -88,7 +88,7 @@ Confirmed iterations are not inferred from commit count. The confirmed iteration
 - files changed: PFI parameter/formula registries, PFI delivery/version/ledger files, `governance/projects.yaml`, root semantic extractor and focused governance tests
 - model changes: no runtime model behavior changed; formula registry now records machine implementation fingerprints for 15 active formulas
 - parameter changes: no runtime parameter values changed; 211 active parameters now carry machine selectors and 2 parameters remain HUMAN_REVIEW_REQUIRED
-- commands: `python3 scripts/validate_semantic_extractors.py 'PFI/modules/qbvs_lab'`
+- commands: `python3 scripts/validate_semantic_extractors.py 'QBVS'`
 - test results: semantic extractor exit 0 with 211 active parameters and 15 active formulas checked; full validation pending
 - successes: PFI semantic coverage moved from planned to in_progress with evidence-bound machine extraction
 - failures: `PARAM-110` summary_sort_keys and `PARAM-111` cost_rate_transform still require human semantic review
@@ -123,7 +123,7 @@ Confirmed iterations are not inferred from commit count. The confirmed iteration
 
 ## Reconstructed Development Events
 
-Scoped git history reviewed with `git log --max-count=50 -- PFI/modules/qbvs_lab`. Visible path commits are treated as RECONSTRUCTED development events only, not confirmed iterations:
+Scoped git history reviewed with `git log --max-count=50 -- QBVS`. Visible path commits are treated as RECONSTRUCTED development events only, not confirmed iterations:
 
 - 9ce4336 Back up QBVS as PFI big data simulator
 

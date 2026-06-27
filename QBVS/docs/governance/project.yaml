@@ -98,11 +98,11 @@ features:
       - "REQ-PFI-001"
       - "REQ-PFI-002"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:13"
-      - "PFI/modules/qbvs_lab/qbvs/indicators.py:6"
+      - "QBVS/qbvs/strategies.py:13"
+      - "QBVS/qbvs/indicators.py:6"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:61"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:65"
+      - "QBVS/tests/test_core.py:61"
+      - "QBVS/tests/test_core.py:65"
     evidence_refs:
       - "EVID-PFI-TRACEABILITY-MATRIX"
       - "EVID-PFI-ASSURANCE-STATUS"
@@ -244,15 +244,15 @@ features:
       - "REQ-PFI-005"
       - "REQ-PFI-006"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/backtest.py:11"
-      - "PFI/modules/qbvs_lab/qbvs/backtest.py:122"
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:10"
-      - "PFI/modules/qbvs_lab/qbvs/validation.py:33"
+      - "QBVS/qbvs/backtest.py:11"
+      - "QBVS/qbvs/backtest.py:122"
+      - "QBVS/qbvs/simulation.py:10"
+      - "QBVS/qbvs/validation.py:33"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:65"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:84"
+      - "QBVS/tests/test_core.py:65"
+      - "QBVS/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:84"
     evidence_refs:
       - "EVID-PFI-TRACEABILITY-MATRIX"
       - "EVID-PFI-ASSURANCE-STATUS"
@@ -368,13 +368,13 @@ features:
       - "REQ-PFI-008"
       - "REQ-PFI-009"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/fast.py:14"
-      - "PFI/modules/qbvs_lab/qbvs/quality.py:12"
-      - "PFI/modules/qbvs_lab/qbvs/tasks.py:18"
+      - "QBVS/qbvs/fast.py:14"
+      - "QBVS/qbvs/quality.py:12"
+      - "QBVS/qbvs/tasks.py:18"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:359"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:95"
+      - "QBVS/tests/test_core.py:359"
+      - "QBVS/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:95"
     evidence_refs:
       - "EVID-PFI-TRACEABILITY-MATRIX"
       - "EVID-PFI-ASSURANCE-STATUS"
@@ -420,11 +420,11 @@ features:
       - "REQ-PFI-010"
       - "REQ-PFI-011"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/campaign.py:18"
-      - "PFI/modules/qbvs_lab/qbvs/finalists.py:13"
+      - "QBVS/qbvs/campaign.py:18"
+      - "QBVS/qbvs/finalists.py:13"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:912"
+      - "QBVS/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:912"
     evidence_refs:
       - "EVID-PFI-TRACEABILITY-MATRIX"
       - "EVID-PFI-ASSURANCE-STATUS"
@@ -468,11 +468,11 @@ features:
       - "REQ-PFI-012"
       - "REQ-PFI-013"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/datasources.py:63"
-      - "PFI/modules/qbvs_lab/qbvs/quantlab_bundle.py:19"
+      - "QBVS/qbvs/datasources.py:63"
+      - "QBVS/qbvs/quantlab_bundle.py:19"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:572"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:307"
+      - "QBVS/tests/test_core.py:572"
+      - "QBVS/tests/test_core.py:307"
     evidence_refs:
       - "EVID-PFI-TRACEABILITY-MATRIX"
       - "EVID-PFI-ASSURANCE-STATUS"
@@ -516,11 +516,11 @@ features:
       - "REQ-PFI-014"
       - "REQ-PFI-015"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/goal_audit.py:17"
-      - "PFI/modules/qbvs_lab/qbvs/universe_seed.py:13"
+      - "QBVS/qbvs/goal_audit.py:17"
+      - "QBVS/qbvs/universe_seed.py:13"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:701"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:504"
+      - "QBVS/tests/test_core.py:701"
+      - "QBVS/tests/test_core.py:504"
     evidence_refs:
       - "EVID-PFI-TRACEABILITY-MATRIX"
       - "EVID-PFI-ASSURANCE-STATUS"
@@ -572,12 +572,12 @@ models:
       - "PARAM-035"
       - "PARAM-036"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:13"
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:31"
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:77"
+      - "QBVS/qbvs/strategies.py:13"
+      - "QBVS/qbvs/strategies.py:31"
+      - "QBVS/qbvs/strategies.py:77"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:61"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:65"
+      - "QBVS/tests/test_core.py:61"
+      - "QBVS/tests/test_core.py:65"
     evidence_refs:
       - "EVID-PFI-MODEL-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -601,13 +601,13 @@ models:
       - "PARAM-044"
       - "PARAM-045"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/indicators.py:6"
-      - "PFI/modules/qbvs_lab/qbvs/indicators.py:10"
-      - "PFI/modules/qbvs_lab/qbvs/indicators.py:18"
-      - "PFI/modules/qbvs_lab/qbvs/indicators.py:25"
-      - "PFI/modules/qbvs_lab/qbvs/indicators.py:35"
+      - "QBVS/qbvs/indicators.py:6"
+      - "QBVS/qbvs/indicators.py:10"
+      - "QBVS/qbvs/indicators.py:18"
+      - "QBVS/qbvs/indicators.py:25"
+      - "QBVS/qbvs/indicators.py:35"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:65"
+      - "QBVS/tests/test_core.py:65"
     evidence_refs:
       - "EVID-PFI-MODEL-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -633,12 +633,12 @@ models:
       - "PARAM-065"
       - "PARAM-066"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/backtest.py:11"
-      - "PFI/modules/qbvs_lab/qbvs/backtest.py:19"
-      - "PFI/modules/qbvs_lab/qbvs/backtest.py:49"
-      - "PFI/modules/qbvs_lab/qbvs/backtest.py:134"
+      - "QBVS/qbvs/backtest.py:11"
+      - "QBVS/qbvs/backtest.py:19"
+      - "QBVS/qbvs/backtest.py:49"
+      - "QBVS/qbvs/backtest.py:134"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:65"
+      - "QBVS/tests/test_core.py:65"
     evidence_refs:
       - "EVID-PFI-MODEL-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -656,12 +656,12 @@ models:
       - "PARAM-068"
       - "PARAM-069"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/backtest.py:122"
-      - "PFI/modules/qbvs_lab/qbvs/backtest.py:163"
-      - "PFI/modules/qbvs_lab/qbvs/validation.py:133"
+      - "QBVS/qbvs/backtest.py:122"
+      - "QBVS/qbvs/backtest.py:163"
+      - "QBVS/qbvs/validation.py:133"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:625"
+      - "QBVS/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:625"
     evidence_refs:
       - "EVID-PFI-MODEL-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -712,12 +712,12 @@ models:
       - "PARAM-104"
       - "PARAM-105"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:10"
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:17"
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:27"
+      - "QBVS/qbvs/simulation.py:10"
+      - "QBVS/qbvs/simulation.py:17"
+      - "QBVS/qbvs/simulation.py:27"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:84"
+      - "QBVS/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:84"
     evidence_refs:
       - "EVID-PFI-MODEL-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -742,14 +742,14 @@ models:
       - "PARAM-109"
       - "PARAM-110"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/validation.py:33"
-      - "PFI/modules/qbvs_lab/qbvs/validation.py:88"
-      - "PFI/modules/qbvs_lab/qbvs/validation.py:103"
-      - "PFI/modules/qbvs_lab/qbvs/windows.py:19"
-      - "PFI/modules/qbvs_lab/qbvs/windows.py:56"
+      - "QBVS/qbvs/validation.py:33"
+      - "QBVS/qbvs/validation.py:88"
+      - "QBVS/qbvs/validation.py:103"
+      - "QBVS/qbvs/windows.py:19"
+      - "QBVS/qbvs/windows.py:56"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:84"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:95"
+      - "QBVS/tests/test_core.py:84"
+      - "QBVS/tests/test_core.py:95"
     evidence_refs:
       - "EVID-PFI-MODEL-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -772,13 +772,13 @@ models:
       - "PARAM-112"
       - "PARAM-113"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/fast.py:14"
-      - "PFI/modules/qbvs_lab/qbvs/fast.py:25"
-      - "PFI/modules/qbvs_lab/qbvs/fast.py:150"
-      - "PFI/modules/qbvs_lab/qbvs/fast.py:215"
+      - "QBVS/qbvs/fast.py:14"
+      - "QBVS/qbvs/fast.py:25"
+      - "QBVS/qbvs/fast.py:150"
+      - "QBVS/qbvs/fast.py:215"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:359"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:418"
+      - "QBVS/tests/test_core.py:359"
+      - "QBVS/tests/test_core.py:418"
     evidence_refs:
       - "EVID-PFI-MODEL-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -813,13 +813,13 @@ models:
       - "PARAM-132"
       - "PARAM-133"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/quality.py:12"
-      - "PFI/modules/qbvs_lab/qbvs/quality.py:28"
-      - "PFI/modules/qbvs_lab/qbvs/quality.py:94"
-      - "PFI/modules/qbvs_lab/qbvs/quality.py:111"
+      - "QBVS/qbvs/quality.py:12"
+      - "QBVS/qbvs/quality.py:28"
+      - "QBVS/qbvs/quality.py:94"
+      - "QBVS/qbvs/quality.py:111"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:273"
+      - "QBVS/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:273"
     evidence_refs:
       - "EVID-PFI-MODEL-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -843,14 +843,14 @@ models:
       - "PARAM-141"
       - "PARAM-142"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/tasks.py:18"
-      - "PFI/modules/qbvs_lab/qbvs/tasks.py:110"
-      - "PFI/modules/qbvs_lab/qbvs/tasks.py:189"
-      - "PFI/modules/qbvs_lab/qbvs/tasks.py:209"
-      - "PFI/modules/qbvs_lab/qbvs/tasks.py:269"
+      - "QBVS/qbvs/tasks.py:18"
+      - "QBVS/qbvs/tasks.py:110"
+      - "QBVS/qbvs/tasks.py:189"
+      - "QBVS/qbvs/tasks.py:209"
+      - "QBVS/qbvs/tasks.py:269"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:95"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:273"
+      - "QBVS/tests/test_core.py:95"
+      - "QBVS/tests/test_core.py:273"
     evidence_refs:
       - "EVID-PFI-MODEL-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -880,14 +880,14 @@ models:
       - "PARAM-156"
       - "PARAM-157"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/campaign.py:18"
-      - "PFI/modules/qbvs_lab/qbvs/campaign.py:41"
-      - "PFI/modules/qbvs_lab/qbvs/campaign.py:92"
-      - "PFI/modules/qbvs_lab/qbvs/campaign.py:139"
-      - "PFI/modules/qbvs_lab/qbvs/planning.py:9"
+      - "QBVS/qbvs/campaign.py:18"
+      - "QBVS/qbvs/campaign.py:41"
+      - "QBVS/qbvs/campaign.py:92"
+      - "QBVS/qbvs/campaign.py:139"
+      - "QBVS/qbvs/planning.py:9"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:625"
+      - "QBVS/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:625"
     evidence_refs:
       - "EVID-PFI-MODEL-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -912,11 +912,11 @@ models:
       - "PARAM-166"
       - "PARAM-167"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/finalists.py:13"
-      - "PFI/modules/qbvs_lab/qbvs/finalists.py:22"
-      - "PFI/modules/qbvs_lab/qbvs/finalists.py:48"
+      - "QBVS/qbvs/finalists.py:13"
+      - "QBVS/qbvs/finalists.py:22"
+      - "QBVS/qbvs/finalists.py:48"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:912"
+      - "QBVS/tests/test_core.py:912"
     evidence_refs:
       - "EVID-PFI-MODEL-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -945,14 +945,14 @@ models:
       - "PARAM-180"
       - "PARAM-181"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/datasources.py:63"
-      - "PFI/modules/qbvs_lab/qbvs/datasources.py:96"
-      - "PFI/modules/qbvs_lab/qbvs/fund_rules.py:14"
-      - "PFI/modules/qbvs_lab/qbvs/fund_rules.py:53"
+      - "QBVS/qbvs/datasources.py:63"
+      - "QBVS/qbvs/datasources.py:96"
+      - "QBVS/qbvs/fund_rules.py:14"
+      - "QBVS/qbvs/fund_rules.py:53"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:572"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:592"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:615"
+      - "QBVS/tests/test_core.py:572"
+      - "QBVS/tests/test_core.py:592"
+      - "QBVS/tests/test_core.py:615"
     evidence_refs:
       - "EVID-PFI-MODEL-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -976,17 +976,17 @@ models:
       - "PARAM-189"
       - "PARAM-190"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/quantlab_bundle.py:19"
-      - "PFI/modules/qbvs_lab/qbvs/quantlab_bundle.py:27"
-      - "PFI/modules/qbvs_lab/qbvs/quantlab_bundle.py:73"
-      - "PFI/modules/qbvs_lab/qbvs/handshake.py:9"
-      - "PFI/modules/qbvs_lab/qbvs/handshake.py:115"
-      - "PFI/modules/qbvs_lab/qbvs/quantlab_adapter.py:10"
-      - "PFI/modules/qbvs_lab/qbvs/quantlab_adapter.py:53"
+      - "QBVS/qbvs/quantlab_bundle.py:19"
+      - "QBVS/qbvs/quantlab_bundle.py:27"
+      - "QBVS/qbvs/quantlab_bundle.py:73"
+      - "QBVS/qbvs/handshake.py:9"
+      - "QBVS/qbvs/handshake.py:115"
+      - "QBVS/qbvs/quantlab_adapter.py:10"
+      - "QBVS/qbvs/quantlab_adapter.py:53"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:307"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:375"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:681"
+      - "QBVS/tests/test_core.py:307"
+      - "QBVS/tests/test_core.py:375"
+      - "QBVS/tests/test_core.py:681"
     evidence_refs:
       - "EVID-PFI-MODEL-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1011,12 +1011,12 @@ models:
       - "PARAM-199"
       - "PARAM-200"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/goal_audit.py:17"
-      - "PFI/modules/qbvs_lab/qbvs/goal_audit.py:26"
-      - "PFI/modules/qbvs_lab/qbvs/goal_audit.py:82"
-      - "PFI/modules/qbvs_lab/qbvs/goal_audit.py:248"
+      - "QBVS/qbvs/goal_audit.py:17"
+      - "QBVS/qbvs/goal_audit.py:26"
+      - "QBVS/qbvs/goal_audit.py:82"
+      - "QBVS/qbvs/goal_audit.py:248"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:701"
+      - "QBVS/tests/test_core.py:701"
     evidence_refs:
       - "EVID-PFI-MODEL-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1044,16 +1044,16 @@ models:
       - "PARAM-212"
       - "PARAM-213"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/universe_seed.py:13"
-      - "PFI/modules/qbvs_lab/qbvs/universe_seed.py:43"
-      - "PFI/modules/qbvs_lab/qbvs/universe_seed.py:55"
-      - "PFI/modules/qbvs_lab/qbvs/datasources.py:32"
-      - "PFI/modules/qbvs_lab/qbvs/moomoo_batch.py:16"
-      - "PFI/modules/qbvs_lab/qbvs/moomoo_batch.py:31"
+      - "QBVS/qbvs/universe_seed.py:13"
+      - "QBVS/qbvs/universe_seed.py:43"
+      - "QBVS/qbvs/universe_seed.py:55"
+      - "QBVS/qbvs/datasources.py:32"
+      - "QBVS/qbvs/moomoo_batch.py:16"
+      - "QBVS/qbvs/moomoo_batch.py:31"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:504"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:772"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:975"
+      - "QBVS/tests/test_core.py:504"
+      - "QBVS/tests/test_core.py:772"
+      - "QBVS/tests/test_core.py:975"
     evidence_refs:
       - "EVID-PFI-MODEL-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1066,12 +1066,12 @@ formulas:
     semantic_status: "MACHINE_VERIFIED"
     expression: "target_weight starts at base_weight; dip rule may set 1.0; trend rule may set 1.0; sell rule multiplies selected targets by 0.85; risk rules cap target to 0.96 or 0.90; final target is forward-filled and clipped to [0,1]."
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:13"
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:31"
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:77"
+      - "QBVS/qbvs/strategies.py:13"
+      - "QBVS/qbvs/strategies.py:31"
+      - "QBVS/qbvs/strategies.py:77"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:61"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:65"
+      - "QBVS/tests/test_core.py:61"
+      - "QBVS/tests/test_core.py:65"
     evidence_refs:
       - "EVID-PFI-FORMULA-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1083,13 +1083,13 @@ formulas:
     semantic_status: "MACHINE_VERIFIED"
     expression: "SMA is rolling mean; RSI=100-100/(1+avg_gain/avg_loss) with neutral fill 50; Bollinger upper/lower=mid +/- num_std*std; MACD=EMA_fast-EMA_slow with signal EMA; ATR is rolling mean true range."
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/indicators.py:6"
-      - "PFI/modules/qbvs_lab/qbvs/indicators.py:10"
-      - "PFI/modules/qbvs_lab/qbvs/indicators.py:18"
-      - "PFI/modules/qbvs_lab/qbvs/indicators.py:25"
-      - "PFI/modules/qbvs_lab/qbvs/indicators.py:35"
+      - "QBVS/qbvs/indicators.py:6"
+      - "QBVS/qbvs/indicators.py:10"
+      - "QBVS/qbvs/indicators.py:18"
+      - "QBVS/qbvs/indicators.py:25"
+      - "QBVS/qbvs/indicators.py:35"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:65"
+      - "QBVS/tests/test_core.py:65"
     evidence_refs:
       - "EVID-PFI-FORMULA-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1101,12 +1101,12 @@ formulas:
     semantic_status: "MACHINE_VERIFIED"
     expression: "Execution uses previous-day target weight. trade_value=equity_before*target_weight-current_position_value; slip_price=open*(1+side*(slippage_bps+market_impact_bps)/10000); equity=cash+quantity*close; metrics derive total return, annualized return, drawdown, volatility, Sharpe, VaR and CVaR."
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/backtest.py:11"
-      - "PFI/modules/qbvs_lab/qbvs/backtest.py:19"
-      - "PFI/modules/qbvs_lab/qbvs/backtest.py:49"
-      - "PFI/modules/qbvs_lab/qbvs/backtest.py:134"
+      - "QBVS/qbvs/backtest.py:11"
+      - "QBVS/qbvs/backtest.py:19"
+      - "QBVS/qbvs/backtest.py:49"
+      - "QBVS/qbvs/backtest.py:134"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:65"
+      - "QBVS/tests/test_core.py:65"
     evidence_refs:
       - "EVID-PFI-FORMULA-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1118,12 +1118,12 @@ formulas:
     semantic_status: "MACHINE_VERIFIED"
     expression: "total_gap=strategy_total_return-buy_hold_total_return; annualized_gap=strategy_annualized_return-buy_hold_annualized_return; drawdown_improvement=strategy_max_drawdown-buy_hold_max_drawdown; passes when gaps meet configured floors."
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/backtest.py:122"
-      - "PFI/modules/qbvs_lab/qbvs/backtest.py:163"
-      - "PFI/modules/qbvs_lab/qbvs/validation.py:133"
+      - "QBVS/qbvs/backtest.py:122"
+      - "QBVS/qbvs/backtest.py:163"
+      - "QBVS/qbvs/validation.py:133"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:625"
+      - "QBVS/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:625"
     evidence_refs:
       - "EVID-PFI-FORMULA-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1135,12 +1135,12 @@ formulas:
     semantic_status: "MACHINE_VERIFIED"
     expression: "For each path choose regime; daily return=normal(mu,sigma)+jump_mask*normal(jump_mu,jump_sigma), clipped to [-0.35,0.35]; close=start_price*exp(cumulative returns); OHLC generated around close/open."
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:10"
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:17"
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:27"
+      - "QBVS/qbvs/simulation.py:10"
+      - "QBVS/qbvs/simulation.py:17"
+      - "QBVS/qbvs/simulation.py:27"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:84"
+      - "QBVS/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:84"
     evidence_refs:
       - "EVID-PFI-FORMULA-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1152,14 +1152,14 @@ formulas:
     semantic_status: "MACHINE_VERIFIED"
     expression: "Validation runs each strategy and symbol/window, records metrics and errors, then groups by strategy_id and sorts by pass_rate, avg_annualized_gap, avg_drawdown_improvement and avg_total_gap descending."
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/validation.py:33"
-      - "PFI/modules/qbvs_lab/qbvs/validation.py:88"
-      - "PFI/modules/qbvs_lab/qbvs/validation.py:103"
-      - "PFI/modules/qbvs_lab/qbvs/windows.py:19"
-      - "PFI/modules/qbvs_lab/qbvs/windows.py:56"
+      - "QBVS/qbvs/validation.py:33"
+      - "QBVS/qbvs/validation.py:88"
+      - "QBVS/qbvs/validation.py:103"
+      - "QBVS/qbvs/windows.py:19"
+      - "QBVS/qbvs/windows.py:56"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:84"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:95"
+      - "QBVS/tests/test_core.py:84"
+      - "QBVS/tests/test_core.py:95"
     evidence_refs:
       - "EVID-PFI-FORMULA-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1171,13 +1171,13 @@ formulas:
     semantic_status: "MACHINE_VERIFIED"
     expression: "Fast returns use shifted target_weight*close_return minus turnover*(commission_rate+(slippage_bps+market_impact_bps)/10000), cumprod equity, and same comparison floor; benchmark summary reports abs differences versus exact engine."
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/fast.py:14"
-      - "PFI/modules/qbvs_lab/qbvs/fast.py:25"
-      - "PFI/modules/qbvs_lab/qbvs/fast.py:150"
-      - "PFI/modules/qbvs_lab/qbvs/fast.py:215"
+      - "QBVS/qbvs/fast.py:14"
+      - "QBVS/qbvs/fast.py:25"
+      - "QBVS/qbvs/fast.py:150"
+      - "QBVS/qbvs/fast.py:215"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:359"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:418"
+      - "QBVS/tests/test_core.py:359"
+      - "QBVS/tests/test_core.py:418"
     evidence_refs:
       - "EVID-PFI-FORMULA-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1189,13 +1189,13 @@ formulas:
     semantic_status: "MACHINE_VERIFIED"
     expression: "Quality starts at 100 and subtracts penalties for too few bars, missing close, duplicate datetime, non-positive close, extreme daily return and calendar gaps; score is clamped [0,100] and mapped to grade A/B/C/D/F."
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/quality.py:12"
-      - "PFI/modules/qbvs_lab/qbvs/quality.py:28"
-      - "PFI/modules/qbvs_lab/qbvs/quality.py:94"
-      - "PFI/modules/qbvs_lab/qbvs/quality.py:111"
+      - "QBVS/qbvs/quality.py:12"
+      - "QBVS/qbvs/quality.py:28"
+      - "QBVS/qbvs/quality.py:94"
+      - "QBVS/qbvs/quality.py:111"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:273"
+      - "QBVS/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:273"
     evidence_refs:
       - "EVID-PFI-FORMULA-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1207,14 +1207,14 @@ formulas:
     semantic_status: "MACHINE_VERIFIED"
     expression: "task_id is first 24 hex chars of sha256 over source/window/strategy payload; run_task_manifest returns cached if result exists, skipped_quality if quality score is below minimum and skip flag is enabled, otherwise completed or failed."
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/tasks.py:18"
-      - "PFI/modules/qbvs_lab/qbvs/tasks.py:110"
-      - "PFI/modules/qbvs_lab/qbvs/tasks.py:189"
-      - "PFI/modules/qbvs_lab/qbvs/tasks.py:209"
-      - "PFI/modules/qbvs_lab/qbvs/tasks.py:269"
+      - "QBVS/qbvs/tasks.py:18"
+      - "QBVS/qbvs/tasks.py:110"
+      - "QBVS/qbvs/tasks.py:189"
+      - "QBVS/qbvs/tasks.py:209"
+      - "QBVS/qbvs/tasks.py:269"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:95"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:273"
+      - "QBVS/tests/test_core.py:95"
+      - "QBVS/tests/test_core.py:273"
     evidence_refs:
       - "EVID-PFI-FORMULA-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1226,14 +1226,14 @@ formulas:
     semantic_status: "MACHINE_VERIFIED"
     expression: "Campaign splits manifest by chunk_size, estimates total_seconds=tasks*million_test_multiplier*seconds_per_task and wall_seconds=total_seconds/workers, writes manual commands; promotion filters candidate summaries by sample/pass/return/drawdown thresholds."
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/campaign.py:18"
-      - "PFI/modules/qbvs_lab/qbvs/campaign.py:41"
-      - "PFI/modules/qbvs_lab/qbvs/campaign.py:92"
-      - "PFI/modules/qbvs_lab/qbvs/campaign.py:139"
-      - "PFI/modules/qbvs_lab/qbvs/planning.py:9"
+      - "QBVS/qbvs/campaign.py:18"
+      - "QBVS/qbvs/campaign.py:41"
+      - "QBVS/qbvs/campaign.py:92"
+      - "QBVS/qbvs/campaign.py:139"
+      - "QBVS/qbvs/planning.py:9"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:625"
+      - "QBVS/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:625"
     evidence_refs:
       - "EVID-PFI-FORMULA-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1245,11 +1245,11 @@ formulas:
     semantic_status: "MACHINE_VERIFIED"
     expression: "Finalists require samples, pass_rate, avg_total_gap, avg_annualized_gap and avg_drawdown_improvement above thresholds; sorted by pass_rate and gaps; top_n assigned finalist_rank and expanded to cache-pair manifest windows."
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/finalists.py:13"
-      - "PFI/modules/qbvs_lab/qbvs/finalists.py:22"
-      - "PFI/modules/qbvs_lab/qbvs/finalists.py:48"
+      - "QBVS/qbvs/finalists.py:13"
+      - "QBVS/qbvs/finalists.py:22"
+      - "QBVS/qbvs/finalists.py:48"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:912"
+      - "QBVS/tests/test_core.py:912"
     evidence_refs:
       - "EVID-PFI-FORMULA-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1261,14 +1261,14 @@ formulas:
     semantic_status: "MACHINE_VERIFIED"
     expression: "Fund buy subscription invests gross_cash/(1+subscription_fee_rate) after buy_confirmation_days; redemptions sell eligible lots with short/long redemption fee, settle cash after sell_cash_delay_days, and compute normal performance metrics plus fee totals."
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/datasources.py:63"
-      - "PFI/modules/qbvs_lab/qbvs/datasources.py:96"
-      - "PFI/modules/qbvs_lab/qbvs/fund_rules.py:14"
-      - "PFI/modules/qbvs_lab/qbvs/fund_rules.py:53"
+      - "QBVS/qbvs/datasources.py:63"
+      - "QBVS/qbvs/datasources.py:96"
+      - "QBVS/qbvs/fund_rules.py:14"
+      - "QBVS/qbvs/fund_rules.py:53"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:572"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:592"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:615"
+      - "QBVS/tests/test_core.py:572"
+      - "QBVS/tests/test_core.py:592"
+      - "QBVS/tests/test_core.py:615"
     evidence_refs:
       - "EVID-PFI-FORMULA-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1280,17 +1280,17 @@ formulas:
     semantic_status: "MACHINE_VERIFIED"
     expression: "Bundle verification requires manifest/payload/candidate artifacts, schema match, writes_quantlab_database=false, writes_quantlab_source=false, ingestion_mode=external_evidence_only; handshake ACK must match protocol/source/target and accepted=true."
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/quantlab_bundle.py:19"
-      - "PFI/modules/qbvs_lab/qbvs/quantlab_bundle.py:27"
-      - "PFI/modules/qbvs_lab/qbvs/quantlab_bundle.py:73"
-      - "PFI/modules/qbvs_lab/qbvs/handshake.py:9"
-      - "PFI/modules/qbvs_lab/qbvs/handshake.py:115"
-      - "PFI/modules/qbvs_lab/qbvs/quantlab_adapter.py:10"
-      - "PFI/modules/qbvs_lab/qbvs/quantlab_adapter.py:53"
+      - "QBVS/qbvs/quantlab_bundle.py:19"
+      - "QBVS/qbvs/quantlab_bundle.py:27"
+      - "QBVS/qbvs/quantlab_bundle.py:73"
+      - "QBVS/qbvs/handshake.py:9"
+      - "QBVS/qbvs/handshake.py:115"
+      - "QBVS/qbvs/quantlab_adapter.py:10"
+      - "QBVS/qbvs/quantlab_adapter.py:53"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:307"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:375"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:681"
+      - "QBVS/tests/test_core.py:307"
+      - "QBVS/tests/test_core.py:375"
+      - "QBVS/tests/test_core.py:681"
     evidence_refs:
       - "EVID-PFI-FORMULA-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1302,12 +1302,12 @@ formulas:
     semantic_status: "MACHINE_VERIFIED"
     expression: "Goal audit builds requirement items with statuses passed/partial/blocked/missing; readiness_score=sum(status_weight)/item_count where passed=1, partial=0.5, blocked=0.25, missing=0."
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/goal_audit.py:17"
-      - "PFI/modules/qbvs_lab/qbvs/goal_audit.py:26"
-      - "PFI/modules/qbvs_lab/qbvs/goal_audit.py:82"
-      - "PFI/modules/qbvs_lab/qbvs/goal_audit.py:248"
+      - "QBVS/qbvs/goal_audit.py:17"
+      - "QBVS/qbvs/goal_audit.py:26"
+      - "QBVS/qbvs/goal_audit.py:82"
+      - "QBVS/qbvs/goal_audit.py:248"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:701"
+      - "QBVS/tests/test_core.py:701"
     evidence_refs:
       - "EVID-PFI-FORMULA-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1319,16 +1319,16 @@ formulas:
     semantic_status: "MACHINE_VERIFIED"
     expression: "Seed validation requires columns and symbol count, warns on market/asset coverage below thresholds; Moomoo probe is ready only if socket is reachable and futu or moomoo SDK is available; batch cache records success/failure counts without QuantLab writes."
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/universe_seed.py:13"
-      - "PFI/modules/qbvs_lab/qbvs/universe_seed.py:43"
-      - "PFI/modules/qbvs_lab/qbvs/universe_seed.py:55"
-      - "PFI/modules/qbvs_lab/qbvs/datasources.py:32"
-      - "PFI/modules/qbvs_lab/qbvs/moomoo_batch.py:16"
-      - "PFI/modules/qbvs_lab/qbvs/moomoo_batch.py:31"
+      - "QBVS/qbvs/universe_seed.py:13"
+      - "QBVS/qbvs/universe_seed.py:43"
+      - "QBVS/qbvs/universe_seed.py:55"
+      - "QBVS/qbvs/datasources.py:32"
+      - "QBVS/qbvs/moomoo_batch.py:16"
+      - "QBVS/qbvs/moomoo_batch.py:31"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:504"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:772"
-      - "PFI/modules/qbvs_lab/tests/test_core.py:975"
+      - "QBVS/tests/test_core.py:504"
+      - "QBVS/tests/test_core.py:772"
+      - "QBVS/tests/test_core.py:975"
     evidence_refs:
       - "EVID-PFI-FORMULA-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1346,11 +1346,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:31"
+      - "QBVS/qbvs/strategies.py:31"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:61"
+      - "QBVS/tests/test_core.py:61"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1367,11 +1367,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:31"
+      - "QBVS/qbvs/strategies.py:31"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:61"
+      - "QBVS/tests/test_core.py:61"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1388,11 +1388,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:31"
+      - "QBVS/qbvs/strategies.py:31"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:61"
+      - "QBVS/tests/test_core.py:61"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1409,11 +1409,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:31"
+      - "QBVS/qbvs/strategies.py:31"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:61"
+      - "QBVS/tests/test_core.py:61"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1430,11 +1430,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:31"
+      - "QBVS/qbvs/strategies.py:31"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:61"
+      - "QBVS/tests/test_core.py:61"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1451,11 +1451,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:33"
+      - "QBVS/qbvs/strategies.py:33"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:61"
+      - "QBVS/tests/test_core.py:61"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1472,11 +1472,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:33"
+      - "QBVS/qbvs/strategies.py:33"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:61"
+      - "QBVS/tests/test_core.py:61"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1493,11 +1493,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:33"
+      - "QBVS/qbvs/strategies.py:33"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:61"
+      - "QBVS/tests/test_core.py:61"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1514,11 +1514,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:33"
+      - "QBVS/qbvs/strategies.py:33"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:61"
+      - "QBVS/tests/test_core.py:61"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1535,11 +1535,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:33"
+      - "QBVS/qbvs/strategies.py:33"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:61"
+      - "QBVS/tests/test_core.py:61"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1556,11 +1556,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:33"
+      - "QBVS/qbvs/strategies.py:33"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:61"
+      - "QBVS/tests/test_core.py:61"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1577,11 +1577,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:34"
+      - "QBVS/qbvs/strategies.py:34"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:61"
+      - "QBVS/tests/test_core.py:61"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1598,11 +1598,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:34"
+      - "QBVS/qbvs/strategies.py:34"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:61"
+      - "QBVS/tests/test_core.py:61"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1619,11 +1619,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:34"
+      - "QBVS/qbvs/strategies.py:34"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:61"
+      - "QBVS/tests/test_core.py:61"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1640,11 +1640,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:34"
+      - "QBVS/qbvs/strategies.py:34"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:61"
+      - "QBVS/tests/test_core.py:61"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1661,11 +1661,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:35"
+      - "QBVS/qbvs/strategies.py:35"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:61"
+      - "QBVS/tests/test_core.py:61"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1682,11 +1682,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:35"
+      - "QBVS/qbvs/strategies.py:35"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:61"
+      - "QBVS/tests/test_core.py:61"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1703,11 +1703,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:35"
+      - "QBVS/qbvs/strategies.py:35"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:61"
+      - "QBVS/tests/test_core.py:61"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1724,11 +1724,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:35"
+      - "QBVS/qbvs/strategies.py:35"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:61"
+      - "QBVS/tests/test_core.py:61"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1745,11 +1745,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:36"
+      - "QBVS/qbvs/strategies.py:36"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:61"
+      - "QBVS/tests/test_core.py:61"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1766,11 +1766,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:36"
+      - "QBVS/qbvs/strategies.py:36"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:61"
+      - "QBVS/tests/test_core.py:61"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1787,11 +1787,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:36"
+      - "QBVS/qbvs/strategies.py:36"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:61"
+      - "QBVS/tests/test_core.py:61"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1808,11 +1808,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:36"
+      - "QBVS/qbvs/strategies.py:36"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:61"
+      - "QBVS/tests/test_core.py:61"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1829,11 +1829,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:20"
+      - "QBVS/qbvs/strategies.py:20"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:61"
+      - "QBVS/tests/test_core.py:61"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1850,11 +1850,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:21"
+      - "QBVS/qbvs/strategies.py:21"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:61"
+      - "QBVS/tests/test_core.py:61"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1871,11 +1871,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:22"
+      - "QBVS/qbvs/strategies.py:22"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:61"
+      - "QBVS/tests/test_core.py:61"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1892,11 +1892,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:23"
+      - "QBVS/qbvs/strategies.py:23"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:61"
+      - "QBVS/tests/test_core.py:61"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1913,11 +1913,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:24"
+      - "QBVS/qbvs/strategies.py:24"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:61"
+      - "QBVS/tests/test_core.py:61"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1934,11 +1934,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:25"
+      - "QBVS/qbvs/strategies.py:25"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:61"
+      - "QBVS/tests/test_core.py:61"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1955,11 +1955,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:162"
+      - "QBVS/qbvs/strategies.py:162"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:61"
+      - "QBVS/tests/test_core.py:61"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1976,11 +1976,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:176"
+      - "QBVS/qbvs/strategies.py:176"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:61"
+      - "QBVS/tests/test_core.py:61"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -1997,11 +1997,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:179"
+      - "QBVS/qbvs/strategies.py:179"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:61"
+      - "QBVS/tests/test_core.py:61"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2018,11 +2018,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:183"
+      - "QBVS/qbvs/strategies.py:183"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:61"
+      - "QBVS/tests/test_core.py:61"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2039,11 +2039,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:182"
+      - "QBVS/qbvs/strategies.py:182"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:61"
+      - "QBVS/tests/test_core.py:61"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2060,11 +2060,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:175"
+      - "QBVS/qbvs/strategies.py:175"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:61"
+      - "QBVS/tests/test_core.py:61"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2081,11 +2081,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/strategies.py:175"
+      - "QBVS/qbvs/strategies.py:175"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:61"
+      - "QBVS/tests/test_core.py:61"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2102,11 +2102,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/indicators.py:7"
+      - "QBVS/qbvs/indicators.py:7"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:65"
+      - "QBVS/tests/test_core.py:65"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2123,11 +2123,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/indicators.py:10"
+      - "QBVS/qbvs/indicators.py:10"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:65"
+      - "QBVS/tests/test_core.py:65"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2144,11 +2144,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/indicators.py:16"
+      - "QBVS/qbvs/indicators.py:16"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:65"
+      - "QBVS/tests/test_core.py:65"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2165,11 +2165,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/indicators.py:18"
+      - "QBVS/qbvs/indicators.py:18"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:65"
+      - "QBVS/tests/test_core.py:65"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2186,11 +2186,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/indicators.py:18"
+      - "QBVS/qbvs/indicators.py:18"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:65"
+      - "QBVS/tests/test_core.py:65"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2207,11 +2207,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/indicators.py:25"
+      - "QBVS/qbvs/indicators.py:25"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:65"
+      - "QBVS/tests/test_core.py:65"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2228,11 +2228,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/indicators.py:25"
+      - "QBVS/qbvs/indicators.py:25"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:65"
+      - "QBVS/tests/test_core.py:65"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2249,11 +2249,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/indicators.py:25"
+      - "QBVS/qbvs/indicators.py:25"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:65"
+      - "QBVS/tests/test_core.py:65"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2270,11 +2270,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-001"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/indicators.py:35"
+      - "QBVS/qbvs/indicators.py:35"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:65"
+      - "QBVS/tests/test_core.py:65"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2291,11 +2291,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-002"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/backtest.py:12"
+      - "QBVS/qbvs/backtest.py:12"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:65"
+      - "QBVS/tests/test_core.py:65"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2312,11 +2312,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-002"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/backtest.py:13"
+      - "QBVS/qbvs/backtest.py:13"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:65"
+      - "QBVS/tests/test_core.py:65"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2333,11 +2333,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-002"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/backtest.py:14"
+      - "QBVS/qbvs/backtest.py:14"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:65"
+      - "QBVS/tests/test_core.py:65"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2354,11 +2354,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-002"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/backtest.py:15"
+      - "QBVS/qbvs/backtest.py:15"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:65"
+      - "QBVS/tests/test_core.py:65"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2375,11 +2375,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-002"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/backtest.py:16"
+      - "QBVS/qbvs/backtest.py:16"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:65"
+      - "QBVS/tests/test_core.py:65"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2396,11 +2396,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-004"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/fast.py:15"
+      - "QBVS/qbvs/fast.py:15"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:359"
+      - "QBVS/tests/test_core.py:359"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2417,11 +2417,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-004"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/fast.py:16"
+      - "QBVS/qbvs/fast.py:16"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:359"
+      - "QBVS/tests/test_core.py:359"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2438,11 +2438,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-004"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/fast.py:17"
+      - "QBVS/qbvs/fast.py:17"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:359"
+      - "QBVS/tests/test_core.py:359"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2459,11 +2459,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-004"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/fast.py:18"
+      - "QBVS/qbvs/fast.py:18"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:359"
+      - "QBVS/tests/test_core.py:359"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2480,11 +2480,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-004"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/fast.py:19"
+      - "QBVS/qbvs/fast.py:19"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:359"
+      - "QBVS/tests/test_core.py:359"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2501,11 +2501,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-002"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/validation.py:17"
+      - "QBVS/qbvs/validation.py:17"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:84"
+      - "QBVS/tests/test_core.py:84"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2522,11 +2522,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-002"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/validation.py:18"
+      - "QBVS/qbvs/validation.py:18"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:84"
+      - "QBVS/tests/test_core.py:84"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2543,11 +2543,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-002"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/validation.py:19"
+      - "QBVS/qbvs/validation.py:19"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:84"
+      - "QBVS/tests/test_core.py:84"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2564,11 +2564,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-002"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/validation.py:20"
+      - "QBVS/qbvs/validation.py:20"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:84"
+      - "QBVS/tests/test_core.py:84"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2585,11 +2585,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-002"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/validation.py:21"
+      - "QBVS/qbvs/validation.py:21"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:84"
+      - "QBVS/tests/test_core.py:84"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2606,11 +2606,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-002"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/backtest.py:58"
+      - "QBVS/qbvs/backtest.py:58"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:65"
+      - "QBVS/tests/test_core.py:65"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2627,11 +2627,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-002"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/backtest.py:58"
+      - "QBVS/qbvs/backtest.py:58"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:65"
+      - "QBVS/tests/test_core.py:65"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2648,11 +2648,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-002"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/backtest.py:45"
+      - "QBVS/qbvs/backtest.py:45"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:65"
+      - "QBVS/tests/test_core.py:65"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2669,11 +2669,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-002"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/backtest.py:75"
+      - "QBVS/qbvs/backtest.py:75"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:65"
+      - "QBVS/tests/test_core.py:65"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2690,11 +2690,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-002"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/backtest.py:146"
+      - "QBVS/qbvs/backtest.py:146"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:65"
+      - "QBVS/tests/test_core.py:65"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2711,11 +2711,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-002"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/backtest.py:147"
+      - "QBVS/qbvs/backtest.py:147"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:65"
+      - "QBVS/tests/test_core.py:65"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2732,11 +2732,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-002"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/backtest.py:170"
+      - "QBVS/qbvs/backtest.py:170"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:76"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2753,11 +2753,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-002"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/backtest.py:170"
+      - "QBVS/qbvs/backtest.py:170"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:76"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2774,11 +2774,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-002"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/backtest.py:170"
+      - "QBVS/qbvs/backtest.py:170"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:76"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2795,11 +2795,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-003"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:11"
+      - "QBVS/qbvs/simulation.py:11"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:76"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2816,11 +2816,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-003"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:12"
+      - "QBVS/qbvs/simulation.py:12"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:76"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2837,11 +2837,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-003"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:13"
+      - "QBVS/qbvs/simulation.py:13"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:76"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2858,11 +2858,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-003"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:14"
+      - "QBVS/qbvs/simulation.py:14"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:76"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2879,11 +2879,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-003"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:39"
+      - "QBVS/qbvs/simulation.py:39"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:76"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2900,11 +2900,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-003"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:39"
+      - "QBVS/qbvs/simulation.py:39"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:76"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2921,11 +2921,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-003"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:17"
+      - "QBVS/qbvs/simulation.py:17"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:76"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2942,11 +2942,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-003"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:17"
+      - "QBVS/qbvs/simulation.py:17"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:76"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2963,11 +2963,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-003"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:17"
+      - "QBVS/qbvs/simulation.py:17"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:76"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -2984,11 +2984,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-003"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:17"
+      - "QBVS/qbvs/simulation.py:17"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:76"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3005,11 +3005,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-003"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:17"
+      - "QBVS/qbvs/simulation.py:17"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:76"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3026,11 +3026,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-003"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:17"
+      - "QBVS/qbvs/simulation.py:17"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:76"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3047,11 +3047,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-003"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:17"
+      - "QBVS/qbvs/simulation.py:17"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:76"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3068,11 +3068,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-003"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:17"
+      - "QBVS/qbvs/simulation.py:17"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:76"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3089,11 +3089,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-003"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:17"
+      - "QBVS/qbvs/simulation.py:17"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:76"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3110,11 +3110,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-003"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:17"
+      - "QBVS/qbvs/simulation.py:17"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:76"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3131,11 +3131,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-003"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:17"
+      - "QBVS/qbvs/simulation.py:17"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:76"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3152,11 +3152,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-003"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:17"
+      - "QBVS/qbvs/simulation.py:17"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:76"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3173,11 +3173,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-003"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:17"
+      - "QBVS/qbvs/simulation.py:17"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:76"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3194,11 +3194,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-003"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:17"
+      - "QBVS/qbvs/simulation.py:17"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:76"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3215,11 +3215,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-003"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:17"
+      - "QBVS/qbvs/simulation.py:17"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:76"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3236,11 +3236,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-003"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:17"
+      - "QBVS/qbvs/simulation.py:17"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:76"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3257,11 +3257,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-003"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:17"
+      - "QBVS/qbvs/simulation.py:17"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:76"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3278,11 +3278,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-003"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:17"
+      - "QBVS/qbvs/simulation.py:17"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:76"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3299,11 +3299,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-003"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:17"
+      - "QBVS/qbvs/simulation.py:17"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:76"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3320,11 +3320,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-003"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:17"
+      - "QBVS/qbvs/simulation.py:17"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:76"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3341,11 +3341,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-003"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:17"
+      - "QBVS/qbvs/simulation.py:17"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:76"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3362,11 +3362,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-003"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:17"
+      - "QBVS/qbvs/simulation.py:17"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:76"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3383,11 +3383,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-003"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:17"
+      - "QBVS/qbvs/simulation.py:17"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:76"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3404,11 +3404,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-003"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:17"
+      - "QBVS/qbvs/simulation.py:17"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:76"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3425,11 +3425,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-003"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:17"
+      - "QBVS/qbvs/simulation.py:17"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:76"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3446,11 +3446,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-003"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:17"
+      - "QBVS/qbvs/simulation.py:17"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:76"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3467,11 +3467,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-003"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:17"
+      - "QBVS/qbvs/simulation.py:17"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:76"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3488,11 +3488,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-003"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:17"
+      - "QBVS/qbvs/simulation.py:17"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:76"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3509,11 +3509,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-003"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:17"
+      - "QBVS/qbvs/simulation.py:17"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:76"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3530,11 +3530,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-003"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/simulation.py:17"
+      - "QBVS/qbvs/simulation.py:17"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:76"
+      - "QBVS/tests/test_core.py:76"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3551,11 +3551,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-002"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/validation.py:91"
+      - "QBVS/qbvs/validation.py:91"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:84"
+      - "QBVS/tests/test_core.py:84"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3572,11 +3572,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-002"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/validation.py:92"
+      - "QBVS/qbvs/validation.py:92"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:84"
+      - "QBVS/tests/test_core.py:84"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3593,11 +3593,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-002"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/validation.py:93"
+      - "QBVS/qbvs/validation.py:93"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:84"
+      - "QBVS/tests/test_core.py:84"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3614,11 +3614,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-002"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/validation.py:107"
+      - "QBVS/qbvs/validation.py:107"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:84"
+      - "QBVS/tests/test_core.py:84"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3635,11 +3635,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-002"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/validation.py:158"
+      - "QBVS/qbvs/validation.py:158"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:84"
+      - "QBVS/tests/test_core.py:84"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3656,11 +3656,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-004"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/fast.py:40"
+      - "QBVS/qbvs/fast.py:40"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:359"
+      - "QBVS/tests/test_core.py:359"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3677,11 +3677,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-004"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/fast.py:41"
+      - "QBVS/qbvs/fast.py:41"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:359"
+      - "QBVS/tests/test_core.py:359"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3698,11 +3698,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-004"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/fast.py:222"
+      - "QBVS/qbvs/fast.py:222"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:359"
+      - "QBVS/tests/test_core.py:359"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3719,11 +3719,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-005"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/quality.py:28"
+      - "QBVS/qbvs/quality.py:28"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:219"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3740,11 +3740,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-005"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/quality.py:48"
+      - "QBVS/qbvs/quality.py:48"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:219"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3761,11 +3761,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-005"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/quality.py:50"
+      - "QBVS/qbvs/quality.py:50"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:219"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3782,11 +3782,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-005"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/quality.py:51"
+      - "QBVS/qbvs/quality.py:51"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:219"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3803,11 +3803,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-005"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/quality.py:53"
+      - "QBVS/qbvs/quality.py:53"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:219"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3824,11 +3824,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-005"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/quality.py:56"
+      - "QBVS/qbvs/quality.py:56"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:219"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3845,11 +3845,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-005"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/quality.py:59"
+      - "QBVS/qbvs/quality.py:59"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:219"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3866,11 +3866,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-005"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/quality.py:59"
+      - "QBVS/qbvs/quality.py:59"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:219"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3887,11 +3887,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-005"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/quality.py:62"
+      - "QBVS/qbvs/quality.py:62"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:219"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3908,11 +3908,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-005"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/quality.py:62"
+      - "QBVS/qbvs/quality.py:62"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:219"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3929,11 +3929,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-005"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/quality.py:63"
+      - "QBVS/qbvs/quality.py:63"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:219"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3950,11 +3950,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-005"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/quality.py:65"
+      - "QBVS/qbvs/quality.py:65"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:219"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3971,11 +3971,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-005"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/quality.py:66"
+      - "QBVS/qbvs/quality.py:66"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:219"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -3992,11 +3992,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-005"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/quality.py:68"
+      - "QBVS/qbvs/quality.py:68"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:219"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4013,11 +4013,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-005"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/quality.py:69"
+      - "QBVS/qbvs/quality.py:69"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:219"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4034,11 +4034,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-005"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/quality.py:71"
+      - "QBVS/qbvs/quality.py:71"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:219"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4055,11 +4055,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-005"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/quality.py:146"
+      - "QBVS/qbvs/quality.py:146"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:219"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4076,11 +4076,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-005"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/quality.py:148"
+      - "QBVS/qbvs/quality.py:148"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:219"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4097,11 +4097,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-005"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/quality.py:150"
+      - "QBVS/qbvs/quality.py:150"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:219"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4118,11 +4118,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-005"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/quality.py:152"
+      - "QBVS/qbvs/quality.py:152"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:219"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4139,11 +4139,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-005"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/tasks.py:24"
+      - "QBVS/qbvs/tasks.py:24"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:95"
+      - "QBVS/tests/test_core.py:95"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4160,11 +4160,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-005"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/tasks.py:25"
+      - "QBVS/qbvs/tasks.py:25"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:95"
+      - "QBVS/tests/test_core.py:95"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4181,11 +4181,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-005"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/tasks.py:26"
+      - "QBVS/qbvs/tasks.py:26"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:95"
+      - "QBVS/tests/test_core.py:95"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4202,11 +4202,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-005"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/tasks.py:115"
+      - "QBVS/qbvs/tasks.py:115"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:95"
+      - "QBVS/tests/test_core.py:95"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4223,11 +4223,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-005"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/tasks.py:118"
+      - "QBVS/qbvs/tasks.py:118"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:95"
+      - "QBVS/tests/test_core.py:95"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4244,11 +4244,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-005"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/tasks.py:205"
+      - "QBVS/qbvs/tasks.py:205"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:95"
+      - "QBVS/tests/test_core.py:95"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4265,11 +4265,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-005"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/tasks.py:214"
+      - "QBVS/qbvs/tasks.py:214"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:95"
+      - "QBVS/tests/test_core.py:95"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4286,11 +4286,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-005"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/tasks.py:216"
+      - "QBVS/qbvs/tasks.py:216"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:95"
+      - "QBVS/tests/test_core.py:95"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4307,11 +4307,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-005"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/tasks.py:215"
+      - "QBVS/qbvs/tasks.py:215"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:95"
+      - "QBVS/tests/test_core.py:95"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4328,11 +4328,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-006"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/campaign.py:19"
+      - "QBVS/qbvs/campaign.py:19"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:219"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4349,11 +4349,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-006"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/campaign.py:20"
+      - "QBVS/qbvs/campaign.py:20"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:219"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4370,11 +4370,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-006"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/campaign.py:21"
+      - "QBVS/qbvs/campaign.py:21"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:219"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4391,11 +4391,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-006"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/campaign.py:22"
+      - "QBVS/qbvs/campaign.py:22"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:219"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4412,11 +4412,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-006"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/campaign.py:23"
+      - "QBVS/qbvs/campaign.py:23"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:219"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4433,11 +4433,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-006"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/campaign.py:24"
+      - "QBVS/qbvs/campaign.py:24"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:219"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4454,11 +4454,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-006"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/campaign.py:25"
+      - "QBVS/qbvs/campaign.py:25"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:219"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4475,11 +4475,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-006"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/campaign.py:26"
+      - "QBVS/qbvs/campaign.py:26"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:219"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4496,11 +4496,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-006"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/campaign.py:27"
+      - "QBVS/qbvs/campaign.py:27"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:219"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4517,11 +4517,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-006"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/campaign.py:33"
+      - "QBVS/qbvs/campaign.py:33"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:219"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4538,11 +4538,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-006"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/campaign.py:34"
+      - "QBVS/qbvs/campaign.py:34"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:219"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4559,11 +4559,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-006"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/campaign.py:35"
+      - "QBVS/qbvs/campaign.py:35"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:219"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4580,11 +4580,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-006"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/campaign.py:36"
+      - "QBVS/qbvs/campaign.py:36"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:219"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4601,11 +4601,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-006"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/campaign.py:37"
+      - "QBVS/qbvs/campaign.py:37"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:219"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4622,11 +4622,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-006"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/campaign.py:38"
+      - "QBVS/qbvs/campaign.py:38"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:219"
+      - "QBVS/tests/test_core.py:219"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4643,11 +4643,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-006"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/finalists.py:14"
+      - "QBVS/qbvs/finalists.py:14"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:912"
+      - "QBVS/tests/test_core.py:912"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4664,11 +4664,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-006"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/finalists.py:15"
+      - "QBVS/qbvs/finalists.py:15"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:912"
+      - "QBVS/tests/test_core.py:912"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4685,11 +4685,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-006"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/finalists.py:16"
+      - "QBVS/qbvs/finalists.py:16"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:912"
+      - "QBVS/tests/test_core.py:912"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4706,11 +4706,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-006"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/finalists.py:17"
+      - "QBVS/qbvs/finalists.py:17"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:912"
+      - "QBVS/tests/test_core.py:912"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4727,11 +4727,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-006"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/finalists.py:18"
+      - "QBVS/qbvs/finalists.py:18"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:912"
+      - "QBVS/tests/test_core.py:912"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4748,11 +4748,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-006"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/finalists.py:19"
+      - "QBVS/qbvs/finalists.py:19"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:912"
+      - "QBVS/tests/test_core.py:912"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4769,11 +4769,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-006"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/finalists.py:54"
+      - "QBVS/qbvs/finalists.py:54"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:912"
+      - "QBVS/tests/test_core.py:912"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4790,11 +4790,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-006"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/finalists.py:55"
+      - "QBVS/qbvs/finalists.py:55"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:912"
+      - "QBVS/tests/test_core.py:912"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4811,11 +4811,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-006"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/finalists.py:56"
+      - "QBVS/qbvs/finalists.py:56"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:912"
+      - "QBVS/tests/test_core.py:912"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4832,11 +4832,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-006"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/finalists.py:58"
+      - "QBVS/qbvs/finalists.py:58"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:912"
+      - "QBVS/tests/test_core.py:912"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4853,11 +4853,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-007"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/fund_rules.py:15"
+      - "QBVS/qbvs/fund_rules.py:15"
     config_refs:
-      - "PFI/modules/qbvs_lab/config/alipay_fund_rule_template.json"
+      - "QBVS/config/alipay_fund_rule_template.json"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:572"
+      - "QBVS/tests/test_core.py:572"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4874,11 +4874,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-007"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/fund_rules.py:16"
+      - "QBVS/qbvs/fund_rules.py:16"
     config_refs:
-      - "PFI/modules/qbvs_lab/config/alipay_fund_rule_template.json"
+      - "QBVS/config/alipay_fund_rule_template.json"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:572"
+      - "QBVS/tests/test_core.py:572"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4895,11 +4895,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-007"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/fund_rules.py:17"
+      - "QBVS/qbvs/fund_rules.py:17"
     config_refs:
-      - "PFI/modules/qbvs_lab/config/alipay_fund_rule_template.json"
+      - "QBVS/config/alipay_fund_rule_template.json"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:572"
+      - "QBVS/tests/test_core.py:572"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4916,11 +4916,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-007"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/fund_rules.py:18"
+      - "QBVS/qbvs/fund_rules.py:18"
     config_refs:
-      - "PFI/modules/qbvs_lab/config/alipay_fund_rule_template.json"
+      - "QBVS/config/alipay_fund_rule_template.json"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:572"
+      - "QBVS/tests/test_core.py:572"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4937,11 +4937,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-007"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/fund_rules.py:19"
+      - "QBVS/qbvs/fund_rules.py:19"
     config_refs:
-      - "PFI/modules/qbvs_lab/config/alipay_fund_rule_template.json"
+      - "QBVS/config/alipay_fund_rule_template.json"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:572"
+      - "QBVS/tests/test_core.py:572"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4958,11 +4958,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-007"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/fund_rules.py:20"
+      - "QBVS/qbvs/fund_rules.py:20"
     config_refs:
-      - "PFI/modules/qbvs_lab/config/alipay_fund_rule_template.json"
+      - "QBVS/config/alipay_fund_rule_template.json"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:572"
+      - "QBVS/tests/test_core.py:572"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -4979,11 +4979,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-007"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/fund_rules.py:21"
+      - "QBVS/qbvs/fund_rules.py:21"
     config_refs:
-      - "PFI/modules/qbvs_lab/config/alipay_fund_rule_template.json"
+      - "QBVS/config/alipay_fund_rule_template.json"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:572"
+      - "QBVS/tests/test_core.py:572"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -5000,11 +5000,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-007"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/fund_rules.py:22"
+      - "QBVS/qbvs/fund_rules.py:22"
     config_refs:
-      - "PFI/modules/qbvs_lab/config/alipay_fund_rule_template.json"
+      - "QBVS/config/alipay_fund_rule_template.json"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:572"
+      - "QBVS/tests/test_core.py:572"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -5021,11 +5021,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-007"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/fund_rules.py:23"
+      - "QBVS/qbvs/fund_rules.py:23"
     config_refs:
-      - "PFI/modules/qbvs_lab/config/alipay_fund_rule_template.json"
+      - "QBVS/config/alipay_fund_rule_template.json"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:572"
+      - "QBVS/tests/test_core.py:572"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -5042,11 +5042,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-007"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/datasources.py:68"
+      - "QBVS/qbvs/datasources.py:68"
     config_refs:
-      - "PFI/modules/qbvs_lab/config/alipay_fund_rule_template.json"
+      - "QBVS/config/alipay_fund_rule_template.json"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:572"
+      - "QBVS/tests/test_core.py:572"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -5063,11 +5063,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-007"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/datasources.py:69"
+      - "QBVS/qbvs/datasources.py:69"
     config_refs:
-      - "PFI/modules/qbvs_lab/config/alipay_fund_rule_template.json"
+      - "QBVS/config/alipay_fund_rule_template.json"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:572"
+      - "QBVS/tests/test_core.py:572"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -5084,11 +5084,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-007"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/datasources.py:70"
+      - "QBVS/qbvs/datasources.py:70"
     config_refs:
-      - "PFI/modules/qbvs_lab/config/alipay_fund_rule_template.json"
+      - "QBVS/config/alipay_fund_rule_template.json"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:572"
+      - "QBVS/tests/test_core.py:572"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -5105,11 +5105,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-007"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/datasources.py:71"
+      - "QBVS/qbvs/datasources.py:71"
     config_refs:
-      - "PFI/modules/qbvs_lab/config/alipay_fund_rule_template.json"
+      - "QBVS/config/alipay_fund_rule_template.json"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:572"
+      - "QBVS/tests/test_core.py:572"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -5126,11 +5126,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-007"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/datasources.py:72"
+      - "QBVS/qbvs/datasources.py:72"
     config_refs:
-      - "PFI/modules/qbvs_lab/config/alipay_fund_rule_template.json"
+      - "QBVS/config/alipay_fund_rule_template.json"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:572"
+      - "QBVS/tests/test_core.py:572"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -5147,11 +5147,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-008"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/quantlab_bundle.py:20"
+      - "QBVS/qbvs/quantlab_bundle.py:20"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:307"
+      - "QBVS/tests/test_core.py:307"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -5168,11 +5168,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-008"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/quantlab_bundle.py:21"
+      - "QBVS/qbvs/quantlab_bundle.py:21"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:307"
+      - "QBVS/tests/test_core.py:307"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -5189,11 +5189,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-008"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/quantlab_bundle.py:22"
+      - "QBVS/qbvs/quantlab_bundle.py:22"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:307"
+      - "QBVS/tests/test_core.py:307"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -5210,11 +5210,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-008"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/quantlab_bundle.py:23"
+      - "QBVS/qbvs/quantlab_bundle.py:23"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:307"
+      - "QBVS/tests/test_core.py:307"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -5231,11 +5231,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-008"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/quantlab_bundle.py:24"
+      - "QBVS/qbvs/quantlab_bundle.py:24"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:307"
+      - "QBVS/tests/test_core.py:307"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -5252,11 +5252,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-008"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/quantlab_bundle.py:15"
+      - "QBVS/qbvs/quantlab_bundle.py:15"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:307"
+      - "QBVS/tests/test_core.py:307"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -5273,11 +5273,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-008"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/handshake.py:9"
+      - "QBVS/qbvs/handshake.py:9"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:307"
+      - "QBVS/tests/test_core.py:307"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -5294,11 +5294,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-008"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/handshake.py:10"
+      - "QBVS/qbvs/handshake.py:10"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:307"
+      - "QBVS/tests/test_core.py:307"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -5315,11 +5315,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-008"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/quantlab_adapter.py:10"
+      - "QBVS/qbvs/quantlab_adapter.py:10"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:307"
+      - "QBVS/tests/test_core.py:307"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -5336,11 +5336,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-009"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/goal_audit.py:18"
+      - "QBVS/qbvs/goal_audit.py:18"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:701"
+      - "QBVS/tests/test_core.py:701"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -5357,11 +5357,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-009"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/goal_audit.py:19"
+      - "QBVS/qbvs/goal_audit.py:19"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:701"
+      - "QBVS/tests/test_core.py:701"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -5378,11 +5378,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-009"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/goal_audit.py:20"
+      - "QBVS/qbvs/goal_audit.py:20"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:701"
+      - "QBVS/tests/test_core.py:701"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -5399,11 +5399,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-009"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/goal_audit.py:21"
+      - "QBVS/qbvs/goal_audit.py:21"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:701"
+      - "QBVS/tests/test_core.py:701"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -5420,11 +5420,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-009"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/goal_audit.py:22"
+      - "QBVS/qbvs/goal_audit.py:22"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:701"
+      - "QBVS/tests/test_core.py:701"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -5441,11 +5441,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-009"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/goal_audit.py:23"
+      - "QBVS/qbvs/goal_audit.py:23"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:701"
+      - "QBVS/tests/test_core.py:701"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -5462,11 +5462,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-009"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/goal_audit.py:249"
+      - "QBVS/qbvs/goal_audit.py:249"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:701"
+      - "QBVS/tests/test_core.py:701"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -5483,11 +5483,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-009"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/goal_audit.py:249"
+      - "QBVS/qbvs/goal_audit.py:249"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:701"
+      - "QBVS/tests/test_core.py:701"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -5504,11 +5504,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-009"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/goal_audit.py:249"
+      - "QBVS/qbvs/goal_audit.py:249"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:701"
+      - "QBVS/tests/test_core.py:701"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -5525,11 +5525,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-009"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/goal_audit.py:249"
+      - "QBVS/qbvs/goal_audit.py:249"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:701"
+      - "QBVS/tests/test_core.py:701"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -5546,11 +5546,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-010"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/universe_seed.py:43"
+      - "QBVS/qbvs/universe_seed.py:43"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:504"
+      - "QBVS/tests/test_core.py:504"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -5567,11 +5567,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-010"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/universe_seed.py:55"
+      - "QBVS/qbvs/universe_seed.py:55"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:504"
+      - "QBVS/tests/test_core.py:504"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -5588,11 +5588,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-010"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/universe_seed.py:80"
+      - "QBVS/qbvs/universe_seed.py:80"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:504"
+      - "QBVS/tests/test_core.py:504"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -5609,11 +5609,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-010"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/universe_seed.py:82"
+      - "QBVS/qbvs/universe_seed.py:82"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:504"
+      - "QBVS/tests/test_core.py:504"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -5630,11 +5630,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-010"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/universe_seed.py:106"
+      - "QBVS/qbvs/universe_seed.py:106"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:504"
+      - "QBVS/tests/test_core.py:504"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -5651,11 +5651,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-010"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/universe_seed.py:107"
+      - "QBVS/qbvs/universe_seed.py:107"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:504"
+      - "QBVS/tests/test_core.py:504"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -5672,11 +5672,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-010"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/universe_seed.py:242"
+      - "QBVS/qbvs/universe_seed.py:242"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:504"
+      - "QBVS/tests/test_core.py:504"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -5693,11 +5693,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-010"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/datasources.py:32"
+      - "QBVS/qbvs/datasources.py:32"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:504"
+      - "QBVS/tests/test_core.py:504"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -5714,11 +5714,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-010"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/datasources.py:32"
+      - "QBVS/qbvs/datasources.py:32"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:504"
+      - "QBVS/tests/test_core.py:504"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -5735,11 +5735,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-010"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/datasources.py:32"
+      - "QBVS/qbvs/datasources.py:32"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:504"
+      - "QBVS/tests/test_core.py:504"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -5756,11 +5756,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-010"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/datasources.py:132"
+      - "QBVS/qbvs/datasources.py:132"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:504"
+      - "QBVS/tests/test_core.py:504"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -5777,11 +5777,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-010"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/datasources.py:133"
+      - "QBVS/qbvs/datasources.py:133"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:504"
+      - "QBVS/tests/test_core.py:504"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -5798,11 +5798,11 @@ parameters:
     unknown_task_ids:
       - "TASK-PFI-B-010"
     code_refs:
-      - "PFI/modules/qbvs_lab/qbvs/moomoo_batch.py:23"
+      - "QBVS/qbvs/moomoo_batch.py:23"
     config_refs:
-      - "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+      - "QBVS/docs/governance/parameter_registry.csv"
     test_refs:
-      - "PFI/modules/qbvs_lab/tests/test_core.py:504"
+      - "QBVS/tests/test_core.py:504"
     evidence_refs:
       - "EVID-PFI-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-PFI-MANIFEST"
@@ -5895,42 +5895,42 @@ evidence_refs:
   -
     evidence_id: "EVID-PFI-MODEL-REGISTRY"
     kind: "file"
-    ref: "PFI/modules/qbvs_lab/docs/governance/model_registry.yaml"
+    ref: "QBVS/docs/governance/model_registry.yaml"
     fact_level: "EXTRACTED"
   -
     evidence_id: "EVID-PFI-FORMULA-REGISTRY"
     kind: "file"
-    ref: "PFI/modules/qbvs_lab/docs/governance/formula_registry.yaml"
+    ref: "QBVS/docs/governance/formula_registry.yaml"
     fact_level: "EXTRACTED"
   -
     evidence_id: "EVID-PFI-PARAMETER-REGISTRY"
     kind: "file"
-    ref: "PFI/modules/qbvs_lab/docs/governance/parameter_registry.csv"
+    ref: "QBVS/docs/governance/parameter_registry.csv"
     fact_level: "EXTRACTED"
   -
     evidence_id: "EVID-PFI-TRACEABILITY-MATRIX"
     kind: "file"
-    ref: "PFI/modules/qbvs_lab/docs/governance/TRACEABILITY_MATRIX.csv"
+    ref: "QBVS/docs/governance/TRACEABILITY_MATRIX.csv"
     fact_level: "EXTRACTED"
   -
     evidence_id: "EVID-PFI-ASSURANCE-STATUS"
     kind: "file"
-    ref: "PFI/modules/qbvs_lab/docs/governance/ASSURANCE_STATUS.yaml"
+    ref: "QBVS/docs/governance/ASSURANCE_STATUS.yaml"
     fact_level: "EXTRACTED"
   -
     evidence_id: "EVID-PFI-DELIVERY-TASKS"
     kind: "file"
-    ref: "PFI/modules/qbvs_lab/docs/governance/delivery_tasks.yaml"
+    ref: "QBVS/docs/governance/delivery_tasks.yaml"
     fact_level: "EXTRACTED"
   -
     evidence_id: "EVID-PFI-DEVELOPMENT-EVENTS"
     kind: "file"
-    ref: "PFI/modules/qbvs_lab/docs/governance/development_events.jsonl"
+    ref: "QBVS/docs/governance/development_events.jsonl"
     fact_level: "RECONSTRUCTED"
   -
     evidence_id: "EVID-PFI-OWNER-STATUS"
     kind: "file"
-    ref: "PFI/modules/qbvs_lab/docs/governance/OWNER_STATUS.md"
+    ref: "QBVS/docs/governance/OWNER_STATUS.md"
     fact_level: "EXTRACTED"
   -
     evidence_id: "EVID-SEMANTIC-PFI-MANIFEST"

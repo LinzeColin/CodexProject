@@ -67,7 +67,7 @@ PFI remains UNVERIFIED and cannot support strategy approval.
 
 - evidence_required: pre-registration, OOS metrics, corrected significance, sensitivity results, dependency-prepared pytest run if S3PCT02 is promoted beyond local lifecycle proof
 - principal_risks: data mining, survivor bias, underestimated costs, resource blowups
-- generated_from_refs: `PFI/modules/qbvs_lab/docs/governance/ASSURANCE_STATUS.yaml, PFI/modules/qbvs_lab/docs/governance/delivery_tasks.yaml`
+- generated_from_refs: `QBVS/docs/governance/ASSURANCE_STATUS.yaml, QBVS/docs/governance/delivery_tasks.yaml`
 
 ## 12. Model Formula Parameter Change
 

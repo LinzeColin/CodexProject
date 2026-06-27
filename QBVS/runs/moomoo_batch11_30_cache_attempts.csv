@@ -2,16 +2,16 @@ symbol,market,returncode,stdout,stderr
 US.VYM,US_ETF,1,,"Traceback (most recent call last):
   File ""<frozen runpy>"", line 198, in _run_module_as_main
   File ""<frozen runpy>"", line 88, in _run_code
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 948, in <module>
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/cli.py"", line 948, in <module>
     raise SystemExit(main())
                      ^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 586, in main
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/cli.py"", line 586, in main
     row = cache_moomoo_history(
           ^^^^^^^^^^^^^^^^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 142, in cache_moomoo_history
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/datasources.py"", line 142, in cache_moomoo_history
     futu = _load_futu_module()
            ^^^^^^^^^^^^^^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 262, in _load_futu_module
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/datasources.py"", line 262, in _load_futu_module
     import moomoo as futu  # type: ignore
     ^^^^^^^^^^^^^^^^^^^^^
   File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/__init__.py"", line 100, in <module>
@@ -31,16 +31,16 @@ KeyError: 'HOME'"
 US.IWB,US_ETF,1,,"Traceback (most recent call last):
   File ""<frozen runpy>"", line 198, in _run_module_as_main
   File ""<frozen runpy>"", line 88, in _run_code
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 948, in <module>
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/cli.py"", line 948, in <module>
     raise SystemExit(main())
                      ^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 586, in main
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/cli.py"", line 586, in main
     row = cache_moomoo_history(
           ^^^^^^^^^^^^^^^^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 142, in cache_moomoo_history
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/datasources.py"", line 142, in cache_moomoo_history
     futu = _load_futu_module()
            ^^^^^^^^^^^^^^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 262, in _load_futu_module
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/datasources.py"", line 262, in _load_futu_module
     import moomoo as futu  # type: ignore
     ^^^^^^^^^^^^^^^^^^^^^
   File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/__init__.py"", line 100, in <module>
@@ -60,16 +60,16 @@ KeyError: 'HOME'"
 US.IWF,US_ETF,1,,"Traceback (most recent call last):
   File ""<frozen runpy>"", line 198, in _run_module_as_main
   File ""<frozen runpy>"", line 88, in _run_code
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 948, in <module>
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/cli.py"", line 948, in <module>
     raise SystemExit(main())
                      ^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 586, in main
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/cli.py"", line 586, in main
     row = cache_moomoo_history(
           ^^^^^^^^^^^^^^^^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 142, in cache_moomoo_history
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/datasources.py"", line 142, in cache_moomoo_history
     futu = _load_futu_module()
            ^^^^^^^^^^^^^^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 262, in _load_futu_module
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/datasources.py"", line 262, in _load_futu_module
     import moomoo as futu  # type: ignore
     ^^^^^^^^^^^^^^^^^^^^^
   File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/__init__.py"", line 100, in <module>
@@ -89,16 +89,16 @@ KeyError: 'HOME'"
 US.IWD,US_ETF,1,,"Traceback (most recent call last):
   File ""<frozen runpy>"", line 198, in _run_module_as_main
   File ""<frozen runpy>"", line 88, in _run_code
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 948, in <module>
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/cli.py"", line 948, in <module>
     raise SystemExit(main())
                      ^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 586, in main
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/cli.py"", line 586, in main
     row = cache_moomoo_history(
           ^^^^^^^^^^^^^^^^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 142, in cache_moomoo_history
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/datasources.py"", line 142, in cache_moomoo_history
     futu = _load_futu_module()
            ^^^^^^^^^^^^^^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 262, in _load_futu_module
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/datasources.py"", line 262, in _load_futu_module
     import moomoo as futu  # type: ignore
     ^^^^^^^^^^^^^^^^^^^^^
   File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/__init__.py"", line 100, in <module>
@@ -118,16 +118,16 @@ KeyError: 'HOME'"
 US.IVE,US_ETF,1,,"Traceback (most recent call last):
   File ""<frozen runpy>"", line 198, in _run_module_as_main
   File ""<frozen runpy>"", line 88, in _run_code
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 948, in <module>
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/cli.py"", line 948, in <module>
     raise SystemExit(main())
                      ^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 586, in main
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/cli.py"", line 586, in main
     row = cache_moomoo_history(
           ^^^^^^^^^^^^^^^^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 142, in cache_moomoo_history
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/datasources.py"", line 142, in cache_moomoo_history
     futu = _load_futu_module()
            ^^^^^^^^^^^^^^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 262, in _load_futu_module
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/datasources.py"", line 262, in _load_futu_module
     import moomoo as futu  # type: ignore
     ^^^^^^^^^^^^^^^^^^^^^
   File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/__init__.py"", line 100, in <module>
@@ -147,16 +147,16 @@ KeyError: 'HOME'"
 US.IVW,US_ETF,1,,"Traceback (most recent call last):
   File ""<frozen runpy>"", line 198, in _run_module_as_main
   File ""<frozen runpy>"", line 88, in _run_code
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 948, in <module>
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/cli.py"", line 948, in <module>
     raise SystemExit(main())
                      ^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 586, in main
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/cli.py"", line 586, in main
     row = cache_moomoo_history(
           ^^^^^^^^^^^^^^^^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 142, in cache_moomoo_history
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/datasources.py"", line 142, in cache_moomoo_history
     futu = _load_futu_module()
            ^^^^^^^^^^^^^^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 262, in _load_futu_module
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/datasources.py"", line 262, in _load_futu_module
     import moomoo as futu  # type: ignore
     ^^^^^^^^^^^^^^^^^^^^^
   File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/__init__.py"", line 100, in <module>
@@ -176,16 +176,16 @@ KeyError: 'HOME'"
 US.MDY,US_ETF,1,,"Traceback (most recent call last):
   File ""<frozen runpy>"", line 198, in _run_module_as_main
   File ""<frozen runpy>"", line 88, in _run_code
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 948, in <module>
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/cli.py"", line 948, in <module>
     raise SystemExit(main())
                      ^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 586, in main
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/cli.py"", line 586, in main
     row = cache_moomoo_history(
           ^^^^^^^^^^^^^^^^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 142, in cache_moomoo_history
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/datasources.py"", line 142, in cache_moomoo_history
     futu = _load_futu_module()
            ^^^^^^^^^^^^^^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 262, in _load_futu_module
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/datasources.py"", line 262, in _load_futu_module
     import moomoo as futu  # type: ignore
     ^^^^^^^^^^^^^^^^^^^^^
   File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/__init__.py"", line 100, in <module>
@@ -205,16 +205,16 @@ KeyError: 'HOME'"
 US.IJH,US_ETF,1,,"Traceback (most recent call last):
   File ""<frozen runpy>"", line 198, in _run_module_as_main
   File ""<frozen runpy>"", line 88, in _run_code
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 948, in <module>
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/cli.py"", line 948, in <module>
     raise SystemExit(main())
                      ^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 586, in main
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/cli.py"", line 586, in main
     row = cache_moomoo_history(
           ^^^^^^^^^^^^^^^^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 142, in cache_moomoo_history
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/datasources.py"", line 142, in cache_moomoo_history
     futu = _load_futu_module()
            ^^^^^^^^^^^^^^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 262, in _load_futu_module
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/datasources.py"", line 262, in _load_futu_module
     import moomoo as futu  # type: ignore
     ^^^^^^^^^^^^^^^^^^^^^
   File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/__init__.py"", line 100, in <module>
@@ -234,16 +234,16 @@ KeyError: 'HOME'"
 US.IJR,US_ETF,1,,"Traceback (most recent call last):
   File ""<frozen runpy>"", line 198, in _run_module_as_main
   File ""<frozen runpy>"", line 88, in _run_code
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 948, in <module>
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/cli.py"", line 948, in <module>
     raise SystemExit(main())
                      ^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 586, in main
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/cli.py"", line 586, in main
     row = cache_moomoo_history(
           ^^^^^^^^^^^^^^^^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 142, in cache_moomoo_history
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/datasources.py"", line 142, in cache_moomoo_history
     futu = _load_futu_module()
            ^^^^^^^^^^^^^^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 262, in _load_futu_module
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/datasources.py"", line 262, in _load_futu_module
     import moomoo as futu  # type: ignore
     ^^^^^^^^^^^^^^^^^^^^^
   File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/__init__.py"", line 100, in <module>
@@ -263,16 +263,16 @@ KeyError: 'HOME'"
 US.IJS,US_ETF,1,,"Traceback (most recent call last):
   File ""<frozen runpy>"", line 198, in _run_module_as_main
   File ""<frozen runpy>"", line 88, in _run_code
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 948, in <module>
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/cli.py"", line 948, in <module>
     raise SystemExit(main())
                      ^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 586, in main
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/cli.py"", line 586, in main
     row = cache_moomoo_history(
           ^^^^^^^^^^^^^^^^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 142, in cache_moomoo_history
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/datasources.py"", line 142, in cache_moomoo_history
     futu = _load_futu_module()
            ^^^^^^^^^^^^^^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 262, in _load_futu_module
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/datasources.py"", line 262, in _load_futu_module
     import moomoo as futu  # type: ignore
     ^^^^^^^^^^^^^^^^^^^^^
   File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/__init__.py"", line 100, in <module>
@@ -292,16 +292,16 @@ KeyError: 'HOME'"
 US.EFA,US_ETF,1,,"Traceback (most recent call last):
   File ""<frozen runpy>"", line 198, in _run_module_as_main
   File ""<frozen runpy>"", line 88, in _run_code
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 948, in <module>
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/cli.py"", line 948, in <module>
     raise SystemExit(main())
                      ^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 586, in main
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/cli.py"", line 586, in main
     row = cache_moomoo_history(
           ^^^^^^^^^^^^^^^^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 142, in cache_moomoo_history
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/datasources.py"", line 142, in cache_moomoo_history
     futu = _load_futu_module()
            ^^^^^^^^^^^^^^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 262, in _load_futu_module
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/datasources.py"", line 262, in _load_futu_module
     import moomoo as futu  # type: ignore
     ^^^^^^^^^^^^^^^^^^^^^
   File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/__init__.py"", line 100, in <module>
@@ -321,16 +321,16 @@ KeyError: 'HOME'"
 US.EEM,US_ETF,1,,"Traceback (most recent call last):
   File ""<frozen runpy>"", line 198, in _run_module_as_main
   File ""<frozen runpy>"", line 88, in _run_code
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 948, in <module>
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/cli.py"", line 948, in <module>
     raise SystemExit(main())
                      ^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 586, in main
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/cli.py"", line 586, in main
     row = cache_moomoo_history(
           ^^^^^^^^^^^^^^^^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 142, in cache_moomoo_history
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/datasources.py"", line 142, in cache_moomoo_history
     futu = _load_futu_module()
            ^^^^^^^^^^^^^^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 262, in _load_futu_module
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/datasources.py"", line 262, in _load_futu_module
     import moomoo as futu  # type: ignore
     ^^^^^^^^^^^^^^^^^^^^^
   File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/__init__.py"", line 100, in <module>
@@ -350,16 +350,16 @@ KeyError: 'HOME'"
 US.VEA,US_ETF,1,,"Traceback (most recent call last):
   File ""<frozen runpy>"", line 198, in _run_module_as_main
   File ""<frozen runpy>"", line 88, in _run_code
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 948, in <module>
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/cli.py"", line 948, in <module>
     raise SystemExit(main())
                      ^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 586, in main
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/cli.py"", line 586, in main
     row = cache_moomoo_history(
           ^^^^^^^^^^^^^^^^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 142, in cache_moomoo_history
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/datasources.py"", line 142, in cache_moomoo_history
     futu = _load_futu_module()
            ^^^^^^^^^^^^^^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 262, in _load_futu_module
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/datasources.py"", line 262, in _load_futu_module
     import moomoo as futu  # type: ignore
     ^^^^^^^^^^^^^^^^^^^^^
   File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/__init__.py"", line 100, in <module>
@@ -379,16 +379,16 @@ KeyError: 'HOME'"
 US.VWO,US_ETF,1,,"Traceback (most recent call last):
   File ""<frozen runpy>"", line 198, in _run_module_as_main
   File ""<frozen runpy>"", line 88, in _run_code
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 948, in <module>
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/cli.py"", line 948, in <module>
     raise SystemExit(main())
                      ^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 586, in main
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/cli.py"", line 586, in main
     row = cache_moomoo_history(
           ^^^^^^^^^^^^^^^^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 142, in cache_moomoo_history
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/datasources.py"", line 142, in cache_moomoo_history
     futu = _load_futu_module()
            ^^^^^^^^^^^^^^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 262, in _load_futu_module
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/datasources.py"", line 262, in _load_futu_module
     import moomoo as futu  # type: ignore
     ^^^^^^^^^^^^^^^^^^^^^
   File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/__init__.py"", line 100, in <module>
@@ -408,16 +408,16 @@ KeyError: 'HOME'"
 US.ACWI,US_ETF,1,,"Traceback (most recent call last):
   File ""<frozen runpy>"", line 198, in _run_module_as_main
   File ""<frozen runpy>"", line 88, in _run_code
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 948, in <module>
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/cli.py"", line 948, in <module>
     raise SystemExit(main())
                      ^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 586, in main
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/cli.py"", line 586, in main
     row = cache_moomoo_history(
           ^^^^^^^^^^^^^^^^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 142, in cache_moomoo_history
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/datasources.py"", line 142, in cache_moomoo_history
     futu = _load_futu_module()
            ^^^^^^^^^^^^^^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 262, in _load_futu_module
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/datasources.py"", line 262, in _load_futu_module
     import moomoo as futu  # type: ignore
     ^^^^^^^^^^^^^^^^^^^^^
   File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/__init__.py"", line 100, in <module>
@@ -437,16 +437,16 @@ KeyError: 'HOME'"
 US.VT,US_ETF,1,,"Traceback (most recent call last):
   File ""<frozen runpy>"", line 198, in _run_module_as_main
   File ""<frozen runpy>"", line 88, in _run_code
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 948, in <module>
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/cli.py"", line 948, in <module>
     raise SystemExit(main())
                      ^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 586, in main
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/cli.py"", line 586, in main
     row = cache_moomoo_history(
           ^^^^^^^^^^^^^^^^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 142, in cache_moomoo_history
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/datasources.py"", line 142, in cache_moomoo_history
     futu = _load_futu_module()
            ^^^^^^^^^^^^^^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 262, in _load_futu_module
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/datasources.py"", line 262, in _load_futu_module
     import moomoo as futu  # type: ignore
     ^^^^^^^^^^^^^^^^^^^^^
   File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/__init__.py"", line 100, in <module>
@@ -466,16 +466,16 @@ KeyError: 'HOME'"
 US.IEFA,US_ETF,1,,"Traceback (most recent call last):
   File ""<frozen runpy>"", line 198, in _run_module_as_main
   File ""<frozen runpy>"", line 88, in _run_code
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 948, in <module>
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/cli.py"", line 948, in <module>
     raise SystemExit(main())
                      ^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 586, in main
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/cli.py"", line 586, in main
     row = cache_moomoo_history(
           ^^^^^^^^^^^^^^^^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 142, in cache_moomoo_history
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/datasources.py"", line 142, in cache_moomoo_history
     futu = _load_futu_module()
            ^^^^^^^^^^^^^^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 262, in _load_futu_module
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/datasources.py"", line 262, in _load_futu_module
     import moomoo as futu  # type: ignore
     ^^^^^^^^^^^^^^^^^^^^^
   File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/__init__.py"", line 100, in <module>
@@ -495,16 +495,16 @@ KeyError: 'HOME'"
 US.IEMG,US_ETF,1,,"Traceback (most recent call last):
   File ""<frozen runpy>"", line 198, in _run_module_as_main
   File ""<frozen runpy>"", line 88, in _run_code
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 948, in <module>
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/cli.py"", line 948, in <module>
     raise SystemExit(main())
                      ^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 586, in main
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/cli.py"", line 586, in main
     row = cache_moomoo_history(
           ^^^^^^^^^^^^^^^^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 142, in cache_moomoo_history
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/datasources.py"", line 142, in cache_moomoo_history
     futu = _load_futu_module()
            ^^^^^^^^^^^^^^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 262, in _load_futu_module
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/datasources.py"", line 262, in _load_futu_module
     import moomoo as futu  # type: ignore
     ^^^^^^^^^^^^^^^^^^^^^
   File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/__init__.py"", line 100, in <module>
@@ -524,16 +524,16 @@ KeyError: 'HOME'"
 US.HYG,US_ETF,1,,"Traceback (most recent call last):
   File ""<frozen runpy>"", line 198, in _run_module_as_main
   File ""<frozen runpy>"", line 88, in _run_code
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 948, in <module>
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/cli.py"", line 948, in <module>
     raise SystemExit(main())
                      ^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 586, in main
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/cli.py"", line 586, in main
     row = cache_moomoo_history(
           ^^^^^^^^^^^^^^^^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 142, in cache_moomoo_history
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/datasources.py"", line 142, in cache_moomoo_history
     futu = _load_futu_module()
            ^^^^^^^^^^^^^^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 262, in _load_futu_module
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/datasources.py"", line 262, in _load_futu_module
     import moomoo as futu  # type: ignore
     ^^^^^^^^^^^^^^^^^^^^^
   File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/__init__.py"", line 100, in <module>
@@ -553,16 +553,16 @@ KeyError: 'HOME'"
 US.LQD,US_ETF,1,,"Traceback (most recent call last):
   File ""<frozen runpy>"", line 198, in _run_module_as_main
   File ""<frozen runpy>"", line 88, in _run_code
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 948, in <module>
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/cli.py"", line 948, in <module>
     raise SystemExit(main())
                      ^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/cli.py"", line 586, in main
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/cli.py"", line 586, in main
     row = cache_moomoo_history(
           ^^^^^^^^^^^^^^^^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 142, in cache_moomoo_history
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/datasources.py"", line 142, in cache_moomoo_history
     futu = _load_futu_module()
            ^^^^^^^^^^^^^^^^^^^
-  File ""/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system/qbvs/datasources.py"", line 262, in _load_futu_module
+  File ""/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS/qbvs/datasources.py"", line 262, in _load_futu_module
     import moomoo as futu  # type: ignore
     ^^^^^^^^^^^^^^^^^^^^^
   File ""/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/moomoo/__init__.py"", line 100, in <module>

@@ -23,10 +23,28 @@ const STATUS_LABELS = {
   blocked: "阻塞",
 };
 
+const USER_TEXT_LABELS = {
+  "Synthetic E2E": "合成端到端",
+  "Rollback plan": "回滚计划",
+  "Follow-up list": "后续任务清单",
+  "Review lifecycle": "复盘生命周期",
+  "PFI Context Export": "PFI 上下文导出",
+  "Alpha 只读出口": "Alpha 只读出口",
+  "Existing smoke、focused tests、changed-only governance 已记录。": "既有 smoke、聚焦测试和变更范围治理已记录。",
+  "Owner docs、diff summary、rollback plan、follow-up list。": "用户文档、差异摘要、回滚计划和后续任务清单已记录。",
+};
+
 const GENERIC_WORKFLOW_DESCRIPTION = "查看该工作流的来源、任务和证据状态。";
 
 const WORKSPACE_LABELS = {
   home: "首页",
+  accounts: "账户与资产",
+  ledger: "账本流水",
+  investment: "投资管理",
+  consumption: "消费管理",
+  sync: "数据源与同步",
+  recommendations: "建议与复盘",
+  insights: "报告与洞察",
   market: "市场",
   markets: "市场",
   research: "研究",
@@ -35,6 +53,14 @@ const WORKSPACE_LABELS = {
   strategy: "策略实验室",
   strategy_lab: "策略实验室",
   data: "数据与系统",
+  首页总览: "首页总览",
+  账户与资产: "账户与资产",
+  账本流水: "账本流水",
+  投资管理: "投资管理",
+  消费管理: "消费管理",
+  数据源与同步: "数据源与同步",
+  建议与复盘: "建议与复盘",
+  报告与洞察: "报告与洞察",
 };
 
 const CARD_LABELS = {
@@ -42,6 +68,16 @@ const CARD_LABELS = {
   market_events: "市场事件",
   portfolio_risk: "持仓风险",
   strategy_runs: "策略运行",
+  net_worth: "净资产",
+  cash: "现金",
+  investment_assets: "投资资产",
+  monthly_spending: "本月支出",
+  data_health: "数据健康",
+  investment_market_value: "投资市值",
+  investment_pnl: "投资盈亏",
+  month_spend: "本月支出",
+  budget_remaining: "预算剩余",
+  cashflow_pressure: "现金流压力",
 };
 
 const CARD_SOURCES = {
@@ -49,6 +85,16 @@ const CARD_SOURCES = {
   market_events: "来源登记",
   portfolio_risk: "持仓快照",
   strategy_runs: "证据记录",
+  net_worth: "账户账本",
+  cash: "账户地图",
+  investment_assets: "账户与资产",
+  monthly_spending: "账本流水",
+  data_health: "数据源与同步",
+  investment_market_value: "投资管理",
+  investment_pnl: "收益归因",
+  month_spend: "消费管理",
+  budget_remaining: "消费预算",
+  cashflow_pressure: "现金流预测",
 };
 
 const FEATURE_TARGETS = {
@@ -93,6 +139,42 @@ const FEATURE_TARGETS = {
   持仓: { view: "holdings", label: "打开持仓" },
   数据中心: { view: "tools", label: "打开数据" },
   策略库: { view: "library", label: "打开策略库" },
+  上传支付宝账单: { workspace: "sync", label: "打开上传" },
+  同步全部: { workspace: "sync", label: "同步计划" },
+  处理待复核: { workspace: "ledger", label: "处理复核" },
+  查看建议: { workspace: "recommendations", label: "查看建议" },
+  生成报告: { workspace: "insights", label: "生成报告" },
+  建议模型: { view: "recommendation_model", label: "打开模型" },
+  "Review lifecycle": { view: "review_lifecycle", label: "打开生命周期" },
+  投资建议: { view: "investment_recommendations", label: "查看投资建议" },
+  消费建议: { view: "consumption_recommendations", label: "查看消费建议" },
+  月度报告: { view: "monthly_report", label: "打开月报" },
+  投资报告: { view: "investment_report", label: "打开投资报告" },
+  消费报告: { view: "consumption_report", label: "打开消费报告" },
+  数据质量报告: { view: "data_quality_report", label: "打开质量报告" },
+  导出中心: { view: "export_center", label: "打开导出" },
+  "PFI Context Export": { view: "pfi_context_export", label: "打开 Context" },
+  "Alpha 只读出口": { view: "alpha_readonly_export", label: "查看出口" },
+  端到端验收: { view: "stage6_e2e", label: "打开验收" },
+  合成端到端: { view: "stage6_synthetic_e2e", label: "查看合成验收" },
+  "Synthetic E2E": { view: "stage6_synthetic_e2e", label: "查看 E2E" },
+  回归治理: { view: "stage6_regression_governance", label: "查看治理" },
+  交付与回滚: { view: "stage6_delivery_rollback", label: "查看交付" },
+  回滚计划: { view: "stage6_rollback_plan", label: "查看回滚" },
+  "Rollback plan": { view: "stage6_rollback_plan", label: "查看回滚" },
+  后续任务清单: { view: "stage6_follow_up_list", label: "查看后续" },
+  "Follow-up list": { view: "stage6_follow_up_list", label: "查看后续" },
+  账户地图: { workspace: "accounts", label: "查看账户" },
+  账本流水: { workspace: "ledger", label: "查看账本" },
+  投资总览: { workspace: "investment", label: "查看投资" },
+  收益归因: { workspace: "investment", label: "查看归因" },
+  风险分析: { workspace: "investment", label: "查看风险" },
+  行为复盘: { workspace: "investment", label: "查看复盘" },
+  消费总览: { workspace: "consumption", label: "查看消费" },
+  分类分析: { workspace: "consumption", label: "查看分类" },
+  订阅检测: { workspace: "consumption", label: "查看订阅" },
+  异常消费: { workspace: "consumption", label: "查看异常" },
+  现金流预测: { workspace: "consumption", label: "查看现金流" },
   来源登记: { view: "source_registry", label: "打开来源" },
   任务监控: { view: "task_monitor", label: "打开任务" },
   隐私边界: { view: "privacy_boundary", label: "打开隐私" },
@@ -398,6 +480,142 @@ const FUNCTION_VIEWS = {
     ["可用：报告结论、证据缺口和验证任务", "验收：每个缺口必须有负责人、来源和下一步", "边界：验证不修改原报告，不自动刷新数据"],
     { legacyView: "reports" },
   ),
+  recommendation_model: functionView(
+    "recommendation_model",
+    "建议模型",
+    "recommendations",
+    "查看建议模型",
+    "按 domain、evidence、expected effect、tradeoff、action 和 decision 组织建议，禁止无证据建议。",
+    ["可用：投资建议和消费建议统一模型", "验收：每条建议必须有证据、预期效果和 tradeoff", "边界：建议是人工复核队列，不是订单"],
+  ),
+  review_lifecycle: functionView(
+    "review_lifecycle",
+    "Review lifecycle",
+    "recommendations",
+    "打开复盘生命周期",
+    "支持 accept、reject、snooze、review 和 effect measurement，保留决策记录和复盘结果。",
+    ["可用：决策状态、复盘窗口和效果度量", "验收：建议可复盘、可追踪、可解释", "边界：人工确认前不改变资产或支出"],
+  ),
+  investment_recommendations: functionView(
+    "investment_recommendations",
+    "投资建议",
+    "recommendations",
+    "查看投资建议",
+    "聚合集中度、交易频率、现金仓位、策略暂停或上线建议，并解释原因和代价。",
+    ["可用：concentration、trading frequency、cash position、strategy pause/launch", "验收：每条建议必须能解释原因", "边界：不连接券商，不提交订单"],
+  ),
+  consumption_recommendations: functionView(
+    "consumption_recommendations",
+    "消费建议",
+    "recommendations",
+    "查看消费建议",
+    "聚合预算、订阅、异常和降成本建议，必须带可量化 savings target。",
+    ["可用：budget、subscription、anomaly、cost saving", "验收：必须有 savings target 和证据", "边界：不自动支付、不自动取消订阅"],
+  ),
+  monthly_report: functionView(
+    "monthly_report",
+    "月度报告",
+    "insights",
+    "生成月度报告",
+    "汇总净资产、现金流、消费、投资和建议复盘，保留来源链路。",
+    ["可用：净资产、现金流、消费、投资、建议复盘", "验收：报告必须可复现导出", "边界：报告只读，结论需人工复核"],
+  ),
+  investment_report: functionView(
+    "investment_report",
+    "投资报告",
+    "insights",
+    "生成投资报告",
+    "输出收益、风险、归因、持仓和行为复盘，数据不足时不输出精确结论。",
+    ["可用：return、risk、attribution、positions、behavior", "验收：估计口径必须可见", "边界：投资报告不构成自动交易指令"],
+  ),
+  consumption_report: functionView(
+    "consumption_report",
+    "消费报告",
+    "insights",
+    "生成消费报告",
+    "输出分类、预算、订阅、异常和节省金额，用于月末复盘。",
+    ["可用：classification、budget、subscriptions、anomalies、saving target", "验收：消费建议必须能追溯证据", "边界：不自动发起支付或取消服务"],
+  ),
+  data_quality_report: functionView(
+    "data_quality_report",
+    "数据质量报告",
+    "insights",
+    "生成质量报告",
+    "检查同步状态、缺失区间、对账差异和 parser 错误，定位数据可信度问题。",
+    ["可用：sync status、missing intervals、reconciliation differences、parser errors", "验收：质量问题必须可定位到来源", "边界：只读检查，不复制私有原始数据"],
+  ),
+  export_center: functionView(
+    "export_center",
+    "导出中心",
+    "insights",
+    "导出报告",
+    "以 Markdown、JSON 和 CSV 生成可复现的本地报告出口，保留内容哈希。",
+    ["可用：Markdown / JSON / CSV", "验收：导出内容可复现并有 checksum", "边界：导出不包含 secrets 或交易凭证"],
+  ),
+  pfi_context_export: functionView(
+    "pfi_context_export",
+    "PFI Context Export",
+    "insights",
+    "生成 Context Snapshot",
+    "生成 pfi_context_snapshot_v1，包含净资产、可投资现金、组合配置、风险预算、现金流压力、行为标签和数据新鲜度。",
+    ["可用：pfi_context_snapshot_v1", "验收：必须显示 read-only 和 live trade disabled 约束", "边界：只读 context，不修改 Alpha 仓库"],
+  ),
+  alpha_readonly_export: functionView(
+    "alpha_readonly_export",
+    "Alpha 只读出口",
+    "insights",
+    "查看 Alpha 出口边界",
+    "PFI 只输出只读 context，Alpha 独立消费；PFI 不新增 Alpha 一级入口，不修改 Alpha repo。",
+    ["可用：只读 context schema 和约束字段", "验收：trading_password_available=false，live_trade_submission_authorized=false", "边界：无交易密码、无实盘提交、无 Alpha 仓库变更"],
+  ),
+  stage6_e2e: functionView(
+    "stage6_e2e",
+    "端到端验收",
+    "insights",
+    "查看 Stage 6 验收",
+    "统一查看 Stage 6 的多数据源、首页、账本、建议、回归治理、交付回滚和 TaskPack acceptance gate。",
+    ["可用：20 个总验收 gate 和 ACC-* 审计", "验收：所有 gate 必须有证据引用且 PASS", "边界：只读 synthetic E2E，不连接真实账户"],
+  ),
+  stage6_synthetic_e2e: functionView(
+    "stage6_synthetic_e2e",
+    "合成端到端",
+    "insights",
+    "查看合成端到端验收",
+    "核对支付宝、支付宝基金、Moomoo、中国券商、ABC、CBA、微信的 fixture/contract，并验证首页、账本和建议闭环。",
+    ["可用：source fixture matrix、homepage loop、ledger loop、recommendation loop", "验收：核心源不得缺失，首页必须可读，分类必须正确", "边界：不导入真实私有数据"],
+  ),
+  stage6_regression_governance: functionView(
+    "stage6_regression_governance",
+    "回归治理",
+    "insights",
+    "查看回归治理",
+    "确认 existing smoke、新增 focused tests、changed-only governance 和 no broad refactor gate 都已记录。",
+    ["可用：顶层 QBVS smoke、Stage 1-6 tests、lean governance", "验收：变更范围只在 PFI、QBVS、MetaDatabase 目标文件内", "边界：PFI 不覆盖 QBVS"],
+  ),
+  stage6_delivery_rollback: functionView(
+    "stage6_delivery_rollback",
+    "交付与回滚",
+    "insights",
+    "查看交付回滚",
+    "整理 owner docs、diff summary、rollback plan 和后续任务清单，确保 V0.2 可继续迭代。",
+    ["可用：owner docs、diff summary、rollback plan", "验收：回滚步骤可定位到文件并不影响私有数据", "边界：不做生产迁移"],
+  ),
+  stage6_rollback_plan: functionView(
+    "stage6_rollback_plan",
+    "回滚计划",
+    "insights",
+    "查看回滚计划",
+    "查看 Stage 6 的可逆文件清单、恢复边界和无需迁移真实数据的说明。",
+    ["可用：代码、测试、文档、治理、Web Shell 回滚步骤", "验收：回滚清楚区分 PFI 与 QBVS", "边界：无生产数据库迁移"],
+  ),
+  stage6_follow_up_list: functionView(
+    "stage6_follow_up_list",
+    "后续任务清单",
+    "insights",
+    "查看后续任务",
+    "列出 Alpha context consumer、真实数据接入、PDF/ZIP、CDR/Open Banking 和发布证据 gate 等后续工作。",
+    ["可用：分离后续任务，不并入 Stage 6", "验收：Stage 6 不越权修改外部仓库", "边界：后续任务需新 pursuing goal"],
+  ),
   tools: functionView(
     "tools",
     "数据中心",
@@ -460,30 +678,29 @@ const DEFAULT_WORKSPACES = {
     freshness: "更新 08:45",
     runtime: "快速路径：待复核 · 目标 60 秒",
     cards: [
-      ["待处理", "0", "来源：任务表 · 状态待补"],
-      ["市场事件", "0", "来源：来源登记 · 状态待补"],
-      ["持仓风险", "待补", "来源：持仓快照 · 需要人工数据"],
-      ["策略运行", "0", "来源：证据记录 · 状态待补"],
+      ["净资产", "待补", "来源：账户账本 · 状态需要同步"],
+      ["现金", "待补", "来源：账户地图 · 状态需要同步"],
+      ["投资资产", "待补", "来源：账户与资产 · 状态需要同步"],
+      ["本月支出", "待补", "来源：账本流水 · 状态需要同步"],
     ],
     features: [
+      feature("上传支付宝账单", "可用", "CSV / ZIP 原始账单", "页面顶部有真实上传控件，可接入已发现的三年支付宝原始数据。", { workspace: "sync", label: "打开上传" }),
+      feature("同步全部", "需要同步", "数据源与同步", "生成可执行前的本地同步/导入计划，不登录、不下单、不支付。"),
+      feature("处理待复核", "需要复核", "账本流水", "用 A/B/C/D 选择处理低置信度流水，避免 unknown 静默入账。"),
+      feature("查看建议", "有建议", "建议与复盘", "查看带证据、动作、状态、预期效果和 tradeoff 的 Top N 建议。"),
+      feature("生成报告", "有建议", "报告与洞察", "生成本地只读报告草稿，保留首页、账户、账本和证据链。"),
       feature("单标的回测", "可用", "回测证据", "运行单标的策略回测，查看收益、回撤、交易和报告。"),
-      feature("参数扫描", "可用", "参数稳定性", "比较参数网格、Train-Test 和 Walk-Forward 结果。"),
       feature("盘感训练", "可用", "训练记录", "保留读图训练和限时判断，不输出实盘信号。"),
-      feature("热点分析", "可用", "市场热度", "查看指数、ETF、主题和自选对象的强弱扩散。"),
-      feature("报告中心", "可用", "研究档案", "查看、筛选、下载和复核研究产物。"),
-      feature("持仓", "复核", "持仓边界", "查看正式持仓、候选持仓、暴露和质量检查。"),
-      feature("政策雷达", "复核", "权威来源", "登记政策来源、影响路径和人工行动队列。"),
-      feature("数据中心", "复核", "系统诊断", "检查来源、任务、隐私边界和备份状态。"),
     ],
     rows: [
-      row("P0", "数据新鲜度", "来源时间", "复核缓存兜底是否仍可用。", "复核"),
-      row("P1", "市场简报", "事件摘要", "查看今日可用市场证据。", "可用"),
-      row("P1", "策略运行", "回测元数据", "确认策略结果是否可复现。", "观察"),
+      row("P1", "数据源与同步", "账户状态", "先同步或扫描本地导入文件。", "需要同步"),
+      row("P2", "账本流水", "待复核记录", "处理低置信度流水。", "需要复核"),
+      row("P3", "报告与洞察", "首页证据链", "生成本地报告草稿。", "有建议"),
     ],
     tasks: [
-      task("数据新鲜度复核", "可用 · 缓存兜底已准备", "ready"),
-      task("策略验证", "第 1/3 步 · 等待", "running"),
-      task("证据导出", "排队中 · 后台任务待生成", "queued"),
+      task("支付宝账单导入", "可用 · 页面顶部上传或接入旧数据", "ready"),
+      task("账本复核", "第 1/3 步 · 等待导入结果", "running"),
+      task("报告生成", "排队中 · 导入后可生成", "queued"),
     ],
     evidence: evidence("首页运行证据", "今日缓存摘要", "运行库摘要", "首页卡片和决策队列来自本地运行库。"),
     chart: [22, 28, 24, 36, 34, 43, 39, 48, 45, 58, 52, 63, 59, 67],
@@ -664,6 +881,185 @@ const DEFAULT_WORKSPACES = {
 };
 
 const WORKSPACES = structuredClone(DEFAULT_WORKSPACES);
+installStage3WorkspaceAliases();
+
+function installStage3WorkspaceAliases() {
+  WORKSPACES.home.label = "首页总览";
+  WORKSPACES.home.conclusion = "先看投资市值、投资盈亏、本月支出、预算剩余和现金流压力，再进入投资或消费分析。";
+  WORKSPACES.accounts = {
+    ...structuredClone(DEFAULT_WORKSPACES.portfolio),
+    label: "账户与资产",
+    kicker: "账户地图",
+    conclusion: "统一查看支付宝、基金、Moomoo、中国券商、ABC、CBA、微信和其他账户状态。",
+    freshness: "账户状态来自本地 read-model",
+    runtime: "账户与资产：跨币种折算 · 对账可见",
+    cards: [
+      ["账户来源", "7", "支付宝、基金、券商、银行、微信"],
+      ["币种", "4", "AUD / CNY / USD / HKD"],
+      ["对账状态", "复核", "平台余额 vs PFI 账本余额"],
+      ["凭证边界", "只读", "不需要交易密码"],
+    ],
+    features: [
+      feature("账户地图", "可用", "账户与资产", "查看全部账户、来源状态、币种和对账差异。", { workspace: "accounts", label: "查看账户" }),
+      feature("导入对账", "需要复核", "平台余额", "核对平台余额和 PFI 账本余额差异。", { view: "portfolio_reconciliation", label: "打开对账" }),
+      feature("持仓", "可用", "投资账户", "兼容旧持仓复核入口，仍然只读。", { view: "holdings", label: "打开持仓" }),
+    ],
+  };
+  WORKSPACES.ledger = {
+    ...structuredClone(DEFAULT_WORKSPACES.data),
+    label: "账本流水",
+    kicker: "流水事实层",
+    conclusion: "查看 normalized transactions、待分类流水、转账匹配和每条流水的原始证据链。",
+    freshness: "账本来自本地导入 fixture",
+    runtime: "账本流水：证据链优先 · unknown 不静默入账",
+    cards: [
+      ["全部流水", "可查", "normalized transactions"],
+      ["待分类", "复核", "低置信度进入队列"],
+      ["转账匹配", "可确认", "确认/拒绝/修改"],
+      ["证据链", "开启", "batch/raw/parser"],
+    ],
+    features: [
+      feature("处理待复核", "需要复核", "A/B/C/D", "用选择题处理低置信度流水。", { workspace: "ledger", label: "处理复核" }),
+      feature("账本流水", "可用", "原始证据链", "查看 batch、raw record 和 parser version。", { workspace: "ledger", label: "查看流水" }),
+      feature("导入对账", "需要复核", "转账匹配", "确认、拒绝或修改疑似转账，防止计入消费。", { view: "portfolio_reconciliation", label: "打开对账" }),
+    ],
+  };
+  WORKSPACES.investment = {
+    ...structuredClone(DEFAULT_WORKSPACES.strategy),
+    label: "投资管理",
+    kicker: "投资分析",
+    conclusion: "查看总市值、盈亏、资产配置、收益归因、风险暴露和行为复盘；策略回测、盘感训练和大数据模拟器仍保留。",
+    runtime: "Stage 4：投资总览 / 收益归因 / 风险分析 / 行为复盘",
+    cards: [
+      ["投资总览", "可算", "总市值、盈亏、资产配置、现金仓位"],
+      ["收益归因", "复核", "市场 / 主动 / 费用 / FX / 现金拖累"],
+      ["风险分析", "可读", "集中度、回撤、币种暴露、流动性"],
+      ["行为复盘", "有建议", "追涨、杀跌、频繁交易、持有周期"],
+    ],
+    features: [
+      feature("投资总览", "可用", "持仓事实", "查看总市值、盈亏、资产配置和现金仓位。", { workspace: "investment", label: "查看投资" }),
+      feature("收益归因", "需要复核", "估计归因", "把收益拆为市场、主动决策、费用、汇率和现金拖累；数据不足不输出精确结论。", { workspace: "investment", label: "查看归因" }),
+      feature("风险分析", "有建议", "风险证据", "查看集中度、回撤、币种暴露和流动性。", { workspace: "investment", label: "查看风险" }),
+      feature("行为复盘", "有建议", "交易证据", "识别追涨、杀跌、频繁交易和持有周期。", { workspace: "investment", label: "查看复盘" }),
+      feature("策略实验室", "可用", "QBVS", "保留策略回测、参数扫描、盘感训练和大数据模拟器。", { workspace: "strategy", label: "打开策略" }),
+    ],
+  };
+  WORKSPACES.consumption = {
+    ...structuredClone(DEFAULT_WORKSPACES.data),
+    label: "消费管理",
+    kicker: "消费分析",
+    conclusion: "查看本月支出、预算剩余、分类、订阅、异常消费和现金流预测；转账和投资事件不计生活消费。",
+    freshness: "消费视图来自 Stage 4 分析 read-model",
+    runtime: "Stage 4：消费总览 / 分类分析 / 订阅检测 / 异常消费 / 现金流预测",
+    cards: [
+      ["消费总览", "可算", "本月支出、预算剩余、固定/弹性支出"],
+      ["分类分析", "复核", "支付宝、微信、CBA 分类"],
+      ["订阅检测", "有建议", "周期扣费和疑似订阅"],
+      ["异常消费", "需要复核", "大额、重复、夜间、周末、冲动型"],
+    ],
+    features: [
+      feature("消费总览", "可用", "预算", "查看本月支出、预算剩余和固定/弹性支出。", { workspace: "consumption", label: "查看消费" }),
+      feature("分类分析", "需要复核", "三来源", "支付宝、微信、CBA 消费分类；低置信度必须进入复核。", { workspace: "consumption", label: "查看分类" }),
+      feature("订阅检测", "有建议", "周期扣费", "识别周期扣费和疑似订阅，支持保留、取消或暂缓复盘。", { workspace: "consumption", label: "查看订阅" }),
+      feature("异常消费", "需要复核", "消费证据", "识别大额、重复、夜间、节假日和冲动型消费。", { workspace: "consumption", label: "查看异常" }),
+      feature("现金流预测", "可用", "30/90/180 天", "预测支出、收入和可投资现金，生活现金与投资现金分开。", { workspace: "consumption", label: "查看现金流" }),
+      feature("处理待复核", "需要复核", "消费分类", "复核低置信度消费流水。", { workspace: "ledger", label: "处理复核" }),
+      feature("账本流水", "可用", "消费证据", "查看消费、退款、转账和费用的证据链。", { workspace: "ledger", label: "查看流水" }),
+    ],
+  };
+  WORKSPACES.sync = {
+    ...structuredClone(DEFAULT_WORKSPACES.data),
+    label: "数据源与同步",
+    kicker: "同步与导入",
+    conclusion: "一键生成可执行前的同步/导入计划；真实登录、支付和券商操作必须另走 owner gate。",
+    runtime: "同步全部：只生成计划 · 不执行外部动作",
+    cards: [
+      ["支付宝账单", "可上传", "CSV / ZIP 原始账单，本机私有目录"],
+      ["旧数据", "已发现", "2022-06-05 至 2026-06-03 账单分段"],
+      ["导入结果", "待生成", "标准化流水和待复核队列"],
+      ["隐私边界", "本机", "原始账单不进入 Git"],
+    ],
+    features: [
+      feature("上传支付宝账单", "可用", "本机上传", "使用页面顶部上传控件，或接入已发现的旧支付宝原始账单。", { workspace: "sync", label: "查看上传" }),
+      feature("同步全部", "需要同步", "7 个来源", "扫描本地导入收件箱或生成只读预检，不登录、不下单、不支付。", { workspace: "sync", label: "同步计划" }),
+      feature("来源登记", "复核", "数据源状态", "查看数据源新鲜度、失败原因和 parser 合同。"),
+      feature("隐私边界", "可用", "本地数据", "私有数据和凭证不进入公共 Git。"),
+    ],
+    rows: [
+      row("P0", "支付宝原始账单", "CSV / ZIP", "上传或接入旧交接目录中的原始账单。", "可用"),
+      row("P1", "标准化流水", "parser v1", "生成私有 CSV 和 manifest 后进入账本复核。", "需要同步"),
+      row("P1", "隐私边界", "~/.pfi/runtime", "原始账单只保存在本机私有目录，不提交 Git。", "可用"),
+    ],
+    tasks: [
+      task("上传账单", "可用 · 支持多文件 CSV / ZIP", "ready"),
+      task("旧数据接入", "可用 · 发现旧支付宝原始文件后可一键导入", "ready"),
+      task("账本复核", "导入后处理低置信度分类", "review"),
+    ],
+  };
+  WORKSPACES.recommendations = {
+    ...structuredClone(DEFAULT_WORKSPACES.home),
+    label: "建议与复盘",
+    kicker: "建议生命周期",
+    conclusion: "建议必须有 domain、evidence、expected effect、tradeoff、action 和 decision 状态。",
+    runtime: "建议与复盘：Top N · 人工决策",
+    cards: [
+      ["建议模型", "8", "领域、证据、预期效果、代价、动作、决策"],
+      ["Review lifecycle", "开启", "接受、拒绝、暂缓、复核、效果度量"],
+      ["投资建议", "4", "集中度、交易频率、现金仓位、策略上线/暂停"],
+      ["消费建议", "4", "预算、订阅、异常、降成本目标"],
+    ],
+    features: [
+      feature("建议模型", "可用", "Stage 5", "所有建议必须有证据、预期效果、tradeoff、动作和 owner decision。"),
+      feature("Review lifecycle", "可用", "复盘状态", "建议支持接受、拒绝、暂缓、复核和效果度量。"),
+      feature("投资建议", "有建议", "投资管理", "集中度、交易频率、现金仓位、策略暂停或上线建议。"),
+      feature("消费建议", "有建议", "消费管理", "预算、订阅、异常和降成本建议必须有 savings target。"),
+    ],
+    rows: [
+      row("P1", "建议模型", "stage5:recommendations", "查看 Top N 建议并进行人工决策。", "有建议"),
+      row("P1", "Review lifecycle", "stage5:lifecycle", "记录 accept/reject/snooze/review/effect measurement。", "可用"),
+      row("P2", "投资建议", "stage4:investment", "复核集中度、交易频率、现金仓位和策略 gate。", "有建议"),
+      row("P2", "消费建议", "stage4:consumption", "复核预算、订阅、异常和降成本目标。", "有建议"),
+    ],
+    tasks: [
+      task("Top N 建议排序", "首页只显示最重要建议，避免噪音", "ready"),
+      task("建议复盘记录", "decision 与 effect measurement 可追踪", "ready"),
+      task("无证据建议拦截", "evidence_refs 为空不得进入建议队列", "ready"),
+    ],
+  };
+  WORKSPACES.insights = {
+    ...structuredClone(DEFAULT_WORKSPACES.research),
+    label: "报告与洞察",
+    kicker: "报告出口",
+    conclusion: "月度、投资、消费、数据质量和 PFI Context Export 必须保留证据链。",
+    runtime: "报告与洞察：Markdown / JSON / CSV 优先",
+    cards: [
+      ["月度报告", "可用", "净资产、现金流、消费、投资、建议复盘"],
+      ["投资报告", "可用", "收益、风险、归因、持仓、行为"],
+      ["消费报告", "可用", "分类、预算、订阅、异常、节省金额"],
+      ["数据质量报告", "可用", "同步、缺失、对账、parser 错误"],
+    ],
+    features: [
+      feature("月度报告", "可用", "stage5:monthly_report", "汇总净资产、现金流、消费、投资和建议复盘。"),
+      feature("投资报告", "可用", "stage5:investment_report", "展示收益、风险、归因、持仓和行为复盘。"),
+      feature("消费报告", "可用", "stage5:consumption_report", "展示分类、预算、订阅、异常和节省金额。"),
+      feature("数据质量报告", "可用", "stage5:data_quality_report", "展示同步状态、缺失区间、对账差异和 parser 错误。"),
+      feature("导出中心", "可用", "Markdown / JSON / CSV", "导出可复现报告，并保留内容哈希。"),
+      feature("PFI Context Export", "只读", "pfi_context_snapshot_v1", "输出给外部 Alpha 消费的只读 context snapshot。"),
+      feature("Alpha 只读出口", "只读", "约束字段", "不新增 Alpha 一级入口，不修改 Alpha repo，不授权实盘提交。"),
+    ],
+    rows: [
+      row("P1", "月度报告", "stage5:reports", "生成本地只读月度报告。", "可用"),
+      row("P1", "导出中心", "stage5:exports", "导出 Markdown / JSON / CSV。", "可用"),
+      row("P1", "PFI Context Export", "pfi_context_snapshot_v1", "生成只读 context snapshot。", "只读"),
+      row("P0", "Alpha 只读出口", "constraints=false", "确认无交易密码、无实盘提交、无 Alpha 仓库变更。", "可用"),
+    ],
+    tasks: [
+      task("报告可复现", "Markdown / JSON / CSV 有 checksum", "ready"),
+      task("数据质量复核", "同步、缺失、对账和 parser 错误可见", "ready"),
+      task("Alpha 边界", "只读 context，live_trade_submission_authorized=false", "ready"),
+    ],
+  };
+}
 
 function feature(title, status, evidence, description, target = null) {
   return { title, status, evidence, description, target: target || featureTarget(title) };
@@ -793,15 +1189,17 @@ function readHomeSummary() {
 function applyHomeSummary(summary) {
   if (!summary) return;
   const home = WORKSPACES.home;
+  const cards = (summary.metric_cards || []).slice(0, 5);
   const cardByKey = {};
-  (summary.metric_cards || []).forEach((card) => {
+  cards.forEach((card) => {
     cardByKey[card.key] = card;
   });
-  home.cards = ["open_tasks", "market_events", "portfolio_risk", "strategy_runs"].map((key, index) => {
+  const orderedKeys = cards.length ? cards.map((card) => card.key) : ["open_tasks", "market_events", "portfolio_risk", "strategy_runs"];
+  home.cards = orderedKeys.slice(0, 5).map((key, index) => {
     const card = cardByKey[key] || {};
-    const fallback = DEFAULT_WORKSPACES.home.cards[index];
+    const fallback = DEFAULT_WORKSPACES.home.cards[index] || ["数据健康", "待补", "来源：数据源与同步 · 状态待补"];
     return [
-      CARD_LABELS[key] || fallback[0],
+      safeUserText(card.label, CARD_LABELS[key] || fallback[0]),
       safeUserText(card.value, fallback[1]),
       localizedCardDetail(key, card, fallback[2]),
     ];
@@ -820,13 +1218,250 @@ function applyHomeSummary(summary) {
   if (mappedRows.length) home.rows = mappedRows;
 
   home.evidence = localizedEvidence(summary.evidence_drawer || {}, home.evidence);
+  applyStage3Dashboard(summary.stage3_dashboard || {});
+  applyStage4Dashboard(summary.stage4_dashboard || {});
   applyWorkflowRuntime(summary.workflow_runtime || {});
+  applyStage5Dashboard(summary.stage5_dashboard || {});
+  applyStage6Dashboard(summary.stage6_dashboard || {});
+}
+
+function applyStage3Dashboard(dashboard) {
+  if (!dashboard || dashboard.schema !== "PFIV02Stage3ReadableMVPV1") return;
+  const actions = (dashboard.quick_actions || []).slice(0, 6).map((item) => {
+    const title = safeUserText(item.label, "PFI 操作");
+    return feature(
+      title,
+      safeUserText(item.status, "复核"),
+      safeUserText(item.target_entry, "Stage 3"),
+      `证据 ${Number(item.evidence_count || 0)} 项 · ${safeUserText(item.target_entry, "首页总览")}`,
+      FEATURE_TARGETS[title] || { workspace: "home", label: "打开入口" },
+    );
+  });
+  if (actions.length) {
+    WORKSPACES.home.features = actions;
+  }
+  const reviewCount = Number((dashboard.review_queue || []).length || 0);
+  const syncCount = Number((dashboard.sync_all_plan || []).length || 0);
+  WORKSPACES.home.tasks = [
+    task("同步全部", `${syncCount} 个来源 · 只生成同步/导入计划`, syncCount ? "review" : "ready"),
+    task("待复核选择题", `${reviewCount} 条流水 · A/B/C/D 处理`, reviewCount ? "review" : "ready"),
+    task("简单状态语言", "正常 / 需要同步 / 需要复核 / 有异常 / 有建议", "ready"),
+  ];
+  WORKSPACES.home.runtime = "Stage 3：同步、复核、建议、报告 · 只读本地 MVP";
+}
+
+function applyStage4Dashboard(dashboard) {
+  if (!dashboard || dashboard.schema !== "PFIV02Stage4AnalysisMVPV1") return;
+  const investment = dashboard.investment_analysis || {};
+  const consumption = dashboard.consumption_analysis || {};
+  const invSummary = investment.summary || {};
+  const attribution = investment.attribution || {};
+  const risk = investment.risk || {};
+  const behavior = investment.behavior || {};
+  const conSummary = consumption.summary || {};
+  const classification = consumption.classification || {};
+  const recurring = consumption.recurring || {};
+  const anomalies = consumption.anomalies || {};
+  const cashflow = consumption.cashflow_forecast || {};
+  const firstHorizon = (cashflow.horizons || [])[0] || {};
+
+  WORKSPACES.home.runtime = "Stage 4：投资与消费智能分析 · 本地只读 MVP";
+  WORKSPACES.home.features = [
+    feature("投资总览", "可用", "投资管理", `投资市值 ${moneyLabel(invSummary.total_market_value_aud)} · 盈亏 ${moneyLabel(invSummary.total_unrealized_pnl_aud)}`, { workspace: "investment", label: "查看投资" }),
+    feature("风险分析", safeUserText((risk.concentration || {}).status, "复核"), "投资管理", "集中度、回撤、币种暴露和流动性可展示。", { workspace: "investment", label: "查看风险" }),
+    feature("消费总览", "可用", "消费管理", `本月支出 ${moneyLabel(conSummary.month_spend_aud)} · 预算剩余 ${moneyLabel(conSummary.budget_remaining_aud)}`, { workspace: "consumption", label: "查看消费" }),
+    feature("现金流预测", safeUserText(firstHorizon.cashflow_pressure, "复核"), "消费管理", "30/90/180 天支出、收入和可投资现金预测。", { workspace: "consumption", label: "查看现金流" }),
+  ];
+  WORKSPACES.home.tasks = [
+    task("收益归因", `${(attribution.components || []).length} 个组件 · 市场/主动/费用/FX/现金拖累`, statusState(attribution.status)),
+    task("行为复盘", `${Number(behavior.trade_count || 0)} 条交易 · ${(behavior.conclusions || []).join(" / ") || "等待交易数据"}`, statusState(behavior.status)),
+    task("消费分类", `${(classification.rows || []).length} 条分类 · ${(classification.review_queue || []).length} 条待复核`, (classification.review_queue || []).length ? "review" : "ready"),
+    task("异常与订阅", `${Number(anomalies.anomaly_count || 0)} 条异常 · ${Number(recurring.candidate_count || 0)} 个订阅`, Number(anomalies.anomaly_count || 0) ? "review" : "ready"),
+  ];
+  WORKSPACES.investment.rows = [
+    row("P1", "投资总览", (invSummary.evidence_refs || []).slice(0, 2).join(", "), "查看总市值、盈亏、配置和现金仓位。", "可用"),
+    row("P1", "收益归因", safeUserText(attribution.precision_policy, "估计归因"), "复核市场、主动、费用、FX 和现金拖累。", safeUserText(attribution.status, "复核")),
+    row("P1", "风险分析", safeUserText((risk.concentration || {}).largest_instrument_id, "持仓"), "复核集中度、回撤、币种暴露和流动性。", safeUserText((risk.concentration || {}).status, "复核")),
+    row("P2", "行为复盘", `${Number(behavior.trade_count || 0)} 条交易`, "查看追涨、杀跌、频繁交易和持有周期。", safeUserText(behavior.status, "复核")),
+  ];
+  WORKSPACES.consumption.rows = [
+    row("P1", "消费总览", safeUserText((conSummary.source_ids || []).join(", "), "三来源"), "查看预算剩余、固定和弹性支出。", "可用"),
+    row("P1", "分类分析", `${(classification.review_queue || []).length} 条待复核`, "低置信度分类用选择题处理。", (classification.review_queue || []).length ? "复核" : "可用"),
+    row("P1", "异常消费", `${Number(anomalies.anomaly_count || 0)} 条异常`, "处理大额、重复、夜间、周末和冲动型消费。", Number(anomalies.anomaly_count || 0) ? "复核" : "可用"),
+    row("P2", "现金流预测", `30 天 ${moneyLabel(firstHorizon.available_to_invest_aud)}`, "生活现金和投资现金分开计算。", safeUserText(firstHorizon.cashflow_pressure, "复核")),
+  ];
+}
+
+function applyStage5Dashboard(dashboard) {
+  if (!dashboard || dashboard.schema !== "PFIV02Stage5AdviceReportAlphaExportV1") return;
+  const recommendations = dashboard.recommendations || [];
+  const topRecommendations = dashboard.top_recommendations || [];
+  const lifecycle = dashboard.review_lifecycle || {};
+  const reports = dashboard.reports || {};
+  const reportItems = Object.values(reports);
+  const exportCenter = dashboard.export_center || {};
+  const exportItems = exportCenter.exports || [];
+  const alphaContext = dashboard.alpha_context_export || {};
+  const constraints = alphaContext.constraints || {};
+  const investmentCount = recommendations.filter((item) => item.domain === "investment").length;
+  const consumptionCount = recommendations.filter((item) => item.domain === "consumption").length;
+  const totalSavings = recommendations
+    .filter((item) => item.domain === "consumption")
+    .reduce((total, item) => total + Number(item.savings_target_aud || 0), 0);
+
+  WORKSPACES.home.runtime = "Stage 5：建议、报告、Alpha 只读出口 · 本地只读 MVP";
+  const topFeatures = topRecommendations.slice(0, 4).map((item) =>
+    feature(
+      recommendationTypeLabel(item.recommendation_type),
+      safeUserText(item.status, "有建议"),
+      safeUserText((item.evidence_refs || [])[0], "stage5:recommendations"),
+      safeUserText(item.suggested_action, "查看建议并人工决策。"),
+      { workspace: "recommendations", label: "查看建议" },
+    ),
+  );
+  WORKSPACES.home.features = [
+    ...topFeatures,
+    feature("月度报告", "可用", "stage5:monthly_report", "净资产、现金流、消费、投资和建议复盘可导出。"),
+    feature("PFI Context Export", "只读", safeUserText(alphaContext.schema, "pfi_context_snapshot_v1"), "只读 context；无交易密码，无实盘提交授权。"),
+  ].slice(0, 6);
+  WORKSPACES.home.tasks = [
+    task("Top N 建议", `${topRecommendations.length} 条展示 · ${recommendations.length} 条进入 lifecycle`, topRecommendations.length ? "ready" : "review"),
+    task("报告导出", `${exportItems.length} 种格式 · ${(exportCenter.preferred_formats || []).join(" / ") || "Markdown / JSON / CSV"}`, exportItems.length ? "ready" : "review"),
+    task("Alpha 只读出口", constraints.live_trade_submission_authorized === false ? "live_trade_submission_authorized=false" : "等待约束确认", constraints.live_trade_submission_authorized === false ? "ready" : "review"),
+  ];
+
+  WORKSPACES.recommendations.cards = [
+    ["建议模型", String(recommendations.length), "领域、证据、预期效果、代价、动作、决策"],
+    ["Review lifecycle", String((lifecycle.rows || []).length), "接受、拒绝、暂缓、复核、效果度量"],
+    ["投资建议", String(investmentCount), "集中度、交易频率、现金仓位、策略上线/暂停"],
+    ["消费建议", moneyLabel(totalSavings), "预算、订阅、异常、降成本目标"],
+  ];
+  WORKSPACES.recommendations.features = [
+    feature("建议模型", "可用", "stage5:recommendations", "所有建议必须有证据、预期效果、tradeoff、动作和 owner decision。"),
+    feature("Review lifecycle", lifecycle.decision_record_supported ? "可用" : "复核", "stage5:lifecycle", "支持接受、拒绝、暂缓、复核和效果度量。"),
+    feature("投资建议", investmentCount ? "有建议" : "复核", "stage4:investment", `${investmentCount} 条投资建议可人工决策。`),
+    feature("消费建议", consumptionCount ? "有建议" : "复核", "stage4:consumption", `${consumptionCount} 条消费建议 · savings target ${moneyLabel(totalSavings)}。`),
+  ];
+  WORKSPACES.recommendations.rows = topRecommendations.slice(0, 4).map((item) =>
+    row(
+      `P${item.priority || 9}`,
+      safeUserText(item.target_entry, "建议与复盘"),
+      safeEvidenceText((item.evidence_refs || []).slice(0, 2).join(", "), "stage5:recommendations"),
+      safeUserText(item.suggested_action, "查看建议并人工决策。"),
+      safeUserText(item.status, "有建议"),
+    ),
+  );
+  WORKSPACES.recommendations.tasks = [
+    task("无证据建议拦截", recommendations.every((item) => (item.evidence_refs || []).length) ? "全部建议有 evidence_refs" : "存在缺失证据", recommendations.every((item) => (item.evidence_refs || []).length) ? "ready" : "review"),
+    task("Top N 首页降噪", `${topRecommendations.length} 条展示，其余留在建议与复盘`, "ready"),
+    task("效果度量", lifecycle.manual_review_required ? "人工 review 后记录 measured effect" : "等待 lifecycle", lifecycle.manual_review_required ? "ready" : "review"),
+  ];
+
+  WORKSPACES.insights.cards = [
+    ["月度报告", reports.monthly_report ? "ready" : "待补", "净资产、现金流、消费、投资、建议复盘"],
+    ["投资报告", reports.investment_report ? "ready" : "待补", "收益、风险、归因、持仓、行为"],
+    ["消费报告", reports.consumption_report ? "ready" : "待补", "分类、预算、订阅、异常、节省金额"],
+    ["数据质量报告", reports.data_quality_report ? "ready" : "待补", "同步、缺失、对账、parser 错误"],
+  ];
+  WORKSPACES.insights.features = [
+    ...reportItems.map((item) =>
+      feature(
+        safeUserText(item.title, "报告"),
+        safeUserText(item.status, "可用"),
+        safeEvidenceText((item.evidence_refs || []).join(", "), "stage5:reports"),
+        `${(item.required_sections || []).join(" / ")} · 证据链${item.has_evidence_chain ? "已连接" : "待补"}`,
+      ),
+    ),
+    feature("导出中心", exportItems.length ? "可用" : "复核", "Markdown / JSON / CSV", `可复现导出 ${exportItems.length} 种格式，保留 checksum。`),
+    feature("PFI Context Export", "只读", safeUserText(alphaContext.schema, "pfi_context_snapshot_v1"), "输出净资产、可投资现金、组合配置、风险预算、现金流压力、行为标签和数据新鲜度。"),
+    feature("Alpha 只读出口", "只读", "constraints=false", "不新增 Alpha 一级入口，不修改 Alpha repo，不授权实盘提交。"),
+  ];
+  WORKSPACES.insights.rows = [
+    ...reportItems.slice(0, 3).map((item, index) =>
+      row(`P${index + 1}`, safeUserText(item.title, "报告"), safeEvidenceText((item.evidence_refs || [])[0], "stage5:reports"), "生成本地只读报告并保留证据链。", safeUserText(item.status, "可用")),
+    ),
+    row("P1", "PFI Context Export", safeUserText(alphaContext.schema, "pfi_context_snapshot_v1"), "生成只读 context snapshot。", "只读"),
+  ];
+  WORKSPACES.insights.tasks = [
+    task("报告可复现", `${exportItems.length} 个导出文件 · checksum ready`, exportItems.length ? "ready" : "review"),
+    task("数据质量报告", reports.data_quality_report ? "同步、缺失、对账和 parser 错误可见" : "等待质量报告", reports.data_quality_report ? "ready" : "review"),
+    task("实盘边界", constraints.trading_password_available === false ? "trading_password_available=false" : "等待约束确认", constraints.trading_password_available === false ? "ready" : "review"),
+  ];
+}
+
+function applyStage6Dashboard(dashboard) {
+  if (!dashboard || dashboard.schema !== "PFIV02Stage6E2EStabilizationV1") return;
+  const phase6a = dashboard.phase_6a || {};
+  const sourceMatrix = phase6a.source_fixture_matrix || [];
+  const homepageLoop = phase6a.homepage_loop || {};
+  const ledgerLoop = phase6a.ledger_loop || {};
+  const recommendationLoop = phase6a.recommendation_loop || {};
+  const regression = dashboard.phase_6b || {};
+  const delivery = dashboard.phase_6c || {};
+  const totalGate = dashboard.total_acceptance_gate || [];
+  const taskpackAudit = dashboard.taskpack_acceptance_audit || [];
+  const gatePassCount = totalGate.filter((item) => item.status === "PASS").length;
+  const auditPassCount = taskpackAudit.filter((item) => item.status === "PASS").length;
+  const rollbackCount = (delivery.rollback_plan || []).length;
+  const followUpCount = (delivery.follow_up_list || []).length;
+
+  WORKSPACES.home.runtime = "Stage 6：端到端验收与稳定化 · 本地只读 MVP";
+  WORKSPACES.home.features = [
+    feature("端到端验收", gatePassCount === totalGate.length ? "通过" : "复核", "stage6:total_acceptance_gate", `${gatePassCount}/${totalGate.length} 个总 gate 通过。`),
+    feature("合成端到端", phase6a.status === "PASS" ? "通过" : "复核", "stage6:phase_6a", `${sourceMatrix.length} 个核心源 · 首页/账本/建议闭环。`),
+    feature("回归治理", regression.status === "PASS" ? "通过" : "复核", "stage6:phase_6b", "既有 smoke、聚焦测试和变更范围治理已记录。"),
+    feature("交付与回滚", delivery.status === "PASS" ? "通过" : "复核", "stage6:phase_6c", `${rollbackCount} 步回滚计划 · ${followUpCount} 项后续任务。`),
+    feature("回滚计划", rollbackCount >= 6 ? "可用" : "复核", "stage6:rollback", "可回滚代码、测试、文档、治理和 Web Shell 接入。"),
+    feature("后续任务清单", followUpCount ? "可用" : "待补", "stage6:follow_up", "外部 context consumer、真实数据、PDF/ZIP、CDR/Open Banking 分离跟进。"),
+  ];
+  WORKSPACES.home.tasks = [
+    task("Stage 6 总验收", `${gatePassCount}/${totalGate.length} 个 gate PASS`, gatePassCount === totalGate.length ? "ready" : "review"),
+    task("TaskPack ACC 审计", `${auditPassCount}/${taskpackAudit.length} 个 acceptance PASS`, auditPassCount === taskpackAudit.length ? "ready" : "review"),
+    task("E2E 四闭环", `sources=${sourceMatrix.length} · ledger=${(ledgerLoop.checks || []).length} · recommendations=${recommendationLoop.generated_count || 0}`, phase6a.status === "PASS" ? "ready" : "review"),
+    task("回滚计划", `${rollbackCount} 步 · QBVS 顶层独立，不迁移真实数据`, rollbackCount >= 6 ? "ready" : "review"),
+  ];
+
+  WORKSPACES.insights.features = [
+    feature("端到端验收", gatePassCount === totalGate.length ? "通过" : "复核", "stage6:total_acceptance_gate", `${gatePassCount}/${totalGate.length} 个总 gate 通过。`),
+    feature("合成端到端", phase6a.status === "PASS" ? "通过" : "复核", "stage6:phase_6a", "多数据源、首页、账本和建议闭环。"),
+    feature("回归治理", regression.status === "PASS" ? "通过" : "复核", "stage6:phase_6b", "既有 smoke、聚焦测试、变更范围治理和无大范围重构已记录。"),
+    feature("交付与回滚", delivery.status === "PASS" ? "通过" : "复核", "stage6:phase_6c", "用户文档、差异摘要、回滚计划和后续任务清单已记录。"),
+    feature("回滚计划", rollbackCount >= 6 ? "可用" : "复核", "stage6:rollback", "可逆文件清单和无生产迁移边界。"),
+    feature("后续任务清单", followUpCount ? "可用" : "待补", "stage6:follow_up", "后续任务独立排期，不越权进入 Stage 6。"),
+  ];
+  WORKSPACES.insights.rows = [
+    row("P0", "端到端验收", "stage6:total_acceptance_gate", `${gatePassCount}/${totalGate.length} 个 gate 通过。`, gatePassCount === totalGate.length ? "通过" : "复核"),
+    row("P0", "合成端到端", "stage6:phase_6a", `${sourceMatrix.length} 个核心源；首页状态 ${safeUserText(homepageLoop.status, "复核")}。`, safeUserText(phase6a.status, "复核")),
+    row("P1", "回归治理", "lean_governance.py", safeUserText((regression.changed_scope_governance || {}).expected, "运行 changed-only governance。"), safeUserText(regression.status, "复核")),
+    row("P1", "交付与回滚", "stage6:phase_6c", `${rollbackCount} 步 rollback · ${followUpCount} 项 follow-up。`, safeUserText(delivery.status, "复核")),
+  ];
+  WORKSPACES.insights.tasks = [
+    task("Stage 6 owner docs", (delivery.owner_docs || []).length ? `${delivery.owner_docs.length} 个 owner 文档已覆盖` : "等待 owner 文档", (delivery.owner_docs || []).length ? "ready" : "review"),
+    task("分类闭环", `${(ledgerLoop.checks || []).length} 个账本分类检查`, ledgerLoop.status === "PASS" ? "ready" : "review"),
+    task("建议闭环", `${recommendationLoop.generated_count || 0} 条建议 · lifecycle ${recommendationLoop.lifecycle_row_count || 0}`, recommendationLoop.status === "PASS" ? "ready" : "review"),
+    task("回归命令", regression.status === "PASS" ? "smoke / focused / governance 已记录" : "等待回归治理", regression.status === "PASS" ? "ready" : "review"),
+  ];
+}
+
+function recommendationTypeLabel(value) {
+  const labels = {
+    concentration: "集中度建议",
+    trading_frequency: "交易频率建议",
+    cash_position: "现金仓位建议",
+    strategy_pause_or_launch: "策略上线/暂停建议",
+    budget: "预算建议",
+    subscription: "订阅建议",
+    anomaly: "异常消费建议",
+    cost_saving: "降成本建议",
+  };
+  return labels[value] || "建议模型";
 }
 
 function localizedCardDetail(key, card, fallback) {
   if (!card || (!card.detail && !card.value)) return fallback;
   const source = CARD_SOURCES[key] || "运行库";
   const detail = safeUserText(card.detail, "");
+  if (detail && !englishNoise(detail)) return `来源：${source} · ${detail}`;
   const status = localizeStatus(detail.match(/status\s+([A-Za-z]+)/)?.[1] || "");
   return `来源：${source} · ${status ? `状态${status}` : "状态待复核"}`;
 }
@@ -973,9 +1608,9 @@ function renderCards(cards) {
   document.querySelectorAll("[data-home-card]").forEach((tile, index) => {
     const card = cards[index];
     if (!card) return;
-    tile.querySelector("span").textContent = card[0];
-    tile.querySelector("[data-card-value]").textContent = card[1];
-    tile.querySelector("[data-card-detail]").textContent = card[2];
+    tile.querySelector("span").textContent = safeUserText(card[0], "指标");
+    tile.querySelector("[data-card-value]").textContent = safeUserText(card[1], "待补");
+    tile.querySelector("[data-card-detail]").textContent = safeUserText(card[2], "来源待补");
   });
 }
 
@@ -991,7 +1626,7 @@ function renderFeatureCards(cards) {
     const head = document.createElement("div");
     head.className = "workflow-card-head";
     const title = document.createElement("strong");
-    title.textContent = card.title;
+    title.textContent = safeUserText(card.title, "功能入口");
     const status = document.createElement("span");
     status.className = `status-pill ${statusClass(card.status)}`;
     status.textContent = localizeStatus(card.status);
@@ -1036,7 +1671,9 @@ function renderFeatureCards(cards) {
 }
 
 function featureTarget(title) {
-  const compact = String(title || "").replace(/\s+/g, "");
+  const raw = String(title || "").trim();
+  if (Object.prototype.hasOwnProperty.call(FEATURE_TARGETS, raw)) return FEATURE_TARGETS[raw];
+  const compact = raw.replace(/\s+/g, "");
   if (Object.prototype.hasOwnProperty.call(FEATURE_TARGETS, compact)) return FEATURE_TARGETS[compact];
   if (/回测|参数|盘感|策略|模拟/.test(compact)) return { workspace: "strategy", label: "打开策略" };
   if (/持仓|订单|组合|纪律/.test(compact)) return { workspace: "portfolio", label: "打开持仓" };
@@ -1255,11 +1892,11 @@ function renderTasks(tasks) {
     const li = document.createElement("li");
     li.dataset.taskState = item.state || "review";
     const title = document.createElement("strong");
-    title.textContent = item.title;
+    title.textContent = safeUserText(item.title, "任务");
     const detail = document.createElement("span");
     if (index === 1) detail.id = "task-phase";
     if (index === 2) detail.id = "background-job-label";
-    detail.textContent = item.detail;
+    detail.textContent = safeUserText(item.detail, "等待处理");
     li.appendChild(title);
     li.appendChild(detail);
     list.appendChild(li);
@@ -1490,6 +2127,12 @@ function localizeStatus(status) {
   return STATUS_LABELS[normalized] || status || "复核";
 }
 
+function moneyLabel(value) {
+  const numeric = Number(value || 0);
+  if (!Number.isFinite(numeric)) return "AUD 0.00";
+  return `AUD ${numeric.toLocaleString("en-AU", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
 function workspaceLabel(value, fallback = "工作区") {
   const clean = String(value || "").trim();
   const key = clean.toLowerCase().replaceAll(" ", "_").replaceAll("+", "").replaceAll("__", "_");
@@ -1508,6 +2151,8 @@ function safeUserText(value, fallback = "待补") {
   if (!clean) return fallback;
   if (clean === "{}") return "{}";
   const normalized = clean.toLowerCase().replaceAll(" ", "_");
+  if (Object.prototype.hasOwnProperty.call(USER_TEXT_LABELS, clean)) return USER_TEXT_LABELS[clean];
+  if (Object.prototype.hasOwnProperty.call(USER_TEXT_LABELS, normalized)) return USER_TEXT_LABELS[normalized];
   if (Object.prototype.hasOwnProperty.call(STATUS_LABELS, normalized)) return STATUS_LABELS[normalized];
   if (["missing", "n/a", "none", "null", "undefined"].includes(normalized)) return fallback;
   if (clean === ["Disabled", "Provider"].join("")) return "外部模型未启用";
@@ -1536,6 +2181,13 @@ function bindEvents() {
       event.preventDefault();
       setPressedFeedback(featureControl);
       openFunctionView(featureControl.dataset.featureView);
+      return;
+    }
+    const workspaceControl = event.target.closest("[data-feature-workspace]");
+    if (workspaceControl) {
+      event.preventDefault();
+      setPressedFeedback(workspaceControl);
+      setActiveWorkspace(workspaceControl.dataset.featureWorkspace || "home");
       return;
     }
     const functionAction = event.target.closest("[data-function-action]");

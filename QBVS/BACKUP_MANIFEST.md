@@ -4,11 +4,11 @@ Backup date: 2026-06-20 Australia/Sydney
 
 Source path before cleanup:
 
-`/Users/linzezhang/Documents/Codex/2026-06-02/new-chat-2/outputs/quant_behavior_validation_system`
+`/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS`
 
 GitHub target path:
 
-`LinzeColin/CodexProject/PFI/modules/qbvs_lab`
+`LinzeColin/CodexProject/QBVS`
 
 ## Included In Git
 

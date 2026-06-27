@@ -57,8 +57,8 @@ ACTIVE_VIEW_COMPATIBILITY: tuple[CompatibilityEntry, ...] = (
 )
 
 PUBLIC_ASSUMPTION_COMPATIBILITY: tuple[CompatibilityEntry, ...] = (
-    CompatibilityEntry("PFI/modules/qbvs_lab", True, "TaskPack public assumption; current local equivalent is PFI_OS strategy simulation", "投资管理 > 策略实验室 / 大数据模拟器", "如果该公开路径在其他 checkout 存在，必须保留；本地以 PFI_OS 模拟实验兼容。", "MappedPublicAssumption"),
-    CompatibilityEntry("qbvs/ active runtime", True, "TaskPack public assumption; not present in current local PFI_OS root", "投资管理 > 策略实验室 / 大数据模拟器", "如果该 runtime 在其他 checkout 存在，禁止移动、改名或宽重构；当前本地 active runtime 是 src/pfi_os + web + scripts。", "BoundaryLocked"),
+    CompatibilityEntry("QBVS", True, "CodexProject/QBVS", "独立系统：CodexProject/QBVS", "PFI 不覆盖 QBVS；只保留外部系统引用和跳转说明。", "IndependentSystem"),
+    CompatibilityEntry("qbvs/ active runtime", True, "CodexProject/QBVS/qbvs", "独立系统：CodexProject/QBVS", "QBVS runtime 已从 PFI 独立；PFI 的策略实验室、回测、盘感训练和大数据模拟器仍保留。", "IndependentSystem"),
 )
 
 LOCAL_ACTIVE_RUNTIME_PATHS: tuple[str, ...] = (
@@ -75,10 +75,7 @@ ROOT_GOVERNANCE_PATHS: tuple[str, ...] = (
     "governance/projects.yaml",
 )
 
-LOCAL_PUBLIC_ASSUMPTION_GAPS: tuple[str, ...] = (
-    "No local PFI/modules/qbvs_lab directory under CodexProject.",
-    "No local qbvs/ directory under PFI_OS.",
-)
+LOCAL_PUBLIC_ASSUMPTION_GAPS: tuple[str, ...] = ()
 
 FORBIDDEN_PRODUCT_PRIMARY_LABELS: tuple[str, ...] = (
     "Alpha",

@@ -10,7 +10,7 @@
 
 Current project root is `CodexProject/PFI`.
 
-The old public path `PFI/modules/qbvs_lab` remains a compatibility entry for the
+The old public path `QBVS` remains a compatibility entry for the
 QBVS runtime and maps to `投资管理 > 策略实验室 / 大数据模拟器`.
 
 ## Phase Status
@@ -54,7 +54,7 @@ Acceptance coverage:
 - No broker-order or payment submission.
 - No Alpha product page or first-level entry inside PFI.
 - No system/development product first-level entry.
-- `PFI/modules/qbvs_lab/qbvs` remains accessible and unmoved.
+- `QBVS/qbvs` remains accessible and unmoved.
 
 ## Phase 1B Contract Summary
 
@@ -106,7 +106,7 @@ Observed: `Ran 7 tests` / `OK`.
 Legacy compatibility smoke:
 
 ```bash
-cd PFI/modules/qbvs_lab
+cd QBVS
 PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q
 ```
 
@@ -133,6 +133,6 @@ Observed closeout:
 | Command | Result |
 | --- | --- |
 | `PYTHONPATH=src python3 -B -m unittest tests.test_stage1_ia_contract tests.test_stage1_core_models tests.test_stage1_classification_rules -q` | `Ran 23 tests` / `OK` |
-| `cd PFI/modules/qbvs_lab && PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q` | `Ran 1 test` / `OK` |
+| `cd QBVS && PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q` | `Ran 1 test` / `OK` |
 | Excluded-literal grep scoped to Stage 1 touched files | Pass, no output |
 | `git diff --check` | Pass, no output |

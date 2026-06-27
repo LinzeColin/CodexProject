@@ -56,12 +56,12 @@ class Stage2NonCsvContractsTest(unittest.TestCase):
         self.assertEqual(matched.status, "MATCHED")
         self.assertFalse(matched.requires_review)
 
-    def test_moomoo_read_only_contract_reuses_existing_qbvs_and_never_fabricates_probe_data(self) -> None:
+    def test_moomoo_read_only_contract_references_external_qbvs_and_never_fabricates_probe_data(self) -> None:
         contract = build_moomoo_read_only_contract()
         probe = probe_moomoo_opend_contract(opend_available=False, sdk_available=False)
 
-        self.assertTrue(contract["reuse_existing_qbvs"])
-        self.assertIn("PFI/modules/qbvs_lab/qbvs/datasources.py", contract["existing_runtime_refs"])
+        self.assertTrue(contract["external_qbvs_reference"])
+        self.assertIn("QBVS/qbvs/datasources.py", contract["external_runtime_refs"])
         self.assertIn("no_live_order_submission", contract["boundaries"])
         self.assertEqual(probe["status"], "UNAVAILABLE")
         self.assertFalse(probe["can_emit_synthetic_data"])

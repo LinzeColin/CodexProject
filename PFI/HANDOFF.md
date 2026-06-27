@@ -4,13 +4,14 @@ Last updated: 2026-06-27 Australia/Sydney
 
 ## Current Goal
 
-PFI V0.2 Stage 2 closeout and Stage 3 readiness.
+PFI V0.2 Stage 6 synthetic E2E stabilization, regression governance, delivery rollback, and post-V0.2 follow-up readiness.
 
 ## Current Status
 
-- Correct and only active project root is `PFI/`.
-- Former QBVS container path has been migrated to `PFI/modules/qbvs_lab`.
-- Active QBVS runtime path is `PFI/modules/qbvs_lab/qbvs`.
+- Correct and only active PFI project root is `PFI/`.
+- QBVS is independent top-level system `QBVS/`; PFI does not own or cover QBVS.
+- Active QBVS runtime path is `QBVS/qbvs`.
+- User raw-data archive root is `MetaDatabase/`; current PFI Alipay raw and processed data are under `MetaDatabase/PFI/alipay_daily/`.
 - Former app shell source has been moved into `PFI/src/pfi_os`,
   `PFI/scripts`, `PFI/macos`, `PFI/assets`, `PFI/web`, `PFI/shared`, and
   `PFI/systems`.
@@ -26,30 +27,62 @@ PFI V0.2 Stage 2 closeout and Stage 3 readiness.
 - Stage 2 record is `docs/pfi_v02/STAGE2_DATA_SYNC_MVP.md`.
 - Stage 2 acceptance audit is `docs/pfi_v02/STAGE2_ACCEPTANCE_AUDIT.md`.
 - Stage 2 local contract acceptance is complete for phases 2A-2H.
+- Stage 3 read-model is implemented in `src/pfi_v02/stage3_read_mvp.py`.
+- Stage 3 record is `docs/pfi_v02/STAGE3_READABLE_MVP.md`.
+- Stage 3 local readable MVP acceptance is complete for phases 3A-3D.
+- Stage 4 analysis read-model is implemented in `src/pfi_v02/stage4_analysis_mvp.py`.
+- Stage 4 record is `docs/pfi_v02/STAGE4_ANALYSIS_MVP.md`.
+- Stage 4 local analysis MVP acceptance is complete for phases 4A-4B.
+- Stage 5 advice/report/export model is implemented in `src/pfi_v02/stage5_advice_report_alpha.py`.
+- Stage 5 record is `docs/pfi_v02/STAGE5_ADVICE_REPORT_ALPHA_EXPORT.md`.
+- Stage 5 local advice/report/Alpha-read-only export acceptance is complete for phases 5A-5C.
+- Stage 6 E2E stabilization model is implemented in `src/pfi_v02/stage6_e2e_stabilization.py`.
+- Stage 6 record is `docs/pfi_v02/STAGE6_E2E_STABILIZATION.md`.
+- Stage 6 local synthetic E2E, regression governance, delivery rollback, 20 gate audit, and ACC-* taskpack audit acceptance is complete for phases 6A-6C.
+- Web shell default homepage consumes Stage 6 closeout status, keeps the V0.2 8 first-level entries, shows recommendation lifecycle under 建议与复盘, and shows reports/context export plus Stage 6 closeout under 报告与洞察.
+- 2026-06-27验收退回纠偏：默认 8501 顶部已新增 PFI 本机数据上传；真实支付宝导出 CSV parser 已支持说明区/中间表头/GB18030/尾随空列；旧支付宝原始账单 4 份已导入 `~/.pfi/runtime/imports/alipay_daily`，覆盖 `2022-06-06` 至 `2026-06-03`，`8815` 条标准化流水，`406` 条待复核；Web Shell 动态英文状态已中文化，8 个一级入口浏览器点击验证通过。
+- 2026-06-27二次纠偏：QBVS 已从 `PFI/` 内部分离为顶层 `QBVS/`；PFI 合同改为 `qbvs_independent_system=true`；Web Shell 补回 V0.1 六入口；`MetaDatabase/` 保存支付宝原始 CSV、manifest 和标准化流水，供 GitHub 验收。
 
 ## Decisions
 
-- Do not move or broadly refactor `PFI/modules/qbvs_lab/qbvs` again without a
-  dedicated migration gate and backup.
+- Do not re-embed `QBVS/qbvs` inside `PFI/`.
+- Any future QBVS change must happen under `CodexProject/QBVS`.
 - Put new shared PFI V0.2 contracts at the `PFI/` root.
-- Keep strategy backtesting and 大数据模拟器 under `投资管理 > 策略实验室 / 大数据模拟器`.
+- Keep PFI strategy backtesting, 盘感训练 and 大数据模拟器 under PFI `投资管理`.
+- Keep V0.1 compatibility entries visible: 首页、市场、研究、持仓、策略实验室、数据与系统.
 - Keep PFI research-only: no trading password, no automatic real-money orders.
 - Non-CSV sources are first-class: 支付宝基金、中国大陆券商、ABC Bullion do not rely on CSV as the primary contract.
 - Low-confidence OCR/screenshot/recording input is candidate-only and must enter review before acceptance.
+- Stage 3 `sync_all_plan` is a plan/preview only. It does not log in, submit payments, submit broker orders, or mutate real accounts.
+- Stage 3 FX values are deterministic local fixtures for UI/test readability, not live exchange rates.
+- Stage 4 attribution values are deterministic local estimates. If evidence is insufficient, PFI must show `estimate/需要复核` rather than precise conclusions.
+- Stage 4 consumption analysis excludes transfers and investment records from living consumption.
+- Stage 4 cashflow forecast separates life cash from investment cash.
+- Stage 5 recommendations are review queue items. They are not orders, payment actions, or automatic real-money decisions.
+- Stage 5 Alpha export is only `pfi_context_snapshot_v1`; it does not add Alpha/Ralpha/System first-level entries and does not modify the Alpha repository.
+- Stage 5 context constraints keep `trading_password_available=false` and `live_trade_submission_authorized=false`.
+- Stage 6 is synthetic/read-only E2E only. It proves local V0.2 can run, verify, and rollback; it does not prove real account production connectivity.
+- Stage 6 follow-ups are separate gates: external Alpha context consumer, real account data connection, PDF/ZIP package, CDR/Open Banking, and production release evidence.
 
 ## Validation Commands
 
 ```bash
-PYTHONPATH=src python3 -B -m unittest tests.test_stage1_ia_contract tests.test_stage1_core_models tests.test_stage1_classification_rules tests.test_stage2_data_source_registry tests.test_stage2_cba_csv_import tests.test_stage2_alipay_import tests.test_stage2_non_csv_contracts -q
-cd modules/qbvs_lab && PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q
+PYTHONPATH=src python3 -B -m unittest tests.test_stage1_ia_contract tests.test_stage1_core_models tests.test_stage1_classification_rules tests.test_stage2_data_source_registry tests.test_stage2_cba_csv_import tests.test_stage2_alipay_import tests.test_stage2_non_csv_contracts tests.test_stage3_readable_mvp tests.test_stage4_analysis_mvp tests.test_stage5_advice_report_alpha tests.test_stage6_e2e_stabilization -q
+cd ../QBVS && PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pfi_os.examples.macos_app_acceptance_lite --project-root . --summary-json
+node --check web/app/shell.js
 git diff --check
 ```
 
 Latest Stage 2 target result: `Ran 22 tests / OK`.
 Latest closeout result: Stage 1+2 contracts `Ran 45 tests / OK`; legacy QBVS smoke `Ran 1 test / OK`; project governance validation `errors 0 / warnings 0`; human-entry Markdown contract `Ran 2 tests / OK`; PFI.app resolves to `CodexProject/PFI`; port 8501 is served by canonical PFI `.venv`; no PFI LaunchAgent found.
+Latest Stage 3 closeout result: Stage 1+2+3 contracts `Ran 59 tests / OK`; legacy QBVS lifecycle smoke `Ran 1 test / OK`; project governance validation `errors 0 / warnings 0`; human-entry Markdown contract `Ran 2 tests / OK`; Python compile `OK`; Web shell syntax `OK`.
+Latest Stage 4 closeout result: Stage 1+2+3+4 contracts `Ran 71 tests / OK`; legacy QBVS lifecycle smoke `Ran 1 test / OK`; project governance validation `errors 0 / warnings 0`; human-entry Markdown contract `Ran 2 tests / OK`; Stage 4 contract `Ran 12 tests / OK`; Python compile `OK`; Web shell syntax `OK`; `git diff --check -- PFI` `OK`.
+Latest Stage 5 closeout result: Stage 1+2+3+4+5 contracts `Ran 85 tests / OK`; legacy QBVS lifecycle smoke `Ran 1 test / OK`; project governance validation `errors 0 / warnings 0`; human-entry Markdown contract `Ran 2 tests / OK`; Stage 5 contract `Ran 14 tests / OK`; Python compile `OK`; Web shell syntax `OK`; `git diff --check -- PFI` `OK`; macOS app acceptance lite `29 pass / 0 fail / 2 info`; browser validation screenshot `/tmp/pfi-stage5-browser-verified.png`.
+Latest Stage 6 closeout result: Stage 1+2+3+4+5+6 contracts `Ran 95 tests / OK`; legacy QBVS lifecycle smoke `Ran 1 test / OK`; project governance validation `errors 0 / warnings 0`; human-entry Markdown contract `Ran 2 tests / OK`; Stage 6 contract `Ran 10 tests / OK`; Python compile `OK`; Web shell syntax `OK`; `git diff --check -- PFI` `OK`; macOS app acceptance lite `29 pass / 0 fail / 2 info`; browser validation screenshot `/tmp/pfi-stage6-browser-verified.png`.
+Latest验收退回纠偏 result: `tests.test_stage2_alipay_import` `Ran 7 tests / OK`; Stage 1 classification + Stage 2 targeted contracts `Ran 32 tests / OK`; Python compile `OK`; Web shell syntax `OK`; real old Alipay import `4/4 files`, `8815` records, `406` review; browser validation `upload panel true`, `private ledger true`, `file input 1`, `navCount 8`, all primary entry clicks OK, no raw `ready`/`Synthetic E2E`; screenshot `/tmp/pfi-alipay-upload-verified-v2.png`.
 
 ## Next
 
-1. Stage 3 can build owner-readable homepage/account/ledger MVP on these contracts.
-2. Real account credentials, production sync, payment submission, broker order submission, and live trading remain separate gates.
+1. Commit/push this branch by staging only `PFI/`, `QBVS/`, and `MetaDatabase/`; do not include unrelated EEI/ADP/Alpha/Serenity runtime changes.
+2. After this correction lands on GitHub, next work must be a separate post-V0.2 gate for real account credentials, production sync, PDF/ZIP package, external context consumer, CDR/Open Banking, payment submission, broker order submission, or live trading evidence.

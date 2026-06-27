@@ -1,0 +1,120 @@
+{
+  "schema": "PFIAlipayLocalImportPreviewV1",
+  "generated_at": "2026-06-27T06:27:27.475205+00:00",
+  "file_count": 4,
+  "valid_file_count": 4,
+  "bytes_count": 1477316,
+  "raw_record_count": 8815,
+  "transaction_count": 8815,
+  "review_count": 406,
+  "date_start": "2022-06-06",
+  "date_end": "2026-06-03",
+  "file_summaries": [
+    {
+      "file_name": "alipay_20220605-20230605_24779d7bb0f9.csv",
+      "content_sha256": "24779d7bb0f977d57feb3a6f03932e565a7697f6a61bd9e2ec10a5ce23684342",
+      "bytes_count": 264554,
+      "raw_record_count": 1571,
+      "transaction_count": 1571,
+      "review_count": 74,
+      "date_start": "2022-06-06",
+      "date_end": "2023-06-05",
+      "status": "Ready",
+      "error": ""
+    },
+    {
+      "file_name": "alipay_20230605-20240605_c16e278e987c.csv",
+      "content_sha256": "c16e278e987c3c626fc2495254e5d0b5eeb71bd8ec4dcacc8d3a7cec2e6d1e13",
+      "bytes_count": 259891,
+      "raw_record_count": 1531,
+      "transaction_count": 1531,
+      "review_count": 97,
+      "date_start": "2023-06-06",
+      "date_end": "2024-06-05",
+      "status": "Ready",
+      "error": ""
+    },
+    {
+      "file_name": "alipay_20240605-20250605_c592e6a224da.csv",
+      "content_sha256": "c592e6a224da1e31995760b59f3597c351a87d545f535e219c27f4bec6792ba1",
+      "bytes_count": 263668,
+      "raw_record_count": 1586,
+      "transaction_count": 1586,
+      "review_count": 75,
+      "date_start": "2024-06-06",
+      "date_end": "2025-06-05",
+      "status": "Ready",
+      "error": ""
+    },
+    {
+      "file_name": "alipay_20250604-20260603_eaff20de65cc.csv",
+      "content_sha256": "eaff20de65cc44de54b9b39ab7b90f097c375662b5bb1f8870ad15c16409bc54",
+      "bytes_count": 689203,
+      "raw_record_count": 4127,
+      "transaction_count": 4127,
+      "review_count": 160,
+      "date_start": "2025-06-05",
+      "date_end": "2026-06-03",
+      "status": "Ready",
+      "error": ""
+    }
+  ],
+  "event_counts": {
+    "BUY_ASSET": 12,
+    "CASH": 4139,
+    "FUND": 3154,
+    "REFUND": 250,
+    "TRANSFER": 1260
+  },
+  "private_upload_dir": "/Users/linzezhang/.pfi/runtime/uploads/alipay_daily",
+  "private_transactions_path": "/Users/linzezhang/.pfi/runtime/imports/alipay_daily/alipay_transactions.csv",
+  "private_manifest_path": "/Users/linzezhang/.pfi/runtime/imports/alipay_daily/alipay_import_manifest.json",
+  "private_files": [
+    {
+      "file_name": "alipay_20220605-20230605_24779d7bb0f9.csv",
+      "sha256": "24779d7bb0f977d57feb3a6f03932e565a7697f6a61bd9e2ec10a5ce23684342",
+      "private_path": "/Users/linzezhang/.pfi/runtime/uploads/alipay_daily/24779d7bb0f977d5_alipay_20220605-20230605_24779d7bb0f9.csv"
+    },
+    {
+      "file_name": "alipay_20230605-20240605_c16e278e987c.csv",
+      "sha256": "c16e278e987c3c626fc2495254e5d0b5eeb71bd8ec4dcacc8d3a7cec2e6d1e13",
+      "private_path": "/Users/linzezhang/.pfi/runtime/uploads/alipay_daily/c16e278e987c3c62_alipay_20230605-20240605_c16e278e987c.csv"
+    },
+    {
+      "file_name": "alipay_20240605-20250605_c592e6a224da.csv",
+      "sha256": "c592e6a224da1e31995760b59f3597c351a87d545f535e219c27f4bec6792ba1",
+      "private_path": "/Users/linzezhang/.pfi/runtime/uploads/alipay_daily/c592e6a224da1e31_alipay_20240605-20250605_c592e6a224da.csv"
+    },
+    {
+      "file_name": "alipay_20250604-20260603_eaff20de65cc.csv",
+      "sha256": "eaff20de65cc44de54b9b39ab7b90f097c375662b5bb1f8870ad15c16409bc54",
+      "private_path": "/Users/linzezhang/.pfi/runtime/uploads/alipay_daily/eaff20de65cc44de_alipay_20250604-20260603_eaff20de65cc.csv"
+    }
+  ],
+  "privacy_boundary": "owner_authorized_metadatabase_archive_and_local_private_runtime",
+  "metadatabase_raw_dir": "MetaDatabase/PFI/alipay_daily/raw",
+  "metadatabase_transactions_path": "MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv",
+  "metadatabase_manifest_path": "MetaDatabase/PFI/alipay_daily/processed/alipay_import_manifest.json",
+  "metadatabase_files": [
+    {
+      "file_name": "alipay_20220605-20230605_24779d7bb0f9.csv",
+      "sha256": "24779d7bb0f977d57feb3a6f03932e565a7697f6a61bd9e2ec10a5ce23684342",
+      "metadatabase_path": "MetaDatabase/PFI/alipay_daily/raw/alipay_20220605-20230605_24779d7bb0f9.csv"
+    },
+    {
+      "file_name": "alipay_20230605-20240605_c16e278e987c.csv",
+      "sha256": "c16e278e987c3c626fc2495254e5d0b5eeb71bd8ec4dcacc8d3a7cec2e6d1e13",
+      "metadatabase_path": "MetaDatabase/PFI/alipay_daily/raw/alipay_20230605-20240605_c16e278e987c.csv"
+    },
+    {
+      "file_name": "alipay_20240605-20250605_c592e6a224da.csv",
+      "sha256": "c592e6a224da1e31995760b59f3597c351a87d545f535e219c27f4bec6792ba1",
+      "metadatabase_path": "MetaDatabase/PFI/alipay_daily/raw/alipay_20240605-20250605_c592e6a224da.csv"
+    },
+    {
+      "file_name": "alipay_20250604-20260603_eaff20de65cc.csv",
+      "sha256": "eaff20de65cc44de54b9b39ab7b90f097c375662b5bb1f8870ad15c16409bc54",
+      "metadatabase_path": "MetaDatabase/PFI/alipay_daily/raw/alipay_20250604-20260603_eaff20de65cc.csv"
+    }
+  ]
+}

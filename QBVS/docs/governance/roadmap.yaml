@@ -64,9 +64,9 @@ stages:
               - "python -B scripts/lean_governance.py check-render --project PFI_BIG_DATA_SIMULATOR"
               - "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main"
             evidence_refs:
-              - "PFI/modules/qbvs_lab/docs/governance/project.yaml"
-              - "PFI/modules/qbvs_lab/docs/governance/roadmap.yaml"
-              - "PFI/modules/qbvs_lab/docs/governance/events.jsonl"
+              - "QBVS/docs/governance/project.yaml"
+              - "QBVS/docs/governance/roadmap.yaml"
+              - "QBVS/docs/governance/events.jsonl"
               - "governance/run_manifests/GOV-REVIEW9-S5PBT04-PFI-BIG-DATA-SIMULATOR-CANONICAL-RENDER-20260624.json"
             risk: "范围扩张、事实失真或治理回归"
             rollback: "Revert only this task commit; retain the read-only audit evidence."
