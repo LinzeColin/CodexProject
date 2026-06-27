@@ -1,8 +1,38 @@
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 from pfi_v02.stage2_registry import REQUIRED_STAGE2_SOURCE_IDS
 from pfi_v02.stage3_read_mvp import STAGE3_FX_TO_AUD, STAGE3_REQUIRED_ACCOUNT_SOURCES
 
+
+V022_STAGE1_TASK_IDS = (
+    "S1-P1-T1",
+    "S1-P1-T2",
+    "S1-P1-T3",
+    "S1-P2-T1",
+    "S1-P2-T2",
+    "S1-P2-T3",
+)
+
+V022_STAGE1_REQUIRED_PARAMETER_DOMAINS = (
+    "currency",
+    "fx",
+    "time",
+    "data_sources",
+    "account_roles",
+    "event_types",
+    "interconnection",
+    "consumption_categories",
+    "tags",
+    "confidence",
+    "consumption_model",
+    "investment_model",
+    "cashflow",
+    "visualization",
+    "testing",
+)
 
 V022_STAGE0_TASK_IDS = (
     "S0-P1-T1",
@@ -270,4 +300,75 @@ def build_v022_stage0_agent_review() -> dict[str, object]:
         },
         "blocking": False,
         "stage0_result": "baseline_ready_for_owner_review",
+    }
+
+
+def default_v022_parameter_catalog_path() -> Path:
+    return Path(__file__).resolve().parents[2] / "config" / "pfi_parameters.yaml"
+
+
+def load_v022_parameter_catalog(path: Path | None = None) -> dict[str, object]:
+    """Load the Stage 1 machine-readable parameter catalog.
+
+    The file uses JSON-compatible YAML so it can be parsed without adding a
+    runtime YAML dependency. JSON is a valid YAML subset and keeps local tests
+    deterministic in the current PFI environment.
+    """
+    catalog_path = path or default_v022_parameter_catalog_path()
+    return json.loads(catalog_path.read_text(encoding="utf-8"))
+
+
+def build_v022_stage1_contract() -> dict[str, object]:
+    return {
+        "schema": "PFIV022ParameterGovernanceStage1ContractV1",
+        "version": "v0.2.2",
+        "stage": "Stage 1",
+        "stage_name_zh": "模型参数文件重构",
+        "task_ids": V022_STAGE1_TASK_IDS,
+        "goal": "建立中文可读参数总目录、机器可读参数 YAML 和参数一致性测试。",
+        "deliverables": (
+            "PFI/模型参数文件.md",
+            "PFI/config/pfi_parameters.yaml",
+            "PFI/tests/test_pfi_parameters_consistency.py",
+            "PFI/docs/pfi_v022/STAGE1_PARAMETER_GOVERNANCE.md",
+            "PFI/config/parameter_changelog.md",
+            "PFI/功能清单.md",
+            "PFI/开发记录.md",
+            "PFI/HANDOFF.md",
+        ),
+        "required_parameter_domains": V022_STAGE1_REQUIRED_PARAMETER_DOMAINS,
+        "machine_readable_parameter_file": {
+            "path": "PFI/config/pfi_parameters.yaml",
+            "format": "JSON-compatible YAML",
+            "draft_alias_not_used": "PFI/config/pfi_v022_parameters.yaml",
+            "reason": "Stage -> Phase -> Task roadmap and Stage 0 core list name PFI/config/pfi_parameters.yaml as the canonical target; one source avoids YAML drift.",
+        },
+        "acceptance_criteria": (
+            "模型参数文件包含货币、汇率、时间、数据源、账户角色、事件类型、Interconnection、消费分类、标签、置信度、消费模型、投资模型、现金流、可视化、测试。",
+            "YAML 与 Markdown 参数含义一致，字段中文说明可在 Markdown 查到。",
+            "参数一致性测试确认 Markdown、YAML 和前端显示的核心阈值一致。",
+            "每个公式有中文名称、用途、输入、输出、计算逻辑、示例。",
+            "每个阈值有当前值、存在原因、影响页面和是否允许用户修改。",
+            "公式变量有中文别名。",
+        ),
+        "stop_conditions": (
+            "参数仍散落在代码和文档中且没有统一目录。",
+            "Markdown 和 YAML 核心参数不一致。",
+            "核心阈值多处不一致且没有明确标记为后续阶段差异。",
+            "公式只有英文变量或代码名，用户无法理解。",
+        ),
+        "validation_commands": (
+            "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m unittest PFI.tests.test_pfi_parameters_consistency -q",
+            "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m unittest PFI.tests.test_v022_stage0_database_governance PFI.tests.test_pfi_parameters_consistency -q",
+            "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m unittest discover -s PFI/tests -q",
+            "node --check PFI/web/app/shell.js",
+            "python3 scripts/validate_project_governance.py --project PFI",
+            "git diff --check -- PFI",
+        ),
+        "non_goals": (
+            "不改 v0.2.1 HTML Web Shell 正式前端显示。",
+            "不提前实现 Stage 2 汇率快照读取。",
+            "不新增真实交易、自动投资、支付或券商提交。",
+            "不生成 Stage 9/12 的 HTML 逻辑审查页。",
+        ),
     }

@@ -7,6 +7,33 @@ PFI V0.2 is the Personal Financial Intelligence project under
 under `LinzeColin/CodexProject/QBVS`; PFI investment management does not own
 or cover QBVS.
 
+## v0.2.2 数据库治理 Stage 1
+
+`v0.2.2 数据库治理` 当前完成 Stage 1：模型参数文件重构。本轮只做参数治理，不修改 v0.2.1 HTML Web Shell 正式前端，不实现 Stage 2 汇率快照读取，不生成 Stage 9/12 的 HTML 审查页。
+
+Stage 1 source files:
+
+| Purpose | Path |
+| --- | --- |
+| 中文参数总目录 | `模型参数文件.md` |
+| 机器可读参数源 | `config/pfi_parameters.yaml` |
+| 参数变更记录 | `config/parameter_changelog.md` |
+| Stage 1 验收报告 | `docs/pfi_v022/STAGE1_PARAMETER_GOVERNANCE.md` |
+| Stage 0-13 roadmap lock | `docs/pfi_v022/ROADMAP_LOCK.md` |
+| Stage 1 contract | `src/pfi_v02/stage_v022_database_governance.py` |
+| Stage 1 consistency test | `tests/test_pfi_parameters_consistency.py` |
+
+Stage 1 locked parameters:
+
+- 主货币：`CNY`。
+- 当前前端徽标：`CNY/AUD=4.70（YYYYMMDD--HH:MM）`，本轮保持不改。
+- 汇率读取时间：`06:00 Australia/Sydney`。
+- 普通运行默认联网：`false`。
+- 低置信复核线：`70 分`。
+- 大额消费阈值：`CNY 2000` 或 `AUD 500`。
+- 夜间窗口：`22:00-06:00`。
+- 现金流窗口：`7/21/30/60/90/180/360`。
+
 ## v0.2.1 前端优化 Stage 0
 
 `v0.2.1 前端优化` 已进入 Stage 0 准备轮。本轮只锁定前端优化范围、CNY 基准、HTML Web Shell 目标、统一导航、设置页反馈归属和后续 stage 验收合同，不提前实现 Stage 1+。

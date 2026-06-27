@@ -1,7 +1,7 @@
 governance_spec_version: "1.0.0"
 project_id: "PFI"
-product_version: "v0.2.1 前端优化"
-product_version_status: "provisional"
+product_version: "v0.2.2 数据库治理 Stage 1"
+product_version_status: "stage1_verified"
 version_file_value: "v0.2.1 前端优化"
 schema_version: "1.0.0"
 model_versions:
@@ -9,6 +9,6 @@ model_versions:
 parameter_profile_versions:
   pfi_root_contract: "pfi-v0.2-root-contract"
 data_snapshot_version: "not_applicable_contract_only"
-current_iteration: "ITER-20260627-PFI-V021-FRONTEND-STAGE0"
-current_phase: "P0/S0"
-current_gate: "PFI-V021-STAGE0-FRONTEND-PREP-GATE"
+current_iteration: "ITER-20260628-PFI-V022-STAGE1-PARAMETER-GOVERNANCE"
+current_phase: "Stage 1 / Phase 1.1-1.2"
+current_gate: "PFI-V022-S1-PARAMETER-GOVERNANCE-GATE"

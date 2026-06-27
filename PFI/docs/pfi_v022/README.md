@@ -20,10 +20,23 @@
 - 不新增标签数据库 schema。
 - 不改变 v0.2.1 UIUX 展示。
 
+## Stage 1 范围
+
+本轮完成参数治理，不改前端：
+
+- 重构 `PFI/模型参数文件.md`，建立中文参数总目录。
+- 新增 `PFI/config/pfi_parameters.yaml`，作为唯一机器可读参数源。
+- 新增 `PFI/tests/test_pfi_parameters_consistency.py`，验证 Markdown、YAML、前端合同和 HTML 中的核心参数一致。
+- 公式补中文名称、用途、输入、输出、计算逻辑和示例。
+- 阈值补当前值、存在原因、影响页面和是否允许用户修改。
+- 公式变量补中文别名。
+- 继续不修改 `PFI/web/index.html`、`PFI/web/app/shell.js`，不新增 `PFI/web/pfi_v022_logic_review.html`。
+
 ## 文件
 
 | 文件 | 用途 |
 | --- | --- |
 | `STAGE0_BASELINE_REPORT.md` | Stage 0 中文 baseline report。 |
+| `STAGE1_PARAMETER_GOVERNANCE.md` | Stage 1 参数治理验收报告。 |
 | `SOURCE_TASK_PACK_MANIFEST.md` | Downloads 来源文件、SHA-256 和使用边界。 |
 | `ROADMAP_LOCK.md` | v0.2.2 Stage / Phase / Task / Acceptance / Stop / Validation 锁定摘要。 |

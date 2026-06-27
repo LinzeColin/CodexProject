@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## v0.2.2 数据库治理 Stage 1 - 2026-06-28
+
+- 完成 Stage 1 `模型参数文件重构`，覆盖 `S1-P1-T1..S1-P2-T3`。
+- `模型参数文件.md` 新增中文参数总目录，覆盖货币、汇率、时间、数据源、账户角色、事件类型、Interconnection、消费分类、标签、置信度、消费模型、投资模型、现金流、可视化和测试。
+- 新增 `config/pfi_parameters.yaml` 作为唯一机器可读参数源；参数草案中的 `config/pfi_v022_parameters.yaml` 已记录为 draft alias，不新增第二个漂移文件。
+- 新增 `tests/test_pfi_parameters_consistency.py`，验证 Markdown、YAML、前端合同和 HTML 中的核心参数一致。
+- 新增 `docs/pfi_v022/STAGE1_PARAMETER_GOVERNANCE.md`，记录 Stage 1 验收、非目标、参数命名决策和后续 Stage 2 边界。
+- 本轮不修改 `PFI/web/index.html`、`PFI/web/app/shell.js`，不实现真实汇率快照读取，不新增真实交易、自动投资、支付或券商提交能力。
+
 ## v0.2.1 前端优化 - 2026-06-27
 
 - 建立 v0.2.1 前端优化 Stage 0 准备合同，锁定本轮是 PFI Web Shell 前端、交互、图表、上传命名、设置页和持仓编辑持久化优化，不是 V0.2 重构。
