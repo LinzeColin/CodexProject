@@ -9,6 +9,7 @@ from pfi_os.application.source_registry import SourceRegistry
 from pfi_os.application.workflow_runtime_read_model import build_workflow_runtime_read_model, empty_workflow_runtime_read_model
 from pfi_v02.stage3_read_mvp import build_stage3_read_model
 from pfi_v02.stage4_analysis_mvp import build_stage4_analysis_model
+from pfi_v02.stage5_advice_report_alpha import build_stage5_delivery_model
 
 RETIRED_PUBLIC_FRAGMENTS = (
     "Token" + " ROI",
@@ -32,6 +33,7 @@ def build_homepage_summary(store: OperationalStore | None = None, *, now: dateti
     operational_store = store or OperationalStore()
     stage3_dashboard = build_stage3_read_model(now=now)
     stage4_dashboard = build_stage4_analysis_model(stage3_dashboard=stage3_dashboard, now=now)
+    stage5_dashboard = build_stage5_delivery_model(stage3_dashboard=stage3_dashboard, stage4_dashboard=stage4_dashboard, now=now)
     source_registry = SourceRegistry(operational_store)
     source_summary = _without_retired_source_rows(source_registry.summary(now=now))
     sources = _without_retired_rows(operational_store.table_rows("source_records"))
@@ -43,7 +45,12 @@ def build_homepage_summary(store: OperationalStore | None = None, *, now: dateti
     generated_at = (now or datetime.now(timezone.utc)).isoformat(timespec="seconds")
     latest_as_of = _latest_text([row.get("as_of", "") for row in [*sources, *evidence, *jobs, *tasks, *holdings]])
     cards = _stage4_metric_cards(stage4_dashboard) or _stage3_metric_cards(stage3_dashboard)
-    decision_rows = _stage4_decision_rows(stage4_dashboard) or _stage3_decision_rows(stage3_dashboard) or _decision_rows(tasks, jobs, evidence)
+    decision_rows = (
+        _stage5_decision_rows(stage5_dashboard)
+        or _stage4_decision_rows(stage4_dashboard)
+        or _stage3_decision_rows(stage3_dashboard)
+        or _decision_rows(tasks, jobs, evidence)
+    )
     return {
         "schema": "PFIOSHomeSummaryV1",
         "generated_at": generated_at,
@@ -51,7 +58,11 @@ def build_homepage_summary(store: OperationalStore | None = None, *, now: dateti
         "source_registry": source_summary,
         "metric_cards": cards,
         "decision_rows": decision_rows,
-        "evidence_drawer": _stage4_evidence_drawer(stage4_dashboard) or _stage3_evidence_drawer(stage3_dashboard) or _evidence_drawer(evidence, sources),
+        "evidence_drawer": _stage5_evidence_drawer(stage5_dashboard)
+        or _stage4_evidence_drawer(stage4_dashboard)
+        or _stage3_evidence_drawer(stage3_dashboard)
+        or _evidence_drawer(evidence, sources),
+        "stage5_dashboard": _sanitize_public_payload(stage5_dashboard),
         "stage4_dashboard": _sanitize_public_payload(stage4_dashboard),
         "stage3_dashboard": _sanitize_public_payload(stage3_dashboard),
         "workflow_runtime": _sanitize_public_payload(build_workflow_runtime_read_model(operational_store, now=now)),
@@ -64,6 +75,7 @@ def build_homepage_summary(store: OperationalStore | None = None, *, now: dateti
 def empty_homepage_summary() -> dict[str, Any]:
     stage3_dashboard = build_stage3_read_model()
     stage4_dashboard = build_stage4_analysis_model(stage3_dashboard=stage3_dashboard)
+    stage5_dashboard = build_stage5_delivery_model(stage3_dashboard=stage3_dashboard, stage4_dashboard=stage4_dashboard)
     return {
         "schema": "PFIOSHomeSummaryV1",
         "generated_at": "",
@@ -78,8 +90,9 @@ def empty_homepage_summary() -> dict[str, Any]:
             "truth_role": "Operational source_records table is the source registry; ResearchBus remains compatibility events only.",
         },
         "metric_cards": _stage4_metric_cards(stage4_dashboard),
-        "decision_rows": _stage4_decision_rows(stage4_dashboard),
-        "evidence_drawer": _stage4_evidence_drawer(stage4_dashboard),
+        "decision_rows": _stage5_decision_rows(stage5_dashboard),
+        "evidence_drawer": _stage5_evidence_drawer(stage5_dashboard),
+        "stage5_dashboard": _sanitize_public_payload(stage5_dashboard),
         "stage4_dashboard": _sanitize_public_payload(stage4_dashboard),
         "stage3_dashboard": _sanitize_public_payload(stage3_dashboard),
         "workflow_runtime": empty_workflow_runtime_read_model(),
@@ -110,6 +123,28 @@ def _stage4_decision_rows(stage4_dashboard: dict[str, Any]) -> list[dict[str, st
                 "object": str(item.get("object", "首页总览")),
                 "evidence": str(item.get("evidence", "")),
                 "action": str(item.get("action", "查看分析")),
+                "status": str(item.get("status", "有建议")),
+            }
+        )
+    return rows
+
+
+def _stage5_decision_rows(stage5_dashboard: dict[str, Any]) -> list[dict[str, str]]:
+    rows: list[dict[str, str]] = []
+    for item in stage5_dashboard.get("top_recommendations", [])[:4]:
+        if not isinstance(item, dict):
+            continue
+        evidence_refs = item.get("evidence_refs", [])
+        if isinstance(evidence_refs, (list, tuple)):
+            evidence = ", ".join(str(ref) for ref in evidence_refs[:2])
+        else:
+            evidence = str(evidence_refs)
+        rows.append(
+            {
+                "priority": f"P{item.get('priority', 9)}",
+                "object": str(item.get("target_entry", "建议与复盘")),
+                "evidence": evidence or str(item.get("recommendation_id", "")),
+                "action": str(item.get("suggested_action", "查看建议并人工决策")),
                 "status": str(item.get("status", "有建议")),
             }
         )
@@ -159,6 +194,20 @@ def _stage4_evidence_drawer(stage4_dashboard: dict[str, Any]) -> dict[str, str]:
         "Parameters": "Attribution components market/active/fees/fx/cash_drag; budget AUD 3600; reserve AUD 5000; no exact conclusion without evidence.",
         "Data lineage": "Stage3 account/ledger read-model + Stage4 synthetic analysis fixtures -> Stage4 investment/consumption analysis read-model.",
         "Raw document": "PFI/docs/pfi_v02/STAGE4_ANALYSIS_MVP.md",
+    }
+
+
+def _stage5_evidence_drawer(stage5_dashboard: dict[str, Any]) -> dict[str, str]:
+    alpha_context = stage5_dashboard.get("alpha_context_export", {})
+    export_center = stage5_dashboard.get("export_center", {})
+    return {
+        "title": "PFI Stage 5 · Stage 4 inputs · 建议、报告、Alpha 只读出口",
+        "Evidence": "Stage 5 使用本地只读模型验证建议模型、review lifecycle、投资/消费建议、Top N 排序、四类报告、导出中心和 Alpha context snapshot。",
+        "Source": "pfi_v02.stage5_advice_report_alpha",
+        "Model": str(stage5_dashboard.get("schema", "PFIV02Stage5AdviceReportAlphaExportV1")),
+        "Parameters": f"top_n={len(stage5_dashboard.get('top_recommendations', []))}; export_formats={', '.join(export_center.get('preferred_formats', ())) or 'markdown/json/csv'}; context_schema={alpha_context.get('schema', 'pfi_context_snapshot_v1')}",
+        "Data lineage": "Stage3 account/ledger read-model + Stage4 analysis read-model -> Stage5 recommendation/report/context export.",
+        "Raw document": "PFI/docs/pfi_v02/STAGE5_ADVICE_REPORT_ALPHA_EXPORT.md",
     }
 
 

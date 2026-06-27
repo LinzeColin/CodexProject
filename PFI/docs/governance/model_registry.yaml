@@ -32,10 +32,15 @@ models:
       - "PARAM-PFI-001"
       - "PARAM-PFI-002"
       - "PARAM-PFI-003"
+      - "PARAM-PFI-013"
+      - "PARAM-PFI-014"
+      - "PARAM-PFI-015"
+      - "PARAM-PFI-016"
+      - "PARAM-PFI-017"
     inputs:
-      - "Stage 1/2/3/4 contract files"
+      - "Stage 1/2/3/4/5 contract files"
     outputs:
-      - "owner-readable scope, readable MVP state, analysis MVP state, and blocked production status"
+      - "owner-readable scope, readable MVP state, analysis MVP state, advice/report/context export state, and blocked production status"
     code_refs:
       - "PFI/src/pfi_v02/stage1_ia.py"
       - "PFI/src/pfi_v02/stage2_registry.py"
@@ -43,13 +48,16 @@ models:
       - "PFI/src/pfi_v02/stage2_contracts.py"
       - "PFI/src/pfi_v02/stage3_read_mvp.py"
       - "PFI/src/pfi_v02/stage4_analysis_mvp.py"
+      - "PFI/src/pfi_v02/stage5_advice_report_alpha.py"
     test_refs:
       - "PFI/tests/test_stage1_ia_contract.py"
       - "PFI/tests/test_stage2_data_source_registry.py"
       - "PFI/tests/test_stage3_readable_mvp.py"
       - "PFI/tests/test_stage4_analysis_mvp.py"
+      - "PFI/tests/test_stage5_advice_report_alpha.py"
     evidence_refs:
       - "PFI/docs/pfi_v02/STAGE1_CORE_SKELETON.md"
       - "PFI/docs/pfi_v02/STAGE2_DATA_SYNC_MVP.md"
       - "PFI/docs/pfi_v02/STAGE3_READABLE_MVP.md"
       - "PFI/docs/pfi_v02/STAGE4_ANALYSIS_MVP.md"
+      - "PFI/docs/pfi_v02/STAGE5_ADVICE_REPORT_ALPHA_EXPORT.md"

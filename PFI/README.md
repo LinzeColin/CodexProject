@@ -103,19 +103,44 @@ Stage 4 source files:
 | Stage 4 tests | `tests/test_stage4_analysis_mvp.py` |
 | Web shell | `web/index.html`, `web/app/shell.js` |
 
+## Stage 5
+
+Stage 5 builds the advice, report, and Alpha read-only export MVP. It adds:
+
+- recommendation model with domain, evidence, expected effect, tradeoff, action, and owner decision
+- review lifecycle for accept, reject, snooze, review, and effect measurement
+- investment recommendations for concentration, trading frequency, cash position, and strategy pause/launch
+- consumption recommendations for budget, subscription, anomaly, and cost saving with savings targets
+- Top N recommendation ranking for the homepage without hiding the full lifecycle queue
+- monthly, investment, consumption, and data-quality reports
+- reproducible Markdown, JSON, and CSV export center with content hashes
+- `pfi_context_snapshot_v1` read-only context export for external Alpha consumption
+- explicit constraints: `trading_password_available=false` and `live_trade_submission_authorized=false`
+
+Stage 5 source files:
+
+| Purpose | Path |
+| --- | --- |
+| Advice/report/export model | `src/pfi_v02/stage5_advice_report_alpha.py` |
+| Stage 5 record | `docs/pfi_v02/STAGE5_ADVICE_REPORT_ALPHA_EXPORT.md` |
+| Stage 5 tests | `tests/test_stage5_advice_report_alpha.py` |
+| Web shell | `web/index.html`, `web/app/shell.js` |
+
 ## Boundaries
 
 - No automatic real-money trading.
 - No trading password.
 - No broker-order or payment submission.
 - No Alpha product page inside PFI.
+- No Ralpha, System, or Development product page inside PFI.
+- No Alpha repository modification in Stage 5.
 - `PFI/modules/qbvs_lab/qbvs` is the canonical migrated QBVS runtime path.
 
 ## Validation
 
 ```bash
 PYTHONPATH=src python3 -B -m unittest tests.test_stage1_ia_contract -q
-PYTHONPATH=src python3 -B -m unittest tests.test_stage2_data_source_registry tests.test_stage2_cba_csv_import tests.test_stage2_alipay_import tests.test_stage2_non_csv_contracts tests.test_stage3_readable_mvp tests.test_stage4_analysis_mvp -q
+PYTHONPATH=src python3 -B -m unittest tests.test_stage2_data_source_registry tests.test_stage2_cba_csv_import tests.test_stage2_alipay_import tests.test_stage2_non_csv_contracts tests.test_stage3_readable_mvp tests.test_stage4_analysis_mvp tests.test_stage5_advice_report_alpha -q
 node --check web/app/shell.js
 (cd modules/qbvs_lab && PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q)
 ```
