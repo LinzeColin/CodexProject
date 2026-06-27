@@ -1,25 +1,25 @@
 {
   "acceptance": [
     {
-      "evidence_generated_at": "2026-06-27T08:59:53+00:00",
+      "evidence_generated_at": "2026-06-27T09:14:20+00:00",
       "evidence_status": "observing",
       "id": "phase6_48h_soak_validation",
       "status": "blocked"
     },
     {
-      "evidence_generated_at": "2026-06-27T08:58:47+00:00",
+      "evidence_generated_at": "2026-06-27T09:13:53+00:00",
       "evidence_status": "pass",
       "id": "qualified_trading_day_paper_shadow_report",
       "status": "pass"
     },
     {
-      "evidence_generated_at": "2026-06-27T08:58:47+00:00",
+      "evidence_generated_at": "2026-06-27T09:13:53+00:00",
       "evidence_status": "pass",
       "id": "shadow_live_constraints",
       "status": "pass"
     },
     {
-      "evidence_generated_at": "2026-06-27T08:58:47+00:00",
+      "evidence_generated_at": "2026-06-27T09:13:53+00:00",
       "evidence_status": "pass",
       "id": "limit_order_contract",
       "status": "pass"
@@ -37,44 +37,44 @@
       "exists": true,
       "id": "phase6_closeout",
       "path": "phase6_closeout.json",
-      "sha256": "d984665f0ea36548f184a9b3548ed4c0caf38f5d63858f1ad7f9789556e25ade"
+      "sha256": "220870c8021672d48f2f6c8b84517cdbf0065294f29e6f796ba0f63f1253d05f"
     },
     {
       "exists": true,
       "id": "paper_shadow_report",
       "path": "paper_shadow_report_latest.json",
-      "sha256": "a56fd11a89e85b262cf83c0f8b1677b24c638d93e725631ec56d475c64827d1f"
+      "sha256": "5452668afaa29ee427885fa0b51834ff3a2ccc39c513f645c6d32c27c94d2292"
     },
     {
       "exists": true,
       "id": "shadow_live_constraints",
       "path": "shadow_live_constraints_latest.json",
-      "sha256": "8293e5c0c4895d5fcdade1d0938895982c19fa32dccd8b2f7d915d1c6c311ec8"
+      "sha256": "88458341f2ce5d8f32cd15d4613ce0341255c80c2bb9635168fad6c0d4f0f678"
     },
     {
       "exists": true,
       "id": "soak_validation",
       "path": "soak_validation_latest.json",
-      "sha256": "d72828a379384c2a754c39867b0705d3139f34497fd7b3a9beb7407c2470c838"
+      "sha256": "b9b95921cd37e922a68456542e754c41515a34833471c4dd468767d89f2bdc09"
     },
     {
       "exists": true,
       "id": "owner_decision",
       "path": "OWNER_DECISION.md",
-      "sha256": "2c571c74a03571a5e13f08aa682e6d58975fe53617affd37afd7c1f42c3fbbf5"
+      "sha256": "28316254d02df1c6cfc622166a75a240307979794922332760179bbb17a58607"
     },
     {
       "exists": true,
       "id": "closeout_report",
       "path": "PHASE6_CLOSEOUT_REPORT.md",
-      "sha256": "f7346994a8474822cb429fdd87d3f199a4b4e541514d3008b65c6314bfe7cfbb"
+      "sha256": "007445354864624c1928173aeee37daf350255cba01d2320858c9e63d3ad9937"
     }
   ],
   "blocking_conditions": [
     "phase6_48h_soak_validation"
   ],
   "evidence_root": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject-alpha-g6-clean/Alpha/docs/evidence/phase6_closeout_latest",
-  "generated_at": "2026-06-27T08:59:53+00:00",
+  "generated_at": "2026-06-27T09:14:20+00:00",
   "live_authorization_absent": true,
   "paper_shadow": {
     "hard_gate_status": "pass",
@@ -96,18 +96,18 @@
     "status": "pass"
   },
   "soak": {
-    "continuous_sample_count": 33,
+    "continuous_sample_count": 36,
     "duration_hours_required": 48,
     "estimated_ready_at": "2026-06-29T06:14:28+00:00",
     "gap_violation_count": 1,
     "max_observed_gap_seconds": 3100,
     "max_sample_gap_seconds": 900,
-    "observed_hours": 2.7386,
-    "remaining_hours": 45.2614,
-    "remaining_seconds": 162941,
-    "sample_count": 109,
+    "observed_hours": 2.9903,
+    "remaining_hours": 45.0097,
+    "remaining_seconds": 162035,
+    "sample_count": 112,
     "status": "observing",
-    "window_end": "2026-06-27T08:58:47+00:00",
+    "window_end": "2026-06-27T09:13:53+00:00",
     "window_start": "2026-06-27T06:14:28+00:00"
   },
   "status": "blocked_not_ready_for_owner_gate"
