@@ -1,0 +1,155 @@
+{
+  "acceptance_id": "ACC-S2PMT07-FINAL-REVIEW",
+  "closure_claimed": false,
+  "contract_version": "ADP-PRODUCT-CONTRACT-V7.2",
+  "current_pointer_changed": false,
+  "daily_operation_enabled": false,
+  "db_migration_executed": false,
+  "finding_ids": [
+    "A-006",
+    "A-007",
+    "A-008",
+    "A-009"
+  ],
+  "generated_at": "2026-06-27T19:01:16+10:00",
+  "inherited_v7_1_open_p0_findings_after": 8,
+  "inherited_v7_1_open_p0_findings_before": 8,
+  "inherited_v7_1_open_p1_findings_after": 37,
+  "inherited_v7_1_open_p1_findings_before": 37,
+  "manifest_id": "ADP-S2PMT07-P1-A006-A009-TECHNICAL-REVIEW-20260627",
+  "next_task": "continue_p1_finding_level_technical_reviews_or_independent_final_gate_after_all_candidates",
+  "p0_closure_claimed": false,
+  "p1_closure_claimed": false,
+  "parent_task_id": "S2PMT07",
+  "preserved_blockers": [
+    "p1_closure_not_claimed",
+    "independent_final_signoff_missing",
+    "independent_final_command_execution_missing",
+    "s2plt04_not_completed",
+    "final_acceptance_bundle_missing"
+  ],
+  "production_queue_mutation_allowed": false,
+  "production_restore_enabled": false,
+  "project_id": "arxiv-daily-push",
+  "public_schema_changed": false,
+  "ranking_changed": false,
+  "real_smtp_sent": false,
+  "release_packaging_enabled": false,
+  "review_scope": "local_code_and_governance_evidence_only",
+  "reviewed_findings": [
+    {
+      "evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_RUNTIME_LOCK_A006.md",
+        "governance/run_manifests/ADP-S2PMT03-RUNTIME-LOCK-A006-20260626.json",
+        "arxiv-daily-push/src/arxiv_daily_push/stage1_runtime.py",
+        "arxiv-daily-push/tests/test_stage1_runtime.py"
+      ],
+      "finding_id": "A-006",
+      "finding_title": "tick 写入异常时 runtime.lock 永久残留",
+      "fix_task": "S2PMT03-RUNTIME-LOCK-A006",
+      "independent_final_closure_decision_required": true,
+      "severity": "P1",
+      "technical_closure_candidate": true,
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "verified_checks": [
+        "runtime_lock_context_manager_finally_release",
+        "write_exception_releases_lock",
+        "stale_dead_process_takeover_uses_new_fencing_token",
+        "renew_requires_matching_fencing_token",
+        "no_production_side_effects"
+      ]
+    },
+    {
+      "evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_STATE_HISTORY_A007.md",
+        "governance/run_manifests/ADP-S2PMT03-STATE-HISTORY-A007-20260626.json",
+        "arxiv-daily-push/src/arxiv_daily_push/state_machine.py",
+        "arxiv-daily-push/tests/test_state_machine.py"
+      ],
+      "finding_id": "A-007",
+      "finding_title": "状态历史不验证声明的 from_state",
+      "fix_task": "S2PMT03-STATE-HISTORY-A007",
+      "independent_final_closure_decision_required": true,
+      "severity": "P1",
+      "technical_closure_candidate": true,
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "verified_checks": [
+        "from_state_chain_validation",
+        "reason_required",
+        "iso_timestamp_required",
+        "non_decreasing_history_time",
+        "illegal_transition_rejected",
+        "no_production_side_effects"
+      ]
+    },
+    {
+      "evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_STATE_CONSISTENCY_A008.md",
+        "governance/run_manifests/ADP-S2PMT03-STATE-CONSISTENCY-A008-20260626.json",
+        "arxiv-daily-push/src/arxiv_daily_push/state_machine.py",
+        "arxiv-daily-push/tests/test_state_machine.py"
+      ],
+      "finding_id": "A-008",
+      "finding_title": "current_state 与 state_history 末态可不一致",
+      "fix_task": "S2PMT03-STATE-CONSISTENCY-A008",
+      "independent_final_closure_decision_required": true,
+      "severity": "P1",
+      "technical_closure_candidate": true,
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "verified_checks": [
+        "current_state_matches_history_last_to_state",
+        "status_matches_current_state",
+        "schema_version_required",
+        "row_version_matches_transition_count",
+        "row_version_increments_on_transition",
+        "no_production_side_effects"
+      ]
+    },
+    {
+      "evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_OPTIMISTIC_FENCING_A009.md",
+        "governance/run_manifests/ADP-S2PMT03-OPTIMISTIC-FENCING-A009-20260626.json",
+        "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py",
+        "arxiv-daily-push/tests/test_stage2_lease_fencing.py"
+      ],
+      "finding_id": "A-009",
+      "finding_title": "状态转换缺少乐观并发控制与 fencing token",
+      "fix_task": "S2PMT03-OPTIMISTIC-FENCING-A009",
+      "independent_final_closure_decision_required": true,
+      "severity": "P1",
+      "technical_closure_candidate": true,
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "verified_checks": [
+        "row_version_compare_and_swap",
+        "single_winner_concurrent_claim",
+        "stale_row_version_blocked",
+        "stale_fencing_token_blocked",
+        "append_only_claim_attempt_log",
+        "no_production_side_effects"
+      ]
+    }
+  ],
+  "reviewer_independence_for_final_gate_claimed": false,
+  "rollback": "Remove this manifest, phase record, P1 receipt updates, traceability row, rendered owner pages, and tests; no production state was changed.",
+  "s2pmt07_final_pass_claimed": false,
+  "scheduler_install_enabled": false,
+  "schema_version": "codexproject.run_manifest.v1",
+  "source_adapter_changed": false,
+  "stage2_integrated_production_accepted": false,
+  "status": "finding_level_technical_review_passed_no_p1_closure_no_production",
+  "summary": "Finding-level technical review for P1 A-006 through A-009 confirms local runtime-lock, state-history, state-consistency, and optimistic-fencing evidence as technical closure candidates. This is not independent final signoff and does not close P1.",
+  "task_id": "S2PMT07-P1-A006-A009-TECHNICAL-REVIEW",
+  "technical_review_checks": {
+    "all_evidence_files_exist": true,
+    "all_four_findings_present": true,
+    "all_technical_review_verdicts_pass_no_production": true,
+    "independent_final_signoff_present": false,
+    "p1_counter_preserved_open": true,
+    "s2pmt07_final_gate_still_blocked": true
+  },
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false,
+  "validation_commands_planned": [
+    "python3 -m unittest arxiv-daily-push/tests/test_stage1_runtime.py arxiv-daily-push/tests/test_state_machine.py arxiv-daily-push/tests/test_stage2_lease_fencing.py arxiv-daily-push/tests/test_stage2_final_gate.py -q"
+  ]
+}

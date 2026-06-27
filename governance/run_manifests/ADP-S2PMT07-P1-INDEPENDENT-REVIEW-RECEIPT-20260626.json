@@ -60,14 +60,18 @@
       "evidence_refs": [
         "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_RUNTIME_LOCK_A006.md",
         "governance/run_manifests/ADP-S2PMT03-RUNTIME-LOCK-A006-20260626.json",
-        "arxiv-daily-push/tests/test_stage1_runtime.py"
+        "arxiv-daily-push/tests/test_stage1_runtime.py",
+        "governance/run_manifests/ADP-S2PMT07-P1-A006-A009-TECHNICAL-REVIEW-20260627.json"
       ],
       "finding_id": "A-006",
+      "finding_level_technical_review_receipt": "governance/run_manifests/ADP-S2PMT07-P1-A006-A009-TECHNICAL-REVIEW-20260627.json",
       "fix_task": "S2PMT03-RUNTIME-LOCK-A006",
-      "preliminary_review_state": "refreshed_current_evidence_located_independent_review_required_closure_not_claimed",
+      "preliminary_review_state": "finding_level_technical_review_passed_technical_closure_candidate_no_p1_closure",
       "receipt_refreshed_at": "2026-06-27T04:14:36+10:00",
-      "reviewer_decision_required": "Verify V7.1 fix/test requirement: heartbeat/checkpoint 任一步异常后无残锁 | 模拟死进程后仅新 fencing token 可接管",
+      "reviewer_decision_required": "Carry this finding into the later P1 closure package as a technical closure candidate; do not lower P0/P1 counters or claim S2PMT07 final pass until the full independent final gate signs off.",
       "severity": "P1",
+      "technical_closure_candidate": true,
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
       "title": "tick 写入异常时 runtime.lock 永久残留",
       "track": "A_安全代码并发"
     },
@@ -75,14 +79,18 @@
       "evidence_refs": [
         "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_STATE_HISTORY_A007.md",
         "governance/run_manifests/ADP-S2PMT03-STATE-HISTORY-A007-20260626.json",
-        "arxiv-daily-push/tests/test_state_machine.py"
+        "arxiv-daily-push/tests/test_state_machine.py",
+        "governance/run_manifests/ADP-S2PMT07-P1-A006-A009-TECHNICAL-REVIEW-20260627.json"
       ],
       "finding_id": "A-007",
+      "finding_level_technical_review_receipt": "governance/run_manifests/ADP-S2PMT07-P1-A006-A009-TECHNICAL-REVIEW-20260627.json",
       "fix_task": "S2PMT03-STATE-HISTORY-A007",
-      "preliminary_review_state": "refreshed_current_evidence_located_independent_review_required_closure_not_claimed",
+      "preliminary_review_state": "finding_level_technical_review_passed_technical_closure_candidate_no_p1_closure",
       "receipt_refreshed_at": "2026-06-27T04:14:36+10:00",
-      "reviewer_decision_required": "Verify V7.1 fix/test requirement: 篡改 from_state 必须失败 | 缺 reason/at 或时间倒序必须失败",
+      "reviewer_decision_required": "Carry this finding into the later P1 closure package as a technical closure candidate; do not lower P0/P1 counters or claim S2PMT07 final pass until the full independent final gate signs off.",
       "severity": "P1",
+      "technical_closure_candidate": true,
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
       "title": "状态历史不验证声明的 from_state",
       "track": "A_安全代码并发"
     },
@@ -90,14 +98,18 @@
       "evidence_refs": [
         "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_STATE_CONSISTENCY_A008.md",
         "governance/run_manifests/ADP-S2PMT03-STATE-CONSISTENCY-A008-20260626.json",
-        "arxiv-daily-push/tests/test_state_machine.py"
+        "arxiv-daily-push/tests/test_state_machine.py",
+        "governance/run_manifests/ADP-S2PMT07-P1-A006-A009-TECHNICAL-REVIEW-20260627.json"
       ],
       "finding_id": "A-008",
+      "finding_level_technical_review_receipt": "governance/run_manifests/ADP-S2PMT07-P1-A006-A009-TECHNICAL-REVIEW-20260627.json",
       "fix_task": "S2PMT03-STATE-CONSISTENCY-A008",
-      "preliminary_review_state": "refreshed_current_evidence_located_independent_review_required_closure_not_claimed",
+      "preliminary_review_state": "finding_level_technical_review_passed_technical_closure_candidate_no_p1_closure",
       "receipt_refreshed_at": "2026-06-27T04:14:36+10:00",
-      "reviewer_decision_required": "Verify V7.1 fix/test requirement: 末态不一致和 status 不一致均失败",
+      "reviewer_decision_required": "Carry this finding into the later P1 closure package as a technical closure candidate; do not lower P0/P1 counters or claim S2PMT07 final pass until the full independent final gate signs off.",
       "severity": "P1",
+      "technical_closure_candidate": true,
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
       "title": "current_state 与 state_history 末态可不一致",
       "track": "A_安全代码并发"
     },
@@ -105,14 +117,18 @@
       "evidence_refs": [
         "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_OPTIMISTIC_FENCING_A009.md",
         "governance/run_manifests/ADP-S2PMT03-OPTIMISTIC-FENCING-A009-20260626.json",
-        "arxiv-daily-push/tests/test_stage2_lease_fencing.py"
+        "arxiv-daily-push/tests/test_stage2_lease_fencing.py",
+        "governance/run_manifests/ADP-S2PMT07-P1-A006-A009-TECHNICAL-REVIEW-20260627.json"
       ],
       "finding_id": "A-009",
+      "finding_level_technical_review_receipt": "governance/run_manifests/ADP-S2PMT07-P1-A006-A009-TECHNICAL-REVIEW-20260627.json",
       "fix_task": "S2PMT03-OPTIMISTIC-FENCING-A009",
-      "preliminary_review_state": "refreshed_current_evidence_located_independent_review_required_closure_not_claimed",
+      "preliminary_review_state": "finding_level_technical_review_passed_technical_closure_candidate_no_p1_closure",
       "receipt_refreshed_at": "2026-06-27T04:14:36+10:00",
-      "reviewer_decision_required": "Verify V7.1 fix/test requirement: 100 个并发 claimant 仅一个获得同一任务 | 过期 worker 的写入被 fencing token 拒绝",
+      "reviewer_decision_required": "Carry this finding into the later P1 closure package as a technical closure candidate; do not lower P0/P1 counters or claim S2PMT07 final pass until the full independent final gate signs off.",
       "severity": "P1",
+      "technical_closure_candidate": true,
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
       "title": "状态转换缺少乐观并发控制与 fencing token",
       "track": "A_安全代码并发"
     },
@@ -672,6 +688,13 @@
     "B_压力运行生命周期": 12,
     "C_UI交互架构": 9
   },
+  "p1_technical_review_candidate_findings": [
+    "A-006",
+    "A-007",
+    "A-008",
+    "A-009"
+  ],
+  "p1_technical_review_candidate_manifest": "governance/run_manifests/ADP-S2PMT07-P1-A006-A009-TECHNICAL-REVIEW-20260627.json",
   "preserved_blockers": [
     "reviewer_independence_not_proven",
     "p0_closure_not_claimed",
@@ -681,9 +704,12 @@
     "independent_final_signoff_missing",
     "independent_final_command_execution_missing"
   ],
-  "previous_refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C010-20260627.json",
+  "previous_refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C011-20260627.json",
   "project_id": "arxiv-daily-push",
-  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C011-20260627.json",
+  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-A006-A009-TECHNICAL-REVIEW-20260627.json",
+  "refresh_manifest_history": [
+    "governance/run_manifests/ADP-S2PMT07-P1-A006-A009-TECHNICAL-REVIEW-20260627.json"
+  ],
   "refresh_manifests": [
     "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-A006-A009-20260627.json",
@@ -698,9 +724,10 @@
     "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C012-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C003-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C010-20260627.json",
-    "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C011-20260627.json"
+    "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-C011-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-A006-A009-TECHNICAL-REVIEW-20260627.json"
   ],
-  "refreshed_at": "2026-06-27T07:40:20+10:00",
+  "refreshed_at": "2026-06-27 19:01:16 Australia/Sydney",
   "refreshed_findings": [
     "A-006",
     "A-007",

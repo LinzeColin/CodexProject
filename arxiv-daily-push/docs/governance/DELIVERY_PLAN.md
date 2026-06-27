@@ -288,3 +288,9 @@ The machine-readable task source is `delivery_tasks.yaml`.
 - Added package manifest `governance/run_manifests/ADP-S2PMT07-P0-TECHNICAL-CLOSURE-CANDIDATE-PACKAGE-20260627.json`.
 - Added phase record `PHASE_S2PMT07_P0_TECHNICAL_CLOSURE_CANDIDATE_PACKAGE.md`.
 - This is a bounded review package only: P0/P1 counters remain open, S2PLT04/final bundle/final signoff/final command execution remain missing, and production remains disabled.
+
+## 2026-06-27 19:01:16 Australia/Sydney - S2PMT07 P1 A006-A009 technical review
+
+- Added manifest `governance/run_manifests/ADP-S2PMT07-P1-A006-A009-TECHNICAL-REVIEW-20260627.json`.
+- Added phase record `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_A006_A009_TECHNICAL_REVIEW.md`.
+- A-006/A-007/A-008/A-009 are technical closure candidates only; P1 remains open and production remains disabled.
