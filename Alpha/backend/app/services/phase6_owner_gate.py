@@ -181,6 +181,15 @@ def build_soak_validation_report(
             if parsed_time.isoformat() == last_gap["end"]:
                 continuous_start_index = index
                 break
+    failed_sample_indexes = [
+        index
+        for index, (_, item) in enumerate(parsed_samples)
+        if int(item.get("fail_count", 0)) > 0
+        or (item.get("paper_shadow_report") or {}).get("status") != "pass"
+        or (item.get("shadow_live_constraints") or {}).get("status") != "pass"
+    ]
+    if failed_sample_indexes:
+        continuous_start_index = max(continuous_start_index, failed_sample_indexes[-1] + 1)
     continuous_samples = parsed_samples[continuous_start_index:] if parsed_samples else []
     first = continuous_samples[0][0] if continuous_samples else None
     latest = continuous_samples[-1][0] if continuous_samples else None
@@ -188,7 +197,7 @@ def build_soak_validation_report(
     required_seconds = int(duration_hours * 3600)
     remaining_seconds = max(required_seconds - observed_seconds, 0)
     estimated_ready_at = (first + timedelta(seconds=required_seconds)).isoformat() if first else None
-    failed_samples = [item for item in sorted_samples if int(item.get("fail_count", 0)) > 0]
+    current_failed_samples = [item for _, item in continuous_samples if int(item.get("fail_count", 0)) > 0]
     current_window_gaps = gaps[continuous_start_index:] if parsed_samples else []
     current_window_gap_violations = [item for item in current_window_gaps if item["seconds"] > max_sample_gap_seconds]
     checks = [
@@ -196,16 +205,16 @@ def build_soak_validation_report(
         _check("timestamps_valid", invalid_sample_count == 0, "sample timestamps valid"),
         _check("sample_gap_coverage", not current_window_gap_violations, "current continuous sample window has no stale gaps"),
         _check("duration_coverage", observed_seconds >= required_seconds, "48h natural-day continuous coverage"),
-        _check("no_failed_samples", not failed_samples, "no failed soak samples"),
+        _check("no_failed_samples", not current_failed_samples, "current continuous sample window has no failed samples"),
         _check(
             "paper_shadow_reports_pass",
-            all((item.get("paper_shadow_report") or {}).get("status") == "pass" for item in sorted_samples),
-            "paper/shadow report passed for every sample",
+            all((item.get("paper_shadow_report") or {}).get("status") == "pass" for _, item in continuous_samples),
+            "paper/shadow report passed for every sample in current continuous window",
         ),
         _check(
             "shadow_constraints_pass",
-            all((item.get("shadow_live_constraints") or {}).get("status") == "pass" for item in sorted_samples),
-            "shadow live constraints passed for every sample",
+            all((item.get("shadow_live_constraints") or {}).get("status") == "pass" for _, item in continuous_samples),
+            "shadow live constraints passed for every sample in current continuous window",
         ),
     ]
     report = {
@@ -217,6 +226,8 @@ def build_soak_validation_report(
         "max_observed_gap_seconds": max((item["seconds"] for item in gaps), default=0),
         "gap_violation_count": len(gap_violations),
         "last_gap_violation": gap_violations[-1] if gap_violations else None,
+        "failed_sample_count": len(failed_sample_indexes),
+        "last_failed_sample_at": parsed_samples[failed_sample_indexes[-1]][0].isoformat() if failed_sample_indexes else None,
         "window_start": first.isoformat() if first else None,
         "window_end": latest.isoformat() if latest else None,
         "observed_seconds": observed_seconds,

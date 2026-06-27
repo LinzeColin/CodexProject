@@ -119,6 +119,36 @@ def test_soak_validation_resets_window_after_stale_gap(tmp_path):
     assert {item["id"]: item["status"] for item in report["checks"]}["sample_gap_coverage"] == "pass"
 
 
+def test_soak_validation_resets_window_after_failed_sample(tmp_path):
+    run = _paper_run(tmp_path)
+    paper_shadow = build_paper_shadow_report(run_result=run)
+    failed_paper_shadow = dict(paper_shadow)
+    failed_paper_shadow["status"] = "fail"
+    constraints = build_shadow_live_constraints_report(live_authorization_path=tmp_path / "LIVE_AUTHORIZATION.json")
+    start = datetime.now(timezone.utc).replace(microsecond=0)
+    failed_sample = _soak_sample(start + timedelta(seconds=600), failed_paper_shadow, constraints)
+    failed_sample["fail_count"] = 1
+    samples = [
+        _soak_sample(start, paper_shadow, constraints),
+        failed_sample,
+        _soak_sample(start + timedelta(seconds=1200), paper_shadow, constraints),
+        _soak_sample(start + timedelta(seconds=1800), paper_shadow, constraints),
+    ]
+
+    report = build_soak_validation_report(samples=samples, duration_hours=1, max_sample_gap_seconds=900)
+
+    assert report["status"] == "observing"
+    assert report["observed_seconds"] == 600
+    assert report["remaining_seconds"] == 3000
+    assert report["window_start"] == (start + timedelta(seconds=1200)).isoformat()
+    assert report["window_end"] == (start + timedelta(seconds=1800)).isoformat()
+    assert report["failed_sample_count"] == 1
+    assert report["last_failed_sample_at"] == (start + timedelta(seconds=600)).isoformat()
+    checks = {item["id"]: item["status"] for item in report["checks"]}
+    assert checks["no_failed_samples"] == "pass"
+    assert checks["paper_shadow_reports_pass"] == "pass"
+
+
 def test_owner_gate_closeout_blocks_until_all_acceptance_pass(tmp_path):
     run = _paper_run(tmp_path)
     paper_shadow = build_paper_shadow_report(run_result=run)

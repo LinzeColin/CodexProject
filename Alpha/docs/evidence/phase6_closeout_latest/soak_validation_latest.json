@@ -22,27 +22,29 @@
     },
     {
       "id": "no_failed_samples",
-      "message": "no failed soak samples",
+      "message": "current continuous sample window has no failed samples",
       "status": "pass"
     },
     {
       "id": "paper_shadow_reports_pass",
-      "message": "paper/shadow report passed for every sample",
+      "message": "paper/shadow report passed for every sample in current continuous window",
       "status": "pass"
     },
     {
       "id": "shadow_constraints_pass",
-      "message": "shadow live constraints passed for every sample",
+      "message": "shadow live constraints passed for every sample in current continuous window",
       "status": "pass"
     }
   ],
-  "continuous_sample_count": 39,
+  "continuous_sample_count": 2,
   "duration_hours_required": 48,
-  "estimated_ready_at": "2026-06-29T01:02:44+00:00",
+  "estimated_ready_at": "2026-06-29T06:14:28+00:00",
   "fail_count": 1,
+  "failed_sample_count": 27,
   "gap_violation_count": 1,
-  "generated_at": "2026-06-27T03:09:18+00:00",
+  "generated_at": "2026-06-27T06:15:01+00:00",
   "invalid_sample_count": 0,
+  "last_failed_sample_at": "2026-06-27T06:09:49+00:00",
   "last_gap_violation": {
     "end": "2026-06-27T01:02:44+00:00",
     "seconds": 3100,
@@ -50,19 +52,19 @@
   },
   "max_observed_gap_seconds": 3100,
   "max_sample_gap_seconds": 900,
-  "observed_hours": 2.0903,
-  "observed_seconds": 7525,
-  "remaining_hours": 45.9097,
-  "remaining_seconds": 165275,
+  "observed_hours": 0.0081,
+  "observed_seconds": 29,
+  "remaining_hours": 47.9919,
+  "remaining_seconds": 172771,
   "safety_boundary": {
     "broker_mutation_allowed": false,
     "live_authorization_file_must_be_absent": true,
     "live_trading_enabled": false,
     "mode": "research_paper_order_intent_review"
   },
-  "sample_count": 40,
+  "sample_count": 78,
   "schema_version": "2026-06-27.alpha.phase6.soak_validation",
   "status": "observing",
-  "window_end": "2026-06-27T03:08:09+00:00",
-  "window_start": "2026-06-27T01:02:44+00:00"
+  "window_end": "2026-06-27T06:14:57+00:00",
+  "window_start": "2026-06-27T06:14:28+00:00"
 }

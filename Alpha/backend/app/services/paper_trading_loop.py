@@ -114,12 +114,17 @@ class PaperTradingLoop:
         else:
             latest = (candidates if not candidates.empty else latest_prices.sort_values("close")).iloc[0]
             winner = {"strategy_id": f"fixture_momentum_{latest['symbol']}", "symbol": str(latest["symbol"])}
+        symbol = str(latest["symbol"])
+        price = float(latest["close"])
+        side = "buy"
+        if float(getattr(self.paper_broker, "cash", 0.0)) < price and self.paper_broker.positions.get(symbol, 0.0) >= 1:
+            side = "sell"
         return OrderIntent.create(
             strategy_id=str(winner.get("strategy_id", "fixture_momentum_v0")),
-            symbol=str(latest["symbol"]),
-            side="buy",
+            symbol=symbol,
+            side=side,
             quantity=1,
-            estimated_price=float(latest["close"]),
+            estimated_price=price,
             source_run_id=run_id,
             ttl_seconds=self.refresh_interval_seconds,
             order_type="limit",
