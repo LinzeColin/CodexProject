@@ -5795,7 +5795,7 @@ formulas:
     assumption_ids:
       - "ASM-ADP-035"
     status: "active"
-    expression: "S2PMT07 final gate precheck remains blocked unless reviewer independence is proven, inherited V7.1 P0/P1 findings are zero, S2PMT01 through S2PMT06 and S2PLT04 dependencies are completed, FINAL_ACCEPTANCE_BUNDLE plus HANDOFF plus independent_review_signoff evidence exists, final acceptance bundle readiness proves manifest, P0/P1 zero proof, S2PLT04 completion report, independent signoff, final command execution, and no-production attestation are present, P0/P1 technical closure candidate receipts are visible only as prebundle candidate evidence and never as zero proof, P0/P1 zero proof readiness remains blocked until the required artifact path and fields exist with independent final closure decision and zero open P0/P1 counts, final commands are executed by the independent reviewer, no production acceptance is claimed, inherited P0/P1 are not self-closed, and all production/CURRENT/V7 baseline side-effect flags remain false."
+    expression: "S2PMT07 final gate precheck remains blocked unless reviewer independence is proven, inherited V7.1 P0/P1 findings are zero, S2PMT01 through S2PMT06 and S2PLT04 dependencies are completed, FINAL_ACCEPTANCE_BUNDLE plus HANDOFF plus independent_review_signoff evidence exists, final acceptance bundle readiness proves manifest, P0/P1 zero proof, S2PLT04 completion report, independent signoff, final command execution, and no-production attestation are present, P0/P1 technical closure candidate receipts are visible only as prebundle candidate evidence and never as zero proof, P0/P1 zero proof readiness remains blocked until the required artifact path and fields exist with independent final closure decision and zero open P0/P1 counts, P0/P1 zero proof artifact validation requires schema version, exact closure decision, full candidate refs, zero P0/P1 counts, final bundle refs, no-production flags, and hash-bound payload, final commands are executed by the independent reviewer, no production acceptance is claimed, inherited P0/P1 are not self-closed, and all production/CURRENT/V7 baseline side-effect flags remain false."
     variables:
       -
         name: "dependency_state"
@@ -5833,13 +5833,18 @@ formulas:
         unit: "zero proof readiness schema"
         input_domain: "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json required fields and missing-artifact blockers"
       -
+        name: "p0_p1_zero_proof_artifact_validation"
+        data_type: "object"
+        unit: "zero proof artifact payload validation"
+        input_domain: "schema version, closure decision, source refs, final bundle refs, no-production flags, and decision hash"
+      -
         name: "test_gates"
         data_type: "object"
         unit: "final required command coverage"
         input_domain: "task-pack validator, full pytest, zero P0/P1 bundle verifier"
-    constraints: "S2PMT07 precheck is fail-closed only. Candidate P0/P1 technical evidence can be recorded as available prebundle evidence but must not set P0/P1 zero proof or closure flags. Zero-proof readiness can publish schema and missing-artifact blockers but must keep p0_zero_proven, p1_zero_proven, closure_claimed, and all production side-effect flags false until the final artifact exists. It must not claim INTEGRATED_PRODUCTION_ACCEPTED, DAILY_OPERATION, real SMTP, scheduler installation, Release packaging, production restore, CURRENT changes, V7.1 baseline changes, V7.2 contract changes, or inherited P0/P1 closure."
-    missing_policy: "Missing independent reviewer proof, nonzero inherited P0/P1, missing S2PLT04, missing final acceptance bundle, missing final bundle manifest, missing P0/P1 zero proof artifact, missing required zero-proof fields, missing S2PLT04 completion report, missing independent signoff, missing required command execution, missing no-production attestation, invalid or missing P0/P1 candidate state, invalid or missing zero-proof readiness state, or any forbidden production flag blocks S2PMT07."
-    output_range: "S2PMT07 precheck report with pass or blocked status, required dependencies, inherited audit blocker counts, evidence bundle state, final acceptance bundle readiness state, P0/P1 technical closure candidate readiness state, P0/P1 zero proof readiness state, test gate state, blocking reasons, deterministic report hash, production_acceptance_claimed false, inherited_p0_p1_closed false, p0_p1_zero_proof_present false until final bundle proof exists, and all forbidden pass flags false."
+    constraints: "S2PMT07 precheck is fail-closed only. Candidate P0/P1 technical evidence can be recorded as available prebundle evidence but must not set P0/P1 zero proof or closure flags. Zero-proof readiness can publish schema and missing-artifact blockers but must keep p0_zero_proven, p1_zero_proven, closure_claimed, and all production side-effect flags false until the final artifact exists. Zero-proof artifact validation can validate a supplied payload but current readiness must remain blocked while the artifact is missing. It must not claim INTEGRATED_PRODUCTION_ACCEPTED, DAILY_OPERATION, real SMTP, scheduler installation, Release packaging, production restore, CURRENT changes, V7.1 baseline changes, V7.2 contract changes, or inherited P0/P1 closure."
+    missing_policy: "Missing independent reviewer proof, nonzero inherited P0/P1, missing S2PLT04, missing final acceptance bundle, missing final bundle manifest, missing P0/P1 zero proof artifact, missing required zero-proof fields, invalid zero-proof schema version, invalid zero-proof closure decision, missing source candidate refs, nonzero P0/P1 counts, missing final bundle refs, true no-production side-effect flags, decision_hash mismatch, missing S2PLT04 completion report, missing independent signoff, missing required command execution, missing no-production attestation, invalid or missing P0/P1 candidate state, invalid or missing zero-proof readiness state, or any forbidden production flag blocks S2PMT07."
+    output_range: "S2PMT07 precheck report with pass or blocked status, required dependencies, inherited audit blocker counts, evidence bundle state, final acceptance bundle readiness state, P0/P1 technical closure candidate readiness state, P0/P1 zero proof readiness state, P0/P1 zero proof artifact validation state, test gate state, blocking reasons, deterministic report hash, production_acceptance_claimed false, inherited_p0_p1_closed false, p0_p1_zero_proof_present false until final bundle proof exists, and all forbidden pass flags false."
     code_refs:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py"
     test_refs:
@@ -5849,10 +5854,12 @@ formulas:
       - "governance/run_manifests/ADP-S2PMT07-FINAL-ACCEPTANCE-BUNDLE-READINESS-20260628.json"
       - "governance/run_manifests/ADP-S2PMT07-P0-P1-TECHNICAL-CANDIDATE-READINESS-20260628.json"
       - "governance/run_manifests/ADP-S2PMT07-P0-P1-ZERO-PROOF-READINESS-20260628.json"
+      - "governance/run_manifests/ADP-S2PMT07-P0-P1-ZERO-PROOF-VALIDATOR-20260628.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_GATE_PRECHECK.md"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_ACCEPTANCE_BUNDLE_READINESS.md"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_P1_TECHNICAL_CANDIDATE_READINESS.md"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_P1_ZERO_PROOF_READINESS.md"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_P1_ZERO_PROOF_VALIDATOR.md"
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PMT07_FINAL_GATE_MODEL_ID"
@@ -5878,8 +5885,14 @@ formulas:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PMT07_P1_TECHNICAL_CLOSURE_CANDIDATE_MANIFESTS"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PMT07_P0_P1_TECHNICAL_CANDIDATE_BLOCKING_REASONS"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PMT07_P0_P1_ZERO_PROOF_ARTIFACT_PATH"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PMT07_P0_P1_ZERO_PROOF_SCHEMA_VERSION"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PMT07_P0_P1_ZERO_PROOF_CLOSURE_DECISION"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PMT07_P0_P1_ZERO_PROOF_REQUIRED_FIELDS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PMT07_P0_P1_ZERO_PROOF_NO_PRODUCTION_FLAGS"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PMT07_P0_P1_ZERO_PROOF_BLOCKING_REASONS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_p0_p1_zero_proof_decision_hash"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::validate_p0_p1_zero_proof_artifact"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_p0_p1_zero_proof_artifact_validation_state"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_dependency_state"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_audit_blocker_state"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_reviewer_independence_state"
