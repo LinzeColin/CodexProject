@@ -7,12 +7,13 @@ machine_summary:
 
 - model_count: 117
 - formula_count: 119
-- parameter_count: 998
+- parameter_count: 1001
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
 ## Governance Notes
 
+- `S2PMT07-P0-P1-ZERO-PROOF-VALIDATOR` adds `PARAM-ADP-999` through `PARAM-ADP-1001` under `MOD-ADP-100` / `FORM-ADP-102`. It validates future `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json` payloads for schema version, exact no-production closure decision, candidate refs, zero P0/P1 counts, final bundle refs, no-production flags, and decision hash while keeping the current artifact missing, inherited P0=8/P1=37 open, closure flags false, and every production side-effect flag false. It does not create P0/P1 zero proof, close P0/P1, complete S2PLT04, create the final bundle, enable SMTP/scheduler/Release/restore, mutate production state, change sources/ranking/CURRENT/V7, or claim integrated production acceptance.
 - `S2PMT07-P0-P1-ZERO-PROOF-READINESS` adds `PARAM-ADP-996` through `PARAM-ADP-998` under `MOD-ADP-100` / `FORM-ADP-102`. It defines the required `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json` artifact path, required fields, and blocking reasons while keeping the artifact missing, inherited P0=8/P1=37 open, closure flags false, and every production side-effect flag false. It does not create P0/P1 zero proof, close P0/P1, complete S2PLT04, create the final bundle, enable SMTP/scheduler/Release/restore, mutate production state, change sources/ranking/CURRENT/V7, or claim integrated production acceptance.
 - `S2PMT07-P0-P1-TECHNICAL-CANDIDATE-READINESS` adds `PARAM-ADP-990` through `PARAM-ADP-995` under `MOD-ADP-100` / `FORM-ADP-102`. It exposes existing 8 P0 and 37 P1 technical closure candidates to S2PMT07 final acceptance bundle readiness as prebundle evidence only. It does not create P0/P1 zero proof, close P0/P1, complete S2PLT04, create the final bundle, enable SMTP/scheduler/Release/restore, mutate production state, change sources/ranking/CURRENT/V7, or claim integrated production acceptance.
 - `S2PLT04-FINAL-BUNDLE-READINESS-SYNC` reuses existing `PARAM-ADP-965` through `PARAM-ADP-967` under `MOD-ADP-103` / `FORM-ADP-105` to embed the fail-closed final acceptance bundle readiness detail inside S2PLT04 evidence. It does not create the final bundle, satisfy S2PLT04, close P0/P1, enable SMTP/scheduler/Release/restore, mutate production state, change sources/ranking/CURRENT/V7, or claim integrated production acceptance.

@@ -27,11 +27,16 @@ from arxiv_daily_push.stage2_final_gate import (
     S2PMT07_FINAL_ACCEPTANCE_BUNDLE_FORBIDDEN_FLAGS,
     S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS,
     S2PMT07_FORBIDDEN_PASS_FLAGS,
+    S2PMT07_P0_P1_ZERO_PROOF_CLOSURE_DECISION,
+    S2PMT07_P0_P1_ZERO_PROOF_NO_PRODUCTION_FLAGS,
     S2PMT07_P0_P1_ZERO_PROOF_REQUIRED_FIELDS,
+    S2PMT07_P0_P1_ZERO_PROOF_SCHEMA_VERSION,
     S2PMT07_REQUIRED_DEPENDENCIES,
     S2PMT07_REQUIRED_EVIDENCE,
     S2PMT07_REQUIRED_TEST_COMMANDS,
     build_final_acceptance_bundle_readiness_state,
+    build_p0_p1_zero_proof_artifact_validation_state,
+    build_p0_p1_zero_proof_decision_hash,
     build_p0_p1_zero_proof_readiness_state,
     build_p0_p1_technical_closure_candidate_state,
     build_s2plt02_dependency_state,
@@ -55,6 +60,7 @@ from arxiv_daily_push.stage2_final_gate import (
     validate_s2plt03_resilience_precheck_report,
     validate_s2plt04_integration_candidate_report,
     validate_final_acceptance_bundle_readiness_state,
+    validate_p0_p1_zero_proof_artifact,
     validate_p0_p1_zero_proof_readiness_state,
     validate_p0_p1_technical_closure_candidate_state,
     validate_s2pmt07_precheck_report,
@@ -2093,6 +2099,73 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertIn("p0_p1_zero_proof_artifact_missing", zero_proof["blocking_reasons"])
         self.assertEqual(validate_p0_p1_zero_proof_readiness_state(zero_proof), [])
         self.assertEqual(validate_final_acceptance_bundle_readiness_state(state), [])
+
+    def _valid_zero_proof_payload(self) -> dict[str, object]:
+        payload: dict[str, object] = {
+            "schema_version": S2PMT07_P0_P1_ZERO_PROOF_SCHEMA_VERSION,
+            "contract_id": "ADP-PRODUCT-CONTRACT-V7.2",
+            "generated_at": "2026-06-28T04:58:30+10:00",
+            "reviewer_independence": {
+                "status": "verified",
+                "required_independence": "not_involved_in_S2PMT01_T06_implementation",
+            },
+            "source_candidate_refs": build_p0_p1_zero_proof_readiness_state()["candidate_evidence_refs"],
+            "finding_counts": {"P0": 0, "P1": 0},
+            "zero_severity_counts": {"P0": 0, "P1": 0},
+            "independent_closure_decision": {
+                "decision": S2PMT07_P0_P1_ZERO_PROOF_CLOSURE_DECISION,
+                "p0_zero_proven": True,
+                "p1_zero_proven": True,
+                "production_acceptance_claimed": False,
+            },
+            "final_bundle_refs": list(S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS),
+            "no_production_side_effects": {
+                flag: False for flag in S2PMT07_P0_P1_ZERO_PROOF_NO_PRODUCTION_FLAGS
+            },
+        }
+        payload["decision_hash"] = build_p0_p1_zero_proof_decision_hash(payload)
+        return payload
+
+    def test_p0_p1_zero_proof_artifact_validator_accepts_only_exact_hash_bound_payload(self) -> None:
+        payload = self._valid_zero_proof_payload()
+        state = build_p0_p1_zero_proof_artifact_validation_state(payload)
+
+        self.assertEqual(validate_p0_p1_zero_proof_artifact(payload), [])
+        self.assertEqual(state["status"], "pass")
+        self.assertTrue(state["artifact_present"])
+        self.assertTrue(state["p0_zero_proven_by_payload"])
+        self.assertTrue(state["p1_zero_proven_by_payload"])
+        self.assertFalse(state["production_acceptance_claimed"])
+        self.assertFalse(state["integrated_production_accepted"])
+        self.assertEqual(state["validation_errors"], [])
+
+        tampered = json.loads(json.dumps(payload))
+        tampered["finding_counts"]["P0"] = 1
+        self.assertIn("finding_counts.P0 must be 0", validate_p0_p1_zero_proof_artifact(tampered))
+
+        tampered_hash = json.loads(json.dumps(payload))
+        tampered_hash["decision_hash"] = "sha256:not-the-payload-hash"
+        self.assertIn("decision_hash does not match payload content", validate_p0_p1_zero_proof_artifact(tampered_hash))
+
+    def test_p0_p1_zero_proof_artifact_validator_fails_closed_on_missing_refs_or_production_flags(self) -> None:
+        missing_state = build_p0_p1_zero_proof_artifact_validation_state(None)
+
+        self.assertEqual(missing_state["status"], "blocked")
+        self.assertFalse(missing_state["artifact_present"])
+        self.assertIn("p0_p1_zero_proof_artifact_missing", missing_state["validation_errors"])
+        self.assertFalse(missing_state["p0_zero_proven_by_payload"])
+        self.assertFalse(missing_state["p1_zero_proven_by_payload"])
+
+        payload = self._valid_zero_proof_payload()
+        payload["source_candidate_refs"] = []
+        self.assertIn(
+            "source_candidate_refs must include all P0/P1 technical candidate refs",
+            validate_p0_p1_zero_proof_artifact(payload),
+        )
+
+        payload = self._valid_zero_proof_payload()
+        payload["no_production_side_effects"]["real_smtp_sent"] = True
+        self.assertIn("no_production_side_effects.real_smtp_sent must be false", validate_p0_p1_zero_proof_artifact(payload))
 
     def test_p0_p1_technical_candidate_builder_fails_closed_without_closure(self) -> None:
         state = build_p0_p1_technical_closure_candidate_state()
