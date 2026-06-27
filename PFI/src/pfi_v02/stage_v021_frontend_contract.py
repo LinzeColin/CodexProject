@@ -26,6 +26,10 @@ STAGE4_TASK_IDS = (
     "V021-P4-S4-T03",
     "V021-P4-S4-T04",
 )
+STAGE5_TASK_IDS = (
+    "V021-P5-S5-T01",
+    "V021-P5-S5-T02",
+)
 BASE_CURRENCY = "CNY"
 UI_TARGET = "PFI/web HTML shell"
 
@@ -391,6 +395,70 @@ def build_v021_stage4_contract() -> dict[str, object]:
             "消费管理显示支出、预算和现金流趋势。",
             "趋势图必须有中文标题、图例、CNY 基准、中文空状态和非 hover 可读信息。",
             "不接真实账户、不伪造实时数据、不新增交易或支付动作。",
+        ),
+    }
+
+
+def build_v021_stage5_contract() -> dict[str, object]:
+    return {
+        "schema": "PFIV021FrontendOptimizationStage5ContractV1",
+        "version_name": VERSION_NAME,
+        "stage": "S5 上传中心",
+        "task_ids": STAGE5_TASK_IDS,
+        "project_root": "CodexProject/PFI",
+        "ui_target": UI_TARGET,
+        "upload_center_contract": {
+            "route": "/sources-upload",
+            "workspace": "sync",
+            "surface": "sync_workspace_upload_center",
+            "accepted_file_types": ("CSV", "ZIP", "XLS", "XLSX"),
+            "max_file_mb": 50,
+            "html_markers": (
+                "data-upload-import-panel",
+                "data-upload-center",
+                "data-upload-dropzone",
+                "data-upload-input",
+                "data-upload-status",
+                "data-upload-error",
+                "data-upload-file-list",
+            ),
+            "required_interactions": (
+                "click_file_picker",
+                "dragenter",
+                "dragover",
+                "dragleave",
+                "drop",
+                "local_validation",
+                "status_update",
+            ),
+            "failure_feedback": (
+                "空选择中文提示",
+                "不支持的文件类型中文提示",
+                "文件过大中文提示",
+            ),
+        },
+        "import_center_contract": {
+            "surface": "sync_workspace_import_center",
+            "html_markers": (
+                "data-import-center",
+                "data-import-summary",
+                "data-import-batches",
+                "data-import-review-link",
+            ),
+            "batch_fields": ("批次", "来源", "文件数", "记录数", "待复核", "状态"),
+            "summary_fields": ("已选择文件", "预计记录", "待复核", "失败反馈"),
+            "review_entry": {
+                "label": "进入账本复核",
+                "target_workspace": "ledger",
+                "target_route": "/ledger",
+            },
+        },
+        "acceptance": (
+            "数据源与上传页面必须显示上传中心，支持点击选择文件和拖拽投放。",
+            "上传中心必须显示等待、已选择、预检完成和失败反馈四类中文状态。",
+            "导入中心必须显示批次、摘要、待复核数量和复核入口。",
+            "复核入口必须可点击进入账本流水，不触发真实外部上传、支付、券商或自动下单。",
+            "原始用户数据不进入公共 Git；Stage 5 只交付 HTML Web Shell 合同和本地前端交互。",
         ),
     }
 

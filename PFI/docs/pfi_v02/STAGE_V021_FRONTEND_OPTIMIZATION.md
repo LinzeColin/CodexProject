@@ -314,3 +314,50 @@ git diff --check -- PFI
 ## Stage 4 后续顺序
 
 下一轮 pursuing goal 应从 `P5 / S5 上传中心` 开始，优先完成上传、拖拽、状态、失败反馈、导入批次、摘要和复核入口。不得跳到持仓 SQLite 持久化，除非用户明确改变阶段顺序。
+
+## Stage 5 完成记录
+
+本轮完成 `P5 / S5 上传中心`，覆盖任务：
+
+- `V021-P5-S5-T01`：上传中心支持点击选择文件、拖拽投放、状态显示和失败反馈。
+- `V021-P5-S5-T02`：导入中心显示批次、摘要和账本复核入口。
+
+当前交付：
+
+- 新增 `build_v021_stage5_contract()` 和 `tests/test_v021_stage5_upload_import_contract.py`。
+- `数据源与上传` 页面内新增上传中心，不再只是说明按钮；支持 `CSV`、`ZIP`、`XLS`、`XLSX` 多文件本机预检。
+- 上传区支持拖拽进入、拖拽停留、拖拽离开、投放文件和键盘触发文件选择。
+- 上传状态显示 `等待选择文件`、`已选择 N 个文件 · 导入预检完成`、`失败反馈 N 项`。
+- 失败反馈覆盖空选择、不支持的文件类型和文件过大，全部为中文提示。
+- 导入中心显示批次、来源、文件数、记录数、待复核、状态和摘要。
+- `进入账本复核` 按钮可点击跳转到账本流水。
+- 顶部全局搜索可命中上传中心、拖拽上传、导入中心、导入批次、导入摘要、复核入口和失败反馈。
+- 本轮只交付 HTML Web Shell 本机前端交互，不执行外部真实上传、支付、券商提交或实盘自动下单。
+
+Stage 5 已通过的目标验收命令：
+
+```bash
+node --check PFI/web/app/shell.js
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m unittest PFI.tests.test_v021_stage5_upload_import_contract PFI.tests.test_v021_stage4_trend_contract PFI.tests.test_v021_stage3_settings_search_contract PFI.tests.test_v021_stage2_copy_cleanup_contract PFI.tests.test_v021_stage1_navigation_contract PFI.tests.test_v021_stage0_frontend_contract -q
+```
+
+当前结果：Web Shell 语法检查通过；Stage 0/1/2/3/4/5 前端合同 `Ran 31 tests / OK`。
+
+Stage 5 closeout 验收命令：
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -B -m unittest discover -s tests -q
+python3 scripts/validate_project_governance.py --project PFI
+git diff --check -- PFI
+```
+
+当前结果：完整 PFI 单测 `Ran 131 tests / OK`；治理 `errors 0 / warnings 0`；`git diff --check -- PFI` 通过。
+
+浏览器验收：
+
+- Chrome headless desktop 1440x950：`/sources-upload` 显示上传/导入面板；文件选择、拖拽上传、失败反馈、导入中心摘要和 `进入账本复核` 跳转到账本流水均通过；console errors `0`；截图 `/tmp/pfi-v021-stage5-upload-desktop-verified.png`。
+- Chrome headless mobile 390x844：上传/导入面板和复核入口可见；截图 `/tmp/pfi-v021-stage5-upload-mobile-verified.png`。
+
+## Stage 5 后续顺序
+
+下一轮 pursuing goal 应从 `P6 / S6 持仓持久化` 开始，优先完成持仓编辑数据模型、服务和刷新/重启后仍存在的前端持久化。不得跳到 Stage 7 流畅度，除非用户明确改变阶段顺序。
