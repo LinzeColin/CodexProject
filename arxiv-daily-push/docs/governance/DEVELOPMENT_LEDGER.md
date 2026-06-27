@@ -10,13 +10,30 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.1
 - Current phase: S2PM
-- Current gate: S2PMT07_P0_P1_TECHNICAL_CANDIDATE_READINESS_BLOCKED_NO_PRODUCTION
-- Confirmed iteration count: 164
+- Current gate: S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_REQUEST_BLOCKED_NO_PRODUCTION
+- Confirmed iteration count: 165
 - Reconstructed event count: 0
-- Current task: `S2PMT07-P0-P1-TECHNICAL-CANDIDATE-READINESS` records that S2PMT07 final acceptance bundle readiness can see 8 P0 and 37 P1 technical closure candidates as prebundle evidence while P0/P1 zero proof, closure, final bundle, S2PLT04, and all production gates remain closed.
+- Current task: `S2PMT07-INDEPENDENT-FINAL-CLOSURE-DECISION-REQUEST` records that S2PMT07 final acceptance bundle readiness can expose deterministic reviewer inputs and required `independent_final_reviewer` action while reviewer assignment, independent final closure decision, P0/P1 zero proof, closure, final bundle, S2PLT04, and all production gates remain closed.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
 
+
+### `ITER-20260628-ADP-S2PMT07-INDEPENDENT-FINAL-CLOSURE-DECISION-REQUEST`
+
+- Timestamp: `2026-06-28T08:21:10+10:00`
+- Fact level: EXTRACTED from S2PMT07 final-gate implementation, focused RED/GREEN regression tests, semantic registries, traceability row, phase record, run manifest, delivery task, and shallow user-center traceability page.
+- Base commit: `7cf2f61826c992e2af4f3d1f3c2f84d19f102606`
+- Product version: `0.23.1`
+- Status: blocked no-production decision request recorded; independent final reviewer input is assembled, but reviewer assignment and independent final closure decision are not claimed.
+- Task IDs: `S2PMT07-INDEPENDENT-FINAL-CLOSURE-DECISION-REQUEST`; parent `S2PMT07`; acceptance `ACC-S2PMT07-FINAL-REVIEW`.
+- Goal: Prevent final acceptance bundle readiness from hiding the future independent final closure decision input package while preventing that request from being mistaken for P0/P1 zero proof or final closure.
+- Files changed: S2PMT07 final-gate helper and tests, model/formula/parameter registries, traceability matrix, shallow user-center traceability page, phase record, run manifest, delivery task, development events, status views, VERSION_MATRIX, changelog, and 三基 notes.
+- Decisions: `independent_final_closure_decision_request` is embedded under final acceptance bundle readiness with status `blocked_decision_request_ready_no_closure`, `required_reviewer_role=independent_final_reviewer`, decision artifact ref `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json#independent_closure_decision`, candidate counts `8 / 37`, `independent_final_closure_decision_present=false`, `p0_p1_zero_proof_artifact_present=false`, and inherited P0/P1 counts still `8 / 37`.
+- Validation: RED target test observed expected missing independent final closure decision request API; focused final-gate tests 52 OK; focused final-gate plus user-center traceability tests 69 OK; full arxiv-daily-push unittest 636 OK; V7.2 validator PASS; ADP project governance 0 errors / 0 warnings; changed-only governance semantic 0 errors / 0 warnings; governance sync validator 0 errors / 0 warnings; lean check-render drift_count 0 / reference_issue_count 0; user-center timestamp check 18 pages validated; py_compile PASS; JSON/JSONL/YAML/CSV/manifest parse OK; git diff --check PASS; production true-flag scan PASS; open PR count 0; remote ADP/arxiv/s2p branch grep no matches; no __pycache__/.pyc remains. Full semantic extractor timed out after 60 seconds and is not claimed as passed.
+- Boundaries: No SMTP, scheduler, Release, production restore, public schema, DB, production queue, source adapter, ranking, CURRENT/V7 contract, V7.1 baseline, P0/P1 closure, DAILY_OPERATION, or integrated production acceptance changed.
+- Risks: This request can be misread as independent final closure. It is deliberately fail-closed reviewer-input evidence only; reviewer assignment, independent final closure decision, P0/P1 zero proof, S2PLT04 completion, final bundle, final command execution, and S2PMT07 acceptance still control production acceptance.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-INDEPENDENT-FINAL-CLOSURE-DECISION-REQUEST-20260628.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_REQUEST.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`; `arxiv-daily-push/用户中心/功能任务测试证据追踪链.md`.
+- Next step: Continue independent final reviewer assignment/decision artifact work or final-bundle artifact work under S2PMT07/V7.2 boundaries, without enabling production.
 
 ### `ITER-20260628-ADP-S2PMT07-P0-P1-TECHNICAL-CANDIDATE-READINESS`
 

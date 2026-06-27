@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260628-ADP-S2PMT07-P0-P1-ZERO-PROOF-ASSEMBLY"
+as_of_event_id: "EVENT-20260628-ADP-S2PMT07-INDEPENDENT-FINAL-CLOSURE-DECISION-REQUEST"
 source_snapshot_hash: "sha256:b46b66adca9fff016c8699d25d2f20031291631ddbc6e9ee00fc360126a9647f"
 source_base_commit: "12e91a8e1b84fe29724f43229131bd43f8fa31cd"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
-snapshot_event_time: "2026-06-28T07:56:58+10:00"
+snapshot_event_time: "2026-06-28T08:21:10+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -16,8 +16,8 @@ dimensions:
     status: "PARTIAL"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 1004
-    total_active_parameters: 1019
+    checked_active_parameters: 1007
+    total_active_parameters: 1022
     checked_active_formulas: 119
     total_active_formulas: 119
     unresolved_fact_ids:
@@ -28,8 +28,8 @@ dimensions:
   parameter_source_quality:
     status: "PARTIAL"
     fact_level: "UNKNOWN"
-    checked_active_parameters: 1004
-    total_active_parameters: 1019
+    checked_active_parameters: 1007
+    total_active_parameters: 1022
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -62,12 +62,12 @@ dimensions:
     tree_bound_events: 0
     commit_bound_events: 4
     legacy_unbound_events: 188
-    precommit_pending_events: 47
+    precommit_pending_events: 48
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "VERIFIED"
-  release_gate: "S2PMT07_P0_P1_ZERO_PROOF_ASSEMBLY_BLOCKED_NO_PRODUCTION"
+  release_gate: "S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_REQUEST_BLOCKED_NO_PRODUCTION"
   blocker_ids:
     - "FACT-arxiv-daily-push-IMPLEMENTATION-PARAMETER-REVIEW"
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
@@ -105,7 +105,7 @@ owner_decision:
   question: "是否接受 V7.2 作为 CURRENT 产品合同，保留 V7.1 为只读历史基线，并要求所有 Stage2 agent 先按 V7.2 复审已完成工作，不满足的先修复，再继续新任务。"
   human_owner_role: "content_owner + engineering_owner"
   human_assignment_status: "CODEX_CAN_CONTINUE_WITH_STAGE2_CONTRACT"
-  current_recommendation: "A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PLT04 final bundle readiness detail as local no-production blocked evidence only, keep S2PLT02 blocked until S2PLT01 acceptance, inherited P0/P1 zero state, real scheduler/SMTP proof, 8 real M1-M4 emails, M4 watermark proof, and final production stop gates close, and require S2PMT07 independent final review before any inherited P0/P1 closure or production acceptance claim."
+  current_recommendation: "A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, require independent final reviewer assignment, independent final closure decision, valid FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json, S2PLT04 completion proof, final bundle manifest, independent final signoff, final command execution proof, no-production attestation, and next-agent handoff before inherited P0/P1 can be treated as zero or any production acceptance claim can be made."
   option_a: "继续 S2PLT02 no-production readiness evidence work under V7.2 boundaries。"
   option_b: "暂停所有 Stage2 任务等待真实 scheduler/SMTP 生产启用；会不必要阻塞无冲突证据工作。"
   option_c: "越过 S2PMT07 直接声称 P0/P1 关闭或启用 scheduler/SMTP；禁止。"
@@ -120,7 +120,7 @@ owner_decision:
   evidence_required: "S2PMT07 independent final review, inherited P0/P1 closure proof, S2PLT04 completion, governance validator, lean render proof, and no-production-side-effect evidence"
   decision_deadline_or_priority: "P1"
   consequence_of_no_decision: "Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract drift."
-  unblock_task_id: "S2PLT02"
+  unblock_task_id: "S2PMT07-INDEPENDENT-FINAL-CLOSURE-DECISION"
   acceptance_ids:
     - "ACC-S2PLT02-2D"
   generated_from_refs:
