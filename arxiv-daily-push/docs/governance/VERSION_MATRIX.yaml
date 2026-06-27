@@ -95,6 +95,7 @@ model_versions:
   MOD-ADP-107: "adp-s2pit05-four-check-freshness-v1"
   MOD-ADP-111: "adp-s2pmt02-restore-atomic-replacement-a002-v1"
   MOD-ADP-112: "adp-s2pmt03-outbox-delivery-a003-v1"
+  MOD-ADP-113: "adp-s2pmt01-frontstage-evidence-a004-v1"
 parameter_profile_versions:
   adp-foundation-parameters: "adp-foundation-parameters-v1"
   adp-contract-parameters: "adp-contract-parameters-v1"

@@ -5849,3 +5849,49 @@ models:
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_OUTBOX_DELIVERY_A003.md"
       - "governance/run_manifests/ADP-S2PMT03-OUTBOX-DELIVERY-A003-20260627.json"
       - "arxiv-daily-push/用户中心/事务发件箱与消息ID扫描.md"
+
+
+  -
+    model_id: "MOD-ADP-113"
+    name: "S2PMT01 frontstage evidence A-004 model"
+    purpose: "Refresh inherited P0 A-004 evidence with dedicated current typed-frontstage probes proving fact claim/evidence binding, inference premise/reasoning/confidence binding, action scope binding, unknown-claim blocking, unsupported foreground claim blocking, and no production side effects."
+    owner: "arxiv-daily-push"
+    status: "active"
+    task_ids:
+      - "S2PMT01-FRONTSTAGE-EVIDENCE-A004"
+      - "S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A004"
+    assumption_ids:
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-115"
+    parameter_ids:
+      - "PARAM-ADP-950"
+      - "PARAM-ADP-951"
+      - "PARAM-ADP-952"
+      - "PARAM-ADP-953"
+      - "PARAM-ADP-954"
+    inputs:
+      - "typed frontstage statement objects"
+      - "allowed claim ids"
+      - "evidence id bindings"
+      - "invalid frontstage statement cases"
+      - "production side-effect flags"
+    outputs:
+      - "fact_requires_claim_and_evidence_ids"
+      - "inference_requires_premises_reasoning_confidence"
+      - "action_requires_premise_and_scope"
+      - "unknown_claim_reference_blocks"
+      - "unsupported_foreground_claim_blocks"
+      - "frontstage_evidence_hash"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/security_boundary.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_security_boundary.py"
+      - "arxiv-daily-push/tests/test_stage2_final_gate.py"
+      - "arxiv-daily-push/tests/test_user_center_candidate_pool.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT01_FRONTSTAGE_EVIDENCE_A004.md"
+      - "governance/run_manifests/ADP-S2PMT01-FRONTSTAGE-EVIDENCE-A004-20260627.json"
+      - "arxiv-daily-push/用户中心/前台陈述证据绑定扫描.md"

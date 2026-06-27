@@ -144,7 +144,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         manifest_path = REPO_ROOT / "governance/run_manifests/ADP-S2PMT07-P0-INDEPENDENT-REVIEW-RECEIPT-20260626.json"
         refresh_manifest_path = (
             REPO_ROOT
-            / "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A003-20260627.json"
+            / "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A004-20260627.json"
         )
         receipt = receipt_path.read_text(encoding="utf-8")
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
@@ -169,6 +169,12 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertIn("test_stage2_lease_fencing.py", receipt_rows["A-003"])
         self.assertNotIn("PHASE_S2PMT03_LEASE_FENCING.md", receipt_rows["A-003"])
         self.assertNotIn("ADP-S2PMT03-LEASE-FENCING-20260626.json", receipt_rows["A-003"])
+        self.assertIn("PHASE_S2PMT01_FRONTSTAGE_EVIDENCE_A004.md", receipt_rows["A-004"])
+        self.assertIn("ADP-S2PMT01-FRONTSTAGE-EVIDENCE-A004-20260627.json", receipt_rows["A-004"])
+        self.assertIn("用户中心/前台陈述证据绑定扫描.md", receipt_rows["A-004"])
+        self.assertIn("test_security_boundary.py", receipt_rows["A-004"])
+        self.assertNotIn("PHASE_S2PMT01_SECURITY_BOUNDARY.md", receipt_rows["A-004"])
+        self.assertNotIn("ADP-S2PMT01-SECURITY-BOUNDARY-20260626.json", receipt_rows["A-004"])
         self.assertIn("PHASE_S2PMT05_DUPLICATE_TRIGGER_B007.md", receipt_rows["B-007"])
         self.assertIn("ADP-S2PMT05-DUPLICATE-TRIGGER-B007-20260627.json", receipt_rows["B-007"])
         self.assertNotIn("ADP-S2PMT05-STRESS-E2E-20260626.json", receipt_rows["B-007"])
@@ -177,10 +183,10 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertNotIn("ADP-S2PMT05-STRESS-E2E-20260626.json", receipt_rows["B-008"])
 
         findings = {finding["finding_id"]: finding for finding in manifest["p0_findings"]}
-        self.assertEqual(manifest["refreshed_findings"], ["A-001", "A-002", "A-003", "B-007", "B-008"])
+        self.assertEqual(manifest["refreshed_findings"], ["A-001", "A-002", "A-003", "A-004", "B-007", "B-008"])
         self.assertEqual(
             manifest["refresh_manifest"],
-            "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A003-20260627.json",
+            "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A004-20260627.json",
         )
         self.assertIn(manifest["refresh_manifest"], manifest["refresh_manifests"])
         self.assertTrue(refresh_manifest_path.exists())
@@ -231,6 +237,21 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertIn("arxiv-daily-push/tests/test_stage2_lease_fencing.py", findings["A-003"]["evidence_refs"])
         self.assertNotIn("arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_LEASE_FENCING.md", findings["A-003"]["evidence_refs"])
         self.assertNotIn("governance/run_manifests/ADP-S2PMT03-LEASE-FENCING-20260626.json", findings["A-003"]["evidence_refs"])
+        self.assertIn(
+            "arxiv-daily-push/docs/phase_records/PHASE_S2PMT01_FRONTSTAGE_EVIDENCE_A004.md",
+            findings["A-004"]["evidence_refs"],
+        )
+        self.assertIn(
+            "governance/run_manifests/ADP-S2PMT01-FRONTSTAGE-EVIDENCE-A004-20260627.json",
+            findings["A-004"]["evidence_refs"],
+        )
+        self.assertIn(
+            "arxiv-daily-push/用户中心/前台陈述证据绑定扫描.md",
+            findings["A-004"]["evidence_refs"],
+        )
+        self.assertIn("arxiv-daily-push/tests/test_security_boundary.py", findings["A-004"]["evidence_refs"])
+        self.assertNotIn("arxiv-daily-push/docs/phase_records/PHASE_S2PMT01_SECURITY_BOUNDARY.md", findings["A-004"]["evidence_refs"])
+        self.assertNotIn("governance/run_manifests/ADP-S2PMT01-SECURITY-BOUNDARY-20260626.json", findings["A-004"]["evidence_refs"])
         self.assertIn(
             "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_DUPLICATE_TRIGGER_B007.md",
             findings["B-007"]["evidence_refs"],

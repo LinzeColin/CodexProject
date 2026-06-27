@@ -6546,3 +6546,60 @@ formulas:
     evidence_hash: "PENDING_MAIN_COMMIT"
     last_verified_commit: "PRECOMMIT"
     verified_at: "2026-06-27T09:28:57+10:00"
+
+
+  -
+    formula_id: "FORM-ADP-115"
+    model_id: "MOD-ADP-113"
+    assumption_ids:
+      - "ASM-ADP-035"
+    task_ids:
+      - "S2PMT01-FRONTSTAGE-EVIDENCE-A004"
+      - "S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A004"
+    status: "active"
+    expression: "A-004 typed frontstage evidence passes only when required_probe_coverage, typed_statement_schema_enforced, evidence_binding_enforced, unknown_claims_blocked, unsupported_foreground_claims_blocked, and no_production_side_effect are all true; fact statements require known claim_ids and non-empty evidence_ids; inference statements require premise_claim_ids, reasoning_version, and 0..1 confidence; action statements require premise_claim_ids and action_scope; unknown claim references and unsupported foreground claims must block."
+    variables:
+      -
+        name: "frontstage_typed_statements"
+        data_type: "array"
+        unit: "statement objects"
+        input_domain: "fact, inference, hypothesis, action"
+      -
+        name: "allowed_claim_ids"
+        data_type: "array"
+        unit: "claim ids"
+        input_domain: "known evidence claims"
+      -
+        name: "invalid_case_results"
+        data_type: "object"
+        unit: "blocked invalid cases"
+        input_domain: "missing evidence, missing reasoning/confidence, missing action scope, unknown claim, unsupported foreground claim"
+      -
+        name: "production_side_effect_flags"
+        data_type: "object"
+        unit: "boolean flags"
+        input_domain: "false"
+    constraints: "This is current local P0 A-004 evidence only; it must not send SMTP, install scheduler, upload Release, mutate public schema or production queue, edit CURRENT or V7.1/V7.2 contracts, close inherited P0/P1, or claim Stage2 integrated production acceptance."
+    missing_policy: "Missing required probe, accepted unsupported foreground fact, accepted unknown claim reference, missing frontstage binding, or any forbidden side-effect flag blocks the report."
+    output_range: "A-004 frontstage evidence report with status pass or blocked, gate states, invalid-case results, deterministic frontstage_evidence_hash, validation errors, and all production/schema/queue/V7/closure side-effect flags false."
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/security_boundary.py"
+    test_refs:
+      - "arxiv-daily-push/tests/test_security_boundary.py"
+      - "arxiv-daily-push/tests/test_stage2_final_gate.py"
+      - "arxiv-daily-push/tests/test_user_center_candidate_pool.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT01_FRONTSTAGE_EVIDENCE_A004.md"
+      - "governance/run_manifests/ADP-S2PMT01-FRONTSTAGE-EVIDENCE-A004-20260627.json"
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/security_boundary.py::S2PMT01_FRONTSTAGE_A004_MODEL_ID"
+      - "arxiv-daily-push/src/arxiv_daily_push/security_boundary.py::S2PMT01_FRONTSTAGE_A004_REQUIRED_PROBES"
+      - "arxiv-daily-push/src/arxiv_daily_push/security_boundary.py::S2PMT01_FRONTSTAGE_A004_REQUIRED_GATES"
+      - "arxiv-daily-push/src/arxiv_daily_push/security_boundary.py::S2PMT01_FRONTSTAGE_A004_REQUIRED_PRODUCTION_FALSE_FLAGS"
+      - "arxiv-daily-push/src/arxiv_daily_push/security_boundary.py::build_frontstage_evidence_a004_report"
+      - "arxiv-daily-push/src/arxiv_daily_push/security_boundary.py::validate_frontstage_evidence_a004_report"
+    implementation_fingerprint: "PENDING_MAIN_COMMIT"
+    evidence_hash: "PENDING_MAIN_COMMIT"
+    last_verified_commit: "PRECOMMIT"
+    verified_at: "2026-06-27T09:58:16+10:00"

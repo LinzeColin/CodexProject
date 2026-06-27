@@ -22,6 +22,7 @@ TRACEABILITY_CHAIN_PAGE = USER_CENTER / "功能任务测试证据追踪链.md"
 RESTORE_PATH_SAFETY_PAGE = USER_CENTER / "恢复路径安全扫描.md"
 RESTORE_ATOMIC_REPLACEMENT_PAGE = USER_CENTER / "恢复原子替换扫描.md"
 OUTBOX_DELIVERY_PAGE = USER_CENTER / "事务发件箱与消息ID扫描.md"
+FRONTSTAGE_EVIDENCE_PAGE = USER_CENTER / "前台陈述证据绑定扫描.md"
 LEGACY_MAIL_SCAN_PAGE = USER_CENTER / "旧邮件标识兼容扫描.md"
 TRACEABILITY_MATRIX = ROOT / "docs" / "governance" / "TRACEABILITY_MATRIX.csv"
 MODEL_PARAMS_PAGE = ROOT / "模型参数文件.md"
@@ -210,6 +211,30 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertNotIn("/Users/", page)
         self.assertNotIn("file://", page)
         self.assertIn("[事务发件箱与消息ID扫描](./事务发件箱与消息ID扫描.md)", readme)
+
+    def test_frontstage_evidence_page_exposes_a004_current_evidence(self):
+        page = FRONTSTAGE_EVIDENCE_PAGE.read_text(encoding="utf-8")
+        readme = (USER_CENTER / "README.md").read_text(encoding="utf-8")
+
+        self.assertTrue(page.startswith("# 前台陈述证据绑定扫描\n"))
+        self.assertRegex(page, r"更新时间：\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} Australia/Sydney")
+        self.assertIn("P0 `A-004`", page)
+        self.assertIn("fact 必须绑定 claim 与 evidence", page)
+        self.assertIn("inference 必须绑定 premise、reasoning version、confidence", page)
+        self.assertIn("action 必须绑定 premise 与 action scope", page)
+        self.assertIn("unknown claim reference | fail-closed", page)
+        self.assertIn("unsupported foreground claim | fail-closed", page)
+        self.assertIn("真实 SMTP 发送 | `false`", page)
+        self.assertIn("P0 关闭声明 | `false`", page)
+        self.assertIn(
+            "[A-004 运行清单](../../governance/run_manifests/ADP-S2PMT01-FRONTSTAGE-EVIDENCE-A004-20260627.json)",
+            page,
+        )
+        self.assertIn("[A-004 阶段记录](../docs/phase_records/PHASE_S2PMT01_FRONTSTAGE_EVIDENCE_A004.md)", page)
+        self.assertIn("[聚焦测试](../tests/test_security_boundary.py)", page)
+        self.assertNotIn("/Users/", page)
+        self.assertNotIn("file://", page)
+        self.assertIn("[前台陈述证据绑定扫描](./前台陈述证据绑定扫描.md)", readme)
 
     def test_user_center_pages_keep_chinese_facing_labels(self):
         forbidden = (
