@@ -4,9 +4,9 @@
 
 - 收口状态: `blocked_not_ready_for_owner_gate`
 - 中文状态: `阻塞，尚不可进入 OWNER-GATE-01`
-- 生成时间: `2026-06-27T01:22:23+00:00`
-- 已观察 soak 小时: `1.1886 / 48`
-- 剩余 soak 小时: `46.8114`
+- 生成时间: `2026-06-27T01:29:24+00:00`
+- 已观察 soak 小时: `1.3056 / 48`
+- 剩余 soak 小时: `46.6944`
 - 当前阻塞项: `phase6_48h_soak_validation`
 - 实盘交易开关: `false`
 - Broker 真实写单允许状态: `false`
@@ -16,10 +16,10 @@
 
 | 验收项 | 当前状态 | 证据状态 | 证据时间 |
 |---|---|---|---|
-| `phase6_48h_soak_validation` | `blocked` | `observing` | `2026-06-27T01:22:23+00:00` |
-| `qualified_trading_day_paper_shadow_report` | `pass` | `pass` | `2026-06-27T01:22:23+00:00` |
-| `shadow_live_constraints` | `pass` | `pass` | `2026-06-27T01:22:23+00:00` |
-| `limit_order_contract` | `pass` | `pass` | `2026-06-27T01:22:23+00:00` |
+| `phase6_48h_soak_validation` | `blocked` | `observing` | `2026-06-27T01:29:24+00:00` |
+| `qualified_trading_day_paper_shadow_report` | `pass` | `pass` | `2026-06-27T01:29:24+00:00` |
+| `shadow_live_constraints` | `pass` | `pass` | `2026-06-27T01:29:24+00:00` |
+| `limit_order_contract` | `pass` | `pass` | `2026-06-27T01:29:24+00:00` |
 | `live_authorization_absent` | `pass` | `不适用` | `不适用` |
 
 ## Paper/Shadow 摘要

@@ -24,6 +24,14 @@ Reason: OWNER-GATE-01 is an owner decision surface. It must not drift from machi
 
 Consequence: Running `scripts/build_phase6_owner_gate_evidence.py` refreshes both JSON evidence and the human-readable A/B/C owner decision file. Until `phase6_closeout.json` reports `ready_for_owner_gate`, option A remains a continue-evidence path, not MICRO_LIVE authorization.
 
+## 2026-06-27: Phase 6 Closeout Report Must Map Acceptance To Evidence
+
+Decision: `docs/evidence/phase6_closeout_latest/PHASE6_CLOSEOUT_REPORT.md` is generated from the same Phase 6 evidence set and must map every OWNER-GATE acceptance item to a concrete evidence file and current status.
+
+Reason: The owner needs a human-readable closeout report, not only raw JSON, and future agents must not infer completion from partial evidence.
+
+Consequence: Running `scripts/build_phase6_owner_gate_evidence.py` refreshes the closeout report alongside JSON evidence and `OWNER_DECISION.md`. The report must continue to state that Alpha is not ready when 48-hour natural-day soak coverage is incomplete.
+
 ## 2026-06-13: Execution Boundary
 
 Decision: Alpha will automate paper trading, risk checks, approval queues, and broker-ready order tickets. It will not autonomously submit real-money broker orders.

@@ -340,6 +340,143 @@ def build_owner_decision_markdown(
     return document
 
 
+def build_phase6_closeout_report_markdown(
+    *,
+    closeout: dict,
+    soak_validation: dict,
+    paper_shadow_report: dict,
+    shadow_live_constraints: dict,
+    output_path: str | Path | None = None,
+) -> str:
+    def _display(value: Any) -> str:
+        if value is None:
+            return "不适用"
+        if isinstance(value, bool):
+            return "true" if value else "false"
+        if value == "":
+            return "无"
+        return str(value)
+
+    ready = closeout.get("status") == "ready_for_owner_gate"
+    observed_hours = float(soak_validation.get("observed_hours") or 0)
+    required_hours = float(soak_validation.get("duration_hours_required") or 48)
+    remaining_hours = max(required_hours - observed_hours, 0)
+    schema_passed = all(item.get("status") == "pass" for item in paper_shadow_report.get("schema_checks", []))
+    hard_gates_passed = all(item.get("status") == "pass" for item in paper_shadow_report.get("hard_gate_checks", []))
+    acceptance_by_id = {item.get("id"): item for item in closeout.get("acceptance", [])}
+    requirement_rows = [
+        (
+            "48 小时自然日 soak validation 通过",
+            acceptance_by_id.get("phase6_48h_soak_validation", {}),
+            "soak_validation_latest.json",
+        ),
+        (
+            "至少一个合格交易日 Paper/Shadow 报告通过 schema 和 hard gate",
+            {
+                "status": "pass" if paper_shadow_report.get("status") == "pass" and schema_passed and hard_gates_passed else "blocked",
+                "evidence_status": paper_shadow_report.get("status"),
+                "evidence_generated_at": paper_shadow_report.get("generated_at"),
+            },
+            "paper_shadow_report_latest.json",
+        ),
+        (
+            "Shadow live 约束不再 blocked",
+            acceptance_by_id.get("shadow_live_constraints", {}),
+            "shadow_live_constraints_latest.json",
+        ),
+        (
+            "限价订单契约通过",
+            acceptance_by_id.get("limit_order_contract", {}),
+            "paper_shadow_report_latest.json",
+        ),
+        (
+            "phase6_closeout.json status 为 ready_for_owner_gate",
+            {
+                "status": "pass" if ready else "blocked",
+                "evidence_status": closeout.get("status"),
+                "evidence_generated_at": closeout.get("generated_at"),
+            },
+            "phase6_closeout.json",
+        ),
+        (
+            "OWNER_DECISION.md 可供 owner 选择 A/B/C",
+            {
+                "status": "pass",
+                "evidence_status": "已生成",
+                "evidence_generated_at": closeout.get("generated_at"),
+            },
+            "OWNER_DECISION.md",
+        ),
+        (
+            "不写 runtime/LIVE_AUTHORIZATION.json",
+            acceptance_by_id.get("live_authorization_absent", {}),
+            "runtime/LIVE_AUTHORIZATION.json absent",
+        ),
+    ]
+    lines = [
+        "# Alpha Phase 6 Closeout Report",
+        "",
+        "## 执行摘要",
+        "",
+        f"- 当前状态: `{closeout.get('status', '缺失')}`",
+        f"- 中文状态: `{closeout.get('status_zh', '缺失')}`",
+        f"- 生成时间: `{closeout.get('generated_at', '缺失')}`",
+        f"- 48 小时观察进度: `{observed_hours:.4f} / {required_hours:.0f}` 小时",
+        f"- 剩余观察时间: `{remaining_hours:.4f}` 小时",
+        f"- 当前阻塞项: `{', '.join(closeout.get('blocking_conditions') or []) or '无'}`",
+        "- 结论: `可提交 OWNER-GATE-01`" if ready else "- 结论: `尚不可提交 OWNER-GATE-01`",
+        "",
+        "## 验收标准逐项审计",
+        "",
+        "| 验收标准 | 当前状态 | 证据状态 | 证据时间 | 证据文件 |",
+        "|---|---|---|---|---|",
+    ]
+    for requirement, evidence, evidence_file in requirement_rows:
+        lines.append(
+            f"| {requirement} | `{evidence.get('status', 'missing')}` | "
+            f"`{_display(evidence.get('evidence_status'))}` | "
+            f"`{_display(evidence.get('evidence_generated_at'))}` | `{evidence_file}` |"
+        )
+    lines.extend(
+        [
+            "",
+            "## Paper/Shadow 合格交易日报告",
+            "",
+            f"- 报告状态: `{paper_shadow_report.get('status', '缺失')}`",
+            f"- Schema 检查: `{'pass' if schema_passed else 'fail'}`",
+            f"- Hard gate 检查: `{'pass' if hard_gates_passed else 'fail'}`",
+            f"- 交易日: `{paper_shadow_report.get('trading_day', '缺失')}`",
+            f"- 标的: `{(paper_shadow_report.get('shadow') or {}).get('symbol', '缺失')}`",
+            f"- 订单类型: `{(paper_shadow_report.get('shadow') or {}).get('order_type', '缺失')}`",
+            "",
+            "## Shadow Live 约束",
+            "",
+            f"- 约束状态: `{shadow_live_constraints.get('status', '缺失')}`",
+            f"- 实盘交易开关: `{_display((shadow_live_constraints.get('health') or {}).get('live_trading_enabled', '缺失'))}`",
+            f"- Kill switch: `{_display((shadow_live_constraints.get('health') or {}).get('kill_switch_active', '缺失'))}`",
+            "",
+            "## 安全边界",
+            "",
+            "- 停在 OWNER-GATE-01，不进入 MICRO_LIVE。",
+            "- 不创建 `runtime/LIVE_AUTHORIZATION.json`。",
+            "- 不开启 live trading。",
+            "- 不提交真实 broker order。",
+            "- 不把 48 小时未满写成 ready。",
+            "",
+            "## 下一步",
+            "",
+            "继续让 Phase 6 sampler 自然累计 48 小时 Paper/Shadow 观察；达到要求后重新生成本报告和 `phase6_closeout.json`。",
+            "",
+        ]
+    )
+    document = "\n".join(lines)
+    if output_path:
+        output = Path(output_path)
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(document, encoding="utf-8")
+    return document
+
+
 def _limit_order_contract_passed(report: dict) -> bool:
     return report.get("status") == "pass" and report.get("shadow", {}).get("order_type") == "limit"
 

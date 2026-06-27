@@ -11,6 +11,7 @@ from backend.app.services.phase6_owner_gate import (
     append_soak_sample,
     build_owner_decision_markdown,
     build_owner_gate_closeout,
+    build_phase6_closeout_report_markdown,
     build_paper_shadow_report,
     build_shadow_live_constraints_report,
     build_soak_validation_report,
@@ -121,6 +122,35 @@ def test_owner_decision_markdown_contains_owner_choices_and_blockers(tmp_path):
     assert "Paper/Shadow schema 状态" in document
     assert "runtime/LIVE_AUTHORIZATION.json" in document
     assert "不提交真实 broker order" in document
+
+
+def test_phase6_closeout_report_maps_acceptance_to_evidence(tmp_path):
+    run = _paper_run(tmp_path)
+    paper_shadow = build_paper_shadow_report(run_result=run)
+    constraints = build_shadow_live_constraints_report(live_authorization_path=tmp_path / "LIVE_AUTHORIZATION.json")
+    soak = build_soak_validation_report(samples=[])
+    closeout = build_owner_gate_closeout(
+        soak_validation=soak,
+        paper_shadow_report=paper_shadow,
+        shadow_live_constraints=constraints,
+    )
+    output_path = tmp_path / "PHASE6_CLOSEOUT_REPORT.md"
+
+    document = build_phase6_closeout_report_markdown(
+        closeout=closeout,
+        soak_validation=soak,
+        paper_shadow_report=paper_shadow,
+        shadow_live_constraints=constraints,
+        output_path=output_path,
+    )
+
+    assert output_path.read_text(encoding="utf-8") == document
+    assert "验收标准逐项审计" in document
+    assert "48 小时自然日 soak validation 通过" in document
+    assert "至少一个合格交易日 Paper/Shadow 报告通过 schema 和 hard gate" in document
+    assert "OWNER_DECISION.md 可供 owner 选择 A/B/C" in document
+    assert "停在 OWNER-GATE-01，不进入 MICRO_LIVE" in document
+    assert "尚不可提交 OWNER-GATE-01" in document
 
 
 def test_soak_history_appends_jsonl_samples(tmp_path):
