@@ -85,6 +85,9 @@ def test_soak_validation_observes_until_48h_coverage(tmp_path):
 
     assert report["status"] == "pass"
     assert report["observed_hours"] == 48.0
+    assert report["remaining_seconds"] == 0
+    assert report["remaining_hours"] == 0
+    assert report["estimated_ready_at"] == end.isoformat()
     assert report["window_start"] == start.isoformat()
     assert report["window_end"] == end.isoformat()
     assert report["max_observed_gap_seconds"] == 900
@@ -106,6 +109,9 @@ def test_soak_validation_resets_window_after_stale_gap(tmp_path):
 
     assert report["status"] == "observing"
     assert report["observed_seconds"] == 600
+    assert report["remaining_seconds"] == 3000
+    assert report["remaining_hours"] == 0.8333
+    assert report["estimated_ready_at"] == (start + timedelta(seconds=5400)).isoformat()
     assert report["window_start"] == (start + timedelta(seconds=1800)).isoformat()
     assert report["window_end"] == (start + timedelta(seconds=2400)).isoformat()
     assert report["max_observed_gap_seconds"] == 1800
@@ -374,6 +380,8 @@ def test_owner_gate_status_cli_reports_ready_from_runtime_evidence(tmp_path, mon
     assert payload["live_authorization_absent"] is True
     assert payload["sampler_freshness_status"] == "pass"
     assert payload["latest_sample_generated_at"] == end.isoformat()
+    assert payload["remaining_seconds"] == 0
+    assert payload["estimated_ready_at"] == end.isoformat()
     assert payload["gap_violation_count"] == 0
     assert payload["continuous_sample_count"] == len(samples)
 
@@ -453,6 +461,8 @@ def test_publish_phase6_owner_gate_evidence_syncs_runtime_to_docs_without_append
 
     assert report["status"] == "ready_for_owner_gate"
     assert report["verification_status"] == "pass"
+    assert report["soak"]["remaining_seconds"] == 0
+    assert report["soak"]["estimated_ready_at"] == end.isoformat()
     assert report["live_authorization_absent"] is True
     assert verification["verification_status"] == "pass"
     assert json.loads((docs_root / "phase6_closeout.json").read_text(encoding="utf-8"))["status"] == "ready_for_owner_gate"

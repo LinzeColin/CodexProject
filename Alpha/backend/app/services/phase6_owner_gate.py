@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-import json
 import hashlib
-from datetime import datetime, timezone
+import json
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
@@ -186,6 +186,8 @@ def build_soak_validation_report(
     latest = continuous_samples[-1][0] if continuous_samples else None
     observed_seconds = int((latest - first).total_seconds()) if first and latest else 0
     required_seconds = int(duration_hours * 3600)
+    remaining_seconds = max(required_seconds - observed_seconds, 0)
+    estimated_ready_at = (first + timedelta(seconds=required_seconds)).isoformat() if first else None
     failed_samples = [item for item in sorted_samples if int(item.get("fail_count", 0)) > 0]
     current_window_gaps = gaps[continuous_start_index:] if parsed_samples else []
     current_window_gap_violations = [item for item in current_window_gaps if item["seconds"] > max_sample_gap_seconds]
@@ -219,6 +221,9 @@ def build_soak_validation_report(
         "window_end": latest.isoformat() if latest else None,
         "observed_seconds": observed_seconds,
         "observed_hours": round(observed_seconds / 3600, 4),
+        "remaining_seconds": remaining_seconds,
+        "remaining_hours": round(remaining_seconds / 3600, 4),
+        "estimated_ready_at": estimated_ready_at,
         "sample_count": len(sorted_samples),
         "continuous_sample_count": len(continuous_samples),
         "invalid_sample_count": invalid_sample_count,
@@ -324,6 +329,9 @@ def build_phase6_owner_gate_status(
         "continuous_sample_count": soak["continuous_sample_count"],
         "observed_hours": soak["observed_hours"],
         "duration_hours_required": soak["duration_hours_required"],
+        "remaining_seconds": soak.get("remaining_seconds"),
+        "remaining_hours": soak.get("remaining_hours"),
+        "estimated_ready_at": soak.get("estimated_ready_at"),
         "window_start": soak.get("window_start"),
         "window_end": soak.get("window_end"),
         "max_sample_gap_seconds": soak.get("max_sample_gap_seconds"),
@@ -358,7 +366,8 @@ def build_owner_decision_markdown(
     blocking = closeout.get("blocking_conditions") or []
     observed_hours = float(soak_validation.get("observed_hours") or 0)
     duration_hours = float(soak_validation.get("duration_hours_required") or 48)
-    remaining_hours = max(duration_hours - observed_hours, 0)
+    remaining_hours = float(soak_validation.get("remaining_hours", max(duration_hours - observed_hours, 0)) or 0)
+    estimated_ready_at = _display(soak_validation.get("estimated_ready_at"))
     max_gap_seconds = int(soak_validation.get("max_observed_gap_seconds") or 0)
     gap_violation_count = int(soak_validation.get("gap_violation_count") or 0)
     option_a = (
@@ -377,6 +386,7 @@ def build_owner_decision_markdown(
         f"- 生成时间: `{_display(closeout.get('generated_at', '缺失'))}`",
         f"- 已观察 soak 小时: `{observed_hours:.4f} / {duration_hours:.0f}`",
         f"- 剩余 soak 小时: `{remaining_hours:.4f}`",
+        f"- 预计可满足 48h 时间: `{estimated_ready_at}`",
         f"- 连续观察窗口: `{_display(soak_validation.get('window_start'))}` 到 `{_display(soak_validation.get('window_end'))}`",
         f"- 最大样本间隔: `{max_gap_seconds}` 秒；gap violation: `{gap_violation_count}`",
         f"- 当前阻塞项: `{', '.join(blocking) if blocking else '无'}`",
@@ -456,7 +466,8 @@ def build_phase6_closeout_report_markdown(
     ready = closeout.get("status") == "ready_for_owner_gate"
     observed_hours = float(soak_validation.get("observed_hours") or 0)
     required_hours = float(soak_validation.get("duration_hours_required") or 48)
-    remaining_hours = max(required_hours - observed_hours, 0)
+    remaining_hours = float(soak_validation.get("remaining_hours", max(required_hours - observed_hours, 0)) or 0)
+    estimated_ready_at = _display(soak_validation.get("estimated_ready_at"))
     max_gap_seconds = int(soak_validation.get("max_observed_gap_seconds") or 0)
     gap_violation_count = int(soak_validation.get("gap_violation_count") or 0)
     schema_passed = all(item.get("status") == "pass" for item in paper_shadow_report.get("schema_checks", []))
@@ -521,6 +532,7 @@ def build_phase6_closeout_report_markdown(
         f"- 生成时间: `{closeout.get('generated_at', '缺失')}`",
         f"- 48 小时观察进度: `{observed_hours:.4f} / {required_hours:.0f}` 小时",
         f"- 剩余观察时间: `{remaining_hours:.4f}` 小时",
+        f"- 预计可满足 48h 时间: `{estimated_ready_at}`",
         f"- 连续观察窗口: `{_display(soak_validation.get('window_start'))}` 到 `{_display(soak_validation.get('window_end'))}`",
         f"- 最大样本间隔: `{max_gap_seconds}` 秒；gap violation: `{gap_violation_count}`",
         f"- 当前阻塞项: `{', '.join(closeout.get('blocking_conditions') or []) or '无'}`",
@@ -622,6 +634,9 @@ def build_phase6_evidence_manifest(
             "continuous_sample_count": soak_validation.get("continuous_sample_count"),
             "observed_hours": soak_validation.get("observed_hours"),
             "duration_hours_required": soak_validation.get("duration_hours_required"),
+            "remaining_seconds": soak_validation.get("remaining_seconds"),
+            "remaining_hours": soak_validation.get("remaining_hours"),
+            "estimated_ready_at": soak_validation.get("estimated_ready_at"),
             "window_start": soak_validation.get("window_start"),
             "window_end": soak_validation.get("window_end"),
             "max_sample_gap_seconds": soak_validation.get("max_sample_gap_seconds"),
@@ -715,6 +730,9 @@ def publish_phase6_owner_gate_evidence(
             "status": soak_validation.get("status"),
             "observed_hours": soak_validation.get("observed_hours"),
             "duration_hours_required": soak_validation.get("duration_hours_required"),
+            "remaining_seconds": soak_validation.get("remaining_seconds"),
+            "remaining_hours": soak_validation.get("remaining_hours"),
+            "estimated_ready_at": soak_validation.get("estimated_ready_at"),
             "sample_count": soak_validation.get("sample_count"),
             "continuous_sample_count": soak_validation.get("continuous_sample_count"),
             "window_start": soak_validation.get("window_start"),

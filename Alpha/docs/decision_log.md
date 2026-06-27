@@ -151,3 +151,11 @@ Decision: `scripts/publish_phase6_owner_gate_evidence.py` publishes the current 
 Reason: The LaunchAgent sampler must keep high-frequency runtime evidence local, while GitHub handoff and OWNER-GATE-01 review need a committed docs evidence package that can be refreshed from runtime state on demand.
 
 Consequence: `docs/evidence/phase6_closeout_latest` can be refreshed as the canonical owner decision package whenever the soak window progresses. Package verification may pass while OWNER-GATE readiness still remains blocked by `phase6_48h_soak_validation`.
+
+## 2026-06-27: Phase 6 Soak Evidence Exposes Remaining Time And ETA
+
+Decision: Phase 6 soak validation, owner-gate status, evidence manifest, OWNER_DECISION, closeout report, and dashboard now expose `remaining_seconds`, `remaining_hours`, and `estimated_ready_at`.
+
+Reason: OWNER-GATE reviewers and follow-on agents need a concrete human-readable estimate for the 48-hour natural-day observation window instead of manually subtracting timestamps from JSONL history.
+
+Consequence: ETA improves progress visibility only. It does not mark Phase 6 ready, bypass sample freshness, override gap resets, create live authorization, or change any broker execution path.

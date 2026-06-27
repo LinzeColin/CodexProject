@@ -259,12 +259,14 @@ def dashboard() -> str:
         <div class="metric-grid">
           ${metric('收口状态', pill(statusText(phase6.status || 'unknown'), statusKind))}
           ${metric('连续观察', `${formatHours(phase6.observed_hours)} / ${phase6.duration_hours_required || 48}h`)}
+          ${metric('剩余观察', `${formatHours(phase6.remaining_hours)}h`)}
           ${metric('最新样本', pill(statusText(phase6.sampler_freshness_status || 'unknown'), freshKind))}
           ${metric('实盘授权文件', pill(phase6.live_authorization_absent ? '不存在' : '存在', liveKind))}
         </div>
         <table>
           <tbody>
             <tr><th>连续窗口</th><td>${phase6.window_start || '缺失'} → ${phase6.window_end || '缺失'}</td></tr>
+            <tr><th>预计达标</th><td>${phase6.estimated_ready_at || '缺失'}</td></tr>
             <tr><th>样本</th><td>总数 ${phase6.sample_count || 0}，连续 ${phase6.continuous_sample_count || 0}</td></tr>
             <tr><th>样本间隔</th><td>最大 ${phase6.max_observed_gap_seconds || 0}s，阈值 ${phase6.max_sample_gap_seconds || 900}s，gap ${phase6.gap_violation_count || 0}</td></tr>
             <tr><th>最新样本年龄</th><td>${phase6.latest_sample_age_seconds ?? 'n/a'}s / ${phase6.max_sample_age_seconds || 900}s</td></tr>

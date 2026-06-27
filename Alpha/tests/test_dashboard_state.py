@@ -73,6 +73,8 @@ def test_phase6_owner_gate_status_endpoint_is_read_only_and_fail_closed(tmp_path
     assert status["shadow_live_constraints_status"] == "pass"
     assert status["blocking_conditions"] == ["phase6_48h_soak_validation"]
     assert "continuous_sample_count" in status
+    assert "remaining_hours" in status
+    assert "estimated_ready_at" in status
     assert not (tmp_path / "LIVE_AUTHORIZATION.json").exists()
 
 
@@ -82,6 +84,8 @@ def test_dashboard_html_contains_phase6_owner_gate_panel():
     assert "Phase 6 OWNER-GATE" in html
     assert "renderPhase6" in html
     assert "连续观察" in html
+    assert "剩余观察" in html
+    assert "预计达标" in html
 
 
 def test_agent_status_reports_app_runtime_loop_state(tmp_path, monkeypatch):
