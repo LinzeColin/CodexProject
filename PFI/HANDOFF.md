@@ -4,7 +4,7 @@ Last updated: 2026-06-27 Australia/Sydney
 
 ## Current Goal
 
-PFI V0.2 Stage 6 synthetic E2E stabilization, regression governance, delivery rollback, and post-V0.2 follow-up readiness.
+PFI V0.2 Stage 0 preparation audit after Stage 6 correction: confirm GitHub-visible facts, V0.1/V0.2 entry compatibility, QBVS independence, MetaDatabase boundary, and unresolved governance-registration decisions.
 
 ## Current Status
 
@@ -39,9 +39,11 @@ PFI V0.2 Stage 6 synthetic E2E stabilization, regression governance, delivery ro
 - Stage 6 E2E stabilization model is implemented in `src/pfi_v02/stage6_e2e_stabilization.py`.
 - Stage 6 record is `docs/pfi_v02/STAGE6_E2E_STABILIZATION.md`.
 - Stage 6 local synthetic E2E, regression governance, delivery rollback, 20 gate audit, and ACC-* taskpack audit acceptance is complete for phases 6A-6C.
+- Stage 0 preparation audit is `docs/pfi_v02/STAGE0_PREPARATION_AUDIT_20260627.md`.
 - Web shell default homepage consumes Stage 6 closeout status, keeps the V0.2 8 first-level entries, shows recommendation lifecycle under 建议与复盘, and shows reports/context export plus Stage 6 closeout under 报告与洞察.
 - 2026-06-27验收退回纠偏：默认 8501 顶部已新增 PFI 本机数据上传；真实支付宝导出 CSV parser 已支持说明区/中间表头/GB18030/尾随空列；旧支付宝原始账单 4 份已导入 `~/.pfi/runtime/imports/alipay_daily`，覆盖 `2022-06-06` 至 `2026-06-03`，`8815` 条标准化流水，`406` 条待复核；Web Shell 动态英文状态已中文化，8 个一级入口浏览器点击验证通过。
 - 2026-06-27二次纠偏：QBVS 已从 `PFI/` 内部分离为顶层 `QBVS/`；PFI 合同改为 `qbvs_independent_system=true`；Web Shell 补回 V0.1 六入口；`MetaDatabase/` 保存支付宝原始 CSV、manifest 和标准化流水，供 GitHub 验收。
+- 当前 GitHub 分支 `codex/pfi-stage6-meta-qbvs-sync` 已推送 commit `d0d0a4b8f50231e2c63293396a1fee8e03de7fda`；PFI/QBVS/MetaDatabase 相关工作区在该 commit 后干净。
 
 ## Decisions
 
@@ -84,5 +86,7 @@ Latest验收退回纠偏 result: `tests.test_stage2_alipay_import` `Ran 7 tests 
 
 ## Next
 
-1. Commit/push this branch by staging only `PFI/`, `QBVS/`, and `MetaDatabase/`; do not include unrelated EEI/ADP/Alpha/Serenity runtime changes.
-2. After this correction lands on GitHub, next work must be a separate post-V0.2 gate for real account credentials, production sync, PDF/ZIP package, external context consumer, CDR/Open Banking, payment submission, broker order submission, or live trading evidence.
+1. Ask the user whether `QBVS` should be registered in root `README.md` and `governance/projects.yaml` as an independent Lean v2 project.
+2. Ask the user whether `MetaDatabase` should remain a top-level data archive or become an independent governed project.
+3. Ask the user whether to merge `codex/pfi-stage6-meta-qbvs-sync` into `main` so GitHub default branch shows Stage 6 and Stage 0 delivery directly.
+4. Next implementation work must be a separate post-V0.2 gate for real account credentials, production sync, PDF/ZIP package, external context consumer, CDR/Open Banking, payment submission, broker order submission, or live trading evidence.
