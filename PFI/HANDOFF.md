@@ -4,7 +4,7 @@ Last updated: 2026-06-27 Australia/Sydney
 
 ## Current Goal
 
-PFI v0.2.1 前端优化 Stage 5 已完成：`数据源与上传` 页面提供上传中心和导入中心，支持文件选择、拖拽、状态、失败反馈、导入批次、导入摘要和账本复核入口。
+PFI v0.2.1 前端优化 Stage 6 已完成：`投资管理 > 持仓` 提供持仓编辑面板，支持 snapshot / adjustment SQLite 服务、前端新增/编辑/软删除、保存后刷新恢复和本机持久化验收。
 
 ## Current Status
 
@@ -47,6 +47,7 @@ PFI v0.2.1 前端优化 Stage 5 已完成：`数据源与上传` 页面提供上
 - v0.2.1 Stage 3 合同是 `src/pfi_v02/stage_v021_frontend_contract.py::build_v021_stage3_contract()`，测试是 `tests/test_v021_stage3_settings_search_contract.py`。
 - v0.2.1 Stage 4 合同是 `src/pfi_v02/stage_v021_frontend_contract.py::build_v021_stage4_contract()`，测试是 `tests/test_v021_stage4_trend_contract.py`。
 - v0.2.1 Stage 5 合同是 `src/pfi_v02/stage_v021_frontend_contract.py::build_v021_stage5_contract()`，测试是 `tests/test_v021_stage5_upload_import_contract.py`。
+- v0.2.1 Stage 6 合同是 `src/pfi_v02/stage_v021_frontend_contract.py::build_v021_stage6_contract()`；SQLite 服务是 `src/pfi_v02/stage_v021_holdings_persistence.py`；测试是 `tests/test_v021_stage6_holdings_persistence.py`。
 - v0.2.1 UI 货币基准已锁定为 CNY；所有页面顶部右上角必须显示 `CNY/AUD=4.70（YYYYMMDD--HH:MM）`，读取当日 06:00 Australia/Sydney 汇率快照。
 - v0.2.1 正式前端目标是 `PFI/web` HTML Web Shell；多模态反馈、触感、声音、视觉、通知和运行反馈控制台后续必须收敛到设置页。
 - Web shell default homepage consumes Stage 6 closeout status and now shows one unified 15-entry navigation list: 首页总览、账户与资产、账本流水、投资管理、消费管理、数据源与上传、建议与复盘、报告与洞察、首页、市场、研究、持仓、策略实验室、数据与系统、设置.
@@ -59,6 +60,7 @@ PFI v0.2.1 前端优化 Stage 5 已完成：`数据源与上传` 页面提供上
 - 2026-06-27 v0.2.1 Stage 3：`设置` 和 `数据与系统` 深链统一进入设置主工作区；业务页面不常驻反馈控制台；设置页包含运行反馈控制台、多模态反馈、触感、声音、视觉、通知、反馈测试和无障碍反馈；顶部全局搜索支持 15 个入口、V0.1 别名、工作区卡片、功能面板、任务中心、决策行和设置反馈控制项的模糊检索。
 - 2026-06-27 v0.2.1 Stage 4：新增 `UNIFIED_TREND_DATA`；账户与资产显示现金/净资产趋势；投资管理显示市值/总收益/现金仓位趋势；消费管理显示支出/预算/现金流趋势；趋势图有中文标题、图例、CNY 基准、终点直接标签和中文空状态。
 - 2026-06-27 v0.2.1 Stage 5：`数据源与上传` 页面新增上传中心和导入中心；文件选择、拖拽上传、等待/完成/失败中文状态、失败反馈、已选文件列表、导入批次、导入摘要和 `进入账本复核` 按钮可用；不执行外部真实上传、支付、券商提交或实盘自动下单。
+- 2026-06-27 v0.2.1 Stage 6：`投资管理 > 持仓` 新增持仓编辑面板；SQLite operational database 新增 `v021_holding_snapshots` 和 `v021_position_adjustments` 合同；服务覆盖新增、读取、修改、软删除；前端保存到本机持久状态，刷新或重开 HTML Web Shell 仍保留。
 
 ## Decisions
 
@@ -105,9 +107,10 @@ Latest v0.2.1 Stage 2 target result: Stage 2 contract `Ran 4 tests / OK`; Stage 
 Latest v0.2.1 Stage 3 target result: Stage 0/1/2/3 frontend contracts `Ran 21 tests / OK`; full PFI unittest discover `Ran 121 tests / OK`; `node --check PFI/web/app/shell.js` OK; governance `errors 0 / warnings 0`; `git diff --check -- PFI` OK; Chrome headless desktop verified settings route, legacy data-system deep link, fuzzy searches `xf`、`fk`、`ledger`, keyboard jump and console errors `0`, screenshot `/tmp/pfi-v021-stage3-settings-search-desktop-verified.png`; Chrome headless mobile 390x844 verified fuzzy search `fk` -> `运行反馈控制台`, screenshot `/tmp/pfi-v021-stage3-settings-search-mobile-verified.png`.
 Latest v0.2.1 Stage 4 target result: Stage 0/1/2/3/4 frontend contracts `Ran 26 tests / OK`; full PFI unittest discover `Ran 126 tests / OK`; `node --check PFI/web/app/shell.js` OK; governance `errors 0 / warnings 0`; `git diff --check -- PFI` OK; Chrome headless desktop verified `/accounts`、`/investment`、`/consumption` trend titles, CNY baseline, legends and nonblank canvas with console errors `0`, screenshot `/tmp/pfi-v021-stage4-trends-desktop-verified.png`; Chrome headless mobile 390x844 verified `消费管理` trend panel and nonblank canvas, screenshot `/tmp/pfi-v021-stage4-trends-mobile-verified.png`.
 Latest v0.2.1 Stage 5 target result: Stage 0/1/2/3/4/5 frontend contracts `Ran 31 tests / OK`; full PFI unittest discover `Ran 131 tests / OK`; `node --check PFI/web/app/shell.js` OK; governance `errors 0 / warnings 0`; `git diff --check -- PFI` OK; Chrome headless desktop verified `/sources-upload` upload panel, file picker upload, drag/drop upload, failure feedback, import center summary, review-link jump to `账本流水`, console errors `0`, screenshot `/tmp/pfi-v021-stage5-upload-desktop-verified.png`; Chrome headless mobile 390x844 verified upload/import panel and review entry, screenshot `/tmp/pfi-v021-stage5-upload-mobile-verified.png`.
+Latest v0.2.1 Stage 6 target result: Stage 0/1/2/3/4/5/6 frontend contracts `Ran 37 tests / OK`; target Stage 6 contract `Ran 6 tests / OK`; full PFI unittest discover `Ran 137 tests / OK`; governance `errors 0 / warnings 0`; Web shell syntax `OK`; `git diff --check -- PFI` `OK`; browser desktop verified `/investment?tab=holdings` edit/save/reload/reopen persistence with console errors `0`, screenshot `/tmp/pfi-v021-stage6-holdings-desktop-verified.png`; browser mobile 390x844 verified holdings panel and 3 rows, screenshot `/tmp/pfi-v021-stage6-holdings-mobile-verified.png`.
 
 ## Next
 
-1. Push current Stage 5 commit to GitHub `main` and sync canonical local `PFI/`.
-2. Next run under the active goal should handle only `P6 / S6 持仓持久化`：持仓编辑数据模型、服务和前端持久化。
-3. Do not jump to Stage 7 all-click smoothness until Stage 6 is completed and verified.
+1. Finish this Stage 6 closeout by pushing GitHub `main`, syncing canonical local `PFI/`, refreshing app entry, and bounded cache cleanup.
+2. Next run under the active goal should handle only `P7 / S7 流畅度`：所有入口和按钮可点击、成功/失败/进行中反馈统一。
+3. Do not expand into P8 final acceptance until Stage 7 is completed and verified.

@@ -310,6 +310,43 @@
           </div>
         </section>
 
+        <section class="holdings-persistence-panel" data-holdings-persistence-panel hidden aria-labelledby="holdings-persistence-title">
+          <div class="holdings-persistence-head">
+            <div>
+              <p class="panel-kicker">持仓持久化</p>
+              <h2 id="holdings-persistence-title">持仓编辑</h2>
+              <p>编辑数量和价格后保存；刷新或重开页面仍保留本机持仓草稿。</p>
+            </div>
+            <span class="status-pill status-review" data-holdings-persistence-status>等待保存</span>
+          </div>
+          <dl class="holdings-summary" data-holdings-summary aria-label="持仓摘要">
+            <div><dt>持仓数</dt><dd data-holdings-summary-count>0</dd></div>
+            <div><dt>总市值</dt><dd data-holdings-summary-value>CNY 0.00</dd></div>
+            <div><dt>最近保存</dt><dd data-holdings-summary-saved>未保存</dd></div>
+          </dl>
+          <div class="holdings-table-wrap">
+            <table class="holdings-table">
+              <thead>
+                <tr>
+                  <th scope="col">标的</th>
+                  <th scope="col">名称</th>
+                  <th scope="col">数量</th>
+                  <th scope="col">成本</th>
+                  <th scope="col">价格</th>
+                  <th scope="col">币种</th>
+                  <th scope="col">操作</th>
+                </tr>
+              </thead>
+              <tbody data-holdings-rows></tbody>
+            </table>
+          </div>
+          <div class="holdings-actions">
+            <button class="primary-action" type="button" data-holdings-save>保存修改</button>
+            <button class="secondary-action" type="button" data-holdings-add>新增持仓</button>
+            <button class="secondary-action" type="button" data-holdings-reset>恢复默认</button>
+          </div>
+        </section>
+
         <section class="content-grid">
           <article class="panel main-panel" aria-labelledby="main-panel-title">
             <div class="panel-toolbar">
