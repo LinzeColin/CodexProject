@@ -4,8 +4,8 @@
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:d39c8be3fed272f236414566df58c4d9dd650fe2106c2ebccc7a8e04af51a66b`
-- snapshot_event_time: `2026-06-27T05:25:16+10:00`
+- source_snapshot_hash: `sha256:cdbdbff29ee0ed27c06cc23c716b5ee0a934a8261b11b16513cdf4af84aae77c`
+- snapshot_event_time: `2026-06-28T01:30:57+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -15,25 +15,17 @@
 - Path: `arxiv-daily-push`
 - Product version: `0.23.1`
 - Phase/Gate: `S2PM / S2PMT07_FINAL_ACCEPTANCE_BUNDLE_READINESS_BLOCKED_NO_PRODUCTION`
-- Models/Formulas/Parameters total: `115 / 117 / 967`
-- Active formulas/parameters: `117 / 950`
-- Machine checked formulas/parameters: `117 / 950`
-
-## Latest Local Update
-
-- latest_task: `S2PLT01-REPLAY-REVIEW-STATUS-SYNC`
-- latest_status: `completed_no_acceptance_no_production`
-- latest_findings: `S2PLT01_INDEPENDENT_REPLAY_REVIEW_PRESENT_BUT_ACCEPTANCE_BLOCKED`
-- evidence: `governance/run_manifests/ADP-S2PLT01-REPLAY-REVIEW-STATUS-SYNC-20260628.json`; `governance/run_manifests/ADP-S2PLT01-INDEPENDENT-REPLAY-REVIEW-20260626.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PLT01_REPLAY_REVIEW_STATUS_SYNC.md`; `arxiv-daily-push/tests/test_stage2_replay_gate.py`
-- production_boundary: inherited blockers remain `P0=8 / P1=37`; `stage2_integrated_production_accepted=false`; no SMTP, scheduler, Release, CURRENT/V7 contract, public schema, DB, production queue, source adapter, or ranking change.
+- Models/Formulas/Parameters total: `116 / 118 / 975`
+- Active formulas/parameters: `118 / 958`
+- Machine checked formulas/parameters: `118 / 953`
 
 ## Assurance
 
 | Dimension | Status | Evidence |
 |---|---|---|
 | structural_completeness | `VERIFIED` | `scripts/validate_project_governance.py` |
-| implementation_congruence | `VERIFIED` | `arxiv-daily-push/docs/governance/parameter_registry.csv, arxiv-daily-push/docs/governance/formula_registry.yaml` |
-| parameter_source_quality | `VERIFIED` | `arxiv-daily-push/docs/governance/parameter_registry.csv` |
+| implementation_congruence | `PARTIAL` | `arxiv-daily-push/docs/governance/parameter_registry.csv, arxiv-daily-push/docs/governance/formula_registry.yaml` |
+| parameter_source_quality | `PARTIAL` | `arxiv-daily-push/docs/governance/parameter_registry.csv` |
 | methodological_rationale | `VERIFIED` | `arxiv-daily-push/docs/governance/MODEL_SPEC.md` |
 | empirical_validation | `VERIFIED` | `arxiv-daily-push/docs/governance/delivery_tasks.yaml` |
 | operational_validation | `VERIFIED` | `arxiv-daily-push/docs/governance/development_events.jsonl` |
@@ -56,8 +48,8 @@
 - Next governance task: `S2PMT07`
 - Parallel shadow source task: `NONE_WHILE_S2PMT07_BLOCKED`
 - Next executable task: `S2PLT01`
-- Pending/stale events: `187`
+- Pending/stale events: `223`
 - Tree-bound events: `0`
 - Commit-bound events: `4`
-- Legacy unbound events: `148`
-- Unresolved fact IDs: `0`
+- Legacy unbound events: `184`
+- Unresolved fact IDs: `1`

@@ -8,10 +8,6 @@ arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTI
 
 Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。
 
-本次补充记录了 `S2PMT07-FINAL-ACCEPTANCE-BUNDLE-READINESS`：最终验收包现在有显式 fail-closed readiness 子门，必须先具备 manifest、P0/P1 清零证明、S2PLT04 完成证明、独立签收、最终命令执行证明、无生产副作用证明和下一 Agent handoff，S2PMT07 才能进入最终签收判断。当前结论为 `blocked_readiness_precheck_recorded`。这不是最终验收包创建、不是 P0/P1 关闭、不是 S2PMT07 最终签收，也不是生产验收；继承阻断仍为 `P0=8 / P1=37`。
-
-本次同步还修正了 `S2PLT01` replay-chain 的当前口径：本地 no-production replay payload execution 和 independent replay review receipt 已存在，旧记录中“独立复审缺失”的阻断已更新为“复审存在但 S2PLT01 仍未验收”。这不是 `S2PLT01 accepted`，也不是 `S2PLT04 completed` 或 `S2PMT07 passed`；继承阻断仍为 `P0=8 / P1=37`。
-
 ## 3. 为什么重要
 
 在保持 arXiv 稳定运行的前提下，统一 V7.1 有效要求与 V1.1 新要求，并让 Stage2 agents 在 V7.2 下继续推进无冲突来源 Shadow。
@@ -38,13 +34,13 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - next_task_id: `S2PLT01`
 - responsible_role: `content_owner + product_owner`
 - acceptance_ids: `ACC-S2PLT01-30D`
-- unblock_condition: S2PLT01 replay payload execution package and independent replay review receipt are present as local no-production evidence, but inherited P0/P1, S2PLT04, S2PMT07 final independent review, and final production stop gates still block S2PLT01 and integrated production acceptance.
+- unblock_condition: S2PLT01 replay payload execution package can be misread as S2PLT01 acceptance; inherited P0/P1, S2PLT04, S2PMT07 final independent review, and final production stop gates still block S2PLT01 and integrated production acceptance.
 
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (950/950 active parameters, 117/117 active formulas)
-- parameter_source_quality: `VERIFIED`
+- implementation_congruence: `PARTIAL` (953/958 active parameters, 118/118 active formulas)
+- parameter_source_quality: `PARTIAL`
 - methodological_rationale: `VERIFIED`
 - empirical_validation: `VERIFIED`
 - operational_validation: `VERIFIED`
@@ -72,11 +68,11 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 12. Model Formula Parameter Change
 
-- model_count: `115`
-- total_formulas: `117`
-- active_formulas: `117`
-- total_parameters: `967`
-- active_parameters: `950`
+- model_count: `116`
+- total_formulas: `118`
+- active_formulas: `118`
+- total_parameters: `975`
+- active_parameters: `958`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
@@ -89,20 +85,20 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `0`
 - commit_bound_events: `4`
-- legacy_unbound_events: `148`
+- legacy_unbound_events: `184`
 - precommit_pending_events: `40`
-- pending_or_stale_events: `187`
+- pending_or_stale_events: `223`
 
 ## 15. UNKNOWN
 
-- unresolved_fact_ids: `0`
+- unresolved_fact_ids: `1`
 
 ## 16. 技术元数据
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:d39c8be3fed272f236414566df58c4d9dd650fe2106c2ebccc7a8e04af51a66b`
-- snapshot_event_time: `2026-06-27T05:25:16+10:00`
+- source_snapshot_hash: `sha256:cdbdbff29ee0ed27c06cc23c716b5ee0a934a8261b11b16513cdf4af84aae77c`
+- snapshot_event_time: `2026-06-28T01:30:57+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
 - phase/gate: `S2PM / S2PMT07_FINAL_ACCEPTANCE_BUNDLE_READINESS_BLOCKED_NO_PRODUCTION`

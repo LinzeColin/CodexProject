@@ -17,6 +17,21 @@ The append-only machine record is `development_events.jsonl`.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
 
+### `ITER-20260628-ADP-S2PLT03-RESILIENCE-PRECHECK`
+
+- Timestamp: `2026-06-28T01:30:57+10:00`
+- Fact level: EXTRACTED from S2PLT03 roadmap requirement, final-gate helper, focused RED/GREEN regression tests, semantic registries, traceability row, phase record, and run manifest.
+- Base commit: `4a8d931302e0d3ef40130c72eee328140134edf2`
+- Product version: `0.23.1`
+- Status: blocked no-production precheck recorded; S2PLT03 acceptance, real resilience drills, production restore, and integrated production acceptance are not claimed.
+- Task IDs: `S2PLT03`; acceptance `ACC-S2PLT03-RESILIENCE`.
+- Goal: Make the S2PLT03 resilience/capacity/rollback/state-count blocker explicit and machine-verifiable before S2PLT04 can be considered.
+- Files changed: S2PLT03 final-gate helper and tests, semantic registries, traceability matrix, phase record, run manifest, delivery task, delivery plan, development event, and 三基 notes.
+- Decisions: The precheck remains `blocked` because S2PLT02 is not accepted; rate-limit, parser-drift, restart, disk-pressure, backup restore-point, executable rollback, and ledger-count conservation evidence are not proven; inherited P0=8/P1=37 remain open. This does not send SMTP, enable scheduler, upload Release assets, execute production restore, mutate schema/DB/queues, change sources or ranking, edit V7 baselines, or claim production acceptance.
+- Validation: RED target test observed expected missing S2PLT03 API import failure; focused S2PLT02/S2PLT03/S2PLT04/S2PMT07 final-gate and user-center tests 35 OK; ADP full unittest 602 OK; ADP project governance 0 errors / 0 warnings; governance sync 0 errors / 0 warnings; V7.2 validator PASS; Lean check-render drift 0 / reference issues 0; changed-only semantic governance 0 errors / 0 warnings; user-center timestamp check 18 pages validated; JSON/JSONL/CSV/YAML parse OK; git diff --check PASS; open PR count 0; ADP/arxiv/s2p remote branch grep no matches. Full semantic extractor exceeded the local time window and was interrupted as non-blocking; it is not claimed as passed.
+- Risks: This precheck can be misread as S2PLT03 drill completion; S2PLT02 acceptance, real drill evidence, backup/rollback proof, ledger count conservation, inherited P0/P1 zero proof, S2PLT04, final bundle, and S2PMT07 still control production acceptance.
+- Evidence: `governance/run_manifests/ADP-S2PLT03-RESILIENCE-PRECHECK-20260628.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PLT03_RESILIENCE_PRECHECK.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.
+
 
 ### `ITER-20260628-ADP-S2PMT07-P1-C002-TECHNICAL-REVIEW`
 

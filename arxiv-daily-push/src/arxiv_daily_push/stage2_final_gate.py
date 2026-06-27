@@ -130,6 +130,52 @@ S2PLT02_BLOCKING_REASONS = (
     "inherited_v7_1_p0_findings_open",
     "inherited_v7_1_p1_findings_open",
 )
+S2PLT03_RESILIENCE_PRECHECK_MODEL_ID = "adp-s2plt03-resilience-precheck-v1"
+S2PLT03_ACCEPTANCE_ID = "ACC-S2PLT03-RESILIENCE"
+S2PLT03_TASK_ID = "S2PLT03"
+S2PLT03_SCHEMA_VERSION = 1
+S2PLT03_REQUIRED_DEPENDENCIES = ("S2PLT02",)
+S2PLT03_REQUIRED_EVIDENCE = (
+    "RATE_LIMIT_DRILL",
+    "PARSER_DRIFT_DRILL",
+    "RESTART_RECOVERY_DRILL",
+    "DISK_PRESSURE_DRILL",
+    "BACKUP_RESTORE_POINT_PROVEN",
+    "ROLLBACK_EXECUTABLE",
+    "LEDGER_COUNT_CONSERVATION",
+)
+S2PLT03_FORBIDDEN_FLAGS = (
+    "s2plt03_accepted",
+    "s2plt03_resilience_drill_completed",
+    "integrated_production_accepted",
+    "daily_operation_enabled",
+    "real_smtp_sent",
+    "real_smtp_send_enabled",
+    "scheduler_enabled",
+    "scheduler_install_enabled",
+    "release_uploaded",
+    "production_restore_executed",
+    "production_queue_mutated",
+    "public_schema_changed",
+    "db_migration_executed",
+    "source_adapter_changed",
+    "ranking_algorithm_changed",
+    "current_pointer_changed",
+    "v7_1_baseline_changed",
+    "v7_2_contract_files_changed",
+)
+S2PLT03_BLOCKING_REASONS = (
+    "s2plt02_not_accepted",
+    "rate_limit_drill_not_proven",
+    "parser_drift_drill_not_proven",
+    "restart_recovery_drill_not_proven",
+    "disk_pressure_drill_not_proven",
+    "backup_restore_point_not_proven",
+    "rollback_executable_not_proven",
+    "ledger_count_conservation_not_proven",
+    "inherited_v7_1_p0_findings_open",
+    "inherited_v7_1_p1_findings_open",
+)
 S2PLT04_INTEGRATION_CANDIDATE_MODEL_ID = "adp-s2plt04-integration-candidate-precheck-v1"
 S2PLT04_ACCEPTANCE_ID = "ACC-S2PLT04-INTEGRATION-CANDIDATE"
 S2PLT04_TASK_ID = "S2PLT04"
@@ -333,6 +379,154 @@ def validate_s2plt02_live_2d_precheck_report(report: Mapping[str, Any]) -> list[
     expected_hash = _stable_hash({key: value for key, value in report.items() if key != "report_hash"})
     if report.get("report_hash") != expected_hash:
         errors.append("S2PLT02 report_hash does not match report content")
+    return errors
+
+
+def build_s2plt03_dependency_state() -> dict[str, Any]:
+    """Build current S2PLT03 dependency state without accepting S2PLT02."""
+
+    return {
+        "status": "blocked",
+        "required_dependencies": list(S2PLT03_REQUIRED_DEPENDENCIES),
+        "completed_dependencies": {},
+        "unmet_dependencies": list(S2PLT03_REQUIRED_DEPENDENCIES),
+        "s2plt02_acceptance_status": "blocked_by_missing_real_2d_run_and_final_gates",
+    }
+
+
+def build_s2plt03_resilience_evidence_state() -> dict[str, Any]:
+    """Build current S2PLT03 resilience evidence state without running drills."""
+
+    available = {
+        "RATE_LIMIT_DRILL": False,
+        "PARSER_DRIFT_DRILL": False,
+        "RESTART_RECOVERY_DRILL": False,
+        "DISK_PRESSURE_DRILL": False,
+        "BACKUP_RESTORE_POINT_PROVEN": False,
+        "ROLLBACK_EXECUTABLE": False,
+        "LEDGER_COUNT_CONSERVATION": False,
+    }
+    return {
+        "status": "blocked",
+        "required_evidence": list(S2PLT03_REQUIRED_EVIDENCE),
+        "available_evidence": available,
+        "missing_evidence": [item for item, present in available.items() if not present],
+        "rate_limit_drill_status": "not_run",
+        "parser_drift_drill_status": "not_run",
+        "restart_recovery_drill_status": "not_run",
+        "disk_pressure_drill_status": "not_run",
+        "backup_restore_point_status": "not_proven",
+        "rollback_executable_status": "not_proven",
+        "ledger_count_conservation_status": "not_proven",
+    }
+
+
+def build_s2plt03_resilience_precheck_report(*, generated_at: str) -> dict[str, Any]:
+    """Build a deterministic fail-closed S2PLT03 resilience precheck."""
+
+    dependencies = build_s2plt03_dependency_state()
+    evidence = build_s2plt03_resilience_evidence_state()
+    audit_blockers = build_audit_blocker_state()
+    available_evidence = evidence["available_evidence"]
+    gates = {
+        "s2plt02_accepted": "S2PLT02" in dependencies["completed_dependencies"],
+        "rate_limit_drill_proven": available_evidence["RATE_LIMIT_DRILL"],
+        "parser_drift_drill_proven": available_evidence["PARSER_DRIFT_DRILL"],
+        "restart_recovery_drill_proven": available_evidence["RESTART_RECOVERY_DRILL"],
+        "disk_pressure_drill_proven": available_evidence["DISK_PRESSURE_DRILL"],
+        "backup_restore_point_proven": available_evidence["BACKUP_RESTORE_POINT_PROVEN"],
+        "rollback_executable": available_evidence["ROLLBACK_EXECUTABLE"],
+        "ledger_count_conserved": available_evidence["LEDGER_COUNT_CONSERVATION"],
+        "p0_zero": audit_blockers["checks"]["P0_zero"],
+        "p1_zero": audit_blockers["checks"]["P1_zero"],
+        "no_production_side_effect": True,
+    }
+    blocking_reasons: list[str] = []
+    if not gates["s2plt02_accepted"]:
+        blocking_reasons.append("s2plt02_not_accepted")
+    if not gates["rate_limit_drill_proven"]:
+        blocking_reasons.append("rate_limit_drill_not_proven")
+    if not gates["parser_drift_drill_proven"]:
+        blocking_reasons.append("parser_drift_drill_not_proven")
+    if not gates["restart_recovery_drill_proven"]:
+        blocking_reasons.append("restart_recovery_drill_not_proven")
+    if not gates["disk_pressure_drill_proven"]:
+        blocking_reasons.append("disk_pressure_drill_not_proven")
+    if not gates["backup_restore_point_proven"]:
+        blocking_reasons.append("backup_restore_point_not_proven")
+    if not gates["rollback_executable"]:
+        blocking_reasons.append("rollback_executable_not_proven")
+    if not gates["ledger_count_conserved"]:
+        blocking_reasons.append("ledger_count_conservation_not_proven")
+    if not gates["p0_zero"]:
+        blocking_reasons.append("inherited_v7_1_p0_findings_open")
+    if not gates["p1_zero"]:
+        blocking_reasons.append("inherited_v7_1_p1_findings_open")
+    report = {
+        "model_id": S2PLT03_RESILIENCE_PRECHECK_MODEL_ID,
+        "schema_version": S2PLT03_SCHEMA_VERSION,
+        "task_id": S2PLT03_TASK_ID,
+        "acceptance_id": S2PLT03_ACCEPTANCE_ID,
+        "generated_at": generated_at,
+        "status": "pass" if not blocking_reasons and all(gates.values()) else "blocked",
+        "scope": "no_production_resilience_capacity_rollback_precheck_only",
+        "gates": gates,
+        "dependencies": dependencies,
+        "evidence": evidence,
+        "audit_blockers": audit_blockers,
+        "blocking_reasons": blocking_reasons,
+        "production_acceptance_claimed": False,
+        "inherited_p0_p1_closed": False,
+        "report_hash": "",
+        **{flag: False for flag in S2PLT03_FORBIDDEN_FLAGS},
+    }
+    report["report_hash"] = _stable_hash({key: value for key, value in report.items() if key != "report_hash"})
+    return report
+
+
+def validate_s2plt03_resilience_precheck_report(report: Mapping[str, Any]) -> list[str]:
+    """Validate S2PLT03 resilience precheck reports."""
+
+    errors: list[str] = []
+    if report.get("model_id") != S2PLT03_RESILIENCE_PRECHECK_MODEL_ID:
+        errors.append("S2PLT03 report model_id is invalid")
+    if report.get("schema_version") != S2PLT03_SCHEMA_VERSION:
+        errors.append("S2PLT03 report schema_version must be 1")
+    if report.get("task_id") != S2PLT03_TASK_ID:
+        errors.append("S2PLT03 report task_id is invalid")
+    if report.get("acceptance_id") != S2PLT03_ACCEPTANCE_ID:
+        errors.append("S2PLT03 report acceptance_id is invalid")
+    if report.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PLT03 report status must be pass or blocked")
+    if report.get("production_acceptance_claimed") is not False:
+        errors.append("S2PLT03 precheck must not claim production acceptance")
+    if report.get("inherited_p0_p1_closed") is not False:
+        errors.append("S2PLT03 precheck must not close inherited P0/P1")
+    for flag in S2PLT03_FORBIDDEN_FLAGS:
+        if report.get(flag) is not False:
+            errors.append(f"{flag} must be false")
+
+    dependencies = _mapping(report.get("dependencies"))
+    for task_id in S2PLT03_REQUIRED_DEPENDENCIES:
+        if task_id not in dependencies.get("required_dependencies", []):
+            errors.append(f"dependencies.required_dependencies must include {task_id}")
+    evidence = _mapping(report.get("evidence"))
+    for item in S2PLT03_REQUIRED_EVIDENCE:
+        if item not in evidence.get("required_evidence", []):
+            errors.append(f"evidence.required_evidence must include {item}")
+    if report.get("status") == "pass":
+        gates = _mapping(report.get("gates"))
+        if not all(gates.values()):
+            errors.append("passing S2PLT03 report requires every gate true")
+        if report.get("blocking_reasons"):
+            errors.append("passing S2PLT03 report must not have blocking reasons")
+    else:
+        for reason in S2PLT03_BLOCKING_REASONS:
+            if reason not in report.get("blocking_reasons", []):
+                errors.append(f"blocked S2PLT03 precheck must include {reason}")
+    expected_hash = _stable_hash({key: value for key, value in report.items() if key != "report_hash"})
+    if report.get("report_hash") != expected_hash:
+        errors.append("S2PLT03 report_hash does not match report content")
     return errors
 
 

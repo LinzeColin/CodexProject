@@ -5534,6 +5534,47 @@ models:
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_LIVE_2D_PRECHECK.md"
 
   -
+    model_id: "MOD-ADP-116"
+    name: "S2PLT03 resilience readiness precheck model"
+    purpose: "Record a fail-closed no-production S2PLT03 readiness precheck for resilience, capacity, rollback, and state-count conservation drills without running live production drills or executing restore."
+    owner: "arxiv-daily-push"
+    status: "active"
+    assumption_ids:
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-118"
+    parameter_ids:
+      - "PARAM-ADP-968"
+      - "PARAM-ADP-969"
+      - "PARAM-ADP-970"
+      - "PARAM-ADP-971"
+      - "PARAM-ADP-972"
+      - "PARAM-ADP-973"
+      - "PARAM-ADP-974"
+      - "PARAM-ADP-975"
+    inputs:
+      - "S2PLT02 acceptance state"
+      - "rate-limit, parser-drift, restart, and disk-pressure drill evidence"
+      - "backup restore-point and rollback executable evidence"
+      - "ledger count conservation evidence"
+      - "inherited V7.1 P0/P1 blocker counts"
+      - "no-production side-effect flags"
+    outputs:
+      - "blocked S2PLT03 resilience readiness precheck report"
+      - "S2PLT03 dependency and resilience evidence state"
+      - "deterministic report hash"
+      - "forbidden production flag state"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_final_gate.py"
+    evidence_refs:
+      - "governance/run_manifests/ADP-S2PLT03-RESILIENCE-PRECHECK-20260628.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT03_RESILIENCE_PRECHECK.md"
+
+  -
     model_id: "MOD-ADP-105"
     name: "Owner center GitHub entry governance model"
     purpose: "Record the rule that ADP owner-facing status, mail, queue, review, action, and ROI summaries use GitHub-rendered shallow user-center Markdown as the primary human-readable surface while local .adp runtime files remain evidence sources only."
