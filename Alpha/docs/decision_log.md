@@ -159,3 +159,11 @@ Decision: Phase 6 soak validation, owner-gate status, evidence manifest, OWNER_D
 Reason: OWNER-GATE reviewers and follow-on agents need a concrete human-readable estimate for the 48-hour natural-day observation window instead of manually subtracting timestamps from JSONL history.
 
 Consequence: ETA improves progress visibility only. It does not mark Phase 6 ready, bypass sample freshness, override gap resets, create live authorization, or change any broker execution path.
+
+## 2026-06-27: Phase 6 Finalize Is A Read-Only Ready Gate
+
+Decision: `scripts/finalize_phase6_owner_gate_if_ready.py` is the one-command Phase 6 closeout gate: it publishes runtime evidence into docs evidence, runs `require_ready` verification, and returns `ready_for_owner_gate` only when the full evidence package satisfies OWNER-GATE-01.
+
+Reason: After the natural 48-hour soak window completes, a follow-on agent needs a deterministic finalization command that cannot silently convert partial evidence into readiness.
+
+Consequence: Before 48 hours, the command returns `not_ready_for_owner_gate` with `phase6_48h_soak_validation` as the blocker. It does not create `runtime/LIVE_AUTHORIZATION.json`, enable live trading, run a broker mutation, or enter MICRO_LIVE.
