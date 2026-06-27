@@ -2,18 +2,18 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "PFI"
 total_estimated_hours: 4
-completed_estimated_hours: 3
+completed_estimated_hours: 4
 current_stage_id: "S2"
 current_phase_id: "S2P"
-current_task_id: "PFI-MD-001"
-next_gate_id: "PFI-GOV-GATE"
+current_task_id: "S2PZT01"
+next_gate_id: "S3-START-GATE"
 stages:
   - stage_id: "S2"
     name: "数据源与低操作自动同步 MVP"
     person_goal: "把 PFI 根项目的真实能力、边界、参数和下一步阻塞写成 owner 可读事实。"
-    status: "in_progress"
+    status: "completed"
     estimated_hours: 4
-    estimated_pct: 75
+    estimated_pct: 100
     stop_conditions:
       - "自动实盘下单"
       - "交易密码或支付提交动作"
@@ -23,16 +23,19 @@ stages:
       pass_criteria:
         - "PFI 根三基 Markdown 存在且无无后缀副本"
         - "PFI 根治理文件通过项目治理验证"
+        - "Stage 1+2 合同测试通过"
+        - "旧 QBVS lifecycle smoke 通过"
+        - "本地 PFI.app 入口指向 canonical PFI"
       evidence:
         - "PFI/docs/governance"
       failure_action: "blocked"
     phases:
       - phase_id: "S2P"
         name: "多数据源合同与低操作导入"
-        objective: "记录已存在 Stage 1/2 合同，不新增生产声明。"
-        status: "in_progress"
+        objective: "记录并验收已存在 Stage 1/2 合同，不新增生产声明。"
+        status: "completed"
         estimated_hours: 4
-        estimated_pct: 75
+        estimated_pct: 100
         stop_conditions:
           - "缺少中文 owner 入口"
           - "三基文件不是 Markdown"
@@ -40,6 +43,7 @@ stages:
           gate_id: "PFI-GOV-GATE"
           pass_criteria:
             - "本 PR 验证命令通过"
+            - "Stage 2 2A-2H acceptance audit 全部 PASS"
           evidence:
             - "PFI/功能清单.md"
             - "PFI/开发记录.md"
@@ -64,7 +68,8 @@ stages:
               - "python scripts/validate_project_governance.py --project PFI"
               - "python -m unittest tests.governance.test_human_entry_markdown_contract -q"
             test_results:
-              - "To be rerun in this PR after file creation."
+              - "Project governance validation: errors 0 / warnings 0"
+              - "Human-entry Markdown contract: Ran 2 tests / OK"
             evidence_refs:
               - "PFI/docs/governance/project.yaml"
               - "PFI/docs/governance/roadmap.yaml"
@@ -72,4 +77,38 @@ stages:
               - "生产联通和实盘执行仍未验证。"
             rollback: "Revert this PR."
             current_result: "PFI 根三基入口已改为 .md。"
+            completed_version: "0.2.0"
+          - task_id: "S2PZT01"
+            name: "Stage 2 closeout 与本地入口验收"
+            objective: "证明 Stage 2 2A-2H acceptance、stop condition、validation、入口和缓存清理均完成。"
+            status: "completed"
+            estimated_hours: 0
+            estimated_pct: 100
+            dependencies:
+              - "PFI-MD-001"
+            acceptance_ids:
+              - "ACC-PFI-S2-CLOSEOUT"
+            acceptance:
+              - acceptance_id: "ACC-PFI-S2-CLOSEOUT"
+                description: "Stage 2 所有 phase/task 的本地合同、旧 QBVS smoke、治理验证、本机入口和缓存清理通过。"
+                evidence_refs:
+                  - "PFI/docs/pfi_v02/STAGE2_ACCEPTANCE_AUDIT.md"
+                  - "PFI/docs/pfi_v02/STAGE2_DATA_SYNC_MVP.md"
+            test_commands:
+              - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -B -m unittest tests.test_stage1_ia_contract tests.test_stage1_core_models tests.test_stage1_classification_rules tests.test_stage2_data_source_registry tests.test_stage2_cba_csv_import tests.test_stage2_alipay_import tests.test_stage2_non_csv_contracts -q"
+              - "cd PFI/modules/qbvs_lab && PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q"
+              - "python3 scripts/validate_project_governance.py --project PFI"
+              - "python3 -B -m unittest tests.governance.test_human_entry_markdown_contract -q"
+            test_results:
+              - "Stage 1+2 contracts: Ran 45 tests / OK"
+              - "Legacy QBVS lifecycle smoke: Ran 1 test / OK"
+              - "Project governance validation: errors 0 / warnings 0"
+              - "Human-entry Markdown contract: Ran 2 tests / OK"
+            evidence_refs:
+              - "PFI/docs/pfi_v02/STAGE2_ACCEPTANCE_AUDIT.md"
+              - "PFI/HANDOFF.md"
+            risks:
+              - "真实账户联通、真实凭证、生产运行和实盘执行仍未验证。"
+            rollback: "Revert the Stage 2 closeout documentation commit; do not move QBVS runtime."
+            current_result: "Stage 2 local contract acceptance complete; production readiness not claimed."
             completed_version: "0.2.0"

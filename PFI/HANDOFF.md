@@ -4,7 +4,7 @@ Last updated: 2026-06-27 Australia/Sydney
 
 ## Current Goal
 
-PFI root unification and app-entry migration after PFI V0.2 Stage 2.
+PFI V0.2 Stage 2 closeout and Stage 3 readiness.
 
 ## Current Status
 
@@ -24,6 +24,8 @@ PFI root unification and app-entry migration after PFI V0.2 Stage 2.
 - Stage 2 import pipeline is implemented in `src/pfi_v02/stage2_import.py`.
 - Stage 2 non-CSV and reconciliation contracts are implemented in `src/pfi_v02/stage2_contracts.py`.
 - Stage 2 record is `docs/pfi_v02/STAGE2_DATA_SYNC_MVP.md`.
+- Stage 2 acceptance audit is `docs/pfi_v02/STAGE2_ACCEPTANCE_AUDIT.md`.
+- Stage 2 local contract acceptance is complete for phases 2A-2H.
 
 ## Decisions
 
@@ -45,9 +47,9 @@ git diff --check
 ```
 
 Latest Stage 2 target result: `Ran 22 tests / OK`.
-Latest closeout result: Stage 1+2 contracts `Ran 45 tests / OK`; legacy QBVS smoke `Ran 1 test / OK`; macOS app lite acceptance `29 pass / 0 fail`; manual browser navigation acceptance `Pass`; app process cwd is `CodexProject/PFI`.
+Latest closeout result: Stage 1+2 contracts `Ran 45 tests / OK`; legacy QBVS smoke `Ran 1 test / OK`; project governance validation `errors 0 / warnings 0`; human-entry Markdown contract `Ran 2 tests / OK`; PFI.app resolves to `CodexProject/PFI`; port 8501 is served by canonical PFI `.venv`; no PFI LaunchAgent found.
 
 ## Next
 
-1. Re-run full Stage 1+2 contract tests plus legacy QBVS smoke before closeout.
-2. Stage 3 can build owner-readable homepage/account/ledger MVP on these contracts.
+1. Stage 3 can build owner-readable homepage/account/ledger MVP on these contracts.
+2. Real account credentials, production sync, payment submission, broker order submission, and live trading remain separate gates.
