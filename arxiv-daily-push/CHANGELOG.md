@@ -1,5 +1,6 @@
 # Changelog
 
+- Recorded B-001 isolated launchd proof reconciliation in GitHub evidence surfaces so the previous missing isolated install-run-uninstall proof is now reviewable by S2PMT07 independent review; P0/P1 counters, SMTP, scheduler, Release, CURRENT, V7 contracts, daily operation, and integrated production acceptance remain unchanged.
 ## Unreleased - 2026-06-24
 
 - Added `S2PMT04-INSTALL-LIFECYCLE-B001` dedicated local evidence and refreshed `S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001` so P0 receipt row B-001 points to controlled install/status/trigger-probe/uninstall lifecycle proof instead of older aggregate lifecycle/cache evidence; the real isolated install-run-uninstall proof remains missing and blocked, and this leaves independent signoff, final command execution, P0/P1 closure, S2PLT04, final bundle, SMTP, scheduler, launchd bootstrap, Release, public schema, DB migration, production queue mutation, source adapters, ranking, CURRENT, V7.1/V7.2 contracts, DAILY_OPERATION, and integrated production acceptance unchanged.

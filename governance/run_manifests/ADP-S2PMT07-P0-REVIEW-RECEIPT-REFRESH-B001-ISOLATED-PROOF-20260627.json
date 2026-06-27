@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "manifest_id": "ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-ISOLATED-PROOF-20260627",
+  "project_id": "arxiv-daily-push",
+  "generated_at": "2026-06-27T15:08:53.985597+10:00",
+  "actor": "Codex",
+  "base_commit": "3d7a83703d467972132a3e9109dff6f0b2a0a18a",
+  "task_id": "S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-ISOLATED-PROOF",
+  "task_ids": [
+    "S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-ISOLATED-PROOF",
+    "S2PMT07",
+    "B-001",
+    "ACC-S2PMT07-FINAL-REVIEW"
+  ],
+  "phase": "S2PM",
+  "acceptance_id": "ACC-S2PMT07-FINAL-REVIEW",
+  "change_type": "stage2_p0_review_receipt_refresh_b001_isolated_proof",
+  "result": "receipt_updated_with_b001_isolated_proof_no_closure_no_production",
+  "status": "completed_no_closure_no_production",
+  "summary": "Updates the S2PMT07 P0 receipt so B-001 points to the isolated launchd proof reconciliation manifest; P0/P1 remain open pending independent review.",
+  "target_finding": "B-001",
+  "inherited_findings_targeted": [
+    "B-001"
+  ],
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_INDEPENDENT_REVIEW_RECEIPT.md",
+    "governance/run_manifests/ADP-S2PMT07-P0-INDEPENDENT-REVIEW-RECEIPT-20260626.json",
+    "governance/run_manifests/ADP-S2PMT07-B001-ISOLATED-PROOF-RECONCILIATION-20260627.json"
+  ],
+  "p0_closure_claimed": false,
+  "p1_closure_claimed": false,
+  "independent_review_signoff_present": false,
+  "independent_final_command_execution_present": false,
+  "inherited_v7_1_open_p0_findings": 8,
+  "inherited_v7_1_open_p1_findings": 37,
+  "stage2_integrated_production_accepted": false,
+  "current_pointer_changed": false,
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false,
+  "real_smtp_sent": false,
+  "scheduler_changed": false,
+  "production_schedule_enabled": false,
+  "release_changed": false,
+  "public_schema_changed": false,
+  "db_migration_executed": false,
+  "queue_mutation_allowed": false,
+  "source_adapter_changed": false,
+  "ranking_algorithm_changed": false,
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_b001_iso_focus2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_user_center_candidate_pool.py -q",
+    "PYTHONPATH=arxiv-daily-push/src python3 arxiv-daily-push/scripts/update_user_center_timestamps.py --check",
+    "python3 arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2",
+    "python3 scripts/validate_project_governance.py --project arxiv-daily-push",
+    "python3 scripts/validate_governance_sync.py",
+    "python3 scripts/lean_governance.py check-render --project arxiv-daily-push",
+    "ruby structured parse for new JSON/JSONL/YAML/CSV evidence files",
+    "git diff --check"
+  ],
+  "test_results": [
+    "focused final-gate and user-center regression tests: 31 OK",
+    "user-center timestamp check: 18 pages validated",
+    "V7.2 validator: PASS",
+    "project governance: errors 0 warnings 0",
+    "governance sync: errors 0 warnings 0",
+    "lean check-render: drift 0 reference issues 0",
+    "structured parse: json=3 jsonl=2 yaml=1 traceability_rows=262",
+    "git diff --check: PASS"
+  ],
+  "rollback": "Revert the B-001 isolated proof receipt refresh manifest, P0 receipt updates, user-center/governance references, and regression tests; no runtime production state was changed."
+}

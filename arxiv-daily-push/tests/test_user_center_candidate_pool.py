@@ -272,13 +272,17 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertRegex(page, r"更新时间：\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} Australia/Sydney")
         self.assertIn("P0 `B-001`", page)
         self.assertIn("安装 / 状态 / 触发探针 / 卸载", page)
-        self.assertIn("真实隔离触发证明 | 缺失 / 阻断关闭", page)
-        self.assertIn("launchd bootstrap | 未执行", page)
+        self.assertIn("真实隔离触发证明 | 已记录外部 proof / 待独立复审", page)
+        self.assertIn("launchd bootstrap | 已在 isolated label 执行 / 生产 label 未触碰", page)
         self.assertIn("scheduler 启用 | `false`", page)
         self.assertIn("真实 SMTP 发送 | `false`", page)
         self.assertIn("P0 关闭声明 | `false`", page)
         self.assertIn(
             "[B-001 运行清单](../../governance/run_manifests/ADP-S2PMT04-INSTALL-LIFECYCLE-B001-20260627.json)",
+            page,
+        )
+        self.assertIn(
+            "[B-001 isolated proof reconciliation](../../governance/run_manifests/ADP-S2PMT07-B001-ISOLATED-PROOF-RECONCILIATION-20260627.json)",
             page,
         )
         self.assertIn("[B-001 阶段记录](../docs/phase_records/PHASE_S2PMT04_INSTALL_LIFECYCLE_B001.md)", page)
