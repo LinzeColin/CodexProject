@@ -1,0 +1,157 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-ALPHA-CN-BASE-FILE-ROUTING-20260627",
+  "project_id": "CodexProject",
+  "task_id": "ALPHA-CN-BASE-FILE-ROUTING-20260627",
+  "acceptance_ids": [
+    "ACC-ALPHA-CN-BASE-FILES-NONZERO",
+    "ACC-ALPHA-CODEXPROJECT-ONLY"
+  ],
+  "iteration_id": "ITER-20260627-ALPHA-CN-BASE-FILE-ROUTING",
+  "generated_at": "2026-06-27T09:09:16Z",
+  "implementation_base_sha": "ca425ca4abf225645b679e918663fecb875a5fcc",
+  "content_tree_hash": "sha256-changed-files-excluding-this-manifest:8f2199ed6e6c3ff60d9916896465e59b1f858e1f8d089e058b1bcf349e8add1a",
+  "changed_files_declared": [
+    "README.md",
+    "scripts/generate_governance_dashboard.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-ALPHA-CN-BASE-FILE-ROUTING-20260627.json"
+  ],
+  "changed_files_actual": [
+    "README.md",
+    "scripts/generate_governance_dashboard.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-ALPHA-CN-BASE-FILE-ROUTING-20260627.json"
+  ],
+  "required_governance_files": [
+    "README.md",
+    "scripts/generate_governance_dashboard.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-ALPHA-CN-BASE-FILE-ROUTING-20260627.json"
+  ],
+  "updated_governance_files": [
+    "README.md",
+    "scripts/generate_governance_dashboard.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-ALPHA-CN-BASE-FILE-ROUTING-20260627.json"
+  ],
+  "change_classification": [
+    "root_governance_change",
+    "alpha_repository_routing",
+    "human_entry_path_contract",
+    "owner_readable_chinese_regression"
+  ],
+  "language_rule": "中文优先，默认全局中文",
+  "owner_readable_priority_enforced": true,
+  "model_delta": "NOT_CHANGED",
+  "formula_delta": "NOT_CHANGED",
+  "parameter_delta": "NOT_CHANGED",
+  "version_delta": "Root README and generated README template now route Alpha to LinzeColin/CodexProject/tree/main/Alpha and describe no-suffix or .md human-entry paths according to each project contract.",
+  "test_commands": [
+    "python3 -m pytest tests/governance/test_project_governance_validator.py -q -k \"root_entry_points_only_to_human_files_and_standard or generated_readme_entry_matches_lean_contract or alpha_repository_routing_never_points_to_standalone_alpha or current_human_entries_pass_quality_contract\"",
+    "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Alpha/.venv/bin/python -m pytest Alpha/tests/test_owner_base_files.py -q",
+    "python3 scripts/validate_project_governance.py --project Alpha",
+    "python3 scripts/validate_project_governance.py",
+    "python3 scripts/generate_governance_dashboard.py --changed-only --base-ref origin/main --root-artifact-dir /private/tmp/alpha-cn-check",
+    "GOVERNANCE_EVIDENCE_DIR=/private/tmp/alpha-cn-governance-evidence python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+    "git diff --check",
+    "curl -fsS http://127.0.0.1:8000/health",
+    "curl -fsS http://127.0.0.1:8000/phase6/owner-gate/status",
+    "test ! -e /Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Alpha/runtime/LIVE_AUTHORIZATION.json"
+  ],
+  "test_results": [
+    {
+      "command": "python3 -m pytest tests/governance/test_project_governance_validator.py -q -k ...",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "4 passed, 337 deselected, 9 subtests passed."
+    },
+    {
+      "command": "python -m pytest Alpha/tests/test_owner_base_files.py -q",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "1 passed; Alpha no-suffix base files are present and Chinese-readable."
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --project Alpha",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Alpha governance validation returned errors: 0, warnings: 0."
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "All registered projects structural governance returned errors: 0, warnings: 0."
+    },
+    {
+      "command": "python3 scripts/generate_governance_dashboard.py --changed-only --base-ref origin/main --root-artifact-dir /private/tmp/alpha-cn-check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Generator dry run returned status PASS and did not write tracked files."
+    },
+    {
+      "command": "GOVERNANCE_EVIDENCE_DIR=/private/tmp/alpha-cn-governance-evidence python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+      "exit_code": 1,
+      "result": "EXPECTED_BRANCH_LEVEL_STOP",
+      "observed": "The long-running branch differs from origin/main by 38 files and selected 9 projects; legacy sync stopped on pre-existing Alpha governance-file requirements plus root run_manifest requirement. This manifest addresses the root-manifest part only."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No whitespace errors before manifest addition."
+    },
+    {
+      "command": "curl -fsS http://127.0.0.1:8000/health",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "live_trading_enabled=false and kill_switch_active=false."
+    },
+    {
+      "command": "curl -fsS http://127.0.0.1:8000/phase6/owner-gate/status",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "status=blocked_not_ready_for_owner_gate; blocking_conditions=[phase6_48h_soak_validation]; live_authorization_absent=true."
+    },
+    {
+      "command": "test ! -e runtime/LIVE_AUTHORIZATION.json",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "No live authorization file exists in canonical Alpha runtime."
+    }
+  ],
+  "evidence_refs": [
+    "README.md",
+    "scripts/generate_governance_dashboard.py",
+    "tests/governance/test_project_governance_validator.py",
+    "Alpha/tests/test_owner_base_files.py",
+    "Alpha/功能清单",
+    "Alpha/开发记录",
+    "Alpha/模型参数文件",
+    "/private/tmp/alpha-cn-governance-evidence/ci-1782551318845-87764-741c562b169e-56b2f9c1.json",
+    "http://127.0.0.1:8000/health",
+    "http://127.0.0.1:8000/phase6/owner-gate/status"
+  ],
+  "human_entry_chinese_ratios": {
+    "Alpha/功能清单": "22.97%",
+    "Alpha/开发记录": "23.63%",
+    "Alpha/模型参数文件": "24.19%"
+  },
+  "runtime_safety": {
+    "live_trading_enabled": false,
+    "kill_switch_active": false,
+    "live_authorization_absent": true,
+    "no_broker_mutation": true
+  },
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Alpha root navigation and generated governance README route to CodexProject Alpha, not standalone LinzeColin/Alpha, and preserve Chinese human-entry path contracts.",
+  "ci_run_reference": "LOCAL_FOCUSED_TESTS_PASS_BRANCH_LEVEL_CHANGED_ONLY_STOP_DOCUMENTED",
+  "summary": "Root README and governance dashboard README generation no longer point Alpha to the retired standalone repository. The root entry text now acknowledges no-suffix Chinese human-entry files where project contracts require them. Regression tests lock both behaviors.",
+  "rollback": "Revert README.md, scripts/generate_governance_dashboard.py, tests/governance/test_project_governance_validator.py, and this run manifest.",
+  "unresolved_risks": [
+    "The Phase 6 branch remains ahead of origin/main with earlier Alpha evidence/tooling changes, so changed-only CI against origin/main still reports branch-level governance sync requirements unrelated to this routing fix.",
+    "Phase 6 OWNER-GATE remains blocked until 48 continuous natural hours of Paper/Shadow observation pass."
+  ],
+  "self_reference_policy": "content_tree_hash excludes this manifest because a file cannot contain its own final precommit hash before commit; changed_files_actual includes this manifest for diff coverage."
+}

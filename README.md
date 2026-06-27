@@ -6,7 +6,8 @@ Active Codex-related project hub for LinzeColin.
 
 - Execution contract: [AGENTS.md](AGENTS.md)
 - Lean v2 standard: [docs/governance/STANDARD.md](docs/governance/STANDARD.md)
-- Project human-entry files: `功能清单.md`, `开发记录.md`, `模型参数文件.md`
+- Project human-entry files: `功能清单`, `开发记录`, `模型参数文件` or the
+  `.md` variants required by each project contract.
 
 ## Canonical Local Root
 
@@ -39,7 +40,7 @@ resolve to this checkout.
 
 | Project | Path | Repository |
 |---|---|---|
-| `Alpha` | `Alpha` | https://github.com/LinzeColin/Alpha |
+| `Alpha` | `Alpha` | https://github.com/LinzeColin/CodexProject/tree/main/Alpha |
 | `EEI` | `EEI` | https://github.com/LinzeColin/CodexProject/tree/main/EEI |
 | `FIFA` | `FIFA` | https://github.com/LinzeColin/FIFA |
 | `OpMe_System` | `OpMe_System` | https://github.com/LinzeColin/OpMe_System |

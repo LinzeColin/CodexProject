@@ -11411,6 +11411,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertNotIn("source_snapshot_hash", readme)
         self.assertNotIn("Current Governance Snapshot", readme)
         self.assertNotIn(".git/codex-review", readme)
+        self.assertIn("https://github.com/LinzeColin/CodexProject/tree/main/Alpha", readme)
+        self.assertNotIn("https://github.com/LinzeColin/Alpha", readme)
 
     def test_review9_s6pat03_generated_readme_entry_matches_lean_contract(self) -> None:
         dashboard = load_dashboard_module()
@@ -11429,6 +11431,28 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             self.assertNotIn(forbidden, entry)
         self.assertNotIn("Current Governance Snapshot", rendered)
         self.assertNotIn(".git/codex-review", rendered)
+
+    def test_alpha_repository_routing_never_points_to_standalone_alpha(self) -> None:
+        dashboard = load_dashboard_module()
+        self.assertEqual(
+            dashboard.PROJECT_REPOSITORIES["Alpha"],
+            "https://github.com/LinzeColin/CodexProject/tree/main/Alpha",
+        )
+        self.assertNotEqual(
+            dashboard.PROJECT_REPOSITORIES["Alpha"],
+            "https://github.com/LinzeColin/Alpha",
+        )
+
+        rendered = dashboard.render_readme(
+            [{"project_id": "Alpha", "path": "Alpha"}],
+            {
+                "source_base_commit": "a" * 40,
+                "source_tree_hash": "sha256:" + "b" * 64,
+                "source_snapshot_hash": "sha256:" + "c" * 64,
+            },
+        )
+        self.assertIn("https://github.com/LinzeColin/CodexProject/tree/main/Alpha", rendered)
+        self.assertNotIn("https://github.com/LinzeColin/Alpha |", rendered)
 
     def test_other8_s2pat01_root_readme_uses_read_only_fast_gate(self) -> None:
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
