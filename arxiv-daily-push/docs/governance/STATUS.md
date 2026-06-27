@@ -5,7 +5,7 @@
 - source_base_commit: `f49b645d9a35857605eff53a26bed0ea7e15816a`
 - source_tree_hash: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - source_snapshot_hash: `sha256:b46b66adca9fff016c8699d25d2f20031291631ddbc6e9ee00fc360126a9647f`
-- snapshot_event_time: `2026-06-28T05:18:27+10:00`
+- snapshot_event_time: `2026-06-28T05:57:25+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -14,10 +14,10 @@
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - Product version: `0.23.1`
-- Phase/Gate: `S2PM / S2PMT07_S2PLT04_COMPLETION_REPORT_VALIDATOR_BLOCKED_NO_PRODUCTION`
-- Models/Formulas/Parameters total: `117 / 119 / 1010`
-- Active formulas/parameters: `119 / 993`
-- Machine checked formulas/parameters: `119 / 978`
+- Phase/Gate: `S2PM / S2PMT07_FINAL_COMMAND_EXECUTION_VALIDATOR_BLOCKED_NO_PRODUCTION`
+- Models/Formulas/Parameters total: `117 / 119 / 1014`
+- Active formulas/parameters: `119 / 997`
+- Machine checked formulas/parameters: `119 / 982`
 
 ## Assurance
 
@@ -35,7 +35,7 @@
 ## Delivery
 
 - Readiness: `VERIFIED`
-- Release gate: `S2PMT07_S2PLT04_COMPLETION_REPORT_VALIDATOR_BLOCKED_NO_PRODUCTION`
+- Release gate: `S2PMT07_FINAL_COMMAND_EXECUTION_VALIDATOR_BLOCKED_NO_PRODUCTION`
 - V7 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - V7 contract hash: `a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d`
 - V7 roadmap hash: `7c5f2d842d4f6b909343c953fe39b4a4aa540d168199747a9f7decdb1aad9bd1`
