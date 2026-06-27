@@ -648,6 +648,83 @@ def build_phase6_evidence_manifest(
     return report
 
 
+def publish_phase6_owner_gate_evidence(
+    *,
+    source_evidence_root: str | Path = DEFAULT_RUNTIME_EVIDENCE_ROOT,
+    target_evidence_root: str | Path = DEFAULT_EVIDENCE_ROOT,
+    history_path: str | Path = DEFAULT_SOAK_HISTORY_PATH,
+    duration_hours: int = 48,
+    max_sample_gap_seconds: int = DEFAULT_MAX_SAMPLE_GAP_SECONDS,
+) -> dict:
+    source_root = Path(source_evidence_root)
+    target_root = Path(target_evidence_root)
+    paper_shadow_report = _read_json(source_root / "paper_shadow_report_latest.json")
+    shadow_live_constraints = _read_json(source_root / "shadow_live_constraints_latest.json")
+    samples = read_soak_samples(history_path)
+
+    _write_json(target_root / "paper_shadow_report_latest.json", paper_shadow_report)
+    _write_json(target_root / "shadow_live_constraints_latest.json", shadow_live_constraints)
+
+    soak_validation = build_soak_validation_report(
+        samples=samples,
+        duration_hours=duration_hours,
+        max_sample_gap_seconds=max_sample_gap_seconds,
+        output_path=target_root / "soak_validation_latest.json",
+    )
+    closeout = build_owner_gate_closeout(
+        soak_validation=soak_validation,
+        paper_shadow_report=paper_shadow_report,
+        shadow_live_constraints=shadow_live_constraints,
+        output_path=target_root / "phase6_closeout.json",
+    )
+    build_owner_decision_markdown(
+        closeout=closeout,
+        soak_validation=soak_validation,
+        paper_shadow_report=paper_shadow_report,
+        shadow_live_constraints=shadow_live_constraints,
+        output_path=target_root / "OWNER_DECISION.md",
+    )
+    build_phase6_closeout_report_markdown(
+        closeout=closeout,
+        soak_validation=soak_validation,
+        paper_shadow_report=paper_shadow_report,
+        shadow_live_constraints=shadow_live_constraints,
+        output_path=target_root / "PHASE6_CLOSEOUT_REPORT.md",
+    )
+    build_phase6_evidence_manifest(
+        evidence_root=target_root,
+        closeout=closeout,
+        soak_validation=soak_validation,
+        paper_shadow_report=paper_shadow_report,
+        shadow_live_constraints=shadow_live_constraints,
+        output_path=target_root / "EVIDENCE_MANIFEST.json",
+    )
+    verification = verify_phase6_evidence_package(
+        evidence_root=target_root,
+        output_path=target_root / "EVIDENCE_PACKAGE_VERIFICATION.json",
+    )
+    return {
+        "schema_version": "2026-06-27.alpha.phase6.owner_gate_publish",
+        "generated_at": utc_now_iso(),
+        "source_evidence_root": str(source_root),
+        "target_evidence_root": str(target_root),
+        "history_path": str(Path(history_path)),
+        "status": closeout.get("status"),
+        "blocking_conditions": closeout.get("blocking_conditions", []),
+        "soak": {
+            "status": soak_validation.get("status"),
+            "observed_hours": soak_validation.get("observed_hours"),
+            "duration_hours_required": soak_validation.get("duration_hours_required"),
+            "sample_count": soak_validation.get("sample_count"),
+            "continuous_sample_count": soak_validation.get("continuous_sample_count"),
+            "window_start": soak_validation.get("window_start"),
+            "window_end": soak_validation.get("window_end"),
+        },
+        "verification_status": verification.get("verification_status"),
+        "live_authorization_absent": verification.get("live_authorization_absent"),
+    }
+
+
 def verify_phase6_evidence_package(
     *,
     evidence_root: str | Path = DEFAULT_EVIDENCE_ROOT,

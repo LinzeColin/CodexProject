@@ -16,6 +16,7 @@ from backend.app.services.phase6_owner_gate import (
     build_paper_shadow_report,
     build_shadow_live_constraints_report,
     build_soak_validation_report,
+    publish_phase6_owner_gate_evidence,
     read_soak_samples,
     verify_phase6_evidence_package,
 )
@@ -418,3 +419,42 @@ def test_owner_gate_status_cli_detects_stale_sampler_sample(tmp_path, monkeypatc
     payload = json.loads(capsys.readouterr().out)
     assert payload["sampler_freshness_status"] == "stale"
     assert payload["latest_sample_age_seconds"] > 1
+
+
+def test_publish_phase6_owner_gate_evidence_syncs_runtime_to_docs_without_appending_history(tmp_path):
+    run = _paper_run(tmp_path)
+    runtime_root = tmp_path / "runtime" / "phase6_owner_gate_latest"
+    docs_root = tmp_path / "docs" / "evidence" / "phase6_closeout_latest"
+    history_path = tmp_path / "runtime" / "phase6_soak_history.jsonl"
+    paper_shadow = build_paper_shadow_report(
+        run_result=run,
+        output_path=runtime_root / "paper_shadow_report_latest.json",
+    )
+    constraints = build_shadow_live_constraints_report(
+        live_authorization_path=tmp_path / "runtime" / "LIVE_AUTHORIZATION.json",
+        output_path=runtime_root / "shadow_live_constraints_latest.json",
+    )
+    end = datetime.now(timezone.utc).replace(microsecond=0)
+    start = end - timedelta(hours=48)
+    samples = _continuous_soak_samples(start, end, paper_shadow, constraints)
+    history_path.parent.mkdir(parents=True, exist_ok=True)
+    history_path.write_text("\n".join(json.dumps(sample) for sample in samples) + "\n", encoding="utf-8")
+
+    report = publish_phase6_owner_gate_evidence(
+        source_evidence_root=runtime_root,
+        target_evidence_root=docs_root,
+        history_path=history_path,
+    )
+    verification = verify_phase6_evidence_package(
+        evidence_root=docs_root,
+        live_authorization_path=tmp_path / "runtime" / "LIVE_AUTHORIZATION.json",
+        require_ready=True,
+    )
+
+    assert report["status"] == "ready_for_owner_gate"
+    assert report["verification_status"] == "pass"
+    assert report["live_authorization_absent"] is True
+    assert verification["verification_status"] == "pass"
+    assert json.loads((docs_root / "phase6_closeout.json").read_text(encoding="utf-8"))["status"] == "ready_for_owner_gate"
+    assert len(read_soak_samples(history_path)) == len(samples)
+    assert not (tmp_path / "runtime" / "LIVE_AUTHORIZATION.json").exists()

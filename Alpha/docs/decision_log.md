@@ -143,3 +143,11 @@ Decision: Atomic JSON writes must preserve the previous committed target on repl
 Reason: S3PB must preserve governance truth during failures: a stale PID that points to an unrelated process is not dashboard evidence, and a failed local write must not corrupt paper queue or broker state.
 
 Consequence: S3PBT03 adds shutdown fault-injection tests for disk-error preservation, forced termination before replace, no write after stopped, reused PID archiving, and start script dashboard identity checks. This closes the S3PB technical fault-injection gate without enabling live broker execution or production readiness.
+
+## 2026-06-27: Phase 6 Runtime Evidence Must Be Published To Docs Evidence
+
+Decision: `scripts/publish_phase6_owner_gate_evidence.py` publishes the current read-only Phase 6 runtime evidence into `docs/evidence/phase6_closeout_latest` without running a paper cycle, appending soak history, creating `LIVE_AUTHORIZATION.json`, or touching any broker mutation path.
+
+Reason: The LaunchAgent sampler must keep high-frequency runtime evidence local, while GitHub handoff and OWNER-GATE-01 review need a committed docs evidence package that can be refreshed from runtime state on demand.
+
+Consequence: `docs/evidence/phase6_closeout_latest` can be refreshed as the canonical owner decision package whenever the soak window progresses. Package verification may pass while OWNER-GATE readiness still remains blocked by `phase6_48h_soak_validation`.
