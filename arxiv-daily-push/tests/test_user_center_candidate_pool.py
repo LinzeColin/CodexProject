@@ -24,6 +24,7 @@ RESTORE_ATOMIC_REPLACEMENT_PAGE = USER_CENTER / "恢复原子替换扫描.md"
 OUTBOX_DELIVERY_PAGE = USER_CENTER / "事务发件箱与消息ID扫描.md"
 FRONTSTAGE_EVIDENCE_PAGE = USER_CENTER / "前台陈述证据绑定扫描.md"
 TRUST_BOUNDARY_PAGE = USER_CENTER / "来源信任边界扫描.md"
+B001_INSTALL_LIFECYCLE_PAGE = USER_CENTER / "自动唤醒安装生命周期扫描.md"
 LEGACY_MAIL_SCAN_PAGE = USER_CENTER / "旧邮件标识兼容扫描.md"
 TRACEABILITY_MATRIX = ROOT / "docs" / "governance" / "TRACEABILITY_MATRIX.csv"
 MODEL_PARAMS_PAGE = ROOT / "模型参数文件.md"
@@ -262,6 +263,30 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertNotIn("/Users/", page)
         self.assertNotIn("file://", page)
         self.assertIn("[来源信任边界扫描](./来源信任边界扫描.md)", readme)
+
+    def test_install_lifecycle_page_exposes_b001_current_evidence(self):
+        page = B001_INSTALL_LIFECYCLE_PAGE.read_text(encoding="utf-8")
+        readme = (USER_CENTER / "README.md").read_text(encoding="utf-8")
+
+        self.assertTrue(page.startswith("# 自动唤醒安装生命周期扫描\n"))
+        self.assertRegex(page, r"更新时间：\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} Australia/Sydney")
+        self.assertIn("P0 `B-001`", page)
+        self.assertIn("安装 / 状态 / 触发探针 / 卸载", page)
+        self.assertIn("真实隔离触发证明 | 缺失 / 阻断关闭", page)
+        self.assertIn("launchd bootstrap | 未执行", page)
+        self.assertIn("scheduler 启用 | `false`", page)
+        self.assertIn("真实 SMTP 发送 | `false`", page)
+        self.assertIn("P0 关闭声明 | `false`", page)
+        self.assertIn(
+            "[B-001 运行清单](../../governance/run_manifests/ADP-S2PMT04-INSTALL-LIFECYCLE-B001-20260627.json)",
+            page,
+        )
+        self.assertIn("[B-001 阶段记录](../docs/phase_records/PHASE_S2PMT04_INSTALL_LIFECYCLE_B001.md)", page)
+        self.assertIn("[P0 复审 receipt](../docs/phase_records/PHASE_S2PMT07_P0_INDEPENDENT_REVIEW_RECEIPT.md)", page)
+        self.assertIn("[聚焦测试](../tests/test_stage2_lifecycle_cache.py)", page)
+        self.assertNotIn("/Users/", page)
+        self.assertNotIn("file://", page)
+        self.assertIn("[自动唤醒安装生命周期扫描](./自动唤醒安装生命周期扫描.md)", readme)
 
     def test_user_center_pages_keep_chinese_facing_labels(self):
         forbidden = (

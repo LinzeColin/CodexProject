@@ -22,7 +22,8 @@
     "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_OUTBOX_DELIVERY_A003.md",
     "governance/run_manifests/ADP-S2PMT03-OUTBOX-DELIVERY-A003-20260627.json",
     "arxiv-daily-push/用户中心/事务发件箱与消息ID扫描.md",
-    "arxiv-daily-push/tests/test_stage2_lease_fencing.py"
+    "arxiv-daily-push/tests/test_stage2_lease_fencing.py",
+    "governance/run_manifests/ADP-S2PMT04-INSTALL-LIFECYCLE-B001-20260627.json"
   ],
   "final_acceptance_bundle_present": false,
   "forbidden_side_effects": {
@@ -120,14 +121,15 @@
     },
     {
       "evidence_refs": [
-        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT04_LIFECYCLE_CACHE.md",
-        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT04_SCHEDULER_TEMPLATE_A013.md",
-        "governance/run_manifests/ADP-S2PMT04-LIFECYCLE-CACHE-20260626.json"
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT04_INSTALL_LIFECYCLE_B001.md",
+        "governance/run_manifests/ADP-S2PMT04-INSTALL-LIFECYCLE-B001-20260627.json",
+        "arxiv-daily-push/用户中心/自动唤醒安装生命周期扫描.md",
+        "arxiv-daily-push/tests/test_stage2_lifecycle_cache.py"
       ],
       "finding_id": "B-001",
-      "fix_task": "S2PMT04",
-      "preliminary_review_state": "local_evidence_located_independent_review_required",
-      "reviewer_decision_required": "Decide whether local scheduler/lifecycle rehearsal is sufficient, or whether real target install-run-uninstall proof remains required.",
+      "fix_task": "S2PMT04-INSTALL-LIFECYCLE-B001",
+      "preliminary_review_state": "dedicated_current_evidence_located_independent_review_required",
+      "reviewer_decision_required": "Verify controlled install/status/trigger/uninstall evidence and decide whether real isolated target install-run-status-uninstall proof remains required before B-001 closure.",
       "severity": "P0"
     },
     {
@@ -165,11 +167,12 @@
     "independent_final_signoff_missing",
     "independent_final_command_execution_missing"
   ],
-  "previous_refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A004-20260627.json",
+  "previous_refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A005-20260627.json",
   "project_id": "arxiv-daily-push",
-  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A005-20260627.json",
+  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-20260627.json",
   "refresh_manifest_history": [
-    "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A005-20260627.json"
+    "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A005-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-20260627.json"
   ],
   "refresh_manifests": [
     "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B007-B008-20260627.json",
@@ -177,15 +180,17 @@
     "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A002-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A003-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A004-20260627.json",
-    "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A005-20260627.json"
+    "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A005-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-20260627.json"
   ],
-  "refreshed_at": "2026-06-27T11:30:00+10:00",
+  "refreshed_at": "2026-06-27 11:26:15 Australia/Sydney",
   "refreshed_findings": [
     "A-001",
     "A-002",
     "A-003",
     "A-004",
     "A-005",
+    "B-001",
     "B-007",
     "B-008"
   ],
@@ -195,6 +200,6 @@
   "s2plt04_completed": false,
   "stage2_integrated_production_accepted": false,
   "status": "review_receipt_ready_no_closure_claim",
-  "summary": "Records the inherited V7.1 P0 evidence surface for later independent S2PMT07 review without claiming independent signoff, P0/P1 closure, S2PLT04 completion, or integrated production acceptance.",
+  "summary": "S2PMT07 P0 review receipt now routes all eight inherited P0 findings to dedicated current evidence surfaces where available; B-001 remains blocked pending independent decision on real isolated install-run-status-uninstall proof.",
   "task_id": "S2PMT07"
 }

@@ -9,7 +9,7 @@
 - status: `review_receipt_ready_no_closure_claim`
 - V7.2 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - created_at: `2026-06-26 18:45:19 Australia/Sydney`
-- refreshed_at: `2026-06-27 09:28:57 Australia/Sydney`
+- refreshed_at: `2026-06-27 11:26:15 Australia/Sydney`
 
 This receipt organizes the inherited V7.1 P0 evidence set for later independent
 review. It is not an independent reviewer signoff, does not close any P0/P1
@@ -40,7 +40,7 @@ pointer change, no V7.1/V7.2 contract-file edit, no `DAILY_OPERATION`, and no
 | `A-003` | `S2PMT03-OUTBOX-DELIVERY-A003` | `PHASE_S2PMT03_OUTBOX_DELIVERY_A003.md`, `ADP-S2PMT03-OUTBOX-DELIVERY-A003-20260627.json`, `用户中心/事务发件箱与消息ID扫描.md`, `test_stage2_lease_fencing.py` | refreshed current evidence located; closure not claimed | Verify stable same-revision `Message-ID`, changed revision rekeying, one outbox claim under 100 attempts, SMTP accepted-before-commit fail-closed behavior, provider-ref finalization without resend, and no exactly-once claim. |
 | `A-004` | `S2PMT01-FRONTSTAGE-EVIDENCE-A004` | `PHASE_S2PMT01_FRONTSTAGE_EVIDENCE_A004.md`, `ADP-S2PMT01-FRONTSTAGE-EVIDENCE-A004-20260627.json`, `用户中心/前台陈述证据绑定扫描.md`, `test_security_boundary.py` | refreshed current evidence located; closure not claimed | Verify fact, inference, hypothesis, and action frontstage statements require known claim bindings, evidence IDs, reasoning/confidence/scope, and fail closed for unknown or unsupported foreground claims. |
 | `A-005` | `S2PMT01-TRUST-BOUNDARY-A005` | [A-005 trust boundary](PHASE_S2PMT01_TRUST_BOUNDARY_A005.md); [manifest](../../../governance/run_manifests/ADP-S2PMT01-TRUST-BOUNDARY-A005-20260627.json); [用户中心](../../用户中心/来源信任边界扫描.md); [test](../../tests/test_security_boundary.py) | refreshed current evidence located; closure not claimed | Verify `UNTRUSTED_DATA` isolation, tool boundary, safe rendering, and prompt-injection refusal behavior. |
-| `B-001` | `S2PMT04` | `PHASE_S2PMT04_LIFECYCLE_CACHE.md`, `PHASE_S2PMT04_SCHEDULER_TEMPLATE_A013.md`, `ADP-S2PMT04-LIFECYCLE-CACHE-20260626.json` | local evidence located; closure not claimed | Decide whether current local scheduler/lifecycle rehearsal is sufficient, or whether a real target install/run/uninstall proof is still required. |
+| `B-001` | `S2PMT04-INSTALL-LIFECYCLE-B001` | `PHASE_S2PMT04_INSTALL_LIFECYCLE_B001.md`, `ADP-S2PMT04-INSTALL-LIFECYCLE-B001-20260627.json`, `用户中心/自动唤醒安装生命周期扫描.md`, `test_stage2_lifecycle_cache.py` | dedicated current evidence located; closure not claimed | Verify controlled install/status/trigger/uninstall evidence and decide whether real isolated target install-run-status-uninstall proof remains required before B-001 closure. |
 | `B-007` | `S2PMT05-DUPLICATE-TRIGGER-B007` | `PHASE_S2PMT05_DUPLICATE_TRIGGER_B007.md`, `ADP-S2PMT05-DUPLICATE-TRIGGER-B007-20260627.json`, `test_stage2_stress_e2e.py` | refreshed current evidence located; closure not claimed | Verify four actor sources, M1-M4 x 100 attempts, one active revision per product, reason-coded duplicate blocks, lease/fencing receipts, and no scheduler side effects; decide whether multi-host/real scheduler duplicate-trigger proof is still required. |
 | `B-008` | `S2PMT05-SMTP-CRASH-WINDOW-B008` | `PHASE_S2PMT05_SMTP_CRASH_WINDOW_B008.md`, `ADP-S2PMT05-SMTP-CRASH-WINDOW-B008-20260627.json`, `test_stage2_stress_e2e.py` | refreshed current evidence located; closure not claimed | Verify outbox claim before SMTP acceptance, `ACCEPTED_PENDING_COMMIT`, stable idempotent `message_id`, provider accept ref finalization, blocked unsafe resend, and no real SMTP side effects; decide whether runner-level fake SMTP kill/restart proof is still required. |
 
@@ -48,11 +48,11 @@ pointer change, no V7.1/V7.2 contract-file edit, no `DAILY_OPERATION`, and no
 
 ## Evidence Refresh 2026-06-27
 
-This refresh updates the P0 receipt to point `A-004` at dedicated frontstage statement evidence instead of aggregate S2PMT01 security-boundary records. It does not close any P0 finding and does not provide independent review signoff.
+This refresh updates the P0 receipt to point `B-001` at dedicated S2PMT04 install lifecycle evidence instead of aggregate lifecycle/cache records. It does not close any P0 finding and does not provide independent review signoff.
 
-- refreshed_findings: `A-001`, `A-002`, `A-003`, `A-004`, `A-005`, `B-007`, `B-008`
-- refresh_manifest: `governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A005-20260627.json`
-- previous_refresh_manifest: `governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A004-20260627.json`
+- refreshed_findings: `A-001`, `A-002`, `A-003`, `A-004`, `A-005`, `B-001`, `B-007`, `B-008`
+- refresh_manifest: `governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-20260627.json`
+- previous_refresh_manifest: `governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A005-20260627.json`
 - closure_claimed: `false`
 - independent_review_signoff_present: `false`
 

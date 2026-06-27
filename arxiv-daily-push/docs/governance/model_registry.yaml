@@ -5955,3 +5955,61 @@ models:
     evidence_hash: "PENDING_MAIN_COMMIT"
     last_verified_commit: "PRECOMMIT"
     verified_at: "2026-06-27T11:30:00+10:00"
+
+
+  -
+    model_id: "MOD-ADP-115"
+    name: "S2PMT04 install lifecycle B-001 model"
+    purpose: "Refresh inherited P0 B-001 evidence with dedicated current install/status/trigger/uninstall lifecycle probes, preserving the blocker that real isolated target install-run-status-uninstall proof is still missing."
+    owner: "arxiv-daily-push"
+    status: "active"
+    task_ids:
+      - "S2PMT04-INSTALL-LIFECYCLE-B001"
+      - "S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001"
+    assumption_ids:
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-117"
+    parameter_ids:
+      - "PARAM-ADP-960"
+      - "PARAM-ADP-961"
+      - "PARAM-ADP-962"
+      - "PARAM-ADP-963"
+      - "PARAM-ADP-964"
+    inputs:
+      - "install lifecycle state rows"
+      - "platform adapter contract rows"
+      - "owner enablement flag"
+      - "isolated trigger proof flag"
+      - "production side-effect flags"
+    outputs:
+      - "install_status_uninstall_contract"
+      - "platform_adapter_contract"
+      - "owner_enable_required"
+      - "isolated_trigger_proof_missing_blocker"
+      - "no_production_side_effect"
+      - "install_lifecycle_hash"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_lifecycle_cache.py"
+    config_refs:
+      - "NOT_APPLICABLE"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_lifecycle_cache.py"
+      - "arxiv-daily-push/tests/test_stage2_final_gate.py"
+      - "arxiv-daily-push/tests/test_user_center_candidate_pool.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT04_INSTALL_LIFECYCLE_B001.md"
+      - "governance/run_manifests/ADP-S2PMT04-INSTALL-LIFECYCLE-B001-20260627.json"
+      - "arxiv-daily-push/用户中心/自动唤醒安装生命周期扫描.md"
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_lifecycle_cache.py::S2PMT04_INSTALL_LIFECYCLE_B001_MODEL_ID"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_lifecycle_cache.py::S2PMT04_B001_REQUIRED_STATES"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_lifecycle_cache.py::S2PMT04_B001_REQUIRED_GATES"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_lifecycle_cache.py::S2PMT04_B001_REQUIRED_PRODUCTION_FALSE_FLAGS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_lifecycle_cache.py::build_install_lifecycle_b001_report"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_lifecycle_cache.py::validate_install_lifecycle_b001_report"
+    implementation_fingerprint: "PENDING_MAIN_COMMIT"
+    evidence_hash: "PENDING_MAIN_COMMIT"
+    last_verified_commit: "PRECOMMIT"
+    verified_at: "2026-06-27T11:26:15+10:00"
