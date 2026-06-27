@@ -734,6 +734,9 @@ S2PIT02_REQUIRED_OWNER_STATUS_STATES = (
     "sent",
     "blocked_not_sent",
     "queued_or_pending",
+    "empty",
+    "delayed",
+    "failed",
 )
 S2PIT02_REPORT_FILENAME = "stage2_s2pit02_runtime_dashboard_report.json"
 S2PIT03_SOURCE_MODEL_VIEW_MODEL_ID = "adp-s2pit03-source-model-view-v1"
@@ -7954,6 +7957,10 @@ def _validate_s2pit02_owner_status_summary(summary: Mapping[str, Any]) -> list[s
     missing_states = [state for state in S2PIT02_REQUIRED_OWNER_STATUS_STATES if state not in observed_states]
     if missing_states:
         errors.append("S2PIT02 owner status summary missing status states: " + ", ".join(missing_states))
+    not_proven_states = set(summary.get("status_states_not_proven") or [])
+    still_not_proven = [state for state in S2PIT02_REQUIRED_OWNER_STATUS_STATES if state in not_proven_states]
+    if still_not_proven:
+        errors.append("S2PIT02 owner status summary has unproven required status states: " + ", ".join(still_not_proven))
 
     if summary.get("review_action_snapshot_state") != "pending_daily_snapshot":
         errors.append("S2PIT02 owner status review_action_snapshot_state must be pending_daily_snapshot until real daily reports sync")

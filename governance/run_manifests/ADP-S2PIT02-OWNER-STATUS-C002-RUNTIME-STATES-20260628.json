@@ -1,0 +1,122 @@
+{
+  "schema_version": 1,
+  "manifest_id": "ADP-S2PIT02-OWNER-STATUS-C002-RUNTIME-STATES-20260628",
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PIT02-OWNER-STATUS-C002-RUNTIME-STATES",
+  "parent_task_id": "S2PIT02-OWNER-STATUS-C002",
+  "acceptance_id": "ACC-S2PIT02-RUNTIME-DASHBOARD",
+  "inherited_finding": "C-002",
+  "phase": "S2PI",
+  "generated_at": "2026-06-28T00:18:10+10:00",
+  "current_contract": "ADP-PRODUCT-CONTRACT-V7.2",
+  "status": "completed_local_validation_no_closure_no_production",
+  "result": "c002_empty_delayed_failed_runtime_states_proven_locally_no_closure_no_production",
+  "summary": "Dedicated C-002 runtime-state supplement upgrades the S2PIT02 owner status summary gate from sent/blocked/queued visibility to all six required owner-visible states: sent, blocked_not_sent, queued_or_pending, empty, delayed, and failed. Missing or still-unproven required states now block the runtime dashboard. This is local evidence only and does not close C-002 or P1.",
+  "supersedes_gap_from": "governance/run_manifests/ADP-S2PIT02-OWNER-STATUS-C002-20260627.json",
+  "owner_status_path": "用户中心/邮件发送与队列状态.md",
+  "owner_status_summary": {
+    "snapshot_source": "用户中心/邮件发送与队列状态.md",
+    "snapshot_only": true,
+    "data_as_of": "2026-06-26 20:52:29 Australia/Sydney",
+    "sent_today": 2,
+    "expected_today": 4,
+    "total_candidate_pool": 299,
+    "generated_report_or_preview_count": 30,
+    "pending_candidate_count": 269,
+    "historical_send_record_count": 4,
+    "selected_candidate_count": 20,
+    "review_action_snapshot_state": "pending_daily_snapshot",
+    "review_action_pending_field_count": 10,
+    "status_states_observed": [
+      "sent",
+      "blocked_not_sent",
+      "queued_or_pending",
+      "empty",
+      "delayed",
+      "failed"
+    ],
+    "status_states_not_proven": [],
+    "evidence_refs": [
+      "用户中心/邮件发送与队列状态.md",
+      "用户中心/截至今日候选池.md",
+      "用户中心/复习行动与收益.md",
+      "docs/owner/CONTENT_LEDGER.csv"
+    ]
+  },
+  "state_gate": {
+    "required_status_states": [
+      "sent",
+      "blocked_not_sent",
+      "queued_or_pending",
+      "empty",
+      "delayed",
+      "failed"
+    ],
+    "missing_required_state_blocks": true,
+    "unproven_required_state_blocks": true,
+    "negative_tests": [
+      "test_s2pit02_runtime_dashboard_requires_failed_runtime_display_state",
+      "existing S2PIT02 blocked missing state coverage tests"
+    ],
+    "status": "pass"
+  },
+  "count_conservation": {
+    "candidate_pool_formula": "total_candidate_pool = generated_report_or_preview_count + pending_candidate_count",
+    "observed": "299 = 30 + 269",
+    "status": "pass"
+  },
+  "closure_claimed": false,
+  "p1_closure_claimed": false,
+  "independent_review_signoff_present": false,
+  "stage2_integrated_production_accepted": false,
+  "model_ids_changed": [
+    "MOD-ADP-080"
+  ],
+  "formula_ids_changed": [
+    "FORM-ADP-082"
+  ],
+  "parameter_ids_changed": [
+    "PARAM-ADP-921"
+  ],
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PIT02_OWNER_STATUS_C002.md",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py",
+    "arxiv-daily-push/tests/test_stage2_sources.py",
+    "arxiv-daily-push/用户中心/邮件发送与队列状态.md",
+    "arxiv-daily-push/用户中心/截至今日候选池.md",
+    "arxiv-daily-push/用户中心/复习行动与收益.md",
+    "arxiv-daily-push/docs/owner/CONTENT_LEDGER.csv"
+  ],
+  "production_boundary": {
+    "current_pointer_changed": false,
+    "daily_operation_enabled": false,
+    "db_migration_executed": false,
+    "email_frontstage_changed": false,
+    "integrated_production_accepted": false,
+    "inherited_p0_p1_closed": false,
+    "owner_experience_accepted": false,
+    "production_acceptance_claimed": false,
+    "production_restore_executed": false,
+    "production_schedule_enabled": false,
+    "public_schema_changed": false,
+    "queue_mutation_allowed": false,
+    "queue_schema_changed": false,
+    "ranking_algorithm_changed": false,
+    "real_release_uploaded": false,
+    "real_smtp_sent": false,
+    "release_changed": false,
+    "scheduler_changed": false,
+    "smtp_changed": false,
+    "source_adapter_changed": false,
+    "source_or_board_changed": false,
+    "stage2_integrated_production_accepted": false,
+    "v7_1_baseline_changed": false,
+    "v7_2_contract_files_changed": false
+  },
+  "tests_run_so_far": [
+    "S2PIT02 single missing-failed-state regression: OK",
+    "arxiv-daily-push/tests/test_stage2_sources.py: 179 OK"
+  ],
+  "final_validation_status": "pending_current_run_full_validation",
+  "rollback": "Revert the S2PIT02 required owner status states constant, focused regression test, this runtime-state manifest, C-002 phase record update, P1 receipt update, traceability row, rendered owner page, semantic registry update, and event records; no runtime production state was changed."
+}

@@ -50,3 +50,7 @@ No real SMTP send, scheduler installation, Release packaging, production restore
 ## Next
 
 Carry `C-001`, `C-003`, `C-005`, `C-006`, `C-007`, `C-010`, `C-011`, and `C-012` into the later independent final P1 closure package as technical closure candidates. Repair or review `C-002` separately before any full P1 candidate package; do not reduce inherited P0/P1 counters until the final S2PMT07 gates pass.
+
+## Supersession Note 2026-06-28
+
+This C-group package remains historically accurate for its own generated time and still records `C-002 excluded`. A later separate record, `PHASE_S2PMT07_P1_C002_TECHNICAL_REVIEW.md`, reviews C-002 after the empty, delayed, and failed runtime-state gate was added. The later C-002 record still does not close P1 or change production state.

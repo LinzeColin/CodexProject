@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "manifest_id": "ADP-S2PMT07-P1-C002-TECHNICAL-REVIEW-20260628",
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PMT07-P1-C002-TECHNICAL-REVIEW",
+  "parent_task_id": "S2PMT07",
+  "acceptance_id": "ACC-S2PMT07-FINAL-REVIEW",
+  "contract_version": "ADP-PRODUCT-CONTRACT-V7.2",
+  "generated_at": "2026-06-28T00:18:10+10:00",
+  "status": "finding_level_technical_review_passed_no_p1_closure_no_production",
+  "summary": "Finding-level technical review for inherited P1 C-002 confirms the current S2PIT02 owner-status gate now requires all six runtime display states and blocks missing or still-unproven empty/delayed/failed states. This is not independent final signoff and does not close P1.",
+  "review_scope": "local_code_and_governance_evidence_only",
+  "finding_ids": [
+    "C-002"
+  ],
+  "reviewed_findings": [
+    {
+      "finding_id": "C-002",
+      "finding_title": "总控台偏配置容量，缺真实排队/讲解/发送/复习/行动数量",
+      "severity": "P1",
+      "fix_task": "S2PIT02-OWNER-STATUS-C002-RUNTIME-STATES",
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "technical_closure_candidate": true,
+      "independent_final_closure_decision_required": true,
+      "evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PIT02_OWNER_STATUS_C002.md",
+        "governance/run_manifests/ADP-S2PIT02-OWNER-STATUS-C002-20260627.json",
+        "governance/run_manifests/ADP-S2PIT02-OWNER-STATUS-C002-RUNTIME-STATES-20260628.json",
+        "arxiv-daily-push/src/arxiv_daily_push/stage2_sources.py",
+        "arxiv-daily-push/tests/test_stage2_sources.py"
+      ],
+      "verified_checks": [
+        "six_owner_visible_runtime_states_required",
+        "empty_delayed_failed_states_required",
+        "missing_required_state_blocks_runtime_dashboard",
+        "unproven_required_state_blocks_runtime_dashboard",
+        "count_conservation_preserved",
+        "no_production_side_effects"
+      ]
+    }
+  ],
+  "technical_review_checks": {
+    "c002_finding_present": true,
+    "all_six_status_states_present": true,
+    "empty_delayed_failed_states_required": true,
+    "missing_required_state_blocks": true,
+    "unproven_required_state_blocks": true,
+    "count_conservation_preserved": true,
+    "all_evidence_files_exist": true,
+    "all_technical_review_verdicts_pass_no_production": true,
+    "p1_counter_preserved_open": true,
+    "independent_final_signoff_present": false,
+    "s2pmt07_final_gate_still_blocked": true
+  },
+  "preserved_blockers": [
+    "p1_closure_not_claimed",
+    "independent_final_signoff_missing",
+    "independent_final_command_execution_missing",
+    "s2plt04_not_completed",
+    "final_acceptance_bundle_missing"
+  ],
+  "inherited_v7_1_open_p0_findings_before": 8,
+  "inherited_v7_1_open_p0_findings_after": 8,
+  "inherited_v7_1_open_p1_findings_before": 37,
+  "inherited_v7_1_open_p1_findings_after": 37,
+  "p0_closure_claimed": false,
+  "p1_closure_claimed": false,
+  "closure_claimed": false,
+  "reviewer_independence_for_final_gate_claimed": false,
+  "s2pmt07_final_pass_claimed": false,
+  "stage2_integrated_production_accepted": false,
+  "real_smtp_sent": false,
+  "scheduler_install_enabled": false,
+  "release_packaging_enabled": false,
+  "production_restore_enabled": false,
+  "daily_operation_enabled": false,
+  "public_schema_changed": false,
+  "db_migration_executed": false,
+  "production_queue_mutation_allowed": false,
+  "ranking_changed": false,
+  "source_adapter_changed": false,
+  "current_pointer_changed": false,
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false,
+  "next_task": "assemble_remaining_p1_final_candidate_package_after_all_finding_level_reviews_without_closing_p1_or_enabling_production",
+  "validation_commands_planned": [
+    "python3 -m unittest arxiv-daily-push/tests/test_stage2_sources.py arxiv-daily-push/tests/test_stage2_final_gate.py -q",
+    "python3 -m unittest arxiv-daily-push/tests/test_user_center_candidate_pool.py -q"
+  ],
+  "rollback": "Remove this manifest, C-002 runtime-state supplement manifest, C-002 phase record update, P1 receipt updates, traceability row, rendered owner page, semantic registry update, delivery/event/status records, and tests; no production state was changed."
+}

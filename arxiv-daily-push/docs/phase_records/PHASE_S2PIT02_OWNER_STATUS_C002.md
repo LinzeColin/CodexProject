@@ -18,7 +18,8 @@ Generated at: `2026-06-27 05:25:16 Australia/Sydney`
   - 历史发送记录 = `4`.
   - 候选队列前20精选 = `20`.
 - Requires count conservation for the current candidate pool: `299 = 30 + 269`.
-- Requires status visibility for sent, blocked-not-sent, and queued-or-pending records.
+- Requires status visibility for sent, blocked-not-sent, queued-or-pending, empty, delayed, and failed records.
+- Adds the 2026-06-28 runtime-state supplement so missing or still-unproven required states block S2PIT02 instead of remaining an undocumented review gap.
 - Records that review/action/asset/ROI daily counts remain `pending_daily_snapshot` with 10 pending fields on `用户中心/复习行动与收益.md`; this refresh does not fabricate those counts.
 - Focused tests cover passing count conservation, blocked count mismatch, blocked missing state coverage, persistence, and CLI JSON output.
 
@@ -36,9 +37,22 @@ Generated at: `2026-06-27 05:25:16 Australia/Sydney`
 - `git diff --check`: PASS.
 - Full `scripts/validate_semantic_extractors.py arxiv-daily-push` was manually interrupted after running longer than 90 seconds and is not claimed as passing evidence for this refresh.
 
+## Runtime State Supplement 2026-06-28
+
+The follow-up manifest `ADP-S2PIT02-OWNER-STATUS-C002-RUNTIME-STATES-20260628.json` records all six required owner-visible runtime states:
+
+- `sent`
+- `blocked_not_sent`
+- `queued_or_pending`
+- `empty`
+- `delayed`
+- `failed`
+
+`status_states_not_proven` is now empty for the local S2PIT02 gate, and the focused regression test `test_s2pit02_runtime_dashboard_requires_failed_runtime_display_state` proves that a missing `failed` state blocks the report.
+
 ## Remaining Review Gaps
 
-This evidence refresh still requires independent reviewer judgment before C-002 can close. It does not prove all empty, delayed, or failed daily runtime states; those states remain listed as not yet proven in the S2PIT02 owner status summary.
+This evidence refresh still requires independent reviewer judgment before C-002 can close. The empty, delayed, and failed local runtime display states are now proven at the S2PIT02 gate, but this remains finding-level technical evidence only: P1 closure, independent final signoff, S2PLT04, final acceptance bundle, final command execution, and P0/P1 counter reduction are still blocked.
 
 ## Boundaries
 
