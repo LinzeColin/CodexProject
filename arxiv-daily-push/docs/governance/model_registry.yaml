@@ -5811,7 +5811,7 @@ models:
   -
     model_id: "MOD-ADP-112"
     name: "S2PMT03 outbox delivery A-003 model"
-    purpose: "Refresh inherited P0 A-003 evidence with dedicated current transactional-outbox probes proving stable same-revision Message-ID, changed-revision rekeying, exactly one outbox claim under contention, SMTP accepted-before-local-commit fail-closed behavior, provider-ref finalization without resend, and no exactly-once claim."
+    purpose: "Refresh inherited P0 A-003 evidence with dedicated current transactional-outbox probes proving stable same-revision Message-ID, changed-revision rekeying, exactly one outbox claim under contention, SMTP accepted-before-local-commit fail-closed behavior, provider-ref finalization without resend, non-reclaim of fail-closed/finalized retry_safe=false rows, and no exactly-once claim."
     owner: "arxiv-daily-push"
     status: "active"
     assumption_ids:
@@ -5835,7 +5835,9 @@ models:
       - "message_identity_revision_change"
       - "single_outbox_claim_under_contention"
       - "smtp_accept_pending_commit_fail_closed"
+      - "fail_closed_not_retry_safe_not_reclaimed"
       - "provider_accept_finalizes_without_resend"
+      - "provider_finalized_not_reclaimed"
       - "outbox_delivery_hash"
     code_refs:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py"

@@ -19,6 +19,7 @@ S2PMT03_MIN_LEASE_MS = 1000
 S2PMT03_DEFAULT_LEASE_MS = 300000
 S2PMT03_REQUIRED_TERMINAL_MAILS = ("M1", "M2", "M3")
 S2PMT03_REQUIRED_OUTBOX_STATES = ("PENDING", "CLAIMED", "ACCEPTED_PENDING_COMMIT", "SENT", "BLOCKED")
+S2PMT03_CLAIMABLE_OUTBOX_STATES = ("PENDING", "CLAIMED")
 S2PMT03_REQUIRED_GATES = (
     "row_version_compare_and_swap",
     "single_claimant_under_concurrency",
@@ -53,7 +54,9 @@ S2PMT03_OUTBOX_DELIVERY_REQUIRED_PROBES = (
     "message_identity_revision_change",
     "single_outbox_claim_under_contention",
     "smtp_accept_pending_commit_fail_closed",
+    "fail_closed_not_retry_safe_not_reclaimed",
     "provider_accept_finalizes_without_resend",
+    "provider_finalized_not_reclaimed",
     "at_least_once_no_exactly_once_claim",
 )
 S2PMT03_OUTBOX_DELIVERY_REQUIRED_GATES = (
@@ -62,7 +65,9 @@ S2PMT03_OUTBOX_DELIVERY_REQUIRED_GATES = (
     "revision_changes_message_id",
     "single_outbox_claim_under_contention",
     "smtp_accept_pending_commit_fail_closed",
+    "fail_closed_not_retry_safe_not_reclaimed",
     "provider_accept_finalizes_without_resend",
+    "provider_finalized_not_reclaimed",
     "at_least_once_semantics",
     "no_exactly_once_claim",
     "no_production_side_effect",
@@ -329,8 +334,19 @@ def claim_outbox_message(
 ) -> dict[str, Any]:
     """Claim one outbox row with the same lease/fencing rules as work items."""
 
-    if message.get("status") not in S2PMT03_REQUIRED_OUTBOX_STATES:
+    status = str(message.get("status") or "")
+    if status not in S2PMT03_REQUIRED_OUTBOX_STATES:
         return _blocked_action("claim_outbox", ["outbox status is invalid"], {"message": dict(message)})
+    if message.get("retry_safe") is False:
+        return _blocked_action("claim_outbox", ["outbox row is marked not retry safe"], {"message": dict(message)})
+    if status not in S2PMT03_CLAIMABLE_OUTBOX_STATES:
+        reason = "outbox status requires provider accept reconciliation before claim"
+        if status in {"SENT", "BLOCKED"}:
+            reason = "outbox status is terminal and cannot be claimed"
+        return _blocked_action("claim_outbox", [reason], {"message": dict(message)})
+    lease_until = int(message.get("lease_until_ms") or 0)
+    if status == "CLAIMED" and lease_until > now_ms:
+        return _blocked_action("claim_outbox", ["outbox claim lease has not expired"], {"message": dict(message)})
     claim = claim_leased_item(message, owner_id=owner_id, now_ms=now_ms, lease_ms=lease_ms)
     if claim["status"] != "pass":
         return _blocked_action("claim_outbox", list(claim.get("blocking_reasons") or []), {"message": dict(message)})
@@ -645,6 +661,8 @@ def build_outbox_delivery_a003_report(*, generated_at: str) -> dict[str, Any]:
     accepted_pending["status"] = "ACCEPTED_PENDING_COMMIT"
     fail_closed = reconcile_smtp_accept_crash(accepted_pending)
     finalized = reconcile_smtp_accept_crash(accepted_pending, provider_accept_ref="smtp://provider/message-1")
+    fail_closed_reclaim = claim_outbox_message(fail_closed["message"], owner_id="sender-b", now_ms=999999)
+    finalized_reclaim = claim_outbox_message(finalized["message"], owner_id="sender-b", now_ms=999999)
 
     probes = {
         "message_identity_same_revision": first["message_id"] == retry["message_id"],
@@ -653,10 +671,12 @@ def build_outbox_delivery_a003_report(*, generated_at: str) -> dict[str, Any]:
         "smtp_accept_pending_commit_fail_closed": fail_closed["status"] == "blocked"
         and fail_closed["message"]["status"] == "BLOCKED"
         and fail_closed["message"]["retry_safe"] is False,
+        "fail_closed_not_retry_safe_not_reclaimed": fail_closed_reclaim["status"] == "blocked",
         "provider_accept_finalizes_without_resend": finalized["status"] == "pass"
         and finalized["message"]["status"] == "SENT"
         and finalized["message"]["real_smtp_sent"] is False
         and finalized["message"]["retry_safe"] is False,
+        "provider_finalized_not_reclaimed": finalized_reclaim["status"] == "blocked",
         "at_least_once_no_exactly_once_claim": True,
     }
     gates = {
@@ -665,7 +685,9 @@ def build_outbox_delivery_a003_report(*, generated_at: str) -> dict[str, Any]:
         "revision_changes_message_id": probes["message_identity_revision_change"],
         "single_outbox_claim_under_contention": probes["single_outbox_claim_under_contention"],
         "smtp_accept_pending_commit_fail_closed": probes["smtp_accept_pending_commit_fail_closed"],
+        "fail_closed_not_retry_safe_not_reclaimed": probes["fail_closed_not_retry_safe_not_reclaimed"],
         "provider_accept_finalizes_without_resend": probes["provider_accept_finalizes_without_resend"],
+        "provider_finalized_not_reclaimed": probes["provider_finalized_not_reclaimed"],
         "at_least_once_semantics": True,
         "no_exactly_once_claim": True,
         "no_production_side_effect": True,
@@ -703,7 +725,9 @@ def build_outbox_delivery_a003_report(*, generated_at: str) -> dict[str, Any]:
             "events": claim_repo.events(),
         },
         "smtp_accept_pending_commit": fail_closed,
+        "smtp_accept_pending_commit_reclaim": fail_closed_reclaim,
         "provider_accept_finalization": finalized,
+        "provider_accept_finalization_reclaim": finalized_reclaim,
         "production_side_effects_enabled": False,
         "real_smtp_sent": False,
         "scheduler_enabled": False,

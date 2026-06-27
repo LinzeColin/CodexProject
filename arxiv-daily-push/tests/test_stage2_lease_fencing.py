@@ -187,6 +187,52 @@ class Stage2LeaseFencingTests(unittest.TestCase):
         self.assertEqual(resolved["message"]["status"], "SENT")
         self.assertFalse(resolved["message"]["real_smtp_sent"])
 
+    def test_outbox_reclaim_blocks_not_retry_safe_or_terminal_rows_after_lease_expiry(self) -> None:
+        message = build_outbox_message(
+            cycle_id="2026-07-02",
+            product_id="M1",
+            recipient="linzezhang35@gmail.com",
+            content_revision_id="rev-1",
+            body="body",
+            generated_at="2026-07-02T06:00:00+10:00",
+        )
+        claimed = claim_outbox_message(message, owner_id="sender-a", now_ms=1000)
+        accepted = dict(claimed["message"])
+        accepted["status"] = "ACCEPTED_PENDING_COMMIT"
+
+        pending_commit_claim = claim_outbox_message(accepted, owner_id="sender-b", now_ms=999999)
+        fail_closed = reconcile_smtp_accept_crash(accepted)
+        finalized = reconcile_smtp_accept_crash(accepted, provider_accept_ref="smtp://provider/message-1")
+
+        blocked_repo = LocalOutboxClaimRepository(fail_closed["message"])
+        blocked_reclaim = blocked_repo.claim(
+            owner_id="sender-b",
+            expected_row_version=fail_closed["message"]["row_version"],
+            now_ms=999999,
+        )
+        sent_repo = LocalOutboxClaimRepository(finalized["message"])
+        sent_reclaim = sent_repo.claim(
+            owner_id="sender-b",
+            expected_row_version=finalized["message"]["row_version"],
+            now_ms=999999,
+        )
+
+        self.assertEqual(pending_commit_claim["status"], "blocked")
+        self.assertIn(
+            "outbox status requires provider accept reconciliation before claim",
+            pending_commit_claim["blocking_reasons"],
+        )
+        self.assertEqual(blocked_reclaim["status"], "blocked")
+        self.assertEqual(blocked_reclaim["affected_rows"], 0)
+        self.assertIn("outbox row is marked not retry safe", blocked_reclaim["blocking_reasons"])
+        self.assertEqual(blocked_repo.snapshot()["status"], "BLOCKED")
+        self.assertEqual(blocked_repo.snapshot()["send_attempts"], 1)
+        self.assertEqual(sent_reclaim["status"], "blocked")
+        self.assertEqual(sent_reclaim["affected_rows"], 0)
+        self.assertIn("outbox row is marked not retry safe", sent_reclaim["blocking_reasons"])
+        self.assertEqual(sent_repo.snapshot()["status"], "SENT")
+        self.assertEqual(sent_repo.snapshot()["send_attempts"], 1)
+
     def test_watchdog_recovery_blocks_live_owner_and_recovers_dead_stale_lock(self) -> None:
         stale_lock = {
             "work_id": "cycle-20260702-M2",
@@ -356,6 +402,10 @@ class Stage2LeaseFencingTests(unittest.TestCase):
         self.assertTrue(report["probes"]["message_identity_same_revision"])
         self.assertTrue(report["probes"]["message_identity_revision_change"])
         self.assertTrue(report["gates"]["provider_accept_finalizes_without_resend"])
+        self.assertTrue(report["gates"]["fail_closed_not_retry_safe_not_reclaimed"])
+        self.assertTrue(report["gates"]["provider_finalized_not_reclaimed"])
+        self.assertEqual(report["smtp_accept_pending_commit_reclaim"]["status"], "blocked")
+        self.assertEqual(report["provider_accept_finalization_reclaim"]["status"], "blocked")
         self.assertEqual(validate_outbox_delivery_a003_report(report), [])
 
     def test_outbox_delivery_a003_report_blocks_exactly_once_or_missing_gate(self) -> None:

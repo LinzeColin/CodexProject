@@ -6500,7 +6500,7 @@ formulas:
     assumption_ids:
       - "ASM-ADP-035"
     status: "active"
-    expression: "A-003 transactional outbox delivery evidence passes only when required_probe_coverage, stable_message_id, revision_changes_message_id, single_outbox_claim_under_contention, smtp_accept_pending_commit_fail_closed, provider_accept_finalizes_without_resend, at_least_once_semantics, no_exactly_once_claim, and no_production_side_effect are all true; same content revision must keep message_id stable, changed content revision/body must change message_id, 100 same-row-version claims must produce exactly 1 pass and 99 blocked attempts, SMTP accepted-before-local-commit without provider ref must fail closed, provider accept ref may finalize local state without resend, and all production/schema/queue/V7/closure flags remain false."
+    expression: "A-003 transactional outbox delivery evidence passes only when required_probe_coverage, stable_message_id, revision_changes_message_id, single_outbox_claim_under_contention, smtp_accept_pending_commit_fail_closed, fail_closed_not_retry_safe_not_reclaimed, provider_accept_finalizes_without_resend, provider_finalized_not_reclaimed, at_least_once_semantics, no_exactly_once_claim, and no_production_side_effect are all true; same content revision must keep message_id stable, changed content revision/body must change message_id, 100 same-row-version claims must produce exactly 1 pass and 99 blocked attempts, SMTP accepted-before-local-commit without provider ref must fail closed, fail-closed or finalized retry_safe=false rows must not be reclaimed after lease expiry, provider accept ref may finalize local state without resend, and all production/schema/queue/V7/closure flags remain false."
     variables:
       -
         name: "message_identity"
@@ -6523,8 +6523,8 @@ formulas:
         unit: "boolean flags"
         input_domain: "false"
     constraints: "This is current local P0 A-003 evidence only; it must not send SMTP, install scheduler, upload Release, mutate public schema or production queue, edit CURRENT or V7.1/V7.2 contracts, close inherited P0/P1, or claim Stage2 integrated production acceptance."
-    missing_policy: "Missing required probe, unstable same-revision message ID, unchanged changed-revision message ID, more than one successful claim, unsafe resend without provider ref, exactly-once claim, or any forbidden side-effect flag blocks the report."
-    output_range: "A-003 transactional outbox delivery report with status pass or blocked, gate states, claim contention summary, deterministic outbox_delivery_hash, validation errors, and all production/schema/queue/V7/closure side-effect flags false."
+    missing_policy: "Missing required probe, unstable same-revision message ID, unchanged changed-revision message ID, more than one successful claim, unsafe resend without provider ref, terminal or not-retry-safe reclaim, exactly-once claim, or any forbidden side-effect flag blocks the report."
+    output_range: "A-003 transactional outbox delivery report with status pass or blocked, gate states, claim contention summary, retry-safety reclaim checks, deterministic outbox_delivery_hash, validation errors, and all production/schema/queue/V7/closure side-effect flags false."
     code_refs:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py"
     test_refs:
@@ -6534,6 +6534,7 @@ formulas:
     evidence_refs:
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_OUTBOX_DELIVERY_A003.md"
       - "governance/run_manifests/ADP-S2PMT03-OUTBOX-DELIVERY-A003-20260627.json"
+      - "arxiv-daily-push/用户中心/事务发件箱与消息ID扫描.md"
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_lease_fencing.py::S2PMT03_OUTBOX_DELIVERY_MODEL_ID"
