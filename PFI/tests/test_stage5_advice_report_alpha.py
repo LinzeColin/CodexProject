@@ -161,7 +161,7 @@ class Stage5AdviceReportAlphaTest(unittest.TestCase):
         html = (root / "web" / "index.html").read_text(encoding="utf-8")
         js = (root / "web" / "app" / "shell.js").read_text(encoding="utf-8")
 
-        self.assertIn('data-primary-workspaces="8"', html)
+        self.assertIn('data-primary-workspaces="15"', html)
         for label in ("建议模型", "Review lifecycle", "投资建议", "消费建议", "月度报告", "投资报告", "消费报告", "数据质量报告", "PFI Context Export"):
             self.assertIn(label, js)
         self.assertNotIn('data-workspace="alpha"', html.lower())

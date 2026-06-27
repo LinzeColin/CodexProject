@@ -21,7 +21,7 @@ class Stage1IAContractTest(unittest.TestCase):
                 "账本流水",
                 "投资管理",
                 "消费管理",
-                "数据源与同步",
+                "数据源与上传",
                 "建议与复盘",
                 "报告与洞察",
             ),
@@ -78,13 +78,13 @@ class Stage1IAContractTest(unittest.TestCase):
         entries = {entry["label"]: entry for entry in build_stage1_ia_contract()["primary_entries"]}
 
         consumption_text = " ".join(entries["消费管理"]["acceptance_markers"])
-        data_text = " ".join(entries["数据源与同步"]["acceptance_markers"])
+        data_text = " ".join(entries["数据源与上传"]["acceptance_markers"])
         recommendation_text = " ".join(entries["建议与复盘"]["acceptance_markers"])
         report_text = " ".join(entries["报告与洞察"]["acceptance_markers"])
 
         for marker in ["支付宝", "微信", "CBA", "银行卡", "信用卡", "订阅", "转账不计消费"]:
             self.assertIn(marker, consumption_text)
-        for marker in ["数据源列表", "凭证", "同步", "导入", "对账", "待复核", "外部只读接口"]:
+        for marker in ["数据源列表", "上传中心", "导入中心", "同步状态", "对账", "待复核", "外部只读接口"]:
             self.assertIn(marker, data_text)
         for marker in ["证据", "动作", "状态", "复盘"]:
             self.assertIn(marker, recommendation_text)

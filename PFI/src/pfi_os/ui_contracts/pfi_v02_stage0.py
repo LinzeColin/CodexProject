@@ -26,7 +26,7 @@ V02_TARGET_PRIMARY_ENTRIES: tuple[V02PrimaryEntry, ...] = (
     V02PrimaryEntry(3, "账本流水", "统一承接消费、投资、转账、费用、退款、估值和汇率事件。"),
     V02PrimaryEntry(4, "投资管理", "承接持仓、市场观察、策略回测、盘感训练、策略实验室和大数据模拟器。"),
     V02PrimaryEntry(5, "消费管理", "承接日常支出、订阅、预算、异常消费和消费复盘。"),
-    V02PrimaryEntry(6, "数据源与同步", "承接数据源、凭证引用、同步、导入、对账、待复核和状态解释。"),
+    V02PrimaryEntry(6, "数据源与上传", "承接数据源、上传、导入、同步状态、对账、待复核和状态解释。"),
     V02PrimaryEntry(7, "建议与复盘", "承接投资、消费、现金流和数据修复建议的生命周期与复盘。"),
     V02PrimaryEntry(8, "报告与洞察", "承接月度、投资、消费、数据质量、证据链和 PFI context export。"),
 )
@@ -37,7 +37,7 @@ CURRENT_SIX_WORKSPACE_COMPATIBILITY: tuple[CompatibilityEntry, ...] = (
     CompatibilityEntry("研究", True, "web/index.html side-nav: research", "报告与洞察", "保留旧按钮；研究证据和报告清单归入报告与洞察。", "Mapped"),
     CompatibilityEntry("持仓", True, "web/index.html side-nav: portfolio", "账户与资产 / 投资管理", "保留旧按钮；账户事实归入账户与资产，投资复核归入投资管理。", "Mapped"),
     CompatibilityEntry("策略实验室", True, "web/index.html side-nav: strategy", "投资管理 > 策略实验室", "保留旧按钮；作为投资管理下的核心兼容入口。", "Mapped"),
-    CompatibilityEntry("数据与系统", True, "web/index.html side-nav: data", "数据源与同步", "保留旧按钮；系统诊断只作为内部状态，不作为产品一级入口。", "Mapped"),
+    CompatibilityEntry("数据与系统", True, "web/index.html side-nav: settings", "设置", "保留旧按钮；系统诊断只作为设置页内容，不作为产品一级入口。", "Mapped"),
 )
 
 ACTIVE_VIEW_COMPATIBILITY: tuple[CompatibilityEntry, ...] = (
@@ -53,7 +53,7 @@ ACTIVE_VIEW_COMPATIBILITY: tuple[CompatibilityEntry, ...] = (
     CompatibilityEntry("策略实验室｜盘感训练", True, "ACTIVE_PFI_VIEW_OPTIONS: market_feel", "投资管理 > 策略实验室 / 盘感训练", "保留当前入口；隐藏未来答案并只做训练。", "Mapped"),
     CompatibilityEntry("策略实验室｜策略库", True, "ACTIVE_PFI_VIEW_OPTIONS: library", "投资管理 > 策略实验室 / 策略库", "保留当前入口；策略注册保持人工复核。", "Mapped"),
     CompatibilityEntry("数据与系统｜模拟实验", True, "ACTIVE_PFI_VIEW_OPTIONS: big_data", "投资管理 > 策略实验室 / 大数据模拟器", "保留当前入口；大数据模拟器归入策略实验室。", "Mapped"),
-    CompatibilityEntry("数据与系统｜数据中心", True, "ACTIVE_PFI_VIEW_OPTIONS: tools", "数据源与同步", "保留当前入口；作为数据源与同步兼容入口。", "Mapped"),
+    CompatibilityEntry("数据与系统｜数据中心", True, "ACTIVE_PFI_VIEW_OPTIONS: tools", "设置", "保留当前入口；作为设置页兼容入口。", "Mapped"),
 )
 
 PUBLIC_ASSUMPTION_COMPATIBILITY: tuple[CompatibilityEntry, ...] = (

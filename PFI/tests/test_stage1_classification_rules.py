@@ -2,7 +2,12 @@ from __future__ import annotations
 
 import unittest
 
-from pfi_v02.classification_rules import ClassificationInput, classify_transaction, stage1_classification_fixtures
+from pfi_v02.classification_rules import (
+    ClassificationInput,
+    build_ledger_classification_standard,
+    classify_transaction,
+    stage1_classification_fixtures,
+)
 from pfi_v02.core_models import AssetType, LedgerEventType
 
 
@@ -74,6 +79,20 @@ class Stage1ClassificationRulesTest(unittest.TestCase):
         self.assertIn(LedgerEventType.FUND, [result.event_type for result in results])
         self.assertIn(LedgerEventType.BUY_ASSET, [result.event_type for result in results])
         self.assertEqual(sum(1 for result in results if result.affects_consumption), 0)
+
+    def test_ledger_classification_standard_documents_priority_and_effects(self) -> None:
+        standard = build_ledger_classification_standard()
+        rule_ids = [rule["rule_id"] for rule in standard]
+        priorities = [rule["priority"] for rule in standard]
+        by_id = {rule["rule_id"]: rule for rule in standard}
+
+        self.assertEqual(rule_ids, ["LCS-001", "LCS-002", "LCS-003", "LCS-004", "LCS-005"])
+        self.assertEqual(priorities, sorted(priorities))
+        self.assertFalse(by_id["LCS-001"]["affects_consumption"])
+        self.assertTrue(by_id["LCS-001"]["dedupe_required"])
+        self.assertFalse(by_id["LCS-003"]["affects_consumption"])
+        self.assertTrue(by_id["LCS-003"]["affects_investment"])
+        self.assertEqual(by_id["LCS-005"]["review_state"], "NEEDS_REVIEW when abs(amount) >= 1000 else ACCEPTED")
 
 
 if __name__ == "__main__":
