@@ -31,6 +31,7 @@ from arxiv_daily_push.stage2_final_gate import (
     S2PMT07_REQUIRED_EVIDENCE,
     S2PMT07_REQUIRED_TEST_COMMANDS,
     build_final_acceptance_bundle_readiness_state,
+    build_p0_p1_technical_closure_candidate_state,
     build_s2plt02_dependency_state,
     build_s2plt02_live_2d_precheck_report,
     build_s2plt02_live_evidence_state,
@@ -52,6 +53,7 @@ from arxiv_daily_push.stage2_final_gate import (
     validate_s2plt03_resilience_precheck_report,
     validate_s2plt04_integration_candidate_report,
     validate_final_acceptance_bundle_readiness_state,
+    validate_p0_p1_technical_closure_candidate_state,
     validate_s2pmt07_precheck_report,
 )
 
@@ -2012,6 +2014,52 @@ class Stage2FinalGateTests(unittest.TestCase):
             "final acceptance bundle readiness must not claim ready while blocked",
             validate_final_acceptance_bundle_readiness_state(tampered),
         )
+
+    def test_final_acceptance_bundle_readiness_embeds_p0_p1_candidates_without_zero_proof(self) -> None:
+        state = build_final_acceptance_bundle_readiness_state()
+        candidate = state["p0_p1_technical_closure_candidate_state"]
+
+        self.assertEqual(candidate["status"], "blocked_candidate_ready_no_closure")
+        self.assertEqual(candidate["p0_candidate_count"], 8)
+        self.assertEqual(candidate["p1_candidate_count"], 37)
+        self.assertEqual(len(candidate["p0_candidate_findings"]), 8)
+        self.assertEqual(len(candidate["p1_candidate_findings"]), 37)
+        self.assertTrue(candidate["p0_candidate_package_present"])
+        self.assertTrue(candidate["p1_candidate_receipt_present"])
+        self.assertTrue(candidate["all_p0_candidate_reviews_passed_no_production_acceptance"])
+        self.assertTrue(candidate["all_p1_candidate_reviews_passed_no_production_acceptance"])
+        self.assertFalse(candidate["p0_p1_zero_proof_present"])
+        self.assertFalse(candidate["independent_final_closure_decision_present"])
+        self.assertFalse(candidate["p0_closure_claimed"])
+        self.assertFalse(candidate["p1_closure_claimed"])
+        self.assertFalse(candidate["closure_claimed"])
+        self.assertEqual(candidate["inherited_v7_1_open_p0_findings"], 8)
+        self.assertEqual(candidate["inherited_v7_1_open_p1_findings"], 37)
+        self.assertIn("p0_p1_zero_proof_missing", candidate["blocking_reasons"])
+        self.assertFalse(state["available_items"]["FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json"])
+        self.assertTrue(state["available_prebundle_evidence"]["P0_P1_TECHNICAL_CLOSURE_CANDIDATES"])
+        for ref in candidate["candidate_manifest_refs"]:
+            self.assertTrue((REPO_ROOT / ref).exists(), ref)
+        self.assertEqual(validate_p0_p1_technical_closure_candidate_state(candidate), [])
+        self.assertEqual(validate_final_acceptance_bundle_readiness_state(state), [])
+
+        tampered = json.loads(json.dumps(candidate))
+        tampered["p1_closure_claimed"] = True
+        self.assertIn("p1_closure_claimed must be false", validate_p0_p1_technical_closure_candidate_state(tampered))
+
+    def test_p0_p1_technical_candidate_builder_fails_closed_without_closure(self) -> None:
+        state = build_p0_p1_technical_closure_candidate_state()
+
+        self.assertEqual(state["scope"], "technical_closure_candidate_reviews_only_not_p0_p1_zero_proof")
+        self.assertIn(
+            "governance/run_manifests/ADP-S2PMT07-P0-TECHNICAL-CLOSURE-CANDIDATE-PACKAGE-20260627.json",
+            state["candidate_manifest_refs"],
+        )
+        self.assertIn(
+            "governance/run_manifests/ADP-S2PMT07-P1-INDEPENDENT-REVIEW-RECEIPT-20260626.json",
+            state["candidate_manifest_refs"],
+        )
+        self.assertEqual(validate_p0_p1_technical_closure_candidate_state(state), [])
 
     def test_full_precheck_report_fails_closed_without_production_side_effects(self) -> None:
         report = build_s2pmt07_precheck_report(generated_at="2026-06-26T17:00:00+10:00")

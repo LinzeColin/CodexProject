@@ -7,12 +7,13 @@ machine_summary:
 
 - model_count: 117
 - formula_count: 119
-- parameter_count: 989
+- parameter_count: 995
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
 ## Governance Notes
 
+- `S2PMT07-P0-P1-TECHNICAL-CANDIDATE-READINESS` adds `PARAM-ADP-990` through `PARAM-ADP-995` under `MOD-ADP-100` / `FORM-ADP-102`. It exposes existing 8 P0 and 37 P1 technical closure candidates to S2PMT07 final acceptance bundle readiness as prebundle evidence only. It does not create P0/P1 zero proof, close P0/P1, complete S2PLT04, create the final bundle, enable SMTP/scheduler/Release/restore, mutate production state, change sources/ranking/CURRENT/V7, or claim integrated production acceptance.
 - `S2PLT04-FINAL-BUNDLE-READINESS-SYNC` reuses existing `PARAM-ADP-965` through `PARAM-ADP-967` under `MOD-ADP-103` / `FORM-ADP-105` to embed the fail-closed final acceptance bundle readiness detail inside S2PLT04 evidence. It does not create the final bundle, satisfy S2PLT04, close P0/P1, enable SMTP/scheduler/Release/restore, mutate production state, change sources/ranking/CURRENT/V7, or claim integrated production acceptance.
 - `S2PLT03` adds `MOD-ADP-116`, `FORM-ADP-118`, and `PARAM-ADP-968`
   through `PARAM-ADP-975`. It records a fail-closed no-production resilience,
