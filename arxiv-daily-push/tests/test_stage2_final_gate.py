@@ -150,6 +150,10 @@ class Stage2FinalGateTests(unittest.TestCase):
             REPO_ROOT
             / "governance/run_manifests/ADP-S2PMT07-B001-ISOLATED-PROOF-RECONCILIATION-20260627.json"
         )
+        independent_review_manifest_path = (
+            REPO_ROOT
+            / "governance/run_manifests/ADP-S2PMT07-B001-INDEPENDENT-TECHNICAL-REVIEW-20260627.json"
+        )
         receipt = receipt_path.read_text(encoding="utf-8")
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         receipt_rows = {
@@ -188,6 +192,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertIn("PHASE_S2PMT04_INSTALL_LIFECYCLE_B001.md", receipt_rows["B-001"])
         self.assertIn("ADP-S2PMT04-INSTALL-LIFECYCLE-B001-20260627.json", receipt_rows["B-001"])
         self.assertIn("ADP-S2PMT07-B001-ISOLATED-PROOF-RECONCILIATION-20260627.json", receipt_rows["B-001"])
+        self.assertIn("ADP-S2PMT07-B001-INDEPENDENT-TECHNICAL-REVIEW-20260627.json", receipt_rows["B-001"])
         self.assertIn("用户中心/自动唤醒安装生命周期扫描.md", receipt_rows["B-001"])
         self.assertIn("test_stage2_lifecycle_cache.py", receipt_rows["B-001"])
         self.assertNotIn("PHASE_S2PMT04_LIFECYCLE_CACHE.md", receipt_rows["B-001"])
@@ -215,6 +220,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertIn(manifest["refresh_manifest"], manifest["refresh_manifests"])
         self.assertTrue(refresh_manifest_path.exists())
         self.assertTrue(isolated_proof_manifest_path.exists())
+        self.assertTrue(independent_review_manifest_path.exists())
         self.assertFalse(manifest["p0_closure_claimed"])
         self.assertFalse(manifest["stage2_integrated_production_accepted"])
         self.assertIn(
@@ -306,11 +312,20 @@ class Stage2FinalGateTests(unittest.TestCase):
             findings["B-001"]["evidence_refs"],
         )
         self.assertIn(
+            "governance/run_manifests/ADP-S2PMT07-B001-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+            findings["B-001"]["evidence_refs"],
+        )
+        self.assertIn(
             "arxiv-daily-push/用户中心/自动唤醒安装生命周期扫描.md",
             findings["B-001"]["evidence_refs"],
         )
         self.assertIn("arxiv-daily-push/tests/test_stage2_lifecycle_cache.py", findings["B-001"]["evidence_refs"])
-        self.assertIn("external_isolated_proof_reconciled", findings["B-001"]["preliminary_review_state"])
+        self.assertEqual(findings["B-001"]["reviewer_verdict"], "PASS_WITH_NO_PRODUCTION_ACCEPTANCE")
+        self.assertEqual(
+            findings["B-001"]["finding_level_independent_review_receipt"],
+            "governance/run_manifests/ADP-S2PMT07-B001-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+        )
+        self.assertIn("finding_level_independent_review_passed", findings["B-001"]["preliminary_review_state"])
         self.assertNotIn("arxiv-daily-push/docs/phase_records/PHASE_S2PMT04_LIFECYCLE_CACHE.md", findings["B-001"]["evidence_refs"])
         self.assertNotIn("governance/run_manifests/ADP-S2PMT04-LIFECYCLE-CACHE-20260626.json", findings["B-001"]["evidence_refs"])
         self.assertIn(
@@ -354,6 +369,26 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertTrue(isolated_manifest["reconciliation_checks"]["launchd_uninstall_not_found_observed"])
         self.assertTrue(isolated_manifest["reconciliation_checks"]["production_labels_not_touched"])
         self.assertEqual(isolated_manifest["reconciliation_summary"]["artifact_hash_mismatches"], [])
+
+        independent_review = json.loads(independent_review_manifest_path.read_text(encoding="utf-8"))
+        self.assertEqual(independent_review["reviewer_verdict"], "PASS_WITH_NO_PRODUCTION_ACCEPTANCE")
+        self.assertEqual(independent_review["finding_id"], "B-001")
+        self.assertTrue(independent_review["technical_closure_candidate"])
+        self.assertTrue(independent_review["external_isolated_launchd_proof_verified"])
+        self.assertEqual(independent_review["artifact_hashes_checked"], 15)
+        self.assertTrue(independent_review["artifact_hashes_match"])
+        self.assertTrue(independent_review["operation_sequence_complete"])
+        self.assertTrue(independent_review["launchd_run_exit_0_observed"])
+        self.assertTrue(independent_review["launchd_uninstall_not_found_observed"])
+        self.assertTrue(independent_review["isolated_label_not_loaded_now"])
+        self.assertTrue(independent_review["isolated_plist_absent_now"])
+        self.assertFalse(independent_review["p0_closure_claimed"])
+        self.assertFalse(independent_review["p1_closure_claimed"])
+        self.assertFalse(independent_review["s2pmt07_final_pass_claimed"])
+        self.assertFalse(independent_review["s2plt04_completed"])
+        self.assertFalse(independent_review["stage2_integrated_production_accepted"])
+        self.assertFalse(independent_review["scheduler_install_enabled"])
+        self.assertFalse(independent_review["real_smtp_sent"])
 
     def test_p1_review_receipt_uses_refreshed_current_evidence(self) -> None:
         receipt_path = REPO_ROOT / "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_INDEPENDENT_REVIEW_RECEIPT.md"

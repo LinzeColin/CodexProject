@@ -273,6 +273,7 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("P0 `B-001`", page)
         self.assertIn("安装 / 状态 / 触发探针 / 卸载", page)
         self.assertIn("真实隔离触发证明 | 已记录外部 proof / 待独立复审", page)
+        self.assertIn("独立技术复审 | `PASS_WITH_NO_PRODUCTION_ACCEPTANCE` / 技术关闭候选", page)
         self.assertIn("launchd bootstrap | 已在 isolated label 执行 / 生产 label 未触碰", page)
         self.assertIn("scheduler 启用 | `false`", page)
         self.assertIn("真实 SMTP 发送 | `false`", page)
@@ -283,6 +284,10 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         )
         self.assertIn(
             "[B-001 isolated proof reconciliation](../../governance/run_manifests/ADP-S2PMT07-B001-ISOLATED-PROOF-RECONCILIATION-20260627.json)",
+            page,
+        )
+        self.assertIn(
+            "[B-001 独立技术复审 receipt](../../governance/run_manifests/ADP-S2PMT07-B001-INDEPENDENT-TECHNICAL-REVIEW-20260627.json)",
             page,
         )
         self.assertIn("[B-001 阶段记录](../docs/phase_records/PHASE_S2PMT04_INSTALL_LIFECYCLE_B001.md)", page)
