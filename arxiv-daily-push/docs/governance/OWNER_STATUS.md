@@ -6,7 +6,7 @@ arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTI
 
 ## 2. 本次运行改变了什么
 
-S2PMT07 现在有 P0/P1 zero-proof assembly 状态：系统会把 8 个 P0 与 37 个 P1 技术候选、manifest refs、当前 open blocker count 和 no-production flags 装配为未来独立终审的机器输入。当前 independent final closure decision、next-agent handoff、no-production attestation、independent signoff、final command execution artifact、completion report、manifest、zero-proof artifact 和 final bundle 仍缺失，inherited P0/P1 仍为 `8 / 37`。该 assembly 只是后续最终包工作的 blocked prebundle evidence，不是 P0/P1 归零证明、最终包已创建、S2PLT04 完成、P0/P1 关闭或生产验收。
+S2PMT07 现在有 independent final closure decision request 状态：系统会把 P0/P1 zero-proof assembly、zero-proof readiness、候选证据 refs、最终包 refs、no-production flags 和 `independent_final_reviewer` 角色要求装配为未来独立终审的机器输入。当前 independent final reviewer assignment、independent final closure decision、next-agent handoff、no-production attestation、independent signoff、final command execution artifact、completion report、manifest、zero-proof artifact 和 final bundle 仍缺失，inherited P0/P1 仍为 `8 / 37`。该 request 只是后续最终包工作的 blocked prebundle evidence，不是 P0/P1 归零证明、最终包已创建、S2PLT04 完成、P0/P1 关闭或生产验收。
 
 ## 3. 为什么重要
 
@@ -21,7 +21,7 @@ S2PMT07 现在有 P0/P1 zero-proof assembly 状态：系统会把 8 个 P0 与 3
 
 ## 5. 默认建议
 
-- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, require independent final closure decision plus valid `FINAL_ACCEPTANCE_BUNDLE/manifest.json`, valid `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json`, S2PLT04 completion proof, independent final signoff, final command execution proof, no-production attestation, and next-agent handoff before inherited P0/P1 can be treated as zero or any production acceptance claim can be made.
+- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, assign an independent final reviewer and require independent final closure decision plus valid `FINAL_ACCEPTANCE_BUNDLE/manifest.json`, valid `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json`, S2PLT04 completion proof, independent final signoff, final command execution proof, no-production attestation, and next-agent handoff before inherited P0/P1 can be treated as zero or any production acceptance claim can be made.
 - estimated_effort: P0/P1; contract hash, AGENTS, 三基文件, validator/test, no production side effect
 - estimated_cost_or_resource: local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner
 
@@ -39,7 +39,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `PARTIAL` (1004/1019 active parameters, 119/119 active formulas)
+- implementation_congruence: `PARTIAL` (1007/1022 active parameters, 119/119 active formulas)
 - parameter_source_quality: `PARTIAL`
 - methodological_rationale: `VERIFIED`
 - empirical_validation: `VERIFIED`
@@ -71,14 +71,14 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - model_count: `117`
 - total_formulas: `119`
 - active_formulas: `119`
-- total_parameters: `1036`
-- active_parameters: `1019`
+- total_parameters: `1039`
+- active_parameters: `1022`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PMT07_P0_P1_ZERO_PROOF_ASSEMBLY_BLOCKED_NO_PRODUCTION`
+- release_gate: `S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_REQUEST_BLOCKED_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
@@ -86,8 +86,8 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - tree_bound_events: `0`
 - commit_bound_events: `4`
 - legacy_unbound_events: `188`
-- precommit_pending_events: `47`
-- pending_or_stale_events: `233`
+- precommit_pending_events: `48`
+- pending_or_stale_events: `234`
 
 ## 15. UNKNOWN
 
@@ -98,12 +98,12 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - source_base_commit: `12e91a8e1b84fe29724f43229131bd43f8fa31cd`
 - source_tree_hash: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - source_snapshot_hash: `sha256:b46b66adca9fff016c8699d25d2f20031291631ddbc6e9ee00fc360126a9647f`
-- snapshot_event_time: `2026-06-28T07:56:58+10:00`
+- snapshot_event_time: `2026-06-28T08:21:10+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PM / S2PMT07_P0_P1_ZERO_PROOF_ASSEMBLY_BLOCKED_NO_PRODUCTION`
+- phase/gate: `S2PM / S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_REQUEST_BLOCKED_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 
 - task_id: `S2PMT07`
-- reason: Keep P0/P1 technical candidates fail-closed until independent final closure decision, zero proof, S2PLT04 completion, final bundle, final command execution, and no-production attestation are proven under V7.2 and S2PMT07 blocked boundaries.
+- reason: Keep P0/P1 technical candidates and independent final closure decision request fail-closed until reviewer assignment, independent final closure decision, zero proof, S2PLT04 completion, final bundle, final command execution, and no-production attestation are proven under V7.2 and S2PMT07 blocked boundaries.

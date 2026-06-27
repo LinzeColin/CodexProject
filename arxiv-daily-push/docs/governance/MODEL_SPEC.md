@@ -7,12 +7,20 @@ machine_summary:
 
 - model_count: 117
 - formula_count: 119
-- parameter_count: 1036
+- parameter_count: 1039
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
 ## Governance Notes
 
+- `S2PMT07-INDEPENDENT-FINAL-CLOSURE-DECISION-REQUEST` adds
+  `PARAM-ADP-1037` through `PARAM-ADP-1039` under `MOD-ADP-100` /
+  `FORM-ADP-102`. It exposes the future independent final reviewer request
+  state for `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json#independent_closure_decision`,
+  binding zero-proof assembly, zero-proof readiness, candidate refs, final
+  bundle refs, no-production flags, and reviewer role while keeping the
+  reviewer assignment, closure decision, zero-proof artifact, P0/P1 zero proof,
+  S2PLT04, final bundle, and every production side-effect flag blocked/false.
 - `S2PMT07-P0-P1-ZERO-PROOF-ASSEMBLY` adds `PARAM-ADP-1034`
   through `PARAM-ADP-1036` under `MOD-ADP-100` / `FORM-ADP-102`.
   It assembles existing P0/P1 technical candidate inputs, manifest refs,
