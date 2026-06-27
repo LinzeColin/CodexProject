@@ -4,12 +4,36 @@
 
 ## 结论
 
-PFI v0.2.2 本轮定位为数据库治理和 E2E 逻辑优化，不是 v0.2.1 前端重做。Stage 0 已定位当前参数、公式、阈值、分类、数据源、账户角色、测试框架和 Stage 6 E2E 产物，并标记与 v0.2.2 要求冲突的部分。
+PFI v0.2.2 本轮定位为数据库治理和 E2E 逻辑优化，不是 v0.2.1 前端重做。Stage 0 已按新版 Stage -> Phase -> Task roadmap 补做，任务 ID 为 `S0-P1-T1`、`S0-P1-T2`、`S0-P1-T3`、`S0-P2-T1`、`S0-P2-T2`。本轮已定位当前参数、公式、阈值、分类、数据源、账户角色、测试框架和 Stage 6 E2E 产物，并标记与 v0.2.2 要求冲突的部分。
 
 本轮不修改 `PFI/web/index.html`。  
 本轮不修改 `PFI/web/app/shell.js`。  
 本轮不新增 `PFI/web/pfi_v022_logic_review.html`。  
 `PFI_v0.2.2_UIUX_Logic_Review_Template.html` 只作为后续逻辑审查页的信息结构参考。
+
+## Stage 0 补做任务表
+
+| Task ID | 任务 | 交付物 | 当前结论 |
+| --- | --- | --- | --- |
+| `S0-P1-T1` | 在开发记录中新增任务条目 `PFI v0.2.2 E2E 逻辑优化` | `PFI/开发记录.md` | 已补做，任务名、目标、范围、非目标为中文。 |
+| `S0-P1-T2` | 定位三基文件与本次会修改的核心文件 | 文件清单 | 已补做，覆盖三基、参数 YAML 目标、前端 HTML、测试文件。 |
+| `S0-P1-T3` | 明确本次不做的内容 | 非目标清单 | 已补做，明确不做真实交易、自动投资、隐私私有化重构、每次运行联网抓汇率。 |
+| `S0-P2-T1` | 新增参数版本号 | `PFI/模型参数文件.md` metadata | 已补做，包含 `task_name=PFI v0.2.2 E2E 逻辑优化` 和 `parameter_version=v0.2.2`。 |
+| `S0-P2-T2` | 新增参数变更记录文件 | `PFI/config/parameter_changelog.md` | 已补做，后续参数变化需记录字段、旧值、新值、原因、影响范围。 |
+
+## Stage 0 文件定位清单
+
+| 文件 | Stage 0 状态 |
+| --- | --- |
+| `PFI/模型参数文件.md` | 已更新 metadata 和 v0.2.2 Stage 0 参数记录。 |
+| `PFI/功能清单.md` | 已记录 v0.2.2 Stage 0 当前能力和不改前端范围。 |
+| `PFI/开发记录.md` | 已新增 Stage 0 任务章节。 |
+| `PFI/config/pfi_parameters.yaml` | Stage 1 目标文件，Stage 0 只定位，不创建。 |
+| `PFI/config/parameter_changelog.md` | Stage 0 已创建。 |
+| `PFI/web/index.html` | v0.2.1 前端入口，Stage 0 不修改。 |
+| `PFI/web/app/shell.js` | v0.2.1 前端交互入口，Stage 0 不修改。 |
+| `PFI/tests/test_pfi_parameters_consistency.py` | Stage 1 目标测试，Stage 0 只定位，不创建。 |
+| `PFI/tests/test_v022_stage0_database_governance.py` | Stage 0 已创建。 |
 
 ## 已读取的当前文件
 
@@ -119,7 +143,7 @@ v0.2.2 要求现金流窗口为 `7/21/30/60/90/180/360` 天。
 - 用户自定义标签新增、重命名、禁用、删除。
 - 标签 assignment / rule / changelog 的 SQLite 持久化。
 
-这不是 Stage 0 阻塞，但必须作为 Milestone 4 的核心交付。
+这不是 Stage 0 阻塞，但必须作为 Stage 6 的核心交付。
 
 ## Interconnection 现状
 
@@ -139,7 +163,7 @@ v0.2.2 要求现金流窗口为 `7/21/30/60/90/180/360` 天。
 
 ## 与 v0.2.2 要求冲突清单
 
-| ID | 主题 | 当前状态 | v0.2.2 要求 | 后续 Milestone |
+| ID | 主题 | 当前状态 | v0.2.2 要求 | 后续 Stage |
 | --- | --- | --- | --- | --- |
 | `V022-S0-CONFLICT-001` | CNY / 汇率 | Stage 3/4/5 多数指标按 AUD fixture 派生；v0.2.1 顶栏为 CNY/AUD。 | CNY 主口径，AUD/CNY 格式，06:00 有效日。 | M1/M2 |
 | `V022-S0-CONFLICT-002` | 消费口径 | 只有 `affects_consumption`，生活消费排除 transfer/investment。 | 双口径：消费总流出金额 + 生活消费金额。 | M1/M3/M5 |
@@ -171,16 +195,19 @@ Stage 0 不改变 Stage 6 代码或前端显示。当前 Stage 6 产物仍作为
 
 状态：通过。
 
-结论：已列出散落在代码、Markdown、Web fixture 和测试中的关键阈值。后续 Milestone 1 必须把核心参数写入 `PFI/模型参数文件.md` 和 `PFI/config/pfi_v022_parameters.yaml`，并用一致性测试防止数值漂移。
+结论：已列出散落在代码、Markdown、Web fixture 和测试中的关键阈值。后续 Stage 1 必须把核心参数写入 `PFI/模型参数文件.md` 和机器可读参数 YAML，并用一致性测试防止数值漂移。
 
 ## Stage 0 验收结论
 
 | 验收项 | 状态 |
 | --- | --- |
+| 已按 Stage -> Phase -> Task roadmap 补做 Stage 0 | 通过 |
+| 已创建参数变更记录文件 | 通过 |
+| 已新增 `task_name` 和 `parameter_version` metadata | 通过 |
 | 已列出现有参数与硬编码阈值 | 通过 |
 | 已列出现有消费、投资、现金流、建议模块计算口径 | 通过 |
 | 已标记与 v0.2.2 要求冲突的逻辑 | 通过 |
 | 已确认不破坏 Stage 6 基础 | 通过 |
 | 已明确 HTML 模板不是本轮 UI 修改要求 | 通过 |
 
-Stage 0 可以进入用户检查和后续 Milestone 1 准备。
+Stage 0 可以进入用户检查和后续 Stage 1 准备。
