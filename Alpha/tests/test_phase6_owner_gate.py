@@ -477,7 +477,6 @@ def test_finalize_phase6_owner_gate_cli_returns_ready_after_publish(tmp_path, mo
     runtime_root = tmp_path / "runtime" / "phase6_owner_gate_latest"
     docs_root = tmp_path / "docs" / "evidence" / "phase6_closeout_latest"
     history_path = tmp_path / "runtime" / "phase6_soak_history.jsonl"
-    output_path = tmp_path / "finalize.json"
     paper_shadow = build_paper_shadow_report(
         run_result=run,
         output_path=runtime_root / "paper_shadow_report_latest.json",
@@ -502,17 +501,17 @@ def test_finalize_phase6_owner_gate_cli_returns_ready_after_publish(tmp_path, mo
             str(docs_root),
             "--history-path",
             str(history_path),
-            "--output",
-            str(output_path),
         ],
     )
 
     assert finalize_phase6_owner_gate_if_ready.main() == 0
     payload = json.loads(capsys.readouterr().out)
+    output_path = docs_root / "FINALIZE_STATUS.json"
     written = json.loads(output_path.read_text(encoding="utf-8"))
     assert payload["status"] == "ready_for_owner_gate"
     assert written["status"] == "ready_for_owner_gate"
     assert payload["require_ready_verification"]["verification_status"] == "pass"
+    assert output_path.exists()
     assert not (tmp_path / "runtime" / "LIVE_AUTHORIZATION.json").exists()
 
 
@@ -554,4 +553,5 @@ def test_finalize_phase6_owner_gate_cli_returns_not_ready_before_48h(tmp_path, m
     assert payload["blocking_conditions"] == ["phase6_48h_soak_validation"]
     assert payload["publish_report"]["verification_status"] == "pass"
     assert payload["require_ready_verification"]["verification_status"] == "fail"
+    assert json.loads((docs_root / "FINALIZE_STATUS.json").read_text(encoding="utf-8"))["status"] == "not_ready_for_owner_gate"
     assert not (tmp_path / "runtime" / "LIVE_AUTHORIZATION.json").exists()

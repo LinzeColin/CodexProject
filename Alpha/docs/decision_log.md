@@ -166,4 +166,4 @@ Decision: `scripts/finalize_phase6_owner_gate_if_ready.py` is the one-command Ph
 
 Reason: After the natural 48-hour soak window completes, a follow-on agent needs a deterministic finalization command that cannot silently convert partial evidence into readiness.
 
-Consequence: Before 48 hours, the command returns `not_ready_for_owner_gate` with `phase6_48h_soak_validation` as the blocker. It does not create `runtime/LIVE_AUTHORIZATION.json`, enable live trading, run a broker mutation, or enter MICRO_LIVE.
+Consequence: Before 48 hours, the command returns `not_ready_for_owner_gate` with `phase6_48h_soak_validation` as the blocker and writes `docs/evidence/phase6_closeout_latest/FINALIZE_STATUS.json` as the latest fixed closeout-attempt status. It does not create `runtime/LIVE_AUTHORIZATION.json`, enable live trading, run a broker mutation, or enter MICRO_LIVE.

@@ -28,7 +28,7 @@ def main() -> int:
     parser.add_argument("--history-path", default=str(DEFAULT_SOAK_HISTORY_PATH))
     parser.add_argument("--duration-hours", type=int, default=48)
     parser.add_argument("--max-sample-gap-seconds", type=int, default=DEFAULT_MAX_SAMPLE_GAP_SECONDS)
-    parser.add_argument("--output", default=None, help="可选：写出 finalize JSON 报告。")
+    parser.add_argument("--output", default=None, help="可选：写出 finalize JSON 报告；默认写到 target evidence root。")
     args = parser.parse_args()
 
     publish_report = publish_phase6_owner_gate_evidence(
@@ -57,10 +57,9 @@ def main() -> int:
         "require_ready_verification": ready_report,
         "live_authorization_absent": live_authorization_absent,
     }
-    if args.output:
-        output = Path(args.output)
-        output.parent.mkdir(parents=True, exist_ok=True)
-        output.write_text(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    output = Path(args.output) if args.output else Path(args.target_evidence_root) / "FINALIZE_STATUS.json"
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
     if not live_authorization_absent:
         return 2
