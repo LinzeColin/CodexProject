@@ -110,8 +110,57 @@ def test_signed_brand_clearance_bundle_validates_but_is_not_release_ready(
     assert result["valid"] is True
     assert result["a210_clearance_complete"] is True
     assert result["release_ready"] is False
+    assert result["signed_bundle_source_boundary"]["closure_allowed"] is True
+    assert (
+        result["signed_bundle_source_boundary"]["source_kind"]
+        == "external_operator_file"
+    )
     assert "A209_24h_operator_soak" in result["remaining_external_gates"]
     assert result["trademark_jurisdictions"] == sorted(
         brand.REQUIRED_TRADEMARK_JURISDICTIONS
     )
     assert result["market_surfaces"] == sorted(brand.REQUIRED_SURFACES)
+
+
+def test_signed_brand_clearance_rejects_repository_template() -> None:
+    with pytest.raises(AssertionError, match="repository_template"):
+        brand.validate_signed_bundle(brand.ROOT / brand.INTAKE_TEMPLATE_PATH)
+
+
+def test_signed_brand_clearance_rejects_repository_fixture(tmp_path: Path) -> None:
+    payload = signed_bundle_from_template()
+    fixture_dir = brand.ROOT / "artifacts/tests/a210"
+    fixture_path = fixture_dir / "signed-a210-brand-clearance-fixture.json"
+    fixture_path.write_text(json.dumps(payload), encoding="utf-8")
+    try:
+        with pytest.raises(AssertionError, match="repository_fixture_or_source"):
+            brand.validate_signed_bundle(fixture_path)
+    finally:
+        fixture_path.unlink(missing_ok=True)
+
+
+def test_signed_brand_clearance_allows_approved_operator_input_dir(
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    payload = signed_bundle_from_template()
+    operator_dir = brand.ROOT / "artifacts/operator_inputs/a210"
+    operator_dir.mkdir(parents=True, exist_ok=True)
+    operator_path = operator_dir / "signed-a210-brand-clearance-test.json"
+    operator_path.write_text(json.dumps(payload), encoding="utf-8")
+    try:
+        brand.validate_signed_bundle(operator_path)
+
+        result = json.loads(capsys.readouterr().out)
+        assert result["signed_bundle_source_boundary"]["closure_allowed"] is True
+        assert (
+            result["signed_bundle_source_boundary"]["source_kind"]
+            == "repository_operator_input"
+        )
+    finally:
+        operator_path.unlink(missing_ok=True)
+        try:
+            operator_dir.rmdir()
+            operator_dir.parent.rmdir()
+        except OSError:
+            pass

@@ -56,6 +56,19 @@ REQUIRED_SURFACES = {
     "pypi",
 }
 SIGNED_CLEARANCE_STATUSES = {"CLEARED", "RISK_WAIVER_ACCEPTED"}
+SIGNED_BUNDLE_ALLOWED_REPO_PREFIXES = (
+    "artifacts/operator_inputs/",
+    "operator_inputs/",
+    "work/operator_inputs/",
+)
+SIGNED_BUNDLE_DISALLOWED_REPO_PREFIXES = (
+    "artifacts/tests/",
+    "data/",
+    "tests/",
+    "docs/",
+    "config/",
+    "brand/",
+)
 
 
 def require(condition: bool, message: str) -> None:
@@ -191,6 +204,73 @@ def require_text(payload: dict[str, Any], key: str) -> str:
     return str(value).strip()
 
 
+def display_path(path: Path) -> str:
+    resolved = path.resolve()
+    try:
+        return resolved.relative_to(ROOT).as_posix()
+    except ValueError:
+        return resolved.as_posix()
+
+
+def signed_bundle_source_boundary(path: Path) -> dict[str, Any]:
+    resolved = path.resolve()
+    root = ROOT.resolve()
+    try:
+        repo_relative = resolved.relative_to(root).as_posix()
+    except ValueError:
+        return {
+            "path": resolved.as_posix(),
+            "source_kind": "external_operator_file",
+            "repository_relative": None,
+            "closure_allowed": True,
+            "reason": "signed A210 bundle is outside the repository fixture/template tree",
+        }
+    if resolved == (ROOT / INTAKE_TEMPLATE_PATH).resolve():
+        return {
+            "path": repo_relative,
+            "source_kind": "repository_template",
+            "repository_relative": repo_relative,
+            "closure_allowed": False,
+            "reason": "default A210 intake template is not signed brand clearance evidence",
+        }
+    if repo_relative.startswith(SIGNED_BUNDLE_ALLOWED_REPO_PREFIXES):
+        return {
+            "path": repo_relative,
+            "source_kind": "repository_operator_input",
+            "repository_relative": repo_relative,
+            "closure_allowed": True,
+            "reason": "signed A210 bundle is under an approved operator input directory",
+        }
+    if repo_relative.startswith(SIGNED_BUNDLE_DISALLOWED_REPO_PREFIXES):
+        return {
+            "path": repo_relative,
+            "source_kind": "repository_fixture_or_source",
+            "repository_relative": repo_relative,
+            "closure_allowed": False,
+            "reason": "repository fixtures, templates, configs, docs and data cannot close A210",
+        }
+    return {
+        "path": repo_relative,
+        "source_kind": "repository_unapproved_path",
+        "repository_relative": repo_relative,
+        "closure_allowed": False,
+        "reason": (
+            "signed A210 bundle must be outside the repository or under "
+            "artifacts/operator_inputs"
+        ),
+    }
+
+
+def validate_signed_bundle_source_path(path: Path) -> dict[str, Any]:
+    boundary = signed_bundle_source_boundary(path)
+    if boundary["closure_allowed"] is not True:
+        raise AssertionError(
+            "A210 signed brand-clearance bundle must be operator-supplied, not "
+            f"{boundary['source_kind']}: {boundary['path']}"
+        )
+    return boundary
+
+
 def template_trademark_entry(jurisdiction: str) -> dict[str, Any]:
     return {
         "jurisdiction": jurisdiction,
@@ -270,6 +350,8 @@ def build_intake_template() -> dict[str, Any]:
         "validation_policy": {
             "template_only_counts_as_clearance": False,
             "signed_bundle_required_for_a210_closure": True,
+            "signed_bundle_source_must_be_operator_supplied": True,
+            "repository_fixtures_and_templates_count_as_clearance": False,
             "signed_bundle_must_cover_all_required_jurisdictions": True,
             "signed_bundle_must_cover_all_required_market_surfaces": True,
             "signed_bundle_with_blocking_conflicts_must_fail": True,
@@ -472,6 +554,13 @@ def build_payload() -> dict[str, Any]:
             "research_summary": "brand/BRAND_AND_COMPETITIVE_LANDSCAPE_RESEARCH.md",
             "brand_clearance_intake_template": str(INTAKE_TEMPLATE_PATH),
         },
+        "signed_bundle_source_boundary_policy": {
+            "signed_bundle_source_must_be_operator_supplied": True,
+            "repository_fixtures_and_templates_count_as_clearance": False,
+            "allowed_repository_prefixes": list(SIGNED_BUNDLE_ALLOWED_REPO_PREFIXES),
+            "disallowed_repository_prefixes": list(SIGNED_BUNDLE_DISALLOWED_REPO_PREFIXES),
+            "default_template_source_kind": "repository_template",
+        },
         "release_gate": {
             "id": gate["id"],
             "status": "BLOCKING",
@@ -561,6 +650,26 @@ def validate_payload(payload: dict[str, Any]) -> None:
     for key in ["formal_legal_clearance", "market_clearance"]:
         require(current.get(key) == "NOT_COMPLETE", f"{key} must not be complete")
     require(current.get("signed_risk_waiver") == "NOT_PROVIDED", "risk waiver must not be provided")
+    source_boundary_policy = payload.get("signed_bundle_source_boundary_policy") or {}
+    require(
+        source_boundary_policy.get("signed_bundle_source_must_be_operator_supplied") is True,
+        "signed bundle must be operator supplied",
+    )
+    require(
+        source_boundary_policy.get("repository_fixtures_and_templates_count_as_clearance")
+        is False,
+        "repository fixtures/templates must not count as clearance",
+    )
+    require(
+        tuple(source_boundary_policy.get("allowed_repository_prefixes") or ())
+        == SIGNED_BUNDLE_ALLOWED_REPO_PREFIXES,
+        "allowed signed-bundle prefixes drift",
+    )
+    require(
+        tuple(source_boundary_policy.get("disallowed_repository_prefixes") or ())
+        == SIGNED_BUNDLE_DISALLOWED_REPO_PREFIXES,
+        "disallowed signed-bundle prefixes drift",
+    )
     if (ROOT / INTAKE_TEMPLATE_PATH).is_file():
         validate_intake_template(json.loads((ROOT / INTAKE_TEMPLATE_PATH).read_text()))
 
@@ -624,15 +733,17 @@ def validate_template() -> None:
 
 
 def validate_signed_bundle(path: Path) -> None:
+    source_boundary = validate_signed_bundle_source_path(path)
     payload = json.loads(path.read_text(encoding="utf-8"))
     summary = validate_signed_intake_bundle(payload)
     print(
         json.dumps(
             {
                 "valid": True,
-                "bundle": str(path),
+                "bundle": display_path(path),
                 "a210_clearance_complete": True,
                 "release_ready": False,
+                "signed_bundle_source_boundary": source_boundary,
                 "remaining_external_gates": [
                     "A202_source_license_owner_legal_release",
                     "A026_A027_production_gold_labels",
