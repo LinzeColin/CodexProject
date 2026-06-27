@@ -305,7 +305,17 @@ class GlobalScanTests(unittest.TestCase):
             source_batches=source_batches(**{"cs": [queued]}),
         )
         queue = first["candidate_queue"]
-        queue["items"].append(first["selection"]["selected"])
+        legacy_selected = dict(first["selection"]["selected"])
+        legacy_selected["score_model_id"] = "adp-roi-ranking-v1"
+        legacy_selected["roi_component_weights"] = {
+            "relevance": 20.0,
+            "learning_value": 20.0,
+            "economic_conversion_rate": 20.0,
+            "roi": 20.0,
+            "interdisciplinary_value": 10.0,
+            "explainability": 10.0,
+        }
+        queue["items"].append(legacy_selected)
 
         second = build_all_arxiv_daily_input(
             date="2026-07-02",
@@ -317,6 +327,8 @@ class GlobalScanTests(unittest.TestCase):
         self.assertEqual(second["status"], "pass")
         self.assertEqual(second["daily_input"]["source_item"]["source_id"], "arxiv:2607.00003")
         self.assertEqual(second["selection"]["selected"]["selection_source"], "candidate_queue")
+        self.assertEqual(second["selection"]["selected"]["score_model_id"], "adp-roi-semantic-rubric-v2")
+        self.assertEqual(second["selection"]["selected"]["roi_component_weights"], ROI_COMPONENT_WEIGHTS)
 
     def test_delivery_package_requires_stage1_text_and_queue_summary(self) -> None:
         daily_input = {

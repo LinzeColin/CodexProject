@@ -525,6 +525,18 @@ def normalize_candidate_queue(queue: Mapping[str, Any] | None, *, generated_at: 
             if not isinstance(claims, list) or any(validate_evidence_claim(claim) for claim in claims if isinstance(claim, Mapping)):
                 continue
             normalized = dict(item)
+            refreshed, refresh_errors = _candidate_from_source_item(source_item, generated_at=generated_at)
+            if refreshed and not refresh_errors:
+                refreshed.update(
+                    {
+                        "queue_status": "queued",
+                        "carried_count": int(normalized.get("carried_count") or 0),
+                        "first_seen_at": str(normalized.get("first_seen_at") or generated_at),
+                        "last_seen_at": str(normalized.get("last_seen_at") or generated_at),
+                        "queue_reason": str(normalized.get("queue_reason") or "carried_from_existing_queue"),
+                    }
+                )
+                normalized = refreshed
             normalized["queue_status"] = "queued"
             normalized["carried_count"] = int(normalized.get("carried_count") or 0)
             normalized.setdefault("first_seen_at", generated_at)
