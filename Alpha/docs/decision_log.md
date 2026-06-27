@@ -72,6 +72,14 @@ Reason: A first-to-last timestamp span can overstate real observation if the sam
 
 Consequence: Historical gap violations remain visible in evidence, but readiness depends on a fresh continuous window reaching 48 hours with passing Paper/Shadow and Shadow live constraints.
 
+## 2026-06-27: Dashboard Shows Phase 6 OWNER-GATE Read-Only Status
+
+Decision: `/dashboard/state` and the dashboard page expose the same Phase 6 OWNER-GATE status report used by the CLI checker.
+
+Reason: The owner must be able to see current blocker, continuous observation window, sampler freshness, Paper/Shadow status, Shadow live constraints, and live authorization absence without reading raw JSON files.
+
+Consequence: Dashboard visibility is read-only. It does not create `runtime/LIVE_AUTHORIZATION.json`, does not submit broker orders, and does not promote Alpha to MICRO_LIVE or OWNER-GATE readiness.
+
 ## 2026-06-13: Execution Boundary
 
 Decision: Alpha will automate paper trading, risk checks, approval queues, and broker-ready order tickets. It will not autonomously submit real-money broker orders.

@@ -13,6 +13,8 @@ ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_EVIDENCE_ROOT = ROOT / "docs" / "evidence" / "phase6_closeout_latest"
 DEFAULT_RUNTIME_EVIDENCE_ROOT = ROOT / "runtime" / "phase6_owner_gate_latest"
 DEFAULT_SOAK_HISTORY_PATH = ROOT / "runtime" / "phase6_soak_history.jsonl"
+DEFAULT_MAX_SAMPLE_GAP_SECONDS = 900
+DEFAULT_MAX_SAMPLE_AGE_SECONDS = 900
 
 
 def utc_now_iso() -> str:
@@ -288,6 +290,53 @@ def build_owner_gate_closeout(
     if output_path:
         _write_json(output_path, report)
     return report
+
+
+def build_phase6_owner_gate_status(
+    *,
+    evidence_root: str | Path = DEFAULT_RUNTIME_EVIDENCE_ROOT,
+    history_path: str | Path = DEFAULT_SOAK_HISTORY_PATH,
+    duration_hours: int = 48,
+    max_sample_gap_seconds: int = DEFAULT_MAX_SAMPLE_GAP_SECONDS,
+    max_sample_age_seconds: int = DEFAULT_MAX_SAMPLE_AGE_SECONDS,
+    live_authorization_path: str | Path | None = None,
+) -> dict:
+    root = Path(evidence_root)
+    samples = read_soak_samples(history_path)
+    paper_shadow = _read_json(root / "paper_shadow_report_latest.json")
+    shadow_constraints = _read_json(root / "shadow_live_constraints_latest.json")
+    soak = build_soak_validation_report(
+        samples=samples,
+        duration_hours=duration_hours,
+        max_sample_gap_seconds=max_sample_gap_seconds,
+    )
+    closeout = build_owner_gate_closeout(
+        soak_validation=soak,
+        paper_shadow_report=paper_shadow,
+        shadow_live_constraints=shadow_constraints,
+    )
+    auth_path = Path(live_authorization_path or ROOT / "runtime" / "LIVE_AUTHORIZATION.json")
+    return {
+        "schema_version": "2026-06-27.alpha.phase6.owner_gate_status",
+        "status": closeout["status"],
+        "blocking_conditions": closeout["blocking_conditions"],
+        "sample_count": soak["sample_count"],
+        "continuous_sample_count": soak["continuous_sample_count"],
+        "observed_hours": soak["observed_hours"],
+        "duration_hours_required": soak["duration_hours_required"],
+        "window_start": soak.get("window_start"),
+        "window_end": soak.get("window_end"),
+        "max_sample_gap_seconds": soak.get("max_sample_gap_seconds"),
+        "max_observed_gap_seconds": soak.get("max_observed_gap_seconds"),
+        "gap_violation_count": soak.get("gap_violation_count"),
+        "last_gap_violation": soak.get("last_gap_violation"),
+        "paper_shadow_status": paper_shadow.get("status", "missing"),
+        "shadow_live_constraints_status": shadow_constraints.get("status", "missing"),
+        "live_authorization_absent": not auth_path.exists(),
+        "evidence_root": str(root),
+        "history_path": str(Path(history_path)),
+        **_latest_sample_freshness(samples, max_age_seconds=max_sample_age_seconds),
+    }
 
 
 def build_owner_decision_markdown(
@@ -712,6 +761,36 @@ def _check_status(report: dict, check_id: str) -> str:
         if item.get("id") == check_id:
             return str(item.get("status"))
     return "missing"
+
+
+def _latest_sample_freshness(samples: list[dict], *, max_age_seconds: int) -> dict:
+    if not samples:
+        return {
+            "latest_sample_generated_at": None,
+            "latest_sample_age_seconds": None,
+            "max_sample_age_seconds": max_age_seconds,
+            "sampler_freshness_status": "missing",
+        }
+    latest_sample = max(samples, key=lambda item: item.get("generated_at") or "")
+    latest_generated_at = latest_sample.get("generated_at")
+    try:
+        latest_time = _parse_time(latest_generated_at)
+    except ValueError:
+        latest_time = None
+    if latest_time is None:
+        return {
+            "latest_sample_generated_at": latest_generated_at,
+            "latest_sample_age_seconds": None,
+            "max_sample_age_seconds": max_age_seconds,
+            "sampler_freshness_status": "invalid_timestamp",
+        }
+    age_seconds = max(0, int((datetime.now(timezone.utc) - latest_time).total_seconds()))
+    return {
+        "latest_sample_generated_at": latest_time.isoformat(),
+        "latest_sample_age_seconds": age_seconds,
+        "max_sample_age_seconds": max_age_seconds,
+        "sampler_freshness_status": "pass" if age_seconds <= max_age_seconds else "stale",
+    }
 
 
 def _read_json(path: Path) -> dict:
