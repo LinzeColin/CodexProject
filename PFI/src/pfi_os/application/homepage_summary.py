@@ -190,24 +190,24 @@ def _stage3_decision_rows(stage3_dashboard: dict[str, Any]) -> list[dict[str, st
 
 def _stage3_evidence_drawer(stage3_dashboard: dict[str, Any]) -> dict[str, str]:
     return {
-        "title": "PFI Stage 3 · 首页、账户、账本",
-        "Evidence": "Stage 3 使用本地 synthetic/read-only read-model 验证首页、账户地图、账本流水、待复核和同步全部计划。",
+        "title": "PFI 第 3 阶段 · 首页、账户、账本",
+        "Evidence": "第 3 阶段使用本地合成只读读模型验证首页、账户地图、账本流水、待复核和同步全部计划。",
         "Source": "pfi_v02.stage3_read_mvp",
         "Model": str(stage3_dashboard.get("schema", "PFIV02Stage3ReadableMVPV1")),
-        "Parameters": "FX fixture AUD/CNY/USD/HKD; no live market rate; no real credential.",
-        "Data lineage": "Stage2 import fixtures -> Stage3 account/ledger/recommendation read-model.",
+        "Parameters": "汇率样本覆盖 AUD/CNY/USD/HKD；不读取实时市场汇率；不需要真实凭证。",
+        "Data lineage": "第 2 阶段导入样本 -> 第 3 阶段账户、账本、建议读模型。",
         "Raw document": "PFI/docs/pfi_v02/STAGE3_READABLE_MVP.md",
     }
 
 
 def _stage4_evidence_drawer(stage4_dashboard: dict[str, Any]) -> dict[str, str]:
     return {
-        "title": "PFI Stage 4 · 投资与消费智能分析",
-        "Evidence": "Stage 4 使用本地 synthetic/read-only read-model 验证投资总览、收益归因、风险、行为复盘、消费预算、订阅、异常和现金流预测。",
+        "title": "PFI 第 4 阶段 · 投资与消费智能分析",
+        "Evidence": "第 4 阶段使用本地合成只读读模型验证投资总览、收益归因、风险、行为复盘、消费预算、订阅、异常和现金流预测。",
         "Source": "pfi_v02.stage4_analysis_mvp",
         "Model": str(stage4_dashboard.get("schema", "PFIV02Stage4AnalysisMVPV1")),
-        "Parameters": "Attribution components market/active/fees/fx/cash_drag; budget AUD 3600; reserve AUD 5000; no exact conclusion without evidence.",
-        "Data lineage": "Stage3 account/ledger read-model + Stage4 synthetic analysis fixtures -> Stage4 investment/consumption analysis read-model.",
+        "Parameters": "归因组件覆盖市场、主动决策、费用、汇率、现金拖累；预算 AUD 3600；生活现金底线 AUD 5000；证据不足时不输出精确结论。",
+        "Data lineage": "第 3 阶段账户和账本读模型 + 第 4 阶段合成分析样本 -> 第 4 阶段投资和消费分析读模型。",
         "Raw document": "PFI/docs/pfi_v02/STAGE4_ANALYSIS_MVP.md",
     }
 
@@ -216,12 +216,12 @@ def _stage5_evidence_drawer(stage5_dashboard: dict[str, Any]) -> dict[str, str]:
     alpha_context = stage5_dashboard.get("alpha_context_export", {})
     export_center = stage5_dashboard.get("export_center", {})
     return {
-        "title": "PFI Stage 5 · Stage 4 inputs · 建议、报告、Alpha 只读出口",
-        "Evidence": "Stage 5 使用本地只读模型验证建议模型、review lifecycle、投资/消费建议、Top N 排序、四类报告、导出中心和 Alpha context snapshot。",
+        "title": "PFI 第 5 阶段 · 第 4 阶段输入 · 建议、报告、外部系统只读出口",
+        "Evidence": "第 5 阶段使用本地只读模型验证建议模型、复盘生命周期、投资/消费建议、重点建议排序、四类报告、导出中心和 PFI 上下文快照。",
         "Source": "pfi_v02.stage5_advice_report_alpha",
         "Model": str(stage5_dashboard.get("schema", "PFIV02Stage5AdviceReportAlphaExportV1")),
-        "Parameters": f"top_n={len(stage5_dashboard.get('top_recommendations', []))}; export_formats={', '.join(export_center.get('preferred_formats', ())) or 'markdown/json/csv'}; context_schema={alpha_context.get('schema', 'pfi_context_snapshot_v1')}",
-        "Data lineage": "Stage3 account/ledger read-model + Stage4 analysis read-model -> Stage5 recommendation/report/context export.",
+        "Parameters": f"重点建议数={len(stage5_dashboard.get('top_recommendations', []))}; 导出格式={', '.join(export_center.get('preferred_formats', ())) or 'Markdown/JSON/CSV'}; 上下文快照={alpha_context.get('schema', 'pfi_context_snapshot_v1')}",
+        "Data lineage": "第 3 阶段账户和账本读模型 + 第 4 阶段分析读模型 -> 第 5 阶段建议、报告、上下文导出。",
         "Raw document": "PFI/docs/pfi_v02/STAGE5_ADVICE_REPORT_ALPHA_EXPORT.md",
     }
 
@@ -232,12 +232,12 @@ def _stage6_evidence_drawer(stage6_dashboard: dict[str, Any]) -> dict[str, str]:
     total_gates = stage6_dashboard.get("total_acceptance_gate", ())
     taskpack_audit = stage6_dashboard.get("taskpack_acceptance_audit", ())
     return {
-        "title": "PFI Stage 6 · Stage 5 · Stage 4 inputs · 端到端验收与稳定化",
-        "Evidence": "Stage 6 使用本地 synthetic/read-only 模型验证多数据源、首页、账本、建议生命周期、回归治理、交付回滚和 TaskPack acceptance gates。",
+        "title": "PFI 第 6 阶段 · 第 5 阶段 · 第 4 阶段输入 · 端到端验收与稳定化",
+        "Evidence": "第 6 阶段使用本地合成只读模型验证多数据源、首页、账本、建议生命周期、回归治理、交付回滚和任务包验收门禁。",
         "Source": "pfi_v02.stage6_e2e_stabilization",
         "Model": str(stage6_dashboard.get("schema", "PFIV02Stage6E2EStabilizationV1")),
-        "Parameters": f"core_sources={source_count}; total_gates={len(total_gates)}; acceptance_checks={len(taskpack_audit)}; live_trade_submission_authorized=false",
-        "Data lineage": "Stage2 contracts + Stage3 account/ledger read-model + Stage4 analysis + Stage5 recommendations/reports/context export -> Stage6 E2E closeout.",
+        "Parameters": f"核心来源={source_count}; 总门禁={len(total_gates)}; 验收检查={len(taskpack_audit)}; 实盘提交授权=否",
+        "Data lineage": "第 2 阶段合同 + 第 3 阶段账户和账本读模型 + 第 4 阶段分析 + 第 5 阶段建议、报告、上下文导出 -> 第 6 阶段端到端收口。",
         "Raw document": "PFI/docs/pfi_v02/STAGE6_E2E_STABILIZATION.md",
     }
 

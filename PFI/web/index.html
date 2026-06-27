@@ -151,7 +151,7 @@
               </dl>
               <div class="workflow-actions">
                 <button class="workflow-open" type="button" data-feature-view="source_registry">打开上传说明</button>
-                <button type="button" data-workflow-evidence="strategy">查看边界</button>
+                <button type="button" data-workflow-evidence="strategy">查看说明</button>
               </div>
             </article>
             <article class="workflow-card" data-workflow-card="market">
@@ -207,7 +207,7 @@
             <div>
               <p class="panel-kicker">功能面板</p>
               <h2 id="function-detail-title" data-function-title>PFI 功能入口</h2>
-              <p data-function-purpose>选择一个功能板块后，这里会显示中文操作面板、证据边界和下一步。</p>
+              <p data-function-purpose>选择一个功能板块后，这里会显示中文操作面板、证据说明和下一步。</p>
             </div>
             <span class="status-pill status-ready" data-function-status>可用</span>
           </div>
@@ -221,7 +221,7 @@
               <dd data-function-workspace>首页</dd>
             </div>
             <div>
-              <dt>边界</dt>
+              <dt>使用限制</dt>
               <dd data-function-boundary>只做研究、回测、训练、复核和报告，不做实盘自动下单。</dd>
             </div>
           </dl>
@@ -231,7 +231,7 @@
               <div>
                 <p class="panel-kicker">操作区</p>
                 <h3 id="function-runner-title" data-function-run-title>功能已准备</h3>
-                <p data-function-run-summary>点击主操作后，这里会显示可执行步骤、当前状态和验收边界。</p>
+                <p data-function-run-summary>点击主操作后，这里会显示可执行步骤、当前状态和验收要求。</p>
               </div>
               <span class="status-pill status-ready" data-function-run-state>已进入</span>
             </div>
@@ -283,7 +283,7 @@
                 <tr>
                   <td>P1</td>
                   <td>账本流水</td>
-                  <td>parser / raw / batch 链路</td>
+                  <td>解析器 / 原始记录 / 批次链路</td>
                   <td>处理低置信度记录</td>
                   <td><span class="status-pill status-ready">可用</span></td>
                 </tr>
@@ -353,7 +353,7 @@
           <dt>模型</dt>
           <dd data-evidence-field="Model">外部模型未启用</dd>
           <dt>参数</dt>
-          <dd data-evidence-field="Parameters">市场=美股 · 标的=SPY · 组合=主组合 · 币种=USD</dd>
+          <dd data-evidence-field="Parameters">市场=美股 · 标的=SPY · 组合=主组合 · 基准币种=CNY</dd>
           <dt>数据血缘</dt>
           <dd data-evidence-field="Data lineage">运行库摘要 → 缓存卡片 → 决策队列。</dd>
           <dt>原始记录</dt>
@@ -394,18 +394,10 @@
         "metric_cards": [],
         "decision_rows": [],
         "evidence_drawer": {},
-        "stage6_dashboard": {
-          "schema": "PFIV02Stage6E2EStabilizationV1"
-        },
-        "stage5_dashboard": {
-          "schema": "PFIV02Stage5AdviceReportAlphaExportV1"
-        },
-        "stage4_dashboard": {
-          "schema": "PFIV02Stage4AnalysisMVPV1"
-        },
-        "stage3_dashboard": {
-          "schema": "PFIV02Stage3ReadableMVPV1"
-        },
+        "stage6_dashboard": {},
+        "stage5_dashboard": {},
+        "stage4_dashboard": {},
+        "stage3_dashboard": {},
         "workflow_runtime": {
           "schema": "PFIOSPhaseCWorkflowRuntimeReadModelV1",
           "fast_path": {

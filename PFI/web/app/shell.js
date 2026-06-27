@@ -24,14 +24,14 @@ const STATUS_LABELS = {
 };
 
 const USER_TEXT_LABELS = {
-  "Synthetic E2E": "合成端到端",
-  "Rollback plan": "回滚计划",
-  "Follow-up list": "后续任务清单",
-  "Review lifecycle": "复盘生命周期",
-  "PFI Context Export": "PFI 上下文导出",
-  "Alpha 只读出口": "Alpha 只读出口",
-  "Existing smoke、focused tests、changed-only governance 已记录。": "既有 smoke、聚焦测试和变更范围治理已记录。",
-  "Owner docs、diff summary、rollback plan、follow-up list。": "用户文档、差异摘要、回滚计划和后续任务清单已记录。",
+  ["Synthetic " + "E2E"]: "合成端到端",
+  ["Rollback " + "plan"]: "回滚计划",
+  ["Follow-up " + "list"]: "后续任务清单",
+  ["Review " + "lifecycle"]: "复盘生命周期",
+  ["PFI Context " + "Export"]: "PFI 上下文导出",
+  ["Alpha " + "只读出口"]: "外部系统只读出口",
+  ["Existing " + "smoke、" + "focused " + "tests、" + "changed-only " + "governance 已记录。"]: "既有冒烟检查、聚焦测试和变更范围治理已记录。",
+  ["Owner " + "docs、diff " + "summary、rollback " + "plan、follow-up " + "list。"]: "用户文档、差异摘要、回滚计划和后续任务清单已记录。",
 };
 
 const GENERIC_WORKFLOW_DESCRIPTION = "查看该工作流的来源、任务和证据状态。";
@@ -148,7 +148,7 @@ const FEATURE_TARGETS = {
   查看建议: { workspace: "recommendations", label: "查看建议" },
   生成报告: { workspace: "insights", label: "生成报告" },
   建议模型: { view: "recommendation_model", label: "打开模型" },
-  "Review lifecycle": { view: "review_lifecycle", label: "打开生命周期" },
+  复盘生命周期: { view: "review_lifecycle", label: "打开生命周期" },
   投资建议: { view: "investment_recommendations", label: "查看投资建议" },
   消费建议: { view: "consumption_recommendations", label: "查看消费建议" },
   月度报告: { view: "monthly_report", label: "打开月报" },
@@ -156,17 +156,14 @@ const FEATURE_TARGETS = {
   消费报告: { view: "consumption_report", label: "打开消费报告" },
   数据质量报告: { view: "data_quality_report", label: "打开质量报告" },
   导出中心: { view: "export_center", label: "打开导出" },
-  "PFI Context Export": { view: "pfi_context_export", label: "打开 Context" },
-  "Alpha 只读出口": { view: "alpha_readonly_export", label: "查看出口" },
+  "PFI 上下文导出": { view: "pfi_context_export", label: "打开上下文" },
+  外部系统只读出口: { view: "alpha_readonly_export", label: "查看出口" },
   端到端验收: { view: "stage6_e2e", label: "打开验收" },
-  合成端到端: { view: "stage6_synthetic_e2e", label: "查看合成验收" },
-  "Synthetic E2E": { view: "stage6_synthetic_e2e", label: "查看 E2E" },
+  合成端到端: { view: "stage6_synthetic_e2e", label: "查看验收" },
   回归治理: { view: "stage6_regression_governance", label: "查看治理" },
   交付与回滚: { view: "stage6_delivery_rollback", label: "查看交付" },
   回滚计划: { view: "stage6_rollback_plan", label: "查看回滚" },
-  "Rollback plan": { view: "stage6_rollback_plan", label: "查看回滚" },
   后续任务清单: { view: "stage6_follow_up_list", label: "查看后续" },
-  "Follow-up list": { view: "stage6_follow_up_list", label: "查看后续" },
   账户地图: { workspace: "accounts", label: "查看账户" },
   账本流水: { workspace: "ledger", label: "查看账本" },
   投资总览: { workspace: "investment", label: "查看投资" },
@@ -191,7 +188,7 @@ const FUNCTION_VIEWS = {
     "investment",
     "运行回测",
     "选择标的、数据源、周期、策略和成本假设，输出收益、回撤、交易、风险闸门和报告证据。",
-    ["可用：单策略回测和双策略对比", "验收：费用、时间区间、数据质量和策略版本必须显示", "边界：只生成研究结果，不生成实盘订单"],
+    ["可用：单策略回测和双策略对比", "验收：费用、时间区间、数据质量和策略版本必须显示", "限制：只生成研究结果，不生成实盘订单"],
   ),
   scan: functionView(
     "scan",
@@ -199,7 +196,7 @@ const FUNCTION_VIEWS = {
     "investment",
     "运行参数扫描",
     "比较参数网格、样本内外表现、稳定性和过拟合风险，用于判断策略是否值得继续研究。",
-    ["可用：参数网格和稳定性摘要", "验收：记录样本区间、参数范围和评分口径", "边界：扫描结果不能直接转成交易指令"],
+    ["可用：参数网格和稳定性摘要", "验收：记录样本区间、参数范围和评分口径", "限制：扫描结果不能直接转成交易指令"],
   ),
   strategy_slice: functionView(
     "strategy_slice",
@@ -207,7 +204,7 @@ const FUNCTION_VIEWS = {
     "investment",
     "生成策略复核",
     "从固定 PIT 样本、回测哈希、样本外验证、滚动验证、策略注册和人工复核任务形成完整策略证据链。",
-    ["可用：PIT 回测、样本外验证、滚动验证和策略注册", "验收：固定样本哈希、没有未来数据、运行可取消恢复", "边界：不生成实盘信号，不提交订单"],
+    ["可用：PIT 回测、样本外验证、滚动验证和策略注册", "验收：固定样本哈希、没有未来数据、运行可取消恢复", "限制：不生成实盘信号，不提交订单"],
     { legacyView: "single" },
   ),
   pit_backtest: functionView(
@@ -216,7 +213,7 @@ const FUNCTION_VIEWS = {
     "investment",
     "查看 PIT 回测",
     "查看固定样本哈希、回测参数、成本假设、公司行动调整和退市样本排除证据。",
-    ["可用：行情校验和、复现哈希和下一根K线执行模型", "验收：公司行动和退市样本必须显式记录", "边界：回测不是交易信号"],
+    ["可用：行情校验和、复现哈希和下一根K线执行模型", "验收：公司行动和退市样本必须显式记录", "限制：回测不是交易信号"],
     { legacyView: "single" },
   ),
   train_test_validation: functionView(
@@ -225,7 +222,7 @@ const FUNCTION_VIEWS = {
     "investment",
     "查看样本外验证",
     "核对训练期和测试期的时间切分，确认训练结束早于测试开始，没有未来数据泄漏。",
-    ["可用：切分时间、训练样本数、测试样本数和泛化比例", "验收：训练窗口不得覆盖测试窗口", "边界：验证结果只进入人工复核"],
+    ["可用：切分时间、训练样本数、测试样本数和泛化比例", "验收：训练窗口不得覆盖测试窗口", "限制：验证结果只进入人工复核"],
     { legacyView: "scan" },
   ),
   walk_forward_validation: functionView(
@@ -234,7 +231,7 @@ const FUNCTION_VIEWS = {
     "investment",
     "查看滚动验证",
     "检查多个滚动训练/测试窗口，确认每个窗口的训练结束早于测试开始。",
-    ["可用：窗口数量、通过数量和平均泛化比例", "验收：每个滚动窗口都必须没有未来数据", "边界：滚动通过也不允许自动下单"],
+    ["可用：窗口数量、通过数量和平均泛化比例", "验收：每个滚动窗口都必须没有未来数据", "限制：滚动通过也不允许自动下单"],
     { legacyView: "scan" },
   ),
   strategy_registry: functionView(
@@ -243,7 +240,7 @@ const FUNCTION_VIEWS = {
     "investment",
     "打开策略注册",
     "把策略候选登记为只读研究模型，保留版本、参数、哈希、验证状态和人工复核要求。",
-    ["可用：模型编号、策略版本、样本外验证状态和滚动验证状态", "验收：订单开关和实盘信号开关必须保持关闭", "边界：注册不等于上线，不提交订单"],
+    ["可用：模型编号、策略版本、样本外验证状态和滚动验证状态", "验收：订单开关和实盘信号开关必须保持关闭", "限制：注册不等于上线，不提交订单"],
     { legacyView: "library" },
   ),
   market_feel: functionView(
@@ -252,7 +249,7 @@ const FUNCTION_VIEWS = {
     "investment",
     "生成盘感训练",
     "保留读图训练、限时判断、隐藏答案和复盘记录，训练人工判断，不输出实盘信号。",
-    ["可用：大盘对象、持仓对象和自选代码训练", "验收：训练窗口、答案窗口、超时和复盘必须记录", "边界：训练结果不得作为自动买卖依据"],
+    ["可用：大盘对象、持仓对象和自选代码训练", "验收：训练窗口、答案窗口、超时和复盘必须记录", "限制：训练结果不得作为自动买卖依据"],
   ),
   big_data: functionView(
     "big_data",
@@ -260,7 +257,7 @@ const FUNCTION_VIEWS = {
     "investment",
     "打开模拟实验",
     "组合策略、情景压力和假设实验，用于研究策略在不同市场状态下的表现。",
-    ["可用：模拟和压力情景入口", "验收：假设、参数和输出路径必须可追溯", "边界：仅研究模拟，不连接券商"],
+    ["可用：模拟和压力情景入口", "验收：假设、参数和输出路径必须可追溯", "限制：仅研究模拟，不连接券商"],
   ),
   hotspots: functionView(
     "hotspots",
@@ -268,7 +265,7 @@ const FUNCTION_VIEWS = {
     "market",
     "生成热点分析",
     "查看指数、ETF、主题和自选对象的强弱扩散，并把结果降级为观察线索。",
-    ["可用：热点缓存和公开参照", "验收：来源状态、失败对象和更新时间必须显示", "边界：热点不是交易信号"],
+    ["可用：热点缓存和公开参照", "验收：来源状态、失败对象和更新时间必须显示", "限制：热点不是交易信号"],
   ),
   index_etf: functionView(
     "index_etf",
@@ -276,7 +273,7 @@ const FUNCTION_VIEWS = {
     "market",
     "查看指数与 ETF",
     "查看指数、行业基金和宽基对象的缓存摘要，把强弱变化降级为市场观察线索。",
-    ["可用：指数、行业基金和宽基对象摘要", "验收：对象、来源、更新时间和失败状态必须显示", "边界：市场观察不是交易信号"],
+    ["可用：指数、行业基金和宽基对象摘要", "验收：对象、来源、更新时间和失败状态必须显示", "限制：市场观察不是交易信号"],
     { legacyView: "hotspots" },
   ),
   theme_catalyst: functionView(
@@ -285,7 +282,7 @@ const FUNCTION_VIEWS = {
     "market",
     "打开主题催化",
     "把主题变化拆成可验证事件，记录来源、时间、影响路径和需要补证据的事项。",
-    ["可用：主题事件、来源状态和人工复核任务", "验收：主题线索必须带来源与更新时间", "边界：主题变化不能直接触发调仓"],
+    ["可用：主题事件、来源状态和人工复核任务", "验收：主题线索必须带来源与更新时间", "限制：主题变化不能直接触发调仓"],
     { legacyView: "hotspots" },
   ),
   watchlist_monitor: functionView(
@@ -294,7 +291,7 @@ const FUNCTION_VIEWS = {
     "market",
     "打开自选监控",
     "按标的保存观察线索、来源状态和下一步复核任务，用于人工跟踪而不是自动交易。",
-    ["可用：自选池对象、观察原因和复核状态", "验收：每个观察项必须能追溯来源", "边界：自选池不生成买卖指令"],
+    ["可用：自选池对象、观察原因和复核状态", "验收：每个观察项必须能追溯来源", "限制：自选池不生成买卖指令"],
     { legacyView: "hotspots" },
   ),
   market_slice: functionView(
@@ -303,7 +300,7 @@ const FUNCTION_VIEWS = {
     "market",
     "生成市场复核",
     "从本地已观察行情生成市场事件、热点扩散、市场情绪、证据任务和人工复核队列。",
-    ["可用：市场事件、热点扩散和市场情绪三张证据卡", "验收：source_id、as_of、evidence_class、freshness 和 checksum 必须可追溯", "边界：市场观察不是交易信号，不自动调仓"],
+    ["可用：市场事件、热点扩散和市场情绪三张证据卡", "验收：来源编号、数据日期、证据类别、新鲜度和校验值必须可追溯", "限制：市场观察不是交易信号，不自动调仓"],
     { legacyView: "hotspots" },
   ),
   market_overlay: functionView(
@@ -312,7 +309,7 @@ const FUNCTION_VIEWS = {
     "market",
     "查看组合覆盖",
     "把市场观察降级为组合复核输入；不读取私有持仓，不计算自动调仓，不生成实盘订单。",
-    ["可用：目标权重变化固定为 0", "验收：必须显示未使用私有持仓且需要人工复核", "边界：需要持仓切片复核后才能形成仓位影响判断"],
+    ["可用：目标权重变化固定为 0", "验收：必须显示未使用私有持仓且需要人工复核", "限制：需要持仓切片复核后才能形成仓位影响判断"],
     { legacyView: "holdings" },
   ),
   market_alerts: functionView(
@@ -321,7 +318,7 @@ const FUNCTION_VIEWS = {
     "market",
     "保存观察视图",
     "保存市场每日复核和热点观察视图，并在新鲜度、覆盖率或热点分歧异常时进入人工复核。",
-    ["可用：新鲜度复核提醒和热点分歧复核提醒", "验收：保存视图只读，并保留筛选条件和来源编号", "边界：提醒只创建人工任务，不触发交易"],
+    ["可用：新鲜度复核提醒和热点分歧复核提醒", "验收：保存视图只读，并保留筛选条件和来源编号", "限制：提醒只创建人工任务，不触发交易"],
     { legacyView: "tools" },
   ),
   source_status: functionView(
@@ -330,7 +327,7 @@ const FUNCTION_VIEWS = {
     "data",
     "检查来源状态",
     "查看数据来源是否可用、是否过期、是否失败，以及失败后进入人工复核的路径。",
-    ["可用：来源健康、失败原因和更新时间", "验收：来源状态必须能解释为什么可用或不可用", "边界：不提交密钥，不复制私有数据"],
+    ["可用：来源健康、失败原因和更新时间", "验收：来源状态必须能解释为什么可用或不可用", "限制：不提交密钥，不复制私有数据"],
     { legacyView: "tools" },
   ),
   reports: functionView(
@@ -339,7 +336,7 @@ const FUNCTION_VIEWS = {
     "research",
     "打开报告列表",
     "检索回测、扫描、研究、验证和复盘产物，查看证据缺口和待验证任务。",
-    ["可用：报告列表、运行判读和验证任务", "验收：报告路径、生成时间和缺口状态必须显示", "边界：报告结论需人工复核"],
+    ["可用：报告列表、运行判读和验证任务", "验收：报告路径、生成时间和缺口状态必须显示", "限制：报告结论需人工复核"],
   ),
   company_research: functionView(
     "company_research",
@@ -347,7 +344,7 @@ const FUNCTION_VIEWS = {
     "research",
     "打开公司研究",
     "整理公司财务、公告、业务变化、反方证据和待核验问题，形成可复核研究材料。",
-    ["可用：公司证据、反方条件和待补材料", "验收：关键结论必须连接来源和反证条件", "边界：研究材料不构成投资建议"],
+    ["可用：公司证据、反方条件和待补材料", "验收：关键结论必须连接来源和反证条件", "限制：研究材料不构成投资建议"],
     { legacyView: "reports" },
   ),
   fund_research: functionView(
@@ -356,7 +353,7 @@ const FUNCTION_VIEWS = {
     "research",
     "打开基金研究",
     "跟踪基金持仓、风格、费率、历史表现和替代方案，结论进入人工复核。",
-    ["可用：持仓风格、费率和表现证据", "验收：基金比较必须记录数据来源和日期", "边界：基金研究不直接生成买卖建议"],
+    ["可用：持仓风格、费率和表现证据", "验收：基金比较必须记录数据来源和日期", "限制：基金研究不直接生成买卖建议"],
     { legacyView: "reports" },
   ),
   holdings: functionView(
@@ -365,7 +362,7 @@ const FUNCTION_VIEWS = {
     "portfolio",
     "同步持仓",
     "查看正式持仓、候选持仓、暴露、集中度和订单意图草案，私有数据留在本机。",
-    ["可用：持仓、候选、暴露和质量检查", "验收：私有数据不得进入公共 Git", "边界：只生成待确认意图，不提交券商"],
+    ["可用：持仓、候选、暴露和质量检查", "验收：私有数据不得进入公共 Git", "限制：只生成待确认意图，不提交券商"],
   ),
   portfolio_slice: functionView(
     "portfolio_slice",
@@ -373,7 +370,7 @@ const FUNCTION_VIEWS = {
     "portfolio",
     "生成持仓复核",
     "从合成券商导入账本生成持仓快照、对账、公司行动、汇率换算、现金固定样本、风险约束和人工决策提案。",
-    ["可用：导入账本、持仓快照、对账、约束和人工提案", "验收：source_id、snapshot_checksum、holding_count 和证据记录必须可追溯", "边界：只读复核，不连接真实券商，不提交订单"],
+    ["可用：导入账本、持仓快照、对账、约束和人工提案", "验收：来源编号、快照校验值、持仓数量和证据记录必须可追溯", "限制：只读复核，不连接真实券商，不提交订单"],
     { legacyView: "holdings" },
   ),
   portfolio_reconciliation: functionView(
@@ -382,7 +379,7 @@ const FUNCTION_VIEWS = {
     "portfolio",
     "查看导入对账",
     "核对合成券商导入账本、公司行动调整、汇率换算、现金固定样本和持仓快照差异。",
-    ["可用：导入记录、券商数量、快照持仓数和值差", "验收：未匹配导入标的和未匹配快照标的必须显示", "边界：只读对账，不修改真实持仓"],
+    ["可用：导入记录、券商数量、快照持仓数和值差", "验收：未匹配导入标的和未匹配快照标的必须显示", "限制：只读对账，不修改真实持仓"],
     { legacyView: "holdings" },
   ),
   portfolio_risk: functionView(
@@ -391,7 +388,7 @@ const FUNCTION_VIEWS = {
     "portfolio",
     "查看风险约束",
     "检查单一持仓、前三集中度、现金缓冲和自动再平衡关闭状态，所有异常进入人工复核。",
-    ["可用：单一持仓上限、前三集中度、现金缓冲和自动再平衡状态", "验收：约束违反数和人工复核原因必须显示", "边界：不自动调仓，不生成实盘信号"],
+    ["可用：单一持仓上限、前三集中度、现金缓冲和自动再平衡状态", "验收：约束违反数和人工复核原因必须显示", "限制：不自动调仓，不生成实盘信号"],
     { legacyView: "holdings" },
   ),
   portfolio_decision: functionView(
@@ -400,7 +397,7 @@ const FUNCTION_VIEWS = {
     "portfolio",
     "打开决策提案",
     "把对账和风险约束降级为人工决策提案，目标权重变化固定为 0，不创建订单意图。",
-    ["可用：目标权重变化为 0、不创建订单意图、必须人工复核", "验收：提案动作必须明确不提交券商", "边界：不得连接真实券商，不得下单"],
+    ["可用：目标权重变化为 0、不创建订单意图、必须人工复核", "验收：提案动作必须明确不提交券商", "限制：不得连接真实券商，不得下单"],
     { legacyView: "holdings" },
   ),
   portfolio_exposure: functionView(
@@ -409,7 +406,7 @@ const FUNCTION_VIEWS = {
     "portfolio",
     "查看组合暴露",
     "查看行业、资产类别、币种和主题暴露，把异常暴露降级为人工复核任务。",
-    ["可用：行业、资产类别、币种和主题暴露", "验收：暴露结果必须标明来源和日期", "边界：不自动调仓，不提交券商"],
+    ["可用：行业、资产类别、币种和主题暴露", "验收：暴露结果必须标明来源和日期", "限制：不自动调仓，不提交券商"],
     { legacyView: "holdings" },
   ),
   concentration_risk: functionView(
@@ -418,7 +415,7 @@ const FUNCTION_VIEWS = {
     "portfolio",
     "查看集中度风险",
     "识别单一标的、前三持仓或主题过度集中，并生成只读风险复核项。",
-    ["可用：单一持仓、前三集中度和主题集中度", "验收：风险阈值和人工复核原因必须显示", "边界：风险提示不是自动交易指令"],
+    ["可用：单一持仓、前三集中度和主题集中度", "验收：风险阈值和人工复核原因必须显示", "限制：风险提示不是自动交易指令"],
     { legacyView: "holdings" },
   ),
   discipline_check: functionView(
@@ -427,7 +424,7 @@ const FUNCTION_VIEWS = {
     "portfolio",
     "打开纪律检查",
     "记录交易前提、复盘问题、是否违反预设纪律，以及需要人工纠偏的事项。",
-    ["可用：纪律规则、复盘记录和纠偏任务", "验收：每条违反项必须有人工复核状态", "边界：纪律检查不连接券商，不提交订单"],
+    ["可用：纪律规则、复盘记录和纠偏任务", "验收：每条违反项必须有人工复核状态", "限制：纪律检查不连接券商，不提交订单"],
     { legacyView: "profile" },
   ),
   order_intent: functionView(
@@ -436,7 +433,7 @@ const FUNCTION_VIEWS = {
     "portfolio",
     "查看订单意图",
     "只生成待确认的订单意图草案，保留原因、证据、风险和人工确认状态。",
-    ["可用：意图草案、证据摘要和风险说明", "验收：必须显示草案未提交且需要人工确认", "边界：不连接真实券商，不自动下单"],
+    ["可用：意图草案、证据摘要和风险说明", "验收：必须显示草案未提交且需要人工确认", "限制：不连接真实券商，不自动下单"],
     { legacyView: "holdings" },
   ),
   policy: functionView(
@@ -445,7 +442,7 @@ const FUNCTION_VIEWS = {
     "research",
     "打开政策雷达",
     "登记政策来源、影响路径、机会状态和人工行动队列，优先使用官方或监管来源。",
-    ["可用：政策机会和权威来源复核", "验收：官方来源或证据路径必须可追溯", "边界：政策线索不等同投资建议"],
+    ["可用：政策机会和权威来源复核", "验收：官方来源或证据路径必须可追溯", "限制：政策线索不等同投资建议"],
   ),
   research_policy_slice: functionView(
     "research_policy_slice",
@@ -453,7 +450,7 @@ const FUNCTION_VIEWS = {
     "research",
     "生成研究复核",
     "统一展示政策权威来源、研究证据缺口、引用定位和报告清单，所有结论进入人工复核队列。",
-    ["可用：政策权威、政策机会和研究证据缺口三张证据卡", "验收：官方链接、证据路径、报告清单和验证任务必须可追溯", "边界：不登录政府门户，不给法律税务结论，不生成投资建议"],
+    ["可用：政策权威、政策机会和研究证据缺口三张证据卡", "验收：官方链接、证据路径、报告清单和验证任务必须可追溯", "限制：不登录政府门户，不给法律税务结论，不生成投资建议"],
     { legacyView: "policy" },
   ),
   citation_locator: functionView(
@@ -462,7 +459,7 @@ const FUNCTION_VIEWS = {
     "research",
     "定位官方引用",
     "把政策来源、官方链接、证据路径和报告缺口任务定位到可复核引用，区分官方证据和待补证据。",
-    ["可用：官方证据与待补证据两类引用", "验收：每条引用必须带来源类型、官方链接或证据路径", "边界：引用只证明来源位置，不代表政策、法律或投资结论"],
+    ["可用：官方证据与待补证据两类引用", "验收：每条引用必须带来源类型、官方链接或证据路径", "限制：引用只证明来源位置，不代表政策、法律或投资结论"],
     { legacyView: "policy" },
   ),
   report_manifest: functionView(
@@ -471,7 +468,7 @@ const FUNCTION_VIEWS = {
     "research",
     "打开报告清单",
     "把报告、运行元数据、缺失证据、验证任务和只读状态整理成清单，用于后续补证据。",
-    ["可用：证据不足报告清单和缺口任务编号", "验收：数据质量、多源校验和滚动验证缺口必须显示", "边界：清单只创建复核任务，不修改报告、不刷新数据"],
+    ["可用：证据不足报告清单和缺口任务编号", "验收：数据质量、多源校验和滚动验证缺口必须显示", "限制：清单只创建复核任务，不修改报告、不刷新数据"],
     { legacyView: "reports" },
   ),
   report_validation: functionView(
@@ -480,7 +477,7 @@ const FUNCTION_VIEWS = {
     "research",
     "打开报告验证",
     "把报告结论拆成可验证任务，检查数据质量、多源校验、回测证据和人工复核缺口。",
-    ["可用：报告结论、证据缺口和验证任务", "验收：每个缺口必须有负责人、来源和下一步", "边界：验证不修改原报告，不自动刷新数据"],
+    ["可用：报告结论、证据缺口和验证任务", "验收：每个缺口必须有负责人、来源和下一步", "限制：验证不修改原报告，不自动刷新数据"],
     { legacyView: "reports" },
   ),
   recommendation_model: functionView(
@@ -488,16 +485,16 @@ const FUNCTION_VIEWS = {
     "建议模型",
     "recommendations",
     "查看建议模型",
-    "按 domain、evidence、expected effect、tradeoff、action 和 decision 组织建议，禁止无证据建议。",
-    ["可用：投资建议和消费建议统一模型", "验收：每条建议必须有证据、预期效果和 tradeoff", "边界：建议是人工复核队列，不是订单"],
+    "按领域、证据、预期效果、代价、动作和决策状态组织建议，禁止无证据建议。",
+    ["可用：投资建议和消费建议统一模型", "验收：每条建议必须有证据、预期效果和代价", "限制：建议是人工复核队列，不是订单"],
   ),
   review_lifecycle: functionView(
     "review_lifecycle",
-    "Review lifecycle",
+    "复盘生命周期",
     "recommendations",
     "打开复盘生命周期",
-    "支持 accept、reject、snooze、review 和 effect measurement，保留决策记录和复盘结果。",
-    ["可用：决策状态、复盘窗口和效果度量", "验收：建议可复盘、可追踪、可解释", "边界：人工确认前不改变资产或支出"],
+    "支持接受、拒绝、暂缓、复核和效果度量，保留决策记录和复盘结果。",
+    ["可用：决策状态、复盘窗口和效果度量", "验收：建议可复盘、可追踪、可解释", "限制：人工确认前不改变资产或支出"],
   ),
   investment_recommendations: functionView(
     "investment_recommendations",
@@ -505,15 +502,15 @@ const FUNCTION_VIEWS = {
     "recommendations",
     "查看投资建议",
     "聚合集中度、交易频率、现金仓位、策略暂停或上线建议，并解释原因和代价。",
-    ["可用：concentration、trading frequency、cash position、strategy pause/launch", "验收：每条建议必须能解释原因", "边界：不连接券商，不提交订单"],
+    ["可用：集中度、交易频率、现金仓位、策略暂停或上线", "验收：每条建议必须能解释原因", "限制：不连接券商，不提交订单"],
   ),
   consumption_recommendations: functionView(
     "consumption_recommendations",
     "消费建议",
     "recommendations",
     "查看消费建议",
-    "聚合预算、订阅、异常和降成本建议，必须带可量化 savings target。",
-    ["可用：budget、subscription、anomaly、cost saving", "验收：必须有 savings target 和证据", "边界：不自动支付、不自动取消订阅"],
+    "聚合预算、订阅、异常和降成本建议，必须带可量化节省目标。",
+    ["可用：预算、订阅、异常、降成本", "验收：必须有节省目标和证据", "限制：不自动支付、不自动取消订阅"],
   ),
   monthly_report: functionView(
     "monthly_report",
@@ -521,7 +518,7 @@ const FUNCTION_VIEWS = {
     "insights",
     "生成月度报告",
     "汇总净资产、现金流、消费、投资和建议复盘，保留来源链路。",
-    ["可用：净资产、现金流、消费、投资、建议复盘", "验收：报告必须可复现导出", "边界：报告只读，结论需人工复核"],
+    ["可用：净资产、现金流、消费、投资、建议复盘", "验收：报告必须可复现导出", "限制：报告只读，结论需人工复核"],
   ),
   investment_report: functionView(
     "investment_report",
@@ -529,7 +526,7 @@ const FUNCTION_VIEWS = {
     "insights",
     "生成投资报告",
     "输出收益、风险、归因、持仓和行为复盘，数据不足时不输出精确结论。",
-    ["可用：return、risk、attribution、positions、behavior", "验收：估计口径必须可见", "边界：投资报告不构成自动交易指令"],
+    ["可用：收益、风险、归因、持仓、行为", "验收：估计口径必须可见", "限制：投资报告不构成自动交易指令"],
   ),
   consumption_report: functionView(
     "consumption_report",
@@ -537,15 +534,15 @@ const FUNCTION_VIEWS = {
     "insights",
     "生成消费报告",
     "输出分类、预算、订阅、异常和节省金额，用于月末复盘。",
-    ["可用：classification、budget、subscriptions、anomalies、saving target", "验收：消费建议必须能追溯证据", "边界：不自动发起支付或取消服务"],
+    ["可用：分类、预算、订阅、异常、节省目标", "验收：消费建议必须能追溯证据", "限制：不自动发起支付或取消服务"],
   ),
   data_quality_report: functionView(
     "data_quality_report",
     "数据质量报告",
     "insights",
     "生成质量报告",
-    "检查同步状态、缺失区间、对账差异和 parser 错误，定位数据可信度问题。",
-    ["可用：sync status、missing intervals、reconciliation differences、parser errors", "验收：质量问题必须可定位到来源", "边界：只读检查，不复制私有原始数据"],
+    "检查同步状态、缺失区间、对账差异和解析器错误，定位数据可信度问题。",
+    ["可用：同步状态、缺失区间、对账差异、解析器错误", "验收：质量问题必须可定位到来源", "限制：只读检查，不复制私有原始数据"],
   ),
   export_center: functionView(
     "export_center",
@@ -553,31 +550,31 @@ const FUNCTION_VIEWS = {
     "insights",
     "导出报告",
     "以 Markdown、JSON 和 CSV 生成可复现的本地报告出口，保留内容哈希。",
-    ["可用：Markdown / JSON / CSV", "验收：导出内容可复现并有 checksum", "边界：导出不包含 secrets 或交易凭证"],
+    ["可用：Markdown / JSON / CSV", "验收：导出内容可复现并有校验值", "限制：导出不包含密钥或交易凭证"],
   ),
   pfi_context_export: functionView(
     "pfi_context_export",
-    "PFI Context Export",
+    "PFI 上下文导出",
     "insights",
-    "生成 Context Snapshot",
-    "生成 pfi_context_snapshot_v1，包含净资产、可投资现金、组合配置、风险预算、现金流压力、行为标签和数据新鲜度。",
-    ["可用：pfi_context_snapshot_v1", "验收：必须显示 read-only 和 live trade disabled 约束", "边界：只读 context，不修改 Alpha 仓库"],
+    "生成上下文快照",
+    "生成只读上下文快照，包含净资产、可投资现金、组合配置、风险预算、现金流压力、行为标签和数据新鲜度。",
+    ["可用：只读上下文快照", "验收：必须显示只读和实盘提交关闭约束", "限制：只读上下文，不修改外部系统仓库"],
   ),
   alpha_readonly_export: functionView(
     "alpha_readonly_export",
-    "Alpha 只读出口",
+    "外部系统只读出口",
     "insights",
-    "查看 Alpha 出口边界",
-    "PFI 只输出只读 context，Alpha 独立消费；PFI 不新增 Alpha 一级入口，不修改 Alpha repo。",
-    ["可用：只读 context schema 和约束字段", "验收：trading_password_available=false，live_trade_submission_authorized=false", "边界：无交易密码、无实盘提交、无 Alpha 仓库变更"],
+    "查看外部系统出口限制",
+    "PFI 只输出只读上下文，外部系统独立消费；PFI 不新增外部系统一级入口，不修改外部系统仓库。",
+    ["可用：只读上下文和约束字段", "验收：交易密码可用=false，实盘提交授权=false", "限制：无交易密码、无实盘提交、无外部系统仓库变更"],
   ),
   stage6_e2e: functionView(
     "stage6_e2e",
     "端到端验收",
     "insights",
-    "查看 Stage 6 验收",
-    "统一查看 Stage 6 的多数据源、首页、账本、建议、回归治理、交付回滚和 TaskPack acceptance gate。",
-    ["可用：20 个总验收 gate 和 ACC-* 审计", "验收：所有 gate 必须有证据引用且 PASS", "边界：只读 synthetic E2E，不连接真实账户"],
+    "查看第 6 阶段验收",
+    "统一查看第 6 阶段的多数据源、首页、账本、建议、回归治理、交付回滚和任务包验收门禁。",
+    ["可用：20 个总验收门禁和验收审计", "验收：所有门禁必须有证据引用且通过", "限制：只读合成端到端，不连接真实账户"],
   ),
   stage6_synthetic_e2e: functionView(
     "stage6_synthetic_e2e",
@@ -585,39 +582,39 @@ const FUNCTION_VIEWS = {
     "insights",
     "查看合成端到端验收",
     "核对支付宝、支付宝基金、Moomoo、中国券商、ABC、CBA、微信的 fixture/contract，并验证首页、账本和建议闭环。",
-    ["可用：source fixture matrix、homepage loop、ledger loop、recommendation loop", "验收：核心源不得缺失，首页必须可读，分类必须正确", "边界：不导入真实私有数据"],
+    ["可用：数据源样本矩阵、首页闭环、账本闭环、建议闭环", "验收：核心源不得缺失，首页必须可读，分类必须正确", "限制：不导入真实私有数据"],
   ),
   stage6_regression_governance: functionView(
     "stage6_regression_governance",
     "回归治理",
     "insights",
     "查看回归治理",
-    "确认 existing smoke、新增 focused tests、changed-only governance 和 no broad refactor gate 都已记录。",
-    ["可用：顶层 QBVS smoke、Stage 1-6 tests、lean governance", "验收：变更范围只在 PFI、QBVS、MetaDatabase 目标文件内", "边界：PFI 不覆盖 QBVS"],
+    "确认既有冒烟检查、新增聚焦测试、变更范围治理和无大范围重构门禁都已记录。",
+    ["可用：顶层 QBVS 冒烟检查、第 1-6 阶段测试、精简治理", "验收：变更范围只在 PFI、QBVS、MetaDatabase 目标文件内", "限制：PFI 不覆盖 QBVS"],
   ),
   stage6_delivery_rollback: functionView(
     "stage6_delivery_rollback",
     "交付与回滚",
     "insights",
     "查看交付回滚",
-    "整理 owner docs、diff summary、rollback plan 和后续任务清单，确保 V0.2 可继续迭代。",
-    ["可用：owner docs、diff summary、rollback plan", "验收：回滚步骤可定位到文件并不影响私有数据", "边界：不做生产迁移"],
+    "整理用户文档、差异摘要、回滚计划和后续任务清单，确保 V0.2 可继续迭代。",
+    ["可用：用户文档、差异摘要、回滚计划", "验收：回滚步骤可定位到文件并不影响私有数据", "限制：不做生产迁移"],
   ),
   stage6_rollback_plan: functionView(
     "stage6_rollback_plan",
     "回滚计划",
     "insights",
     "查看回滚计划",
-    "查看 Stage 6 的可逆文件清单、恢复边界和无需迁移真实数据的说明。",
-    ["可用：代码、测试、文档、治理、Web Shell 回滚步骤", "验收：回滚清楚区分 PFI 与 QBVS", "边界：无生产数据库迁移"],
+    "查看第 6 阶段的可逆文件清单、恢复限制和无需迁移真实数据的说明。",
+    ["可用：代码、测试、文档、治理、Web Shell 回滚步骤", "验收：回滚清楚区分 PFI 与 QBVS", "限制：无生产数据库迁移"],
   ),
   stage6_follow_up_list: functionView(
     "stage6_follow_up_list",
     "后续任务清单",
     "insights",
     "查看后续任务",
-    "列出 Alpha context consumer、真实数据接入、PDF/ZIP、CDR/Open Banking 和发布证据 gate 等后续工作。",
-    ["可用：分离后续任务，不并入 Stage 6", "验收：Stage 6 不越权修改外部仓库", "边界：后续任务需新 pursuing goal"],
+    "列出外部上下文消费者、真实数据接入、PDF/ZIP、CDR/Open Banking 和发布证据门禁等后续工作。",
+    ["可用：分离后续任务，不并入第 6 阶段", "验收：第 6 阶段不越权修改外部仓库", "限制：后续任务需新 pursuing goal"],
   ),
   tools: functionView(
     "tools",
@@ -625,7 +622,7 @@ const FUNCTION_VIEWS = {
     "settings",
     "检查数据源",
     "查看数据源、代码格式、质量报告、缓存、隐私边界和系统诊断。",
-    ["可用：数据源状态和代码助手", "验收：来源、新鲜度、失败原因必须显示", "边界：不提交 secrets 或私有数据"],
+    ["可用：数据源状态和代码助手", "验收：来源、新鲜度、失败原因必须显示", "限制：不提交 secrets 或私有数据"],
   ),
   source_registry: functionView(
     "source_registry",
@@ -633,7 +630,7 @@ const FUNCTION_VIEWS = {
     "settings",
     "打开来源登记",
     "登记数据来源、使用限制、新鲜度、失败原因和复核状态，作为后续研究的来源台账。",
-    ["可用：来源名称、更新时间、限制条件和失败原因", "验收：来源必须能追溯到登记记录", "边界：不保存密钥，不复制私有原始数据"],
+    ["可用：来源名称、更新时间、限制条件和失败原因", "验收：来源必须能追溯到登记记录", "限制：不保存密钥，不复制私有原始数据"],
     { legacyView: "tools" },
   ),
   task_monitor: functionView(
@@ -642,7 +639,7 @@ const FUNCTION_VIEWS = {
     "settings",
     "打开任务监控",
     "查看任务队列、重试、失败、产物和人工复核状态，定位系统运行问题。",
-    ["可用：任务状态、重试次数、失败原因和产物路径", "验收：失败任务必须有下一步处理建议", "边界：监控不触发实盘执行"],
+    ["可用：任务状态、重试次数、失败原因和产物路径", "验收：失败任务必须有下一步处理建议", "限制：监控不触发实盘执行"],
     { legacyView: "tools" },
   ),
   privacy_boundary: functionView(
@@ -650,8 +647,8 @@ const FUNCTION_VIEWS = {
     "隐私边界",
     "settings",
     "检查隐私边界",
-    "检查私有数据目录、公共提交目录、密钥排除和本机运行边界，避免隐私数据进入 Git。",
-    ["可用：私有目录、公有目录和密钥排除规则", "验收：不得把私有持仓、密钥或原始账本提交到公共仓库", "边界：只读检查，不复制私有数据"],
+    "检查私有数据目录、公共提交目录、密钥排除和本机运行限制，避免隐私数据进入 Git。",
+    ["可用：私有目录、公有目录和密钥排除规则", "验收：不得把私有持仓、密钥或原始账本提交到公共仓库", "限制：只读检查，不复制私有数据"],
     { legacyView: "tools" },
   ),
   backup_restore: functionView(
@@ -660,7 +657,7 @@ const FUNCTION_VIEWS = {
     "settings",
     "检查备份恢复",
     "检查备份、校验和、恢复路径和恢复演练状态，确保运行资料可追溯。",
-    ["可用：备份路径、校验和和恢复演练状态", "验收：恢复路径必须可定位且可复核", "边界：恢复演练不覆盖真实私有数据"],
+    ["可用：备份路径、校验和和恢复演练状态", "验收：恢复路径必须可定位且可复核", "限制：恢复演练不覆盖真实私有数据"],
     { legacyView: "tools" },
   ),
   library: functionView(
@@ -669,7 +666,7 @@ const FUNCTION_VIEWS = {
     "investment",
     "打开策略库",
     "管理候选策略、确认状态、风险说明和版本证据，避免未确认策略进入正式研究。",
-    ["可用：策略模板和候选策略审查", "验收：策略版本、参数和风险说明必须保留", "边界：未确认策略不能进入正式回测"],
+    ["可用：策略模板和候选策略审查", "验收：策略版本、参数和风险说明必须保留", "限制：未确认策略不能进入正式回测"],
   ),
 };
 
@@ -690,7 +687,7 @@ const DEFAULT_WORKSPACES = {
       feature("上传支付宝账单", "可用", "CSV / ZIP 原始账单", "页面顶部有真实上传控件，可接入已发现的三年支付宝原始数据。", { workspace: "sync", label: "打开上传" }),
       feature("同步全部", "需要同步", "数据源与上传", "生成可执行前的本地同步/导入计划，不登录、不下单、不支付。"),
       feature("处理待复核", "需要复核", "账本流水", "用 A/B/C/D 选择处理低置信度流水，避免 unknown 静默入账。"),
-      feature("查看建议", "有建议", "建议与复盘", "查看带证据、动作、状态、预期效果和 tradeoff 的 Top N 建议。"),
+      feature("查看建议", "有建议", "建议与复盘", "查看带证据、动作、状态、预期效果和代价说明的重点建议。"),
       feature("生成报告", "有建议", "报告与洞察", "生成本地只读报告草稿，保留首页、账户、账本和证据链。"),
       feature("单标的回测", "可用", "回测证据", "运行单标的策略回测，查看收益、回撤、交易和报告。"),
       feature("盘感训练", "可用", "训练记录", "保留读图训练和限时判断，不输出实盘信号。"),
@@ -842,7 +839,7 @@ const DEFAULT_WORKSPACES = {
       row("P1", "盘感训练", "训练记录", "保留人工判断，不转为实盘信号。", "可用"),
     ],
     tasks: [
-      task("回测口径复核", "复核 · 等待 Golden 样本", "review"),
+      task("回测口径复核", "复核 · 等待固定样本", "review"),
       task("参数稳定性检查", "观察 · 可运行扫描", "watch"),
       task("盘感训练入口", "可用 · 已保留", "ready"),
     ],
@@ -912,18 +909,18 @@ function installStage3WorkspaceAliases() {
     ...structuredClone(DEFAULT_WORKSPACES.data),
     label: "账本流水",
     kicker: "流水事实层",
-    conclusion: "查看 normalized transactions、待分类流水、转账匹配和每条流水的原始证据链。",
-    freshness: "账本来自本地导入 fixture",
-    runtime: "账本流水：证据链优先 · unknown 不静默入账",
+    conclusion: "查看标准化流水、待分类流水、转账匹配和每条流水的原始证据链。",
+    freshness: "账本来自本地导入样本",
+    runtime: "账本流水：证据链优先 · 未知分类不静默入账",
     cards: [
-      ["全部流水", "可查", "normalized transactions"],
+      ["全部流水", "可查", "标准化交易"],
       ["待分类", "复核", "低置信度进入队列"],
       ["转账匹配", "可确认", "确认/拒绝/修改"],
-      ["证据链", "开启", "batch/raw/parser"],
+      ["证据链", "开启", "批次 / 原始记录 / 解析器"],
     ],
     features: [
       feature("处理待复核", "需要复核", "A/B/C/D", "用选择题处理低置信度流水。", { workspace: "ledger", label: "处理复核" }),
-      feature("账本流水", "可用", "原始证据链", "查看 batch、raw record 和 parser version。", { workspace: "ledger", label: "查看流水" }),
+      feature("账本流水", "可用", "原始证据链", "查看批次、原始记录和解析器版本。", { workspace: "ledger", label: "查看流水" }),
       feature("导入对账", "需要复核", "转账匹配", "确认、拒绝或修改疑似转账，防止计入消费。", { view: "portfolio_reconciliation", label: "打开对账" }),
     ],
   };
@@ -932,7 +929,7 @@ function installStage3WorkspaceAliases() {
     label: "投资管理",
     kicker: "投资分析",
     conclusion: "查看总市值、盈亏、资产配置、收益归因、风险暴露和行为复盘；策略回测、盘感训练和大数据模拟器仍保留。",
-    runtime: "Stage 4：投资总览 / 收益归因 / 风险分析 / 行为复盘",
+    runtime: "第 4 阶段：投资总览 / 收益归因 / 风险分析 / 行为复盘",
     cards: [
       ["投资总览", "可算", "总市值、盈亏、资产配置、现金仓位"],
       ["收益归因", "复核", "市场 / 主动 / 费用 / FX / 现金拖累"],
@@ -952,8 +949,8 @@ function installStage3WorkspaceAliases() {
     label: "消费管理",
     kicker: "消费分析",
     conclusion: "查看本月支出、预算剩余、分类、订阅、异常消费和现金流预测；转账和投资事件不计生活消费。",
-    freshness: "消费视图来自 Stage 4 分析 read-model",
-    runtime: "Stage 4：消费总览 / 分类分析 / 订阅检测 / 异常消费 / 现金流预测",
+    freshness: "消费视图来自第 4 阶段分析读模型",
+    runtime: "第 4 阶段：消费总览 / 分类分析 / 订阅检测 / 异常消费 / 现金流预测",
     cards: [
       ["消费总览", "可算", "本月支出、预算剩余、固定/弹性支出"],
       ["分类分析", "复核", "支付宝、微信、CBA 分类"],
@@ -974,7 +971,7 @@ function installStage3WorkspaceAliases() {
     ...structuredClone(DEFAULT_WORKSPACES.data),
     label: "数据源与上传",
     kicker: "同步与导入",
-    conclusion: "一键生成可执行前的同步/导入计划；真实登录、支付和券商操作必须另走 owner gate。",
+    conclusion: "一键生成可执行前的同步/导入计划；真实登录、支付和券商操作必须另走用户确认门禁。",
     runtime: "同步全部：只生成计划 · 不执行外部动作",
     cards: [
       ["支付宝账单", "可上传", "CSV / ZIP 原始账单，本机私有目录"],
@@ -986,12 +983,12 @@ function installStage3WorkspaceAliases() {
       feature("上传支付宝账单", "可用", "本机上传", "使用页面顶部上传控件，或接入已发现的旧支付宝原始账单。", { workspace: "sync", label: "查看上传" }),
       feature("导入中心", "可用", "批次摘要", "查看导入批次、导入摘要、失败原因和账本复核入口。", { workspace: "sync", label: "打开导入" }),
       feature("同步全部", "需要同步", "7 个来源", "扫描本地导入收件箱或生成只读预检，不登录、不下单、不支付。", { workspace: "sync", label: "同步计划" }),
-      feature("来源登记", "复核", "数据源状态", "查看数据源新鲜度、失败原因和 parser 合同。"),
+      feature("来源登记", "复核", "数据源状态", "查看数据源新鲜度、失败原因和解析器合同。"),
       feature("隐私边界", "可用", "本地数据", "私有数据和凭证不进入公共 Git。"),
     ],
     rows: [
       row("P0", "支付宝原始账单", "CSV / ZIP", "上传或接入旧交接目录中的原始账单。", "可用"),
-      row("P1", "标准化流水", "parser v1", "生成私有 CSV 和 manifest 后进入账本复核。", "需要同步"),
+      row("P1", "标准化流水", "解析器 v1", "生成私有 CSV 和 manifest 后进入账本复核。", "需要同步"),
       row("P1", "隐私边界", "~/.pfi/runtime", "原始账单只保存在本机私有目录，不提交 Git。", "可用"),
     ],
     tasks: [
@@ -1036,63 +1033,63 @@ function installStage3WorkspaceAliases() {
     ...structuredClone(DEFAULT_WORKSPACES.home),
     label: "建议与复盘",
     kicker: "建议生命周期",
-    conclusion: "建议必须有 domain、evidence、expected effect、tradeoff、action 和 decision 状态。",
-    runtime: "建议与复盘：Top N · 人工决策",
+    conclusion: "建议必须有领域、证据、预期效果、代价说明、动作和决策状态。",
+    runtime: "建议与复盘：重点建议 · 人工决策",
     cards: [
       ["建议模型", "8", "领域、证据、预期效果、代价、动作、决策"],
-      ["Review lifecycle", "开启", "接受、拒绝、暂缓、复核、效果度量"],
+      ["复盘生命周期", "开启", "接受、拒绝、暂缓、复核、效果度量"],
       ["投资建议", "4", "集中度、交易频率、现金仓位、策略上线/暂停"],
       ["消费建议", "4", "预算、订阅、异常、降成本目标"],
     ],
     features: [
-      feature("建议模型", "可用", "Stage 5", "所有建议必须有证据、预期效果、tradeoff、动作和 owner decision。"),
-      feature("Review lifecycle", "可用", "复盘状态", "建议支持接受、拒绝、暂缓、复核和效果度量。"),
+      feature("建议模型", "可用", "第 5 阶段", "所有建议必须有证据、预期效果、代价、动作和用户决策。"),
+      feature("复盘生命周期", "可用", "复盘状态", "建议支持接受、拒绝、暂缓、复核和效果度量。"),
       feature("投资建议", "有建议", "投资管理", "集中度、交易频率、现金仓位、策略暂停或上线建议。"),
-      feature("消费建议", "有建议", "消费管理", "预算、订阅、异常和降成本建议必须有 savings target。"),
+      feature("消费建议", "有建议", "消费管理", "预算、订阅、异常和降成本建议必须有节省目标。"),
     ],
     rows: [
-      row("P1", "建议模型", "stage5:recommendations", "查看 Top N 建议并进行人工决策。", "有建议"),
-      row("P1", "Review lifecycle", "stage5:lifecycle", "记录 accept/reject/snooze/review/effect measurement。", "可用"),
-      row("P2", "投资建议", "stage4:investment", "复核集中度、交易频率、现金仓位和策略 gate。", "有建议"),
-      row("P2", "消费建议", "stage4:consumption", "复核预算、订阅、异常和降成本目标。", "有建议"),
+      row("P1", "建议模型", "建议模型证据", "查看重点建议并进行人工决策。", "有建议"),
+      row("P1", "复盘生命周期", "复盘状态证据", "记录接受、拒绝、暂缓、复核和效果度量。", "可用"),
+      row("P2", "投资建议", "投资分析证据", "复核集中度、交易频率、现金仓位和策略门禁。", "有建议"),
+      row("P2", "消费建议", "消费分析证据", "复核预算、订阅、异常和降成本目标。", "有建议"),
     ],
     tasks: [
-      task("Top N 建议排序", "首页只显示最重要建议，避免噪音", "ready"),
-      task("建议复盘记录", "decision 与 effect measurement 可追踪", "ready"),
-      task("无证据建议拦截", "evidence_refs 为空不得进入建议队列", "ready"),
+      task("重点建议排序", "首页只显示最重要建议，避免噪音", "ready"),
+      task("建议复盘记录", "决策与效果度量可追踪", "ready"),
+      task("无证据建议拦截", "证据引用为空不得进入建议队列", "ready"),
     ],
   };
   WORKSPACES.insights = {
     ...structuredClone(DEFAULT_WORKSPACES.research),
     label: "报告与洞察",
     kicker: "报告出口",
-    conclusion: "月度、投资、消费、数据质量和 PFI Context Export 必须保留证据链。",
+    conclusion: "月度、投资、消费、数据质量和 PFI 上下文导出必须保留证据链。",
     runtime: "报告与洞察：Markdown / JSON / CSV 优先",
     cards: [
       ["月度报告", "可用", "净资产、现金流、消费、投资、建议复盘"],
       ["投资报告", "可用", "收益、风险、归因、持仓、行为"],
       ["消费报告", "可用", "分类、预算、订阅、异常、节省金额"],
-      ["数据质量报告", "可用", "同步、缺失、对账、parser 错误"],
+      ["数据质量报告", "可用", "同步、缺失、对账、解析器错误"],
     ],
     features: [
-      feature("月度报告", "可用", "stage5:monthly_report", "汇总净资产、现金流、消费、投资和建议复盘。"),
-      feature("投资报告", "可用", "stage5:investment_report", "展示收益、风险、归因、持仓和行为复盘。"),
-      feature("消费报告", "可用", "stage5:consumption_report", "展示分类、预算、订阅、异常和节省金额。"),
-      feature("数据质量报告", "可用", "stage5:data_quality_report", "展示同步状态、缺失区间、对账差异和 parser 错误。"),
+      feature("月度报告", "可用", "月报证据", "汇总净资产、现金流、消费、投资和建议复盘。"),
+      feature("投资报告", "可用", "投资报告证据", "展示收益、风险、归因、持仓和行为复盘。"),
+      feature("消费报告", "可用", "消费报告证据", "展示分类、预算、订阅、异常和节省金额。"),
+      feature("数据质量报告", "可用", "质量报告证据", "展示同步状态、缺失区间、对账差异和解析器错误。"),
       feature("导出中心", "可用", "Markdown / JSON / CSV", "导出可复现报告，并保留内容哈希。"),
-      feature("PFI Context Export", "只读", "pfi_context_snapshot_v1", "输出给外部 Alpha 消费的只读 context snapshot。"),
-      feature("Alpha 只读出口", "只读", "约束字段", "不新增 Alpha 一级入口，不修改 Alpha repo，不授权实盘提交。"),
+      feature("PFI 上下文导出", "只读", "只读上下文快照", "输出给外部系统消费的只读上下文快照。"),
+      feature("外部系统只读出口", "只读", "约束字段", "不新增外部系统一级入口，不修改外部系统仓库，不授权实盘提交。"),
     ],
     rows: [
-      row("P1", "月度报告", "stage5:reports", "生成本地只读月度报告。", "可用"),
-      row("P1", "导出中心", "stage5:exports", "导出 Markdown / JSON / CSV。", "可用"),
-      row("P1", "PFI Context Export", "pfi_context_snapshot_v1", "生成只读 context snapshot。", "只读"),
-      row("P0", "Alpha 只读出口", "constraints=false", "确认无交易密码、无实盘提交、无 Alpha 仓库变更。", "可用"),
+      row("P1", "月度报告", "报告证据", "生成本地只读月度报告。", "可用"),
+      row("P1", "导出中心", "导出证据", "导出 Markdown / JSON / CSV。", "可用"),
+      row("P1", "PFI 上下文导出", "只读上下文快照", "生成只读上下文快照。", "只读"),
+      row("P0", "外部系统只读出口", "约束关闭", "确认无交易密码、无实盘提交、无外部系统仓库变更。", "可用"),
     ],
     tasks: [
-      task("报告可复现", "Markdown / JSON / CSV 有 checksum", "ready"),
-      task("数据质量复核", "同步、缺失、对账和 parser 错误可见", "ready"),
-      task("Alpha 边界", "只读 context，live_trade_submission_authorized=false", "ready"),
+      task("报告可复现", "Markdown / JSON / CSV 有校验值", "ready"),
+      task("数据质量复核", "同步、缺失、对账和解析器错误可见", "ready"),
+      task("外部系统限制", "只读上下文，实盘提交授权=false", "ready"),
     ],
   };
 }
@@ -1112,7 +1109,7 @@ function functionView(view, title, workspace, primaryAction, purpose, checks, op
     primaryAction,
     purpose,
     checks,
-    runSummary: options.runSummary || `${title}已在 PFI Shell 内进入操作状态；请先核对数据、参数、证据和安全边界。`,
+    runSummary: options.runSummary || `${title}已在 PFI Shell 内进入操作状态；请先核对数据、参数、证据和使用限制。`,
     runSteps,
     runFields,
     status: "可用",
@@ -1135,7 +1132,7 @@ function defaultRunFields(title, workspace) {
     ["当前功能", title],
     ["所属入口", workspaceName],
     ["执行方式", "本地只读 · 人工复核"],
-    ["安全边界", "不连接券商 · 不提交订单"],
+    ["使用限制", "不连接券商 · 不提交订单"],
   ];
 }
 
@@ -1268,7 +1265,7 @@ function applyStage3Dashboard(dashboard) {
     return feature(
       title,
       safeUserText(item.status, "复核"),
-      safeUserText(item.target_entry, "Stage 3"),
+      safeUserText(item.target_entry, "第 3 阶段"),
       `证据 ${Number(item.evidence_count || 0)} 项 · ${safeUserText(item.target_entry, "首页总览")}`,
       FEATURE_TARGETS[title] || { workspace: "home", label: "打开入口" },
     );
@@ -1283,7 +1280,7 @@ function applyStage3Dashboard(dashboard) {
     task("待复核选择题", `${reviewCount} 条流水 · A/B/C/D 处理`, reviewCount ? "review" : "ready"),
     task("简单状态语言", "正常 / 需要同步 / 需要复核 / 有异常 / 有建议", "ready"),
   ];
-  WORKSPACES.home.runtime = "Stage 3：同步、复核、建议、报告 · 只读本地 MVP";
+  WORKSPACES.home.runtime = "第 3 阶段：同步、复核、建议、报告 · 只读本地 MVP";
 }
 
 function applyStage4Dashboard(dashboard) {
@@ -1301,7 +1298,7 @@ function applyStage4Dashboard(dashboard) {
   const cashflow = consumption.cashflow_forecast || {};
   const firstHorizon = (cashflow.horizons || [])[0] || {};
 
-  WORKSPACES.home.runtime = "Stage 4：投资与消费智能分析 · 本地只读 MVP";
+  WORKSPACES.home.runtime = "第 4 阶段：投资与消费智能分析 · 本地只读 MVP";
   WORKSPACES.home.features = [
     feature("投资总览", "可用", "投资管理", `投资市值 ${moneyLabel(invSummary.total_market_value_aud)} · 盈亏 ${moneyLabel(invSummary.total_unrealized_pnl_aud)}`, { workspace: "investment", label: "查看投资" }),
     feature("风险分析", safeUserText((risk.concentration || {}).status, "复核"), "投资管理", "集中度、回撤、币种暴露和流动性可展示。", { workspace: "investment", label: "查看风险" }),
@@ -1345,83 +1342,83 @@ function applyStage5Dashboard(dashboard) {
     .filter((item) => item.domain === "consumption")
     .reduce((total, item) => total + Number(item.savings_target_aud || 0), 0);
 
-  WORKSPACES.home.runtime = "Stage 5：建议、报告、Alpha 只读出口 · 本地只读 MVP";
+  WORKSPACES.home.runtime = "第 5 阶段：建议、报告、外部系统只读出口 · 本地只读 MVP";
   const topFeatures = topRecommendations.slice(0, 4).map((item) =>
     feature(
       recommendationTypeLabel(item.recommendation_type),
       safeUserText(item.status, "有建议"),
-      safeUserText((item.evidence_refs || [])[0], "stage5:recommendations"),
+      safeEvidenceText((item.evidence_refs || [])[0], "建议证据"),
       safeUserText(item.suggested_action, "查看建议并人工决策。"),
       { workspace: "recommendations", label: "查看建议" },
     ),
   );
   WORKSPACES.home.features = [
     ...topFeatures,
-    feature("月度报告", "可用", "stage5:monthly_report", "净资产、现金流、消费、投资和建议复盘可导出。"),
-    feature("PFI Context Export", "只读", safeUserText(alphaContext.schema, "pfi_context_snapshot_v1"), "只读 context；无交易密码，无实盘提交授权。"),
+    feature("月度报告", "可用", "月报证据", "净资产、现金流、消费、投资和建议复盘可导出。"),
+    feature("PFI 上下文导出", "只读", "只读上下文快照", "只读上下文；无交易密码，无实盘提交授权。"),
   ].slice(0, 6);
   WORKSPACES.home.tasks = [
-    task("Top N 建议", `${topRecommendations.length} 条展示 · ${recommendations.length} 条进入 lifecycle`, topRecommendations.length ? "ready" : "review"),
+    task("重点建议", `${topRecommendations.length} 条展示 · ${recommendations.length} 条进入复盘生命周期`, topRecommendations.length ? "ready" : "review"),
     task("报告导出", `${exportItems.length} 种格式 · ${(exportCenter.preferred_formats || []).join(" / ") || "Markdown / JSON / CSV"}`, exportItems.length ? "ready" : "review"),
-    task("Alpha 只读出口", constraints.live_trade_submission_authorized === false ? "live_trade_submission_authorized=false" : "等待约束确认", constraints.live_trade_submission_authorized === false ? "ready" : "review"),
+    task("外部系统只读出口", constraints.live_trade_submission_authorized === false ? "实盘提交授权：否" : "等待约束确认", constraints.live_trade_submission_authorized === false ? "ready" : "review"),
   ];
 
   WORKSPACES.recommendations.cards = [
     ["建议模型", String(recommendations.length), "领域、证据、预期效果、代价、动作、决策"],
-    ["Review lifecycle", String((lifecycle.rows || []).length), "接受、拒绝、暂缓、复核、效果度量"],
+    ["复盘生命周期", String((lifecycle.rows || []).length), "接受、拒绝、暂缓、复核、效果度量"],
     ["投资建议", String(investmentCount), "集中度、交易频率、现金仓位、策略上线/暂停"],
     ["消费建议", moneyLabel(totalSavings), "预算、订阅、异常、降成本目标"],
   ];
   WORKSPACES.recommendations.features = [
-    feature("建议模型", "可用", "stage5:recommendations", "所有建议必须有证据、预期效果、tradeoff、动作和 owner decision。"),
-    feature("Review lifecycle", lifecycle.decision_record_supported ? "可用" : "复核", "stage5:lifecycle", "支持接受、拒绝、暂缓、复核和效果度量。"),
-    feature("投资建议", investmentCount ? "有建议" : "复核", "stage4:investment", `${investmentCount} 条投资建议可人工决策。`),
-    feature("消费建议", consumptionCount ? "有建议" : "复核", "stage4:consumption", `${consumptionCount} 条消费建议 · savings target ${moneyLabel(totalSavings)}。`),
+    feature("建议模型", "可用", "建议模型证据", "所有建议必须有证据、预期效果、代价、动作和用户决策。"),
+    feature("复盘生命周期", lifecycle.decision_record_supported ? "可用" : "复核", "复盘状态证据", "支持接受、拒绝、暂缓、复核和效果度量。"),
+    feature("投资建议", investmentCount ? "有建议" : "复核", "投资分析证据", `${investmentCount} 条投资建议可人工决策。`),
+    feature("消费建议", consumptionCount ? "有建议" : "复核", "消费分析证据", `${consumptionCount} 条消费建议 · 节省目标 ${moneyLabel(totalSavings)}。`),
   ];
   WORKSPACES.recommendations.rows = topRecommendations.slice(0, 4).map((item) =>
     row(
       `P${item.priority || 9}`,
       safeUserText(item.target_entry, "建议与复盘"),
-      safeEvidenceText((item.evidence_refs || []).slice(0, 2).join(", "), "stage5:recommendations"),
+      safeEvidenceText((item.evidence_refs || []).slice(0, 2).join(", "), "建议证据"),
       safeUserText(item.suggested_action, "查看建议并人工决策。"),
       safeUserText(item.status, "有建议"),
     ),
   );
   WORKSPACES.recommendations.tasks = [
-    task("无证据建议拦截", recommendations.every((item) => (item.evidence_refs || []).length) ? "全部建议有 evidence_refs" : "存在缺失证据", recommendations.every((item) => (item.evidence_refs || []).length) ? "ready" : "review"),
-    task("Top N 首页降噪", `${topRecommendations.length} 条展示，其余留在建议与复盘`, "ready"),
-    task("效果度量", lifecycle.manual_review_required ? "人工 review 后记录 measured effect" : "等待 lifecycle", lifecycle.manual_review_required ? "ready" : "review"),
+    task("无证据建议拦截", recommendations.every((item) => (item.evidence_refs || []).length) ? "全部建议有证据引用" : "存在缺失证据", recommendations.every((item) => (item.evidence_refs || []).length) ? "ready" : "review"),
+    task("重点建议首页降噪", `${topRecommendations.length} 条展示，其余留在建议与复盘`, "ready"),
+    task("效果度量", lifecycle.manual_review_required ? "人工复核后记录效果度量" : "等待生命周期", lifecycle.manual_review_required ? "ready" : "review"),
   ];
 
   WORKSPACES.insights.cards = [
-    ["月度报告", reports.monthly_report ? "ready" : "待补", "净资产、现金流、消费、投资、建议复盘"],
-    ["投资报告", reports.investment_report ? "ready" : "待补", "收益、风险、归因、持仓、行为"],
-    ["消费报告", reports.consumption_report ? "ready" : "待补", "分类、预算、订阅、异常、节省金额"],
-    ["数据质量报告", reports.data_quality_report ? "ready" : "待补", "同步、缺失、对账、parser 错误"],
+    ["月度报告", reports.monthly_report ? "可用" : "待补", "净资产、现金流、消费、投资、建议复盘"],
+    ["投资报告", reports.investment_report ? "可用" : "待补", "收益、风险、归因、持仓、行为"],
+    ["消费报告", reports.consumption_report ? "可用" : "待补", "分类、预算、订阅、异常、节省金额"],
+    ["数据质量报告", reports.data_quality_report ? "可用" : "待补", "同步、缺失、对账、解析器错误"],
   ];
   WORKSPACES.insights.features = [
     ...reportItems.map((item) =>
       feature(
         safeUserText(item.title, "报告"),
         safeUserText(item.status, "可用"),
-        safeEvidenceText((item.evidence_refs || []).join(", "), "stage5:reports"),
+        safeEvidenceText((item.evidence_refs || []).join(", "), "报告证据"),
         `${(item.required_sections || []).join(" / ")} · 证据链${item.has_evidence_chain ? "已连接" : "待补"}`,
       ),
     ),
-    feature("导出中心", exportItems.length ? "可用" : "复核", "Markdown / JSON / CSV", `可复现导出 ${exportItems.length} 种格式，保留 checksum。`),
-    feature("PFI Context Export", "只读", safeUserText(alphaContext.schema, "pfi_context_snapshot_v1"), "输出净资产、可投资现金、组合配置、风险预算、现金流压力、行为标签和数据新鲜度。"),
-    feature("Alpha 只读出口", "只读", "constraints=false", "不新增 Alpha 一级入口，不修改 Alpha repo，不授权实盘提交。"),
+    feature("导出中心", exportItems.length ? "可用" : "复核", "Markdown / JSON / CSV", `可复现导出 ${exportItems.length} 种格式，保留校验值。`),
+    feature("PFI 上下文导出", "只读", "只读上下文快照", "输出净资产、可投资现金、组合配置、风险预算、现金流压力、行为标签和数据新鲜度。"),
+    feature("外部系统只读出口", "只读", "约束关闭", "不新增外部系统一级入口，不修改外部系统仓库，不授权实盘提交。"),
   ];
   WORKSPACES.insights.rows = [
     ...reportItems.slice(0, 3).map((item, index) =>
-      row(`P${index + 1}`, safeUserText(item.title, "报告"), safeEvidenceText((item.evidence_refs || [])[0], "stage5:reports"), "生成本地只读报告并保留证据链。", safeUserText(item.status, "可用")),
+      row(`P${index + 1}`, safeUserText(item.title, "报告"), safeEvidenceText((item.evidence_refs || [])[0], "报告证据"), "生成本地只读报告并保留证据链。", safeUserText(item.status, "可用")),
     ),
-    row("P1", "PFI Context Export", safeUserText(alphaContext.schema, "pfi_context_snapshot_v1"), "生成只读 context snapshot。", "只读"),
+    row("P1", "PFI 上下文导出", "只读上下文快照", "生成只读上下文快照。", "只读"),
   ];
   WORKSPACES.insights.tasks = [
-    task("报告可复现", `${exportItems.length} 个导出文件 · checksum ready`, exportItems.length ? "ready" : "review"),
-    task("数据质量报告", reports.data_quality_report ? "同步、缺失、对账和 parser 错误可见" : "等待质量报告", reports.data_quality_report ? "ready" : "review"),
-    task("实盘边界", constraints.trading_password_available === false ? "trading_password_available=false" : "等待约束确认", constraints.trading_password_available === false ? "ready" : "review"),
+    task("报告可复现", `${exportItems.length} 个导出文件 · 校验值可用`, exportItems.length ? "ready" : "review"),
+    task("数据质量报告", reports.data_quality_report ? "同步、缺失、对账和解析器错误可见" : "等待质量报告", reports.data_quality_report ? "ready" : "review"),
+    task("实盘限制", constraints.trading_password_available === false ? "交易密码可用：否" : "等待约束确认", constraints.trading_password_available === false ? "ready" : "review"),
   ];
 }
 
@@ -1441,41 +1438,41 @@ function applyStage6Dashboard(dashboard) {
   const rollbackCount = (delivery.rollback_plan || []).length;
   const followUpCount = (delivery.follow_up_list || []).length;
 
-  WORKSPACES.home.runtime = "Stage 6：端到端验收与稳定化 · 本地只读 MVP";
+  WORKSPACES.home.runtime = "第 6 阶段：端到端验收与稳定化 · 本地只读 MVP";
   WORKSPACES.home.features = [
-    feature("端到端验收", gatePassCount === totalGate.length ? "通过" : "复核", "stage6:total_acceptance_gate", `${gatePassCount}/${totalGate.length} 个总 gate 通过。`),
-    feature("合成端到端", phase6a.status === "PASS" ? "通过" : "复核", "stage6:phase_6a", `${sourceMatrix.length} 个核心源 · 首页/账本/建议闭环。`),
-    feature("回归治理", regression.status === "PASS" ? "通过" : "复核", "stage6:phase_6b", "既有 smoke、聚焦测试和变更范围治理已记录。"),
-    feature("交付与回滚", delivery.status === "PASS" ? "通过" : "复核", "stage6:phase_6c", `${rollbackCount} 步回滚计划 · ${followUpCount} 项后续任务。`),
-    feature("回滚计划", rollbackCount >= 6 ? "可用" : "复核", "stage6:rollback", "可回滚代码、测试、文档、治理和 Web Shell 接入。"),
-    feature("后续任务清单", followUpCount ? "可用" : "待补", "stage6:follow_up", "外部 context consumer、真实数据、PDF/ZIP、CDR/Open Banking 分离跟进。"),
+    feature("端到端验收", gatePassCount === totalGate.length ? "通过" : "复核", "总验收门禁", `${gatePassCount}/${totalGate.length} 个总门禁通过。`),
+    feature("合成端到端", phase6a.status === "PASS" ? "通过" : "复核", "合成验收", `${sourceMatrix.length} 个核心源 · 首页/账本/建议闭环。`),
+    feature("回归治理", regression.status === "PASS" ? "通过" : "复核", "回归治理", "既有冒烟检查、聚焦测试和变更范围治理已记录。"),
+    feature("交付与回滚", delivery.status === "PASS" ? "通过" : "复核", "交付回滚", `${rollbackCount} 步回滚计划 · ${followUpCount} 项后续任务。`),
+    feature("回滚计划", rollbackCount >= 6 ? "可用" : "复核", "回滚计划", "可回滚代码、测试、文档、治理和 Web Shell 接入。"),
+    feature("后续任务清单", followUpCount ? "可用" : "待补", "后续任务", "外部上下文消费者、真实数据、PDF/ZIP、CDR/Open Banking 分离跟进。"),
   ];
   WORKSPACES.home.tasks = [
-    task("Stage 6 总验收", `${gatePassCount}/${totalGate.length} 个 gate PASS`, gatePassCount === totalGate.length ? "ready" : "review"),
-    task("TaskPack ACC 审计", `${auditPassCount}/${taskpackAudit.length} 个 acceptance PASS`, auditPassCount === taskpackAudit.length ? "ready" : "review"),
-    task("E2E 四闭环", `sources=${sourceMatrix.length} · ledger=${(ledgerLoop.checks || []).length} · recommendations=${recommendationLoop.generated_count || 0}`, phase6a.status === "PASS" ? "ready" : "review"),
+    task("第 6 阶段总验收", `${gatePassCount}/${totalGate.length} 个门禁通过`, gatePassCount === totalGate.length ? "ready" : "review"),
+    task("任务包验收审计", `${auditPassCount}/${taskpackAudit.length} 个验收项通过`, auditPassCount === taskpackAudit.length ? "ready" : "review"),
+    task("端到端四闭环", `数据源=${sourceMatrix.length} · 账本=${(ledgerLoop.checks || []).length} · 建议=${recommendationLoop.generated_count || 0}`, phase6a.status === "PASS" ? "ready" : "review"),
     task("回滚计划", `${rollbackCount} 步 · QBVS 顶层独立，不迁移真实数据`, rollbackCount >= 6 ? "ready" : "review"),
   ];
 
   WORKSPACES.insights.features = [
-    feature("端到端验收", gatePassCount === totalGate.length ? "通过" : "复核", "stage6:total_acceptance_gate", `${gatePassCount}/${totalGate.length} 个总 gate 通过。`),
-    feature("合成端到端", phase6a.status === "PASS" ? "通过" : "复核", "stage6:phase_6a", "多数据源、首页、账本和建议闭环。"),
-    feature("回归治理", regression.status === "PASS" ? "通过" : "复核", "stage6:phase_6b", "既有 smoke、聚焦测试、变更范围治理和无大范围重构已记录。"),
-    feature("交付与回滚", delivery.status === "PASS" ? "通过" : "复核", "stage6:phase_6c", "用户文档、差异摘要、回滚计划和后续任务清单已记录。"),
-    feature("回滚计划", rollbackCount >= 6 ? "可用" : "复核", "stage6:rollback", "可逆文件清单和无生产迁移边界。"),
-    feature("后续任务清单", followUpCount ? "可用" : "待补", "stage6:follow_up", "后续任务独立排期，不越权进入 Stage 6。"),
+    feature("端到端验收", gatePassCount === totalGate.length ? "通过" : "复核", "总验收门禁", `${gatePassCount}/${totalGate.length} 个总门禁通过。`),
+    feature("合成端到端", phase6a.status === "PASS" ? "通过" : "复核", "合成验收", "多数据源、首页、账本和建议闭环。"),
+    feature("回归治理", regression.status === "PASS" ? "通过" : "复核", "回归治理", "既有冒烟检查、聚焦测试、变更范围治理和无大范围重构已记录。"),
+    feature("交付与回滚", delivery.status === "PASS" ? "通过" : "复核", "交付回滚", "用户文档、差异摘要、回滚计划和后续任务清单已记录。"),
+    feature("回滚计划", rollbackCount >= 6 ? "可用" : "复核", "回滚计划", "可逆文件清单和无生产迁移限制。"),
+    feature("后续任务清单", followUpCount ? "可用" : "待补", "后续任务", "后续任务独立排期，不越权进入第 6 阶段。"),
   ];
   WORKSPACES.insights.rows = [
-    row("P0", "端到端验收", "stage6:total_acceptance_gate", `${gatePassCount}/${totalGate.length} 个 gate 通过。`, gatePassCount === totalGate.length ? "通过" : "复核"),
-    row("P0", "合成端到端", "stage6:phase_6a", `${sourceMatrix.length} 个核心源；首页状态 ${safeUserText(homepageLoop.status, "复核")}。`, safeUserText(phase6a.status, "复核")),
-    row("P1", "回归治理", "lean_governance.py", safeUserText((regression.changed_scope_governance || {}).expected, "运行 changed-only governance。"), safeUserText(regression.status, "复核")),
-    row("P1", "交付与回滚", "stage6:phase_6c", `${rollbackCount} 步 rollback · ${followUpCount} 项 follow-up。`, safeUserText(delivery.status, "复核")),
+    row("P0", "端到端验收", "总验收门禁", `${gatePassCount}/${totalGate.length} 个门禁通过。`, gatePassCount === totalGate.length ? "通过" : "复核"),
+    row("P0", "合成端到端", "合成验收", `${sourceMatrix.length} 个核心源；首页状态 ${safeUserText(homepageLoop.status, "复核")}。`, safeUserText(phase6a.status, "复核")),
+    row("P1", "回归治理", "治理脚本", safeUserText((regression.changed_scope_governance || {}).expected, "运行变更范围治理。"), safeUserText(regression.status, "复核")),
+    row("P1", "交付与回滚", "交付回滚", `${rollbackCount} 步回滚 · ${followUpCount} 项后续任务。`, safeUserText(delivery.status, "复核")),
   ];
   WORKSPACES.insights.tasks = [
-    task("Stage 6 owner docs", (delivery.owner_docs || []).length ? `${delivery.owner_docs.length} 个 owner 文档已覆盖` : "等待 owner 文档", (delivery.owner_docs || []).length ? "ready" : "review"),
+    task("第 6 阶段用户文档", (delivery.owner_docs || []).length ? `${delivery.owner_docs.length} 个用户文档已覆盖` : "等待用户文档", (delivery.owner_docs || []).length ? "ready" : "review"),
     task("分类闭环", `${(ledgerLoop.checks || []).length} 个账本分类检查`, ledgerLoop.status === "PASS" ? "ready" : "review"),
-    task("建议闭环", `${recommendationLoop.generated_count || 0} 条建议 · lifecycle ${recommendationLoop.lifecycle_row_count || 0}`, recommendationLoop.status === "PASS" ? "ready" : "review"),
-    task("回归命令", regression.status === "PASS" ? "smoke / focused / governance 已记录" : "等待回归治理", regression.status === "PASS" ? "ready" : "review"),
+    task("建议闭环", `${recommendationLoop.generated_count || 0} 条建议 · 生命周期 ${recommendationLoop.lifecycle_row_count || 0}`, recommendationLoop.status === "PASS" ? "ready" : "review"),
+    task("回归命令", regression.status === "PASS" ? "冒烟检查 / 聚焦测试 / 治理已记录" : "等待回归治理", regression.status === "PASS" ? "ready" : "review"),
   ];
 }
 
