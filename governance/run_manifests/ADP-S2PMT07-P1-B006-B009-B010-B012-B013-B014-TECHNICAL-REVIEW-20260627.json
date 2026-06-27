@@ -1,0 +1,219 @@
+{
+  "schema_version": 1,
+  "manifest_id": "ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627",
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW",
+  "parent_task_id": "S2PMT07",
+  "acceptance_id": "ACC-S2PMT07-FINAL-REVIEW",
+  "contract_version": "ADP-PRODUCT-CONTRACT-V7.2",
+  "generated_at": "2026-06-27T23:08:31+10:00",
+  "status": "finding_level_technical_review_passed_no_p1_closure_no_production",
+  "summary": "Finding-level technical review for P1 B-006, B-009, B-010, B-012, B-013, and B-014 confirms current S2PMT05 local capacity, fault-injection, time-policy, 35-day E2E, result-validity, and backpressure evidence as technical closure candidates. This is not independent final signoff and does not close P1.",
+  "review_scope": "local_code_and_governance_evidence_only",
+  "finding_ids": [
+    "B-006",
+    "B-009",
+    "B-010",
+    "B-012",
+    "B-013",
+    "B-014"
+  ],
+  "reviewed_findings": [
+    {
+      "finding_id": "B-006",
+      "finding_title": "缺少正式负载、压力、峰值、浸泡和容量基线",
+      "severity": "P1",
+      "fix_task": "S2PMT05-CAPACITY-BASELINE-B006",
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "technical_closure_candidate": true,
+      "independent_final_closure_decision_required": true,
+      "evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_CAPACITY_BASELINE_B006.md",
+        "governance/run_manifests/ADP-S2PMT05-CAPACITY-BASELINE-B006-20260627.json",
+        "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py",
+        "arxiv-daily-push/tests/test_stage2_stress_e2e.py"
+      ],
+      "verified_checks": [
+        "load_stress_spike_soak_rows_present",
+        "required_1x_2x_5x_multipliers_present",
+        "throughput_latency_queue_memory_disk_error_metrics_present",
+        "queue_age_bounded_and_recoverable",
+        "accelerated_local_24h_soak_covered",
+        "spike_sheds_rebuildable_only",
+        "no_production_side_effects"
+      ]
+    },
+    {
+      "finding_id": "B-009",
+      "finding_title": "缺少磁盘满、只读目录、数据库锁死、损坏缓存/备份等故障注入",
+      "severity": "P1",
+      "fix_task": "S2PMT05-FAULT-INJECTION-B009",
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "technical_closure_candidate": true,
+      "independent_final_closure_decision_required": true,
+      "evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_FAULT_INJECTION_B009.md",
+        "governance/run_manifests/ADP-S2PMT05-FAULT-INJECTION-B009-20260627.json",
+        "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py",
+        "arxiv-daily-push/tests/test_stage2_stress_e2e.py"
+      ],
+      "verified_checks": [
+        "required_faults_present",
+        "required_recovery_states_present",
+        "all_faults_fail_closed",
+        "no_production_mutation_applied",
+        "durable_evidence_preserved",
+        "no_partial_artifact_committed",
+        "sqlite_busy_retry_policy_present",
+        "corrupt_pdf_rebuilds_from_source",
+        "backup_faults_block_restore_or_publish",
+        "no_production_side_effects"
+      ]
+    },
+    {
+      "finding_id": "B-010",
+      "finding_title": "缺少 Australia/Sydney DST、时钟跳变、漏跑和补跑政策测试",
+      "severity": "P1",
+      "fix_task": "S2PMT05-TIME-POLICY-B010",
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "technical_closure_candidate": true,
+      "independent_final_closure_decision_required": true,
+      "evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_TIME_POLICY_B010.md",
+        "governance/run_manifests/ADP-S2PMT05-TIME-POLICY-B010-20260627.json",
+        "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py",
+        "arxiv-daily-push/tests/test_stage2_stress_e2e.py"
+      ],
+      "verified_checks": [
+        "structured_sydney_0500_schedule_present",
+        "required_time_policy_cases_present",
+        "utc_cycle_watermark_used",
+        "dst_fold_and_gap_handled",
+        "future_heartbeat_blocks",
+        "ntp_forward_over_tolerance_blocks",
+        "misfire_within_grace_runs_once",
+        "sleep_8h_catchup_bounded",
+        "no_duplicate_m4_watermark",
+        "no_production_side_effects"
+      ]
+    },
+    {
+      "finding_id": "B-012",
+      "finding_title": "没有覆盖 3+1 日报、周报、月报、复习、行动、ROI 的完整流程测试",
+      "severity": "P1",
+      "fix_task": "S2PMT05-E2E-B012",
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "technical_closure_candidate": true,
+      "independent_final_closure_decision_required": true,
+      "evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_E2E_B012.md",
+        "governance/run_manifests/ADP-S2PMT05-E2E-B012-20260627.json",
+        "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py",
+        "arxiv-daily-push/tests/test_stage2_stress_e2e.py"
+      ],
+      "verified_checks": [
+        "daily_3_plus_1_mail_count_conservation",
+        "weekly_and_monthly_coverage_present",
+        "review_action_roi_count_conservation",
+        "auditable_run_bundle_present",
+        "section_artifacts_present",
+        "bundle_links_reachable",
+        "deterministic_bundle_hash_present",
+        "no_production_side_effects"
+      ]
+    },
+    {
+      "finding_id": "B-013",
+      "finding_title": "结果有效性测试偏结构存在性，缺语义、证据和非模板化验收",
+      "severity": "P1",
+      "fix_task": "S2PMT05-RESULT-VALIDITY-B013",
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "technical_closure_candidate": true,
+      "independent_final_closure_decision_required": true,
+      "evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_RESULT_VALIDITY_B013.md",
+        "governance/run_manifests/ADP-S2PMT05-RESULT-VALIDITY-B013-20260626.json",
+        "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py",
+        "arxiv-daily-push/tests/test_stage2_stress_e2e.py"
+      ],
+      "verified_checks": [
+        "semantic_alignment_threshold_required",
+        "claim_ledger_refs_present",
+        "evidence_refs_present",
+        "mechanism_and_action_specific",
+        "non_template_variance_required",
+        "unsupported_p0_claims_blocked",
+        "no_production_side_effects"
+      ]
+    },
+    {
+      "finding_id": "B-014",
+      "finding_title": "无背压、熔断、降级和负载丢弃优先级",
+      "severity": "P1",
+      "fix_task": "S2PMT05-BACKPRESSURE-B014",
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "technical_closure_candidate": true,
+      "independent_final_closure_decision_required": true,
+      "evidence_refs": [
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_BACKPRESSURE_B014.md",
+        "governance/run_manifests/ADP-S2PMT05-BACKPRESSURE-B014-20260627.json",
+        "arxiv-daily-push/src/arxiv_daily_push/stage2_stress_e2e.py",
+        "arxiv-daily-push/tests/test_stage2_stress_e2e.py"
+      ],
+      "verified_checks": [
+        "covers_2x_and_5x_peak_profiles",
+        "high_priority_slo_met",
+        "low_priority_delay_or_drop_has_reasons",
+        "durable_evidence_preserved",
+        "rebuildable_only_shedding",
+        "circuit_breaker_and_deadline_degradation_present",
+        "no_production_side_effects"
+      ]
+    }
+  ],
+  "technical_review_checks": {
+    "all_six_reviewed_findings_present": true,
+    "all_evidence_files_exist": true,
+    "all_technical_review_verdicts_pass_no_production": true,
+    "stress_e2e_tests_cover_capacity_fault_time_e2e_result_validity_backpressure": true,
+    "p1_counter_preserved_open": true,
+    "independent_final_signoff_present": false,
+    "s2pmt07_final_gate_still_blocked": true
+  },
+  "preserved_blockers": [
+    "p1_closure_not_claimed",
+    "independent_final_signoff_missing",
+    "independent_final_command_execution_missing",
+    "s2plt04_not_completed",
+    "final_acceptance_bundle_missing",
+    "a020_supply_chain_sufficiency_gap_not_resolved"
+  ],
+  "inherited_v7_1_open_p0_findings_before": 8,
+  "inherited_v7_1_open_p0_findings_after": 8,
+  "inherited_v7_1_open_p1_findings_before": 37,
+  "inherited_v7_1_open_p1_findings_after": 37,
+  "p0_closure_claimed": false,
+  "p1_closure_claimed": false,
+  "closure_claimed": false,
+  "reviewer_independence_for_final_gate_claimed": false,
+  "s2pmt07_final_pass_claimed": false,
+  "stage2_integrated_production_accepted": false,
+  "real_smtp_sent": false,
+  "scheduler_install_enabled": false,
+  "release_packaging_enabled": false,
+  "production_restore_enabled": false,
+  "daily_operation_enabled": false,
+  "public_schema_changed": false,
+  "db_migration_executed": false,
+  "production_queue_mutation_allowed": false,
+  "ranking_changed": false,
+  "source_adapter_changed": false,
+  "current_pointer_changed": false,
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false,
+  "validation_commands_planned": [
+    "python3 -m unittest arxiv-daily-push/tests/test_stage2_stress_e2e.py arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_user_center_candidate_pool.py -q"
+  ],
+  "next_task": "continue_remaining_p1_reviews_or_repair_a020_supply_chain_sufficiency_gap",
+  "rollback": "Remove this manifest, phase record, P1 receipt updates, traceability row, rendered owner page, and tests; no production state was changed."
+}

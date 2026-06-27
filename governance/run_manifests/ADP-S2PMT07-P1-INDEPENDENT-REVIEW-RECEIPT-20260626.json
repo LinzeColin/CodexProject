@@ -440,46 +440,61 @@
       "evidence_refs": [
         "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_CAPACITY_BASELINE_B006.md",
         "governance/run_manifests/ADP-S2PMT05-CAPACITY-BASELINE-B006-20260627.json",
-        "arxiv-daily-push/tests/test_stage2_stress_e2e.py"
+        "arxiv-daily-push/tests/test_stage2_stress_e2e.py",
+        "governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json"
       ],
       "finding_id": "B-006",
       "fix_task": "S2PMT05",
-      "preliminary_review_state": "refreshed_current_evidence_located_sufficiency_gap_review_required_closure_not_claimed",
-      "receipt_refreshed_at": "2026-06-27T03:37:12+10:00",
-      "reviewer_decision_required": "Verify V7.1 fix/test requirement: 至少 24h soak；2x 峰值；队列有界且可恢复",
+      "preliminary_review_state": "finding_level_technical_review_passed_no_p1_closure_no_production",
+      "receipt_refreshed_at": "2026-06-27T23:08:31+10:00",
+      "reviewer_decision_required": "Carry into later P1 closure package; verify independent final signoff before reducing counters",
       "severity": "P1",
       "title": "缺少正式负载、压力、峰值、浸泡和容量基线",
-      "track": "B_压力运行生命周期"
+      "track": "B_压力运行生命周期",
+      "finding_level_technical_review_receipt": "governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json",
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "technical_closure_candidate": true,
+      "independent_final_closure_decision_required": true
     },
     {
       "evidence_refs": [
         "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_FAULT_INJECTION_B009.md",
         "governance/run_manifests/ADP-S2PMT05-FAULT-INJECTION-B009-20260627.json",
-        "arxiv-daily-push/tests/test_stage2_stress_e2e.py"
+        "arxiv-daily-push/tests/test_stage2_stress_e2e.py",
+        "governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json"
       ],
       "finding_id": "B-009",
       "fix_task": "S2PMT05",
-      "preliminary_review_state": "refreshed_current_evidence_located_independent_review_required_closure_not_claimed",
-      "receipt_refreshed_at": "2026-06-27T03:37:12+10:00",
-      "reviewer_decision_required": "Verify V7.1 fix/test requirement: ENOSPC/EACCES/SQLITE_BUSY/corrupt JSON/PDF/backup 均有明确状态和恢复路径",
+      "preliminary_review_state": "finding_level_technical_review_passed_no_p1_closure_no_production",
+      "receipt_refreshed_at": "2026-06-27T23:08:31+10:00",
+      "reviewer_decision_required": "Carry into later P1 closure package; verify independent final signoff before reducing counters",
       "severity": "P1",
       "title": "缺少磁盘满、只读目录、数据库锁死、损坏缓存/备份等故障注入",
-      "track": "B_压力运行生命周期"
+      "track": "B_压力运行生命周期",
+      "finding_level_technical_review_receipt": "governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json",
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "technical_closure_candidate": true,
+      "independent_final_closure_decision_required": true
     },
     {
       "evidence_refs": [
         "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_TIME_POLICY_B010.md",
         "governance/run_manifests/ADP-S2PMT05-TIME-POLICY-B010-20260627.json",
-        "arxiv-daily-push/tests/test_stage2_stress_e2e.py"
+        "arxiv-daily-push/tests/test_stage2_stress_e2e.py",
+        "governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json"
       ],
       "finding_id": "B-010",
       "fix_task": "S2PMT05",
-      "preliminary_review_state": "refreshed_current_evidence_located_independent_review_required_closure_not_claimed",
-      "receipt_refreshed_at": "2026-06-27T03:37:12+10:00",
-      "reviewer_decision_required": "Verify V7.1 fix/test requirement: DST forward/backward、NTP 前后跳、休眠 8h 后补跑均确定性",
+      "preliminary_review_state": "finding_level_technical_review_passed_no_p1_closure_no_production",
+      "receipt_refreshed_at": "2026-06-27T23:08:31+10:00",
+      "reviewer_decision_required": "Carry into later P1 closure package; verify independent final signoff before reducing counters",
       "severity": "P1",
       "title": "缺少 Australia/Sydney DST、时钟跳变、漏跑和补跑政策测试",
-      "track": "B_压力运行生命周期"
+      "track": "B_压力运行生命周期",
+      "finding_level_technical_review_receipt": "governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json",
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "technical_closure_candidate": true,
+      "independent_final_closure_decision_required": true
     },
     {
       "evidence_refs": [
@@ -503,46 +518,61 @@
       "evidence_refs": [
         "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_E2E_B012.md",
         "governance/run_manifests/ADP-S2PMT05-E2E-B012-20260627.json",
-        "arxiv-daily-push/tests/test_stage2_stress_e2e.py"
+        "arxiv-daily-push/tests/test_stage2_stress_e2e.py",
+        "governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json"
       ],
       "finding_id": "B-012",
       "fix_task": "S2PMT05",
-      "preliminary_review_state": "refreshed_current_evidence_located_sufficiency_gap_review_required_closure_not_claimed",
-      "receipt_refreshed_at": "2026-06-27T03:37:12+10:00",
-      "reviewer_decision_required": "Verify V7.1 fix/test requirement: 一条命令生成可审计 run bundle，分项总数守恒、链接可达",
+      "preliminary_review_state": "finding_level_technical_review_passed_no_p1_closure_no_production",
+      "receipt_refreshed_at": "2026-06-27T23:08:31+10:00",
+      "reviewer_decision_required": "Carry into later P1 closure package; verify independent final signoff before reducing counters",
       "severity": "P1",
       "title": "没有覆盖 3+1 日报、周报、月报、复习、行动、ROI 的完整流程测试",
-      "track": "B_压力运行生命周期"
+      "track": "B_压力运行生命周期",
+      "finding_level_technical_review_receipt": "governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json",
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "technical_closure_candidate": true,
+      "independent_final_closure_decision_required": true
     },
     {
       "evidence_refs": [
         "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_RESULT_VALIDITY_B013.md",
         "governance/run_manifests/ADP-S2PMT05-RESULT-VALIDITY-B013-20260626.json",
-        "arxiv-daily-push/tests/test_stage2_stress_e2e.py"
+        "arxiv-daily-push/tests/test_stage2_stress_e2e.py",
+        "governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json"
       ],
       "finding_id": "B-013",
       "fix_task": "S2PMT05-RESULT-VALIDITY-B013",
-      "preliminary_review_state": "refreshed_current_evidence_located_sufficiency_gap_review_required_closure_not_claimed",
-      "receipt_refreshed_at": "2026-06-27T03:37:12+10:00",
-      "reviewer_decision_required": "Verify V7.1 fix/test requirement: 金标五维≥4/5；关键事实人工抽检；模板重复率上限",
+      "preliminary_review_state": "finding_level_technical_review_passed_no_p1_closure_no_production",
+      "receipt_refreshed_at": "2026-06-27T23:08:31+10:00",
+      "reviewer_decision_required": "Carry into later P1 closure package; verify independent final signoff before reducing counters",
       "severity": "P1",
       "title": "结果有效性测试偏结构存在性，缺语义、证据和非模板化验收",
-      "track": "B_压力运行生命周期"
+      "track": "B_压力运行生命周期",
+      "finding_level_technical_review_receipt": "governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json",
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "technical_closure_candidate": true,
+      "independent_final_closure_decision_required": true
     },
     {
       "evidence_refs": [
         "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_BACKPRESSURE_B014.md",
         "governance/run_manifests/ADP-S2PMT05-BACKPRESSURE-B014-20260627.json",
-        "arxiv-daily-push/tests/test_stage2_stress_e2e.py"
+        "arxiv-daily-push/tests/test_stage2_stress_e2e.py",
+        "governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json"
       ],
       "finding_id": "B-014",
       "fix_task": "S2PMT05",
-      "preliminary_review_state": "refreshed_current_evidence_located_independent_review_required_closure_not_claimed",
-      "receipt_refreshed_at": "2026-06-27T03:37:12+10:00",
-      "reviewer_decision_required": "Verify V7.1 fix/test requirement: 2x/5x 峰值下高优先项 SLO，低优先项明确延后/丢弃原因",
+      "preliminary_review_state": "finding_level_technical_review_passed_no_p1_closure_no_production",
+      "receipt_refreshed_at": "2026-06-27T23:08:31+10:00",
+      "reviewer_decision_required": "Carry into later P1 closure package; verify independent final signoff before reducing counters",
       "severity": "P1",
       "title": "无背压、熔断、降级和负载丢弃优先级",
-      "track": "B_压力运行生命周期"
+      "track": "B_压力运行生命周期",
+      "finding_level_technical_review_receipt": "governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json",
+      "technical_review_verdict": "PASS_WITH_NO_PRODUCTION_ACCEPTANCE",
+      "technical_closure_candidate": true,
+      "independent_final_closure_decision_required": true
     },
     {
       "evidence_refs": [
@@ -761,8 +791,12 @@
     "C_UI交互架构": 9
   },
   "p1_latest_technical_review_candidate_findings": [
-    "B-003",
-    "B-011"
+    "B-006",
+    "B-009",
+    "B-010",
+    "B-012",
+    "B-013",
+    "B-014"
   ],
   "p1_technical_review_candidate_findings": [
     "A-006",
@@ -785,16 +819,23 @@
     "B-005",
     "B-015",
     "B-003",
-    "B-011"
+    "B-011",
+    "B-006",
+    "B-009",
+    "B-010",
+    "B-012",
+    "B-013",
+    "B-014"
   ],
-  "p1_technical_review_candidate_manifest": "governance/run_manifests/ADP-S2PMT07-P1-B003-B011-TECHNICAL-REVIEW-20260627.json",
+  "p1_technical_review_candidate_manifest": "governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json",
   "p1_technical_review_candidate_manifests": [
     "governance/run_manifests/ADP-S2PMT07-P1-A006-A009-TECHNICAL-REVIEW-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-A010-A016-TECHNICAL-REVIEW-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-A017-A019-TECHNICAL-REVIEW-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-A018-A021-TECHNICAL-REVIEW-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-B002-B004-B005-B015-TECHNICAL-REVIEW-20260627.json",
-    "governance/run_manifests/ADP-S2PMT07-P1-B003-B011-TECHNICAL-REVIEW-20260627.json"
+    "governance/run_manifests/ADP-S2PMT07-P1-B003-B011-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json"
   ],
   "preserved_blockers": [
     "reviewer_independence_not_proven",
@@ -805,13 +846,14 @@
     "independent_final_signoff_missing",
     "independent_final_command_execution_missing"
   ],
-  "previous_refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-B002-B004-B005-B015-TECHNICAL-REVIEW-20260627.json",
+  "previous_refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-B003-B011-TECHNICAL-REVIEW-20260627.json",
   "project_id": "arxiv-daily-push",
-  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-B003-B011-TECHNICAL-REVIEW-20260627.json",
+  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json",
   "refresh_manifest_history": [
     "governance/run_manifests/ADP-S2PMT07-P1-A006-A009-TECHNICAL-REVIEW-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-A010-A016-TECHNICAL-REVIEW-20260627.json",
-    "governance/run_manifests/ADP-S2PMT07-P1-B003-B011-TECHNICAL-REVIEW-20260627.json"
+    "governance/run_manifests/ADP-S2PMT07-P1-B003-B011-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json"
   ],
   "refresh_manifests": [
     "governance/run_manifests/ADP-S2PMT07-P1-REVIEW-RECEIPT-REFRESH-20260627.json",
@@ -833,9 +875,10 @@
     "governance/run_manifests/ADP-S2PMT07-P1-A017-A019-TECHNICAL-REVIEW-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-A018-A021-TECHNICAL-REVIEW-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P1-B002-B004-B005-B015-TECHNICAL-REVIEW-20260627.json",
-    "governance/run_manifests/ADP-S2PMT07-P1-B003-B011-TECHNICAL-REVIEW-20260627.json"
+    "governance/run_manifests/ADP-S2PMT07-P1-B003-B011-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json"
   ],
-  "refreshed_at": "2026-06-27 19:36:09 Australia/Sydney",
+  "refreshed_at": "2026-06-27T23:08:31+10:00",
   "refreshed_findings": [
     "A-006",
     "A-007",

@@ -3279,3 +3279,21 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW"
+    phase: "S2PM"
+    objective: "Record finding-level technical review for inherited P1 findings B-006, B-009, B-010, B-012, B-013, and B-014 without claiming P1 closure or production acceptance."
+    scope: "S2PMT05 evidence review, P1 receipt manifest and phase record refresh, dedicated technical review manifest and phase record, traceability row, rendered user-center traceability page, focused regression tests, and no-production evidence."
+    non_scope: "No independent final signoff, final command execution, inherited P0/P1 closure, S2PLT04 completion, final acceptance bundle creation, SMTP transport, scheduler install or enablement, Release upload, public schema or DB migration, production queue mutation, ranking/source-adapter change, CURRENT pointer change, V7.1/V7.2 contract-file edit, DAILY_OPERATION, or integrated production acceptance."
+    status: "completed"
+    dependencies: ["S2PMT07", "S2PMT05", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    required_files: ["arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_B006_B009_B010_B012_B013_B014_TECHNICAL_REVIEW.md", "governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_INDEPENDENT_REVIEW_RECEIPT.md", "governance/run_manifests/ADP-S2PMT07-P1-INDEPENDENT-REVIEW-RECEIPT-20260626.json", "arxiv-daily-push/tests/test_stage2_stress_e2e.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_user_center_candidate_pool.py"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2pmt05_target PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_stress_e2e.py arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_user_center_candidate_pool.py -q"]
+    test_results: ["focused stress/final-gate/user-center tests: 51 OK", "full arxiv-daily-push unittest: 593 OK", "V7.2 validator PASS", "V7.2 unittest: 4 OK", "changed-only governance semantic: errors 0 warnings 0", "project governance: errors 0 warnings 0", "governance sync: errors 0 warnings 0", "lean governance check-render: drift_count 0 reference_issue_count 0", "structured parse: JSON/JSONL/YAML/CSV OK", "git diff --check pending after LF normalization"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_B006_B009_B010_B012_B013_B014_TECHNICAL_REVIEW.md", "arxiv-daily-push/tests/test_stage2_stress_e2e.py", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
+    risk: "This receipt can be misread as B-006/B-009/B-010/B-012/B-013/B-014 P1 closure; independent final S2PMT07 review, full P0/P1 closure package, S2PLT04, final bundle, and final command execution still control closure and production acceptance."
+    rollback: "Revert the S2PMT05 B-track technical review phase record and manifest, P1 receipt refresh, traceability row, rendered user-center traceability page, delivery/event/status records, and regression test extensions; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
