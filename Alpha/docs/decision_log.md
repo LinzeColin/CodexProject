@@ -2,11 +2,19 @@
 
 ## 2026-06-13: GitHub Is Authoritative
 
-Decision: Use `https://github.com/LinzeColin/Alpha` as the authoritative project backup and continuity surface.
+Decision: Superseded on 2026-06-27. Use `https://github.com/LinzeColin/CodexProject`, project path `Alpha/`, as the authoritative project backup and continuity surface.
 
 Reason: Future agents need a stable, inspectable state source for code, docs, tests, rules, and handoff.
 
-Consequence: Every meaningful run must commit and push code/docs/test evidence unless blocked.
+Consequence: Every meaningful run must commit and push code/docs/test evidence through `LinzeColin/CodexProject/Alpha` unless blocked. Standalone `LinzeColin/Alpha` and old local shadow folders are not authoritative delivery roots.
+
+## 2026-06-27: Phase 6 Owner Gate Evidence Must Be Canonical
+
+Decision: Alpha G6 Phase 6 evidence must be generated from the canonical `CodexProject/Alpha` root and must not be inferred from older shadow folders.
+
+Reason: The current canonical dashboard is in research/paper order-intent review mode with live trading disabled. Older local shadow outputs are not a safe source for owner-gate claims.
+
+Consequence: Phase 6 remains blocked until canonical evidence proves 48-hour Paper/Shadow soak, a qualified trading-day report, Shadow live constraints, limit-order contract, and closeout readiness. `runtime/LIVE_AUTHORIZATION.json` must remain absent.
 
 ## 2026-06-13: Execution Boundary
 

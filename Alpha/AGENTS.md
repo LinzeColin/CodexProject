@@ -11,10 +11,26 @@ Committed code must not implement or enable unattended real-money order submissi
 The authoritative project repository is:
 
 ```text
-https://github.com/LinzeColin/Alpha
+https://github.com/LinzeColin/CodexProject
+project path: Alpha/
 ```
 
-All source code, project rules, docs, Task Packs, handoff notes, decision logs, test evidence, and delivery manifests must be committed and pushed to GitHub after every meaningful run.
+There is no active standalone `LinzeColin/Alpha` delivery repository for this
+program. Do not push, mirror, or hand off Alpha delivery there. All source code,
+project rules, docs, Task Packs, handoff notes, decision logs, test evidence,
+and delivery manifests must be committed and pushed through
+`LinzeColin/CodexProject`, project path `Alpha/`, after every meaningful run.
+
+The current canonical local root is:
+
+```text
+/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Alpha
+```
+
+Do not resume work from older shadow folders such as
+`/Users/linzezhang/Documents/Codex/2026-06-13/files-mentioned-by-the-user-alpha`
+unless the owner explicitly designates them as an evidence source for read-only
+comparison.
 
 Local-only state is not authoritative except:
 
@@ -26,6 +42,8 @@ Local-only state is not authoritative except:
 ## Safety Boundaries
 
 - `live_trading.enabled` must remain `false` in committed default config.
+- `runtime/LIVE_AUTHORIZATION.json` must not be created by development,
+  research, dashboard, paper/shadow, or Phase 6 closeout work.
 - No committed code may directly call a real broker `place_order` endpoint.
 - No agent may receive raw broker trading credentials.
 - Real broker integration work is limited to read-only probes, broker paper APIs, or owner-confirmed order tickets.
