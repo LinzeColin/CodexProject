@@ -7,7 +7,7 @@ machine_summary:
 
 - model_count: 117
 - formula_count: 119
-- parameter_count: 982
+- parameter_count: 983
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -26,6 +26,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 
 - `S2PLT03-LOCAL-RESILIENCE-DRILL` adds `MOD-ADP-117`, `FORM-ADP-119`, and `PARAM-ADP-976` through `PARAM-ADP-979`. It records deterministic local no-production drill evidence for rate limit, parser drift, restart recovery, disk pressure, backup restore-point, rollback dry-run, and ledger count conservation. It does not accept S2PLT03, close P0/P1, enable SMTP/scheduler/Release/restore, mutate production state, or claim integrated production acceptance.
 
+- `S2PLT04-S2PLT02-PRECHECK-EVIDENCE-SYNC` adds `PARAM-ADP-983` and updates `PARAM-ADP-980` / `PARAM-ADP-981` under the existing `MOD-ADP-103` / `FORM-ADP-105` S2PLT04 precheck. It lets S2PLT04 consume the existing S2PLT02 live two-day readiness precheck as non-terminal local evidence only. It does not satisfy S2PLT02 authoritative completion, prove the real two-day run, complete S2PLT04, create the final bundle, close P0/P1, enable SMTP/scheduler/Release/restore, mutate production state, or claim integrated production acceptance.
 - `S2PLT04-LOCAL-DRILL-EVIDENCE-SYNC` adds `PARAM-ADP-980` through `PARAM-ADP-982` under the existing `MOD-ADP-103` / `FORM-ADP-105` S2PLT04 precheck. It lets S2PLT04 consume the existing S2PLT03 local no-production drill bundle as non-terminal local evidence only. It does not satisfy S2PLT03 authoritative completion, complete S2PLT04, create the final bundle, close P0/P1, enable SMTP/scheduler/Release/restore, mutate production state, or claim integrated production acceptance.
 
 - `S1-02-BASELINE-LOCK-TRACEABILITY-001` locked the Review8 V4 two-stage
@@ -1109,6 +1110,7 @@ Uncovered planned scenarios:
 ## S2PLT04 Integration Candidate Precheck
 
 - `MOD-ADP-103` / `FORM-ADP-105` define the fail-closed S2PLT04 integration candidate precheck.
+- `PARAM-ADP-983` and the refreshed `PARAM-ADP-980` / `PARAM-ADP-981` let S2PLT04 expose the existing S2PLT02 live two-day readiness precheck under `available_nonterminal_evidence` as `S2PLT02_LIVE_2D_PRECHECK`, with report hash `e5366499d0842e8b4d26fc30e5c2814e4c4f462222641b7ea6b174a2534603f0`. This evidence is explicitly non-terminal and does not satisfy `S2PLT02_2D_REAL_RUN`, S2PLT02 authoritative completion, or S2PLT04 completion.
 - `PARAM-ADP-980` through `PARAM-ADP-982` let S2PLT04 expose the existing S2PLT03 local no-production drill bundle under `available_nonterminal_evidence` as `S2PLT03_LOCAL_RESILIENCE_DRILL`, with bundle hash `4a17a4950b8e79dc59d6b4b095df15f43acd8b3f45a23be77683194bc32a9afa`. This evidence is explicitly non-terminal and does not satisfy `S2PLT03_RESILIENCE_DRILL`, S2PLT03 authoritative completion, or S2PLT04 completion.
 - Passing S2PLT04 is not claimed by this run. The current precheck remains blocked because S2PLT01 acceptance is not proven, S2PLT02/S2PLT03 authoritative completion evidence is missing, the final acceptance bundle is missing, inherited V7.1 P0=8 and P1=37 remain open, and embedded S2PMT07 precheck is blocked.
 - S2PLT04 precheck does not produce `S2_INTEGRATION_CANDIDATE_READY`, complete S2PLT04, enable SMTP, install scheduler, upload Release assets, execute production restore, migrate DB/public schema, mutate production queues, change source adapters or ranking, change CURRENT or V7.1/V7.2 contracts, close inherited P0/P1, enable DAILY_OPERATION, or claim integrated production acceptance.

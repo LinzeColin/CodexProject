@@ -39,7 +39,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `PARTIAL` (960/965 active parameters, 119/119 active formulas)
+- implementation_congruence: `PARTIAL` (961/966 active parameters, 119/119 active formulas)
 - parameter_source_quality: `PARTIAL`
 - methodological_rationale: `VERIFIED`
 - empirical_validation: `VERIFIED`
@@ -71,23 +71,23 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - model_count: `117`
 - total_formulas: `119`
 - active_formulas: `119`
-- total_parameters: `982`
-- active_parameters: `965`
+- total_parameters: `983`
+- active_parameters: `966`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PLT04_LOCAL_DRILL_EVIDENCE_SYNC_BLOCKED_NO_PRODUCTION`
+- release_gate: `S2PLT04_S2PLT02_PRECHECK_EVIDENCE_SYNC_BLOCKED_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `0`
 - commit_bound_events: `4`
-- legacy_unbound_events: `186`
+- legacy_unbound_events: `187`
 - precommit_pending_events: `40`
-- pending_or_stale_events: `225`
+- pending_or_stale_events: `226`
 
 ## 15. UNKNOWN
 
@@ -97,11 +97,11 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 - source_base_commit: `61c262d6445002035a21ffd289c801519caab2c3`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:73ed330b33cec3b74b18e5b9a318435aadee45b3d027a180e9d271027b32dd78`
-- snapshot_event_time: `2026-06-28T02:24:54+10:00`
+- source_snapshot_hash: `sha256:752a4b21344dc91ff83341db46acc38567d114dbdf0395b3fd5e78f743edb11f`
+- snapshot_event_time: `2026-06-28T02:46:45+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PL / S2PLT04_LOCAL_DRILL_EVIDENCE_SYNC_BLOCKED_NO_PRODUCTION`
+- phase/gate: `S2PL / S2PLT04_S2PLT02_PRECHECK_EVIDENCE_SYNC_BLOCKED_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 

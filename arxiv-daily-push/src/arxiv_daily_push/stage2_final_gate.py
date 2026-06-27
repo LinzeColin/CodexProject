@@ -201,6 +201,7 @@ S2PLT04_REQUIRED_DEPENDENCIES = (
 )
 S2PLT04_AVAILABLE_LOCAL_EVIDENCE = (
     "S2PLT01-INDEPENDENT-REPLAY-REVIEW",
+    "S2PLT02-LIVE-2D-PRECHECK",
     "S2PLT03-LOCAL-RESILIENCE-DRILL",
     "S2PMT01",
     "S2PMT02",
@@ -211,8 +212,10 @@ S2PLT04_AVAILABLE_LOCAL_EVIDENCE = (
     "S2PMT07",
 )
 S2PLT04_NONTERMINAL_LOCAL_EVIDENCE = (
+    "S2PLT02_LIVE_2D_PRECHECK",
     "S2PLT03_LOCAL_RESILIENCE_DRILL",
 )
+S2PLT04_LIVE_2D_PRECHECK_GENERATED_AT = "2026-06-26T19:00:00+10:00"
 S2PLT04_LOCAL_DRILL_BUNDLE_GENERATED_AT = "2026-06-28T02:00:14+10:00"
 S2PLT04_REQUIRED_EVIDENCE = (
     "S2PLT01_ACCEPTED",
@@ -791,10 +794,18 @@ def build_s2plt04_dependency_state() -> dict[str, Any]:
 
 
 def build_s2plt04_evidence_state(
-    *, local_drill_bundle: Mapping[str, Any] | None = None
+    *,
+    live_2d_precheck_report: Mapping[str, Any] | None = None,
+    local_drill_bundle: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Build current S2PLT04 evidence state from local governance facts."""
 
+    if live_2d_precheck_report is None:
+        live_2d_precheck_report = build_s2plt02_live_2d_precheck_report(
+            generated_at=S2PLT04_LIVE_2D_PRECHECK_GENERATED_AT
+        )
+    live_2d_precheck_valid = not validate_s2plt02_live_2d_precheck_report(live_2d_precheck_report)
+    live_2d_precheck_present = live_2d_precheck_valid and live_2d_precheck_report.get("status") == "blocked"
     if local_drill_bundle is None:
         local_drill_bundle = build_s2plt03_local_resilience_drill_bundle(
             generated_at=S2PLT04_LOCAL_DRILL_BUNDLE_GENERATED_AT
@@ -810,7 +821,8 @@ def build_s2plt04_evidence_state(
         "FINAL_ACCEPTANCE_BUNDLE/": False,
     }
     available_nonterminal = {
-        S2PLT04_NONTERMINAL_LOCAL_EVIDENCE[0]: local_drill_passed,
+        "S2PLT02_LIVE_2D_PRECHECK": live_2d_precheck_present,
+        "S2PLT03_LOCAL_RESILIENCE_DRILL": local_drill_passed,
     }
     return {
         "status": "blocked",
@@ -818,6 +830,15 @@ def build_s2plt04_evidence_state(
         "available_evidence": available,
         "available_nonterminal_evidence": available_nonterminal,
         "missing_evidence": [item for item, present in available.items() if not present],
+        "s2plt02_readiness_precheck_scope": (
+            live_2d_precheck_report.get("scope") if live_2d_precheck_valid else "invalid"
+        ),
+        "s2plt02_readiness_precheck_report_hash": (
+            live_2d_precheck_report.get("report_hash") if live_2d_precheck_valid else None
+        ),
+        "s2plt02_readiness_precheck_status": (
+            "blocked_precheck_present_not_terminal_acceptance" if live_2d_precheck_present else "not_proven"
+        ),
         "s2plt03_local_drill_scope": local_drill_bundle.get("scope") if local_drill_valid else "invalid",
         "s2plt03_local_drill_bundle_hash": local_drill_bundle.get("bundle_hash") if local_drill_valid else None,
         "s2plt03_local_drill_status": "present_not_terminal_acceptance" if local_drill_passed else "not_proven",
@@ -839,6 +860,9 @@ def build_s2plt04_integration_candidate_report(*, generated_at: str) -> dict[str
         "s2plt01_accepted": "S2PLT01" in dependencies["completed_dependencies"],
         "s2plt02_completed": "S2PLT02" in dependencies["completed_dependencies"],
         "s2plt03_completed": "S2PLT03" in dependencies["completed_dependencies"],
+        "s2plt02_readiness_precheck_present": evidence["available_nonterminal_evidence"][
+            "S2PLT02_LIVE_2D_PRECHECK"
+        ],
         "s2plt03_local_drill_evidence_present": evidence["available_nonterminal_evidence"][
             "S2PLT03_LOCAL_RESILIENCE_DRILL"
         ],

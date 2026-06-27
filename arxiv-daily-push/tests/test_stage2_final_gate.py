@@ -228,6 +228,26 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertIn("s2plt03_not_completed", report["blocking_reasons"])
         self.assertEqual(validate_s2plt04_integration_candidate_report(report), [])
 
+    def test_s2plt04_consumes_s2plt02_readiness_precheck_as_nonterminal_evidence(self) -> None:
+        report = build_s2plt04_integration_candidate_report(generated_at="2026-06-28T02:46:45+10:00")
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertIn("S2PLT02-LIVE-2D-PRECHECK", report["dependencies"]["available_local_evidence"])
+        self.assertTrue(report["evidence"]["available_nonterminal_evidence"]["S2PLT02_LIVE_2D_PRECHECK"])
+        self.assertEqual(
+            report["evidence"]["s2plt02_readiness_precheck_scope"],
+            "no_production_live_2d_readiness_precheck_only",
+        )
+        self.assertEqual(
+            report["evidence"]["s2plt02_readiness_precheck_status"],
+            "blocked_precheck_present_not_terminal_acceptance",
+        )
+        self.assertTrue(report["gates"]["s2plt02_readiness_precheck_present"])
+        self.assertFalse(report["gates"]["s2plt02_completed"])
+        self.assertFalse(report["evidence"]["available_evidence"]["S2PLT02_2D_REAL_RUN"])
+        self.assertIn("s2plt02_not_completed", report["blocking_reasons"])
+        self.assertEqual(validate_s2plt04_integration_candidate_report(report), [])
+
     def test_s2plt04_integration_candidate_report_fails_closed_without_production_side_effects(self) -> None:
         report = build_s2plt04_integration_candidate_report(generated_at="2026-06-26T18:00:00+10:00")
 
