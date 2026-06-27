@@ -6,7 +6,7 @@ arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTI
 
 ## 2. 本次运行改变了什么
 
-S2PMT07 现在有独立的 final bundle manifest validator：未来 `FINAL_ACCEPTANCE_BUNDLE/manifest.json` 必须通过 schema version、bundle item hashes、artifact validations、closure state、no-production flags 和 manifest hash 校验。当前 manifest 仍缺失，inherited P0/P1 仍为 `8 / 37`。既有技术候选证据和 validator 只是 prebundle evidence，不是 P0/P1 归零证明、最终包已创建、S2PLT04 完成、P0/P1 关闭或生产验收。
+S2PMT07 现在有独立的 S2PLT04 completion report validator：未来 `FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json` 必须通过 schema version、S2PLT04 decision、S2PLT01/S2PLT02/S2PLT03/P0-P1-zero/final-manifest source refs、terminal dependency booleans、final bundle refs、no-production flags 和 report hash 校验。当前 report、manifest、zero-proof artifact 和 final bundle 仍缺失，inherited P0/P1 仍为 `8 / 37`。既有技术候选证据和 validator 只是 prebundle evidence，不是 P0/P1 归零证明、最终包已创建、S2PLT04 完成、P0/P1 关闭或生产验收。
 
 ## 3. 为什么重要
 
@@ -71,14 +71,14 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - model_count: `117`
 - total_formulas: `119`
 - active_formulas: `119`
-- total_parameters: `1005`
+- total_parameters: `1010`
 - active_parameters: `988`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PMT07_FINAL_BUNDLE_MANIFEST_VALIDATOR_BLOCKED_NO_PRODUCTION`
+- release_gate: `S2PMT07_S2PLT04_COMPLETION_REPORT_VALIDATOR_BLOCKED_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
@@ -101,7 +101,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - snapshot_event_time: `2026-06-28T05:18:27+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PM / S2PMT07_FINAL_BUNDLE_MANIFEST_VALIDATOR_BLOCKED_NO_PRODUCTION`
+- phase/gate: `S2PM / S2PMT07_S2PLT04_COMPLETION_REPORT_VALIDATOR_BLOCKED_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 
