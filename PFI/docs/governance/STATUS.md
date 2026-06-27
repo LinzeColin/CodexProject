@@ -1,5 +1,7 @@
 # STATUS
 
-当前状态：PFI V0.2 Stage 6 端到端验收与稳定化完成；PFI V0.2 本地 synthetic/read-only MVP 可运行、可验证、可回滚，但不声明生产就绪。
+当前状态：PFI v0.2.1 前端优化已进入 Stage 0 准备轮；PFI V0.2 本地 synthetic/read-only MVP 可运行、可验证、可回滚，但不声明生产就绪。
 
 已记录事实：Stage 1 信息架构、Stage 2 多数据源合同、Stage 3 首页/账户/账本/低操作 UX read-model、Stage 4 投资/消费分析 read-model、Stage 5 建议/报告/Alpha 只读 context export、Stage 6 synthetic E2E / 20 gate audit / ACC-* audit / rollback plan、顶层 QBVS lifecycle smoke、本机 PFI.app 入口、实盘和支付提交禁止边界。
+
+v0.2.1 Stage 0 新事实：正式前端目标为 `PFI/web` HTML Web Shell；系统基准货币为 CNY；所有页面顶部右上角必须展示 `CNY/AUD=4.70（YYYYMMDD--HH:MM）`，读取当日 06:00 Australia/Sydney 汇率快照；多模态反馈、触感、声音、视觉、通知和运行反馈控制台后续收敛到设置页；下一轮默认从 P1/S1 导航合并开始。
