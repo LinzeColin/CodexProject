@@ -70,10 +70,11 @@
 - `MetaDatabase/PFI/alipay_daily/processed/`：保存导入 manifest 和标准化流水。
 - PFI 本地私有运行目录仍是 `~/.pfi/`；GitHub 可验收归档为 `MetaDatabase/`。
 
-待确认：
+当前裁定：
 
-- `MetaDatabase` 是否只作为数据归档目录，不作为 Lean v2 独立项目登记。
-- 是否需要为 `MetaDatabase` 增加单独的索引、校验和、数据字典和隐私分级。
+- `MetaDatabase` 已登记为 CodexProject 顶层 Lean v2 数据归档项目。
+- 当前已补三基文件、最小治理文件、manifest 和数据边界说明。
+- 后续新增数据仍需要单独确认授权、manifest、校验和、数据字典和隐私分级。
 
 ## 当前 GitHub 同步事实
 
@@ -136,10 +137,8 @@ git diff --check -- PFI QBVS MetaDatabase
 
 ## 当前未确认项
 
-1. 是否把 `QBVS` 正式登记进根 `README.md` 和 `governance/projects.yaml`，作为 `CodexProject` 的独立 Lean v2 项目。
-2. 是否把 `MetaDatabase` 登记为独立项目，还是只作为顶层数据归档目录。
-3. 是否将 `codex/pfi-stage6-meta-qbvs-sync` 合并到 `main`，让 GitHub 默认分支直接显示 Stage 6 和 Stage 0 准备交付物。
-4. 是否需要把下载版 Roadmap 旧口径同步修订为“QBVS 独立，不再映射进 PFI 投资管理”。
+1. 是否将 `codex/pfi-stage6-meta-qbvs-sync` 合并到 `main`，让 GitHub 默认分支直接显示 Stage 6 和 Stage 0/1-5 交付物。
+2. 是否需要把下载版 Roadmap 旧口径同步修订为“QBVS 独立，不再映射进 PFI 投资管理”。
 
 ## Stage 0 停止条件状态
 

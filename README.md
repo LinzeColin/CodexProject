@@ -44,7 +44,9 @@ resolve to this checkout.
 | `FIFA` | `FIFA` | https://github.com/LinzeColin/FIFA |
 | `OpMe_System` | `OpMe_System` | https://github.com/LinzeColin/OpMe_System |
 | `OpenAIDatabase` | `OpenAIDatabase` | https://github.com/LinzeColin/CodexProject/tree/main/OpenAIDatabase |
+| `MetaDatabase` | `MetaDatabase` | https://github.com/LinzeColin/CodexProject/tree/main/MetaDatabase |
 | `PFI` | `PFI` | https://github.com/LinzeColin/CodexProject/tree/main/PFI |
+| `QBVS` | `QBVS` | https://github.com/LinzeColin/CodexProject/tree/main/QBVS |
 | `Serenity-Alipay` | `Serenity-Alipay` | https://github.com/LinzeColin/Serenity-Alipay |
 | `whkmSalary` | `whkmSalary` | https://github.com/LinzeColin/whkmSalary |
 | `arxiv-daily-push` | `arxiv-daily-push` | https://github.com/LinzeColin/CodexProject/tree/main/arxiv-daily-push |

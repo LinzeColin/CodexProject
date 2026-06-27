@@ -941,7 +941,7 @@ function installStage3WorkspaceAliases() {
       feature("收益归因", "需要复核", "估计归因", "把收益拆为市场、主动决策、费用、汇率和现金拖累；数据不足不输出精确结论。", { workspace: "investment", label: "查看归因" }),
       feature("风险分析", "有建议", "风险证据", "查看集中度、回撤、币种暴露和流动性。", { workspace: "investment", label: "查看风险" }),
       feature("行为复盘", "有建议", "交易证据", "识别追涨、杀跌、频繁交易和持有周期。", { workspace: "investment", label: "查看复盘" }),
-      feature("策略实验室", "可用", "QBVS", "保留策略回测、参数扫描、盘感训练和大数据模拟器。", { workspace: "strategy", label: "打开策略" }),
+      feature("策略实验室", "可用", "PFI 策略实验室", "保留 PFI 策略回测、参数扫描、盘感训练和大数据模拟器；QBVS 是顶层独立系统。", { workspace: "strategy", label: "打开策略" }),
     ],
   };
   WORKSPACES.consumption = {

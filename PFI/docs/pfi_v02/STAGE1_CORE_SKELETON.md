@@ -10,8 +10,9 @@
 
 Current project root is `CodexProject/PFI`.
 
-The old public path `QBVS` remains a compatibility entry for the
-QBVS runtime and maps to `投资管理 > 策略实验室 / 大数据模拟器`.
+`QBVS` is a separate top-level system at `CodexProject/QBVS`. PFI must not own
+or cover QBVS. PFI investment management keeps its own strategy backtesting,
+market-feel training, parameter scan, and big-data simulator.
 
 ## Phase Status
 
@@ -41,7 +42,7 @@ Acceptance coverage:
 | 首页总览 | 净资产、账户地图、投资快照、消费快照、数据健康、今日建议 |
 | 账户与资产 | DataSource / Account / AssetInstrument 分离、账户对账、跨币种 |
 | 账本流水 | 消费、投资、转账、退款、费用、估值、汇率、证据链 |
-| 投资管理 | Moomoo、支付宝基金、中国券商、ABC Bullion、QBVS 策略实验室 |
+| 投资管理 | Moomoo、支付宝基金、中国券商、ABC Bullion、PFI 策略实验室、盘感训练、大数据模拟器；QBVS 独立于 PFI |
 | 消费管理 | 支付宝、微信、CBA、银行卡、信用卡、订阅、转账不计消费 |
 | 数据源与同步 | 数据源列表、凭证、同步、导入、对账、待复核、外部只读接口 |
 | 建议与复盘 | 建议有证据、动作、状态、复盘、失效条件 |
@@ -54,7 +55,7 @@ Acceptance coverage:
 - No broker-order or payment submission.
 - No Alpha product page or first-level entry inside PFI.
 - No system/development product first-level entry.
-- `QBVS/qbvs` remains accessible and unmoved.
+- `QBVS/qbvs` remains accessible as a top-level independent system, not as a PFI-owned module.
 
 ## Phase 1B Contract Summary
 
@@ -103,7 +104,7 @@ PYTHONPATH=src python3 -B -m unittest tests.test_stage1_ia_contract -q
 
 Observed: `Ran 7 tests` / `OK`.
 
-Legacy compatibility smoke:
+QBVS independent-system smoke:
 
 ```bash
 cd QBVS

@@ -6,8 +6,9 @@ Updated: 2026-06-27 Australia/Sydney
 
 Stage 2 local contract delivery is complete. The implementation proves the
 data-source registry, low-operation import contracts, non-CSV contracts,
-review-queue boundaries, reconciliation contracts, and legacy QBVS compatibility
-in the current `CodexProject/PFI` root.
+review-queue boundaries, reconciliation contracts, and external QBVS boundary
+references in the current `CodexProject/PFI` root. QBVS is a separate top-level
+system at `CodexProject/QBVS`; PFI does not own or cover QBVS.
 
 This is not production readiness. Real account credentials, live platform
 connectivity, automatic trading, payment submission, and broker order
@@ -50,7 +51,7 @@ submission remain out of scope and unverified.
 | Trading password required | PASS - excluded by registry and contracts |
 | Automatic real-money order submission | PASS - explicitly forbidden |
 | Payment or broker-order submission | PASS - out of scope |
-| QBVS re-embedded into PFI/rename/broad refactor | PASS - active runtime remains `QBVS/qbvs` |
+| QBVS re-embedded into PFI/rename/broad refactor | PASS - active runtime remains top-level `QBVS/qbvs`, outside PFI ownership |
 | Alpha as PFI first-level entry | PASS - forbidden and tested |
 | Rejected Alpha variant product entry | PASS - forbidden label only, no product entry |
 | Technical development product entry | PASS - forbidden label only, no product entry |

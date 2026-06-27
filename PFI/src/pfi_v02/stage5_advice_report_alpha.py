@@ -148,7 +148,7 @@ def build_stage5_recommendations(stage4_dashboard: dict[str, object]) -> tuple[S
         Stage5Recommendation(
             "rec_inv_strategy_control",
             "investment",
-            ("QBVS/qbvs", "strategy:stage4_compatibility"),
+            ("pfi_strategy_lab:stage4_compatibility", "pfi_strategy_lab:no_live_orders"),
             "把策略上线/暂停作为人工 gate，避免分析结果直接变成订单。",
             "过度保守会降低策略迭代速度。",
             "只允许 PFI 策略实验室进入复核；QBVS 是独立系统，不由 PFI 投资管理覆盖。",
