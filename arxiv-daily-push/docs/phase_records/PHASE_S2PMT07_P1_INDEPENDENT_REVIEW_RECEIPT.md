@@ -9,7 +9,7 @@
 - status: `review_receipt_ready_no_closure_claim`
 - V7.2 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - created_at: `2026-06-26 19:51:01 Australia/Sydney`
-- refreshed_at: `2026-06-27 07:40:20 Australia/Sydney`
+- refreshed_at: `2026-06-27 23:08:31 Australia/Sydney`
 
 This receipt organizes the inherited V7.1 P1 evidence set for later independent review. It is not an independent reviewer signoff, does not close any P0/P1 finding, and does not unblock integrated production acceptance.
 
@@ -72,13 +72,13 @@ No P0/P1 closure, no independent final signoff, no S2PLT04 completion, no final 
 | `B-003` | `S2PMT03-WATCHDOG-RECOVERY-B003` | watchdog 只报告 stale lock，不执行可证明安全的恢复 | `PHASE_S2PMT03_WATCHDOG_RECOVERY_B003.md`, `ADP-S2PMT03-WATCHDOG-RECOVERY-B003-20260626.json`, `test_stage2_lease_fencing.py`; `ADP-S2PMT07-P1-B003-B011-TECHNICAL-REVIEW-20260627.json` | finding-level technical review passed; P1 closure not claimed | Carry to final P1 closure package; verify independent final signoff before reducing counters |
 | `B-004` | `S2PMT04` | 启动时没有在途任务、outbox、临时文件和残锁 reconciliation | `PHASE_S2PMT04_STARTUP_CONVERGENCE_B004.md`, `ADP-S2PMT04-STARTUP-CONVERGENCE-B004-20260626.json`, `test_stage2_lifecycle_cache.py` | finding-level technical review passed; P1 closure not claimed | Carry to final P1 closure package; verify independent final signoff before reducing counters |
 | `B-005` | `S2PMT04` | 无安全缓存分类、TTL、容量上限、清理与保留证据 | `PHASE_S2PMT04_CACHE_LOW_DISK_B005.md`, `ADP-S2PMT04-CACHE-LOW-DISK-B005-20260626.json`, `test_stage2_lifecycle_cache.py` | finding-level technical review passed; P1 closure not claimed | Carry to final P1 closure package; verify independent final signoff before reducing counters |
-| `B-006` | `S2PMT05` | 缺少正式负载、压力、峰值、浸泡和容量基线 | `PHASE_S2PMT05_CAPACITY_BASELINE_B006.md`, `ADP-S2PMT05-CAPACITY-BASELINE-B006-20260627.json`, `test_stage2_stress_e2e.py` | refreshed current evidence located; sufficiency/gap review required; closure not claimed | Verify V7.1 fix/test requirement: 至少 24h soak；2x 峰值；队列有界且可恢复 |
-| `B-009` | `S2PMT05` | 缺少磁盘满、只读目录、数据库锁死、损坏缓存/备份等故障注入 | `PHASE_S2PMT05_FAULT_INJECTION_B009.md`, `ADP-S2PMT05-FAULT-INJECTION-B009-20260627.json`, `test_stage2_stress_e2e.py` | refreshed current evidence located; independent review required; closure not claimed | Verify V7.1 fix/test requirement: ENOSPC/EACCES/SQLITE_BUSY/corrupt JSON/PDF/backup 均有明确状态和恢复路径 |
-| `B-010` | `S2PMT05` | 缺少 Australia/Sydney DST、时钟跳变、漏跑和补跑政策测试 | `PHASE_S2PMT05_TIME_POLICY_B010.md`, `ADP-S2PMT05-TIME-POLICY-B010-20260627.json`, `test_stage2_stress_e2e.py` | refreshed current evidence located; independent review required; closure not claimed | Verify V7.1 fix/test requirement: DST forward/backward、NTP 前后跳、休眠 8h 后补跑均确定性 |
+| `B-006` | `S2PMT05` | 缺少正式负载、压力、峰值、浸泡和容量基线 | `PHASE_S2PMT05_CAPACITY_BASELINE_B006.md`, `ADP-S2PMT05-CAPACITY-BASELINE-B006-20260627.json`, `test_stage2_stress_e2e.py`; `ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json` | finding-level technical review passed; P1 closure not claimed | Carry to final P1 closure package; verify independent final signoff before reducing counters |
+| `B-009` | `S2PMT05` | 缺少磁盘满、只读目录、数据库锁死、损坏缓存/备份等故障注入 | `PHASE_S2PMT05_FAULT_INJECTION_B009.md`, `ADP-S2PMT05-FAULT-INJECTION-B009-20260627.json`, `test_stage2_stress_e2e.py`; `ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json` | finding-level technical review passed; P1 closure not claimed | Carry to final P1 closure package; verify independent final signoff before reducing counters |
+| `B-010` | `S2PMT05` | 缺少 Australia/Sydney DST、时钟跳变、漏跑和补跑政策测试 | `PHASE_S2PMT05_TIME_POLICY_B010.md`, `ADP-S2PMT05-TIME-POLICY-B010-20260627.json`, `test_stage2_stress_e2e.py`; `ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json` | finding-level technical review passed; P1 closure not claimed | Carry to final P1 closure package; verify independent final signoff before reducing counters |
 | `B-011` | `S2PMT03-M4-WATERMARK-B011` | M4 水位线缺少 cycle_id、超时、迟到数据和降级策略 | `PHASE_S2PMT03_M4_WATERMARK_B011.md`, `ADP-S2PMT03-M4-WATERMARK-B011-20260626.json`, `test_stage2_lease_fencing.py`; `ADP-S2PMT07-P1-B003-B011-TECHNICAL-REVIEW-20260627.json` | finding-level technical review passed; P1 closure not claimed | Carry to final P1 closure package; verify independent final signoff before reducing counters |
-| `B-012` | `S2PMT05` | 没有覆盖 3+1 日报、周报、月报、复习、行动、ROI 的完整流程测试 | `PHASE_S2PMT05_E2E_B012.md`, `ADP-S2PMT05-E2E-B012-20260627.json`, `test_stage2_stress_e2e.py` | refreshed current evidence located; sufficiency/gap review required; closure not claimed | Verify V7.1 fix/test requirement: 一条命令生成可审计 run bundle，分项总数守恒、链接可达 |
-| `B-013` | `S2PMT05-RESULT-VALIDITY-B013` | 结果有效性测试偏结构存在性，缺语义、证据和非模板化验收 | `PHASE_S2PMT05_RESULT_VALIDITY_B013.md`, `ADP-S2PMT05-RESULT-VALIDITY-B013-20260626.json`, `test_stage2_stress_e2e.py` | refreshed current evidence located; sufficiency/gap review required; closure not claimed | Verify V7.1 fix/test requirement: 金标五维≥4/5；关键事实人工抽检；模板重复率上限 |
-| `B-014` | `S2PMT05` | 无背压、熔断、降级和负载丢弃优先级 | `PHASE_S2PMT05_BACKPRESSURE_B014.md`, `ADP-S2PMT05-BACKPRESSURE-B014-20260627.json`, `test_stage2_stress_e2e.py` | refreshed current evidence located; independent review required; closure not claimed | Verify V7.1 fix/test requirement: 2x/5x 峰值下高优先项 SLO，低优先项明确延后/丢弃原因 |
+| `B-012` | `S2PMT05` | 没有覆盖 3+1 日报、周报、月报、复习、行动、ROI 的完整流程测试 | `PHASE_S2PMT05_E2E_B012.md`, `ADP-S2PMT05-E2E-B012-20260627.json`, `test_stage2_stress_e2e.py`; `ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json` | finding-level technical review passed; P1 closure not claimed | Carry to final P1 closure package; verify independent final signoff before reducing counters |
+| `B-013` | `S2PMT05-RESULT-VALIDITY-B013` | 结果有效性测试偏结构存在性，缺语义、证据和非模板化验收 | `PHASE_S2PMT05_RESULT_VALIDITY_B013.md`, `ADP-S2PMT05-RESULT-VALIDITY-B013-20260626.json`, `test_stage2_stress_e2e.py`; `ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json` | finding-level technical review passed; P1 closure not claimed | Carry to final P1 closure package; verify independent final signoff before reducing counters |
+| `B-014` | `S2PMT05` | 无背压、熔断、降级和负载丢弃优先级 | `PHASE_S2PMT05_BACKPRESSURE_B014.md`, `ADP-S2PMT05-BACKPRESSURE-B014-20260627.json`, `test_stage2_stress_e2e.py`; `ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json` | finding-level technical review passed; P1 closure not claimed | Carry to final P1 closure package; verify independent final signoff before reducing counters |
 | `B-015` | `S2PMT04` | 后台清理与数据保存没有事务边界和可观察完成信号 | `PHASE_S2PMT04_TRANSACTION_COMPLETION_B015.md`, `ADP-S2PMT04-TRANSACTION-COMPLETION-B015-20260626.json`, `test_stage2_lifecycle_cache.py` | finding-level technical review passed; P1 closure not claimed | Carry to final P1 closure package; verify independent final signoff before reducing counters |
 | `C-001` | `S2PIT01-SHALLOW-USER-CENTER-C001` | 当前仓库未落地唯一中文 00_用户中心首屏 | `PHASE_S2PIT01_SHALLOW_USER_CENTER_C001.md`, `ADP-S2PIT01-SHALLOW-USER-CENTER-C001-20260627.json`, `test_stage2_sources.py` | refreshed current evidence located; sufficiency/gap review required; closure not claimed | Verify V7.1 fix/test requirement: 从项目根两次点击内完成所有常用操作 |
 | `C-002` | `S2PIT02-OWNER-STATUS-C002` | 总控台偏配置容量，缺真实排队/讲解/发送/复习/行动数量 | `PHASE_S2PIT02_OWNER_STATUS_C002.md`, `ADP-S2PIT02-OWNER-STATUS-C002-20260627.json`, `test_stage2_sources.py` | refreshed current evidence located; sufficiency/gap review required; closure not claimed | Verify V7.1 fix/test requirement: 各分项与总数守恒；空/延迟/失败状态正确显示 |
@@ -95,8 +95,8 @@ No P0/P1 closure, no independent final signoff, no S2PLT04 completion, no final 
 This refresh updates the P1 receipt to point completed P1 remediation rows at their dedicated phase records and manifests instead of older aggregate evidence surfaces. It does not close any P1 finding and does not provide independent review signoff.
 
 - refreshed_findings: `A-006`, `A-007`, `A-008`, `A-009`, `A-010`, `A-011`, `A-012`, `A-013`, `A-014`, `A-015`, `A-016`, `A-017`, `A-018`, `A-019`, `A-020`, `A-021`, `B-002`, `B-003`, `B-004`, `B-005`, `B-006`, `B-009`, `B-010`, `B-011`, `B-012`, `B-013`, `B-014`, `B-015`, `C-001`, `C-002`, `C-003`, `C-005`, `C-006`, `C-007`, `C-010`, `C-011`, `C-012`
-- refresh_manifest: `governance/run_manifests/ADP-S2PMT07-P1-B003-B011-TECHNICAL-REVIEW-20260627.json`
-- previous_refresh_manifest: `governance/run_manifests/ADP-S2PMT07-P1-B002-B004-B005-B015-TECHNICAL-REVIEW-20260627.json`
+- refresh_manifest: `governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json`
+- previous_refresh_manifest: `governance/run_manifests/ADP-S2PMT07-P1-B003-B011-TECHNICAL-REVIEW-20260627.json`
 - closure_claimed: `false`
 - independent_review_signoff_present: `false`
 
@@ -179,3 +179,15 @@ An independent reviewer must re-run or inspect the referenced evidence, decide e
 ## Finding-Level Technical Review 2026-06-27 B003-B011
 
 `S2PMT07-P1-B003-B011-TECHNICAL-REVIEW` reviewed S2PMT03 watchdog stale-lock recovery and M4 cycle-watermark findings `B-003` and `B-011` against current local code, phase records, manifests, and `test_stage2_lease_fencing.py`. Both are technical closure candidates only. P1 closure is not claimed; inherited counters remain P0=`8`, P1=`37`; `A-020`, S2PLT04, final bundle, independent final signoff, and independent final command execution still block Stage 2 integrated production acceptance.
+
+
+## Finding-Level Technical Review 2026-06-27 B006-B009-B010-B012-B013-B014
+
+`S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW` reviewed S2PMT05 capacity, fault-injection, time-policy, 35-day E2E, result-validity, and backpressure findings `B-006`, `B-009`, `B-010`, `B-012`, `B-013`, and `B-014` against current local code, phase records, manifests, and `test_stage2_stress_e2e.py`. All six are technical closure candidates only. P1 closure is not claimed; inherited counters remain P0=`8`, P1=`37`; `A-020`, S2PLT04, final bundle, independent final signoff, and independent final command execution still block Stage 2 integrated production acceptance.
+
+- manifest: [`ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json`](../../../governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json)
+- phase record: [`PHASE_S2PMT07_P1_B006_B009_B010_B012_B013_B014_TECHNICAL_REVIEW.md`](./PHASE_S2PMT07_P1_B006_B009_B010_B012_B013_B014_TECHNICAL_REVIEW.md)
+- reviewed findings: `B-006`, `B-009`, `B-010`, `B-012`, `B-013`, `B-014`
+- verdict: `PASS_WITH_NO_PRODUCTION_ACCEPTANCE` for finding-level technical evidence only
+- preserved counters: P0 remains `8`, P1 remains `37`
+- final closure: not claimed; independent final signoff, final command execution, S2PLT04, and final acceptance bundle remain required
