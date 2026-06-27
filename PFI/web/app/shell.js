@@ -179,7 +179,39 @@ const FEATURE_TARGETS = {
   任务监控: { view: "task_monitor", label: "打开任务" },
   隐私边界: { view: "privacy_boundary", label: "打开隐私" },
   备份恢复: { view: "backup_restore", label: "打开备份" },
+  运行反馈控制台: { workspace: "settings", label: "打开反馈" },
+  多模态反馈: { workspace: "settings", label: "打开反馈" },
+  触感反馈强度: { workspace: "settings", label: "打开触感" },
+  声音反馈: { workspace: "settings", label: "打开声音" },
+  视觉反馈: { workspace: "settings", label: "打开视觉" },
+  通知反馈: { workspace: "settings", label: "打开通知" },
+  反馈测试: { workspace: "settings", label: "测试反馈" },
+  无障碍反馈: { workspace: "settings", label: "打开无障碍" },
 };
+
+const SEARCH_ALIASES = {
+  首页总览: "home dashboard overview zonglan 首页 今日 总览",
+  账户与资产: "accounts assets account zichan 账户 资产 净资产 现金",
+  账本流水: "ledger transactions zhangben liushui 账本 流水 交易 分类",
+  投资管理: "investment portfolio touzi 投资 持仓 风险 收益 回测",
+  消费管理: "consumption spending xiaofei xf 消费 支出 预算 订阅 异常",
+  数据源与上传: "sources upload import sync shuju yuan 上传 导入 同步 支付宝",
+  建议与复盘: "review recommendations advice fupan 建议 复盘 决策",
+  报告与洞察: "reports insights report baogao 报告 洞察 导出 上下文",
+  设置: "settings preferences config shezhi 设置 偏好 系统",
+  数据与系统: "settings data system shuju xitong 数据 系统 来源 任务 隐私",
+  运行反馈控制台: "feedback console fankui fk 反馈 运行 控制台",
+  多模态反馈: "multimodal feedback haptic sound visual notification 多模态 反馈",
+  触感反馈强度: "haptic vibration touch chugan 触感 震动 强度",
+  声音反馈: "sound audio shengyin 声音 音效",
+  视觉反馈: "visual animation shijue 视觉 动效 状态",
+  通知反馈: "notification toast tongzhi 通知 提醒",
+  反馈测试: "feedback test ceshi 测试 反馈",
+  无障碍反馈: "accessibility a11y wu zhang ai 无障碍",
+};
+
+const SEARCH_DEFAULT_LIMIT = 10;
+let globalSearchState = { items: [], results: [], activeIndex: 0 };
 
 const FUNCTION_VIEWS = {
   single: functionView(
@@ -1006,7 +1038,7 @@ function installStage3WorkspaceAliases() {
     runtime: "设置：只改本机偏好 · 不触发外部动作",
     cards: [
       ["数据与系统", "可用", "来源、任务、隐私、备份"],
-      ["运行反馈", "可配置", "视觉、声音、触感、通知"],
+      ["运行反馈控制台", "可配置", "视觉、声音、触感、通知"],
       ["汇率徽标", "待更新", "CNY/AUD 06:00 快照"],
       ["隐私边界", "开启", "原始数据按 MetaDatabase 备份规则管理"],
     ],
@@ -1014,17 +1046,26 @@ function installStage3WorkspaceAliases() {
       feature("数据中心", "可用", "系统诊断", "检查数据源、代码格式、质量报告、缓存和隐私边界。", { workspace: "settings", label: "打开数据与系统" }),
       feature("来源登记", "复核", "数据源状态", "查看来源、时间、质量和限制条件。", { workspace: "settings", label: "查看来源" }),
       feature("任务监控", "可用", "任务中心", "查看队列、重试、失败和产物。", { workspace: "settings", label: "查看任务" }),
+      feature("运行反馈控制台", "可配置", "设置页", "统一管理成功、失败、进行中、后台任务和缓存兜底反馈。", { workspace: "settings", label: "打开反馈" }),
       feature("多模态反馈", "可配置", "设置页", "管理触感反馈强度、声音反馈、视觉反馈、通知反馈和反馈测试。", { workspace: "settings", label: "打开反馈设置" }),
+      feature("触感反馈强度", "可配置", "关闭 / 轻 / 标准 / 强", "手机浏览器支持震动时才启用，不支持时静默降级。", { workspace: "settings", label: "打开触感" }),
+      feature("声音反馈", "可配置", "提示音", "控制成功、失败和完成提示音，默认不打扰。", { workspace: "settings", label: "打开声音" }),
+      feature("视觉反馈", "可配置", "动效与状态", "控制按钮按压、骨架屏、错误横幅和状态提示。", { workspace: "settings", label: "打开视觉" }),
+      feature("通知反馈", "可配置", "本机通知", "控制后台任务完成、失败和待复核提醒。", { workspace: "settings", label: "打开通知" }),
+      feature("反馈测试", "可用", "即时验证", "测试触感、声音、视觉和通知反馈是否符合当前偏好。", { workspace: "settings", label: "测试反馈" }),
+      feature("无障碍反馈", "可配置", "键盘与读屏", "保证反馈状态可被键盘和读屏读取。", { workspace: "settings", label: "打开无障碍" }),
       feature("备份恢复", "复核", "恢复演练", "检查备份、校验和恢复路径。", { workspace: "settings", label: "查看备份" }),
     ],
     rows: [
       row("P0", "汇率徽标", "CNY/AUD", "读取当日 06:00 快照；缺失时显示中文待更新。", "复核"),
+      row("P0", "运行反馈控制台", "设置页", "集中配置多模态反馈，不在业务页常驻右侧设置面板。", "可用"),
       row("P0", "隐私边界", "目录策略", "确认私有数据与 secrets 不进入公共 Git。", "可用"),
-      row("P1", "反馈设置", "本机偏好", "业务页默认不常驻反馈控制台。", "可用"),
+      row("P1", "反馈设置", "触感/声音/视觉/通知", "业务页默认不常驻反馈控制台。", "可用"),
     ],
     tasks: [
       task("数据与系统入口", "可用 · 旧入口映射到设置页", "ready"),
-      task("反馈设置归口", "可配置 · 触感/声音/视觉/通知集中管理", "ready"),
+      task("反馈设置归口", "可配置 · 运行反馈/触感/声音/视觉/通知集中管理", "ready"),
+      task("反馈测试", "可用 · 可在设置页触发反馈检查", "ready"),
       task("汇率数据", "复核 · 等待 06:00 快照源接入", "review"),
     ],
     evidence: evidence("设置证据", "数据与系统、反馈和备份", "本地设置合同", "设置入口不触发外部执行。"),
@@ -1609,6 +1650,7 @@ function renderWorkspace(workspaceId, options = {}) {
   const runtimeTarget = document.querySelector("[data-runtime-target]");
   const previousContext = currentContext();
   const activeRoute = Object.prototype.hasOwnProperty.call(options, "routeAlias") ? options.routeAlias : "";
+  const routeForState = activeRoute || defaultRouteAliasForWorkspace(workspaceId);
 
   document.querySelectorAll("[data-workspace]").forEach((button) => {
     const isAlias = button.dataset.entryType === "v01_alias" || button.hasAttribute("data-feature-view");
@@ -1626,6 +1668,8 @@ function renderWorkspace(workspaceId, options = {}) {
   if (freshness) freshness.textContent = workspace.freshness;
   if (runtimeTarget) runtimeTarget.textContent = workspace.runtime;
   main.dataset.activeWorkspace = workspaceId;
+  main.dataset.routeAlias = routeForState;
+  main.dataset.settingsSurface = workspaceId === "settings" ? "primary_workspace" : "none";
   shell.dataset.state = "ready";
 
   renderCards(workspace.cards);
@@ -1636,13 +1680,15 @@ function renderWorkspace(workspaceId, options = {}) {
   drawSparkline(workspace.chart);
   if (!options.keepFunctionDetail) hideFunctionDetail();
   const nextContext = { ...previousContext, workspace: workspaceId };
-  if (activeRoute) {
-    nextContext.route_alias = activeRoute;
+  if (routeForState) {
+    nextContext.route_alias = routeForState;
   } else {
     delete nextContext.route_alias;
   }
   if (!options.keepFunctionDetail) delete nextContext.feature_view;
   writeContext(nextContext);
+  if (workspaceId === "settings") setEvidenceDrawer(false);
+  if (!options.skipRouteSync) syncBrowserRoute(routeForState);
 
   if (!options.silent) showToast(`已切换到${workspace.label}`);
   if (!options.preserveFocus) main.focus({ preventScroll: true });
@@ -2027,6 +2073,45 @@ function setActiveWorkspace(workspaceId, options = {}) {
   renderWorkspace(workspaceId, options);
 }
 
+function defaultRouteAliasForWorkspace(workspaceId) {
+  const entries = [...document.querySelectorAll('[data-primary-entry="true"]')];
+  const primary = entries.find((entry) => entry.dataset.workspace === workspaceId && entry.dataset.entryType !== "v01_alias");
+  const any = entries.find((entry) => entry.dataset.workspace === workspaceId);
+  return (primary || any)?.dataset.routeAlias || "";
+}
+
+function workspaceTargetFromRoute(routeAlias) {
+  const clean = String(routeAlias || "").trim();
+  if (!clean) return null;
+  const entry = [...document.querySelectorAll('[data-primary-entry="true"]')]
+    .find((button) => button.dataset.routeAlias === clean);
+  if (!entry) return null;
+  return {
+    workspace: entry.dataset.workspace || "home",
+    routeAlias: clean,
+    view: entry.dataset.featureView || "",
+  };
+}
+
+function routeAliasFromLocation() {
+  const hashRoute = decodeURIComponent(String(window.location.hash || "").replace(/^#/, ""));
+  if (hashRoute.startsWith("/")) return hashRoute;
+  const params = initialSearchParams();
+  return params.get("route") || "";
+}
+
+function syncBrowserRoute(routeAlias) {
+  const clean = String(routeAlias || "").trim();
+  if (!clean || !window.history || typeof window.history.replaceState !== "function") return;
+  try {
+    const url = new URL(String(window.location || ""));
+    url.hash = clean;
+    window.history.replaceState(null, "", url);
+  } catch (_error) {
+    // Static file previews can have unusual URLs; route state is still stored in context.
+  }
+}
+
 function openCommandPalette() {
   const dialog = document.querySelector("[data-command-palette]");
   const input = document.querySelector("[data-command-input]");
@@ -2060,6 +2145,251 @@ function toggleTaskCenter() {
   const taskCenter = document.querySelector("[data-task-center]");
   if (!taskCenter) return;
   taskCenter.toggleAttribute("hidden");
+}
+
+function focusGlobalSearch() {
+  const input = document.querySelector("[data-global-search-input]");
+  if (!input) return;
+  input.focus();
+  input.select();
+  renderGlobalSearchResults(input.value);
+}
+
+function buildGlobalSearchIndex() {
+  const items = [];
+  const seen = new Set();
+  const add = (item) => {
+    const title = safeUserText(item.title, "");
+    if (!title) return;
+    const key = [item.category || "结果", title, item.workspace || "", item.view || "", item.routeAlias || ""].join("|");
+    if (seen.has(key)) return;
+    seen.add(key);
+    items.push({
+      title,
+      category: item.category || "结果",
+      path: safeUserText(item.path, item.workspace ? workspaceLabel(item.workspace, "工作区") : "PFI"),
+      hint: safeUserText(item.hint, item.view ? "打开功能" : "打开入口"),
+      keywords: [item.keywords || "", SEARCH_ALIASES[title] || ""].join(" "),
+      workspace: item.workspace || "",
+      view: item.view || "",
+      routeAlias: item.routeAlias || "",
+      priority: Number(item.priority || 50),
+    });
+  };
+
+  document.querySelectorAll('[data-primary-entry="true"]').forEach((button) => {
+    const title = button.textContent.trim();
+    add({
+      title,
+      category: button.dataset.entryType === "v01_alias" ? "兼容入口" : "一级入口",
+      path: button.dataset.routeAlias || workspaceLabel(button.dataset.workspace, "入口"),
+      hint: button.dataset.featureView ? "打开功能" : "打开入口",
+      workspace: button.dataset.workspace || "home",
+      view: button.dataset.featureView || "",
+      routeAlias: button.dataset.routeAlias || "",
+      keywords: `${button.dataset.workspace || ""} ${button.dataset.routeAlias || ""}`,
+      priority: Number(button.dataset.navIndex || 50),
+    });
+  });
+
+  Object.entries(WORKSPACES).forEach(([workspaceId, workspace]) => {
+    add({
+      title: workspace.label,
+      category: "工作区",
+      path: defaultRouteAliasForWorkspace(workspaceId) || workspace.label,
+      hint: "打开工作区",
+      workspace: workspaceId,
+      routeAlias: defaultRouteAliasForWorkspace(workspaceId),
+      keywords: `${workspace.kicker || ""} ${workspace.conclusion || ""} ${workspace.runtime || ""}`,
+      priority: 20,
+    });
+
+    (workspace.features || []).forEach((card, index) => {
+      const target = card.target || featureTarget(card.title);
+      add({
+        title: card.title,
+        category: "功能",
+        path: `${workspace.label} / ${safeUserText(card.evidence, "功能")}`,
+        hint: target.view ? "打开功能面板" : "打开工作区",
+        workspace: target.workspace || workspaceId,
+        view: target.view || "",
+        routeAlias: target.routeAlias || defaultRouteAliasForWorkspace(target.workspace || workspaceId),
+        keywords: `${card.status || ""} ${card.evidence || ""} ${card.description || ""}`,
+        priority: 30 + index,
+      });
+    });
+
+    (workspace.tasks || []).forEach((item, index) => {
+      add({
+        title: item.title,
+        category: "任务",
+        path: `${workspace.label} / 任务中心`,
+        hint: "打开所在工作区",
+        workspace: workspaceId,
+        routeAlias: defaultRouteAliasForWorkspace(workspaceId),
+        keywords: `${item.detail || ""} ${item.state || ""}`,
+        priority: 60 + index,
+      });
+    });
+
+    (workspace.rows || []).forEach((item, index) => {
+      add({
+        title: item.object,
+        category: "决策",
+        path: `${workspace.label} / ${item.priority || "P"}`,
+        hint: "打开所在工作区",
+        workspace: workspaceId,
+        routeAlias: defaultRouteAliasForWorkspace(workspaceId),
+        keywords: `${item.evidence || ""} ${item.action || ""} ${item.status || ""}`,
+        priority: 70 + index,
+      });
+    });
+  });
+
+  Object.values(FUNCTION_VIEWS).forEach((detail, index) => {
+    add({
+      title: detail.title,
+      category: "功能面板",
+      path: `${WORKSPACE_LABELS[detail.workspace] || "PFI"} / ${detail.primaryAction}`,
+      hint: "打开功能面板",
+      workspace: detail.workspace,
+      view: detail.view,
+      routeAlias: detail.view === "single" ? "/investment/strategy-lab" : defaultRouteAliasForWorkspace(detail.workspace),
+      keywords: `${detail.purpose || ""} ${(detail.checks || []).join(" ")} ${(detail.runSteps || []).join(" ")}`,
+      priority: 40 + index,
+    });
+  });
+
+  return items;
+}
+
+function fuzzySearchItems(query, items = buildGlobalSearchIndex(), limit = SEARCH_DEFAULT_LIMIT) {
+  const cleanQuery = normalizeSearch(query);
+  const ranked = items
+    .map((item) => ({ item, score: searchScore(cleanQuery, item) }))
+    .filter((entry) => cleanQuery ? entry.score > 0 : entry.item.category.includes("入口") || entry.item.title === "运行反馈控制台")
+    .sort((left, right) => right.score - left.score || left.item.priority - right.item.priority || left.item.title.localeCompare(right.item.title, "zh-Hans-CN"))
+    .slice(0, limit)
+    .map((entry) => entry.item);
+  return ranked;
+}
+
+function searchScore(cleanQuery, item) {
+  if (!cleanQuery) return 100 - Number(item.priority || 50);
+  const haystack = normalizeSearch([item.title, item.category, item.path, item.hint, item.keywords].join(" "));
+  if (!haystack) return 0;
+  const title = normalizeSearch(item.title);
+  let score = 0;
+  if (title === cleanQuery) score += 500;
+  if (title.includes(cleanQuery)) score += 280 - title.indexOf(cleanQuery);
+  if (haystack.includes(cleanQuery)) score += 180 - Math.min(haystack.indexOf(cleanQuery), 80);
+  const subsequence = subsequenceScore(cleanQuery, haystack);
+  if (subsequence > 0) score += subsequence;
+  return score;
+}
+
+function subsequenceScore(query, text) {
+  if (!query) return 1;
+  let cursor = -1;
+  let gap = 0;
+  for (const char of query) {
+    const next = text.indexOf(char, cursor + 1);
+    if (next === -1) return 0;
+    gap += Math.max(0, next - cursor - 1);
+    cursor = next;
+  }
+  return Math.max(1, 120 - gap);
+}
+
+function normalizeSearch(value) {
+  return String(value || "")
+    .toLowerCase()
+    .replace(/[\s\u3000/|·:：,，.。?？()（）\[\]【】_-]+/g, "");
+}
+
+function renderGlobalSearchResults(query) {
+  const input = document.querySelector("[data-global-search-input]");
+  const panel = document.querySelector("[data-global-search-results]");
+  if (!input || !panel) return;
+  globalSearchState.items = buildGlobalSearchIndex();
+  globalSearchState.results = fuzzySearchItems(query, globalSearchState.items);
+  globalSearchState.activeIndex = Math.min(globalSearchState.activeIndex, Math.max(globalSearchState.results.length - 1, 0));
+  panel.replaceChildren();
+  if (!globalSearchState.results.length) {
+    const empty = document.createElement("div");
+    empty.className = "search-empty";
+    empty.textContent = "没有匹配结果";
+    panel.appendChild(empty);
+  } else {
+    globalSearchState.results.forEach((item, index) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.id = `global-search-option-${index}`;
+      button.className = `search-result${index === globalSearchState.activeIndex ? " is-active" : ""}`;
+      button.dataset.searchIndex = String(index);
+      button.setAttribute("role", "option");
+      button.setAttribute("aria-selected", index === globalSearchState.activeIndex ? "true" : "false");
+      const title = document.createElement("strong");
+      title.textContent = item.title;
+      const meta = document.createElement("span");
+      meta.textContent = `${item.category} · ${item.path}`;
+      const hint = document.createElement("small");
+      hint.textContent = item.hint;
+      button.appendChild(title);
+      button.appendChild(meta);
+      button.appendChild(hint);
+      panel.appendChild(button);
+    });
+  }
+  panel.hidden = false;
+  input.setAttribute("aria-expanded", "true");
+  input.setAttribute("aria-activedescendant", globalSearchState.results.length ? `global-search-option-${globalSearchState.activeIndex}` : "");
+}
+
+function closeGlobalSearchResults() {
+  const input = document.querySelector("[data-global-search-input]");
+  const panel = document.querySelector("[data-global-search-results]");
+  if (panel) panel.hidden = true;
+  if (input) {
+    input.setAttribute("aria-expanded", "false");
+    input.removeAttribute("aria-activedescendant");
+  }
+}
+
+function setGlobalSearchActiveIndex(nextIndex) {
+  if (!globalSearchState.results.length) return;
+  const total = globalSearchState.results.length;
+  globalSearchState.activeIndex = (nextIndex + total) % total;
+  renderGlobalSearchResults(document.querySelector("[data-global-search-input]")?.value || "");
+}
+
+function openGlobalSearchResult(index = globalSearchState.activeIndex) {
+  const item = globalSearchState.results[index];
+  if (!item) return;
+  if (item.view) {
+    openFunctionView(item.view, { routeAlias: item.routeAlias || "" });
+  } else {
+    setActiveWorkspace(item.workspace || "home", { routeAlias: item.routeAlias || "" });
+  }
+  const input = document.querySelector("[data-global-search-input]");
+  if (input) input.value = item.title;
+  closeGlobalSearchResults();
+  showToast(`已打开${item.title}`);
+}
+
+function handleGlobalSearchKeydown(event) {
+  if (event.key === "ArrowDown") {
+    event.preventDefault();
+    setGlobalSearchActiveIndex(globalSearchState.activeIndex + 1);
+  } else if (event.key === "ArrowUp") {
+    event.preventDefault();
+    setGlobalSearchActiveIndex(globalSearchState.activeIndex - 1);
+  } else if (event.key === "Enter") {
+    event.preventDefault();
+    openGlobalSearchResult();
+  } else if (event.key === "Escape") {
+    closeGlobalSearchResults();
+  }
 }
 
 function runCachedRefresh() {
@@ -2259,10 +2589,37 @@ function bindEvents() {
     button.addEventListener("click", openCommandPalette);
   });
 
+  const globalSearchInput = document.querySelector("[data-global-search-input]");
+  const globalSearchResults = document.querySelector("[data-global-search-results]");
+  globalSearchInput?.addEventListener("focus", (event) => {
+    globalSearchState.activeIndex = 0;
+    renderGlobalSearchResults(event.target.value);
+  });
+  globalSearchInput?.addEventListener("input", (event) => {
+    globalSearchState.activeIndex = 0;
+    renderGlobalSearchResults(event.target.value);
+  });
+  globalSearchInput?.addEventListener("keydown", handleGlobalSearchKeydown);
+  globalSearchResults?.addEventListener("mousedown", (event) => {
+    event.preventDefault();
+  });
+  globalSearchResults?.addEventListener("click", (event) => {
+    const result = event.target.closest("[data-search-index]");
+    if (!result) return;
+    openGlobalSearchResult(Number(result.dataset.searchIndex || 0));
+  });
+
   document.querySelector("[data-command-input]")?.addEventListener("input", (event) => {
-    const query = event.target.value.trim().toLowerCase();
+    const query = event.target.value.trim();
     document.querySelectorAll("[data-command-workspace]").forEach((button) => {
-      button.hidden = query && !button.textContent.toLowerCase().includes(query);
+      const label = button.textContent.trim();
+      button.hidden = query && searchScore(normalizeSearch(query), {
+        title: label,
+        category: "命令",
+        path: button.dataset.commandRoute || "",
+        hint: "打开入口",
+        keywords: `${button.dataset.commandWorkspace || ""} ${SEARCH_ALIASES[label] || ""}`,
+      }) <= 0;
     });
   });
 
@@ -2307,11 +2664,18 @@ function bindEvents() {
   document.addEventListener("keydown", (event) => {
     if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
       event.preventDefault();
-      openCommandPalette();
+      focusGlobalSearch();
     }
     if (event.key === "Escape") {
       closeCommandPalette();
+      closeGlobalSearchResults();
       setEvidenceDrawer(false);
+    }
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!event.target.closest("[data-search-surface='global']")) {
+      closeGlobalSearchResults();
     }
   });
 }
@@ -2322,6 +2686,15 @@ document.addEventListener("DOMContentLoaded", () => {
   applyHomeSummary(readHomeSummary());
   const params = initialSearchParams();
   const requestedFeature = params.get("view") || readContext().feature_view || "";
+  const routeTarget = workspaceTargetFromRoute(routeAliasFromLocation());
+  if (routeTarget?.view) {
+    openFunctionView(routeTarget.view, { silent: true, routeAlias: routeTarget.routeAlias });
+    return;
+  }
+  if (routeTarget?.workspace) {
+    renderWorkspace(routeTarget.workspace, { routeAlias: routeTarget.routeAlias, silent: true, preserveFocus: true });
+    return;
+  }
   if (Object.prototype.hasOwnProperty.call(FUNCTION_VIEWS, requestedFeature)) {
     openFunctionView(requestedFeature, { silent: true });
     return;
