@@ -9,6 +9,6 @@ model_versions:
 parameter_profile_versions:
   pfi_root_contract: "pfi-v0.2-root-contract"
 data_snapshot_version: "not_applicable_contract_only"
-current_iteration: "ITER-20260627-PFI-S3-READABLE-MVP"
-current_phase: "S3P"
-current_gate: "PFI-S3-READABLE-MVP-GATE"
+current_iteration: "ITER-20260627-PFI-S4-ANALYSIS-MVP"
+current_phase: "S4P"
+current_gate: "PFI-S4-ANALYSIS-MVP-GATE"

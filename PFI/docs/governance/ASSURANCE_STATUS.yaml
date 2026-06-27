@@ -1,10 +1,10 @@
 project_id: "PFI"
-as_of_event_id: "EVENT-PFI-20260627-S3-READABLE-MVP"
+as_of_event_id: "EVENT-PFI-20260627-S4-ANALYSIS-MVP"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "47d36e0227d85849b2f7624c137c1f644bef13a0"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
-snapshot_event_time: "2026-06-27T11:30:00+10:00"
-generator_version: "stage3-readable-mvp-closeout-v1"
+snapshot_event_time: "2026-06-27T12:20:00+10:00"
+generator_version: "stage4-analysis-mvp-closeout-v1"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
   structural_completeness:
@@ -15,7 +15,7 @@ dimensions:
   implementation_congruence:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
-    total_active_parameters: 7
+    total_active_parameters: 12
     total_active_formulas: 1
     evidence_refs:
       - "PFI/docs/governance/parameter_registry.csv"
@@ -52,14 +52,14 @@ dimensions:
       - "PFI/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "PARTIAL"
-  release_gate: "S4-START-GATE"
+  release_gate: "S5-START-GATE"
   blocker_ids:
     - "PFI-PROD-VAL-001"
 next_executable_task:
-  task_id: "S4PAT01"
+  task_id: "S5PAT01"
   status: "planned"
-  reason: "Stage 3 本地可读 MVP 验收已完成，下一步进入投资与消费智能分析；真实环境验证仍是独立生产阻塞。"
+  reason: "Stage 4 本地分析 MVP 验收已完成，下一步进入建议、报告和 Alpha 只读出口；真实环境验证仍是独立生产阻塞。"
   acceptance_ids:
-    - "ACC-PFI-S4-INVESTMENT-SUMMARY"
+    - "ACC-PFI-S5-RECOMMENDATION-MODEL"
   owner: "owner"
-  unblock_condition: "Stage 4 投资总览、消费总览、风险、预算和现金流分析完成。"
+  unblock_condition: "Stage 5 recommendation lifecycle、报告导出和 Alpha 只读 context export 完成。"

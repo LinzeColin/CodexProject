@@ -1,12 +1,12 @@
 schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "PFI"
-total_estimated_hours: 8
-completed_estimated_hours: 8
-current_stage_id: "S3"
-current_phase_id: "S3P"
-current_task_id: "S3PZT01"
-next_gate_id: "S4-START-GATE"
+total_estimated_hours: 12
+completed_estimated_hours: 12
+current_stage_id: "S4"
+current_phase_id: "S4P"
+current_task_id: "S4PZT01"
+next_gate_id: "S5-START-GATE"
 stages:
   - stage_id: "S2"
     name: "数据源与低操作自动同步 MVP"
@@ -196,4 +196,92 @@ stages:
               - "Stage 3 FX fixture 不是实时汇率。"
             rollback: "Revert the Stage 3 closeout commit; keep QBVS runtime path unchanged."
             current_result: "Stage 3 local readable MVP acceptance complete; production readiness not claimed."
+            completed_version: "0.2.0"
+  - stage_id: "S4"
+    name: "投资与消费智能分析 MVP"
+    person_goal: "Owner 能从记录升级到分析，看到投资收益/风险/行为和消费预算/订阅/异常/现金流。"
+    status: "completed"
+    estimated_hours: 4
+    estimated_pct: 100
+    stop_conditions:
+      - "投资/消费混算"
+      - "数据不足却给精确结论"
+      - "缺交易数据仍生成行为结论"
+      - "转账或投资事件计入生活消费"
+      - "生活现金和投资现金混淆"
+      - "隐藏旧策略回测、盘感训练或大数据模拟器入口"
+    stop_gate:
+      gate_id: "PFI-S4-ANALYSIS-MVP-GATE"
+      pass_criteria:
+        - "Stage 4 4A/4B acceptance matrix 全部 PASS"
+        - "Stage 4 contract test 通过"
+        - "Web shell 投资管理和消费管理显示分析能力"
+        - "旧 QBVS lifecycle smoke 通过"
+        - "本地 PFI.app 入口指向 canonical PFI"
+      evidence:
+        - "PFI/docs/pfi_v02/STAGE4_ANALYSIS_MVP.md"
+        - "PFI/src/pfi_v02/stage4_analysis_mvp.py"
+      failure_action: "blocked"
+    phases:
+      - phase_id: "S4P"
+        name: "投资分析、消费分析"
+        objective: "提供本地只读智能分析 MVP，不新增真实同步、支付或实盘执行。"
+        status: "completed"
+        estimated_hours: 4
+        estimated_pct: 100
+        stop_conditions:
+          - "无证据归因、无证据风险、无证据异常"
+          - "低置信度消费分类不进复核"
+          - "QBVS 入口丢失"
+        stop_gate:
+          gate_id: "PFI-S4-ANALYSIS-MVP-GATE"
+          pass_criteria:
+            - "S4 read-model 覆盖 4A/4B"
+            - "收益归因 precision_policy 阻止精确伪结论"
+            - "消费 summary 排除 transfer/investment"
+            - "现金流 forecast 分离 life_cash 和 investment_cash"
+          evidence:
+            - "PFI/docs/pfi_v02/STAGE4_ANALYSIS_MVP.md"
+            - "PFI/tests/test_stage4_analysis_mvp.py"
+          failure_action: "fix_and_rerun"
+        tasks:
+          - task_id: "S4PZT01"
+            name: "Stage 4 closeout、本机入口刷新与缓存清理"
+            objective: "证明 Stage 4 投资分析和消费分析 acceptance、stop condition、validation、入口和缓存清理均完成。"
+            status: "completed"
+            estimated_hours: 4
+            estimated_pct: 100
+            dependencies:
+              - "S3PZT01"
+            acceptance_ids:
+              - "ACC-PFI-S4-ANALYSIS-MVP"
+            acceptance:
+              - acceptance_id: "ACC-PFI-S4-ANALYSIS-MVP"
+                description: "Stage 4 所有 phase/task 的本地只读分析 read-model、Web shell 投资/消费分析、旧 QBVS smoke、治理验证、本机入口和缓存清理通过。"
+                evidence_refs:
+                  - "PFI/docs/pfi_v02/STAGE4_ANALYSIS_MVP.md"
+                  - "PFI/tests/test_stage4_analysis_mvp.py"
+            test_commands:
+              - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -B -m unittest tests.test_stage1_ia_contract tests.test_stage1_core_models tests.test_stage1_classification_rules tests.test_stage2_data_source_registry tests.test_stage2_cba_csv_import tests.test_stage2_alipay_import tests.test_stage2_non_csv_contracts tests.test_stage3_readable_mvp tests.test_stage4_analysis_mvp -q"
+              - "cd PFI/modules/qbvs_lab && PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q"
+              - "node --check PFI/web/app/shell.js"
+              - "python3 scripts/validate_project_governance.py --project PFI"
+              - "python3 -B -m unittest tests.governance.test_human_entry_markdown_contract -q"
+            test_results:
+              - "Stage 1+2+3+4 contracts: Ran 71 tests / OK"
+              - "Legacy QBVS lifecycle smoke: Ran 1 test / OK"
+              - "Project governance validation: errors 0 / warnings 0"
+              - "Human-entry Markdown contract: Ran 2 tests / OK"
+              - "Stage 4 contract: Ran 12 tests / OK"
+              - "Python compile: OK"
+              - "Web shell syntax: OK"
+              - "git diff --check -- PFI: OK"
+            evidence_refs:
+              - "PFI/docs/pfi_v02/STAGE4_ANALYSIS_MVP.md"
+              - "PFI/HANDOFF.md"
+            risks:
+              - "真实账户联通、真实凭证、生产运行和实盘执行仍未验证。"
+              - "Stage 4 分析使用 synthetic/local fixtures，不是正式投资建议。"
+            rollback: "Revert the Stage 4 closeout commit; keep QBVS runtime path unchanged."
+            current_result: "Stage 4 local analysis MVP acceptance complete; production readiness not claimed."
             completed_version: "0.2.0"

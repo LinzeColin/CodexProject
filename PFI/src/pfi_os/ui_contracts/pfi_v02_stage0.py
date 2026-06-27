@@ -58,7 +58,7 @@ ACTIVE_VIEW_COMPATIBILITY: tuple[CompatibilityEntry, ...] = (
 
 PUBLIC_ASSUMPTION_COMPATIBILITY: tuple[CompatibilityEntry, ...] = (
     CompatibilityEntry("PFI/modules/qbvs_lab", True, "CodexProject/PFI/modules/qbvs_lab", "投资管理 > 策略实验室 / 大数据模拟器", "保留该路径和文档；作为新 IA 下的兼容入口。", "MappedPublicAssumption"),
-    CompatibilityEntry("qbvs/ active runtime", True, "CodexProject/PFI/modules/qbvs_lab/qbvs", "投资管理 > 策略实验室 / 大数据模拟器", "禁止移动、改名或宽重构；Stage 3 只刷新入口和 read-model。", "BoundaryLocked"),
+    CompatibilityEntry("qbvs/ active runtime", True, "CodexProject/PFI/modules/qbvs_lab/qbvs", "投资管理 > 策略实验室 / 大数据模拟器", "禁止移动、改名或宽重构；Stage 4 只刷新入口和分析 read-model。", "BoundaryLocked"),
 )
 
 LOCAL_ACTIVE_RUNTIME_PATHS: tuple[str, ...] = (

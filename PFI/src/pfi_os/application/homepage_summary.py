@@ -8,6 +8,7 @@ from pfi_os.application.operational_store import OperationalStore
 from pfi_os.application.source_registry import SourceRegistry
 from pfi_os.application.workflow_runtime_read_model import build_workflow_runtime_read_model, empty_workflow_runtime_read_model
 from pfi_v02.stage3_read_mvp import build_stage3_read_model
+from pfi_v02.stage4_analysis_mvp import build_stage4_analysis_model
 
 RETIRED_PUBLIC_FRAGMENTS = (
     "Token" + " ROI",
@@ -30,6 +31,7 @@ SAFE_METADATA_KEYS = (
 def build_homepage_summary(store: OperationalStore | None = None, *, now: datetime | None = None) -> dict[str, Any]:
     operational_store = store or OperationalStore()
     stage3_dashboard = build_stage3_read_model(now=now)
+    stage4_dashboard = build_stage4_analysis_model(stage3_dashboard=stage3_dashboard, now=now)
     source_registry = SourceRegistry(operational_store)
     source_summary = _without_retired_source_rows(source_registry.summary(now=now))
     sources = _without_retired_rows(operational_store.table_rows("source_records"))
@@ -40,8 +42,8 @@ def build_homepage_summary(store: OperationalStore | None = None, *, now: dateti
 
     generated_at = (now or datetime.now(timezone.utc)).isoformat(timespec="seconds")
     latest_as_of = _latest_text([row.get("as_of", "") for row in [*sources, *evidence, *jobs, *tasks, *holdings]])
-    cards = _stage3_metric_cards(stage3_dashboard)
-    decision_rows = _stage3_decision_rows(stage3_dashboard) or _decision_rows(tasks, jobs, evidence)
+    cards = _stage4_metric_cards(stage4_dashboard) or _stage3_metric_cards(stage3_dashboard)
+    decision_rows = _stage4_decision_rows(stage4_dashboard) or _stage3_decision_rows(stage3_dashboard) or _decision_rows(tasks, jobs, evidence)
     return {
         "schema": "PFIOSHomeSummaryV1",
         "generated_at": generated_at,
@@ -49,7 +51,8 @@ def build_homepage_summary(store: OperationalStore | None = None, *, now: dateti
         "source_registry": source_summary,
         "metric_cards": cards,
         "decision_rows": decision_rows,
-        "evidence_drawer": _stage3_evidence_drawer(stage3_dashboard) or _evidence_drawer(evidence, sources),
+        "evidence_drawer": _stage4_evidence_drawer(stage4_dashboard) or _stage3_evidence_drawer(stage3_dashboard) or _evidence_drawer(evidence, sources),
+        "stage4_dashboard": _sanitize_public_payload(stage4_dashboard),
         "stage3_dashboard": _sanitize_public_payload(stage3_dashboard),
         "workflow_runtime": _sanitize_public_payload(build_workflow_runtime_read_model(operational_store, now=now)),
         "read_model": "OperationalStore -> SourceRegistry -> PFIOSHomeSummaryV1",
@@ -60,6 +63,7 @@ def build_homepage_summary(store: OperationalStore | None = None, *, now: dateti
 
 def empty_homepage_summary() -> dict[str, Any]:
     stage3_dashboard = build_stage3_read_model()
+    stage4_dashboard = build_stage4_analysis_model(stage3_dashboard=stage3_dashboard)
     return {
         "schema": "PFIOSHomeSummaryV1",
         "generated_at": "",
@@ -73,9 +77,10 @@ def empty_homepage_summary() -> dict[str, Any]:
             "private_uri_policy": "Private, private-derived, and secret source URIs are redacted by default.",
             "truth_role": "Operational source_records table is the source registry; ResearchBus remains compatibility events only.",
         },
-        "metric_cards": _stage3_metric_cards(stage3_dashboard),
-        "decision_rows": _stage3_decision_rows(stage3_dashboard),
-        "evidence_drawer": _stage3_evidence_drawer(stage3_dashboard),
+        "metric_cards": _stage4_metric_cards(stage4_dashboard),
+        "decision_rows": _stage4_decision_rows(stage4_dashboard),
+        "evidence_drawer": _stage4_evidence_drawer(stage4_dashboard),
+        "stage4_dashboard": _sanitize_public_payload(stage4_dashboard),
         "stage3_dashboard": _sanitize_public_payload(stage3_dashboard),
         "workflow_runtime": empty_workflow_runtime_read_model(),
         "read_model": "OperationalStore -> SourceRegistry -> PFIOSHomeSummaryV1",
@@ -87,6 +92,28 @@ def empty_homepage_summary() -> dict[str, Any]:
 def _stage3_metric_cards(stage3_dashboard: dict[str, Any]) -> list[dict[str, str]]:
     cards = stage3_dashboard.get("home", {}).get("financial_status_cards", [])
     return [_sanitize_public_payload(card) for card in cards[:5] if isinstance(card, dict)]
+
+
+def _stage4_metric_cards(stage4_dashboard: dict[str, Any]) -> list[dict[str, str]]:
+    cards = stage4_dashboard.get("metric_cards", [])
+    return [_sanitize_public_payload(card) for card in cards[:5] if isinstance(card, dict)]
+
+
+def _stage4_decision_rows(stage4_dashboard: dict[str, Any]) -> list[dict[str, str]]:
+    rows: list[dict[str, str]] = []
+    for item in stage4_dashboard.get("decision_rows", [])[:4]:
+        if not isinstance(item, dict):
+            continue
+        rows.append(
+            {
+                "priority": str(item.get("priority", "P2")),
+                "object": str(item.get("object", "首页总览")),
+                "evidence": str(item.get("evidence", "")),
+                "action": str(item.get("action", "查看分析")),
+                "status": str(item.get("status", "有建议")),
+            }
+        )
+    return rows
 
 
 def _stage3_decision_rows(stage3_dashboard: dict[str, Any]) -> list[dict[str, str]]:
@@ -120,6 +147,18 @@ def _stage3_evidence_drawer(stage3_dashboard: dict[str, Any]) -> dict[str, str]:
         "Parameters": "FX fixture AUD/CNY/USD/HKD; no live market rate; no real credential.",
         "Data lineage": "Stage2 import fixtures -> Stage3 account/ledger/recommendation read-model.",
         "Raw document": "PFI/docs/pfi_v02/STAGE3_READABLE_MVP.md",
+    }
+
+
+def _stage4_evidence_drawer(stage4_dashboard: dict[str, Any]) -> dict[str, str]:
+    return {
+        "title": "PFI Stage 4 · 投资与消费智能分析",
+        "Evidence": "Stage 4 使用本地 synthetic/read-only read-model 验证投资总览、收益归因、风险、行为复盘、消费预算、订阅、异常和现金流预测。",
+        "Source": "pfi_v02.stage4_analysis_mvp",
+        "Model": str(stage4_dashboard.get("schema", "PFIV02Stage4AnalysisMVPV1")),
+        "Parameters": "Attribution components market/active/fees/fx/cash_drag; budget AUD 3600; reserve AUD 5000; no exact conclusion without evidence.",
+        "Data lineage": "Stage3 account/ledger read-model + Stage4 synthetic analysis fixtures -> Stage4 investment/consumption analysis read-model.",
+        "Raw document": "PFI/docs/pfi_v02/STAGE4_ANALYSIS_MVP.md",
     }
 
 

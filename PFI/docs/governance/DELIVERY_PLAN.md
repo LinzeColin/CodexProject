@@ -2,9 +2,9 @@
 
 model_count: 1
 formula_count: 1
-parameter_count: 7
-task_count: 3
-acceptance_count: 3
+parameter_count: 12
+task_count: 4
+acceptance_count: 4
 
 ## 当前交付
 
@@ -14,6 +14,8 @@ acceptance_count: 3
 
 `S3PZT01`：PFI V0.2 Stage 3 首页、账户、账本可读 MVP、本地入口刷新和缓存清理。
 
+`S4PZT01`：PFI V0.2 Stage 4 投资与消费智能分析 MVP、本地入口刷新和缓存清理。
+
 ## 下一步
 
-`S4PAT01`：投资总览 MVP。真实环境验证、自动实盘下单和支付提交仍是独立阻塞，不属于 Stage 3 closeout。
+`S5PAT01`：Recommendation model。真实环境验证、自动实盘下单和支付提交仍是独立阻塞，不属于 Stage 4 closeout。
