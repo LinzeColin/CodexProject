@@ -220,6 +220,29 @@ S2PMT07_FINAL_COMMAND_EXECUTION_REQUIRED_FIELDS = (
     "execution_hash",
 )
 S2PMT07_FINAL_COMMAND_EXECUTION_NO_PRODUCTION_FLAGS = S2PMT07_FINAL_ACCEPTANCE_BUNDLE_NO_PRODUCTION_FLAGS
+S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_SCHEMA_VERSION = "adp.independent_review_signoff.v1"
+S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_DECISION = "INDEPENDENT_REVIEW_SIGNED_OFF_NO_PRODUCTION_ACCEPTANCE"
+S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_REQUIRED_FIELDS = (
+    "schema_version",
+    "contract_id",
+    "generated_at",
+    "signoff_decision",
+    "reviewer_independence",
+    "review_scope",
+    "artifact_validations",
+    "closure_state",
+    "final_bundle_refs",
+    "no_production_side_effects",
+    "signoff_hash",
+)
+S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_REQUIRED_ARTIFACT_VALIDATIONS = (
+    "P0_P1_ZERO_PROOF_ARTIFACT",
+    "S2PLT04_COMPLETION_REPORT",
+    "FINAL_COMMAND_EXECUTION",
+    "NO_PRODUCTION_SIDE_EFFECT_ATTESTATION",
+    "NEXT_AGENT_HANDOFF",
+)
+S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_NO_PRODUCTION_FLAGS = S2PMT07_FINAL_ACCEPTANCE_BUNDLE_NO_PRODUCTION_FLAGS
 S2PMT07_P0_TECHNICAL_CLOSURE_CANDIDATE_PACKAGE = (
     "governance/run_manifests/ADP-S2PMT07-P0-TECHNICAL-CLOSURE-CANDIDATE-PACKAGE-20260627.json"
 )
@@ -2007,6 +2030,127 @@ def build_final_command_execution_validation_state(payload: Mapping[str, Any] | 
     return state
 
 
+def build_independent_review_signoff_hash(payload: Mapping[str, Any]) -> str:
+    """Return the canonical independent-review signoff hash excluding its hash field."""
+
+    payload_without_hash = {key: value for key, value in payload.items() if key != "signoff_hash"}
+    return f"sha256:{_stable_hash(payload_without_hash)}"
+
+
+def validate_independent_review_signoff_artifact(payload: Mapping[str, Any] | None) -> list[str]:
+    """Validate a future independent-review signoff artifact without accepting production."""
+
+    if payload is None:
+        return ["independent_review_signoff_missing"]
+    errors: list[str] = []
+    for field in S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_REQUIRED_FIELDS:
+        if field not in payload:
+            errors.append(f"{field} is required")
+    if tuple(payload.keys()) != S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_REQUIRED_FIELDS:
+        errors.append("independent review signoff field order is invalid")
+    if payload.get("schema_version") != S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_SCHEMA_VERSION:
+        errors.append("schema_version is invalid")
+    if payload.get("contract_id") != "ADP-PRODUCT-CONTRACT-V7.2":
+        errors.append("contract_id must be ADP-PRODUCT-CONTRACT-V7.2")
+    if not isinstance(payload.get("generated_at"), str) or not payload.get("generated_at"):
+        errors.append("generated_at must be a non-empty string")
+    if payload.get("signoff_decision") != S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_DECISION:
+        errors.append("signoff_decision is invalid")
+
+    reviewer = _mapping(payload.get("reviewer_independence"))
+    if reviewer.get("status") != "verified":
+        errors.append("reviewer_independence.status must be verified")
+    if reviewer.get("required_independence") != S2PMT07_REQUIRED_REVIEWER_INDEPENDENCE:
+        errors.append("reviewer_independence.required_independence is invalid")
+    if reviewer.get("reviewer_role") != "independent_final_reviewer":
+        errors.append("reviewer_independence.reviewer_role must be independent_final_reviewer")
+    if reviewer.get("not_implementation_agent") is not True:
+        errors.append("reviewer_independence.not_implementation_agent must be true")
+
+    review_scope = _mapping(payload.get("review_scope"))
+    if review_scope.get("task_id") != S2PMT07_TASK_ID:
+        errors.append("review_scope.task_id must be S2PMT07")
+    if review_scope.get("scope") != "independent_review_signoff_validation_only_no_production_acceptance":
+        errors.append("review_scope.scope is invalid")
+    if (
+        tuple(review_scope.get("reviewed_artifact_validations", []))
+        != S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_REQUIRED_ARTIFACT_VALIDATIONS
+    ):
+        errors.append("review_scope.reviewed_artifact_validations must exactly match required artifact validations")
+
+    artifact_validations = _mapping(payload.get("artifact_validations"))
+    for validation in S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_REQUIRED_ARTIFACT_VALIDATIONS:
+        result = _mapping(artifact_validations.get(validation))
+        if validation not in artifact_validations:
+            errors.append(f"artifact_validations must include {validation}")
+            continue
+        if result.get("status") != "pass":
+            errors.append(f"artifact_validations.{validation}.status must be pass")
+        if not isinstance(result.get("evidence_ref"), str) or not result.get("evidence_ref"):
+            errors.append(f"artifact_validations.{validation}.evidence_ref must be a non-empty string")
+
+    closure_state = _mapping(payload.get("closure_state"))
+    for flag in (
+        "p0_zero_proven",
+        "p1_zero_proven",
+        "s2plt04_completed",
+        "final_commands_executed",
+        "no_production_side_effects_proven",
+    ):
+        if closure_state.get(flag) is not True:
+            errors.append(f"closure_state.{flag} must be true")
+    for flag in ("production_acceptance_claimed", "integrated_production_accepted"):
+        if closure_state.get(flag) is not False:
+            errors.append(f"closure_state.{flag} must be false")
+
+    if tuple(payload.get("final_bundle_refs", [])) != S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS:
+        errors.append("final_bundle_refs must exactly match final acceptance bundle required items")
+
+    no_production = _mapping(payload.get("no_production_side_effects"))
+    for flag in S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_NO_PRODUCTION_FLAGS:
+        if no_production.get(flag) is not False:
+            errors.append(f"no_production_side_effects.{flag} must be false")
+
+    if payload.get("signoff_hash") != build_independent_review_signoff_hash(payload):
+        errors.append("signoff_hash does not match payload content")
+    return errors
+
+
+def build_independent_review_signoff_validation_state(payload: Mapping[str, Any] | None) -> dict[str, Any]:
+    """Build a validation report for future independent-review signoff evidence."""
+
+    errors = validate_independent_review_signoff_artifact(payload)
+    artifact_validations = _mapping(payload.get("artifact_validations")) if payload is not None else {}
+    all_required_artifact_validations_passed = all(
+        _mapping(artifact_validations.get(validation)).get("status") == "pass"
+        for validation in S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_REQUIRED_ARTIFACT_VALIDATIONS
+    )
+    state = {
+        "status": "pass" if not errors else "blocked",
+        "scope": "independent_review_signoff_validation_only_no_production_acceptance",
+        "artifact_path": "FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml",
+        "signoff_present": payload is not None,
+        "validation_errors": errors,
+        "required_artifact_validations": list(
+            S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_REQUIRED_ARTIFACT_VALIDATIONS
+        ),
+        "all_required_artifact_validations_passed": (
+            payload is not None and all_required_artifact_validations_passed
+        ),
+        "independent_review_signed_off_by_payload": not errors and payload is not None,
+        "production_acceptance_claimed": False,
+        "integrated_production_accepted": False,
+        "daily_operation_enabled": False,
+        "real_smtp_send_enabled": False,
+        "scheduler_install_enabled": False,
+        "release_packaging_enabled": False,
+        "production_restore_enabled": False,
+        "state_hash": "",
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
 def build_final_acceptance_bundle_readiness_state() -> dict[str, Any]:
     """Build the current final acceptance bundle readiness state without packaging."""
 
@@ -2017,6 +2161,7 @@ def build_final_acceptance_bundle_readiness_state() -> dict[str, Any]:
     final_acceptance_bundle_manifest_validation = build_final_acceptance_bundle_manifest_validation_state(None)
     s2plt04_completion_report_validation = build_s2plt04_completion_report_validation_state(None)
     final_command_execution_validation = build_final_command_execution_validation_state(None)
+    independent_review_signoff_validation = build_independent_review_signoff_validation_state(None)
     state = {
         "status": "blocked",
         "scope": "final_acceptance_bundle_readiness_precheck_only",
@@ -2033,6 +2178,7 @@ def build_final_acceptance_bundle_readiness_state() -> dict[str, Any]:
             ),
             "S2PLT04_COMPLETION_REPORT_VALIDATION": s2plt04_completion_report_validation["status"] == "pass",
             "FINAL_COMMAND_EXECUTION_VALIDATION": final_command_execution_validation["status"] == "pass",
+            "INDEPENDENT_REVIEW_SIGNOFF_VALIDATION": independent_review_signoff_validation["status"] == "pass",
         },
         "missing_items": [item for item, present in available_items.items() if not present],
         "blocking_reasons": list(S2PMT07_FINAL_ACCEPTANCE_BUNDLE_BLOCKING_REASONS),
@@ -2042,6 +2188,7 @@ def build_final_acceptance_bundle_readiness_state() -> dict[str, Any]:
         "final_acceptance_bundle_manifest_validation": final_acceptance_bundle_manifest_validation,
         "s2plt04_completion_report_validation": s2plt04_completion_report_validation,
         "final_command_execution_validation": final_command_execution_validation,
+        "independent_review_signoff_validation": independent_review_signoff_validation,
         "bundle_present": False,
         "bundle_claimed_ready": False,
         "production_acceptance_claimed": False,
@@ -2084,6 +2231,8 @@ def validate_final_acceptance_bundle_readiness_state(state: Mapping[str, Any]) -
         errors.append("final acceptance bundle readiness must not expose S2PLT04 completion report validation as passing")
     if prebundle.get("FINAL_COMMAND_EXECUTION_VALIDATION") is not False:
         errors.append("final acceptance bundle readiness must not expose final command execution validation as passing")
+    if prebundle.get("INDEPENDENT_REVIEW_SIGNOFF_VALIDATION") is not False:
+        errors.append("final acceptance bundle readiness must not expose independent review signoff validation as passing")
     p0_p1_candidate = _mapping(state.get("p0_p1_technical_closure_candidate_state"))
     if validate_p0_p1_technical_closure_candidate_state(p0_p1_candidate):
         errors.append("final acceptance bundle readiness P0/P1 technical candidate state is invalid")
@@ -2102,6 +2251,9 @@ def validate_final_acceptance_bundle_readiness_state(state: Mapping[str, Any]) -
     final_command = _mapping(state.get("final_command_execution_validation"))
     if final_command.get("status") != "blocked":
         errors.append("final acceptance bundle readiness final command execution validation must remain blocked")
+    independent_signoff = _mapping(state.get("independent_review_signoff_validation"))
+    if independent_signoff.get("status") != "blocked":
+        errors.append("final acceptance bundle readiness independent review signoff validation must remain blocked")
     for flag in S2PMT07_FINAL_ACCEPTANCE_BUNDLE_FORBIDDEN_FLAGS:
         if state.get(flag) is not False:
             errors.append(f"{flag} must be false")

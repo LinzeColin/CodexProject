@@ -34,6 +34,11 @@ from arxiv_daily_push.stage2_final_gate import (
     S2PMT07_FINAL_COMMAND_EXECUTION_NO_PRODUCTION_FLAGS,
     S2PMT07_FINAL_COMMAND_EXECUTION_REQUIRED_FIELDS,
     S2PMT07_FINAL_COMMAND_EXECUTION_SCHEMA_VERSION,
+    S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_DECISION,
+    S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_NO_PRODUCTION_FLAGS,
+    S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_REQUIRED_ARTIFACT_VALIDATIONS,
+    S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_REQUIRED_FIELDS,
+    S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_SCHEMA_VERSION,
     S2PMT07_FORBIDDEN_PASS_FLAGS,
     S2PMT07_P0_P1_ZERO_PROOF_CLOSURE_DECISION,
     S2PMT07_P0_P1_ZERO_PROOF_NO_PRODUCTION_FLAGS,
@@ -49,6 +54,8 @@ from arxiv_daily_push.stage2_final_gate import (
     build_final_acceptance_bundle_readiness_state,
     build_final_command_execution_hash,
     build_final_command_execution_validation_state,
+    build_independent_review_signoff_hash,
+    build_independent_review_signoff_validation_state,
     build_final_acceptance_bundle_manifest_hash,
     build_final_acceptance_bundle_manifest_validation_state,
     build_p0_p1_zero_proof_artifact_validation_state,
@@ -79,6 +86,7 @@ from arxiv_daily_push.stage2_final_gate import (
     validate_s2plt04_integration_candidate_report,
     validate_final_acceptance_bundle_readiness_state,
     validate_final_command_execution_artifact,
+    validate_independent_review_signoff_artifact,
     validate_final_acceptance_bundle_manifest,
     validate_p0_p1_zero_proof_artifact,
     validate_p0_p1_zero_proof_readiness_state,
@@ -2459,6 +2467,109 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(final_command["command_execution_present"])
         self.assertFalse(state["available_prebundle_evidence"]["FINAL_COMMAND_EXECUTION_VALIDATION"])
         self.assertIn("final_command_execution_missing", final_command["validation_errors"])
+        self.assertEqual(validate_final_acceptance_bundle_readiness_state(state), [])
+
+    def _valid_independent_review_signoff_payload(self) -> dict[str, object]:
+        payload: dict[str, object] = {
+            "schema_version": S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_SCHEMA_VERSION,
+            "contract_id": "ADP-PRODUCT-CONTRACT-V7.2",
+            "generated_at": "2026-06-28T07:18:00+10:00",
+            "signoff_decision": S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_DECISION,
+            "reviewer_independence": {
+                "status": "verified",
+                "required_independence": "not_involved_in_S2PMT01_T06_implementation",
+                "reviewer_role": "independent_final_reviewer",
+                "not_implementation_agent": True,
+            },
+            "review_scope": {
+                "task_id": "S2PMT07",
+                "scope": "independent_review_signoff_validation_only_no_production_acceptance",
+                "reviewed_artifact_validations": list(
+                    S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_REQUIRED_ARTIFACT_VALIDATIONS
+                ),
+            },
+            "artifact_validations": {
+                validation: {
+                    "status": "pass",
+                    "evidence_ref": f"governance/final_review/{validation.lower()}.json",
+                }
+                for validation in S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_REQUIRED_ARTIFACT_VALIDATIONS
+            },
+            "closure_state": {
+                "p0_zero_proven": True,
+                "p1_zero_proven": True,
+                "s2plt04_completed": True,
+                "final_commands_executed": True,
+                "no_production_side_effects_proven": True,
+                "production_acceptance_claimed": False,
+                "integrated_production_accepted": False,
+            },
+            "final_bundle_refs": list(S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS),
+            "no_production_side_effects": {
+                flag: False for flag in S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_NO_PRODUCTION_FLAGS
+            },
+        }
+        payload["signoff_hash"] = build_independent_review_signoff_hash(payload)
+        return payload
+
+    def test_independent_review_signoff_validator_accepts_only_exact_hash_bound_payload(self) -> None:
+        payload = self._valid_independent_review_signoff_payload()
+        state = build_independent_review_signoff_validation_state(payload)
+
+        self.assertEqual(validate_independent_review_signoff_artifact(payload), [])
+        self.assertEqual(tuple(payload), S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_REQUIRED_FIELDS)
+        self.assertEqual(state["status"], "pass")
+        self.assertTrue(state["signoff_present"])
+        self.assertTrue(state["all_required_artifact_validations_passed"])
+        self.assertTrue(state["independent_review_signed_off_by_payload"])
+        self.assertFalse(state["production_acceptance_claimed"])
+        self.assertFalse(state["integrated_production_accepted"])
+
+        tampered = json.loads(json.dumps(payload))
+        tampered["artifact_validations"]["FINAL_COMMAND_EXECUTION"]["status"] = "blocked"
+        self.assertIn(
+            "artifact_validations.FINAL_COMMAND_EXECUTION.status must be pass",
+            validate_independent_review_signoff_artifact(tampered),
+        )
+
+        tampered_hash = json.loads(json.dumps(payload))
+        tampered_hash["signoff_hash"] = "sha256:not-the-signoff-hash"
+        self.assertIn(
+            "signoff_hash does not match payload content",
+            validate_independent_review_signoff_artifact(tampered_hash),
+        )
+
+    def test_independent_review_signoff_validator_fails_closed_on_missing_or_production_flags(self) -> None:
+        missing_state = build_independent_review_signoff_validation_state(None)
+
+        self.assertEqual(missing_state["status"], "blocked")
+        self.assertFalse(missing_state["signoff_present"])
+        self.assertIn("independent_review_signoff_missing", missing_state["validation_errors"])
+        self.assertFalse(missing_state["all_required_artifact_validations_passed"])
+        self.assertFalse(missing_state["independent_review_signed_off_by_payload"])
+
+        payload = self._valid_independent_review_signoff_payload()
+        payload["no_production_side_effects"]["scheduler_install_enabled"] = True
+        self.assertIn(
+            "no_production_side_effects.scheduler_install_enabled must be false",
+            validate_independent_review_signoff_artifact(payload),
+        )
+
+        payload = self._valid_independent_review_signoff_payload()
+        del payload["artifact_validations"]["NO_PRODUCTION_SIDE_EFFECT_ATTESTATION"]
+        self.assertIn(
+            "artifact_validations must include NO_PRODUCTION_SIDE_EFFECT_ATTESTATION",
+            validate_independent_review_signoff_artifact(payload),
+        )
+
+    def test_final_acceptance_bundle_readiness_embeds_independent_review_signoff_validation_as_blocked(self) -> None:
+        state = build_final_acceptance_bundle_readiness_state()
+        signoff = state["independent_review_signoff_validation"]
+
+        self.assertEqual(signoff["status"], "blocked")
+        self.assertFalse(signoff["signoff_present"])
+        self.assertFalse(state["available_prebundle_evidence"]["INDEPENDENT_REVIEW_SIGNOFF_VALIDATION"])
+        self.assertIn("independent_review_signoff_missing", signoff["validation_errors"])
         self.assertEqual(validate_final_acceptance_bundle_readiness_state(state), [])
 
     def test_p0_p1_technical_candidate_builder_fails_closed_without_closure(self) -> None:

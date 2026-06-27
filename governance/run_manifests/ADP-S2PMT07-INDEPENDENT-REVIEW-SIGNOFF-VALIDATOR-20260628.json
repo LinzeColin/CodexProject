@@ -1,0 +1,162 @@
+{
+  "schema_version": 1,
+  "manifest_id": "ADP-S2PMT07-INDEPENDENT-REVIEW-SIGNOFF-VALIDATOR-20260628",
+  "project_id": "arxiv-daily-push",
+  "generated_at": "2026-06-28T06:18:50+10:00",
+  "actor": "Codex",
+  "base_commit": "3c7faa9107487bcfa7cd27735f09e14e5b17d0c4",
+  "task_id": "S2PMT07-INDEPENDENT-REVIEW-SIGNOFF-VALIDATOR",
+  "task_ids": [
+    "S2PMT07-INDEPENDENT-REVIEW-SIGNOFF-VALIDATOR",
+    "S2PMT07",
+    "ACC-S2PMT07-FINAL-REVIEW"
+  ],
+  "phase": "S2PM",
+  "acceptance_id": "ACC-S2PMT07-FINAL-REVIEW",
+  "contract_version": "ADP-PRODUCT-CONTRACT-V7.2",
+  "iteration_id": "ITER-20260628-ADP-S2PMT07-INDEPENDENT-REVIEW-SIGNOFF-VALIDATOR",
+  "status": "blocked",
+  "result": "blocked_independent_review_signoff_validator_ready_artifact_missing_no_production",
+  "summary": "Adds a strict validator for future independent final review signoff evidence while the current artifact remains missing and all production stop gates remain false.",
+  "validation_state": {
+    "status": "blocked",
+    "scope": "independent_review_signoff_validation_only_no_production_acceptance",
+    "artifact_path": "FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml",
+    "signoff_present": false,
+    "validation_errors": [
+      "independent_review_signoff_missing"
+    ],
+    "required_artifact_validations": [
+      "P0_P1_ZERO_PROOF_ARTIFACT",
+      "S2PLT04_COMPLETION_REPORT",
+      "FINAL_COMMAND_EXECUTION",
+      "NO_PRODUCTION_SIDE_EFFECT_ATTESTATION",
+      "NEXT_AGENT_HANDOFF"
+    ],
+    "all_required_artifact_validations_passed": false,
+    "independent_review_signed_off_by_payload": false,
+    "production_acceptance_claimed": false,
+    "integrated_production_accepted": false,
+    "daily_operation_enabled": false,
+    "real_smtp_send_enabled": false,
+    "scheduler_install_enabled": false,
+    "release_packaging_enabled": false,
+    "production_restore_enabled": false,
+    "state_hash": "36709f2b703f3a1b1ed5155e98f2556a000705894f0b1676588793266c646896"
+  },
+  "required_artifact_validations": [
+    "P0_P1_ZERO_PROOF_ARTIFACT",
+    "S2PLT04_COMPLETION_REPORT",
+    "FINAL_COMMAND_EXECUTION",
+    "NO_PRODUCTION_SIDE_EFFECT_ATTESTATION",
+    "NEXT_AGENT_HANDOFF"
+  ],
+  "final_bundle_refs": [
+    "FINAL_ACCEPTANCE_BUNDLE/manifest.json",
+    "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
+    "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json",
+    "FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml",
+    "FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json",
+    "FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json",
+    "HANDOFF/00_下一Agent先读.md"
+  ],
+  "parameter_ids_changed": [
+    "PARAM-ADP-1015",
+    "PARAM-ADP-1016",
+    "PARAM-ADP-1017",
+    "PARAM-ADP-1018",
+    "PARAM-ADP-1019"
+  ],
+  "formula_ids_changed": [
+    "FORM-ADP-102"
+  ],
+  "model_ids_changed": [
+    "MOD-ADP-100"
+  ],
+  "files_changed": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DELIVERY_PLAN.md",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/MODEL_SPEC.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/governance/events.jsonl",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_VALIDATOR.md",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py",
+    "arxiv-daily-push/tests/test_stage2_final_gate.py",
+    "arxiv-daily-push/tests/test_user_center_candidate_pool.py",
+    "arxiv-daily-push/功能清单.md",
+    "arxiv-daily-push/开发记录.md",
+    "arxiv-daily-push/模型参数文件.md",
+    "arxiv-daily-push/用户中心/README.md",
+    "arxiv-daily-push/用户中心/功能任务测试证据追踪链.md",
+    "governance/run_manifests/ADP-S2PMT07-INDEPENDENT-REVIEW-SIGNOFF-VALIDATOR-20260628.json"
+  ],
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_VALIDATOR.md",
+    "governance/run_manifests/ADP-S2PMT07-INDEPENDENT-REVIEW-SIGNOFF-VALIDATOR-20260628.json",
+    "arxiv-daily-push/tests/test_stage2_final_gate.py"
+  ],
+  "test_results": [
+    "TDD red failed because independent review signoff validator API was missing",
+    "focused final-gate tests: 42 OK",
+    "focused final-gate/user-center tests: 59 OK",
+    "full arxiv-daily-push unittest: 626 OK",
+    "py_compile PASS",
+    "project governance: errors 0 warnings 0",
+    "changed-only governance semantic: errors 0 warnings 0",
+    "V7.2 validator PASS",
+    "lean check-render: drift_count 0 reference_issue_count 0",
+    "user-center timestamp check: validated 18 pages",
+    "structured YAML/JSON/JSONL/CSV parse OK",
+    "git diff --check PASS"
+  ],
+  "production_boundary": {
+    "formal_production_inclusion": false,
+    "independent_final_signoff_present": false,
+    "independent_review_signoff_artifact_present": false,
+    "final_commands_executed": false,
+    "final_acceptance_bundle_created": false,
+    "p0_closure_claimed": false,
+    "p1_closure_claimed": false,
+    "s2plt04_completed": false,
+    "stage2_integrated_production_accepted": false,
+    "daily_operation_enabled": false,
+    "real_smtp_sent": false,
+    "real_smtp_send_enabled": false,
+    "scheduler_install_enabled": false,
+    "release_packaging_enabled": false,
+    "production_restore_enabled": false,
+    "current_pointer_changed": false,
+    "v7_1_baseline_changed": false,
+    "v7_2_contract_files_changed": false
+  },
+  "risks": [
+    "This validator can be misread as independent final signoff; the current signoff artifact is missing and validation remains blocked.",
+    "Inherited P0/P1, S2PLT04, final bundle, final command execution, no-production attestation, and S2PMT07 acceptance remain blocked."
+  ],
+  "rollback": "Revert independent review signoff validator helpers/tests, registry updates, phase record, run manifest, traceability row, delivery/event records, generated views, and three base file updates; no runtime production state was changed.",
+  "next_task": "CONTINUE_S2PMT07_FINAL_BUNDLE_PREREQUISITES_ONLY_AFTER_REQUIRED_EVIDENCE_EXISTS",
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_signoff_red PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_signoff_green PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_signoff_focused2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_user_center_candidate_pool.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_signoff_full1 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_signoff_compile PYTHONPATH=arxiv-daily-push/src python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_user_center_candidate_pool.py",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_signoff_project3 PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_signoff_changed3 PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_signoff_v72_2 PYTHONPATH=arxiv-daily-push/src python3 arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_signoff_render1 PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/lean_governance.py check-render --project arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_signoff_ts_check PYTHONPATH=arxiv-daily-push/src python3 arxiv-daily-push/scripts/update_user_center_timestamps.py --check",
+    "ruby -ryaml -rjson -rcsv structured parse over changed YAML/JSON/JSONL/CSV files",
+    "git diff --check"
+  ]
+}
