@@ -142,6 +142,14 @@ class Stage2FinalGateTests(unittest.TestCase):
     def test_p0_review_receipt_uses_refreshed_current_evidence(self) -> None:
         receipt_path = REPO_ROOT / "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_INDEPENDENT_REVIEW_RECEIPT.md"
         manifest_path = REPO_ROOT / "governance/run_manifests/ADP-S2PMT07-P0-INDEPENDENT-REVIEW-RECEIPT-20260626.json"
+        package_manifest_path = (
+            REPO_ROOT
+            / "governance/run_manifests/ADP-S2PMT07-P0-TECHNICAL-CLOSURE-CANDIDATE-PACKAGE-20260627.json"
+        )
+        package_phase_record_path = (
+            REPO_ROOT
+            / "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_TECHNICAL_CLOSURE_CANDIDATE_PACKAGE.md"
+        )
         refresh_manifest_path = (
             REPO_ROOT
             / "governance/run_manifests/ADP-S2PMT07-B008-FAKE-SMTP-CRASH-WINDOW-EVIDENCE-20260627.json"
@@ -256,13 +264,19 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertEqual(
             manifest["refresh_manifest"],
-            "governance/run_manifests/ADP-S2PMT07-B008-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+            "governance/run_manifests/ADP-S2PMT07-P0-TECHNICAL-CLOSURE-CANDIDATE-PACKAGE-20260627.json",
         )
         self.assertEqual(
             manifest["previous_refresh_manifest"],
-            "governance/run_manifests/ADP-S2PMT07-B007-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
+            "governance/run_manifests/ADP-S2PMT07-B008-INDEPENDENT-TECHNICAL-REVIEW-20260627.json",
         )
         self.assertIn(manifest["refresh_manifest"], manifest["refresh_manifests"])
+        self.assertEqual(
+            manifest["technical_closure_candidate_package"],
+            "governance/run_manifests/ADP-S2PMT07-P0-TECHNICAL-CLOSURE-CANDIDATE-PACKAGE-20260627.json",
+        )
+        self.assertTrue(manifest["all_p0_finding_level_reviews_passed_no_production_acceptance"])
+        self.assertTrue(manifest["p0_closure_package_ready_for_final_gate_review"])
         self.assertIn(
             "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-ISOLATED-PROOF-20260627.json",
             manifest["refresh_manifest_history"],
@@ -297,6 +311,8 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertTrue(a005_independent_review_manifest_path.exists())
         self.assertTrue(b007_independent_review_manifest_path.exists())
         self.assertTrue(b008_independent_review_manifest_path.exists())
+        self.assertTrue(package_manifest_path.exists())
+        self.assertTrue(package_phase_record_path.exists())
         self.assertFalse(manifest["p0_closure_claimed"])
         self.assertFalse(manifest["stage2_integrated_production_accepted"])
         self.assertIn(
@@ -510,6 +526,50 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertIn("finding_level_independent_review_passed", findings["B-008"]["preliminary_review_state"])
         self.assertNotIn("governance/run_manifests/ADP-S2PMT05-STRESS-E2E-20260626.json", findings["B-008"]["evidence_refs"])
+
+        package_manifest = json.loads(package_manifest_path.read_text(encoding="utf-8"))
+        package_phase_record = package_phase_record_path.read_text(encoding="utf-8")
+        self.assertEqual(
+            package_manifest["status"],
+            "technical_closure_candidate_package_ready_no_p0_closure_no_production",
+        )
+        self.assertEqual(package_manifest["finding_count"], 8)
+        self.assertEqual(package_manifest["expected_p0_finding_ids"], list(findings))
+        self.assertTrue(package_manifest["package_checks"]["all_8_p0_findings_present"])
+        self.assertTrue(package_manifest["package_checks"]["all_finding_level_review_receipts_present"])
+        self.assertTrue(
+            package_manifest["package_checks"]["all_finding_level_verdicts_pass_with_no_production_acceptance"]
+        )
+        self.assertTrue(package_manifest["package_checks"]["p0_counter_preserved_open"])
+        self.assertTrue(package_manifest["package_checks"]["p1_counter_preserved_open"])
+        self.assertFalse(package_manifest["package_checks"]["independent_final_signoff_present"])
+        self.assertFalse(package_manifest["package_checks"]["independent_final_command_execution_present"])
+        self.assertEqual(package_manifest["inherited_v7_1_open_p0_findings_after"], 8)
+        self.assertEqual(package_manifest["inherited_v7_1_open_p1_findings_after"], 37)
+        self.assertFalse(package_manifest["p0_closure_claimed"])
+        self.assertFalse(package_manifest["p1_closure_claimed"])
+        self.assertFalse(package_manifest["closure_claimed"])
+        self.assertFalse(package_manifest["s2pmt07_final_pass_claimed"])
+        self.assertFalse(package_manifest["stage2_integrated_production_accepted"])
+        self.assertFalse(package_manifest["real_smtp_sent"])
+        self.assertFalse(package_manifest["scheduler_install_enabled"])
+        self.assertFalse(package_manifest["release_packaging_enabled"])
+        self.assertFalse(package_manifest["production_restore_enabled"])
+        self.assertFalse(package_manifest["current_pointer_changed"])
+        self.assertFalse(package_manifest["v7_1_baseline_changed"])
+        self.assertFalse(package_manifest["v7_2_contract_files_changed"])
+        packaged = {finding["finding_id"]: finding for finding in package_manifest["packaged_findings"]}
+        self.assertEqual(set(packaged), set(findings))
+        for finding_id, finding in findings.items():
+            self.assertEqual(
+                packaged[finding_id]["finding_level_independent_review_receipt"],
+                finding["finding_level_independent_review_receipt"],
+            )
+            self.assertEqual(packaged[finding_id]["reviewer_verdict"], "PASS_WITH_NO_PRODUCTION_ACCEPTANCE")
+            self.assertTrue(packaged[finding_id]["technical_closure_candidate"])
+        self.assertIn("P0 Technical Closure Candidate Package", receipt)
+        self.assertIn("P0 findings packaged | `8 / 8`", package_phase_record)
+        self.assertIn("Integrated production accepted | `false`", package_phase_record)
 
         isolated_manifest = json.loads(isolated_proof_manifest_path.read_text(encoding="utf-8"))
         self.assertEqual(isolated_manifest["inherited_finding"], "B-001")
