@@ -28,7 +28,7 @@
       "relationships_publishable": 0,
       "release_clearance": false,
       "source_capture_artifact": "artifacts/tests/a202/t1301_live_official_selected_capture_evidence.json",
-      "source_capture_artifact_sha256": "9e8e73ee58338a3d1d17206b46559019ea5d9860e50edc4bc97e142fbde3bd3d",
+      "source_capture_artifact_sha256": "ad0de30da50faab2e6ff2e9624af69e2a3c60a08c599748b38228f6e7ae924c3",
       "source_license_review_status": "missing",
       "status": "PENDING_OWNER_LEGAL_CLEARANCE"
     },
@@ -80,7 +80,7 @@
       "status": "PENDING_SIGNED_DECISIONS"
     }
   },
-  "generated_at": "2026-06-27T07:04:51Z",
+  "generated_at": "2026-06-27T09:17:14Z",
   "missing_input_ids": [
     "A202_source_license_passage_owner_legal_release",
     "A210_brand_legal_market_clearance_or_risk_waiver",
@@ -126,12 +126,12 @@
       "label": "A202 signed source/license/passage/owner/legal release decision",
       "required_source": {
         "path": "artifacts/tests/a202/t1301_a202_release_decision_intake_template.json",
-        "sha256": "4d01b4de9584da3c2d33da889119e5ce60d8f386cf94fb53bf3af6a8119d3712"
+        "sha256": "9a7db41a662d8652e5b04bd5f8b8b55e62ad13bb03e24a8549d5614991f7cbc5"
       },
       "supporting_sources": [
         {
           "path": "artifacts/tests/a202/t1301_operator_review_packet_contract.json",
-          "sha256": "cedc5ae7056c85acf249f5b1ef50da4067223d8170608fa5913efc7631d4ca7b"
+          "sha256": "48a257e5771ebe0c04460a42b5c7bf401a64adf513fb86a8a25f4325cd4ad4da"
         }
       ],
       "template_or_partial_evidence_counts_as_clearance": false,
@@ -237,11 +237,11 @@
     },
     "a202_operator_review_packet": {
       "path": "artifacts/tests/a202/t1301_operator_review_packet_contract.json",
-      "sha256": "cedc5ae7056c85acf249f5b1ef50da4067223d8170608fa5913efc7631d4ca7b"
+      "sha256": "48a257e5771ebe0c04460a42b5c7bf401a64adf513fb86a8a25f4325cd4ad4da"
     },
     "a202_release_decision_intake_template": {
       "path": "artifacts/tests/a202/t1301_a202_release_decision_intake_template.json",
-      "sha256": "4d01b4de9584da3c2d33da889119e5ce60d8f386cf94fb53bf3af6a8119d3712"
+      "sha256": "9a7db41a662d8652e5b04bd5f8b8b55e62ad13bb03e24a8549d5614991f7cbc5"
     },
     "a209_operator_soak_finalization_preflight": {
       "path": "artifacts/tests/a209/t1307_operator_soak_finalization_preflight.json",
@@ -253,7 +253,7 @@
     },
     "external_release_evidence_bundle_preflight": {
       "path": "artifacts/tests/a205/t1303_external_release_evidence_bundle_preflight.json",
-      "sha256": "1b2266e5ee1bb4ecec18c3b209fd3cc50614bf7b6cdd8159b4a64a2a4297e27d"
+      "sha256": "ccce21263831fb07b5ad2ba8df52c1855aceeb8167a981b7ec328813c4bc1464"
     }
   },
   "system_en_name": "Enterprise Ecosystem Intelligence",

@@ -2,10 +2,10 @@
 
 ## Snapshot Metadata
 
-- source_base_commit: `30ddce62f711f17eff18591adc4e4f315782d589`
-- source_tree_hash: `6bb27e6276f43e2f4a5e76038656e9ea0009ec6a`
-- source_snapshot_hash: `sha256:02120bccb74f1eb94afbaece541d43a4fdafc2799f147ad3b86176d7587f1e54`
-- snapshot_event_time: `2026-06-27T18:08:00+10:00`
+- source_base_commit: `0175e2b9616fa77d50ae06bcf0cd68ce9d015f7d`
+- source_tree_hash: `356fcd0bb5d3b892b331d28351fe9e99a64c8457`
+- source_snapshot_hash: `sha256:0aca7308792067310a98a33c5200f7a551e034e4565dcfa250be586487fa1866`
+- snapshot_event_time: `2026-06-27T19:13:36+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -14,7 +14,7 @@
 - Project: `EEI`
 - Path: `EEI`
 - Product version: `0.1.0`
-- Phase/Gate: `D / TASK-T1307-A209-BROWSER-SLICE-REUSE`
+- Phase/Gate: `D / TASK-T1301-A202-LIVE-OFFICIAL-CAPTURE-FRESHNESS`
 - Models/Formulas/Parameters total: `12 / 12 / 90`
 - Active formulas/parameters: `11 / 90`
 - Machine checked formulas/parameters: `11 / 90`
@@ -35,9 +35,9 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `TASK-T1307-A209-BROWSER-SLICE-REUSE`
+- Release gate: `TASK-T1301-A202-LIVE-OFFICIAL-CAPTURE-FRESHNESS`
 - Next executable task: `TASK-T1301`
-- Pending/stale events: `111`
+- Pending/stale events: `112`
 - Tree-bound events: `0`
 - Commit-bound events: `18`
 - Legacy unbound events: `19`
