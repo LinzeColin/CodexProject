@@ -358,6 +358,48 @@ git diff --check -- PFI
 - Chrome headless desktop 1440x950：`/sources-upload` 显示上传/导入面板；文件选择、拖拽上传、失败反馈、导入中心摘要和 `进入账本复核` 跳转到账本流水均通过；console errors `0`；截图 `/tmp/pfi-v021-stage5-upload-desktop-verified.png`。
 - Chrome headless mobile 390x844：上传/导入面板和复核入口可见；截图 `/tmp/pfi-v021-stage5-upload-mobile-verified.png`。
 
-## Stage 5 后续顺序
+## Stage 6 完成记录
 
-下一轮 pursuing goal 应从 `P6 / S6 持仓持久化` 开始，优先完成持仓编辑数据模型、服务和刷新/重启后仍存在的前端持久化。不得跳到 Stage 7 流畅度，除非用户明确改变阶段顺序。
+本轮完成 `P6 / S6 持仓持久化`，覆盖任务：
+
+- `V021-P6-S6-T01`：持仓编辑数据模型，snapshot 和 adjustment 均可写入 SQLite operational database。
+- `V021-P6-S6-T02`：持仓编辑服务，新增、读取、修改、软删除和汇总测试通过。
+- `V021-P6-S6-T03`：持仓编辑前端，编辑数量和价格后保存，刷新或重开 HTML Web Shell 仍保留。
+
+当前交付：
+
+- 新增 `build_v021_stage6_contract()` 和 `tests/test_v021_stage6_holdings_persistence.py`。
+- 新增 `src/pfi_v02/stage_v021_holdings_persistence.py`，提供 `V021HoldingsPersistenceService`。
+- SQLite 合同表：`v021_holding_snapshots`、`v021_position_adjustments`。
+- `投资管理 > 持仓` 显示持仓编辑面板、持仓摘要、可编辑宽表和保存/新增/恢复默认操作。
+- 前端草稿保存 key：`pfi-v021-holdings-persistence`。
+- 本轮不连接真实券商、不提交订单、不支付、不执行实盘自动下单；真实私有 SQLite runtime 数据不进入公共 Git。
+
+Stage 6 已通过的目标验收命令：
+
+```bash
+node --check PFI/web/app/shell.js
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m unittest PFI.tests.test_v021_stage6_holdings_persistence -q
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m unittest PFI.tests.test_v021_stage0_frontend_contract PFI.tests.test_v021_stage1_navigation_contract PFI.tests.test_v021_stage2_copy_cleanup_contract PFI.tests.test_v021_stage3_settings_search_contract PFI.tests.test_v021_stage4_trend_contract PFI.tests.test_v021_stage5_upload_import_contract PFI.tests.test_v021_stage6_holdings_persistence -q
+```
+
+当前结果：Web Shell 语法检查通过；Stage 6 目标合同 `Ran 6 tests / OK`；Stage 0/1/2/3/4/5/6 前端合同 `Ran 37 tests / OK`。
+
+Stage 6 closeout 验收命令：
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -B -m unittest discover -s tests -q
+python3 scripts/validate_project_governance.py --project PFI
+git diff --check -- PFI
+```
+
+当前结果：完整 PFI 单测 `Ran 137 tests / OK`；治理 `errors 0 / warnings 0`；`git diff --check -- PFI` 通过。
+
+浏览器验收：
+
+- Chrome headless desktop 1440x950：`/investment?tab=holdings` 持仓编辑、保存、刷新恢复和同一浏览器上下文新页重开恢复全部通过；console errors `0`；截图 `/tmp/pfi-v021-stage6-holdings-desktop-verified.png`。
+- Chrome headless mobile 390x844：持仓编辑面板、保存按钮和 3 行持仓可见；截图 `/tmp/pfi-v021-stage6-holdings-mobile-verified.png`。
+
+## Stage 6 后续顺序
+
+下一轮 pursuing goal 应从 `P7 / S7 流畅度` 开始，优先完成所有入口和按钮自动遍历、成功/失败/进行中反馈统一。不得跳到 Stage 8 最终验收，除非用户明确改变阶段顺序。

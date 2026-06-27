@@ -30,6 +30,11 @@ STAGE5_TASK_IDS = (
     "V021-P5-S5-T01",
     "V021-P5-S5-T02",
 )
+STAGE6_TASK_IDS = (
+    "V021-P6-S6-T01",
+    "V021-P6-S6-T02",
+    "V021-P6-S6-T03",
+)
 BASE_CURRENCY = "CNY"
 UI_TARGET = "PFI/web HTML shell"
 
@@ -459,6 +464,96 @@ def build_v021_stage5_contract() -> dict[str, object]:
             "导入中心必须显示批次、摘要、待复核数量和复核入口。",
             "复核入口必须可点击进入账本流水，不触发真实外部上传、支付、券商或自动下单。",
             "原始用户数据不进入公共 Git；Stage 5 只交付 HTML Web Shell 合同和本地前端交互。",
+        ),
+    }
+
+
+def build_v021_stage6_contract() -> dict[str, object]:
+    return {
+        "schema": "PFIV021FrontendOptimizationStage6ContractV1",
+        "version_name": VERSION_NAME,
+        "stage": "S6 持仓持久化",
+        "task_ids": STAGE6_TASK_IDS,
+        "project_root": "CodexProject/PFI",
+        "ui_target": UI_TARGET,
+        "sqlite_contract": {
+            "default_db_path": "$PFI_DATA_HOME/private/operational/pfi.sqlite",
+            "service_module": "pfi_v02.stage_v021_holdings_persistence",
+            "schema": "PFIV021HoldingsPersistenceV1",
+            "tables": ("v021_holding_snapshots", "v021_position_adjustments"),
+            "snapshot_required_fields": (
+                "snapshot_id",
+                "portfolio_id",
+                "instrument_id",
+                "display_name",
+                "quantity",
+                "average_cost",
+                "market_price",
+                "market_value",
+                "currency",
+                "source_id",
+                "as_of",
+            ),
+            "adjustment_required_fields": (
+                "adjustment_id",
+                "snapshot_id",
+                "portfolio_id",
+                "instrument_id",
+                "adjustment_type",
+                "changes_json",
+                "reason",
+                "status",
+                "human_review_required",
+            ),
+        },
+        "service_contract": {
+            "class": "V021HoldingsPersistenceService",
+            "required_methods": (
+                "initialize",
+                "upsert_snapshot",
+                "get_snapshot",
+                "list_snapshots",
+                "soft_delete_snapshot",
+                "create_adjustment",
+                "update_adjustment",
+                "soft_delete_adjustment",
+                "get_adjustment",
+                "list_adjustments",
+                "persistence_summary",
+            ),
+            "crud_coverage": ("create", "read", "update", "soft_delete"),
+            "default_seed": "build_v021_demo_holding_snapshots",
+        },
+        "frontend_contract": {
+            "route": "/investment?tab=holdings",
+            "workspace": "investment",
+            "surface": "investment_holdings_persistence_panel",
+            "html_markers": (
+                "data-holdings-persistence-panel",
+                "data-holdings-persistence-status",
+                "data-holdings-summary",
+                "data-holdings-rows",
+                "data-holding-field",
+                "data-holdings-save",
+                "data-holdings-add",
+                "data-holdings-reset",
+            ),
+            "storage_key": "pfi-v021-holdings-persistence",
+            "required_interactions": (
+                "edit_quantity",
+                "edit_market_price",
+                "save_to_local_persistent_state",
+                "restore_after_refresh",
+                "add_holding",
+                "soft_delete_holding",
+            ),
+        },
+        "acceptance": (
+            "持仓编辑数据模型必须把 snapshot 和 adjustment 写入 SQLite operational database。",
+            "持仓编辑服务必须覆盖新增、修改、软删除、读取，并有目标单测证明。",
+            "持仓前端必须能编辑数量和价格，保存后刷新或重开 HTML Web Shell 仍保留。",
+            "持仓持久化不连接真实券商、不提交订单、不支付、不执行实盘自动下单。",
+            "私有持仓和 SQLite runtime 数据不进入公共 Git。",
         ),
     }
 

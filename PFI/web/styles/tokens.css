@@ -880,6 +880,114 @@ button:active {
   margin: 0;
 }
 
+.holdings-persistence-panel {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 12px;
+  border: 1px solid var(--pfi-border);
+  border-radius: var(--pfi-radius);
+  background: var(--pfi-surface);
+  box-shadow: var(--pfi-shadow);
+  padding: 14px;
+}
+
+.holdings-persistence-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.holdings-persistence-head h2 {
+  margin: 0;
+  font-size: 1.12rem;
+}
+
+.holdings-persistence-head p {
+  margin: 5px 0 0;
+  color: var(--pfi-muted);
+}
+
+.holdings-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+
+.holdings-summary div {
+  min-width: 0;
+  border: 1px solid var(--pfi-border);
+  border-radius: var(--pfi-radius);
+  background: var(--pfi-bg);
+  padding: 10px;
+}
+
+.holdings-summary dt {
+  color: var(--pfi-muted);
+  font-size: 0.76rem;
+  font-weight: 720;
+}
+
+.holdings-summary dd {
+  margin: 4px 0 0;
+  font-weight: 780;
+  overflow-wrap: anywhere;
+}
+
+.holdings-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--pfi-border);
+  border-radius: var(--pfi-radius);
+}
+
+.holdings-table {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+  background: var(--pfi-surface);
+  font-size: 0.88rem;
+}
+
+.holdings-table th,
+.holdings-table td {
+  padding: 8px;
+  border-bottom: 1px solid var(--pfi-border);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.holdings-table th {
+  color: var(--pfi-muted);
+  font-size: 0.76rem;
+  font-weight: 780;
+}
+
+.holdings-table input {
+  width: 100%;
+  min-width: 92px;
+  min-height: 38px;
+  border: 1px solid var(--pfi-border);
+  border-radius: calc(var(--pfi-radius) - 2px);
+  background: var(--pfi-bg);
+  color: var(--pfi-ink);
+  padding: 0 9px;
+}
+
+.holdings-table button {
+  min-height: 38px;
+  padding: 0 10px;
+  color: var(--pfi-red);
+  font-weight: 720;
+}
+
+.holdings-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
 .content-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 310px;
@@ -1215,6 +1323,7 @@ button:active {
 
   .metric-grid,
   .import-summary,
+  .holdings-summary,
   .import-batch dl {
     grid-template-columns: 1fr 1fr;
   }
@@ -1229,9 +1338,15 @@ button:active {
   }
 
   .function-detail-head,
+  .holdings-persistence-head,
   .function-runner-head,
   .function-meta {
     grid-template-columns: 1fr;
     display: grid;
+  }
+
+  .holdings-actions {
+    display: grid;
+    grid-template-columns: 1fr;
   }
 }

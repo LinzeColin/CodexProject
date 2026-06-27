@@ -146,6 +146,9 @@ const FEATURE_TARGETS = {
   市场快照: { view: "hotspots", label: "打开热点" },
   研究队列: { view: "reports", label: "打开报告" },
   持仓复核: { view: "holdings", label: "打开持仓" },
+  持仓编辑: { workspace: "investment", routeAlias: "/investment?tab=holdings", label: "打开编辑" },
+  持仓持久化: { workspace: "investment", routeAlias: "/investment?tab=holdings", label: "打开持仓" },
+  保存修改: { workspace: "investment", routeAlias: "/investment?tab=holdings", label: "打开持仓" },
   策略实验室: { view: "single", label: "打开策略" },
   指数与ETF: { view: "index_etf", label: "打开指数" },
   主题催化: { view: "theme_catalyst", label: "打开主题" },
@@ -246,6 +249,10 @@ const SEARCH_ALIASES = {
   账户与资产: "accounts assets account zichan 账户 资产 净资产 现金",
   账本流水: "ledger transactions zhangben liushui 账本 流水 交易 分类",
   投资管理: "investment portfolio touzi 投资 持仓 风险 收益 回测",
+  持仓: "holdings positions chichang 持仓 投资 组合 编辑 保存",
+  持仓编辑: "holdings edit persistence chichang bianji 持仓 编辑 数量 价格 保存",
+  持仓持久化: "holdings persistence sqlite localStorage chichang 持仓 持久化 刷新 重启",
+  保存修改: "save holdings baocun xiugai 保存 修改 持仓",
   消费管理: "consumption spending xiaofei xf 消费 支出 预算 订阅 异常",
   现金与净资产趋势: "trend qushi accounts cash net worth 现金 净资产 趋势",
   投资趋势: "trend qushi investment market value return cash position 市值 总收益 现金仓位 趋势",
@@ -294,6 +301,47 @@ let uploadCenterState = {
   rejected: [],
   lastSource: "",
 };
+
+const HOLDINGS_STORAGE_KEY = "pfi-v021-holdings-persistence";
+const HOLDINGS_DEFAULT_ROWS = [
+  {
+    snapshotId: "v021-snap-spy",
+    instrumentId: "SPY",
+    displayName: "SPY ETF",
+    quantity: 8,
+    averageCost: 520,
+    marketPrice: 548,
+    currency: "USD",
+    sourceId: "manual_review",
+    asOf: "2026-06-27",
+    softDeleted: false,
+  },
+  {
+    snapshotId: "v021-snap-510300",
+    instrumentId: "510300",
+    displayName: "沪深300ETF",
+    quantity: 1200,
+    averageCost: 3.72,
+    marketPrice: 3.91,
+    currency: "CNY",
+    sourceId: "manual_review",
+    asOf: "2026-06-27",
+    softDeleted: false,
+  },
+  {
+    snapshotId: "v021-snap-gold",
+    instrumentId: "ABC_GOLD",
+    displayName: "ABC Bullion 黄金",
+    quantity: 1,
+    averageCost: 3900,
+    marketPrice: 4200,
+    currency: "AUD",
+    sourceId: "manual_review",
+    asOf: "2026-06-27",
+    softDeleted: false,
+  },
+];
+let holdingsPersistenceState = defaultHoldingsState();
 
 const FUNCTION_VIEWS = {
   single: functionView(
@@ -1050,17 +1098,19 @@ function installStage3WorkspaceAliases() {
     label: "投资管理",
     kicker: "投资分析",
     conclusion: "查看总市值、盈亏、资产配置、收益归因、风险暴露和行为复盘；策略回测、盘感训练和大数据模拟器仍保留。",
-    runtime: "第 4 阶段：市值 / 总收益 / 现金仓位趋势 · CNY 基准",
+    runtime: "第 6 阶段：持仓编辑持久化 · SQLite 服务 + 本机前端保存",
     trend: UNIFIED_TREND_DATA.investment,
     cards: [
       ["市值趋势", "CNY 98,200", "6 个月投资市值"],
       ["总收益趋势", "CNY 4,600", "累计总收益"],
       ["现金仓位", "CNY 15,100", "投资账户现金"],
-      ["策略实验室", "保留", "回测、盘感训练、模拟"],
+      ["持仓编辑", "可保存", "刷新 / 重开后仍保留"],
     ],
     features: [
       feature("投资趋势", "可用", "统一趋势合同", "同一趋势结构显示市值、总收益和现金仓位。", { workspace: "investment", label: "查看趋势" }),
       feature("投资总览", "可用", "持仓事实", "查看总市值、盈亏、资产配置和现金仓位。", { workspace: "investment", label: "查看投资" }),
+      feature("持仓编辑", "可用", "本机持久化", "编辑数量和价格，保存后刷新或重开仍保留。", { workspace: "investment", routeAlias: "/investment?tab=holdings", label: "打开编辑" }),
+      feature("持仓持久化", "可用", "SQLite 服务", "持仓 snapshot 和 adjustment 写入本机 operational database。", { workspace: "investment", routeAlias: "/investment?tab=holdings", label: "查看持仓" }),
       feature("收益归因", "需要复核", "估计归因", "把收益拆为市场、主动决策、费用、汇率和现金拖累；数据不足不输出精确结论。", { workspace: "investment", label: "查看归因" }),
       feature("风险分析", "有建议", "风险证据", "查看集中度、回撤、币种暴露和流动性。", { workspace: "investment", label: "查看风险" }),
       feature("行为复盘", "有建议", "交易证据", "识别追涨、杀跌、频繁交易和持有周期。", { workspace: "investment", label: "查看复盘" }),
@@ -1068,8 +1118,9 @@ function installStage3WorkspaceAliases() {
     ],
     tasks: [
       task("市值趋势", "可用 · CNY 月度折线", "ready"),
+      task("持仓编辑", "可用 · 保存后刷新仍保留", "ready"),
       task("总收益趋势", "可用 · 估计值需复核", "review"),
-      task("现金仓位趋势", "可用 · 只读分析", "ready"),
+      task("持仓 SQLite 服务", "可用 · snapshot / adjustment 可写入", "ready"),
     ],
   };
   WORKSPACES.consumption = {
@@ -1977,6 +2028,223 @@ function openImportReviewQueue() {
   showToast("已进入账本流水复核");
 }
 
+function bindHoldingsPersistenceEvents() {
+  document.querySelector("[data-holdings-save]")?.addEventListener("click", saveHoldingsEdits);
+  document.querySelector("[data-holdings-add]")?.addEventListener("click", addHoldingDraft);
+  document.querySelector("[data-holdings-reset]")?.addEventListener("click", resetHoldingsPersistence);
+  document.querySelector("[data-holdings-rows]")?.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-holdings-soft-delete-row]");
+    if (!button) return;
+    softDeleteHoldingRow(button.dataset.snapshotId || "");
+  });
+}
+
+function defaultHoldingsState() {
+  return {
+    schema: "PFIV021HoldingsFrontendStateV1",
+    rows: HOLDINGS_DEFAULT_ROWS.map((row) => ({ ...row })),
+    lastSavedAt: "",
+  };
+}
+
+function loadPersistedHoldings() {
+  try {
+    const stored = JSON.parse(localStorage.getItem(HOLDINGS_STORAGE_KEY) || "null");
+    if (!stored || stored.schema !== "PFIV021HoldingsFrontendStateV1" || !Array.isArray(stored.rows)) return defaultHoldingsState();
+    return {
+      schema: stored.schema,
+      rows: stored.rows.map(normalizeHoldingRow).filter(Boolean),
+      lastSavedAt: String(stored.lastSavedAt || ""),
+    };
+  } catch (_error) {
+    return defaultHoldingsState();
+  }
+}
+
+function savePersistedHoldings(state = holdingsPersistenceState) {
+  const next = {
+    schema: "PFIV021HoldingsFrontendStateV1",
+    rows: (state.rows || []).map(normalizeHoldingRow).filter(Boolean),
+    lastSavedAt: state.lastSavedAt || new Date().toISOString(),
+  };
+  localStorage.setItem(HOLDINGS_STORAGE_KEY, JSON.stringify(next));
+  holdingsPersistenceState = next;
+  return next;
+}
+
+function normalizeHoldingRow(row) {
+  if (!row || typeof row !== "object") return null;
+  return {
+    snapshotId: String(row.snapshotId || row.snapshot_id || `v021-snap-${Date.now()}`),
+    instrumentId: String(row.instrumentId || row.instrument_id || "").trim() || "待补标的",
+    displayName: String(row.displayName || row.display_name || row.instrumentId || row.instrument_id || "待补名称"),
+    quantity: nonNegativeNumber(row.quantity),
+    averageCost: nonNegativeNumber(row.averageCost ?? row.average_cost),
+    marketPrice: nonNegativeNumber(row.marketPrice ?? row.market_price),
+    currency: String(row.currency || "CNY").trim().toUpperCase(),
+    sourceId: String(row.sourceId || row.source_id || "manual_review"),
+    asOf: String(row.asOf || row.as_of || "2026-06-27"),
+    softDeleted: Boolean(row.softDeleted || row.soft_deleted),
+  };
+}
+
+function nonNegativeNumber(value) {
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric) || numeric < 0) return 0;
+  return numeric;
+}
+
+function renderHoldingsPersistencePanel(workspaceId, routeAlias = "") {
+  const panel = document.querySelector("[data-holdings-persistence-panel]");
+  if (!panel) return;
+  const visible = isHoldingsPersistenceRoute(workspaceId, routeAlias);
+  panel.hidden = !visible;
+  if (!visible) return;
+  holdingsPersistenceState = loadPersistedHoldings();
+  renderHoldingsRows();
+  updateHoldingsSummary();
+}
+
+function isHoldingsPersistenceRoute(workspaceId, routeAlias = "") {
+  const cleanRoute = String(routeAlias || "").trim();
+  const current = currentContext();
+  return (
+    (workspaceId === "investment" && cleanRoute.includes("holdings")) ||
+    workspaceId === "portfolio" ||
+    current.feature_view === "holdings"
+  );
+}
+
+function renderHoldingsRows() {
+  const tbody = document.querySelector("[data-holdings-rows]");
+  if (!tbody) return;
+  tbody.replaceChildren();
+  const rows = (holdingsPersistenceState.rows || []).filter((row) => !row.softDeleted);
+  rows.forEach((row) => {
+    const item = document.createElement("tr");
+    item.dataset.holdingSnapshotId = row.snapshotId;
+    item.innerHTML = `
+      <td><input data-holding-field="instrumentId" data-snapshot-id="${row.snapshotId}" value="${escapeAttribute(row.instrumentId)}" aria-label="标的" /></td>
+      <td><input data-holding-field="displayName" data-snapshot-id="${row.snapshotId}" value="${escapeAttribute(row.displayName)}" aria-label="名称" /></td>
+      <td><input data-holding-field="quantity" data-snapshot-id="${row.snapshotId}" type="number" min="0" step="0.0001" value="${row.quantity}" aria-label="数量" /></td>
+      <td><input data-holding-field="averageCost" data-snapshot-id="${row.snapshotId}" type="number" min="0" step="0.01" value="${row.averageCost}" aria-label="成本" /></td>
+      <td><input data-holding-field="marketPrice" data-snapshot-id="${row.snapshotId}" type="number" min="0" step="0.01" value="${row.marketPrice}" aria-label="价格" /></td>
+      <td><input data-holding-field="currency" data-snapshot-id="${row.snapshotId}" value="${escapeAttribute(row.currency)}" aria-label="币种" /></td>
+      <td><button type="button" data-holdings-soft-delete-row data-snapshot-id="${row.snapshotId}">软删除</button></td>
+    `;
+    tbody.appendChild(item);
+  });
+}
+
+function readHoldingsRowsFromDom() {
+  const currentRows = new Map((holdingsPersistenceState.rows || []).map((row) => [row.snapshotId, { ...row }]));
+  document.querySelectorAll("[data-holding-field]").forEach((input) => {
+    const snapshotId = input.dataset.snapshotId || "";
+    const field = input.dataset.holdingField || "";
+    const row = currentRows.get(snapshotId);
+    if (!row || !field) return;
+    if (["quantity", "averageCost", "marketPrice"].includes(field)) {
+      row[field] = nonNegativeNumber(input.value);
+    } else {
+      row[field] = String(input.value || "").trim();
+    }
+    currentRows.set(snapshotId, row);
+  });
+  return [...currentRows.values()].map(normalizeHoldingRow).filter(Boolean);
+}
+
+function saveHoldingsEdits() {
+  const rows = readHoldingsRowsFromDom();
+  holdingsPersistenceState = savePersistedHoldings({
+    schema: "PFIV021HoldingsFrontendStateV1",
+    rows,
+    lastSavedAt: new Date().toISOString(),
+  });
+  renderHoldingsRows();
+  updateHoldingsSummary();
+  setHoldingsStatus("已保存 · 刷新后仍保留", "ready");
+  showToast("持仓修改已保存到本机");
+}
+
+function addHoldingDraft() {
+  const timestamp = Date.now();
+  const rows = [
+    ...readHoldingsRowsFromDom(),
+    {
+      snapshotId: `v021-snap-draft-${timestamp}`,
+      instrumentId: "NEW",
+      displayName: "新增持仓",
+      quantity: 0,
+      averageCost: 0,
+      marketPrice: 0,
+      currency: "CNY",
+      sourceId: "manual_review",
+      asOf: "2026-06-27",
+      softDeleted: false,
+    },
+  ];
+  holdingsPersistenceState = { ...holdingsPersistenceState, rows };
+  renderHoldingsRows();
+  updateHoldingsSummary();
+  setHoldingsStatus("已新增草稿 · 需要保存", "review");
+}
+
+function softDeleteHoldingRow(snapshotId) {
+  if (!snapshotId) return;
+  const rows = readHoldingsRowsFromDom().map((row) => (row.snapshotId === snapshotId ? { ...row, softDeleted: true } : row));
+  holdingsPersistenceState = savePersistedHoldings({
+    schema: "PFIV021HoldingsFrontendStateV1",
+    rows,
+    lastSavedAt: new Date().toISOString(),
+  });
+  renderHoldingsRows();
+  updateHoldingsSummary();
+  setHoldingsStatus("已软删除 · 已保存", "ready");
+  showToast("持仓已软删除并保存在本机");
+}
+
+function resetHoldingsPersistence() {
+  localStorage.removeItem(HOLDINGS_STORAGE_KEY);
+  holdingsPersistenceState = defaultHoldingsState();
+  renderHoldingsRows();
+  updateHoldingsSummary();
+  setHoldingsStatus("已恢复默认 · 等待保存", "review");
+  showToast("已恢复默认持仓草稿");
+}
+
+function updateHoldingsSummary() {
+  const activeRows = (holdingsPersistenceState.rows || []).filter((row) => !row.softDeleted);
+  const count = document.querySelector("[data-holdings-summary-count]");
+  const value = document.querySelector("[data-holdings-summary-value]");
+  const saved = document.querySelector("[data-holdings-summary-saved]");
+  const total = activeRows.reduce((sum, row) => sum + nonNegativeNumber(row.quantity) * nonNegativeNumber(row.marketPrice), 0);
+  if (count) count.textContent = String(activeRows.length);
+  if (value) value.textContent = `CNY ${total.toLocaleString("zh-CN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  if (saved) saved.textContent = holdingsPersistenceState.lastSavedAt ? formatLocalSaveTime(holdingsPersistenceState.lastSavedAt) : "未保存";
+  setHoldingsStatus(holdingsPersistenceState.lastSavedAt ? "已从本机恢复" : "等待保存", holdingsPersistenceState.lastSavedAt ? "ready" : "review");
+}
+
+function setHoldingsStatus(text, status) {
+  const statusNode = document.querySelector("[data-holdings-persistence-status]");
+  if (!statusNode) return;
+  statusNode.textContent = text;
+  statusNode.className = `status-pill ${statusClass(status || "review")}`;
+}
+
+function formatLocalSaveTime(value) {
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return "已保存";
+  return parsed.toLocaleString("zh-CN", { hour12: false });
+}
+
+function escapeAttribute(value) {
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
 function renderWorkspace(workspaceId, options = {}) {
   const workspace = WORKSPACES[workspaceId] || WORKSPACES.home;
   const shell = document.querySelector(".app-shell");
@@ -2015,6 +2283,7 @@ function renderWorkspace(workspaceId, options = {}) {
   renderDecisionRows(workspace.rows);
   renderTasks(workspace.tasks);
   renderUploadImportPanel(workspaceId);
+  renderHoldingsPersistencePanel(workspaceId, routeForState);
   applyEvidenceDrawer(workspace.evidence);
   drawTrendChart(workspace.trend || legacyChartToTrend(workspace));
   if (!options.keepFunctionDetail) hideFunctionDetail();
@@ -2126,8 +2395,9 @@ function featureOpenControl(card) {
   button.type = "button";
   button.className = "workflow-open";
   button.dataset.featureWorkspace = target.workspace || "home";
+  if (target.routeAlias) button.dataset.routeAlias = target.routeAlias;
   button.textContent = target.label || "打开入口";
-  button.addEventListener("click", () => setActiveWorkspace(target.workspace || "home"));
+  button.addEventListener("click", () => setActiveWorkspace(target.workspace || "home", { routeAlias: target.routeAlias || "" }));
   return button;
 }
 
@@ -3125,6 +3395,7 @@ function bindEvents() {
   document.querySelector("[data-table-sort]")?.addEventListener("click", sortRows);
   document.querySelector("[data-table-export]")?.addEventListener("click", exportRows);
   bindUploadCenterEvents();
+  bindHoldingsPersistenceEvents();
 
   document.addEventListener("keydown", (event) => {
     if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
