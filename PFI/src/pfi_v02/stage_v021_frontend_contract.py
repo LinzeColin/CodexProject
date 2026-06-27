@@ -16,6 +16,10 @@ STAGE2_TASK_IDS = (
     "V021-P2-S2-T02",
     "V021-P2-S2-T03",
 )
+STAGE3_TASK_IDS = (
+    "V021-P3-S3-T01",
+    "V021-P3-S3-T02",
+)
 BASE_CURRENCY = "CNY"
 UI_TARGET = "PFI/web HTML shell"
 
@@ -287,6 +291,55 @@ def build_v021_stage2_contract() -> dict[str, object]:
             "ETF",
             "PIT",
             "A/B/C/D",
+        ),
+    }
+
+
+def build_v021_stage3_contract() -> dict[str, object]:
+    return {
+        "schema": "PFIV021FrontendOptimizationStage3ContractV1",
+        "version_name": VERSION_NAME,
+        "stage": "S3 设置页与全局搜索",
+        "task_ids": STAGE3_TASK_IDS,
+        "project_root": "CodexProject/PFI",
+        "ui_target": UI_TARGET,
+        "settings_contract": {
+            "route": "/settings",
+            "legacy_data_system_route": "/settings?tab=data-system",
+            "presentation": "primary_workspace",
+            "default_business_pages_show_settings_sidebar": False,
+            "forbidden_surfaces": ("settings-drawer", "right-settings", "side-settings-panel"),
+            "feedback_controls": build_v021_feedback_contract()["feedback_controls"],
+        },
+        "global_search_contract": {
+            "surface": "top_bar_global_search",
+            "html_id": "global-search",
+            "result_container_id": "global-search-results",
+            "scope": (
+                "15 个一级导航入口",
+                "V0.1 兼容入口别名",
+                "工作区功能卡",
+                "功能面板",
+                "任务中心条目",
+                "决策队列表格行",
+                "设置页反馈控制项",
+            ),
+            "fuzzy_match_modes": (
+                "substring",
+                "subsequence",
+                "alias_keywords",
+                "English technical token",
+            ),
+            "keyboard_contract": ("ArrowDown", "ArrowUp", "Enter", "Escape", "Meta/Ctrl+K"),
+            "ui_reference": "VS Code / Google Chrome style command search: input, ranked list, category, path, action hint",
+            "empty_state": "没有匹配结果",
+        },
+        "acceptance": (
+            "设置页通过 /settings 独立路由进入，并作为主工作区展示。",
+            "数据与系统旧入口映射到 /settings?tab=data-system。",
+            "业务页默认不展示右侧设置面板；运行反馈控制台、多模态反馈、触感、声音、视觉、通知和反馈测试进入设置页。",
+            "顶部全局搜索支持跨入口、功能、任务、表格行和设置控件的模糊搜索。",
+            "搜索结果必须显示分类、路径和操作提示，并支持键盘上下选择、Enter 打开、Escape 关闭。",
         ),
     }
 

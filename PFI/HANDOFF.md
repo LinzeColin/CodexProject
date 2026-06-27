@@ -4,7 +4,7 @@ Last updated: 2026-06-27 Australia/Sydney
 
 ## Current Goal
 
-PFI v0.2.1 前端优化 Stage 2 已完成：全局用户可见文案中文化，清理 `运行边界` 类 UI 文案，移除手机演示框/预览框风险，动态证据抽屉和 Stage 5/6 卡片不再暴露英文交付噪音或机器证据字段。
+PFI v0.2.1 前端优化 Stage 3 已完成：设置页拥有独立路由和主工作区，运行反馈控制台归入设置页，顶部搜索升级为全局模糊搜索并支持中文、英文技术词、短别名和键盘跳转。
 
 ## Current Status
 
@@ -44,6 +44,7 @@ PFI v0.2.1 前端优化 Stage 2 已完成：全局用户可见文案中文化，
 - v0.2.1 前端优化记录是 `docs/pfi_v02/STAGE_V021_FRONTEND_OPTIMIZATION.md`。
 - v0.2.1 Stage 0/1 合同是 `src/pfi_v02/stage_v021_frontend_contract.py`，测试是 `tests/test_v021_stage0_frontend_contract.py` 和 `tests/test_v021_stage1_navigation_contract.py`。
 - v0.2.1 Stage 2 合同是 `src/pfi_v02/stage_v021_frontend_contract.py::build_v021_stage2_contract()`，测试是 `tests/test_v021_stage2_copy_cleanup_contract.py`。
+- v0.2.1 Stage 3 合同是 `src/pfi_v02/stage_v021_frontend_contract.py::build_v021_stage3_contract()`，测试是 `tests/test_v021_stage3_settings_search_contract.py`。
 - v0.2.1 UI 货币基准已锁定为 CNY；所有页面顶部右上角必须显示 `CNY/AUD=4.70（YYYYMMDD--HH:MM）`，读取当日 06:00 Australia/Sydney 汇率快照。
 - v0.2.1 正式前端目标是 `PFI/web` HTML Web Shell；多模态反馈、触感、声音、视觉、通知和运行反馈控制台后续必须收敛到设置页。
 - Web shell default homepage consumes Stage 6 closeout status and now shows one unified 15-entry navigation list: 首页总览、账户与资产、账本流水、投资管理、消费管理、数据源与上传、建议与复盘、报告与洞察、首页、市场、研究、持仓、策略实验室、数据与系统、设置.
@@ -53,6 +54,7 @@ PFI v0.2.1 前端优化 Stage 2 已完成：全局用户可见文案中文化，
 - 2026-06-27 Stage 1-5 acceptance audit：根 `README.md` 和 `governance/projects.yaml` 已登记 `QBVS` 和 `MetaDatabase`；`MetaDatabase` 补三基和最小治理；PFI Stage 1-5 contracts `Ran 89 tests / OK`；QBVS smoke `Ran 1 test / OK`；PFI/QBVS/MetaDatabase governance `errors 0 / warnings 0`；Web Shell Chrome 点击验收 `14/14`、console errors `0`。
 - 2026-06-27 v0.2.1 Stage 1：HTML Web Shell 左侧导航已改为 15 个统一入口；`数据与系统` 映射设置页；策略实验室旧入口和投资管理卡片都打开投资管理下的策略实验室状态；新增 `docs/pfi_v02/LEDGER_CLASSIFICATION_STANDARD.md`；三基文件已明确功能目录、开发日志、参数依据三种定位。
 - 2026-06-27 v0.2.1 Stage 2：HTML Web Shell 与动态首页摘要完成中文可读文案清理；`Review lifecycle`、`PFI Context Export`、`Synthetic E2E`、`Rollback plan`、`Follow-up list`、`Top N`、`tradeoff`、`owner gate`、`parser / raw / batch` 等旧英文/机器文案被移出用户可见面；`运行边界`、`查看边界`、`验收边界`、`安全边界` 和英文 `Boundary` 被合同测试禁止；未新增 iframe、手机演示框或预览框。
+- 2026-06-27 v0.2.1 Stage 3：`设置` 和 `数据与系统` 深链统一进入设置主工作区；业务页面不常驻反馈控制台；设置页包含运行反馈控制台、多模态反馈、触感、声音、视觉、通知、反馈测试和无障碍反馈；顶部全局搜索支持 15 个入口、V0.1 别名、工作区卡片、功能面板、任务中心、决策行和设置反馈控制项的模糊检索。
 
 ## Decisions
 
@@ -96,9 +98,10 @@ Latest Stage 6 closeout result: Stage 1+2+3+4+5+6 contracts `Ran 95 tests / OK`;
 Latest验收退回纠偏 result: `tests.test_stage2_alipay_import` `Ran 7 tests / OK`; Stage 1 classification + Stage 2 targeted contracts `Ran 32 tests / OK`; Python compile `OK`; Web shell syntax `OK`; real old Alipay import `4/4 files`, `8815` records, `406` review; browser validation `upload panel true`, `private ledger true`, `file input 1`, `navCount 8`, all primary entry clicks OK, no raw `ready`/`Synthetic E2E`; screenshot `/tmp/pfi-alipay-upload-verified-v2.png`.
 Latest v0.2.1 Stage 1 target result: Stage 1 target contracts `Ran 22 tests / OK`; full PFI unittest discover `Ran 112 tests / OK`; `node --check web/app/shell.js` OK; governance `errors 0 / warnings 0`; `git diff --check -- PFI` OK; Chrome headless desktop clicked `15/15` entries with screenshot `/tmp/pfi-v021-stage1-nav-verified.png`; Chrome headless mobile 390x844 validated `数据源与上传` and `策略实验室` with screenshot `/tmp/pfi-v021-stage1-mobile-verified.png`.
 Latest v0.2.1 Stage 2 target result: Stage 2 contract `Ran 4 tests / OK`; Stage 0/1/2 frontend contracts `Ran 16 tests / OK`; Stage 4/5/6 regression contracts `Ran 36 tests / OK`; full PFI unittest discover `Ran 116 tests / OK`; `node --check PFI/web/app/shell.js` OK; governance `errors 0 / warnings 0`; `git diff --check -- PFI` OK; Chrome headless desktop clicked `15/15` entries and validated `复盘生命周期`、`PFI 上下文导出`、`策略实验室`, console errors `0`, screenshot `/tmp/pfi-v021-stage2-copy-desktop-verified.png`; Chrome headless mobile 390x844 validated `15` entries and `数据源与上传`, screenshot `/tmp/pfi-v021-stage2-copy-mobile-verified.png`.
+Latest v0.2.1 Stage 3 target result: Stage 0/1/2/3 frontend contracts `Ran 21 tests / OK`; full PFI unittest discover `Ran 121 tests / OK`; `node --check PFI/web/app/shell.js` OK; governance `errors 0 / warnings 0`; `git diff --check -- PFI` OK; Chrome headless desktop verified settings route, legacy data-system deep link, fuzzy searches `xf`、`fk`、`ledger`, keyboard jump and console errors `0`, screenshot `/tmp/pfi-v021-stage3-settings-search-desktop-verified.png`; Chrome headless mobile 390x844 verified fuzzy search `fk` -> `运行反馈控制台`, screenshot `/tmp/pfi-v021-stage3-settings-search-mobile-verified.png`.
 
 ## Next
 
-1. Finish current Stage 2 full verification and push the resulting commit to GitHub `main`.
-2. Next v0.2.1 pursuing goal should start with `P3 / S3 设置页`：设置页独立路由、运行反馈控制台移入设置页。
-3. Do not jump to graphing, upload center, or position persistence until the corresponding stage is opened by the user.
+1. Finish current Stage 3 full verification and push the resulting commit to GitHub `main`.
+2. Next v0.2.1 pursuing goal should start with `P4 / S4 趋势模型`：统一趋势数据结构、账户与资产折线图、投资管理折线图、消费管理折线图。
+3. Do not jump to upload center or position persistence until the corresponding stage is opened by the user.

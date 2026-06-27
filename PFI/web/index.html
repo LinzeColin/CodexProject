@@ -20,10 +20,28 @@
           <span class="brand-mark" aria-hidden="true">PFI</span>
           <span class="brand-name">PFI</span>
         </div>
-        <label class="global-search">
-          <span class="sr-only">全局搜索</span>
-          <input id="global-search" type="search" placeholder="搜索账户、流水、消费、持仓或报告" autocomplete="off" />
-        </label>
+        <div class="global-search" data-search-surface="global">
+          <label for="global-search" class="sr-only">全局搜索</label>
+          <input
+            id="global-search"
+            data-global-search-input
+            type="search"
+            role="combobox"
+            aria-autocomplete="list"
+            aria-expanded="false"
+            aria-controls="global-search-results"
+            placeholder="全局搜索：账户、流水、消费、设置、反馈"
+            autocomplete="off"
+          />
+          <div
+            id="global-search-results"
+            class="global-search-results"
+            data-global-search-results
+            role="listbox"
+            aria-label="全局搜索结果"
+            hidden
+          ></div>
+        </div>
         <form class="global-context" aria-label="全局上下文">
           <label>
             <span>数据源</span>

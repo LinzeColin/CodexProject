@@ -223,3 +223,49 @@ git diff --check -- PFI
 ## Stage 2 后续顺序
 
 下一轮 pursuing goal 应从 `P3 / S3 设置页` 开始，优先完成设置页独立路由和运行反馈控制台归口。不得跳到趋势图、上传中心或持仓持久化，除非用户明确改变阶段顺序。
+
+## Stage 3 完成记录
+
+本轮完成 `P3 / S3 设置页与全局搜索`，覆盖任务：
+
+- `V021-P3-S3-T01`：设置页独立路由，`/settings` 和旧入口 `/settings?tab=data-system` 都打开设置主工作区。
+- `V021-P3-S3-T02`：运行反馈控制台移入设置页，业务页面默认不常驻反馈控制台。
+- 用户追加验收：顶部搜索升级为全局模糊搜索，参考 VS Code / Google Chrome 的搜索体验，支持中文、英文技术词和短别名。
+
+当前交付：
+
+- `设置` 和 `数据与系统` 均映射到设置主工作区；设置页状态标记为 `data-settings-surface="primary_workspace"`。
+- 禁止把设置能力做成右侧抽屉、右侧设置栏或业务页常驻设置面板。
+- 设置页包含 `运行反馈控制台`、`多模态反馈`、`触感反馈强度`、`声音反馈`、`视觉反馈`、`通知反馈`、`反馈测试`、`无障碍反馈`。
+- 顶部全局搜索覆盖 15 个一级入口、V0.1 兼容别名、工作区卡片、功能面板、任务中心行、决策行和设置反馈控制项。
+- 全局搜索支持 substring、subsequence、alias keywords 和英文技术 token；示例：`xf` 命中 `消费管理`，`fk` 命中 `运行反馈控制台`，`ledger` 命中 `账本流水`。
+- 键盘交互支持 `ArrowDown`、`ArrowUp`、`Enter`、`Escape` 和 `Ctrl/Cmd+K`。
+- 搜索结果显示标题、分类、路径和简短提示；无结果时显示中文空状态 `没有匹配结果`。
+
+Stage 3 已通过的目标验收命令：
+
+```bash
+node --check PFI/web/app/shell.js
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m unittest PFI.tests.test_v021_stage3_settings_search_contract PFI.tests.test_v021_stage2_copy_cleanup_contract PFI.tests.test_v021_stage1_navigation_contract PFI.tests.test_v021_stage0_frontend_contract -q
+```
+
+当前结果：Web Shell 语法检查通过；Stage 0/1/2/3 前端合同 `Ran 21 tests / OK`。
+
+Stage 3 closeout 验收命令：
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -B -m unittest discover -s tests -q
+python3 scripts/validate_project_governance.py --project PFI
+git diff --check -- PFI
+```
+
+当前结果：完整 PFI 单测 `Ran 121 tests / OK`；治理 `errors 0 / warnings 0`；`git diff --check -- PFI` 通过。
+
+浏览器验收：
+
+- Chrome headless desktop 1440x950：`设置` 打开 `#/settings`；`/settings?tab=data-system` 深链恢复设置主工作区；`xf`、`fk`、`ledger` 模糊搜索命中并可回车跳转；console errors `0`；截图 `/tmp/pfi-v021-stage3-settings-search-desktop-verified.png`。
+- Chrome headless mobile 390x844：顶部搜索可输入 `fk` 并命中 `运行反馈控制台`；截图 `/tmp/pfi-v021-stage3-settings-search-mobile-verified.png`。
+
+## Stage 3 后续顺序
+
+下一轮 pursuing goal 应从 `P4 / S4 趋势模型` 开始，优先完成统一趋势数据结构、账户与资产折线图、投资管理折线图和消费管理折线图。不得跳到上传中心或持仓持久化，除非用户明确改变阶段顺序。
