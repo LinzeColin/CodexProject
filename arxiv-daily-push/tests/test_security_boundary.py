@@ -6,6 +6,7 @@ from pathlib import Path
 from arxiv_daily_push.security_boundary import (
     audit_workflow_supply_chain,
     build_frontstage_evidence_a004_report,
+    build_trust_boundary_a005_report,
     build_supply_chain_baseline,
     build_dependency_vulnerability_gate,
     build_trust_boundary_receipt,
@@ -14,6 +15,7 @@ from arxiv_daily_push.security_boundary import (
     typed_inference,
     validate_frontstage_evidence_a004_report,
     validate_supply_chain_baseline,
+    validate_trust_boundary_a005_report,
     validate_trust_boundary_receipt,
     validate_typed_frontstage,
 )
@@ -102,6 +104,40 @@ class SecurityBoundaryTests(unittest.TestCase):
             },
         }
         self.assertIn("unsupported_foreground_claim must be blocked", validate_frontstage_evidence_a004_report(tampered_invalid))
+
+    def test_trust_boundary_a005_report_passes_with_required_blocks(self) -> None:
+        report = build_trust_boundary_a005_report(generated_at="2026-06-27T11:30:00+10:00")
+
+        self.assertEqual(report["status"], "pass")
+        self.assertEqual(report["finding_id"], "A-005")
+        self.assertEqual(report["task_id"], "S2PMT01-TRUST-BOUNDARY-A005")
+        self.assertTrue(report["probes"]["source_content_labeled_untrusted"])
+        self.assertTrue(report["probes"]["unsafe_url_schemes_blocked"])
+        self.assertTrue(report["probes"]["source_content_tool_requests_blocked"])
+        self.assertTrue(report["probes"]["secret_access_blocked"])
+        self.assertTrue(report["gates"]["tool_and_secret_boundary_enforced"])
+        self.assertFalse(report["p0_closure_claimed"])
+        self.assertFalse(report["real_smtp_sent"])
+        self.assertFalse(validate_trust_boundary_a005_report(report))
+
+    def test_trust_boundary_a005_report_blocks_tampered_boundary_or_closure(self) -> None:
+        report = build_trust_boundary_a005_report(generated_at="2026-06-27T11:30:00+10:00")
+
+        tampered = {**report, "p0_closure_claimed": True}
+        self.assertIn(
+            "p0_closure_claimed must be false for A-005 trust-boundary evidence",
+            validate_trust_boundary_a005_report(tampered),
+        )
+        tampered = {**report, "probes": {**report["probes"], "secret_access_blocked": False}}
+        self.assertIn("secret_access_blocked probe must pass", validate_trust_boundary_a005_report(tampered))
+        tampered_invalid = {
+            **report,
+            "invalid_case_results": {
+                **report["invalid_case_results"],
+                "model_can_read_secrets": {"status": "pass", "errors": []},
+            },
+        }
+        self.assertIn("model_can_read_secrets must be blocked", validate_trust_boundary_a005_report(tampered_invalid))
 
     def test_supply_chain_baseline_declares_local_controls_without_side_effects(self) -> None:
         workflow_contents = {str(path.relative_to(ROOT)): path.read_text(encoding="utf-8") for path in ADP_WORKFLOWS}

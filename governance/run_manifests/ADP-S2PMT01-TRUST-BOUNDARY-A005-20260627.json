@@ -1,0 +1,168 @@
+{
+  "acceptance_id": "ACC-S2PMT01-SECURITY",
+  "base_commit": "88597153257c09bf6d4d2677ea8994d804e7c54f",
+  "created_at": "2026-06-27T11:30:00+10:00",
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT01_TRUST_BOUNDARY_A005.md",
+    "arxiv-daily-push/src/arxiv_daily_push/security_boundary.py",
+    "arxiv-daily-push/tests/test_security_boundary.py",
+    "arxiv-daily-push/用户中心/来源信任边界扫描.md"
+  ],
+  "finding_id": "A-005",
+  "formula_id": "FORM-ADP-116",
+  "manifest_id": "ADP-S2PMT01-TRUST-BOUNDARY-A005-20260627",
+  "model_id": "MOD-ADP-114",
+  "non_scope": "No SMTP, scheduler, Release, production restore, public schema, DB migration, queue mutation, source adapter, ranking, CURRENT, V7.1/V7.2 contract, P0/P1 closure, DAILY_OPERATION, or integrated production acceptance change.",
+  "p0_closure_claimed": false,
+  "p1_closure_claimed": false,
+  "parameter_ids": [
+    "PARAM-ADP-955",
+    "PARAM-ADP-956",
+    "PARAM-ADP-957",
+    "PARAM-ADP-958",
+    "PARAM-ADP-959"
+  ],
+  "parent_task_id": "S2PMT01",
+  "phase": "S2PM",
+  "production_side_effects": false,
+  "project_id": "arxiv-daily-push",
+  "scope": "Dedicated local A-005 trust-boundary evidence for untrusted source content, safe URL rendering, blocked source-content tool requests, blocked secret access, blocked repository writes, blocked email sending, and no production side effects.",
+  "stage2_integrated_production_accepted": false,
+  "task_id": "S2PMT01-TRUST-BOUNDARY-A005",
+  "test_results": [
+    "py_compile PASS",
+    "user-center timestamp check: validated 17 pages",
+    "targeted A-005 tests: 41 OK",
+    "full arxiv-daily-push unittest: 586 OK",
+    "V7.2 validator PASS",
+    "V7.2 unittest: 4 OK",
+    "project governance: errors 0 warnings 0",
+    "governance sync: errors 0 warnings 0",
+    "lean governance check-render: drift_count 0 reference_issue_count 0",
+    "structured parse: JSON 3 OK; JSONL 2 OK; parameter_registry.csv 959 rows width 36; TRACEABILITY_MATRIX.csv 259 rows width 12",
+    "forbidden production/closure flag scan PASS",
+    "git diff --check PASS",
+    "semantic extractor: timed out after 60s; non-blocking validation not completed and not claimed as passed"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_a005_compile PYTHONPATH=arxiv-daily-push/src python3 -m py_compile arxiv-daily-push/src/arxiv_daily_push/security_boundary.py arxiv-daily-push/tests/test_security_boundary.py arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_user_center_candidate_pool.py",
+    "PYTHONPATH=arxiv-daily-push/src python3 arxiv-daily-push/scripts/update_user_center_timestamps.py --check",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_a005_target2 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_security_boundary.py arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_user_center_candidate_pool.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_a005_full PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "python3 arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_a005_v72 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/docs/pursuing_goal/v7_2/tests -q",
+    "PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push",
+    "PYTHONPATH=arxiv-daily-push/src python3 scripts/validate_governance_sync.py",
+    "PYTHONPATH=arxiv-daily-push/src python3 scripts/lean_governance.py check-render --project arxiv-daily-push",
+    "structured JSON/JSONL/CSV parse check",
+    "precise forbidden production/closure flag scan",
+    "git diff --check",
+    "python3 scripts/validate_semantic_extractors.py arxiv-daily-push with 60s wrapper timeout"
+  ],
+  "trust_boundary_report": {
+    "acceptance_id": "ACC-S2PMT01-SECURITY",
+    "blocking_reasons": [],
+    "current_pointer_changed": false,
+    "db_migration_executed": false,
+    "finding_id": "A-005",
+    "gates": {
+      "no_production_side_effect": true,
+      "required_probe_coverage": true,
+      "tool_and_secret_boundary_enforced": true,
+      "trust_receipt_schema_enforced": true,
+      "url_sanitizer_enforced": true
+    },
+    "generated_at": "2026-06-27T11:30:00+10:00",
+    "invalid_case_results": {
+      "model_can_execute_repository_writes": {
+        "errors": [
+          "tool_policy.model_can_execute_repository_writes must be false"
+        ],
+        "status": "blocked"
+      },
+      "model_can_read_secrets": {
+        "errors": [
+          "tool_policy.model_can_read_secrets must be false"
+        ],
+        "status": "blocked"
+      },
+      "model_can_send_email": {
+        "errors": [
+          "tool_policy.model_can_send_email must be false"
+        ],
+        "status": "blocked"
+      },
+      "source_content_can_request_tools": {
+        "errors": [
+          "tool_policy.source_content_can_request_tools must be false"
+        ],
+        "status": "blocked"
+      },
+      "source_content_not_untrusted": {
+        "errors": [
+          "source content must be labeled UNTRUSTED_DATA"
+        ],
+        "status": "blocked"
+      },
+      "unsafe_url_rendering_allowed": {
+        "errors": [
+          "output_policy.unsafe_url_rendering_allowed must be false"
+        ],
+        "status": "blocked"
+      }
+    },
+    "model_id": "adp-s2pmt01-trust-boundary-a005-v1",
+    "p0_closure_claimed": false,
+    "p1_closure_claimed": false,
+    "parent_task_id": "S2PMT01",
+    "probes": {
+      "email_send_blocked": true,
+      "repository_write_blocked": true,
+      "secret_access_blocked": true,
+      "source_content_labeled_untrusted": true,
+      "source_content_tool_requests_blocked": true,
+      "unsafe_hosts_blocked": true,
+      "unsafe_url_schemes_blocked": true
+    },
+    "production_restore_executed": false,
+    "production_side_effects_enabled": false,
+    "public_schema_changed": false,
+    "queue_mutation_allowed": false,
+    "queue_schema_changed": false,
+    "ranking_algorithm_changed": false,
+    "real_smtp_sent": false,
+    "release_upload_allowed": false,
+    "scheduler_enabled": false,
+    "source_adapter_changed": false,
+    "stage2_integrated_production_accepted": false,
+    "status": "pass",
+    "task_id": "S2PMT01-TRUST-BOUNDARY-A005",
+    "trust_boundary_hash": "7808a7c38417e0d7df987f7f402a0fb43938b1160d84b69518d41abba690bfe3",
+    "url_probe_results": {
+      "arxiv_http_upgraded": true,
+      "credential_url": true,
+      "data_scheme": true,
+      "file_scheme": true,
+      "javascript_scheme": true,
+      "unapproved_host": true
+    },
+    "v7_1_baseline_changed": false,
+    "v7_2_contract_files_changed": false,
+    "valid_receipt_errors": []
+  },
+  "validation": [
+    "py_compile PASS",
+    "user-center timestamp check: validated 17 pages",
+    "targeted A-005 tests: 41 OK",
+    "full arxiv-daily-push unittest: 586 OK",
+    "V7.2 validator PASS",
+    "V7.2 unittest: 4 OK",
+    "project governance: errors 0 warnings 0",
+    "governance sync: errors 0 warnings 0",
+    "lean governance check-render: drift_count 0 reference_issue_count 0",
+    "structured parse: JSON 3 OK; JSONL 2 OK; parameter_registry.csv 959 rows width 36; TRACEABILITY_MATRIX.csv 259 rows width 12",
+    "forbidden production/closure flag scan PASS",
+    "git diff --check PASS",
+    "semantic extractor: timed out after 60s; non-blocking validation not completed and not claimed as passed"
+  ]
+}

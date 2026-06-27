@@ -6603,3 +6603,60 @@ formulas:
     evidence_hash: "PENDING_MAIN_COMMIT"
     last_verified_commit: "PRECOMMIT"
     verified_at: "2026-06-27T09:58:16+10:00"
+
+
+  -
+    formula_id: "FORM-ADP-116"
+    model_id: "MOD-ADP-114"
+    assumption_ids:
+      - "ASM-ADP-035"
+    task_ids:
+      - "S2PMT01-TRUST-BOUNDARY-A005"
+      - "S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A005"
+    status: "active"
+    expression: "A-005 trust-boundary evidence passes only when required_probe_coverage, trust_receipt_schema_enforced, url_sanitizer_enforced, tool_and_secret_boundary_enforced, and no_production_side_effect are all true; source content must be labeled UNTRUSTED_DATA; javascript, data, file, credential, and unapproved-host URLs must be blocked; source content must not request tools, read secrets, write repository files, or send email."
+    variables:
+      -
+        name: "trust_boundary_receipt"
+        data_type: "object"
+        unit: "receipt"
+        input_domain: "source content trust, tool policy, output policy"
+      -
+        name: "url_probe_results"
+        data_type: "object"
+        unit: "boolean probes"
+        input_domain: "javascript, data, file, credential, unapproved host, arxiv http upgrade"
+      -
+        name: "invalid_case_results"
+        data_type: "object"
+        unit: "blocked invalid cases"
+        input_domain: "trusted source label, tool request, secret read, repository write, email send, unsafe URL rendering"
+      -
+        name: "production_side_effect_flags"
+        data_type: "object"
+        unit: "boolean flags"
+        input_domain: "false"
+    constraints: "This is current local P0 A-005 evidence only; it must not send SMTP, install scheduler, upload Release, mutate public schema or production queue, edit CURRENT or V7.1/V7.2 contracts, close inherited P0/P1, or claim Stage2 integrated production acceptance."
+    missing_policy: "Missing required probe, accepted trusted source label, accepted tool request, accepted secret access, accepted repository write, accepted email send, accepted unsafe URL, or any forbidden side-effect flag blocks the report."
+    output_range: "A-005 trust-boundary evidence report with status pass or blocked, gate states, invalid-case results, URL probe results, deterministic trust_boundary_hash, validation errors, and all production/schema/queue/V7/closure side-effect flags false."
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/security_boundary.py"
+    test_refs:
+      - "arxiv-daily-push/tests/test_security_boundary.py"
+      - "arxiv-daily-push/tests/test_stage2_final_gate.py"
+      - "arxiv-daily-push/tests/test_user_center_candidate_pool.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT01_TRUST_BOUNDARY_A005.md"
+      - "governance/run_manifests/ADP-S2PMT01-TRUST-BOUNDARY-A005-20260627.json"
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/security_boundary.py::S2PMT01_TRUST_A005_MODEL_ID"
+      - "arxiv-daily-push/src/arxiv_daily_push/security_boundary.py::S2PMT01_TRUST_A005_REQUIRED_PROBES"
+      - "arxiv-daily-push/src/arxiv_daily_push/security_boundary.py::S2PMT01_TRUST_A005_REQUIRED_GATES"
+      - "arxiv-daily-push/src/arxiv_daily_push/security_boundary.py::S2PMT01_TRUST_A005_REQUIRED_PRODUCTION_FALSE_FLAGS"
+      - "arxiv-daily-push/src/arxiv_daily_push/security_boundary.py::build_trust_boundary_a005_report"
+      - "arxiv-daily-push/src/arxiv_daily_push/security_boundary.py::validate_trust_boundary_a005_report"
+    implementation_fingerprint: "PENDING_MAIN_COMMIT"
+    evidence_hash: "PENDING_MAIN_COMMIT"
+    last_verified_commit: "PRECOMMIT"
+    verified_at: "2026-06-27T11:30:00+10:00"

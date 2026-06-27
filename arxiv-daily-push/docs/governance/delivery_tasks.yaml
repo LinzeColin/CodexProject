@@ -3202,3 +3202,32 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PMT01-TRUST-BOUNDARY-A005"
+    phase: "S2PM"
+    status: "completed"
+    acceptance_id: "ACC-S2PMT01-SECURITY"
+    acceptance_ids: ["ACC-S2PMT01-SECURITY"]
+    completed_version: "0.23.1"
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_a005_sec PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_security_boundary.py -q"]
+    test_results: ["focused security boundary tests: 11 OK"]
+    objective: "Record dedicated local evidence that external source content remains untrusted data and cannot request tools, read secrets, write repository files, send email, or render unsafe URLs."
+    scope: "S2PMT01 trust-boundary helper, focused regression, phase record, run manifest, shallow user-center page, and governance traceability records for inherited P0 finding A-005."
+    non_scope: "No independent signoff, no final acceptance bundle creation, no inherited P0/P1 closure, no S2PLT04 completion claim, no final command execution claim, no real SMTP send, no scheduler install, no launchd bootstrap, no Release, no production restore, no public schema change, no DB migration, no production queue mutation, no ranking change, no source adapter change, no workflow enforcement, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no integrated production acceptance, and no daily-operation enablement."
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PMT01_TRUST_BOUNDARY_A005.md", "governance/run_manifests/ADP-S2PMT01-TRUST-BOUNDARY-A005-20260627.json", "arxiv-daily-push/用户中心/来源信任边界扫描.md", "arxiv-daily-push/tests/test_security_boundary.py"]
+    risk: "A-005 local evidence can be misread as full prompt-injection red-team coverage or P0 closure; it only records deterministic local evidence and leaves inherited P0/P1, S2PLT04, final bundle, final command execution, and S2PMT07 acceptance blocked."
+    rollback: "Revert the A-005 trust-boundary helper/test, phase record, run manifest, user-center page, traceability/delivery/event records, generated status refresh, and this task entry; no runtime production state was changed."
+  - task_id: "S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A005"
+    phase: "S2PM"
+    status: "completed"
+    acceptance_id: "ACC-S2PMT07-FINAL-REVIEW"
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW"]
+    completed_version: "0.23.1"
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_a005_final PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_security_boundary.py arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_user_center_candidate_pool.py -q"]
+    test_results: ["focused A-005/final-gate/user-center tests pending final validation"]
+    objective: "Refresh the S2PMT07 P0 independent-review receipt so A-005 points to dedicated current trust-boundary evidence."
+    scope: "P0 A-005 receipt routing refresh, focused security/final-gate/user-center regression test extension, current-run manifest, and governance traceability records."
+    non_scope: "No independent signoff, no final acceptance bundle creation, no inherited P0/P1 closure, no S2PLT04 completion claim, no final command execution claim, no real SMTP send, no scheduler install, no launchd bootstrap, no Release, no production restore, no public schema change, no DB migration, no production queue mutation, no ranking change, no source adapter change, no workflow enforcement, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no integrated production acceptance, and no daily-operation enablement."
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_INDEPENDENT_REVIEW_RECEIPT.md", "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A005-20260627.json", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
+    risk: "This refresh can be misread as A-005 P0 closure or independent review signoff; it only updates evidence routing and leaves inherited P0/P1, S2PLT04, final bundle, final command execution, and S2PMT07 acceptance blocked."
+    rollback: "Revert the A-005 P0 review receipt refresh, run manifest, regression test extension, traceability/delivery/event records, generated status refresh, and this task entry; no runtime production state was changed."

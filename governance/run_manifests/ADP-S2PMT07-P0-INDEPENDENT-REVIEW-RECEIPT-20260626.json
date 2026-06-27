@@ -107,12 +107,14 @@
     },
     {
       "evidence_refs": [
-        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT01_SECURITY_BOUNDARY.md",
-        "governance/run_manifests/ADP-S2PMT01-SECURITY-BOUNDARY-20260626.json"
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PMT01_TRUST_BOUNDARY_A005.md",
+        "governance/run_manifests/ADP-S2PMT01-TRUST-BOUNDARY-A005-20260627.json",
+        "arxiv-daily-push/用户中心/来源信任边界扫描.md",
+        "arxiv-daily-push/tests/test_security_boundary.py"
       ],
       "finding_id": "A-005",
-      "fix_task": "S2PMT01",
-      "preliminary_review_state": "evidence_located_independent_review_required",
+      "fix_task": "S2PMT01-TRUST-BOUNDARY-A005",
+      "preliminary_review_state": "refreshed_current_evidence_located_independent_review_required",
       "reviewer_decision_required": "Verify UNTRUSTED_DATA isolation, tool allowlist boundaries, safe rendering, and prompt-injection refusal behavior.",
       "severity": "P0"
     },
@@ -163,25 +165,27 @@
     "independent_final_signoff_missing",
     "independent_final_command_execution_missing"
   ],
-  "previous_refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A003-20260627.json",
+  "previous_refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A004-20260627.json",
   "project_id": "arxiv-daily-push",
-  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A004-20260627.json",
+  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A005-20260627.json",
   "refresh_manifest_history": [
-    "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A004-20260627.json"
+    "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A005-20260627.json"
   ],
   "refresh_manifests": [
     "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B007-B008-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A001-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A002-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A003-20260627.json",
-    "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A004-20260627.json"
+    "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A004-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A005-20260627.json"
   ],
-  "refreshed_at": "2026-06-27T09:28:57+10:00",
+  "refreshed_at": "2026-06-27T11:30:00+10:00",
   "refreshed_findings": [
     "A-001",
     "A-002",
     "A-003",
     "A-004",
+    "A-005",
     "B-007",
     "B-008"
   ],
