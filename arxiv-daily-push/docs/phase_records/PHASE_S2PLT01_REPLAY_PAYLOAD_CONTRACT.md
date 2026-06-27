@@ -41,8 +41,9 @@ This run does not execute the real 30-day replay payload, accept `S2PLT01`, comp
 
 - inherited V7.1 P0 findings: 8
 - inherited V7.1 P1 findings: 37
-- actual S2PLT01 30-day replay payload execution: missing
-- independent S2PLT01 replay review: missing
+- actual S2PLT01 30-day replay payload execution: available as local no-production evidence via `ADP-S2PLT01-REPLAY-PAYLOAD-EXECUTION-20260626`
+- independent S2PLT01 replay review: available as local no-production evidence via `ADP-S2PLT01-INDEPENDENT-REPLAY-REVIEW-20260626`
+- S2PLT01 acceptance: blocked
 - S2PLT04: incomplete
 - S2PMT07 final independent production gate: blocked
 

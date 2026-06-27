@@ -496,6 +496,38 @@ class Stage2ReplayGateTests(unittest.TestCase):
         tampered["s2plt01_accepted"] = True
         self.assertIn("s2plt01_accepted must be false", validate_s2plt01_entry_precheck_report(tampered))
 
+    def test_current_s2plt01_records_recognize_independent_review_receipt(self) -> None:
+        repo_root = Path(__file__).resolve().parents[2]
+        review_manifest_path = (
+            repo_root / "governance/run_manifests/ADP-S2PLT01-INDEPENDENT-REPLAY-REVIEW-20260626.json"
+        )
+        self.assertTrue(review_manifest_path.exists())
+        review_manifest = json.loads(review_manifest_path.read_text(encoding="utf-8"))
+        self.assertEqual(review_manifest["task_id"], "S2PLT01-INDEPENDENT-REPLAY-REVIEW")
+        self.assertNotIn("independent_s2plt01_review_not_completed", review_manifest["blocking_reasons"])
+
+        manifest_paths = [
+            repo_root / "governance/run_manifests/ADP-S2PLT01-REPLAY-EVIDENCE-GATE-20260626.json",
+            repo_root / "governance/run_manifests/ADP-S2PLT01-REPLAY-PAYLOAD-CONTRACT-20260626.json",
+            repo_root / "governance/run_manifests/ADP-S2PLT01-REPLAY-PAYLOAD-EXECUTION-20260626.json",
+        ]
+        for manifest_path in manifest_paths:
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            self.assertNotIn("independent_s2plt01_review_not_completed", manifest["blocking_reasons"])
+            self.assertIn("inherited_v7_1_p0_findings_open", manifest["blocking_reasons"])
+            self.assertIn("inherited_v7_1_p1_findings_open", manifest["blocking_reasons"])
+            self.assertFalse(manifest["s2plt01_accepted"])
+            self.assertFalse(manifest["stage2_integrated_production_accepted"])
+
+        phase_paths = [
+            repo_root / "arxiv-daily-push/docs/phase_records/PHASE_S2PLT01_REPLAY_EVIDENCE_GATE.md",
+            repo_root / "arxiv-daily-push/docs/phase_records/PHASE_S2PLT01_REPLAY_PAYLOAD_CONTRACT.md",
+            repo_root / "arxiv-daily-push/docs/phase_records/PHASE_S2PLT01_REPLAY_PAYLOAD_EXECUTION.md",
+        ]
+        for phase_path in phase_paths:
+            text = phase_path.read_text(encoding="utf-8")
+            self.assertNotIn("independent S2PLT01 replay review: missing", text)
+
 
 if __name__ == "__main__":
     unittest.main()

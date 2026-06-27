@@ -3375,3 +3375,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PLT01-REPLAY-REVIEW-STATUS-SYNC"
+    phase: "S2PL"
+    objective: "Sync S2PLT01 replay-chain governance so current records recognize the existing local no-production replay payload execution and independent replay review receipts without accepting S2PLT01."
+    scope: "S2PLT01 replay-chain phase records, run manifests, focused replay gate regression test, traceability row, three base files, and no-production evidence."
+    non_scope: "No S2PLT01 acceptance, no S2PLT04 completion, no S2PMT07 pass, no inherited P0/P1 closure, no final acceptance bundle creation, no SMTP transport, no scheduler install or enablement, no Release upload, no public schema or DB migration, no production queue mutation, no ranking/source-adapter change, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no DAILY_OPERATION, and no integrated production acceptance."
+    status: "completed"
+    dependencies: ["S2PLT01-INDEPENDENT-REPLAY-REVIEW", "S2PLT01-REPLAY-PAYLOAD-EXECUTION", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    risk_tier: "T2"
+    required_files: ["arxiv-daily-push/docs/phase_records/PHASE_S2PLT01_REPLAY_REVIEW_STATUS_SYNC.md", "governance/run_manifests/ADP-S2PLT01-REPLAY-REVIEW-STATUS-SYNC-20260628.json", "arxiv-daily-push/tests/test_stage2_replay_gate.py"]
+    acceptance_ids: ["ACC-S2PLT01-30D"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt01_review_sync_green1 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_replay_gate.py -q"]
+    test_results: ["focused S2PLT01 replay gate tests: 20 OK"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PLT01-REPLAY-REVIEW-STATUS-SYNC-20260628.json", "governance/run_manifests/ADP-S2PLT01-INDEPENDENT-REPLAY-REVIEW-20260626.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT01_REPLAY_REVIEW_STATUS_SYNC.md", "arxiv-daily-push/tests/test_stage2_replay_gate.py"]
+    result: "Current S2PLT01 replay-chain records recognize the independent replay review receipt while S2PLT01 acceptance, S2PLT04, S2PMT07, P0/P1 closure, and production acceptance remain blocked."
+    risk: "This sync can be misread as S2PLT01 acceptance; it only updates current evidence wording and keeps all production stop gates closed."
+    rollback: "Revert the S2PLT01 replay review status sync manifest/phase record, S2PLT01 replay-chain manifest wording changes, regression test, traceability row, delivery/event records, and three base file updates; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

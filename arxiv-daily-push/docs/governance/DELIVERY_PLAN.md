@@ -21,7 +21,7 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 193
+- task_count: 194
 - acceptance_count: 125
 
 ## Delivery Tasks
@@ -326,3 +326,10 @@ The machine-readable task source is `delivery_tasks.yaml`.
 - Added phase record `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_C001_C003_C005_C006_C007_C010_C011_C012_TECHNICAL_REVIEW.md`.
 - C-002 remains excluded because empty/delayed/failed runtime display states are not yet proven.
 - No P1/P0 closure, production acceptance, SMTP, scheduler, Release, schema, DB, queue, source, ranking, CURRENT, V7.1, or V7.2 contract side effect is claimed.
+
+## 2026-06-28 01:05:34 Australia/Sydney - S2PLT01 replay review status sync
+
+- Added manifest `governance/run_manifests/ADP-S2PLT01-REPLAY-REVIEW-STATUS-SYNC-20260628.json`.
+- Added phase record `arxiv-daily-push/docs/phase_records/PHASE_S2PLT01_REPLAY_REVIEW_STATUS_SYNC.md`.
+- Current S2PLT01 replay-chain records now recognize the existing local no-production replay payload execution and independent replay review receipts.
+- S2PLT01 acceptance, S2PLT04, S2PMT07, P0/P1 closure, final bundle, SMTP, scheduler, Release, CURRENT/V7 contract edits, daily operation, and integrated production acceptance remain blocked.

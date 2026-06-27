@@ -43,7 +43,7 @@ This run does not accept `S2PLT01`, execute a production replay, complete `S2PLT
 - inherited V7.1 P0 findings: 8
 - inherited V7.1 P1 findings: 37
 - S2PLT01 acceptance: blocked
-- independent S2PLT01 replay review: missing
+- independent S2PLT01 replay review: available as local no-production evidence via `ADP-S2PLT01-INDEPENDENT-REPLAY-REVIEW-20260626`
 - S2PLT04: incomplete
 - S2PMT07 final independent production gate: blocked
 
