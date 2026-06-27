@@ -2,27 +2,27 @@
   "blocking_conditions": [
     "phase6_48h_soak_validation"
   ],
-  "generated_at": "2026-06-27T08:19:42+00:00",
+  "generated_at": "2026-06-27T08:24:40+00:00",
   "history_path": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Alpha/runtime/phase6_soak_history.jsonl",
   "live_authorization_absent": true,
   "publish_report": {
     "blocking_conditions": [
       "phase6_48h_soak_validation"
     ],
-    "generated_at": "2026-06-27T08:19:42+00:00",
+    "generated_at": "2026-06-27T08:24:40+00:00",
     "history_path": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Alpha/runtime/phase6_soak_history.jsonl",
     "live_authorization_absent": true,
     "schema_version": "2026-06-27.alpha.phase6.owner_gate_publish",
     "soak": {
-      "continuous_sample_count": 25,
+      "continuous_sample_count": 26,
       "duration_hours_required": 48,
       "estimated_ready_at": "2026-06-29T06:14:28+00:00",
-      "observed_hours": 2.0664,
-      "remaining_hours": 45.9336,
-      "remaining_seconds": 165361,
-      "sample_count": 101,
+      "observed_hours": 2.1503,
+      "remaining_hours": 45.8497,
+      "remaining_seconds": 165059,
+      "sample_count": 102,
       "status": "observing",
-      "window_end": "2026-06-27T08:18:27+00:00",
+      "window_end": "2026-06-27T08:23:29+00:00",
       "window_start": "2026-06-27T06:14:28+00:00"
     },
     "source_evidence_root": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Alpha/runtime/phase6_owner_gate_latest",
@@ -177,7 +177,7 @@
       }
     ],
     "evidence_root": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject-alpha-g6-clean/Alpha/docs/evidence/phase6_closeout_latest",
-    "generated_at": "2026-06-27T08:19:42+00:00",
+    "generated_at": "2026-06-27T08:24:40+00:00",
     "live_authorization_absent": true,
     "owner_gate_status": "blocked_not_ready_for_owner_gate",
     "require_ready": true,
