@@ -129,9 +129,9 @@ class Stage6E2EStabilizationTest(unittest.TestCase):
         self.assertEqual(summary["stage5_dashboard"]["schema"], "PFIV02Stage5AdviceReportAlphaExportV1")
         self.assertEqual(summary["stage4_dashboard"]["schema"], "PFIV02Stage4AnalysisMVPV1")
         self.assertEqual(summary["stage3_dashboard"]["schema"], "PFIV02Stage3ReadableMVPV1")
-        self.assertIn("Stage 6", summary["evidence_drawer"]["title"])
-        self.assertIn("Stage 5", summary["evidence_drawer"]["title"])
-        self.assertIn("Stage 4", summary["evidence_drawer"]["title"])
+        self.assertIn("第 6 阶段", summary["evidence_drawer"]["title"])
+        self.assertIn("第 5 阶段", summary["evidence_drawer"]["title"])
+        self.assertIn("第 4 阶段", summary["evidence_drawer"]["title"])
 
     def test_web_shell_exposes_stage6_views_without_extra_first_level_entries(self) -> None:
         root = Path(__file__).resolve().parents[1]

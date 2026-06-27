@@ -183,3 +183,43 @@ node --check web/app/shell.js
 python3 ../scripts/validate_project_governance.py --project PFI
 git diff --check -- PFI
 ```
+
+## Stage 2 完成记录
+
+本轮完成 `P2 / S2 文案清理`，覆盖任务：
+
+- `V021-P2-S2-T01`：全局用户可见文案中文化，保留 `CNY/AUD`、`CSV`、`ZIP`、`JSON`、`Markdown`、`PDF`、`CDR/Open Banking` 等必要技术 token。
+- `V021-P2-S2-T02`：删除 Web Shell 中用户可见的 `运行边界`、`查看边界`、`验收边界`、`安全边界` 和英文 `Boundary` 模块表达，统一改为 `使用限制`、`说明` 或 `验收要求`。
+- `V021-P2-S2-T03`：确认正式交付目标仍为 `PFI/web` 响应式 HTML Web Shell；没有引入桌面手机演示框、预览框或 iframe 交付面。
+
+当前交付：
+
+- 新增 `build_v021_stage2_contract()` 和 `tests/test_v021_stage2_copy_cleanup_contract.py`。
+- 静态 Web Shell 黑名单扫描覆盖 `Review lifecycle`、`PFI Context Export`、`Synthetic E2E`、`Rollback plan`、`Follow-up list`、`Top N`、`tradeoff`、`owner gate`、`parser / raw / batch` 等旧英文/机器文案。
+- 动态首页证据抽屉改为中文标题和中文参数：`PFI 第 6 阶段 · 第 5 阶段 · 第 4 阶段输入 · 端到端验收与稳定化`、`任务包验收门禁`、`实盘提交授权=否`。
+- Stage 5/6 的用户可见卡片不再展示 `stage5:*`、`stage6:*`、`changed-only governance` 等机器证据字段，改为 `建议证据`、`报告证据`、`总验收门禁`、`合成验收`、`回归治理`。
+- 静态 HTML 内置摘要不再提供只有 schema、没有数据的 Stage 3/4/5/6 空 dashboard，避免文件态验收时出现 `0/0` 门禁或缺失上下文按钮；真实运行时仍由应用注入完整摘要。
+- 15 个一级入口、V0.1 兼容入口、CNY/AUD 顶栏汇率徽标、策略实验室收口、上传入口和设置页入口均保持不变。
+
+Stage 2 已通过的目标验收命令：
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m unittest PFI.tests.test_v021_stage2_copy_cleanup_contract -q
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m unittest PFI.tests.test_v021_stage2_copy_cleanup_contract PFI.tests.test_v021_stage1_navigation_contract PFI.tests.test_v021_stage0_frontend_contract -q
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m unittest PFI.tests.test_stage4_analysis_mvp PFI.tests.test_stage5_advice_report_alpha PFI.tests.test_stage6_e2e_stabilization -q
+node --check PFI/web/app/shell.js
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -B -m unittest discover -s tests -q
+python3 scripts/validate_project_governance.py --project PFI
+git diff --check -- PFI
+```
+
+当前结果：Stage 2 合同 `Ran 4 tests / OK`；Stage 0/1/2 合同 `Ran 16 tests / OK`；Stage 4/5/6 回归 `Ran 36 tests / OK`；完整 PFI 单测 `Ran 116 tests / OK`；Web Shell 语法检查通过；治理 `errors 0 / warnings 0`；`git diff --check -- PFI` 通过。
+
+浏览器验收：
+
+- Chrome headless desktop 1440x950：15/15 入口可点击；`建议与复盘 -> 复盘生命周期`、`报告与洞察 -> PFI 上下文导出`、`策略实验室` 关键路径通过；console errors `0`；截图 `/tmp/pfi-v021-stage2-copy-desktop-verified.png`。
+- Chrome headless mobile 390x844：15 个入口存在；`数据源与上传` 关键路径通过；无 iframe / 手机演示框 / 预览框；截图 `/tmp/pfi-v021-stage2-copy-mobile-verified.png`。
+
+## Stage 2 后续顺序
+
+下一轮 pursuing goal 应从 `P3 / S3 设置页` 开始，优先完成设置页独立路由和运行反馈控制台归口。不得跳到趋势图、上传中心或持仓持久化，除非用户明确改变阶段顺序。

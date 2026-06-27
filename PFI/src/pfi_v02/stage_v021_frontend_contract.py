@@ -11,6 +11,11 @@ STAGE1_TASK_IDS = (
     "V021-P1-S1-T03",
     "V021-P1-S1-T04",
 )
+STAGE2_TASK_IDS = (
+    "V021-P2-S2-T01",
+    "V021-P2-S2-T02",
+    "V021-P2-S2-T03",
+)
 BASE_CURRENCY = "CNY"
 UI_TARGET = "PFI/web HTML shell"
 
@@ -206,6 +211,82 @@ def build_v021_stage1_contract() -> dict[str, object]:
             "低操作导入中心在用户可见 Web Shell 中改为导入中心",
             "策略实验室只路由到投资管理下的 /investment/strategy-lab，不创建 strategy 一级 workspace",
             "设置入口可点击，数据与系统旧入口映射到设置页",
+        ),
+    }
+
+
+def build_v021_stage2_contract() -> dict[str, object]:
+    return {
+        "schema": "PFIV021FrontendOptimizationStage2ContractV1",
+        "version_name": VERSION_NAME,
+        "stage": "S2 文案清理",
+        "task_ids": STAGE2_TASK_IDS,
+        "project_root": "CodexProject/PFI",
+        "ui_target": UI_TARGET,
+        "acceptance": (
+            "全局用户可见文案中文化，保留必要技术格式和文件格式 token。",
+            "用户界面不出现运行边界、安全边界、验收边界、查看边界或英文 Boundary 模块。",
+            "桌面端不出现手机演示框或预览框；手机端使用真实响应式布局。",
+            "Stage 5/6 动态证据抽屉不得暴露 Review lifecycle、PFI Context Export、Synthetic E2E、TaskPack acceptance gates 等英文交付噪音。",
+        ),
+        "forbidden_visible_english_terms": (
+            "Review lifecycle",
+            "PFI Context Export",
+            "Synthetic E2E",
+            "Rollback plan",
+            "Follow-up list",
+            "owner docs",
+            "diff summary",
+            "changed-only governance",
+            "focused tests",
+            "Context Snapshot",
+            "live trade",
+            "read-only context",
+            "owner gate",
+            "Top N",
+            "tradeoff",
+            "parser / raw / batch",
+        ),
+        "forbidden_boundary_ui_terms": (
+            "运行边界",
+            "安全边界",
+            "验收边界",
+            "查看边界",
+            "Boundary",
+            "Non-execution boundary",
+        ),
+        "forbidden_preview_terms": (
+            "桌面手机预览框",
+            "手机演示框",
+            "desktop preview",
+            "mobile preview",
+            "phone-preview",
+            "mobile-preview",
+            "device-preview",
+        ),
+        "required_visible_chinese_terms": (
+            "使用限制",
+            "复盘生命周期",
+            "PFI 上下文导出",
+            "外部系统只读出口",
+            "解析器",
+            "校验值",
+            "第 6 阶段",
+        ),
+        "allowed_technical_tokens": (
+            "PFI",
+            "CNY/AUD",
+            "CSV",
+            "ZIP",
+            "JSON",
+            "Markdown",
+            "PDF",
+            "CDR",
+            "Open Banking",
+            "Moomoo",
+            "ETF",
+            "PIT",
+            "A/B/C/D",
         ),
     }
 

@@ -153,7 +153,7 @@ class Stage5AdviceReportAlphaTest(unittest.TestCase):
 
         self.assertEqual(summary["stage5_dashboard"]["schema"], "PFIV02Stage5AdviceReportAlphaExportV1")
         self.assertGreaterEqual(len(summary["decision_rows"]), 3)
-        self.assertIn("Stage 5", summary["evidence_drawer"]["title"])
+        self.assertIn("第 5 阶段", summary["evidence_drawer"]["title"])
         self.assertEqual(summary["stage5_dashboard"]["alpha_context_export"]["schema"], ALPHA_CONTEXT_SCHEMA)
 
     def test_web_shell_exposes_stage5_labels_without_alpha_first_level_entry(self) -> None:
@@ -162,7 +162,7 @@ class Stage5AdviceReportAlphaTest(unittest.TestCase):
         js = (root / "web" / "app" / "shell.js").read_text(encoding="utf-8")
 
         self.assertIn('data-primary-workspaces="15"', html)
-        for label in ("建议模型", "Review lifecycle", "投资建议", "消费建议", "月度报告", "投资报告", "消费报告", "数据质量报告", "PFI Context Export"):
+        for label in ("建议模型", "复盘生命周期", "投资建议", "消费建议", "月度报告", "投资报告", "消费报告", "数据质量报告", "PFI 上下文导出", "外部系统只读出口"):
             self.assertIn(label, js)
         self.assertNotIn('data-workspace="alpha"', html.lower())
         self.assertNotIn('data-workspace="ralpha"', html.lower())
