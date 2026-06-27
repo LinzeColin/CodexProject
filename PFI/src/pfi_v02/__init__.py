@@ -17,6 +17,7 @@ from pfi_v02.stage2_contracts import build_stage2_contract_summary
 from pfi_v02.stage2_import import detect_watch_folder_files, parse_alipay_bill_bytes, parse_cba_csv_bytes
 from pfi_v02.stage2_registry import build_stage2_registry, build_stage2_registry_contract
 from pfi_v02.stage3_read_mvp import build_stage3_read_model, build_sync_all_plan, simple_status_language
+from pfi_v02.stage4_analysis_mvp import build_stage4_analysis_model
 
 __all__ = [
     "ClassificationInput",
@@ -29,6 +30,7 @@ __all__ = [
     "build_stage2_registry",
     "build_stage2_registry_contract",
     "build_stage3_read_model",
+    "build_stage4_analysis_model",
     "build_sync_all_plan",
     "classify_transaction",
     "default_stage1_sources",

@@ -84,7 +84,7 @@
           <div>
             <p class="workspace-kicker" id="workspace-kicker">今日总览</p>
             <h1 id="workspace-title">首页总览</h1>
-            <p id="workspace-conclusion">先看净资产、现金、投资资产、本月支出和数据健康，再处理同步、复核、建议和报告。</p>
+            <p id="workspace-conclusion">先看投资市值、投资盈亏、本月支出、预算剩余和现金流压力，再进入投资或消费分析。</p>
           </div>
           <div class="sync-status" aria-live="polite">
             <span class="status-dot status-ready" aria-hidden="true"></span>
@@ -94,30 +94,30 @@
         </section>
 
         <section class="metric-grid" aria-label="工作区摘要">
-          <article class="metric-tile" data-home-card="open_tasks" data-card-source="operational_store:task_records">
-            <span>待处理</span>
-            <strong data-card-value>0</strong>
-            <small data-card-detail>来源：任务表 · 更新缺失 · 状态待补</small>
+          <article class="metric-tile" data-home-card="investment_market_value" data-card-source="pfi_v02:stage4_analysis_model">
+            <span>投资市值</span>
+            <strong data-card-value>AUD 0.00</strong>
+            <small data-card-detail>来源：投资管理 · 等待本地分析摘要</small>
           </article>
-          <article class="metric-tile" data-home-card="market_events" data-card-source="operational_store:source_records">
-            <span>市场事件</span>
-            <strong data-card-value>0</strong>
-            <small data-card-detail>来源：来源登记 · 更新缺失 · 状态待补</small>
+          <article class="metric-tile" data-home-card="investment_pnl" data-card-source="pfi_v02:stage4_analysis_model">
+            <span>投资盈亏</span>
+            <strong data-card-value>AUD 0.00</strong>
+            <small data-card-detail>来源：收益归因 · 数据不足时复核</small>
           </article>
-          <article class="metric-tile" data-home-card="portfolio_risk" data-card-source="operational_store:holding_snapshots">
-            <span>持仓风险</span>
-            <strong data-card-value>待补</strong>
-            <small data-card-detail>来源：持仓快照 · 更新缺失 · 状态待补数据</small>
+          <article class="metric-tile" data-home-card="month_spend" data-card-source="pfi_v02:stage4_analysis_model">
+            <span>本月支出</span>
+            <strong data-card-value>AUD 0.00</strong>
+            <small data-card-detail>来源：消费管理 · 转账和投资排除</small>
           </article>
-          <article class="metric-tile" data-home-card="strategy_runs" data-card-source="operational_store:evidence_records">
-            <span>策略运行</span>
-            <strong data-card-value>0</strong>
-            <small data-card-detail>来源：证据记录 · 更新缺失 · 状态待补</small>
+          <article class="metric-tile" data-home-card="budget_remaining" data-card-source="pfi_v02:stage4_analysis_model">
+            <span>预算剩余</span>
+            <strong data-card-value>AUD 0.00</strong>
+            <small data-card-detail>来源：消费预算 · 固定/弹性拆分</small>
           </article>
-          <article class="metric-tile" data-home-card="data_health" data-card-source="pfi_v02:stage3_read_model">
-            <span>数据健康</span>
-            <strong data-card-value>需要同步</strong>
-            <small data-card-detail>来源：数据源与同步 · 状态需要同步</small>
+          <article class="metric-tile" data-home-card="cashflow_pressure" data-card-source="pfi_v02:stage4_analysis_model">
+            <span>现金流压力</span>
+            <strong data-card-value>需要复核</strong>
+            <small data-card-detail>来源：现金流预测 · 生活现金和投资现金分开</small>
           </article>
         </section>
 
@@ -360,12 +360,14 @@
           <input data-command-input placeholder="跳转到工作区或证据" />
         </label>
         <div class="command-results" role="listbox">
-          <button type="button" role="option" data-command-workspace="home">首页</button>
-          <button type="button" role="option" data-command-workspace="market">市场</button>
-          <button type="button" role="option" data-command-workspace="research">研究</button>
-          <button type="button" role="option" data-command-workspace="portfolio">持仓</button>
-          <button type="button" role="option" data-command-workspace="strategy">策略实验室</button>
-          <button type="button" role="option" data-command-workspace="data">数据与系统</button>
+          <button type="button" role="option" data-command-workspace="home">首页总览</button>
+          <button type="button" role="option" data-command-workspace="accounts">账户与资产</button>
+          <button type="button" role="option" data-command-workspace="ledger">账本流水</button>
+          <button type="button" role="option" data-command-workspace="investment">投资管理</button>
+          <button type="button" role="option" data-command-workspace="consumption">消费管理</button>
+          <button type="button" role="option" data-command-workspace="sync">数据源与同步</button>
+          <button type="button" role="option" data-command-workspace="recommendations">建议与复盘</button>
+          <button type="button" role="option" data-command-workspace="insights">报告与洞察</button>
         </div>
       </form>
     </dialog>
@@ -376,6 +378,12 @@
         "metric_cards": [],
         "decision_rows": [],
         "evidence_drawer": {},
+        "stage4_dashboard": {
+          "schema": "PFIV02Stage4AnalysisMVPV1"
+        },
+        "stage3_dashboard": {
+          "schema": "PFIV02Stage3ReadableMVPV1"
+        },
         "workflow_runtime": {
           "schema": "PFIOSPhaseCWorkflowRuntimeReadModelV1",
           "fast_path": {

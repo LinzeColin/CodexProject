@@ -62,6 +62,11 @@ const CARD_LABELS = {
   investment_assets: "投资资产",
   monthly_spending: "本月支出",
   data_health: "数据健康",
+  investment_market_value: "投资市值",
+  investment_pnl: "投资盈亏",
+  month_spend: "本月支出",
+  budget_remaining: "预算剩余",
+  cashflow_pressure: "现金流压力",
 };
 
 const CARD_SOURCES = {
@@ -74,6 +79,11 @@ const CARD_SOURCES = {
   investment_assets: "账户与资产",
   monthly_spending: "账本流水",
   data_health: "数据源与同步",
+  investment_market_value: "投资管理",
+  investment_pnl: "收益归因",
+  month_spend: "消费管理",
+  budget_remaining: "消费预算",
+  cashflow_pressure: "现金流预测",
 };
 
 const FEATURE_TARGETS = {
@@ -124,6 +134,15 @@ const FEATURE_TARGETS = {
   生成报告: { workspace: "insights", label: "生成报告" },
   账户地图: { workspace: "accounts", label: "查看账户" },
   账本流水: { workspace: "ledger", label: "查看账本" },
+  投资总览: { workspace: "investment", label: "查看投资" },
+  收益归因: { workspace: "investment", label: "查看归因" },
+  风险分析: { workspace: "investment", label: "查看风险" },
+  行为复盘: { workspace: "investment", label: "查看复盘" },
+  消费总览: { workspace: "consumption", label: "查看消费" },
+  分类分析: { workspace: "consumption", label: "查看分类" },
+  订阅检测: { workspace: "consumption", label: "查看订阅" },
+  异常消费: { workspace: "consumption", label: "查看异常" },
+  现金流预测: { workspace: "consumption", label: "查看现金流" },
   来源登记: { view: "source_registry", label: "打开来源" },
   任务监控: { view: "task_monitor", label: "打开任务" },
   隐私边界: { view: "privacy_boundary", label: "打开隐私" },
@@ -697,7 +716,7 @@ installStage3WorkspaceAliases();
 
 function installStage3WorkspaceAliases() {
   WORKSPACES.home.label = "首页总览";
-  WORKSPACES.home.conclusion = "先看净资产、现金、投资资产、本月支出和数据健康，再处理同步、复核、建议和报告。";
+  WORKSPACES.home.conclusion = "先看投资市值、投资盈亏、本月支出、预算剩余和现金流压力，再进入投资或消费分析。";
   WORKSPACES.accounts = {
     ...structuredClone(DEFAULT_WORKSPACES.portfolio),
     label: "账户与资产",
@@ -739,24 +758,42 @@ function installStage3WorkspaceAliases() {
   WORKSPACES.investment = {
     ...structuredClone(DEFAULT_WORKSPACES.strategy),
     label: "投资管理",
-    kicker: "投资与策略",
-    conclusion: "保留策略回测、盘感训练和大数据模拟器；账户事实来自账户与资产。",
-    runtime: "投资管理：策略实验室 / 大数据模拟器 / 盘感训练",
+    kicker: "投资分析",
+    conclusion: "查看总市值、盈亏、资产配置、收益归因、风险暴露和行为复盘；策略回测、盘感训练和大数据模拟器仍保留。",
+    runtime: "Stage 4：投资总览 / 收益归因 / 风险分析 / 行为复盘",
+    cards: [
+      ["投资总览", "可算", "总市值、盈亏、资产配置、现金仓位"],
+      ["收益归因", "复核", "市场 / 主动 / 费用 / FX / 现金拖累"],
+      ["风险分析", "可读", "集中度、回撤、币种暴露、流动性"],
+      ["行为复盘", "有建议", "追涨、杀跌、频繁交易、持有周期"],
+    ],
+    features: [
+      feature("投资总览", "可用", "持仓事实", "查看总市值、盈亏、资产配置和现金仓位。", { workspace: "investment", label: "查看投资" }),
+      feature("收益归因", "需要复核", "估计归因", "把收益拆为市场、主动决策、费用、汇率和现金拖累；数据不足不输出精确结论。", { workspace: "investment", label: "查看归因" }),
+      feature("风险分析", "有建议", "风险证据", "查看集中度、回撤、币种暴露和流动性。", { workspace: "investment", label: "查看风险" }),
+      feature("行为复盘", "有建议", "交易证据", "识别追涨、杀跌、频繁交易和持有周期。", { workspace: "investment", label: "查看复盘" }),
+      feature("策略实验室", "可用", "QBVS", "保留策略回测、参数扫描、盘感训练和大数据模拟器。", { workspace: "strategy", label: "打开策略" }),
+    ],
   };
   WORKSPACES.consumption = {
     ...structuredClone(DEFAULT_WORKSPACES.data),
     label: "消费管理",
-    kicker: "消费与成本",
-    conclusion: "消费流水、预算、订阅、异常消费和成本控制都必须排除转账与投资事件。",
-    freshness: "消费视图来自账本流水",
-    runtime: "消费管理：转账不计消费 · 低置信度先复核",
+    kicker: "消费分析",
+    conclusion: "查看本月支出、预算剩余、分类、订阅、异常消费和现金流预测；转账和投资事件不计生活消费。",
+    freshness: "消费视图来自 Stage 4 分析 read-model",
+    runtime: "Stage 4：消费总览 / 分类分析 / 订阅检测 / 异常消费 / 现金流预测",
     cards: [
-      ["本月支出", "可读", "来自已分类消费流水"],
-      ["待分类", "复核", "unknown 不静默入账"],
-      ["订阅", "后续", "Stage 4 扩展"],
-      ["异常消费", "后续", "Stage 4 扩展"],
+      ["消费总览", "可算", "本月支出、预算剩余、固定/弹性支出"],
+      ["分类分析", "复核", "支付宝、微信、CBA 分类"],
+      ["订阅检测", "有建议", "周期扣费和疑似订阅"],
+      ["异常消费", "需要复核", "大额、重复、夜间、周末、冲动型"],
     ],
     features: [
+      feature("消费总览", "可用", "预算", "查看本月支出、预算剩余和固定/弹性支出。", { workspace: "consumption", label: "查看消费" }),
+      feature("分类分析", "需要复核", "三来源", "支付宝、微信、CBA 消费分类；低置信度必须进入复核。", { workspace: "consumption", label: "查看分类" }),
+      feature("订阅检测", "有建议", "周期扣费", "识别周期扣费和疑似订阅，支持保留、取消或暂缓复盘。", { workspace: "consumption", label: "查看订阅" }),
+      feature("异常消费", "需要复核", "消费证据", "识别大额、重复、夜间、节假日和冲动型消费。", { workspace: "consumption", label: "查看异常" }),
+      feature("现金流预测", "可用", "30/90/180 天", "预测支出、收入和可投资现金，生活现金与投资现金分开。", { workspace: "consumption", label: "查看现金流" }),
       feature("处理待复核", "需要复核", "消费分类", "复核低置信度消费流水。", { workspace: "ledger", label: "处理复核" }),
       feature("账本流水", "可用", "消费证据", "查看消费、退款、转账和费用的证据链。", { workspace: "ledger", label: "查看流水" }),
     ],
@@ -947,6 +984,7 @@ function applyHomeSummary(summary) {
 
   home.evidence = localizedEvidence(summary.evidence_drawer || {}, home.evidence);
   applyStage3Dashboard(summary.stage3_dashboard || {});
+  applyStage4Dashboard(summary.stage4_dashboard || {});
   applyWorkflowRuntime(summary.workflow_runtime || {});
 }
 
@@ -973,6 +1011,48 @@ function applyStage3Dashboard(dashboard) {
     task("简单状态语言", "正常 / 需要同步 / 需要复核 / 有异常 / 有建议", "ready"),
   ];
   WORKSPACES.home.runtime = "Stage 3：同步、复核、建议、报告 · 只读本地 MVP";
+}
+
+function applyStage4Dashboard(dashboard) {
+  if (!dashboard || dashboard.schema !== "PFIV02Stage4AnalysisMVPV1") return;
+  const investment = dashboard.investment_analysis || {};
+  const consumption = dashboard.consumption_analysis || {};
+  const invSummary = investment.summary || {};
+  const attribution = investment.attribution || {};
+  const risk = investment.risk || {};
+  const behavior = investment.behavior || {};
+  const conSummary = consumption.summary || {};
+  const classification = consumption.classification || {};
+  const recurring = consumption.recurring || {};
+  const anomalies = consumption.anomalies || {};
+  const cashflow = consumption.cashflow_forecast || {};
+  const firstHorizon = (cashflow.horizons || [])[0] || {};
+
+  WORKSPACES.home.runtime = "Stage 4：投资与消费智能分析 · 本地只读 MVP";
+  WORKSPACES.home.features = [
+    feature("投资总览", "可用", "投资管理", `投资市值 ${moneyLabel(invSummary.total_market_value_aud)} · 盈亏 ${moneyLabel(invSummary.total_unrealized_pnl_aud)}`, { workspace: "investment", label: "查看投资" }),
+    feature("风险分析", safeUserText((risk.concentration || {}).status, "复核"), "投资管理", "集中度、回撤、币种暴露和流动性可展示。", { workspace: "investment", label: "查看风险" }),
+    feature("消费总览", "可用", "消费管理", `本月支出 ${moneyLabel(conSummary.month_spend_aud)} · 预算剩余 ${moneyLabel(conSummary.budget_remaining_aud)}`, { workspace: "consumption", label: "查看消费" }),
+    feature("现金流预测", safeUserText(firstHorizon.cashflow_pressure, "复核"), "消费管理", "30/90/180 天支出、收入和可投资现金预测。", { workspace: "consumption", label: "查看现金流" }),
+  ];
+  WORKSPACES.home.tasks = [
+    task("收益归因", `${(attribution.components || []).length} 个组件 · 市场/主动/费用/FX/现金拖累`, statusState(attribution.status)),
+    task("行为复盘", `${Number(behavior.trade_count || 0)} 条交易 · ${(behavior.conclusions || []).join(" / ") || "等待交易数据"}`, statusState(behavior.status)),
+    task("消费分类", `${(classification.rows || []).length} 条分类 · ${(classification.review_queue || []).length} 条待复核`, (classification.review_queue || []).length ? "review" : "ready"),
+    task("异常与订阅", `${Number(anomalies.anomaly_count || 0)} 条异常 · ${Number(recurring.candidate_count || 0)} 个订阅`, Number(anomalies.anomaly_count || 0) ? "review" : "ready"),
+  ];
+  WORKSPACES.investment.rows = [
+    row("P1", "投资总览", (invSummary.evidence_refs || []).slice(0, 2).join(", "), "查看总市值、盈亏、配置和现金仓位。", "可用"),
+    row("P1", "收益归因", safeUserText(attribution.precision_policy, "估计归因"), "复核市场、主动、费用、FX 和现金拖累。", safeUserText(attribution.status, "复核")),
+    row("P1", "风险分析", safeUserText((risk.concentration || {}).largest_instrument_id, "持仓"), "复核集中度、回撤、币种暴露和流动性。", safeUserText((risk.concentration || {}).status, "复核")),
+    row("P2", "行为复盘", `${Number(behavior.trade_count || 0)} 条交易`, "查看追涨、杀跌、频繁交易和持有周期。", safeUserText(behavior.status, "复核")),
+  ];
+  WORKSPACES.consumption.rows = [
+    row("P1", "消费总览", safeUserText((conSummary.source_ids || []).join(", "), "三来源"), "查看预算剩余、固定和弹性支出。", "可用"),
+    row("P1", "分类分析", `${(classification.review_queue || []).length} 条待复核`, "低置信度分类用选择题处理。", (classification.review_queue || []).length ? "复核" : "可用"),
+    row("P1", "异常消费", `${Number(anomalies.anomaly_count || 0)} 条异常`, "处理大额、重复、夜间、周末和冲动型消费。", Number(anomalies.anomaly_count || 0) ? "复核" : "可用"),
+    row("P2", "现金流预测", `30 天 ${moneyLabel(firstHorizon.available_to_invest_aud)}`, "生活现金和投资现金分开计算。", safeUserText(firstHorizon.cashflow_pressure, "复核")),
+  ];
 }
 
 function localizedCardDetail(key, card, fallback) {
@@ -1641,6 +1721,12 @@ function statusState(status) {
 function localizeStatus(status) {
   const normalized = String(status || "").trim().toLowerCase();
   return STATUS_LABELS[normalized] || status || "复核";
+}
+
+function moneyLabel(value) {
+  const numeric = Number(value || 0);
+  if (!Number.isFinite(numeric)) return "AUD 0.00";
+  return `AUD ${numeric.toLocaleString("en-AU", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
 function workspaceLabel(value, fallback = "工作区") {

@@ -79,6 +79,30 @@ Stage 3 source files:
 | Stage 3 tests | `tests/test_stage3_readable_mvp.py` |
 | Web shell | `web/index.html`, `web/app/shell.js` |
 
+## Stage 4
+
+Stage 4 builds the investment and consumption analysis MVP. It adds:
+
+- investment summary: total market value, unrealized PnL, allocation, cash position
+- attribution split: market, active decision, fees, FX, cash drag
+- risk analysis: concentration, drawdown, currency exposure, liquidity
+- behavior review: chase, panic sell, frequent trading, holding period tags when trade evidence exists
+- QBVS compatibility under 投资管理 > 策略实验室 / 大数据模拟器
+- consumption summary: month spend, budget remaining, fixed/flexible spend
+- classification analysis for Alipay, WeChat, and CBA with low-confidence review
+- recurring subscription detection
+- anomaly detection for large, duplicate, night, weekend, and impulsive spending
+- 30/90/180 day cashflow forecast with life cash separated from investment cash
+
+Stage 4 source files:
+
+| Purpose | Path |
+| --- | --- |
+| Analysis MVP read-model | `src/pfi_v02/stage4_analysis_mvp.py` |
+| Stage 4 record | `docs/pfi_v02/STAGE4_ANALYSIS_MVP.md` |
+| Stage 4 tests | `tests/test_stage4_analysis_mvp.py` |
+| Web shell | `web/index.html`, `web/app/shell.js` |
+
 ## Boundaries
 
 - No automatic real-money trading.
@@ -91,7 +115,7 @@ Stage 3 source files:
 
 ```bash
 PYTHONPATH=src python3 -B -m unittest tests.test_stage1_ia_contract -q
-PYTHONPATH=src python3 -B -m unittest tests.test_stage2_data_source_registry tests.test_stage2_cba_csv_import tests.test_stage2_alipay_import tests.test_stage2_non_csv_contracts tests.test_stage3_readable_mvp -q
+PYTHONPATH=src python3 -B -m unittest tests.test_stage2_data_source_registry tests.test_stage2_cba_csv_import tests.test_stage2_alipay_import tests.test_stage2_non_csv_contracts tests.test_stage3_readable_mvp tests.test_stage4_analysis_mvp -q
 node --check web/app/shell.js
 (cd modules/qbvs_lab && PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q)
 ```

@@ -154,7 +154,7 @@ class Stage3ReadableMvpTest(unittest.TestCase):
         self.assertIn('data-primary-workspaces="8"', html)
         for label in ("首页总览", "账户与资产", "账本流水", "投资管理", "消费管理", "数据源与同步", "建议与复盘", "报告与洞察"):
             self.assertIn(label, html + js)
-        self.assertIn('data-home-card="data_health"', html)
+        self.assertIn("data_health", html + js)
         for action in ("同步全部", "处理待复核", "查看建议", "生成报告"):
             self.assertIn(action, js)
 

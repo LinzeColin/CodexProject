@@ -4,7 +4,7 @@ Last updated: 2026-06-27 Australia/Sydney
 
 ## Current Goal
 
-PFI V0.2 Stage 3 readable MVP closeout and Stage 4 readiness.
+PFI V0.2 Stage 4 investment and consumption analysis MVP closeout and Stage 5 readiness.
 
 ## Current Status
 
@@ -29,7 +29,10 @@ PFI V0.2 Stage 3 readable MVP closeout and Stage 4 readiness.
 - Stage 3 read-model is implemented in `src/pfi_v02/stage3_read_mvp.py`.
 - Stage 3 record is `docs/pfi_v02/STAGE3_READABLE_MVP.md`.
 - Stage 3 local readable MVP acceptance is complete for phases 3A-3D.
-- Web shell default homepage consumes Stage 3 read-model and shows the V0.2 8 first-level entries.
+- Stage 4 analysis read-model is implemented in `src/pfi_v02/stage4_analysis_mvp.py`.
+- Stage 4 record is `docs/pfi_v02/STAGE4_ANALYSIS_MVP.md`.
+- Stage 4 local analysis MVP acceptance is complete for phases 4A-4B.
+- Web shell default homepage consumes Stage 4 analysis read-model, keeps the V0.2 8 first-level entries, and shows investment/consumption analysis under 投资管理 and 消费管理.
 
 ## Decisions
 
@@ -42,11 +45,14 @@ PFI V0.2 Stage 3 readable MVP closeout and Stage 4 readiness.
 - Low-confidence OCR/screenshot/recording input is candidate-only and must enter review before acceptance.
 - Stage 3 `sync_all_plan` is a plan/preview only. It does not log in, submit payments, submit broker orders, or mutate real accounts.
 - Stage 3 FX values are deterministic local fixtures for UI/test readability, not live exchange rates.
+- Stage 4 attribution values are deterministic local estimates. If evidence is insufficient, PFI must show `estimate/需要复核` rather than precise conclusions.
+- Stage 4 consumption analysis excludes transfers and investment records from living consumption.
+- Stage 4 cashflow forecast separates life cash from investment cash.
 
 ## Validation Commands
 
 ```bash
-PYTHONPATH=src python3 -B -m unittest tests.test_stage1_ia_contract tests.test_stage1_core_models tests.test_stage1_classification_rules tests.test_stage2_data_source_registry tests.test_stage2_cba_csv_import tests.test_stage2_alipay_import tests.test_stage2_non_csv_contracts tests.test_stage3_readable_mvp -q
+PYTHONPATH=src python3 -B -m unittest tests.test_stage1_ia_contract tests.test_stage1_core_models tests.test_stage1_classification_rules tests.test_stage2_data_source_registry tests.test_stage2_cba_csv_import tests.test_stage2_alipay_import tests.test_stage2_non_csv_contracts tests.test_stage3_readable_mvp tests.test_stage4_analysis_mvp -q
 cd modules/qbvs_lab && PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pfi_os.examples.macos_app_acceptance_lite --project-root . --summary-json
 node --check web/app/shell.js
@@ -56,8 +62,9 @@ git diff --check
 Latest Stage 2 target result: `Ran 22 tests / OK`.
 Latest closeout result: Stage 1+2 contracts `Ran 45 tests / OK`; legacy QBVS smoke `Ran 1 test / OK`; project governance validation `errors 0 / warnings 0`; human-entry Markdown contract `Ran 2 tests / OK`; PFI.app resolves to `CodexProject/PFI`; port 8501 is served by canonical PFI `.venv`; no PFI LaunchAgent found.
 Latest Stage 3 closeout result: Stage 1+2+3 contracts `Ran 59 tests / OK`; legacy QBVS lifecycle smoke `Ran 1 test / OK`; project governance validation `errors 0 / warnings 0`; human-entry Markdown contract `Ran 2 tests / OK`; Python compile `OK`; Web shell syntax `OK`.
+Latest Stage 4 closeout result: Stage 1+2+3+4 contracts `Ran 71 tests / OK`; legacy QBVS lifecycle smoke `Ran 1 test / OK`; project governance validation `errors 0 / warnings 0`; human-entry Markdown contract `Ran 2 tests / OK`; Stage 4 contract `Ran 12 tests / OK`; Python compile `OK`; Web shell syntax `OK`; `git diff --check -- PFI` `OK`.
 
 ## Next
 
-1. Stage 4 can build investment and consumption intelligent analysis on top of Stage 3 account/ledger/readable MVP contracts.
+1. Stage 5 can build recommendation lifecycle, reports, and Alpha read-only context export on top of Stage 4 analysis contracts.
 2. Real account credentials, production sync, payment submission, broker order submission, and live trading remain separate gates.
