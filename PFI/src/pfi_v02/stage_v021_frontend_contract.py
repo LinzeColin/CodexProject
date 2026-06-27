@@ -39,6 +39,11 @@ STAGE7_TASK_IDS = (
     "V021-P7-S7-T01",
     "V021-P7-S7-T02",
 )
+STAGE8_TASK_IDS = (
+    "V021-P8-S8-T01",
+    "V021-P8-S8-T02",
+    "V021-P8-S8-T03",
+)
 BASE_CURRENCY = "CNY"
 UI_TARGET = "PFI/web HTML shell"
 
@@ -615,6 +620,96 @@ def build_v021_stage7_contract() -> dict[str, object]:
             "页面必须统一展示进行中、成功、失败三类反馈，不允许静默失败。",
             "反馈必须可被读屏读取，并保留中文用户可读文案。",
             "Stage 7 不新增交易、支付、券商提交或实盘自动下单能力。",
+        ),
+    }
+
+
+def build_v021_stage8_contract() -> dict[str, object]:
+    return {
+        "schema": "PFIV021FrontendOptimizationStage8ContractV1",
+        "version_name": VERSION_NAME,
+        "stage": "S8 最终验收",
+        "task_ids": STAGE8_TASK_IDS,
+        "project_root": "CodexProject/PFI",
+        "ui_target": UI_TARGET,
+        "acceptance_gate": "PFI-V021-S8-FINAL-ACCEPTANCE-GATE",
+        "prior_stage_contracts": (
+            "build_v021_stage0_contract",
+            "build_v021_stage1_contract",
+            "build_v021_stage2_contract",
+            "build_v021_stage3_contract",
+            "build_v021_stage4_contract",
+            "build_v021_stage5_contract",
+            "build_v021_stage6_contract",
+            "build_v021_stage7_contract",
+        ),
+        "required_artifacts": (
+            "docs/pfi_v02/STAGE_V021_FINAL_ACCEPTANCE_AUDIT.md",
+            "docs/pfi_v02/STAGE_V021_FRONTEND_OPTIMIZATION.md",
+            "HANDOFF.md",
+            "开发记录.md",
+            "功能清单.md",
+            "模型参数文件.md",
+        ),
+        "command_validation": {
+            "frontend_contract_suite": (
+                "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m unittest "
+                "PFI.tests.test_v021_stage0_frontend_contract "
+                "PFI.tests.test_v021_stage1_navigation_contract "
+                "PFI.tests.test_v021_stage2_copy_cleanup_contract "
+                "PFI.tests.test_v021_stage3_settings_search_contract "
+                "PFI.tests.test_v021_stage4_trend_contract "
+                "PFI.tests.test_v021_stage5_upload_import_contract "
+                "PFI.tests.test_v021_stage6_holdings_persistence "
+                "PFI.tests.test_v021_stage7_clicksafe_feedback "
+                "PFI.tests.test_v021_stage8_final_acceptance -q"
+            ),
+            "full_unittest": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -B -m unittest discover -s tests -q",
+            "web_shell_syntax": "node --check PFI/web/app/shell.js",
+            "governance": "python3 scripts/validate_project_governance.py --project PFI",
+            "diff_check": "git diff --check -- PFI",
+            "macos_app_acceptance": "zsh scripts/macosAppAcceptanceLite.sh --project-root . --summary-json",
+        },
+        "browser_validation": {
+            "desktop_viewport": "1440x1100",
+            "mobile_viewport": "390x920",
+            "required_routes": tuple(entry.route for entry in NAVIGATION_ENTRIES),
+            "required_key_paths": (
+                "top_right_fx_badge",
+                "global_fuzzy_search",
+                "sources_upload_file_picker_and_drag_drop",
+                "ledger_review_entry",
+                "investment_holdings_persistence",
+                "settings_feedback_console",
+                "stage7_clicksafe_feedback_states",
+            ),
+            "required_screenshots": (
+                "/tmp/pfi-v021-stage8-final-desktop-verified.png",
+                "/tmp/pfi-v021-stage8-final-mobile-verified.png",
+            ),
+            "console_errors_allowed": 0,
+        },
+        "local_sync_contract": {
+            "github_branch": "main",
+            "canonical_checkout": (
+                "/Users/linzezhang/Documents/Codex/2026-06-19/"
+                "current-phase-phase-0-goal-scope/work/CodexProject"
+            ),
+            "app_entries": ("/Applications/PFI.app", "~/Downloads/PFI.app", "~/Desktop/PFI.app"),
+            "cleanup_scope": ("PFI/__pycache__", "PFI/.pytest_cache", "PFI/**/*.pyc", "temporary stage8 worktree"),
+        },
+        "safety_boundary": (
+            "Stage 8 is validation, documentation, GitHub sync, app refresh and bounded cache cleanup only. "
+            "It must not add broker submission, payment execution, live trading, trading password capture, "
+            "external upload execution, or QBVS ownership inside PFI."
+        ),
+        "acceptance": (
+            "Stage 0-8 前端合同测试通过。",
+            "完整 PFI 单测、JS 语法、项目治理和 diff 检查通过。",
+            "桌面和手机浏览器关键路径通过，截图和 console error 结果可追溯。",
+            "GitHub main、canonical PFI 文件和 PFI.app 入口一致。",
+            "本机非必要 PFI 缓存和本轮临时 worktree 已清理。",
+            "无新增交易、支付、券商提交、实盘自动下单或 QBVS 内嵌能力。",
         ),
     }
 

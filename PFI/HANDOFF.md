@@ -1,10 +1,10 @@
 # PFI Handoff
 
-Last updated: 2026-06-27 Australia/Sydney
+Last updated: 2026-06-28 Australia/Sydney
 
 ## Current Goal
 
-PFI v0.2.1 前端优化 Stage 7 已完成：所有一级入口、代表性功能按钮和命令面板入口可点击；统一显示 `进行中/成功/失败` 反馈；hash 路由状态和移动端入口可读性已通过浏览器验收。
+PFI v0.2.1 前端优化 Stage 8 已完成：最终验收合同、整体检查、桌面/手机浏览器关键路径、命令验收、GitHub main 同步、本机 app 入口刷新和本机非必要缓存清理全部纳入交付口径。
 
 ## Current Status
 
@@ -49,6 +49,7 @@ PFI v0.2.1 前端优化 Stage 7 已完成：所有一级入口、代表性功能
 - v0.2.1 Stage 5 合同是 `src/pfi_v02/stage_v021_frontend_contract.py::build_v021_stage5_contract()`，测试是 `tests/test_v021_stage5_upload_import_contract.py`。
 - v0.2.1 Stage 6 合同是 `src/pfi_v02/stage_v021_frontend_contract.py::build_v021_stage6_contract()`；SQLite 服务是 `src/pfi_v02/stage_v021_holdings_persistence.py`；测试是 `tests/test_v021_stage6_holdings_persistence.py`。
 - v0.2.1 Stage 7 合同是 `src/pfi_v02/stage_v021_frontend_contract.py::build_v021_stage7_contract()`；Web Shell 点击安全函数是 `buildClickSafeInventory()` / `bindClickSafeFeedback()` / `setActionFeedback()`；测试是 `tests/test_v021_stage7_clicksafe_feedback.py`。
+- v0.2.1 Stage 8 合同是 `src/pfi_v02/stage_v021_frontend_contract.py::build_v021_stage8_contract()`；最终验收审计是 `docs/pfi_v02/STAGE_V021_FINAL_ACCEPTANCE_AUDIT.md`；测试是 `tests/test_v021_stage8_final_acceptance.py`。
 - v0.2.1 UI 货币基准已锁定为 CNY；所有页面顶部右上角必须显示 `CNY/AUD=4.70（YYYYMMDD--HH:MM）`，读取当日 06:00 Australia/Sydney 汇率快照。
 - v0.2.1 正式前端目标是 `PFI/web` HTML Web Shell；多模态反馈、触感、声音、视觉、通知和运行反馈控制台后续必须收敛到设置页。
 - Web shell default homepage consumes Stage 6 closeout status and now shows one unified 15-entry navigation list: 首页总览、账户与资产、账本流水、投资管理、消费管理、数据源与上传、建议与复盘、报告与洞察、首页、市场、研究、持仓、策略实验室、数据与系统、设置.
@@ -63,6 +64,7 @@ PFI v0.2.1 前端优化 Stage 7 已完成：所有一级入口、代表性功能
 - 2026-06-27 v0.2.1 Stage 5：`数据源与上传` 页面新增上传中心和导入中心；文件选择、拖拽上传、等待/完成/失败中文状态、失败反馈、已选文件列表、导入批次、导入摘要和 `进入账本复核` 按钮可用；不执行外部真实上传、支付、券商提交或实盘自动下单。
 - 2026-06-27 v0.2.1 Stage 6：`投资管理 > 持仓` 新增持仓编辑面板；SQLite operational database 新增 `v021_holding_snapshots` 和 `v021_position_adjustments` 合同；服务覆盖新增、读取、修改、软删除；前端保存到本机持久状态，刷新或重开 HTML Web Shell 仍保留。
 - 2026-06-27 v0.2.1 Stage 7：所有可见按钮进入点击安全清单；按钮点击统一显示 `进行中/成功/失败` 反馈；`hashchange` 同步工作区和左侧高亮；移动端一级入口横向滚动且不竖排；桌面/手机浏览器验收覆盖 15 个一级入口、40 个代表按钮、15 个命令入口和三态反馈。
+- 2026-06-28 v0.2.1 Stage 8：新增最终验收合同和审计；`V021-P8-S8-T01` 前端合同测试、`V021-P8-S8-T02` 浏览器验收、`V021-P8-S8-T03` 命令验收统一进入 `PFI-V021-S8-FINAL-ACCEPTANCE-GATE`；Stage 0-8 前端合同、完整 PFI 单测、JS、治理、diff、浏览器、GitHub main、canonical PFI、PFI.app 和缓存清理成为同一 closeout gate。
 
 ## Decisions
 
@@ -111,9 +113,9 @@ Latest v0.2.1 Stage 4 target result: Stage 0/1/2/3/4 frontend contracts `Ran 26 
 Latest v0.2.1 Stage 5 target result: Stage 0/1/2/3/4/5 frontend contracts `Ran 31 tests / OK`; full PFI unittest discover `Ran 131 tests / OK`; `node --check PFI/web/app/shell.js` OK; governance `errors 0 / warnings 0`; `git diff --check -- PFI` OK; Chrome headless desktop verified `/sources-upload` upload panel, file picker upload, drag/drop upload, failure feedback, import center summary, review-link jump to `账本流水`, console errors `0`, screenshot `/tmp/pfi-v021-stage5-upload-desktop-verified.png`; Chrome headless mobile 390x844 verified upload/import panel and review entry, screenshot `/tmp/pfi-v021-stage5-upload-mobile-verified.png`.
 Latest v0.2.1 Stage 6 target result: Stage 0/1/2/3/4/5/6 frontend contracts `Ran 37 tests / OK`; target Stage 6 contract `Ran 6 tests / OK`; full PFI unittest discover `Ran 137 tests / OK`; governance `errors 0 / warnings 0`; Web shell syntax `OK`; `git diff --check -- PFI` `OK`; browser desktop verified `/investment?tab=holdings` edit/save/reload/reopen persistence with console errors `0`, screenshot `/tmp/pfi-v021-stage6-holdings-desktop-verified.png`; browser mobile 390x844 verified holdings panel and 3 rows, screenshot `/tmp/pfi-v021-stage6-holdings-mobile-verified.png`.
 Latest v0.2.1 Stage 7 target result: Stage 0/1/2/3/4/5/6/7 frontend contracts `Ran 42 tests / OK`; target Stage 7 contract `Ran 5 tests / OK`; full PFI unittest discover `Ran 142 tests / OK`; governance `errors 0 / warnings 0`; Web shell syntax `OK`; `git diff --check -- PFI` `OK`; browser desktop/mobile verified 15 primary entries, 14 unique route aliases, 40 representative clicks, 15 command entries, `progress/success/failure` feedback states, zero console errors, screenshots `/tmp/pfi-v021-stage7-clicksafe-desktop-verified.png` and `/tmp/pfi-v021-stage7-clicksafe-mobile-verified.png`.
+Latest v0.2.1 Stage 8 target result: Stage 0/1/2/3/4/5/6/7/8 frontend contracts `Ran 47 tests / OK`; target Stage 8 contract `Ran 5 tests / OK`; full PFI unittest discover `Ran 147 tests / OK`; governance `errors 0 / warnings 0`; Web shell syntax `OK`; `git diff --check -- PFI` `OK`; browser desktop/mobile verified 15 primary entries, 14 unique route aliases, CNY/AUD 06:00 badge, global fuzzy search, upload picker/drag/drop/failure feedback, ledger review entry, holdings persistence, settings feedback console, progress/success/failure feedback states, zero console errors, screenshots `/tmp/pfi-v021-stage8-final-desktop-verified.png` and `/tmp/pfi-v021-stage8-final-mobile-verified.png`; macOS app acceptance pending after GitHub main sync and canonical app refresh.
 
 ## Next
 
-1. Finish this Stage 7 closeout by running full PFI validation, pushing GitHub `main`, syncing canonical local `PFI/`, refreshing app entry, and bounded cache cleanup.
-2. Stage 5-7 active goal can close only after GitHub `main` and local app entry are proven current.
-3. Next separate pursuing goal should start `P8 / S8 最终验收`，不要把 P8 混入 Stage 7 closeout。
+1. Finish this Stage 8 closeout by running the final command/browser/app validation, pushing GitHub `main`, syncing canonical local `PFI/`, refreshing app entry, and bounded cache cleanup.
+2. After Stage 8 passes, next work should start from the next owner-approved roadmap, not from hidden legacy EVA/PFI branches.

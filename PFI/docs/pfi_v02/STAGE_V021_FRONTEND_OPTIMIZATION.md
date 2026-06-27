@@ -449,3 +449,49 @@ git diff --check -- PFI
 ## Stage 7 后续顺序
 
 下一轮 pursuing goal 应从 `P8 / S8 最终验收` 开始，做最终回归、交付包、入口刷新和验收审计。Stage 7 不提前声明 P8 完成。
+
+## Stage 8 完成记录
+
+本轮完成 `P8 / S8 最终验收`，覆盖任务：
+
+- `V021-P8-S8-T01`：前端合同测试，新增 Stage 8 合同和测试，Stage 0-8 前端合同套件必须通过。
+- `V021-P8-S8-T02`：浏览器验收，桌面和手机关键路径必须通过，console errors 必须为 `0`。
+- `V021-P8-S8-T03`：命令验收，完整 PFI 单测、JS、治理、diff、macOS app acceptance、GitHub main 和本机入口同步必须通过。
+
+Stop gate：`PFI-V021-S8-FINAL-ACCEPTANCE-GATE`。
+
+当前交付：
+
+- 新增 `build_v021_stage8_contract()`。
+- 新增 `tests/test_v021_stage8_final_acceptance.py`。
+- 新增 `docs/pfi_v02/STAGE_V021_FINAL_ACCEPTANCE_AUDIT.md`。
+- 更新 `HANDOFF.md`、`开发记录.md`、`功能清单.md`、`模型参数文件.md`。
+- 本轮只做验收、文档、GitHub 同步、本机 app 入口刷新和有限缓存清理；不新增交易、支付、券商提交、实盘自动下单或 QBVS 内嵌能力。
+
+Stage 8 已通过的目标验收命令：
+
+```bash
+node --check PFI/web/app/shell.js
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m unittest PFI.tests.test_v021_stage0_frontend_contract PFI.tests.test_v021_stage1_navigation_contract PFI.tests.test_v021_stage2_copy_cleanup_contract PFI.tests.test_v021_stage3_settings_search_contract PFI.tests.test_v021_stage4_trend_contract PFI.tests.test_v021_stage5_upload_import_contract PFI.tests.test_v021_stage6_holdings_persistence PFI.tests.test_v021_stage7_clicksafe_feedback PFI.tests.test_v021_stage8_final_acceptance -q
+```
+
+Stage 8 closeout 验收命令：
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -B -m unittest discover -s tests -q
+python3 scripts/validate_project_governance.py --project PFI
+git diff --check -- PFI
+zsh scripts/macosAppAcceptanceLite.sh --project-root . --summary-json
+```
+
+当前结果：Web Shell 语法检查通过；Stage 8 目标合同 `Ran 5 tests / OK`；Stage 0/1/2/3/4/5/6/7/8 前端合同 `Ran 47 tests / OK`；完整 PFI 单测 `Ran 147 tests / OK`；治理 `errors 0 / warnings 0`；`git diff --check -- PFI` 通过。macOS app acceptance 将在 GitHub main 同步和 canonical app 刷新后写入最终结果。
+
+浏览器验收：
+
+- Chrome headless desktop 1440x1100：15 个一级入口、14 个唯一路由、CNY/AUD 06:00 徽标、全局模糊搜索、上传选择、拖拽上传、失败反馈、导入中心、账本复核入口、持仓保存刷新恢复、设置反馈控制台和三态反馈均通过；console errors `0`。
+- Chrome headless mobile 390x920：CNY/AUD 徽标、横向入口可读性、上传/导入面板、全局搜索和命令反馈通过；console errors `0`。
+- 截图：`/tmp/pfi-v021-stage8-final-desktop-verified.png`、`/tmp/pfi-v021-stage8-final-mobile-verified.png`。
+
+## Stage 8 后续顺序
+
+Stage 8 完成后，v0.2.1 前端优化阶段闭环。后续工作必须从 owner 单独开启的新 roadmap 或新 pursuing goal 开始，不从隐藏的 EVA/PFI 旧分支继续。
