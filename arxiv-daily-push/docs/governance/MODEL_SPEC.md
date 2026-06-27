@@ -13,6 +13,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 
 ## Governance Notes
 
+- `S2PLT04-FINAL-BUNDLE-READINESS-SYNC` reuses existing `PARAM-ADP-965` through `PARAM-ADP-967` under `MOD-ADP-103` / `FORM-ADP-105` to embed the fail-closed final acceptance bundle readiness detail inside S2PLT04 evidence. It does not create the final bundle, satisfy S2PLT04, close P0/P1, enable SMTP/scheduler/Release/restore, mutate production state, change sources/ranking/CURRENT/V7, or claim integrated production acceptance.
 - `S2PLT03` adds `MOD-ADP-116`, `FORM-ADP-118`, and `PARAM-ADP-968`
   through `PARAM-ADP-975`. It records a fail-closed no-production resilience,
   capacity, rollback, and state-count precheck requiring S2PLT02 acceptance,

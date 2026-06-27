@@ -10,12 +10,30 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.1
 - Current phase: S2PL
-- Current gate: S2PLT04_STATE_CONTENT_EVIDENCE_BUNDLE_SYNC_BLOCKED_NO_PRODUCTION
-- Confirmed iteration count: 162
+- Current gate: S2PLT04_FINAL_BUNDLE_READINESS_SYNC_BLOCKED_NO_PRODUCTION
+- Confirmed iteration count: 163
 - Reconstructed event count: 0
-- Current task: `S2PLT04-STATE-CONTENT-EVIDENCE-BUNDLE-SYNC` records that S2PLT04 integration-candidate precheck binds local state-consistency and content evidence to hash-bound no-production bundles. No S2PLT04 completion, final bundle, P0/P1 closure, CURRENT, V7.1/V7.2 contract file, real SMTP, scheduler, Release, production restore, public schema, DB migration, production queue, source adapter, ranking, DAILY_OPERATION, or integrated production acceptance state changed.
+- Current task: `S2PLT04-FINAL-BUNDLE-READINESS-SYNC` records that S2PLT04 integration-candidate precheck embeds final acceptance bundle readiness detail and missing required items while all terminal and production gates remain closed.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
+
+
+### `ITER-20260628-ADP-S2PLT04-FINAL-BUNDLE-READINESS-SYNC`
+
+- Timestamp: `2026-06-28T03:51:22+10:00`
+- Fact level: EXTRACTED from S2PLT04 final-gate implementation, focused RED/GREEN regression tests, final bundle readiness sub-gate, traceability row, phase record, run manifest, and generated governance views.
+- Base commit: `0408db0f6049105282b771c01216566057db763c`
+- Product version: `0.23.1`
+- Status: blocked no-production precheck recorded; S2PLT04 now embeds final acceptance bundle readiness detail, but the final bundle is not present and S2PLT04 completion is not claimed.
+- Task IDs: `S2PLT04-FINAL-BUNDLE-READINESS-SYNC`; parent `S2PLT04`; acceptance `ACC-S2PLT04-INTEGRATION-CANDIDATE`.
+- Goal: Prevent S2PLT04 from hiding final-bundle missing evidence behind a single boolean while still preventing readiness detail from satisfying terminal gates.
+- Files changed: S2PLT04 final-gate helper and tests, model/formula registries, traceability matrix, shallow user-center traceability page, phase record, run manifest, delivery task, development events, generated status views, VERSION_MATRIX, changelog, and 三基 notes.
+- Decisions: `final_acceptance_bundle_readiness` is embedded under S2PLT04 evidence with status `blocked`, all required final bundle files listed as missing, `bundle_present=false`, `bundle_claimed_ready=false`, and `production_acceptance_claimed=false`.
+- Validation: RED target test observed expected missing final_acceptance_bundle_readiness detail; focused S2PLT04 final-gate tests 24 OK; focused final-gate plus user-center traceability tests 41 OK; full arxiv-daily-push unittest 608 OK; V7.2 validator PASS; ADP project governance 0 errors / 0 warnings; changed-only governance semantic 0 errors / 0 warnings; governance sync validator 0 errors / 0 warnings; lean check-render drift_count 0 / reference_issue_count 0; user-center timestamp check 18 pages validated; py_compile PASS; JSON/JSONL/YAML/CSV/manifest parse 403 structured files OK; git diff --check PASS; production false-flag scan OK; open PR count 0; remote ADP/arxiv/s2p branch grep no matches; no __pycache__/.pyc remains. Full semantic extractor was not run in this iteration and is not claimed as passed.
+- Boundaries: No SMTP, scheduler, Release, production restore, public schema, DB, production queue, source adapter, ranking, CURRENT/V7 contract, V7.1 baseline, P0/P1 closure, DAILY_OPERATION, or integrated production acceptance changed.
+- Risks: This readiness detail can be misread as final bundle creation. It is deliberately fail-closed evidence only; S2PLT01/S2PLT02/S2PLT03 authoritative completion, S2PLT04 completion, final bundle files, S2PMT07, and inherited P0/P1 zero state still control production acceptance.
+- Evidence: `governance/run_manifests/ADP-S2PLT04-FINAL-BUNDLE-READINESS-SYNC-20260628.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PLT04_FINAL_BUNDLE_READINESS_SYNC.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`; `arxiv-daily-push/用户中心/功能任务测试证据追踪链.md`.
+- Next step: Continue final-bundle prerequisite closure or terminal dependency work under S2PMT07/V7.2 boundaries, without enabling production.
 
 ### `ITER-20260628-ADP-S2PLT04-STATE-CONTENT-EVIDENCE-BUNDLE-SYNC`
 

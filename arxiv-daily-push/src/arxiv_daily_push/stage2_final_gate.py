@@ -958,13 +958,14 @@ def build_s2plt04_evidence_state(
         source_tasks=S2PLT04_CONTENT_EVIDENCE_SOURCE_TASKS,
         evidence_refs=S2PLT04_CONTENT_EVIDENCE_REFS,
     )
+    final_acceptance_bundle_readiness = build_final_acceptance_bundle_readiness_state()
     available = {
         "S2PLT01_ACCEPTED": False,
         "S2PLT02_2D_REAL_RUN": False,
         "S2PLT03_RESILIENCE_DRILL": False,
         "STATE_CONSISTENCY_EVIDENCE": state_consistency_evidence_bundle["status"] == "pass",
         "CONTENT_EVIDENCE": content_evidence_bundle["status"] == "pass",
-        "FINAL_ACCEPTANCE_BUNDLE/": False,
+        "FINAL_ACCEPTANCE_BUNDLE/": final_acceptance_bundle_readiness["bundle_present"],
     }
     available_nonterminal = {
         "S2PLT01_INDEPENDENT_REPLAY_REVIEW": replay_review_present,
@@ -1003,6 +1004,7 @@ def build_s2plt04_evidence_state(
         "s2plt03_local_drill_status": "present_not_terminal_acceptance" if local_drill_passed else "not_proven",
         "state_consistency_evidence_bundle": state_consistency_evidence_bundle,
         "content_evidence_bundle": content_evidence_bundle,
+        "final_acceptance_bundle_readiness": final_acceptance_bundle_readiness,
         "state_consistency_basis": "S2PMT02_through_S2PMT06_local_validation",
         "content_evidence_basis": "S2PHT05_S2PIT04_S2PKT05_local_validation",
         "production_evidence_basis": "not_present",
@@ -1125,6 +1127,13 @@ def validate_s2plt04_integration_candidate_report(report: Mapping[str, Any]) -> 
         expected_bundle_hash = _stable_hash({key: value for key, value in bundle.items() if key != "bundle_hash"})
         if bundle.get("bundle_hash") != expected_bundle_hash:
             errors.append(f"evidence.{bundle_key}.bundle_hash does not match bundle content")
+    final_bundle = _mapping(evidence.get("final_acceptance_bundle_readiness"))
+    final_bundle_errors = validate_final_acceptance_bundle_readiness_state(final_bundle)
+    if final_bundle_errors:
+        errors.append("S2PLT04 final acceptance bundle readiness is invalid")
+    available = _mapping(evidence.get("available_evidence"))
+    if available.get("FINAL_ACCEPTANCE_BUNDLE/") != final_bundle.get("bundle_present"):
+        errors.append("evidence.FINAL_ACCEPTANCE_BUNDLE/ must match final bundle readiness bundle_present")
     s2pmt07 = _mapping(report.get("s2pmt07_precheck"))
     s2pmt07_errors = validate_s2pmt07_precheck_report(s2pmt07)
     if s2pmt07_errors:

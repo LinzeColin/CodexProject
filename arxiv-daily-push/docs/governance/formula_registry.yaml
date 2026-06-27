@@ -6029,7 +6029,7 @@ formulas:
     assumption_ids:
       - "ASM-ADP-035"
     status: "active"
-    expression: "S2PLT04 integration candidate readiness remains blocked unless S2PLT01, S2PLT02, and S2PLT03 are all authoritatively completed; S2PLT01 independent replay review, S2PLT02 live two-day readiness precheck, and S2PLT03 local drill evidence may be consumed only as non-terminal evidence and must not satisfy S2PLT01_ACCEPTED, S2PLT02_2D_REAL_RUN, S2PLT02 completion, S2PLT03_RESILIENCE_DRILL, or S2PLT03 completion; state and content evidence are present as hash-bound no-production bundles with explicit source tasks and evidence refs; final acceptance bundle is present; inherited V7.1 P0 and P1 findings are zero; S2PMT07 precheck passes; and every production, scheduler, SMTP, Release, restore, queue, schema, DB, source-adapter, ranking, CURRENT, V7.1, and V7.2 side-effect flag is false."
+    expression: "S2PLT04 integration candidate readiness remains blocked unless S2PLT01, S2PLT02, and S2PLT03 are all authoritatively completed; S2PLT01 independent replay review, S2PLT02 live two-day readiness precheck, and S2PLT03 local drill evidence may be consumed only as non-terminal evidence and must not satisfy S2PLT01_ACCEPTED, S2PLT02_2D_REAL_RUN, S2PLT02 completion, S2PLT03_RESILIENCE_DRILL, or S2PLT03 completion; state and content evidence are present as hash-bound no-production bundles with explicit source tasks and evidence refs; final acceptance bundle readiness detail is embedded and remains blocked until required bundle files exist; final acceptance bundle is present; inherited V7.1 P0 and P1 findings are zero; S2PMT07 precheck passes; and every production, scheduler, SMTP, Release, restore, queue, schema, DB, source-adapter, ranking, CURRENT, V7.1, and V7.2 side-effect flag is false."
     variables:
       -
         name: "dependency_state"
@@ -6057,7 +6057,7 @@ formulas:
         unit: "final gate precheck state"
         input_domain: "S2PMT07 fail-closed precheck"
     constraints: "S2PLT04 integration candidate precheck must not complete S2PLT04, produce S2_INTEGRATION_CANDIDATE_READY, claim INTEGRATED_PRODUCTION_ACCEPTED or DAILY_OPERATION, send SMTP, enable scheduler, upload Release, execute production restore, mutate production queues, change public schema or DB, change source adapters or ranking, change CURRENT, change V7.1 baseline, or edit V7.2 contract files."
-    missing_policy: "Missing S2PLT01/S2PLT02/S2PLT03 completion, missing final acceptance bundle, nonzero inherited P0/P1, blocked S2PMT07 precheck, or any forbidden side-effect flag blocks S2PLT04. Present S2PLT01 independent replay review, S2PLT02 readiness precheck evidence, and S2PLT03 local drill evidence are recorded under available_nonterminal_evidence; state/content evidence must expose bundle_hash, source_tasks, evidence_refs, no_production_side_effects true, and terminal_acceptance_claimed false and still leave s2plt01_not_accepted, s2plt02_not_completed, and s2plt03_not_completed active."
+    missing_policy: "Missing S2PLT01/S2PLT02/S2PLT03 completion, missing final acceptance bundle, missing or invalid final acceptance bundle readiness detail, nonzero inherited P0/P1, blocked S2PMT07 precheck, or any forbidden side-effect flag blocks S2PLT04. Present S2PLT01 independent replay review, S2PLT02 readiness precheck evidence, and S2PLT03 local drill evidence are recorded under available_nonterminal_evidence; state/content evidence must expose bundle_hash, source_tasks, evidence_refs, no_production_side_effects true, and terminal_acceptance_claimed false and still leave s2plt01_not_accepted, s2plt02_not_completed, and s2plt03_not_completed active."
     output_range: "S2PLT04 integration candidate precheck report with pass or blocked status, dependency state, evidence state, audit blocker state, embedded S2PMT07 precheck, blocking reasons, deterministic candidate_hash, production_acceptance_claimed false, inherited_p0_p1_closed false, and all forbidden flags false."
     code_refs:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py"
@@ -6074,6 +6074,8 @@ formulas:
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT04_S2PLT01_REPLAY_REVIEW_EVIDENCE_SYNC.md"
       - "governance/run_manifests/ADP-S2PLT04-STATE-CONTENT-EVIDENCE-BUNDLE-SYNC-20260628.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT04_STATE_CONTENT_EVIDENCE_BUNDLE_SYNC.md"
+      - "governance/run_manifests/ADP-S2PLT04-FINAL-BUNDLE-READINESS-SYNC-20260628.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT04_FINAL_BUNDLE_READINESS_SYNC.md"
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT04_INTEGRATION_CANDIDATE_MODEL_ID"
@@ -6096,12 +6098,14 @@ formulas:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT04_BLOCKING_REASONS"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_s2plt04_dependency_state"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_s2plt04_evidence_state"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_final_acceptance_bundle_readiness_state"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::validate_final_acceptance_bundle_readiness_state"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_s2plt04_integration_candidate_report"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::validate_s2plt04_integration_candidate_report"
-    implementation_fingerprint: "sha256:c4bb9c9191c0e2d448318f6fae5221a94462f574ca4cc5ebefab3b30e7a9069d"
-    evidence_hash: "sha256:c4bb9c9191c0e2d448318f6fae5221a94462f574ca4cc5ebefab3b30e7a9069d"
+    implementation_fingerprint: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+    evidence_hash: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
     last_verified_commit: "PRECOMMIT"
-    verified_at: "2026-06-28T03:26:05+10:00"
+    verified_at: "2026-06-28T03:51:22+10:00"
 
   -
     formula_id: "FORM-ADP-106"

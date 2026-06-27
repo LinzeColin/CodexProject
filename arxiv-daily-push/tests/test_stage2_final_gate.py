@@ -310,6 +310,23 @@ class Stage2FinalGateTests(unittest.TestCase):
         tampered["s2_integration_candidate_ready"] = True
         self.assertIn("s2_integration_candidate_ready must be false", validate_s2plt04_integration_candidate_report(tampered))
 
+    def test_s2plt04_embeds_final_bundle_readiness_detail_without_claiming_bundle(self) -> None:
+        report = build_s2plt04_integration_candidate_report(generated_at="2026-06-28T03:51:22+10:00")
+
+        readiness = report["evidence"]["final_acceptance_bundle_readiness"]
+        self.assertEqual(readiness["status"], "blocked")
+        self.assertEqual(tuple(readiness["required_items"]), S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS)
+        self.assertEqual(set(readiness["missing_items"]), set(S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS))
+        self.assertEqual(readiness["blocking_reasons"], list(S2PMT07_FINAL_ACCEPTANCE_BUNDLE_BLOCKING_REASONS))
+        self.assertFalse(readiness["bundle_present"])
+        self.assertFalse(readiness["bundle_claimed_ready"])
+        self.assertFalse(readiness["production_acceptance_claimed"])
+        self.assertFalse(report["gates"]["final_acceptance_bundle_present"])
+        self.assertFalse(report["evidence"]["available_evidence"]["FINAL_ACCEPTANCE_BUNDLE/"])
+        self.assertIn("final_acceptance_bundle_missing", report["blocking_reasons"])
+        self.assertEqual(validate_final_acceptance_bundle_readiness_state(readiness), [])
+        self.assertEqual(validate_s2plt04_integration_candidate_report(report), [])
+
     def test_audit_blocker_state_blocks_current_inherited_p0_p1(self) -> None:
         state = build_audit_blocker_state()
 

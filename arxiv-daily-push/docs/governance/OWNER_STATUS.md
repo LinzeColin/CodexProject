@@ -6,7 +6,7 @@ arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTI
 
 ## 2. 本次运行改变了什么
 
-S2PLT04 现在把本地状态一致性证据和内容证据绑定为带哈希的 no-production bundle；这只是集成候选前置证据，不是 S2PLT04 完成、P0/P1 关闭或生产验收。
+S2PLT04 现在嵌入最终验收包 readiness 明细并列出缺失项；这只是集成候选前置证据，不是最终包已创建、S2PLT04 完成、P0/P1 关闭或生产验收。
 
 ## 3. 为什么重要
 
@@ -21,7 +21,7 @@ S2PLT04 现在把本地状态一致性证据和内容证据绑定为带哈希的
 
 ## 5. 默认建议
 
-- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PLT04 state/content bundles as local no-production blocked evidence only, keep S2PLT04 blocked until terminal dependencies, final bundle, inherited P0/P1 zero proof, final production stop gates, and S2PMT07 independent final review exist before any inherited P0/P1 closure or production acceptance claim.
+- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PLT04 final bundle readiness detail as local no-production blocked evidence only, keep S2PLT04 blocked until terminal dependencies, final bundle, inherited P0/P1 zero proof, final production stop gates, and S2PMT07 independent final review exist before any inherited P0/P1 closure or production acceptance claim.
 - estimated_effort: P0/P1; contract hash, AGENTS, 三基文件, validator/test, no production side effect
 - estimated_cost_or_resource: local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner
 
@@ -52,7 +52,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 | Decision Item | Current Recommendation | Choice A | Choice B | Choice C | No Decision Consequence |
 |---|---|---|---|---|---|
-| `DEC-ADP-V7-2-CURRENT-20260624` | A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PLT04 state/content bundles as local no-production blocked evidence only, keep S2PLT04 blocked until terminal dependencies, final bundle, inherited P0/P1 zero proof, final production stop gates, and S2PMT07 independent final review exist before any inherited P0/P1 closure or production acceptance claim. | 继续 S2PLT04 no-production evidence-bundle prerequisite work under V7.2/S2PMT07 boundaries。 | 暂停所有 Stage2 任务等待真实 scheduler/SMTP 生产启用；会不必要阻塞无冲突证据工作。 | 越过 S2PMT07 直接声称 P0/P1 关闭或启用 scheduler/SMTP；禁止。 | Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract drift. |
+| `DEC-ADP-V7-2-CURRENT-20260624` | A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat S2PLT04 final bundle readiness detail as local no-production blocked evidence only, keep S2PLT04 blocked until terminal dependencies, final bundle, inherited P0/P1 zero proof, final production stop gates, and S2PMT07 independent final review exist before any inherited P0/P1 closure or production acceptance claim. | 继续 S2PLT04 final bundle readiness prerequisite work under V7.2/S2PMT07 boundaries。 | 暂停所有 Stage2 任务等待真实 scheduler/SMTP 生产启用；会不必要阻塞无冲突证据工作。 | 越过 S2PMT07 直接声称 P0/P1 关闭或启用 scheduler/SMTP；禁止。 | Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract drift. |
 
 ## 10. Current Blockers
 
@@ -78,7 +78,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PLT04_STATE_CONTENT_EVIDENCE_BUNDLE_SYNC_BLOCKED_NO_PRODUCTION`
+- release_gate: `S2PLT04_FINAL_BUNDLE_READINESS_SYNC_BLOCKED_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
@@ -95,13 +95,13 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 16. 技术元数据
 
-- source_base_commit: `afc31872ff4acd8b21f30c84e0f3876e9b8a97cf`
+- source_base_commit: `0408db0f6049105282b771c01216566057db763c`
 - source_tree_hash: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
-- source_snapshot_hash: `sha256:c4bb9c9191c0e2d448318f6fae5221a94462f574ca4cc5ebefab3b30e7a9069d`
-- snapshot_event_time: `2026-06-28T03:26:05+10:00`
+- source_snapshot_hash: `sha256:b46b66adca9fff016c8699d25d2f20031291631ddbc6e9ee00fc360126a9647f`
+- snapshot_event_time: `2026-06-28T03:51:22+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PL / S2PLT04_STATE_CONTENT_EVIDENCE_BUNDLE_SYNC_BLOCKED_NO_PRODUCTION`
+- phase/gate: `S2PL / S2PLT04_FINAL_BUNDLE_READINESS_SYNC_BLOCKED_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 
