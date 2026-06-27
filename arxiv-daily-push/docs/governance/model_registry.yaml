@@ -5364,6 +5364,9 @@ models:
       - "PARAM-ADP-1037"
       - "PARAM-ADP-1038"
       - "PARAM-ADP-1039"
+      - "PARAM-ADP-1040"
+      - "PARAM-ADP-1041"
+      - "PARAM-ADP-1042"
     inputs:
       - "S2PMT01 through S2PMT06 local validation receipts"
       - "S2PLT04 completion evidence"
@@ -5383,6 +5386,7 @@ models:
       - "final bundle prerequisite plan state"
       - "P0/P1 zero-proof assembly state"
       - "independent final closure decision request state"
+      - "independent final reviewer assignment request state"
     outputs:
       - "blocked S2PMT07 precheck report"
       - "blocked final acceptance bundle readiness state"
@@ -5398,6 +5402,7 @@ models:
       - "blocked final bundle prerequisite plan state"
       - "blocked P0/P1 zero-proof assembly state"
       - "blocked independent final closure decision request state"
+      - "blocked independent final reviewer assignment request state"
       - "blocking reason list"
       - "forbidden production flag state"
       - "deterministic report hash"
@@ -5422,6 +5427,7 @@ models:
       - "governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-PREREQUISITE-PLAN-20260628.json"
       - "governance/run_manifests/ADP-S2PMT07-P0-P1-ZERO-PROOF-ASSEMBLY-20260628.json"
       - "governance/run_manifests/ADP-S2PMT07-INDEPENDENT-FINAL-CLOSURE-DECISION-REQUEST-20260628.json"
+      - "governance/run_manifests/ADP-S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-REQUEST-20260628.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_GATE_PRECHECK.md"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_ACCEPTANCE_BUNDLE_READINESS.md"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_P1_TECHNICAL_CANDIDATE_READINESS.md"
@@ -5436,6 +5442,7 @@ models:
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN.md"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_P1_ZERO_PROOF_ASSEMBLY.md"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_REQUEST.md"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_REQUEST.md"
 
   -
     model_id: "MOD-ADP-101"

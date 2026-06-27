@@ -7,12 +7,21 @@ machine_summary:
 
 - model_count: 117
 - formula_count: 119
-- parameter_count: 1039
+- parameter_count: 1042
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
 ## Governance Notes
 
+- `S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-REQUEST` adds
+  `PARAM-ADP-1040` through `PARAM-ADP-1042` under `MOD-ADP-100` /
+  `FORM-ADP-102`. It exposes the future independent final reviewer assignment
+  request state for `FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json`,
+  binding V7.2 current/root lock, zero-proof assembly, zero-proof readiness,
+  candidate refs, final bundle refs, no-production flags, and reviewer
+  independence requirements while keeping the reviewer assignment, closure
+  decision, zero-proof artifact, P0/P1 zero proof, S2PLT04, final bundle, and
+  every production side-effect flag blocked/false.
 - `S2PMT07-INDEPENDENT-FINAL-CLOSURE-DECISION-REQUEST` adds
   `PARAM-ADP-1037` through `PARAM-ADP-1039` under `MOD-ADP-100` /
   `FORM-ADP-102`. It exposes the future independent final reviewer request

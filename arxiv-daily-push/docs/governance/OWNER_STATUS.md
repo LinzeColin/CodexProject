@@ -6,7 +6,7 @@ arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTI
 
 ## 2. 本次运行改变了什么
 
-S2PMT07 现在有 independent final closure decision request 状态：系统会把 P0/P1 zero-proof assembly、zero-proof readiness、候选证据 refs、最终包 refs、no-production flags 和 `independent_final_reviewer` 角色要求装配为未来独立终审的机器输入。当前 independent final reviewer assignment、independent final closure decision、next-agent handoff、no-production attestation、independent signoff、final command execution artifact、completion report、manifest、zero-proof artifact 和 final bundle 仍缺失，inherited P0/P1 仍为 `8 / 37`。该 request 只是后续最终包工作的 blocked prebundle evidence，不是 P0/P1 归零证明、最终包已创建、S2PLT04 完成、P0/P1 关闭或生产验收。
+S2PMT07 现在有 independent final reviewer assignment request 状态：系统会把 V7.2 current/root lock、P0/P1 zero-proof assembly、zero-proof readiness、候选证据 refs、最终包 refs、no-production flags 和 reviewer independence 要求装配为未来独立终审指派的机器输入。当前 independent final reviewer assignment、independent final closure decision、next-agent handoff、no-production attestation、independent signoff、final command execution artifact、completion report、manifest、zero-proof artifact 和 final bundle 仍缺失，inherited P0/P1 仍为 `8 / 37`。该 request 只是后续最终包工作的 blocked prebundle evidence，不是 P0/P1 归零证明、最终包已创建、S2PLT04 完成、P0/P1 关闭或生产验收。
 
 ## 3. 为什么重要
 
@@ -31,7 +31,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 7. 下一行动、责任角色和验收证据
 
-- next_task_id: `S2PMT07-INDEPENDENT-FINAL-CLOSURE-DECISION`
+- next_task_id: `S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT`
 - responsible_role: `content_owner + product_owner`
 - acceptance_ids: `ACC-S2PLT04-INTEGRATION-CANDIDATE`
 - unblock_condition: S2PLT01 replay payload execution package can be misread as S2PLT01 acceptance; inherited P0/P1, S2PLT04, S2PMT07 final independent review, and final production stop gates still block S2PLT01 and integrated production acceptance.
@@ -39,7 +39,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `PARTIAL` (1007/1022 active parameters, 119/119 active formulas)
+- implementation_congruence: `PARTIAL` (1010/1025 active parameters, 119/119 active formulas)
 - parameter_source_quality: `PARTIAL`
 - methodological_rationale: `VERIFIED`
 - empirical_validation: `VERIFIED`
@@ -52,7 +52,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 | Decision Item | Current Recommendation | Choice A | Choice B | Choice C | No Decision Consequence |
 |---|---|---|---|---|---|
-| `DEC-ADP-V7-2-CURRENT-20260624` | A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, require `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json` and independent final closure decision before inherited P0/P1 can be treated as zero, and keep technical candidates as prebundle evidence only. | 继续 S2PMT07 final closure decision 或 S2PLT04 final bundle prerequisite work under V7.2/S2PMT07 boundaries。 | 暂停所有 Stage2 任务等待真实 scheduler/SMTP 生产启用；会不必要阻塞无冲突证据工作。 | 越过 S2PMT07 直接声称 P0/P1 关闭或启用 scheduler/SMTP；禁止。 | Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract drift. |
+| `DEC-ADP-V7-2-CURRENT-20260624` | A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, require `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json` and independent final closure decision before inherited P0/P1 can be treated as zero, and keep technical candidates as prebundle evidence only. | 继续 S2PMT07 final reviewer assignment artifact 或 S2PLT04 final bundle prerequisite work under V7.2/S2PMT07 boundaries。 | 暂停所有 Stage2 任务等待真实 scheduler/SMTP 生产启用；会不必要阻塞无冲突证据工作。 | 越过 S2PMT07 直接声称 P0/P1 关闭或启用 scheduler/SMTP；禁止。 | Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract drift. |
 
 ## 10. Current Blockers
 
@@ -71,14 +71,14 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - model_count: `117`
 - total_formulas: `119`
 - active_formulas: `119`
-- total_parameters: `1039`
-- active_parameters: `1022`
+- total_parameters: `1042`
+- active_parameters: `1025`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_REQUEST_BLOCKED_NO_PRODUCTION`
+- release_gate: `S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_REQUEST_BLOCKED_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
@@ -98,12 +98,12 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - source_base_commit: `12e91a8e1b84fe29724f43229131bd43f8fa31cd`
 - source_tree_hash: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - source_snapshot_hash: `sha256:b46b66adca9fff016c8699d25d2f20031291631ddbc6e9ee00fc360126a9647f`
-- snapshot_event_time: `2026-06-28T08:21:10+10:00`
+- snapshot_event_time: `2026-06-28T08:48:03+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PM / S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_REQUEST_BLOCKED_NO_PRODUCTION`
+- phase/gate: `S2PM / S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_REQUEST_BLOCKED_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 
 - task_id: `S2PMT07`
-- reason: Keep P0/P1 technical candidates and independent final closure decision request fail-closed until reviewer assignment, independent final closure decision, zero proof, S2PLT04 completion, final bundle, final command execution, and no-production attestation are proven under V7.2 and S2PMT07 blocked boundaries.
+- reason: Keep P0/P1 technical candidates and independent final reviewer assignment request fail-closed until reviewer assignment, independent final closure decision, zero proof, S2PLT04 completion, final bundle, final command execution, and no-production attestation are proven under V7.2 and S2PMT07 blocked boundaries.
