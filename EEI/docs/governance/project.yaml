@@ -8,7 +8,7 @@ owner_role: "product_owner + data_owner + risk_owner"
 current_status: "failed_delivery_readiness"
 limitations:
   -
-    statement: "实现一致性为 PARTIAL：61/68 active parameters 和 10/11 active formulas 有抽取/指纹证据；FORM-012 与 PARAM-052..PARAM-058 仍为 HUMAN_REVIEW_REQUIRED 或 UNKNOWN。"
+    statement: "实现一致性为 PARTIAL：83/90 active parameters 和 10/11 active formulas 有抽取/指纹证据；FORM-012 与 PARAM-052..PARAM-058 仍为 HUMAN_REVIEW_REQUIRED 或 UNKNOWN。"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "EVID-EEI-ASSURANCE-STATUS"
@@ -168,7 +168,7 @@ features:
   -
     feature_id: "FEAT-EEI-005"
     name: "运行、视觉、发布决策与黄金集阈值控制"
-    description: "记录非评分阈值、motion、refresh、release-decision bundle、gold-quality 和 soak gate 参数；FORM-012 与 7 个 motion 参数仍需人工语义复核。"
+    description: "记录非评分阈值、motion、refresh、release-decision bundle、brand-clearance preflight、gold-quality、soak gate 和 release-manager 外部门禁参数；FORM-012 与 7 个 motion 参数仍需人工语义复核。"
     status: "active"
     fact_level: "RECONSTRUCTED"
     model_ids:
@@ -203,6 +203,28 @@ features:
       - "PARAM-066"
       - "PARAM-067"
       - "PARAM-068"
+      - "PARAM-069"
+      - "PARAM-070"
+      - "PARAM-071"
+      - "PARAM-072"
+      - "PARAM-073"
+      - "PARAM-074"
+      - "PARAM-075"
+      - "PARAM-076"
+      - "PARAM-077"
+      - "PARAM-078"
+      - "PARAM-079"
+      - "PARAM-080"
+      - "PARAM-081"
+      - "PARAM-082"
+      - "PARAM-083"
+      - "PARAM-084"
+      - "PARAM-085"
+      - "PARAM-086"
+      - "PARAM-087"
+      - "PARAM-088"
+      - "PARAM-089"
+      - "PARAM-090"
     code_refs:
       - "EEI/data/parameter_catalog.csv:43-61"
       - "EEI/config/thresholds/default-v2.json"
@@ -213,6 +235,53 @@ features:
       - "EVID-EEI-PARAMETER-REGISTRY"
       - "EVID-EEI-FORMULA-REGISTRY"
       - "EVID-EEI-SEMANTIC-MANIFEST"
+  -
+    feature_id: "FEAT-EEI-006"
+    name: "A209 长时稳定性证据链"
+    description: "T1307 operator soak 支持窗口化 checkpoint、watchdog、heartbeat、finalization 和 browser/worker 指标；当前仍需新的真实 288/288、0 failed 的 24h 证据，partial/failed heartbeat 不关闭 A209 或 MVP release gate。"
+    status: "in_progress"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-012"
+    formula_ids:
+      - "FORM-012"
+    parameter_ids:
+      - "PARAM-069"
+      - "PARAM-070"
+      - "PARAM-071"
+      - "PARAM-079"
+      - "PARAM-082"
+      - "PARAM-090"
+    code_refs:
+      - "EEI/scripts/run_operator_soak.mjs"
+      - "EEI/scripts/run_soak_smoke.mjs"
+      - "EEI/scripts/watch_operator_soak.py"
+      - "EEI/scripts/finalize_operator_soak_evidence.py"
+    test_refs:
+      - "EEI/tests/unit/test_operator_soak_evidence.py"
+      - "EEI/tests/unit/test_operator_soak_finalization.py"
+    evidence_refs:
+      - "EVID-EEI-DEVELOPMENT-EVENTS"
+      - "EVID-EEI-PARAMETER-REGISTRY"
+  -
+    feature_id: "FEAT-EEI-007"
+    name: "EEI app shell 图标与品牌入口"
+    description: "记录可复现 app icon pipeline：scripts/generate_app_icon.py 生成 EEIAppIcon.svg/png/icns，Next metadata 指向 web public icon，/Applications/EEI.app 使用 EEIAppIcon.icns；该视觉资产不替代 A210 正式法律或市场清权。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_ids:
+      - "MOD-012"
+    formula_ids:
+      - "FORM-012"
+    parameter_ids: []
+    code_refs:
+      - "EEI/scripts/generate_app_icon.py"
+      - "EEI/apps/web/src/app/layout.tsx"
+    test_refs:
+      - "EEI/scripts/generate_app_icon.py --install-app /Applications/EEI.app --verify-app /Applications/EEI.app"
+    evidence_refs:
+      - "EVID-EEI-APP-ICON"
+      - "EVID-EEI-DEVELOPMENT-EVENTS"
 models:
   -
     model_id: "MOD-001"
@@ -491,6 +560,28 @@ models:
       - "PARAM-066"
       - "PARAM-067"
       - "PARAM-068"
+      - "PARAM-069"
+      - "PARAM-070"
+      - "PARAM-071"
+      - "PARAM-072"
+      - "PARAM-073"
+      - "PARAM-074"
+      - "PARAM-075"
+      - "PARAM-076"
+      - "PARAM-077"
+      - "PARAM-078"
+      - "PARAM-079"
+      - "PARAM-080"
+      - "PARAM-081"
+      - "PARAM-082"
+      - "PARAM-083"
+      - "PARAM-084"
+      - "PARAM-085"
+      - "PARAM-086"
+      - "PARAM-087"
+      - "PARAM-088"
+      - "PARAM-089"
+      - "PARAM-090"
     semantic_status: "HUMAN_REVIEW_REQUIRED"
     code_refs:
       - "EEI/data/parameter_catalog.csv:43-84"
@@ -1687,6 +1778,342 @@ parameters:
       - "EVID-EEI-PARAMETER-REGISTRY"
       - "EVID-EEI-SEMANTIC-MANIFEST"
     unknown_task_ids: []
+  -
+    parameter_id: "PARAM-069"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "soak.watchdog_interval_seconds"
+    name: "A209 watchdog 轮询间隔"
+    value: "300"
+    source: "EXTRACTED from EEI/scripts/watch_operator_soak.py DEFAULT_INTERVAL_SECONDS; detached watchdog polls A209 every 300 seconds and does not close A209."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-070"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "soak.watchdog_stale_after_seconds"
+    name: "A209 watchdog stale 判定窗口"
+    value: "900"
+    source: "EXTRACTED from EEI/scripts/watch_operator_soak.py DEFAULT_STALE_AFTER_SECONDS; stale live PIDs require operator intervention and are not killed or replaced by the watchdog; EVENT-20260627-003 makes the heartbeat consume watchdog stale observations instead of reporting stale live checkpoints as normal running."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-071"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "soak.background_heartbeat_schema_version"
+    name: "A209 background heartbeat schema"
+    value: "eei-a209-operator-soak-background-heartbeat-v1"
+    source: "EXTRACTED from EEI/scripts/record_operator_soak_heartbeat.py HEARTBEAT_SCHEMA_VERSION; repository-local heartbeat is point-in-time background progress evidence only and keeps A209 IN_PROGRESS; release-manager preflight consumes it as counts_as_release_ready=false context; EVENT-20260627-003 adds watchdog_observation_status fields without changing the schema_version or release-closure policy."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-072"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "brand_clearance.intake_schema_version"
+    name: "A210 清权 intake schema"
+    value: "eei-a210-brand-clearance-intake-v1"
+    source: "EXTRACTED from EEI/scripts/validate_brand_clearance.py INTAKE_SCHEMA_VERSION; A210 intake template is non-closure evidence until signed bundle validation passes."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-073"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "brand_clearance.required_trademark_jurisdictions"
+    name: "A210 必查商标司法辖区"
+    value: "AU|CN|EU|UK|US"
+    source: "EXTRACTED from EEI/scripts/validate_brand_clearance.py REQUIRED_TRADEMARK_JURISDICTIONS; signed A210 bundle must cover all listed jurisdictions before closure."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-074"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "brand_clearance.required_market_surfaces"
+    name: "A210 必查市场搜索面"
+    value: "app_store|company_name|domain|github|npm|pypi|social_handle"
+    source: "EXTRACTED from EEI/scripts/validate_brand_clearance.py REQUIRED_SURFACES; signed A210 bundle must cover all listed market surfaces before closure."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-075"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "brand_clearance.signed_clearance_statuses"
+    name: "A210 可接受签核状态"
+    value: "CLEARED|RISK_WAIVER_ACCEPTED"
+    source: "EXTRACTED from EEI/scripts/validate_brand_clearance.py SIGNED_CLEARANCE_STATUSES; signed A210 bundle accepts only cleared or risk-waived decisions."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-076"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "release_decision_intake.schema_version"
+    name: "A202 发布签核 intake schema"
+    value: "eei-a202-release-decision-intake-v1"
+    source: "EXTRACTED from EEI/scripts/validate_release_decision_bundle.py INTAKE_SCHEMA_VERSION; A202 intake template captures source-license passage-level owner and legal review fields but remains non-closure until signed intake validation passes.; EVENT-20260625-022 refreshed the A202 release-decision intake template after packet freshness repair; template-only remains non-clearance."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-077"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "production_api.release_preflight_schema_version"
+    name: "A203 生产 API release preflight schema"
+    value: "eei-t1302-a203-production-api-release-preflight-v1"
+    source: "EXTRACTED from EEI/scripts/validate_production_api_release_preflight.py SCHEMA_VERSION; A203 release readiness remains blocked until A202 publication clearance A204/A205 activation and A209 24h operator soak are real and current."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-078"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "mvp_release_gate.preflight_schema_version"
+    name: "MVP release gate preflight schema"
+    value: "eei-t1303-mvp-release-gate-preflight-v1"
+    source: "EXTRACTED from EEI/scripts/validate_mvp_release_gate.py SCHEMA_VERSION; final MVP release gate aggregates A202 A203 A204/A205 A209 A210 A026 and A027 without converting fixtures templates or heartbeat progress into clearance.; EVENT-20260627-002 refreshed dependent A202/A205 release evidence hashes after A210 source-boundary sync while keeping release_ready=false."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-079"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "soak.finalization_preflight_schema_version"
+    name: "A209 finalization preflight schema"
+    value: "eei-a209-operator-soak-finalization-preflight-v1"
+    source: "EXTRACTED from EEI/scripts/finalize_operator_soak_evidence.py SCHEMA_VERSION; finalization preflight converts current heartbeat and evidence-validation state into an operator decision artifact without closing A209.; EVENT-20260625-022 refreshed A209 finalization preflight at 190/288 PASS with downstream release-gate refresh still blocked."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-080"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "external_release_evidence_bundle.preflight_schema_version"
+    name: "外部发布证据包 preflight schema"
+    value: "eei-external-release-evidence-bundle-preflight-v1"
+    source: "EXTRACTED from EEI/scripts/validate_external_release_evidence_bundle.py SCHEMA_VERSION; bundle preflight aggregates A202 A210 A026 A027 and A209 external gate evidence, now including the A202 operator review packet as source-hashed supporting review evidence without closing release gates.; EVENT-20260625-022 refreshed the external release evidence bundle after A202 packet freshness repair while keeping bundle status blocked.; EVENT-20260627-002 refreshed dependent A202/A205 release evidence hashes after A210 source-boundary sync while keeping release_ready=false."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-081"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "release_decision_intake.preflight_schema_version"
+    name: "A202 signed-intake preflight schema"
+    value: "eei-a202-signed-intake-preflight-v1"
+    source: "EXTRACTED from EEI/scripts/validate_a202_signed_intake_preflight.py SCHEMA_VERSION; A202 signed-intake preflight converts the operator template or future signed bundle into a hash-bound gate artifact without closing release gates.; EVENT-20260625-022 refreshed the A202 signed-intake preflight after packet freshness repair while keeping signed intake missing and release_ready=false."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-082"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "soak.background_heartbeat_counts_as_release_ready"
+    name: "A209 heartbeat release-ready policy"
+    value: "false"
+    source: "EXTRACTED from A209 background heartbeat and failed-evidence artifacts: release_gate_closed_by_background_heartbeat=false, FAILED_OPERATOR_EVIDENCE is non-release-ready, and the isolated rerun /private/tmp/eei-a209-rerun-20260626-0918 remains progress-only until 288/288 PASS with 0 failed windows."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids:
+      - "TASK-T1307"
+  -
+    parameter_id: "PARAM-083"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "gold_quality.production_forbidden_fixture_refs"
+    name: "Production gold fixture evidence exclusion"
+    value: "data/|tests/|fixture://|fixture_reviewer"
+    source: "EXTRACTED from EEI/scripts/validate_gold_quality_evaluation.py PRODUCTION_GOLD_FORBIDDEN_REPOSITORY_REF_PREFIXES and PRODUCTION_GOLD_FORBIDDEN_LABELERS; production_gold_set=true cannot use repository fixture refs or fixture labelers."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-084"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "visual.workspace_layer_hydration_guard"
+    name: "Workspace layer hydration guard"
+    value: "disabled={!stateReady || lensForWorkspaceLayer(item.key) === null}"
+    source: "EXTRACTED from EEI/apps/web/src/app/page.tsx workspace-layer button disabled guard; prevents pre-hydration clicks and disables unsupported layer-to-lens mappings."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-085"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "release_decision_bundle.exact_signed_candidate_coverage_rejections"
+    name: "A202 signed candidate exact coverage rejection prefixes"
+    value: "source_license_reviews duplicate candidate source anchors|source_license_reviews reference unknown candidate source anchors|passage reviews duplicate relationship candidates|production_owner_signoffs duplicate relationship candidates|production_owner_signoffs reference unknown relationship candidates|production_owner_signoffs missing relationship candidates"
+    source: "EXTRACTED from EEI/scripts/validate_release_decision_bundle.py EXACT_SIGNED_COVERAGE_REJECTION_PREFIXES; signed A202/A210 bundles and A202 signed-intake preflights must reject duplicate or unknown source reviews, duplicate passage reviews, and duplicate/unknown/missing production owner signoffs before any A202 publication clearance can proceed."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids:
+      - "TASK-T1301"
+  -
+    parameter_id: "PARAM-086"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "live_official_capture.release_clearance_policy"
+    name: "A202 live official capture release-clearance policy"
+    value: "false"
+    source: "EXTRACTED from EEI/artifacts/tests/a202/t1301_live_official_selected_capture_evidence.json capture_policy.release_clearance=false; selected live official capture hashes and source_health are review inputs only and cannot publish relationships or close A202."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids:
+      - "TASK-T1301"
+  -
+    parameter_id: "PARAM-087"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "external_release_operator_intake.packet_schema_version"
+    name: "外部发布 operator intake packet schema"
+    value: "eei-external-release-operator-intake-packet-v1"
+    source: "PACKET_SCHEMA_VERSION in validate_external_release_evidence_bundle.py binds the operator intake packet schema for required A202/A210/A026/A027/A209 inputs; the A202 operator review packet is listed as a supporting source only and does not close any release gate.; EVENT-20260625-022 refreshed the operator intake packet source hashes after A202 packet freshness repair; packet remains WAITING_FOR_OPERATOR_INPUTS.; EVENT-20260627-002 refreshed dependent A202/A205 release evidence hashes after A210 source-boundary sync while keeping release_ready=false."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids: []
+  -
+    parameter_id: "PARAM-088"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "release_decision_intake.signed_source_boundary"
+    name: "A202 signed-intake source boundary disallowed repository prefixes"
+    value: "artifacts/tests/|data/|tests/|docs/|config/|brand/"
+    source: "EXTRACTED from EEI/scripts/validate_release_decision_bundle.py SIGNED_INTAKE_DISALLOWED_REPO_PREFIXES; signed A202 intake closure rejects repository fixtures templates configs docs data and source trees unless outside the repository or under approved operator input directories.; EVENT-20260625-022 refreshed signed-intake dependent artifacts after A202 packet freshness repair; source-boundary disallowed prefixes are unchanged."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids:
+      - "TASK-T1301"
+  -
+    parameter_id: "PARAM-089"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "brand_clearance.signed_bundle_source_boundary"
+    name: "A210 signed brand-clearance bundle source boundary"
+    value: "allow:artifacts/operator_inputs/|operator_inputs/|work/operator_inputs/;disallow:artifacts/tests/|data/|tests/|docs/|config/|brand/"
+    source: "EXTRACTED from EEI/artifacts/tests/a210/t1309_brand_clearance_preflight_contract.json signed_bundle_source_boundary_policy.policy_value; signed A210 brand-clearance closure rejects repository templates fixtures configs docs data and source trees unless outside the repository or under approved operator input directories."
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids:
+      - "TASK-T1309"
+  -
+    parameter_id: "PARAM-090"
+    model_id: "MOD-012"
+    formula_id: "FORM-012"
+    symbol: "soak.playwright_browsers_path"
+    name: "A209 Playwright browser runtime path"
+    value: "/private/tmp/eei-ms-playwright"
+    source: "EXTRACTED from EEI/scripts/run_soak_smoke.mjs LOCAL_PLAYWRIGHT_BROWSERS_PATH fallback and 2026-06-27 operator smoke evidence"
+    status: "active"
+    fact_level: "EXTRACTED"
+    semantic_status: "MACHINE_VERIFIED"
+    evidence_refs:
+      - "EVID-EEI-PARAMETER-REGISTRY"
+      - "EVID-EEI-SEMANTIC-MANIFEST"
+    unknown_task_ids:
+      - "TASK-T1307"
 strategies:
   -
     strategy_id: "STRAT-EEI-001"
@@ -1856,3 +2283,8 @@ evidence_refs:
     kind: "run_manifest"
     ref: "governance/run_manifests/GOV-REVIEW9-S5PBT01-EEI-CANONICAL-RENDER-20260624.json"
     fact_level: "PROPOSED"
+  -
+    evidence_id: "EVID-EEI-APP-ICON"
+    kind: "app_shell_asset"
+    ref: "EEI/assets/app_icon/EEIAppIcon.icns; EEI/apps/web/public/eei-app-icon.svg; EVENT-20260627-007"
+    fact_level: "EXTRACTED"
