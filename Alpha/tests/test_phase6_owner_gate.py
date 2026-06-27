@@ -352,3 +352,48 @@ def test_owner_gate_status_cli_reports_ready_from_runtime_evidence(tmp_path, mon
     payload = json.loads(capsys.readouterr().out)
     assert payload["status"] == "ready_for_owner_gate"
     assert payload["live_authorization_absent"] is True
+    assert payload["sampler_freshness_status"] == "pass"
+    assert payload["latest_sample_generated_at"] == (start + timedelta(hours=48)).isoformat()
+
+
+def test_owner_gate_status_cli_detects_stale_sampler_sample(tmp_path, monkeypatch, capsys):
+    from scripts import check_phase6_owner_gate_status
+
+    run = _paper_run(tmp_path)
+    evidence_root = tmp_path / "phase6_owner_gate_latest"
+    history_path = tmp_path / "soak.jsonl"
+    paper_shadow = build_paper_shadow_report(
+        run_result=run,
+        output_path=evidence_root / "paper_shadow_report_latest.json",
+    )
+    constraints = build_shadow_live_constraints_report(
+        live_authorization_path=tmp_path / "LIVE_AUTHORIZATION.json",
+        output_path=evidence_root / "shadow_live_constraints_latest.json",
+    )
+    sample = {
+        "generated_at": "2000-01-01T00:00:00+00:00",
+        "fail_count": 0,
+        "paper_shadow_report": paper_shadow,
+        "shadow_live_constraints": constraints,
+    }
+    history_path.write_text(json.dumps(sample) + "\n", encoding="utf-8")
+    monkeypatch.setattr(check_phase6_owner_gate_status, "ROOT", tmp_path)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "check_phase6_owner_gate_status.py",
+            "--evidence-root",
+            str(evidence_root),
+            "--history-path",
+            str(history_path),
+            "--max-sample-age-seconds",
+            "1",
+            "--require-fresh",
+        ],
+    )
+
+    assert check_phase6_owner_gate_status.main() == 3
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["sampler_freshness_status"] == "stale"
+    assert payload["latest_sample_age_seconds"] > 1

@@ -56,6 +56,14 @@ Reason: OWNER-GATE review needs the concrete observed time window, not only elap
 
 Consequence: Runtime and committed evidence can remain `blocked_not_ready_for_owner_gate` while still showing exactly how much of the 48-hour observation window has accrued.
 
+## 2026-06-27: Phase 6 Status Must Detect Stale Sampler Evidence
+
+Decision: `scripts/check_phase6_owner_gate_status.py` reports latest sampler sample age and supports `--require-fresh` as a read-only watchdog gate.
+
+Reason: During the 48-hour natural-day soak, Alpha must detect a stopped or stale sampler before the owner relies on incomplete observation evidence.
+
+Consequence: Freshness monitoring can fail independently from OWNER-GATE readiness. It does not create `runtime/LIVE_AUTHORIZATION.json`, does not submit broker orders, and does not promote Alpha to MICRO_LIVE.
+
 ## 2026-06-13: Execution Boundary
 
 Decision: Alpha will automate paper trading, risk checks, approval queues, and broker-ready order tickets. It will not autonomously submit real-money broker orders.
