@@ -21,7 +21,7 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 206
+- task_count: 207
 - acceptance_count: 126
 
 ## Delivery Tasks
@@ -293,6 +293,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW | S2PM | finding_level_review_passed_no_p1_closure_no_production | `ACC-S2PMT07-FINAL-REVIEW` | Records finding-level technical review verdict `PASS_WITH_NO_PRODUCTION_ACCEPTANCE` for S2PMT05 B-006/B-009/B-010/B-012/B-013/B-014 evidence; this does not close P1/P0, pass S2PMT07, complete S2PLT04, execute final commands, or change production state. |
 | S2PMT07-P1-A020-TECHNICAL-REVIEW | S2PM | finding_level_review_passed_no_p1_closure_no_production | `ACC-S2PMT07-FINAL-REVIEW` | Records finding-level technical review verdict `PASS_WITH_NO_PRODUCTION_ACCEPTANCE` for A-020 supply-chain SBOM/CI evidence; this does not close P1/P0, pass S2PMT07, complete S2PLT04, execute final commands, or change production state. |
 | S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW | S2PM | finding_level_review_passed_no_p1_closure_no_production | `ACC-S2PMT07-FINAL-REVIEW` | Records finding-level technical review verdict `PASS_WITH_NO_PRODUCTION_ACCEPTANCE` for C-001/C-003/C-005/C-006/C-007/C-010/C-011/C-012 evidence while explicitly excluding C-002; this does not close P1/P0, pass S2PMT07, complete S2PLT04, execute final commands, or change production state. |
+| S2PMT07-FINAL-COMMAND-EXECUTION-VALIDATOR | S2PM | blocked | `ACC-S2PMT07-FINAL-REVIEW` | Defines and validates the future `FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json` artifact contract; current artifact remains missing, final commands are not executed, P0/P1 and production gates remain blocked. |
 
 ## 2026-06-27 18:52:57 Australia/Sydney - S2PMT07 P0 technical closure candidate package
 

@@ -71,14 +71,14 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - model_count: `117`
 - total_formulas: `119`
 - active_formulas: `119`
-- total_parameters: `1010`
-- active_parameters: `988`
+- total_parameters: `1014`
+- active_parameters: `997`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PMT07_S2PLT04_COMPLETION_REPORT_VALIDATOR_BLOCKED_NO_PRODUCTION`
+- release_gate: `S2PMT07_FINAL_COMMAND_EXECUTION_VALIDATOR_BLOCKED_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
@@ -98,10 +98,10 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - source_base_commit: `f49b645d9a35857605eff53a26bed0ea7e15816a`
 - source_tree_hash: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - source_snapshot_hash: `sha256:b46b66adca9fff016c8699d25d2f20031291631ddbc6e9ee00fc360126a9647f`
-- snapshot_event_time: `2026-06-28T05:18:27+10:00`
+- snapshot_event_time: `2026-06-28T05:57:25+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PM / S2PMT07_S2PLT04_COMPLETION_REPORT_VALIDATOR_BLOCKED_NO_PRODUCTION`
+- phase/gate: `S2PM / S2PMT07_FINAL_COMMAND_EXECUTION_VALIDATOR_BLOCKED_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 

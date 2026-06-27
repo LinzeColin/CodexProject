@@ -1,0 +1,162 @@
+{
+  "schema_version": 1,
+  "manifest_id": "ADP-S2PMT07-FINAL-COMMAND-EXECUTION-VALIDATOR-20260628",
+  "project_id": "arxiv-daily-push",
+  "generated_at": "2026-06-28T05:57:25+10:00",
+  "actor": "Codex",
+  "base_commit": "383e37839b53c7a8e314d4e551ed7378c3f5b06b",
+  "task_id": "S2PMT07-FINAL-COMMAND-EXECUTION-VALIDATOR",
+  "task_ids": [
+    "S2PMT07-FINAL-COMMAND-EXECUTION-VALIDATOR",
+    "S2PMT07",
+    "ACC-S2PMT07-FINAL-REVIEW"
+  ],
+  "phase": "S2PM",
+  "acceptance_id": "ACC-S2PMT07-FINAL-REVIEW",
+  "contract_version": "ADP-PRODUCT-CONTRACT-V7.2",
+  "iteration_id": "ITER-20260628-ADP-S2PMT07-FINAL-COMMAND-EXECUTION-VALIDATOR",
+  "status": "blocked",
+  "result": "blocked_final_command_execution_validator_ready_artifact_missing_no_production",
+  "summary": "Adds a strict validator for future independent final command execution evidence while the current artifact remains missing and all production stop gates remain false.",
+  "validation_state": {
+    "status": "blocked",
+    "scope": "final_command_execution_validation_only_no_production_acceptance",
+    "artifact_path": "FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json",
+    "command_execution_present": false,
+    "validation_errors": [
+      "final_command_execution_missing"
+    ],
+    "required_commands": [
+      "python tools/validate_task_pack.py --root .",
+      "python -m pytest -q",
+      "python tools/verify_acceptance_bundle.py --require-zero P0 P1"
+    ],
+    "all_required_commands_passed": false,
+    "final_commands_executed_by_payload": false,
+    "production_acceptance_claimed": false,
+    "integrated_production_accepted": false,
+    "daily_operation_enabled": false,
+    "real_smtp_send_enabled": false,
+    "scheduler_install_enabled": false,
+    "release_packaging_enabled": false,
+    "production_restore_enabled": false,
+    "state_hash": "a516f2d33fcd1e8de56d85ebf4bca6587757bf1f415502b97edbe5bed6298fbb"
+  },
+  "required_commands": [
+    "python tools/validate_task_pack.py --root .",
+    "python -m pytest -q",
+    "python tools/verify_acceptance_bundle.py --require-zero P0 P1"
+  ],
+  "parameter_ids_changed": [
+    "PARAM-ADP-1011",
+    "PARAM-ADP-1012",
+    "PARAM-ADP-1013",
+    "PARAM-ADP-1014"
+  ],
+  "formula_ids_changed": [
+    "FORM-ADP-102"
+  ],
+  "model_ids_changed": [
+    "MOD-ADP-100"
+  ],
+  "files_changed": [
+    "\"arxiv-daily-push/\\345\\212\\237\\350\\203\\275\\346\\270\\205\\345\\215\\225.md\"",
+    "\"arxiv-daily-push/\\345\\274\\200\\345\\217\\221\\350\\256\\260\\345\\275\\225.md\"",
+    "\"arxiv-daily-push/\\346\\250\\241\\345\\236\\213\\345\\217\\202\\346\\225\\260\\346\\226\\207\\344\\273\\266.md\"",
+    "\"arxiv-daily-push/\\347\\224\\250\\346\\210\\267\\344\\270\\255\\345\\277\\203/README.md\"",
+    "\"arxiv-daily-push/\\347\\224\\250\\346\\210\\267\\344\\270\\255\\345\\277\\203/\\344\\270\\200\\347\\234\\213\\344\\270\\211\\346\\237\\245.md\"",
+    "\"arxiv-daily-push/\\347\\224\\250\\346\\210\\267\\344\\270\\255\\345\\277\\203/\\344\\272\\213\\345\\212\\241\\345\\217\\221\\344\\273\\266\\347\\256\\261\\344\\270\\216\\346\\266\\210\\346\\201\\257ID\\346\\211\\253\\346\\217\\217.md\"",
+    "\"arxiv-daily-push/\\347\\224\\250\\346\\210\\267\\344\\270\\255\\345\\277\\203/\\345\\205\\263\\351\\224\\256\\347\\273\\223\\350\\256\\272\\344\\270\\216\\347\\224\\250\\346\\210\\267\\345\\206\\263\\347\\255\\226.md\"",
+    "\"arxiv-daily-push/\\347\\224\\250\\346\\210\\267\\344\\270\\255\\345\\277\\203/\\345\\211\\215\\345\\217\\260\\351\\231\\210\\350\\277\\260\\350\\257\\201\\346\\215\\256\\347\\273\\221\\345\\256\\232\\346\\211\\253\\346\\217\\217.md\"",
+    "\"arxiv-daily-push/\\347\\224\\250\\346\\210\\267\\344\\270\\255\\345\\277\\203/\\345\\212\\237\\350\\203\\275\\344\\273\\273\\345\\212\\241\\346\\265\\213\\350\\257\\225\\350\\257\\201\\346\\215\\256\\350\\277\\275\\350\\270\\252\\351\\223\\276.md\"",
+    "\"arxiv-daily-push/\\347\\224\\250\\346\\210\\267\\344\\270\\255\\345\\277\\203/\\345\\244\\215\\344\\271\\240\\350\\241\\214\\345\\212\\250\\344\\270\\216\\346\\224\\266\\347\\233\\212.md\"",
+    "\"arxiv-daily-push/\\347\\224\\250\\346\\210\\267\\344\\270\\255\\345\\277\\203/\\345\\267\\262\\347\\224\\237\\346\\210\\220\\346\\212\\245\\345\\221\\212\\344\\270\\216\\351\\202\\256\\344\\273\\266\\351\\242\\204\\350\\247\\210.md\"",
+    "\"arxiv-daily-push/\\347\\224\\250\\346\\210\\267\\344\\270\\255\\345\\277\\203/\\346\\201\\242\\345\\244\\215\\345\\216\\237\\345\\255\\220\\346\\233\\277\\346\\215\\242\\346\\211\\253\\346\\217\\217.md\"",
+    "\"arxiv-daily-push/\\347\\224\\250\\346\\210\\267\\344\\270\\255\\345\\277\\203/\\346\\201\\242\\345\\244\\215\\350\\267\\257\\345\\276\\204\\345\\256\\211\\345\\205\\250\\346\\211\\253\\346\\217\\217.md\"",
+    "\"arxiv-daily-push/\\347\\224\\250\\346\\210\\267\\344\\270\\255\\345\\277\\203/\\346\\210\\252\\350\\207\\263\\344\\273\\212\\346\\227\\245\\345\\200\\231\\351\\200\\211\\346\\261\\240.md\"",
+    "\"arxiv-daily-push/\\347\\224\\250\\346\\210\\267\\344\\270\\255\\345\\277\\203/\\346\\225\\260\\346\\215\\256\\346\\272\\220\\344\\270\\216\\346\\235\\277\\345\\235\\227\\345\\201\\245\\345\\272\\267.md\"",
+    "\"arxiv-daily-push/\\347\\224\\250\\346\\210\\267\\344\\270\\255\\345\\277\\203/\\346\\227\\247\\351\\202\\256\\344\\273\\266\\346\\240\\207\\350\\257\\206\\345\\205\\274\\345\\256\\271\\346\\211\\253\\346\\217\\217.md\"",
+    "\"arxiv-daily-push/\\347\\224\\250\\346\\210\\267\\344\\270\\255\\345\\277\\203/\\346\\235\\245\\346\\272\\220\\344\\277\\241\\344\\273\\273\\350\\276\\271\\347\\225\\214\\346\\211\\253\\346\\217\\217.md\"",
+    "\"arxiv-daily-push/\\347\\224\\250\\346\\210\\267\\344\\270\\255\\345\\277\\203/\\350\\207\\252\\345\\212\\250\\345\\224\\244\\351\\206\\222\\345\\256\\211\\350\\243\\205\\347\\224\\237\\345\\221\\275\\345\\221\\250\\346\\234\\237\\346\\211\\253\\346\\217\\217.md\"",
+    "\"arxiv-daily-push/\\347\\224\\250\\346\\210\\267\\344\\270\\255\\345\\277\\203/\\350\\267\\257\\347\\272\\277\\345\\233\\276\\344\\270\\216\\345\\201\\234\\346\\255\\242\\351\\227\\250.md\"",
+    "\"arxiv-daily-push/\\347\\224\\250\\346\\210\\267\\344\\270\\255\\345\\277\\203/\\351\\202\\256\\344\\273\\266\\345\\217\\221\\351\\200\\201\\344\\270\\216\\351\\230\\237\\345\\210\\227\\347\\212\\266\\346\\200\\201.md\"",
+    "\"arxiv-daily-push/\\347\\224\\250\\346\\210\\267\\344\\270\\255\\345\\277\\203/\\351\\202\\256\\344\\273\\266\\346\\250\\241\\346\\235\\277\\351\\242\\204\\350\\247\\210.md\"",
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DELIVERY_PLAN.md",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/MODEL_SPEC.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/governance/events.jsonl",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py",
+    "arxiv-daily-push/tests/test_stage2_final_gate.py",
+    "arxiv-daily-push/tests/test_user_center_candidate_pool.py"
+  ],
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_COMMAND_EXECUTION_VALIDATOR.md",
+    "governance/run_manifests/ADP-S2PMT07-FINAL-COMMAND-EXECUTION-VALIDATOR-20260628.json",
+    "arxiv-daily-push/tests/test_stage2_final_gate.py"
+  ],
+  "test_results": [
+    "TDD red failed because final command execution validator API was missing",
+    "focused final-gate tests: 39 OK",
+    "focused final-gate/user-center tests: 56 OK",
+    "full arxiv-daily-push unittest: 623 OK",
+    "project governance: errors 0 warnings 0",
+    "changed-only governance semantic: errors 0 warnings 0",
+    "V7.2 validator PASS",
+    "lean check-render: drift_count 0 reference_issue_count 0",
+    "user-center timestamp check: validated 18 pages",
+    "structured YAML/JSON/JSONL/CSV parse OK",
+    "git diff --check PASS",
+    "production-side-effect forbidden scan PASS"
+  ],
+  "production_boundary": {
+    "formal_production_inclusion": false,
+    "final_commands_executed": false,
+    "final_command_execution_artifact_present": false,
+    "final_acceptance_bundle_created": false,
+    "p0_closure_claimed": false,
+    "p1_closure_claimed": false,
+    "s2plt04_completed": false,
+    "independent_final_signoff_present": false,
+    "stage2_integrated_production_accepted": false,
+    "daily_operation_enabled": false,
+    "real_smtp_sent": false,
+    "real_smtp_send_enabled": false,
+    "scheduler_install_enabled": false,
+    "release_packaging_enabled": false,
+    "production_restore_enabled": false,
+    "current_pointer_changed": false,
+    "v7_1_baseline_changed": false,
+    "v7_2_contract_files_changed": false
+  },
+  "risks": [
+    "This validator can be misread as final command execution; the current artifact is missing and validation remains blocked.",
+    "Inherited P0/P1, S2PLT04, final bundle, independent signoff, final command execution, and S2PMT07 acceptance remain blocked."
+  ],
+  "rollback": "Revert final command execution validator helpers/tests, registry updates, phase record, run manifest, traceability row, delivery/event records, generated views, and three base file updates; no runtime production state was changed.",
+  "next_task": "CONTINUE_S2PMT07_OR_S2PLT04_ONLY_AFTER_REQUIRED_EVIDENCE_EXISTS",
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_final_command_red PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_final_command_green1 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_final_command_focused1 PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_user_center_candidate_pool.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_final_command_full1 PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_final_command_project1 PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/validate_project_governance.py --project arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_final_command_changed2 PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_final_command_v72_1 PYTHONPATH=arxiv-daily-push/src python3 arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_final_command_render1 PYTHONPATH=scripts:arxiv-daily-push/src python3 scripts/lean_governance.py check-render --project arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_final_command_ts_check PYTHONPATH=arxiv-daily-push/src python3 arxiv-daily-push/scripts/update_user_center_timestamps.py --check",
+    "YAML/JSON/JSONL/CSV parse checks",
+    "git diff --check",
+    "precise forbidden production true-flag scan"
+  ]
+}
