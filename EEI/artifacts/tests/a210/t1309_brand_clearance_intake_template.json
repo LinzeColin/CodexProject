@@ -1,7 +1,7 @@
 {
   "schema_version": "eei-a210-brand-clearance-intake-v1",
   "artifact_id": "t1309-a210-brand-clearance-intake-template",
-  "generated_at": "2026-06-23T17:18:56+00:00",
+  "generated_at": "2026-06-27T01:52:51+00:00",
   "system_name": "EEI",
   "system": {
     "zh_name": "商域图谱",
@@ -178,6 +178,8 @@
   "validation_policy": {
     "template_only_counts_as_clearance": false,
     "signed_bundle_required_for_a210_closure": true,
+    "signed_bundle_source_must_be_operator_supplied": true,
+    "repository_fixtures_and_templates_count_as_clearance": false,
     "signed_bundle_must_cover_all_required_jurisdictions": true,
     "signed_bundle_must_cover_all_required_market_surfaces": true,
     "signed_bundle_with_blocking_conflicts_must_fail": true,

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "artifact_id": "t1309-brand-clearance-preflight-contract",
-  "generated_at": "2026-06-21T02:19:48+00:00",
+  "generated_at": "2026-06-27T01:53:03+00:00",
   "task_id": "T1309",
   "acceptance_ids": [
     "A210"
@@ -16,7 +16,26 @@
     "brand_policy": "config/brand_policy.yaml",
     "conflict_register": "data/brand_name_conflict_register.csv",
     "competitive_landscape": "data/competitive_product_landscape.csv",
-    "research_summary": "brand/BRAND_AND_COMPETITIVE_LANDSCAPE_RESEARCH.md"
+    "research_summary": "brand/BRAND_AND_COMPETITIVE_LANDSCAPE_RESEARCH.md",
+    "brand_clearance_intake_template": "artifacts/tests/a210/t1309_brand_clearance_intake_template.json"
+  },
+  "signed_bundle_source_boundary_policy": {
+    "signed_bundle_source_must_be_operator_supplied": true,
+    "repository_fixtures_and_templates_count_as_clearance": false,
+    "allowed_repository_prefixes": [
+      "artifacts/operator_inputs/",
+      "operator_inputs/",
+      "work/operator_inputs/"
+    ],
+    "disallowed_repository_prefixes": [
+      "artifacts/tests/",
+      "data/",
+      "tests/",
+      "docs/",
+      "config/",
+      "brand/"
+    ],
+    "default_template_source_kind": "repository_template"
   },
   "release_gate": {
     "id": "BRAND-G1",
