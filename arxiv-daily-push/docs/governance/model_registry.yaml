@@ -5311,6 +5311,9 @@ models:
       - "PARAM-ADP-840"
       - "PARAM-ADP-841"
       - "PARAM-ADP-842"
+      - "PARAM-ADP-965"
+      - "PARAM-ADP-966"
+      - "PARAM-ADP-967"
     inputs:
       - "S2PMT01 through S2PMT06 local validation receipts"
       - "S2PLT04 completion evidence"
@@ -5320,6 +5323,7 @@ models:
       - "final required command coverage"
     outputs:
       - "blocked S2PMT07 precheck report"
+      - "blocked final acceptance bundle readiness state"
       - "blocking reason list"
       - "forbidden production flag state"
       - "deterministic report hash"
@@ -5331,7 +5335,9 @@ models:
       - "arxiv-daily-push/tests/test_stage2_final_gate.py"
     evidence_refs:
       - "governance/run_manifests/ADP-S2PMT07-FINAL-GATE-PRECHECK-20260626.json"
+      - "governance/run_manifests/ADP-S2PMT07-FINAL-ACCEPTANCE-BUNDLE-READINESS-20260628.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_GATE_PRECHECK.md"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_ACCEPTANCE_BUNDLE_READINESS.md"
 
   -
     model_id: "MOD-ADP-101"

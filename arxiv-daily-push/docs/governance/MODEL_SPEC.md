@@ -7,7 +7,7 @@ machine_summary:
 
 - model_count: 115
 - formula_count: 117
-- parameter_count: 964
+- parameter_count: 967
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -1070,6 +1070,7 @@ Uncovered planned scenarios:
 
 - `MOD-ADP-100` / `FORM-ADP-102` define the fail-closed final production gate precheck for S2PMT07.
 - Passing S2PMT07 is not claimed by this run. The current precheck remains blocked because reviewer independence is not proven, inherited V7.1 P0=8 and P1=37 are open, S2PLT04 completion is missing, the final acceptance bundle is missing, the independent signoff is missing, and final required command execution by an independent reviewer is not proven.
+- The final acceptance bundle readiness sub-gate now enumerates the required bundle items: `manifest.json`, P0/P1 zero proof, S2PLT04 completion report, independent review signoff, final command execution, no-production-side-effect attestation, and handoff. In the current state every item is missing, `bundle_present=false`, `bundle_claimed_ready=false`, and the gate remains blocked.
 - S2PMT07 precheck does not enable SMTP, install scheduler, upload Release assets, run production restore, migrate DB/public schema, mutate production queues, change source adapters or ranking, change CURRENT or V7.1/V7.2 contracts, close inherited P0/P1, enable DAILY_OPERATION, or claim integrated production acceptance.
 
 ## S2PLT01 Full Replay Entry Precheck

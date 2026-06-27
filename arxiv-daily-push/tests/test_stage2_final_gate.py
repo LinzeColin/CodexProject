@@ -17,10 +17,14 @@ from arxiv_daily_push.stage2_final_gate import (
     S2PLT04_REQUIRED_DEPENDENCIES,
     S2PLT04_REQUIRED_EVIDENCE,
     S2PMT07_BLOCKING_REASONS,
+    S2PMT07_FINAL_ACCEPTANCE_BUNDLE_BLOCKING_REASONS,
+    S2PMT07_FINAL_ACCEPTANCE_BUNDLE_FORBIDDEN_FLAGS,
+    S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS,
     S2PMT07_FORBIDDEN_PASS_FLAGS,
     S2PMT07_REQUIRED_DEPENDENCIES,
     S2PMT07_REQUIRED_EVIDENCE,
     S2PMT07_REQUIRED_TEST_COMMANDS,
+    build_final_acceptance_bundle_readiness_state,
     build_s2plt02_dependency_state,
     build_s2plt02_live_2d_precheck_report,
     build_s2plt02_live_evidence_state,
@@ -35,6 +39,7 @@ from arxiv_daily_push.stage2_final_gate import (
     build_test_gate_state,
     validate_s2plt02_live_2d_precheck_report,
     validate_s2plt04_integration_candidate_report,
+    validate_final_acceptance_bundle_readiness_state,
     validate_s2pmt07_precheck_report,
 )
 
@@ -1790,6 +1795,29 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(tuple(tests["required_test_commands"]), S2PMT07_REQUIRED_TEST_COMMANDS)
         self.assertFalse(tests["executed_as_final_reviewer"])
 
+    def test_final_acceptance_bundle_readiness_state_lists_missing_required_items(self) -> None:
+        state = build_final_acceptance_bundle_readiness_state()
+
+        self.assertEqual(state["status"], "blocked")
+        self.assertEqual(tuple(state["required_items"]), S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS)
+        self.assertEqual(set(state["missing_items"]), set(S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS))
+        self.assertFalse(state["bundle_present"])
+        self.assertFalse(state["bundle_claimed_ready"])
+        self.assertFalse(state["production_acceptance_claimed"])
+        self.assertFalse(state["release_packaging_enabled"])
+        for flag in S2PMT07_FINAL_ACCEPTANCE_BUNDLE_FORBIDDEN_FLAGS:
+            self.assertFalse(state[flag])
+        for reason in S2PMT07_FINAL_ACCEPTANCE_BUNDLE_BLOCKING_REASONS:
+            self.assertIn(reason, state["blocking_reasons"])
+        self.assertEqual(validate_final_acceptance_bundle_readiness_state(state), [])
+
+        tampered = dict(state)
+        tampered["bundle_claimed_ready"] = True
+        self.assertIn(
+            "final acceptance bundle readiness must not claim ready while blocked",
+            validate_final_acceptance_bundle_readiness_state(tampered),
+        )
+
     def test_full_precheck_report_fails_closed_without_production_side_effects(self) -> None:
         report = build_s2pmt07_precheck_report(generated_at="2026-06-26T17:00:00+10:00")
 
@@ -1809,6 +1837,13 @@ class Stage2FinalGateTests(unittest.TestCase):
         tampered = dict(report)
         tampered["integrated_production_accepted"] = True
         self.assertIn("integrated_production_accepted must be false", validate_s2pmt07_precheck_report(tampered))
+
+        tampered_bundle = json.loads(json.dumps(report))
+        tampered_bundle["final_acceptance_bundle_readiness"]["bundle_claimed_ready"] = True
+        self.assertIn(
+            "S2PMT07 final acceptance bundle readiness is invalid",
+            validate_s2pmt07_precheck_report(tampered_bundle),
+        )
 
     def test_s2pmt07_final_command_blocker_is_recorded_in_report_phase_and_manifest(self) -> None:
         blocker = "independent_final_command_execution_missing"

@@ -3980,3 +3980,15 @@ None for this new project baseline.
 - Goal: Move the first S2PMT03 P1 group from evidence-located to finding-level technical review candidate without closing P1.
 - Decisions: Verdict `PASS_WITH_NO_PRODUCTION_ACCEPTANCE`; inherited P0 remains 8 and P1 remains 37. No production side effects, no CURRENT/V7 contract edits, no SMTP, scheduler, Release, restore, schema, DB, queue, source adapter, or ranking changes.
 - Evidence: `governance/run_manifests/ADP-S2PMT07-P1-A006-A009-TECHNICAL-REVIEW-20260627.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P1_A006_A009_TECHNICAL_REVIEW.md`; `arxiv-daily-push/tests/test_stage1_runtime.py`; `arxiv-daily-push/tests/test_state_machine.py`; `arxiv-daily-push/tests/test_stage2_lease_fencing.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.
+
+### `ITER-20260628-ADP-S2PMT07-FINAL-ACCEPTANCE-BUNDLE-READINESS`
+
+- Time: 2026-06-28 00:42:33 Australia/Sydney.
+- Fact level: EXTRACTED from S2PMT07 final-gate code, focused regression tests, semantic registries, phase record, and run manifest.
+- Task IDs: `S2PMT07-FINAL-ACCEPTANCE-BUNDLE-READINESS`; parent `S2PMT07`; acceptance `ACC-S2PMT07-FINAL-REVIEW`.
+- Goal: Record a fail-closed readiness sub-gate that names the final acceptance bundle evidence required before S2PMT07 can pass.
+- Decisions: Final acceptance bundle readiness is `blocked`; required items include manifest, P0/P1 zero proof, S2PLT04 completion proof, independent signoff, final command execution proof, no-production attestation, and next-agent handoff. This does not create the final bundle, close P0/P1, complete S2PLT04, or claim production acceptance.
+- Validation so far: focused final-gate tests 15 OK; user-center traceability regression 17 OK; structured JSON/CSV parse OK. Full project validation is still pending in this run.
+- Boundaries: No SMTP, scheduler, Release, production restore, public schema, DB, production queue, source adapter, ranking, CURRENT/V7 contract, V7.1 baseline, DAILY_OPERATION, or integrated production acceptance changed.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-FINAL-ACCEPTANCE-BUNDLE-READINESS-20260628.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_ACCEPTANCE_BUNDLE_READINESS.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.
+- Next step: Keep S2PMT07 blocked until P0/P1 zero proof, S2PLT04 completion, final bundle, independent signoff, and final command execution exist as real evidence.

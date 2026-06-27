@@ -29,7 +29,9 @@
   "event_id": "EVENT-20260626-ADP-S2PMT07-FINAL-GATE-PRECHECK-001",
   "evidence_refs": [
     "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_GATE_PRECHECK.md",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_ACCEPTANCE_BUNDLE_READINESS.md",
     "governance/run_manifests/ADP-S2PMT07-FINAL-GATE-PRECHECK-20260626.json",
+    "governance/run_manifests/ADP-S2PMT07-FINAL-ACCEPTANCE-BUNDLE-READINESS-20260628.json",
     "arxiv-daily-push/tests/test_stage2_final_gate.py"
   ],
   "fact_level": "EXTRACTED",
@@ -94,7 +96,9 @@
   "release_changed": false,
   "release_packaging_enabled": false,
   "refreshed_at": "2026-06-27T02:59:04+10:00",
-  "report_hash": "20908c705964fec5ee6b06104a18cb1c9eb6d15c1922823580b7062140ff4474",
+  "report_hash": "e2c3deef9595e053a094f7b51b32ddd9b7ee366e15d4f1ca285468c5ff653129",
+  "final_acceptance_bundle_readiness_status": "blocked",
+  "final_acceptance_bundle_readiness_state_hash": "988ed71dea26fab662fd753fdc4187842b7277e14d950e755cdab3a8a1959e06",
   "report_status": "blocked",
   "required_test_commands": [
     "python tools/validate_task_pack.py --root .",
