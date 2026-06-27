@@ -5465,9 +5465,13 @@ models:
       - "PARAM-ADP-879"
       - "PARAM-ADP-880"
       - "PARAM-ADP-881"
+      - "PARAM-ADP-980"
+      - "PARAM-ADP-981"
+      - "PARAM-ADP-982"
     inputs:
       - "S2PLT01 independent replay review receipt state"
       - "S2PLT02 and S2PLT03 authoritative completion state"
+      - "S2PLT03 local drill bundle as non-terminal evidence"
       - "S2PMT01 through S2PMT07 local hardening/precheck state"
       - "inherited V7.1 P0/P1 blocker counts"
       - "final acceptance bundle presence"
@@ -5475,6 +5479,7 @@ models:
     outputs:
       - "blocked S2PLT04 integration candidate precheck report"
       - "S2PLT04 dependency and evidence state"
+      - "S2PLT03 local drill non-terminal evidence state"
       - "embedded S2PMT07 precheck state"
       - "deterministic candidate hash"
       - "forbidden production flag state"
@@ -5487,6 +5492,8 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PLT04-INTEGRATION-CANDIDATE-PRECHECK-20260626.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT04_INTEGRATION_CANDIDATE_PRECHECK.md"
+      - "governance/run_manifests/ADP-S2PLT04-LOCAL-DRILL-EVIDENCE-SYNC-20260628.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT04_LOCAL_DRILL_EVIDENCE_SYNC.md"
 
   -
     model_id: "MOD-ADP-104"

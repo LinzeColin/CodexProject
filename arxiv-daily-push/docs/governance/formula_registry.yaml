@@ -6029,7 +6029,7 @@ formulas:
     assumption_ids:
       - "ASM-ADP-035"
     status: "active"
-    expression: "S2PLT04 integration candidate readiness remains blocked unless S2PLT01, S2PLT02, and S2PLT03 are all authoritatively completed; state and content evidence are present; final acceptance bundle is present; inherited V7.1 P0 and P1 findings are zero; S2PMT07 precheck passes; and every production, scheduler, SMTP, Release, restore, queue, schema, DB, source-adapter, ranking, CURRENT, V7.1, and V7.2 side-effect flag is false."
+    expression: "S2PLT04 integration candidate readiness remains blocked unless S2PLT01, S2PLT02, and S2PLT03 are all authoritatively completed; S2PLT03 local drill evidence may be consumed only as non-terminal evidence and must not satisfy S2PLT03_RESILIENCE_DRILL or S2PLT03 completion; state and content evidence are present; final acceptance bundle is present; inherited V7.1 P0 and P1 findings are zero; S2PMT07 precheck passes; and every production, scheduler, SMTP, Release, restore, queue, schema, DB, source-adapter, ranking, CURRENT, V7.1, and V7.2 side-effect flag is false."
     variables:
       -
         name: "dependency_state"
@@ -6042,6 +6042,11 @@ formulas:
         unit: "integration candidate evidence"
         input_domain: "S2PL replay, real-run, resilience, state, content, and final bundle evidence"
       -
+        name: "nonterminal_local_evidence"
+        data_type: "object"
+        unit: "local evidence"
+        input_domain: "S2PLT03 local drill evidence that is not terminal acceptance"
+      -
         name: "audit_blocker_state"
         data_type: "object"
         unit: "inherited V7.1 P0/P1 blocker counts"
@@ -6052,7 +6057,7 @@ formulas:
         unit: "final gate precheck state"
         input_domain: "S2PMT07 fail-closed precheck"
     constraints: "S2PLT04 integration candidate precheck must not complete S2PLT04, produce S2_INTEGRATION_CANDIDATE_READY, claim INTEGRATED_PRODUCTION_ACCEPTED or DAILY_OPERATION, send SMTP, enable scheduler, upload Release, execute production restore, mutate production queues, change public schema or DB, change source adapters or ranking, change CURRENT, change V7.1 baseline, or edit V7.2 contract files."
-    missing_policy: "Missing S2PLT01/S2PLT02/S2PLT03 completion, missing final acceptance bundle, nonzero inherited P0/P1, blocked S2PMT07 precheck, or any forbidden side-effect flag blocks S2PLT04."
+    missing_policy: "Missing S2PLT01/S2PLT02/S2PLT03 completion, missing final acceptance bundle, nonzero inherited P0/P1, blocked S2PMT07 precheck, or any forbidden side-effect flag blocks S2PLT04. Present S2PLT03 local drill evidence is recorded under available_nonterminal_evidence and still leaves s2plt03_not_completed active."
     output_range: "S2PLT04 integration candidate precheck report with pass or blocked status, dependency state, evidence state, audit blocker state, embedded S2PMT07 precheck, blocking reasons, deterministic candidate_hash, production_acceptance_claimed false, inherited_p0_p1_closed false, and all forbidden flags false."
     code_refs:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py"
@@ -6061,6 +6066,8 @@ formulas:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PLT04-INTEGRATION-CANDIDATE-PRECHECK-20260626.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT04_INTEGRATION_CANDIDATE_PRECHECK.md"
+      - "governance/run_manifests/ADP-S2PLT04-LOCAL-DRILL-EVIDENCE-SYNC-20260628.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT04_LOCAL_DRILL_EVIDENCE_SYNC.md"
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT04_INTEGRATION_CANDIDATE_MODEL_ID"
@@ -6068,6 +6075,9 @@ formulas:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT04_TASK_ID"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT04_SCHEMA_VERSION"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT04_REQUIRED_DEPENDENCIES"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT04_AVAILABLE_LOCAL_EVIDENCE"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT04_NONTERMINAL_LOCAL_EVIDENCE"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT04_LOCAL_DRILL_BUNDLE_GENERATED_AT"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT04_REQUIRED_EVIDENCE"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT04_FORBIDDEN_FLAGS"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT04_BLOCKING_REASONS"

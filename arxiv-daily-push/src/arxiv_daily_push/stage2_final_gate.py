@@ -201,6 +201,7 @@ S2PLT04_REQUIRED_DEPENDENCIES = (
 )
 S2PLT04_AVAILABLE_LOCAL_EVIDENCE = (
     "S2PLT01-INDEPENDENT-REPLAY-REVIEW",
+    "S2PLT03-LOCAL-RESILIENCE-DRILL",
     "S2PMT01",
     "S2PMT02",
     "S2PMT03",
@@ -209,6 +210,10 @@ S2PLT04_AVAILABLE_LOCAL_EVIDENCE = (
     "S2PMT06",
     "S2PMT07",
 )
+S2PLT04_NONTERMINAL_LOCAL_EVIDENCE = (
+    "S2PLT03_LOCAL_RESILIENCE_DRILL",
+)
+S2PLT04_LOCAL_DRILL_BUNDLE_GENERATED_AT = "2026-06-28T02:00:14+10:00"
 S2PLT04_REQUIRED_EVIDENCE = (
     "S2PLT01_ACCEPTED",
     "S2PLT02_2D_REAL_RUN",
@@ -785,9 +790,17 @@ def build_s2plt04_dependency_state() -> dict[str, Any]:
     }
 
 
-def build_s2plt04_evidence_state() -> dict[str, Any]:
+def build_s2plt04_evidence_state(
+    *, local_drill_bundle: Mapping[str, Any] | None = None
+) -> dict[str, Any]:
     """Build current S2PLT04 evidence state from local governance facts."""
 
+    if local_drill_bundle is None:
+        local_drill_bundle = build_s2plt03_local_resilience_drill_bundle(
+            generated_at=S2PLT04_LOCAL_DRILL_BUNDLE_GENERATED_AT
+        )
+    local_drill_valid = not validate_s2plt03_local_resilience_drill_bundle(local_drill_bundle)
+    local_drill_passed = local_drill_valid and local_drill_bundle.get("status") == "pass"
     available = {
         "S2PLT01_ACCEPTED": False,
         "S2PLT02_2D_REAL_RUN": False,
@@ -796,11 +809,18 @@ def build_s2plt04_evidence_state() -> dict[str, Any]:
         "CONTENT_EVIDENCE": True,
         "FINAL_ACCEPTANCE_BUNDLE/": False,
     }
+    available_nonterminal = {
+        S2PLT04_NONTERMINAL_LOCAL_EVIDENCE[0]: local_drill_passed,
+    }
     return {
         "status": "blocked",
         "required_evidence": list(S2PLT04_REQUIRED_EVIDENCE),
         "available_evidence": available,
+        "available_nonterminal_evidence": available_nonterminal,
         "missing_evidence": [item for item, present in available.items() if not present],
+        "s2plt03_local_drill_scope": local_drill_bundle.get("scope") if local_drill_valid else "invalid",
+        "s2plt03_local_drill_bundle_hash": local_drill_bundle.get("bundle_hash") if local_drill_valid else None,
+        "s2plt03_local_drill_status": "present_not_terminal_acceptance" if local_drill_passed else "not_proven",
         "state_consistency_basis": "S2PMT02_through_S2PMT06_local_validation",
         "content_evidence_basis": "S2PHT05_S2PIT04_S2PKT05_local_validation",
         "production_evidence_basis": "not_present",
@@ -819,6 +839,9 @@ def build_s2plt04_integration_candidate_report(*, generated_at: str) -> dict[str
         "s2plt01_accepted": "S2PLT01" in dependencies["completed_dependencies"],
         "s2plt02_completed": "S2PLT02" in dependencies["completed_dependencies"],
         "s2plt03_completed": "S2PLT03" in dependencies["completed_dependencies"],
+        "s2plt03_local_drill_evidence_present": evidence["available_nonterminal_evidence"][
+            "S2PLT03_LOCAL_RESILIENCE_DRILL"
+        ],
         "state_consistency_evidence_present": evidence["available_evidence"]["STATE_CONSISTENCY_EVIDENCE"],
         "content_evidence_present": evidence["available_evidence"]["CONTENT_EVIDENCE"],
         "final_acceptance_bundle_present": evidence["available_evidence"]["FINAL_ACCEPTANCE_BUNDLE/"],
