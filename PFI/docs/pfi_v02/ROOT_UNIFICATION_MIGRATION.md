@@ -9,7 +9,7 @@ Date: 2026-06-27 Australia/Sydney
 ## Changes
 
 - Migrated QBVS from the misleading product-root-like path into
-  `PFI/modules/qbvs_lab`.
+  `QBVS`.
 - Migrated the former local app shell into `PFI`:
   `src/pfi_os`, `scripts`, `macos`, `assets`, `web`, `shared`, and `systems`.
 - Replaced installed app target from `PFI_OS.app` to `PFI.app`.
@@ -44,8 +44,8 @@ Date: 2026-06-27 Australia/Sydney
 | macOS app template | `PFI/macos/PFI.app` |
 | Installed app | `/Applications/PFI.app`, `~/Downloads/PFI.app`, `~/Desktop/PFI.app` |
 | Local data home | `~/.pfi` or explicit `$PFI_DATA_HOME` |
-| QBVS strategy lab | `PFI/modules/qbvs_lab` |
-| QBVS package | `PFI/modules/qbvs_lab/qbvs` |
+| QBVS strategy lab | `QBVS` |
+| QBVS package | `QBVS/qbvs` |
 | Archived legacy docs | `PFI/docs/pfi_os_legacy` |
 
 ## Boundaries

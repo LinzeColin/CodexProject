@@ -6,8 +6,9 @@ Updated: 2026-06-27 Australia/Sydney
 
 Stage 2 local contract delivery is complete. The implementation proves the
 data-source registry, low-operation import contracts, non-CSV contracts,
-review-queue boundaries, reconciliation contracts, and legacy QBVS compatibility
-in the current `CodexProject/PFI` root.
+review-queue boundaries, reconciliation contracts, and external QBVS boundary
+references in the current `CodexProject/PFI` root. QBVS is a separate top-level
+system at `CodexProject/QBVS`; PFI does not own or cover QBVS.
 
 This is not production readiness. Real account credentials, live platform
 connectivity, automatic trading, payment submission, and broker order
@@ -33,7 +34,7 @@ submission remain out of scope and unverified.
 | 2E | Moomoo OpenD/API read-only probe | PASS | `probe_moomoo_opend_contract()` reports unavailable without fabricated data | `tests.test_stage2_non_csv_contracts` |
 | 2E | Moomoo account/funds/positions/orders/fills contract | PASS | `build_moomoo_read_only_contract()` records read contracts and ledger outputs | `tests.test_stage2_non_csv_contracts` |
 | 2E | No trading password or live order submission | PASS | Registry and contract boundaries require read-only and no trading password | Stage 2 registry and non-CSV tests |
-| 2E | Existing QBVS reuse | PASS | Contract references `PFI/modules/qbvs_lab/qbvs/datasources.py` and `moomoo_batch.py` | `tests.test_stage2_data_source_registry`, `tests.test_stage2_non_csv_contracts` |
+| 2E | Existing QBVS reuse | PASS | Contract references `QBVS/qbvs/datasources.py` and `moomoo_batch.py` | `tests.test_stage2_data_source_registry`, `tests.test_stage2_non_csv_contracts` |
 | 2F | China broker non-CSV profile | PASS | QMT, PTrade, terminal, HTML, PDF, Excel, browser/manual snapshot modes are represented | `tests.test_stage2_non_csv_contracts` |
 | 2F | Holdings/trades/fees/taxes model | PASS | Account, position, trade, commission, stamp tax, transfer fee fields are represented | `tests.test_stage2_non_csv_contracts` |
 | 2F | Acquisition mode selection | PASS | `select_cn_broker_acquisition()` selects modes from profile capability | `tests.test_stage2_non_csv_contracts` |
@@ -50,7 +51,7 @@ submission remain out of scope and unverified.
 | Trading password required | PASS - excluded by registry and contracts |
 | Automatic real-money order submission | PASS - explicitly forbidden |
 | Payment or broker-order submission | PASS - out of scope |
-| QBVS runtime move/rename/broad refactor | PASS - active runtime remains `PFI/modules/qbvs_lab/qbvs` |
+| QBVS re-embedded into PFI/rename/broad refactor | PASS - active runtime remains top-level `QBVS/qbvs`, outside PFI ownership |
 | Alpha as PFI first-level entry | PASS - forbidden and tested |
 | Rejected Alpha variant product entry | PASS - forbidden label only, no product entry |
 | Technical development product entry | PASS - forbidden label only, no product entry |

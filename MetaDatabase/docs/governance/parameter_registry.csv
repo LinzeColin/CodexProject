@@ -1,0 +1,1 @@
+parameter_id,model_id,formula_id,symbol,name,category,data_type,unit,default_value,initial_or_prior_value,active_value,weight,weight_group,weight_group_target,weight_group_tolerance,min_value,max_value,formula_or_transform,source_or_rationale,calibration_method,sensitivity,code_ref,config_ref,test_ref,status,fact_level,unknown_task_ids,parameter_version,last_updated

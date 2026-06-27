@@ -3,8 +3,9 @@
 ## Current Root
 
 PFI V0.2 work uses `CodexProject/PFI` as the only active product root.
-The QBVS runtime lives at `PFI/modules/qbvs_lab/qbvs` and maps to
-`投资管理 > 策略实验室 / 大数据模拟器`.
+QBVS is an independent top-level system at `CodexProject/QBVS`; PFI may keep
+external references to `QBVS/qbvs`, but PFI investment management must not own
+or cover QBVS.
 
 ## Stage 1 Scope
 
@@ -17,8 +18,9 @@ Stage 1 builds the shared PFI V0.2 skeleton:
 
 ## Boundaries
 
-- Do not move or rename `PFI/modules/qbvs_lab/qbvs` without a dedicated
-  migration gate and backup.
+- Do not re-embed `QBVS/qbvs` under `PFI/`.
+- Keep PFI's own strategy backtesting, market-feel training, and simulator
+  surfaces available under PFI.
 - Do not add Alpha as a PFI product page or first-level navigation entry.
 - Do not add rejected Alpha variants, system/development product navigation, or
   real-money execution surfaces.
@@ -36,5 +38,5 @@ cd PFI
 PYTHONPATH=src python3 -B -m unittest tests.test_stage1_ia_contract -q
 PYTHONPATH=src python3 -B -m unittest tests.test_stage1_core_models -q
 PYTHONPATH=src python3 -B -m unittest tests.test_stage1_classification_rules -q
-cd modules/qbvs_lab && PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q
+cd ../QBVS && PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q
 ```

@@ -144,6 +144,12 @@ from pfi_os.consumption import (
 )
 from pfi_os.config import REPORT_ROOT_DIR
 from pfi_os.executive import build_command_center, write_command_center
+from pfi_v02.local_imports import (
+    build_alipay_import_preview,
+    discover_local_alipay_raw_files,
+    payloads_from_paths,
+    write_private_alipay_import,
+)
 from pfi_os.data import (
     DEFAULT_US_ETF_UNIVERSE,
     INTERVAL_OPTIONS,
@@ -956,6 +962,116 @@ def _render_html_frame(markup: str, *, height: int, width: object = None, scroll
     components.html(markup, height=height, width=width, scrolling=scrolling)
 
 
+def render_pfi_local_data_upload_panel() -> None:
+    st.markdown("## PFI 本机数据上传")
+    st.caption("先把支付宝、微信、银行等原始账单导入本机私有目录，再进入账本、消费、投资和报告；按本轮授权同步备份到 GitHub 顶层 MetaDatabase。")
+    latest = st.session_state.get("pfi_latest_alipay_import_manifest") or _load_existing_alipay_import_manifest()
+    if latest:
+        _render_alipay_import_summary(latest, title="当前 PFI 私有账本")
+        st.caption(f"最近一次私有导入 manifest：{latest.get('private_manifest_path', '未生成')}")
+        st.divider()
+
+    uploaded_files = st.file_uploader(
+        "上传支付宝原始账单 CSV / ZIP",
+        type=["csv", "zip"],
+        accept_multiple_files=True,
+        key="pfi_alipay_bill_upload_v1",
+        help="支持支付宝导出的带说明区 CSV，也支持包含 CSV 的 ZIP。可一次选择多份年度账单。",
+    )
+    if uploaded_files:
+        payloads = tuple((file.name, file.getvalue()) for file in uploaded_files)
+        preview = build_alipay_import_preview(payloads)
+        _render_alipay_import_summary(preview.as_dict(), title="上传预检结果")
+        if st.button("保存上传账单到 PFI 私有账本", type="primary", key="save_uploaded_alipay_bills"):
+            manifest = write_private_alipay_import(payloads, default_data_home())
+            st.session_state["pfi_latest_alipay_import_manifest"] = manifest
+            st.success("已保存到 PFI 私有数据目录，并同步到 MetaDatabase，标准化流水已生成。")
+            _render_alipay_import_summary(manifest, title="已保存导入结果")
+
+    discovered = discover_local_alipay_raw_files()
+    if discovered:
+        st.divider()
+        st.markdown("### 已找到旧支付宝原始账单")
+        st.caption("这些文件来自之前交接目录。点击按钮会复制到 `~/.pfi/runtime/uploads/alipay_daily`，同步到 `MetaDatabase/PFI/alipay_daily`，并生成私有账本预览。")
+        if latest:
+            st.success("旧支付宝原始账单已经接入当前 PFI 私有账本；需要重建时可点击下方按钮。")
+        elif st.button("预检已发现的旧支付宝账单", key="preview_discovered_alipay_bills"):
+            discovered_preview = build_alipay_import_preview(payloads_from_paths(discovered))
+            _render_alipay_import_summary(discovered_preview.as_dict(), title="旧数据预检结果")
+        with st.expander("查看已发现文件", expanded=False):
+            st.dataframe(
+                pd.DataFrame({"文件": [path.name for path in discovered], "本机路径": [str(path) for path in discovered]}),
+                use_container_width=True,
+                hide_index=True,
+            )
+        if st.button("接入已发现的支付宝三年原始账单", type="primary", key="import_discovered_alipay_bills"):
+            manifest = write_private_alipay_import(payloads_from_paths(discovered), default_data_home())
+            st.session_state["pfi_latest_alipay_import_manifest"] = manifest
+            st.success("已接入旧支付宝原始账单，当前 PFI 私有账本和 MetaDatabase 备份已生成。")
+            _render_alipay_import_summary(manifest, title="已接入旧数据")
+    else:
+        st.info("当前没有在历史交接目录发现支付宝原始账单；可以直接用上方上传控件导入。")
+
+
+def _load_existing_alipay_import_manifest() -> dict | None:
+    manifest_path = default_data_home() / "runtime" / "imports" / "alipay_daily" / "alipay_import_manifest.json"
+    if not manifest_path.exists():
+        return None
+    try:
+        payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    return payload if isinstance(payload, dict) else None
+
+
+def _render_alipay_import_summary(summary: dict, *, title: str) -> None:
+    st.markdown(f"#### {title}")
+    cols = st.columns(6)
+    cols[0].metric("文件", f"{summary.get('valid_file_count', 0)}/{summary.get('file_count', 0)}")
+    cols[1].metric("原始记录", int(summary.get("raw_record_count", 0)))
+    cols[2].metric("标准流水", int(summary.get("transaction_count", 0)))
+    cols[3].metric("待复核", int(summary.get("review_count", 0)))
+    cols[4].metric("起始", summary.get("date_start") or "待识别")
+    cols[5].metric("结束", summary.get("date_end") or "待识别")
+
+    file_summaries = summary.get("file_summaries") or []
+    if file_summaries:
+        file_summary_frame = pd.DataFrame(file_summaries)
+        columns = [
+            column
+            for column in [
+                "file_name",
+                "status",
+                "raw_record_count",
+                "transaction_count",
+                "review_count",
+                "date_start",
+                "date_end",
+                "error",
+            ]
+            if column in file_summary_frame.columns
+        ]
+        st.dataframe(
+            file_summary_frame[columns].rename(
+                columns={
+                    "file_name": "文件",
+                    "status": "状态",
+                    "raw_record_count": "原始记录",
+                    "transaction_count": "标准流水",
+                    "review_count": "待复核",
+                    "date_start": "起始",
+                    "date_end": "结束",
+                    "error": "错误",
+                }
+            ),
+            use_container_width=True,
+            hide_index=True,
+        )
+    if summary.get("private_transactions_path"):
+        st.caption("标准化流水私有路径")
+        st.code(str(summary["private_transactions_path"]), language="text")
+
+
 def install_streamlit_runtime_compat() -> None:
     marker = "_pfi_runtime_compat_installed"
     if getattr(st, "__dict__", {}).get(marker):
@@ -1008,9 +1124,11 @@ def render_pfi_ui_v2_shell() -> None:
             display: block;
         }
         </style>
-        """,
+    """,
         unsafe_allow_html=True,
     )
+    render_pfi_local_data_upload_panel()
+    st.divider()
     store = OperationalStore()
     try:
         store.initialize()
@@ -5942,6 +6060,8 @@ def _format_metric_value(value, formatter: str) -> str:
 
 
 def data_tools_view() -> None:
+    render_pfi_local_data_upload_panel()
+    st.divider()
     st.subheader("数据源状态")
     status = pd.DataFrame(provider_status_rows())
     status_display = status.rename(

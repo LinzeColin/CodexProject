@@ -25,9 +25,9 @@ class HumanEntryMarkdownContractTests(unittest.TestCase):
                     self.assertFalse((project_root / stem).exists(), f"{project_path}/{stem}")
                     self.assertTrue((project_root / f"{stem}.md").is_file(), f"{project_path}/{stem}.md")
 
-    def test_migrated_qbvs_lab_uses_markdown_human_entries(self) -> None:
-        pfi_root = ROOT / "PFI" / "modules" / "qbvs_lab"
+    def test_independent_qbvs_uses_markdown_human_entries(self) -> None:
+        pfi_root = ROOT / "QBVS"
         self.assertTrue(pfi_root.is_dir())
         for stem in HUMAN_ENTRY_STEMS:
-            self.assertFalse((pfi_root / stem).exists(), f"PFI/modules/qbvs_lab/{stem}")
-            self.assertTrue((pfi_root / f"{stem}.md").is_file(), f"PFI/modules/qbvs_lab/{stem}.md")
+            self.assertFalse((pfi_root / stem).exists(), f"QBVS/{stem}")
+            self.assertTrue((pfi_root / f"{stem}.md").is_file(), f"QBVS/{stem}.md")

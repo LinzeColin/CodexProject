@@ -70,7 +70,7 @@ PRIMARY_ENTRIES: tuple[Stage1Entry, ...] = (
     Stage1Entry(
         4,
         "投资管理",
-        "多平台投资账户管理、投资行为分析、投资建议、策略回测和大数据模拟器兼容入口。",
+        "多平台投资账户管理、投资行为分析、投资建议、PFI 策略回测、盘感训练和大数据模拟器。",
         (
             "投资总览",
             "持仓管理",
@@ -81,11 +81,13 @@ PRIMARY_ENTRIES: tuple[Stage1Entry, ...] = (
             "行为复盘",
             "基金分析",
             "贵金属分析",
-            "策略实验室 / 大数据模拟器 / QBVS compatibility entry",
+            "PFI 策略实验室",
+            "PFI 大数据模拟器",
+            "盘感训练",
             "投资目标",
             "投资建议",
         ),
-        ("Moomoo", "支付宝基金", "中国券商", "ABC Bullion", "QBVS", "策略实验室", "大数据模拟器"),
+        ("Moomoo", "支付宝基金", "中国券商", "ABC Bullion", "策略实验室", "盘感训练", "大数据模拟器"),
     ),
     Stage1Entry(
         5,
@@ -172,16 +174,29 @@ FORBIDDEN_PRIMARY_ENTRY_MARKERS = (
 )
 
 LEGACY_COMPATIBILITY_ENTRY = {
-    "existing_path": "PFI/modules/qbvs_lab",
-    "current_root": "PFI",
-    "target_location": "投资管理 > 策略实验室 / 大数据模拟器",
-    "runtime_path": "PFI/modules/qbvs_lab/qbvs",
-    "policy": "Keep accessible; do not move, rename, or broad-refactor active QBVS runtime during Stage 1.",
+    "existing_path": "QBVS",
+    "current_root": "CodexProject/QBVS",
+    "target_location": "独立系统：CodexProject/QBVS",
+    "runtime_path": "QBVS/qbvs",
+    "policy": "QBVS is independent from PFI. PFI may link to or read handoff evidence, but PFI investment management must not own or cover QBVS.",
 }
+
+V01_COMPATIBILITY_ENTRIES: tuple[str, ...] = (
+    "首页",
+    "市场",
+    "研究",
+    "持仓",
+    "策略实验室",
+    "数据与系统",
+)
 
 
 def primary_entry_labels() -> tuple[str, ...]:
     return tuple(entry.label for entry in PRIMARY_ENTRIES)
+
+
+def v01_compatibility_entry_labels() -> tuple[str, ...]:
+    return V01_COMPATIBILITY_ENTRIES
 
 
 def build_stage1_ia_contract() -> dict[str, object]:
@@ -189,6 +204,7 @@ def build_stage1_ia_contract() -> dict[str, object]:
         "schema": "PFIV02Stage1IAContractV1",
         "project_root": "CodexProject/PFI",
         "primary_entries": [asdict(entry) for entry in PRIMARY_ENTRIES],
+        "v01_compatibility_entries": V01_COMPATIBILITY_ENTRIES,
         "forbidden_primary_entry_markers": FORBIDDEN_PRIMARY_ENTRY_MARKERS,
         "legacy_compatibility_entry": LEGACY_COMPATIBILITY_ENTRY,
         "non_execution_boundary": (

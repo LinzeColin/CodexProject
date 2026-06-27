@@ -1,0 +1,2 @@
+PFI/alipay_daily/raw/*.csv binary
+PFI/alipay_daily/processed/*.csv text eol=lf

@@ -102,8 +102,8 @@ def build_stage2_registry() -> dict[str, Stage2SourceProfile]:
             parser_contracts=("account_funds_positions_contract", "orders_fills_contract"),
             ledger_boundaries=("no_live_order_submission", "no_trading_password", "do_not_fabricate_when_unavailable"),
             active_runtime_refs=(
-                "PFI/modules/qbvs_lab/qbvs/datasources.py",
-                "PFI/modules/qbvs_lab/qbvs/moomoo_batch.py",
+                "QBVS/qbvs/datasources.py",
+                "QBVS/qbvs/moomoo_batch.py",
             ),
         ),
         Stage2SourceProfile(

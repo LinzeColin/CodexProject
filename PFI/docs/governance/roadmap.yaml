@@ -24,7 +24,7 @@ stages:
         - "PFI 根三基 Markdown 存在且无无后缀副本"
         - "PFI 根治理文件通过项目治理验证"
         - "Stage 1+2 合同测试通过"
-        - "旧 QBVS lifecycle smoke 通过"
+        - "顶层 QBVS lifecycle smoke 通过"
         - "本地 PFI.app 入口指向 canonical PFI"
       evidence:
         - "PFI/docs/governance"
@@ -96,12 +96,12 @@ stages:
                   - "PFI/docs/pfi_v02/STAGE2_DATA_SYNC_MVP.md"
             test_commands:
               - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -B -m unittest tests.test_stage1_ia_contract tests.test_stage1_core_models tests.test_stage1_classification_rules tests.test_stage2_data_source_registry tests.test_stage2_cba_csv_import tests.test_stage2_alipay_import tests.test_stage2_non_csv_contracts -q"
-              - "cd PFI/modules/qbvs_lab && PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q"
+              - "cd QBVS && PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q"
               - "python3 scripts/validate_project_governance.py --project PFI"
               - "python3 -B -m unittest tests.governance.test_human_entry_markdown_contract -q"
             test_results:
               - "Stage 1+2 contracts: Ran 45 tests / OK"
-              - "Legacy QBVS lifecycle smoke: Ran 1 test / OK"
+              - "Top-level QBVS lifecycle smoke: Ran 1 test / OK"
               - "Project governance validation: errors 0 / warnings 0"
               - "Human-entry Markdown contract: Ran 2 tests / OK"
             evidence_refs:
@@ -109,7 +109,7 @@ stages:
               - "PFI/HANDOFF.md"
             risks:
               - "真实账户联通、真实凭证、生产运行和实盘执行仍未验证。"
-            rollback: "Revert the Stage 2 closeout documentation commit; do not move QBVS runtime."
+            rollback: "Revert the Stage 2 closeout documentation commit; keep QBVS as an independent top-level system."
             current_result: "Stage 2 local contract acceptance complete; production readiness not claimed."
             completed_version: "0.2.0"
   - stage_id: "S3"
@@ -129,7 +129,7 @@ stages:
         - "Stage 3 3A-3D acceptance matrix 全部 PASS"
         - "Stage 3 contract test 通过"
         - "Web shell 8 个一级入口可见"
-        - "旧 QBVS lifecycle smoke 通过"
+        - "顶层 QBVS lifecycle smoke 通过"
         - "本地 PFI.app 入口指向 canonical PFI"
       evidence:
         - "PFI/docs/pfi_v02/STAGE3_READABLE_MVP.md"
@@ -176,13 +176,13 @@ stages:
                   - "PFI/tests/test_stage3_readable_mvp.py"
             test_commands:
               - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -B -m unittest tests.test_stage1_ia_contract tests.test_stage1_core_models tests.test_stage1_classification_rules tests.test_stage2_data_source_registry tests.test_stage2_cba_csv_import tests.test_stage2_alipay_import tests.test_stage2_non_csv_contracts tests.test_stage3_readable_mvp -q"
-              - "cd PFI/modules/qbvs_lab && PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q"
+              - "cd QBVS && PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q"
               - "node --check PFI/web/app/shell.js"
               - "python3 scripts/validate_project_governance.py --project PFI"
               - "python3 -B -m unittest tests.governance.test_human_entry_markdown_contract -q"
             test_results:
               - "Stage 1+2+3 contracts: Ran 59 tests / OK"
-              - "Legacy QBVS lifecycle smoke: Ran 1 test / OK"
+              - "Top-level QBVS lifecycle smoke: Ran 1 test / OK"
               - "Project governance validation: errors 0 / warnings 0"
               - "Human-entry Markdown contract: Ran 2 tests / OK"
               - "Stage 3 contract: Ran 13 tests / OK"
@@ -194,7 +194,7 @@ stages:
             risks:
               - "真实账户联通、真实凭证、生产运行和实盘执行仍未验证。"
               - "Stage 3 FX fixture 不是实时汇率。"
-            rollback: "Revert the Stage 3 closeout commit; keep QBVS runtime path unchanged."
+            rollback: "Revert the Stage 3 closeout commit; keep QBVS as an independent top-level system."
             current_result: "Stage 3 local readable MVP acceptance complete; production readiness not claimed."
             completed_version: "0.2.0"
   - stage_id: "S4"
@@ -216,7 +216,7 @@ stages:
         - "Stage 4 4A/4B acceptance matrix 全部 PASS"
         - "Stage 4 contract test 通过"
         - "Web shell 投资管理和消费管理显示分析能力"
-        - "旧 QBVS lifecycle smoke 通过"
+        - "顶层 QBVS lifecycle smoke 通过"
         - "本地 PFI.app 入口指向 canonical PFI"
       evidence:
         - "PFI/docs/pfi_v02/STAGE4_ANALYSIS_MVP.md"
@@ -263,13 +263,13 @@ stages:
                   - "PFI/tests/test_stage4_analysis_mvp.py"
             test_commands:
               - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -B -m unittest tests.test_stage1_ia_contract tests.test_stage1_core_models tests.test_stage1_classification_rules tests.test_stage2_data_source_registry tests.test_stage2_cba_csv_import tests.test_stage2_alipay_import tests.test_stage2_non_csv_contracts tests.test_stage3_readable_mvp tests.test_stage4_analysis_mvp -q"
-              - "cd PFI/modules/qbvs_lab && PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q"
+              - "cd QBVS && PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q"
               - "node --check PFI/web/app/shell.js"
               - "python3 scripts/validate_project_governance.py --project PFI"
               - "python3 -B -m unittest tests.governance.test_human_entry_markdown_contract -q"
             test_results:
               - "Stage 1+2+3+4 contracts: Ran 71 tests / OK"
-              - "Legacy QBVS lifecycle smoke: Ran 1 test / OK"
+              - "Top-level QBVS lifecycle smoke: Ran 1 test / OK"
               - "Project governance validation: errors 0 / warnings 0"
               - "Human-entry Markdown contract: Ran 2 tests / OK"
               - "Stage 4 contract: Ran 12 tests / OK"
@@ -282,7 +282,7 @@ stages:
             risks:
               - "真实账户联通、真实凭证、生产运行和实盘执行仍未验证。"
               - "Stage 4 分析使用 synthetic/local fixtures，不是正式投资建议。"
-            rollback: "Revert the Stage 4 closeout commit; keep QBVS runtime path unchanged."
+            rollback: "Revert the Stage 4 closeout commit; keep QBVS as an independent top-level system."
             current_result: "Stage 4 local analysis MVP acceptance complete; production readiness not claimed."
             completed_version: "0.2.0"
   - stage_id: "S5"
@@ -353,13 +353,13 @@ stages:
                   - "PFI/tests/test_stage5_advice_report_alpha.py"
             test_commands:
               - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -B -m unittest tests.test_stage1_ia_contract tests.test_stage1_core_models tests.test_stage1_classification_rules tests.test_stage2_data_source_registry tests.test_stage2_cba_csv_import tests.test_stage2_alipay_import tests.test_stage2_non_csv_contracts tests.test_stage3_readable_mvp tests.test_stage4_analysis_mvp tests.test_stage5_advice_report_alpha -q"
-              - "cd PFI/modules/qbvs_lab && PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q"
+              - "cd QBVS && PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q"
               - "node --check PFI/web/app/shell.js"
               - "python3 scripts/validate_project_governance.py --project PFI"
               - "python3 -B -m unittest tests.governance.test_human_entry_markdown_contract -q"
             test_results:
               - "Stage 1+2+3+4+5 contracts: Ran 85 tests / OK"
-              - "Legacy QBVS lifecycle smoke: Ran 1 test / OK"
+              - "Top-level QBVS lifecycle smoke: Ran 1 test / OK"
               - "Project governance validation: errors 0 / warnings 0"
               - "Human-entry Markdown contract: Ran 2 tests / OK"
               - "Stage 5 contract: Ran 14 tests / OK"
@@ -449,7 +449,7 @@ stages:
                   - "PFI/tests/test_stage6_e2e_stabilization.py"
             test_commands:
               - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -B -m unittest tests.test_stage1_ia_contract tests.test_stage1_core_models tests.test_stage1_classification_rules tests.test_stage2_data_source_registry tests.test_stage2_cba_csv_import tests.test_stage2_alipay_import tests.test_stage2_non_csv_contracts tests.test_stage3_readable_mvp tests.test_stage4_analysis_mvp tests.test_stage5_advice_report_alpha tests.test_stage6_e2e_stabilization -q"
-              - "cd PFI/modules/qbvs_lab && PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q"
+              - "cd QBVS && PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q"
               - "node --check PFI/web/app/shell.js"
               - "python3 scripts/validate_project_governance.py --project PFI"
               - "python3 -B -m unittest tests.governance.test_human_entry_markdown_contract -q"
@@ -458,7 +458,7 @@ stages:
               - "Stage 6 focused contract: Ran 10 tests / OK"
               - "Web shell syntax: OK"
               - "Stage 1+2+3+4+5+6 contracts: Ran 95 tests / OK"
-              - "Legacy QBVS lifecycle smoke: Ran 1 test / OK"
+              - "Top-level QBVS lifecycle smoke: Ran 1 test / OK"
               - "Project governance validation: errors 0 / warnings 0"
               - "Human-entry Markdown contract: Ran 2 tests / OK"
               - "Python compile: OK"

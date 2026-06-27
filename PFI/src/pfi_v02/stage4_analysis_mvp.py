@@ -146,7 +146,9 @@ def build_stage4_analysis_model(
             "alpha_first_level_entry_added": False,
             "ralpha_first_level_entry_added": False,
             "system_first_level_entry_added": False,
-            "qbvs_runtime_moved": False,
+            "qbvs_independent_system": True,
+            "qbvs_owned_by_pfi": False,
+            "qbvs_runtime_moved_out_of_pfi": True,
         },
         "status_language": SIMPLE_STATUS_LANGUAGE,
         "boundaries": (
@@ -267,11 +269,14 @@ def build_investment_behavior_review(trades: Iterable[Stage4InvestmentTrade]) ->
 def build_qbvs_compatibility_contract() -> dict[str, object]:
     return {
         "status": "正常",
-        "target_entry": "投资管理 > 策略实验室 / 大数据模拟器",
-        "legacy_runtime_path": "PFI/modules/qbvs_lab/qbvs",
+        "target_entry": "独立系统：CodexProject/QBVS",
+        "pfi_strategy_lab_entry": "投资管理 > PFI 策略实验室 / 大数据模拟器 / 盘感训练",
+        "legacy_runtime_path": "QBVS/qbvs",
         "compatibility_smoke": "tests.test_s3pct02_lifecycle",
-        "runtime_moved": False,
-        "preserved_features": ("策略回测", "参数扫描", "盘感训练", "大数据模拟器"),
+        "runtime_moved_out_of_pfi": True,
+        "pfi_owns_qbvs": False,
+        "preserved_pfi_features": ("策略回测", "参数扫描", "盘感训练", "大数据模拟器"),
+        "external_qbvs_policy": "PFI does not cover QBVS. QBVS is a separate top-level system with its own tests and GitHub-visible files.",
     }
 
 
@@ -362,7 +367,7 @@ def build_consumption_anomalies(records: tuple[Stage4SpendingRecord, ...]) -> di
             anomalies.append(_anomaly("夜间消费", record, "交易发生在夜间复核窗口。"))
         if _is_weekend(record.occurred_at) and record.category in {"购物", "餐饮"}:
             anomalies.append(_anomaly("节假日/周末消费", record, "周末消费进入行为复盘。"))
-        if record.merchant.lower().startswith("electronics"):
+        if record.merchant.lower().startswith("electronics") and amount_aud >= 300 and (hour >= 23 or hour < 5):
             anomalies.append(_anomaly("冲动型消费", record, "电子产品大额夜间消费需要复盘。"))
         duplicate_key = (record.merchant.lower(), round(amount_aud, 2), record.occurred_at[:10])
         if duplicate_key in seen:

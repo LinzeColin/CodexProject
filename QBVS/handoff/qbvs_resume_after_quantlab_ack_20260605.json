@@ -1,0 +1,54 @@
+{
+  "schema_version": "qbvs-resume-after-quantlab-ack-v1",
+  "created_at_utc": "2026-06-05T06:47:43Z",
+  "created_at_local": "2026-06-05T16:47:43+10:00",
+  "source_system": "quantlab",
+  "target_system": "quant_behavior_validation_system",
+  "status": "ready_to_resume_minimal_validation",
+  "quantlab_ack_path": "handoff/quantlab_handshake_ack.json",
+  "verify_handshake": {
+    "valid": true,
+    "errors": []
+  },
+  "latest_goal_readiness_audit": {
+    "path": "runs/goal_readiness_audit_quantlab_ack_20260605_from_quantlab_thread/goal_readiness_audit.json",
+    "score": {
+      "passed": 9,
+      "partial": 1,
+      "blocked": 0,
+      "missing": 0,
+      "readiness_percent": 95.0
+    },
+    "remaining_partial": "Scale target: public-history exact rows=40000 vs target effective tests=200000000."
+  },
+  "resolved_items": [
+    "handoff/quantlab_handshake_ack.json exists and is valid.",
+    "QuantLab ACK missing blocker is resolved.",
+    "BRK-B provider alias snapshot-confirmed as US.BRK.B."
+  ],
+  "remaining_blockers": [
+    "OpenD historical K-line quota constrained; do not batch refetch until quota recovers."
+  ],
+  "resume_policy": {
+    "allowed": [
+      "verify-handshake",
+      "audit-goal-readiness",
+      "quota-safe public-history exact campaign continuation",
+      "replacement-to-200 planning without OpenD fetch",
+      "read-only ResearchBus mapping and ReviewOnly evidence export"
+    ],
+    "not_allowed_without_user_approval_or_quota": [
+      "OpenD batch historical K-line refetch",
+      "QuantLab approved strategy-library write",
+      "QuantLab source/database mutation from QBVS evidence",
+      "live trading or real order placement"
+    ]
+  },
+  "recommended_resume_command_sequence": [
+    "PYTHONPATH=. python3 -m qbvs.cli verify-handshake --ack handoff/quantlab_handshake_ack.json",
+    "PYTHONPATH=. python3 -m qbvs.cli audit-goal-readiness --summary runs/yahoo_public_200x200_pair_full_40000_exact/strategy_summary.csv --results runs/yahoo_public_200x200_pair_full_40000_exact/validation_results.csv --manifest runs/manifests/yahoo_public_200x200_pair_manifest.csv --moomoo-probe runs/moomoo_opend_probe_iteration26_after_sdk.json --handshake-ack handoff/quantlab_handshake_ack.json --output-dir runs/goal_readiness_audit_quantlab_ack_20260605_from_quantlab_thread",
+    "If the only remaining item is scale partial, continue a resumable public-history exact campaign shard plan; avoid OpenD until quota recovers."
+  ],
+  "quantlab_root": "/Users/linzezhang/Documents/Codex/2026-06-04/files-mentioned-by-the-user-quantlab/outputs/CodexFinance",
+  "qbvs_root": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/QBVS"
+}

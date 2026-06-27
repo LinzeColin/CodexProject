@@ -2,7 +2,7 @@ governance_spec_version: "1.0.0"
 project_id: "PFI"
 assumptions:
   - assumption_id: "ASM-PFI-001"
-    statement: "PFI 根目录是当前注册项目根；PFI/modules/qbvs_lab 是迁移后的兼容模块。"
+    statement: "PFI 根目录是当前注册项目根；QBVS 是迁移后的兼容模块。"
     status: "active"
     fact_level: "EXTRACTED"
     evidence_refs:

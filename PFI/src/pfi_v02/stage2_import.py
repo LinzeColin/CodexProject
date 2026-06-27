@@ -91,12 +91,41 @@ def _decode_text(content: bytes) -> str:
     return content.decode("utf-8", errors="replace")
 
 
+def _clean_row(row: dict[str | None, str | None]) -> dict[str, str]:
+    return {
+        str(key).strip(): str(value or "").strip()
+        for key, value in row.items()
+        if key is not None and str(key).strip()
+    }
+
+
+def _csv_rows_after_header(content: bytes, *, required_headers: tuple[str, ...]) -> list[dict[str, str]]:
+    text = _decode_text(content)
+    lines = text.splitlines()
+    header_index = 0
+    for index, line in enumerate(lines):
+        try:
+            cells = next(csv.reader([line]))
+        except csv.Error:
+            continue
+        normalized = {cell.strip() for cell in cells}
+        if all(header in normalized for header in required_headers):
+            header_index = index
+            break
+    rows: list[dict[str, str]] = []
+    for row in csv.DictReader(io.StringIO("\n".join(lines[header_index:]))):
+        cleaned = _clean_row(row)
+        if any(cleaned.values()):
+            rows.append(cleaned)
+    return rows
+
+
 def _canonical_row(row: dict[str, str]) -> str:
-    return json.dumps({key: value for key, value in sorted(row.items())}, ensure_ascii=False, sort_keys=True)
+    return json.dumps({key: value for key, value in sorted(_clean_row(row).items())}, ensure_ascii=False, sort_keys=True)
 
 
 def _field(row: dict[str, str], *names: str) -> str:
-    lower = {key.strip().lower(): value.strip() for key, value in row.items() if key is not None}
+    lower = {key.strip().lower(): value.strip() for key, value in _clean_row(row).items()}
     for name in names:
         key = name.strip().lower()
         if key in lower:
@@ -209,7 +238,12 @@ def parse_alipay_bill_bytes(content: bytes, *, account_id: str = "acct_alipay", 
                 raise ValueError("Alipay ZIP contains no CSV bill file.")
             content = archive.read(csv_names[0])
 
-    rows = list(csv.DictReader(io.StringIO(_decode_text(content))))
+    rows = _csv_rows_after_header(content, required_headers=("交易时间", "金额"))
+    rows = [
+        row
+        for row in rows
+        if _field(row, "交易时间", "日期", "Date", "Time") and _field(row, "金额", "Amount", "交易金额")
+    ]
     batch = _make_batch("alipay_daily", "alipay_bill_csv_v1", content, len(rows))
     raw_records: list[RawRecord] = []
     transactions: list[NormalizedTransaction] = []
@@ -232,7 +266,7 @@ def parse_alipay_bill_bytes(content: bytes, *, account_id: str = "acct_alipay", 
             for part in (
                 _field(row, "商品说明", "商品名称", "Description", "交易说明"),
                 _field(row, "交易对方", "Counterparty"),
-                _field(row, "交易类型", "Type", "分类"),
+                _field(row, "交易类型", "交易分类", "Type", "分类"),
             )
             if part
         )

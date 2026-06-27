@@ -1,0 +1,61 @@
+schema_version: "codexproject.roadmap.v1"
+roadmap_kind: "product"
+project_id: "MetaDatabase"
+current_stage_id: "S0"
+current_phase_id: "S0PA"
+current_task_id: "TASK-MDB-S0-001"
+next_gate_id: "MDB-S0-GATE"
+total_estimated_hours: 1
+completed_estimated_hours: 1
+stages:
+  - stage_id: "S0"
+    name: "数据归档登记"
+    person_goal: "让用户上传和已授权导入的原始数据在 GitHub 上有明确归档边界、manifest 和治理登记。"
+    status: "completed"
+    stop_conditions:
+      - "未授权数据被新增"
+      - "归档目录被业务系统当成实盘执行源"
+      - "manifest 缺失"
+    stop_gate:
+      gate_id: "MDB-S0-GATE"
+      status: "closed"
+      pass_conditions:
+        - "MetaDatabase 登记为顶层项目"
+        - "三基文件存在且中文可读"
+        - "当前 PFI Alipay 数据 manifest 可追溯"
+      evidence_refs:
+        - "MetaDatabase/MANIFEST.json"
+    phases:
+      - phase_id: "S0PA"
+        name: "PFI 数据归档登记"
+        objective: "登记 PFI 支付宝原始数据和处理后导入证据。"
+        status: "completed"
+        stop_conditions:
+          - "原始文件覆盖写入"
+          - "缺少 manifest"
+        stop_gate:
+          gate_id: "MDB-S0PA-GATE"
+          status: "closed"
+          pass_conditions:
+            - "raw 和 processed 路径存在"
+            - "manifest 记录文件和 hash"
+          evidence_refs:
+            - "MetaDatabase/MANIFEST.json"
+        tasks:
+          - task_id: "TASK-MDB-S0-001"
+            name: "登记 MetaDatabase"
+            objective: "把 MetaDatabase 变成 CodexProject 顶层受治理数据归档项目。"
+            status: "completed"
+            estimated_hours: 1
+            total_hours_percent: "100.00%"
+            dependencies: []
+            acceptance_ids:
+              - "ACC-MDB-S0-001"
+            test_commands:
+              - "python3 scripts/validate_project_governance.py --project MetaDatabase"
+              - "python3 -B -m unittest tests.governance.test_human_entry_markdown_contract -q"
+            evidence_refs:
+              - "MetaDatabase/MANIFEST.json"
+              - "MetaDatabase/docs/governance/project.yaml"
+            risk: "用户财务原始数据必须保持授权、只追加和可追溯。"
+            rollback: "移除 MetaDatabase root registration and governance files only if the data archive is no longer tracked in CodexProject."

@@ -1,0 +1,9 @@
+governance_spec_version: "1.0.0"
+project_id: "MetaDatabase"
+assumptions:
+  - assumption_id: "ASM-MDB-001"
+    statement: "MetaDatabase is a data archive and does not contain active business models."
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "MetaDatabase/README.md"
+models: []

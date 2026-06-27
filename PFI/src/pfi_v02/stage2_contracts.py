@@ -42,7 +42,7 @@ def build_alipay_fund_non_csv_contract() -> dict[str, object]:
         "csv_assumption": False,
         "transaction_line": ("fund_transaction_line", "fund_subscription", "fund_redemption", "cash_arrival", "fee"),
         "holding_line": ("fund_page_read", "app_assisted_read", "manual_holding_snapshot"),
-        "nav_line": ("external_nav_source", "existing_qbvs_nav_capability"),
+        "nav_line": ("external_nav_source", "independent_qbvs_nav_reference"),
         "models": (
             "fund_transaction",
             "fund_holding_snapshot",
@@ -109,10 +109,10 @@ def build_moomoo_read_only_contract() -> dict[str, object]:
         "probe": "OpenD/API read-only availability probe",
         "read_contracts": ("account_list", "funds", "positions", "orders", "fills"),
         "ledger_outputs": ("investment_ledger_events", "holding_snapshot", "investment_summary"),
-        "reuse_existing_qbvs": True,
-        "existing_runtime_refs": (
-            "PFI/modules/qbvs_lab/qbvs/datasources.py",
-            "PFI/modules/qbvs_lab/qbvs/moomoo_batch.py",
+        "external_qbvs_reference": True,
+        "external_runtime_refs": (
+            "QBVS/qbvs/datasources.py",
+            "QBVS/qbvs/moomoo_batch.py",
         ),
         "boundaries": ("no_trading_password", "no_live_order_submission", "do_not_fabricate_unavailable_data"),
     }

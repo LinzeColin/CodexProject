@@ -57,13 +57,12 @@ ACTIVE_VIEW_COMPATIBILITY: tuple[CompatibilityEntry, ...] = (
 )
 
 PUBLIC_ASSUMPTION_COMPATIBILITY: tuple[CompatibilityEntry, ...] = (
-    CompatibilityEntry("PFI/modules/qbvs_lab", True, "CodexProject/PFI/modules/qbvs_lab", "投资管理 > 策略实验室 / 大数据模拟器", "保留该路径和文档；作为新 IA 下的兼容入口。", "MappedPublicAssumption"),
-    CompatibilityEntry("qbvs/ active runtime", True, "CodexProject/PFI/modules/qbvs_lab/qbvs", "投资管理 > 策略实验室 / 大数据模拟器", "禁止移动、改名或宽重构；Stage 4 只刷新入口和分析 read-model。", "BoundaryLocked"),
+    CompatibilityEntry("QBVS", True, "CodexProject/QBVS", "独立系统：CodexProject/QBVS", "PFI 不覆盖 QBVS；只保留外部系统引用和跳转说明。", "IndependentSystem"),
+    CompatibilityEntry("qbvs/ active runtime", True, "CodexProject/QBVS/qbvs", "独立系统：CodexProject/QBVS", "QBVS runtime 已从 PFI 独立；PFI 的策略实验室、回测、盘感训练和大数据模拟器仍保留。", "IndependentSystem"),
 )
 
 LOCAL_ACTIVE_RUNTIME_PATHS: tuple[str, ...] = (
     "src/pfi_os",
-    "modules/qbvs_lab/qbvs",
     "web",
     "scripts",
     "tests",

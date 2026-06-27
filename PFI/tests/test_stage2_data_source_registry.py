@@ -41,12 +41,12 @@ class Stage2DataSourceRegistryTest(unittest.TestCase):
         self.assertIn("do_not_assume_universal_csv", registry["cn_broker"].ledger_boundaries)
         self.assertIn("do_not_rely_on_csv", registry["abc_bullion"].ledger_boundaries)
 
-    def test_moomoo_contract_references_existing_qbvs_runtime(self) -> None:
+    def test_moomoo_contract_references_external_qbvs_runtime(self) -> None:
         registry = build_stage2_registry()
 
         refs = registry["moomoo_au"].active_runtime_refs
-        self.assertIn("PFI/modules/qbvs_lab/qbvs/datasources.py", refs)
-        self.assertIn("PFI/modules/qbvs_lab/qbvs/moomoo_batch.py", refs)
+        self.assertIn("QBVS/qbvs/datasources.py", refs)
+        self.assertIn("QBVS/qbvs/moomoo_batch.py", refs)
 
     def test_new_platform_extends_by_profile_without_core_ledger_rewrite(self) -> None:
         profile = build_connector_profile(
