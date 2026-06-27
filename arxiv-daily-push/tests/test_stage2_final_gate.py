@@ -248,6 +248,26 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertIn("s2plt02_not_completed", report["blocking_reasons"])
         self.assertEqual(validate_s2plt04_integration_candidate_report(report), [])
 
+    def test_s2plt04_consumes_s2plt01_independent_review_as_nonterminal_evidence(self) -> None:
+        report = build_s2plt04_integration_candidate_report(generated_at="2026-06-28T03:07:28+10:00")
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertIn("S2PLT01-INDEPENDENT-REPLAY-REVIEW", report["dependencies"]["available_local_evidence"])
+        self.assertTrue(report["evidence"]["available_nonterminal_evidence"]["S2PLT01_INDEPENDENT_REPLAY_REVIEW"])
+        self.assertEqual(
+            report["evidence"]["s2plt01_independent_replay_review_scope"],
+            "no_production_independent_replay_review_receipt",
+        )
+        self.assertEqual(
+            report["evidence"]["s2plt01_independent_replay_review_status"],
+            "blocked_review_package_passed_not_terminal_acceptance",
+        )
+        self.assertTrue(report["gates"]["s2plt01_independent_replay_review_present"])
+        self.assertFalse(report["gates"]["s2plt01_accepted"])
+        self.assertFalse(report["evidence"]["available_evidence"]["S2PLT01_ACCEPTED"])
+        self.assertIn("s2plt01_not_accepted", report["blocking_reasons"])
+        self.assertEqual(validate_s2plt04_integration_candidate_report(report), [])
+
     def test_s2plt04_integration_candidate_report_fails_closed_without_production_side_effects(self) -> None:
         report = build_s2plt04_integration_candidate_report(generated_at="2026-06-26T18:00:00+10:00")
 

@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PLT04-S2PLT01-REPLAY-REVIEW-EVIDENCE-SYNC",
+  "parent_task_id": "S2PLT04",
+  "acceptance_id": "ACC-S2PLT04-INTEGRATION-CANDIDATE",
+  "phase": "S2PL",
+  "generated_at": "2026-06-28T03:07:28+10:00",
+  "base_commit": "22ad95f96e021b78a0754c4f31b1fa10f189d216",
+  "status": "blocked",
+  "result": "blocked_precheck_nonterminal_s2plt01_replay_review_evidence_consumed_no_production",
+  "fact_level": "EXTRACTED",
+  "model_ids": [
+    "MOD-ADP-103"
+  ],
+  "formula_ids": [
+    "FORM-ADP-105"
+  ],
+  "parameter_ids": [
+    "PARAM-ADP-980",
+    "PARAM-ADP-981",
+    "PARAM-ADP-984",
+    "PARAM-ADP-985"
+  ],
+  "candidate_hash": "ac20cc305fef214263737ada726cff2c935015023b51f06135c04be5e0f5a73e",
+  "s2plt01_independent_replay_review_hash": "ca1fbe5a65e44f2dfff302c5b5e6ad2b3007ec3efd7f81a00ea462d6a62c3706",
+  "s2plt01_replay_execution_hash": "47394faede126c943dc46b3ca2ae0c8680d5ef32f1f26f4618e3064fcbc28171",
+  "consumed_nonterminal_evidence": [
+    "S2PLT01_INDEPENDENT_REPLAY_REVIEW"
+  ],
+  "available_nonterminal_evidence": [
+    "S2PLT01_INDEPENDENT_REPLAY_REVIEW",
+    "S2PLT02_LIVE_2D_PRECHECK",
+    "S2PLT03_LOCAL_RESILIENCE_DRILL"
+  ],
+  "available_local_evidence_labels": [
+    "S2PLT01-INDEPENDENT-REPLAY-REVIEW",
+    "S2PLT02-LIVE-2D-PRECHECK",
+    "S2PLT03-LOCAL-RESILIENCE-DRILL",
+    "S2PMT01",
+    "S2PMT02",
+    "S2PMT03",
+    "S2PMT04",
+    "S2PMT05",
+    "S2PMT06",
+    "S2PMT07"
+  ],
+  "blocking_reasons": [
+    "s2plt01_not_accepted",
+    "s2plt02_not_completed",
+    "s2plt03_not_completed",
+    "final_acceptance_bundle_missing",
+    "inherited_v7_1_p0_findings_open",
+    "inherited_v7_1_p1_findings_open",
+    "s2pmt07_final_gate_precheck_blocked"
+  ],
+  "inherited_v7_1_open_p0_findings": 8,
+  "inherited_v7_1_open_p1_findings": 37,
+  "s2plt01_accepted": false,
+  "s2plt01_acceptance_claimed": false,
+  "s2plt02_accepted": false,
+  "s2plt02_real_run_started": false,
+  "s2plt02_2d_real_run_proven": false,
+  "s2plt03_accepted": false,
+  "s2plt04_completed": false,
+  "s2_integration_candidate_ready": false,
+  "production_acceptance_claimed": false,
+  "inherited_p0_p1_closed": false,
+  "integrated_production_accepted": false,
+  "stage2_integrated_production_accepted": false,
+  "daily_operation_enabled": false,
+  "real_smtp_sent": false,
+  "real_smtp_send_enabled": false,
+  "scheduler_enabled": false,
+  "scheduler_install_enabled": false,
+  "release_uploaded": false,
+  "real_release_uploaded": false,
+  "production_restore_executed": false,
+  "production_queue_mutated": false,
+  "public_schema_changed": false,
+  "db_migration_executed": false,
+  "ranking_algorithm_changed": false,
+  "source_adapter_changed": false,
+  "current_pointer_changed": false,
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false,
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PLT04_S2PLT01_REPLAY_REVIEW_EVIDENCE_SYNC.md",
+    "governance/run_manifests/ADP-S2PLT04-S2PLT01-REPLAY-REVIEW-EVIDENCE-SYNC-20260628.json",
+    "governance/run_manifests/ADP-S2PLT01-INDEPENDENT-REPLAY-REVIEW-20260626.json",
+    "governance/run_manifests/ADP-S2PLT01-REPLAY-PAYLOAD-EXECUTION-20260626.json",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py",
+    "arxiv-daily-push/tests/test_stage2_final_gate.py"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s2plt04_s2plt01_red PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s2plt04_s2plt01_green PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q"
+  ],
+  "test_results": [
+    "RED target test observed expected absence of S2PLT01_INDEPENDENT_REPLAY_REVIEW in S2PLT04 available_nonterminal_evidence",
+    "focused S2PLT04 final-gate tests: 22 OK"
+  ],
+  "notes": "This is non-terminal local evidence consumption only. It does not accept S2PLT01, accept S2PLT02, start a real two-day live run, complete S2PLT04, create the final bundle, pass S2PMT07, close P0/P1, send SMTP, install or enable scheduler, upload Release, change schema/DB/production queues/ranking/source adapters, edit CURRENT or V7 contracts, enable DAILY_OPERATION, or grant integrated production acceptance."
+}

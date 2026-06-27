@@ -7,6 +7,13 @@ import json
 from collections.abc import Mapping
 from typing import Any
 
+from arxiv_daily_push.stage2_replay_gate import (
+    S2PLT01_REQUIRED_MAIL_PRODUCTS,
+    build_s2plt01_independent_replay_review_report,
+    build_s2plt01_replay_payload_execution_report,
+    validate_s2plt01_independent_replay_review_report,
+)
+
 
 S2PMT07_FINAL_GATE_MODEL_ID = "adp-s2pmt07-final-gate-precheck-v1"
 S2PMT07_ACCEPTANCE_ID = "ACC-S2PMT07-FINAL-REVIEW"
@@ -212,9 +219,12 @@ S2PLT04_AVAILABLE_LOCAL_EVIDENCE = (
     "S2PMT07",
 )
 S2PLT04_NONTERMINAL_LOCAL_EVIDENCE = (
+    "S2PLT01_INDEPENDENT_REPLAY_REVIEW",
     "S2PLT02_LIVE_2D_PRECHECK",
     "S2PLT03_LOCAL_RESILIENCE_DRILL",
 )
+S2PLT04_REPLAY_EXECUTION_GENERATED_AT = "2026-06-26T19:10:00+10:00"
+S2PLT04_REPLAY_REVIEW_GENERATED_AT = "2026-06-26T20:00:00+10:00"
 S2PLT04_LIVE_2D_PRECHECK_GENERATED_AT = "2026-06-26T19:00:00+10:00"
 S2PLT04_LOCAL_DRILL_BUNDLE_GENERATED_AT = "2026-06-28T02:00:14+10:00"
 S2PLT04_REQUIRED_EVIDENCE = (
@@ -793,13 +803,92 @@ def build_s2plt04_dependency_state() -> dict[str, Any]:
     }
 
 
+def _build_s2plt04_replay_records() -> list[dict[str, Any]]:
+    return [
+        {
+            "as_of_date": f"2026-05-{day:02d}",
+            "status": "pass",
+            "source_domains": ["D1", "D2", "D3", "D4"],
+            "reading_boards": ["B1", "B2", "B3", "B4", "B5", "B6"],
+            "future_leakage_count": 0,
+            "p0_p1_blocker_count": 0,
+            "evidence_refs": [f"replay/{day:02d}.json"],
+        }
+        for day in range(1, 31)
+    ]
+
+
+def _build_s2plt04_mail_preview_records() -> list[dict[str, Any]]:
+    return [
+        {
+            "as_of_date": f"2026-05-{day:02d}",
+            "mail_product_id": product_id,
+            "status": "pass",
+            "email_template_contract": "EMAIL_LEARNING_V1",
+            "real_smtp_sent": False,
+            "evidence_refs": [f"mail/{day:02d}/{product_id}.json"],
+        }
+        for day in range(1, 31)
+        for product_id in S2PLT01_REQUIRED_MAIL_PRODUCTS
+    ]
+
+
+def _build_s2plt04_source_terminal_states() -> list[dict[str, Any]]:
+    return [
+        {
+            "source_domain": domain,
+            "status": "terminal_ready",
+            "terminal_state": "qualified_no_send",
+            "production_inclusion": False,
+            "evidence_refs": [f"terminal/{domain}.json"],
+        }
+        for domain in ("D1", "D2", "D3", "D4")
+    ]
+
+
+def _build_s2plt04_s2plt01_independent_replay_review_report() -> dict[str, Any]:
+    execution_report = build_s2plt01_replay_payload_execution_report(
+        execution_id="S2PLT01-REPLAY-PAYLOAD-EXECUTION-20260626-001",
+        generated_at=S2PLT04_REPLAY_EXECUTION_GENERATED_AT,
+        generated_by="codex-stage2-local",
+        evidence_mode="actual_replay_evidence",
+        replay_records=_build_s2plt04_replay_records(),
+        mail_preview_records=_build_s2plt04_mail_preview_records(),
+        source_terminal_states=_build_s2plt04_source_terminal_states(),
+        evidence_refs=["governance/run_manifests/ADP-S2PLT01-REPLAY-PAYLOAD-EXECUTION-20260626.json"],
+    )
+    return build_s2plt01_independent_replay_review_report(
+        review_id="S2PLT01-INDEPENDENT-REVIEW-20260626-001",
+        generated_at=S2PLT04_REPLAY_REVIEW_GENERATED_AT,
+        reviewer_id="codex-independent-reviewer",
+        reviewer_role="independent_stage2_replay_reviewer",
+        reviewer_involved_in_s2plt01_implementation=False,
+        replay_execution_report=execution_report,
+        ci_evidence_refs=[
+            "https://github.com/LinzeColin/CodexProject/actions/runs/28217724286",
+            "https://github.com/LinzeColin/CodexProject/actions/runs/28217724275",
+        ],
+        evidence_refs=["governance/run_manifests/ADP-S2PLT01-INDEPENDENT-REPLAY-REVIEW-20260626.json"],
+    )
+
+
 def build_s2plt04_evidence_state(
     *,
+    independent_replay_review_report: Mapping[str, Any] | None = None,
     live_2d_precheck_report: Mapping[str, Any] | None = None,
     local_drill_bundle: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Build current S2PLT04 evidence state from local governance facts."""
 
+    if independent_replay_review_report is None:
+        independent_replay_review_report = _build_s2plt04_s2plt01_independent_replay_review_report()
+    replay_review_valid = not validate_s2plt01_independent_replay_review_report(independent_replay_review_report)
+    replay_review_present = (
+        replay_review_valid
+        and independent_replay_review_report.get("status") == "blocked"
+        and independent_replay_review_report.get("review_package_passed") is True
+        and independent_replay_review_report.get("s2plt01_acceptance_claimed") is False
+    )
     if live_2d_precheck_report is None:
         live_2d_precheck_report = build_s2plt02_live_2d_precheck_report(
             generated_at=S2PLT04_LIVE_2D_PRECHECK_GENERATED_AT
@@ -821,6 +910,7 @@ def build_s2plt04_evidence_state(
         "FINAL_ACCEPTANCE_BUNDLE/": False,
     }
     available_nonterminal = {
+        "S2PLT01_INDEPENDENT_REPLAY_REVIEW": replay_review_present,
         "S2PLT02_LIVE_2D_PRECHECK": live_2d_precheck_present,
         "S2PLT03_LOCAL_RESILIENCE_DRILL": local_drill_passed,
     }
@@ -830,6 +920,18 @@ def build_s2plt04_evidence_state(
         "available_evidence": available,
         "available_nonterminal_evidence": available_nonterminal,
         "missing_evidence": [item for item, present in available.items() if not present],
+        "s2plt01_independent_replay_review_scope": (
+            independent_replay_review_report.get("scope") if replay_review_valid else "invalid"
+        ),
+        "s2plt01_independent_replay_review_hash": (
+            independent_replay_review_report.get("review_hash") if replay_review_valid else None
+        ),
+        "s2plt01_independent_replay_review_status": (
+            "blocked_review_package_passed_not_terminal_acceptance" if replay_review_present else "not_proven"
+        ),
+        "s2plt01_independent_replay_review_generated_at": (
+            independent_replay_review_report.get("generated_at") if replay_review_valid else None
+        ),
         "s2plt02_readiness_precheck_scope": (
             live_2d_precheck_report.get("scope") if live_2d_precheck_valid else "invalid"
         ),
@@ -860,6 +962,9 @@ def build_s2plt04_integration_candidate_report(*, generated_at: str) -> dict[str
         "s2plt01_accepted": "S2PLT01" in dependencies["completed_dependencies"],
         "s2plt02_completed": "S2PLT02" in dependencies["completed_dependencies"],
         "s2plt03_completed": "S2PLT03" in dependencies["completed_dependencies"],
+        "s2plt01_independent_replay_review_present": evidence["available_nonterminal_evidence"][
+            "S2PLT01_INDEPENDENT_REPLAY_REVIEW"
+        ],
         "s2plt02_readiness_precheck_present": evidence["available_nonterminal_evidence"][
             "S2PLT02_LIVE_2D_PRECHECK"
         ],
@@ -942,6 +1047,10 @@ def validate_s2plt04_integration_candidate_report(report: Mapping[str, Any]) -> 
     for item in S2PLT04_REQUIRED_EVIDENCE:
         if item not in evidence.get("required_evidence", []):
             errors.append(f"evidence.required_evidence must include {item}")
+    nonterminal_evidence = _mapping(evidence.get("available_nonterminal_evidence"))
+    for item in S2PLT04_NONTERMINAL_LOCAL_EVIDENCE:
+        if item not in nonterminal_evidence:
+            errors.append(f"evidence.available_nonterminal_evidence must include {item}")
     s2pmt07 = _mapping(report.get("s2pmt07_precheck"))
     s2pmt07_errors = validate_s2pmt07_precheck_report(s2pmt07)
     if s2pmt07_errors:
