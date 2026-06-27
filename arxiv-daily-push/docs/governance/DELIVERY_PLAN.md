@@ -21,7 +21,7 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 211
+- task_count: 212
 - acceptance_count: 126
 
 ## Delivery Tasks
@@ -298,6 +298,13 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PMT07-NO-PRODUCTION-SIDE-EFFECT-ATTESTATION-VALIDATOR | S2PM | blocked | `ACC-S2PMT07-FINAL-REVIEW` | Defines and validates the future `FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json` artifact contract; current attestation remains missing, no-production proof is not accepted, P0/P1 and production gates remain blocked. |
 | S2PMT07-NEXT-AGENT-HANDOFF-VALIDATOR | S2PM | blocked | `ACC-S2PMT07-FINAL-REVIEW` | Defines and validates the future `HANDOFF/00_下一Agent先读.md` artifact contract; current handoff remains missing, no handoff readiness is accepted, P0/P1 and production gates remain blocked. |
 | S2PMT07-FINAL-BUNDLE-PREREQUISITE-PLAN | S2PM | blocked | `ACC-S2PMT07-FINAL-REVIEW` | Defines the ordered fail-closed prerequisite plan for final bundle artifacts; the plan is valid prebundle evidence only, current artifacts remain missing, and P0/P1 plus production gates remain blocked. |
+| S2PMT07-P0-P1-ZERO-PROOF-ASSEMBLY | S2PM | blocked | `ACC-S2PMT07-FINAL-REVIEW` | Assembles P0/P1 technical candidate inputs for future zero-proof review; independent final closure decision and zero-proof artifact remain missing, so P0/P1 plus production gates remain blocked. |
+
+## 2026-06-28 07:56:58 Australia/Sydney - S2PMT07 P0/P1 zero-proof assembly
+
+- Added phase record `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_P1_ZERO_PROOF_ASSEMBLY.md`.
+- Added manifest `governance/run_manifests/ADP-S2PMT07-P0-P1-ZERO-PROOF-ASSEMBLY-20260628.json`.
+- This is blocked prebundle assembly only: independent final closure decision and zero-proof artifact remain missing, P0/P1 counters remain open, S2PLT04/final bundle remain blocked, and production remains disabled.
 
 ## 2026-06-28 07:41:22 Australia/Sydney - S2PMT07 final bundle prerequisite plan
 

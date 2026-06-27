@@ -54,6 +54,9 @@ from arxiv_daily_push.stage2_final_gate import (
     S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_REQUIRED_FIELDS,
     S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_SCHEMA_VERSION,
     S2PMT07_FORBIDDEN_PASS_FLAGS,
+    S2PMT07_P0_P1_ZERO_PROOF_ASSEMBLY_BLOCKING_REASONS,
+    S2PMT07_P0_P1_ZERO_PROOF_ASSEMBLY_FORBIDDEN_FLAGS,
+    S2PMT07_P0_P1_ZERO_PROOF_ASSEMBLY_REQUIRED_INPUTS,
     S2PMT07_P0_P1_ZERO_PROOF_CLOSURE_DECISION,
     S2PMT07_P0_P1_ZERO_PROOF_NO_PRODUCTION_FLAGS,
     S2PMT07_P0_P1_ZERO_PROOF_REQUIRED_FIELDS,
@@ -77,6 +80,7 @@ from arxiv_daily_push.stage2_final_gate import (
     build_independent_review_signoff_validation_state,
     build_final_acceptance_bundle_manifest_hash,
     build_final_acceptance_bundle_manifest_validation_state,
+    build_p0_p1_zero_proof_assembly_state,
     build_p0_p1_zero_proof_artifact_validation_state,
     build_p0_p1_zero_proof_decision_hash,
     build_p0_p1_zero_proof_readiness_state,
@@ -110,6 +114,7 @@ from arxiv_daily_push.stage2_final_gate import (
     validate_next_agent_handoff,
     validate_independent_review_signoff_artifact,
     validate_final_acceptance_bundle_manifest,
+    validate_p0_p1_zero_proof_assembly_state,
     validate_p0_p1_zero_proof_artifact,
     validate_p0_p1_zero_proof_readiness_state,
     validate_s2plt04_completion_report,
@@ -2140,8 +2145,11 @@ class Stage2FinalGateTests(unittest.TestCase):
 
     def test_final_acceptance_bundle_readiness_embeds_zero_proof_readiness_not_closure(self) -> None:
         state = build_final_acceptance_bundle_readiness_state()
+        assembly = state["p0_p1_zero_proof_assembly"]
         zero_proof = state["p0_p1_zero_proof_readiness"]
 
+        self.assertEqual(assembly["status"], "blocked_candidate_inputs_ready_no_closure")
+        self.assertTrue(state["available_prebundle_evidence"]["P0_P1_ZERO_PROOF_ASSEMBLY"])
         self.assertEqual(zero_proof["status"], "blocked")
         self.assertFalse(zero_proof["zero_proof_artifact_present"])
         self.assertFalse(zero_proof["p0_zero_proven"])
@@ -2150,6 +2158,44 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertIn("p0_p1_zero_proof_artifact_missing", zero_proof["blocking_reasons"])
         self.assertEqual(validate_p0_p1_zero_proof_readiness_state(zero_proof), [])
         self.assertEqual(validate_final_acceptance_bundle_readiness_state(state), [])
+
+    def test_p0_p1_zero_proof_assembly_binds_candidate_inputs_without_closure(self) -> None:
+        state = build_p0_p1_zero_proof_assembly_state()
+
+        self.assertEqual(state["status"], "blocked_candidate_inputs_ready_no_closure")
+        self.assertEqual(state["scope"], "p0_p1_zero_proof_assembly_only_no_closure")
+        self.assertEqual(tuple(state["required_inputs"]), S2PMT07_P0_P1_ZERO_PROOF_ASSEMBLY_REQUIRED_INPUTS)
+        self.assertEqual(state["p0_candidate_count"], 8)
+        self.assertEqual(state["p1_candidate_count"], 37)
+        self.assertEqual(state["candidate_total"], 45)
+        self.assertTrue(state["all_candidate_reviews_available"])
+        self.assertTrue(state["all_candidate_refs_exist"])
+        self.assertEqual(state["next_required_action"], "independent_final_closure_decision")
+        self.assertFalse(state["independent_final_closure_decision_present"])
+        self.assertFalse(state["zero_proof_artifact_present"])
+        self.assertFalse(state["p0_zero_proven"])
+        self.assertFalse(state["p1_zero_proven"])
+        self.assertFalse(state["closure_claimed"])
+        self.assertEqual(state["observed_open_p0_findings"], 8)
+        self.assertEqual(state["observed_open_p1_findings"], 37)
+        for reason in S2PMT07_P0_P1_ZERO_PROOF_ASSEMBLY_BLOCKING_REASONS:
+            self.assertIn(reason, state["blocking_reasons"])
+        for flag in S2PMT07_P0_P1_ZERO_PROOF_ASSEMBLY_FORBIDDEN_FLAGS:
+            self.assertFalse(state[flag])
+        for ref in state["candidate_manifest_refs"]:
+            self.assertTrue((REPO_ROOT / ref).exists(), ref)
+        self.assertEqual(validate_p0_p1_zero_proof_assembly_state(state), [])
+
+        tampered = json.loads(json.dumps(state))
+        tampered["all_candidate_refs_exist"] = False
+        self.assertIn(
+            "P0/P1 zero proof assembly candidate refs must exist",
+            validate_p0_p1_zero_proof_assembly_state(tampered),
+        )
+
+        tampered_flag = json.loads(json.dumps(state))
+        tampered_flag["real_smtp_sent"] = True
+        self.assertIn("real_smtp_sent must be false", validate_p0_p1_zero_proof_assembly_state(tampered_flag))
 
     def _valid_zero_proof_payload(self) -> dict[str, object]:
         payload: dict[str, object] = {

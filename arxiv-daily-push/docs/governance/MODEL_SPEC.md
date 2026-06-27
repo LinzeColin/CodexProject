@@ -7,12 +7,20 @@ machine_summary:
 
 - model_count: 117
 - formula_count: 119
-- parameter_count: 1033
+- parameter_count: 1036
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
 ## Governance Notes
 
+- `S2PMT07-P0-P1-ZERO-PROOF-ASSEMBLY` adds `PARAM-ADP-1034`
+  through `PARAM-ADP-1036` under `MOD-ADP-100` / `FORM-ADP-102`.
+  It assembles existing P0/P1 technical candidate inputs, manifest refs,
+  open blocker counts, and no-production flags into one blocked prebundle state
+  for future independent final closure review. It keeps independent final
+  closure decision, zero-proof artifact presence, P0/P1 zero proof, closure
+  claims, S2PLT04 completion, final bundle readiness, and every production
+  side-effect flag false.
 - `S2PMT07-FINAL-BUNDLE-PREREQUISITE-PLAN` adds `PARAM-ADP-1031`
   through `PARAM-ADP-1033` under `MOD-ADP-100` / `FORM-ADP-102`.
 - `S2PMT07-NEXT-AGENT-HANDOFF-VALIDATOR` adds `PARAM-ADP-1025`

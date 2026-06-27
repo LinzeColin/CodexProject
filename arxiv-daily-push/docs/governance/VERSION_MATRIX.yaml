@@ -244,7 +244,7 @@ parameter_profile_versions:
 data_snapshot_version: "fixture_arxiv_atom_to_daily_dry_run_v1"
 current_iteration: "ITER-20260628-ADP-S2PMT07-FINAL-BUNDLE-PREREQUISITE-PLAN"
 current_phase: "S2PM"
-current_gate: "S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_BLOCKED_NO_PRODUCTION"
+current_gate: "S2PMT07_P0_P1_ZERO_PROOF_ASSEMBLY_BLOCKED_NO_PRODUCTION"
 current_v6_task_id: "NOT_APPLICABLE"
 current_v7_contract_version: "ADP-PRODUCT-CONTRACT-V7.2"
 current_v7_roadmap_version: "ADP-ROADMAP-V7.2"
