@@ -1,0 +1,77 @@
+{
+  "schema_version": "2026-06-27.alpha.phase6.owner_gate_gap",
+  "generated_at": "2026-06-27T10:58:00+10:00",
+  "status": "blocked_not_ready_for_owner_gate",
+  "status_zh": "阻塞，尚不可进入 OWNER-GATE-01",
+  "mode": "research_paper_order_intent_review",
+  "canonical_root": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Alpha",
+  "github_source_of_truth": "LinzeColin/CodexProject/Alpha",
+  "safety_boundary": {
+    "live_trading_enabled": false,
+    "kill_switch_active": false,
+    "live_authorization_file_required_absent": true,
+    "live_authorization_path": "runtime/LIVE_AUTHORIZATION.json",
+    "broker_mutation_allowed": false,
+    "message_zh": "当前只允许研究、模拟和 broker-ready order intent 审核；不得创建 LIVE_AUTHORIZATION.json，不得提交真实 broker mutation。"
+  },
+  "acceptance": [
+    {
+      "id": "phase6_48h_soak_validation",
+      "required": "48 小时自然日 Paper/Shadow soak validation 通过",
+      "status": "missing",
+      "status_zh": "缺失",
+      "evidence": [],
+      "reason_zh": "canonical Alpha 当前没有可验证的 48 小时 soak validation 证据或 Phase 6 采样历史。"
+    },
+    {
+      "id": "qualified_trading_day_paper_shadow_report",
+      "required": "至少一个合格交易日 Paper/Shadow 报告通过 schema 和 hard gate",
+      "status": "missing",
+      "status_zh": "缺失",
+      "evidence": [],
+      "reason_zh": "canonical Alpha 当前没有合格交易日 Paper/Shadow 报告、schema 验证输出或 hard gate 通过证据。"
+    },
+    {
+      "id": "shadow_live_constraints",
+      "required": "Shadow live 约束不再 blocked",
+      "status": "blocked",
+      "status_zh": "阻塞",
+      "evidence": [],
+      "reason_zh": "canonical Alpha 当前保持研究/意图审核模式，未建立可验收的 Shadow live constraints 证据。"
+    },
+    {
+      "id": "limit_order_contract",
+      "required": "限价订单契约通过",
+      "status": "partial",
+      "status_zh": "部分具备",
+      "evidence": [
+        "tests/test_approval_queue.py",
+        "tests/test_policy.py",
+        "tests/test_live_broker_fail_closed.py"
+      ],
+      "reason_zh": "已有订单意图、风控、审批队列和 fail-closed 测试基础，但当前没有 Phase 6 限价订单契约验收报告。"
+    },
+    {
+      "id": "owner_decision",
+      "required": "OWNER_DECISION.md 可供 owner 选择 A/B/C",
+      "status": "present_blocked_choice",
+      "status_zh": "已提供阻塞态选择",
+      "evidence": [
+        "docs/evidence/phase6_closeout_latest/OWNER_DECISION.md"
+      ],
+      "reason_zh": "已提供 A/B/C 决策页，但只能用于选择继续补证、保持研究模式或暂停；不能用于批准 MICRO_LIVE。"
+    }
+  ],
+  "blocking_conditions": [
+    "48 小时自然日 soak validation 证据缺失",
+    "合格交易日 Paper/Shadow 报告缺失",
+    "Shadow live constraints 仍无 canonical 通过证据",
+    "Phase 6 closeout status 不是 ready_for_owner_gate"
+  ],
+  "next_actions": [
+    "在 canonical Alpha 内实现或恢复 Phase 6 只读/paper-shadow 采样与验证工具，禁止迁回旧 shadow folder。",
+    "生成至少一个合格交易日 Paper/Shadow 报告，并用 schema 与 hard gate 验证。",
+    "生成 Shadow live constraints 报告，保持 broker mutation disabled。",
+    "48 小时自然日验证通过后再把本文件 status 改为 ready_for_owner_gate。"
+  ]
+}
