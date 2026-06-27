@@ -68,6 +68,7 @@ def main() -> int:
     parser.add_argument("--evidence-root", default=str(DEFAULT_RUNTIME_EVIDENCE_ROOT))
     parser.add_argument("--history-path", default=str(DEFAULT_SOAK_HISTORY_PATH))
     parser.add_argument("--duration-hours", type=int, default=48)
+    parser.add_argument("--max-sample-gap-seconds", type=int, default=900)
     parser.add_argument("--max-sample-age-seconds", type=int, default=900)
     parser.add_argument("--require-fresh", action="store_true", help="要求最新 sampler 样本未过期，否则返回非 0。")
     parser.add_argument("--require-ready", action="store_true", help="要求 ready_for_owner_gate，否则返回非 0。")
@@ -77,7 +78,11 @@ def main() -> int:
     samples = read_soak_samples(args.history_path)
     paper_shadow = _read_json(evidence_root / "paper_shadow_report_latest.json")
     shadow_constraints = _read_json(evidence_root / "shadow_live_constraints_latest.json")
-    soak = build_soak_validation_report(samples=samples, duration_hours=args.duration_hours)
+    soak = build_soak_validation_report(
+        samples=samples,
+        duration_hours=args.duration_hours,
+        max_sample_gap_seconds=args.max_sample_gap_seconds,
+    )
     closeout = build_owner_gate_closeout(
         soak_validation=soak,
         paper_shadow_report=paper_shadow,
@@ -91,6 +96,13 @@ def main() -> int:
         "sample_count": soak["sample_count"],
         "observed_hours": soak["observed_hours"],
         "duration_hours_required": soak["duration_hours_required"],
+        "window_start": soak.get("window_start"),
+        "window_end": soak.get("window_end"),
+        "continuous_sample_count": soak.get("continuous_sample_count"),
+        "max_sample_gap_seconds": soak.get("max_sample_gap_seconds"),
+        "max_observed_gap_seconds": soak.get("max_observed_gap_seconds"),
+        "gap_violation_count": soak.get("gap_violation_count"),
+        "last_gap_violation": soak.get("last_gap_violation"),
         "paper_shadow_status": paper_shadow.get("status", "missing"),
         "shadow_live_constraints_status": shadow_constraints.get("status", "missing"),
         "live_authorization_absent": not (ROOT / "runtime" / "LIVE_AUTHORIZATION.json").exists(),

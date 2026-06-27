@@ -32,6 +32,25 @@ def _paper_run(tmp_path: Path) -> dict:
     return loop.run_once()
 
 
+def _soak_sample(generated_at: datetime, paper_shadow: dict, constraints: dict) -> dict:
+    return {
+        "generated_at": generated_at.isoformat(),
+        "fail_count": 0,
+        "paper_shadow_report": paper_shadow,
+        "shadow_live_constraints": constraints,
+    }
+
+
+def _continuous_soak_samples(start: datetime, end: datetime, paper_shadow: dict, constraints: dict, *, step_minutes: int = 15) -> list[dict]:
+    samples = []
+    current = start
+    while current < end:
+        samples.append(_soak_sample(current, paper_shadow, constraints))
+        current += timedelta(minutes=step_minutes)
+    samples.append(_soak_sample(end, paper_shadow, constraints))
+    return samples
+
+
 def test_paper_shadow_report_passes_limit_order_contract(tmp_path):
     run = _paper_run(tmp_path)
     report = build_paper_shadow_report(run_result=run)
@@ -57,28 +76,40 @@ def test_soak_validation_observes_until_48h_coverage(tmp_path):
     run = _paper_run(tmp_path)
     paper_shadow = build_paper_shadow_report(run_result=run)
     constraints = build_shadow_live_constraints_report(live_authorization_path=tmp_path / "LIVE_AUTHORIZATION.json")
-    start = datetime.now(timezone.utc).replace(microsecond=0)
-    samples = [
-        {
-            "generated_at": start.isoformat(),
-            "fail_count": 0,
-            "paper_shadow_report": {**paper_shadow, "status": "pass", "shadow": {**paper_shadow["shadow"], "order_type": "limit"}},
-            "shadow_live_constraints": constraints,
-        },
-        {
-            "generated_at": (start + timedelta(hours=48)).isoformat(),
-            "fail_count": 0,
-            "paper_shadow_report": {**paper_shadow, "status": "pass", "shadow": {**paper_shadow["shadow"], "order_type": "limit"}},
-            "shadow_live_constraints": constraints,
-        },
-    ]
+    end = datetime.now(timezone.utc).replace(microsecond=0)
+    start = end - timedelta(hours=48)
+    samples = _continuous_soak_samples(start, end, paper_shadow, constraints)
 
     report = build_soak_validation_report(samples=samples)
 
     assert report["status"] == "pass"
     assert report["observed_hours"] == 48.0
     assert report["window_start"] == start.isoformat()
-    assert report["window_end"] == (start + timedelta(hours=48)).isoformat()
+    assert report["window_end"] == end.isoformat()
+    assert report["max_observed_gap_seconds"] == 900
+    assert report["gap_violation_count"] == 0
+
+
+def test_soak_validation_resets_window_after_stale_gap(tmp_path):
+    run = _paper_run(tmp_path)
+    paper_shadow = build_paper_shadow_report(run_result=run)
+    constraints = build_shadow_live_constraints_report(live_authorization_path=tmp_path / "LIVE_AUTHORIZATION.json")
+    start = datetime.now(timezone.utc).replace(microsecond=0)
+    samples = [
+        _soak_sample(start, paper_shadow, constraints),
+        _soak_sample(start + timedelta(seconds=1800), paper_shadow, constraints),
+        _soak_sample(start + timedelta(seconds=2400), paper_shadow, constraints),
+    ]
+
+    report = build_soak_validation_report(samples=samples, duration_hours=1, max_sample_gap_seconds=900)
+
+    assert report["status"] == "observing"
+    assert report["observed_seconds"] == 600
+    assert report["window_start"] == (start + timedelta(seconds=1800)).isoformat()
+    assert report["window_end"] == (start + timedelta(seconds=2400)).isoformat()
+    assert report["max_observed_gap_seconds"] == 1800
+    assert report["gap_violation_count"] == 1
+    assert {item["id"]: item["status"] for item in report["checks"]}["sample_gap_coverage"] == "pass"
 
 
 def test_owner_gate_closeout_blocks_until_all_acceptance_pass(tmp_path):
@@ -316,21 +347,9 @@ def test_owner_gate_status_cli_reports_ready_from_runtime_evidence(tmp_path, mon
         live_authorization_path=tmp_path / "LIVE_AUTHORIZATION.json",
         output_path=evidence_root / "shadow_live_constraints_latest.json",
     )
-    start = datetime.now(timezone.utc).replace(microsecond=0)
-    samples = [
-        {
-            "generated_at": start.isoformat(),
-            "fail_count": 0,
-            "paper_shadow_report": paper_shadow,
-            "shadow_live_constraints": constraints,
-        },
-        {
-            "generated_at": (start + timedelta(hours=48)).isoformat(),
-            "fail_count": 0,
-            "paper_shadow_report": paper_shadow,
-            "shadow_live_constraints": constraints,
-        },
-    ]
+    end = datetime.now(timezone.utc).replace(microsecond=0)
+    start = end - timedelta(hours=48)
+    samples = _continuous_soak_samples(start, end, paper_shadow, constraints)
     history_path.write_text("\n".join(json.dumps(sample) for sample in samples) + "\n", encoding="utf-8")
     monkeypatch.setattr(check_phase6_owner_gate_status, "ROOT", tmp_path)
     monkeypatch.setattr(
@@ -353,7 +372,9 @@ def test_owner_gate_status_cli_reports_ready_from_runtime_evidence(tmp_path, mon
     assert payload["status"] == "ready_for_owner_gate"
     assert payload["live_authorization_absent"] is True
     assert payload["sampler_freshness_status"] == "pass"
-    assert payload["latest_sample_generated_at"] == (start + timedelta(hours=48)).isoformat()
+    assert payload["latest_sample_generated_at"] == end.isoformat()
+    assert payload["gap_violation_count"] == 0
+    assert payload["continuous_sample_count"] == len(samples)
 
 
 def test_owner_gate_status_cli_detects_stale_sampler_sample(tmp_path, monkeypatch, capsys):

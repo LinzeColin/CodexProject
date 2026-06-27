@@ -64,6 +64,14 @@ Reason: During the 48-hour natural-day soak, Alpha must detect a stopped or stal
 
 Consequence: Freshness monitoring can fail independently from OWNER-GATE readiness. It does not create `runtime/LIVE_AUTHORIZATION.json`, does not submit broker orders, and does not promote Alpha to MICRO_LIVE.
 
+## 2026-06-27: Phase 6 Soak Uses Continuous Window Coverage
+
+Decision: `build_soak_validation_report` measures the current continuous Paper/Shadow observation window and resets the 48-hour clock after stale sample gaps.
+
+Reason: A first-to-last timestamp span can overstate real observation if the sampler stopped for a long interval. OWNER-GATE needs proof of continuous natural-day observation, not only elapsed wall-clock distance.
+
+Consequence: Historical gap violations remain visible in evidence, but readiness depends on a fresh continuous window reaching 48 hours with passing Paper/Shadow and Shadow live constraints.
+
 ## 2026-06-13: Execution Boundary
 
 Decision: Alpha will automate paper trading, risk checks, approval queues, and broker-ready order tickets. It will not autonomously submit real-money broker orders.

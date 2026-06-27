@@ -147,17 +147,51 @@ def build_soak_validation_report(
     *,
     samples: list[dict],
     duration_hours: int = 48,
+    max_sample_gap_seconds: int = 900,
     output_path: str | Path | None = None,
 ) -> dict:
     sorted_samples = sorted(samples, key=lambda item: item.get("generated_at") or "")
-    first = _parse_time(sorted_samples[0].get("generated_at")) if sorted_samples else None
-    latest = _parse_time(sorted_samples[-1].get("generated_at")) if sorted_samples else None
+    parsed_samples = []
+    invalid_sample_count = 0
+    for item in sorted_samples:
+        try:
+            parsed_time = _parse_time(item.get("generated_at"))
+        except ValueError:
+            parsed_time = None
+        if parsed_time is None:
+            invalid_sample_count += 1
+            continue
+        parsed_samples.append((parsed_time, item))
+
+    gaps = [
+        {
+            "start": previous[0].isoformat(),
+            "end": current[0].isoformat(),
+            "seconds": max(0, int((current[0] - previous[0]).total_seconds())),
+        }
+        for previous, current in zip(parsed_samples, parsed_samples[1:])
+    ]
+    gap_violations = [item for item in gaps if item["seconds"] > max_sample_gap_seconds]
+    continuous_start_index = 0
+    if gap_violations:
+        last_gap = gap_violations[-1]
+        for index, (parsed_time, _) in enumerate(parsed_samples):
+            if parsed_time.isoformat() == last_gap["end"]:
+                continuous_start_index = index
+                break
+    continuous_samples = parsed_samples[continuous_start_index:] if parsed_samples else []
+    first = continuous_samples[0][0] if continuous_samples else None
+    latest = continuous_samples[-1][0] if continuous_samples else None
     observed_seconds = int((latest - first).total_seconds()) if first and latest else 0
     required_seconds = int(duration_hours * 3600)
     failed_samples = [item for item in sorted_samples if int(item.get("fail_count", 0)) > 0]
+    current_window_gaps = gaps[continuous_start_index:] if parsed_samples else []
+    current_window_gap_violations = [item for item in current_window_gaps if item["seconds"] > max_sample_gap_seconds]
     checks = [
         _check("samples_present", bool(sorted_samples), "soak samples present"),
-        _check("duration_coverage", observed_seconds >= required_seconds, "48h natural-day coverage"),
+        _check("timestamps_valid", invalid_sample_count == 0, "sample timestamps valid"),
+        _check("sample_gap_coverage", not current_window_gap_violations, "current continuous sample window has no stale gaps"),
+        _check("duration_coverage", observed_seconds >= required_seconds, "48h natural-day continuous coverage"),
         _check("no_failed_samples", not failed_samples, "no failed soak samples"),
         _check(
             "paper_shadow_reports_pass",
@@ -175,11 +209,17 @@ def build_soak_validation_report(
         "generated_at": utc_now_iso(),
         "status": "pass" if all(item["status"] == "pass" for item in checks) else "observing",
         "duration_hours_required": duration_hours,
+        "max_sample_gap_seconds": max_sample_gap_seconds,
+        "max_observed_gap_seconds": max((item["seconds"] for item in gaps), default=0),
+        "gap_violation_count": len(gap_violations),
+        "last_gap_violation": gap_violations[-1] if gap_violations else None,
         "window_start": first.isoformat() if first else None,
         "window_end": latest.isoformat() if latest else None,
         "observed_seconds": observed_seconds,
         "observed_hours": round(observed_seconds / 3600, 4),
         "sample_count": len(sorted_samples),
+        "continuous_sample_count": len(continuous_samples),
+        "invalid_sample_count": invalid_sample_count,
         "fail_count": sum(1 for item in checks if item["status"] == "fail"),
         "checks": checks,
         "safety_boundary": _safety_boundary(),
@@ -270,6 +310,8 @@ def build_owner_decision_markdown(
     observed_hours = float(soak_validation.get("observed_hours") or 0)
     duration_hours = float(soak_validation.get("duration_hours_required") or 48)
     remaining_hours = max(duration_hours - observed_hours, 0)
+    max_gap_seconds = int(soak_validation.get("max_observed_gap_seconds") or 0)
+    gap_violation_count = int(soak_validation.get("gap_violation_count") or 0)
     option_a = (
         "批准提交 OWNER-GATE-01 审核；仍停在 owner 决策，不进入 MICRO_LIVE。"
         if ready
@@ -286,6 +328,8 @@ def build_owner_decision_markdown(
         f"- 生成时间: `{_display(closeout.get('generated_at', '缺失'))}`",
         f"- 已观察 soak 小时: `{observed_hours:.4f} / {duration_hours:.0f}`",
         f"- 剩余 soak 小时: `{remaining_hours:.4f}`",
+        f"- 连续观察窗口: `{_display(soak_validation.get('window_start'))}` 到 `{_display(soak_validation.get('window_end'))}`",
+        f"- 最大样本间隔: `{max_gap_seconds}` 秒；gap violation: `{gap_violation_count}`",
         f"- 当前阻塞项: `{', '.join(blocking) if blocking else '无'}`",
         "- 实盘交易开关: `false`",
         "- Broker 真实写单允许状态: `false`",
@@ -364,6 +408,8 @@ def build_phase6_closeout_report_markdown(
     observed_hours = float(soak_validation.get("observed_hours") or 0)
     required_hours = float(soak_validation.get("duration_hours_required") or 48)
     remaining_hours = max(required_hours - observed_hours, 0)
+    max_gap_seconds = int(soak_validation.get("max_observed_gap_seconds") or 0)
+    gap_violation_count = int(soak_validation.get("gap_violation_count") or 0)
     schema_passed = all(item.get("status") == "pass" for item in paper_shadow_report.get("schema_checks", []))
     hard_gates_passed = all(item.get("status") == "pass" for item in paper_shadow_report.get("hard_gate_checks", []))
     acceptance_by_id = {item.get("id"): item for item in closeout.get("acceptance", [])}
@@ -426,6 +472,8 @@ def build_phase6_closeout_report_markdown(
         f"- 生成时间: `{closeout.get('generated_at', '缺失')}`",
         f"- 48 小时观察进度: `{observed_hours:.4f} / {required_hours:.0f}` 小时",
         f"- 剩余观察时间: `{remaining_hours:.4f}` 小时",
+        f"- 连续观察窗口: `{_display(soak_validation.get('window_start'))}` 到 `{_display(soak_validation.get('window_end'))}`",
+        f"- 最大样本间隔: `{max_gap_seconds}` 秒；gap violation: `{gap_violation_count}`",
         f"- 当前阻塞项: `{', '.join(closeout.get('blocking_conditions') or []) or '无'}`",
         "- 结论: `可提交 OWNER-GATE-01`" if ready else "- 结论: `尚不可提交 OWNER-GATE-01`",
         "",
@@ -522,8 +570,14 @@ def build_phase6_evidence_manifest(
         "soak": {
             "status": soak_validation.get("status"),
             "sample_count": soak_validation.get("sample_count"),
+            "continuous_sample_count": soak_validation.get("continuous_sample_count"),
             "observed_hours": soak_validation.get("observed_hours"),
             "duration_hours_required": soak_validation.get("duration_hours_required"),
+            "window_start": soak_validation.get("window_start"),
+            "window_end": soak_validation.get("window_end"),
+            "max_sample_gap_seconds": soak_validation.get("max_sample_gap_seconds"),
+            "max_observed_gap_seconds": soak_validation.get("max_observed_gap_seconds"),
+            "gap_violation_count": soak_validation.get("gap_violation_count"),
         },
         "paper_shadow": {
             "status": paper_shadow_report.get("status"),
@@ -592,6 +646,7 @@ def verify_phase6_evidence_package(
             _check("live_trading_disabled", (shadow_constraints.get("health") or {}).get("live_trading_enabled") is False, "live trading disabled"),
             _check("live_authorization_absent", not auth_path.exists(), "LIVE_AUTHORIZATION.json absent"),
             _check("soak_samples_present", int(soak.get("sample_count") or 0) > 0, "soak samples present"),
+            _check("soak_sample_gap_coverage", _check_status(soak, "sample_gap_coverage") == "pass", "soak current sample gaps within threshold"),
             _check("soak_no_failed_samples", _check_status(soak, "no_failed_samples") == "pass", "soak has no failed samples"),
             _check("soak_duration_pass", soak.get("status") == "pass", "48h natural-day soak pass"),
             _check("closeout_ready", closeout.get("status") == "ready_for_owner_gate", "closeout ready for owner gate"),

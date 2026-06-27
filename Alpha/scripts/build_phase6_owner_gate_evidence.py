@@ -31,6 +31,7 @@ def main() -> int:
     parser.add_argument("--history-path", default=str(DEFAULT_SOAK_HISTORY_PATH))
     parser.add_argument("--sample-count", type=int, default=1)
     parser.add_argument("--duration-hours", type=int, default=48)
+    parser.add_argument("--max-sample-gap-seconds", type=int, default=900)
     args = parser.parse_args()
 
     evidence_root = Path(args.evidence_root)
@@ -57,6 +58,7 @@ def main() -> int:
     soak = build_soak_validation_report(
         samples=samples,
         duration_hours=args.duration_hours,
+        max_sample_gap_seconds=args.max_sample_gap_seconds,
         output_path=evidence_root / "soak_validation_latest.json",
     )
     closeout = build_owner_gate_closeout(
