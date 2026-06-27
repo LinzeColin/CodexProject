@@ -5471,6 +5471,10 @@ models:
       - "PARAM-ADP-983"
       - "PARAM-ADP-984"
       - "PARAM-ADP-985"
+      - "PARAM-ADP-986"
+      - "PARAM-ADP-987"
+      - "PARAM-ADP-988"
+      - "PARAM-ADP-989"
     inputs:
       - "S2PLT01 independent replay review receipt state"
       - "S2PLT02 and S2PLT03 authoritative completion state"
@@ -5478,6 +5482,8 @@ models:
       - "S2PLT02 live two-day readiness precheck as non-terminal evidence"
       - "S2PLT03 local drill bundle as non-terminal evidence"
       - "S2PMT01 through S2PMT07 local hardening/precheck state"
+      - "hash-bound state-consistency evidence bundle"
+      - "hash-bound content evidence bundle"
       - "inherited V7.1 P0/P1 blocker counts"
       - "final acceptance bundle presence"
       - "no-production side-effect flags"
@@ -5487,6 +5493,8 @@ models:
       - "S2PLT01 independent replay review non-terminal evidence state"
       - "S2PLT02 readiness precheck non-terminal evidence state"
       - "S2PLT03 local drill non-terminal evidence state"
+      - "state-consistency evidence bundle hash"
+      - "content evidence bundle hash"
       - "embedded S2PMT07 precheck state"
       - "deterministic candidate hash"
       - "forbidden production flag state"
@@ -5505,6 +5513,8 @@ models:
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT04_S2PLT02_PRECHECK_EVIDENCE_SYNC.md"
       - "governance/run_manifests/ADP-S2PLT04-S2PLT01-REPLAY-REVIEW-EVIDENCE-SYNC-20260628.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT04_S2PLT01_REPLAY_REVIEW_EVIDENCE_SYNC.md"
+      - "governance/run_manifests/ADP-S2PLT04-STATE-CONTENT-EVIDENCE-BUNDLE-SYNC-20260628.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT04_STATE_CONTENT_EVIDENCE_BUNDLE_SYNC.md"
 
   -
     model_id: "MOD-ADP-104"

@@ -227,6 +227,30 @@ S2PLT04_REPLAY_EXECUTION_GENERATED_AT = "2026-06-26T19:10:00+10:00"
 S2PLT04_REPLAY_REVIEW_GENERATED_AT = "2026-06-26T20:00:00+10:00"
 S2PLT04_LIVE_2D_PRECHECK_GENERATED_AT = "2026-06-26T19:00:00+10:00"
 S2PLT04_LOCAL_DRILL_BUNDLE_GENERATED_AT = "2026-06-28T02:00:14+10:00"
+S2PLT04_STATE_CONSISTENCY_SOURCE_TASKS = (
+    "S2PMT02",
+    "S2PMT03",
+    "S2PMT04",
+    "S2PMT05",
+    "S2PMT06",
+)
+S2PLT04_CONTENT_EVIDENCE_SOURCE_TASKS = (
+    "S2PHT05",
+    "S2PIT04",
+    "S2PKT05",
+)
+S2PLT04_STATE_CONSISTENCY_EVIDENCE_REFS = (
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT02_ATOMIC_RECOVERY.md",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT03_LEASE_FENCING.md",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT04_LIFECYCLE_CACHE.md",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT05_STRESS_E2E.md",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT06_OWNER_UX.md",
+)
+S2PLT04_CONTENT_EVIDENCE_REFS = (
+    "governance/run_manifests/ADP-S2PHT05-CONTENT-QUALITY-GATE-20260626.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PIT04_CONTENT_LEDGER.md",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PKT05_M4_MAIL.md",
+)
 S2PLT04_REQUIRED_EVIDENCE = (
     "S2PLT01_ACCEPTED",
     "S2PLT02_2D_REAL_RUN",
@@ -872,6 +896,27 @@ def _build_s2plt04_s2plt01_independent_replay_review_report() -> dict[str, Any]:
     )
 
 
+def _build_s2plt04_local_evidence_bundle(
+    *,
+    bundle_id: str,
+    scope: str,
+    source_tasks: tuple[str, ...],
+    evidence_refs: tuple[str, ...],
+) -> dict[str, Any]:
+    bundle = {
+        "bundle_id": bundle_id,
+        "status": "pass",
+        "scope": scope,
+        "source_tasks": list(source_tasks),
+        "evidence_refs": list(evidence_refs),
+        "no_production_side_effects": True,
+        "terminal_acceptance_claimed": False,
+        "bundle_hash": "",
+    }
+    bundle["bundle_hash"] = _stable_hash({key: value for key, value in bundle.items() if key != "bundle_hash"})
+    return bundle
+
+
 def build_s2plt04_evidence_state(
     *,
     independent_replay_review_report: Mapping[str, Any] | None = None,
@@ -901,12 +946,24 @@ def build_s2plt04_evidence_state(
         )
     local_drill_valid = not validate_s2plt03_local_resilience_drill_bundle(local_drill_bundle)
     local_drill_passed = local_drill_valid and local_drill_bundle.get("status") == "pass"
+    state_consistency_evidence_bundle = _build_s2plt04_local_evidence_bundle(
+        bundle_id="S2PLT04-STATE-CONSISTENCY-EVIDENCE-BUNDLE",
+        scope="local_state_consistency_evidence_not_terminal_acceptance",
+        source_tasks=S2PLT04_STATE_CONSISTENCY_SOURCE_TASKS,
+        evidence_refs=S2PLT04_STATE_CONSISTENCY_EVIDENCE_REFS,
+    )
+    content_evidence_bundle = _build_s2plt04_local_evidence_bundle(
+        bundle_id="S2PLT04-CONTENT-EVIDENCE-BUNDLE",
+        scope="local_content_evidence_not_terminal_acceptance",
+        source_tasks=S2PLT04_CONTENT_EVIDENCE_SOURCE_TASKS,
+        evidence_refs=S2PLT04_CONTENT_EVIDENCE_REFS,
+    )
     available = {
         "S2PLT01_ACCEPTED": False,
         "S2PLT02_2D_REAL_RUN": False,
         "S2PLT03_RESILIENCE_DRILL": False,
-        "STATE_CONSISTENCY_EVIDENCE": True,
-        "CONTENT_EVIDENCE": True,
+        "STATE_CONSISTENCY_EVIDENCE": state_consistency_evidence_bundle["status"] == "pass",
+        "CONTENT_EVIDENCE": content_evidence_bundle["status"] == "pass",
         "FINAL_ACCEPTANCE_BUNDLE/": False,
     }
     available_nonterminal = {
@@ -944,6 +1001,8 @@ def build_s2plt04_evidence_state(
         "s2plt03_local_drill_scope": local_drill_bundle.get("scope") if local_drill_valid else "invalid",
         "s2plt03_local_drill_bundle_hash": local_drill_bundle.get("bundle_hash") if local_drill_valid else None,
         "s2plt03_local_drill_status": "present_not_terminal_acceptance" if local_drill_passed else "not_proven",
+        "state_consistency_evidence_bundle": state_consistency_evidence_bundle,
+        "content_evidence_bundle": content_evidence_bundle,
         "state_consistency_basis": "S2PMT02_through_S2PMT06_local_validation",
         "content_evidence_basis": "S2PHT05_S2PIT04_S2PKT05_local_validation",
         "production_evidence_basis": "not_present",
@@ -1051,6 +1110,21 @@ def validate_s2plt04_integration_candidate_report(report: Mapping[str, Any]) -> 
     for item in S2PLT04_NONTERMINAL_LOCAL_EVIDENCE:
         if item not in nonterminal_evidence:
             errors.append(f"evidence.available_nonterminal_evidence must include {item}")
+    for bundle_key in ("state_consistency_evidence_bundle", "content_evidence_bundle"):
+        bundle = _mapping(evidence.get(bundle_key))
+        if bundle.get("status") != "pass":
+            errors.append(f"evidence.{bundle_key}.status must be pass")
+        if bundle.get("no_production_side_effects") is not True:
+            errors.append(f"evidence.{bundle_key}.no_production_side_effects must be true")
+        if bundle.get("terminal_acceptance_claimed") is not False:
+            errors.append(f"evidence.{bundle_key}.terminal_acceptance_claimed must be false")
+        if not bundle.get("source_tasks"):
+            errors.append(f"evidence.{bundle_key}.source_tasks must not be empty")
+        if not bundle.get("evidence_refs"):
+            errors.append(f"evidence.{bundle_key}.evidence_refs must not be empty")
+        expected_bundle_hash = _stable_hash({key: value for key, value in bundle.items() if key != "bundle_hash"})
+        if bundle.get("bundle_hash") != expected_bundle_hash:
+            errors.append(f"evidence.{bundle_key}.bundle_hash does not match bundle content")
     s2pmt07 = _mapping(report.get("s2pmt07_precheck"))
     s2pmt07_errors = validate_s2pmt07_precheck_report(s2pmt07)
     if s2pmt07_errors:

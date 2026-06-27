@@ -7,7 +7,7 @@ machine_summary:
 
 - model_count: 117
 - formula_count: 119
-- parameter_count: 985
+- parameter_count: 989
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -26,6 +26,7 @@ Fact levels follow `docs/governance/STANDARD.md`.
 
 - `S2PLT03-LOCAL-RESILIENCE-DRILL` adds `MOD-ADP-117`, `FORM-ADP-119`, and `PARAM-ADP-976` through `PARAM-ADP-979`. It records deterministic local no-production drill evidence for rate limit, parser drift, restart recovery, disk pressure, backup restore-point, rollback dry-run, and ledger count conservation. It does not accept S2PLT03, close P0/P1, enable SMTP/scheduler/Release/restore, mutate production state, or claim integrated production acceptance.
 
+- `S2PLT04-STATE-CONTENT-EVIDENCE-BUNDLE-SYNC` adds `PARAM-ADP-986` through `PARAM-ADP-989` under the existing `MOD-ADP-103` / `FORM-ADP-105` S2PLT04 precheck. It binds local state-consistency evidence and content evidence as hash-bound no-production bundles with explicit source tasks and evidence refs. It does not satisfy S2PLT01/S2PLT02/S2PLT03 terminal dependencies, complete S2PLT04, create the final bundle, close P0/P1, enable SMTP/scheduler/Release/restore, mutate production state, change sources/ranking/CURRENT/V7, or claim integrated production acceptance.
 - `S2PLT04-S2PLT01-REPLAY-REVIEW-EVIDENCE-SYNC` adds `PARAM-ADP-984` / `PARAM-ADP-985` and updates `PARAM-ADP-980` / `PARAM-ADP-981` under the existing `MOD-ADP-103` / `FORM-ADP-105` S2PLT04 precheck. It lets S2PLT04 consume the existing S2PLT01 independent replay review receipt as non-terminal local evidence only. It does not satisfy S2PLT01 authoritative acceptance, complete S2PLT04, create the final bundle, close P0/P1, enable SMTP/scheduler/Release/restore, mutate production state, or claim integrated production acceptance.
 - `S2PLT04-S2PLT02-PRECHECK-EVIDENCE-SYNC` adds `PARAM-ADP-983` and updates `PARAM-ADP-980` / `PARAM-ADP-981` under the existing `MOD-ADP-103` / `FORM-ADP-105` S2PLT04 precheck. It lets S2PLT04 consume the existing S2PLT02 live two-day readiness precheck as non-terminal local evidence only. It does not satisfy S2PLT02 authoritative completion, prove the real two-day run, complete S2PLT04, create the final bundle, close P0/P1, enable SMTP/scheduler/Release/restore, mutate production state, or claim integrated production acceptance.
 - `S2PLT04-LOCAL-DRILL-EVIDENCE-SYNC` adds `PARAM-ADP-980` through `PARAM-ADP-982` under the existing `MOD-ADP-103` / `FORM-ADP-105` S2PLT04 precheck. It lets S2PLT04 consume the existing S2PLT03 local no-production drill bundle as non-terminal local evidence only. It does not satisfy S2PLT03 authoritative completion, complete S2PLT04, create the final bundle, close P0/P1, enable SMTP/scheduler/Release/restore, mutate production state, or claim integrated production acceptance.

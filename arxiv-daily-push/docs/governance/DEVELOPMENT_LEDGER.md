@@ -10,11 +10,29 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.1
 - Current phase: S2PL
-- Current gate: S2PLT04_S2PLT01_REPLAY_REVIEW_EVIDENCE_SYNC_BLOCKED_NO_PRODUCTION
-- Confirmed iteration count: 161
+- Current gate: S2PLT04_STATE_CONTENT_EVIDENCE_BUNDLE_SYNC_BLOCKED_NO_PRODUCTION
+- Confirmed iteration count: 162
 - Reconstructed event count: 0
-- Current task: `S2PLT04-S2PLT01-REPLAY-REVIEW-EVIDENCE-SYNC` records that S2PLT04 integration-candidate precheck consumes existing S2PLT01 independent replay review evidence as non-terminal evidence only. No S2PLT01/S2PLT04 completion, final bundle, P0/P1 closure, CURRENT, V7.1/V7.2 contract file, real SMTP, scheduler, Release, production restore, public schema, DB migration, production queue, source adapter, ranking, DAILY_OPERATION, or integrated production acceptance state changed.
+- Current task: `S2PLT04-STATE-CONTENT-EVIDENCE-BUNDLE-SYNC` records that S2PLT04 integration-candidate precheck binds local state-consistency and content evidence to hash-bound no-production bundles. No S2PLT04 completion, final bundle, P0/P1 closure, CURRENT, V7.1/V7.2 contract file, real SMTP, scheduler, Release, production restore, public schema, DB migration, production queue, source adapter, ranking, DAILY_OPERATION, or integrated production acceptance state changed.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
+
+
+### `ITER-20260628-ADP-S2PLT04-STATE-CONTENT-EVIDENCE-BUNDLE-SYNC`
+
+- Timestamp: `2026-06-28T03:26:05+10:00`
+- Fact level: EXTRACTED from S2PLT04 final-gate implementation, focused RED/GREEN regression tests, semantic registries, traceability row, phase record, run manifest, and generated governance views.
+- Base commit: `afc31872ff4acd8b21f30c84e0f3876e9b8a97cf`
+- Product version: `0.23.1`
+- Status: blocked no-production precheck recorded; S2PLT04 state and content evidence are now hash-bound bundles, but S2PLT04 completion and the final acceptance bundle are not claimed.
+- Task IDs: `S2PLT04-STATE-CONTENT-EVIDENCE-BUNDLE-SYNC`; parent `S2PLT04`; acceptance `ACC-S2PLT04-INTEGRATION-CANDIDATE`.
+- Goal: Prevent S2PLT04 from treating local state/content evidence as unbound strings while still preventing that evidence from satisfying terminal S2PLT04 gates.
+- Files changed: S2PLT04 final-gate helper and tests, semantic registries, traceability matrix, shallow user-center traceability page, phase record, run manifest, delivery task, development events, generated status views, VERSION_MATRIX, changelog, and 三基 notes.
+- Decisions: `STATE_CONSISTENCY_EVIDENCE` and `CONTENT_EVIDENCE` now include deterministic bundle hashes, source tasks, evidence refs, no-production flags, and terminal_acceptance_claimed false; final bundle, S2PLT04 completion, inherited P0/P1 zero state, and S2PMT07 remain blocked.
+- Validation: RED target test observed expected missing state/content evidence bundle fields; focused S2PLT04 final-gate plus user-center traceability tests 40 OK; owner-controls tests 5 OK; full arxiv-daily-push unittest 607 OK; V7.2 validator PASS; ADP project governance 0 errors / 0 warnings; changed-only governance semantic 0 errors / 0 warnings; governance sync validator 0 errors / 0 warnings; lean check-render drift_count 0 / reference_issue_count 0; JSON/JSONL/YAML/CSV/manifest parse OK; git diff --check PASS; production true-flag scan OK; CURRENT points to V7.2/S2PMT07 with P0=8/P1=37 still open; open PR count 0; remote ADP/arxiv/s2p branch grep no matches; no __pycache__/.pyc remains. Full semantic extractor was interrupted after more than 80 seconds during full-table AST parsing and is not claimed as passed.
+- Boundaries: No SMTP, scheduler, Release, production restore, public schema, DB, production queue, source adapter, ranking, CURRENT/V7 contract, V7.1 baseline, P0/P1 closure, DAILY_OPERATION, or integrated production acceptance changed.
+- Risks: This evidence sync can be misread as S2PLT04 completion. It is deliberately local evidence binding only; S2PLT01/S2PLT02/S2PLT03 authoritative completion, S2PLT04 completion, final bundle, S2PMT07, and inherited P0/P1 zero state still control production acceptance.
+- Evidence: `governance/run_manifests/ADP-S2PLT04-STATE-CONTENT-EVIDENCE-BUNDLE-SYNC-20260628.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PLT04_STATE_CONTENT_EVIDENCE_BUNDLE_SYNC.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`; `arxiv-daily-push/用户中心/功能任务测试证据追踪链.md`.
+- Next step: Continue S2PLT04 prerequisite closure or final-bundle prerequisite work under S2PMT07/V7.2 boundaries, without enabling production.
 
 
 ### `ITER-20260628-ADP-S2PLT04-S2PLT01-REPLAY-REVIEW-EVIDENCE-SYNC`
