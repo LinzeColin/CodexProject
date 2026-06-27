@@ -16,7 +16,7 @@
 - 不修改 `PFI/web/index.html`。
 - 不修改 `PFI/web/app/shell.js`。
 - 不新增 `PFI/web/pfi_v022_logic_review.html`。
-- 不新增 `PFI/config/pfi_v022_parameters.yaml`。
+- 不新增 `PFI/config/pfi_parameters.yaml`。
 - 不新增标签数据库 schema。
 - 不改变 v0.2.1 UIUX 展示。
 
@@ -26,5 +26,4 @@
 | --- | --- |
 | `STAGE0_BASELINE_REPORT.md` | Stage 0 中文 baseline report。 |
 | `SOURCE_TASK_PACK_MANIFEST.md` | Downloads 来源文件、SHA-256 和使用边界。 |
-| `ROADMAP_LOCK.md` | v0.2.2 Milestone / Acceptance / Stop / Validation 锁定摘要。 |
-
+| `ROADMAP_LOCK.md` | v0.2.2 Stage / Phase / Task / Acceptance / Stop / Validation 锁定摘要。 |

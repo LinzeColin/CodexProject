@@ -2,25 +2,44 @@
 
 版本：`v0.2.2 数据库治理 / E2E 逻辑优化`
 
+Roadmap 形态：`Stage -> Phase -> Task`
+
+权威任务包：`PFI_v0.2.2_Stage_Phase_Task_Roadmap_zh.md`
+
 追求目标：
 
 ```text
 建立一个以 CNY 为主口径、以统一账本为事实层、以 Interconnection 为核心关联机制、以参数文件为模型治理中心、以中文可视化为人工验收入口的个人金融 E2E 逻辑系统。
 ```
 
-## Stage / Milestone 顺序
+## Stage 顺序
 
-| Milestone | 名称 | 本轮状态 | 说明 |
+| Stage | 名称 | 本轮状态 | 说明 |
 | --- | --- | --- | --- |
-| 0 | 现状盘点与任务锁定 | 本轮执行 | 只做 baseline，不提前实现后续功能。 |
-| 1 | 模型参数文件重构 | 待 owner 开启 | 后续新增 YAML、参数 changelog 和一致性测试。 |
-| 2 | CNY 与汇率有效日逻辑 | 待 owner 开启 | 统一 CNY 主口径和 06:00 有效汇率日。 |
-| 3 | Economic Event 与 Interconnection | 待 owner 开启 | 新增 economic_event_id、interconnection_group_id、no-double-count。 |
-| 4 | 消费分类与标签系统 | 待 owner 开启 | 12 大类、50 中类、标签持久化。 |
-| 5 | 消费、投资、现金流模型升级 | 待 owner 开启 | 公式、参数、阈值和现金流 7 窗口。 |
-| 6 | Runtime Diff 与 Agent Trigger | 待 owner 开启 | dependency hash、impacted metrics、Codex Review Ticket。 |
-| 7 | HTML / UIUX 可视化审查页 | 待 owner 开启 | 未来新增审查页；不影响本轮 Stage 0。 |
-| 8 | 2 轮 x 6 Agent 自检和最终交付 | 待 owner 开启 | 所有测试通过后生成正式复审报告。 |
+| Stage 0 | 任务锁定与文件定位 | 本轮补做 | 完成 `S0-P1-T1..S0-P2-T2`。 |
+| Stage 1 | 模型参数文件重构 | 待 owner 开启 | 中文参数总目录、机器可读 YAML、一致性测试。 |
+| Stage 2 | CNY 基准与汇率规则 | 待 owner 开启 | CNY 主显示、原币辅助、06:00 有效汇率日。 |
+| Stage 3 | 数据源、账户角色与可扩展结构 | 待 owner 开启 | Source Profile、capabilities、账户角色重叠和生效期。 |
+| Stage 4 | Economic Event 与 Interconnection 逻辑 | 待 owner 开启 | economic_event_id、interconnection_group_id、Matrix。 |
+| Stage 5 | 统一账本事件、消费双口径与分类体系 | 待 owner 开启 | event type、双消费口径、12 大类 / 50 中类。 |
+| Stage 6 | 标签系统与自定义视图 | 待 owner 开启 | 标签注册、赋值、规则、变更历史和视图。 |
+| Stage 7 | 模型公式、阈值与评分标准 | 待 owner 开启 | 置信度、消费、投资、现金流公式。 |
+| Stage 8 | 本地运行 Diff 与 Impacted Metrics | 待 owner 开启 | dependency hash、diff 收紧、LLM 触发规则。 |
+| Stage 9 | 可视化与 UI/UX | 待 owner 开启 | 参数中心、Interconnection 可视化、现金流和 drilldown。 |
+| Stage 10 | 报告、建议与复盘 | 待 owner 开启 | 双消费口径报告、投资成本行为、建议评分生命周期。 |
+| Stage 11 | 测试与验证 | 待 owner 开启 | 金融逻辑、跨板块一致性、可视化一致性测试。 |
+| Stage 12 | 文档同步与交付 | 待 owner 开启 | 三基、审查 HTML、总结报告。 |
+| Stage 13 | 后置触发型复核 | 非默认执行 | 仅在 diff/test/owner 指定触发时执行。 |
+
+## Stage 0 Task Lock
+
+| Task ID | Phase | 交付物 | 状态 |
+| --- | --- | --- | --- |
+| `S0-P1-T1` | Phase 0.1 | `PFI/开发记录.md` 新增 `PFI v0.2.2 E2E 逻辑优化` 任务章节 | 本轮补做 |
+| `S0-P1-T2` | Phase 0.1 | 文件清单，覆盖三基、参数 YAML、前端 HTML、测试文件 | 本轮补做 |
+| `S0-P1-T3` | Phase 0.1 | 非目标清单：不做真实交易、自动投资、隐私私有化重构、每次运行联网抓汇率 | 本轮补做 |
+| `S0-P2-T1` | Phase 0.2 | `PFI/模型参数文件.md` metadata 新增 `task_name` 和 `parameter_version` | 本轮补做 |
+| `S0-P2-T2` | Phase 0.2 | `PFI/config/parameter_changelog.md` | 本轮补做 |
 
 ## Stage 0 Acceptance Criteria
 
@@ -29,6 +48,9 @@
 - 已标记哪些逻辑与 v0.2.2 要求冲突。
 - 已确认不会破坏已有 v0.2 Stage 6 基础。
 - 已锁定 HTML 模板只是未来逻辑审查参考，不是本轮 UI 修改要求。
+- 已按 Stage -> Phase -> Task roadmap 补做 Stage 0，不再只保留 milestone 摘要。
+- 已创建参数变更记录文件 `PFI/config/parameter_changelog.md`。
+- 已在 `PFI/模型参数文件.md` 记录 `task_name=PFI v0.2.2 E2E 逻辑优化` 和 `parameter_version=v0.2.2`。
 
 ## Stage 0 Stop Condition
 
@@ -48,4 +70,3 @@ node --check PFI/web/app/shell.js
 python3 scripts/validate_project_governance.py --project PFI
 git diff --check -- PFI
 ```
-
