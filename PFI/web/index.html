@@ -263,6 +263,53 @@
           </div>
         </section>
 
+        <section class="upload-import-panel" data-upload-import-panel hidden aria-labelledby="upload-center-title">
+          <div class="upload-import-grid">
+            <article class="upload-center" data-upload-center>
+              <div class="panel-toolbar">
+                <div>
+                  <p class="panel-kicker">上传中心</p>
+                  <h2 id="upload-center-title">上传支付宝账单</h2>
+                </div>
+                <span class="status-pill status-review" data-upload-status data-upload-state="idle">等待选择文件</span>
+              </div>
+              <label class="upload-dropzone" data-upload-dropzone for="pfi-upload-input" tabindex="0">
+                <strong>拖拽 CSV / ZIP / XLSX 到这里</strong>
+                <span>也可以点击选择文件；本轮只做本机预检，不上传到外部服务。</span>
+              </label>
+              <input
+                id="pfi-upload-input"
+                class="upload-input"
+                data-upload-input
+                type="file"
+                multiple
+                accept=".csv,.zip,.xls,.xlsx,text/csv,application/zip"
+              />
+              <div class="upload-error" data-upload-error role="alert" hidden></div>
+              <ul class="upload-file-list" data-upload-file-list aria-label="已选择文件">
+                <li>等待 CSV / ZIP / XLSX 文件</li>
+              </ul>
+            </article>
+
+            <article class="import-center" data-import-center>
+              <div class="panel-toolbar">
+                <div>
+                  <p class="panel-kicker">导入中心</p>
+                  <h2>批次与摘要</h2>
+                </div>
+                <button class="secondary-action" type="button" data-import-review-link>进入账本复核</button>
+              </div>
+              <dl class="import-summary" data-import-summary aria-label="导入摘要">
+                <div><dt>已选择文件</dt><dd data-import-summary-files>0</dd></div>
+                <div><dt>预计记录</dt><dd data-import-summary-records>0</dd></div>
+                <div><dt>待复核</dt><dd data-import-summary-review>0</dd></div>
+                <div><dt>失败反馈</dt><dd data-import-summary-errors>0</dd></div>
+              </dl>
+              <div class="import-batches" data-import-batches aria-label="导入批次"></div>
+            </article>
+          </div>
+        </section>
+
         <section class="content-grid">
           <article class="panel main-panel" aria-labelledby="main-panel-title">
             <div class="panel-toolbar">

@@ -185,7 +185,13 @@ const FEATURE_TARGETS = {
   数据中心: { view: "tools", label: "打开数据" },
   策略库: { view: "library", label: "打开策略库" },
   上传支付宝账单: { workspace: "sync", label: "打开上传" },
+  上传中心: { workspace: "sync", label: "打开上传" },
+  拖拽上传: { workspace: "sync", label: "打开上传" },
+  失败反馈: { workspace: "sync", label: "查看反馈" },
   导入中心: { workspace: "sync", label: "打开导入" },
+  导入批次: { workspace: "sync", label: "查看批次" },
+  导入摘要: { workspace: "sync", label: "查看摘要" },
+  复核入口: { workspace: "ledger", label: "进入复核" },
   同步全部: { workspace: "sync", label: "同步计划" },
   处理待复核: { workspace: "ledger", label: "处理复核" },
   查看建议: { workspace: "recommendations", label: "查看建议" },
@@ -245,6 +251,14 @@ const SEARCH_ALIASES = {
   投资趋势: "trend qushi investment market value return cash position 市值 总收益 现金仓位 趋势",
   消费趋势: "trend qushi consumption spending budget cashflow 支出 预算 现金流 趋势",
   数据源与上传: "sources upload import sync shuju yuan 上传 导入 同步 支付宝",
+  上传中心: "upload center shangchuan zhongxin 上传 文件 拖拽 支付宝 CSV ZIP",
+  上传支付宝账单: "alipay bill upload zhangdan 支付宝 账单 上传 CSV ZIP",
+  拖拽上传: "drag drop upload tuozhuai 拖拽 上传 文件",
+  失败反馈: "error feedback shibai fankui 失败 错误 类型 过大",
+  导入中心: "import center daoru zhongxin 导入 批次 摘要 复核",
+  导入批次: "import batch daoru pici 批次 文件 记录",
+  导入摘要: "import summary zhaiyao 摘要 记录 待复核",
+  复核入口: "review entry fuhe rukou 复核 账本 流水",
   建议与复盘: "review recommendations advice fupan 建议 复盘 决策",
   报告与洞察: "reports insights report baogao 报告 洞察 导出 上下文",
   设置: "settings preferences config shezhi 设置 偏好 系统",
@@ -261,6 +275,25 @@ const SEARCH_ALIASES = {
 
 const SEARCH_DEFAULT_LIMIT = 10;
 let globalSearchState = { items: [], results: [], activeIndex: 0 };
+
+const UPLOAD_ALLOWED_EXTENSIONS = [".csv", ".zip", ".xls", ".xlsx"];
+const UPLOAD_MAX_FILE_MB = 50;
+const IMPORT_BATCH_FIXTURES = [
+  {
+    batchId: "P5-旧账单-20260627",
+    source: "旧支付宝原始账单",
+    fileCount: 3,
+    recordCount: 1286,
+    reviewCount: 42,
+    status: "待复核",
+    summary: "已发现旧交接目录中的支付宝分段账单，等待用户确认后接入私有账本。",
+  },
+];
+let uploadCenterState = {
+  files: [],
+  rejected: [],
+  lastSource: "",
+};
 
 const FUNCTION_VIEWS = {
   single: functionView(
@@ -1073,29 +1106,37 @@ function installStage3WorkspaceAliases() {
     ...structuredClone(DEFAULT_WORKSPACES.data),
     label: "数据源与上传",
     kicker: "同步与导入",
-    conclusion: "一键生成可执行前的同步/导入计划；真实登录、支付和券商操作必须另走用户确认门禁。",
-    runtime: "同步全部：只生成计划 · 不执行外部动作",
+    conclusion: "上传支付宝账单、查看导入批次、处理失败反馈，并把低置信度记录送到账本复核。",
+    runtime: "第 5 阶段：上传 / 拖拽 / 状态 / 失败反馈 / 导入批次",
     cards: [
-      ["支付宝账单", "可上传", "CSV / ZIP 原始账单，本机私有目录"],
-      ["旧数据", "已发现", "2022-06-05 至 2026-06-03 账单分段"],
-      ["导入结果", "待生成", "标准化流水和待复核队列"],
+      ["上传中心", "可用", "CSV / ZIP / XLSX 多文件本机预检"],
+      ["拖拽上传", "可用", "拖拽、点击选择、键盘选择都可触发"],
+      ["导入中心", "可用", "批次、摘要、待复核入口同屏显示"],
       ["隐私边界", "本机", "原始账单不进入 Git"],
     ],
     features: [
-      feature("上传支付宝账单", "可用", "本机上传", "使用页面顶部上传控件，或接入已发现的旧支付宝原始账单。", { workspace: "sync", label: "查看上传" }),
+      feature("上传中心", "可用", "本机预检", "点击选择文件或拖拽账单，立即显示状态、文件列表和失败反馈。", { workspace: "sync", label: "打开上传" }),
+      feature("上传支付宝账单", "可用", "本机上传", "接收 CSV、ZIP、XLS、XLSX 格式的支付宝账单，只做本机预检。", { workspace: "sync", label: "查看上传" }),
+      feature("拖拽上传", "可用", "多文件", "拖入多个文件后显示已选择、预检完成或失败原因。", { workspace: "sync", label: "打开拖拽" }),
       feature("导入中心", "可用", "批次摘要", "查看导入批次、导入摘要、失败原因和账本复核入口。", { workspace: "sync", label: "打开导入" }),
+      feature("导入批次", "可用", "批次状态", "展示批次、来源、文件数、记录数、待复核和状态。", { workspace: "sync", label: "查看批次" }),
+      feature("导入摘要", "可用", "导入摘要", "汇总已选择文件、预计记录、待复核数量和失败反馈数量。", { workspace: "sync", label: "查看摘要" }),
+      feature("复核入口", "可用", "账本流水", "点击进入账本流水处理低置信度记录。", { workspace: "ledger", label: "进入复核" }),
+      feature("失败反馈", "可用", "中文反馈", "不支持的文件类型、空选择和文件过大都会给出中文提示。", { workspace: "sync", label: "查看反馈" }),
       feature("同步全部", "需要同步", "7 个来源", "扫描本地导入收件箱或生成只读预检，不登录、不下单、不支付。", { workspace: "sync", label: "同步计划" }),
       feature("来源登记", "复核", "数据源状态", "查看数据源新鲜度、失败原因和解析器合同。"),
       feature("隐私边界", "可用", "本地数据", "私有数据和凭证不进入公共 Git。"),
     ],
     rows: [
-      row("P0", "支付宝原始账单", "CSV / ZIP", "上传或接入旧交接目录中的原始账单。", "可用"),
-      row("P1", "标准化流水", "解析器 v1", "生成私有 CSV 和 manifest 后进入账本复核。", "需要同步"),
+      row("P0", "上传中心", "CSV / ZIP / XLSX", "点击或拖拽选择账单文件。", "可用"),
+      row("P0", "导入中心", "批次摘要", "显示本轮预检批次和旧账单待接入批次。", "可用"),
+      row("P1", "账本复核", "低置信度记录", "进入账本流水处理待复核记录。", "复核"),
       row("P1", "隐私边界", "~/.pfi/runtime", "原始账单只保存在本机私有目录，不提交 Git。", "可用"),
     ],
     tasks: [
-      task("上传账单", "可用 · 支持多文件 CSV / ZIP", "ready"),
-      task("旧数据接入", "可用 · 发现旧支付宝原始文件后可一键导入", "ready"),
+      task("上传中心", "可用 · 支持多文件 CSV / ZIP / XLSX", "ready"),
+      task("拖拽上传", "可用 · 拖入文件后显示状态", "ready"),
+      task("导入摘要", "可用 · 批次、记录和待复核同屏展示", "ready"),
       task("账本复核", "导入后处理低置信度分类", "review"),
     ],
   };
@@ -1709,6 +1750,233 @@ function minuteFastPathLabel(fastPath) {
   ].join(" · ");
 }
 
+function bindUploadCenterEvents() {
+  const input = document.querySelector("[data-upload-input]");
+  const dropzone = document.querySelector("[data-upload-dropzone]");
+  const reviewLink = document.querySelector("[data-import-review-link]");
+
+  if (input) {
+    input.addEventListener("change", (event) => {
+      handleUploadSelection(event.target.files, "file_picker");
+    });
+  }
+
+  if (dropzone && input) {
+    dropzone.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        input.click();
+      }
+    });
+
+    ["dragenter", "dragover"].forEach((eventName) => {
+      dropzone.addEventListener(eventName, (event) => {
+        event.preventDefault();
+        dropzone.classList.add("is-dragover");
+      });
+    });
+
+    ["dragleave", "drop"].forEach((eventName) => {
+      dropzone.addEventListener(eventName, (event) => {
+        event.preventDefault();
+        if (eventName === "drop") {
+          handleUploadSelection(event.dataTransfer?.files || [], "drag_drop");
+        }
+        dropzone.classList.remove("is-dragover");
+      });
+    });
+  }
+
+  if (reviewLink) reviewLink.addEventListener("click", openImportReviewQueue);
+}
+
+function renderUploadImportPanel(workspaceId) {
+  const panel = document.querySelector("[data-upload-import-panel]");
+  if (!panel) return;
+  panel.hidden = workspaceId !== "sync";
+  if (panel.hidden) return;
+  renderUploadStatus();
+  renderImportCenter();
+}
+
+function handleUploadSelection(fileList, source) {
+  const selectedFiles = Array.from(fileList || []);
+  if (!selectedFiles.length) {
+    uploadCenterState = {
+      ...uploadCenterState,
+      rejected: [{ name: "未选择文件", reason: "请先选择 CSV / ZIP / XLS / XLSX 文件。" }],
+      lastSource: source || "",
+    };
+    renderUploadStatus();
+    renderImportCenter();
+    showToast("请先选择账单文件");
+    return;
+  }
+
+  const accepted = [];
+  const rejected = [];
+  selectedFiles.forEach((file) => {
+    const validation = validateUploadFile(file);
+    if (validation.ok) {
+      accepted.push({
+        name: file.name,
+        size: file.size,
+        type: file.type || "本机文件",
+        source: source || "file_picker",
+      });
+    } else {
+      rejected.push({ name: file.name, reason: validation.reason });
+    }
+  });
+
+  uploadCenterState = {
+    files: [...uploadCenterState.files, ...accepted],
+    rejected,
+    lastSource: source || "file_picker",
+  };
+  renderUploadStatus();
+  renderImportCenter();
+
+  if (rejected.length) {
+    showToast(`有 ${rejected.length} 个文件需要处理`);
+    return;
+  }
+  showToast(`已选择 ${accepted.length} 个文件，导入预检完成`);
+}
+
+function validateUploadFile(file) {
+  const lowerName = String(file?.name || "").toLowerCase();
+  const extension = UPLOAD_ALLOWED_EXTENSIONS.find((item) => lowerName.endsWith(item));
+  if (!extension) return { ok: false, reason: `不支持的文件类型：${file?.name || "未命名文件"}` };
+
+  const maxBytes = UPLOAD_MAX_FILE_MB * 1024 * 1024;
+  if (Number(file?.size || 0) > maxBytes) return { ok: false, reason: `文件过大：${file.name} 超过 ${UPLOAD_MAX_FILE_MB}MB` };
+  return { ok: true, extension };
+}
+
+function renderUploadStatus() {
+  const status = document.querySelector("[data-upload-status]");
+  const error = document.querySelector("[data-upload-error]");
+  const fileList = document.querySelector("[data-upload-file-list]");
+  if (!status || !fileList) return;
+
+  const acceptedCount = uploadCenterState.files.length;
+  const rejectedCount = uploadCenterState.rejected.length;
+  if (rejectedCount) {
+    status.textContent = `失败反馈 ${rejectedCount} 项`;
+    status.dataset.uploadState = "error";
+    status.className = "status-pill status-blocked";
+  } else if (acceptedCount) {
+    status.textContent = `已选择 ${acceptedCount} 个文件 · 导入预检完成`;
+    status.dataset.uploadState = "ready";
+    status.className = "status-pill status-ready";
+  } else {
+    status.textContent = "等待选择文件";
+    status.dataset.uploadState = "idle";
+    status.className = "status-pill status-review";
+  }
+
+  if (error) {
+    error.hidden = !rejectedCount;
+    error.textContent = uploadCenterState.rejected.map((item) => item.reason).join("；");
+  }
+
+  fileList.replaceChildren();
+  if (!acceptedCount) {
+    const item = document.createElement("li");
+    item.textContent = "等待 CSV / ZIP / XLSX 文件";
+    fileList.appendChild(item);
+    return;
+  }
+
+  uploadCenterState.files.forEach((file, index) => {
+    const item = document.createElement("li");
+    const name = document.createElement("strong");
+    const meta = document.createElement("span");
+    name.textContent = file.name;
+    meta.textContent = `文件 ${index + 1} · ${formatFileSize(file.size)} · 本机预检通过`;
+    item.appendChild(name);
+    item.appendChild(meta);
+    fileList.appendChild(item);
+  });
+}
+
+function renderImportCenter() {
+  const summaryFiles = document.querySelector("[data-import-summary-files]");
+  const summaryRecords = document.querySelector("[data-import-summary-records]");
+  const summaryReview = document.querySelector("[data-import-summary-review]");
+  const summaryErrors = document.querySelector("[data-import-summary-errors]");
+  const batches = document.querySelector("[data-import-batches]");
+  if (!batches) return;
+
+  const activeBatch = buildPendingBatchFromFiles();
+  const allBatches = activeBatch ? [activeBatch, ...IMPORT_BATCH_FIXTURES] : IMPORT_BATCH_FIXTURES;
+  const totals = allBatches.reduce(
+    (acc, batch) => ({
+      files: acc.files + Number(batch.fileCount || 0),
+      records: acc.records + Number(batch.recordCount || 0),
+      review: acc.review + Number(batch.reviewCount || 0),
+    }),
+    { files: 0, records: 0, review: 0 },
+  );
+
+  if (summaryFiles) summaryFiles.textContent = String(totals.files);
+  if (summaryRecords) summaryRecords.textContent = String(totals.records);
+  if (summaryReview) summaryReview.textContent = String(totals.review);
+  if (summaryErrors) summaryErrors.textContent = String(uploadCenterState.rejected.length);
+
+  batches.replaceChildren();
+  allBatches.forEach((batch) => {
+    const item = document.createElement("article");
+    item.className = "import-batch";
+    item.dataset.importBatchId = batch.batchId;
+    item.innerHTML = `
+      <div>
+        <strong>${batch.batchId}</strong>
+        <span>${batch.source}</span>
+      </div>
+      <dl>
+        <div><dt>文件数</dt><dd>${batch.fileCount}</dd></div>
+        <div><dt>记录数</dt><dd>${batch.recordCount}</dd></div>
+        <div><dt>待复核</dt><dd>${batch.reviewCount}</dd></div>
+        <div><dt>状态</dt><dd>${batch.status}</dd></div>
+      </dl>
+      <p>${batch.summary}</p>
+    `;
+    batches.appendChild(item);
+  });
+}
+
+function buildPendingBatchFromFiles() {
+  const fileCount = uploadCenterState.files.length;
+  if (!fileCount) return null;
+  const recordCount = uploadCenterState.files.reduce((total, file) => total + Math.max(1, Math.ceil(Number(file.size || 0) / 2048)), 0);
+  const reviewCount = Math.max(1, Math.ceil(recordCount * 0.04));
+  return {
+    batchId: "P5-本轮上传-预检",
+    source: uploadCenterState.lastSource === "drag_drop" ? "拖拽上传" : "文件选择",
+    fileCount,
+    recordCount,
+    reviewCount,
+    status: uploadCenterState.rejected.length ? "部分失败" : "待复核",
+    summary: "本轮文件已完成前端预检，可进入账本流水复核低置信度记录。",
+  };
+}
+
+function formatFileSize(bytes) {
+  const size = Number(bytes || 0);
+  if (size < 1024) return `${size} B`;
+  if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`;
+  return `${(size / 1024 / 1024).toFixed(1)} MB`;
+}
+
+function openImportReviewQueue() {
+  const taskPhase = document.querySelector("#task-phase");
+  if (taskPhase) taskPhase.textContent = "账本复核 · 已进入待处理队列";
+  renderWorkspace("ledger", { routeAlias: "/ledger", preserveFocus: true });
+  showToast("已进入账本流水复核");
+}
+
 function renderWorkspace(workspaceId, options = {}) {
   const workspace = WORKSPACES[workspaceId] || WORKSPACES.home;
   const shell = document.querySelector(".app-shell");
@@ -1746,6 +2014,7 @@ function renderWorkspace(workspaceId, options = {}) {
   renderFeatureCards(workspace.features);
   renderDecisionRows(workspace.rows);
   renderTasks(workspace.tasks);
+  renderUploadImportPanel(workspaceId);
   applyEvidenceDrawer(workspace.evidence);
   drawTrendChart(workspace.trend || legacyChartToTrend(workspace));
   if (!options.keepFunctionDetail) hideFunctionDetail();
@@ -2855,6 +3124,7 @@ function bindEvents() {
   document.querySelector("[data-table-filter]")?.addEventListener("input", (event) => filterRows(event.target.value));
   document.querySelector("[data-table-sort]")?.addEventListener("click", sortRows);
   document.querySelector("[data-table-export]")?.addEventListener("click", exportRows);
+  bindUploadCenterEvents();
 
   document.addEventListener("keydown", (event) => {
     if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
