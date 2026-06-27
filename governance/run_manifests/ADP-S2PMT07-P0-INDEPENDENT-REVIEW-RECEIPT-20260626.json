@@ -23,7 +23,9 @@
     "governance/run_manifests/ADP-S2PMT03-OUTBOX-DELIVERY-A003-20260627.json",
     "arxiv-daily-push/用户中心/事务发件箱与消息ID扫描.md",
     "arxiv-daily-push/tests/test_stage2_lease_fencing.py",
-    "governance/run_manifests/ADP-S2PMT04-INSTALL-LIFECYCLE-B001-20260627.json"
+    "governance/run_manifests/ADP-S2PMT04-INSTALL-LIFECYCLE-B001-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-B001-ISOLATED-PROOF-RECONCILIATION-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-ISOLATED-PROOF-20260627.json"
   ],
   "final_acceptance_bundle_present": false,
   "forbidden_side_effects": {
@@ -124,12 +126,14 @@
         "arxiv-daily-push/docs/phase_records/PHASE_S2PMT04_INSTALL_LIFECYCLE_B001.md",
         "governance/run_manifests/ADP-S2PMT04-INSTALL-LIFECYCLE-B001-20260627.json",
         "arxiv-daily-push/用户中心/自动唤醒安装生命周期扫描.md",
-        "arxiv-daily-push/tests/test_stage2_lifecycle_cache.py"
+        "arxiv-daily-push/tests/test_stage2_lifecycle_cache.py",
+        "governance/run_manifests/ADP-S2PMT07-B001-ISOLATED-PROOF-RECONCILIATION-20260627.json",
+        "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-ISOLATED-PROOF-20260627.json"
       ],
       "finding_id": "B-001",
       "fix_task": "S2PMT04-INSTALL-LIFECYCLE-B001",
-      "preliminary_review_state": "dedicated_current_evidence_located_independent_review_required",
-      "reviewer_decision_required": "Verify controlled install/status/trigger/uninstall evidence and decide whether real isolated target install-run-status-uninstall proof remains required before B-001 closure.",
+      "preliminary_review_state": "external_isolated_proof_reconciled_independent_review_required_closure_not_claimed",
+      "reviewer_decision_required": "Verify dedicated install/status/trigger/uninstall evidence plus the isolated launchd proof reconciliation manifest; decide whether this external proof is sufficient for B-001 technical closure. No P0/P1 closure is claimed until independent review signs off.",
       "severity": "P0"
     },
     {
@@ -167,12 +171,13 @@
     "independent_final_signoff_missing",
     "independent_final_command_execution_missing"
   ],
-  "previous_refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A005-20260627.json",
+  "previous_refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-20260627.json",
   "project_id": "arxiv-daily-push",
-  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-20260627.json",
+  "refresh_manifest": "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-ISOLATED-PROOF-20260627.json",
   "refresh_manifest_history": [
     "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A005-20260627.json",
-    "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-20260627.json"
+    "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-ISOLATED-PROOF-20260627.json"
   ],
   "refresh_manifests": [
     "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B007-B008-20260627.json",
@@ -181,9 +186,10 @@
     "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A003-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A004-20260627.json",
     "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-A005-20260627.json",
-    "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-20260627.json"
+    "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P0-REVIEW-RECEIPT-REFRESH-B001-ISOLATED-PROOF-20260627.json"
   ],
-  "refreshed_at": "2026-06-27 11:26:15 Australia/Sydney",
+  "refreshed_at": "2026-06-27 15:08:53 Australia/Sydney",
   "refreshed_findings": [
     "A-001",
     "A-002",
@@ -200,6 +206,6 @@
   "s2plt04_completed": false,
   "stage2_integrated_production_accepted": false,
   "status": "review_receipt_ready_no_closure_claim",
-  "summary": "S2PMT07 P0 review receipt now routes all eight inherited P0 findings to dedicated current evidence surfaces where available; B-001 remains blocked pending independent decision on real isolated install-run-status-uninstall proof.",
+  "summary": "S2PMT07 P0 review receipt routes all eight inherited P0 findings to current evidence surfaces; B-001 now includes an isolated launchd proof reconciliation manifest but still requires independent review before closure.",
   "task_id": "S2PMT07"
 }
