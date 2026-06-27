@@ -13,6 +13,7 @@ from backend.app.services.phase6_owner_gate import (  # noqa: E402
     DEFAULT_EVIDENCE_ROOT,
     DEFAULT_SOAK_HISTORY_PATH,
     append_soak_sample,
+    build_owner_decision_markdown,
     build_owner_gate_closeout,
     build_paper_shadow_report,
     build_shadow_live_constraints_report,
@@ -60,6 +61,13 @@ def main() -> int:
         paper_shadow_report=latest_report,
         shadow_live_constraints=latest_constraints,
         output_path=evidence_root / "phase6_closeout.json",
+    )
+    build_owner_decision_markdown(
+        closeout=closeout,
+        soak_validation=soak,
+        paper_shadow_report=latest_report,
+        shadow_live_constraints=latest_constraints,
+        output_path=evidence_root / "OWNER_DECISION.md",
     )
     print(json.dumps(closeout, ensure_ascii=False, indent=2, sort_keys=True))
     return 0

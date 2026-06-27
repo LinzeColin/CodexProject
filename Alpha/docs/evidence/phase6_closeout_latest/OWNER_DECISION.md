@@ -2,25 +2,42 @@
 
 ## 当前结论
 
-当前不能进入 OWNER-GATE-01，也不能声明 Phase 6 完成。canonical Alpha 只处于研究和 broker-ready order intent 审核模式：
+- 收口状态: `blocked_not_ready_for_owner_gate`
+- 中文状态: `阻塞，尚不可进入 OWNER-GATE-01`
+- 生成时间: `2026-06-27T01:22:23+00:00`
+- 已观察 soak 小时: `1.1886 / 48`
+- 剩余 soak 小时: `46.8114`
+- 当前阻塞项: `phase6_48h_soak_validation`
+- 实盘交易开关: `false`
+- Broker 真实写单允许状态: `false`
+- runtime/LIVE_AUTHORIZATION.json: `必须保持不存在`
 
-- `live_trading_enabled=false`
-- `runtime/LIVE_AUTHORIZATION.json` 不存在且不得创建
-- 不允许真实 broker mutation
-- 48 小时 Paper/Shadow soak validation 尚未完成自然日累计
-- 合格交易日 Paper/Shadow 报告当前已通过本地 hard gate
-- Shadow live constraints 当前已通过本地安全约束检查
-- 限价订单契约当前已通过本地 hard gate
+## 验收证据
+
+| 验收项 | 当前状态 | 证据状态 | 证据时间 |
+|---|---|---|---|
+| `phase6_48h_soak_validation` | `blocked` | `observing` | `2026-06-27T01:22:23+00:00` |
+| `qualified_trading_day_paper_shadow_report` | `pass` | `pass` | `2026-06-27T01:22:23+00:00` |
+| `shadow_live_constraints` | `pass` | `pass` | `2026-06-27T01:22:23+00:00` |
+| `limit_order_contract` | `pass` | `pass` | `2026-06-27T01:22:23+00:00` |
+| `live_authorization_absent` | `pass` | `不适用` | `不适用` |
+
+## Paper/Shadow 摘要
+
+- Paper/Shadow 状态: `pass`
+- Paper/Shadow schema 状态: `pass`
+- 交易日: `2026-06-27`
+- 最新标的: `TLT`
+- 订单类型: `limit`
+- Shadow live 约束状态: `pass`
 
 ## Owner 选择
 
-### A. 继续补齐 Phase 6 证据
-
-批准继续在 canonical `LinzeColin/CodexProject/Alpha` 内通过 Phase 6 OWNER-GATE sampler 累计 paper/shadow 采样，直到 48 小时自然日 soak validation 通过。仍不进入 MICRO_LIVE。
+### A. 继续补齐 Phase 6 证据，等待 48 小时自然日 soak validation 通过；仍不进入 MICRO_LIVE。
 
 ### B. 保持研究/意图审核模式
 
-维持当前模式，只允许研究、回测、模拟、风控、审批队列和 broker-ready order intent。暂停 Phase 6 完成声明。
+维持当前模式，只允许研究、回测、模拟、风控、审批队列和 broker-ready order intent；暂停 Phase 6 完成声明或 OWNER-GATE 推进。
 
 ### C. 暂停 Alpha Phase 6
 

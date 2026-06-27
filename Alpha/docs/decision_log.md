@@ -16,6 +16,14 @@ Reason: The current canonical dashboard is in research/paper order-intent review
 
 Consequence: Phase 6 remains blocked until canonical evidence proves 48-hour Paper/Shadow soak, a qualified trading-day report, Shadow live constraints, limit-order contract, and closeout readiness. `runtime/LIVE_AUTHORIZATION.json` must remain absent.
 
+## 2026-06-27: OWNER_DECISION Must Be Evidence-Generated
+
+Decision: `docs/evidence/phase6_closeout_latest/OWNER_DECISION.md` is generated from the same Phase 6 closeout, soak, Paper/Shadow, and Shadow live constraint evidence used for `phase6_closeout.json`.
+
+Reason: OWNER-GATE-01 is an owner decision surface. It must not drift from machine-readable evidence or manually imply readiness before the 48-hour soak is proven.
+
+Consequence: Running `scripts/build_phase6_owner_gate_evidence.py` refreshes both JSON evidence and the human-readable A/B/C owner decision file. Until `phase6_closeout.json` reports `ready_for_owner_gate`, option A remains a continue-evidence path, not MICRO_LIVE authorization.
+
 ## 2026-06-13: Execution Boundary
 
 Decision: Alpha will automate paper trading, risk checks, approval queues, and broker-ready order tickets. It will not autonomously submit real-money broker orders.

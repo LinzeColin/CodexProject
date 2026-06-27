@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-27T01:14:14+00:00",
+  "generated_at": "2026-06-27T01:22:23+00:00",
   "hard_gate_checks": [
     {
       "id": "paper_cycle_completed",
@@ -39,7 +39,7 @@
   ],
   "paper": {
     "latest_trade": {
-      "idempotency_key": "run_472549a6b525:momentum_TLT_20d:TLT:buy:1:2026-06-27T01:14:14+00:00",
+      "idempotency_key": "run_681454de3f09:momentum_TLT_20d:TLT:buy:1:2026-06-27T01:22:23+00:00",
       "notional": 91.95,
       "price": 91.95,
       "quantity": 1.0,
@@ -48,25 +48,137 @@
     },
     "order_status": "filled",
     "total_equity": 10000.0,
-    "trade_count": 30
+    "trade_count": 37
   },
-  "run_id": "run_472549a6b525",
+  "run_id": "run_681454de3f09",
   "safety_boundary": {
     "broker_mutation_allowed": false,
     "live_authorization_file_must_be_absent": true,
     "live_trading_enabled": false,
     "mode": "research_paper_order_intent_review"
   },
+  "schema_checks": [
+    {
+      "id": "schema_schema_version",
+      "message": "schema_version",
+      "status": "pass"
+    },
+    {
+      "id": "schema_generated_at",
+      "message": "generated_at",
+      "status": "pass"
+    },
+    {
+      "id": "schema_trading_day",
+      "message": "trading_day",
+      "status": "pass"
+    },
+    {
+      "id": "schema_run_id",
+      "message": "run_id",
+      "status": "pass"
+    },
+    {
+      "id": "schema_hard_gate_checks",
+      "message": "hard_gate_checks",
+      "status": "pass"
+    },
+    {
+      "id": "schema_paper.order_status",
+      "message": "paper.order_status",
+      "status": "pass"
+    },
+    {
+      "id": "schema_paper.trade_count",
+      "message": "paper.trade_count",
+      "status": "pass"
+    },
+    {
+      "id": "schema_paper.total_equity",
+      "message": "paper.total_equity",
+      "status": "pass"
+    },
+    {
+      "id": "schema_paper.latest_trade",
+      "message": "paper.latest_trade",
+      "status": "pass"
+    },
+    {
+      "id": "schema_shadow.ticket_id",
+      "message": "shadow.ticket_id",
+      "status": "pass"
+    },
+    {
+      "id": "schema_shadow.actionability",
+      "message": "shadow.actionability",
+      "status": "pass"
+    },
+    {
+      "id": "schema_shadow.symbol",
+      "message": "shadow.symbol",
+      "status": "pass"
+    },
+    {
+      "id": "schema_shadow.side",
+      "message": "shadow.side",
+      "status": "pass"
+    },
+    {
+      "id": "schema_shadow.quantity",
+      "message": "shadow.quantity",
+      "status": "pass"
+    },
+    {
+      "id": "schema_shadow.order_type",
+      "message": "shadow.order_type",
+      "status": "pass"
+    },
+    {
+      "id": "schema_shadow.time_in_force",
+      "message": "shadow.time_in_force",
+      "status": "pass"
+    },
+    {
+      "id": "schema_shadow.client_order_id",
+      "message": "shadow.client_order_id",
+      "status": "pass"
+    },
+    {
+      "id": "schema_shadow.estimated_notional_aud",
+      "message": "shadow.estimated_notional_aud",
+      "status": "pass"
+    },
+    {
+      "id": "schema_safety_boundary.live_trading_enabled",
+      "message": "safety_boundary.live_trading_enabled",
+      "status": "pass"
+    },
+    {
+      "id": "schema_safety_boundary.broker_mutation_allowed",
+      "message": "safety_boundary.broker_mutation_allowed",
+      "status": "pass"
+    },
+    {
+      "id": "schema_safety_boundary.live_authorization_file_must_be_absent",
+      "message": "safety_boundary.live_authorization_file_must_be_absent",
+      "status": "pass"
+    },
+    {
+      "id": "schema_hard_gate_checks_non_empty",
+      "message": "hard_gate_checks non-empty",
+      "status": "pass"
+    }
+  ],
   "schema_version": "2026-06-27.alpha.phase6.paper_shadow_report",
   "shadow": {
     "actionability": "fresh_pending_owner_approval",
-    "client_order_id": "run_472549a6b525:momentum_TLT_20d:TLT:buy:1:2026-06-27T01:14:14+00:00",
+    "client_order_id": "run_681454de3f09:momentum_TLT_20d:TLT:buy:1:2026-06-27T01:22:23+00:00",
     "estimated_notional_aud": 91.95,
     "order_type": "limit",
     "quantity": 1.0,
     "side": "buy",
     "symbol": "TLT",
-    "ticket_id": "ticket_8b4a8c37864e",
+    "ticket_id": "ticket_fda3b01eebe0",
     "time_in_force": "day"
   },
   "status": "pass",

@@ -42,7 +42,6 @@ def build_paper_shadow_report(*, run_result: dict, output_path: str | Path | Non
     report = {
         "schema_version": "2026-06-27.alpha.phase6.paper_shadow_report",
         "generated_at": utc_now_iso(),
-        "status": "pass" if all(item["status"] == "pass" for item in hard_gate_checks) else "fail",
         "trading_day": str(run_result.get("generated_at", "")[:10]),
         "run_id": run_result.get("run_id"),
         "hard_gate_checks": hard_gate_checks,
@@ -65,9 +64,54 @@ def build_paper_shadow_report(*, run_result: dict, output_path: str | Path | Non
         },
         "safety_boundary": _safety_boundary(),
     }
+    schema_checks = validate_paper_shadow_report_schema(report)
+    report["schema_checks"] = schema_checks
+    report["status"] = (
+        "pass"
+        if all(item["status"] == "pass" for item in hard_gate_checks + schema_checks)
+        else "fail"
+    )
     if output_path:
         _write_json(output_path, report)
     return report
+
+
+def validate_paper_shadow_report_schema(report: dict) -> list[dict]:
+    required_paths = [
+        ("schema_version",),
+        ("generated_at",),
+        ("trading_day",),
+        ("run_id",),
+        ("hard_gate_checks",),
+        ("paper", "order_status"),
+        ("paper", "trade_count"),
+        ("paper", "total_equity"),
+        ("paper", "latest_trade"),
+        ("shadow", "ticket_id"),
+        ("shadow", "actionability"),
+        ("shadow", "symbol"),
+        ("shadow", "side"),
+        ("shadow", "quantity"),
+        ("shadow", "order_type"),
+        ("shadow", "time_in_force"),
+        ("shadow", "client_order_id"),
+        ("shadow", "estimated_notional_aud"),
+        ("safety_boundary", "live_trading_enabled"),
+        ("safety_boundary", "broker_mutation_allowed"),
+        ("safety_boundary", "live_authorization_file_must_be_absent"),
+    ]
+    checks = []
+    for path in required_paths:
+        value = _nested_get(report, path)
+        checks.append(_check("schema_" + ".".join(path), value is not None, ".".join(path)))
+    checks.append(
+        _check(
+            "schema_hard_gate_checks_non_empty",
+            bool(report.get("hard_gate_checks")),
+            "hard_gate_checks non-empty",
+        )
+    )
+    return checks
 
 
 def build_shadow_live_constraints_report(
@@ -203,6 +247,99 @@ def build_owner_gate_closeout(
     return report
 
 
+def build_owner_decision_markdown(
+    *,
+    closeout: dict,
+    soak_validation: dict,
+    paper_shadow_report: dict,
+    shadow_live_constraints: dict,
+    output_path: str | Path | None = None,
+) -> str:
+    def _display(value: Any) -> str:
+        if value is None:
+            return "不适用"
+        if value == "":
+            return "无"
+        return str(value)
+
+    ready = closeout.get("status") == "ready_for_owner_gate"
+    blocking = closeout.get("blocking_conditions") or []
+    observed_hours = float(soak_validation.get("observed_hours") or 0)
+    duration_hours = float(soak_validation.get("duration_hours_required") or 48)
+    remaining_hours = max(duration_hours - observed_hours, 0)
+    option_a = (
+        "批准提交 OWNER-GATE-01 审核；仍停在 owner 决策，不进入 MICRO_LIVE。"
+        if ready
+        else "继续补齐 Phase 6 证据，等待 48 小时自然日 soak validation 通过；仍不进入 MICRO_LIVE。"
+    )
+    schema_passed = all(item.get("status") == "pass" for item in paper_shadow_report.get("schema_checks", []))
+    lines = [
+        "# Alpha OWNER-GATE-01 Decision",
+        "",
+        "## 当前结论",
+        "",
+        f"- 收口状态: `{_display(closeout.get('status', '缺失'))}`",
+        f"- 中文状态: `{_display(closeout.get('status_zh', '缺失'))}`",
+        f"- 生成时间: `{_display(closeout.get('generated_at', '缺失'))}`",
+        f"- 已观察 soak 小时: `{observed_hours:.4f} / {duration_hours:.0f}`",
+        f"- 剩余 soak 小时: `{remaining_hours:.4f}`",
+        f"- 当前阻塞项: `{', '.join(blocking) if blocking else '无'}`",
+        "- 实盘交易开关: `false`",
+        "- Broker 真实写单允许状态: `false`",
+        "- runtime/LIVE_AUTHORIZATION.json: `必须保持不存在`",
+        "",
+        "## 验收证据",
+        "",
+        "| 验收项 | 当前状态 | 证据状态 | 证据时间 |",
+        "|---|---|---|---|",
+    ]
+    for item in closeout.get("acceptance", []):
+        lines.append(
+            f"| `{_display(item.get('id'))}` | `{_display(item.get('status'))}` | "
+            f"`{_display(item.get('evidence_status'))}` | `{_display(item.get('evidence_generated_at'))}` |"
+        )
+    lines.extend(
+        [
+            "",
+            "## Paper/Shadow 摘要",
+            "",
+            f"- Paper/Shadow 状态: `{_display(paper_shadow_report.get('status', '缺失'))}`",
+            f"- Paper/Shadow schema 状态: `{'pass' if schema_passed else 'fail'}`",
+            f"- 交易日: `{_display(paper_shadow_report.get('trading_day', '缺失'))}`",
+            f"- 最新标的: `{_display((paper_shadow_report.get('shadow') or {}).get('symbol', '缺失'))}`",
+            f"- 订单类型: `{_display((paper_shadow_report.get('shadow') or {}).get('order_type', '缺失'))}`",
+            f"- Shadow live 约束状态: `{_display(shadow_live_constraints.get('status', '缺失'))}`",
+            "",
+            "## Owner 选择",
+            "",
+            f"### A. {option_a}",
+            "",
+            "### B. 保持研究/意图审核模式",
+            "",
+            "维持当前模式，只允许研究、回测、模拟、风控、审批队列和 broker-ready order intent；暂停 Phase 6 完成声明或 OWNER-GATE 推进。",
+            "",
+            "### C. 暂停 Alpha Phase 6",
+            "",
+            "停止 Phase 6 推进，只保留当前代码、治理文件和安全边界，等待 owner 后续重新授权继续。",
+            "",
+            "## 明确禁止",
+            "",
+            "- 不创建 `runtime/LIVE_AUTHORIZATION.json`",
+            "- 不开启 live trading",
+            "- 不提交真实 broker order",
+            "- 不从旧 shadow folder 继续运行 Phase 6",
+            "- 不把缺失证据写成通过",
+            "",
+        ]
+    )
+    document = "\n".join(lines)
+    if output_path:
+        output = Path(output_path)
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(document, encoding="utf-8")
+    return document
+
+
 def _limit_order_contract_passed(report: dict) -> bool:
     return report.get("status") == "pass" and report.get("shadow", {}).get("order_type") == "limit"
 
@@ -218,6 +355,15 @@ def _acceptance(check_id: str, passed: bool, evidence: dict) -> dict:
 
 def _check(check_id: str, condition: bool, message: str) -> dict:
     return {"id": check_id, "status": "pass" if condition else "fail", "message": message}
+
+
+def _nested_get(payload: dict, path: tuple[str, ...]) -> Any:
+    current: Any = payload
+    for key in path:
+        if not isinstance(current, dict) or key not in current:
+            return None
+        current = current[key]
+    return current
 
 
 def _safety_boundary() -> dict:

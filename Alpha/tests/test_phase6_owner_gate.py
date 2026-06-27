@@ -9,6 +9,7 @@ from backend.app.services.approval_queue import ApprovalQueue
 from backend.app.services.paper_trading_loop import PaperTradingLoop
 from backend.app.services.phase6_owner_gate import (
     append_soak_sample,
+    build_owner_decision_markdown,
     build_owner_gate_closeout,
     build_paper_shadow_report,
     build_shadow_live_constraints_report,
@@ -35,6 +36,7 @@ def test_paper_shadow_report_passes_limit_order_contract(tmp_path):
     assert report["status"] == "pass"
     checks = {item["id"]: item["status"] for item in report["hard_gate_checks"]}
     assert checks["broker_ready_limit_order"] == "pass"
+    assert all(item["status"] == "pass" for item in report["schema_checks"])
     assert report["safety_boundary"]["broker_mutation_allowed"] is False
 
 
@@ -89,6 +91,36 @@ def test_owner_gate_closeout_blocks_until_all_acceptance_pass(tmp_path):
     assert closeout["status"] == "blocked_not_ready_for_owner_gate"
     assert "phase6_48h_soak_validation" in closeout["blocking_conditions"]
     assert "limit_order_contract" not in closeout["blocking_conditions"]
+
+
+def test_owner_decision_markdown_contains_owner_choices_and_blockers(tmp_path):
+    run = _paper_run(tmp_path)
+    paper_shadow = build_paper_shadow_report(run_result=run)
+    constraints = build_shadow_live_constraints_report(live_authorization_path=tmp_path / "LIVE_AUTHORIZATION.json")
+    soak = build_soak_validation_report(samples=[])
+    closeout = build_owner_gate_closeout(
+        soak_validation=soak,
+        paper_shadow_report=paper_shadow,
+        shadow_live_constraints=constraints,
+    )
+    output_path = tmp_path / "OWNER_DECISION.md"
+
+    document = build_owner_decision_markdown(
+        closeout=closeout,
+        soak_validation=soak,
+        paper_shadow_report=paper_shadow,
+        shadow_live_constraints=constraints,
+        output_path=output_path,
+    )
+
+    assert output_path.read_text(encoding="utf-8") == document
+    assert "### A." in document
+    assert "### B." in document
+    assert "### C." in document
+    assert "phase6_48h_soak_validation" in document
+    assert "Paper/Shadow schema 状态" in document
+    assert "runtime/LIVE_AUTHORIZATION.json" in document
+    assert "不提交真实 broker order" in document
 
 
 def test_soak_history_appends_jsonl_samples(tmp_path):
