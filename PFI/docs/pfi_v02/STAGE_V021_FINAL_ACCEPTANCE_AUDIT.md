@@ -62,7 +62,11 @@ zsh scripts/macosAppAcceptanceLite.sh --project-root . --summary-json
 - 完整 PFI 单测：`Ran 147 tests / OK`。
 - 项目治理：`errors 0 / warnings 0`。
 - `git diff --check -- PFI`：通过。
-- `macOS app acceptance lite`：等待 GitHub main 同步和 canonical app 刷新后写入最终结果。
+- `macOS app acceptance lite`：`29 pass / 0 fail / 2 info`。
+- GitHub main：已同步到 `f6a53db5ec66412c5d32078c6e3d4f281930d968`。
+- canonical `PFI/`：与 `origin/main` 内容对比无差异。
+- `.app` 入口：`/Applications/PFI.app`、`~/Downloads/PFI.app`、`~/Desktop/PFI.app` 的 `PFI_PROJECT_ROOT` 均指向 canonical PFI。
+- 运行健康：`http://127.0.0.1:8501/_stcore/health` 返回 `ok`。
 
 ## 浏览器验收
 

@@ -484,7 +484,7 @@ git diff --check -- PFI
 zsh scripts/macosAppAcceptanceLite.sh --project-root . --summary-json
 ```
 
-当前结果：Web Shell 语法检查通过；Stage 8 目标合同 `Ran 5 tests / OK`；Stage 0/1/2/3/4/5/6/7/8 前端合同 `Ran 47 tests / OK`；完整 PFI 单测 `Ran 147 tests / OK`；治理 `errors 0 / warnings 0`；`git diff --check -- PFI` 通过。macOS app acceptance 将在 GitHub main 同步和 canonical app 刷新后写入最终结果。
+当前结果：Web Shell 语法检查通过；Stage 8 目标合同 `Ran 5 tests / OK`；Stage 0/1/2/3/4/5/6/7/8 前端合同 `Ran 47 tests / OK`；完整 PFI 单测 `Ran 147 tests / OK`；治理 `errors 0 / warnings 0`；`git diff --check -- PFI` 通过；GitHub main 已同步到 `f6a53db5`；canonical `PFI/` 与 `origin/main` 内容一致；macOS app acceptance lite `29 pass / 0 fail / 2 info`；`/Applications/PFI.app`、`~/Downloads/PFI.app`、`~/Desktop/PFI.app` 均指向 canonical PFI；`http://127.0.0.1:8501/_stcore/health` 返回 `ok`。
 
 浏览器验收：
 
