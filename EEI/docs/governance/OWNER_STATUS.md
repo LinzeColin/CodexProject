@@ -6,7 +6,7 @@ EEI 当前治理结论：实现一致性为 `VERIFIED`，方法/实证为 `UNVER
 
 ## 2. 本次运行改变了什么
 
-Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。
+Owner 视图现在记录 A209 browser-soak runtime 修复：浏览器短切片复用一个 Chromium 进程并保持逐切片 fresh page，300 秒 operator probe 已通过 wall-clock 预算；这仍不是 24h release evidence。
 
 ## 3. 为什么重要
 
@@ -78,7 +78,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `TASK-T1308-A211-APP-ICON-SHELL-SYNC`
+- release_gate: `TASK-T1307-A209-BROWSER-SLICE-REUSE`
 
 ## 14. Evidence Freshness
 
@@ -95,13 +95,13 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 ## 16. 技术元数据
 
-- source_base_commit: `12df22b6347fd881d42545afe387ac9e41e56fb4`
+- source_base_commit: `fd66c8a0a6af645fc955f2e9695f32a7cca089bf`
 - source_tree_hash: `00e27599461403192b998e8f9a3f7f0e769e5d8f`
 - source_snapshot_hash: `sha256:7e0d8296ea40acfca3185cb63edf522b6f405da61aae12f3e1caf6ca6db523a0`
-- snapshot_event_time: `2026-06-27T16:14:00+10:00`
+- snapshot_event_time: `2026-06-27T18:08:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.1.0`
-- phase/gate: `D / TASK-T1308-A211-APP-ICON-SHELL-SYNC`
+- phase/gate: `D / TASK-T1307-A209-BROWSER-SLICE-REUSE`
 
 ## 17. Next Unique Task
 

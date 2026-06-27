@@ -3792,6 +3792,7 @@ tasks:
       - "A209 heartbeat/watchdog stale binding PASS: tests/unit/test_operator_soak_evidence.py PASS 22/22, focused ruff PASS, validate_task_pack PASS, and live origin/main heartbeat probe reports 10/288 PASS with 0 failed while preserving release_gate_closed_by_background_heartbeat=false"
       - "A209 running-partial finalization sync PASS: active origin/main rerun heartbeat reports 20/288 PASS windows, 0 failed, operator PID 37871 RUNNING, watchdog PID 38400 RUNNING, finalization status A209_FINALIZATION_BLOCKED_RUNNING_PARTIAL, and downstream_release_gate_refresh_allowed=false"
       - "A209 focused finalization regression PASS: tests/unit/test_operator_soak_finalization.py PASS 5/5, py_compile PASS, and ruff PASS; historical FAILED_OPERATOR_EVIDENCE remains visible while a new healthy rerun is not mislabeled as intervention"
+      - "A209 browser-slice reuse repair PASS: scripts/run_soak_smoke.mjs now reuses one Chromium process while creating a fresh page per slice; 300s operator probe reports 1/1 PASS, elapsed_wall_seconds=346.5261 <= 375, browser_slices_completed=20, browser_measurement_error=null, and A209 remains IN_PROGRESS."
     evidence_refs:
       - "EEI/artifacts/tests/a209/t1307_operator_soak_readiness.json"
       - "EEI/artifacts/tests/a209/t1307_operator_soak_readiness.checkpoints.jsonl"
@@ -3818,6 +3819,9 @@ tasks:
       - "/private/tmp/eei-a209-rerun-20260626-150051-b6c63687/operator_soak_24h.checkpoints.jsonl"
       - "EVENT-20260627-003 live heartbeat probe summary"
       - "EEI/docs/governance/development_events.jsonl:EVENT-20260627-006"
+      - "EEI/docs/governance/development_events.jsonl:EVENT-20260627-008"
+      - "/private/tmp/eei-a209-browser-reuse-window-probe.json"
+      - "/tmp/eei-operator-soak-rebased2.json"
     risk: "A209 can be falsely closed if 4h evidence, monitor/supervisor/watchdog/heartbeat/finalization progress, incident recovery evidence, a failed 24h run, a short slice probe, or a partial 24h checkpoint is treated as 24h evidence or final release-manager approval; watchdog stale-PID detection must not be used to kill or replace a live operator soak process without explicit operator action."
     rollback: "Stop only the detached watchdog PID if needed, remove the monitor/supervisor/watchdog/heartbeat/finalization script/Makefile/test/governance changes or invalid 4h JSON/checkpoint, regenerate the A209 evidence-validation artifact back to missing long-duration evidence, regenerate clean-room/release artifacts, and rerun make verify."
     target_version: "0.1.0"
