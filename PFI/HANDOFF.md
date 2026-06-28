@@ -4,6 +4,8 @@ Last updated: 2026-06-29 Australia/Sydney
 
 ## Current Goal
 
+最新任务：PFI v0.2.1.1 Product UI Recovery Stage 0 准备轮。用户明确 roadmap 把 Stage 和 Phase 的母子关系搞反；本轮只读取 v0.2.1.1 RTF 与 controlled UI rebuild roadmap，建立 6-stage 执行锁、来源清单、产品上下文和合同测试，不修改正式 UI，不刷新 app 入口，不清理缓存。
+
 PFI v0.2.2 Stage 1-13 复审并解决：第一阶段每次 run work 只复审解决 1 个 Stage，第二阶段整体项目复审解决已完成。正式页面、报告、图表、首页摘要和建议只允许读取真实 MetaDatabase 派生数据或中文真实空态；不得使用 demo/sample/synthetic/fixture/mock/fake/测试样例数据作为验收依据。GitHub main 同步和 app 入口重装纳入本轮 closeout，均按 `PFI/` 与 `MetaDatabase/PFI/` path-limited 范围执行，不能带入 EEI/ADP/Alpha/Serenity/arxiv 等混合改动。阻塞项数量：`0`。
 
 ## Current Status
@@ -20,6 +22,9 @@ PFI v0.2.2 Stage 1-13 复审并解决：第一阶段每次 run work 只复审解
   resolve to this checkout.
 - Local runtime data home is now `~/.pfi` or explicit `$PFI_DATA_HOME`.
 - Current app URL after migration verification: `http://localhost:8501`.
+- v0.2.1.1 Stage 0 准备轮已新增目标产物：`PRODUCT.md`、`docs/pfi_v0211/SOURCE_TASK_PACK_MANIFEST.md`、`docs/pfi_v0211/ROADMAP_LOCK.md`、`docs/pfi_v0211/STAGE0_PREPARATION.md`、`src/pfi_v02/stage_v0211_ui_recovery.py`、`tests/test_v0211_stage0_preparation_contract.py`。
+- v0.2.1.1 执行层级锁定为 6 个 Stage：S0 准备轮、S1 产品壳与路由、S2 页面骨架与去 AI 化、S3 真实操作流、S4 持久化与同步、S5 真实图表与最终验收；每次 run work 最多完成 1 个 Stage。
+- v0.2.1.1 Stage 0 禁止修改 `PFI/web/index.html`、`PFI/web/app/shell.js`、`PFI/src/pfi_os/app/streamlit_app.py`，禁止提前做 UI 重建或声明 v0.2.1.1 完成。
 - 当前复审状态：Stage 1-13 复审并解决已完成；整体项目复审解决已完成；GitHub main 同步纳入本轮 closeout；app 入口重装已完成并通过 macOS app acceptance lite。
 - 当前 Stage 13 task IDs：`S13-P1-T1`、`S13-P1-T2`、`S13-P1-T3`。
 - Stage 13 单轮历史边界：Stage 13 - 后置触发型复核；交付前人工指定触发 Codex Review Ticket；本轮只复审解决 Stage 13；整体项目复审解决不在本轮实现；GitHub 同步不在本轮执行；app 入口重装不在本轮执行；禁止全仓无差别扫描；仅对异常区域进行复核；不联网；不调用外部 LLM；问题、修复、验证、剩余风险已记录；阻塞项数量：`0`。
