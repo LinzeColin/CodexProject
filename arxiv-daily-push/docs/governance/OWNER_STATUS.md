@@ -6,7 +6,7 @@ arxiv-daily-push 当前治理结论：实现一致性为 `VERIFIED`，方法/实
 
 ## 2. 本次运行改变了什么
 
-Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。
+Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。本次已记录独立最终复审分配和 P0/P1 zero-proof artifact，但 S2PLT04 completion、final command、handoff、signoff、manifest 与 production acceptance 仍阻断。
 
 ## 3. 为什么重要
 
@@ -31,10 +31,10 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 7. 下一行动、责任角色和验收证据
 
-- next_task_id: `S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT`
+- next_task_id: `S2PMT07-S2PLT04-COMPLETION-REPORT`
 - responsible_role: `content_owner + engineering_owner + independent_final_reviewer`
 - acceptance_ids: `ACC-S2PMT07-FINAL-REVIEW`
-- unblock_condition: Provide independent final reviewer assignment artifact, independent closure decision, P0/P1 zero proof, S2PLT04 completion report, final bundle manifest, independent signoff, final command execution, no-production attestation, and next-agent handoff before any final gate closure claim.
+- unblock_condition: Provide real S2PLT04 completion report, final bundle manifest, independent signoff, final command execution, and next-agent handoff after the already validated independent reviewer assignment and P0/P1 zero-proof artifacts; do not claim production acceptance until all final-bundle gates pass.
 
 ## 8. 九层 Assurance 状态
 
@@ -78,7 +78,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_DRAFT_CLI_READY_NO_ASSIGNMENT_NO_PRODUCTION`
+- release_gate: `S2PMT07_ASSIGNMENT_AND_ZERO_PROOF_VALIDATED_S2PLT04_BLOCKED_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
@@ -101,9 +101,9 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - snapshot_event_time: `2026-06-29T00:40:23+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PM / S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_DRAFT_CLI_READY_NO_ASSIGNMENT_NO_PRODUCTION`
+- phase/gate: `S2PM / S2PMT07_ASSIGNMENT_AND_ZERO_PROOF_VALIDATED_S2PLT04_BLOCKED_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 
-- task_id: `S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT`
-- reason: Current S2PMT07 blockers are mapped to required future evidence; independent reviewer assignment remains required before the future closure decision packet can be turned into a real P0/P1 zero-proof closure artifact.
+- task_id: `S2PMT07-S2PLT04-COMPLETION-REPORT`
+- reason: Independent final reviewer assignment and P0/P1 zero-proof artifacts are now valid; S2PLT04 completion report is the next required blocked artifact before final command, handoff, signoff, manifest, or production acceptance can proceed.
