@@ -12,6 +12,21 @@ const FEEDBACK_STATES = {
 };
 const FEEDBACK_STATE_ORDER = ["progress", "success", "failure"];
 
+const FX_SNAPSHOT = Object.freeze({
+  snapshotId: "fx_AUD_CNY_20260628",
+  pair: "AUD/CNY",
+  rateAudToCny: 4.6874,
+  effectiveDate: "2026-06-28",
+  effectiveTimeLocal: "06:00",
+  cacheState: "cached",
+});
+const FX_TO_CNY = Object.freeze({
+  CNY: 1,
+  AUD: FX_SNAPSHOT.rateAudToCny,
+  USD: 1.52 * FX_SNAPSHOT.rateAudToCny,
+  HKD: 0.195 * FX_SNAPSHOT.rateAudToCny,
+});
+
 const STATUS_LABELS = {
   ready: "可用",
   completed: "完成",
@@ -1209,7 +1224,7 @@ function installStage3WorkspaceAliases() {
     cards: [
       ["数据与系统", "可用", "来源、任务、隐私、备份"],
       ["运行反馈控制台", "可配置", "视觉、声音、触感、通知"],
-      ["汇率徽标", "待更新", "CNY/AUD 06:00 快照"],
+      ["汇率徽标", "已缓存", "AUD/CNY 06:00 快照"],
       ["隐私边界", "开启", "原始数据按 MetaDatabase 备份规则管理"],
     ],
     features: [
@@ -1227,7 +1242,7 @@ function installStage3WorkspaceAliases() {
       feature("备份恢复", "复核", "恢复演练", "检查备份、校验和恢复路径。", { workspace: "settings", label: "查看备份" }),
     ],
     rows: [
-      row("P0", "汇率徽标", "CNY/AUD", "读取当日 06:00 快照；缺失时显示中文待更新。", "复核"),
+      row("P0", "汇率徽标", "AUD/CNY", "普通运行只读本地 06:00 快照；缓存缺失时显示中文待更新。", "复核"),
       row("P0", "运行反馈控制台", "设置页", "集中配置多模态反馈，不在业务页常驻右侧设置面板。", "可用"),
       row("P0", "隐私边界", "目录策略", "确认私有数据与 secrets 不进入公共 Git。", "可用"),
       row("P1", "反馈设置", "触感/声音/视觉/通知", "业务页默认不常驻反馈控制台。", "可用"),
@@ -1533,9 +1548,9 @@ function applyStage4Dashboard(dashboard) {
 
   WORKSPACES.home.runtime = "第 4 阶段：投资与消费智能分析 · 本地只读 MVP";
   WORKSPACES.home.features = [
-    feature("投资总览", "可用", "投资管理", `投资市值 ${moneyLabel(invSummary.total_market_value_aud)} · 盈亏 ${moneyLabel(invSummary.total_unrealized_pnl_aud)}`, { workspace: "investment", label: "查看投资" }),
+    feature("投资总览", "可用", "投资管理", `投资市值 ${moneyLabel(invSummary.total_market_value_aud, "AUD")} · 盈亏 ${moneyLabel(invSummary.total_unrealized_pnl_aud, "AUD")}`, { workspace: "investment", label: "查看投资" }),
     feature("风险分析", safeUserText((risk.concentration || {}).status, "复核"), "投资管理", "集中度、回撤、币种暴露和流动性可展示。", { workspace: "investment", label: "查看风险" }),
-    feature("消费总览", "可用", "消费管理", `本月支出 ${moneyLabel(conSummary.month_spend_aud)} · 预算剩余 ${moneyLabel(conSummary.budget_remaining_aud)}`, { workspace: "consumption", label: "查看消费" }),
+    feature("消费总览", "可用", "消费管理", `本月支出 ${moneyLabel(conSummary.month_spend_aud, "AUD")} · 预算剩余 ${moneyLabel(conSummary.budget_remaining_aud, "AUD")}`, { workspace: "consumption", label: "查看消费" }),
     feature("现金流预测", safeUserText(firstHorizon.cashflow_pressure, "复核"), "消费管理", "30/90/180 天支出、收入和可投资现金预测。", { workspace: "consumption", label: "查看现金流" }),
   ];
   WORKSPACES.home.tasks = [
@@ -1554,7 +1569,7 @@ function applyStage4Dashboard(dashboard) {
     row("P1", "消费总览", safeUserText((conSummary.source_ids || []).join(", "), "三来源"), "查看预算剩余、固定和弹性支出。", "可用"),
     row("P1", "分类分析", `${(classification.review_queue || []).length} 条待复核`, "低置信度分类用选择题处理。", (classification.review_queue || []).length ? "复核" : "可用"),
     row("P1", "异常消费", `${Number(anomalies.anomaly_count || 0)} 条异常`, "处理大额、重复、夜间、周末和冲动型消费。", Number(anomalies.anomaly_count || 0) ? "复核" : "可用"),
-    row("P2", "现金流预测", `30 天 ${moneyLabel(firstHorizon.available_to_invest_aud)}`, "生活现金和投资现金分开计算。", safeUserText(firstHorizon.cashflow_pressure, "复核")),
+    row("P2", "现金流预测", `30 天 ${moneyLabel(firstHorizon.available_to_invest_aud, "AUD")}`, "生活现金和投资现金分开计算。", safeUserText(firstHorizon.cashflow_pressure, "复核")),
   ];
 }
 
@@ -1600,13 +1615,13 @@ function applyStage5Dashboard(dashboard) {
     ["建议模型", String(recommendations.length), "领域、证据、预期效果、代价、动作、决策"],
     ["复盘生命周期", String((lifecycle.rows || []).length), "接受、拒绝、暂缓、复核、效果度量"],
     ["投资建议", String(investmentCount), "集中度、交易频率、现金仓位、策略上线/暂停"],
-    ["消费建议", moneyLabel(totalSavings), "预算、订阅、异常、降成本目标"],
+    ["消费建议", moneyLabel(totalSavings, "AUD"), "预算、订阅、异常、降成本目标"],
   ];
   WORKSPACES.recommendations.features = [
     feature("建议模型", "可用", "建议模型证据", "所有建议必须有证据、预期效果、代价、动作和用户决策。"),
     feature("复盘生命周期", lifecycle.decision_record_supported ? "可用" : "复核", "复盘状态证据", "支持接受、拒绝、暂缓、复核和效果度量。"),
     feature("投资建议", investmentCount ? "有建议" : "复核", "投资分析证据", `${investmentCount} 条投资建议可人工决策。`),
-    feature("消费建议", consumptionCount ? "有建议" : "复核", "消费分析证据", `${consumptionCount} 条消费建议 · 节省目标 ${moneyLabel(totalSavings)}。`),
+    feature("消费建议", consumptionCount ? "有建议" : "复核", "消费分析证据", `${consumptionCount} 条消费建议 · 节省目标 ${moneyLabel(totalSavings, "AUD")}。`),
   ];
   WORKSPACES.recommendations.rows = topRecommendations.slice(0, 4).map((item) =>
     row(
@@ -2247,7 +2262,10 @@ function updateHoldingsSummary() {
   const count = document.querySelector("[data-holdings-summary-count]");
   const value = document.querySelector("[data-holdings-summary-value]");
   const saved = document.querySelector("[data-holdings-summary-saved]");
-  const total = activeRows.reduce((sum, row) => sum + nonNegativeNumber(row.quantity) * nonNegativeNumber(row.marketPrice), 0);
+  const total = activeRows.reduce((sum, row) => {
+    const originalValue = nonNegativeNumber(row.quantity) * nonNegativeNumber(row.marketPrice);
+    return sum + toCnyAmount(originalValue, row.currency);
+  }, 0);
   if (count) count.textContent = String(activeRows.length);
   if (value) value.textContent = `CNY ${total.toLocaleString("zh-CN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   if (saved) saved.textContent = holdingsPersistenceState.lastSavedAt ? formatLocalSaveTime(holdingsPersistenceState.lastSavedAt) : "未保存";
@@ -3351,10 +3369,21 @@ function localizeStatus(status) {
   return STATUS_LABELS[normalized] || status || "复核";
 }
 
-function moneyLabel(value) {
+function toCnyAmount(value, sourceCurrency = "CNY") {
   const numeric = Number(value || 0);
-  if (!Number.isFinite(numeric)) return "AUD 0.00";
-  return `AUD ${numeric.toLocaleString("en-AU", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  if (!Number.isFinite(numeric)) return 0;
+  const rate = FX_TO_CNY[String(sourceCurrency || "CNY").trim().toUpperCase()] || 1;
+  return numeric * rate;
+}
+
+function formatCnyAmount(value) {
+  const numeric = Number(value || 0);
+  if (!Number.isFinite(numeric)) return "CNY 0.00";
+  return `CNY ${numeric.toLocaleString("zh-CN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
+function moneyLabel(value, sourceCurrency = "CNY") {
+  return formatCnyAmount(toCnyAmount(value, sourceCurrency));
 }
 
 function workspaceLabel(value, fallback = "工作区") {

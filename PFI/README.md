@@ -7,11 +7,11 @@ PFI V0.2 is the Personal Financial Intelligence project under
 under `LinzeColin/CodexProject/QBVS`; PFI investment management does not own
 or cover QBVS.
 
-## v0.2.2 数据库治理 Stage 1
+## v0.2.2 数据库治理 Stage 2
 
-`v0.2.2 数据库治理` 当前完成 Stage 1：模型参数文件重构。本轮只做参数治理，不修改 v0.2.1 HTML Web Shell 正式前端，不实现 Stage 2 汇率快照读取，不生成 Stage 9/12 的 HTML 审查页。
+`v0.2.2 数据库治理` 当前完成 Stage 2：CNY 基准与汇率规则。本轮实现真实 `AUD/CNY` 本地汇率快照读取、CNY 主显示、原币辅助字段、06:00 有效汇率日和普通运行不默认联网规则；不生成 Stage 9/12 的 HTML 审查页，不新增真实交易、自动投资、支付或券商提交能力。
 
-Stage 1 source files:
+Stage 2 source files:
 
 | Purpose | Path |
 | --- | --- |
@@ -19,16 +19,23 @@ Stage 1 source files:
 | 机器可读参数源 | `config/pfi_parameters.yaml` |
 | 参数变更记录 | `config/parameter_changelog.md` |
 | Stage 1 验收报告 | `docs/pfi_v022/STAGE1_PARAMETER_GOVERNANCE.md` |
+| Stage 2 验收报告 | `docs/pfi_v022/STAGE2_CNY_FX_GOVERNANCE.md` |
 | Stage 0-13 roadmap lock | `docs/pfi_v022/ROADMAP_LOCK.md` |
-| Stage 1 contract | `src/pfi_v02/stage_v022_database_governance.py` |
-| Stage 1 consistency test | `tests/test_pfi_parameters_consistency.py` |
+| Stage 2 contract | `src/pfi_v02/stage_v022_database_governance.py` |
+| 汇率快照读取模块 | `src/pfi_v02/stage_v022_fx.py` |
+| 真实汇率快照 | `data/fx_snapshots/AUD_CNY/2026-06-28.json` |
+| Stage 2 FX test | `tests/test_v022_fx_effective_date.py` |
+| 参数一致性测试 | `tests/test_pfi_parameters_consistency.py` |
 
-Stage 1 locked parameters:
+Stage 2 locked parameters:
 
 - 主货币：`CNY`。
-- 当前前端徽标：`CNY/AUD=4.70（YYYYMMDD--HH:MM）`，本轮保持不改。
+- 当前前端徽标：`AUD/CNY=4.69（YYYYMMDD--HH:MM）`。
 - 汇率读取时间：`06:00 Australia/Sydney`。
-- 普通运行默认联网：`false`。
+- 当前真实快照：`fx_AUD_CNY_20260628`，`1 AUD = 4.6874 CNY`，来源 `Frankfurter v2 public API`。
+- 普通运行默认联网：`false`，只读 `data/fx_snapshots/` 本地快照。
+- 显式刷新命令：`PYTHONPATH=src python3 -B -m pfi_v02.stage_v022_fx refresh --allow-network`。
+- 汇率缺失状态：显示 `汇率数据待更新`，不得伪造实时汇率或强制联网。
 - 低置信复核线：`70 分`。
 - 大额消费阈值：`CNY 2000` 或 `AUD 500`。
 - 夜间窗口：`22:00-06:00`。
@@ -49,8 +56,9 @@ Stage 0 source files:
 Currency and header contract:
 
 - Base currency is `CNY`.
-- Every page must keep a top-right exchange badge in this format: `CNY/AUD=4.70（YYYYMMDD--HH:MM）`.
-- The badge reads the current local day's `06:00 Australia/Sydney` exchange snapshot.
+- v0.2.1 historical header format was `CNY/AUD=4.70（YYYYMMDD--HH:MM）`.
+- v0.2.2 Stage 2 current header format is `AUD/CNY=4.69（YYYYMMDD--HH:MM）`, meaning `1 AUD = 4.69 CNY`.
+- The badge reads the effective local `06:00 Australia/Sydney` exchange snapshot from `data/fx_snapshots/`.
 - Missing exchange data must show `汇率数据待更新`; PFI must not invent a live rate.
 
 ## Stage 1

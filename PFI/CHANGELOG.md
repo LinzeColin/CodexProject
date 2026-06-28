@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## v0.2.2 数据库治理 Stage 2 - 2026-06-28
+
+- 完成 Stage 2 `CNY 基准与汇率规则`，覆盖 `S2-P1-T1..S2-P2-T3`。
+- 新增 `src/pfi_v02/stage_v022_fx.py`，实现 06:00 Australia/Sydney 有效汇率日、普通运行本地快照读取、显式联网刷新、快照 hash 校验、金额转 CNY 和账本金额字段生成。
+- 新增真实快照 `data/fx_snapshots/AUD_CNY/2026-06-28.json`：`fx_AUD_CNY_20260628`，`1 AUD = 4.6874 CNY`，来源 `Frankfurter v2 public API`。
+- Web Shell 顶部汇率徽标从历史 `CNY/AUD=4.70` 更新为当前 `AUD/CNY=4.69（YYYYMMDD--HH:MM）`，主页等主金额显示以 `CNY` 为主。
+- `config/pfi_parameters.yaml`、`模型参数文件.md`、`功能清单.md`、`开发记录.md` 和 `config/parameter_changelog.md` 补齐 Stage 2 汇率、快照、原币辅助、缺失状态和非目标边界。
+- 新增 `docs/pfi_v022/STAGE2_CNY_FX_GOVERNANCE.md` 与 `tests/test_v022_fx_effective_date.py`，把 Stage 2 acceptance criteria、stop condition 和 validation 固化为可重复验证合同。
+- 本轮不实现 Stage 3 数据源结构，不新增参数中心页面，不提交真实交易、支付、券商下单或自动投资能力。
+
 ## v0.2.2 数据库治理 Stage 1 - 2026-06-28
 
 - 完成 Stage 1 `模型参数文件重构`，覆盖 `S1-P1-T1..S1-P2-T3`。
