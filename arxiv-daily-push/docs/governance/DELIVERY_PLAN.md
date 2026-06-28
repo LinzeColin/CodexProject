@@ -21,12 +21,19 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 245
+- task_count: 246
 - acceptance_count: 127
 
 ## Delivery Tasks
 
 The machine-readable task source is `delivery_tasks.yaml`.
+
+## 2026-06-28 23:23:48 Australia/Sydney - S2PMT07 P0/P1 Zero Proof CLI Validator
+
+- `S2PMT07-P0-P1-ZERO-PROOF-CLI-VALIDATOR` exposes `adp validate-p0-p1-zero-proof --path FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json --json`.
+- Missing zero-proof artifact returns `blocked` / exit 2 with `p0_p1_zero_proof_artifact_missing`; a future valid artifact can pass strict schema, candidate refs, zero counts, final bundle refs, no-production flags, and `decision_hash` checks.
+- The current command result is not P0/P1 zero proof, not a reviewer assignment, not a closure decision, not S2PLT04 completion, not final bundle acceptance, and not production acceptance.
+- No SMTP, scheduler, Release, restore, schema/DB, source/ranking, CURRENT/V7, DAILY_OPERATION, or integrated production acceptance side effect is claimed.
 
 ## 2026-06-28 23:04:29 Australia/Sydney - S2PMT07 Independent Final Closure Decision Owner Packet CLI
 
