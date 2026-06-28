@@ -7,11 +7,11 @@ PFI V0.2 is the Personal Financial Intelligence project under
 under `LinzeColin/CodexProject/QBVS`; PFI investment management does not own
 or cover QBVS.
 
-## v0.2.2 数据库治理 Stage 10
+## v0.2.2 数据库治理 Stage 11
 
-`v0.2.2 数据库治理` 当前完成 Stage 10 - 报告、建议与复盘。本轮新增双消费口径月报、投资成本与行为报告、Interconnection 数据质量报告、行动建议评分公式和建议生命周期；不实现 Stage 11 测试与验证总门，不修改 v0.2.1 主 Web Shell UIUX 基线，不新增真实交易、自动投资、支付或券商提交能力。
+`v0.2.2 数据库治理` 当前完成 Stage 11 - 测试与验证。本轮新增金融逻辑测试门、跨板块一致性测试门和可视化一致性测试门；不实现 Stage 12 文档同步与最终交付，不执行 Stage 13 后置触发型复核，不修改 v0.2.1 主 Web Shell UIUX 基线，不新增真实交易、自动投资、支付或券商提交能力。
 
-Stage 10 source files:
+Stage 11 source files:
 
 | Purpose | Path |
 | --- | --- |
@@ -29,15 +29,17 @@ Stage 10 source files:
 | Stage 9 验收报告 | `docs/pfi_v022/STAGE9_VISUALIZATION_UIUX.md` |
 | Stage 9 Interconnection Map | `docs/pfi_v022/INTERCONNECTION_MAP.md` |
 | Stage 10 验收报告 | `docs/pfi_v022/STAGE10_REPORT_ADVICE_REVIEW.md` |
+| Stage 11 验收报告 | `docs/pfi_v022/STAGE11_TEST_VALIDATION.md` |
 | Interconnection Matrix | `docs/pfi_v02/INTERCONNECTION_MATRIX.md` |
 | Stage 0-13 roadmap lock | `docs/pfi_v022/ROADMAP_LOCK.md` |
-| Stage 10 contract | `src/pfi_v02/stage_v022_database_governance.py` |
+| Stage 11 contract | `src/pfi_v02/stage_v022_database_governance.py` |
 | Stage 5 ledger taxonomy | `src/pfi_v02/stage_v022_ledger_taxonomy.py` |
 | Stage 6 tags/views | `src/pfi_v02/stage_v022_tags_views.py` |
 | Stage 7 formula scoring | `src/pfi_v02/stage_v022_formula_scoring.py` |
 | Stage 8 runtime diff | `src/pfi_v02/stage_v022_runtime_diff.py` |
 | Stage 9 visualization UIUX | `src/pfi_v02/stage_v022_visualization_uiux.py` |
 | Stage 10 report advice review | `src/pfi_v02/stage_v022_report_advice_review.py` |
+| Stage 11 test validation | `src/pfi_v02/stage_v022_test_validation.py` |
 | Stage 6 local HTML | `web/pfi_v022_tag_views.html` |
 | Stage 9 local HTML | `web/interconnection-map.html` |
 | 汇率快照读取模块 | `src/pfi_v02/stage_v022_fx.py` |
@@ -315,4 +317,16 @@ Stage 10 - 报告、建议与复盘已加入 PFI 的数据库治理路线。
 - 报告口径锁定：月报同时显示消费总流出和生活消费；投资报告显示收益、成本、费用、汇率、交易频率、风格、现金拖累；数据质量报告显示未匹配转账、重复候选、低置信、标签变更、参数变更、hash diff。
 - 建议生命周期锁定：`pending`、`accepted`、`rejected`、`snoozed`、`reviewed`、`effect_measured`。
 - 行动建议与复盘不是自动买卖建议，不生成券商订单、支付动作或自动投资动作。
-- 本轮不实现 Stage 11 测试与验证总门，不修改 v0.2.1 主 Web Shell UIUX 基线，不联网、不调用外部 LLM、不生成真实 agent 任务。
+- Stage 11 测试与验证已在后续单独 gate 中实现。
+
+## v0.2.2 Stage 11
+
+Stage 11 - 测试与验证已加入 PFI 的数据库治理路线。
+
+- 新增 `src/pfi_v02/stage_v022_test_validation.py`：生成金融逻辑、跨板块一致性和可视化一致性验证模型。
+- 新增 `tests/test_v022_stage11_test_validation.py`：验证 `S11-P1-T1..S11-P3-T3`，覆盖投资入金计入消费总流出、基金申购计入消费总流出、退款抵消、信用卡还款不重复计入生活消费。
+- 新增 `docs/pfi_v022/STAGE11_TEST_VALIDATION.md`：中文验收报告。
+- `config/pfi_parameters.yaml` 升级为 `PFIParametersV022Stage11`，记录 `test_validation` 参数、Stage 11 task ids、图表来源字段、图表新鲜度和性能状态。
+- `S11-P2-T3` 跨板块一致性锁定：首页消费总流出 = 消费页消费总流出 = 月报消费总流出；首页投资资产 = 投资页投资资产 = 投资报告投资资产；现金流预测来源能追溯到账本事件和计划事件。
+- `S11-P3-T3` 可视化一致性锁定：每个图表必须追溯 `metric_id`、`formula_id`、`parameter_hash`、`data_hash`，并显示 `compute time` 和 `cache status`。
+- 本轮不实现 Stage 12 文档同步与最终交付，不执行 Stage 13 后置触发型复核，不修改 v0.2.1 主 Web Shell UIUX 基线，不联网、不调用外部 LLM、不生成真实 agent 任务。

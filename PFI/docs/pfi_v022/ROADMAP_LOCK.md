@@ -27,7 +27,7 @@ Roadmap 形态：`Stage -> Phase -> Task`
 | Stage 8 | 本地运行 Diff 与 Impacted Metrics | 本轮完成 | dependency hash、diff 收紧、LLM 触发规则、中文 Codex Review Ticket 模板。 |
 | Stage 9 | 可视化与 UI/UX | 本轮完成 | 参数中心、Interconnection Map、Metric Dependency Graph、现金流可视化和 Metric Drilldown Debugger。 |
 | Stage 10 | 报告、建议与复盘 | 本轮完成 | 双消费口径报告、投资成本行为、Interconnection 数据质量报告、行动建议评分和生命周期。 |
-| Stage 11 | 测试与验证 | 待 owner 开启 | 金融逻辑、跨板块一致性、可视化一致性测试。 |
+| Stage 11 | 测试与验证 | 本轮完成 | 金融逻辑、跨板块一致性、可视化一致性测试。 |
 | Stage 12 | 文档同步与交付 | 待 owner 开启 | 三基、审查 HTML、总结报告。 |
 | Stage 13 | 后置触发型复核 | 非默认执行 | 仅在 diff/test/owner 指定触发时执行。 |
 
@@ -524,6 +524,72 @@ git diff --check -- PFI
 - `git diff --check -- PFI`：通过。
 - macOS app acceptance lite：`29 pass / 0 fail / 2 info`。
 - 真实 8501 浏览器验收：关键中文入口和 `AUD/CNY` 可见，Stage 10 审查文档未注入主 UI，console errors `0`，截图 `/tmp/pfi-v022-stage10-app-verified.png`。
+
+## Stage 11 - 测试与验证 Task Lock
+
+| Task ID | Phase | 交付物 | 状态 |
+| --- | --- | --- | --- |
+| `S11-P1-T1` | Phase 11.1 | 投资入金计入消费总流出测试 | 本轮完成 |
+| `S11-P1-T2` | Phase 11.1 | 基金申购计入消费总流出测试 | 本轮完成 |
+| `S11-P1-T3` | Phase 11.1 | 退款抵消测试 | 本轮完成 |
+| `S11-P1-T4` | Phase 11.1 | 信用卡还款测试 | 本轮完成 |
+| `S11-P2-T1` | Phase 11.2 | 首页与消费页一致测试 | 本轮完成 |
+| `S11-P2-T2` | Phase 11.2 | 首页与投资页一致测试 | 本轮完成 |
+| `S11-P2-T3` | Phase 11.2 | 现金流与账本一致测试 | 本轮完成 |
+| `S11-P3-T1` | Phase 11.3 | 图表数据来源测试 | 本轮完成 |
+| `S11-P3-T2` | Phase 11.3 | 图表及时性测试 | 本轮完成 |
+| `S11-P3-T3` | Phase 11.3 | 图表性能测试 | 本轮完成 |
+
+## Stage 11 Acceptance Criteria
+
+- 投资入金计入消费总流出：CBA -> Moomoo 时消费总流出增加，生活消费不增加，投资现金增加。
+- 基金申购计入消费总流出：支付宝基金申购时消费总流出增加，生活消费不增加，投资持仓增加。
+- 退款抵消原消费，且不影响投资收益。
+- 信用卡还款不重复计入生活消费。
+- 首页消费总流出 = 消费页消费总流出 = 月报消费总流出。
+- 首页投资资产 = 投资页投资资产 = 投资报告投资资产。
+- 现金流预测来源能追溯到账本事件和计划事件。
+- 每个图表可追溯 `metric_id`、`formula_id`、`parameter_hash`、`data_hash`。
+- 数据变化后受影响图表自动标记 `needs_update` 或 `updated`。
+- 大量模拟记录下图表生成不明显卡死，并显示 `compute time` 和 `cache status`。
+
+## Stage 11 Stop Condition
+
+- 投资入金未进入消费总流出时停止。
+- 基金申购被当普通生活消费时停止。
+- 退款重复计入收入时停止。
+- 还款造成重复消费时停止。
+- 首页、消费页、月报三处金额不一致时停止。
+- 首页、投资页、投资报告三处金额不一致时停止。
+- 现金流无法解释时停止。
+- 图表数字无来源时停止。
+- 图表显示旧数据时停止。
+- 无性能状态或明显卡顿时停止。
+- Stage 12 文档同步与最终交付被提前实现时停止。
+
+当前检查结论：以上停止条件均未触发。Stage 11 交付物为本地测试门、参数和验证合同；不改 v0.2.1 主 Web Shell UIUX 基线，不联网，不调用外部 LLM，不提前实现 Stage 12/13。
+
+## Stage 11 Validation
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pytest tests/test_v022_stage11_test_validation.py -q -p no:cacheprovider
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pytest tests/test_v022_stage0_database_governance.py tests/test_pfi_parameters_consistency.py tests/test_v022_fx_effective_date.py tests/test_v022_stage3_source_account_profiles.py tests/test_v022_interconnection_no_double_count.py tests/test_v022_consumption_investment_outflow.py tests/test_v022_stage5_ledger_taxonomy.py tests/test_v022_stage6_tags_views.py tests/test_v022_stage7_formula_scoring.py tests/test_v022_stage8_runtime_diff.py tests/test_v022_stage9_visualization_uiux.py tests/test_v022_stage10_report_advice_review.py tests/test_v022_stage11_test_validation.py -q -p no:cacheprovider
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pytest tests -q -p no:cacheprovider
+node --check web/app/shell.js
+python3 ../scripts/validate_project_governance.py --project PFI
+git diff --check -- PFI
+```
+
+当前运行结果：
+
+- Stage 11 合同测试：`6 passed`。
+- Stage 0-11 v0.2.2 回归：`87 passed`。
+- 完整 PFI pytest：`245 passed`。
+- Web shell 语法检查：`node --check web/app/shell.js` 通过。
+- 项目治理：`errors: 0`，`warnings: 0`。
+- `git diff --check -- PFI` 通过。
+- macOS app 入口轻量验收：`29 pass / 0 fail / 2 info`，8501 健康。
+- 真实 8501 浏览器验收：`PFI`、`首页总览`、`数据源与上传`、`建议与复盘`、`报告与洞察`、`AUD/CNY` 可见；点击 `报告与洞察` 有响应；禁止正式 UI 出现 `Stage 11 - 测试与验证`、`STAGE11_TEST_VALIDATION`、`自动买入`、`自动卖出`；console errors `0`；截图 `/tmp/pfi-v022-stage11-app-verified.png`。
 
 ## Stage 7 - 模型公式、阈值与评分标准 Task Lock
 

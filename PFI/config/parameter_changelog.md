@@ -92,6 +92,12 @@
 | 2026-06-28 | `S10-P2-T2` | `report_advice_review.scoring_weights` | `Stage 5 建议有优先级但没有正式评分权重` | `财务影响25、风险降低20、紧急程度15、置信度15、可逆性10、执行成本反比10、学习价值5` | 建议排序必须有可解释依据，执行难度以执行成本反比分表达。 | 建议排序、报告解释、复盘优先级。 |
 | 2026-06-28 | `S10-P2-T3` | `report_advice_review.lifecycle_statuses` | `Stage 5 状态草案不完整` | `pending、accepted、rejected、snoozed、reviewed、effect_measured` | 建议必须能从待处理进入用户决策、复核和效果复盘。 | 建议生命周期、效果复盘、报告。 |
 | 2026-06-28 | `S10-P2-T3` | `report_advice_review.required_recommendation_fields` | `无正式必备字段清单` | `证据来源、相关交易、相关参数、相关公式、预期影响金额 CNY、置信度、是否需要人工复核、用户决策状态、效果复盘状态` | 每条建议必须可追溯、可复核、可衡量效果。 | 建议与复盘、报告、审计。 |
+| 2026-06-28 | `S11-P1-T1..S11-P1-T4` | `test_validation.financial_logic_case_ids` | `无正式 Stage 11 金融逻辑测试门` | `cba_to_moomoo_investment_deposit、alipay_fund_purchase、refund_offsets_original_consumption、credit_card_repayment_no_double_count` | 锁定投资入金、基金申购、退款、信用卡还款四个停止条件测试。 | 消费总流出、生活消费、投资现金、投资持仓、退款、信用卡还款。 |
+| 2026-06-28 | `S11-P2-T1..S11-P2-T2` | `test_validation.cross_surface_required_equalities` | `无正式跨板块相等关系参数` | `首页消费总流出 = 消费页消费总流出 = 月报消费总流出；首页投资资产 = 投资页投资资产 = 投资报告投资资产` | 防止首页、业务页和报告使用不同事实层或指标口径。 | 首页总览、消费管理、投资管理、报告与洞察。 |
+| 2026-06-28 | `S11-P2-T3` | `test_validation.cashflow_traceability_required` | `无正式现金流追溯参数` | `true` | 现金流预测必须能解释到账本事件和计划事件。 | 现金流、账本事件、计划事件、报告。 |
+| 2026-06-28 | `S11-P3-T1` | `test_validation.visualization_required_trace_fields` | `Stage 9 有数据状态字段，但没有 Stage 11 测试门必填字段` | `metric_id、formula_id、parameter_hash、data_hash` | 图表数字必须可追溯来源、公式、参数和数据 hash。 | 账户图表、投资图表、消费图表、现金流图表。 |
+| 2026-06-28 | `S11-P3-T2` | `test_validation.visualization_freshness_statuses` | `无正式图表新鲜度测试状态` | `needs_update、updated` | 数据变化后受影响图表不得继续显示旧数据。 | Runtime Diff、图表刷新、报告一致性。 |
+| 2026-06-28 | `S11-P3-T3` | `test_validation.performance_record_count` | `无正式 Stage 11 大量模拟记录数量` | `12000` | 性能测试需要证明大量模拟记录下不明显卡死，并显示 compute time/cache status。 | 可视化性能、缓存状态、用户验收。 |
 
 ## 记录规则
 

@@ -122,8 +122,8 @@ class TestV022Stage3SourceAccountProfiles(unittest.TestCase):
         catalog = load_v022_parameter_catalog(ROOT / "config" / "pfi_parameters.yaml")
         params = catalog["parameters"]
 
-        self.assertEqual(catalog["schema"], "PFIParametersV022Stage10")
-        self.assertEqual(catalog["current_stage"], "Stage 10 - 报告、建议与复盘")
+        self.assertEqual(catalog["schema"], "PFIParametersV022Stage11")
+        self.assertEqual(catalog["current_stage"], "Stage 11 - 测试与验证")
         self.assertEqual(catalog["stage3_task_ids"], list(V022_STAGE3_TASK_IDS))
         self.assertEqual(catalog["stage4_task_ids"], list(V022_STAGE4_TASK_IDS))
         self.assertEqual(params["data_sources"]["source_profile_schema"]["source_types"], list(STAGE3_SOURCE_TYPES))

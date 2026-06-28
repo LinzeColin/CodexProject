@@ -1,9 +1,9 @@
 {
-  "schema": "PFIParametersV022Stage10",
+  "schema": "PFIParametersV022Stage11",
   "project_id": "PFI",
   "task_name": "PFI v0.2.2 E2E 逻辑优化",
   "parameter_version": "v0.2.2",
-  "current_stage": "Stage 10 - 报告、建议与复盘",
+  "current_stage": "Stage 11 - 测试与验证",
   "canonical_parameter_file": "PFI/config/pfi_parameters.yaml",
   "machine_format": "JSON-compatible YAML",
   "uiux_baseline": "v0.2.1 HTML Web Shell",
@@ -3054,6 +3054,65 @@
         "description_zh": "每条行动建议必须包含的字段。",
         "impact_zh": "保证建议可追溯、可复核、可复盘。"
       }
+    },
+    "test_validation": {
+      "description_zh": "Stage 11 - 测试与验证的金融逻辑、跨板块一致性和可视化一致性测试门参数。",
+      "financial_logic_case_ids": {
+        "value": [
+          "cba_to_moomoo_investment_deposit",
+          "alipay_fund_purchase",
+          "refund_offsets_original_consumption",
+          "credit_card_repayment_no_double_count"
+        ],
+        "description_zh": "Stage 11 金融逻辑单元测试必须覆盖的用例。",
+        "impact_zh": "保证投资入金、基金申购、退款、信用卡还款口径不漂移。"
+      },
+      "cross_surface_required_equalities": {
+        "value": [
+          "首页消费总流出 = 消费页消费总流出 = 月报消费总流出",
+          "首页投资资产 = 投资页投资资产 = 投资报告投资资产"
+        ],
+        "description_zh": "跨板块一致性测试必须验证的金额相等关系。",
+        "impact_zh": "防止首页、业务页和报告使用不同口径。"
+      },
+      "cashflow_traceability_required": {
+        "value": true,
+        "description_zh": "现金流预测必须能追溯到账本事件和计划事件。",
+        "impact_zh": "现金流无法解释时阻断交付。"
+      },
+      "visualization_required_trace_fields": {
+        "value": [
+          "metric_id",
+          "formula_id",
+          "parameter_hash",
+          "data_hash"
+        ],
+        "description_zh": "每个图表数字必须暴露的来源字段。",
+        "impact_zh": "防止图表只有数字没有来源。"
+      },
+      "visualization_chart_ids": {
+        "value": [
+          "accounts_net_worth_trend",
+          "investment_asset_trend",
+          "consumption_total_outflow_trend",
+          "cashflow_ladder"
+        ],
+        "description_zh": "Stage 11 可视化一致性测试覆盖的图表。",
+        "impact_zh": "覆盖账户、投资、消费、现金流核心图表。"
+      },
+      "visualization_freshness_statuses": {
+        "value": [
+          "needs_update",
+          "updated"
+        ],
+        "description_zh": "数据变化后受影响图表允许的状态。",
+        "impact_zh": "图表显示旧数据时阻断交付。"
+      },
+      "performance_record_count": {
+        "value": 12000,
+        "description_zh": "Stage 11 性能测试使用的大量模拟记录数量。",
+        "impact_zh": "图表生成必须显示 compute time 和 cache status，并避免明显卡死。"
+      }
     }
   },
   "formulas": [
@@ -3634,5 +3693,17 @@
     "S10-P2-T1",
     "S10-P2-T2",
     "S10-P2-T3"
+  ],
+  "stage11_task_ids": [
+    "S11-P1-T1",
+    "S11-P1-T2",
+    "S11-P1-T3",
+    "S11-P1-T4",
+    "S11-P2-T1",
+    "S11-P2-T2",
+    "S11-P2-T3",
+    "S11-P3-T1",
+    "S11-P3-T2",
+    "S11-P3-T3"
   ]
 }

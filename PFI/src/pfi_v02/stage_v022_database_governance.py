@@ -61,6 +61,12 @@ from pfi_v02.stage_v022_report_advice_review import (
     STAGE10_SCORING_WEIGHTS,
     build_stage10_contract_payload,
 )
+from pfi_v02.stage_v022_test_validation import (
+    STAGE11_FINANCIAL_CASE_IDS,
+    STAGE11_SURFACE_NAMES,
+    STAGE11_VISUALIZATION_CHART_IDS,
+    build_stage11_contract_payload,
+)
 
 
 V022_STAGE1_TASK_IDS = (
@@ -193,6 +199,19 @@ V022_STAGE10_TASK_IDS = (
     "S10-P2-T1",
     "S10-P2-T2",
     "S10-P2-T3",
+)
+
+V022_STAGE11_TASK_IDS = (
+    "S11-P1-T1",
+    "S11-P1-T2",
+    "S11-P1-T3",
+    "S11-P1-T4",
+    "S11-P2-T1",
+    "S11-P2-T2",
+    "S11-P2-T3",
+    "S11-P3-T1",
+    "S11-P3-T2",
+    "S11-P3-T3",
 )
 
 V022_STAGE0_TASK_IDS = (
@@ -1307,5 +1326,106 @@ def build_v022_stage10_contract() -> dict[str, object]:
             "Stage 13 后置触发型复核不在本轮实现。",
             "不修改 v0.2.1 主 Web Shell UIUX 基线。",
             "不新增真实交易、自动投资、支付或券商提交。",
+        ),
+    }
+
+
+def build_v022_stage11_contract() -> dict[str, object]:
+    stage11_payload = build_stage11_contract_payload(load_v022_parameter_catalog())
+    return {
+        "schema": "PFIV022TestValidationStage11ContractV1",
+        "version": "v0.2.2",
+        "stage": "Stage 11",
+        "stage_name_zh": "测试与验证",
+        "goal": "把金融逻辑、跨板块金额一致性和可视化数据一致性收口为可重复运行的本地测试门，为 Stage 12 文档交付提供证据。",
+        "task_ids": V022_STAGE11_TASK_IDS,
+        "phases": {
+            "Phase 11.1": ("金融逻辑单元测试", "S11-P1-T1", "S11-P1-T2", "S11-P1-T3", "S11-P1-T4"),
+            "Phase 11.2": ("跨板块一致性测试", "S11-P2-T1", "S11-P2-T2", "S11-P2-T3"),
+            "Phase 11.3": ("可视化一致性测试", "S11-P3-T1", "S11-P3-T2", "S11-P3-T3"),
+        },
+        "financial_logic_validation": {
+            "case_ids": STAGE11_FINANCIAL_CASE_IDS,
+            "payload": stage11_payload["financial_logic_cases"],
+            "required_assertions": (
+                "CBA -> Moomoo 投资入金：消费总流出增加，生活消费不增加，投资现金增加。",
+                "支付宝基金申购：消费总流出增加，生活消费不增加，投资持仓增加。",
+                "退款能抵消原消费，且不影响投资收益。",
+                "信用卡还款不重复计入生活消费。",
+            ),
+        },
+        "cross_surface_consistency": {
+            "surfaces": STAGE11_SURFACE_NAMES,
+            "payload": stage11_payload["cross_surface_consistency"],
+            "required_equalities": (
+                "首页消费总流出 = 消费页消费总流出 = 月报消费总流出",
+                "首页投资资产 = 投资页投资资产 = 投资报告投资资产",
+            ),
+            "cashflow_traceability": "现金流预测来源能追溯到账本事件和计划事件。",
+        },
+        "visualization_consistency": {
+            "chart_ids": STAGE11_VISUALIZATION_CHART_IDS,
+            "payload": stage11_payload["visualization_validation"],
+            "required_trace_fields": ("metric_id", "formula_id", "parameter_hash", "data_hash"),
+            "freshness_rule": "数据变化后受影响图表必须标记 needs_update 或 updated。",
+            "performance_rule": "大量模拟记录下图表生成不明显卡死，并显示 compute time/cache status。",
+        },
+        "deliverables": (
+            "PFI/src/pfi_v02/stage_v022_test_validation.py",
+            "PFI/src/pfi_v02/stage_v022_database_governance.py",
+            "PFI/tests/test_v022_stage11_test_validation.py",
+            "PFI/docs/pfi_v022/STAGE11_TEST_VALIDATION.md",
+            "PFI/config/pfi_parameters.yaml",
+            "PFI/config/parameter_changelog.md",
+            "PFI/模型参数文件.md",
+            "PFI/功能清单.md",
+            "PFI/开发记录.md",
+            "PFI/HANDOFF.md",
+            "PFI/README.md",
+        ),
+        "acceptance_criteria": (
+            "CBA -> Moomoo 投资入金测试证明消费总流出增加、生活消费不增加、投资现金增加。",
+            "支付宝基金申购测试证明消费总流出增加、生活消费不增加、投资持仓增加。",
+            "退款抵消测试证明退款抵消原消费且不影响投资收益。",
+            "信用卡还款测试证明还款不重复计入生活消费。",
+            "首页消费总流出、消费页消费总流出和月报消费总流出完全一致。",
+            "首页投资资产、投资页投资资产和投资报告投资资产完全一致。",
+            "现金流预测能追溯到账本事件和计划事件。",
+            "每个图表可追溯 metric_id、formula_id、parameter_hash、data_hash。",
+            "数据变化后受影响图表自动标记需更新或已更新。",
+            "大量模拟记录下图表生成不明显卡死，并显示 compute time/cache status。",
+        ),
+        "stop_conditions": (
+            "投资入金未进入消费总流出时停止。",
+            "基金申购被当普通生活消费时停止。",
+            "退款重复计入收入时停止。",
+            "还款造成重复消费时停止。",
+            "首页、消费页、月报三处金额不一致时停止。",
+            "首页、投资页、投资报告三处金额不一致时停止。",
+            "现金流无法解释时停止。",
+            "图表数字无来源时停止。",
+            "图表显示旧数据时停止。",
+            "无性能状态或明显卡顿时停止。",
+            "Stage 12 文档同步与最终交付被提前实现。",
+        ),
+        "validation_commands": (
+            "PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests/test_v022_stage11_test_validation.py -q",
+            "PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests/test_v022_stage0_database_governance.py PFI/tests/test_pfi_parameters_consistency.py PFI/tests/test_v022_fx_effective_date.py PFI/tests/test_v022_stage3_source_account_profiles.py PFI/tests/test_v022_interconnection_no_double_count.py PFI/tests/test_v022_consumption_investment_outflow.py PFI/tests/test_v022_stage5_ledger_taxonomy.py PFI/tests/test_v022_stage6_tags_views.py PFI/tests/test_v022_stage7_formula_scoring.py PFI/tests/test_v022_stage8_runtime_diff.py PFI/tests/test_v022_stage9_visualization_uiux.py PFI/tests/test_v022_stage10_report_advice_review.py PFI/tests/test_v022_stage11_test_validation.py -q",
+            "PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests -q",
+            "node --check PFI/web/app/shell.js",
+            "python3 scripts/validate_project_governance.py --project PFI",
+            "git diff --check -- PFI",
+        ),
+        "cross_review": {
+            "Agent 1": "金融事实层审查：投资入金、基金申购、退款、信用卡还款口径必须和 Stage 4/5/7 一致。",
+            "Agent 4": "消费、投资、现金流模型审查：跨板块金额和现金流追溯不得漂移。",
+            "Agent 6": "测试与可视化审查：图表来源、新鲜度和性能状态必须被测试覆盖。",
+        },
+        "non_goals": (
+            "Stage 12 文档同步与最终交付不在本轮实现。",
+            "Stage 13 后置触发型复核不在本轮实现。",
+            "不修改 v0.2.1 主 Web Shell UIUX 基线。",
+            "不新增真实交易、自动投资、支付或券商提交。",
+            "不联网、不调用外部 LLM、不生成真实 agent 任务。",
         ),
     }
