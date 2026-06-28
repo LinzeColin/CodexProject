@@ -3,12 +3,12 @@
     "atlas_edges": 3857,
     "atlas_nodes": 725,
     "backup_policy": "redacted_summary_only_no_raw_transcript_no_plaintext_secret",
-    "message_count": 132310,
+    "message_count": 132319,
     "range_end": "2026-06-28",
     "range_start": "2026-06-03",
     "session_count": 401,
     "source": "real_codex_local_data",
-    "tool_call_count": 434136,
+    "tool_call_count": 434174,
     "top_topics": [
       {
         "count": 13926,
@@ -134,7 +134,7 @@
     "registry_path": "config/data_sources/source_registry.json",
     "schema_version": "memory_atlas_data_source_registry.v1"
   },
-  "generated_at": "2026-06-28T21:40:14Z",
+  "generated_at": "2026-06-28T21:41:01Z",
   "layers": [
     {
       "canonical_files": [
@@ -213,128 +213,7 @@
     "changes": {
       "added": [],
       "deleted_or_demoted": [],
-      "modified": [
-        {
-          "after": {
-            "confidence": "high",
-            "evidence_count": 6007,
-            "id": "codex_signal_github_as_memory_source",
-            "importance": "高",
-            "reason": "从 401 个真实 Codex session 的用户消息和任务目标中检测到 6007 次相关信号。",
-            "scope": "ChatGPT / Codex / future agents",
-            "source": "real_codex_local_sessions",
-            "statement": "GitHub 上的 OpenAIDatabase 应作为任意 agent 可读取的长期记忆、画像、偏好和历史上下文数据库。",
-            "title": "OpenAIDatabase 是 durable memory source"
-          },
-          "before": {
-            "confidence": "high",
-            "evidence_count": 4789,
-            "id": "codex_signal_github_as_memory_source",
-            "importance": "高",
-            "reason": "从 393 个真实 Codex session 的用户消息和任务目标中检测到 4789 次相关信号。",
-            "scope": "ChatGPT / Codex / future agents",
-            "source": "real_codex_local_sessions",
-            "statement": "GitHub 上的 OpenAIDatabase 应作为任意 agent 可读取的长期记忆、画像、偏好和历史上下文数据库。",
-            "title": "OpenAIDatabase 是 durable memory source"
-          }
-        },
-        {
-          "after": {
-            "confidence": "high",
-            "evidence_count": 2645,
-            "id": "codex_signal_agent_personalization",
-            "importance": "高",
-            "reason": "从 401 个真实 Codex session 的用户消息和任务目标中检测到 2645 次相关信号。",
-            "scope": "ChatGPT / Codex / future agents",
-            "source": "real_codex_local_sessions",
-            "statement": "所有 agent 访问后都应能生成适配用户的 profile、preference、project context、rules 和 history summary。",
-            "title": "任意 agent personalization"
-          },
-          "before": {
-            "confidence": "high",
-            "evidence_count": 2425,
-            "id": "codex_signal_agent_personalization",
-            "importance": "高",
-            "reason": "从 393 个真实 Codex session 的用户消息和任务目标中检测到 2425 次相关信号。",
-            "scope": "ChatGPT / Codex / future agents",
-            "source": "real_codex_local_sessions",
-            "statement": "所有 agent 访问后都应能生成适配用户的 profile、preference、project context、rules 和 history summary。",
-            "title": "任意 agent personalization"
-          }
-        },
-        {
-          "after": {
-            "confidence": "high",
-            "evidence_count": 2502,
-            "id": "codex_signal_real_data_required",
-            "importance": "高",
-            "reason": "从 401 个真实 Codex session 的用户消息和任务目标中检测到 2502 次相关信号。",
-            "scope": "ChatGPT / Codex / future agents",
-            "source": "real_codex_local_sessions",
-            "statement": "用户明确要求使用真实 Codex / ChatGPT / GitHub 数据，不接受 mock、伪进度或只给概念演示。",
-            "title": "真实数据优先"
-          },
-          "before": {
-            "confidence": "high",
-            "evidence_count": 2242,
-            "id": "codex_signal_real_data_required",
-            "importance": "高",
-            "reason": "从 393 个真实 Codex session 的用户消息和任务目标中检测到 2242 次相关信号。",
-            "scope": "ChatGPT / Codex / future agents",
-            "source": "real_codex_local_sessions",
-            "statement": "用户明确要求使用真实 Codex / ChatGPT / GitHub 数据，不接受 mock、伪进度或只给概念演示。",
-            "title": "真实数据优先"
-          }
-        },
-        {
-          "after": {
-            "confidence": "high",
-            "evidence_count": 1331,
-            "id": "codex_signal_prefer_chinese",
-            "importance": "高",
-            "reason": "从 401 个真实 Codex session 的用户消息和任务目标中检测到 1331 次相关信号。",
-            "scope": "ChatGPT / Codex / future agents",
-            "source": "real_codex_local_sessions",
-            "statement": "用户长期偏好中文输出；代码、API、库名、错误信息和专业术语可保留英文。",
-            "title": "默认中文输出"
-          },
-          "before": {
-            "confidence": "high",
-            "evidence_count": 1227,
-            "id": "codex_signal_prefer_chinese",
-            "importance": "高",
-            "reason": "从 393 个真实 Codex session 的用户消息和任务目标中检测到 1227 次相关信号。",
-            "scope": "ChatGPT / Codex / future agents",
-            "source": "real_codex_local_sessions",
-            "statement": "用户长期偏好中文输出；代码、API、库名、错误信息和专业术语可保留英文。",
-            "title": "默认中文输出"
-          }
-        },
-        {
-          "after": {
-            "confidence": "high",
-            "evidence_count": 839,
-            "id": "codex_signal_human_readable_reports",
-            "importance": "高",
-            "reason": "从 401 个真实 Codex session 的用户消息和任务目标中检测到 839 次相关信号。",
-            "scope": "ChatGPT / Codex / future agents",
-            "source": "real_codex_local_sessions",
-            "statement": "处理记忆或行为数据后，应输出人能直接使用的话题、行动、建议、机会、ROI、能力成长和风险提醒。",
-            "title": "报告面向人类 ROI 和成长"
-          },
-          "before": {
-            "confidence": "high",
-            "evidence_count": 794,
-            "id": "codex_signal_human_readable_reports",
-            "importance": "高",
-            "reason": "从 393 个真实 Codex session 的用户消息和任务目标中检测到 794 次相关信号。",
-            "scope": "ChatGPT / Codex / future agents",
-            "source": "real_codex_local_sessions",
-            "statement": "处理记忆或行为数据后，应输出人能直接使用的话题、行动、建议、机会、ROI、能力成长和风险提醒。",
-            "title": "报告面向人类 ROI 和成长"
-          }
-        }
-      ]
+      "modified": []
     },
     "current": [
       {
@@ -399,56 +278,7 @@
     "changes": {
       "added": [],
       "deleted_or_demoted": [],
-      "modified": [
-        {
-          "after": {
-            "confidence": "high",
-            "evidence_count": 12085,
-            "id": "codex_signal_no_plaintext_secrets_in_git",
-            "importance": "高",
-            "reason": "从 401 个真实 Codex session 的用户消息和任务目标中检测到 12085 次相关信号。",
-            "scope": "ChatGPT / Codex / future agents",
-            "source": "real_codex_local_sessions",
-            "statement": "GitHub 备份中不得提交 plaintext high-risk secrets；金融/交易 agent 使用 secret_ref 和受控本地 resolver。",
-            "title": "GitHub secret 边界"
-          },
-          "before": {
-            "confidence": "high",
-            "evidence_count": 10054,
-            "id": "codex_signal_no_plaintext_secrets_in_git",
-            "importance": "高",
-            "reason": "从 393 个真实 Codex session 的用户消息和任务目标中检测到 10054 次相关信号。",
-            "scope": "ChatGPT / Codex / future agents",
-            "source": "real_codex_local_sessions",
-            "statement": "GitHub 备份中不得提交 plaintext high-risk secrets；金融/交易 agent 使用 secret_ref 和受控本地 resolver。",
-            "title": "GitHub secret 边界"
-          }
-        },
-        {
-          "after": {
-            "confidence": "high",
-            "evidence_count": 5393,
-            "id": "codex_signal_authorization_gate",
-            "importance": "高",
-            "reason": "从 401 个真实 Codex session 的用户消息和任务目标中检测到 5393 次相关信号。",
-            "scope": "ChatGPT / Codex / future agents",
-            "source": "real_codex_local_sessions",
-            "statement": "用户说先不开始时必须先澄清需求；用户授权开始后应持续推进到可验证结果。",
-            "title": "授权边界"
-          },
-          "before": {
-            "confidence": "high",
-            "evidence_count": 4269,
-            "id": "codex_signal_authorization_gate",
-            "importance": "高",
-            "reason": "从 393 个真实 Codex session 的用户消息和任务目标中检测到 4269 次相关信号。",
-            "scope": "ChatGPT / Codex / future agents",
-            "source": "real_codex_local_sessions",
-            "statement": "用户说先不开始时必须先澄清需求；用户授权开始后应持续推进到可验证结果。",
-            "title": "授权边界"
-          }
-        }
-      ]
+      "modified": []
     },
     "current": [
       {
