@@ -20,7 +20,7 @@ Roadmap 形态：`Stage -> Phase -> Task`
 | Stage 1 | 模型参数文件重构 | 本轮完成 | 中文参数总目录、机器可读 YAML、一致性测试。 |
 | Stage 2 | CNY 基准与汇率规则 | 本轮完成 | CNY 主显示、原币辅助、06:00 有效汇率日、本地快照读取。 |
 | Stage 3 | 数据源、账户角色与可扩展结构 | 本轮完成 | Source Profile、capabilities、`other_source_template`、账户角色重叠和生效期。 |
-| Stage 4 | Economic Event 与 Interconnection 逻辑 | 待 owner 开启 | economic_event_id、interconnection_group_id、Matrix。 |
+| Stage 4 | Economic Event 与 Interconnection 逻辑 | 本轮完成 | `economic_event_id`、`interconnection_group_id`、事件影响 flags、Interconnection Matrix、Metric Dependency Graph、no-double-count。 |
 | Stage 5 | 统一账本事件、消费双口径与分类体系 | 待 owner 开启 | event type、双消费口径、12 大类 / 50 中类。 |
 | Stage 6 | 标签系统与自定义视图 | 待 owner 开启 | 标签注册、赋值、规则、变更历史和视图。 |
 | Stage 7 | 模型公式、阈值与评分标准 | 待 owner 开启 | 置信度、消费、投资、现金流公式。 |
@@ -195,6 +195,52 @@ git diff --check -- PFI
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m unittest PFI.tests.test_v022_stage3_source_account_profiles -q
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m unittest PFI.tests.test_v022_stage0_database_governance PFI.tests.test_pfi_parameters_consistency PFI.tests.test_v022_fx_effective_date PFI.tests.test_v022_stage3_source_account_profiles -q
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m unittest discover -s PFI/tests -q
+node --check PFI/web/app/shell.js
+python3 scripts/validate_project_governance.py --project PFI
+git diff --check -- PFI
+```
+
+## Stage 4 Task Lock
+
+| Task ID | Phase | 交付物 | 状态 |
+| --- | --- | --- | --- |
+| `S4-P1-T1` | Phase 4.1 | `economic_event_id`，同一真实经济事件只有一个 ID | 本轮完成 |
+| `S4-P1-T2` | Phase 4.1 | `interconnection_group_id`，银行转 Moomoo、支付宝基金申购、退款、信用卡还款可形成关联组 | 本轮完成 |
+| `S4-P1-T3` | Phase 4.1 | event type affects flags，写清首页、消费、投资、现金流、报告处理方式 | 本轮完成 |
+| `S4-P2-T1` | Phase 4.2 | `PFI/docs/pfi_v02/INTERCONNECTION_MATRIX.md` | 本轮完成 |
+| `S4-P2-T2` | Phase 4.2 | Matrix 字段：是否计入消费总流出、生活消费、投资、净资产、现金流 | 本轮完成 |
+| `S4-P2-T3` | Phase 4.2 | 退款抵消、信用卡还款不重复、投资入金/基金申购双口径规则 | 本轮完成 |
+
+## Stage 4 Acceptance Criteria
+
+- 同一真实事件只有一个 `economic_event_id`。
+- 同一 `interconnection_group_id` 不会重复计入核心金额。
+- 每个 event type 有明确 affects flags。
+- 首页、投资、消费、现金流、报告口径一致。
+- 投资入金计入消费总流出，不计入生活消费，计入投资现金。
+- 基金申购计入消费总流出，不计入生活消费，计入基金资产。
+- 投资买入计入消费总流出，不计入生活消费，计入投资持仓。
+- 退款抵消原消费或对应总流出。
+- 信用卡还款不重复计入生活消费。
+- Agent 1 复核消费、投资、现金流口径。
+- Agent 2 复核 source -> transaction -> group -> economic event -> ledger -> metric 链路。
+
+## Stage 4 Stop Condition
+
+- 同一记录被重复计入核心金额。
+- `投资入金未进入消费总流出`。
+- `基金申购未进入消费总流出`。
+- `投资入金错误进入生活消费`。
+- 同一 `interconnection_group_id` 因重复来源记录导致核心金额重复计算。
+
+当前检查结论：以上停止条件均未触发。
+
+## Stage 4 Validation
+
+```bash
+PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests/test_v022_interconnection_no_double_count.py PFI/tests/test_v022_consumption_investment_outflow.py -q
+PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests/test_v022_stage0_database_governance.py PFI/tests/test_pfi_parameters_consistency.py PFI/tests/test_v022_fx_effective_date.py PFI/tests/test_v022_stage3_source_account_profiles.py PFI/tests/test_v022_interconnection_no_double_count.py PFI/tests/test_v022_consumption_investment_outflow.py -q
+PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests -q
 node --check PFI/web/app/shell.js
 python3 scripts/validate_project_governance.py --project PFI
 git diff --check -- PFI

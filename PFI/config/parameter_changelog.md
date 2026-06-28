@@ -38,6 +38,12 @@
 | 2026-06-28 | `S3-P2-T1` | `account_roles.account_role_schema` | `multiple_roles_per_account=true 但缺少完整 schema` | `required_fields=account_id/source_id/role/role_effective_from/role_effective_to；multiple_roles_per_account=true` | 一个账户可同时是主钱包、消费账户、投资入金来源和收入账户。 | 账户与资产、消费管理、投资管理、现金流。 |
 | 2026-06-28 | `S3-P2-T2` | `account_roles.role_effective_date_required` | `文档约束` | `true，字段为 role_effective_from / role_effective_to` | 角色随时间变化时必须能解释历史账本。 | 账户角色、账本复核、报告追溯。 |
 | 2026-06-28 | `S3-P2-T3` | `event_types.role_event_calculation_policy` | `只写明后续按角色和事件类型判断` | `metric_basis=role_and_event_type；forbid_source_name_hardcode=true` | 消费金额不等于支付宝+微信+银行卡，而是事件影响标记和账户角色共同决定。 | 消费管理、账本流水、投资管理、现金流、报告与洞察。 |
+| 2026-06-28 | `S4-P1-T1` | `interconnection.economic_event_id` | `缺少真实经济事件 ID` | `required=true；同一真实事件只有一个 economic_event_id` | 多来源记录必须能归并为同一真实资金事件，避免银行扣款、券商入金、持仓变化重复计算。 | 账本流水、首页总览、消费管理、投资管理、现金流、报告与洞察。 |
+| 2026-06-28 | `S4-P1-T2` | `interconnection.interconnection_group_id` | `缺少跨来源关联组 ID` | `required=true；同一资金链路归入同一 interconnection_group_id` | CBA -> Moomoo、支付宝基金申购、退款、信用卡还款等需要可追踪的关联组。 | 账本复核、账户与资产、投资管理、消费管理、报告审计。 |
+| 2026-06-28 | `S4-P1-T3` | `interconnection.event_type_policies` | `只存在粗粒度 affects_consumption` | `为每个 event_type 定义 total_consumption_outflow/living_consumption/investment/net_worth/cashflow flags` | 首页、消费、投资、现金流和报告必须使用同一指标口径。 | 指标计算、报告解释、测试、参数中心。 |
+| 2026-06-28 | `S4-P2-T1` | `interconnection.interconnection_matrix` | `无正式中文矩阵` | `PFI/docs/pfi_v02/INTERCONNECTION_MATRIX.md` | Stage 4 要求每类事件可读、可验收、可复核。 | GitHub 验收、三基文件、后续 UI 参数中心。 |
+| 2026-06-28 | `S4-P2-T2` | `interconnection.matrix_fields` | `无统一字段` | `event_type/中文名/是否影响消费总流出/生活消费/投资/净资产/现金流/展示面/抵消规则` | 矩阵字段必须覆盖 roadmap 要求的所有口径。 | Interconnection Matrix、合同测试、报告说明。 |
+| 2026-06-28 | `S4-P2-T3` | `consumption_model.double_count_rules` | `投资入金、基金申购、信用卡还款、退款规则未形成统一机器口径` | `投资入金和基金申购进入消费总流出但不进入生活消费；退款抵消原消费；信用卡还款不重复计入生活消费` | 满足 Stage 4 stop condition：不得出现投资入金未进入消费总流出、基金申购未进入消费总流出或投资入金错误进入生活消费。 | 消费总流出、生活消费、投资现金、基金资产、现金流、报告与洞察。 |
 
 ## 记录规则
 

@@ -32,3 +32,6 @@ acceptance_count: 6
 - 完成 PFI v0.2.2 Stage 3 数据源、账户角色与可扩展结构，新增 `src/pfi_v02/stage_v022_source_profile.py`、`docs/pfi_v022/STAGE3_SOURCE_ACCOUNT_PROFILE.md` 和 `tests/test_v022_stage3_source_account_profiles.py`。
 - product_version v0.2.2 数据库治理 Stage 3 对应本轮 source/account profile 文档状态；`VERSION` 继续保留 v0.2.1 前端优化，表示 UIUX 基线仍沿用 v0.2.1 HTML Web Shell。
 - Stage 3 覆盖 `S3-P1-T1..S3-P2-T3`，建立 source profile schema、capabilities、`other_source_template`、账户多角色、生效期和 role/event type 计算策略。
+- 完成 PFI v0.2.2 Stage 4 Economic Event 与 Interconnection 逻辑，新增 `src/pfi_v02/stage_v022_interconnection.py`、`docs/pfi_v022/STAGE4_INTERCONNECTION.md`、`docs/pfi_v02/INTERCONNECTION_MATRIX.md`、`tests/test_v022_interconnection_no_double_count.py` 和 `tests/test_v022_consumption_investment_outflow.py`。
+- product_version v0.2.2 数据库治理 Stage 4 对应本轮 interconnection/no-double-count 文档状态；`VERSION` 继续保留 v0.2.1 前端优化，表示 UIUX 基线仍沿用 v0.2.1 HTML Web Shell。
+- Stage 4 覆盖 `S4-P1-T1..S4-P2-T3`，建立 `economic_event_id`、`interconnection_group_id`、事件影响 flags、Interconnection Matrix、Metric Dependency Graph、双消费口径和 no-double-count 规则。

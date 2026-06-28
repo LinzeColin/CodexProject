@@ -13,6 +13,12 @@ from pfi_v02.stage_v022_fx import (
     FX_SNAPSHOT_SCHEMA,
 )
 from pfi_v02.stage_v022_source_profile import build_stage3_profile_contract
+from pfi_v02.stage_v022_interconnection import (
+    STAGE4_MATRIX_FIELDS,
+    STAGE4_REQUIRED_EVENT_TYPES,
+    build_metric_dependency_graph,
+    build_stage4_interconnection_contract,
+)
 
 
 V022_STAGE1_TASK_IDS = (
@@ -58,6 +64,15 @@ V022_STAGE3_TASK_IDS = (
     "S3-P2-T1",
     "S3-P2-T2",
     "S3-P2-T3",
+)
+
+V022_STAGE4_TASK_IDS = (
+    "S4-P1-T1",
+    "S4-P1-T2",
+    "S4-P1-T3",
+    "S4-P2-T1",
+    "S4-P2-T2",
+    "S4-P2-T3",
 )
 
 V022_STAGE0_TASK_IDS = (
@@ -534,5 +549,77 @@ def build_v022_stage3_contract() -> dict[str, object]:
             "不修改 v0.2.1 HTML Web Shell 交互架构。",
             "不做真实交易、自动投资、支付或券商提交。",
             "不按支付宝、微信、银行卡等 source 名称定义消费公式。",
+        ),
+    }
+
+
+def build_v022_stage4_contract() -> dict[str, object]:
+    interconnection_contract = build_stage4_interconnection_contract()
+    return {
+        "schema": "PFIV022InterconnectionStage4ContractV1",
+        "version": "v0.2.2",
+        "stage": "Stage 4",
+        "stage_name_zh": "Economic Event 与 Interconnection 逻辑",
+        "task_ids": V022_STAGE4_TASK_IDS,
+        "goal": "建立 economic_event_id、interconnection_group_id、事件影响 flags、Interconnection Matrix 和 no-double-count 计算规则，保证多来源记录可多处展示但核心口径只计算一次。",
+        "economic_event_contract": {
+            "economic_event_id_required": True,
+            "interconnection_group_id_required": True,
+            "single_true_event_single_economic_event_id": True,
+            "single_interconnection_group_not_repeated_in_core_amounts": True,
+            "required_event_types": STAGE4_REQUIRED_EVENT_TYPES,
+            "matrix_fields": STAGE4_MATRIX_FIELDS,
+        },
+        "interconnection_contract": interconnection_contract,
+        "metric_dependency_graph": build_metric_dependency_graph(),
+        "deliverables": (
+            "PFI/src/pfi_v02/stage_v022_interconnection.py",
+            "PFI/src/pfi_v02/stage_v022_database_governance.py",
+            "PFI/tests/test_v022_interconnection_no_double_count.py",
+            "PFI/tests/test_v022_consumption_investment_outflow.py",
+            "PFI/docs/pfi_v02/INTERCONNECTION_MATRIX.md",
+            "PFI/docs/pfi_v022/STAGE4_INTERCONNECTION.md",
+            "PFI/config/pfi_parameters.yaml",
+            "PFI/config/parameter_changelog.md",
+            "PFI/模型参数文件.md",
+            "PFI/功能清单.md",
+            "PFI/开发记录.md",
+            "PFI/HANDOFF.md",
+        ),
+        "acceptance_criteria": (
+            "同一真实事件只有一个 economic_event_id。",
+            "同一 interconnection_group 不会重复计入核心金额。",
+            "每个 event type 有明确 affects flags。",
+            "首页、投资、消费、现金流、报告口径一致。",
+            "投资入金计入消费总流出，不计入生活消费，计入投资现金。",
+            "基金申购计入消费总流出，不计入生活消费，计入基金资产。",
+            "投资买入计入消费总流出，不计入生活消费，计入投资持仓。",
+            "信用卡还款不重复计入生活消费。",
+            "退款抵消原消费或对应总流出。",
+        ),
+        "stop_conditions": (
+            "同一记录被重复计入核心金额。",
+            "投资入金未进入消费总流出。",
+            "基金申购未进入消费总流出。",
+            "投资入金错误进入生活消费。",
+            "同一 interconnection_group 因重复来源记录导致核心金额重复计算。",
+        ),
+        "validation_commands": (
+            "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m unittest PFI.tests.test_v022_interconnection_no_double_count PFI.tests.test_v022_consumption_investment_outflow -q",
+            "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m unittest PFI.tests.test_v022_stage0_database_governance PFI.tests.test_pfi_parameters_consistency PFI.tests.test_v022_fx_effective_date PFI.tests.test_v022_stage3_source_account_profiles PFI.tests.test_v022_interconnection_no_double_count PFI.tests.test_v022_consumption_investment_outflow -q",
+            "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m unittest discover -s PFI/tests -q",
+            "node --check PFI/web/app/shell.js",
+            "python3 scripts/validate_project_governance.py --project PFI",
+            "git diff --check -- PFI",
+        ),
+        "cross_review": {
+            "Agent 1": "消费、投资、现金流口径复审通过；投资入金/基金申购/投资买入均进入消费总流出但不进入生活消费。",
+            "Agent 2": "source -> transaction -> group -> economic event -> ledger -> metric 链路复审通过。",
+        },
+        "non_goals": (
+            "不实现 Stage 5 分类 taxonomy 和双口径 UI。",
+            "不实现 Stage 6 标签持久化。",
+            "不修改 v0.2.1 HTML Web Shell 交互架构。",
+            "不做真实交易、自动投资、支付或券商提交。",
         ),
     }

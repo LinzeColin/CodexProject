@@ -8,6 +8,7 @@ import unittest
 
 from pfi_v02.stage_v022_database_governance import (
     V022_STAGE3_TASK_IDS,
+    V022_STAGE4_TASK_IDS,
     build_v022_stage3_contract,
     load_v022_parameter_catalog,
 )
@@ -121,9 +122,10 @@ class TestV022Stage3SourceAccountProfiles(unittest.TestCase):
         catalog = load_v022_parameter_catalog(ROOT / "config" / "pfi_parameters.yaml")
         params = catalog["parameters"]
 
-        self.assertEqual(catalog["schema"], "PFIParametersV022Stage3")
-        self.assertEqual(catalog["current_stage"], "Stage 3 - 数据源、账户角色与可扩展结构")
+        self.assertEqual(catalog["schema"], "PFIParametersV022Stage4")
+        self.assertEqual(catalog["current_stage"], "Stage 4 - Economic Event 与 Interconnection 逻辑")
         self.assertEqual(catalog["stage3_task_ids"], list(V022_STAGE3_TASK_IDS))
+        self.assertEqual(catalog["stage4_task_ids"], list(V022_STAGE4_TASK_IDS))
         self.assertEqual(params["data_sources"]["source_profile_schema"]["source_types"], list(STAGE3_SOURCE_TYPES))
         self.assertEqual(params["data_sources"]["source_profile_schema"]["capabilities"], list(STAGE3_CAPABILITIES))
         self.assertEqual(params["data_sources"]["other_source_template"]["source_id"], "other_source_template")
