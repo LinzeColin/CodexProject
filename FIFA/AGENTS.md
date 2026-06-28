@@ -64,3 +64,11 @@ python3 -m unittest tests.test_pipeline
 
 Record actual command results. Do not claim a test passed if it was not run.
 
+## S4 精简执行胶囊
+
+- 普通 T0/T1 任务先读本文件和被任务直接点名的文件。
+- 不得读取完整 `模型参数文件.md`，除非变更涉及信号、公式、stake/risk、赔率访问策略、
+  校准或生产门禁。
+- 治理验证：`python -B scripts/lean_governance.py validate --project FIFA --semantic`。
+- owner 预览：`python -B scripts/lean_governance.py check-render --project FIFA`。
+

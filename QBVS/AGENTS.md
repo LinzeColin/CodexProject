@@ -13,6 +13,7 @@
 
 - 产品名：大数据模拟器。
 - 历史名：QBVS / Quant Behavior Validation System。
+- 当前治理身份：`project_id=QBVS`，`display_name=大数据模拟器（QBVS / Quant Behavior Validation System）`。
 - Python package：`qbvs`，暂不重命名，避免破坏 CLI、测试和 QuantLab adapter。
 - 角色：PFI 的外部大规模策略模拟、随机压力测试、行为策略验证和 QuantLab ReviewOnly 证据包生成层。
 - 禁止：实盘交易、自动下单、写 QuantLab 数据库、写 approved strategy library、保存交易账号密码或 secrets。

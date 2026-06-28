@@ -1,5 +1,8 @@
 # QBVS 独立策略验证系统中文 Owner 快速入口
 
+- project_id: `QBVS`
+- display_name: `大数据模拟器（QBVS / Quant Behavior Validation System）`
+
 QBVS 已从 PFI 内部分离为 `LinzeColin/CodexProject/QBVS` 顶层独立系统。PFI 的投资管理不覆盖 QBVS；PFI 只保留策略回测、盘感训练和大数据模拟器的本地入口，以及对 QBVS 证据包的外部引用。
 
 - S6PAT02 中文 Owner 快速入口：用户可读优先；中文优先，默认全局中文。
