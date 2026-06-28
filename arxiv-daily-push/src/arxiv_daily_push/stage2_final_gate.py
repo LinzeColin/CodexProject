@@ -63,6 +63,7 @@ S2PMT07_BLOCKING_REASONS = (
     "independent_review_signoff_missing",
     "independent_final_command_execution_missing",
 )
+S2PMT07_REMAINING_BLOCKER_MATRIX_REQUIRED_BLOCKERS = S2PMT07_BLOCKING_REASONS
 S2PMT07_P0_P1_ZERO_PROOF_ARTIFACT_PATH = "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json"
 S2PMT07_P0_P1_ZERO_PROOF_SCHEMA_VERSION = "adp.p0_p1_zero_proof.v1"
 S2PMT07_P0_P1_ZERO_PROOF_CLOSURE_DECISION = "P0_P1_ZERO_PROVEN_NO_PRODUCTION_ACCEPTANCE"
@@ -2427,6 +2428,180 @@ def build_test_gate_state() -> dict[str, Any]:
         "full_pytest_executed_by_independent_reviewer": False,
         "acceptance_bundle_zero_p0_p1_verified": False,
     }
+
+
+def _s2pmt07_blocker_matrix_row(blocking_reason: str) -> dict[str, Any]:
+    """Return the required evidence/action row for a current S2PMT07 blocker."""
+
+    rows = {
+        "reviewer_independence_not_proven": {
+            "blocking_reason": "reviewer_independence_not_proven",
+            "required_evidence": "FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json",
+            "owner_action": "assign_independent_final_reviewer",
+            "default_next_step": "create_or_validate_independent_final_reviewer_assignment_artifact",
+            "external_or_future_evidence_required": True,
+            "cannot_be_self_certified_by_current_agent": True,
+            "production_gate_unblocked_by_this_row": False,
+        },
+        "inherited_v7_1_p0_findings_open": {
+            "blocking_reason": "inherited_v7_1_p0_findings_open",
+            "required_evidence": f"{S2PMT07_P0_P1_ZERO_PROOF_ARTIFACT_PATH}#independent_closure_decision",
+            "owner_action": "obtain_independent_final_closure_decision_for_p0",
+            "default_next_step": "independent_final_reviewer_must_accept_or_reject_p0_zero_proof",
+            "external_or_future_evidence_required": True,
+            "cannot_be_self_certified_by_current_agent": True,
+            "production_gate_unblocked_by_this_row": False,
+        },
+        "inherited_v7_1_p1_findings_open": {
+            "blocking_reason": "inherited_v7_1_p1_findings_open",
+            "required_evidence": f"{S2PMT07_P0_P1_ZERO_PROOF_ARTIFACT_PATH}#independent_closure_decision",
+            "owner_action": "obtain_independent_final_closure_decision_for_p1",
+            "default_next_step": "independent_final_reviewer_must_accept_or_reject_p1_zero_proof",
+            "external_or_future_evidence_required": True,
+            "cannot_be_self_certified_by_current_agent": True,
+            "production_gate_unblocked_by_this_row": False,
+        },
+        "s2plt04_not_completed": {
+            "blocking_reason": "s2plt04_not_completed",
+            "required_evidence": "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json",
+            "owner_action": "complete_s2plt04_after_s2plt01_s2plt02_s2plt03_and_p0_p1_gates",
+            "default_next_step": "validate_s2plt04_completion_report_artifact_after_terminal_dependencies",
+            "external_or_future_evidence_required": True,
+            "cannot_be_self_certified_by_current_agent": False,
+            "production_gate_unblocked_by_this_row": False,
+        },
+        "final_acceptance_bundle_missing": {
+            "blocking_reason": "final_acceptance_bundle_missing",
+            "required_evidence": "FINAL_ACCEPTANCE_BUNDLE/manifest.json",
+            "owner_action": "assemble_final_acceptance_bundle_after_required_artifacts_pass",
+            "default_next_step": "run_final_bundle_manifest_validator_after_all_artifacts_exist",
+            "external_or_future_evidence_required": True,
+            "cannot_be_self_certified_by_current_agent": False,
+            "production_gate_unblocked_by_this_row": False,
+        },
+        "independent_review_signoff_missing": {
+            "blocking_reason": "independent_review_signoff_missing",
+            "required_evidence": "FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml",
+            "owner_action": "obtain_independent_final_review_signoff",
+            "default_next_step": "validate_independent_review_signoff_artifact",
+            "external_or_future_evidence_required": True,
+            "cannot_be_self_certified_by_current_agent": True,
+            "production_gate_unblocked_by_this_row": False,
+        },
+        "independent_final_command_execution_missing": {
+            "blocking_reason": "independent_final_command_execution_missing",
+            "required_evidence": "FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json",
+            "owner_action": "execute_required_final_commands_by_independent_final_reviewer",
+            "default_next_step": "validate_final_command_execution_artifact",
+            "external_or_future_evidence_required": True,
+            "cannot_be_self_certified_by_current_agent": True,
+            "production_gate_unblocked_by_this_row": False,
+        },
+    }
+    return dict(rows[blocking_reason])
+
+
+def build_s2pmt07_remaining_blocker_matrix_state(*, generated_at: str) -> dict[str, Any]:
+    """Build the current S2PMT07 blocker matrix without closing any gate."""
+
+    precheck = build_s2pmt07_precheck_report(generated_at=generated_at)
+    current_blockers = list(precheck.get("blocking_reasons", []))
+    blocker_rows = [_s2pmt07_blocker_matrix_row(reason) for reason in current_blockers]
+    state = {
+        "status": "blocked_matrix_ready_no_closure",
+        "scope": "s2pmt07_remaining_blocker_matrix_only_no_gate_closure",
+        "task_id": S2PMT07_TASK_ID,
+        "acceptance_id": S2PMT07_ACCEPTANCE_ID,
+        "generated_at": generated_at,
+        "source_precheck_hash": precheck["report_hash"],
+        "required_blockers": list(S2PMT07_REMAINING_BLOCKER_MATRIX_REQUIRED_BLOCKERS),
+        "current_blockers": current_blockers,
+        "blocker_rows": blocker_rows,
+        "next_unblocked_by_agent": False,
+        "requires_external_or_future_evidence": True,
+        "p0_zero_proven": False,
+        "p1_zero_proven": False,
+        "p0_closure_claimed": False,
+        "p1_closure_claimed": False,
+        "s2plt04_completed": False,
+        "final_acceptance_bundle_present": False,
+        "independent_review_signoff_present": False,
+        "required_final_commands_executed": False,
+        "s2pmt07_pass_claimed": False,
+        "production_acceptance_claimed": False,
+        **{flag: False for flag in S2PMT07_FORBIDDEN_PASS_FLAGS},
+        "state_hash": "",
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
+def validate_s2pmt07_remaining_blocker_matrix_state(state: Mapping[str, Any]) -> list[str]:
+    """Validate the S2PMT07 blocker matrix without treating it as closure evidence."""
+
+    errors: list[str] = []
+    if state.get("status") != "blocked_matrix_ready_no_closure":
+        errors.append("remaining blocker matrix status must remain blocked_matrix_ready_no_closure")
+    if state.get("scope") != "s2pmt07_remaining_blocker_matrix_only_no_gate_closure":
+        errors.append("remaining blocker matrix scope is invalid")
+    if state.get("task_id") != S2PMT07_TASK_ID:
+        errors.append("remaining blocker matrix task_id is invalid")
+    if state.get("acceptance_id") != S2PMT07_ACCEPTANCE_ID:
+        errors.append("remaining blocker matrix acceptance_id is invalid")
+    if not isinstance(state.get("generated_at"), str) or not state.get("generated_at"):
+        errors.append("remaining blocker matrix generated_at must be a non-empty string")
+    if not isinstance(state.get("source_precheck_hash"), str) or not state.get("source_precheck_hash"):
+        errors.append("remaining blocker matrix source_precheck_hash must be present")
+    if tuple(state.get("required_blockers", [])) != S2PMT07_REMAINING_BLOCKER_MATRIX_REQUIRED_BLOCKERS:
+        errors.append("remaining blocker matrix required_blockers are invalid")
+    if set(state.get("current_blockers", [])) != set(S2PMT07_BLOCKING_REASONS):
+        errors.append("remaining blocker matrix current_blockers must match current S2PMT07 blocking reasons")
+
+    blocker_rows = _list_of_mappings(state.get("blocker_rows"))
+    row_reasons = [row.get("blocking_reason") for row in blocker_rows]
+    if set(row_reasons) != set(S2PMT07_BLOCKING_REASONS):
+        errors.append("remaining blocker matrix must cover every current S2PMT07 blocking reason")
+    for row in blocker_rows:
+        reason = row.get("blocking_reason")
+        if reason not in S2PMT07_BLOCKING_REASONS:
+            errors.append(f"remaining blocker matrix has invalid blocker row: {reason}")
+            continue
+        expected = _s2pmt07_blocker_matrix_row(str(reason))
+        for field in (
+            "required_evidence",
+            "owner_action",
+            "default_next_step",
+            "external_or_future_evidence_required",
+            "cannot_be_self_certified_by_current_agent",
+            "production_gate_unblocked_by_this_row",
+        ):
+            if row.get(field) != expected[field]:
+                errors.append(f"{reason}.{field} is invalid")
+
+    for flag in (
+        "next_unblocked_by_agent",
+        "p0_zero_proven",
+        "p1_zero_proven",
+        "p0_closure_claimed",
+        "p1_closure_claimed",
+        "s2plt04_completed",
+        "final_acceptance_bundle_present",
+        "independent_review_signoff_present",
+        "required_final_commands_executed",
+        "s2pmt07_pass_claimed",
+        "production_acceptance_claimed",
+    ):
+        if state.get(flag) is not False:
+            errors.append(f"{flag} must be false")
+    if state.get("requires_external_or_future_evidence") is not True:
+        errors.append("remaining blocker matrix must require external or future evidence")
+    for flag in S2PMT07_FORBIDDEN_PASS_FLAGS:
+        if state.get(flag) is not False:
+            errors.append(f"{flag} must be false")
+    expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    if state.get("state_hash") != expected_hash:
+        errors.append("remaining blocker matrix state_hash does not match state content")
+    return errors
 
 
 def build_p0_p1_technical_closure_candidate_state() -> dict[str, Any]:

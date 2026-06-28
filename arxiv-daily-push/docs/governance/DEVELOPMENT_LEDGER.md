@@ -10,13 +10,23 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.1
 - Current phase: S2PL
-- Current gate: S2PLT02_M4_WATERMARK_PROOF_READY_S2PLT02_BLOCKED_NO_ACCEPTANCE
+- Current gate: S2PMT07_REMAINING_BLOCKER_MATRIX_READY_NO_CLOSURE
 - Confirmed iteration count: 199
 - Reconstructed event count: 0
-- Current task: `S2PLT02-M4-WATERMARK-PROOF-RECORD` records an explicit same-day M4 watermark proof record for service date `2026-06-28`; `m4_watermark_correct=true` for the current delivery-ledger date, but S2PLT02, S2PLT04, S2PMT07, inherited P0/P1 zero proof, final bundle, second real day, eight total emails, scheduler, Release, DAILY_OPERATION, and integrated production acceptance remain blocked/false.
+- Current task: `S2PMT07-REMAINING-BLOCKER-MATRIX` records an explicit same-day M4 watermark proof record for service date `2026-06-28`; `m4_watermark_correct=true` for the current delivery-ledger date, but S2PLT02, S2PLT04, S2PMT07, inherited P0/P1 zero proof, final bundle, second real day, eight total emails, scheduler, Release, DAILY_OPERATION, and integrated production acceptance remain blocked/false.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. Local daily M1-M4 orchestration is now recorded as readiness evidence, but V7.2 contract baseline migration blockers are zero while real restore, real SMTP production, scheduler installation, final acceptance bundle creation, directory-level final bundle artifact validation pass, P0/P1 closure, S2PLT04 completion, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
 
+
+
+### `ITER-20260628-ADP-S2PMT07-REMAINING-BLOCKER-MATRIX`
+
+- Timestamp: `2026-06-28T14:11:24+10:00`
+- Task IDs: `S2PMT07-REMAINING-BLOCKER-MATRIX`; parent `S2PMT07`; acceptance `ACC-S2PMT07-FINAL-REVIEW`.
+- Decisions: Added a fail-closed remaining blocker matrix for the current seven S2PMT07 blockers. Each row names required future evidence, owner action, default next step, whether external/future evidence is required, and whether the current agent is forbidden from self-certifying closure.
+- Files changed: S2PMT07 final gate helper, focused final-gate regression test, `PARAM-ADP-1061` / `FORM-ADP-102` semantic refresh, phase record, run manifest, traceability/delivery/event records, user-center traceability page, and three base files.
+- Boundary: no independent reviewer assignment, no independent final closure decision, no zero-proof artifact, no P0/P1 closure, no S2PLT04 completion, no final bundle creation, no SMTP/scheduler/Release/restore, no CURRENT/V7 change, and no integrated production acceptance.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-REMAINING-BLOCKER-MATRIX-20260628.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_REMAINING_BLOCKER_MATRIX.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`; `arxiv-daily-push/用户中心/功能任务测试证据追踪链.md`.
 
 ### `ITER-20260628-ADP-S2PLT02-M4-WATERMARK-PROOF-RECORD`
 

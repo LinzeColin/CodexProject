@@ -55,6 +55,7 @@ from arxiv_daily_push.stage2_final_gate import (
     S2PMT07_NEXT_AGENT_HANDOFF_REQUIRED_FIELDS,
     S2PMT07_NEXT_AGENT_HANDOFF_REQUIRED_READER_FILES,
     S2PMT07_NEXT_AGENT_HANDOFF_SCHEMA_VERSION,
+    S2PMT07_REMAINING_BLOCKER_MATRIX_REQUIRED_BLOCKERS,
     S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_DECISION,
     S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_NO_PRODUCTION_FLAGS,
     S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_REQUIRED_ARTIFACT_VALIDATIONS,
@@ -112,6 +113,7 @@ from arxiv_daily_push.stage2_final_gate import (
     build_s2plt04_completion_report_hash,
     build_s2plt04_completion_report_validation_state,
     build_p0_p1_technical_closure_candidate_state,
+    build_s2pmt07_remaining_blocker_matrix_state,
     build_s2plt02_dependency_state,
     build_s2plt02_delivery_evidence_ledger_state,
     build_s2plt02_live_2d_precheck_report,
@@ -154,6 +156,7 @@ from arxiv_daily_push.stage2_final_gate import (
     validate_p0_p1_zero_proof_readiness_state,
     validate_s2plt04_completion_report,
     validate_p0_p1_technical_closure_candidate_state,
+    validate_s2pmt07_remaining_blocker_matrix_state,
     validate_s2pmt07_precheck_report,
 )
 
@@ -2272,6 +2275,48 @@ class Stage2FinalGateTests(unittest.TestCase):
 
         independent = build_reviewer_independence_state(reviewer_involved_in_s2pmt01_t06=False)
         self.assertEqual(independent["status"], "pass")
+
+    def test_remaining_blocker_matrix_maps_current_final_gate_blockers_to_required_evidence(self) -> None:
+        state = build_s2pmt07_remaining_blocker_matrix_state(generated_at="2026-06-28T14:30:00+10:00")
+
+        self.assertEqual(state["status"], "blocked_matrix_ready_no_closure")
+        self.assertEqual(tuple(state["required_blockers"]), S2PMT07_REMAINING_BLOCKER_MATRIX_REQUIRED_BLOCKERS)
+        self.assertEqual(set(state["current_blockers"]), set(S2PMT07_BLOCKING_REASONS))
+        self.assertFalse(state["p0_closure_claimed"])
+        self.assertFalse(state["p1_closure_claimed"])
+        self.assertFalse(state["s2pmt07_pass_claimed"])
+        self.assertFalse(state["integrated_production_accepted"])
+        self.assertFalse(state["daily_operation_enabled"])
+
+        by_reason = {item["blocking_reason"]: item for item in state["blocker_rows"]}
+        self.assertEqual(set(by_reason), set(S2PMT07_BLOCKING_REASONS))
+        self.assertEqual(
+            by_reason["reviewer_independence_not_proven"]["required_evidence"],
+            "FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json",
+        )
+        self.assertEqual(by_reason["reviewer_independence_not_proven"]["owner_action"], "assign_independent_final_reviewer")
+        self.assertTrue(by_reason["reviewer_independence_not_proven"]["external_or_future_evidence_required"])
+        self.assertTrue(by_reason["reviewer_independence_not_proven"]["cannot_be_self_certified_by_current_agent"])
+        self.assertEqual(
+            by_reason["inherited_v7_1_p0_findings_open"]["required_evidence"],
+            "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json#independent_closure_decision",
+        )
+        self.assertEqual(
+            by_reason["inherited_v7_1_p1_findings_open"]["required_evidence"],
+            "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json#independent_closure_decision",
+        )
+        self.assertEqual(
+            by_reason["s2plt04_not_completed"]["required_evidence"],
+            "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json",
+        )
+        self.assertEqual(validate_s2pmt07_remaining_blocker_matrix_state(state), [])
+
+        tampered = dict(state)
+        tampered["blocker_rows"] = state["blocker_rows"][:-1]
+        self.assertIn(
+            "remaining blocker matrix must cover every current S2PMT07 blocking reason",
+            validate_s2pmt07_remaining_blocker_matrix_state(tampered),
+        )
 
     def test_evidence_bundle_and_test_gate_are_blocked_until_final_artifacts_exist(self) -> None:
         evidence = build_evidence_bundle_state()
