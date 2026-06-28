@@ -4299,3 +4299,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-CLI-VALIDATOR"
+    phase: "S2PM"
+    objective: "Expose a fail-closed CLI command for validating the future independent final reviewer assignment artifact without creating an assignment or production side effects."
+    scope: "ADP CLI parser/dispatcher, focused CLI regression tests, phase record, run manifest, traceability row, delivery task, event records, governance current state, and three base files."
+    non_scope: "No independent final reviewer assignment artifact creation, no independent final closure decision, no zero-proof artifact, no S2PLT04 completion, no final bundle acceptance, no live next-agent handoff, no independent signoff, no final command execution, no P0/P1 closure, no SMTP transport send, no scheduler install or enablement, no Release upload, no public schema or DB migration, no production queue mutation, no ranking/source-adapter change, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no DAILY_OPERATION, and no integrated production acceptance."
+    status: "blocked"
+    dependencies: ["S2PMT07", "S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-ARTIFACT-VALIDATOR", "S2PMT07-FINAL-BUNDLE-ASSIGNMENT-REQUIRED-ITEM"]
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_CLI_VALIDATOR.md", "governance/run_manifests/ADP-S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-CLI-VALIDATOR-20260628.json"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_assignment_cli_red PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_cli.py -k validate_final_reviewer_assignment -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_assignment_cli_green PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_cli.py -k validate_final_reviewer_assignment -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_assignment_cli_target1 PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_cli.py arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_governance_current_state.py -q"]
+    test_results: ["TDD red failed as expected because validate-final-reviewer-assignment was not a recognized CLI command", "focused CLI assignment validator tests: 2 OK", "targeted CLI/final-gate/current-state tests: 90 OK before governance sync"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-CLI-VALIDATOR-20260628.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_CLI_VALIDATOR.md", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_cli.py"]
+    result: "CLI validator is ready; the real assignment artifact is still missing and final bundle remains blocked."
+    risk: "A passing future CLI validation can be misread as final gate closure. It only validates assignment artifact structure and no-production flags."
+    rollback: "Revert CLI parser/dispatcher changes, focused regression tests, phase record, manifest, traceability row, delivery task, event records, generated views, and three base records; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
