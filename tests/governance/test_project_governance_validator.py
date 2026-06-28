@@ -12175,6 +12175,113 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(payload["decision"], "SHIP")
         self.assertEqual(payload["language"], "zh-CN")
 
+    def test_m1_final_roi_audit_ships_when_stage5_and_manifests_pass(self) -> None:
+        cli = load_lean_governance_module()
+        fake_stage5 = {
+            "owner_status_zh": "Stage5 验收通过。",
+            "schema_version": 1,
+            "language": "zh-CN",
+            "command": "stage5-audit",
+            "decision": "SHIP",
+            "zero_tracked_write": True,
+            "risk_closure": {"open_p0_p1_count": 0, "pass": True},
+            "owner_readability": {
+                "project_count": 11,
+                "passed_project_count": 11,
+                "failed_projects": [],
+                "pass": True,
+            },
+            "shadow_parity": {
+                "quality_guards": {
+                    "candidate_report_only": True,
+                    "legacy_validation_required": True,
+                    "read_only_guard_required": True,
+                    "selector_parity_guard_required": True,
+                    "t2_t3_root_rule_preserved": True,
+                    "full_governance_all_scope_preserved": True,
+                    "changed_only_rollback_switch_present": True,
+                    "adp_fail_closed_preflight_present": True,
+                    "hook_advisory_only": True,
+                    "pass": True,
+                }
+            },
+            "roi_metrics": {
+                "pass": True,
+                "after": {
+                    "ordinary_context_file_count": 2,
+                    "ordinary_context_bytes": 7746,
+                    "stdout_bytes": 1390,
+                    "ci_wall_time_seconds": 2.5,
+                },
+            },
+            "rollback_rehearsal": {"pass": True},
+            "timing_telemetry": {"stage5_audit_seconds": 1.2},
+        }
+
+        with patch.object(cli, "run_stage5_audit", return_value=(0, fake_stage5)):
+            exit_code, audit = cli.run_roi_final_audit("origin/main", root=ROOT, projects_file=ROOT / "governance" / "projects.yaml")
+
+        self.assertEqual(exit_code, 0, audit.get("blocking_reasons"))
+        self.assertEqual(audit["decision"], "SHIP")
+        self.assertEqual(set(audit["acceptance_ids"]), set(cli.FINAL_REVIEW_ACCEPTANCE_IDS))
+        self.assertTrue(all(item["pass"] for item in audit["stage_manifest_reviews"]), audit["stage_manifest_reviews"])
+        self.assertTrue(all(item["pass"] for item in audit["task_results"].values()), audit["task_results"])
+        self.assertTrue(audit["solution_boundaries"]["pass"], audit["solution_boundaries"]["failed_checks"])
+        self.assertTrue(audit["project_capsules"]["pass"], audit["project_capsules"]["failed_projects"])
+        self.assertTrue(audit["identity_repairs"]["pass"], audit["identity_repairs"]["failed_checks"])
+
+    def test_m1_final_roi_manifest_review_rejects_missing_stage_acceptance(self) -> None:
+        cli = load_lean_governance_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest_dir = root / "governance" / "run_manifests"
+            manifest_dir.mkdir(parents=True)
+            (manifest_dir / "bad.json").write_text(
+                json.dumps(
+                    {
+                        "acceptance_ids": ["S3PAT01"],
+                        "binding_status": "PRECOMMIT_TREE_BOUND",
+                        "changed_files_actual": ["AGENTS.md"],
+                        "test_commands": ["python -m unittest"],
+                        "test_results": [{"command": "python -m unittest", "result": "PASS"}],
+                        "evidence_refs": [{"path_or_artifact_ref": "tmp"}],
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            review = cli.review_stage_manifest(
+                root,
+                {
+                    "stage": "S3",
+                    "manifest": "bad.json",
+                    "acceptance_ids": ("S3PAT01", "S3PBT01"),
+                },
+            )
+
+        self.assertFalse(review["pass"])
+        self.assertIn("S3PBT01", review["missing_acceptance_ids"])
+        self.assertIn("expected_acceptance_ids_present", review["failed_checks"])
+
+    def test_m1_final_roi_audit_cli_outputs_chinese_ship_json(self) -> None:
+        cli = load_lean_governance_module()
+        fake_audit = {
+            "owner_status_zh": "最终复审通过。",
+            "schema_version": 1,
+            "language": "zh-CN",
+            "command": "roi-final-audit",
+            "decision": "SHIP",
+        }
+        stream = io.StringIO()
+        with patch.object(cli, "run_roi_final_audit", return_value=(0, fake_audit)):
+            with contextlib.redirect_stdout(stream):
+                self.assertEqual(cli.main(["roi-final-audit", "--base-ref", "origin/main"]), 0)
+
+        payload = json.loads(stream.getvalue())
+        self.assertEqual(payload["command"], "roi-final-audit")
+        self.assertEqual(payload["decision"], "SHIP")
+        self.assertEqual(payload["language"], "zh-CN")
+
 
 if __name__ == "__main__":
     unittest.main()
