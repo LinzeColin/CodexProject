@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260628-ADP-S2PMT07-P0-P1-ZERO-PROOF-CLI-VALIDATOR"
+as_of_event_id: "EVENT-20260628-ADP-S2PMT07-FINAL-COMMAND-EXECUTION-CLI-VALIDATOR"
 source_snapshot_hash: "sha256:a68baa09e7ce2df698c1f653a64a9db8dea11b07ba731497245ee261d349151a"
 source_base_commit: "9fbb0c4eb240a1782bae3db4db873ded37ac21f4"
 source_tree_hash: "23334defdf6e168d709c223d61c0998e594f6852"
-snapshot_event_time: "2026-06-28T23:23:48+10:00"
+snapshot_event_time: "2026-06-28T23:41:05+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -61,12 +61,12 @@ dimensions:
     tree_bound_events: 0
     commit_bound_events: 4
     legacy_unbound_events: 231
-    precommit_pending_events: 41
+    precommit_pending_events: 42
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "BLOCKED_PRECHECK"
-  release_gate: "S2PMT07_P0_P1_ZERO_PROOF_CLI_VALIDATOR_READY_ARTIFACT_MISSING_NO_PRODUCTION"
+  release_gate: "S2PMT07_FINAL_COMMAND_EXECUTION_CLI_VALIDATOR_READY_ARTIFACT_MISSING_NO_PRODUCTION"
   blocker_ids:
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
@@ -114,7 +114,7 @@ owner_decision:
   estimated_effort: "P0/P1; contract hash, AGENTS, 三基文件, validator/test, no production side effect"
   estimated_cost_or_resource: "local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner"
   expected_benefit: "在保持 arXiv 稳定运行的前提下，统一 V7.1 有效要求与 V1.1 新要求，并让 Stage2 agents 在 V7.2 下聚焦 S2PMT07 独立终审、P0/P1 零证明、S2PLT04 完成和最终验收包证据。"
-  principal_risks: "将 S2PLT02 delivery evidence ledger 和 2026-06-28 M4 watermark proof record 误读为 S2PLT02 acceptance、真实两日运行、scheduler proof、P0/P1 清零、S2PLT04 完成、S2PMT07 通过或生产 stop gate 解除"
+  principal_risks: "将 validate-final-command-execution CLI validator、validate-p0-p1-zero-proof CLI validator、S2PLT02 delivery evidence ledger 或 2026-06-28 M4 watermark proof record 误读为 final commands executed、P0/P1 清零、S2PLT02 acceptance、真实两日运行、scheduler proof、S2PLT04 完成、S2PMT07 通过或生产 stop gate 解除"
   evidence_required: "S2PMT07 independent final review, inherited P0/P1 closure proof, S2PLT04 completion, governance validator, lean render proof, and no-production-side-effect evidence"
   decision_deadline_or_priority: "P1"
   consequence_of_no_decision: "Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract drift."

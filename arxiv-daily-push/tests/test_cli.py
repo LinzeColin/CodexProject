@@ -8,6 +8,9 @@ from pathlib import Path
 from arxiv_daily_push.cli import main
 from arxiv_daily_push.stage2_final_gate import (
     S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS,
+    S2PMT07_FINAL_COMMAND_EXECUTION_DECISION,
+    S2PMT07_FINAL_COMMAND_EXECUTION_NO_PRODUCTION_FLAGS,
+    S2PMT07_FINAL_COMMAND_EXECUTION_SCHEMA_VERSION,
     S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_DECISION,
     S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_NO_PRODUCTION_FLAGS,
     S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_SCHEMA_VERSION,
@@ -15,6 +18,8 @@ from arxiv_daily_push.stage2_final_gate import (
     S2PMT07_P0_P1_ZERO_PROOF_NO_PRODUCTION_FLAGS,
     S2PMT07_P0_P1_ZERO_PROOF_SCHEMA_VERSION,
     S2PMT07_REQUIRED_REVIEWER_INDEPENDENCE,
+    S2PMT07_REQUIRED_TEST_COMMANDS,
+    build_final_command_execution_hash,
     build_independent_final_reviewer_assignment_hash,
     build_independent_final_reviewer_assignment_request_state,
     build_p0_p1_zero_proof_decision_hash,
@@ -157,6 +162,22 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["integrated_production_accepted"])
         self.assertFalse(payload["daily_operation_enabled"])
 
+    def test_validate_final_command_execution_blocks_when_artifact_missing(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "final_command_execution.json"
+            buffer = io.StringIO()
+            with redirect_stdout(buffer):
+                result = main(["validate-final-command-execution", "--path", str(path), "--json"])
+        self.assertEqual(result, 2)
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(payload["status"], "blocked")
+        self.assertFalse(payload["command_execution_present"])
+        self.assertIn("final_command_execution_missing", payload["validation_errors"])
+        self.assertFalse(payload["final_commands_executed_by_payload"])
+        self.assertFalse(payload["production_acceptance_claimed"])
+        self.assertFalse(payload["integrated_production_accepted"])
+        self.assertFalse(payload["daily_operation_enabled"])
+
     def test_validate_p0_p1_zero_proof_passes_valid_artifact_without_production_claim(self):
         zero_proof = {
             "schema_version": S2PMT07_P0_P1_ZERO_PROOF_SCHEMA_VERSION,
@@ -195,6 +216,51 @@ class CliTests(unittest.TestCase):
         self.assertTrue(payload["artifact_present"])
         self.assertTrue(payload["p0_zero_proven_by_payload"])
         self.assertTrue(payload["p1_zero_proven_by_payload"])
+        self.assertFalse(payload["production_acceptance_claimed"])
+        self.assertFalse(payload["integrated_production_accepted"])
+        self.assertFalse(payload["daily_operation_enabled"])
+
+    def test_validate_final_command_execution_passes_valid_artifact_without_production_claim(self):
+        command_execution = {
+            "schema_version": S2PMT07_FINAL_COMMAND_EXECUTION_SCHEMA_VERSION,
+            "contract_id": "ADP-PRODUCT-CONTRACT-V7.2",
+            "generated_at": "2026-06-28T23:50:00+10:00",
+            "execution_decision": S2PMT07_FINAL_COMMAND_EXECUTION_DECISION,
+            "executor_independence": {
+                "status": "verified",
+                "required_independence": S2PMT07_REQUIRED_REVIEWER_INDEPENDENCE,
+                "executor_role": "independent_final_reviewer",
+            },
+            "required_commands_executed": list(S2PMT07_REQUIRED_TEST_COMMANDS),
+            "command_results": {
+                command: {
+                    "status": "pass",
+                    "exit_code": 0,
+                    "executed_by": "independent_final_reviewer",
+                    "evidence_ref": f"FINAL_ACCEPTANCE_BUNDLE/command_evidence/{index}.txt",
+                }
+                for index, command in enumerate(S2PMT07_REQUIRED_TEST_COMMANDS, start=1)
+            },
+            "final_bundle_refs": list(S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS),
+            "no_production_side_effects": {
+                flag: False for flag in S2PMT07_FINAL_COMMAND_EXECUTION_NO_PRODUCTION_FLAGS
+            },
+            "execution_hash": "",
+        }
+        command_execution["execution_hash"] = build_final_command_execution_hash(command_execution)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "final_command_execution.json"
+            path.write_text(json.dumps(command_execution), encoding="utf-8")
+            buffer = io.StringIO()
+            with redirect_stdout(buffer):
+                result = main(["validate-final-command-execution", "--path", str(path), "--json"])
+        self.assertEqual(result, 0)
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(payload["status"], "pass")
+        self.assertTrue(payload["command_execution_present"])
+        self.assertTrue(payload["all_required_commands_passed"])
+        self.assertTrue(payload["final_commands_executed_by_payload"])
         self.assertFalse(payload["production_acceptance_claimed"])
         self.assertFalse(payload["integrated_production_accepted"])
         self.assertFalse(payload["daily_operation_enabled"])

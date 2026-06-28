@@ -21,12 +21,19 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 246
+- task_count: 247
 - acceptance_count: 127
 
 ## Delivery Tasks
 
 The machine-readable task source is `delivery_tasks.yaml`.
+
+## 2026-06-28 23:41:05 Australia/Sydney - S2PMT07 Final Command Execution CLI Validator
+
+- `S2PMT07-FINAL-COMMAND-EXECUTION-CLI-VALIDATOR` exposes `adp validate-final-command-execution --path FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json --json`.
+- Missing final-command execution artifact returns `blocked` / exit 2 with `final_command_execution_missing`; a future valid artifact can pass strict schema, executor independence, required command results, final bundle refs, no-production flags, and `execution_hash` checks.
+- The current command result is not final command execution, not a reviewer assignment, not a closure decision, not P0/P1 zero proof, not S2PLT04 completion, not final bundle acceptance, and not production acceptance.
+- No SMTP, scheduler, Release, restore, schema/DB, source/ranking, CURRENT/V7, DAILY_OPERATION, or integrated production acceptance side effect is claimed.
 
 ## 2026-06-28 23:23:48 Australia/Sydney - S2PMT07 P0/P1 Zero Proof CLI Validator
 
