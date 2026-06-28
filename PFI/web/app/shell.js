@@ -11,6 +11,11 @@ const FEEDBACK_STATES = {
   failure: "失败",
 };
 const FEEDBACK_STATE_ORDER = ["progress", "success", "failure"];
+const FEEDBACK_HUB_LANES = {
+  visual: "视觉状态轨道",
+  haptic: "触感强度",
+  sound: "声音反馈",
+};
 
 const FX_SNAPSHOT = Object.freeze({
   snapshotId: "fx_AUD_CNY_20260628",
@@ -305,7 +310,7 @@ const SEARCH_DEFAULT_LIMIT = 10;
 let globalSearchState = { items: [], results: [], activeIndex: 0 };
 let clickFeedbackSerial = 0;
 let clickSafeBound = false;
-let feedbackRuntimeState = { haptic: true, sound: false, motion: false };
+let feedbackRuntimeState = { haptic: true, sound: false, motion: true };
 let feedbackAudioContext = null;
 
 const UPLOAD_ALLOWED_EXTENSIONS = [".csv", ".zip", ".xls", ".xlsx"];
@@ -1444,12 +1449,19 @@ function setActionFeedback(state, message, options = {}) {
   if (body) body.textContent = message || "操作已响应";
   const shell = document.querySelector(".app-shell");
   if (shell) shell.dataset.feedbackState = normalizedState;
-  emitMultimodalFeedback(feedbackKindFromState(normalizedState));
+  const kind = options.kind || feedbackKindFromState(normalizedState);
+  updateFeedbackHub({
+    lane: options.lane || feedbackLaneFromKind(kind),
+    label: message || "操作已响应",
+    state: normalizedState,
+    kind,
+  });
+  emitMultimodalFeedback(kind);
 }
 
-function showToast(message, state = "success") {
+function showToast(message, state = "success", options = {}) {
   const toast = document.querySelector("[data-toast]");
-  setActionFeedback(state, message);
+  setActionFeedback(state, message, options);
   if (!toast) return;
   toast.textContent = message;
   toast.dataset.toastState = state;
@@ -1463,6 +1475,46 @@ function feedbackKindFromState(state) {
   if (state === "failure") return "error";
   if (state === "progress") return "soft";
   return "confirm";
+}
+
+function feedbackLaneFromKind(kind = "select") {
+  if (kind === "warning" || kind === "error") return "sound";
+  if (kind === "select") return "haptic";
+  return "visual";
+}
+
+function updateFeedbackHub({ lane = "visual", label = "操作已响应", state = "success", kind = "confirm" } = {}) {
+  const hub = document.querySelector("[data-feedback-hub]");
+  if (!hub) return;
+  const normalizedLane = Object.prototype.hasOwnProperty.call(FEEDBACK_HUB_LANES, lane) ? lane : "visual";
+  const laneLabel = FEEDBACK_HUB_LANES[normalizedLane];
+  const stateLabel = FEEDBACK_STATES[state] || FEEDBACK_STATES.success;
+  const stateNode = hub.querySelector("[data-feedback-hub-state]");
+  if (stateNode) stateNode.textContent = `${laneLabel} · ${stateLabel}`;
+
+  hub.querySelectorAll("[data-feedback-lane]").forEach((node) => {
+    node.classList.toggle("is-active", node.dataset.feedbackLane === normalizedLane);
+    node.dataset.feedbackState = node.dataset.feedbackLane === normalizedLane ? state : "idle";
+  });
+
+  const meter = hub.querySelector(`[data-feedback-meter="${normalizedLane}"] i`);
+  if (meter) {
+    const width = state === "progress" ? "64%" : state === "failure" ? "100%" : kind === "select" ? "74%" : "88%";
+    meter.style.width = width;
+  }
+
+  const log = hub.querySelector("[data-feedback-event-log]");
+  if (!log) return;
+  const item = document.createElement("li");
+  const timeNode = document.createElement("span");
+  const titleNode = document.createElement("strong");
+  const bodyNode = document.createElement("small");
+  timeNode.textContent = "刚刚";
+  titleNode.textContent = laneLabel;
+  bodyNode.textContent = label;
+  item.append(timeNode, titleNode, bodyNode);
+  log.prepend(item);
+  Array.from(log.children).slice(3).forEach((child) => child.remove());
 }
 
 function emitMultimodalFeedback(kind = "select") {
@@ -1530,27 +1582,26 @@ function bindFeedbackToggles() {
     const key = toggle.dataset.feedbackToggle;
     if (!Object.prototype.hasOwnProperty.call(feedbackRuntimeState, key)) return;
     feedbackRuntimeState[key] = Boolean(toggle.checked);
-    document.body.classList.toggle("reduce-motion", feedbackRuntimeState.motion);
+    document.body.classList.toggle("reduce-motion", !feedbackRuntimeState.motion);
     toggle.addEventListener("change", () => {
       feedbackRuntimeState[key] = Boolean(toggle.checked);
-      document.body.classList.toggle("reduce-motion", feedbackRuntimeState.motion);
+      document.body.classList.toggle("reduce-motion", !feedbackRuntimeState.motion);
       const label = toggle.closest(".toggle-item")?.querySelector("strong")?.textContent || "反馈";
       setActionFeedback("success", `${label}已更新`);
     });
   });
 }
 
-function bindOwnerFeedbackSignals() {
-  document.querySelectorAll("[data-feedback-signal]").forEach((button) => {
+function bindFeedbackHub() {
+  document.querySelectorAll("[data-feedback-lane]").forEach((button) => {
     button.dataset.clickSafe = "true";
     button.addEventListener("click", (event) => {
       setPressedFeedback(button);
       createRipple(event, button);
       const label = button.querySelector("strong")?.textContent?.trim() || "交互反馈";
       const kind = button.dataset.feedbackKind || "select";
-      emitMultimodalFeedback(kind);
-      setActionFeedback("success", `${label}已响应`);
-      showToast(`${label}已响应`, "success");
+      const lane = button.dataset.feedbackLane || feedbackLaneFromKind(kind);
+      showToast(`${label}已响应`, "success", { lane, kind });
     });
   });
 }
@@ -3547,7 +3598,7 @@ function englishNoise(value) {
 function bindEvents() {
   bindClickSafeFeedback();
   bindFeedbackToggles();
-  bindOwnerFeedbackSignals();
+  bindFeedbackHub();
   document.querySelectorAll("[data-workspace]").forEach((button) => {
     button.addEventListener("click", () => {
       setPressedFeedback(button);

@@ -488,8 +488,8 @@ zsh scripts/macosAppAcceptanceLite.sh --project-root . --summary-json
 
 浏览器验收：
 
-- Chrome headless desktop 1440x1100：15 个一级入口、14 个唯一路由、CNY/AUD 06:00 徽标、全局模糊搜索、上传选择、拖拽上传、失败反馈、导入中心、账本复核入口、持仓保存刷新恢复、设置反馈控制台和三态反馈均通过；console errors `0`。
-- Chrome headless mobile 390x920：CNY/AUD 徽标、横向入口可读性、上传/导入面板、全局搜索和命令反馈通过；console errors `0`。
+- Chrome headless desktop 1440x1100：15 个一级入口、14 个唯一路由、AUD/CNY 06:00 徽标、全局模糊搜索、上传选择、拖拽上传、失败反馈、导入中心、账本复核入口、持仓保存刷新恢复、设置反馈控制台和三态反馈均通过；console errors `0`。
+- Chrome headless mobile 390x920：AUD/CNY 徽标、横向入口可读性、上传/导入面板、全局搜索和命令反馈通过；console errors `0`。
 - 截图：`/tmp/pfi-v021-stage8-final-desktop-verified.png`、`/tmp/pfi-v021-stage8-final-mobile-verified.png`。
 
 ## Stage 8 后续顺序

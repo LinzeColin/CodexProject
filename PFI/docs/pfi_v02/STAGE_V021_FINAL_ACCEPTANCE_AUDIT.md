@@ -75,7 +75,7 @@ zsh scripts/macosAppAcceptanceLite.sh --project-root . --summary-json
 - Chrome headless desktop `1440x1100`。
 - Chrome headless mobile `390x920`。
 - 15 个一级入口和 V0.1 兼容入口。
-- 顶栏 `CNY/AUD` 汇率徽标。
+- 顶栏 `AUD/CNY` 汇率徽标。
 - 全局模糊搜索。
 - `数据源与上传` 上传中心、拖拽上传、失败反馈、导入中心、账本复核入口。
 - `投资管理 > 持仓` 持仓编辑、保存、刷新恢复。
@@ -90,8 +90,8 @@ zsh scripts/macosAppAcceptanceLite.sh --project-root . --summary-json
 
 当前浏览器结果：
 
-- desktop：15 个一级入口、14 个唯一路由、CNY/AUD 06:00 徽标、全局模糊搜索、上传选择、拖拽上传、失败反馈、导入中心、账本复核入口、持仓保存刷新恢复、设置反馈控制台和 `progress/success/failure` 三态反馈均通过。
-- mobile：CNY/AUD 徽标、横向入口可读性、上传/导入面板、全局搜索和命令反馈均通过。
+- desktop：15 个一级入口、14 个唯一路由、AUD/CNY 06:00 徽标、全局模糊搜索、上传选择、拖拽上传、失败反馈、导入中心、账本复核入口、持仓保存刷新恢复、设置反馈控制台和 `progress/success/failure` 三态反馈均通过。
+- mobile：AUD/CNY 徽标、横向入口可读性、上传/导入面板、全局搜索和命令反馈均通过。
 - console errors：`0`。
 
 ## GitHub 与本机入口验收
