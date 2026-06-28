@@ -4,7 +4,7 @@ Last updated: 2026-06-28 Australia/Sydney
 
 ## Current Goal
 
-PFI v0.2.2 Stage 13 - 后置触发型复核收口：完成 `S13-P1-T1`、`S13-P1-T2`、`S13-P1-T3`，包括交付前人工指定触发、本地 Codex Review Ticket、仅对异常区域进行复核、禁止全仓无差别扫描、问题/修复/验证/剩余风险开发记录回写，以及 Downloads 污染文件夹清理/迁移；不联网、不调用外部 LLM，不修改 v0.2.1 Web Shell UIUX 基线。
+PFI v0.2.2 Stage 1-13 复审并解决：第一阶段每次 run work 只复审解决 1 个 Stage，第二阶段做整体项目复审解决；整体 goal 完成后再重装 app 入口。本轮已完成 Stage 1 复审并解决，新增 `docs/pfi_v022/reviews/STAGE1_REVIEW_20260628.md` 和 `tests/test_v022_review_stage1.py`，补齐 3 个阈值/开关键说明；不复审解决 Stage 2-13，不重装 app 入口。
 
 ## Current Status
 
@@ -20,6 +20,8 @@ PFI v0.2.2 Stage 13 - 后置触发型复核收口：完成 `S13-P1-T1`、`S13-P1
   resolve to this checkout.
 - Local runtime data home is now `~/.pfi` or explicit `$PFI_DATA_HOME`.
 - Current app URL after migration verification: `http://localhost:8501`.
+- 当前复审状态：Stage 1 复审并解决已完成；Stage 2-13 复审解决未开始；整体项目复审解决未开始；app 入口重装未执行。
+- 历史完成状态：Stage 13 - 后置触发型复核 已完成 `S13-P1-T1`、`S13-P1-T2`、`S13-P1-T3`；由 `交付前人工指定` 触发，生成本地 Codex Review Ticket，仅对异常区域进行复核，禁止全仓无差别扫描；问题、修复、验证、剩余风险已写入开发记录；Downloads 污染文件夹 `PFI_V022_STAGE0_PRE_CANONICAL_SYNC_20260628T090028` 等已归档并移出 Downloads。
 - Stage 1 contracts remain in `src/pfi_v02/stage1_ia.py`, `src/pfi_v02/core_models.py`, and `src/pfi_v02/classification_rules.py`.
 - Stage 2 registry is implemented in `src/pfi_v02/stage2_registry.py`.
 - Stage 2 import pipeline is implemented in `src/pfi_v02/stage2_import.py`.

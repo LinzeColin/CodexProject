@@ -11,6 +11,17 @@ or cover QBVS.
 
 `v0.2.2 数据库治理` 当前完成 Stage 13 - 后置触发型复核。本轮在 `交付前人工指定` 触发下生成本地 Codex Review Ticket，仅对异常区域进行复核，禁止全仓无差别扫描，将问题、修复、验证、剩余风险写入开发记录，并清理/迁移 Downloads 污染文件夹；不联网、不调用外部 LLM、不修改 v0.2.1 主 Web Shell UIUX 基线，不新增真实交易、自动投资、支付或券商提交能力。
 
+## v0.2.2 Stage 1-13 复审
+
+当前 pursuing goal 为重新复审并解决 Stage 1-13。第一阶段每次 run work 只复审解决 1 个 Stage，第二阶段再做整体项目复审解决；整体复审解决完成后才重装 app 入口。
+
+当前复审进度：
+
+- Stage 1 复审并解决：已完成，报告为 `docs/pfi_v022/reviews/STAGE1_REVIEW_20260628.md`，测试为 `tests/test_v022_review_stage1.py`；已补齐 3 个阈值/开关键说明。
+- Stage 2-13 复审解决：未开始。
+- 整体项目复审解决：未开始。
+- app 入口重装：未执行，按用户要求留到整体 pursuing goal 完成后。
+
 Stage 13 source files:
 
 | Purpose | Path |
@@ -20,6 +31,7 @@ Stage 13 source files:
 | v0.2.2 参数交付镜像 | `config/pfi_v022_parameters.yaml` |
 | 参数变更记录 | `config/parameter_changelog.md` |
 | Stage 1 验收报告 | `docs/pfi_v022/STAGE1_PARAMETER_GOVERNANCE.md` |
+| Stage 1 复审报告 | `docs/pfi_v022/reviews/STAGE1_REVIEW_20260628.md` |
 | Stage 2 验收报告 | `docs/pfi_v022/STAGE2_CNY_FX_GOVERNANCE.md` |
 | Stage 3 验收报告 | `docs/pfi_v022/STAGE3_SOURCE_ACCOUNT_PROFILE.md` |
 | Stage 4 验收报告 | `docs/pfi_v022/STAGE4_INTERCONNECTION.md` |
