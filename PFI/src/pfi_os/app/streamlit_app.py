@@ -59,6 +59,15 @@ if str(ROOT / "src") not in sys.path:
 CASHFLOW_LEDGER = "company_cashflow"
 POLICY_LEDGER = "policy_radar"
 CONSUMPTION_LEDGER = "consumption_guard"
+ALIPAY_IMPORT_STATUS_LABELS = {
+    "Ready": "就绪",
+    "Pass": "通过",
+    "Review": "待复核",
+    "PendingReview": "待复核",
+    "Failed": "失败",
+    "Error": "失败",
+    "Skipped": "已跳过",
+}
 
 from pfi_os.approvals import StrategyApprovalRegistry
 from pfi_os.application import (
@@ -962,6 +971,139 @@ def _render_html_frame(markup: str, *, height: int, width: object = None, scroll
     components.html(markup, height=height, width=width, scrolling=scrolling)
 
 
+def _render_pfi_native_shell_style() -> None:
+    st.markdown(
+        """
+        <style>
+        html,
+        body,
+        [data-testid="stAppViewContainer"],
+        [data-testid="stApp"] {
+            background: #06111f !important;
+        }
+        [data-testid="stToolbar"],
+        [data-testid="stDecoration"],
+        [data-testid="stStatusWidget"],
+        header[data-testid="stHeader"],
+        .stDeployButton {
+            display: none !important;
+        }
+        .block-container {
+            max-width: none !important;
+            padding-top: 0 !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            padding-bottom: 24px !important;
+        }
+        iframe {
+            display: block;
+            border: 0 !important;
+        }
+        [data-testid="stFileUploader"] {
+            margin-top: 12px;
+            padding: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 8px;
+            background: linear-gradient(135deg, rgba(102, 242, 221, 0.12), rgba(145, 197, 255, 0.08));
+        }
+        [data-testid="stFileUploader"] label {
+            color: #f4f9ff !important;
+            font-weight: 800 !important;
+        }
+        [data-testid="stFileUploaderDropzone"] {
+            min-height: 148px;
+            position: relative;
+            overflow: hidden;
+            border: 1px dashed rgba(102, 242, 221, 0.58) !important;
+            border-radius: 8px !important;
+            background: rgba(255, 255, 255, 0.06) !important;
+        }
+        [data-testid="stFileUploaderDropzone"] [data-testid="stMarkdownContainer"],
+        [data-testid="stFileUploaderDropzoneInstructions"],
+        [data-testid="stFileUploaderDropzone"] small {
+            display: none !important;
+        }
+        [data-testid="stFileUploaderDropzone"]::before {
+            content: "拖拽 CSV / ZIP 到这里";
+            position: absolute;
+            left: 24px;
+            top: 28px;
+            color: #f4f9ff;
+            font-size: 18px;
+            font-weight: 900;
+        }
+        [data-testid="stFileUploaderDropzone"]::after {
+            content: "单文件上限 200MB · 支持 CSV、ZIP · 原始数据只写入本机私有账本";
+            position: absolute;
+            left: 24px;
+            top: 62px;
+            right: 24px;
+            color: #a9bbcf;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        [data-testid="stFileUploaderDropzone"] button {
+            position: absolute !important;
+            right: 24px !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            min-width: 112px !important;
+            border-radius: 8px !important;
+            border-color: rgba(102, 242, 221, 0.44) !important;
+            background: linear-gradient(135deg, #66f2dd, #91c5ff) !important;
+            color: #06111f !important;
+            font-size: 0 !important;
+            font-weight: 900 !important;
+        }
+        [data-testid="stFileUploaderDropzone"] button::after {
+            content: "选择文件";
+            font-size: 14px;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def _render_streamlit_upload_localizer() -> None:
+    components.html(
+        """
+        <script>
+        (() => {
+          const parentDoc = window.parent && window.parent.document;
+          if (!parentDoc) return;
+          const dragText = ["Drag", "and drop files here"].join(" ");
+          const browseText = ["Browse", "files"].join(" ");
+          const limitPrefix = ["Limit", "200MB per file"].join(" ");
+          const replacements = new Map([
+            [dragText, "拖拽 CSV / ZIP 到这里"],
+            [browseText, "选择文件"],
+          ]);
+
+          function localizeUploader() {
+            parentDoc.querySelectorAll('[data-testid="stFileUploaderDropzone"]').forEach((dropzone) => {
+              dropzone.setAttribute("aria-label", "选择支付宝原始账单 CSV 或 ZIP");
+              dropzone.querySelectorAll("span, small, button").forEach((node) => {
+                const text = (node.textContent || "").trim();
+                if (replacements.has(text)) {
+                  node.textContent = replacements.get(text);
+                } else if (text.startsWith(limitPrefix)) {
+                  node.textContent = "单文件上限 200MB · 支持 CSV、ZIP";
+                }
+              });
+            });
+          }
+
+          localizeUploader();
+          new MutationObserver(localizeUploader).observe(parentDoc.body, { childList: true, subtree: true });
+        })();
+        </script>
+        """,
+        height=0,
+        scrolling=False,
+    )
+
+
 def render_pfi_local_data_upload_panel() -> None:
     st.markdown("## PFI 本机数据上传")
     st.caption("先把支付宝、微信、银行等原始账单导入本机私有目录，再进入账本、消费、投资和报告；按本轮授权同步备份到 GitHub 顶层 MetaDatabase。")
@@ -978,6 +1120,7 @@ def render_pfi_local_data_upload_panel() -> None:
         key="pfi_alipay_bill_upload_v1",
         help="支持支付宝导出的带说明区 CSV，也支持包含 CSV 的 ZIP。可一次选择多份年度账单。",
     )
+    _render_streamlit_upload_localizer()
     if uploaded_files:
         payloads = tuple((file.name, file.getvalue()) for file in uploaded_files)
         preview = build_alipay_import_preview(payloads)
@@ -1037,6 +1180,10 @@ def _render_alipay_import_summary(summary: dict, *, title: str) -> None:
     file_summaries = summary.get("file_summaries") or []
     if file_summaries:
         file_summary_frame = pd.DataFrame(file_summaries)
+        if "status" in file_summary_frame.columns:
+            file_summary_frame["status"] = file_summary_frame["status"].map(
+                lambda value: ALIPAY_IMPORT_STATUS_LABELS.get(str(value), str(value) or "待识别")
+            )
         columns = [
             column
             for column in [
@@ -1108,36 +1255,7 @@ def _pfi_segmented_control(label: str, options: list[str], *, default: str, key:
 
 
 def render_pfi_ui_v2_shell() -> None:
-    st.markdown(
-        """
-        <style>
-        html,
-        body,
-        [data-testid="stAppViewContainer"],
-        [data-testid="stApp"] {
-            background: #06101d !important;
-        }
-        [data-testid="stToolbar"],
-        [data-testid="stDecoration"],
-        [data-testid="stStatusWidget"],
-        header[data-testid="stHeader"] {
-            display: none !important;
-        }
-        .block-container {
-            max-width: none !important;
-            padding-top: 0 !important;
-            padding-left: 0 !important;
-            padding-right: 0 !important;
-            padding-bottom: 24px !important;
-        }
-        iframe {
-            display: block;
-            border: 0 !important;
-        }
-        </style>
-    """,
-        unsafe_allow_html=True,
-    )
+    _render_pfi_native_shell_style()
     store = OperationalStore()
     try:
         store.initialize()

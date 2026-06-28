@@ -1540,6 +1540,21 @@ function bindFeedbackToggles() {
   });
 }
 
+function bindOwnerFeedbackSignals() {
+  document.querySelectorAll("[data-feedback-signal]").forEach((button) => {
+    button.dataset.clickSafe = "true";
+    button.addEventListener("click", (event) => {
+      setPressedFeedback(button);
+      createRipple(event, button);
+      const label = button.querySelector("strong")?.textContent?.trim() || "交互反馈";
+      const kind = button.dataset.feedbackKind || "select";
+      emitMultimodalFeedback(kind);
+      setActionFeedback("success", `${label}已响应`);
+      showToast(`${label}已响应`, "success");
+    });
+  });
+}
+
 function readHomeSummary() {
   const node = document.querySelector("#pfi-home-summary");
   if (!node) return null;
@@ -3532,6 +3547,7 @@ function englishNoise(value) {
 function bindEvents() {
   bindClickSafeFeedback();
   bindFeedbackToggles();
+  bindOwnerFeedbackSignals();
   document.querySelectorAll("[data-workspace]").forEach((button) => {
     button.addEventListener("click", () => {
       setPressedFeedback(button);
