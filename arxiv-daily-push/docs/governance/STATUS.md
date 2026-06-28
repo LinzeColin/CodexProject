@@ -4,8 +4,8 @@
 
 - source_base_commit: `12e91a8e1b84fe29724f43229131bd43f8fa31cd`
 - source_tree_hash: `8caef1969ddfe23755890506daa0d02e6f6df81f`
-- source_snapshot_hash: `sha256:4aca02d69498180095923ed7acf5c5b3f30c0dc147fd651170ece7545f1329d3`
-- snapshot_event_time: `2026-06-28T10:30:22+10:00`
+- source_snapshot_hash: `sha256:c24352a49a013b3e3018eb1b6e4c012076e2a3378c4b0b75b0a7c54d6c50ecc4`
+- snapshot_event_time: `2026-06-28T10:59:31+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -48,15 +48,8 @@
 - Next governance task: `S2PMT07`
 - Parallel shadow source task: `NONE_WHILE_S2PMT07_BLOCKED`
 - Next executable task: `S2PLT01`
-- Pending/stale events: `244`
+- Pending/stale events: `246`
 - Tree-bound events: `0`
 - Commit-bound events: `4`
-- Legacy unbound events: `205`
+- Legacy unbound events: `207`
 - Unresolved fact IDs: `1`
-
-## Local Daily Runner M1-M4
-
-- Local runner send orchestration: `LOCAL_DAILY_M1_M4_SEND_ORCHESTRATION_READY`
-- Planned daily mail products: `M1 / M2 / M3 / M4`
-- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_LOCAL_DAILY_M1_M4_SEND_ORCHESTRATION_20260628.md`
-- Boundary: this records code/test readiness for local catch-up and duplicate-send protection; it does not claim real M2-M4 delivery, S2PMT07 final acceptance, scheduler enablement, Release upload, or integrated production acceptance.

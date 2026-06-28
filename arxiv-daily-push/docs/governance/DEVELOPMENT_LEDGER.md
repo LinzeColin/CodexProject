@@ -9,12 +9,12 @@ The append-only machine record is `development_events.jsonl`.
 ## Current State
 
 - Product version: 0.23.1
-- Current phase: S1P5
-- Current gate: LOCAL_DAILY_M1_M4_SEND_ORCHESTRATION_READY_S2PMT07_STILL_BLOCKED
-- Confirmed iteration count: 167
+- Current phase: S2PM
+- Current gate: S2PMT07_MAINLINE_ATTESTATION_PASS_NO_PRODUCTION
+- Confirmed iteration count: 195
 - Reconstructed event count: 0
-- Current task: `LOCAL-DAILY-M1-M4-SEND-ORCHESTRATION` records that the local daily runner now builds and reports M1-M4 Email V1 products, syncs actual sent count to the GitHub user center, and skips already-sent same-day products during catch-up while S2PMT07 final acceptance, inherited P0/P1 closure, final bundle, and integrated production acceptance remain blocked.
-- Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
+- Current task: `S2PMT07-MAINLINE-ATTESTATION` records that the canonical VERSION_MATRIX current gate remains S2PMT07 mainline attestation, while the local daily M1-M4 orchestration is recorded below as a separate local-runner readiness entry; reviewer assignment, independent final closure decision, P0/P1 zero proof, S2PLT04 completion, final bundle, and all production gates remain closed.
+- Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. Local daily M1-M4 orchestration is now recorded as readiness evidence, but V7.2 contract baseline migration blockers are zero while real restore, real SMTP production, scheduler installation, final acceptance bundle creation, P0/P1 closure, S2PLT04 completion, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
 ### `ITER-20260628-ADP-LOCAL-DAILY-M1-M4-SEND-ORCHESTRATION`
 
