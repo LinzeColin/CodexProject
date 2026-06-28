@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-06-29 09:09:03 Australia/Sydney - S2PMT07-S2PLT04-COMPLETION-REPORT-DEPENDENCY-ORDER
+
+- Fixed the S2PLT04 completion report validator/template ordering so the report no longer requires later final-bundle manifest evidence (`FINAL_BUNDLE_MANIFEST` / `FINAL_ACCEPTANCE_BUNDLE_PRESENT`) as a prerequisite.
+- The real `FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json` is still missing and S2PLT01/S2PLT02/S2PLT03 terminal acceptance is still not proven by this change.
+- S2PLT04 completion report, final command execution, handoff, signoff, final manifest, P0/P1 top-level closure, SMTP, scheduler, Release, restore, CURRENT/V7 changes, DAILY_OPERATION, and integrated production acceptance remain blocked or false.
+
 ## 2026-06-29 08:46:12 Australia/Sydney - S2PMT07-CLI-MODULE-ENTRYPOINT
 
 - Added the missing `__main__` module entrypoint so `python3 -B -m arxiv_daily_push.cli plan-final-bundle-prerequisites --json` dispatches to the same CLI path as direct `main([...])` calls.

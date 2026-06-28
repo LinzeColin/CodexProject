@@ -9448,6 +9448,15 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             "S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT",
         )
         self.assertEqual(s2pmt07_next_task["acceptance_ids"], ["ACC-S2PMT07-FINAL-REVIEW"])
+        s2plt04_next_task = dashboard.adp_s2pmt07_blocked_next_task(
+            matrix={
+                "current_iteration": "ITER-20260629-ADP-S2PMT07-S2PLT04-COMPLETION-REPORT-DEPENDENCY-ORDER",
+                "current_gate": "S2PMT07_S2PLT04_COMPLETION_REPORT_DEPENDENCY_ORDER_FIXED_STILL_BLOCKED_NO_PRODUCTION",
+            }
+        )
+        self.assertEqual(s2plt04_next_task["task_id"], "S2PMT07-S2PLT04-COMPLETION-REPORT")
+        self.assertIn("S2PLT04 completion report", s2plt04_next_task["reason"])
+        self.assertEqual(s2plt04_next_task["acceptance_ids"], ["ACC-S2PMT07-FINAL-REVIEW"])
 
     def test_other8_s6pbt02_owner_flow_task_is_not_product_current_task(self) -> None:
         owner_flow_readmes = [

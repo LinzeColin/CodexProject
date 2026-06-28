@@ -19,17 +19,14 @@
     "P0_P1_ZERO_PROOF": {
       "status": "pass",
       "artifact_ref": "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json"
-    },
-    "FINAL_BUNDLE_MANIFEST": {
-      "status": "pass",
-      "artifact_ref": "FINAL_ACCEPTANCE_BUNDLE/manifest.json"
     }
   },
   "terminal_dependency_state": {
     "S2PLT01_ACCEPTED": "REPLACE_WITH_TRUE_ONLY_AFTER_ACCEPTANCE",
     "S2PLT02_ACCEPTED": "REPLACE_WITH_TRUE_ONLY_AFTER_ACCEPTANCE",
     "S2PLT03_ACCEPTED": "REPLACE_WITH_TRUE_ONLY_AFTER_ACCEPTANCE",
-    "P0_P1_ZERO_PROOF_ACCEPTED": "REPLACE_WITH_TRUE_ONLY_AFTER_ACCEPTANCE"
+    "P0_ZERO_PROVEN": "REPLACE_WITH_TRUE_ONLY_AFTER_ACCEPTANCE",
+    "P1_ZERO_PROVEN": "REPLACE_WITH_TRUE_ONLY_AFTER_ACCEPTANCE"
   },
   "final_bundle_refs": [
     "FINAL_ACCEPTANCE_BUNDLE/manifest.json",

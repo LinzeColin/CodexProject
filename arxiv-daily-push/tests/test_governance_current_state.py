@@ -30,17 +30,17 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn(f"- Current task: `{expected_task}`", current_state)
         self.assertIn(f"### `{current_iteration}`", ledger)
 
-    def test_s2pmt07_current_state_summary_describes_assignment_and_zero_proof(self) -> None:
+    def test_s2pmt07_current_state_summary_describes_completion_report_dependency_order(self) -> None:
         ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
-            "S2PMT07_ASSIGNMENT_AND_ZERO_PROOF_VALIDATED_S2PLT04_BLOCKED_NO_PRODUCTION",
+            "S2PMT07_S2PLT04_COMPLETION_REPORT_DEPENDENCY_ORDER_FIXED_STILL_BLOCKED_NO_PRODUCTION",
             current_state,
         )
-        self.assertIn("S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-AND-ZERO-PROOF", current_state)
-        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json", current_state)
-        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json", current_state)
+        self.assertIn("S2PMT07-S2PLT04-COMPLETION-REPORT-DEPENDENCY-ORDER", current_state)
+        self.assertIn("FINAL_BUNDLE_MANIFEST", current_state)
+        self.assertIn("FINAL_ACCEPTANCE_BUNDLE_PRESENT", current_state)
         self.assertIn("next_required_step=S2PLT04_COMPLETION_REPORT", current_state)
         self.assertIn("P0=8", current_state)
         self.assertIn("P1=37", current_state)
@@ -56,6 +56,10 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         generator = (REPO_ROOT / "scripts/generate_governance_dashboard.py").read_text(encoding="utf-8")
 
         stale_option = "继续 S2PLT02 no-production readiness evidence work under V7.2 boundaries"
+        self.assertIn('task_id: "S2PMT07-S2PLT04-COMPLETION-REPORT"', assurance)
+        self.assertIn("next_task_id: `S2PMT07-S2PLT04-COMPLETION-REPORT`", owner_status)
+        self.assertNotIn('task_id: "S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT"', assurance)
+        self.assertNotIn("next_task_id: `S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT`", owner_status)
         for text in (assurance, owner_status):
             self.assertIn("S2PMT07", text)
             self.assertIn("S2PMT07-S2PLT04-COMPLETION-REPORT", text)

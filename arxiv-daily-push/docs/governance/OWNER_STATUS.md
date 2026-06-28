@@ -6,7 +6,7 @@ arxiv-daily-push 当前治理结论：实现一致性为 `VERIFIED`，方法/实
 
 ## 2. 本次运行改变了什么
 
-Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。本次已记录独立最终复审分配和 P0/P1 zero-proof artifact，并修复 `python -m arxiv_daily_push.cli` 模块入口，使 final-bundle prerequisite plan 可从模块命令复现；但 S2PLT04 completion、final command、handoff、signoff、manifest 与 production acceptance 仍阻断。
+Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。
 
 ## 3. 为什么重要
 
@@ -34,7 +34,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - next_task_id: `S2PMT07-S2PLT04-COMPLETION-REPORT`
 - responsible_role: `content_owner + engineering_owner + independent_final_reviewer`
 - acceptance_ids: `ACC-S2PMT07-FINAL-REVIEW`
-- unblock_condition: Provide real S2PLT04 completion report, final bundle manifest, independent signoff, final command execution, and next-agent handoff after the already validated independent reviewer assignment and P0/P1 zero-proof artifacts; do not claim production acceptance until all final-bundle gates pass.
+- unblock_condition: Provide real S2PLT04 completion report after S2PLT01/S2PLT02/S2PLT03 terminal evidence and P0/P1 zero-proof inputs are truthfully available; then proceed to final command execution, next-agent handoff, independent signoff, and final bundle manifest without claiming production acceptance until all final-bundle gates pass.
 
 ## 8. 九层 Assurance 状态
 
@@ -78,16 +78,16 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PMT07_ASSIGNMENT_AND_ZERO_PROOF_VALIDATED_S2PLT04_BLOCKED_NO_PRODUCTION`
+- release_gate: `S2PMT07_S2PLT04_COMPLETION_REPORT_DEPENDENCY_ORDER_FIXED_STILL_BLOCKED_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `0`
 - commit_bound_events: `4`
-- legacy_unbound_events: `241`
+- legacy_unbound_events: `246`
 - precommit_pending_events: `40`
-- pending_or_stale_events: `280`
+- pending_or_stale_events: `285`
 
 ## 15. UNKNOWN
 
@@ -95,15 +95,15 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 16. 技术元数据
 
-- source_base_commit: `b8c57d57729a94871af9da2cd6ec1e7381a0ff16`
+- source_base_commit: `9fbb0c4eb240a1782bae3db4db873ded37ac21f4`
 - source_tree_hash: `23334defdf6e168d709c223d61c0998e594f6852`
-- source_snapshot_hash: `sha256:44e89ad287c8ba102d3adf2bd34445fe92f72467236c875dba961377ec933d7a`
-- snapshot_event_time: `2026-06-29T08:46:12+10:00`
+- source_snapshot_hash: `sha256:fbb753580c6a34841d09662c4f7665503ceab6db3f93606566ba6e0d8a144b04`
+- snapshot_event_time: `2026-06-29T09:09:03+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PM / S2PMT07_ASSIGNMENT_AND_ZERO_PROOF_VALIDATED_S2PLT04_BLOCKED_NO_PRODUCTION`
+- phase/gate: `S2PM / S2PMT07_S2PLT04_COMPLETION_REPORT_DEPENDENCY_ORDER_FIXED_STILL_BLOCKED_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 
 - task_id: `S2PMT07-S2PLT04-COMPLETION-REPORT`
-- reason: Independent final reviewer assignment and P0/P1 zero-proof artifacts are now valid; S2PLT04 completion report is the next required blocked artifact before final command, handoff, signoff, manifest, or production acceptance can proceed.
+- reason: Independent final reviewer assignment and P0/P1 zero-proof artifacts are validated for the final-bundle chain; S2PLT04 completion report is the next required blocked artifact before final command, handoff, signoff, manifest, or production acceptance can proceed.
