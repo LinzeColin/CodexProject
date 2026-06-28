@@ -63,7 +63,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 11. Evidence Required To Unblock
 
 - evidence_required: S2PMT07 independent final review, inherited P0/P1 closure proof, S2PLT04 completion, governance validator, lean render proof, and no-production-side-effect evidence
-- principal_risks: 将 `validate-p0-p1-zero-proof` CLI validator、S2PLT02 delivery evidence ledger 或 2026-06-28 M4 watermark proof record 误读为 P0/P1 清零、S2PLT02 acceptance、真实两日运行、scheduler proof、S2PLT04 完成、S2PMT07 通过或生产 stop gate 解除
+- principal_risks: 将 `validate-final-command-execution` CLI validator、`validate-p0-p1-zero-proof` CLI validator、S2PLT02 delivery evidence ledger 或 2026-06-28 M4 watermark proof record 误读为 final commands executed、P0/P1 清零、S2PLT02 acceptance、真实两日运行、scheduler proof、S2PLT04 完成、S2PMT07 通过或生产 stop gate 解除
 - generated_from_refs: `arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml, arxiv-daily-push/docs/governance/delivery_tasks.yaml`
 
 ## 12. Model Formula Parameter Change
@@ -78,7 +78,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PMT07_P0_P1_ZERO_PROOF_CLI_VALIDATOR_READY_ARTIFACT_MISSING_NO_PRODUCTION`
+- release_gate: `S2PMT07_FINAL_COMMAND_EXECUTION_CLI_VALIDATOR_READY_ARTIFACT_MISSING_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
@@ -101,7 +101,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - snapshot_event_time: `2026-06-28T23:23:48+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PM / S2PMT07_P0_P1_ZERO_PROOF_CLI_VALIDATOR_READY_ARTIFACT_MISSING_NO_PRODUCTION`
+- phase/gate: `S2PM / S2PMT07_FINAL_COMMAND_EXECUTION_CLI_VALIDATOR_READY_ARTIFACT_MISSING_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 

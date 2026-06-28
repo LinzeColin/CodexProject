@@ -4439,3 +4439,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+  - task_id: "S2PMT07-FINAL-COMMAND-EXECUTION-CLI-VALIDATOR"
+    title: "S2PMT07 final command execution CLI validator"
+    phase: "S2PM"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-28T23:41:05+10:00"
+    summary: "Expose the existing final-command execution artifact validator through CLI without executing commands or creating live artifacts."
+    owner: "content_owner + engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_COMMAND_EXECUTION_CLI_VALIDATOR.md", "governance/run_manifests/ADP-S2PMT07-FINAL-COMMAND-EXECUTION-CLI-VALIDATOR-20260628.json"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_final_command_cli_red PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_cli.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_final_command_cli_green PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_cli.py -q"]
+    test_results: ["TDD red failed as expected because validate-final-command-execution was not a recognized CLI command", "focused CLI tests: 15 OK"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-FINAL-COMMAND-EXECUTION-CLI-VALIDATOR-20260628.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_COMMAND_EXECUTION_CLI_VALIDATOR.md", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_cli.py"]
+    result: "Final-command execution artifact validation is available through CLI; the real artifact is still missing and final bundle remains blocked."
+    risk: "A validator CLI can be misread as real final command execution unless command_execution_present, all_required_commands_passed, and final_commands_executed_by_payload remain false while the artifact is missing."
+    rollback: "Revert CLI parser/dispatcher changes, focused regression tests, phase record, manifest, traceability row, delivery task, event records, generated views, and three base records; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

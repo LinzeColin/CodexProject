@@ -116,6 +116,7 @@ from .stage2_final_gate import (
     S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_PATH,
     S2PMT07_P0_P1_ZERO_PROOF_ARTIFACT_PATH,
     build_final_acceptance_bundle_readiness_state,
+    build_final_command_execution_validation_state,
     build_independent_final_closure_decision_owner_packet_state,
     build_independent_final_reviewer_assignment_owner_packet_state,
     build_independent_final_reviewer_assignment_validation_state,
@@ -1186,6 +1187,17 @@ def build_parser() -> argparse.ArgumentParser:
         help="Path to FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json.",
     )
     p0_p1_zero_proof.add_argument("--json", action="store_true", help="Print JSON validation state.")
+
+    final_command_execution = subparsers.add_parser(
+        "validate-final-command-execution",
+        help="Validate the S2PMT07 final-command execution artifact without production side effects.",
+    )
+    final_command_execution.add_argument(
+        "--path",
+        default="FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json",
+        help="Path to FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json.",
+    )
+    final_command_execution.add_argument("--json", action="store_true", help="Print JSON validation state.")
 
     final_reviewer_assignment_owner_packet = subparsers.add_parser(
         "build-final-reviewer-assignment-owner-packet",
@@ -3398,6 +3410,18 @@ def main(argv: list[str] | None = None) -> int:
         artifact_path = Path(args.path)
         payload = load_json_mapping(artifact_path) if artifact_path.exists() else None
         report = build_p0_p1_zero_proof_artifact_validation_state(payload)
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- artifact_path: {report.get('artifact_path')}")
+            for error in report.get("validation_errors", []):
+                print(f"- error: {error}")
+        return 0 if report["status"] == "pass" else 2
+    if args.command == "validate-final-command-execution":
+        artifact_path = Path(args.path)
+        payload = load_json_mapping(artifact_path) if artifact_path.exists() else None
+        report = build_final_command_execution_validation_state(payload)
         if args.json:
             print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
         else:
