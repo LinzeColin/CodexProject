@@ -21,12 +21,20 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 243
+- task_count: 244
 - acceptance_count: 127
 
 ## Delivery Tasks
 
 The machine-readable task source is `delivery_tasks.yaml`.
+
+## 2026-06-28 22:44:37 Australia/Sydney - S2PMT07 Final Bundle Readiness CLI
+
+- `S2PMT07-FINAL-BUNDLE-READINESS-CLI` exposes `adp validate-final-acceptance-bundle --repo-root . --json`.
+- The command reports the existing fail-closed final acceptance bundle readiness state and returns blocked/exit 2 while required live artifacts are missing.
+- The command recognizes committed `FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json` as present, but manifest, independent reviewer assignment, P0/P1 zero proof, S2PLT04 completion report, independent signoff, final command execution, and next-agent handoff remain missing.
+- This is not a reviewer assignment, not P0/P1 closure, not S2PLT04 completion, not final bundle acceptance, and not production acceptance.
+- No SMTP, scheduler, Release, restore, schema/DB, source/ranking, CURRENT/V7, DAILY_OPERATION, or integrated production acceptance side effect is claimed.
 
 ## 2026-06-28 22:23:15 Australia/Sydney - S2PMT07 Final Bundle Template Placeholder Gate
 

@@ -4379,3 +4379,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+  - task_id: "S2PMT07-FINAL-BUNDLE-READINESS-CLI"
+    title: "S2PMT07 final bundle readiness CLI"
+    phase: "S2PM"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-28T22:44:37+10:00"
+    summary: "Expose a fail-closed CLI command for current S2PMT07 final acceptance bundle readiness without creating live artifacts."
+    owner: "content_owner + engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_READINESS_CLI.md", "governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-READINESS-CLI-20260628.json"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_final_bundle_cli_red PYTHONPATH=src python3 -B -m unittest tests.test_cli.CliTests.test_validate_final_acceptance_bundle_json_command_blocks_without_live_artifacts -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_final_bundle_cli_green2 PYTHONPATH=src python3 -B -m unittest tests.test_cli.CliTests.test_validate_final_acceptance_bundle_json_command_blocks_without_live_artifacts -q"]
+    test_results: ["TDD red failed as expected because validate-final-acceptance-bundle was not a recognized CLI command", "focused CLI readiness regression test: 1 OK"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-READINESS-CLI-20260628.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_READINESS_CLI.md", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_cli.py"]
+    result: "Final acceptance bundle readiness is available through CLI and returns blocked/exit 2 while required live artifacts are missing."
+    risk: "A structurally valid readiness payload can be misread as final bundle pass unless status and exit code stay blocked while artifacts are missing."
+    rollback: "Revert CLI parser/dispatcher changes, focused regression test, phase record, manifest, traceability row, delivery task, event records, generated views, and three base records; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

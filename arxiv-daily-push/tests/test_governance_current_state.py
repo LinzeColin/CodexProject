@@ -30,18 +30,17 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn(f"- Current task: `{expected_task}`", current_state)
         self.assertIn(f"### `{current_iteration}`", ledger)
 
-    def test_s2pmt07_current_state_summary_describes_final_bundle_template_placeholder_gate(self) -> None:
+    def test_s2pmt07_current_state_summary_describes_final_bundle_readiness_cli(self) -> None:
         ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
-            "S2PMT07_FINAL_BUNDLE_TEMPLATE_PLACEHOLDER_GATE_READY_ARTIFACTS_MISSING_NO_PRODUCTION",
+            "S2PMT07_FINAL_BUNDLE_READINESS_CLI_READY_ARTIFACTS_MISSING_NO_PRODUCTION",
             current_state,
         )
-        self.assertIn("S2PMT07-FINAL-BUNDLE-TEMPLATE-PLACEHOLDER-GATE", current_state)
-        self.assertIn("REPLACE_WITH", current_state)
-        self.assertIn("RECOMPUTE_WITH", current_state)
-        self.assertIn("all S2PMT07 final-bundle artifact validators", current_state)
+        self.assertIn("S2PMT07-FINAL-BUNDLE-READINESS-CLI", current_state)
+        self.assertIn("validate-final-acceptance-bundle", current_state)
+        self.assertIn("readiness_validation_errors=[]", current_state)
         self.assertIn("independent_final_reviewer_assignment.json", current_state)
         self.assertIn("p0_p1_zero_proof.json", current_state)
         self.assertIn("s2plt04_completion_report.json", current_state)
@@ -50,9 +49,7 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("independent_final_reviewer_assignment_missing", current_state)
         self.assertIn("P0=8", current_state)
         self.assertIn("P1=37", current_state)
-        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/templates/", current_state)
         self.assertIn("no_production_side_effects.json", current_state)
-        self.assertIn("only one sub-artifact", current_state)
         self.assertIn("independent review pass", current_state)
         self.assertNotIn("M4 watermark proof record", current_state)
         self.assertNotIn("m4_watermark_correct=true", current_state)

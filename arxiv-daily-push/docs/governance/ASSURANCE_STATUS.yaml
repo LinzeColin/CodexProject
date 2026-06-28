@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260628-ADP-S2PMT07-FINAL-BUNDLE-TEMPLATE-PLACEHOLDER-GATE"
+as_of_event_id: "EVENT-20260628-ADP-S2PMT07-FINAL-BUNDLE-READINESS-CLI"
 source_snapshot_hash: "sha256:a68baa09e7ce2df698c1f653a64a9db8dea11b07ba731497245ee261d349151a"
 source_base_commit: "9fbb0c4eb240a1782bae3db4db873ded37ac21f4"
 source_tree_hash: "23334defdf6e168d709c223d61c0998e594f6852"
-snapshot_event_time: "2026-06-28T22:23:15+10:00"
+snapshot_event_time: "2026-06-28T22:44:37+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -66,7 +66,7 @@ dimensions:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "BLOCKED_PRECHECK"
-  release_gate: "S2PMT07_FINAL_BUNDLE_TEMPLATE_PLACEHOLDER_GATE_READY_ARTIFACTS_MISSING_NO_PRODUCTION"
+  release_gate: "S2PMT07_FINAL_BUNDLE_READINESS_CLI_READY_ARTIFACTS_MISSING_NO_PRODUCTION"
   blocker_ids:
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
