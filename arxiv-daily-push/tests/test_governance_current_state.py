@@ -30,21 +30,22 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn(f"- Current task: `{expected_task}`", current_state)
         self.assertIn(f"### `{current_iteration}`", ledger)
 
-    def test_s2pmt07_current_state_summary_describes_assignment_artifact_intake(self) -> None:
+    def test_s2pmt07_current_state_summary_describes_assignment_hard_gate(self) -> None:
         ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
-            "S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_INTAKE_READY_FINAL_BUNDLE_STILL_BLOCKED",
+            "S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_HARD_GATE_BLOCKS_FINAL_BUNDLE",
             current_state,
         )
-        self.assertIn("S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-ARTIFACT-INTAKE", current_state)
+        self.assertIn("S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-HARD-GATE", current_state)
         self.assertIn("independent_final_reviewer_assignment.json", current_state)
+        self.assertIn("directory-level final bundle artifact validation passes", current_state)
         self.assertIn("assignment validation remains blocked", current_state)
         self.assertIn("FINAL_ACCEPTANCE_BUNDLE/templates/", current_state)
         self.assertIn("no_production_side_effects.json", current_state)
         self.assertIn("only present passing artifact", current_state)
-        self.assertIn("final bundle remains blocked", current_state)
+        self.assertIn("final bundle readiness remains blocked", current_state)
         self.assertIn("independent final review", current_state)
         self.assertNotIn("M4 watermark proof record", current_state)
         self.assertNotIn("m4_watermark_correct=true", current_state)

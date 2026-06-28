@@ -2822,6 +2822,54 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(state["daily_operation_enabled"])
         self.assertEqual(validate_final_acceptance_bundle_readiness_state(state), [])
 
+    def test_final_acceptance_bundle_readiness_requires_independent_reviewer_assignment_even_when_artifacts_pass(self) -> None:
+        with TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            bundle_dir = root / "FINAL_ACCEPTANCE_BUNDLE"
+            handoff_dir = root / "HANDOFF"
+            bundle_dir.mkdir()
+            handoff_dir.mkdir()
+            bundle_payloads = {
+                "manifest.json": self._valid_final_acceptance_bundle_manifest_payload(),
+                "p0_p1_zero_proof.json": self._valid_zero_proof_payload(),
+                "s2plt04_completion_report.json": self._valid_s2plt04_completion_report_payload(),
+                "independent_review_signoff.yaml": self._valid_independent_review_signoff_payload(),
+                "final_command_execution.json": self._valid_final_command_execution_payload(),
+                "no_production_side_effects.json": self._valid_no_production_side_effect_attestation_payload(),
+            }
+            for filename, payload in bundle_payloads.items():
+                (bundle_dir / filename).write_text(
+                    json.dumps(payload, ensure_ascii=False, indent=2),
+                    encoding="utf-8",
+                )
+            (handoff_dir / "00_下一Agent先读.md").write_text(
+                json.dumps(self._valid_next_agent_handoff_payload(), ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
+
+            state = build_final_acceptance_bundle_readiness_state(
+                repo_root=root,
+                manifest=bundle_payloads["manifest.json"],
+                p0_p1_zero_proof=bundle_payloads["p0_p1_zero_proof.json"],
+                s2plt04_completion_report=bundle_payloads["s2plt04_completion_report.json"],
+                independent_review_signoff=bundle_payloads["independent_review_signoff.yaml"],
+                final_command_execution=bundle_payloads["final_command_execution.json"],
+                no_production_side_effect_attestation=bundle_payloads["no_production_side_effects.json"],
+                next_agent_handoff=self._valid_next_agent_handoff_payload(),
+            )
+
+        self.assertEqual(state["final_acceptance_bundle_artifact_validation"]["status"], "pass")
+        self.assertEqual(state["independent_final_reviewer_assignment_validation"]["status"], "blocked")
+        self.assertFalse(
+            state["available_prebundle_evidence"]["INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION"]
+        )
+        self.assertEqual(state["status"], "blocked")
+        self.assertFalse(state["bundle_present"])
+        self.assertIn("independent_final_reviewer_assignment_missing", state["blocking_reasons"])
+        self.assertFalse(state["production_acceptance_claimed"])
+        self.assertFalse(state["integrated_production_accepted"])
+        self.assertEqual(validate_final_acceptance_bundle_readiness_state(state), [])
+
     def test_independent_final_reviewer_assignment_artifact_validator_fails_closed_on_missing_self_review_or_production_flags(self) -> None:
         state = build_independent_final_reviewer_assignment_validation_state(None)
 

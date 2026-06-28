@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-HARD-GATE",
+  "task_ids": [
+    "S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-HARD-GATE",
+    "S2PMT07",
+    "ACC-S2PMT07-FINAL-REVIEW"
+  ],
+  "iteration_id": "ITER-20260628-ADP-S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-HARD-GATE",
+  "phase": "S2PM",
+  "generated_at": "2026-06-28T20:10:59+10:00",
+  "base_commit": "e512eec0a8d5484c0d23a8096352d48b76519b95",
+  "result": "assignment_hard_gate_blocks_final_bundle_without_artifact",
+  "fact_level": "EXTRACTED",
+  "summary": "S2PMT07 final bundle readiness now requires independent final reviewer assignment validation before top-level final bundle readiness can pass, even when directory-level artifact validation passes.",
+  "assignment_artifact_path": "FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json",
+  "assignment_artifact_present": false,
+  "assignment_validation_status": "blocked",
+  "assignment_validation_state_hash": "64c58949e427fb3da7a67aea916258f852c44ec82fd114ce78508902b5cefe9e",
+  "final_bundle_readiness_state_hash": "88b03692e40784896285efc7803a7d71f5751dbf77a94656f11e7863b369730f",
+  "final_acceptance_bundle_artifact_validation_state_hash": "dc8d620f3b3771a37c6d3ab314a6c9780ef5e1f6d28e6aa4d092928afff387d5",
+  "hard_gate_blocker": "independent_final_reviewer_assignment_missing",
+  "inherited_v7_1_open_p0_findings": 8,
+  "inherited_v7_1_open_p1_findings": 37,
+  "s2plt04_completed": false,
+  "final_acceptance_bundle_present": false,
+  "production_acceptance_claimed": false,
+  "integrated_production_accepted": false,
+  "stage2_integrated_production_accepted": false,
+  "daily_operation_enabled": false,
+  "real_smtp_sent": false,
+  "real_smtp_send_enabled": false,
+  "scheduler_enabled": false,
+  "scheduler_install_enabled": false,
+  "release_uploaded": false,
+  "release_packaging_enabled": false,
+  "production_restore_enabled": false,
+  "production_restore_executed": false,
+  "public_schema_changed": false,
+  "db_migration_executed": false,
+  "production_queue_mutated": false,
+  "source_adapter_changed": false,
+  "source_or_board_changed": false,
+  "ranking_algorithm_changed": false,
+  "current_pointer_changed": false,
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false,
+  "mail_production_code_changed": false,
+  "smtp_changed": false,
+  "scheduler_changed": false,
+  "release_changed": false,
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_HARD_GATE.md",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py",
+    "arxiv-daily-push/tests/test_stage2_final_gate.py"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_assignment_hard_gate_red3 PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -k test_final_acceptance_bundle_readiness_requires_independent_reviewer_assignment_even_when_artifacts_pass -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_assignment_hard_gate_green1 PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -k test_final_acceptance_bundle_readiness_requires_independent_reviewer_assignment_even_when_artifacts_pass -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_assignment_hard_gate_final_gate2 PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q"
+  ],
+  "test_results": [
+    "TDD red failed as expected because directory-level artifact validation passed but top-level readiness incorrectly passed without assignment validation",
+    "target hard-gate regression test OK",
+    "focused final-gate tests: 77 OK before governance sync"
+  ],
+  "branch_cleanup": {
+    "branch_or_pr_created_by_this_run": false,
+    "branches_deleted_by_this_run": [],
+    "branches_retained_by_this_run": [],
+    "closeout_recheck_required": true,
+    "note": "No branch or PR was created by this run. Closeout must recheck GitHub open PR count and ADP/arxiv/s2p remote branch scan before push."
+  },
+  "risks": [
+    "A directory-level final bundle artifact validation pass can otherwise be misread as final bundle readiness without a real independent final reviewer assignment.",
+    "The current assignment artifact is still missing; owner/coordinator must supply a real independent reviewer assignment before final review can proceed."
+  ],
+  "rollback": "Revert assignment hard-gate aggregation, focused regression test, phase record, run manifest, traceability/delivery/event records, generated views, and three base records; no runtime production state was changed."
+}
