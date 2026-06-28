@@ -5668,6 +5668,9 @@ models:
       - "PARAM-ADP-1055"
       - "PARAM-ADP-1056"
       - "PARAM-ADP-1057"
+      - "PARAM-ADP-1058"
+      - "PARAM-ADP-1059"
+      - "PARAM-ADP-1060"
     inputs:
       - "S2PLT01 acceptance state"
       - "two consecutive real natural day evidence"
@@ -5697,6 +5700,8 @@ models:
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_DELIVERY_EVIDENCE_LEDGER.md"
       - "governance/run_manifests/ADP-S2PLT02-M4-WATERMARK-PROOF-20260628.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_M4_WATERMARK_PROOF.md"
+      - "governance/run_manifests/ADP-S2PLT02-M4-WATERMARK-PROOF-RECORD-20260628.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_M4_WATERMARK_PROOF_RECORD.md"
 
   -
     model_id: "MOD-ADP-116"

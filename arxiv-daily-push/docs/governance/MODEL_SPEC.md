@@ -7,13 +7,14 @@ machine_summary:
 
 - model_count: 117
 - formula_count: 119
-- parameter_count: 1057
+- parameter_count: 1060
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
 ## Governance Notes
 
-- `S2PLT02-M4-WATERMARK-PROOF` adds `PARAM-ADP-1054` through `PARAM-ADP-1057` under `MOD-ADP-104` / `FORM-ADP-106`. It requires future S2PLT02 M4 correctness to be backed by explicit proof records that bind M4 to same-cycle M1/M2/M3 terminal mail records, match delivery ledger refs, derive a ready M4 watermark, and keep all production/CURRENT/V7 side-effect flags false. Current status remains blocked because service date `2026-06-28` has no explicit proof record; no S2PLT02 acceptance, SMTP, scheduler, Release, production restore, schema/DB/queue/source/ranking/CURRENT/V7 change, P0/P1 closure, DAILY_OPERATION, or integrated production acceptance is claimed.
+- `S2PLT02-M4-WATERMARK-PROOF-RECORD` adds `PARAM-ADP-1058` through `PARAM-ADP-1060` under `MOD-ADP-104` / `FORM-ADP-106`. It binds service date `2026-06-28` to an explicit proof record at `governance/run_manifests/ADP-S2PLT02-M4-WATERMARK-PROOF-RECORD-20260628.json`, generated at `2026-06-28T01:26:41Z` for cycle `2026-06-28`; the record binds M4 to same-cycle M1/M2/M3 terminal mail records and derives a ready M4 watermark while all production/CURRENT/V7 side-effect flags remain false. S2PLT02 remains blocked because S2PLT01 acceptance, the second real natural day, eight total emails, real scheduler proof, inherited P0/P1 zero proof, S2PLT04, final bundle, and S2PMT07 are still missing; no S2PLT02 acceptance, SMTP, scheduler, Release, production restore, schema/DB/queue/source/ranking/CURRENT/V7 change, P0/P1 closure, DAILY_OPERATION, or integrated production acceptance is claimed.
+- `S2PLT02-M4-WATERMARK-PROOF` adds `PARAM-ADP-1054` through `PARAM-ADP-1057` under `MOD-ADP-104` / `FORM-ADP-106`. It requires future S2PLT02 M4 correctness to be backed by explicit proof records that bind M4 to same-cycle M1/M2/M3 terminal mail records, match delivery ledger refs, derive a ready M4 watermark, and keep all production/CURRENT/V7 side-effect flags false. The validator now has a 2026-06-28 proof record, but S2PLT02 remains blocked by its remaining two-day, scheduler, dependency, inherited P0/P1, S2PLT04, final bundle, and S2PMT07 gates.
 - `S2PLT02-DELIVERY-EVIDENCE-LEDGER` adds `PARAM-ADP-1051`
   through `PARAM-ADP-1053` under `MOD-ADP-104` / `FORM-ADP-106`, and
   updates `PARAM-ADP-892` with `duplicate_emails_found`. It records a
@@ -1194,7 +1195,7 @@ Uncovered planned scenarios:
 ## S2PLT02 Live 2D Precheck
 
 - `MOD-ADP-104` / `FORM-ADP-106` define the fail-closed S2PLT02 two-day live-run readiness precheck.
-- Passing S2PLT02 is not claimed by this run. The current precheck remains blocked because S2PLT01 acceptance is not proven, two consecutive real natural days are not proven, 8 real M1-M4 emails are not proven, real scheduler and SMTP proof are missing, explicit M4 watermark proof is not present, and inherited V7.1 P0=8 and P1=37 remain open.
+- Passing S2PLT02 is not claimed by this run. The current precheck remains blocked because S2PLT01 acceptance is not proven, two consecutive real natural days are not proven, 8 real M1-M4 emails are not proven, real scheduler and SMTP proof are missing, the second real natural day, four additional emails, real scheduler proof, and inherited V7.1 P0=8 and P1=37 remain open.
 - S2PLT02 precheck does not start live operation, accept S2PLT02, enable SMTP, install scheduler, upload Release assets, execute production restore, migrate DB/public schema, mutate production queues, change source adapters or ranking, change CURRENT or V7.1/V7.2 contracts, close inherited P0/P1, enable DAILY_OPERATION, or claim integrated production acceptance.
 
 ## S2PLT04 Integration Candidate Precheck

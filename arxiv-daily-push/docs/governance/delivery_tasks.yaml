@@ -3997,3 +3997,24 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+
+  - task_id: "S2PLT02-M4-WATERMARK-PROOF-RECORD"
+    phase: "S2PL"
+    objective: "Bind the current 2026-06-28 delivery-ledger service date to an explicit same-cycle M4 watermark proof record while keeping S2PLT02 blocked."
+    scope: "S2PLT02 M4 watermark proof default record, focused proof-record regression test, phase record, run manifest, traceability row, semantic parameter refresh, current status views, user-center traceability page, and three base files."
+    non_scope: "No new SMTP send, no scheduler install or enablement, no Release upload, no public schema or DB migration, no source/ranking change, no CURRENT/V7 contract change, no P0/P1 closure, no S2PLT02 acceptance, no S2PLT04 completion, no DAILY_OPERATION, and no integrated production acceptance."
+    status: "completed"
+    dependencies: ["S2PLT02-M4-WATERMARK-PROOF", "S2PLT02-DELIVERY-EVIDENCE-LEDGER", "LOCAL-DAILY-M1-M4-RESEND-EXECUTION", "S2PMT07"]
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_M4_WATERMARK_PROOF_RECORD.md", "governance/run_manifests/ADP-S2PLT02-M4-WATERMARK-PROOF-RECORD-20260628.json", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
+    acceptance_ids: ["ACC-S2PLT02-2D"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_m4_proof_record_red PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_m4_proof_record_green2 PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q"]
+    test_results: ["TDD red failed because S2PLT02_M4_WATERMARK_PROOF_RECORD_REF was not exported", "focused stage2 final-gate tests: 66 OK before governance sync"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PLT02-M4-WATERMARK-PROOF-RECORD-20260628.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_M4_WATERMARK_PROOF_RECORD.md", "governance/run_manifests/ADP-S2PLT02-DELIVERY-EVIDENCE-LEDGER-20260628.json", "governance/run_manifests/ADP-LOCAL-DAILY-M1-M4-RESEND-EXECUTION-20260628.json"]
+    result: "S2PLT02 M4 watermark proof record is ready for service date 2026-06-28, while S2PLT02 remains blocked by S2PLT01, second natural day, eight emails, scheduler proof, inherited P0/P1, S2PLT04, final bundle, and S2PMT07."
+    risk: "M4 proof record can be misread as S2PLT02 completion; all acceptance and production flags remain false."
+    rollback: "Revert S2PLT02 M4 proof-record helper/tests and governance records; no runtime production state was changed by this task."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

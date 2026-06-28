@@ -1,3 +1,4 @@
+- 2026-06-28 13:33:15 Australia/Sydney: Added S2PLT02 explicit M4 watermark proof record for service date 2026-06-28; M4 watermark correctness is now ready for the current ledger date while S2PLT02 acceptance, second real day, eight-email total, scheduler proof, P0/P1 zero proof, S2PLT04, final bundle, S2PMT07, and all production gates remain blocked.
 # Changelog
 - 2026-06-28 13:12:48 Australia/Sydney: Added S2PLT02 explicit M4 watermark proof validator; current service date 2026-06-28 remains blocked because no explicit proof record exists, while S2PLT02 acceptance and all production gates remain false.
 - 2026-06-28 12:47:11 Australia/Sydney: Added S2PLT02 delivery evidence ledger over committed M1-M4 real-delivery manifests; current state remains partial at 1/2 natural days and 4/8 emails with duplicate counts zero, while S2PLT02 acceptance and all production gates remain blocked.

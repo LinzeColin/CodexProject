@@ -34,12 +34,12 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - next_task_id: `S2PLT02`
 - responsible_role: `content_owner + product_owner`
 - acceptance_ids: `ACC-S2PLT02-2D`
-- unblock_condition: S2PLT02 now has a delivery evidence ledger and an explicit M4 watermark proof validator; the current 2026-06-28 service date still lacks explicit watermark proof, and still needs a second real natural day, eight total emails, real scheduler proof, explicit M4 watermark proof, S2PLT01 acceptance, inherited P0/P1 zero proof, S2PLT04 completion, and S2PMT07 final review before any Stage 2 production acceptance claim.
+- unblock_condition: S2PLT02 now has a delivery evidence ledger and an explicit same-cycle M4 watermark proof record for service date 2026-06-28; it still needs a second real natural day, eight total emails, real scheduler proof, S2PLT01 acceptance, inherited P0/P1 zero proof, S2PLT04 completion, and S2PMT07 final review before any Stage 2 production acceptance claim.
 
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `PARTIAL` (1035/1040 active parameters, 119/119 active formulas)
+- implementation_congruence: `PARTIAL` (1038/1043 active parameters, 119/119 active formulas)
 - parameter_source_quality: `PARTIAL`
 - methodological_rationale: `VERIFIED`
 - empirical_validation: `VERIFIED`
@@ -63,7 +63,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 11. Evidence Required To Unblock
 
 - evidence_required: S2PMT07 independent final review, inherited P0/P1 closure proof, S2PLT04 completion, governance validator, lean render proof, and no-production-side-effect evidence
-- principal_risks: 将 2026-06-28 单日四封 delivery ledger 或 M4 watermark validator 误读为 S2PLT02 acceptance、真实两日运行、scheduler 证明、显式 M4 watermark 证明，或绕过 S2PMT07 独立复审和生产 stop gate
+- principal_risks: 将 2026-06-28 单日四封 delivery ledger 和 M4 watermark proof record 误读为 S2PLT02 acceptance、真实两日运行、scheduler 证明、P0/P1 关闭，或绕过 S2PMT07 独立复审和生产 stop gate
 - generated_from_refs: `arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml, arxiv-daily-push/docs/governance/delivery_tasks.yaml`
 
 ## 12. Model Formula Parameter Change
@@ -71,14 +71,14 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - model_count: `117`
 - total_formulas: `119`
 - active_formulas: `119`
-- total_parameters: `1057`
-- active_parameters: `1040`
+- total_parameters: `1060`
+- active_parameters: `1043`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PLT02_M4_WATERMARK_PROOF_BLOCKED_NO_ACCEPTANCE`
+- release_gate: `S2PLT02_M4_WATERMARK_PROOF_READY_S2PLT02_BLOCKED_NO_ACCEPTANCE`
 
 ## 14. Evidence Freshness
 
@@ -87,7 +87,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - commit_bound_events: `4`
 - legacy_unbound_events: `210`
 - precommit_pending_events: `40`
-- pending_or_stale_events: `249`
+- pending_or_stale_events: `250`
 
 ## 15. UNKNOWN
 
@@ -98,10 +98,10 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - source_base_commit: `12e91a8e1b84fe29724f43229131bd43f8fa31cd`
 - source_tree_hash: `8caef1969ddfe23755890506daa0d02e6f6df81f`
 - source_snapshot_hash: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
-- snapshot_event_time: `2026-06-28T13:12:48+10:00`
+- snapshot_event_time: `2026-06-28T13:33:15+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PL / S2PLT02_M4_WATERMARK_PROOF_BLOCKED_NO_ACCEPTANCE`
+- phase/gate: `S2PL / S2PLT02_M4_WATERMARK_PROOF_READY_S2PLT02_BLOCKED_NO_ACCEPTANCE`
 
 ## 17. Next Unique Task
 

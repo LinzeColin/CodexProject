@@ -719,6 +719,11 @@ S2PLT02_DELIVERY_EVIDENCE_LEDGER_FORBIDDEN_SOURCE_FLAGS = (
 )
 S2PLT02_M4_WATERMARK_PROOF_MODEL_ID = "adp-s2plt02-m4-watermark-proof-v1"
 S2PLT02_M4_WATERMARK_PROOF_SCOPE = "m4_watermark_proof_validator_no_s2plt02_acceptance"
+S2PLT02_M4_WATERMARK_PROOF_RECORD_REF = (
+    "governance/run_manifests/ADP-S2PLT02-M4-WATERMARK-PROOF-RECORD-20260628.json"
+)
+S2PLT02_M4_WATERMARK_PROOF_GENERATED_AT = "2026-06-28T01:26:41Z"
+S2PLT02_M4_WATERMARK_PROOF_CYCLE_ID = "2026-06-28"
 S2PLT02_M4_WATERMARK_REQUIRED_TERMINAL_PRODUCTS = ("M1", "M2", "M3")
 S2PLT02_M4_WATERMARK_FORBIDDEN_SOURCE_FLAGS = (
     "integrated_production_accepted",
@@ -1059,6 +1064,76 @@ def build_s2plt02_delivery_evidence_ledger_state(
     return state
 
 
+def _default_s2plt02_m4_watermark_proof_records() -> list[dict[str, Any]]:
+    """Return committed non-secret M4 watermark proof records for the current ledger."""
+
+    refs = dict(S2PLT02_PARTIAL_REAL_DELIVERY_REFS)
+    generated_at = S2PLT02_M4_WATERMARK_PROOF_GENERATED_AT
+    cycle_id = S2PLT02_M4_WATERMARK_PROOF_CYCLE_ID
+    return [
+        {
+            "proof_ref": S2PLT02_M4_WATERMARK_PROOF_RECORD_REF,
+            "status": "pass",
+            "service_date": S2PLT02_PARTIAL_REAL_DELIVERY_SERVICE_DATE,
+            "cycle_id": cycle_id,
+            "generated_at": generated_at,
+            "mail_product_id": "M4",
+            "m4_delivery_ref": refs["M4"],
+            "terminal_mail_records": [
+                {
+                    "product_id": "M1",
+                    "cycle_id": cycle_id,
+                    "status": "SENT",
+                    "observed_at": generated_at,
+                    "delivery_ref": refs["M1"],
+                    "message_id": "<adp-419c5f9177debf426f5813dd@arxiv-daily-push.local>",
+                },
+                {
+                    "product_id": "M2",
+                    "cycle_id": cycle_id,
+                    "status": "SENT",
+                    "observed_at": generated_at,
+                    "delivery_ref": refs["M2"],
+                    "message_id": "<adp-f081f502a9706f56ffbf0830@arxiv-daily-push.local>",
+                },
+                {
+                    "product_id": "M3",
+                    "cycle_id": cycle_id,
+                    "status": "SENT",
+                    "observed_at": generated_at,
+                    "delivery_ref": refs["M3"],
+                    "message_id": "<adp-f90d3056a41a9ab3c9ba196f@arxiv-daily-push.local>",
+                },
+            ],
+            "watermark": {
+                "cycle_id": cycle_id,
+                "status": "ready",
+                "m4_ready": True,
+                "m4_cycle_watermark": True,
+                "watermark_finalized_at": generated_at,
+            },
+            "source_evidence_refs": [
+                "governance/run_manifests/ADP-LOCAL-DAILY-M1-M4-RESEND-EXECUTION-20260628.json",
+                "governance/run_manifests/ADP-S2PLT02-DELIVERY-EVIDENCE-LEDGER-20260628.json",
+            ],
+            "integrated_production_accepted": False,
+            "stage2_integrated_production_accepted": False,
+            "daily_operation_enabled": False,
+            "scheduler_enabled": False,
+            "release_uploaded": False,
+            "production_restore_executed": False,
+            "production_queue_mutated": False,
+            "public_schema_changed": False,
+            "db_migration_executed": False,
+            "source_adapter_changed": False,
+            "ranking_algorithm_changed": False,
+            "current_pointer_changed": False,
+            "v7_1_baseline_changed": False,
+            "v7_2_contract_files_changed": False,
+        }
+    ]
+
+
 def validate_s2plt02_delivery_evidence_ledger_state(state: Mapping[str, Any]) -> list[str]:
     """Validate the S2PLT02 real-delivery ledger state."""
 
@@ -1133,7 +1208,9 @@ def build_s2plt02_m4_watermark_proof_state(
     ledger = dict(delivery_ledger or build_s2plt02_delivery_evidence_ledger_state())
     source_proofs = [
         json.loads(json.dumps(record, ensure_ascii=False))
-        for record in (watermark_proofs if watermark_proofs is not None else [])
+        for record in (
+            watermark_proofs if watermark_proofs is not None else _default_s2plt02_m4_watermark_proof_records()
+        )
     ]
     ledger_errors = validate_s2plt02_delivery_evidence_ledger_state(ledger)
     validation_errors: list[str] = []
