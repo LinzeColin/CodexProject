@@ -3,8 +3,8 @@
   "backup_policy": "redacted_summary_only_no_raw_transcript_no_plaintext_secret",
   "day_count": 26,
   "error_event_count": 0,
-  "generated_at": "2026-06-28T21:41:00Z",
-  "message_count": 132319,
+  "generated_at": "2026-06-28T21:42:15Z",
+  "message_count": 132330,
   "range_end": "2026-06-28",
   "range_start": "2026-06-03",
   "recommendation_counts": {
@@ -20,22 +20,22 @@
   "schema_version": "codex_activity_snapshot.v1",
   "session_count": 401,
   "source": "real_codex_local_data",
-  "tool_call_count": 434174,
+  "tool_call_count": 434217,
   "top_tools": [
     {
-      "count": 191631,
+      "count": 191652,
       "name": "function_call_output"
     },
     {
-      "count": 160076,
+      "count": 160096,
       "name": "exec_command"
     },
     {
-      "count": 24455,
+      "count": 24456,
       "name": "apply_patch"
     },
     {
-      "count": 24454,
+      "count": 24455,
       "name": "custom_tool_call_output"
     },
     {
