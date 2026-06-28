@@ -164,8 +164,8 @@ class TestV022Stage5LedgerTaxonomy(unittest.TestCase):
 
         governance = importlib.import_module("pfi_v02.stage_v022_database_governance")
         catalog = governance.load_v022_parameter_catalog(ROOT / "config" / "pfi_parameters.yaml")
-        self.assertEqual(catalog["schema"], "PFIParametersV022Stage8")
-        self.assertEqual(catalog["current_stage"], "Stage 8 - 本地运行 Diff 与 Impacted Metrics")
+        self.assertEqual(catalog["schema"], "PFIParametersV022Stage9")
+        self.assertEqual(catalog["current_stage"], "Stage 9 - 可视化与 UI/UX")
         self.assertEqual(catalog["stage5_task_ids"], list(governance.V022_STAGE5_TASK_IDS))
         categories = catalog["parameters"]["consumption_categories"]
         self.assertIn("default_taxonomy", categories)

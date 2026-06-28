@@ -25,7 +25,7 @@ Roadmap 形态：`Stage -> Phase -> Task`
 | Stage 6 | 标签系统与自定义视图 | 本轮完成 | 标签注册、赋值、规则、默认/自定义标签、变更历史、标签报告和自定义视图。 |
 | Stage 7 | 模型公式、阈值与评分标准 | 本轮完成 | 置信度评分、消费、投资、现金流公式和现金流压力分。 |
 | Stage 8 | 本地运行 Diff 与 Impacted Metrics | 本轮完成 | dependency hash、diff 收紧、LLM 触发规则、中文 Codex Review Ticket 模板。 |
-| Stage 9 | 可视化与 UI/UX | 待 owner 开启 | 参数中心、Interconnection 可视化、现金流和 drilldown。 |
+| Stage 9 | 可视化与 UI/UX | 本轮完成 | 参数中心、Interconnection Map、Metric Dependency Graph、现金流可视化和 Metric Drilldown Debugger。 |
 | Stage 10 | 报告、建议与复盘 | 待 owner 开启 | 双消费口径报告、投资成本行为、建议评分生命周期。 |
 | Stage 11 | 测试与验证 | 待 owner 开启 | 金融逻辑、跨板块一致性、可视化一致性测试。 |
 | Stage 12 | 文档同步与交付 | 待 owner 开启 | 三基、审查 HTML、总结报告。 |
@@ -406,6 +406,68 @@ git diff --check -- PFI
 ```
 
 当前本地 closeout 结果：Stage 6 目标测试 `6 passed`；Stage 0-6 v0.2.2 回归 `51 passed`；完整 PFI pytest `209 passed`；治理 `errors 0 / warnings 0`；Web shell 语法和 `git diff --check -- PFI` 通过；App 入口验收 `29 pass / 0 fail / 2 info`；真实 8501 浏览器禁用词扫描 0 命中、console errors `0`；Stage 6 HTML 浏览器任务、表、默认标签组、自定义视图均可见，console errors `0`。
+
+## Stage 9 - 可视化与 UI/UX Task Lock
+
+| Task ID | Phase | 交付物 | 状态 |
+| --- | --- | --- | --- |
+| `S9-P1-T1` | Phase 9.1 | 参数中心页面/模块，覆盖货币、汇率、分类、标签、阈值、公式、置信度、现金流窗口 | 本轮完成 |
+| `S9-P1-T2` | Phase 9.1 | 参数中文说明，包含中文名、当前值、作用、影响范围、是否可修改 | 本轮完成 |
+| `S9-P1-T3` | Phase 9.1 | 参数变更影响预览，覆盖记录数、标签数、建议数、图表数 | 本轮完成 |
+| `S9-P2-T1` | Phase 9.2 | `docs/pfi_v022/INTERCONNECTION_MAP.md` Mermaid 图 | 本轮完成 |
+| `S9-P2-T2` | Phase 9.2 | `web/interconnection-map.html` 本地可点击关系图 | 本轮完成 |
+| `S9-P2-T3` | Phase 9.2 | 每个图表的数据状态字段 | 本轮完成 |
+| `S9-P3-T1` | Phase 9.3 | 现金流阶梯图，窗口为 `7/21/30/60/90/180/360` | 本轮完成 |
+| `S9-P3-T2` | Phase 9.3 | 现金流瀑布图，含当前现金、收入、退款、固定支出、弹性支出、信用卡、投资入金、投资回流 | 本轮完成 |
+| `S9-P3-T3` | Phase 9.3 | 储备金安全带，含绿色、黄色、红色 | 本轮完成 |
+| `S9-P3-T4` | Phase 9.3 | 投资入金挤压图，说明生活现金和储备金影响 | 本轮完成 |
+| `S9-P4-T1` | Phase 9.4 | 首页核心数字 drilldown：本月消费、投资资产、现金流窗口 | 本轮完成 |
+| `S9-P4-T2` | Phase 9.4 | 纳入、排除、调整说明 | 本轮完成 |
+| `S9-P4-T3` | Phase 9.4 | 置信度、匹配率、最后更新时间、计算耗时、缓存状态 | 本轮完成 |
+
+## Stage 9 Acceptance Criteria
+
+- 参数中心显示货币、汇率、分类、标签、阈值、公式、置信度、现金流窗口。
+- 每个参数显示中文名、当前值、作用、影响范围、是否可修改。
+- 参数变更影响预览显示可能影响的记录数、标签数、建议数、图表数。
+- Interconnection Map 以 Mermaid 图展示 `source -> raw -> normalized -> group -> event -> ledger -> metrics -> UI`。
+- `PFI/web/interconnection-map.html` 为 HTML 单文件可打开，不依赖外网。
+- HTML 可点击追踪数据源、事件类型、分类、标签、公式、影响板块。
+- 每个图表显示数据来源覆盖率、最近更新时间、参数版本、公式版本、汇率快照 ID、ledger_hash、interconnection_hash、是否存在未匹配记录、是否存在低置信记录、是否存在缓存、是否需要重算、UI 指标是否与报告一致。
+- 现金流阶梯图展示 7/21/30/60/90/180/360 天预测余额。
+- 现金流瀑布图展示当前现金、收入、退款、固定支出、弹性支出、信用卡、投资入金、投资回流。
+- 储备金安全带展示绿色、黄色、红色现金安全区间。
+- 投资入金挤压图显示投资入金对生活现金和储备金的影响。
+- Metric Drilldown Debugger 展示来源记录、公式、参数、排除项、抵消项、纳入、排除、调整和质量状态。
+
+## Stage 9 Stop Condition
+
+- 用户无法人工检查参数。
+- 只有代码变量名，没有中文解释。
+- 参数变更无法预估影响。
+- Interconnection 只有文字，没有 graph。
+- HTML 图不可点击或不可追踪。
+- 图表无法证明数据新鲜度。
+- HTML 依赖外部 CDN、远程脚本、远程字体或网络。
+- UI 只显示结果，不显示公式、参数和数据来源。
+- Stage 10 报告、建议与复盘被提前实现。
+
+当前检查结论：以上停止条件均未触发。Stage 9 交付物为本地纯 HTML、文档和合同模块；不改 v0.2.1 主 Web Shell UIUX 基线，不联网，不调用外部 LLM，不提前实现 Stage 10。
+
+## Stage 9 Validation
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pytest tests/test_v022_stage9_visualization_uiux.py -q -p no:cacheprovider
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pytest tests/test_v022_stage0_database_governance.py tests/test_pfi_parameters_consistency.py tests/test_v022_fx_effective_date.py tests/test_v022_stage3_source_account_profiles.py tests/test_v022_interconnection_no_double_count.py tests/test_v022_consumption_investment_outflow.py tests/test_v022_stage5_ledger_taxonomy.py tests/test_v022_stage6_tags_views.py tests/test_v022_stage7_formula_scoring.py tests/test_v022_stage8_runtime_diff.py tests/test_v022_stage9_visualization_uiux.py -q -p no:cacheprovider
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pytest tests -q -p no:cacheprovider
+node --check web/app/shell.js
+python3 ../scripts/validate_project_governance.py --project PFI
+git diff --check -- PFI
+```
+
+浏览器验收：打开 `PFI/web/interconnection-map.html`，点击 `data-map-node` 和 `data-drilldown-metric` 后详情区必须变化；页面必须离线可读且 console errors 为 0。
+
+当前本地 closeout 结果：Stage 9 目标测试 `8 passed`；Stage 0-9 v0.2.2 回归 `74 passed`；完整 PFI pytest `232 passed`；治理 `errors 0 / warnings 0`；Web shell 语法和 `git diff --check -- PFI` 通过；App 入口验收 `29 pass / 0 fail / 2 info`；Stage 9 HTML 浏览器验收模块缺失 `0`、状态字段渲染 `144`、console errors `0`、外部网络请求 `0`，截图 `/tmp/pfi-v022-stage9-html-verified.png`；真实 8501 PFI 入口验证 `PFI`、`首页总览`、`数据源与上传`、`AUD/CNY` 可见，Stage 9 审查页未进入主 UI，console errors `0`，截图 `/tmp/pfi-v022-stage9-app-verified.png`。
 
 ## Stage 7 - 模型公式、阈值与评分标准 Task Lock
 

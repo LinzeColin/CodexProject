@@ -188,7 +188,10 @@ class TestV022Stage8RuntimeDiff(unittest.TestCase):
             self.assertTrue(path.exists(), f"{path} must exist for Stage 8")
             text = path.read_text(encoding="utf-8")
             with self.subTest(path=path.name):
-                self.assertIn("Stage 8 - 本地运行 Diff 与 Impacted Metrics", text)
+                if path.name in {"STAGE8_RUNTIME_DIFF_IMPACTED_METRICS.md", "CODEX_REVIEW_TICKET_TEMPLATE.md"}:
+                    self.assertIn("Stage 8 - 本地运行 Diff 与 Impacted Metrics", text)
+                else:
+                    self.assertIn("Stage 9 - 可视化与 UI/UX", text)
                 self.assertIn("S8-P1-T1", text)
                 self.assertIn("P0 核心指标", text)
                 self.assertIn("P1 分析指标", text)
@@ -198,8 +201,8 @@ class TestV022Stage8RuntimeDiff(unittest.TestCase):
 
         governance = importlib.import_module("pfi_v02.stage_v022_database_governance")
         catalog = governance.load_v022_parameter_catalog(ROOT / "config" / "pfi_parameters.yaml")
-        self.assertEqual(catalog["schema"], "PFIParametersV022Stage8")
-        self.assertEqual(catalog["current_stage"], "Stage 8 - 本地运行 Diff 与 Impacted Metrics")
+        self.assertEqual(catalog["schema"], "PFIParametersV022Stage9")
+        self.assertEqual(catalog["current_stage"], "Stage 9 - 可视化与 UI/UX")
         self.assertEqual(catalog["stage8_task_ids"], list(governance.V022_STAGE8_TASK_IDS))
         self.assertFalse(catalog["parameters"]["runtime_refresh_policy"]["default_network_refresh"]["value"])
         self.assertEqual(

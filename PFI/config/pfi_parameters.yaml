@@ -1,9 +1,9 @@
 {
-  "schema": "PFIParametersV022Stage8",
+  "schema": "PFIParametersV022Stage9",
   "project_id": "PFI",
   "task_name": "PFI v0.2.2 E2E 逻辑优化",
   "parameter_version": "v0.2.2",
-  "current_stage": "Stage 8 - 本地运行 Diff 与 Impacted Metrics",
+  "current_stage": "Stage 9 - 可视化与 UI/UX",
   "canonical_parameter_file": "PFI/config/pfi_parameters.yaml",
   "machine_format": "JSON-compatible YAML",
   "uiux_baseline": "v0.2.1 HTML Web Shell",
@@ -2859,6 +2859,103 @@
         ],
         "user_editable": false
       }
+    },
+    "visualization_uiux": {
+      "description_zh": "Stage 9 - 可视化与 UI/UX 的本地 HTML、参数中心、关系图、现金流和指标 drilldown 参数。",
+      "local_html_path": {
+        "value": "PFI/web/interconnection-map.html",
+        "description_zh": "Stage 9 本地单文件 HTML 审查页路径。",
+        "impact_zh": "用于人工打开和浏览器行为验收。"
+      },
+      "local_html_external_network_allowed": {
+        "value": false,
+        "description_zh": "Stage 9 HTML 不允许依赖外部网络、CDN、远程脚本或远程字体。",
+        "impact_zh": "保证本机离线可验收。"
+      },
+      "required_modules": {
+        "value": [
+          "首页总览",
+          "参数中心",
+          "Interconnection Map",
+          "Metric Dependency Graph",
+          "消费分类与标签",
+          "投资模型",
+          "消费模型",
+          "现金流可视化",
+          "Runtime Diff Dashboard",
+          "Agent Review Queue",
+          "验收清单"
+        ],
+        "description_zh": "Milestone 7 要求在本地 HTML 中可见的模块。",
+        "impact_zh": "模块缺失会导致 Stage 9 验收失败。"
+      },
+      "data_status_fields": {
+        "value": [
+          "数据来源覆盖率",
+          "最近更新时间",
+          "参数版本",
+          "公式版本",
+          "汇率快照 ID",
+          "ledger_hash",
+          "interconnection_hash",
+          "是否存在未匹配记录",
+          "是否存在低置信记录",
+          "是否存在缓存",
+          "是否需要重算",
+          "UI 指标是否与报告一致"
+        ],
+        "description_zh": "每个图表和模块必须显示的数据新鲜度与一致性字段。",
+        "impact_zh": "用于证明 UI 指标不是不可追溯的静态结果。"
+      },
+      "parameter_center_domains": {
+        "value": [
+          "货币",
+          "汇率",
+          "分类",
+          "标签",
+          "阈值",
+          "公式",
+          "置信度",
+          "现金流窗口"
+        ],
+        "description_zh": "参数中心必须覆盖的人工检查域。",
+        "impact_zh": "用户可以检查参数、阈值、公式、分类、标签和影响范围。"
+      },
+      "cashflow_windows_days": {
+        "value": [
+          7,
+          21,
+          30,
+          60,
+          90,
+          180,
+          360
+        ],
+        "description_zh": "现金流阶梯图展示窗口。",
+        "impact_zh": "覆盖短中长期现金压力。"
+      },
+      "clickable_graph_nodes": {
+        "value": [
+          "数据源",
+          "事件类型",
+          "分类",
+          "标签",
+          "公式",
+          "影响板块"
+        ],
+        "description_zh": "Interconnection HTML 必须可点击追踪的节点类型。",
+        "impact_zh": "支持从数据源到 UI 指标的人工追踪。"
+      },
+      "parameter_impact_preview_fields": {
+        "value": [
+          "记录数",
+          "标签数",
+          "建议数",
+          "图表数"
+        ],
+        "description_zh": "参数变更影响预览必须展示的影响范围。",
+        "impact_zh": "避免参数变更前无法估计影响。"
+      }
     }
   },
   "formulas": [
@@ -3416,5 +3513,20 @@
     "S8-P3-T1",
     "S8-P3-T2",
     "S8-P3-T3"
+  ],
+  "stage9_task_ids": [
+    "S9-P1-T1",
+    "S9-P1-T2",
+    "S9-P1-T3",
+    "S9-P2-T1",
+    "S9-P2-T2",
+    "S9-P2-T3",
+    "S9-P3-T1",
+    "S9-P3-T2",
+    "S9-P3-T3",
+    "S9-P3-T4",
+    "S9-P4-T1",
+    "S9-P4-T2",
+    "S9-P4-T3"
   ]
 }
