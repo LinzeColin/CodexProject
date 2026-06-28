@@ -2,7 +2,7 @@
 
 ## Interconnection Matrix
 
-本矩阵定义同一笔钱如何从来源记录进入真实经济事件。核心规则是：可多处展示，但同一 `economic_event_id` 在同一指标口径只能计算一次；同一 `interconnection_group_id` 可包含多来源记录，但不得重复计入核心金额。
+本矩阵定义同一笔钱如何从来源记录进入真实经济事件。核心规则是：可多处展示，但同一 `interconnection_group_id + event_type` 在同一指标口径只能计算一次；缺少关联组时，同一 `economic_event_id + event_type` 只能计算一次。同一 `interconnection_group_id` 可包含多来源记录，但不得重复计入核心金额。
 
 | event_type | 中文名称 | 消费总流出 | 生活消费 | 投资 | 净资产 | 现金流 | 抵消规则 |
 |---|---|---:|---:|---:|---:|---:|---|
@@ -45,7 +45,8 @@ flowchart LR
 - `investment_cash_cny` 来源：投资入金、投资卖出回流。
 - `fund_asset_flow_cny` 来源：基金申购。
 - `investment_holding_flow_cny` 来源：投资买入、投资卖出。
-- `cashflow` 来源：收入、退款、信用卡还款、内部转账、汇率兑换。
+- `cashflow` 来源：投资入金、基金申购、黄金申购、投资买入、投资卖出、收入、费用、退款、信用卡还款、内部转账、汇率兑换。
+- 当同一关联组内的银行侧、券商侧、基金份额侧或支付侧记录暂时拥有不同 `economic_event_id` 时，核心金额仍先按 `interconnection_group_id + event_type` 去重，避免一笔资金链路重复进入消费总流出、投资现金或现金流。
 
 ## Stage 4 - Economic Event 与 Interconnection 逻辑验收
 

@@ -20,7 +20,8 @@ or cover QBVS.
 - Stage 1 复审并解决：已完成，报告为 `docs/pfi_v022/reviews/STAGE1_REVIEW_20260628.md`，测试为 `tests/test_v022_review_stage1.py`；已补齐 3 个阈值/开关键说明。
 - Stage 2 复审并解决：已完成，报告为 `docs/pfi_v022/reviews/STAGE2_REVIEW_20260628.md`，测试为 `tests/test_v022_review_stage2.py`；已补齐 CNY 主显示现金流影响面和账本金额字段中文标签映射。
 - Stage 3 复审并解决：已完成，报告为 `docs/pfi_v022/reviews/STAGE3_REVIEW_20260628.md`，测试为 `tests/test_v022_review_stage3.py`；已补齐 taskpack 默认账户角色和 source profile 角色扩展示例。
-- Stage 4-13 复审解决：未开始。
+- Stage 4 复审并解决：已完成，报告为 `docs/pfi_v022/reviews/STAGE4_REVIEW_20260628.md`，测试为 `tests/test_v022_review_stage4.py`；已修复同一关联组来源两侧 economic_event_id 不一致导致重复计量，并补齐现金流依赖图。
+- Stage 5-13 复审解决：未开始。
 - 整体项目复审解决：未开始。
 - app 入口重装：未执行，按用户要求留到整体 pursuing goal 完成后。
 
@@ -37,6 +38,7 @@ Stage 13 source files:
 | Stage 2 验收报告 | `docs/pfi_v022/STAGE2_CNY_FX_GOVERNANCE.md` |
 | Stage 3 验收报告 | `docs/pfi_v022/STAGE3_SOURCE_ACCOUNT_PROFILE.md` |
 | Stage 4 验收报告 | `docs/pfi_v022/STAGE4_INTERCONNECTION.md` |
+| Stage 4 复审报告 | `docs/pfi_v022/reviews/STAGE4_REVIEW_20260628.md` |
 | Stage 5 验收报告 | `docs/pfi_v022/STAGE5_LEDGER_TAXONOMY.md` |
 | Stage 6 验收报告 | `docs/pfi_v022/STAGE6_TAGS_CUSTOM_VIEWS.md` |
 | Stage 7 验收报告 | `docs/pfi_v022/STAGE7_FORMULA_SCORING.md` |
@@ -72,6 +74,7 @@ Stage 13 source files:
 | Stage 3 source/account test | `tests/test_v022_stage3_source_account_profiles.py` |
 | Stage 4 no-double-count test | `tests/test_v022_interconnection_no_double_count.py` |
 | Stage 4 consumption/investment outflow test | `tests/test_v022_consumption_investment_outflow.py` |
+| Stage 4 review fix test | `tests/test_v022_review_stage4.py` |
 | Stage 5 ledger taxonomy test | `tests/test_v022_stage5_ledger_taxonomy.py` |
 | Stage 6 tags/views test | `tests/test_v022_stage6_tags_views.py` |
 | Stage 7 formula/scoring test | `tests/test_v022_stage7_formula_scoring.py` |
@@ -95,10 +98,11 @@ Stage 7 locked parameters:
 - 新增 source 模板：`other_source_template`。
 - 账户角色字段：`role_effective_from`、`role_effective_to`。
 - `economic_event_id`：同一真实经济事件只有一个 ID。
-- `interconnection_group_id`：同一资金链路进入一个关联组。
+- `interconnection_group_id`：同一资金链路进入一个关联组；核心金额优先按 `interconnection_group_id + event_type` 去重，缺少关联组时按 `economic_event_id + event_type` 兜底。
 - `消费总流出`：普通消费、投资入金、基金申购、黄金申购、投资买入、费用进入该口径，退款抵消。
 - `生活消费`：普通生活消费进入该口径，退款抵消；投资入金、基金申购、投资买入不进入。
 - Stage 4 stop condition：`投资入金未进入消费总流出`、`基金申购未进入消费总流出`、`投资入金错误进入生活消费`、同一 `interconnection_group_id` 重复进入核心金额。
+- 现金流依赖图：投资入金、基金申购、黄金申购、投资买入、投资卖出、收入、费用、退款、信用卡还款、内部转账、汇率兑换。
 - Agent 1 复核消费、投资、现金流口径；Agent 2 复核 source -> transaction -> group -> economic event -> ledger -> metric 链路。
 - Stage 5 事件类型表：消费、投资入金、基金申购、黄金申购、投资买入、投资卖出、退款、费用、信用卡还款、内部转账、收入、估值、汇率兑换。
 - Stage 5 双消费展示：首页、消费页、报告必须同时展示 `消费总流出` 与 `生活消费` 并解释差异。

@@ -4,7 +4,7 @@ Last updated: 2026-06-28 Australia/Sydney
 
 ## Current Goal
 
-PFI v0.2.2 Stage 1-13 复审并解决：第一阶段每次 run work 只复审解决 1 个 Stage，第二阶段做整体项目复审解决；整体 goal 完成后再重装 app 入口。本轮已完成 Stage 3 复审并解决，新增 `docs/pfi_v022/reviews/STAGE3_REVIEW_20260628.md` 和 `tests/test_v022_review_stage3.py`，补齐 taskpack 默认账户角色和 source profile 角色扩展示例；不复审解决 Stage 4-13，不重装 app 入口。
+PFI v0.2.2 Stage 1-13 复审并解决：第一阶段每次 run work 只复审解决 1 个 Stage，第二阶段做整体项目复审解决；整体 goal 完成后再重装 app 入口。本轮已完成 Stage 4 复审并解决，新增 `docs/pfi_v022/reviews/STAGE4_REVIEW_20260628.md` 和 `tests/test_v022_review_stage4.py`，修复同一关联组来源两侧 `economic_event_id` 不一致导致重复核心计量的问题，并补齐现金流依赖图；不复审解决 Stage 5-13，不重装 app 入口。
 
 ## Current Status
 
@@ -20,7 +20,7 @@ PFI v0.2.2 Stage 1-13 复审并解决：第一阶段每次 run work 只复审解
   resolve to this checkout.
 - Local runtime data home is now `~/.pfi` or explicit `$PFI_DATA_HOME`.
 - Current app URL after migration verification: `http://localhost:8501`.
-- 当前复审状态：Stage 1-3 复审并解决已完成；Stage 4-13 复审解决未开始；整体项目复审解决未开始；app 入口重装未执行。
+- 当前复审状态：Stage 1-4 复审并解决已完成；Stage 5-13 复审解决未开始；整体项目复审解决未开始；app 入口重装未执行。
 - 历史完成状态：Stage 13 - 后置触发型复核 已完成 `S13-P1-T1`、`S13-P1-T2`、`S13-P1-T3`；由 `交付前人工指定` 触发，生成本地 Codex Review Ticket，仅对异常区域进行复核，禁止全仓无差别扫描；问题、修复、验证、剩余风险已写入开发记录；Downloads 污染文件夹 `PFI_V022_STAGE0_PRE_CANONICAL_SYNC_20260628T090028` 等已归档并移出 Downloads。
 - Stage 1 contracts remain in `src/pfi_v02/stage1_ia.py`, `src/pfi_v02/core_models.py`, and `src/pfi_v02/classification_rules.py`.
 - Stage 2 registry is implemented in `src/pfi_v02/stage2_registry.py`.

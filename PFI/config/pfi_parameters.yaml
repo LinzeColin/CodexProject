@@ -797,9 +797,9 @@
         "user_editable": false
       },
       "no_double_count_rule": {
-        "value": "同一 economic_event 在同一 metric 口径只能计算一次",
+        "value": "同一 interconnection_group_id + event_type 优先只进入核心金额一次；缺少关联组时同一 economic_event_id 只进入核心金额一次",
         "label_zh": "单次计算规则",
-        "description_zh": "允许多处展示，但不得在同一口径重复计入金额。",
+        "description_zh": "允许多处展示，但不得在同一口径重复计入金额；当银行侧和平台侧的 economic_event_id 不一致但 interconnection_group_id 相同时，核心金额仍按一笔真实资金链路计算。",
         "impact_surfaces": [
           "首页总览",
           "消费管理",
@@ -963,7 +963,13 @@
           "investment_sell"
         ],
         "cashflow": [
+          "investment_deposit",
+          "fund_subscription",
+          "bullion_purchase",
+          "investment_buy",
+          "investment_sell",
           "income",
+          "fee",
           "refund",
           "credit_card_repayment",
           "internal_transfer",
