@@ -24,6 +24,12 @@ from pfi_v02.stage_v022_ledger_taxonomy import (
     STAGE5_TAXONOMY_LIMITS,
     build_stage5_contract_payload,
 )
+from pfi_v02.stage_v022_tags_views import (
+    STAGE6_DEFAULT_TAG_GROUPS,
+    STAGE6_TAG_RULE_DIMENSIONS,
+    STAGE6_TAG_TABLES,
+    build_stage6_contract_payload,
+)
 
 
 V022_STAGE1_TASK_IDS = (
@@ -90,6 +96,18 @@ V022_STAGE5_TASK_IDS = (
     "S5-P3-T2",
     "S5-P3-T3",
     "S5-P3-T4",
+)
+
+V022_STAGE6_TASK_IDS = (
+    "S6-P1-T1",
+    "S6-P1-T2",
+    "S6-P1-T3",
+    "S6-P2-T1",
+    "S6-P2-T2",
+    "S6-P2-T3",
+    "S6-P3-T1",
+    "S6-P3-T2",
+    "S6-P3-T3",
 )
 
 V022_STAGE0_TASK_IDS = (
@@ -724,5 +742,87 @@ def build_v022_stage5_contract() -> dict[str, object]:
             "不修改 v0.2.1 HTML Web Shell UIUX 基线。",
             "不新增真实交易、自动投资、支付或券商提交。",
             "不实现 Stage 7 评分公式、Stage 8 runtime diff 或 Stage 9 可视化页面。",
+        ),
+    }
+
+
+def build_v022_stage6_contract() -> dict[str, object]:
+    stage6_payload = build_stage6_contract_payload()
+    return {
+        "schema": "PFIV022TagViewStage6ContractV1",
+        "version": "v0.2.2",
+        "stage": "Stage 6",
+        "stage_name_zh": "标签系统与自定义视图",
+        "task_ids": V022_STAGE6_TASK_IDS,
+        "goal": "在 Stage 5 单一主分类之外，建立可持久化、多标签、可追踪历史、可规则自动赋值、可筛选账本、可进入报告和可保存自定义视图的标签系统。",
+        "tag_persistence_policy": {
+            "tables": STAGE6_TAG_TABLES,
+            "default_tag_groups": STAGE6_DEFAULT_TAG_GROUPS,
+            "tag_rule_dimensions": STAGE6_TAG_RULE_DIMENSIONS,
+            "persistence": stage6_payload["persistence"],
+            "system_default_physical_delete_allowed": False,
+            "custom_tag_lifecycle": ("新增", "重命名", "停用", "删除"),
+        },
+        "default_tag_library": stage6_payload["default_tag_library"],
+        "tag_rules": stage6_payload["tag_rules"],
+        "custom_view_policy": {
+            "required_surfaces": stage6_payload["custom_view_surfaces"],
+            "html_deliverable": "PFI/web/pfi_v022_tag_views.html",
+            "saved_view_table": "pfi_custom_views",
+            "examples": ("订阅检查", "投资追涨复盘", "夜间大额复盘"),
+        },
+        "deliverables": (
+            "PFI/src/pfi_v02/stage_v022_tags_views.py",
+            "PFI/src/pfi_v02/stage_v022_database_governance.py",
+            "PFI/tests/test_v022_stage6_tags_views.py",
+            "PFI/docs/pfi_v022/STAGE6_TAGS_CUSTOM_VIEWS.md",
+            "PFI/web/pfi_v022_tag_views.html",
+            "PFI/config/pfi_parameters.yaml",
+            "PFI/config/parameter_changelog.md",
+            "PFI/模型参数文件.md",
+            "PFI/功能清单.md",
+            "PFI/开发记录.md",
+            "PFI/HANDOFF.md",
+            "PFI/README.md",
+        ),
+        "acceptance_criteria": (
+            "pfi_tags 表或本地等价存储包含 tag_id、中文名、范围、类型、是否系统默认、是否可编辑、是否启用。",
+            "pfi_tag_assignments 支持同一交易、经济事件、持仓或账户拥有多个标签。",
+            "pfi_tag_rules 支持金额、时间、分类、事件类型和账户角色自动打标签。",
+            "默认标签库覆盖通用、消费、投资、数据质量、现金流和复盘。",
+            "自定义标签支持新增、重命名、停用和删除，且默认系统标签不能被物理删除。",
+            "标签变更历史记录旧值、新值、时间、影响对象和原因。",
+            "账本可按标签组合筛选，例如夜间 + 大额 + 计划外。",
+            "报告可按标签聚合消费、投资、异常和复盘项。",
+            "本地 HTML 可展示并保存自定义标签视图，例如订阅检查和投资追涨复盘。",
+        ),
+        "stop_conditions": (
+            "标签不能持久化。",
+            "一笔记录只能有一个标签。",
+            "标签只能手动添加。",
+            "默认标签缺失关键分析维度。",
+            "自定义标签无法修改。",
+            "标签历史不可追踪。",
+            "标签无法筛选账本。",
+            "标签不参与报告。",
+            "自定义视图不能保存。",
+        ),
+        "validation_commands": (
+            "PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests/test_v022_stage6_tags_views.py -q",
+            "PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests/test_v022_stage0_database_governance.py PFI/tests/test_pfi_parameters_consistency.py PFI/tests/test_v022_fx_effective_date.py PFI/tests/test_v022_stage3_source_account_profiles.py PFI/tests/test_v022_interconnection_no_double_count.py PFI/tests/test_v022_consumption_investment_outflow.py PFI/tests/test_v022_stage5_ledger_taxonomy.py PFI/tests/test_v022_stage6_tags_views.py -q",
+            "PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests -q",
+            "node --check PFI/web/app/shell.js",
+            "python3 scripts/validate_project_governance.py --project PFI",
+            "git diff --check -- PFI",
+        ),
+        "cross_review": {
+            "Agent 4": "标签体系复核：分类保持单一主分类，标签承担多维分析、建议、视图和复盘。",
+            "Agent 5": "视图与报告复核：标签筛选不改变原始账本金额，自定义视图只是保存筛选条件。",
+        },
+        "non_goals": (
+            "Stage 7 现金流窗口不在本轮实现。",
+            "不修改 v0.2.1 HTML Web Shell UIUX 基线。",
+            "不新增真实交易、自动投资、支付或券商提交。",
+            "不实现 Stage 8 runtime diff、Stage 9 参数中心或 Stage 12 逻辑审查页。",
         ),
     }

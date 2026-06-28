@@ -4,7 +4,7 @@ Last updated: 2026-06-28 Australia/Sydney
 
 ## Current Goal
 
-PFI v0.2.2 Stage 5 收口：完成统一账本事件类型表、消费总流出 / 生活消费双口径、12 大类 / 50 中类消费分类 taxonomy、Stage 5 合同测试和中文验收文档；本轮不实现 Stage 6 标签持久化，不修改 v0.2.1 Web Shell UIUX 基线。
+PFI v0.2.2 Stage 6 收口：完成标签注册、标签赋值、标签规则、默认/自定义标签、标签变更历史、标签筛选账本、标签报告和自定义视图；本轮不实现 Stage 7 现金流评分、Stage 8 Runtime Diff 或 Stage 9 参数中心，不修改 v0.2.1 Web Shell UIUX 基线。
 
 ## Current Status
 
@@ -86,7 +86,13 @@ PFI v0.2.2 Stage 5 收口：完成统一账本事件类型表、消费总流出 
 - v0.2.2 Stage 5 当前事件类型表覆盖消费、投资入金、基金申购、黄金申购、投资买入、投资卖出、退款、费用、信用卡还款、内部转账、收入、估值、汇率兑换。
 - v0.2.2 Stage 5 当前双消费口径：`消费总流出` 包含生活消费、投资入金、基金申购、黄金申购、投资买入、金融费用并由退款抵消；`生活消费` 只包含普通生活消费并由退款抵消。
 - v0.2.2 Stage 5 当前分类约束：`L1 ≤ 12`、每类 `L2 ≤ 5`、总 `L2 ≤ 50`、每笔交易主分类数量为 `1`，每个 L1 有 `future_merge_to` / `merge_candidate`。
-- v0.2.2 Stage 5 明确不实现 Stage 6 标签持久化、自定义标签增删改、标签历史或标签筛选视图。
+- v0.2.2 Stage 6 task IDs 是 `S6-P1-T1`、`S6-P1-T2`、`S6-P1-T3`、`S6-P2-T1`、`S6-P2-T2`、`S6-P2-T3`、`S6-P3-T1`、`S6-P3-T2`、`S6-P3-T3`。
+- v0.2.2 Stage 6 合同是 `src/pfi_v02/stage_v022_database_governance.py::build_v022_stage6_contract()`；标签视图模块是 `src/pfi_v02/stage_v022_tags_views.py`。
+- v0.2.2 Stage 6 验收报告是 `docs/pfi_v022/STAGE6_TAGS_CUSTOM_VIEWS.md`；合同测试是 `tests/test_v022_stage6_tags_views.py`；本地 HTML 是 `web/pfi_v022_tag_views.html`。
+- v0.2.2 Stage 6 当前持久化表：`pfi_tags`、`pfi_tag_assignments`、`pfi_tag_rules`、`pfi_tag_history`、`pfi_custom_views`。
+- v0.2.2 Stage 6 当前默认标签组：通用、消费、投资、数据质量、现金流、复盘。
+- v0.2.2 Stage 6 当前规则维度：金额、时间、分类、事件类型、账户角色。
+- v0.2.2 Stage 6 明确不实现 Stage 7 现金流评分、Stage 8 Runtime Diff、Stage 9 参数中心或 Stage 12 逻辑审查页。
 - v0.2.2 Stage 4 当前规则：同一真实事件只有一个 `economic_event_id`；同一资金链路进入一个 `interconnection_group_id`；同一事件可多处展示但同一核心指标只计算一次。
 - v0.2.2 Stage 4 消费口径：投资入金、基金申购、黄金申购、投资买入和费用进入消费总流出；投资入金、基金申购、投资买入不进入生活消费；退款抵消原消费；信用卡还款不重复计入生活消费。
 - v0.2.2 Stage 4 stop condition：`投资入金未进入消费总流出`、`基金申购未进入消费总流出`、`投资入金错误进入生活消费`、同一 `interconnection_group_id` 重复计入核心金额。
@@ -113,12 +119,14 @@ PFI v0.2.2 Stage 5 收口：完成统一账本事件类型表、消费总流出 
 - 2026-06-28 v0.2.2 Stage 3：新增 `src/pfi_v02/stage_v022_source_profile.py`、`docs/pfi_v022/STAGE3_SOURCE_ACCOUNT_PROFILE.md` 和 `tests/test_v022_stage3_source_account_profiles.py`；`config/pfi_parameters.yaml`、三基文件、README、HANDOFF、roadmap lock 和 governance 同步为 Stage 3 source/account profile 口径。
 - 2026-06-28 v0.2.2 Stage 4：新增 `src/pfi_v02/stage_v022_interconnection.py`、`docs/pfi_v022/STAGE4_INTERCONNECTION.md`、`docs/pfi_v02/INTERCONNECTION_MATRIX.md`、`tests/test_v022_interconnection_no_double_count.py` 和 `tests/test_v022_consumption_investment_outflow.py`；`config/pfi_parameters.yaml` 升级为 `PFIParametersV022Stage4`；三基文件和参数变更记录同步记录 no-double-count、双消费口径、Metric Dependency Graph、Agent 1/Agent 2 复核和 stop condition。
 - 2026-06-28 v0.2.2 Stage 5：新增 `src/pfi_v02/stage_v022_ledger_taxonomy.py`、`docs/pfi_v022/STAGE5_LEDGER_TAXONOMY.md` 和 `tests/test_v022_stage5_ledger_taxonomy.py`；`config/pfi_parameters.yaml` 升级为 `PFIParametersV022Stage5`；三基文件、README、roadmap lock 和参数变更记录同步记录统一账本事件、双消费口径、12 大类 / 50 中类 taxonomy、future_merge 字段、Agent 1/Agent 3 复核和 stop condition。
+- 2026-06-28 v0.2.2 Stage 6：新增 `src/pfi_v02/stage_v022_tags_views.py`、`docs/pfi_v022/STAGE6_TAGS_CUSTOM_VIEWS.md`、`web/pfi_v022_tag_views.html` 和 `tests/test_v022_stage6_tags_views.py`；`config/pfi_parameters.yaml` 升级为 `PFIParametersV022Stage6`；三基文件、README、roadmap lock 和参数变更记录同步记录 `pfi_tags`、`pfi_tag_assignments`、`pfi_tag_rules`、`pfi_tag_history`、`pfi_custom_views`、默认标签库、自定义标签生命周期、标签报告和自定义视图。
 - 2026-06-28 v0.2.1 UIUX 退回整改：`web/styles/tokens.css` 改为深色玻璃工作台风格；`web/index.html` 顶部动作显示“搜索/任务/证据/设置”；`web/app/shell.js` 新增 `restoreOwnerHomeWorkflow()` 并修复视觉波纹反馈条件；`src/pfi_os/app/streamlit_app.py` 移除真实上传面板外层嵌套 expander 并把 Web Shell iframe 高度调整为 `1120`。验证：v0.2.1 前端合同 `49 passed`，`node --check web/app/shell.js` 通过，`git diff --check -- PFI` 通过，真实 8501 console errors `0`，关键点击链上传/搜索/设置/策略实验室通过。
 - 2026-06-28 v0.2.1 UIUX 二次退回修复：首屏新增 `视觉回弹/触感回馈/声音提示` 反馈信号条；`bindOwnerFeedbackSignals()` 触发状态条、toast、波纹、触感和声音降级；Streamlit 原生上传控件已本地化为中文 `拖拽 CSV / ZIP 到这里`、`选择文件`、`单文件上限 200MB`；支付宝导入摘要状态 `Ready` 映射为 `就绪`；新增 `tests/test_v021_uiux_multimodal_style_regression.py`。真实 8501 验证：`Drag and drop files here=false`、`Browse files=false`、`Deploy=false`、`Ready=0`、`就绪=4`。
 - 2026-06-28 v0.2.1 UIUX 三次退回修复：旧 `视觉回弹/触感回馈/声音提示` 说明按钮条已移除，首屏改为 `data-feedback-hub` 多模态交互反馈中枢；包含 `视觉状态轨道`、`触感强度`、`声音反馈`、强度条和事件日志；`bindFeedbackHub()` / `updateFeedbackHub()` 会在点击后更新 `data-feedback-hub-state`、`data-action-feedback`、toast 和日志；视觉反馈默认开启并修复 `reduce-motion` 反向逻辑；顶栏可见汇率统一为 `AUD/CNY=4.69（20260628--06:00）`。真实 8501 Chrome 验证：`data-feedback-hub=1`、旧 `data-owner-feedback-strip=0`、旧 `.feedback-signal=0`、点击后状态 `视觉状态轨道 · 成功`，截图 `/tmp/pfi-uiux-feedback-hub-clicked.png`。
 - 2026-06-28 v0.2.1 复审硬失败修复：`PFI/web` 和注入首页摘要不再出现 `只读/实盘/运行边界/使用限制/隐私边界/交易密码/不下单/不支付/不登录` 等正式 UI 禁词；新增 `src/pfi_v02/stage_v021_runtime_api.py`；`web/app/shell.js` 保存持仓调用 `/api/holdings`，本机 API 调用 `V021HoldingsPersistenceService` 写入 SQLite，`/api/trends` 从 SQLite 运行读模型派生账户、投资和消费趋势；策略实验室一级入口和投资管理内部入口统一到 `/investment/strategy-lab`。
 - 2026-06-28 v0.2.1 复审最终本地验收：v0.2.1 合同 `58 passed`；完整 PFI pytest `198 passed, 64 subtests passed`；`node --check PFI/web/app/shell.js` 和 `git diff --check -- PFI` 通过；Chrome/系统浏览器真实点击 15 个入口、设置隔离、正式 UI 禁词扫描、持仓保存到 SQLite、API 查询、趋势读模型、刷新读取和 API 重启后读取均通过，console errors `0`；`macOS app acceptance lite` `29 pass / 0 fail / 2 info`；三处 `PFI.app` 入口均指向 canonical PFI，其中 Desktop 为 `/Applications/PFI.app` 符号链接。
 - 2026-06-28 v0.2.2 Stage 5 closeout 运行修复：`src/pfi_os/app/streamlit_app.py` 移除原生上传面板内嵌 `st.expander()`，避免 Streamlit `Expanders may not be nested`；`page_icon` 改为 `None`，避免浏览器请求 `/PFI` 产生 404。`tests/test_v021_stage8_final_acceptance.py` 增加对应回归断言。
+- 2026-06-28 v0.2.2 Stage 6 closeout 运行修复：`src/pfi_os/app/streamlit_app.py` 正式 UI 不再显示 `runtime` 路径、`Web Shell` 和 `manifest` 等开发词；父页面保留本机上传，8 个一级入口由上方工作台 iframe 展示；`web/pfi_v022_tag_views.html` 补齐 6 个默认标签组并避免 favicon 404。
 
 ## Decisions
 
@@ -171,8 +179,9 @@ Latest v0.2.1 Stage 8 target result: Stage 0/1/2/3/4/5/6/7/8 frontend contracts 
 Latest v0.2.2 Stage 2 target result: Stage 2 FX contract `Ran 7 tests / OK`; Stage 0+1+2 targeted governance contracts `Ran 24 tests / OK`; full PFI unittest discover `Ran 171 tests / OK`; governance `errors 0 / warnings 0`; Web shell syntax `OK`; `git diff --check -- PFI` `OK`; local FX read returned `fx_AUD_CNY_20260628`, `rate=4.6874`, `ordinary_runtime_network_refresh=false`.
 Latest v0.2.2 Stage 4 closeout result: Stage 4 interconnection/no-double-count contracts `8 passed`; Stage 0-4 v0.2.2 contracts `40 passed`; full PFI pytest `193 passed`; project governance `errors 0 / warnings 0`; Web shell syntax `OK`; `git diff --check -- PFI` `OK`; macOS app acceptance lite `29 pass / 0 fail / 2 info`; `http://127.0.0.1:8501/_stcore/health` returned `ok`.
 Latest v0.2.2 Stage 5 target result: Stage 5 ledger taxonomy contracts `5 passed`; Stage 0-5 v0.2.2 contracts `45 passed`; full PFI pytest `203 passed`; project governance `errors 0 / warnings 0`; Web shell syntax `OK`; `git diff --check -- PFI` `OK`; Streamlit app compile `OK`; macOS app acceptance lite `29 pass / 0 fail / 2 info`; `/Applications/PFI.app` launched canonical PFI on port `8501`, PID `87045`; browser validation confirmed PFI 首页、数据源上传、投资管理、消费管理、AUD/CNY 徽标和原生上传控件可见，nested expander error `false`, console errors `0`, screenshot `/tmp/pfi-v022-stage5-app-verified.png`; GitHub `main` closeout sync completed for PFI-only changes.
+Latest v0.2.2 Stage 6 target result: Stage 6 tag/custom-view contracts `6 passed`; Stage 0-6 v0.2.2 regression `51 passed`; full PFI pytest `209 passed`; project governance `errors 0 / warnings 0`; Web shell syntax `OK`; `git diff --check -- PFI` `OK`; macOS app acceptance lite `29 pass / 0 fail / 2 info`; `http://127.0.0.1:8501/_stcore/health` returned `ok`; true 8501 browser validation confirmed 8 primary entries in the iframe workspace, no visible `runtime/Web Shell/manifest/运行边界/不做实盘自动下单` hits, console errors `0`, screenshot `/tmp/pfi-v022-stage6-app-verified.png`; Stage 6 HTML validation confirmed 9 task IDs, 5 tables, 6 default tag groups, 3 custom views, no forbidden visible text, console errors `0`, screenshot `/tmp/pfi-v022-stage6-tag-views-verified.png`.
 
 ## Next
 
-1. 下一轮 pursuing goal 应从 v0.2.2 Stage 6 `标签系统与自定义视图` 开始。
-2. 不得提前实现 Stage 7-13，不得修改 v0.2.1 Web Shell UIUX 基线，除非用户单独开启前端目标。
+1. 下一轮 pursuing goal 应从 v0.2.2 Stage 7 `模型公式、阈值与评分标准` 开始。
+2. 不得提前实现 Stage 8-13，不得修改 v0.2.1 Web Shell UIUX 基线，除非用户单独开启前端目标。

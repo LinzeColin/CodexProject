@@ -80,7 +80,21 @@
 - 默认分类 taxonomy 为 `L1 ≤ 12`、每个 L1 的 `L2 ≤ 5`、总 `L2 ≤ 50`。
 - 每个 L1 保留 `future_merge_to` / `merge_candidate`，后续可压缩到 10 类或更少。
 - 新增 `PFI/tests/test_v022_stage5_ledger_taxonomy.py`，验证 Stage 5 acceptance criteria 和 stop condition。
-- 本轮不实现 Stage 6 标签持久化、自定义标签增删改、标签历史或标签视图；不修改 v0.2.1 Web Shell UIUX 基线，不做真实交易、自动投资、支付或券商提交。
+- Stage 6 已在后续单独 gate 中实现标签持久化、自定义标签增删改、标签历史和标签视图；Stage 5 本身不改 v0.2.1 Web Shell UIUX 基线，不做真实交易、自动投资、支付或券商提交。
+
+## Stage 6 范围
+
+本轮完成标签系统与自定义视图：
+
+- 新增 `PFI/src/pfi_v02/stage_v022_tags_views.py`，建立 `Stage6TagViewStore` 本地 SQLite 标签持久化服务。
+- 新增 `pfi_tags`、`pfi_tag_assignments`、`pfi_tag_rules`、`pfi_tag_history`、`pfi_custom_views` 本地等价表。
+- 默认标签库覆盖通用、消费、投资、数据质量、现金流、复盘。
+- 自定义标签支持新增、重命名、停用和删除，系统默认标签不可物理删除。
+- 标签规则支持金额、时间、分类、事件类型、账户角色自动打标签。
+- 标签组合可筛选账本，标签报告可聚合记录数与 CNY 金额。
+- 新增 `PFI/web/pfi_v022_tag_views.html`，作为 Stage 6 本地 HTML 自定义视图验收页。
+- 新增 `PFI/tests/test_v022_stage6_tags_views.py`，验证 Stage 6 acceptance criteria 和 stop condition。
+- 本轮不实现 Stage 7 现金流窗口和评分公式，不做 Stage 8 Runtime Diff，不改 v0.2.1 主 Web Shell UIUX 基线。
 
 ## 文件
 
@@ -93,5 +107,6 @@
 | `STAGE3_SOURCE_ACCOUNT_PROFILE.md` | Stage 3 数据源 Profile、账户角色和生效期验收报告。 |
 | `STAGE4_INTERCONNECTION.md` | Stage 4 Economic Event、Interconnection Matrix、no-double-count 和双消费口径验收报告。 |
 | `STAGE5_LEDGER_TAXONOMY.md` | Stage 5 统一账本事件、消费双口径和消费分类 taxonomy 验收报告。 |
+| `STAGE6_TAGS_CUSTOM_VIEWS.md` | Stage 6 标签系统、标签持久化、标签规则、历史和自定义视图验收报告。 |
 | `SOURCE_TASK_PACK_MANIFEST.md` | Downloads 来源文件、SHA-256 和使用边界。 |
 | `ROADMAP_LOCK.md` | v0.2.2 Stage / Phase / Task / Acceptance / Stop / Validation 锁定摘要。 |

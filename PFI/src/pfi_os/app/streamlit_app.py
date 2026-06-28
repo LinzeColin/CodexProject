@@ -1123,7 +1123,7 @@ def render_pfi_local_data_upload_panel() -> None:
     latest = st.session_state.get("pfi_latest_alipay_import_manifest") or _load_existing_alipay_import_manifest()
     if latest:
         _render_alipay_import_summary(latest, title="当前 PFI 私有账本")
-        st.caption(f"最近一次私有导入 manifest：{latest.get('private_manifest_path', '未生成')}")
+        st.caption("最近一次导入记录：已保存在本机私有数据目录，可由开发验收工具读取。")
         st.divider()
 
     uploaded_files = st.file_uploader(
@@ -1148,7 +1148,7 @@ def render_pfi_local_data_upload_panel() -> None:
     if discovered:
         st.divider()
         st.markdown("### 已找到旧支付宝原始账单")
-        st.caption("这些文件来自之前交接目录。点击按钮会复制到 `~/.pfi/runtime/uploads/alipay_daily`，同步到 `MetaDatabase/PFI/alipay_daily`，并生成私有账本预览。")
+        st.caption("这些文件来自之前交接目录。点击按钮会复制到 PFI 本机私有上传目录，同步到 `MetaDatabase/PFI/alipay_daily`，并生成私有账本预览。")
         if latest:
             st.success("旧支付宝原始账单已经接入当前 PFI 私有账本；需要重建时可点击下方按钮。")
         elif st.button("预检已发现的旧支付宝账单", key="preview_discovered_alipay_bills"):
@@ -1228,8 +1228,8 @@ def _render_alipay_import_summary(summary: dict, *, title: str) -> None:
             hide_index=True,
         )
     if summary.get("private_transactions_path"):
-        st.caption("标准化流水私有路径")
-        st.code(str(summary["private_transactions_path"]), language="text")
+        st.caption("标准化流水状态")
+        st.success("已生成标准化流水，并保存在本机 PFI 私有数据目录。")
 
 
 def install_streamlit_runtime_compat() -> None:
@@ -1282,7 +1282,7 @@ def render_pfi_ui_v2_shell() -> None:
         <section style="padding:0 24px 24px;color:#f5f9ff;">
           <div style="max-width:1200px;margin:0 auto 12px;padding:16px 18px;border:1px solid rgba(255,255,255,.14);border-radius:8px;background:rgba(255,255,255,.06);">
             <strong>本机真实上传与支付宝账本</strong>
-            <span style="display:block;margin-top:6px;color:#a9bbcf;">这是 Streamlit 原生上传能力，负责把真实 CSV / ZIP 写入 PFI 私有账本；上方 Web Shell 负责日常导航、预览和反馈。</span>
+            <span style="display:block;margin-top:6px;color:#a9bbcf;">这是本机原生上传能力，负责把真实 CSV / ZIP 写入 PFI 私有账本；上方工作台负责日常导航、预览和反馈。</span>
           </div>
         </section>
         """,

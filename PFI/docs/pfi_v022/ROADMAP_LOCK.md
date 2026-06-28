@@ -22,7 +22,7 @@ Roadmap 形态：`Stage -> Phase -> Task`
 | Stage 3 | 数据源、账户角色与可扩展结构 | 本轮完成 | Source Profile、capabilities、`other_source_template`、账户角色重叠和生效期。 |
 | Stage 4 | Economic Event 与 Interconnection 逻辑 | 本轮完成 | `economic_event_id`、`interconnection_group_id`、事件影响 flags、Interconnection Matrix、Metric Dependency Graph、no-double-count。 |
 | Stage 5 | 统一账本事件、消费双口径与分类体系 | 本轮完成 | event type、双消费口径、12 大类 / 50 中类。 |
-| Stage 6 | 标签系统与自定义视图 | 待 owner 开启 | 标签注册、赋值、规则、变更历史和视图。 |
+| Stage 6 | 标签系统与自定义视图 | 本轮完成 | 标签注册、赋值、规则、默认/自定义标签、变更历史、标签报告和自定义视图。 |
 | Stage 7 | 模型公式、阈值与评分标准 | 待 owner 开启 | 置信度、消费、投资、现金流公式。 |
 | Stage 8 | 本地运行 Diff 与 Impacted Metrics | 待 owner 开启 | dependency hash、diff 收紧、LLM 触发规则。 |
 | Stage 9 | 可视化与 UI/UX | 待 owner 开启 | 参数中心、Interconnection 可视化、现金流和 drilldown。 |
@@ -72,6 +72,8 @@ node --check PFI/web/app/shell.js
 python3 scripts/validate_project_governance.py --project PFI
 git diff --check -- PFI
 ```
+
+当前本地 closeout 结果：Stage 6 目标测试 `6 passed`；Stage 0-6 v0.2.2 回归 `51 passed`；完整 PFI pytest `209 passed`；治理 `errors 0 / warnings 0`；Web shell 语法和 `git diff --check -- PFI` 通过；App 入口验收 `29 pass / 0 fail / 2 info`；真实 8501 浏览器禁用词扫描 0 命中、console errors `0`；Stage 6 HTML 浏览器任务、表、默认标签组、自定义视图均可见，console errors `0`。
 
 ## Stage 1 Task Lock
 
@@ -297,3 +299,54 @@ git diff --check -- PFI
 ```
 
 当前本地 closeout 结果：Stage 5 目标测试 `5 passed`；Stage 0-5 v0.2.2 回归 `45 passed`；完整 PFI pytest `203 passed`；治理 `errors 0 / warnings 0`；Web shell 语法、Streamlit compile、`git diff --check -- PFI` 通过；App 入口验收 `29 pass / 0 fail / 2 info`；浏览器 8501 console errors `0`。
+
+## Stage 6 - 标签系统与自定义视图 Task Lock
+
+| Task ID | Phase | 交付物 | 状态 |
+| --- | --- | --- | --- |
+| `S6-P1-T1` | Phase 6.1 | `pfi_tags` 标签注册表，包含 ID、中文名、范围、类型、是否系统默认、是否可编辑、是否启用 | 本轮完成 |
+| `S6-P1-T2` | Phase 6.1 | `pfi_tag_assignments` 标签赋值表，同一交易、经济事件、持仓、账户可拥有多个标签 | 本轮完成 |
+| `S6-P1-T3` | Phase 6.1 | `pfi_tag_rules` 标签规则表，支持金额、时间、分类、事件类型、账户角色自动打标签 | 本轮完成 |
+| `S6-P2-T1` | Phase 6.2 | 默认标签库，覆盖通用、消费、投资、数据质量、现金流、复盘 | 本轮完成 |
+| `S6-P2-T2` | Phase 6.2 | 自定义标签新增、重命名、停用、删除 | 本轮完成 |
+| `S6-P2-T3` | Phase 6.2 | `pfi_tag_history` 标签变更历史 | 本轮完成 |
+| `S6-P3-T1` | Phase 6.3 | 标签组合筛选账本 | 本轮完成 |
+| `S6-P3-T2` | Phase 6.3 | 标签驱动报告聚合 | 本轮完成 |
+| `S6-P3-T3` | Phase 6.3 | `pfi_custom_views` 与 `PFI/web/pfi_v022_tag_views.html` 自定义标签视图 | 本轮完成 |
+
+## Stage 6 Acceptance Criteria
+
+- `pfi_tags` 或本地等价存储包含标签 ID、中文名、范围、类型、是否系统默认、是否可编辑、是否启用。
+- `pfi_tag_assignments` 允许一笔交易、经济事件、持仓或账户拥有多个标签。
+- `pfi_tag_rules` 支持金额、时间、分类、事件类型和账户角色自动打标签。
+- 默认标签库覆盖通用、消费、投资、数据质量、现金流、复盘。
+- 自定义标签可新增、重命名、停用、删除；系统默认标签不可物理删除。
+- `pfi_tag_history` 记录旧值、新值、时间、影响对象和原因。
+- 标签组合可筛选账本，例如夜间 + 大额 + 计划外。
+- 报告可按标签聚合消费、投资、异常、复盘项。
+- 本地 HTML 可展示和保存自定义标签视图，例如订阅检查、投资追涨复盘。
+
+## Stage 6 Stop Condition
+
+- 标签不能持久化。
+- 一笔记录只能有一个标签。
+- 标签只能手动添加。
+- 默认标签缺失关键分析维度。
+- 自定义标签无法修改。
+- 标签历史不可追踪。
+- 标签无法筛选账本。
+- 标签不参与报告。
+- 自定义视图不能保存。
+
+当前检查结论：以上停止条件均未触发。Stage 7 现金流窗口和评分公式、Stage 8 Runtime Diff、Stage 9 参数中心不在本轮实现。
+
+## Stage 6 Validation
+
+```bash
+PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests/test_v022_stage6_tags_views.py -q
+PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests/test_v022_stage0_database_governance.py PFI/tests/test_pfi_parameters_consistency.py PFI/tests/test_v022_fx_effective_date.py PFI/tests/test_v022_stage3_source_account_profiles.py PFI/tests/test_v022_interconnection_no_double_count.py PFI/tests/test_v022_consumption_investment_outflow.py PFI/tests/test_v022_stage5_ledger_taxonomy.py PFI/tests/test_v022_stage6_tags_views.py -q
+PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests -q
+node --check PFI/web/app/shell.js
+python3 scripts/validate_project_governance.py --project PFI
+git diff --check -- PFI
+```

@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Stage 6 - 标签系统与自定义视图</title>
+    <link rel="icon" href="data:," />
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #f6f8fb;
+        color: #172033;
+      }
+      body {
+        margin: 0;
+      }
+      main {
+        width: min(1080px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 32px 0;
+      }
+      h1 {
+        font-size: 28px;
+        margin: 0 0 8px;
+        letter-spacing: 0;
+      }
+      .summary {
+        margin: 0 0 24px;
+        color: #44506a;
+        line-height: 1.7;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 14px;
+      }
+      article {
+        background: #ffffff;
+        border: 1px solid #d8deea;
+        border-radius: 8px;
+        padding: 16px;
+      }
+      h2 {
+        font-size: 18px;
+        margin: 0 0 10px;
+      }
+      p {
+        margin: 0 0 10px;
+        line-height: 1.6;
+      }
+      .tag-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .tag {
+        border: 1px solid #b9c7dc;
+        border-radius: 999px;
+        padding: 4px 10px;
+        background: #eef4fb;
+        font-size: 13px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background: #ffffff;
+      }
+      th,
+      td {
+        border: 1px solid #d8deea;
+        padding: 10px;
+        text-align: left;
+      }
+      th {
+        background: #edf2f8;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Stage 6 - 标签系统与自定义视图</h1>
+      <p class="summary">
+        本地 HTML 验收页用于展示标签筛选、自定义视图和持久化表结构。正式数据由
+        <code>pfi_tags</code>、<code>pfi_tag_assignments</code>、<code>pfi_tag_rules</code>、
+        <code>pfi_tag_history</code>、<code>pfi_custom_views</code> 管理。
+      </p>
+
+      <section class="grid" aria-label="自定义视图">
+        <article>
+          <h2>订阅检查</h2>
+          <p>用于筛选周期性订阅扣费，辅助复核是否仍需保留。</p>
+          <div class="tag-list">
+            <span class="tag">tag_consumption_subscription</span>
+            <span class="tag">tag_general_recurring</span>
+          </div>
+        </article>
+        <article>
+          <h2>投资追涨复盘</h2>
+          <p>用于筛选买入交易和追涨候选，辅助盘后复盘。</p>
+          <div class="tag-list">
+            <span class="tag">tag_investment_buy</span>
+            <span class="tag">tag_investment_chase_candidate</span>
+          </div>
+        </article>
+        <article>
+          <h2>夜间大额复盘</h2>
+          <p>用于筛选夜间消费和大额消费，辅助行为复盘。</p>
+          <div class="tag-list">
+            <span class="tag">tag_consumption_night</span>
+            <span class="tag">tag_consumption_large</span>
+          </div>
+        </article>
+      </section>
+
+      <section aria-label="默认标签组">
+        <h2>默认标签组</h2>
+        <div class="tag-list">
+          <span class="tag">通用</span>
+          <span class="tag">消费</span>
+          <span class="tag">投资</span>
+          <span class="tag">数据质量</span>
+          <span class="tag">现金流</span>
+          <span class="tag">复盘</span>
+        </div>
+      </section>
+
+      <table aria-label="Stage 6 标签表">
+        <thead>
+          <tr>
+            <th>表</th>
+            <th>作用</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>pfi_tags</td><td>标签注册表，保存默认标签和自定义标签。</td></tr>
+          <tr><td>pfi_tag_assignments</td><td>标签赋值表，一笔记录可有多个标签。</td></tr>
+          <tr><td>pfi_tag_rules</td><td>自动打标签规则表。</td></tr>
+          <tr><td>pfi_tag_history</td><td>标签新增、重命名、停用、删除的历史记录。</td></tr>
+          <tr><td>pfi_custom_views</td><td>自定义视图保存表。</td></tr>
+        </tbody>
+      </table>
+
+      <table aria-label="Stage 6 任务">
+        <thead>
+          <tr>
+            <th>任务</th>
+            <th>交付</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>S6-P1-T1</td><td>建立 pfi_tags 标签注册表。</td></tr>
+          <tr><td>S6-P1-T2</td><td>建立 pfi_tag_assignments 标签赋值表。</td></tr>
+          <tr><td>S6-P1-T3</td><td>建立 pfi_tag_rules 标签规则表。</td></tr>
+          <tr><td>S6-P2-T1</td><td>新增默认标签库。</td></tr>
+          <tr><td>S6-P2-T2</td><td>支持自定义标签新增、重命名、停用和删除。</td></tr>
+          <tr><td>S6-P2-T3</td><td>标签变更写入 pfi_tag_history。</td></tr>
+          <tr><td>S6-P3-T1</td><td>支持标签组合筛选账本。</td></tr>
+          <tr><td>S6-P3-T2</td><td>支持标签驱动报告。</td></tr>
+          <tr><td>S6-P3-T3</td><td>支持自定义视图保存。</td></tr>
+        </tbody>
+      </table>
+    </main>
+  </body>
+</html>
