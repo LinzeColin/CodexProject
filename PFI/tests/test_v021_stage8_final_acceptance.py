@@ -93,7 +93,7 @@ class V021Stage8FinalAcceptanceTest(unittest.TestCase):
     def test_web_shell_still_contains_required_user_paths_and_no_forbidden_execution(self) -> None:
         self.assertEqual(self.html.count('data-primary-entry="true"'), 15)
         for required in (
-            "CNY/AUD=",
+            "AUD/CNY=",
             "data-global-search-input",
             "data-upload-import-panel",
             "data-import-review-link",

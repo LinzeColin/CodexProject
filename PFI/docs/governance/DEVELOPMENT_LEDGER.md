@@ -26,3 +26,6 @@ acceptance_count: 6
 - product_version v0.2.2 数据库治理 Stage 1 对应本轮参数治理文档状态；`VERSION` 继续保留 v0.2.1 前端优化，表示当前 Web Shell UI 基线未在 Stage 1 修改。
 - Stage 1 参数治理覆盖 `S1-P1-T1..S1-P2-T3`，建立中文参数总目录、机器可读参数源、公式中文解释、阈值说明表和变量中文别名。
 - 本轮不修改 v0.2.1 HTML Web Shell，不实现 Stage 2 汇率快照读取，不新增真实交易、自动投资、支付或券商提交能力。
+- 完成 PFI v0.2.2 Stage 2 CNY 基准与汇率规则，新增 `src/pfi_v02/stage_v022_fx.py`、真实快照 `data/fx_snapshots/AUD_CNY/2026-06-28.json`、`docs/pfi_v022/STAGE2_CNY_FX_GOVERNANCE.md` 和 `tests/test_v022_fx_effective_date.py`。
+- product_version v0.2.2 数据库治理 Stage 2 对应本轮 CNY/Fx 文档状态；`VERSION` 继续保留 v0.2.1 前端优化，表示 UIUX 基线仍沿用 v0.2.1 HTML Web Shell。
+- Stage 2 覆盖 `S2-P1-T1..S2-P2-T3`，建立 `AUD/CNY` 真实快照、06:00 有效汇率日、普通运行不默认联网、原币辅助显示和账本金额字段。

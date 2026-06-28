@@ -1,0 +1,23 @@
+{
+  "base_currency": "CNY",
+  "cache_state": "cached",
+  "display_pair": "AUD/CNY",
+  "effective_date": "2026-06-28",
+  "effective_time_local": "06:00",
+  "fetch_transport": "system_curl_fallback_after_SSLCertVerificationError",
+  "fetched_at": "2026-06-28T10:09:43+10:00",
+  "hash": "2e0d770f16f07543bfe03f9189f1be923b2ef4518a346c79788655600040018b",
+  "meaning_zh": "1 AUD = 4.6874 CNY",
+  "network_refresh_used": true,
+  "ordinary_runtime_network_refresh": false,
+  "pair_base": "AUD",
+  "pair_quote": "CNY",
+  "rate": "4.6874",
+  "rate_float": 4.6874,
+  "schema": "PFIV022FxSnapshotV1",
+  "snapshot_id": "fx_AUD_CNY_20260628",
+  "source_observed_date": "2026-06-28",
+  "source_provider": "Frankfurter v2 public API",
+  "source_url": "https://api.frankfurter.dev/v2/rate/AUD/CNY?date=2026-06-28",
+  "timezone": "Australia/Sydney"
+}

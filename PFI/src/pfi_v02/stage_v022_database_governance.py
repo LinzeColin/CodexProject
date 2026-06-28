@@ -5,6 +5,13 @@ from pathlib import Path
 
 from pfi_v02.stage2_registry import REQUIRED_STAGE2_SOURCE_IDS
 from pfi_v02.stage3_read_mvp import STAGE3_FX_TO_AUD, STAGE3_REQUIRED_ACCOUNT_SOURCES
+from pfi_v02.stage_v022_fx import (
+    BASE_CURRENCY as V022_BASE_CURRENCY,
+    DEFAULT_FX_PAIR as V022_FX_PAIR,
+    DEFAULT_CUTOFF_LOCAL as V022_FX_CUTOFF_LOCAL,
+    FX_LEDGER_AMOUNT_SCHEMA,
+    FX_SNAPSHOT_SCHEMA,
+)
 
 
 V022_STAGE1_TASK_IDS = (
@@ -32,6 +39,15 @@ V022_STAGE1_REQUIRED_PARAMETER_DOMAINS = (
     "cashflow",
     "visualization",
     "testing",
+)
+
+V022_STAGE2_TASK_IDS = (
+    "S2-P1-T1",
+    "S2-P1-T2",
+    "S2-P1-T3",
+    "S2-P2-T1",
+    "S2-P2-T2",
+    "S2-P2-T3",
 )
 
 V022_STAGE0_TASK_IDS = (
@@ -370,5 +386,89 @@ def build_v022_stage1_contract() -> dict[str, object]:
             "不提前实现 Stage 2 汇率快照读取。",
             "不新增真实交易、自动投资、支付或券商提交。",
             "不生成 Stage 9/12 的 HTML 逻辑审查页。",
+        ),
+    }
+
+
+def build_v022_stage2_contract() -> dict[str, object]:
+    return {
+        "schema": "PFIV022CnyFxGovernanceStage2ContractV1",
+        "version": "v0.2.2",
+        "stage": "Stage 2",
+        "stage_name_zh": "CNY 基准与汇率规则",
+        "task_ids": V022_STAGE2_TASK_IDS,
+        "goal": "建立 CNY 主显示、原币辅助、账本金额追溯字段、06:00 有效汇率日和每日一次本地汇率快照。",
+        "currency_policy": {
+            "base_currency": V022_BASE_CURRENCY,
+            "display_pair": V022_FX_PAIR,
+            "display_semantic_zh": "1 AUD = x CNY",
+            "effective_time_local": V022_FX_CUTOFF_LOCAL,
+            "timezone": "Australia/Sydney",
+            "ordinary_runtime_network_refresh": False,
+            "explicit_refresh_requires_allow_network": True,
+        },
+        "deliverables": (
+            "PFI/src/pfi_v02/stage_v022_fx.py",
+            "PFI/data/fx_snapshots/AUD_CNY/<YYYY-MM-DD>.json",
+            "PFI/tests/test_v022_fx_effective_date.py",
+            "PFI/docs/pfi_v022/STAGE2_CNY_FX_GOVERNANCE.md",
+            "PFI/config/pfi_parameters.yaml",
+            "PFI/config/parameter_changelog.md",
+            "PFI/web/index.html",
+            "PFI/web/app/shell.js",
+            "PFI/模型参数文件.md",
+            "PFI/功能清单.md",
+            "PFI/开发记录.md",
+            "PFI/HANDOFF.md",
+        ),
+        "ledger_amount_schema": {
+            "schema": FX_LEDGER_AMOUNT_SCHEMA,
+            "required_fields": ("original_amount", "original_currency", "amount_cny", "fx_snapshot_id"),
+        },
+        "fx_snapshot_schema": {
+            "schema": FX_SNAPSHOT_SCHEMA,
+            "required_fields": (
+                "snapshot_id",
+                "effective_date",
+                "effective_time_local",
+                "display_pair",
+                "rate",
+                "source_provider",
+                "source_url",
+                "source_observed_date",
+                "fetched_at",
+                "hash",
+            ),
+        },
+        "acceptance_criteria": (
+            "首页、投资、消费、现金流、报告主显示均为 CNY。",
+            "原币作为辅助显示，例如 ¥2,405.00 / 约 500.00 AUD / AUD/CNY=4.81。",
+            "每条账本金额字段明确原始金额、原始币种、CNY 金额和汇率快照 ID。",
+            "06:00 前使用昨天有效汇率，06:00 后使用当天有效汇率。",
+            "普通本地运行只读本地快照，不默认联网抓汇率。",
+            "显式刷新才能联网读取真实 Frankfurter AUD/CNY 汇率并写入本地快照。",
+            "汇率快照含来源、读取时间、币种对和 hash，hash 可校验。",
+        ),
+        "stop_conditions": (
+            "任一核心板块仍以 AUD 为主显示。",
+            "原币丢失或汇率不显示。",
+            "金额无法追溯汇率快照。",
+            "03:00 错用当天汇率。",
+            "普通运行触发网络抓取。",
+            "汇率无快照或无法追溯。",
+        ),
+        "validation_commands": (
+            "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m unittest PFI.tests.test_v022_fx_effective_date -q",
+            "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m unittest PFI.tests.test_v022_stage0_database_governance PFI.tests.test_pfi_parameters_consistency PFI.tests.test_v022_fx_effective_date -q",
+            "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m unittest discover -s PFI/tests -q",
+            "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m pfi_v02.stage_v022_fx read",
+            "node --check PFI/web/app/shell.js",
+            "python3 scripts/validate_project_governance.py --project PFI",
+            "git diff --check -- PFI",
+        ),
+        "non_goals": (
+            "不做真实交易、自动投资、支付或券商提交。",
+            "不把普通页面加载变成联网抓汇率。",
+            "不提前实现 Stage 3 数据源 profile 或 Stage 4 Interconnection Matrix。",
         ),
     }

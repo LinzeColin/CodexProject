@@ -1,13 +1,14 @@
 {
-  "schema": "PFIParametersV022Stage1",
+  "schema": "PFIParametersV022Stage2",
   "project_id": "PFI",
   "task_name": "PFI v0.2.2 E2E 逻辑优化",
   "parameter_version": "v0.2.2",
-  "current_stage": "Stage 1 - 模型参数文件重构",
+  "current_stage": "Stage 2 - CNY 基准与汇率规则",
   "canonical_parameter_file": "PFI/config/pfi_parameters.yaml",
   "machine_format": "JSON-compatible YAML",
   "uiux_baseline": "v0.2.1 HTML Web Shell",
   "stage1_task_ids": ["S1-P1-T1", "S1-P1-T2", "S1-P1-T3", "S1-P2-T1", "S1-P2-T2", "S1-P2-T3"],
+  "stage2_task_ids": ["S2-P1-T1", "S2-P1-T2", "S2-P1-T3", "S2-P2-T1", "S2-P2-T2", "S2-P2-T3"],
   "naming_decision": {
     "draft_requested_file": "PFI/config/pfi_v022_parameters.yaml",
     "canonical_file": "PFI/config/pfi_parameters.yaml",
@@ -34,15 +35,19 @@
     "currency": {
       "base_currency": {"value": "CNY", "label_zh": "主货币", "description_zh": "首页、投资、消费、现金流和报告的核心指标以人民币为主显示。", "impact_surfaces": ["首页总览", "投资管理", "消费管理", "报告与洞察"], "user_editable": false},
       "preserve_original_currency": {"value": true, "label_zh": "保留原币", "description_zh": "每条账本保留原始金额和原始币种，CNY 只是主口径折算。", "impact_surfaces": ["账本流水", "报告与洞察"], "user_editable": false},
-      "frontend_fx_badge_pair": {"value": "CNY/AUD", "label_zh": "当前前端汇率徽标币种对", "description_zh": "v0.2.1 顶栏现有显示格式，Stage 1 不改前端。", "impact_surfaces": ["所有页面顶部右上角"], "user_editable": false}
+      "frontend_fx_badge_pair": {"value": "AUD/CNY", "label_zh": "当前前端汇率徽标币种对", "description_zh": "v0.2.2 Stage 2 已统一为 1 AUD 对应多少 CNY。", "impact_surfaces": ["所有页面顶部右上角"], "user_editable": false},
+      "auxiliary_original_currency_display": {"value": true, "label_zh": "原币辅助显示", "description_zh": "CNY 为主金额，原始币种和原始金额必须保留为辅助信息。", "impact_surfaces": ["账本流水", "投资管理", "消费管理", "报告与洞察"], "user_editable": false}
     },
     "fx": {
-      "frontend_badge_example_rate": {"value": 4.70, "label_zh": "当前前端徽标示例值", "description_zh": "用于校验现有 HTML/合同显示 CNY/AUD=4.70，不代表实时汇率。", "impact_surfaces": ["所有页面顶部右上角"], "user_editable": false},
-      "frontend_badge_format": {"value": "CNY/AUD=4.70（YYYYMMDD--HH:MM）", "label_zh": "当前前端徽标格式", "description_zh": "用户已指定的常态化顶部显示格式。", "impact_surfaces": ["所有页面顶部右上角"], "user_editable": false},
-      "stage2_target_pair": {"value": "AUD/CNY", "label_zh": "Stage 2 目标语义币种对", "description_zh": "后续汇率治理会统一为 1 AUD 对应多少 CNY 的有效日快照；Stage 1 只登记，不改 UI。", "impact_surfaces": ["汇率快照", "账本折算", "报告"], "user_editable": false},
-      "stage2_target_example_rate": {"value": 4.81, "label_zh": "Stage 2 目标草案示例值", "description_zh": "来自 v0.2.2 参数草案的示例，不作为本轮运行汇率。", "impact_surfaces": ["Stage 2 汇率治理"], "user_editable": false},
+      "frontend_badge_example_rate": {"value": 4.6874, "label_zh": "当前前端徽标真实快照值", "description_zh": "来自 2026-06-28 Frankfurter AUD/CNY 快照，前端显示四舍五入为 4.69。", "impact_surfaces": ["所有页面顶部右上角"], "user_editable": false},
+      "frontend_badge_format": {"value": "AUD/CNY=4.69（YYYYMMDD--HH:MM）", "label_zh": "当前前端徽标格式", "description_zh": "v0.2.2 Stage 2 常态化顶部显示格式。", "impact_surfaces": ["所有页面顶部右上角"], "user_editable": false},
+      "stage2_target_pair": {"value": "AUD/CNY", "label_zh": "Stage 2 已实现币种对", "description_zh": "统一为 1 AUD 对应多少 CNY 的有效日快照。", "impact_surfaces": ["汇率快照", "账本折算", "报告"], "user_editable": false},
+      "stage2_target_example_rate": {"value": 4.81, "label_zh": "Stage 2 目标草案示例值", "description_zh": "来自 v0.2.2 参数草案的示例，仅用于解释格式；运行汇率以快照文件为准。", "impact_surfaces": ["Stage 2 汇率治理"], "user_editable": false},
       "snapshot_time_local": {"value": "06:00", "label_zh": "每日有效汇率读取时间", "description_zh": "本地时间 06:00 后使用当天有效快照，06:00 前使用前一日快照。", "impact_surfaces": ["账本折算", "趋势图", "报告"], "user_editable": false},
-      "default_network_refresh": {"value": false, "label_zh": "普通运行是否联网抓汇率", "description_zh": "普通运行只读本地有效汇率快照，避免重复联网和 token 浪费。", "impact_surfaces": ["运行刷新", "汇率快照"], "user_editable": false}
+      "default_network_refresh": {"value": false, "label_zh": "普通运行是否联网抓汇率", "description_zh": "普通运行只读本地有效汇率快照，避免重复联网和 token 浪费。", "impact_surfaces": ["运行刷新", "汇率快照"], "user_editable": false},
+      "explicit_refresh_requires_allow_network": {"value": true, "label_zh": "显式刷新才允许联网", "description_zh": "只有调用 refresh --allow-network 才读取 Frankfurter；页面加载和普通本地运行不触发网络。", "impact_surfaces": ["汇率快照", "运行刷新"], "user_editable": false},
+      "snapshot_directory": {"value": "PFI/data/fx_snapshots/AUD_CNY/", "label_zh": "汇率快照目录", "description_zh": "每日 AUD/CNY 快照按有效日期保存为 JSON，包含来源、读取时间、币种对和 hash。", "impact_surfaces": ["汇率快照", "报告"], "user_editable": false},
+      "snapshot_source_provider": {"value": "Frankfurter v2 public API", "label_zh": "汇率来源", "description_zh": "公共无 key 汇率 API，快照记录 source_url 和 provider date，便于复核。", "impact_surfaces": ["汇率快照", "报告"], "user_editable": false}
     },
     "time": {
       "timezone": {"value": "Australia/Sydney", "label_zh": "用户本地时区", "description_zh": "汇率有效日、夜间消费和运行刷新默认按该时区判断。", "impact_surfaces": ["汇率", "消费模型", "现金流"], "user_editable": true},
@@ -121,7 +126,7 @@
       "inputs": ["original_amount", "original_currency", "fx_to_cny_rate", "fx_snapshot_id"],
       "outputs": ["amount_cny"],
       "logic_zh": "金额_CNY = 原始金额 × 原币兑 CNY 汇率。",
-      "example_zh": "例如：500 AUD × 4.70 = 2350 CNY。",
+      "example_zh": "例如：500 AUD × 4.6874 = 2343.70 CNY。",
       "variable_aliases": {"original_amount": "原始金额", "original_currency": "原始币种", "fx_to_cny_rate": "原币兑 CNY 汇率", "fx_snapshot_id": "汇率快照 ID", "amount_cny": "CNY 金额"}
     },
     {
@@ -171,7 +176,7 @@
       "inputs": ["quantity", "latest_price", "price_currency", "fx_to_cny_rate"],
       "outputs": ["investment_market_value_cny"],
       "logic_zh": "投资市值_CNY = 持仓数量 × 最新价格 × 原币兑 CNY 汇率。",
-      "example_zh": "10 股 × 100 AUD × 4.70 = 4700 CNY。",
+      "example_zh": "10 股 × 100 AUD × 4.6874 = 4687.40 CNY。",
       "variable_aliases": {"quantity": "持仓数量", "latest_price": "最新价格", "price_currency": "价格币种", "fx_to_cny_rate": "原币兑 CNY 汇率", "investment_market_value_cny": "投资市值"}
     },
     {

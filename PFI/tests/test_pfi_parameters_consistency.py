@@ -4,7 +4,7 @@ import re
 import unittest
 from pathlib import Path
 
-from pfi_v02.stage_v021_frontend_contract import BASE_CURRENCY, build_v021_fx_badge_contract
+from pfi_v02.stage_v021_frontend_contract import BASE_CURRENCY
 from pfi_v02.stage_v022_database_governance import (
     V022_STAGE1_REQUIRED_PARAMETER_DOMAINS,
     V022_STAGE1_TASK_IDS,
@@ -35,9 +35,13 @@ class TestPFIParametersConsistency(unittest.TestCase):
         self.assertIn("JSON-compatible YAML", contract["machine_readable_parameter_file"]["format"])
 
     def test_machine_readable_catalog_has_chinese_domain_directory(self) -> None:
-        self.assertEqual(self.catalog["schema"], "PFIParametersV022Stage1")
+        self.assertEqual(self.catalog["schema"], "PFIParametersV022Stage2")
         self.assertEqual(self.catalog["parameter_version"], "v0.2.2")
         self.assertEqual(self.catalog["stage1_task_ids"], list(V022_STAGE1_TASK_IDS))
+        self.assertEqual(
+            self.catalog["stage2_task_ids"],
+            ["S2-P1-T1", "S2-P1-T2", "S2-P1-T3", "S2-P2-T1", "S2-P2-T2", "S2-P2-T3"],
+        )
 
         domains = {item["key"]: item for item in self.catalog["domains"]}
         self.assertEqual(set(domains), set(V022_STAGE1_REQUIRED_PARAMETER_DOMAINS))
@@ -49,16 +53,16 @@ class TestPFIParametersConsistency(unittest.TestCase):
 
     def test_markdown_and_yaml_core_parameters_are_consistent(self) -> None:
         params = self.catalog["parameters"]
-        fx_contract = build_v021_fx_badge_contract()
 
         self.assertEqual(params["currency"]["base_currency"]["value"], BASE_CURRENCY)
         self.assertEqual(params["currency"]["base_currency"]["value"], "CNY")
-        self.assertEqual(params["currency"]["frontend_fx_badge_pair"]["value"], fx_contract["quote_pair"])
-        self.assertEqual(params["fx"]["frontend_badge_format"]["value"], fx_contract["display_format"])
-        self.assertEqual(params["fx"]["snapshot_time_local"]["value"], fx_contract["snapshot_time_local"])
+        self.assertEqual(params["currency"]["frontend_fx_badge_pair"]["value"], "AUD/CNY")
+        self.assertEqual(params["fx"]["frontend_badge_format"]["value"], "AUD/CNY=4.69（YYYYMMDD--HH:MM）")
+        self.assertEqual(params["fx"]["snapshot_time_local"]["value"], "06:00")
         self.assertFalse(params["fx"]["default_network_refresh"]["value"])
+        self.assertTrue(params["fx"]["explicit_refresh_requires_allow_network"]["value"])
 
-        for expected in ("base_currency | `CNY`", "fx_badge_pair | `CNY/AUD`", "fx_badge_format | `CNY/AUD=4.70"):
+        for expected in ("base_currency | `CNY`", "fx_badge_pair | `AUD/CNY`", "fx_badge_format | `AUD/CNY=4.69"):
             self.assertIn(expected, self.parameter_text)
         self.assertIn("每次运行默认联网 | `false`", self.parameter_text)
 
@@ -70,9 +74,10 @@ class TestPFIParametersConsistency(unittest.TestCase):
 
         self.assertIn(f"{pair}={rate:.2f}", self.index_html)
         self.assertIn(snapshot_time, self.index_html)
-        self.assertRegex(self.index_html, re.compile(r"CNY/AUD=4\.70（\d{8}--06:00）"))
+        self.assertRegex(self.index_html, re.compile(r"AUD/CNY=4\.69（\d{8}--06:00）"))
+        self.assertIn('data-fx-cache-state="cached"', self.index_html)
         self.assertEqual(params["fx"]["stage2_target_pair"]["value"], "AUD/CNY")
-        self.assertNotEqual(params["fx"]["stage2_target_pair"]["value"], pair)
+        self.assertEqual(params["fx"]["stage2_target_pair"]["value"], pair)
 
     def test_formulas_have_chinese_explanations_and_aliases(self) -> None:
         required_fields = {"formula_id", "name_zh", "purpose_zh", "inputs", "outputs", "logic_zh", "example_zh", "variable_aliases"}
