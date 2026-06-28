@@ -23,7 +23,7 @@ parameter_profile_versions:
   writeback: "writeback-proposal-parameters-v0"
   personalization_routing: "personalization-routing-parameters-v0"
 data_snapshot_version: "public_redacted_read_only_visualization"
-current_iteration: "ITER-20260626-OAIDB-D001"
+current_iteration: "ITER-20260629-OAIDB-D003"
 current_phase: "D"
 current_gate: "S5PB-GATE-IN-PROGRESS; MEMORY-ATLAS-CLOUDFLARE-LIVE-AUTH-REQUIRED"
 legacy_version_labels:
@@ -35,3 +35,4 @@ notes:
   - "Review9 S5PBT03 migrates OpenAIDatabase to Lean v2 canonical facts and Chinese human-readable entries without changing memory extraction, privacy, retrieval, atlas, writeback, personalization, data, frontend, script, or runtime behavior."
   - "Other8 S3PDT01 adds synthetic privacy import, redaction, Git leakage, and deletion-recovery contract tests without approving real raw export ingestion or delivery readiness."
   - "ITER-20260626-OAIDB-D001 renames Notion map to 数据导图, refreshes the redacted Memory Atlas snapshot, records Monday/Friday 03:00 Codex auto-update support, and passes local release/visual/acceptance/Cloudflare preflight; live Cloudflare Pages deployment still requires Wrangler/API-token authentication."
+  - "ITER-20260629-OAIDB-D003 repairs OpenAIDatabase CI evidence/schema compatibility and cross-platform path output without changing product version, live Cloudflare state, privacy boundary, or delivery readiness."

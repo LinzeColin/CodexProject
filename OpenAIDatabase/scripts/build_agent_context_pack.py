@@ -20,6 +20,10 @@ MEMORY_ATLAS = Path("data/derived/visualization/memory_atlas.json")
 DATA_SOURCE_REGISTRY = Path("config/data_sources/source_registry.json")
 
 
+def rel(path: Path) -> str:
+    return path.as_posix()
+
+
 def read_json(path: Path) -> dict[str, Any]:
     if not path.exists():
         return {}
@@ -129,19 +133,19 @@ def build_agent_context_pack(database_dir: Path) -> dict[str, Any]:
         "generated_at": recommendations.get("generated_at") or snapshot.get("generated_at") or overview.get("generated_at") or "",
         "source": "OpenAIDatabase redacted derived memory surfaces",
         "source_files": {
-            "core_profile": str(CORE_PROFILE),
-            "codex_recommendations": str(CODEX_RECOMMENDATIONS),
-            "codex_snapshot": str(CODEX_SNAPSHOT),
-            "memory_atlas": str(MEMORY_ATLAS),
-            "data_source_registry": str(DATA_SOURCE_REGISTRY),
+            "core_profile": rel(CORE_PROFILE),
+            "codex_recommendations": rel(CODEX_RECOMMENDATIONS),
+            "codex_snapshot": rel(CODEX_SNAPSHOT),
+            "memory_atlas": rel(MEMORY_ATLAS),
+            "data_source_registry": rel(DATA_SOURCE_REGISTRY),
         },
         "read_order": [
-            str(DEFAULT_MARKDOWN_OUTPUT),
-            str(DEFAULT_JSON_OUTPUT),
-            str(CORE_PROFILE),
-            str(CODEX_RECOMMENDATIONS),
-            str(MEMORY_ATLAS),
-            str(DATA_SOURCE_REGISTRY),
+            rel(DEFAULT_MARKDOWN_OUTPUT),
+            rel(DEFAULT_JSON_OUTPUT),
+            rel(CORE_PROFILE),
+            rel(CODEX_RECOMMENDATIONS),
+            rel(MEMORY_ATLAS),
+            rel(DATA_SOURCE_REGISTRY),
         ],
         "memory": {
             "purpose": "给任意 ChatGPT / Codex / future agent 作为长期记忆和 RAG 入口。",
@@ -159,7 +163,7 @@ def build_agent_context_pack(database_dir: Path) -> dict[str, Any]:
             "startup_instruction_zh": "新 agent 启动后先读取本文件、CORE_PROFILE 和 Memory Atlas，再生成适配用户的 profile、preference、project context、rules 和 history summary；不要依赖聊天上下文猜测。",
         },
         "profile": {
-            "core_profile_path": str(CORE_PROFILE),
+            "core_profile_path": rel(CORE_PROFILE),
             "core_profile_item_count": len(core_profile_items),
             "core_profile_items": core_profile_items,
         },
@@ -189,7 +193,7 @@ def build_agent_context_pack(database_dir: Path) -> dict[str, Any]:
             "atlas_edges": int(overview.get("edge_count") or 0),
         },
         "data_sources": {
-            "registry_path": str(DATA_SOURCE_REGISTRY),
+            "registry_path": rel(DATA_SOURCE_REGISTRY),
             "schema_version": registry.get("schema_version") or "",
             "contract_version": registry.get("contract_version") or "",
             "active": [source for source in data_sources if source.get("status") == "active"],

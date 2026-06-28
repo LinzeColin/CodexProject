@@ -60,6 +60,63 @@ def is_pending(value: Any) -> bool:
     return isinstance(value, str) and value.upper() == "PENDING"
 
 
+def is_legacy_sync_run(row: dict[str, Any]) -> bool:
+    return (
+        row.get("category") == "sync_runs"
+        and row.get("task") == "sync_codex_memory_data"
+        and "run_type" not in row
+    )
+
+
+def normalize_legacy_sync_run(row: dict[str, Any]) -> dict[str, Any]:
+    status = row.get("status") if row.get("status") in VALID_STATUSES else "FAIL"
+    tests = row.get("tests") if isinstance(row.get("tests"), list) else []
+    tests_run = [
+        {
+            "command": str(test),
+            "result": "NOT_RUN",
+            "not_run_reason": "legacy sync log recorded test names without per-command exit code or evidence",
+        }
+        for test in tests
+    ] or [
+        {
+            "command": "legacy sync_codex_memory_data",
+            "result": "NOT_RUN",
+            "not_run_reason": "legacy sync log predates task-run evidence schema",
+        }
+    ]
+    return {
+        "timestamp": row.get("timestamp"),
+        "category": row.get("category"),
+        "task_id": "TASK-OAI-D-001",
+        "run_type": "sync_run",
+        "status": status,
+        "task": row.get("task"),
+        "updated_targets": row.get("updated_targets", []),
+        "source_files": row.get("source_files", []),
+        "output_files": row.get("output_files", []),
+        "context_used": [
+            {
+                "source": "local Codex session logs redacted in memory only",
+                "reason": "legacy sync input; raw transcripts are not committed",
+            }
+        ],
+        "tools_used": [
+            {
+                "tool": "python",
+                "operation": "sync_codex_memory_data",
+                "result": "success" if status == "PASS" else "failure",
+            }
+        ],
+        "tests_run": tests_run,
+        "failure_recovery": [],
+        "base_commit": "LEGACY_SYNC_LOG_PRE_TASK_RUN_SCHEMA",
+        "result_commit": "LEGACY_SYNC_LOG_PRE_TASK_RUN_SCHEMA",
+        "risks": row.get("risks", []),
+        "residual_risks": row.get("risks", []),
+    }
+
+
 def require_list(row: dict[str, Any], field: str, failures: list[str], prefix: str) -> list[Any]:
     value = row.get(field)
     if not isinstance(value, list):
@@ -73,6 +130,8 @@ def validate_task_run_record(database_dir: Path, path: Path, line_no: int, row: 
     if not isinstance(row, dict):
         failures.append(f"invalid_jsonl_row:{scope}:not_object")
         return
+    if is_legacy_sync_run(row):
+        row = normalize_legacy_sync_run(row)
 
     required = [
         "task_id",

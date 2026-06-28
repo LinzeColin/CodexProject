@@ -8,6 +8,8 @@ OpenAIDatabase 当前治理结论：实现一致性为 `PARTIAL`，方法/实证
 
 Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。
 
+本次维护仅修复 CI：旧 `sync_runs` 证据记录可被 evaluator 兼容读取，未来 sync 记录会写完整 task-run schema，Windows/Linux 路径输出保持一致，缺少 `openssl` 时归档步骤 fail-closed 而不是崩溃。交付状态仍是 `FAILED`，不代表 Cloudflare live 部署或生产记忆安全已通过。
+
 ## 3. 为什么重要
 
 验证系统有用且不会把私密内容错误持久化或泄漏。
