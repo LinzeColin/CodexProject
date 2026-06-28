@@ -7,11 +7,11 @@ PFI V0.2 is the Personal Financial Intelligence project under
 under `LinzeColin/CodexProject/QBVS`; PFI investment management does not own
 or cover QBVS.
 
-## v0.2.2 数据库治理 Stage 4
+## v0.2.2 数据库治理 Stage 5
 
-`v0.2.2 数据库治理` 当前完成 Stage 4：Economic Event 与 Interconnection 逻辑。本轮建立 `economic_event_id`、`interconnection_group_id`、事件影响 flags、Interconnection Matrix、Metric Dependency Graph 和 no-double-count 合同；同一真实经济事件可多处展示，但同一核心指标只计算一次。本轮不实现 Stage 5 分类 taxonomy，不新增真实交易、自动投资、支付或券商提交能力。
+`v0.2.2 数据库治理` 当前完成 Stage 5：统一账本事件、消费双口径与分类体系。本轮在 Stage 4 的 Interconnection 事实层之上建立 Stage 5 事件类型表、首页 / 消费页 / 报告共用的双消费口径，以及 `L1 ≤ 12`、每类 `L2 ≤ 5`、总 `L2 ≤ 50` 的中文消费分类 taxonomy。本轮不实现 Stage 6 标签持久化，不新增真实交易、自动投资、支付或券商提交能力。
 
-Stage 4 source files:
+Stage 5 source files:
 
 | Purpose | Path |
 | --- | --- |
@@ -22,9 +22,11 @@ Stage 4 source files:
 | Stage 2 验收报告 | `docs/pfi_v022/STAGE2_CNY_FX_GOVERNANCE.md` |
 | Stage 3 验收报告 | `docs/pfi_v022/STAGE3_SOURCE_ACCOUNT_PROFILE.md` |
 | Stage 4 验收报告 | `docs/pfi_v022/STAGE4_INTERCONNECTION.md` |
+| Stage 5 验收报告 | `docs/pfi_v022/STAGE5_LEDGER_TAXONOMY.md` |
 | Interconnection Matrix | `docs/pfi_v02/INTERCONNECTION_MATRIX.md` |
 | Stage 0-13 roadmap lock | `docs/pfi_v022/ROADMAP_LOCK.md` |
 | Stage 4 contract | `src/pfi_v02/stage_v022_database_governance.py` |
+| Stage 5 ledger taxonomy | `src/pfi_v02/stage_v022_ledger_taxonomy.py` |
 | 汇率快照读取模块 | `src/pfi_v02/stage_v022_fx.py` |
 | 数据源与账户角色模块 | `src/pfi_v02/stage_v022_source_profile.py` |
 | Interconnection 模块 | `src/pfi_v02/stage_v022_interconnection.py` |
@@ -33,9 +35,10 @@ Stage 4 source files:
 | Stage 3 source/account test | `tests/test_v022_stage3_source_account_profiles.py` |
 | Stage 4 no-double-count test | `tests/test_v022_interconnection_no_double_count.py` |
 | Stage 4 consumption/investment outflow test | `tests/test_v022_consumption_investment_outflow.py` |
+| Stage 5 ledger taxonomy test | `tests/test_v022_stage5_ledger_taxonomy.py` |
 | 参数一致性测试 | `tests/test_pfi_parameters_consistency.py` |
 
-Stage 4 locked parameters:
+Stage 5 locked parameters:
 
 - 主货币：`CNY`。
 - 当前前端徽标：`AUD/CNY=4.69（YYYYMMDD--HH:MM）`。
@@ -58,6 +61,12 @@ Stage 4 locked parameters:
 - `生活消费`：普通生活消费进入该口径，退款抵消；投资入金、基金申购、投资买入不进入。
 - Stage 4 stop condition：`投资入金未进入消费总流出`、`基金申购未进入消费总流出`、`投资入金错误进入生活消费`、同一 `interconnection_group_id` 重复进入核心金额。
 - Agent 1 复核消费、投资、现金流口径；Agent 2 复核 source -> transaction -> group -> economic event -> ledger -> metric 链路。
+- Stage 5 事件类型表：消费、投资入金、基金申购、黄金申购、投资买入、投资卖出、退款、费用、信用卡还款、内部转账、收入、估值、汇率兑换。
+- Stage 5 双消费展示：首页、消费页、报告必须同时展示 `消费总流出` 与 `生活消费` 并解释差异。
+- Stage 5 分类约束：`L1 ≤ 12`、每类 `L2 ≤ 5`、总 `L2 ≤ 50`、每笔交易主分类数量为 `1`。
+- Stage 5 默认 taxonomy：餐饮食品、居住家庭、交通出行、购物用品、医疗健康、教育成长、娱乐社交、订阅服务、金融费用、投资资金流出、家庭责任、调整其他。
+- Stage 5 stop condition：事件类型不足、影响口径缺失、投资入金或基金申购未进入消费总流出、生活消费被投资资金流污染、分类超限、后续无法合并分类。
+- Stage 6 标签持久化、自定义标签增删改、标签历史和标签视图仍是后续单独 gate。
 
 ## v0.2.1 前端优化 Stage 0
 

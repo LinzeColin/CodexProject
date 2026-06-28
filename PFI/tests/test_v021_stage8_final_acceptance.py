@@ -137,6 +137,12 @@ class V021Stage8FinalAcceptanceTest(unittest.TestCase):
         self.assertIn("本机真实上传与支付宝账本", body)
         self.assertIn("height=1120", body)
 
+        upload_start = self.app_source.index("def render_pfi_local_data_upload_panel()")
+        upload_end = self.app_source.index("def _load_existing_alipay_import_manifest()", upload_start)
+        upload_body = self.app_source[upload_start:upload_end]
+        self.assertNotIn("st.expander(", upload_body)
+        self.assertNotIn('page_icon="PFI"', self.app_source)
+
 
 if __name__ == "__main__":
     unittest.main()

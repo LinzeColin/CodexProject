@@ -21,7 +21,7 @@ Roadmap 形态：`Stage -> Phase -> Task`
 | Stage 2 | CNY 基准与汇率规则 | 本轮完成 | CNY 主显示、原币辅助、06:00 有效汇率日、本地快照读取。 |
 | Stage 3 | 数据源、账户角色与可扩展结构 | 本轮完成 | Source Profile、capabilities、`other_source_template`、账户角色重叠和生效期。 |
 | Stage 4 | Economic Event 与 Interconnection 逻辑 | 本轮完成 | `economic_event_id`、`interconnection_group_id`、事件影响 flags、Interconnection Matrix、Metric Dependency Graph、no-double-count。 |
-| Stage 5 | 统一账本事件、消费双口径与分类体系 | 待 owner 开启 | event type、双消费口径、12 大类 / 50 中类。 |
+| Stage 5 | 统一账本事件、消费双口径与分类体系 | 本轮完成 | event type、双消费口径、12 大类 / 50 中类。 |
 | Stage 6 | 标签系统与自定义视图 | 待 owner 开启 | 标签注册、赋值、规则、变更历史和视图。 |
 | Stage 7 | 模型公式、阈值与评分标准 | 待 owner 开启 | 置信度、消费、投资、现金流公式。 |
 | Stage 8 | 本地运行 Diff 与 Impacted Metrics | 待 owner 开启 | dependency hash、diff 收紧、LLM 触发规则。 |
@@ -245,3 +245,55 @@ node --check PFI/web/app/shell.js
 python3 scripts/validate_project_governance.py --project PFI
 git diff --check -- PFI
 ```
+
+## Stage 5 - 统一账本事件、消费双口径与分类体系 Task Lock
+
+| Task ID | Phase | 交付物 | 状态 |
+| --- | --- | --- | --- |
+| `S5-P1-T1` | Phase 5.1 | 账本事件类型表，覆盖消费、投资入金、基金申购、黄金申购、投资买入、投资卖出、退款、费用、信用卡还款、内部转账、收入、估值、汇率兑换 | 本轮完成 |
+| `S5-P1-T2` | Phase 5.1 | event type policy，每个事件绑定消费总流出、生活消费、投资、净资产、现金流影响口径 | 本轮完成 |
+| `S5-P2-T1` | Phase 5.2 | `消费总流出金额` 公式与展示模板 | 本轮完成 |
+| `S5-P2-T2` | Phase 5.2 | `生活消费金额` 公式与展示模板 | 本轮完成 |
+| `S5-P2-T3` | Phase 5.2 | 首页、消费页、报告双口径模板 | 本轮完成 |
+| `S5-P3-T1` | Phase 5.3 | 12 个以内 L1 大类 | 本轮完成 |
+| `S5-P3-T2` | Phase 5.3 | 每个 L1 最多 5 个 L2 | 本轮完成 |
+| `S5-P3-T3` | Phase 5.3 | 总 L2 不超过 50 的测试 | 本轮完成 |
+| `S5-P3-T4` | Phase 5.3 | 每个 L1 预留 `future_merge_to` / `merge_candidate` | 本轮完成 |
+
+## Stage 5 Acceptance Criteria
+
+- 统一账本事件类型表足以表达真实资金流，包含估值和汇率兑换。
+- 每个 event type 都写明 `affects_total_consumption_outflow`、`affects_living_consumption`、`affects_investment`、`affects_net_worth`、`affects_cashflow`。
+- `消费总流出金额` 包含生活消费、投资入金、基金申购、黄金申购、投资买入、金融费用，并由退款抵消。
+- `生活消费金额` 只包含普通生活消费，排除投资入金、基金申购、黄金申购、投资买入、内部转账和信用卡还款。
+- 首页、消费页、报告同时展示 `消费总流出` 与 `生活消费`，并解释差异。
+- 分类约束为 `L1 ≤ 12`、每类 `L2 ≤ 5`、总 `L2 ≤ 50`。
+- 每笔交易主分类数量为 `1`；多维分析标签留到 Stage 6。
+- 每个 L1 都有 `future_merge_to` 或 `merge_candidate`，后续可压缩到 10 类或更少。
+
+## Stage 5 Stop Condition
+
+- 事件类型不足以表达真实资金流。
+- 任一事件影响口径缺失。
+- 投资入金未计入消费总流出。
+- 基金申购未计入消费总流出。
+- 黄金申购或投资买入未计入消费总流出。
+- 投资入金、基金申购、黄金申购或投资买入错误进入生活消费。
+- 首页、消费页、报告只显示一个消费数字导致误解。
+- 分类超过 12 大类、任一大类超过 5 中类、或总中类超过 50。
+- 后续无法合并分类。
+
+当前检查结论：以上停止条件均未触发。Stage 6 标签持久化、自定义标签增删改、标签历史、标签筛选视图不在本轮实现。
+
+## Stage 5 Validation
+
+```bash
+PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests/test_v022_stage5_ledger_taxonomy.py -q
+PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests/test_v022_stage0_database_governance.py PFI/tests/test_pfi_parameters_consistency.py PFI/tests/test_v022_fx_effective_date.py PFI/tests/test_v022_stage3_source_account_profiles.py PFI/tests/test_v022_interconnection_no_double_count.py PFI/tests/test_v022_consumption_investment_outflow.py PFI/tests/test_v022_stage5_ledger_taxonomy.py -q
+PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests -q
+node --check PFI/web/app/shell.js
+python3 scripts/validate_project_governance.py --project PFI
+git diff --check -- PFI
+```
+
+当前本地 closeout 结果：Stage 5 目标测试 `5 passed`；Stage 0-5 v0.2.2 回归 `45 passed`；完整 PFI pytest `203 passed`；治理 `errors 0 / warnings 0`；Web shell 语法、Streamlit compile、`git diff --check -- PFI` 通过；App 入口验收 `29 pass / 0 fail / 2 info`；浏览器 8501 console errors `0`。

@@ -67,6 +67,21 @@
 - Agent 1 复核消费/投资/现金流口径；Agent 2 复核 source -> transaction -> group -> economic event -> ledger -> metric 链路。
 - 本轮不实现 Stage 5 分类 taxonomy，不修改 v0.2.1 Web Shell UIUX 基线，不做真实交易、自动投资、支付或券商提交。
 
+## Stage 5 范围
+
+本轮完成统一账本事件、消费双口径与分类体系：
+
+- 新增 `PFI/src/pfi_v02/stage_v022_ledger_taxonomy.py`，建立 Stage 5 统一账本事件类型表、双消费展示模板和默认消费分类 taxonomy。
+- 账本事件类型覆盖消费、投资入金、基金申购、黄金申购、投资买入、投资卖出、退款、费用、信用卡还款、内部转账、收入、估值、汇率兑换。
+- 每个事件绑定 `affects_total_consumption_outflow`、`affects_living_consumption`、`affects_investment`、`affects_net_worth`、`affects_cashflow`。
+- `消费总流出` 包含生活消费、投资入金、基金申购、黄金申购、投资买入、金融费用，并由退款抵消。
+- `生活消费` 只包含普通生活消费，排除投资入金、基金申购、黄金申购、投资买入、内部转账和信用卡还款。
+- 首页、消费页、报告模板同时展示 `消费总流出` 与 `生活消费`，并说明差异。
+- 默认分类 taxonomy 为 `L1 ≤ 12`、每个 L1 的 `L2 ≤ 5`、总 `L2 ≤ 50`。
+- 每个 L1 保留 `future_merge_to` / `merge_candidate`，后续可压缩到 10 类或更少。
+- 新增 `PFI/tests/test_v022_stage5_ledger_taxonomy.py`，验证 Stage 5 acceptance criteria 和 stop condition。
+- 本轮不实现 Stage 6 标签持久化、自定义标签增删改、标签历史或标签视图；不修改 v0.2.1 Web Shell UIUX 基线，不做真实交易、自动投资、支付或券商提交。
+
 ## 文件
 
 | 文件 | 用途 |
@@ -77,5 +92,6 @@
 | `STAGE2_CNY_FX_GOVERNANCE.md` | Stage 2 CNY 与汇率治理验收报告。 |
 | `STAGE3_SOURCE_ACCOUNT_PROFILE.md` | Stage 3 数据源 Profile、账户角色和生效期验收报告。 |
 | `STAGE4_INTERCONNECTION.md` | Stage 4 Economic Event、Interconnection Matrix、no-double-count 和双消费口径验收报告。 |
+| `STAGE5_LEDGER_TAXONOMY.md` | Stage 5 统一账本事件、消费双口径和消费分类 taxonomy 验收报告。 |
 | `SOURCE_TASK_PACK_MANIFEST.md` | Downloads 来源文件、SHA-256 和使用边界。 |
 | `ROADMAP_LOCK.md` | v0.2.2 Stage / Phase / Task / Acceptance / Stop / Validation 锁定摘要。 |

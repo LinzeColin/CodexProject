@@ -44,6 +44,12 @@
 | 2026-06-28 | `S4-P2-T1` | `interconnection.interconnection_matrix` | `无正式中文矩阵` | `PFI/docs/pfi_v02/INTERCONNECTION_MATRIX.md` | Stage 4 要求每类事件可读、可验收、可复核。 | GitHub 验收、三基文件、后续 UI 参数中心。 |
 | 2026-06-28 | `S4-P2-T2` | `interconnection.matrix_fields` | `无统一字段` | `event_type/中文名/是否影响消费总流出/生活消费/投资/净资产/现金流/展示面/抵消规则` | 矩阵字段必须覆盖 roadmap 要求的所有口径。 | Interconnection Matrix、合同测试、报告说明。 |
 | 2026-06-28 | `S4-P2-T3` | `consumption_model.double_count_rules` | `投资入金、基金申购、信用卡还款、退款规则未形成统一机器口径` | `投资入金和基金申购进入消费总流出但不进入生活消费；退款抵消原消费；信用卡还款不重复计入生活消费` | 满足 Stage 4 stop condition：不得出现投资入金未进入消费总流出、基金申购未进入消费总流出或投资入金错误进入生活消费。 | 消费总流出、生活消费、投资现金、基金资产、现金流、报告与洞察。 |
+| 2026-06-28 | `S5-P1-T1` | `event_types.stage5_ledger_event_type_table` | `Stage 4 event_type_policies，未单独包含估值事件` | `13 类统一账本事件，包含估值和汇率兑换` | Stage 5 要求事件类型表足以表达真实资金流、估值和汇率兑换。 | 账本流水、首页总览、消费管理、投资管理、现金流、报告与洞察、测试。 |
+| 2026-06-28 | `S5-P1-T2` | `event_types.required_affects_flags` | `Stage 4 flags 已用于 Interconnection` | `Stage 5 事件类型表强制五个 flags：消费总流出、生活消费、投资、净资产、现金流` | 每种事件必须绑定影响口径，避免首页、消费页和报告解释不一致。 | 指标计算、参数中心、报告说明、合同测试。 |
+| 2026-06-28 | `S5-P2-T1` | `consumption_model.gross_consumption_includes` | `Stage 4 已覆盖普通消费、投资入金、基金申购、黄金申购、投资买入、费用` | `正式锁定为生活消费、投资入金、基金申购、黄金申购、投资买入、金融费用，退款抵消` | Stage 5 要求新增消费总流出金额并进入首页、消费页和报告模板。 | 首页总览、消费管理、报告与洞察、测试。 |
+| 2026-06-28 | `S5-P2-T2` | `consumption_model.living_consumption_excludes` | `Stage 4 规则已排除投资入金、基金申购、投资买入` | `排除投资入金、基金申购、黄金申购、投资买入、内部转账、信用卡还款` | 保证生活消费不被投资资金流和还款污染。 | 消费管理、预算、报告、测试。 |
+| 2026-06-28 | `S5-P2-T3` | `consumption_model.double_consumption_surfaces` | `无正式 Stage 5 展示面参数` | `homepage, consumption_page, report 同时展示消费总流出与生活消费` | 避免只显示一个消费数字导致误解。 | 首页总览、消费管理、报告与洞察、测试。 |
+| 2026-06-28 | `S5-P3-T1..S5-P3-T4` | `consumption_categories.default_taxonomy` | `只有数量上限，无正式 12 大类 / 50 中类 taxonomy` | `12 个 L1、50 个 L2、每个 L1 有 future_merge_to / merge_candidate` | Stage 5 要求建立默认消费分类，并预留后续压缩到 10 类或更少的字段。 | 账本流水、消费管理、报告与洞察、参数中心、测试。 |
 
 ## 记录规则
 
