@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import contextlib
+import concurrent.futures
 import csv
 import importlib.util
 import io
@@ -1253,6 +1254,49 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertFalse(symlink["clean"])
         self.assertEqual(symlink["content_changed_files"], ["link.txt"])
 
+    def test_s3pat01_zero_write_linked_worktree_dirty_file_modified_fails(self) -> None:
+        cli = load_lean_governance_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            main_worktree = tmp_path / "main"
+            linked_worktree = tmp_path / "linked"
+            main_worktree.mkdir()
+            self._init_m1_zero_write_repo(main_worktree)
+            subprocess.run(
+                ["git", "worktree", "add", "--detach", str(linked_worktree), "HEAD"],
+                cwd=main_worktree,
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+            try:
+                target = linked_worktree / "README.md"
+                target.write_text("linked dirty before\n", encoding="utf-8")
+                before_status = cli.git_status_porcelain(linked_worktree)
+                before_snapshot = cli.worktree_status_snapshot(linked_worktree, before_status)
+                target.write_text("linked dirty after\n", encoding="utf-8")
+                after_status = cli.git_status_porcelain(linked_worktree)
+                after_snapshot = cli.worktree_status_snapshot(linked_worktree, after_status)
+            finally:
+                subprocess.run(
+                    ["git", "worktree", "remove", "--force", str(linked_worktree)],
+                    cwd=main_worktree,
+                    check=False,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                )
+
+        delta = cli.worktree_write_delta(
+            before_status,
+            after_status,
+            clean_start_required=False,
+            before_snapshot=before_snapshot,
+            after_snapshot=after_snapshot,
+        )
+        self.assertFalse(delta["clean"])
+        self.assertEqual(before_status, after_status)
+        self.assertEqual(delta["content_changed_files"], ["README.md"])
+
     def _copy_m1_1_pack_and_bundle(self, tmp_path: Path) -> tuple[Path, Path]:
         pack_copy = tmp_path / "taskpack"
         bundle_copy = tmp_path / "review_bundle"
@@ -1471,6 +1515,157 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             self.assertTrue(Path(first["path_or_artifact_ref"]).is_file())
             self.assertTrue(Path(second["path_or_artifact_ref"]).is_file())
             self.assertEqual(first["sha256"], second["sha256"])
+
+    def test_s3pat01_full_evidence_concurrent_writes_are_unique_and_hash_bound(self) -> None:
+        cli = load_lean_governance_module()
+        summary = cli.with_stable_summary_hash(
+            {
+                "schema_version": 1,
+                "command": "ci",
+                "scope": "changed-only",
+                "changed_scope": {"base_ref_status": "resolved", "changed_files": [], "selected_project_count": 0},
+                "validation": {"argv": [], "exit_code": 0, "output": ["projects checked: none"]},
+                "check_render": {"checked_count": 0, "skipped_count": 0, "skipped": []},
+                "selector_parity": {"selected_project_count": 0, "validation_checked_project_count": 0, "matches": True},
+                "zero_write_delta": {"clean": True, "clean_start_required": False, "clean_start_ok": True},
+                "zero_diff": {"clean": True},
+            }
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            with patch.dict(os.environ, {"GOVERNANCE_EVIDENCE_DIR": tmp}, clear=False):
+                with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
+                    refs = list(pool.map(lambda _: cli.write_full_evidence(summary, root=ROOT), range(8)))
+
+            paths = [Path(ref["path_or_artifact_ref"]) for ref in refs]
+            self.assertEqual(len({str(path) for path in paths}), 8)
+            self.assertEqual({ref["sha256"] for ref in refs}, {refs[0]["sha256"]})
+            for path in paths:
+                self.assertTrue(path.is_file(), path)
+
+    def test_s3pbt01_ordinary_context_contract_is_bounded_and_excludes_heavy_paths(self) -> None:
+        cli = load_lean_governance_module()
+        contract = cli.ordinary_context_contract(ROOT)
+
+        self.assertTrue(contract["within_budget"], contract)
+        self.assertLessEqual(contract["default_file_count"], 5)
+        self.assertLessEqual(contract["default_total_bytes"], 12 * 1024)
+        default_paths = {item["path"] for item in contract["default_files"]}
+        self.assertEqual(default_paths, {"AGENTS.md", "README.md"})
+        self.assertIn("scripts/lean_governance.py", contract["forbidden_default_reads"])
+        self.assertIn("governance/run_manifests", contract["forbidden_default_reads"])
+        self.assertIn("T2_or_T3_risk", contract["escalation_triggers"])
+        self.assertIn("manifest_or_evidence_ref", contract["escalation_triggers"])
+
+    def test_s3pbt02_root_agents_is_under_4kb_and_keeps_core_rules(self) -> None:
+        text = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+        self.assertLessEqual(len(text.encode("utf-8")), 4096)
+        for required in (
+            "中文优先",
+            "功能清单.md",
+            "开发记录.md",
+            "模型参数文件.md",
+            "Roadmap",
+            "T0",
+            "T1",
+            "T2",
+            "T3",
+            "READ_ONLY",
+            "IMPLEMENT",
+            "zero tracked/source write",
+            "GitHub source-of-truth",
+        ):
+            self.assertIn(required, text)
+        self.assertIn("scripts/lean_governance.py", text)
+        self.assertIn("governance/run_manifests", text)
+
+    def test_s3pct01_adp_a020_gate_decision_is_path_aware_and_fail_closed(self) -> None:
+        cli = load_lean_governance_module()
+        config = {
+            "projects": [
+                {"project_id": "Alpha", "path": "Alpha"},
+                {"project_id": "arxiv-daily-push", "path": "arxiv-daily-push"},
+            ]
+        }
+
+        self.assertFalse(
+            cli.adp_a020_gate_decision(["Alpha/README.md"], config=config)["run_gate"]
+        )
+        self.assertTrue(
+            cli.adp_a020_gate_decision(["arxiv-daily-push/README.md"], config=config)["run_gate"]
+        )
+        self.assertTrue(
+            cli.adp_a020_gate_decision(["scripts/lean_governance.py"], config=config)["run_gate"]
+        )
+        workflow = cli.adp_a020_gate_decision([".github/workflows/project-governance.yml"], config=config)
+        self.assertTrue(workflow["run_gate"])
+        self.assertEqual(workflow["reason"], "root_governance_or_ci_changed")
+        self.assertEqual(workflow["matched_files"], [".github/workflows/project-governance.yml"])
+        self.assertTrue(cli.adp_a020_gate_decision([], config=config)["run_gate"])
+        self.assertTrue(
+            cli.adp_a020_gate_decision(["unknown/file.md"], config=config)["run_gate"]
+        )
+        unresolved = cli.adp_a020_gate_decision(
+            ["Alpha/README.md"],
+            config=config,
+            base_ref_status="unresolved",
+            error_code="UNRESOLVED_BASE",
+        )
+        self.assertTrue(unresolved["run_gate"])
+        self.assertEqual(unresolved["reason"], "diff_untrusted_fail_closed")
+
+    def test_s3pct01_adp_a020_cli_invalid_base_fails_closed(self) -> None:
+        result = run_lean("adp-a020-gate", "--base-ref", "__missing_s3pct01_base__")
+        self.assertEqual(result.returncode, 0)
+        payload = json.loads(result.stdout)
+        self.assertTrue(payload["run_gate"])
+        self.assertEqual(payload["base_ref_status"], "unresolved")
+        self.assertEqual(payload["error_code"], "UNRESOLVED_BASE")
+
+    def test_s3pct01_content_diff_helper_ignores_status_only_noise(self) -> None:
+        cli = load_lean_governance_module()
+        with (
+            patch.object(cli.governance, "explicit_base_ref", return_value="BASE"),
+            patch.object(cli.governance, "git_ref_exists", return_value=True),
+            patch.object(cli.subprocess, "check_output", side_effect=["AGENTS.md\n", ""]) as check_output,
+        ):
+            changed = cli.git_content_changed_files("BASE", root=ROOT)
+
+        self.assertEqual(changed, ["AGENTS.md"])
+        called = [" ".join(call.args[0]) for call in check_output.call_args_list]
+        self.assertTrue(any("diff --name-only BASE" in command for command in called))
+        self.assertFalse(any("status" in command for command in called))
+
+    def test_s3pct01_changed_scope_uses_content_diff_not_status_union(self) -> None:
+        cli = load_lean_governance_module()
+        config = {
+            "root_governance": {"required_files": ["AGENTS.md"]},
+            "projects": [
+                {"project_id": "Alpha", "path": "Alpha", "ci_mode": "required"},
+                {"project_id": "arxiv-daily-push", "path": "arxiv-daily-push", "ci_mode": "required"},
+            ],
+        }
+        with (
+            patch.object(cli.governance, "load_yaml", return_value=config),
+            patch.object(
+                cli.governance,
+                "git_changed_files",
+                return_value=["AGENTS.md", "arxiv-daily-push/tests/test_security_boundary.py"],
+            ),
+            patch.object(cli, "git_content_changed_files", return_value=["AGENTS.md"]),
+        ):
+            scope = cli.build_changed_scope("BASE", root=ROOT, projects_file=ROOT / "governance" / "projects.yaml")
+
+        self.assertEqual(scope["changed_files"], ["AGENTS.md"])
+        self.assertTrue(scope["root_governance_changed"])
+
+    def test_s3pct01_workflow_uses_preflight_without_paths_ignore(self) -> None:
+        workflow = (ROOT / ".github" / "workflows" / "project-governance.yml").read_text(encoding="utf-8")
+        self.assertIn("id: adp-a020-preflight", workflow)
+        self.assertIn("scripts/lean_governance.py adp-a020-gate", workflow)
+        self.assertIn("adp-a020-preflight.json", workflow)
+        self.assertIn("steps.adp-a020-preflight.outputs.run_gate == 'true'", workflow)
+        self.assertIn("preflight_error_fail_closed", workflow)
+        self.assertNotIn("paths-ignore", workflow)
 
     def test_m1_s3pct02_candidate_shadow_comparison_preserves_legacy_exit_code(self) -> None:
         cli = load_lean_governance_module()
@@ -4510,7 +4705,8 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             self.assertTrue(payload["candidate_report_only"])
             self.assertEqual(payload["legacy_exit_code"], 0)
             self.assertIn("M1-S2PC-PRE-S3", payload["acceptance_ids"])
-            self.assertIn("S3PBT04", payload["acceptance_ids"])
+            self.assertIn("S3PAT01", payload["acceptance_ids"])
+            self.assertIn("S3PCT02", payload["acceptance_ids"])
             self.assertTrue(payload["zero_tracked_write"])
             self.assertTrue(payload["stable_summary_hash"].startswith("sha256:"))
             self.assertEqual(payload["check_plan"]["next_action_zh"], "查看 full_evidence_ref。")
@@ -11819,6 +12015,272 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
 
             with self.assertRaisesRegex(ValueError, "Unknown render view"):
                 cli.render_project_files(project_root, write=False, view="unknown-view")
+
+    def test_m1_s4_project_execution_capsules_define_verify_and_model_escalation(self) -> None:
+        projects = [
+            "PFI",
+            "arxiv-daily-push",
+            "Alpha",
+            "FIFA",
+            "OpMe_System",
+            "OpenAIDatabase",
+            "Serenity-Alipay",
+            "whkmSalary",
+        ]
+        for project in projects:
+            with self.subTest(project=project):
+                text = (ROOT / project / "AGENTS.md").read_text(encoding="utf-8")
+                self.assertIn("S4", text)
+                self.assertIn("精简执行胶囊", text)
+                self.assertIn("不得", text)
+                self.assertRegex(text, r"(?i)verify|验证")
+                self.assertIn("模型参数文件.md", text)
+                self.assertIn("lean_governance.py", text)
+
+    def test_m1_s4_adp_capsule_routes_source_changes_to_full_gate(self) -> None:
+        text = (ROOT / "arxiv-daily-push" / "AGENTS.md").read_text(encoding="utf-8")
+        self.assertIn("普通非来源变更", text)
+        self.assertIn("不得默认读取完整 `用户中心/`", text)
+        self.assertIn("来源、板块、scheduler、SMTP、storage、security、ranking", text)
+        self.assertIn("完整特殊", text)
+        self.assertIn("test_security_boundary.py", text)
+        self.assertIn("test_source_registry.py", text)
+
+    def test_m1_s4_metadatabase_current_task_uses_legal_lean_id(self) -> None:
+        current_files = [
+            ROOT / "MetaDatabase" / "docs" / "governance" / "roadmap.yaml",
+            ROOT / "MetaDatabase" / "docs" / "governance" / "ASSURANCE_STATUS.yaml",
+            ROOT / "MetaDatabase" / "docs" / "governance" / "TRACEABILITY_MATRIX.csv",
+            ROOT / "MetaDatabase" / "功能清单.md",
+            ROOT / "MetaDatabase" / "开发记录.md",
+        ]
+        for path in current_files:
+            with self.subTest(path=str(path.relative_to(ROOT))):
+                text = path.read_text(encoding="utf-8")
+                self.assertIn("S1PAT01", text)
+                self.assertNotIn("TASK-MDB-S0-001", text)
+
+        delivery = (ROOT / "MetaDatabase" / "docs" / "governance" / "delivery_tasks.yaml").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn('task_id: "S1PAT01"', delivery)
+        self.assertIn('legacy_task_ids:', delivery)
+        self.assertIn('"TASK-MDB-S0-001"', delivery)
+
+    def test_m1_s4_qbvs_identity_is_consistent_across_current_entries(self) -> None:
+        project_text = (ROOT / "QBVS" / "docs" / "governance" / "project.yaml").read_text(encoding="utf-8")
+        roadmap_text = (ROOT / "QBVS" / "docs" / "governance" / "roadmap.yaml").read_text(encoding="utf-8")
+        self.assertIn('project_id: "QBVS"', project_text)
+        self.assertIn('display_name: "大数据模拟器（QBVS / Quant Behavior Validation System）"', project_text)
+        self.assertIn('project_id: "QBVS"', roadmap_text)
+
+        for relative in ["README.md", "功能清单.md", "开发记录.md", "模型参数文件.md", "AGENTS.md"]:
+            with self.subTest(path=relative):
+                text = (ROOT / "QBVS" / relative).read_text(encoding="utf-8")
+                self.assertIn("QBVS", text)
+                self.assertIn("大数据模拟器", text)
+                self.assertNotIn("project_id: `PFI_BIG_DATA_SIMULATOR`", text)
+
+        rendered = load_lean_governance_module().check_render_registered_project("QBVS", root=ROOT)
+        self.assertEqual(rendered["drift_count"], 0, rendered["drift"])
+        self.assertEqual(rendered["reference_issue_count"], 0, rendered["reference_issues"])
+
+    def test_m1_s4_legacy_run_manifest_schema_version_is_skipped_as_v1(self) -> None:
+        spec = importlib.util.spec_from_file_location(
+            "validate_governance_sync_for_s4",
+            ROOT / "scripts" / "validate_governance_sync.py",
+        )
+        module = importlib.util.module_from_spec(spec)
+        sys.modules[spec.name] = module
+        assert spec.loader is not None
+        spec.loader.exec_module(module)
+
+        self.assertEqual(module.run_manifest_schema_version({"schema_version": "codexproject.run_manifest.v1"}), 1)
+        self.assertEqual(module.run_manifest_schema_version({"schema_version": 2}), 2)
+
+    def test_m1_s5_stage5_audit_collects_shadow_roi_owner_and_rollback(self) -> None:
+        cli = load_lean_governance_module()
+        ci_summary = {
+            "schema_version": 1,
+            "command": "ci",
+            "scope": "changed-only",
+            "changed_scope": {
+                "base_ref_status": "resolved",
+                "changed_files": [
+                    "AGENTS.md",
+                    "scripts/lean_governance.py",
+                    "governance/run_manifests/GOV-ROI-MINPATCH-S5-ACCEPTANCE-ROI-ROLLBACK-20260628.json",
+                ],
+                "selected_project_count": 11,
+            },
+            "candidate_shadow_comparison": {
+                "legacy_exit_code": 0,
+                "candidate_report_only": True,
+                "selector_parity_matches": True,
+                "required_exit_code_sources": ["legacy_validation", "read_only_guard", "selector_parity_guard"],
+            },
+            "zero_diff": {"clean": True},
+            "timing_telemetry": {"total_seconds": 1.5},
+            "output_telemetry": {"validator_stdout_bytes": 1200},
+        }
+
+        with patch.object(cli, "run_changed_only_ci", return_value=(0, ci_summary)):
+            exit_code, audit = cli.run_stage5_audit("origin/main", root=ROOT, projects_file=ROOT / "governance" / "projects.yaml")
+
+        self.assertEqual(exit_code, 0, audit.get("blocking_reasons"))
+        self.assertEqual(audit["decision"], "SHIP")
+        self.assertEqual(set(audit["acceptance_ids"]), {"S5PAT01", "S5PBT01", "S5PBT02", "S5PCT01"})
+        self.assertTrue(all(item["pass"] for item in audit["task_results"].values()), audit["task_results"])
+        self.assertTrue(audit["risk_closure"]["pass"], audit["risk_closure"])
+        self.assertEqual(audit["risk_closure"]["open_p0_p1_count"], 0)
+        self.assertTrue(audit["owner_readability"]["pass"], audit["owner_readability"]["failed_projects"])
+        self.assertTrue(audit["rollback_rehearsal"]["pass"], audit["rollback_rehearsal"])
+        self.assertTrue(audit["roi_metrics"]["pass"], audit["roi_metrics"]["pass_checks"])
+        self.assertLessEqual(audit["roi_metrics"]["after"]["ordinary_context_file_count"], 5)
+        self.assertLessEqual(audit["roi_metrics"]["after"]["stdout_bytes"], 2048)
+        self.assertTrue(audit["shadow_parity"]["quality_guards"]["candidate_report_only"])
+        self.assertFalse(audit["shadow_parity"]["adp_non_adp_fixture"]["run_gate"])
+
+    def test_m1_s5_owner_entry_review_rejects_link_only_markdown(self) -> None:
+        cli = load_lean_governance_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "功能清单.md"
+            path.write_text(
+                "# 功能清单\n\n详见 docs/governance/project.yaml\ncompatibility indexes only\n",
+                encoding="utf-8",
+            )
+            review = cli.stage5_owner_entry_file_review(path, "功能清单.md")
+
+        self.assertFalse(review["pass"])
+        self.assertIn("## 摘要", review["missing_required_tokens"])
+        self.assertIn("compatibility index", review["forbidden_markers"])
+        self.assertLess(review["actionable_token_count"], 3)
+
+    def test_m1_s5_stage5_audit_cli_outputs_chinese_ship_json(self) -> None:
+        cli = load_lean_governance_module()
+        fake_audit = {
+            "owner_status_zh": "Stage5 验收通过。",
+            "schema_version": 1,
+            "language": "zh-CN",
+            "command": "stage5-audit",
+            "decision": "SHIP",
+        }
+        stream = io.StringIO()
+        with patch.object(cli, "run_stage5_audit", return_value=(0, fake_audit)):
+            with contextlib.redirect_stdout(stream):
+                self.assertEqual(cli.main(["stage5-audit", "--base-ref", "origin/main"]), 0)
+
+        payload = json.loads(stream.getvalue())
+        self.assertEqual(payload["command"], "stage5-audit")
+        self.assertEqual(payload["decision"], "SHIP")
+        self.assertEqual(payload["language"], "zh-CN")
+
+    def test_m1_final_roi_audit_ships_when_stage5_and_manifests_pass(self) -> None:
+        cli = load_lean_governance_module()
+        fake_stage5 = {
+            "owner_status_zh": "Stage5 验收通过。",
+            "schema_version": 1,
+            "language": "zh-CN",
+            "command": "stage5-audit",
+            "decision": "SHIP",
+            "zero_tracked_write": True,
+            "risk_closure": {"open_p0_p1_count": 0, "pass": True},
+            "owner_readability": {
+                "project_count": 11,
+                "passed_project_count": 11,
+                "failed_projects": [],
+                "pass": True,
+            },
+            "shadow_parity": {
+                "quality_guards": {
+                    "candidate_report_only": True,
+                    "legacy_validation_required": True,
+                    "read_only_guard_required": True,
+                    "selector_parity_guard_required": True,
+                    "t2_t3_root_rule_preserved": True,
+                    "full_governance_all_scope_preserved": True,
+                    "changed_only_rollback_switch_present": True,
+                    "adp_fail_closed_preflight_present": True,
+                    "hook_advisory_only": True,
+                    "pass": True,
+                }
+            },
+            "roi_metrics": {
+                "pass": True,
+                "after": {
+                    "ordinary_context_file_count": 2,
+                    "ordinary_context_bytes": 7746,
+                    "stdout_bytes": 1390,
+                    "ci_wall_time_seconds": 2.5,
+                },
+            },
+            "rollback_rehearsal": {"pass": True},
+            "timing_telemetry": {"stage5_audit_seconds": 1.2},
+        }
+
+        with patch.object(cli, "run_stage5_audit", return_value=(0, fake_stage5)):
+            exit_code, audit = cli.run_roi_final_audit("origin/main", root=ROOT, projects_file=ROOT / "governance" / "projects.yaml")
+
+        self.assertEqual(exit_code, 0, audit.get("blocking_reasons"))
+        self.assertEqual(audit["decision"], "SHIP")
+        self.assertEqual(set(audit["acceptance_ids"]), set(cli.FINAL_REVIEW_ACCEPTANCE_IDS))
+        self.assertTrue(all(item["pass"] for item in audit["stage_manifest_reviews"]), audit["stage_manifest_reviews"])
+        self.assertTrue(all(item["pass"] for item in audit["task_results"].values()), audit["task_results"])
+        self.assertTrue(audit["solution_boundaries"]["pass"], audit["solution_boundaries"]["failed_checks"])
+        self.assertTrue(audit["project_capsules"]["pass"], audit["project_capsules"]["failed_projects"])
+        self.assertTrue(audit["identity_repairs"]["pass"], audit["identity_repairs"]["failed_checks"])
+
+    def test_m1_final_roi_manifest_review_rejects_missing_stage_acceptance(self) -> None:
+        cli = load_lean_governance_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest_dir = root / "governance" / "run_manifests"
+            manifest_dir.mkdir(parents=True)
+            (manifest_dir / "bad.json").write_text(
+                json.dumps(
+                    {
+                        "acceptance_ids": ["S3PAT01"],
+                        "binding_status": "PRECOMMIT_TREE_BOUND",
+                        "changed_files_actual": ["AGENTS.md"],
+                        "test_commands": ["python -m unittest"],
+                        "test_results": [{"command": "python -m unittest", "result": "PASS"}],
+                        "evidence_refs": [{"path_or_artifact_ref": "tmp"}],
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            review = cli.review_stage_manifest(
+                root,
+                {
+                    "stage": "S3",
+                    "manifest": "bad.json",
+                    "acceptance_ids": ("S3PAT01", "S3PBT01"),
+                },
+            )
+
+        self.assertFalse(review["pass"])
+        self.assertIn("S3PBT01", review["missing_acceptance_ids"])
+        self.assertIn("expected_acceptance_ids_present", review["failed_checks"])
+
+    def test_m1_final_roi_audit_cli_outputs_chinese_ship_json(self) -> None:
+        cli = load_lean_governance_module()
+        fake_audit = {
+            "owner_status_zh": "最终复审通过。",
+            "schema_version": 1,
+            "language": "zh-CN",
+            "command": "roi-final-audit",
+            "decision": "SHIP",
+        }
+        stream = io.StringIO()
+        with patch.object(cli, "run_roi_final_audit", return_value=(0, fake_audit)):
+            with contextlib.redirect_stdout(stream):
+                self.assertEqual(cli.main(["roi-final-audit", "--base-ref", "origin/main"]), 0)
+
+        payload = json.loads(stream.getvalue())
+        self.assertEqual(payload["command"], "roi-final-audit")
+        self.assertEqual(payload["decision"], "SHIP")
+        self.assertEqual(payload["language"], "zh-CN")
 
 
 if __name__ == "__main__":

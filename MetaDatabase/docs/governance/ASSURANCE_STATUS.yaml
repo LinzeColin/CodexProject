@@ -54,7 +54,7 @@ delivery_readiness:
   release_gate: "MDB-S0-GATE"
   blocker_ids: []
 next_executable_task:
-  task_id: "TASK-MDB-S0-001"
+  task_id: "S1PAT01"
   status: "completed"
   reason: "Top-level data archive registration completed."
   acceptance_ids:

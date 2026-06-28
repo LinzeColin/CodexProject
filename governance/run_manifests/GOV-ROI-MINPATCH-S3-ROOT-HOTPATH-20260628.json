@@ -1,0 +1,144 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-ROI-MINPATCH-S3-ROOT-HOTPATH-20260628",
+  "project_id": "CodexProject",
+  "task_id": "S3-ROOT-HOTPATH-MINPATCH",
+  "acceptance_ids": [
+    "S3PAT01",
+    "S3PBT01",
+    "S3PBT02",
+    "S3PCT01",
+    "S3PCT02"
+  ],
+  "iteration_id": "ITER-20260628-ROI-MINPATCH-S3",
+  "stage": "S3",
+  "generated_at": "2026-06-28T00:00:00+10:00",
+  "implementation_base_sha": "8cf4c441371ff023fb24efc954ced9c5cc432d34",
+  "content_tree_hash": "sha256:6ade89e2970967f50df2ecb8da59eda1d4321dbe7215edf13d46aab3993849c0",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Stage3 root governance hot-path minpatch for token, CI, and ROI reduction",
+  "ci_run_reference": "LOCAL_PRECOMMIT_STAGE3_CHANGED_ONLY_SHIP_THEN_BRANCH_PUSH",
+  "language_rule": "中文优先，默认全局中文",
+  "owner_readable_summary": "本轮只处理 Stage3：保留治理真相与证据绑定，把普通开发动作的初始治理上下文和 A-020 固定运行成本降下来。普通 T0/T1 初始治理上下文限定为 AGENTS.md 与 README.md；root AGENTS.md 小于 4KB；ADP A-020 改为路径感知且 fail-closed。",
+  "stage_scope": {
+    "allowed": "Root execution layer and root tests only.",
+    "business_project_content_diff": false,
+    "next_stage_allowed": "Stage4 only after owner opens the next pursuing goal."
+  },
+  "roi_results": {
+    "root_agents_bytes": 4052,
+    "ordinary_context_default_total_bytes": 7676,
+    "ordinary_context_default_file_count": 2,
+    "ordinary_context_limits": {
+      "max_bytes": 12288,
+      "max_files": 5
+    },
+    "compact_stdout_bytes_before_manifest": 1641,
+    "changed_only_wall_time_seconds_before_manifest": 4.96,
+    "compact_stdout_bytes_after_manifest": 1652,
+    "changed_only_wall_time_seconds_after_manifest": 1.454,
+    "adp_a020_gate_decision": {
+      "base_ref": "origin/main",
+      "run_gate": true,
+      "reason": "root_governance_or_ci_changed",
+      "non_adp_registered_project_only_skips": true,
+      "path_parse_failure_fails_closed": true
+    }
+  },
+  "changed_files_declared": [
+    ".github/workflows/project-governance.yml",
+    "AGENTS.md",
+    "governance/run_manifests/GOV-ROI-MINPATCH-S3-ROOT-HOTPATH-20260628.json",
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "changed_files_actual": [
+    ".github/workflows/project-governance.yml",
+    "AGENTS.md",
+    "governance/run_manifests/GOV-ROI-MINPATCH-S3-ROOT-HOTPATH-20260628.json",
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "required_governance_files": [
+    ".github/workflows/project-governance.yml",
+    "AGENTS.md",
+    "governance/run_manifests/GOV-ROI-MINPATCH-S3-ROOT-HOTPATH-20260628.json",
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "updated_governance_files": [
+    ".github/workflows/project-governance.yml",
+    "AGENTS.md",
+    "governance/run_manifests/GOV-ROI-MINPATCH-S3-ROOT-HOTPATH-20260628.json",
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "test_commands": [
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_s3pat01_zero_write_linked_worktree_dirty_file_modified_fails tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_s3pat01_full_evidence_concurrent_writes_are_unique_and_hash_bound tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_s3pbt01_ordinary_context_contract_is_bounded_and_excludes_heavy_paths tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_s3pbt02_root_agents_is_under_4kb_and_keeps_core_rules tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_s3pct01_adp_a020_gate_decision_is_path_aware_and_fail_closed tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_s3pct01_adp_a020_cli_invalid_base_fails_closed tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_s3pct01_workflow_uses_preflight_without_paths_ignore tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_s3pct01_content_diff_helper_ignores_status_only_noise tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_s3pct01_changed_scope_uses_content_diff_not_status_union",
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_m1_s2pc_ci_compact_stdout_has_chinese_owner_and_durable_evidence_ref tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_m1_s3pct01_stable_summary_hash_is_repeatable_for_20_runs",
+    "python -B scripts/lean_governance.py context-contract",
+    "python -B scripts/lean_governance.py changed-scope --base-ref origin/main",
+    "python -B scripts/lean_governance.py adp-a020-gate --base-ref origin/main",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main"
+  ],
+  "test_results": [
+    {
+      "command": "Stage3 focused root governance tests",
+      "result": "PASS",
+      "observed": "Initial 7 focused tests passed; added diff-helper regression tests passed."
+    },
+    {
+      "command": "compact and 20-repeat stability tests",
+      "result": "PASS",
+      "observed": "Ran 2 tests; OK."
+    },
+    {
+      "command": "ordinary context contract",
+      "result": "PASS",
+      "observed": "default_total_bytes=7676; default_file_count=2; within_budget=true."
+    },
+    {
+      "command": "changed-scope before manifest",
+      "result": "PASS",
+      "observed": "changed_files reduced from status-noisy 6 to content-diff 4; no ADP project content diff."
+    },
+    {
+      "command": "ADP A-020 preflight",
+      "result": "PASS",
+      "observed": "run_gate=true for root governance changes; invalid base fails closed; non-ADP registered project changes skip in unit tests."
+    },
+    {
+      "command": "changed-only compact CI before manifest",
+      "result": "EXPECTED_STOP_BEFORE_MANIFEST",
+      "observed": "Only remaining blocker was updated run_manifest; compact_stdout_bytes=1641; total_seconds=4.96; zero_tracked_write=true."
+    },
+    {
+      "command": "changed-only compact CI after manifest",
+      "result": "PASS",
+      "observed": "decision=SHIP; legacy_exit_code=0; process_exit_code=0; compact_stdout_bytes=1652; total_seconds=1.454; zero_tracked_write=true."
+    }
+  ],
+  "evidence_refs": [
+    "C:\\Users\\linze\\AppData\\Local\\Temp\\codex-stage3-evidence\\ci-1782649846848-8208-66292de9228f-9f67ce58.json",
+    "C:\\Users\\linze\\AppData\\Local\\Temp\\codex-stage3-evidence\\ci-1782649631699-29780-a95ddb9093bf-d1aeebb2.json",
+    "C:\\Users\\linze\\AppData\\Local\\Temp\\codex-stage3-evidence\\ci-1782649581810-2088-20d17b25d114-5b917a16.json",
+    "C:\\Users\\linze\\AppData\\Local\\Temp\\codex-stage3-evidence\\ci-1782649413645-19132-f40e1eee609f-7ae1a89f.json",
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    ".github/workflows/project-governance.yml",
+    "AGENTS.md"
+  ],
+  "rollback": {
+    "action": "Revert this Stage3 root hot-path commit.",
+    "one_click_adp_gate_rollback": "In .github/workflows/project-governance.yml, remove the preflight if-condition and run the ADP A-020 unittest unconditionally.",
+    "data_migration_required": false,
+    "business_project_restore_required": false
+  },
+  "stop_conditions": {
+    "false_negative_on_adp_or_governance_path": "STOP_AND_REVERT_TO_ALWAYS_RUN_A020",
+    "ordinary_context_over_12kb_or_5_files": "STOP_AND_RESIZE_AGENTS_OR_CONTEXT_CONTRACT",
+    "triads_or_roadmap_weakened": "STOP_AND_RESTORE_SOURCE_OF_TRUTH",
+    "hook_or_ci_writes_source": "STOP_AND_FIX_ZERO_WRITE_GUARD"
+  },
+  "next_allowed_stage": "S4_AFTER_OWNER_PURSUES_GOAL"
+}

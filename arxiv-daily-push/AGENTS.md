@@ -2,6 +2,31 @@
 
 This project follows the root `AGENTS.md` and `docs/governance/STANDARD.md`.
 
+## S4 精简执行胶囊
+
+普通非来源变更先读本文件、`README.md` 和被任务直接点名的任务/证据文件。仅做文案、
+README、owner 页面或治理说明改动时，不得默认读取完整 `用户中心/`、`docs/owner/`
+或所有根级人类入口。
+
+普通非来源变更验证命令：
+
+```bash
+PYTHONPATH=arxiv-daily-push/src python -B -m unittest arxiv-daily-push/tests/test_owner_controls.py arxiv-daily-push/tests/test_user_center_candidate_pool.py -q
+python -B scripts/lean_governance.py check-render --project arxiv-daily-push
+```
+
+来源、板块、scheduler、SMTP、storage、security、ranking，或用户中心里的来源/板块
+新增、删除、重命名、启用、停用变更，必须读取被点名的来源/板块契约，并走完整特殊
+gate 路线。最低验证包括：
+
+```bash
+PYTHONPATH=arxiv-daily-push/src python -B -m unittest arxiv-daily-push/tests/test_security_boundary.py -q
+PYTHONPATH=arxiv-daily-push/src python -B -m unittest arxiv-daily-push/tests/test_source_registry.py arxiv-daily-push/tests/test_user_center_candidate_pool.py arxiv-daily-push/tests/test_owner_controls.py -q
+```
+
+这条路线保留来源变更所需的完整 V7.2 和用户中心门禁，同时让普通非来源任务避免读取
+完整用户中心。
+
 ## Permanent Rules
 
 - Work one phase, one task ID, and one acceptance target at a time.

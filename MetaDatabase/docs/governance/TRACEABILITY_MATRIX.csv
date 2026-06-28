@@ -1,2 +1,2 @@
 requirement_id,model_id,assumption_id,formula_id,parameter_id,task_id,acceptance_id,code_ref,config_ref,test_ref,evidence_ref,status
-REQ-MDB-ARCHIVE-001,NOT_APPLICABLE,ASM-MDB-001,NOT_APPLICABLE,NOT_APPLICABLE,TASK-MDB-S0-001,ACC-MDB-S0-001,NOT_APPLICABLE,MetaDatabase/MANIFEST.json,python3 scripts/validate_project_governance.py --project MetaDatabase,MetaDatabase/MANIFEST.json,active
+REQ-MDB-ARCHIVE-001,NOT_APPLICABLE,ASM-MDB-001,NOT_APPLICABLE,NOT_APPLICABLE,S1PAT01,ACC-MDB-S0-001,NOT_APPLICABLE,MetaDatabase/MANIFEST.json,python3 scripts/validate_project_governance.py --project MetaDatabase,MetaDatabase/MANIFEST.json,active
