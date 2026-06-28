@@ -3,15 +3,15 @@
     "atlas_edges": 3857,
     "atlas_nodes": 725,
     "backup_policy": "redacted_summary_only_no_raw_transcript_no_plaintext_secret",
-    "message_count": 132330,
+    "message_count": 132355,
     "range_end": "2026-06-28",
     "range_start": "2026-06-03",
     "session_count": 401,
     "source": "real_codex_local_data",
-    "tool_call_count": 434217,
+    "tool_call_count": 434306,
     "top_topics": [
       {
-        "count": 13926,
+        "count": 13927,
         "label": "Codex 本地数据 / agent 工作流"
       },
       {
@@ -19,11 +19,11 @@
         "label": "安全边界 / secret / 权限"
       },
       {
-        "count": 10824,
+        "count": 10825,
         "label": "高质量交付 / 验证 / CI"
       },
       {
-        "count": 8520,
+        "count": 8521,
         "label": "GitHub 备份 / durable state"
       },
       {
@@ -31,7 +31,7 @@
         "label": "前端交互 / Three.js / Dashboard"
       },
       {
-        "count": 2291,
+        "count": 2292,
         "label": "长期记忆数据库 / RAG"
       },
       {
@@ -134,7 +134,7 @@
     "registry_path": "config/data_sources/source_registry.json",
     "schema_version": "memory_atlas_data_source_registry.v1"
   },
-  "generated_at": "2026-06-28T21:42:16Z",
+  "generated_at": "2026-06-28T21:44:54Z",
   "layers": [
     {
       "canonical_files": [
@@ -366,7 +366,7 @@
     ],
     "top_topics": [
       {
-        "count": 13926,
+        "count": 13927,
         "label": "Codex 本地数据 / agent 工作流"
       },
       {
@@ -374,11 +374,11 @@
         "label": "安全边界 / secret / 权限"
       },
       {
-        "count": 10824,
+        "count": 10825,
         "label": "高质量交付 / 验证 / CI"
       },
       {
-        "count": 8520,
+        "count": 8521,
         "label": "GitHub 备份 / durable state"
       },
       {
@@ -386,7 +386,7 @@
         "label": "前端交互 / Three.js / Dashboard"
       },
       {
-        "count": 2291,
+        "count": 2292,
         "label": "长期记忆数据库 / RAG"
       },
       {
