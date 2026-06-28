@@ -398,7 +398,9 @@
           "main_wallet",
           "consumption_account",
           "income_account",
-          "investment_funding_source"
+          "investment_funding_source",
+          "savings_account",
+          "external_counterparty"
         ],
         "parser_version": "profile-template-v1",
         "role_effective_date_required": true,
@@ -409,7 +411,7 @@
       "multiple_roles_per_account": {
         "value": true,
         "label_zh": "账户可多角色",
-        "description_zh": "一个账户可同时是主钱包、消费账户、收入账户或投资入金来源。",
+        "description_zh": "一个账户可同时是主钱包、消费账户、收入接收账户、投资入金来源、储蓄账户或外部对手方。",
         "impact_surfaces": [
           "账户与资产",
           "现金流"
@@ -437,7 +439,9 @@
           "income_account",
           "investment_account",
           "asset_custody",
-          "liability_account"
+          "liability_account",
+          "savings_account",
+          "external_counterparty"
         ],
         "label_zh": "账户角色枚举",
         "description_zh": "后续所有计算按角色和事件类型判断，不按 source 名称判断。",
@@ -465,7 +469,9 @@
           "income_account",
           "investment_account",
           "asset_custody",
-          "liability_account"
+          "liability_account",
+          "savings_account",
+          "external_counterparty"
         ],
         "multiple_roles_per_account": true,
         "role_effective_date_required": true,
@@ -480,6 +486,17 @@
           "报告与洞察"
         ],
         "user_editable": true
+      },
+      "role_labels_zh": {
+        "main_wallet": "主钱包",
+        "consumption_account": "消费账户",
+        "investment_funding_source": "投资入金来源",
+        "income_account": "收入接收账户",
+        "investment_account": "投资账户",
+        "asset_custody": "资产托管账户",
+        "liability_account": "负债账户",
+        "savings_account": "储蓄账户",
+        "external_counterparty": "外部对手方"
       }
     },
     "event_types": {

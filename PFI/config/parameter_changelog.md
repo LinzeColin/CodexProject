@@ -114,6 +114,8 @@
 | 2026-06-28 | `Stage13-Downloads` | `post_review.downloads_cleanup_candidates` | `无清理白名单` | `6 个 PFI_V022_STAGE*_PRE_CANONICAL_SYNC_* 目录` | 只清理 PFI 临时目录，不触碰 PFI.app、taskpack、roadmap、zip、md。 | 本机清理、用户源文件保护。 |
 | 2026-06-28 | `REVIEW-S2` | `currency.base_currency.impact_surfaces` | `首页总览、投资管理、消费管理、报告与洞察` | `首页总览、投资管理、消费管理、现金流、报告与洞察` | Stage 2 验收明确要求现金流也以 CNY 为主显示，复审发现参数影响面漏项。 | 首页总览、投资管理、消费管理、现金流、报告与洞察、复审测试。 |
 | 2026-06-28 | `REVIEW-S2` | `ledger_amount_fields.field_labels_zh` | `无` | `original_amount=原始金额, original_currency=原始币种, amount_cny=CNY金额, fx_snapshot_id=汇率快照ID` | 保留机器字段的同时提供中文验收字段映射，避免用户只看到英文 key。 | 账本流水、汇率追溯、三基文件、Stage 2 复审测试。 |
+| 2026-06-28 | `REVIEW-S3` | `account_roles.role_registry` | `main_wallet, consumption_account, investment_funding_source, income_account, investment_account, asset_custody, liability_account` | `新增 savings_account, external_counterparty；income_account 中文标签统一为收入接收账户` | taskpack 默认角色包含储蓄账户和外部对手方，复审发现 Stage 3 枚举漏项。 | 数据源与上传、账户与资产、账本流水、Stage 3 复审测试。 |
+| 2026-06-28 | `REVIEW-S3` | `data_sources.other_source_template.account_roles_allowed` | `main_wallet, consumption_account, income_account, investment_funding_source` | `追加 savings_account, external_counterparty` | 未来新增 source 应能通过 profile 表达储蓄账户和外部对手方，不应要求改核心代码。 | source profile、other_source_template、自定义 source 扩展、Stage 3 复审测试。 |
 
 ## 记录规则
 

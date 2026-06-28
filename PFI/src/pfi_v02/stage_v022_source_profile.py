@@ -47,16 +47,20 @@ STAGE3_ACCOUNT_ROLES = (
     "investment_account",
     "asset_custody",
     "liability_account",
+    "savings_account",
+    "external_counterparty",
 )
 
 STAGE3_ACCOUNT_ROLE_LABELS_ZH = {
     "main_wallet": "主钱包",
     "consumption_account": "消费账户",
     "investment_funding_source": "投资入金来源",
-    "income_account": "收入账户",
+    "income_account": "收入接收账户",
     "investment_account": "投资账户",
     "asset_custody": "资产托管账户",
     "liability_account": "负债账户",
+    "savings_account": "储蓄账户",
+    "external_counterparty": "外部对手方",
 }
 
 SOURCE_PROFILE_SCHEMA_FIELDS = (
@@ -185,7 +189,14 @@ def other_source_template() -> SourceProfile:
         source_type="other",
         supported_file_types=("csv", "xlsx", "json", "pdf", "manual"),
         capabilities=("cash_ledger", "balance_snapshot", "fee", "refund", "transfer"),
-        account_roles_allowed=("main_wallet", "consumption_account", "income_account", "investment_funding_source"),
+        account_roles_allowed=(
+            "main_wallet",
+            "consumption_account",
+            "income_account",
+            "investment_funding_source",
+            "savings_account",
+            "external_counterparty",
+        ),
         parser_version="profile-template-v1",
         role_effective_date_required=True,
         profile_status="template",
@@ -225,7 +236,7 @@ def build_stage3_source_profiles(extra_profiles: Iterable[SourceProfile] = ()) -
             "payment_platform",
             ("csv", "zip"),
             ("cash_ledger", "fee", "refund", "transfer"),
-            ("main_wallet", "consumption_account", "income_account", "investment_funding_source"),
+            ("main_wallet", "consumption_account", "income_account", "investment_funding_source", "external_counterparty"),
             "alipay-daily-v2",
         ),
         SourceProfile(
@@ -270,7 +281,7 @@ def build_stage3_source_profiles(extra_profiles: Iterable[SourceProfile] = ()) -
             "bank",
             ("csv", "ofx"),
             ("cash_ledger", "balance_snapshot", "fee", "refund", "transfer"),
-            ("main_wallet", "consumption_account", "income_account", "investment_funding_source"),
+            ("main_wallet", "consumption_account", "income_account", "investment_funding_source", "savings_account"),
             "bank-profile-v1",
         ),
         SourceProfile(
@@ -279,7 +290,7 @@ def build_stage3_source_profiles(extra_profiles: Iterable[SourceProfile] = ()) -
             "wallet",
             ("csv", "xlsx", "zip"),
             ("cash_ledger", "fee", "refund", "transfer"),
-            ("main_wallet", "consumption_account", "income_account", "investment_funding_source"),
+            ("main_wallet", "consumption_account", "income_account", "investment_funding_source", "external_counterparty"),
             "wallet-profile-v1",
         ),
         SourceProfile(
@@ -310,6 +321,8 @@ def build_stage3_account_roles() -> tuple[AccountRoleAssignment, ...]:
         AccountRoleAssignment("acct_moomoo_au", "moomoo_au", "investment_account", date(2023, 1, 1)),
         AccountRoleAssignment("acct_abc_bullion", "abc_bullion", "asset_custody", date(2024, 1, 1)),
         AccountRoleAssignment("acct_manual_snapshot", "manual_snapshot", "asset_custody", date(2026, 1, 1)),
+        AccountRoleAssignment("acct_cba_savings", "cba_bank", "savings_account", date(2022, 1, 1)),
+        AccountRoleAssignment("acct_external_counterparty", "wechat_pay", "external_counterparty", date(2022, 1, 1)),
     )
 
 

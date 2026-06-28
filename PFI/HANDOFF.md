@@ -4,7 +4,7 @@ Last updated: 2026-06-28 Australia/Sydney
 
 ## Current Goal
 
-PFI v0.2.2 Stage 1-13 复审并解决：第一阶段每次 run work 只复审解决 1 个 Stage，第二阶段做整体项目复审解决；整体 goal 完成后再重装 app 入口。本轮已完成 Stage 2 复审并解决，新增 `docs/pfi_v022/reviews/STAGE2_REVIEW_20260628.md` 和 `tests/test_v022_review_stage2.py`，补齐 CNY 主显示现金流影响面和账本金额字段中文标签映射；不复审解决 Stage 3-13，不重装 app 入口。
+PFI v0.2.2 Stage 1-13 复审并解决：第一阶段每次 run work 只复审解决 1 个 Stage，第二阶段做整体项目复审解决；整体 goal 完成后再重装 app 入口。本轮已完成 Stage 3 复审并解决，新增 `docs/pfi_v022/reviews/STAGE3_REVIEW_20260628.md` 和 `tests/test_v022_review_stage3.py`，补齐 taskpack 默认账户角色和 source profile 角色扩展示例；不复审解决 Stage 4-13，不重装 app 入口。
 
 ## Current Status
 
@@ -20,7 +20,7 @@ PFI v0.2.2 Stage 1-13 复审并解决：第一阶段每次 run work 只复审解
   resolve to this checkout.
 - Local runtime data home is now `~/.pfi` or explicit `$PFI_DATA_HOME`.
 - Current app URL after migration verification: `http://localhost:8501`.
-- 当前复审状态：Stage 1-2 复审并解决已完成；Stage 3-13 复审解决未开始；整体项目复审解决未开始；app 入口重装未执行。
+- 当前复审状态：Stage 1-3 复审并解决已完成；Stage 4-13 复审解决未开始；整体项目复审解决未开始；app 入口重装未执行。
 - 历史完成状态：Stage 13 - 后置触发型复核 已完成 `S13-P1-T1`、`S13-P1-T2`、`S13-P1-T3`；由 `交付前人工指定` 触发，生成本地 Codex Review Ticket，仅对异常区域进行复核，禁止全仓无差别扫描；问题、修复、验证、剩余风险已写入开发记录；Downloads 污染文件夹 `PFI_V022_STAGE0_PRE_CANONICAL_SYNC_20260628T090028` 等已归档并移出 Downloads。
 - Stage 1 contracts remain in `src/pfi_v02/stage1_ia.py`, `src/pfi_v02/core_models.py`, and `src/pfi_v02/classification_rules.py`.
 - Stage 2 registry is implemented in `src/pfi_v02/stage2_registry.py`.
@@ -80,6 +80,7 @@ PFI v0.2.2 Stage 1-13 复审并解决：第一阶段每次 run work 只复审解
 - v0.2.2 Stage 3 当前 source profile 支持 `wallet`、`bank`、`broker`、`fund_platform`、`bullion_platform`、`payment_platform`、`manual_snapshot`、`other`；capabilities 覆盖现金流水、投资交易、基金交易、黄金交易、余额快照、费用、退款、转账。
 - v0.2.2 Stage 3 账户角色字段锁定为 `account_id`、`source_id`、`role`、`role_effective_from`、`role_effective_to`；未知角色进入复核队列。
 - v0.2.2 Stage 3 指标计算策略为 `role_and_event_type`，不得按支付宝、微信、银行卡、券商等 source 名称硬编码。
+- v0.2.2 Stage 3 复审并解决结果：`tests/test_v022_review_stage3.py` `4 passed`；已新增 `savings_account=储蓄账户`、`external_counterparty=外部对手方`，并统一 `income_account=收入接收账户`。
 - v0.2.2 Stage 4 task IDs 是 `S4-P1-T1`、`S4-P1-T2`、`S4-P1-T3`、`S4-P2-T1`、`S4-P2-T2`、`S4-P2-T3`。
 - v0.2.2 Stage 4 合同是 `src/pfi_v02/stage_v022_database_governance.py::build_v022_stage4_contract()`；Interconnection 模块是 `src/pfi_v02/stage_v022_interconnection.py`。
 - v0.2.2 Stage 4 验收报告是 `docs/pfi_v022/STAGE4_INTERCONNECTION.md`；Interconnection Matrix 是 `docs/pfi_v02/INTERCONNECTION_MATRIX.md`。
