@@ -4,7 +4,7 @@ Last updated: 2026-06-29 Australia/Sydney
 
 ## Current Goal
 
-最新任务：PFI v0.2.1.1 Product UI Recovery Stage 2 页面骨架与去 AI 化。用户要求按 v0.2.1.1 roadmap/taskpack 完成本轮 Stage 2，并在完成后同步 GitHub、刷新本机入口和清理非必要缓存。本轮只做页面骨架、二级入口和正式 UI 去 AI 化，不做数据库 migration、上传入库闭环、持仓 SQLite 闭环、真实图表数据接入或最终验收。
+最新任务：PFI v0.2.1.1 Product UI Recovery Stage 3 真实操作流。用户要求按 v0.2.1.1 roadmap/taskpack 完成本轮 Stage 3，并在完成后同步 GitHub、刷新本机入口和清理非必要缓存。本轮只做上传/导入、账本复核/导出、持仓编辑表单和设置保存操作流；不声明 Stage 4 持久化与同步完成，不声明 Stage 5 真实图表与最终验收完成。
 
 PFI v0.2.2 Stage 1-13 复审并解决：第一阶段每次 run work 只复审解决 1 个 Stage，第二阶段整体项目复审解决已完成。正式页面、报告、图表、首页摘要和建议只允许读取真实 MetaDatabase 派生数据或中文真实空态；不得使用 demo/sample/synthetic/fixture/mock/fake/测试样例数据作为验收依据。GitHub main 同步和 app 入口重装纳入本轮 closeout，均按 `PFI/` 与 `MetaDatabase/PFI/` path-limited 范围执行，不能带入 EEI/ADP/Alpha/Serenity/arxiv 等混合改动。阻塞项数量：`0`。
 
@@ -27,6 +27,8 @@ PFI v0.2.2 Stage 1-13 复审并解决：第一阶段每次 run work 只复审解
 - v0.2.1.1 Stage 1 已完成产品壳与路由：正式一级入口收敛为 10 个，策略实验室唯一正式路由为 `/market-research/strategy-lab`。
 - v0.2.1.1 Stage 2 已建立 10 个正式一级入口的中文页面骨架和二级入口，默认首页改为用户任务语言，并清理正式 UI 中运行边界、Task Pack、Demo、Prototype、手机预览、运行反馈控制台、多模态交互反馈、证据抽屉、运行证据、任务中心等污染词。
 - v0.2.1.1 Stage 2 交付文档为 `docs/pfi_v0211/STAGE2_PAGE_SKELETON_CLEANUP.md`，合同测试为 `tests/test_v0211_stage2_page_skeleton_contract.py`。
+- v0.2.1.1 Stage 3 已建立真实操作流：`数据源与上传` 的解析预览、字段映射、确认入库和待复核队列；`账本流水` 的筛选、分类选择、保存复核和导出；`投资管理 > 持仓` 的持仓编辑表单、未提交草稿和保存入口；`设置` 的保存设置、恢复默认和状态反馈。
+- v0.2.1.1 Stage 3 交付文档为 `docs/pfi_v0211/STAGE3_REAL_OPERATION_FLOWS.md`，合同测试为 `tests/test_v0211_stage3_real_operation_flow_contract.py`。
 - 当前复审状态：Stage 1-13 复审并解决已完成；整体项目复审解决已完成；GitHub main 同步纳入本轮 closeout；app 入口重装已完成并通过 macOS app acceptance lite。
 - 当前 Stage 13 task IDs：`S13-P1-T1`、`S13-P1-T2`、`S13-P1-T3`。
 - Stage 13 单轮历史边界：Stage 13 - 后置触发型复核；交付前人工指定触发 Codex Review Ticket；本轮只复审解决 Stage 13；整体项目复审解决不在本轮实现；GitHub 同步不在本轮执行；app 入口重装不在本轮执行；禁止全仓无差别扫描；仅对异常区域进行复核；不联网；不调用外部 LLM；问题、修复、验证、剩余风险已记录；阻塞项数量：`0`。

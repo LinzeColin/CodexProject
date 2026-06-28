@@ -421,8 +421,23 @@ let uploadCenterState = {
   lastSource: "",
   importing: false,
   importedManifest: null,
+  confirmedAt: "",
 };
 let alipayImportState = defaultAlipayImportSummary();
+
+let ledgerOperationState = {
+  filter: "",
+  category: "",
+  reviewSavedAt: "",
+  exportPreparedAt: "",
+};
+
+let settingsOperationState = {
+  defaultAccount: "主账户",
+  themeLanguage: "中文优先",
+  savedAt: "",
+  resetAt: "",
+};
 
 const HOLDINGS_DRAFT_STORAGE_KEY = "pfi-v021-unsubmitted-holdings-draft";
 let holdingsPersistenceState = defaultHoldingsState();
@@ -2138,6 +2153,77 @@ function bindFeedbackHub() {
   });
 }
 
+function bindSettingsOperationEvents() {
+  document.querySelectorAll("[data-settings-preference]").forEach((input) => {
+    input.addEventListener("change", () => {
+      readSettingsOperationInputs();
+      renderSettingsOperationFlow("settings");
+    });
+  });
+  document.querySelector("[data-settings-save]")?.addEventListener("click", saveSettingsOperationFlow);
+  document.querySelector("[data-settings-reset]")?.addEventListener("click", resetSettingsOperationFlow);
+}
+
+function readSettingsOperationInputs() {
+  const account = document.querySelector('[data-settings-preference="default_account"]');
+  const language = document.querySelector('[data-settings-preference="theme_language"]');
+  settingsOperationState = {
+    ...settingsOperationState,
+    defaultAccount: account?.value || settingsOperationState.defaultAccount,
+    themeLanguage: language?.value || settingsOperationState.themeLanguage,
+  };
+}
+
+function renderSettingsOperationFlow(workspaceId) {
+  const panel = document.querySelector("[data-settings-operation-flow]");
+  if (!panel) return;
+  const visible = workspaceId === "settings";
+  panel.hidden = !visible;
+  if (!visible) return;
+
+  const account = panel.querySelector('[data-settings-preference="default_account"]');
+  const language = panel.querySelector('[data-settings-preference="theme_language"]');
+  const status = panel.querySelector("[data-settings-save-status]");
+  const state = panel.querySelector("[data-settings-operation-state]");
+  if (account && account.value !== settingsOperationState.defaultAccount) account.value = settingsOperationState.defaultAccount;
+  if (language && language.value !== settingsOperationState.themeLanguage) language.value = settingsOperationState.themeLanguage;
+
+  if (status) {
+    status.textContent = settingsOperationState.savedAt ? "已保存" : settingsOperationState.resetAt ? "已恢复默认" : "等待保存";
+    status.className = `status-pill ${settingsOperationState.savedAt ? "status-ready" : "status-review"}`;
+  }
+  if (state) {
+    const timeText = settingsOperationState.savedAt
+      ? `最近保存 ${formatLocalSaveTime(settingsOperationState.savedAt)}`
+      : settingsOperationState.resetAt
+        ? `最近恢复 ${formatLocalSaveTime(settingsOperationState.resetAt)}`
+        : "尚未保存";
+    state.textContent = `默认账户：${settingsOperationState.defaultAccount} · 主题语言：${settingsOperationState.themeLanguage} · ${timeText}`;
+  }
+}
+
+function saveSettingsOperationFlow() {
+  readSettingsOperationInputs();
+  settingsOperationState = {
+    ...settingsOperationState,
+    savedAt: new Date().toISOString(),
+    resetAt: "",
+  };
+  renderSettingsOperationFlow("settings");
+  showToast("设置已保存到当前本机页面状态");
+}
+
+function resetSettingsOperationFlow() {
+  settingsOperationState = {
+    defaultAccount: "主账户",
+    themeLanguage: "中文优先",
+    savedAt: "",
+    resetAt: new Date().toISOString(),
+  };
+  renderSettingsOperationFlow("settings");
+  showToast("设置已恢复默认");
+}
+
 function readHomeSummary() {
   const node = document.querySelector("#pfi-home-summary");
   if (!node) return null;
@@ -2624,6 +2710,7 @@ function bindUploadCenterEvents() {
   const input = document.querySelector("[data-upload-input]");
   const dropzone = document.querySelector("[data-upload-dropzone]");
   const reviewLink = document.querySelector("[data-import-review-link]");
+  const importConfirm = document.querySelector("[data-import-confirm]");
 
   if (input) {
     input.addEventListener("change", (event) => {
@@ -2658,6 +2745,7 @@ function bindUploadCenterEvents() {
   }
 
   if (reviewLink) reviewLink.addEventListener("click", openImportReviewQueue);
+  if (importConfirm) importConfirm.addEventListener("click", confirmStage3Import);
 }
 
 function renderUploadImportPanel(workspaceId) {
@@ -2666,6 +2754,7 @@ function renderUploadImportPanel(workspaceId) {
   panel.hidden = workspaceId !== "sync";
   if (panel.hidden) return;
   renderUploadStatus();
+  renderStage3UploadFlow();
   renderImportCenter();
 }
 
@@ -2679,6 +2768,7 @@ async function handleUploadSelection(fileList, source) {
       importing: false,
     };
     renderUploadStatus();
+    renderStage3UploadFlow();
     renderImportCenter();
     showToast("请先选择账单文件");
     return;
@@ -2710,6 +2800,7 @@ async function handleUploadSelection(fileList, source) {
     importedManifest: uploadCenterState.importedManifest || null,
   };
   renderUploadStatus();
+  renderStage3UploadFlow();
   renderImportCenter();
 
   if (rejected.length) {
@@ -2726,6 +2817,7 @@ async function handleUploadSelection(fileList, source) {
     };
     applyAlipayImportSummary(manifestToAlipaySummary(manifest));
     renderUploadStatus();
+    renderStage3UploadFlow();
     renderImportCenter();
     await refreshRuntimeTrends({ rerender: true });
     showToast(`真实账单已接入：${Number(manifest.transaction_count || 0).toLocaleString("zh-CN")} 条流水`, "success");
@@ -2736,8 +2828,126 @@ async function handleUploadSelection(fileList, source) {
       rejected: [{ name: "真实数据接入失败", reason: error?.message || "本机服务未完成导入。" }],
     };
     renderUploadStatus();
+    renderStage3UploadFlow();
     renderImportCenter();
     showToast("真实数据接入失败，请检查本机服务", "failure");
+  }
+}
+
+async function confirmStage3Import() {
+  if (uploadCenterState.importedManifest) {
+    uploadCenterState = {
+      ...uploadCenterState,
+      confirmedAt: new Date().toISOString(),
+    };
+    renderStage3UploadFlow();
+    renderImportCenter();
+    showToast("导入批次已确认，待复核流水已进入队列");
+    return;
+  }
+  if (!uploadCenterState.files.length) {
+    uploadCenterState = {
+      ...uploadCenterState,
+      rejected: [{ name: "未选择文件", reason: "请先选择真实文件，再确认入库。" }],
+    };
+    renderUploadStatus();
+    renderStage3UploadFlow();
+    renderImportCenter();
+    showToast("请先选择真实文件", "failure");
+    return;
+  }
+
+  const status = document.querySelector("[data-import-confirm-status]");
+  if (status) {
+    status.textContent = "等待本机服务解析";
+    status.className = "status-pill status-watch";
+  }
+  setActionFeedback("progress", "正在确认真实上传文件");
+  showToast("正在确认真实上传文件", "progress");
+  try {
+    const manifest = await runtimeApiJson("/api/imports/alipay/confirm", {
+      method: "POST",
+      body: JSON.stringify({
+        files: uploadCenterState.files.map((file) => ({
+          name: file.name,
+          size: file.size,
+          type: file.type,
+          source: file.source,
+        })),
+      }),
+    });
+    uploadCenterState = {
+      ...uploadCenterState,
+      importedManifest: manifest,
+      importing: false,
+      confirmedAt: new Date().toISOString(),
+    };
+    applyAlipayImportSummary(manifestToAlipaySummary(manifest));
+    renderUploadStatus();
+    renderStage3UploadFlow();
+    renderImportCenter();
+    showToast("导入确认完成，待复核流水已进入账本", "success");
+  } catch (error) {
+    uploadCenterState = {
+      ...uploadCenterState,
+      importing: false,
+      rejected: [{ name: "确认入库失败", reason: error?.message || "本机服务暂不可用，未写入正式账本。" }],
+    };
+    renderUploadStatus();
+    renderStage3UploadFlow();
+    renderImportCenter();
+    showToast("确认入库失败，未写入正式账本", "failure");
+  }
+}
+
+function renderStage3UploadFlow() {
+  const preview = document.querySelector("[data-upload-preview]");
+  const mapping = document.querySelector("[data-field-mapping-status]");
+  const confirmStatus = document.querySelector("[data-import-confirm-status]");
+  const reviewEntry = document.querySelector("[data-review-queue-entry]");
+  const acceptedCount = uploadCenterState.files.length;
+  const rejectedCount = uploadCenterState.rejected.length;
+  const manifest = uploadCenterState.importedManifest;
+
+  if (preview) {
+    if (!acceptedCount) {
+      preview.innerHTML = "<strong>解析预览</strong><span>等待真实文件；记录数以本机解析结果为准。</span>";
+    } else {
+      const fileNames = uploadCenterState.files.map((file) => `${escapeHtml(file.name)}（${formatFileSize(file.size)}）`).join("、");
+      preview.innerHTML = `<strong>解析预览</strong><span>${fileNames}</span>`;
+    }
+  }
+
+  if (mapping) {
+    mapping.textContent = acceptedCount
+      ? "已准备字段映射：日期、金额、币种、账户、备注。最终字段以后端真实解析结果为准。"
+      : "等待真实文件解析后确认日期、金额、币种、账户和备注字段。";
+  }
+
+  if (confirmStatus) {
+    if (manifest) {
+      confirmStatus.textContent = `已确认 ${Number(manifest.transaction_count || 0).toLocaleString("zh-CN")} 条真实流水`;
+      confirmStatus.className = "status-pill status-ready";
+    } else if (rejectedCount) {
+      confirmStatus.textContent = "需要处理失败反馈";
+      confirmStatus.className = "status-pill status-blocked";
+    } else if (acceptedCount) {
+      confirmStatus.textContent = "可确认入库";
+      confirmStatus.className = "status-pill status-watch";
+    } else {
+      confirmStatus.textContent = "等待真实文件";
+      confirmStatus.className = "status-pill status-review";
+    }
+  }
+
+  if (reviewEntry) {
+    if (manifest) {
+      reviewEntry.textContent = `待复核队列：${Number(manifest.review_count || 0).toLocaleString("zh-CN")} 条真实流水待处理。`;
+    } else if (acceptedCount) {
+      reviewEntry.textContent = "待复核队列：文件已选择，等待本机服务解析后生成真实队列。";
+    } else {
+      reviewEntry.textContent = "待复核队列：暂无真实导入批次。";
+    }
   }
 }
 
@@ -2953,6 +3163,89 @@ function openImportReviewQueue() {
   if (taskPhase) taskPhase.textContent = "账本复核 · 已进入待处理队列";
   renderWorkspace("ledger", { routeAlias: "/ledger", preserveFocus: true });
   showToast("已进入账本流水复核");
+}
+
+function bindLedgerOperationEvents() {
+  const filterInput = document.querySelector("[data-ledger-filter]");
+  const categorySelect = document.querySelector("[data-ledger-category-select]");
+  filterInput?.addEventListener("input", (event) => {
+    ledgerOperationState = {
+      ...ledgerOperationState,
+      filter: String(event.target.value || ""),
+    };
+    filterRows(ledgerOperationState.filter);
+    renderLedgerOperationFlow("ledger");
+  });
+  categorySelect?.addEventListener("change", (event) => {
+    ledgerOperationState = {
+      ...ledgerOperationState,
+      category: String(event.target.value || ""),
+    };
+    renderLedgerOperationFlow("ledger");
+  });
+  document.querySelector("[data-ledger-review-save]")?.addEventListener("click", saveLedgerReview);
+  document.querySelector("[data-ledger-export]")?.addEventListener("click", exportLedgerReview);
+}
+
+function renderLedgerOperationFlow(workspaceId) {
+  const panel = document.querySelector("[data-ledger-operation-flow]");
+  if (!panel) return;
+  const visible = workspaceId === "ledger";
+  panel.hidden = !visible;
+  if (!visible) return;
+
+  const status = panel.querySelector("[data-ledger-operation-status]");
+  const state = panel.querySelector("[data-ledger-review-state]");
+  const filterInput = panel.querySelector("[data-ledger-filter]");
+  const categorySelect = panel.querySelector("[data-ledger-category-select]");
+  const visibleRows = [...document.querySelectorAll("#decision-rows tr")].filter((rowNode) => !rowNode.hidden);
+  const hasRealLedger = alipayImportState.transactionCount > 0 || Boolean(uploadCenterState.importedManifest);
+  const filterText = ledgerOperationState.filter ? `筛选：“${ledgerOperationState.filter}”` : "未筛选";
+  const categoryText = ledgerOperationState.category ? `分类：“${ledgerOperationState.category}”` : "未修改分类";
+
+  if (filterInput && filterInput.value !== ledgerOperationState.filter) filterInput.value = ledgerOperationState.filter;
+  if (categorySelect && categorySelect.value !== ledgerOperationState.category) categorySelect.value = ledgerOperationState.category;
+
+  if (status) {
+    status.textContent = hasRealLedger ? `真实流水 ${alipayImportState.transactionCount.toLocaleString("zh-CN")} 条` : "暂无真实流水";
+    status.className = `status-pill ${hasRealLedger ? "status-ready" : "status-review"}`;
+  }
+  if (state) {
+    const saved = ledgerOperationState.reviewSavedAt ? ` · 已保存复核 ${formatLocalSaveTime(ledgerOperationState.reviewSavedAt)}` : "";
+    const exported = ledgerOperationState.exportPreparedAt ? ` · 已准备导出 ${formatLocalSaveTime(ledgerOperationState.exportPreparedAt)}` : "";
+    state.textContent = `${filterText} · ${categoryText} · 当前显示 ${visibleRows.length} 行${saved}${exported}。无真实流水时显示中文空状态。`;
+  }
+}
+
+function saveLedgerReview() {
+  ledgerOperationState = {
+    ...ledgerOperationState,
+    reviewSavedAt: new Date().toISOString(),
+  };
+  renderLedgerOperationFlow("ledger");
+  const taskPhase = document.querySelector("#task-phase");
+  if (taskPhase) taskPhase.textContent = "账本复核 · 已保存当前复核状态";
+  showToast("账本复核状态已更新");
+}
+
+function exportLedgerReview() {
+  const rows = [...document.querySelectorAll("#decision-rows tr")]
+    .filter((rowNode) => !rowNode.hidden)
+    .map((rowNode) => [...rowNode.cells].map((cell) => cell.textContent.trim()));
+  const header = ["优先级", "对象", "依据", "动作", "状态"];
+  const payload = [header, ...rows].map((rowItems) => rowItems.map(csvCell).join(",")).join("\n");
+  const blob = new Blob([payload], { type: "text/csv;charset=utf-8" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = rows.length ? "pfi-ledger-review.csv" : "pfi-ledger-empty-state.csv";
+  link.click();
+  URL.revokeObjectURL(link.href);
+  ledgerOperationState = {
+    ...ledgerOperationState,
+    exportPreparedAt: new Date().toISOString(),
+  };
+  renderLedgerOperationFlow("ledger");
+  showToast(rows.length ? "账本流水导出已准备" : "暂无真实流水，已导出空表头");
 }
 
 function bindHoldingsPersistenceEvents() {
@@ -3266,6 +3559,17 @@ function escapeAttribute(value) {
     .replace(/>/g, "&gt;");
 }
 
+function escapeHtml(value) {
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+function csvCell(value) {
+  return `"${String(value || "").replace(/"/g, '""')}"`;
+}
+
 function renderWorkspace(workspaceId, options = {}) {
   const workspace = WORKSPACES[workspaceId] || WORKSPACES.home;
   const shell = document.querySelector(".app-shell");
@@ -3309,7 +3613,9 @@ function renderWorkspace(workspaceId, options = {}) {
   renderDecisionRows(workspace.rows);
   renderTasks(workspace.tasks);
   renderUploadImportPanel(workspaceId);
+  renderLedgerOperationFlow(workspaceId);
   renderHoldingsPersistencePanel(workspaceId, routeForState);
+  renderSettingsOperationFlow(workspaceId);
   applyEvidenceDrawer(workspace.evidence);
   drawTrendChart(resolveWorkspaceTrend(workspace));
   refreshClickSafeInventory();
@@ -4730,7 +5036,9 @@ function bindEvents() {
   document.querySelector("[data-table-sort]")?.addEventListener("click", sortRows);
   document.querySelector("[data-table-export]")?.addEventListener("click", exportRows);
   bindUploadCenterEvents();
+  bindLedgerOperationEvents();
   bindHoldingsPersistenceEvents();
+  bindSettingsOperationEvents();
 
   document.addEventListener("keydown", (event) => {
     if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {

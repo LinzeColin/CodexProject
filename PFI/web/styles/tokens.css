@@ -912,6 +912,67 @@ button:active {
   margin: 0;
 }
 
+.ledger-operation-panel,
+.settings-operation-panel {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 12px;
+  border: 1px solid var(--pfi-border);
+  border-radius: var(--pfi-radius);
+  background: var(--pfi-surface);
+  box-shadow: var(--pfi-shadow);
+  padding: 14px;
+}
+
+.field-mapping-panel,
+.review-queue-entry,
+.operation-status {
+  display: grid;
+  gap: 4px;
+  border: 1px solid var(--pfi-border);
+  border-radius: var(--pfi-radius);
+  background: var(--pfi-bg);
+  color: var(--pfi-muted);
+  padding: 10px 12px;
+  overflow-wrap: anywhere;
+}
+
+.field-mapping-panel strong,
+.operation-status strong {
+  color: var(--pfi-ink);
+}
+
+.operation-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.operation-grid label {
+  min-width: 0;
+  display: grid;
+  gap: 6px;
+  font-weight: 720;
+}
+
+.operation-grid input,
+.operation-grid select {
+  min-height: var(--pfi-target);
+  min-width: 0;
+  border: 1px solid var(--pfi-border);
+  border-radius: var(--pfi-radius);
+  background: var(--pfi-bg);
+  color: var(--pfi-ink);
+  padding: 0 10px;
+}
+
+.operation-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
 .holdings-persistence-panel {
   display: grid;
   gap: 12px;
@@ -1509,6 +1570,8 @@ body.reduce-motion *::after {
 .function-detail,
 .function-runner,
 .upload-import-panel,
+.ledger-operation-panel,
+.settings-operation-panel,
 .upload-center,
 .import-center,
 .feedback-hub,
@@ -2307,6 +2370,7 @@ button.is-pressed,
   .metric-grid,
   .import-summary,
   .holdings-summary,
+  .operation-grid,
   .import-batch dl {
     grid-template-columns: 1fr;
   }

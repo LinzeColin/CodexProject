@@ -267,7 +267,7 @@
           </div>
         </section>
 
-        <section class="upload-import-panel" data-upload-import-panel hidden aria-labelledby="upload-center-title">
+        <section class="upload-import-panel" data-upload-import-panel data-stage3-upload-flow hidden aria-labelledby="upload-center-title">
           <div class="upload-import-grid">
             <article class="upload-center" data-upload-center>
               <div class="panel-toolbar">
@@ -293,6 +293,10 @@
               <ul class="upload-file-list" data-upload-file-list aria-label="已选择文件">
                 <li>等待 CSV / ZIP / XLSX 文件</li>
               </ul>
+              <div class="operation-status" data-upload-preview aria-live="polite">
+                <strong>解析预览</strong>
+                <span>请选择真实文件后预览文件名、大小和来源；记录数以本机解析结果为准。</span>
+              </div>
             </article>
 
             <article class="import-center" data-import-center>
@@ -303,32 +307,75 @@
                 </div>
                 <button class="secondary-action" type="button" data-import-review-link>进入账本复核</button>
               </div>
+              <div class="field-mapping-panel" data-field-mapping-panel aria-label="字段映射">
+                <strong>字段映射</strong>
+                <span data-field-mapping-status>等待真实文件解析后确认日期、金额、币种、账户和备注字段。</span>
+              </div>
               <dl class="import-summary" data-import-summary aria-label="导入摘要">
                 <div><dt>已选择文件</dt><dd data-import-summary-files>0</dd></div>
                 <div><dt>预计记录</dt><dd data-import-summary-records>0</dd></div>
                 <div><dt>待复核</dt><dd data-import-summary-review>0</dd></div>
                 <div><dt>失败反馈</dt><dd data-import-summary-errors>0</dd></div>
               </dl>
+              <div class="operation-actions">
+                <button class="primary-action" type="button" data-import-confirm>确认入库</button>
+                <span class="status-pill status-review" data-import-confirm-status>等待真实文件</span>
+              </div>
+              <div class="review-queue-entry" data-review-queue-entry aria-live="polite">
+                待复核队列：暂无真实导入批次。
+              </div>
               <div class="import-batches" data-import-batches aria-label="导入批次"></div>
             </article>
           </div>
         </section>
 
-        <section class="holdings-persistence-panel" data-holdings-persistence-panel hidden aria-labelledby="holdings-persistence-title">
+        <section class="ledger-operation-panel" data-ledger-operation-flow hidden aria-labelledby="ledger-operation-title">
+          <div class="panel-toolbar">
+            <div>
+              <p class="panel-kicker">账本操作流</p>
+              <h2 id="ledger-operation-title">账本筛选与分类复核</h2>
+            </div>
+            <span class="status-pill status-review" data-ledger-operation-status>暂无真实流水</span>
+          </div>
+          <div class="operation-grid">
+            <label>
+              <span>账本筛选</span>
+              <input type="search" data-ledger-filter placeholder="输入账户、日期、金额、分类或备注" />
+            </label>
+            <label>
+              <span>分类选择</span>
+              <select data-ledger-category-select aria-label="分类选择">
+                <option value="">保持原分类</option>
+                <option value="餐饮食品">餐饮食品</option>
+                <option value="交通出行">交通出行</option>
+                <option value="投资资金流出">投资资金流出</option>
+                <option value="金融费用">金融费用</option>
+                <option value="调整其他">调整其他</option>
+              </select>
+            </label>
+          </div>
+          <div class="operation-actions">
+            <button class="primary-action" type="button" data-ledger-review-save>保存复核</button>
+            <button class="secondary-action" type="button" data-ledger-export>导出流水</button>
+          </div>
+          <p class="operation-status" data-ledger-review-state aria-live="polite">没有真实流水时显示中文空状态；筛选、分类和导出以当前真实列表为准。</p>
+        </section>
+
+        <section class="holdings-persistence-panel" data-holdings-persistence-panel data-holdings-operation-flow hidden aria-labelledby="holdings-persistence-title">
           <div class="holdings-persistence-head">
             <div>
-              <p class="panel-kicker">持仓持久化</p>
+              <p class="panel-kicker">持仓操作流</p>
               <h2 id="holdings-persistence-title">持仓编辑</h2>
-              <p>编辑数量和价格后点击保存；提交后写入 SQLite 数据库，未保存输入会标为未提交草稿。</p>
+              <p>编辑数量和价格后点击保存；未保存输入会标为未提交草稿，生产保存必须调用本机服务。</p>
             </div>
             <span class="status-pill status-review" data-holdings-persistence-status>等待保存</span>
           </div>
           <dl class="holdings-summary" data-holdings-summary aria-label="持仓摘要">
             <div><dt>持仓数</dt><dd data-holdings-summary-count>0</dd></div>
             <div><dt>总市值</dt><dd data-holdings-summary-value>CNY 0.00</dd></div>
-            <div><dt>最近保存</dt><dd data-holdings-summary-saved>未保存</dd></div>
+            <div><dt>草稿状态</dt><dd data-holdings-summary-saved data-holdings-draft-label>未提交草稿</dd></div>
           </dl>
-          <div class="holdings-table-wrap">
+          <div class="holdings-table-wrap" data-holding-edit-form>
             <table class="holdings-table">
               <thead>
                 <tr>
@@ -345,7 +392,7 @@
             </table>
           </div>
           <div class="holdings-actions">
-            <button class="primary-action" type="button" data-holdings-save>保存修改</button>
+            <button class="primary-action" type="button" data-holdings-save data-holdings-save-action>保存修改</button>
             <button class="secondary-action" type="button" data-holdings-add>新增持仓</button>
             <button class="secondary-action" type="button" data-holdings-reset>恢复默认</button>
           </div>
@@ -492,6 +539,37 @@
             </label>
           </div>
           <button class="primary-action" type="button" data-feedback-test>反馈测试</button>
+          <section class="settings-operation-panel" data-settings-operation-flow aria-labelledby="settings-operation-title">
+            <div class="panel-toolbar">
+              <div>
+                <p class="panel-kicker">设置操作流</p>
+                <h2 id="settings-operation-title">保存设置</h2>
+              </div>
+              <span class="status-pill status-review" data-settings-save-status>等待保存</span>
+            </div>
+            <div class="operation-grid">
+              <label>
+                <span>账户偏好</span>
+                <select data-settings-preference="default_account" aria-label="默认账户">
+                  <option>主账户</option>
+                  <option>投资复盘</option>
+                  <option>消费复盘</option>
+                </select>
+              </label>
+              <label>
+                <span>主题语言</span>
+                <select data-settings-preference="theme_language" aria-label="主题语言">
+                  <option>中文优先</option>
+                  <option>跟随系统</option>
+                </select>
+              </label>
+            </div>
+            <div class="operation-actions">
+              <button class="primary-action" type="button" data-settings-save>保存设置</button>
+              <button class="secondary-action" type="button" data-settings-reset>恢复默认</button>
+            </div>
+            <p class="operation-status" data-settings-operation-state aria-live="polite">设置只在本页显示；保存后会更新本页状态。</p>
+          </section>
         </section>
 
         <section class="feedback-panel" aria-live="assertive" data-feedback-region>
