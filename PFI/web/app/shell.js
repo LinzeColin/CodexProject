@@ -1509,7 +1509,7 @@ function playFeedbackTone(kind = "select") {
 }
 
 function createRipple(event, element) {
-  if (!element || feedbackRuntimeState.motion) return;
+  if (!element || !feedbackRuntimeState.motion) return;
   const rect = element.getBoundingClientRect();
   if (!rect.width || !rect.height) return;
   const ripple = document.createElement("span");
@@ -1588,6 +1588,18 @@ function applyHomeSummary(summary) {
   applyWorkflowRuntime(summary.workflow_runtime || {});
   applyStage5Dashboard(summary.stage5_dashboard || {});
   applyStage6Dashboard(summary.stage6_dashboard || {});
+  restoreOwnerHomeWorkflow();
+}
+
+function restoreOwnerHomeWorkflow() {
+  const ownerHome = DEFAULT_WORKSPACES.home;
+  WORKSPACES.home.label = "首页总览";
+  WORKSPACES.home.kicker = "今日总览";
+  WORKSPACES.home.conclusion = "先处理数据上传、账本复核、消费分类、投资持仓和策略复盘，再查看报告与建议。";
+  WORKSPACES.home.runtime = "快速路径：上传账单 · 复核流水 · 查看投资/消费 · 生成报告";
+  WORKSPACES.home.features = structuredClone(ownerHome.features);
+  WORKSPACES.home.rows = structuredClone(ownerHome.rows);
+  WORKSPACES.home.tasks = structuredClone(ownerHome.tasks);
 }
 
 function applyStage3Dashboard(dashboard) {
