@@ -19,6 +19,11 @@ from pfi_v02.stage_v022_interconnection import (
     build_metric_dependency_graph,
     build_stage4_interconnection_contract,
 )
+from pfi_v02.stage_v022_ledger_taxonomy import (
+    STAGE5_LEDGER_EVENT_TYPES,
+    STAGE5_TAXONOMY_LIMITS,
+    build_stage5_contract_payload,
+)
 
 
 V022_STAGE1_TASK_IDS = (
@@ -73,6 +78,18 @@ V022_STAGE4_TASK_IDS = (
     "S4-P2-T1",
     "S4-P2-T2",
     "S4-P2-T3",
+)
+
+V022_STAGE5_TASK_IDS = (
+    "S5-P1-T1",
+    "S5-P1-T2",
+    "S5-P2-T1",
+    "S5-P2-T2",
+    "S5-P2-T3",
+    "S5-P3-T1",
+    "S5-P3-T2",
+    "S5-P3-T3",
+    "S5-P3-T4",
 )
 
 V022_STAGE0_TASK_IDS = (
@@ -621,5 +638,91 @@ def build_v022_stage4_contract() -> dict[str, object]:
             "不实现 Stage 6 标签持久化。",
             "不修改 v0.2.1 HTML Web Shell 交互架构。",
             "不做真实交易、自动投资、支付或券商提交。",
+        ),
+    }
+
+
+def build_v022_stage5_contract() -> dict[str, object]:
+    stage5_payload = build_stage5_contract_payload()
+    return {
+        "schema": "PFIV022LedgerTaxonomyStage5ContractV1",
+        "version": "v0.2.2",
+        "stage": "Stage 5",
+        "stage_name_zh": "统一账本事件、消费双口径与分类体系",
+        "task_ids": V022_STAGE5_TASK_IDS,
+        "goal": "把 Stage 4 的 Interconnection 事实口径收敛为统一账本事件类型表、首页/消费页/报告共用的双消费口径，以及 L1 ≤ 12、每类 L2 ≤ 5、总 L2 ≤ 50 的中文消费分类 taxonomy。",
+        "ledger_event_type_policy": {
+            "required_event_types": STAGE5_LEDGER_EVENT_TYPES,
+            "required_affects_flags": (
+                "affects_total_consumption_outflow",
+                "affects_living_consumption",
+                "affects_investment",
+                "affects_net_worth",
+                "affects_cashflow",
+            ),
+            "event_type_table": stage5_payload["ledger_event_type_table"],
+        },
+        "double_consumption_policy": {
+            "gross_consumption_label_zh": "消费总流出金额",
+            "living_consumption_label_zh": "生活消费金额",
+            "gross_includes": ("生活消费", "投资入金", "基金申购", "黄金申购", "投资买入", "金融费用"),
+            "living_excludes": ("投资入金", "基金申购", "黄金申购", "投资买入", "内部转账", "信用卡还款"),
+            "required_surfaces": stage5_payload["double_consumption_surface_required"],
+            "source_metric_function": "pfi_v02.stage_v022_interconnection.aggregate_core_metrics",
+        },
+        "consumption_taxonomy_policy": {
+            "limits": STAGE5_TAXONOMY_LIMITS,
+            "taxonomy": stage5_payload["taxonomy"],
+            "validation": stage5_payload["taxonomy_validation"],
+            "future_merge_field_required": True,
+        },
+        "deliverables": (
+            "PFI/src/pfi_v02/stage_v022_ledger_taxonomy.py",
+            "PFI/src/pfi_v02/stage_v022_database_governance.py",
+            "PFI/tests/test_v022_stage5_ledger_taxonomy.py",
+            "PFI/docs/pfi_v022/STAGE5_LEDGER_TAXONOMY.md",
+            "PFI/config/pfi_parameters.yaml",
+            "PFI/config/parameter_changelog.md",
+            "PFI/模型参数文件.md",
+            "PFI/功能清单.md",
+            "PFI/开发记录.md",
+            "PFI/HANDOFF.md",
+            "PFI/README.md",
+        ),
+        "acceptance_criteria": (
+            "统一账本事件类型表包含消费、投资入金、基金申购、黄金申购、投资买入、投资卖出、退款、费用、信用卡还款、内部转账、收入、估值、汇率兑换。",
+            "每种事件绑定影响消费总流出、生活消费、投资、净资产和现金流的 flags。",
+            "消费总流出金额包含生活消费、投资入金、基金申购、黄金申购、投资买入和金融费用。",
+            "生活消费金额只包含普通生活消费，排除投资入金、基金申购、黄金申购、投资买入、内部转账和信用卡还款。",
+            "首页、消费页、报告模板同时展示消费总流出与生活消费，并解释差异。",
+            "消费分类 L1 ≤ 12，每个 L1 的 L2 ≤ 5，总 L2 不超过 50。",
+            "每个 L1 保留 future_merge_to 或 merge_candidate，后续可压缩到 10 类或更少。",
+        ),
+        "stop_conditions": (
+            "事件类型不足以表达真实资金流。",
+            "任一事件影响口径缺失。",
+            "投资入金未计入消费总流出。",
+            "生活消费被投资入金污染。",
+            "首页、消费页、报告只显示一个消费数字导致误解。",
+            "L1 超过 12、任一 L1 的 L2 超过 5、或总 L2 超过 50。",
+            "后续无法合并分类。",
+        ),
+        "validation_commands": (
+            "PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests/test_v022_stage5_ledger_taxonomy.py -q",
+            "PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests/test_v022_stage0_database_governance.py PFI/tests/test_pfi_parameters_consistency.py PFI/tests/test_v022_fx_effective_date.py PFI/tests/test_v022_stage3_source_account_profiles.py PFI/tests/test_v022_interconnection_no_double_count.py PFI/tests/test_v022_consumption_investment_outflow.py PFI/tests/test_v022_stage5_ledger_taxonomy.py -q",
+            "PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests -q",
+            "node --check PFI/web/app/shell.js",
+            "python3 scripts/validate_project_governance.py --project PFI",
+            "git diff --check -- PFI",
+        ),
+        "cross_review": {
+            "Agent 1": "复核双消费口径：投资入金、基金申购、黄金申购、投资买入和费用进入消费总流出，但不进入生活消费。",
+            "Agent 3": "复核分类参数：12 大类 / 每类 5 中类 / 总中类 50，分类与 Stage 6 标签系统分离。",
+        },
+        "non_goals": (
+            "Stage 6 标签持久化不在本轮实现。",
+            "不修改 v0.2.1 HTML Web Shell UIUX 基线。",
+            "不新增真实交易、自动投资、支付或券商提交。",
+            "不实现 Stage 7 评分公式、Stage 8 runtime diff 或 Stage 9 可视化页面。",
         ),
     }

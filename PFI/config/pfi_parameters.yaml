@@ -1,9 +1,9 @@
 {
-  "schema": "PFIParametersV022Stage4",
+  "schema": "PFIParametersV022Stage5",
   "project_id": "PFI",
   "task_name": "PFI v0.2.2 E2E 逻辑优化",
   "parameter_version": "v0.2.2",
-  "current_stage": "Stage 4 - Economic Event 与 Interconnection 逻辑",
+  "current_stage": "Stage 5 - 统一账本事件、消费双口径与分类体系",
   "canonical_parameter_file": "PFI/config/pfi_parameters.yaml",
   "machine_format": "JSON-compatible YAML",
   "uiux_baseline": "v0.2.1 HTML Web Shell",
@@ -523,6 +523,225 @@
           "报告与洞察"
         ],
         "user_editable": false
+      },
+      "stage5_ledger_event_type_table": {
+        "label_zh": "Stage 5 统一账本事件类型表",
+        "description_zh": "覆盖真实资金流、估值和汇率兑换，并为每个事件绑定消费总流出、生活消费、投资、净资产和现金流影响口径。",
+        "required_event_types": [
+          "consumption",
+          "investment_deposit",
+          "fund_subscription",
+          "bullion_purchase",
+          "investment_buy",
+          "investment_sell",
+          "refund",
+          "fee",
+          "credit_card_repayment",
+          "internal_transfer",
+          "income",
+          "valuation",
+          "fx_conversion"
+        ],
+        "required_affects_flags": [
+          "affects_total_consumption_outflow",
+          "affects_living_consumption",
+          "affects_investment",
+          "affects_net_worth",
+          "affects_cashflow"
+        ],
+        "event_type_table": [
+          {
+            "event_type": "consumption",
+            "label_zh": "普通消费",
+            "affects_total_consumption_outflow": true,
+            "affects_living_consumption": true,
+            "affects_investment": false,
+            "affects_net_worth": true,
+            "affects_cashflow": true,
+            "homepage_display": "首页显示为本期支出和现金流压力来源。",
+            "consumption_display": "计入消费总流出和生活消费。",
+            "investment_display": "不计入投资资产。",
+            "cashflow_display": "计入生活现金流出。",
+            "report_display": "报告中作为普通生活消费展示。"
+          },
+          {
+            "event_type": "investment_deposit",
+            "label_zh": "投资入金",
+            "affects_total_consumption_outflow": true,
+            "affects_living_consumption": false,
+            "affects_investment": true,
+            "affects_net_worth": false,
+            "affects_cashflow": true,
+            "homepage_display": "首页可显示为投资现金增加和生活现金减少。",
+            "consumption_display": "计入消费总流出，不计入生活消费。",
+            "investment_display": "计入投资现金。",
+            "cashflow_display": "计入生活现金流出和投资现金流入。",
+            "report_display": "报告中作为投资性资金流出展示。"
+          },
+          {
+            "event_type": "fund_subscription",
+            "label_zh": "基金申购",
+            "affects_total_consumption_outflow": true,
+            "affects_living_consumption": false,
+            "affects_investment": true,
+            "affects_net_worth": false,
+            "affects_cashflow": true,
+            "homepage_display": "首页可显示为基金资产增加。",
+            "consumption_display": "计入消费总流出，不计入生活消费。",
+            "investment_display": "计入基金资产。",
+            "cashflow_display": "计入主钱包或基金平台现金流出。",
+            "report_display": "报告中作为投资性资金流出展示。"
+          },
+          {
+            "event_type": "bullion_purchase",
+            "label_zh": "黄金申购",
+            "affects_total_consumption_outflow": true,
+            "affects_living_consumption": false,
+            "affects_investment": true,
+            "affects_net_worth": false,
+            "affects_cashflow": true,
+            "homepage_display": "首页可显示为贵金属资产增加。",
+            "consumption_display": "计入消费总流出，不计入生活消费。",
+            "investment_display": "计入贵金属资产。",
+            "cashflow_display": "计入现金流出。",
+            "report_display": "报告中作为贵金属投资流出展示。"
+          },
+          {
+            "event_type": "investment_buy",
+            "label_zh": "投资买入",
+            "affects_total_consumption_outflow": true,
+            "affects_living_consumption": false,
+            "affects_investment": true,
+            "affects_net_worth": false,
+            "affects_cashflow": true,
+            "homepage_display": "首页可显示为投资持仓增加。",
+            "consumption_display": "计入消费总流出，不计入生活消费。",
+            "investment_display": "计入投资持仓。",
+            "cashflow_display": "计入投资账户现金流出。",
+            "report_display": "报告中作为投资买入展示。"
+          },
+          {
+            "event_type": "investment_sell",
+            "label_zh": "投资卖出",
+            "affects_total_consumption_outflow": false,
+            "affects_living_consumption": false,
+            "affects_investment": true,
+            "affects_net_worth": false,
+            "affects_cashflow": true,
+            "homepage_display": "首页可显示为投资现金回流。",
+            "consumption_display": "不计入消费。",
+            "investment_display": "计入投资卖出和投资现金回流。",
+            "cashflow_display": "计入投资账户现金流入。",
+            "report_display": "报告中作为投资卖出展示。"
+          },
+          {
+            "event_type": "refund",
+            "label_zh": "退款",
+            "affects_total_consumption_outflow": true,
+            "affects_living_consumption": true,
+            "affects_investment": false,
+            "affects_net_worth": true,
+            "affects_cashflow": true,
+            "homepage_display": "首页可显示为支出抵消或现金回流。",
+            "consumption_display": "抵消原消费或对应总流出。",
+            "investment_display": "通常不计入投资。",
+            "cashflow_display": "计入现金流入。",
+            "report_display": "报告中展示为退款抵消项。"
+          },
+          {
+            "event_type": "fee",
+            "label_zh": "费用",
+            "affects_total_consumption_outflow": true,
+            "affects_living_consumption": false,
+            "affects_investment": false,
+            "affects_net_worth": true,
+            "affects_cashflow": true,
+            "homepage_display": "首页可显示为费用拖累。",
+            "consumption_display": "计入消费总流出，不计入生活消费。",
+            "investment_display": "可作为投资费用或金融费用分析。",
+            "cashflow_display": "计入现金流出。",
+            "report_display": "报告中作为费用展示。"
+          },
+          {
+            "event_type": "credit_card_repayment",
+            "label_zh": "信用卡还款",
+            "affects_total_consumption_outflow": false,
+            "affects_living_consumption": false,
+            "affects_investment": false,
+            "affects_net_worth": false,
+            "affects_cashflow": true,
+            "homepage_display": "首页可显示为现金流还款压力。",
+            "consumption_display": "不重复计入生活消费，可在还款分析单列。",
+            "investment_display": "不计入投资。",
+            "cashflow_display": "计入生活现金流出。",
+            "report_display": "报告中单列还款，不重复增加消费。"
+          },
+          {
+            "event_type": "internal_transfer",
+            "label_zh": "内部转账",
+            "affects_total_consumption_outflow": false,
+            "affects_living_consumption": false,
+            "affects_investment": false,
+            "affects_net_worth": false,
+            "affects_cashflow": true,
+            "homepage_display": "首页可显示为账户间调拨。",
+            "consumption_display": "不计入消费。",
+            "investment_display": "不计入投资资产变化。",
+            "cashflow_display": "只计内部现金移动。",
+            "report_display": "报告中作为内部转账展示。"
+          },
+          {
+            "event_type": "income",
+            "label_zh": "收入",
+            "affects_total_consumption_outflow": false,
+            "affects_living_consumption": false,
+            "affects_investment": false,
+            "affects_net_worth": true,
+            "affects_cashflow": true,
+            "homepage_display": "首页显示为收入和现金流改善。",
+            "consumption_display": "不计入消费。",
+            "investment_display": "不计入投资。",
+            "cashflow_display": "计入现金流入。",
+            "report_display": "报告中作为收入展示。"
+          },
+          {
+            "event_type": "valuation",
+            "label_zh": "估值",
+            "affects_total_consumption_outflow": false,
+            "affects_living_consumption": false,
+            "affects_investment": true,
+            "affects_net_worth": true,
+            "affects_cashflow": false,
+            "homepage_display": "首页可展示资产估值变化，但不作为现金流出。",
+            "consumption_display": "不计入消费。",
+            "investment_display": "计入投资资产估值变化。",
+            "cashflow_display": "不影响现金流。",
+            "report_display": "报告中作为资产估值或价格变动展示。"
+          },
+          {
+            "event_type": "fx_conversion",
+            "label_zh": "汇率兑换",
+            "affects_total_consumption_outflow": false,
+            "affects_living_consumption": false,
+            "affects_investment": false,
+            "affects_net_worth": false,
+            "affects_cashflow": true,
+            "homepage_display": "首页可显示为币种转换。",
+            "consumption_display": "不计入消费。",
+            "investment_display": "不计入投资资产变化。",
+            "cashflow_display": "作为币种间现金移动展示。",
+            "report_display": "报告中展示汇率快照和转换证据。"
+          }
+        ],
+        "impact_surfaces": [
+          "账本流水",
+          "首页总览",
+          "消费管理",
+          "投资管理",
+          "现金流",
+          "报告与洞察"
+        ],
+        "user_editable": false
       }
     },
     "interconnection": {
@@ -774,6 +993,357 @@
           "消费管理"
         ],
         "user_editable": false
+      },
+      "default_taxonomy": {
+        "label_zh": "Stage 5 默认消费分类 taxonomy",
+        "description_zh": "默认 12 大类 / 50 中类；一笔交易只能有一个主分类，多维分析由 Stage 6 标签系统承担。",
+        "taxonomy": [
+          {
+            "l1_key": "food",
+            "l1_label_zh": "餐饮食品",
+            "l2": [
+              {
+                "l2_key": "food_01",
+                "label_zh": "外出就餐"
+              },
+              {
+                "l2_key": "food_02",
+                "label_zh": "外卖"
+              },
+              {
+                "l2_key": "food_03",
+                "label_zh": "咖啡饮品"
+              },
+              {
+                "l2_key": "food_04",
+                "label_zh": "超市食品"
+              },
+              {
+                "l2_key": "food_05",
+                "label_zh": "零食饮料"
+              }
+            ],
+            "future_merge_to": "生活必要",
+            "merge_candidate": "生活必要",
+            "primary_category_per_transaction": 1
+          },
+          {
+            "l1_key": "housing",
+            "l1_label_zh": "居住家庭",
+            "l2": [
+              {
+                "l2_key": "housing_01",
+                "label_zh": "房租房贷"
+              },
+              {
+                "l2_key": "housing_02",
+                "label_zh": "水电燃气"
+              },
+              {
+                "l2_key": "housing_03",
+                "label_zh": "网络通讯"
+              },
+              {
+                "l2_key": "housing_04",
+                "label_zh": "家居维修"
+              }
+            ],
+            "future_merge_to": "生活必要",
+            "merge_candidate": "生活必要",
+            "primary_category_per_transaction": 1
+          },
+          {
+            "l1_key": "transport",
+            "l1_label_zh": "交通出行",
+            "l2": [
+              {
+                "l2_key": "transport_01",
+                "label_zh": "公共交通"
+              },
+              {
+                "l2_key": "transport_02",
+                "label_zh": "打车网约"
+              },
+              {
+                "l2_key": "transport_03",
+                "label_zh": "车辆油电"
+              },
+              {
+                "l2_key": "transport_04",
+                "label_zh": "停车路桥"
+              },
+              {
+                "l2_key": "transport_05",
+                "label_zh": "长途交通"
+              }
+            ],
+            "future_merge_to": "出行与成长",
+            "merge_candidate": "出行与成长",
+            "primary_category_per_transaction": 1
+          },
+          {
+            "l1_key": "shopping",
+            "l1_label_zh": "购物用品",
+            "l2": [
+              {
+                "l2_key": "shopping_01",
+                "label_zh": "日用百货"
+              },
+              {
+                "l2_key": "shopping_02",
+                "label_zh": "服饰鞋包"
+              },
+              {
+                "l2_key": "shopping_03",
+                "label_zh": "数码家电"
+              },
+              {
+                "l2_key": "shopping_04",
+                "label_zh": "美妆个护"
+              },
+              {
+                "l2_key": "shopping_05",
+                "label_zh": "家居用品"
+              }
+            ],
+            "future_merge_to": "可选消费",
+            "merge_candidate": "可选消费",
+            "primary_category_per_transaction": 1
+          },
+          {
+            "l1_key": "health",
+            "l1_label_zh": "医疗健康",
+            "l2": [
+              {
+                "l2_key": "health_01",
+                "label_zh": "门诊药品"
+              },
+              {
+                "l2_key": "health_02",
+                "label_zh": "保险保障"
+              },
+              {
+                "l2_key": "health_03",
+                "label_zh": "健身运动"
+              },
+              {
+                "l2_key": "health_04",
+                "label_zh": "牙科眼科"
+              }
+            ],
+            "future_merge_to": "生活必要",
+            "merge_candidate": "生活必要",
+            "primary_category_per_transaction": 1
+          },
+          {
+            "l1_key": "education",
+            "l1_label_zh": "教育成长",
+            "l2": [
+              {
+                "l2_key": "education_01",
+                "label_zh": "课程培训"
+              },
+              {
+                "l2_key": "education_02",
+                "label_zh": "书籍资料"
+              },
+              {
+                "l2_key": "education_03",
+                "label_zh": "考试认证"
+              },
+              {
+                "l2_key": "education_04",
+                "label_zh": "学习工具"
+              }
+            ],
+            "future_merge_to": "出行与成长",
+            "merge_candidate": "出行与成长",
+            "primary_category_per_transaction": 1
+          },
+          {
+            "l1_key": "entertainment",
+            "l1_label_zh": "娱乐社交",
+            "l2": [
+              {
+                "l2_key": "entertainment_01",
+                "label_zh": "影视游戏"
+              },
+              {
+                "l2_key": "entertainment_02",
+                "label_zh": "活动票务"
+              },
+              {
+                "l2_key": "entertainment_03",
+                "label_zh": "社交聚餐"
+              },
+              {
+                "l2_key": "entertainment_04",
+                "label_zh": "礼物红包"
+              },
+              {
+                "l2_key": "entertainment_05",
+                "label_zh": "休闲旅行"
+              }
+            ],
+            "future_merge_to": "可选消费",
+            "merge_candidate": "可选消费",
+            "primary_category_per_transaction": 1
+          },
+          {
+            "l1_key": "subscription",
+            "l1_label_zh": "订阅服务",
+            "l2": [
+              {
+                "l2_key": "subscription_01",
+                "label_zh": "影音会员"
+              },
+              {
+                "l2_key": "subscription_02",
+                "label_zh": "软件工具"
+              },
+              {
+                "l2_key": "subscription_03",
+                "label_zh": "云服务"
+              },
+              {
+                "l2_key": "subscription_04",
+                "label_zh": "平台会员"
+              }
+            ],
+            "future_merge_to": "可选消费",
+            "merge_candidate": "可选消费",
+            "primary_category_per_transaction": 1
+          },
+          {
+            "l1_key": "financial_fee",
+            "l1_label_zh": "金融费用",
+            "l2": [
+              {
+                "l2_key": "financial_fee_01",
+                "label_zh": "银行费用"
+              },
+              {
+                "l2_key": "financial_fee_02",
+                "label_zh": "支付手续费"
+              },
+              {
+                "l2_key": "financial_fee_03",
+                "label_zh": "汇兑成本"
+              },
+              {
+                "l2_key": "financial_fee_04",
+                "label_zh": "贷款利息"
+              },
+              {
+                "l2_key": "financial_fee_05",
+                "label_zh": "税费罚款"
+              }
+            ],
+            "future_merge_to": "金融成本",
+            "merge_candidate": "金融成本",
+            "primary_category_per_transaction": 1
+          },
+          {
+            "l1_key": "investment_outflow",
+            "l1_label_zh": "投资资金流出",
+            "l2": [
+              {
+                "l2_key": "investment_outflow_01",
+                "label_zh": "证券入金"
+              },
+              {
+                "l2_key": "investment_outflow_02",
+                "label_zh": "基金申购"
+              },
+              {
+                "l2_key": "investment_outflow_03",
+                "label_zh": "黄金申购"
+              },
+              {
+                "l2_key": "investment_outflow_04",
+                "label_zh": "其他投资入金"
+              }
+            ],
+            "future_merge_to": "投资资金流",
+            "merge_candidate": "投资资金流",
+            "primary_category_per_transaction": 1
+          },
+          {
+            "l1_key": "family_responsibility",
+            "l1_label_zh": "家庭责任",
+            "l2": [
+              {
+                "l2_key": "family_responsibility_01",
+                "label_zh": "家庭支持"
+              },
+              {
+                "l2_key": "family_responsibility_02",
+                "label_zh": "人情往来"
+              },
+              {
+                "l2_key": "family_responsibility_03",
+                "label_zh": "报销垫付"
+              }
+            ],
+            "future_merge_to": "家庭责任",
+            "merge_candidate": "家庭责任",
+            "primary_category_per_transaction": 1
+          },
+          {
+            "l1_key": "adjustment_other",
+            "l1_label_zh": "调整其他",
+            "l2": [
+              {
+                "l2_key": "adjustment_other_01",
+                "label_zh": "退款抵扣"
+              },
+              {
+                "l2_key": "adjustment_other_02",
+                "label_zh": "未分类其他"
+              }
+            ],
+            "future_merge_to": "调整其他",
+            "merge_candidate": "调整其他",
+            "primary_category_per_transaction": 1
+          }
+        ],
+        "validation": {
+          "schema": "PFIV022Stage5TaxonomyValidationV1",
+          "status": "通过",
+          "l1_count": 12,
+          "max_l2_per_l1_actual": 5,
+          "l2_total": 50,
+          "future_merge_ready": true,
+          "primary_category_per_transaction": 1,
+          "limits": {
+            "max_l1_categories": 12,
+            "max_l2_per_l1": 5,
+            "max_l2_total": 50,
+            "primary_category_per_transaction": 1
+          }
+        },
+        "future_merge_field_required": true,
+        "impact_surfaces": [
+          "账本流水",
+          "消费管理",
+          "报告与洞察"
+        ],
+        "user_editable": true
+      },
+      "taxonomy_limits": {
+        "label_zh": "消费分类数量约束",
+        "description_zh": "L1 ≤ 12；每个 L1 的 L2 ≤ 5；总 L2 ≤ 50；每笔交易主分类数量为 1。",
+        "l1_limit": 12,
+        "l2_per_l1_limit": 5,
+        "l2_total_limit": 50,
+        "primary_category_per_transaction": 1,
+        "future_merge_ready": true,
+        "impact_surfaces": [
+          "消费管理",
+          "测试",
+          "报告与洞察"
+        ],
+        "user_editable": false
       }
     },
     "tags": {
@@ -914,6 +1484,24 @@
         "description_zh": "独立电子产品冲动阈值删除，后续并入夜间或大额标签组合。",
         "impact_surfaces": [
           "消费管理"
+        ],
+        "user_editable": false
+      },
+      "double_consumption_surfaces": {
+        "label_zh": "双消费口径展示面",
+        "description_zh": "首页、消费页和报告必须同时显示消费总流出与生活消费，并解释差异。",
+        "required_surfaces": [
+          "homepage",
+          "consumption_page",
+          "report"
+        ],
+        "gross_consumption_label_zh": "消费总流出",
+        "living_consumption_label_zh": "生活消费",
+        "metric_source": "aggregate_core_metrics",
+        "impact_surfaces": [
+          "首页总览",
+          "消费管理",
+          "报告与洞察"
         ],
         "user_editable": false
       }
@@ -1109,6 +1697,17 @@
         "impact_surfaces": [
           "测试",
           "治理"
+        ],
+        "user_editable": false
+      },
+      "stage5_ledger_taxonomy_test": {
+        "value": "PFI/tests/test_v022_stage5_ledger_taxonomy.py",
+        "label_zh": "Stage 5 账本与分类约束测试",
+        "description_zh": "验证事件类型表、双消费口径、12/5/50 分类约束、未来合并字段和三基文件同步。",
+        "impact_surfaces": [
+          "测试",
+          "治理",
+          "GitHub 验收"
         ],
         "user_editable": false
       }
@@ -1459,5 +2058,16 @@
     "S4-P2-T1",
     "S4-P2-T2",
     "S4-P2-T3"
+  ],
+  "stage5_task_ids": [
+    "S5-P1-T1",
+    "S5-P1-T2",
+    "S5-P2-T1",
+    "S5-P2-T2",
+    "S5-P2-T3",
+    "S5-P3-T1",
+    "S5-P3-T2",
+    "S5-P3-T3",
+    "S5-P3-T4"
   ]
 }

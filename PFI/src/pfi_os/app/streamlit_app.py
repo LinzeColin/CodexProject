@@ -1154,12 +1154,12 @@ def render_pfi_local_data_upload_panel() -> None:
         elif st.button("预检已发现的旧支付宝账单", key="preview_discovered_alipay_bills"):
             discovered_preview = build_alipay_import_preview(payloads_from_paths(discovered))
             _render_alipay_import_summary(discovered_preview.as_dict(), title="旧数据预检结果")
-        with st.expander("查看已发现文件", expanded=False):
-            st.dataframe(
-                pd.DataFrame({"文件": [path.name for path in discovered], "本机路径": [str(path) for path in discovered]}),
-                use_container_width=True,
-                hide_index=True,
-            )
+        st.markdown("#### 查看已发现文件")
+        st.dataframe(
+            pd.DataFrame({"文件": [path.name for path in discovered], "本机路径": [str(path) for path in discovered]}),
+            use_container_width=True,
+            hide_index=True,
+        )
         if st.button("接入已发现的支付宝三年原始账单", type="primary", key="import_discovered_alipay_bills"):
             manifest = write_private_alipay_import(payloads_from_paths(discovered), default_data_home())
             st.session_state["pfi_latest_alipay_import_manifest"] = manifest
@@ -1292,7 +1292,7 @@ def render_pfi_ui_v2_shell() -> None:
 
 
 def main() -> None:
-    st.set_page_config(page_title=MASTER_DISPLAY_NAME, page_icon="PFI", layout="wide", initial_sidebar_state="expanded")
+    st.set_page_config(page_title=MASTER_DISPLAY_NAME, page_icon=None, layout="wide", initial_sidebar_state="expanded")
     install_streamlit_runtime_compat()
     if _pfi_ui_v2_enabled():
         render_pfi_ui_v2_shell()
