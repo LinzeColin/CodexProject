@@ -49,6 +49,8 @@ from arxiv_daily_push.stage2_final_gate import (
     S2PMT07_NO_PRODUCTION_SIDE_EFFECT_ATTESTATION_REQUIRED_EVIDENCE_REFS,
     S2PMT07_NO_PRODUCTION_SIDE_EFFECT_ATTESTATION_REQUIRED_FIELDS,
     S2PMT07_NO_PRODUCTION_SIDE_EFFECT_ATTESTATION_SCHEMA_VERSION,
+    S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS,
+    S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_ENV_FLAGS_FALSE,
     S2PMT07_NEXT_AGENT_HANDOFF_DECISION,
     S2PMT07_NEXT_AGENT_HANDOFF_NO_PRODUCTION_FLAGS,
     S2PMT07_NEXT_AGENT_HANDOFF_REQUIRED_ARTIFACT_VALIDATIONS,
@@ -99,6 +101,7 @@ from arxiv_daily_push.stage2_final_gate import (
     build_final_bundle_prerequisite_plan_state,
     build_final_command_execution_hash,
     build_final_command_execution_validation_state,
+    build_local_runtime_no_production_state,
     build_no_production_side_effect_attestation_hash,
     build_no_production_side_effect_attestation_validation_state,
     build_next_agent_handoff_hash,
@@ -151,6 +154,7 @@ from arxiv_daily_push.stage2_final_gate import (
     validate_final_acceptance_bundle_readiness_state,
     validate_final_bundle_prerequisite_plan_state,
     validate_final_command_execution_artifact,
+    validate_local_runtime_no_production_state,
     validate_no_production_side_effect_attestation,
     validate_next_agent_handoff,
     validate_independent_review_signoff_artifact,
@@ -3201,6 +3205,68 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(state["available_prebundle_evidence"]["FINAL_COMMAND_EXECUTION_VALIDATION"])
         self.assertIn("final_command_execution_missing", final_command["validation_errors"])
         self.assertEqual(validate_final_acceptance_bundle_readiness_state(state), [])
+
+    def test_local_runtime_no_production_state_accepts_disabled_launchd_and_smtp_false(self) -> None:
+        print_disabled_output = "\n".join(
+            f'\t\t"{label}" => disabled'
+            for label in S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS
+        )
+        service_outputs = {
+            label: f"gui/501/{label} = {{\n\tstate = not running\n}}"
+            for label in S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS
+        }
+        env_flags = {
+            flag: "false"
+            for flag in S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_ENV_FLAGS_FALSE
+        }
+
+        state = build_local_runtime_no_production_state(
+            generated_at="2026-06-28T17:12:00+10:00",
+            launchctl_print_disabled_output=print_disabled_output,
+            launchctl_print_outputs=service_outputs,
+            env_flags=env_flags,
+        )
+
+        self.assertEqual(state["status"], "pass")
+        self.assertTrue(state["launchd_labels_disabled"])
+        self.assertTrue(state["launchd_labels_not_running"])
+        self.assertTrue(state["smtp_send_flag_false"])
+        self.assertEqual(state["blocking_reasons"], [])
+        self.assertFalse(state["real_smtp_send_enabled"])
+        self.assertFalse(state["scheduler_install_enabled"])
+        self.assertEqual(validate_local_runtime_no_production_state(state), [])
+
+    def test_local_runtime_no_production_state_blocks_enabled_launchd_or_smtp_true(self) -> None:
+        print_disabled_output = "\n".join(
+            f'\t\t"{label}" => enabled'
+            for label in S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS
+        )
+        service_outputs = {
+            label: f"gui/501/{label} = {{\n\tstate = not running\n}}"
+            for label in S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS
+        }
+
+        state = build_local_runtime_no_production_state(
+            generated_at="2026-06-28T17:12:00+10:00",
+            launchctl_print_disabled_output=print_disabled_output,
+            launchctl_print_outputs=service_outputs,
+            env_flags={"ADP_ALLOW_SMTP_SEND": "true"},
+        )
+
+        self.assertEqual(state["status"], "blocked")
+        self.assertFalse(state["launchd_labels_disabled"])
+        self.assertTrue(state["launchd_labels_not_running"])
+        self.assertFalse(state["smtp_send_flag_false"])
+        self.assertIn("launchd_label_not_disabled", state["blocking_reasons"])
+        self.assertIn("smtp_send_flag_enabled", state["blocking_reasons"])
+        self.assertEqual(validate_local_runtime_no_production_state(state), [])
+
+        tampered = json.loads(json.dumps(state))
+        tampered["blocking_reasons"] = []
+        self.assertIn(
+            "blocked local runtime no-production blocking_reasons must match failed gates",
+            validate_local_runtime_no_production_state(tampered),
+        )
 
     def _valid_no_production_side_effect_attestation_payload(self) -> dict[str, object]:
         payload: dict[str, object] = {

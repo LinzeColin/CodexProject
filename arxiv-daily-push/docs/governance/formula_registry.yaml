@@ -7083,3 +7083,59 @@ formulas:
     evidence_hash: "PENDING_MAIN_COMMIT"
     last_verified_commit: "PRECOMMIT"
     verified_at: "2026-06-27T11:26:15+10:00"
+
+  -
+    formula_id: "FORM-ADP-120"
+    model_id: "MOD-ADP-118"
+    assumption_ids:
+      - "ASM-ADP-035"
+    task_ids:
+      - "S2PMT07-LOCAL-RUNTIME-NO-PRODUCTION-GATE"
+      - "S2PMT07"
+    status: "active"
+    expression: "Local runtime no-production precheck passes only when all required ADP LaunchAgents are disabled, all required ADP LaunchAgents are not running, ADP_ALLOW_SMTP_SEND is false/0/no/off, every production side-effect flag is false, and the state hash matches the sanitized launchd/env evidence."
+    variables:
+      -
+        name: "launchd_disabled_states"
+        data_type: "object"
+        unit: "label to disabled/enabled/missing state"
+        input_domain: "com.linze.adp.local.daily, com.linze.adp.local.health, com.linze.adp.local.watchdog"
+      -
+        name: "launchd_running_states"
+        data_type: "object"
+        unit: "label to service state"
+        input_domain: "not running required"
+      -
+        name: "env_flag_states"
+        data_type: "object"
+        unit: "flag to sanitized value"
+        input_domain: "ADP_ALLOW_SMTP_SEND must be false/0/no/off"
+      -
+        name: "production_side_effect_flags"
+        data_type: "object"
+        unit: "boolean flags"
+        input_domain: "false"
+    constraints: "This gate may disable local ADP LaunchAgents and set local ADP_ALLOW_SMTP_SEND=false as a safety correction, but it must not bootstrap, kickstart, enable, schedule, send SMTP, upload Release, restore production, mutate public schema/DB/queues, change sources/ranking/CURRENT/V7 files, close P0/P1, complete S2PLT04, enable DAILY_OPERATION, or claim integrated production acceptance."
+    missing_policy: "Missing launchd label, missing service state, or missing/true SMTP send flag blocks the local runtime no-production state."
+    output_range: "pass or blocked local runtime no-production state with deterministic state_hash and explicit blocking reasons."
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_final_gate.py"
+      - "arxiv-daily-push/tests/test_governance_current_state.py"
+      - "arxiv-daily-push/tests/test_user_center_candidate_pool.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_GATE.md"
+      - "governance/run_manifests/ADP-S2PMT07-LOCAL-RUNTIME-NO-PRODUCTION-GATE-20260628.json"
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_SCHEMA_VERSION"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_ENV_FLAGS_FALSE"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_BLOCKING_REASONS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_local_runtime_no_production_state"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::validate_local_runtime_no_production_state"
+    implementation_fingerprint: "PENDING_MAIN_COMMIT"
+    evidence_hash: "PENDING_MAIN_COMMIT"
+    last_verified_commit: "PRECOMMIT"
+    verified_at: "2026-06-28T16:32:45+10:00"

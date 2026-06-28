@@ -21,12 +21,19 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 230
+- task_count: 231
 - acceptance_count: 126
 
 ## Delivery Tasks
 
 The machine-readable task source is `delivery_tasks.yaml`.
+## 2026-06-28 16:32:45 Australia/Sydney - S2PMT07 Local Runtime No-Production Gate
+
+- `S2PMT07-LOCAL-RUNTIME-NO-PRODUCTION-GATE` binds local ADP LaunchAgent disabled/not-running state and `ADP_ALLOW_SMTP_SEND=false` into the no-production precheck evidence.
+- The local safety correction disabled daily/health/watchdog LaunchAgents and set local SMTP send authorization false; no runner was kickstarted and no mail was sent.
+- This is not independent final reviewer assignment, not P0/P1 zero proof, not S2PLT04 completion, not final bundle creation, and not production acceptance.
+- No SMTP, scheduler, Release, restore, schema/DB, source/ranking, CURRENT/V7, DAILY_OPERATION, or integrated production acceptance side effect is claimed.
+
 ## 2026-06-28 16:01:08 Australia/Sydney - S2PMT07 A-005 Parameter Selector Assurance
 
 - `S2PMT07-A005-PARAMETER-SELECTOR-ASSURANCE` adds machine-readable selectors for `PARAM-ADP-955..959`, restoring active parameter source coverage from `1045 / 1050` to `1050 / 1050`.
