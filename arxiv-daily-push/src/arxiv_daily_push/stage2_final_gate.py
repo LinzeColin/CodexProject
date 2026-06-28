@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 from collections.abc import Mapping
+from pathlib import Path
 from typing import Any
 
 from arxiv_daily_push.stage2_lease_fencing import build_m4_cycle_watermark
@@ -65,6 +66,9 @@ S2PMT07_BLOCKING_REASONS = (
 )
 S2PMT07_REMAINING_BLOCKER_MATRIX_REQUIRED_BLOCKERS = S2PMT07_BLOCKING_REASONS
 S2PMT07_P0_P1_ZERO_PROOF_ARTIFACT_PATH = "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json"
+S2PMT07_NO_PRODUCTION_SIDE_EFFECT_ATTESTATION_ARTIFACT_PATH = (
+    "FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json"
+)
 S2PMT07_P0_P1_ZERO_PROOF_SCHEMA_VERSION = "adp.p0_p1_zero_proof.v1"
 S2PMT07_P0_P1_ZERO_PROOF_CLOSURE_DECISION = "P0_P1_ZERO_PROVEN_NO_PRODUCTION_ACCEPTANCE"
 S2PMT07_P0_P1_ZERO_PROOF_REQUIRED_FIELDS = (
@@ -320,7 +324,7 @@ S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS = (
     "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json",
     "FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml",
     "FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json",
-    "FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json",
+    S2PMT07_NO_PRODUCTION_SIDE_EFFECT_ATTESTATION_ARTIFACT_PATH,
     "HANDOFF/00_下一Agent先读.md",
 )
 S2PMT07_FINAL_ACCEPTANCE_BUNDLE_BLOCKING_REASONS = (
@@ -548,7 +552,9 @@ S2PMT07_FINAL_ACCEPTANCE_BUNDLE_ITEM_BLOCKING_REASONS = {
     "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json": "s2plt04_completion_evidence_missing",
     "FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml": "independent_review_signoff_missing",
     "FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json": "independent_final_command_execution_missing",
-    "FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json": "no_production_side_effect_attestation_missing",
+    S2PMT07_NO_PRODUCTION_SIDE_EFFECT_ATTESTATION_ARTIFACT_PATH: (
+        "no_production_side_effect_attestation_missing"
+    ),
     "HANDOFF/00_下一Agent先读.md": "next_agent_handoff_missing",
 }
 S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_REQUIRED_STEPS = (
@@ -4901,10 +4907,47 @@ def validate_final_acceptance_bundle_artifact_validation_state(state: Mapping[st
     return errors
 
 
-def build_final_acceptance_bundle_readiness_state() -> dict[str, Any]:
+def _repo_root_from_source_tree() -> Path:
+    """Return the repository root for source-tree validation runs."""
+
+    return Path(__file__).resolve().parents[3]
+
+
+def _load_json_mapping_artifact(artifact_path: Path) -> Mapping[str, Any] | None:
+    """Load a JSON object artifact, returning None when it is absent or malformed."""
+
+    try:
+        payload = json.loads(artifact_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    if not isinstance(payload, Mapping):
+        return None
+    return payload
+
+
+def _load_committed_no_production_side_effect_attestation(
+    repo_root: Path | None = None,
+) -> Mapping[str, Any] | None:
+    """Load the committed no-production attestation artifact when present."""
+
+    root = repo_root or _repo_root_from_source_tree()
+    artifact_path = root / S2PMT07_NO_PRODUCTION_SIDE_EFFECT_ATTESTATION_ARTIFACT_PATH
+    return _load_json_mapping_artifact(artifact_path)
+
+
+def build_final_acceptance_bundle_readiness_state(
+    *,
+    no_production_side_effect_attestation: Mapping[str, Any] | None = None,
+    load_committed_artifacts: bool = True,
+) -> dict[str, Any]:
     """Build the current final acceptance bundle readiness state without packaging."""
 
-    available_items = {item: False for item in S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS}
+    repo_root = _repo_root_from_source_tree()
+    bundle_directory_present = (
+        (repo_root / "FINAL_ACCEPTANCE_BUNDLE").is_dir() if load_committed_artifacts else False
+    )
+    if no_production_side_effect_attestation is None and load_committed_artifacts:
+        no_production_side_effect_attestation = _load_committed_no_production_side_effect_attestation(repo_root)
     final_bundle_prerequisite_plan = build_final_bundle_prerequisite_plan_state()
     p0_p1_technical_candidate_state = build_p0_p1_technical_closure_candidate_state()
     p0_p1_zero_proof_assembly = build_p0_p1_zero_proof_assembly_state()
@@ -4929,11 +4972,17 @@ def build_final_acceptance_bundle_readiness_state() -> dict[str, Any]:
     s2plt04_completion_report_validation = build_s2plt04_completion_report_validation_state(None)
     final_command_execution_validation = build_final_command_execution_validation_state(None)
     no_production_side_effect_attestation_validation = (
-        build_no_production_side_effect_attestation_validation_state(None)
+        build_no_production_side_effect_attestation_validation_state(no_production_side_effect_attestation)
     )
     next_agent_handoff_validation = build_next_agent_handoff_validation_state(None)
     independent_review_signoff_validation = build_independent_review_signoff_validation_state(None)
-    final_acceptance_bundle_artifact_validation = build_final_acceptance_bundle_artifact_validation_state()
+    final_acceptance_bundle_artifact_validation = build_final_acceptance_bundle_artifact_validation_state(
+        bundle_directory_present=bundle_directory_present,
+        no_production_side_effect_attestation=no_production_side_effect_attestation,
+    )
+    available_items = final_acceptance_bundle_artifact_validation["available_items"]
+    missing_items = final_acceptance_bundle_artifact_validation["missing_items"]
+    blocking_reasons = final_acceptance_bundle_artifact_validation["blocking_reasons"]
     state = {
         "status": "blocked",
         "scope": "final_acceptance_bundle_readiness_precheck_only",
@@ -4988,8 +5037,8 @@ def build_final_acceptance_bundle_readiness_state() -> dict[str, Any]:
             "NEXT_AGENT_HANDOFF_VALIDATION": next_agent_handoff_validation["status"] == "pass",
             "INDEPENDENT_REVIEW_SIGNOFF_VALIDATION": independent_review_signoff_validation["status"] == "pass",
         },
-        "missing_items": [item for item, present in available_items.items() if not present],
-        "blocking_reasons": list(S2PMT07_FINAL_ACCEPTANCE_BUNDLE_BLOCKING_REASONS),
+        "missing_items": missing_items,
+        "blocking_reasons": blocking_reasons,
         "final_bundle_prerequisite_plan": final_bundle_prerequisite_plan,
         "p0_p1_technical_closure_candidate_state": p0_p1_technical_candidate_state,
         "p0_p1_zero_proof_assembly": p0_p1_zero_proof_assembly,
@@ -5009,7 +5058,7 @@ def build_final_acceptance_bundle_readiness_state() -> dict[str, Any]:
         "no_production_side_effect_attestation_validation": no_production_side_effect_attestation_validation,
         "next_agent_handoff_validation": next_agent_handoff_validation,
         "independent_review_signoff_validation": independent_review_signoff_validation,
-        "bundle_present": False,
+        "bundle_present": final_acceptance_bundle_artifact_validation["status"] == "pass",
         "bundle_claimed_ready": False,
         "production_acceptance_claimed": False,
         "integrated_production_accepted": False,
@@ -5036,6 +5085,11 @@ def validate_final_acceptance_bundle_readiness_state(state: Mapping[str, Any]) -
     for item in S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS:
         if item not in available:
             errors.append(f"available_items must include {item}")
+    expected_missing_items = [
+        item for item in S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS if not available.get(item)
+    ]
+    if state.get("missing_items") != expected_missing_items:
+        errors.append("final acceptance bundle readiness missing_items do not match available_items")
     if available.get("FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json") is not False:
         errors.append("final acceptance bundle readiness must not expose p0_p1_zero_proof before final bundle exists")
     prebundle = _mapping(state.get("available_prebundle_evidence"))
@@ -5069,9 +5123,13 @@ def validate_final_acceptance_bundle_readiness_state(state: Mapping[str, Any]) -
         errors.append("final acceptance bundle readiness must not expose S2PLT04 completion report validation as passing")
     if prebundle.get("FINAL_COMMAND_EXECUTION_VALIDATION") is not False:
         errors.append("final acceptance bundle readiness must not expose final command execution validation as passing")
-    if prebundle.get("NO_PRODUCTION_SIDE_EFFECT_ATTESTATION_VALIDATION") is not False:
+    no_production_attestation = _mapping(state.get("no_production_side_effect_attestation_validation"))
+    expected_no_production_attestation_ready = no_production_attestation.get("status") == "pass"
+    if prebundle.get("NO_PRODUCTION_SIDE_EFFECT_ATTESTATION_VALIDATION") is not (
+        expected_no_production_attestation_ready
+    ):
         errors.append(
-            "final acceptance bundle readiness must not expose no-production side-effect attestation validation as passing"
+            "final acceptance bundle readiness no-production attestation prebundle flag is invalid"
         )
     if prebundle.get("NEXT_AGENT_HANDOFF_VALIDATION") is not False:
         errors.append("final acceptance bundle readiness must not expose next-agent handoff validation as passing")
@@ -5119,19 +5177,28 @@ def validate_final_acceptance_bundle_readiness_state(state: Mapping[str, Any]) -
         errors.append("final acceptance bundle readiness artifact validation is invalid")
     if artifact_validation.get("status") != "blocked":
         errors.append("final acceptance bundle readiness artifact validation must remain blocked")
-    if artifact_validation.get("bundle_directory_present") != state.get("bundle_present"):
-        errors.append("final acceptance bundle readiness bundle_present must match artifact validation directory state")
+    if state.get("bundle_present") is not (artifact_validation.get("status") == "pass"):
+        errors.append("final acceptance bundle readiness bundle_present must match artifact validation pass state")
     completion_report = _mapping(state.get("s2plt04_completion_report_validation"))
     if completion_report.get("status") != "blocked":
         errors.append("final acceptance bundle readiness S2PLT04 completion report validation must remain blocked")
     final_command = _mapping(state.get("final_command_execution_validation"))
     if final_command.get("status") != "blocked":
         errors.append("final acceptance bundle readiness final command execution validation must remain blocked")
-    no_production_attestation = _mapping(state.get("no_production_side_effect_attestation_validation"))
-    if no_production_attestation.get("status") != "blocked":
+    if no_production_attestation.get("status") not in {"pass", "blocked"}:
         errors.append(
-            "final acceptance bundle readiness no-production side-effect attestation validation must remain blocked"
+            "final acceptance bundle readiness no-production side-effect attestation validation status is invalid"
         )
+    if no_production_attestation.get("status") == "pass":
+        if available.get(S2PMT07_NO_PRODUCTION_SIDE_EFFECT_ATTESTATION_ARTIFACT_PATH) is not True:
+            errors.append(
+                "final acceptance bundle readiness passing no-production attestation must have artifact available"
+            )
+    else:
+        if available.get(S2PMT07_NO_PRODUCTION_SIDE_EFFECT_ATTESTATION_ARTIFACT_PATH) is not False:
+            errors.append(
+                "final acceptance bundle readiness blocked no-production attestation must not mark artifact available"
+            )
     next_agent_handoff = _mapping(state.get("next_agent_handoff_validation"))
     if next_agent_handoff.get("status") != "blocked":
         errors.append("final acceptance bundle readiness next-agent handoff validation must remain blocked")
@@ -5149,9 +5216,9 @@ def validate_final_acceptance_bundle_readiness_state(state: Mapping[str, Any]) -
     else:
         if state.get("bundle_claimed_ready") is not False:
             errors.append("final acceptance bundle readiness must not claim ready while blocked")
-        for reason in S2PMT07_FINAL_ACCEPTANCE_BUNDLE_BLOCKING_REASONS:
-            if reason not in state.get("blocking_reasons", []):
-                errors.append(f"blocked final acceptance bundle readiness must include {reason}")
+        expected_blocking_reasons = artifact_validation.get("blocking_reasons", [])
+        if state.get("blocking_reasons") != expected_blocking_reasons:
+            errors.append("blocked final acceptance bundle readiness blocking_reasons must match artifact validation")
     expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
     if state.get("state_hash") != expected_hash:
         errors.append("final acceptance bundle readiness state_hash does not match state content")

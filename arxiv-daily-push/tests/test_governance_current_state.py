@@ -30,12 +30,13 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn(f"- Current task: `{expected_task}`", current_state)
         self.assertIn(f"### `{current_iteration}`", ledger)
 
-    def test_s2pmt07_current_state_summary_describes_no_production_attestation_artifact(self) -> None:
+    def test_s2pmt07_current_state_summary_describes_no_production_attestation_readiness_sync(self) -> None:
         ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
         current_state = ledger.split("\n### `", 1)[0]
 
-        self.assertIn("S2PMT07_NO_PRODUCTION_ATTESTATION_ARTIFACT_VALIDATED_FINAL_BUNDLE_STILL_BLOCKED", current_state)
-        self.assertIn("S2PMT07-NO-PRODUCTION-ATTESTATION-ARTIFACT", current_state)
+        self.assertIn("S2PMT07_NO_PRODUCTION_ATTESTATION_READINESS_SYNC_FINAL_BUNDLE_STILL_BLOCKED", current_state)
+        self.assertIn("S2PMT07-NO-PRODUCTION-ATTESTATION-READINESS-SYNC", current_state)
+        self.assertIn("makes final bundle readiness consume", current_state)
         self.assertIn("no_production_side_effects.json", current_state)
         self.assertIn("final bundle remains blocked", current_state)
         self.assertIn("independent final reviewer assignment", current_state)
