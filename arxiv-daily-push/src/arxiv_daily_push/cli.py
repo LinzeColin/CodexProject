@@ -114,8 +114,10 @@ from .stage2_replay_gate import (
 )
 from .stage2_final_gate import (
     S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_PATH,
+    build_final_acceptance_bundle_readiness_state,
     build_independent_final_reviewer_assignment_owner_packet_state,
     build_independent_final_reviewer_assignment_validation_state,
+    validate_final_acceptance_bundle_readiness_state,
     validate_independent_final_reviewer_assignment_owner_packet_state,
 )
 from .stage2_sources import (
@@ -1179,6 +1181,17 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Print JSON owner action packet.",
     )
+
+    final_acceptance_bundle = subparsers.add_parser(
+        "validate-final-acceptance-bundle",
+        help="Validate S2PMT07 final acceptance bundle readiness without production side effects.",
+    )
+    final_acceptance_bundle.add_argument(
+        "--repo-root",
+        default=".",
+        help="Repository root containing FINAL_ACCEPTANCE_BUNDLE and HANDOFF artifacts.",
+    )
+    final_acceptance_bundle.add_argument("--json", action="store_true", help="Print JSON readiness state.")
 
     all_arxiv_plan = subparsers.add_parser("plan-all-arxiv-scan", help="Print the Phase 12 all-arXiv scan plan.")
     all_arxiv_plan.add_argument("--max-results-per-category", type=int, default=ALL_ARXIV_MAX_RESULTS_PER_CATEGORY)
@@ -3375,6 +3388,23 @@ def main(argv: list[str] | None = None) -> int:
             for error in errors:
                 print(f"- error: {error}")
         return 0 if not errors else 2
+    if args.command == "validate-final-acceptance-bundle":
+        report = build_final_acceptance_bundle_readiness_state(repo_root=Path(args.repo_root))
+        errors = validate_final_acceptance_bundle_readiness_state(report)
+        output = {**report, "readiness_validation_errors": errors}
+        if args.json:
+            print(json.dumps(output, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- scope: {report.get('scope')}")
+            print(f"- bundle_present: {report.get('bundle_present')}")
+            for item in report.get("missing_items", []):
+                print(f"- missing: {item}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if report["status"] == "pass" and not errors else 2
     if args.command == "plan-all-arxiv-scan":
         plan = build_all_arxiv_scan_plan(max_results_per_category=args.max_results_per_category)
         errors = validate_all_arxiv_scan_plan(plan)

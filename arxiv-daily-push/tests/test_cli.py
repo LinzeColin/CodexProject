@@ -155,6 +155,31 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["daily_operation_enabled"])
         self.assertEqual(payload["owner_packet_validation_errors"], [])
 
+    def test_validate_final_acceptance_bundle_json_command_blocks_without_live_artifacts(self):
+        repo_root = Path(__file__).resolve().parents[2]
+        buffer = io.StringIO()
+        with redirect_stdout(buffer):
+            result = main(
+                [
+                    "validate-final-acceptance-bundle",
+                    "--repo-root",
+                    str(repo_root),
+                    "--json",
+                ]
+            )
+        self.assertEqual(result, 2)
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(payload["status"], "blocked")
+        self.assertEqual(payload["scope"], "final_acceptance_bundle_readiness_precheck_only")
+        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/manifest.json", payload["missing_items"])
+        self.assertNotIn("FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json", payload["missing_items"])
+        self.assertTrue(payload["available_items"]["FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json"])
+        self.assertIn("independent_final_reviewer_assignment_missing", payload["blocking_reasons"])
+        self.assertFalse(payload["production_acceptance_claimed"])
+        self.assertFalse(payload["integrated_production_accepted"])
+        self.assertFalse(payload["daily_operation_enabled"])
+        self.assertEqual(payload["readiness_validation_errors"], [])
+
     def test_validate_final_reviewer_assignment_passes_valid_artifact_without_production_claim(self):
         assignment = {
             "schema_version": S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_SCHEMA_VERSION,
