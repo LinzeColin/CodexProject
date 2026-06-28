@@ -98,8 +98,31 @@ jobs:
               python3 scripts/lean_governance.py ci --changed-only
             fi
           fi
-      - name: Run ADP supply-chain A-020 gate
+      - name: Decide ADP supply-chain A-020 gate
+        id: adp-a020-preflight
         if: github.event_name == 'pull_request' || github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'changed-only')
+        env:
+          GOVERNANCE_BASE_REF: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before || inputs.base_ref || '' }}
+          GOVERNANCE_EVIDENCE_DIR: ${{ runner.temp }}/governance-ci-evidence
+        run: |
+          mkdir -p "${GOVERNANCE_EVIDENCE_DIR}"
+          if [ -n "${GOVERNANCE_BASE_REF}" ]; then
+            python3 scripts/lean_governance.py adp-a020-gate --base-ref "${GOVERNANCE_BASE_REF}" > "${GOVERNANCE_EVIDENCE_DIR}/adp-a020-preflight.json" || \
+              printf '{"schema_version":1,"gate":"ADP-A020","run_gate":true,"reason":"preflight_error_fail_closed"}\n' > "${GOVERNANCE_EVIDENCE_DIR}/adp-a020-preflight.json"
+          else
+            python3 scripts/lean_governance.py adp-a020-gate > "${GOVERNANCE_EVIDENCE_DIR}/adp-a020-preflight.json" || \
+              printf '{"schema_version":1,"gate":"ADP-A020","run_gate":true,"reason":"preflight_error_fail_closed"}\n' > "${GOVERNANCE_EVIDENCE_DIR}/adp-a020-preflight.json"
+          fi
+          python3 - "${GOVERNANCE_EVIDENCE_DIR}/adp-a020-preflight.json" >> "${GITHUB_OUTPUT}" <<'PY'
+          import json
+          import sys
+          payload = json.loads(open(sys.argv[1], encoding="utf-8").read())
+          print(f"run_gate={str(bool(payload.get('run_gate'))).lower()}")
+          print(f"reason={payload.get('reason', '')}")
+          PY
+          cat "${GOVERNANCE_EVIDENCE_DIR}/adp-a020-preflight.json"
+      - name: Run ADP supply-chain A-020 gate
+        if: (github.event_name == 'pull_request' || github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.scope == 'changed-only')) && steps.adp-a020-preflight.outputs.run_gate == 'true'
         run: |
           PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX="${RUNNER_TEMP}/adp-supply-chain-pycache" PYTHONPATH=arxiv-daily-push/src \
             python3 -m unittest arxiv-daily-push/tests/test_security_boundary.py -q

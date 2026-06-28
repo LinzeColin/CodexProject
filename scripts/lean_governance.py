@@ -55,6 +55,30 @@ ROOT_GOVERNANCE_PREFIXES = (
     "scripts/",
     "tests/governance/",
 )
+ORDINARY_CONTEXT_MAX_BYTES = 12 * 1024
+ORDINARY_CONTEXT_MAX_FILES = 5
+ORDINARY_CONTEXT_BOOTSTRAP_FILES = ("AGENTS.md", "README.md")
+ORDINARY_CONTEXT_FORBIDDEN_DEFAULT_READS = (
+    "scripts/lean_governance.py",
+    "governance/run_manifests",
+)
+ORDINARY_CONTEXT_ESCALATION_TRIGGERS = (
+    "T2_or_T3_risk",
+    "root_governance_change",
+    "release_or_production_gate",
+    "manifest_or_evidence_ref",
+    "project_specific_contract",
+)
+ADP_A020_PROJECT_PATH = "arxiv-daily-push"
+ADP_A020_FAIL_CLOSED_FILES = ("AGENTS.md", "README.md")
+ADP_A020_FAIL_CLOSED_PREFIXES = (
+    ".codex/hooks/",
+    ".github/workflows/",
+    "docs/governance/",
+    "governance/",
+    "scripts/",
+    "tests/governance/",
+)
 
 
 def file_state(root: Path, rel_path: str) -> dict[str, Any]:
@@ -67,6 +91,24 @@ def file_state(root: Path, rel_path: str) -> dict[str, Any]:
         "exists": exists,
         "nonempty": bool(is_file and size > 0),
         "bytes": size,
+    }
+
+
+def ordinary_context_contract(root: Path = ROOT) -> dict[str, Any]:
+    files = [file_state(root, rel_path) for rel_path in ORDINARY_CONTEXT_BOOTSTRAP_FILES]
+    total_bytes = sum(int(item.get("bytes", 0)) for item in files)
+    return {
+        "schema_version": 1,
+        "scope": "ordinary_t0_t1_initial_governance_context",
+        "max_files": ORDINARY_CONTEXT_MAX_FILES,
+        "max_bytes": ORDINARY_CONTEXT_MAX_BYTES,
+        "default_files": files,
+        "default_file_count": len(files),
+        "default_total_bytes": total_bytes,
+        "within_budget": len(files) <= ORDINARY_CONTEXT_MAX_FILES and total_bytes <= ORDINARY_CONTEXT_MAX_BYTES,
+        "forbidden_default_reads": list(ORDINARY_CONTEXT_FORBIDDEN_DEFAULT_READS),
+        "escalation_triggers": list(ORDINARY_CONTEXT_ESCALATION_TRIGGERS),
+        "rule": "Compact is a read route for ordinary T0/T1 work, not a source of truth.",
     }
 
 
@@ -1324,7 +1366,7 @@ def compact_ci_summary(summary: dict[str, Any], exit_code: int, full_evidence_re
         "check_plan": compact_check_plan(summary),
         "timing_telemetry": summary.get("timing_telemetry", {}),
         "output_telemetry": summary.get("output_telemetry", {}),
-        "acceptance_ids": ["M1-S2PC-PRE-S3", "S3PAT01", "S3PAT02", "S3PBT01", "S3PBT02", "S3PBT03", "S3PBT04"],
+        "acceptance_ids": ["M1-S2PC-PRE-S3", "S3PAT01", "S3PBT01", "S3PBT02", "S3PCT01", "S3PCT02"],
         "evidence_refs": [evidence_ref] if evidence_ref else [],
         "rollback_or_stop_condition": (
             "无 tracked 回滚；full evidence 见 full_evidence_ref。"
@@ -1802,11 +1844,62 @@ def root_changed_scope_excluded_projects(config: dict[str, Any]) -> set[str]:
     return {str(item) for item in governance.as_list(root_config.get("changed_scope_excluded_projects")) if item}
 
 
+def parse_git_name_only(output: str) -> set[str]:
+    return {line.strip().replace("\\", "/") for line in output.splitlines() if line.strip()}
+
+
+def git_name_only(args: list[str], *, root: Path = ROOT, error_code: str = "DIFF_FAILED") -> set[str]:
+    try:
+        output = subprocess.check_output(
+            ["git", "-c", "core.quotePath=false", *args],
+            cwd=root,
+            text=True,
+            encoding="utf-8",
+            stderr=subprocess.PIPE,
+        )
+    except subprocess.CalledProcessError as exc:
+        stderr = (exc.stderr or "").strip()
+        detail = f": {stderr}" if stderr else ""
+        raise governance.GovernanceDiffError(
+            error_code,
+            f"Git changed-file diff failed{detail}",
+        ) from exc
+    return parse_git_name_only(output)
+
+
+def git_content_changed_files(base_ref: str | None = None, *, root: Path = ROOT) -> list[str]:
+    """Return content-level changed paths without status-only noise."""
+
+    explicit_base = governance.explicit_base_ref(base_ref)
+    changed: set[str] = set()
+    if explicit_base:
+        if not governance.git_ref_exists(explicit_base):
+            raise governance.GovernanceDiffError(
+                "UNRESOLVED_BASE",
+                f"Explicit governance diff base does not resolve to a commit: {explicit_base}",
+                base_ref=explicit_base,
+            )
+        try:
+            changed.update(git_name_only(["diff", "--name-only", explicit_base, "--"], root=root))
+        except governance.GovernanceDiffError as exc:
+            exc.base_ref = explicit_base
+            raise
+    else:
+        changed.update(git_name_only(["diff", "--name-only", "--"], root=root, error_code="LOCAL_DIFF_FAILED"))
+        changed.update(
+            git_name_only(["diff", "--cached", "--name-only", "--"], root=root, error_code="LOCAL_DIFF_FAILED")
+        )
+    changed.update(
+        git_name_only(["ls-files", "--others", "--exclude-standard"], root=root, error_code="LOCAL_DIFF_FAILED")
+    )
+    return sorted(changed)
+
+
 def build_changed_scope(base_ref: str | None = None, root: Path = ROOT, projects_file: Path = PROJECTS_FILE) -> dict[str, Any]:
     config = governance.load_yaml(projects_file)
     if not isinstance(config, dict):
         raise ValueError(f"{governance.rel(projects_file)} must parse to a mapping")
-    changed = governance.git_changed_files(base_ref)
+    changed = git_content_changed_files(base_ref, root=root)
     projects = [item for item in governance.as_list(config.get("projects")) if isinstance(item, dict)]
     selection = governance.changed_scope_selection(config, changed)
     selected = list(selection["projects"])
@@ -1840,13 +1933,122 @@ def build_changed_scope(base_ref: str | None = None, root: Path = ROOT, projects
     }
 
 
+def normalize_repo_path(path: str) -> str:
+    normalized = str(path).replace("\\", "/").strip()
+    if normalized.startswith("./"):
+        normalized = normalized[2:]
+    while normalized.startswith("/"):
+        normalized = normalized[1:]
+    return normalized
+
+
+def path_is_under(path: str, prefix: str) -> bool:
+    normalized = normalize_repo_path(path)
+    clean_prefix = normalize_repo_path(prefix).rstrip("/")
+    return normalized == clean_prefix or normalized.startswith(f"{clean_prefix}/")
+
+
+def registered_project_paths(config: dict[str, Any]) -> list[str]:
+    return [
+        normalize_repo_path(str(project.get("path") or "")).rstrip("/")
+        for project in governance.as_list(config.get("projects"))
+        if isinstance(project, dict) and project.get("path")
+    ]
+
+
+def adp_a020_gate_decision(
+    changed_files: list[str],
+    *,
+    config: dict[str, Any],
+    base_ref: str = "",
+    base_ref_status: str = "resolved",
+    error_code: str = "",
+) -> dict[str, Any]:
+    normalized = [normalize_repo_path(path) for path in changed_files if normalize_repo_path(path)]
+    decision: dict[str, Any] = {
+        "schema_version": 1,
+        "gate": "ADP-A020",
+        "run_gate": True,
+        "reason": "",
+        "base_ref": base_ref,
+        "base_ref_status": base_ref_status,
+        "error_code": error_code,
+        "changed_file_count": len(normalized),
+        "changed_files": normalized[:50],
+        "matched_files": [],
+        "roi_telemetry": {
+            "before": "fixed_run_on_pull_request_push_changed_only",
+            "after": "path_aware_fail_closed",
+            "ci_substep": "Run ADP supply-chain A-020 gate",
+        },
+    }
+    if base_ref_status != "resolved":
+        decision["reason"] = "diff_untrusted_fail_closed"
+        return decision
+    if not normalized:
+        decision["reason"] = "empty_diff_fail_closed"
+        return decision
+
+    root_matches = [
+        path
+        for path in normalized
+        if path in ADP_A020_FAIL_CLOSED_FILES
+        or any(path_is_under(path, prefix) for prefix in ADP_A020_FAIL_CLOSED_PREFIXES)
+    ]
+    if root_matches:
+        decision["reason"] = "root_governance_or_ci_changed"
+        decision["matched_files"] = root_matches[:20]
+        return decision
+
+    adp_matches = [path for path in normalized if path_is_under(path, ADP_A020_PROJECT_PATH)]
+    if adp_matches:
+        decision["reason"] = "adp_path_changed"
+        decision["matched_files"] = adp_matches[:20]
+        return decision
+
+    project_roots = registered_project_paths(config)
+    unknown = [
+        path
+        for path in normalized
+        if not any(path_is_under(path, project_root) for project_root in project_roots)
+    ]
+    if unknown:
+        decision["reason"] = "unknown_path_fail_closed"
+        decision["matched_files"] = unknown[:20]
+        return decision
+
+    decision["run_gate"] = False
+    decision["reason"] = "non_adp_registered_project_only"
+    return decision
+
+
+def adp_a020_gate_decision_from_git(base_ref: str | None = None, *, projects_file: Path = PROJECTS_FILE) -> dict[str, Any]:
+    config = governance.load_yaml(projects_file)
+    if not isinstance(config, dict):
+        raise ValueError(f"{governance.rel(projects_file)} must parse to a mapping")
+    try:
+        changed = git_content_changed_files(base_ref, root=ROOT)
+    except governance.GovernanceDiffError as exc:
+        return adp_a020_gate_decision(
+            [],
+            config=config,
+            base_ref=exc.base_ref or base_ref or "",
+            base_ref_status="unresolved" if exc.error_code == "UNRESOLVED_BASE" else "error",
+            error_code=exc.error_code,
+        )
+    return adp_a020_gate_decision(changed, config=config, base_ref=base_ref or "")
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     subparsers = parser.add_subparsers(dest="command", required=True)
     baseline = subparsers.add_parser("baseline", help="Print a read-only repository baseline summary.")
     baseline.add_argument("--all", action="store_true", help="Inspect root governance and all registered projects.")
+    subparsers.add_parser("context-contract", help="Print the ordinary T0/T1 compact context contract.")
     changed_scope = subparsers.add_parser("changed-scope", help="Print read-only changed project selection.")
     changed_scope.add_argument("--base-ref", help="Explicit base commit/ref for changed-scope diff selection.")
+    adp_a020_gate = subparsers.add_parser("adp-a020-gate", help="Decide whether the ADP A-020 gate must run.")
+    adp_a020_gate.add_argument("--base-ref", help="Explicit base commit/ref for changed-file diff selection.")
     render = subparsers.add_parser("render", help="Render one project's human entry files from Lean canonical facts.")
     render.add_argument("--project", required=True, help="Registered project_id or project path.")
     render.add_argument("--view", help="Optional single view alias or human entry filename to render.")
@@ -1875,6 +2077,9 @@ def main(argv: list[str] | None = None) -> int:
         summary = build_baseline(ROOT, PROJECTS_FILE)
         print(json.dumps(summary, ensure_ascii=True, sort_keys=True, separators=(",", ":")))
         return 0
+    if args.command == "context-contract":
+        print(json.dumps(ordinary_context_contract(ROOT), ensure_ascii=True, sort_keys=True, separators=(",", ":")))
+        return 0
     if args.command == "changed-scope":
         try:
             summary = build_changed_scope(args.base_ref, ROOT, PROJECTS_FILE)
@@ -1888,6 +2093,10 @@ def main(argv: list[str] | None = None) -> int:
                 )
             )
             return 1
+        print(json.dumps(summary, ensure_ascii=True, sort_keys=True, separators=(",", ":")))
+        return 0
+    if args.command == "adp-a020-gate":
+        summary = adp_a020_gate_decision_from_git(args.base_ref, projects_file=PROJECTS_FILE)
         print(json.dumps(summary, ensure_ascii=True, sort_keys=True, separators=(",", ":")))
         return 0
     if args.command == "render":
