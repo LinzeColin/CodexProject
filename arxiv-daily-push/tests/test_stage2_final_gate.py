@@ -3327,6 +3327,30 @@ class Stage2FinalGateTests(unittest.TestCase):
             validate_no_production_side_effect_attestation(tampered_hash),
         )
 
+    def test_committed_no_production_side_effect_attestation_artifact_validates(self) -> None:
+        artifact_path = REPO_ROOT / "FINAL_ACCEPTANCE_BUNDLE" / "no_production_side_effects.json"
+        payload = json.loads(artifact_path.read_text(encoding="utf-8"))
+        state = build_final_acceptance_bundle_artifact_validation_state(
+            bundle_directory_present=True,
+            no_production_side_effect_attestation=payload,
+        )
+
+        self.assertEqual(validate_no_production_side_effect_attestation(payload), [])
+        self.assertEqual(
+            payload["attestation_hash"],
+            build_no_production_side_effect_attestation_hash(payload),
+        )
+        self.assertEqual(
+            state["artifact_validations"]["NO_PRODUCTION_SIDE_EFFECT_ATTESTATION"]["status"],
+            "pass",
+        )
+        self.assertEqual(state["status"], "blocked")
+        self.assertIn("final_acceptance_bundle_manifest_missing", state["blocking_reasons"])
+        self.assertIn("p0_p1_zero_proof_missing", state["blocking_reasons"])
+        self.assertFalse(state["production_acceptance_claimed"])
+        self.assertFalse(state["integrated_production_accepted"])
+        self.assertFalse(state["daily_operation_enabled"])
+
     def test_no_production_side_effect_attestation_fails_closed_on_missing_or_production_flags(self) -> None:
         missing_state = build_no_production_side_effect_attestation_validation_state(None)
 

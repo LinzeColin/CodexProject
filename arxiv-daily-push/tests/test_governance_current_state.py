@@ -30,14 +30,14 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn(f"- Current task: `{expected_task}`", current_state)
         self.assertIn(f"### `{current_iteration}`", ledger)
 
-    def test_s2pmt07_current_state_summary_describes_local_runtime_no_production_gate(self) -> None:
+    def test_s2pmt07_current_state_summary_describes_no_production_attestation_artifact(self) -> None:
         ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
         current_state = ledger.split("\n### `", 1)[0]
 
-        self.assertIn("S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_GATE_VERIFIED_NO_SCHEDULER_NO_SMTP_NO_ACCEPTANCE", current_state)
-        self.assertIn("S2PMT07-LOCAL-RUNTIME-NO-PRODUCTION-GATE", current_state)
-        self.assertIn("ADP_ALLOW_SMTP_SEND=false", current_state)
-        self.assertIn("disabled/not running", current_state)
+        self.assertIn("S2PMT07_NO_PRODUCTION_ATTESTATION_ARTIFACT_VALIDATED_FINAL_BUNDLE_STILL_BLOCKED", current_state)
+        self.assertIn("S2PMT07-NO-PRODUCTION-ATTESTATION-ARTIFACT", current_state)
+        self.assertIn("no_production_side_effects.json", current_state)
+        self.assertIn("final bundle remains blocked", current_state)
         self.assertIn("independent final reviewer assignment", current_state)
         self.assertNotIn("M4 watermark proof record", current_state)
         self.assertNotIn("m4_watermark_correct=true", current_state)

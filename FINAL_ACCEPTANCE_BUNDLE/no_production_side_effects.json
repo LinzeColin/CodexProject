@@ -1,0 +1,88 @@
+{
+  "schema_version": "adp.no_production_side_effect_attestation.v1",
+  "contract_id": "ADP-PRODUCT-CONTRACT-V7.2",
+  "generated_at": "2026-06-28T17:02:13+10:00",
+  "attestation_decision": "NO_PRODUCTION_SIDE_EFFECTS_PROVEN_NO_PRODUCTION_ACCEPTANCE",
+  "attestation_scope": {
+    "task_id": "S2PMT07",
+    "scope": "no_production_side_effect_attestation_validation_only_no_production_acceptance",
+    "required_bundle_items": [
+      "FINAL_ACCEPTANCE_BUNDLE/manifest.json",
+      "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
+      "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json",
+      "FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml",
+      "FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json",
+      "FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json",
+      "HANDOFF/00_下一Agent先读.md"
+    ]
+  },
+  "verified_evidence_refs": {
+    "V7_2_VALIDATOR": {
+      "status": "pass",
+      "evidence_ref": "governance/run_manifests/ADP-S2PMT07-NO-PRODUCTION-ATTESTATION-ARTIFACT-20260628.json#test_results"
+    },
+    "PROJECT_GOVERNANCE": {
+      "status": "pass",
+      "evidence_ref": "governance/run_manifests/ADP-S2PMT07-NO-PRODUCTION-ATTESTATION-ARTIFACT-20260628.json#test_results"
+    },
+    "CHANGED_ONLY_SEMANTIC_GOVERNANCE": {
+      "status": "pass",
+      "evidence_ref": "governance/run_manifests/ADP-S2PMT07-NO-PRODUCTION-ATTESTATION-ARTIFACT-20260628.json#test_results"
+    },
+    "LEAN_RENDER": {
+      "status": "pass",
+      "evidence_ref": "governance/run_manifests/ADP-S2PMT07-NO-PRODUCTION-ATTESTATION-ARTIFACT-20260628.json#test_results"
+    },
+    "FULL_ADP_UNITTEST": {
+      "status": "pass",
+      "evidence_ref": "governance/run_manifests/ADP-S2PMT07-NO-PRODUCTION-ATTESTATION-ARTIFACT-20260628.json#test_results"
+    },
+    "LOCAL_LAUNCHD_DISABLED_STATE": {
+      "status": "pass",
+      "evidence_ref": "governance/run_manifests/ADP-S2PMT07-NO-PRODUCTION-ATTESTATION-ARTIFACT-20260628.json#runtime_state"
+    },
+    "LOCAL_SMTP_SEND_FLAG_FALSE": {
+      "status": "pass",
+      "evidence_ref": "governance/run_manifests/ADP-S2PMT07-NO-PRODUCTION-ATTESTATION-ARTIFACT-20260628.json#runtime_state"
+    },
+    "OPEN_PR_COUNT_ZERO": {
+      "status": "pass",
+      "evidence_ref": "governance/run_manifests/ADP-S2PMT07-NO-PRODUCTION-ATTESTATION-ARTIFACT-20260628.json#branch_cleanup"
+    },
+    "REMOTE_ADP_BRANCH_SCAN": {
+      "status": "pass",
+      "evidence_ref": "governance/run_manifests/ADP-S2PMT07-NO-PRODUCTION-ATTESTATION-ARTIFACT-20260628.json#branch_cleanup"
+    },
+    "PRODUCTION_TRUE_FLAG_DIFF_SCAN": {
+      "status": "pass",
+      "evidence_ref": "governance/run_manifests/ADP-S2PMT07-NO-PRODUCTION-ATTESTATION-ARTIFACT-20260628.json#test_results"
+    }
+  },
+  "no_production_side_effects": {
+    "integrated_production_accepted": false,
+    "daily_operation_enabled": false,
+    "real_smtp_sent": false,
+    "real_smtp_send_enabled": false,
+    "scheduler_enabled": false,
+    "scheduler_install_enabled": false,
+    "release_uploaded": false,
+    "release_packaging_enabled": false,
+    "production_restore_enabled": false,
+    "production_restore_executed": false,
+    "public_schema_changed": false,
+    "db_migration_executed": false,
+    "production_queue_mutated": false,
+    "source_adapter_changed": false,
+    "ranking_algorithm_changed": false,
+    "current_pointer_changed": false,
+    "v7_1_baseline_changed": false,
+    "v7_2_contract_files_changed": false
+  },
+  "closure_state": {
+    "no_production_side_effects_proven": true,
+    "production_acceptance_claimed": false,
+    "integrated_production_accepted": false,
+    "daily_operation_enabled": false
+  },
+  "attestation_hash": "sha256:f733c86023021b17c3c4b49443f777b5450df7714cbccc5e2e5867a9ba8d85cf"
+}
