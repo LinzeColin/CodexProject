@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from tempfile import TemporaryDirectory
 import unittest
 
 from arxiv_daily_push.stage2_final_gate import (
@@ -3221,6 +3222,37 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(final_command["command_execution_present"])
         self.assertFalse(state["available_prebundle_evidence"]["FINAL_COMMAND_EXECUTION_VALIDATION"])
         self.assertIn("final_command_execution_missing", final_command["validation_errors"])
+        self.assertEqual(validate_final_acceptance_bundle_readiness_state(state), [])
+
+    def test_final_acceptance_bundle_readiness_consumes_committed_final_command_execution(self) -> None:
+        payload = self._valid_final_command_execution_payload()
+
+        with TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            bundle_dir = root / "FINAL_ACCEPTANCE_BUNDLE"
+            bundle_dir.mkdir()
+            (bundle_dir / "final_command_execution.json").write_text(
+                json.dumps(payload, ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
+
+            state = build_final_acceptance_bundle_readiness_state(repo_root=root)
+
+        self.assertTrue(state["available_items"]["FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json"])
+        self.assertTrue(state["available_prebundle_evidence"]["FINAL_COMMAND_EXECUTION_VALIDATION"])
+        self.assertEqual(state["final_command_execution_validation"]["status"], "pass")
+        self.assertEqual(
+            state["final_acceptance_bundle_artifact_validation"]["artifact_validations"][
+                "FINAL_COMMAND_EXECUTION"
+            ]["status"],
+            "pass",
+        )
+        self.assertNotIn("independent_final_command_execution_missing", state["blocking_reasons"])
+        self.assertIn("p0_p1_zero_proof_missing", state["blocking_reasons"])
+        self.assertIn("no_production_side_effect_attestation_missing", state["blocking_reasons"])
+        self.assertEqual(state["status"], "blocked")
+        self.assertFalse(state["production_acceptance_claimed"])
+        self.assertFalse(state["integrated_production_accepted"])
         self.assertEqual(validate_final_acceptance_bundle_readiness_state(state), [])
 
     def test_local_runtime_no_production_state_accepts_disabled_launchd_and_smtp_false(self) -> None:

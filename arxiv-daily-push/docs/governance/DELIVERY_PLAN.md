@@ -21,7 +21,7 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 234
+- task_count: 235
 - acceptance_count: 127
 
 ## Delivery Tasks
@@ -31,6 +31,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 ## 2026-06-28 18:04:30 Australia/Sydney - S2PJT02/S2PJT03 Owner Snapshot Summary Sync
 
 - `S2PJT02-S2PJT03-OWNER-SNAPSHOT-SUMMARY-SYNC` synchronizes shallow GitHub user-center summaries with the already-written 2026-06-28 review/action/capability/ROI snapshot.
+- `S2PMT07-FINAL-BUNDLE-COMMITTED-ARTIFACT-CONSUMPTION` makes final bundle readiness consume committed artifact payloads through nested validators while final acceptance remains blocked.
 - This removes stale wording that still described the snapshot as pending from `README.md` and `一看三查.md`.
 - This is owner-facing display synchronization only: it does not accept S2PLT02, close S2PMT07, close P0/P1, or enable production.
 - No SMTP, scheduler, Release, restore, schema/DB, source/ranking, CURRENT/V7, DAILY_OPERATION, or integrated production acceptance side effect is claimed.
