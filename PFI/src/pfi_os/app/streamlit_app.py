@@ -948,6 +948,12 @@ def _pfi_ui_v2_enabled() -> bool:
 
 
 def _pfi_web_shell_html(home_summary: dict | None = None) -> str:
+    try:
+        from pfi_v02.stage_v021_runtime_api import ensure_v021_runtime_api_server
+
+        runtime_api_base_url = ensure_v021_runtime_api_server()
+    except Exception:
+        runtime_api_base_url = "http://127.0.0.1:8766"
     shell_path = ROOT / "web" / "index.html"
     css_path = ROOT / "web" / "styles" / "tokens.css"
     js_path = ROOT / "web" / "app" / "shell.js"
@@ -956,7 +962,14 @@ def _pfi_web_shell_html(home_summary: dict | None = None) -> str:
     js = js_path.read_text(encoding="utf-8")
     summary_payload = home_summary if isinstance(home_summary, dict) else empty_homepage_summary()
     summary_json = json.dumps(summary_payload, ensure_ascii=False).replace("</", "<\\/")
+    runtime_json = json.dumps({"apiBaseUrl": runtime_api_base_url}, ensure_ascii=False).replace("</", "<\\/")
     shell_html = shell_html.replace('<link rel="stylesheet" href="./styles/tokens.css" />', f"<style>{css}</style>")
+    shell_html = re.sub(
+        r'<script type="application/json" id="pfi-runtime-config">.*?</script>',
+        f'<script type="application/json" id="pfi-runtime-config">{runtime_json}</script>',
+        shell_html,
+        flags=re.DOTALL,
+    )
     shell_html = re.sub(
         r'<script type="application/json" id="pfi-home-summary">.*?</script>',
         f'<script type="application/json" id="pfi-home-summary">{summary_json}</script>',

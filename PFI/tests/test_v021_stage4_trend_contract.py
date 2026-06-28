@@ -26,11 +26,11 @@ class V021Stage4TrendContractTest(unittest.TestCase):
         self.assertEqual(tuple(contract["task_ids"]), STAGE4_TASK_IDS)
         self.assertEqual(trend["object_name"], "UNIFIED_TREND_DATA")
         self.assertEqual(trend["base_currency"], BASE_CURRENCY)
-        self.assertEqual(trend["missing_data_state"], "趋势数据待更新")
+        self.assertIn("不伪造", trend["missing_data_state"])
         self.assertEqual(set(trend["required_pages"]), {"accounts", "investment", "consumption"})
-        self.assertEqual(trend["required_pages"]["accounts"], ("现金", "净资产"))
-        self.assertEqual(trend["required_pages"]["investment"], ("市值", "总收益", "现金仓位"))
-        self.assertEqual(trend["required_pages"]["consumption"], ("支出", "预算", "现金流"))
+        self.assertEqual(trend["required_pages"]["accounts"], ("现金", "净资产", "总资产", "总负债"))
+        self.assertEqual(trend["required_pages"]["investment"], ("投资市值", "总收益", "未实现盈亏", "现金仓位"))
+        self.assertEqual(trend["required_pages"]["consumption"], ("本月支出", "预算剩余", "固定支出", "弹性支出", "现金流预测"))
 
     def test_chart_surface_has_accessible_html_markers_and_chinese_state(self) -> None:
         chart = build_v021_stage4_contract()["chart_contract"]
@@ -54,14 +54,21 @@ class V021Stage4TrendContractTest(unittest.TestCase):
         for series_id in (
             "cash_cny",
             "net_worth_cny",
+            "total_assets_cny",
+            "total_liabilities_cny",
             "market_value_cny",
             "total_return_cny",
+            "unrealized_pnl_cny",
             "cash_position_cny",
-            "spend_cny",
-            "budget_cny",
-            "cashflow_cny",
+            "month_spend_cny",
+            "budget_remaining_cny",
+            "fixed_spend_cny",
+            "flex_spend_cny",
+            "cashflow_forecast_cny",
         ):
             self.assertIn(series_id, self.js)
+        self.assertIn("SQLite 运行读模型", self.js)
+        self.assertIn("refreshRuntimeTrends", self.js)
 
     def test_canvas_renderer_exposes_non_hover_reading_path(self) -> None:
         self.assertIn("function drawTrendChart", self.js)
@@ -75,7 +82,8 @@ class V021Stage4TrendContractTest(unittest.TestCase):
         forbidden = ("data-workspace=\"qbvs\"", "data-workspace=\"alpha\"", "data-action=\"trade\"", "data-action=\"pay\"", "data-action=\"broker-submit\"")
         for term in forbidden:
             self.assertNotIn(term, self.web_source)
-        self.assertIn("不做实盘自动下单", self.web_source)
+        for forbidden_copy in ("不做实盘自动下单", "只做研究", "不连接券商", "不提交订单"):
+            self.assertNotIn(forbidden_copy, self.web_source)
 
 
 if __name__ == "__main__":

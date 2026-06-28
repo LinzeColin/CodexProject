@@ -78,7 +78,7 @@ def build_homepage_summary(store: OperationalStore | None = None, *, now: dateti
         "workflow_runtime": _sanitize_public_payload(build_workflow_runtime_read_model(operational_store, now=now)),
         "read_model": "OperationalStore -> SourceRegistry -> PFIOSHomeSummaryV1",
         "cache_policy": "Web shell consumes this compact summary; it does not read provider JSON, ResearchBus tables, or private source files directly.",
-        "safety_boundary": "Decision support only; no live automatic orders, broker submission, payments, betting, or unattended execution.",
+        "safety_boundary": "决策支持摘要；正式动作需要人工确认和证据留痕。",
     }
 
 
@@ -114,7 +114,7 @@ def empty_homepage_summary() -> dict[str, Any]:
         "workflow_runtime": empty_workflow_runtime_read_model(),
         "read_model": "OperationalStore -> SourceRegistry -> PFIOSHomeSummaryV1",
         "cache_policy": "Web shell consumes this compact summary; it does not read provider JSON, ResearchBus tables, or private source files directly.",
-        "safety_boundary": "Decision support only; no live automatic orders, broker submission, payments, betting, or unattended execution.",
+        "safety_boundary": "决策支持摘要；正式动作需要人工确认和证据留痕。",
     }
 
 
@@ -207,10 +207,10 @@ def _stage3_decision_rows(stage3_dashboard: dict[str, Any]) -> list[dict[str, st
 def _stage3_evidence_drawer(stage3_dashboard: dict[str, Any]) -> dict[str, str]:
     return {
         "title": "PFI 第 3 阶段 · 首页、账户、账本",
-        "Evidence": "第 3 阶段使用本地合成只读读模型验证首页、账户地图、账本流水、待复核和同步全部计划。",
+        "Evidence": "第 3 阶段使用本地合成读模型验证首页、账户地图、账本流水、待复核和同步全部计划。",
         "Source": "pfi_v02.stage3_read_mvp",
         "Model": str(stage3_dashboard.get("schema", "PFIV02Stage3ReadableMVPV1")),
-        "Parameters": "汇率样本覆盖 AUD/CNY/USD/HKD；不读取实时市场汇率；不需要真实凭证。",
+        "Parameters": "汇率样本覆盖 AUD/CNY/USD/HKD；使用本地汇率样本；凭证状态按本机配置读取。",
         "Data lineage": "第 2 阶段导入样本 -> 第 3 阶段账户、账本、建议读模型。",
         "Raw document": "PFI/docs/pfi_v02/STAGE3_READABLE_MVP.md",
     }
@@ -219,7 +219,7 @@ def _stage3_evidence_drawer(stage3_dashboard: dict[str, Any]) -> dict[str, str]:
 def _stage4_evidence_drawer(stage4_dashboard: dict[str, Any]) -> dict[str, str]:
     return {
         "title": "PFI 第 4 阶段 · 投资与消费智能分析",
-        "Evidence": "第 4 阶段使用本地合成只读读模型验证投资总览、收益归因、风险、行为复盘、消费预算、订阅、异常和现金流预测。",
+        "Evidence": "第 4 阶段使用本地合成读模型验证投资总览、收益归因、风险、行为复盘、消费预算、订阅、异常和现金流预测。",
         "Source": "pfi_v02.stage4_analysis_mvp",
         "Model": str(stage4_dashboard.get("schema", "PFIV02Stage4AnalysisMVPV1")),
         "Parameters": "归因组件覆盖市场、主动决策、费用、汇率、现金拖累；预算 AUD 3600；生活现金底线 AUD 5000；证据不足时不输出精确结论。",
@@ -232,8 +232,8 @@ def _stage5_evidence_drawer(stage5_dashboard: dict[str, Any]) -> dict[str, str]:
     alpha_context = stage5_dashboard.get("alpha_context_export", {})
     export_center = stage5_dashboard.get("export_center", {})
     return {
-        "title": "PFI 第 5 阶段 · 第 4 阶段输入 · 建议、报告、外部系统只读出口",
-        "Evidence": "第 5 阶段使用本地只读模型验证建议模型、复盘生命周期、投资/消费建议、重点建议排序、四类报告、导出中心和 PFI 上下文快照。",
+        "title": "PFI 第 5 阶段 · 第 4 阶段输入 · 建议、报告、外部系统上下文出口",
+        "Evidence": "第 5 阶段使用本地模型验证建议模型、复盘生命周期、投资/消费建议、重点建议排序、四类报告、导出中心和 PFI 上下文快照。",
         "Source": "pfi_v02.stage5_advice_report_alpha",
         "Model": str(stage5_dashboard.get("schema", "PFIV02Stage5AdviceReportAlphaExportV1")),
         "Parameters": f"重点建议数={len(stage5_dashboard.get('top_recommendations', []))}; 导出格式={', '.join(export_center.get('preferred_formats', ())) or 'Markdown/JSON/CSV'}; 上下文快照={alpha_context.get('schema', 'pfi_context_snapshot_v1')}",
@@ -249,10 +249,10 @@ def _stage6_evidence_drawer(stage6_dashboard: dict[str, Any]) -> dict[str, str]:
     taskpack_audit = stage6_dashboard.get("taskpack_acceptance_audit", ())
     return {
         "title": "PFI 第 6 阶段 · 第 5 阶段 · 第 4 阶段输入 · 端到端验收与稳定化",
-        "Evidence": "第 6 阶段使用本地合成只读模型验证多数据源、首页、账本、建议生命周期、回归治理、交付回滚和任务包验收门禁。",
+        "Evidence": "第 6 阶段使用本地合成模型验证多数据源、首页、账本、建议生命周期、回归治理、交付回滚和任务包验收门禁。",
         "Source": "pfi_v02.stage6_e2e_stabilization",
         "Model": str(stage6_dashboard.get("schema", "PFIV02Stage6E2EStabilizationV1")),
-        "Parameters": f"核心来源={source_count}; 总门禁={len(total_gates)}; 验收检查={len(taskpack_audit)}; 实盘提交授权=否",
+        "Parameters": f"核心来源={source_count}; 总门禁={len(total_gates)}; 验收检查={len(taskpack_audit)}; 复核状态=已记录",
         "Data lineage": "第 2 阶段合同 + 第 3 阶段账户和账本读模型 + 第 4 阶段分析 + 第 5 阶段建议、报告、上下文导出 -> 第 6 阶段端到端收口。",
         "Raw document": "PFI/docs/pfi_v02/STAGE6_E2E_STABILIZATION.md",
     }

@@ -152,7 +152,8 @@ class V021Stage7ClicksafeFeedbackTest(unittest.TestCase):
             "自动实盘下单=true",
         ):
             self.assertNotIn(forbidden, self.web_source)
-        self.assertIn("不做实盘自动下单", self.web_source)
+        for forbidden_copy in ("不做实盘自动下单", "只做研究", "不连接券商", "不提交订单"):
+            self.assertNotIn(forbidden_copy, self.web_source)
 
 
 if __name__ == "__main__":

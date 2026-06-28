@@ -162,7 +162,7 @@ class Stage5AdviceReportAlphaTest(unittest.TestCase):
         js = (root / "web" / "app" / "shell.js").read_text(encoding="utf-8")
 
         self.assertIn('data-primary-workspaces="15"', html)
-        for label in ("建议模型", "复盘生命周期", "投资建议", "消费建议", "月度报告", "投资报告", "消费报告", "数据质量报告", "PFI 上下文导出", "外部系统只读出口"):
+        for label in ("建议模型", "复盘生命周期", "投资建议", "消费建议", "月度报告", "投资报告", "消费报告", "数据质量报告", "PFI 上下文导出", "外部系统上下文出口"):
             self.assertIn(label, js)
         self.assertNotIn('data-workspace="alpha"', html.lower())
         self.assertNotIn('data-workspace="ralpha"', html.lower())

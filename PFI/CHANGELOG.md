@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## v0.2.1 复审退回修复 - 2026-06-28
+
+- 正式 Web Shell 删除运行边界/使用限制/隐私边界/只读/实盘/交易密码等用户可见边界类文案；约束保留在合同、测试和文档中。
+- 新增 `src/pfi_v02/stage_v021_runtime_api.py`，提供本机 `GET/POST /api/holdings` 和 `GET /api/trends`。
+- 持仓编辑保存路径改为 Web Shell -> 本机 API -> `V021HoldingsPersistenceService` -> SQLite operational database；浏览器缓存只保存明确标注的未提交草稿。
+- 账户与资产、投资管理、消费管理趋势图改为从 SQLite 运行读模型派生；真实数据不足时显示中文空状态，不使用硬编码 demo 数组。
+- 一级入口“策略实验室”和投资管理内部“策略实验室”统一进入 `/investment/strategy-lab`，复用同一功能面板、路由和状态。
+- 新增 `tests/test_v021_review_rework_contract.py`，把复审失败项固化为回归测试，并扩展 Stage 2 合同禁词集合。
+
 ## v0.2.2 数据库治理 Stage 4 - 2026-06-28
 
 - 完成 Stage 4 `Economic Event 与 Interconnection 逻辑`，覆盖 `S4-P1-T1..S4-P2-T3`。
