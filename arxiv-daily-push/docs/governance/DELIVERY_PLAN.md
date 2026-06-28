@@ -21,12 +21,20 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 231
+- task_count: 232
 - acceptance_count: 126
 
 ## Delivery Tasks
 
 The machine-readable task source is `delivery_tasks.yaml`.
+
+## 2026-06-28 17:02:13 Australia/Sydney - S2PMT07 No-Production Attestation Artifact
+
+- `S2PMT07-NO-PRODUCTION-ATTESTATION-ARTIFACT` commits `FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json` and validates its schema/hash/no-production flags.
+- The artifact hash is `sha256:f733c86023021b17c3c4b49443f777b5450df7714cbccc5e2e5867a9ba8d85cf`.
+- This is not final bundle acceptance: manifest, P0/P1 zero proof, S2PLT04 completion report, independent signoff, final command execution, and next-agent handoff remain missing.
+- No SMTP, scheduler, Release, restore, schema/DB, source/ranking, CURRENT/V7, DAILY_OPERATION, or integrated production acceptance side effect is claimed.
+
 ## 2026-06-28 16:32:45 Australia/Sydney - S2PMT07 Local Runtime No-Production Gate
 
 - `S2PMT07-LOCAL-RUNTIME-NO-PRODUCTION-GATE` binds local ADP LaunchAgent disabled/not-running state and `ADP_ALLOW_SMTP_SEND=false` into the no-production precheck evidence.
@@ -351,7 +359,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 
 - Added phase record `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_ARTIFACT_VALIDATION.md`.
 - Added manifest `governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-ARTIFACT-VALIDATION-20260628.json`.
-- This is blocked directory-level validation only: the real final bundle directory, P0/P1 zero proof, S2PLT04 completion report, independent signoff, final command execution, no-production attestation, next-agent handoff, and production acceptance remain missing or blocked.
+- This is blocked directory-level validation only: the final bundle manifest, P0/P1 zero proof, S2PLT04 completion report, independent signoff, final command execution, next-agent handoff, and production acceptance remain missing or blocked; the no-production attestation artifact now exists but does not pass the final bundle by itself.
 
 ## 2026-06-28 10:08:17 Australia/Sydney - S2PMT07 mainline attestation
 
