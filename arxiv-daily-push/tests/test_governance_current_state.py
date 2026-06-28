@@ -30,16 +30,17 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn(f"- Current task: `{expected_task}`", current_state)
         self.assertIn(f"### `{current_iteration}`", ledger)
 
-    def test_s2pmt07_current_state_summary_describes_assignment_owner_packet_cli(self) -> None:
+    def test_s2pmt07_current_state_summary_describes_assignment_placeholder_gate(self) -> None:
         ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
-            "S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_OWNER_PACKET_CLI_READY_NO_ASSIGNMENT_NO_PRODUCTION",
+            "S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_PLACEHOLDER_GATE_READY_NO_ASSIGNMENT_NO_PRODUCTION",
             current_state,
         )
-        self.assertIn("S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-OWNER-PACKET-CLI", current_state)
-        self.assertIn("build-final-reviewer-assignment-owner-packet", current_state)
+        self.assertIn("S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-PLACEHOLDER-GATE", current_state)
+        self.assertIn("validate_independent_final_reviewer_assignment_artifact", current_state)
+        self.assertIn("REPLACE_WITH", current_state)
         self.assertIn("independent_final_reviewer_assignment.json", current_state)
         self.assertIn("assignment_artifact_present=false", current_state)
         self.assertIn("independent_final_reviewer_assigned=false", current_state)
