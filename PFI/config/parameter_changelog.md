@@ -84,6 +84,14 @@
 | 2026-06-28 | `S9-P2-T3` | `visualization_uiux.data_status_fields` | `无统一可视化数据状态字段` | `数据来源覆盖率、最近更新时间、参数版本、公式版本、汇率快照 ID、ledger_hash、interconnection_hash、是否存在未匹配记录、是否存在低置信记录、是否存在缓存、是否需要重算、UI 指标是否与报告一致` | 每个图表必须证明数据来源和新鲜度。 | 首页总览、图表、报告一致性、测试。 |
 | 2026-06-28 | `S9-P3-T1..S9-P3-T4` | `visualization_uiux.cashflow_visualizations` | `Stage 7 锁定公式，无 Stage 9 本地可视化` | `现金流阶梯图、现金流瀑布图、储备金安全带、投资入金挤压图` | 现金流需要可视化呈现 7/21/30/60/90/180/360 和投资入金挤压。 | 现金流可视化、首页、报告预检。 |
 | 2026-06-28 | `S9-P4-T1..S9-P4-T3` | `visualization_uiux.metric_drilldown_debugger` | `无 Stage 9 drilldown 合同` | `本月消费、投资资产、现金流窗口的纳入、排除、调整、公式、参数、质量状态` | 首页核心数字必须可追溯，不只显示结果。 | 首页总览、Metric Drilldown Debugger、报告一致性。 |
+| 2026-06-28 | `S10-P1-T1` | `report_advice_review.monthly_report_required_consumption_metrics` | `Stage 5/7 已有双消费公式，但月报必填项未锁定` | `消费总流出、生活消费` | 月报必须同时解释现金流出压力和生活支出，避免只看一个消费数字。 | 月报、报告与洞察、首页摘要、消费管理。 |
+| 2026-06-28 | `S10-P1-T2` | `report_advice_review.investment_report_required_sections` | `投资报告可能偏收益展示` | `收益、成本、费用、汇率、交易频率、风格、现金拖累` | 投资复盘不能只看收益，必须解释成本和行为。 | 投资报告、投资管理、策略实验室复盘。 |
+| 2026-06-28 | `S10-P1-T3` | `report_advice_review.data_quality_report_interconnection_metrics` | `数据质量报告未强制关联 Interconnection 和 Runtime Diff 指标` | `未匹配转账、重复候选、低置信、标签变更、参数变更、hash diff` | 数据质量报告必须能解释跨来源关联、重复候选和运行差异。 | 数据质量报告、账本复核、Runtime Diff、Interconnection。 |
+| 2026-06-28 | `S10-P2-T1` | `report_advice_review.recommendation_label` | `推荐` | `行动建议与复盘` | 避免用户把推荐误解为买卖指令或自动投资建议。 | 建议与复盘、报告、首页 Top N。 |
+| 2026-06-28 | `S10-P2-T1` | `report_advice_review.automatic_investment_advice_allowed` | `未单独参数化` | `false` | 行动建议只生成复盘任务，不生成自动投资、付款或券商提交。 | 建议与复盘、投资报告、风控合同。 |
+| 2026-06-28 | `S10-P2-T2` | `report_advice_review.scoring_weights` | `Stage 5 建议有优先级但没有正式评分权重` | `财务影响25、风险降低20、紧急程度15、置信度15、可逆性10、执行成本反比10、学习价值5` | 建议排序必须有可解释依据，执行难度以执行成本反比分表达。 | 建议排序、报告解释、复盘优先级。 |
+| 2026-06-28 | `S10-P2-T3` | `report_advice_review.lifecycle_statuses` | `Stage 5 状态草案不完整` | `pending、accepted、rejected、snoozed、reviewed、effect_measured` | 建议必须能从待处理进入用户决策、复核和效果复盘。 | 建议生命周期、效果复盘、报告。 |
+| 2026-06-28 | `S10-P2-T3` | `report_advice_review.required_recommendation_fields` | `无正式必备字段清单` | `证据来源、相关交易、相关参数、相关公式、预期影响金额 CNY、置信度、是否需要人工复核、用户决策状态、效果复盘状态` | 每条建议必须可追溯、可复核、可衡量效果。 | 建议与复盘、报告、审计。 |
 
 ## 记录规则
 

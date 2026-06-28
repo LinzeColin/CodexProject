@@ -7,11 +7,11 @@ PFI V0.2 is the Personal Financial Intelligence project under
 under `LinzeColin/CodexProject/QBVS`; PFI investment management does not own
 or cover QBVS.
 
-## v0.2.2 数据库治理 Stage 9
+## v0.2.2 数据库治理 Stage 10
 
-`v0.2.2 数据库治理` 当前完成 Stage 9 - 可视化与 UI/UX。本轮新增本地 HTML 单文件审查页、参数中心、Interconnection Map、Metric Dependency Graph、现金流可视化和 Metric Drilldown Debugger；不实现 Stage 10 报告、建议与复盘，不修改 v0.2.1 主 Web Shell UIUX 基线，不新增真实交易、自动投资、支付或券商提交能力。
+`v0.2.2 数据库治理` 当前完成 Stage 10 - 报告、建议与复盘。本轮新增双消费口径月报、投资成本与行为报告、Interconnection 数据质量报告、行动建议评分公式和建议生命周期；不实现 Stage 11 测试与验证总门，不修改 v0.2.1 主 Web Shell UIUX 基线，不新增真实交易、自动投资、支付或券商提交能力。
 
-Stage 9 source files:
+Stage 10 source files:
 
 | Purpose | Path |
 | --- | --- |
@@ -28,14 +28,16 @@ Stage 9 source files:
 | Stage 8 验收报告 | `docs/pfi_v022/STAGE8_RUNTIME_DIFF_IMPACTED_METRICS.md` |
 | Stage 9 验收报告 | `docs/pfi_v022/STAGE9_VISUALIZATION_UIUX.md` |
 | Stage 9 Interconnection Map | `docs/pfi_v022/INTERCONNECTION_MAP.md` |
+| Stage 10 验收报告 | `docs/pfi_v022/STAGE10_REPORT_ADVICE_REVIEW.md` |
 | Interconnection Matrix | `docs/pfi_v02/INTERCONNECTION_MATRIX.md` |
 | Stage 0-13 roadmap lock | `docs/pfi_v022/ROADMAP_LOCK.md` |
-| Stage 9 contract | `src/pfi_v02/stage_v022_database_governance.py` |
+| Stage 10 contract | `src/pfi_v02/stage_v022_database_governance.py` |
 | Stage 5 ledger taxonomy | `src/pfi_v02/stage_v022_ledger_taxonomy.py` |
 | Stage 6 tags/views | `src/pfi_v02/stage_v022_tags_views.py` |
 | Stage 7 formula scoring | `src/pfi_v02/stage_v022_formula_scoring.py` |
 | Stage 8 runtime diff | `src/pfi_v02/stage_v022_runtime_diff.py` |
 | Stage 9 visualization UIUX | `src/pfi_v02/stage_v022_visualization_uiux.py` |
+| Stage 10 report advice review | `src/pfi_v02/stage_v022_report_advice_review.py` |
 | Stage 6 local HTML | `web/pfi_v022_tag_views.html` |
 | Stage 9 local HTML | `web/interconnection-map.html` |
 | 汇率快照读取模块 | `src/pfi_v02/stage_v022_fx.py` |
@@ -300,4 +302,17 @@ Stage 9 - 可视化与 UI/UX 已加入 PFI 的数据库治理路线。
 - 新增 `docs/pfi_v022/INTERCONNECTION_MAP.md`：Mermaid 关系图，覆盖 `source -> raw -> normalized -> group -> event -> ledger -> metrics -> UI`。
 - 新增 `web/interconnection-map.html`：本地 HTML 单文件审查页，覆盖首页总览、参数中心、Interconnection Map、Metric Dependency Graph、消费分类与标签、投资模型、消费模型、现金流可视化、Runtime Diff Dashboard、Agent Review Queue、验收清单。
 - `config/pfi_parameters.yaml` 升级为 `PFIParametersV022Stage9`，记录 `visualization_uiux` 参数、Stage 9 task ids、本地 HTML 不依赖外网、现金流窗口和可点击节点。
-- 本轮不实现 Stage 10 报告、建议与复盘，不修改 v0.2.1 主 Web Shell UIUX 基线，不联网、不调用外部 LLM、不生成真实 agent 任务。
+- Stage 10 报告、建议与复盘已在后续单独 gate 中实现。
+
+## v0.2.2 Stage 10
+
+Stage 10 - 报告、建议与复盘已加入 PFI 的数据库治理路线。
+
+- 新增 `src/pfi_v02/stage_v022_report_advice_review.py`：生成月报、投资报告、数据质量报告、行动建议定义、行动建议评分公式、建议生命周期和建议样本。
+- 新增 `tests/test_v022_stage10_report_advice_review.py`：验证 `S10-P1-T1..S10-P2-T3`，覆盖双消费口径、投资成本行为、数据质量 Interconnection 指标、行动建议非自动投资、评分公式和生命周期。
+- 新增 `docs/pfi_v022/STAGE10_REPORT_ADVICE_REVIEW.md`：中文验收报告。
+- `config/pfi_parameters.yaml` 升级为 `PFIParametersV022Stage10`，记录 `report_advice_review` 参数、Stage 10 task ids、行动建议评分权重和生命周期状态。
+- 报告口径锁定：月报同时显示消费总流出和生活消费；投资报告显示收益、成本、费用、汇率、交易频率、风格、现金拖累；数据质量报告显示未匹配转账、重复候选、低置信、标签变更、参数变更、hash diff。
+- 建议生命周期锁定：`pending`、`accepted`、`rejected`、`snoozed`、`reviewed`、`effect_measured`。
+- 行动建议与复盘不是自动买卖建议，不生成券商订单、支付动作或自动投资动作。
+- 本轮不实现 Stage 11 测试与验证总门，不修改 v0.2.1 主 Web Shell UIUX 基线，不联网、不调用外部 LLM、不生成真实 agent 任务。

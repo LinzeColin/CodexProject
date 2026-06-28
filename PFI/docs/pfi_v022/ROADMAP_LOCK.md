@@ -26,7 +26,7 @@ Roadmap 形态：`Stage -> Phase -> Task`
 | Stage 7 | 模型公式、阈值与评分标准 | 本轮完成 | 置信度评分、消费、投资、现金流公式和现金流压力分。 |
 | Stage 8 | 本地运行 Diff 与 Impacted Metrics | 本轮完成 | dependency hash、diff 收紧、LLM 触发规则、中文 Codex Review Ticket 模板。 |
 | Stage 9 | 可视化与 UI/UX | 本轮完成 | 参数中心、Interconnection Map、Metric Dependency Graph、现金流可视化和 Metric Drilldown Debugger。 |
-| Stage 10 | 报告、建议与复盘 | 待 owner 开启 | 双消费口径报告、投资成本行为、建议评分生命周期。 |
+| Stage 10 | 报告、建议与复盘 | 本轮完成 | 双消费口径报告、投资成本行为、Interconnection 数据质量报告、行动建议评分和生命周期。 |
 | Stage 11 | 测试与验证 | 待 owner 开启 | 金融逻辑、跨板块一致性、可视化一致性测试。 |
 | Stage 12 | 文档同步与交付 | 待 owner 开启 | 三基、审查 HTML、总结报告。 |
 | Stage 13 | 后置触发型复核 | 非默认执行 | 仅在 diff/test/owner 指定触发时执行。 |
@@ -468,6 +468,62 @@ git diff --check -- PFI
 浏览器验收：打开 `PFI/web/interconnection-map.html`，点击 `data-map-node` 和 `data-drilldown-metric` 后详情区必须变化；页面必须离线可读且 console errors 为 0。
 
 当前本地 closeout 结果：Stage 9 目标测试 `8 passed`；Stage 0-9 v0.2.2 回归 `74 passed`；完整 PFI pytest `232 passed`；治理 `errors 0 / warnings 0`；Web shell 语法和 `git diff --check -- PFI` 通过；App 入口验收 `29 pass / 0 fail / 2 info`；Stage 9 HTML 浏览器验收模块缺失 `0`、状态字段渲染 `144`、console errors `0`、外部网络请求 `0`，截图 `/tmp/pfi-v022-stage9-html-verified.png`；真实 8501 PFI 入口验证 `PFI`、`首页总览`、`数据源与上传`、`AUD/CNY` 可见，Stage 9 审查页未进入主 UI，console errors `0`，截图 `/tmp/pfi-v022-stage9-app-verified.png`。
+
+## Stage 10 - 报告、建议与复盘 Task Lock
+
+| Task ID | Phase | 交付物 | 状态 |
+| --- | --- | --- | --- |
+| `S10-P1-T1` | Phase 10.1 | 月报模板加入双消费口径：消费总流出和生活消费 | 本轮完成 |
+| `S10-P1-T2` | Phase 10.1 | 投资报告加入收益、成本、费用、汇率、交易频率、风格、现金拖累 | 本轮完成 |
+| `S10-P1-T3` | Phase 10.1 | 数据质量报告加入未匹配转账、重复候选、低置信、标签变更、参数变更、hash diff | 本轮完成 |
+| `S10-P2-T1` | Phase 10.2 | 将“推荐”定义为行动建议与复盘，明确不是自动投资建议 | 本轮完成 |
+| `S10-P2-T2` | Phase 10.2 | 建立行动建议评分公式 | 本轮完成 |
+| `S10-P2-T3` | Phase 10.2 | 建立建议生命周期：`pending`、`accepted`、`rejected`、`snoozed`、`reviewed`、`effect_measured` | 本轮完成 |
+
+## Stage 10 Acceptance Criteria
+
+- 月报同时显示消费总流出和生活消费。
+- 投资报告显示收益、成本、费用、汇率、交易频率、风格、现金拖累。
+- 数据质量报告显示未匹配转账、重复候选、低置信、标签变更、参数变更、hash diff。
+- “推荐”必须解释为行动建议与复盘，不得被误解成买卖指令或自动投资建议。
+- 行动建议与复盘覆盖数据修复建议、消费复盘建议、投资行为复盘建议、现金流风险建议、订阅优化建议、参数调整建议。
+- 行动建议评分包含财务影响、风险降低、紧急程度、置信度、可逆性、执行成本反比分、学习价值。
+- 每条建议包含证据来源、相关交易、相关参数、相关公式、预期影响金额 CNY、置信度、是否需要人工复核、用户决策状态、效果复盘状态。
+- 建议生命周期支持 `pending`、`accepted`、`rejected`、`snoozed`、`reviewed`、`effect_measured`。
+
+## Stage 10 Stop Condition
+
+- 报告只显示一个消费口径。
+- 投资报告只有收益。
+- 数据质量报告不含 Interconnection 关联指标。
+- 推荐被误解成买卖指令。
+- 建议没有排序依据。
+- 建议无法复盘效果。
+- Stage 11 测试与验证被提前实现。
+
+当前检查结论：以上停止条件均未触发。Stage 10 交付物为本地合同、参数、报告口径和建议生命周期模型；不改 v0.2.1 主 Web Shell UIUX 基线，不联网，不调用外部 LLM，不提前实现 Stage 11。
+
+## Stage 10 Validation
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pytest tests/test_v022_stage10_report_advice_review.py -q -p no:cacheprovider
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pytest tests/test_v022_stage0_database_governance.py tests/test_pfi_parameters_consistency.py tests/test_v022_fx_effective_date.py tests/test_v022_stage3_source_account_profiles.py tests/test_v022_interconnection_no_double_count.py tests/test_v022_consumption_investment_outflow.py tests/test_v022_stage5_ledger_taxonomy.py tests/test_v022_stage6_tags_views.py tests/test_v022_stage7_formula_scoring.py tests/test_v022_stage8_runtime_diff.py tests/test_v022_stage9_visualization_uiux.py tests/test_v022_stage10_report_advice_review.py -q -p no:cacheprovider
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pytest tests -q -p no:cacheprovider
+node --check web/app/shell.js
+python3 ../scripts/validate_project_governance.py --project PFI
+git diff --check -- PFI
+```
+
+当前验证结果：
+
+- Stage 10 目标测试：`7 passed`。
+- Stage 0-10 v0.2.2 回归：`81 passed`。
+- 完整 PFI pytest：`239 passed`。
+- `node --check web/app/shell.js`：通过。
+- `python3 scripts/validate_project_governance.py --project PFI`：`errors 0 / warnings 0`。
+- `git diff --check -- PFI`：通过。
+- macOS app acceptance lite：`29 pass / 0 fail / 2 info`。
+- 真实 8501 浏览器验收：关键中文入口和 `AUD/CNY` 可见，Stage 10 审查文档未注入主 UI，console errors `0`，截图 `/tmp/pfi-v022-stage10-app-verified.png`。
 
 ## Stage 7 - 模型公式、阈值与评分标准 Task Lock
 

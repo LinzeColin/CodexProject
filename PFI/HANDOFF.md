@@ -4,7 +4,7 @@ Last updated: 2026-06-28 Australia/Sydney
 
 ## Current Goal
 
-PFI v0.2.2 Stage 9 收口：完成可视化与 UI/UX 审查交付，包括参数中心、Interconnection Map、Metric Dependency Graph、现金流阶梯图、现金流瀑布图、储备金安全带、投资入金挤压图和 Metric Drilldown Debugger；本轮不实现 Stage 10 报告、建议与复盘，不修改 v0.2.1 Web Shell UIUX 基线。
+PFI v0.2.2 Stage 10 收口：完成报告、建议与复盘交付，包括月报双消费口径、投资成本与行为报告、Interconnection 数据质量报告、行动建议评分公式和建议生命周期；本轮不实现 Stage 11 测试与验证总门，不修改 v0.2.1 Web Shell UIUX 基线。
 
 ## Current Status
 
@@ -112,7 +112,16 @@ PFI v0.2.2 Stage 9 收口：完成可视化与 UI/UX 审查交付，包括参数
 - v0.2.2 Stage 9 Interconnection Map 覆盖 `source -> raw -> normalized -> group -> event -> ledger -> metrics -> UI`；本地 HTML 可点击追踪数据源、事件类型、分类、标签、公式、影响板块。
 - v0.2.2 Stage 9 现金流可视化包含现金流阶梯图、现金流瀑布图、储备金安全带、投资入金挤压图；现金流窗口为 `7/21/30/60/90/180/360`。
 - v0.2.2 Stage 9 Metric Drilldown Debugger 覆盖本月消费、投资资产、现金流窗口的纳入、排除、调整、公式、参数和质量状态。
-- v0.2.2 Stage 9 明确不实现 Stage 10 报告、建议与复盘、Stage 11 测试总门或 Stage 12 文档总交付。
+- v0.2.2 Stage 9 已在后续 Stage 10 前完成；Stage 10 报告、建议与复盘已单独实现。
+- v0.2.2 Stage 10 - 报告、建议与复盘 task IDs 是 `S10-P1-T1`、`S10-P1-T2`、`S10-P1-T3`、`S10-P2-T1`、`S10-P2-T2`、`S10-P2-T3`。
+- v0.2.2 Stage 10 合同是 `src/pfi_v02/stage_v022_database_governance.py::build_v022_stage10_contract()`；报告与建议模块是 `src/pfi_v02/stage_v022_report_advice_review.py`。
+- v0.2.2 Stage 10 验收报告是 `docs/pfi_v022/STAGE10_REPORT_ADVICE_REVIEW.md`；合同测试是 `tests/test_v022_stage10_report_advice_review.py`。
+- v0.2.2 Stage 10 月报必须同时显示 `消费总流出` 和 `生活消费`；投资报告必须显示收益、成本、费用、汇率、交易频率、风格、现金拖累；数据质量报告必须显示未匹配转账、重复候选、低置信、标签变更、参数变更、hash diff。
+- v0.2.2 Stage 10 将“推荐”统一解释为 `行动建议与复盘`，不是自动投资建议、买卖指令、付款或券商提交。
+- v0.2.2 Stage 10 行动建议类型覆盖数据修复建议、消费复盘建议、投资行为复盘建议、现金流风险建议、订阅优化建议、参数调整建议。
+- v0.2.2 Stage 10 行动建议评分权重是财务影响 25、风险降低 20、紧急程度 15、置信度 15、可逆性 10、执行成本反比 10、学习价值 5。
+- v0.2.2 Stage 10 生命周期支持 `pending`、`accepted`、`rejected`、`snoozed`、`reviewed`、`effect_measured`。
+- v0.2.2 Stage 10 明确不实现 Stage 11 测试与验证总门、Stage 12 最终交付包或 Stage 13 后置触发型复核。
 - v0.2.2 Stage 4 当前规则：同一真实事件只有一个 `economic_event_id`；同一资金链路进入一个 `interconnection_group_id`；同一事件可多处展示但同一核心指标只计算一次。
 - v0.2.2 Stage 4 消费口径：投资入金、基金申购、黄金申购、投资买入和费用进入消费总流出；投资入金、基金申购、投资买入不进入生活消费；退款抵消原消费；信用卡还款不重复计入生活消费。
 - v0.2.2 Stage 4 stop condition：`投资入金未进入消费总流出`、`基金申购未进入消费总流出`、`投资入金错误进入生活消费`、同一 `interconnection_group_id` 重复计入核心金额。
@@ -150,6 +159,7 @@ PFI v0.2.2 Stage 9 收口：完成可视化与 UI/UX 审查交付，包括参数
 - 2026-06-28 v0.2.2 Stage 7：新增 `src/pfi_v02/stage_v022_formula_scoring.py`、`docs/pfi_v022/STAGE7_FORMULA_SCORING.md` 和 `tests/test_v022_stage7_formula_scoring.py`；`config/pfi_parameters.yaml` 升级为 `PFIParametersV022Stage7`；三基文件、README、roadmap lock 和参数变更记录同步记录 100 分置信度、统一 70 分复核线、双消费公式、投资市值/收益/行为公式、现金流窗口、储备金安全线和投资挤压生活现金模型。
 - 2026-06-28 v0.2.2 Stage 8：新增 `src/pfi_v02/stage_v022_runtime_diff.py`、`docs/pfi_v022/STAGE8_RUNTIME_DIFF_IMPACTED_METRICS.md`、`review_queue/CODEX_REVIEW_TICKET_TEMPLATE.md` 和 `tests/test_v022_stage8_runtime_diff.py`；`config/pfi_parameters.yaml` 升级为 `PFIParametersV022Stage8`；三基文件、README、roadmap lock 和参数变更记录同步记录 dependency hash、P0/P1/P2 impacted metrics、no-diff 外部触发禁用和本地中文 Codex Review Ticket。
 - 2026-06-28 v0.2.2 Stage 9：新增 `src/pfi_v02/stage_v022_visualization_uiux.py`、`docs/pfi_v022/STAGE9_VISUALIZATION_UIUX.md`、`docs/pfi_v022/INTERCONNECTION_MAP.md`、`web/interconnection-map.html` 和 `tests/test_v022_stage9_visualization_uiux.py`；`config/pfi_parameters.yaml` 升级为 `PFIParametersV022Stage9`；三基文件、README、roadmap lock 和参数变更记录同步记录参数中心、Interconnection Map、Metric Dependency Graph、现金流可视化和 Metric Drilldown Debugger。
+- 2026-06-28 v0.2.2 Stage 10：新增 `src/pfi_v02/stage_v022_report_advice_review.py`、`docs/pfi_v022/STAGE10_REPORT_ADVICE_REVIEW.md` 和 `tests/test_v022_stage10_report_advice_review.py`；`config/pfi_parameters.yaml` 升级为 `PFIParametersV022Stage10`；三基文件、README、roadmap lock 和参数变更记录同步记录月报双消费口径、投资成本行为报告、Interconnection 数据质量报告、行动建议评分公式和建议生命周期。
 
 ## Decisions
 
@@ -206,8 +216,9 @@ Latest v0.2.2 Stage 6 target result: Stage 6 tag/custom-view contracts `6 passed
 Latest v0.2.2 Stage 7 target result: Stage 7 formula/scoring contracts `7 passed`; Stage 0-7 v0.2.2 regression `58 passed`; full PFI pytest `216 passed`; project governance `errors 0 / warnings 0`; Web shell syntax `OK`; `git diff --check -- PFI` `OK`; macOS app acceptance lite `29 pass / 0 fail / 2 info`; `http://127.0.0.1:8501/_stcore/health` returned `ok`; true 8501 browser validation confirmed primary entries, `AUD/CNY`, upload center and import center after clicking `数据源与上传`, no forbidden visible text hits, console errors `0`, screenshot `/tmp/pfi-v022-stage7-upload-verified-final.png`.
 Latest v0.2.2 Stage 8 target result: Stage 8 runtime diff contracts `8 passed`; Stage 0-8 v0.2.2 regression `66 passed`; full PFI pytest `224 passed`; project governance `errors 0 / warnings 0`; Web shell syntax `OK`; `git diff --check -- PFI` `OK`; macOS app acceptance lite `29 pass / 0 fail / 2 info`; `http://127.0.0.1:8501/_stcore/health` returned `ok`; true 8501 browser validation clicked `数据源与上传`, confirmed `PFI`、`首页总览`、`数据源与上传`、`AUD/CNY`, no forbidden visible text hits, console errors `0`, screenshot `/tmp/pfi-v022-stage8-app-verified.png`.
 Latest v0.2.2 Stage 9 target result: Stage 9 visualization/UIUX contracts `8 passed`; Stage 0-9 v0.2.2 regression `74 passed`; full PFI pytest `232 passed`; project governance `errors 0 / warnings 0`; Web shell syntax `OK`; `git diff --check -- PFI` `OK`; macOS app acceptance lite `29 pass / 0 fail / 2 info`; Stage 9 local HTML browser validation confirmed required modules missing `0`, status fields rendered `144`, data-map-node and data-drilldown-metric clicks update detail panels, console errors `0`, external network requests `0`, screenshot `/tmp/pfi-v022-stage9-html-verified.png`; true 8501 browser validation confirmed `PFI`、`首页总览`、`数据源与上传`、`AUD/CNY` visible and Stage 9 review page not injected into main UI, console errors `0`, screenshot `/tmp/pfi-v022-stage9-app-verified.png`.
+Latest v0.2.2 Stage 10 target result: Stage 10 report/advice/review contracts `7 passed`; Stage 0-10 v0.2.2 regression `81 passed`; full PFI pytest `239 passed`; project governance `errors 0 / warnings 0`; Web shell syntax `OK`; `git diff --check -- PFI` `OK`; macOS app acceptance lite `29 pass / 0 fail / 2 info`; `http://127.0.0.1:8501/_stcore/health` returned `ok`; true 8501 browser validation confirmed `PFI`、`首页总览`、`数据源与上传`、`建议与复盘`、`报告与洞察`、`AUD/CNY` visible, Stage 10 review docs not injected into main UI, console errors `0`, screenshot `/tmp/pfi-v022-stage10-app-verified.png`.
 
 ## Next
 
-1. 下一轮 pursuing goal 应从 v0.2.2 Stage 10 `报告、建议与复盘` 开始。
-2. 不得提前实现 Stage 11-13，不得修改 v0.2.1 Web Shell UIUX 基线，除非用户单独开启前端目标或 Stage 10 合同明确要求。
+1. 下一轮 pursuing goal 应从 v0.2.2 Stage 11 `测试与验证` 开始。
+2. 不得提前实现 Stage 12-13，不得修改 v0.2.1 Web Shell UIUX 基线，除非用户单独开启前端目标或 Stage 11 合同明确要求。

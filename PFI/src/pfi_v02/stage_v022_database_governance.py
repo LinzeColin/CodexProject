@@ -53,6 +53,14 @@ from pfi_v02.stage_v022_visualization_uiux import (
     STAGE9_REQUIRED_MODULES,
     build_stage9_contract_payload,
 )
+from pfi_v02.stage_v022_report_advice_review import (
+    STAGE10_ACTION_REVIEW_TASK_TYPES,
+    STAGE10_LIFECYCLE_STATUSES,
+    STAGE10_REPORT_SECTIONS,
+    STAGE10_REQUIRED_RECOMMENDATION_FIELDS,
+    STAGE10_SCORING_WEIGHTS,
+    build_stage10_contract_payload,
+)
 
 
 V022_STAGE1_TASK_IDS = (
@@ -176,6 +184,15 @@ V022_STAGE9_TASK_IDS = (
     "S9-P4-T1",
     "S9-P4-T2",
     "S9-P4-T3",
+)
+
+V022_STAGE10_TASK_IDS = (
+    "S10-P1-T1",
+    "S10-P1-T2",
+    "S10-P1-T3",
+    "S10-P2-T1",
+    "S10-P2-T2",
+    "S10-P2-T3",
 )
 
 V022_STAGE0_TASK_IDS = (
@@ -1204,5 +1221,91 @@ def build_v022_stage9_contract() -> dict[str, object]:
             "不修改 v0.2.1 主 Web Shell UIUX 基线。",
             "不新增真实交易、自动投资、支付或券商提交。",
             "不联网、不调用外部 LLM、不生成真实 agent 任务。",
+        ),
+    }
+
+
+def build_v022_stage10_contract() -> dict[str, object]:
+    stage10_payload = build_stage10_contract_payload(load_v022_parameter_catalog())
+    return {
+        "schema": "PFIV022ReportAdviceReviewStage10ContractV1",
+        "version": "v0.2.2",
+        "stage": "Stage 10",
+        "stage_name_zh": "报告、建议与复盘",
+        "goal": "把月报、投资报告、数据质量报告和行动建议升级为双消费口径、成本行为可解释、Interconnection 可追踪、评分可排序、生命周期可复盘的本地合同。",
+        "task_ids": V022_STAGE10_TASK_IDS,
+        "phases": {
+            "Phase 10.1": ("报告口径", "S10-P1-T1", "S10-P1-T2", "S10-P1-T3"),
+            "Phase 10.2": ("行动建议与复盘", "S10-P2-T1", "S10-P2-T2", "S10-P2-T3"),
+        },
+        "report_scope": {
+            "monthly_report_required_sections": STAGE10_REPORT_SECTIONS["monthly_report"],
+            "investment_report_required_sections": STAGE10_REPORT_SECTIONS["investment_report"],
+            "data_quality_report_required_sections": STAGE10_REPORT_SECTIONS["data_quality_report"],
+            "payload": stage10_payload["report_suite"],
+        },
+        "action_review": {
+            "label_zh": "行动建议与复盘",
+            "task_types": STAGE10_ACTION_REVIEW_TASK_TYPES,
+            "automatic_investment_advice_allowed": False,
+            "automatic_buy_sell_instruction_allowed": False,
+            "scoring_weights": STAGE10_SCORING_WEIGHTS,
+            "scoring_formula_zh": stage10_payload["scoring_formula"]["formula_zh"],
+            "required_recommendation_fields": STAGE10_REQUIRED_RECOMMENDATION_FIELDS,
+            "lifecycle_statuses": STAGE10_LIFECYCLE_STATUSES,
+            "lifecycle_transitions": stage10_payload["lifecycle"]["transitions"],
+            "terminal_status": "effect_measured",
+        },
+        "deliverables": (
+            "PFI/src/pfi_v02/stage_v022_report_advice_review.py",
+            "PFI/src/pfi_v02/stage_v022_database_governance.py",
+            "PFI/tests/test_v022_stage10_report_advice_review.py",
+            "PFI/docs/pfi_v022/STAGE10_REPORT_ADVICE_REVIEW.md",
+            "PFI/config/pfi_parameters.yaml",
+            "PFI/config/parameter_changelog.md",
+            "PFI/模型参数文件.md",
+            "PFI/功能清单.md",
+            "PFI/开发记录.md",
+            "PFI/HANDOFF.md",
+            "PFI/README.md",
+        ),
+        "acceptance_criteria": (
+            "月报模板同时显示消费总流出和生活消费。",
+            "投资报告显示收益、成本、费用、汇率、交易频率、风格和现金拖累。",
+            "数据质量报告显示未匹配转账、重复候选、低置信、标签变更、参数变更和 hash diff。",
+            "推荐统一解释为行动建议与复盘，不得被误解为买卖指令、自动投资建议、付款或券商提交。",
+            "行动建议覆盖数据修复、消费复盘、投资行为复盘、现金流风险、订阅优化和参数调整。",
+            "行动建议评分包含财务影响、风险降低、紧急程度、置信度、可逆性、执行成本反比和学习价值；执行难度以执行成本反比分表达。",
+            "每条建议包含证据来源、相关交易、相关参数、相关公式、预期影响金额 CNY、置信度、是否需要人工复核、用户决策状态和效果复盘状态。",
+            "建议生命周期支持 pending、accepted、rejected、snoozed、reviewed、effect_measured，并能复盘效果。",
+        ),
+        "stop_conditions": (
+            "月报只显示一个消费口径。",
+            "投资报告只有收益。",
+            "数据质量报告没有 Interconnection 或 Runtime Diff 指标。",
+            "推荐可能被误解为买卖指令或自动投资建议。",
+            "建议没有排序依据。",
+            "建议不能进入 reviewed 或 effect_measured。",
+            "Stage 11 测试与验证被提前实现。",
+        ),
+        "validation_commands": (
+            "PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests/test_v022_stage10_report_advice_review.py -q",
+            "PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests/test_v022_stage0_database_governance.py PFI/tests/test_pfi_parameters_consistency.py PFI/tests/test_v022_fx_effective_date.py PFI/tests/test_v022_stage3_source_account_profiles.py PFI/tests/test_v022_interconnection_no_double_count.py PFI/tests/test_v022_consumption_investment_outflow.py PFI/tests/test_v022_stage5_ledger_taxonomy.py PFI/tests/test_v022_stage6_tags_views.py PFI/tests/test_v022_stage7_formula_scoring.py PFI/tests/test_v022_stage8_runtime_diff.py PFI/tests/test_v022_stage9_visualization_uiux.py PFI/tests/test_v022_stage10_report_advice_review.py -q",
+            "PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests -q",
+            "node --check PFI/web/app/shell.js",
+            "python3 scripts/validate_project_governance.py --project PFI",
+            "git diff --check -- PFI",
+        ),
+        "cross_review": {
+            "Agent 1": "财务逻辑审查：确认双消费口径、投资成本行为和数据质量指标不互相污染。",
+            "Agent 3": "参数公式审查：确认行动建议评分权重、字段和生命周期记录在参数文件与变更记录中。",
+            "Agent 6": "测试审查：确认 Stage 10 合同测试不是 marker-only，且不提前实现 Stage 11。",
+        },
+        "non_goals": (
+            "Stage 11 测试与验证总门不在本轮实现。",
+            "Stage 12 文档同步与最终交付不在本轮实现。",
+            "Stage 13 后置触发型复核不在本轮实现。",
+            "不修改 v0.2.1 主 Web Shell UIUX 基线。",
+            "不新增真实交易、自动投资、支付或券商提交。",
         ),
     }
