@@ -10,12 +10,30 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.1
 - Current phase: S2PM
-- Current gate: S2PMT07_NO_PRODUCTION_ATTESTATION_ARTIFACT_VALIDATED_FINAL_BUNDLE_STILL_BLOCKED
-- Confirmed iteration count: 205
+- Current gate: S2PMT07_NO_PRODUCTION_ATTESTATION_READINESS_SYNC_FINAL_BUNDLE_STILL_BLOCKED
+- Confirmed iteration count: 206
 - Reconstructed event count: 0
-- Current task: `S2PMT07-NO-PRODUCTION-ATTESTATION-ARTIFACT` validates `FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json`; final bundle remains blocked because manifest, P0/P1 zero proof, S2PLT04 completion report, independent signoff, final command execution, and next-agent handoff are still missing. The owner-visible next action remains independent final reviewer assignment, and P0/P1 closure, scheduler, Release, DAILY_OPERATION, and integrated production acceptance remain blocked/false.
+- Current task: `S2PMT07-NO-PRODUCTION-ATTESTATION-READINESS-SYNC` makes final bundle readiness consume the committed `FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json`; final bundle remains blocked because manifest, P0/P1 zero proof, S2PLT04 completion report, independent signoff, final command execution, and next-agent handoff are still missing. The owner-visible next action remains independent final reviewer assignment, and P0/P1 closure, scheduler, Release, DAILY_OPERATION, and integrated production acceptance remain blocked/false.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. Local daily M1-M4 orchestration is now recorded as readiness evidence, but V7.2 contract baseline migration blockers are zero while real restore, real SMTP production, scheduler installation, final acceptance bundle creation, directory-level final bundle artifact validation pass, P0/P1 closure, S2PLT04 completion, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
+
+### `ITER-20260628-ADP-S2PMT07-NO-PRODUCTION-ATTESTATION-READINESS-SYNC`
+
+- Timestamp: `2026-06-28T17:32:43+10:00`
+- Fact level: EXTRACTED from committed `FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json`, final bundle readiness helper, focused final-bundle regression tests, phase record, run manifest, traceability row, delivery task, event record, and three base files.
+- Base commit: `6abab81c3ce786bfa4f7313e9fe0af19865c2d0f`
+- Product version: `0.23.1`
+- Status: no-production side-effect attestation is now consumed by final bundle readiness; final bundle remains blocked.
+- Task IDs: `S2PMT07-NO-PRODUCTION-ATTESTATION-READINESS-SYNC`; parent `S2PMT07`; acceptance `ACC-S2PMT07-FINAL-REVIEW`.
+- Goal: Remove stale readiness reporting that still treated the committed no-production attestation as missing, without using it to claim final acceptance.
+- Files changed: S2PMT07 final gate helper, final-gate regression tests, phase record, run manifest, traceability/delivery/event records, user-center traceability page, and three base files.
+- Decisions: `NO_PRODUCTION_SIDE_EFFECT_ATTESTATION_VALIDATION=true` only when the committed artifact validates; `final_acceptance_bundle_artifact_validation_passed=false`; P0=8; P1=37; and every production/contract side-effect flag remains false.
+- Validation: focused final-bundle readiness tests 15 OK before governance sync. Final run-level validation is recorded in the run manifest and closeout.
+- Boundaries: No independent reviewer assignment, no independent final closure decision, no zero-proof artifact, no P0/P1 closure, no S2PLT04 completion, no final bundle manifest acceptance, no SMTP send, no scheduler install/enablement, no Release, no restore, no CURRENT/V7 change, no source/ranking change, no DAILY_OPERATION, and no integrated production acceptance.
+- Branch hygiene: no branch or PR is created by this run; final closeout rechecks open PR count and ADP/arxiv/s2p remote branch count.
+- Risks: A passing no-production attestation validation can be misread as final bundle completion. It is only one sub-validation; S2PMT07 remains blocked.
+- Evidence: `FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json`; `governance/run_manifests/ADP-S2PMT07-NO-PRODUCTION-ATTESTATION-READINESS-SYNC-20260628.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_NO_PRODUCTION_ATTESTATION_READINESS_SYNC.md`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.
+- Next step: Owner/coordinator must still supply the real independent final reviewer assignment artifact and the remaining final bundle items.
 
 ### `ITER-20260628-ADP-S2PMT07-NO-PRODUCTION-ATTESTATION-ARTIFACT`
 

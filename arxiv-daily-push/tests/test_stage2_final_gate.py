@@ -625,10 +625,18 @@ class Stage2FinalGateTests(unittest.TestCase):
         report = build_s2plt04_integration_candidate_report(generated_at="2026-06-28T03:51:22+10:00")
 
         readiness = report["evidence"]["final_acceptance_bundle_readiness"]
+        expected_missing = set(S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS) - {
+            "FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json"
+        }
+        expected_blockers = set(S2PMT07_FINAL_ACCEPTANCE_BUNDLE_BLOCKING_REASONS) - {
+            "final_acceptance_bundle_directory_missing",
+            "no_production_side_effect_attestation_missing",
+        }
         self.assertEqual(readiness["status"], "blocked")
         self.assertEqual(tuple(readiness["required_items"]), S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS)
-        self.assertEqual(set(readiness["missing_items"]), set(S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS))
-        self.assertEqual(readiness["blocking_reasons"], list(S2PMT07_FINAL_ACCEPTANCE_BUNDLE_BLOCKING_REASONS))
+        self.assertEqual(set(readiness["missing_items"]), expected_missing)
+        self.assertTrue(expected_blockers.issubset(set(readiness["blocking_reasons"])))
+        self.assertNotIn("no_production_side_effect_attestation_missing", readiness["blocking_reasons"])
         self.assertFalse(readiness["bundle_present"])
         self.assertFalse(readiness["bundle_claimed_ready"])
         self.assertFalse(readiness["production_acceptance_claimed"])
@@ -2345,18 +2353,27 @@ class Stage2FinalGateTests(unittest.TestCase):
 
     def test_final_acceptance_bundle_readiness_state_lists_missing_required_items(self) -> None:
         state = build_final_acceptance_bundle_readiness_state()
+        expected_missing = set(S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS) - {
+            "FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json"
+        }
 
         self.assertEqual(state["status"], "blocked")
         self.assertEqual(tuple(state["required_items"]), S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS)
-        self.assertEqual(set(state["missing_items"]), set(S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS))
+        self.assertEqual(set(state["missing_items"]), expected_missing)
         self.assertFalse(state["bundle_present"])
         self.assertFalse(state["bundle_claimed_ready"])
         self.assertFalse(state["production_acceptance_claimed"])
         self.assertFalse(state["release_packaging_enabled"])
         for flag in S2PMT07_FINAL_ACCEPTANCE_BUNDLE_FORBIDDEN_FLAGS:
             self.assertFalse(state[flag])
-        for reason in S2PMT07_FINAL_ACCEPTANCE_BUNDLE_BLOCKING_REASONS:
+        expected_blockers = set(S2PMT07_FINAL_ACCEPTANCE_BUNDLE_BLOCKING_REASONS) - {
+            "final_acceptance_bundle_directory_missing",
+            "no_production_side_effect_attestation_missing",
+        }
+        for reason in expected_blockers:
             self.assertIn(reason, state["blocking_reasons"])
+        self.assertNotIn("final_acceptance_bundle_directory_missing", state["blocking_reasons"])
+        self.assertNotIn("no_production_side_effect_attestation_missing", state["blocking_reasons"])
         self.assertEqual(validate_final_acceptance_bundle_readiness_state(state), [])
 
         tampered = dict(state)
@@ -3351,6 +3368,27 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(state["integrated_production_accepted"])
         self.assertFalse(state["daily_operation_enabled"])
 
+    def test_final_acceptance_bundle_readiness_consumes_committed_no_production_attestation(self) -> None:
+        state = build_final_acceptance_bundle_readiness_state()
+        artifact_validation = state["final_acceptance_bundle_artifact_validation"]
+
+        self.assertTrue(state["available_items"]["FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json"])
+        self.assertFalse(state["available_items"]["FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json"])
+        self.assertTrue(state["available_prebundle_evidence"]["NO_PRODUCTION_SIDE_EFFECT_ATTESTATION_VALIDATION"])
+        self.assertEqual(state["no_production_side_effect_attestation_validation"]["status"], "pass")
+        self.assertTrue(artifact_validation["bundle_directory_present"])
+        self.assertEqual(
+            artifact_validation["artifact_validations"]["NO_PRODUCTION_SIDE_EFFECT_ATTESTATION"]["status"],
+            "pass",
+        )
+        self.assertNotIn("no_production_side_effect_attestation_missing", state["blocking_reasons"])
+        self.assertIn("p0_p1_zero_proof_missing", state["blocking_reasons"])
+        self.assertIn("final_acceptance_bundle_manifest_missing", state["blocking_reasons"])
+        self.assertEqual(state["status"], "blocked")
+        self.assertFalse(state["production_acceptance_claimed"])
+        self.assertFalse(state["integrated_production_accepted"])
+        self.assertEqual(validate_final_acceptance_bundle_readiness_state(state), [])
+
     def test_no_production_side_effect_attestation_fails_closed_on_missing_or_production_flags(self) -> None:
         missing_state = build_no_production_side_effect_attestation_validation_state(None)
 
@@ -3374,14 +3412,14 @@ class Stage2FinalGateTests(unittest.TestCase):
             validate_no_production_side_effect_attestation(payload),
         )
 
-    def test_final_acceptance_bundle_readiness_embeds_no_production_attestation_validation_as_blocked(self) -> None:
+    def test_final_acceptance_bundle_readiness_embeds_committed_no_production_attestation(self) -> None:
         state = build_final_acceptance_bundle_readiness_state()
         attestation = state["no_production_side_effect_attestation_validation"]
 
-        self.assertEqual(attestation["status"], "blocked")
-        self.assertFalse(attestation["attestation_present"])
-        self.assertFalse(state["available_prebundle_evidence"]["NO_PRODUCTION_SIDE_EFFECT_ATTESTATION_VALIDATION"])
-        self.assertIn("no_production_side_effect_attestation_missing", attestation["validation_errors"])
+        self.assertEqual(attestation["status"], "pass")
+        self.assertTrue(attestation["attestation_present"])
+        self.assertTrue(state["available_prebundle_evidence"]["NO_PRODUCTION_SIDE_EFFECT_ATTESTATION_VALIDATION"])
+        self.assertEqual(attestation["validation_errors"], [])
         self.assertEqual(validate_final_acceptance_bundle_readiness_state(state), [])
 
     def _valid_next_agent_handoff_payload(self) -> dict[str, object]:
@@ -3664,9 +3702,14 @@ class Stage2FinalGateTests(unittest.TestCase):
         directory_validation = state["final_acceptance_bundle_artifact_validation"]
 
         self.assertEqual(directory_validation["status"], "blocked")
-        self.assertFalse(directory_validation["bundle_directory_present"])
+        self.assertTrue(directory_validation["bundle_directory_present"])
         self.assertFalse(state["available_prebundle_evidence"]["FINAL_ACCEPTANCE_BUNDLE_ARTIFACT_VALIDATION"])
-        self.assertIn("final_acceptance_bundle_directory_missing", directory_validation["blocking_reasons"])
+        self.assertNotIn("final_acceptance_bundle_directory_missing", directory_validation["blocking_reasons"])
+        self.assertNotIn("no_production_side_effect_attestation_missing", directory_validation["blocking_reasons"])
+        self.assertEqual(
+            directory_validation["artifact_validations"]["NO_PRODUCTION_SIDE_EFFECT_ATTESTATION"]["status"],
+            "pass",
+        )
         self.assertEqual(validate_final_acceptance_bundle_artifact_validation_state(directory_validation), [])
         self.assertEqual(validate_final_acceptance_bundle_readiness_state(state), [])
 

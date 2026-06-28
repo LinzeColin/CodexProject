@@ -21,12 +21,19 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 232
+- task_count: 233
 - acceptance_count: 126
 
 ## Delivery Tasks
 
 The machine-readable task source is `delivery_tasks.yaml`.
+
+## 2026-06-28 17:32:43 Australia/Sydney - S2PMT07 No-Production Attestation Readiness Sync
+
+- `S2PMT07-NO-PRODUCTION-ATTESTATION-READINESS-SYNC` makes final bundle readiness consume the committed `FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json` artifact.
+- This removes stale readiness reporting that still marked the no-production attestation missing after the artifact was committed and validated.
+- This is not final bundle acceptance: manifest, P0/P1 zero proof, S2PLT04 completion report, independent signoff, final command execution, and next-agent handoff remain missing.
+- No SMTP, scheduler, Release, restore, schema/DB, source/ranking, CURRENT/V7, DAILY_OPERATION, or integrated production acceptance side effect is claimed.
 
 ## 2026-06-28 17:02:13 Australia/Sydney - S2PMT07 No-Production Attestation Artifact
 
