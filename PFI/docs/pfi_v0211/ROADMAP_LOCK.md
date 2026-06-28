@@ -14,9 +14,10 @@
 - `S1 产品壳与路由` 已完成并推送 GitHub main。
 - `S2 页面骨架与去 AI 化` 已完成并推送 GitHub main。
 - `S3 真实操作流` 已完成并推送 GitHub main。
-- 本轮只完成 `S4 持久化与同步`。
+- `S4 持久化与同步` 已完成并推送 GitHub main。
+- 本轮完成 `S5 真实图表与最终验收`，并按用户口径执行 `Stage 6 项目级复审验收` closeout。
 - Stage 0 不修改正式 UI。
-- 后续 Stage 未开始前，不允许声明 v0.2.1.1 完成。
+- `S5` 完成并通过项目级复审、GitHub main 同步、本机 PFI.app 入口刷新和非必要缓存清理后，才允许声明 v0.2.1.1 本轮完成。
 
 ## 6 个执行 Stage
 
@@ -110,6 +111,28 @@ Stage 4 退出条件：
 - `tests/test_v0211_stage4_persistence_sync_contract.py` 通过。
 - `node --check web/app/shell.js` 通过。
 - 真实 8501 浏览器验收覆盖投资持仓、保存入口、首页、投资页和报告页。
+
+## Stage 5 退出条件
+
+Stage 5 退出条件：
+
+- 账户与资产、投资管理、消费管理趋势图统一读取 `/api/trends`，不得继续使用硬编码 chart array。
+- 账户与资产趋势从 SQLite operational DB / 读模型派生现金总额、净资产、总资产、总负债；数据不足时显示中文空状态。
+- 投资管理趋势从 SQLite 持仓快照派生投资市值、总收益、未实现盈亏、现金仓位；无真实持仓时不伪造收益。
+- 消费管理趋势从 `MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv` 派生本月支出、预算剩余、固定支出、弹性支出、现金流预测；缺数据时显示中文空状态。
+- 正式 Web Shell 不暴露合成验收、测试样例、fixture、demo、mock、fake 或硬编码趋势路径。
+- 所有一级入口、关键二级入口、主要按钮、全局搜索、策略实验室同路由、设置隔离和图表空状态必须用真实浏览器验收。
+- `tests/test_v0211_stage5_6_final_acceptance_contract.py` 通过。
+- `node --check web/app/shell.js` 通过。
+
+## Stage 6 项目级复审验收退出条件
+
+用户口径的 Stage 6 是 Stage 5 之后的第二阶段 closeout，不是路线锁之外再新增一个可跳过的机器 Stage。
+
+- 复审首页、账户、账本、投资、消费、数据源、建议、报告、市场与研究和设置。
+- 修复复审暴露的问题后再同步 GitHub main。
+- 刷新本机 `PFI.app` 入口并确认 8501 health。
+- 清理本轮临时 worktree、pytest cache、`__pycache__`、临时 SQLite 和临时截图/日志，不清理用户原始数据、`MetaDatabase`、正式 operational DB 或其它项目。
 
 ## 后续停止条件
 

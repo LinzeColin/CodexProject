@@ -62,6 +62,20 @@ Stage 0 交付入口：
 - 交付记录：`docs/pfi_v0211/STAGE4_PERSISTENCE_SYNC.md`。
 - 合同测试：`tests/test_v0211_stage4_persistence_sync_contract.py`。
 
+## v0.2.1.1 Stage 5/6 - 真实图表、最终验收和项目级复审
+
+`v0.2.1.1 Stage 5` 完成账户、投资、消费趋势图的真实数据源锁定：正式图表只读取 `/api/trends`，后端只从 SQLite operational DB 和 `MetaDatabase/PFI/alipay_daily` 派生；无真实数据时显示中文空状态，不显示硬编码曲线。
+
+用户口径的 `Stage 6 项目级复审验收` 是 Stage 5 后的第二阶段 closeout，用于整体跨板块复审、修复发现的问题、同步 GitHub main、刷新本机 PFI.app 入口并清理非必要缓存。
+
+交付入口：
+
+| 文件 | 用途 |
+| --- | --- |
+| `docs/pfi_v0211/STAGE5_REAL_CHARTS_FINAL_ACCEPTANCE.md` | Stage 5 真实图表与最终验收记录。 |
+| `docs/pfi_v0211/STAGE6_PROJECT_REVIEW_CLOSEOUT.md` | Stage 6 项目级复审验收记录。 |
+| `tests/test_v0211_stage5_6_final_acceptance_contract.py` | Stage 5/6 合同、真实图表数据源和正式 UI 污染回归测试。 |
+
 ## v0.2.2 数据库治理整体复审
 
 `v0.2.2 数据库治理` 当前完成 Stage 0-13 的整体项目复审解决。正式页面、报告、图表、首页摘要和建议只允许读取真实 MetaDatabase 派生数据或中文真实空态；不得使用 demo/sample/synthetic/fixture/mock/fake/测试样例数据作为验收依据。不新增真实交易、自动投资、支付或券商提交能力。
