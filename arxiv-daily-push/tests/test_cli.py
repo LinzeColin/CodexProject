@@ -178,6 +178,51 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["integrated_production_accepted"])
         self.assertFalse(payload["daily_operation_enabled"])
 
+    def test_validate_remaining_final_bundle_artifacts_block_when_missing(self):
+        cases = (
+            (
+                "validate-final-bundle-manifest",
+                "manifest.json",
+                "manifest_present",
+                "final_acceptance_bundle_manifest_missing",
+            ),
+            (
+                "validate-s2plt04-completion-report",
+                "s2plt04_completion_report.json",
+                "report_present",
+                "s2plt04_completion_report_missing",
+            ),
+            (
+                "validate-no-production-attestation",
+                "no_production_side_effects.json",
+                "attestation_present",
+                "no_production_side_effect_attestation_missing",
+            ),
+            (
+                "validate-next-agent-handoff",
+                "next_agent_handoff.json",
+                "handoff_present",
+                "next_agent_handoff_missing",
+            ),
+        )
+
+        with tempfile.TemporaryDirectory() as tmp:
+            for command, filename, present_key, expected_error in cases:
+                path = Path(tmp) / filename
+                buffer = io.StringIO()
+                with redirect_stdout(buffer):
+                    result = main([command, "--path", str(path), "--json"])
+                payload = json.loads(buffer.getvalue())
+
+                self.assertEqual(result, 2, command)
+                self.assertEqual(payload["status"], "blocked", command)
+                self.assertFalse(payload[present_key], command)
+                self.assertIn(expected_error, payload["validation_errors"], command)
+                self.assertFalse(payload["production_acceptance_claimed"], command)
+                self.assertFalse(payload["integrated_production_accepted"], command)
+                self.assertFalse(payload["real_smtp_send_enabled"], command)
+                self.assertFalse(payload["scheduler_install_enabled"], command)
+
     def test_validate_p0_p1_zero_proof_passes_valid_artifact_without_production_claim(self):
         zero_proof = {
             "schema_version": S2PMT07_P0_P1_ZERO_PROOF_SCHEMA_VERSION,

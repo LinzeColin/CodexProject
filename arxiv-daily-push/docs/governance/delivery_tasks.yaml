@@ -4459,3 +4459,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+  - task_id: "S2PMT07-REMAINING-FINAL-BUNDLE-ARTIFACT-CLI-VALIDATORS"
+    title: "S2PMT07 remaining final-bundle artifact CLI validators"
+    phase: "S2PM"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-28T23:58:57+10:00"
+    summary: "Expose remaining final-bundle artifact validators through CLI without creating artifacts or accepting production."
+    owner: "content_owner + engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_REMAINING_FINAL_BUNDLE_ARTIFACT_CLI_VALIDATORS.md", "governance/run_manifests/ADP-S2PMT07-REMAINING-FINAL-BUNDLE-ARTIFACT-CLI-VALIDATORS-20260628.json"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_remaining_cli_red PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_cli.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_remaining_cli_green PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_cli.py -q"]
+    test_results: ["TDD red failed as expected because validate-final-bundle-manifest was not a recognized CLI command", "focused CLI tests: 16 OK"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-REMAINING-FINAL-BUNDLE-ARTIFACT-CLI-VALIDATORS-20260628.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_REMAINING_FINAL_BUNDLE_ARTIFACT_CLI_VALIDATORS.md", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_cli.py"]
+    result: "Remaining final-bundle artifact validators are available through CLI; live final bundle remains blocked."
+    risk: "Validator CLI commands can be misread as artifact creation unless status, present flags, and production flags stay explicit."
+    rollback: "Revert CLI parser/dispatcher changes, focused regression test, phase record, manifest, traceability row, delivery task, event records, generated views, and three base records; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

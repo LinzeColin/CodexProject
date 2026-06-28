@@ -1,0 +1,124 @@
+{
+  "schema_version": 1,
+  "project_id": "arxiv-daily-push",
+  "event_id": "EVENT-20260628-ADP-S2PMT07-REMAINING-FINAL-BUNDLE-ARTIFACT-CLI-VALIDATORS",
+  "task_id": "S2PMT07-REMAINING-FINAL-BUNDLE-ARTIFACT-CLI-VALIDATORS",
+  "task_ids": [
+    "S2PMT07-REMAINING-FINAL-BUNDLE-ARTIFACT-CLI-VALIDATORS",
+    "S2PMT07",
+    "ACC-S2PMT07-FINAL-REVIEW"
+  ],
+  "generated_at": "2026-06-28T23:58:57+10:00",
+  "fact_level": "EXTRACTED",
+  "summary": "Expose remaining S2PMT07 final-bundle artifact validators through CLI while the real manifest, S2PLT04 completion report, next-agent handoff, reviewer assignment, zero proof, final command execution, independent signoff, and production acceptance remain blocked or false.",
+  "result": "blocked_remaining_final_bundle_artifact_cli_validators_ready_artifacts_missing_no_production",
+  "cli_commands": [
+    "adp validate-final-bundle-manifest --path FINAL_ACCEPTANCE_BUNDLE/manifest.json --json",
+    "adp validate-s2plt04-completion-report --path FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json --json",
+    "adp validate-no-production-attestation --path FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json --json",
+    "adp validate-next-agent-handoff --path HANDOFF/00_下一Agent先读.md --json"
+  ],
+  "cli_results": {
+    "final_bundle_manifest": {
+      "status": "blocked",
+      "exit_code": 2,
+      "present_key": "manifest_present",
+      "present": false,
+      "validation_errors": [
+        "final_acceptance_bundle_manifest_missing"
+      ],
+      "state_hash": "3b3ecc8417d458a56e2a5dce5764f04eabfa44e7df3113fbbb88808d1115907b"
+    },
+    "s2plt04_completion_report": {
+      "status": "blocked",
+      "exit_code": 2,
+      "present_key": "report_present",
+      "present": false,
+      "validation_errors": [
+        "s2plt04_completion_report_missing"
+      ],
+      "state_hash": "0a672c066cc354d3c78b11b20caffffc75fa6eebb2732a6600b85996fff2fcc6"
+    },
+    "no_production_attestation": {
+      "status": "pass",
+      "exit_code": 0,
+      "present_key": "attestation_present",
+      "present": true,
+      "validation_errors": [],
+      "state_hash": "5fdf8ef1a69c7692004f7c0f6308bb1fc4a0d643be76ba0822d7918f818ff26c"
+    },
+    "next_agent_handoff": {
+      "status": "blocked",
+      "exit_code": 2,
+      "present_key": "handoff_present",
+      "present": false,
+      "validation_errors": [
+        "next_agent_handoff_missing"
+      ],
+      "state_hash": "7619e3d7b921fe6cabcf1a77ff7ff66c519c2da57bb9cd97daa9533c43b18ac9"
+    }
+  },
+  "open_p0_findings": 8,
+  "open_p1_findings": 37,
+  "production_acceptance_claimed": false,
+  "integrated_production_accepted": false,
+  "stage2_integrated_production_accepted": false,
+  "daily_operation_enabled": false,
+  "real_smtp_sent": false,
+  "real_smtp_send_enabled": false,
+  "scheduler_enabled": false,
+  "scheduler_install_enabled": false,
+  "release_uploaded": false,
+  "release_packaging_enabled": false,
+  "production_restore_enabled": false,
+  "production_restore_executed": false,
+  "public_schema_changed": false,
+  "db_migration_executed": false,
+  "production_queue_mutated": false,
+  "source_adapter_changed": false,
+  "source_or_board_changed": false,
+  "ranking_algorithm_changed": false,
+  "current_pointer_changed": false,
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false,
+  "test_results": [
+    "TDD red failed as expected because validate-final-bundle-manifest was not a recognized CLI command",
+    "focused CLI tests: 16 OK"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_remaining_cli_red PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_cli.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_remaining_cli_green PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_cli.py -q"
+  ],
+  "branch_cleanup": {
+    "branch_or_pr_created_by_this_run": false,
+    "branches_deleted_by_this_run": [],
+    "branches_retained_by_this_run": [],
+    "closeout_recheck_required": true
+  },
+  "version_before": "0.23.1",
+  "version_after": "0.23.1",
+  "next_task": "SUPPLY_REAL_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT",
+  "files_changed": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DELIVERY_PLAN.md",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/governance/events.jsonl",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_REMAINING_FINAL_BUNDLE_ARTIFACT_CLI_VALIDATORS.md",
+    "arxiv-daily-push/src/arxiv_daily_push/cli.py",
+    "arxiv-daily-push/tests/test_cli.py",
+    "arxiv-daily-push/tests/test_governance_current_state.py",
+    "arxiv-daily-push/tests/test_user_center_candidate_pool.py",
+    "arxiv-daily-push/功能清单.md",
+    "arxiv-daily-push/开发记录.md",
+    "arxiv-daily-push/模型参数文件.md",
+    "arxiv-daily-push/用户中心/功能任务测试证据追踪链.md",
+    "governance/run_manifests/ADP-S2PMT07-REMAINING-FINAL-BUNDLE-ARTIFACT-CLI-VALIDATORS-20260628.json"
+  ]
+}
