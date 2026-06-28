@@ -30,22 +30,21 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn(f"- Current task: `{expected_task}`", current_state)
         self.assertIn(f"### `{current_iteration}`", ledger)
 
-    def test_s2pmt07_current_state_summary_describes_closure_decision_owner_packet_cli(self) -> None:
+    def test_s2pmt07_current_state_summary_describes_zero_proof_cli_validator(self) -> None:
         ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
-            "S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_OWNER_PACKET_CLI_READY_NO_CLOSURE_NO_PRODUCTION",
+            "S2PMT07_P0_P1_ZERO_PROOF_CLI_VALIDATOR_READY_ARTIFACT_MISSING_NO_PRODUCTION",
             current_state,
         )
-        self.assertIn("S2PMT07-INDEPENDENT-FINAL-CLOSURE-DECISION-OWNER-PACKET-CLI", current_state)
-        self.assertIn("build-final-closure-decision-owner-packet", current_state)
-        self.assertIn("owner_packet_validation_errors=[]", current_state)
-        self.assertIn("assignment_artifact_present=false", current_state)
-        self.assertIn("independent_final_reviewer_assigned=false", current_state)
-        self.assertIn("independent_final_closure_decision_present=false", current_state)
-        self.assertIn("zero_proof_artifact_present=false", current_state)
-        self.assertIn("closure_claimed=false", current_state)
+        self.assertIn("S2PMT07-P0-P1-ZERO-PROOF-CLI-VALIDATOR", current_state)
+        self.assertIn("validate-p0-p1-zero-proof", current_state)
+        self.assertIn("status=blocked", current_state)
+        self.assertIn("artifact_present=false", current_state)
+        self.assertIn("p0_p1_zero_proof_artifact_missing", current_state)
+        self.assertIn("p0_zero_proven_by_payload=false", current_state)
+        self.assertIn("p1_zero_proven_by_payload=false", current_state)
         self.assertIn("P0=8", current_state)
         self.assertIn("P1=37", current_state)
         self.assertIn("does not close P0/P1", current_state)

@@ -4419,3 +4419,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+  - task_id: "S2PMT07-P0-P1-ZERO-PROOF-CLI-VALIDATOR"
+    title: "S2PMT07 P0/P1 zero-proof CLI validator"
+    phase: "S2PM"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-28T23:23:48+10:00"
+    summary: "Expose the existing P0/P1 zero-proof artifact validator through CLI without creating or accepting any final-bundle artifact."
+    owner: "content_owner + engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_P1_ZERO_PROOF_CLI_VALIDATOR.md", "governance/run_manifests/ADP-S2PMT07-P0-P1-ZERO-PROOF-CLI-VALIDATOR-20260628.json"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_zero_proof_cli_red PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_cli.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_zero_proof_cli_green PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_cli.py -q"]
+    test_results: ["TDD red failed as expected because validate-p0-p1-zero-proof was not a recognized CLI command", "focused CLI tests: 13 OK"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-P0-P1-ZERO-PROOF-CLI-VALIDATOR-20260628.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_P1_ZERO_PROOF_CLI_VALIDATOR.md", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_cli.py"]
+    result: "P0/P1 zero-proof artifact validation is available through CLI; the real artifact is still missing and final bundle remains blocked."
+    risk: "A validator CLI can be misread as a real zero-proof artifact unless artifact_present and zero-proven flags remain false while the artifact is missing."
+    rollback: "Revert CLI parser/dispatcher changes, focused regression tests, phase record, manifest, traceability row, delivery task, event records, generated views, and three base records; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

@@ -114,10 +114,12 @@ from .stage2_replay_gate import (
 )
 from .stage2_final_gate import (
     S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_PATH,
+    S2PMT07_P0_P1_ZERO_PROOF_ARTIFACT_PATH,
     build_final_acceptance_bundle_readiness_state,
     build_independent_final_closure_decision_owner_packet_state,
     build_independent_final_reviewer_assignment_owner_packet_state,
     build_independent_final_reviewer_assignment_validation_state,
+    build_p0_p1_zero_proof_artifact_validation_state,
     validate_final_acceptance_bundle_readiness_state,
     validate_independent_final_closure_decision_owner_packet_state,
     validate_independent_final_reviewer_assignment_owner_packet_state,
@@ -1173,6 +1175,17 @@ def build_parser() -> argparse.ArgumentParser:
         help="Path to FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json.",
     )
     final_reviewer_assignment.add_argument("--json", action="store_true", help="Print JSON validation state.")
+
+    p0_p1_zero_proof = subparsers.add_parser(
+        "validate-p0-p1-zero-proof",
+        help="Validate the S2PMT07 P0/P1 zero-proof artifact without production side effects.",
+    )
+    p0_p1_zero_proof.add_argument(
+        "--path",
+        default=S2PMT07_P0_P1_ZERO_PROOF_ARTIFACT_PATH,
+        help="Path to FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json.",
+    )
+    p0_p1_zero_proof.add_argument("--json", action="store_true", help="Print JSON validation state.")
 
     final_reviewer_assignment_owner_packet = subparsers.add_parser(
         "build-final-reviewer-assignment-owner-packet",
@@ -3373,6 +3386,18 @@ def main(argv: list[str] | None = None) -> int:
         artifact_path = Path(args.path)
         payload = load_json_mapping(artifact_path) if artifact_path.exists() else None
         report = build_independent_final_reviewer_assignment_validation_state(payload)
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- artifact_path: {report.get('artifact_path')}")
+            for error in report.get("validation_errors", []):
+                print(f"- error: {error}")
+        return 0 if report["status"] == "pass" else 2
+    if args.command == "validate-p0-p1-zero-proof":
+        artifact_path = Path(args.path)
+        payload = load_json_mapping(artifact_path) if artifact_path.exists() else None
+        report = build_p0_p1_zero_proof_artifact_validation_state(payload)
         if args.json:
             print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
         else:

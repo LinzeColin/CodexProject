@@ -10,11 +10,29 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.1
 - Current phase: S2PM
-- Current gate: S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_OWNER_PACKET_CLI_READY_NO_CLOSURE_NO_PRODUCTION
-- Confirmed iteration count: 217
+- Current gate: S2PMT07_P0_P1_ZERO_PROOF_CLI_VALIDATOR_READY_ARTIFACT_MISSING_NO_PRODUCTION
+- Confirmed iteration count: 218
 - Reconstructed event count: 0
-- Current task: `S2PMT07-INDEPENDENT-FINAL-CLOSURE-DECISION-OWNER-PACKET-CLI` exposes `adp build-final-closure-decision-owner-packet --json` for the owner/reviewer closure-decision action packet. The command returns exit 0 only when the packet structure validates and includes `owner_packet_validation_errors=[]`; it does not create the real reviewer assignment artifact, does not record an independent closure decision, does not create `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json`, does not close P0/P1, and does not complete S2PLT04 or the final bundle. Current facts remain `assignment_artifact_present=false`, `independent_final_reviewer_assigned=false`, `independent_final_closure_decision_present=false`, `zero_proof_artifact_present=false`, `closure_claimed=false`, P0=8, P1=37, and production acceptance / DAILY_OPERATION / scheduler / SMTP / Release / restore all false.
+- Current task: `S2PMT07-P0-P1-ZERO-PROOF-CLI-VALIDATOR` exposes `adp validate-p0-p1-zero-proof --path FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json --json` for fail-closed artifact validation. Missing artifact returns `status=blocked`, exit 2, `artifact_present=false`, `validation_errors=["p0_p1_zero_proof_artifact_missing"]`, and `state_hash=d50b2a0e3449204f62ed3103ad3c6aff283d2dac1a0a606ddefa78c142d96e4d`. This does not create `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json`, does not assign an independent final reviewer, does not record an independent closure decision, does not close P0/P1, and does not complete S2PLT04 or the final bundle. Current facts remain `artifact_present=false`, `p0_zero_proven_by_payload=false`, `p1_zero_proven_by_payload=false`, P0=8, P1=37, and production acceptance / DAILY_OPERATION / scheduler / SMTP / Release / restore all false.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. Local daily M1-M4 orchestration is now recorded as readiness evidence, but V7.2 contract baseline migration blockers are zero while real restore, real SMTP production, scheduler installation, final acceptance bundle creation, independent final reviewer assignment artifact supply/validation, directory-level final bundle artifact validation pass, P0/P1 closure, S2PLT04 completion, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
+
+### `ITER-20260628-ADP-S2PMT07-P0-P1-ZERO-PROOF-CLI-VALIDATOR`
+
+- Timestamp: `2026-06-28T23:23:48+10:00`
+- Fact level: EXTRACTED from CLI parser/dispatcher, existing P0/P1 zero-proof artifact validator, focused CLI TDD regression tests, phase record, run manifest, traceability row, delivery task, event record, and three base files.
+- Base commit: `5c6ce773211164c888ce2f12a6ea6446ca57ca29`
+- Product version: `0.23.1`
+- Status: P0/P1 zero-proof artifact validation is now executable from CLI; the real zero-proof artifact, independent final reviewer assignment, closure decision, S2PLT04 completion, and final bundle remain blocked.
+- Task IDs: `S2PMT07-P0-P1-ZERO-PROOF-CLI-VALIDATOR`; parent `S2PMT07`; acceptance `ACC-S2PMT07-FINAL-REVIEW`.
+- Goal: Give owner/coordinator/future independent final reviewer one deterministic command to validate `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json` without entering Python internals or fabricating evidence.
+- Files changed: ADP CLI, focused CLI regression tests, phase record, run manifest, traceability/delivery/event records, governance current state, user-center traceability page, and three base files.
+- Decisions: `adp validate-p0-p1-zero-proof --path FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json --json` returns exit code 2 when the artifact is missing, and exit code 0 only when a future payload passes schema, candidate refs, zero-counts, final-bundle refs, no-production flags, and `decision_hash` validation.
+- Validation: TDD red failed because `validate-p0-p1-zero-proof` was not a recognized CLI command; focused CLI tests 13 OK after parser/dispatcher implementation.
+- Boundaries: No zero-proof artifact is created, no independent reviewer assignment artifact is created, no independent final closure decision, no P0/P1 closure, no S2PLT04 completion, no final bundle acceptance, no final command execution, no next-agent handoff, no SMTP send, no scheduler install/enablement, no Release, no restore, no CURRENT/V7 change, no source/ranking change, no DAILY_OPERATION, and no integrated production acceptance.
+- Branch hygiene: no branch or PR is created by this run; closeout must recheck open PR count and ADP/arxiv/s2p remote branch count.
+- Risks: The validator CLI can be misread as real P0/P1 zero proof. The current command keeps `artifact_present=false`, `p0_zero_proven_by_payload=false`, `p1_zero_proven_by_payload=false`, P0/P1 as 8/37, and all production flags false until real independent-review artifacts exist.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-P0-P1-ZERO-PROOF-CLI-VALIDATOR-20260628.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_P0_P1_ZERO_PROOF_CLI_VALIDATOR.md`; `arxiv-daily-push/src/arxiv_daily_push/cli.py`; `arxiv-daily-push/tests/test_cli.py`.
+- Next step: Owner/coordinator must still supply `FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json` and then a real independent closure decision / zero-proof artifact before P0/P1 can be treated as zero; do not claim P0/P1 zero proof, S2PLT04 completion, S2PMT07, DAILY_OPERATION, or production acceptance from CLI validator readiness alone.
 
 ### `ITER-20260628-ADP-S2PMT07-INDEPENDENT-FINAL-CLOSURE-DECISION-OWNER-PACKET-CLI`
 

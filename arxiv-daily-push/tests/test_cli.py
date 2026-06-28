@@ -7,12 +7,18 @@ from pathlib import Path
 
 from arxiv_daily_push.cli import main
 from arxiv_daily_push.stage2_final_gate import (
+    S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS,
     S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_DECISION,
     S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_NO_PRODUCTION_FLAGS,
     S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_SCHEMA_VERSION,
+    S2PMT07_P0_P1_ZERO_PROOF_CLOSURE_DECISION,
+    S2PMT07_P0_P1_ZERO_PROOF_NO_PRODUCTION_FLAGS,
+    S2PMT07_P0_P1_ZERO_PROOF_SCHEMA_VERSION,
     S2PMT07_REQUIRED_REVIEWER_INDEPENDENCE,
     build_independent_final_reviewer_assignment_hash,
     build_independent_final_reviewer_assignment_request_state,
+    build_p0_p1_zero_proof_decision_hash,
+    build_p0_p1_zero_proof_readiness_state,
 )
 from arxiv_daily_push.state_machine import initial_run_record
 
@@ -131,6 +137,65 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["status"], "blocked")
         self.assertFalse(payload["assignment_present"])
         self.assertIn("independent_final_reviewer_assignment_missing", payload["validation_errors"])
+        self.assertFalse(payload["integrated_production_accepted"])
+        self.assertFalse(payload["daily_operation_enabled"])
+
+    def test_validate_p0_p1_zero_proof_blocks_when_artifact_missing(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "p0_p1_zero_proof.json"
+            buffer = io.StringIO()
+            with redirect_stdout(buffer):
+                result = main(["validate-p0-p1-zero-proof", "--path", str(path), "--json"])
+        self.assertEqual(result, 2)
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(payload["status"], "blocked")
+        self.assertFalse(payload["artifact_present"])
+        self.assertIn("p0_p1_zero_proof_artifact_missing", payload["validation_errors"])
+        self.assertFalse(payload["p0_zero_proven_by_payload"])
+        self.assertFalse(payload["p1_zero_proven_by_payload"])
+        self.assertFalse(payload["production_acceptance_claimed"])
+        self.assertFalse(payload["integrated_production_accepted"])
+        self.assertFalse(payload["daily_operation_enabled"])
+
+    def test_validate_p0_p1_zero_proof_passes_valid_artifact_without_production_claim(self):
+        zero_proof = {
+            "schema_version": S2PMT07_P0_P1_ZERO_PROOF_SCHEMA_VERSION,
+            "contract_id": "ADP-PRODUCT-CONTRACT-V7.2",
+            "generated_at": "2026-06-28T22:35:00+10:00",
+            "reviewer_independence": {
+                "status": "verified",
+                "required_independence": S2PMT07_REQUIRED_REVIEWER_INDEPENDENCE,
+            },
+            "source_candidate_refs": build_p0_p1_zero_proof_readiness_state()["candidate_evidence_refs"],
+            "finding_counts": {"P0": 0, "P1": 0},
+            "zero_severity_counts": {"P0": 0, "P1": 0},
+            "independent_closure_decision": {
+                "decision": S2PMT07_P0_P1_ZERO_PROOF_CLOSURE_DECISION,
+                "p0_zero_proven": True,
+                "p1_zero_proven": True,
+                "production_acceptance_claimed": False,
+            },
+            "final_bundle_refs": list(S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS),
+            "no_production_side_effects": {
+                flag: False for flag in S2PMT07_P0_P1_ZERO_PROOF_NO_PRODUCTION_FLAGS
+            },
+            "decision_hash": "",
+        }
+        zero_proof["decision_hash"] = build_p0_p1_zero_proof_decision_hash(zero_proof)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "p0_p1_zero_proof.json"
+            path.write_text(json.dumps(zero_proof), encoding="utf-8")
+            buffer = io.StringIO()
+            with redirect_stdout(buffer):
+                result = main(["validate-p0-p1-zero-proof", "--path", str(path), "--json"])
+        self.assertEqual(result, 0)
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(payload["status"], "pass")
+        self.assertTrue(payload["artifact_present"])
+        self.assertTrue(payload["p0_zero_proven_by_payload"])
+        self.assertTrue(payload["p1_zero_proven_by_payload"])
+        self.assertFalse(payload["production_acceptance_claimed"])
         self.assertFalse(payload["integrated_production_accepted"])
         self.assertFalse(payload["daily_operation_enabled"])
 
