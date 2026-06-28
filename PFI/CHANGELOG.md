@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v0.2.2 数据库治理 Stage 0 补做复核 - 2026-06-28
+
+- 新增 `docs/pfi_v022/STAGE0_REDO_ACCEPTANCE_20260628.md`，把 Stage 0 的 `S0-P1-T1..S0-P2-T2`、Milestone 0 acceptance criteria、stop condition、Agent 1/3 自检和验证命令整理为独立中文验收入口。
+- 更新 `docs/pfi_v022/ROADMAP_LOCK.md`、`docs/pfi_v022/README.md`、`STAGE0_BASELINE_REPORT.md`、三基文件和 `HANDOFF.md`，明确 Stage 0 已补做复核且后续仍从 Stage 3 开始。
+- 本轮不回滚 Stage 1/2，不修改 `PFI/web/index.html`、`PFI/web/app/shell.js`、`PFI/web/styles/tokens.css`，不新增逻辑审查 HTML，也不做真实交易、自动投资或默认联网抓汇率。
+
 ## v0.2.2 数据库治理 Stage 2 - 2026-06-28
 
 - 完成 Stage 2 `CNY 基准与汇率规则`，覆盖 `S2-P1-T1..S2-P2-T3`。

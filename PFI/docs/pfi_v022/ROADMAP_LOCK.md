@@ -16,7 +16,7 @@ Roadmap 形态：`Stage -> Phase -> Task`
 
 | Stage | 名称 | 本轮状态 | 说明 |
 | --- | --- | --- | --- |
-| Stage 0 | 任务锁定与文件定位 | 本轮补做 | 完成 `S0-P1-T1..S0-P2-T2`。 |
+| Stage 0 | 任务锁定与文件定位 | 已补做复核 | 完成 `S0-P1-T1..S0-P2-T2`；独立复核文件为 `docs/pfi_v022/STAGE0_REDO_ACCEPTANCE_20260628.md`。 |
 | Stage 1 | 模型参数文件重构 | 本轮完成 | 中文参数总目录、机器可读 YAML、一致性测试。 |
 | Stage 2 | CNY 基准与汇率规则 | 本轮完成 | CNY 主显示、原币辅助、06:00 有效汇率日、本地快照读取。 |
 | Stage 3 | 数据源、账户角色与可扩展结构 | 待 owner 开启 | Source Profile、capabilities、账户角色重叠和生效期。 |
@@ -60,6 +60,8 @@ Roadmap 形态：`Stage -> Phase -> Task`
 - Stage 0 改动触碰 v0.2.1 正式前端显示。
 
 当前检查结论：以上停止条件均未触发。
+
+独立补做验收：`docs/pfi_v022/STAGE0_REDO_ACCEPTANCE_20260628.md`，用于 GitHub 单独检查 Stage 0。
 
 ## Stage 0 Validation
 

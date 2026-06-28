@@ -82,6 +82,20 @@ class TestV022Stage0DatabaseGovernance(unittest.TestCase):
         self.assertIn("Agent 1", report)
         self.assertIn("Agent 3", report)
 
+    def test_stage0_redo_acceptance_report_is_independent_and_chinese(self) -> None:
+        report = (ROOT / "docs" / "pfi_v022" / "STAGE0_REDO_ACCEPTANCE_20260628.md").read_text(encoding="utf-8")
+
+        self.assertIn("PFI v0.2.2 Stage 0 补做验收记录", report)
+        self.assertIn("PFI-V022-S0-REDO-ACCEPTANCE-GATE", report)
+        self.assertIn("S0-P1-T1", report)
+        self.assertIn("S0-P2-T2", report)
+        self.assertIn("Milestone 0 验收复核", report)
+        self.assertIn("Stop Condition 复核", report)
+        self.assertIn("不修改 `PFI/web/index.html`", report)
+        self.assertIn("不修改 `PFI/web/app/shell.js`", report)
+        self.assertIn("Codex 自检 Agent 1 和 Agent 3 审核通过", report)
+        self.assertIn("94950e0cc4a46cfd19dfa2ed5ff2ebcab10909775e20d8bae1a4a2fe6f8b879c", report)
+
     def test_stage0_does_not_create_future_ui_review_page(self) -> None:
         self.assertFalse((ROOT / "web" / "pfi_v022_logic_review.html").exists())
 

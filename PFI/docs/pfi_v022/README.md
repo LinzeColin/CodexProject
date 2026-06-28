@@ -48,6 +48,7 @@
 | 文件 | 用途 |
 | --- | --- |
 | `STAGE0_BASELINE_REPORT.md` | Stage 0 中文 baseline report。 |
+| `STAGE0_REDO_ACCEPTANCE_20260628.md` | Stage 0 独立补做验收记录，方便 GitHub 单独检查。 |
 | `STAGE1_PARAMETER_GOVERNANCE.md` | Stage 1 参数治理验收报告。 |
 | `STAGE2_CNY_FX_GOVERNANCE.md` | Stage 2 CNY 与汇率治理验收报告。 |
 | `SOURCE_TASK_PACK_MANIFEST.md` | Downloads 来源文件、SHA-256 和使用边界。 |

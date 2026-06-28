@@ -211,3 +211,9 @@ Stage 0 不改变 Stage 6 代码或前端显示。当前 Stage 6 产物仍作为
 | 已明确 HTML 模板不是本轮 UI 修改要求 | 通过 |
 
 Stage 0 可以进入用户检查和后续 Stage 1 准备。
+
+## Stage 0 补做复核
+
+2026-06-28 已追加独立补做验收入口：`docs/pfi_v022/STAGE0_REDO_ACCEPTANCE_20260628.md`。
+
+该文件单独复核 `S0-P1-T1`、`S0-P1-T2`、`S0-P1-T3`、`S0-P2-T1`、`S0-P2-T2`，并把 Milestone 0 的 acceptance criteria、stop condition、Agent 1 / Agent 3 自检和验证命令整理为中文可验收清单。后续 Stage 3 不应重复 Stage 0，只应从数据源、账户角色与可扩展结构继续。
