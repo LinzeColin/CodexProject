@@ -218,8 +218,8 @@ class TestV022Stage6TagsViews(unittest.TestCase):
 
         governance = importlib.import_module("pfi_v02.stage_v022_database_governance")
         catalog = governance.load_v022_parameter_catalog(ROOT / "config" / "pfi_parameters.yaml")
-        self.assertEqual(catalog["schema"], "PFIParametersV022Stage12")
-        self.assertEqual(catalog["current_stage"], "Stage 12 - 文档同步与交付")
+        self.assertEqual(catalog["schema"], "PFIParametersV022Stage13")
+        self.assertEqual(catalog["current_stage"], "Stage 13 - 后置触发型复核")
         self.assertEqual(catalog["stage6_task_ids"], list(governance.V022_STAGE6_TASK_IDS))
         tags = catalog["parameters"]["tags"]
         self.assertIn("default_tag_library", tags)

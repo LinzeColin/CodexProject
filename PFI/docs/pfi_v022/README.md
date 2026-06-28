@@ -129,6 +129,9 @@
 | `STAGE11_TEST_VALIDATION.md` | Stage 11 金融逻辑、跨板块一致性和可视化一致性测试验收报告。 |
 | `STAGE12_DELIVERY_REPORT.md` | Stage 12 文档同步与交付验收报告，采用 Stage -> Phase -> Task。 |
 | `SIX_AGENT_DELIVERY_REVIEW.md` | Stage 12 2 轮 × 6 Agent 自检报告。 |
+| `STAGE13_POST_REVIEW.md` | Stage 13 后置触发型复核报告。 |
+| `DOWNLOADS_CLEANUP_STAGE13.md` | Stage 13 Downloads 污染文件夹清理记录。 |
+| `../review_queue/codex_review_stage13_owner_specified_20260628.md` | Stage 13 本地 Codex Review Ticket。 |
 | `../../web/pfi_v022_logic_review.html` | Stage 12 本地 UI/UX 审查 HTML，覆盖参数、分类、标签、图表、diff、Interconnection。 |
 | `../../reports/pfi_v022_summary.md` | Stage 12 最终中文摘要，包含用户人工复核点。 |
 | `../../review_queue/CODEX_REVIEW_TICKET_TEMPLATE.md` | Stage 8 本地 Codex Review Ticket 中文模板。 |
@@ -193,3 +196,14 @@ Stage 12 - 文档同步与交付已完成 `S12-P1-T1..S12-P2-T3`：
 - `S12-P2-T3`：新增 `PFI/reports/pfi_v022_summary.md`，说明做了什么、怎么验收、哪些未做、哪些需要用户人工复核。
 - 2 轮 × 6 Agent 自检报告已生成，阻塞项为 0。
 - Stage 13 后置触发型复核不在本轮执行；Downloads 污染文件夹清理或迁移只在 Stage 13 后执行。
+
+## Stage 13 范围
+
+Stage 13 - 后置触发型复核已完成 `S13-P1-T1..S13-P1-T3`：
+
+- `S13-P1-T1`：在 `交付前人工指定` 触发下生成本地 Codex Review Ticket。
+- `S13-P1-T2`：仅对异常区域进行复核，scope files 由 ticket 指定，禁止全仓无差别扫描。
+- `S13-P1-T3`：复核结果写入开发记录，包含问题、修复、验证、剩余风险。
+- Downloads 污染文件夹清理：`PFI_V022_STAGE0_PRE_CANONICAL_SYNC_20260628T090028` 等 6 个 PFI 预同步临时目录已归档并移出 Downloads。
+- `PFI.app` 和用户提供的 taskpack、roadmap、zip、md 源文件保留。
+- Stage 13 不联网、不调用外部 LLM，不复核 EEI、ADP、Alpha、Serenity 或其它项目。

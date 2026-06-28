@@ -73,6 +73,13 @@ from pfi_v02.stage_v022_delivery import (
     STAGE12_REVIEW_DIMENSIONS,
     build_stage12_delivery_payload,
 )
+from pfi_v02.stage_v022_post_review import (
+    STAGE13_DOWNLOADS_CLEANUP_CANDIDATES,
+    STAGE13_OWNER_TRIGGER,
+    STAGE13_REVIEW_SCOPE_FILES,
+    STAGE13_TRIGGER_CONDITIONS,
+    build_stage13_post_review_payload,
+)
 
 
 V022_STAGE1_TASK_IDS = (
@@ -227,6 +234,12 @@ V022_STAGE12_TASK_IDS = (
     "S12-P2-T1",
     "S12-P2-T2",
     "S12-P2-T3",
+)
+
+V022_STAGE13_TASK_IDS = (
+    "S13-P1-T1",
+    "S13-P1-T2",
+    "S13-P1-T3",
 )
 
 V022_STAGE0_TASK_IDS = (
@@ -1528,4 +1541,78 @@ def build_v022_stage12_contract() -> dict[str, object]:
         "final_artifacts": STAGE12_FINAL_ARTIFACTS,
         "required_tri_base_terms": STAGE12_REQUIRED_TRI_BASE_TERMS,
         "review_dimensions": STAGE12_REVIEW_DIMENSIONS,
+    }
+
+
+def build_v022_stage13_contract() -> dict[str, object]:
+    stage13_payload = build_stage13_post_review_payload(load_v022_parameter_catalog())
+    return {
+        "schema": "PFIV022PostReviewStage13ContractV1",
+        "version": "v0.2.2",
+        "stage": "Stage 13",
+        "stage_name_zh": "后置触发型复核",
+        "goal": "在交付前人工指定触发下生成本地 Codex Review Ticket，仅复核 ticket 指定的异常区域和交付收口区域，并把问题、修复、验证、剩余风险写入开发记录。",
+        "task_ids": V022_STAGE13_TASK_IDS,
+        "phases": {
+            "Phase 13.1": ("触发型 Codex / LLM 复核", "S13-P1-T1", "S13-P1-T2", "S13-P1-T3"),
+        },
+        "trigger_condition": STAGE13_OWNER_TRIGGER,
+        "allowed_trigger_conditions": STAGE13_TRIGGER_CONDITIONS,
+        "ticket": stage13_payload["ticket"],
+        "review_scope_files": STAGE13_REVIEW_SCOPE_FILES,
+        "review_result": stage13_payload["review_result"],
+        "downloads_cleanup": stage13_payload["downloads_cleanup"],
+        "downloads_cleanup_candidates": STAGE13_DOWNLOADS_CLEANUP_CANDIDATES,
+        "full_repo_scan_allowed": False,
+        "network_allowed": False,
+        "external_llm_allowed": False,
+        "deliverables": (
+            "PFI/src/pfi_v02/stage_v022_post_review.py",
+            "PFI/src/pfi_v02/stage_v022_database_governance.py",
+            "PFI/tests/test_v022_stage13_post_review.py",
+            "PFI/review_queue/codex_review_stage13_owner_specified_20260628.md",
+            "PFI/docs/pfi_v022/STAGE13_POST_REVIEW.md",
+            "PFI/docs/pfi_v022/DOWNLOADS_CLEANUP_STAGE13.md",
+            "PFI/docs/pfi_v022/downloads_cleanup/PFI_V022_PRE_CANONICAL_SYNC_ARCHIVE_20260628.tar.gz",
+            "PFI/config/pfi_parameters.yaml",
+            "PFI/config/pfi_v022_parameters.yaml",
+            "PFI/模型参数文件.md",
+            "PFI/功能清单.md",
+            "PFI/开发记录.md",
+            "PFI/HANDOFF.md",
+            "PFI/README.md",
+        ),
+        "acceptance_criteria": (
+            "交付前人工指定触发 Stage 13，允许生成本地 Codex Review Ticket。",
+            "无触发条件时不得生成 Codex Review Ticket。",
+            "Codex Review Ticket 只包含指定 scope files，不允许全仓无差别扫描。",
+            "复核结果写入开发记录，包含问题、修复、验证、剩余风险。",
+            "阻塞项数量为 0 才能进入 goal closeout。",
+            "Downloads 中明确的 PFI 预同步临时目录被归档并移出 Downloads。",
+            "用户 taskpack/roadmap zip/md 和 PFI.app 保留在 Downloads。",
+        ),
+        "stop_conditions": (
+            "无触发条件时不得生成 Codex Review Ticket。",
+            "禁止全仓无差别扫描。",
+            "复核结果未写入开发记录时停止。",
+            "存在阻塞项仍继续交付时停止。",
+            "清理 Downloads 时删除 PFI.app 或用户提供的 taskpack/roadmap 源文件时停止。",
+            "未归档就删除 PFI 预同步临时目录时停止。",
+        ),
+        "validation_commands": (
+            "PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests/test_v022_stage13_post_review.py -q",
+            "PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests/test_v022_stage0_database_governance.py PFI/tests/test_pfi_parameters_consistency.py PFI/tests/test_v022_fx_effective_date.py PFI/tests/test_v022_stage3_source_account_profiles.py PFI/tests/test_v022_interconnection_no_double_count.py PFI/tests/test_v022_consumption_investment_outflow.py PFI/tests/test_v022_stage5_ledger_taxonomy.py PFI/tests/test_v022_stage6_tags_views.py PFI/tests/test_v022_stage7_formula_scoring.py PFI/tests/test_v022_stage8_runtime_diff.py PFI/tests/test_v022_stage9_visualization_uiux.py PFI/tests/test_v022_stage10_report_advice_review.py PFI/tests/test_v022_stage11_test_validation.py PFI/tests/test_v022_stage12_delivery.py PFI/tests/test_v022_stage13_post_review.py -q",
+            "PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests -q",
+            "node --check PFI/web/app/shell.js",
+            "python3 scripts/validate_project_governance.py --project PFI",
+            "git diff --check -- PFI",
+            "find ~/Downloads -maxdepth 1 -name 'PFI_V022_STAGE*_PRE_CANONICAL_SYNC_*' -print",
+        ),
+        "non_goals": (
+            "不联网、不调用外部 LLM。",
+            "不做真实交易、支付、券商提交或实盘自动下单。",
+            "不修改 v0.2.1 主 Web Shell UIUX 基线。",
+            "不删除用户提供的 Downloads taskpack、roadmap、zip、md 或 PFI.app。",
+            "不复核 EEI、ADP、Alpha、Serenity 或其它项目。",
+        ),
     }

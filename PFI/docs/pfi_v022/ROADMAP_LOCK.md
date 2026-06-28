@@ -29,7 +29,7 @@ Roadmap 形态：`Stage -> Phase -> Task`
 | Stage 10 | 报告、建议与复盘 | 本轮完成 | 双消费口径报告、投资成本行为、Interconnection 数据质量报告、行动建议评分和生命周期。 |
 | Stage 11 | 测试与验证 | 本轮完成 | 金融逻辑、跨板块一致性、可视化一致性测试。 |
 | Stage 12 | 文档同步与交付 | 本轮完成 | 三基、审查 HTML、Roadmap 与验证报告、最终中文摘要、2 轮 × 6 Agent 自检。 |
-| Stage 13 | 后置触发型复核 | 非默认执行 | 仅在 diff/test/owner 指定触发时执行。 |
+| Stage 13 | 后置触发型复核 | 本轮完成 | 交付前人工指定触发、本地 Codex Review Ticket、受限复核、开发记录回写、Downloads 清理。 |
 
 ## Stage 0 Task Lock
 
@@ -649,6 +649,61 @@ git diff --check -- PFI
 - macOS app 入口轻量验收：`29 pass / 0 fail / 2 info`，8501 健康。
 - Stage 12 本地 HTML 浏览器验收：7 个区块可点击，缺失必填词 `0`，console errors `0`，外部请求 `0`，截图 `/tmp/pfi-v022-stage12-html-verified.png`。
 - 真实 8501 浏览器验收：`PFI`、`首页总览`、`数据源与上传`、`建议与复盘`、`报告与洞察`、`AUD/CNY` 可见；点击 `报告与洞察` 有响应；禁止正式 UI 出现 `Stage 12 - 文档同步与交付`、`pfi_v022_logic_review`、`STAGE12_DELIVERY_REPORT`、`自动买入`、`自动卖出`；console errors `0`；截图 `/tmp/pfi-v022-stage12-app-verified.png`。
+
+## Stage 13 - 后置触发型复核 Task Lock
+
+| Task ID | Phase | 交付物 | 状态 |
+| --- | --- | --- | --- |
+| `S13-P1-T1` | Phase 13.1 | 生成 Codex Review Ticket：`PFI/review_queue/codex_review_stage13_owner_specified_20260628.md` | 本轮完成 |
+| `S13-P1-T2` | Phase 13.1 | 仅对异常区域进行复核，scope files 由 ticket 指定，禁止全仓无差别扫描 | 本轮完成 |
+| `S13-P1-T3` | Phase 13.1 | 复核结果写入开发记录，包含问题、修复、验证、剩余风险 | 本轮完成 |
+
+## Stage 13 Acceptance Criteria
+
+- `交付前人工指定` 触发 Stage 13。
+- 无触发条件时不得生成 Codex Review Ticket。
+- Codex Review Ticket 只复核指定 scope files，不允许全仓无差别扫描。
+- 复核结果写入 `PFI/开发记录.md`，包含问题、修复、验证、剩余风险。
+- 阻塞项数量为 0。
+- Downloads 污染文件夹只清理 PFI 预同步临时目录。
+- 本轮 Downloads 污染文件夹清理覆盖 `PFI_V022_STAGE0_PRE_CANONICAL_SYNC_20260628T090028` 等 6 个 PFI 预同步临时目录。
+- `PFI.app` 和用户提供的 taskpack、roadmap、zip、md 源文件保留。
+
+## Stage 13 Stop Condition
+
+- 无触发条件时不得生成 Codex Review Ticket。
+- 禁止全仓无差别扫描。
+- 复核结果未写入开发记录时停止。
+- 存在阻塞项仍继续交付时停止。
+- 清理 Downloads 时删除 `PFI.app` 或用户提供的 taskpack/roadmap 源文件时停止。
+- 未归档就删除 PFI 预同步临时目录时停止。
+
+当前检查结论：以上停止条件均未触发。Stage 13 由 `交付前人工指定` 触发；本轮只复核指定 PFI scope files，不联网，不调用外部 LLM，不做真实交易、支付、券商提交或实盘自动下单。
+
+## Stage 13 Validation
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pytest tests/test_v022_stage13_post_review.py -q -p no:cacheprovider
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pytest tests/test_v022_stage0_database_governance.py tests/test_pfi_parameters_consistency.py tests/test_v022_fx_effective_date.py tests/test_v022_stage3_source_account_profiles.py tests/test_v022_interconnection_no_double_count.py tests/test_v022_consumption_investment_outflow.py tests/test_v022_stage5_ledger_taxonomy.py tests/test_v022_stage6_tags_views.py tests/test_v022_stage7_formula_scoring.py tests/test_v022_stage8_runtime_diff.py tests/test_v022_stage9_visualization_uiux.py tests/test_v022_stage10_report_advice_review.py tests/test_v022_stage11_test_validation.py tests/test_v022_stage12_delivery.py tests/test_v022_stage13_post_review.py -q -p no:cacheprovider
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pytest tests -q -p no:cacheprovider
+node --check web/app/shell.js
+python3 ../scripts/validate_project_governance.py --project PFI
+git diff --check -- PFI
+find ~/Downloads -maxdepth 1 -name 'PFI_V022_STAGE*_PRE_CANONICAL_SYNC_*' -print
+```
+
+当前运行结果：
+
+- Stage 13 合同测试：`5 passed`。
+- Stage 0-13 v0.2.2 回归：`97 passed`。
+- 完整 PFI pytest：`255 passed`。
+- Web shell 语法检查：`node --check web/app/shell.js` 通过。
+- 项目治理：`errors 0 / warnings 0`。
+- `git diff --check -- PFI` 通过。
+- macOS app 入口轻量验收：`29 pass / 0 fail / 2 info`，8501 健康。
+- 真实 8501 浏览器验收：必填中文入口和 `AUD/CNY` 可见，`报告与洞察` 点击成功，Stage 13 开发交付词未进入正式 UI，console errors `0`，截图 `/tmp/pfi-v022-stage13-app-verified.png`。
+- Downloads 残留扫描：`PFI_V022_STAGE*_PRE_CANONICAL_SYNC_*` 输出为空；`PFI.app` 和用户 taskpack/roadmap 源文件保留。
+- Downloads 归档：`PFI/docs/pfi_v022/downloads_cleanup/PFI_V022_PRE_CANONICAL_SYNC_ARCHIVE_20260628.tar.gz`，SHA-256 `c636b7afbd40923946af77c4987bb5dc1342e924b89e2b3da5bd2128795b6274`。
 
 ## Stage 7 - 模型公式、阈值与评分标准 Task Lock
 

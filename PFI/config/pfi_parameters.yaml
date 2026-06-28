@@ -1,9 +1,9 @@
 {
-  "schema": "PFIParametersV022Stage12",
+  "schema": "PFIParametersV022Stage13",
   "project_id": "PFI",
   "task_name": "PFI v0.2.2 E2E 逻辑优化",
   "parameter_version": "v0.2.2",
-  "current_stage": "Stage 12 - 文档同步与交付",
+  "current_stage": "Stage 13 - 后置触发型复核",
   "canonical_parameter_file": "PFI/config/pfi_parameters.yaml",
   "machine_format": "JSON-compatible YAML",
   "uiux_baseline": "v0.2.1 HTML Web Shell",
@@ -3168,6 +3168,71 @@
         "description_zh": "Downloads 污染文件夹清理或迁移只在 Stage 13 后执行。",
         "impact_zh": "本轮不清理 Downloads，避免误删交付来源文件。"
       }
+    },
+    "post_review": {
+      "description_zh": "Stage 13 - 后置触发型复核的本地 Review Ticket、受限复核范围、开发记录回写和 Downloads 清理迁移参数。",
+      "trigger_condition": {
+        "value": "交付前人工指定",
+        "description_zh": "本轮 Stage 13 由 pursuing goal 明确指定为交付后置复核，不是无触发自动运行。",
+        "impact_zh": "允许生成本地 Codex Review Ticket，但禁止联网和外部 LLM。"
+      },
+      "review_ticket_path": {
+        "value": "PFI/review_queue/codex_review_stage13_owner_specified_20260628.md",
+        "description_zh": "Stage 13 本地 Codex Review Ticket 路径。",
+        "impact_zh": "复核队列、开发记录、最终交付审计。"
+      },
+      "scope_files": {
+        "value": [
+          "PFI/config/pfi_parameters.yaml",
+          "PFI/config/pfi_v022_parameters.yaml",
+          "PFI/src/pfi_v02/stage_v022_runtime_diff.py",
+          "PFI/src/pfi_v02/stage_v022_post_review.py",
+          "PFI/review_queue/codex_review_stage13_owner_specified_20260628.md",
+          "PFI/docs/pfi_v022/STAGE13_POST_REVIEW.md",
+          "PFI/docs/pfi_v022/DOWNLOADS_CLEANUP_STAGE13.md",
+          "PFI/reports/pfi_v022_summary.md",
+          "PFI/开发记录.md"
+        ],
+        "description_zh": "S13-P1-T2 只允许复核的 ticket 指定文件范围。",
+        "impact_zh": "禁止全仓无差别扫描。"
+      },
+      "full_repo_scan_allowed": {
+        "value": false,
+        "description_zh": "Stage 13 禁止全仓无差别扫描。",
+        "impact_zh": "控制上下文成本和误改风险。"
+      },
+      "network_allowed": {
+        "value": false,
+        "description_zh": "Stage 13 本地复核不联网。",
+        "impact_zh": "避免外部依赖和数据泄露。"
+      },
+      "external_llm_allowed": {
+        "value": false,
+        "description_zh": "Stage 13 不调用外部 LLM。",
+        "impact_zh": "本地 ticket 只作为 Codex 本轮复核证据。"
+      },
+      "blocking_issue_count": {
+        "value": 0,
+        "description_zh": "Stage 13 复核完成后的阻塞项数量。",
+        "impact_zh": "阻塞项为 0 才能关闭 v0.2.2 Stage 7-13 goal。"
+      },
+      "downloads_cleanup_archive": {
+        "value": "PFI/docs/pfi_v022/downloads_cleanup/PFI_V022_PRE_CANONICAL_SYNC_ARCHIVE_20260628.tar.gz",
+        "description_zh": "Downloads 预同步临时目录归档路径。",
+        "impact_zh": "GitHub 备份、Downloads 减负、可追溯清理。"
+      },
+      "downloads_cleanup_candidates": {
+        "value": [
+          "PFI_V022_STAGE0_PRE_CANONICAL_SYNC_20260628T090028",
+          "PFI_V022_STAGE0_REDO_PRE_CANONICAL_SYNC_20260628T091046",
+          "PFI_V022_STAGE0_REDO_PRE_CANONICAL_SYNC_20260628T105440",
+          "PFI_V022_STAGE1_PRE_CANONICAL_SYNC_20260628T095205",
+          "PFI_V022_STAGE2_PRE_CANONICAL_SYNC_20260628T102911",
+          "PFI_V022_STAGE3_PRE_CANONICAL_SYNC_20260628T111109"
+        ],
+        "description_zh": "本轮允许从 Downloads 清理/迁移的 PFI 临时目录白名单。",
+        "impact_zh": "不触碰 PFI.app、taskpack、roadmap、zip、md 源文件。"
+      }
     }
   },
   "formulas": [
@@ -3768,5 +3833,10 @@
     "S12-P2-T1",
     "S12-P2-T2",
     "S12-P2-T3"
+  ],
+  "stage13_task_ids": [
+    "S13-P1-T1",
+    "S13-P1-T2",
+    "S13-P1-T3"
   ]
 }
