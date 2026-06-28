@@ -4620,17 +4620,23 @@ def build_final_bundle_prerequisite_plan_state(
     *,
     repo_root: Path | None = None,
     no_production_side_effect_attestation: Mapping[str, Any] | None = None,
+    independent_final_reviewer_assignment: Mapping[str, Any] | None = None,
+    p0_p1_zero_proof: Mapping[str, Any] | None = None,
     load_committed_artifacts: bool = True,
 ) -> dict[str, Any]:
     """Build the current fail-closed execution order for final-bundle prerequisites."""
 
     if load_committed_artifacts and no_production_side_effect_attestation is None:
         no_production_side_effect_attestation = _load_committed_no_production_side_effect_attestation(repo_root)
+    if load_committed_artifacts and independent_final_reviewer_assignment is None:
+        independent_final_reviewer_assignment = _load_committed_independent_final_reviewer_assignment(repo_root)
+    if load_committed_artifacts and p0_p1_zero_proof is None:
+        p0_p1_zero_proof = _load_committed_p0_p1_zero_proof(repo_root)
     validation_states: dict[str, Mapping[str, Any]] = {
         "INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION": (
-            build_independent_final_reviewer_assignment_validation_state(None)
+            build_independent_final_reviewer_assignment_validation_state(independent_final_reviewer_assignment)
         ),
-        "P0_P1_ZERO_PROOF_ARTIFACT": build_p0_p1_zero_proof_artifact_validation_state(None),
+        "P0_P1_ZERO_PROOF_ARTIFACT": build_p0_p1_zero_proof_artifact_validation_state(p0_p1_zero_proof),
         "S2PLT04_COMPLETION_REPORT": build_s2plt04_completion_report_validation_state(None),
         "FINAL_COMMAND_EXECUTION": build_final_command_execution_validation_state(None),
         "NO_PRODUCTION_SIDE_EFFECT_ATTESTATION": (
@@ -5137,6 +5143,14 @@ def _load_committed_independent_final_reviewer_assignment(
     return _load_json_mapping_artifact(artifact_path)
 
 
+def _load_committed_p0_p1_zero_proof(repo_root: Path | None = None) -> Mapping[str, Any] | None:
+    """Load the committed P0/P1 zero-proof artifact when present."""
+
+    root = repo_root or _repo_root_from_source_tree()
+    artifact_path = root / S2PMT07_P0_P1_ZERO_PROOF_ARTIFACT_PATH
+    return _load_json_mapping_artifact(artifact_path)
+
+
 def build_final_acceptance_bundle_readiness_state(
     *,
     repo_root: Path | None = None,
@@ -5179,7 +5193,13 @@ def build_final_acceptance_bundle_readiness_state(
             no_production_side_effect_attestation = _load_committed_no_production_side_effect_attestation(root)
         if next_agent_handoff is None:
             next_agent_handoff = _load_json_mapping_artifact(root / "HANDOFF" / "00_下一Agent先读.md")
-    final_bundle_prerequisite_plan = build_final_bundle_prerequisite_plan_state()
+    final_bundle_prerequisite_plan = build_final_bundle_prerequisite_plan_state(
+        repo_root=root,
+        no_production_side_effect_attestation=no_production_side_effect_attestation,
+        independent_final_reviewer_assignment=independent_final_reviewer_assignment,
+        p0_p1_zero_proof=p0_p1_zero_proof,
+        load_committed_artifacts=load_committed_artifacts,
+    )
     p0_p1_technical_candidate_state = build_p0_p1_technical_closure_candidate_state()
     p0_p1_zero_proof_assembly = build_p0_p1_zero_proof_assembly_state()
     independent_final_reviewer_assignment_request = (

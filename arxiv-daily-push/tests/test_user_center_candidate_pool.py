@@ -734,9 +734,11 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         agents = PROJECT_AGENTS.read_text(encoding="utf-8")
         readme = PROJECT_README.read_text(encoding="utf-8")
 
-        self.assertIn("source or board addition, deletion", root_agents)
+        self.assertIn("source or board", root_agents)
+        self.assertIn("add/delete/rename/enable/disable", root_agents)
         self.assertIn("user-center sync gate", root_agents)
-        self.assertIn("must not change only", root_agents)
+        self.assertIn("config/code-only changes", root_agents)
+        self.assertIn("are not complete", root_agents)
         self.assertIn("新增、删除、重命名、启用或停用任何板块或数据源", agents)
         required_paths = (
             "用户中心/数据源与板块健康.md",

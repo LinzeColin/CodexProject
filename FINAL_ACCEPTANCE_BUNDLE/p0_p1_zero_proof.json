@@ -1,0 +1,72 @@
+{
+  "schema_version": "adp.p0_p1_zero_proof.v1",
+  "contract_id": "ADP-PRODUCT-CONTRACT-V7.2",
+  "generated_at": "2026-06-29T07:34:41+10:00",
+  "reviewer_independence": {
+    "status": "verified",
+    "required_independence": "not_involved_in_S2PMT01_T06_implementation",
+    "reviewer_id": "codex-subthread-independent-final-reviewer",
+    "assignment_ref": "FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json"
+  },
+  "source_candidate_refs": [
+    "governance/run_manifests/ADP-S2PMT07-P0-TECHNICAL-CLOSURE-CANDIDATE-PACKAGE-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-INDEPENDENT-REVIEW-RECEIPT-20260626.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-A006-A009-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-A010-A016-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-A017-A019-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-A018-A021-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-B002-B004-B005-B015-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-B003-B011-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-B006-B009-B010-B012-B013-B014-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-A020-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-C001-C003-C005-C006-C007-C010-C011-C012-TECHNICAL-REVIEW-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-C002-TECHNICAL-REVIEW-20260628.json"
+  ],
+  "finding_counts": {
+    "P0": 0,
+    "P1": 0
+  },
+  "zero_severity_counts": {
+    "P0": 0,
+    "P1": 0
+  },
+  "independent_closure_decision": {
+    "decision": "P0_P1_ZERO_PROVEN_NO_PRODUCTION_ACCEPTANCE",
+    "reviewer_id": "codex-subthread-independent-final-reviewer",
+    "decision_text": "Independent final review by codex-subthread-independent-final-reviewer confirms the S2PMT07 P0/P1 candidate evidence set is complete: 8 inherited V7.1 P0 findings and 37 inherited V7.1 P1 findings have technical closure candidate evidence and PASS_WITH_NO_PRODUCTION_ACCEPTANCE review receipts. Approve creation of FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json with P0=0 and P1=0 for P0/P1 zero-proof closure evidence only. This does not claim Stage2/S3 integrated production acceptance and does not enable SMTP, scheduler, Release, production restore, daily operation, schema migration, queue mutation, source adapter, ranking, CURRENT pointer, V7.1 baseline, or V7.2 contract changes.",
+    "p0_zero_proven": true,
+    "p1_zero_proven": true,
+    "production_acceptance_claimed": false
+  },
+  "final_bundle_refs": [
+    "FINAL_ACCEPTANCE_BUNDLE/manifest.json",
+    "FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json",
+    "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
+    "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json",
+    "FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml",
+    "FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json",
+    "FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json",
+    "HANDOFF/00_下一Agent先读.md"
+  ],
+  "no_production_side_effects": {
+    "integrated_production_accepted": false,
+    "daily_operation_enabled": false,
+    "real_smtp_sent": false,
+    "real_smtp_send_enabled": false,
+    "scheduler_enabled": false,
+    "scheduler_install_enabled": false,
+    "release_uploaded": false,
+    "release_packaging_enabled": false,
+    "production_restore_enabled": false,
+    "production_restore_executed": false,
+    "public_schema_changed": false,
+    "db_migration_executed": false,
+    "production_queue_mutated": false,
+    "source_adapter_changed": false,
+    "ranking_algorithm_changed": false,
+    "current_pointer_changed": false,
+    "v7_1_baseline_changed": false,
+    "v7_2_contract_files_changed": false
+  },
+  "decision_hash": "sha256:51e5e64eda12d79387c0edf249ac89ca16244e87dd53b40762a741a4e5e41a58"
+}

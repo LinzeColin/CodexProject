@@ -30,27 +30,23 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn(f"- Current task: `{expected_task}`", current_state)
         self.assertIn(f"### `{current_iteration}`", ledger)
 
-    def test_s2pmt07_current_state_summary_describes_assignment_artifact_draft_cli(self) -> None:
+    def test_s2pmt07_current_state_summary_describes_assignment_and_zero_proof(self) -> None:
         ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
-            "S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_DRAFT_CLI_READY_NO_ASSIGNMENT_NO_PRODUCTION",
+            "S2PMT07_ASSIGNMENT_AND_ZERO_PROOF_VALIDATED_S2PLT04_BLOCKED_NO_PRODUCTION",
             current_state,
         )
-        self.assertIn("S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-ARTIFACT-DRAFT-CLI", current_state)
-        self.assertIn("build-final-reviewer-assignment-artifact-draft", current_state)
-        self.assertIn("assignment_artifact_written=false", current_state)
-        self.assertIn("assignment_artifact_present_in_repo=false", current_state)
-        self.assertIn("assignment_gate_satisfied_by_this_command=false", current_state)
-        self.assertIn("independent_final_reviewer_assigned_by_this_command=false", current_state)
+        self.assertIn("S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-AND-ZERO-PROOF", current_state)
+        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json", current_state)
+        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json", current_state)
+        self.assertIn("next_required_step=S2PLT04_COMPLETION_REPORT", current_state)
         self.assertIn("P0=8", current_state)
         self.assertIn("P1=37", current_state)
-        self.assertIn("does not create final-bundle artifacts", current_state)
-        self.assertIn("does not assign an independent final reviewer", current_state)
-        self.assertIn("does not close P0/P1", current_state)
         self.assertIn("does not complete S2PLT04", current_state)
         self.assertIn("does not execute final commands", current_state)
+        self.assertIn("does not accept production", current_state)
         self.assertNotIn("M4 watermark proof record", current_state)
         self.assertNotIn("m4_watermark_correct=true", current_state)
 
@@ -61,9 +57,11 @@ class GovernanceCurrentStateTests(unittest.TestCase):
 
         stale_option = "继续 S2PLT02 no-production readiness evidence work under V7.2 boundaries"
         for text in (assurance, owner_status):
-            self.assertIn("S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT", text)
+            self.assertIn("S2PMT07", text)
+            self.assertIn("S2PMT07-S2PLT04-COMPLETION-REPORT", text)
             self.assertIn("ACC-S2PMT07-FINAL-REVIEW", text)
             self.assertIn("independent final reviewer assignment", text)
+            self.assertIn("P0/P1 zero-proof", text)
             self.assertNotIn(stale_option, text)
             self.assertNotIn("ACC-S2PLT02-2D", text)
         self.assertIn("adp_s2pmt07_blocked_next_task", generator)
