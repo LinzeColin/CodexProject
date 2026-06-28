@@ -1,25 +1,29 @@
 # Codex 行为与记忆同步报告
 
-- 生成时间：2026-06-27T00:06:01Z
+- 生成时间：2026-06-28T21:40:13Z
 - 数据来源：真实本地 Codex session 派生摘要，不包含原始全文和 plaintext secret。
-- 覆盖范围：2026-06-03 至 2026-06-27，393 个 session，115180 条消息，375400 次工具调用。
+- 覆盖范围：2026-06-03 至 2026-06-28，401 个 session，132310 条消息，434136 次工具调用。
 
 ## 主要话题
-- Codex 本地数据 / agent 工作流：11747
-- 安全边界 / secret / 权限：10349
-- 高质量交付 / 验证 / CI：9263
-- GitHub 备份 / durable state：6960
-- 前端交互 / Three.js / Dashboard：2467
-- 长期记忆数据库 / RAG：2026
-- 金融 / trading / 风险边界：1754
-- Memory Atlas / 记忆可视化：585
+- Codex 本地数据 / agent 工作流：13926
+- 安全边界 / secret / 权限：12393
+- 高质量交付 / 验证 / CI：10824
+- GitHub 备份 / durable state：8520
+- 前端交互 / Three.js / Dashboard：2800
+- 长期记忆数据库 / RAG：2291
+- 金融 / trading / 风险边界：2080
+- Memory Atlas / 记忆可视化：604
 
 ## Memory（给 ChatGPT / Codex Personalization）
 ### 新增
 - 暂无
 
 ### 修改
-- 暂无
+- OpenAIDatabase 是 durable memory source：GitHub 上的 OpenAIDatabase 应作为任意 agent 可读取的长期记忆、画像、偏好和历史上下文数据库。（证据 6007）
+- 任意 agent personalization：所有 agent 访问后都应能生成适配用户的 profile、preference、project context、rules 和 history summary。（证据 2645）
+- 真实数据优先：用户明确要求使用真实 Codex / ChatGPT / GitHub 数据，不接受 mock、伪进度或只给概念演示。（证据 2502）
+- 默认中文输出：用户长期偏好中文输出；代码、API、库名、错误信息和专业术语可保留英文。（证据 1331）
+- 报告面向人类 ROI 和成长：处理记忆或行为数据后，应输出人能直接使用的话题、行动、建议、机会、ROI、能力成长和风险提醒。（证据 839）
 
 ### 删除/降级建议
 - 暂无
@@ -29,8 +33,8 @@
 - 暂无
 
 ### 修改
-- GitHub secret 边界：GitHub 备份中不得提交 plaintext high-risk secrets；金融/交易 agent 使用 secret_ref 和受控本地 resolver。（证据 10054）
-- 授权边界：用户说先不开始时必须先澄清需求；用户授权开始后应持续推进到可验证结果。（证据 4269）
+- GitHub secret 边界：GitHub 备份中不得提交 plaintext high-risk secrets；金融/交易 agent 使用 secret_ref 和受控本地 resolver。（证据 12085）
+- 授权边界：用户说先不开始时必须先澄清需求；用户授权开始后应持续推进到可验证结果。（证据 5393）
 
 ### 删除/降级建议
 - 暂无
