@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## v0.2.1.1 Product UI Recovery Stage 2 - 2026-06-29
+
+- 完成 `S2 页面骨架与去 AI 化`，为 10 个正式一级入口建立中文页面骨架和二级入口。
+- 新增 `docs/pfi_v0211/STAGE2_PAGE_SKELETON_CLEANUP.md`、`tests/test_v0211_stage2_page_skeleton_contract.py`，并扩展 `src/pfi_v02/stage_v0211_ui_recovery.py` 的 Stage 2 合同。
+- Web Shell 默认首页改为用户任务语言：净资产、现金余额、投资市值、本月支出、待复核交易、数据源状态。
+- 清理正式 UI 中运行边界、Task Pack、Demo、Prototype、手机预览、运行反馈控制台、多模态交互反馈、证据抽屉、运行证据、任务中心等污染词。
+- `数据源与上传` 二级入口固定包含 `上传中心` 和 `导入中心`；`设置` 独立承接反馈、主题、语言、备份恢复等设置项。
+- 本轮不做数据库 migration、上传入库闭环、持仓 SQLite 闭环、真实图表数据接入，也不声明 v0.2.1.1 整体完成。
+
 ## v0.2.1.1 Product UI Recovery Stage 0 - 2026-06-29
 
 - 建立 v0.2.1.1 前端 UIUX 逻辑优化准备轮，明确当前 v0.2.1 前端优化不再作为正式 UI 完成状态，后续不得继续在旧 AI 化 Web Shell 上补丁式修补。

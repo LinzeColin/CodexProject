@@ -48,12 +48,12 @@ class V021Stage3SettingsSearchContractTest(unittest.TestCase):
 
         for control in contract["settings_contract"]["feedback_controls"]:
             self.assertIn(control, self.js)
-        self.assertIn("运行反馈控制台", self.js)
-        self.assertIn("触感反馈强度", self.js)
+        self.assertIn("反馈偏好", self.js)
+        self.assertIn("触感反馈", self.js)
         self.assertIn("声音反馈", self.js)
         self.assertIn("视觉反馈", self.js)
         self.assertIn("通知反馈", self.js)
-        self.assertIn("业务页默认不常驻反馈控制台", self.js)
+        self.assertIn("业务页默认不常驻反馈面板", self.js)
 
     def test_global_search_dom_contract_and_fuzzy_functions_exist(self) -> None:
         search = build_v021_stage3_contract()["global_search_contract"]
@@ -77,7 +77,7 @@ class V021Stage3SettingsSearchContractTest(unittest.TestCase):
     def test_global_search_scope_and_keyboard_contract_are_locked(self) -> None:
         search = build_v021_stage3_contract()["global_search_contract"]
 
-        for scope in ("15 个一级导航入口", "工作区功能卡", "功能面板", "任务中心条目", "决策队列表格行", "设置页反馈控制项"):
+        for scope in ("10 个正式一级导航入口", "工作区功能卡", "功能面板", "待办清单条目", "决策队列表格行", "设置页反馈控制项"):
             self.assertIn(scope, search["scope"])
         for mode in ("substring", "subsequence", "alias_keywords"):
             self.assertIn(mode, search["fuzzy_match_modes"])

@@ -74,9 +74,9 @@ class V021Stage7ClicksafeFeedbackTest(unittest.TestCase):
         ):
             self.assertIn(required, self.js)
 
-    def test_owner_facing_multimodal_delivery_style_is_present(self) -> None:
+    def test_owner_facing_feedback_delivery_style_is_present(self) -> None:
         for required in (
-            'data-uiux-delivery-target="v021_multimodal_feedback"',
+            'data-uiux-delivery-target="v021_feedback_preferences"',
             "data-settings-feedback-console",
             "feedback-wave",
             'data-feedback-toggle="haptic"',

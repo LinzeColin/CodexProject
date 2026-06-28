@@ -6,6 +6,7 @@ from dataclasses import asdict, dataclass
 VERSION_NAME = "v0.2.1.1 Product UI Recovery"
 STAGE0_TASK_ID = "V0211-S0-T01"
 STAGE1_TASK_ID = "V0211-S1-T01"
+STAGE2_TASK_ID = "V0211-S2-T01"
 TOTAL_EXECUTION_STAGES = 6
 
 
@@ -32,6 +33,15 @@ class V0211Decision:
     source_conflict: str
     default_resolution: str
     stage_to_finalize: str
+
+
+@dataclass(frozen=True)
+class V0211PageSkeleton:
+    workspace_id: str
+    label: str
+    route: str
+    purpose: str
+    secondary_tabs: tuple[str, ...]
 
 
 SOURCE_FILES: tuple[V0211SourceFile, ...] = (
@@ -248,6 +258,96 @@ STAGE1_LEGACY_ROUTE_ALIASES = {
     "数据与系统": "/settings?tab=data-system",
 }
 
+STAGE2_PAGE_SKELETONS: dict[str, V0211PageSkeleton] = {
+    "home": V0211PageSkeleton(
+        "home",
+        "首页总览",
+        "/home",
+        "回答当前财务状态和待处理事项",
+        ("财务状态", "待办事项", "快捷操作", "最近报告"),
+    ),
+    "accounts": V0211PageSkeleton(
+        "accounts",
+        "账户与资产",
+        "/accounts",
+        "管理账户列表、账户详情、资产趋势和对账状态",
+        ("账户总览", "账户列表", "资产趋势", "对账状态"),
+    ),
+    "ledger": V0211PageSkeleton(
+        "ledger",
+        "账本流水",
+        "/ledger",
+        "查看流水列表、搜索筛选、分类复核和导出",
+        ("流水列表", "筛选搜索", "分类复核", "导出流水"),
+    ),
+    "investment": V0211PageSkeleton(
+        "investment",
+        "投资管理",
+        "/investment",
+        "查看投资总览、持仓、交易记录和收益分析",
+        ("投资总览", "持仓", "交易记录", "收益分析"),
+    ),
+    "consumption": V0211PageSkeleton(
+        "consumption",
+        "消费管理",
+        "/consumption",
+        "查看消费总览、分类、预算、订阅、异常和现金流预测",
+        ("消费总览", "分类分析", "预算", "订阅", "异常消费", "现金流预测"),
+    ),
+    "sync": V0211PageSkeleton(
+        "sync",
+        "数据源与上传",
+        "/sources-upload",
+        "上传数据、查看导入批次、管理数据源和待复核记录",
+        ("上传中心", "导入中心", "数据源管理", "待复核", "导入历史"),
+    ),
+    "recommendations": V0211PageSkeleton(
+        "recommendations",
+        "建议与复盘",
+        "/review",
+        "查看建议、记录决策和复盘结果",
+        ("建议列表", "建议详情", "决策记录", "复盘记录"),
+    ),
+    "insights": V0211PageSkeleton(
+        "insights",
+        "报告与洞察",
+        "/reports",
+        "查看月报、季报、年报、自定义报告和导出",
+        ("月报", "季报", "年报", "自定义报告", "导出"),
+    ),
+    "market_research": V0211PageSkeleton(
+        "market_research",
+        "市场与研究",
+        "/market-research",
+        "查看市场观察、研究材料、政策研究和唯一策略实验室",
+        ("市场观察", "公司研究", "基金研究", "政策研究", "策略实验室"),
+    ),
+    "settings": V0211PageSkeleton(
+        "settings",
+        "设置",
+        "/settings",
+        "管理账户偏好、数据与系统、隐私、本地存储、反馈、主题和备份",
+        ("账户偏好", "数据与系统", "隐私与本地存储", "反馈偏好", "主题语言", "备份恢复"),
+    ),
+}
+
+STAGE2_FORBIDDEN_VISIBLE_TEXT = (
+    "运行边界",
+    "使用限制",
+    "隐私边界",
+    "不做实盘自动下单",
+    "Task Pack",
+    "Demo",
+    "Prototype",
+    "AI 演示",
+    "运行反馈控制台",
+    "多模态交互反馈",
+    "手机预览",
+    "证据抽屉",
+    "运行证据",
+    "任务中心",
+)
+
 
 def build_v0211_stage0_contract() -> dict[str, object]:
     return {
@@ -324,6 +424,45 @@ def build_v0211_stage1_contract() -> dict[str, object]:
     }
 
 
+def build_v0211_stage2_contract() -> dict[str, object]:
+    stage = next(item for item in EXECUTION_STAGES if item.stage_id == "S2")
+    return {
+        "schema": "PFIV0211ProductUIRecoveryStage2ContractV1",
+        "version_name": VERSION_NAME,
+        "stage": "S2 页面骨架与去 AI 化",
+        "task_id": STAGE2_TASK_ID,
+        "project_root": "CodexProject/PFI",
+        "primary_navigation": STAGE1_PRIMARY_NAVIGATION,
+        "page_skeletons": {
+            key: {
+                "label": value.label,
+                "route": value.route,
+                "purpose": value.purpose,
+                "secondary_tabs": value.secondary_tabs,
+            }
+            for key, value in STAGE2_PAGE_SKELETONS.items()
+        },
+        "delivery_focus": stage.delivery_focus,
+        "forbidden_work": stage.forbidden_work,
+        "acceptance_gate": stage.acceptance_gate,
+        "forbidden_visible_text": STAGE2_FORBIDDEN_VISIBLE_TEXT,
+        "settings_only_controls": (
+            "反馈偏好",
+            "触感反馈",
+            "声音反馈",
+            "视觉反馈",
+            "主题语言",
+            "备份恢复",
+        ),
+        "stage2_non_goals": (
+            "不做数据库 migration",
+            "不做持仓 SQLite 持久化闭环",
+            "不做真实图表数据接入",
+            "不使用 demo/sample/synthetic/fixture/mock/fake 数据作为正式产品数据源",
+        ),
+    }
+
+
 def v0211_stage_ids() -> tuple[str, ...]:
     return tuple(stage.stage_id for stage in EXECUTION_STAGES)
 
@@ -334,3 +473,7 @@ def v0211_default_navigation_labels() -> tuple[str, ...]:
 
 def v0211_stage1_navigation_labels() -> tuple[str, ...]:
     return STAGE1_PRIMARY_NAVIGATION
+
+
+def v0211_stage2_page_labels() -> tuple[str, ...]:
+    return tuple(item.label for item in STAGE2_PAGE_SKELETONS.values())

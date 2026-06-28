@@ -422,6 +422,38 @@ button:active {
   margin-bottom: 12px;
 }
 
+.page-tabs-panel {
+  margin: 0 0 12px;
+}
+
+.secondary-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.secondary-tab {
+  min-height: 36px;
+  border: 1px solid var(--pfi-border);
+  border-radius: var(--pfi-radius);
+  padding: 0 12px;
+  background: var(--pfi-surface);
+  color: var(--pfi-ink);
+  font-weight: 760;
+}
+
+.secondary-tab:hover,
+.secondary-tab:focus-visible {
+  border-color: var(--pfi-blue);
+  color: var(--pfi-blue);
+}
+
+.secondary-tab.is-active {
+  border-color: var(--pfi-blue);
+  background: color-mix(in srgb, var(--pfi-blue) 10%, var(--pfi-surface));
+  color: var(--pfi-blue);
+}
+
 .section-heading {
   display: flex;
   justify-content: space-between;

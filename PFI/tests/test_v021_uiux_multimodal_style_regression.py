@@ -18,9 +18,8 @@ class V021UiuxMultimodalStyleRegressionTest(unittest.TestCase):
             'data-feedback-lane="visual"',
             'data-feedback-lane="haptic"',
             'data-feedback-lane="sound"',
-            "多模态交互反馈",
             "视觉状态轨道",
-            "触感强度",
+            "触感反馈",
             "声音反馈",
             "data-feedback-meter",
             "data-feedback-event-log",
@@ -39,6 +38,8 @@ class V021UiuxMultimodalStyleRegressionTest(unittest.TestCase):
         ):
             self.assertNotIn(forbidden, self.html)
         self.assertIn("data-settings-feedback-console hidden", self.html)
+        self.assertNotIn("多模态交互反馈", self.html)
+        self.assertNotIn("运行反馈控制台", self.html)
 
     def test_css_is_delivery_style_not_plain_admin_shell(self) -> None:
         for required in (

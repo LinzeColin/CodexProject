@@ -53,7 +53,7 @@ class V021Stage0FrontendContractTest(unittest.TestCase):
         self.assertEqual(feedback["formal_delivery_surface"], "HTML")
         self.assertEqual(feedback["settings_route"], "/settings")
         self.assertFalse(feedback["default_visible_on_business_pages"])
-        for item in ["运行反馈控制台", "多模态反馈", "触感反馈强度", "声音反馈", "视觉反馈", "通知反馈"]:
+        for item in ["反馈偏好", "触感反馈", "声音反馈", "视觉反馈", "通知反馈"]:
             self.assertIn(item, feedback["feedback_controls"])
         self.assertEqual(feedback["haptic_levels"], ("关闭", "轻", "标准", "强"))
 
