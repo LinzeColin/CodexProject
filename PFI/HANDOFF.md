@@ -4,7 +4,7 @@ Last updated: 2026-06-28 Australia/Sydney
 
 ## Current Goal
 
-PFI v0.2.2 Stage 10 收口：完成报告、建议与复盘交付，包括月报双消费口径、投资成本与行为报告、Interconnection 数据质量报告、行动建议评分公式和建议生命周期；本轮不实现 Stage 11 测试与验证总门，不修改 v0.2.1 Web Shell UIUX 基线。
+PFI v0.2.2 Stage 11 收口：完成测试与验证交付，包括金融逻辑单元测试、跨板块一致性测试和可视化一致性测试；本轮不实现 Stage 12 文档同步与最终交付，不执行 Stage 13 后置触发型复核，不修改 v0.2.1 Web Shell UIUX 基线。
 
 ## Current Status
 
@@ -121,7 +121,15 @@ PFI v0.2.2 Stage 10 收口：完成报告、建议与复盘交付，包括月报
 - v0.2.2 Stage 10 行动建议类型覆盖数据修复建议、消费复盘建议、投资行为复盘建议、现金流风险建议、订阅优化建议、参数调整建议。
 - v0.2.2 Stage 10 行动建议评分权重是财务影响 25、风险降低 20、紧急程度 15、置信度 15、可逆性 10、执行成本反比 10、学习价值 5。
 - v0.2.2 Stage 10 生命周期支持 `pending`、`accepted`、`rejected`、`snoozed`、`reviewed`、`effect_measured`。
-- v0.2.2 Stage 10 明确不实现 Stage 11 测试与验证总门、Stage 12 最终交付包或 Stage 13 后置触发型复核。
+- v0.2.2 Stage 10 已在后续 Stage 11 中接受测试与验证总门；Stage 12 最终交付包和 Stage 13 后置触发型复核仍未实现。
+- v0.2.2 Stage 11 - 测试与验证 task IDs 是 `S11-P1-T1`、`S11-P1-T2`、`S11-P1-T3`、`S11-P1-T4`、`S11-P2-T1`、`S11-P2-T2`、`S11-P2-T3`、`S11-P3-T1`、`S11-P3-T2`、`S11-P3-T3`。
+- v0.2.2 Stage 11 合同是 `src/pfi_v02/stage_v022_database_governance.py::build_v022_stage11_contract()`；测试与验证模块是 `src/pfi_v02/stage_v022_test_validation.py`。
+- v0.2.2 Stage 11 验收报告是 `docs/pfi_v022/STAGE11_TEST_VALIDATION.md`；合同测试是 `tests/test_v022_stage11_test_validation.py`。
+- v0.2.2 Stage 11 金融逻辑测试覆盖投资入金计入消费总流出、基金申购计入消费总流出、退款抵消、信用卡还款不重复计入生活消费。
+- v0.2.2 Stage 11 跨板块一致性测试要求 `首页消费总流出 = 消费页消费总流出 = 月报消费总流出`，以及 `首页投资资产 = 投资页投资资产 = 投资报告投资资产`。
+- v0.2.2 Stage 11 现金流预测必须追溯到账本事件和计划事件。
+- v0.2.2 Stage 11 可视化一致性测试要求每个图表可追溯 `metric_id`、`formula_id`、`parameter_hash`、`data_hash`；数据变化后受影响图表标记 `needs_update` 或 `updated`；大量模拟记录下显示 `compute time` 和 `cache status`。
+- v0.2.2 Stage 11 明确不实现 Stage 12 文档同步与最终交付，也不执行 Stage 13 后置触发型复核。
 - v0.2.2 Stage 4 当前规则：同一真实事件只有一个 `economic_event_id`；同一资金链路进入一个 `interconnection_group_id`；同一事件可多处展示但同一核心指标只计算一次。
 - v0.2.2 Stage 4 消费口径：投资入金、基金申购、黄金申购、投资买入和费用进入消费总流出；投资入金、基金申购、投资买入不进入生活消费；退款抵消原消费；信用卡还款不重复计入生活消费。
 - v0.2.2 Stage 4 stop condition：`投资入金未进入消费总流出`、`基金申购未进入消费总流出`、`投资入金错误进入生活消费`、同一 `interconnection_group_id` 重复计入核心金额。
@@ -160,6 +168,7 @@ PFI v0.2.2 Stage 10 收口：完成报告、建议与复盘交付，包括月报
 - 2026-06-28 v0.2.2 Stage 8：新增 `src/pfi_v02/stage_v022_runtime_diff.py`、`docs/pfi_v022/STAGE8_RUNTIME_DIFF_IMPACTED_METRICS.md`、`review_queue/CODEX_REVIEW_TICKET_TEMPLATE.md` 和 `tests/test_v022_stage8_runtime_diff.py`；`config/pfi_parameters.yaml` 升级为 `PFIParametersV022Stage8`；三基文件、README、roadmap lock 和参数变更记录同步记录 dependency hash、P0/P1/P2 impacted metrics、no-diff 外部触发禁用和本地中文 Codex Review Ticket。
 - 2026-06-28 v0.2.2 Stage 9：新增 `src/pfi_v02/stage_v022_visualization_uiux.py`、`docs/pfi_v022/STAGE9_VISUALIZATION_UIUX.md`、`docs/pfi_v022/INTERCONNECTION_MAP.md`、`web/interconnection-map.html` 和 `tests/test_v022_stage9_visualization_uiux.py`；`config/pfi_parameters.yaml` 升级为 `PFIParametersV022Stage9`；三基文件、README、roadmap lock 和参数变更记录同步记录参数中心、Interconnection Map、Metric Dependency Graph、现金流可视化和 Metric Drilldown Debugger。
 - 2026-06-28 v0.2.2 Stage 10：新增 `src/pfi_v02/stage_v022_report_advice_review.py`、`docs/pfi_v022/STAGE10_REPORT_ADVICE_REVIEW.md` 和 `tests/test_v022_stage10_report_advice_review.py`；`config/pfi_parameters.yaml` 升级为 `PFIParametersV022Stage10`；三基文件、README、roadmap lock 和参数变更记录同步记录月报双消费口径、投资成本行为报告、Interconnection 数据质量报告、行动建议评分公式和建议生命周期。
+- 2026-06-28 v0.2.2 Stage 11：新增 `src/pfi_v02/stage_v022_test_validation.py`、`docs/pfi_v022/STAGE11_TEST_VALIDATION.md` 和 `tests/test_v022_stage11_test_validation.py`；`config/pfi_parameters.yaml` 升级为 `PFIParametersV022Stage11`；三基文件、README、roadmap lock 和参数变更记录同步记录金融逻辑单元测试、跨板块一致性测试和可视化一致性测试。
 
 ## Decisions
 
@@ -217,8 +226,9 @@ Latest v0.2.2 Stage 7 target result: Stage 7 formula/scoring contracts `7 passed
 Latest v0.2.2 Stage 8 target result: Stage 8 runtime diff contracts `8 passed`; Stage 0-8 v0.2.2 regression `66 passed`; full PFI pytest `224 passed`; project governance `errors 0 / warnings 0`; Web shell syntax `OK`; `git diff --check -- PFI` `OK`; macOS app acceptance lite `29 pass / 0 fail / 2 info`; `http://127.0.0.1:8501/_stcore/health` returned `ok`; true 8501 browser validation clicked `数据源与上传`, confirmed `PFI`、`首页总览`、`数据源与上传`、`AUD/CNY`, no forbidden visible text hits, console errors `0`, screenshot `/tmp/pfi-v022-stage8-app-verified.png`.
 Latest v0.2.2 Stage 9 target result: Stage 9 visualization/UIUX contracts `8 passed`; Stage 0-9 v0.2.2 regression `74 passed`; full PFI pytest `232 passed`; project governance `errors 0 / warnings 0`; Web shell syntax `OK`; `git diff --check -- PFI` `OK`; macOS app acceptance lite `29 pass / 0 fail / 2 info`; Stage 9 local HTML browser validation confirmed required modules missing `0`, status fields rendered `144`, data-map-node and data-drilldown-metric clicks update detail panels, console errors `0`, external network requests `0`, screenshot `/tmp/pfi-v022-stage9-html-verified.png`; true 8501 browser validation confirmed `PFI`、`首页总览`、`数据源与上传`、`AUD/CNY` visible and Stage 9 review page not injected into main UI, console errors `0`, screenshot `/tmp/pfi-v022-stage9-app-verified.png`.
 Latest v0.2.2 Stage 10 target result: Stage 10 report/advice/review contracts `7 passed`; Stage 0-10 v0.2.2 regression `81 passed`; full PFI pytest `239 passed`; project governance `errors 0 / warnings 0`; Web shell syntax `OK`; `git diff --check -- PFI` `OK`; macOS app acceptance lite `29 pass / 0 fail / 2 info`; `http://127.0.0.1:8501/_stcore/health` returned `ok`; true 8501 browser validation confirmed `PFI`、`首页总览`、`数据源与上传`、`建议与复盘`、`报告与洞察`、`AUD/CNY` visible, Stage 10 review docs not injected into main UI, console errors `0`, screenshot `/tmp/pfi-v022-stage10-app-verified.png`.
+Latest v0.2.2 Stage 11 target result: Stage 11 contracts `6 passed`; Stage 0-11 v0.2.2 regression `87 passed`; full PFI pytest `245 passed`; project governance `errors 0 / warnings 0`; Web shell syntax `OK`; `git diff --check -- PFI` `OK`; macOS app acceptance lite `29 pass / 0 fail / 2 info`; `http://127.0.0.1:8501/_stcore/health` returned healthy through app acceptance; true 8501 browser validation confirmed `PFI`、`首页总览`、`数据源与上传`、`建议与复盘`、`报告与洞察`、`AUD/CNY` visible, clicked `报告与洞察`, forbidden visible Stage 11 development terms `0`, console errors `0`, screenshot `/tmp/pfi-v022-stage11-app-verified.png`.
 
 ## Next
 
-1. 下一轮 pursuing goal 应从 v0.2.2 Stage 11 `测试与验证` 开始。
-2. 不得提前实现 Stage 12-13，不得修改 v0.2.1 Web Shell UIUX 基线，除非用户单独开启前端目标或 Stage 11 合同明确要求。
+1. 下一轮 pursuing goal 应从 v0.2.2 Stage 12 `文档同步与交付` 开始。
+2. 不得提前实现 Stage 13，不得修改 v0.2.1 Web Shell UIUX 基线，除非用户单独开启前端目标或 Stage 12 合同明确要求。

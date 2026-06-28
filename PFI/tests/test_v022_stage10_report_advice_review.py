@@ -123,8 +123,8 @@ def test_parameter_catalog_and_changelog_record_stage10_values() -> None:
     catalog = load_v022_parameter_catalog()
     params = catalog["parameters"]["report_advice_review"]
 
-    assert catalog["schema"] == "PFIParametersV022Stage10"
-    assert catalog["current_stage"] == "Stage 10 - 报告、建议与复盘"
+    assert catalog["schema"] == "PFIParametersV022Stage11"
+    assert catalog["current_stage"] == "Stage 11 - 测试与验证"
     assert catalog["stage10_task_ids"] == list(V022_STAGE10_TASK_IDS)
     assert params["monthly_report_required_consumption_metrics"]["value"] == ["消费总流出", "生活消费"]
     assert params["investment_report_required_sections"]["value"] == ["收益", "成本", "费用", "汇率", "交易频率", "风格", "现金拖累"]

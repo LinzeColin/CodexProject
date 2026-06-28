@@ -126,6 +126,7 @@
 | `STAGE9_VISUALIZATION_UIUX.md` | Stage 9 参数中心、Interconnection Map、Metric Dependency Graph、现金流可视化和 Metric Drilldown Debugger 验收报告。 |
 | `INTERCONNECTION_MAP.md` | Stage 9 Mermaid 关系图，覆盖 `source -> raw -> normalized -> group -> event -> ledger -> metrics -> UI`。 |
 | `STAGE10_REPORT_ADVICE_REVIEW.md` | Stage 10 报告、行动建议与复盘生命周期验收报告。 |
+| `STAGE11_TEST_VALIDATION.md` | Stage 11 金融逻辑、跨板块一致性和可视化一致性测试验收报告。 |
 | `../../review_queue/CODEX_REVIEW_TICKET_TEMPLATE.md` | Stage 8 本地 Codex Review Ticket 中文模板。 |
 | `SOURCE_TASK_PACK_MANIFEST.md` | Downloads 来源文件、SHA-256 和使用边界。 |
 | `ROADMAP_LOCK.md` | v0.2.2 Stage / Phase / Task / Acceptance / Stop / Validation 锁定摘要。 |
@@ -161,4 +162,17 @@ Stage 10 - 报告、建议与复盘已完成 `S10-P1-T1..S10-P2-T3`：
 - 新增 `PFI/docs/pfi_v022/STAGE10_REPORT_ADVICE_REVIEW.md`，记录 Stage 10 acceptance criteria、stop condition 和 validation。
 - `PFI/config/pfi_parameters.yaml` 升级为 `PFIParametersV022Stage10`，新增 `report_advice_review` 参数域和 `stage10_task_ids`。
 - 行动建议与复盘明确不是自动买卖建议；不得生成自动投资、付款、券商提交或真实交易动作。
-- Stage 11 测试与验证不在本轮实现；不修改 v0.2.1 主 Web Shell UIUX 基线。
+- Stage 11 测试与验证已在后续单独 gate 中实现。
+
+## Stage 11 范围
+
+Stage 11 - 测试与验证已完成 `S11-P1-T1..S11-P3-T3`：
+
+- 新增 `PFI/src/pfi_v02/stage_v022_test_validation.py`，提供金融逻辑、跨板块一致性和可视化一致性验证模型。
+- 新增 `PFI/tests/test_v022_stage11_test_validation.py`，覆盖投资入金计入消费总流出、基金申购计入消费总流出、退款抵消、信用卡还款不重复计入生活消费。
+- 跨板块一致性锁定：首页消费总流出 = 消费页消费总流出 = 月报消费总流出；首页投资资产 = 投资页投资资产 = 投资报告投资资产。
+- 现金流预测必须追溯到账本事件和计划事件，无法解释时停止。
+- 每个图表必须追溯 `metric_id`、`formula_id`、`parameter_hash`、`data_hash`。
+- 图表新鲜度必须在数据变化后标记 `needs_update` 或 `updated`；性能状态必须显示 `compute time` 和 `cache status`。
+- `PFI/config/pfi_parameters.yaml` 升级为 `PFIParametersV022Stage11`，新增 `test_validation` 参数域和 `stage11_task_ids`。
+- Stage 12 文档同步与最终交付不在本轮实现；Stage 13 后置触发型复核不在本轮实现；不修改 v0.2.1 主 Web Shell UIUX 基线。
