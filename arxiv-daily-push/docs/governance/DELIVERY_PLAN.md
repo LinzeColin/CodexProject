@@ -21,12 +21,19 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 244
+- task_count: 245
 - acceptance_count: 127
 
 ## Delivery Tasks
 
 The machine-readable task source is `delivery_tasks.yaml`.
+
+## 2026-06-28 23:04:29 Australia/Sydney - S2PMT07 Independent Final Closure Decision Owner Packet CLI
+
+- `S2PMT07-INDEPENDENT-FINAL-CLOSURE-DECISION-OWNER-PACKET-CLI` exposes `adp build-final-closure-decision-owner-packet --json`.
+- The command prints the existing owner/reviewer action packet for the future independent final closure decision, including decision artifact ref, required owner actions, assignment prerequisite, review refs, P0/P1 open counts, and no-production flags.
+- The command returning 0 only means the owner/reviewer packet validates; it is not a reviewer assignment, not a closure decision, not P0/P1 zero proof, not S2PLT04 completion, not final bundle acceptance, and not production acceptance.
+- No SMTP, scheduler, Release, restore, schema/DB, source/ranking, CURRENT/V7, DAILY_OPERATION, or integrated production acceptance side effect is claimed.
 
 ## 2026-06-28 22:44:37 Australia/Sydney - S2PMT07 Final Bundle Readiness CLI
 

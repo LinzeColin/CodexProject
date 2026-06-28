@@ -4399,3 +4399,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+  - task_id: "S2PMT07-INDEPENDENT-FINAL-CLOSURE-DECISION-OWNER-PACKET-CLI"
+    title: "S2PMT07 independent final closure decision owner packet CLI"
+    phase: "S2PM"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-28T23:04:29+10:00"
+    summary: "Expose the existing owner/reviewer action packet for the future independent final closure decision through CLI without creating closure artifacts."
+    owner: "content_owner + engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_OWNER_PACKET_CLI.md", "governance/run_manifests/ADP-S2PMT07-INDEPENDENT-FINAL-CLOSURE-DECISION-OWNER-PACKET-CLI-20260628.json"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_closure_owner_cli_red PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push.tests.test_cli.CliTests.test_build_final_closure_decision_owner_packet_json_command -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_closure_owner_cli_green PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push.tests.test_cli.CliTests.test_build_final_closure_decision_owner_packet_json_command -q"]
+    test_results: ["TDD red failed as expected because build-final-closure-decision-owner-packet was not a recognized CLI command", "focused CLI owner-packet regression test: 1 OK"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-INDEPENDENT-FINAL-CLOSURE-DECISION-OWNER-PACKET-CLI-20260628.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_OWNER_PACKET_CLI.md", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_cli.py"]
+    result: "Independent final closure decision owner/reviewer packet is available through CLI; the real assignment artifact, closure decision, zero proof, S2PLT04, final bundle, and production gates remain blocked."
+    risk: "A CLI packet can be misread as a real closure decision unless assignment_artifact_present, independent_final_closure_decision_present, zero_proof_artifact_present, and closure_claimed remain false."
+    rollback: "Revert CLI parser/dispatcher changes, focused regression test, phase record, manifest, traceability row, delivery task, event records, generated views, and three base records; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
