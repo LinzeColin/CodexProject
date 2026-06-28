@@ -1,0 +1,643 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
+  <title>PFI Stage 9 - 可视化与 UI/UX</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f7f8;
+      --panel: #ffffff;
+      --ink: #172026;
+      --muted: #65717b;
+      --line: #d8dee4;
+      --blue: #1f6feb;
+      --green: #1a7f37;
+      --amber: #9a6700;
+      --red: #cf222e;
+      --violet: #8250df;
+      --shadow: 0 8px 24px rgba(23, 32, 38, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+      line-height: 1.5;
+    }
+
+    header {
+      padding: 24px 28px 16px;
+      border-bottom: 1px solid var(--line);
+      background: var(--panel);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    h1, h2, h3 { margin: 0; letter-spacing: 0; }
+
+    h1 { font-size: 24px; }
+
+    h2 { font-size: 18px; margin-bottom: 14px; }
+
+    h3 { font-size: 15px; margin-bottom: 8px; }
+
+    .subhead {
+      margin-top: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      padding: 3px 10px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fbfcfd;
+      color: var(--ink);
+      font-size: 12px;
+    }
+
+    main {
+      padding: 22px 28px 42px;
+      display: grid;
+      gap: 18px;
+    }
+
+    section {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .span-4 { grid-column: span 4; }
+    .span-6 { grid-column: span 6; }
+    .span-8 { grid-column: span 8; }
+    .span-12 { grid-column: span 12; }
+
+    .metric-row {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .metric {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      min-height: 86px;
+      background: #fbfcfd;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 21px;
+      margin-top: 6px;
+    }
+
+    .metric span, .small {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th, td {
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      padding: 10px 8px;
+      vertical-align: top;
+    }
+
+    th { color: #3c4852; background: #f8fafc; }
+
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .status-item {
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 8px;
+      min-height: 72px;
+      background: #fbfcfd;
+      font-size: 12px;
+    }
+
+    .status-item b {
+      display: block;
+      color: #3c4852;
+      margin-bottom: 4px;
+    }
+
+    .map-wrap {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(120px, 1fr));
+      gap: 10px;
+    }
+
+    button.node, button.drill {
+      width: 100%;
+      min-height: 48px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      color: var(--ink);
+      cursor: pointer;
+      text-align: left;
+      padding: 10px;
+      font: inherit;
+    }
+
+    button.node:hover, button.drill:hover,
+    button.node.active, button.drill.active {
+      border-color: var(--blue);
+      outline: 2px solid rgba(31, 111, 235, 0.12);
+    }
+
+    .detail {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      background: #fbfcfd;
+      min-height: 202px;
+    }
+
+    .ladder {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(72px, 1fr));
+      gap: 8px;
+      align-items: end;
+      min-height: 210px;
+      border-bottom: 1px solid var(--line);
+      padding: 12px 0 0;
+    }
+
+    .bar {
+      display: grid;
+      align-content: end;
+      gap: 8px;
+      min-height: 180px;
+      text-align: center;
+      font-size: 12px;
+    }
+
+    .bar span:first-child {
+      display: block;
+      border-radius: 6px 6px 0 0;
+      background: var(--blue);
+      min-height: 24px;
+    }
+
+    .waterfall {
+      display: grid;
+      gap: 8px;
+    }
+
+    .waterfall-row {
+      display: grid;
+      grid-template-columns: 112px minmax(0, 1fr) 88px;
+      gap: 8px;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .waterfall-bar {
+      height: 20px;
+      border-radius: 5px;
+      background: var(--green);
+    }
+
+    .waterfall-bar.out { background: var(--red); }
+    .waterfall-bar.neutral { background: var(--amber); }
+
+    .safety-band {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .safety-band div { padding: 14px; min-height: 104px; }
+    .green { background: #dafbe1; color: var(--green); }
+    .yellow { background: #fff8c5; color: var(--amber); }
+    .red { background: #ffebe9; color: var(--red); }
+
+    .checklist {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      padding: 0;
+      list-style: none;
+      margin: 0;
+    }
+
+    .checklist li {
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 10px;
+      background: #fbfcfd;
+    }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+    }
+
+    @media (max-width: 980px) {
+      .span-4, .span-6, .span-8 { grid-column: span 12; }
+      .metric-row, .status-grid, .map-wrap, .flow, .ladder, .checklist { grid-template-columns: 1fr; }
+      header, main { padding-left: 16px; padding-right: 16px; }
+      .waterfall-row { grid-template-columns: 92px minmax(0, 1fr) 72px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>PFI Stage 9 - 可视化与 UI/UX</h1>
+    <div class="subhead">
+      <span class="badge">v0.2.2 数据库治理</span>
+      <span class="badge">本地 HTML 单文件可打开</span>
+      <span class="badge">不依赖外网</span>
+      <span class="badge">Stage 10 报告、建议与复盘不在本轮实现</span>
+    </div>
+  </header>
+
+  <main>
+    <section id="overview">
+      <h2>首页总览</h2>
+      <div class="metric-row">
+        <div class="metric"><span>本月消费</span><strong>CNY 18,420</strong><span>含投资入金与基金申购的消费总流出口径</span></div>
+        <div class="metric"><span>投资资产</span><strong>CNY 126,800</strong><span>持仓市值、投资现金、基金和贵金属折算</span></div>
+        <div class="metric"><span>现金流窗口</span><strong>7/21/30/60/90/180/360</strong><span>统一现金流阶梯图窗口</span></div>
+        <div class="metric"><span>待复核记录</span><strong>406</strong><span>低置信与未匹配 interconnection 进入队列</span></div>
+      </div>
+      <div class="status-grid" data-status-for="首页总览"></div>
+    </section>
+
+    <div class="grid">
+      <section class="span-8" id="parameter-center">
+        <h2>参数中心</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>参数域</th>
+              <th>中文名</th>
+              <th>当前值</th>
+              <th>作用</th>
+              <th>影响范围</th>
+              <th>是否可修改</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>货币</td><td>主货币</td><td>CNY</td><td>首页、消费、投资、现金流、报告统一主口径</td><td>首页总览、投资模型、消费模型</td><td>否</td></tr>
+            <tr><td>汇率</td><td>顶部汇率快照</td><td>AUD/CNY=4.69（20260628--06:00）</td><td>用于原币折算和顶部状态显示</td><td>账本、趋势图、报告</td><td>否</td></tr>
+            <tr><td>分类</td><td>消费分类体系</td><td>L1 ≤ 12 / L2 ≤ 50</td><td>限制分类颗粒度并保留合并字段</td><td>消费分类与标签、消费模型</td><td>是</td></tr>
+            <tr><td>标签</td><td>默认标签库</td><td>通用、消费、投资、数据质量、现金流、复盘</td><td>支持跨分类筛选和自定义视图</td><td>标签视图、报告、复核</td><td>是</td></tr>
+            <tr><td>阈值</td><td>大额消费阈值</td><td>CNY 2000 / AUD 500</td><td>识别大额消费和需要复盘的支出</td><td>消费模型、标签、建议</td><td>是</td></tr>
+            <tr><td>公式</td><td>公式目录</td><td>15 个公式</td><td>展示中文名称、输入、输出、逻辑和示例</td><td>Metric Drilldown Debugger、报告</td><td>否</td></tr>
+            <tr><td>置信度</td><td>统一复核阈值</td><td>70 分</td><td>低于阈值进入复核队列，不按 source 分层</td><td>导入、账本复核、数据质量</td><td>是</td></tr>
+            <tr><td>现金流窗口</td><td>现金流预测窗口</td><td>7/21/30/60/90/180/360 天</td><td>覆盖短期、中期和长期现金压力</td><td>现金流可视化、首页总览</td><td>是</td></tr>
+          </tbody>
+        </table>
+        <div class="status-grid" data-status-for="参数中心"></div>
+      </section>
+
+      <section class="span-4" id="impact-preview">
+        <h2>参数变更影响预览</h2>
+        <table>
+          <tbody>
+            <tr><th>变更参数</th><td>confidence.review_threshold</td></tr>
+            <tr><th>旧值</th><td>70</td></tr>
+            <tr><th>新值</th><td>75</td></tr>
+            <tr><th>可能影响记录数</th><td>406</td></tr>
+            <tr><th>可能影响标签数</th><td>48</td></tr>
+            <tr><th>可能影响建议数</th><td>12</td></tr>
+            <tr><th>可能影响图表数</th><td>9</td></tr>
+          </tbody>
+        </table>
+        <p class="small">该预览只读取本地 snapshot，不联网、不重算全量指标。</p>
+      </section>
+    </div>
+
+    <section id="interconnection-map">
+      <h2>Interconnection Map</h2>
+      <div class="map-wrap">
+        <div class="flow" aria-label="可点击关系图">
+          <button class="node active" data-map-node="数据源">数据源<br><span class="small">支付宝、银行、券商、基金、贵金属、微信、手工快照</span></button>
+          <button class="node" data-map-node="原始记录">原始记录<br><span class="small">raw import rows</span></button>
+          <button class="node" data-map-node="标准化交易">标准化交易<br><span class="small">normalized transaction</span></button>
+          <button class="node" data-map-node="Interconnection group">Interconnection group<br><span class="small">去重、抵消、合并</span></button>
+          <button class="node" data-map-node="事件类型">事件类型<br><span class="small">消费、退款、投资入金、基金申购、转账</span></button>
+          <button class="node" data-map-node="账本事件">账本事件<br><span class="small">ledger_event_hash</span></button>
+          <button class="node" data-map-node="公式">公式<br><span class="small">消费总流出、生活消费、投资市值、现金流窗口</span></button>
+          <button class="node" data-map-node="影响板块">影响板块<br><span class="small">首页、消费、投资、现金流、报告</span></button>
+          <button class="node" data-map-node="分类">分类<br><span class="small">L1/L2 消费分类</span></button>
+          <button class="node" data-map-node="标签">标签<br><span class="small">默认标签与自定义视图</span></button>
+          <button class="node" data-map-node="Metric Dependency Graph">Metric Dependency Graph<br><span class="small">指标依赖与重算范围</span></button>
+          <button class="node" data-map-node="Metric Drilldown Debugger">Metric Drilldown Debugger<br><span class="small">来源、公式、参数、排除、抵消</span></button>
+        </div>
+        <aside class="detail" id="map-detail">
+          <h3>数据源</h3>
+          <p>source -> raw -> normalized -> group -> event -> ledger -> metrics -> UI。点击节点查看对应数据来源、事件类型、分类、标签、公式和影响板块。</p>
+        </aside>
+      </div>
+      <div class="status-grid" data-status-for="Interconnection Map"></div>
+    </section>
+
+    <section id="dependency-graph">
+      <h2>Metric Dependency Graph</h2>
+      <table>
+        <thead><tr><th>核心指标</th><th>直接依赖</th><th>重算触发</th><th>不应受影响示例</th></tr></thead>
+        <tbody>
+          <tr><td>净资产</td><td>账本事件、持仓市值、生活现金、汇率快照</td><td>金额、持仓、汇率变化</td><td>仅标签显示名变化</td></tr>
+          <tr><td>消费总流出</td><td>生活消费、投资入金、基金申购、黄金申购、投资买入、金融费用、退款抵消</td><td>消费/投资流出事件变化</td><td>图表排序变化</td></tr>
+          <tr><td>现金流窗口</td><td>预计收入、退款、固定支出、弹性支出、信用卡、投资入金、投资回流</td><td>现金流事件或窗口参数变化</td><td>tooltip 文案变化</td></tr>
+        </tbody>
+      </table>
+      <div class="status-grid" data-status-for="Metric Dependency Graph"></div>
+    </section>
+
+    <div class="grid">
+      <section class="span-6" id="tag-category">
+        <h2>消费分类与标签</h2>
+        <p>消费分类保持 `L1 ≤ 12 / L2 ≤ 50`；标签支持默认标签、自定义标签、规则标签和历史追踪。</p>
+        <table>
+          <tbody>
+            <tr><th>纳入消费总流出</th><td>投资入金、基金申购、黄金申购、投资买入、金融费用</td></tr>
+            <tr><th>排除生活消费</th><td>投资入金、基金申购、黄金申购、投资买入、内部转账、信用卡还款</td></tr>
+            <tr><th>低置信记录</th><td>低于 70 分进入 Agent Review Queue（智能复核队列）</td></tr>
+          </tbody>
+        </table>
+        <div class="status-grid" data-status-for="消费分类与标签"></div>
+      </section>
+
+      <section class="span-6" id="investment-model">
+        <h2>投资模型</h2>
+        <p>投资市值 = 投资现金 + Σ(持仓数量 × 最新价格 × 汇率)。成本、税费、汇率、已实现、未实现和总收益均保留中文 drilldown。</p>
+        <table>
+          <tbody>
+            <tr><th>市值输入</th><td>持仓数量、最新价格、汇率快照、投资现金</td></tr>
+            <tr><th>行为指标</th><td>交易频率、换手率、持仓周期、追涨、杀跌、现金拖累、集中度</td></tr>
+            <tr><th>现金影响</th><td>投资入金进入消费总流出，同时进入现金流挤压分析</td></tr>
+          </tbody>
+        </table>
+        <div class="status-grid" data-status-for="投资模型"></div>
+      </section>
+    </div>
+
+    <section id="consumption-model">
+      <h2>消费模型</h2>
+      <table>
+        <thead><tr><th>指标</th><th>公式</th><th>排除/抵消</th><th>影响板块</th></tr></thead>
+        <tbody>
+          <tr><td>消费总流出金额</td><td>生活消费 + 投资入金 + 基金申购 + 黄金申购 + 投资买入 + 金融费用 - 退款抵消</td><td>退款抵消原消费</td><td>首页总览、消费管理、报告</td></tr>
+          <tr><td>生活消费金额</td><td>普通生活消费 - 已关联退款 - 已关联撤销</td><td>投资入金、基金申购、黄金申购、投资买入、内部转账、信用卡还款</td><td>消费管理、现金流</td></tr>
+        </tbody>
+      </table>
+      <div class="status-grid" data-status-for="消费模型"></div>
+    </section>
+
+    <section id="cashflow">
+      <h2>现金流可视化</h2>
+      <div class="grid">
+        <div class="span-6">
+          <h3>现金流阶梯图</h3>
+          <div class="ladder" aria-label="现金流阶梯图">
+            <div class="bar"><span style="height: 136px"></span><b>7 天</b><small>CNY 21,800</small></div>
+            <div class="bar"><span style="height: 124px"></span><b>21 天</b><small>CNY 19,400</small></div>
+            <div class="bar"><span style="height: 116px"></span><b>30 天</b><small>CNY 18,100</small></div>
+            <div class="bar"><span style="height: 98px"></span><b>60 天</b><small>CNY 15,200</small></div>
+            <div class="bar"><span style="height: 90px"></span><b>90 天</b><small>CNY 14,000</small></div>
+            <div class="bar"><span style="height: 82px"></span><b>180 天</b><small>CNY 12,700</small></div>
+            <div class="bar"><span style="height: 76px"></span><b>360 天</b><small>CNY 11,800</small></div>
+          </div>
+        </div>
+        <div class="span-6">
+          <h3>现金流瀑布图</h3>
+          <div class="waterfall">
+            <div class="waterfall-row"><span>当前现金</span><span class="waterfall-bar" style="width: 72%"></span><b>+21,800</b></div>
+            <div class="waterfall-row"><span>收入</span><span class="waterfall-bar" style="width: 64%"></span><b>+9,200</b></div>
+            <div class="waterfall-row"><span>退款</span><span class="waterfall-bar" style="width: 22%"></span><b>+880</b></div>
+            <div class="waterfall-row"><span>固定支出</span><span class="waterfall-bar out" style="width: 48%"></span><b>-5,600</b></div>
+            <div class="waterfall-row"><span>弹性支出</span><span class="waterfall-bar out" style="width: 36%"></span><b>-3,100</b></div>
+            <div class="waterfall-row"><span>信用卡</span><span class="waterfall-bar out" style="width: 30%"></span><b>-2,700</b></div>
+            <div class="waterfall-row"><span>投资入金</span><span class="waterfall-bar neutral" style="width: 40%"></span><b>-4,000</b></div>
+            <div class="waterfall-row"><span>投资回流</span><span class="waterfall-bar" style="width: 18%"></span><b>+1,200</b></div>
+          </div>
+        </div>
+        <div class="span-6">
+          <h3>储备金安全带</h3>
+          <div class="safety-band">
+            <div class="green"><b>绿色</b><br>生活现金高于储备金底线 120%，可维持计划投资。</div>
+            <div class="yellow"><b>黄色</b><br>生活现金位于 80%-120%，需要观察固定支出和信用卡压力。</div>
+            <div class="red"><b>红色</b><br>生活现金低于 80%，暂停新增投资入金建议。</div>
+          </div>
+        </div>
+        <div class="span-6">
+          <h3>投资入金挤压图</h3>
+          <table>
+            <tbody>
+              <tr><th>计划投资入金</th><td>CNY 4,000</td></tr>
+              <tr><th>入金后 30 天生活现金</th><td>CNY 18,100 -> CNY 14,100</td></tr>
+              <tr><th>储备金底线</th><td>CNY 15,000</td></tr>
+              <tr><th>挤压结论</th><td>进入黄色区间，建议先保留生活现金。</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="status-grid" data-status-for="现金流可视化"></div>
+    </section>
+
+    <section id="drilldown">
+      <h2>Metric Drilldown Debugger</h2>
+      <div class="map-wrap">
+        <div class="flow">
+          <button class="drill active" data-drilldown-metric="本月消费">本月消费</button>
+          <button class="drill" data-drilldown-metric="投资资产">投资资产</button>
+          <button class="drill" data-drilldown-metric="现金流窗口">现金流窗口</button>
+        </div>
+        <aside class="detail" id="drilldown-detail">
+          <h3>本月消费</h3>
+          <p><b>纳入：</b>普通生活消费、投资入金、基金申购、黄金申购、投资买入、金融费用。</p>
+          <p><b>排除：</b>内部转账、信用卡还款、投资卖出回流。</p>
+          <p><b>调整：</b>退款抵消原消费。</p>
+          <p><b>质量：</b>置信度 ≥ 70 分；匹配率 94%；最后更新时间 2026-06-28 06:00；计算耗时 42ms；缓存状态 cached_snapshot。</p>
+        </aside>
+      </div>
+      <div class="status-grid" data-status-for="Metric Drilldown Debugger"></div>
+    </section>
+
+    <div class="grid">
+      <section class="span-6" id="runtime-diff">
+        <h2>Runtime Diff Dashboard（本地差异看板）</h2>
+        <table>
+          <tbody>
+            <tr><th>无 diff</th><td>不联网、不生成 Codex ticket、不触发 LLM。</td></tr>
+            <tr><th>有 diff</th><td>只重算受影响指标，不全量重算所有板块。</td></tr>
+            <tr><th>P0 核心指标</th><td>净资产、生活现金、投资资产、消费总流出、生活消费、投资收益、现金流窗口、待复核数量、Interconnection 异常数量。</td></tr>
+          </tbody>
+        </table>
+        <div class="status-grid" data-status-for="Runtime Diff Dashboard"></div>
+      </section>
+
+      <section class="span-6" id="agent-review">
+        <h2>Agent Review Queue（智能复核队列）</h2>
+        <table>
+          <tbody>
+            <tr><th>触发原因</th><td>业务语义变化、公式逻辑变化、分类冲突、标签冲突、跨板块不一致、测试无法解释。</td></tr>
+            <tr><th>禁止事项</th><td>普通本地重算不得触发外部 LLM；ticket 必须中文且可执行。</td></tr>
+            <tr><th>当前样本</th><td>低置信 406 条；未匹配 interconnection 18 条。</td></tr>
+          </tbody>
+        </table>
+        <div class="status-grid" data-status-for="Agent Review Queue"></div>
+      </section>
+    </div>
+
+    <section id="acceptance">
+      <h2>验收清单</h2>
+      <ul class="checklist">
+        <li><b>S9-P1-T1</b><br>参数中心覆盖货币、汇率、分类、标签、阈值、公式、置信度、现金流窗口。</li>
+        <li><b>S9-P1-T2</b><br>参数显示中文名、当前值、作用、影响范围、是否可修改。</li>
+        <li><b>S9-P1-T3</b><br>参数变更影响预览覆盖记录数、标签数、建议数、图表数。</li>
+        <li><b>S9-P2-T1</b><br>INTERCONNECTION_MAP.md 含 Mermaid 图。</li>
+        <li><b>S9-P2-T2</b><br>HTML 可点击追踪数据源、事件类型、分类、标签、公式、影响板块。</li>
+        <li><b>S9-P2-T3</b><br>每个图表显示数据状态：参数版本、公式版本、汇率快照、hash、缓存、是否需要重算。</li>
+        <li><b>S9-P3-T1</b><br>现金流阶梯图包含 7/21/30/60/90/180/360 天。</li>
+        <li><b>S9-P3-T2</b><br>现金流瀑布图包含当前现金、收入、退款、固定支出、弹性支出、信用卡、投资入金、投资回流。</li>
+        <li><b>S9-P3-T3</b><br>储备金安全带包含绿色、黄色、红色。</li>
+        <li><b>S9-P3-T4</b><br>投资入金挤压图说明生活现金和储备金影响。</li>
+        <li><b>S9-P4-T1</b><br>首页核心数字 drilldown 显示来源、公式、参数、排除、抵消。</li>
+        <li><b>S9-P4-T2</b><br>展示 included、excluded、adjusted。</li>
+        <li><b>S9-P4-T3</b><br>展示 confidence、match rate、last updated、compute time、cache status。</li>
+      </ul>
+      <div class="status-grid" data-status-for="验收清单"></div>
+    </section>
+  </main>
+
+  <script>
+    const statusTemplate = {
+      "数据来源覆盖率": "支付宝、银行、券商、基金、贵金属、微信和手工快照合同层已覆盖",
+      "最近更新时间": "2026-06-28 06:00 Australia/Sydney",
+      "参数版本": "v0.2.2 / PFIParametersV022Stage9",
+      "公式版本": "Stage 7 formula/scoring",
+      "汇率快照 ID": "fx_AUD_CNY_20260628",
+      "ledger_hash": "ledger_events_hash",
+      "interconnection_hash": "interconnection_hash",
+      "是否存在未匹配记录": "有，进入待复核队列",
+      "是否存在低置信记录": "有，低于 70 分进入复核",
+      "是否存在缓存": "有，本地 snapshot 缓存",
+      "是否需要重算": "由 Stage 8 Runtime Diff 判断",
+      "UI 指标是否与报告一致": "必须一致；不一致时生成本地 Codex Review Ticket"
+    };
+
+    const mapDetails = {
+      "数据源": "数据源包含支付宝、银行、券商、基金、贵金属、微信和手工快照；上传中心保存 source profile 和 capability。",
+      "原始记录": "原始记录保留 raw row、source_id、account_id、导入批次和原始金额，不直接进入指标。",
+      "标准化交易": "标准化交易统一方向、金额、币种、时间、账户角色和 source profile。",
+      "Interconnection group": "Interconnection group 负责去重、退款抵消、信用卡还款抵消和跨账户事件合并。",
+      "事件类型": "事件类型决定是否影响消费总流出、生活消费、投资、现金流和净资产。",
+      "账本事件": "账本事件是指标事实层，含 ledger_hash、event_type、amount_cny、fx_snapshot_id。",
+      "公式": "公式包括消费总流出、生活消费、投资市值、现金流窗口、储备金安全线和投资入金挤压。",
+      "影响板块": "影响板块包括首页总览、消费管理、投资管理、现金流可视化、报告和复核队列。",
+      "分类": "分类使用 L1/L2 消费分类，保持 L1 ≤ 12、L2 ≤ 50。",
+      "标签": "标签支持默认标签、自定义标签、规则标签和 tag history。",
+      "Metric Dependency Graph": "Metric Dependency Graph 用于解释 P0/P1/P2 指标依赖和是否需要重算。",
+      "Metric Drilldown Debugger": "Metric Drilldown Debugger 展示 source records、formula、parameters、exclusions、offsets 和质量状态。"
+    };
+
+    const drillDetails = {
+      "本月消费": {
+        "纳入": "普通生活消费、投资入金、基金申购、黄金申购、投资买入、金融费用。",
+        "排除": "内部转账、信用卡还款、投资卖出回流。",
+        "调整": "退款抵消原消费。",
+        "质量": "置信度 ≥ 70 分；匹配率 94%；最后更新时间 2026-06-28 06:00；计算耗时 42ms；缓存状态 cached_snapshot。"
+      },
+      "投资资产": {
+        "纳入": "投资现金、持仓市值、基金资产、贵金属资产。",
+        "排除": "生活现金、普通消费、信用卡还款。",
+        "调整": "汇率快照折算、费用和税费。",
+        "质量": "置信度 ≥ 70 分；匹配率 91%；最后更新时间 2026-06-28 06:00；计算耗时 38ms；缓存状态 cached_snapshot。"
+      },
+      "现金流窗口": {
+        "纳入": "预计收入、预计退款、固定支出、弹性支出、信用卡、投资入金、投资回流。",
+        "排除": "内部账户调拨重复项。",
+        "调整": "储备金安全线、投资入金挤压生活现金。",
+        "质量": "置信度 ≥ 70 分；匹配率 89%；最后更新时间 2026-06-28 06:00；计算耗时 44ms；缓存状态 cached_snapshot。"
+      }
+    };
+
+    function fillStatusBlocks() {
+      document.querySelectorAll("[data-status-for]").forEach((grid) => {
+        grid.innerHTML = Object.entries(statusTemplate).map(([key, value]) =>
+          `<div class="status-item"><b>${key}</b><span>${value}</span></div>`
+        ).join("");
+      });
+    }
+
+    function activateButton(button, selector) {
+      document.querySelectorAll(selector).forEach((node) => node.classList.remove("active"));
+      button.classList.add("active");
+    }
+
+    document.querySelectorAll("[data-map-node]").forEach((button) => {
+      button.addEventListener("click", () => {
+        activateButton(button, "[data-map-node]");
+        const key = button.getAttribute("data-map-node");
+        document.getElementById("map-detail").innerHTML = `<h3>${key}</h3><p>${mapDetails[key]}</p>`;
+      });
+    });
+
+    document.querySelectorAll("[data-drilldown-metric]").forEach((button) => {
+      button.addEventListener("click", () => {
+        activateButton(button, "[data-drilldown-metric]");
+        const key = button.getAttribute("data-drilldown-metric");
+        const detail = drillDetails[key];
+        document.getElementById("drilldown-detail").innerHTML = `
+          <h3>${key}</h3>
+          <p><b>纳入：</b>${detail["纳入"]}</p>
+          <p><b>排除：</b>${detail["排除"]}</p>
+          <p><b>调整：</b>${detail["调整"]}</p>
+          <p><b>质量：</b>${detail["质量"]}</p>
+        `;
+      });
+    });
+
+    fillStatusBlocks();
+  </script>
+</body>
+</html>

@@ -76,6 +76,14 @@
 | 2026-06-28 | `S8-P2-T1..S8-P2-T3` | `impacted_metrics_policy` | `未区分 P0/P1/P2` | `P0 核心指标、P1 分析指标、P2 展示指标分离` | 防止展示变化或标签变化误报为财务核心变化。 | 首页、消费、投资、现金流、报告、参数中心。 |
 | 2026-06-28 | `S8-P2-T4` | `impacted_metrics_policy.tag_display_name_not_impacted` | `无` | `净资产、投资收益、现金流窗口` | 仅标签显示名变化不应改变核心金额或现金流口径。 | 标签系统、Runtime Diff、测试。 |
 | 2026-06-28 | `S8-P3-T1..S8-P3-T3` | `llm_agent_review_triggers` | `无正式触发规则` | `业务语义变化、公式逻辑变化、分类冲突、标签冲突、跨板块不一致、测试无法解释才生成本地票据` | 普通本地重算不得触发 LLM；重要冲突需要可执行中文复核票据。 | `PFI/review_queue/`、开发记录、测试复核。 |
+| 2026-06-28 | `S9-P1-T1` | `visualization_uiux.parameter_center_domains` | `无正式 Stage 9 参数中心域` | `货币、汇率、分类、标签、阈值、公式、置信度、现金流窗口` | Stage 9 要求用户可以人工检查核心参数域。 | 参数中心、本地 HTML、合同测试。 |
+| 2026-06-28 | `S9-P1-T2` | `visualization_uiux.required_parameter_fields` | `无` | `中文名、当前值、作用、影响范围、是否可修改` | 避免只显示代码变量名，保证中文可读。 | 参数中心、三基文件、HTML 审查页。 |
+| 2026-06-28 | `S9-P1-T3` | `visualization_uiux.parameter_impact_preview_fields` | `无` | `记录数、标签数、建议数、图表数` | 修改参数前必须预估影响范围。 | 参数中心、运行复核、报告预估。 |
+| 2026-06-28 | `S9-P2-T1` | `visualization_uiux.interconnection_map` | `Stage 4/8 只有逻辑和依赖图` | `source -> raw -> normalized -> group -> event -> ledger -> metrics -> UI` | Stage 9 要求 Mermaid graph 而不是纯文字说明。 | `docs/pfi_v022/INTERCONNECTION_MAP.md`、Metric Dependency Graph。 |
+| 2026-06-28 | `S9-P2-T2` | `visualization_uiux.local_html_path` | `无 Stage 9 HTML` | `PFI/web/interconnection-map.html` | 提供本地可打开、可点击追踪的审查页。 | 浏览器验收、GitHub 交付检查。 |
+| 2026-06-28 | `S9-P2-T3` | `visualization_uiux.data_status_fields` | `无统一可视化数据状态字段` | `数据来源覆盖率、最近更新时间、参数版本、公式版本、汇率快照 ID、ledger_hash、interconnection_hash、是否存在未匹配记录、是否存在低置信记录、是否存在缓存、是否需要重算、UI 指标是否与报告一致` | 每个图表必须证明数据来源和新鲜度。 | 首页总览、图表、报告一致性、测试。 |
+| 2026-06-28 | `S9-P3-T1..S9-P3-T4` | `visualization_uiux.cashflow_visualizations` | `Stage 7 锁定公式，无 Stage 9 本地可视化` | `现金流阶梯图、现金流瀑布图、储备金安全带、投资入金挤压图` | 现金流需要可视化呈现 7/21/30/60/90/180/360 和投资入金挤压。 | 现金流可视化、首页、报告预检。 |
+| 2026-06-28 | `S9-P4-T1..S9-P4-T3` | `visualization_uiux.metric_drilldown_debugger` | `无 Stage 9 drilldown 合同` | `本月消费、投资资产、现金流窗口的纳入、排除、调整、公式、参数、质量状态` | 首页核心数字必须可追溯，不只显示结果。 | 首页总览、Metric Drilldown Debugger、报告一致性。 |
 
 ## 记录规则
 

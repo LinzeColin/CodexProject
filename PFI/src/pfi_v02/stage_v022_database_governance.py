@@ -45,6 +45,14 @@ from pfi_v02.stage_v022_runtime_diff import (
     STAGE8_P2_DISPLAY_METRICS,
     build_stage8_contract_payload,
 )
+from pfi_v02.stage_v022_visualization_uiux import (
+    STAGE9_CASHFLOW_VISUALIZATIONS,
+    STAGE9_CASHFLOW_WINDOWS_DAYS,
+    STAGE9_DATA_STATUS_FIELDS,
+    STAGE9_PARAMETER_CENTER_DOMAINS,
+    STAGE9_REQUIRED_MODULES,
+    build_stage9_contract_payload,
+)
 
 
 V022_STAGE1_TASK_IDS = (
@@ -152,6 +160,22 @@ V022_STAGE8_TASK_IDS = (
     "S8-P3-T1",
     "S8-P3-T2",
     "S8-P3-T3",
+)
+
+V022_STAGE9_TASK_IDS = (
+    "S9-P1-T1",
+    "S9-P1-T2",
+    "S9-P1-T3",
+    "S9-P2-T1",
+    "S9-P2-T2",
+    "S9-P2-T3",
+    "S9-P3-T1",
+    "S9-P3-T2",
+    "S9-P3-T3",
+    "S9-P3-T4",
+    "S9-P4-T1",
+    "S9-P4-T2",
+    "S9-P4-T3",
 )
 
 V022_STAGE0_TASK_IDS = (
@@ -1078,5 +1102,107 @@ def build_v022_stage8_contract() -> dict[str, object]:
             "不修改 v0.2.1 HTML Web Shell UIUX 基线。",
             "不联网、不调用外部 LLM、不生成真实 agent 任务。",
             "不新增真实交易、自动投资、支付或券商提交。",
+        ),
+    }
+
+
+def build_v022_stage9_contract() -> dict[str, object]:
+    stage9_payload = build_stage9_contract_payload({})
+    return {
+        "schema": "PFIV022VisualizationUIUXStage9ContractV1",
+        "version": "v0.2.2",
+        "stage": "Stage 9",
+        "stage_name_zh": "可视化与 UI/UX",
+        "goal": "生成本地可打开、中文可读、可点击追踪的 Stage 9 可视化审查页，让参数、公式、数据新鲜度、现金流和核心指标 drilldown 可人工验收。",
+        "task_ids": V022_STAGE9_TASK_IDS,
+        "phases": {
+            "Phase 9.1": ("参数中心", "S9-P1-T1", "S9-P1-T2", "S9-P1-T3"),
+            "Phase 9.2": ("Interconnection 可视化", "S9-P2-T1", "S9-P2-T2", "S9-P2-T3"),
+            "Phase 9.3": ("现金流可视化", "S9-P3-T1", "S9-P3-T2", "S9-P3-T3", "S9-P3-T4"),
+            "Phase 9.4": ("Metric Drilldown Debugger", "S9-P4-T1", "S9-P4-T2", "S9-P4-T3"),
+        },
+        "required_modules": STAGE9_REQUIRED_MODULES,
+        "parameter_center": {
+            "domains": STAGE9_PARAMETER_CENTER_DOMAINS,
+            "required_fields_zh": ("中文名", "当前值", "作用", "影响范围", "是否可修改"),
+            "impact_preview_fields_zh": ("记录数", "标签数", "建议数", "图表数"),
+            "stop_condition": "用户无法人工检查参数、阈值、公式、分类、标签和影响范围时停止。",
+        },
+        "interconnection_visualization": {
+            "mermaid_required_chain": "source → raw → normalized → group → event → ledger → metrics → UI",
+            "html_path": stage9_payload["single_html_path"],
+            "clickable_nodes": ("数据源", "事件类型", "分类", "标签", "公式", "影响板块"),
+            "status_fields": STAGE9_DATA_STATUS_FIELDS,
+        },
+        "cashflow_visualization": {
+            "windows_days": STAGE9_CASHFLOW_WINDOWS_DAYS,
+            "visualizations": STAGE9_CASHFLOW_VISUALIZATIONS,
+            "waterfall_components": ("当前现金", "收入", "退款", "固定支出", "弹性支出", "信用卡", "投资入金", "投资回流"),
+            "safety_band": ("绿色", "黄色", "红色"),
+        },
+        "metric_drilldown_debugger": {
+            "metrics": ("本月消费", "投资资产", "现金流窗口"),
+            "required_drilldown_fields": ("source records", "formula", "parameters", "exclusions", "offsets"),
+            "quality_fields": ("confidence", "match rate", "last updated", "compute time", "cache status"),
+        },
+        "deliverables": (
+            "PFI/src/pfi_v02/stage_v022_visualization_uiux.py",
+            "PFI/src/pfi_v02/stage_v022_database_governance.py",
+            "PFI/tests/test_v022_stage9_visualization_uiux.py",
+            "PFI/docs/pfi_v022/STAGE9_VISUALIZATION_UIUX.md",
+            "PFI/docs/pfi_v022/INTERCONNECTION_MAP.md",
+            "PFI/web/interconnection-map.html",
+            "PFI/config/pfi_parameters.yaml",
+            "PFI/config/parameter_changelog.md",
+            "PFI/模型参数文件.md",
+            "PFI/功能清单.md",
+            "PFI/开发记录.md",
+            "PFI/HANDOFF.md",
+            "PFI/README.md",
+        ),
+        "acceptance_criteria": (
+            "参数中心必须显示货币、汇率、分类、标签、阈值、公式、置信度、现金流窗口。",
+            "每个参数都有中文名、当前值、作用、影响范围、是否可修改。",
+            "参数变更前显示可能影响的记录数、标签数、建议数、图表数。",
+            "INTERCONNECTION_MAP.md 必须包含 Mermaid 图，链路为 source → raw → normalized → group → event → ledger → metrics → UI。",
+            "PFI/web/interconnection-map.html 必须是 HTML 单文件可打开，不依赖外网。",
+            "HTML 必须可点击追踪数据源、事件类型、分类、标签、公式和影响板块。",
+            "每个图表和模块必须显示数据来源覆盖率、参数版本、公式版本、汇率快照、hash、缓存和是否需要重算。",
+            "现金流必须展示 7/21/30/60/90/180/360 天阶梯图。",
+            "现金流瀑布图必须包含当前现金、收入、退款、固定支出、弹性支出、信用卡、投资入金、投资回流。",
+            "储备金安全带必须区分绿色、黄色、红色。",
+            "投资入金挤压图必须说明投资入金对生活现金和储备金的影响。",
+            "Metric Drilldown Debugger 必须展示纳入、排除、调整、公式、参数和质量字段。",
+        ),
+        "stop_conditions": (
+            "用户无法人工检查参数时停止。",
+            "只有代码变量名、没有中文解释时停止。",
+            "参数变更无法预估影响时停止。",
+            "Interconnection 只有文字没有 graph 时停止。",
+            "HTML 图不可点击或不可追踪时停止。",
+            "图表无法证明数据新鲜度时停止。",
+            "HTML 依赖外部 CDN 或网络时停止。",
+            "UI 只显示结果、不显示公式、参数和数据来源时停止。",
+            "Stage 10 报告、建议与复盘不在本轮实现。",
+        ),
+        "validation_commands": (
+            "PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests/test_v022_stage9_visualization_uiux.py -q",
+            "PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests/test_v022_stage0_database_governance.py PFI/tests/test_pfi_parameters_consistency.py PFI/tests/test_v022_fx_effective_date.py PFI/tests/test_v022_stage3_source_account_profiles.py PFI/tests/test_v022_interconnection_no_double_count.py PFI/tests/test_v022_consumption_investment_outflow.py PFI/tests/test_v022_stage5_ledger_taxonomy.py PFI/tests/test_v022_stage6_tags_views.py PFI/tests/test_v022_stage7_formula_scoring.py PFI/tests/test_v022_stage8_runtime_diff.py PFI/tests/test_v022_stage9_visualization_uiux.py -q",
+            "PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests -q",
+            "node --check PFI/web/app/shell.js",
+            "python3 scripts/validate_project_governance.py --project PFI",
+            "git diff --check -- PFI",
+            "Playwright 打开 PFI/web/interconnection-map.html 并点击 data-map-node 与 data-drilldown-metric。",
+        ),
+        "cross_review": {
+            "Agent 3": "参数中心审查：确认中文参数、阈值、公式和影响预览足以人工检查。",
+            "Agent 5": "UI/UX 可视化审查：确认 HTML 单文件、本地可打开、中文可读、点击可追踪。",
+            "Agent 6": "测试与运行审查：确认无外网依赖、数据状态字段完整、Stage 10 未提前实现。",
+        },
+        "non_goals": (
+            "Stage 10 报告、建议与复盘不在本轮实现。",
+            "不修改 v0.2.1 主 Web Shell UIUX 基线。",
+            "不新增真实交易、自动投资、支付或券商提交。",
+            "不联网、不调用外部 LLM、不生成真实 agent 任务。",
         ),
     }
