@@ -7,6 +7,7 @@ VERSION_NAME = "v0.2.1.1 Product UI Recovery"
 STAGE0_TASK_ID = "V0211-S0-T01"
 STAGE1_TASK_ID = "V0211-S1-T01"
 STAGE2_TASK_ID = "V0211-S2-T01"
+STAGE3_TASK_ID = "V0211-S3-T01"
 TOTAL_EXECUTION_STAGES = 6
 
 
@@ -42,6 +43,16 @@ class V0211PageSkeleton:
     route: str
     purpose: str
     secondary_tabs: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class V0211OperationFlow:
+    flow_id: str
+    owner_entry: str
+    route: str
+    required_controls: tuple[str, ...]
+    state_surfaces: tuple[str, ...]
+    acceptance: tuple[str, ...]
 
 
 SOURCE_FILES: tuple[V0211SourceFile, ...] = (
@@ -348,6 +359,57 @@ STAGE2_FORBIDDEN_VISIBLE_TEXT = (
     "任务中心",
 )
 
+STAGE3_OPERATION_FLOWS: tuple[V0211OperationFlow, ...] = (
+    V0211OperationFlow(
+        "upload_import",
+        "数据源与上传",
+        "/sources-upload?tab=upload",
+        ("上传中心", "解析预览", "字段映射", "确认入库", "进入账本复核"),
+        ("上传状态", "解析预览", "导入摘要", "待复核队列"),
+        (
+            "未选择文件时显示中文提示，不制造记录数",
+            "选择真实文件后显示文件名、大小、字段映射和待复核路径",
+            "确认入库必须走后端或本地服务；失败时显示中文错误",
+        ),
+    ),
+    V0211OperationFlow(
+        "ledger_review_export",
+        "账本流水",
+        "/ledger?tab=review",
+        ("账本筛选", "分类选择", "保存复核", "导出流水"),
+        ("筛选状态", "分类复核状态", "导出状态"),
+        (
+            "无真实流水时显示中文空状态",
+            "筛选、分类和复核动作必须改变页面状态",
+            "导出路径只导出当前真实列表或空表头，不生成虚构流水",
+        ),
+    ),
+    V0211OperationFlow(
+        "holdings_edit",
+        "投资管理",
+        "/investment?tab=holdings",
+        ("持仓编辑表单", "新增持仓", "保存修改", "放弃未提交草稿"),
+        ("未提交草稿", "持仓摘要", "保存状态"),
+        (
+            "浏览器缓存只允许保存明确标注的未提交草稿",
+            "生产保存必须调用本地 API 或后端服务",
+            "无真实持仓时显示中文空状态，不伪造持仓",
+        ),
+    ),
+    V0211OperationFlow(
+        "settings_save",
+        "设置",
+        "/settings",
+        ("账户偏好", "主题语言", "保存设置", "恢复默认"),
+        ("设置保存状态", "反馈偏好状态", "本机设置摘要"),
+        (
+            "设置只在设置页显示",
+            "保存和恢复动作必须改变设置页状态",
+            "业务页面默认不展示反馈控制台或设置侧栏",
+        ),
+    ),
+)
+
 
 def build_v0211_stage0_contract() -> dict[str, object]:
     return {
@@ -463,6 +525,38 @@ def build_v0211_stage2_contract() -> dict[str, object]:
     }
 
 
+def build_v0211_stage3_contract() -> dict[str, object]:
+    stage = next(item for item in EXECUTION_STAGES if item.stage_id == "S3")
+    return {
+        "schema": "PFIV0211ProductUIRecoveryStage3ContractV1",
+        "version_name": VERSION_NAME,
+        "stage": "S3 真实操作流",
+        "task_id": STAGE3_TASK_ID,
+        "project_root": "CodexProject/PFI",
+        "current_stage_only": True,
+        "primary_navigation": STAGE1_PRIMARY_NAVIGATION,
+        "operation_flows": [asdict(item) for item in STAGE3_OPERATION_FLOWS],
+        "delivery_focus": stage.delivery_focus,
+        "forbidden_work": stage.forbidden_work,
+        "acceptance_gate": stage.acceptance_gate,
+        "browser_behavior_required": (
+            "点击一级入口和二级入口后，操作面板必须出现对应中文状态",
+            "点击主要操作按钮必须改变页面状态、表格、摘要或状态条",
+            "无真实数据时显示中文空状态，不用演示数据填充",
+        ),
+        "production_persistence_policy": (
+            "持仓生产保存不得写入 localStorage、sessionStorage 或 IndexedDB",
+            "localStorage 只允许保存明确标注的未提交草稿",
+            "上传确认和持仓保存必须调用后端 API 或本地服务；失败要显示中文错误状态",
+        ),
+        "stage3_non_goals": (
+            "不声明 Stage 4 持久化与同步完成",
+            "不声明 Stage 5 真实图表与最终验收完成",
+            "不新增测试数据、样例流水、模拟持仓或虚构财务事实",
+        ),
+    }
+
+
 def v0211_stage_ids() -> tuple[str, ...]:
     return tuple(stage.stage_id for stage in EXECUTION_STAGES)
 
@@ -477,3 +571,7 @@ def v0211_stage1_navigation_labels() -> tuple[str, ...]:
 
 def v0211_stage2_page_labels() -> tuple[str, ...]:
     return tuple(item.label for item in STAGE2_PAGE_SKELETONS.values())
+
+
+def v0211_stage3_operation_flow_ids() -> tuple[str, ...]:
+    return tuple(item.flow_id for item in STAGE3_OPERATION_FLOWS)
