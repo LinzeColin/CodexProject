@@ -250,8 +250,8 @@ class TestV022Stage7FormulaScoring(unittest.TestCase):
 
         governance = importlib.import_module("pfi_v02.stage_v022_database_governance")
         catalog = governance.load_v022_parameter_catalog(ROOT / "config" / "pfi_parameters.yaml")
-        self.assertEqual(catalog["schema"], "PFIParametersV022Stage7")
-        self.assertEqual(catalog["current_stage"], "Stage 7 - 模型公式、阈值与评分标准")
+        self.assertEqual(catalog["schema"], "PFIParametersV022Stage8")
+        self.assertEqual(catalog["current_stage"], "Stage 8 - 本地运行 Diff 与 Impacted Metrics")
         self.assertEqual(catalog["stage7_task_ids"], list(governance.V022_STAGE7_TASK_IDS))
         self.assertEqual(catalog["parameters"]["confidence"]["review_threshold"]["value"], 70)
         self.assertEqual(catalog["parameters"]["cashflow"]["windows_days"]["value"], [7, 21, 30, 60, 90, 180, 360])

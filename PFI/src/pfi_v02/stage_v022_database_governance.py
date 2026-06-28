@@ -36,6 +36,15 @@ from pfi_v02.stage_v022_formula_scoring import (
     STAGE7_REVIEW_THRESHOLD,
     build_stage7_contract_payload,
 )
+from pfi_v02.stage_v022_runtime_diff import (
+    STAGE8_DEPENDENCY_HASH_KEYS,
+    STAGE8_LLM_TRIGGER_REASONS,
+    STAGE8_NO_LLM_SCENARIOS,
+    STAGE8_P0_CORE_METRICS,
+    STAGE8_P1_ANALYSIS_METRICS,
+    STAGE8_P2_DISPLAY_METRICS,
+    build_stage8_contract_payload,
+)
 
 
 V022_STAGE1_TASK_IDS = (
@@ -130,6 +139,19 @@ V022_STAGE7_TASK_IDS = (
     "S7-P4-T1",
     "S7-P4-T2",
     "S7-P4-T3",
+)
+
+V022_STAGE8_TASK_IDS = (
+    "S8-P1-T1",
+    "S8-P1-T2",
+    "S8-P1-T3",
+    "S8-P2-T1",
+    "S8-P2-T2",
+    "S8-P2-T3",
+    "S8-P2-T4",
+    "S8-P3-T1",
+    "S8-P3-T2",
+    "S8-P3-T3",
 )
 
 V022_STAGE0_TASK_IDS = (
@@ -952,6 +974,109 @@ def build_v022_stage7_contract() -> dict[str, object]:
             "Stage 9 参数中心和 HTML 关系图不在本轮实现。",
             "Stage 10 建议评分生命周期不在本轮实现。",
             "不修改 v0.2.1 HTML Web Shell UIUX 基线。",
+            "不新增真实交易、自动投资、支付或券商提交。",
+        ),
+    }
+
+
+def build_v022_stage8_contract() -> dict[str, object]:
+    stage8_payload = build_stage8_contract_payload()
+    return {
+        "schema": "PFIV022RuntimeDiffStage8ContractV1",
+        "version": "v0.2.2",
+        "stage": "Stage 8",
+        "stage_name_zh": "本地运行 Diff 与 Impacted Metrics",
+        "goal": "每次运行生成本地依赖 hash snapshot；有 diff 时只重算受影响指标；重要冲突才生成本地中文 Codex Review Ticket。",
+        "task_ids": V022_STAGE8_TASK_IDS,
+        "phases": {
+            "Phase 8.1": ("本地一致性刷新", "S8-P1-T1", "S8-P1-T2", "S8-P1-T3"),
+            "Phase 8.2": ("收紧 Impacted Metrics", "S8-P2-T1", "S8-P2-T2", "S8-P2-T3", "S8-P2-T4"),
+            "Phase 8.3": ("ChatGPT / Codex / LLM 触发条件", "S8-P3-T1", "S8-P3-T2", "S8-P3-T3"),
+        },
+        "dependency_hash_snapshot": {
+            "hash_keys": STAGE8_DEPENDENCY_HASH_KEYS,
+            "required_phrase": "原始数据、标准化交易、账本事件、interconnection、参数、分类、标签、汇率快照 hash",
+            "stop_condition": "无法判断数据是否变化时停止。",
+        },
+        "runtime_refresh_policy": {
+            "no_diff_behavior": "无 diff 不联网、不生成 Codex ticket、不触发 LLM。",
+            "ordinary_diff_behavior": "普通 diff 只生成本地 diff report。",
+            "important_diff_behavior": "业务语义、公式逻辑、分类冲突、标签冲突、跨板块不一致、测试无法解释时生成本地中文 Codex Review Ticket。",
+            "network_allowed_by_default": False,
+            "full_recompute_allowed": False,
+            "recompute_policy": "有 diff 时只重算受影响指标；不全量重算所有板块。",
+        },
+        "impacted_metrics": {
+            "p0_core_metrics": STAGE8_P0_CORE_METRICS,
+            "p0_rule_zh": "P0 核心指标仅包括净资产、生活现金、投资资产、消费总流出、生活消费、投资收益、现金流窗口、待复核数量、Interconnection 异常数量。",
+            "p1_analysis_metrics": STAGE8_P1_ANALYSIS_METRICS,
+            "p2_display_metrics": STAGE8_P2_DISPLAY_METRICS,
+            "not_impacted_examples": (
+                "仅标签名称变化不应改变净资产、投资收益、现金流窗口。",
+                "仅图表排序变化不应改变任何金额。",
+                "仅刷新本地缓存不应改变 ledger_event_hash。",
+                "仅 UI 文案变化不应改变模型参数 hash。",
+            ),
+            "dependency_graph": stage8_payload["dependency_graph"],
+        },
+        "llm_trigger_policy": {
+            "allowed_trigger_reasons": STAGE8_LLM_TRIGGER_REASONS,
+            "no_llm_scenarios": STAGE8_NO_LLM_SCENARIOS,
+            "trigger_mode": "local_ticket_only_no_network",
+        },
+        "deliverables": (
+            "PFI/src/pfi_v02/stage_v022_runtime_diff.py",
+            "PFI/src/pfi_v02/stage_v022_database_governance.py",
+            "PFI/tests/test_v022_stage8_runtime_diff.py",
+            "PFI/docs/pfi_v022/STAGE8_RUNTIME_DIFF_IMPACTED_METRICS.md",
+            "PFI/review_queue/CODEX_REVIEW_TICKET_TEMPLATE.md",
+            "PFI/config/pfi_parameters.yaml",
+            "PFI/config/parameter_changelog.md",
+            "PFI/模型参数文件.md",
+            "PFI/功能清单.md",
+            "PFI/开发记录.md",
+            "PFI/HANDOFF.md",
+            "PFI/README.md",
+        ),
+        "acceptance_criteria": (
+            "每次运行计算依赖 hash，至少包含原始数据、标准化交易、账本事件、interconnection、参数、分类、标签、汇率快照 hash。",
+            "无 diff 不联网、不生成 Codex ticket、不触发 LLM。",
+            "有 diff 时只重算受影响指标，不全量重算所有板块。",
+            "P0 核心指标仅包括净资产、生活现金、投资资产、消费总流出、生活消费、投资收益、现金流窗口、待复核数量、Interconnection 异常数量。",
+            "P1 分析指标和 P2 展示指标与 P0 核心指标分离。",
+            "每个 diff report 都标记不应受影响指标。",
+            "只有业务语义、公式逻辑、分类冲突、标签冲突、跨板块不一致、测试无法解释时触发 LLM 复核票据。",
+            "Codex Review Ticket 必须包含触发原因、影响指标、涉及文件、期望检查、禁止事项、中文业务解释。",
+        ),
+        "stop_conditions": (
+            "无法判断数据是否变化。",
+            "无 diff 仍触发联网、agent、Codex ticket 或 LLM。",
+            "小 diff 导致全局重算。",
+            "Impacted metrics 过宽导致误报。",
+            "分析指标与核心指标混在一起。",
+            "展示变化被误判为财务核心变化。",
+            "标签改名导致金额变化。",
+            "普通本地重算触发 LLM。",
+            "Ticket 内容不足以让 Codex 执行。",
+            "Stage 9 可视化与 UI/UX 不在本轮实现。",
+        ),
+        "validation_commands": (
+            "PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests/test_v022_stage8_runtime_diff.py -q",
+            "PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests/test_v022_stage0_database_governance.py PFI/tests/test_pfi_parameters_consistency.py PFI/tests/test_v022_fx_effective_date.py PFI/tests/test_v022_stage3_source_account_profiles.py PFI/tests/test_v022_interconnection_no_double_count.py PFI/tests/test_v022_consumption_investment_outflow.py PFI/tests/test_v022_stage5_ledger_taxonomy.py PFI/tests/test_v022_stage6_tags_views.py PFI/tests/test_v022_stage7_formula_scoring.py PFI/tests/test_v022_stage8_runtime_diff.py -q",
+            "PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests -q",
+            "node --check PFI/web/app/shell.js",
+            "python3 scripts/validate_project_governance.py --project PFI",
+            "git diff --check -- PFI",
+        ),
+        "cross_review": {
+            "Agent 3": "参数、公式、阈值审查：确认参数 hash、公式变化和阈值变化只触发必要指标。",
+            "Agent 4": "消费、投资、现金流模型审查：确认 P0 核心指标不被标签、文案或图表变更污染。",
+            "Agent 6": "测试、Diff、LLM Agent Trigger 审查：确认 no-diff 禁止外部触发，ticket 中文且可执行。",
+        },
+        "non_goals": (
+            "Stage 9 可视化与 UI/UX 不在本轮实现。",
+            "不修改 v0.2.1 HTML Web Shell UIUX 基线。",
+            "不联网、不调用外部 LLM、不生成真实 agent 任务。",
             "不新增真实交易、自动投资、支付或券商提交。",
         ),
     }

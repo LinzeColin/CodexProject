@@ -1,9 +1,9 @@
 {
-  "schema": "PFIParametersV022Stage7",
+  "schema": "PFIParametersV022Stage8",
   "project_id": "PFI",
   "task_name": "PFI v0.2.2 E2E 逻辑优化",
   "parameter_version": "v0.2.2",
-  "current_stage": "Stage 7 - 模型公式、阈值与评分标准",
+  "current_stage": "Stage 8 - 本地运行 Diff 与 Impacted Metrics",
   "canonical_parameter_file": "PFI/config/pfi_parameters.yaml",
   "machine_format": "JSON-compatible YAML",
   "uiux_baseline": "v0.2.1 HTML Web Shell",
@@ -2672,6 +2672,193 @@
         ],
         "user_editable": false
       }
+    },
+    "runtime_refresh_policy": {
+      "default_network_refresh": {
+        "value": false,
+        "label_zh": "普通运行是否联网",
+        "description_zh": "Stage 8 规定普通运行只做本地一致性刷新，不默认联网、不调用外部 LLM、不生成真实 agent 任务。",
+        "impact_surfaces": [
+          "运行刷新",
+          "Runtime Diff",
+          "报告生成"
+        ],
+        "user_editable": false
+      },
+      "dependency_hash_keys": {
+        "value": [
+          "raw_data_hash",
+          "normalized_transactions_hash",
+          "ledger_events_hash",
+          "interconnection_hash",
+          "parameter_hash",
+          "category_hash",
+          "tag_hash",
+          "fx_snapshot_hash"
+        ],
+        "label_zh": "运行依赖 hash 清单",
+        "description_zh": "每次运行至少计算原始数据、标准化交易、账本事件、interconnection、参数、分类、标签和汇率快照 hash。",
+        "impact_surfaces": [
+          "本地运行 Diff",
+          "受影响指标报告"
+        ],
+        "user_editable": false
+      },
+      "no_diff_behavior": {
+        "value": "不联网、不生成 Codex ticket、不触发 LLM",
+        "label_zh": "无 diff 行为",
+        "description_zh": "依赖 hash 完全一致时只复用本地结果，禁止联网、禁止 Codex ticket、禁止 LLM 触发。",
+        "impact_surfaces": [
+          "运行刷新",
+          "复核队列"
+        ],
+        "user_editable": false
+      },
+      "ordinary_diff_behavior": {
+        "value": "只生成本地 diff report，只重算受影响指标",
+        "label_zh": "普通 diff 行为",
+        "description_zh": "普通依赖变化只触发本地重算，不扩大到全局重算，也不生成外部分析任务。",
+        "impact_surfaces": [
+          "受影响指标报告",
+          "缓存刷新"
+        ],
+        "user_editable": false
+      },
+      "important_diff_behavior": {
+        "value": "生成本地中文 Codex Review Ticket，不自动联网",
+        "label_zh": "重要 diff 行为",
+        "description_zh": "只有业务语义、公式逻辑、分类冲突、标签冲突、跨板块不一致或测试无法解释时，才生成本地复审票据。",
+        "impact_surfaces": [
+          "review_queue",
+          "开发记录",
+          "测试复核"
+        ],
+        "user_editable": false
+      }
+    },
+    "impacted_metrics_policy": {
+      "p0_core_metrics": {
+        "value": [
+          "净资产",
+          "生活现金",
+          "投资资产",
+          "消费总流出",
+          "生活消费",
+          "投资收益",
+          "现金流窗口",
+          "待复核数量",
+          "Interconnection 异常数量"
+        ],
+        "label_zh": "P0 核心指标",
+        "description_zh": "P0 仅在真实金额、核心口径、现金流或 Interconnection 异常变化时进入 impacted metrics。",
+        "impact_surfaces": [
+          "首页总览",
+          "消费管理",
+          "投资管理",
+          "现金流",
+          "报告与洞察"
+        ],
+        "user_editable": false
+      },
+      "p1_analysis_metrics": {
+        "value": [
+          "分类占比",
+          "标签视图",
+          "订阅",
+          "夜间",
+          "大额",
+          "商户集中度",
+          "投资风格",
+          "交易频率",
+          "费用拖累",
+          "现金拖累"
+        ],
+        "label_zh": "P1 分析指标",
+        "description_zh": "P1 仅在分类、标签、行为模型或公式参数变化时进入 impacted metrics，不与核心金额混用。",
+        "impact_surfaces": [
+          "消费分析",
+          "投资行为",
+          "标签视图"
+        ],
+        "user_editable": false
+      },
+      "p2_display_metrics": {
+        "value": [
+          "图表排序",
+          "趋势图",
+          "辅助说明",
+          "tooltip",
+          "参数中心展示"
+        ],
+        "label_zh": "P2 展示指标",
+        "description_zh": "P2 属于展示与解释层，不能被误判为财务核心金额变化。",
+        "impact_surfaces": [
+          "本地 HTML",
+          "参数中心",
+          "图表说明"
+        ],
+        "user_editable": false
+      },
+      "tag_display_name_not_impacted": {
+        "value": [
+          "净资产",
+          "投资收益",
+          "现金流窗口"
+        ],
+        "label_zh": "标签显示名变化不应影响指标",
+        "description_zh": "仅标签中文名变化不改变净资产、投资收益和现金流窗口。",
+        "impact_surfaces": [
+          "标签系统",
+          "Runtime Diff"
+        ],
+        "user_editable": false
+      }
+    },
+    "llm_agent_review_triggers": {
+      "trigger_mode": {
+        "value": "local_ticket_only_no_network",
+        "label_zh": "LLM 触发方式",
+        "description_zh": "Stage 8 只生成本地 Codex Review Ticket，不要求每次运行联网。",
+        "impact_surfaces": [
+          "review_queue",
+          "开发复核"
+        ],
+        "user_editable": false
+      },
+      "allowed_trigger_reasons": {
+        "value": [
+          "业务语义变化",
+          "公式逻辑变化",
+          "分类冲突",
+          "标签冲突",
+          "跨板块不一致",
+          "测试无法解释"
+        ],
+        "label_zh": "允许触发复核的原因",
+        "description_zh": "只有业务语义、公式逻辑、分类或标签冲突、跨板块不一致、测试无法解释时触发本地复核票据。",
+        "impact_surfaces": [
+          "Codex Review Ticket",
+          "测试复核"
+        ],
+        "user_editable": false
+      },
+      "no_llm_scenarios": {
+        "value": [
+          "无 diff",
+          "只刷新缓存",
+          "只重绘图表",
+          "汇率快照未变",
+          "参数未变",
+          "普通本地重算"
+        ],
+        "label_zh": "无需 LLM 场景",
+        "description_zh": "这些场景不得生成 LLM 复核票据，不得联网。",
+        "impact_surfaces": [
+          "运行刷新",
+          "复核队列"
+        ],
+        "user_editable": false
+      }
     }
   },
   "formulas": [
@@ -3217,5 +3404,17 @@
     "S7-P4-T1",
     "S7-P4-T2",
     "S7-P4-T3"
+  ],
+  "stage8_task_ids": [
+    "S8-P1-T1",
+    "S8-P1-T2",
+    "S8-P1-T3",
+    "S8-P2-T1",
+    "S8-P2-T2",
+    "S8-P2-T3",
+    "S8-P2-T4",
+    "S8-P3-T1",
+    "S8-P3-T2",
+    "S8-P3-T3"
   ]
 }

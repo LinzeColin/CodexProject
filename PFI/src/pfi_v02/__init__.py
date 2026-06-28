@@ -22,6 +22,7 @@ from pfi_v02.stage4_analysis_mvp import build_stage4_analysis_model
 from pfi_v02.stage5_advice_report_alpha import build_stage5_delivery_model
 from pfi_v02.stage6_e2e_stabilization import build_stage6_e2e_stabilization_model
 from pfi_v02.stage_v021_frontend_contract import build_v021_stage0_contract
+from pfi_v02.stage_v022_runtime_diff import build_dependency_hash_snapshot, build_impacted_metrics_report
 
 __all__ = [
     "ClassificationInput",
@@ -38,6 +39,8 @@ __all__ = [
     "build_stage5_delivery_model",
     "build_stage6_e2e_stabilization_model",
     "build_v021_stage0_contract",
+    "build_dependency_hash_snapshot",
+    "build_impacted_metrics_report",
     "build_sync_all_plan",
     "classify_transaction",
     "default_stage1_sources",

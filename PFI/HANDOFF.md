@@ -4,7 +4,7 @@ Last updated: 2026-06-28 Australia/Sydney
 
 ## Current Goal
 
-PFI v0.2.2 Stage 7 收口：完成模型公式、阈值与评分标准，包括 100 分置信度、统一 70 分复核线、双消费公式、投资市值/收益/行为公式、现金流窗口、储备金安全线和投资入金挤压生活现金模型；本轮不实现 Stage 8 Runtime Diff、Stage 9 参数中心或 Stage 10 建议生命周期，不修改 v0.2.1 Web Shell UIUX 基线。
+PFI v0.2.2 Stage 8 收口：完成本地运行 Diff 与 Impacted Metrics，包括依赖 hash snapshot、无 diff 不联网/不生成 Codex ticket/不触发 LLM、有 diff 只重算受影响指标、P0/P1/P2 指标边界、本地中文 Codex Review Ticket 模板；本轮不实现 Stage 9 可视化与 UI/UX，不修改 v0.2.1 Web Shell UIUX 基线。
 
 ## Current Status
 
@@ -99,7 +99,13 @@ PFI v0.2.2 Stage 7 收口：完成模型公式、阈值与评分标准，包括 
 - v0.2.2 Stage 7 消费总流出包含生活消费、投资入金、基金申购、黄金申购、投资买入、金融费用并由退款抵消；生活消费只包含普通生活消费并由退款抵消。
 - v0.2.2 Stage 7 投资市值公式是 `quantity * latest_price * fx_rate_to_cny`；收益公式显式纳入费用、税费和汇率影响。
 - v0.2.2 Stage 7 现金流窗口是 `7/21/30/60/90/180/360`；储备金安全线是 `max(user_min_reserve_cny, average_fixed_monthly_expense_cny * reserve_months)`；投资挤压模型解释计划入金是否压低生活现金。
-- v0.2.2 Stage 7 明确不实现 Stage 8 Runtime Diff、Stage 9 参数中心、Stage 10 建议生命周期或 Stage 12 逻辑审查页。
+- v0.2.2 Stage 8 task IDs 是 `S8-P1-T1`、`S8-P1-T2`、`S8-P1-T3`、`S8-P2-T1`、`S8-P2-T2`、`S8-P2-T3`、`S8-P2-T4`、`S8-P3-T1`、`S8-P3-T2`、`S8-P3-T3`。
+- v0.2.2 Stage 8 合同是 `src/pfi_v02/stage_v022_database_governance.py::build_v022_stage8_contract()`；Runtime Diff 模块是 `src/pfi_v02/stage_v022_runtime_diff.py`。
+- v0.2.2 Stage 8 验收报告是 `docs/pfi_v022/STAGE8_RUNTIME_DIFF_IMPACTED_METRICS.md`；合同测试是 `tests/test_v022_stage8_runtime_diff.py`；本地复审票据模板是 `review_queue/CODEX_REVIEW_TICKET_TEMPLATE.md`。
+- v0.2.2 Stage 8 依赖 hash keys：`raw_data_hash`、`normalized_transactions_hash`、`ledger_events_hash`、`interconnection_hash`、`parameter_hash`、`category_hash`、`tag_hash`、`fx_snapshot_hash`。
+- v0.2.2 Stage 8 运行策略：无 diff 不联网、不生成 Codex ticket、不触发 LLM；普通 diff 只生成本地 diff report；重要业务冲突才生成本地中文 Codex Review Ticket。
+- v0.2.2 Stage 8 P0 核心指标仅包括净资产、生活现金、投资资产、消费总流出、生活消费、投资收益、现金流窗口、待复核数量、Interconnection 异常数量；P1/P2 与 P0 分离。
+- v0.2.2 Stage 8 明确不实现 Stage 9 可视化与 UI/UX、Stage 10 建议生命周期或 Stage 12 逻辑审查页。
 - v0.2.2 Stage 4 当前规则：同一真实事件只有一个 `economic_event_id`；同一资金链路进入一个 `interconnection_group_id`；同一事件可多处展示但同一核心指标只计算一次。
 - v0.2.2 Stage 4 消费口径：投资入金、基金申购、黄金申购、投资买入和费用进入消费总流出；投资入金、基金申购、投资买入不进入生活消费；退款抵消原消费；信用卡还款不重复计入生活消费。
 - v0.2.2 Stage 4 stop condition：`投资入金未进入消费总流出`、`基金申购未进入消费总流出`、`投资入金错误进入生活消费`、同一 `interconnection_group_id` 重复计入核心金额。
@@ -135,6 +141,7 @@ PFI v0.2.2 Stage 7 收口：完成模型公式、阈值与评分标准，包括 
 - 2026-06-28 v0.2.2 Stage 5 closeout 运行修复：`src/pfi_os/app/streamlit_app.py` 移除原生上传面板内嵌 `st.expander()`，避免 Streamlit `Expanders may not be nested`；`page_icon` 改为 `None`，避免浏览器请求 `/PFI` 产生 404。`tests/test_v021_stage8_final_acceptance.py` 增加对应回归断言。
 - 2026-06-28 v0.2.2 Stage 6 closeout 运行修复：`src/pfi_os/app/streamlit_app.py` 正式 UI 不再显示 `runtime` 路径、`Web Shell` 和 `manifest` 等开发词；父页面保留本机上传，8 个一级入口由上方工作台 iframe 展示；`web/pfi_v022_tag_views.html` 补齐 6 个默认标签组并避免 favicon 404。
 - 2026-06-28 v0.2.2 Stage 7：新增 `src/pfi_v02/stage_v022_formula_scoring.py`、`docs/pfi_v022/STAGE7_FORMULA_SCORING.md` 和 `tests/test_v022_stage7_formula_scoring.py`；`config/pfi_parameters.yaml` 升级为 `PFIParametersV022Stage7`；三基文件、README、roadmap lock 和参数变更记录同步记录 100 分置信度、统一 70 分复核线、双消费公式、投资市值/收益/行为公式、现金流窗口、储备金安全线和投资挤压生活现金模型。
+- 2026-06-28 v0.2.2 Stage 8：新增 `src/pfi_v02/stage_v022_runtime_diff.py`、`docs/pfi_v022/STAGE8_RUNTIME_DIFF_IMPACTED_METRICS.md`、`review_queue/CODEX_REVIEW_TICKET_TEMPLATE.md` 和 `tests/test_v022_stage8_runtime_diff.py`；`config/pfi_parameters.yaml` 升级为 `PFIParametersV022Stage8`；三基文件、README、roadmap lock 和参数变更记录同步记录 dependency hash、P0/P1/P2 impacted metrics、no-diff 外部触发禁用和本地中文 Codex Review Ticket。
 
 ## Decisions
 
@@ -189,8 +196,9 @@ Latest v0.2.2 Stage 4 closeout result: Stage 4 interconnection/no-double-count c
 Latest v0.2.2 Stage 5 target result: Stage 5 ledger taxonomy contracts `5 passed`; Stage 0-5 v0.2.2 contracts `45 passed`; full PFI pytest `203 passed`; project governance `errors 0 / warnings 0`; Web shell syntax `OK`; `git diff --check -- PFI` `OK`; Streamlit app compile `OK`; macOS app acceptance lite `29 pass / 0 fail / 2 info`; `/Applications/PFI.app` launched canonical PFI on port `8501`, PID `87045`; browser validation confirmed PFI 首页、数据源上传、投资管理、消费管理、AUD/CNY 徽标和原生上传控件可见，nested expander error `false`, console errors `0`, screenshot `/tmp/pfi-v022-stage5-app-verified.png`; GitHub `main` closeout sync completed for PFI-only changes.
 Latest v0.2.2 Stage 6 target result: Stage 6 tag/custom-view contracts `6 passed`; Stage 0-6 v0.2.2 regression `51 passed`; full PFI pytest `209 passed`; project governance `errors 0 / warnings 0`; Web shell syntax `OK`; `git diff --check -- PFI` `OK`; macOS app acceptance lite `29 pass / 0 fail / 2 info`; `http://127.0.0.1:8501/_stcore/health` returned `ok`; true 8501 browser validation confirmed 8 primary entries in the iframe workspace, no visible `runtime/Web Shell/manifest/运行边界/不做实盘自动下单` hits, console errors `0`, screenshot `/tmp/pfi-v022-stage6-app-verified.png`; Stage 6 HTML validation confirmed 9 task IDs, 5 tables, 6 default tag groups, 3 custom views, no forbidden visible text, console errors `0`, screenshot `/tmp/pfi-v022-stage6-tag-views-verified.png`.
 Latest v0.2.2 Stage 7 target result: Stage 7 formula/scoring contracts `7 passed`; Stage 0-7 v0.2.2 regression `58 passed`; full PFI pytest `216 passed`; project governance `errors 0 / warnings 0`; Web shell syntax `OK`; `git diff --check -- PFI` `OK`; macOS app acceptance lite `29 pass / 0 fail / 2 info`; `http://127.0.0.1:8501/_stcore/health` returned `ok`; true 8501 browser validation confirmed primary entries, `AUD/CNY`, upload center and import center after clicking `数据源与上传`, no forbidden visible text hits, console errors `0`, screenshot `/tmp/pfi-v022-stage7-upload-verified-final.png`.
+Latest v0.2.2 Stage 8 target result: Stage 8 runtime diff contracts `8 passed`; Stage 0-8 v0.2.2 regression `66 passed`; full PFI pytest `224 passed`; project governance `errors 0 / warnings 0`; Web shell syntax `OK`; `git diff --check -- PFI` `OK`; macOS app acceptance lite `29 pass / 0 fail / 2 info`; `http://127.0.0.1:8501/_stcore/health` returned `ok`; true 8501 browser validation clicked `数据源与上传`, confirmed `PFI`、`首页总览`、`数据源与上传`、`AUD/CNY`, no forbidden visible text hits, console errors `0`, screenshot `/tmp/pfi-v022-stage8-app-verified.png`.
 
 ## Next
 
-1. 下一轮 pursuing goal 应从 v0.2.2 Stage 8 `本地运行 Diff 与 Impacted Metrics` 开始。
-2. 不得提前实现 Stage 9-13，不得修改 v0.2.1 Web Shell UIUX 基线，除非用户单独开启前端目标。
+1. 下一轮 pursuing goal 应从 v0.2.2 Stage 9 `可视化与 UI/UX` 开始。
+2. 不得提前实现 Stage 10-13，不得修改 v0.2.1 Web Shell UIUX 基线，除非用户单独开启前端目标或 Stage 9 合同明确要求。
