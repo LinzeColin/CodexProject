@@ -21,12 +21,19 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 237
+- task_count: 238
 - acceptance_count: 127
 
 ## Delivery Tasks
 
 The machine-readable task source is `delivery_tasks.yaml`.
+
+## 2026-06-28 20:10:59 Australia/Sydney - S2PMT07 Independent Final Reviewer Assignment Hard Gate
+
+- `S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-HARD-GATE` makes top-level final bundle readiness require independent final reviewer assignment validation.
+- Even if directory-level final bundle artifact validation passes, the final bundle readiness state remains blocked while `FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json` is missing or invalid.
+- This is not a reviewer assignment, not P0/P1 closure, not S2PLT04 completion, not a final bundle, and not production acceptance.
+- No SMTP, scheduler, Release, restore, schema/DB, source/ranking, CURRENT/V7, DAILY_OPERATION, or integrated production acceptance side effect is claimed.
 
 ## 2026-06-28 18:04:30 Australia/Sydney - S2PJT02/S2PJT03 Owner Snapshot Summary Sync
 
@@ -357,6 +364,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-ARTIFACT-VALIDATOR | S2PM | blocked | `ACC-S2PMT07-FINAL-REVIEW` | Defines the future independent final reviewer assignment artifact validator; assignment artifact, reviewer assignment, independent closure decision, zero-proof artifact, P0/P1 closure, S2PLT04, final bundle, and production gates remain blocked. |
 | S2PMT07-MAINLINE-ATTESTATION | S2PM | completed | `ACC-S2PMT07-FINAL-REVIEW` | Binds prior S2PMT07 evidence commit ancestry on origin/main, open PR count 0, and ADP/arxiv/s2p remote branch count 0; this is mainline hygiene evidence only and does not close P0/P1, complete S2PLT04, create final bundle, or change production state. |
 | S2PMT07-FINAL-BUNDLE-ARTIFACT-VALIDATION | S2PM | blocked | `ACC-S2PMT07-FINAL-REVIEW` | Adds directory-level final acceptance bundle artifact validation; final bundle directory and required artifacts remain missing, so P0/P1, S2PLT04, final commands, handoff, and production gates remain blocked. |
+| S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-HARD-GATE | S2PM | blocked | `ACC-S2PMT07-FINAL-REVIEW` | Makes top-level final bundle readiness require independent final reviewer assignment validation; missing or invalid assignment keeps final bundle readiness blocked even when directory-level artifact validation passes. |
 
 ## 2026-06-28 12:43:50 Australia/Sydney - S2PLT02 delivery evidence ledger
 

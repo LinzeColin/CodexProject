@@ -5053,11 +5053,19 @@ def build_final_acceptance_bundle_readiness_state(
     )
     available_items = final_acceptance_bundle_artifact_validation["available_items"]
     missing_items = final_acceptance_bundle_artifact_validation["missing_items"]
-    blocking_reasons = final_acceptance_bundle_artifact_validation["blocking_reasons"]
+    assignment_validation_passed = independent_final_reviewer_assignment_validation["status"] == "pass"
+    blocking_reasons = list(final_acceptance_bundle_artifact_validation["blocking_reasons"])
+    if not assignment_validation_passed:
+        assignment_blocker = (
+            "independent_final_reviewer_assignment_validation_blocked"
+            if independent_final_reviewer_assignment_validation["assignment_present"]
+            else "independent_final_reviewer_assignment_missing"
+        )
+        if assignment_blocker not in blocking_reasons:
+            blocking_reasons.append(assignment_blocker)
+    bundle_ready = final_acceptance_bundle_artifact_validation["status"] == "pass" and assignment_validation_passed
     state = {
-        "status": (
-            "pass" if final_acceptance_bundle_artifact_validation["status"] == "pass" else "blocked"
-        ),
+        "status": "pass" if bundle_ready else "blocked",
         "scope": "final_acceptance_bundle_readiness_precheck_only",
         "required_items": list(S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS),
         "available_items": available_items,
@@ -5131,7 +5139,7 @@ def build_final_acceptance_bundle_readiness_state(
         "no_production_side_effect_attestation_validation": no_production_side_effect_attestation_validation,
         "next_agent_handoff_validation": next_agent_handoff_validation,
         "independent_review_signoff_validation": independent_review_signoff_validation,
-        "bundle_present": final_acceptance_bundle_artifact_validation["status"] == "pass",
+        "bundle_present": bundle_ready,
         "bundle_claimed_ready": False,
         "production_acceptance_claimed": False,
         "integrated_production_accepted": False,
@@ -5308,11 +5316,13 @@ def validate_final_acceptance_bundle_readiness_state(state: Mapping[str, Any]) -
             errors.append(f"final acceptance bundle readiness {label} validation status is invalid")
     if validate_final_acceptance_bundle_artifact_validation_state(artifact_validation):
         errors.append("final acceptance bundle readiness artifact validation is invalid")
-    expected_readiness_status = "pass" if artifact_validation.get("status") == "pass" else "blocked"
+    assignment_validation_ready = reviewer_assignment_validation.get("status") == "pass"
+    expected_readiness_ready = artifact_validation.get("status") == "pass" and assignment_validation_ready
+    expected_readiness_status = "pass" if expected_readiness_ready else "blocked"
     if state.get("status") != expected_readiness_status:
-        errors.append("final acceptance bundle readiness status must match artifact validation")
-    if state.get("bundle_present") is not (artifact_validation.get("status") == "pass"):
-        errors.append("final acceptance bundle readiness bundle_present must match artifact validation pass state")
+        errors.append("final acceptance bundle readiness status must match artifact and assignment validation")
+    if state.get("bundle_present") is not expected_readiness_ready:
+        errors.append("final acceptance bundle readiness bundle_present must match artifact and assignment validation pass state")
     for flag in S2PMT07_FINAL_ACCEPTANCE_BUNDLE_FORBIDDEN_FLAGS:
         if state.get(flag) is not False:
             errors.append(f"{flag} must be false")
@@ -5324,9 +5334,17 @@ def validate_final_acceptance_bundle_readiness_state(state: Mapping[str, Any]) -
     else:
         if state.get("bundle_claimed_ready") is not False:
             errors.append("final acceptance bundle readiness must not claim ready while blocked")
-        expected_blocking_reasons = artifact_validation.get("blocking_reasons", [])
+        expected_blocking_reasons = list(artifact_validation.get("blocking_reasons", []))
+        if not assignment_validation_ready:
+            assignment_blocker = (
+                "independent_final_reviewer_assignment_validation_blocked"
+                if reviewer_assignment_validation.get("assignment_present") is True
+                else "independent_final_reviewer_assignment_missing"
+            )
+            if assignment_blocker not in expected_blocking_reasons:
+                expected_blocking_reasons.append(assignment_blocker)
         if state.get("blocking_reasons") != expected_blocking_reasons:
-            errors.append("blocked final acceptance bundle readiness blocking_reasons must match artifact validation")
+            errors.append("blocked final acceptance bundle readiness blocking_reasons must match artifact and assignment validation")
     expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
     if state.get("state_hash") != expected_hash:
         errors.append("final acceptance bundle readiness state_hash does not match state content")
