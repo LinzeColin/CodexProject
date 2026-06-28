@@ -77,6 +77,14 @@ python -m pytest tests -q
 python -m backend.app.services.paper_trading_loop --once
 ```
 
+## S4 精简执行胶囊
+
+- 普通 T0/T1 任务先读本文件和任务点名文件，不做无关项目扫描。
+- 不得读取完整 `模型参数文件.md`，除非变更涉及策略规则、评分、风险、阈值、券商路由、
+  paper/live execution 或模型证据。
+- 治理验证：`python -B scripts/lean_governance.py validate --project Alpha --semantic`。
+- owner 预览：`python -B scripts/lean_governance.py check-render --project Alpha`。
+
 Run the API locally when touching routes or dashboard behavior:
 
 ```bash

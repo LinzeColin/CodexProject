@@ -120,6 +120,11 @@ def text_or_na(value: Any) -> str:
     return str(value)
 
 
+def display_name_summary_lines(project_facts: dict[str, Any]) -> list[str]:
+    display_name = str(project_facts.get("display_name") or "").strip()
+    return [f"- display_name: `{text_or_na(display_name)}`"] if display_name else []
+
+
 def pct(value: float, total: float) -> str:
     if total <= 0:
         return "0.00%"
@@ -548,6 +553,7 @@ def render_feature_list(project_facts: dict[str, Any], roadmap: dict[str, Any]) 
         "## 摘要",
         "",
         f"- project_id: `{text_or_na(project_facts.get('project_id'))}`",
+        *display_name_summary_lines(project_facts),
         f"- product_version: `{text_or_na(project_facts.get('version'))}`",
         f"- current_stage: `{text_or_na(roadmap.get('current_stage_id'))}`",
         f"- current_phase: `{text_or_na(roadmap.get('current_phase_id'))}`",
@@ -594,6 +600,7 @@ def render_development_record(project_facts: dict[str, Any], roadmap: dict[str, 
         "## 摘要",
         "",
         f"- project_id: `{text_or_na(project_facts.get('project_id'))}`",
+        *display_name_summary_lines(project_facts),
         f"- product_version: `{text_or_na(project_facts.get('version'))}`",
         f"- current_stage: `{text_or_na(roadmap.get('current_stage_id'))}`",
         f"- current_phase: `{text_or_na(roadmap.get('current_phase_id'))}`",
@@ -641,6 +648,7 @@ def render_model_parameters(project_facts: dict[str, Any], roadmap: dict[str, An
         "## 摘要",
         "",
         f"- project_id: `{text_or_na(project_facts.get('project_id'))}`",
+        *display_name_summary_lines(project_facts),
         f"- product_version: `{text_or_na(project_facts.get('version'))}`",
         f"- current_stage: `{text_or_na(roadmap.get('current_stage_id'))}`",
         f"- current_phase: `{text_or_na(roadmap.get('current_phase_id'))}`",

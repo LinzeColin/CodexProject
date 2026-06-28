@@ -1,14 +1,14 @@
 schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "MetaDatabase"
-current_stage_id: "S0"
-current_phase_id: "S0PA"
-current_task_id: "TASK-MDB-S0-001"
-next_gate_id: "MDB-S0-GATE"
+current_stage_id: "S1"
+current_phase_id: "S1PA"
+current_task_id: "S1PAT01"
+next_gate_id: "MDB-S1-GATE"
 total_estimated_hours: 1
 completed_estimated_hours: 1
 stages:
-  - stage_id: "S0"
+  - stage_id: "S1"
     name: "数据归档登记"
     person_goal: "让用户上传和已授权导入的原始数据在 GitHub 上有明确归档边界、manifest 和治理登记。"
     status: "completed"
@@ -17,7 +17,7 @@ stages:
       - "归档目录被业务系统当成实盘执行源"
       - "manifest 缺失"
     stop_gate:
-      gate_id: "MDB-S0-GATE"
+      gate_id: "MDB-S1-GATE"
       status: "closed"
       pass_conditions:
         - "MetaDatabase 登记为顶层项目"
@@ -26,7 +26,7 @@ stages:
       evidence_refs:
         - "MetaDatabase/MANIFEST.json"
     phases:
-      - phase_id: "S0PA"
+      - phase_id: "S1PA"
         name: "PFI 数据归档登记"
         objective: "登记 PFI 支付宝原始数据和处理后导入证据。"
         status: "completed"
@@ -34,7 +34,7 @@ stages:
           - "原始文件覆盖写入"
           - "缺少 manifest"
         stop_gate:
-          gate_id: "MDB-S0PA-GATE"
+          gate_id: "MDB-S1PA-GATE"
           status: "closed"
           pass_conditions:
             - "raw 和 processed 路径存在"
@@ -42,7 +42,7 @@ stages:
           evidence_refs:
             - "MetaDatabase/MANIFEST.json"
         tasks:
-          - task_id: "TASK-MDB-S0-001"
+          - task_id: "S1PAT01"
             name: "登记 MetaDatabase"
             objective: "把 MetaDatabase 变成 CodexProject 顶层受治理数据归档项目。"
             status: "completed"
