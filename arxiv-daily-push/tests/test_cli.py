@@ -6,6 +6,14 @@ from contextlib import redirect_stdout
 from pathlib import Path
 
 from arxiv_daily_push.cli import main
+from arxiv_daily_push.stage2_final_gate import (
+    S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_DECISION,
+    S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_NO_PRODUCTION_FLAGS,
+    S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_SCHEMA_VERSION,
+    S2PMT07_REQUIRED_REVIEWER_INDEPENDENCE,
+    build_independent_final_reviewer_assignment_hash,
+    build_independent_final_reviewer_assignment_request_state,
+)
 from arxiv_daily_push.state_machine import initial_run_record
 
 
@@ -111,6 +119,63 @@ class CliTests(unittest.TestCase):
             self.assertEqual(rollback_result, 0)
             self.assertEqual(rollback_payload["status"], "pass")
             self.assertEqual(rollback_payload["schema_version"], 0)
+
+    def test_validate_final_reviewer_assignment_blocks_when_artifact_missing(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "independent_final_reviewer_assignment.json"
+            buffer = io.StringIO()
+            with redirect_stdout(buffer):
+                result = main(["validate-final-reviewer-assignment", "--path", str(path), "--json"])
+        self.assertEqual(result, 2)
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(payload["status"], "blocked")
+        self.assertFalse(payload["assignment_present"])
+        self.assertIn("independent_final_reviewer_assignment_missing", payload["validation_errors"])
+        self.assertFalse(payload["integrated_production_accepted"])
+        self.assertFalse(payload["daily_operation_enabled"])
+
+    def test_validate_final_reviewer_assignment_passes_valid_artifact_without_production_claim(self):
+        assignment = {
+            "schema_version": S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_SCHEMA_VERSION,
+            "contract_id": "ADP-PRODUCT-CONTRACT-V7.2",
+            "generated_at": "2026-06-28T21:20:00+10:00",
+            "assignment_decision": S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_DECISION,
+            "reviewer_assignment": {
+                "reviewer_id": "independent-final-reviewer-001",
+                "reviewer_role": "independent_final_reviewer",
+                "assigned_by": "owner_or_coordinator",
+                "assignment_scope": "S2PMT07_P0_P1_FINAL_CLOSURE_REVIEW",
+            },
+            "reviewer_independence": {
+                "status": "verified",
+                "required_independence": S2PMT07_REQUIRED_REVIEWER_INDEPENDENCE,
+                "reviewer_involved_in_s2pmt01_t06": False,
+            },
+            "review_input_refs": build_independent_final_reviewer_assignment_request_state()[
+                "review_input_refs"
+            ],
+            "no_production_side_effects": {
+                flag: False
+                for flag in S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_NO_PRODUCTION_FLAGS
+            },
+            "assignment_hash": "",
+        }
+        assignment["assignment_hash"] = build_independent_final_reviewer_assignment_hash(assignment)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "independent_final_reviewer_assignment.json"
+            path.write_text(json.dumps(assignment), encoding="utf-8")
+            buffer = io.StringIO()
+            with redirect_stdout(buffer):
+                result = main(["validate-final-reviewer-assignment", "--path", str(path), "--json"])
+        self.assertEqual(result, 0)
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(payload["status"], "pass")
+        self.assertTrue(payload["assignment_present"])
+        self.assertTrue(payload["independent_final_reviewer_assigned_by_payload"])
+        self.assertFalse(payload["production_acceptance_claimed"])
+        self.assertFalse(payload["integrated_production_accepted"])
+        self.assertFalse(payload["daily_operation_enabled"])
 
 
 if __name__ == "__main__":

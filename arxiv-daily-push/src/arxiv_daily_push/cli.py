@@ -112,6 +112,10 @@ from .stage2_replay_gate import (
     validate_s2plt01_independent_replay_review_report,
     validate_s2plt01_replay_payload_execution_report,
 )
+from .stage2_final_gate import (
+    S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_PATH,
+    build_independent_final_reviewer_assignment_validation_state,
+)
 from .stage2_sources import (
     run_s2pgt05_cross_board_calibration,
     run_s2pgt04_delta_resonance,
@@ -1152,6 +1156,17 @@ def build_parser() -> argparse.ArgumentParser:
     s2plt01_independent_review.add_argument("--ci-evidence-ref", action="append", default=[], help="CI/workflow evidence ref. May be repeated.")
     s2plt01_independent_review.add_argument("--evidence-ref", action="append", default=[], help="Durable review evidence ref. May be repeated.")
     s2plt01_independent_review.add_argument("--json", action="store_true", help="Print JSON independent replay review report.")
+
+    final_reviewer_assignment = subparsers.add_parser(
+        "validate-final-reviewer-assignment",
+        help="Validate the S2PMT07 independent final reviewer assignment artifact without production side effects.",
+    )
+    final_reviewer_assignment.add_argument(
+        "--path",
+        default=S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_PATH,
+        help="Path to FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json.",
+    )
+    final_reviewer_assignment.add_argument("--json", action="store_true", help="Print JSON validation state.")
 
     all_arxiv_plan = subparsers.add_parser("plan-all-arxiv-scan", help="Print the Phase 12 all-arXiv scan plan.")
     all_arxiv_plan.add_argument("--max-results-per-category", type=int, default=ALL_ARXIV_MAX_RESULTS_PER_CATEGORY)
@@ -3317,6 +3332,18 @@ def main(argv: list[str] | None = None) -> int:
             for error in errors:
                 print(f"- error: {error}")
         return 0 if report["review_package_passed"] and not errors else 2
+    if args.command == "validate-final-reviewer-assignment":
+        artifact_path = Path(args.path)
+        payload = load_json_mapping(artifact_path) if artifact_path.exists() else None
+        report = build_independent_final_reviewer_assignment_validation_state(payload)
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- artifact_path: {report.get('artifact_path')}")
+            for error in report.get("validation_errors", []):
+                print(f"- error: {error}")
+        return 0 if report["status"] == "pass" else 2
     if args.command == "plan-all-arxiv-scan":
         plan = build_all_arxiv_scan_plan(max_results_per_category=args.max_results_per_category)
         errors = validate_all_arxiv_scan_plan(plan)

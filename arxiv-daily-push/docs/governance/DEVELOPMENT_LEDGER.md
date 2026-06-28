@@ -10,11 +10,29 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.1
 - Current phase: S2PM
-- Current gate: S2PMT07_FINAL_BUNDLE_ASSIGNMENT_REQUIRED_ITEM_BLOCKS_DIRECTORY_VALIDATION
-- Confirmed iteration count: 212
+- Current gate: S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_CLI_VALIDATOR_READY_NO_ASSIGNMENT_NO_PRODUCTION
+- Confirmed iteration count: 213
 - Reconstructed event count: 0
-- Current task: `S2PMT07-FINAL-BUNDLE-ASSIGNMENT-REQUIRED-ITEM` makes `FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json` a formal final bundle required item and directory-level artifact validation key. The real artifact is still missing, so assignment validation, directory-level final bundle artifact validation, and top-level final bundle readiness remain blocked. `FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json` remains present and hash-valid after required-item sync, and `FINAL_ACCEPTANCE_BUNDLE/templates/` remains template-only preparation, but the attestation is only one sub-artifact; P0/P1 closure, S2PLT04 completion, scheduler, Release, DAILY_OPERATION, and integrated production acceptance remain blocked/false.
+- Current task: `S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-CLI-VALIDATOR` exposes `adp validate-final-reviewer-assignment --path FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json --json` as a fail-closed command for validating the future real independent final reviewer assignment artifact. The real artifact is still missing, so the CLI returns blocked with `independent_final_reviewer_assignment_missing`; assignment validation, directory-level final bundle artifact validation, and top-level final bundle readiness remain blocked. `FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json` remains present and hash-valid, and `FINAL_ACCEPTANCE_BUNDLE/templates/` remains template-only preparation, but the attestation is only one sub-artifact; P0/P1 closure, S2PLT04 completion, scheduler, Release, DAILY_OPERATION, and integrated production acceptance remain blocked/false.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. Local daily M1-M4 orchestration is now recorded as readiness evidence, but V7.2 contract baseline migration blockers are zero while real restore, real SMTP production, scheduler installation, final acceptance bundle creation, independent final reviewer assignment validation, directory-level final bundle artifact validation pass, P0/P1 closure, S2PLT04 completion, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
+
+### `ITER-20260628-ADP-S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-CLI-VALIDATOR`
+
+- Timestamp: `2026-06-28T21:07:59+10:00`
+- Fact level: EXTRACTED from CLI parser/dispatcher, independent final reviewer assignment artifact validator, focused CLI TDD regression tests, phase record, run manifest, traceability row, delivery task, event record, and three base files.
+- Base commit: `3fe7f8c5b25a6fc2e0aa10f66150103743edd4ab`
+- Product version: `0.23.1`
+- Status: independent final reviewer assignment validation is now executable from CLI; the real artifact is still missing and final bundle remains blocked.
+- Task IDs: `S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-CLI-VALIDATOR`; parent `S2PMT07`; acceptance `ACC-S2PMT07-FINAL-REVIEW`.
+- Goal: Give the owner/coordinator and future independent final reviewer a deterministic local command for validating `FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json` without creating or implying the assignment.
+- Files changed: ADP CLI, focused CLI regression tests, phase record, run manifest, traceability/delivery/event records, governance current state, and three base files.
+- Decisions: missing assignment artifact returns CLI exit code 2 with status `blocked`; a valid temporary artifact returns exit code 0 with status `pass`; both paths keep production acceptance, DAILY_OPERATION, scheduler, SMTP, Release, restore, public schema, DB migration, source, ranking, CURRENT, V7.1, and V7.2 side-effect flags false.
+- Validation: TDD red failed because `validate-final-reviewer-assignment` was not a recognized CLI command; focused CLI tests 2 OK after parser/dispatcher implementation; target CLI/final-gate/current-state tests 90 OK before governance sync.
+- Boundaries: No independent reviewer assignment artifact is created, no independent final closure decision, no zero-proof artifact, no P0/P1 closure, no S2PLT04 completion, no final bundle acceptance, no final command execution, no next-agent handoff, no SMTP send, no scheduler install/enablement, no Release, no restore, no CURRENT/V7 change, no source/ranking change, no DAILY_OPERATION, and no integrated production acceptance.
+- Branch hygiene: no branch or PR is created by this run; closeout must recheck open PR count and ADP/arxiv/s2p remote branch count.
+- Risks: A passing future CLI validation can be misread as P0/P1 closure or production acceptance. It only validates reviewer assignment artifact structure and no-production flags.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-CLI-VALIDATOR-20260628.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_CLI_VALIDATOR.md`; `arxiv-daily-push/src/arxiv_daily_push/cli.py`; `arxiv-daily-push/tests/test_cli.py`.
+- Next step: Owner/coordinator must supply a real `FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json` artifact using an independent reviewer not involved in S2PMT01-T06 implementation, then run the CLI validator; do not claim P0/P1 zero proof, S2PLT04 completion, S2PMT07, DAILY_OPERATION, or production acceptance from CLI readiness alone.
 
 ### `ITER-20260628-ADP-S2PMT07-FINAL-BUNDLE-ASSIGNMENT-REQUIRED-ITEM`
 
