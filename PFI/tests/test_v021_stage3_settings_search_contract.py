@@ -32,7 +32,8 @@ class V021Stage3SettingsSearchContractTest(unittest.TestCase):
         contract = build_v021_stage3_contract()
 
         self.assertIn('data-workspace="settings" data-route-alias="/settings"', self.html)
-        self.assertIn('data-workspace="settings" data-route-alias="/settings?tab=data-system"', self.html)
+        self.assertIn('data-command-workspace="settings" data-command-route="/settings?tab=data-system"', self.html)
+        self.assertIn('"/data-system": "/settings?tab=data-system"', self.js)
         self.assertIn('main.dataset.settingsSurface = workspaceId === "settings" ? "primary_workspace" : "none"', self.js)
         self.assertIn("data-settings-feedback-console", self.html)
         self.assertIn('settingsConsole.hidden = workspaceId !== "settings"', self.js)

@@ -163,7 +163,7 @@
         "user_editable": false
       },
       "frontend_badge_format": {
-        "value": "AUD/CNY=4.69（YYYYMMDD--HH:MM）",
+        "value": "AUD/CNY=4.69（YYYY/MM/DD HH:MM）",
         "label_zh": "当前前端徽标格式",
         "description_zh": "v0.2.2 Stage 2 常态化顶部显示格式。",
         "impact_surfaces": [

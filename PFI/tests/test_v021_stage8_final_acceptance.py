@@ -92,7 +92,7 @@ class V021Stage8FinalAcceptanceTest(unittest.TestCase):
         self.assertIn("PFI-V021-S8-FINAL-ACCEPTANCE-GATE", self.dev_record)
 
     def test_web_shell_still_contains_required_user_paths_and_no_forbidden_execution(self) -> None:
-        self.assertEqual(self.html.count('data-primary-entry="true"'), 15)
+        self.assertEqual(self.html.count('data-primary-entry="true"'), 10)
         for required in (
             "AUD/CNY=",
             "AUD/CNY=4.69",

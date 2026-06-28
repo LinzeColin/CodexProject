@@ -135,9 +135,9 @@ def test_trends_are_derived_from_operational_store_not_demo_arrays() -> None:
 
 
 def test_strategy_lab_has_one_canonical_route_and_shared_component() -> None:
-    assert 'data-route-alias="/investment/strategy-lab"' in HTML
-    assert 'data-command-route="/investment/strategy-lab"' in HTML
-    assert '策略实验室: { workspace: "investment", routeAlias: "/investment/strategy-lab"' in JS
+    assert 'data-route-alias="/market-research"' in HTML
+    assert 'data-command-route="/market-research/strategy-lab"' in HTML
+    assert '策略实验室: { workspace: "market_research", routeAlias: "/market-research/strategy-lab"' in JS
     assert '策略实验室: { view: "single"' not in JS
-    assert 'feature("策略实验室", "可用", "PFI 策略实验室"' in JS
-    assert '{ workspace: "investment", routeAlias: "/investment/strategy-lab", label: "打开策略" }' in JS
+    assert 'feature("策略实验室", "可用", "统一策略入口"' in JS
+    assert '{ workspace: "market_research", routeAlias: "/market-research/strategy-lab", label: "打开策略" }' in JS

@@ -45,7 +45,7 @@
 - 完成 Stage 2 `CNY 基准与汇率规则`，覆盖 `S2-P1-T1..S2-P2-T3`。
 - 新增 `src/pfi_v02/stage_v022_fx.py`，实现 06:00 Australia/Sydney 有效汇率日、普通运行本地快照读取、显式联网刷新、快照 hash 校验、金额转 CNY 和账本金额字段生成。
 - 新增真实快照 `data/fx_snapshots/AUD_CNY/2026-06-28.json`：`fx_AUD_CNY_20260628`，`1 AUD = 4.6874 CNY`，来源 `Frankfurter v2 public API`。
-- Web Shell 顶部汇率徽标从历史 `CNY/AUD=4.70` 更新为当前 `AUD/CNY=4.69（YYYYMMDD--HH:MM）`，主页等主金额显示以 `CNY` 为主。
+- Web Shell 顶部汇率徽标从历史 `CNY/AUD=4.70` 更新为当前 `AUD/CNY=4.69（YYYY/MM/DD HH:MM）`，主页等主金额显示以 `CNY` 为主。
 - `config/pfi_parameters.yaml`、`模型参数文件.md`、`功能清单.md`、`开发记录.md` 和 `config/parameter_changelog.md` 补齐 Stage 2 汇率、快照、原币辅助、缺失状态和非目标边界。
 - 新增 `docs/pfi_v022/STAGE2_CNY_FX_GOVERNANCE.md` 与 `tests/test_v022_fx_effective_date.py`，把 Stage 2 acceptance criteria、stop condition 和 validation 固化为可重复验证合同。
 - 本轮不实现 Stage 3 数据源结构，不新增参数中心页面，不提交真实交易、支付、券商下单或自动投资能力。
@@ -64,7 +64,7 @@
 - 建立 v0.2.1 前端优化 Stage 0 准备合同，锁定本轮是 PFI Web Shell 前端、交互、图表、上传命名、设置页和持仓编辑持久化优化，不是 V0.2 重构。
 - 新增 `docs/pfi_v02/STAGE_V021_FRONTEND_OPTIMIZATION.md`，记录 roadmap、stage/task、acceptance criteria、stop condition、validation 和后续 pursuing goal 顺序。
 - 新增 `src/pfi_v02/stage_v021_frontend_contract.py` 与 `tests/test_v021_stage0_frontend_contract.py`，把 CNY 基准、CNY/AUD 顶栏汇率、HTML 目标、多模态反馈设置页归属、统一导航和 P0-P8 任务清单固化为合同。
-- 锁定后续 UI 货币契约：整体系统以 CNY 元为基准，所有页面顶部右上角显示 `CNY/AUD=4.70（YYYYMMDD--HH:MM）`，读取当日 06:00 Australia/Sydney 汇率快照，缺失时显示中文空状态且不得伪造汇率。
+- 锁定后续 UI 货币契约：整体系统以 CNY 元为基准，所有页面顶部右上角显示 `CNY/AUD=4.70（YYYY/MM/DD HH:MM）`，读取当日 06:00 Australia/Sydney 汇率快照，缺失时显示中文空状态且不得伪造汇率。
 - 本轮不重构 QBVS，不新增 Alpha/Ralpha/System/Development 产品一级入口，不提前实现后续 stage。
 
 ## 0.2.0 - 2026-06-27
@@ -88,3 +88,12 @@
 - 新增 `src/pfi_v02/stage6_e2e_stabilization.py` 与 `tests/test_stage6_e2e_stabilization.py`，将 Stage 6 6A/6B/6C acceptance 固化为本地合同测试。
 - Web shell 首页和报告与洞察接入 Stage 6；仍保持 8 个一级入口，不新增外部系统产品入口，QBVS 顶层独立且 PFI 不覆盖 QBVS。
 - Stage 6 仍只证明本地 synthetic/read-only V0.2 可运行、可验证、可回滚；真实数据连接、外部 context consumer、PDF/ZIP、CDR/Open Banking 和生产发布证据为后续独立 gate。
+
+## v0.2.1.1 Stage 1 - 2026-06-29
+
+- 完成产品壳与路由受控重建：正式侧栏一级入口从旧 15 项收敛为 10 项。
+- 新增正式一级入口 `市场与研究`，承接旧 `市场`、`研究` 与 `策略实验室`。
+- `策略实验室` canonical route 改为 `/market-research/strategy-lab`；旧 `/strategy-lab` 和 `/investment/strategy-lab` 保留为兼容别名。
+- Web Shell 路由从单纯 `replaceState` 升级为 `pushState` + `popstate`，支持浏览器前进后退。
+- 新增 `docs/pfi_v0211/STAGE1_PRODUCT_SHELL_ROUTING.md` 与 `tests/test_v0211_stage1_product_shell_contract.py`。
+- 本轮不实现图表、上传闭环、持仓编辑或报告。
