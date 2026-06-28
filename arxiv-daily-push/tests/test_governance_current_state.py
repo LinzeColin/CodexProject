@@ -30,19 +30,22 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn(f"- Current task: `{expected_task}`", current_state)
         self.assertIn(f"### `{current_iteration}`", ledger)
 
-    def test_s2pmt07_current_state_summary_describes_assignment_cli_validator(self) -> None:
+    def test_s2pmt07_current_state_summary_describes_assignment_owner_packet_cli(self) -> None:
         ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
-            "S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_CLI_VALIDATOR_READY_NO_ASSIGNMENT_NO_PRODUCTION",
+            "S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_OWNER_PACKET_CLI_READY_NO_ASSIGNMENT_NO_PRODUCTION",
             current_state,
         )
-        self.assertIn("S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-CLI-VALIDATOR", current_state)
-        self.assertIn("validate-final-reviewer-assignment", current_state)
+        self.assertIn("S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-OWNER-PACKET-CLI", current_state)
+        self.assertIn("build-final-reviewer-assignment-owner-packet", current_state)
         self.assertIn("independent_final_reviewer_assignment.json", current_state)
+        self.assertIn("assignment_artifact_present=false", current_state)
+        self.assertIn("independent_final_reviewer_assigned=false", current_state)
         self.assertIn("independent_final_reviewer_assignment_missing", current_state)
-        self.assertIn("CLI returns blocked", current_state)
+        self.assertIn("P0=8", current_state)
+        self.assertIn("P1=37", current_state)
         self.assertIn("directory-level final bundle artifact validation", current_state)
         self.assertIn("FINAL_ACCEPTANCE_BUNDLE/templates/", current_state)
         self.assertIn("no_production_side_effects.json", current_state)

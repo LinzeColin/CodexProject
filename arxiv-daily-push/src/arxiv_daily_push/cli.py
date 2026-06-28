@@ -114,7 +114,9 @@ from .stage2_replay_gate import (
 )
 from .stage2_final_gate import (
     S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_PATH,
+    build_independent_final_reviewer_assignment_owner_packet_state,
     build_independent_final_reviewer_assignment_validation_state,
+    validate_independent_final_reviewer_assignment_owner_packet_state,
 )
 from .stage2_sources import (
     run_s2pgt05_cross_board_calibration,
@@ -1167,6 +1169,16 @@ def build_parser() -> argparse.ArgumentParser:
         help="Path to FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json.",
     )
     final_reviewer_assignment.add_argument("--json", action="store_true", help="Print JSON validation state.")
+
+    final_reviewer_assignment_owner_packet = subparsers.add_parser(
+        "build-final-reviewer-assignment-owner-packet",
+        help="Print the S2PMT07 owner/coordinator action packet for assigning an independent final reviewer.",
+    )
+    final_reviewer_assignment_owner_packet.add_argument(
+        "--json",
+        action="store_true",
+        help="Print JSON owner action packet.",
+    )
 
     all_arxiv_plan = subparsers.add_parser("plan-all-arxiv-scan", help="Print the Phase 12 all-arXiv scan plan.")
     all_arxiv_plan.add_argument("--max-results-per-category", type=int, default=ALL_ARXIV_MAX_RESULTS_PER_CATEGORY)
@@ -3344,6 +3356,25 @@ def main(argv: list[str] | None = None) -> int:
             for error in report.get("validation_errors", []):
                 print(f"- error: {error}")
         return 0 if report["status"] == "pass" else 2
+    if args.command == "build-final-reviewer-assignment-owner-packet":
+        report = build_independent_final_reviewer_assignment_owner_packet_state()
+        errors = validate_independent_final_reviewer_assignment_owner_packet_state(report)
+        output = {**report, "owner_packet_validation_errors": errors}
+        if args.json:
+            print(json.dumps(output, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- task_id: {report.get('task_id')}")
+            print(f"- next_required_action: {report.get('next_required_action')}")
+            print(f"- assignment_artifact_path: {report.get('assignment_artifact_path')}")
+            print(f"- assignment_artifact_present: {report.get('assignment_artifact_present')}")
+            print(f"- observed_open_p0_findings: {report.get('observed_open_p0_findings')}")
+            print(f"- observed_open_p1_findings: {report.get('observed_open_p1_findings')}")
+            for action in report.get("required_owner_actions", []):
+                print(f"- required_owner_action: {action}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if not errors else 2
     if args.command == "plan-all-arxiv-scan":
         plan = build_all_arxiv_scan_plan(max_results_per_category=args.max_results_per_category)
         errors = validate_all_arxiv_scan_plan(plan)
