@@ -34,15 +34,16 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
         current_state = ledger.split("\n### `", 1)[0]
 
-        self.assertIn("S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_OWNER_PACKET_READY_NO_CLOSURE", current_state)
-        self.assertIn("owner/reviewer packet", current_state)
-        self.assertIn("actual closure decision", current_state)
+        self.assertIn("S2PMT07_A005_PARAMETER_SELECTOR_ASSURANCE_VERIFIED_NO_CLOSURE_NO_PRODUCTION", current_state)
+        self.assertIn("S2PMT07-A005-PARAMETER-SELECTOR-ASSURANCE", current_state)
+        self.assertIn("independent final reviewer assignment", current_state)
         self.assertNotIn("M4 watermark proof record", current_state)
         self.assertNotIn("m4_watermark_correct=true", current_state)
 
     def test_owner_next_action_points_to_s2pmt07_not_stale_s2plt02(self) -> None:
         assurance = (ADP_ROOT / "docs/governance/ASSURANCE_STATUS.yaml").read_text(encoding="utf-8")
         owner_status = (ADP_ROOT / "docs/governance/OWNER_STATUS.md").read_text(encoding="utf-8")
+        generator = (REPO_ROOT / "scripts/generate_governance_dashboard.py").read_text(encoding="utf-8")
 
         stale_option = "继续 S2PLT02 no-production readiness evidence work under V7.2 boundaries"
         for text in (assurance, owner_status):
@@ -51,6 +52,9 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             self.assertIn("independent final reviewer assignment", text)
             self.assertNotIn(stale_option, text)
             self.assertNotIn("ACC-S2PLT02-2D", text)
+        self.assertIn("adp_s2pmt07_blocked_next_task", generator)
+        self.assertIn("adp_s2pmt07_gate_is_current", generator)
+        self.assertIn("current_v7_task_id", generator)
 
     def test_user_center_default_next_step_prioritizes_s2pmt07_final_review(self) -> None:
         decisions = (ADP_ROOT / "用户中心/关键结论与用户决策.md").read_text(encoding="utf-8")

@@ -21,12 +21,19 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 229
+- task_count: 230
 - acceptance_count: 126
 
 ## Delivery Tasks
 
 The machine-readable task source is `delivery_tasks.yaml`.
+## 2026-06-28 16:01:08 Australia/Sydney - S2PMT07 A-005 Parameter Selector Assurance
+
+- `S2PMT07-A005-PARAMETER-SELECTOR-ASSURANCE` adds machine-readable selectors for `PARAM-ADP-955..959`, restoring active parameter source coverage from `1045 / 1050` to `1050 / 1050`.
+- The governance dashboard now keeps ADP owner-visible next action pinned to `S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT` whenever `current_v7_task_id=S2PMT07`, even if the exact current gate string changes.
+- This is not P0/P1 closure, not S2PLT04 completion, not a final bundle, not independent review assignment, and not production acceptance.
+- No SMTP, scheduler, Release, restore, schema/DB, source/ranking, CURRENT/V7, DAILY_OPERATION, or integrated production acceptance side effect is claimed.
+
 ## 2026-06-28 15:26:22 Australia/Sydney - S2PMT07 Closure Decision Owner Packet
 
 - `S2PMT07-INDEPENDENT-FINAL-CLOSURE-DECISION-OWNER-PACKET` exposes the owner/reviewer action packet for the future independent final closure decision.
