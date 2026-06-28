@@ -136,6 +136,42 @@ def decision_policy_for(project_id: str, next_task: dict[str, Any]) -> dict[str,
     return policy
 
 
+def adp_s2pmt07_blocked_next_task(stale_candidates: list[dict[str, str]] | None = None) -> dict[str, Any]:
+    """Keep ADP's owner-visible next action pinned to the V7.2 final gate."""
+
+    return {
+        "task_id": "S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT",
+        "status": "blocked",
+        "reason": (
+            "Current S2PMT07 blockers are mapped to required future evidence; "
+            "independent reviewer assignment remains required before the future "
+            "closure decision packet can be turned into a real P0/P1 zero-proof "
+            "closure artifact."
+        ),
+        "acceptance_ids": ["ACC-S2PMT07-FINAL-REVIEW"],
+        "owner": "content_owner + engineering_owner + independent_final_reviewer",
+        "human_owner_role": "content_owner + engineering_owner + independent_final_reviewer",
+        "unblock_condition": (
+            "Provide independent final reviewer assignment artifact, independent "
+            "closure decision, P0/P1 zero proof, S2PLT04 completion report, final "
+            "bundle manifest, independent signoff, final command execution, "
+            "no-production attestation, and next-agent handoff before any final "
+            "gate closure claim."
+        ),
+        "stale_candidates": stale_candidates or [],
+    }
+
+
+def adp_s2pmt07_gate_is_current(project_id: str, matrix: dict[str, Any]) -> bool:
+    """Return true when ADP's V7.2 current task is any S2PMT07 final-gate state."""
+
+    if project_id != "arxiv-daily-push":
+        return False
+    current_gate = str(matrix.get("current_gate") or "")
+    current_v7_task_id = str(matrix.get("current_v7_task_id") or "")
+    return current_v7_task_id == "S2PMT07" or current_gate.startswith("S2PMT07")
+
+
 def git_output(args: list[str]) -> str:
     result = subprocess.run(
         ["git", "-c", "core.quotePath=false", *args],
@@ -644,7 +680,7 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
                 "blockers": [],
             }
         )
-    if project_id == "arxiv-daily-push" and matrix.get("current_gate") == "S2PMT07_FINAL_GATE_PRECHECK_BLOCKED":
+    if adp_s2pmt07_gate_is_current(project_id, matrix):
         policy["readiness"] = "blocked_precheck"
         policy["decision"] = "S2PMT07 final gate precheck is blocked; Stage 1 remains accepted, but integrated production acceptance is not available."
     unresolved = collect_unresolved_fact_ids(project_id, parsed, counts)
@@ -681,8 +717,13 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
         str(matrix.get("current_phase") or ""),
         arxiv_stage1_accepted=arxiv_stage1_accepted,
     )
+    adp_s2pmt07_current = adp_s2pmt07_gate_is_current(project_id, matrix)
+    if adp_s2pmt07_current:
+        next_task = adp_s2pmt07_blocked_next_task(
+            structural.as_list(next_task.get("stale_candidates")) if isinstance(next_task, dict) else []
+        )
     decision_policy = decision_policy_for(project_id, next_task)
-    if decision_policy.get("owner_role") and str(next_task.get("task_id") or "") != "NONE":
+    if decision_policy.get("owner_role") and str(next_task.get("task_id") or "") != "NONE" and not adp_s2pmt07_current:
         next_task = {
             **next_task,
             "owner": str(decision_policy.get("owner_role")),

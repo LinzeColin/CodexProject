@@ -10,11 +10,28 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.1
 - Current phase: S2PM
-- Current gate: S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_OWNER_PACKET_READY_NO_CLOSURE
-- Confirmed iteration count: 202
+- Current gate: S2PMT07_A005_PARAMETER_SELECTOR_ASSURANCE_VERIFIED_NO_CLOSURE_NO_PRODUCTION
+- Confirmed iteration count: 203
 - Reconstructed event count: 0
-- Current task: `S2PMT07-INDEPENDENT-FINAL-CLOSURE-DECISION-OWNER-PACKET` exposes a fail-closed owner/reviewer packet for the future independent final closure decision; it lists required owner/reviewer actions, zero-proof decision location, reviewer assignment prerequisite, review input refs, and no-production flags while the actual assignment artifact, actual closure decision, P0/P1 zero proof, S2PLT04 completion, final bundle, scheduler, Release, DAILY_OPERATION, and integrated production acceptance remain blocked/false.
+- Current task: `S2PMT07-A005-PARAMETER-SELECTOR-ASSURANCE` verifies the five A-005 trust-boundary parameter selectors in the semantic registry, restores implementation congruence to 1050/1050 active parameters, and keeps the owner-visible next action pinned to independent final reviewer assignment while P0/P1 zero proof, S2PLT04 completion, final bundle, scheduler, Release, DAILY_OPERATION, and integrated production acceptance remain blocked/false.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. Local daily M1-M4 orchestration is now recorded as readiness evidence, but V7.2 contract baseline migration blockers are zero while real restore, real SMTP production, scheduler installation, final acceptance bundle creation, directory-level final bundle artifact validation pass, P0/P1 closure, S2PLT04 completion, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
+
+### `ITER-20260628-ADP-S2PMT07-A005-PARAMETER-SELECTOR-ASSURANCE`
+
+- Timestamp: `2026-06-28T16:01:08+10:00`
+- Fact level: EXTRACTED from A-005 trust-boundary constants, parameter registry selectors, governance dashboard generator, focused governance-current regression test, run manifest, traceability row, delivery task, event record, and three base files.
+- Base commit: `24963326e6e67fd8d82435e86a92010ff90f1849`
+- Product version: `0.23.1`
+- Status: A-005 parameter selector gap closed; implementation congruence and parameter source quality now verify 1050/1050 active parameters.
+- Task IDs: `S2PMT07-A005-PARAMETER-SELECTOR-ASSURANCE`; parent `S2PMT07`; acceptance `ACC-S2PMT07-FINAL-REVIEW`.
+- Goal: Remove the last known semantic parameter-source gap without using it to close P0/P1 or S2PMT07.
+- Files changed: `PARAM-ADP-955..959` selector metadata, governance dashboard S2PMT07 next-action guard, generated governance status views, focused governance-current regression test, run manifest, traceability/delivery/event records, and three base files.
+- Decisions: `checked_active_parameters=1050`, `total_active_parameters=1050`, `implementation_congruence=VERIFIED`, `parameter_source_quality=VERIFIED`, `delivery_readiness=BLOCKED_PRECHECK`, P0=8, P1=37, and every production/contract side-effect flag remains false.
+- Validation: A direct selector probe confirmed `PARAM-ADP-958` / `PARAM-ADP-959` extract `A-005` and `S2PMT01-TRUST-BOUNDARY-A005`; full semantic extractor exceeded 60 seconds and is not claimed as passed. Final run-level validation is recorded in the run manifest and closeout.
+- Boundaries: No independent reviewer assignment, no independent final closure decision, no zero-proof artifact, no P0/P1 closure, no S2PLT04 completion, no final bundle creation, no SMTP/scheduler/Release/restore, no CURRENT/V7 change, no source/ranking change, no DAILY_OPERATION, and no integrated production acceptance.
+- Risks: This repair can be misread as delivery acceptance because Assurance implementation congruence is now verified. It is only a parameter-source governance repair; S2PMT07 remains blocked.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-A005-PARAMETER-SELECTOR-ASSURANCE-20260628.json`; `arxiv-daily-push/docs/governance/parameter_registry.csv`; `scripts/generate_governance_dashboard.py`; `arxiv-daily-push/tests/test_governance_current_state.py`.
+- Next step: Owner/coordinator must still supply the real independent final reviewer assignment artifact at `FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json`; current agent cannot fabricate it.
 
 ### `ITER-20260628-ADP-S2PMT07-INDEPENDENT-FINAL-CLOSURE-DECISION-OWNER-PACKET`
 

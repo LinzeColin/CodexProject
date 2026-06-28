@@ -9231,6 +9231,27 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             {"task_id": "S1-08-LOCAL_RUNTIME_RECOVERY-001"},
         )
         self.assertEqual(override_policy["decision_id"], "DEC-arxiv-daily-push-V5-S1-002")
+        self.assertTrue(
+            dashboard.adp_s2pmt07_gate_is_current(
+                "arxiv-daily-push",
+                {
+                    "current_v7_task_id": "S2PMT07",
+                    "current_gate": "S2PMT07_A005_PARAMETER_SELECTOR_ASSURANCE_VERIFIED_NO_CLOSURE_NO_PRODUCTION",
+                },
+            )
+        )
+        self.assertFalse(
+            dashboard.adp_s2pmt07_gate_is_current(
+                "EEI",
+                {"current_v7_task_id": "S2PMT07", "current_gate": "S2PMT07_ANY"},
+            )
+        )
+        s2pmt07_next_task = dashboard.adp_s2pmt07_blocked_next_task()
+        self.assertEqual(
+            s2pmt07_next_task["task_id"],
+            "S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT",
+        )
+        self.assertEqual(s2pmt07_next_task["acceptance_ids"], ["ACC-S2PMT07-FINAL-REVIEW"])
 
     def test_other8_s6pbt02_owner_flow_task_is_not_product_current_task(self) -> None:
         owner_flow_readmes = [
