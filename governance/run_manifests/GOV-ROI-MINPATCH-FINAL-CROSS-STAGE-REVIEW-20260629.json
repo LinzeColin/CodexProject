@@ -1,0 +1,230 @@
+{
+  "schema_version": 2,
+  "run_id": "GOV-ROI-MINPATCH-FINAL-CROSS-STAGE-REVIEW-20260629",
+  "project_id": "CodexProject",
+  "task_id": "FINAL-CROSS-STAGE-ROI-MINPATCH-REVIEW",
+  "acceptance_ids": [
+    "FINAL-S3-S5-REQ-MATRIX",
+    "FINAL-QUALITY-GUARDS",
+    "FINAL-ROI-EVIDENCE",
+    "FINAL-HANDOFF"
+  ],
+  "iteration_id": "ITER-20260629-ROI-MINPATCH-FINAL",
+  "stage": "FINAL",
+  "generated_at": "2026-06-29T00:00:00+10:00",
+  "implementation_base_sha": "b2db63fb9a730eb879be6ddc3c15871a54b52e55",
+  "comparison_base_sha": "5d39e58503cf16c9863a74be56a85a6117fb096e",
+  "content_tree_hash": "post_manifest_verified_diff_against_origin_main",
+  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "ci_attestation_subject": "Stage3-5 ROI 最小补丁综合复审、显式 final audit 与最终交付 gate",
+  "ci_run_reference": "LOCAL_PRECOMMIT_FINAL_ROI_AUDIT_SHIP_AND_CHANGED_ONLY_SHIP",
+  "language_rule": "中文优先，默认全局中文",
+  "owner_readable_summary": "本最终复审把 S3/S4/S5 的验收、质量闸、ROI 指标、中文 owner 可读性、回滚和 stop condition 合并成一个显式命令 roi-final-audit。普通开发路径仍只读根 AGENTS.md 与 README.md；治理计算保留在显式 gate，不进入每次开发热路径。未改变业务运行逻辑，未声明生产状态升级。",
+  "stage_scope": {
+    "allowed": "新增最终综合复审命令、测试和最终 run manifest；不改业务代码，不创建 CURRENT.md/SHIP.md，不删除历史证据。",
+    "business_logic_changed": false,
+    "production_status_changed": false,
+    "data_migration_required": false,
+    "stacked_branch_note": "本 final 复审叠在 Stage3/Stage4/Stage5 分支上；changed_files_actual 覆盖相对 origin/main 的完整 diff，确保最后一次 changed-only CI 绑定全部 manifest union。",
+    "stop_gate": "decision=SHIP 才能推进；若任一阶段 manifest 缺验收 ID、质量闸退化、ROI 预算超限、owner 中文可读失败、T2/T3 或 rollback 缺失、新 CURRENT.md/SHIP.md 出现，则 STOP。"
+  },
+  "acceptance_results": {
+    "FINAL-S3-S5-REQ-MATRIX": "roi-final-audit 逐个检查 S3/S4/S5 manifest 的 expected acceptance_ids、test_commands、test_results、PASS 结果、evidence_refs、changed_files_actual 和 binding_status。",
+    "FINAL-QUALITY-GUARDS": "复用 Stage5 shadow parity，确认 candidate_report_only、legacy_validation、read_only_guard、selector_parity、T2/T3 root rule、full governance all-scope、ADP fail-closed 和 hook advisory-only 均保留。",
+    "FINAL-ROI-EVIDENCE": "复核普通 T0/T1 初始上下文仍为 2 文件、7746 bytes，根 AGENTS.md git blob 4052 bytes，compact stdout 1390 bytes，changed-only CI 3.182 秒，均低于阈值。",
+    "FINAL-HANDOFF": "复核 8 个 S4 项目执行胶囊、11/11 三中文入口 owner 可读、MetaDatabase/QBVS identity 修复、P0/P1 findings 全闭合和 rollback rehearsal。"
+  },
+  "changed_files_declared": [
+    ".github/workflows/project-governance.yml",
+    "AGENTS.md",
+    "Alpha/AGENTS.md",
+    "FIFA/AGENTS.md",
+    "MetaDatabase/docs/governance/ASSURANCE_STATUS.yaml",
+    "MetaDatabase/docs/governance/TRACEABILITY_MATRIX.csv",
+    "MetaDatabase/docs/governance/delivery_tasks.yaml",
+    "MetaDatabase/docs/governance/development_events.jsonl",
+    "MetaDatabase/docs/governance/roadmap.yaml",
+    "MetaDatabase/功能清单.md",
+    "MetaDatabase/开发记录.md",
+    "MetaDatabase/模型参数文件.md",
+    "OpMe_System/AGENTS.md",
+    "OpenAIDatabase/AGENTS.md",
+    "PFI/AGENTS.md",
+    "QBVS/AGENTS.md",
+    "QBVS/README.md",
+    "QBVS/docs/governance/events.jsonl",
+    "QBVS/docs/governance/project.yaml",
+    "QBVS/docs/governance/roadmap.yaml",
+    "QBVS/功能清单.md",
+    "QBVS/开发记录.md",
+    "QBVS/模型参数文件.md",
+    "Serenity-Alipay/AGENTS.md",
+    "arxiv-daily-push/AGENTS.md",
+    "arxiv-daily-push/功能清单.md",
+    "arxiv-daily-push/开发记录.md",
+    "arxiv-daily-push/模型参数文件.md",
+    "governance/run_manifests/GOV-ROI-MINPATCH-FINAL-CROSS-STAGE-REVIEW-20260629.json",
+    "governance/run_manifests/GOV-ROI-MINPATCH-S3-ROOT-HOTPATH-20260628.json",
+    "governance/run_manifests/GOV-ROI-MINPATCH-S4-PROJECT-INTERFACES-20260628.json",
+    "governance/run_manifests/GOV-ROI-MINPATCH-S5-ACCEPTANCE-ROI-ROLLBACK-20260628.json",
+    "governance/schemas/project.schema.json",
+    "scripts/lean_governance.py",
+    "scripts/validate_governance_sync.py",
+    "tests/governance/test_project_governance_validator.py",
+    "whkmSalary/AGENTS.md"
+  ],
+  "changed_files_actual": [
+    ".github/workflows/project-governance.yml",
+    "AGENTS.md",
+    "Alpha/AGENTS.md",
+    "FIFA/AGENTS.md",
+    "MetaDatabase/docs/governance/ASSURANCE_STATUS.yaml",
+    "MetaDatabase/docs/governance/TRACEABILITY_MATRIX.csv",
+    "MetaDatabase/docs/governance/delivery_tasks.yaml",
+    "MetaDatabase/docs/governance/development_events.jsonl",
+    "MetaDatabase/docs/governance/roadmap.yaml",
+    "MetaDatabase/功能清单.md",
+    "MetaDatabase/开发记录.md",
+    "MetaDatabase/模型参数文件.md",
+    "OpMe_System/AGENTS.md",
+    "OpenAIDatabase/AGENTS.md",
+    "PFI/AGENTS.md",
+    "QBVS/AGENTS.md",
+    "QBVS/README.md",
+    "QBVS/docs/governance/events.jsonl",
+    "QBVS/docs/governance/project.yaml",
+    "QBVS/docs/governance/roadmap.yaml",
+    "QBVS/功能清单.md",
+    "QBVS/开发记录.md",
+    "QBVS/模型参数文件.md",
+    "Serenity-Alipay/AGENTS.md",
+    "arxiv-daily-push/AGENTS.md",
+    "arxiv-daily-push/功能清单.md",
+    "arxiv-daily-push/开发记录.md",
+    "arxiv-daily-push/模型参数文件.md",
+    "governance/run_manifests/GOV-ROI-MINPATCH-FINAL-CROSS-STAGE-REVIEW-20260629.json",
+    "governance/run_manifests/GOV-ROI-MINPATCH-S3-ROOT-HOTPATH-20260628.json",
+    "governance/run_manifests/GOV-ROI-MINPATCH-S4-PROJECT-INTERFACES-20260628.json",
+    "governance/run_manifests/GOV-ROI-MINPATCH-S5-ACCEPTANCE-ROI-ROLLBACK-20260628.json",
+    "governance/schemas/project.schema.json",
+    "scripts/lean_governance.py",
+    "scripts/validate_governance_sync.py",
+    "tests/governance/test_project_governance_validator.py",
+    "whkmSalary/AGENTS.md"
+  ],
+  "required_governance_files": [
+    "governance/run_manifests/GOV-ROI-MINPATCH-FINAL-CROSS-STAGE-REVIEW-20260629.json",
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "updated_governance_files": [
+    "governance/run_manifests/GOV-ROI-MINPATCH-FINAL-CROSS-STAGE-REVIEW-20260629.json",
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py"
+  ],
+  "roi_results": {
+    "ordinary_context_file_count": 2,
+    "ordinary_context_bytes": 7746,
+    "root_agents_blob_bytes": 4052,
+    "compact_stdout_bytes_before_final_manifest": 1390,
+    "changed_only_ci_seconds_before_final_manifest": 3.182,
+    "changed_file_count_before_final_manifest": 36,
+    "changed_manifest_count_before_final_manifest": 3,
+    "final_audit_decision_before_final_manifest": "SHIP",
+    "post_manifest_rerun_status": "PASS",
+    "final_audit_decision_after_final_manifest": "SHIP",
+    "final_audit_seconds_after_final_manifest": 3.447,
+    "final_audit_changed_file_count_after_final_manifest": 37,
+    "final_audit_changed_manifest_count_after_final_manifest": 4,
+    "final_audit_changed_only_ci_seconds_after_final_manifest": 3.057,
+    "final_audit_compact_stdout_bytes_after_final_manifest": 1389,
+    "changed_only_ci_decision_after_final_manifest": "SHIP",
+    "changed_only_ci_seconds_after_final_manifest": 3.384,
+    "changed_only_ci_compact_stdout_bytes_after_final_manifest": 1663,
+    "validate_changed_only_errors_after_final_manifest": 0,
+    "validate_changed_only_warnings_after_final_manifest": 0,
+    "stage5_audit_decision_after_final_manifest": "SHIP"
+  },
+  "test_commands": [
+    "python -B -m unittest tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_m1_final_roi_audit_ships_when_stage5_and_manifests_pass tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_m1_final_roi_manifest_review_rejects_missing_stage_acceptance tests.governance.test_project_governance_validator.ProjectGovernanceValidatorTests.test_m1_final_roi_audit_cli_outputs_chinese_ship_json",
+    "python -B scripts/lean_governance.py roi-final-audit --base-ref origin/main",
+    "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main",
+    "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "python -B scripts/lean_governance.py context-contract",
+    "python -B -m json.tool governance/run_manifests/GOV-ROI-MINPATCH-FINAL-CROSS-STAGE-REVIEW-20260629.json",
+    "git diff --check"
+  ],
+  "test_results": [
+    {
+      "command": "final roi focused tests before final manifest",
+      "result": "PASS",
+      "observed": "Ran 3 tests; OK. Covered SHIP path, missing acceptance ID negative path, and Chinese roi-final-audit CLI output."
+    },
+    {
+      "command": "roi-final-audit before final manifest",
+      "result": "PASS",
+      "observed": "decision=SHIP；S3/S4/S5 manifest reviews all pass；owner_readability 11/11；open_p0_p1_count=0；ordinary_context=2 files/7746 bytes；root AGENTS blob=4052；changed_only_ci_seconds=3.182；compact_stdout_bytes=1390。"
+    },
+    {
+      "command": "roi-final-audit after final manifest",
+      "result": "PASS",
+      "observed": "decision=SHIP；stage_manifest_reviews all pass；blocking_reasons=[]；changed_file_count=37；changed_manifest_count=4；ordinary_context=2 files/7746 bytes；root AGENTS blob=4052；changed_only_ci_seconds=3.057；compact_stdout_bytes=1389。"
+    },
+    {
+      "command": "changed-only compact CI after final manifest",
+      "result": "PASS",
+      "observed": "decision=SHIP；legacy_exit_code=0；process_exit_code=0；changed_file_count=37；selected_project_count=11；zero_tracked_write=true；compact_stdout_bytes=1663；total_seconds=3.384。"
+    },
+    {
+      "command": "validate changed-only semantic after final manifest",
+      "result": "PASS",
+      "observed": "errors=0；warnings=0；root checked；projects checked=11。"
+    },
+    {
+      "command": "context-contract after final manifest",
+      "result": "PASS",
+      "observed": "default_file_count=2；default_total_bytes=7746；within_budget=true；forbidden_default_reads include scripts/lean_governance.py and governance/run_manifests。"
+    },
+    {
+      "command": "stage5-audit after final manifest",
+      "result": "PASS",
+      "observed": "decision=SHIP；open_p0_p1_count=0；owner_readability 11/11；changed_file_count=37；changed_manifest_count=4；changed_only_ci_seconds=3.168；zero_tracked_write=true。"
+    },
+    {
+      "command": "json.tool final manifest",
+      "result": "PASS",
+      "observed": "JSON parsed successfully."
+    },
+    {
+      "command": "git diff --check",
+      "result": "PASS",
+      "observed": "No whitespace errors. Git only reported LF-to-CRLF working-copy warnings for scripts/lean_governance.py and tests/governance/test_project_governance_validator.py."
+    }
+  ],
+  "evidence_refs": [
+    "scripts/lean_governance.py",
+    "tests/governance/test_project_governance_validator.py",
+    "governance/run_manifests/GOV-ROI-MINPATCH-S3-ROOT-HOTPATH-20260628.json",
+    "governance/run_manifests/GOV-ROI-MINPATCH-S4-PROJECT-INTERFACES-20260628.json",
+    "governance/run_manifests/GOV-ROI-MINPATCH-S5-ACCEPTANCE-ROI-ROLLBACK-20260628.json",
+    "governance/run_manifests/GOV-ROI-MINPATCH-FINAL-CROSS-STAGE-REVIEW-20260629.json",
+    "C:\\Users\\linze\\AppData\\Local\\Temp\\codex-final-roi-evidence\\ci-1782683331717-25152-22c7e78cf137-c5e2deed.json"
+  ],
+  "rollback": {
+    "action": "回滚 final 复审提交即可恢复 Stage5 状态。",
+    "rollback_switch": "GOVERNANCE_ROLLBACK_LEGACY_CHANGED_ONLY=1",
+    "rollback_command": "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "business_data_restore_required": false,
+    "production_restore_required": false
+  },
+  "stop_conditions": {
+    "stage_manifest_acceptance_gap": "STOP",
+    "stage5_audit_not_ship": "STOP",
+    "quality_guard_missing": "STOP_AND_RESTORE_STAGE5_GUARDS",
+    "roi_budget_or_boundary_broken": "STOP_AND_REDUCE_HOT_PATH",
+    "owner_or_handoff_gap": "STOP_AND_FIX_CHINESE_OWNER_READABILITY",
+    "new_current_truth_file_created": "STOP_AND_REMOVE_UNAPPROVED_CURRENT_TRUTH"
+  },
+  "production_status": "UNCHANGED_NOT_CLAIMED",
+  "next_allowed_stage": "COMMIT_PUSH_AND_REMOTE_STATUS_CHECK"
+}

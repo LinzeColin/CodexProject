@@ -89,6 +89,39 @@ STAGE5_P0_P1_FINDINGS = {
     "F-005": "MetaDatabase task id 与 QBVS identity 已修复",
     "F-006": "三中文入口保留，普通任务改走项目执行胶囊",
 }
+FINAL_REVIEW_STAGE_MANIFESTS = (
+    {
+        "stage": "S3",
+        "manifest": "GOV-ROI-MINPATCH-S3-ROOT-HOTPATH-20260628.json",
+        "acceptance_ids": ("S3PAT01", "S3PBT01", "S3PBT02", "S3PCT01", "S3PCT02"),
+    },
+    {
+        "stage": "S4",
+        "manifest": "GOV-ROI-MINPATCH-S4-PROJECT-INTERFACES-20260628.json",
+        "acceptance_ids": ("S4PAT01", "S4PAT02", "S4PBT01", "S4PBT02", "S4PCT01"),
+    },
+    {
+        "stage": "S5",
+        "manifest": "GOV-ROI-MINPATCH-S5-ACCEPTANCE-ROI-ROLLBACK-20260628.json",
+        "acceptance_ids": STAGE5_ACCEPTANCE_IDS,
+    },
+)
+FINAL_REVIEW_ACCEPTANCE_IDS = (
+    "FINAL-S3-S5-REQ-MATRIX",
+    "FINAL-QUALITY-GUARDS",
+    "FINAL-ROI-EVIDENCE",
+    "FINAL-HANDOFF",
+)
+FINAL_REVIEW_PROJECT_CAPSULES = (
+    "PFI",
+    "arxiv-daily-push",
+    "Alpha",
+    "FIFA",
+    "OpMe_System",
+    "OpenAIDatabase",
+    "Serenity-Alipay",
+    "whkmSalary",
+)
 
 
 def file_state(root: Path, rel_path: str) -> dict[str, Any]:
@@ -2466,6 +2499,265 @@ def run_stage5_audit(base_ref: str | None = None, *, root: Path = ROOT, projects
     return (0 if decision == "SHIP" else 1), summary
 
 
+def manifest_has_pass_result(manifest: dict[str, Any]) -> bool:
+    for item in governance.as_list(manifest.get("test_results")):
+        result = str(item.get("result") if isinstance(item, dict) else item).upper()
+        observed = str(item.get("observed") if isinstance(item, dict) else "").upper()
+        if result.startswith("PASS") or "OK" in observed:
+            return True
+    return False
+
+
+def review_stage_manifest(root: Path, spec: dict[str, Any]) -> dict[str, Any]:
+    manifest_name = str(spec.get("manifest") or "")
+    raw_expected_ids = spec.get("acceptance_ids")
+    if isinstance(raw_expected_ids, (list, tuple, set)):
+        expected_ids = tuple(str(item) for item in raw_expected_ids)
+    else:
+        expected_ids = tuple(str(item) for item in governance.as_list(raw_expected_ids))
+    manifest_path = root / "governance" / "run_manifests" / manifest_name
+    manifest = load_stage_manifest(root, manifest_name)
+    acceptance_ids = set(str(item) for item in governance.as_list(manifest.get("acceptance_ids")))
+    acceptance_results = manifest.get("acceptance_results") if isinstance(manifest.get("acceptance_results"), dict) else {}
+    accounted_ids = acceptance_ids | {str(key) for key in acceptance_results}
+    missing_ids = [item for item in expected_ids if item not in accounted_ids]
+    test_commands = governance.as_list(manifest.get("test_commands"))
+    test_results = governance.as_list(manifest.get("test_results"))
+    evidence_refs = governance.as_list(manifest.get("evidence_refs"))
+    changed_files_actual = governance.as_list(manifest.get("changed_files_actual"))
+    checks = {
+        "manifest_exists": manifest_path.is_file(),
+        "manifest_is_mapping": bool(manifest),
+        "binding_not_legacy_unbound": str(manifest.get("binding_status") or "") != "LEGACY_UNBOUND",
+        "expected_acceptance_ids_present": not missing_ids,
+        "test_commands_present": bool(test_commands),
+        "test_results_present": bool(test_results),
+        "test_pass_result_present": manifest_has_pass_result(manifest),
+        "evidence_refs_present": bool(evidence_refs),
+        "changed_files_actual_present": bool(changed_files_actual),
+    }
+    return {
+        "stage": str(spec.get("stage") or ""),
+        "manifest": manifest_name,
+        "path": governance.rel(manifest_path),
+        "expected_acceptance_ids": list(expected_ids),
+        "manifest_acceptance_ids": sorted(acceptance_ids),
+        "missing_acceptance_ids": missing_ids,
+        "checks": checks,
+        "failed_checks": [name for name, passed in checks.items() if not passed],
+        "pass": all(checks.values()),
+    }
+
+
+def git_tracked_files(root: Path) -> list[str]:
+    result = subprocess.run(
+        ["git", "ls-files"],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL,
+        check=False,
+    )
+    if result.returncode != 0:
+        return []
+    return [line.strip().replace("\\", "/") for line in result.stdout.splitlines() if line.strip()]
+
+
+def review_solution_boundaries(root: Path) -> dict[str, Any]:
+    context_contract = ordinary_context_contract(root)
+    root_agents_blob_size = git_blob_size(root, "AGENTS.md")
+    tracked_files = git_tracked_files(root)
+    forbidden_current_truth = sorted(
+        path for path in tracked_files if Path(path).name in {"CURRENT.md", "SHIP.md"}
+    )
+    forbidden_default_reads = set(str(item) for item in governance.as_list(context_contract.get("forbidden_default_reads")))
+    stage_manifest_paths = [
+        f"governance/run_manifests/{spec['manifest']}"
+        for spec in FINAL_REVIEW_STAGE_MANIFESTS
+    ]
+    checks = {
+        "no_new_current_truth_markdown": not forbidden_current_truth,
+        "stage_manifests_preserved": all((root / path).is_file() for path in stage_manifest_paths),
+        "ordinary_context_within_budget": bool(context_contract.get("within_budget")),
+        "ordinary_context_file_count_under_limit": int(context_contract.get("default_file_count", 999)) <= ORDINARY_CONTEXT_MAX_FILES,
+        "ordinary_context_bytes_under_limit": int(context_contract.get("default_total_bytes", 999999)) <= ORDINARY_CONTEXT_MAX_BYTES,
+        "root_agents_under_4kb_blob": root_agents_blob_size is not None and root_agents_blob_size <= 4096,
+        "default_reads_do_not_include_governance_compute": ORDINARY_CONTEXT_FORBIDDEN_DEFAULT_READS[0] in forbidden_default_reads
+        and ORDINARY_CONTEXT_FORBIDDEN_DEFAULT_READS[1] in forbidden_default_reads,
+    }
+    return {
+        "schema_version": 1,
+        "context_contract": context_contract,
+        "root_agents_blob_bytes": root_agents_blob_size,
+        "forbidden_current_truth_markdown": forbidden_current_truth,
+        "stage_manifest_paths": stage_manifest_paths,
+        "checks": checks,
+        "failed_checks": [name for name, passed in checks.items() if not passed],
+        "pass": all(checks.values()),
+    }
+
+
+def review_project_capsules(root: Path) -> dict[str, Any]:
+    project_results: list[dict[str, Any]] = []
+    for project in FINAL_REVIEW_PROJECT_CAPSULES:
+        path = root / project / "AGENTS.md"
+        text = path.read_text(encoding="utf-8") if path.is_file() else ""
+        checks = {
+            "agents_exists": path.is_file(),
+            "s4_capsule_present": "S4" in text and "精简执行胶囊" in text,
+            "ordinary_read_limit_present": "不得" in text,
+            "model_parameters_escalation_present": "模型参数文件.md" in text,
+            "governance_verify_present": "lean_governance.py" in text and ("验证" in text or "verify" in text.lower()),
+        }
+        if project == "arxiv-daily-push":
+            checks.update(
+                {
+                    "ordinary_non_source_route_present": "普通非来源变更" in text and "不得默认读取完整 `用户中心/`" in text,
+                    "source_full_gate_route_present": "来源、板块、scheduler、SMTP、storage、security、ranking" in text
+                    and "完整特殊" in text,
+                    "source_gate_tests_present": "test_security_boundary.py" in text and "test_source_registry.py" in text,
+                }
+            )
+        project_results.append(
+            {
+                "project": project,
+                "path": governance.rel(path),
+                "checks": checks,
+                "failed_checks": [name for name, passed in checks.items() if not passed],
+                "pass": all(checks.values()),
+            }
+        )
+    failed = [item["project"] for item in project_results if not item["pass"]]
+    return {
+        "schema_version": 1,
+        "mode": "s4_project_execution_capsule_review",
+        "project_count": len(project_results),
+        "failed_projects": failed,
+        "projects": project_results,
+        "pass": not failed,
+    }
+
+
+def review_identity_repairs(root: Path) -> dict[str, Any]:
+    metadatabase_roadmap = (root / "MetaDatabase" / "docs" / "governance" / "roadmap.yaml").read_text(encoding="utf-8")
+    metadatabase_delivery = (root / "MetaDatabase" / "docs" / "governance" / "delivery_tasks.yaml").read_text(encoding="utf-8")
+    qbvs_project = (root / "QBVS" / "docs" / "governance" / "project.yaml").read_text(encoding="utf-8")
+    qbvs_readme = (root / "QBVS" / "README.md").read_text(encoding="utf-8")
+    checks = {
+        "metadatabase_current_task_id_legal": 'current_task_id: "S1PAT01"' in metadatabase_roadmap,
+        "metadatabase_legacy_alias_retained": 'legacy_task_ids:' in metadatabase_delivery
+        and '"TASK-MDB-S0-001"' in metadatabase_delivery,
+        "qbvs_project_id_current": 'project_id: "QBVS"' in qbvs_project,
+        "qbvs_display_name_present": 'display_name: "大数据模拟器' in qbvs_project,
+        "qbvs_readme_identity_current": "QBVS" in qbvs_readme
+        and "大数据模拟器" in qbvs_readme
+        and "project_id: `PFI_BIG_DATA_SIMULATOR`" not in qbvs_readme,
+    }
+    return {
+        "schema_version": 1,
+        "mode": "s4_identity_repair_review",
+        "checks": checks,
+        "failed_checks": [name for name, passed in checks.items() if not passed],
+        "pass": all(checks.values()),
+    }
+
+
+def run_roi_final_audit(base_ref: str | None = None, *, root: Path = ROOT, projects_file: Path = PROJECTS_FILE) -> tuple[int, dict[str, Any]]:
+    started = time.perf_counter()
+    stage5_exit, stage5 = run_stage5_audit(base_ref, root=root, projects_file=projects_file)
+    stage_reviews = [review_stage_manifest(root, spec) for spec in FINAL_REVIEW_STAGE_MANIFESTS]
+    boundaries = review_solution_boundaries(root)
+    capsules = review_project_capsules(root)
+    identity = review_identity_repairs(root)
+    quality_guards = (
+        (stage5.get("shadow_parity") or {}).get("quality_guards")
+        if isinstance(stage5.get("shadow_parity"), dict)
+        else {}
+    )
+    risk_closure = stage5.get("risk_closure") if isinstance(stage5.get("risk_closure"), dict) else {}
+    owner_readability = stage5.get("owner_readability") if isinstance(stage5.get("owner_readability"), dict) else {}
+    rollback = stage5.get("rollback_rehearsal") if isinstance(stage5.get("rollback_rehearsal"), dict) else {}
+    roi_metrics = stage5.get("roi_metrics") if isinstance(stage5.get("roi_metrics"), dict) else {}
+    task_results = {
+        "FINAL-S3-S5-REQ-MATRIX": {
+            "name": "S3/S4/S5 manifest 验收矩阵完整",
+            "pass": all(item["pass"] for item in stage_reviews),
+            "evidence": [item["manifest"] for item in stage_reviews],
+        },
+        "FINAL-QUALITY-GUARDS": {
+            "name": "质量闸、T2/T3、全量治理、ADP fail-closed 和 hook advisory 保留",
+            "pass": bool(quality_guards.get("pass")) and bool(stage5.get("zero_tracked_write")),
+            "evidence": ["stage5.shadow_parity.quality_guards", "stage5.zero_tracked_write"],
+        },
+        "FINAL-ROI-EVIDENCE": {
+            "name": "ROI 指标与普通上下文预算仍达标",
+            "pass": bool(roi_metrics.get("pass")) and bool(boundaries.get("pass")),
+            "evidence": ["stage5.roi_metrics", "ordinary_context_contract", "root_AGENTS_blob_bytes"],
+        },
+        "FINAL-HANDOFF": {
+            "name": "项目胶囊、中文 owner 可读和 identity 修复可交接",
+            "pass": bool(capsules.get("pass"))
+            and bool(identity.get("pass"))
+            and bool(owner_readability.get("pass"))
+            and int(risk_closure.get("open_p0_p1_count", 1)) == 0
+            and bool(rollback.get("pass")),
+            "evidence": ["project AGENTS capsules", "owner_readability", "risk_closure", "rollback_rehearsal"],
+        },
+    }
+    stop_conditions = {
+        "stage_manifest_acceptance_gap": not task_results["FINAL-S3-S5-REQ-MATRIX"]["pass"],
+        "stage5_audit_not_ship": stage5_exit != 0 or stage5.get("decision") != "SHIP",
+        "quality_guard_missing": not task_results["FINAL-QUALITY-GUARDS"]["pass"],
+        "roi_budget_or_boundary_broken": not task_results["FINAL-ROI-EVIDENCE"]["pass"],
+        "owner_or_handoff_gap": not task_results["FINAL-HANDOFF"]["pass"],
+        "new_current_truth_file_created": bool(boundaries.get("forbidden_current_truth_markdown")),
+    }
+    blocking = [name for name, failed in stop_conditions.items() if failed]
+    decision = "SHIP" if not blocking and all(item["pass"] for item in task_results.values()) else "STOP"
+    summary = {
+        "owner_status_zh": "最终复审通过：S3-S5 证据闭环，治理真相保留，治理计算仍在显式 gate 中，不进入普通开发热路径。"
+        if decision == "SHIP"
+        else "最终复审停止：存在阶段证据、质量闸、ROI 预算或中文交接缺口。",
+        "schema_version": 1,
+        "language": "zh-CN",
+        "command": "roi-final-audit",
+        "acceptance_ids": list(FINAL_REVIEW_ACCEPTANCE_IDS),
+        "base_ref": base_ref or "",
+        "decision": decision,
+        "stage_manifest_reviews": stage_reviews,
+        "task_results": task_results,
+        "solution_boundaries": boundaries,
+        "project_capsules": capsules,
+        "identity_repairs": identity,
+        "stage5_audit": {
+            "exit_code": stage5_exit,
+            "decision": stage5.get("decision"),
+            "owner_status_zh": stage5.get("owner_status_zh"),
+            "risk_closure": risk_closure,
+            "owner_readability": {
+                "project_count": owner_readability.get("project_count"),
+                "passed_project_count": owner_readability.get("passed_project_count"),
+                "failed_projects": owner_readability.get("failed_projects"),
+                "pass": owner_readability.get("pass"),
+            },
+            "quality_guards": quality_guards,
+            "roi_metrics": roi_metrics,
+            "rollback_rehearsal": rollback,
+            "zero_tracked_write": stage5.get("zero_tracked_write"),
+        },
+        "stop_conditions": stop_conditions,
+        "blocking_reasons": blocking,
+        "timing_telemetry": {
+            "final_audit_seconds": round(time.perf_counter() - started, 3),
+            "stage5_audit_seconds": (stage5.get("timing_telemetry") or {}).get("stage5_audit_seconds")
+            if isinstance(stage5.get("timing_telemetry"), dict)
+            else None,
+        },
+        "rollback_or_stop_condition": "decision=SHIP 时仅保留显式审计命令；失败时先停，不合并/不继续开发，按 blocking_reasons 修复后重跑。",
+    }
+    return (0 if decision == "SHIP" else 1), summary
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -2489,6 +2781,8 @@ def main(argv: list[str] | None = None) -> int:
     ci.add_argument("--base-ref", help="Explicit base commit/ref for changed-only CI.")
     stage5_audit = subparsers.add_parser("stage5-audit", help="Run Stage5 ROI acceptance and rollback audit.")
     stage5_audit.add_argument("--base-ref", help="Explicit base commit/ref for Stage5 changed-only audit.")
+    roi_final_audit = subparsers.add_parser("roi-final-audit", help="Run the final S3-S5 ROI cross-stage audit.")
+    roi_final_audit.add_argument("--base-ref", help="Explicit base commit/ref for final ROI audit.")
     validate = subparsers.add_parser("validate", help="Run governance structure and semantic validation.")
     validate_scope = validate.add_mutually_exclusive_group()
     validate_scope.add_argument("--all", action="store_true", help="Validate root governance and all registered projects.")
@@ -2577,6 +2871,10 @@ def main(argv: list[str] | None = None) -> int:
         return exit_code
     if args.command == "stage5-audit":
         exit_code, summary = run_stage5_audit(args.base_ref, root=ROOT, projects_file=PROJECTS_FILE)
+        print(json.dumps(summary, ensure_ascii=False, sort_keys=False, separators=(",", ":")))
+        return exit_code
+    if args.command == "roi-final-audit":
+        exit_code, summary = run_roi_final_audit(args.base_ref, root=ROOT, projects_file=PROJECTS_FILE)
         print(json.dumps(summary, ensure_ascii=False, sort_keys=False, separators=(",", ":")))
         return exit_code
     if args.command == "validate":
