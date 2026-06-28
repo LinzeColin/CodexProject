@@ -24,6 +24,18 @@ Stage 0 交付入口：
 | `src/pfi_v02/stage_v0211_ui_recovery.py` | 机器可读 Stage 0 合同。 |
 | `tests/test_v0211_stage0_preparation_contract.py` | Stage 0 合同测试。 |
 
+## v0.2.1.1 Stage 2 - 页面骨架与去 AI 化
+
+本轮只完成 Stage 2，不实现数据库迁移、上传入库闭环、持仓 SQLite 持久化、真实图表数据接入或最终验收。
+
+- 正式 10 个一级入口均具备中文页面骨架和二级入口。
+- `数据源与上传` 二级入口固定包含 `上传中心`、`导入中心`。
+- 默认首页改为用户任务语言：净资产、现金余额、投资市值、本月支出、待复核交易、数据源状态。
+- 正式 UI 清理运行边界、Task Pack、Demo、Prototype、手机预览、运行反馈控制台、多模态交互反馈、证据抽屉、运行证据、任务中心等污染词。
+- 反馈、触感、声音、视觉、主题语言和备份恢复只在 `设置` 页出现。
+- 交付记录：`docs/pfi_v0211/STAGE2_PAGE_SKELETON_CLEANUP.md`。
+- 合同测试：`tests/test_v0211_stage2_page_skeleton_contract.py`。
+
 ## v0.2.2 数据库治理整体复审
 
 `v0.2.2 数据库治理` 当前完成 Stage 0-13 的整体项目复审解决。正式页面、报告、图表、首页摘要和建议只允许读取真实 MetaDatabase 派生数据或中文真实空态；不得使用 demo/sample/synthetic/fixture/mock/fake/测试样例数据作为验收依据。不新增真实交易、自动投资、支付或券商提交能力。

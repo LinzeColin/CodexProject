@@ -62,7 +62,7 @@ const USER_TEXT_LABELS = {
   ["Owner " + "docs、diff " + "summary、rollback " + "plan、follow-up " + "list。"]: "用户文档、差异摘要、回滚计划和后续任务清单已记录。",
 };
 
-const GENERIC_WORKFLOW_DESCRIPTION = "查看该工作流的来源、任务和证据状态。";
+const GENERIC_WORKFLOW_DESCRIPTION = "查看该功能的说明、状态和下一步。";
 
 const WORKSPACE_LABELS = {
   home: "首页",
@@ -116,7 +116,7 @@ const CARD_SOURCES = {
   open_tasks: "任务表",
   market_events: "来源登记",
   portfolio_risk: "持仓快照",
-  strategy_runs: "证据记录",
+  strategy_runs: "策略记录",
   net_worth: "账户账本",
   cash: "账户地图",
   investment_assets: "账户与资产",
@@ -136,7 +136,7 @@ const UNIFIED_TREND_DATA = {
     scope: "账户与资产",
     title: "现金、净资产、总资产与负债趋势",
     unit: "CNY",
-    source: "SQLite 运行读模型",
+    source: "本机数据层",
     emptyState: "账户趋势需要先保存持仓或导入账户流水。",
     periods: [],
     series: [
@@ -150,7 +150,7 @@ const UNIFIED_TREND_DATA = {
     scope: "投资管理",
     title: "投资市值、收益、未实现盈亏与现金仓位趋势",
     unit: "CNY",
-    source: "SQLite 运行读模型",
+    source: "本机数据层",
     emptyState: "投资趋势需要先保存持仓，当前不伪造收益。",
     periods: [],
     series: [
@@ -164,7 +164,7 @@ const UNIFIED_TREND_DATA = {
     scope: "消费管理",
     title: "本月支出、预算剩余、固定/弹性支出与现金流预测",
     unit: "CNY",
-    source: "SQLite 运行读模型",
+    source: "本机数据层",
     emptyState: "消费趋势需要先导入真实流水，当前不伪造支出或预算。",
     periods: [],
     series: [
@@ -266,9 +266,8 @@ const FEATURE_TARGETS = {
   任务监控: { view: "task_monitor", label: "打开任务" },
   本机数据管理: { view: "privacy_boundary", label: "打开数据" },
   备份恢复: { view: "backup_restore", label: "打开备份" },
-  运行反馈控制台: { workspace: "settings", label: "打开反馈" },
-  多模态反馈: { workspace: "settings", label: "打开反馈" },
-  触感反馈强度: { workspace: "settings", label: "打开触感" },
+  反馈偏好: { workspace: "settings", label: "打开反馈" },
+  触感反馈: { workspace: "settings", label: "打开触感" },
   声音反馈: { workspace: "settings", label: "打开声音" },
   视觉反馈: { workspace: "settings", label: "打开视觉" },
   通知反馈: { workspace: "settings", label: "打开通知" },
@@ -309,9 +308,8 @@ const SEARCH_ALIASES = {
   策略实验室: "strategy lab backtest scan market feel celue 策略 实验室 回测 参数 盘感 模拟",
   设置: "settings preferences config shezhi 设置 偏好 系统",
   数据与系统: "settings data system shuju xitong 数据 系统 来源 任务 管理",
-  运行反馈控制台: "feedback console fankui fk 反馈 运行 控制台",
-  多模态反馈: "multimodal feedback haptic sound visual notification 多模态 反馈",
-  触感反馈强度: "haptic vibration touch chugan 触感 震动 强度",
+  反馈偏好: "feedback preferences fankui fk 反馈 偏好",
+  触感反馈: "haptic vibration touch chugan 触感 震动 强度",
   声音反馈: "sound audio shengyin 声音 音效",
   视觉反馈: "visual animation shijue 视觉 动效 状态",
   通知反馈: "notification toast tongzhi 通知 提醒",
@@ -340,6 +338,75 @@ const LEGACY_COMMAND_ALIASES = Object.freeze([
   { title: "数据与系统", workspace: "settings", routeAlias: "/settings?tab=data-system", keywords: "data system 数据 系统 设置" },
 ]);
 const STRATEGY_LAB_VIEWS = new Set(["single", "scan", "strategy_slice", "pit_backtest", "train_test_validation", "walk_forward_validation", "strategy_registry", "market_feel", "big_data", "library"]);
+const STAGE2_SECONDARY_TABS = {
+  home: [
+    { title: "财务状态", routeAlias: "/home?tab=status" },
+    { title: "待办事项", routeAlias: "/home?tab=todo" },
+    { title: "快捷操作", routeAlias: "/home?tab=actions" },
+    { title: "最近报告", routeAlias: "/home?tab=reports" },
+  ],
+  accounts: [
+    { title: "账户总览", routeAlias: "/accounts?tab=overview" },
+    { title: "账户列表", routeAlias: "/accounts?tab=list" },
+    { title: "资产趋势", routeAlias: "/accounts?tab=trend" },
+    { title: "对账状态", routeAlias: "/accounts?tab=reconcile" },
+  ],
+  ledger: [
+    { title: "流水列表", routeAlias: "/ledger?tab=list" },
+    { title: "筛选搜索", routeAlias: "/ledger?tab=filter" },
+    { title: "分类复核", routeAlias: "/ledger?tab=review" },
+    { title: "导出流水", routeAlias: "/ledger?tab=export" },
+  ],
+  investment: [
+    { title: "投资总览", routeAlias: "/investment?tab=overview" },
+    { title: "持仓", routeAlias: "/investment?tab=holdings" },
+    { title: "交易记录", routeAlias: "/investment?tab=trades" },
+    { title: "收益分析", routeAlias: "/investment?tab=returns" },
+  ],
+  consumption: [
+    { title: "消费总览", routeAlias: "/consumption?tab=overview" },
+    { title: "分类分析", routeAlias: "/consumption?tab=category" },
+    { title: "预算", routeAlias: "/consumption?tab=budget" },
+    { title: "订阅", routeAlias: "/consumption?tab=subscription" },
+    { title: "异常消费", routeAlias: "/consumption?tab=anomaly" },
+    { title: "现金流预测", routeAlias: "/consumption?tab=cashflow" },
+  ],
+  sync: [
+    { title: "上传中心", routeAlias: "/sources-upload?tab=upload" },
+    { title: "导入中心", routeAlias: "/sources-upload?tab=import" },
+    { title: "数据源管理", routeAlias: "/sources-upload?tab=sources" },
+    { title: "待复核", routeAlias: "/sources-upload?tab=review" },
+    { title: "导入历史", routeAlias: "/sources-upload?tab=history" },
+  ],
+  recommendations: [
+    { title: "建议列表", routeAlias: "/review?tab=list" },
+    { title: "建议详情", routeAlias: "/review?tab=detail" },
+    { title: "决策记录", routeAlias: "/review?tab=decision" },
+    { title: "复盘记录", routeAlias: "/review?tab=history" },
+  ],
+  insights: [
+    { title: "月报", routeAlias: "/reports?tab=monthly" },
+    { title: "季报", routeAlias: "/reports?tab=quarterly" },
+    { title: "年报", routeAlias: "/reports?tab=yearly" },
+    { title: "自定义报告", routeAlias: "/reports?tab=custom" },
+    { title: "导出", routeAlias: "/reports?tab=export" },
+  ],
+  market_research: [
+    { title: "市场观察", routeAlias: "/market-research?tab=market" },
+    { title: "公司研究", routeAlias: "/market-research?tab=company" },
+    { title: "基金研究", routeAlias: "/market-research?tab=fund" },
+    { title: "政策研究", routeAlias: "/market-research?tab=policy" },
+    { title: "策略实验室", routeAlias: "/market-research/strategy-lab", view: "single" },
+  ],
+  settings: [
+    { title: "账户偏好", routeAlias: "/settings?tab=account" },
+    { title: "数据与系统", routeAlias: "/settings?tab=data-system" },
+    { title: "隐私与本地存储", routeAlias: "/settings?tab=privacy" },
+    { title: "反馈偏好", routeAlias: "/settings?tab=feedback" },
+    { title: "主题语言", routeAlias: "/settings?tab=theme" },
+    { title: "备份恢复", routeAlias: "/settings?tab=backup" },
+  ],
+};
 let globalSearchState = { items: [], results: [], activeIndex: 0 };
 let clickFeedbackSerial = 0;
 let clickSafeBound = false;
@@ -883,7 +950,7 @@ const DEFAULT_WORKSPACES = {
       task("账本复核", "第 1/3 步 · 等待导入结果", "running"),
       task("报告生成", "排队中 · 导入后可生成", "queued"),
     ],
-    evidence: evidence("首页运行证据", "今日缓存摘要", "运行库摘要", "首页卡片和决策队列来自本地运行库。"),
+    evidence: evidence("首页说明", "今日缓存摘要", "本机摘要", "首页卡片和待办列表来自本机资料。"),
     chart: [22, 28, 24, 36, 34, 43, 39, 48, 45, 58, 52, 63, 59, 67],
   },
   market: {
@@ -950,7 +1017,7 @@ const DEFAULT_WORKSPACES = {
     tasks: [
       task("政策权威来源复核", "复核 · 缺少官方链接", "review"),
       task("公司研究反证", "观察 · 等待材料", "watch"),
-      task("报告验证任务", "可用 · 可进入任务中心", "ready"),
+      task("报告验证任务", "可用 · 可进入待办清单", "ready"),
     ],
     evidence: evidence("研究证据", "研究库和政策雷达", "本地证据索引", "研究入口只做证据组织和决策支持。"),
     chart: [16, 20, 22, 30, 27, 32, 35, 42, 39, 44, 48, 52, 50, 56],
@@ -1042,7 +1109,7 @@ const DEFAULT_WORKSPACES = {
     features: [
       feature("数据中心", "可用", "系统诊断", "检查数据源、代码格式、质量报告、缓存和本机数据管理。", { view: "tools", label: "打开数据中心" }),
       feature("来源登记", "复核", "数据来源", "检查来源、时间、质量和限制条件。"),
-      feature("任务监控", "可用", "任务中心", "查看队列、重试、失败和产物。"),
+      feature("待办监控", "可用", "待办清单", "查看队列、重试、失败和产物。"),
       feature("本机数据管理", "可用", "数据目录", "私有数据留在本机运行目录。"),
       feature("备份恢复", "复核", "恢复演练", "检查备份、校验和恢复路径。"),
     ],
@@ -1063,6 +1130,7 @@ const DEFAULT_WORKSPACES = {
 
 const WORKSPACES = structuredClone(DEFAULT_WORKSPACES);
 installStage3WorkspaceAliases();
+installStage2PageSkeletons();
 
 function installStage3WorkspaceAliases() {
   WORKSPACES.home.label = "首页总览";
@@ -1252,22 +1320,22 @@ function installStage3WorkspaceAliases() {
     ...structuredClone(DEFAULT_WORKSPACES.data),
     label: "设置",
     kicker: "系统设置",
-    conclusion: "集中管理数据与系统、运行反馈、多模态反馈、触感、声音、视觉、通知和备份恢复设置。",
+    conclusion: "集中管理数据与系统、反馈偏好、触感、声音、视觉、通知和备份恢复设置。",
     freshness: "设置项本地保存",
     runtime: "设置：只改本机偏好 · 不触发外部动作",
     cards: [
       ["数据与系统", "可用", "来源、任务、本机数据、备份"],
-      ["运行反馈控制台", "可配置", "视觉、声音、触感、通知"],
+      ["反馈偏好", "可配置", "视觉、声音、触感、通知"],
       ["汇率徽标", "已缓存", "AUD/CNY 06:00 快照"],
       ["本机数据管理", "开启", "原始数据按 MetaDatabase 备份规则管理"],
     ],
     features: [
       feature("数据中心", "可用", "系统诊断", "检查数据源、代码格式、质量报告、缓存和本机数据管理。", { workspace: "settings", label: "打开数据与系统" }),
       feature("来源登记", "复核", "数据源状态", "查看来源、时间、质量和限制条件。", { workspace: "settings", label: "查看来源" }),
-      feature("任务监控", "可用", "任务中心", "查看队列、重试、失败和产物。", { workspace: "settings", label: "查看任务" }),
-      feature("运行反馈控制台", "可配置", "设置页", "统一管理成功、失败、进行中、后台任务和缓存兜底反馈。", { workspace: "settings", label: "打开反馈" }),
-      feature("多模态反馈", "可配置", "设置页", "管理触感反馈强度、声音反馈、视觉反馈、通知反馈和反馈测试。", { workspace: "settings", label: "打开反馈设置" }),
-      feature("触感反馈强度", "可配置", "关闭 / 轻 / 标准 / 强", "手机浏览器支持震动时才启用，不支持时静默降级。", { workspace: "settings", label: "打开触感" }),
+      feature("待办监控", "可用", "待办清单", "查看队列、重试、失败和产物。", { workspace: "settings", label: "查看待办" }),
+      feature("反馈偏好", "可配置", "设置页", "统一管理成功、失败、进行中、后台任务和缓存提示。", { workspace: "settings", label: "打开反馈" }),
+      feature("反馈偏好", "可配置", "设置页", "管理触感反馈、声音反馈、视觉反馈、通知反馈和反馈测试。", { workspace: "settings", label: "打开反馈设置" }),
+      feature("触感反馈", "可配置", "关闭 / 轻 / 标准 / 强", "手机浏览器支持震动时才启用，不支持时静默降级。", { workspace: "settings", label: "打开触感" }),
       feature("声音反馈", "可配置", "提示音", "控制成功、失败和完成提示音，默认不打扰。", { workspace: "settings", label: "打开声音" }),
       feature("视觉反馈", "可配置", "动效与状态", "控制按钮按压、骨架屏、错误横幅和状态提示。", { workspace: "settings", label: "打开视觉" }),
       feature("通知反馈", "可配置", "本机通知", "控制后台任务完成、失败和待复核提醒。", { workspace: "settings", label: "打开通知" }),
@@ -1277,9 +1345,9 @@ function installStage3WorkspaceAliases() {
     ],
     rows: [
       row("P0", "汇率徽标", "AUD/CNY", "普通运行本地 06:00 快照；缓存缺失时显示中文待更新。", "复核"),
-      row("P0", "运行反馈控制台", "设置页", "集中配置多模态反馈，不在业务页常驻右侧设置面板。", "可用"),
+      row("P0", "反馈偏好", "设置页", "集中配置触感、声音、视觉和通知，不在业务页常驻右侧设置面板。", "可用"),
       row("P0", "本机数据管理", "目录策略", "确认私有数据与 密钥 不进入公共仓库。", "可用"),
-      row("P1", "反馈设置", "触感/声音/视觉/通知", "业务页默认不常驻反馈控制台。", "可用"),
+      row("P1", "反馈设置", "触感/声音/视觉/通知", "业务页默认不常驻反馈面板。", "可用"),
     ],
     tasks: [
       task("数据与系统入口", "可用 · 旧入口映射到设置页", "ready"),
@@ -1354,6 +1422,349 @@ function installStage3WorkspaceAliases() {
   };
 }
 
+function installStage2PageSkeletons() {
+  WORKSPACES.home = {
+    ...WORKSPACES.home,
+    label: "首页总览",
+    kicker: "今日总览",
+    conclusion: "查看净资产、现金余额、投资市值、本月支出、待复核交易、数据源状态、最近建议和最近报告。",
+    freshness: "本机状态",
+    runtime: "当前页面：财务状态与待办事项",
+    secondaryTabs: STAGE2_SECONDARY_TABS.home,
+    cards: [
+      ["净资产", "暂无真实数据", "账户和持仓接入后显示"],
+      ["现金余额", "暂无真实数据", "账户流水接入后显示"],
+      ["投资市值", "暂无真实数据", "持仓接入后显示"],
+      ["本月支出", "暂无真实数据", "真实流水导入后显示"],
+      ["待复核交易", "0", "导入流水后显示"],
+      ["数据源状态", "等待上传", "进入数据源与上传处理"],
+    ],
+    features: [
+      feature("上传数据", "可用", "上传中心", "进入数据源与上传，选择账单或数据文件。", { workspace: "sync", routeAlias: "/sources-upload?tab=upload", label: "上传数据" }),
+      feature("复核流水", "待处理", "账本流水", "导入后进入账本流水处理分类和复核。", { workspace: "ledger", routeAlias: "/ledger?tab=review", label: "复核流水" }),
+      feature("查看投资", "可用", "投资管理", "查看投资总览、持仓、交易记录和收益分析。", { workspace: "investment", routeAlias: "/investment?tab=overview", label: "查看投资" }),
+      feature("生成报告", "可用", "报告与洞察", "进入报告与洞察，生成或导出本机报告。", { workspace: "insights", routeAlias: "/reports?tab=monthly", label: "生成报告" }),
+    ],
+    rows: [
+      row("1", "上传数据", "等待真实文件", "进入上传中心", "待处理"),
+      row("2", "复核流水", "暂无待复核交易", "导入后处理", "等待数据"),
+      row("3", "最近报告", "暂无新报告", "进入报告页", "可用"),
+    ],
+    tasks: [
+      task("上传数据", "选择账单或数据文件", "ready"),
+      task("复核流水", "导入后处理分类、合并和排除", "review"),
+      task("查看报告", "生成月报或导出本机报告", "queued"),
+    ],
+    evidence: evidence("首页说明", "当前财务状态、待办事项和快捷操作", "本机数据", "账户、流水、持仓和报告状态汇总到首页。"),
+    trend: null,
+    chart: [],
+  };
+
+  WORKSPACES.accounts = {
+    ...WORKSPACES.accounts,
+    label: "账户与资产",
+    kicker: "账户与资产",
+    conclusion: "查看账户总览、账户列表、资产趋势和对账状态；没有真实账户数据时只显示中文空状态。",
+    freshness: "等待账户数据",
+    runtime: "当前页面：账户列表与资产变化",
+    secondaryTabs: STAGE2_SECONDARY_TABS.accounts,
+    cards: [
+      ["账户总览", "暂无真实数据", "绑定或导入账户后显示"],
+      ["账户列表", "0", "等待数据源"],
+      ["资产趋势", "暂无真实数据", "不伪造趋势"],
+      ["对账状态", "等待数据", "导入后可对账"],
+    ],
+    features: [
+      feature("账户总览", "可用", "账户与资产", "查看所有账户、币种、余额和数据状态。", { workspace: "accounts", routeAlias: "/accounts?tab=overview", label: "打开总览" }),
+      feature("账户列表", "可用", "账户列表", "查看账户名称、类型、币种和最近更新时间。", { workspace: "accounts", routeAlias: "/accounts?tab=list", label: "打开列表" }),
+      feature("资产趋势", "等待数据", "资产趋势", "真实账户和持仓接入后显示现金、净资产、总资产和负债。", { workspace: "accounts", routeAlias: "/accounts?tab=trend", label: "查看趋势" }),
+      feature("对账状态", "等待数据", "对账状态", "比较平台余额、本机账本和导入记录。", { workspace: "accounts", routeAlias: "/accounts?tab=reconcile", label: "查看对账" }),
+    ],
+    rows: [
+      row("1", "账户总览", "暂无账户数据", "进入账户列表", "等待数据"),
+      row("2", "资产趋势", "暂无趋势", "导入真实数据后显示", "等待数据"),
+      row("3", "对账状态", "暂无差异", "导入后对账", "等待数据"),
+    ],
+    tasks: [
+      task("新增账户", "后续操作流阶段接入", "queued"),
+      task("编辑账户", "后续操作流阶段接入", "queued"),
+      task("绑定数据源", "先进入数据源与上传", "ready"),
+    ],
+    evidence: evidence("账户说明", "账户列表、账户详情、资产趋势和对账状态", "本机账户资料", "账户资料汇总到账户与资产页面。"),
+  };
+
+  WORKSPACES.ledger = {
+    ...WORKSPACES.ledger,
+    label: "账本流水",
+    kicker: "账本流水",
+    conclusion: "查看流水列表、筛选搜索、分类复核、合并排除和导出；没有真实流水时显示中文空状态。",
+    freshness: "等待流水数据",
+    runtime: "当前页面：流水列表与复核",
+    secondaryTabs: STAGE2_SECONDARY_TABS.ledger,
+    cards: [
+      ["流水列表", "暂无真实数据", "上传后显示"],
+      ["筛选搜索", "可用", "按账户、日期、金额和分类筛选"],
+      ["分类复核", "0", "低置信度记录导入后显示"],
+      ["导出流水", "可用", "导出功能在后续操作流完善"],
+    ],
+    features: [
+      feature("流水列表", "可用", "账本流水", "查看交易日期、账户、金额、分类和备注。", { workspace: "ledger", routeAlias: "/ledger?tab=list", label: "查看列表" }),
+      feature("筛选搜索", "可用", "筛选搜索", "按账户、日期、金额、分类和文字检索流水。", { workspace: "ledger", routeAlias: "/ledger?tab=filter", label: "打开筛选" }),
+      feature("分类复核", "等待数据", "分类复核", "修改分类、合并转账、排除非消费记录。", { workspace: "ledger", routeAlias: "/ledger?tab=review", label: "打开复核" }),
+      feature("导出流水", "可用", "导出流水", "导出当前筛选结果。", { workspace: "ledger", routeAlias: "/ledger?tab=export", label: "打开导出" }),
+    ],
+    rows: [
+      row("1", "导入流水", "等待文件", "进入上传中心", "待处理"),
+      row("2", "分类复核", "暂无待复核", "导入后处理", "等待数据"),
+      row("3", "导出流水", "当前为空", "选择筛选后导出", "可用"),
+    ],
+    tasks: [
+      task("导入流水", "从数据源与上传进入", "ready"),
+      task("批量分类", "后续操作流阶段接入", "queued"),
+      task("保存筛选", "后续操作流阶段接入", "queued"),
+    ],
+    evidence: evidence("账本说明", "流水列表、筛选搜索、分类复核和导出", "本机账本", "导入记录标准化后进入账本流水。"),
+  };
+
+  WORKSPACES.investment = {
+    ...WORKSPACES.investment,
+    label: "投资管理",
+    kicker: "投资管理",
+    conclusion: "查看投资总览、持仓、交易记录和收益分析；策略实验室统一放在市场与研究。",
+    freshness: "等待投资数据",
+    runtime: "当前页面：投资总览与持仓",
+    secondaryTabs: STAGE2_SECONDARY_TABS.investment,
+    cards: [
+      ["投资总览", "暂无真实数据", "持仓接入后显示"],
+      ["持仓", "暂无真实数据", "不使用浏览器缓存作为正式数据"],
+      ["交易记录", "暂无真实数据", "导入券商或手工记录后显示"],
+      ["收益分析", "暂无真实数据", "不伪造收益"],
+    ],
+    features: [
+      feature("投资总览", "可用", "投资总览", "查看投资市值、现金仓位和主要变化。", { workspace: "investment", routeAlias: "/investment?tab=overview", label: "打开总览" }),
+      feature("持仓", "等待数据", "持仓", "查看标的、数量、成本、价格、币种和账户。", { workspace: "investment", routeAlias: "/investment?tab=holdings", label: "查看持仓" }),
+      feature("交易记录", "等待数据", "交易记录", "查看买入、卖出、费用、税费和汇率影响。", { workspace: "investment", routeAlias: "/investment?tab=trades", label: "查看交易" }),
+      feature("收益分析", "等待数据", "收益分析", "有真实持仓和交易后再显示总收益、未实现盈亏和现金拖累。", { workspace: "investment", routeAlias: "/investment?tab=returns", label: "查看收益" }),
+    ],
+    rows: [
+      row("1", "持仓", "暂无真实持仓", "后续阶段接入编辑和保存", "等待数据"),
+      row("2", "交易记录", "暂无交易", "导入后查看", "等待数据"),
+      row("3", "收益分析", "暂无可算收益", "不伪造收益", "等待数据"),
+    ],
+    tasks: [
+      task("修改持仓", "后续真实操作流阶段处理", "queued"),
+      task("查看收益", "等待真实持仓和交易", "review"),
+      task("进入策略实验室", "从市场与研究打开唯一入口", "ready"),
+    ],
+    evidence: evidence("投资说明", "投资总览、持仓、交易记录和收益分析", "本机投资资料", "持仓和交易资料汇总到投资管理。"),
+  };
+
+  WORKSPACES.consumption = {
+    ...WORKSPACES.consumption,
+    label: "消费管理",
+    kicker: "消费管理",
+    conclusion: "查看消费总览、分类分析、预算、订阅、异常消费和现金流预测；没有真实流水时不显示模拟趋势。",
+    freshness: "等待消费流水",
+    runtime: "当前页面：消费分类与预算",
+    secondaryTabs: STAGE2_SECONDARY_TABS.consumption,
+    cards: [
+      ["消费总览", "暂无真实数据", "流水导入后显示"],
+      ["分类分析", "暂无真实数据", "导入后分类"],
+      ["预算", "未设置", "后续设置保存阶段接入"],
+      ["异常消费", "0", "真实流水导入后识别"],
+    ],
+    features: [
+      feature("消费总览", "可用", "消费总览", "查看本月支出、预算剩余、固定和弹性支出。", { workspace: "consumption", routeAlias: "/consumption?tab=overview", label: "打开总览" }),
+      feature("分类分析", "等待数据", "分类分析", "按消费分类查看真实流水。", { workspace: "consumption", routeAlias: "/consumption?tab=category", label: "查看分类" }),
+      feature("预算", "未设置", "预算", "设置预算、查看预算剩余和超支项。", { workspace: "consumption", routeAlias: "/consumption?tab=budget", label: "查看预算" }),
+      feature("订阅", "等待数据", "订阅", "识别周期扣费和疑似订阅。", { workspace: "consumption", routeAlias: "/consumption?tab=subscription", label: "查看订阅" }),
+      feature("异常消费", "等待数据", "异常消费", "查看大额、重复、夜间和冲动型消费。", { workspace: "consumption", routeAlias: "/consumption?tab=anomaly", label: "查看异常" }),
+      feature("现金流预测", "等待数据", "现金流预测", "有真实收入和支出后再预测现金流。", { workspace: "consumption", routeAlias: "/consumption?tab=cashflow", label: "查看现金流" }),
+    ],
+    rows: [
+      row("1", "分类分析", "等待流水", "导入后查看", "等待数据"),
+      row("2", "预算", "未设置", "后续阶段保存", "待处理"),
+      row("3", "异常消费", "暂无记录", "真实流水导入后识别", "等待数据"),
+    ],
+    tasks: [
+      task("设置预算", "后续操作流阶段接入", "queued"),
+      task("修改分类", "先导入真实流水", "review"),
+      task("查看明细", "流水导入后可用", "queued"),
+    ],
+    evidence: evidence("消费说明", "消费总览、分类、预算、订阅、异常和现金流预测", "本机消费流水", "消费流水标准化后进入消费管理。"),
+  };
+
+  WORKSPACES.sync = {
+    ...WORKSPACES.sync,
+    label: "数据源与上传",
+    kicker: "数据源与上传",
+    conclusion: "上传文件、查看导入中心、管理数据源、处理待复核记录和导入历史。",
+    freshness: "等待上传",
+    runtime: "当前页面：上传中心与导入中心",
+    secondaryTabs: STAGE2_SECONDARY_TABS.sync,
+    cards: [
+      ["上传中心", "可用", "选择 CSV / ZIP / XLSX"],
+      ["导入中心", "可用", "查看批次和摘要"],
+      ["数据源管理", "可用", "管理支付宝、微信、银行和券商来源"],
+      ["待复核", "0", "导入后显示"],
+    ],
+    features: [
+      feature("上传中心", "可用", "上传中心", "选择账单或数据文件，进入解析预览前的本机预检。", { workspace: "sync", routeAlias: "/sources-upload?tab=upload", label: "打开上传" }),
+      feature("导入中心", "可用", "导入中心", "查看导入批次、摘要、失败反馈和待复核数量。", { workspace: "sync", routeAlias: "/sources-upload?tab=import", label: "打开导入" }),
+      feature("数据源管理", "可用", "数据源管理", "查看来源、账户、文件类型和最近更新时间。", { workspace: "sync", routeAlias: "/sources-upload?tab=sources", label: "管理数据源" }),
+      feature("待复核", "等待数据", "待复核", "导入后进入账本流水处理低置信度记录。", { workspace: "sync", routeAlias: "/sources-upload?tab=review", label: "查看待复核" }),
+      feature("导入历史", "暂无记录", "导入历史", "查看历史批次和处理结果。", { workspace: "sync", routeAlias: "/sources-upload?tab=history", label: "查看历史" }),
+    ],
+    rows: [
+      row("1", "上传中心", "等待文件", "选择文件", "可用"),
+      row("2", "导入中心", "暂无批次", "上传后查看", "等待数据"),
+      row("3", "待复核", "0", "进入账本流水", "等待数据"),
+    ],
+    tasks: [
+      task("上传文件", "支持 CSV / ZIP / XLSX", "ready"),
+      task("解析预览", "后续真实操作流阶段接入", "queued"),
+      task("确认入库", "后续真实操作流阶段接入", "queued"),
+    ],
+    evidence: evidence("上传说明", "上传中心、导入中心、数据源管理、待复核和导入历史", "本机上传资料", "文件预检后进入导入中心。"),
+  };
+
+  WORKSPACES.recommendations = {
+    ...WORKSPACES.recommendations,
+    label: "建议与复盘",
+    kicker: "建议与复盘",
+    conclusion: "建议必须绑定真实数据依据，支持接受、暂缓、忽略和复盘记录。",
+    freshness: "等待真实建议",
+    runtime: "当前页面：建议列表与复盘记录",
+    secondaryTabs: STAGE2_SECONDARY_TABS.recommendations,
+    cards: [
+      ["建议列表", "暂无建议", "真实数据触发后显示"],
+      ["建议详情", "等待选择", "查看依据、动作和影响"],
+      ["决策记录", "暂无记录", "接受、暂缓或忽略后显示"],
+      ["复盘记录", "暂无记录", "后续记录效果"],
+    ],
+    features: [
+      feature("建议列表", "可用", "建议列表", "查看来自消费异常、预算、现金流或持仓集中度的建议。", { workspace: "recommendations", routeAlias: "/review?tab=list", label: "查看列表" }),
+      feature("建议详情", "等待选择", "建议详情", "查看数据依据、预期影响、代价和动作。", { workspace: "recommendations", routeAlias: "/review?tab=detail", label: "查看详情" }),
+      feature("决策记录", "暂无记录", "决策记录", "记录接受、暂缓、忽略和原因。", { workspace: "recommendations", routeAlias: "/review?tab=decision", label: "查看决策" }),
+      feature("复盘记录", "暂无记录", "复盘记录", "记录建议效果和后续调整。", { workspace: "recommendations", routeAlias: "/review?tab=history", label: "查看复盘" }),
+    ],
+    rows: [
+      row("1", "消费建议", "暂无触发", "等待真实流水", "等待数据"),
+      row("2", "投资建议", "暂无持仓", "等待真实持仓", "等待数据"),
+      row("3", "现金流建议", "暂无预测", "等待收入支出数据", "等待数据"),
+    ],
+    tasks: [
+      task("接受建议", "后续操作流阶段接入", "queued"),
+      task("暂缓建议", "后续操作流阶段接入", "queued"),
+      task("写入复盘", "后续操作流阶段接入", "queued"),
+    ],
+    evidence: evidence("建议说明", "建议列表、建议详情、决策记录和复盘记录", "真实数据触发", "真实数据触发后进入建议与复盘。"),
+  };
+
+  WORKSPACES.insights = {
+    ...WORKSPACES.insights,
+    label: "报告与洞察",
+    kicker: "报告与洞察",
+    conclusion: "查看月报、季报、年报、自定义报告和导出；报告必须来自真实数据或中文空状态。",
+    freshness: "等待报告数据",
+    runtime: "当前页面：报告列表与导出",
+    secondaryTabs: STAGE2_SECONDARY_TABS.insights,
+    cards: [
+      ["月报", "可用", "真实数据不足时显示空状态"],
+      ["季报", "可用", "真实数据不足时显示空状态"],
+      ["年报", "可用", "真实数据不足时显示空状态"],
+      ["导出", "可用", "后续操作流完善"],
+    ],
+    features: [
+      feature("月报", "可用", "月报", "查看净资产、现金流、消费、投资和建议复盘。", { workspace: "insights", routeAlias: "/reports?tab=monthly", label: "打开月报" }),
+      feature("季报", "可用", "季报", "查看季度趋势和主要变化。", { workspace: "insights", routeAlias: "/reports?tab=quarterly", label: "打开季报" }),
+      feature("年报", "可用", "年报", "查看年度资产、消费、投资和复盘。", { workspace: "insights", routeAlias: "/reports?tab=yearly", label: "打开年报" }),
+      feature("自定义报告", "可用", "自定义报告", "按时间、账户、分类和主题生成报告。", { workspace: "insights", routeAlias: "/reports?tab=custom", label: "自定义报告" }),
+      feature("导出", "可用", "导出", "导出 PDF、Markdown 或上下文快照。", { workspace: "insights", routeAlias: "/reports?tab=export", label: "打开导出" }),
+    ],
+    rows: [
+      row("1", "月报", "等待真实数据", "生成月报", "可用"),
+      row("2", "自定义报告", "等待选择范围", "选择条件", "可用"),
+      row("3", "导出", "等待报告", "导出文件", "可用"),
+    ],
+    tasks: [
+      task("生成报告", "后续操作流阶段接入", "queued"),
+      task("导出 PDF", "后续操作流阶段接入", "queued"),
+      task("导出 Markdown", "后续操作流阶段接入", "queued"),
+    ],
+    evidence: evidence("报告说明", "月报、季报、年报、自定义报告和导出", "本机报告资料", "真实数据汇总后进入报告与洞察。"),
+  };
+
+  WORKSPACES.market_research = {
+    ...WORKSPACES.market_research,
+    label: "市场与研究",
+    kicker: "市场与研究",
+    conclusion: "查看市场观察、公司研究、基金研究、政策研究和唯一策略实验室。",
+    freshness: "等待市场资料",
+    runtime: "当前页面：市场观察、研究和策略实验室",
+    secondaryTabs: STAGE2_SECONDARY_TABS.market_research,
+    cards: [
+      ["市场观察", "可用", "指数、ETF、主题和自选"],
+      ["公司研究", "可用", "公司资料和反方条件"],
+      ["基金研究", "可用", "基金持仓、费率和风格"],
+      ["策略实验室", "唯一入口", "回测、参数扫描和盘感训练"],
+    ],
+    features: [
+      feature("市场观察", "可用", "市场观察", "查看指数、ETF、主题和自选对象。", { workspace: "market_research", routeAlias: "/market-research?tab=market", label: "打开市场" }),
+      feature("公司研究", "可用", "公司研究", "查看公司资料、关键假设和反方条件。", { workspace: "market_research", routeAlias: "/market-research?tab=company", label: "打开公司" }),
+      feature("基金研究", "可用", "基金研究", "查看基金持仓、风格、费用和风险。", { workspace: "market_research", routeAlias: "/market-research?tab=fund", label: "打开基金" }),
+      feature("政策研究", "可用", "政策研究", "查看政策资料和引用位置。", { workspace: "market_research", routeAlias: "/market-research?tab=policy", label: "打开政策" }),
+      feature("策略实验室", "可用", "策略实验室", "进入唯一策略实验室，保留策略回测、参数扫描和盘感训练。", { workspace: "market_research", routeAlias: "/market-research/strategy-lab", label: "打开策略" }),
+    ],
+    rows: [
+      row("1", "市场观察", "等待市场资料", "查看市场", "可用"),
+      row("2", "研究材料", "等待材料", "查看研究", "可用"),
+      row("3", "策略实验室", "唯一入口", "打开策略", "可用"),
+    ],
+    tasks: [
+      task("市场观察", "查看市场和自选", "ready"),
+      task("公司/基金研究", "整理研究材料", "ready"),
+      task("策略实验室", "统一进入回测和盘感训练", "ready"),
+    ],
+    evidence: evidence("市场与研究说明", "市场观察、公司研究、基金研究、政策研究和策略实验室", "本机研究资料", "研究资料汇总到市场与研究。"),
+  };
+
+  WORKSPACES.settings = {
+    ...WORKSPACES.settings,
+    label: "设置",
+    kicker: "设置",
+    conclusion: "管理账户偏好、数据与系统、隐私与本地存储、反馈偏好、主题语言和备份恢复。",
+    freshness: "设置保存在本机",
+    runtime: "当前页面：偏好与本机数据设置",
+    secondaryTabs: STAGE2_SECONDARY_TABS.settings,
+    cards: [
+      ["账户偏好", "可配置", "默认账户、币种和显示偏好"],
+      ["数据与系统", "可配置", "数据路径、来源和备份"],
+      ["隐私与本地存储", "本机优先", "原始数据保存在本机和 MetaDatabase"],
+      ["反馈偏好", "可配置", "触感、声音、视觉和通知"],
+    ],
+    features: [
+      feature("账户偏好", "可配置", "账户偏好", "设置默认账户、显示币种和首页偏好。", { workspace: "settings", routeAlias: "/settings?tab=account", label: "打开偏好" }),
+      feature("数据与系统", "可配置", "数据与系统", "查看数据路径、来源状态、备份和恢复。", { workspace: "settings", routeAlias: "/settings?tab=data-system", label: "打开数据" }),
+      feature("隐私与本地存储", "可配置", "隐私与本地存储", "查看本机数据目录、原始文件位置和公共提交排除规则。", { workspace: "settings", routeAlias: "/settings?tab=privacy", label: "打开隐私" }),
+      feature("反馈偏好", "可配置", "反馈偏好", "设置触感、声音、视觉和通知反馈。", { workspace: "settings", routeAlias: "/settings?tab=feedback", label: "打开反馈" }),
+      feature("主题语言", "可配置", "主题语言", "设置主题、字号和语言偏好。", { workspace: "settings", routeAlias: "/settings?tab=theme", label: "打开主题" }),
+      feature("备份恢复", "可配置", "备份恢复", "查看备份、恢复和校验状态。", { workspace: "settings", routeAlias: "/settings?tab=backup", label: "打开备份" }),
+    ],
+    rows: [
+      row("1", "账户偏好", "本机设置", "调整显示偏好", "可配置"),
+      row("2", "数据与系统", "本机路径", "查看数据位置", "可配置"),
+      row("3", "反馈偏好", "设置页", "调整触感、声音、视觉和通知", "可配置"),
+    ],
+    tasks: [
+      task("保存设置", "后续操作流阶段接入", "queued"),
+      task("备份恢复", "后续操作流阶段接入", "queued"),
+      task("反馈测试", "只在设置页显示", "ready"),
+    ],
+    evidence: evidence("设置说明", "账户偏好、数据与系统、隐私、本地存储、反馈、主题和备份", "本机设置", "设置项集中在设置页。"),
+  };
+}
+
 function feature(title, status, evidence, description, target = null) {
   return { title, status, evidence, description, target: target || featureTarget(title) };
 }
@@ -1369,7 +1780,7 @@ function functionView(view, title, workspace, primaryAction, purpose, checks, op
     primaryAction,
     purpose,
     checks,
-    runSummary: options.runSummary || `${title}已在 PFI Shell 内进入操作状态；请先核对数据、参数和证据。`,
+    runSummary: options.runSummary || `${title}已进入操作状态；请先核对数据、参数和当前记录。`,
     runSteps,
     runFields,
     status: "可用",
@@ -1379,9 +1790,9 @@ function functionView(view, title, workspace, primaryAction, purpose, checks, op
 function defaultRunSteps(title, workspace) {
   const workspaceName = WORKSPACE_LABELS[workspace] || "当前工作区";
   return [
-    `确认${workspaceName}上下文、标的、日期和组合范围。`,
-    `检查${title}所需数据、参数、证据来源和缺口。`,
-    "生成研究复核结果，并把需要人工判断的事项写入任务中心。",
+    `确认${workspaceName}当前页面和时间范围。`,
+    `检查${title}所需数据、参数和缺口。`,
+    "生成处理结果，并把需要人工判断的事项写入待办清单。",
   ];
 }
 
@@ -1407,10 +1818,10 @@ function evidence(title, evidenceText, source, lineage) {
     title,
     Evidence: evidenceText,
     Source: source,
-    Model: "外部模型未启用",
-    Parameters: "本地缓存 · 人工复核",
+    Model: "本机读取",
+    Parameters: "本机设置 · 人工复核",
     "Data lineage": lineage,
-    "Raw document": "运行库摘要",
+    "Raw document": "本机摘要",
   };
 }
 
@@ -1509,13 +1920,14 @@ function applyOperationalReadModel(model) {
       ["固定/弹性", `${formatCnyAmount(consumption.fixed_spend_cny)} / ${formatCnyAmount(consumption.flex_spend_cny)}`, consumption.fixed_flex_policy || "真实流水派生"],
     ];
   }
-  if ((hasInvestment || hasConsumption) && WORKSPACES.home) {
+  if ((hasInvestment || hasAccounts || hasConsumption) && WORKSPACES.home) {
     WORKSPACES.home.cards = [
-      ["投资市值", formatCnyAmount(investment.market_value_cny), "SQLite 持仓读模型"],
-      ["投资盈亏", formatCnyAmount(investment.total_return_cny), "由持仓快照派生"],
-      ["本月支出", hasConsumption ? formatCnyAmount(consumption.month_spend_cny) : "待导入", hasConsumption ? "MetaDatabase 真实支付宝流水" : "等待真实流水"],
-      ["待复核流水", hasConsumption ? String(consumption.review_count || 0) : "待导入", hasConsumption ? `${consumption.transaction_count || 0} 条真实流水` : "等待真实流水"],
-      ["近30天支出", hasConsumption ? formatCnyAmount(consumption.cashflow_forecast_cny) : formatCnyAmount(investment.cash_position_cny), hasConsumption ? "最近30天真实消费流出" : "持仓元数据"],
+      ["净资产", hasAccounts ? formatCnyAmount(accounts.net_worth_cny) : "暂无真实数据", hasAccounts ? "账户和持仓汇总" : "账户和持仓接入后显示"],
+      ["现金余额", hasAccounts ? formatCnyAmount(accounts.cash_cny) : "暂无真实数据", hasAccounts ? "账户现金汇总" : "账户流水接入后显示"],
+      ["投资市值", hasInvestment ? formatCnyAmount(investment.market_value_cny) : "暂无真实数据", hasInvestment ? "持仓读模型" : "持仓接入后显示"],
+      ["本月支出", hasConsumption ? formatCnyAmount(consumption.month_spend_cny) : "暂无真实数据", hasConsumption ? "MetaDatabase 真实支付宝流水" : "真实流水导入后显示"],
+      ["待复核交易", hasConsumption ? String(consumption.review_count || 0) : "0", hasConsumption ? `${consumption.transaction_count || 0} 条真实流水` : "导入流水后显示"],
+      ["数据源状态", hasConsumption ? "已导入" : "等待上传", hasConsumption ? "真实流水可读取" : "进入数据源与上传处理"],
     ];
   }
 }
@@ -1643,6 +2055,7 @@ function emitMultimodalFeedback(kind = "select") {
 
 function vibrateFeedback(kind = "select") {
   if (!feedbackRuntimeState.haptic || !("vibrate" in navigator)) return;
+  if (navigator.userActivation && !navigator.userActivation.isActive) return;
   const patterns = {
     soft: [8],
     select: [12],
@@ -1836,14 +2249,27 @@ function applyHomeSummary(summary) {
 }
 
 function restoreOwnerHomeWorkflow() {
-  const ownerHome = DEFAULT_WORKSPACES.home;
   WORKSPACES.home.label = "首页总览";
   WORKSPACES.home.kicker = "今日总览";
-  WORKSPACES.home.conclusion = "先处理数据上传、账本复核、消费分类、投资持仓和策略复盘，再查看报告与建议。";
-  WORKSPACES.home.runtime = "快速路径：上传账单 · 复核流水 · 查看投资/消费 · 生成报告";
-  WORKSPACES.home.features = structuredClone(ownerHome.features);
-  WORKSPACES.home.rows = structuredClone(ownerHome.rows);
-  WORKSPACES.home.tasks = structuredClone(ownerHome.tasks);
+  WORKSPACES.home.conclusion = "查看净资产、现金余额、投资市值、本月支出、待复核交易、数据源状态、最近建议和最近报告。";
+  WORKSPACES.home.runtime = "当前页面：财务状态与待办事项";
+  WORKSPACES.home.secondaryTabs = STAGE2_SECONDARY_TABS.home;
+  WORKSPACES.home.features = [
+    feature("上传数据", "可用", "上传中心", "进入数据源与上传，选择账单或数据文件。", { workspace: "sync", routeAlias: "/sources-upload?tab=upload", label: "上传数据" }),
+    feature("复核流水", "待处理", "账本流水", "导入后进入账本流水处理分类和复核。", { workspace: "ledger", routeAlias: "/ledger?tab=review", label: "复核流水" }),
+    feature("查看投资", "可用", "投资管理", "查看投资总览、持仓、交易记录和收益分析。", { workspace: "investment", routeAlias: "/investment?tab=overview", label: "查看投资" }),
+    feature("生成报告", "可用", "报告与洞察", "进入报告与洞察，生成或导出本机报告。", { workspace: "insights", routeAlias: "/reports?tab=monthly", label: "生成报告" }),
+  ];
+  WORKSPACES.home.rows = [
+    row("1", "上传数据", "等待真实文件", "进入上传中心", "待处理"),
+    row("2", "复核流水", "暂无待复核交易", "导入后处理", "等待数据"),
+    row("3", "最近报告", "暂无新报告", "进入报告页", "可用"),
+  ];
+  WORKSPACES.home.tasks = [
+    task("上传数据", "选择账单或数据文件", "ready"),
+    task("复核流水", "导入后处理分类、合并和排除", "review"),
+    task("查看报告", "生成月报或导出本机报告", "queued"),
+  ];
 }
 
 function applyStage3Dashboard(dashboard) {
@@ -2082,7 +2508,7 @@ function recommendationTypeLabel(value) {
 
 function localizedCardDetail(key, card, fallback) {
   if (!card || (!card.detail && !card.value)) return fallback;
-  const source = CARD_SOURCES[key] || "运行库";
+  const source = CARD_SOURCES[key] || "本机资料";
   const detail = safeUserText(card.detail, "");
   if (detail && !englishNoise(detail)) return `来源：${source} · ${detail}`;
   const status = localizeStatus(detail.match(/status\s+([A-Za-z]+)/)?.[1] || "");
@@ -2091,6 +2517,12 @@ function localizedCardDetail(key, card, fallback) {
 
 function applyWorkflowRuntime(runtime) {
   if (!runtime || runtime.schema !== "PFIOSPhaseCWorkflowRuntimeReadModelV1") return;
+  const hasVisibleRuntime =
+    (runtime.task_center_rows || []).length ||
+    (runtime.workflow_cards || []).length ||
+    (runtime.minute_fast_path && runtime.minute_fast_path.web_shell_visible) ||
+    (runtime.local_llm_deep_path && runtime.local_llm_deep_path.web_shell_visible);
+  if (!hasVisibleRuntime) return;
   const rows = (runtime.task_center_rows || []).slice(0, 6).map((item, index) => {
     const fallback = DEFAULT_WORKSPACES.home.tasks[index] || DEFAULT_WORKSPACES.home.tasks[0];
     const priority = safeUserText(item.priority || "P1", "P1");
@@ -2166,7 +2598,7 @@ function localizedWorkflowCard(card) {
   return feature(
     workspaceLabel(card.title || workspace, fallbackTitle),
     localizeStatus(card.status || "review"),
-    safeEvidenceText(card.evidence_id || card.evidence_class || "", "运行证据"),
+    safeEvidenceText(card.evidence_id || card.evidence_class || "", "页面说明"),
     safeUserText(card.summary || card.source_type || "", GENERIC_WORKFLOW_DESCRIPTION),
   );
 }
@@ -2872,6 +3304,7 @@ function renderWorkspace(workspaceId, options = {}) {
   shell.dataset.state = "ready";
 
   renderCards(workspace.cards);
+  renderSecondaryTabs(workspace.secondaryTabs || [], workspaceId, routeForState);
   renderFeatureCards(workspace.features);
   renderDecisionRows(workspace.rows);
   renderTasks(workspace.tasks);
@@ -2907,10 +3340,33 @@ function syncMobileTabs(workspaceId) {
 function renderCards(cards) {
   document.querySelectorAll("[data-home-card]").forEach((tile, index) => {
     const card = cards[index];
+    tile.hidden = !card;
     if (!card) return;
     tile.querySelector("span").textContent = safeUserText(card[0], "指标");
     tile.querySelector("[data-card-value]").textContent = safeUserText(card[1], "待补");
-    tile.querySelector("[data-card-detail]").textContent = safeUserText(card[2], "来源待补");
+    tile.querySelector("[data-card-detail]").textContent = safeUserText(card[2], "待补充");
+  });
+}
+
+function renderSecondaryTabs(tabs, workspaceId, routeForState) {
+  const container = document.querySelector("[data-secondary-tabs]");
+  if (!container) return;
+  container.replaceChildren();
+  const activeRoute = normalizeRouteAlias(routeForState || "");
+  tabs.forEach((tab, index) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "secondary-tab";
+    button.dataset.secondaryTab = tab.title;
+    button.dataset.featureWorkspace = workspaceId;
+    if (tab.routeAlias) button.dataset.routeAlias = normalizeRouteAlias(tab.routeAlias);
+    if (tab.view) button.dataset.featureView = tab.view;
+    button.textContent = ownerVisibleText(tab.title, "二级入口");
+    const tabRoute = normalizeRouteAlias(tab.routeAlias || "");
+    const active = tabRoute ? activeRoute === tabRoute : index === 0;
+    button.classList.toggle("is-active", active || (!activeRoute && index === 0));
+    button.setAttribute("aria-current", button.classList.contains("is-active") ? "page" : "false");
+    container.appendChild(button);
   });
 }
 
@@ -2938,7 +3394,7 @@ function renderFeatureCards(cards) {
     const evidenceButton = document.createElement("button");
     evidenceButton.type = "button";
     evidenceButton.dataset.workflowEvidence = String(index);
-    evidenceButton.textContent = "查看证据";
+    evidenceButton.textContent = "查看说明";
     evidenceButton.addEventListener("click", () => showWorkflowEvidence(card));
 
     actions.appendChild(openAction);
@@ -3240,21 +3696,21 @@ function workflowFreshnessLabel(freshness) {
 
 function showWorkflowEvidence(card) {
   applyEvidenceDrawer({
-    title: `${ownerVisibleText(card.title, "功能")}证据`,
-    Evidence: ownerVisibleText(card.evidence, "运行证据"),
-    Source: "本地运行库",
-    Model: "外部模型未启用",
-    Parameters: " · 人工复核 · 证据留痕",
-    "Data lineage": ownerVisibleText(card.description, "运行库工作流卡片。"),
-    "Raw document": "缓存摘要",
+    title: `${ownerVisibleText(card.title, "功能")}说明`,
+    Evidence: ownerVisibleText(card.evidence, "页面说明"),
+    Source: "本机资料",
+    Model: "本机读取",
+    Parameters: "人工复核",
+    "Data lineage": ownerVisibleText(card.description, "页面功能说明。"),
+    "Raw document": "本机摘要",
   });
   setEvidenceDrawer(true);
-  setActionFeedback("success", `已打开${ownerVisibleText(card.title, "功能")}证据`);
+  setActionFeedback("success", `已打开${ownerVisibleText(card.title, "功能")}说明`);
 }
 
 function applyEvidenceDrawer(drawer) {
   const title = document.querySelector("[data-evidence-title]");
-  if (title && drawer.title) title.textContent = ownerVisibleText(drawer.title, "PFI · 运行证据");
+  if (title && drawer.title) title.textContent = ownerVisibleText(drawer.title, "PFI · 页面说明");
   document.querySelectorAll("[data-evidence-field]").forEach((node) => {
     const key = node.dataset.evidenceField;
     if (!Object.prototype.hasOwnProperty.call(drawer, key)) return;
@@ -3380,6 +3836,22 @@ function routeWorkspaceFromAlias(routeAlias) {
   if (clean.startsWith("/market-research/strategy-lab")) {
     return { workspace: "market_research", routeAlias: "/market-research/strategy-lab", view: "single" };
   }
+  const routePrefixes = [
+    ["/home", "home"],
+    ["/accounts", "accounts"],
+    ["/ledger", "ledger"],
+    ["/investment", "investment"],
+    ["/consumption", "consumption"],
+    ["/sources-upload", "sync"],
+    ["/review", "recommendations"],
+    ["/reports", "insights"],
+    ["/market-research", "market_research"],
+    ["/settings", "settings"],
+  ];
+  const matched = routePrefixes.find(([prefix]) => clean === prefix || clean.startsWith(`${prefix}?`));
+  if (matched) {
+    return { workspace: matched[1], routeAlias: clean, view: "" };
+  }
   if (clean.startsWith("/market-research")) {
     return { workspace: "market_research", routeAlias: clean, view: "" };
   }
@@ -3473,14 +3945,14 @@ function setEvidenceDrawer(open) {
   if (!drawer) return;
   drawer.classList.toggle("is-open", open);
   drawer.setAttribute("aria-expanded", open ? "true" : "false");
-  setActionFeedback("success", open ? "证据抽屉已打开" : "证据抽屉已关闭");
+  setActionFeedback("success", open ? "页面说明已打开" : "页面说明已关闭");
 }
 
 function toggleTaskCenter() {
   const taskCenter = document.querySelector("[data-task-center]");
   if (!taskCenter) return;
   const hidden = taskCenter.toggleAttribute("hidden");
-  setActionFeedback("success", hidden ? "任务中心已关闭" : "任务中心已打开");
+  setActionFeedback("success", hidden ? "待办清单已关闭" : "待办清单已打开");
 }
 
 function focusGlobalSearch() {
@@ -3574,7 +4046,7 @@ function buildGlobalSearchIndex() {
       add({
         title: item.title,
         category: "任务",
-        path: `${workspace.label} / 任务中心`,
+        path: `${workspace.label} / 待办清单`,
         hint: "打开所在工作区",
         workspace: workspaceId,
         routeAlias: defaultRouteAliasForWorkspace(workspaceId),
@@ -3621,7 +4093,7 @@ function fuzzySearchItems(query, items = buildGlobalSearchIndex(), limit = SEARC
   const cleanQuery = normalizeSearch(query);
   const ranked = items
     .map((item) => ({ item, score: searchScore(cleanQuery, item) }))
-    .filter((entry) => cleanQuery ? entry.score > 0 : entry.item.category.includes("入口") || entry.item.title === "运行反馈控制台")
+    .filter((entry) => cleanQuery ? entry.score > 0 : entry.item.category.includes("入口") || entry.item.title === "反馈偏好")
     .sort((left, right) => right.score - left.score || left.item.priority - right.item.priority || left.item.title.localeCompare(right.item.title, "zh-Hans-CN"))
     .slice(0, limit)
     .map((entry) => entry.item);
@@ -4076,7 +4548,7 @@ function workspaceLabel(value, fallback = "工作区") {
   return WORKSPACE_LABELS[key] || WORKSPACE_LABELS[clean] || safeUserText(clean, fallback);
 }
 
-function safeEvidenceText(value, fallback = "运行证据") {
+function safeEvidenceText(value, fallback = "页面说明") {
   const clean = String(value || "").trim();
   if (!clean) return fallback;
   if (/^[a-z0-9_:-]+$/i.test(clean) || englishNoise(clean)) return fallback;
