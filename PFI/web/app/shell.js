@@ -443,6 +443,7 @@ const HOLDINGS_DRAFT_STORAGE_KEY = "pfi-v021-unsubmitted-holdings-draft";
 let holdingsPersistenceState = defaultHoldingsState();
 let runtimeTrendState = null;
 let runtimeReadModelState = null;
+let runtimeStage4SyncState = null;
 
 const FUNCTION_VIEWS = {
   single: functionView(
@@ -1886,6 +1887,11 @@ async function refreshRuntimeTrends(options = {}) {
     const payload = await runtimeApiJson("/api/trends");
     runtimeTrendState = payload.trends || null;
     runtimeReadModelState = payload.readModel || {};
+    try {
+      runtimeStage4SyncState = await runtimeApiJson("/api/read-model");
+    } catch (_syncError) {
+      runtimeStage4SyncState = null;
+    }
     applyOperationalReadModel(runtimeReadModelState);
     if (options.rerender) {
       const current = document.querySelector("#main-workspace")?.dataset.activeWorkspace || currentContext().workspace || "home";
@@ -1894,6 +1900,7 @@ async function refreshRuntimeTrends(options = {}) {
     }
   } catch (_error) {
     runtimeTrendState = null;
+    runtimeStage4SyncState = null;
   }
 }
 
@@ -1933,6 +1940,16 @@ function applyOperationalReadModel(model) {
       ["待复核流水", String(consumption.review_count || 0), `${consumption.transaction_count || 0} 条真实流水`],
       ["近30天支出", formatCnyAmount(consumption.cashflow_forecast_cny), "最近30天真实消费流出"],
       ["固定/弹性", `${formatCnyAmount(consumption.fixed_spend_cny)} / ${formatCnyAmount(consumption.flex_spend_cny)}`, consumption.fixed_flex_policy || "真实流水派生"],
+    ];
+  }
+  if (hasInvestment && WORKSPACES.insights) {
+    const report = runtimeStage4SyncState?.report || {};
+    const holdingCount = Number.isFinite(Number(report.holding_count)) ? Number(report.holding_count) : Number(investment.holding_count || 0);
+    WORKSPACES.insights.cards = [
+      ["月报", hasAccounts ? formatCnyAmount(accounts.net_worth_cny) : "暂无真实数据", "净资产、现金流、消费、投资"],
+      ["投资报告", formatCnyAmount(investment.market_value_cny), `${holdingCount} 条持仓，读取 SQLite`],
+      ["收益复核", formatCnyAmount(investment.unrealized_pnl_cny), "由持仓成本和现价派生"],
+      ["导出", "可用", "Markdown / JSON / CSV"],
     ];
   }
   if ((hasInvestment || hasAccounts || hasConsumption) && WORKSPACES.home) {
@@ -3305,6 +3322,9 @@ function clearUnsubmittedHoldingsDraft() {
 
 function normalizeHoldingRow(row) {
   if (!row || typeof row !== "object") return null;
+  const metadata = row.metadata && typeof row.metadata === "object" ? { ...row.metadata } : {};
+  const note = String(row.note || row.memo || metadata.note || "").trim();
+  if (note) metadata.note = note;
   return {
     snapshotId: String(row.snapshotId || row.snapshot_id || `v021-snap-${Date.now()}`),
     instrumentId: String(row.instrumentId || row.instrument_id || "").trim() || "待补标的",
@@ -3313,8 +3333,11 @@ function normalizeHoldingRow(row) {
     averageCost: nonNegativeNumber(row.averageCost ?? row.average_cost),
     marketPrice: nonNegativeNumber(row.marketPrice ?? row.market_price),
     currency: String(row.currency || "CNY").trim().toUpperCase(),
+    portfolioId: String(row.portfolioId || row.portfolio_id || row.account || "manual").trim() || "manual",
     sourceId: String(row.sourceId || row.source_id || "manual_review"),
-    asOf: String(row.asOf || row.as_of || "2026-06-27"),
+    asOf: String(row.asOf || row.as_of || row.updatedAt || row.updated_at || "2026-06-27"),
+    note,
+    metadata,
     softDeleted: Boolean(row.softDeleted || row.soft_deleted),
   };
 }
@@ -3377,7 +3400,7 @@ function renderHoldingsRows() {
   const rows = (holdingsPersistenceState.rows || []).filter((row) => !row.softDeleted);
   if (!rows.length) {
     const item = document.createElement("tr");
-    item.innerHTML = `<td colspan="7">暂无持仓数据。请新增持仓并点击“保存持仓修改”写入 SQLite。</td>`;
+    item.innerHTML = `<td colspan="10">暂无持仓数据。请新增持仓并点击“保存持仓修改”写入 SQLite。</td>`;
     tbody.appendChild(item);
     return;
   }
@@ -3391,6 +3414,9 @@ function renderHoldingsRows() {
       <td><input data-holding-field="averageCost" data-snapshot-id="${row.snapshotId}" type="number" min="0" step="0.01" value="${row.averageCost}" aria-label="成本" /></td>
       <td><input data-holding-field="marketPrice" data-snapshot-id="${row.snapshotId}" type="number" min="0" step="0.01" value="${row.marketPrice}" aria-label="价格" /></td>
       <td><input data-holding-field="currency" data-snapshot-id="${row.snapshotId}" value="${escapeAttribute(row.currency)}" aria-label="币种" /></td>
+      <td><input data-holding-field="portfolioId" data-snapshot-id="${row.snapshotId}" value="${escapeAttribute(row.portfolioId)}" aria-label="账户" /></td>
+      <td><input data-holding-field="asOf" data-snapshot-id="${row.snapshotId}" value="${escapeAttribute(row.asOf)}" aria-label="更新时间" /></td>
+      <td><input data-holding-field="note" data-snapshot-id="${row.snapshotId}" value="${escapeAttribute(row.note)}" aria-label="备注" /></td>
       <td><button type="button" data-holdings-soft-delete-row data-snapshot-id="${row.snapshotId}">软删除</button></td>
     `;
     tbody.appendChild(item);
@@ -3466,8 +3492,11 @@ function addHoldingDraft() {
       averageCost: 0,
       marketPrice: 0,
       currency: "CNY",
+      portfolioId: "manual",
       sourceId: "manual_review",
-      asOf: "2026-06-27",
+      asOf: localDateValue(new Date()),
+      note: "",
+      metadata: {},
       softDeleted: false,
     },
   ];

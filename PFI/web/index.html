@@ -366,7 +366,7 @@
             <div>
               <p class="panel-kicker">持仓操作流</p>
               <h2 id="holdings-persistence-title">持仓编辑</h2>
-              <p>编辑数量和价格后点击保存；未保存输入会标为未提交草稿，生产保存必须调用本机服务。</p>
+              <p>编辑标的、数量、成本、币种、账户、更新时间和备注后点击保存；生产保存必须调用本机服务并写入 SQLite。</p>
             </div>
             <span class="status-pill status-review" data-holdings-persistence-status>等待保存</span>
           </div>
@@ -385,6 +385,9 @@
                   <th scope="col">成本</th>
                   <th scope="col">价格</th>
                   <th scope="col">币种</th>
+                  <th scope="col">账户</th>
+                  <th scope="col">更新时间</th>
+                  <th scope="col">备注</th>
                   <th scope="col">操作</th>
                 </tr>
               </thead>

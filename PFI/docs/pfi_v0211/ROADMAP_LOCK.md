@@ -13,7 +13,8 @@
 - `S0 准备轮` 已完成并推送 GitHub main。
 - `S1 产品壳与路由` 已完成并推送 GitHub main。
 - `S2 页面骨架与去 AI 化` 已完成并推送 GitHub main。
-- 本轮只完成 `S3 真实操作流`。
+- `S3 真实操作流` 已完成并推送 GitHub main。
+- 本轮只完成 `S4 持久化与同步`。
 - Stage 0 不修改正式 UI。
 - 后续 Stage 未开始前，不允许声明 v0.2.1.1 完成。
 
@@ -94,6 +95,21 @@ Stage 3 退出条件：
 - `tests/test_v0211_stage3_real_operation_flow_contract.py` 通过。
 - `node --check web/app/shell.js` 通过。
 - 真实浏览器点击上传、账本、持仓和设置主要按钮可获得中文反馈。
+
+## Stage 4 退出条件
+
+Stage 4 退出条件：
+
+- `投资管理 > 持仓` 的保存路径为 Web Shell -> `/api/holdings` -> `V021HoldingsPersistenceService` -> SQLite operational DB。
+- 持仓字段至少包含标的、名称、数量、成本、价格、币种、账户、更新时间和备注。
+- SQLite 中能查询到保存后的 `v021_holding_snapshots` 和 `v021_position_adjustments`。
+- 页面刷新后能通过 `/api/holdings` 读回保存结果。
+- 重启本机服务后仍能从同一 SQLite 文件读回保存结果。
+- `/api/read-model` 同步首页、投资管理和报告与洞察所需的持仓读模型。
+- `/api/reports/holdings` 读取同一 SQLite 数据源；正式库无持仓时显示中文空状态，不生成模拟收益。
+- `tests/test_v0211_stage4_persistence_sync_contract.py` 通过。
+- `node --check web/app/shell.js` 通过。
+- 真实 8501 浏览器验收覆盖投资持仓、保存入口、首页、投资页和报告页。
 
 ## 后续停止条件
 
