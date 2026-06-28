@@ -2917,6 +2917,17 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertIn("reviewer_assignment.reviewer_id must not be codex-current-agent", errors)
         self.assertIn("no_production_side_effects.real_smtp_sent must be false", errors)
 
+    def test_independent_final_reviewer_assignment_rejects_template_placeholders(self) -> None:
+        payload = self._valid_independent_final_reviewer_assignment_payload()
+        payload["generated_at"] = "REPLACE_WITH_REAL_TIMESTAMP_AUSTRALIA_SYDNEY"
+        payload["reviewer_assignment"]["reviewer_id"] = "REPLACE_WITH_REAL_INDEPENDENT_REVIEWER_ID"
+        payload["assignment_hash"] = build_independent_final_reviewer_assignment_hash(payload)
+
+        errors = validate_independent_final_reviewer_assignment_artifact(payload)
+
+        self.assertIn("generated_at must not be a template placeholder", errors)
+        self.assertIn("reviewer_assignment.reviewer_id must not be a template placeholder", errors)
+
     def test_s2pmt07_mainline_attestation_binds_main_branch_without_production_acceptance(self) -> None:
         target_commit = "729cda3c6b5d6618ab29afa3161fc3ecd721b87c"
         origin_main_commit = "e7cdeb7a342a4ecee2bde43db479ee30ca72c042"

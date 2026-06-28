@@ -21,12 +21,19 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 241
+- task_count: 242
 - acceptance_count: 127
 
 ## Delivery Tasks
 
 The machine-readable task source is `delivery_tasks.yaml`.
+
+## 2026-06-28 22:03:08 Australia/Sydney - S2PMT07 Independent Final Reviewer Assignment Placeholder Gate
+
+- `S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-PLACEHOLDER-GATE` hardens `validate_independent_final_reviewer_assignment_artifact()`.
+- The validator now rejects copied template placeholder values in `generated_at` and `reviewer_assignment.reviewer_id` even when `assignment_hash` is recomputed.
+- The real `FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json` artifact is still missing; this is not a reviewer assignment, not P0/P1 closure, not S2PLT04 completion, not final bundle acceptance, and not production acceptance.
+- No SMTP, scheduler, Release, restore, schema/DB, source/ranking, CURRENT/V7, DAILY_OPERATION, or integrated production acceptance side effect is claimed.
 
 ## 2026-06-28 21:37:18 Australia/Sydney - S2PMT07 Independent Final Reviewer Assignment Owner Packet CLI
 

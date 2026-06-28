@@ -3156,6 +3156,10 @@ def build_independent_final_reviewer_assignment_hash(payload: Mapping[str, Any])
     return f"sha256:{_stable_hash(payload_without_hash)}"
 
 
+def _is_assignment_template_placeholder(value: Any) -> bool:
+    return isinstance(value, str) and "REPLACE_WITH" in value
+
+
 def validate_independent_final_reviewer_assignment_artifact(payload: Mapping[str, Any] | None) -> list[str]:
     """Validate a future independent-final-reviewer assignment artifact."""
 
@@ -3173,6 +3177,8 @@ def validate_independent_final_reviewer_assignment_artifact(payload: Mapping[str
         errors.append("contract_id must be ADP-PRODUCT-CONTRACT-V7.2")
     if not isinstance(payload.get("generated_at"), str) or not payload.get("generated_at"):
         errors.append("generated_at must be a non-empty string")
+    elif _is_assignment_template_placeholder(payload.get("generated_at")):
+        errors.append("generated_at must not be a template placeholder")
     if payload.get("assignment_decision") != S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_DECISION:
         errors.append("assignment_decision is invalid")
 
@@ -3180,6 +3186,8 @@ def validate_independent_final_reviewer_assignment_artifact(payload: Mapping[str
     reviewer_id = assignment.get("reviewer_id")
     if not isinstance(reviewer_id, str) or not reviewer_id:
         errors.append("reviewer_assignment.reviewer_id must be a non-empty string")
+    elif _is_assignment_template_placeholder(reviewer_id):
+        errors.append("reviewer_assignment.reviewer_id must not be a template placeholder")
     if reviewer_id == "codex-current-agent":
         errors.append("reviewer_assignment.reviewer_id must not be codex-current-agent")
     if assignment.get("reviewer_role") != "independent_final_reviewer":
