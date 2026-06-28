@@ -721,10 +721,6 @@ def sync_codex_data(
             database_dir,
         )
 
-    git_result = {"committed": False, "pushed": False, "reason": "not_requested"}
-    if commit:
-        git_result = git_commit_and_push(database_dir, push)
-
     result = {
         "status": "PASS",
         "generated_at": snapshot["generated_at"],
@@ -746,10 +742,12 @@ def sync_codex_data(
             "agent_context": "data/derived/agent_context/agent_context_pack.json",
             "personalization": "data/derived/personalization/personalization_export.json",
         },
-        "git": git_result,
+        "git": {"committed": False, "pushed": False, "reason": "not_requested"},
     }
     log_path = append_sync_log(database_dir, result)
     result["outputs"]["sync_log"] = str(log_path.relative_to(database_dir))
+    if commit:
+        result["git"] = git_commit_and_push(database_dir, push)
     return result
 
 
