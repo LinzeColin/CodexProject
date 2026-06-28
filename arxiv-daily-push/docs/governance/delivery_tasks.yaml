@@ -4200,3 +4200,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PMT07-FINAL-BUNDLE-COMMITTED-ARTIFACT-CONSUMPTION"
+    phase: "S2PM"
+    objective: "Make S2PMT07 final bundle readiness consume committed final-bundle artifacts through nested validators while keeping final bundle acceptance blocked."
+    scope: "S2PMT07 final bundle readiness helper, focused final-gate regression test, phase records, run manifest, traceability row, user-center traceability page, and three base files."
+    non_scope: "No independent final reviewer assignment, no independent final closure decision, no zero-proof artifact, no S2PLT04 completion, no final bundle manifest acceptance, no next-agent handoff, no independent signoff, no final command execution, no P0/P1 closure, no SMTP transport send, no scheduler install or enablement, no Release upload, no public schema or DB migration, no production queue mutation, no ranking/source-adapter change, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no DAILY_OPERATION, and no integrated production acceptance."
+    status: "blocked"
+    dependencies: ["S2PMT07", "S2PMT07-NO-PRODUCTION-ATTESTATION-READINESS-SYNC", "S2PMT07-FINAL-BUNDLE-ARTIFACT-VALIDATION"]
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_COMMITTED_ARTIFACT_CONSUMPTION.md", "governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-COMMITTED-ARTIFACT-CONSUMPTION-20260628.json", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s2pmt07_rebase_target PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -k test_final_acceptance_bundle_readiness_consumes_committed_final_command_execution -q"]
+    test_results: ["post-rebase focused committed final command artifact consumption test: 1 OK", "focused final-gate tests before governance sync: 74 OK", "final validation pending"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-COMMITTED-ARTIFACT-CONSUMPTION-20260628.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_COMMITTED_ARTIFACT_CONSUMPTION.md", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
+    result: "Committed final-bundle artifact consumption is ready, but final bundle remains blocked because required final artifacts are still missing."
+    risk: "A passing individual committed artifact validation can be misread as final bundle or production acceptance; required final artifacts remain missing."
+    rollback: "Revert committed artifact loading/readiness aggregation changes, focused regression test, phase records, manifest, traceability row, delivery task, events, and three base records; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

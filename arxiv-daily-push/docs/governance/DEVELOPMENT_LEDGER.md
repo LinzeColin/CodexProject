@@ -10,10 +10,10 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.1
 - Current phase: S2PM
-- Current gate: S2PMT07_NO_PRODUCTION_ATTESTATION_READINESS_SYNC_FINAL_BUNDLE_STILL_BLOCKED
-- Confirmed iteration count: 207
+- Current gate: S2PMT07_FINAL_BUNDLE_COMMITTED_ARTIFACT_CONSUMPTION_BLOCKED
+- Confirmed iteration count: 208
 - Reconstructed event count: 0
-- Current task: `S2PMT07-NO-PRODUCTION-ATTESTATION-READINESS-SYNC` makes final bundle readiness consume the committed `FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json`; final bundle remains blocked because manifest, P0/P1 zero proof, S2PLT04 completion report, independent signoff, final command execution, and next-agent handoff are still missing. Latest owner snapshot sync `S2PJT02-S2PJT03-OWNER-SNAPSHOT-SUMMARY-SYNC` only synchronizes shallow GitHub user-center summaries with the already-written 2026-06-28 review/action/capability/ROI snapshot. The owner-visible next action remains independent final reviewer assignment, and P0/P1 closure, scheduler, Release, DAILY_OPERATION, and integrated production acceptance remain blocked/false.
+- Current task: `S2PMT07-FINAL-BUNDLE-COMMITTED-ARTIFACT-CONSUMPTION` makes final bundle readiness consume committed final-bundle artifacts through nested validators; `FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json` is the only present passing artifact, and final bundle remains blocked because manifest, P0/P1 zero proof, S2PLT04 completion report, independent signoff, final command execution, and next-agent handoff are still missing. Latest owner snapshot sync `S2PJT02-S2PJT03-OWNER-SNAPSHOT-SUMMARY-SYNC` only synchronizes shallow GitHub user-center summaries with the already-written 2026-06-28 review/action/capability/ROI snapshot. The owner-visible next action remains supplying real final bundle artifacts and independent final review, and P0/P1 closure, scheduler, Release, DAILY_OPERATION, and integrated production acceptance remain blocked/false.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. Local daily M1-M4 orchestration is now recorded as readiness evidence, but V7.2 contract baseline migration blockers are zero while real restore, real SMTP production, scheduler installation, final acceptance bundle creation, directory-level final bundle artifact validation pass, P0/P1 closure, S2PLT04 completion, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
 
@@ -4553,3 +4553,13 @@ None for this new project baseline.
 - Files changed: GitHub user center mail/status pages, resend execution phase record, run manifest, traceability/delivery/event records, and governance status files.
 - Boundary: real SMTP delivery evidence exists for this local catch-up execution, but scheduler enablement, Release upload, S2PMT07 final acceptance, DAILY_OPERATION, and integrated production acceptance remain false.
 - Evidence: `governance/run_manifests/ADP-LOCAL-DAILY-M1-M4-RESEND-EXECUTION-20260628.json`; `arxiv-daily-push/docs/phase_records/PHASE_LOCAL_DAILY_M1_M4_RESEND_EXECUTION_20260628.md`; `arxiv-daily-push/用户中心/邮件发送与队列状态.md`.
+
+### `ITER-20260628-ADP-S2PMT07-FINAL-BUNDLE-COMMITTED-ARTIFACT-CONSUMPTION`
+
+- Timestamp: `2026-06-28T18:28:46+10:00`
+- Task IDs: `S2PMT07-FINAL-BUNDLE-COMMITTED-ARTIFACT-CONSUMPTION`; parent `S2PMT07`; acceptance `ACC-S2PMT07-FINAL-REVIEW`.
+- Decisions: Final bundle readiness now consumes committed manifest, zero-proof, S2PLT04 completion, independent signoff, final command execution, no-production attestation, and handoff artifacts through nested validators instead of hard-coded missing states.
+- Current state: only `FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json` is present and valid; manifest, P0/P1 zero proof, S2PLT04 completion report, independent signoff, final command execution, and next-agent handoff remain missing, so readiness remains `blocked`.
+- Files changed: S2PMT07 final gate helper, final-gate regression tests, phase records, run manifest, traceability/delivery/event records, generated governance status views, user-center traceability page, and three base files.
+- Boundary: no final bundle creation, no independent signoff, no final command execution, no P0/P1 closure, no S2PLT04 completion, no SMTP/scheduler/Release/restore, no public schema/DB/queue/source/ranking/CURRENT/V7 change, and no integrated production acceptance.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-COMMITTED-ARTIFACT-CONSUMPTION-20260628.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_COMMITTED_ARTIFACT_CONSUMPTION.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.

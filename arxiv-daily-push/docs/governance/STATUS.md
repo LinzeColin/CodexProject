@@ -2,10 +2,10 @@
 
 ## Snapshot Metadata
 
-- source_base_commit: `b15bb02e85bd9b5041bf7035d6aba6491cbb5767`
+- source_base_commit: `9fbb0c4eb240a1782bae3db4db873ded37ac21f4`
 - source_tree_hash: `23334defdf6e168d709c223d61c0998e594f6852`
-- source_snapshot_hash: `sha256:1d38d9ee7a973d11f06c5dd96ecd3cab842d57f04fe9f4916ed65a12088852b1`
-- snapshot_event_time: `2026-06-28T18:04:30+10:00`
+- source_snapshot_hash: `sha256:08fa259e60613bc5ece8702672186b374b680d100ca099488c0f7a09d0fb5dab`
+- snapshot_event_time: `2026-06-28T18:28:46+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -14,7 +14,7 @@
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - Product version: `0.23.1`
-- Phase/Gate: `S2PM / S2PMT07_NO_PRODUCTION_ATTESTATION_READINESS_SYNC_FINAL_BUNDLE_STILL_BLOCKED`
+- Phase/Gate: `S2PM / S2PMT07_FINAL_BUNDLE_COMMITTED_ARTIFACT_CONSUMPTION_BLOCKED`
 - Models/Formulas/Parameters total: `118 / 120 / 1072`
 - Active formulas/parameters: `120 / 1055`
 - Machine checked formulas/parameters: `120 / 1055`
@@ -35,7 +35,7 @@
 ## Delivery
 
 - Readiness: `BLOCKED_PRECHECK`
-- Release gate: `S2PMT07_NO_PRODUCTION_ATTESTATION_READINESS_SYNC_FINAL_BUNDLE_STILL_BLOCKED`
+- Release gate: `S2PMT07_FINAL_BUNDLE_COMMITTED_ARTIFACT_CONSUMPTION_BLOCKED`
 - V7 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - V7 contract hash: `a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d`
 - V7 roadmap hash: `7c5f2d842d4f6b909343c953fe39b4a4aa540d168199747a9f7decdb1aad9bd1`
@@ -48,9 +48,8 @@
 - Next governance task: `S2PMT07`
 - Parallel shadow source task: `NONE_WHILE_S2PMT07_BLOCKED`
 - Next executable task: `S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT`
-- Latest owner snapshot sync: `S2PJT02-S2PJT03-OWNER-SNAPSHOT-SUMMARY-SYNC` wrote 2026-06-28 review/action/capability/ROI summary visibility to shallow GitHub user-center pages without changing production stop gates.
-- Pending/stale events: `261`
+- Pending/stale events: `263`
 - Tree-bound events: `0`
 - Commit-bound events: `4`
-- Legacy unbound events: `222`
+- Legacy unbound events: `224`
 - Unresolved fact IDs: `0`
