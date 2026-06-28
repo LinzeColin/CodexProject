@@ -117,7 +117,7 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         readme = (USER_CENTER / "README.md").read_text(encoding="utf-8")
 
         self.assertGreaterEqual(len(matrix_rows), 245)
-        self.assertEqual(len(matrix_rows), 319)
+        self.assertEqual(len(matrix_rows), 320)
         self.assertEqual(len(table_rows), len(matrix_rows))
         self.assertTrue(page.startswith("# 功能任务测试证据追踪链\n"))
         self.assertRegex(page, r"更新时间：\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} Australia/Sydney")
@@ -126,7 +126,7 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("[运行清单](../../governance/run_manifests/ADP-S2PAT05-TRACEABILITY-CHAIN-C010-20260627.json)", page)
         self.assertIn("| 序号 | 需求 | 任务 | 验收 | 代码 | 配置 | 测试 | 运行证据 | 状态 |", page)
         self.assertIn("[test_stage2_sources.py](../tests/test_stage2_sources.py)", page)
-        self.assertIn("TRACEABILITY_MATRIX 行数 | 319", page)
+        self.assertIn("TRACEABILITY_MATRIX 行数 | 320", page)
         self.assertIn("REQ-ADP-LOCAL-DAILY-M1-M4-SEND-ORCHESTRATION", page)
         self.assertIn("LOCAL-DAILY-M1-M4-SEND-ORCHESTRATION", page)
         self.assertIn("PHASE_LOCAL_DAILY_M1_M4_SEND_ORCHESTRATION_20260628.md", page)

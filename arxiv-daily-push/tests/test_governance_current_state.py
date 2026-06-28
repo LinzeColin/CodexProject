@@ -34,9 +34,9 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
         current_state = ledger.split("\n### `", 1)[0]
 
-        self.assertIn("S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_OWNER_PACKET_READY_NO_ASSIGNMENT", current_state)
-        self.assertIn("owner/coordinator packet", current_state)
-        self.assertIn("actual assignment artifact", current_state)
+        self.assertIn("S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_OWNER_PACKET_READY_NO_CLOSURE", current_state)
+        self.assertIn("owner/reviewer packet", current_state)
+        self.assertIn("actual closure decision", current_state)
         self.assertNotIn("M4 watermark proof record", current_state)
         self.assertNotIn("m4_watermark_correct=true", current_state)
 
