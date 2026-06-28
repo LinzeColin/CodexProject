@@ -2,10 +2,10 @@
 
 ## Snapshot Metadata
 
-- source_base_commit: `12e91a8e1b84fe29724f43229131bd43f8fa31cd`
+- source_base_commit: `91bbbdbd2ee4bba94aaba124fee0e070ddf552a2`
 - source_tree_hash: `8caef1969ddfe23755890506daa0d02e6f6df81f`
 - source_snapshot_hash: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
-- snapshot_event_time: `2026-06-28T14:11:24+10:00`
+- snapshot_event_time: `2026-06-28T14:40:13+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -48,6 +48,7 @@
 - Next governance task: `S2PMT07`
 - Parallel shadow source task: `NONE_WHILE_S2PMT07_BLOCKED`
 - Next executable task: `S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT`
+- Owner next-action sync: `S2PMT07-OWNER-NEXT-ACTION-SYNC`
 - Pending/stale events: `251`
 - Tree-bound events: `0`
 - Commit-bound events: `4`

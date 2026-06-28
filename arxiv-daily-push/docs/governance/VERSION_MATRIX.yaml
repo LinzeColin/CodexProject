@@ -242,7 +242,7 @@ parameter_profile_versions:
   adp-s2pmt04-install-lifecycle-b001: "adp-s2pmt04-install-lifecycle-b001-v1"
   adp-s2pmt04-install-lifecycle-b001-parameters: "adp-s2pmt04-install-lifecycle-b001-parameters-v1"
 data_snapshot_version: "fixture_arxiv_atom_to_daily_dry_run_v1"
-current_iteration: "ITER-20260628-ADP-S2PMT07-REMAINING-BLOCKER-MATRIX"
+current_iteration: "ITER-20260628-ADP-S2PMT07-OWNER-NEXT-ACTION-SYNC"
 current_phase: "S2PM"
 current_gate: "S2PMT07_REMAINING_BLOCKER_MATRIX_READY_NO_CLOSURE"
 current_v6_task_id: "NOT_APPLICABLE"
@@ -251,7 +251,7 @@ current_v7_roadmap_version: "ADP-ROADMAP-V7.2"
 current_v7_task_id: "S2PMT07"
 current_v7_shadow_source_task_id: "NONE_WHILE_S2PMT07_BLOCKED"
 current_v7_final_task_id: "S2PMT07"
-current_v7_legacy_alias: "S2PMT07-REMAINING-BLOCKER-MATRIX maps the current seven S2PMT07 final-gate blockers to required evidence, owner action, default next step, and self-certification limits. It does not close P0/P1, assign an independent reviewer, create the final bundle, complete S2PLT04, enable scheduler/SMTP/Release/restore, change CURRENT/V7, DAILY_OPERATION, or integrated production acceptance."
+current_v7_legacy_alias: "S2PMT07-OWNER-NEXT-ACTION-SYNC aligns owner/governance next-action text to independent final reviewer assignment and final-bundle evidence. It does not close P0/P1, assign an independent reviewer, create the final bundle, complete S2PLT04, enable scheduler/SMTP/Release/restore, change CURRENT/V7, DAILY_OPERATION, or integrated production acceptance."
 s2plt02_partial_real_delivery_iteration: "ITER-20260628-ADP-S2PLT02-PARTIAL-REAL-DELIVERY-EVIDENCE"
 s2plt02_partial_real_delivery_gate: "S2PLT02_PARTIAL_REAL_DELIVERY_EVIDENCE_BLOCKED_NO_ACCEPTANCE"
 s2plt02_observed_natural_days: 1
@@ -282,6 +282,10 @@ s2pmt07_remaining_blocker_matrix_gate: "S2PMT07_REMAINING_BLOCKER_MATRIX_READY_N
 s2pmt07_remaining_blocker_matrix_status: "blocked_matrix_ready_no_closure"
 s2pmt07_remaining_blocker_matrix_required_blocker_count: 7
 s2pmt07_remaining_blocker_matrix_state_hash: "2f77acb5f6960cb7c50e7c5f31bc3ae69bc7ebf2d1837cf14c4107c216f79597"
+s2pmt07_owner_next_action_sync_iteration: "ITER-20260628-ADP-S2PMT07-OWNER-NEXT-ACTION-SYNC"
+s2pmt07_owner_next_action_sync_gate: "S2PMT07_REMAINING_BLOCKER_MATRIX_READY_NO_CLOSURE"
+s2pmt07_owner_next_action_sync_status: "owner_next_action_synced_no_production_no_acceptance"
+s2pmt07_owner_next_action_sync_recommended_next: "S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT"
 local_daily_m1_m4_send_orchestration_iteration: "ITER-20260628-ADP-LOCAL-DAILY-M1-M4-SEND-ORCHESTRATION"
 local_daily_m1_m4_send_orchestration_gate: "LOCAL_DAILY_M1_M4_SEND_ORCHESTRATION_READY_NO_PRODUCTION_ACCEPTANCE"
 local_daily_m1_m4_real_m2_m4_delivery_claimed: true
