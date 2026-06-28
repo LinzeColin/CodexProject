@@ -31,7 +31,7 @@ class V021Stage6HoldingsPersistenceTest(unittest.TestCase):
         self.assertEqual(contract["schema"], "PFIV021FrontendOptimizationStage6ContractV1")
         self.assertEqual(tuple(contract["task_ids"]), STAGE6_TASK_IDS)
         self.assertEqual(contract["frontend_contract"]["route"], "/investment?tab=holdings")
-        self.assertEqual(contract["frontend_contract"]["storage_key"], "pfi-v021-holdings-persistence")
+        self.assertEqual(contract["frontend_contract"]["draft_storage_key"], "pfi-v021-unsubmitted-holdings-draft")
         self.assertEqual(
             contract["sqlite_contract"]["tables"],
             ("v021_holding_snapshots", "v021_position_adjustments"),
@@ -47,17 +47,20 @@ class V021Stage6HoldingsPersistenceTest(unittest.TestCase):
             self.assertIn(marker, self.web_source)
         for required in (
             'data-route-alias="/investment?tab=holdings"',
-            "const HOLDINGS_STORAGE_KEY",
-            "function loadPersistedHoldings",
-            "function savePersistedHoldings",
+            "const HOLDINGS_DRAFT_STORAGE_KEY",
+            "function refreshHoldingsFromBackend",
+            "function saveUnsubmittedHoldingsDraft",
+            "function saveHoldingsToBackend",
             "function renderHoldingsPersistencePanel",
             "function saveHoldingsEdits",
             "function softDeleteHoldingRow",
-            "localStorage.getItem(HOLDINGS_STORAGE_KEY",
-            "localStorage.setItem(HOLDINGS_STORAGE_KEY",
-            "刷新或重开页面仍保留",
+            "runtimeApiJson(\"/api/holdings\"",
+            "已写入 SQLite 数据库",
+            "未提交草稿",
         ):
             self.assertIn(required, self.web_source)
+        for forbidden in ("HOLDINGS_STORAGE_KEY", "localStorage.setItem(HOLDINGS_STORAGE_KEY", "已保存到本机"):
+            self.assertNotIn(forbidden, self.web_source)
 
     def test_frontend_has_readable_responsive_holding_styles(self) -> None:
         for required in (
@@ -79,7 +82,8 @@ class V021Stage6HoldingsPersistenceTest(unittest.TestCase):
             "live_trade_submission_authorized=true",
         ):
             self.assertNotIn(forbidden, self.web_source)
-        self.assertIn("不做实盘自动下单", self.web_source)
+        for forbidden_copy in ("不做实盘自动下单", "只做研究", "不连接券商", "不提交订单"):
+            self.assertNotIn(forbidden_copy, self.web_source)
 
     def test_sqlite_service_persists_snapshots_across_reopen(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

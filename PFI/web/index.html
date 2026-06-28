@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="light dark" />
     <title>PFI</title>
+    <link rel="icon" href="data:," />
     <link rel="stylesheet" href="./styles/tokens.css" />
   </head>
   <body
@@ -103,14 +104,14 @@
         <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="5" data-workspace="consumption" data-route-alias="/consumption" data-nav-icon="◌" data-nav-hint="预算 · 分类 · 异常 · 订阅">消费管理</button>
         <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="6" data-workspace="sync" data-route-alias="/sources-upload" data-nav-icon="⇄" data-nav-hint="上传 · 解析 · 对账 · 队列">数据源与上传</button>
         <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="7" data-workspace="recommendations" data-route-alias="/review" data-nav-icon="✦" data-nav-hint="证据 · 决策 · 生命周期">建议与复盘</button>
-        <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="8" data-workspace="insights" data-route-alias="/reports" data-nav-icon="▣" data-nav-hint="月报 · 导出 · 只读快照">报告与洞察</button>
+        <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="8" data-workspace="insights" data-route-alias="/reports" data-nav-icon="▣" data-nav-hint="月报 · 导出 · 本机快照">报告与洞察</button>
         <button class="nav-item nav-alias" type="button" data-primary-entry="true" data-nav-index="9" data-workspace="home" data-route-alias="/home" data-entry-type="v01_alias" data-nav-icon="⌁" data-nav-hint="映射：首页总览">首页</button>
         <button class="nav-item nav-alias" type="button" data-primary-entry="true" data-nav-index="10" data-workspace="investment" data-route-alias="/investment?tab=market" data-entry-type="v01_alias" data-nav-icon="⌁" data-nav-hint="映射：投资管理">市场</button>
         <button class="nav-item nav-alias" type="button" data-primary-entry="true" data-nav-index="11" data-workspace="investment" data-route-alias="/investment?tab=research" data-entry-type="v01_alias" data-nav-icon="⌁" data-nav-hint="映射：报告与洞察">研究</button>
         <button class="nav-item nav-alias" type="button" data-primary-entry="true" data-nav-index="12" data-workspace="investment" data-route-alias="/investment?tab=holdings" data-entry-type="v01_alias" data-nav-icon="⌁" data-nav-hint="映射：投资管理">持仓</button>
         <button class="nav-item nav-alias" type="button" data-primary-entry="true" data-nav-index="13" data-workspace="investment" data-route-alias="/investment/strategy-lab" data-entry-type="v01_alias" data-feature-view="single" data-nav-icon="⌁" data-nav-hint="映射：策略回测与盘感训练">策略实验室</button>
         <button class="nav-item nav-alias" type="button" data-primary-entry="true" data-nav-index="14" data-workspace="settings" data-route-alias="/settings?tab=data-system" data-entry-type="v01_alias" data-nav-icon="⌁" data-nav-hint="映射：数据源与系统设置">数据与系统</button>
-        <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="15" data-workspace="settings" data-route-alias="/settings" data-nav-icon="⚙" data-nav-hint="反馈 · 参数 · 数据边界">设置</button>
+        <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="15" data-workspace="settings" data-route-alias="/settings" data-nav-icon="⚙" data-nav-hint="反馈 · 参数 · 数据管理">设置</button>
       </nav>
 
       <main id="main-workspace" class="workspace" tabindex="-1" data-active-workspace="home">
@@ -275,10 +276,6 @@
               <dt>工作区</dt>
               <dd data-function-workspace>首页</dd>
             </div>
-            <div>
-              <dt>使用限制</dt>
-              <dd data-function-boundary>只做研究、回测、训练、复核和报告，不做实盘自动下单。</dd>
-            </div>
           </dl>
           <div class="function-checks" data-function-checks></div>
           <section class="function-runner" data-function-runner hidden aria-labelledby="function-runner-title">
@@ -352,7 +349,7 @@
             <div>
               <p class="panel-kicker">持仓持久化</p>
               <h2 id="holdings-persistence-title">持仓编辑</h2>
-              <p>编辑数量和价格后保存；刷新或重开页面仍保留本机持仓草稿。</p>
+              <p>编辑数量和价格后点击保存；提交后写入 SQLite 数据库，未保存输入会标为未提交草稿。</p>
             </div>
             <span class="status-pill status-review" data-holdings-persistence-status>等待保存</span>
           </div>
@@ -439,7 +436,7 @@
                   <td>P1</td>
                   <td>策略实验室</td>
                   <td>回测和盘感训练</td>
-                  <td>只读研究复盘</td>
+                  <td>研究复盘</td>
                   <td><span class="status-pill status-watch">观察</span></td>
                 </tr>
               </tbody>
@@ -575,6 +572,9 @@
       </form>
     </dialog>
     <noscript>PFI 需要启用浏览器脚本来保存本地导航状态。</noscript>
+    <script type="application/json" id="pfi-runtime-config">
+      {"apiBaseUrl":"http://127.0.0.1:8766"}
+    </script>
     <script type="application/json" id="pfi-home-summary">
       {
         "schema": "PFIOSHomeSummaryV1",

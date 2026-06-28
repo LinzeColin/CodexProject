@@ -60,9 +60,15 @@ install_optional_app() {
   fi
 }
 
+install_desktop_link() {
+  rm -rf "$DESKTOP_APP"
+  ln -s "$APPLICATIONS_APP" "$DESKTOP_APP"
+  echo "optional=$DESKTOP_APP status=linked_to_applications"
+}
+
 install_required_app "$DOWNLOADS_APP"
 install_required_app "$APPLICATIONS_APP"
-install_optional_app "$DESKTOP_APP"
+install_desktop_link
 
 echo "PFI_ENTRY_APPS: installed"
 echo "desktop=$DESKTOP_APP"

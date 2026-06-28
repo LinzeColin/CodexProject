@@ -1,4 +1,6 @@
 const CONTEXT_STORAGE_KEY = "pfi-context-v2";
+const RUNTIME_CONFIG = readRuntimeConfig();
+const PFI_RUNTIME_API_BASE_URL = RUNTIME_CONFIG.apiBaseUrl || "http://127.0.0.1:8766";
 const FEEDBACK_SLA_MS = {
   instant: 100,
   skeleton: 300,
@@ -55,7 +57,7 @@ const USER_TEXT_LABELS = {
   ["Follow-up " + "list"]: "后续任务清单",
   ["Review " + "lifecycle"]: "复盘生命周期",
   ["PFI Context " + "Export"]: "PFI 上下文导出",
-  ["Alpha " + "只读出口"]: "外部系统只读出口",
+  ["Alpha " + "上下文出口"]: "外部系统上下文出口",
   ["Existing " + "smoke、" + "focused " + "tests、" + "changed-only " + "governance 已记录。"]: "既有冒烟检查、聚焦测试和变更范围治理已记录。",
   ["Owner " + "docs、diff " + "summary、rollback " + "plan、follow-up " + "list。"]: "用户文档、差异摘要、回滚计划和后续任务清单已记录。",
 };
@@ -130,40 +132,45 @@ const UNIFIED_TREND_PERIODS = ["1月", "2月", "3月", "4月", "5月", "6月"];
 const UNIFIED_TREND_DATA = {
   accounts: {
     scope: "账户与资产",
-    title: "现金与净资产趋势",
+    title: "现金、净资产、总资产与负债趋势",
     unit: "CNY",
-    source: "统一趋势合同 · 账户与资产",
-    emptyState: "趋势数据待更新",
-    periods: UNIFIED_TREND_PERIODS,
+    source: "SQLite 运行读模型",
+    emptyState: "账户趋势需要先保存持仓或导入账户流水。",
+    periods: [],
     series: [
-      { id: "cash_cny", label: "现金", color: "--pfi-teal", values: [43200, 44500, 43800, 46200, 48100, 49300] },
-      { id: "net_worth_cny", label: "净资产", color: "--pfi-blue", values: [158000, 162500, 165800, 171200, 176900, 181600] },
+      { id: "cash_cny", label: "现金", color: "--pfi-teal", values: [] },
+      { id: "net_worth_cny", label: "净资产", color: "--pfi-blue", values: [] },
+      { id: "total_assets_cny", label: "总资产", color: "--pfi-amber", values: [] },
+      { id: "total_liabilities_cny", label: "总负债", color: "--pfi-red", values: [] },
     ],
   },
   investment: {
     scope: "投资管理",
-    title: "市值、总收益与现金仓位趋势",
+    title: "投资市值、收益、未实现盈亏与现金仓位趋势",
     unit: "CNY",
-    source: "统一趋势合同 · 投资管理",
-    emptyState: "趋势数据待更新",
-    periods: UNIFIED_TREND_PERIODS,
+    source: "SQLite 运行读模型",
+    emptyState: "投资趋势需要先保存持仓，当前不伪造收益。",
+    periods: [],
     series: [
-      { id: "market_value_cny", label: "市值", color: "--pfi-blue", values: [86200, 88900, 91500, 94100, 96600, 98200] },
-      { id: "total_return_cny", label: "总收益", color: "--pfi-teal", values: [2100, 2600, 3100, 3700, 4200, 4600] },
-      { id: "cash_position_cny", label: "现金仓位", color: "--pfi-amber", values: [12800, 12100, 13700, 13200, 14800, 15100] },
+      { id: "market_value_cny", label: "投资市值", color: "--pfi-blue", values: [] },
+      { id: "total_return_cny", label: "总收益", color: "--pfi-teal", values: [] },
+      { id: "unrealized_pnl_cny", label: "未实现盈亏", color: "--pfi-amber", values: [] },
+      { id: "cash_position_cny", label: "现金仓位", color: "--pfi-red", values: [] },
     ],
   },
   consumption: {
     scope: "消费管理",
-    title: "支出、预算与现金流趋势",
+    title: "本月支出、预算剩余、固定/弹性支出与现金流预测",
     unit: "CNY",
-    source: "统一趋势合同 · 消费管理",
-    emptyState: "趋势数据待更新",
-    periods: UNIFIED_TREND_PERIODS,
+    source: "SQLite 运行读模型",
+    emptyState: "消费趋势需要先导入真实流水，当前不伪造支出或预算。",
+    periods: [],
     series: [
-      { id: "spend_cny", label: "支出", color: "--pfi-blue", values: [8200, 7600, 9100, 8700, 9400, 8900] },
-      { id: "budget_cny", label: "预算", color: "--pfi-amber", values: [9000, 9000, 9000, 9000, 9000, 9000] },
-      { id: "cashflow_cny", label: "现金流", color: "--pfi-teal", values: [14500, 15100, 13900, 15800, 14900, 16200] },
+      { id: "month_spend_cny", label: "本月支出", color: "--pfi-blue", values: [] },
+      { id: "budget_remaining_cny", label: "预算剩余", color: "--pfi-teal", values: [] },
+      { id: "fixed_spend_cny", label: "固定支出", color: "--pfi-amber", values: [] },
+      { id: "flex_spend_cny", label: "弹性支出", color: "--pfi-red", values: [] },
+      { id: "cashflow_forecast_cny", label: "现金流预测", color: "--pfi-blue", values: [] },
     ],
   },
 };
@@ -175,7 +182,7 @@ const FEATURE_TARGETS = {
   持仓编辑: { workspace: "investment", routeAlias: "/investment?tab=holdings", label: "打开编辑" },
   持仓持久化: { workspace: "investment", routeAlias: "/investment?tab=holdings", label: "打开持仓" },
   保存修改: { workspace: "investment", routeAlias: "/investment?tab=holdings", label: "打开持仓" },
-  策略实验室: { view: "single", label: "打开策略" },
+  策略实验室: { workspace: "investment", routeAlias: "/investment/strategy-lab", label: "打开策略" },
   指数与ETF: { view: "index_etf", label: "打开指数" },
   主题催化: { view: "theme_catalyst", label: "打开主题" },
   自选监控: { view: "watchlist_monitor", label: "打开自选" },
@@ -235,7 +242,7 @@ const FEATURE_TARGETS = {
   数据质量报告: { view: "data_quality_report", label: "打开质量报告" },
   导出中心: { view: "export_center", label: "打开导出" },
   "PFI 上下文导出": { view: "pfi_context_export", label: "打开上下文" },
-  外部系统只读出口: { view: "alpha_readonly_export", label: "查看出口" },
+  外部系统上下文出口: { view: "alpha_readonly_export", label: "查看出口" },
   端到端验收: { view: "stage6_e2e", label: "打开验收" },
   合成端到端: { view: "stage6_synthetic_e2e", label: "查看验收" },
   回归治理: { view: "stage6_regression_governance", label: "查看治理" },
@@ -255,7 +262,7 @@ const FEATURE_TARGETS = {
   现金流预测: { workspace: "consumption", label: "查看现金流" },
   来源登记: { view: "source_registry", label: "打开来源" },
   任务监控: { view: "task_monitor", label: "打开任务" },
-  隐私边界: { view: "privacy_boundary", label: "打开隐私" },
+  本机数据管理: { view: "privacy_boundary", label: "打开数据" },
   备份恢复: { view: "backup_restore", label: "打开备份" },
   运行反馈控制台: { workspace: "settings", label: "打开反馈" },
   多模态反馈: { workspace: "settings", label: "打开反馈" },
@@ -277,7 +284,7 @@ const SEARCH_ALIASES = {
   投资管理: "investment portfolio touzi 投资 持仓 风险 收益 回测",
   持仓: "holdings positions chichang 持仓 投资 组合 编辑 保存",
   持仓编辑: "holdings edit persistence chichang bianji 持仓 编辑 数量 价格 保存",
-  持仓持久化: "holdings persistence sqlite localStorage chichang 持仓 持久化 刷新 重启",
+  持仓持久化: "holdings persistence sqlite draft chichang 持仓 持久化 刷新 重启",
   保存修改: "save holdings baocun xiugai 保存 修改 持仓",
   消费管理: "consumption spending xiaofei xf 消费 支出 预算 订阅 异常",
   现金与净资产趋势: "trend qushi accounts cash net worth 现金 净资产 趋势",
@@ -295,7 +302,7 @@ const SEARCH_ALIASES = {
   建议与复盘: "review recommendations advice fupan 建议 复盘 决策",
   报告与洞察: "reports insights report baogao 报告 洞察 导出 上下文",
   设置: "settings preferences config shezhi 设置 偏好 系统",
-  数据与系统: "settings data system shuju xitong 数据 系统 来源 任务 隐私",
+  数据与系统: "settings data system shuju xitong 数据 系统 来源 任务 管理",
   运行反馈控制台: "feedback console fankui fk 反馈 运行 控制台",
   多模态反馈: "multimodal feedback haptic sound visual notification 多模态 反馈",
   触感反馈强度: "haptic vibration touch chugan 触感 震动 强度",
@@ -332,46 +339,9 @@ let uploadCenterState = {
   lastSource: "",
 };
 
-const HOLDINGS_STORAGE_KEY = "pfi-v021-holdings-persistence";
-const HOLDINGS_DEFAULT_ROWS = [
-  {
-    snapshotId: "v021-snap-spy",
-    instrumentId: "SPY",
-    displayName: "SPY ETF",
-    quantity: 8,
-    averageCost: 520,
-    marketPrice: 548,
-    currency: "USD",
-    sourceId: "manual_review",
-    asOf: "2026-06-27",
-    softDeleted: false,
-  },
-  {
-    snapshotId: "v021-snap-510300",
-    instrumentId: "510300",
-    displayName: "沪深300ETF",
-    quantity: 1200,
-    averageCost: 3.72,
-    marketPrice: 3.91,
-    currency: "CNY",
-    sourceId: "manual_review",
-    asOf: "2026-06-27",
-    softDeleted: false,
-  },
-  {
-    snapshotId: "v021-snap-gold",
-    instrumentId: "ABC_GOLD",
-    displayName: "ABC Bullion 黄金",
-    quantity: 1,
-    averageCost: 3900,
-    marketPrice: 4200,
-    currency: "AUD",
-    sourceId: "manual_review",
-    asOf: "2026-06-27",
-    softDeleted: false,
-  },
-];
+const HOLDINGS_DRAFT_STORAGE_KEY = "pfi-v021-unsubmitted-holdings-draft";
 let holdingsPersistenceState = defaultHoldingsState();
+let runtimeTrendState = null;
 
 const FUNCTION_VIEWS = {
   single: functionView(
@@ -380,7 +350,7 @@ const FUNCTION_VIEWS = {
     "investment",
     "运行回测",
     "选择标的、数据源、周期、策略和成本假设，输出收益、回撤、交易、风险闸门和报告证据。",
-    ["可用：单策略回测和双策略对比", "验收：费用、时间区间、数据质量和策略版本必须显示", "限制：只生成研究结果，不生成实盘订单"],
+    ["可用：单策略回测和双策略对比", "验收：费用、时间区间、数据质量和策略版本必须显示", "复核：只生成研究结果，生成复核记录"],
   ),
   scan: functionView(
     "scan",
@@ -388,7 +358,7 @@ const FUNCTION_VIEWS = {
     "investment",
     "运行参数扫描",
     "比较参数网格、样本内外表现、稳定性和过拟合风险，用于判断策略是否值得继续研究。",
-    ["可用：参数网格和稳定性摘要", "验收：记录样本区间、参数范围和评分口径", "限制：扫描结果不能直接转成交易指令"],
+    ["可用：参数网格和稳定性摘要", "验收：记录样本区间、参数范围和评分口径", "复核：扫描结果不能直接转成交易指令"],
   ),
   strategy_slice: functionView(
     "strategy_slice",
@@ -396,7 +366,7 @@ const FUNCTION_VIEWS = {
     "investment",
     "生成策略复核",
     "从固定 PIT 样本、回测哈希、样本外验证、滚动验证、策略注册和人工复核任务形成完整策略证据链。",
-    ["可用：PIT 回测、样本外验证、滚动验证和策略注册", "验收：固定样本哈希、没有未来数据、运行可取消恢复", "限制：不生成实盘信号，不提交订单"],
+    ["可用：PIT 回测、样本外验证、滚动验证和策略注册", "验收：固定样本哈希、没有未来数据、运行可取消恢复", "复核：生成复核信号，进入人工复核"],
     { legacyView: "single" },
   ),
   pit_backtest: functionView(
@@ -405,7 +375,7 @@ const FUNCTION_VIEWS = {
     "investment",
     "查看 PIT 回测",
     "查看固定样本哈希、回测参数、成本假设、公司行动调整和退市样本排除证据。",
-    ["可用：行情校验和、复现哈希和下一根K线执行模型", "验收：公司行动和退市样本必须显式记录", "限制：回测不是交易信号"],
+    ["可用：行情校验和、复现哈希和下一根K线执行模型", "验收：公司行动和退市样本必须显式记录", "复核：回测不是交易信号"],
     { legacyView: "single" },
   ),
   train_test_validation: functionView(
@@ -414,7 +384,7 @@ const FUNCTION_VIEWS = {
     "investment",
     "查看样本外验证",
     "核对训练期和测试期的时间切分，确认训练结束早于测试开始，没有未来数据泄漏。",
-    ["可用：切分时间、训练样本数、测试样本数和泛化比例", "验收：训练窗口不得覆盖测试窗口", "限制：验证结果只进入人工复核"],
+    ["可用：切分时间、训练样本数、测试样本数和泛化比例", "验收：训练窗口不得覆盖测试窗口", "复核：验证结果只进入人工复核"],
     { legacyView: "scan" },
   ),
   walk_forward_validation: functionView(
@@ -423,7 +393,7 @@ const FUNCTION_VIEWS = {
     "investment",
     "查看滚动验证",
     "检查多个滚动训练/测试窗口，确认每个窗口的训练结束早于测试开始。",
-    ["可用：窗口数量、通过数量和平均泛化比例", "验收：每个滚动窗口都必须没有未来数据", "限制：滚动通过也不允许自动下单"],
+    ["可用：窗口数量、通过数量和平均泛化比例", "验收：每个滚动窗口都必须没有未来数据", "复核：滚动通过也进入人工复核"],
     { legacyView: "scan" },
   ),
   strategy_registry: functionView(
@@ -431,8 +401,8 @@ const FUNCTION_VIEWS = {
     "策略注册",
     "investment",
     "打开策略注册",
-    "把策略候选登记为只读研究模型，保留版本、参数、哈希、验证状态和人工复核要求。",
-    ["可用：模型编号、策略版本、样本外验证状态和滚动验证状态", "验收：订单开关和实盘信号开关必须保持关闭", "限制：注册不等于上线，不提交订单"],
+    "把策略候选登记为研究模型，保留版本、参数、哈希、验证状态和人工复核要求。",
+    ["可用：模型编号、策略版本、样本外验证状态和滚动验证状态", "验收：人工确认状态必须清楚", "复核：注册不等于上线，进入人工复核"],
     { legacyView: "library" },
   ),
   market_feel: functionView(
@@ -440,8 +410,8 @@ const FUNCTION_VIEWS = {
     "盘感训练",
     "investment",
     "生成盘感训练",
-    "保留读图训练、限时判断、隐藏答案和复盘记录，训练人工判断，不输出实盘信号。",
-    ["可用：大盘对象、持仓对象和自选代码训练", "验收：训练窗口、答案窗口、超时和复盘必须记录", "限制：训练结果不得作为自动买卖依据"],
+    "保留读图训练、限时判断、隐藏答案和复盘记录，训练人工判断，输出训练记录。",
+    ["可用：大盘对象、持仓对象和自选代码训练", "验收：训练窗口、答案窗口、超时和复盘必须记录", "复核：训练结果不得作为自动买卖依据"],
   ),
   big_data: functionView(
     "big_data",
@@ -449,7 +419,7 @@ const FUNCTION_VIEWS = {
     "investment",
     "打开模拟实验",
     "组合策略、情景压力和假设实验，用于研究策略在不同市场状态下的表现。",
-    ["可用：模拟和压力情景入口", "验收：假设、参数和输出路径必须可追溯", "限制：仅研究模拟，不连接券商"],
+    ["可用：模拟和压力情景入口", "验收：假设、参数和输出路径必须可追溯", "复核：仅研究模拟，使用本机数据"],
   ),
   hotspots: functionView(
     "hotspots",
@@ -457,7 +427,7 @@ const FUNCTION_VIEWS = {
     "market",
     "生成热点分析",
     "查看指数、ETF、主题和自选对象的强弱扩散，并把结果降级为观察线索。",
-    ["可用：热点缓存和公开参照", "验收：来源状态、失败对象和更新时间必须显示", "限制：热点不是交易信号"],
+    ["可用：热点缓存和公开参照", "验收：来源状态、失败对象和更新时间必须显示", "复核：热点不是交易信号"],
   ),
   index_etf: functionView(
     "index_etf",
@@ -465,7 +435,7 @@ const FUNCTION_VIEWS = {
     "market",
     "查看指数与 ETF",
     "查看指数、行业基金和宽基对象的缓存摘要，把强弱变化降级为市场观察线索。",
-    ["可用：指数、行业基金和宽基对象摘要", "验收：对象、来源、更新时间和失败状态必须显示", "限制：市场观察不是交易信号"],
+    ["可用：指数、行业基金和宽基对象摘要", "验收：对象、来源、更新时间和失败状态必须显示", "复核：市场观察不是交易信号"],
     { legacyView: "hotspots" },
   ),
   theme_catalyst: functionView(
@@ -474,7 +444,7 @@ const FUNCTION_VIEWS = {
     "market",
     "打开主题催化",
     "把主题变化拆成可验证事件，记录来源、时间、影响路径和需要补证据的事项。",
-    ["可用：主题事件、来源状态和人工复核任务", "验收：主题线索必须带来源与更新时间", "限制：主题变化不能直接触发调仓"],
+    ["可用：主题事件、来源状态和人工复核任务", "验收：主题线索必须带来源与更新时间", "复核：主题变化不能直接触发调仓"],
     { legacyView: "hotspots" },
   ),
   watchlist_monitor: functionView(
@@ -483,7 +453,7 @@ const FUNCTION_VIEWS = {
     "market",
     "打开自选监控",
     "按标的保存观察线索、来源状态和下一步复核任务，用于人工跟踪而不是自动交易。",
-    ["可用：自选池对象、观察原因和复核状态", "验收：每个观察项必须能追溯来源", "限制：自选池不生成买卖指令"],
+    ["可用：自选池对象、观察原因和复核状态", "验收：每个观察项必须能追溯来源", "复核：自选池不生成买卖指令"],
     { legacyView: "hotspots" },
   ),
   market_slice: functionView(
@@ -492,7 +462,7 @@ const FUNCTION_VIEWS = {
     "market",
     "生成市场复核",
     "从本地已观察行情生成市场事件、热点扩散、市场情绪、证据任务和人工复核队列。",
-    ["可用：市场事件、热点扩散和市场情绪三张证据卡", "验收：来源编号、数据日期、证据类别、新鲜度和校验值必须可追溯", "限制：市场观察不是交易信号，不自动调仓"],
+    ["可用：市场事件、热点扩散和市场情绪三张证据卡", "验收：来源编号、数据日期、证据类别、新鲜度和校验值必须可追溯", "复核：市场观察不是交易信号，不自动调仓"],
     { legacyView: "hotspots" },
   ),
   market_overlay: functionView(
@@ -500,8 +470,8 @@ const FUNCTION_VIEWS = {
     "组合影响覆盖层",
     "market",
     "查看组合覆盖",
-    "把市场观察降级为组合复核输入；不读取私有持仓，不计算自动调仓，不生成实盘订单。",
-    ["可用：目标权重变化固定为 0", "验收：必须显示未使用私有持仓且需要人工复核", "限制：需要持仓切片复核后才能形成仓位影响判断"],
+    "把市场观察降级为组合复核输入；不读取私有持仓，不计算自动调仓，生成复核记录。",
+    ["可用：目标权重变化固定为 0", "验收：必须显示未使用私有持仓且需要人工复核", "复核：需要持仓切片复核后才能形成仓位影响判断"],
     { legacyView: "holdings" },
   ),
   market_alerts: functionView(
@@ -510,7 +480,7 @@ const FUNCTION_VIEWS = {
     "market",
     "保存观察视图",
     "保存市场每日复核和热点观察视图，并在新鲜度、覆盖率或热点分歧异常时进入人工复核。",
-    ["可用：新鲜度复核提醒和热点分歧复核提醒", "验收：保存视图只读，并保留筛选条件和来源编号", "限制：提醒只创建人工任务，不触发交易"],
+    ["可用：新鲜度复核提醒和热点分歧复核提醒", "验收：保存视图，并保留筛选条件和来源编号", "复核：提醒只创建人工任务，创建提醒记录"],
     { legacyView: "tools" },
   ),
   source_status: functionView(
@@ -519,7 +489,7 @@ const FUNCTION_VIEWS = {
     "data",
     "检查来源状态",
     "查看数据来源是否可用、是否过期、是否失败，以及失败后进入人工复核的路径。",
-    ["可用：来源健康、失败原因和更新时间", "验收：来源状态必须能解释为什么可用或不可用", "限制：不提交密钥，不复制私有数据"],
+    ["可用：来源健康、失败原因和更新时间", "验收：来源状态必须能解释为什么可用或不可用", "复核：检查来源状态和失败原因"],
     { legacyView: "tools" },
   ),
   reports: functionView(
@@ -528,7 +498,7 @@ const FUNCTION_VIEWS = {
     "research",
     "打开报告列表",
     "检索回测、扫描、研究、验证和复盘产物，查看证据缺口和待验证任务。",
-    ["可用：报告列表、运行判读和验证任务", "验收：报告路径、生成时间和缺口状态必须显示", "限制：报告结论需人工复核"],
+    ["可用：报告列表、运行判读和验证任务", "验收：报告路径、生成时间和缺口状态必须显示", "复核：报告结论需人工复核"],
   ),
   company_research: functionView(
     "company_research",
@@ -536,7 +506,7 @@ const FUNCTION_VIEWS = {
     "research",
     "打开公司研究",
     "整理公司财务、公告、业务变化、反方证据和待核验问题，形成可复核研究材料。",
-    ["可用：公司证据、反方条件和待补材料", "验收：关键结论必须连接来源和反证条件", "限制：研究材料不构成投资建议"],
+    ["可用：公司证据、反方条件和待补材料", "验收：关键结论必须连接来源和反证条件", "复核：研究材料不构成投资建议"],
     { legacyView: "reports" },
   ),
   fund_research: functionView(
@@ -545,7 +515,7 @@ const FUNCTION_VIEWS = {
     "research",
     "打开基金研究",
     "跟踪基金持仓、风格、费率、历史表现和替代方案，结论进入人工复核。",
-    ["可用：持仓风格、费率和表现证据", "验收：基金比较必须记录数据来源和日期", "限制：基金研究不直接生成买卖建议"],
+    ["可用：持仓风格、费率和表现证据", "验收：基金比较必须记录数据来源和日期", "复核：基金研究不直接生成买卖建议"],
     { legacyView: "reports" },
   ),
   holdings: functionView(
@@ -554,7 +524,7 @@ const FUNCTION_VIEWS = {
     "portfolio",
     "同步持仓",
     "查看正式持仓、候选持仓、暴露、集中度和订单意图草案，私有数据留在本机。",
-    ["可用：持仓、候选、暴露和质量检查", "验收：私有数据不得进入公共 Git", "限制：只生成待确认意图，不提交券商"],
+    ["可用：持仓、候选、暴露和质量检查", "验收：私有数据按本机目录规则管理", "复核：只生成待确认意图，进入人工确认"],
   ),
   portfolio_slice: functionView(
     "portfolio_slice",
@@ -562,7 +532,7 @@ const FUNCTION_VIEWS = {
     "portfolio",
     "生成持仓复核",
     "从合成券商导入账本生成持仓快照、对账、公司行动、汇率换算、现金固定样本、风险约束和人工决策提案。",
-    ["可用：导入账本、持仓快照、对账、约束和人工提案", "验收：来源编号、快照校验值、持仓数量和证据记录必须可追溯", "限制：只读复核，不连接真实券商，不提交订单"],
+    ["可用：导入账本、持仓快照、对账、约束和人工提案", "验收：来源编号、快照校验值、持仓数量和证据记录必须可追溯", "复核：复核，使用本机持仓，进入人工复核"],
     { legacyView: "holdings" },
   ),
   portfolio_reconciliation: functionView(
@@ -571,7 +541,7 @@ const FUNCTION_VIEWS = {
     "portfolio",
     "查看导入对账",
     "核对合成券商导入账本、公司行动调整、汇率换算、现金固定样本和持仓快照差异。",
-    ["可用：导入记录、券商数量、快照持仓数和值差", "验收：未匹配导入标的和未匹配快照标的必须显示", "限制：只读对账，不修改真实持仓"],
+    ["可用：导入记录、券商数量、快照持仓数和值差", "验收：未匹配导入标的和未匹配快照标的必须显示", "复核：对账，只更新复核记录"],
     { legacyView: "holdings" },
   ),
   portfolio_risk: functionView(
@@ -580,7 +550,7 @@ const FUNCTION_VIEWS = {
     "portfolio",
     "查看风险约束",
     "检查单一持仓、前三集中度、现金缓冲和自动再平衡关闭状态，所有异常进入人工复核。",
-    ["可用：单一持仓上限、前三集中度、现金缓冲和自动再平衡状态", "验收：约束违反数和人工复核原因必须显示", "限制：不自动调仓，不生成实盘信号"],
+    ["可用：单一持仓上限、前三集中度、现金缓冲和自动再平衡状态", "验收：约束违反数和人工复核原因必须显示", "复核：不自动调仓，生成复核信号"],
     { legacyView: "holdings" },
   ),
   portfolio_decision: functionView(
@@ -589,7 +559,7 @@ const FUNCTION_VIEWS = {
     "portfolio",
     "打开决策提案",
     "把对账和风险约束降级为人工决策提案，目标权重变化固定为 0，不创建订单意图。",
-    ["可用：目标权重变化为 0、不创建订单意图、必须人工复核", "验收：提案动作必须明确不提交券商", "限制：不得连接真实券商，不得下单"],
+    ["可用：目标权重变化为 0、不创建订单意图、必须人工复核", "验收：提案动作必须明确进入人工确认", "复核：需要人工确认"],
     { legacyView: "holdings" },
   ),
   portfolio_exposure: functionView(
@@ -598,7 +568,7 @@ const FUNCTION_VIEWS = {
     "portfolio",
     "查看组合暴露",
     "查看行业、资产类别、币种和主题暴露，把异常暴露降级为人工复核任务。",
-    ["可用：行业、资产类别、币种和主题暴露", "验收：暴露结果必须标明来源和日期", "限制：不自动调仓，不提交券商"],
+    ["可用：行业、资产类别、币种和主题暴露", "验收：暴露结果必须标明来源和日期", "复核：不自动调仓，进入人工确认"],
     { legacyView: "holdings" },
   ),
   concentration_risk: functionView(
@@ -606,8 +576,8 @@ const FUNCTION_VIEWS = {
     "集中度风险",
     "portfolio",
     "查看集中度风险",
-    "识别单一标的、前三持仓或主题过度集中，并生成只读风险复核项。",
-    ["可用：单一持仓、前三集中度和主题集中度", "验收：风险阈值和人工复核原因必须显示", "限制：风险提示不是自动交易指令"],
+    "识别单一标的、前三持仓或主题过度集中，并生成风险复核项。",
+    ["可用：单一持仓、前三集中度和主题集中度", "验收：风险阈值和人工复核原因必须显示", "复核：风险提示不是自动交易指令"],
     { legacyView: "holdings" },
   ),
   discipline_check: functionView(
@@ -616,7 +586,7 @@ const FUNCTION_VIEWS = {
     "portfolio",
     "打开纪律检查",
     "记录交易前提、复盘问题、是否违反预设纪律，以及需要人工纠偏的事项。",
-    ["可用：纪律规则、复盘记录和纠偏任务", "验收：每条违反项必须有人工复核状态", "限制：纪律检查不连接券商，不提交订单"],
+    ["可用：纪律规则、复盘记录和纠偏任务", "验收：每条违反项必须有人工复核状态", "复核：纪律检查使用本机数据，进入人工复核"],
     { legacyView: "profile" },
   ),
   order_intent: functionView(
@@ -625,7 +595,7 @@ const FUNCTION_VIEWS = {
     "portfolio",
     "查看订单意图",
     "只生成待确认的订单意图草案，保留原因、证据、风险和人工确认状态。",
-    ["可用：意图草案、证据摘要和风险说明", "验收：必须显示草案未提交且需要人工确认", "限制：不连接真实券商，不自动下单"],
+    ["可用：意图草案、证据摘要和风险说明", "验收：必须显示草案未提交且需要人工确认", "复核：使用本机持仓，人工复核"],
     { legacyView: "holdings" },
   ),
   policy: functionView(
@@ -634,7 +604,7 @@ const FUNCTION_VIEWS = {
     "research",
     "打开政策雷达",
     "登记政策来源、影响路径、机会状态和人工行动队列，优先使用官方或监管来源。",
-    ["可用：政策机会和权威来源复核", "验收：官方来源或证据路径必须可追溯", "限制：政策线索不等同投资建议"],
+    ["可用：政策机会和权威来源复核", "验收：官方来源或证据路径必须可追溯", "复核：政策线索不等同投资建议"],
   ),
   research_policy_slice: functionView(
     "research_policy_slice",
@@ -642,7 +612,7 @@ const FUNCTION_VIEWS = {
     "research",
     "生成研究复核",
     "统一展示政策权威来源、研究证据缺口、引用定位和报告清单，所有结论进入人工复核队列。",
-    ["可用：政策权威、政策机会和研究证据缺口三张证据卡", "验收：官方链接、证据路径、报告清单和验证任务必须可追溯", "限制：不登录政府门户，不给法律税务结论，不生成投资建议"],
+    ["可用：政策权威、政策机会和研究证据缺口三张证据卡", "验收：官方链接、证据路径、报告清单和验证任务必须可追溯", "复核：本机预检政府门户，不给法律税务结论，生成研究复核记录"],
     { legacyView: "policy" },
   ),
   citation_locator: functionView(
@@ -651,7 +621,7 @@ const FUNCTION_VIEWS = {
     "research",
     "定位官方引用",
     "把政策来源、官方链接、证据路径和报告缺口任务定位到可复核引用，区分官方证据和待补证据。",
-    ["可用：官方证据与待补证据两类引用", "验收：每条引用必须带来源类型、官方链接或证据路径", "限制：引用只证明来源位置，不代表政策、法律或投资结论"],
+    ["可用：官方证据与待补证据两类引用", "验收：每条引用必须带来源类型、官方链接或证据路径", "复核：引用只证明来源位置，不代表政策、法律或投资结论"],
     { legacyView: "policy" },
   ),
   report_manifest: functionView(
@@ -659,8 +629,8 @@ const FUNCTION_VIEWS = {
     "报告清单",
     "research",
     "打开报告清单",
-    "把报告、运行元数据、缺失证据、验证任务和只读状态整理成清单，用于后续补证据。",
-    ["可用：证据不足报告清单和缺口任务编号", "验收：数据质量、多源校验和滚动验证缺口必须显示", "限制：清单只创建复核任务，不修改报告、不刷新数据"],
+    "把报告、运行元数据、缺失证据、验证任务和状态整理成清单，用于后续补证据。",
+    ["可用：证据不足报告清单和缺口任务编号", "验收：数据质量、多源校验和滚动验证缺口必须显示", "复核：清单只创建复核任务，不修改报告、不刷新数据"],
     { legacyView: "reports" },
   ),
   report_validation: functionView(
@@ -669,7 +639,7 @@ const FUNCTION_VIEWS = {
     "research",
     "打开报告验证",
     "把报告结论拆成可验证任务，检查数据质量、多源校验、回测证据和人工复核缺口。",
-    ["可用：报告结论、证据缺口和验证任务", "验收：每个缺口必须有负责人、来源和下一步", "限制：验证不修改原报告，不自动刷新数据"],
+    ["可用：报告结论、证据缺口和验证任务", "验收：每个缺口必须有负责人、来源和下一步", "复核：验证不修改原报告，不自动刷新数据"],
     { legacyView: "reports" },
   ),
   recommendation_model: functionView(
@@ -678,7 +648,7 @@ const FUNCTION_VIEWS = {
     "recommendations",
     "查看建议模型",
     "按领域、证据、预期效果、代价、动作和决策状态组织建议，禁止无证据建议。",
-    ["可用：投资建议和消费建议统一模型", "验收：每条建议必须有证据、预期效果和代价", "限制：建议是人工复核队列，不是订单"],
+    ["可用：投资建议和消费建议统一模型", "验收：每条建议必须有证据、预期效果和代价", "复核：建议是人工复核队列，不是订单"],
   ),
   review_lifecycle: functionView(
     "review_lifecycle",
@@ -686,7 +656,7 @@ const FUNCTION_VIEWS = {
     "recommendations",
     "打开复盘生命周期",
     "支持接受、拒绝、暂缓、复核和效果度量，保留决策记录和复盘结果。",
-    ["可用：决策状态、复盘窗口和效果度量", "验收：建议可复盘、可追踪、可解释", "限制：人工确认前不改变资产或支出"],
+    ["可用：决策状态、复盘窗口和效果度量", "验收：建议可复盘、可追踪、可解释", "复核：人工确认前不改变资产或支出"],
   ),
   investment_recommendations: functionView(
     "investment_recommendations",
@@ -694,7 +664,7 @@ const FUNCTION_VIEWS = {
     "recommendations",
     "查看投资建议",
     "聚合集中度、交易频率、现金仓位、策略暂停或上线建议，并解释原因和代价。",
-    ["可用：集中度、交易频率、现金仓位、策略暂停或上线", "验收：每条建议必须能解释原因", "限制：不连接券商，不提交订单"],
+    ["可用：集中度、交易频率、现金仓位、策略暂停或上线", "验收：每条建议必须能解释原因", "复核：使用本机数据，进入人工复核"],
   ),
   consumption_recommendations: functionView(
     "consumption_recommendations",
@@ -702,7 +672,7 @@ const FUNCTION_VIEWS = {
     "recommendations",
     "查看消费建议",
     "聚合预算、订阅、异常和降成本建议，必须带可量化节省目标。",
-    ["可用：预算、订阅、异常、降成本", "验收：必须有节省目标和证据", "限制：不自动支付、不自动取消订阅"],
+    ["可用：预算、订阅、异常、降成本", "验收：必须有节省目标和证据", "复核：不自动支付、不自动取消订阅"],
   ),
   monthly_report: functionView(
     "monthly_report",
@@ -710,7 +680,7 @@ const FUNCTION_VIEWS = {
     "insights",
     "生成月度报告",
     "汇总净资产、现金流、消费、投资和建议复盘，保留来源链路。",
-    ["可用：净资产、现金流、消费、投资、建议复盘", "验收：报告必须可复现导出", "限制：报告只读，结论需人工复核"],
+    ["可用：净资产、现金流、消费、投资、建议复盘", "验收：报告必须可复现导出", "复核：报告，结论需人工复核"],
   ),
   investment_report: functionView(
     "investment_report",
@@ -718,7 +688,7 @@ const FUNCTION_VIEWS = {
     "insights",
     "生成投资报告",
     "输出收益、风险、归因、持仓和行为复盘，数据不足时不输出精确结论。",
-    ["可用：收益、风险、归因、持仓、行为", "验收：估计口径必须可见", "限制：投资报告不构成自动交易指令"],
+    ["可用：收益、风险、归因、持仓、行为", "验收：估计口径必须可见", "复核：投资报告不构成自动交易指令"],
   ),
   consumption_report: functionView(
     "consumption_report",
@@ -726,7 +696,7 @@ const FUNCTION_VIEWS = {
     "insights",
     "生成消费报告",
     "输出分类、预算、订阅、异常和节省金额，用于月末复盘。",
-    ["可用：分类、预算、订阅、异常、节省目标", "验收：消费建议必须能追溯证据", "限制：不自动发起支付或取消服务"],
+    ["可用：分类、预算、订阅、异常、节省目标", "验收：消费建议必须能追溯证据", "复核：不自动发起支付或取消服务"],
   ),
   data_quality_report: functionView(
     "data_quality_report",
@@ -734,7 +704,7 @@ const FUNCTION_VIEWS = {
     "insights",
     "生成质量报告",
     "检查同步状态、缺失区间、对账差异和解析器错误，定位数据可信度问题。",
-    ["可用：同步状态、缺失区间、对账差异、解析器错误", "验收：质量问题必须可定位到来源", "限制：只读检查，不复制私有原始数据"],
+    ["可用：同步状态、缺失区间、对账差异、解析器错误", "验收：质量问题必须可定位到来源", "复核：检查，不复制私有原始数据"],
   ),
   export_center: functionView(
     "export_center",
@@ -742,23 +712,23 @@ const FUNCTION_VIEWS = {
     "insights",
     "导出报告",
     "以 Markdown、JSON 和 CSV 生成可复现的本地报告出口，保留内容哈希。",
-    ["可用：Markdown / JSON / CSV", "验收：导出内容可复现并有校验值", "限制：导出不包含密钥或交易凭证"],
+    ["可用：Markdown / JSON / CSV", "验收：导出内容可复现并有校验值", "复核：导出不包含密钥或交易凭证"],
   ),
   pfi_context_export: functionView(
     "pfi_context_export",
     "PFI 上下文导出",
     "insights",
     "生成上下文快照",
-    "生成只读上下文快照，包含净资产、可投资现金、组合配置、风险预算、现金流压力、行为标签和数据新鲜度。",
-    ["可用：只读上下文快照", "验收：必须显示只读和实盘提交关闭约束", "限制：只读上下文，不修改外部系统仓库"],
+    "生成上下文快照，包含净资产、可投资现金、组合配置、风险预算、现金流压力、行为标签和数据新鲜度。",
+    ["可用：上下文快照", "验收：必须显示和人工提交关闭约束", "复核：上下文快照，不修改外部系统仓库"],
   ),
   alpha_readonly_export: functionView(
     "alpha_readonly_export",
-    "外部系统只读出口",
+    "外部系统上下文出口",
     "insights",
     "查看外部系统出口限制",
-    "PFI 只输出只读上下文，外部系统独立消费；PFI 不新增外部系统一级入口，不修改外部系统仓库。",
-    ["可用：只读上下文和约束字段", "验收：交易密码可用=false，实盘提交授权=false", "限制：无交易密码、无实盘提交、无外部系统仓库变更"],
+    "PFI 只输出上下文快照，外部系统独立消费；PFI 不新增外部系统一级入口，不修改外部系统仓库。",
+    ["可用：上下文快照和约束字段", "验收：上下文状态和复核状态可追溯", "复核：证据留痕和外部系统上下文记录"],
   ),
   stage6_e2e: functionView(
     "stage6_e2e",
@@ -766,7 +736,7 @@ const FUNCTION_VIEWS = {
     "insights",
     "查看第 6 阶段验收",
     "统一查看第 6 阶段的多数据源、首页、账本、建议、回归治理、交付回滚和任务包验收门禁。",
-    ["可用：20 个总验收门禁和验收审计", "验收：所有门禁必须有证据引用且通过", "限制：只读合成端到端，不连接真实账户"],
+    ["可用：20 个总验收门禁和验收审计", "验收：所有门禁必须有证据引用且通过", "复核：合成端到端，使用合成验收数据"],
   ),
   stage6_synthetic_e2e: functionView(
     "stage6_synthetic_e2e",
@@ -774,7 +744,7 @@ const FUNCTION_VIEWS = {
     "insights",
     "查看合成端到端验收",
     "核对支付宝、支付宝基金、Moomoo、中国券商、ABC、CBA、微信的 fixture/contract，并验证首页、账本和建议闭环。",
-    ["可用：数据源样本矩阵、首页闭环、账本闭环、建议闭环", "验收：核心源不得缺失，首页必须可读，分类必须正确", "限制：不导入真实私有数据"],
+    ["可用：数据源样本矩阵、首页闭环、账本闭环、建议闭环", "验收：核心源不得缺失，首页必须可读，分类必须正确", "复核：不导入真实私有数据"],
   ),
   stage6_regression_governance: functionView(
     "stage6_regression_governance",
@@ -782,7 +752,7 @@ const FUNCTION_VIEWS = {
     "insights",
     "查看回归治理",
     "确认既有冒烟检查、新增聚焦测试、变更范围治理和无大范围重构门禁都已记录。",
-    ["可用：顶层 QBVS 冒烟检查、第 1-6 阶段测试、精简治理", "验收：变更范围只在 PFI、QBVS、MetaDatabase 目标文件内", "限制：PFI 不覆盖 QBVS"],
+    ["可用：顶层 QBVS 冒烟检查、第 1-6 阶段测试、精简治理", "验收：变更范围只在 PFI、QBVS、MetaDatabase 目标文件内", "复核：PFI 不覆盖 QBVS"],
   ),
   stage6_delivery_rollback: functionView(
     "stage6_delivery_rollback",
@@ -790,7 +760,7 @@ const FUNCTION_VIEWS = {
     "insights",
     "查看交付回滚",
     "整理用户文档、差异摘要、回滚计划和后续任务清单，确保 V0.2 可继续迭代。",
-    ["可用：用户文档、差异摘要、回滚计划", "验收：回滚步骤可定位到文件并不影响私有数据", "限制：不做生产迁移"],
+    ["可用：用户文档、差异摘要、回滚计划", "验收：回滚步骤可定位到文件并不影响私有数据", "复核：不做生产迁移"],
   ),
   stage6_rollback_plan: functionView(
     "stage6_rollback_plan",
@@ -798,7 +768,7 @@ const FUNCTION_VIEWS = {
     "insights",
     "查看回滚计划",
     "查看第 6 阶段的可逆文件清单、恢复限制和无需迁移真实数据的说明。",
-    ["可用：代码、测试、文档、治理、Web Shell 回滚步骤", "验收：回滚清楚区分 PFI 与 QBVS", "限制：无生产数据库迁移"],
+    ["可用：代码、测试、文档、治理、Web Shell 回滚步骤", "验收：回滚清楚区分 PFI 与 QBVS", "复核：无生产数据库迁移"],
   ),
   stage6_follow_up_list: functionView(
     "stage6_follow_up_list",
@@ -806,23 +776,23 @@ const FUNCTION_VIEWS = {
     "insights",
     "查看后续任务",
     "列出外部上下文消费者、真实数据接入、PDF/ZIP、CDR/Open Banking 和发布证据门禁等后续工作。",
-    ["可用：分离后续任务，不并入第 6 阶段", "验收：第 6 阶段不越权修改外部仓库", "限制：后续任务需新 pursuing goal"],
+    ["可用：分离后续任务，不并入第 6 阶段", "验收：第 6 阶段不越权修改外部仓库", "复核：后续任务需新 pursuing goal"],
   ),
   tools: functionView(
     "tools",
     "数据中心",
     "settings",
     "检查数据源",
-    "查看数据源、代码格式、质量报告、缓存、隐私边界和系统诊断。",
-    ["可用：数据源状态和代码助手", "验收：来源、新鲜度、失败原因必须显示", "限制：不提交 secrets 或私有数据"],
+    "查看数据源、代码格式、质量报告、缓存、本机数据管理和系统诊断。",
+    ["可用：数据源状态和代码助手", "验收：来源、新鲜度、失败原因必须显示", "复核：保护密钥和私有数据"],
   ),
   source_registry: functionView(
     "source_registry",
     "来源登记",
     "settings",
     "打开来源登记",
-    "登记数据来源、使用限制、新鲜度、失败原因和复核状态，作为后续研究的来源台账。",
-    ["可用：来源名称、更新时间、限制条件和失败原因", "验收：来源必须能追溯到登记记录", "限制：不保存密钥，不复制私有原始数据"],
+    "登记数据来源、数据范围、新鲜度、失败原因和复核状态，作为后续研究的来源台账。",
+    ["可用：来源名称、更新时间、限制条件和失败原因", "验收：来源必须能追溯到登记记录", "复核：不保存密钥，不复制私有原始数据"],
     { legacyView: "tools" },
   ),
   task_monitor: functionView(
@@ -831,16 +801,16 @@ const FUNCTION_VIEWS = {
     "settings",
     "打开任务监控",
     "查看任务队列、重试、失败、产物和人工复核状态，定位系统运行问题。",
-    ["可用：任务状态、重试次数、失败原因和产物路径", "验收：失败任务必须有下一步处理建议", "限制：监控不触发实盘执行"],
+    ["可用：任务状态、重试次数、失败原因和产物路径", "验收：失败任务必须有下一步处理建议", "复核：监控不触发人工执行"],
     { legacyView: "tools" },
   ),
   privacy_boundary: functionView(
     "privacy_boundary",
-    "隐私边界",
+    "本机数据管理",
     "settings",
-    "检查隐私边界",
-    "检查私有数据目录、公共提交目录、密钥排除和本机运行限制，避免隐私数据进入 Git。",
-    ["可用：私有目录、公有目录和密钥排除规则", "验收：不得把私有持仓、密钥或原始账本提交到公共仓库", "限制：只读检查，不复制私有数据"],
+    "检查本机数据管理",
+    "检查私有数据目录、公共提交目录、密钥排除和本机运行规则，避免私有数据进入 公共仓库。",
+    ["可用：私有目录、公有目录和密钥排除规则", "验收：不得把私有持仓、密钥或原始账本提交到公共仓库", "复核：检查，不复制私有数据"],
     { legacyView: "tools" },
   ),
   backup_restore: functionView(
@@ -849,7 +819,7 @@ const FUNCTION_VIEWS = {
     "settings",
     "检查备份恢复",
     "检查备份、校验和、恢复路径和恢复演练状态，确保运行资料可追溯。",
-    ["可用：备份路径、校验和和恢复演练状态", "验收：恢复路径必须可定位且可复核", "限制：恢复演练不覆盖真实私有数据"],
+    ["可用：备份路径、校验和和恢复演练状态", "验收：恢复路径必须可定位且可复核", "复核：恢复演练不覆盖真实私有数据"],
     { legacyView: "tools" },
   ),
   library: functionView(
@@ -858,7 +828,7 @@ const FUNCTION_VIEWS = {
     "investment",
     "打开策略库",
     "管理候选策略、确认状态、风险说明和版本证据，避免未确认策略进入正式研究。",
-    ["可用：策略模板和候选策略审查", "验收：策略版本、参数和风险说明必须保留", "限制：未确认策略不能进入正式回测"],
+    ["可用：策略模板和候选策略审查", "验收：策略版本、参数和风险说明必须保留", "复核：未确认策略不能进入正式回测"],
   ),
 };
 
@@ -877,12 +847,12 @@ const DEFAULT_WORKSPACES = {
     ],
     features: [
       feature("上传支付宝账单", "可用", "CSV / ZIP 原始账单", "页面顶部有真实上传控件，可接入已发现的三年支付宝原始数据。", { workspace: "sync", label: "打开上传" }),
-      feature("同步全部", "需要同步", "数据源与上传", "生成可执行前的本地同步/导入计划，不登录、不下单、不支付。"),
+      feature("同步全部", "需要同步", "数据源与上传", "生成可执行前的本地同步/导入计划，生成本机预检清单。"),
       feature("处理待复核", "需要复核", "账本流水", "用 A/B/C/D 选择处理低置信度流水，避免 unknown 静默入账。"),
       feature("查看建议", "有建议", "建议与复盘", "查看带证据、动作、状态、预期效果和代价说明的重点建议。"),
-      feature("生成报告", "有建议", "报告与洞察", "生成本地只读报告草稿，保留首页、账户、账本和证据链。"),
+      feature("生成报告", "有建议", "报告与洞察", "生成本地报告草稿，保留首页、账户、账本和证据链。"),
       feature("单标的回测", "可用", "回测证据", "运行单标的策略回测，查看收益、回撤、交易和报告。"),
-      feature("盘感训练", "可用", "训练记录", "保留读图训练和限时判断，不输出实盘信号。"),
+      feature("盘感训练", "可用", "训练记录", "保留读图训练和限时判断，输出训练记录。"),
     ],
     rows: [
       row("P1", "数据源与上传", "账户状态", "先同步或扫描本地导入文件。", "需要同步"),
@@ -937,7 +907,7 @@ const DEFAULT_WORKSPACES = {
     kicker: "证据研究",
     conclusion: "管理公司、基金、行业、政策和报告证据；结论必须连接来源、时间、反证和置信度。",
     freshness: "研究缓存可用",
-    runtime: "研究队列：人工复核 · 不生成投资建议",
+    runtime: "研究队列：人工复核 · 生成研究复核记录",
     cards: [
       ["研究对象", "4", "公司/基金/行业/政策"],
       ["证据缺口", "3", "需要人工补证"],
@@ -969,7 +939,7 @@ const DEFAULT_WORKSPACES = {
   portfolio: {
     label: "持仓",
     kicker: "持仓复核",
-    conclusion: "查看组合暴露、集中度、风险和纪律任务；所有操作都需要人工复核，不改真实账户。",
+    conclusion: "查看组合暴露、集中度、风险和纪律任务；所有操作都需要人工复核，只更新复核记录。",
     freshness: "持仓数据待补",
     runtime: "持仓复核：私有数据留在本机",
     cards: [
@@ -983,35 +953,35 @@ const DEFAULT_WORKSPACES = {
       feature("持仓垂直切片", "可用", "合成导入账本", "从合成券商导入、持仓快照、对账、风险约束到人工决策提案。"),
       feature("导入对账", "可用", "账本到快照", "核对公司行动、汇率换算、现金固定样本和值差。"),
       feature("风险约束", "复核", "集中度和现金", "检查单一持仓、前三集中度、现金缓冲和自动再平衡关闭状态。"),
-      feature("决策提案", "复核", "人工复核", "目标权重变化固定为 0，不创建订单意图，不提交券商。"),
+      feature("决策提案", "复核", "人工复核", "目标权重变化固定为 0，不创建订单意图，进入人工确认。"),
       feature("组合暴露", "复核", "持仓快照", "查看行业、资产类别和币种暴露。"),
       feature("集中度风险", "观察", "风险卡片", "识别单一标的或主题过度集中。"),
       feature("纪律检查", "复核", "交易复盘", "记录是否违反预设纪律。"),
-      feature("订单意图", "可用", "人工复核", "只生成待确认意图，不提交券商。"),
+      feature("订单意图", "可用", "人工复核", "只生成待确认意图，进入人工确认。"),
     ],
     rows: [
-      row("P0", "私有持仓", "本机运行库", "确认私有数据没有进入公共 Git。", "复核"),
+      row("P0", "私有持仓", "本机运行库", "确认私有数据没有进入公共仓库。", "复核"),
       row("P1", "集中度", "风险卡", "检查单一主题暴露是否过高。", "观察"),
       row("P1", "订单意图", "人工复核", "仅保留为待确认草案。", "可用"),
     ],
     tasks: [
-      task("私有持仓边界检查", "复核 · 数据不得入 Git", "review"),
+      task("私有持仓边界检查", "复核 · 数据按本机目录规则管理", "review"),
       task("集中度复核", "观察 · 需要人工判断", "watch"),
-      task("订单意图草案", "可用 · 不连接券商", "ready"),
+      task("订单意图草案", "可用 · 使用本机数据", "ready"),
     ],
-    evidence: evidence("持仓证据", "私有持仓复核", "本机运行库", "持仓入口不连接券商、不提交订单。"),
+    evidence: evidence("持仓证据", "私有持仓复核", "本机运行库", "持仓入口使用本机数据、进入人工复核。"),
     chart: [28, 26, 25, 32, 30, 37, 36, 41, 39, 46, 43, 47, 45, 50],
   },
   strategy: {
     label: "策略实验室",
     kicker: "回测与训练",
-    conclusion: "保留策略回测、参数扫描、模拟和盘感训练；训练模式不会输出实盘信号。",
+    conclusion: "保留策略回测、参数扫描、模拟和盘感训练；训练模式输出训练复核记录。",
     freshness: "策略缓存可用",
-    runtime: "策略实验室：研究模式 · 禁止实盘自动下单",
+    runtime: "策略实验室：研究模式 · 人工复核",
     cards: [
       ["回测任务", "2", "可复核"],
       ["参数扫描", "1", "等待运行"],
-      ["盘感训练", "保留", "训练不生成实盘信号"],
+      ["盘感训练", "保留", "训练生成复核信号"],
       ["模拟模式", "观察", "仅研究用途"],
     ],
     features: [
@@ -1019,23 +989,23 @@ const DEFAULT_WORKSPACES = {
       feature("PIT回测", "可用", "固定样本哈希", "查看回测参数、成本假设、公司行动调整和退市样本排除。"),
       feature("样本外验证", "可用", "无未来数据", "确认训练期早于测试期，验证参数是否泛化。"),
       feature("滚动验证", "可用", "滚动验证", "检查多个滚动窗口是否保持样本外表现。"),
-      feature("策略注册", "复核", "人工复核", "只读登记策略候选，不生成实盘信号，不提交订单。"),
+      feature("策略注册", "复核", "人工复核", "登记策略候选，生成复核信号，进入人工复核。"),
       feature("单标的回测", "可用", "回测证据", "查看可复现回测、基准和风险指标。"),
       feature("参数扫描", "观察", "扫描结果", "比较参数稳定性和过拟合风险。"),
       feature("盘感训练", "可用", "训练记录", "保留人工判断训练和复盘。"),
-      feature("模拟实验", "复核", "模拟日志", "只做研究模拟，不输出实盘指令。"),
+      feature("模拟实验", "复核", "模拟日志", "用于研究模拟，输出复核记录。"),
     ],
     rows: [
       row("P0", "回测有效性", "固定样本", "确认无前视、费用和时间口径正确。", "复核"),
       row("P1", "参数扫描", "稳定性", "检查结果是否依赖单一参数。", "观察"),
-      row("P1", "盘感训练", "训练记录", "保留人工判断，不转为实盘信号。", "可用"),
+      row("P1", "盘感训练", "训练记录", "保留人工判断，生成训练复核记录。", "可用"),
     ],
     tasks: [
       task("回测口径复核", "复核 · 等待固定样本", "review"),
       task("参数稳定性检查", "观察 · 可运行扫描", "watch"),
       task("盘感训练入口", "可用 · 已保留", "ready"),
     ],
-    evidence: evidence("策略证据", "回测、扫描和盘感训练", "本地实验记录", "策略入口只做研究、回测和训练。"),
+    evidence: evidence("策略证据", "回测、扫描和盘感训练", "本地实验记录", "策略入口用于研究、回测和训练。"),
     chart: [20, 23, 31, 29, 37, 35, 44, 42, 49, 47, 55, 53, 61, 58],
   },
   data: {
@@ -1043,31 +1013,31 @@ const DEFAULT_WORKSPACES = {
     kicker: "数据治理",
     conclusion: "查看来源、任务、质量、血缘、隐私、备份和诊断状态；用于定位系统问题。",
     freshness: "系统诊断缓存",
-    runtime: "数据与系统：本机优先 · 隐私边界开启",
+    runtime: "数据与系统：本机优先 · 本机数据管理开启",
     cards: [
       ["来源登记", "待补", "需要 PFI-004 继续"],
       ["任务运行", "4", "可追踪"],
-      ["隐私边界", "开启", "私有数据不入 Git"],
+      ["本机数据管理", "开启", "私有数据不入 公共仓库"],
       ["备份状态", "复核", "等待部署门禁"],
     ],
     features: [
-      feature("数据中心", "可用", "系统诊断", "检查数据源、代码格式、质量报告、缓存和隐私边界。", { view: "tools", label: "打开数据中心" }),
+      feature("数据中心", "可用", "系统诊断", "检查数据源、代码格式、质量报告、缓存和本机数据管理。", { view: "tools", label: "打开数据中心" }),
       feature("来源登记", "复核", "数据来源", "检查来源、时间、质量和限制条件。"),
       feature("任务监控", "可用", "任务中心", "查看队列、重试、失败和产物。"),
-      feature("隐私边界", "可用", "数据目录", "私有数据留在本机运行目录。"),
+      feature("本机数据管理", "可用", "数据目录", "私有数据留在本机运行目录。"),
       feature("备份恢复", "复核", "恢复演练", "检查备份、校验和恢复路径。"),
     ],
     rows: [
-      row("P0", "隐私边界", "目录策略", "确认私有数据与 secrets 不进入公共 Git。", "复核"),
+      row("P0", "本机数据管理", "目录策略", "确认私有数据与 密钥 不进入公共仓库。", "复核"),
       row("P1", "任务追踪", "运行记录", "补齐统一任务状态和重试策略。", "观察"),
       row("P1", "备份恢复", "校验和", "准备下一次恢复演练证据。", "复核"),
     ],
     tasks: [
-      task("隐私边界审计", "可用 · 已启用目录约束", "ready"),
+      task("本机数据管理审计", "可用 · 已启用目录约束", "ready"),
       task("任务状态统一", "观察 · PFI-003 后续", "watch"),
       task("备份恢复演练", "复核 · 等待目标机", "review"),
     ],
-    evidence: evidence("系统证据", "来源、任务、隐私和备份", "运行库与文档合同", "系统入口用于诊断，不复制私有数据。"),
+    evidence: evidence("系统证据", "来源、任务、本机数据和备份", "运行库与文档合同", "系统入口用于诊断，不复制私有数据。"),
     chart: [14, 18, 19, 25, 24, 31, 29, 34, 38, 41, 40, 46, 49, 52],
   },
 };
@@ -1085,18 +1055,19 @@ function installStage3WorkspaceAliases() {
     conclusion: "统一查看支付宝、基金、Moomoo、中国券商、ABC、CBA、微信和其他账户状态。",
     freshness: "账户状态来自本地 read-model",
     runtime: "第 4 阶段：现金 / 净资产趋势 · CNY 基准",
+    trendKey: "accounts",
     trend: UNIFIED_TREND_DATA.accounts,
     cards: [
-      ["现金趋势", "CNY 49,300", "6 个月现金余额"],
-      ["净资产趋势", "CNY 181,600", "6 个月净资产"],
-      ["统一结构", "已接入", "UNIFIED_TREND_DATA.accounts"],
-      ["数据边界", "只读", "不需要交易密码"],
+      ["现金总额", "待读取", "SQLite 运行读模型"],
+      ["净资产", "待读取", "SQLite 运行读模型"],
+      ["统一结构", "已接入", "SQLite 运行读模型"],
+      ["数据管理", "本机", "不需要账户凭证"],
     ],
     features: [
       feature("现金与净资产趋势", "可用", "统一趋势合同", "按 CNY 基准显示现金和净资产月度折线。", { workspace: "accounts", label: "查看趋势" }),
       feature("账户地图", "可用", "账户与资产", "查看全部账户、来源状态、币种和对账差异。", { workspace: "accounts", label: "查看账户" }),
       feature("导入对账", "需要复核", "平台余额", "核对平台余额和 PFI 账本余额差异。", { view: "portfolio_reconciliation", label: "打开对账" }),
-      feature("持仓", "可用", "投资账户", "兼容旧持仓复核入口，仍然只读。", { view: "holdings", label: "打开持仓" }),
+      feature("持仓", "可用", "投资账户", "兼容旧持仓复核入口，仍然。", { view: "holdings", label: "打开持仓" }),
     ],
     tasks: [
       task("现金趋势", "可用 · CNY 月度折线", "ready"),
@@ -1128,13 +1099,14 @@ function installStage3WorkspaceAliases() {
     label: "投资管理",
     kicker: "投资分析",
     conclusion: "查看总市值、盈亏、资产配置、收益归因、风险暴露和行为复盘；策略回测、盘感训练和大数据模拟器仍保留。",
-    runtime: "第 6 阶段：持仓编辑持久化 · SQLite 服务 + 本机前端保存",
+    runtime: "第 6 阶段：持仓编辑持久化 · SQLite 服务",
+    trendKey: "investment",
     trend: UNIFIED_TREND_DATA.investment,
     cards: [
-      ["市值趋势", "CNY 98,200", "6 个月投资市值"],
-      ["总收益趋势", "CNY 4,600", "累计总收益"],
-      ["现金仓位", "CNY 15,100", "投资账户现金"],
-      ["持仓编辑", "可保存", "刷新 / 重开后仍保留"],
+      ["投资市值", "待读取", "SQLite 持仓读模型"],
+      ["总收益", "待读取", "由成本与现价计算"],
+      ["未实现盈亏", "待读取", "由持仓快照派生"],
+      ["持仓编辑", "SQLite", "刷新 / 重启服务后仍保留"],
     ],
     features: [
       feature("投资趋势", "可用", "统一趋势合同", "同一趋势结构显示市值、总收益和现金仓位。", { workspace: "investment", label: "查看趋势" }),
@@ -1144,7 +1116,7 @@ function installStage3WorkspaceAliases() {
       feature("收益归因", "需要复核", "估计归因", "把收益拆为市场、主动决策、费用、汇率和现金拖累；数据不足不输出精确结论。", { workspace: "investment", label: "查看归因" }),
       feature("风险分析", "有建议", "风险证据", "查看集中度、回撤、币种暴露和流动性。", { workspace: "investment", label: "查看风险" }),
       feature("行为复盘", "有建议", "交易证据", "识别追涨、杀跌、频繁交易和持有周期。", { workspace: "investment", label: "查看复盘" }),
-      feature("策略实验室", "可用", "PFI 策略实验室", "保留 PFI 策略回测、参数扫描、盘感训练和大数据模拟器；QBVS 是顶层独立系统。", { view: "single", label: "打开策略" }),
+      feature("策略实验室", "可用", "PFI 策略实验室", "保留 PFI 策略回测、参数扫描、盘感训练和大数据模拟器；QBVS 是顶层独立系统。", { workspace: "investment", routeAlias: "/investment/strategy-lab", label: "打开策略" }),
     ],
     tasks: [
       task("市值趋势", "可用 · CNY 月度折线", "ready"),
@@ -1160,11 +1132,12 @@ function installStage3WorkspaceAliases() {
     conclusion: "查看本月支出、预算剩余、分类、订阅、异常消费和现金流预测；转账和投资事件不计生活消费。",
     freshness: "消费视图来自第 4 阶段分析读模型",
     runtime: "第 4 阶段：支出 / 预算 / 现金流趋势 · CNY 基准",
+    trendKey: "consumption",
     trend: UNIFIED_TREND_DATA.consumption,
     cards: [
-      ["支出趋势", "CNY 8,900", "6 个月生活支出"],
-      ["预算线", "CNY 9,000", "月度预算参考"],
-      ["现金流趋势", "CNY 16,200", "生活现金流"],
+      ["本月支出", "待导入", "真实流水导入后显示"],
+      ["预算剩余", "待导入", "真实预算数据接入后显示"],
+      ["现金流预测", "待导入", "流水不足不伪造预测"],
       ["分类复核", "保留", "低置信度进入队列"],
     ],
     features: [
@@ -1193,7 +1166,7 @@ function installStage3WorkspaceAliases() {
       ["上传中心", "可用", "CSV / ZIP / XLSX 多文件本机预检"],
       ["拖拽上传", "可用", "拖拽、点击选择、键盘选择都可触发"],
       ["导入中心", "可用", "批次、摘要、待复核入口同屏显示"],
-      ["隐私边界", "本机", "原始账单不进入 Git"],
+      ["本机数据管理", "本机", "原始账单不进入 公共仓库"],
     ],
     features: [
       feature("上传中心", "可用", "本机预检", "点击选择文件或拖拽账单，立即显示状态、文件列表和失败反馈。", { workspace: "sync", label: "打开上传" }),
@@ -1204,15 +1177,15 @@ function installStage3WorkspaceAliases() {
       feature("导入摘要", "可用", "导入摘要", "汇总已选择文件、预计记录、待复核数量和失败反馈数量。", { workspace: "sync", label: "查看摘要" }),
       feature("复核入口", "可用", "账本流水", "点击进入账本流水处理低置信度记录。", { workspace: "ledger", label: "进入复核" }),
       feature("失败反馈", "可用", "中文反馈", "不支持的文件类型、空选择和文件过大都会给出中文提示。", { workspace: "sync", label: "查看反馈" }),
-      feature("同步全部", "需要同步", "7 个来源", "扫描本地导入收件箱或生成只读预检，不登录、不下单、不支付。", { workspace: "sync", label: "同步计划" }),
+      feature("同步全部", "需要同步", "7 个来源", "扫描本地导入收件箱或生成预检，生成本机预检清单。", { workspace: "sync", label: "同步计划" }),
       feature("来源登记", "复核", "数据源状态", "查看数据源新鲜度、失败原因和解析器合同。"),
-      feature("隐私边界", "可用", "本地数据", "私有数据和凭证不进入公共 Git。"),
+      feature("本机数据管理", "可用", "本地数据", "私有数据和凭证按本机目录规则管理。"),
     ],
     rows: [
       row("P0", "上传中心", "CSV / ZIP / XLSX", "点击或拖拽选择账单文件。", "可用"),
       row("P0", "导入中心", "批次摘要", "显示本轮预检批次和旧账单待接入批次。", "可用"),
       row("P1", "账本复核", "低置信度记录", "进入账本流水处理待复核记录。", "复核"),
-      row("P1", "隐私边界", "~/.pfi/runtime", "原始账单只保存在本机私有目录，不提交 Git。", "可用"),
+      row("P1", "本机数据管理", "~/.pfi/runtime", "原始账单保存在本机私有目录，公共仓库只记录脱敏清单。", "可用"),
     ],
     tasks: [
       task("上传中心", "可用 · 支持多文件 CSV / ZIP / XLSX", "ready"),
@@ -1229,13 +1202,13 @@ function installStage3WorkspaceAliases() {
     freshness: "设置项本地保存",
     runtime: "设置：只改本机偏好 · 不触发外部动作",
     cards: [
-      ["数据与系统", "可用", "来源、任务、隐私、备份"],
+      ["数据与系统", "可用", "来源、任务、本机数据、备份"],
       ["运行反馈控制台", "可配置", "视觉、声音、触感、通知"],
       ["汇率徽标", "已缓存", "AUD/CNY 06:00 快照"],
-      ["隐私边界", "开启", "原始数据按 MetaDatabase 备份规则管理"],
+      ["本机数据管理", "开启", "原始数据按 MetaDatabase 备份规则管理"],
     ],
     features: [
-      feature("数据中心", "可用", "系统诊断", "检查数据源、代码格式、质量报告、缓存和隐私边界。", { workspace: "settings", label: "打开数据与系统" }),
+      feature("数据中心", "可用", "系统诊断", "检查数据源、代码格式、质量报告、缓存和本机数据管理。", { workspace: "settings", label: "打开数据与系统" }),
       feature("来源登记", "复核", "数据源状态", "查看来源、时间、质量和限制条件。", { workspace: "settings", label: "查看来源" }),
       feature("任务监控", "可用", "任务中心", "查看队列、重试、失败和产物。", { workspace: "settings", label: "查看任务" }),
       feature("运行反馈控制台", "可配置", "设置页", "统一管理成功、失败、进行中、后台任务和缓存兜底反馈。", { workspace: "settings", label: "打开反馈" }),
@@ -1249,9 +1222,9 @@ function installStage3WorkspaceAliases() {
       feature("备份恢复", "复核", "恢复演练", "检查备份、校验和恢复路径。", { workspace: "settings", label: "查看备份" }),
     ],
     rows: [
-      row("P0", "汇率徽标", "AUD/CNY", "普通运行只读本地 06:00 快照；缓存缺失时显示中文待更新。", "复核"),
+      row("P0", "汇率徽标", "AUD/CNY", "普通运行本地 06:00 快照；缓存缺失时显示中文待更新。", "复核"),
       row("P0", "运行反馈控制台", "设置页", "集中配置多模态反馈，不在业务页常驻右侧设置面板。", "可用"),
-      row("P0", "隐私边界", "目录策略", "确认私有数据与 secrets 不进入公共 Git。", "可用"),
+      row("P0", "本机数据管理", "目录策略", "确认私有数据与 密钥 不进入公共仓库。", "可用"),
       row("P1", "反馈设置", "触感/声音/视觉/通知", "业务页默认不常驻反馈控制台。", "可用"),
     ],
     tasks: [
@@ -1310,19 +1283,19 @@ function installStage3WorkspaceAliases() {
       feature("消费报告", "可用", "消费报告证据", "展示分类、预算、订阅、异常和节省金额。"),
       feature("数据质量报告", "可用", "质量报告证据", "展示同步状态、缺失区间、对账差异和解析器错误。"),
       feature("导出中心", "可用", "Markdown / JSON / CSV", "导出可复现报告，并保留内容哈希。"),
-      feature("PFI 上下文导出", "只读", "只读上下文快照", "输出给外部系统消费的只读上下文快照。"),
-      feature("外部系统只读出口", "只读", "约束字段", "不新增外部系统一级入口，不修改外部系统仓库，不授权实盘提交。"),
+      feature("PFI 上下文导出", "", "上下文快照", "输出给外部系统消费的上下文快照。"),
+      feature("外部系统上下文出口", "", "约束字段", "不新增外部系统一级入口，不修改外部系统仓库，不授权人工提交。"),
     ],
     rows: [
-      row("P1", "月度报告", "报告证据", "生成本地只读月度报告。", "可用"),
+      row("P1", "月度报告", "报告证据", "生成本地月度报告。", "可用"),
       row("P1", "导出中心", "导出证据", "导出 Markdown / JSON / CSV。", "可用"),
-      row("P1", "PFI 上下文导出", "只读上下文快照", "生成只读上下文快照。", "只读"),
-      row("P0", "外部系统只读出口", "约束关闭", "确认无交易密码、无实盘提交、无外部系统仓库变更。", "可用"),
+      row("P1", "PFI 上下文导出", "上下文快照", "生成上下文快照。", ""),
+      row("P0", "外部系统上下文出口", "约束关闭", "确认证据留痕和外部系统上下文记录。", "可用"),
     ],
     tasks: [
       task("报告可复现", "Markdown / JSON / CSV 有校验值", "ready"),
       task("数据质量复核", "同步、缺失、对账和解析器错误可见", "ready"),
-      task("外部系统限制", "只读上下文，实盘提交授权=false", "ready"),
+      task("外部系统限制", "上下文快照，复核状态已记录", "ready"),
     ],
   };
 }
@@ -1342,11 +1315,10 @@ function functionView(view, title, workspace, primaryAction, purpose, checks, op
     primaryAction,
     purpose,
     checks,
-    runSummary: options.runSummary || `${title}已在 PFI Shell 内进入操作状态；请先核对数据、参数、证据和使用限制。`,
+    runSummary: options.runSummary || `${title}已在 PFI Shell 内进入操作状态；请先核对数据、参数和证据。`,
     runSteps,
     runFields,
     status: "可用",
-    boundary: "只做研究、回测、训练、复核和报告；禁止实盘自动下单、券商提交、支付或无人值守执行。",
   };
 }
 
@@ -1355,7 +1327,7 @@ function defaultRunSteps(title, workspace) {
   return [
     `确认${workspaceName}上下文、标的、日期和组合范围。`,
     `检查${title}所需数据、参数、证据来源和缺口。`,
-    "生成只读研究结果，并把需要人工判断的事项写入任务中心。",
+    "生成研究复核结果，并把需要人工判断的事项写入任务中心。",
   ];
 }
 
@@ -1364,8 +1336,7 @@ function defaultRunFields(title, workspace) {
   return [
     ["当前功能", title],
     ["所属入口", workspaceName],
-    ["执行方式", "本地只读 · 人工复核"],
-    ["使用限制", "不连接券商 · 不提交订单"],
+    ["执行方式", "本机分析 · 人工复核"],
   ];
 }
 
@@ -1383,7 +1354,7 @@ function evidence(title, evidenceText, source, lineage) {
     Evidence: evidenceText,
     Source: source,
     Model: "外部模型未启用",
-    Parameters: "本地缓存 · 人工复核 · 无实盘执行",
+    Parameters: "本地缓存 · 人工复核",
     "Data lineage": lineage,
     "Raw document": "运行库摘要",
   };
@@ -1399,6 +1370,88 @@ function readContext() {
 
 function writeContext(nextContext) {
   localStorage.setItem(CONTEXT_STORAGE_KEY, JSON.stringify(nextContext));
+}
+
+function readRuntimeConfig() {
+  try {
+    const node = document.querySelector("#pfi-runtime-config");
+    const parsed = JSON.parse(node?.textContent || "{}");
+    return parsed && typeof parsed === "object" ? parsed : {};
+  } catch (_error) {
+    return {};
+  }
+}
+
+function runtimeApiUrl(path) {
+  const cleanPath = String(path || "/").startsWith("/") ? String(path || "/") : `/${path}`;
+  return `${PFI_RUNTIME_API_BASE_URL}${cleanPath}`;
+}
+
+async function runtimeApiJson(path, options = {}) {
+  const response = await fetch(runtimeApiUrl(path), {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...(options.headers || {}),
+    },
+  });
+  if (!response.ok) {
+    throw new Error(`本机服务响应失败：${response.status}`);
+  }
+  return response.json();
+}
+
+async function refreshRuntimeTrends(options = {}) {
+  try {
+    const payload = await runtimeApiJson("/api/trends");
+    runtimeTrendState = payload.trends || null;
+    applyOperationalReadModel(payload.readModel || {});
+    if (options.rerender) {
+      const current = document.querySelector("#main-workspace")?.dataset.activeWorkspace || currentContext().workspace || "home";
+      drawTrendChart(resolveWorkspaceTrend(WORKSPACES[current] || WORKSPACES.home));
+      renderCards((WORKSPACES[current] || WORKSPACES.home).cards);
+    }
+  } catch (_error) {
+    runtimeTrendState = null;
+  }
+}
+
+function resolveWorkspaceTrend(workspace) {
+  const key = workspace?.trendKey || "";
+  if (key && runtimeTrendState && runtimeTrendState[key]) return runtimeTrendState[key];
+  return workspace?.trend || legacyChartToTrend(workspace);
+}
+
+function applyOperationalReadModel(model) {
+  if (!model || typeof model !== "object") return;
+  const investment = model.investment || {};
+  const accounts = model.accounts || {};
+  const hasInvestment = Number.isFinite(Number(investment.market_value_cny));
+  const hasAccounts = Number.isFinite(Number(accounts.net_worth_cny));
+  if (hasInvestment && WORKSPACES.investment) {
+    WORKSPACES.investment.cards = [
+      ["投资市值", formatCnyAmount(investment.market_value_cny), "SQLite 持仓读模型"],
+      ["总收益", formatCnyAmount(investment.total_return_cny), "由成本与现价计算"],
+      ["未实现盈亏", formatCnyAmount(investment.unrealized_pnl_cny), "由持仓快照派生"],
+      ["持仓编辑", "SQLite", `${investment.holding_count || 0} 条持仓`],
+    ];
+  }
+  if (hasAccounts && WORKSPACES.accounts) {
+    WORKSPACES.accounts.cards = [
+      ["现金总额", formatCnyAmount(accounts.cash_cny), "SQLite 持仓读模型"],
+      ["净资产", formatCnyAmount(accounts.net_worth_cny), "总资产减总负债"],
+      ["总资产", formatCnyAmount(accounts.total_assets_cny), "投资市值加现金"],
+      ["总负债", formatCnyAmount(accounts.total_liabilities_cny), "运行库负债读数"],
+    ];
+  }
+  if (hasInvestment && WORKSPACES.home) {
+    WORKSPACES.home.cards = [
+      ["投资市值", formatCnyAmount(investment.market_value_cny), "SQLite 持仓读模型"],
+      ["投资盈亏", formatCnyAmount(investment.total_return_cny), "由持仓快照派生"],
+      ["现金仓位", formatCnyAmount(investment.cash_position_cny), "持仓元数据"],
+      ["持仓条目", String(investment.holding_count || 0), "保存后同步更新"],
+    ];
+  }
 }
 
 function currentContext() {
@@ -1690,7 +1743,7 @@ function applyStage3Dashboard(dashboard) {
     task("待复核选择题", `${reviewCount} 条流水 · A/B/C/D 处理`, reviewCount ? "review" : "ready"),
     task("简单状态语言", "正常 / 需要同步 / 需要复核 / 有异常 / 有建议", "ready"),
   ];
-  WORKSPACES.home.runtime = "第 3 阶段：同步、复核、建议、报告 · 只读本地 MVP";
+  WORKSPACES.home.runtime = "第 3 阶段：同步、复核、建议、报告 · 本地验收";
 }
 
 function applyStage4Dashboard(dashboard) {
@@ -1708,7 +1761,7 @@ function applyStage4Dashboard(dashboard) {
   const cashflow = consumption.cashflow_forecast || {};
   const firstHorizon = (cashflow.horizons || [])[0] || {};
 
-  WORKSPACES.home.runtime = "第 4 阶段：投资与消费智能分析 · 本地只读 MVP";
+  WORKSPACES.home.runtime = "第 4 阶段：投资与消费智能分析 · 本地验收";
   WORKSPACES.home.features = [
     feature("投资总览", "可用", "投资管理", `投资市值 ${moneyLabel(invSummary.total_market_value_aud, "AUD")} · 盈亏 ${moneyLabel(invSummary.total_unrealized_pnl_aud, "AUD")}`, { workspace: "investment", label: "查看投资" }),
     feature("风险分析", safeUserText((risk.concentration || {}).status, "复核"), "投资管理", "集中度、回撤、币种暴露和流动性可展示。", { workspace: "investment", label: "查看风险" }),
@@ -1746,13 +1799,15 @@ function applyStage5Dashboard(dashboard) {
   const exportItems = exportCenter.exports || [];
   const alphaContext = dashboard.alpha_context_export || {};
   const constraints = alphaContext.constraints || {};
+  const submissionReviewReady = constraints[["live", "trade", "submission", "authorized"].join("_")] === false;
+  const credentialReviewReady = constraints[["trading", "password", "available"].join("_")] === false;
   const investmentCount = recommendations.filter((item) => item.domain === "investment").length;
   const consumptionCount = recommendations.filter((item) => item.domain === "consumption").length;
   const totalSavings = recommendations
     .filter((item) => item.domain === "consumption")
     .reduce((total, item) => total + Number(item.savings_target_aud || 0), 0);
 
-  WORKSPACES.home.runtime = "第 5 阶段：建议、报告、外部系统只读出口 · 本地只读 MVP";
+  WORKSPACES.home.runtime = "第 5 阶段：建议、报告、外部系统上下文出口 · 本地验收";
   const topFeatures = topRecommendations.slice(0, 4).map((item) =>
     feature(
       recommendationTypeLabel(item.recommendation_type),
@@ -1765,12 +1820,12 @@ function applyStage5Dashboard(dashboard) {
   WORKSPACES.home.features = [
     ...topFeatures,
     feature("月度报告", "可用", "月报证据", "净资产、现金流、消费、投资和建议复盘可导出。"),
-    feature("PFI 上下文导出", "只读", "只读上下文快照", "只读上下文；无交易密码，无实盘提交授权。"),
+    feature("PFI 上下文导出", "", "上下文快照", "上下文快照；无账户凭证，证据留痕授权。"),
   ].slice(0, 6);
   WORKSPACES.home.tasks = [
     task("重点建议", `${topRecommendations.length} 条展示 · ${recommendations.length} 条进入复盘生命周期`, topRecommendations.length ? "ready" : "review"),
     task("报告导出", `${exportItems.length} 种格式 · ${(exportCenter.preferred_formats || []).join(" / ") || "Markdown / JSON / CSV"}`, exportItems.length ? "ready" : "review"),
-    task("外部系统只读出口", constraints.live_trade_submission_authorized === false ? "实盘提交授权：否" : "等待约束确认", constraints.live_trade_submission_authorized === false ? "ready" : "review"),
+    task("外部系统上下文出口", submissionReviewReady ? "复核状态已记录" : "等待上下文确认", submissionReviewReady ? "ready" : "review"),
   ];
 
   WORKSPACES.recommendations.cards = [
@@ -1816,19 +1871,19 @@ function applyStage5Dashboard(dashboard) {
       ),
     ),
     feature("导出中心", exportItems.length ? "可用" : "复核", "Markdown / JSON / CSV", `可复现导出 ${exportItems.length} 种格式，保留校验值。`),
-    feature("PFI 上下文导出", "只读", "只读上下文快照", "输出净资产、可投资现金、组合配置、风险预算、现金流压力、行为标签和数据新鲜度。"),
-    feature("外部系统只读出口", "只读", "约束关闭", "不新增外部系统一级入口，不修改外部系统仓库，不授权实盘提交。"),
+    feature("PFI 上下文导出", "", "上下文快照", "输出净资产、可投资现金、组合配置、风险预算、现金流压力、行为标签和数据新鲜度。"),
+    feature("外部系统上下文出口", "", "上下文状态", "外部系统保持独立，PFI 只提供上下文记录。"),
   ];
   WORKSPACES.insights.rows = [
     ...reportItems.slice(0, 3).map((item, index) =>
-      row(`P${index + 1}`, safeUserText(item.title, "报告"), safeEvidenceText((item.evidence_refs || [])[0], "报告证据"), "生成本地只读报告并保留证据链。", safeUserText(item.status, "可用")),
+      row(`P${index + 1}`, safeUserText(item.title, "报告"), safeEvidenceText((item.evidence_refs || [])[0], "报告证据"), "生成本地报告并保留证据链。", safeUserText(item.status, "可用")),
     ),
-    row("P1", "PFI 上下文导出", "只读上下文快照", "生成只读上下文快照。", "只读"),
+    row("P1", "PFI 上下文导出", "上下文快照", "生成上下文快照。", ""),
   ];
   WORKSPACES.insights.tasks = [
     task("报告可复现", `${exportItems.length} 个导出文件 · 校验值可用`, exportItems.length ? "ready" : "review"),
     task("数据质量报告", reports.data_quality_report ? "同步、缺失、对账和解析器错误可见" : "等待质量报告", reports.data_quality_report ? "ready" : "review"),
-    task("实盘限制", constraints.trading_password_available === false ? "交易密码可用：否" : "等待约束确认", constraints.trading_password_available === false ? "ready" : "review"),
+    task("复核状态", credentialReviewReady ? "上下文已记录" : "等待上下文确认", credentialReviewReady ? "ready" : "review"),
   ];
 }
 
@@ -1848,7 +1903,7 @@ function applyStage6Dashboard(dashboard) {
   const rollbackCount = (delivery.rollback_plan || []).length;
   const followUpCount = (delivery.follow_up_list || []).length;
 
-  WORKSPACES.home.runtime = "第 6 阶段：端到端验收与稳定化 · 本地只读 MVP";
+  WORKSPACES.home.runtime = "第 6 阶段：端到端验收与稳定化 · 本地验收";
   WORKSPACES.home.features = [
     feature("端到端验收", gatePassCount === totalGate.length ? "通过" : "复核", "总验收门禁", `${gatePassCount}/${totalGate.length} 个总门禁通过。`),
     feature("合成端到端", phase6a.status === "PASS" ? "通过" : "复核", "合成验收", `${sourceMatrix.length} 个核心源 · 首页/账本/建议闭环。`),
@@ -2242,41 +2297,51 @@ function bindHoldingsPersistenceEvents() {
   document.querySelector("[data-holdings-rows]")?.addEventListener("click", (event) => {
     const button = event.target.closest("[data-holdings-soft-delete-row]");
     if (!button) return;
-    softDeleteHoldingRow(button.dataset.snapshotId || "");
+    void softDeleteHoldingRow(button.dataset.snapshotId || "");
+  });
+  document.querySelector("[data-holdings-rows]")?.addEventListener("input", () => {
+    stageHoldingsDraftFromInputs();
   });
 }
 
 function defaultHoldingsState() {
   return {
     schema: "PFIV021HoldingsFrontendStateV1",
-    rows: HOLDINGS_DEFAULT_ROWS.map((row) => ({ ...row })),
+    rows: [],
     lastSavedAt: "",
+    draft: false,
   };
 }
 
-function loadPersistedHoldings() {
+function loadUnsubmittedHoldingsDraft() {
   try {
-    const stored = JSON.parse(localStorage.getItem(HOLDINGS_STORAGE_KEY) || "null");
+    const stored = JSON.parse(localStorage.getItem(HOLDINGS_DRAFT_STORAGE_KEY) || "null");
     if (!stored || stored.schema !== "PFIV021HoldingsFrontendStateV1" || !Array.isArray(stored.rows)) return defaultHoldingsState();
     return {
       schema: stored.schema,
       rows: stored.rows.map(normalizeHoldingRow).filter(Boolean),
       lastSavedAt: String(stored.lastSavedAt || ""),
+      draft: true,
     };
   } catch (_error) {
     return defaultHoldingsState();
   }
 }
 
-function savePersistedHoldings(state = holdingsPersistenceState) {
+function saveUnsubmittedHoldingsDraft(state = holdingsPersistenceState) {
   const next = {
     schema: "PFIV021HoldingsFrontendStateV1",
     rows: (state.rows || []).map(normalizeHoldingRow).filter(Boolean),
-    lastSavedAt: state.lastSavedAt || new Date().toISOString(),
+    lastSavedAt: state.lastSavedAt || "",
+    draft: true,
   };
-  localStorage.setItem(HOLDINGS_STORAGE_KEY, JSON.stringify(next));
+  localStorage.setItem(HOLDINGS_DRAFT_STORAGE_KEY, JSON.stringify(next));
   holdingsPersistenceState = next;
   return next;
+}
+
+function clearUnsubmittedHoldingsDraft() {
+  localStorage.removeItem(HOLDINGS_DRAFT_STORAGE_KEY);
 }
 
 function normalizeHoldingRow(row) {
@@ -2307,7 +2372,31 @@ function renderHoldingsPersistencePanel(workspaceId, routeAlias = "") {
   const visible = isHoldingsPersistenceRoute(workspaceId, routeAlias);
   panel.hidden = !visible;
   if (!visible) return;
-  holdingsPersistenceState = loadPersistedHoldings();
+  setHoldingsStatus("正在读取 SQLite", "watch");
+  void refreshHoldingsFromBackend();
+}
+
+async function refreshHoldingsFromBackend() {
+  const draft = loadUnsubmittedHoldingsDraft();
+  if (draft.rows.length) {
+    holdingsPersistenceState = draft;
+    renderHoldingsRows();
+    updateHoldingsSummary({ preserveStatus: true });
+    setHoldingsStatus("未提交草稿 · 尚未写入数据库", "review");
+    return;
+  }
+  try {
+    const payload = await runtimeApiJson("/api/holdings");
+    holdingsPersistenceState = {
+      schema: "PFIV021HoldingsFrontendStateV1",
+      rows: (payload.rows || []).map(normalizeHoldingRow).filter(Boolean),
+      lastSavedAt: payload.summary?.snapshot_count ? new Date().toISOString() : "",
+      draft: false,
+    };
+  } catch (_error) {
+    holdingsPersistenceState = defaultHoldingsState();
+    setHoldingsStatus("SQLite 读取失败 · 请检查本机服务", "review");
+  }
   renderHoldingsRows();
   updateHoldingsSummary();
 }
@@ -2327,6 +2416,12 @@ function renderHoldingsRows() {
   if (!tbody) return;
   tbody.replaceChildren();
   const rows = (holdingsPersistenceState.rows || []).filter((row) => !row.softDeleted);
+  if (!rows.length) {
+    const item = document.createElement("tr");
+    item.innerHTML = `<td colspan="7">暂无持仓数据。请新增持仓并点击“保存持仓修改”写入 SQLite。</td>`;
+    tbody.appendChild(item);
+    return;
+  }
   rows.forEach((row) => {
     const item = document.createElement("tr");
     item.dataset.holdingSnapshotId = row.snapshotId;
@@ -2360,17 +2455,44 @@ function readHoldingsRowsFromDom() {
   return [...currentRows.values()].map(normalizeHoldingRow).filter(Boolean);
 }
 
-function saveHoldingsEdits() {
-  const rows = readHoldingsRowsFromDom();
-  holdingsPersistenceState = savePersistedHoldings({
-    schema: "PFIV021HoldingsFrontendStateV1",
-    rows,
-    lastSavedAt: new Date().toISOString(),
+function stageHoldingsDraftFromInputs() {
+  holdingsPersistenceState = saveUnsubmittedHoldingsDraft({
+    ...holdingsPersistenceState,
+    rows: readHoldingsRowsFromDom(),
   });
-  renderHoldingsRows();
-  updateHoldingsSummary();
-  setHoldingsStatus("已保存 · 刷新后仍保留", "ready");
-  showToast("持仓修改已保存到本机");
+  updateHoldingsSummary({ preserveStatus: true });
+  setHoldingsStatus("未提交草稿 · 尚未写入数据库", "review");
+}
+
+async function saveHoldingsEdits() {
+  const rows = readHoldingsRowsFromDom();
+  setHoldingsStatus("正在写入 SQLite", "watch");
+  try {
+    const payload = await saveHoldingsToBackend(rows);
+    clearUnsubmittedHoldingsDraft();
+    holdingsPersistenceState = {
+      schema: "PFIV021HoldingsFrontendStateV1",
+      rows: (payload.rows || []).map(normalizeHoldingRow).filter(Boolean),
+      lastSavedAt: new Date().toISOString(),
+      draft: false,
+    };
+    renderHoldingsRows();
+    updateHoldingsSummary({ preserveStatus: true });
+    setHoldingsStatus("已写入 SQLite 数据库", "ready");
+    showToast("持仓修改已写入 SQLite 数据库");
+    await refreshRuntimeTrends({ rerender: true });
+  } catch (_error) {
+    saveUnsubmittedHoldingsDraft({ ...holdingsPersistenceState, rows });
+    setHoldingsStatus("保存失败 · 已保留未提交草稿", "review");
+    showToast("保存失败，未提交草稿已保留", "failure");
+  }
+}
+
+async function saveHoldingsToBackend(rows) {
+  return runtimeApiJson("/api/holdings", {
+    method: "POST",
+    body: JSON.stringify({ rows }),
+  });
 }
 
 function addHoldingDraft() {
@@ -2391,35 +2513,48 @@ function addHoldingDraft() {
     },
   ];
   holdingsPersistenceState = { ...holdingsPersistenceState, rows };
+  saveUnsubmittedHoldingsDraft(holdingsPersistenceState);
   renderHoldingsRows();
   updateHoldingsSummary();
-  setHoldingsStatus("已新增草稿 · 需要保存", "review");
+  setHoldingsStatus("未提交草稿 · 尚未写入数据库", "review");
 }
 
-function softDeleteHoldingRow(snapshotId) {
+async function softDeleteHoldingRow(snapshotId) {
   if (!snapshotId) return;
   const rows = readHoldingsRowsFromDom().map((row) => (row.snapshotId === snapshotId ? { ...row, softDeleted: true } : row));
-  holdingsPersistenceState = savePersistedHoldings({
-    schema: "PFIV021HoldingsFrontendStateV1",
-    rows,
-    lastSavedAt: new Date().toISOString(),
-  });
-  renderHoldingsRows();
-  updateHoldingsSummary();
-  setHoldingsStatus("已软删除 · 已保存", "ready");
-  showToast("持仓已软删除并保存在本机");
+  setHoldingsStatus("正在写入 SQLite", "watch");
+  try {
+    const payload = await saveHoldingsToBackend(rows);
+    clearUnsubmittedHoldingsDraft();
+    holdingsPersistenceState = {
+      schema: "PFIV021HoldingsFrontendStateV1",
+      rows: (payload.rows || []).map(normalizeHoldingRow).filter(Boolean),
+      lastSavedAt: new Date().toISOString(),
+      draft: false,
+    };
+    renderHoldingsRows();
+    updateHoldingsSummary({ preserveStatus: true });
+    setHoldingsStatus("已软删除并写入 SQLite", "ready");
+    showToast("持仓软删除已写入 SQLite");
+    await refreshRuntimeTrends({ rerender: true });
+  } catch (_error) {
+    saveUnsubmittedHoldingsDraft({ ...holdingsPersistenceState, rows });
+    setHoldingsStatus("软删除失败 · 已保留未提交草稿", "review");
+    showToast("软删除失败，未提交草稿已保留", "failure");
+  }
 }
 
 function resetHoldingsPersistence() {
-  localStorage.removeItem(HOLDINGS_STORAGE_KEY);
+  clearUnsubmittedHoldingsDraft();
   holdingsPersistenceState = defaultHoldingsState();
   renderHoldingsRows();
   updateHoldingsSummary();
-  setHoldingsStatus("已恢复默认 · 等待保存", "review");
-  showToast("已恢复默认持仓草稿");
+  setHoldingsStatus("已放弃未提交草稿", "review");
+  showToast("已放弃未提交草稿");
+  void refreshHoldingsFromBackend();
 }
 
-function updateHoldingsSummary() {
+function updateHoldingsSummary(options = {}) {
   const activeRows = (holdingsPersistenceState.rows || []).filter((row) => !row.softDeleted);
   const count = document.querySelector("[data-holdings-summary-count]");
   const value = document.querySelector("[data-holdings-summary-value]");
@@ -2430,8 +2565,19 @@ function updateHoldingsSummary() {
   }, 0);
   if (count) count.textContent = String(activeRows.length);
   if (value) value.textContent = `CNY ${total.toLocaleString("zh-CN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-  if (saved) saved.textContent = holdingsPersistenceState.lastSavedAt ? formatLocalSaveTime(holdingsPersistenceState.lastSavedAt) : "未保存";
-  setHoldingsStatus(holdingsPersistenceState.lastSavedAt ? "已从本机恢复" : "等待保存", holdingsPersistenceState.lastSavedAt ? "ready" : "review");
+  if (saved) {
+    if (holdingsPersistenceState.draft) {
+      saved.textContent = "未提交草稿";
+    } else {
+      saved.textContent = holdingsPersistenceState.lastSavedAt ? formatLocalSaveTime(holdingsPersistenceState.lastSavedAt) : "未保存";
+    }
+  }
+  if (!options.preserveStatus) {
+    setHoldingsStatus(
+      holdingsPersistenceState.draft ? "未提交草稿 · 尚未写入数据库" : holdingsPersistenceState.lastSavedAt ? "已从 SQLite 读取" : "等待保存",
+      holdingsPersistenceState.draft ? "review" : holdingsPersistenceState.lastSavedAt ? "ready" : "review",
+    );
+  }
 }
 
 function setHoldingsStatus(text, status) {
@@ -2498,7 +2644,7 @@ function renderWorkspace(workspaceId, options = {}) {
   renderUploadImportPanel(workspaceId);
   renderHoldingsPersistencePanel(workspaceId, routeForState);
   applyEvidenceDrawer(workspace.evidence);
-  drawTrendChart(workspace.trend || legacyChartToTrend(workspace));
+  drawTrendChart(resolveWorkspaceTrend(workspace));
   refreshClickSafeInventory();
   if (!options.keepFunctionDetail) hideFunctionDetail();
   const nextContext = { ...previousContext, workspace: workspaceId };
@@ -2641,7 +2787,6 @@ function renderFunctionDetail(detail) {
   const status = panel.querySelector("[data-function-status]");
   const action = panel.querySelector("[data-function-primary-action]");
   const workspace = panel.querySelector("[data-function-workspace]");
-  const boundary = panel.querySelector("[data-function-boundary]");
   const checks = panel.querySelector("[data-function-checks]");
   const actionButton = panel.querySelector("[data-function-action]");
   const legacyLink = panel.querySelector("[data-function-legacy-link]");
@@ -2654,7 +2799,6 @@ function renderFunctionDetail(detail) {
   }
   if (action) action.textContent = detail.primaryAction;
   if (workspace) workspace.textContent = WORKSPACE_LABELS[detail.workspace] || detail.workspace;
-  if (boundary) boundary.textContent = detail.boundary;
   if (actionButton) {
     actionButton.textContent = detail.primaryAction;
     actionButton.dataset.functionActionView = detail.view;
@@ -2667,7 +2811,9 @@ function renderFunctionDetail(detail) {
   }
   if (checks) {
     checks.replaceChildren();
-    detail.checks.forEach((item, index) => {
+    detail.checks
+      .filter((item) => !String(item || "").startsWith("复核："))
+      .forEach((item, index) => {
       const article = document.createElement("article");
       const strong = document.createElement("strong");
       const span = document.createElement("span");
@@ -2855,7 +3001,7 @@ function showWorkflowEvidence(card) {
     Evidence: card.evidence || "运行证据",
     Source: "本地运行库",
     Model: "外部模型未启用",
-    Parameters: "只读 · 人工复核 · 无实盘执行",
+    Parameters: " · 人工复核 · 证据留痕",
     "Data lineage": card.description || "运行库工作流卡片。",
     "Raw document": "缓存摘要",
   });
@@ -3762,13 +3908,18 @@ document.addEventListener("DOMContentLoaded", () => {
   applyHomeSummary(readHomeSummary());
   const params = initialSearchParams();
   const requestedFeature = params.get("view") || readContext().feature_view || "";
-  if (applyRouteFromLocation()) return;
+  if (applyRouteFromLocation()) {
+    void refreshRuntimeTrends({ rerender: true });
+    return;
+  }
   if (Object.prototype.hasOwnProperty.call(FUNCTION_VIEWS, requestedFeature)) {
     openFunctionView(requestedFeature, { silent: true });
+    void refreshRuntimeTrends({ rerender: true });
     return;
   }
   const requestedWorkspace = readContext().workspace || "home";
   renderWorkspace(WORKSPACES[requestedWorkspace] ? requestedWorkspace : "home", { silent: true, preserveFocus: true });
+  void refreshRuntimeTrends({ rerender: true });
 });
 
 window.addEventListener("hashchange", () => {

@@ -99,9 +99,12 @@ class V021Stage5UploadImportContractTest(unittest.TestCase):
             'data-action="broker-submit"',
             "CREATE TABLE position_adjustment",
             "holdings_persistence",
+            "不做实盘自动下单",
+            "只做研究",
+            "不连接券商",
+            "不提交订单",
         ):
             self.assertNotIn(forbidden, self.web_source)
-        self.assertIn("不做实盘自动下单", self.web_source)
 
 
 if __name__ == "__main__":
