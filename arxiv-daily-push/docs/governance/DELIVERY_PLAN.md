@@ -21,7 +21,7 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 216
+- task_count: 217
 - acceptance_count: 126
 
 ## Delivery Tasks
@@ -91,6 +91,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | ADP-S1P5T04-POST-MERGE-TEST10-040 | S1-A | completed | ADP-ACC-PHASE12-MANUAL-DELIVERY-TEST | manual run 28059194999 / test10 completed success from main, proved Sydney-date subject, Gmail SMTP sent state, Chinese lesson flag, candidate queue summary flag, and no production schedule enablement | `governance/run_manifests/ADP-S1P5T04-POST-MERGE-TEST10-VERIFIED-20260624.json` |
 | ADP-S1P5T04-PRODUCTION-SCHEDULE-OWNER-DECISION-041 | S1-A | deprecated | ADP-ACC-PHASE12-PRODUCTION-ENABLEMENT | Owner superseded the GitHub cloud scheduled-production path with local Mac + Codex/local runner; GitHub remains code, PR/CI, evidence, status, and backup only | `governance/run_manifests/ADP-S1P5T04-POST-MERGE-TEST10-VERIFIED-20260624.json` |
 | ADP-S1P5T05-LOCAL-PRODUCTION-AND-MIGRATION-PREP | S1-A | completed | ADP-ACC-S1P5T05-LOCAL-PRODUCTION-MIGRATION-PREP | local-runner daily/preflight, queue/ledger/report/email preview persistence, launchd package draft, and 2026-06-30 migration runbook pass focused tests without real SMTP send or GitHub cloud schedule | `governance/run_manifests/ADP-S1P5T05-LOCAL-PRODUCTION-AND-MIGRATION-PREP-20260624.json` |
+| LOCAL-DAILY-M1-M4-SEND-ORCHESTRATION | S1P5 | completed | ADP-ACC-S1P5T05-LOCAL-PRODUCTION-MIGRATION-PREP | local runner now builds M1-M4 Email V1 packages, records per-product SMTP evidence, syncs actual sent count, and skips same-day already-sent products; focused tests 9 OK and full unittest 641 OK after rebase | `docs/phase_records/PHASE_LOCAL_DAILY_M1_M4_SEND_ORCHESTRATION_20260628.md` |
 | S2PAT01 | S2PA | completed | ACC-S2PAT01-V7-AUDIT | V7 package integrity and V6-to-V7 conflict/alias boundary are locked without rewriting historical Stage 1 evidence | `docs/pursuing_goal/v7_1/CONTRACT_HASH.txt` |
 | S2PAT02 | S2PA | completed | ACC-S2PAT02-CONTRACT | V7 product contract, requirements, decision log, stop codes, roadmap, and repository lock file are present and hash-bound | `docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml` |
 | S2PAT03 | S2PA | completed | ACC-S2PAT03-ROADMAP | root/ADP AGENTS and roadmap references now route new work through V7 while preserving legacy `S2P1T01` alias | `AGENTS.md`; `arxiv-daily-push/AGENTS.md` |

@@ -225,11 +225,18 @@ class LocalRunnerTests(unittest.TestCase):
             self.assertFalse(report["github_cloud_schedule_enabled"])
             self.assertFalse(report["production_evidence_ready"])
             self.assertEqual(report["notification_report"]["status"], "dry_run")
+            self.assertEqual(set(report["notification_reports"]), {"M1", "M2", "M3", "M4"})
+            self.assertTrue(all(item["status"] == "dry_run" for item in report["notification_reports"].values()))
+            self.assertEqual(report["mail_delivery_summary"]["sent_mail_count"], 0)
+            self.assertEqual(report["mail_delivery_summary"]["dry_run_mail_products"], ["M1", "M2", "M3", "M4"])
             self.assertTrue((state / "candidate_queue.json").is_file())
             self.assertTrue((state / "local_content_ledger.jsonl").is_file())
             self.assertTrue(Path(report["email_preview_paths"]["plain"]).is_file())
+            self.assertTrue(Path(report["email_preview_paths"]["by_product"]["M4"]["html"]).is_file())
             self.assertEqual(report["delivery_package"]["email_template_contract"], EMAIL_LEARNING_V1_CONTRACT_ID)
             self.assertEqual(report["delivery_package"]["mail_product_id"], "M1")
+            self.assertEqual(set(report["delivery_packages"]), {"M1", "M2", "M3", "M4"})
+            self.assertEqual(report["delivery_packages"]["M4"]["mail_product_id"], "M4")
             self.assertEqual(report["planned_mail_delivery"]["planned_send_total"], 4)
             self.assertEqual(report["planned_mail_delivery"]["planned_mail_products"], ["M1", "M2", "M3", "M4"])
             self.assertIn("【先把论文讲成人话】", Path(report["email_preview_paths"]["plain"]).read_text(encoding="utf-8"))
@@ -357,7 +364,88 @@ class LocalRunnerTests(unittest.TestCase):
             self.assertTrue(report["production_evidence_ready"])
             self.assertTrue(report["real_smtp_sent"])
             self.assertEqual(report["notification_report"]["status"], "sent")
-            self.assertEqual(len(FakeSMTP.sent_messages), 1)
+            self.assertEqual(report["mail_delivery_summary"]["sent_mail_count"], 4)
+            self.assertTrue(report["mail_delivery_summary"]["all_planned_products_sent"])
+            self.assertEqual(report["mail_delivery_summary"]["newly_sent_mail_products"], ["M1", "M2", "M3", "M4"])
+            self.assertEqual(report["mail_delivery_summary"]["historical_sent_mail_products"], [])
+            self.assertTrue(all(item["status"] == "sent" for item in report["notification_reports"].values()))
+            self.assertEqual([item["product_id"] for item in report["notification_reports"].values()], ["M1", "M2", "M3", "M4"])
+            self.assertEqual(len(FakeSMTP.sent_messages), 4)
+            subjects = [str(message["Subject"]) for message in FakeSMTP.sent_messages]
+            self.assertTrue(any("-- M1 --" in subject for subject in subjects))
+            self.assertTrue(any("-- M4 --" in subject for subject in subjects))
+            for mail_status_page in USER_CENTER_MAIL_STATUS_PAGES:
+                page_text = (root / mail_status_page).read_text(encoding="utf-8")
+                self.assertIn("| 今日已发送 / 总应发送 | 4 / 4 |", page_text)
+
+    def test_local_daily_real_smtp_skips_already_sent_products_and_catches_up_missing_products(self) -> None:
+        class FakeSMTP:
+            sent_messages: list[EmailMessage] = []
+
+            def __init__(self, host, port, timeout): pass
+            def __enter__(self): return self
+            def __exit__(self, exc_type, exc, traceback): return False
+            def starttls(self): return None
+            def login(self, username, password): return None
+            def send_message(self, message):
+                FakeSMTP.sent_messages.append(message)
+                return {}
+
+        candidate = source_item(
+            "arxiv:2606.24007",
+            "Catch-up orchestration for product-level mail delivery",
+            "cs.AI",
+            ["cs.AI", "q-fin.PM"],
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "repo"
+            root.mkdir()
+            state = Path(tmp) / "state"
+            write_user_center_sync_inputs(root, state)
+            (state / "local_content_ledger.jsonl").write_text(
+                json.dumps(
+                    {
+                        "date": "2026-06-24",
+                        "email_status": "sent",
+                        "email_ref": "smtp://message/legacy-m1",
+                    },
+                    ensure_ascii=False,
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            report = run_local_daily(
+                project_root=root,
+                state_dir=state,
+                date="2026-06-24",
+                generated_at=GENERATED_AT,
+                env=smtp_env(),
+                allow_smtp_send=True,
+                source_batches=source_batches(**{"cs": [candidate]}),
+                command_resolver=command_resolver,
+                disk_free_gib=120.0,
+                memory_total_gib=16.0,
+                smtp_factory=FakeSMTP,
+            )
+
+            self.assertEqual(report["status"], "pass")
+            self.assertTrue(report["production_evidence_ready"])
+            self.assertTrue(report["real_smtp_sent"])
+            self.assertEqual(len(FakeSMTP.sent_messages), 3)
+            self.assertEqual(report["notification_reports"]["M1"]["status"], "sent")
+            self.assertTrue(report["notification_reports"]["M1"]["historical_delivery_evidence"])
+            self.assertFalse(report["notification_reports"]["M1"]["real_send_attempted"])
+            self.assertEqual(report["notification_reports"]["M1"]["delivery_ref"], "smtp://message/legacy-m1")
+            self.assertEqual(report["mail_delivery_summary"]["sent_mail_count"], 4)
+            self.assertEqual(report["mail_delivery_summary"]["historical_sent_mail_products"], ["M1"])
+            self.assertEqual(report["mail_delivery_summary"]["newly_sent_mail_products"], ["M2", "M3", "M4"])
+            subjects = [str(message["Subject"]) for message in FakeSMTP.sent_messages]
+            self.assertFalse(any("-- M1 --" in subject for subject in subjects))
+            self.assertTrue(any("-- M2 --" in subject for subject in subjects))
+            self.assertTrue(any("-- M4 --" in subject for subject in subjects))
+            for mail_status_page in USER_CENTER_MAIL_STATUS_PAGES:
+                page_text = (root / mail_status_page).read_text(encoding="utf-8")
+                self.assertIn("| 今日已发送 / 总应发送 | 4 / 4 |", page_text)
 
     def test_local_daily_blocks_when_user_center_sync_missing(self) -> None:
         class FakeSMTP:
@@ -400,6 +488,9 @@ class LocalRunnerTests(unittest.TestCase):
             self.assertIn("user center sync missing required files", " ".join(report["blocking_reasons"]))
             self.assertEqual(report["notification_report"]["status"], "blocked")
             self.assertFalse(report["notification_report"]["real_send_attempted"])
+            self.assertEqual(set(report["notification_reports"]), {"M1", "M2", "M3", "M4"})
+            self.assertTrue(all(item["status"] == "blocked" for item in report["notification_reports"].values()))
+            self.assertEqual(report["mail_delivery_summary"]["blocked_mail_products"], ["M1", "M2", "M3", "M4"])
             self.assertEqual(FakeSMTP.sent_messages, [])
             self.assertTrue(validate_local_runner_report(report) == [])
 
@@ -470,6 +561,8 @@ class LocalRunnerTests(unittest.TestCase):
             self.assertIn("missing roi_signals six-factor detail", " ".join(report["blocking_reasons"]))
             self.assertEqual(report["notification_report"]["status"], "blocked")
             self.assertFalse(report["notification_report"]["real_send_attempted"])
+            self.assertEqual(set(report["notification_reports"]), {"M1", "M2", "M3", "M4"})
+            self.assertTrue(all(item["status"] == "blocked" for item in report["notification_reports"].values()))
             self.assertEqual(FakeSMTP.sent_messages, [])
             self.assertTrue(validate_local_runner_report(report) == [])
 

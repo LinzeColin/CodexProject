@@ -53,3 +53,10 @@
 - Commit-bound events: `4`
 - Legacy unbound events: `205`
 - Unresolved fact IDs: `1`
+
+## Local Daily Runner M1-M4
+
+- Local runner send orchestration: `LOCAL_DAILY_M1_M4_SEND_ORCHESTRATION_READY`
+- Planned daily mail products: `M1 / M2 / M3 / M4`
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_LOCAL_DAILY_M1_M4_SEND_ORCHESTRATION_20260628.md`
+- Boundary: this records code/test readiness for local catch-up and duplicate-send protection; it does not claim real M2-M4 delivery, S2PMT07 final acceptance, scheduler enablement, Release upload, or integrated production acceptance.

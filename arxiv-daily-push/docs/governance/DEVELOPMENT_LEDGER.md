@@ -9,13 +9,28 @@ The append-only machine record is `development_events.jsonl`.
 ## Current State
 
 - Product version: 0.23.1
-- Current phase: S2PM
-- Current gate: S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_REQUEST_BLOCKED_NO_PRODUCTION
-- Confirmed iteration count: 166
+- Current phase: S1P5
+- Current gate: LOCAL_DAILY_M1_M4_SEND_ORCHESTRATION_READY_S2PMT07_STILL_BLOCKED
+- Confirmed iteration count: 167
 - Reconstructed event count: 0
-- Current task: `S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-REQUEST` records that S2PMT07 final acceptance bundle readiness can expose deterministic reviewer assignment request inputs and required reviewer independence before independent final closure decision work while reviewer assignment, independent final closure decision, P0/P1 zero proof, closure, final bundle, S2PLT04, and all production gates remain closed.
+- Current task: `LOCAL-DAILY-M1-M4-SEND-ORCHESTRATION` records that the local daily runner now builds and reports M1-M4 Email V1 products, syncs actual sent count to the GitHub user center, and skips already-sent same-day products during catch-up while S2PMT07 final acceptance, inherited P0/P1 closure, final bundle, and integrated production acceptance remain blocked.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. V7.2 contract baseline migration blockers are zero, but real restore, real SMTP production, scheduler installation, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
+### `ITER-20260628-ADP-LOCAL-DAILY-M1-M4-SEND-ORCHESTRATION`
+
+- Timestamp: `2026-06-28T10:26:53+10:00`
+- Fact level: EXTRACTED from local runner implementation, focused fake SMTP regression tests, full unittest, user-center timestamp check, phase record, and three base files.
+- Base commit: `1987d08ee3c5b4db65caafa30bc40f34eedf8d7e`
+- Product version: `0.23.1`
+- Status: local daily M1-M4 send orchestration ready; real M2-M4 production catch-up not claimed by this commit.
+- Task IDs: `LOCAL-DAILY-M1-M4-SEND-ORCHESTRATION`; parent `ADP-S1P5T05`; acceptance `ADP-ACC-S1P5T05-LOCAL-PRODUCTION-MIGRATION-PREP`.
+- Goal: Make the local daily runner execute the existing Email V1 M1-M4 contract instead of sending only M1, while preserving user-center sync and duplicate-send protection.
+- Files changed: `local_runner.py`, `test_local_runner.py`, user-center mail/status pages, phase record, three base files, and governance sync records.
+- Decisions: A daily run now builds four delivery packages, one per `M1, M2, M3, M4`; `notification_reports` and `mail_delivery_summary` record per-product SMTP status; `real_smtp_sent` is true only when all four products are sent or accounted for by historical same-day sent evidence; same-day reruns skip already-sent products from `local_content_ledger.jsonl` and send only missing products.
+- Validation: focused local runner tests 9 OK; mail/global SMTP tests 24 OK; user-center tests 22 OK; full arxiv-daily-push unittest 638 OK; user-center timestamp check 18 pages validated; git diff --check PASS. Full semantic extractor was interrupted after more than three minutes without output and is not claimed as passed.
+- Boundaries: No public schema, DB, source adapter, ranking, V7.1 baseline, V7.2 contract, CURRENT pointer, GitHub cloud scheduler, Release, or integrated production acceptance changed. This commit changes local runner mail production behavior but does not itself send real SMTP mail.
+- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_LOCAL_DAILY_M1_M4_SEND_ORCHESTRATION_20260628.md`; `arxiv-daily-push/src/arxiv_daily_push/local_runner.py`; `arxiv-daily-push/tests/test_local_runner.py`; `arxiv-daily-push/用户中心/邮件发送与队列状态.md`.
+- Next step: If SMTP environment and user-center sync gate pass, run product-level local daily catch-up for the current service date; append real delivery results to the GitHub user-center history.
 
 ### `ITER-20260628-ADP-S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-REQUEST`
 

@@ -1106,6 +1106,25 @@ tasks:
     target_version: "0.23.0"
     completed_version: "0.23.0"
     unknown_task_ids: []
+  - task_id: "LOCAL-DAILY-M1-M4-SEND-ORCHESTRATION"
+    phase: "S1P5"
+    objective: "Make local daily runner execute the existing Email V1 M1-M4 contract and protect same-day catch-up from duplicate sends."
+    scope: "local_runner M1-M4 package generation, per-product SMTP delivery reports, user-center sent-count sync, content-ledger product status, fake SMTP regression tests, and owner-facing records."
+    non_scope: "No public schema, DB, source adapter, ranking, V7.1 baseline, V7.2 contract, CURRENT pointer, GitHub cloud scheduler, Release upload, or integrated production acceptance change."
+    status: "completed"
+    dependencies: ["ADP-S1P5T05-LOCAL-PRODUCTION-AND-MIGRATION-PREP", "EMAIL_LEARNING_V1"]
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/local_runner.py", "arxiv-daily-push/tests/test_local_runner.py", "arxiv-daily-push/docs/phase_records/PHASE_LOCAL_DAILY_M1_M4_SEND_ORCHESTRATION_20260628.md", "arxiv-daily-push/用户中心/邮件发送与队列状态.md"]
+    acceptance_ids: ["ADP-ACC-S1P5T05-LOCAL-PRODUCTION-MIGRATION-PREP"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_local_runner.py -q", "PYTHONPATH=arxiv-daily-push/src python3 -m unittest discover -s arxiv-daily-push/tests -q", "python3 arxiv-daily-push/scripts/update_user_center_timestamps.py --check", "git diff --check"]
+    test_results: ["focused local runner tests: 9 OK", "full arxiv-daily-push unittest: 641 OK after rebase", "user-center timestamp check: 18 pages validated", "git diff --check: PASS"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_LOCAL_DAILY_M1_M4_SEND_ORCHESTRATION_20260628.md", "arxiv-daily-push/src/arxiv_daily_push/local_runner.py", "arxiv-daily-push/tests/test_local_runner.py", "arxiv-daily-push/用户中心/邮件发送与队列状态.md"]
+    result: "Local daily runner now builds and reports M1-M4 Email V1 products; same-day reruns skip already-sent products and send only missing products."
+    risk: "A real catch-up still depends on SMTP environment and user-center sync gate passing at runtime; this task does not claim real M2-M4 delivery."
+    rollback: "Revert local_runner M1-M4 orchestration helpers, focused tests, phase record, owner-facing updates, and this delivery task entry."
+    target_version: "0.23.1"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
   - task_id: "S2PAT05"
     phase: "S2PA"
     objective: "Import V7.1 parallel audit findings, merge policy, lifecycle contract, and remediation gate so later agents cannot claim production while P0/P1 remain open."
