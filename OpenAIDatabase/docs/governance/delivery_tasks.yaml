@@ -146,6 +146,23 @@ tasks:
     rollback: "Do not execute live upload until auth/env exists; if a live deploy later fails, roll back to the previous Pages deployment version and keep main commit as source evidence."
     target_version: "0.2.0"
     completed_version: ""
+  - task_id: "TASK-OAI-D-003"
+    phase: "D"
+    objective: "Repair OpenAIDatabase CI by restoring task-run evidence compatibility and cross-platform deterministic script output."
+    scope: ["legacy sync_runs compatibility", "future sync log task-run schema", "POSIX generated paths", "openssl-missing archive fail-closed handling", "OpenAIDatabase CI unit tests"]
+    non_scope: ["raw export ingestion", "plaintext secrets", "Cloudflare live upload", "Access policy mutation", "delivery readiness promotion", "model calibration"]
+    status: "completed"
+    dependencies: ["TASK-OAI-D-001"]
+    required_files: ["OpenAIDatabase/scripts/evaluate_personalization_context.py", "OpenAIDatabase/scripts/sync_codex_memory_data.py", "OpenAIDatabase/scripts/build_agent_context_pack.py", "OpenAIDatabase/scripts/deploy_memory_atlas_cloudflare.py", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py"]
+    acceptance_ids: ["ACC-OAI-D-003"]
+    test_commands: ["python -B -m unittest discover -s tests -p test_*.py -v", "python -B scripts/build_personalization_exports.py --database-dir .", "python -B scripts/route_agent_resources.py --database-dir . --intent startup", "python -B scripts/evaluate_personalization_context.py --database-dir .", "python -B -m py_compile scripts/build_agent_context_pack.py scripts/deploy_memory_atlas_cloudflare.py scripts/evaluate_personalization_context.py scripts/sync_codex_memory_data.py skills/openai-memory-analysis/scripts/openai_memory_analysis.py", "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main", "python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main"]
+    test_results: ["PASS: OpenAIDatabase unittest discover ran 44 tests OK", "PASS: generated_at reused and log not_appended_no_output_changes", "PASS: startup route returned AGENTS.md and codex_personalization.md read order", "PASS: evaluator status PASS with failures empty", "PASS: py_compile exit 0", "PASS: changed-only governance validate errors 0 warnings 0", "PASS: changed-only governance ci decision SHIP"]
+    evidence_refs: ["OpenAIDatabase/scripts/evaluate_personalization_context.py", "OpenAIDatabase/scripts/sync_codex_memory_data.py", "OpenAIDatabase/scripts/build_agent_context_pack.py", "OpenAIDatabase/scripts/deploy_memory_atlas_cloudflare.py", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py"]
+    risk: "This repairs CI evidence handling only; legacy sync rows remain historical evidence and live Cloudflare delivery remains blocked."
+    rollback: "Revert TASK-OAI-D-003 script and governance changes; main would return to the previous OpenAIDatabase CI failure."
+    target_version: "0.2.0"
+    completed_version: "0.2.0"
+    completed_commit: "PENDING"
   - task_id: "TASK-OAI-E-001"
     phase: "E"
     objective: "Maintain OpenAIDatabase governance drift checks in required mode."

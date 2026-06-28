@@ -29,6 +29,7 @@ AUTH_ENV = "MEMORY_ATLAS_CLOUDFLARE_AUTHORIZED"
 AUTH_VALUE = "I_AUTHORIZE_THIS_DEPLOY"
 PROJECT_NAME = "openai-memory-atlas"
 PUBLISH_DIR = Path("apps/memory-atlas/dist")
+PUBLISH_DIR_ARG = PUBLISH_DIR.as_posix()
 
 
 class DeploymentError(RuntimeError):
@@ -110,11 +111,11 @@ def deploy(args: argparse.Namespace) -> dict[str, Any]:
         ["python3", "scripts/build_memory_atlas_data.py", "--database-dir", ".", "--output", "data/derived/visualization/memory_atlas.json"],
         ["npm", "ci", "--prefix", "apps/memory-atlas"],
         ["npm", "run", "build", "--prefix", "apps/memory-atlas"],
-        ["python3", "scripts/audit_memory_atlas_release.py", "--publish-dir", str(PUBLISH_DIR)],
+        ["python3", "scripts/audit_memory_atlas_release.py", "--publish-dir", PUBLISH_DIR_ARG],
         ["python3", "scripts/audit_memory_atlas_visual_acceptance.py"],
-        ["python3", "scripts/audit_memory_atlas_acceptance.py", "--publish-dir", str(PUBLISH_DIR)],
-        ["python3", "scripts/preflight_cloudflare_pages_access.py", "--publish-dir", str(PUBLISH_DIR), "--require-live-env"],
-        ["npx", "wrangler", "pages", "deploy", str(PUBLISH_DIR), "--project-name", PROJECT_NAME],
+        ["python3", "scripts/audit_memory_atlas_acceptance.py", "--publish-dir", PUBLISH_DIR_ARG],
+        ["python3", "scripts/preflight_cloudflare_pages_access.py", "--publish-dir", PUBLISH_DIR_ARG, "--require-live-env"],
+        ["npx", "wrangler", "pages", "deploy", PUBLISH_DIR_ARG, "--project-name", PROJECT_NAME],
     ]
 
     results: list[dict[str, Any]] = []

@@ -817,12 +817,26 @@ def encrypt_archive(input_path: Path, database_dir: Path, key_file: Path) -> dic
         subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         status = "encrypted"
         error = ""
+    except FileNotFoundError:
+        return {
+            "source_path": str(input_path),
+            "source_sha256": source_sha,
+            "status": "failed",
+            "error": "openssl executable not found; archive not created",
+        }
     except subprocess.CalledProcessError as exc:
         fallback = [part for part in cmd if part != "-pbkdf2"]
         try:
             subprocess.run(fallback, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             status = "encrypted_without_pbkdf2"
             error = "openssl did not accept -pbkdf2; used compatibility fallback"
+        except FileNotFoundError:
+            return {
+                "source_path": str(input_path),
+                "source_sha256": source_sha,
+                "status": "failed",
+                "error": "openssl executable not found; archive not created",
+            }
         except subprocess.CalledProcessError as fallback_exc:
             return {
                 "source_path": str(input_path),

@@ -15,6 +15,7 @@
 - Path: `OpenAIDatabase`
 - Product version: `0.2.0`
 - Phase/Gate: `D / S5PB-GATE-IN-PROGRESS; MEMORY-ATLAS-CLOUDFLARE-LIVE-AUTH-REQUIRED`
+- Latest maintenance task: `TASK-OAI-D-003 / OpenAIDatabase CI evidence-schema repair`
 - Models/Formulas/Parameters total: `11 / 11 / 94`
 - Active formulas/parameters: `11 / 94`
 - Machine checked formulas/parameters: `10 / 28`
@@ -36,7 +37,7 @@
 
 - Readiness: `FAILED`
 - Release gate: `S5PB-GATE-IN-PROGRESS; MEMORY-ATLAS-CLOUDFLARE-LIVE-AUTH-REQUIRED`
-- Next executable task: `TASK-OAI-B-001`
+- Next executable task: `TASK-OAI-B-001`; `TASK-OAI-D-003` is a completed CI repair and does not change delivery readiness.
 - Pending/stale events: `9`
 - Tree-bound events: `0`
 - Commit-bound events: `1`

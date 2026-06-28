@@ -1,6 +1,6 @@
 # OpenAIDatabase Delivery Plan
 
-task_count: 12
+task_count: 13
 
 ## Phase A - Discovery and Baseline
 
@@ -189,6 +189,24 @@ task_count: 12
 - rollback: do not execute live upload until auth/env exists; if a live deploy later fails, roll back to the previous Pages deployment version.
 - target version: 0.2.0
 - completed version:
+
+### TASK-OAI-D-003
+
+- task_id: TASK-OAI-D-003
+- phase: D
+- objective: Repair OpenAIDatabase CI evidence-schema compatibility and cross-platform deterministic script output.
+- scope: legacy `sync_runs` compatibility, future sync log task-run schema, POSIX generated paths, `openssl` missing fail-closed handling, OpenAIDatabase CI tests.
+- non_scope: raw exports, plaintext secrets, live Cloudflare deployment, Access mutation, model calibration, delivery readiness promotion.
+- status: completed
+- dependencies: TASK-OAI-D-001
+- required files: `scripts/evaluate_personalization_context.py`, `scripts/sync_codex_memory_data.py`, `scripts/build_agent_context_pack.py`, `scripts/deploy_memory_atlas_cloudflare.py`, `skills/openai-memory-analysis/scripts/openai_memory_analysis.py`
+- acceptance_ids: ACC-OAI-D-003
+- test commands: OpenAIDatabase unittest discover, personalization export, startup route, evaluator, py_compile, changed-only governance validation.
+- evidence: local OpenAIDatabase unittest discover ran 44 tests OK; export/route/evaluator/py_compile passed; governance changed-only rerun pending after this document sync.
+- risk: historical sync rows remain legacy compatibility evidence; live Cloudflare delivery is still blocked.
+- rollback: revert TASK-OAI-D-003 scripts and governance records.
+- target version: 0.2.0
+- completed version: 0.2.0
 
 ## Phase E - Delivery and Operation
 

@@ -12,10 +12,11 @@
 - blockers: live Wrangler authentication, Cloudflare account/token/hostname/allowed-email env, remaining complex branch rules, TypeScript writeback semantics, heuristic calibration evidence, owner privacy signoff, and production memory safety are HUMAN_REVIEW_REQUIRED or UNKNOWN; S3PDT01 is synthetic privacy-boundary evidence only
 
 Confirmed iterations are not inferred from commit count. This ledger currently
-records seven confirmed iterations: the baseline run, three TASK-OAI-C-002
+records eight confirmed iterations: the baseline run, three TASK-OAI-C-002
 follow-up governance and personalization hardening runs, the semantic
-extractor rollout run, the S3PDT01 synthetic privacy-boundary run, and the
-TASK-OAI-D-001 Memory Atlas local release/preflight run.
+extractor rollout run, the S3PDT01 synthetic privacy-boundary run, the
+TASK-OAI-D-001 Memory Atlas local release/preflight run, and the TASK-OAI-D-003
+OpenAIDatabase CI evidence-schema repair run.
 
 ## Phase Matrix
 
@@ -196,6 +197,30 @@ TASK-OAI-D-001 Memory Atlas local release/preflight run.
 - remaining risks: live Access policy correctness, production hostname, Cloudflare account permissions, and safe agent access remain unverified.
 - rollback: revert the main merge/snapshot/test/governance commits and, if a live deploy later exists, roll back to the previous successful Cloudflare Pages deployment version.
 - next step: provide Cloudflare auth/env, then run TASK-OAI-D-002 and write sanitized live evidence.
+
+### ITER-20260629-OAIDB-D003
+
+- date: 2026-06-29
+- fact level: EXTRACTED
+- version before: 0.2.0 provisional
+- version after: 0.2.0 provisional
+- base commit: 563f25c7212369b46af87c92c1b8c33cf4bfd6eb
+- result commit: PENDING
+- task IDs: TASK-OAI-D-003, ACC-OAI-D-003
+- objective: repair OpenAIDatabase CI after main merge exposed legacy `sync_runs` schema drift and cross-platform path output drift.
+- assumptions: legacy sync logs are historical evidence predating the task-run schema; they may be read through an explicit compatibility normalizer, while new sync logs must emit complete task-run fields.
+- files read: OpenAIDatabase workflow, tests, `evaluate_personalization_context.py`, `sync_codex_memory_data.py`, personalization/export scripts, memory-analysis archive helper, and current governance files.
+- files changed: `OpenAIDatabase/scripts/evaluate_personalization_context.py`, `OpenAIDatabase/scripts/sync_codex_memory_data.py`, `OpenAIDatabase/scripts/build_agent_context_pack.py`, `OpenAIDatabase/scripts/deploy_memory_atlas_cloudflare.py`, `OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py`, and OpenAIDatabase governance records.
+- model changes: none; runtime memory extraction, retrieval, atlas, writeback, and personalization decisions are unchanged.
+- parameter changes: none; no heuristic calibration or scoring parameter is promoted.
+- commands: `python -B -m unittest discover -s tests -p test_*.py -v`; `python -B scripts/build_personalization_exports.py --database-dir .`; `python -B scripts/route_agent_resources.py --database-dir . --intent startup`; `python -B scripts/evaluate_personalization_context.py --database-dir .`; `python -B -m py_compile scripts/build_agent_context_pack.py scripts/deploy_memory_atlas_cloudflare.py scripts/evaluate_personalization_context.py scripts/sync_codex_memory_data.py skills/openai-memory-analysis/scripts/openai_memory_analysis.py`; `python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main`; `python -B scripts/lean_governance.py ci --changed-only --base-ref origin/main`.
+- test results: OpenAIDatabase unittest discover PASS with 44 tests OK; personalization export PASS with no output changes; startup route PASS; evaluator PASS with failures empty; py_compile PASS; changed-only governance validate PASS with errors 0 warnings 0; changed-only governance CI decision SHIP.
+- successes: legacy sync logs no longer fail evaluator, future sync logs write complete task-run schema, Windows/Linux generated path strings are stable, and missing `openssl` records archive failure instead of crashing or writing unencrypted raw copies.
+- failures: GitHub job logs could not be downloaded through unauthenticated REST because GitHub requires repository admin rights for logs; local workflow-equivalent tests were used instead.
+- decisions: keep product version 0.2.0 and delivery readiness FAILED; this is a CI/evidence compatibility repair only.
+- remaining risks: legacy sync rows remain historical compatibility evidence; live Cloudflare deploy and Access verification remain blocked by missing credentials/env.
+- rollback: revert TASK-OAI-D-003 script and governance changes; OpenAIDatabase CI would return to the known failing state.
+- next step: rerun changed-only governance and push main; confirm GitHub OpenAIDatabase CI passes on the new commit.
 
 ## Reconstructed Development Events
 

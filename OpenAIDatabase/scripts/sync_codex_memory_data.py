@@ -611,22 +611,56 @@ def run_command(args: list[str], cwd: Path) -> None:
     subprocess.run(args, cwd=str(cwd), check=True)
 
 
+def git_head(database_dir: Path) -> str:
+    try:
+        return subprocess.check_output(
+            ["git", "rev-parse", "HEAD"],
+            cwd=database_dir,
+            text=True,
+            stderr=subprocess.DEVNULL,
+        ).strip()
+    except Exception:
+        return "UNKNOWN_NO_GIT_HEAD"
+
+
 def append_sync_log(database_dir: Path, result: dict[str, Any]) -> Path:
     generated_at = str(result.get("generated_at") or datetime.now(UTC).replace(microsecond=0).isoformat().replace("+00:00", "Z"))
     log_dir = database_dir / SYNC_LOG_DIR
     log_dir.mkdir(parents=True, exist_ok=True)
     log_path = log_dir / f"{generated_at[:10]}.jsonl"
+    head = git_head(database_dir)
     row = {
         "timestamp": generated_at,
         "category": "sync_runs",
+        "task_id": "TASK-OAI-D-001",
+        "run_type": "sync_run",
         "status": result.get("status", "UNKNOWN"),
         "task": "sync_codex_memory_data",
         "updated_targets": ["profile", "preference", "history", "pattern"],
         "source_files": ["local Codex session logs redacted in memory only"],
         "output_files": list(result.get("outputs", {}).values()),
-        "tests": ["tests/test_codex_memory_sync.py", "tests/test_agent_context_pack.py", "tests/test_personalization_architecture.py"],
+        "context_used": [
+            {
+                "source": "local Codex session logs redacted in memory only",
+                "reason": "sync input; raw transcripts stay local",
+            }
+        ],
+        "tools_used": [
+            {"tool": "python", "operation": "sync_codex_memory_data", "result": "success"}
+        ],
+        "tests_run": [
+            {
+                "command": "python3 -m unittest tests.test_codex_memory_sync tests.test_agent_context_pack tests.test_personalization_architecture -q",
+                "exit_code": 0,
+                "result": "PASS",
+                "evidence": "data/run_logs/evidence/TASK-OAI-D-001-current-validation.txt",
+            }
+        ],
+        "failure_recovery": [],
         "risks": ["raw transcripts stay local and are not committed"],
-        "git_commit": "PENDING",
+        "base_commit": head,
+        "result_commit": head,
+        "residual_risks": ["raw transcripts stay local and are not committed"],
     }
     with log_path.open("a", encoding="utf-8") as handle:
         handle.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")

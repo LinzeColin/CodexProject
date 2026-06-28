@@ -6,7 +6,7 @@ governance_spec_version: 1.0.0
 model_count: 11
 formula_count: 11
 parameter_count: 94
-task_count: 12
+task_count: 13
 
 ## A. Model Overview
 
@@ -165,3 +165,4 @@ Uncovered or unresolved:
 
 - `TASK-OAI-B-001`: calibration evidence for heuristic weights and thresholds.
 - `TASK-OAI-D-002`: authorized Cloudflare Pages live upload and Access verification after credentials/env are available.
+- `TASK-OAI-D-003`: completed CI evidence-schema and cross-platform path repair; it does not change delivery readiness.
