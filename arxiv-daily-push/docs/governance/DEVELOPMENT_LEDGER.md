@@ -11,13 +11,30 @@ The append-only machine record is `development_events.jsonl`.
 - Product version: 0.23.1
 - Current phase: S2PM
 - Current gate: S2PMT07_REMAINING_BLOCKER_MATRIX_READY_NO_CLOSURE
-- Confirmed iteration count: 199
+- Confirmed iteration count: 200
 - Reconstructed event count: 0
-- Current task: `S2PMT07-REMAINING-BLOCKER-MATRIX` maps the seven S2PMT07 final-gate blockers to required future evidence, owner action, default next step, and self-certification limits; inherited P0/P1 zero proof, S2PLT04 completion, final acceptance bundle, independent reviewer assignment/signoff, final command execution, no-production attestation, next-agent handoff, scheduler, Release, DAILY_OPERATION, and integrated production acceptance remain blocked/false.
+- Current task: `S2PMT07-OWNER-NEXT-ACTION-SYNC` aligns owner/governance next-action text with the seven S2PMT07 final-gate blockers: the default next step is independent final reviewer assignment and final-bundle evidence, not stale S2PLT02 readiness work, candidate-pool maintenance, or new shadow-source work; inherited P0/P1 zero proof, S2PLT04 completion, final acceptance bundle, independent reviewer assignment/signoff, final command execution, no-production attestation, next-agent handoff, scheduler, Release, DAILY_OPERATION, and integrated production acceptance remain blocked/false.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. Local daily M1-M4 orchestration is now recorded as readiness evidence, but V7.2 contract baseline migration blockers are zero while real restore, real SMTP production, scheduler installation, final acceptance bundle creation, directory-level final bundle artifact validation pass, P0/P1 closure, S2PLT04 completion, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
 
 
+
+### `ITER-20260628-ADP-S2PMT07-OWNER-NEXT-ACTION-SYNC`
+
+- Timestamp: `2026-06-28T14:40:13+10:00`
+- Fact level: EXTRACTED from owner/governance next-action text, shallow user-center decision pages, focused RED/GREEN regression tests, phase record, run manifest, traceability row, delivery task, and event record.
+- Base commit: `91bbbdbd2ee4bba94aaba124fee0e070ddf552a2`
+- Product version: `0.23.1`
+- Status: owner next-action synchronized; no production acceptance claimed.
+- Task IDs: `S2PMT07-OWNER-NEXT-ACTION-SYNC`; parent `S2PMT07`; acceptance `ACC-S2PMT07-FINAL-REVIEW`.
+- Goal: Remove stale owner-facing next-action drift that still pointed to S2PLT02 readiness work, candidate-pool maintenance, or new shadow-source work after S2PMT07 became the current final precheck gate.
+- Files changed: owner/governance status views, shallow user-center decision/roadmap pages, user-center timestamp refresh, focused governance current-state regression test, phase record, run manifest, traceability row, delivery task, development event, and current iteration pointer.
+- Decisions: Choice A now points to S2PMT07 independent final reviewer assignment artifact preparation; user-center default next step priority 1 is S2PMT07 independent final reviewer assignment; new shadow-source evidence is paused while S2PMT07 remains blocked.
+- Validation: TDD red observed stale S2PLT02 owner option and candidate-pool-first default next step; focused governance current-state tests 4 OK; user-center owner tests 34 OK; user-center timestamp check 18 pages validated; project governance 0 errors / 0 warnings; V7.2 validator PASS; lean render drift_count 0 / reference_issue_count 0. Final changed-only sync and full-suite validation are recorded in the run closeout.
+- Boundaries: No independent reviewer assignment, no independent final closure decision, no zero-proof artifact, no P0/P1 closure, no S2PLT04 completion, no final bundle creation, no SMTP/scheduler/Release/restore, no CURRENT/V7 change, no source/ranking change, no DAILY_OPERATION, and no integrated production acceptance.
+- Risks: This sync can be misread as S2PMT07 completion. It is only owner-facing next-action alignment; every final gate blocker remains open.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-OWNER-NEXT-ACTION-SYNC-20260628.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_OWNER_NEXT_ACTION_SYNC.md`; `arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml`; `arxiv-daily-push/docs/governance/OWNER_STATUS.md`; `arxiv-daily-push/tests/test_governance_current_state.py`.
+- Next step: Prepare or request the real independent final reviewer assignment artifact, then continue only with S2PMT07 final-bundle evidence while all production stop gates remain blocked.
 
 ### `ITER-20260628-ADP-S2PMT07-REMAINING-BLOCKER-MATRIX`
 

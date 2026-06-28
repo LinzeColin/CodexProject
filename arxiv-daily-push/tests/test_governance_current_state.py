@@ -39,6 +39,34 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertNotIn("M4 watermark proof record", current_state)
         self.assertNotIn("m4_watermark_correct=true", current_state)
 
+    def test_owner_next_action_points_to_s2pmt07_not_stale_s2plt02(self) -> None:
+        assurance = (ADP_ROOT / "docs/governance/ASSURANCE_STATUS.yaml").read_text(encoding="utf-8")
+        owner_status = (ADP_ROOT / "docs/governance/OWNER_STATUS.md").read_text(encoding="utf-8")
+
+        stale_option = "继续 S2PLT02 no-production readiness evidence work under V7.2 boundaries"
+        for text in (assurance, owner_status):
+            self.assertIn("S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT", text)
+            self.assertIn("ACC-S2PMT07-FINAL-REVIEW", text)
+            self.assertIn("independent final reviewer assignment", text)
+            self.assertNotIn(stale_option, text)
+            self.assertNotIn("ACC-S2PLT02-2D", text)
+
+    def test_user_center_default_next_step_prioritizes_s2pmt07_final_review(self) -> None:
+        decisions = (ADP_ROOT / "用户中心/关键结论与用户决策.md").read_text(encoding="utf-8")
+        roadmap = (ADP_ROOT / "用户中心/路线图与停止门.md").read_text(encoding="utf-8")
+        default_next = decisions.split("## 默认下一步", 1)[1]
+        first_action_row = next(
+            line for line in default_next.splitlines() if line.startswith("| 1 |")
+        )
+
+        self.assertIn("S2PMT07", first_action_row)
+        self.assertIn("独立终审", first_action_row)
+        self.assertNotIn("候选池", first_action_row)
+        self.assertNotIn("评分标准公开", first_action_row)
+        self.assertIn("独立终审 reviewer assignment artifact", default_next)
+        self.assertNotIn("| 无冲突的影子数据源证据 | 可以 |", roadmap)
+        self.assertIn("S2PMT07 阻断期暂停新增影子数据源", roadmap)
+
 
 if __name__ == "__main__":
     unittest.main()
