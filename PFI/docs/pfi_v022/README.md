@@ -125,6 +125,7 @@
 | `STAGE8_RUNTIME_DIFF_IMPACTED_METRICS.md` | Stage 8 本地运行 Diff、Impacted Metrics 和 LLM trigger policy 验收报告。 |
 | `STAGE9_VISUALIZATION_UIUX.md` | Stage 9 参数中心、Interconnection Map、Metric Dependency Graph、现金流可视化和 Metric Drilldown Debugger 验收报告。 |
 | `INTERCONNECTION_MAP.md` | Stage 9 Mermaid 关系图，覆盖 `source -> raw -> normalized -> group -> event -> ledger -> metrics -> UI`。 |
+| `STAGE10_REPORT_ADVICE_REVIEW.md` | Stage 10 报告、行动建议与复盘生命周期验收报告。 |
 | `../../review_queue/CODEX_REVIEW_TICKET_TEMPLATE.md` | Stage 8 本地 Codex Review Ticket 中文模板。 |
 | `SOURCE_TASK_PACK_MANIFEST.md` | Downloads 来源文件、SHA-256 和使用边界。 |
 | `ROADMAP_LOCK.md` | v0.2.2 Stage / Phase / Task / Acceptance / Stop / Validation 锁定摘要。 |
@@ -149,4 +150,15 @@ Stage 9 - 可视化与 UI/UX 已完成 `S9-P1-T1..S9-P4-T3`：
 - 新增 `PFI/web/interconnection-map.html`，作为本地 HTML 单文件审查页；包含首页总览、参数中心、Interconnection Map、Metric Dependency Graph、消费分类与标签、投资模型、消费模型、现金流可视化、Runtime Diff Dashboard、Agent Review Queue、验收清单。
 - 每个图表/模块都显示数据来源覆盖率、最近更新时间、参数版本、公式版本、汇率快照 ID、ledger_hash、interconnection_hash、未匹配记录、低置信记录、缓存、是否需要重算、UI 指标是否与报告一致。
 - 现金流可视化包含现金流阶梯图、现金流瀑布图、储备金安全带、投资入金挤压图。
-- Stage 10 报告、建议与复盘不在本轮实现；不修改 v0.2.1 主 Web Shell UIUX 基线；不联网、不调用外部 LLM、不新增真实交易、自动投资、支付或券商提交。
+- Stage 10 报告、建议与复盘已在后续单独 gate 中实现。
+
+## Stage 10 范围
+
+Stage 10 - 报告、建议与复盘已完成 `S10-P1-T1..S10-P2-T3`：
+
+- 新增 `PFI/src/pfi_v02/stage_v022_report_advice_review.py`，提供月报、投资报告、数据质量报告、行动建议定义、评分公式、生命周期和建议样本合同。
+- 新增 `PFI/tests/test_v022_stage10_report_advice_review.py`，验证报告双消费口径、投资成本行为、数据质量 Interconnection 指标、行动建议非自动投资、评分公式和生命周期。
+- 新增 `PFI/docs/pfi_v022/STAGE10_REPORT_ADVICE_REVIEW.md`，记录 Stage 10 acceptance criteria、stop condition 和 validation。
+- `PFI/config/pfi_parameters.yaml` 升级为 `PFIParametersV022Stage10`，新增 `report_advice_review` 参数域和 `stage10_task_ids`。
+- 行动建议与复盘明确不是自动买卖建议；不得生成自动投资、付款、券商提交或真实交易动作。
+- Stage 11 测试与验证不在本轮实现；不修改 v0.2.1 主 Web Shell UIUX 基线。

@@ -221,8 +221,8 @@ class TestV022Stage9VisualizationUIUX(unittest.TestCase):
 
         governance = importlib.import_module("pfi_v02.stage_v022_database_governance")
         catalog = self._catalog()
-        self.assertEqual(catalog["schema"], "PFIParametersV022Stage9")
-        self.assertEqual(catalog["current_stage"], "Stage 9 - 可视化与 UI/UX")
+        self.assertEqual(catalog["schema"], "PFIParametersV022Stage10")
+        self.assertEqual(catalog["current_stage"], "Stage 10 - 报告、建议与复盘")
         self.assertEqual(catalog["stage9_task_ids"], list(governance.V022_STAGE9_TASK_IDS))
         self.assertFalse(catalog["parameters"]["visualization_uiux"]["local_html_external_network_allowed"]["value"])
 

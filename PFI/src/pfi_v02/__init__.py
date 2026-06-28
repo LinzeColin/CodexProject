@@ -24,6 +24,7 @@ from pfi_v02.stage6_e2e_stabilization import build_stage6_e2e_stabilization_mode
 from pfi_v02.stage_v021_frontend_contract import build_v021_stage0_contract
 from pfi_v02.stage_v022_runtime_diff import build_dependency_hash_snapshot, build_impacted_metrics_report
 from pfi_v02.stage_v022_visualization_uiux import build_stage9_visualization_payload
+from pfi_v02.stage_v022_report_advice_review import build_stage10_contract_payload
 
 __all__ = [
     "ClassificationInput",
@@ -43,6 +44,7 @@ __all__ = [
     "build_dependency_hash_snapshot",
     "build_impacted_metrics_report",
     "build_stage9_visualization_payload",
+    "build_stage10_contract_payload",
     "build_sync_all_plan",
     "classify_transaction",
     "default_stage1_sources",

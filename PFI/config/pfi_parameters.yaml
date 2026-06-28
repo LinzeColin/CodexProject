@@ -1,9 +1,9 @@
 {
-  "schema": "PFIParametersV022Stage9",
+  "schema": "PFIParametersV022Stage10",
   "project_id": "PFI",
   "task_name": "PFI v0.2.2 E2E 逻辑优化",
   "parameter_version": "v0.2.2",
-  "current_stage": "Stage 9 - 可视化与 UI/UX",
+  "current_stage": "Stage 10 - 报告、建议与复盘",
   "canonical_parameter_file": "PFI/config/pfi_parameters.yaml",
   "machine_format": "JSON-compatible YAML",
   "uiux_baseline": "v0.2.1 HTML Web Shell",
@@ -2956,6 +2956,104 @@
         "description_zh": "参数变更影响预览必须展示的影响范围。",
         "impact_zh": "避免参数变更前无法估计影响。"
       }
+    },
+    "report_advice_review": {
+      "description_zh": "Stage 10 - 报告、建议与复盘的报告口径、行动建议定义、评分公式和生命周期参数。",
+      "monthly_report_required_consumption_metrics": {
+        "value": [
+          "消费总流出",
+          "生活消费"
+        ],
+        "description_zh": "月报必须同时显示消费总流出和生活消费两个口径。",
+        "impact_zh": "避免把投资入金和基金申购误读为普通生活消费。"
+      },
+      "investment_report_required_sections": {
+        "value": [
+          "收益",
+          "成本",
+          "费用",
+          "汇率",
+          "交易频率",
+          "风格",
+          "现金拖累"
+        ],
+        "description_zh": "投资报告必须显示成本和行为，不得只显示收益。",
+        "impact_zh": "支持投资行为复盘和现金拖累解释。"
+      },
+      "data_quality_report_interconnection_metrics": {
+        "value": [
+          "未匹配转账",
+          "重复候选",
+          "低置信",
+          "标签变更",
+          "参数变更",
+          "hash diff"
+        ],
+        "description_zh": "数据质量报告必须纳入 Interconnection 和 Runtime Diff 指标。",
+        "impact_zh": "让报告解释数据质量问题而不是只输出同步状态。"
+      },
+      "recommendation_label": {
+        "value": "行动建议与复盘",
+        "description_zh": "将推荐解释为本地复盘任务。",
+        "impact_zh": "避免用户把建议误解为自动投资或买卖指令。"
+      },
+      "automatic_investment_advice_allowed": {
+        "value": false,
+        "description_zh": "PFI 不生成自动投资建议、买卖指令、支付或券商提交动作。",
+        "impact_zh": "所有建议只能进入人工复盘和效果跟踪。"
+      },
+      "action_review_task_types": {
+        "value": [
+          "数据修复建议",
+          "消费复盘建议",
+          "投资行为复盘建议",
+          "现金流风险建议",
+          "订阅优化建议",
+          "参数调整建议"
+        ],
+        "description_zh": "行动建议与复盘可覆盖的任务类型。",
+        "impact_zh": "覆盖消费、投资、数据、现金流和参数治理。"
+      },
+      "scoring_weights": {
+        "value": {
+          "financial_impact": 25,
+          "risk_reduction": 20,
+          "urgency": 15,
+          "confidence": 15,
+          "reversibility": 10,
+          "execution_cost_inverse": 10,
+          "learning_value": 5
+        },
+        "description_zh": "行动建议评分权重，总分 100。执行难度使用执行成本反比分表达，分数越高代表越容易执行。",
+        "impact_zh": "提供建议排序依据，不生成自动执行动作。"
+      },
+      "lifecycle_statuses": {
+        "value": [
+          "pending",
+          "accepted",
+          "rejected",
+          "snoozed",
+          "reviewed",
+          "effect_measured"
+        ],
+        "description_zh": "建议生命周期状态。",
+        "impact_zh": "支持用户决策和效果复盘。"
+      },
+      "required_recommendation_fields": {
+        "value": [
+          "证据来源",
+          "相关交易",
+          "相关参数",
+          "相关公式",
+          "预期影响金额 CNY",
+          "置信度",
+          "是否需要人工复核",
+          "用户决策状态",
+          "效果复盘状态"
+        ],
+        "description_zh": "每条行动建议必须包含的字段。",
+        "impact_zh": "保证建议可追溯、可复核、可复盘。"
+      }
     }
   },
   "formulas": [
@@ -3528,5 +3626,13 @@
     "S9-P4-T1",
     "S9-P4-T2",
     "S9-P4-T3"
+  ],
+  "stage10_task_ids": [
+    "S10-P1-T1",
+    "S10-P1-T2",
+    "S10-P1-T3",
+    "S10-P2-T1",
+    "S10-P2-T2",
+    "S10-P2-T3"
   ]
 }
