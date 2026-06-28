@@ -4,6 +4,8 @@
 
 本轮目标：把置信度、消费、投资和现金流模型从分散说明升级为统一、可测试、可解释的中文公式与阈值合同。Stage 7 不修改 v0.2.1 HTML Web Shell UIUX 基线，不实现 Stage 8 Runtime Diff、Stage 9 参数中心、Stage 10 建议生命周期，也不新增真实交易、支付、券商提交或自动投资能力。
 
+复审更新：Stage 7 公式验收不再使用构造财务交易或 `MOCK` 持仓；置信度、消费和现金流公式改用 `MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv` 中的 `8815` 条真实支付宝流水。当前没有真实持仓快照或可确认卖出交易，投资市值、收益和行为评分保持中文空态，不伪造收益。
+
 ## Task Lock
 
 | Task ID | Phase | 交付物 | 状态 |
@@ -154,7 +156,7 @@ Stage 7 锁定的现金流可视化合同包括：现金流阶梯图、现金流
 - 生活消费排除投资入金、基金申购、黄金申购、投资买入、内部转账、信用卡还款。
 - 大额消费、夜间消费、订阅识别、投资市值、成本收益、行为评分、现金流窗口、储备金安全线、投资挤压模型均有机器可读参数和中文说明。
 - `config/pfi_parameters.yaml` schema 升级为 `PFIParametersV022Stage7`，并保留 Stage 1-6 历史 task ids。
-- `tests/test_v022_stage7_formula_scoring.py` 不是字符串 marker 测试，必须执行样本计算并校验结果。
+- `tests/test_v022_stage7_formula_scoring.py` 不是字符串 marker 测试，必须执行真实 MetaDatabase 输入或真实空态计算并校验结果。
 
 ## Stop Condition
 
@@ -173,9 +175,9 @@ Stage 7 锁定的现金流可视化合同包括：现金流阶梯图、现金流
 ## Validation
 
 ```bash
-PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pytest tests/test_v022_stage7_formula_scoring.py -q -p no:cacheprovider
-PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pytest tests/test_v022_stage0_database_governance.py tests/test_pfi_parameters_consistency.py tests/test_v022_fx_effective_date.py tests/test_v022_stage3_source_account_profiles.py tests/test_v022_interconnection_no_double_count.py tests/test_v022_consumption_investment_outflow.py tests/test_v022_stage5_ledger_taxonomy.py tests/test_v022_stage6_tags_views.py tests/test_v022_stage7_formula_scoring.py -q -p no:cacheprovider
-PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pytest -q -p no:cacheprovider
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -B -m pytest tests/test_v022_stage7_formula_scoring.py tests/test_v022_review_stage7.py -q -p no:cacheprovider
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -B -m pytest tests/test_v022_stage0_database_governance.py tests/test_pfi_parameters_consistency.py tests/test_v022_fx_effective_date.py tests/test_v022_stage3_source_account_profiles.py tests/test_v022_interconnection_no_double_count.py tests/test_v022_consumption_investment_outflow.py tests/test_v022_stage5_ledger_taxonomy.py tests/test_v022_stage6_tags_views.py tests/test_v022_stage7_formula_scoring.py tests/test_v022_review_stage7.py -q -p no:cacheprovider
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -B -m pytest tests/test_v022_stage7_formula_scoring.py tests/test_v022_review_stage7.py -q -p no:cacheprovider
 node --check web/app/shell.js
 python3 ../scripts/validate_project_governance.py --project PFI
 git diff --check -- PFI
@@ -183,12 +185,12 @@ git diff --check -- PFI
 
 当前本地 closeout 结果：
 
-- Stage 7 目标测试：`7 passed`。
-- Stage 0-7 v0.2.2 回归：`58 passed`。
-- 完整 PFI pytest：`216 passed`。
-- Web Shell 语法：`node --check web/app/shell.js` 通过。
+- Stage 7 目标 + 复审测试：`10 passed, 38 subtests passed`，使用真实 MetaDatabase 支付宝流水或真实空态。
+- Stage 0-7 v0.2.2 相关回归：`61 passed, 245 subtests passed`。
+- 完整 PFI pytest：本轮未运行；不作为 v0.2.2 Stage 7 复审的产品验收依据。
+- Web Shell 语法：`node --check PFI/web/app/shell.js` 通过。
 - 项目治理：`errors 0 / warnings 0`。
 - Diff 空白检查：`git diff --check -- PFI` 通过。
-- macOS app acceptance lite：`29 pass / 0 fail / 2 info`。
 - 8501 健康检查：`ok`。
-- 真实浏览器验收：数据源与上传点击后 `首页总览`、`账户与资产`、`投资管理`、`消费管理`、`数据源与上传`、`AUD/CNY`、`上传中心`、`导入中心` 全部可见；正式 UI 禁用词扫描 0 命中；console errors `0`；截图 `/tmp/pfi-v022-stage7-upload-verified-final.png`。
+- 真实 8501 浏览器：`/tmp/pfi_stage7_review_recheck/summary.json` 通过，桌面 15 个一级入口全部可见且可点击、7 个首页功能按钮可点击、全局搜索 `8815/406` 命中真实支付宝流水、策略实验室同路由、正式业务页禁用词扫描 0 命中、业务页反馈污染 0、设置页反馈控件可见、console errors `0`；移动端 5 个底部入口可见，水平溢出 `0px`。截图：`/tmp/pfi_stage7_review_recheck/desktop.png`、`/tmp/pfi_stage7_review_recheck/mobile.png`。
+- macOS app acceptance lite：本轮不重跑；整体 goal 完成后再统一刷新和验收 app 入口。

@@ -83,6 +83,11 @@
       "description_zh": "Stage 13 本地 Codex Review Ticket 路径。",
       "impact_zh": "复核队列、开发记录、最终交付审计。"
     },
+    "stage13_review_summary_path": {
+      "value": "PFI/reports/pfi_v022_stage13_review_summary.md",
+      "description_zh": "Stage 13 独立复审摘要路径，避免污染 Stage 12 最终摘要。",
+      "impact_zh": "Stage 13 复审、整体项目复审输入。"
+    },
     "scope_files": {
       "value": [
         "PFI/config/pfi_parameters.yaml",
@@ -92,7 +97,8 @@
         "PFI/review_queue/codex_review_stage13_owner_specified_20260628.md",
         "PFI/docs/pfi_v022/STAGE13_POST_REVIEW.md",
         "PFI/docs/pfi_v022/DOWNLOADS_CLEANUP_STAGE13.md",
-        "PFI/reports/pfi_v022_summary.md",
+        "PFI/docs/pfi_v022/reviews/STAGE13_REVIEW_20260629.md",
+        "PFI/reports/pfi_v022_stage13_review_summary.md",
         "PFI/开发记录.md"
       ],
       "description_zh": "S13-P1-T2 只允许复核的 ticket 指定文件范围。",
@@ -116,7 +122,32 @@
     "blocking_issue_count": {
       "value": 0,
       "description_zh": "Stage 13 复核完成后的阻塞项数量。",
-      "impact_zh": "阻塞项为 0 才能关闭 v0.2.2 Stage 7-13 goal。"
+      "impact_zh": "阻塞项为 0 才能进入整体项目复审准备；本轮不标记整体 goal 完成。"
+    },
+    "stage13_ready_for_overall_review": {
+      "value": true,
+      "description_zh": "Stage 13 已完成本轮复审，可进入下一轮整体项目复审解决。",
+      "impact_zh": "后续整体复审入口。"
+    },
+    "stage13_ready_for_goal_closeout": {
+      "value": false,
+      "description_zh": "Stage 13 本轮不关闭整体 pursuing goal。",
+      "impact_zh": "避免提前 GitHub 同步、app 入口重装或 goal closeout。"
+    },
+    "overall_project_review_deferred": {
+      "value": true,
+      "description_zh": "整体项目复审解决不在本轮实现。",
+      "impact_zh": "下一轮整体复审。"
+    },
+    "github_sync_deferred": {
+      "value": true,
+      "description_zh": "GitHub 同步不在本轮执行。",
+      "impact_zh": "避免在混合 worktree 中自动同步未复审整体状态。"
+    },
+    "app_entry_reinstall_deferred": {
+      "value": true,
+      "description_zh": "app 入口重装不在本轮执行。",
+      "impact_zh": "整体 goal 完成后再刷新入口。"
     },
     "downloads_cleanup_archive": {
       "value": "PFI/docs/pfi_v022/downloads_cleanup/PFI_V022_PRE_CANONICAL_SYNC_ARCHIVE_20260628.tar.gz",

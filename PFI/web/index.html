@@ -128,36 +128,6 @@
           </div>
         </section>
 
-        <section class="feedback-hub" data-feedback-hub aria-labelledby="feedback-hub-title">
-          <div class="feedback-hub-head">
-            <div>
-              <p class="panel-kicker">交互反馈</p>
-              <h2 id="feedback-hub-title">多模态交互反馈</h2>
-            </div>
-            <span class="feedback-hub-state" data-feedback-hub-state>就绪</span>
-          </div>
-          <div class="feedback-lanes" aria-label="反馈通道">
-            <button class="feedback-lane" type="button" data-feedback-lane="visual" data-feedback-kind="confirm">
-              <span class="feedback-lane-icon" aria-hidden="true">●</span>
-              <span><strong>视觉状态轨道</strong><small>按钮回弹、进度、错误横幅</small></span>
-              <span class="feedback-meter" data-feedback-meter="visual"><i></i></span>
-            </button>
-            <button class="feedback-lane" type="button" data-feedback-lane="haptic" data-feedback-kind="select">
-              <span class="feedback-lane-icon" aria-hidden="true">▦</span>
-              <span><strong>触感强度</strong><small>点击、保存、复核分级反馈</small></span>
-              <span class="feedback-meter" data-feedback-meter="haptic"><i></i></span>
-            </button>
-            <button class="feedback-lane" type="button" data-feedback-lane="sound" data-feedback-kind="warning">
-              <span class="feedback-lane-icon" aria-hidden="true">♪</span>
-              <span><strong>声音反馈</strong><small>默认静音，设置页开启</small></span>
-              <span class="feedback-meter" data-feedback-meter="sound"><i></i></span>
-            </button>
-          </div>
-          <ol class="feedback-event-log" data-feedback-event-log aria-live="polite" aria-label="反馈事件">
-            <li><span>刚刚</span><strong>界面就绪</strong><small>视觉、触感、声音反馈已接入当前工作流。</small></li>
-          </ol>
-        </section>
-
         <section class="metric-grid" aria-label="工作区摘要">
           <article class="metric-tile" data-home-card="investment_market_value" data-card-source="pfi_v02:stage4_analysis_model">
             <span>投资市值</span>
@@ -198,13 +168,7 @@
             <article class="workflow-card" data-workflow-card="strategy">
               <div class="workflow-card-head">
                 <strong>上传支付宝账单</strong>
-                <span class="status-pill status-review">复核</span>
               </div>
-              <dl class="workflow-meta">
-                <div><dt>证据</dt><dd>CSV / ZIP 原始账单</dd></div>
-                <div><dt>新鲜度</dt><dd>本机预检</dd></div>
-                <div><dt>任务</dt><dd>导入后进入账本复核</dd></div>
-              </dl>
               <div class="workflow-actions">
                 <button class="workflow-open" type="button" data-feature-view="source_registry">打开上传说明</button>
                 <button type="button" data-workflow-evidence="strategy">查看说明</button>
@@ -213,13 +177,7 @@
             <article class="workflow-card" data-workflow-card="market">
               <div class="workflow-card-head">
                 <strong>账户与资产</strong>
-                <span class="status-pill status-review">复核</span>
               </div>
-              <dl class="workflow-meta">
-                <div><dt>证据</dt><dd>账户地图</dd></div>
-                <div><dt>新鲜度</dt><dd>等待导入</dd></div>
-                <div><dt>任务</dt><dd>对账差异复核</dd></div>
-              </dl>
               <div class="workflow-actions">
                 <button class="workflow-open" type="button" data-feature-workspace="accounts">查看账户</button>
                 <button type="button" data-workflow-evidence="market">查看证据</button>
@@ -228,13 +186,7 @@
             <article class="workflow-card" data-workflow-card="research">
               <div class="workflow-card-head">
                 <strong>账本与消费</strong>
-                <span class="status-pill status-review">复核</span>
               </div>
-              <dl class="workflow-meta">
-                <div><dt>证据</dt><dd>标准化流水</dd></div>
-                <div><dt>新鲜度</dt><dd>导入后更新</dd></div>
-                <div><dt>任务</dt><dd>A/B/C/D 待复核</dd></div>
-              </dl>
               <div class="workflow-actions">
                 <button class="workflow-open" type="button" data-feature-workspace="ledger">处理流水</button>
                 <button type="button" data-workflow-evidence="research">查看证据</button>
@@ -243,13 +195,7 @@
             <article class="workflow-card" data-workflow-card="portfolio">
               <div class="workflow-card-head">
                 <strong>策略回测与盘感训练</strong>
-                <span class="status-pill status-review">复核</span>
               </div>
-              <dl class="workflow-meta">
-                <div><dt>证据</dt><dd>回测 / 训练记录</dd></div>
-                <div><dt>新鲜度</dt><dd>本机运行</dd></div>
-                <div><dt>任务</dt><dd>人工复盘</dd></div>
-              </dl>
               <div class="workflow-actions">
                 <button class="workflow-open" type="button" data-feature-view="single">打开回测</button>
                 <button type="button" data-workflow-evidence="portfolio">查看证据</button>
@@ -309,7 +255,7 @@
               </div>
               <label class="upload-dropzone" data-upload-dropzone for="pfi-upload-input" tabindex="0">
                 <strong>拖拽 CSV / ZIP / XLSX 到这里</strong>
-                <span>也可以点击选择文件；本轮只做本机预检，不上传到外部服务。</span>
+                <span>也可以点击选择文件；写入本机 PFI 和 MetaDatabase，不上传到外部服务。</span>
               </label>
               <input
                 id="pfi-upload-input"
@@ -477,6 +423,35 @@
             <span class="status-pill status-ready">可配置</span>
           </div>
           <p>集中管理导航、保存、上传、错误和复核动作的反馈。默认业务页面不展示此控制台。</p>
+          <section class="feedback-hub" data-feedback-hub aria-labelledby="feedback-hub-title">
+            <div class="feedback-hub-head">
+              <div>
+                <p class="panel-kicker">交互反馈</p>
+                <h2 id="feedback-hub-title">多模态交互反馈</h2>
+              </div>
+              <span class="feedback-hub-state" data-feedback-hub-state>就绪</span>
+            </div>
+            <div class="feedback-lanes" aria-label="反馈通道">
+              <button class="feedback-lane" type="button" data-feedback-lane="visual" data-feedback-kind="confirm">
+                <span class="feedback-lane-icon" aria-hidden="true">●</span>
+                <span><strong>视觉状态轨道</strong><small>按钮回弹、进度、错误横幅</small></span>
+                <span class="feedback-meter" data-feedback-meter="visual"><i></i></span>
+              </button>
+              <button class="feedback-lane" type="button" data-feedback-lane="haptic" data-feedback-kind="select">
+                <span class="feedback-lane-icon" aria-hidden="true">▦</span>
+                <span><strong>触感强度</strong><small>点击、保存、复核分级反馈</small></span>
+                <span class="feedback-meter" data-feedback-meter="haptic"><i></i></span>
+              </button>
+              <button class="feedback-lane" type="button" data-feedback-lane="sound" data-feedback-kind="warning">
+                <span class="feedback-lane-icon" aria-hidden="true">♪</span>
+                <span><strong>声音反馈</strong><small>默认静音，设置页开启</small></span>
+                <span class="feedback-meter" data-feedback-meter="sound"><i></i></span>
+              </button>
+            </div>
+            <ol class="feedback-event-log" data-feedback-event-log aria-live="polite" aria-label="反馈事件">
+              <li><span>刚刚</span><strong>界面就绪</strong><small>视觉、触感、声音反馈已接入设置页。</small></li>
+            </ol>
+          </section>
           <div class="feedback-wave" aria-hidden="true"></div>
           <div class="toggle-row" aria-label="反馈开关">
             <label class="toggle-item">

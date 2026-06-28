@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import html
+import csv
 import json
 import sqlite3
 from dataclasses import asdict, dataclass
@@ -21,6 +22,7 @@ STAGE6_TAG_TABLES = (
 STAGE6_DEFAULT_TAG_GROUPS = ("通用", "消费", "投资", "数据质量", "现金流", "复盘")
 
 STAGE6_TAG_RULE_DIMENSIONS = ("amount_cny", "time_window", "l1_category", "event_type", "account_role")
+STAGE6_ALIPAY_TRANSACTION_SOURCE = "MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv"
 
 
 @dataclass(frozen=True)
@@ -164,6 +166,28 @@ def build_stage6_tag_rules() -> tuple[dict[str, object], ...]:
         ),
     )
     return tuple(rule.to_dict() for rule in rules)
+
+
+def load_stage6_alipay_records_from_metadatabase(
+    metadatabase_root: str | Path | None = None,
+    *,
+    limit: int | None = None,
+) -> list[dict[str, object]]:
+    root = Path(metadatabase_root) if metadatabase_root is not None else _default_stage6_alipay_metadatabase_root()
+    transactions_path = root / "processed" / "alipay_transactions.csv"
+    if not transactions_path.exists():
+        return []
+
+    records: list[dict[str, object]] = []
+    with transactions_path.open(encoding="utf-8-sig", newline="") as file_obj:
+        for row in csv.DictReader(file_obj):
+            record = _stage6_record_from_alipay_row(row)
+            if record is None:
+                continue
+            records.append(record)
+            if limit is not None and len(records) >= limit:
+                break
+    return records
 
 
 def _now() -> str:
@@ -622,6 +646,78 @@ def _decimal(value: object) -> Decimal:
     if isinstance(value, Decimal):
         return value
     return Decimal(str(value))
+
+
+def _default_stage6_alipay_metadatabase_root() -> Path:
+    return Path(__file__).resolve().parents[3] / "MetaDatabase" / "PFI" / "alipay_daily"
+
+
+def _stage6_record_from_alipay_row(row: Mapping[str, object]) -> dict[str, object] | None:
+    raw_event_type = str(row.get("event_type") or "").strip().upper()
+    amount = _decimal(row.get("amount") or "0")
+    stage6_event_type = _stage6_event_type(raw_event_type, amount)
+    if not stage6_event_type:
+        return None
+
+    record_id = str(row.get("transaction_id") or "").strip()
+    if not record_id:
+        return None
+
+    return {
+        "record_id": record_id,
+        "amount_cny": abs(amount),
+        "local_time": _stage6_local_time(row.get("occurred_at")),
+        "l1_category": _stage6_l1_category(row.get("description"), stage6_event_type),
+        "event_type": stage6_event_type,
+        "account_roles": _stage6_account_roles(stage6_event_type),
+        "occurred_at": str(row.get("occurred_at") or "").strip(),
+        "description": str(row.get("description") or "").strip(),
+        "source_id": str(row.get("source_id") or "alipay_daily").strip(),
+        "real_data_source": STAGE6_ALIPAY_TRANSACTION_SOURCE,
+    }
+
+
+def _stage6_event_type(raw_event_type: str, amount: Decimal) -> str:
+    if raw_event_type == "CASH" and amount < 0:
+        return "ordinary_consumption"
+    if raw_event_type == "FUND" and amount < 0:
+        return "investment_deposit"
+    if raw_event_type == "FUND" and amount >= 0:
+        return "investment_return"
+    if raw_event_type == "BUY_ASSET":
+        return "investment_buy"
+    if raw_event_type == "REFUND":
+        return "refund"
+    return ""
+
+
+def _stage6_local_time(value: object) -> str:
+    text = str(value or "").strip()
+    if "T" in text:
+        time_part = text.split("T", 1)[1]
+    elif " " in text:
+        time_part = text.split(" ", 1)[1]
+    else:
+        return "12:00"
+    chunks = time_part.split(":", 2)
+    return ":".join(chunks[:2]) if len(chunks) >= 2 else "12:00"
+
+
+def _stage6_l1_category(description: object, event_type: str) -> str:
+    text = str(description or "")
+    if "订阅" in text or "会员" in text:
+        return "订阅服务"
+    if event_type.startswith("investment_"):
+        return "投资资金流出"
+    if event_type == "refund":
+        return "退款"
+    return "真实支付宝流水"
+
+
+def _stage6_account_roles(event_type: str) -> tuple[str, ...]:
+    if event_type in {"investment_deposit", "investment_buy"}:
+        return ("investment_funding_source",)
+    return ("consumer_wallet",)
 
 
 def _record_matches_conditions(record: Mapping[str, object], conditions: Mapping[str, object]) -> bool:

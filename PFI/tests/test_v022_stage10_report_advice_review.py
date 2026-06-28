@@ -18,6 +18,7 @@ from pfi_v02.stage_v022_report_advice_review import (
     build_action_review_lifecycle_model,
     build_stage10_contract_payload,
     build_stage10_report_suite,
+    load_stage10_real_report_advice_context,
     score_action_review_recommendation,
 )
 
@@ -43,9 +44,14 @@ def test_stage10_contract_matches_roadmap_phase_task_scope() -> None:
 
 
 def test_report_suite_contains_dual_consumption_investment_behavior_and_interconnection_quality() -> None:
-    suite = build_stage10_report_suite(load_v022_parameter_catalog())
+    context = load_stage10_real_report_advice_context(ROOT)
+    suite = build_stage10_report_suite(load_v022_parameter_catalog(), context=context)
+    assert suite["source_policy"]["real_data_source"] == "MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv"
+    assert suite["source_policy"]["normalized_transaction_count"] == 8815
 
     monthly = suite["monthly_report"]
+    assert str(monthly["current_real_metrics_cny"]["消费总流出"]) == "1727278.37"
+    assert str(monthly["current_real_metrics_cny"]["生活消费"]) == "1545600.44"
     dual_metrics = monthly["dual_consumption_metrics"]
     assert set(dual_metrics) == {"total_consumption_outflow", "living_consumption"}
     assert dual_metrics["total_consumption_outflow"]["label_zh"] == "消费总流出"
@@ -54,19 +60,22 @@ def test_report_suite_contains_dual_consumption_investment_behavior_and_intercon
     assert "投资入金" in dual_metrics["living_consumption"]["excluded_flows"]
 
     investment = suite["investment_report"]
+    assert "暂无真实持仓快照" in investment["data_status_zh"]
     for expected in ("收益", "成本", "费用", "汇率", "交易频率", "风格", "现金拖累"):
         assert expected in investment["required_sections"]
         assert expected in investment["metrics"].values()
     assert investment["must_not_be_return_only"] is True
 
     data_quality = suite["data_quality_report"]
+    assert data_quality["current_real_metrics"]["待复核记录"] == 406
+    assert str(data_quality["current_real_metrics"]["待复核金额覆盖面_CNY"]) == "3082013.96"
     for expected in ("未匹配转账", "重复候选", "低置信", "标签变更", "参数变更", "hash diff"):
         assert expected in data_quality["required_sections"]
         assert expected in data_quality["interconnection_metrics"].values()
 
 
 def test_action_review_definition_cannot_be_read_as_buy_sell_instruction() -> None:
-    payload = build_stage10_contract_payload(load_v022_parameter_catalog())
+    payload = build_stage10_contract_payload(load_v022_parameter_catalog(), project_root=ROOT)
     definition = payload["action_review_definition"]
 
     assert definition["label_zh"] == "行动建议与复盘"
@@ -77,14 +86,20 @@ def test_action_review_definition_cannot_be_read_as_buy_sell_instruction() -> No
     assert "不是买入、卖出或自动下单指令" in definition["plain_language_definition"]
 
     recommendations = payload["recommendations"]
-    assert {item["task_type"] for item in recommendations} == set(STAGE10_ACTION_REVIEW_TASK_TYPES)
+    assert {item["task_type"] for item in recommendations}.issubset(set(STAGE10_ACTION_REVIEW_TASK_TYPES))
+    assert {"数据修复建议", "消费复盘建议", "现金流风险建议", "参数调整建议"}.issubset(
+        {item["task_type"] for item in recommendations}
+    )
+    assert "投资行为复盘建议" in payload["real_empty_states"]
+    assert "订阅优化建议" in payload["real_empty_states"]
     assert all(item["buy_sell_instruction"] is False for item in recommendations)
     assert all(item["required_fields_zh"] == STAGE10_REQUIRED_RECOMMENDATION_FIELDS for item in recommendations)
-    assert all(item["evidence_source"] for item in recommendations)
+    assert all(item["evidence_source"] == "MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv" for item in recommendations)
     assert all(item["related_transactions"] for item in recommendations)
     assert all(item["related_parameters"] for item in recommendations)
     assert all(item["related_formulas"] for item in recommendations)
     assert all("expected_impact_amount_cny" in item for item in recommendations)
+    assert all("score_basis_zh" in item for item in recommendations)
 
 
 def test_action_review_scoring_formula_is_weighted_and_rankable() -> None:

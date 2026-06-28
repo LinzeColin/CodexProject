@@ -33,6 +33,8 @@ class V021Stage2CopyCleanupContractTest(unittest.TestCase):
             self.assertNotIn(forbidden, self.web_source, forbidden)
         for required in contract["required_visible_chinese_terms"]:
             self.assertIn(required, self.web_source, required)
+        for forbidden in contract["forbidden_visible_stage_labels"]:
+            self.assertNotIn(forbidden, self.web_source, forbidden)
         for forbidden in ("使用限制", "隐私边界", "不做实盘自动下单", "只做研究", "不连接券商", "不提交订单"):
             self.assertNotIn(forbidden, self.web_source, forbidden)
 

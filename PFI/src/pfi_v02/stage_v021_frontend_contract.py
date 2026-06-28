@@ -312,7 +312,16 @@ def build_v021_stage2_contract() -> dict[str, object]:
             "外部系统上下文出口",
             "解析器",
             "校验值",
+        ),
+        "forbidden_visible_stage_labels": (
+            "第 3 阶段",
+            "第 4 阶段",
+            "第 5 阶段",
             "第 6 阶段",
+            "Stage 3",
+            "Stage 4",
+            "Stage 5",
+            "Stage 6",
         ),
         "allowed_technical_tokens": (
             "PFI",

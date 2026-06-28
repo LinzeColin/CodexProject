@@ -2,6 +2,17 @@
 
 本轮目标：把 Stage 0-11 的数据库治理、参数、公式、阈值、评分、分类、标签、可视化规则、测试与验证证据同步为可交付、可审查、可追踪的中文资料。Stage 12 不执行 Stage 13 后置触发型复核，不修改 v0.2.1 主 Web Shell UIUX 基线，不清理或迁移 Downloads 污染文件夹。
 
+## Stage 12 复审修正
+
+本轮只复审解决 Stage 12。复审发现旧摘要把 Stage 13 后置复核、Downloads 清理和旧宽验收结果混入 Stage 12 交付，已修正为 Stage 12-only 交付边界：
+
+- Stage 12 只交付三基同步、本地审查 HTML、Roadmap 与验证报告、最终中文摘要和 2 轮 × 6 Agent 自检。
+- Stage 13 后置触发型复核不在本轮实现。
+- 不清理或迁移 Downloads 污染文件夹。
+- 本地审查 HTML 不进入正式运行页面，不修改 `PFI/web/index.html`、`PFI/web/app/shell.js` 或 `PFI/src/pfi_os/app/streamlit_app.py`。
+- Stage 12 承接 Stage 11 的真实数据证据：`MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv`，`8815` 条标准化支付宝流水；缺少真实持仓、计划事件、Interconnection 分组时保留中文真实空态。
+- Stage 12 不新增模拟数据、构造金额、构造交易 ID 或构造持仓。
+
 ## Stage -> Phase -> Task
 
 | Stage | Phase | Task ID | 交付物 | 验收状态 |
@@ -47,3 +58,13 @@
 
 当前检查结论：以上停止条件均未触发。用户人工复核点保留在最终摘要中。
 
+## 复审验证结果
+
+- Stage 12 目标 + 复审测试：`10 passed, 35 subtests passed`。
+- Stage 0-12 v0.2.2 相关回归：`114 passed, 398 subtests passed`。
+- Web shell 语法检查：`node --check web/app/shell.js` 通过。
+- 项目治理检查：`python3 scripts/validate_project_governance.py --project PFI` 返回 `errors: 0`、`warnings: 0`。
+- 空白检查：`git diff --check -- PFI` 通过。
+- 8501 health：`curl -fsS http://127.0.0.1:8501/_stcore/health` 返回 `ok`。
+- 本地审查 HTML 浏览器矩阵：`/tmp/pfi_stage12_review_recheck/summary.json` 通过；7 个区块可点击，console/page errors `0`，外部请求 `0`，截图 `/tmp/pfi_stage12_review_recheck/stage12-html.png`。
+- 真实 8501 浏览器矩阵：`/tmp/pfi_stage12_review_recheck/summary.json` 通过；桌面和移动端均验证正式 UI 不显示 Stage 12 开发文档、不链接本地审查 HTML、不出现自动买卖词，7 个首页 workflow 卡片可见，`.workflow-meta=0`，一级入口和首页真实按钮可点击，全局搜索 `406/8815` 可用，console/page errors `0`，水平溢出 `0px`。

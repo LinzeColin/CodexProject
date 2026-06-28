@@ -12,7 +12,7 @@ class V021UiuxMultimodalStyleRegressionTest(unittest.TestCase):
         self.js = (self.root / "web" / "app" / "shell.js").read_text(encoding="utf-8")
         self.app_source = (self.root / "src" / "pfi_os" / "app" / "streamlit_app.py").read_text(encoding="utf-8")
 
-    def test_owner_first_screen_exposes_multimodal_feedback_hub(self) -> None:
+    def test_multimodal_feedback_hub_is_settings_only(self) -> None:
         for required in (
             "data-feedback-hub",
             'data-feedback-lane="visual"',
@@ -26,6 +26,10 @@ class V021UiuxMultimodalStyleRegressionTest(unittest.TestCase):
             "data-feedback-event-log",
         ):
             self.assertIn(required, self.html)
+        settings_index = self.html.index("data-settings-feedback-console")
+        feedback_index = self.html.index("data-feedback-hub")
+        self.assertGreater(feedback_index, settings_index)
+        self.assertNotIn("data-feedback-hub", self.html[:settings_index])
         for forbidden in (
             "data-owner-feedback-strip",
             "feedback-signal",

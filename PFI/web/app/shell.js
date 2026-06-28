@@ -322,26 +322,19 @@ let feedbackAudioContext = null;
 
 const UPLOAD_ALLOWED_EXTENSIONS = [".csv", ".zip", ".xls", ".xlsx"];
 const UPLOAD_MAX_FILE_MB = 50;
-const IMPORT_BATCH_FIXTURES = [
-  {
-    batchId: "P5-旧账单-20260627",
-    source: "旧支付宝原始账单",
-    fileCount: 3,
-    recordCount: 1286,
-    reviewCount: 42,
-    status: "待复核",
-    summary: "已发现旧交接目录中的支付宝分段账单，等待用户确认后接入私有账本。",
-  },
-];
 let uploadCenterState = {
   files: [],
   rejected: [],
   lastSource: "",
+  importing: false,
+  importedManifest: null,
 };
+let alipayImportState = defaultAlipayImportSummary();
 
 const HOLDINGS_DRAFT_STORAGE_KEY = "pfi-v021-unsubmitted-holdings-draft";
 let holdingsPersistenceState = defaultHoldingsState();
 let runtimeTrendState = null;
+let runtimeReadModelState = null;
 
 const FUNCTION_VIEWS = {
   single: functionView(
@@ -734,8 +727,8 @@ const FUNCTION_VIEWS = {
     "stage6_e2e",
     "端到端验收",
     "insights",
-    "查看第 6 阶段验收",
-    "统一查看第 6 阶段的多数据源、首页、账本、建议、回归治理、交付回滚和任务包验收门禁。",
+    "查看整体验收",
+    "统一查看多数据源、首页、账本、建议、回归治理、交付回滚和任务包验收门禁。",
     ["可用：20 个总验收门禁和验收审计", "验收：所有门禁必须有证据引用且通过", "复核：合成端到端，使用合成验收数据"],
   ),
   stage6_synthetic_e2e: functionView(
@@ -767,7 +760,7 @@ const FUNCTION_VIEWS = {
     "回滚计划",
     "insights",
     "查看回滚计划",
-    "查看第 6 阶段的可逆文件清单、恢复限制和无需迁移真实数据的说明。",
+    "查看可逆文件清单、恢复限制和无需迁移真实数据的说明。",
     ["可用：代码、测试、文档、治理、Web Shell 回滚步骤", "验收：回滚清楚区分 PFI 与 QBVS", "复核：无生产数据库迁移"],
   ),
   stage6_follow_up_list: functionView(
@@ -776,7 +769,7 @@ const FUNCTION_VIEWS = {
     "insights",
     "查看后续任务",
     "列出外部上下文消费者、真实数据接入、PDF/ZIP、CDR/Open Banking 和发布证据门禁等后续工作。",
-    ["可用：分离后续任务，不并入第 6 阶段", "验收：第 6 阶段不越权修改外部仓库", "复核：后续任务需新 pursuing goal"],
+    ["可用：分离后续任务，不并入本轮功能页面", "验收：不越权修改外部仓库", "复核：后续任务需新 pursuing goal"],
   ),
   tools: functionView(
     "tools",
@@ -1054,7 +1047,7 @@ function installStage3WorkspaceAliases() {
     kicker: "账户地图",
     conclusion: "统一查看支付宝、基金、Moomoo、中国券商、ABC、CBA、微信和其他账户状态。",
     freshness: "账户状态来自本地 read-model",
-    runtime: "第 4 阶段：现金 / 净资产趋势 · CNY 基准",
+    runtime: "现金 / 净资产趋势 · CNY 基准",
     trendKey: "accounts",
     trend: UNIFIED_TREND_DATA.accounts,
     cards: [
@@ -1099,7 +1092,7 @@ function installStage3WorkspaceAliases() {
     label: "投资管理",
     kicker: "投资分析",
     conclusion: "查看总市值、盈亏、资产配置、收益归因、风险暴露和行为复盘；策略回测、盘感训练和大数据模拟器仍保留。",
-    runtime: "第 6 阶段：持仓编辑持久化 · SQLite 服务",
+    runtime: "持仓编辑持久化 · SQLite 服务",
     trendKey: "investment",
     trend: UNIFIED_TREND_DATA.investment,
     cards: [
@@ -1130,8 +1123,8 @@ function installStage3WorkspaceAliases() {
     label: "消费管理",
     kicker: "消费分析",
     conclusion: "查看本月支出、预算剩余、分类、订阅、异常消费和现金流预测；转账和投资事件不计生活消费。",
-    freshness: "消费视图来自第 4 阶段分析读模型",
-    runtime: "第 4 阶段：支出 / 预算 / 现金流趋势 · CNY 基准",
+    freshness: "消费视图来自分析读模型",
+    runtime: "支出 / 预算 / 现金流趋势 · CNY 基准",
     trendKey: "consumption",
     trend: UNIFIED_TREND_DATA.consumption,
     cards: [
@@ -1161,7 +1154,7 @@ function installStage3WorkspaceAliases() {
     label: "数据源与上传",
     kicker: "同步与导入",
     conclusion: "上传支付宝账单、查看导入批次、处理失败反馈，并把低置信度记录送到账本复核。",
-    runtime: "第 5 阶段：上传 / 拖拽 / 状态 / 失败反馈 / 导入批次",
+    runtime: "上传 / 拖拽 / 状态 / 失败反馈 / 导入批次",
     cards: [
       ["上传中心", "可用", "CSV / ZIP / XLSX 多文件本机预检"],
       ["拖拽上传", "可用", "拖拽、点击选择、键盘选择都可触发"],
@@ -1248,7 +1241,7 @@ function installStage3WorkspaceAliases() {
       ["消费建议", "4", "预算、订阅、异常、降成本目标"],
     ],
     features: [
-      feature("建议模型", "可用", "第 5 阶段", "所有建议必须有证据、预期效果、代价、动作和用户决策。"),
+      feature("建议模型", "可用", "建议证据", "所有建议必须有证据、预期效果、代价、动作和用户决策。"),
       feature("复盘生命周期", "可用", "复盘状态", "建议支持接受、拒绝、暂缓、复核和效果度量。"),
       feature("投资建议", "有建议", "投资管理", "集中度、交易频率、现金仓位、策略暂停或上线建议。"),
       feature("消费建议", "有建议", "消费管理", "预算、订阅、异常和降成本建议必须有节省目标。"),
@@ -1405,7 +1398,8 @@ async function refreshRuntimeTrends(options = {}) {
   try {
     const payload = await runtimeApiJson("/api/trends");
     runtimeTrendState = payload.trends || null;
-    applyOperationalReadModel(payload.readModel || {});
+    runtimeReadModelState = payload.readModel || {};
+    applyOperationalReadModel(runtimeReadModelState);
     if (options.rerender) {
       const current = document.querySelector("#main-workspace")?.dataset.activeWorkspace || currentContext().workspace || "home";
       drawTrendChart(resolveWorkspaceTrend(WORKSPACES[current] || WORKSPACES.home));
@@ -1426,8 +1420,10 @@ function applyOperationalReadModel(model) {
   if (!model || typeof model !== "object") return;
   const investment = model.investment || {};
   const accounts = model.accounts || {};
+  const consumption = model.consumption || {};
   const hasInvestment = Number.isFinite(Number(investment.market_value_cny));
   const hasAccounts = Number.isFinite(Number(accounts.net_worth_cny));
+  const hasConsumption = consumption.has_real_transactions === true;
   if (hasInvestment && WORKSPACES.investment) {
     WORKSPACES.investment.cards = [
       ["投资市值", formatCnyAmount(investment.market_value_cny), "SQLite 持仓读模型"],
@@ -1444,12 +1440,21 @@ function applyOperationalReadModel(model) {
       ["总负债", formatCnyAmount(accounts.total_liabilities_cny), "运行库负债读数"],
     ];
   }
-  if (hasInvestment && WORKSPACES.home) {
+  if (hasConsumption && WORKSPACES.consumption) {
+    WORKSPACES.consumption.cards = [
+      ["本月支出", formatCnyAmount(consumption.month_spend_cny), "MetaDatabase 真实支付宝流水"],
+      ["待复核流水", String(consumption.review_count || 0), `${consumption.transaction_count || 0} 条真实流水`],
+      ["近30天支出", formatCnyAmount(consumption.cashflow_forecast_cny), "最近30天真实消费流出"],
+      ["固定/弹性", `${formatCnyAmount(consumption.fixed_spend_cny)} / ${formatCnyAmount(consumption.flex_spend_cny)}`, consumption.fixed_flex_policy || "真实流水派生"],
+    ];
+  }
+  if ((hasInvestment || hasConsumption) && WORKSPACES.home) {
     WORKSPACES.home.cards = [
       ["投资市值", formatCnyAmount(investment.market_value_cny), "SQLite 持仓读模型"],
       ["投资盈亏", formatCnyAmount(investment.total_return_cny), "由持仓快照派生"],
-      ["现金仓位", formatCnyAmount(investment.cash_position_cny), "持仓元数据"],
-      ["持仓条目", String(investment.holding_count || 0), "保存后同步更新"],
+      ["本月支出", hasConsumption ? formatCnyAmount(consumption.month_spend_cny) : "待导入", hasConsumption ? "MetaDatabase 真实支付宝流水" : "等待真实流水"],
+      ["待复核流水", hasConsumption ? String(consumption.review_count || 0) : "待导入", hasConsumption ? `${consumption.transaction_count || 0} 条真实流水` : "等待真实流水"],
+      ["近30天支出", hasConsumption ? formatCnyAmount(consumption.cashflow_forecast_cny) : formatCnyAmount(investment.cash_position_cny), hasConsumption ? "最近30天真实消费流出" : "持仓元数据"],
     ];
   }
 }
@@ -1670,8 +1675,67 @@ function readHomeSummary() {
   }
 }
 
+function defaultAlipayImportSummary() {
+  return {
+    schema: "PFIAlipayRealImportSummaryV1",
+    sourceId: "alipay_daily",
+    status: "未接入真实数据",
+    fileCount: 0,
+    validFileCount: 0,
+    transactionCount: 0,
+    reviewCount: 0,
+    dateStart: "",
+    dateEnd: "",
+    searchTokens: [],
+  };
+}
+
+function normalizeAlipayImportSummary(summary = {}) {
+  if (!summary || summary.schema !== "PFIAlipayRealImportSummaryV1") return defaultAlipayImportSummary();
+  return {
+    schema: summary.schema,
+    sourceId: safeUserText(summary.source_id || summary.sourceId, "alipay_daily"),
+    status: safeUserText(summary.status, "未接入真实数据"),
+    fileCount: Number(summary.file_count ?? summary.fileCount ?? 0),
+    validFileCount: Number(summary.valid_file_count ?? summary.validFileCount ?? 0),
+    transactionCount: Number(summary.transaction_count ?? summary.transactionCount ?? 0),
+    reviewCount: Number(summary.review_count ?? summary.reviewCount ?? 0),
+    dateStart: safeUserText(summary.date_start || summary.dateStart, ""),
+    dateEnd: safeUserText(summary.date_end || summary.dateEnd, ""),
+    searchTokens: Array.isArray(summary.search_tokens || summary.searchTokens) ? (summary.search_tokens || summary.searchTokens).map(String) : [],
+  };
+}
+
+function applyAlipayImportSummary(summary) {
+  alipayImportState = normalizeAlipayImportSummary(summary);
+  const hasRealData = alipayImportState.transactionCount > 0;
+  const dateRange = hasRealData ? `${alipayImportState.dateStart} 至 ${alipayImportState.dateEnd}` : "等待真实账单";
+  const recordLabel = hasRealData ? `${alipayImportState.transactionCount.toLocaleString("zh-CN")} 条` : "待导入";
+  const reviewLabel = hasRealData ? `${alipayImportState.reviewCount.toLocaleString("zh-CN")} 条` : "待导入";
+
+  WORKSPACES.sync.cards = [
+    ["真实支付宝流水", recordLabel, `${alipayImportState.fileCount} 个文件 · ${dateRange}`],
+    ["待复核流水", reviewLabel, "低置信度记录进入账本复核"],
+    ["上传中心", "可用", "CSV / ZIP / XLSX 多文件本机预检"],
+    ["导入中心", alipayImportState.status, "批次、摘要、待复核入口同屏显示"],
+  ];
+  WORKSPACES.sync.rows = [
+    row("P0", "真实支付宝流水", `${alipayImportState.fileCount} 个原始文件`, `${dateRange} · ${recordLabel}标准化流水`, alipayImportState.status),
+    row("P0", "导入中心", "真实账本摘要", `待复核 ${reviewLabel}，进入账本流水处理。`, hasRealData ? "可用" : "复核"),
+    row("P1", "上传中心", "CSV / ZIP / XLSX", "点击或拖拽选择账单文件；已有真实账本不会被伪造覆盖。", "可用"),
+    row("P1", "账本复核", "低置信度记录", "进入账本流水处理待复核记录。", "复核"),
+  ];
+  WORKSPACES.sync.tasks = [
+    task("真实支付宝流水", `${recordLabel} · ${dateRange}`, hasRealData ? "ready" : "review"),
+    task("待复核流水", `${reviewLabel} · 进入账本流水处理`, hasRealData ? "review" : "queued"),
+    task("上传中心", "可用 · 支持多文件 CSV / ZIP / XLSX", "ready"),
+    task("导入摘要", "可用 · 批次、记录和待复核同屏展示", "ready"),
+  ];
+}
+
 function applyHomeSummary(summary) {
   if (!summary) return;
+  applyAlipayImportSummary(summary.alipay_import_summary || summary.alipayImportSummary || {});
   const home = WORKSPACES.home;
   const cards = (summary.metric_cards || []).slice(0, 5);
   const cardByKey = {};
@@ -1728,7 +1792,7 @@ function applyStage3Dashboard(dashboard) {
     return feature(
       title,
       safeUserText(item.status, "复核"),
-      safeUserText(item.target_entry, "第 3 阶段"),
+      safeUserText(item.target_entry, "首页总览"),
       `证据 ${Number(item.evidence_count || 0)} 项 · ${safeUserText(item.target_entry, "首页总览")}`,
       FEATURE_TARGETS[title] || { workspace: "home", label: "打开入口" },
     );
@@ -1743,7 +1807,7 @@ function applyStage3Dashboard(dashboard) {
     task("待复核选择题", `${reviewCount} 条流水 · A/B/C/D 处理`, reviewCount ? "review" : "ready"),
     task("简单状态语言", "正常 / 需要同步 / 需要复核 / 有异常 / 有建议", "ready"),
   ];
-  WORKSPACES.home.runtime = "第 3 阶段：同步、复核、建议、报告 · 本地验收";
+  WORKSPACES.home.runtime = "同步、复核、建议、报告";
 }
 
 function applyStage4Dashboard(dashboard) {
@@ -1761,7 +1825,7 @@ function applyStage4Dashboard(dashboard) {
   const cashflow = consumption.cashflow_forecast || {};
   const firstHorizon = (cashflow.horizons || [])[0] || {};
 
-  WORKSPACES.home.runtime = "第 4 阶段：投资与消费智能分析 · 本地验收";
+  WORKSPACES.home.runtime = "投资与消费智能分析";
   WORKSPACES.home.features = [
     feature("投资总览", "可用", "投资管理", `投资市值 ${moneyLabel(invSummary.total_market_value_aud, "AUD")} · 盈亏 ${moneyLabel(invSummary.total_unrealized_pnl_aud, "AUD")}`, { workspace: "investment", label: "查看投资" }),
     feature("风险分析", safeUserText((risk.concentration || {}).status, "复核"), "投资管理", "集中度、回撤、币种暴露和流动性可展示。", { workspace: "investment", label: "查看风险" }),
@@ -1807,7 +1871,7 @@ function applyStage5Dashboard(dashboard) {
     .filter((item) => item.domain === "consumption")
     .reduce((total, item) => total + Number(item.savings_target_aud || 0), 0);
 
-  WORKSPACES.home.runtime = "第 5 阶段：建议、报告、外部系统上下文出口 · 本地验收";
+  WORKSPACES.home.runtime = "建议、报告、外部系统上下文出口";
   const topFeatures = topRecommendations.slice(0, 4).map((item) =>
     feature(
       recommendationTypeLabel(item.recommendation_type),
@@ -1903,7 +1967,7 @@ function applyStage6Dashboard(dashboard) {
   const rollbackCount = (delivery.rollback_plan || []).length;
   const followUpCount = (delivery.follow_up_list || []).length;
 
-  WORKSPACES.home.runtime = "第 6 阶段：端到端验收与稳定化 · 本地验收";
+  WORKSPACES.home.runtime = "端到端验收与稳定化";
   WORKSPACES.home.features = [
     feature("端到端验收", gatePassCount === totalGate.length ? "通过" : "复核", "总验收门禁", `${gatePassCount}/${totalGate.length} 个总门禁通过。`),
     feature("合成端到端", phase6a.status === "PASS" ? "通过" : "复核", "合成验收", `${sourceMatrix.length} 个核心源 · 首页/账本/建议闭环。`),
@@ -1913,7 +1977,7 @@ function applyStage6Dashboard(dashboard) {
     feature("后续任务清单", followUpCount ? "可用" : "待补", "后续任务", "外部上下文消费者、真实数据、PDF/ZIP、CDR/Open Banking 分离跟进。"),
   ];
   WORKSPACES.home.tasks = [
-    task("第 6 阶段总验收", `${gatePassCount}/${totalGate.length} 个门禁通过`, gatePassCount === totalGate.length ? "ready" : "review"),
+    task("总体验收", `${gatePassCount}/${totalGate.length} 个门禁通过`, gatePassCount === totalGate.length ? "ready" : "review"),
     task("任务包验收审计", `${auditPassCount}/${taskpackAudit.length} 个验收项通过`, auditPassCount === taskpackAudit.length ? "ready" : "review"),
     task("端到端四闭环", `数据源=${sourceMatrix.length} · 账本=${(ledgerLoop.checks || []).length} · 建议=${recommendationLoop.generated_count || 0}`, phase6a.status === "PASS" ? "ready" : "review"),
     task("回滚计划", `${rollbackCount} 步 · QBVS 顶层独立，不迁移真实数据`, rollbackCount >= 6 ? "ready" : "review"),
@@ -1925,7 +1989,7 @@ function applyStage6Dashboard(dashboard) {
     feature("回归治理", regression.status === "PASS" ? "通过" : "复核", "回归治理", "既有冒烟检查、聚焦测试、变更范围治理和无大范围重构已记录。"),
     feature("交付与回滚", delivery.status === "PASS" ? "通过" : "复核", "交付回滚", "用户文档、差异摘要、回滚计划和后续任务清单已记录。"),
     feature("回滚计划", rollbackCount >= 6 ? "可用" : "复核", "回滚计划", "可逆文件清单和无生产迁移限制。"),
-    feature("后续任务清单", followUpCount ? "可用" : "待补", "后续任务", "后续任务独立排期，不越权进入第 6 阶段。"),
+    feature("后续任务清单", followUpCount ? "可用" : "待补", "后续任务", "后续任务独立排期，不并入当前功能页面。"),
   ];
   WORKSPACES.insights.rows = [
     row("P0", "端到端验收", "总验收门禁", `${gatePassCount}/${totalGate.length} 个门禁通过。`, gatePassCount === totalGate.length ? "通过" : "复核"),
@@ -1934,7 +1998,7 @@ function applyStage6Dashboard(dashboard) {
     row("P1", "交付与回滚", "交付回滚", `${rollbackCount} 步回滚 · ${followUpCount} 项后续任务。`, safeUserText(delivery.status, "复核")),
   ];
   WORKSPACES.insights.tasks = [
-    task("第 6 阶段用户文档", (delivery.owner_docs || []).length ? `${delivery.owner_docs.length} 个用户文档已覆盖` : "等待用户文档", (delivery.owner_docs || []).length ? "ready" : "review"),
+    task("用户文档", (delivery.owner_docs || []).length ? `${delivery.owner_docs.length} 个用户文档已覆盖` : "等待用户文档", (delivery.owner_docs || []).length ? "ready" : "review"),
     task("分类闭环", `${(ledgerLoop.checks || []).length} 个账本分类检查`, ledgerLoop.status === "PASS" ? "ready" : "review"),
     task("建议闭环", `${recommendationLoop.generated_count || 0} 条建议 · 生命周期 ${recommendationLoop.lifecycle_row_count || 0}`, recommendationLoop.status === "PASS" ? "ready" : "review"),
     task("回归命令", regression.status === "PASS" ? "冒烟检查 / 聚焦测试 / 治理已记录" : "等待回归治理", regression.status === "PASS" ? "ready" : "review"),
@@ -2070,7 +2134,7 @@ function bindUploadCenterEvents() {
 
   if (input) {
     input.addEventListener("change", (event) => {
-      handleUploadSelection(event.target.files, "file_picker");
+      void handleUploadSelection(event.target.files, "file_picker");
     });
   }
 
@@ -2093,7 +2157,7 @@ function bindUploadCenterEvents() {
       dropzone.addEventListener(eventName, (event) => {
         event.preventDefault();
         if (eventName === "drop") {
-          handleUploadSelection(event.dataTransfer?.files || [], "drag_drop");
+          void handleUploadSelection(event.dataTransfer?.files || [], "drag_drop");
         }
         dropzone.classList.remove("is-dragover");
       });
@@ -2112,13 +2176,14 @@ function renderUploadImportPanel(workspaceId) {
   renderImportCenter();
 }
 
-function handleUploadSelection(fileList, source) {
+async function handleUploadSelection(fileList, source) {
   const selectedFiles = Array.from(fileList || []);
   if (!selectedFiles.length) {
     uploadCenterState = {
       ...uploadCenterState,
       rejected: [{ name: "未选择文件", reason: "请先选择 CSV / ZIP / XLS / XLSX 文件。" }],
       lastSource: source || "",
+      importing: false,
     };
     renderUploadStatus();
     renderImportCenter();
@@ -2127,6 +2192,7 @@ function handleUploadSelection(fileList, source) {
   }
 
   const accepted = [];
+  const acceptedFiles = [];
   const rejected = [];
   selectedFiles.forEach((file) => {
     const validation = validateUploadFile(file);
@@ -2137,6 +2203,7 @@ function handleUploadSelection(fileList, source) {
         type: file.type || "本机文件",
         source: source || "file_picker",
       });
+      acceptedFiles.push(file);
     } else {
       rejected.push({ name: file.name, reason: validation.reason });
     }
@@ -2146,6 +2213,8 @@ function handleUploadSelection(fileList, source) {
     files: [...uploadCenterState.files, ...accepted],
     rejected,
     lastSource: source || "file_picker",
+    importing: acceptedFiles.length > 0 && rejected.length === 0,
+    importedManifest: uploadCenterState.importedManifest || null,
   };
   renderUploadStatus();
   renderImportCenter();
@@ -2154,7 +2223,81 @@ function handleUploadSelection(fileList, source) {
     showToast(`有 ${rejected.length} 个文件需要处理`);
     return;
   }
-  showToast(`已选择 ${accepted.length} 个文件，导入预检完成`);
+  showToast(`已选择 ${accepted.length} 个文件，正在接入真实数据`);
+  try {
+    const manifest = await uploadAlipayFilesToBackend(acceptedFiles);
+    uploadCenterState = {
+      ...uploadCenterState,
+      importing: false,
+      importedManifest: manifest,
+    };
+    applyAlipayImportSummary(manifestToAlipaySummary(manifest));
+    renderUploadStatus();
+    renderImportCenter();
+    await refreshRuntimeTrends({ rerender: true });
+    showToast(`真实账单已接入：${Number(manifest.transaction_count || 0).toLocaleString("zh-CN")} 条流水`, "success");
+  } catch (error) {
+    uploadCenterState = {
+      ...uploadCenterState,
+      importing: false,
+      rejected: [{ name: "真实数据接入失败", reason: error?.message || "本机服务未完成导入。" }],
+    };
+    renderUploadStatus();
+    renderImportCenter();
+    showToast("真实数据接入失败，请检查本机服务", "failure");
+  }
+}
+
+async function uploadAlipayFilesToBackend(files) {
+  const payloadFiles = await Promise.all(
+    Array.from(files || []).map(async (file) => ({
+      name: file.name,
+      size: file.size,
+      type: file.type || "本机文件",
+      contentBase64: await readFileAsBase64(file),
+    })),
+  );
+  return runtimeApiJson("/api/imports/alipay", {
+    method: "POST",
+    body: JSON.stringify({ files: payloadFiles }),
+  });
+}
+
+function readFileAsBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const value = String(reader.result || "");
+      resolve(value.includes(",") ? value.split(",", 2)[1] : value);
+    };
+    reader.onerror = () => reject(new Error(`读取文件失败：${file?.name || "未命名文件"}`));
+    reader.readAsDataURL(file);
+  });
+}
+
+function manifestToAlipaySummary(manifest = {}) {
+  return {
+    schema: "PFIAlipayRealImportSummaryV1",
+    source_id: "alipay_daily",
+    status: Number(manifest.transaction_count || 0) > 0 ? "已接入真实数据" : "未接入真实数据",
+    file_count: Number(manifest.file_count || 0),
+    valid_file_count: Number(manifest.valid_file_count || 0),
+    transaction_count: Number(manifest.transaction_count || 0),
+    review_count: Number(manifest.review_count || 0),
+    date_start: String(manifest.date_start || ""),
+    date_end: String(manifest.date_end || ""),
+    search_tokens: [
+      "支付宝",
+      "真实支付宝流水",
+      String(manifest.file_count || ""),
+      String(manifest.transaction_count || ""),
+      String(manifest.review_count || ""),
+      String(manifest.date_start || ""),
+      String(manifest.date_end || ""),
+      String(manifest.date_start || "").replaceAll("-", ""),
+      String(manifest.date_end || "").replaceAll("-", ""),
+    ].filter(Boolean),
+  };
 }
 
 function validateUploadFile(file) {
@@ -2179,8 +2322,16 @@ function renderUploadStatus() {
     status.textContent = `失败反馈 ${rejectedCount} 项`;
     status.dataset.uploadState = "error";
     status.className = "status-pill status-blocked";
+  } else if (uploadCenterState.importing) {
+    status.textContent = `正在接入 ${acceptedCount} 个真实文件`;
+    status.dataset.uploadState = "running";
+    status.className = "status-pill status-watch";
+  } else if (uploadCenterState.importedManifest) {
+    status.textContent = `已接入 ${Number(uploadCenterState.importedManifest.transaction_count || 0).toLocaleString("zh-CN")} 条真实流水`;
+    status.dataset.uploadState = "ready";
+    status.className = "status-pill status-ready";
   } else if (acceptedCount) {
-    status.textContent = `已选择 ${acceptedCount} 个文件 · 导入预检完成`;
+    status.textContent = `已选择 ${acceptedCount} 个文件 · 等待真实解析`;
     status.dataset.uploadState = "ready";
     status.className = "status-pill status-ready";
   } else {
@@ -2207,7 +2358,7 @@ function renderUploadStatus() {
     const name = document.createElement("strong");
     const meta = document.createElement("span");
     name.textContent = file.name;
-    meta.textContent = `文件 ${index + 1} · ${formatFileSize(file.size)} · 本机预检通过`;
+    meta.textContent = `文件 ${index + 1} · ${formatFileSize(file.size)} · 将写入本机 PFI 和 MetaDatabase`;
     item.appendChild(name);
     item.appendChild(meta);
     fileList.appendChild(item);
@@ -2223,7 +2374,8 @@ function renderImportCenter() {
   if (!batches) return;
 
   const activeBatch = buildPendingBatchFromFiles();
-  const allBatches = activeBatch ? [activeBatch, ...IMPORT_BATCH_FIXTURES] : IMPORT_BATCH_FIXTURES;
+  const realBatch = buildRealAlipayImportBatch();
+  const allBatches = [activeBatch, realBatch].filter(Boolean);
   const totals = allBatches.reduce(
     (acc, batch) => ({
       files: acc.files + Number(batch.fileCount || 0),
@@ -2239,6 +2391,14 @@ function renderImportCenter() {
   if (summaryErrors) summaryErrors.textContent = String(uploadCenterState.rejected.length);
 
   batches.replaceChildren();
+  if (!allBatches.length) {
+    const empty = document.createElement("article");
+    empty.className = "import-batch";
+    empty.innerHTML = "<strong>暂无真实导入批次</strong><p>导入真实账单后，这里显示文件数、记录数、待复核数和日期范围。</p>";
+    batches.appendChild(empty);
+    return;
+  }
+
   allBatches.forEach((batch) => {
     const item = document.createElement("article");
     item.className = "import-batch";
@@ -2260,19 +2420,31 @@ function renderImportCenter() {
   });
 }
 
+function buildRealAlipayImportBatch() {
+  if (!alipayImportState || Number(alipayImportState.transactionCount || 0) <= 0) return null;
+  return {
+    batchId: "真实支付宝流水",
+    source: "支付宝三年历史账单",
+    fileCount: alipayImportState.fileCount,
+    recordCount: alipayImportState.transactionCount,
+    reviewCount: alipayImportState.reviewCount,
+    status: alipayImportState.status || "已接入真实数据",
+    summary: `${alipayImportState.dateStart} 至 ${alipayImportState.dateEnd} · ${alipayImportState.transactionCount} 条标准化流水 · ${alipayImportState.reviewCount} 条待复核`,
+  };
+}
+
 function buildPendingBatchFromFiles() {
   const fileCount = uploadCenterState.files.length;
   if (!fileCount) return null;
-  const recordCount = uploadCenterState.files.reduce((total, file) => total + Math.max(1, Math.ceil(Number(file.size || 0) / 2048)), 0);
-  const reviewCount = Math.max(1, Math.ceil(recordCount * 0.04));
+  if (uploadCenterState.importedManifest) return null;
   return {
-    batchId: "P5-本轮上传-预检",
+    batchId: uploadCenterState.importing ? "正在接入真实上传" : "待接入真实上传",
     source: uploadCenterState.lastSource === "drag_drop" ? "拖拽上传" : "文件选择",
     fileCount,
-    recordCount,
-    reviewCount,
-    status: uploadCenterState.rejected.length ? "部分失败" : "待复核",
-    summary: "本轮文件已完成前端预检，可进入账本流水复核低置信度记录。",
+    recordCount: 0,
+    reviewCount: 0,
+    status: uploadCenterState.importing ? "写入中" : "待真实解析",
+    summary: "已选择真实文件；记录数和待复核数只以后端解析结果为准。",
   };
 }
 
@@ -2625,11 +2797,11 @@ function renderWorkspace(workspaceId, options = {}) {
   });
   syncMobileTabs(workspaceId);
 
-  title.textContent = workspace.label;
-  kicker.textContent = workspace.kicker;
-  conclusion.textContent = workspace.conclusion;
-  if (freshness) freshness.textContent = workspace.freshness;
-  if (runtimeTarget) runtimeTarget.textContent = workspace.runtime;
+  title.textContent = ownerVisibleText(workspace.label, "首页总览");
+  kicker.textContent = ownerVisibleText(workspace.kicker, "今日总览");
+  conclusion.textContent = ownerVisibleText(workspace.conclusion, "");
+  if (freshness) freshness.textContent = ownerVisibleText(workspace.freshness, "本机数据");
+  if (runtimeTarget) runtimeTarget.textContent = ownerVisibleText(workspace.runtime);
   main.dataset.activeWorkspace = workspaceId;
   main.dataset.routeAlias = routeForState;
   main.dataset.settingsSurface = workspaceId === "settings" ? "primary_workspace" : "none";
@@ -2692,29 +2864,10 @@ function renderFeatureCards(cards) {
     const head = document.createElement("div");
     head.className = "workflow-card-head";
     const title = document.createElement("strong");
-    title.textContent = safeUserText(card.title, "功能入口");
-    const status = document.createElement("span");
-    status.className = `status-pill ${statusClass(card.status)}`;
-    status.textContent = localizeStatus(card.status);
+    const titleText = ownerVisibleText(card.title, "功能入口");
+    title.textContent = titleText;
+    item.setAttribute("aria-label", `${titleText}，${localizeStatus(card.status)}`);
     head.appendChild(title);
-    head.appendChild(status);
-
-    const meta = document.createElement("dl");
-    meta.className = "workflow-meta";
-    [
-      ["证据", card.evidence],
-      ["状态", localizeStatus(card.status)],
-      ["说明", card.description],
-    ].forEach(([label, value]) => {
-      const rowNode = document.createElement("div");
-      const dt = document.createElement("dt");
-      const dd = document.createElement("dd");
-      dt.textContent = label;
-      dd.textContent = value || "待补";
-      rowNode.appendChild(dt);
-      rowNode.appendChild(dd);
-      meta.appendChild(rowNode);
-    });
 
     const actions = document.createElement("div");
     actions.className = "workflow-actions";
@@ -2730,7 +2883,6 @@ function renderFeatureCards(cards) {
     actions.appendChild(evidenceButton);
 
     item.appendChild(head);
-    item.appendChild(meta);
     item.appendChild(actions);
     grid.appendChild(item);
   });
@@ -2791,23 +2943,23 @@ function renderFunctionDetail(detail) {
   const actionButton = panel.querySelector("[data-function-action]");
   const legacyLink = panel.querySelector("[data-function-legacy-link]");
 
-  if (title) title.textContent = detail.title;
-  if (purpose) purpose.textContent = detail.purpose;
+  if (title) title.textContent = ownerVisibleText(detail.title, "功能");
+  if (purpose) purpose.textContent = ownerVisibleText(detail.purpose, "");
   if (status) {
     status.textContent = detail.status;
     status.className = `status-pill ${statusClass(detail.status)}`;
   }
-  if (action) action.textContent = detail.primaryAction;
-  if (workspace) workspace.textContent = WORKSPACE_LABELS[detail.workspace] || detail.workspace;
+  if (action) action.textContent = ownerVisibleText(detail.primaryAction, "开始");
+  if (workspace) workspace.textContent = ownerVisibleText(WORKSPACE_LABELS[detail.workspace] || detail.workspace, "工作区");
   if (actionButton) {
-    actionButton.textContent = detail.primaryAction;
+    actionButton.textContent = ownerVisibleText(detail.primaryAction, "开始");
     actionButton.dataset.functionActionView = detail.view;
   }
   if (legacyLink) {
     legacyLink.href = legacyViewUrl(detail.legacyView || detail.view);
     legacyLink.target = "_blank";
     legacyLink.rel = "noreferrer";
-    legacyLink.textContent = `打开${detail.title}兼容详情`;
+    legacyLink.textContent = `打开${ownerVisibleText(detail.title, "功能")}兼容详情`;
   }
   if (checks) {
     checks.replaceChildren();
@@ -2818,7 +2970,7 @@ function renderFunctionDetail(detail) {
       const strong = document.createElement("strong");
       const span = document.createElement("span");
       strong.textContent = `检查 ${index + 1}`;
-      span.textContent = item;
+      span.textContent = ownerVisibleText(item, "检查项");
       article.appendChild(strong);
       article.appendChild(span);
       checks.appendChild(article);
@@ -2854,8 +3006,8 @@ function renderFunctionRunner(detail) {
   if (!runner) return;
   runner.hidden = false;
   runner.dataset.activeFunction = detail.view;
-  runner.querySelector("[data-function-run-title]").textContent = `${detail.title} · 操作面板`;
-  runner.querySelector("[data-function-run-summary]").textContent = detail.runSummary;
+  runner.querySelector("[data-function-run-title]").textContent = `${ownerVisibleText(detail.title, "功能")} · 操作面板`;
+  runner.querySelector("[data-function-run-summary]").textContent = ownerVisibleText(detail.runSummary, "");
   runner.querySelector("[data-function-run-state]").textContent = "已进入";
 
   const steps = runner.querySelector("[data-function-run-steps]");
@@ -2866,7 +3018,7 @@ function renderFunctionRunner(detail) {
       const strong = document.createElement("strong");
       const span = document.createElement("span");
       strong.textContent = `步骤 ${index + 1}`;
-      span.textContent = item;
+      span.textContent = ownerVisibleText(item, "步骤");
       li.appendChild(strong);
       li.appendChild(span);
       steps.appendChild(li);
@@ -2880,8 +3032,8 @@ function renderFunctionRunner(detail) {
       const item = document.createElement("article");
       const strong = document.createElement("strong");
       const span = document.createElement("span");
-      strong.textContent = label;
-      span.textContent = value;
+      strong.textContent = ownerVisibleText(label, "字段");
+      span.textContent = ownerVisibleText(value, "待补");
       item.appendChild(strong);
       item.appendChild(span);
       output.appendChild(item);
@@ -2939,7 +3091,7 @@ function renderDecisionRows(rows) {
     const tr = document.createElement("tr");
     [item.priority, item.object, item.evidence, item.action].forEach((value) => {
       const td = document.createElement("td");
-      td.textContent = value || "";
+      td.textContent = ownerVisibleText(value, "");
       tr.appendChild(td);
     });
     const statusCell = document.createElement("td");
@@ -2960,11 +3112,11 @@ function renderTasks(tasks) {
     const li = document.createElement("li");
     li.dataset.taskState = item.state || "review";
     const title = document.createElement("strong");
-    title.textContent = safeUserText(item.title, "任务");
+    title.textContent = ownerVisibleText(item.title, "任务");
     const detail = document.createElement("span");
     if (index === 1) detail.id = "task-phase";
     if (index === 2) detail.id = "background-job-label";
-    detail.textContent = safeUserText(item.detail, "等待处理");
+    detail.textContent = ownerVisibleText(item.detail, "等待处理");
     li.appendChild(title);
     li.appendChild(detail);
     list.appendChild(li);
@@ -2997,25 +3149,25 @@ function workflowFreshnessLabel(freshness) {
 
 function showWorkflowEvidence(card) {
   applyEvidenceDrawer({
-    title: `${card.title || "功能"}证据`,
-    Evidence: card.evidence || "运行证据",
+    title: `${ownerVisibleText(card.title, "功能")}证据`,
+    Evidence: ownerVisibleText(card.evidence, "运行证据"),
     Source: "本地运行库",
     Model: "外部模型未启用",
     Parameters: " · 人工复核 · 证据留痕",
-    "Data lineage": card.description || "运行库工作流卡片。",
+    "Data lineage": ownerVisibleText(card.description, "运行库工作流卡片。"),
     "Raw document": "缓存摘要",
   });
   setEvidenceDrawer(true);
-  setActionFeedback("success", `已打开${card.title || "功能"}证据`);
+  setActionFeedback("success", `已打开${ownerVisibleText(card.title, "功能")}证据`);
 }
 
 function applyEvidenceDrawer(drawer) {
   const title = document.querySelector("[data-evidence-title]");
-  if (title && drawer.title) title.textContent = safeUserText(drawer.title, "PFI · 运行证据");
+  if (title && drawer.title) title.textContent = ownerVisibleText(drawer.title, "PFI · 运行证据");
   document.querySelectorAll("[data-evidence-field]").forEach((node) => {
     const key = node.dataset.evidenceField;
     if (!Object.prototype.hasOwnProperty.call(drawer, key)) return;
-    node.textContent = safeUserText(drawer[key], node.textContent || "待补");
+    node.textContent = ownerVisibleText(drawer[key], node.textContent || "待补");
   });
 }
 
@@ -3231,6 +3383,7 @@ function buildGlobalSearchIndex() {
       path: safeUserText(item.path, item.workspace ? workspaceLabel(item.workspace, "工作区") : "PFI"),
       hint: safeUserText(item.hint, item.view ? "打开功能" : "打开入口"),
       keywords: [item.keywords || "", SEARCH_ALIASES[title] || ""].join(" "),
+      numbers: [item.numbers || "", extractNumericTokens([title, item.category, item.path, item.hint, item.keywords].join(" "))].join(" "),
       workspace: item.workspace || "",
       view: item.view || "",
       routeAlias: item.routeAlias || "",
@@ -3248,34 +3401,35 @@ function buildGlobalSearchIndex() {
       workspace: button.dataset.workspace || "home",
       view: button.dataset.featureView || "",
       routeAlias: button.dataset.routeAlias || "",
-      keywords: `${button.dataset.workspace || ""} ${button.dataset.routeAlias || ""}`,
+      keywords: `${button.dataset.workspace || ""} ${button.dataset.routeAlias || ""} 第${button.dataset.navIndex || ""}入口 ${button.dataset.navIndex || ""}`,
+      numbers: button.dataset.navIndex || "",
       priority: Number(button.dataset.navIndex || 50),
     });
   });
 
   Object.entries(WORKSPACES).forEach(([workspaceId, workspace]) => {
     add({
-      title: workspace.label,
+      title: ownerVisibleText(workspace.label, "工作区"),
       category: "工作区",
-      path: defaultRouteAliasForWorkspace(workspaceId) || workspace.label,
+      path: defaultRouteAliasForWorkspace(workspaceId) || ownerVisibleText(workspace.label, "工作区"),
       hint: "打开工作区",
       workspace: workspaceId,
       routeAlias: defaultRouteAliasForWorkspace(workspaceId),
-      keywords: `${workspace.kicker || ""} ${workspace.conclusion || ""} ${workspace.runtime || ""}`,
+      keywords: ownerVisibleText(`${workspace.kicker || ""} ${workspace.conclusion || ""} ${workspace.runtime || ""}`, ""),
       priority: 20,
     });
 
     (workspace.features || []).forEach((card, index) => {
       const target = card.target || featureTarget(card.title);
       add({
-        title: card.title,
+        title: ownerVisibleText(card.title, "功能"),
         category: "功能",
-        path: `${workspace.label} / ${safeUserText(card.evidence, "功能")}`,
+        path: `${ownerVisibleText(workspace.label, "工作区")} / ${ownerVisibleText(card.evidence, "功能")}`,
         hint: target.view ? "打开功能面板" : "打开工作区",
         workspace: target.workspace || workspaceId,
         view: target.view || "",
         routeAlias: target.routeAlias || defaultRouteAliasForWorkspace(target.workspace || workspaceId),
-        keywords: `${card.status || ""} ${card.evidence || ""} ${card.description || ""}`,
+        keywords: ownerVisibleText(`${card.status || ""} ${card.evidence || ""} ${card.description || ""}`, ""),
         priority: 30 + index,
       });
     });
@@ -3320,6 +3474,8 @@ function buildGlobalSearchIndex() {
       priority: 40 + index,
     });
   });
+  addRealDataSearchItems(add);
+  addRealConsumptionSearchItems(add);
 
   return items;
 }
@@ -3337,7 +3493,7 @@ function fuzzySearchItems(query, items = buildGlobalSearchIndex(), limit = SEARC
 
 function searchScore(cleanQuery, item) {
   if (!cleanQuery) return 100 - Number(item.priority || 50);
-  const haystack = normalizeSearch([item.title, item.category, item.path, item.hint, item.keywords].join(" "));
+  const haystack = normalizeSearch([item.title, item.category, item.path, item.hint, item.keywords, item.numbers].join(" "));
   if (!haystack) return 0;
   const title = normalizeSearch(item.title);
   let score = 0;
@@ -3347,6 +3503,71 @@ function searchScore(cleanQuery, item) {
   const subsequence = subsequenceScore(cleanQuery, haystack);
   if (subsequence > 0) score += subsequence;
   return score;
+}
+
+function addRealDataSearchItems(add) {
+  if (!alipayImportState || Number(alipayImportState.transactionCount || 0) <= 0) return;
+  const numberTokens = [
+    alipayImportState.fileCount,
+    alipayImportState.validFileCount,
+    alipayImportState.transactionCount,
+    alipayImportState.reviewCount,
+    alipayImportState.dateStart,
+    alipayImportState.dateEnd,
+    alipayImportState.dateStart.replaceAll("-", ""),
+    alipayImportState.dateEnd.replaceAll("-", ""),
+    ...(alipayImportState.searchTokens || []),
+  ].join(" ");
+  add({
+    title: "真实支付宝流水",
+    category: "真实数据",
+    path: "数据源与上传 / 导入中心",
+    hint: `${alipayImportState.transactionCount} 条流水 · ${alipayImportState.reviewCount} 条待复核`,
+    workspace: "sync",
+    routeAlias: "/sources-upload",
+    keywords: `支付宝 三年 历史数据 ${numberTokens}`,
+    numbers: numberTokens,
+    priority: 3,
+  });
+  add({
+    title: "待复核流水",
+    category: "真实数据",
+    path: "账本流水 / 待复核",
+    hint: `${alipayImportState.reviewCount} 条待复核`,
+    workspace: "ledger",
+    routeAlias: "/ledger",
+    keywords: `支付宝 待复核 低置信度 ${numberTokens}`,
+    numbers: numberTokens,
+    priority: 4,
+  });
+}
+
+function addRealConsumptionSearchItems(add) {
+  const consumption = runtimeReadModelState?.consumption || {};
+  if (consumption.has_real_transactions !== true) return;
+  const numberTokens = [
+    consumption.transaction_count,
+    consumption.review_count,
+    consumption.latest_month,
+    consumption.latest_date,
+    consumption.month_spend_cny,
+    consumption.budget_remaining_cny,
+    consumption.fixed_spend_cny,
+    consumption.flex_spend_cny,
+    consumption.cashflow_forecast_cny,
+    extractNumericTokens(JSON.stringify(consumption)),
+  ].join(" ");
+  add({
+    title: "真实消费流水",
+    category: "真实数据",
+    path: "消费管理 / 消费趋势",
+    hint: `本月支出 ${formatCnyAmount(consumption.month_spend_cny)} · 近30天 ${formatCnyAmount(consumption.cashflow_forecast_cny)}`,
+    workspace: "consumption",
+    routeAlias: "/consumption",
+    keywords: `真实消费 支付宝 本月支出 现金流 ${numberTokens}`,
+    numbers: numberTokens,
+    priority: 5,
+  });
 }
 
 function subsequenceScore(query, text) {
@@ -3366,6 +3587,10 @@ function normalizeSearch(value) {
   return String(value || "")
     .toLowerCase()
     .replace(/[\s\u3000/|·:：,，.。?？()（）\[\]【】_-]+/g, "");
+}
+
+function extractNumericTokens(value) {
+  return (String(value || "").match(/\d+(?:[.,]\d+)?/g) || []).join(" ");
 }
 
 function renderGlobalSearchResults(query) {
@@ -3734,6 +3959,18 @@ function safeUserText(value, fallback = "待补") {
   return clean;
 }
 
+function ownerVisibleText(value, fallback = "待补") {
+  const clean = safeUserText(value, fallback);
+  const withoutStageLabels = String(clean || "")
+    .replace(/第\s*[0-9一二三四五六七八九十]+\s*阶段[：:：-]?\s*/g, "")
+    .replace(/\bStage\s*[0-9]+\b[：:：-]?\s*/gi, "")
+    .replace(/\bS[0-9]+\s*[-–—]\s*/g, "")
+    .replace(/\s*·\s*本地验收/g, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+  return withoutStageLabels || fallback;
+}
+
 function englishNoise(value) {
   const clean = String(value || "");
   const asciiLetters = (clean.match(/[A-Za-z]/g) || []).length;
@@ -3809,6 +4046,14 @@ function bindEvents() {
     renderGlobalSearchResults(event.target.value);
   });
   globalSearchInput?.addEventListener("keydown", handleGlobalSearchKeydown);
+  globalSearchInput?.addEventListener("keyup", (event) => {
+    if (event.key === "Escape") {
+      closeGlobalSearchResults();
+    }
+  });
+  globalSearchInput?.addEventListener("blur", () => {
+    window.setTimeout(closeGlobalSearchResults, 80);
+  });
   globalSearchResults?.addEventListener("mousedown", (event) => {
     event.preventDefault();
   });

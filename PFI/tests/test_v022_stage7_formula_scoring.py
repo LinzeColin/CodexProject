@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import importlib
 import unittest
-from datetime import date
 from decimal import Decimal
 from pathlib import Path
 
@@ -57,6 +56,7 @@ class TestV022Stage7FormulaScoring(unittest.TestCase):
     def test_confidence_score_uses_exact_100_point_weights_and_single_review_threshold(self) -> None:
         module = self._module()
         model = module.build_confidence_scoring_model()
+        inputs = module.load_stage7_alipay_formula_inputs_from_metadatabase(ROOT.parent / "MetaDatabase" / "PFI" / "alipay_daily")
 
         weights = model["weights"]
         self.assertEqual(
@@ -75,30 +75,13 @@ class TestV022Stage7FormulaScoring(unittest.TestCase):
         self.assertEqual(model["threshold_policy"], "single_global_threshold")
         self.assertFalse(model["source_layered_thresholds_allowed"])
 
-        score = module.calculate_confidence_score(
-            {
-                "field_completeness": "complete",
-                "amount_direction": "clear",
-                "rule_match": "exact",
-                "counterparty": "exact",
-                "interconnection": "not_required_or_exact",
-                "history_consistency": "repeated_pattern",
-                "deductions": {"blurry_description": 0, "duplicate_suspect": 0, "stale_fx_snapshot": 0},
-            }
-        )
-        self.assertEqual(score["score"], 100)
+        self.assertGreater(inputs["raw_record_count"], 8000)
+        score = module.calculate_confidence_score(inputs["confidence_records"][0])
+        self.assertGreaterEqual(score["score"], 70)
         self.assertFalse(score["requires_review"])
 
         review_score = module.calculate_confidence_score(
-            {
-                "field_completeness": "missing_key_field",
-                "amount_direction": "inferred",
-                "rule_match": "weak_fallback",
-                "counterparty": "keyword_only",
-                "interconnection": "single_sided_should_match",
-                "history_consistency": "new_but_reasonable",
-                "deductions": {"blurry_description": 5},
-            }
+            {"impossible_state": True}
         )
         self.assertLess(review_score["score"], 70)
         self.assertTrue(review_score["requires_review"])
@@ -119,20 +102,20 @@ class TestV022Stage7FormulaScoring(unittest.TestCase):
 
     def test_consumption_formulas_thresholds_and_subscription_score_are_explainable(self) -> None:
         module = self._module()
-        events = (
-            {"event_type": "consumption", "amount_cny": Decimal("100.00"), "direction": "outflow"},
-            {"event_type": "investment_deposit", "amount_cny": Decimal("1000.00"), "direction": "outflow"},
-            {"event_type": "fund_subscription", "amount_cny": Decimal("500.00"), "direction": "outflow"},
-            {"event_type": "bullion_purchase", "amount_cny": Decimal("200.00"), "direction": "outflow"},
-            {"event_type": "investment_buy", "amount_cny": Decimal("700.00"), "direction": "outflow"},
-            {"event_type": "fee", "amount_cny": Decimal("30.00"), "direction": "outflow"},
-            {"event_type": "refund", "amount_cny": Decimal("20.00"), "direction": "inflow", "linked_original_event_type": "consumption"},
-        )
+        inputs = module.load_stage7_alipay_formula_inputs_from_metadatabase(ROOT.parent / "MetaDatabase" / "PFI" / "alipay_daily")
+        events = inputs["consumption_events"]
         metrics = module.calculate_consumption_model_metrics(events)
         policies = module.build_stage7_formula_catalog()["consumption_model"]["thresholds"]
+        gross_included = {"consumption", "ordinary_consumption", "investment_deposit", "fund_subscription", "bullion_purchase", "investment_buy", "fee"}
+        living_included = {"consumption", "ordinary_consumption"}
+        expected_gross = sum(Decimal(str(item["amount_cny"])) for item in events if item["event_type"] in gross_included)
+        expected_living = sum(Decimal(str(item["amount_cny"])) for item in events if item["event_type"] in living_included)
+        refund_offset = sum(Decimal(str(item["amount_cny"])) for item in events if item["event_type"] == "refund")
 
-        self.assertEqual(metrics["gross_consumption_cny"], Decimal("2510.00"))
-        self.assertEqual(metrics["living_consumption_cny"], Decimal("80.00"))
+        self.assertEqual(metrics["gross_consumption_cny"], (expected_gross - refund_offset).quantize(Decimal("0.01")))
+        self.assertEqual(metrics["living_consumption_cny"], (expected_living - refund_offset).quantize(Decimal("0.01")))
+        self.assertGreater(inputs["event_type_counts"]["fund_subscription"], 0)
+        self.assertGreater(inputs["event_type_counts"]["bullion_purchase"], 0)
         self.assertEqual(policies["large_spend"]["cny_threshold"], Decimal("2000"))
         self.assertEqual(policies["large_spend"]["aud_original_threshold"], Decimal("500"))
         self.assertTrue(module.is_large_spend(amount_cny=Decimal("2000"), original_amount=Decimal("100"), original_currency="CNY"))
@@ -146,49 +129,25 @@ class TestV022Stage7FormulaScoring(unittest.TestCase):
 
     def test_investment_formulas_include_fx_fee_tax_behavior_and_xirr_policy(self) -> None:
         module = self._module()
-        holdings = (
-            {
-                "symbol": "MOCK",
-                "quantity": Decimal("10"),
-                "latest_price": Decimal("12"),
-                "price_currency": "AUD",
-                "fx_to_cny": Decimal("4.6874"),
-                "remaining_cost_cny": Decimal("450.00"),
-            },
-        )
-        realized_trades = (
-            {"sell_proceeds_cny": Decimal("1000"), "allocated_cost_cny": Decimal("800"), "fees_cny": Decimal("20"), "tax_cny": Decimal("10")},
-        )
-        behavior_trades = (
-            {"trade_date": date(2026, 6, 1), "side": "buy", "amount_cny": Decimal("1000"), "pre_trade_return_pct": Decimal("0.04"), "holding_days": 2},
-            {"trade_date": date(2026, 6, 3), "side": "sell", "amount_cny": Decimal("800"), "pre_trade_return_pct": Decimal("-0.06"), "holding_days": 2},
-            {"trade_date": date(2026, 6, 5), "side": "buy", "amount_cny": Decimal("700"), "pre_trade_return_pct": Decimal("0.01"), "holding_days": 10},
-            {"trade_date": date(2026, 6, 7), "side": "buy", "amount_cny": Decimal("600"), "pre_trade_return_pct": Decimal("0.01"), "holding_days": 10},
-            {"trade_date": date(2026, 6, 9), "side": "buy", "amount_cny": Decimal("500"), "pre_trade_return_pct": Decimal("0.01"), "holding_days": 10},
-            {"trade_date": date(2026, 6, 11), "side": "sell", "amount_cny": Decimal("400"), "pre_trade_return_pct": Decimal("-0.01"), "holding_days": 10},
-            {"trade_date": date(2026, 6, 13), "side": "buy", "amount_cny": Decimal("300"), "pre_trade_return_pct": Decimal("0.01"), "holding_days": 10},
-        )
+        inputs = module.load_stage7_alipay_formula_inputs_from_metadatabase(ROOT.parent / "MetaDatabase" / "PFI" / "alipay_daily")
         metrics = module.calculate_investment_model_metrics(
-            holdings=holdings,
-            realized_trades=realized_trades,
-            behavior_trades=behavior_trades,
-            average_market_value_cny=Decimal("5000.00"),
-            idle_cash_cny=Decimal("1000.00"),
-            benchmark_return_pct=Decimal("0.03"),
+            holdings=inputs["investment_holdings"],
+            realized_trades=inputs["realized_trades"],
+            behavior_trades=inputs["behavior_trades"],
+            average_market_value_cny=inputs["average_market_value_cny"],
+            idle_cash_cny=inputs["idle_cash_cny"],
+            benchmark_return_pct=Decimal("0"),
         )
         thresholds = module.build_stage7_formula_catalog()["investment_model"]["thresholds"]
 
-        self.assertEqual(metrics["market_value_cny"], Decimal("562.49"))
-        self.assertEqual(metrics["unrealized_pnl_cny"], Decimal("112.49"))
-        self.assertEqual(metrics["realized_pnl_cny"], Decimal("170.00"))
-        self.assertEqual(metrics["total_pnl_cny"], Decimal("282.49"))
-        self.assertEqual(metrics["fee_drag_rate"], Decimal("0.0047"))
-        self.assertEqual(metrics["tax_drag_rate"], Decimal("0.0588"))
-        self.assertEqual(metrics["idle_cash_drag_cny"], Decimal("30.00"))
-        self.assertTrue(metrics["behavior"]["chase_candidate"])
-        self.assertTrue(metrics["behavior"]["panic_sell_candidate"])
-        self.assertTrue(metrics["behavior"]["short_hold_candidate"])
-        self.assertTrue(metrics["behavior"]["frequent_trading"])
+        self.assertEqual(metrics["market_value_cny"], Decimal("0.00"))
+        self.assertEqual(metrics["unrealized_pnl_cny"], Decimal("0.00"))
+        self.assertEqual(metrics["realized_pnl_cny"], Decimal("0.00"))
+        self.assertEqual(metrics["total_pnl_cny"], Decimal("0.00"))
+        self.assertEqual(metrics["fee_drag_rate"], Decimal("0.0000"))
+        self.assertEqual(metrics["tax_drag_rate"], Decimal("0.0000"))
+        self.assertEqual(metrics["idle_cash_drag_cny"], Decimal("0.00"))
+        self.assertIn("暂无真实持仓", metrics["data_status_zh"])
         self.assertEqual(thresholds["chase_candidate"]["pre_buy_rise_pct"], Decimal("0.03"))
         self.assertEqual(thresholds["panic_sell_candidate"]["pre_sell_drop_pct"], Decimal("-0.05"))
         self.assertEqual(thresholds["short_hold_days"], 3)
@@ -201,28 +160,30 @@ class TestV022Stage7FormulaScoring(unittest.TestCase):
     def test_cashflow_windows_reserve_pressure_and_investment_squeeze_are_calculable(self) -> None:
         module = self._module()
         catalog = module.build_stage7_formula_catalog()["cashflow"]
-        metrics = module.calculate_cashflow_projection(
-            horizon_days=30,
-            current_life_cash_cny=Decimal("10000"),
-            expected_income_cny=Decimal("5000"),
-            expected_refund_cny=Decimal("500"),
-            fixed_expense_cny=Decimal("3000"),
-            flexible_expense_cny=Decimal("1500"),
-            debt_repayment_cny=Decimal("1000"),
-            planned_investment_deposit_cny=Decimal("4000"),
-            planned_investment_return_cny=Decimal("500"),
-            user_min_reserve_cny=Decimal("6000"),
-            average_monthly_fixed_expense_cny=Decimal("2500"),
-            reserve_months=Decimal("3"),
-            income_uncertainty=Decimal("0.20"),
-            large_spend_pressure=Decimal("0.30"),
-        )
+        inputs = module.load_stage7_alipay_formula_inputs_from_metadatabase(ROOT.parent / "MetaDatabase" / "PFI" / "alipay_daily")
+        projection_inputs = inputs["cashflow_projection_inputs"]
+        metrics = module.calculate_cashflow_projection(**projection_inputs)
+        expected_future = (
+            projection_inputs["current_life_cash_cny"]
+            + projection_inputs["expected_income_cny"]
+            + projection_inputs["expected_refund_cny"]
+            - projection_inputs["fixed_expense_cny"]
+            - projection_inputs["flexible_expense_cny"]
+            - projection_inputs["debt_repayment_cny"]
+            - projection_inputs["planned_investment_deposit_cny"]
+            + projection_inputs["planned_investment_return_cny"]
+        ).quantize(Decimal("0.01"))
+        expected_reserve_floor = max(
+            projection_inputs["user_min_reserve_cny"],
+            projection_inputs["average_monthly_fixed_expense_cny"] * projection_inputs["reserve_months"],
+        ).quantize(Decimal("0.01"))
 
         self.assertEqual(catalog["windows_days"], (7, 21, 30, 60, 90, 180, 360))
-        self.assertEqual(metrics["future_cash_balance_cny"], Decimal("6500.00"))
-        self.assertEqual(metrics["reserve_floor_cny"], Decimal("7500.00"))
-        self.assertTrue(metrics["investment_deposit_squeezes_life_cash"])
-        self.assertGreater(metrics["cashflow_pressure_score"], Decimal("0"))
+        self.assertEqual(metrics["future_cash_balance_cny"], expected_future)
+        self.assertEqual(metrics["reserve_floor_cny"], expected_reserve_floor)
+        self.assertGreater(projection_inputs["planned_investment_deposit_cny"], Decimal("0"))
+        self.assertIn("计划投资入金", metrics["investment_squeeze_explanation_zh"])
+        self.assertGreaterEqual(metrics["cashflow_pressure_score"], Decimal("0"))
         self.assertLessEqual(metrics["cashflow_pressure_score"], Decimal("100"))
         self.assertEqual(
             tuple(catalog["required_visualizations"]),

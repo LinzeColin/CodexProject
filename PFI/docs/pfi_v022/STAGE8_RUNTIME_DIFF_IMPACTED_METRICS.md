@@ -25,6 +25,23 @@ tag_hash
 fx_snapshot_hash
 ```
 
+## 真实输入来源
+
+Stage 8 运行差异输入必须来自真实本地来源或真实空态，不得使用 demo/sample/synthetic/fixture/mock/fake/测试样例财务记录。
+
+| 依赖 | 当前来源 |
+| --- | --- |
+| 原始数据 | `MetaDatabase/PFI/alipay_daily/raw`，当前真实 raw 文件数 `4` |
+| 标准化交易 | `MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv`，当前真实记录数 `8815` |
+| 账本事件 | 由真实标准化支付宝流水派生 |
+| interconnection | 暂无真实分组文件时使用中文真实空态，不生成模拟分组 |
+| 参数 | `PFI/config/pfi_parameters.yaml` |
+| 分类 | `PFI/docs/pfi_v02/LEDGER_CLASSIFICATION_STANDARD.md` 与 Stage 5 分类/事件类型表 |
+| 标签 | Stage 6 默认标签与标签规则 |
+| 汇率快照 | `PFI/data/fx_snapshots/AUD_CNY/2026-06-28.json` |
+
+当前真实空态文案：`暂无真实 Interconnection 分组文件，使用真实空态，不生成模拟分组。`
+
 ## Phase 8.2 收紧 Impacted Metrics
 
 ### P0 核心指标
@@ -126,6 +143,7 @@ P2 属于展示层。展示变化被误判为财务核心变化时停止。
 
 ```bash
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pytest tests/test_v022_stage8_runtime_diff.py -q -p no:cacheprovider
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pytest tests/test_v022_stage8_runtime_diff.py tests/test_v022_review_stage8.py -q -p no:cacheprovider
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pytest tests/test_v022_stage0_database_governance.py tests/test_pfi_parameters_consistency.py tests/test_v022_fx_effective_date.py tests/test_v022_stage3_source_account_profiles.py tests/test_v022_interconnection_no_double_count.py tests/test_v022_consumption_investment_outflow.py tests/test_v022_stage5_ledger_taxonomy.py tests/test_v022_stage6_tags_views.py tests/test_v022_stage7_formula_scoring.py tests/test_v022_stage8_runtime_diff.py -q -p no:cacheprovider
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pytest tests -q -p no:cacheprovider
 node --check web/app/shell.js

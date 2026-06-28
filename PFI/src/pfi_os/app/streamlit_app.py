@@ -1277,18 +1277,6 @@ def render_pfi_ui_v2_shell() -> None:
     except Exception:
         home_summary = empty_homepage_summary()
     _render_html_frame(_pfi_web_shell_html(home_summary), height=1120, scrolling=True)
-    st.markdown(
-        """
-        <section style="padding:0 24px 24px;color:#f5f9ff;">
-          <div style="max-width:1200px;margin:0 auto 12px;padding:16px 18px;border:1px solid rgba(255,255,255,.14);border-radius:8px;background:rgba(255,255,255,.06);">
-            <strong>本机真实上传与支付宝账本</strong>
-            <span style="display:block;margin-top:6px;color:#a9bbcf;">这是本机原生上传能力，负责把真实 CSV / ZIP 写入 PFI 私有账本；上方工作台负责日常导航、预览和反馈。</span>
-          </div>
-        </section>
-        """,
-        unsafe_allow_html=True,
-    )
-    render_pfi_local_data_upload_panel()
 
 
 def main() -> None:
@@ -6212,8 +6200,6 @@ def _format_metric_value(value, formatter: str) -> str:
 
 
 def data_tools_view() -> None:
-    render_pfi_local_data_upload_panel()
-    st.divider()
     st.subheader("数据源状态")
     status = pd.DataFrame(provider_status_rows())
     status_display = status.rename(

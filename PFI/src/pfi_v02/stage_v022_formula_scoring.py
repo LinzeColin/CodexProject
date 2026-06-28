@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+import csv
+from collections import Counter
 from decimal import Decimal, ROUND_HALF_UP
+from pathlib import Path
 from typing import Mapping, Sequence
 
 
@@ -23,6 +26,7 @@ STAGE7_REQUIRED_CASHFLOW_VISUALIZATIONS = (
     "消费-投资挤压图",
     "现金流窗口对比表",
 )
+STAGE7_ALIPAY_TRANSACTION_SOURCE = "MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv"
 
 
 def _d(value: object) -> Decimal:
@@ -41,6 +45,58 @@ def _rate(value: Decimal) -> Decimal:
 
 def _clamp(value: Decimal, low: Decimal = Decimal("0"), high: Decimal = Decimal("100")) -> Decimal:
     return max(low, min(high, value))
+
+
+def load_stage7_alipay_formula_inputs_from_metadatabase(
+    metadatabase_root: str | Path | None = None,
+    *,
+    limit: int | None = None,
+) -> dict[str, object]:
+    root = Path(metadatabase_root) if metadatabase_root is not None else _default_stage7_alipay_metadatabase_root()
+    transactions_path = root / "processed" / "alipay_transactions.csv"
+    if not transactions_path.exists():
+        return {
+            "schema": "PFIV022Stage7RealFormulaInputsV1",
+            "raw_record_count": 0,
+            "real_data_source": STAGE7_ALIPAY_TRANSACTION_SOURCE,
+            "consumption_events": [],
+            "confidence_records": [],
+            "investment_holdings": [],
+            "realized_trades": [],
+            "behavior_trades": [],
+            "investment_data_status_zh": "暂无真实支付宝标准化流水，Stage 7 不生成模拟输入。",
+            "event_type_counts": {},
+            "cashflow_projection_inputs": _empty_cashflow_projection_inputs(),
+        }
+
+    events: list[dict[str, object]] = []
+    confidence_records: list[dict[str, object]] = []
+    with transactions_path.open(encoding="utf-8-sig", newline="") as file_obj:
+        for row in csv.DictReader(file_obj):
+            event = _stage7_event_from_alipay_row(row)
+            if event is None:
+                continue
+            events.append(event)
+            confidence_records.append(_stage7_confidence_record_from_alipay_row(row, event))
+            if limit is not None and len(events) >= limit:
+                break
+
+    event_type_counts = Counter(str(event["event_type"]) for event in events)
+    return {
+        "schema": "PFIV022Stage7RealFormulaInputsV1",
+        "raw_record_count": len(events),
+        "real_data_source": STAGE7_ALIPAY_TRANSACTION_SOURCE,
+        "consumption_events": events,
+        "confidence_records": confidence_records,
+        "investment_holdings": [],
+        "realized_trades": [],
+        "behavior_trades": [],
+        "average_market_value_cny": Decimal("0"),
+        "idle_cash_cny": Decimal("0"),
+        "investment_data_status_zh": "暂无真实持仓快照或可确认卖出交易；投资市值、收益和行为评分保持空态，不伪造收益。",
+        "event_type_counts": dict(event_type_counts),
+        "cashflow_projection_inputs": _stage7_cashflow_inputs_from_events(events),
+    }
 
 
 def build_confidence_scoring_model() -> dict[str, object]:
@@ -201,21 +257,28 @@ def calculate_investment_model_metrics(
     idle_cash_cny: Decimal,
     benchmark_return_pct: Decimal,
 ) -> dict[str, object]:
+    no_real_investment_positions = not holdings and not realized_trades and not behavior_trades
     market_value = sum(
-        _d(item.get("quantity", "0")) * _d(item.get("latest_price", "0")) * _d(item.get("fx_to_cny", "1"))
-        for item in holdings
+        (
+            _d(item.get("quantity", "0")) * _d(item.get("latest_price", "0")) * _d(item.get("fx_to_cny", "1"))
+            for item in holdings
+        ),
+        Decimal("0"),
     )
-    remaining_cost = sum(_d(item.get("remaining_cost_cny", "0")) for item in holdings)
+    remaining_cost = sum((_d(item.get("remaining_cost_cny", "0")) for item in holdings), Decimal("0"))
     realized_pnl = sum(
-        _d(item.get("sell_proceeds_cny", "0"))
-        - _d(item.get("allocated_cost_cny", "0"))
-        - _d(item.get("fees_cny", "0"))
-        - _d(item.get("tax_cny", "0"))
-        for item in realized_trades
+        (
+            _d(item.get("sell_proceeds_cny", "0"))
+            - _d(item.get("allocated_cost_cny", "0"))
+            - _d(item.get("fees_cny", "0"))
+            - _d(item.get("tax_cny", "0"))
+            for item in realized_trades
+        ),
+        Decimal("0"),
     )
-    total_fee = sum(_d(item.get("fees_cny", "0")) for item in realized_trades)
-    total_tax = sum(_d(item.get("tax_cny", "0")) for item in realized_trades)
-    total_trade_amount = sum(abs(_d(item.get("amount_cny", "0"))) for item in behavior_trades)
+    total_fee = sum((_d(item.get("fees_cny", "0")) for item in realized_trades), Decimal("0"))
+    total_tax = sum((_d(item.get("tax_cny", "0")) for item in realized_trades), Decimal("0"))
+    total_trade_amount = sum((abs(_d(item.get("amount_cny", "0"))) for item in behavior_trades), Decimal("0"))
     turnover_rate = total_trade_amount / average_market_value_cny if average_market_value_cny else Decimal("0")
     unrealized = market_value - remaining_cost
     behavior = {
@@ -236,6 +299,7 @@ def calculate_investment_model_metrics(
         "tax_drag_rate": _rate(total_tax / realized_pnl if realized_pnl else Decimal("0")),
         "idle_cash_drag_cny": _money(idle_cash_cny * benchmark_return_pct),
         "behavior": behavior,
+        "data_status_zh": "暂无真实持仓或可确认交易数据，投资指标保持空态，不伪造收益。" if no_real_investment_positions else "使用输入持仓、交易和现金数据计算。",
         "xirr_policy_zh": "XIRR 口径：投资入金：负现金流；投资回流：正现金流；当前投资市值：最终正现金流。",
     }
 
@@ -288,7 +352,142 @@ def calculate_cashflow_projection(
         "reserve_coverage": _rate(reserve_coverage),
         "cashflow_pressure_score": _money(pressure),
         "investment_deposit_squeezes_life_cash": planned_investment_deposit_cny > 0 and future_balance < reserve_floor,
+        "investment_squeeze_explanation_zh": "计划投资入金会先扣减生活现金，再与储备金安全线比较；低于安全线时标记投资挤压现金。",
     }
+
+
+def _default_stage7_alipay_metadatabase_root() -> Path:
+    return Path(__file__).resolve().parents[3] / "MetaDatabase" / "PFI" / "alipay_daily"
+
+
+def _empty_cashflow_projection_inputs() -> dict[str, Decimal | int]:
+    return {
+        "horizon_days": 30,
+        "current_life_cash_cny": Decimal("0"),
+        "expected_income_cny": Decimal("0"),
+        "expected_refund_cny": Decimal("0"),
+        "fixed_expense_cny": Decimal("0"),
+        "flexible_expense_cny": Decimal("0"),
+        "debt_repayment_cny": Decimal("0"),
+        "planned_investment_deposit_cny": Decimal("0"),
+        "planned_investment_return_cny": Decimal("0"),
+        "user_min_reserve_cny": Decimal("0"),
+        "average_monthly_fixed_expense_cny": Decimal("0"),
+        "reserve_months": Decimal("3"),
+        "income_uncertainty": Decimal("0"),
+        "large_spend_pressure": Decimal("0"),
+    }
+
+
+def _stage7_event_from_alipay_row(row: Mapping[str, object]) -> dict[str, object] | None:
+    raw_event_type = str(row.get("event_type") or "").strip().upper()
+    amount = _d(row.get("amount") or "0")
+    description = str(row.get("description") or "").strip()
+    event_type = _stage7_event_type(raw_event_type, amount, description)
+    if not event_type:
+        return None
+
+    transaction_id = str(row.get("transaction_id") or "").strip()
+    if not transaction_id:
+        return None
+
+    return {
+        "transaction_id": transaction_id,
+        "event_type": event_type,
+        "amount_cny": abs(amount),
+        "signed_amount_cny": amount,
+        "direction": "inflow" if amount >= 0 else "outflow",
+        "currency": str(row.get("currency") or "CNY").strip(),
+        "occurred_at": str(row.get("occurred_at") or "").strip(),
+        "description": description,
+        "source_id": str(row.get("source_id") or "alipay_daily").strip(),
+        "review_state": str(row.get("review_state") or "").strip(),
+        "real_data_source": STAGE7_ALIPAY_TRANSACTION_SOURCE,
+    }
+
+
+def _stage7_event_type(raw_event_type: str, amount: Decimal, description: str) -> str:
+    if raw_event_type == "CASH" and amount < 0:
+        return "ordinary_consumption"
+    if raw_event_type == "CASH" and amount >= 0:
+        return "cash_inflow"
+    if raw_event_type == "FUND" and amount < 0:
+        return "fund_subscription"
+    if raw_event_type == "FUND" and amount >= 0:
+        return "investment_return"
+    if raw_event_type == "BUY_ASSET" and amount < 0:
+        return "bullion_purchase" if "黄金" in description else "investment_buy"
+    if raw_event_type == "REFUND":
+        return "refund"
+    if raw_event_type == "TRANSFER":
+        return "internal_transfer"
+    return ""
+
+
+def _stage7_confidence_record_from_alipay_row(row: Mapping[str, object], event: Mapping[str, object]) -> dict[str, object]:
+    core_fields = ("transaction_id", "source_id", "amount", "currency", "occurred_at", "description")
+    missing_count = sum(1 for key in core_fields if not str(row.get(key) or "").strip())
+    if missing_count == 0:
+        field_completeness = "complete"
+    elif missing_count == 1:
+        field_completeness = "minor_missing"
+    elif missing_count <= 3:
+        field_completeness = "partial"
+    else:
+        field_completeness = "missing_key_field"
+
+    event_type = str(event.get("event_type") or "")
+    description = str(row.get("description") or "").strip()
+    return {
+        "field_completeness": field_completeness,
+        "amount_direction": "clear" if event.get("direction") in {"inflow", "outflow"} else "unknown",
+        "rule_match": "exact" if event_type != "internal_transfer" else "strong_role_match",
+        "counterparty": "fuzzy_high" if description else "missing",
+        "interconnection": "single_sided_should_match" if event_type == "internal_transfer" else "not_required_or_exact",
+        "history_consistency": "similar_history" if description else "new_but_reasonable",
+        "deductions": {
+            "blurry_description": 0 if description else 5,
+            "duplicate_suspect": 0,
+            "stale_fx_snapshot": 0,
+        },
+        "transaction_id": event["transaction_id"],
+        "real_data_source": STAGE7_ALIPAY_TRANSACTION_SOURCE,
+    }
+
+
+def _stage7_cashflow_inputs_from_events(events: Sequence[Mapping[str, object]]) -> dict[str, Decimal | int]:
+    totals: Counter[str] = Counter()
+    months: set[str] = set()
+    large_count = 0
+    for event in events:
+        event_type = str(event.get("event_type") or "")
+        amount = _d(event.get("amount_cny") or "0")
+        totals[event_type] += amount
+        occurred_at = str(event.get("occurred_at") or "")
+        if len(occurred_at) >= 7:
+            months.add(occurred_at[:7])
+        if event_type == "ordinary_consumption" and amount >= Decimal("2000"):
+            large_count += 1
+
+    observed_months = Decimal(max(len(months), 1))
+    average_living_outflow = totals["ordinary_consumption"] / observed_months
+    investment_outflow = totals["fund_subscription"] + totals["bullion_purchase"] + totals["investment_buy"]
+    living_event_count = sum(1 for event in events if str(event.get("event_type")) == "ordinary_consumption")
+    large_spend_pressure = Decimal(large_count) / Decimal(living_event_count) if living_event_count else Decimal("0")
+    projection = _empty_cashflow_projection_inputs()
+    projection.update(
+        {
+            "expected_income_cny": _money(totals["cash_inflow"]),
+            "expected_refund_cny": _money(totals["refund"]),
+            "fixed_expense_cny": _money(average_living_outflow),
+            "planned_investment_deposit_cny": _money(investment_outflow),
+            "planned_investment_return_cny": _money(totals["investment_return"]),
+            "user_min_reserve_cny": _money(average_living_outflow * Decimal("3")),
+            "average_monthly_fixed_expense_cny": _money(average_living_outflow),
+            "large_spend_pressure": _rate(large_spend_pressure),
+        }
+    )
+    return projection
 
 
 def build_stage7_formula_catalog() -> dict[str, object]:

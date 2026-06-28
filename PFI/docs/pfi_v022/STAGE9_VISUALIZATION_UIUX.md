@@ -4,6 +4,21 @@
 
 本轮目标：生成本地可打开、中文可读、可点击追踪的 Stage 9 可视化审查交付物。Stage 9 不修改 v0.2.1 主 Web Shell UIUX 基线，不实现 Stage 10 报告、建议与复盘，不联网、不调用外部 LLM、不新增真实交易、自动投资、支付或券商提交能力。
 
+## 真实输入来源与复审修正
+
+Stage 9 复审后，可视化状态由 `load_stage9_real_visualization_context()` 装载真实上下文，不再使用固定假金额、固定假匹配率、模拟耗时或旧构造计数参数。
+
+- 真实标准化流水：`MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv`，当前 `8815` 条。
+- 真实 raw 文件：`MetaDatabase/PFI/alipay_daily/raw`，当前 `4` 个。
+- 待复核记录：`406` 条。
+- 默认标签：`56` 个。
+- 行动建议：`0` 条。
+- 消费总流出：`CNY 1,727,278.37`。
+- 生活消费：`CNY 1,545,600.44`。
+- 当前无真实持仓快照：投资资产、收益和持仓图显示 `暂无真实持仓快照`，不得伪造数值。
+- 当前无真实 Interconnection 分组文件：匹配率、未匹配数量和分组图显示 `暂无真实 Interconnection 分组文件`，不得伪造匹配率。
+- 当前无真实前端性能测量：计算耗时显示 `本轮未测量，不显示模拟耗时`。
+
 ## Phase 9.1 - 参数中心
 
 | Task ID | 交付物 | 验收标准 | 状态 |
@@ -75,15 +90,23 @@
 ## 验收命令
 
 ```bash
-PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pytest tests/test_v022_stage9_visualization_uiux.py -q -p no:cacheprovider
-PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pytest tests/test_v022_stage0_database_governance.py tests/test_pfi_parameters_consistency.py tests/test_v022_fx_effective_date.py tests/test_v022_stage3_source_account_profiles.py tests/test_v022_interconnection_no_double_count.py tests/test_v022_consumption_investment_outflow.py tests/test_v022_stage5_ledger_taxonomy.py tests/test_v022_stage6_tags_views.py tests/test_v022_stage7_formula_scoring.py tests/test_v022_stage8_runtime_diff.py tests/test_v022_stage9_visualization_uiux.py -q -p no:cacheprovider
-PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pytest tests -q -p no:cacheprovider
-node --check web/app/shell.js
-python3 ../scripts/validate_project_governance.py --project PFI
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -B -m pytest tests/test_v022_stage9_visualization_uiux.py tests/test_v022_review_stage9.py -q -p no:cacheprovider
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -B -m pytest tests/test_v022_stage0_database_governance.py tests/test_pfi_parameters_consistency.py tests/test_v022_fx_effective_date.py tests/test_v022_stage3_source_account_profiles.py tests/test_v022_interconnection_no_double_count.py tests/test_v022_consumption_investment_outflow.py tests/test_v022_stage5_ledger_taxonomy.py tests/test_v022_stage6_tags_views.py tests/test_v022_stage7_formula_scoring.py tests/test_v022_stage8_runtime_diff.py tests/test_v022_review_stage8.py tests/test_v022_stage9_visualization_uiux.py tests/test_v022_review_stage9.py -q -p no:cacheprovider
+node --check PFI/web/app/shell.js
+python3 scripts/validate_project_governance.py --project PFI
 git diff --check -- PFI
+curl -fsS http://127.0.0.1:8501/_stcore/health
 ```
 
 浏览器验收：打开 `PFI/web/interconnection-map.html`，点击 `data-map-node` 和 `data-drilldown-metric`，确认右侧详情与 drilldown 内容变化；页面不得依赖 `http://`、`https://`、CDN、远程脚本或远程字体。
+
+最新复审验证结果：
+
+- Stage 9 目标 + 复审测试：`13 passed, 68 subtests passed`。
+- Stage 0-9 v0.2.2 相关回归：`82 passed, 330 subtests passed`。
+- Stage 9 本地 HTML 浏览器验收：`/tmp/pfi_stage9_review_recheck/stage9-html-summary.json` 通过，缺失项、禁用固定假值、外部网络请求、console/page errors 均为 `0`；截图 `/tmp/pfi_stage9_review_recheck/stage9-html.png`。
+- 真实 8501 浏览器矩阵：`/tmp/pfi_stage9_review_recheck/summary.json` 通过，桌面 15 个一级入口、7 个首页功能按钮、搜索 `8815/406`、策略实验室同路由、设置反馈隔离、移动端水平溢出 `0px` 均通过；截图 `/tmp/pfi_stage9_review_recheck/desktop.png` 和 `/tmp/pfi_stage9_review_recheck/mobile.png`。
+- Web shell 语法、项目治理、空白检查和 8501 health 均通过。
 
 ## 非目标
 

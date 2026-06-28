@@ -52,6 +52,8 @@
 | 2026-06-28 | `S5-P2-T2` | `consumption_model.living_consumption_excludes` | `Stage 4 规则已排除投资入金、基金申购、投资买入` | `排除投资入金、基金申购、黄金申购、投资买入、内部转账、信用卡还款` | 保证生活消费不被投资资金流和还款污染。 | 消费管理、预算、报告、测试。 |
 | 2026-06-28 | `S5-P2-T3` | `consumption_model.double_consumption_surfaces` | `无正式 Stage 5 展示面参数` | `homepage, consumption_page, report 同时展示消费总流出与生活消费` | 避免只显示一个消费数字导致误解。 | 首页总览、消费管理、报告与洞察、测试。 |
 | 2026-06-28 | `S5-P3-T1..S5-P3-T4` | `consumption_categories.default_taxonomy` | `只有数量上限，无正式 12 大类 / 50 中类 taxonomy` | `12 个 L1、50 个 L2、每个 L1 有 future_merge_to / merge_candidate` | Stage 5 要求建立默认消费分类，并预留后续压缩到 10 类或更少的字段。 | 账本流水、消费管理、报告与洞察、参数中心、测试。 |
+| 2026-06-28 | `REVIEW-S5` | `consumption_categories.primary_category_validation` | `验证函数只返回 primary_category_per_transaction=1 静态限制` | `逐行检查 taxonomy 的 primary_category_per_transaction；不等于 1 时 status=失败 且 violations 包含 primary_category_per_transaction` | Stage 5 验收要求每笔交易只有一个主分类，不能只靠文字或常量声明。 | 消费分类、账本流水、参数一致性、复审测试。 |
+| 2026-06-28 | `REVIEW-S5` | `consumption_categories.future_merge_target` | `只在文档中说明可压缩到 10 类或更少` | `future_merge_target_max_l1=10；future_merge_l1_count=7；future_merge_groups 可机器读取；multi_dimensional_analysis_uses_tags=true` | GitHub 验收需要可检查字段证明默认 12 大类可收敛，且多维分析不污染主分类。 | 消费管理、报告与洞察、Stage 6 标签系统边界、复审测试。 |
 | 2026-06-28 | `S6-P1-T1` | `tags.tag_tables` | `只有默认标签组和生命周期说明` | `pfi_tags, pfi_tag_assignments, pfi_tag_rules, pfi_tag_history, pfi_custom_views` | Stage 6 要求标签 registry、赋值、规则、历史和自定义视图可持久化。 | 账本流水、报告与洞察、数据库治理、测试。 |
 | 2026-06-28 | `S6-P1-T2` | `tags.assignment_policy` | `无机器可验收赋值表` | `同一 transaction/economic_event/holding/account 可拥有多个 tag_id` | 标签区别于主分类，必须支持多维分析。 | 账本筛选、报告聚合、建议复盘。 |
 | 2026-06-28 | `S6-P1-T3` | `tags.tag_rule_dimensions` | `无自动标签规则维度` | `amount_cny, time_window, l1_category, event_type, account_role` | 支持按金额、时间、分类、事件类型、账户角色自动打标签。 | 消费复盘、投资复盘、现金流观察、测试。 |
@@ -99,7 +101,9 @@
 | 2026-06-28 | `S11-P2-T3` | `test_validation.cashflow_traceability_required` | `无正式现金流追溯参数` | `true` | 现金流预测必须能解释到账本事件和计划事件。 | 现金流、账本事件、计划事件、报告。 |
 | 2026-06-28 | `S11-P3-T1` | `test_validation.visualization_required_trace_fields` | `Stage 9 有数据状态字段，但没有 Stage 11 测试门必填字段` | `metric_id、formula_id、parameter_hash、data_hash` | 图表数字必须可追溯来源、公式、参数和数据 hash。 | 账户图表、投资图表、消费图表、现金流图表。 |
 | 2026-06-28 | `S11-P3-T2` | `test_validation.visualization_freshness_statuses` | `无正式图表新鲜度测试状态` | `needs_update、updated` | 数据变化后受影响图表不得继续显示旧数据。 | Runtime Diff、图表刷新、报告一致性。 |
-| 2026-06-28 | `S11-P3-T3` | `test_validation.performance_record_count` | `无正式 Stage 11 大量模拟记录数量` | `12000` | 性能测试需要证明大量模拟记录下不明显卡死，并显示 compute time/cache status。 | 可视化性能、缓存状态、用户验收。 |
+| 2026-06-28 | `S11-P3-T3` | `test_validation.performance_record_count` | `无正式 Stage 11 真实记录性能门` | `8815` | 性能测试读取真实 MetaDatabase 标准化流水，不生成替代记录，并显示 compute time/cache status。 | 可视化性能、缓存状态、用户验收。 |
+| 2026-06-28 | `S11-P1-T1..S11-P3-T3` | `test_validation.real_data_source` | `Stage 11 允许构造金额表达验收` | `MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv` | 正式测试门只读取真实标准化流水、真实 read model、本地 hash 和中文真实空态。 | 金融逻辑、跨板块一致性、可视化一致性。 |
+| 2026-06-28 | `S11-P1-T1..S11-P3-T3` | `test_validation.real_empty_state_policy` | `缺失数据可能被构造案例补齐` | `中文真实空态` | 暂无真实 CBA -> Moomoo、信用卡还款、计划事件或持仓快照时不构造金额、交易 ID 或持仓。 | 投资入金、信用卡还款、现金流计划事件、投资资产。 |
 | 2026-06-28 | `S12-P1-T1..S12-P1-T3` | `delivery.tri_base_required_terms` | `无正式 Stage 12 三基交付参数` | `参数中心、标签系统、Interconnection 可视化、双消费口径、现金流图表、diff ticket、公式、阈值、评分、分类、可视化规则` | 三基文件必须同步本次所有参数、公式、阈值、评分、分类、标签和可视化规则。 | 模型参数文件、功能清单、开发记录。 |
 | 2026-06-28 | `S12-P2-T1` | `delivery.review_html_path` | `无 Stage 12 UI/UX 审查 HTML` | `PFI/web/pfi_v022_logic_review.html` | 交付本地中文、可打开、可点击的审查页，覆盖参数、分类、标签、图表、diff、Interconnection。 | 本地浏览器验收、用户人工复核。 |
 | 2026-06-28 | `S12-P2-T2` | `delivery.roadmap_structure` | `Roadmap 可退回 milestone 表达` | `Stage -> Phase -> Task` | 防止最终交付物丢失 Phase/Task 追踪。 | Roadmap、验证报告、GitHub 验收。 |
