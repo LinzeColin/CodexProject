@@ -223,6 +223,29 @@ class CliTests(unittest.TestCase):
                 self.assertFalse(payload["real_smtp_send_enabled"], command)
                 self.assertFalse(payload["scheduler_install_enabled"], command)
 
+    def test_plan_final_bundle_prerequisites_json_command_blocks_without_artifacts(self):
+        buffer = io.StringIO()
+        with redirect_stdout(buffer):
+            result = main(["plan-final-bundle-prerequisites", "--json"])
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(result, 2)
+        self.assertEqual(payload["status"], "blocked")
+        self.assertEqual(payload["scope"], "final_bundle_prerequisite_plan_only_no_production_acceptance")
+        self.assertEqual(payload["next_required_step"], "INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION")
+        self.assertFalse(payload["all_required_steps_passed"])
+        self.assertFalse(payload["ready_for_final_bundle_manifest"])
+        step_status = {step["step_id"]: step["status"] for step in payload["ordered_steps"]}
+        self.assertEqual(step_status["NO_PRODUCTION_SIDE_EFFECT_ATTESTATION"], "pass")
+        self.assertIn("independent_final_reviewer_assignment_missing", payload["blocking_reasons"])
+        self.assertNotIn("no_production_side_effect_attestation_missing", payload["blocking_reasons"])
+        self.assertFalse(payload["production_acceptance_claimed"])
+        self.assertFalse(payload["integrated_production_accepted"])
+        self.assertFalse(payload["daily_operation_enabled"])
+        self.assertFalse(payload["real_smtp_send_enabled"])
+        self.assertFalse(payload["scheduler_install_enabled"])
+        self.assertEqual(payload["plan_validation_errors"], [])
+
     def test_validate_p0_p1_zero_proof_passes_valid_artifact_without_production_claim(self):
         zero_proof = {
             "schema_version": S2PMT07_P0_P1_ZERO_PROOF_SCHEMA_VERSION,

@@ -1,4 +1,9 @@
 # Changelog
+
+## 2026-06-29 00:14:34 Australia/Sydney - S2PMT07-FINAL-BUNDLE-PREREQUISITE-PLAN-CLI
+
+- Expose `adp plan-final-bundle-prerequisites --json` as a blocked, no-production S2PMT07 prerequisite plan CLI.
+- The plan consumes committed `FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json` as `NO_PRODUCTION_SIDE_EFFECT_ATTESTATION=pass` while keeping reviewer assignment, P0/P1 zero proof, S2PLT04 report, final command execution, handoff, signoff, manifest, final bundle, P0/P1 closure, and production acceptance blocked.
 - 2026-06-28 23:58:57 Australia/Sydney: Added remaining S2PMT07 final-bundle artifact CLI validators for manifest, S2PLT04 completion report, no-production attestation, and next-agent handoff; manifest/report/handoff remain blocked when missing, committed no-production attestation validates pass, and no final-bundle artifact, P0/P1 closure, S2PLT04 completion, SMTP, scheduler, Release, restore, DAILY_OPERATION, or integrated production acceptance is claimed.
 - 2026-06-28 23:41:05 Australia/Sydney: Added `validate-final-command-execution` CLI validation for future `FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json`; missing artifact returns blocked/exit 2 with `final_command_execution_missing`, and final command execution, reviewer assignment, P0/P1 closure, S2PLT04, final bundle, scheduler, SMTP, Release, restore, DAILY_OPERATION, and integrated production acceptance remain blocked.
 - 2026-06-28 23:23:48 Australia/Sydney: Added `validate-p0-p1-zero-proof` CLI validation for future `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json`; missing artifact returns blocked/exit 2 with `p0_p1_zero_proof_artifact_missing`, and P0/P1 closure, S2PLT04, final bundle, scheduler, SMTP, Release, restore, DAILY_OPERATION, and integrated production acceptance remain blocked.

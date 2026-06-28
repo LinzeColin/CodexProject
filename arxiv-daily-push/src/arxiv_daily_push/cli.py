@@ -117,6 +117,7 @@ from .stage2_final_gate import (
     S2PMT07_P0_P1_ZERO_PROOF_ARTIFACT_PATH,
     build_final_acceptance_bundle_readiness_state,
     build_final_acceptance_bundle_manifest_validation_state,
+    build_final_bundle_prerequisite_plan_state,
     build_final_command_execution_validation_state,
     build_independent_final_closure_decision_owner_packet_state,
     build_independent_final_reviewer_assignment_owner_packet_state,
@@ -126,6 +127,7 @@ from .stage2_final_gate import (
     build_p0_p1_zero_proof_artifact_validation_state,
     build_s2plt04_completion_report_validation_state,
     validate_final_acceptance_bundle_readiness_state,
+    validate_final_bundle_prerequisite_plan_state,
     validate_independent_final_closure_decision_owner_packet_state,
     validate_independent_final_reviewer_assignment_owner_packet_state,
 )
@@ -1265,6 +1267,16 @@ def build_parser() -> argparse.ArgumentParser:
         "--json",
         action="store_true",
         help="Print JSON owner/reviewer closure decision packet.",
+    )
+
+    final_bundle_prerequisites = subparsers.add_parser(
+        "plan-final-bundle-prerequisites",
+        help="Print the S2PMT07 final-bundle prerequisite execution plan without production side effects.",
+    )
+    final_bundle_prerequisites.add_argument(
+        "--json",
+        action="store_true",
+        help="Print JSON prerequisite plan.",
     )
 
     final_acceptance_bundle = subparsers.add_parser(
@@ -3566,6 +3578,24 @@ def main(argv: list[str] | None = None) -> int:
             for error in errors:
                 print(f"- error: {error}")
         return 0 if not errors else 2
+    if args.command == "plan-final-bundle-prerequisites":
+        report = build_final_bundle_prerequisite_plan_state()
+        errors = validate_final_bundle_prerequisite_plan_state(report)
+        output = {**report, "plan_validation_errors": errors}
+        if args.json:
+            print(json.dumps(output, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- task_id: {report.get('task_id')}")
+            print(f"- next_required_step: {report.get('next_required_step')}")
+            print(f"- ready_for_final_bundle_manifest: {report.get('ready_for_final_bundle_manifest')}")
+            for step in report.get("ordered_steps", []):
+                print(f"- step: {step.get('step_id')} status={step.get('status')} artifact={step.get('artifact_ref')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if report["status"] == "pass" and not errors else 2
     if args.command == "validate-final-acceptance-bundle":
         report = build_final_acceptance_bundle_readiness_state(repo_root=Path(args.repo_root))
         errors = validate_final_acceptance_bundle_readiness_state(report)

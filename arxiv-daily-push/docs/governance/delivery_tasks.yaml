@@ -4479,3 +4479,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+  - task_id: "S2PMT07-FINAL-BUNDLE-PREREQUISITE-PLAN-CLI"
+    title: "S2PMT07 final bundle prerequisite plan CLI"
+    phase: "S2PM"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-29T00:14:34+10:00"
+    summary: "Expose the final-bundle prerequisite plan through CLI while consuming the committed no-production attestation and keeping missing final artifacts blocked."
+    owner: "content_owner + engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_CLI.md", "governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-PREREQUISITE-PLAN-CLI-20260629.json"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_plan_prereq_artifact_red PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_cli.py arxiv-daily-push/tests/test_stage2_final_gate.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_plan_prereq_green2 PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_cli.py arxiv-daily-push/tests/test_stage2_final_gate.py -q"]
+    test_results: ["TDD red failed as expected because plan-final-bundle-prerequisites was not a recognized CLI command and the prerequisite plan did not consume the committed no-production attestation", "focused CLI/final-gate tests: 97 OK"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-PREREQUISITE-PLAN-CLI-20260629.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_CLI.md", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
+    result: "Final-bundle prerequisite plan is available through CLI; no-production attestation is pass, first required blocked step is independent final reviewer assignment, and live final bundle remains blocked."
+    risk: "A prerequisite-plan CLI can be misread as final bundle progress unless next_required_step, blocked status, and production flags stay explicit."
+    rollback: "Revert CLI parser/dispatcher changes, final-gate plan changes, focused regression tests, phase record, manifest, traceability row, delivery task, event records, generated views, and three base records; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

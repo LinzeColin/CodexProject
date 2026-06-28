@@ -21,12 +21,21 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 248
+- task_count: 249
 - acceptance_count: 127
 
 ## Delivery Tasks
 
 The machine-readable task source is `delivery_tasks.yaml`.
+
+
+## 2026-06-29 00:14:34 Australia/Sydney - S2PMT07 Final Bundle Prerequisite Plan CLI
+
+- `S2PMT07-FINAL-BUNDLE-PREREQUISITE-PLAN-CLI` exposes `adp plan-final-bundle-prerequisites --json` so owner/coordinator/future independent final reviewer can see the exact ordered prerequisite plan without entering Python internals.
+- The plan now consumes committed `FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json`; `NO_PRODUCTION_SIDE_EFFECT_ATTESTATION` is `pass`, while first blocked step remains `INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION`.
+- Current blockers remain reviewer assignment, P0/P1 zero proof, S2PLT04 completion report, final command execution, next-agent handoff, independent signoff, final bundle manifest, inherited P0=8, and inherited P1=37.
+- The CLI returns `blocked` / exit 2 by design and does not create final-bundle artifacts, assign a reviewer, close P0/P1, complete S2PLT04, execute final commands, or accept production.
+- No SMTP, scheduler, Release, restore, schema/DB, source/ranking, CURRENT/V7, DAILY_OPERATION, or integrated production acceptance side effect is claimed.
 
 ## 2026-06-28 23:58:57 Australia/Sydney - S2PMT07 Remaining Final-Bundle Artifact CLI Validators
 
