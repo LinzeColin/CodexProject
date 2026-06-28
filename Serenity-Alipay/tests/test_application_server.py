@@ -535,6 +535,38 @@ def test_application_autoscheduler_run_once_writes_success_status(monkeypatch, t
     assert read_autoscheduler_status(settings)["last_tick_action"] == "no_due_slot"
 
 
+def test_read_autoscheduler_status_reports_recent_launchd_tick(tmp_path):
+    settings = temp_settings(tmp_path)
+    init_db(settings.db_path)
+    created_at = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    with connect(settings.db_path) as conn:
+        conn.execute(
+            """
+            INSERT INTO automation_tick_log (
+              tick_time_bj, tick_time_au, due_slot, action, run_id, dry_run, created_at
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                "2026-06-29T07:47:16+08:00",
+                "2026-06-29T09:47:16+10:00",
+                None,
+                "no_due_slot",
+                None,
+                1,
+                created_at,
+            ),
+        )
+
+    status = read_autoscheduler_status(settings)
+
+    assert status["status"] == "success"
+    assert status["scheduler_kind"] == "launchd_interval"
+    assert status["application_server_autoscheduler_status"] == "not_started"
+    assert status["last_tick_action"] == "no_due_slot"
+    assert status["external_scheduler"]["fresh"] is True
+
+
 def test_application_server_starts_autoscheduler(monkeypatch, tmp_path):
     settings = temp_settings(tmp_path)
     events = {}

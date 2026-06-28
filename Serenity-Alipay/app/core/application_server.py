@@ -118,22 +118,97 @@ def _next_real_slot_snapshot(settings: Settings, current: datetime | None = None
     return {"slot": None, "run_time_bj": None, "run_time_au": None}
 
 
+def _parse_utc_datetime(value: object) -> datetime | None:
+    if not value:
+        return None
+    try:
+        parsed = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc)
+
+
+def _latest_launchd_tick_status(settings: Settings) -> dict[str, object] | None:
+    if not settings.db_path.exists():
+        return None
+    try:
+        with connect(settings.db_path) as conn:
+            row = conn.execute(
+                """
+                SELECT tick_time_bj, tick_time_au, due_slot, action, run_id, dry_run, created_at
+                FROM automation_tick_log
+                ORDER BY id DESC
+                LIMIT 1
+                """
+            ).fetchone()
+    except Exception:
+        return None
+    if not row:
+        return None
+
+    created_at = _parse_utc_datetime(row["created_at"])
+    age_seconds = None
+    fresh = False
+    if created_at:
+        age_seconds = (datetime.now(timezone.utc) - created_at).total_seconds()
+        # launchd fires every 180 seconds; allow two missed intervals plus slack.
+        fresh = age_seconds <= 420
+
+    return {
+        "scheduler_kind": "launchd_interval",
+        "fresh": fresh,
+        "freshness_threshold_seconds": 420,
+        "age_seconds": age_seconds,
+        "last_tick_action": row["action"],
+        "last_due_slot": row["due_slot"],
+        "last_run_id": row["run_id"],
+        "last_tick_time_bj": row["tick_time_bj"],
+        "last_tick_time_au": row["tick_time_au"],
+        "last_created_at": row["created_at"],
+        "last_dry_run": bool(row["dry_run"]),
+    }
+
+
 def read_autoscheduler_status(settings: Settings) -> dict[str, object]:
     path = _autoscheduler_status_path(settings)
+    payload: dict[str, object] | None = None
     if path.exists():
         try:
             data = json.loads(path.read_text(encoding="utf-8"))
             if isinstance(data, dict):
                 data["status_path"] = str(path)
-                return data
+                payload = data
         except json.JSONDecodeError:
             pass
-    return {
-        "status": "not_started",
-        "scheduler_kind": "application_server_interval",
-        "status_path": str(path),
-        "next_real_slot": _next_real_slot_snapshot(settings),
-    }
+    if payload is None:
+        payload = {
+            "status": "not_started",
+            "scheduler_kind": "application_server_interval",
+            "status_path": str(path),
+            "next_real_slot": _next_real_slot_snapshot(settings),
+        }
+
+    launchd_tick = _latest_launchd_tick_status(settings)
+    if launchd_tick:
+        payload["external_scheduler"] = launchd_tick
+    if (
+        launchd_tick
+        and launchd_tick.get("fresh")
+        and str(payload.get("status") or "") in {"not_started", "stopped"}
+    ):
+        payload["application_server_autoscheduler_status"] = payload.get("status")
+        payload["status"] = "success"
+        payload["scheduler_kind"] = "launchd_interval"
+        payload["thread_alive"] = False
+        payload["last_tick_action"] = launchd_tick.get("last_tick_action")
+        payload["last_due_slot"] = launchd_tick.get("last_due_slot")
+        payload["last_run_id"] = launchd_tick.get("last_run_id")
+        payload["last_tick_time_bj"] = launchd_tick.get("last_tick_time_bj")
+        payload["last_tick_time_au"] = launchd_tick.get("last_tick_time_au")
+        payload["last_exit_code"] = 0
+    return payload
 
 
 class ApplicationAutoScheduler:

@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased - Launchd Scheduler Status Clarity
+
+- Fixed `/api/scheduler/status` so a disabled application-server autoscheduler no longer makes the whole system look stopped when the external LaunchAgent is actively ticking.
+- Added read-only aggregation from the latest `automation_tick_log` row; fresh launchd ticks now report `status=success` and `scheduler_kind=launchd_interval`.
+- Added regression coverage for recent launchd tick detection without changing actual scheduling, trading, mail, or run generation behavior.
+
+No historical snapshot, report, immutable creation timestamp, first pool entry timestamp, or prior analysis record was rewritten by this change.
+
 ## Unreleased - Immutable Pool Entry Guard
 
 - Fixed `record_asset_pool_entries()` so first candidate/holding/observation pool entry facts are resolved from historical `recommendation_snapshot + run_log` before insertion, instead of blindly using the current run.
