@@ -4180,3 +4180,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PJT02-S2PJT03-OWNER-SNAPSHOT-SUMMARY-SYNC"
+    phase: "S2PJ"
+    objective: "Synchronize shallow GitHub user-center summary wording with the already-written 2026-06-28 review/action/capability/ROI snapshot."
+    scope: "Shallow user-center README and one-look/three-check summaries, timestamp refresh, focused user-center regression test, phase record, run manifest, traceability row, delivery task, event record, and three base files."
+    non_scope: "No source adapter, ranking, queue schema, public schema, SMTP transport, scheduler install or enablement, Release upload, production restore, CURRENT pointer, V7.1/V7.2 contract file, P0/P1 closure, S2PLT02 acceptance, S2PLT04 completion, DAILY_OPERATION, or integrated production acceptance change."
+    status: "completed"
+    dependencies: ["S2PJT02", "S2PJT03", "S2PMT07-NO-PRODUCTION-ATTESTATION-READINESS-SYNC"]
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/用户中心/README.md", "arxiv-daily-push/用户中心/一看三查.md", "arxiv-daily-push/用户中心/复习行动与收益.md", "governance/run_manifests/ADP-S2PJT02-S2PJT03-OWNER-SNAPSHOT-SUMMARY-SYNC-20260628.json"]
+    acceptance_ids: ["ACC-S2PJ-OWNER-USER-CENTER-SNAPSHOT"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_owner_snapshot_summary PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_user_center_candidate_pool.py -q", "PYTHONPATH=arxiv-daily-push/src python3 arxiv-daily-push/scripts/update_user_center_timestamps.py --check", "PYTHONPATH=arxiv-daily-push/src python3 arxiv-daily-push/scripts/update_user_center_learning_snapshot.py --check --state-dir /Users/linzezhang/.adp/arxiv-daily-push"]
+    test_results: ["targeted user-center tests: 18 OK before governance sync", "user-center timestamp check: 18 pages valid before governance sync", "learning snapshot check against local state: valid", "project governance: errors 0 warnings 0 before governance sync", "final validation pending"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PJT02-S2PJT03-OWNER-SNAPSHOT-SUMMARY-SYNC-20260628.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PJT02_S2PJT03_OWNER_SNAPSHOT_SUMMARY_SYNC.md", "arxiv-daily-push/用户中心/复习行动与收益.md"]
+    result: "2026-06-28 review/action/capability/ROI snapshot summary is visible from shallow GitHub user-center pages; S2PMT07 and production acceptance remain blocked."
+    risk: "Visible owner snapshot numbers can be misread as daily operation or Stage 2 production acceptance."
+    rollback: "Revert the shallow user-center wording, timestamp refresh, test, phase record, manifest, traceability row, delivery task, events, and three base records; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

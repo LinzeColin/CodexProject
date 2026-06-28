@@ -110,6 +110,22 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertNotIn("| 原始定位 |", page)
         self.assertEqual(page.count("[CONTENT_LEDGER.csv](../docs/owner/CONTENT_LEDGER.csv)"), len(generated_rows) + 1)
 
+    def test_learning_snapshot_summary_pages_do_not_revert_to_pending_after_daily_snapshot(self):
+        snapshot_page = (USER_CENTER / "复习行动与收益.md").read_text(encoding="utf-8")
+        readme = (USER_CENTER / "README.md").read_text(encoding="utf-8")
+        one_check_three = (USER_CENTER / "一看三查.md").read_text(encoding="utf-8")
+
+        self.assertIn("本表已由 2026-06-28 本地恢复补发运行写入", snapshot_page)
+        self.assertIn("| 今日到期复习 | 0 项 |", snapshot_page)
+        self.assertIn("| 今日 15 分钟行动 | 1 项 |", snapshot_page)
+        self.assertIn("| 新增能力资产 | 1 项 |", snapshot_page)
+        self.assertIn("复习行动与收益](./复习行动与收益.md) 已显示字段、证据链和 2026-06-28 今日快照数字", readme)
+        self.assertIn("复习行动与收益](./复习行动与收益.md) 已有 GitHub 展示位、证据链和 2026-06-28 今日快照数字", one_check_three)
+        self.assertNotIn("今日快照待写入", readme)
+        self.assertNotIn("今日快照待写入", one_check_three)
+        self.assertNotIn("仍需真实运行写入的数字", one_check_three)
+        self.assertNotIn("当前仓库没有可作为今日真实数字的持久化日报", one_check_three)
+
     def test_traceability_chain_page_exposes_all_matrix_rows_as_clickable_links(self):
         matrix_rows = list(csv.DictReader(TRACEABILITY_MATRIX.read_text(encoding="utf-8").splitlines()))
         page = TRACEABILITY_CHAIN_PAGE.read_text(encoding="utf-8")
@@ -117,7 +133,7 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         readme = (USER_CENTER / "README.md").read_text(encoding="utf-8")
 
         self.assertGreaterEqual(len(matrix_rows), 245)
-        self.assertEqual(len(matrix_rows), 324)
+        self.assertEqual(len(matrix_rows), 325)
         self.assertEqual(len(table_rows), len(matrix_rows))
         self.assertTrue(page.startswith("# 功能任务测试证据追踪链\n"))
         self.assertRegex(page, r"更新时间：\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} Australia/Sydney")
@@ -126,7 +142,7 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("[运行清单](../../governance/run_manifests/ADP-S2PAT05-TRACEABILITY-CHAIN-C010-20260627.json)", page)
         self.assertIn("| 序号 | 需求 | 任务 | 验收 | 代码 | 配置 | 测试 | 运行证据 | 状态 |", page)
         self.assertIn("[test_stage2_sources.py](../tests/test_stage2_sources.py)", page)
-        self.assertIn("TRACEABILITY_MATRIX 行数 | 324", page)
+        self.assertIn("TRACEABILITY_MATRIX 行数 | 325", page)
         self.assertIn("REQ-ADP-LOCAL-DAILY-M1-M4-SEND-ORCHESTRATION", page)
         self.assertIn("LOCAL-DAILY-M1-M4-SEND-ORCHESTRATION", page)
         self.assertIn("PHASE_LOCAL_DAILY_M1_M4_SEND_ORCHESTRATION_20260628.md", page)
@@ -185,6 +201,10 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("PHASE_S2PMT07_NO_PRODUCTION_ATTESTATION_READINESS_SYNC.md", page)
         self.assertIn("ADP-S2PMT07-NO-PRODUCTION-ATTESTATION-READINESS-SYNC-20260628.json", page)
         self.assertIn("no_production_attestation_readiness_sync_final_bundle_still_blocked", page)
+        self.assertIn("REQ-ADP-V7-041-S2PJT02-S2PJT03-OWNER-SNAPSHOT-SUMMARY-SYNC", page)
+        self.assertIn("S2PJT02-S2PJT03-OWNER-SNAPSHOT-SUMMARY-SYNC", page)
+        self.assertIn("ADP-S2PJT02-S2PJT03-OWNER-SNAPSHOT-SUMMARY-SYNC-20260628.json", page)
+        self.assertIn("owner_snapshot_summary_synced_no_production_no_acceptance", page)
         self.assertIn("REQ-ADP-V7-039-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-OWNER-PACKET", page)
         self.assertIn("S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-OWNER-PACKET", page)
         self.assertIn("ADP-S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-OWNER-PACKET-20260628.json", page)

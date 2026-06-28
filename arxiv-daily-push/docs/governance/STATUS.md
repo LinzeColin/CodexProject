@@ -2,10 +2,10 @@
 
 ## Snapshot Metadata
 
-- source_base_commit: `9fbb0c4eb240a1782bae3db4db873ded37ac21f4`
+- source_base_commit: `b15bb02e85bd9b5041bf7035d6aba6491cbb5767`
 - source_tree_hash: `23334defdf6e168d709c223d61c0998e594f6852`
 - source_snapshot_hash: `sha256:1d38d9ee7a973d11f06c5dd96ecd3cab842d57f04fe9f4916ed65a12088852b1`
-- snapshot_event_time: `2026-06-28T17:32:43+10:00`
+- snapshot_event_time: `2026-06-28T18:04:30+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -48,6 +48,7 @@
 - Next governance task: `S2PMT07`
 - Parallel shadow source task: `NONE_WHILE_S2PMT07_BLOCKED`
 - Next executable task: `S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT`
+- Latest owner snapshot sync: `S2PJT02-S2PJT03-OWNER-SNAPSHOT-SUMMARY-SYNC` wrote 2026-06-28 review/action/capability/ROI summary visibility to shallow GitHub user-center pages without changing production stop gates.
 - Pending/stale events: `261`
 - Tree-bound events: `0`
 - Commit-bound events: `4`
