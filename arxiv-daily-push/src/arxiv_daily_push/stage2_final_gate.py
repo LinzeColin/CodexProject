@@ -3156,8 +3156,29 @@ def build_independent_final_reviewer_assignment_hash(payload: Mapping[str, Any])
     return f"sha256:{_stable_hash(payload_without_hash)}"
 
 
-def _is_assignment_template_placeholder(value: Any) -> bool:
-    return isinstance(value, str) and "REPLACE_WITH" in value
+def _is_final_bundle_template_placeholder(value: Any) -> bool:
+    if not isinstance(value, str):
+        return False
+    return "REPLACE_WITH" in value or "RECOMPUTE_WITH" in value
+
+
+def _final_bundle_template_placeholder_errors(value: Any, path: str = "") -> list[str]:
+    if _is_final_bundle_template_placeholder(value):
+        location = path or "<root>"
+        return [f"template placeholder found at {location}"]
+    if isinstance(value, Mapping):
+        errors: list[str] = []
+        for key, child in value.items():
+            child_path = f"{path}.{key}" if path else str(key)
+            errors.extend(_final_bundle_template_placeholder_errors(child, child_path))
+        return errors
+    if isinstance(value, (list, tuple)):
+        errors = []
+        for index, child in enumerate(value):
+            child_path = f"{path}[{index}]" if path else f"[{index}]"
+            errors.extend(_final_bundle_template_placeholder_errors(child, child_path))
+        return errors
+    return []
 
 
 def validate_independent_final_reviewer_assignment_artifact(payload: Mapping[str, Any] | None) -> list[str]:
@@ -3166,6 +3187,7 @@ def validate_independent_final_reviewer_assignment_artifact(payload: Mapping[str
     if payload is None:
         return ["independent_final_reviewer_assignment_missing"]
     errors: list[str] = []
+    errors.extend(_final_bundle_template_placeholder_errors(payload))
     for field in S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_REQUIRED_FIELDS:
         if field not in payload:
             errors.append(f"{field} is required")
@@ -3177,7 +3199,7 @@ def validate_independent_final_reviewer_assignment_artifact(payload: Mapping[str
         errors.append("contract_id must be ADP-PRODUCT-CONTRACT-V7.2")
     if not isinstance(payload.get("generated_at"), str) or not payload.get("generated_at"):
         errors.append("generated_at must be a non-empty string")
-    elif _is_assignment_template_placeholder(payload.get("generated_at")):
+    elif _is_final_bundle_template_placeholder(payload.get("generated_at")):
         errors.append("generated_at must not be a template placeholder")
     if payload.get("assignment_decision") != S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_DECISION:
         errors.append("assignment_decision is invalid")
@@ -3186,7 +3208,7 @@ def validate_independent_final_reviewer_assignment_artifact(payload: Mapping[str
     reviewer_id = assignment.get("reviewer_id")
     if not isinstance(reviewer_id, str) or not reviewer_id:
         errors.append("reviewer_assignment.reviewer_id must be a non-empty string")
-    elif _is_assignment_template_placeholder(reviewer_id):
+    elif _is_final_bundle_template_placeholder(reviewer_id):
         errors.append("reviewer_assignment.reviewer_id must not be a template placeholder")
     if reviewer_id == "codex-current-agent":
         errors.append("reviewer_assignment.reviewer_id must not be codex-current-agent")
@@ -3650,6 +3672,7 @@ def validate_p0_p1_zero_proof_artifact(payload: Mapping[str, Any] | None) -> lis
     if payload is None:
         return ["p0_p1_zero_proof_artifact_missing"]
     errors: list[str] = []
+    errors.extend(_final_bundle_template_placeholder_errors(payload))
     for field in S2PMT07_P0_P1_ZERO_PROOF_REQUIRED_FIELDS:
         if field not in payload:
             errors.append(f"{field} is required")
@@ -3744,6 +3767,7 @@ def validate_final_acceptance_bundle_manifest(payload: Mapping[str, Any] | None)
     if payload is None:
         return ["final_acceptance_bundle_manifest_missing"]
     errors: list[str] = []
+    errors.extend(_final_bundle_template_placeholder_errors(payload))
     for field in S2PMT07_FINAL_ACCEPTANCE_BUNDLE_MANIFEST_REQUIRED_FIELDS:
         if field not in payload:
             errors.append(f"{field} is required")
@@ -3843,6 +3867,7 @@ def validate_s2plt04_completion_report(payload: Mapping[str, Any] | None) -> lis
     if payload is None:
         return ["s2plt04_completion_report_missing"]
     errors: list[str] = []
+    errors.extend(_final_bundle_template_placeholder_errors(payload))
     for field in S2PMT07_S2PLT04_COMPLETION_REPORT_REQUIRED_FIELDS:
         if field not in payload:
             errors.append(f"{field} is required")
@@ -3931,6 +3956,7 @@ def validate_final_command_execution_artifact(payload: Mapping[str, Any] | None)
     if payload is None:
         return ["final_command_execution_missing"]
     errors: list[str] = []
+    errors.extend(_final_bundle_template_placeholder_errors(payload))
     for field in S2PMT07_FINAL_COMMAND_EXECUTION_REQUIRED_FIELDS:
         if field not in payload:
             errors.append(f"{field} is required")
@@ -4185,6 +4211,7 @@ def validate_no_production_side_effect_attestation(payload: Mapping[str, Any] | 
     if payload is None:
         return ["no_production_side_effect_attestation_missing"]
     errors: list[str] = []
+    errors.extend(_final_bundle_template_placeholder_errors(payload))
     for field in S2PMT07_NO_PRODUCTION_SIDE_EFFECT_ATTESTATION_REQUIRED_FIELDS:
         if field not in payload:
             errors.append(f"{field} is required")
@@ -4287,6 +4314,7 @@ def validate_next_agent_handoff(payload: Mapping[str, Any] | None) -> list[str]:
     if payload is None:
         return ["next_agent_handoff_missing"]
     errors: list[str] = []
+    errors.extend(_final_bundle_template_placeholder_errors(payload))
     for field in S2PMT07_NEXT_AGENT_HANDOFF_REQUIRED_FIELDS:
         if field not in payload:
             errors.append(f"{field} is required")
@@ -4404,6 +4432,7 @@ def validate_independent_review_signoff_artifact(payload: Mapping[str, Any] | No
     if payload is None:
         return ["independent_review_signoff_missing"]
     errors: list[str] = []
+    errors.extend(_final_bundle_template_placeholder_errors(payload))
     for field in S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_REQUIRED_FIELDS:
         if field not in payload:
             errors.append(f"{field} is required")
