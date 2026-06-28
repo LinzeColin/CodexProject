@@ -16,6 +16,7 @@ from arxiv_daily_push.stage2_final_gate import (
     S2PLT02_PARTIAL_REAL_DELIVERY_NEWLY_SENT_PRODUCTS,
     S2PLT02_PARTIAL_REAL_DELIVERY_PRODUCTS,
     S2PLT02_M4_WATERMARK_PROOF_MODEL_ID,
+    S2PLT02_M4_WATERMARK_PROOF_RECORD_REF,
     S2PLT02_M4_WATERMARK_PROOF_SCOPE,
     S2PLT02_M4_WATERMARK_REQUIRED_TERMINAL_PRODUCTS,
     S2PLT03_BLOCKING_REASONS,
@@ -233,7 +234,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(ledger["two_day_delivery_evidence_present"])
 
     def test_s2plt02_m4_watermark_proof_blocks_when_current_m4_has_no_explicit_watermark(self) -> None:
-        proof = build_s2plt02_m4_watermark_proof_state()
+        proof = build_s2plt02_m4_watermark_proof_state(watermark_proofs=[])
 
         self.assertEqual(proof["model_id"], S2PLT02_M4_WATERMARK_PROOF_MODEL_ID)
         self.assertEqual(proof["status"], "blocked")
@@ -246,6 +247,25 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(proof["s2plt02_accepted"])
         self.assertFalse(proof["production_acceptance_claimed"])
         self.assertEqual(validate_s2plt02_m4_watermark_proof_state(proof), [])
+
+    def test_s2plt02_m4_watermark_proof_consumes_committed_same_day_record_without_acceptance(self) -> None:
+        proof = build_s2plt02_m4_watermark_proof_state()
+
+        self.assertEqual(proof["model_id"], S2PLT02_M4_WATERMARK_PROOF_MODEL_ID)
+        self.assertEqual(proof["status"], "ready")
+        self.assertEqual(proof["proof_refs"], [S2PLT02_M4_WATERMARK_PROOF_RECORD_REF])
+        self.assertEqual(proof["covered_service_dates"], ["2026-06-28"])
+        self.assertEqual(proof["missing_service_dates"], [])
+        self.assertTrue(proof["m4_watermark_correct"])
+        self.assertFalse(proof["s2plt02_accepted"])
+        self.assertFalse(proof["production_acceptance_claimed"])
+        self.assertFalse(proof["stage2_integrated_production_accepted"])
+        self.assertEqual(validate_s2plt02_m4_watermark_proof_state(proof), [])
+
+        ready = proof["ready_proofs_by_service_date"]["2026-06-28"]
+        self.assertEqual(ready["proof_ref"], S2PLT02_M4_WATERMARK_PROOF_RECORD_REF)
+        self.assertEqual(ready["m4_delivery_ref"], "smtp://message/smtp-delivery:7f815186af789297")
+        self.assertEqual(ready["terminal_mail_products"], ["M1", "M2", "M3"])
 
     def test_s2plt02_m4_watermark_proof_accepts_explicit_same_day_proof_without_acceptance(self) -> None:
         ledger = build_s2plt02_delivery_evidence_ledger_state()
@@ -339,8 +359,9 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertTrue(state["available_evidence"]["NO_DUPLICATE_EMAILS"])
         self.assertFalse(state["available_evidence"]["REAL_SCHEDULER_PROVEN"])
         self.assertTrue(state["available_evidence"]["REAL_SMTP_PROVEN"])
-        self.assertFalse(state["m4_watermark_correct"])
-        self.assertEqual(state["m4_watermark_proof"]["status"], "blocked")
+        self.assertTrue(state["m4_watermark_correct"])
+        self.assertTrue(state["available_evidence"]["M4_WATERMARK_CORRECT"])
+        self.assertEqual(state["m4_watermark_proof"]["status"], "ready")
         self.assertEqual(state["partial_real_delivery_evidence"]["status"], "partial")
         self.assertEqual(state["delivery_evidence_ledger"]["status"], "partial")
         self.assertFalse(state["delivery_evidence_ledger"]["two_day_delivery_evidence_present"])
@@ -358,11 +379,11 @@ class Stage2FinalGateTests(unittest.TestCase):
             "two_consecutive_real_days_not_proven",
             "eight_real_emails_not_proven",
             "real_scheduler_not_proven",
-            "m4_watermark_not_proven",
             "inherited_v7_1_p0_findings_open",
             "inherited_v7_1_p1_findings_open",
         ):
             self.assertIn(reason, report["blocking_reasons"])
+        self.assertNotIn("m4_watermark_not_proven", report["blocking_reasons"])
         self.assertNotIn("real_smtp_not_proven", report["blocking_reasons"])
         self.assertFalse(report["gates"]["s2plt01_accepted"])
         self.assertFalse(report["gates"]["real_scheduler_proven"])

@@ -21,12 +21,18 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 224
+- task_count: 225
 - acceptance_count: 126
 
 ## Delivery Tasks
 
 The machine-readable task source is `delivery_tasks.yaml`.
+## 2026-06-28 13:33:15 Australia/Sydney - S2PLT02 M4 Watermark Proof Record
+
+- `S2PLT02-M4-WATERMARK-PROOF-RECORD` turns the 2026-06-28 M4 watermark proof state from missing proof record to ready for the current ledger service date.
+- S2PLT02 remains blocked by S2PLT01, second real natural day, eight total M1-M4 emails, real scheduler proof, inherited P0/P1, S2PLT04, final bundle, and S2PMT07.
+- No SMTP, scheduler, Release, restore, schema/DB, source/ranking, CURRENT/V7, P0/P1 closure, DAILY_OPERATION, or integrated production acceptance side effect is claimed.
+
 
 | Task ID | Phase | Status | Acceptance | Test result | Evidence |
 |---|---|---|---|---|---|
@@ -249,8 +255,8 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PLT01-REPLAY-EVIDENCE-GATE | Full-system replay evidence gate | completed_local_validation | `ACC-S2PLT01-30D` | Validates provided 30 replay days, 120 M1-M4 Email V1 previews, D1-D4 terminal source states, coverage, zero leakage/P0P1 counters, and evidence refs without executing replay or claiming S2PLT01 acceptance. |
 | S2PLT01-REPLAY-PAYLOAD-CONTRACT | Full-system replay payload contract | completed_local_validation | `ACC-S2PLT01-30D` | Wraps explicit replay/mail/source-terminal records in a deterministic no-production payload contract with metadata, evidence mode, payload hash, evidence refs, and forbidden production side-effect flags before entry precheck consumption. |
 | S2PLT01-REPLAY-PAYLOAD-EXECUTION | Full-system replay payload execution package | completed_local_validation | `ACC-S2PLT01-30D` | Builds a validated no-production payload execution package with entry precheck binding, payload/precheck validation errors, blocking reasons, and deterministic execution hash; S2PLT01 remains blocked by inherited P0/P1 and final gates. |
-| S2PLT02 | Two-day live 3+1 mail readiness precheck | blocked | `ACC-S2PLT02-2D` | Fail-closed S2PLT02 readiness precheck for two consecutive real natural days and 8 real M1-M4 emails; S2PLT01 acceptance, real scheduler/SMTP proof, M4 watermark proof, and inherited P0/P1 zero state are missing, so no live run or production side effect is started. |
-| S2PLT02-PARTIAL-REAL-DELIVERY-EVIDENCE | S2PL | blocked | `ACC-S2PLT02-2D` | Binds the recorded 2026-06-28 M1-M4 resend into S2PLT02 as one observed natural day and four observed emails; second day, eight emails, scheduler proof, M4 watermark proof, S2PLT01, P0/P1, S2PLT04, and S2PMT07 remain blocked. |
+| S2PLT02 | Two-day live 3+1 mail readiness precheck | blocked | `ACC-S2PLT02-2D` | Fail-closed S2PLT02 readiness precheck for two consecutive real natural days and 8 real M1-M4 emails; the 2026-06-28 M4 proof record is present, but S2PLT01 acceptance, the second real day, four additional emails, real scheduler proof, and inherited P0/P1 zero state are missing, so no live run or production side effect is started. |
+| S2PLT02-PARTIAL-REAL-DELIVERY-EVIDENCE | S2PL | blocked | `ACC-S2PLT02-2D` | Binds the recorded 2026-06-28 M1-M4 resend into S2PLT02 as one observed natural day and four observed emails; the 2026-06-28 M4 proof record is now present, but second day, eight-email total, scheduler proof, S2PLT01, P0/P1, S2PLT04, and S2PMT07 remain blocked. |
 | S2PLT02-DELIVERY-EVIDENCE-LEDGER | S2PL | blocked | `ACC-S2PLT02-2D` | Adds a delivery manifest ledger for committed real SMTP evidence; current ledger is partial at 1/2 natural days and 4/8 emails, with duplicate service-date/product and forbidden acceptance-flag checks, so S2PLT02 remains blocked. |
 | S2PLT03 | Resilience, capacity, rollback, and state-count precheck | blocked | `ACC-S2PLT03-RESILIENCE` | Fail-closed S2PLT03 readiness precheck for rate-limit, parser-drift, restart, disk-pressure, backup restore-point, executable rollback, and ledger count conservation evidence; S2PLT02 acceptance, real drill proof, backup/rollback proof, ledger conservation proof, and inherited P0/P1 zero state are missing, so no resilience drill completion or production side effect is claimed. |
 | S2PLT04 | Integration candidate precheck | blocked | `ACC-S2PLT04-INTEGRATION-CANDIDATE` | Fail-closed integration candidate precheck summarizing S2PLT01 review evidence, missing S2PLT02/S2PLT03 completion, local state/content evidence, inherited P0/P1 blockers, missing final bundle, and blocked S2PMT07; does not complete S2PLT04 or produce `S2_INTEGRATION_CANDIDATE_READY`. |
@@ -313,13 +319,13 @@ The machine-readable task source is `delivery_tasks.yaml`.
 
 - Added phase record `arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_DELIVERY_EVIDENCE_LEDGER.md`.
 - Added manifest `governance/run_manifests/ADP-S2PLT02-DELIVERY-EVIDENCE-LEDGER-20260628.json`.
-- S2PLT02 delivery evidence now has a manifest ledger that records `observed_natural_days=1 / 2`, `observed_email_count=4 / 8`, `duplicate_email_count=0`, and `duplicate_service_date_count=0`; S2PLT02 acceptance remains blocked until the second real day, eight total emails, scheduler proof, M4 watermark proof, S2PLT01 acceptance, inherited P0/P1 zero state, S2PLT04, final bundle, S2PMT07, daily operation, and integrated production acceptance are proven.
+- S2PLT02 delivery evidence now has a manifest ledger that records `observed_natural_days=1 / 2`, `observed_email_count=4 / 8`, `duplicate_email_count=0`, and `duplicate_service_date_count=0`; the 2026-06-28 M4 proof record is now present, but S2PLT02 acceptance remains blocked until the second real day, eight total emails, scheduler proof, S2PLT01 acceptance, inherited P0/P1 zero state, S2PLT04, final bundle, S2PMT07, daily operation, and integrated production acceptance are proven.
 
 ## 2026-06-28 12:10:01 Australia/Sydney - S2PLT02 partial real delivery evidence
 
 - Added phase record `arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_PARTIAL_REAL_DELIVERY_EVIDENCE.md`.
 - Added manifest `governance/run_manifests/ADP-S2PLT02-PARTIAL-REAL-DELIVERY-EVIDENCE-20260628.json`.
-- S2PLT02 now records the 2026-06-28 local M1-M4 resend as one observed real natural day and four observed emails. S2PLT02 acceptance remains blocked because the second real day, eight total emails, scheduler proof, M4 watermark proof, S2PLT01 acceptance, inherited P0/P1 zero state, S2PLT04, final bundle, S2PMT07, daily operation, and integrated production acceptance remain missing.
+- S2PLT02 now records the 2026-06-28 local M1-M4 resend as one observed real natural day and four observed emails. The 2026-06-28 M4 proof record is now present, but S2PLT02 acceptance remains blocked because the second real day, eight total emails, scheduler proof, S2PLT01 acceptance, inherited P0/P1 zero state, S2PLT04, final bundle, S2PMT07, daily operation, and integrated production acceptance remain missing.
 
 ## 2026-06-28 11:39:47 Australia/Sydney - S2PMT07 final bundle artifact validation
 
@@ -443,3 +449,4 @@ The machine-readable task source is `delivery_tasks.yaml`.
 - 2026-06-28 M1-M4 mail state is now 4 / 4: M1 reused historical sent evidence, and M2/M3/M4 were sent by real SMTP from the local runner using the same-day daily input report.
 - This is local catch-up delivery evidence only; scheduler, Release, source, ranking, CURRENT, V7 contract, DAILY_OPERATION, and integrated production acceptance remain blocked.
 | S2PLT02-M4-WATERMARK-PROOF | S2PL | blocked | ACC-S2PLT02-2D | focused final-gate tests 65 OK before governance sync; final validation recorded in run manifest | `docs/phase_records/PHASE_S2PLT02_M4_WATERMARK_PROOF.md` |
+| S2PLT02-M4-WATERMARK-PROOF-RECORD | S2PL | ready_m4_proof_s2plt02_blocked | ACC-S2PLT02-2D | focused final-gate tests 66 OK before governance sync; final validation recorded in run manifest | `docs/phase_records/PHASE_S2PLT02_M4_WATERMARK_PROOF_RECORD.md`; `governance/run_manifests/ADP-S2PLT02-M4-WATERMARK-PROOF-RECORD-20260628.json` |

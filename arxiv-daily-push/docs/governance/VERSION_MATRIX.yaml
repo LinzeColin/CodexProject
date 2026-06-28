@@ -242,16 +242,16 @@ parameter_profile_versions:
   adp-s2pmt04-install-lifecycle-b001: "adp-s2pmt04-install-lifecycle-b001-v1"
   adp-s2pmt04-install-lifecycle-b001-parameters: "adp-s2pmt04-install-lifecycle-b001-parameters-v1"
 data_snapshot_version: "fixture_arxiv_atom_to_daily_dry_run_v1"
-current_iteration: "ITER-20260628-ADP-S2PLT02-M4-WATERMARK-PROOF"
+current_iteration: "ITER-20260628-ADP-S2PLT02-M4-WATERMARK-PROOF-RECORD"
 current_phase: "S2PL"
-current_gate: "S2PLT02_M4_WATERMARK_PROOF_BLOCKED_NO_ACCEPTANCE"
+current_gate: "S2PLT02_M4_WATERMARK_PROOF_READY_S2PLT02_BLOCKED_NO_ACCEPTANCE"
 current_v6_task_id: "NOT_APPLICABLE"
 current_v7_contract_version: "ADP-PRODUCT-CONTRACT-V7.2"
 current_v7_roadmap_version: "ADP-ROADMAP-V7.2"
 current_v7_task_id: "S2PMT07"
 current_v7_shadow_source_task_id: "NONE_WHILE_S2PMT07_BLOCKED"
 current_v7_final_task_id: "S2PMT07"
-current_v7_legacy_alias: "S2PLT02-M4-WATERMARK-PROOF records an explicit M4 watermark proof validator. The current 2026-06-28 service date is missing an explicit same-cycle proof, so M4 watermark correctness remains false and S2PLT02 remains blocked; no scheduler, Release, production restore, CURRENT/V7 change, DAILY_OPERATION, or integrated production acceptance is claimed"
+current_v7_legacy_alias: "S2PLT02-M4-WATERMARK-PROOF-RECORD records the explicit same-cycle M4 watermark proof for service date 2026-06-28. M4 watermark correctness is ready for the current ledger date, but S2PLT02 remains blocked by S2PLT01, second real day, eight emails, scheduler proof, inherited P0/P1, S2PLT04, final bundle, and S2PMT07; no scheduler, Release, production restore, CURRENT/V7 change, DAILY_OPERATION, or integrated production acceptance is claimed"
 s2plt02_partial_real_delivery_iteration: "ITER-20260628-ADP-S2PLT02-PARTIAL-REAL-DELIVERY-EVIDENCE"
 s2plt02_partial_real_delivery_gate: "S2PLT02_PARTIAL_REAL_DELIVERY_EVIDENCE_BLOCKED_NO_ACCEPTANCE"
 s2plt02_observed_natural_days: 1
@@ -267,13 +267,16 @@ s2plt02_delivery_evidence_ledger_status: "partial"
 s2plt02_delivery_evidence_ledger_duplicate_email_count: 0
 s2plt02_delivery_evidence_ledger_duplicate_service_date_count: 0
 s2plt02_delivery_evidence_ledger_hash: "555c0f122e65823a6311e1c4cc32f4b51253758d98f12db671453bd25378c70e"
-s2plt02_m4_watermark_proof_iteration: "ITER-20260628-ADP-S2PLT02-M4-WATERMARK-PROOF"
-s2plt02_m4_watermark_proof_gate: "S2PLT02_M4_WATERMARK_PROOF_BLOCKED_NO_ACCEPTANCE"
-s2plt02_m4_watermark_proof_status: "blocked"
-s2plt02_m4_watermark_correct: false
+s2plt02_m4_watermark_proof_iteration: "ITER-20260628-ADP-S2PLT02-M4-WATERMARK-PROOF-RECORD"
+s2plt02_m4_watermark_proof_gate: "S2PLT02_M4_WATERMARK_PROOF_READY_S2PLT02_BLOCKED_NO_ACCEPTANCE"
+s2plt02_m4_watermark_proof_status: "ready"
+s2plt02_m4_watermark_correct: true
 s2plt02_m4_watermark_required_terminal_products: "M1,M2,M3"
-s2plt02_m4_watermark_missing_service_dates: "2026-06-28"
-s2plt02_m4_watermark_proof_hash: "fbe5d8aafdf5e46ea398904d204e23bdfe727f0d6f85e7a1c887a41ef6dba365"
+s2plt02_m4_watermark_missing_service_dates: "NONE"
+s2plt02_m4_watermark_covered_service_dates: "2026-06-28"
+s2plt02_m4_watermark_proof_ref_count: 1
+s2plt02_m4_watermark_proof_record_ref: "governance/run_manifests/ADP-S2PLT02-M4-WATERMARK-PROOF-RECORD-20260628.json"
+s2plt02_m4_watermark_proof_hash: "79d64129581c4db6656c422bc0fbb8e814a6a2b25f13b943105506b341f29283"
 local_daily_m1_m4_send_orchestration_iteration: "ITER-20260628-ADP-LOCAL-DAILY-M1-M4-SEND-ORCHESTRATION"
 local_daily_m1_m4_send_orchestration_gate: "LOCAL_DAILY_M1_M4_SEND_ORCHESTRATION_READY_NO_PRODUCTION_ACCEPTANCE"
 local_daily_m1_m4_real_m2_m4_delivery_claimed: true
