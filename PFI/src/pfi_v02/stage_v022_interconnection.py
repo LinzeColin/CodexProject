@@ -37,6 +37,20 @@ STAGE4_MATRIX_FIELDS = (
     "offset_rule_zh",
 )
 
+CASHFLOW_DEPENDENCY_EVENT_TYPES = (
+    "investment_deposit",
+    "fund_subscription",
+    "bullion_purchase",
+    "investment_buy",
+    "investment_sell",
+    "income",
+    "fee",
+    "refund",
+    "credit_card_repayment",
+    "internal_transfer",
+    "fx_conversion",
+)
+
 
 @dataclass(frozen=True)
 class EventTypePolicy:
@@ -352,9 +366,9 @@ def build_metric_dependency_graph() -> dict[str, object]:
             "investment_cash_cny": ("investment_deposit", "investment_sell"),
             "fund_asset_flow_cny": ("fund_subscription",),
             "investment_holding_flow_cny": ("investment_buy", "investment_sell"),
-            "cashflow": ("income", "refund", "credit_card_repayment", "internal_transfer", "fx_conversion"),
+            "cashflow": CASHFLOW_DEPENDENCY_EVENT_TYPES,
         },
-        "no_double_count_rule": "同一 economic_event_id 只进入核心金额一次；同一 interconnection_group 可多处展示但不得在同一指标口径重复计算。",
+        "no_double_count_rule": "同一 interconnection_group_id + event_type 优先只进入核心金额一次；缺少关联组时同一 economic_event_id 只进入核心金额一次。",
     }
 
 
@@ -374,13 +388,16 @@ def _signed_amount(record: InterconnectionRecord, policy: EventTypePolicy) -> De
 
 
 def _dedupe_records(records: Iterable[InterconnectionRecord]) -> tuple[InterconnectionRecord, ...]:
-    by_event: dict[str, InterconnectionRecord] = {}
+    by_event: dict[tuple[str, str], InterconnectionRecord] = {}
     for record in records:
         policy = event_policy(record.event_type)
         normalized = replace(record, event_type=policy.event_type, amount_cny=abs(_decimal(record.amount_cny)))
-        current = by_event.get(normalized.economic_event_id)
+        core_event_type = "consumption" if policy.event_type == "ordinary_consumption" else policy.event_type
+        group_key = normalized.interconnection_group_id.strip() or normalized.economic_event_id
+        dedupe_key = (group_key, core_event_type)
+        current = by_event.get(dedupe_key)
         if current is None or abs(normalized.amount_cny) > abs(current.amount_cny):
-            by_event[normalized.economic_event_id] = normalized
+            by_event[dedupe_key] = normalized
     return tuple(by_event.values())
 
 
