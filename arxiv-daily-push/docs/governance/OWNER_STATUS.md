@@ -31,15 +31,15 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 7. 下一行动、责任角色和验收证据
 
-- next_task_id: `S2PLT02`
-- responsible_role: `content_owner + product_owner`
-- acceptance_ids: `ACC-S2PLT02-2D`
-- unblock_condition: S2PLT02 now has a delivery evidence ledger and an explicit same-cycle M4 watermark proof record for service date 2026-06-28; it still needs a second real natural day, eight total emails, real scheduler proof, S2PLT01 acceptance, inherited P0/P1 zero proof, S2PLT04 completion, and S2PMT07 final review before any Stage 2 production acceptance claim.
+- next_task_id: `S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT`
+- responsible_role: `content_owner + engineering_owner + independent_final_reviewer`
+- acceptance_ids: `ACC-S2PMT07-FINAL-REVIEW`
+- unblock_condition: S2PMT07 当前 7 个 blocker 已映射到所需证据；下一步必须由独立终审 reviewer assignment artifact 和后续 final bundle evidence 解除，当前 agent 不能自证关闭。
 
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `PARTIAL` (1038/1043 active parameters, 119/119 active formulas)
+- implementation_congruence: `PARTIAL` (1039/1044 active parameters, 119/119 active formulas)
 - parameter_source_quality: `PARTIAL`
 - methodological_rationale: `VERIFIED`
 - empirical_validation: `VERIFIED`
@@ -71,14 +71,14 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - model_count: `117`
 - total_formulas: `119`
 - active_formulas: `119`
-- total_parameters: `1060`
-- active_parameters: `1043`
+- total_parameters: `1061`
+- active_parameters: `1044`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PLT02_M4_WATERMARK_PROOF_READY_S2PLT02_BLOCKED_NO_ACCEPTANCE`
+- release_gate: `S2PMT07_REMAINING_BLOCKER_MATRIX_READY_NO_CLOSURE`
 
 ## 14. Evidence Freshness
 
@@ -86,8 +86,8 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - tree_bound_events: `0`
 - commit_bound_events: `4`
 - legacy_unbound_events: `210`
-- precommit_pending_events: `40`
-- pending_or_stale_events: `250`
+- precommit_pending_events: `43`
+- pending_or_stale_events: `251`
 
 ## 15. UNKNOWN
 
@@ -98,12 +98,12 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - source_base_commit: `12e91a8e1b84fe29724f43229131bd43f8fa31cd`
 - source_tree_hash: `8caef1969ddfe23755890506daa0d02e6f6df81f`
 - source_snapshot_hash: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
-- snapshot_event_time: `2026-06-28T13:33:15+10:00`
+- snapshot_event_time: `2026-06-28T14:11:24+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PL / S2PLT02_M4_WATERMARK_PROOF_READY_S2PLT02_BLOCKED_NO_ACCEPTANCE`
+- phase/gate: `S2PM / S2PMT07_REMAINING_BLOCKER_MATRIX_READY_NO_CLOSURE`
 
 ## 17. Next Unique Task
 
-- task_id: `S2PLT01`
-- reason: Keep S2PLT01 fail-closed until inherited P0/P1, full replay, 120 mail previews, D1-D4 terminal source states, and independent review are proven under V7.2 and S2PMT07 blocked boundaries.
+- task_id: `S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT`
+- reason: Current S2PMT07 blockers are mapped to required future evidence; independent reviewer assignment is required before final closure work can proceed.
