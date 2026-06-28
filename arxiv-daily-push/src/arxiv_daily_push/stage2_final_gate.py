@@ -4953,12 +4953,23 @@ def _load_committed_no_production_side_effect_attestation(
     return _load_json_mapping_artifact(artifact_path)
 
 
+def _load_committed_independent_final_reviewer_assignment(
+    repo_root: Path | None = None,
+) -> Mapping[str, Any] | None:
+    """Load the committed independent reviewer assignment artifact when present."""
+
+    root = repo_root or _repo_root_from_source_tree()
+    artifact_path = root / S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_PATH
+    return _load_json_mapping_artifact(artifact_path)
+
+
 def build_final_acceptance_bundle_readiness_state(
     *,
     repo_root: Path | None = None,
     manifest: Mapping[str, Any] | None = None,
     p0_p1_zero_proof: Mapping[str, Any] | None = None,
     s2plt04_completion_report: Mapping[str, Any] | None = None,
+    independent_final_reviewer_assignment: Mapping[str, Any] | None = None,
     independent_review_signoff: Mapping[str, Any] | None = None,
     final_command_execution: Mapping[str, Any] | None = None,
     no_production_side_effect_attestation: Mapping[str, Any] | None = None,
@@ -4980,6 +4991,8 @@ def build_final_acceptance_bundle_readiness_state(
             s2plt04_completion_report = _load_json_mapping_artifact(
                 root / "FINAL_ACCEPTANCE_BUNDLE" / "s2plt04_completion_report.json"
             )
+        if independent_final_reviewer_assignment is None:
+            independent_final_reviewer_assignment = _load_committed_independent_final_reviewer_assignment(root)
         if independent_review_signoff is None:
             independent_review_signoff = _load_yaml_mapping_artifact(
                 root / "FINAL_ACCEPTANCE_BUNDLE" / "independent_review_signoff.yaml"
@@ -5002,7 +5015,7 @@ def build_final_acceptance_bundle_readiness_state(
         build_independent_final_reviewer_assignment_owner_packet_state()
     )
     independent_final_reviewer_assignment_validation = (
-        build_independent_final_reviewer_assignment_validation_state(None)
+        build_independent_final_reviewer_assignment_validation_state(independent_final_reviewer_assignment)
     )
     independent_final_closure_decision_request = (
         build_independent_final_closure_decision_request_state()
@@ -5159,6 +5172,7 @@ def validate_final_acceptance_bundle_readiness_state(state: Mapping[str, Any]) -
     no_production_attestation = _mapping(state.get("no_production_side_effect_attestation_validation"))
     next_agent_handoff = _mapping(state.get("next_agent_handoff_validation"))
     independent_signoff = _mapping(state.get("independent_review_signoff_validation"))
+    reviewer_assignment_validation = _mapping(state.get("independent_final_reviewer_assignment_validation"))
     artifact_presence_checks = (
         (
             "FINAL_ACCEPTANCE_BUNDLE/manifest.json",
@@ -5212,9 +5226,10 @@ def validate_final_acceptance_bundle_readiness_state(state: Mapping[str, Any]) -
         errors.append("final acceptance bundle readiness must expose independent final reviewer assignment request")
     if prebundle.get("INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_OWNER_PACKET") is not True:
         errors.append("final acceptance bundle readiness must expose independent final reviewer assignment owner packet")
-    if prebundle.get("INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION") is not False:
+    expected_assignment_validation_ready = reviewer_assignment_validation.get("status") == "pass"
+    if prebundle.get("INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION") is not expected_assignment_validation_ready:
         errors.append(
-            "final acceptance bundle readiness must not expose independent final reviewer assignment validation as passing"
+            "final acceptance bundle readiness independent final reviewer assignment validation flag must match validation status"
         )
     if prebundle.get("INDEPENDENT_FINAL_CLOSURE_DECISION_REQUEST") is not True:
         errors.append("final acceptance bundle readiness must expose independent final closure decision request")
@@ -5255,11 +5270,21 @@ def validate_final_acceptance_bundle_readiness_state(state: Mapping[str, Any]) -
     )
     if validate_independent_final_reviewer_assignment_owner_packet_state(reviewer_assignment_owner_packet):
         errors.append("final acceptance bundle readiness independent final reviewer assignment owner packet is invalid")
-    reviewer_assignment_validation = _mapping(state.get("independent_final_reviewer_assignment_validation"))
-    if reviewer_assignment_validation.get("status") != "blocked":
-        errors.append(
-            "final acceptance bundle readiness independent final reviewer assignment validation must remain blocked"
-        )
+    if reviewer_assignment_validation.get("status") not in {"pass", "blocked"}:
+        errors.append("final acceptance bundle readiness independent final reviewer assignment validation status is invalid")
+    if reviewer_assignment_validation.get("scope") != "independent_final_reviewer_assignment_validation_only_no_closure":
+        errors.append("final acceptance bundle readiness independent final reviewer assignment validation scope is invalid")
+    if reviewer_assignment_validation.get("status") == "pass":
+        if reviewer_assignment_validation.get("assignment_present") is not True:
+            errors.append("final acceptance bundle readiness assignment validation pass requires artifact presence")
+        if reviewer_assignment_validation.get("independent_final_reviewer_assigned_by_payload") is not True:
+            errors.append("final acceptance bundle readiness assignment validation pass requires reviewer assignment payload")
+        if reviewer_assignment_validation.get("validation_errors") != []:
+            errors.append("final acceptance bundle readiness assignment validation pass requires zero validation errors")
+    if reviewer_assignment_validation.get("state_hash") != _stable_hash(
+        {key: value for key, value in reviewer_assignment_validation.items() if key != "state_hash"}
+    ):
+        errors.append("final acceptance bundle readiness independent final reviewer assignment validation hash is invalid")
     final_closure_request = _mapping(state.get("independent_final_closure_decision_request"))
     if validate_independent_final_closure_decision_request_state(final_closure_request):
         errors.append("final acceptance bundle readiness independent final closure decision request is invalid")

@@ -10,11 +10,29 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.1
 - Current phase: S2PM
-- Current gate: S2PMT07_FINAL_BUNDLE_TEMPLATES_READY_FINAL_BUNDLE_STILL_BLOCKED
-- Confirmed iteration count: 209
+- Current gate: S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_INTAKE_READY_FINAL_BUNDLE_STILL_BLOCKED
+- Confirmed iteration count: 210
 - Reconstructed event count: 0
-- Current task: `S2PMT07-FINAL-BUNDLE-TEMPLATES` provides template-only skeletons under `FINAL_ACCEPTANCE_BUNDLE/templates/` for independent final reviewer assignment, P0/P1 zero proof, S2PLT04 completion report, independent signoff, final command execution, and next-agent handoff. These templates do not count as live final bundle artifacts; `FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json` remains the only present passing artifact, and final bundle remains blocked because manifest, P0/P1 zero proof, S2PLT04 completion report, independent signoff, final command execution, and next-agent handoff are still missing. Latest owner snapshot sync `S2PJT02-S2PJT03-OWNER-SNAPSHOT-SUMMARY-SYNC` only synchronizes shallow GitHub user-center summaries with the already-written 2026-06-28 review/action/capability/ROI snapshot. The owner-visible next action remains supplying real final bundle artifacts and independent final review, and P0/P1 closure, scheduler, Release, DAILY_OPERATION, and integrated production acceptance remain blocked/false.
+- Current task: `S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-ARTIFACT-INTAKE` wires final-bundle readiness to consume a future real `FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json` artifact. The current artifact is still missing, so assignment validation remains blocked and final bundle readiness remains blocked; final bundle remains blocked. Existing templates under `FINAL_ACCEPTANCE_BUNDLE/templates/` remain template-only skeletons; `FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json` remains the only present passing artifact. The owner-visible next action is still to supply a real independent final reviewer assignment artifact and continue independent final review; P0/P1 closure, S2PLT04 completion, scheduler, Release, DAILY_OPERATION, and integrated production acceptance remain blocked/false.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. Local daily M1-M4 orchestration is now recorded as readiness evidence, but V7.2 contract baseline migration blockers are zero while real restore, real SMTP production, scheduler installation, final acceptance bundle creation, directory-level final bundle artifact validation pass, P0/P1 closure, S2PLT04 completion, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
+
+### `ITER-20260628-ADP-S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-ARTIFACT-INTAKE`
+
+- Timestamp: `2026-06-28T19:40:00+10:00`
+- Fact level: EXTRACTED from final-bundle readiness helper, focused TDD regression test, phase record, run manifest, traceability row, delivery task, event record, and three base files.
+- Base commit: `94c5d2f4d01998c5dd94e485384f46c55ac6dddf`
+- Product version: `0.23.1`
+- Status: independent final reviewer assignment artifact intake is ready; the real assignment artifact is still missing and final bundle remains blocked.
+- Task IDs: `S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-ARTIFACT-INTAKE`; parent `S2PMT07`; acceptance `ACC-S2PMT07-FINAL-REVIEW`.
+- Goal: Ensure the future owner/coordinator-supplied assignment artifact is read and validated by final-bundle readiness instead of being ignored, without self-assigning a reviewer.
+- Files changed: S2PMT07 final gate helper, final-gate regression test, phase record, run manifest, traceability/delivery/event records, and three base files.
+- Decisions: `INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION` can pass only when a real valid assignment artifact is present. Current repository state has no live assignment artifact, so assignment validation remains blocked and no closure or production flag is changed.
+- Validation: TDD red failed because readiness did not consume a valid temporary assignment artifact; focused final-gate tests 76 OK after the loader/readiness path was added. Final run-level validation is recorded in the run manifest and closeout.
+- Boundaries: No independent reviewer assignment, no independent final closure decision, no zero-proof artifact, no P0/P1 closure, no S2PLT04 completion, no final bundle manifest, no final command execution, no next-agent handoff, no SMTP send, no scheduler install/enablement, no Release, no restore, no CURRENT/V7 change, no source/ranking change, no DAILY_OPERATION, and no integrated production acceptance.
+- Branch hygiene: no branch or PR is created by this run; initial GitHub open PR count is 0 and ADP/arxiv/s2p remote branch scan is 0.
+- Risks: A future passing assignment validation can be misread as P0/P1 closure. It only proves assignment intake; closure still requires independent final closure decision and zero-proof artifact.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-ARTIFACT-INTAKE-20260628.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_INTAKE.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.
+- Next step: Owner/coordinator must supply a real `FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json` artifact using an independent reviewer not involved in S2PMT01-T06 implementation; do not claim P0/P1 zero proof, S2PLT04 completion, S2PMT07, DAILY_OPERATION, or production acceptance from intake readiness.
 
 ### `ITER-20260628-ADP-S2PMT07-FINAL-BUNDLE-TEMPLATES`
 

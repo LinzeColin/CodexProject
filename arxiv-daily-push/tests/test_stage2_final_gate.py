@@ -2755,8 +2755,8 @@ class Stage2FinalGateTests(unittest.TestCase):
             validate_independent_final_reviewer_assignment_owner_packet_state(tampered_flag),
         )
 
-    def test_independent_final_reviewer_assignment_artifact_validator_accepts_only_exact_hash_bound_payload(self) -> None:
-        payload = {
+    def _valid_independent_final_reviewer_assignment_payload(self) -> dict[str, object]:
+        payload: dict[str, object] = {
             "schema_version": S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_SCHEMA_VERSION,
             "contract_id": "ADP-PRODUCT-CONTRACT-V7.2",
             "generated_at": "2026-06-28T09:16:00+10:00",
@@ -2772,13 +2772,19 @@ class Stage2FinalGateTests(unittest.TestCase):
                 "required_independence": "not_involved_in_S2PMT01_T06_implementation",
                 "reviewer_involved_in_s2pmt01_t06": False,
             },
-            "review_input_refs": build_independent_final_reviewer_assignment_request_state()["review_input_refs"],
+            "review_input_refs": build_independent_final_reviewer_assignment_request_state()[
+                "review_input_refs"
+            ],
             "no_production_side_effects": {
                 flag: False for flag in S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_NO_PRODUCTION_FLAGS
             },
             "assignment_hash": "",
         }
         payload["assignment_hash"] = build_independent_final_reviewer_assignment_hash(payload)
+        return payload
+
+    def test_independent_final_reviewer_assignment_artifact_validator_accepts_only_exact_hash_bound_payload(self) -> None:
+        payload = self._valid_independent_final_reviewer_assignment_payload()
 
         self.assertEqual(tuple(payload), S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_REQUIRED_FIELDS)
         self.assertEqual(validate_independent_final_reviewer_assignment_artifact(payload), [])
@@ -2789,6 +2795,32 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertTrue(state["independent_final_reviewer_assigned_by_payload"])
         self.assertFalse(state["production_acceptance_claimed"])
         self.assertFalse(state["integrated_production_accepted"])
+
+    def test_final_acceptance_bundle_readiness_consumes_committed_independent_final_reviewer_assignment(self) -> None:
+        payload = self._valid_independent_final_reviewer_assignment_payload()
+
+        with TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            bundle_dir = root / "FINAL_ACCEPTANCE_BUNDLE"
+            bundle_dir.mkdir()
+            (bundle_dir / "independent_final_reviewer_assignment.json").write_text(
+                json.dumps(payload, ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
+
+            state = build_final_acceptance_bundle_readiness_state(repo_root=root)
+
+        assignment_validation = state["independent_final_reviewer_assignment_validation"]
+        self.assertTrue(state["available_prebundle_evidence"]["INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION"])
+        self.assertEqual(assignment_validation["status"], "pass")
+        self.assertTrue(assignment_validation["assignment_present"])
+        self.assertTrue(assignment_validation["independent_final_reviewer_assigned_by_payload"])
+        self.assertEqual(assignment_validation["validation_errors"], [])
+        self.assertEqual(state["status"], "blocked")
+        self.assertFalse(state["production_acceptance_claimed"])
+        self.assertFalse(state["integrated_production_accepted"])
+        self.assertFalse(state["daily_operation_enabled"])
+        self.assertEqual(validate_final_acceptance_bundle_readiness_state(state), [])
 
     def test_independent_final_reviewer_assignment_artifact_validator_fails_closed_on_missing_self_review_or_production_flags(self) -> None:
         state = build_independent_final_reviewer_assignment_validation_state(None)
