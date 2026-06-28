@@ -23,6 +23,10 @@ INTERNAL_CHECKSUMS = "PACKAGE_CHECKSUMS.sha256"
 FIXED_ZIP_DATETIME = (2026, 6, 19, 0, 0, 0)
 BINARY_SUFFIXES = {".gif", ".gz", ".ico", ".jpg", ".jpeg", ".pdf", ".png", ".webp", ".zip"}
 
+
+def path_id(path: Path) -> str:
+    return path.as_posix()
+
 REQUIRED_MARKDOWN = {
     "README.md",
     "GOVERNANCE_INDEX.md",
@@ -141,6 +145,18 @@ def canonical_file_bytes(path: Path) -> bytes:
 
 def sha256_bytes(payload: bytes) -> str:
     return hashlib.sha256(payload).hexdigest()
+
+
+def canonical_file_bytes(path: Path) -> bytes:
+    payload = path.read_bytes()
+    if b"\0" in payload:
+        return payload
+    try:
+        text = payload.decode("utf-8")
+    except UnicodeDecodeError:
+        return payload
+    normalized = text.replace("\r\n", "\n").replace("\r", "\n")
+    return normalized.encode("utf-8")
 
 
 def sha256_file(path: Path) -> str:
@@ -389,8 +405,8 @@ def generate(_: argparse.Namespace) -> None:
         json.dumps(
             {
                 "generated": True,
-                "package": str(PACKAGE),
-                "evidence": str(EVIDENCE),
+                "package": path_id(PACKAGE),
+                "evidence": path_id(EVIDENCE),
                 "package_paths": len(paths),
                 "package_sha256": evidence["package"]["sha256"],
             },
@@ -462,8 +478,8 @@ def validate(_: argparse.Namespace | None = None) -> None:
         json.dumps(
             {
                 "valid": True,
-                "package": str(PACKAGE),
-                "evidence": str(EVIDENCE),
+                "package": path_id(PACKAGE),
+                "evidence": path_id(EVIDENCE),
                 "package_paths": len(paths),
                 "category_counts": category_counts,
                 "package_sha256": evidence["package"]["sha256"],

@@ -19,6 +19,11 @@ RELEASE_EVIDENCE = Path("artifacts/release_evidence_t1211.json")
 OPERATION_LOG = Path("artifacts/release_operation_log_t1211.jsonl")
 BINARY_SUFFIXES = {".gif", ".gz", ".ico", ".jpg", ".jpeg", ".pdf", ".png", ".webp", ".zip"}
 
+
+def path_id(path: Path) -> str:
+    return path.as_posix()
+
+
 REQUIRED_RELEASE_PATHS = {
     MANIFEST.as_posix(),
     DIRECTORY_TREE.as_posix(),
@@ -32,7 +37,7 @@ TRACKED_PATH_EXCLUDES = {
     "apps/web/next-env.d.ts",
 }
 
-CHECKSUM_EXCLUDES = {str(CHECKSUMS)}
+CHECKSUM_EXCLUDES = {path_id(CHECKSUMS)}
 
 
 def run_git(*args: str) -> str:
