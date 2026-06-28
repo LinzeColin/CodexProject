@@ -18,7 +18,8 @@ or cover QBVS.
 当前复审进度：
 
 - Stage 1 复审并解决：已完成，报告为 `docs/pfi_v022/reviews/STAGE1_REVIEW_20260628.md`，测试为 `tests/test_v022_review_stage1.py`；已补齐 3 个阈值/开关键说明。
-- Stage 2-13 复审解决：未开始。
+- Stage 2 复审并解决：已完成，报告为 `docs/pfi_v022/reviews/STAGE2_REVIEW_20260628.md`，测试为 `tests/test_v022_review_stage2.py`；已补齐 CNY 主显示现金流影响面和账本金额字段中文标签映射。
+- Stage 3-13 复审解决：未开始。
 - 整体项目复审解决：未开始。
 - app 入口重装：未执行，按用户要求留到整体 pursuing goal 完成后。
 

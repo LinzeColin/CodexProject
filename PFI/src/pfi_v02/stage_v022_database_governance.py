@@ -9,6 +9,7 @@ from pfi_v02.stage_v022_fx import (
     BASE_CURRENCY as V022_BASE_CURRENCY,
     DEFAULT_FX_PAIR as V022_FX_PAIR,
     DEFAULT_CUTOFF_LOCAL as V022_FX_CUTOFF_LOCAL,
+    FX_LEDGER_AMOUNT_FIELD_LABELS_ZH,
     FX_LEDGER_AMOUNT_SCHEMA,
     FX_SNAPSHOT_SCHEMA,
 )
@@ -616,6 +617,7 @@ def build_v022_stage2_contract() -> dict[str, object]:
         "ledger_amount_schema": {
             "schema": FX_LEDGER_AMOUNT_SCHEMA,
             "required_fields": ("original_amount", "original_currency", "amount_cny", "fx_snapshot_id"),
+            "field_labels_zh": dict(FX_LEDGER_AMOUNT_FIELD_LABELS_ZH),
         },
         "fx_snapshot_schema": {
             "schema": FX_SNAPSHOT_SCHEMA,
