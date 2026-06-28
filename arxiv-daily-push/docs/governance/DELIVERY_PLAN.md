@@ -21,13 +21,19 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 251
+- task_count: 252
 - acceptance_count: 127
 
 ## Delivery Tasks
 
 The machine-readable task source is `delivery_tasks.yaml`.
 
+
+## 2026-06-29 09:09:03 Australia/Sydney - S2PMT07 S2PLT04 Completion Report Dependency Order
+
+- `S2PMT07-S2PLT04-COMPLETION-REPORT-DEPENDENCY-ORDER` removes the circular requirement that the future S2PLT04 completion report must already include the later `FINAL_BUNDLE_MANIFEST` / `FINAL_ACCEPTANCE_BUNDLE_PRESENT` proof.
+- The validator still fails closed when the real `FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json` is missing, and S2PLT01/S2PLT02/S2PLT03 terminal acceptance still must be proven before S2PLT04 can complete.
+- No SMTP, scheduler, Release, restore, schema/DB, source/ranking, CURRENT/V7, DAILY_OPERATION, final bundle acceptance, or integrated production acceptance side effect is claimed.
 
 ## 2026-06-29 08:46:12 Australia/Sydney - S2PMT07 CLI Module Entrypoint
 

@@ -96,6 +96,7 @@ from arxiv_daily_push.stage2_final_gate import (
     S2PMT07_REQUIRED_TEST_COMMANDS,
     S2PMT07_S2PLT04_COMPLETION_REPORT_DECISION,
     S2PMT07_S2PLT04_COMPLETION_REPORT_NO_PRODUCTION_FLAGS,
+    S2PMT07_S2PLT04_COMPLETION_REPORT_REQUIRED_SOURCE_EVIDENCE_REFS,
     S2PMT07_S2PLT04_COMPLETION_REPORT_REQUIRED_TERMINAL_DEPENDENCIES,
     S2PMT07_S2PLT04_COMPLETION_REPORT_SCHEMA_VERSION,
     build_final_acceptance_bundle_readiness_state,
@@ -3180,10 +3181,6 @@ class Stage2FinalGateTests(unittest.TestCase):
                     "status": "pass",
                     "artifact_ref": "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
                 },
-                "FINAL_BUNDLE_MANIFEST": {
-                    "status": "pass",
-                    "artifact_ref": "FINAL_ACCEPTANCE_BUNDLE/manifest.json",
-                },
             },
             "terminal_dependency_state": {
                 dependency: True
@@ -3219,6 +3216,20 @@ class Stage2FinalGateTests(unittest.TestCase):
         tampered_hash = json.loads(json.dumps(payload))
         tampered_hash["report_hash"] = "sha256:not-the-report-hash"
         self.assertIn("report_hash does not match payload content", validate_s2plt04_completion_report(tampered_hash))
+
+    def test_s2plt04_completion_report_contract_does_not_depend_on_later_final_bundle_manifest(self) -> None:
+        state = build_s2plt04_completion_report_validation_state(None)
+
+        self.assertNotIn(
+            "FINAL_BUNDLE_MANIFEST",
+            S2PMT07_S2PLT04_COMPLETION_REPORT_REQUIRED_SOURCE_EVIDENCE_REFS,
+        )
+        self.assertNotIn("FINAL_BUNDLE_MANIFEST", state["required_source_evidence_refs"])
+        self.assertNotIn(
+            "FINAL_ACCEPTANCE_BUNDLE_PRESENT",
+            S2PMT07_S2PLT04_COMPLETION_REPORT_REQUIRED_TERMINAL_DEPENDENCIES,
+        )
+        self.assertNotIn("FINAL_ACCEPTANCE_BUNDLE_PRESENT", state["required_terminal_dependencies"])
 
     def test_s2plt04_completion_report_validator_fails_closed_on_missing_or_production_flags(self) -> None:
         missing_state = build_s2plt04_completion_report_validation_state(None)

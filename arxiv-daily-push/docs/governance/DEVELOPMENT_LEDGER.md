@@ -10,13 +10,30 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.1
 - Current phase: S2PM
-- Current gate: S2PMT07_ASSIGNMENT_AND_ZERO_PROOF_VALIDATED_S2PLT04_BLOCKED_NO_PRODUCTION
-- Confirmed iteration count: 223
+- Current gate: S2PMT07_S2PLT04_COMPLETION_REPORT_DEPENDENCY_ORDER_FIXED_STILL_BLOCKED_NO_PRODUCTION
+- Confirmed iteration count: 224
 - Reconstructed event count: 0
-- Current task: `S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-AND-ZERO-PROOF` records owner/coordinator assignment of `codex-subthread-independent-final-reviewer`, validates `FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json`, and validates `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json` as P0/P1 zero-proof evidence for the final-bundle chain. The prerequisite plan now has `next_required_step=S2PLT04_COMPLETION_REPORT`; remaining blockers are S2PLT04 completion report, final command execution, next-agent handoff, independent signoff, final bundle manifest, inherited P0=8, and inherited P1=37. This does not complete S2PLT04, does not execute final commands, does not accept production, and does not enable DAILY_OPERATION, scheduler, SMTP, Release, or restore.
+- Current task: `S2PMT07-S2PLT04-COMPLETION-REPORT-DEPENDENCY-ORDER` fixes the S2PLT04 completion report dependency order by removing later `FINAL_BUNDLE_MANIFEST` and `FINAL_ACCEPTANCE_BUNDLE_PRESENT` requirements from the report validator/template. The prerequisite plan still has `next_required_step=S2PLT04_COMPLETION_REPORT`; remaining blockers are the real S2PLT04 completion report, S2PLT01/S2PLT02/S2PLT03 terminal acceptance, final command execution, next-agent handoff, independent signoff, final bundle manifest, inherited P0=8, and inherited P1=37. This does not complete S2PLT04, does not execute final commands, does not accept production, and does not enable DAILY_OPERATION, scheduler, SMTP, Release, or restore.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. Local daily M1-M4 orchestration is now recorded as readiness evidence, but V7.2 contract baseline migration blockers are zero while real restore, real SMTP production, scheduler installation, S2PLT04 completion, final command execution, next-agent handoff, independent signoff, final bundle manifest, directory-level final bundle artifact validation pass, and final integrated production acceptance remain forbidden until V7.2 production stop gates and all `S2PMT07` final-bundle gates pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
 
+
+### `ITER-20260629-ADP-S2PMT07-S2PLT04-COMPLETION-REPORT-DEPENDENCY-ORDER`
+
+- Timestamp: `2026-06-29T09:09:03+10:00`
+- Fact level: EXTRACTED from S2PLT04 completion report validator constants, template, focused final-gate regression test, phase record, run manifest, traceability row, delivery task, and three base files.
+- Base commit: `656f11a3a166cc209e4482934d5035f2a5d10962`
+- Product version: `0.23.1`
+- Status: S2PLT04 completion report validator/template no longer require the later final bundle manifest as a prerequisite; S2PLT04 remains blocked because the real report and terminal dependency evidence are not complete.
+- Task IDs: `S2PMT07-S2PLT04-COMPLETION-REPORT-DEPENDENCY-ORDER`; parent `S2PMT07`; acceptance `ACC-S2PMT07-FINAL-REVIEW`.
+- Goal: Remove the ordering deadlock that forced `S2PLT04_COMPLETION_REPORT` to depend on a later `FINAL_ACCEPTANCE_BUNDLE_MANIFEST` step.
+- Files changed: S2PMT07 final gate helper, S2PLT04 completion report template, focused final-gate regression test, phase record, run manifest, traceability/delivery/event records, model parameter documentation, user-center traceability page, and three base files.
+- Decisions: Required source refs are now `S2PLT01_REPLAY_REVIEW`, `S2PLT02_LIVE_2D_PROOF`, `S2PLT03_RESILIENCE_PROOF`, and `P0_P1_ZERO_PROOF`; required terminal dependencies are now `S2PLT01_ACCEPTED`, `S2PLT02_ACCEPTED`, `S2PLT03_ACCEPTED`, `P0_ZERO_PROVEN`, and `P1_ZERO_PROVEN`.
+- Validation: TDD red failed because `FINAL_BUNDLE_MANIFEST` was still required; focused final-gate tests then passed with 82 OK.
+- Boundaries: No S2PLT04 completion report, final command execution, next-agent handoff, independent signoff, final manifest, P0/P1 top-level closure, SMTP, scheduler, Release, restore, CURRENT/V7 change, source/ranking change, DAILY_OPERATION, or integrated production acceptance.
+- Branch hygiene: no branch or PR is created by this run; closeout must recheck open PR count and ADP/arxiv/s2p remote branches.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-S2PLT04-COMPLETION-REPORT-DEPENDENCY-ORDER-20260629.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT04_COMPLETION_REPORT_DEPENDENCY_ORDER.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `FINAL_ACCEPTANCE_BUNDLE/templates/s2plt04_completion_report.template.json`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.
+- Next step: Continue `S2PMT07-S2PLT04-COMPLETION-REPORT` only after S2PLT01/S2PLT02/S2PLT03 terminal evidence is truthfully available; do not claim S2PMT07, DAILY_OPERATION, or production acceptance from dependency-order readiness alone.
 
 ### `ITER-20260629-ADP-S2PMT07-CLI-MODULE-ENTRYPOINT`
 

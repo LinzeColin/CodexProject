@@ -136,8 +136,43 @@ def decision_policy_for(project_id: str, next_task: dict[str, Any]) -> dict[str,
     return policy
 
 
-def adp_s2pmt07_blocked_next_task(stale_candidates: list[dict[str, str]] | None = None) -> dict[str, Any]:
+def adp_s2pmt07_blocked_next_task(
+    stale_candidates: list[dict[str, str]] | None = None,
+    matrix: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     """Keep ADP's owner-visible next action pinned to the V7.2 final gate."""
+
+    matrix = matrix or {}
+    current_iteration = str(matrix.get("current_iteration") or "")
+    current_gate = str(matrix.get("current_gate") or "")
+    current_alias = str(matrix.get("current_v7_legacy_alias") or "")
+    completion_report_is_next = (
+        "S2PLT04-COMPLETION-REPORT" in current_iteration
+        or "S2PLT04_COMPLETION_REPORT" in current_gate
+        or "S2PLT04 report" in current_alias
+    )
+    if completion_report_is_next:
+        return {
+            "task_id": "S2PMT07-S2PLT04-COMPLETION-REPORT",
+            "status": "blocked",
+            "reason": (
+                "Independent final reviewer assignment and P0/P1 zero-proof artifacts "
+                "are validated for the final-bundle chain; S2PLT04 completion report "
+                "is the next required blocked artifact before final command, handoff, "
+                "signoff, manifest, or production acceptance can proceed."
+            ),
+            "acceptance_ids": ["ACC-S2PMT07-FINAL-REVIEW"],
+            "owner": "content_owner + engineering_owner + independent_final_reviewer",
+            "human_owner_role": "content_owner + engineering_owner + independent_final_reviewer",
+            "unblock_condition": (
+                "Provide real S2PLT04 completion report after S2PLT01/S2PLT02/S2PLT03 "
+                "terminal evidence and P0/P1 zero-proof inputs are truthfully available; "
+                "then proceed to final command execution, next-agent handoff, independent "
+                "signoff, and final bundle manifest without claiming production acceptance "
+                "until all final-bundle gates pass."
+            ),
+            "stale_candidates": stale_candidates or [],
+        }
 
     return {
         "task_id": "S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT",
@@ -720,7 +755,8 @@ def load_project(project: dict[str, Any]) -> dict[str, Any]:
     adp_s2pmt07_current = adp_s2pmt07_gate_is_current(project_id, matrix)
     if adp_s2pmt07_current:
         next_task = adp_s2pmt07_blocked_next_task(
-            structural.as_list(next_task.get("stale_candidates")) if isinstance(next_task, dict) else []
+            structural.as_list(next_task.get("stale_candidates")) if isinstance(next_task, dict) else [],
+            matrix=matrix,
         )
     decision_policy = decision_policy_for(project_id, next_task)
     if decision_policy.get("owner_role") and str(next_task.get("task_id") or "") != "NONE" and not adp_s2pmt07_current:
