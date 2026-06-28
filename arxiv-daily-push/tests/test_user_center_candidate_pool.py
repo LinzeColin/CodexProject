@@ -133,7 +133,7 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         readme = (USER_CENTER / "README.md").read_text(encoding="utf-8")
 
         self.assertGreaterEqual(len(matrix_rows), 245)
-        self.assertEqual(len(matrix_rows), 340)
+        self.assertEqual(len(matrix_rows), 341)
         self.assertEqual(len(table_rows), len(matrix_rows))
         self.assertTrue(page.startswith("# 功能任务测试证据追踪链\n"))
         self.assertRegex(page, r"更新时间：\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} Australia/Sydney")
@@ -142,7 +142,7 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("[运行清单](../../governance/run_manifests/ADP-S2PAT05-TRACEABILITY-CHAIN-C010-20260627.json)", page)
         self.assertIn("| 序号 | 需求 | 任务 | 验收 | 代码 | 配置 | 测试 | 运行证据 | 状态 |", page)
         self.assertIn("[test_stage2_sources.py](../tests/test_stage2_sources.py)", page)
-        self.assertIn("TRACEABILITY_MATRIX 行数 | 340", page)
+        self.assertIn("TRACEABILITY_MATRIX 行数 | 341", page)
         self.assertIn("REQ-ADP-LOCAL-DAILY-M1-M4-SEND-ORCHESTRATION", page)
         self.assertIn("LOCAL-DAILY-M1-M4-SEND-ORCHESTRATION", page)
         self.assertIn("PHASE_LOCAL_DAILY_M1_M4_SEND_ORCHESTRATION_20260628.md", page)
@@ -285,6 +285,18 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION", page)
         self.assertIn("NO_PRODUCTION_SIDE_EFFECT_ATTESTATION=pass", page)
         self.assertIn("ready_for_final_bundle_manifest=false", page)
+        self.assertIn("REQ-ADP-V7-039-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-ARTIFACT-DRAFT-CLI", page)
+        self.assertIn("S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-ARTIFACT-DRAFT-CLI", page)
+        self.assertIn(
+            "ADP-S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-ARTIFACT-DRAFT-CLI-20260629.json",
+            page,
+        )
+        self.assertIn("blocked_assignment_artifact_draft_cli_ready_no_assignment_no_production", page)
+        self.assertIn("build-final-reviewer-assignment-artifact-draft", page)
+        self.assertIn("assignment_artifact_written=false", page)
+        self.assertIn("assignment_gate_satisfied_by_this_command=false", page)
+        self.assertIn("independent_final_reviewer_assigned_by_this_command=false", page)
+        self.assertIn("validation_errors=[]", page)
         self.assertIn("REQ-ADP-V7-039-FINAL-COMMAND-EXECUTION-CLI-VALIDATOR", page)
         self.assertIn("S2PMT07-FINAL-COMMAND-EXECUTION-CLI-VALIDATOR", page)
         self.assertIn(

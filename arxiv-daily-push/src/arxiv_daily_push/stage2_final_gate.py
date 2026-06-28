@@ -3242,6 +3242,81 @@ def validate_independent_final_reviewer_assignment_artifact(payload: Mapping[str
     return errors
 
 
+def build_independent_final_reviewer_assignment_artifact_draft_state(
+    *,
+    reviewer_id: str,
+    assigned_by: str,
+    generated_at: str,
+    assignment_scope: str = "S2PMT07_P0_P1_FINAL_CLOSURE_REVIEW",
+) -> dict[str, Any]:
+    """Build a stdout-only draft assignment artifact from explicit owner/coordinator inputs."""
+
+    request_state = build_independent_final_reviewer_assignment_request_state()
+    artifact = {
+        "schema_version": S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_SCHEMA_VERSION,
+        "contract_id": "ADP-PRODUCT-CONTRACT-V7.2",
+        "generated_at": generated_at,
+        "assignment_decision": S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_DECISION,
+        "reviewer_assignment": {
+            "reviewer_id": reviewer_id,
+            "reviewer_role": "independent_final_reviewer",
+            "assigned_by": assigned_by,
+            "assignment_scope": assignment_scope,
+        },
+        "reviewer_independence": {
+            "status": "verified",
+            "required_independence": S2PMT07_REQUIRED_REVIEWER_INDEPENDENCE,
+            "reviewer_involved_in_s2pmt01_t06": False,
+        },
+        "review_input_refs": list(request_state["review_input_refs"]),
+        "no_production_side_effects": {
+            flag: False for flag in S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_NO_PRODUCTION_FLAGS
+        },
+        "assignment_hash": "",
+    }
+    artifact["assignment_hash"] = build_independent_final_reviewer_assignment_hash(artifact)
+    validation_errors = validate_independent_final_reviewer_assignment_artifact(artifact)
+    state = {
+        "status": "draft" if not validation_errors else "blocked",
+        "scope": "independent_final_reviewer_assignment_artifact_draft_only_no_assignment_no_production",
+        "task_id": S2PMT07_TASK_ID,
+        "acceptance_id": S2PMT07_ACCEPTANCE_ID,
+        "artifact_path": S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_PATH,
+        "artifact": artifact,
+        "validation_errors": validation_errors,
+        "assignment_artifact_written": False,
+        "assignment_artifact_present_in_repo": False,
+        "assignment_gate_satisfied_by_this_command": False,
+        "independent_final_reviewer_assigned_by_this_command": False,
+        "p0_zero_proven": False,
+        "p1_zero_proven": False,
+        "closure_claimed": False,
+        "next_required_action": "owner_or_coordinator_must_review_and_write_assignment_artifact_if_approved",
+        "production_acceptance_claimed": False,
+        "integrated_production_accepted": False,
+        "daily_operation_enabled": False,
+        "real_smtp_sent": False,
+        "real_smtp_send_enabled": False,
+        "scheduler_enabled": False,
+        "scheduler_install_enabled": False,
+        "release_uploaded": False,
+        "release_packaging_enabled": False,
+        "production_restore_enabled": False,
+        "production_restore_executed": False,
+        "public_schema_changed": False,
+        "db_migration_executed": False,
+        "production_queue_mutated": False,
+        "source_adapter_changed": False,
+        "ranking_algorithm_changed": False,
+        "current_pointer_changed": False,
+        "v7_1_baseline_changed": False,
+        "v7_2_contract_files_changed": False,
+        "state_hash": "",
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
 def build_independent_final_reviewer_assignment_validation_state(
     payload: Mapping[str, Any] | None,
 ) -> dict[str, Any]:

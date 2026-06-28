@@ -245,16 +245,16 @@ parameter_profile_versions:
   adp-s2pmt07-local-runtime-no-production: "adp-s2pmt07-local-runtime-no-production-v1"
   adp-s2pmt07-local-runtime-no-production-parameters: "adp-s2pmt07-local-runtime-no-production-parameters-v1"
 data_snapshot_version: "fixture_arxiv_atom_to_daily_dry_run_v1"
-current_iteration: "ITER-20260629-ADP-S2PMT07-FINAL-BUNDLE-PREREQUISITE-PLAN-CLI"
+current_iteration: "ITER-20260629-ADP-S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-ARTIFACT-DRAFT-CLI"
 current_phase: "S2PM"
-current_gate: "S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_CLI_READY_NO_ARTIFACTS_NO_PRODUCTION"
+current_gate: "S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_DRAFT_CLI_READY_NO_ASSIGNMENT_NO_PRODUCTION"
 current_v6_task_id: "NOT_APPLICABLE"
 current_v7_contract_version: "ADP-PRODUCT-CONTRACT-V7.2"
 current_v7_roadmap_version: "ADP-ROADMAP-V7.2"
 current_v7_task_id: "S2PMT07"
 current_v7_shadow_source_task_id: "NONE_WHILE_S2PMT07_BLOCKED"
 current_v7_final_task_id: "S2PMT07"
-current_v7_legacy_alias: "S2PMT07-REMAINING-FINAL-BUNDLE-ARTIFACT-CLI-VALIDATORS exposes final-bundle manifest, S2PLT04 completion report, no-production attestation, and next-agent handoff artifact validators through CLI. The committed no-production attestation validates pass; manifest, S2PLT04 report, handoff, reviewer assignment, P0/P1 zero proof, final command execution, independent signoff, final bundle, scheduler/SMTP/Release/restore, CURRENT/V7 change, DAILY_OPERATION, and integrated production acceptance remain blocked or false."
+current_v7_legacy_alias: "S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-ARTIFACT-DRAFT-CLI exposes stdout-only assignment artifact draft generation from explicit owner/coordinator inputs. It writes no FINAL_ACCEPTANCE_BUNDLE artifact, assigns no reviewer, does not satisfy the assignment gate, and leaves P0/P1 zero proof, S2PLT04 report, final command execution, independent signoff, final bundle, scheduler/SMTP/Release/restore, CURRENT/V7 change, DAILY_OPERATION, and integrated production acceptance blocked or false."
 s2plt02_partial_real_delivery_iteration: "ITER-20260628-ADP-S2PLT02-PARTIAL-REAL-DELIVERY-EVIDENCE"
 s2plt02_partial_real_delivery_gate: "S2PLT02_PARTIAL_REAL_DELIVERY_EVIDENCE_BLOCKED_NO_ACCEPTANCE"
 s2plt02_observed_natural_days: 1
@@ -453,3 +453,13 @@ s2pmt07_final_bundle_prerequisite_plan_cli_no_production_step_status: "pass"
 s2pmt07_final_bundle_prerequisite_plan_cli_ready_for_final_bundle_manifest: false
 s2pmt07_final_bundle_prerequisite_plan_cli_plan_validation_errors: 0
 s2pmt07_final_bundle_prerequisite_plan_cli_recommended_next: "SUPPLY_REAL_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT"
+
+s2pmt07_independent_final_reviewer_assignment_artifact_draft_cli_iteration: "ITER-20260629-ADP-S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-ARTIFACT-DRAFT-CLI"
+s2pmt07_independent_final_reviewer_assignment_artifact_draft_cli_gate: "S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_DRAFT_CLI_READY_NO_ASSIGNMENT_NO_PRODUCTION"
+s2pmt07_independent_final_reviewer_assignment_artifact_draft_cli_status: "blocked_assignment_artifact_draft_cli_ready_no_assignment_no_production"
+s2pmt07_independent_final_reviewer_assignment_artifact_draft_cli_command: "adp build-final-reviewer-assignment-artifact-draft --reviewer-id independent-final-reviewer-001 --assigned-by owner_or_coordinator --generated-at 2026-06-29T00:40:23+10:00 --json"
+s2pmt07_independent_final_reviewer_assignment_artifact_draft_cli_assignment_hash: "sha256:1b31de0eae2283814fa5e458d69700774f2ae8441187a3e8f0fd3a03740c2dec"
+s2pmt07_independent_final_reviewer_assignment_artifact_draft_cli_state_hash: "5bfa7b97e6a318a5ee98ba4b56ee65b2d140fe877d94931cfc350c644cc93ee3"
+s2pmt07_independent_final_reviewer_assignment_artifact_draft_cli_artifact_written: false
+s2pmt07_independent_final_reviewer_assignment_artifact_draft_cli_gate_satisfied: false
+s2pmt07_independent_final_reviewer_assignment_artifact_draft_cli_recommended_next: "SUPPLY_REAL_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT"

@@ -21,13 +21,21 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 249
+- task_count: 250
 - acceptance_count: 127
 
 ## Delivery Tasks
 
 The machine-readable task source is `delivery_tasks.yaml`.
 
+
+## 2026-06-29 00:40:23 Australia/Sydney - S2PMT07 Independent Final Reviewer Assignment Artifact Draft CLI
+
+- `S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-ARTIFACT-DRAFT-CLI` exposes `adp build-final-reviewer-assignment-artifact-draft --reviewer-id ... --assigned-by ... --generated-at ... --json` for a stdout-only assignment artifact draft.
+- The command preserves required artifact field order, computes `assignment_hash=sha256:1b31de0eae2283814fa5e458d69700774f2ae8441187a3e8f0fd3a03740c2dec`, reports `validation_errors=[]`, and exits 0 only for a valid draft.
+- The command is deliberately not a real assignment: `assignment_artifact_written=false`, `assignment_artifact_present_in_repo=false`, `assignment_gate_satisfied_by_this_command=false`, and `independent_final_reviewer_assigned_by_this_command=false`.
+- The real `FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json`, P0/P1 zero proof, S2PLT04 report, final command execution, next-agent handoff, independent signoff, final bundle manifest, inherited P0=8, and inherited P1=37 remain blocked.
+- No SMTP, scheduler, Release, restore, schema/DB, source/ranking, CURRENT/V7, DAILY_OPERATION, or integrated production acceptance side effect is claimed.
 
 ## 2026-06-29 00:14:34 Australia/Sydney - S2PMT07 Final Bundle Prerequisite Plan CLI
 

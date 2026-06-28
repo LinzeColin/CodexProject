@@ -30,22 +30,24 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn(f"- Current task: `{expected_task}`", current_state)
         self.assertIn(f"### `{current_iteration}`", ledger)
 
-    def test_s2pmt07_current_state_summary_describes_final_bundle_prerequisite_plan_cli(self) -> None:
+    def test_s2pmt07_current_state_summary_describes_assignment_artifact_draft_cli(self) -> None:
         ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
-            "S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_CLI_READY_NO_ARTIFACTS_NO_PRODUCTION",
+            "S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_DRAFT_CLI_READY_NO_ASSIGNMENT_NO_PRODUCTION",
             current_state,
         )
-        self.assertIn("S2PMT07-FINAL-BUNDLE-PREREQUISITE-PLAN-CLI", current_state)
-        self.assertIn("plan-final-bundle-prerequisites", current_state)
-        self.assertIn("NO_PRODUCTION_SIDE_EFFECT_ATTESTATION", current_state)
-        self.assertIn("`pass`", current_state)
-        self.assertIn("INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION", current_state)
+        self.assertIn("S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-ARTIFACT-DRAFT-CLI", current_state)
+        self.assertIn("build-final-reviewer-assignment-artifact-draft", current_state)
+        self.assertIn("assignment_artifact_written=false", current_state)
+        self.assertIn("assignment_artifact_present_in_repo=false", current_state)
+        self.assertIn("assignment_gate_satisfied_by_this_command=false", current_state)
+        self.assertIn("independent_final_reviewer_assigned_by_this_command=false", current_state)
         self.assertIn("P0=8", current_state)
         self.assertIn("P1=37", current_state)
         self.assertIn("does not create final-bundle artifacts", current_state)
+        self.assertIn("does not assign an independent final reviewer", current_state)
         self.assertIn("does not close P0/P1", current_state)
         self.assertIn("does not complete S2PLT04", current_state)
         self.assertIn("does not execute final commands", current_state)
