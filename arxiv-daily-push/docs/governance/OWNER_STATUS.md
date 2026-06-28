@@ -35,8 +35,9 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - responsible_role: `content_owner + product_owner`
 - acceptance_ids: `ACC-S2PLT01-30D`
 - unblock_condition: S2PLT01 replay payload execution package can be misread as S2PLT01 acceptance; inherited P0/P1, S2PLT04, S2PMT07 final independent review, and final production stop gates still block S2PLT01 and integrated production acceptance.
-- local_mail_runner_note: `LOCAL-DAILY-M1-M4-SEND-ORCHESTRATION` 已完成代码和测试证据，但真实 M2-M4 补发仍必须由运行证据和 SMTP delivery report 追加到用户中心历史发送记录。
+- local_mail_runner_note: `LOCAL-DAILY-M1-M4-SEND-ORCHESTRATION` 已完成代码和测试证据；`2026-06-28` 的 M2-M4 真实补发已由 SMTP delivery report 追加到用户中心历史发送记录。
 - local_resend_recovery_note: `LOCAL-DAILY-RESEND-REUSE-INPUT` 已完成代码和测试证据，人工补发可复用同日 `adp-daily-input-report.json`，避免 live arXiv fetch 卡住；真实发送成功仍必须以 SMTP delivery report 和内容账本追加记录为准。
+- local_resend_execution_note: `2026-06-28` 今日 M1-M4 已补齐为 `4 / 4`；M1 是历史已发送证据，M2/M3/M4 是 `2026-06-28 11:26:41 AEST` 真实 SMTP 补发；这仍不等于 Stage 2 正式生产验收通过。
 
 ## 8. 九层 Assurance 状态
 

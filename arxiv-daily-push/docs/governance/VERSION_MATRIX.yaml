@@ -254,10 +254,14 @@ current_v7_final_task_id: "S2PMT07"
 current_v7_legacy_alias: "S2PMT07-MAINLINE-ATTESTATION records that the prior S2PMT07 evidence commit is contained in origin/main, open PR count is zero, and ADP/arxiv/s2p remote work branch count is zero. This is mainline hygiene evidence only; independent final reviewer assignment artifact, independent closure decision, P0/P1 zero proof, S2PLT04 completion, required final bundle files, next-agent handoff, no-production attestation, independent signoff, final command execution, and final bundle manifest remain missing; no real SMTP send, scheduler install/enablement, final bundle creation, P0/P1 closure, Release, schema, DB, queue mutation, source adapter or ranking change, CURRENT/V7 change, DAILY_OPERATION, or integrated production acceptance is claimed"
 local_daily_m1_m4_send_orchestration_iteration: "ITER-20260628-ADP-LOCAL-DAILY-M1-M4-SEND-ORCHESTRATION"
 local_daily_m1_m4_send_orchestration_gate: "LOCAL_DAILY_M1_M4_SEND_ORCHESTRATION_READY_NO_PRODUCTION_ACCEPTANCE"
-local_daily_m1_m4_real_m2_m4_delivery_claimed: false
+local_daily_m1_m4_real_m2_m4_delivery_claimed: true
 local_daily_resend_reuse_input_iteration: "ITER-20260628-ADP-LOCAL-DAILY-RESEND-REUSE-INPUT"
 local_daily_resend_reuse_input_gate: "LOCAL_DAILY_RESEND_REUSE_INPUT_READY_NO_PRODUCTION_ACCEPTANCE"
-local_daily_resend_reuse_input_real_delivery_claimed: false
+local_daily_resend_reuse_input_real_delivery_claimed: true
+local_daily_m1_m4_resend_execution_iteration: "ITER-20260628-ADP-LOCAL-DAILY-M1-M4-RESEND-EXECUTION"
+local_daily_m1_m4_resend_execution_gate: "LOCAL_DAILY_M1_M4_RESEND_EXECUTED_NO_STAGE2_ACCEPTANCE"
+local_daily_m1_m4_resend_execution_sent_count: 4
+local_daily_m1_m4_resend_execution_newly_sent_products: "M2,M3,M4"
 v7_product_contract_sha256: "a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d"
 v7_roadmap_sha256: "7c5f2d842d4f6b909343c953fe39b4a4aa540d168199747a9f7decdb1aad9bd1"
 v7_parallel_audit_version: "ADP-V7.2-FINAL-BASELINE-REVIEW"
