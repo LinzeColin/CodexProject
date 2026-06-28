@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
 as_of_event_id: "EVENT-20260628-ADP-S2PLT02-DELIVERY-EVIDENCE-LEDGER"
-source_snapshot_hash: "sha256:b73de879caeec70f188d04f118f5935cd40970adc17b88886541ee4102be0921"
+source_snapshot_hash: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 source_base_commit: "12e91a8e1b84fe29724f43229131bd43f8fa31cd"
 source_tree_hash: "8caef1969ddfe23755890506daa0d02e6f6df81f"
-snapshot_event_time: "2026-06-28T12:47:11+10:00"
+snapshot_event_time: "2026-06-28T13:12:48+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -16,8 +16,8 @@ dimensions:
     status: "PARTIAL"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 1031
-    total_active_parameters: 1036
+    checked_active_parameters: 1035
+    total_active_parameters: 1040
     checked_active_formulas: 119
     total_active_formulas: 119
     unresolved_fact_ids:
@@ -28,8 +28,8 @@ dimensions:
   parameter_source_quality:
     status: "PARTIAL"
     fact_level: "UNKNOWN"
-    checked_active_parameters: 1031
-    total_active_parameters: 1036
+    checked_active_parameters: 1035
+    total_active_parameters: 1040
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -62,12 +62,12 @@ dimensions:
     tree_bound_events: 0
     commit_bound_events: 4
     legacy_unbound_events: 210
-    precommit_pending_events: 41
+    precommit_pending_events: 42
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "VERIFIED"
-  release_gate: "S2PLT02_DELIVERY_EVIDENCE_LEDGER_BLOCKED_NO_ACCEPTANCE"
+  release_gate: "S2PLT02_M4_WATERMARK_PROOF_BLOCKED_NO_ACCEPTANCE"
   blocker_ids:
     - "FACT-arxiv-daily-push-IMPLEMENTATION-PARAMETER-REVIEW"
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
@@ -116,7 +116,7 @@ owner_decision:
   estimated_effort: "P0/P1; contract hash, AGENTS, 三基文件, validator/test, no production side effect"
   estimated_cost_or_resource: "local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner"
   expected_benefit: "在保持 arXiv 稳定运行的前提下，统一 V7.1 有效要求与 V1.1 新要求，并让 Stage2 agents 在 V7.2 下继续推进无冲突来源 Shadow。"
-  principal_risks: "将 S2PLT02 delivery evidence ledger 误读为 S2PLT02 acceptance 或真实两日运行、绕过 S2PMT07 独立复审或生产 stop gate"
+  principal_risks: "将 S2PLT02 delivery evidence ledger 或 M4 watermark validator 误读为 S2PLT02 acceptance、真实两日运行或显式 M4 watermark 通过、绕过 S2PMT07 独立复审或生产 stop gate"
   evidence_required: "S2PMT07 independent final review, inherited P0/P1 closure proof, S2PLT04 completion, governance validator, lean render proof, and no-production-side-effect evidence"
   decision_deadline_or_priority: "P1"
   consequence_of_no_decision: "Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract drift."

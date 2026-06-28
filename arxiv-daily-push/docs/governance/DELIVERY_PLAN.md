@@ -21,7 +21,7 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 223
+- task_count: 224
 - acceptance_count: 126
 
 ## Delivery Tasks
@@ -442,3 +442,4 @@ The machine-readable task source is `delivery_tasks.yaml`.
 - Added phase record `arxiv-daily-push/docs/phase_records/PHASE_LOCAL_DAILY_M1_M4_RESEND_EXECUTION_20260628.md`.
 - 2026-06-28 M1-M4 mail state is now 4 / 4: M1 reused historical sent evidence, and M2/M3/M4 were sent by real SMTP from the local runner using the same-day daily input report.
 - This is local catch-up delivery evidence only; scheduler, Release, source, ranking, CURRENT, V7 contract, DAILY_OPERATION, and integrated production acceptance remain blocked.
+| S2PLT02-M4-WATERMARK-PROOF | S2PL | blocked | ACC-S2PLT02-2D | focused final-gate tests 65 OK before governance sync; final validation recorded in run manifest | `docs/phase_records/PHASE_S2PLT02_M4_WATERMARK_PROOF.md` |

@@ -5803,6 +5803,11 @@ formulas:
         unit: "required dependency completion evidence"
         input_domain: "S2PMT01 through S2PMT06 plus S2PLT04"
       -
+        name: "m4_watermark_proof"
+        data_type: "object"
+        unit: "explicit M4 cycle watermark proof state"
+        input_domain: "delivery-ledger service dates, M1-M3 terminal mail records, M4 delivery ref, derived watermark state, and no-production flags"
+      -
         name: "audit_blocker_state"
         data_type: "object"
         unit: "inherited V7.1 P0/P1 blocker counts"
@@ -6297,7 +6302,7 @@ formulas:
     assumption_ids:
       - "ASM-ADP-035"
     status: "active"
-    expression: "S2PLT02 two-day live-run readiness remains blocked unless S2PLT01 is accepted; the delivery evidence ledger proves two consecutive real natural days; eight real M1-M4 emails are sent without duplicates; the M4 watermark is correct; real scheduler and real SMTP proof are present; inherited V7.1 P0 and P1 findings are zero; and every S2PLT02 production, scheduler, SMTP, Release, restore, queue, schema, DB, source-adapter, ranking, CURRENT, V7.1, and V7.2 side-effect flag is false."
+    expression: "S2PLT02 two-day live-run readiness remains blocked unless S2PLT01 is accepted; the delivery evidence ledger proves two consecutive real natural days; eight real M1-M4 emails are sent without duplicates; the explicit M4 watermark proof validator proves every delivery-ledger service date; real scheduler and real SMTP proof are present; inherited V7.1 P0 and P1 findings are zero; and every S2PLT02 production, scheduler, SMTP, Release, restore, queue, schema, DB, source-adapter, ranking, CURRENT, V7.1, and V7.2 side-effect flag is false."
     variables:
       -
         name: "dependency_state"
@@ -6308,7 +6313,7 @@ formulas:
         name: "live_evidence_state"
         data_type: "object"
         unit: "two-day live mail evidence"
-        input_domain: "real natural days, real M1-M4 emails, duplicate count, M4 watermark, scheduler proof, and SMTP proof"
+        input_domain: "real natural days, real M1-M4 emails, duplicate count, explicit M4 watermark proof, scheduler proof, and SMTP proof"
       -
         name: "delivery_evidence_ledger"
         data_type: "object"
@@ -6320,7 +6325,7 @@ formulas:
         unit: "inherited V7.1 P0/P1 blocker counts"
         input_domain: "open P0 and P1 findings"
     constraints: "S2PLT02 precheck must not accept S2PLT02, start real two-day operation, claim INTEGRATED_PRODUCTION_ACCEPTED or DAILY_OPERATION, send SMTP, enable scheduler, upload Release, execute production restore, mutate production queues, change public schema or DB, change source adapters or ranking, change CURRENT, change V7.1 baseline, or edit V7.2 contract files."
-    missing_policy: "Missing S2PLT01 acceptance, missing delivery ledger proof for two real natural days, fewer than eight real emails, duplicate service-date/product evidence, missing M4 watermark proof, missing real scheduler proof, missing real SMTP proof, nonzero inherited P0/P1, or any forbidden side-effect flag blocks S2PLT02."
+    missing_policy: "Missing S2PLT01 acceptance, missing delivery ledger proof for two real natural days, fewer than eight real emails, duplicate service-date/product evidence, missing explicit M4 watermark proof record, missing real scheduler proof, missing real SMTP proof, nonzero inherited P0/P1, or any forbidden side-effect flag blocks S2PLT02."
     output_range: "S2PLT02 live 2-day readiness precheck report with pass or blocked status, dependency state, live evidence state, audit blocker state, blocking reasons, deterministic report_hash, production_acceptance_claimed false, inherited_p0_p1_closed false, and all forbidden flags false."
     code_refs:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py"
@@ -6331,6 +6336,8 @@ formulas:
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_LIVE_2D_PRECHECK.md"
       - "governance/run_manifests/ADP-S2PLT02-DELIVERY-EVIDENCE-LEDGER-20260628.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_DELIVERY_EVIDENCE_LEDGER.md"
+      - "governance/run_manifests/ADP-S2PLT02-M4-WATERMARK-PROOF-20260628.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_M4_WATERMARK_PROOF.md"
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_LIVE_2D_PRECHECK_MODEL_ID"
@@ -6347,6 +6354,12 @@ formulas:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_DELIVERY_EVIDENCE_LEDGER_MODEL_ID"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_DELIVERY_EVIDENCE_LEDGER_SCOPE"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_DELIVERY_EVIDENCE_LEDGER_FORBIDDEN_SOURCE_FLAGS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_M4_WATERMARK_PROOF_MODEL_ID"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_M4_WATERMARK_PROOF_SCOPE"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_M4_WATERMARK_REQUIRED_TERMINAL_PRODUCTS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_M4_WATERMARK_FORBIDDEN_SOURCE_FLAGS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_s2plt02_m4_watermark_proof_state"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::validate_s2plt02_m4_watermark_proof_state"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_s2plt02_delivery_evidence_ledger_state"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::validate_s2plt02_delivery_evidence_ledger_state"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_s2plt02_dependency_state"
