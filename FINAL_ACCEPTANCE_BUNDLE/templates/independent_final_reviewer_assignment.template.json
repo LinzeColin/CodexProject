@@ -1,0 +1,44 @@
+{
+  "schema_version": "adp.independent_final_reviewer_assignment.v1",
+  "contract_id": "ADP-PRODUCT-CONTRACT-V7.2",
+  "generated_at": "REPLACE_WITH_REAL_TIMESTAMP_AUSTRALIA_SYDNEY",
+  "assignment_decision": "INDEPENDENT_FINAL_REVIEWER_ASSIGNED_NO_PRODUCTION_ACCEPTANCE",
+  "reviewer_assignment": {
+    "reviewer_id": "REPLACE_WITH_REAL_INDEPENDENT_REVIEWER_ID",
+    "reviewer_role": "independent_final_reviewer",
+    "assigned_by": "owner_or_coordinator",
+    "assignment_scope": "S2PMT07_P0_P1_FINAL_CLOSURE_REVIEW"
+  },
+  "reviewer_independence": {
+    "status": "verified",
+    "required_independence": "not_involved_in_S2PMT01_T06_implementation",
+    "reviewer_involved_in_s2pmt01_t06": false
+  },
+  "review_input_refs": [
+    "governance/run_manifests/ADP-S2PMT07-P0-TECHNICAL-CLOSURE-CANDIDATE-PACKAGE-20260627.json",
+    "governance/run_manifests/ADP-S2PMT07-P1-INDEPENDENT-REVIEW-RECEIPT-20260626.json",
+    "governance/run_manifests/ADP-S2PMT07-REMAINING-BLOCKER-MATRIX-20260628.json"
+  ],
+  "no_production_side_effects": {
+    "production_acceptance_claimed": false,
+    "integrated_production_accepted": false,
+    "daily_operation_enabled": false,
+    "real_smtp_sent": false,
+    "real_smtp_send_enabled": false,
+    "scheduler_enabled": false,
+    "scheduler_install_enabled": false,
+    "release_uploaded": false,
+    "release_packaging_enabled": false,
+    "production_restore_enabled": false,
+    "production_restore_executed": false,
+    "public_schema_changed": false,
+    "db_migration_executed": false,
+    "production_queue_mutated": false,
+    "source_adapter_changed": false,
+    "ranking_algorithm_changed": false,
+    "current_pointer_changed": false,
+    "v7_1_baseline_changed": false,
+    "v7_2_contract_files_changed": false
+  },
+  "assignment_hash": "sha256:RECOMPUTE_WITH_build_independent_final_reviewer_assignment_hash"
+}
