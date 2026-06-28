@@ -71,14 +71,14 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - model_count: `117`
 - total_formulas: `119`
 - active_formulas: `119`
-- total_parameters: `1061`
-- active_parameters: `1044`
+- total_parameters: `1064`
+- active_parameters: `1047`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PMT07_REMAINING_BLOCKER_MATRIX_READY_NO_CLOSURE`
+- release_gate: `S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_OWNER_PACKET_READY_NO_ASSIGNMENT`
 
 ## 14. Evidence Freshness
 
@@ -95,10 +95,10 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 16. 技术元数据
 
-- source_base_commit: `91bbbdbd2ee4bba94aaba124fee0e070ddf552a2`
-- source_tree_hash: `8caef1969ddfe23755890506daa0d02e6f6df81f`
+- source_base_commit: `ab7e1415b7f3b83a100e6077b486459c8224f287`
+- source_tree_hash: `843c572695708882cc8f83cc5058d9a736d95efd`
 - source_snapshot_hash: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
-- snapshot_event_time: `2026-06-28T14:40:13+10:00`
+- snapshot_event_time: `2026-06-28T15:05:24+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
 - phase/gate: `S2PM / S2PMT07_REMAINING_BLOCKER_MATRIX_READY_NO_CLOSURE`
