@@ -143,8 +143,10 @@ class Stage6E2EStabilizationTest(unittest.TestCase):
         self.assertNotIn('data-v01-workspaces="6"', html)
         self.assertNotIn('data-v01-entry="true"', html)
         self.assertIn('"stage6_dashboard"', html)
-        for label in ("端到端验收", "合成端到端", "回归治理", "交付与回滚", "回滚计划", "后续任务"):
-            self.assertIn(label, js)
+        self.assertIn("项目级复审", js)
+        self.assertIn("真实数据闭环", js)
+        for label in ("端到端验收", "合成端到端", "stage6_synthetic_e2e", "source_fixture_matrix", "fixture"):
+            self.assertNotIn(label, js)
         self.assertNotIn('data-workspace="alpha"', html.lower())
         self.assertNotIn('data-workspace="ralpha"', html.lower())
         self.assertNotIn('data-workspace="system"', html.lower())

@@ -9,6 +9,8 @@ STAGE1_TASK_ID = "V0211-S1-T01"
 STAGE2_TASK_ID = "V0211-S2-T01"
 STAGE3_TASK_ID = "V0211-S3-T01"
 STAGE4_TASK_ID = "V0211-S4-T01"
+STAGE5_TASK_ID = "V0211-S5-T01"
+STAGE6_PROJECT_REVIEW_TASK_ID = "V0211-S6-T01"
 TOTAL_EXECUTION_STAGES = 6
 
 
@@ -62,6 +64,17 @@ class V0211PersistenceSyncSurface:
     label: str
     source: str
     required_fields: tuple[str, ...]
+    acceptance: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class V0211ChartSurface:
+    surface_id: str
+    label: str
+    route: str
+    source: str
+    required_series: tuple[str, ...]
+    empty_state: str
     acceptance: tuple[str, ...]
 
 
@@ -474,6 +487,48 @@ STAGE4_PERSISTENCE_SYNC_SURFACES: tuple[V0211PersistenceSyncSurface, ...] = (
     ),
 )
 
+STAGE5_CHART_SURFACES: tuple[V0211ChartSurface, ...] = (
+    V0211ChartSurface(
+        "accounts",
+        "账户与资产趋势图",
+        "/accounts?tab=trend",
+        "SQLite operational database",
+        ("现金总额", "净资产", "总资产", "总负债"),
+        "账户趋势需要先保存持仓或导入账户流水。",
+        (
+            "图表必须读取 /api/trends 的 accounts 区块",
+            "有真实持仓或账户流水时展示真实派生曲线",
+            "无真实数据时显示中文空状态，不显示硬编码曲线",
+        ),
+    ),
+    V0211ChartSurface(
+        "investment",
+        "投资管理趋势图",
+        "/investment?tab=overview",
+        "SQLite operational database",
+        ("投资市值", "总收益", "未实现盈亏", "现金仓位"),
+        "投资趋势需要先保存持仓，当前不伪造收益。",
+        (
+            "图表必须读取 /api/trends 的 investment 区块",
+            "投资市值、成本、未实现盈亏由 SQLite 持仓快照派生",
+            "无真实持仓时不生成模拟收益",
+        ),
+    ),
+    V0211ChartSurface(
+        "consumption",
+        "消费管理趋势图",
+        "/consumption?tab=overview",
+        "MetaDatabase/PFI/alipay_daily",
+        ("本月支出", "预算剩余", "固定支出", "弹性支出", "现金流预测"),
+        "消费趋势需要先导入真实流水，当前不伪造支出或预算。",
+        (
+            "图表必须读取 /api/trends 的 consumption 区块",
+            "有真实支付宝流水时从 MetaDatabase 标准化流水派生",
+            "没有预算或固定支出规则时只显示真实空态或 0，不虚构预算",
+        ),
+    ),
+)
+
 
 def build_v0211_stage0_contract() -> dict[str, object]:
     return {
@@ -659,6 +714,98 @@ def build_v0211_stage4_contract() -> dict[str, object]:
     }
 
 
+def build_v0211_stage5_contract() -> dict[str, object]:
+    stage = next(item for item in EXECUTION_STAGES if item.stage_id == "S5")
+    return {
+        "schema": "PFIV0211ProductUIRecoveryStage5ContractV1",
+        "version_name": VERSION_NAME,
+        "stage": "S5 真实图表与最终验收",
+        "task_id": STAGE5_TASK_ID,
+        "project_root": "CodexProject/PFI",
+        "current_stage_only": True,
+        "delivery_focus": stage.delivery_focus,
+        "forbidden_work": stage.forbidden_work,
+        "acceptance_gate": stage.acceptance_gate,
+        "chart_surfaces": {
+            item.surface_id: {
+                "label": item.label,
+                "route": item.route,
+                "source": item.source,
+                "required_series": item.required_series,
+                "empty_state": item.empty_state,
+                "acceptance": item.acceptance,
+            }
+            for item in STAGE5_CHART_SURFACES
+        },
+        "chart_runtime_contract": {
+            "endpoint": "/api/trends",
+            "schema": "PFIV021OperationalTrendReadModelV1",
+            "allowed_sources": (
+                "SQLite operational database",
+                "MetaDatabase/PFI/alipay_daily",
+            ),
+            "forbidden_sources": (
+                "hardcoded chart arrays",
+                "browser cache as production chart source",
+                "demo/sample/synthetic/fixture/mock/fake data",
+            ),
+            "empty_state_policy": "无真实数据时显示中文空状态，不伪造收益、预算或消费趋势。",
+        },
+        "behavior_e2e_required": (
+            "所有一级入口、二级入口和主要按钮真实可点",
+            "图表需用真实浏览器验证非空或中文空状态",
+            "全局搜索需支持真实数据数字、中文标签和模糊输入",
+            "持仓保存、刷新、重启和报告同步必须回归通过",
+            "桌面端和移动端均需截图与 console/page error 证据",
+        ),
+        "stop_conditions": (
+            "账户、投资或消费图表仍从硬编码数组派生",
+            "使用 demo/sample/synthetic/fixture/mock/fake 或测试样例数据作为正式产品依据",
+            "正式 UI 出现运行边界、Task Pack、runtime、Boundary、Evidence 等开发词污染",
+            "任一一级入口、二级入口或主要按钮不可点击",
+            "只用字符串、marker 或函数名测试替代浏览器行为验收",
+        ),
+        "validation_commands": (
+            "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m pytest PFI/tests/test_v0211_stage5_6_final_acceptance_contract.py -q -p no:cacheprovider",
+            "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m pytest PFI/tests/test_v0211_stage0_preparation_contract.py PFI/tests/test_v0211_stage1_product_shell_contract.py PFI/tests/test_v0211_stage2_page_skeleton_contract.py PFI/tests/test_v0211_stage3_real_operation_flow_contract.py PFI/tests/test_v0211_stage4_persistence_sync_contract.py PFI/tests/test_v0211_stage5_6_final_acceptance_contract.py -q -p no:cacheprovider",
+            "node --check PFI/web/app/shell.js",
+            "git diff --check -- PFI",
+            "真实 8501 浏览器 E2E：桌面和移动端",
+        ),
+    }
+
+
+def build_v0211_stage6_project_review_contract() -> dict[str, object]:
+    return {
+        "schema": "PFIV0211ProjectReviewCloseoutStage6AliasV1",
+        "version_name": VERSION_NAME,
+        "owner_stage_label": "Stage 6 项目级复审验收",
+        "task_id": STAGE6_PROJECT_REVIEW_TASK_ID,
+        "machine_stage_completed": "S5",
+        "entry_condition": "Stage 5 完成后执行；用户口径的 Stage 6 用作最终交付复审和第二阶段项目级检查，不新增正式功能 Stage。",
+        "review_scope": (
+            "跨板块复审：首页、账户、账本、投资、消费、数据源、建议、报告、市场研究、设置",
+            "数据边界复审：正式页面只读 SQLite、MetaDatabase 或中文空状态",
+            "UIUX 复审：中文、人类可读、可点击、无开发者词污染、桌面和移动布局",
+            "持久化复审：持仓、报告和图表读取同一运行读模型",
+            "测试复审：行为测试覆盖真实浏览器点击、SQLite 查询、服务重启和禁词扫描",
+        ),
+        "closeout_required": (
+            "GitHub main 同步",
+            "刷新本机 PFI.app 入口",
+            "清理非必要缓存和临时测试库",
+            "保留真实浏览器截图、summary.json 和命令输出路径",
+            "更新 README、HANDOFF、开发记录、功能清单、模型参数文件和 CHANGELOG",
+        ),
+        "stop_conditions": (
+            "整体复审发现正式页面仍依赖硬编码图表、假数据或合成验收数据",
+            "任一一级入口、二级入口、主要按钮、搜索、上传、持仓、报告或设置不可用",
+            "正式 operational DB 被临时测试数据污染",
+            "GitHub main 未同步或本机 app 入口未刷新",
+        ),
+    }
+
+
 def v0211_stage_ids() -> tuple[str, ...]:
     return tuple(stage.stage_id for stage in EXECUTION_STAGES)
 
@@ -681,3 +828,7 @@ def v0211_stage3_operation_flow_ids() -> tuple[str, ...]:
 
 def v0211_stage4_persistence_surface_ids() -> tuple[str, ...]:
     return tuple(item.surface_id for item in STAGE4_PERSISTENCE_SYNC_SURFACES)
+
+
+def v0211_stage5_chart_surface_ids() -> tuple[str, ...]:
+    return tuple(item.surface_id for item in STAGE5_CHART_SURFACES)

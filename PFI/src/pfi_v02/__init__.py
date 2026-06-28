@@ -26,6 +26,8 @@ from pfi_v02.stage_v0211_ui_recovery import (
     build_v0211_stage0_contract,
     build_v0211_stage1_contract,
     build_v0211_stage4_contract,
+    build_v0211_stage5_contract,
+    build_v0211_stage6_project_review_contract,
 )
 from pfi_v02.stage_v022_runtime_diff import build_dependency_hash_snapshot, build_impacted_metrics_report
 from pfi_v02.stage_v022_visualization_uiux import build_stage9_visualization_payload
@@ -52,6 +54,8 @@ __all__ = [
     "build_v0211_stage0_contract",
     "build_v0211_stage1_contract",
     "build_v0211_stage4_contract",
+    "build_v0211_stage5_contract",
+    "build_v0211_stage6_project_review_contract",
     "build_dependency_hash_snapshot",
     "build_impacted_metrics_report",
     "build_stage9_visualization_payload",

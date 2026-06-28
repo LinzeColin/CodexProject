@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v0.2.1.1 Product UI Recovery Stage 5/6 - 2026-06-29
+
+- 完成 `v0.2.1.1 Stage 5` 真实图表与最终验收合同：账户、投资、消费趋势统一读取 `/api/trends`，来源限定为 SQLite operational DB 和 `MetaDatabase/PFI/alipay_daily`。
+- 删除正式 Web Shell 的硬编码数字趋势回退；运行 API 不可用时只显示中文空状态。
+- 隔离旧项目验收功能面板中的合成验收和测试数据路径，正式页面不再暴露 `fixture` 或合成验收入口。
+- 新增 `docs/pfi_v0211/STAGE5_REAL_CHARTS_FINAL_ACCEPTANCE.md`、`docs/pfi_v0211/STAGE6_PROJECT_REVIEW_CLOSEOUT.md` 和 `tests/test_v0211_stage5_6_final_acceptance_contract.py`。
+- Stage 6 项目级复审验收作为用户口径的第二阶段 closeout，覆盖跨板块复审、GitHub main 同步、本机 app 入口刷新和非必要缓存清理。
+
 ## v0.2.1.1 Product UI Recovery Stage 4 - 2026-06-29
 
 - 完成 `S4 持久化与同步`，把 `投资管理 > 持仓` 保存路径接到本机 SQLite operational DB。

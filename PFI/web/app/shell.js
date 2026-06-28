@@ -52,7 +52,6 @@ const STATUS_LABELS = {
 };
 
 const USER_TEXT_LABELS = {
-  ["Syn" + "thetic " + "E" + "2E"]: "合成端到端",
   ["Rollback " + "plan"]: "回滚计划",
   ["Follow-up " + "list"]: "后续任务清单",
   ["Review " + "lifecycle"]: "复盘生命周期",
@@ -128,8 +127,6 @@ const CARD_SOURCES = {
   budget_remaining: "消费预算",
   cashflow_pressure: "现金流预测",
 };
-
-const UNIFIED_TREND_PERIODS = ["1月", "2月", "3月", "4月", "5月", "6月"];
 
 const UNIFIED_TREND_DATA = {
   accounts: {
@@ -245,12 +242,6 @@ const FEATURE_TARGETS = {
   导出中心: { view: "export_center", label: "打开导出" },
   "PFI 上下文导出": { view: "pfi_context_export", label: "打开上下文" },
   外部系统上下文出口: { view: "alpha_readonly_export", label: "查看出口" },
-  端到端验收: { view: "stage6_e2e", label: "打开验收" },
-  合成端到端: { view: "stage6_synthetic_e2e", label: "查看验收" },
-  回归治理: { view: "stage6_regression_governance", label: "查看治理" },
-  交付与回滚: { view: "stage6_delivery_rollback", label: "查看交付" },
-  回滚计划: { view: "stage6_rollback_plan", label: "查看回滚" },
-  后续任务清单: { view: "stage6_follow_up_list", label: "查看后续" },
   账户地图: { workspace: "accounts", label: "查看账户" },
   账本流水: { workspace: "ledger", label: "查看账本" },
   投资总览: { workspace: "investment", label: "查看投资" },
@@ -633,8 +624,8 @@ const FUNCTION_VIEWS = {
     "持仓垂直切片",
     "portfolio",
     "生成持仓复核",
-    "从合成券商导入账本生成持仓快照、对账、公司行动、汇率换算、现金固定样本、风险约束和人工决策提案。",
-    ["可用：导入账本、持仓快照、对账、约束和人工提案", "验收：来源编号、快照校验值、持仓数量和证据记录必须可追溯", "复核：复核，使用本机持仓，进入人工复核"],
+    "从真实持仓或正式导入账本生成持仓快照、对账、公司行动、汇率换算、现金记录、风险约束和人工决策提案。",
+    ["可用：导入账本、持仓快照、对账、约束和人工提案", "验收：来源编号、快照校验值、持仓数量和记录必须可追溯", "复核：使用本机持仓，进入人工复核"],
     { legacyView: "holdings" },
   ),
   portfolio_reconciliation: functionView(
@@ -642,7 +633,7 @@ const FUNCTION_VIEWS = {
     "导入对账",
     "portfolio",
     "查看导入对账",
-    "核对合成券商导入账本、公司行动调整、汇率换算、现金固定样本和持仓快照差异。",
+    "核对真实导入账本、公司行动调整、汇率换算、现金记录和持仓快照差异。",
     ["可用：导入记录、券商数量、快照持仓数和值差", "验收：未匹配导入标的和未匹配快照标的必须显示", "复核：对账，只更新复核记录"],
     { legacyView: "holdings" },
   ),
@@ -834,19 +825,11 @@ const FUNCTION_VIEWS = {
   ),
   stage6_e2e: functionView(
     "stage6_e2e",
-    "端到端验收",
+    "项目级复审",
     "insights",
-    "查看整体验收",
-    "统一查看多数据源、首页、账本、建议、回归治理、交付回滚和任务包验收门禁。",
-    ["可用：20 个总验收门禁和验收审计", "验收：所有门禁必须有证据引用且通过", "复核：合成端到端，使用合成验收数据"],
-  ),
-  stage6_synthetic_e2e: functionView(
-    "stage6_synthetic_e2e",
-    "合成端到端",
-    "insights",
-    "查看合成端到端验收",
-    "核对支付宝、支付宝基金、Moomoo、中国券商、ABC、CBA、微信的 fixture/contract，并验证首页、账本和建议闭环。",
-    ["可用：数据源样本矩阵、首页闭环、账本闭环、建议闭环", "验收：核心源不得缺失，首页必须可读，分类必须正确", "复核：不导入真实私有数据"],
+    "查看项目级复审",
+    "统一查看首页、账户、账本、投资、消费、数据源、建议、报告、市场研究和设置的真实行为验收。",
+    ["可用：真实浏览器点击、SQLite 查询、服务重启和禁词扫描", "验收：所有入口和主要按钮必须可用", "复核：正式页面读取真实数据或中文空状态"],
   ),
   stage6_regression_governance: functionView(
     "stage6_regression_governance",
@@ -967,7 +950,7 @@ const DEFAULT_WORKSPACES = {
       task("报告生成", "排队中 · 导入后可生成", "queued"),
     ],
     evidence: evidence("首页说明", "今日缓存摘要", "本机摘要", "首页卡片和待办列表来自本机资料。"),
-    chart: [22, 28, 24, 36, 34, 43, 39, 48, 45, 58, 52, 63, 59, 67],
+    chart: [],
   },
   market: {
     label: "市场",
@@ -1002,7 +985,7 @@ const DEFAULT_WORKSPACES = {
       task("自选池同步", "可用 · 本地状态已保存", "ready"),
     ],
     evidence: evidence("市场证据", "市场事件与来源登记", "本地缓存与来源登记", "市场入口只显示研究证据，不生成交易信号。"),
-    chart: [18, 25, 29, 31, 28, 34, 40, 38, 44, 49, 47, 53, 51, 57],
+    chart: [],
   },
   research: {
     label: "研究",
@@ -1036,7 +1019,7 @@ const DEFAULT_WORKSPACES = {
       task("报告验证任务", "可用 · 可进入待办清单", "ready"),
     ],
     evidence: evidence("研究证据", "研究库和政策雷达", "本地证据索引", "研究入口只做证据组织和决策支持。"),
-    chart: [16, 20, 22, 30, 27, 32, 35, 42, 39, 44, 48, 52, 50, 56],
+    chart: [],
   },
   portfolio: {
     label: "持仓",
@@ -1052,8 +1035,8 @@ const DEFAULT_WORKSPACES = {
     ],
     features: [
       feature("持仓", "可用", "持仓复核", "查看正式持仓、候选持仓、暴露和质量检查。"),
-      feature("持仓垂直切片", "可用", "合成导入账本", "从合成券商导入、持仓快照、对账、风险约束到人工决策提案。"),
-      feature("导入对账", "可用", "账本到快照", "核对公司行动、汇率换算、现金固定样本和值差。"),
+      feature("持仓垂直切片", "可用", "真实导入账本", "从真实导入账本、持仓快照、对账、风险约束到人工决策提案。"),
+      feature("导入对账", "可用", "账本到快照", "核对公司行动、汇率换算、现金记录和值差。"),
       feature("风险约束", "复核", "集中度和现金", "检查单一持仓、前三集中度、现金缓冲和自动再平衡关闭状态。"),
       feature("决策提案", "复核", "人工复核", "目标权重变化固定为 0，不创建订单意图，进入人工确认。"),
       feature("组合暴露", "复核", "持仓快照", "查看行业、资产类别和币种暴露。"),
@@ -1072,7 +1055,7 @@ const DEFAULT_WORKSPACES = {
       task("订单意图草案", "可用 · 使用本机数据", "ready"),
     ],
     evidence: evidence("持仓证据", "私有持仓复核", "本机运行库", "持仓入口使用本机数据、进入人工复核。"),
-    chart: [28, 26, 25, 32, 30, 37, 36, 41, 39, 46, 43, 47, 45, 50],
+    chart: [],
   },
   strategy: {
     label: "策略实验室",
@@ -1108,7 +1091,7 @@ const DEFAULT_WORKSPACES = {
       task("盘感训练入口", "可用 · 已保留", "ready"),
     ],
     evidence: evidence("策略证据", "回测、扫描和盘感训练", "本地实验记录", "策略入口用于研究、回测和训练。"),
-    chart: [20, 23, 31, 29, 37, 35, 44, 42, 49, 47, 55, 53, 61, 58],
+    chart: [],
   },
   data: {
     label: "数据与系统",
@@ -1140,7 +1123,7 @@ const DEFAULT_WORKSPACES = {
       task("备份恢复演练", "复核 · 等待目标机", "review"),
     ],
     evidence: evidence("系统证据", "来源、任务、本机数据和备份", "运行库与文档合同", "系统入口用于诊断，不复制私有数据。"),
-    chart: [14, 18, 19, 25, 24, 31, 29, 34, 38, 41, 40, 46, 49, 52],
+    chart: [],
   },
 };
 
@@ -1907,7 +1890,7 @@ async function refreshRuntimeTrends(options = {}) {
 function resolveWorkspaceTrend(workspace) {
   const key = workspace?.trendKey || "";
   if (key && runtimeTrendState && runtimeTrendState[key]) return runtimeTrendState[key];
-  return workspace?.trend || legacyChartToTrend(workspace);
+  return workspace?.trend || emptyTrendForWorkspace(workspace);
 }
 
 function applyOperationalReadModel(model) {
@@ -2544,7 +2527,7 @@ function applyStage5Dashboard(dashboard) {
 function applyStage6Dashboard(dashboard) {
   if (!dashboard || dashboard.schema !== "PFIV02Stage6E2EStabilizationV1") return;
   const phase6a = dashboard.phase_6a || {};
-  const sourceMatrix = phase6a.source_fixture_matrix || [];
+  const sourceMatrix = phase6a.source_matrix || phase6a.source_contract_matrix || [];
   const homepageLoop = phase6a.homepage_loop || {};
   const ledgerLoop = phase6a.ledger_loop || {};
   const recommendationLoop = phase6a.recommendation_loop || {};
@@ -2557,10 +2540,10 @@ function applyStage6Dashboard(dashboard) {
   const rollbackCount = (delivery.rollback_plan || []).length;
   const followUpCount = (delivery.follow_up_list || []).length;
 
-  WORKSPACES.home.runtime = "端到端验收与稳定化";
+  WORKSPACES.home.runtime = "项目级复审与稳定化";
   WORKSPACES.home.features = [
-    feature("端到端验收", gatePassCount === totalGate.length ? "通过" : "复核", "总验收门禁", `${gatePassCount}/${totalGate.length} 个总门禁通过。`),
-    feature("合成端到端", phase6a.status === "PASS" ? "通过" : "复核", "合成验收", `${sourceMatrix.length} 个核心源 · 首页/账本/建议闭环。`),
+    feature("项目级复审", gatePassCount === totalGate.length ? "通过" : "复核", "总验收门禁", `${gatePassCount}/${totalGate.length} 个总门禁通过。`),
+    feature("真实数据闭环", phase6a.status === "PASS" ? "通过" : "复核", "验收记录", `${sourceMatrix.length} 个核心源 · 首页/账本/建议闭环。`),
     feature("回归治理", regression.status === "PASS" ? "通过" : "复核", "回归治理", "既有冒烟检查、聚焦测试和变更范围治理已记录。"),
     feature("交付与回滚", delivery.status === "PASS" ? "通过" : "复核", "交付回滚", `${rollbackCount} 步回滚计划 · ${followUpCount} 项后续任务。`),
     feature("回滚计划", rollbackCount >= 6 ? "可用" : "复核", "回滚计划", "可回滚代码、测试、文档、治理和 Web Shell 接入。"),
@@ -2574,16 +2557,16 @@ function applyStage6Dashboard(dashboard) {
   ];
 
   WORKSPACES.insights.features = [
-    feature("端到端验收", gatePassCount === totalGate.length ? "通过" : "复核", "总验收门禁", `${gatePassCount}/${totalGate.length} 个总门禁通过。`),
-    feature("合成端到端", phase6a.status === "PASS" ? "通过" : "复核", "合成验收", "多数据源、首页、账本和建议闭环。"),
+    feature("项目级复审", gatePassCount === totalGate.length ? "通过" : "复核", "总验收门禁", `${gatePassCount}/${totalGate.length} 个总门禁通过。`),
+    feature("真实数据闭环", phase6a.status === "PASS" ? "通过" : "复核", "验收记录", "多数据源、首页、账本和建议闭环。"),
     feature("回归治理", regression.status === "PASS" ? "通过" : "复核", "回归治理", "既有冒烟检查、聚焦测试、变更范围治理和无大范围重构已记录。"),
     feature("交付与回滚", delivery.status === "PASS" ? "通过" : "复核", "交付回滚", "用户文档、差异摘要、回滚计划和后续任务清单已记录。"),
     feature("回滚计划", rollbackCount >= 6 ? "可用" : "复核", "回滚计划", "可逆文件清单和无生产迁移限制。"),
     feature("后续任务清单", followUpCount ? "可用" : "待补", "后续任务", "后续任务独立排期，不并入当前功能页面。"),
   ];
   WORKSPACES.insights.rows = [
-    row("P0", "端到端验收", "总验收门禁", `${gatePassCount}/${totalGate.length} 个门禁通过。`, gatePassCount === totalGate.length ? "通过" : "复核"),
-    row("P0", "合成端到端", "合成验收", `${sourceMatrix.length} 个核心源；首页状态 ${safeUserText(homepageLoop.status, "复核")}。`, safeUserText(phase6a.status, "复核")),
+    row("P0", "项目级复审", "总验收门禁", `${gatePassCount}/${totalGate.length} 个门禁通过。`, gatePassCount === totalGate.length ? "通过" : "复核"),
+    row("P0", "真实数据闭环", "验收记录", `${sourceMatrix.length} 个核心源；首页状态 ${safeUserText(homepageLoop.status, "复核")}。`, safeUserText(phase6a.status, "复核")),
     row("P1", "回归治理", "治理脚本", safeUserText((regression.changed_scope_governance || {}).expected, "运行变更范围治理。"), safeUserText(regression.status, "复核")),
     row("P1", "交付与回滚", "交付回滚", `${rollbackCount} 步回滚 · ${followUpCount} 项后续任务。`, safeUserText(delivery.status, "复核")),
   ];
@@ -4659,20 +4642,19 @@ function showRecoverableError() {
   showToast("刷新失败 · 已切换到缓存兜底", "failure");
 }
 
-function legacyChartToTrend(workspace) {
-  const points = Array.isArray(workspace?.chart) ? workspace.chart : DEFAULT_WORKSPACES.home.chart;
+function emptyTrendForWorkspace(workspace) {
   return {
     scope: workspace?.label || "首页总览",
     title: "状态趋势",
-    unit: "指数",
-    source: "本地缓存趋势",
-    emptyState: "趋势数据待更新",
-    periods: points.map((_, index) => `${index + 1}`),
-    series: [{ id: "status_index", label: "状态", color: "--pfi-blue", values: points }],
+    unit: "CNY",
+    source: "真实数据待接入",
+    emptyState: "趋势数据需要先接入真实数据，当前不显示伪造曲线。",
+    periods: [],
+    series: [],
   };
 }
 
-function drawTrendChart(trend = legacyChartToTrend(WORKSPACES.home)) {
+function drawTrendChart(trend = emptyTrendForWorkspace(WORKSPACES.home)) {
   const canvas = document.querySelector("[data-trend-canvas]");
   const panel = document.querySelector("[data-trend-panel]");
   const title = document.querySelector("[data-trend-title]");
