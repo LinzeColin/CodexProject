@@ -9,11 +9,11 @@ The append-only machine record is `development_events.jsonl`.
 ## Current State
 
 - Product version: 0.23.1
-- Current phase: S2PL
+- Current phase: S2PM
 - Current gate: S2PMT07_REMAINING_BLOCKER_MATRIX_READY_NO_CLOSURE
 - Confirmed iteration count: 199
 - Reconstructed event count: 0
-- Current task: `S2PMT07-REMAINING-BLOCKER-MATRIX` records an explicit same-day M4 watermark proof record for service date `2026-06-28`; `m4_watermark_correct=true` for the current delivery-ledger date, but S2PLT02, S2PLT04, S2PMT07, inherited P0/P1 zero proof, final bundle, second real day, eight total emails, scheduler, Release, DAILY_OPERATION, and integrated production acceptance remain blocked/false.
+- Current task: `S2PMT07-REMAINING-BLOCKER-MATRIX` maps the seven S2PMT07 final-gate blockers to required future evidence, owner action, default next step, and self-certification limits; inherited P0/P1 zero proof, S2PLT04 completion, final acceptance bundle, independent reviewer assignment/signoff, final command execution, no-production attestation, next-agent handoff, scheduler, Release, DAILY_OPERATION, and integrated production acceptance remain blocked/false.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. Local daily M1-M4 orchestration is now recorded as readiness evidence, but V7.2 contract baseline migration blockers are zero while real restore, real SMTP production, scheduler installation, final acceptance bundle creation, directory-level final bundle artifact validation pass, P0/P1 closure, S2PLT04 completion, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
 
