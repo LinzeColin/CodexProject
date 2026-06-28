@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260628-ADP-S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-ARTIFACT-VALIDATOR"
-source_snapshot_hash: "sha256:9230d8760a2ce023022a7f4ad7b8b23dad53645b6177ccdb7c38b51cc21d61fe"
+as_of_event_id: "EVENT-20260628-ADP-S2PMT07-MAINLINE-ATTESTATION"
+source_snapshot_hash: "sha256:4aca02d69498180095923ed7acf5c5b3f30c0dc147fd651170ece7545f1329d3"
 source_base_commit: "12e91a8e1b84fe29724f43229131bd43f8fa31cd"
 source_tree_hash: "8caef1969ddfe23755890506daa0d02e6f6df81f"
-snapshot_event_time: "2026-06-28T09:26:37+10:00"
+snapshot_event_time: "2026-06-28T10:30:22+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -16,8 +16,8 @@ dimensions:
     status: "PARTIAL"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 1024
-    total_active_parameters: 1029
+    checked_active_parameters: 1026
+    total_active_parameters: 1031
     checked_active_formulas: 119
     total_active_formulas: 119
     unresolved_fact_ids:
@@ -28,8 +28,8 @@ dimensions:
   parameter_source_quality:
     status: "PARTIAL"
     fact_level: "UNKNOWN"
-    checked_active_parameters: 1024
-    total_active_parameters: 1029
+    checked_active_parameters: 1026
+    total_active_parameters: 1031
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -61,13 +61,13 @@ dimensions:
     fact_level: "EXTRACTED"
     tree_bound_events: 0
     commit_bound_events: 4
-    legacy_unbound_events: 204
+    legacy_unbound_events: 205
     precommit_pending_events: 40
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "VERIFIED"
-  release_gate: "S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_VALIDATOR_BLOCKED_NO_PRODUCTION"
+  release_gate: "S2PMT07_MAINLINE_ATTESTATION_PASS_NO_PRODUCTION"
   blocker_ids:
     - "FACT-arxiv-daily-push-IMPLEMENTATION-PARAMETER-REVIEW"
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"

@@ -7,12 +7,18 @@ machine_summary:
 
 - model_count: 117
 - formula_count: 119
-- parameter_count: 1046
+- parameter_count: 1048
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
 ## Governance Notes
 
+- `S2PMT07-MAINLINE-ATTESTATION` adds `PARAM-ADP-1047` and
+  `PARAM-ADP-1048` under `MOD-ADP-100` / `FORM-ADP-102`. It binds a prior
+  S2PMT07 evidence commit to current `origin/main` ancestry, open PR count 0,
+  ADP/arxiv/s2p remote work branch count 0, required validation evidence, and
+  no-production flags while keeping P0/P1 closure, final bundle, S2PLT04, and
+  every production side-effect flag false.
 - `S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-ARTIFACT-VALIDATOR`
   adds `PARAM-ADP-1043` through `PARAM-ADP-1046` under `MOD-ADP-100` /
   `FORM-ADP-102`. It validates the future

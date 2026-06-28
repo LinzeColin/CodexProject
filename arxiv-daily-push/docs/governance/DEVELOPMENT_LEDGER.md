@@ -4275,3 +4275,12 @@ None for this new project baseline.
 - Decisions: Added a fail-closed validator for future `FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json` payloads. A valid payload must use schema `adp.independent_final_reviewer_assignment.v1`, decision `INDEPENDENT_FINAL_REVIEWER_ASSIGNED_NO_PRODUCTION_ACCEPTANCE`, independent reviewer role/scope proof, exact review inputs, all no-production flags false, and `assignment_hash` binding.
 - Boundary: no reviewer assignment, no independent final closure decision, no zero-proof artifact, no P0/P1 closure, no S2PLT04 completion, no final bundle creation, no SMTP/scheduler/Release/restore, no CURRENT/V7 change, and no integrated production acceptance.
 - Evidence: `governance/run_manifests/ADP-S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-ARTIFACT-VALIDATOR-20260628.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_VALIDATOR.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.
+
+### `ITER-20260628-ADP-S2PMT07-MAINLINE-ATTESTATION`
+
+- Timestamp: `2026-06-28T10:30:22+10:00`
+- Task IDs: `S2PMT07-MAINLINE-ATTESTATION`; parent `S2PMT07`; acceptance `ACC-S2PMT07-FINAL-REVIEW`.
+- Decisions: Added a mainline attestation state that requires target evidence commit ancestry on `origin/main`, open PR count `0`, ADP/arxiv/s2p remote work branch count `0`, required validation coverage, and no-production flags.
+- Files changed: S2PMT07 final gate helper, final-gate regression tests, `PARAM-ADP-1047..1048` / `FORM-ADP-102` semantic refresh, phase record, run manifest, traceability/delivery/event records, user-center traceability page, and three base files.
+- Boundary: no reviewer assignment, no independent final closure decision, no zero-proof artifact, no P0/P1 closure, no S2PLT04 completion, no final bundle creation, no SMTP/scheduler/Release/restore, no CURRENT/V7 change, and no integrated production acceptance.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-MAINLINE-ATTESTATION-20260628.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_MAINLINE_ATTESTATION.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.

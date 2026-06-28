@@ -3818,3 +3818,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PMT07-MAINLINE-ATTESTATION"
+    phase: "S2PM"
+    objective: "Bind a prior S2PMT07 evidence commit to origin/main ancestry, open PR count zero, ADP/arxiv/s2p remote branch count zero, required validation evidence, and no-production flags without accepting production."
+    scope: "S2PMT07 mainline attestation helper, focused TDD regression tests, phase record, run manifest, semantic parameter refresh, traceability row, user-center traceability page, delivery/event records, and three base files."
+    non_scope: "No independent final reviewer assignment, no independent final closure decision, no zero-proof artifact creation, no final bundle artifact creation, no next-agent handoff creation, no no-production attestation creation, no independent final signoff, no final command execution, no P0/P1 closure, no S2PLT04 completion, no SMTP transport, no scheduler install or enablement, no Release upload, no public schema or DB migration, no production queue mutation, no ranking/source-adapter change, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no DAILY_OPERATION, and no integrated production acceptance."
+    status: "completed"
+    dependencies: ["S2PMT07", "V7_2_AGENT_REVALIDATION_RECEIPT"]
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_MAINLINE_ATTESTATION.md", "governance/run_manifests/ADP-S2PMT07-MAINLINE-ATTESTATION-20260628.json", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_user_center_candidate_pool.py"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s3_mainline_red PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s3_mainline_green3 PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q"]
+    test_results: ["TDD red failed because S2PMT07 mainline attestation API was missing", "focused final-gate tests: 56 OK", "full project validation to be recorded in the task closeout"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-MAINLINE-ATTESTATION-20260628.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_MAINLINE_ATTESTATION.md", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
+    result: "S2PMT07 evidence is now bound to origin/main with open PR count zero and ADP/arxiv/s2p remote branch count zero while all final-bundle, P0/P1, S2PLT04, and production stop gates remain false."
+    risk: "This attestation can be misread as final production acceptance; it is mainline hygiene evidence only and all closure/production flags remain false."
+    rollback: "Revert mainline attestation helpers/tests, registry updates, phase record, run manifest, traceability row, delivery/event records, generated views, and three base file updates; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

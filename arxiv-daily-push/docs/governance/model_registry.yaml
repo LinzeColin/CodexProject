@@ -5371,6 +5371,8 @@ models:
       - "PARAM-ADP-1044"
       - "PARAM-ADP-1045"
       - "PARAM-ADP-1046"
+      - "PARAM-ADP-1047"
+      - "PARAM-ADP-1048"
     inputs:
       - "S2PMT01 through S2PMT06 local validation receipts"
       - "S2PLT04 completion evidence"
