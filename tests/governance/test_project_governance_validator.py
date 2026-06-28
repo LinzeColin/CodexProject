@@ -12098,6 +12098,83 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(module.run_manifest_schema_version({"schema_version": "codexproject.run_manifest.v1"}), 1)
         self.assertEqual(module.run_manifest_schema_version({"schema_version": 2}), 2)
 
+    def test_m1_s5_stage5_audit_collects_shadow_roi_owner_and_rollback(self) -> None:
+        cli = load_lean_governance_module()
+        ci_summary = {
+            "schema_version": 1,
+            "command": "ci",
+            "scope": "changed-only",
+            "changed_scope": {
+                "base_ref_status": "resolved",
+                "changed_files": [
+                    "AGENTS.md",
+                    "scripts/lean_governance.py",
+                    "governance/run_manifests/GOV-ROI-MINPATCH-S5-ACCEPTANCE-ROI-ROLLBACK-20260628.json",
+                ],
+                "selected_project_count": 11,
+            },
+            "candidate_shadow_comparison": {
+                "legacy_exit_code": 0,
+                "candidate_report_only": True,
+                "selector_parity_matches": True,
+                "required_exit_code_sources": ["legacy_validation", "read_only_guard", "selector_parity_guard"],
+            },
+            "zero_diff": {"clean": True},
+            "timing_telemetry": {"total_seconds": 1.5},
+            "output_telemetry": {"validator_stdout_bytes": 1200},
+        }
+
+        with patch.object(cli, "run_changed_only_ci", return_value=(0, ci_summary)):
+            exit_code, audit = cli.run_stage5_audit("origin/main", root=ROOT, projects_file=ROOT / "governance" / "projects.yaml")
+
+        self.assertEqual(exit_code, 0, audit.get("blocking_reasons"))
+        self.assertEqual(audit["decision"], "SHIP")
+        self.assertEqual(set(audit["acceptance_ids"]), {"S5PAT01", "S5PBT01", "S5PBT02", "S5PCT01"})
+        self.assertTrue(all(item["pass"] for item in audit["task_results"].values()), audit["task_results"])
+        self.assertTrue(audit["risk_closure"]["pass"], audit["risk_closure"])
+        self.assertEqual(audit["risk_closure"]["open_p0_p1_count"], 0)
+        self.assertTrue(audit["owner_readability"]["pass"], audit["owner_readability"]["failed_projects"])
+        self.assertTrue(audit["rollback_rehearsal"]["pass"], audit["rollback_rehearsal"])
+        self.assertTrue(audit["roi_metrics"]["pass"], audit["roi_metrics"]["pass_checks"])
+        self.assertLessEqual(audit["roi_metrics"]["after"]["ordinary_context_file_count"], 5)
+        self.assertLessEqual(audit["roi_metrics"]["after"]["stdout_bytes"], 2048)
+        self.assertTrue(audit["shadow_parity"]["quality_guards"]["candidate_report_only"])
+        self.assertFalse(audit["shadow_parity"]["adp_non_adp_fixture"]["run_gate"])
+
+    def test_m1_s5_owner_entry_review_rejects_link_only_markdown(self) -> None:
+        cli = load_lean_governance_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "功能清单.md"
+            path.write_text(
+                "# 功能清单\n\n详见 docs/governance/project.yaml\ncompatibility indexes only\n",
+                encoding="utf-8",
+            )
+            review = cli.stage5_owner_entry_file_review(path, "功能清单.md")
+
+        self.assertFalse(review["pass"])
+        self.assertIn("## 摘要", review["missing_required_tokens"])
+        self.assertIn("compatibility index", review["forbidden_markers"])
+        self.assertLess(review["actionable_token_count"], 3)
+
+    def test_m1_s5_stage5_audit_cli_outputs_chinese_ship_json(self) -> None:
+        cli = load_lean_governance_module()
+        fake_audit = {
+            "owner_status_zh": "Stage5 验收通过。",
+            "schema_version": 1,
+            "language": "zh-CN",
+            "command": "stage5-audit",
+            "decision": "SHIP",
+        }
+        stream = io.StringIO()
+        with patch.object(cli, "run_stage5_audit", return_value=(0, fake_audit)):
+            with contextlib.redirect_stdout(stream):
+                self.assertEqual(cli.main(["stage5-audit", "--base-ref", "origin/main"]), 0)
+
+        payload = json.loads(stream.getvalue())
+        self.assertEqual(payload["command"], "stage5-audit")
+        self.assertEqual(payload["decision"], "SHIP")
+        self.assertEqual(payload["language"], "zh-CN")
+
 
 if __name__ == "__main__":
     unittest.main()
