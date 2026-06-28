@@ -6,6 +6,8 @@
 
 本轮不实现 Stage 6 标签持久化，不修改 v0.2.1 Web Shell UIUX 基线，不新增真实交易、自动投资、支付或券商提交能力。
 
+2026-06-28 复审并解决更新：分类验证已从静态声明升级为真实校验，每个 L1 的 `primary_category_per_transaction` 必须等于 `1`；同时新增 `future_merge_target_max_l1=10`、`future_merge_l1_count`、`future_merge_groups` 和 `multi_dimensional_analysis_uses_tags=true`，证明默认 12 大类可压缩到 10 类或更少，多维分析交给 Stage 6 标签系统。
+
 ## Task 验收
 
 | Task ID | 交付物 | 验收标准 | 状态 |
@@ -44,7 +46,7 @@
 | 家庭责任 | 家庭支持、人情往来、报销垫付 | 家庭责任 |
 | 调整其他 | 退款抵扣、未分类其他 | 调整其他 |
 
-约束结果：`L1 ≤ 12`，每类 `L2 ≤ 5`，总 `L2 ≤ 50`，每笔交易主分类数量为 `1`。
+约束结果：`L1 ≤ 12`，每类 `L2 ≤ 5`，总 `L2 ≤ 50`，每笔交易主分类数量为 `1`。当前 `future_merge_to` 分组为 7 类，满足后续压缩到 10 类或更少的要求。
 
 ## Stop Condition 复核
 
@@ -56,30 +58,37 @@
 | 生活消费被投资入金污染 | `investment_deposit.affects_living_consumption=false`，测试覆盖。 |
 | 只显示一个消费数字导致误解 | 首页、消费页、报告模板同时返回两个口径和中文差异解释。 |
 | 分类超过限制 | `validate_stage5_taxonomy_constraints()` 校验 `L1 ≤ 12`、每类 `L2 ≤ 5`、总 `L2 ≤ 50`。 |
-| 后续无法合并分类 | 每个 L1 都有 `future_merge_to` 和 `merge_candidate`。 |
+| 每笔交易主分类数量不是 1 | `validate_stage5_taxonomy_constraints()` 会返回 `status=失败`，并在 `violations` 中记录 `primary_category_per_transaction`。 |
+| 后续无法合并分类 | 每个 L1 都有 `future_merge_to` 和 `merge_candidate`，且当前 future merge 分组为 7 类，低于 `future_merge_target_max_l1=10`。 |
 
 ## Agent 交叉复审
 
 - Agent 1：双消费口径复核通过；投资入金、基金申购、黄金申购、投资买入和费用进入消费总流出，但不进入生活消费。
 - Agent 3：分类参数复核通过；12 大类 / 每类 5 中类 / 总中类 50，分类与 Stage 6 标签系统分离。
 
+## 复审修复
+
+- 修复 1：分类验证真正检查每笔交易只有一个主分类。错误 taxonomy 中任一 L1 的 `primary_category_per_transaction` 不等于 `1` 时，验证返回失败。
+- 修复 2：补齐后续压缩到 10 类以内的机器验收字段。默认 12 个 L1 当前可通过 `future_merge_to` 收敛为 7 个分组。
+- 本轮复审报告：`docs/pfi_v022/reviews/STAGE5_REVIEW_20260628.md`。
+- 本轮复审测试：`tests/test_v022_review_stage5.py`。
+
 ## Validation
 
 ```bash
-PYTHONPATH=src .venv/bin/python -B -m pytest tests/test_v022_stage5_ledger_taxonomy.py -q
-PYTHONPATH=src .venv/bin/python -B -m pytest tests/test_v022_stage0_database_governance.py tests/test_pfi_parameters_consistency.py tests/test_v022_fx_effective_date.py tests/test_v022_stage3_source_account_profiles.py tests/test_v022_interconnection_no_double_count.py tests/test_v022_consumption_investment_outflow.py tests/test_v022_stage5_ledger_taxonomy.py -q
-PYTHONPATH=src .venv/bin/python -B -m pytest -q
-python3 ../scripts/validate_project_governance.py --project PFI
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -B -m pytest tests/test_v022_review_stage5.py -q -p no:cacheprovider
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -B -m pytest tests/test_v022_stage5_ledger_taxonomy.py tests/test_v022_review_stage5.py tests/test_v022_review_stage4.py tests/test_pfi_parameters_consistency.py -q -p no:cacheprovider
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -B -m pytest tests -q -p no:cacheprovider
+python3 scripts/validate_project_governance.py --project PFI
 node --check web/app/shell.js
 git diff --check -- PFI
 ```
 
 本轮实际结果：
 
-- Stage 5 目标测试：`5 passed`。
-- Stage 0-5 v0.2.2 回归：`45 passed`。
-- 完整 PFI pytest：`203 passed`。
+- Stage 5 复审目标测试：`4 passed, 27 subtests passed`。
+- Stage 5 相关回归：`21 passed, 126 subtests passed`。
+- 完整 PFI 测试：`274 passed, 278 subtests passed`。
 - 项目治理：`errors 0 / warnings 0`。
-- Web shell 语法、Streamlit app compile、`git diff --check -- PFI`：通过。
-- App 入口：`/Applications/PFI.app`、`~/Downloads/PFI.app`、Desktop 链接已刷新到 canonical PFI；`macOS app acceptance lite` 为 `29 pass / 0 fail / 2 info`。
-- 浏览器验收：8501 页面可见 PFI 首页、数据源上传、投资管理、消费管理、AUD/CNY 徽标和原生上传控件；无嵌套 expander 错误，console errors `0`；截图 `/tmp/pfi-v022-stage5-app-verified.png`。
+- Web shell 语法、`git diff --check -- PFI`、参数 JSON 解析：通过。
+- macOS app 轻量验收：`Blocked, pass=22, fail=7, info=2`；运行服务健康，8501 正常，阻塞项为 `/Users/linzezhang/Desktop/PFI.app` 缺失。按当前 goal 约束，本轮不重装 app 入口。

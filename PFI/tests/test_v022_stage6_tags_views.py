@@ -17,6 +17,16 @@ class TestV022Stage6TagsViews(unittest.TestCase):
         except ModuleNotFoundError as exc:
             self.fail(f"Stage 6 tag/view module is missing: {exc}")
 
+    def _real_alipay_records(self, module, *, limit: int | None = None) -> list[dict[str, object]]:
+        metadatabase_root = ROOT.parent / "MetaDatabase" / "PFI" / "alipay_daily"
+        records = module.load_stage6_alipay_records_from_metadatabase(metadatabase_root, limit=limit)
+        self.assertGreater(len(records), 0, "Stage 6 review must use real MetaDatabase Alipay records")
+        for record in records[:20]:
+            with self.subTest(real_record=record["record_id"]):
+                self.assertTrue(str(record["record_id"]).startswith("txn_alipay_"))
+                self.assertTrue(record["real_data_source"].endswith("MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv"))
+        return records
+
     def test_stage6_contract_locks_phase_task_acceptance_and_validation(self) -> None:
         governance = importlib.import_module("pfi_v02.stage_v022_database_governance")
         build_contract = getattr(governance, "build_v022_stage6_contract", None)
@@ -80,6 +90,7 @@ class TestV022Stage6TagsViews(unittest.TestCase):
 
     def test_custom_tag_lifecycle_assignment_and_history_are_persistent(self) -> None:
         module = self._module()
+        real_record_id = self._real_alipay_records(module, limit=1)[0]["record_id"]
 
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "stage6_tags.sqlite"
@@ -90,7 +101,7 @@ class TestV022Stage6TagsViews(unittest.TestCase):
             renamed = store.rename_tag(custom["tag_id"], "家庭支持")
             store.assign_tags(
                 target_type="transaction",
-                target_id="txn_wechat_001",
+                target_id=str(real_record_id),
                 tag_ids=(renamed["tag_id"], "tag_consumption_large", "tag_general_manual_reviewed"),
                 assigned_by="owner",
             )
@@ -98,7 +109,7 @@ class TestV022Stage6TagsViews(unittest.TestCase):
             store.delete_custom_tag(renamed["tag_id"], reason_zh="合并到家庭责任")
 
             reopened = module.Stage6TagViewStore(db_path)
-            assignments = reopened.get_assignments("transaction", "txn_wechat_001")
+            assignments = reopened.get_assignments("transaction", str(real_record_id))
             history = reopened.list_tag_history(renamed["tag_id"])
             with self.assertRaises(ValueError):
                 reopened.delete_custom_tag("tag_consumption_night")
@@ -118,32 +129,7 @@ class TestV022Stage6TagsViews(unittest.TestCase):
 
     def test_tag_rules_auto_apply_and_filter_ledger_by_tag_combination(self) -> None:
         module = self._module()
-        records = (
-            {
-                "record_id": "txn_night_large",
-                "amount_cny": Decimal("2500.00"),
-                "local_time": "23:15",
-                "l1_category": "娱乐社交",
-                "event_type": "consumption",
-                "account_roles": ("consumer_wallet",),
-            },
-            {
-                "record_id": "txn_subscription",
-                "amount_cny": Decimal("88.00"),
-                "local_time": "09:00",
-                "l1_category": "订阅服务",
-                "event_type": "consumption",
-                "account_roles": ("consumer_wallet",),
-            },
-            {
-                "record_id": "txn_invest_deposit",
-                "amount_cny": Decimal("5000.00"),
-                "local_time": "10:00",
-                "l1_category": "投资资金流出",
-                "event_type": "investment_deposit",
-                "account_roles": ("investment_funding_source",),
-            },
-        )
+        records = self._real_alipay_records(module)
 
         with tempfile.TemporaryDirectory() as tmpdir:
             store = module.Stage6TagViewStore(Path(tmpdir) / "stage6_tags.sqlite")
@@ -152,49 +138,48 @@ class TestV022Stage6TagsViews(unittest.TestCase):
             applied = store.apply_tag_rules(records)
             filtered = store.filter_ledger_by_tags(
                 records,
-                required_tag_ids=("tag_consumption_night", "tag_consumption_large"),
+                required_tag_ids=("tag_consumption_large",),
                 match="all",
             )
 
-        self.assertIn("tag_consumption_night", applied["txn_night_large"])
-        self.assertIn("tag_consumption_large", applied["txn_night_large"])
-        self.assertIn("tag_consumption_subscription", applied["txn_subscription"])
-        self.assertIn("tag_investment_deposit", applied["txn_invest_deposit"])
-        self.assertEqual([item["record_id"] for item in filtered], ["txn_night_large"])
+        large_real_ids = {str(record["record_id"]) for record in records if record["event_type"] == "ordinary_consumption" and record["amount_cny"] >= Decimal("2000")}
+        self.assertGreater(len(large_real_ids), 0)
+        self.assertTrue(any("tag_consumption_large" in applied[record_id] for record_id in large_real_ids))
+        self.assertEqual({str(item["record_id"]) for item in filtered}, large_real_ids)
 
     def test_tag_driven_report_and_custom_views_are_saved_and_renderable_html(self) -> None:
         module = self._module()
-        records = (
-            {"record_id": "txn_001", "amount_cny": Decimal("68.00"), "event_type": "consumption"},
-            {"record_id": "txn_002", "amount_cny": Decimal("2000.00"), "event_type": "investment_buy"},
-        )
+        records = self._real_alipay_records(module, limit=400)
+        consumption_record = next(item for item in records if item["event_type"] == "ordinary_consumption")
+        investment_record = next(item for item in records if item["event_type"] in {"investment_return", "investment_buy"})
 
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "stage6_tags.sqlite"
             store = module.Stage6TagViewStore(db_path)
             store.initialize_schema()
             store.seed_default_tags()
-            store.assign_tags("transaction", "txn_001", ("tag_consumption_subscription", "tag_general_recurring"))
-            store.assign_tags("transaction", "txn_002", ("tag_investment_buy", "tag_investment_chase_candidate"))
+            store.assign_tags("transaction", str(consumption_record["record_id"]), ("tag_consumption_large", "tag_general_recurring"))
+            store.assign_tags("transaction", str(investment_record["record_id"]), ("tag_investment_buy", "tag_investment_chase_candidate"))
             report = store.build_tag_report(records)
             view = store.save_custom_view(
                 name_zh="订阅检查",
-                required_tag_ids=("tag_consumption_subscription", "tag_general_recurring"),
-                description_zh="检查周期性订阅扣费",
+                required_tag_ids=("tag_consumption_large", "tag_general_recurring"),
+                description_zh="检查真实流水中的周期性或大额项目",
             )
             html = store.render_custom_views_html()
             reopened = module.Stage6TagViewStore(db_path)
             views = reopened.list_custom_views()
 
         self.assertEqual(report["schema"], "PFIV022Stage6TagDrivenReportV1")
-        self.assertEqual(report["by_tag"]["tag_consumption_subscription"]["record_count"], 1)
-        self.assertEqual(report["by_tag"]["tag_investment_buy"]["amount_cny"], Decimal("2000.00"))
+        self.assertEqual(report["by_tag"]["tag_consumption_large"]["record_count"], 1)
+        self.assertEqual(report["by_tag"]["tag_consumption_large"]["amount_cny"], consumption_record["amount_cny"])
+        self.assertEqual(report["by_tag"]["tag_investment_buy"]["amount_cny"], investment_record["amount_cny"])
         self.assertEqual(view["name_zh"], "订阅检查")
         self.assertEqual(views[0]["name_zh"], "订阅检查")
         self.assertIn("订阅检查", html)
         self.assertIn("标签筛选", html)
         self.assertIn("自定义视图", html)
-        self.assertIn("tag_consumption_subscription", html)
+        self.assertIn("tag_consumption_large", html)
 
     def test_stage6_docs_and_parameter_catalog_record_tag_view_governance(self) -> None:
         expected_docs = (

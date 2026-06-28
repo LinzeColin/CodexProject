@@ -73,7 +73,9 @@ python3 scripts/validate_project_governance.py --project PFI
 git diff --check -- PFI
 ```
 
-当前本地 closeout 结果：Stage 8 目标测试 `8 passed`；Stage 0-8 v0.2.2 回归 `66 passed`；完整 PFI pytest `224 passed`；治理 `errors 0 / warnings 0`；Web shell 语法和 `git diff --check -- PFI` 通过；App 入口验收 `29 pass / 0 fail / 2 info`；8501 health `ok`；真实浏览器点击 `数据源与上传` 成功，`PFI`、`首页总览`、`数据源与上传`、`AUD/CNY` 可见，正式 UI 禁用词扫描 0 命中，console errors `0`，截图 `/tmp/pfi-v022-stage8-app-verified.png`。
+当前复审结果：Stage 7 目标 + 复审测试 `10 passed, 38 subtests passed`，使用 `MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv` 中 `8815` 条真实支付宝流水或真实空态；Stage 0-7 相关回归 `61 passed, 245 subtests passed`；派生事件类型包括 `ordinary_consumption=3831`、`investment_return=3133`、`fund_subscription=21`、`bullion_purchase=12`。当前没有真实持仓快照或可确认卖出交易，投资市值、收益和行为评分保持中文空态，不伪造收益。治理 `errors 0 / warnings 0`；Web shell 语法和 `git diff --check -- PFI` 通过；真实 8501 浏览器矩阵 `/tmp/pfi_stage7_review_recheck/summary.json` 通过，15 个一级入口、7 个首页功能按钮、全局搜索 `8815/406`、策略实验室同路由、设置反馈隔离、桌面/移动禁词扫描和 console errors 均通过。
+
+当前复审结果：Stage 8 目标 + 复审测试 `11 passed, 44 subtests passed`；Stage 0-8 v0.2.2 相关回归 `69 passed, 262 subtests passed`；运行差异输入使用 `MetaDatabase/PFI/alipay_daily/raw` 中 `4` 个真实 raw 文件、`MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv` 中 `8815` 条真实支付宝流水、本地参数、分类、标签和汇率快照；暂无真实 Interconnection 分组文件时使用中文真实空态，不生成模拟分组。治理 `errors 0 / warnings 0`；Web shell 语法和 `git diff --check -- PFI` 通过；8501 health `ok`；真实 8501 浏览器矩阵 `/tmp/pfi_stage8_review_recheck/summary.json` 通过，15 个一级入口、7 个首页功能按钮、全局搜索 `8815/406`、策略实验室同路由、设置反馈隔离、桌面/移动禁词扫描和 console errors 均通过。
 
 当前本地 closeout 结果：Stage 7 目标测试 `7 passed`；Stage 0-7 v0.2.2 回归 `58 passed`；完整 PFI pytest `216 passed`；治理 `errors 0 / warnings 0`；Web shell 语法和 `git diff --check -- PFI` 通过；App 入口验收 `29 pass / 0 fail / 2 info`；8501 health `ok`；真实浏览器点击 `数据源与上传` 后关键入口、上传中心、导入中心和 `AUD/CNY` 均可见，正式 UI 禁用词扫描 0 命中，console errors `0`。
 
@@ -95,6 +97,7 @@ git diff --check -- PFI
 ## Stage 8 Acceptance Criteria
 
 - 每次运行计算依赖 hash，至少覆盖原始数据、标准化交易、账本事件、interconnection、参数、分类、标签、汇率快照。
+- hash 输入必须来自真实 `MetaDatabase`、PFI 本地参数/分类/标签/汇率快照或真实空态；不得使用构造交易、构造账本事件或模拟 Interconnection 分组作为验收输入。
 - 无 diff 不联网、不生成 Codex ticket、不触发 LLM。
 - 有 diff 时只重算受影响指标，不全量重算所有板块。
 - P0 核心指标仅包括净资产、生活现金、投资资产、消费总流出、生活消费、投资收益、现金流窗口、待复核数量、Interconnection 异常数量。
@@ -114,12 +117,13 @@ git diff --check -- PFI
 - 标签改名导致金额变化。
 - Ticket 只有技术日志，没有中文业务解释。
 
-当前检查结论：Stage 8 实现均为本地纯函数和本地模板，不联网、不调用外部 LLM，不提前实现 Stage 9 可视化与 UI/UX。
+当前检查结论：Stage 8 实现均为本地纯函数和本地模板，不联网、不调用外部 LLM，不提前实现 Stage 9 可视化与 UI/UX；真实输入装载器读取 `MetaDatabase/PFI/alipay_daily` 与 PFI 本地合同文件，缺失 Interconnection 分组时保持真实空态。
 
 ## Stage 8 Validation
 
 ```bash
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests/test_v022_stage8_runtime_diff.py -q -p no:cacheprovider
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests/test_v022_stage8_runtime_diff.py PFI/tests/test_v022_review_stage8.py -q -p no:cacheprovider
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests/test_v022_stage0_database_governance.py PFI/tests/test_pfi_parameters_consistency.py PFI/tests/test_v022_fx_effective_date.py PFI/tests/test_v022_stage3_source_account_profiles.py PFI/tests/test_v022_interconnection_no_double_count.py PFI/tests/test_v022_consumption_investment_outflow.py PFI/tests/test_v022_stage5_ledger_taxonomy.py PFI/tests/test_v022_stage6_tags_views.py PFI/tests/test_v022_stage7_formula_scoring.py PFI/tests/test_v022_stage8_runtime_diff.py -q -p no:cacheprovider
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests -q -p no:cacheprovider
 node --check PFI/web/app/shell.js
@@ -127,7 +131,7 @@ python3 scripts/validate_project_governance.py --project PFI
 git diff --check -- PFI
 ```
 
-当前本地 closeout 结果：Stage 7 目标测试 `7 passed`；Stage 0-7 v0.2.2 回归 `58 passed`；完整 PFI pytest `216 passed`；治理 `errors 0 / warnings 0`；Web shell 语法和 `git diff --check -- PFI` 通过；App 入口验收 `29 pass / 0 fail / 2 info`；8501 health `ok`；真实浏览器点击 `数据源与上传` 后关键入口、上传中心、导入中心和 `AUD/CNY` 均可见，正式 UI 禁用词扫描 0 命中，console errors `0`，截图 `/tmp/pfi-v022-stage7-upload-verified-final.png`。
+当前复审结果：Stage 8 目标 + 复审测试 `11 passed, 44 subtests passed`；Stage 0-8 v0.2.2 相关回归 `69 passed, 262 subtests passed`；治理 `errors 0 / warnings 0`；Web shell 语法和 `git diff --check -- PFI` 通过；8501 health `ok`；真实浏览器矩阵 `/tmp/pfi_stage8_review_recheck/summary.json` 通过，正式 UI 禁用词扫描 0 命中，console errors `0`。
 
 ## Stage 1 Task Lock
 
@@ -397,15 +401,15 @@ git diff --check -- PFI
 ## Stage 6 Validation
 
 ```bash
-PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests/test_v022_stage6_tags_views.py -q
-PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests/test_v022_stage0_database_governance.py PFI/tests/test_pfi_parameters_consistency.py PFI/tests/test_v022_fx_effective_date.py PFI/tests/test_v022_stage3_source_account_profiles.py PFI/tests/test_v022_interconnection_no_double_count.py PFI/tests/test_v022_consumption_investment_outflow.py PFI/tests/test_v022_stage5_ledger_taxonomy.py PFI/tests/test_v022_stage6_tags_views.py -q
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m pytest PFI/tests/test_v022_stage6_tags_views.py PFI/tests/test_v022_review_stage6.py -q -p no:cacheprovider
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m pytest PFI/tests/test_v022_stage0_database_governance.py PFI/tests/test_pfi_parameters_consistency.py PFI/tests/test_v022_fx_effective_date.py PFI/tests/test_v022_stage3_source_account_profiles.py PFI/tests/test_v022_interconnection_no_double_count.py PFI/tests/test_v022_consumption_investment_outflow.py PFI/tests/test_v022_stage5_ledger_taxonomy.py PFI/tests/test_v022_stage6_tags_views.py PFI/tests/test_v022_review_stage6.py -q -p no:cacheprovider
 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests -q
 node --check PFI/web/app/shell.js
 python3 scripts/validate_project_governance.py --project PFI
 git diff --check -- PFI
 ```
 
-当前本地 closeout 结果：Stage 6 目标测试 `6 passed`；Stage 0-6 v0.2.2 回归 `51 passed`；完整 PFI pytest `209 passed`；治理 `errors 0 / warnings 0`；Web shell 语法和 `git diff --check -- PFI` 通过；App 入口验收 `29 pass / 0 fail / 2 info`；真实 8501 浏览器禁用词扫描 0 命中、console errors `0`；Stage 6 HTML 浏览器任务、表、默认标签组、自定义视图均可见，console errors `0`。
+当前复审结果：Stage 6 目标 + 复审测试 `9 passed, 139 subtests passed`，使用 `MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv` 真实支付宝流水；Stage 0-6 相关回归 `54 passed, 243 subtests passed`；转换后真实标签记录数 `7247`，覆盖 `ordinary_consumption`、`investment_return`、`investment_deposit`、`investment_buy`、`refund`；治理 `errors 0 / warnings 0`；Web shell 语法和 `git diff --check -- PFI` 通过；真实 8501 浏览器矩阵 `/tmp/pfi_stage6_review_recheck/summary.json` 通过，15 个一级入口、7 个首页功能按钮、全局搜索 `8815/406`、策略实验室同路由、设置反馈隔离、桌面/移动禁词扫描和 console errors 均通过。
 
 ## Stage 9 - 可视化与 UI/UX Task Lock
 
@@ -430,10 +434,12 @@ git diff --check -- PFI
 - 参数中心显示货币、汇率、分类、标签、阈值、公式、置信度、现金流窗口。
 - 每个参数显示中文名、当前值、作用、影响范围、是否可修改。
 - 参数变更影响预览显示可能影响的记录数、标签数、建议数、图表数。
+- 参数变更影响预览必须从真实 `MetaDatabase`、本地参数、Stage 8 hash、Stage 7 公式输入和真实空态派生；不得使用旧构造计数参数或构造财务事实。
 - Interconnection Map 以 Mermaid 图展示 `source -> raw -> normalized -> group -> event -> ledger -> metrics -> UI`。
 - `PFI/web/interconnection-map.html` 为 HTML 单文件可打开，不依赖外网。
 - HTML 可点击追踪数据源、事件类型、分类、标签、公式、影响板块。
 - 每个图表显示数据来源覆盖率、最近更新时间、参数版本、公式版本、汇率快照 ID、ledger_hash、interconnection_hash、是否存在未匹配记录、是否存在低置信记录、是否存在缓存、是否需要重算、UI 指标是否与报告一致。
+- 图表、drilldown 和本地 HTML 只能显示真实支付宝流水派生值或中文真实空态；无真实持仓快照和无真实 Interconnection 分组文件时不得伪造资产、收益、匹配率、未匹配数量或计算耗时。
 - 现金流阶梯图展示 7/21/30/60/90/180/360 天预测余额。
 - 现金流瀑布图展示当前现金、收入、退款、固定支出、弹性支出、信用卡、投资入金、投资回流。
 - 储备金安全带展示绿色、黄色、红色现金安全区间。
@@ -450,24 +456,25 @@ git diff --check -- PFI
 - 图表无法证明数据新鲜度。
 - HTML 依赖外部 CDN、远程脚本、远程字体或网络。
 - UI 只显示结果，不显示公式、参数和数据来源。
+- HTML、测试或合同中出现固定假金额、固定假匹配率、模拟耗时、旧构造计数参数或构造财务事实。
 - Stage 10 报告、建议与复盘被提前实现。
 
-当前检查结论：以上停止条件均未触发。Stage 9 交付物为本地纯 HTML、文档和合同模块；不改 v0.2.1 主 Web Shell UIUX 基线，不联网，不调用外部 LLM，不提前实现 Stage 10。
+当前检查结论：以上停止条件均未触发。Stage 9 交付物为本地纯 HTML、文档和合同模块；不改 v0.2.1 主 Web Shell UIUX 基线，不联网，不调用外部 LLM，不提前实现 Stage 10。复审后固定假金额、固定假匹配率、模拟耗时和旧构造计数参数已移除，当前只显示真实支付宝流水派生值或中文真实空态。
 
 ## Stage 9 Validation
 
 ```bash
-PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pytest tests/test_v022_stage9_visualization_uiux.py -q -p no:cacheprovider
-PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pytest tests/test_v022_stage0_database_governance.py tests/test_pfi_parameters_consistency.py tests/test_v022_fx_effective_date.py tests/test_v022_stage3_source_account_profiles.py tests/test_v022_interconnection_no_double_count.py tests/test_v022_consumption_investment_outflow.py tests/test_v022_stage5_ledger_taxonomy.py tests/test_v022_stage6_tags_views.py tests/test_v022_stage7_formula_scoring.py tests/test_v022_stage8_runtime_diff.py tests/test_v022_stage9_visualization_uiux.py -q -p no:cacheprovider
-PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pytest tests -q -p no:cacheprovider
-node --check web/app/shell.js
-python3 ../scripts/validate_project_governance.py --project PFI
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -B -m pytest tests/test_v022_stage9_visualization_uiux.py tests/test_v022_review_stage9.py -q -p no:cacheprovider
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -B -m pytest tests/test_v022_stage0_database_governance.py tests/test_pfi_parameters_consistency.py tests/test_v022_fx_effective_date.py tests/test_v022_stage3_source_account_profiles.py tests/test_v022_interconnection_no_double_count.py tests/test_v022_consumption_investment_outflow.py tests/test_v022_stage5_ledger_taxonomy.py tests/test_v022_stage6_tags_views.py tests/test_v022_stage7_formula_scoring.py tests/test_v022_stage8_runtime_diff.py tests/test_v022_review_stage8.py tests/test_v022_stage9_visualization_uiux.py tests/test_v022_review_stage9.py -q -p no:cacheprovider
+node --check PFI/web/app/shell.js
+python3 scripts/validate_project_governance.py --project PFI
 git diff --check -- PFI
+curl -fsS http://127.0.0.1:8501/_stcore/health
 ```
 
 浏览器验收：打开 `PFI/web/interconnection-map.html`，点击 `data-map-node` 和 `data-drilldown-metric` 后详情区必须变化；页面必须离线可读且 console errors 为 0。
 
-当前本地 closeout 结果：Stage 9 目标测试 `8 passed`；Stage 0-9 v0.2.2 回归 `74 passed`；完整 PFI pytest `232 passed`；治理 `errors 0 / warnings 0`；Web shell 语法和 `git diff --check -- PFI` 通过；App 入口验收 `29 pass / 0 fail / 2 info`；Stage 9 HTML 浏览器验收模块缺失 `0`、状态字段渲染 `144`、console errors `0`、外部网络请求 `0`，截图 `/tmp/pfi-v022-stage9-html-verified.png`；真实 8501 PFI 入口验证 `PFI`、`首页总览`、`数据源与上传`、`AUD/CNY` 可见，Stage 9 审查页未进入主 UI，console errors `0`，截图 `/tmp/pfi-v022-stage9-app-verified.png`。
+当前复审结果：Stage 9 目标 + 复审测试 `13 passed, 68 subtests passed`；Stage 0-9 v0.2.2 相关回归 `82 passed, 330 subtests passed`；Stage 9 HTML 浏览器矩阵 `/tmp/pfi_stage9_review_recheck/stage9-html-summary.json` 通过，关系图节点 `12` 个、drilldown 指标 `3` 个、缺失项 `0`、禁用固定假值 `0`、外部网络请求 `0`、console/page errors `0`，截图 `/tmp/pfi_stage9_review_recheck/stage9-html.png`；真实 8501 浏览器矩阵 `/tmp/pfi_stage9_review_recheck/summary.json` 通过，桌面 15 个一级入口、7 个首页功能按钮、全局搜索 `8815/406`、策略实验室同路由、设置反馈隔离、禁用可见词、console/page errors、移动端水平溢出均通过，截图 `/tmp/pfi_stage9_review_recheck/desktop.png` 和 `/tmp/pfi_stage9_review_recheck/mobile.png`；治理 `errors 0 / warnings 0`；Web shell 语法、`git diff --check -- PFI` 和 8501 health 通过。
 
 ## Stage 10 - 报告、建议与复盘 Task Lock
 
@@ -490,6 +497,7 @@ git diff --check -- PFI
 - 行动建议评分包含财务影响、风险降低、紧急程度、置信度、可逆性、执行成本反比分、学习价值。
 - 每条建议包含证据来源、相关交易、相关参数、相关公式、预期影响金额 CNY、置信度、是否需要人工复核、用户决策状态、效果复盘状态。
 - 建议生命周期支持 `pending`、`accepted`、`rejected`、`snoozed`、`reviewed`、`effect_measured`。
+- 实际生成的行动建议只能来自真实 `MetaDatabase` 触发条件；没有真实持仓、卖出交易或订阅候选时，投资行为复盘和订阅优化必须显示中文真实空态，不得生成假建议。
 
 ## Stage 10 Stop Condition
 
@@ -499,31 +507,29 @@ git diff --check -- PFI
 - 推荐被误解成买卖指令。
 - 建议没有排序依据。
 - 建议无法复盘效果。
+- 出现构造交易 ID、构造建议标题、构造金额或构造评分输入。
 - Stage 11 测试与验证被提前实现。
 
-当前检查结论：以上停止条件均未触发。Stage 10 交付物为本地合同、参数、报告口径和建议生命周期模型；不改 v0.2.1 主 Web Shell UIUX 基线，不联网，不调用外部 LLM，不提前实现 Stage 11。
+当前检查结论：以上停止条件均未触发。Stage 10 交付物为本地合同、参数、报告口径和建议生命周期模型；不改 v0.2.1 主 Web Shell UIUX 基线，不联网，不调用外部 LLM，不提前实现 Stage 11。复审后构造交易 ID、构造建议标题、构造金额和构造评分输入已移除，当前只生成真实数据触发建议或中文真实空态。
 
 ## Stage 10 Validation
 
 ```bash
-PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pytest tests/test_v022_stage10_report_advice_review.py -q -p no:cacheprovider
-PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pytest tests/test_v022_stage0_database_governance.py tests/test_pfi_parameters_consistency.py tests/test_v022_fx_effective_date.py tests/test_v022_stage3_source_account_profiles.py tests/test_v022_interconnection_no_double_count.py tests/test_v022_consumption_investment_outflow.py tests/test_v022_stage5_ledger_taxonomy.py tests/test_v022_stage6_tags_views.py tests/test_v022_stage7_formula_scoring.py tests/test_v022_stage8_runtime_diff.py tests/test_v022_stage9_visualization_uiux.py tests/test_v022_stage10_report_advice_review.py -q -p no:cacheprovider
-PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pytest tests -q -p no:cacheprovider
-node --check web/app/shell.js
-python3 ../scripts/validate_project_governance.py --project PFI
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -B -m pytest tests/test_v022_stage10_report_advice_review.py tests/test_v022_review_stage10.py -q -p no:cacheprovider
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -B -m pytest tests/test_v022_stage0_database_governance.py tests/test_pfi_parameters_consistency.py tests/test_v022_fx_effective_date.py tests/test_v022_stage3_source_account_profiles.py tests/test_v022_interconnection_no_double_count.py tests/test_v022_consumption_investment_outflow.py tests/test_v022_stage5_ledger_taxonomy.py tests/test_v022_stage6_tags_views.py tests/test_v022_stage7_formula_scoring.py tests/test_v022_stage8_runtime_diff.py tests/test_v022_review_stage8.py tests/test_v022_stage9_visualization_uiux.py tests/test_v022_review_stage9.py tests/test_v022_stage10_report_advice_review.py tests/test_v022_review_stage10.py -q -p no:cacheprovider
+node --check PFI/web/app/shell.js
+python3 scripts/validate_project_governance.py --project PFI
 git diff --check -- PFI
+curl -fsS http://127.0.0.1:8501/_stcore/health
 ```
 
 当前验证结果：
 
-- Stage 10 目标测试：`7 passed`。
-- Stage 0-10 v0.2.2 回归：`81 passed`。
-- 完整 PFI pytest：`239 passed`。
-- `node --check web/app/shell.js`：通过。
-- `python3 scripts/validate_project_governance.py --project PFI`：`errors 0 / warnings 0`。
-- `git diff --check -- PFI`：通过。
-- macOS app acceptance lite：`29 pass / 0 fail / 2 info`。
-- 真实 8501 浏览器验收：关键中文入口和 `AUD/CNY` 可见，Stage 10 审查文档未注入主 UI，console errors `0`，截图 `/tmp/pfi-v022-stage10-app-verified.png`。
+- Stage 10 目标 + 复审测试：`11 passed, 18 subtests passed`。
+- Stage 0-10 v0.2.2 相关回归：`93 passed, 348 subtests passed`。
+- 构造建议残留扫描：无构造交易 ID、构造订阅、构造投资行为建议或旧手写评分输入命中。
+- Web shell 语法、项目治理、空白检查、8501 health：通过。
+- 真实 8501 浏览器矩阵：`/tmp/pfi_stage10_review_recheck/summary.json` 通过，桌面关键入口、建议/报告点击、全局搜索 `406/8815`、移动端入口、禁用词、console/page errors 和水平溢出均通过。
 
 ## Stage 11 - 测试与验证 Task Lock
 
@@ -542,16 +548,16 @@ git diff --check -- PFI
 
 ## Stage 11 Acceptance Criteria
 
-- 投资入金计入消费总流出：CBA -> Moomoo 时消费总流出增加，生活消费不增加，投资现金增加。
-- 基金申购计入消费总流出：支付宝基金申购时消费总流出增加，生活消费不增加，投资持仓增加。
+- 投资入金计入消费总流出：CBA -> Moomoo 当前暂无真实双边转账或入金分组时显示中文真实空态，不构造入金金额。
+- 基金申购计入消费总流出：真实 `MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv` 中 `21` 条支付宝基金申购进入消费总流出，不进入生活消费；无真实持仓快照时不伪造投资持仓增加。
 - 退款抵消原消费，且不影响投资收益。
-- 信用卡还款不重复计入生活消费。
+- 信用卡还款不重复计入生活消费；当前暂无真实信用卡还款事件时显示中文真实空态。
 - 首页消费总流出 = 消费页消费总流出 = 月报消费总流出。
 - 首页投资资产 = 投资页投资资产 = 投资报告投资资产。
-- 现金流预测来源能追溯到账本事件和计划事件。
+- 现金流预测来源能追溯到真实账本事件；暂无真实计划事件时显示中文真实空态。
 - 每个图表可追溯 `metric_id`、`formula_id`、`parameter_hash`、`data_hash`。
 - 数据变化后受影响图表自动标记 `needs_update` 或 `updated`。
-- 大量模拟记录下图表生成不明显卡死，并显示 `compute time` 和 `cache status`。
+- 真实 `8815` 条标准化流水下图表生成不明显卡死，并显示 `compute time` 和 `cache status`。
 
 ## Stage 11 Stop Condition
 
@@ -565,6 +571,7 @@ git diff --check -- PFI
 - 图表数字无来源时停止。
 - 图表显示旧数据时停止。
 - 无性能状态或明显卡顿时停止。
+- 正式测试门出现模拟记录、构造金额、构造交易 ID、构造持仓，或把中文真实空态替换成伪造数值时停止。
 - Stage 12 文档同步与最终交付被提前实现时停止。
 
 当前检查结论：以上停止条件均未触发。Stage 11 交付物为本地测试门、参数和验证合同；不改 v0.2.1 主 Web Shell UIUX 基线，不联网，不调用外部 LLM，不提前实现 Stage 12/13。
@@ -572,8 +579,8 @@ git diff --check -- PFI
 ## Stage 11 Validation
 
 ```bash
-PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pytest tests/test_v022_stage11_test_validation.py -q -p no:cacheprovider
-PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pytest tests/test_v022_stage0_database_governance.py tests/test_pfi_parameters_consistency.py tests/test_v022_fx_effective_date.py tests/test_v022_stage3_source_account_profiles.py tests/test_v022_interconnection_no_double_count.py tests/test_v022_consumption_investment_outflow.py tests/test_v022_stage5_ledger_taxonomy.py tests/test_v022_stage6_tags_views.py tests/test_v022_stage7_formula_scoring.py tests/test_v022_stage8_runtime_diff.py tests/test_v022_stage9_visualization_uiux.py tests/test_v022_stage10_report_advice_review.py tests/test_v022_stage11_test_validation.py -q -p no:cacheprovider
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pytest tests/test_v022_stage11_test_validation.py tests/test_v022_review_stage11.py -q -p no:cacheprovider
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pytest tests/test_v022_stage0_database_governance.py tests/test_pfi_parameters_consistency.py tests/test_v022_fx_effective_date.py tests/test_v022_stage3_source_account_profiles.py tests/test_v022_interconnection_no_double_count.py tests/test_v022_consumption_investment_outflow.py tests/test_v022_stage5_ledger_taxonomy.py tests/test_v022_stage6_tags_views.py tests/test_v022_stage7_formula_scoring.py tests/test_v022_stage8_runtime_diff.py tests/test_v022_review_stage8.py tests/test_v022_stage9_visualization_uiux.py tests/test_v022_review_stage9.py tests/test_v022_stage10_report_advice_review.py tests/test_v022_review_stage10.py tests/test_v022_stage11_test_validation.py tests/test_v022_review_stage11.py -q -p no:cacheprovider
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pytest tests -q -p no:cacheprovider
 node --check web/app/shell.js
 python3 ../scripts/validate_project_governance.py --project PFI
@@ -582,14 +589,14 @@ git diff --check -- PFI
 
 当前运行结果：
 
-- Stage 11 合同测试：`6 passed`。
-- Stage 0-11 v0.2.2 回归：`87 passed`。
-- 完整 PFI pytest：`245 passed`。
+- Stage 11 目标 + 复审测试：`11 passed, 15 subtests passed`。
+- Stage 0-11 v0.2.2 相关回归：`104 passed, 363 subtests passed`。
 - Web shell 语法检查：`node --check web/app/shell.js` 通过。
 - 项目治理：`errors: 0`，`warnings: 0`。
 - `git diff --check -- PFI` 通过。
-- macOS app 入口轻量验收：`29 pass / 0 fail / 2 info`，8501 健康。
-- 真实 8501 浏览器验收：`PFI`、`首页总览`、`数据源与上传`、`建议与复盘`、`报告与洞察`、`AUD/CNY` 可见；点击 `报告与洞察` 有响应；禁止正式 UI 出现 `Stage 11 - 测试与验证`、`STAGE11_TEST_VALIDATION`、`自动买入`、`自动卖出`；console errors `0`；截图 `/tmp/pfi-v022-stage11-app-verified.png`。
+- 8501 health：`ok`。
+- 真实 8501 浏览器验收：`/tmp/pfi_stage11_review_recheck/summary.json` 通过；桌面和移动端均验证 `PFI`、`首页总览`、`数据源与上传`、`建议与复盘`、`报告与洞察`、`AUD/CNY` 可见，7 个首页 workflow 卡片可见，`.workflow-meta=0`，一级入口和首页真实按钮可点击，全局搜索 `406/8815` 可用，禁用词 `0`，console/page errors `0`，水平溢出 `0px`；截图 `/tmp/pfi_stage11_review_recheck/desktop.png` 和 `/tmp/pfi_stage11_review_recheck/mobile.png`。
+- 完整 PFI pytest 和 app 入口重装未在本轮复审中执行；按当前整体 goal，GitHub 同步与 app 入口刷新在 Stage 1-13 和整体复审完成后处理。
 
 ## Stage 12 - 文档同步与交付 Task Lock
 
@@ -640,17 +647,19 @@ git diff --check -- PFI
 
 当前运行结果：
 
-- Stage 12 合同测试：`5 passed`。
-- Stage 0-12 v0.2.2 回归：`92 passed`。
-- 完整 PFI pytest：`250 passed`。
+- Stage 12 目标 + 复审测试：`10 passed, 35 subtests passed`。
+- Stage 0-12 v0.2.2 相关回归：`114 passed, 398 subtests passed`。
 - Web shell 语法检查：`node --check web/app/shell.js` 通过。
 - 项目治理：`errors: 0`，`warnings: 0`。
 - `git diff --check -- PFI` 通过。
-- macOS app 入口轻量验收：`29 pass / 0 fail / 2 info`，8501 健康。
-- Stage 12 本地 HTML 浏览器验收：7 个区块可点击，缺失必填词 `0`，console errors `0`，外部请求 `0`，截图 `/tmp/pfi-v022-stage12-html-verified.png`。
-- 真实 8501 浏览器验收：`PFI`、`首页总览`、`数据源与上传`、`建议与复盘`、`报告与洞察`、`AUD/CNY` 可见；点击 `报告与洞察` 有响应；禁止正式 UI 出现 `Stage 12 - 文档同步与交付`、`pfi_v022_logic_review`、`STAGE12_DELIVERY_REPORT`、`自动买入`、`自动卖出`；console errors `0`；截图 `/tmp/pfi-v022-stage12-app-verified.png`。
+- 8501 health：`ok`。
+- 本地审查 HTML 浏览器验收：`/tmp/pfi_stage12_review_recheck/summary.json` 通过，7 个区块可点击，console/page errors `0`，外部请求 `0`，截图 `/tmp/pfi_stage12_review_recheck/stage12-html.png`。
+- 真实 8501 浏览器验收：`/tmp/pfi_stage12_review_recheck/summary.json` 通过；桌面和移动端均验证正式 UI 不显示 Stage 12 开发文档、不链接本地审查 HTML、不出现自动买卖词，7 个首页 workflow 卡片可见，`.workflow-meta=0`，一级入口和首页真实按钮可点击，全局搜索 `406/8815` 可用，console/page errors `0`，水平溢出 `0px`。
+- 完整 PFI pytest、macOS app 入口重装、GitHub 同步和 Downloads 清理未在本轮复审中执行；按当前整体 goal，Stage 1-13 与整体复审完成后统一处理。
 
 ## Stage 13 - 后置触发型复核 Task Lock
+
+本轮只复审解决 Stage 13。整体项目复审解决不在本轮实现。GitHub 同步不在本轮执行。app 入口重装不在本轮执行。本轮不联网，不调用外部 LLM。
 
 | Task ID | Phase | 交付物 | 状态 |
 | --- | --- | --- | --- |
@@ -667,7 +676,8 @@ git diff --check -- PFI
 - 阻塞项数量为 0。
 - Downloads 污染文件夹只清理 PFI 预同步临时目录。
 - 本轮 Downloads 污染文件夹清理覆盖 `PFI_V022_STAGE0_PRE_CANONICAL_SYNC_20260628T090028` 等 6 个 PFI 预同步临时目录。
-- `PFI.app` 和用户提供的 taskpack、roadmap、zip、md 源文件保留。
+- `PFI.app` 当前仍在 Downloads；用户提供的 taskpack、roadmap、zip、md 源文件名保留在 manifest，本轮不恢复或制造缺失源文件。
+- Stage 13 独立摘要为 `PFI/reports/pfi_v022_stage13_review_summary.md`；`PFI/reports/pfi_v022_summary.md` 继续保持 Stage12-only。
 
 ## Stage 13 Stop Condition
 
@@ -677,15 +687,15 @@ git diff --check -- PFI
 - 存在阻塞项仍继续交付时停止。
 - 清理 Downloads 时删除 `PFI.app` 或用户提供的 taskpack/roadmap 源文件时停止。
 - 未归档就删除 PFI 预同步临时目录时停止。
+- 本轮提前执行整体项目复审解决、GitHub 同步或 app 入口重装时停止。
 
 当前检查结论：以上停止条件均未触发。Stage 13 由 `交付前人工指定` 触发；本轮只复核指定 PFI scope files，不联网，不调用外部 LLM，不做真实交易、支付、券商提交或实盘自动下单。
 
 ## Stage 13 Validation
 
 ```bash
-PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pytest tests/test_v022_stage13_post_review.py -q -p no:cacheprovider
-PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pytest tests/test_v022_stage0_database_governance.py tests/test_pfi_parameters_consistency.py tests/test_v022_fx_effective_date.py tests/test_v022_stage3_source_account_profiles.py tests/test_v022_interconnection_no_double_count.py tests/test_v022_consumption_investment_outflow.py tests/test_v022_stage5_ledger_taxonomy.py tests/test_v022_stage6_tags_views.py tests/test_v022_stage7_formula_scoring.py tests/test_v022_stage8_runtime_diff.py tests/test_v022_stage9_visualization_uiux.py tests/test_v022_stage10_report_advice_review.py tests/test_v022_stage11_test_validation.py tests/test_v022_stage12_delivery.py tests/test_v022_stage13_post_review.py -q -p no:cacheprovider
-PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pytest tests -q -p no:cacheprovider
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -B -m pytest tests/test_v022_stage13_post_review.py tests/test_v022_review_stage13.py -q -p no:cacheprovider
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -B -m pytest tests/test_v022_stage0_database_governance.py tests/test_pfi_parameters_consistency.py tests/test_v022_fx_effective_date.py tests/test_v022_stage3_source_account_profiles.py tests/test_v022_interconnection_no_double_count.py tests/test_v022_consumption_investment_outflow.py tests/test_v022_stage5_ledger_taxonomy.py tests/test_v022_stage6_tags_views.py tests/test_v022_stage7_formula_scoring.py tests/test_v022_stage8_runtime_diff.py tests/test_v022_review_stage8.py tests/test_v022_stage9_visualization_uiux.py tests/test_v022_review_stage9.py tests/test_v022_stage10_report_advice_review.py tests/test_v022_review_stage10.py tests/test_v022_stage11_test_validation.py tests/test_v022_review_stage11.py tests/test_v022_stage12_delivery.py tests/test_v022_review_stage12.py tests/test_v022_stage13_post_review.py tests/test_v022_review_stage13.py -q -p no:cacheprovider
 node --check web/app/shell.js
 python3 ../scripts/validate_project_governance.py --project PFI
 git diff --check -- PFI
@@ -694,15 +704,13 @@ find ~/Downloads -maxdepth 1 -name 'PFI_V022_STAGE*_PRE_CANONICAL_SYNC_*' -print
 
 当前运行结果：
 
-- Stage 13 合同测试：`5 passed`。
-- Stage 0-13 v0.2.2 回归：`97 passed`。
-- 完整 PFI pytest：`255 passed`。
+- Stage 13 目标 + 复审测试：`10 passed, 87 subtests passed`。
+- Stage 0-13 v0.2.2 相关回归：`135 passed, 593 subtests passed`。
 - Web shell 语法检查：`node --check web/app/shell.js` 通过。
 - 项目治理：`errors 0 / warnings 0`。
 - `git diff --check -- PFI` 通过。
-- macOS app 入口轻量验收：`29 pass / 0 fail / 2 info`，8501 健康。
-- 真实 8501 浏览器验收：必填中文入口和 `AUD/CNY` 可见，`报告与洞察` 点击成功，Stage 13 开发交付词未进入正式 UI，console errors `0`，截图 `/tmp/pfi-v022-stage13-app-verified.png`。
-- Downloads 残留扫描：`PFI_V022_STAGE*_PRE_CANONICAL_SYNC_*` 输出为空；`PFI.app` 和用户 taskpack/roadmap 源文件保留。
+- 真实 8501 浏览器验收：`/tmp/pfi_stage13_review_recheck/summary.json` 为 `pass`；桌面和移动端均可见 `PFI`、`首页总览`、`数据源与上传`、`建议与复盘`、`报告与洞察`、`AUD/CNY`，桌面点击 `首页总览`、`数据源与上传`、`上传中心`、`导入中心`、`建议与复盘`、`报告与洞察`、`设置` 均通过，全局搜索 `406/8815` 命中，console/page errors `0`，水平溢出 `0px`。
+- Downloads 残留扫描：`PFI_V022_STAGE*_PRE_CANONICAL_SYNC_*` 输出为空；`PFI.app` 当前存在，用户 taskpack/roadmap 源文件名保留在 manifest。
 - Downloads 归档：`PFI/docs/pfi_v022/downloads_cleanup/PFI_V022_PRE_CANONICAL_SYNC_ARCHIVE_20260628.tar.gz`，SHA-256 `c636b7afbd40923946af77c4987bb5dc1342e924b89e2b3da5bd2128795b6274`。
 
 ## Stage 7 - 模型公式、阈值与评分标准 Task Lock

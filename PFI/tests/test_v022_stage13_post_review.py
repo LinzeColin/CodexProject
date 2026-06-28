@@ -45,17 +45,23 @@ def test_stage13_contract_matches_triggered_roadmap_scope() -> None:
 def test_stage13_payload_generates_scoped_owner_specified_ticket() -> None:
     payload = build_stage13_post_review_payload(load_v022_parameter_catalog())
 
-    assert payload["schema"] == "PFIV022Stage13PostReviewPayloadV1"
+    assert payload["schema"] == "PFIV022Stage13PostReviewPayloadV2"
     assert payload["trigger_condition"] == STAGE13_OWNER_TRIGGER
     assert payload["ticket"]["path"] == "PFI/review_queue/codex_review_stage13_owner_specified_20260628.md"
     assert payload["ticket"]["created"] is True
     assert payload["ticket"]["scope_files"] == STAGE13_REVIEW_SCOPE_FILES
+    assert "PFI/reports/pfi_v022_summary.md" not in payload["ticket"]["scope_files"]
     assert payload["ticket"]["full_repo_scan_allowed"] is False
     assert payload["ticket"]["network_allowed"] is False
     assert payload["ticket"]["external_llm_allowed"] is False
     assert payload["review_result"]["development_record_updated"] is True
     assert payload["review_result"]["blocking_issue_count"] == 0
-    assert payload["stage13_ready_for_goal_closeout"] is True
+    assert payload["stage13_review_summary"]["path"] == "PFI/reports/pfi_v022_stage13_review_summary.md"
+    assert payload["stage13_ready_for_overall_review"] is True
+    assert payload["stage13_ready_for_goal_closeout"] is False
+    assert payload["overall_project_review_deferred"] is True
+    assert payload["github_sync_deferred"] is True
+    assert payload["app_entry_reinstall_deferred"] is True
 
 
 def test_stage13_parameter_catalog_records_post_review_and_downloads_cleanup() -> None:
@@ -77,7 +83,8 @@ def test_stage13_docs_ticket_and_summary_are_chinese_and_traceable() -> None:
         "docs/pfi_v022/STAGE13_POST_REVIEW.md",
         "review_queue/codex_review_stage13_owner_specified_20260628.md",
         "docs/pfi_v022/DOWNLOADS_CLEANUP_STAGE13.md",
-        "reports/pfi_v022_summary.md",
+        "docs/pfi_v022/reviews/STAGE13_REVIEW_20260629.md",
+        "reports/pfi_v022_stage13_review_summary.md",
         "docs/pfi_v022/ROADMAP_LOCK.md",
         "模型参数文件.md",
         "功能清单.md",
@@ -115,5 +122,9 @@ def test_stage13_downloads_cleanup_removed_only_pfi_temp_dirs_and_kept_sources()
         assert candidate in manifest
 
     assert (DOWNLOADS / "PFI.app").exists()
-    assert (DOWNLOADS / "PFI_v0.2.2_Codex_Task_Pack_zh.md").exists()
-    assert (DOWNLOADS / "PFI_v0.2.2_Stage_Phase_Task_Roadmap_zh.md").exists()
+    for source_name in (
+        "PFI_v0.2.2_Codex_Task_Pack_zh.md",
+        "PFI_v0.2.2_Stage_Phase_Task_Roadmap_zh.md",
+        "PFI_v0.2.2_E2E_logic_optimization_package.zip",
+    ):
+        assert source_name in manifest

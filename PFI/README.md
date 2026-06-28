@@ -7,13 +7,15 @@ PFI V0.2 is the Personal Financial Intelligence project under
 under `LinzeColin/CodexProject/QBVS`; PFI investment management does not own
 or cover QBVS.
 
-## v0.2.2 数据库治理 Stage 13
+## v0.2.2 数据库治理整体复审
 
-`v0.2.2 数据库治理` 当前完成 Stage 13 - 后置触发型复核。本轮在 `交付前人工指定` 触发下生成本地 Codex Review Ticket，仅对异常区域进行复核，禁止全仓无差别扫描，将问题、修复、验证、剩余风险写入开发记录，并清理/迁移 Downloads 污染文件夹；不联网、不调用外部 LLM、不修改 v0.2.1 主 Web Shell UIUX 基线，不新增真实交易、自动投资、支付或券商提交能力。
+`v0.2.2 数据库治理` 当前完成 Stage 0-13 的整体项目复审解决。正式页面、报告、图表、首页摘要和建议只允许读取真实 MetaDatabase 派生数据或中文真实空态；不得使用 demo/sample/synthetic/fixture/mock/fake/测试样例数据作为验收依据。不新增真实交易、自动投资、支付或券商提交能力。
+
+整体复审证据为 `docs/pfi_v022/reviews/OVERALL_PROJECT_REVIEW_20260629.md`、`docs/pfi_v022/reviews/TEST_DATA_AUDIT_FINAL_20260629.md` 和 `reports/pfi_v022_overall_closeout_summary.md`。GitHub main 同步和 app 入口重装纳入本轮整体 closeout，均按 `PFI/` 与 `MetaDatabase/PFI/` path-limited 范围执行。阻塞项数量：`0`。
 
 ## v0.2.2 Stage 1-13 复审
 
-当前 pursuing goal 为重新复审并解决 Stage 1-13。第一阶段每次 run work 只复审解决 1 个 Stage，第二阶段再做整体项目复审解决；整体复审解决完成后才重装 app 入口。
+当前 pursuing goal 为重新复审并解决 Stage 1-13。第一阶段每次 run work 只复审解决 1 个 Stage，第二阶段整体项目复审解决已完成；本轮 closeout 完成 GitHub main 同步和 app 入口重装。
 
 当前复审进度：
 
@@ -21,9 +23,11 @@ or cover QBVS.
 - Stage 2 复审并解决：已完成，报告为 `docs/pfi_v022/reviews/STAGE2_REVIEW_20260628.md`，测试为 `tests/test_v022_review_stage2.py`；已补齐 CNY 主显示现金流影响面和账本金额字段中文标签映射。
 - Stage 3 复审并解决：已完成，报告为 `docs/pfi_v022/reviews/STAGE3_REVIEW_20260628.md`，测试为 `tests/test_v022_review_stage3.py`；已补齐 taskpack 默认账户角色和 source profile 角色扩展示例。
 - Stage 4 复审并解决：已完成，报告为 `docs/pfi_v022/reviews/STAGE4_REVIEW_20260628.md`，测试为 `tests/test_v022_review_stage4.py`；已修复同一关联组来源两侧 economic_event_id 不一致导致重复计量，并补齐现金流依赖图。
-- Stage 5-13 复审解决：未开始。
-- 整体项目复审解决：未开始。
-- app 入口重装：未执行，按用户要求留到整体 pursuing goal 完成后。
+- Stage 5 复审并解决：已完成，报告为 `docs/pfi_v022/reviews/STAGE5_REVIEW_20260628.md`，测试为 `tests/test_v022_review_stage5.py`；已修复分类单主分类真实验证，并补齐后续压缩到 10 类以内的机器验收字段。
+- Stage 6-13 复审并解决：已完成；Stage 13 报告为 `docs/pfi_v022/reviews/STAGE13_REVIEW_20260629.md`，测试为 `tests/test_v022_review_stage13.py`。
+- 整体项目复审解决：已完成。
+- GitHub main 同步：本轮 closeout 已按 `PFI/` 与 `MetaDatabase/PFI/` path-limited 范围执行。
+- app 入口重装：已刷新 `/Applications/PFI.app`、`~/Downloads/PFI.app`、`~/Desktop/PFI.app`，macOS app acceptance lite `29 pass / 0 fail / 2 info`。
 
 Stage 13 source files:
 
@@ -40,6 +44,7 @@ Stage 13 source files:
 | Stage 4 验收报告 | `docs/pfi_v022/STAGE4_INTERCONNECTION.md` |
 | Stage 4 复审报告 | `docs/pfi_v022/reviews/STAGE4_REVIEW_20260628.md` |
 | Stage 5 验收报告 | `docs/pfi_v022/STAGE5_LEDGER_TAXONOMY.md` |
+| Stage 5 复审报告 | `docs/pfi_v022/reviews/STAGE5_REVIEW_20260628.md` |
 | Stage 6 验收报告 | `docs/pfi_v022/STAGE6_TAGS_CUSTOM_VIEWS.md` |
 | Stage 7 验收报告 | `docs/pfi_v022/STAGE7_FORMULA_SCORING.md` |
 | Stage 8 验收报告 | `docs/pfi_v022/STAGE8_RUNTIME_DIFF_IMPACTED_METRICS.md` |
@@ -50,6 +55,11 @@ Stage 13 source files:
 | Stage 13 后置复核报告 | `docs/pfi_v022/STAGE13_POST_REVIEW.md` |
 | Stage 13 Codex Review Ticket | `review_queue/codex_review_stage13_owner_specified_20260628.md` |
 | Stage 13 Downloads 清理记录 | `docs/pfi_v022/DOWNLOADS_CLEANUP_STAGE13.md` |
+| Stage 13 复审报告 | `docs/pfi_v022/reviews/STAGE13_REVIEW_20260629.md` |
+| Stage 13 复审摘要 | `reports/pfi_v022_stage13_review_summary.md` |
+| 整体项目复审解决 | `docs/pfi_v022/reviews/OVERALL_PROJECT_REVIEW_20260629.md` |
+| 最终测试数据审计 | `docs/pfi_v022/reviews/TEST_DATA_AUDIT_FINAL_20260629.md` |
+| 整体 closeout 摘要 | `reports/pfi_v022_overall_closeout_summary.md` |
 | Stage 9 验收报告 | `docs/pfi_v022/STAGE9_VISUALIZATION_UIUX.md` |
 | Stage 9 Interconnection Map | `docs/pfi_v022/INTERCONNECTION_MAP.md` |
 | Stage 10 验收报告 | `docs/pfi_v022/STAGE10_REPORT_ADVICE_REVIEW.md` |
@@ -76,6 +86,7 @@ Stage 13 source files:
 | Stage 4 consumption/investment outflow test | `tests/test_v022_consumption_investment_outflow.py` |
 | Stage 4 review fix test | `tests/test_v022_review_stage4.py` |
 | Stage 5 ledger taxonomy test | `tests/test_v022_stage5_ledger_taxonomy.py` |
+| Stage 5 review fix test | `tests/test_v022_review_stage5.py` |
 | Stage 6 tags/views test | `tests/test_v022_stage6_tags_views.py` |
 | Stage 7 formula/scoring test | `tests/test_v022_stage7_formula_scoring.py` |
 | 参数一致性测试 | `tests/test_pfi_parameters_consistency.py` |
@@ -106,8 +117,9 @@ Stage 7 locked parameters:
 - Agent 1 复核消费、投资、现金流口径；Agent 2 复核 source -> transaction -> group -> economic event -> ledger -> metric 链路。
 - Stage 5 事件类型表：消费、投资入金、基金申购、黄金申购、投资买入、投资卖出、退款、费用、信用卡还款、内部转账、收入、估值、汇率兑换。
 - Stage 5 双消费展示：首页、消费页、报告必须同时展示 `消费总流出` 与 `生活消费` 并解释差异。
-- Stage 5 分类约束：`L1 ≤ 12`、每类 `L2 ≤ 5`、总 `L2 ≤ 50`、每笔交易主分类数量为 `1`。
+- Stage 5 分类约束：`L1 ≤ 12`、每类 `L2 ≤ 5`、总 `L2 ≤ 50`、每笔交易主分类数量为 `1`；分类验证会拒绝非单主分类 taxonomy。
 - Stage 5 默认 taxonomy：餐饮食品、居住家庭、交通出行、购物用品、医疗健康、教育成长、娱乐社交、订阅服务、金融费用、投资资金流出、家庭责任、调整其他。
+- Stage 5 future merge：当前 12 个 L1 可压缩为 7 个 future merge 分组，低于 `10` 类目标；多维分析交给 Stage 6 标签系统。
 - Stage 5 stop condition：事件类型不足、影响口径缺失、投资入金或基金申购未进入消费总流出、生活消费被投资资金流污染、分类超限、后续无法合并分类。
 - Stage 6 标签表：`pfi_tags`、`pfi_tag_assignments`、`pfi_tag_rules`、`pfi_tag_history`、`pfi_custom_views`。
 - Stage 6 默认标签组：通用、消费、投资、数据质量、现金流、复盘。
@@ -349,12 +361,13 @@ Stage 10 - 报告、建议与复盘已加入 PFI 的数据库治理路线。
 
 Stage 11 - 测试与验证已加入 PFI 的数据库治理路线。
 
-- 新增 `src/pfi_v02/stage_v022_test_validation.py`：生成金融逻辑、跨板块一致性和可视化一致性验证模型。
+- 新增 `src/pfi_v02/stage_v022_test_validation.py`：生成基于真实 `MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv` 的金融逻辑、跨板块一致性和可视化一致性验证模型。
 - 新增 `tests/test_v022_stage11_test_validation.py`：验证 `S11-P1-T1..S11-P3-T3`，覆盖投资入金计入消费总流出、基金申购计入消费总流出、退款抵消、信用卡还款不重复计入生活消费。
 - 新增 `docs/pfi_v022/STAGE11_TEST_VALIDATION.md`：中文验收报告。
-- `config/pfi_parameters.yaml` 升级为 `PFIParametersV022Stage11`，记录 `test_validation` 参数、Stage 11 task ids、图表来源字段、图表新鲜度和性能状态。
-- `S11-P2-T3` 跨板块一致性锁定：首页消费总流出 = 消费页消费总流出 = 月报消费总流出；首页投资资产 = 投资页投资资产 = 投资报告投资资产；现金流预测来源能追溯到账本事件和计划事件。
+- `config/pfi_parameters.yaml` 记录 `test_validation` 参数、Stage 11 task ids、图表来源字段、图表新鲜度、性能状态、真实数据来源和中文真实空态策略。
+- `S11-P2-T3` 跨板块一致性锁定：首页消费总流出 = 消费页消费总流出 = 月报消费总流出；首页投资资产 = 投资页投资资产 = 投资报告投资资产；现金流预测来源能追溯到真实账本事件，暂无真实计划事件时显示中文真实空态。
 - `S11-P3-T3` 可视化一致性锁定：每个图表必须追溯 `metric_id`、`formula_id`、`parameter_hash`、`data_hash`，并显示 `compute time` 和 `cache status`。
+- Stage 11 复审后，真实 `8815` 条标准化流水作为可视化性能门输入；暂无真实 CBA -> Moomoo、信用卡还款、计划事件或持仓快照时不构造金额、交易 ID 或持仓。
 - 本轮不实现 Stage 12 文档同步与最终交付，不执行 Stage 13 后置触发型复核，不修改 v0.2.1 主 Web Shell UIUX 基线，不联网、不调用外部 LLM、不生成真实 agent 任务。
 
 ## v0.2.2 Stage 12
@@ -370,15 +383,33 @@ Stage 12 - 文档同步与交付已加入 PFI 的数据库治理路线。
 - 新增 `reports/pfi_v022_summary.md`：最终中文摘要，说明做了什么、怎么验收、哪些未做、哪些需要用户人工复核。
 - `config/pfi_parameters.yaml` 升级为 `PFIParametersV022Stage12`，新增 `delivery` 参数域和 `stage12_task_ids`；`config/pfi_v022_parameters.yaml` 是 Task Pack 要求的参数交付镜像。
 - 本轮不执行 Stage 13 后置触发型复核，不修改 v0.2.1 主 Web Shell UIUX 基线，不清理或迁移 Downloads 污染文件夹。
+- Stage 12 复审后，`web/pfi_v022_logic_review.html` 只作为本地审查页，不进入正式运行页面；摘要和交付报告只覆盖 Stage 12，不再声明 Stage 13 执行或 Downloads 清理。
+- Stage 12 承接真实数据证据：`MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv`，`8815` 条标准化支付宝流水；缺少真实数据的区域继续使用中文真实空态。
 
 ## v0.2.2 Stage 13
 
-Stage 13 - 后置触发型复核已加入 PFI 的数据库治理路线。
+Stage 13 - 后置触发型复核已加入 PFI 的数据库治理路线，并已完成本轮复审。
 
+- Stage 13 单轮历史边界：本轮只复审解决 Stage 13；整体项目复审解决不在本轮实现；GitHub 同步不在本轮执行；app 入口重装不在本轮执行；禁止全仓无差别扫描；不联网；不调用外部 LLM；阻塞项数量：`0`。
 - Task ID 清单：`S13-P1-T1`、`S13-P1-T2`、`S13-P1-T3`。
 - `S13-P1-T1`：在 `交付前人工指定` 触发下生成本地 Codex Review Ticket：`PFI/review_queue/codex_review_stage13_owner_specified_20260628.md`。
 - `S13-P1-T2`：仅对异常区域进行复核，scope files 由 ticket 指定，禁止全仓无差别扫描。
 - `S13-P1-T3`：复核结果写入 `PFI/开发记录.md`，包含问题、修复、验证、剩余风险。
 - Downloads 污染文件夹清理：`PFI_V022_STAGE0_PRE_CANONICAL_SYNC_20260628T090028` 等 6 个 PFI 预同步临时目录已归档到 `PFI/docs/pfi_v022/downloads_cleanup/PFI_V022_PRE_CANONICAL_SYNC_ARCHIVE_20260628.tar.gz` 并移出 Downloads。
-- `PFI.app` 和用户提供的 taskpack、roadmap、zip、md 源文件保留在 Downloads。
+- `PFI.app` 当前仍在 Downloads；用户提供的 taskpack、roadmap、zip、md 源文件名保留在 `PFI/docs/pfi_v022/DOWNLOADS_CLEANUP_STAGE13.md`，本轮不恢复或制造缺失源文件。
 - `config/pfi_parameters.yaml` 升级为 `PFIParametersV022Stage13`，新增 `post_review` 参数域和 `stage13_task_ids`。
+- `PFI/reports/pfi_v022_stage13_review_summary.md` 是 Stage 13 独立摘要，`PFI/reports/pfi_v022_summary.md` 继续保持 Stage12-only。
+- Stage 13 单轮复审时不执行整体项目复审解决、GitHub 同步或 app 入口重装；当前整体项目复审解决已在后续总门完成。阻塞项数量：`0`。
+
+## v0.2.2 整体项目复审解决
+
+整体项目复审解决已完成，覆盖 Stage 0-13、真实 MetaDatabase、正式 8501 app、测试数据边界、GitHub main 同步和 app 入口重装。
+
+- 真实 MetaDatabase：`MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv`，`8815` 条真实标准化流水。
+- 正式页面、报告、图表、首页摘要和建议：只允许读取真实 MetaDatabase 派生数据或中文真实空态。
+- 数据边界：不得使用 demo/sample/synthetic/fixture/mock/fake/测试样例数据作为验收依据。
+- 验证总门：完整 PFI pytest `321 passed, 729 subtests passed`；Stage 0-13 + overall 回归 `139 passed, 692 subtests passed`。
+- 真实浏览器矩阵：`/tmp/pfi_v022_overall_review_recheck/summary.json`，`131 pass / 0 fail`，覆盖桌面/移动端、二级入口、全局搜索 `406/8815`、禁词扫描和 console/page errors `0`。
+- GitHub main 同步：本轮 closeout 执行，path-limited 到 `PFI/` 与 `MetaDatabase/PFI/`。
+- app 入口重装：已执行，`/Applications/PFI.app`、`~/Downloads/PFI.app` 绑定 canonical PFI，`~/Desktop/PFI.app` 指向 `/Applications/PFI.app`。
+- 阻塞项数量：`0`。

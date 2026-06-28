@@ -6,6 +6,8 @@
 
 本轮不实现 Stage 7 现金流评分、Stage 8 Runtime Diff、Stage 9 参数中心或 Stage 12 逻辑审查页；不新增真实交易、自动投资、支付或券商提交能力。
 
+复审更新：Stage 6 验收不再使用构造财务交易；标签规则、标签筛选和标签报告改用 `MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv` 中的真实支付宝标准化流水。当前转换后真实记录数为 `7247`，覆盖 `ordinary_consumption`、`investment_return`、`investment_deposit`、`investment_buy`、`refund`。
+
 ## Task 验收
 
 | Task ID | 交付物 | 验收标准 | 状态 |
@@ -83,8 +85,8 @@
 ## Validation
 
 ```bash
-PYTHONPATH=src .venv/bin/python -B -m pytest tests/test_v022_stage6_tags_views.py -q
-PYTHONPATH=src .venv/bin/python -B -m pytest tests/test_v022_stage0_database_governance.py tests/test_pfi_parameters_consistency.py tests/test_v022_fx_effective_date.py tests/test_v022_stage3_source_account_profiles.py tests/test_v022_interconnection_no_double_count.py tests/test_v022_consumption_investment_outflow.py tests/test_v022_stage5_ledger_taxonomy.py tests/test_v022_stage6_tags_views.py -q
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -B -m pytest tests/test_v022_stage6_tags_views.py tests/test_v022_review_stage6.py -q -p no:cacheprovider
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -B -m pytest tests/test_v022_stage0_database_governance.py tests/test_pfi_parameters_consistency.py tests/test_v022_fx_effective_date.py tests/test_v022_stage3_source_account_profiles.py tests/test_v022_interconnection_no_double_count.py tests/test_v022_consumption_investment_outflow.py tests/test_v022_stage5_ledger_taxonomy.py tests/test_v022_stage6_tags_views.py tests/test_v022_review_stage6.py -q -p no:cacheprovider
 PYTHONPATH=src .venv/bin/python -B -m pytest -q
 node --check web/app/shell.js
 python3 ../scripts/validate_project_governance.py --project PFI
@@ -93,11 +95,11 @@ git diff --check -- PFI
 
 当前本地 closeout 结果：
 
-- Stage 6 目标测试：`6 passed`。
-- Stage 0-6 v0.2.2 回归：`51 passed`。
-- 完整 PFI pytest：`209 passed`。
+- Stage 6 目标 + 复审测试：`9 passed, 139 subtests passed`，使用真实 MetaDatabase 支付宝流水，确认不再使用构造财务 transaction id。
+- Stage 0-6 v0.2.2 相关回归：`54 passed, 243 subtests passed`。
+- 完整 PFI pytest：本轮未运行；不作为 v0.2.2 Stage 6 复审的产品验收依据。
 - 项目治理：`errors 0 / warnings 0`。
 - Web Shell 语法和 `git diff --check -- PFI`：通过。
-- macOS app acceptance lite：`29 pass / 0 fail / 2 info`。
-- 真实 8501 浏览器：上方工作台 iframe 包含 8 个一级入口，父页面和工作台禁用词扫描 0 命中，console errors `0`，截图 `/tmp/pfi-v022-stage6-app-verified.png`。
-- Stage 6 HTML 浏览器：9 个任务 ID、5 张表、6 个默认标签组、3 个自定义视图全部可见，禁用词扫描 0 命中，console errors `0`，截图 `/tmp/pfi-v022-stage6-tag-views-verified.png`。
+- macOS app acceptance lite：本轮未重跑；整体 goal 完成后再统一刷新和验收 app 入口。
+- 真实 8501 浏览器：`/tmp/pfi_stage6_review_recheck/summary.json` 通过，桌面业务 iframe `1` 个、15 个一级入口全部可见且可点击、7 个首页功能按钮可点击、全局搜索 `8815/406` 命中真实支付宝流水、策略实验室顶部入口和投资管理入口同路由、正式业务页禁用词扫描 0 命中、业务页反馈污染 0、设置页反馈控件可见、console errors `0`；移动端 5 个底部入口可见，水平溢出 `0px`。截图：`/tmp/pfi_stage6_review_recheck/desktop.png`、`/tmp/pfi_stage6_review_recheck/mobile.png`。
+- Stage 6 HTML 浏览器：本轮未重跑；本轮真实产品入口验收以 8501 为准，Stage 6 HTML 仅作为本地说明页。

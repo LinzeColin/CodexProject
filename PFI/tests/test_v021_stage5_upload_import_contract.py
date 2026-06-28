@@ -55,9 +55,14 @@ class V021Stage5UploadImportContractTest(unittest.TestCase):
             "drop",
             "不支持的文件类型",
             "文件过大",
-            "导入预检完成",
+            "uploadAlipayFilesToBackend",
+            "readFileAsBase64",
+            "/api/imports/alipay",
+            "写入本机 PFI 和 MetaDatabase",
+            "以后端解析结果为准",
         ):
             self.assertIn(required, self.js)
+        self.assertNotIn("Math.ceil(Number(file.size", self.js)
 
     def test_import_center_has_batches_summary_and_review_entry(self) -> None:
         contract = build_v021_stage5_contract()["import_center_contract"]

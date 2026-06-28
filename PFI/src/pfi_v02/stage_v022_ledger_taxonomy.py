@@ -32,6 +32,8 @@ STAGE5_TAXONOMY_LIMITS = {
     "max_l2_per_l1": 5,
     "max_l2_total": 50,
     "primary_category_per_transaction": 1,
+    "future_merge_target_max_l1": 10,
+    "multi_dimensional_analysis_uses_tags": True,
 }
 
 
@@ -168,16 +170,37 @@ def build_stage5_consumption_taxonomy() -> tuple[dict[str, object], ...]:
 def validate_stage5_taxonomy_constraints(
     taxonomy: Iterable[Mapping[str, object]] | None = None,
 ) -> dict[str, object]:
-    rows = tuple(taxonomy or build_stage5_consumption_taxonomy())
+    rows = tuple(build_stage5_consumption_taxonomy() if taxonomy is None else taxonomy)
     l2_counts = [len(tuple(row.get("l2", ()))) for row in rows]
     l2_total = sum(l2_counts)
     l1_count = len(rows)
-    within_limits = (
-        l1_count <= STAGE5_TAXONOMY_LIMITS["max_l1_categories"]
-        and all(count <= STAGE5_TAXONOMY_LIMITS["max_l2_per_l1"] for count in l2_counts)
-        and l2_total <= STAGE5_TAXONOMY_LIMITS["max_l2_total"]
-    )
+    max_l1_ok = l1_count <= STAGE5_TAXONOMY_LIMITS["max_l1_categories"]
+    max_l2_per_l1_ok = all(count <= STAGE5_TAXONOMY_LIMITS["max_l2_per_l1"] for count in l2_counts)
+    max_l2_total_ok = l2_total <= STAGE5_TAXONOMY_LIMITS["max_l2_total"]
     future_merge_ready = all(row.get("future_merge_to") or row.get("merge_candidate") for row in rows)
+    future_merge_groups = tuple(
+        sorted({str(row.get("future_merge_to") or row.get("merge_candidate")) for row in rows if row.get("future_merge_to") or row.get("merge_candidate")})
+    )
+    future_merge_l1_count = len(future_merge_groups)
+    future_merge_target_ok = future_merge_l1_count <= STAGE5_TAXONOMY_LIMITS["future_merge_target_max_l1"]
+    primary_category_ok = all(
+        row.get("primary_category_per_transaction") == STAGE5_TAXONOMY_LIMITS["primary_category_per_transaction"]
+        for row in rows
+    )
+    violations: list[str] = []
+    if not max_l1_ok:
+        violations.append("max_l1_categories")
+    if not max_l2_per_l1_ok:
+        violations.append("max_l2_per_l1")
+    if not max_l2_total_ok:
+        violations.append("max_l2_total")
+    if not future_merge_ready:
+        violations.append("future_merge_to")
+    if not future_merge_target_ok:
+        violations.append("future_merge_target_max_l1")
+    if not primary_category_ok:
+        violations.append("primary_category_per_transaction")
+    within_limits = not violations
     return {
         "schema": "PFIV022Stage5TaxonomyValidationV1",
         "status": "通过" if within_limits and future_merge_ready else "失败",
@@ -185,7 +208,13 @@ def validate_stage5_taxonomy_constraints(
         "max_l2_per_l1_actual": max(l2_counts) if l2_counts else 0,
         "l2_total": l2_total,
         "future_merge_ready": future_merge_ready,
+        "future_merge_groups": future_merge_groups,
+        "future_merge_l1_count": future_merge_l1_count,
+        "future_merge_target_max_l1": STAGE5_TAXONOMY_LIMITS["future_merge_target_max_l1"],
         "primary_category_per_transaction": STAGE5_TAXONOMY_LIMITS["primary_category_per_transaction"],
+        "primary_category_per_transaction_valid": primary_category_ok,
+        "multi_dimensional_analysis_uses_tags": STAGE5_TAXONOMY_LIMITS["multi_dimensional_analysis_uses_tags"],
+        "violations": tuple(violations),
         "limits": dict(STAGE5_TAXONOMY_LIMITS),
     }
 

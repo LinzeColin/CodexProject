@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any
 
 from pfi_os.application.operational_store import OperationalStore
@@ -49,6 +50,7 @@ def build_homepage_summary(store: OperationalStore | None = None, *, now: dateti
     jobs = _without_retired_rows(operational_store.table_rows("job_records"))
     tasks = _without_retired_rows(operational_store.table_rows("task_records"))
     holdings = operational_store.table_rows("holding_snapshots")
+    alipay_import_summary = _load_real_alipay_import_summary()
 
     generated_at = (now or datetime.now(timezone.utc)).isoformat(timespec="seconds")
     latest_as_of = _latest_text([row.get("as_of", "") for row in [*sources, *evidence, *jobs, *tasks, *holdings]])
@@ -76,6 +78,7 @@ def build_homepage_summary(store: OperationalStore | None = None, *, now: dateti
         "stage4_dashboard": _sanitize_public_payload(stage4_dashboard),
         "stage3_dashboard": _sanitize_public_payload(stage3_dashboard),
         "workflow_runtime": _sanitize_public_payload(build_workflow_runtime_read_model(operational_store, now=now)),
+        "alipay_import_summary": alipay_import_summary,
         "read_model": "OperationalStore -> SourceRegistry -> PFIOSHomeSummaryV1",
         "cache_policy": "Web shell consumes this compact summary; it does not read provider JSON, ResearchBus tables, or private source files directly.",
         "safety_boundary": "决策支持摘要；正式动作需要人工确认和证据留痕。",
@@ -112,10 +115,85 @@ def empty_homepage_summary() -> dict[str, Any]:
         "stage4_dashboard": _sanitize_public_payload(stage4_dashboard),
         "stage3_dashboard": _sanitize_public_payload(stage3_dashboard),
         "workflow_runtime": empty_workflow_runtime_read_model(),
+        "alipay_import_summary": _load_real_alipay_import_summary(),
         "read_model": "OperationalStore -> SourceRegistry -> PFIOSHomeSummaryV1",
         "cache_policy": "Web shell consumes this compact summary; it does not read provider JSON, ResearchBus tables, or private source files directly.",
         "safety_boundary": "决策支持摘要；正式动作需要人工确认和证据留痕。",
     }
+
+
+def _load_real_alipay_import_summary() -> dict[str, Any]:
+    manifest_path = _metadatabase_alipay_manifest_path()
+    if not manifest_path.exists():
+        return {
+            "schema": "PFIAlipayRealImportSummaryV1",
+            "source_id": "alipay_daily",
+            "status": "未接入真实数据",
+            "file_count": 0,
+            "valid_file_count": 0,
+            "transaction_count": 0,
+            "review_count": 0,
+            "date_start": "",
+            "date_end": "",
+            "search_tokens": [],
+            "batch": None,
+        }
+    try:
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        manifest = {}
+    if not isinstance(manifest, dict):
+        manifest = {}
+
+    file_count = int(manifest.get("file_count") or 0)
+    valid_file_count = int(manifest.get("valid_file_count") or 0)
+    transaction_count = int(manifest.get("transaction_count") or 0)
+    review_count = int(manifest.get("review_count") or 0)
+    date_start = str(manifest.get("date_start") or "")
+    date_end = str(manifest.get("date_end") or "")
+    search_tokens = [
+        "支付宝",
+        "真实支付宝流水",
+        "三年历史数据",
+        str(file_count),
+        str(valid_file_count),
+        str(transaction_count),
+        str(review_count),
+        date_start,
+        date_end,
+        date_start.replace("-", ""),
+        date_end.replace("-", ""),
+    ]
+    return {
+        "schema": "PFIAlipayRealImportSummaryV1",
+        "source_id": "alipay_daily",
+        "status": "已接入真实数据" if transaction_count else "未接入真实数据",
+        "file_count": file_count,
+        "valid_file_count": valid_file_count,
+        "transaction_count": transaction_count,
+        "review_count": review_count,
+        "date_start": date_start,
+        "date_end": date_end,
+        "manifest_path": "MetaDatabase/PFI/alipay_daily/processed/alipay_import_manifest.json",
+        "transactions_path": "MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv",
+        "search_tokens": [token for token in search_tokens if token],
+        "batch": {
+            "batch_id": "真实支付宝流水",
+            "source": "支付宝三年历史账单",
+            "file_count": file_count,
+            "record_count": transaction_count,
+            "review_count": review_count,
+            "status": "已接入真实数据" if transaction_count else "待导入",
+            "summary": f"{date_start} 至 {date_end} · {transaction_count} 条标准化流水 · {review_count} 条待复核"
+            if transaction_count
+            else "未读取到真实支付宝流水。",
+        },
+    }
+
+
+def _metadatabase_alipay_manifest_path() -> Path:
+    repo_root = Path(__file__).resolve().parents[4]
+    return repo_root / "MetaDatabase" / "PFI" / "alipay_daily" / "processed" / "alipay_import_manifest.json"
 
 
 def _stage3_metric_cards(stage3_dashboard: dict[str, Any]) -> list[dict[str, str]]:

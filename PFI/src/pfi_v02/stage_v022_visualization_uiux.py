@@ -1,7 +1,18 @@
 from __future__ import annotations
 
+from collections import Counter
+from decimal import Decimal
 from html import escape
+from pathlib import Path
 from typing import Mapping
+
+from pfi_v02.stage_v022_formula_scoring import (
+    calculate_cashflow_projection,
+    calculate_consumption_model_metrics,
+    load_stage7_alipay_formula_inputs_from_metadatabase,
+)
+from pfi_v02.stage_v022_runtime_diff import build_dependency_hash_snapshot, load_stage8_runtime_diff_inputs_from_canonical_sources
+from pfi_v02.stage_v022_tags_views import build_stage6_default_tag_library
 
 
 STAGE9_REQUIRED_MODULES = (
@@ -36,6 +47,86 @@ STAGE9_DATA_STATUS_FIELDS = (
 STAGE9_CASHFLOW_WINDOWS_DAYS = (7, 21, 30, 60, 90, 180, 360)
 STAGE9_CASHFLOW_VISUALIZATIONS = ("现金流阶梯图", "现金流瀑布图", "储备金安全带", "投资入金挤压图")
 STAGE9_PARAMETER_CENTER_DOMAINS = ("货币", "汇率", "分类", "标签", "阈值", "公式", "置信度", "现金流窗口")
+STAGE9_REAL_DATA_SOURCE = "MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv"
+STAGE9_UNMEASURED_COMPUTE_STATUS_ZH = "本轮未测量，不显示模拟耗时。"
+
+
+def _resolve_stage9_roots(project_root: str | Path | None = None) -> tuple[Path, Path]:
+    root = Path(project_root).expanduser().resolve() if project_root is not None else Path(__file__).resolve().parents[2]
+    if root.name == "PFI":
+        return root, root.parent
+    if (root / "PFI").is_dir() and (root / "MetaDatabase").is_dir():
+        return root / "PFI", root
+    return root, root.parent
+
+
+def _money(value: object) -> Decimal:
+    return Decimal(str(value or "0")).quantize(Decimal("0.01"))
+
+
+def _money_text(value: object) -> str:
+    return f"CNY {_money(value):,.2f}"
+
+
+def load_stage9_real_visualization_context(project_root: str | Path | None = None) -> dict[str, object]:
+    pfi_root, repo_root = _resolve_stage9_roots(project_root)
+    stage8 = load_stage8_runtime_diff_inputs_from_canonical_sources(pfi_root)
+    stage8_summary = stage8["source_summary"]
+    stage8_inputs = stage8["inputs"]
+    dependency_snapshot = build_dependency_hash_snapshot(stage8_inputs, run_id="stage9-real-visualization-context")
+
+    metadatabase_root = repo_root / "MetaDatabase" / "PFI" / "alipay_daily"
+    stage7_inputs = load_stage7_alipay_formula_inputs_from_metadatabase(metadatabase_root)
+    consumption_metrics = calculate_consumption_model_metrics(stage7_inputs["consumption_events"])
+    normalized_transactions = tuple(stage8_inputs["normalized_transactions"])
+    review_state_counts = Counter(str(row.get("review_state") or "") for row in normalized_transactions if isinstance(row, Mapping))
+    review_record_count = int(review_state_counts.get("NEEDS_REVIEW", 0))
+    tag_count = len(build_stage6_default_tag_library())
+    cashflow_inputs = dict(stage7_inputs["cashflow_projection_inputs"])
+    cashflow_projections = []
+    for day in STAGE9_CASHFLOW_WINDOWS_DAYS:
+        active_inputs = dict(cashflow_inputs)
+        active_inputs["horizon_days"] = day
+        cashflow_projections.append(calculate_cashflow_projection(**active_inputs))
+
+    fx_content = {}
+    fx_snapshot = stage8_inputs.get("fx_snapshot", {})
+    if isinstance(fx_snapshot, Mapping):
+        fx_content = fx_snapshot.get("content", {}) if isinstance(fx_snapshot.get("content"), Mapping) else {}
+    last_updated = f"{fx_content.get('effective_date', '汇率快照日期待更新')} {fx_content.get('effective_time_local', '06:00')} Australia/Sydney"
+    return {
+        "schema": "PFIV022Stage9RealVisualizationContextV1",
+        "real_data_source": STAGE9_REAL_DATA_SOURCE,
+        "raw_file_count": int(stage8_summary["raw_file_count"]),
+        "normalized_transaction_count": int(stage8_summary["normalized_transaction_count"]),
+        "ledger_event_count": int(stage8_summary["ledger_event_count"]),
+        "interconnection_count": int(stage8_summary["interconnection_count"]),
+        "interconnection_state_zh": str(stage8_summary["interconnection_state_zh"]),
+        "review_record_count": review_record_count,
+        "tag_count": tag_count,
+        "advice_item_count": 0,
+        "chart_count": len(STAGE9_CASHFLOW_VISUALIZATIONS) + 3,
+        "gross_consumption_cny": consumption_metrics["gross_consumption_cny"],
+        "living_consumption_cny": consumption_metrics["living_consumption_cny"],
+        "refund_offset_cny": consumption_metrics["refund_offset_cny"],
+        "cashflow_projection_inputs": cashflow_inputs,
+        "cashflow_projections": tuple(cashflow_projections),
+        "cashflow_data_status_zh": "现金流图表使用真实支付宝历史流水派生输入；当前生活现金余额缺少真实账户快照，不展示伪造余额。",
+        "investment_data_status_zh": str(stage7_inputs["investment_data_status_zh"]),
+        "event_type_counts": stage7_inputs["event_type_counts"],
+        "dependency_hashes": dependency_snapshot["dependency_hashes"],
+        "run_hash": dependency_snapshot["run_hash"],
+        "fx_snapshot_id": fx_content.get("snapshot_id", "fx_snapshot_missing"),
+        "last_updated": last_updated,
+        "impact_counts": {
+            "review_records": review_record_count,
+            "tags": tag_count,
+            "advice_items": 0,
+            "charts": len(STAGE9_CASHFLOW_VISUALIZATIONS) + 3,
+        },
+        "network_allowed": False,
+        "data_boundary_zh": "Stage 9 可视化只展示真实 MetaDatabase 派生指标、本地参数和真实空态；不得使用固定假金额、固定假匹配率或模拟耗时。",
+    }
 
 
 def _param_value(catalog: Mapping[str, object], *path: str, default: object = "未配置") -> object:
@@ -138,19 +229,19 @@ def calculate_parameter_impact_preview(
     parameter_key: str,
     old_value: object,
     new_value: object,
-    sample_counts: Mapping[str, int],
+    impact_counts: Mapping[str, int],
 ) -> dict[str, object]:
     return {
         "schema": "PFIV022Stage9ParameterImpactPreviewV1",
         "parameter_key": parameter_key,
         "old_value": old_value,
         "new_value": new_value,
-        "affected_records": int(sample_counts.get("review_records", 0)),
-        "affected_tags": int(sample_counts.get("tags", 0)),
-        "affected_advice_items": int(sample_counts.get("advice_items", 0)),
-        "affected_charts": int(sample_counts.get("charts", 0)),
+        "affected_records": int(impact_counts.get("review_records", 0)),
+        "affected_tags": int(impact_counts.get("tags", 0)),
+        "affected_advice_items": int(impact_counts.get("advice_items", 0)),
+        "affected_charts": int(impact_counts.get("charts", 0)),
         "network_allowed": False,
-        "explanation_zh": "修改阈值前显示可能影响的记录数、标签数、建议数、图表数；该预览只使用本地 snapshot。",
+        "explanation_zh": "修改阈值前显示可能影响的记录数、标签数、建议数、图表数；该预览只使用真实 MetaDatabase、本地参数和本地 snapshot。",
     }
 
 
@@ -167,56 +258,87 @@ def build_interconnection_map_mermaid() -> str:
     )
 
 
-def _default_data_status() -> dict[str, object]:
+def _default_data_status(context: Mapping[str, object] | None = None) -> dict[str, object]:
+    active_context = context or load_stage9_real_visualization_context()
+    dependency_hashes = active_context.get("dependency_hashes", {})
     return {
-        "数据来源覆盖率": "已覆盖支付宝、银行、券商、基金、贵金属、微信和手工快照的合同层。",
-        "最近更新时间": "2026-06-28 06:00 Australia/Sydney",
+        "数据来源覆盖率": f"当前真实支付宝流水 {active_context['normalized_transaction_count']} 条，raw 文件 {active_context['raw_file_count']} 个；其它来源保持合同层或真实空态。",
+        "最近更新时间": active_context["last_updated"],
         "参数版本": "v0.2.2",
         "公式版本": "Stage 7 formula/scoring",
-        "汇率快照 ID": "fx_AUD_CNY_20260628",
-        "ledger_hash": "ledger_events_hash",
-        "interconnection_hash": "interconnection_hash",
-        "是否存在未匹配记录": "有，进入待复核队列。",
-        "是否存在低置信记录": "有，低于 70 分进入复核。",
-        "是否存在缓存": "有，本地 snapshot 缓存。",
+        "汇率快照 ID": active_context["fx_snapshot_id"],
+        "ledger_hash": dependency_hashes.get("ledger_events_hash", "ledger_hash_missing"),
+        "interconnection_hash": dependency_hashes.get("interconnection_hash", "interconnection_hash_missing"),
+        "是否存在未匹配记录": active_context["interconnection_state_zh"],
+        "是否存在低置信记录": f"待复核记录 {active_context['review_record_count']} 条，来自真实标准化流水 review_state。",
+        "是否存在缓存": "有，本地文件 hash snapshot。",
         "是否需要重算": "由 Stage 8 Runtime Diff 判断。",
         "UI 指标是否与报告一致": "必须一致；不一致时生成本地 Codex Review Ticket。",
     }
 
 
-def build_stage9_visualization_payload(catalog: Mapping[str, object]) -> dict[str, object]:
-    modules = tuple({"title": title, "data_status": _default_data_status()} for title in STAGE9_REQUIRED_MODULES)
+def build_stage9_visualization_payload(
+    catalog: Mapping[str, object],
+    context: Mapping[str, object] | None = None,
+) -> dict[str, object]:
+    active_context = context or load_stage9_real_visualization_context()
+    modules = tuple({"title": title, "data_status": _default_data_status(active_context)} for title in STAGE9_REQUIRED_MODULES)
     return {
         "schema": "PFIV022Stage9VisualizationPayloadV1",
         "module_titles": STAGE9_REQUIRED_MODULES,
         "modules": modules,
         "parameter_center": build_parameter_center_model(catalog),
         "interconnection_mermaid": build_interconnection_map_mermaid(),
-        "cashflow": build_cashflow_visualization_model(),
-        "metric_drilldown": build_metric_drilldown_debugger_model(),
+        "cashflow": build_cashflow_visualization_model(active_context),
+        "metric_drilldown": build_metric_drilldown_debugger_model(active_context),
+        "real_visualization_context": active_context,
         "external_network_allowed": False,
     }
 
 
-def build_cashflow_visualization_model() -> dict[str, object]:
+def build_cashflow_visualization_model(context: Mapping[str, object] | None = None) -> dict[str, object]:
+    active_context = context or load_stage9_real_visualization_context()
+    cashflow_inputs = active_context["cashflow_projection_inputs"]
     return {
         "schema": "PFIV022Stage9CashflowVisualizationV1",
         "windows_days": STAGE9_CASHFLOW_WINDOWS_DAYS,
         "visualizations": STAGE9_CASHFLOW_VISUALIZATIONS,
-        "ladder_points": tuple({"window_days": day, "label_zh": f"{day} 天预测余额"} for day in STAGE9_CASHFLOW_WINDOWS_DAYS),
+        "ladder_points": tuple(
+            {
+                "window_days": item["horizon_days"],
+                "label_zh": f"{item['horizon_days']} 天现金流窗口",
+                "future_cash_balance_cny": item["future_cash_balance_cny"],
+                "reserve_floor_cny": item["reserve_floor_cny"],
+                "data_status_zh": active_context["cashflow_data_status_zh"],
+            }
+            for item in active_context["cashflow_projections"]
+        ),
         "waterfall_components": ("当前现金", "收入", "退款", "固定支出", "弹性支出", "信用卡", "投资入金", "投资回流"),
+        "waterfall_values_cny": {
+            "当前现金": _money(cashflow_inputs.get("current_life_cash_cny")),
+            "收入": _money(cashflow_inputs.get("expected_income_cny")),
+            "退款": _money(cashflow_inputs.get("expected_refund_cny")),
+            "固定支出": _money(cashflow_inputs.get("fixed_expense_cny")),
+            "弹性支出": _money(cashflow_inputs.get("flexible_expense_cny")),
+            "信用卡": _money(cashflow_inputs.get("debt_repayment_cny")),
+            "投资入金": _money(cashflow_inputs.get("planned_investment_deposit_cny")),
+            "投资回流": _money(cashflow_inputs.get("planned_investment_return_cny")),
+        },
         "reserve_safety_band": ("绿色", "黄色", "红色"),
         "investment_squeeze_explanation_zh": "投资入金挤压图显示投资入金对生活现金和储备金的影响。",
+        "data_status_zh": active_context["cashflow_data_status_zh"],
     }
 
 
-def build_metric_drilldown_debugger_model() -> dict[str, object]:
+def build_metric_drilldown_debugger_model(context: Mapping[str, object] | None = None) -> dict[str, object]:
+    active_context = context or load_stage9_real_visualization_context()
     quality = {
-        "confidence": ">= 70 分或进入复核",
-        "match_rate": "Interconnection 匹配率",
-        "last_updated": "2026-06-28 06:00",
-        "compute_time_ms": 42,
-        "cache_status": "cached_snapshot",
+        "confidence": f"待复核记录 {active_context['review_record_count']} 条来自真实标准化流水。",
+        "match_rate": active_context["interconnection_state_zh"],
+        "last_updated": active_context["last_updated"],
+        "compute_time_ms": None,
+        "compute_time_status_zh": STAGE9_UNMEASURED_COMPUTE_STATUS_ZH,
+        "cache_status": "local_dependency_hash_snapshot",
     }
     return {
         "schema": "PFIV022Stage9MetricDrilldownDebuggerV1",
@@ -225,18 +347,22 @@ def build_metric_drilldown_debugger_model() -> dict[str, object]:
                 "included": ("普通生活消费", "投资入金", "基金申购", "黄金申购", "投资买入", "金融费用"),
                 "excluded": ("内部转账", "信用卡还款", "投资卖出回流"),
                 "adjusted": ("退款抵消原消费",),
+                "gross_consumption_cny": active_context["gross_consumption_cny"],
+                "living_consumption_cny": active_context["living_consumption_cny"],
                 "quality": quality,
             },
             "投资资产": {
                 "included": ("投资现金", "持仓市值", "基金资产", "贵金属资产"),
                 "excluded": ("生活现金", "普通消费", "信用卡还款"),
                 "adjusted": ("汇率快照折算", "费用和税费"),
+                "data_status_zh": active_context["investment_data_status_zh"],
                 "quality": quality,
             },
             "现金流窗口": {
                 "included": ("预计收入", "预计退款", "固定支出", "弹性支出", "信用卡", "投资入金", "投资回流"),
                 "excluded": ("内部账户调拨重复项",),
                 "adjusted": ("储备金安全线", "投资入金挤压生活现金"),
+                "data_status_zh": active_context["cashflow_data_status_zh"],
                 "quality": quality,
             },
         },

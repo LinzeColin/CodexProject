@@ -1018,6 +1018,27 @@
         ],
         "user_editable": false
       },
+      "future_merge_target_max_l1": {
+        "value": 10,
+        "label_zh": "后续分类压缩目标上限",
+        "description_zh": "Stage 5 默认 12 大类必须可通过 future_merge_to / merge_candidate 压缩到 10 类或更少。",
+        "impact_surfaces": [
+          "消费管理",
+          "报告与洞察"
+        ],
+        "user_editable": false
+      },
+      "multi_dimensional_analysis_uses_tags": {
+        "value": true,
+        "label_zh": "多维分析依赖标签系统",
+        "description_zh": "分类只保留一笔交易一个主分类；订阅、夜间、大额、计划外、投资行为等多维分析由 Stage 6 标签系统承担。",
+        "impact_surfaces": [
+          "账本流水",
+          "消费管理",
+          "报告与洞察"
+        ],
+        "user_editable": false
+      },
       "default_taxonomy": {
         "label_zh": "Stage 5 默认消费分类 taxonomy",
         "description_zh": "默认 12 大类 / 50 中类；一笔交易只能有一个主分类，多维分析由 Stage 6 标签系统承担。",
@@ -1338,12 +1359,28 @@
           "max_l2_per_l1_actual": 5,
           "l2_total": 50,
           "future_merge_ready": true,
+          "future_merge_groups": [
+            "出行与成长",
+            "可选消费",
+            "家庭责任",
+            "投资资金流",
+            "生活必要",
+            "调整其他",
+            "金融成本"
+          ],
+          "future_merge_l1_count": 7,
+          "future_merge_target_max_l1": 10,
           "primary_category_per_transaction": 1,
+          "primary_category_per_transaction_valid": true,
+          "multi_dimensional_analysis_uses_tags": true,
+          "violations": [],
           "limits": {
             "max_l1_categories": 12,
             "max_l2_per_l1": 5,
             "max_l2_total": 50,
-            "primary_category_per_transaction": 1
+            "primary_category_per_transaction": 1,
+            "future_merge_target_max_l1": 10,
+            "multi_dimensional_analysis_uses_tags": true
           }
         },
         "future_merge_field_required": true,
@@ -1356,12 +1393,14 @@
       },
       "taxonomy_limits": {
         "label_zh": "消费分类数量约束",
-        "description_zh": "L1 ≤ 12；每个 L1 的 L2 ≤ 5；总 L2 ≤ 50；每笔交易主分类数量为 1。",
+        "description_zh": "L1 ≤ 12；每个 L1 的 L2 ≤ 5；总 L2 ≤ 50；每笔交易主分类数量为 1；future_merge_to 分组可压缩到 10 类或更少，多维分析由标签系统承担。",
         "l1_limit": 12,
         "l2_per_l1_limit": 5,
         "l2_total_limit": 50,
         "primary_category_per_transaction": 1,
         "future_merge_ready": true,
+        "future_merge_target_max_l1": 10,
+        "multi_dimensional_analysis_uses_tags": true,
         "impact_surfaces": [
           "消费管理",
           "测试",
@@ -3133,9 +3172,19 @@
         "impact_zh": "图表显示旧数据时阻断交付。"
       },
       "performance_record_count": {
-        "value": 12000,
-        "description_zh": "Stage 11 性能测试使用的大量模拟记录数量。",
+        "value": 8815,
+        "description_zh": "Stage 11 性能测试使用真实 MetaDatabase 标准化流水记录数，不生成替代记录。",
         "impact_zh": "图表生成必须显示 compute time 和 cache status，并避免明显卡死。"
+      },
+      "real_data_source": {
+        "value": "MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv",
+        "description_zh": "Stage 11 正式测试门读取的真实标准化流水来源。",
+        "impact_zh": "金融逻辑、跨板块一致性、可视化一致性不得混入构造金融事实。"
+      },
+      "real_empty_state_policy": {
+        "value": "中文真实空态",
+        "description_zh": "暂无真实 CBA -> Moomoo、信用卡还款、计划事件或持仓快照时，显示中文空态并保持数值为空。",
+        "impact_zh": "避免把缺失真实数据伪造成可计算的产品结论。"
       }
     },
     "delivery": {
@@ -3205,6 +3254,11 @@
         "description_zh": "Stage 13 本地 Codex Review Ticket 路径。",
         "impact_zh": "复核队列、开发记录、最终交付审计。"
       },
+      "stage13_review_summary_path": {
+        "value": "PFI/reports/pfi_v022_stage13_review_summary.md",
+        "description_zh": "Stage 13 独立复审摘要路径，避免污染 Stage 12 最终摘要。",
+        "impact_zh": "Stage 13 复审、整体项目复审输入。"
+      },
       "scope_files": {
         "value": [
           "PFI/config/pfi_parameters.yaml",
@@ -3214,7 +3268,8 @@
           "PFI/review_queue/codex_review_stage13_owner_specified_20260628.md",
           "PFI/docs/pfi_v022/STAGE13_POST_REVIEW.md",
           "PFI/docs/pfi_v022/DOWNLOADS_CLEANUP_STAGE13.md",
-          "PFI/reports/pfi_v022_summary.md",
+          "PFI/docs/pfi_v022/reviews/STAGE13_REVIEW_20260629.md",
+          "PFI/reports/pfi_v022_stage13_review_summary.md",
           "PFI/开发记录.md"
         ],
         "description_zh": "S13-P1-T2 只允许复核的 ticket 指定文件范围。",
@@ -3238,7 +3293,32 @@
       "blocking_issue_count": {
         "value": 0,
         "description_zh": "Stage 13 复核完成后的阻塞项数量。",
-        "impact_zh": "阻塞项为 0 才能关闭 v0.2.2 Stage 7-13 goal。"
+        "impact_zh": "阻塞项为 0 才能进入整体项目复审准备；本轮不标记整体 goal 完成。"
+      },
+      "stage13_ready_for_overall_review": {
+        "value": true,
+        "description_zh": "Stage 13 已完成本轮复审，可进入下一轮整体项目复审解决。",
+        "impact_zh": "后续整体复审入口。"
+      },
+      "stage13_ready_for_goal_closeout": {
+        "value": false,
+        "description_zh": "Stage 13 本轮不关闭整体 pursuing goal。",
+        "impact_zh": "避免提前 GitHub 同步、app 入口重装或 goal closeout。"
+      },
+      "overall_project_review_deferred": {
+        "value": true,
+        "description_zh": "整体项目复审解决不在本轮实现。",
+        "impact_zh": "下一轮整体复审。"
+      },
+      "github_sync_deferred": {
+        "value": true,
+        "description_zh": "GitHub 同步不在本轮执行。",
+        "impact_zh": "避免在混合 worktree 中自动同步未复审整体状态。"
+      },
+      "app_entry_reinstall_deferred": {
+        "value": true,
+        "description_zh": "app 入口重装不在本轮执行。",
+        "impact_zh": "整体 goal 完成后再刷新入口。"
       },
       "downloads_cleanup_archive": {
         "value": "PFI/docs/pfi_v022/downloads_cleanup/PFI_V022_PRE_CANONICAL_SYNC_ARCHIVE_20260628.tar.gz",

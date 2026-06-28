@@ -1,6 +1,8 @@
 # Stage 13 - 后置触发型复核
 
-本轮目标：在 `交付前人工指定` 触发下完成 Stage 13 后置触发型复核。Stage 13 只生成本地 Codex Review Ticket，只对异常区域进行复核，禁止全仓无差别扫描，不联网，不调用外部 LLM，不修改真实交易、支付、券商提交或实盘自动下单路径。
+本轮只复审解决 Stage 13。Stage 13 在 `交付前人工指定` 触发下生成本地 Codex Review Ticket，仅对异常区域进行复核，禁止全仓无差别扫描，不联网，不调用外部 LLM，不修改真实交易、支付、券商提交或实盘自动下单路径。
+
+整体项目复审解决不在本轮实现。GitHub 同步不在本轮执行。app 入口重装不在本轮执行。本轮完成后只进入下一轮整体项目复审准备，不标记整体 goal 完成。
 
 ## Stage -> Phase -> Task
 
@@ -27,19 +29,20 @@
 - `PFI/review_queue/codex_review_stage13_owner_specified_20260628.md`
 - `PFI/docs/pfi_v022/STAGE13_POST_REVIEW.md`
 - `PFI/docs/pfi_v022/DOWNLOADS_CLEANUP_STAGE13.md`
-- `PFI/reports/pfi_v022_summary.md`
+- `PFI/docs/pfi_v022/reviews/STAGE13_REVIEW_20260629.md`
+- `PFI/reports/pfi_v022_stage13_review_summary.md`
 - `PFI/开发记录.md`
 
 ## 复核结果
 
 | 问题 | 修复 | 验证 | 剩余风险 | 状态 |
 | --- | --- | --- | --- | --- |
-| 交付前人工指定触发 Stage 13，需要防止扩大成全仓无差别扫描。 | Codex Review Ticket 限定 scope files。 | 合同测试验证 `full_repo_scan_allowed=false`、`network_allowed=false`。 | 无阻塞；用户可人工复核最终摘要。 | 已修复 |
-| Downloads 污染文件夹仍有 PFI 预同步临时目录。 | 归档为 repo-scoped tar.gz 后移出 Downloads。 | 测试扫描候选目录不再位于 Downloads，taskpack 源文件和 PFI.app 保留。 | 归档只覆盖明确 PFI_V022_STAGE*_PRE_CANONICAL_SYNC_* 临时目录。 | 已修复 |
+| 交付前人工指定触发 Stage 13，需要防止扩大成全仓无差别扫描。 | Codex Review Ticket 限定 scope files，并记录不联网、不调用外部 LLM。 | Stage 13 目标 + 复审测试验证 `full_repo_scan_allowed=false`、`network_allowed=false`、`external_llm_allowed=false`。 | 无阻塞；整体项目复审解决不在本轮实现。 | 已修复 |
+| Downloads 污染文件夹仍有 PFI 预同步临时目录。 | 归档为 repo-scoped tar.gz 后移出 Downloads。 | 测试扫描 `PFI_V022_STAGE0_PRE_CANONICAL_SYNC_20260628T090028` 等候选目录不再位于 Downloads，`PFI.app` 仍存在，manifest 保留 taskpack/roadmap/zip/md 来源名。 | 不在本轮恢复或制造 Downloads 源文件。 | 已修复 |
+| Stage 13 内容曾混入 Stage 12 最终摘要。 | 新增 `PFI/reports/pfi_v022_stage13_review_summary.md`，Stage 12 摘要继续保持 Stage12-only。 | 复审测试验证 `PFI/reports/pfi_v022_summary.md` 不含 `S13-P1-T1`、`S13-P1-T2`、`S13-P1-T3`。 | 整体项目摘要将在第二阶段整体复审后生成。 | 已修复 |
 
 本轮记录了问题、修复、验证、剩余风险。阻塞项数量：`0`。
 
 ## Downloads 清理
 
 Downloads 污染文件夹清理记录见 `PFI/docs/pfi_v022/DOWNLOADS_CLEANUP_STAGE13.md`。本轮处理的白名单包含 `PFI_V022_STAGE0_PRE_CANONICAL_SYNC_20260628T090028` 等 6 个 PFI 预同步临时目录；不删除 `PFI.app`，不删除用户提供的 taskpack、roadmap、zip、md 源文件。
-

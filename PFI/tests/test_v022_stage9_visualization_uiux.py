@@ -83,20 +83,21 @@ class TestV022Stage9VisualizationUIUX(unittest.TestCase):
 
     def test_parameter_impact_preview_is_local_and_counts_records_tags_advice_and_charts(self) -> None:
         module = self._module()
+        context = module.load_stage9_real_visualization_context(ROOT)
         preview = module.calculate_parameter_impact_preview(
             parameter_key="confidence.review_threshold",
             old_value=70,
             new_value=75,
-            sample_counts={"review_records": 406, "tags": 48, "advice_items": 12, "charts": 9},
+            impact_counts=context["impact_counts"],
         )
 
         self.assertEqual(preview["schema"], "PFIV022Stage9ParameterImpactPreviewV1")
         self.assertFalse(preview["network_allowed"])
         self.assertEqual(preview["affected_records"], 406)
-        self.assertEqual(preview["affected_tags"], 48)
-        self.assertEqual(preview["affected_advice_items"], 12)
-        self.assertEqual(preview["affected_charts"], 9)
-        self.assertIn("修改阈值前显示可能影响的记录数、标签数、建议数、图表数", preview["explanation_zh"])
+        self.assertEqual(preview["affected_tags"], 56)
+        self.assertEqual(preview["affected_advice_items"], 0)
+        self.assertGreaterEqual(preview["affected_charts"], 4)
+        self.assertIn("真实 MetaDatabase", preview["explanation_zh"])
 
     def test_interconnection_map_mermaid_draws_full_source_to_ui_chain(self) -> None:
         module = self._module()
@@ -144,6 +145,9 @@ class TestV022Stage9VisualizationUIUX(unittest.TestCase):
             with self.subTest(module=module_item["title"]):
                 for field in required_status_fields:
                     self.assertIn(field, module_item["data_status"])
+                self.assertIn("8815", str(module_item["data_status"]["数据来源覆盖率"]))
+                self.assertIn("暂无真实 Interconnection 分组文件", str(module_item["data_status"]["是否存在未匹配记录"]))
+                self.assertIn("406", str(module_item["data_status"]["是否存在低置信记录"]))
 
     def test_cashflow_visualizations_cover_ladder_waterfall_safety_band_and_investment_squeeze(self) -> None:
         module = self._module()
@@ -158,6 +162,8 @@ class TestV022Stage9VisualizationUIUX(unittest.TestCase):
             self.assertIn(component, cashflow["waterfall_components"])
         self.assertEqual(tuple(cashflow["reserve_safety_band"]), ("绿色", "黄色", "红色"))
         self.assertIn("投资入金对生活现金和储备金的影响", cashflow["investment_squeeze_explanation_zh"])
+        self.assertIn("真实支付宝历史流水", cashflow["data_status_zh"])
+        self.assertEqual(str(cashflow["waterfall_values_cny"]["投资入金"]), "181677.93")
 
     def test_metric_drilldown_debugger_explains_included_excluded_adjusted_and_quality(self) -> None:
         module = self._module()
@@ -172,6 +178,10 @@ class TestV022Stage9VisualizationUIUX(unittest.TestCase):
             self.assertTrue(item["adjusted"])
             for quality in ("confidence", "match_rate", "last_updated", "compute_time_ms", "cache_status"):
                 self.assertIn(quality, item["quality"])
+            self.assertIsNone(item["quality"]["compute_time_ms"])
+            self.assertIn("本轮未测量，不显示模拟耗时", item["quality"]["compute_time_status_zh"])
+        self.assertEqual(str(debugger["metrics"]["本月消费"]["gross_consumption_cny"]), "1727278.37")
+        self.assertIn("暂无真实持仓快照", debugger["metrics"]["投资资产"]["data_status_zh"])
 
     def test_stage9_html_docs_and_parameters_are_recorded(self) -> None:
         expected_docs = (

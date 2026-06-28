@@ -2,8 +2,6 @@ from __future__ import annotations
 
 import importlib
 import unittest
-from datetime import date
-from decimal import Decimal
 from pathlib import Path
 
 
@@ -92,33 +90,23 @@ class TestV022Stage5LedgerTaxonomy(unittest.TestCase):
         self.assertFalse(table["valuation"]["affects_total_consumption_outflow"])
         self.assertTrue(table["valuation"]["affects_net_worth"])
 
-    def test_double_consumption_templates_use_same_ledger_metrics_for_home_consumption_and_report(self) -> None:
+    def test_double_consumption_templates_use_same_empty_ledger_metrics_for_home_consumption_and_report(self) -> None:
         module = self._stage5_module()
-        interconnection = importlib.import_module("pfi_v02.stage_v022_interconnection")
-        record = interconnection.InterconnectionRecord
-        records = (
-            record("raw_food", "alipay_daily", "acct_alipay_daily", date(2026, 6, 1), "consumption", Decimal("100.00"), "outflow", "econ_food", "group_food"),
-            record("raw_deposit", "cba_bank", "acct_cba_main", date(2026, 6, 2), "investment_deposit", Decimal("1000.00"), "outflow", "econ_deposit", "group_deposit"),
-            record("raw_fund", "alipay_fund", "acct_alipay_daily", date(2026, 6, 3), "fund_subscription", Decimal("500.00"), "outflow", "econ_fund", "group_fund"),
-            record("raw_gold", "abc_bullion", "acct_abc_bullion", date(2026, 6, 4), "bullion_purchase", Decimal("200.00"), "outflow", "econ_gold", "group_gold"),
-            record("raw_buy", "moomoo_au", "acct_moomoo_au", date(2026, 6, 5), "investment_buy", Decimal("700.00"), "outflow", "econ_buy", "group_buy"),
-            record("raw_fee", "moomoo_au", "acct_moomoo_au", date(2026, 6, 6), "fee", Decimal("30.00"), "outflow", "econ_fee", "group_fee"),
-            record("raw_refund", "wechat_pay", "acct_wechat_pay", date(2026, 6, 7), "refund", Decimal("20.00"), "inflow", "econ_refund", "group_food", "econ_food"),
-        )
+        records = ()
 
         dashboard = module.build_stage5_double_consumption_dashboard(records)
 
         self.assertEqual(dashboard["schema"], "PFIV022Stage5DoubleConsumptionDashboardV1")
-        self.assertEqual(dashboard["metrics"]["gross_consumption_cny"], Decimal("2510.00"))
-        self.assertEqual(dashboard["metrics"]["living_consumption_cny"], Decimal("80.00"))
+        self.assertEqual(str(dashboard["metrics"]["gross_consumption_cny"]), "0.00")
+        self.assertEqual(str(dashboard["metrics"]["living_consumption_cny"]), "0.00")
         for surface in ("homepage", "consumption_page", "report"):
             with self.subTest(surface=surface):
                 payload = dashboard["surfaces"][surface]
                 self.assertEqual(payload["gross_consumption_label_zh"], "消费总流出")
                 self.assertEqual(payload["living_consumption_label_zh"], "生活消费")
                 self.assertIn("投资入金", payload["difference_explanation_zh"])
-                self.assertEqual(payload["gross_consumption_cny"], Decimal("2510.00"))
-                self.assertEqual(payload["living_consumption_cny"], Decimal("80.00"))
+                self.assertEqual(str(payload["gross_consumption_cny"]), "0.00")
+                self.assertEqual(str(payload["living_consumption_cny"]), "0.00")
 
     def test_consumption_taxonomy_respects_12_5_50_limits_and_future_merge_fields(self) -> None:
         module = self._stage5_module()

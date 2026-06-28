@@ -2141,9 +2141,10 @@ button.is-pressed,
 @media (max-width: 780px) {
   .app-shell {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-rows: auto auto minmax(0, 1fr);
     grid-template-areas:
       "top"
+      "nav"
       "main";
     padding: 10px 10px 88px;
     overflow-x: hidden;
@@ -2201,7 +2202,34 @@ button.is-pressed,
   }
 
   .side-nav {
-    display: none;
+    grid-area: nav;
+    display: flex;
+    flex-direction: row;
+    align-self: start;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    height: 52px;
+    max-height: 52px;
+    margin: 0;
+    padding: 8px 0 2px;
+    border-right: 0;
+    border-bottom: 0;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .nav-item {
+    width: auto;
+    min-width: max-content;
+    min-height: 42px;
+    height: 42px;
+    flex: 0 0 auto;
+    padding: 0 13px;
+    text-align: center;
+    white-space: nowrap;
+    scroll-snap-align: start;
   }
 
   .workspace {

@@ -301,10 +301,12 @@
     <section id="overview">
       <h2>首页总览</h2>
       <div class="metric-row">
-        <div class="metric"><span>本月消费</span><strong>CNY 18,420</strong><span>含投资入金与基金申购的消费总流出口径</span></div>
-        <div class="metric"><span>投资资产</span><strong>CNY 126,800</strong><span>持仓市值、投资现金、基金和贵金属折算</span></div>
+        <div class="metric"><span>真实支付宝流水</span><strong>8815 条</strong><span>来自 MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv</span></div>
+        <div class="metric"><span>消费总流出</span><strong>CNY 1,727,278.37</strong><span>真实流水派生，含基金申购与黄金申购并扣除退款</span></div>
+        <div class="metric"><span>生活消费</span><strong>CNY 1,545,600.44</strong><span>真实普通消费扣除退款后的生活消费口径</span></div>
+        <div class="metric"><span>投资资产</span><strong>暂无真实持仓快照</strong><span>不展示伪造市值、收益或匹配率</span></div>
         <div class="metric"><span>现金流窗口</span><strong>7/21/30/60/90/180/360</strong><span>统一现金流阶梯图窗口</span></div>
-        <div class="metric"><span>待复核记录</span><strong>406</strong><span>低置信与未匹配 interconnection 进入队列</span></div>
+        <div class="metric"><span>待复核记录</span><strong>406</strong><span>真实标准化流水 review_state=NEEDS_REVIEW</span></div>
       </div>
       <div class="status-grid" data-status-for="首页总览"></div>
     </section>
@@ -345,12 +347,12 @@
             <tr><th>旧值</th><td>70</td></tr>
             <tr><th>新值</th><td>75</td></tr>
             <tr><th>可能影响记录数</th><td>406</td></tr>
-            <tr><th>可能影响标签数</th><td>48</td></tr>
-            <tr><th>可能影响建议数</th><td>12</td></tr>
-            <tr><th>可能影响图表数</th><td>9</td></tr>
+            <tr><th>可能影响标签数</th><td>默认标签 56 个</td></tr>
+            <tr><th>可能影响建议数</th><td>行动建议 0 条</td></tr>
+            <tr><th>可能影响图表数</th><td>7</td></tr>
           </tbody>
         </table>
-        <p class="small">该预览只读取本地 snapshot，不联网、不重算全量指标。</p>
+        <p class="small">该预览只读取真实 MetaDatabase、本地参数和本地 snapshot，不联网、不重算全量指标。</p>
       </section>
     </div>
 
@@ -358,10 +360,10 @@
       <h2>Interconnection Map</h2>
       <div class="map-wrap">
         <div class="flow" aria-label="可点击关系图">
-          <button class="node active" data-map-node="数据源">数据源<br><span class="small">支付宝、银行、券商、基金、贵金属、微信、手工快照</span></button>
+          <button class="node active" data-map-node="数据源">数据源<br><span class="small">当前真实来源为支付宝流水；其它来源保持合同层或真实空态</span></button>
           <button class="node" data-map-node="原始记录">原始记录<br><span class="small">raw import rows</span></button>
           <button class="node" data-map-node="标准化交易">标准化交易<br><span class="small">normalized transaction</span></button>
-          <button class="node" data-map-node="Interconnection group">Interconnection group<br><span class="small">去重、抵消、合并</span></button>
+          <button class="node" data-map-node="Interconnection group">Interconnection group<br><span class="small">暂无真实 Interconnection 分组文件</span></button>
           <button class="node" data-map-node="事件类型">事件类型<br><span class="small">消费、退款、投资入金、基金申购、转账</span></button>
           <button class="node" data-map-node="账本事件">账本事件<br><span class="small">ledger_event_hash</span></button>
           <button class="node" data-map-node="公式">公式<br><span class="small">消费总流出、生活消费、投资市值、现金流窗口</span></button>
@@ -438,44 +440,45 @@
         <div class="span-6">
           <h3>现金流阶梯图</h3>
           <div class="ladder" aria-label="现金流阶梯图">
-            <div class="bar"><span style="height: 136px"></span><b>7 天</b><small>CNY 21,800</small></div>
-            <div class="bar"><span style="height: 124px"></span><b>21 天</b><small>CNY 19,400</small></div>
-            <div class="bar"><span style="height: 116px"></span><b>30 天</b><small>CNY 18,100</small></div>
-            <div class="bar"><span style="height: 98px"></span><b>60 天</b><small>CNY 15,200</small></div>
-            <div class="bar"><span style="height: 90px"></span><b>90 天</b><small>CNY 14,000</small></div>
-            <div class="bar"><span style="height: 82px"></span><b>180 天</b><small>CNY 12,700</small></div>
-            <div class="bar"><span style="height: 76px"></span><b>360 天</b><small>CNY 11,800</small></div>
+            <div class="bar"><span style="height: 136px"></span><b>7 天</b><small>CNY 10,275,324.15</small></div>
+            <div class="bar"><span style="height: 136px"></span><b>21 天</b><small>CNY 10,275,324.15</small></div>
+            <div class="bar"><span style="height: 136px"></span><b>30 天</b><small>CNY 10,275,324.15</small></div>
+            <div class="bar"><span style="height: 136px"></span><b>60 天</b><small>CNY 10,275,324.15</small></div>
+            <div class="bar"><span style="height: 136px"></span><b>90 天</b><small>CNY 10,275,324.15</small></div>
+            <div class="bar"><span style="height: 136px"></span><b>180 天</b><small>CNY 10,275,324.15</small></div>
+            <div class="bar"><span style="height: 136px"></span><b>360 天</b><small>CNY 10,275,324.15</small></div>
           </div>
+          <p class="small">现金流图表使用真实支付宝历史流水派生输入；当前生活现金余额缺少真实账户快照，不展示伪造余额。</p>
         </div>
         <div class="span-6">
           <h3>现金流瀑布图</h3>
           <div class="waterfall">
-            <div class="waterfall-row"><span>当前现金</span><span class="waterfall-bar" style="width: 72%"></span><b>+21,800</b></div>
-            <div class="waterfall-row"><span>收入</span><span class="waterfall-bar" style="width: 64%"></span><b>+9,200</b></div>
-            <div class="waterfall-row"><span>退款</span><span class="waterfall-bar" style="width: 22%"></span><b>+880</b></div>
-            <div class="waterfall-row"><span>固定支出</span><span class="waterfall-bar out" style="width: 48%"></span><b>-5,600</b></div>
-            <div class="waterfall-row"><span>弹性支出</span><span class="waterfall-bar out" style="width: 36%"></span><b>-3,100</b></div>
-            <div class="waterfall-row"><span>信用卡</span><span class="waterfall-bar out" style="width: 30%"></span><b>-2,700</b></div>
-            <div class="waterfall-row"><span>投资入金</span><span class="waterfall-bar neutral" style="width: 40%"></span><b>-4,000</b></div>
-            <div class="waterfall-row"><span>投资回流</span><span class="waterfall-bar" style="width: 18%"></span><b>+1,200</b></div>
+            <div class="waterfall-row"><span>当前现金</span><span class="waterfall-bar neutral" style="width: 8%"></span><b>0.00</b></div>
+            <div class="waterfall-row"><span>收入</span><span class="waterfall-bar" style="width: 64%"></span><b>+1,784,461.01</b></div>
+            <div class="waterfall-row"><span>退款</span><span class="waterfall-bar" style="width: 22%"></span><b>+132,707.90</b></div>
+            <div class="waterfall-row"><span>固定支出</span><span class="waterfall-bar out" style="width: 28%"></span><b>-34,251.19</b></div>
+            <div class="waterfall-row"><span>弹性支出</span><span class="waterfall-bar out" style="width: 8%"></span><b>0.00</b></div>
+            <div class="waterfall-row"><span>信用卡</span><span class="waterfall-bar out" style="width: 8%"></span><b>0.00</b></div>
+            <div class="waterfall-row"><span>投资入金</span><span class="waterfall-bar neutral" style="width: 40%"></span><b>-181,677.93</b></div>
+            <div class="waterfall-row"><span>投资回流</span><span class="waterfall-bar" style="width: 72%"></span><b>+8,574,084.36</b></div>
           </div>
         </div>
         <div class="span-6">
           <h3>储备金安全带</h3>
           <div class="safety-band">
-            <div class="green"><b>绿色</b><br>生活现金高于储备金底线 120%，可维持计划投资。</div>
-            <div class="yellow"><b>黄色</b><br>生活现金位于 80%-120%，需要观察固定支出和信用卡压力。</div>
-            <div class="red"><b>红色</b><br>生活现金低于 80%，暂停新增投资入金建议。</div>
+            <div class="green"><b>绿色</b><br>储备覆盖率高于安全线时，现金流状态可显示为安全。</div>
+            <div class="yellow"><b>黄色</b><br>储备覆盖率接近安全线时，需要观察固定支出和投资入金压力。</div>
+            <div class="red"><b>红色</b><br>储备覆盖率低于安全线时，不给出新增投资入金行动建议。</div>
           </div>
         </div>
         <div class="span-6">
           <h3>投资入金挤压图</h3>
           <table>
             <tbody>
-              <tr><th>计划投资入金</th><td>CNY 4,000</td></tr>
-              <tr><th>入金后 30 天生活现金</th><td>CNY 18,100 -> CNY 14,100</td></tr>
-              <tr><th>储备金底线</th><td>CNY 15,000</td></tr>
-              <tr><th>挤压结论</th><td>进入黄色区间，建议先保留生活现金。</td></tr>
+              <tr><th>历史派生投资入金</th><td>CNY 181,677.93</td></tr>
+              <tr><th>30 天现金流窗口</th><td>CNY 10,275,324.15</td></tr>
+              <tr><th>储备金底线</th><td>CNY 102,753.57</td></tr>
+              <tr><th>挤压结论</th><td>基于真实支付宝历史流水未触发挤压；缺少真实账户余额时不伪造生活现金。</td></tr>
             </tbody>
           </table>
         </div>
@@ -496,7 +499,7 @@
           <p><b>纳入：</b>普通生活消费、投资入金、基金申购、黄金申购、投资买入、金融费用。</p>
           <p><b>排除：</b>内部转账、信用卡还款、投资卖出回流。</p>
           <p><b>调整：</b>退款抵消原消费。</p>
-          <p><b>质量：</b>置信度 ≥ 70 分；匹配率 94%；最后更新时间 2026-06-28 06:00；计算耗时 42ms；缓存状态 cached_snapshot。</p>
+          <p><b>质量：</b>待复核记录 406 条来自真实标准化流水；暂无真实 Interconnection 分组文件；最后更新时间 2026-06-28 06:00；本轮未测量，不显示模拟耗时；缓存状态 local_dependency_hash_snapshot。</p>
         </aside>
       </div>
       <div class="status-grid" data-status-for="Metric Drilldown Debugger"></div>
@@ -521,7 +524,7 @@
           <tbody>
             <tr><th>触发原因</th><td>业务语义变化、公式逻辑变化、分类冲突、标签冲突、跨板块不一致、测试无法解释。</td></tr>
             <tr><th>禁止事项</th><td>普通本地重算不得触发外部 LLM；ticket 必须中文且可执行。</td></tr>
-            <tr><th>当前样本</th><td>低置信 406 条；未匹配 interconnection 18 条。</td></tr>
+            <tr><th>当前真实状态</th><td>待复核记录 406 条；暂无真实 Interconnection 分组文件，不生成模拟未匹配数量。</td></tr>
           </tbody>
         </table>
         <div class="status-grid" data-status-for="Agent Review Queue"></div>
@@ -551,25 +554,25 @@
 
   <script>
     const statusTemplate = {
-      "数据来源覆盖率": "支付宝、银行、券商、基金、贵金属、微信和手工快照合同层已覆盖",
+      "数据来源覆盖率": "当前真实支付宝流水 8815 条，raw 文件 4 个；其它来源保持合同层或真实空态",
       "最近更新时间": "2026-06-28 06:00 Australia/Sydney",
-      "参数版本": "v0.2.2 / PFIParametersV022Stage9",
+      "参数版本": "v0.2.2 / PFIParametersV022Stage13",
       "公式版本": "Stage 7 formula/scoring",
       "汇率快照 ID": "fx_AUD_CNY_20260628",
       "ledger_hash": "ledger_events_hash",
       "interconnection_hash": "interconnection_hash",
-      "是否存在未匹配记录": "有，进入待复核队列",
-      "是否存在低置信记录": "有，低于 70 分进入复核",
-      "是否存在缓存": "有，本地 snapshot 缓存",
+      "是否存在未匹配记录": "暂无真实 Interconnection 分组文件，使用真实空态，不生成模拟分组",
+      "是否存在低置信记录": "待复核记录 406 条，来自真实标准化流水 review_state",
+      "是否存在缓存": "有，本地文件 hash snapshot",
       "是否需要重算": "由 Stage 8 Runtime Diff 判断",
       "UI 指标是否与报告一致": "必须一致；不一致时生成本地 Codex Review Ticket"
     };
 
     const mapDetails = {
-      "数据源": "数据源包含支付宝、银行、券商、基金、贵金属、微信和手工快照；上传中心保存 source profile 和 capability。",
+      "数据源": "当前真实数据源为 MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv，共 8815 条标准化流水。",
       "原始记录": "原始记录保留 raw row、source_id、account_id、导入批次和原始金额，不直接进入指标。",
       "标准化交易": "标准化交易统一方向、金额、币种、时间、账户角色和 source profile。",
-      "Interconnection group": "Interconnection group 负责去重、退款抵消、信用卡还款抵消和跨账户事件合并。",
+      "Interconnection group": "暂无真实 Interconnection 分组文件，当前只显示真实空态，不生成模拟未匹配数量。",
       "事件类型": "事件类型决定是否影响消费总流出、生活消费、投资、现金流和净资产。",
       "账本事件": "账本事件是指标事实层，含 ledger_hash、event_type、amount_cny、fx_snapshot_id。",
       "公式": "公式包括消费总流出、生活消费、投资市值、现金流窗口、储备金安全线和投资入金挤压。",
@@ -585,19 +588,19 @@
         "纳入": "普通生活消费、投资入金、基金申购、黄金申购、投资买入、金融费用。",
         "排除": "内部转账、信用卡还款、投资卖出回流。",
         "调整": "退款抵消原消费。",
-        "质量": "置信度 ≥ 70 分；匹配率 94%；最后更新时间 2026-06-28 06:00；计算耗时 42ms；缓存状态 cached_snapshot。"
+        "质量": "待复核记录 406 条来自真实标准化流水；暂无真实 Interconnection 分组文件；最后更新时间 2026-06-28 06:00；本轮未测量，不显示模拟耗时；缓存状态 local_dependency_hash_snapshot。"
       },
       "投资资产": {
         "纳入": "投资现金、持仓市值、基金资产、贵金属资产。",
         "排除": "生活现金、普通消费、信用卡还款。",
         "调整": "汇率快照折算、费用和税费。",
-        "质量": "置信度 ≥ 70 分；匹配率 91%；最后更新时间 2026-06-28 06:00；计算耗时 38ms；缓存状态 cached_snapshot。"
+        "质量": "暂无真实持仓快照或可确认卖出交易；不展示模拟市值、模拟收益或模拟匹配率；本轮未测量，不显示模拟耗时。"
       },
       "现金流窗口": {
         "纳入": "预计收入、预计退款、固定支出、弹性支出、信用卡、投资入金、投资回流。",
         "排除": "内部账户调拨重复项。",
         "调整": "储备金安全线、投资入金挤压生活现金。",
-        "质量": "置信度 ≥ 70 分；匹配率 89%；最后更新时间 2026-06-28 06:00；计算耗时 44ms；缓存状态 cached_snapshot。"
+        "质量": "现金流图表使用真实支付宝历史流水派生输入；当前生活现金余额缺少真实账户快照；本轮未测量，不显示模拟耗时。"
       }
     };
 

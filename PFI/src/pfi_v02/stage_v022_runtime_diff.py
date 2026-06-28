@@ -2,9 +2,17 @@ from __future__ import annotations
 
 import hashlib
 import json
+import csv
 from datetime import date, datetime
 from decimal import Decimal
+from pathlib import Path
 from typing import Mapping
+
+from pfi_v02.stage_v022_ledger_taxonomy import (
+    build_stage5_consumption_taxonomy,
+    build_stage5_ledger_event_type_table,
+)
+from pfi_v02.stage_v022_tags_views import build_stage6_default_tag_library, build_stage6_tag_rules
 
 
 STAGE8_DEPENDENCY_HASH_KEYS = (
@@ -28,6 +36,13 @@ _INPUT_TO_HASH_KEY = {
     "tags": "tag_hash",
     "fx_snapshot": "fx_snapshot_hash",
 }
+
+STAGE8_ALIPAY_RAW_ROOT = "MetaDatabase/PFI/alipay_daily/raw"
+STAGE8_ALIPAY_TRANSACTION_SOURCE = "MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv"
+STAGE8_FX_SNAPSHOT_SOURCE = "PFI/data/fx_snapshots/AUD_CNY/2026-06-28.json"
+STAGE8_PARAMETER_SOURCE = "PFI/config/pfi_parameters.yaml"
+STAGE8_LEDGER_STANDARD_SOURCE = "PFI/docs/pfi_v02/LEDGER_CLASSIFICATION_STANDARD.md"
+STAGE8_INTERCONNECTION_EMPTY_STATE_ZH = "暂无真实 Interconnection 分组文件，使用真实空态，不生成模拟分组。"
 
 STAGE8_P0_CORE_METRICS = (
     "净资产",
@@ -143,6 +158,171 @@ def _json_default(value: object) -> str:
 def stable_json_hash(payload: object) -> str:
     encoded = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"), default=_json_default)
     return hashlib.sha256(encoded.encode("utf-8")).hexdigest()
+
+
+def _resolve_stage8_roots(project_root: str | Path | None = None) -> tuple[Path, Path]:
+    root = Path(project_root).expanduser().resolve() if project_root is not None else Path(__file__).resolve().parents[2]
+    if root.name == "PFI":
+        return root, root.parent
+    if (root / "PFI").is_dir() and (root / "MetaDatabase").is_dir():
+        return root / "PFI", root
+    return root, root.parent
+
+
+def _repo_relative(path: Path, repo_root: Path) -> str:
+    try:
+        return str(path.resolve().relative_to(repo_root.resolve()))
+    except ValueError:
+        return str(path.resolve())
+
+
+def _sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as file_obj:
+        for chunk in iter(lambda: file_obj.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _file_payload(path: Path, repo_root: Path, *, parse_json: bool = False) -> dict[str, object]:
+    payload: dict[str, object] = {
+        "path": _repo_relative(path, repo_root),
+        "exists": path.exists(),
+    }
+    if not path.exists():
+        payload["state_zh"] = "文件不存在，保持真实空态，不生成替代数据。"
+        return payload
+
+    payload.update(
+        {
+            "sha256": _sha256_file(path),
+            "size_bytes": path.stat().st_size,
+        }
+    )
+    if parse_json:
+        payload["content"] = json.loads(path.read_text(encoding="utf-8"))
+    return payload
+
+
+def _read_csv_rows(path: Path) -> list[dict[str, str]]:
+    if not path.exists():
+        return []
+    with path.open(encoding="utf-8-sig", newline="") as file_obj:
+        return [dict(row) for row in csv.DictReader(file_obj)]
+
+
+def _stage8_money(value: object) -> str:
+    return str(Decimal(str(value or "0")).copy_abs().quantize(Decimal("0.01")))
+
+
+def _stage8_event_type(raw_event_type: str, amount: Decimal, description: str) -> str:
+    normalized = raw_event_type.strip().upper()
+    if normalized == "CASH" and amount < 0:
+        return "ordinary_consumption"
+    if normalized == "CASH" and amount >= 0:
+        return "cash_inflow"
+    if normalized == "FUND" and amount < 0:
+        return "fund_subscription"
+    if normalized == "FUND" and amount >= 0:
+        return "investment_return"
+    if normalized == "BUY_ASSET" and amount < 0:
+        return "bullion_purchase" if "黄金" in description else "investment_buy"
+    if normalized == "REFUND":
+        return "refund"
+    if normalized == "TRANSFER":
+        return "internal_transfer"
+    return "unclassified_real_event"
+
+
+def _ledger_events_from_transactions(rows: list[dict[str, str]]) -> list[dict[str, object]]:
+    events: list[dict[str, object]] = []
+    for index, row in enumerate(rows, 1):
+        amount = Decimal(str(row.get("amount") or "0"))
+        description = str(row.get("description") or "").strip()
+        transaction_id = str(row.get("transaction_id") or "").strip()
+        raw_id = str(row.get("raw_id") or "").strip()
+        if not transaction_id:
+            continue
+        events.append(
+            {
+                "ledger_event_id": f"ledger:{transaction_id}",
+                "transaction_id": transaction_id,
+                "source_record_id": raw_id or transaction_id,
+                "source_id": str(row.get("source_id") or "alipay_daily").strip(),
+                "account_id": str(row.get("account_id") or "acct_alipay").strip(),
+                "event_type": _stage8_event_type(str(row.get("event_type") or ""), amount, description),
+                "amount_cny": _stage8_money(amount),
+                "signed_amount_cny": str(amount.quantize(Decimal("0.01"))),
+                "direction": "inflow" if amount >= 0 else "outflow",
+                "currency": str(row.get("currency") or "CNY").strip(),
+                "occurred_at": str(row.get("occurred_at") or "").strip(),
+                "description_hash": hashlib.sha256(description.encode("utf-8")).hexdigest(),
+                "review_state": str(row.get("review_state") or "").strip(),
+                "row_number": index,
+                "real_data_source": STAGE8_ALIPAY_TRANSACTION_SOURCE,
+            }
+        )
+    return events
+
+
+def load_stage8_runtime_diff_inputs_from_canonical_sources(
+    project_root: str | Path | None = None,
+) -> dict[str, object]:
+    """Load Stage 8 diff dependencies from canonical real local sources only."""
+    pfi_root, repo_root = _resolve_stage8_roots(project_root)
+    raw_root = repo_root / STAGE8_ALIPAY_RAW_ROOT
+    transactions_path = repo_root / STAGE8_ALIPAY_TRANSACTION_SOURCE
+    parameter_path = repo_root / STAGE8_PARAMETER_SOURCE
+    ledger_standard_path = repo_root / STAGE8_LEDGER_STANDARD_SOURCE
+    fx_snapshot_path = repo_root / STAGE8_FX_SNAPSHOT_SOURCE
+
+    raw_files = [_file_payload(path, repo_root) for path in sorted(raw_root.glob("*.csv"))]
+    normalized_transactions = _read_csv_rows(transactions_path)
+    ledger_events = _ledger_events_from_transactions(normalized_transactions)
+    parameters = _file_payload(parameter_path, repo_root, parse_json=True)
+    categories = {
+        "schema": "PFIV022Stage8CategoryInputsV1",
+        "standard_document": _file_payload(ledger_standard_path, repo_root),
+        "ledger_event_type_table": build_stage5_ledger_event_type_table(),
+        "consumption_taxonomy": build_stage5_consumption_taxonomy(),
+    }
+    tags = {
+        "schema": "PFIV022Stage8TagInputsV1",
+        "default_tag_library": build_stage6_default_tag_library(),
+        "tag_rules": build_stage6_tag_rules(),
+    }
+    fx_snapshot = _file_payload(fx_snapshot_path, repo_root, parse_json=True)
+
+    inputs = {
+        "raw_data": raw_files,
+        "normalized_transactions": normalized_transactions,
+        "ledger_events": ledger_events,
+        "interconnection": [],
+        "parameters": parameters,
+        "categories": categories,
+        "tags": tags,
+        "fx_snapshot": fx_snapshot,
+    }
+    return {
+        "schema": "PFIV022Stage8CanonicalRuntimeDiffInputsV1",
+        "inputs": inputs,
+        "source_summary": {
+            "pfi_root": _repo_relative(pfi_root, repo_root),
+            "raw_data_root": STAGE8_ALIPAY_RAW_ROOT,
+            "raw_file_count": len(raw_files),
+            "normalized_transactions_path": STAGE8_ALIPAY_TRANSACTION_SOURCE,
+            "normalized_transaction_count": len(normalized_transactions),
+            "ledger_event_count": len(ledger_events),
+            "interconnection_count": 0,
+            "interconnection_state_zh": STAGE8_INTERCONNECTION_EMPTY_STATE_ZH,
+            "parameter_source": STAGE8_PARAMETER_SOURCE,
+            "category_source": STAGE8_LEDGER_STANDARD_SOURCE,
+            "tag_source": "PFI/src/pfi_v02/stage_v022_tags_views.py",
+            "fx_snapshot_source": STAGE8_FX_SNAPSHOT_SOURCE,
+            "network_allowed": False,
+            "data_boundary_zh": "Stage 8 只读取 MetaDatabase 与 PFI 本地配置/合同文件；缺失来源保持中文真实空态，不生成测试、样例或模拟数据。",
+        },
+    }
 
 
 def build_dependency_hash_snapshot(inputs: Mapping[str, object], *, run_id: str) -> dict[str, object]:

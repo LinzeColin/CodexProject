@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 import importlib
 import unittest
 from pathlib import Path
@@ -15,17 +16,14 @@ class TestV022Stage8RuntimeDiff(unittest.TestCase):
         except ModuleNotFoundError as exc:
             self.fail(f"Stage 8 runtime diff module is missing: {exc}")
 
-    def _sample_inputs(self) -> dict[str, object]:
-        return {
-            "raw_data": [{"source": "alipay", "source_record_id": "a-1", "amount": "100.00"}],
-            "normalized_transactions": [{"transaction_id": "t-1", "amount_cny": "100.00", "event_type": "consumption"}],
-            "ledger_events": [{"ledger_event_id": "l-1", "amount_cny": "100.00", "event_type": "consumption"}],
-            "interconnection": [{"interconnection_group_id": "g-1", "economic_event_id": "e-1"}],
-            "parameters": {"large_spend_cny": 2000, "review_threshold": 70},
-            "categories": [{"category_id": "food", "category_name_zh": "餐饮"}],
-            "tags": [{"tag_id": "night", "display_name_zh": "夜间消费", "rule_version": 1}],
-            "fx_snapshot": {"pair": "AUD/CNY", "effective_date": "2026-06-28", "rate": "4.6874"},
-        }
+    def _real_inputs(self) -> dict[str, object]:
+        module = self._module()
+        loaded = module.load_stage8_runtime_diff_inputs_from_canonical_sources(ROOT)
+        summary = loaded["source_summary"]
+        self.assertGreaterEqual(summary["raw_file_count"], 4)
+        self.assertGreaterEqual(summary["normalized_transaction_count"], 8000)
+        self.assertEqual(summary["interconnection_state_zh"], module.STAGE8_INTERCONNECTION_EMPTY_STATE_ZH)
+        return copy.deepcopy(loaded["inputs"])
 
     def test_stage8_contract_locks_phase_task_acceptance_and_validation(self) -> None:
         governance = importlib.import_module("pfi_v02.stage_v022_database_governance")
@@ -63,8 +61,9 @@ class TestV022Stage8RuntimeDiff(unittest.TestCase):
 
     def test_dependency_hash_snapshot_is_stable_and_covers_all_required_dependencies(self) -> None:
         module = self._module()
-        snapshot = module.build_dependency_hash_snapshot(self._sample_inputs(), run_id="stage8-test")
-        repeat = module.build_dependency_hash_snapshot(self._sample_inputs(), run_id="stage8-test-repeat")
+        inputs = self._real_inputs()
+        snapshot = module.build_dependency_hash_snapshot(inputs, run_id="stage8-test")
+        repeat = module.build_dependency_hash_snapshot(inputs, run_id="stage8-test-repeat")
 
         self.assertEqual(snapshot["schema"], "PFIV022RuntimeDiffSnapshotV1")
         self.assertEqual(tuple(snapshot["dependency_hashes"].keys()), module.STAGE8_DEPENDENCY_HASH_KEYS)
@@ -73,8 +72,13 @@ class TestV022Stage8RuntimeDiff(unittest.TestCase):
         self.assertEqual(snapshot["dependency_hashes"], repeat["dependency_hashes"])
         self.assertEqual(snapshot["run_hash"], repeat["run_hash"])
 
-        changed_inputs = self._sample_inputs()
-        changed_inputs["tags"] = [{"tag_id": "night", "display_name_zh": "深夜消费", "rule_version": 1}]
+        changed_inputs = self._real_inputs()
+        changed_tags = copy.deepcopy(changed_inputs["tags"])
+        changed_tags["default_tag_library"] = (
+            {**changed_tags["default_tag_library"][0], "label_zh": "计划内复核"},
+            *changed_tags["default_tag_library"][1:],
+        )
+        changed_inputs["tags"] = changed_tags
         changed = module.build_dependency_hash_snapshot(changed_inputs, run_id="stage8-test-changed")
         diff = module.compare_dependency_snapshots(snapshot, changed)
 
@@ -84,7 +88,7 @@ class TestV022Stage8RuntimeDiff(unittest.TestCase):
 
     def test_no_diff_never_triggers_network_llm_or_codex_ticket(self) -> None:
         module = self._module()
-        snapshot = module.build_dependency_hash_snapshot(self._sample_inputs(), run_id="same")
+        snapshot = module.build_dependency_hash_snapshot(self._real_inputs(), run_id="same")
         diff = module.compare_dependency_snapshots(snapshot, snapshot)
         report = module.build_impacted_metrics_report(diff)
 
@@ -98,9 +102,15 @@ class TestV022Stage8RuntimeDiff(unittest.TestCase):
 
     def test_tag_display_name_diff_does_not_pollute_core_financial_metrics(self) -> None:
         module = self._module()
-        before = module.build_dependency_hash_snapshot(self._sample_inputs(), run_id="before")
-        changed_inputs = self._sample_inputs()
-        changed_inputs["tags"] = [{"tag_id": "night", "display_name_zh": "深夜消费", "rule_version": 1}]
+        inputs = self._real_inputs()
+        before = module.build_dependency_hash_snapshot(inputs, run_id="before")
+        changed_inputs = self._real_inputs()
+        changed_tags = copy.deepcopy(changed_inputs["tags"])
+        changed_tags["default_tag_library"] = (
+            {**changed_tags["default_tag_library"][0], "label_zh": "计划内复核"},
+            *changed_tags["default_tag_library"][1:],
+        )
+        changed_inputs["tags"] = changed_tags
         after = module.build_dependency_hash_snapshot(changed_inputs, run_id="after")
         diff = module.compare_dependency_snapshots(before, after)
         report = module.build_impacted_metrics_report(diff)
@@ -159,9 +169,14 @@ class TestV022Stage8RuntimeDiff(unittest.TestCase):
 
     def test_codex_review_ticket_template_is_chinese_actionable_and_local_only(self) -> None:
         module = self._module()
-        before = module.build_dependency_hash_snapshot(self._sample_inputs(), run_id="before")
-        changed_inputs = self._sample_inputs()
-        changed_inputs["categories"] = [{"category_id": "food", "category_name_zh": "餐饮与外卖"}]
+        before = module.build_dependency_hash_snapshot(self._real_inputs(), run_id="before")
+        changed_inputs = self._real_inputs()
+        changed_categories = copy.deepcopy(changed_inputs["categories"])
+        changed_categories["consumption_taxonomy"] = (
+            {**changed_categories["consumption_taxonomy"][0], "review_label_zh": "餐饮食品复核"},
+            *changed_categories["consumption_taxonomy"][1:],
+        )
+        changed_inputs["categories"] = changed_categories
         after = module.build_dependency_hash_snapshot(changed_inputs, run_id="after")
         diff = module.compare_dependency_snapshots(before, after)
         report = module.build_impacted_metrics_report(diff, trigger_reason="分类冲突")

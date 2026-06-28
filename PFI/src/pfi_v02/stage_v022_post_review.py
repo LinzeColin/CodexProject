@@ -23,7 +23,8 @@ STAGE13_REVIEW_SCOPE_FILES = (
     "PFI/review_queue/codex_review_stage13_owner_specified_20260628.md",
     "PFI/docs/pfi_v022/STAGE13_POST_REVIEW.md",
     "PFI/docs/pfi_v022/DOWNLOADS_CLEANUP_STAGE13.md",
-    "PFI/reports/pfi_v022_summary.md",
+    "PFI/docs/pfi_v022/reviews/STAGE13_REVIEW_20260629.md",
+    "PFI/reports/pfi_v022_stage13_review_summary.md",
     "PFI/开发记录.md",
 )
 
@@ -52,7 +53,7 @@ def build_stage13_post_review_payload(catalog: Mapping[str, object] | None = Non
         "network_allowed": False,
         "external_llm_allowed": False,
         "review_focus": (
-            "Stage 7-12 参数、公式、阈值、双消费口径、Runtime Diff、Stage 12 交付物和 Downloads 清理记录。",
+            "Stage 13 当前复审边界、Stage 12 摘要隔离、Downloads 清理记录和下一轮整体项目复审准备。",
         ),
     }
     review_result = {
@@ -61,27 +62,38 @@ def build_stage13_post_review_payload(catalog: Mapping[str, object] | None = Non
             {
                 "issue": "交付前人工指定触发 Stage 13；需确认不做全仓无差别扫描。",
                 "fix": "Review Ticket 只列出 Stage 13 相关 PFI scope files。",
-                "validation": "合同测试检查 full_repo_scan_allowed=false，network_allowed=false。",
-                "remaining_risk": "无阻塞；用户可人工复核最终摘要。",
+                "validation": "合同测试检查 full_repo_scan_allowed=false，network_allowed=false，external_llm_allowed=false。",
+                "remaining_risk": "无阻塞；整体项目复审解决、GitHub 同步和 app 入口重装不在本轮执行。",
                 "status": "已修复",
             },
             {
                 "issue": "Downloads 存在 PFI 预同步临时目录。",
                 "fix": "归档为 repo-scoped tar.gz 后移出 Downloads。",
-                "validation": "测试扫描候选目录不再位于 Downloads，taskpack 源文件和 PFI.app 保留。",
-                "remaining_risk": "归档只覆盖明确 PFI_V022_STAGE*_PRE_CANONICAL_SYNC_* 临时目录。",
+                "validation": "测试扫描候选目录不再位于 Downloads，PFI.app 仍存在，manifest 保留 taskpack/roadmap/zip/md 来源名。",
+                "remaining_risk": "归档只覆盖明确 PFI_V022_STAGE*_PRE_CANONICAL_SYNC_* 临时目录；未在本轮恢复或制造 Downloads 源文件。",
+                "status": "已修复",
+            },
+            {
+                "issue": "旧 Stage 13 验收把 Stage 13 内容写入 Stage 12 最终摘要，污染单 Stage 交付边界。",
+                "fix": "新增独立 Stage 13 复审摘要，不再把 Stage 13 marker 写入 PFI/reports/pfi_v022_summary.md。",
+                "validation": "复审测试验证 Stage 12 摘要不含 S13-P1-*，Stage 13 摘要单独存在。",
+                "remaining_risk": "无阻塞；整体项目复审摘要将在第二阶段另行生成。",
                 "status": "已修复",
             },
         ),
         "blocking_issue_count": 0,
     }
     return {
-        "schema": "PFIV022Stage13PostReviewPayloadV1",
+        "schema": "PFIV022Stage13PostReviewPayloadV2",
         "catalog_schema": catalog_schema,
         "trigger_condition": STAGE13_OWNER_TRIGGER,
         "allowed_trigger_conditions": STAGE13_TRIGGER_CONDITIONS,
         "ticket": ticket,
         "review_result": review_result,
+        "stage13_review_summary": {
+            "path": "PFI/reports/pfi_v022_stage13_review_summary.md",
+            "purpose": "只记录本轮 Stage 13 复审摘要，避免污染 Stage 12 最终摘要。",
+        },
         "downloads_cleanup": {
             "archive": "PFI/docs/pfi_v022/downloads_cleanup/PFI_V022_PRE_CANONICAL_SYNC_ARCHIVE_20260628.tar.gz",
             "manifest": "PFI/docs/pfi_v022/DOWNLOADS_CLEANUP_STAGE13.md",
@@ -92,7 +104,12 @@ def build_stage13_post_review_payload(catalog: Mapping[str, object] | None = Non
                 "PFI_v0.2.2_Stage_Phase_Task_Roadmap_zh.md",
                 "PFI_v0.2.2_E2E_logic_optimization_package.zip",
             ),
+            "downloads_app_entry_required": "PFI.app",
         },
         "stage13_hash": _stable_hash((catalog_schema, ticket, review_result, STAGE13_DOWNLOADS_CLEANUP_CANDIDATES)),
-        "stage13_ready_for_goal_closeout": True,
+        "stage13_ready_for_overall_review": True,
+        "stage13_ready_for_goal_closeout": False,
+        "overall_project_review_deferred": True,
+        "github_sync_deferred": True,
+        "app_entry_reinstall_deferred": True,
     }

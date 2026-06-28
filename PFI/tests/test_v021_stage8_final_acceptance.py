@@ -124,23 +124,23 @@ class V021Stage8FinalAcceptanceTest(unittest.TestCase):
             self.assertNotIn(forbidden, visible_surface)
         self.assertIn("不执行实盘自动下单", visible_surface)
 
-    def test_macos_app_entry_renders_web_shell_before_native_upload_panel_without_nested_expander(self) -> None:
+    def test_macos_app_entry_renders_web_shell_without_bottom_native_upload_patch(self) -> None:
         start = self.app_source.index("def render_pfi_ui_v2_shell()")
         end = self.app_source.index("def main()", start)
         body = self.app_source[start:end]
 
-        web_shell_index = body.index("_render_html_frame(_pfi_web_shell_html(home_summary)")
-        upload_panel_index = body.index("render_pfi_local_data_upload_panel()")
-
-        self.assertLess(web_shell_index, upload_panel_index)
+        self.assertIn("_render_html_frame(_pfi_web_shell_html(home_summary)", body)
+        self.assertNotIn("render_pfi_local_data_upload_panel()", body)
         self.assertNotIn('st.expander("本机真实上传与支付宝账本"', body)
-        self.assertIn("本机真实上传与支付宝账本", body)
+        self.assertNotIn("本机真实上传与支付宝账本", body)
         self.assertIn("height=1120", body)
 
-        upload_start = self.app_source.index("def render_pfi_local_data_upload_panel()")
-        upload_end = self.app_source.index("def _load_existing_alipay_import_manifest()", upload_start)
-        upload_body = self.app_source[upload_start:upload_end]
-        self.assertNotIn("st.expander(", upload_body)
+        data_tools_start = self.app_source.index("def data_tools_view()")
+        data_tools_end = self.app_source.index("def english_name_from_chinese", data_tools_start)
+        data_tools_body = self.app_source[data_tools_start:data_tools_end]
+        self.assertNotIn("render_pfi_local_data_upload_panel()", data_tools_body)
+        self.assertNotIn("PFI 本机数据上传", data_tools_body)
+        self.assertIn("data-upload-import-panel", self.html)
         self.assertNotIn('page_icon="PFI"', self.app_source)
 
 

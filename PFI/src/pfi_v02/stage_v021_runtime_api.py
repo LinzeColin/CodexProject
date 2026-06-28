@@ -1,14 +1,19 @@
 from __future__ import annotations
 
+import base64
+import csv
 import json
 import os
 import threading
 from dataclasses import replace
+from datetime import date, timedelta
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
 
+from pfi_os.application.operational_store import default_data_home
+from pfi_v02.local_imports import write_private_alipay_import
 from pfi_v02.stage_v021_holdings_persistence import (
     V021HoldingsPersistenceService,
     V021HoldingSnapshot,
@@ -91,6 +96,7 @@ def save_v021_holdings_payload(payload: dict[str, Any], *, db_path: Path | str |
 def build_v021_operational_read_model(*, db_path: Path | str | None = None) -> dict[str, Any]:
     service = V021HoldingsPersistenceService(db_path)
     snapshots = service.list_snapshots()
+    consumption = _real_alipay_consumption_model()
     investment_value = round(sum(_snapshot_market_value_cny(item) for item in snapshots), 2)
     investment_cost = round(sum(_snapshot_cost_cny(item) for item in snapshots), 2)
     unrealized_pnl = round(investment_value - investment_cost, 2)
@@ -117,10 +123,7 @@ def build_v021_operational_read_model(*, db_path: Path | str | None = None) -> d
             "holding_count": len(snapshots),
             "adjustment_count": adjustment_count,
         },
-        "consumption": {
-            "has_real_transactions": False,
-            "empty_state": "消费趋势需要先导入真实流水，当前不伪造支出或预算。",
-        },
+        "consumption": consumption,
     }
 
 
@@ -167,25 +170,46 @@ def build_v021_operational_trends(*, db_path: Path | str | None = None) -> dict[
                     _series("cash_position_cny", "现金仓位", "--pfi-red", [cash_position, cash_position] if has_holdings else []),
                 ],
             },
-            "consumption": {
-                "scope": "消费管理",
-                "title": "本月支出、预算剩余、固定/弹性支出与现金流预测",
-                "unit": "CNY",
-                "source": "SQLite 运行读模型",
-                "emptyState": model["consumption"]["empty_state"],
-                "periods": [],
-                "series": [
-                    _series("month_spend_cny", "本月支出", "--pfi-blue", []),
-                    _series("budget_remaining_cny", "预算剩余", "--pfi-teal", []),
-                    _series("fixed_spend_cny", "固定支出", "--pfi-amber", []),
-                    _series("flex_spend_cny", "弹性支出", "--pfi-red", []),
-                    _series("cashflow_forecast_cny", "现金流预测", "--pfi-blue", []),
-                ],
-            },
+            "consumption": _consumption_trend_from_real_alipay(model["consumption"]),
         },
     }
     payload.update(payload["trends"])
     return payload
+
+
+def import_v021_alipay_payloads(
+    payload: dict[str, Any],
+    *,
+    data_home: Path | str | None = None,
+    metadatabase_root: Path | str | None = None,
+) -> dict[str, Any]:
+    files = payload.get("files") if isinstance(payload, dict) else None
+    if not isinstance(files, list) or not files:
+        raise ValueError("files must contain uploaded real Alipay files")
+
+    decoded_payloads: list[tuple[str, bytes]] = []
+    for item in files:
+        if not isinstance(item, dict):
+            raise ValueError("each uploaded file must be an object")
+        name = _clean(item.get("name") or item.get("fileName") or "")
+        if not name:
+            raise ValueError("uploaded file name is required")
+        encoded = _clean(item.get("contentBase64") or item.get("base64") or "")
+        if "," in encoded and encoded.lower().startswith("data:"):
+            encoded = encoded.split(",", 1)[1]
+        if not encoded:
+            raise ValueError(f"{name} has no uploaded file content")
+        try:
+            content = base64.b64decode(encoded, validate=True)
+        except ValueError as exc:
+            raise ValueError(f"{name} is not valid base64") from exc
+        if not content:
+            raise ValueError(f"{name} is empty")
+        decoded_payloads.append((name, content))
+
+    resolved_data_home = Path(data_home).expanduser() if data_home is not None else default_data_home()
+    resolved_metadatabase = Path(metadatabase_root).expanduser() if metadatabase_root is not None else _default_alipay_metadatabase_root()
+    return write_private_alipay_import(tuple(decoded_payloads), resolved_data_home, metadatabase_root=resolved_metadatabase)
 
 
 def ensure_v021_runtime_api_server(
@@ -238,6 +262,9 @@ def _handler_factory(db_path: Path | str | None):
                 payload = self._read_json()
                 if path == "/api/holdings":
                     self._send_json(save_v021_holdings_payload(payload, db_path=db_path))
+                    return
+                if path == "/api/imports/alipay":
+                    self._send_json(import_v021_alipay_payloads(payload))
                     return
                 self._send_json({"error": "not_found", "message": "未找到接口"}, status=404)
             except Exception as exc:  # pragma: no cover - exercised through browser runtime
@@ -337,6 +364,144 @@ def _cash_position_from_snapshots(snapshots: list[V021HoldingSnapshot]) -> float
         if cash_value is not None:
             total += _non_negative(cash_value)
     return round(total, 2)
+
+
+def _real_alipay_consumption_model() -> dict[str, Any]:
+    transactions_path = _alipay_transactions_path()
+    manifest_path = _alipay_manifest_path()
+    if not transactions_path.exists():
+        return {
+            "has_real_transactions": False,
+            "empty_state": "消费趋势需要先导入真实流水，当前不伪造支出或预算。",
+        }
+
+    rows = _read_alipay_transaction_rows(transactions_path)
+    spending_rows = [row for row in rows if row.get("event_type") == "CASH" and _signed_float(row.get("amount")) < 0]
+    if not rows or not spending_rows:
+        return {
+            "has_real_transactions": False,
+            "empty_state": "已读取真实流水，但没有可计入消费支出的现金流出。",
+            "source": "MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv",
+            "transaction_count": len(rows),
+        }
+
+    dated_spending = [
+        (_parse_iso_date(row.get("occurred_at")), abs(_signed_float(row.get("amount"))))
+        for row in spending_rows
+    ]
+    dated_spending = [(item_date, amount) for item_date, amount in dated_spending if item_date is not None]
+    latest_date = max(item_date for item_date, _amount in dated_spending)
+    latest_month = latest_date.strftime("%Y-%m")
+    latest_month_spend = round(sum(amount for item_date, amount in dated_spending if item_date.strftime("%Y-%m") == latest_month), 2)
+    rolling_start = latest_date - timedelta(days=29)
+    rolling_30_spend = round(sum(amount for item_date, amount in dated_spending if rolling_start <= item_date <= latest_date), 2)
+    review_count = _manifest_review_count(manifest_path)
+    if review_count is None:
+        review_count = sum(1 for row in rows if str(row.get("review_state") or "").upper() != "ACCEPTED")
+
+    return {
+        "has_real_transactions": True,
+        "source": "MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv",
+        "transaction_count": len(rows),
+        "spending_transaction_count": len(spending_rows),
+        "review_count": int(review_count),
+        "latest_month": latest_month,
+        "latest_date": latest_date.isoformat(),
+        "month_spend_cny": latest_month_spend,
+        "budget_remaining_cny": 0.0,
+        "fixed_spend_cny": 0.0,
+        "flex_spend_cny": latest_month_spend,
+        "cashflow_forecast_cny": rolling_30_spend,
+        "fixed_flex_policy": "未配置固定支出规则；全部真实消费流出暂列弹性支出。",
+        "empty_state": "",
+    }
+
+
+def _consumption_trend_from_real_alipay(consumption: dict[str, Any]) -> dict[str, Any]:
+    if not consumption.get("has_real_transactions"):
+        return {
+            "scope": "消费管理",
+            "title": "本月支出、预算剩余、固定/弹性支出与现金流预测",
+            "unit": "CNY",
+            "source": "MetaDatabase 真实支付宝流水",
+            "emptyState": consumption.get("empty_state") or "消费趋势需要先导入真实流水，当前不伪造支出或预算。",
+            "periods": [],
+            "series": [
+                _series("month_spend_cny", "本月支出", "--pfi-blue", []),
+                _series("budget_remaining_cny", "预算剩余", "--pfi-teal", []),
+                _series("fixed_spend_cny", "固定支出", "--pfi-amber", []),
+                _series("flex_spend_cny", "弹性支出", "--pfi-red", []),
+                _series("cashflow_forecast_cny", "现金流预测", "--pfi-blue", []),
+            ],
+        }
+
+    rolling_30 = float(consumption.get("cashflow_forecast_cny") or 0)
+    month_spend = float(consumption.get("month_spend_cny") or 0)
+    fixed_spend = float(consumption.get("fixed_spend_cny") or 0)
+    flex_spend = float(consumption.get("flex_spend_cny") or 0)
+    budget_remaining = float(consumption.get("budget_remaining_cny") or 0)
+    return {
+        "scope": "消费管理",
+        "title": "本月支出、预算剩余、固定/弹性支出与现金流预测",
+        "unit": "CNY",
+        "source": "MetaDatabase 真实支付宝流水",
+        "emptyState": "",
+        "periods": ["最近30天", "本月"],
+        "series": [
+            _series("month_spend_cny", "本月支出", "--pfi-blue", [rolling_30, month_spend]),
+            _series("budget_remaining_cny", "预算剩余", "--pfi-teal", [budget_remaining, budget_remaining]),
+            _series("fixed_spend_cny", "固定支出", "--pfi-amber", [0.0, fixed_spend]),
+            _series("flex_spend_cny", "弹性支出", "--pfi-red", [rolling_30, flex_spend]),
+            _series("cashflow_forecast_cny", "现金流预测", "--pfi-blue", [rolling_30, rolling_30]),
+        ],
+    }
+
+
+def _read_alipay_transaction_rows(path: Path) -> list[dict[str, str]]:
+    try:
+        with path.open(encoding="utf-8-sig", newline="") as file_obj:
+            return [dict(row) for row in csv.DictReader(file_obj)]
+    except OSError:
+        return []
+
+
+def _manifest_review_count(path: Path) -> int | None:
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    if not isinstance(payload, dict):
+        return None
+    try:
+        return int(payload.get("review_count"))
+    except (TypeError, ValueError):
+        return None
+
+
+def _alipay_transactions_path() -> Path:
+    return _default_alipay_metadatabase_root() / "processed" / "alipay_transactions.csv"
+
+
+def _alipay_manifest_path() -> Path:
+    return _default_alipay_metadatabase_root() / "processed" / "alipay_import_manifest.json"
+
+
+def _default_alipay_metadatabase_root() -> Path:
+    return Path(__file__).resolve().parents[3] / "MetaDatabase" / "PFI" / "alipay_daily"
+
+
+def _parse_iso_date(value: Any) -> date | None:
+    try:
+        return date.fromisoformat(str(value or "")[:10])
+    except ValueError:
+        return None
+
+
+def _signed_float(value: Any) -> float:
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return 0.0
 
 
 def _fx_rate(currency: str) -> float:
