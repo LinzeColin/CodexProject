@@ -5,14 +5,15 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 117
-- formula_count: 119
-- parameter_count: 1067
+- model_count: 118
+- formula_count: 120
+- parameter_count: 1072
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
 ## Governance Notes
 
+- `S2PMT07-LOCAL-RUNTIME-NO-PRODUCTION-GATE` adds `MOD-ADP-118`, `FORM-ADP-120`, and `PARAM-ADP-1068` through `PARAM-ADP-1072`. It requires local ADP LaunchAgents `com.linze.adp.local.daily`, `com.linze.adp.local.health`, and `com.linze.adp.local.watchdog` to be disabled and not running, and requires `ADP_ALLOW_SMTP_SEND=false` before local no-production evidence can pass. This run applied a local safety correction to disable those LaunchAgents and set the SMTP send flag false; it did not kickstart daily, send SMTP, enable scheduler, upload Release, restore production, mutate schema/DB/queues, change sources/ranking/CURRENT/V7, close P0/P1, complete S2PLT04, enable DAILY_OPERATION, or claim integrated production acceptance.
 - `S2PMT07-A005-PARAMETER-SELECTOR-ASSURANCE` does not add a model, formula, or parameter ID. It repairs selector metadata for existing `PARAM-ADP-955` through `PARAM-ADP-959` under `MOD-ADP-114` / `FORM-ADP-116`: A-005 required probes, gates, forbidden production flags, finding id, and task id now have machine-readable `python_ast_tuple` or `python_ast_literal` selectors against `security_boundary.py`. This restores active parameter source coverage to `1050 / 1050` while keeping S2PMT07, inherited P0/P1, S2PLT04, final bundle, SMTP, scheduler, Release, production restore, CURRENT/V7, DAILY_OPERATION, and integrated production acceptance blocked.
 - `S2PMT07-REMAINING-BLOCKER-MATRIX` adds `PARAM-ADP-1061` under `MOD-ADP-100` / `FORM-ADP-102`. It maps the seven current S2PMT07 blockers to required future evidence, owner actions, default next steps, and self-certification limits while keeping P0/P1 closure, S2PLT04 completion, final bundle, SMTP, scheduler, Release, production restore, CURRENT/V7 changes, DAILY_OPERATION, and integrated production acceptance false.
 - `S2PMT07-INDEPENDENT-FINAL-CLOSURE-DECISION-OWNER-PACKET` adds `PARAM-ADP-1065..1067` under `MOD-ADP-100` / `FORM-ADP-102`. It exposes owner/reviewer required actions, blockers, and forbidden production flags for the future independent final closure decision while keeping reviewer assignment, P0/P1 zero proof, final bundle, and production acceptance blocked.

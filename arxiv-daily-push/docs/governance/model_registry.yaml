@@ -25,6 +25,14 @@ governance_notes:
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
       - "governance/run_manifests/ADP-S2PMT07-A005-PARAMETER-SELECTOR-ASSURANCE-20260628.json"
+  -
+    note_id: "GOV-NOTE-S2PMT07-LOCAL-RUNTIME-NO-PRODUCTION-GATE"
+    task_id: "S2PMT07-LOCAL-RUNTIME-NO-PRODUCTION-GATE"
+    evidence_level: "EXTRACTED"
+    summary: "Local LaunchAgent disabled/not-running state and ADP_ALLOW_SMTP_SEND=false are now bound into the S2PMT07 no-production precheck; this is not scheduler/SMTP enablement or production acceptance."
+    evidence_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py"
+      - "governance/run_manifests/ADP-S2PMT07-LOCAL-RUNTIME-NO-PRODUCTION-GATE-20260628.json"
 assumptions:
   -
     assumption_id: "ASM-ADP-001"
@@ -6292,3 +6300,55 @@ models:
     evidence_hash: "PENDING_MAIN_COMMIT"
     last_verified_commit: "PRECOMMIT"
     verified_at: "2026-06-27T11:26:15+10:00"
+
+  -
+    model_id: "MOD-ADP-118"
+    name: "S2PMT07 local runtime no-production gate model"
+    purpose: "Bind live local launchd disabled/not-running state and local SMTP send authorization false into the S2PMT07 no-production precheck, without enabling scheduler, SMTP, Release, restore, daily operation, or production acceptance."
+    owner: "arxiv-daily-push"
+    status: "active"
+    task_ids:
+      - "S2PMT07-LOCAL-RUNTIME-NO-PRODUCTION-GATE"
+      - "S2PMT07"
+    assumption_ids:
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-120"
+    parameter_ids:
+      - "PARAM-ADP-1068"
+      - "PARAM-ADP-1069"
+      - "PARAM-ADP-1070"
+      - "PARAM-ADP-1071"
+      - "PARAM-ADP-1072"
+    inputs:
+      - "launchctl print-disabled output for ADP local LaunchAgents"
+      - "launchctl print output for ADP local LaunchAgents"
+      - "sanitized ADP_ALLOW_SMTP_SEND flag"
+    outputs:
+      - "local_runtime_no_production_state"
+      - "launchd_labels_disabled"
+      - "launchd_labels_not_running"
+      - "smtp_send_flag_false"
+      - "state_hash"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py"
+    config_refs:
+      - "local ~/.config/arxiv-daily-push/local-runner.env flag read only as sanitized evidence"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_final_gate.py"
+      - "arxiv-daily-push/tests/test_governance_current_state.py"
+      - "arxiv-daily-push/tests/test_user_center_candidate_pool.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_GATE.md"
+      - "governance/run_manifests/ADP-S2PMT07-LOCAL-RUNTIME-NO-PRODUCTION-GATE-20260628.json"
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_SCHEMA_VERSION"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_ENV_FLAGS_FALSE"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_local_runtime_no_production_state"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::validate_local_runtime_no_production_state"
+    implementation_fingerprint: "PENDING_MAIN_COMMIT"
+    evidence_hash: "PENDING_MAIN_COMMIT"
+    last_verified_commit: "PRECOMMIT"
+    verified_at: "2026-06-28T16:32:45+10:00"

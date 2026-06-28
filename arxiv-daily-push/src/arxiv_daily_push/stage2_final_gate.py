@@ -454,12 +454,31 @@ S2PMT07_NO_PRODUCTION_SIDE_EFFECT_ATTESTATION_REQUIRED_EVIDENCE_REFS = (
     "CHANGED_ONLY_SEMANTIC_GOVERNANCE",
     "LEAN_RENDER",
     "FULL_ADP_UNITTEST",
+    "LOCAL_LAUNCHD_DISABLED_STATE",
+    "LOCAL_SMTP_SEND_FLAG_FALSE",
     "OPEN_PR_COUNT_ZERO",
     "REMOTE_ADP_BRANCH_SCAN",
     "PRODUCTION_TRUE_FLAG_DIFF_SCAN",
 )
 S2PMT07_NO_PRODUCTION_SIDE_EFFECT_ATTESTATION_NO_PRODUCTION_FLAGS = (
     S2PMT07_FINAL_ACCEPTANCE_BUNDLE_NO_PRODUCTION_FLAGS
+)
+S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_SCHEMA_VERSION = "adp.local_runtime_no_production_state.v1"
+S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_SCOPE = (
+    "local_runtime_no_production_precheck_only_no_scheduler_or_smtp_enablement"
+)
+S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS = (
+    "com.linze.adp.local.daily",
+    "com.linze.adp.local.health",
+    "com.linze.adp.local.watchdog",
+)
+S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_ENV_FLAGS_FALSE = (
+    "ADP_ALLOW_SMTP_SEND",
+)
+S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_BLOCKING_REASONS = (
+    "launchd_label_not_disabled",
+    "launchd_label_running",
+    "smtp_send_flag_enabled",
 )
 S2PMT07_NEXT_AGENT_HANDOFF_SCHEMA_VERSION = "adp.next_agent_handoff.v1"
 S2PMT07_NEXT_AGENT_HANDOFF_DECISION = "NEXT_AGENT_HANDOFF_READY_NO_PRODUCTION_ACCEPTANCE"
@@ -3971,6 +3990,163 @@ def build_final_command_execution_validation_state(payload: Mapping[str, Any] | 
     }
     state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
     return state
+
+
+def _parse_launchd_disabled_states(print_disabled_output: str) -> dict[str, str]:
+    states: dict[str, str] = {}
+    for raw_line in print_disabled_output.splitlines():
+        line = raw_line.strip()
+        if "=>" not in line:
+            continue
+        label_part, state_part = line.split("=>", 1)
+        label = label_part.strip().strip('"')
+        state = state_part.strip().lower()
+        if label in S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS:
+            states[label] = state
+    return states
+
+
+def _parse_launchd_service_state(print_output: str) -> str:
+    for raw_line in print_output.splitlines():
+        line = raw_line.strip()
+        if line.startswith("state ="):
+            return line.split("=", 1)[1].strip()
+    return "missing"
+
+
+def build_local_runtime_no_production_state(
+    *,
+    generated_at: str,
+    launchctl_print_disabled_output: str,
+    launchctl_print_outputs: Mapping[str, str] | None = None,
+    env_flags: Mapping[str, str] | None = None,
+) -> dict[str, Any]:
+    """Build a fail-closed local runtime no-production precheck from sanitized launchd/env facts."""
+
+    disabled_states = _parse_launchd_disabled_states(launchctl_print_disabled_output)
+    service_outputs = launchctl_print_outputs or {}
+    env = {key: str(value).strip().lower() for key, value in (env_flags or {}).items()}
+    labels = S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS
+    launchd_disabled = {
+        label: disabled_states.get(label, "missing")
+        for label in labels
+    }
+    launchd_running = {
+        label: _parse_launchd_service_state(str(service_outputs.get(label, "")))
+        for label in labels
+    }
+    env_flag_states = {
+        flag: env.get(flag, "missing")
+        for flag in S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_ENV_FLAGS_FALSE
+    }
+    label_disabled_ok = all(state == "disabled" for state in launchd_disabled.values())
+    label_not_running_ok = all(state == "not running" for state in launchd_running.values())
+    smtp_send_flag_false = env_flag_states["ADP_ALLOW_SMTP_SEND"] in {"false", "0", "no", "off"}
+    blocking_reasons: list[str] = []
+    if not label_disabled_ok:
+        blocking_reasons.append("launchd_label_not_disabled")
+    if not label_not_running_ok:
+        blocking_reasons.append("launchd_label_running")
+    if not smtp_send_flag_false:
+        blocking_reasons.append("smtp_send_flag_enabled")
+    state = {
+        "schema_version": S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_SCHEMA_VERSION,
+        "task_id": S2PMT07_TASK_ID,
+        "acceptance_id": S2PMT07_ACCEPTANCE_ID,
+        "generated_at": generated_at,
+        "status": "pass" if not blocking_reasons else "blocked",
+        "scope": S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_SCOPE,
+        "required_launchd_labels": list(labels),
+        "launchd_disabled_states": launchd_disabled,
+        "launchd_running_states": launchd_running,
+        "required_env_flags_false": list(S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_ENV_FLAGS_FALSE),
+        "env_flag_states": env_flag_states,
+        "launchd_labels_disabled": label_disabled_ok,
+        "launchd_labels_not_running": label_not_running_ok,
+        "smtp_send_flag_false": smtp_send_flag_false,
+        "blocking_reasons": blocking_reasons,
+        "production_acceptance_claimed": False,
+        "integrated_production_accepted": False,
+        "daily_operation_enabled": False,
+        "real_smtp_send_enabled": False,
+        "scheduler_install_enabled": False,
+        "release_packaging_enabled": False,
+        "production_restore_enabled": False,
+        "state_hash": "",
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
+def validate_local_runtime_no_production_state(state: Mapping[str, Any]) -> list[str]:
+    """Validate local runtime no-production precheck state without enabling or claiming production."""
+
+    errors: list[str] = []
+    if state.get("schema_version") != S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_SCHEMA_VERSION:
+        errors.append("local runtime no-production schema_version is invalid")
+    if state.get("task_id") != S2PMT07_TASK_ID:
+        errors.append("local runtime no-production task_id must be S2PMT07")
+    if state.get("acceptance_id") != S2PMT07_ACCEPTANCE_ID:
+        errors.append("local runtime no-production acceptance_id is invalid")
+    if state.get("scope") != S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_SCOPE:
+        errors.append("local runtime no-production scope is invalid")
+    if tuple(state.get("required_launchd_labels", [])) != S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS:
+        errors.append("required_launchd_labels must match ADP local LaunchAgents")
+    if (
+        tuple(state.get("required_env_flags_false", []))
+        != S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_ENV_FLAGS_FALSE
+    ):
+        errors.append("required_env_flags_false must match ADP SMTP send flag")
+    if state.get("status") not in {"pass", "blocked"}:
+        errors.append("local runtime no-production status must be pass or blocked")
+    for flag in (
+        "production_acceptance_claimed",
+        "integrated_production_accepted",
+        "daily_operation_enabled",
+        "real_smtp_send_enabled",
+        "scheduler_install_enabled",
+        "release_packaging_enabled",
+        "production_restore_enabled",
+    ):
+        if state.get(flag) is not False:
+            errors.append(f"{flag} must be false")
+
+    disabled_states = _mapping(state.get("launchd_disabled_states"))
+    running_states = _mapping(state.get("launchd_running_states"))
+    for label in S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS:
+        if disabled_states.get(label) != "disabled" and "launchd_label_not_disabled" not in state.get(
+            "blocking_reasons", []
+        ):
+            errors.append("launchd_label_not_disabled blocker is required")
+        if running_states.get(label) != "not running" and "launchd_label_running" not in state.get(
+            "blocking_reasons", []
+        ):
+            errors.append("launchd_label_running blocker is required")
+    env_states = _mapping(state.get("env_flag_states"))
+    if env_states.get("ADP_ALLOW_SMTP_SEND") not in {"false", "0", "no", "off"} and "smtp_send_flag_enabled" not in state.get(
+        "blocking_reasons", []
+    ):
+        errors.append("smtp_send_flag_enabled blocker is required")
+
+    expected_reasons: list[str] = []
+    if state.get("launchd_labels_disabled") is not True:
+        expected_reasons.append("launchd_label_not_disabled")
+    if state.get("launchd_labels_not_running") is not True:
+        expected_reasons.append("launchd_label_running")
+    if state.get("smtp_send_flag_false") is not True:
+        expected_reasons.append("smtp_send_flag_enabled")
+    if state.get("status") == "pass":
+        if expected_reasons:
+            errors.append("passing local runtime no-production state must have all local runtime gates true")
+        if state.get("blocking_reasons"):
+            errors.append("passing local runtime no-production state must not have blocking reasons")
+    else:
+        if tuple(state.get("blocking_reasons", [])) != tuple(expected_reasons):
+            errors.append("blocked local runtime no-production blocking_reasons must match failed gates")
+    expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    if state.get("state_hash") != expected_hash:
+        errors.append("local runtime no-production state_hash does not match state content")
+    return errors
 
 
 def build_no_production_side_effect_attestation_hash(payload: Mapping[str, Any]) -> str:

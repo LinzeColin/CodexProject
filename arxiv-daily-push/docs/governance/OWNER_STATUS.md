@@ -39,7 +39,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (1050/1050 active parameters, 119/119 active formulas)
+- implementation_congruence: `VERIFIED` (1055/1055 active parameters, 120/120 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `VERIFIED`
 - empirical_validation: `VERIFIED`
@@ -68,26 +68,26 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 12. Model Formula Parameter Change
 
-- model_count: `117`
-- total_formulas: `119`
-- active_formulas: `119`
-- total_parameters: `1067`
-- active_parameters: `1050`
+- model_count: `118`
+- total_formulas: `120`
+- active_formulas: `120`
+- total_parameters: `1072`
+- active_parameters: `1055`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PMT07_A005_PARAMETER_SELECTOR_ASSURANCE_VERIFIED_NO_CLOSURE_NO_PRODUCTION`
+- release_gate: `S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_GATE_VERIFIED_NO_SCHEDULER_NO_SMTP_NO_ACCEPTANCE`
 
 ## 14. Evidence Freshness
 
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `0`
 - commit_bound_events: `4`
-- legacy_unbound_events: `219`
+- legacy_unbound_events: `220`
 - precommit_pending_events: `40`
-- pending_or_stale_events: `258`
+- pending_or_stale_events: `259`
 
 ## 15. UNKNOWN
 
@@ -97,11 +97,11 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 - source_base_commit: `9fbb0c4eb240a1782bae3db4db873ded37ac21f4`
 - source_tree_hash: `23334defdf6e168d709c223d61c0998e594f6852`
-- source_snapshot_hash: `sha256:1dd3583402e1b54e80f797f7c14b62fdcea15ab046c28fee799e02114bfefe88`
-- snapshot_event_time: `2026-06-28T16:01:08+10:00`
+- source_snapshot_hash: `sha256:6a02c844f2a0fa96677b1df6945981575f8c1bcd9438b63cb2339b56320f5a89`
+- snapshot_event_time: `2026-06-28T16:32:45+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PM / S2PMT07_A005_PARAMETER_SELECTOR_ASSURANCE_VERIFIED_NO_CLOSURE_NO_PRODUCTION`
+- phase/gate: `S2PM / S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_GATE_VERIFIED_NO_SCHEDULER_NO_SMTP_NO_ACCEPTANCE`
 
 ## 17. Next Unique Task
 

@@ -4,8 +4,8 @@
 
 - source_base_commit: `9fbb0c4eb240a1782bae3db4db873ded37ac21f4`
 - source_tree_hash: `23334defdf6e168d709c223d61c0998e594f6852`
-- source_snapshot_hash: `sha256:1dd3583402e1b54e80f797f7c14b62fdcea15ab046c28fee799e02114bfefe88`
-- snapshot_event_time: `2026-06-28T16:01:08+10:00`
+- source_snapshot_hash: `sha256:6a02c844f2a0fa96677b1df6945981575f8c1bcd9438b63cb2339b56320f5a89`
+- snapshot_event_time: `2026-06-28T16:32:45+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -14,10 +14,10 @@
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - Product version: `0.23.1`
-- Phase/Gate: `S2PM / S2PMT07_A005_PARAMETER_SELECTOR_ASSURANCE_VERIFIED_NO_CLOSURE_NO_PRODUCTION`
-- Models/Formulas/Parameters total: `117 / 119 / 1067`
-- Active formulas/parameters: `119 / 1050`
-- Machine checked formulas/parameters: `119 / 1050`
+- Phase/Gate: `S2PM / S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_GATE_VERIFIED_NO_SCHEDULER_NO_SMTP_NO_ACCEPTANCE`
+- Models/Formulas/Parameters total: `118 / 120 / 1072`
+- Active formulas/parameters: `120 / 1055`
+- Machine checked formulas/parameters: `120 / 1055`
 
 ## Assurance
 
@@ -35,7 +35,7 @@
 ## Delivery
 
 - Readiness: `BLOCKED_PRECHECK`
-- Release gate: `S2PMT07_A005_PARAMETER_SELECTOR_ASSURANCE_VERIFIED_NO_CLOSURE_NO_PRODUCTION`
+- Release gate: `S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_GATE_VERIFIED_NO_SCHEDULER_NO_SMTP_NO_ACCEPTANCE`
 - V7 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - V7 contract hash: `a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d`
 - V7 roadmap hash: `7c5f2d842d4f6b909343c953fe39b4a4aa540d168199747a9f7decdb1aad9bd1`
@@ -48,8 +48,8 @@
 - Next governance task: `S2PMT07`
 - Parallel shadow source task: `NONE_WHILE_S2PMT07_BLOCKED`
 - Next executable task: `S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT`
-- Pending/stale events: `258`
+- Pending/stale events: `259`
 - Tree-bound events: `0`
 - Commit-bound events: `4`
-- Legacy unbound events: `219`
+- Legacy unbound events: `220`
 - Unresolved fact IDs: `0`
