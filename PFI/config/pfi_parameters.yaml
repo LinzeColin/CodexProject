@@ -1,9 +1,9 @@
 {
-  "schema": "PFIParametersV022Stage6",
+  "schema": "PFIParametersV022Stage7",
   "project_id": "PFI",
   "task_name": "PFI v0.2.2 E2E 逻辑优化",
   "parameter_version": "v0.2.2",
-  "current_stage": "Stage 6 - 标签系统与自定义视图",
+  "current_stage": "Stage 7 - 模型公式、阈值与评分标准",
   "canonical_parameter_file": "PFI/config/pfi_parameters.yaml",
   "machine_format": "JSON-compatible YAML",
   "uiux_baseline": "v0.2.1 HTML Web Shell",
@@ -2107,9 +2107,10 @@
       "review_threshold": {
         "value": 70,
         "label_zh": "统一复核阈值",
-        "description_zh": "低于 70 分的分类、匹配或关联必须进入人工复核。",
+        "description_zh": "低于 70 分的分类、匹配或关联必须进入人工复核；不按 source 分层。",
         "impact_surfaces": [
           "账本流水",
+          "数据质量报告",
           "建议与复盘"
         ],
         "user_editable": true
@@ -2124,12 +2125,75 @@
           "历史一致性": 10
         },
         "label_zh": "置信度评分权重",
-        "description_zh": "六项合计 100 分；扣分项只能降低分数，不能突破满分。",
+        "description_zh": "字段完整度 30 分，金额方向 10 分，规则命中 20 分，商户/对手方 15 分，关联匹配 15 分，历史一致性 10 分，合计 100 分。",
         "impact_surfaces": [
           "账本流水",
           "数据质量报告"
         ],
         "user_editable": true
+      },
+      "score_standards": {
+        "value": {
+          "字段完整度": [
+            "0分：无法可靠入账",
+            "低分：缺少关键字段",
+            "中分：描述或批次不完整",
+            "高分：缺少非关键字段",
+            "满分：核心字段完整可追溯"
+          ],
+          "金额方向": [
+            "0分：方向未知",
+            "低分：方向冲突",
+            "中分：由来源推断",
+            "高分：金额明确但描述模糊",
+            "满分：借贷方向明确"
+          ],
+          "规则命中": [
+            "0分：无规则命中",
+            "低分：弱 fallback",
+            "中分：分类关键词",
+            "高分：强关键词和角色匹配",
+            "满分：精确规则命中"
+          ],
+          "商户对手方": [
+            "0分：缺失",
+            "低分：关键词匹配",
+            "中分：高置信模糊匹配",
+            "高分：别名命中",
+            "满分：字典精确命中"
+          ],
+          "关联匹配": [
+            "0分：关联冲突",
+            "低分：单边待匹配",
+            "中分：单边合理等待",
+            "高分：高概率匹配",
+            "满分：无需关联或精确双边匹配"
+          ],
+          "历史一致性": [
+            "0分：历史冲突",
+            "低分：明显异常",
+            "中分：新模式但合理",
+            "高分：历史类似",
+            "满分：历史多次同模式"
+          ]
+        },
+        "label_zh": "置信度评分标准",
+        "description_zh": "每个评分项都有 0 分、低分、中分、高分、满分中文解释。",
+        "impact_surfaces": [
+          "账本流水",
+          "数据质量报告"
+        ],
+        "user_editable": false
+      },
+      "source_layered_thresholds_allowed": {
+        "value": false,
+        "label_zh": "是否允许按 source 分层阈值",
+        "description_zh": "Stage 7 明确禁止按支付宝、微信、银行、券商等 source 分层复核阈值。",
+        "impact_surfaces": [
+          "账本流水",
+          "数据质量报告"
+        ],
+        "user_editable": false
       }
     },
     "consumption_model": {
@@ -2181,7 +2245,7 @@
       "large_spend_aud_original_threshold": {
         "value": 500,
         "label_zh": "大额消费 AUD 原币阈值",
-        "description_zh": "AUD 原币达到或超过 500 时进入大额标签；与当前前端/测试阈值保持一致。",
+        "description_zh": "AUD 原币达到或超过 500 时进入大额标签；与测试阈值保持一致。",
         "impact_surfaces": [
           "消费管理",
           "建议与复盘"
@@ -2214,13 +2278,64 @@
           "报告与洞察"
         ],
         "user_editable": false
+      },
+      "gross_consumption_formula": {
+        "value": "生活消费 + 投资入金 + 基金申购 + 黄金申购 + 投资买入 + 金融费用 - 退款抵消",
+        "label_zh": "消费总流出金额公式",
+        "description_zh": "衡量现金总流出压力，投资相关流出也进入该口径。",
+        "impact_surfaces": [
+          "首页总览",
+          "消费管理",
+          "报告与洞察"
+        ],
+        "user_editable": false
+      },
+      "living_consumption_formula": {
+        "value": "普通生活消费 - 已关联退款 - 已关联撤销",
+        "label_zh": "生活消费金额公式",
+        "description_zh": "排除投资入金、基金申购、投资买入、内部转账和信用卡还款。",
+        "impact_surfaces": [
+          "消费管理",
+          "报告与洞察"
+        ],
+        "user_editable": false
+      },
+      "night_window": {
+        "value": "22:00-06:00",
+        "label_zh": "夜间消费窗口",
+        "description_zh": "本地时间 22:00 到次日 06:00；电子产品冲动独立规则并入夜间或大额标签组合。",
+        "impact_surfaces": [
+          "消费管理",
+          "建议与复盘"
+        ],
+        "user_editable": true
+      },
+      "subscription_score_formula": {
+        "value": "金额相似度×40% + 扣费周期稳定性×30% + 商户相似度×20% + 历史重复次数×10%",
+        "label_zh": "订阅识别评分公式",
+        "description_zh": "订阅评分达到 75 分时打上订阅扣费标签。",
+        "impact_surfaces": [
+          "消费管理",
+          "标签系统"
+        ],
+        "user_editable": false
+      },
+      "subscription_score_threshold": {
+        "value": 75,
+        "label_zh": "订阅扣费标签阈值",
+        "description_zh": "订阅评分达到 75 分时打上订阅扣费标签。",
+        "impact_surfaces": [
+          "消费管理",
+          "标签系统"
+        ],
+        "user_editable": true
       }
     },
     "investment_model": {
       "market_value_formula": {
         "value": "quantity * latest_price * fx_to_cny",
         "label_zh": "投资市值公式",
-        "description_zh": "持仓数量乘最新价格，再按有效汇率折算为 CNY。",
+        "description_zh": "持仓数量 × 最新价格 × 原币兑 CNY 汇率，主显示 CNY，并保留 fx_snapshot_id 追溯。",
         "impact_surfaces": [
           "投资管理",
           "报告与洞察"
@@ -2326,6 +2441,64 @@
           "报告"
         ],
         "user_editable": true
+      },
+      "remaining_cost_formula": {
+        "value": "剩余持仓数量 × 加权平均成本",
+        "label_zh": "剩余成本公式",
+        "description_zh": "剩余成本用持仓数量和加权平均成本计算。",
+        "impact_surfaces": [
+          "投资管理",
+          "报告与洞察"
+        ],
+        "user_editable": false
+      },
+      "realized_pnl_formula": {
+        "value": "卖出收入 - 分摊成本 - 卖出费用 - 税费",
+        "label_zh": "已实现收益公式",
+        "description_zh": "卖出收益必须扣除成本、费用和税费。",
+        "impact_surfaces": [
+          "投资管理",
+          "报告与洞察"
+        ],
+        "user_editable": false
+      },
+      "unrealized_pnl_formula": {
+        "value": "当前持仓市值 - 剩余成本",
+        "label_zh": "未实现收益公式",
+        "description_zh": "未卖出持仓按当前市值和剩余成本计算。",
+        "impact_surfaces": [
+          "投资管理",
+          "报告与洞察"
+        ],
+        "user_editable": false
+      },
+      "xirr_policy": {
+        "value": "投资入金为负现金流，投资回流为正现金流，当前投资市值为最终正现金流",
+        "label_zh": "XIRR 口径",
+        "description_zh": "资金加权收益率按投资入金、投资回流、当前市值和日期计算。",
+        "impact_surfaces": [
+          "投资管理",
+          "报告与洞察"
+        ],
+        "user_editable": false
+      },
+      "behavior_formula_scope": {
+        "value": [
+          "交易频率",
+          "换手率",
+          "持仓周期",
+          "追涨候选",
+          "杀跌候选",
+          "现金拖累",
+          "集中度"
+        ],
+        "label_zh": "投资行为公式范围",
+        "description_zh": "投资管理不能只显示收益，必须同步显示行为和成本口径。",
+        "impact_surfaces": [
+          "投资管理",
+          "建议与复盘"
+        ],
+        "user_editable": false
       }
     },
     "cashflow": {
@@ -2348,6 +2521,73 @@
           "建议与复盘"
         ],
         "user_editable": true
+      },
+      "windows_days": {
+        "value": [
+          7,
+          21,
+          30,
+          60,
+          90,
+          180,
+          360
+        ],
+        "label_zh": "现金流预测窗口",
+        "description_zh": "支持 7/21/30/60/90/180/360 天窗口，覆盖短期、月内、季度、半年和全年视图。",
+        "impact_surfaces": [
+          "消费管理",
+          "现金流",
+          "报告与洞察"
+        ],
+        "user_editable": true
+      },
+      "reserve_floor_formula": {
+        "value": "max(用户自定义最低储备金, 平均月固定支出 × 储备月份数)",
+        "label_zh": "储备金安全线公式",
+        "description_zh": "既支持用户自定义最低储备金，也支持固定支出乘储备月份数。",
+        "impact_surfaces": [
+          "现金流",
+          "建议与复盘"
+        ],
+        "user_editable": true
+      },
+      "cashflow_pressure_score_formula": {
+        "value": "clamp(0,100,100 - 50×储备覆盖率 + 20×固定成本压力 + 15×收入不确定性 + 15×大额消费压力)",
+        "label_zh": "现金流压力分公式",
+        "description_zh": "把储备覆盖、固定成本、收入不确定性和大额消费压力合成 0-100 分。",
+        "impact_surfaces": [
+          "现金流",
+          "报告与洞察"
+        ],
+        "user_editable": false
+      },
+      "investment_squeeze_formula": {
+        "value": "计划投资入金后未来生活现金 < 储备金底线",
+        "label_zh": "投资入金挤压模型",
+        "description_zh": "用于显示投资入金是否挤压生活现金。",
+        "impact_surfaces": [
+          "投资管理",
+          "消费管理",
+          "现金流"
+        ],
+        "user_editable": false
+      },
+      "required_visualizations": {
+        "value": [
+          "现金流阶梯图",
+          "现金流瀑布图",
+          "储备金安全带",
+          "未来大额流出时间轴",
+          "消费-投资挤压图",
+          "现金流窗口对比表"
+        ],
+        "label_zh": "现金流可视化要求",
+        "description_zh": "Stage 7 锁定未来现金流可视化应展示的图形类型，真正 UI 页面不在本轮实现。",
+        "impact_surfaces": [
+          "现金流",
+          "报告与洞察"
+        ],
+        "user_editable": false
       }
     },
     "visualization": {
@@ -2619,6 +2859,136 @@
         "execution_cost_inverse": "执行成本反比",
         "learning_value": "学习价值"
       }
+    },
+    {
+      "formula_id": "remaining_cost_cny",
+      "name_zh": "剩余成本",
+      "purpose_zh": "计算当前未卖出持仓的成本基础。",
+      "inputs": [
+        "remaining_quantity",
+        "weighted_average_cost_cny"
+      ],
+      "outputs": [
+        "remaining_cost_cny"
+      ],
+      "logic_zh": "剩余成本_CNY = 剩余持仓数量 × 加权平均成本。",
+      "example_zh": "10 股 × 45 CNY = 450 CNY。",
+      "variable_aliases": {
+        "remaining_quantity": "剩余持仓数量",
+        "weighted_average_cost_cny": "加权平均成本",
+        "remaining_cost_cny": "剩余成本"
+      }
+    },
+    {
+      "formula_id": "realized_pnl_cny",
+      "name_zh": "已实现收益",
+      "purpose_zh": "计算已卖出交易的实际收益。",
+      "inputs": [
+        "sell_proceeds_cny",
+        "allocated_cost_cny",
+        "fees_cny",
+        "tax_cny"
+      ],
+      "outputs": [
+        "realized_pnl_cny"
+      ],
+      "logic_zh": "已实现收益_CNY = 卖出收入 - 分摊成本 - 卖出费用 - 税费。",
+      "example_zh": "卖出 1000 - 成本 800 - 费用 20 - 税费 10 = 170 CNY。",
+      "variable_aliases": {
+        "sell_proceeds_cny": "卖出收入",
+        "allocated_cost_cny": "分摊成本",
+        "fees_cny": "费用",
+        "tax_cny": "税费",
+        "realized_pnl_cny": "已实现收益"
+      }
+    },
+    {
+      "formula_id": "unrealized_pnl_cny",
+      "name_zh": "未实现收益",
+      "purpose_zh": "计算当前持仓尚未卖出的浮动盈亏。",
+      "inputs": [
+        "investment_market_value_cny",
+        "remaining_cost_cny"
+      ],
+      "outputs": [
+        "unrealized_pnl_cny"
+      ],
+      "logic_zh": "未实现收益_CNY = 当前持仓市值 - 剩余成本。",
+      "example_zh": "市值 562.49 - 成本 450 = 112.49 CNY。",
+      "variable_aliases": {
+        "investment_market_value_cny": "投资市值",
+        "remaining_cost_cny": "剩余成本",
+        "unrealized_pnl_cny": "未实现收益"
+      }
+    },
+    {
+      "formula_id": "total_pnl_cny",
+      "name_zh": "总收益",
+      "purpose_zh": "汇总已实现、未实现、分红、利息、费用和税费。",
+      "inputs": [
+        "realized_pnl_cny",
+        "unrealized_pnl_cny",
+        "dividend_cny",
+        "interest_cny",
+        "total_fees_cny",
+        "total_tax_cny"
+      ],
+      "outputs": [
+        "total_pnl_cny"
+      ],
+      "logic_zh": "总收益_CNY = 已实现收益 + 未实现收益 + 分红 + 利息 - 总费用 - 总税费。",
+      "example_zh": "已实现收益 170 CNY 加未实现收益 112.49 CNY，合计 282.49 CNY。",
+      "variable_aliases": {
+        "total_pnl_cny": "总收益",
+        "dividend_cny": "分红",
+        "interest_cny": "利息",
+        "total_fees_cny": "总费用",
+        "total_tax_cny": "总税费"
+      }
+    },
+    {
+      "formula_id": "reserve_floor_cny",
+      "name_zh": "储备金底线",
+      "purpose_zh": "确定生活现金的安全底线。",
+      "inputs": [
+        "user_min_reserve_cny",
+        "average_monthly_fixed_expense_cny",
+        "reserve_months"
+      ],
+      "outputs": [
+        "reserve_floor_cny"
+      ],
+      "logic_zh": "储备金底线 = max(用户自定义最低储备金, 平均月固定支出 × 储备月份数)。",
+      "example_zh": "用户最低储备金 6000 CNY 与三个月固定支出 7500 CNY 比较，安全线取 7500 CNY。",
+      "variable_aliases": {
+        "reserve_floor_cny": "储备金底线",
+        "user_min_reserve_cny": "用户自定义最低储备金",
+        "average_monthly_fixed_expense_cny": "平均月固定支出",
+        "reserve_months": "储备月份数"
+      }
+    },
+    {
+      "formula_id": "cashflow_pressure_score",
+      "name_zh": "现金流压力分",
+      "purpose_zh": "用 0-100 分描述现金流压力。",
+      "inputs": [
+        "reserve_coverage",
+        "fixed_cost_pressure",
+        "income_uncertainty",
+        "large_spend_pressure"
+      ],
+      "outputs": [
+        "cashflow_pressure_score"
+      ],
+      "logic_zh": "现金流压力分 = clamp(0,100,100 - 50×储备覆盖率 + 20×固定成本压力 + 15×收入不确定性 + 15×大额消费压力)。",
+      "example_zh": "储备覆盖不足且投资入金较高时，压力分升高。",
+      "variable_aliases": {
+        "cashflow_pressure_score": "现金流压力分",
+        "reserve_coverage": "储备覆盖率",
+        "fixed_cost_pressure": "固定成本压力",
+        "income_uncertainty": "收入不确定性",
+        "large_spend_pressure": "大额消费压力"
+      }
     }
   ],
   "threshold_index": [
@@ -2635,7 +3005,7 @@
     {
       "key": "consumption_model.large_spend_cny_threshold",
       "current_value": "CNY 2000",
-      "why_zh": "人民币主口径下的大额消费提示线。",
+      "why_zh": "大额消费进入大额标签和复核。",
       "impact_surfaces": [
         "消费管理",
         "建议与复盘"
@@ -2645,7 +3015,7 @@
     {
       "key": "consumption_model.large_spend_aud_original_threshold",
       "current_value": "AUD 500",
-      "why_zh": "保持与现有前端/测试 fixture 的大额消费阈值一致。",
+      "why_zh": "AUD 原币大额也触发，避免汇率或折算时点影响复核。",
       "impact_surfaces": [
         "消费管理",
         "建议与复盘"
@@ -2655,7 +3025,7 @@
     {
       "key": "time.night_window",
       "current_value": "22:00-06:00",
-      "why_zh": "夜间交易更需要行为复盘。",
+      "why_zh": "夜间交易更可能需要人工确认或行为复盘。",
       "impact_surfaces": [
         "消费管理",
         "建议与复盘"
@@ -2665,9 +3035,10 @@
     {
       "key": "time.cashflow_windows_days",
       "current_value": "7/21/30/60/90/180/360 天",
-      "why_zh": "覆盖一周、三周、月度、双月、季度、半年和年度现金压力。",
+      "why_zh": "覆盖短期、月内、季度、半年和全年现金流观察。",
       "impact_surfaces": [
         "消费管理",
+        "现金流",
         "报告"
       ],
       "user_editable": true
@@ -2762,6 +3133,36 @@
         "汇率"
       ],
       "user_editable": false
+    },
+    {
+      "key": "confidence.source_layered_thresholds_allowed",
+      "current_value": "false",
+      "why_zh": "统一复核阈值不按数据源分层，避免同类事实口径漂移。",
+      "impact_surfaces": [
+        "账本流水",
+        "数据质量报告"
+      ],
+      "user_editable": false
+    },
+    {
+      "key": "consumption_model.subscription_score_threshold",
+      "current_value": "75 分",
+      "why_zh": "达到 75 分时打上订阅扣费标签。",
+      "impact_surfaces": [
+        "消费管理",
+        "标签系统"
+      ],
+      "user_editable": true
+    },
+    {
+      "key": "cashflow.reserve_months_default",
+      "current_value": "3 个月",
+      "why_zh": "默认用 3 个月固定支出作为储备金安全线参考。",
+      "impact_surfaces": [
+        "现金流",
+        "建议与复盘"
+      ],
+      "user_editable": true
     }
   ],
   "stage3_task_ids": [
@@ -2801,5 +3202,20 @@
     "S6-P3-T1",
     "S6-P3-T2",
     "S6-P3-T3"
+  ],
+  "stage7_task_ids": [
+    "S7-P1-T1",
+    "S7-P1-T2",
+    "S7-P1-T3",
+    "S7-P2-T1",
+    "S7-P2-T2",
+    "S7-P2-T3",
+    "S7-P2-T4",
+    "S7-P3-T1",
+    "S7-P3-T2",
+    "S7-P3-T3",
+    "S7-P4-T1",
+    "S7-P4-T2",
+    "S7-P4-T3"
   ]
 }

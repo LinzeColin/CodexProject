@@ -23,7 +23,7 @@ Roadmap 形态：`Stage -> Phase -> Task`
 | Stage 4 | Economic Event 与 Interconnection 逻辑 | 本轮完成 | `economic_event_id`、`interconnection_group_id`、事件影响 flags、Interconnection Matrix、Metric Dependency Graph、no-double-count。 |
 | Stage 5 | 统一账本事件、消费双口径与分类体系 | 本轮完成 | event type、双消费口径、12 大类 / 50 中类。 |
 | Stage 6 | 标签系统与自定义视图 | 本轮完成 | 标签注册、赋值、规则、默认/自定义标签、变更历史、标签报告和自定义视图。 |
-| Stage 7 | 模型公式、阈值与评分标准 | 待 owner 开启 | 置信度、消费、投资、现金流公式。 |
+| Stage 7 | 模型公式、阈值与评分标准 | 本轮完成 | 置信度评分、消费、投资、现金流公式和现金流压力分。 |
 | Stage 8 | 本地运行 Diff 与 Impacted Metrics | 待 owner 开启 | dependency hash、diff 收紧、LLM 触发规则。 |
 | Stage 9 | 可视化与 UI/UX | 待 owner 开启 | 参数中心、Interconnection 可视化、现金流和 drilldown。 |
 | Stage 10 | 报告、建议与复盘 | 待 owner 开启 | 双消费口径报告、投资成本行为、建议评分生命周期。 |
@@ -73,7 +73,7 @@ python3 scripts/validate_project_governance.py --project PFI
 git diff --check -- PFI
 ```
 
-当前本地 closeout 结果：Stage 6 目标测试 `6 passed`；Stage 0-6 v0.2.2 回归 `51 passed`；完整 PFI pytest `209 passed`；治理 `errors 0 / warnings 0`；Web shell 语法和 `git diff --check -- PFI` 通过；App 入口验收 `29 pass / 0 fail / 2 info`；真实 8501 浏览器禁用词扫描 0 命中、console errors `0`；Stage 6 HTML 浏览器任务、表、默认标签组、自定义视图均可见，console errors `0`。
+当前本地 closeout 结果：Stage 7 目标测试 `7 passed`；Stage 0-7 v0.2.2 回归 `58 passed`；完整 PFI pytest `216 passed`；治理 `errors 0 / warnings 0`；Web shell 语法和 `git diff --check -- PFI` 通过；App 入口验收 `29 pass / 0 fail / 2 info`；8501 health `ok`；真实浏览器点击 `数据源与上传` 后关键入口、上传中心、导入中心和 `AUD/CNY` 均可见，正式 UI 禁用词扫描 0 命中，console errors `0`，截图 `/tmp/pfi-v022-stage7-upload-verified-final.png`。
 
 ## Stage 1 Task Lock
 
@@ -346,6 +346,62 @@ git diff --check -- PFI
 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests/test_v022_stage6_tags_views.py -q
 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests/test_v022_stage0_database_governance.py PFI/tests/test_pfi_parameters_consistency.py PFI/tests/test_v022_fx_effective_date.py PFI/tests/test_v022_stage3_source_account_profiles.py PFI/tests/test_v022_interconnection_no_double_count.py PFI/tests/test_v022_consumption_investment_outflow.py PFI/tests/test_v022_stage5_ledger_taxonomy.py PFI/tests/test_v022_stage6_tags_views.py -q
 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests -q
+node --check PFI/web/app/shell.js
+python3 scripts/validate_project_governance.py --project PFI
+git diff --check -- PFI
+```
+
+当前本地 closeout 结果：Stage 6 目标测试 `6 passed`；Stage 0-6 v0.2.2 回归 `51 passed`；完整 PFI pytest `209 passed`；治理 `errors 0 / warnings 0`；Web shell 语法和 `git diff --check -- PFI` 通过；App 入口验收 `29 pass / 0 fail / 2 info`；真实 8501 浏览器禁用词扫描 0 命中、console errors `0`；Stage 6 HTML 浏览器任务、表、默认标签组、自定义视图均可见，console errors `0`。
+
+## Stage 7 - 模型公式、阈值与评分标准 Task Lock
+
+| Task ID | Phase | 交付物 | 状态 |
+| --- | --- | --- | --- |
+| `S7-P1-T1` | Phase 7.1 | 100 分置信度评分公式，权重为字段完整度 30、金额方向 10、规则命中 20、商户/对手方 15、关联匹配 15、历史一致性 10 | 本轮完成 |
+| `S7-P1-T2` | Phase 7.1 | 每个评分项中文评分标准 | 本轮完成 |
+| `S7-P1-T3` | Phase 7.1 | 统一低置信复核阈值 `70`，禁止 source 分层阈值 | 本轮完成 |
+| `S7-P2-T1` | Phase 7.2 | `消费总流出金额` 公式 | 本轮完成 |
+| `S7-P2-T2` | Phase 7.2 | `生活消费金额` 公式 | 本轮完成 |
+| `S7-P2-T3` | Phase 7.2 | 大额消费阈值 `CNY >= 2000` 或原币 `AUD >= 500` | 本轮完成 |
+| `S7-P2-T4` | Phase 7.2 | 夜间窗口 `22:00-06:00`，电子产品冲动规则并入夜间/大额逻辑 | 本轮完成 |
+| `S7-P3-T1` | Phase 7.3 | `market_value_cny = quantity * latest_price * fx_rate_to_cny` | 本轮完成 |
+| `S7-P3-T2` | Phase 7.3 | 成本、已实现收益、未实现收益、总收益公式 | 本轮完成 |
+| `S7-P3-T3` | Phase 7.3 | 频率、换手率、持仓周期、追涨、杀跌、现金拖累、集中度行为公式 | 本轮完成 |
+| `S7-P4-T1` | Phase 7.4 | 现金流窗口 `7/21/30/60/90/180/360` | 本轮完成 |
+| `S7-P4-T2` | Phase 7.4 | `reserve_floor_cny = max(user_min_reserve_cny, average_fixed_monthly_expense_cny * reserve_months)` | 本轮完成 |
+| `S7-P4-T3` | Phase 7.4 | 投资入金挤压生活现金模型 | 本轮完成 |
+
+## Stage 7 Acceptance Criteria
+
+- 置信度总分为 100，权重严格等于 30/10/20/15/15/10。
+- 每个评分项都有中文评分标准，低分、中分、高分或满分可解释。
+- 复核阈值统一为 `70`；不得按支付宝、微信、银行、券商等 source 名称分层。
+- `消费总流出金额` 包含生活消费、投资入金、基金申购、黄金申购、投资买入、金融费用，并由退款抵消。
+- `生活消费金额` 只包含普通生活消费，排除投资入金、基金申购、黄金申购、投资买入、内部转账、信用卡还款。
+- 大额消费、夜间消费、订阅扣费、投资市值、成本收益、行为公式、现金流窗口、储备金安全线和投资挤压模型均进入参数文件。
+- 现金流压力分使用储备金覆盖、固定支出压力、收入不确定性和大额支出压力综合计算。
+- `tests/test_v022_stage7_formula_scoring.py` 执行样本计算并校验数值，不只检查 marker 或函数名。
+- Stage 7 不提前实现 Stage 8 Runtime Diff、Stage 9 参数中心或真实交易能力。
+
+## Stage 7 Stop Condition
+
+- 置信度权重不等于 100。
+- 评分项缺少中文评分标准。
+- 出现 source 分层复核阈值。
+- 投资入金、基金申购、黄金申购或投资买入未进入消费总流出。
+- 投资入金、基金申购、黄金申购或投资买入进入生活消费。
+- 现金流窗口缺少 `7/21/30/60/90/180/360`。
+- 储备金安全线不能同时支持用户自定义最小储备金和固定支出倍数。
+- 投资入金挤压生活现金无法解释。
+
+当前检查结论：以上停止条件均未触发。Stage 8 Runtime Diff、Stage 9 参数中心、Stage 10 建议生命周期不在本轮实现。
+
+## Stage 7 Validation
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests/test_v022_stage7_formula_scoring.py -q -p no:cacheprovider
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests/test_v022_stage0_database_governance.py PFI/tests/test_pfi_parameters_consistency.py PFI/tests/test_v022_fx_effective_date.py PFI/tests/test_v022_stage3_source_account_profiles.py PFI/tests/test_v022_interconnection_no_double_count.py PFI/tests/test_v022_consumption_investment_outflow.py PFI/tests/test_v022_stage5_ledger_taxonomy.py PFI/tests/test_v022_stage6_tags_views.py PFI/tests/test_v022_stage7_formula_scoring.py -q -p no:cacheprovider
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests -q -p no:cacheprovider
 node --check PFI/web/app/shell.js
 python3 scripts/validate_project_governance.py --project PFI
 git diff --check -- PFI
