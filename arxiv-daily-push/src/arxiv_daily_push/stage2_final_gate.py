@@ -4541,9 +4541,16 @@ def build_independent_review_signoff_validation_state(payload: Mapping[str, Any]
     return state
 
 
-def build_final_bundle_prerequisite_plan_state() -> dict[str, Any]:
+def build_final_bundle_prerequisite_plan_state(
+    *,
+    repo_root: Path | None = None,
+    no_production_side_effect_attestation: Mapping[str, Any] | None = None,
+    load_committed_artifacts: bool = True,
+) -> dict[str, Any]:
     """Build the current fail-closed execution order for final-bundle prerequisites."""
 
+    if load_committed_artifacts and no_production_side_effect_attestation is None:
+        no_production_side_effect_attestation = _load_committed_no_production_side_effect_attestation(repo_root)
     validation_states: dict[str, Mapping[str, Any]] = {
         "INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION": (
             build_independent_final_reviewer_assignment_validation_state(None)
@@ -4552,7 +4559,9 @@ def build_final_bundle_prerequisite_plan_state() -> dict[str, Any]:
         "S2PLT04_COMPLETION_REPORT": build_s2plt04_completion_report_validation_state(None),
         "FINAL_COMMAND_EXECUTION": build_final_command_execution_validation_state(None),
         "NO_PRODUCTION_SIDE_EFFECT_ATTESTATION": (
-            build_no_production_side_effect_attestation_validation_state(None)
+            build_no_production_side_effect_attestation_validation_state(
+                no_production_side_effect_attestation
+            )
         ),
         "NEXT_AGENT_HANDOFF": build_next_agent_handoff_validation_state(None),
         "INDEPENDENT_REVIEW_SIGNOFF": build_independent_review_signoff_validation_state(None),
@@ -4577,6 +4586,20 @@ def build_final_bundle_prerequisite_plan_state() -> dict[str, Any]:
         )
 
     all_required_steps_passed = all(step["status"] == "pass" for step in ordered_steps)
+    blocking_reasons: list[str] = []
+    for step in ordered_steps:
+        for error in step["validation_errors"]:
+            if (
+                error in S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_BLOCKING_REASONS
+                and error not in blocking_reasons
+            ):
+                blocking_reasons.append(error)
+    for inherited_blocker in (
+        "inherited_v7_1_p0_findings_open",
+        "inherited_v7_1_p1_findings_open",
+    ):
+        if inherited_blocker not in blocking_reasons:
+            blocking_reasons.append(inherited_blocker)
     state = {
         "status": "pass" if all_required_steps_passed else "blocked",
         "scope": "final_bundle_prerequisite_plan_only_no_production_acceptance",
@@ -4590,7 +4613,7 @@ def build_final_bundle_prerequisite_plan_state() -> dict[str, Any]:
         ),
         "all_required_steps_passed": all_required_steps_passed,
         "ready_for_final_bundle_manifest": False,
-        "blocking_reasons": list(S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_BLOCKING_REASONS),
+        "blocking_reasons": blocking_reasons,
         **{flag: False for flag in S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_FORBIDDEN_FLAGS},
         "state_hash": "",
     }
@@ -4616,23 +4639,39 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
     ordered_steps = _list_of_mappings(state.get("ordered_steps"))
     if tuple(step.get("step_id") for step in ordered_steps) != S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_REQUIRED_STEPS:
         errors.append("final bundle prerequisite plan ordered_steps are invalid")
-    if any(step.get("status") == "pass" for step in ordered_steps):
-        errors.append("final bundle prerequisite plan cannot mark steps pass before artifacts exist")
     for step in ordered_steps:
         if not isinstance(step.get("artifact_ref"), str) or not step.get("artifact_ref"):
             errors.append(f"{step.get('step_id', 'UNKNOWN')}.artifact_ref must be a non-empty string")
+        expected_status = "pass" if not step.get("validation_errors", []) else "blocked"
+        if step.get("status") != expected_status:
+            errors.append("final bundle prerequisite plan step statuses must match validation errors")
 
-    if state.get("next_required_step") != "INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION":
-        errors.append(
-            "final bundle prerequisite plan next_required_step must remain INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION"
-        )
+    expected_next_required_step = next(
+        (step.get("step_id") for step in ordered_steps if step.get("status") != "pass"),
+        None,
+    )
+    if state.get("next_required_step") != expected_next_required_step:
+        errors.append("final bundle prerequisite plan next_required_step must match first blocked step")
     if state.get("all_required_steps_passed") is not False:
         errors.append("final bundle prerequisite plan all_required_steps_passed must remain false")
     if state.get("ready_for_final_bundle_manifest") is not False:
         errors.append("final bundle prerequisite plan must not be ready for final bundle manifest")
-    for reason in S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_BLOCKING_REASONS:
-        if reason not in state.get("blocking_reasons", []):
-            errors.append(f"final bundle prerequisite plan must include blocker {reason}")
+    expected_blocking_reasons: list[str] = []
+    for step in ordered_steps:
+        for error in step.get("validation_errors", []):
+            if (
+                error in S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_BLOCKING_REASONS
+                and error not in expected_blocking_reasons
+            ):
+                expected_blocking_reasons.append(error)
+    for inherited_blocker in (
+        "inherited_v7_1_p0_findings_open",
+        "inherited_v7_1_p1_findings_open",
+    ):
+        if inherited_blocker not in expected_blocking_reasons:
+            expected_blocking_reasons.append(inherited_blocker)
+    if state.get("blocking_reasons") != expected_blocking_reasons:
+        errors.append("final bundle prerequisite plan blocking_reasons must match blocked steps")
     for flag in S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_FORBIDDEN_FLAGS:
         if state.get(flag) is not False:
             errors.append(f"{flag} must be false")

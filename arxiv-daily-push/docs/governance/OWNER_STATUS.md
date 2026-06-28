@@ -63,7 +63,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 11. Evidence Required To Unblock
 
 - evidence_required: S2PMT07 independent final review, inherited P0/P1 closure proof, S2PLT04 completion, governance validator, lean render proof, and no-production-side-effect evidence
-- principal_risks: 将 `validate-final-bundle-manifest` / `validate-s2plt04-completion-report` / `validate-no-production-attestation` / `validate-next-agent-handoff` CLI validators、`validate-final-command-execution` CLI validator、`validate-p0-p1-zero-proof` CLI validator、S2PLT02 delivery evidence ledger 或 2026-06-28 M4 watermark proof record 误读为 final commands executed、P0/P1 清零、S2PLT02 acceptance、真实两日运行、scheduler proof、S2PLT04 完成、S2PMT07 通过或生产 stop gate 解除
+- principal_risks: 将 validate-final-command-execution CLI validator、validate-p0-p1-zero-proof CLI validator、S2PLT02 delivery evidence ledger 或 2026-06-28 M4 watermark proof record 误读为 final commands executed、P0/P1 清零、S2PLT02 acceptance、真实两日运行、scheduler proof、S2PLT04 完成、S2PMT07 通过或生产 stop gate 解除
 - generated_from_refs: `arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml, arxiv-daily-push/docs/governance/delivery_tasks.yaml`
 
 ## 12. Model Formula Parameter Change
@@ -78,16 +78,16 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PMT07_REMAINING_FINAL_BUNDLE_ARTIFACT_CLI_VALIDATORS_READY_ARTIFACTS_MISSING_NO_PRODUCTION`
+- release_gate: `S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_CLI_READY_NO_ARTIFACTS_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `0`
 - commit_bound_events: `4`
-- legacy_unbound_events: `231`
-- precommit_pending_events: `42`
-- pending_or_stale_events: `272`
+- legacy_unbound_events: `240`
+- precommit_pending_events: `40`
+- pending_or_stale_events: `279`
 
 ## 15. UNKNOWN
 
@@ -97,11 +97,11 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 - source_base_commit: `9fbb0c4eb240a1782bae3db4db873ded37ac21f4`
 - source_tree_hash: `23334defdf6e168d709c223d61c0998e594f6852`
-- source_snapshot_hash: `sha256:a68baa09e7ce2df698c1f653a64a9db8dea11b07ba731497245ee261d349151a`
-- snapshot_event_time: `2026-06-28T23:58:57+10:00`
+- source_snapshot_hash: `sha256:1d8229c6749ec53bb8367542dd2959ae9b74ea204759e124992fadccf7e3d91d`
+- snapshot_event_time: `2026-06-29T00:14:34+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PM / S2PMT07_REMAINING_FINAL_BUNDLE_ARTIFACT_CLI_VALIDATORS_READY_ARTIFACTS_MISSING_NO_PRODUCTION`
+- phase/gate: `S2PM / S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_CLI_READY_NO_ARTIFACTS_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 

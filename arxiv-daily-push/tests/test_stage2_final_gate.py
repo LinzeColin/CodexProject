@@ -3798,7 +3798,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertIn("independent_review_signoff_missing", signoff["validation_errors"])
         self.assertEqual(validate_final_acceptance_bundle_readiness_state(state), [])
 
-    def test_final_bundle_prerequisite_plan_orders_missing_artifacts_fail_closed(self) -> None:
+    def test_final_bundle_prerequisite_plan_consumes_committed_no_production_artifact(self) -> None:
         plan = build_final_bundle_prerequisite_plan_state()
 
         self.assertEqual(plan["status"], "blocked")
@@ -3808,8 +3808,10 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(plan["ready_for_final_bundle_manifest"])
         self.assertEqual(plan["next_required_step"], "INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION")
         self.assertEqual([step["step_id"] for step in plan["ordered_steps"]], list(plan["required_steps"]))
-        for reason in S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_BLOCKING_REASONS:
-            self.assertIn(reason, plan["blocking_reasons"])
+        step_status = {step["step_id"]: step["status"] for step in plan["ordered_steps"]}
+        self.assertEqual(step_status["NO_PRODUCTION_SIDE_EFFECT_ATTESTATION"], "pass")
+        self.assertIn("independent_final_reviewer_assignment_missing", plan["blocking_reasons"])
+        self.assertNotIn("no_production_side_effect_attestation_missing", plan["blocking_reasons"])
         for flag in S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_FORBIDDEN_FLAGS:
             self.assertFalse(plan[flag])
         self.assertEqual(validate_final_bundle_prerequisite_plan_state(plan), [])
@@ -3817,7 +3819,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         tampered = json.loads(json.dumps(plan))
         tampered["ordered_steps"][0]["status"] = "pass"
         self.assertIn(
-            "final bundle prerequisite plan cannot mark steps pass before artifacts exist",
+            "final bundle prerequisite plan step statuses must match validation errors",
             validate_final_bundle_prerequisite_plan_state(tampered),
         )
 

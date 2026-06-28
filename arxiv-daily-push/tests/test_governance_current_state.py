@@ -30,27 +30,25 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn(f"- Current task: `{expected_task}`", current_state)
         self.assertIn(f"### `{current_iteration}`", ledger)
 
-    def test_s2pmt07_current_state_summary_describes_remaining_final_bundle_cli_validators(self) -> None:
+    def test_s2pmt07_current_state_summary_describes_final_bundle_prerequisite_plan_cli(self) -> None:
         ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
-            "S2PMT07_REMAINING_FINAL_BUNDLE_ARTIFACT_CLI_VALIDATORS_READY_ARTIFACTS_MISSING_NO_PRODUCTION",
+            "S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_CLI_READY_NO_ARTIFACTS_NO_PRODUCTION",
             current_state,
         )
-        self.assertIn("S2PMT07-REMAINING-FINAL-BUNDLE-ARTIFACT-CLI-VALIDATORS", current_state)
-        self.assertIn("validate-final-bundle-manifest", current_state)
-        self.assertIn("validate-s2plt04-completion-report", current_state)
-        self.assertIn("validate-no-production-attestation", current_state)
-        self.assertIn("validate-next-agent-handoff", current_state)
-        self.assertIn("manifest `blocked`", current_state)
-        self.assertIn("S2PLT04 report `blocked`", current_state)
-        self.assertIn("no-production attestation `pass`", current_state)
-        self.assertIn("next-agent handoff `blocked`", current_state)
+        self.assertIn("S2PMT07-FINAL-BUNDLE-PREREQUISITE-PLAN-CLI", current_state)
+        self.assertIn("plan-final-bundle-prerequisites", current_state)
+        self.assertIn("NO_PRODUCTION_SIDE_EFFECT_ATTESTATION", current_state)
+        self.assertIn("`pass`", current_state)
+        self.assertIn("INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION", current_state)
         self.assertIn("P0=8", current_state)
         self.assertIn("P1=37", current_state)
         self.assertIn("does not create final-bundle artifacts", current_state)
         self.assertIn("does not close P0/P1", current_state)
+        self.assertIn("does not complete S2PLT04", current_state)
+        self.assertIn("does not execute final commands", current_state)
         self.assertNotIn("M4 watermark proof record", current_state)
         self.assertNotIn("m4_watermark_correct=true", current_state)
 
