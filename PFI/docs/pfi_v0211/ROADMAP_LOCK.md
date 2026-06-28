@@ -1,0 +1,62 @@
+# PFI v0.2.1.1 Product UI Recovery Roadmap Lock
+
+更新时间：2026-06-29
+
+## 执行口径
+
+用户最新要求优先：roadmap 中 Phase、Stage、Task 的母子关系不作为执行层级。v0.2.1.1 后续执行以 **Stage** 为 pursuing goal 的顶层 run gate，Phase 和 Task 只是 Stage 内部的子项。
+
+硬规则：
+
+- 一共有 6 个执行 Stage：`S0` 到 `S5`。
+- 每次 run work 最多完成 1 个 Stage。
+- 本轮只完成 `S0 准备轮`。
+- Stage 0 不修改正式 UI。
+- 后续 Stage 未开始前，不允许声明 v0.2.1.1 完成。
+
+## 6 个执行 Stage
+
+| 执行 Stage | 名称 | 吸收的来源 Phase/Stage | 本 Stage 只做什么 | 不做什么 |
+| --- | --- | --- | --- | --- |
+| S0 | 准备轮：失败冻结与执行锁 | Phase 0、Stage 0.1、资料读取、路线纠偏 | 标记旧前端失败；锁定 6-stage 执行模型；建立来源清单、合同和测试；记录冲突默认处理 | 不改 Web Shell，不重建导航，不做图表、上传、持仓、报告 |
+| S1 | 产品壳与路由 | 原 P0 + P1 | 重建正式主导航、一级页面状态、旧入口别名、浏览器前进后退 | 不做图表、上传闭环、持仓编辑、报告 |
+| S2 | 页面骨架与去 AI 化 | 原 P2 + P3 | 清理开发者词和演示污染；建立首页、账户、投资、消费、数据源、建议、报告、设置骨架 | 不做数据库 migration，不伪造趋势数据 |
+| S3 | 真实操作流 | 原 P4 | 上传、账本复核、持仓编辑表单、设置保存 | 不用 toast 代替操作，不用浏览器缓存做生产保存 |
+| S4 | 持久化与同步 | 原 P6 | 持仓写 SQLite；刷新和重启后读取；首页、投资、报告同步 | 不跳过 SQLite 查询，不声明真实账户生产联通 |
+| S5 | 真实图表与最终验收 | 原 P5 + P7 | 账户、投资、消费真实图表或中文空状态；全入口点击、数据、视觉验收 | 不用 demo/sample/mock/fake 数据，不用关键词测试替代行为测试 |
+
+## Stage 1 默认产品决策
+
+Stage 0 读取到两个来源的导航差异。默认采用 RTF 最新纠偏稿：
+
+1. 正式主导航为 10 个入口：首页总览、账户与资产、账本流水、投资管理、消费管理、数据源与上传、建议与复盘、报告与洞察、市场与研究、设置。
+2. 旧入口不作为主导航展示，只作为路由别名、搜索别名或二级入口。
+3. 策略实验室只有一个真实页面，默认归到 `市场与研究 > 策略实验室`。
+4. 如用户下一轮明确改回 9 个入口，则先更新本路线锁和合同，再做 Stage 1。
+
+## Stage 0 进入/退出条件
+
+Stage 0 进入条件：
+
+- 已读取 `/Users/linzezhang/Downloads/v0.2.1.1.rtf`。
+- 已读取 `/Users/linzezhang/Downloads/pfi_v0.2.1_controlled_ui_rebuild_task_pack_roadmap.md`。
+- 已读取 PFI 当前 `AGENTS.md`、`HANDOFF.md`、三基文件和现有 v0.2.1/v0.2.2 记录。
+
+Stage 0 退出条件：
+
+- `docs/pfi_v0211/SOURCE_TASK_PACK_MANIFEST.md` 存在。
+- `docs/pfi_v0211/ROADMAP_LOCK.md` 存在。
+- `docs/pfi_v0211/STAGE0_PREPARATION.md` 存在。
+- `src/pfi_v02/stage_v0211_ui_recovery.py` 存在。
+- `tests/test_v0211_stage0_preparation_contract.py` 通过。
+- 三基文件记录当前 v0.2.1.1 准备轮和下一轮 Stage 1 边界。
+
+## 后续停止条件
+
+任意 Stage 触发以下条件时，不允许声明通过：
+
+- 继续写“v0.2.1 前端优化已完成”而不说明其正式 UI 失败。
+- 把所有模块堆在一个长页面里，用锚点滚动冒充页面跳转。
+- 正式 UI 出现运行边界、默认反馈控制台、右侧设置栏、Task Pack、Demo、Prototype、runtime、Boundary 等开发者词污染。
+- 按字符串/marker/function name 测试替代真实浏览器点击、保存、刷新、重启、SQLite 查询和截图验收。
+- 使用 demo/sample/synthetic/fixture/mock/fake/测试样例数据作为正式产品数据源。

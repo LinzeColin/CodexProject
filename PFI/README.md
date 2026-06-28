@@ -7,6 +7,23 @@ PFI V0.2 is the Personal Financial Intelligence project under
 under `LinzeColin/CodexProject/QBVS`; PFI investment management does not own
 or cover QBVS.
 
+## v0.2.1.1 Product UI Recovery Stage 0
+
+`v0.2.1.1 Product UI Recovery` 是当前前端 UIUX 逻辑优化准备轮。用户已明确：当前 v0.2.1 前端优化不再作为正式 UI 完成状态，后续不能继续在 AI 化 Web Shell 上补丁式堆卡片、堆关键词或用字符串测试冒充验收。
+
+本轮只完成 Stage 0 准备：读取 `/Users/linzezhang/Downloads/v0.2.1.1.rtf` 和 `/Users/linzezhang/Downloads/pfi_v0.2.1_controlled_ui_rebuild_task_pack_roadmap.md`，把错误的 Phase/Stage 母子关系纠正为 6 个执行 Stage，并锁定每次 pursuing goal 最多完成 1 个 Stage。本轮不修改 `PFI/web/index.html`、`PFI/web/app/shell.js` 或 `PFI/src/pfi_os/app/streamlit_app.py`。
+
+Stage 0 交付入口：
+
+| 文件 | 用途 |
+| --- | --- |
+| `PRODUCT.md` | PFI 产品上下文，供后续 UIUX 重建保持一致。 |
+| `docs/pfi_v0211/SOURCE_TASK_PACK_MANIFEST.md` | v0.2.1.1 来源资料、冲突和默认处理。 |
+| `docs/pfi_v0211/ROADMAP_LOCK.md` | 6-stage 执行路线、每轮边界和停止条件。 |
+| `docs/pfi_v0211/STAGE0_PREPARATION.md` | Stage 0 准备轮记录和验证命令。 |
+| `src/pfi_v02/stage_v0211_ui_recovery.py` | 机器可读 Stage 0 合同。 |
+| `tests/test_v0211_stage0_preparation_contract.py` | Stage 0 合同测试。 |
+
 ## v0.2.2 数据库治理整体复审
 
 `v0.2.2 数据库治理` 当前完成 Stage 0-13 的整体项目复审解决。正式页面、报告、图表、首页摘要和建议只允许读取真实 MetaDatabase 派生数据或中文真实空态；不得使用 demo/sample/synthetic/fixture/mock/fake/测试样例数据作为验收依据。不新增真实交易、自动投资、支付或券商提交能力。

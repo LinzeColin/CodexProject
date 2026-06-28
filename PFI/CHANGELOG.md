@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v0.2.1.1 Product UI Recovery Stage 0 - 2026-06-29
+
+- 建立 v0.2.1.1 前端 UIUX 逻辑优化准备轮，明确当前 v0.2.1 前端优化不再作为正式 UI 完成状态，后续不得继续在旧 AI 化 Web Shell 上补丁式修补。
+- 新增 `PRODUCT.md`、`docs/pfi_v0211/SOURCE_TASK_PACK_MANIFEST.md`、`docs/pfi_v0211/ROADMAP_LOCK.md`、`docs/pfi_v0211/STAGE0_PREPARATION.md`、`src/pfi_v02/stage_v0211_ui_recovery.py` 和 `tests/test_v0211_stage0_preparation_contract.py`。
+- 将用户纠偏后的执行层级锁定为 6 个 Stage：S0 准备轮、S1 产品壳与路由、S2 页面骨架与去 AI 化、S3 真实操作流、S4 持久化与同步、S5 真实图表与最终验收；每次 run work 最多完成 1 个 Stage。
+- 记录 Markdown roadmap 与 RTF 的来源差异：Stage 1 默认采用 RTF 最新稿的 10 个正式主导航入口，并把策略实验室唯一位置默认归到 `市场与研究 > 策略实验室`。
+- 本轮不修改 `PFI/web/index.html`、`PFI/web/app/shell.js`、`PFI/src/pfi_os/app/streamlit_app.py`，不刷新 app 入口，不清理缓存，不提前实现后续 Stage。
+
 ## v0.2.1 复审退回修复 - 2026-06-28
 
 - 正式 Web Shell 删除运行边界/使用限制/隐私边界/只读/实盘/交易密码等用户可见边界类文案；约束保留在合同、测试和文档中。
