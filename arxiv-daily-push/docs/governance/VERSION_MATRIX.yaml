@@ -242,16 +242,25 @@ parameter_profile_versions:
   adp-s2pmt04-install-lifecycle-b001: "adp-s2pmt04-install-lifecycle-b001-v1"
   adp-s2pmt04-install-lifecycle-b001-parameters: "adp-s2pmt04-install-lifecycle-b001-parameters-v1"
 data_snapshot_version: "fixture_arxiv_atom_to_daily_dry_run_v1"
-current_iteration: "ITER-20260628-ADP-S2PMT07-FINAL-BUNDLE-ARTIFACT-VALIDATION"
-current_phase: "S2PM"
-current_gate: "S2PMT07_FINAL_BUNDLE_ARTIFACT_VALIDATION_BLOCKED_NO_PRODUCTION"
+current_iteration: "ITER-20260628-ADP-S2PLT02-PARTIAL-REAL-DELIVERY-EVIDENCE"
+current_phase: "S2PL"
+current_gate: "S2PLT02_PARTIAL_REAL_DELIVERY_EVIDENCE_BLOCKED_NO_ACCEPTANCE"
 current_v6_task_id: "NOT_APPLICABLE"
 current_v7_contract_version: "ADP-PRODUCT-CONTRACT-V7.2"
 current_v7_roadmap_version: "ADP-ROADMAP-V7.2"
 current_v7_task_id: "S2PMT07"
 current_v7_shadow_source_task_id: "NONE_WHILE_S2PMT07_BLOCKED"
 current_v7_final_task_id: "S2PMT07"
-current_v7_legacy_alias: "S2PMT07-FINAL-BUNDLE-ARTIFACT-VALIDATION records that the final acceptance bundle now has a directory-level artifact validation gate requiring FINAL_ACCEPTANCE_BUNDLE directory presence, every required item, every sub-artifact validator, no-production flags, and state hash binding. Current status is blocked because the final bundle directory and artifacts are missing; no reviewer assignment, independent closure decision, P0/P1 zero proof, S2PLT04 completion, final command execution, Release, scheduler, real SMTP, production restore, CURRENT/V7 change, DAILY_OPERATION, or integrated production acceptance is claimed"
+current_v7_legacy_alias: "S2PLT02-PARTIAL-REAL-DELIVERY-EVIDENCE records that the S2PLT02 live two-day precheck now consumes the 2026-06-28 M1-M4 resend as one real natural day and four observed emails. S2PLT02 remains blocked because S2PLT01 is not accepted, two consecutive real days, eight emails, scheduler proof, M4 watermark proof, inherited P0/P1 zero proof, S2PLT04, final bundle, S2PMT07 independent review, Release, scheduler, production restore, CURRENT/V7 change, DAILY_OPERATION, and integrated production acceptance are not claimed"
+s2plt02_partial_real_delivery_iteration: "ITER-20260628-ADP-S2PLT02-PARTIAL-REAL-DELIVERY-EVIDENCE"
+s2plt02_partial_real_delivery_gate: "S2PLT02_PARTIAL_REAL_DELIVERY_EVIDENCE_BLOCKED_NO_ACCEPTANCE"
+s2plt02_observed_natural_days: 1
+s2plt02_required_natural_days: 2
+s2plt02_observed_email_count: 4
+s2plt02_required_email_count: 8
+s2plt02_real_smtp_evidence_present: true
+s2plt02_scheduler_evidence_present: false
+s2plt02_accepted: false
 local_daily_m1_m4_send_orchestration_iteration: "ITER-20260628-ADP-LOCAL-DAILY-M1-M4-SEND-ORCHESTRATION"
 local_daily_m1_m4_send_orchestration_gate: "LOCAL_DAILY_M1_M4_SEND_ORCHESTRATION_READY_NO_PRODUCTION_ACCEPTANCE"
 local_daily_m1_m4_real_m2_m4_delivery_claimed: true

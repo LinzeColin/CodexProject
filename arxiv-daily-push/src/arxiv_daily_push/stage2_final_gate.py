@@ -681,6 +681,23 @@ S2PLT02_BLOCKING_REASONS = (
     "inherited_v7_1_p0_findings_open",
     "inherited_v7_1_p1_findings_open",
 )
+S2PLT02_PARTIAL_REAL_DELIVERY_SERVICE_DATE = "2026-06-28"
+S2PLT02_PARTIAL_REAL_DELIVERY_GENERATED_AT = "2026-06-28T11:28:25+10:00"
+S2PLT02_PARTIAL_REAL_DELIVERY_SCOPE = "one_day_real_delivery_evidence_not_s2plt02_acceptance"
+S2PLT02_PARTIAL_REAL_DELIVERY_EVIDENCE_REFS = (
+    "governance/run_manifests/ADP-LOCAL-DAILY-M1-M4-RESEND-EXECUTION-20260628.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_LOCAL_DAILY_M1_M4_RESEND_EXECUTION_20260628.md",
+    "arxiv-daily-push/用户中心/邮件发送与队列状态.md",
+)
+S2PLT02_PARTIAL_REAL_DELIVERY_PRODUCTS = ("M1", "M2", "M3", "M4")
+S2PLT02_PARTIAL_REAL_DELIVERY_HISTORICAL_PRODUCTS = ("M1",)
+S2PLT02_PARTIAL_REAL_DELIVERY_NEWLY_SENT_PRODUCTS = ("M2", "M3", "M4")
+S2PLT02_PARTIAL_REAL_DELIVERY_REFS = {
+    "M1": "smtp://message/smtp-delivery:87f268d29a31288d",
+    "M2": "smtp://message/smtp-delivery:c72ffcd03a277e1d",
+    "M3": "smtp://message/smtp-delivery:590b7230463ff9f7",
+    "M4": "smtp://message/smtp-delivery:7f815186af789297",
+}
 S2PLT03_RESILIENCE_PRECHECK_MODEL_ID = "adp-s2plt03-resilience-precheck-v1"
 S2PLT03_ACCEPTANCE_ID = "ACC-S2PLT03-RESILIENCE"
 S2PLT03_TASK_ID = "S2PLT03"
@@ -843,17 +860,50 @@ def build_s2plt02_dependency_state() -> dict[str, Any]:
     }
 
 
+def build_s2plt02_partial_real_delivery_state() -> dict[str, Any]:
+    """Build one-day real delivery evidence without treating it as S2PLT02 acceptance."""
+
+    state = {
+        "status": "partial",
+        "scope": S2PLT02_PARTIAL_REAL_DELIVERY_SCOPE,
+        "service_dates": [S2PLT02_PARTIAL_REAL_DELIVERY_SERVICE_DATE],
+        "generated_at": S2PLT02_PARTIAL_REAL_DELIVERY_GENERATED_AT,
+        "planned_send_total": len(S2PLT02_PARTIAL_REAL_DELIVERY_PRODUCTS),
+        "observed_natural_days": 1,
+        "observed_email_count": len(S2PLT02_PARTIAL_REAL_DELIVERY_PRODUCTS),
+        "sent_mail_products": list(S2PLT02_PARTIAL_REAL_DELIVERY_PRODUCTS),
+        "historical_sent_mail_products": list(S2PLT02_PARTIAL_REAL_DELIVERY_HISTORICAL_PRODUCTS),
+        "newly_sent_mail_products": list(S2PLT02_PARTIAL_REAL_DELIVERY_NEWLY_SENT_PRODUCTS),
+        "delivery_ref_by_product": dict(S2PLT02_PARTIAL_REAL_DELIVERY_REFS),
+        "duplicate_email_count": 0,
+        "real_smtp_evidence_present": True,
+        "scheduler_evidence_present": False,
+        "m4_mail_product_present": True,
+        "m4_watermark_correct": False,
+        "s2plt02_accepted": False,
+        "production_acceptance_claimed": False,
+        "stage2_integrated_production_accepted": False,
+        "new_production_side_effects_from_precheck": False,
+        "evidence_refs": list(S2PLT02_PARTIAL_REAL_DELIVERY_EVIDENCE_REFS),
+        "evidence_hash": "",
+    }
+    state["evidence_hash"] = _stable_hash({key: value for key, value in state.items() if key != "evidence_hash"})
+    return state
+
+
 def build_s2plt02_live_evidence_state() -> dict[str, Any]:
     """Build current S2PLT02 live-run evidence state without touching production."""
 
+    partial_delivery = build_s2plt02_partial_real_delivery_state()
     available = {
         "S2PLT01_ACCEPTED": False,
-        "TWO_CONSECUTIVE_REAL_NATURAL_DAYS": False,
-        "EIGHT_REAL_EMAILS_SENT": False,
-        "NO_DUPLICATE_EMAILS": False,
-        "M4_WATERMARK_CORRECT": False,
-        "REAL_SCHEDULER_PROVEN": False,
-        "REAL_SMTP_PROVEN": False,
+        "TWO_CONSECUTIVE_REAL_NATURAL_DAYS": partial_delivery["observed_natural_days"]
+        >= S2PLT02_REQUIRED_NATURAL_DAYS,
+        "EIGHT_REAL_EMAILS_SENT": partial_delivery["observed_email_count"] >= S2PLT02_REQUIRED_EMAIL_COUNT,
+        "NO_DUPLICATE_EMAILS": partial_delivery["duplicate_email_count"] == 0,
+        "M4_WATERMARK_CORRECT": partial_delivery["m4_watermark_correct"],
+        "REAL_SCHEDULER_PROVEN": partial_delivery["scheduler_evidence_present"],
+        "REAL_SMTP_PROVEN": partial_delivery["real_smtp_evidence_present"],
     }
     return {
         "status": "blocked",
@@ -861,15 +911,16 @@ def build_s2plt02_live_evidence_state() -> dict[str, Any]:
         "available_evidence": available,
         "missing_evidence": [item for item, present in available.items() if not present],
         "required_natural_days": S2PLT02_REQUIRED_NATURAL_DAYS,
-        "observed_natural_days": 0,
+        "observed_natural_days": partial_delivery["observed_natural_days"],
         "required_email_count": S2PLT02_REQUIRED_EMAIL_COUNT,
-        "observed_email_count": 0,
+        "observed_email_count": partial_delivery["observed_email_count"],
         "required_mail_products": list(S2PLT02_REQUIRED_MAIL_PRODUCTS),
-        "observed_mail_products": [],
-        "duplicate_email_count": None,
-        "m4_watermark_correct": False,
-        "real_scheduler_proven": False,
-        "real_smtp_proven": False,
+        "observed_mail_products": list(partial_delivery["sent_mail_products"]),
+        "duplicate_email_count": partial_delivery["duplicate_email_count"],
+        "m4_watermark_correct": partial_delivery["m4_watermark_correct"],
+        "real_scheduler_proven": partial_delivery["scheduler_evidence_present"],
+        "real_smtp_proven": partial_delivery["real_smtp_evidence_present"],
+        "partial_real_delivery_evidence": partial_delivery,
     }
 
 
@@ -966,6 +1017,31 @@ def validate_s2plt02_live_2d_precheck_report(report: Mapping[str, Any]) -> list[
         errors.append("evidence.required_email_count must be 8")
     if tuple(evidence.get("required_mail_products", [])) != S2PLT02_REQUIRED_MAIL_PRODUCTS:
         errors.append("evidence.required_mail_products must be M1-M4")
+    partial_delivery = _mapping(evidence.get("partial_real_delivery_evidence"))
+    if not partial_delivery:
+        errors.append("evidence.partial_real_delivery_evidence is required")
+    else:
+        if partial_delivery.get("scope") != S2PLT02_PARTIAL_REAL_DELIVERY_SCOPE:
+            errors.append("partial real delivery evidence scope is invalid")
+        if partial_delivery.get("observed_natural_days") != 1:
+            errors.append("partial real delivery evidence must record one observed natural day")
+        if partial_delivery.get("observed_email_count") != 4:
+            errors.append("partial real delivery evidence must record four observed emails")
+        if tuple(partial_delivery.get("sent_mail_products", [])) != S2PLT02_PARTIAL_REAL_DELIVERY_PRODUCTS:
+            errors.append("partial real delivery evidence sent products must be M1-M4")
+        if tuple(partial_delivery.get("newly_sent_mail_products", [])) != S2PLT02_PARTIAL_REAL_DELIVERY_NEWLY_SENT_PRODUCTS:
+            errors.append("partial real delivery evidence newly sent products must be M2-M4")
+        if partial_delivery.get("real_smtp_evidence_present") is not True:
+            errors.append("partial real delivery evidence must include real SMTP proof")
+        if partial_delivery.get("scheduler_evidence_present") is not False:
+            errors.append("partial real delivery evidence must not claim scheduler proof")
+        if partial_delivery.get("s2plt02_accepted") is not False:
+            errors.append("partial real delivery evidence must not accept S2PLT02")
+        expected_partial_hash = _stable_hash(
+            {key: value for key, value in partial_delivery.items() if key != "evidence_hash"}
+        )
+        if partial_delivery.get("evidence_hash") != expected_partial_hash:
+            errors.append("partial real delivery evidence_hash does not match evidence content")
     if report.get("status") == "pass":
         gates = _mapping(report.get("gates"))
         if not all(gates.values()):
@@ -973,9 +1049,26 @@ def validate_s2plt02_live_2d_precheck_report(report: Mapping[str, Any]) -> list[
         if report.get("blocking_reasons"):
             errors.append("passing S2PLT02 report must not have blocking reasons")
     else:
-        for reason in S2PLT02_BLOCKING_REASONS:
-            if reason not in report.get("blocking_reasons", []):
-                errors.append(f"blocked S2PLT02 precheck must include {reason}")
+        gates = _mapping(report.get("gates"))
+        expected_reasons = []
+        if not gates.get("s2plt01_accepted"):
+            expected_reasons.append("s2plt01_not_accepted")
+        if not gates.get("two_consecutive_real_days"):
+            expected_reasons.append("two_consecutive_real_days_not_proven")
+        if not gates.get("eight_real_emails_sent"):
+            expected_reasons.append("eight_real_emails_not_proven")
+        if not gates.get("real_scheduler_proven"):
+            expected_reasons.append("real_scheduler_not_proven")
+        if not gates.get("real_smtp_proven"):
+            expected_reasons.append("real_smtp_not_proven")
+        if not gates.get("m4_watermark_correct"):
+            expected_reasons.append("m4_watermark_not_proven")
+        if not gates.get("p0_zero"):
+            expected_reasons.append("inherited_v7_1_p0_findings_open")
+        if not gates.get("p1_zero"):
+            expected_reasons.append("inherited_v7_1_p1_findings_open")
+        if tuple(report.get("blocking_reasons", [])) != tuple(expected_reasons):
+            errors.append("blocked S2PLT02 precheck blocking_reasons must match failed gates")
     expected_hash = _stable_hash({key: value for key, value in report.items() if key != "report_hash"})
     if report.get("report_hash") != expected_hash:
         errors.append("S2PLT02 report_hash does not match report content")

@@ -12,6 +12,9 @@ from arxiv_daily_push.stage2_final_gate import (
     S2PLT02_REQUIRED_EVIDENCE,
     S2PLT02_REQUIRED_MAIL_PRODUCTS,
     S2PLT02_REQUIRED_NATURAL_DAYS,
+    S2PLT02_PARTIAL_REAL_DELIVERY_EVIDENCE_REFS,
+    S2PLT02_PARTIAL_REAL_DELIVERY_NEWLY_SENT_PRODUCTS,
+    S2PLT02_PARTIAL_REAL_DELIVERY_PRODUCTS,
     S2PLT03_BLOCKING_REASONS,
     S2PLT03_FORBIDDEN_FLAGS,
     S2PLT03_LOCAL_DRILL_FORBIDDEN_FLAGS,
@@ -108,6 +111,7 @@ from arxiv_daily_push.stage2_final_gate import (
     build_s2plt02_dependency_state,
     build_s2plt02_live_2d_precheck_report,
     build_s2plt02_live_evidence_state,
+    build_s2plt02_partial_real_delivery_state,
     build_s2plt03_dependency_state,
     build_s2plt03_local_resilience_drill_bundle,
     build_s2plt03_resilience_evidence_state,
@@ -158,20 +162,40 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(tuple(state["unmet_dependencies"]), S2PLT02_REQUIRED_DEPENDENCIES)
         self.assertEqual(state["s2plt01_acceptance_status"], "blocked_by_inherited_p0_p1_and_final_gates")
 
-    def test_s2plt02_live_evidence_state_records_missing_real_run(self) -> None:
+    def test_s2plt02_partial_real_delivery_state_records_one_day_four_mail_evidence(self) -> None:
+        state = build_s2plt02_partial_real_delivery_state()
+
+        self.assertEqual(state["status"], "partial")
+        self.assertEqual(state["observed_natural_days"], 1)
+        self.assertEqual(state["observed_email_count"], 4)
+        self.assertEqual(tuple(state["sent_mail_products"]), S2PLT02_PARTIAL_REAL_DELIVERY_PRODUCTS)
+        self.assertEqual(tuple(state["newly_sent_mail_products"]), S2PLT02_PARTIAL_REAL_DELIVERY_NEWLY_SENT_PRODUCTS)
+        self.assertEqual(tuple(state["evidence_refs"]), S2PLT02_PARTIAL_REAL_DELIVERY_EVIDENCE_REFS)
+        self.assertTrue(state["real_smtp_evidence_present"])
+        self.assertFalse(state["scheduler_evidence_present"])
+        self.assertFalse(state["m4_watermark_correct"])
+        self.assertFalse(state["s2plt02_accepted"])
+        self.assertFalse(state["production_acceptance_claimed"])
+
+    def test_s2plt02_live_evidence_state_records_partial_real_run_without_acceptance(self) -> None:
         state = build_s2plt02_live_evidence_state()
 
         self.assertEqual(state["status"], "blocked")
         self.assertEqual(tuple(state["required_evidence"]), S2PLT02_REQUIRED_EVIDENCE)
         self.assertEqual(state["required_natural_days"], S2PLT02_REQUIRED_NATURAL_DAYS)
-        self.assertEqual(state["observed_natural_days"], 0)
+        self.assertEqual(state["observed_natural_days"], 1)
         self.assertEqual(state["required_email_count"], S2PLT02_REQUIRED_EMAIL_COUNT)
-        self.assertEqual(state["observed_email_count"], 0)
+        self.assertEqual(state["observed_email_count"], 4)
         self.assertEqual(tuple(state["required_mail_products"]), S2PLT02_REQUIRED_MAIL_PRODUCTS)
+        self.assertEqual(tuple(state["observed_mail_products"]), S2PLT02_PARTIAL_REAL_DELIVERY_PRODUCTS)
         self.assertFalse(state["available_evidence"]["S2PLT01_ACCEPTED"])
+        self.assertFalse(state["available_evidence"]["TWO_CONSECUTIVE_REAL_NATURAL_DAYS"])
+        self.assertFalse(state["available_evidence"]["EIGHT_REAL_EMAILS_SENT"])
+        self.assertTrue(state["available_evidence"]["NO_DUPLICATE_EMAILS"])
         self.assertFalse(state["available_evidence"]["REAL_SCHEDULER_PROVEN"])
-        self.assertFalse(state["available_evidence"]["REAL_SMTP_PROVEN"])
+        self.assertTrue(state["available_evidence"]["REAL_SMTP_PROVEN"])
         self.assertFalse(state["m4_watermark_correct"])
+        self.assertEqual(state["partial_real_delivery_evidence"]["status"], "partial")
 
     def test_s2plt02_live_2d_precheck_fails_closed_without_production_side_effects(self) -> None:
         report = build_s2plt02_live_2d_precheck_report(generated_at="2026-06-26T19:00:00+10:00")
@@ -181,11 +205,22 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(report["inherited_p0_p1_closed"])
         for flag in S2PLT02_FORBIDDEN_FLAGS:
             self.assertFalse(report[flag])
-        for reason in S2PLT02_BLOCKING_REASONS:
+        for reason in (
+            "s2plt01_not_accepted",
+            "two_consecutive_real_days_not_proven",
+            "eight_real_emails_not_proven",
+            "real_scheduler_not_proven",
+            "m4_watermark_not_proven",
+            "inherited_v7_1_p0_findings_open",
+            "inherited_v7_1_p1_findings_open",
+        ):
             self.assertIn(reason, report["blocking_reasons"])
+        self.assertNotIn("real_smtp_not_proven", report["blocking_reasons"])
         self.assertFalse(report["gates"]["s2plt01_accepted"])
         self.assertFalse(report["gates"]["real_scheduler_proven"])
-        self.assertFalse(report["gates"]["real_smtp_proven"])
+        self.assertTrue(report["gates"]["real_smtp_proven"])
+        self.assertEqual(report["evidence"]["observed_natural_days"], 1)
+        self.assertEqual(report["evidence"]["observed_email_count"], 4)
         self.assertEqual(validate_s2plt02_live_2d_precheck_report(report), [])
 
         tampered = dict(report)

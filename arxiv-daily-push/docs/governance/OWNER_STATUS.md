@@ -31,10 +31,10 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 7. 下一行动、责任角色和验收证据
 
-- next_task_id: `S2PLT01`
+- next_task_id: `S2PLT02`
 - responsible_role: `content_owner + product_owner`
-- acceptance_ids: `ACC-S2PLT01-30D`
-- unblock_condition: S2PLT01 replay payload execution package can be misread as S2PLT01 acceptance; inherited P0/P1, S2PLT04, S2PMT07 final independent review, and final production stop gates still block S2PLT01 and integrated production acceptance.
+- acceptance_ids: `ACC-S2PLT02-2D`
+- unblock_condition: S2PLT02 now has one real natural day and four M1-M4 emails recorded from 2026-06-28, but still needs a second real natural day, eight total emails, real scheduler proof, M4 watermark proof, S2PLT01 acceptance, inherited P0/P1 zero proof, S2PLT04 completion, and S2PMT07 final review before any Stage 2 production acceptance claim.
 
 ## 8. 九层 Assurance 状态
 
@@ -63,7 +63,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 11. Evidence Required To Unblock
 
 - evidence_required: S2PMT07 independent final review, inherited P0/P1 closure proof, S2PLT04 completion, governance validator, lean render proof, and no-production-side-effect evidence
-- principal_risks: 将 S2PLT02 live 2-day readiness precheck 误读为 S2PLT02 acceptance 或真实两日运行、绕过 S2PMT07 独立复审或生产 stop gate
+- principal_risks: 将 2026-06-28 单日四封真实发送证据误读为 S2PLT02 acceptance、真实两日运行、scheduler 证明、M4 watermark 证明，或绕过 S2PMT07 独立复审和生产 stop gate
 - generated_from_refs: `arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml, arxiv-daily-push/docs/governance/delivery_tasks.yaml`
 
 ## 12. Model Formula Parameter Change

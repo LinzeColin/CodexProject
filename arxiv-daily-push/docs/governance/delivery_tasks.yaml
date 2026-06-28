@@ -3937,3 +3937,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PLT02-PARTIAL-REAL-DELIVERY-EVIDENCE"
+    phase: "S2PL"
+    objective: "Bind the recorded 2026-06-28 M1-M4 resend into S2PLT02 as one-day/four-email partial real delivery evidence without accepting S2PLT02."
+    scope: "S2PLT02 final-gate helper, focused regression tests, phase record, run manifest, traceability row, delivery/event records, current status views, and three base files."
+    non_scope: "No new SMTP send, no scheduler install or enablement, no Release upload, no public schema or DB migration, no source/ranking change, no CURRENT/V7 contract change, no P0/P1 closure, no S2PLT02 acceptance, no S2PLT04 completion, no DAILY_OPERATION, and no integrated production acceptance."
+    status: "blocked"
+    dependencies: ["LOCAL-DAILY-M1-M4-RESEND-EXECUTION", "S2PLT02", "S2PMT07"]
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_PARTIAL_REAL_DELIVERY_EVIDENCE.md", "governance/run_manifests/ADP-S2PLT02-PARTIAL-REAL-DELIVERY-EVIDENCE-20260628.json", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
+    acceptance_ids: ["ACC-S2PLT02-2D"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_partial_target PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q"]
+    test_results: ["focused stage2 final-gate tests: 59 OK"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PLT02-PARTIAL-REAL-DELIVERY-EVIDENCE-20260628.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_PARTIAL_REAL_DELIVERY_EVIDENCE.md", "governance/run_manifests/ADP-LOCAL-DAILY-M1-M4-RESEND-EXECUTION-20260628.json"]
+    result: "S2PLT02 records one observed real natural day and four M1-M4 emails while remaining blocked on the second day, eight emails, scheduler proof, M4 watermark proof, S2PLT01, P0/P1, S2PLT04, and S2PMT07."
+    risk: "Partial real delivery evidence can be misread as S2PLT02 completion; all acceptance and production flags remain false."
+    rollback: "Revert S2PLT02 partial evidence helper/tests and governance records; no runtime production state was changed by this task."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

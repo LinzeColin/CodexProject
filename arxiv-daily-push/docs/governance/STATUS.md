@@ -5,7 +5,7 @@
 - source_base_commit: `12e91a8e1b84fe29724f43229131bd43f8fa31cd`
 - source_tree_hash: `8caef1969ddfe23755890506daa0d02e6f6df81f`
 - source_snapshot_hash: `sha256:b73de879caeec70f188d04f118f5935cd40970adc17b88886541ee4102be0921`
-- snapshot_event_time: `2026-06-28T11:39:47+10:00`
+- snapshot_event_time: `2026-06-28T12:10:01+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -14,7 +14,7 @@
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - Product version: `0.23.1`
-- Phase/Gate: `S2PM / S2PMT07_FINAL_BUNDLE_ARTIFACT_VALIDATION_BLOCKED_NO_PRODUCTION`
+- Phase/Gate: `S2PL / S2PLT02_PARTIAL_REAL_DELIVERY_EVIDENCE_BLOCKED_NO_ACCEPTANCE`
 - Models/Formulas/Parameters total: `117 / 119 / 1050`
 - Active formulas/parameters: `119 / 1033`
 - Machine checked formulas/parameters: `119 / 1028`
@@ -35,7 +35,7 @@
 ## Delivery
 
 - Readiness: `VERIFIED`
-- Release gate: `S2PMT07_FINAL_BUNDLE_ARTIFACT_VALIDATION_BLOCKED_NO_PRODUCTION`
+- Release gate: `S2PLT02_PARTIAL_REAL_DELIVERY_EVIDENCE_BLOCKED_NO_ACCEPTANCE`
 - V7 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - V7 contract hash: `a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d`
 - V7 roadmap hash: `7c5f2d842d4f6b909343c953fe39b4a4aa540d168199747a9f7decdb1aad9bd1`
@@ -45,7 +45,7 @@
 - Production-forbidden until: `inherited V7.1 P0=0; inherited V7.1 P1=0; S2PLT04 completed; final bundle present; S2PMT07 independent review passed`
 - Stage 2 stop gate: `INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION`
 - Stage 2 integrated accepted: `false`
-- Next governance task: `S2PMT07`
+- Next governance task: `S2PLT02`
 - Parallel shadow source task: `NONE_WHILE_S2PMT07_BLOCKED`
 - Next executable task: `S2PLT01`
 - Pending/stale events: `249`
