@@ -21,13 +21,19 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 250
+- task_count: 251
 - acceptance_count: 127
 
 ## Delivery Tasks
 
 The machine-readable task source is `delivery_tasks.yaml`.
 
+
+## 2026-06-29 08:46:12 Australia/Sydney - S2PMT07 CLI Module Entrypoint
+
+- `S2PMT07-CLI-MODULE-ENTRYPOINT` makes `python3 -B -m arxiv_daily_push.cli plan-final-bundle-prerequisites --json` dispatch to the ADP CLI.
+- The command returns blocked JSON with `next_required_step=S2PLT04_COMPLETION_REPORT` and exit code `2`; this is not S2PLT04 completion, final command execution, final bundle acceptance, or production acceptance.
+- No SMTP, scheduler, Release, restore, schema/DB, source/ranking, CURRENT/V7, DAILY_OPERATION, or integrated production acceptance side effect is claimed.
 
 ## 2026-06-29 00:40:23 Australia/Sydney - S2PMT07 Independent Final Reviewer Assignment Artifact Draft CLI
 

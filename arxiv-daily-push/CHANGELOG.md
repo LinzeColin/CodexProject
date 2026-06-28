@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-06-29 08:46:12 Australia/Sydney - S2PMT07-CLI-MODULE-ENTRYPOINT
+
+- Added the missing `__main__` module entrypoint so `python3 -B -m arxiv_daily_push.cli plan-final-bundle-prerequisites --json` dispatches to the same CLI path as direct `main([...])` calls.
+- The module command now returns blocked JSON with `next_required_step=S2PLT04_COMPLETION_REPORT` and exit code `2`; this is a proof-chain executability fix only.
+- S2PLT04 completion report, final command execution, handoff, signoff, final manifest, P0/P1 top-level closure, SMTP, scheduler, Release, restore, CURRENT/V7 changes, DAILY_OPERATION, and integrated production acceptance remain blocked or false.
+
 ## 2026-06-29 00:40:23 Australia/Sydney - S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-ARTIFACT-DRAFT-CLI
 
 - Added `build-final-reviewer-assignment-artifact-draft` CLI to produce a stdout-only, ordered JSON draft for the future independent final reviewer assignment artifact from explicit owner/coordinator inputs.
