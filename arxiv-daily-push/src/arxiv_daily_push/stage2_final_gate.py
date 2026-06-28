@@ -7,6 +7,7 @@ import json
 from collections.abc import Mapping
 from typing import Any
 
+from arxiv_daily_push.stage2_lease_fencing import build_m4_cycle_watermark
 from arxiv_daily_push.stage2_replay_gate import (
     S2PLT01_REQUIRED_MAIL_PRODUCTS,
     build_s2plt01_independent_replay_review_report,
@@ -716,6 +717,25 @@ S2PLT02_DELIVERY_EVIDENCE_LEDGER_FORBIDDEN_SOURCE_FLAGS = (
     "v7_1_baseline_changed",
     "v7_2_contract_files_changed",
 )
+S2PLT02_M4_WATERMARK_PROOF_MODEL_ID = "adp-s2plt02-m4-watermark-proof-v1"
+S2PLT02_M4_WATERMARK_PROOF_SCOPE = "m4_watermark_proof_validator_no_s2plt02_acceptance"
+S2PLT02_M4_WATERMARK_REQUIRED_TERMINAL_PRODUCTS = ("M1", "M2", "M3")
+S2PLT02_M4_WATERMARK_FORBIDDEN_SOURCE_FLAGS = (
+    "integrated_production_accepted",
+    "stage2_integrated_production_accepted",
+    "daily_operation_enabled",
+    "release_uploaded",
+    "production_restore_executed",
+    "production_queue_mutated",
+    "public_schema_changed",
+    "db_migration_executed",
+    "source_adapter_changed",
+    "ranking_algorithm_changed",
+    "current_pointer_changed",
+    "v7_1_baseline_changed",
+    "v7_2_contract_files_changed",
+    "scheduler_enabled",
+)
 S2PLT03_RESILIENCE_PRECHECK_MODEL_ID = "adp-s2plt03-resilience-precheck-v1"
 S2PLT03_ACCEPTANCE_ID = "ACC-S2PLT03-RESILIENCE"
 S2PLT03_TASK_ID = "S2PLT03"
@@ -1103,6 +1123,184 @@ def validate_s2plt02_delivery_evidence_ledger_state(state: Mapping[str, Any]) ->
     return errors
 
 
+def build_s2plt02_m4_watermark_proof_state(
+    *,
+    watermark_proofs: list[Mapping[str, Any]] | None = None,
+    delivery_ledger: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Build the S2PLT02 M4 watermark proof state without enabling production."""
+
+    ledger = dict(delivery_ledger or build_s2plt02_delivery_evidence_ledger_state())
+    source_proofs = [
+        json.loads(json.dumps(record, ensure_ascii=False))
+        for record in (watermark_proofs if watermark_proofs is not None else [])
+    ]
+    ledger_errors = validate_s2plt02_delivery_evidence_ledger_state(ledger)
+    validation_errors: list[str] = []
+    blocking_reasons: list[str] = []
+    required_service_dates = [str(item) for item in ledger.get("service_dates", [])]
+    delivery_ref_by_service_date = _mapping(ledger.get("delivery_ref_by_service_date"))
+    ready_proofs_by_service_date: dict[str, dict[str, Any]] = {}
+    derived_watermarks_by_service_date: dict[str, dict[str, Any]] = {}
+    proof_refs: list[str] = []
+
+    if ledger_errors:
+        validation_errors.append("delivery ledger is invalid for M4 watermark proof")
+        validation_errors.extend(ledger_errors)
+
+    for service_date in required_service_dates:
+        if not any(proof.get("service_date") == service_date for proof in source_proofs):
+            blocking_reasons.append(f"M4 watermark proof record is missing for {service_date}")
+
+    for index, proof in enumerate(source_proofs, start=1):
+        proof_ref = str(proof.get("proof_ref") or f"inline_m4_watermark_proof_{index}")
+        proof_refs.append(proof_ref)
+        service_date = str(proof.get("service_date") or "")
+        cycle_id = str(proof.get("cycle_id") or "")
+        proof_errors: list[str] = []
+        if proof.get("status") != "pass":
+            proof_errors.append(f"proof {proof_ref} status must be pass")
+        if not service_date:
+            proof_errors.append(f"proof {proof_ref} service_date is required")
+        elif service_date not in required_service_dates:
+            proof_errors.append(f"proof {proof_ref} service_date must match delivery ledger")
+        if not cycle_id:
+            proof_errors.append(f"proof {proof_ref} cycle_id is required")
+        if proof.get("mail_product_id") != "M4":
+            proof_errors.append(f"proof {proof_ref} mail_product_id must be M4")
+
+        for flag in S2PLT02_M4_WATERMARK_FORBIDDEN_SOURCE_FLAGS:
+            if proof.get(flag, False) is not False:
+                proof_errors.append(f"proof {proof_ref} {flag} must be false")
+
+        service_refs = _mapping(delivery_ref_by_service_date.get(service_date))
+        if proof.get("m4_delivery_ref") != service_refs.get("M4"):
+            proof_errors.append(f"proof {proof_ref} m4_delivery_ref must match delivery ledger")
+
+        terminal_records = [row for row in proof.get("terminal_mail_records") or [] if isinstance(row, Mapping)]
+        terminal_products = tuple(str(row.get("product_id") or "") for row in terminal_records)
+        if terminal_products != S2PLT02_M4_WATERMARK_REQUIRED_TERMINAL_PRODUCTS:
+            proof_errors.append(f"proof {proof_ref} terminal_mail_records must be M1-M3")
+        for row in terminal_records:
+            product_id = str(row.get("product_id") or "")
+            if row.get("delivery_ref") != service_refs.get(product_id):
+                proof_errors.append(f"proof {proof_ref} terminal delivery ref mismatch for {product_id}")
+
+        watermark = _mapping(proof.get("watermark"))
+        derived_watermark = build_m4_cycle_watermark(
+            cycle_id=cycle_id,
+            terminal_mails=terminal_records,
+            generated_at=str(watermark.get("watermark_finalized_at") or proof.get("generated_at") or ""),
+            deadline_passed=True,
+        )
+        if service_date:
+            derived_watermarks_by_service_date[service_date] = derived_watermark
+        if watermark.get("cycle_id") != cycle_id:
+            proof_errors.append(f"proof {proof_ref} watermark.cycle_id must match cycle_id")
+        if watermark.get("status") != "ready":
+            proof_errors.append(f"proof {proof_ref} watermark.status must be ready")
+        if watermark.get("m4_ready") is not True:
+            proof_errors.append(f"proof {proof_ref} watermark.m4_ready must be true")
+        if watermark.get("m4_cycle_watermark") is not True:
+            proof_errors.append(f"proof {proof_ref} watermark.m4_cycle_watermark must be true")
+        if derived_watermark.get("status") != "ready" or derived_watermark.get("m4_ready") is not True:
+            proof_errors.append(f"proof {proof_ref} derived watermark must be ready")
+
+        if proof_errors:
+            validation_errors.extend(proof_errors)
+            continue
+        ready_proofs_by_service_date[service_date] = {
+            "proof_ref": proof_ref,
+            "cycle_id": cycle_id,
+            "m4_delivery_ref": proof.get("m4_delivery_ref"),
+            "terminal_mail_products": list(S2PLT02_M4_WATERMARK_REQUIRED_TERMINAL_PRODUCTS),
+            "watermark_finalized_at": str(watermark.get("watermark_finalized_at") or ""),
+        }
+
+    covered_service_dates = [date for date in required_service_dates if date in ready_proofs_by_service_date]
+    missing_service_dates = [date for date in required_service_dates if date not in ready_proofs_by_service_date]
+    for service_date in missing_service_dates:
+        reason = f"M4 watermark proof not ready for {service_date}"
+        if reason not in blocking_reasons:
+            blocking_reasons.append(reason)
+    m4_watermark_correct = bool(required_service_dates) and not missing_service_dates and not validation_errors
+    state = {
+        "model_id": S2PLT02_M4_WATERMARK_PROOF_MODEL_ID,
+        "schema_version": S2PLT02_SCHEMA_VERSION,
+        "task_id": "S2PLT02-M4-WATERMARK-PROOF",
+        "acceptance_id": S2PLT02_ACCEPTANCE_ID,
+        "status": "ready" if m4_watermark_correct else ("partial" if covered_service_dates else "blocked"),
+        "scope": S2PLT02_M4_WATERMARK_PROOF_SCOPE,
+        "required_terminal_mail_products": list(S2PLT02_M4_WATERMARK_REQUIRED_TERMINAL_PRODUCTS),
+        "required_service_dates": required_service_dates,
+        "covered_service_dates": covered_service_dates,
+        "missing_service_dates": missing_service_dates,
+        "proof_ref_count": len(source_proofs),
+        "proof_refs": proof_refs,
+        "ready_proofs_by_service_date": ready_proofs_by_service_date,
+        "derived_watermarks_by_service_date": derived_watermarks_by_service_date,
+        "delivery_evidence_ledger_hash": ledger.get("ledger_hash"),
+        "m4_watermark_correct": m4_watermark_correct,
+        "blocking_reasons": blocking_reasons,
+        "validation_errors": validation_errors,
+        "s2plt02_accepted": False,
+        "production_acceptance_claimed": False,
+        "stage2_integrated_production_accepted": False,
+        "integrated_production_accepted": False,
+        "daily_operation_enabled": False,
+        "new_production_side_effects_from_watermark_proof": False,
+        "proof_hash": "",
+    }
+    state["proof_hash"] = _stable_hash({key: value for key, value in state.items() if key != "proof_hash"})
+    return state
+
+
+def validate_s2plt02_m4_watermark_proof_state(state: Mapping[str, Any]) -> list[str]:
+    """Validate the S2PLT02 M4 watermark proof state."""
+
+    errors: list[str] = []
+    if state.get("model_id") != S2PLT02_M4_WATERMARK_PROOF_MODEL_ID:
+        errors.append("S2PLT02 M4 watermark proof model_id is invalid")
+    if state.get("schema_version") != S2PLT02_SCHEMA_VERSION:
+        errors.append("S2PLT02 M4 watermark proof schema_version must be 1")
+    if state.get("task_id") != "S2PLT02-M4-WATERMARK-PROOF":
+        errors.append("S2PLT02 M4 watermark proof task_id is invalid")
+    if state.get("acceptance_id") != S2PLT02_ACCEPTANCE_ID:
+        errors.append("S2PLT02 M4 watermark proof acceptance_id is invalid")
+    if state.get("scope") != S2PLT02_M4_WATERMARK_PROOF_SCOPE:
+        errors.append("S2PLT02 M4 watermark proof scope is invalid")
+    if state.get("status") not in {"ready", "partial", "blocked"}:
+        errors.append("S2PLT02 M4 watermark proof status is invalid")
+    if tuple(state.get("required_terminal_mail_products", [])) != S2PLT02_M4_WATERMARK_REQUIRED_TERMINAL_PRODUCTS:
+        errors.append("S2PLT02 M4 watermark proof terminal products must be M1-M3")
+    for flag in (
+        "s2plt02_accepted",
+        "production_acceptance_claimed",
+        "stage2_integrated_production_accepted",
+        "integrated_production_accepted",
+        "daily_operation_enabled",
+        "new_production_side_effects_from_watermark_proof",
+    ):
+        if state.get(flag) is not False:
+            errors.append(f"{flag} must be false")
+    for error in state.get("validation_errors", []):
+        if isinstance(error, str):
+            errors.append(error)
+    required_service_dates = [str(item) for item in state.get("required_service_dates", [])]
+    covered_service_dates = [str(item) for item in state.get("covered_service_dates", [])]
+    missing_service_dates = [str(item) for item in state.get("missing_service_dates", [])]
+    if set(covered_service_dates) & set(missing_service_dates):
+        errors.append("S2PLT02 M4 watermark proof cannot both cover and miss a service date")
+    if state.get("m4_watermark_correct") is True and (missing_service_dates or set(covered_service_dates) != set(required_service_dates)):
+        errors.append("M4 watermark proof cannot be correct while required service dates are missing")
+    if state.get("status") == "ready" and state.get("m4_watermark_correct") is not True:
+        errors.append("ready S2PLT02 M4 watermark proof requires m4_watermark_correct")
+    expected_hash = _stable_hash({key: value for key, value in state.items() if key != "proof_hash"})
+    if state.get("proof_hash") != expected_hash:
+        errors.append("S2PLT02 M4 watermark proof_hash does not match proof content")
+    return errors
+
+
 def build_s2plt02_partial_real_delivery_state() -> dict[str, Any]:
     """Build one-day real delivery evidence without treating it as S2PLT02 acceptance."""
 
@@ -1147,6 +1345,7 @@ def build_s2plt02_live_evidence_state() -> dict[str, Any]:
 
     delivery_ledger = build_s2plt02_delivery_evidence_ledger_state()
     partial_delivery = build_s2plt02_partial_real_delivery_state()
+    m4_watermark_proof = build_s2plt02_m4_watermark_proof_state(delivery_ledger=delivery_ledger)
     available = {
         "S2PLT01_ACCEPTED": False,
         "TWO_CONSECUTIVE_REAL_NATURAL_DAYS": delivery_ledger["two_day_delivery_evidence_present"],
@@ -1154,7 +1353,7 @@ def build_s2plt02_live_evidence_state() -> dict[str, Any]:
         and not delivery_ledger["validation_errors"],
         "NO_DUPLICATE_EMAILS": delivery_ledger["duplicate_email_count"] == 0
         and delivery_ledger["duplicate_service_date_count"] == 0,
-        "M4_WATERMARK_CORRECT": partial_delivery["m4_watermark_correct"],
+        "M4_WATERMARK_CORRECT": m4_watermark_proof["m4_watermark_correct"],
         "REAL_SCHEDULER_PROVEN": partial_delivery["scheduler_evidence_present"],
         "REAL_SMTP_PROVEN": delivery_ledger["real_smtp_evidence_present"],
     }
@@ -1173,10 +1372,11 @@ def build_s2plt02_live_evidence_state() -> dict[str, Any]:
         ),
         "duplicate_email_count": delivery_ledger["duplicate_email_count"],
         "duplicate_service_date_count": delivery_ledger["duplicate_service_date_count"],
-        "m4_watermark_correct": partial_delivery["m4_watermark_correct"],
+        "m4_watermark_correct": m4_watermark_proof["m4_watermark_correct"],
         "real_scheduler_proven": partial_delivery["scheduler_evidence_present"],
         "real_smtp_proven": delivery_ledger["real_smtp_evidence_present"],
         "delivery_evidence_ledger": delivery_ledger,
+        "m4_watermark_proof": m4_watermark_proof,
         "partial_real_delivery_evidence": partial_delivery,
     }
 
@@ -1287,6 +1487,13 @@ def validate_s2plt02_live_2d_precheck_report(report: Mapping[str, Any]) -> list[
         errors.append("evidence.observed_email_count must match delivery evidence ledger")
     if evidence.get("duplicate_email_count") != delivery_ledger.get("duplicate_email_count"):
         errors.append("evidence.duplicate_email_count must match delivery evidence ledger")
+    m4_watermark_proof = _mapping(evidence.get("m4_watermark_proof"))
+    watermark_errors = validate_s2plt02_m4_watermark_proof_state(m4_watermark_proof)
+    if watermark_errors:
+        errors.append("S2PLT02 M4 watermark proof is invalid")
+        errors.extend(watermark_errors)
+    if evidence.get("m4_watermark_correct") != m4_watermark_proof.get("m4_watermark_correct"):
+        errors.append("evidence.m4_watermark_correct must match M4 watermark proof")
     partial_delivery = _mapping(evidence.get("partial_real_delivery_evidence"))
     if not partial_delivery:
         errors.append("evidence.partial_real_delivery_evidence is required")

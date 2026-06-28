@@ -15,6 +15,9 @@ from arxiv_daily_push.stage2_final_gate import (
     S2PLT02_PARTIAL_REAL_DELIVERY_EVIDENCE_REFS,
     S2PLT02_PARTIAL_REAL_DELIVERY_NEWLY_SENT_PRODUCTS,
     S2PLT02_PARTIAL_REAL_DELIVERY_PRODUCTS,
+    S2PLT02_M4_WATERMARK_PROOF_MODEL_ID,
+    S2PLT02_M4_WATERMARK_PROOF_SCOPE,
+    S2PLT02_M4_WATERMARK_REQUIRED_TERMINAL_PRODUCTS,
     S2PLT03_BLOCKING_REASONS,
     S2PLT03_FORBIDDEN_FLAGS,
     S2PLT03_LOCAL_DRILL_FORBIDDEN_FLAGS,
@@ -112,6 +115,7 @@ from arxiv_daily_push.stage2_final_gate import (
     build_s2plt02_delivery_evidence_ledger_state,
     build_s2plt02_live_2d_precheck_report,
     build_s2plt02_live_evidence_state,
+    build_s2plt02_m4_watermark_proof_state,
     build_s2plt02_partial_real_delivery_state,
     build_s2plt03_dependency_state,
     build_s2plt03_local_resilience_drill_bundle,
@@ -128,6 +132,7 @@ from arxiv_daily_push.stage2_final_gate import (
     build_test_gate_state,
     validate_s2plt02_live_2d_precheck_report,
     validate_s2plt02_delivery_evidence_ledger_state,
+    validate_s2plt02_m4_watermark_proof_state,
     validate_s2plt03_local_resilience_drill_bundle,
     validate_s2plt03_resilience_precheck_report,
     validate_s2plt04_integration_candidate_report,
@@ -227,6 +232,96 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertIn("manifest governance/run_manifests/BROKEN-LOCAL-DAILY-M1-M4-20260628.json integrated_production_accepted must be false", errors)
         self.assertFalse(ledger["two_day_delivery_evidence_present"])
 
+    def test_s2plt02_m4_watermark_proof_blocks_when_current_m4_has_no_explicit_watermark(self) -> None:
+        proof = build_s2plt02_m4_watermark_proof_state()
+
+        self.assertEqual(proof["model_id"], S2PLT02_M4_WATERMARK_PROOF_MODEL_ID)
+        self.assertEqual(proof["status"], "blocked")
+        self.assertEqual(proof["scope"], S2PLT02_M4_WATERMARK_PROOF_SCOPE)
+        self.assertEqual(tuple(proof["required_terminal_mail_products"]), S2PLT02_M4_WATERMARK_REQUIRED_TERMINAL_PRODUCTS)
+        self.assertEqual(proof["required_service_dates"], ["2026-06-28"])
+        self.assertEqual(proof["covered_service_dates"], [])
+        self.assertFalse(proof["m4_watermark_correct"])
+        self.assertIn("M4 watermark proof record is missing for 2026-06-28", proof["blocking_reasons"])
+        self.assertFalse(proof["s2plt02_accepted"])
+        self.assertFalse(proof["production_acceptance_claimed"])
+        self.assertEqual(validate_s2plt02_m4_watermark_proof_state(proof), [])
+
+    def test_s2plt02_m4_watermark_proof_accepts_explicit_same_day_proof_without_acceptance(self) -> None:
+        ledger = build_s2plt02_delivery_evidence_ledger_state()
+        cycle_id = "adp:2026-06-28:EMAIL_LEARNING_V1:M1-M4"
+        refs = ledger["delivery_ref_by_service_date"]["2026-06-28"]
+        proof_record = {
+            "proof_ref": "governance/run_manifests/FUTURE-M4-WATERMARK-PROOF-20260628.json",
+            "status": "pass",
+            "service_date": "2026-06-28",
+            "cycle_id": cycle_id,
+            "mail_product_id": "M4",
+            "m4_delivery_ref": refs["M4"],
+            "terminal_mail_records": [
+                {"product_id": "M1", "cycle_id": cycle_id, "status": "SENT", "observed_at": "2026-06-28T07:30:00+10:00", "delivery_ref": refs["M1"]},
+                {"product_id": "M2", "cycle_id": cycle_id, "status": "SENT", "observed_at": "2026-06-28T11:30:00+10:00", "delivery_ref": refs["M2"]},
+                {"product_id": "M3", "cycle_id": cycle_id, "status": "SENT", "observed_at": "2026-06-28T17:30:00+10:00", "delivery_ref": refs["M3"]},
+            ],
+            "watermark": {
+                "cycle_id": cycle_id,
+                "status": "ready",
+                "m4_ready": True,
+                "m4_cycle_watermark": True,
+                "watermark_finalized_at": "2026-06-28T21:30:00+10:00",
+            },
+            "integrated_production_accepted": False,
+            "stage2_integrated_production_accepted": False,
+            "daily_operation_enabled": False,
+            "scheduler_enabled": False,
+            "release_uploaded": False,
+            "production_restore_executed": False,
+            "production_queue_mutated": False,
+            "public_schema_changed": False,
+            "db_migration_executed": False,
+            "source_adapter_changed": False,
+            "ranking_algorithm_changed": False,
+            "current_pointer_changed": False,
+            "v7_1_baseline_changed": False,
+            "v7_2_contract_files_changed": False,
+        }
+
+        proof = build_s2plt02_m4_watermark_proof_state(watermark_proofs=[proof_record])
+
+        self.assertEqual(proof["status"], "ready")
+        self.assertEqual(proof["covered_service_dates"], ["2026-06-28"])
+        self.assertTrue(proof["m4_watermark_correct"])
+        self.assertFalse(proof["s2plt02_accepted"])
+        self.assertFalse(proof["production_acceptance_claimed"])
+        self.assertEqual(validate_s2plt02_m4_watermark_proof_state(proof), [])
+
+    def test_s2plt02_m4_watermark_proof_rejects_wrong_cycle_and_forbidden_flags(self) -> None:
+        ledger = build_s2plt02_delivery_evidence_ledger_state()
+        refs = ledger["delivery_ref_by_service_date"]["2026-06-28"]
+        broken = {
+            "proof_ref": "governance/run_manifests/BROKEN-M4-WATERMARK-PROOF-20260628.json",
+            "status": "pass",
+            "service_date": "2026-06-28",
+            "cycle_id": "adp:wrong-cycle",
+            "mail_product_id": "M4",
+            "m4_delivery_ref": refs["M4"],
+            "terminal_mail_records": [
+                {"product_id": "M1", "cycle_id": "adp:wrong-cycle", "status": "SENT", "observed_at": "2026-06-28T07:30:00+10:00", "delivery_ref": refs["M1"]},
+                {"product_id": "M2", "cycle_id": "adp:other-cycle", "status": "SENT", "observed_at": "2026-06-28T11:30:00+10:00", "delivery_ref": refs["M2"]},
+                {"product_id": "M3", "cycle_id": "adp:wrong-cycle", "status": "SENT", "observed_at": "2026-06-28T17:30:00+10:00", "delivery_ref": refs["M3"]},
+            ],
+            "watermark": {"cycle_id": "adp:wrong-cycle", "status": "ready", "m4_ready": True, "m4_cycle_watermark": True},
+            "integrated_production_accepted": True,
+        }
+
+        proof = build_s2plt02_m4_watermark_proof_state(watermark_proofs=[broken])
+        errors = validate_s2plt02_m4_watermark_proof_state(proof)
+
+        self.assertEqual(proof["status"], "blocked")
+        self.assertFalse(proof["m4_watermark_correct"])
+        self.assertIn("proof governance/run_manifests/BROKEN-M4-WATERMARK-PROOF-20260628.json integrated_production_accepted must be false", errors)
+        self.assertIn("proof governance/run_manifests/BROKEN-M4-WATERMARK-PROOF-20260628.json derived watermark must be ready", errors)
+
     def test_s2plt02_live_evidence_state_records_partial_real_run_without_acceptance(self) -> None:
         state = build_s2plt02_live_evidence_state()
 
@@ -245,6 +340,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(state["available_evidence"]["REAL_SCHEDULER_PROVEN"])
         self.assertTrue(state["available_evidence"]["REAL_SMTP_PROVEN"])
         self.assertFalse(state["m4_watermark_correct"])
+        self.assertEqual(state["m4_watermark_proof"]["status"], "blocked")
         self.assertEqual(state["partial_real_delivery_evidence"]["status"], "partial")
         self.assertEqual(state["delivery_evidence_ledger"]["status"], "partial")
         self.assertFalse(state["delivery_evidence_ledger"]["two_day_delivery_evidence_present"])

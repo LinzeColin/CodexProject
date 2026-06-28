@@ -3977,3 +3977,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PLT02-M4-WATERMARK-PROOF"
+    phase: "S2PL"
+    objective: "Add an explicit M4 watermark proof validator for S2PLT02 delivery-ledger service dates while keeping S2PLT02 blocked."
+    scope: "S2PLT02 M4 watermark proof helper, focused TDD regression tests, phase record, run manifest, traceability row, event records, semantic registry updates, current status views, user-center traceability page, and three base files."
+    non_scope: "No new SMTP send, no scheduler install or enablement, no Release upload, no public schema or DB migration, no source/ranking change, no CURRENT/V7 contract change, no P0/P1 closure, no S2PLT02 acceptance, no S2PLT04 completion, no DAILY_OPERATION, and no integrated production acceptance."
+    status: "blocked"
+    dependencies: ["S2PLT02-DELIVERY-EVIDENCE-LEDGER", "LOCAL-DAILY-M1-M4-RESEND-EXECUTION", "S2PMT07"]
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_M4_WATERMARK_PROOF.md", "governance/run_manifests/ADP-S2PLT02-M4-WATERMARK-PROOF-20260628.json", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
+    acceptance_ids: ["ACC-S2PLT02-2D"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_m4_watermark_red PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_m4_watermark_target1 PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q"]
+    test_results: ["TDD red failed because M4 watermark proof API was missing", "focused stage2 final-gate tests: 65 OK before governance sync"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PLT02-M4-WATERMARK-PROOF-20260628.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_M4_WATERMARK_PROOF.md", "governance/run_manifests/ADP-LOCAL-DAILY-M1-M4-RESEND-EXECUTION-20260628.json"]
+    result: "S2PLT02 M4 watermark proof state is blocked because service date 2026-06-28 has no explicit proof record; m4_watermark_correct remains false."
+    risk: "M4 watermark proof validator can be misread as M4 watermark completion; all acceptance and production flags remain false."
+    rollback: "Revert S2PLT02 M4 watermark proof helper/tests and governance records; no runtime production state was changed by this task."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
