@@ -10,12 +10,30 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.1
 - Current phase: S2PM
-- Current gate: S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_CLI_READY_NO_ARTIFACTS_NO_PRODUCTION
-- Confirmed iteration count: 221
+- Current gate: S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_DRAFT_CLI_READY_NO_ASSIGNMENT_NO_PRODUCTION
+- Confirmed iteration count: 222
 - Reconstructed event count: 0
-- Current task: `S2PMT07-FINAL-BUNDLE-PREREQUISITE-PLAN-CLI` exposes `adp plan-final-bundle-prerequisites --json` for the ordered S2PMT07 final-bundle prerequisite plan. The plan consumes committed `FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json` so `NO_PRODUCTION_SIDE_EFFECT_ATTESTATION` is `pass`, but the first blocked step remains `INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION`; remaining blockers are P0/P1 zero proof, S2PLT04 completion report, final command execution, next-agent handoff, independent signoff, final bundle manifest, inherited P0=8, and inherited P1=37. This does not create final-bundle artifacts, does not assign an independent final reviewer, does not record closure, does not close P0/P1, does not complete S2PLT04, does not execute final commands, and does not accept production. Production acceptance / DAILY_OPERATION / scheduler / SMTP / Release / restore all remain false.
+- Current task: `S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-ARTIFACT-DRAFT-CLI` exposes `adp build-final-reviewer-assignment-artifact-draft --reviewer-id ... --assigned-by ... --generated-at ... --json` for a stdout-only future assignment artifact draft. The command validates ordered artifact fields and computes `assignment_hash`, but `assignment_artifact_written=false`, `assignment_artifact_present_in_repo=false`, `assignment_gate_satisfied_by_this_command=false`, and `independent_final_reviewer_assigned_by_this_command=false`; remaining blockers are the real assignment artifact, P0/P1 zero proof, S2PLT04 completion report, final command execution, next-agent handoff, independent signoff, final bundle manifest, inherited P0=8, and inherited P1=37. This does not create final-bundle artifacts, does not assign an independent final reviewer, does not record closure, does not close P0/P1, does not complete S2PLT04, does not execute final commands, and does not accept production. Production acceptance / DAILY_OPERATION / scheduler / SMTP / Release / restore all remain false.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. Local daily M1-M4 orchestration is now recorded as readiness evidence, but V7.2 contract baseline migration blockers are zero while real restore, real SMTP production, scheduler installation, final acceptance bundle creation, independent final reviewer assignment artifact supply/validation, directory-level final bundle artifact validation pass, P0/P1 closure, S2PLT04 completion, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
+
+
+### `ITER-20260629-ADP-S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-ARTIFACT-DRAFT-CLI`
+
+- Timestamp: `2026-06-29T00:40:23+10:00`
+- Fact level: EXTRACTED from CLI parser/dispatcher, S2PMT07 assignment artifact draft builder/validator, focused CLI regression tests, phase record, run manifest, traceability row, delivery task, event record, and three base files.
+- Base commit: `fce5c90bee98212580f57023d7cdafc9a7de57fd`
+- Product version: `0.23.1`
+- Status: assignment artifact draft generation is now executable from CLI; the command returns draft JSON and validates field order/hash, but it writes no live artifact and does not satisfy reviewer assignment.
+- Task IDs: `S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-ARTIFACT-DRAFT-CLI`; parent `S2PMT07`; acceptance `ACC-S2PMT07-FINAL-REVIEW`.
+- Goal: Give owner/coordinator a deterministic, schema-valid draft payload they may review before writing the real independent final reviewer assignment artifact.
+- Files changed: ADP CLI, S2PMT07 final gate draft builder, focused CLI regression tests, phase record, run manifest, traceability/delivery/event records, governance current state, user-center traceability page, and three base files.
+- Decisions: `adp build-final-reviewer-assignment-artifact-draft --reviewer-id independent-final-reviewer-001 --assigned-by owner_or_coordinator --generated-at 2026-06-29T00:40:23+10:00 --json` returns exit 0 with `status=draft`; `assignment_hash=sha256:1b31de0eae2283814fa5e458d69700774f2ae8441187a3e8f0fd3a03740c2dec`; `state_hash=5bfa7b97e6a318a5ee98ba4b56ee65b2d140fe877d94931cfc350c644cc93ee3`; `validation_errors=[]`; `assignment_artifact_written=false`; `assignment_gate_satisfied_by_this_command=false`; `independent_final_reviewer_assigned_by_this_command=false`.
+- Validation: TDD red failed because the command was missing; second red failed because sorted JSON reordered the nested artifact fields; focused CLI tests then passed with 18 OK.
+- Boundaries: No `FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json` is written, no independent reviewer is assigned, no assignment gate is satisfied, no closure decision, no P0/P1 closure, no S2PLT04 completion, no final commands, no final bundle acceptance, no SMTP, no scheduler, no Release, no restore, no CURRENT/V7 change, no source/ranking change, no DAILY_OPERATION, and no integrated production acceptance.
+- Branch hygiene: no branch or PR is created by this run; closeout must recheck open PR count and ADP/arxiv/s2p remote branches.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-ARTIFACT-DRAFT-CLI-20260629.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_DRAFT_CLI.md`; `arxiv-daily-push/src/arxiv_daily_push/cli.py`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_cli.py`.
+- Next step: Owner/coordinator must still supply the real `FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json`; do not claim S2PMT07, DAILY_OPERATION, or production acceptance from draft CLI readiness alone.
 
 ### `ITER-20260629-ADP-S2PMT07-FINAL-BUNDLE-PREREQUISITE-PLAN-CLI`
 

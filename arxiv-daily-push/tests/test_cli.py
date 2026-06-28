@@ -13,6 +13,7 @@ from arxiv_daily_push.stage2_final_gate import (
     S2PMT07_FINAL_COMMAND_EXECUTION_SCHEMA_VERSION,
     S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_DECISION,
     S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_NO_PRODUCTION_FLAGS,
+    S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_REQUIRED_FIELDS,
     S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_SCHEMA_VERSION,
     S2PMT07_P0_P1_ZERO_PROOF_CLOSURE_DECISION,
     S2PMT07_P0_P1_ZERO_PROOF_NO_PRODUCTION_FLAGS,
@@ -353,6 +354,79 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["integrated_production_accepted"])
         self.assertFalse(payload["daily_operation_enabled"])
         self.assertEqual(payload["owner_packet_validation_errors"], [])
+
+    def test_build_final_reviewer_assignment_artifact_draft_json_command(self):
+        buffer = io.StringIO()
+        with redirect_stdout(buffer):
+            result = main(
+                [
+                    "build-final-reviewer-assignment-artifact-draft",
+                    "--reviewer-id",
+                    "independent-final-reviewer-001",
+                    "--assigned-by",
+                    "owner_or_coordinator",
+                    "--generated-at",
+                    "2026-06-29T00:40:23+10:00",
+                    "--json",
+                ]
+            )
+
+        self.assertEqual(result, 0)
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(payload["status"], "draft")
+        self.assertEqual(
+            payload["scope"],
+            "independent_final_reviewer_assignment_artifact_draft_only_no_assignment_no_production",
+        )
+        self.assertEqual(
+            payload["artifact_path"],
+            "FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json",
+        )
+        self.assertFalse(payload["assignment_artifact_written"])
+        self.assertFalse(payload["assignment_gate_satisfied_by_this_command"])
+        self.assertFalse(payload["production_acceptance_claimed"])
+        self.assertFalse(payload["integrated_production_accepted"])
+        self.assertFalse(payload["daily_operation_enabled"])
+        self.assertFalse(payload["real_smtp_send_enabled"])
+        self.assertFalse(payload["scheduler_install_enabled"])
+        self.assertEqual(payload["validation_errors"], [])
+
+        artifact = payload["artifact"]
+        self.assertEqual(list(artifact.keys()), list(S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_REQUIRED_FIELDS))
+        self.assertEqual(
+            artifact["schema_version"],
+            S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_SCHEMA_VERSION,
+        )
+        self.assertEqual(
+            artifact["assignment_decision"],
+            S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_DECISION,
+        )
+        self.assertEqual(artifact["generated_at"], "2026-06-29T00:40:23+10:00")
+        self.assertEqual(artifact["reviewer_assignment"]["reviewer_id"], "independent-final-reviewer-001")
+        self.assertEqual(artifact["reviewer_assignment"]["reviewer_role"], "independent_final_reviewer")
+        self.assertEqual(artifact["reviewer_assignment"]["assigned_by"], "owner_or_coordinator")
+        self.assertEqual(
+            artifact["reviewer_assignment"]["assignment_scope"],
+            "S2PMT07_P0_P1_FINAL_CLOSURE_REVIEW",
+        )
+        self.assertEqual(artifact["reviewer_independence"]["status"], "verified")
+        self.assertEqual(
+            artifact["reviewer_independence"]["required_independence"],
+            S2PMT07_REQUIRED_REVIEWER_INDEPENDENCE,
+        )
+        self.assertFalse(artifact["reviewer_independence"]["reviewer_involved_in_s2pmt01_t06"])
+        self.assertEqual(
+            artifact["review_input_refs"],
+            build_independent_final_reviewer_assignment_request_state()["review_input_refs"],
+        )
+        self.assertEqual(
+            artifact["no_production_side_effects"],
+            {flag: False for flag in S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_NO_PRODUCTION_FLAGS},
+        )
+        self.assertEqual(
+            artifact["assignment_hash"],
+            build_independent_final_reviewer_assignment_hash(artifact),
+        )
 
     def test_build_final_closure_decision_owner_packet_json_command(self):
         buffer = io.StringIO()

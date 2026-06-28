@@ -120,6 +120,7 @@ from .stage2_final_gate import (
     build_final_bundle_prerequisite_plan_state,
     build_final_command_execution_validation_state,
     build_independent_final_closure_decision_owner_packet_state,
+    build_independent_final_reviewer_assignment_artifact_draft_state,
     build_independent_final_reviewer_assignment_owner_packet_state,
     build_independent_final_reviewer_assignment_validation_state,
     build_next_agent_handoff_validation_state,
@@ -1257,6 +1258,40 @@ def build_parser() -> argparse.ArgumentParser:
         "--json",
         action="store_true",
         help="Print JSON owner action packet.",
+    )
+
+    final_reviewer_assignment_draft = subparsers.add_parser(
+        "build-final-reviewer-assignment-artifact-draft",
+        help=(
+            "Build a stdout-only S2PMT07 independent final reviewer assignment artifact draft "
+            "from explicit owner/coordinator inputs."
+        ),
+    )
+    final_reviewer_assignment_draft.add_argument(
+        "--reviewer-id",
+        required=True,
+        help="Independent final reviewer identity label. Must not be codex-current-agent.",
+    )
+    final_reviewer_assignment_draft.add_argument(
+        "--assigned-by",
+        required=True,
+        choices=("owner_or_coordinator", "owner"),
+        help="Assignment authority recorded in the future artifact.",
+    )
+    final_reviewer_assignment_draft.add_argument(
+        "--generated-at",
+        required=True,
+        help="Assignment artifact timestamp to embed in the draft.",
+    )
+    final_reviewer_assignment_draft.add_argument(
+        "--assignment-scope",
+        default="S2PMT07_P0_P1_FINAL_CLOSURE_REVIEW",
+        help="Assignment scope. Defaults to the S2PMT07 final closure review scope.",
+    )
+    final_reviewer_assignment_draft.add_argument(
+        "--json",
+        action="store_true",
+        help="Print JSON draft wrapper. The command never writes the live assignment artifact.",
     )
 
     final_closure_decision_owner_packet = subparsers.add_parser(
@@ -3557,6 +3592,28 @@ def main(argv: list[str] | None = None) -> int:
             for error in errors:
                 print(f"- error: {error}")
         return 0 if not errors else 2
+    if args.command == "build-final-reviewer-assignment-artifact-draft":
+        report = build_independent_final_reviewer_assignment_artifact_draft_state(
+            reviewer_id=args.reviewer_id,
+            assigned_by=args.assigned_by,
+            generated_at=args.generated_at,
+            assignment_scope=args.assignment_scope,
+        )
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2))
+        else:
+            print(report["status"])
+            print(f"- task_id: {report.get('task_id')}")
+            print(f"- artifact_path: {report.get('artifact_path')}")
+            print(f"- assignment_artifact_written: {report.get('assignment_artifact_written')}")
+            print(
+                "- assignment_gate_satisfied_by_this_command: "
+                f"{report.get('assignment_gate_satisfied_by_this_command')}"
+            )
+            print(f"- next_required_action: {report.get('next_required_action')}")
+            for error in report.get("validation_errors", []):
+                print(f"- error: {error}")
+        return 0 if report["status"] == "draft" and not report.get("validation_errors") else 2
     if args.command == "build-final-closure-decision-owner-packet":
         report = build_independent_final_closure_decision_owner_packet_state()
         errors = validate_independent_final_closure_decision_owner_packet_state(report)

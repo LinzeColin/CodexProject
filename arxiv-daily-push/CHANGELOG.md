@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-06-29 00:40:23 Australia/Sydney - S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-ARTIFACT-DRAFT-CLI
+
+- Added `build-final-reviewer-assignment-artifact-draft` CLI to produce a stdout-only, ordered JSON draft for the future independent final reviewer assignment artifact from explicit owner/coordinator inputs.
+- The draft command computes `assignment_hash=sha256:1b31de0eae2283814fa5e458d69700774f2ae8441187a3e8f0fd3a03740c2dec` and validates with no errors, but writes no live artifact, assigns no reviewer, satisfies no assignment gate, closes no P0/P1 findings, completes no S2PLT04 step, executes no final commands, and accepts no production.
+- SMTP, scheduler, Release, restore, public schema, DB migration, production queue, source adapter, ranking, CURRENT/V7, V7.1 baseline, V7.2 contract, DAILY_OPERATION, and integrated production acceptance remain unchanged.
+
 ## 2026-06-29 00:14:34 Australia/Sydney - S2PMT07-FINAL-BUNDLE-PREREQUISITE-PLAN-CLI
 
 - Expose `adp plan-final-bundle-prerequisites --json` as a blocked, no-production S2PMT07 prerequisite plan CLI.
