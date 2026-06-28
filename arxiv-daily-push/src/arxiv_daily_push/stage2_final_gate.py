@@ -320,6 +320,7 @@ S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_OWNER_PACKET_FORBIDDEN_FLAGS = (
 )
 S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS = (
     "FINAL_ACCEPTANCE_BUNDLE/manifest.json",
+    S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_PATH,
     S2PMT07_P0_P1_ZERO_PROOF_ARTIFACT_PATH,
     "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json",
     "FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml",
@@ -330,6 +331,7 @@ S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS = (
 S2PMT07_FINAL_ACCEPTANCE_BUNDLE_BLOCKING_REASONS = (
     "final_acceptance_bundle_directory_missing",
     "final_acceptance_bundle_manifest_missing",
+    "independent_final_reviewer_assignment_missing",
     "p0_p1_zero_proof_missing",
     "s2plt04_completion_evidence_missing",
     "independent_review_signoff_missing",
@@ -364,6 +366,7 @@ S2PMT07_FINAL_ACCEPTANCE_BUNDLE_MANIFEST_REQUIRED_FIELDS = (
     "manifest_hash",
 )
 S2PMT07_FINAL_ACCEPTANCE_BUNDLE_MANIFEST_REQUIRED_ARTIFACT_VALIDATIONS = (
+    "INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION",
     "P0_P1_ZERO_PROOF_ARTIFACT",
     "S2PLT04_COMPLETION_REPORT",
     "INDEPENDENT_REVIEW_SIGNOFF",
@@ -539,6 +542,7 @@ S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_REQUIRED_ARTIFACT_VALIDATIONS = (
 S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_NO_PRODUCTION_FLAGS = S2PMT07_FINAL_ACCEPTANCE_BUNDLE_NO_PRODUCTION_FLAGS
 S2PMT07_FINAL_ACCEPTANCE_BUNDLE_ARTIFACT_VALIDATION_KEYS = (
     "FINAL_ACCEPTANCE_BUNDLE_MANIFEST",
+    "INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION",
     "P0_P1_ZERO_PROOF_ARTIFACT",
     "S2PLT04_COMPLETION_REPORT",
     "INDEPENDENT_REVIEW_SIGNOFF",
@@ -548,6 +552,9 @@ S2PMT07_FINAL_ACCEPTANCE_BUNDLE_ARTIFACT_VALIDATION_KEYS = (
 )
 S2PMT07_FINAL_ACCEPTANCE_BUNDLE_ITEM_BLOCKING_REASONS = {
     "FINAL_ACCEPTANCE_BUNDLE/manifest.json": "final_acceptance_bundle_manifest_missing",
+    S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_PATH: (
+        "independent_final_reviewer_assignment_missing"
+    ),
     "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json": "p0_p1_zero_proof_missing",
     "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json": "s2plt04_completion_evidence_missing",
     "FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml": "independent_review_signoff_missing",
@@ -558,6 +565,7 @@ S2PMT07_FINAL_ACCEPTANCE_BUNDLE_ITEM_BLOCKING_REASONS = {
     "HANDOFF/00_下一Agent先读.md": "next_agent_handoff_missing",
 }
 S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_REQUIRED_STEPS = (
+    "INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION",
     "P0_P1_ZERO_PROOF_ARTIFACT",
     "S2PLT04_COMPLETION_REPORT",
     "FINAL_COMMAND_EXECUTION",
@@ -567,6 +575,7 @@ S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_REQUIRED_STEPS = (
     "FINAL_ACCEPTANCE_BUNDLE_MANIFEST",
 )
 S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_BLOCKING_REASONS = (
+    "independent_final_reviewer_assignment_missing",
     "p0_p1_zero_proof_artifact_missing",
     "s2plt04_completion_report_missing",
     "final_command_execution_missing",
@@ -4499,6 +4508,9 @@ def build_final_bundle_prerequisite_plan_state() -> dict[str, Any]:
     """Build the current fail-closed execution order for final-bundle prerequisites."""
 
     validation_states: dict[str, Mapping[str, Any]] = {
+        "INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION": (
+            build_independent_final_reviewer_assignment_validation_state(None)
+        ),
         "P0_P1_ZERO_PROOF_ARTIFACT": build_p0_p1_zero_proof_artifact_validation_state(None),
         "S2PLT04_COMPLETION_REPORT": build_s2plt04_completion_report_validation_state(None),
         "FINAL_COMMAND_EXECUTION": build_final_command_execution_validation_state(None),
@@ -4573,8 +4585,10 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
         if not isinstance(step.get("artifact_ref"), str) or not step.get("artifact_ref"):
             errors.append(f"{step.get('step_id', 'UNKNOWN')}.artifact_ref must be a non-empty string")
 
-    if state.get("next_required_step") != "P0_P1_ZERO_PROOF_ARTIFACT":
-        errors.append("final bundle prerequisite plan next_required_step must remain P0_P1_ZERO_PROOF_ARTIFACT")
+    if state.get("next_required_step") != "INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION":
+        errors.append(
+            "final bundle prerequisite plan next_required_step must remain INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION"
+        )
     if state.get("all_required_steps_passed") is not False:
         errors.append("final bundle prerequisite plan all_required_steps_passed must remain false")
     if state.get("ready_for_final_bundle_manifest") is not False:
@@ -4723,6 +4737,7 @@ def build_final_acceptance_bundle_artifact_validation_state(
     *,
     bundle_directory_present: bool = False,
     manifest: Mapping[str, Any] | None = None,
+    independent_final_reviewer_assignment: Mapping[str, Any] | None = None,
     p0_p1_zero_proof: Mapping[str, Any] | None = None,
     s2plt04_completion_report: Mapping[str, Any] | None = None,
     independent_review_signoff: Mapping[str, Any] | None = None,
@@ -4734,6 +4749,9 @@ def build_final_acceptance_bundle_artifact_validation_state(
 
     available_items = {
         "FINAL_ACCEPTANCE_BUNDLE/manifest.json": manifest is not None,
+        S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_PATH: (
+            independent_final_reviewer_assignment is not None
+        ),
         S2PMT07_P0_P1_ZERO_PROOF_ARTIFACT_PATH: p0_p1_zero_proof is not None,
         "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json": s2plt04_completion_report is not None,
         "FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml": independent_review_signoff is not None,
@@ -4746,6 +4764,11 @@ def build_final_acceptance_bundle_artifact_validation_state(
     missing_items = [item for item, present in available_items.items() if not present]
     artifact_validations = {
         "FINAL_ACCEPTANCE_BUNDLE_MANIFEST": build_final_acceptance_bundle_manifest_validation_state(manifest),
+        "INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION": (
+            build_independent_final_reviewer_assignment_validation_state(
+                independent_final_reviewer_assignment
+            )
+        ),
         "P0_P1_ZERO_PROOF_ARTIFACT": build_p0_p1_zero_proof_artifact_validation_state(p0_p1_zero_proof),
         "S2PLT04_COMPLETION_REPORT": build_s2plt04_completion_report_validation_state(s2plt04_completion_report),
         "INDEPENDENT_REVIEW_SIGNOFF": build_independent_review_signoff_validation_state(
@@ -5044,6 +5067,7 @@ def build_final_acceptance_bundle_readiness_state(
     final_acceptance_bundle_artifact_validation = build_final_acceptance_bundle_artifact_validation_state(
         bundle_directory_present=bundle_directory_present,
         manifest=manifest,
+        independent_final_reviewer_assignment=independent_final_reviewer_assignment,
         p0_p1_zero_proof=p0_p1_zero_proof,
         s2plt04_completion_report=s2plt04_completion_report,
         independent_review_signoff=independent_review_signoff,
@@ -5188,6 +5212,11 @@ def validate_final_acceptance_bundle_readiness_state(state: Mapping[str, Any]) -
             "manifest_present",
         ),
         (
+            S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_PATH,
+            reviewer_assignment_validation,
+            "assignment_present",
+        ),
+        (
             "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
             p0_p1_zero_proof_artifact,
             "artifact_present",
@@ -5304,6 +5333,7 @@ def validate_final_acceptance_bundle_readiness_state(state: Mapping[str, Any]) -
         errors.append("final acceptance bundle readiness P0/P1 zero proof readiness state is invalid")
     artifact_status_checks = (
         ("P0/P1 zero proof artifact", p0_p1_zero_proof_artifact),
+        ("independent final reviewer assignment", reviewer_assignment_validation),
         ("manifest", manifest_validation),
         ("S2PLT04 completion report", completion_report),
         ("final command execution", final_command),

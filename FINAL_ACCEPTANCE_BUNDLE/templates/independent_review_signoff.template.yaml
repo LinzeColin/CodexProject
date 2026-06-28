@@ -36,6 +36,7 @@ closure_state:
   integrated_production_accepted: false
 final_bundle_refs:
   - FINAL_ACCEPTANCE_BUNDLE/manifest.json
+  - FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json
   - FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json
   - FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json
   - FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml

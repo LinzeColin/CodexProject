@@ -8,6 +8,7 @@
     "scope": "no_production_side_effect_attestation_validation_only_no_production_acceptance",
     "required_bundle_items": [
       "FINAL_ACCEPTANCE_BUNDLE/manifest.json",
+      "FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json",
       "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
       "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json",
       "FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml",
@@ -84,5 +85,5 @@
     "integrated_production_accepted": false,
     "daily_operation_enabled": false
   },
-  "attestation_hash": "sha256:f733c86023021b17c3c4b49443f777b5450df7714cbccc5e2e5867a9ba8d85cf"
+  "attestation_hash": "sha256:6484e2805f1687d940fdca27ce9282bcb764827fa776805be415cbcbbec85215"
 }

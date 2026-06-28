@@ -35,18 +35,18 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
-            "S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_HARD_GATE_BLOCKS_FINAL_BUNDLE",
+            "S2PMT07_FINAL_BUNDLE_ASSIGNMENT_REQUIRED_ITEM_BLOCKS_DIRECTORY_VALIDATION",
             current_state,
         )
-        self.assertIn("S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-HARD-GATE", current_state)
+        self.assertIn("S2PMT07-FINAL-BUNDLE-ASSIGNMENT-REQUIRED-ITEM", current_state)
         self.assertIn("independent_final_reviewer_assignment.json", current_state)
-        self.assertIn("directory-level final bundle artifact validation passes", current_state)
-        self.assertIn("assignment validation remains blocked", current_state)
+        self.assertIn("directory-level artifact validation key", current_state)
+        self.assertIn("directory-level final bundle artifact validation", current_state)
         self.assertIn("FINAL_ACCEPTANCE_BUNDLE/templates/", current_state)
         self.assertIn("no_production_side_effects.json", current_state)
-        self.assertIn("only present passing artifact", current_state)
-        self.assertIn("final bundle readiness remains blocked", current_state)
-        self.assertIn("independent final review", current_state)
+        self.assertIn("only one sub-artifact", current_state)
+        self.assertIn("top-level final bundle readiness remain blocked", current_state)
+        self.assertIn("independent review pass", current_state)
         self.assertNotIn("M4 watermark proof record", current_state)
         self.assertNotIn("m4_watermark_correct=true", current_state)
 
