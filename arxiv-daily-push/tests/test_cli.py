@@ -1,5 +1,8 @@
 import io
 import json
+import os
+import subprocess
+import sys
 import tempfile
 import unittest
 from contextlib import redirect_stdout
@@ -247,6 +250,38 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["production_acceptance_claimed"])
         self.assertFalse(payload["integrated_production_accepted"])
         self.assertFalse(payload["daily_operation_enabled"])
+        self.assertFalse(payload["real_smtp_send_enabled"])
+
+    def test_module_entrypoint_executes_final_bundle_plan_command(self):
+        repo_root = Path(__file__).resolve().parents[2]
+        env = os.environ.copy()
+        src_path = str(repo_root / "arxiv-daily-push" / "src")
+        env["PYTHONPATH"] = (
+            src_path
+            if not env.get("PYTHONPATH")
+            else f"{src_path}{os.pathsep}{env['PYTHONPATH']}"
+        )
+        completed = subprocess.run(
+            [
+                sys.executable,
+                "-B",
+                "-m",
+                "arxiv_daily_push.cli",
+                "plan-final-bundle-prerequisites",
+                "--json",
+            ],
+            cwd=repo_root,
+            env=env,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+
+        self.assertEqual(completed.returncode, 2, completed.stderr)
+        payload = json.loads(completed.stdout)
+        self.assertEqual(payload["status"], "blocked")
+        self.assertEqual(payload["next_required_step"], "S2PLT04_COMPLETION_REPORT")
+        self.assertFalse(payload["integrated_production_accepted"])
         self.assertFalse(payload["real_smtp_send_enabled"])
         self.assertFalse(payload["scheduler_install_enabled"])
         self.assertEqual(payload["plan_validation_errors"], [])

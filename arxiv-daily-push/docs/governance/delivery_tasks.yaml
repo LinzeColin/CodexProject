@@ -4519,3 +4519,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+  - task_id: "S2PMT07-CLI-MODULE-ENTRYPOINT"
+    title: "S2PMT07 CLI module entrypoint"
+    phase: "S2PM"
+    status: "completed"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-29T08:46:12+10:00"
+    summary: "Make python -m arxiv_daily_push.cli dispatch to the ADP CLI so final-bundle prerequisite proofs are reproducible from module invocation."
+    owner: "content_owner + engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_CLI_MODULE_ENTRYPOINT.md", "governance/run_manifests/ADP-S2PMT07-CLI-MODULE-ENTRYPOINT-20260629.json"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_cli_entry_red PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_cli.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_cli_entry_green PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_cli.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_cli_entry_manual PYTHONPATH=arxiv-daily-push/src python3 -B -m arxiv_daily_push.cli plan-final-bundle-prerequisites --json"]
+    test_results: ["TDD red failed as expected because python -m arxiv_daily_push.cli returned exit 0 without dispatching", "focused CLI tests: 19 OK", "manual module command returned blocked JSON with next_required_step=S2PLT04_COMPLETION_REPORT and exit 2"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-CLI-MODULE-ENTRYPOINT-20260629.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_CLI_MODULE_ENTRYPOINT.md", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_cli.py"]
+    result: "CLI module invocation now executes the existing final-bundle prerequisite plan and fails closed with S2PLT04 as the next blocked step."
+    risk: "A working module command can be misread as final-bundle progress unless blocked status, next_required_step, and production flags stay explicit."
+    rollback: "Revert the __main__ entrypoint, subprocess regression test, phase record, manifest, traceability row, delivery/event records, changelog, and three base records; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

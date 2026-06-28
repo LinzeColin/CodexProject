@@ -6,7 +6,7 @@ arxiv-daily-push 当前治理结论：实现一致性为 `VERIFIED`，方法/实
 
 ## 2. 本次运行改变了什么
 
-Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。本次已记录独立最终复审分配和 P0/P1 zero-proof artifact，但 S2PLT04 completion、final command、handoff、signoff、manifest 与 production acceptance 仍阻断。
+Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。本次已记录独立最终复审分配和 P0/P1 zero-proof artifact，并修复 `python -m arxiv_daily_push.cli` 模块入口，使 final-bundle prerequisite plan 可从模块命令复现；但 S2PLT04 completion、final command、handoff、signoff、manifest 与 production acceptance 仍阻断。
 
 ## 3. 为什么重要
 
@@ -95,10 +95,10 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 16. 技术元数据
 
-- source_base_commit: `9fbb0c4eb240a1782bae3db4db873ded37ac21f4`
+- source_base_commit: `b8c57d57729a94871af9da2cd6ec1e7381a0ff16`
 - source_tree_hash: `23334defdf6e168d709c223d61c0998e594f6852`
 - source_snapshot_hash: `sha256:44e89ad287c8ba102d3adf2bd34445fe92f72467236c875dba961377ec933d7a`
-- snapshot_event_time: `2026-06-29T00:40:23+10:00`
+- snapshot_event_time: `2026-06-29T08:46:12+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
 - phase/gate: `S2PM / S2PMT07_ASSIGNMENT_AND_ZERO_PROOF_VALIDATED_S2PLT04_BLOCKED_NO_PRODUCTION`

@@ -4544,3 +4544,7 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"- {reason}")
         return 0 if report["two_day_simulation_ready"] else 2
     raise AssertionError(f"Unhandled command: {args.command}")
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

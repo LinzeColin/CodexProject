@@ -18,6 +18,23 @@ The append-only machine record is `development_events.jsonl`.
 
 
 
+### `ITER-20260629-ADP-S2PMT07-CLI-MODULE-ENTRYPOINT`
+
+- Timestamp: `2026-06-29T08:46:12+10:00`
+- Fact level: EXTRACTED from CLI module invocation behavior, focused subprocess regression test, phase record, run manifest, traceability row, delivery task, event record, and three base files.
+- Base commit: `b8c57d57729a94871af9da2cd6ec1e7381a0ff16`
+- Product version: `0.23.1`
+- Status: `python -m arxiv_daily_push.cli` now dispatches to `main()`; final-bundle prerequisite plan is reproducible through module invocation and remains blocked with `next_required_step=S2PLT04_COMPLETION_REPORT`.
+- Task IDs: `S2PMT07-CLI-MODULE-ENTRYPOINT`; parent `S2PMT07`; acceptance `ACC-S2PMT07-FINAL-REVIEW`.
+- Goal: Remove the CLI module-entrypoint gap so owner/coordinator and independent reviewer can run final-bundle prerequisite planning through standard Python module invocation.
+- Files changed: ADP CLI, focused CLI subprocess regression test, phase record, run manifest, traceability/delivery/event records, changelog, status views, and three base files.
+- Decisions: `python3 -B -m arxiv_daily_push.cli plan-final-bundle-prerequisites --json` returns blocked JSON and exit code `2` with `next_required_step=S2PLT04_COMPLETION_REPORT`, `integrated_production_accepted=false`, `real_smtp_send_enabled=false`, `scheduler_install_enabled=false`, and `plan_validation_errors=[]`.
+- Validation: TDD red failed because module invocation returned exit code `0` with no JSON; focused CLI tests then passed with 19 OK, and manual module command returned blocked final-bundle prerequisite JSON.
+- Boundaries: No S2PLT04 completion report, final command execution, next-agent handoff, independent signoff, final manifest, P0/P1 top-level closure, SMTP, scheduler, Release, restore, CURRENT/V7 change, source/ranking change, DAILY_OPERATION, or integrated production acceptance.
+- Branch hygiene: no branch or PR is created by this run; closeout must recheck open PR count and ADP/arxiv/s2p remote branches.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-CLI-MODULE-ENTRYPOINT-20260629.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_CLI_MODULE_ENTRYPOINT.md`; `arxiv-daily-push/src/arxiv_daily_push/cli.py`; `arxiv-daily-push/tests/test_cli.py`.
+- Next step: Continue `S2PMT07-S2PLT04-COMPLETION-REPORT`; do not claim S2PMT07, DAILY_OPERATION, or production acceptance from module entrypoint readiness alone.
+
 ### `ITER-20260629-ADP-S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-ARTIFACT-DRAFT-CLI`
 
 - Timestamp: `2026-06-29T00:40:23+10:00`

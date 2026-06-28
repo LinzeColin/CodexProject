@@ -5,7 +5,7 @@
 - source_base_commit: `9fbb0c4eb240a1782bae3db4db873ded37ac21f4`
 - source_tree_hash: `23334defdf6e168d709c223d61c0998e594f6852`
 - source_snapshot_hash: `sha256:44e89ad287c8ba102d3adf2bd34445fe92f72467236c875dba961377ec933d7a`
-- snapshot_event_time: `2026-06-29T00:40:23+10:00`
+- snapshot_event_time: `2026-06-29T08:46:12+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -48,6 +48,7 @@
 - Next governance task: `S2PMT07`
 - Parallel shadow source task: `NONE_WHILE_S2PMT07_BLOCKED`
 - Next executable task: `S2PMT07-S2PLT04-COMPLETION-REPORT`
+- Latest S2PMT07 CLI proof-chain fix: `S2PMT07-CLI-MODULE-ENTRYPOINT`, module invocation now returns blocked final-bundle prerequisite JSON with `next_required_step=S2PLT04_COMPLETION_REPORT`.
 - Pending/stale events: `280`
 - Tree-bound events: `0`
 - Commit-bound events: `4`
