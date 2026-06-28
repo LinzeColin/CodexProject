@@ -29,3 +29,6 @@ acceptance_count: 6
 - 完成 PFI v0.2.2 Stage 2 CNY 基准与汇率规则，新增 `src/pfi_v02/stage_v022_fx.py`、真实快照 `data/fx_snapshots/AUD_CNY/2026-06-28.json`、`docs/pfi_v022/STAGE2_CNY_FX_GOVERNANCE.md` 和 `tests/test_v022_fx_effective_date.py`。
 - product_version v0.2.2 数据库治理 Stage 2 对应本轮 CNY/Fx 文档状态；`VERSION` 继续保留 v0.2.1 前端优化，表示 UIUX 基线仍沿用 v0.2.1 HTML Web Shell。
 - Stage 2 覆盖 `S2-P1-T1..S2-P2-T3`，建立 `AUD/CNY` 真实快照、06:00 有效汇率日、普通运行不默认联网、原币辅助显示和账本金额字段。
+- 完成 PFI v0.2.2 Stage 3 数据源、账户角色与可扩展结构，新增 `src/pfi_v02/stage_v022_source_profile.py`、`docs/pfi_v022/STAGE3_SOURCE_ACCOUNT_PROFILE.md` 和 `tests/test_v022_stage3_source_account_profiles.py`。
+- product_version v0.2.2 数据库治理 Stage 3 对应本轮 source/account profile 文档状态；`VERSION` 继续保留 v0.2.1 前端优化，表示 UIUX 基线仍沿用 v0.2.1 HTML Web Shell。
+- Stage 3 覆盖 `S3-P1-T1..S3-P2-T3`，建立 source profile schema、capabilities、`other_source_template`、账户多角色、生效期和 role/event type 计算策略。

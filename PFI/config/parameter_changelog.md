@@ -32,6 +32,12 @@
 | 2026-06-28 | `S2-P2-T3` | `fx.snapshot_directory` | `无正式目录` | `PFI/data/fx_snapshots/AUD_CNY/` | Stage 2 要求本地保存每日快照，包含来源、读取时间、pair 和 hash。 | 数据目录、GitHub 验收、报告 gate。 |
 | 2026-06-28 | `S2-P2-T3` | `fx.latest_snapshot` | `无真实快照` | `fx_AUD_CNY_20260628 / rate=4.6874 / hash=2e0d770f16f07543bfe03f9189f1be923b2ef4518a346c79788655600040018b` | 建立真实汇率读取证据，后续普通运行只读本地快照。 | Web Shell 徽标、合同测试、审计报告。 |
 | 2026-06-28 | `S2-P2-T3` | `fx.missing_snapshot_status` | `未统一` | `汇率数据待更新` | 缺失有效快照时必须中文提示并阻止正式报告，不得伪造实时汇率。 | Web Shell、报告、测试、风控。 |
+| 2026-06-28 | `S3-P1-T1` | `data_sources.source_profile_schema` | `Stage 2 仅记录 required_source_ids 和中文 capability 列表` | `source profile schema 支持 wallet/bank/broker/fund_platform/bullion_platform/payment_platform/manual_snapshot/other` | 新增数据源不能再靠核心代码或 source 名称硬编码。 | 数据源与上传、账本流水、账户与资产、报告与洞察。 |
+| 2026-06-28 | `S3-P1-T2` | `data_sources.capabilities` | `中文能力列表` | `cash_ledger/investment_trade/fund_trade/bullion_trade/balance_snapshot/fee/refund/transfer` | 能力需要机器可读，便于后续 parser、ledger 和报告按能力组合。 | 数据源 profile、导入、测试、参数中心。 |
+| 2026-06-28 | `S3-P1-T3` | `data_sources.other_source_template` | `无` | `other_source_template` | 未来新增 source 必须有模板，不应修改核心计算代码。 | 数据源接入、手工快照、复核队列。 |
+| 2026-06-28 | `S3-P2-T1` | `account_roles.account_role_schema` | `multiple_roles_per_account=true 但缺少完整 schema` | `required_fields=account_id/source_id/role/role_effective_from/role_effective_to；multiple_roles_per_account=true` | 一个账户可同时是主钱包、消费账户、投资入金来源和收入账户。 | 账户与资产、消费管理、投资管理、现金流。 |
+| 2026-06-28 | `S3-P2-T2` | `account_roles.role_effective_date_required` | `文档约束` | `true，字段为 role_effective_from / role_effective_to` | 角色随时间变化时必须能解释历史账本。 | 账户角色、账本复核、报告追溯。 |
+| 2026-06-28 | `S3-P2-T3` | `event_types.role_event_calculation_policy` | `只写明后续按角色和事件类型判断` | `metric_basis=role_and_event_type；forbid_source_name_hardcode=true` | 消费金额不等于支付宝+微信+银行卡，而是事件影响标记和账户角色共同决定。 | 消费管理、账本流水、投资管理、现金流、报告与洞察。 |
 
 ## 记录规则
 

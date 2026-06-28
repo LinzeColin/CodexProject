@@ -12,6 +12,7 @@ from pfi_v02.stage_v022_fx import (
     FX_LEDGER_AMOUNT_SCHEMA,
     FX_SNAPSHOT_SCHEMA,
 )
+from pfi_v02.stage_v022_source_profile import build_stage3_profile_contract
 
 
 V022_STAGE1_TASK_IDS = (
@@ -48,6 +49,15 @@ V022_STAGE2_TASK_IDS = (
     "S2-P2-T1",
     "S2-P2-T2",
     "S2-P2-T3",
+)
+
+V022_STAGE3_TASK_IDS = (
+    "S3-P1-T1",
+    "S3-P1-T2",
+    "S3-P1-T3",
+    "S3-P2-T1",
+    "S3-P2-T2",
+    "S3-P2-T3",
 )
 
 V022_STAGE0_TASK_IDS = (
@@ -470,5 +480,59 @@ def build_v022_stage2_contract() -> dict[str, object]:
             "不做真实交易、自动投资、支付或券商提交。",
             "不把普通页面加载变成联网抓汇率。",
             "不提前实现 Stage 3 数据源 profile 或 Stage 4 Interconnection Matrix。",
+        ),
+    }
+
+
+def build_v022_stage3_contract() -> dict[str, object]:
+    profile_contract = build_stage3_profile_contract()
+    return {
+        "schema": "PFIV022SourceAccountProfileStage3ContractV1",
+        "version": "v0.2.2",
+        "stage": "Stage 3",
+        "stage_name_zh": "数据源、账户角色与可扩展结构",
+        "task_ids": V022_STAGE3_TASK_IDS,
+        "goal": "建立通用 source profile、capabilities、other_source_template、账户多角色和角色生效期，避免按 source 名称硬编码计算。",
+        "source_profile_contract": profile_contract,
+        "deliverables": (
+            "PFI/src/pfi_v02/stage_v022_source_profile.py",
+            "PFI/tests/test_v022_stage3_source_account_profiles.py",
+            "PFI/docs/pfi_v022/STAGE3_SOURCE_ACCOUNT_PROFILE.md",
+            "PFI/config/pfi_parameters.yaml",
+            "PFI/config/parameter_changelog.md",
+            "PFI/模型参数文件.md",
+            "PFI/功能清单.md",
+            "PFI/开发记录.md",
+            "PFI/HANDOFF.md",
+        ),
+        "acceptance_criteria": (
+            "source profile schema 支持 wallet、bank、broker、fund_platform、bullion_platform、payment_platform、manual_snapshot、other。",
+            "数据源能力由 capabilities 描述，覆盖现金流水、投资交易、基金交易、黄金交易、余额快照、费用、退款、转账。",
+            "提供 other_source_template，新增数据源可通过 profile 扩展，不需要改核心计算代码。",
+            "账户角色 schema 允许同一账户同时是主钱包、消费账户、投资入金来源和收入账户。",
+            "账户角色有 role_effective_from 和 role_effective_to，角色历史可追踪。",
+            "所有计算按角色和事件类型，不按 source 名称硬编码。",
+        ),
+        "stop_conditions": (
+            "新增 source 必须修改核心计算代码。",
+            "数据源能力写死在 source 名称里。",
+            "无法添加 other source。",
+            "一个账户只能有一个角色。",
+            "角色历史无法追踪。",
+            "公式按 source 名称写死。",
+        ),
+        "validation_commands": (
+            "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m unittest PFI.tests.test_v022_stage3_source_account_profiles -q",
+            "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m unittest PFI.tests.test_v022_stage0_database_governance PFI.tests.test_pfi_parameters_consistency PFI.tests.test_v022_fx_effective_date PFI.tests.test_v022_stage3_source_account_profiles -q",
+            "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m unittest discover -s PFI/tests -q",
+            "node --check PFI/web/app/shell.js",
+            "python3 scripts/validate_project_governance.py --project PFI",
+            "git diff --check -- PFI",
+        ),
+        "non_goals": (
+            "不实现 Stage 4 economic_event_id 或 interconnection_group_id。",
+            "不修改 v0.2.1 HTML Web Shell 交互架构。",
+            "不做真实交易、自动投资、支付或券商提交。",
+            "不按支付宝、微信、银行卡等 source 名称定义消费公式。",
         ),
     }

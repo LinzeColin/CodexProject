@@ -7,11 +7,11 @@ PFI V0.2 is the Personal Financial Intelligence project under
 under `LinzeColin/CodexProject/QBVS`; PFI investment management does not own
 or cover QBVS.
 
-## v0.2.2 数据库治理 Stage 2
+## v0.2.2 数据库治理 Stage 3
 
-`v0.2.2 数据库治理` 当前完成 Stage 2：CNY 基准与汇率规则。本轮实现真实 `AUD/CNY` 本地汇率快照读取、CNY 主显示、原币辅助字段、06:00 有效汇率日和普通运行不默认联网规则；不生成 Stage 9/12 的 HTML 审查页，不新增真实交易、自动投资、支付或券商提交能力。
+`v0.2.2 数据库治理` 当前完成 Stage 3：数据源、账户角色与可扩展结构。本轮建立 source profile schema、capabilities、`other_source_template`、账户多角色和角色生效期；所有相关计算按 role 和 event type，不按支付宝、微信、银行卡、券商等 source 名称硬编码。本轮不实现 Stage 4 Interconnection Matrix，不新增真实交易、自动投资、支付或券商提交能力。
 
-Stage 2 source files:
+Stage 3 source files:
 
 | Purpose | Path |
 | --- | --- |
@@ -20,14 +20,17 @@ Stage 2 source files:
 | 参数变更记录 | `config/parameter_changelog.md` |
 | Stage 1 验收报告 | `docs/pfi_v022/STAGE1_PARAMETER_GOVERNANCE.md` |
 | Stage 2 验收报告 | `docs/pfi_v022/STAGE2_CNY_FX_GOVERNANCE.md` |
+| Stage 3 验收报告 | `docs/pfi_v022/STAGE3_SOURCE_ACCOUNT_PROFILE.md` |
 | Stage 0-13 roadmap lock | `docs/pfi_v022/ROADMAP_LOCK.md` |
-| Stage 2 contract | `src/pfi_v02/stage_v022_database_governance.py` |
+| Stage 3 contract | `src/pfi_v02/stage_v022_database_governance.py` |
 | 汇率快照读取模块 | `src/pfi_v02/stage_v022_fx.py` |
+| 数据源与账户角色模块 | `src/pfi_v02/stage_v022_source_profile.py` |
 | 真实汇率快照 | `data/fx_snapshots/AUD_CNY/2026-06-28.json` |
 | Stage 2 FX test | `tests/test_v022_fx_effective_date.py` |
+| Stage 3 source/account test | `tests/test_v022_stage3_source_account_profiles.py` |
 | 参数一致性测试 | `tests/test_pfi_parameters_consistency.py` |
 
-Stage 2 locked parameters:
+Stage 3 locked parameters:
 
 - 主货币：`CNY`。
 - 当前前端徽标：`AUD/CNY=4.69（YYYYMMDD--HH:MM）`。
@@ -40,6 +43,10 @@ Stage 2 locked parameters:
 - 大额消费阈值：`CNY 2000` 或 `AUD 500`。
 - 夜间窗口：`22:00-06:00`。
 - 现金流窗口：`7/21/30/60/90/180/360`。
+- 支持 source type：`wallet`、`bank`、`broker`、`fund_platform`、`bullion_platform`、`payment_platform`、`manual_snapshot`、`other`。
+- source capabilities：现金流水、投资交易、基金交易、黄金交易、余额快照、费用、退款、转账。
+- 新增 source 模板：`other_source_template`。
+- 账户角色字段：`role_effective_from`、`role_effective_to`。
 
 ## v0.2.1 前端优化 Stage 0
 

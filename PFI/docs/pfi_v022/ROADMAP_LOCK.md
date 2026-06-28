@@ -19,7 +19,7 @@ Roadmap 形态：`Stage -> Phase -> Task`
 | Stage 0 | 任务锁定与文件定位 | 已补做复核 | 完成 `S0-P1-T1..S0-P2-T2`；独立复核文件为 `docs/pfi_v022/STAGE0_REDO_ACCEPTANCE_20260628.md`。 |
 | Stage 1 | 模型参数文件重构 | 本轮完成 | 中文参数总目录、机器可读 YAML、一致性测试。 |
 | Stage 2 | CNY 基准与汇率规则 | 本轮完成 | CNY 主显示、原币辅助、06:00 有效汇率日、本地快照读取。 |
-| Stage 3 | 数据源、账户角色与可扩展结构 | 待 owner 开启 | Source Profile、capabilities、账户角色重叠和生效期。 |
+| Stage 3 | 数据源、账户角色与可扩展结构 | 本轮完成 | Source Profile、capabilities、`other_source_template`、账户角色重叠和生效期。 |
 | Stage 4 | Economic Event 与 Interconnection 逻辑 | 待 owner 开启 | economic_event_id、interconnection_group_id、Matrix。 |
 | Stage 5 | 统一账本事件、消费双口径与分类体系 | 待 owner 开启 | event type、双消费口径、12 大类 / 50 中类。 |
 | Stage 6 | 标签系统与自定义视图 | 待 owner 开启 | 标签注册、赋值、规则、变更历史和视图。 |
@@ -152,6 +152,48 @@ git diff --check -- PFI
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m unittest PFI.tests.test_v022_fx_effective_date -q
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m unittest PFI.tests.test_v022_stage0_database_governance PFI.tests.test_pfi_parameters_consistency PFI.tests.test_v022_fx_effective_date -q
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m pfi_v02.stage_v022_fx read
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m unittest discover -s PFI/tests -q
+node --check PFI/web/app/shell.js
+python3 scripts/validate_project_governance.py --project PFI
+git diff --check -- PFI
+```
+
+## Stage 3 Task Lock
+
+| Task ID | Phase | 交付物 | 状态 |
+| --- | --- | --- | --- |
+| `S3-P1-T1` | Phase 3.1 | 通用数据源 Profile Schema，支持 `wallet/bank/broker/fund_platform/bullion_platform/payment_platform/manual_snapshot/other` | 本轮完成 |
+| `S3-P1-T2` | Phase 3.1 | `capabilities` 描述数据源能力，覆盖现金流水、投资交易、基金交易、黄金交易、余额快照、费用、退款、转账 | 本轮完成 |
+| `S3-P1-T3` | Phase 3.1 | `other_source_template` | 本轮完成 |
+| `S3-P2-T1` | Phase 3.2 | 账户角色 Schema，允许一个账户同时多角色 | 本轮完成 |
+| `S3-P2-T2` | Phase 3.2 | `role_effective_from` / `role_effective_to` | 本轮完成 |
+| `S3-P2-T3` | Phase 3.2 | 按角色和事件类型计算，不按 source 名称硬编码 | 本轮完成 |
+
+## Stage 3 Acceptance Criteria
+
+- source profile schema 支持 `wallet`、`bank`、`broker`、`fund_platform`、`bullion_platform`、`payment_platform`、`manual_snapshot`、`other`。
+- capabilities 覆盖现金流水、投资交易、基金交易、黄金交易、余额快照、费用、退款、转账。
+- 至少提供 `other_source_template`，新增 source 不需要修改核心计算代码。
+- 一个账户可同时是主钱包、消费账户、投资入金来源、收入账户。
+- 账户角色支持 `role_effective_from` 和 `role_effective_to`。
+- 所有计算按 role 和 event type，不按支付宝、微信、银行卡、券商等 source 名称硬编码。
+
+## Stage 3 Stop Condition
+
+- 新增数据源必须修改核心计算代码。
+- 数据源能力写死在名称里。
+- 无法添加新 source。
+- 一个账户只能有一个角色。
+- 角色历史无法追踪。
+- 公式按 source 名称写死。
+
+当前检查结论：以上停止条件均未触发。
+
+## Stage 3 Validation
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m unittest PFI.tests.test_v022_stage3_source_account_profiles -q
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m unittest PFI.tests.test_v022_stage0_database_governance PFI.tests.test_pfi_parameters_consistency PFI.tests.test_v022_fx_effective_date PFI.tests.test_v022_stage3_source_account_profiles -q
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m unittest discover -s PFI/tests -q
 node --check PFI/web/app/shell.js
 python3 scripts/validate_project_governance.py --project PFI
