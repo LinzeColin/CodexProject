@@ -21,12 +21,18 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 228
+- task_count: 229
 - acceptance_count: 126
 
 ## Delivery Tasks
 
 The machine-readable task source is `delivery_tasks.yaml`.
+## 2026-06-28 15:26:22 Australia/Sydney - S2PMT07 Closure Decision Owner Packet
+
+- `S2PMT07-INDEPENDENT-FINAL-CLOSURE-DECISION-OWNER-PACKET` exposes the owner/reviewer action packet for the future independent final closure decision.
+- The packet is not a reviewer assignment, not a closure decision, not P0/P1 zero proof, not S2PLT04 completion, not a final bundle, and not production acceptance.
+- No SMTP, scheduler, Release, restore, schema/DB, source/ranking, CURRENT/V7, P0/P1 closure, DAILY_OPERATION, or integrated production acceptance side effect is claimed.
+
 ## 2026-06-28 13:33:15 Australia/Sydney - S2PLT02 M4 Watermark Proof Record
 
 - `S2PLT02-M4-WATERMARK-PROOF-RECORD` turns the 2026-06-28 M4 watermark proof state from missing proof record to ready for the current ledger service date.

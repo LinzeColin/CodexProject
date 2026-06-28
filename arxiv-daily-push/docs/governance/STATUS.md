@@ -2,10 +2,10 @@
 
 ## Snapshot Metadata
 
-- source_base_commit: `ab7e1415b7f3b83a100e6077b486459c8224f287`
-- source_tree_hash: `843c572695708882cc8f83cc5058d9a736d95efd`
+- source_base_commit: `9fbb0c4eb240a1782bae3db4db873ded37ac21f4`
+- source_tree_hash: `23334defdf6e168d709c223d61c0998e594f6852`
 - source_snapshot_hash: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
-- snapshot_event_time: `2026-06-28T15:05:24+10:00`
+- snapshot_event_time: `2026-06-28T15:26:22+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -14,10 +14,10 @@
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - Product version: `0.23.1`
-- Phase/Gate: `S2PM / S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_OWNER_PACKET_READY_NO_ASSIGNMENT`
-- Models/Formulas/Parameters total: `117 / 119 / 1064`
-- Active formulas/parameters: `119 / 1047`
-- Machine checked formulas/parameters: `119 / 1042`
+- Phase/Gate: `S2PM / S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_OWNER_PACKET_READY_NO_CLOSURE`
+- Models/Formulas/Parameters total: `117 / 119 / 1067`
+- Active formulas/parameters: `119 / 1050`
+- Machine checked formulas/parameters: `119 / 1045`
 
 ## Assurance
 
@@ -35,7 +35,7 @@
 ## Delivery
 
 - Readiness: `VERIFIED`
-- Release gate: `S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_OWNER_PACKET_READY_NO_ASSIGNMENT`
+- Release gate: `S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_OWNER_PACKET_READY_NO_CLOSURE`
 - V7 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - V7 contract hash: `a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d`
 - V7 roadmap hash: `7c5f2d842d4f6b909343c953fe39b4a4aa540d168199747a9f7decdb1aad9bd1`
@@ -50,7 +50,8 @@
 - Next executable task: `S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT`
 - Owner next-action sync: `S2PMT07-OWNER-NEXT-ACTION-SYNC`
 - Owner assignment packet: `S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-OWNER-PACKET`
-- Pending/stale events: `251`
+- Owner closure decision packet: `S2PMT07-INDEPENDENT-FINAL-CLOSURE-DECISION-OWNER-PACKET`
+- Pending/stale events: `252`
 - Tree-bound events: `0`
 - Commit-bound events: `4`
 - Legacy unbound events: `210`

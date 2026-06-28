@@ -291,6 +291,29 @@ S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_REQUEST_FORBIDDEN_FLAGS = (
     "v7_1_baseline_changed",
     "v7_2_contract_files_changed",
 )
+S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_OWNER_PACKET_REQUIRED_ACTIONS = (
+    "confirm_independent_reviewer_assignment_artifact_is_valid",
+    "review_all_p0_p1_candidate_evidence_refs",
+    "issue_or_reject_independent_closure_decision",
+    "write_decision_only_inside_p0_p1_zero_proof_artifact",
+    "keep_all_no_production_side_effect_flags_false",
+)
+S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_OWNER_PACKET_BLOCKING_REASONS = (
+    "independent_final_closure_decision_owner_packet_only_not_closure",
+    "independent_final_reviewer_assignment_missing",
+    "independent_final_closure_decision_missing",
+    "p0_p1_zero_proof_artifact_missing",
+    "s2plt04_completion_report_missing",
+    "final_command_execution_missing",
+    "no_production_side_effect_attestation_missing",
+    "next_agent_handoff_missing",
+    "final_acceptance_bundle_manifest_missing",
+    "inherited_v7_1_p0_findings_open",
+    "inherited_v7_1_p1_findings_open",
+)
+S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_OWNER_PACKET_FORBIDDEN_FLAGS = (
+    S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_REQUEST_FORBIDDEN_FLAGS
+)
 S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS = (
     "FINAL_ACCEPTANCE_BUNDLE/manifest.json",
     S2PMT07_P0_P1_ZERO_PROOF_ARTIFACT_PATH,
@@ -3327,6 +3350,149 @@ def validate_independent_final_closure_decision_request_state(state: Mapping[str
     return errors
 
 
+def build_independent_final_closure_decision_owner_packet_state() -> dict[str, Any]:
+    """Build the owner/reviewer packet for a future independent final closure decision."""
+
+    request_state = build_independent_final_closure_decision_request_state()
+    assignment_packet = build_independent_final_reviewer_assignment_owner_packet_state()
+    state = {
+        "status": "blocked_owner_action_packet_ready_no_closure",
+        "scope": "owner_closure_decision_packet_only_no_closure",
+        "task_id": S2PMT07_TASK_ID,
+        "acceptance_id": S2PMT07_ACCEPTANCE_ID,
+        "required_owner_actions": list(
+            S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_OWNER_PACKET_REQUIRED_ACTIONS
+        ),
+        "decision_artifact_ref": f"{S2PMT07_P0_P1_ZERO_PROOF_ARTIFACT_PATH}#independent_closure_decision",
+        "zero_proof_artifact_path": S2PMT07_P0_P1_ZERO_PROOF_ARTIFACT_PATH,
+        "zero_proof_schema_version": S2PMT07_P0_P1_ZERO_PROOF_SCHEMA_VERSION,
+        "zero_proof_required_fields": list(S2PMT07_P0_P1_ZERO_PROOF_REQUIRED_FIELDS),
+        "required_closure_decision": S2PMT07_P0_P1_ZERO_PROOF_CLOSURE_DECISION,
+        "assignment_artifact_path": S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_PATH,
+        "assignment_owner_packet_ready": not validate_independent_final_reviewer_assignment_owner_packet_state(
+            assignment_packet
+        ),
+        "closure_decision_request_ready": not validate_independent_final_closure_decision_request_state(
+            request_state
+        ),
+        "required_reviewer_role": "independent_final_reviewer",
+        "required_reviewer_independence": S2PMT07_REQUIRED_REVIEWER_INDEPENDENCE,
+        "review_input_refs": list(request_state["review_input_refs"]),
+        "candidate_manifest_refs": list(request_state["candidate_manifest_refs"]),
+        "p0_candidate_count": request_state["p0_candidate_count"],
+        "p1_candidate_count": request_state["p1_candidate_count"],
+        "candidate_total": request_state["candidate_total"],
+        "assignment_artifact_present": False,
+        "independent_final_reviewer_assigned": False,
+        "independent_final_closure_decision_present": False,
+        "zero_proof_artifact_present": False,
+        "p0_zero_proven": False,
+        "p1_zero_proven": False,
+        "closure_claimed": False,
+        "observed_open_p0_findings": S2PMT07_INHERITED_V7_1_OPEN_P0_FINDINGS,
+        "observed_open_p1_findings": S2PMT07_INHERITED_V7_1_OPEN_P1_FINDINGS,
+        "next_required_action": "owner_or_independent_reviewer_must_record_final_closure_decision_after_assignment",
+        "blocking_reasons": list(S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_OWNER_PACKET_BLOCKING_REASONS),
+        **{flag: False for flag in S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_OWNER_PACKET_FORBIDDEN_FLAGS},
+        "state_hash": "",
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
+def validate_independent_final_closure_decision_owner_packet_state(
+    state: Mapping[str, Any],
+) -> list[str]:
+    """Validate the owner/reviewer packet without treating it as a closure decision."""
+
+    errors: list[str] = []
+    if state.get("status") != "blocked_owner_action_packet_ready_no_closure":
+        errors.append("independent final closure decision owner packet status is invalid")
+    if state.get("scope") != "owner_closure_decision_packet_only_no_closure":
+        errors.append("independent final closure decision owner packet scope is invalid")
+    if state.get("task_id") != S2PMT07_TASK_ID:
+        errors.append("independent final closure decision owner packet task_id is invalid")
+    if state.get("acceptance_id") != S2PMT07_ACCEPTANCE_ID:
+        errors.append("independent final closure decision owner packet acceptance_id is invalid")
+    if (
+        tuple(state.get("required_owner_actions", []))
+        != S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_OWNER_PACKET_REQUIRED_ACTIONS
+    ):
+        errors.append("independent final closure decision owner packet required_owner_actions are invalid")
+    if (
+        state.get("decision_artifact_ref")
+        != f"{S2PMT07_P0_P1_ZERO_PROOF_ARTIFACT_PATH}#independent_closure_decision"
+    ):
+        errors.append("independent final closure decision owner packet decision_artifact_ref is invalid")
+    if state.get("zero_proof_artifact_path") != S2PMT07_P0_P1_ZERO_PROOF_ARTIFACT_PATH:
+        errors.append("independent final closure decision owner packet zero_proof_artifact_path is invalid")
+    if state.get("zero_proof_schema_version") != S2PMT07_P0_P1_ZERO_PROOF_SCHEMA_VERSION:
+        errors.append("independent final closure decision owner packet zero_proof_schema_version is invalid")
+    if tuple(state.get("zero_proof_required_fields", [])) != S2PMT07_P0_P1_ZERO_PROOF_REQUIRED_FIELDS:
+        errors.append("independent final closure decision owner packet zero_proof required fields are invalid")
+    if state.get("required_closure_decision") != S2PMT07_P0_P1_ZERO_PROOF_CLOSURE_DECISION:
+        errors.append("independent final closure decision owner packet closure decision is invalid")
+    if state.get("assignment_artifact_path") != S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_PATH:
+        errors.append("independent final closure decision owner packet assignment_artifact_path is invalid")
+    if state.get("assignment_owner_packet_ready") is not True:
+        errors.append("independent final closure decision owner packet assignment owner packet must be ready")
+    if state.get("closure_decision_request_ready") is not True:
+        errors.append("independent final closure decision owner packet request must be ready")
+    if state.get("required_reviewer_role") != "independent_final_reviewer":
+        errors.append("independent final closure decision owner packet reviewer role is invalid")
+    if state.get("required_reviewer_independence") != S2PMT07_REQUIRED_REVIEWER_INDEPENDENCE:
+        errors.append("independent final closure decision owner packet reviewer independence is invalid")
+    request_state = build_independent_final_closure_decision_request_state()
+    for ref in request_state["review_input_refs"]:
+        if ref not in state.get("review_input_refs", []):
+            errors.append(f"independent final closure decision owner packet review inputs must include {ref}")
+    for ref in request_state["candidate_manifest_refs"]:
+        if ref not in state.get("candidate_manifest_refs", []):
+            errors.append(f"independent final closure decision owner packet candidate refs must include {ref}")
+    if state.get("p0_candidate_count") != request_state["p0_candidate_count"]:
+        errors.append("independent final closure decision owner packet P0 candidate count is invalid")
+    if state.get("p1_candidate_count") != request_state["p1_candidate_count"]:
+        errors.append("independent final closure decision owner packet P1 candidate count is invalid")
+    if state.get("candidate_total") != request_state["candidate_total"]:
+        errors.append("independent final closure decision owner packet candidate_total is invalid")
+    if state.get("assignment_artifact_present") is not False:
+        errors.append("assignment_artifact_present must remain false until owner supplies artifact")
+    for flag in (
+        "independent_final_reviewer_assigned",
+        "independent_final_closure_decision_present",
+        "zero_proof_artifact_present",
+        "p0_zero_proven",
+        "p1_zero_proven",
+        "closure_claimed",
+    ):
+        if state.get(flag) is not False:
+            if flag == "independent_final_closure_decision_present":
+                errors.append(
+                    "independent_final_closure_decision_present must remain false until final reviewer supplies decision"
+                )
+            else:
+                errors.append(f"{flag} must be false")
+    if state.get("observed_open_p0_findings") != S2PMT07_INHERITED_V7_1_OPEN_P0_FINDINGS:
+        errors.append("independent final closure decision owner packet must preserve inherited open P0 count")
+    if state.get("observed_open_p1_findings") != S2PMT07_INHERITED_V7_1_OPEN_P1_FINDINGS:
+        errors.append("independent final closure decision owner packet must preserve inherited open P1 count")
+    if (
+        state.get("next_required_action")
+        != "owner_or_independent_reviewer_must_record_final_closure_decision_after_assignment"
+    ):
+        errors.append("independent final closure decision owner packet next_required_action is invalid")
+    for reason in S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_OWNER_PACKET_BLOCKING_REASONS:
+        if reason not in state.get("blocking_reasons", []):
+            errors.append(f"independent final closure decision owner packet must include blocker {reason}")
+    for flag in S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_OWNER_PACKET_FORBIDDEN_FLAGS:
+        if state.get(flag) is not False:
+            errors.append(f"{flag} must be false")
+    expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    if state.get("state_hash") != expected_hash:
+        errors.append("independent final closure decision owner packet state_hash does not match state content")
+    return errors
+
+
 def build_p0_p1_zero_proof_readiness_state() -> dict[str, Any]:
     """Build a fail-closed schema contract for the future P0/P1 zero proof artifact."""
 
@@ -4578,6 +4744,9 @@ def build_final_acceptance_bundle_readiness_state() -> dict[str, Any]:
     independent_final_closure_decision_request = (
         build_independent_final_closure_decision_request_state()
     )
+    independent_final_closure_decision_owner_packet = (
+        build_independent_final_closure_decision_owner_packet_state()
+    )
     p0_p1_zero_proof_readiness = build_p0_p1_zero_proof_readiness_state()
     p0_p1_zero_proof_artifact_validation = build_p0_p1_zero_proof_artifact_validation_state(None)
     final_acceptance_bundle_manifest_validation = build_final_acceptance_bundle_manifest_validation_state(None)
@@ -4622,6 +4791,11 @@ def build_final_acceptance_bundle_readiness_state() -> dict[str, Any]:
                     independent_final_closure_decision_request
                 )
             ),
+            "INDEPENDENT_FINAL_CLOSURE_DECISION_OWNER_PACKET": (
+                not validate_independent_final_closure_decision_owner_packet_state(
+                    independent_final_closure_decision_owner_packet
+                )
+            ),
             "P0_P1_ZERO_PROOF_READINESS": p0_p1_zero_proof_readiness["status"] == "pass",
             "P0_P1_ZERO_PROOF_ARTIFACT_VALIDATION": p0_p1_zero_proof_artifact_validation["status"] == "pass",
             "FINAL_ACCEPTANCE_BUNDLE_MANIFEST_VALIDATION": (
@@ -4649,6 +4823,7 @@ def build_final_acceptance_bundle_readiness_state() -> dict[str, Any]:
         ),
         "independent_final_reviewer_assignment_validation": independent_final_reviewer_assignment_validation,
         "independent_final_closure_decision_request": independent_final_closure_decision_request,
+        "independent_final_closure_decision_owner_packet": independent_final_closure_decision_owner_packet,
         "p0_p1_zero_proof_readiness": p0_p1_zero_proof_readiness,
         "p0_p1_zero_proof_artifact_validation": p0_p1_zero_proof_artifact_validation,
         "final_acceptance_bundle_manifest_validation": final_acceptance_bundle_manifest_validation,
@@ -4704,6 +4879,8 @@ def validate_final_acceptance_bundle_readiness_state(state: Mapping[str, Any]) -
         )
     if prebundle.get("INDEPENDENT_FINAL_CLOSURE_DECISION_REQUEST") is not True:
         errors.append("final acceptance bundle readiness must expose independent final closure decision request")
+    if prebundle.get("INDEPENDENT_FINAL_CLOSURE_DECISION_OWNER_PACKET") is not True:
+        errors.append("final acceptance bundle readiness must expose independent final closure decision owner packet")
     if prebundle.get("P0_P1_ZERO_PROOF_READINESS") is not False:
         errors.append("final acceptance bundle readiness must not expose P0/P1 zero proof readiness as passing")
     if prebundle.get("P0_P1_ZERO_PROOF_ARTIFACT_VALIDATION") is not False:
@@ -4749,6 +4926,9 @@ def validate_final_acceptance_bundle_readiness_state(state: Mapping[str, Any]) -
     final_closure_request = _mapping(state.get("independent_final_closure_decision_request"))
     if validate_independent_final_closure_decision_request_state(final_closure_request):
         errors.append("final acceptance bundle readiness independent final closure decision request is invalid")
+    final_closure_owner_packet = _mapping(state.get("independent_final_closure_decision_owner_packet"))
+    if validate_independent_final_closure_decision_owner_packet_state(final_closure_owner_packet):
+        errors.append("final acceptance bundle readiness independent final closure decision owner packet is invalid")
     p0_p1_zero_proof = _mapping(state.get("p0_p1_zero_proof_readiness"))
     if validate_p0_p1_zero_proof_readiness_state(p0_p1_zero_proof):
         errors.append("final acceptance bundle readiness P0/P1 zero proof readiness state is invalid")

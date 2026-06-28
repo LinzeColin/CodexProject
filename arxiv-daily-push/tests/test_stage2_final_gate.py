@@ -68,6 +68,9 @@ from arxiv_daily_push.stage2_final_gate import (
     S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_REQUEST_BLOCKING_REASONS,
     S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_REQUEST_FORBIDDEN_FLAGS,
     S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_REQUEST_REQUIRED_INPUTS,
+    S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_OWNER_PACKET_BLOCKING_REASONS,
+    S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_OWNER_PACKET_FORBIDDEN_FLAGS,
+    S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_OWNER_PACKET_REQUIRED_ACTIONS,
     S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_REQUEST_BLOCKING_REASONS,
     S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_REQUEST_FORBIDDEN_FLAGS,
     S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_REQUEST_REQUIRED_INPUTS,
@@ -102,6 +105,7 @@ from arxiv_daily_push.stage2_final_gate import (
     build_next_agent_handoff_validation_state,
     build_independent_review_signoff_hash,
     build_independent_review_signoff_validation_state,
+    build_independent_final_closure_decision_owner_packet_state,
     build_independent_final_closure_decision_request_state,
     build_independent_final_reviewer_assignment_owner_packet_state,
     build_independent_final_reviewer_assignment_hash,
@@ -151,6 +155,7 @@ from arxiv_daily_push.stage2_final_gate import (
     validate_next_agent_handoff,
     validate_independent_review_signoff_artifact,
     validate_final_acceptance_bundle_manifest,
+    validate_independent_final_closure_decision_owner_packet_state,
     validate_independent_final_closure_decision_request_state,
     validate_independent_final_reviewer_assignment_owner_packet_state,
     validate_independent_final_reviewer_assignment_artifact,
@@ -2531,6 +2536,68 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertIn(
             "real_smtp_sent must be false",
             validate_independent_final_closure_decision_request_state(tampered_flag),
+        )
+
+    def test_independent_final_closure_decision_owner_packet_is_ready_but_not_closure(self) -> None:
+        packet = build_independent_final_closure_decision_owner_packet_state()
+
+        self.assertEqual(packet["status"], "blocked_owner_action_packet_ready_no_closure")
+        self.assertEqual(packet["scope"], "owner_closure_decision_packet_only_no_closure")
+        self.assertEqual(packet["task_id"], "S2PMT07")
+        self.assertEqual(packet["acceptance_id"], "ACC-S2PMT07-FINAL-REVIEW")
+        self.assertEqual(
+            tuple(packet["required_owner_actions"]),
+            S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_OWNER_PACKET_REQUIRED_ACTIONS,
+        )
+        self.assertEqual(
+            packet["decision_artifact_ref"],
+            "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json#independent_closure_decision",
+        )
+        self.assertEqual(packet["required_reviewer_role"], "independent_final_reviewer")
+        self.assertTrue(packet["closure_decision_request_ready"])
+        self.assertFalse(packet["assignment_artifact_present"])
+        self.assertFalse(packet["independent_final_reviewer_assigned"])
+        self.assertFalse(packet["independent_final_closure_decision_present"])
+        self.assertFalse(packet["zero_proof_artifact_present"])
+        self.assertFalse(packet["p0_zero_proven"])
+        self.assertFalse(packet["p1_zero_proven"])
+        self.assertFalse(packet["closure_claimed"])
+        self.assertEqual(packet["observed_open_p0_findings"], 8)
+        self.assertEqual(packet["observed_open_p1_findings"], 37)
+        self.assertEqual(
+            packet["next_required_action"],
+            "owner_or_independent_reviewer_must_record_final_closure_decision_after_assignment",
+        )
+        for ref in build_independent_final_closure_decision_request_state()["review_input_refs"]:
+            self.assertIn(ref, packet["review_input_refs"])
+        for reason in S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_OWNER_PACKET_BLOCKING_REASONS:
+            self.assertIn(reason, packet["blocking_reasons"])
+        for flag in S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_OWNER_PACKET_FORBIDDEN_FLAGS:
+            self.assertFalse(packet[flag])
+        self.assertEqual(validate_independent_final_closure_decision_owner_packet_state(packet), [])
+
+        readiness = build_final_acceptance_bundle_readiness_state()
+        self.assertTrue(
+            readiness["available_prebundle_evidence"]["INDEPENDENT_FINAL_CLOSURE_DECISION_OWNER_PACKET"]
+        )
+        self.assertEqual(
+            readiness["independent_final_closure_decision_owner_packet"]["status"],
+            "blocked_owner_action_packet_ready_no_closure",
+        )
+        self.assertFalse(readiness["available_prebundle_evidence"]["P0_P1_ZERO_PROOF_ARTIFACT_VALIDATION"])
+
+        tampered = json.loads(json.dumps(packet))
+        tampered["independent_final_closure_decision_present"] = True
+        self.assertIn(
+            "independent_final_closure_decision_present must remain false until final reviewer supplies decision",
+            validate_independent_final_closure_decision_owner_packet_state(tampered),
+        )
+
+        tampered_flag = json.loads(json.dumps(packet))
+        tampered_flag["real_smtp_sent"] = True
+        self.assertIn(
+            "real_smtp_sent must be false",
+            validate_independent_final_closure_decision_owner_packet_state(tampered_flag),
         )
 
     def test_independent_final_reviewer_assignment_request_remains_blocked_without_assignment(self) -> None:
