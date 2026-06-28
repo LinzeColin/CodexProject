@@ -155,6 +155,41 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["daily_operation_enabled"])
         self.assertEqual(payload["owner_packet_validation_errors"], [])
 
+    def test_build_final_closure_decision_owner_packet_json_command(self):
+        buffer = io.StringIO()
+        with redirect_stdout(buffer):
+            try:
+                result = main(["build-final-closure-decision-owner-packet", "--json"])
+            except SystemExit as exc:
+                self.fail(f"command should be registered without exiting argparse: {exc}")
+        self.assertEqual(result, 0)
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(payload["status"], "blocked_owner_action_packet_ready_no_closure")
+        self.assertEqual(payload["task_id"], "S2PMT07")
+        self.assertEqual(
+            payload["decision_artifact_ref"],
+            "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json#independent_closure_decision",
+        )
+        self.assertEqual(
+            payload["assignment_artifact_path"],
+            "FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json",
+        )
+        self.assertTrue(payload["assignment_owner_packet_ready"])
+        self.assertTrue(payload["closure_decision_request_ready"])
+        self.assertFalse(payload["assignment_artifact_present"])
+        self.assertFalse(payload["independent_final_reviewer_assigned"])
+        self.assertFalse(payload["independent_final_closure_decision_present"])
+        self.assertFalse(payload["zero_proof_artifact_present"])
+        self.assertFalse(payload["p0_zero_proven"])
+        self.assertFalse(payload["p1_zero_proven"])
+        self.assertFalse(payload["closure_claimed"])
+        self.assertEqual(payload["observed_open_p0_findings"], 8)
+        self.assertEqual(payload["observed_open_p1_findings"], 37)
+        self.assertFalse(payload["production_acceptance_claimed"])
+        self.assertFalse(payload["integrated_production_accepted"])
+        self.assertFalse(payload["daily_operation_enabled"])
+        self.assertEqual(payload["owner_packet_validation_errors"], [])
+
     def test_validate_final_acceptance_bundle_json_command_blocks_without_live_artifacts(self):
         repo_root = Path(__file__).resolve().parents[2]
         buffer = io.StringIO()

@@ -115,9 +115,11 @@ from .stage2_replay_gate import (
 from .stage2_final_gate import (
     S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_PATH,
     build_final_acceptance_bundle_readiness_state,
+    build_independent_final_closure_decision_owner_packet_state,
     build_independent_final_reviewer_assignment_owner_packet_state,
     build_independent_final_reviewer_assignment_validation_state,
     validate_final_acceptance_bundle_readiness_state,
+    validate_independent_final_closure_decision_owner_packet_state,
     validate_independent_final_reviewer_assignment_owner_packet_state,
 )
 from .stage2_sources import (
@@ -1180,6 +1182,16 @@ def build_parser() -> argparse.ArgumentParser:
         "--json",
         action="store_true",
         help="Print JSON owner action packet.",
+    )
+
+    final_closure_decision_owner_packet = subparsers.add_parser(
+        "build-final-closure-decision-owner-packet",
+        help="Print the S2PMT07 owner/reviewer action packet for a future independent final closure decision.",
+    )
+    final_closure_decision_owner_packet.add_argument(
+        "--json",
+        action="store_true",
+        help="Print JSON owner/reviewer closure decision packet.",
     )
 
     final_acceptance_bundle = subparsers.add_parser(
@@ -3381,6 +3393,27 @@ def main(argv: list[str] | None = None) -> int:
             print(f"- next_required_action: {report.get('next_required_action')}")
             print(f"- assignment_artifact_path: {report.get('assignment_artifact_path')}")
             print(f"- assignment_artifact_present: {report.get('assignment_artifact_present')}")
+            print(f"- observed_open_p0_findings: {report.get('observed_open_p0_findings')}")
+            print(f"- observed_open_p1_findings: {report.get('observed_open_p1_findings')}")
+            for action in report.get("required_owner_actions", []):
+                print(f"- required_owner_action: {action}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if not errors else 2
+    if args.command == "build-final-closure-decision-owner-packet":
+        report = build_independent_final_closure_decision_owner_packet_state()
+        errors = validate_independent_final_closure_decision_owner_packet_state(report)
+        output = {**report, "owner_packet_validation_errors": errors}
+        if args.json:
+            print(json.dumps(output, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- task_id: {report.get('task_id')}")
+            print(f"- next_required_action: {report.get('next_required_action')}")
+            print(f"- decision_artifact_ref: {report.get('decision_artifact_ref')}")
+            print(f"- assignment_artifact_path: {report.get('assignment_artifact_path')}")
+            print(f"- assignment_artifact_present: {report.get('assignment_artifact_present')}")
+            print(f"- independent_final_closure_decision_present: {report.get('independent_final_closure_decision_present')}")
             print(f"- observed_open_p0_findings: {report.get('observed_open_p0_findings')}")
             print(f"- observed_open_p1_findings: {report.get('observed_open_p1_findings')}")
             for action in report.get("required_owner_actions", []):
