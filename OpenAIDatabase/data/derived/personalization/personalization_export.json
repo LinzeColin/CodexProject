@@ -3,12 +3,12 @@
     "atlas_edges": 3857,
     "atlas_nodes": 725,
     "backup_policy": "redacted_summary_only_no_raw_transcript_no_plaintext_secret",
-    "message_count": 132319,
+    "message_count": 132330,
     "range_end": "2026-06-28",
     "range_start": "2026-06-03",
     "session_count": 401,
     "source": "real_codex_local_data",
-    "tool_call_count": 434174,
+    "tool_call_count": 434217,
     "top_topics": [
       {
         "count": 13926,
@@ -134,7 +134,7 @@
     "registry_path": "config/data_sources/source_registry.json",
     "schema_version": "memory_atlas_data_source_registry.v1"
   },
-  "generated_at": "2026-06-28T21:41:01Z",
+  "generated_at": "2026-06-28T21:42:16Z",
   "layers": [
     {
       "canonical_files": [
