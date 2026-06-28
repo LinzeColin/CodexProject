@@ -74,6 +74,47 @@ class V021Stage7ClicksafeFeedbackTest(unittest.TestCase):
         ):
             self.assertIn(required, self.js)
 
+    def test_owner_facing_multimodal_delivery_style_is_present(self) -> None:
+        for required in (
+            'data-uiux-delivery-target="v021_multimodal_feedback"',
+            "data-settings-feedback-console",
+            "feedback-wave",
+            'data-feedback-toggle="haptic"',
+            'data-feedback-toggle="sound"',
+            'data-feedback-toggle="motion"',
+            "data-feedback-test",
+            "mobile-bottom-nav",
+            "data-mobile-workspace",
+            "data-nav-icon",
+            "data-nav-hint",
+        ):
+            self.assertIn(required, self.html)
+        for required in (
+            "function emitMultimodalFeedback",
+            "function vibrateFeedback",
+            "function playFeedbackTone",
+            "function createRipple",
+            "function bindFeedbackToggles",
+            "function syncMobileTabs",
+            "navigator.vibrate",
+            "AudioContext",
+        ):
+            self.assertIn(required, self.js)
+        for required in (
+            ".feedback-wave",
+            ".toggle-row",
+            ".toggle-item",
+            ".mobile-bottom-nav",
+            ".mobile-tab",
+            ".ripple",
+            "backdrop-filter",
+            "data-nav-hint",
+            "grid-template-areas",
+            "translateX(calc(100% + 24px))",
+            ".top-actions .icon-button",
+        ):
+            self.assertIn(required, self.css)
+
     def test_clicksafe_inventory_and_global_button_feedback_are_wired(self) -> None:
         click_safe = build_v021_stage7_contract()["click_safe_contract"]
 

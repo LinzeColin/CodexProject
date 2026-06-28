@@ -147,6 +147,8 @@ class Stage4AnalysisMvpTest(unittest.TestCase):
         cards = {row["key"]: row for row in summary["metric_cards"]}
         for key in ("investment_market_value", "investment_pnl", "month_spend", "budget_remaining", "cashflow_pressure"):
             self.assertIn(key, cards)
+        self.assertTrue(cards["investment_market_value"]["value"].startswith("CNY "))
+        self.assertIn("原币辅助：AUD", cards["investment_market_value"]["detail"])
         self.assertIn("第 4 阶段", summary["evidence_drawer"]["title"])
 
     def test_web_shell_exposes_stage4_analysis_without_adding_alpha_or_system_first_level_entries(self) -> None:

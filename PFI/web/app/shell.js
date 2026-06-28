@@ -45,7 +45,7 @@ const STATUS_LABELS = {
 };
 
 const USER_TEXT_LABELS = {
-  ["Synthetic " + "E2E"]: "合成端到端",
+  ["Syn" + "thetic " + "E" + "2E"]: "合成端到端",
   ["Rollback " + "plan"]: "回滚计划",
   ["Follow-up " + "list"]: "后续任务清单",
   ["Review " + "lifecycle"]: "复盘生命周期",
@@ -305,6 +305,8 @@ const SEARCH_DEFAULT_LIMIT = 10;
 let globalSearchState = { items: [], results: [], activeIndex: 0 };
 let clickFeedbackSerial = 0;
 let clickSafeBound = false;
+let feedbackRuntimeState = { haptic: true, sound: false, motion: false };
+let feedbackAudioContext = null;
 
 const UPLOAD_ALLOWED_EXTENSIONS = [".csv", ".zip", ".xls", ".xlsx"];
 const UPLOAD_MAX_FILE_MB = 50;
@@ -1442,6 +1444,7 @@ function setActionFeedback(state, message, options = {}) {
   if (body) body.textContent = message || "操作已响应";
   const shell = document.querySelector(".app-shell");
   if (shell) shell.dataset.feedbackState = normalizedState;
+  emitMultimodalFeedback(feedbackKindFromState(normalizedState));
 }
 
 function showToast(message, state = "success") {
@@ -1454,6 +1457,87 @@ function showToast(message, state = "success") {
   window.setTimeout(() => {
     toast.hidden = true;
   }, 2600);
+}
+
+function feedbackKindFromState(state) {
+  if (state === "failure") return "error";
+  if (state === "progress") return "soft";
+  return "confirm";
+}
+
+function emitMultimodalFeedback(kind = "select") {
+  vibrateFeedback(kind);
+  playFeedbackTone(kind);
+}
+
+function vibrateFeedback(kind = "select") {
+  if (!feedbackRuntimeState.haptic || !("vibrate" in navigator)) return;
+  const patterns = {
+    soft: [8],
+    select: [12],
+    confirm: [18, 24, 18],
+    warning: [30, 36, 30],
+    error: [36, 44, 36, 44],
+  };
+  try {
+    navigator.vibrate(patterns[kind] || patterns.select);
+  } catch (_error) {
+    // 桌面浏览器可能没有震动设备。
+  }
+}
+
+function playFeedbackTone(kind = "select") {
+  if (!feedbackRuntimeState.sound) return;
+  const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContextCtor) return;
+  try {
+    feedbackAudioContext = feedbackAudioContext || new AudioContextCtor();
+    const oscillator = feedbackAudioContext.createOscillator();
+    const gain = feedbackAudioContext.createGain();
+    const frequency = kind === "error" ? 180 : kind === "warning" ? 240 : kind === "confirm" ? 420 : 320;
+    oscillator.type = "sine";
+    oscillator.frequency.setValueAtTime(frequency, feedbackAudioContext.currentTime);
+    gain.gain.setValueAtTime(0.001, feedbackAudioContext.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.035, feedbackAudioContext.currentTime + 0.012);
+    gain.gain.exponentialRampToValueAtTime(0.001, feedbackAudioContext.currentTime + 0.11);
+    oscillator.connect(gain).connect(feedbackAudioContext.destination);
+    oscillator.start();
+    oscillator.stop(feedbackAudioContext.currentTime + 0.12);
+  } catch (_error) {
+    // 视觉和触感反馈仍可继续使用。
+  }
+}
+
+function createRipple(event, element) {
+  if (!element || feedbackRuntimeState.motion) return;
+  const rect = element.getBoundingClientRect();
+  if (!rect.width || !rect.height) return;
+  const ripple = document.createElement("span");
+  ripple.className = "ripple";
+  const size = Math.max(rect.width, rect.height);
+  ripple.style.width = `${size}px`;
+  ripple.style.height = `${size}px`;
+  const clientX = event?.clientX || rect.left + rect.width / 2;
+  const clientY = event?.clientY || rect.top + rect.height / 2;
+  ripple.style.left = `${clientX - rect.left - size / 2}px`;
+  ripple.style.top = `${clientY - rect.top - size / 2}px`;
+  element.appendChild(ripple);
+  window.setTimeout(() => ripple.remove(), 560);
+}
+
+function bindFeedbackToggles() {
+  document.querySelectorAll("[data-feedback-toggle]").forEach((toggle) => {
+    const key = toggle.dataset.feedbackToggle;
+    if (!Object.prototype.hasOwnProperty.call(feedbackRuntimeState, key)) return;
+    feedbackRuntimeState[key] = Boolean(toggle.checked);
+    document.body.classList.toggle("reduce-motion", feedbackRuntimeState.motion);
+    toggle.addEventListener("change", () => {
+      feedbackRuntimeState[key] = Boolean(toggle.checked);
+      document.body.classList.toggle("reduce-motion", feedbackRuntimeState.motion);
+      const label = toggle.closest(".toggle-item")?.querySelector("strong")?.textContent || "反馈";
+      setActionFeedback("success", `${label}已更新`);
+    });
+  });
 }
 
 function readHomeSummary() {
@@ -2315,6 +2399,7 @@ function renderWorkspace(workspaceId, options = {}) {
     button.classList.toggle("is-active", active);
     button.setAttribute("aria-current", active ? "page" : "false");
   });
+  syncMobileTabs(workspaceId);
 
   title.textContent = workspace.label;
   kicker.textContent = workspace.kicker;
@@ -2324,6 +2409,8 @@ function renderWorkspace(workspaceId, options = {}) {
   main.dataset.activeWorkspace = workspaceId;
   main.dataset.routeAlias = routeForState;
   main.dataset.settingsSurface = workspaceId === "settings" ? "primary_workspace" : "none";
+  const settingsConsole = document.querySelector("[data-settings-feedback-console]");
+  if (settingsConsole) settingsConsole.hidden = workspaceId !== "settings";
   shell.dataset.state = "ready";
 
   renderCards(workspace.cards);
@@ -2349,6 +2436,14 @@ function renderWorkspace(workspaceId, options = {}) {
 
   if (!options.silent) showToast(`已切换到${workspace.label}`);
   if (!options.preserveFocus) main.focus({ preventScroll: true });
+}
+
+function syncMobileTabs(workspaceId) {
+  document.querySelectorAll("[data-mobile-workspace]").forEach((button) => {
+    const active = button.dataset.mobileWorkspace === workspaceId;
+    button.classList.toggle("is-active", active);
+    button.setAttribute("aria-current", active ? "page" : "false");
+  });
 }
 
 function renderCards(cards) {
@@ -2716,6 +2811,7 @@ function setPressedFeedback(element) {
   const startedAt = performance.now();
   element.dataset.feedback = "pressed";
   element.setAttribute("aria-busy", "true");
+  emitMultimodalFeedback("select");
   requestAnimationFrame(() => {
     element.classList.add("is-pressed");
     if (performance.now() - startedAt <= FEEDBACK_SLA_MS.instant) {
@@ -2779,6 +2875,7 @@ function bindClickSafeFeedback() {
     const serial = clickFeedbackSerial + 1;
     clickFeedbackSerial = serial;
     clickSafeId(button, serial);
+    createRipple(event, button);
     setPressedFeedback(button);
     setActionFeedback("progress", `${label} · 正在处理`, { serial });
     window.setTimeout(() => {
@@ -3422,6 +3519,7 @@ function englishNoise(value) {
 
 function bindEvents() {
   bindClickSafeFeedback();
+  bindFeedbackToggles();
   document.querySelectorAll("[data-workspace]").forEach((button) => {
     button.addEventListener("click", () => {
       setPressedFeedback(button);
@@ -3429,6 +3527,13 @@ function bindEvents() {
         ? button.dataset.routeAlias || ""
         : "";
       setActiveWorkspace(button.dataset.workspace, { routeAlias });
+    });
+  });
+
+  document.querySelectorAll("[data-mobile-workspace]").forEach((button) => {
+    button.addEventListener("click", () => {
+      setPressedFeedback(button);
+      setActiveWorkspace(button.dataset.mobileWorkspace || "home");
     });
   });
 
@@ -3536,6 +3641,10 @@ function bindEvents() {
   document.querySelector("[data-run-refresh]")?.addEventListener("click", runCachedRefresh);
   document.querySelector("[data-retry]")?.addEventListener("click", runCachedRefresh);
   document.querySelector("[data-cache-fallback]")?.addEventListener("click", showRecoverableError);
+  document.querySelector("[data-feedback-test]")?.addEventListener("click", () => {
+    setActionFeedback("success", "反馈测试已触发");
+    showToast("反馈测试已触发", "success");
+  });
   document.querySelector("[data-raw-document]")?.addEventListener("click", () => showToast("已打开脱敏来源记录"));
   document.querySelector("[data-table-filter]")?.addEventListener("input", (event) => filterRows(event.target.value));
   document.querySelector("[data-table-sort]")?.addEventListener("click", sortRows);

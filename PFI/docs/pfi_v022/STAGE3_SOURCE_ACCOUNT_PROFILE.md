@@ -1,7 +1,7 @@
 # PFI v0.2.2 Stage 3 数据源、账户角色与可扩展结构
 
-交付日期：2026-06-28 Australia/Sydney  
-任务名称：`PFI v0.2.2 E2E 逻辑优化`  
+交付日期：2026-06-28 Australia/Sydney
+任务名称：`PFI v0.2.2 E2E 逻辑优化`
 验收门禁：`PFI-V022-S3-SOURCE-ACCOUNT-PROFILE-GATE`
 
 ## 结论

@@ -24,6 +24,7 @@ class V021Stage8FinalAcceptanceTest(unittest.TestCase):
         self.parameter_file = (self.root / "模型参数文件.md").read_text(encoding="utf-8")
         self.html = (self.root / "web" / "index.html").read_text(encoding="utf-8")
         self.js = (self.root / "web" / "app" / "shell.js").read_text(encoding="utf-8")
+        self.app_source = (self.root / "src" / "pfi_os" / "app" / "streamlit_app.py").read_text(encoding="utf-8")
 
     def test_stage8_contract_locks_final_acceptance_tasks(self) -> None:
         contract = build_v021_stage8_contract()
@@ -93,6 +94,7 @@ class V021Stage8FinalAcceptanceTest(unittest.TestCase):
     def test_web_shell_still_contains_required_user_paths_and_no_forbidden_execution(self) -> None:
         self.assertEqual(self.html.count('data-primary-entry="true"'), 15)
         for required in (
+            "CNY/AUD=4.69",
             "AUD/CNY=",
             "data-global-search-input",
             "data-upload-import-panel",
@@ -121,6 +123,17 @@ class V021Stage8FinalAcceptanceTest(unittest.TestCase):
         ):
             self.assertNotIn(forbidden, visible_surface)
         self.assertIn("不执行实盘自动下单", visible_surface)
+
+    def test_macos_app_entry_renders_web_shell_before_legacy_streamlit_upload_panel(self) -> None:
+        start = self.app_source.index("def render_pfi_ui_v2_shell()")
+        end = self.app_source.index("def main()", start)
+        body = self.app_source[start:end]
+
+        web_shell_index = body.index("_render_html_frame(_pfi_web_shell_html(home_summary)")
+        upload_panel_index = body.index("render_pfi_local_data_upload_panel()")
+
+        self.assertLess(web_shell_index, upload_panel_index)
+        self.assertIn('st.expander("本机真实上传与支付宝账本", expanded=False)', body)
 
 
 if __name__ == "__main__":

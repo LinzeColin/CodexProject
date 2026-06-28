@@ -12,6 +12,7 @@
     data-feature-flag="PFI_UI_V2"
     data-fallback-flag-value="1"
     data-cached-home-target-seconds="2"
+    data-uiux-delivery-target="v021_multimodal_feedback"
   >
     <a class="skip-link" href="#main-workspace">跳到内容</a>
     <div class="app-shell" data-state="ready">
@@ -64,10 +65,7 @@
               <option>消费复盘</option>
             </select>
           </label>
-          <label>
-            <span>日期</span>
-            <input data-context-field="as_of" type="date" value="2026-06-19" aria-label="截至日期" />
-          </label>
+          <input data-context-field="as_of" type="hidden" value="2026-06-28" aria-label="截至日期" />
           <input type="hidden" data-context-field="currency" value="CNY" />
           <input type="hidden" data-context-field="research_task" value="daily_brief" />
           <input type="hidden" data-context-field="evidence_set" value="cached_home" />
@@ -80,36 +78,37 @@
             data-context-field="fx_badge"
             data-fx-effective-date="2026-06-28"
             data-fx-cache-state="cached"
-          >AUD/CNY=4.69（20260628--06:00）</span>
-          <button class="icon-button" type="button" data-command-open aria-label="打开命令面板">命令</button>
-          <button class="icon-button" type="button" data-task-toggle aria-label="打开任务中心">
-            <span aria-hidden="true">任务</span>
+            data-fx-source-label="AUD/CNY=4.69（20260628--06:00）"
+          >CNY/AUD=4.69（20260628--06:00）</span>
+          <button class="icon-button" type="button" data-command-open aria-label="打开命令面板" title="命令面板">⌘</button>
+          <button class="icon-button" type="button" data-task-toggle aria-label="打开任务中心" title="任务中心">
+            <span aria-hidden="true">✓</span>
           </button>
-          <button class="icon-button" type="button" data-evidence-toggle aria-label="打开证据抽屉">
-            <span aria-hidden="true">证据</span>
+          <button class="icon-button" type="button" data-evidence-toggle aria-label="打开证据抽屉" title="证据抽屉">
+            <span aria-hidden="true">◫</span>
           </button>
-          <button class="icon-button" type="button" data-settings-open aria-label="打开系统设置">
-            <span aria-hidden="true">设置</span>
+          <button class="icon-button" type="button" data-settings-open aria-label="打开系统设置" title="设置">
+            <span aria-hidden="true">⚙</span>
           </button>
         </div>
       </header>
 
       <nav class="side-nav" aria-label="一级工作区" data-primary-workspaces="15">
-        <button class="nav-item is-active" type="button" data-primary-entry="true" data-nav-index="1" data-workspace="home" data-route-alias="/home">首页总览</button>
-        <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="2" data-workspace="accounts" data-route-alias="/accounts">账户与资产</button>
-        <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="3" data-workspace="ledger" data-route-alias="/ledger">账本流水</button>
-        <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="4" data-workspace="investment" data-route-alias="/investment">投资管理</button>
-        <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="5" data-workspace="consumption" data-route-alias="/consumption">消费管理</button>
-        <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="6" data-workspace="sync" data-route-alias="/sources-upload">数据源与上传</button>
-        <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="7" data-workspace="recommendations" data-route-alias="/review">建议与复盘</button>
-        <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="8" data-workspace="insights" data-route-alias="/reports">报告与洞察</button>
-        <button class="nav-item nav-alias" type="button" data-primary-entry="true" data-nav-index="9" data-workspace="home" data-route-alias="/home" data-entry-type="v01_alias">首页</button>
-        <button class="nav-item nav-alias" type="button" data-primary-entry="true" data-nav-index="10" data-workspace="investment" data-route-alias="/investment?tab=market" data-entry-type="v01_alias">市场</button>
-        <button class="nav-item nav-alias" type="button" data-primary-entry="true" data-nav-index="11" data-workspace="investment" data-route-alias="/investment?tab=research" data-entry-type="v01_alias">研究</button>
-        <button class="nav-item nav-alias" type="button" data-primary-entry="true" data-nav-index="12" data-workspace="investment" data-route-alias="/investment?tab=holdings" data-entry-type="v01_alias">持仓</button>
-        <button class="nav-item nav-alias" type="button" data-primary-entry="true" data-nav-index="13" data-workspace="investment" data-route-alias="/investment/strategy-lab" data-entry-type="v01_alias" data-feature-view="single">策略实验室</button>
-        <button class="nav-item nav-alias" type="button" data-primary-entry="true" data-nav-index="14" data-workspace="settings" data-route-alias="/settings?tab=data-system" data-entry-type="v01_alias">数据与系统</button>
-        <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="15" data-workspace="settings" data-route-alias="/settings">设置</button>
+        <button class="nav-item is-active" type="button" data-primary-entry="true" data-nav-index="1" data-workspace="home" data-route-alias="/home" data-nav-icon="⌂" data-nav-hint="净资产 · 现金流 · 数据健康">首页总览</button>
+        <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="2" data-workspace="accounts" data-route-alias="/accounts" data-nav-icon="◫" data-nav-hint="账户地图 · 对账 · 跨币种">账户与资产</button>
+        <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="3" data-workspace="ledger" data-route-alias="/ledger" data-nav-icon="≋" data-nav-hint="标准流水 · A/B/C/D 复核">账本流水</button>
+        <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="4" data-workspace="investment" data-route-alias="/investment" data-nav-icon="↗" data-nav-hint="持仓 · 归因 · 策略回测">投资管理</button>
+        <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="5" data-workspace="consumption" data-route-alias="/consumption" data-nav-icon="◌" data-nav-hint="预算 · 分类 · 异常 · 订阅">消费管理</button>
+        <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="6" data-workspace="sync" data-route-alias="/sources-upload" data-nav-icon="⇄" data-nav-hint="上传 · 解析 · 对账 · 队列">数据源与上传</button>
+        <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="7" data-workspace="recommendations" data-route-alias="/review" data-nav-icon="✦" data-nav-hint="证据 · 决策 · 生命周期">建议与复盘</button>
+        <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="8" data-workspace="insights" data-route-alias="/reports" data-nav-icon="▣" data-nav-hint="月报 · 导出 · 只读快照">报告与洞察</button>
+        <button class="nav-item nav-alias" type="button" data-primary-entry="true" data-nav-index="9" data-workspace="home" data-route-alias="/home" data-entry-type="v01_alias" data-nav-icon="⌁" data-nav-hint="映射：首页总览">首页</button>
+        <button class="nav-item nav-alias" type="button" data-primary-entry="true" data-nav-index="10" data-workspace="investment" data-route-alias="/investment?tab=market" data-entry-type="v01_alias" data-nav-icon="⌁" data-nav-hint="映射：投资管理">市场</button>
+        <button class="nav-item nav-alias" type="button" data-primary-entry="true" data-nav-index="11" data-workspace="investment" data-route-alias="/investment?tab=research" data-entry-type="v01_alias" data-nav-icon="⌁" data-nav-hint="映射：报告与洞察">研究</button>
+        <button class="nav-item nav-alias" type="button" data-primary-entry="true" data-nav-index="12" data-workspace="investment" data-route-alias="/investment?tab=holdings" data-entry-type="v01_alias" data-nav-icon="⌁" data-nav-hint="映射：投资管理">持仓</button>
+        <button class="nav-item nav-alias" type="button" data-primary-entry="true" data-nav-index="13" data-workspace="investment" data-route-alias="/investment/strategy-lab" data-entry-type="v01_alias" data-feature-view="single" data-nav-icon="⌁" data-nav-hint="映射：策略回测与盘感训练">策略实验室</button>
+        <button class="nav-item nav-alias" type="button" data-primary-entry="true" data-nav-index="14" data-workspace="settings" data-route-alias="/settings?tab=data-system" data-entry-type="v01_alias" data-nav-icon="⌁" data-nav-hint="映射：数据源与系统设置">数据与系统</button>
+        <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="15" data-workspace="settings" data-route-alias="/settings" data-nav-icon="⚙" data-nav-hint="反馈 · 参数 · 数据边界">设置</button>
       </nav>
 
       <main id="main-workspace" class="workspace" tabindex="-1" data-active-workspace="home">
@@ -440,6 +439,33 @@
           </aside>
         </section>
 
+        <section class="settings-feedback-console" data-settings-feedback-console hidden aria-labelledby="settings-feedback-title">
+          <div class="rail-card-head">
+            <div>
+              <p class="panel-kicker">设置页反馈控制</p>
+              <h2 id="settings-feedback-title">运行反馈与多模态反馈</h2>
+            </div>
+            <span class="status-pill status-ready">可配置</span>
+          </div>
+          <p>集中管理导航、保存、上传、错误和复核动作的反馈。默认业务页面不展示此控制台。</p>
+          <div class="feedback-wave" aria-hidden="true"></div>
+          <div class="toggle-row" aria-label="反馈开关">
+            <label class="toggle-item">
+              <span><strong>触感反馈强度</strong><small>关闭、轻、标准、强按浏览器能力降级</small></span>
+              <input class="toggle" type="checkbox" data-feedback-toggle="haptic" checked />
+            </label>
+            <label class="toggle-item">
+              <span><strong>声音反馈</strong><small>仅用户点击后播放</small></span>
+              <input class="toggle" type="checkbox" data-feedback-toggle="sound" />
+            </label>
+            <label class="toggle-item">
+              <span><strong>视觉反馈</strong><small>控制按钮回弹、波纹和状态提示</small></span>
+              <input class="toggle" type="checkbox" data-feedback-toggle="motion" />
+            </label>
+          </div>
+          <button class="primary-action" type="button" data-feedback-test>反馈测试</button>
+        </section>
+
         <section class="feedback-panel" aria-live="assertive" data-feedback-region>
           <div class="skeleton-row" hidden data-skeleton>
             <span></span><span></span><span></span>
@@ -482,6 +508,14 @@
         </dl>
       </aside>
     </div>
+
+    <nav class="mobile-bottom-nav" aria-label="移动端底部入口">
+      <button type="button" class="mobile-tab is-active" data-mobile-workspace="home"><span aria-hidden="true">⌂</span><span>首页</span></button>
+      <button type="button" class="mobile-tab" data-mobile-workspace="accounts"><span aria-hidden="true">◫</span><span>账户</span></button>
+      <button type="button" class="mobile-tab" data-mobile-workspace="ledger"><span aria-hidden="true">≋</span><span>流水</span></button>
+      <button type="button" class="mobile-tab" data-mobile-workspace="sync"><span aria-hidden="true">⇄</span><span>上传</span></button>
+      <button type="button" class="mobile-tab" data-mobile-workspace="settings"><span aria-hidden="true">☰</span><span>更多</span></button>
+    </nav>
 
     <dialog class="command-palette" data-command-palette aria-label="命令面板">
       <form method="dialog">

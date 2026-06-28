@@ -28,6 +28,7 @@ SAFE_METADATA_KEYS = (
     "action_count",
     "artifact_uri",
 )
+AUD_TO_CNY_RATE = 4.6874
 
 
 def build_homepage_summary(store: OperationalStore | None = None, *, now: datetime | None = None) -> dict[str, Any]:
@@ -124,7 +125,22 @@ def _stage3_metric_cards(stage3_dashboard: dict[str, Any]) -> list[dict[str, str
 
 def _stage4_metric_cards(stage4_dashboard: dict[str, Any]) -> list[dict[str, str]]:
     cards = stage4_dashboard.get("metric_cards", [])
-    return [_sanitize_public_payload(card) for card in cards[:5] if isinstance(card, dict)]
+    return [_stage4_card_with_cny_display(card) for card in cards[:5] if isinstance(card, dict)]
+
+
+def _stage4_card_with_cny_display(card: dict[str, Any]) -> dict[str, str]:
+    sanitized = _sanitize_public_payload(card)
+    value = str(sanitized.get("value", ""))
+    if not value.startswith("AUD "):
+        return sanitized
+    try:
+        amount_aud = float(value.removeprefix("AUD ").replace(",", ""))
+    except ValueError:
+        return sanitized
+    amount_cny = amount_aud * AUD_TO_CNY_RATE
+    sanitized["value"] = f"CNY {amount_cny:,.2f}"
+    sanitized["detail"] = f"{sanitized.get('detail', '')} 原币辅助：{value}；AUD/CNY={AUD_TO_CNY_RATE:.4f}。".strip()
+    return sanitized
 
 
 def _stage4_decision_rows(stage4_dashboard: dict[str, Any]) -> list[dict[str, str]]:
