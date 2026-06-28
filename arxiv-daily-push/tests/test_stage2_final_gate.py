@@ -3421,6 +3421,41 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(state["integrated_production_accepted"])
         self.assertEqual(validate_final_acceptance_bundle_readiness_state(state), [])
 
+    def test_final_bundle_templates_exist_but_do_not_satisfy_readiness(self) -> None:
+        template_dir = REPO_ROOT / "FINAL_ACCEPTANCE_BUNDLE" / "templates"
+        self.assertTrue((template_dir / "TEMPLATE_INDEX.md").exists())
+        self.assertFalse((template_dir / "README.md").exists())
+
+        expected_templates = (
+            "independent_final_reviewer_assignment.template.json",
+            "p0_p1_zero_proof.template.json",
+            "s2plt04_completion_report.template.json",
+            "independent_review_signoff.template.yaml",
+            "final_command_execution.template.json",
+            "next_agent_handoff.template.json",
+        )
+
+        for filename in expected_templates:
+            template_path = template_dir / filename
+            self.assertTrue(template_path.exists(), str(template_path))
+            self.assertGreater(template_path.stat().st_size, 200, str(template_path))
+
+        state = build_final_acceptance_bundle_readiness_state()
+
+        for required_item in (
+            "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
+            "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json",
+            "FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml",
+            "FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json",
+            "HANDOFF/00_下一Agent先读.md",
+        ):
+            self.assertFalse(state["available_items"][required_item], required_item)
+            self.assertIn(required_item, state["missing_items"], required_item)
+        self.assertEqual(state["status"], "blocked")
+        self.assertFalse(state["production_acceptance_claimed"])
+        self.assertFalse(state["integrated_production_accepted"])
+        self.assertFalse(state["daily_operation_enabled"])
+
     def test_no_production_side_effect_attestation_fails_closed_on_missing_or_production_flags(self) -> None:
         missing_state = build_no_production_side_effect_attestation_validation_state(None)
 

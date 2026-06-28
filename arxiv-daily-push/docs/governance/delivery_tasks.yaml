@@ -4220,3 +4220,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PMT07-FINAL-BUNDLE-TEMPLATES"
+    phase: "S2PM"
+    objective: "Provide template-only skeletons for future S2PMT07 final bundle artifacts while keeping live final bundle readiness blocked."
+    scope: "FINAL_ACCEPTANCE_BUNDLE/templates/, focused final-gate regression test, phase record, run manifest, traceability row, delivery task, event record, and three base files."
+    non_scope: "No independent final reviewer assignment, no independent final closure decision, no zero-proof artifact, no S2PLT04 completion, no final bundle manifest acceptance, no live next-agent handoff, no independent signoff, no final command execution, no P0/P1 closure, no SMTP transport send, no scheduler install or enablement, no Release upload, no public schema or DB migration, no production queue mutation, no ranking/source-adapter change, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no DAILY_OPERATION, and no integrated production acceptance."
+    status: "blocked"
+    dependencies: ["S2PMT07", "S2PMT07-FINAL-BUNDLE-COMMITTED-ARTIFACT-CONSUMPTION", "S2PMT07-FINAL-BUNDLE-ARTIFACT-VALIDATION"]
+    risk_tier: "T1"
+    required_files: ["FINAL_ACCEPTANCE_BUNDLE/templates/TEMPLATE_INDEX.md", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_TEMPLATES.md", "governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-TEMPLATES-20260628.json", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_templates_green PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -k test_final_bundle_templates_exist_but_do_not_satisfy_readiness -q"]
+    test_results: ["TDD red failed as expected before templates existed", "focused template readiness guard: 1 OK", "governance dashboard generation: PASS", "targeted final-gate/user-center/governance-current tests: 97 OK", "full arxiv-daily-push unittest: 668 OK", "project governance --project arxiv-daily-push: errors 0 warnings 0", "governance sync: errors 0 warnings 0", "changed-only governance semantic/sync: errors 0 warnings 0", "V7.2 validator PASS", "lean governance check-render: drift_count 0 reference_issue_count 0", "user-center timestamp check: 18 pages valid", "YAML/JSON/JSONL/CSV structured parse OK for 13 changed structured files including untracked", "git diff --check PASS", "precise production enablement scan PASS (no matches; rg exit 1)", "GitHub open PR count: 0", "ADP/arxiv/s2p remote branch scan: 0 remaining", "pycache scan PASS after cleanup"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-TEMPLATES-20260628.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_TEMPLATES.md", "FINAL_ACCEPTANCE_BUNDLE/templates/TEMPLATE_INDEX.md", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
+    result: "Final bundle artifact templates are ready, but live final bundle remains blocked because required live artifacts are still missing."
+    risk: "Template files can be misread as live final bundle evidence; only no-production side-effect attestation is currently present as a passing live artifact."
+    rollback: "Remove FINAL_ACCEPTANCE_BUNDLE/templates/, focused regression test, phase record, manifest, traceability row, delivery task, event records, and three base records; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
