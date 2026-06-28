@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## v0.2.1.1 Product UI Recovery Stage 4 - 2026-06-29
+
+- 完成 `S4 持久化与同步`，把 `投资管理 > 持仓` 保存路径接到本机 SQLite operational DB。
+- 新增 `docs/pfi_v0211/STAGE4_PERSISTENCE_SYNC.md`、`tests/test_v0211_stage4_persistence_sync_contract.py`，并扩展 `src/pfi_v02/stage_v0211_ui_recovery.py` 的 Stage 4 合同。
+- `src/pfi_v02/stage_v021_runtime_api.py` 新增 `/api/read-model` 和 `/api/reports/holdings`，让首页、投资管理和报告与洞察读取同一持仓读模型。
+- 持仓编辑字段补齐账户、更新时间和备注；备注写入 SQLite snapshot 的 `metadata.note`。
+- `web/app/shell.js` 保存持仓后刷新后端读模型，并同步更新首页、投资和报告卡片；生产保存不调用浏览器缓存。
+- 正式库无真实持仓时继续显示中文空状态，不生成模拟收益或模拟持仓。
+
 ## v0.2.1.1 Product UI Recovery Stage 3 - 2026-06-29
 
 - 完成 `S3 真实操作流`，把 Stage 2 页面骨架推进为可点击、可反馈、可复核的上传、账本、持仓和设置操作路径。

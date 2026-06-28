@@ -8,6 +8,7 @@ STAGE0_TASK_ID = "V0211-S0-T01"
 STAGE1_TASK_ID = "V0211-S1-T01"
 STAGE2_TASK_ID = "V0211-S2-T01"
 STAGE3_TASK_ID = "V0211-S3-T01"
+STAGE4_TASK_ID = "V0211-S4-T01"
 TOTAL_EXECUTION_STAGES = 6
 
 
@@ -52,6 +53,15 @@ class V0211OperationFlow:
     route: str
     required_controls: tuple[str, ...]
     state_surfaces: tuple[str, ...]
+    acceptance: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class V0211PersistenceSyncSurface:
+    surface_id: str
+    label: str
+    source: str
+    required_fields: tuple[str, ...]
     acceptance: tuple[str, ...]
 
 
@@ -410,6 +420,60 @@ STAGE3_OPERATION_FLOWS: tuple[V0211OperationFlow, ...] = (
     ),
 )
 
+STAGE4_PERSISTENCE_SYNC_SURFACES: tuple[V0211PersistenceSyncSurface, ...] = (
+    V0211PersistenceSyncSurface(
+        "holdings_sqlite",
+        "持仓 SQLite 保存",
+        "V021HoldingsPersistenceService",
+        (
+            "snapshot_id",
+            "instrument_id",
+            "display_name",
+            "quantity",
+            "average_cost",
+            "market_price",
+            "currency",
+            "portfolio_id",
+            "as_of",
+            "metadata.note",
+        ),
+        (
+            "保存持仓修改必须调用 /api/holdings",
+            "后端必须写入 v021_holding_snapshots 和 v021_position_adjustments",
+            "浏览器缓存只允许未提交草稿，不能作为生产保存来源",
+        ),
+    ),
+    V0211PersistenceSyncSurface(
+        "refresh_reopen_readback",
+        "刷新和重启后读取",
+        "SQLite operational database",
+        ("db_path", "snapshot_count", "adjustment_count", "rows"),
+        (
+            "页面保存后刷新必须从 /api/holdings 重新读取",
+            "重启本机服务后仍能从同一 SQLite 读取持仓",
+            "SQLite 查询能看到刚保存的 snapshot 和 adjustment",
+        ),
+    ),
+    V0211PersistenceSyncSurface(
+        "home_investment_report_sync",
+        "首页、投资和报告同步",
+        "PFIV021OperationalReadModelV1",
+        (
+            "home.net_worth_cny",
+            "home.investment_market_value_cny",
+            "investment.market_value_cny",
+            "investment.unrealized_pnl_cny",
+            "report.holding_count",
+            "report.market_value_cny",
+        ),
+        (
+            "首页摘要、投资管理和报告与洞察必须读取同一运行读模型",
+            "修改持仓后三个页面展示的投资市值必须一致",
+            "正式库无真实持仓时只显示中文空状态，不伪造收益",
+        ),
+    ),
+)
+
 
 def build_v0211_stage0_contract() -> dict[str, object]:
     return {
@@ -557,6 +621,44 @@ def build_v0211_stage3_contract() -> dict[str, object]:
     }
 
 
+def build_v0211_stage4_contract() -> dict[str, object]:
+    stage = next(item for item in EXECUTION_STAGES if item.stage_id == "S4")
+    return {
+        "schema": "PFIV0211ProductUIRecoveryStage4ContractV1",
+        "version_name": VERSION_NAME,
+        "stage": "S4 持久化与同步",
+        "task_id": STAGE4_TASK_ID,
+        "project_root": "CodexProject/PFI",
+        "current_stage_only": True,
+        "delivery_focus": stage.delivery_focus,
+        "forbidden_work": stage.forbidden_work,
+        "acceptance_gate": stage.acceptance_gate,
+        "persistence_surfaces": [asdict(item) for item in STAGE4_PERSISTENCE_SYNC_SURFACES],
+        "sqlite_contract": {
+            "service": "V021HoldingsPersistenceService",
+            "tables": ("v021_holding_snapshots", "v021_position_adjustments"),
+            "write_endpoint": "/api/holdings",
+            "read_endpoint": "/api/holdings",
+            "read_model_endpoint": "/api/read-model",
+            "report_endpoint": "/api/reports/holdings",
+        },
+        "browser_e2e_required": (
+            "打开投资管理 > 持仓",
+            "新增或编辑持仓并点击保存修改",
+            "查询 SQLite 中 snapshot 和 adjustment",
+            "刷新页面后从后端读回",
+            "重启本机服务后再次读回",
+            "首页总览、投资管理、报告与洞察读取同一持仓读模型",
+        ),
+        "stage4_non_goals": (
+            "不声明 Stage 5 图表与最终验收完成",
+            "不伪造账户、收益、消费或持仓趋势",
+            "不声明真实账户生产联通",
+            "不把 demo/sample/synthetic/fixture/mock/fake 数据作为正式产品数据源",
+        ),
+    }
+
+
 def v0211_stage_ids() -> tuple[str, ...]:
     return tuple(stage.stage_id for stage in EXECUTION_STAGES)
 
@@ -575,3 +677,7 @@ def v0211_stage2_page_labels() -> tuple[str, ...]:
 
 def v0211_stage3_operation_flow_ids() -> tuple[str, ...]:
     return tuple(item.flow_id for item in STAGE3_OPERATION_FLOWS)
+
+
+def v0211_stage4_persistence_surface_ids() -> tuple[str, ...]:
+    return tuple(item.surface_id for item in STAGE4_PERSISTENCE_SYNC_SURFACES)

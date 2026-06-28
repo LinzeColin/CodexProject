@@ -49,6 +49,19 @@ Stage 0 交付入口：
 - 交付记录：`docs/pfi_v0211/STAGE3_REAL_OPERATION_FLOWS.md`。
 - 合同测试：`tests/test_v0211_stage3_real_operation_flow_contract.py`。
 
+## v0.2.1.1 Stage 4 - 持久化与同步
+
+本轮只完成 Stage 4，不声明 Stage 5 真实图表与最终验收完成。
+
+- `投资管理 > 持仓` 的生产保存路径为 Web Shell -> `/api/holdings` -> `V021HoldingsPersistenceService` -> SQLite operational DB。
+- 持仓字段补齐为标的、名称、数量、成本、价格、币种、账户、更新时间和备注；备注写入 `metadata.note`。
+- 新增 `/api/read-model`，用于首页、投资管理和报告与洞察读取同一持仓运行读模型。
+- 新增 `/api/reports/holdings`，用于报告页读取同一 SQLite 持仓报告。
+- 浏览器缓存只允许保存明确标注的未提交草稿；点击保存后必须写入 SQLite。
+- 正式库无真实持仓时保持中文空状态，不生成模拟收益或模拟持仓。
+- 交付记录：`docs/pfi_v0211/STAGE4_PERSISTENCE_SYNC.md`。
+- 合同测试：`tests/test_v0211_stage4_persistence_sync_contract.py`。
+
 ## v0.2.2 数据库治理整体复审
 
 `v0.2.2 数据库治理` 当前完成 Stage 0-13 的整体项目复审解决。正式页面、报告、图表、首页摘要和建议只允许读取真实 MetaDatabase 派生数据或中文真实空态；不得使用 demo/sample/synthetic/fixture/mock/fake/测试样例数据作为验收依据。不新增真实交易、自动投资、支付或券商提交能力。

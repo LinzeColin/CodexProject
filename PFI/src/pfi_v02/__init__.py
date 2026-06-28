@@ -22,7 +22,11 @@ from pfi_v02.stage4_analysis_mvp import build_stage4_analysis_model
 from pfi_v02.stage5_advice_report_alpha import build_stage5_delivery_model
 from pfi_v02.stage6_e2e_stabilization import build_stage6_e2e_stabilization_model
 from pfi_v02.stage_v021_frontend_contract import build_v021_stage0_contract
-from pfi_v02.stage_v0211_ui_recovery import build_v0211_stage0_contract, build_v0211_stage1_contract
+from pfi_v02.stage_v0211_ui_recovery import (
+    build_v0211_stage0_contract,
+    build_v0211_stage1_contract,
+    build_v0211_stage4_contract,
+)
 from pfi_v02.stage_v022_runtime_diff import build_dependency_hash_snapshot, build_impacted_metrics_report
 from pfi_v02.stage_v022_visualization_uiux import build_stage9_visualization_payload
 from pfi_v02.stage_v022_report_advice_review import build_stage10_contract_payload
@@ -47,6 +51,7 @@ __all__ = [
     "build_v021_stage0_contract",
     "build_v0211_stage0_contract",
     "build_v0211_stage1_contract",
+    "build_v0211_stage4_contract",
     "build_dependency_hash_snapshot",
     "build_impacted_metrics_report",
     "build_stage9_visualization_payload",

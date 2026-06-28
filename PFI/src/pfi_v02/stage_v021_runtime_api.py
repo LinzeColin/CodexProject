@@ -93,6 +93,70 @@ def save_v021_holdings_payload(payload: dict[str, Any], *, db_path: Path | str |
     return load_v021_holdings_payload(db_path=db_path)
 
 
+def build_v021_holdings_sync_read_model(*, db_path: Path | str | None = None) -> dict[str, Any]:
+    holdings = load_v021_holdings_payload(db_path=db_path)
+    read_model = build_v021_operational_read_model(db_path=db_path)
+    investment = read_model["investment"]
+    accounts = read_model["accounts"]
+    report = build_v021_holdings_report(db_path=db_path)
+    market_value = float(investment["market_value_cny"])
+    return {
+        "schema": "PFIV0211Stage4HoldingsSyncReadModelV1",
+        "source": "SQLite operational database",
+        "sqlite": {
+            "db_path": holdings["summary"]["db_path"],
+            "snapshot_count": holdings["summary"]["snapshot_count"],
+            "adjustment_count": holdings["summary"]["adjustment_count"],
+            "tables": holdings["summary"]["tables"],
+        },
+        "home": {
+            "net_worth_cny": accounts["net_worth_cny"],
+            "cash_cny": accounts["cash_cny"],
+            "investment_market_value_cny": investment["market_value_cny"],
+            "holding_count": investment["holding_count"],
+        },
+        "investment": {
+            "market_value_cny": investment["market_value_cny"],
+            "cost_basis_cny": investment["cost_basis_cny"],
+            "total_return_cny": investment["total_return_cny"],
+            "unrealized_pnl_cny": investment["unrealized_pnl_cny"],
+            "cash_position_cny": investment["cash_position_cny"],
+            "holding_count": investment["holding_count"],
+        },
+        "report": report["report"],
+        "consistency": {
+            "home_investment_report_market_value_same": (
+                float(report["report"]["market_value_cny"]) == market_value
+                and float(read_model["accounts"]["total_assets_cny"]) >= market_value
+            ),
+            "read_model_schema": read_model["schema"],
+            "report_schema": report["schema"],
+        },
+    }
+
+
+def build_v021_holdings_report(*, db_path: Path | str | None = None) -> dict[str, Any]:
+    service = V021HoldingsPersistenceService(db_path)
+    snapshots = service.list_snapshots()
+    read_model = build_v021_operational_read_model(db_path=db_path)
+    investment = read_model["investment"]
+    rows = [_snapshot_to_frontend(row) for row in snapshots]
+    return {
+        "schema": "PFIV0211Stage4HoldingsReportV1",
+        "source": "SQLite operational database",
+        "report": {
+            "title": "持仓同步报告",
+            "holding_count": len(rows),
+            "market_value_cny": investment["market_value_cny"],
+            "cost_basis_cny": investment["cost_basis_cny"],
+            "unrealized_pnl_cny": investment["unrealized_pnl_cny"],
+            "adjustment_count": len(service.list_adjustments()),
+            "empty_state": "暂无真实持仓，报告不生成模拟收益。" if not rows else "",
+            "rows": rows,
+        },
+    }
+
+
 def build_v021_operational_read_model(*, db_path: Path | str | None = None) -> dict[str, Any]:
     service = V021HoldingsPersistenceService(db_path)
     snapshots = service.list_snapshots()
@@ -249,6 +313,12 @@ def _handler_factory(db_path: Path | str | None):
                 if path == "/api/holdings":
                     self._send_json(load_v021_holdings_payload(db_path=db_path))
                     return
+                if path == "/api/read-model":
+                    self._send_json(build_v021_holdings_sync_read_model(db_path=db_path))
+                    return
+                if path == "/api/reports/holdings":
+                    self._send_json(build_v021_holdings_report(db_path=db_path))
+                    return
                 if path == "/api/trends":
                     self._send_json(build_v021_operational_trends(db_path=db_path))
                     return
@@ -304,9 +374,22 @@ def _snapshot_from_frontend(row: Any) -> V021HoldingSnapshot:
         snapshot_id = f"v021-manual-{instrument_id or 'holding'}"
     if not instrument_id:
         instrument_id = "待补标的"
+    raw_metadata = row.get("metadata") if isinstance(row.get("metadata"), dict) else {}
+    metadata = dict(raw_metadata)
+    note = _clean(row.get("note") or row.get("memo") or metadata.get("note") or "")
+    if note:
+        metadata["note"] = note
+    portfolio_id = _clean(
+        row.get("portfolioId")
+        or row.get("portfolio_id")
+        or row.get("account")
+        or row.get("accountName")
+        or "manual"
+    )
+    as_of = _clean(row.get("asOf") or row.get("as_of") or row.get("updatedAt") or row.get("updated_at") or "2026-06-28")
     return V021HoldingSnapshot(
         snapshot_id=snapshot_id,
-        portfolio_id=_clean(row.get("portfolioId") or row.get("portfolio_id") or "manual"),
+        portfolio_id=portfolio_id,
         instrument_id=instrument_id,
         display_name=_clean(row.get("displayName") or row.get("display_name") or instrument_id),
         quantity=_non_negative(row.get("quantity")),
@@ -314,9 +397,9 @@ def _snapshot_from_frontend(row: Any) -> V021HoldingSnapshot:
         market_price=_non_negative(row.get("marketPrice") if "marketPrice" in row else row.get("market_price")),
         currency=_clean(row.get("currency") or "CNY").upper(),
         source_id=_clean(row.get("sourceId") or row.get("source_id") or "manual_review"),
-        as_of=_clean(row.get("asOf") or row.get("as_of") or "2026-06-28"),
+        as_of=as_of,
         soft_deleted=bool(row.get("softDeleted") or row.get("soft_deleted")),
-        metadata=row.get("metadata") if isinstance(row.get("metadata"), dict) else {},
+        metadata=metadata,
     )
 
 
@@ -331,8 +414,11 @@ def _snapshot_to_frontend(snapshot: V021HoldingSnapshot) -> dict[str, Any]:
         "marketPrice": snapshot.market_price,
         "marketValue": snapshot.market_value,
         "currency": snapshot.currency,
+        "account": snapshot.portfolio_id,
         "sourceId": snapshot.source_id,
         "asOf": snapshot.as_of,
+        "updatedAt": snapshot.as_of,
+        "note": snapshot.metadata.get("note", "") if isinstance(snapshot.metadata, dict) else "",
         "softDeleted": snapshot.soft_deleted,
         "metadata": snapshot.metadata,
     }
