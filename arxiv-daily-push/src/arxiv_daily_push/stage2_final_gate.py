@@ -226,6 +226,29 @@ S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_REQUEST_FORBIDDEN_FLAGS = (
     "v7_1_baseline_changed",
     "v7_2_contract_files_changed",
 )
+S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_OWNER_PACKET_REQUIRED_ACTIONS = (
+    "select_reviewer_not_involved_in_s2pmt01_t06_implementation",
+    "record_reviewer_id_role_assigner_and_scope",
+    "verify_reviewer_independence_against_required_input_refs",
+    "write_assignment_artifact_to_final_acceptance_bundle_path",
+    "keep_all_no_production_side_effect_flags_false",
+)
+S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_OWNER_PACKET_BLOCKING_REASONS = (
+    "owner_or_coordinator_assignment_artifact_missing",
+    "independent_final_reviewer_assignment_missing",
+    "independent_final_closure_decision_missing",
+    "p0_p1_zero_proof_artifact_missing",
+    "s2plt04_completion_report_missing",
+    "final_command_execution_missing",
+    "no_production_side_effect_attestation_missing",
+    "next_agent_handoff_missing",
+    "final_acceptance_bundle_manifest_missing",
+    "inherited_v7_1_p0_findings_open",
+    "inherited_v7_1_p1_findings_open",
+)
+S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_OWNER_PACKET_FORBIDDEN_FLAGS = (
+    S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_REQUEST_FORBIDDEN_FLAGS
+)
 S2PMT07_INDEPENDENT_FINAL_CLOSURE_DECISION_REQUEST_REQUIRED_INPUTS = (
     "P0_P1_ZERO_PROOF_ASSEMBLY_STATE",
     "P0_P1_ZERO_PROOF_READINESS_STATE",
@@ -2934,6 +2957,141 @@ def validate_independent_final_reviewer_assignment_request_state(state: Mapping[
     return errors
 
 
+def build_independent_final_reviewer_assignment_owner_packet_state() -> dict[str, Any]:
+    """Build the owner/coordinator packet for creating the reviewer assignment artifact."""
+
+    request_state = build_independent_final_reviewer_assignment_request_state()
+    state = {
+        "status": "blocked_owner_action_packet_ready_no_assignment",
+        "scope": "owner_assignment_packet_only_no_assignment",
+        "task_id": S2PMT07_TASK_ID,
+        "acceptance_id": S2PMT07_ACCEPTANCE_ID,
+        "required_owner_actions": list(
+            S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_OWNER_PACKET_REQUIRED_ACTIONS
+        ),
+        "assignment_artifact_path": S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_PATH,
+        "assignment_schema_version": S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_SCHEMA_VERSION,
+        "assignment_decision": S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_DECISION,
+        "assignment_required_fields": list(S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_REQUIRED_FIELDS),
+        "required_reviewer_role": "independent_final_reviewer",
+        "required_reviewer_independence": S2PMT07_REQUIRED_REVIEWER_INDEPENDENCE,
+        "allowed_assigned_by_values": ["owner_or_coordinator", "owner"],
+        "required_assignment_scope": "S2PMT07_P0_P1_FINAL_CLOSURE_REVIEW",
+        "forbidden_reviewer_ids": ["codex-current-agent"],
+        "review_input_refs": list(request_state["review_input_refs"]),
+        "candidate_manifest_refs": list(request_state["candidate_manifest_refs"]),
+        "p0_candidate_count": request_state["p0_candidate_count"],
+        "p1_candidate_count": request_state["p1_candidate_count"],
+        "candidate_total": request_state["candidate_total"],
+        "assignment_request_ready": request_state["assignment_request_ready"],
+        "assignment_artifact_present": False,
+        "independent_final_reviewer_assigned": False,
+        "assignment_satisfies_gate": False,
+        "independent_final_closure_decision_present": False,
+        "zero_proof_artifact_present": False,
+        "p0_zero_proven": False,
+        "p1_zero_proven": False,
+        "closure_claimed": False,
+        "observed_open_p0_findings": S2PMT07_INHERITED_V7_1_OPEN_P0_FINDINGS,
+        "observed_open_p1_findings": S2PMT07_INHERITED_V7_1_OPEN_P1_FINDINGS,
+        "next_required_action": "owner_or_coordinator_must_create_assignment_artifact_with_independent_reviewer",
+        "blocking_reasons": list(S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_OWNER_PACKET_BLOCKING_REASONS),
+        **{flag: False for flag in S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_OWNER_PACKET_FORBIDDEN_FLAGS},
+        "state_hash": "",
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
+def validate_independent_final_reviewer_assignment_owner_packet_state(
+    state: Mapping[str, Any],
+) -> list[str]:
+    """Validate the owner/coordinator packet without treating it as an assignment artifact."""
+
+    errors: list[str] = []
+    if state.get("status") != "blocked_owner_action_packet_ready_no_assignment":
+        errors.append("independent final reviewer assignment owner packet status is invalid")
+    if state.get("scope") != "owner_assignment_packet_only_no_assignment":
+        errors.append("independent final reviewer assignment owner packet scope is invalid")
+    if state.get("task_id") != S2PMT07_TASK_ID:
+        errors.append("independent final reviewer assignment owner packet task_id is invalid")
+    if state.get("acceptance_id") != S2PMT07_ACCEPTANCE_ID:
+        errors.append("independent final reviewer assignment owner packet acceptance_id is invalid")
+    if (
+        tuple(state.get("required_owner_actions", []))
+        != S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_OWNER_PACKET_REQUIRED_ACTIONS
+    ):
+        errors.append("independent final reviewer assignment owner packet required_owner_actions are invalid")
+    if state.get("assignment_artifact_path") != S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_PATH:
+        errors.append("independent final reviewer assignment owner packet assignment_artifact_path is invalid")
+    if state.get("assignment_schema_version") != S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_SCHEMA_VERSION:
+        errors.append("independent final reviewer assignment owner packet assignment_schema_version is invalid")
+    if state.get("assignment_decision") != S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_DECISION:
+        errors.append("independent final reviewer assignment owner packet assignment_decision is invalid")
+    if (
+        tuple(state.get("assignment_required_fields", []))
+        != S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_REQUIRED_FIELDS
+    ):
+        errors.append("independent final reviewer assignment owner packet required fields are invalid")
+    if state.get("required_reviewer_role") != "independent_final_reviewer":
+        errors.append("independent final reviewer assignment owner packet reviewer role is invalid")
+    if state.get("required_reviewer_independence") != S2PMT07_REQUIRED_REVIEWER_INDEPENDENCE:
+        errors.append("independent final reviewer assignment owner packet reviewer independence is invalid")
+    if tuple(state.get("allowed_assigned_by_values", [])) != ("owner_or_coordinator", "owner"):
+        errors.append("independent final reviewer assignment owner packet assigned_by values are invalid")
+    if state.get("required_assignment_scope") != "S2PMT07_P0_P1_FINAL_CLOSURE_REVIEW":
+        errors.append("independent final reviewer assignment owner packet assignment scope is invalid")
+    if state.get("forbidden_reviewer_ids") != ["codex-current-agent"]:
+        errors.append("independent final reviewer assignment owner packet forbidden reviewer ids are invalid")
+    request_state = build_independent_final_reviewer_assignment_request_state()
+    for ref in request_state["review_input_refs"]:
+        if ref not in state.get("review_input_refs", []):
+            errors.append(f"independent final reviewer assignment owner packet review inputs must include {ref}")
+    for ref in request_state["candidate_manifest_refs"]:
+        if ref not in state.get("candidate_manifest_refs", []):
+            errors.append(f"independent final reviewer assignment owner packet candidate refs must include {ref}")
+    if state.get("p0_candidate_count") != request_state["p0_candidate_count"]:
+        errors.append("independent final reviewer assignment owner packet P0 candidate count is invalid")
+    if state.get("p1_candidate_count") != request_state["p1_candidate_count"]:
+        errors.append("independent final reviewer assignment owner packet P1 candidate count is invalid")
+    if state.get("candidate_total") != request_state["candidate_total"]:
+        errors.append("independent final reviewer assignment owner packet candidate_total is invalid")
+    if state.get("assignment_request_ready") is not True:
+        errors.append("independent final reviewer assignment owner packet request must be ready")
+    if state.get("assignment_artifact_present") is not False:
+        errors.append("assignment_artifact_present must remain false until owner supplies artifact")
+    for flag in (
+        "independent_final_reviewer_assigned",
+        "assignment_satisfies_gate",
+        "independent_final_closure_decision_present",
+        "zero_proof_artifact_present",
+        "p0_zero_proven",
+        "p1_zero_proven",
+        "closure_claimed",
+    ):
+        if state.get(flag) is not False:
+            errors.append(f"{flag} must be false")
+    if state.get("observed_open_p0_findings") != S2PMT07_INHERITED_V7_1_OPEN_P0_FINDINGS:
+        errors.append("independent final reviewer assignment owner packet must preserve inherited open P0 count")
+    if state.get("observed_open_p1_findings") != S2PMT07_INHERITED_V7_1_OPEN_P1_FINDINGS:
+        errors.append("independent final reviewer assignment owner packet must preserve inherited open P1 count")
+    if (
+        state.get("next_required_action")
+        != "owner_or_coordinator_must_create_assignment_artifact_with_independent_reviewer"
+    ):
+        errors.append("independent final reviewer assignment owner packet next_required_action is invalid")
+    for reason in S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_OWNER_PACKET_BLOCKING_REASONS:
+        if reason not in state.get("blocking_reasons", []):
+            errors.append(f"independent final reviewer assignment owner packet must include blocker {reason}")
+    for flag in S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_OWNER_PACKET_FORBIDDEN_FLAGS:
+        if state.get(flag) is not False:
+            errors.append(f"{flag} must be false")
+    expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    if state.get("state_hash") != expected_hash:
+        errors.append("independent final reviewer assignment owner packet state_hash does not match state content")
+    return errors
+
+
 def build_independent_final_reviewer_assignment_hash(payload: Mapping[str, Any]) -> str:
     """Return the canonical reviewer-assignment hash excluding its hash field."""
 
@@ -4411,6 +4569,9 @@ def build_final_acceptance_bundle_readiness_state() -> dict[str, Any]:
     independent_final_reviewer_assignment_request = (
         build_independent_final_reviewer_assignment_request_state()
     )
+    independent_final_reviewer_assignment_owner_packet = (
+        build_independent_final_reviewer_assignment_owner_packet_state()
+    )
     independent_final_reviewer_assignment_validation = (
         build_independent_final_reviewer_assignment_validation_state(None)
     )
@@ -4448,6 +4609,11 @@ def build_final_acceptance_bundle_readiness_state() -> dict[str, Any]:
                     independent_final_reviewer_assignment_request
                 )
             ),
+            "INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_OWNER_PACKET": (
+                not validate_independent_final_reviewer_assignment_owner_packet_state(
+                    independent_final_reviewer_assignment_owner_packet
+                )
+            ),
             "INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION": (
                 independent_final_reviewer_assignment_validation["status"] == "pass"
             ),
@@ -4478,6 +4644,9 @@ def build_final_acceptance_bundle_readiness_state() -> dict[str, Any]:
         "p0_p1_technical_closure_candidate_state": p0_p1_technical_candidate_state,
         "p0_p1_zero_proof_assembly": p0_p1_zero_proof_assembly,
         "independent_final_reviewer_assignment_request": independent_final_reviewer_assignment_request,
+        "independent_final_reviewer_assignment_owner_packet": (
+            independent_final_reviewer_assignment_owner_packet
+        ),
         "independent_final_reviewer_assignment_validation": independent_final_reviewer_assignment_validation,
         "independent_final_closure_decision_request": independent_final_closure_decision_request,
         "p0_p1_zero_proof_readiness": p0_p1_zero_proof_readiness,
@@ -4527,6 +4696,8 @@ def validate_final_acceptance_bundle_readiness_state(state: Mapping[str, Any]) -
         errors.append("final acceptance bundle readiness must expose P0/P1 zero proof assembly")
     if prebundle.get("INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_REQUEST") is not True:
         errors.append("final acceptance bundle readiness must expose independent final reviewer assignment request")
+    if prebundle.get("INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_OWNER_PACKET") is not True:
+        errors.append("final acceptance bundle readiness must expose independent final reviewer assignment owner packet")
     if prebundle.get("INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION") is not False:
         errors.append(
             "final acceptance bundle readiness must not expose independent final reviewer assignment validation as passing"
@@ -4565,6 +4736,11 @@ def validate_final_acceptance_bundle_readiness_state(state: Mapping[str, Any]) -
     reviewer_assignment_request = _mapping(state.get("independent_final_reviewer_assignment_request"))
     if validate_independent_final_reviewer_assignment_request_state(reviewer_assignment_request):
         errors.append("final acceptance bundle readiness independent final reviewer assignment request is invalid")
+    reviewer_assignment_owner_packet = _mapping(
+        state.get("independent_final_reviewer_assignment_owner_packet")
+    )
+    if validate_independent_final_reviewer_assignment_owner_packet_state(reviewer_assignment_owner_packet):
+        errors.append("final acceptance bundle readiness independent final reviewer assignment owner packet is invalid")
     reviewer_assignment_validation = _mapping(state.get("independent_final_reviewer_assignment_validation"))
     if reviewer_assignment_validation.get("status") != "blocked":
         errors.append(

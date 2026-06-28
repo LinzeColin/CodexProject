@@ -7,13 +7,14 @@ machine_summary:
 
 - model_count: 117
 - formula_count: 119
-- parameter_count: 1061
+- parameter_count: 1064
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
 ## Governance Notes
 
 - `S2PMT07-REMAINING-BLOCKER-MATRIX` adds `PARAM-ADP-1061` under `MOD-ADP-100` / `FORM-ADP-102`. It maps the seven current S2PMT07 blockers to required future evidence, owner actions, default next steps, and self-certification limits while keeping P0/P1 closure, S2PLT04 completion, final bundle, SMTP, scheduler, Release, production restore, CURRENT/V7 changes, DAILY_OPERATION, and integrated production acceptance false.
+- `S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-OWNER-PACKET` adds `PARAM-ADP-1062..1064` under `MOD-ADP-100` / `FORM-ADP-102`. It exposes owner/coordinator required actions, blockers, and forbidden production flags for preparing the future independent final reviewer assignment artifact while keeping assignment, P0/P1 closure, final bundle, and production acceptance blocked.
 - `S2PLT02-M4-WATERMARK-PROOF-RECORD` adds `PARAM-ADP-1058` through `PARAM-ADP-1060` under `MOD-ADP-104` / `FORM-ADP-106`. It binds service date `2026-06-28` to an explicit proof record at `governance/run_manifests/ADP-S2PLT02-M4-WATERMARK-PROOF-RECORD-20260628.json`, generated at `2026-06-28T01:26:41Z` for cycle `2026-06-28`; the record binds M4 to same-cycle M1/M2/M3 terminal mail records and derives a ready M4 watermark while all production/CURRENT/V7 side-effect flags remain false. S2PLT02 remains blocked because S2PLT01 acceptance, the second real natural day, eight total emails, real scheduler proof, inherited P0/P1 zero proof, S2PLT04, final bundle, and S2PMT07 are still missing; no S2PLT02 acceptance, SMTP, scheduler, Release, production restore, schema/DB/queue/source/ranking/CURRENT/V7 change, P0/P1 closure, DAILY_OPERATION, or integrated production acceptance is claimed.
 - `S2PLT02-M4-WATERMARK-PROOF` adds `PARAM-ADP-1054` through `PARAM-ADP-1057` under `MOD-ADP-104` / `FORM-ADP-106`. It requires future S2PLT02 M4 correctness to be backed by explicit proof records that bind M4 to same-cycle M1/M2/M3 terminal mail records, match delivery ledger refs, derive a ready M4 watermark, and keep all production/CURRENT/V7 side-effect flags false. The validator now has a 2026-06-28 proof record, but S2PLT02 remains blocked by its remaining two-day, scheduler, dependency, inherited P0/P1, S2PLT04, final bundle, and S2PMT07 gates.
 - `S2PLT02-DELIVERY-EVIDENCE-LEDGER` adds `PARAM-ADP-1051`

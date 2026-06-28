@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260628-ADP-S2PMT07-OWNER-NEXT-ACTION-SYNC"
+as_of_event_id: "EVENT-20260628-ADP-S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-OWNER-PACKET"
 source_snapshot_hash: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
-source_base_commit: "91bbbdbd2ee4bba94aaba124fee0e070ddf552a2"
-source_tree_hash: "8caef1969ddfe23755890506daa0d02e6f6df81f"
-snapshot_event_time: "2026-06-28T14:40:13+10:00"
+source_base_commit: "ab7e1415b7f3b83a100e6077b486459c8224f287"
+source_tree_hash: "843c572695708882cc8f83cc5058d9a736d95efd"
+snapshot_event_time: "2026-06-28T15:05:24+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -16,8 +16,8 @@ dimensions:
     status: "PARTIAL"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 1039
-    total_active_parameters: 1044
+    checked_active_parameters: 1042
+    total_active_parameters: 1047
     checked_active_formulas: 119
     total_active_formulas: 119
     unresolved_fact_ids:
@@ -28,8 +28,8 @@ dimensions:
   parameter_source_quality:
     status: "PARTIAL"
     fact_level: "UNKNOWN"
-    checked_active_parameters: 1039
-    total_active_parameters: 1044
+    checked_active_parameters: 1042
+    total_active_parameters: 1047
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -67,7 +67,7 @@ dimensions:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "VERIFIED"
-  release_gate: "S2PMT07_REMAINING_BLOCKER_MATRIX_READY_NO_CLOSURE"
+  release_gate: "S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_OWNER_PACKET_READY_NO_ASSIGNMENT"
   blocker_ids:
     - "FACT-arxiv-daily-push-IMPLEMENTATION-PARAMETER-REVIEW"
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"

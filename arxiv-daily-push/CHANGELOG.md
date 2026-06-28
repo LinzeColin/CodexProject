@@ -569,3 +569,4 @@
 - Added local daily resend recovery support for `--daily-input-report`, allowing M1-M4 catch-up to reuse an existing same-day `adp-daily-input-report.json` without live arXiv fetch, with date-mismatch blocking and no production acceptance claim.
 - Added S2PMT07 directory-level final bundle artifact validation while preserving missing-final-bundle, P0=8/P1=37, no-production, and no-integrated-acceptance blockers.
 - Added S2PLT02 partial real delivery evidence binding for the recorded 2026-06-28 M1-M4 resend: one observed real natural day and four observed emails now feed the two-day precheck, while S2PLT02 acceptance and production gates remain blocked.
+- Added S2PMT07 independent final reviewer assignment owner packet while preserving missing assignment artifact, P0=8/P1=37, no-production, and no-integrated-acceptance blockers.
