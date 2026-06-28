@@ -128,8 +128,8 @@ def test_visualization_validation_has_sources_freshness_and_performance_status()
 
 def test_stage11_parameter_catalog_and_docs_are_updated() -> None:
     catalog = load_v022_parameter_catalog()
-    assert catalog["schema"] == "PFIParametersV022Stage12"
-    assert catalog["current_stage"] == "Stage 12 - 文档同步与交付"
+    assert catalog["schema"] == "PFIParametersV022Stage13"
+    assert catalog["current_stage"] == "Stage 13 - 后置触发型复核"
     assert catalog["stage11_task_ids"] == list(V022_STAGE11_TASK_IDS)
     validation_params = catalog["parameters"]["test_validation"]
     assert validation_params["financial_logic_case_ids"]["value"] == list(STAGE11_FINANCIAL_CASE_IDS)

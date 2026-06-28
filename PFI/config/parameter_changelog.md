@@ -104,6 +104,14 @@
 | 2026-06-28 | `S12-P2-T3` | `delivery.final_summary_path` | `无最终中文摘要路径` | `PFI/reports/pfi_v022_summary.md` | 最终摘要必须说明做了什么、怎么验收、哪些未做、哪些需要用户人工复核。 | 用户验收、Stage 13 准备。 |
 | 2026-06-28 | `S12-P2-T3` | `delivery.six_agent_review_rounds` | `无正式交付前自检轮数` | `2` | 交付前必须保留 2 轮 × 6 Agent 自检证据。 | 自检报告、风险说明、交付门。 |
 | 2026-06-28 | `S12-P2-T3` | `delivery.six_agent_blocking_issue_count` | `无阻塞项计数参数` | `0` | 存在阻塞项时不得继续交付。 | 2 轮 × 6 Agent 自检、最终摘要。 |
+| 2026-06-28 | `S13-P1-T1` | `post_review.trigger_condition` | `Stage 13 未执行` | `交付前人工指定` | 本轮 pursuing goal 明确触发 Stage 13，允许生成本地 Codex Review Ticket。 | 后置复核、最终完成审计。 |
+| 2026-06-28 | `S13-P1-T1` | `post_review.review_ticket_path` | `无 Stage 13 ticket` | `PFI/review_queue/codex_review_stage13_owner_specified_20260628.md` | 生成本地 Codex Review Ticket，记录触发条件和复核范围。 | 复核队列、开发记录。 |
+| 2026-06-28 | `S13-P1-T2` | `post_review.scope_files` | `无受限复核范围参数` | `9 个 PFI scope files` | 仅对异常区域进行复核，禁止全仓无差别扫描。 | 上下文成本、误改风险、测试。 |
+| 2026-06-28 | `S13-P1-T2` | `post_review.full_repo_scan_allowed` | `未参数化` | `false` | 禁止全仓无差别扫描。 | Stage 13 后置复核边界。 |
+| 2026-06-28 | `S13-P1-T2` | `post_review.network_allowed` | `未参数化` | `false` | 后置复核不联网。 | 隐私、安全、可重复验证。 |
+| 2026-06-28 | `S13-P1-T3` | `post_review.blocking_issue_count` | `无阻塞项计数` | `0` | 阻塞项为 0 才允许 goal closeout。 | 最终验收、开发记录。 |
+| 2026-06-28 | `Stage13-Downloads` | `post_review.downloads_cleanup_archive` | `Downloads 保留 PFI 预同步临时目录` | `PFI/docs/pfi_v022/downloads_cleanup/PFI_V022_PRE_CANONICAL_SYNC_ARCHIVE_20260628.tar.gz` | 清理前归档，减少 Downloads 污染并保留 GitHub 证据。 | Downloads 清理、GitHub 备份。 |
+| 2026-06-28 | `Stage13-Downloads` | `post_review.downloads_cleanup_candidates` | `无清理白名单` | `6 个 PFI_V022_STAGE*_PRE_CANONICAL_SYNC_* 目录` | 只清理 PFI 临时目录，不触碰 PFI.app、taskpack、roadmap、zip、md。 | 本机清理、用户源文件保护。 |
 
 ## 记录规则
 

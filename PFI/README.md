@@ -7,11 +7,11 @@ PFI V0.2 is the Personal Financial Intelligence project under
 under `LinzeColin/CodexProject/QBVS`; PFI investment management does not own
 or cover QBVS.
 
-## v0.2.2 数据库治理 Stage 12
+## v0.2.2 数据库治理 Stage 13
 
-`v0.2.2 数据库治理` 当前完成 Stage 12 - 文档同步与交付。本轮同步三基文件、生成 UI/UX 审查 HTML、生成 Stage -> Phase -> Task Roadmap 与验证报告、生成最终中文摘要，并完成 2 轮 × 6 Agent 自检；不执行 Stage 13 后置触发型复核，不修改 v0.2.1 主 Web Shell UIUX 基线，不新增真实交易、自动投资、支付或券商提交能力。
+`v0.2.2 数据库治理` 当前完成 Stage 13 - 后置触发型复核。本轮在 `交付前人工指定` 触发下生成本地 Codex Review Ticket，仅对异常区域进行复核，禁止全仓无差别扫描，将问题、修复、验证、剩余风险写入开发记录，并清理/迁移 Downloads 污染文件夹；不联网、不调用外部 LLM、不修改 v0.2.1 主 Web Shell UIUX 基线，不新增真实交易、自动投资、支付或券商提交能力。
 
-Stage 12 source files:
+Stage 13 source files:
 
 | Purpose | Path |
 | --- | --- |
@@ -31,6 +31,9 @@ Stage 12 source files:
 | Stage 12 2 轮 × 6 Agent 自检 | `docs/pfi_v022/SIX_AGENT_DELIVERY_REVIEW.md` |
 | Stage 12 UI/UX 审查 HTML | `web/pfi_v022_logic_review.html` |
 | Stage 12 最终摘要 | `reports/pfi_v022_summary.md` |
+| Stage 13 后置复核报告 | `docs/pfi_v022/STAGE13_POST_REVIEW.md` |
+| Stage 13 Codex Review Ticket | `review_queue/codex_review_stage13_owner_specified_20260628.md` |
+| Stage 13 Downloads 清理记录 | `docs/pfi_v022/DOWNLOADS_CLEANUP_STAGE13.md` |
 | Stage 9 验收报告 | `docs/pfi_v022/STAGE9_VISUALIZATION_UIUX.md` |
 | Stage 9 Interconnection Map | `docs/pfi_v022/INTERCONNECTION_MAP.md` |
 | Stage 10 验收报告 | `docs/pfi_v022/STAGE10_REPORT_ADVICE_REVIEW.md` |
@@ -349,3 +352,15 @@ Stage 12 - 文档同步与交付已加入 PFI 的数据库治理路线。
 - 新增 `reports/pfi_v022_summary.md`：最终中文摘要，说明做了什么、怎么验收、哪些未做、哪些需要用户人工复核。
 - `config/pfi_parameters.yaml` 升级为 `PFIParametersV022Stage12`，新增 `delivery` 参数域和 `stage12_task_ids`；`config/pfi_v022_parameters.yaml` 是 Task Pack 要求的参数交付镜像。
 - 本轮不执行 Stage 13 后置触发型复核，不修改 v0.2.1 主 Web Shell UIUX 基线，不清理或迁移 Downloads 污染文件夹。
+
+## v0.2.2 Stage 13
+
+Stage 13 - 后置触发型复核已加入 PFI 的数据库治理路线。
+
+- Task ID 清单：`S13-P1-T1`、`S13-P1-T2`、`S13-P1-T3`。
+- `S13-P1-T1`：在 `交付前人工指定` 触发下生成本地 Codex Review Ticket：`PFI/review_queue/codex_review_stage13_owner_specified_20260628.md`。
+- `S13-P1-T2`：仅对异常区域进行复核，scope files 由 ticket 指定，禁止全仓无差别扫描。
+- `S13-P1-T3`：复核结果写入 `PFI/开发记录.md`，包含问题、修复、验证、剩余风险。
+- Downloads 污染文件夹清理：`PFI_V022_STAGE0_PRE_CANONICAL_SYNC_20260628T090028` 等 6 个 PFI 预同步临时目录已归档到 `PFI/docs/pfi_v022/downloads_cleanup/PFI_V022_PRE_CANONICAL_SYNC_ARCHIVE_20260628.tar.gz` 并移出 Downloads。
+- `PFI.app` 和用户提供的 taskpack、roadmap、zip、md 源文件保留在 Downloads。
+- `config/pfi_parameters.yaml` 升级为 `PFIParametersV022Stage13`，新增 `post_review` 参数域和 `stage13_task_ids`。

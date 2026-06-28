@@ -68,8 +68,8 @@ def test_stage12_delivery_payload_covers_all_required_artifacts() -> None:
 def test_stage12_parameter_catalog_records_delivery_gate() -> None:
     catalog = load_v022_parameter_catalog()
 
-    assert catalog["schema"] == "PFIParametersV022Stage12"
-    assert catalog["current_stage"] == "Stage 12 - 文档同步与交付"
+    assert catalog["schema"] == "PFIParametersV022Stage13"
+    assert catalog["current_stage"] == "Stage 13 - 后置触发型复核"
     assert catalog["stage12_task_ids"] == list(V022_STAGE12_TASK_IDS)
     delivery_params = catalog["parameters"]["delivery"]
     assert delivery_params["roadmap_structure"]["value"] == "Stage -> Phase -> Task"
