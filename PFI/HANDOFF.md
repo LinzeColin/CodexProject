@@ -4,7 +4,7 @@ Last updated: 2026-06-28 Australia/Sydney
 
 ## Current Goal
 
-PFI v0.2.2 Stage 1-13 复审并解决：第一阶段每次 run work 只复审解决 1 个 Stage，第二阶段做整体项目复审解决；整体 goal 完成后再重装 app 入口。本轮已完成 Stage 1 复审并解决，新增 `docs/pfi_v022/reviews/STAGE1_REVIEW_20260628.md` 和 `tests/test_v022_review_stage1.py`，补齐 3 个阈值/开关键说明；不复审解决 Stage 2-13，不重装 app 入口。
+PFI v0.2.2 Stage 1-13 复审并解决：第一阶段每次 run work 只复审解决 1 个 Stage，第二阶段做整体项目复审解决；整体 goal 完成后再重装 app 入口。本轮已完成 Stage 2 复审并解决，新增 `docs/pfi_v022/reviews/STAGE2_REVIEW_20260628.md` 和 `tests/test_v022_review_stage2.py`，补齐 CNY 主显示现金流影响面和账本金额字段中文标签映射；不复审解决 Stage 3-13，不重装 app 入口。
 
 ## Current Status
 
@@ -20,7 +20,7 @@ PFI v0.2.2 Stage 1-13 复审并解决：第一阶段每次 run work 只复审解
   resolve to this checkout.
 - Local runtime data home is now `~/.pfi` or explicit `$PFI_DATA_HOME`.
 - Current app URL after migration verification: `http://localhost:8501`.
-- 当前复审状态：Stage 1 复审并解决已完成；Stage 2-13 复审解决未开始；整体项目复审解决未开始；app 入口重装未执行。
+- 当前复审状态：Stage 1-2 复审并解决已完成；Stage 3-13 复审解决未开始；整体项目复审解决未开始；app 入口重装未执行。
 - 历史完成状态：Stage 13 - 后置触发型复核 已完成 `S13-P1-T1`、`S13-P1-T2`、`S13-P1-T3`；由 `交付前人工指定` 触发，生成本地 Codex Review Ticket，仅对异常区域进行复核，禁止全仓无差别扫描；问题、修复、验证、剩余风险已写入开发记录；Downloads 污染文件夹 `PFI_V022_STAGE0_PRE_CANONICAL_SYNC_20260628T090028` 等已归档并移出 Downloads。
 - Stage 1 contracts remain in `src/pfi_v02/stage1_ia.py`, `src/pfi_v02/core_models.py`, and `src/pfi_v02/classification_rules.py`.
 - Stage 2 registry is implemented in `src/pfi_v02/stage2_registry.py`.
@@ -71,6 +71,8 @@ PFI v0.2.2 Stage 1-13 复审并解决：第一阶段每次 run work 只复审解
 - v0.2.2 Stage 2 当前真实快照是 `data/fx_snapshots/AUD_CNY/2026-06-28.json`，`snapshot_id=fx_AUD_CNY_20260628`，`rate=4.6874`，来源 `Frankfurter v2 public API`，hash `2e0d770f16f07543bfe03f9189f1be923b2ef4518a346c79788655600040018b`。
 - v0.2.2 Stage 2 普通本地运行只读 `data/fx_snapshots/`，不默认联网；显式刷新必须调用 `pfi_v02.stage_v022_fx refresh --allow-network`。
 - v0.2.2 Stage 2 账本金额字段锁定为 `原始金额`、`原始币种`、`CNY金额`、`汇率快照ID`；缺失当日有效快照时显示 `汇率数据待更新`，不得伪造实时汇率。
+- v0.2.2 Stage 2 复审并解决结果：`tests/test_v022_review_stage2.py` `4 passed`；完整 PFI pytest `262 passed, 225 subtests passed`；治理 `errors 0 / warnings 0`；JS 和 diff 通过。
+- 当前 app 入口事实：8501 健康，`/Applications/PFI.app` 和 `~/Downloads/PFI.app` 绑定 canonical PFI；`~/Desktop/PFI.app` 缺失导致 macOS app acceptance lite `Blocked, pass=22, fail=7, info=2`。按当前 goal，不在 Stage 2 run 内重装入口，整体复审解决完成后再刷新。
 - v0.2.2 Stage 3 task IDs 是 `S3-P1-T1`、`S3-P1-T2`、`S3-P1-T3`、`S3-P2-T1`、`S3-P2-T2`、`S3-P2-T3`。
 - v0.2.2 Stage 3 合同是 `src/pfi_v02/stage_v022_database_governance.py::build_v022_stage3_contract()`；source/account profile 模块是 `src/pfi_v02/stage_v022_source_profile.py`。
 - v0.2.2 Stage 3 验收报告是 `docs/pfi_v022/STAGE3_SOURCE_ACCOUNT_PROFILE.md`；合同测试是 `tests/test_v022_stage3_source_account_profiles.py`。

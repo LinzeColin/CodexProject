@@ -116,3 +116,14 @@ git diff --check -- PFI
 | 06:00 有效日边界不可测试 | 未触发 |
 
 结论：Stage 2 可进入 closeout 验证；下一轮应从 Stage 3 开始，不提前实现 Stage 4-13。
+
+## 2026-06-28 复审并解决补丁
+
+复审报告：`PFI/docs/pfi_v022/reviews/STAGE2_REVIEW_20260628.md`。
+
+本轮复审发现并解决两个问题：
+
+- `currency.base_currency.impact_surfaces` 漏掉 `现金流`，已补齐，确保首页、投资、消费、现金流、报告均属于 CNY 主显示验收面。
+- `ledger_amount_fields()` 只有机器字段，已增加 `field_labels_zh`，把 `original_amount`、`original_currency`、`amount_cny`、`fx_snapshot_id` 映射为 `原始金额`、`原始币种`、`CNY金额`、`汇率快照ID`。
+
+新增复审测试：`PFI/tests/test_v022_review_stage2.py`。

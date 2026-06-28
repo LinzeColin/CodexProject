@@ -24,6 +24,12 @@ DEFAULT_CUTOFF_LOCAL = "06:00"
 FRANKFURTER_RATE_ENDPOINT = "https://api.frankfurter.dev/v2/rate/{base}/{quote}"
 FX_SNAPSHOT_SCHEMA = "PFIV022FxSnapshotV1"
 FX_LEDGER_AMOUNT_SCHEMA = "PFIV022LedgerAmountFieldsV1"
+FX_LEDGER_AMOUNT_FIELD_LABELS_ZH = {
+    "original_amount": "原始金额",
+    "original_currency": "原始币种",
+    "amount_cny": "CNY金额",
+    "fx_snapshot_id": "汇率快照ID",
+}
 
 
 @dataclass(frozen=True)
@@ -303,6 +309,7 @@ def ledger_amount_fields(
         "original_currency": original_currency.upper(),
         "amount_cny": str(amount_cny),
         "fx_snapshot_id": snapshot["snapshot_id"],
+        "field_labels_zh": dict(FX_LEDGER_AMOUNT_FIELD_LABELS_ZH),
         "fx_display_pair": snapshot["display_pair"],
         "fx_rate": snapshot["rate"],
     }

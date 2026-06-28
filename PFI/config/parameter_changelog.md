@@ -112,6 +112,8 @@
 | 2026-06-28 | `S13-P1-T3` | `post_review.blocking_issue_count` | `无阻塞项计数` | `0` | 阻塞项为 0 才允许 goal closeout。 | 最终验收、开发记录。 |
 | 2026-06-28 | `Stage13-Downloads` | `post_review.downloads_cleanup_archive` | `Downloads 保留 PFI 预同步临时目录` | `PFI/docs/pfi_v022/downloads_cleanup/PFI_V022_PRE_CANONICAL_SYNC_ARCHIVE_20260628.tar.gz` | 清理前归档，减少 Downloads 污染并保留 GitHub 证据。 | Downloads 清理、GitHub 备份。 |
 | 2026-06-28 | `Stage13-Downloads` | `post_review.downloads_cleanup_candidates` | `无清理白名单` | `6 个 PFI_V022_STAGE*_PRE_CANONICAL_SYNC_* 目录` | 只清理 PFI 临时目录，不触碰 PFI.app、taskpack、roadmap、zip、md。 | 本机清理、用户源文件保护。 |
+| 2026-06-28 | `REVIEW-S2` | `currency.base_currency.impact_surfaces` | `首页总览、投资管理、消费管理、报告与洞察` | `首页总览、投资管理、消费管理、现金流、报告与洞察` | Stage 2 验收明确要求现金流也以 CNY 为主显示，复审发现参数影响面漏项。 | 首页总览、投资管理、消费管理、现金流、报告与洞察、复审测试。 |
+| 2026-06-28 | `REVIEW-S2` | `ledger_amount_fields.field_labels_zh` | `无` | `original_amount=原始金额, original_currency=原始币种, amount_cny=CNY金额, fx_snapshot_id=汇率快照ID` | 保留机器字段的同时提供中文验收字段映射，避免用户只看到英文 key。 | 账本流水、汇率追溯、三基文件、Stage 2 复审测试。 |
 
 ## 记录规则
 
