@@ -5661,10 +5661,14 @@ models:
       - "PARAM-ADP-890"
       - "PARAM-ADP-891"
       - "PARAM-ADP-892"
+      - "PARAM-ADP-1051"
+      - "PARAM-ADP-1052"
+      - "PARAM-ADP-1053"
     inputs:
       - "S2PLT01 acceptance state"
       - "two consecutive real natural day evidence"
       - "M1-M4 real email send evidence"
+      - "committed delivery manifest ledger records"
       - "duplicate email and M4 watermark evidence"
       - "real scheduler and real SMTP proof"
       - "inherited V7.1 P0/P1 blocker counts"
@@ -5672,6 +5676,7 @@ models:
     outputs:
       - "blocked S2PLT02 two-day live-run readiness precheck report"
       - "S2PLT02 dependency and live evidence state"
+      - "S2PLT02 delivery evidence ledger"
       - "deterministic report hash"
       - "forbidden production flag state"
     code_refs:
@@ -5683,6 +5688,8 @@ models:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PLT02-LIVE-2D-PRECHECK-20260626.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_LIVE_2D_PRECHECK.md"
+      - "governance/run_manifests/ADP-S2PLT02-DELIVERY-EVIDENCE-LEDGER-20260628.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_DELIVERY_EVIDENCE_LEDGER.md"
 
   -
     model_id: "MOD-ADP-116"

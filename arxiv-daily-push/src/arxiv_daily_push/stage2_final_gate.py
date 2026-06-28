@@ -675,6 +675,7 @@ S2PLT02_BLOCKING_REASONS = (
     "s2plt01_not_accepted",
     "two_consecutive_real_days_not_proven",
     "eight_real_emails_not_proven",
+    "duplicate_emails_found",
     "real_scheduler_not_proven",
     "real_smtp_not_proven",
     "m4_watermark_not_proven",
@@ -698,6 +699,23 @@ S2PLT02_PARTIAL_REAL_DELIVERY_REFS = {
     "M3": "smtp://message/smtp-delivery:590b7230463ff9f7",
     "M4": "smtp://message/smtp-delivery:7f815186af789297",
 }
+S2PLT02_DELIVERY_EVIDENCE_LEDGER_MODEL_ID = "adp-s2plt02-delivery-evidence-ledger-v1"
+S2PLT02_DELIVERY_EVIDENCE_LEDGER_SCOPE = "delivery_manifest_ledger_no_s2plt02_acceptance"
+S2PLT02_DELIVERY_EVIDENCE_LEDGER_FORBIDDEN_SOURCE_FLAGS = (
+    "integrated_production_accepted",
+    "stage2_integrated_production_accepted",
+    "daily_operation_enabled",
+    "release_uploaded",
+    "production_restore_executed",
+    "production_queue_mutated",
+    "public_schema_changed",
+    "db_migration_executed",
+    "source_adapter_changed",
+    "ranking_algorithm_changed",
+    "current_pointer_changed",
+    "v7_1_baseline_changed",
+    "v7_2_contract_files_changed",
+)
 S2PLT03_RESILIENCE_PRECHECK_MODEL_ID = "adp-s2plt03-resilience-precheck-v1"
 S2PLT03_ACCEPTANCE_ID = "ACC-S2PLT03-RESILIENCE"
 S2PLT03_TASK_ID = "S2PLT03"
@@ -860,31 +878,264 @@ def build_s2plt02_dependency_state() -> dict[str, Any]:
     }
 
 
+def _default_s2plt02_delivery_manifest_records() -> list[dict[str, Any]]:
+    """Return committed real-delivery manifest facts used by the S2PLT02 ledger."""
+
+    return [
+        {
+            "manifest_ref": S2PLT02_PARTIAL_REAL_DELIVERY_EVIDENCE_REFS[0],
+            "schema_version": 1,
+            "project_id": "arxiv-daily-push",
+            "task_id": "LOCAL-DAILY-M1-M4-RESEND-EXECUTION",
+            "status": "pass",
+            "generated_at": S2PLT02_PARTIAL_REAL_DELIVERY_GENERATED_AT,
+            "service_date": S2PLT02_PARTIAL_REAL_DELIVERY_SERVICE_DATE,
+            "mail_delivery_summary": {
+                "planned_send_total": len(S2PLT02_REQUIRED_MAIL_PRODUCTS),
+                "sent_mail_count": len(S2PLT02_REQUIRED_MAIL_PRODUCTS),
+                "sent_mail_products": list(S2PLT02_REQUIRED_MAIL_PRODUCTS),
+                "historical_sent_mail_products": list(S2PLT02_PARTIAL_REAL_DELIVERY_HISTORICAL_PRODUCTS),
+                "newly_sent_mail_products": list(S2PLT02_PARTIAL_REAL_DELIVERY_NEWLY_SENT_PRODUCTS),
+                "delivery_ref_by_product": dict(S2PLT02_PARTIAL_REAL_DELIVERY_REFS),
+            },
+            "real_smtp_sent": True,
+            "real_smtp_send_enabled": True,
+            "stage2_integrated_production_accepted": False,
+            "integrated_production_accepted": False,
+            "daily_operation_enabled": False,
+            "scheduler_enabled": False,
+            "release_uploaded": False,
+            "production_restore_executed": False,
+            "production_queue_mutated": False,
+            "public_schema_changed": False,
+            "db_migration_executed": False,
+            "source_adapter_changed": False,
+            "ranking_algorithm_changed": False,
+            "current_pointer_changed": False,
+            "v7_1_baseline_changed": False,
+            "v7_2_contract_files_changed": False,
+            "evidence_refs": list(S2PLT02_PARTIAL_REAL_DELIVERY_EVIDENCE_REFS),
+        }
+    ]
+
+
+def build_s2plt02_delivery_evidence_ledger_state(
+    *, delivery_manifests: list[Mapping[str, Any]] | None = None
+) -> dict[str, Any]:
+    """Build the S2PLT02 real-delivery ledger without sending mail or accepting S2PLT02."""
+
+    source_manifests = [
+        json.loads(json.dumps(record, ensure_ascii=False))
+        for record in (delivery_manifests if delivery_manifests is not None else _default_s2plt02_delivery_manifest_records())
+    ]
+    validation_errors: list[str] = []
+    service_date_order: list[str] = []
+    products_by_service_date: dict[str, list[str]] = {}
+    delivery_ref_by_service_date: dict[str, dict[str, str]] = {}
+    evidence_refs: list[str] = []
+    seen_dates: set[str] = set()
+    duplicate_service_date_count = 0
+    seen_delivery_keys: set[tuple[str, str]] = set()
+    duplicate_email_count = 0
+    real_smtp_record_count = 0
+
+    for index, manifest in enumerate(source_manifests, start=1):
+        manifest_ref = str(manifest.get("manifest_ref") or f"inline_delivery_manifest_{index}")
+        if manifest_ref not in evidence_refs:
+            evidence_refs.append(manifest_ref)
+        for ref in manifest.get("evidence_refs", []):
+            if isinstance(ref, str) and ref not in evidence_refs:
+                evidence_refs.append(ref)
+
+        service_date = manifest.get("service_date")
+        if not isinstance(service_date, str) or not service_date:
+            validation_errors.append(f"manifest {manifest_ref} service_date is required")
+            continue
+        if service_date in seen_dates:
+            duplicate_service_date_count += 1
+            validation_errors.append(f"duplicate service date manifest: {service_date}")
+        else:
+            seen_dates.add(service_date)
+            service_date_order.append(service_date)
+
+        if manifest.get("status") != "pass":
+            validation_errors.append(f"manifest {manifest_ref} status must be pass")
+        if manifest.get("real_smtp_sent") is not True:
+            validation_errors.append(f"manifest {manifest_ref} real_smtp_sent must be true")
+        else:
+            real_smtp_record_count += 1
+        for flag in S2PLT02_DELIVERY_EVIDENCE_LEDGER_FORBIDDEN_SOURCE_FLAGS:
+            if manifest.get(flag) is not False:
+                validation_errors.append(f"manifest {manifest_ref} {flag} must be false")
+
+        mail_summary = _mapping(manifest.get("mail_delivery_summary"))
+        products = mail_summary.get("sent_mail_products", [])
+        if tuple(products) != S2PLT02_REQUIRED_MAIL_PRODUCTS:
+            validation_errors.append(f"manifest {manifest_ref} sent products must be M1-M4")
+        if mail_summary.get("planned_send_total") != len(S2PLT02_REQUIRED_MAIL_PRODUCTS):
+            validation_errors.append(f"manifest {manifest_ref} planned_send_total must be 4")
+        if mail_summary.get("sent_mail_count") != len(products):
+            validation_errors.append(f"manifest {manifest_ref} sent_mail_count must match sent products")
+
+        refs = _mapping(mail_summary.get("delivery_ref_by_product"))
+        product_refs: dict[str, str] = {}
+        for product in S2PLT02_REQUIRED_MAIL_PRODUCTS:
+            delivery_ref = refs.get(product)
+            if not isinstance(delivery_ref, str) or not delivery_ref.startswith("smtp://message/"):
+                validation_errors.append(f"manifest {manifest_ref} delivery ref missing for {service_date}/{product}")
+                continue
+            delivery_key = (service_date, product)
+            if delivery_key in seen_delivery_keys:
+                duplicate_email_count += 1
+                validation_errors.append(f"duplicate email evidence for {service_date}/{product}")
+                continue
+            seen_delivery_keys.add(delivery_key)
+            product_refs[product] = delivery_ref
+
+        if product_refs:
+            products_by_service_date[service_date] = [product for product in S2PLT02_REQUIRED_MAIL_PRODUCTS if product in product_refs]
+            delivery_ref_by_service_date[service_date] = product_refs
+
+    observed_email_count = sum(len(products) for products in products_by_service_date.values())
+    two_day_delivery_evidence_present = (
+        len(service_date_order) >= S2PLT02_REQUIRED_NATURAL_DAYS
+        and observed_email_count >= S2PLT02_REQUIRED_EMAIL_COUNT
+        and duplicate_email_count == 0
+        and duplicate_service_date_count == 0
+        and not validation_errors
+    )
+    state = {
+        "model_id": S2PLT02_DELIVERY_EVIDENCE_LEDGER_MODEL_ID,
+        "schema_version": S2PLT02_SCHEMA_VERSION,
+        "task_id": "S2PLT02-DELIVERY-EVIDENCE-LEDGER",
+        "acceptance_id": S2PLT02_ACCEPTANCE_ID,
+        "status": "ready" if two_day_delivery_evidence_present else ("partial" if observed_email_count else "blocked"),
+        "scope": S2PLT02_DELIVERY_EVIDENCE_LEDGER_SCOPE,
+        "source_manifest_count": len(source_manifests),
+        "source_manifests": source_manifests,
+        "required_natural_days": S2PLT02_REQUIRED_NATURAL_DAYS,
+        "observed_natural_days": len(service_date_order),
+        "required_email_count": S2PLT02_REQUIRED_EMAIL_COUNT,
+        "observed_email_count": observed_email_count,
+        "required_mail_products": list(S2PLT02_REQUIRED_MAIL_PRODUCTS),
+        "service_dates": service_date_order,
+        "products_by_service_date": products_by_service_date,
+        "delivery_ref_by_service_date": delivery_ref_by_service_date,
+        "duplicate_email_count": duplicate_email_count,
+        "duplicate_service_date_count": duplicate_service_date_count,
+        "real_smtp_evidence_present": real_smtp_record_count > 0 and observed_email_count > 0,
+        "two_day_delivery_evidence_present": two_day_delivery_evidence_present,
+        "validation_errors": validation_errors,
+        "s2plt02_accepted": False,
+        "production_acceptance_claimed": False,
+        "stage2_integrated_production_accepted": False,
+        "integrated_production_accepted": False,
+        "daily_operation_enabled": False,
+        "new_production_side_effects_from_ledger": False,
+        "evidence_refs": evidence_refs,
+        "ledger_hash": "",
+    }
+    state["ledger_hash"] = _stable_hash({key: value for key, value in state.items() if key != "ledger_hash"})
+    return state
+
+
+def validate_s2plt02_delivery_evidence_ledger_state(state: Mapping[str, Any]) -> list[str]:
+    """Validate the S2PLT02 real-delivery ledger state."""
+
+    errors: list[str] = []
+    if state.get("model_id") != S2PLT02_DELIVERY_EVIDENCE_LEDGER_MODEL_ID:
+        errors.append("S2PLT02 delivery ledger model_id is invalid")
+    if state.get("schema_version") != S2PLT02_SCHEMA_VERSION:
+        errors.append("S2PLT02 delivery ledger schema_version must be 1")
+    if state.get("task_id") != "S2PLT02-DELIVERY-EVIDENCE-LEDGER":
+        errors.append("S2PLT02 delivery ledger task_id is invalid")
+    if state.get("acceptance_id") != S2PLT02_ACCEPTANCE_ID:
+        errors.append("S2PLT02 delivery ledger acceptance_id is invalid")
+    if state.get("scope") != S2PLT02_DELIVERY_EVIDENCE_LEDGER_SCOPE:
+        errors.append("S2PLT02 delivery ledger scope is invalid")
+    if state.get("status") not in {"ready", "partial", "blocked"}:
+        errors.append("S2PLT02 delivery ledger status is invalid")
+    if state.get("required_natural_days") != S2PLT02_REQUIRED_NATURAL_DAYS:
+        errors.append("S2PLT02 delivery ledger required_natural_days must be 2")
+    if state.get("required_email_count") != S2PLT02_REQUIRED_EMAIL_COUNT:
+        errors.append("S2PLT02 delivery ledger required_email_count must be 8")
+    if tuple(state.get("required_mail_products", [])) != S2PLT02_REQUIRED_MAIL_PRODUCTS:
+        errors.append("S2PLT02 delivery ledger required_mail_products must be M1-M4")
+    if state.get("s2plt02_accepted") is not False:
+        errors.append("S2PLT02 delivery ledger must not accept S2PLT02")
+    for flag in (
+        "production_acceptance_claimed",
+        "stage2_integrated_production_accepted",
+        "integrated_production_accepted",
+        "daily_operation_enabled",
+        "new_production_side_effects_from_ledger",
+    ):
+        if state.get(flag) is not False:
+            errors.append(f"{flag} must be false")
+
+    service_dates = state.get("service_dates", [])
+    if state.get("observed_natural_days") != len(service_dates):
+        errors.append("S2PLT02 delivery ledger observed_natural_days must match service_dates")
+    products_by_service_date = _mapping(state.get("products_by_service_date"))
+    observed_email_count = sum(len(products) for products in products_by_service_date.values() if isinstance(products, list))
+    if state.get("observed_email_count") != observed_email_count:
+        errors.append("S2PLT02 delivery ledger observed_email_count must match products_by_service_date")
+    for service_date, products in products_by_service_date.items():
+        if tuple(products) != S2PLT02_REQUIRED_MAIL_PRODUCTS:
+            errors.append(f"S2PLT02 delivery ledger products for {service_date} must be M1-M4")
+    for error in state.get("validation_errors", []):
+        if isinstance(error, str):
+            errors.append(error)
+    if state.get("duplicate_email_count", 0) != 0:
+        errors.append("S2PLT02 delivery ledger duplicate_email_count must be 0")
+    if state.get("duplicate_service_date_count", 0) != 0:
+        errors.append("S2PLT02 delivery ledger duplicate_service_date_count must be 0")
+    if state.get("status") == "ready" and not state.get("two_day_delivery_evidence_present"):
+        errors.append("ready S2PLT02 delivery ledger requires two_day_delivery_evidence_present")
+    if state.get("two_day_delivery_evidence_present") and (
+        state.get("observed_natural_days", 0) < S2PLT02_REQUIRED_NATURAL_DAYS
+        or state.get("observed_email_count", 0) < S2PLT02_REQUIRED_EMAIL_COUNT
+    ):
+        errors.append("two_day_delivery_evidence_present requires 2 natural days and 8 emails")
+    expected_hash = _stable_hash({key: value for key, value in state.items() if key != "ledger_hash"})
+    if state.get("ledger_hash") != expected_hash:
+        errors.append("S2PLT02 delivery ledger_hash does not match ledger content")
+    return errors
+
+
 def build_s2plt02_partial_real_delivery_state() -> dict[str, Any]:
     """Build one-day real delivery evidence without treating it as S2PLT02 acceptance."""
 
+    ledger = build_s2plt02_delivery_evidence_ledger_state()
+    current_service_date = ledger["service_dates"][0] if ledger["service_dates"] else S2PLT02_PARTIAL_REAL_DELIVERY_SERVICE_DATE
+    current_products = ledger["products_by_service_date"].get(current_service_date, list(S2PLT02_PARTIAL_REAL_DELIVERY_PRODUCTS))
+    current_delivery_refs = ledger["delivery_ref_by_service_date"].get(
+        current_service_date,
+        dict(S2PLT02_PARTIAL_REAL_DELIVERY_REFS),
+    )
     state = {
         "status": "partial",
         "scope": S2PLT02_PARTIAL_REAL_DELIVERY_SCOPE,
-        "service_dates": [S2PLT02_PARTIAL_REAL_DELIVERY_SERVICE_DATE],
+        "service_dates": list(ledger["service_dates"]),
         "generated_at": S2PLT02_PARTIAL_REAL_DELIVERY_GENERATED_AT,
-        "planned_send_total": len(S2PLT02_PARTIAL_REAL_DELIVERY_PRODUCTS),
-        "observed_natural_days": 1,
-        "observed_email_count": len(S2PLT02_PARTIAL_REAL_DELIVERY_PRODUCTS),
-        "sent_mail_products": list(S2PLT02_PARTIAL_REAL_DELIVERY_PRODUCTS),
+        "planned_send_total": len(current_products),
+        "observed_natural_days": ledger["observed_natural_days"],
+        "observed_email_count": ledger["observed_email_count"],
+        "sent_mail_products": list(current_products),
         "historical_sent_mail_products": list(S2PLT02_PARTIAL_REAL_DELIVERY_HISTORICAL_PRODUCTS),
         "newly_sent_mail_products": list(S2PLT02_PARTIAL_REAL_DELIVERY_NEWLY_SENT_PRODUCTS),
-        "delivery_ref_by_product": dict(S2PLT02_PARTIAL_REAL_DELIVERY_REFS),
-        "duplicate_email_count": 0,
-        "real_smtp_evidence_present": True,
+        "delivery_ref_by_product": current_delivery_refs,
+        "duplicate_email_count": ledger["duplicate_email_count"],
+        "real_smtp_evidence_present": ledger["real_smtp_evidence_present"],
         "scheduler_evidence_present": False,
-        "m4_mail_product_present": True,
+        "m4_mail_product_present": "M4" in current_products,
         "m4_watermark_correct": False,
         "s2plt02_accepted": False,
         "production_acceptance_claimed": False,
         "stage2_integrated_production_accepted": False,
         "new_production_side_effects_from_precheck": False,
         "evidence_refs": list(S2PLT02_PARTIAL_REAL_DELIVERY_EVIDENCE_REFS),
+        "delivery_evidence_ledger_hash": ledger["ledger_hash"],
         "evidence_hash": "",
     }
     state["evidence_hash"] = _stable_hash({key: value for key, value in state.items() if key != "evidence_hash"})
@@ -894,16 +1145,18 @@ def build_s2plt02_partial_real_delivery_state() -> dict[str, Any]:
 def build_s2plt02_live_evidence_state() -> dict[str, Any]:
     """Build current S2PLT02 live-run evidence state without touching production."""
 
+    delivery_ledger = build_s2plt02_delivery_evidence_ledger_state()
     partial_delivery = build_s2plt02_partial_real_delivery_state()
     available = {
         "S2PLT01_ACCEPTED": False,
-        "TWO_CONSECUTIVE_REAL_NATURAL_DAYS": partial_delivery["observed_natural_days"]
-        >= S2PLT02_REQUIRED_NATURAL_DAYS,
-        "EIGHT_REAL_EMAILS_SENT": partial_delivery["observed_email_count"] >= S2PLT02_REQUIRED_EMAIL_COUNT,
-        "NO_DUPLICATE_EMAILS": partial_delivery["duplicate_email_count"] == 0,
+        "TWO_CONSECUTIVE_REAL_NATURAL_DAYS": delivery_ledger["two_day_delivery_evidence_present"],
+        "EIGHT_REAL_EMAILS_SENT": delivery_ledger["observed_email_count"] >= S2PLT02_REQUIRED_EMAIL_COUNT
+        and not delivery_ledger["validation_errors"],
+        "NO_DUPLICATE_EMAILS": delivery_ledger["duplicate_email_count"] == 0
+        and delivery_ledger["duplicate_service_date_count"] == 0,
         "M4_WATERMARK_CORRECT": partial_delivery["m4_watermark_correct"],
         "REAL_SCHEDULER_PROVEN": partial_delivery["scheduler_evidence_present"],
-        "REAL_SMTP_PROVEN": partial_delivery["real_smtp_evidence_present"],
+        "REAL_SMTP_PROVEN": delivery_ledger["real_smtp_evidence_present"],
     }
     return {
         "status": "blocked",
@@ -911,15 +1164,19 @@ def build_s2plt02_live_evidence_state() -> dict[str, Any]:
         "available_evidence": available,
         "missing_evidence": [item for item, present in available.items() if not present],
         "required_natural_days": S2PLT02_REQUIRED_NATURAL_DAYS,
-        "observed_natural_days": partial_delivery["observed_natural_days"],
+        "observed_natural_days": delivery_ledger["observed_natural_days"],
         "required_email_count": S2PLT02_REQUIRED_EMAIL_COUNT,
-        "observed_email_count": partial_delivery["observed_email_count"],
+        "observed_email_count": delivery_ledger["observed_email_count"],
         "required_mail_products": list(S2PLT02_REQUIRED_MAIL_PRODUCTS),
-        "observed_mail_products": list(partial_delivery["sent_mail_products"]),
-        "duplicate_email_count": partial_delivery["duplicate_email_count"],
+        "observed_mail_products": sorted(
+            {product for products in delivery_ledger["products_by_service_date"].values() for product in products}
+        ),
+        "duplicate_email_count": delivery_ledger["duplicate_email_count"],
+        "duplicate_service_date_count": delivery_ledger["duplicate_service_date_count"],
         "m4_watermark_correct": partial_delivery["m4_watermark_correct"],
         "real_scheduler_proven": partial_delivery["scheduler_evidence_present"],
-        "real_smtp_proven": partial_delivery["real_smtp_evidence_present"],
+        "real_smtp_proven": delivery_ledger["real_smtp_evidence_present"],
+        "delivery_evidence_ledger": delivery_ledger,
         "partial_real_delivery_evidence": partial_delivery,
     }
 
@@ -949,6 +1206,8 @@ def build_s2plt02_live_2d_precheck_report(*, generated_at: str) -> dict[str, Any
         blocking_reasons.append("two_consecutive_real_days_not_proven")
     if not gates["eight_real_emails_sent"]:
         blocking_reasons.append("eight_real_emails_not_proven")
+    if not gates["no_duplicate_emails"]:
+        blocking_reasons.append("duplicate_emails_found")
     if not gates["real_scheduler_proven"]:
         blocking_reasons.append("real_scheduler_not_proven")
     if not gates["real_smtp_proven"]:
@@ -1017,6 +1276,17 @@ def validate_s2plt02_live_2d_precheck_report(report: Mapping[str, Any]) -> list[
         errors.append("evidence.required_email_count must be 8")
     if tuple(evidence.get("required_mail_products", [])) != S2PLT02_REQUIRED_MAIL_PRODUCTS:
         errors.append("evidence.required_mail_products must be M1-M4")
+    delivery_ledger = _mapping(evidence.get("delivery_evidence_ledger"))
+    ledger_errors = validate_s2plt02_delivery_evidence_ledger_state(delivery_ledger)
+    if ledger_errors:
+        errors.append("S2PLT02 delivery evidence ledger is invalid")
+        errors.extend(ledger_errors)
+    if evidence.get("observed_natural_days") != delivery_ledger.get("observed_natural_days"):
+        errors.append("evidence.observed_natural_days must match delivery evidence ledger")
+    if evidence.get("observed_email_count") != delivery_ledger.get("observed_email_count"):
+        errors.append("evidence.observed_email_count must match delivery evidence ledger")
+    if evidence.get("duplicate_email_count") != delivery_ledger.get("duplicate_email_count"):
+        errors.append("evidence.duplicate_email_count must match delivery evidence ledger")
     partial_delivery = _mapping(evidence.get("partial_real_delivery_evidence"))
     if not partial_delivery:
         errors.append("evidence.partial_real_delivery_evidence is required")
@@ -1057,6 +1327,8 @@ def validate_s2plt02_live_2d_precheck_report(report: Mapping[str, Any]) -> list[
             expected_reasons.append("two_consecutive_real_days_not_proven")
         if not gates.get("eight_real_emails_sent"):
             expected_reasons.append("eight_real_emails_not_proven")
+        if not gates.get("no_duplicate_emails"):
+            expected_reasons.append("duplicate_emails_found")
         if not gates.get("real_scheduler_proven"):
             expected_reasons.append("real_scheduler_not_proven")
         if not gates.get("real_smtp_proven"):
