@@ -24,7 +24,7 @@ Roadmap 形态：`Stage -> Phase -> Task`
 | Stage 5 | 统一账本事件、消费双口径与分类体系 | 本轮完成 | event type、双消费口径、12 大类 / 50 中类。 |
 | Stage 6 | 标签系统与自定义视图 | 本轮完成 | 标签注册、赋值、规则、默认/自定义标签、变更历史、标签报告和自定义视图。 |
 | Stage 7 | 模型公式、阈值与评分标准 | 本轮完成 | 置信度评分、消费、投资、现金流公式和现金流压力分。 |
-| Stage 8 | 本地运行 Diff 与 Impacted Metrics | 待 owner 开启 | dependency hash、diff 收紧、LLM 触发规则。 |
+| Stage 8 | 本地运行 Diff 与 Impacted Metrics | 本轮完成 | dependency hash、diff 收紧、LLM 触发规则、中文 Codex Review Ticket 模板。 |
 | Stage 9 | 可视化与 UI/UX | 待 owner 开启 | 参数中心、Interconnection 可视化、现金流和 drilldown。 |
 | Stage 10 | 报告、建议与复盘 | 待 owner 开启 | 双消费口径报告、投资成本行为、建议评分生命周期。 |
 | Stage 11 | 测试与验证 | 待 owner 开启 | 金融逻辑、跨板块一致性、可视化一致性测试。 |
@@ -68,6 +68,60 @@ Roadmap 形态：`Stage -> Phase -> Task`
 ```bash
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m unittest PFI.tests.test_v022_stage0_database_governance -q
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src python3 -B -m unittest discover -s PFI/tests -q
+node --check PFI/web/app/shell.js
+python3 scripts/validate_project_governance.py --project PFI
+git diff --check -- PFI
+```
+
+当前本地 closeout 结果：Stage 8 目标测试 `8 passed`；Stage 0-8 v0.2.2 回归 `66 passed`；完整 PFI pytest `224 passed`；治理 `errors 0 / warnings 0`；Web shell 语法和 `git diff --check -- PFI` 通过；App 入口验收 `29 pass / 0 fail / 2 info`；8501 health `ok`；真实浏览器点击 `数据源与上传` 成功，`PFI`、`首页总览`、`数据源与上传`、`AUD/CNY` 可见，正式 UI 禁用词扫描 0 命中，console errors `0`，截图 `/tmp/pfi-v022-stage8-app-verified.png`。
+
+当前本地 closeout 结果：Stage 7 目标测试 `7 passed`；Stage 0-7 v0.2.2 回归 `58 passed`；完整 PFI pytest `216 passed`；治理 `errors 0 / warnings 0`；Web shell 语法和 `git diff --check -- PFI` 通过；App 入口验收 `29 pass / 0 fail / 2 info`；8501 health `ok`；真实浏览器点击 `数据源与上传` 后关键入口、上传中心、导入中心和 `AUD/CNY` 均可见，正式 UI 禁用词扫描 0 命中，console errors `0`。
+
+## Stage 8 - 本地运行 Diff 与 Impacted Metrics Task Lock
+
+| Task ID | Phase | 交付物 | 状态 |
+| --- | --- | --- | --- |
+| `S8-P1-T1` | Phase 8.1 | run snapshot，包含原始数据、标准化交易、账本事件、interconnection、参数、分类、标签、汇率快照 hash | 本轮完成 |
+| `S8-P1-T2` | Phase 8.1 | 运行策略：无 diff 不联网、不生成 Codex ticket、不触发 LLM | 本轮完成 |
+| `S8-P1-T3` | Phase 8.1 | 依赖图：有 diff 时只重算受影响指标 | 本轮完成 |
+| `S8-P2-T1` | Phase 8.2 | P0 核心指标影响范围 | 本轮完成 |
+| `S8-P2-T2` | Phase 8.2 | P1 分析指标影响范围 | 本轮完成 |
+| `S8-P2-T3` | Phase 8.2 | P2 展示指标影响范围 | 本轮完成 |
+| `S8-P2-T4` | Phase 8.2 | diff report 标记不应受影响指标 | 本轮完成 |
+| `S8-P3-T1` | Phase 8.3 | LLM 分析触发规则 | 本轮完成 |
+| `S8-P3-T2` | Phase 8.3 | `PFI/review_queue/CODEX_REVIEW_TICKET_TEMPLATE.md` | 本轮完成 |
+| `S8-P3-T3` | Phase 8.3 | 无需 LLM 场景清单 | 本轮完成 |
+
+## Stage 8 Acceptance Criteria
+
+- 每次运行计算依赖 hash，至少覆盖原始数据、标准化交易、账本事件、interconnection、参数、分类、标签、汇率快照。
+- 无 diff 不联网、不生成 Codex ticket、不触发 LLM。
+- 有 diff 时只重算受影响指标，不全量重算所有板块。
+- P0 核心指标仅包括净资产、生活现金、投资资产、消费总流出、生活消费、投资收益、现金流窗口、待复核数量、Interconnection 异常数量。
+- P1 分析指标包括分类占比、标签视图、订阅、夜间、大额、商户集中度、投资风格、交易频率、费用拖累、现金拖累。
+- P2 展示指标包括图表排序、趋势图、辅助说明、tooltip、参数中心展示。
+- 每个 diff report 标记“不应受影响指标”；仅标签显示名变化不应改变净资产、投资收益、现金流窗口。
+- 只有业务语义变化、公式逻辑变化、分类冲突、标签冲突、跨板块不一致、测试无法解释时生成本地中文 Codex Review Ticket。
+
+## Stage 8 Stop Condition
+
+- 无法判断数据是否变化。
+- 无 diff 仍触发联网、agent、Codex ticket 或 LLM。
+- 小 diff 导致全局重算。
+- Impacted metrics 过宽导致误报。
+- 分析指标与核心指标混在一起。
+- 展示变化被误判为财务核心变化。
+- 标签改名导致金额变化。
+- Ticket 只有技术日志，没有中文业务解释。
+
+当前检查结论：Stage 8 实现均为本地纯函数和本地模板，不联网、不调用外部 LLM，不提前实现 Stage 9 可视化与 UI/UX。
+
+## Stage 8 Validation
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests/test_v022_stage8_runtime_diff.py -q -p no:cacheprovider
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests/test_v022_stage0_database_governance.py PFI/tests/test_pfi_parameters_consistency.py PFI/tests/test_v022_fx_effective_date.py PFI/tests/test_v022_stage3_source_account_profiles.py PFI/tests/test_v022_interconnection_no_double_count.py PFI/tests/test_v022_consumption_investment_outflow.py PFI/tests/test_v022_stage5_ledger_taxonomy.py PFI/tests/test_v022_stage6_tags_views.py PFI/tests/test_v022_stage7_formula_scoring.py PFI/tests/test_v022_stage8_runtime_diff.py -q -p no:cacheprovider
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests -q -p no:cacheprovider
 node --check PFI/web/app/shell.js
 python3 scripts/validate_project_governance.py --project PFI
 git diff --check -- PFI

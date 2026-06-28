@@ -70,6 +70,12 @@
 | 2026-06-28 | `S7-P4-T1` | `cashflow.windows_days` | `30/90/180 或分散草案` | `7/21/30/60/90/180/360` | 现金流预测需要短中长期窗口统一口径。 | 现金流、首页、报告、测试。 |
 | 2026-06-28 | `S7-P4-T2` | `cashflow.reserve_floor_formula` | `无正式公式` | `max(user_min_reserve_cny, average_fixed_monthly_expense_cny * reserve_months)` | 储备金安全线要同时支持用户底线和固定支出倍数。 | 现金流、安全带、建议、报告。 |
 | 2026-06-28 | `S7-P4-T3` | `cashflow.investment_squeeze_formula` | `无正式模型` | `investment_squeeze_cny = max(0, reserve_floor_cny - future_cash_balance_after_investment)` | 需要解释投资入金是否挤压生活现金，避免把投资计划误判为普通生活消费。 | 现金流、投资管理、报告、复盘。 |
+| 2026-06-28 | `S8-P1-T1` | `runtime_refresh_policy.dependency_hash_keys` | `无正式 Stage 8 hash 清单` | `raw_data_hash, normalized_transactions_hash, ledger_events_hash, interconnection_hash, parameter_hash, category_hash, tag_hash, fx_snapshot_hash` | 每次运行必须能判断依赖是否变化。 | Runtime Diff、缓存刷新、报告生成。 |
+| 2026-06-28 | `S8-P1-T2` | `runtime_refresh_policy.no_diff_behavior` | `无正式 no-diff 行为` | `不联网、不生成 Codex ticket、不触发 LLM` | 防止无变化运行浪费 token、联网或制造复审任务。 | 运行刷新、复核队列、测试。 |
+| 2026-06-28 | `S8-P1-T3` | `runtime_refresh_policy.ordinary_diff_behavior` | `diff 影响范围未收紧` | `只生成本地 diff report，只重算受影响指标` | 防止小 diff 导致全局重算。 | 指标计算、报告、缓存。 |
+| 2026-06-28 | `S8-P2-T1..S8-P2-T3` | `impacted_metrics_policy` | `未区分 P0/P1/P2` | `P0 核心指标、P1 分析指标、P2 展示指标分离` | 防止展示变化或标签变化误报为财务核心变化。 | 首页、消费、投资、现金流、报告、参数中心。 |
+| 2026-06-28 | `S8-P2-T4` | `impacted_metrics_policy.tag_display_name_not_impacted` | `无` | `净资产、投资收益、现金流窗口` | 仅标签显示名变化不应改变核心金额或现金流口径。 | 标签系统、Runtime Diff、测试。 |
+| 2026-06-28 | `S8-P3-T1..S8-P3-T3` | `llm_agent_review_triggers` | `无正式触发规则` | `业务语义变化、公式逻辑变化、分类冲突、标签冲突、跨板块不一致、测试无法解释才生成本地票据` | 普通本地重算不得触发 LLM；重要冲突需要可执行中文复核票据。 | `PFI/review_queue/`、开发记录、测试复核。 |
 
 ## 记录规则
 

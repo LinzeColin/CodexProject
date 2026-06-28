@@ -272,3 +272,14 @@ PYTHONPATH=src python3 -B -m unittest tests.test_stage2_data_source_registry tes
 node --check web/app/shell.js
 (cd ../QBVS && PYTHONPATH=. python3 -B -m unittest tests.test_s3pct02_lifecycle -q)
 ```
+
+## v0.2.2 Stage 8
+
+Stage 8 - 本地运行 Diff 与 Impacted Metrics 已加入 PFI 的数据库治理路线。
+
+- 新增 `src/pfi_v02/stage_v022_runtime_diff.py`：生成依赖 hash snapshot、比较 diff、输出 impacted metrics report、判断 LLM 触发条件、生成本地 Codex Review Ticket 数据。
+- 新增 `tests/test_v022_stage8_runtime_diff.py`：验证 `S8-P1-T1..S8-P3-T3`，包括无 diff 不联网、不生成 Codex ticket、不触发 LLM，标签显示名变化不污染净资产、投资收益、现金流窗口。
+- 新增 `docs/pfi_v022/STAGE8_RUNTIME_DIFF_IMPACTED_METRICS.md`：中文验收报告。
+- 新增 `review_queue/CODEX_REVIEW_TICKET_TEMPLATE.md`：本地中文复审票据模板，包含触发原因、影响指标、涉及文件、期望检查、禁止事项、中文业务解释。
+- `config/pfi_parameters.yaml` 升级为 `PFIParametersV022Stage8`，记录 runtime refresh、P0/P1/P2 impacted metrics 和 LLM trigger policy。
+- 本轮不实现 Stage 9 可视化与 UI/UX，不修改 v0.2.1 HTML Web Shell UIUX 基线，不联网、不调用外部 LLM、不生成真实 agent 任务。

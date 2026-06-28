@@ -122,5 +122,18 @@
 | `STAGE5_LEDGER_TAXONOMY.md` | Stage 5 统一账本事件、消费双口径和消费分类 taxonomy 验收报告。 |
 | `STAGE6_TAGS_CUSTOM_VIEWS.md` | Stage 6 标签系统、标签持久化、标签规则、历史和自定义视图验收报告。 |
 | `STAGE7_FORMULA_SCORING.md` | Stage 7 模型公式、阈值与评分标准验收报告。 |
+| `STAGE8_RUNTIME_DIFF_IMPACTED_METRICS.md` | Stage 8 本地运行 Diff、Impacted Metrics 和 LLM trigger policy 验收报告。 |
+| `../../review_queue/CODEX_REVIEW_TICKET_TEMPLATE.md` | Stage 8 本地 Codex Review Ticket 中文模板。 |
 | `SOURCE_TASK_PACK_MANIFEST.md` | Downloads 来源文件、SHA-256 和使用边界。 |
 | `ROADMAP_LOCK.md` | v0.2.2 Stage / Phase / Task / Acceptance / Stop / Validation 锁定摘要。 |
+
+## Stage 8 范围
+
+Stage 8 - 本地运行 Diff 与 Impacted Metrics 已完成 `S8-P1-T1..S8-P3-T3`：
+
+- 每次运行计算原始数据、标准化交易、账本事件、interconnection、参数、分类、标签、汇率快照 hash。
+- 无 diff 不联网、不生成 Codex ticket、不触发 LLM。
+- 有 diff 时只重算受影响指标，不全量重算所有板块。
+- P0 核心指标、P1 分析指标、P2 展示指标分离，展示变化不得误判为财务核心变化。
+- Codex Review Ticket 只在业务语义变化、公式逻辑变化、分类冲突、标签冲突、跨板块不一致、测试无法解释时生成本地中文票据。
+- Stage 9 可视化与 UI/UX 不在本轮实现。
