@@ -3877,3 +3877,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "LOCAL-DAILY-RESEND-REUSE-INPUT"
+    phase: "S1P5"
+    objective: "Allow manual M1-M4 resend/catch-up to reuse an existing same-day adp-daily-input-report.json without live arXiv fetch, while blocking date mismatch before SMTP."
+    scope: "local_runner daily input resolution, CLI --daily-input-report argument, focused regression tests, phase record, run manifest, traceability row, event record, and governance status files."
+    non_scope: "No email template body change, no public schema change, no ranking/source-adapter change, no scheduler install or enablement, no Release upload, no CURRENT/V7 contract change, no production acceptance, and no claim that real resend already completed."
+    status: "completed"
+    dependencies: ["LOCAL-DAILY-M1-M4-SEND-ORCHESTRATION", "EMAIL_LEARNING_V1", "ADP-S1P5T05"]
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/docs/phase_records/PHASE_LOCAL_DAILY_RESEND_REUSE_INPUT_20260628.md", "governance/run_manifests/ADP-LOCAL-DAILY-RESEND-REUSE-INPUT-20260628.json", "arxiv-daily-push/src/arxiv_daily_push/local_runner.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_local_runner.py"]
+    acceptance_ids: ["ADP-ACC-S1P5T05-LOCAL-PRODUCTION-MIGRATION-PREP"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_resend_reuse_tests PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_local_runner.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_resend_reuse_full PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest discover -s arxiv-daily-push/tests -q", "git diff --check", "python3 arxiv-daily-push/scripts/update_user_center_timestamps.py --check"]
+    test_results: ["focused local runner tests: 12 OK", "full arxiv-daily-push unittest: 644 OK", "git diff --check: PASS", "user-center timestamp check: 18 pages valid"]
+    evidence_refs: ["governance/run_manifests/ADP-LOCAL-DAILY-RESEND-REUSE-INPUT-20260628.json", "arxiv-daily-push/docs/phase_records/PHASE_LOCAL_DAILY_RESEND_REUSE_INPUT_20260628.md", "arxiv-daily-push/src/arxiv_daily_push/local_runner.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_local_runner.py"]
+    result: "Manual resend can now reuse same-day daily input evidence and records the input source/path; mismatched dates block before SMTP."
+    risk: "A reused input file can be mistaken for a fresh live fetch or a completed real send; reports explicitly identify existing_report and this task records no real delivery claim."
+    rollback: "Revert local_runner.py, cli.py, test_local_runner.py, and LOCAL-DAILY-RESEND-REUSE-INPUT governance records; no runtime production state migration is required."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

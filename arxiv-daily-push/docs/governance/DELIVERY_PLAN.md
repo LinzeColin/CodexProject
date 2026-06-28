@@ -21,7 +21,7 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 218
+- task_count: 219
 - acceptance_count: 126
 
 ## Delivery Tasks
@@ -407,3 +407,9 @@ The machine-readable task source is `delivery_tasks.yaml`.
 - Added manifest `governance/run_manifests/ADP-S2PLT04-STATE-CONTENT-EVIDENCE-BUNDLE-SYNC-20260628.json`.
 - Added phase record `arxiv-daily-push/docs/phase_records/PHASE_S2PLT04_STATE_CONTENT_EVIDENCE_BUNDLE_SYNC.md`.
 - S2PLT04 can now see state/content evidence as deterministic no-production bundles; S2PLT04 completion, final bundle, S2PMT07, inherited P0/P1 zero state, SMTP, scheduler, Release, restore, schema, DB, queue, source, ranking, CURRENT, V7 contract, daily operation, and production acceptance remain blocked.
+
+## 2026-06-28 11:12:24 Australia/Sydney - local daily resend reuse input
+
+- Added manifest `governance/run_manifests/ADP-LOCAL-DAILY-RESEND-REUSE-INPUT-20260628.json`.
+- Added phase record `arxiv-daily-push/docs/phase_records/PHASE_LOCAL_DAILY_RESEND_REUSE_INPUT_20260628.md`.
+- Local runner manual resend can now reuse a same-day `adp-daily-input-report.json` with `--daily-input-report`, records the input source/path, and blocks mismatched dates before SMTP. This is recovery capability evidence only; no real SMTP delivery, scheduler, Release, schema, source, ranking, CURRENT, V7 contract, daily operation, or integrated production acceptance is claimed by this record.

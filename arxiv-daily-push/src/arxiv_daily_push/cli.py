@@ -401,6 +401,10 @@ def build_parser() -> argparse.ArgumentParser:
     local_daily.add_argument("--generated-at", required=True, help="Evidence timestamp.")
     local_daily.add_argument("--max-results-per-category", type=int, default=ALL_ARXIV_MAX_RESULTS_PER_CATEGORY)
     local_daily.add_argument("--polite-delay-seconds", type=float, default=0.0)
+    local_daily.add_argument(
+        "--daily-input-report",
+        help="Reuse an existing adp-daily-input-report.json for resend/catch-up instead of fetching live arXiv input.",
+    )
     local_daily.add_argument("--allow-smtp-send", action="store_true", help="Attempt real SMTP only when env keys are present.")
     local_daily.add_argument("--no-write", action="store_true", help="Run without writing local state/artifacts.")
     local_daily.add_argument("--json", action="store_true", help="Print JSON local runner report.")
@@ -1834,6 +1838,7 @@ def main(argv: list[str] | None = None) -> int:
                 date=args.date,
                 generated_at=args.generated_at,
                 max_results_per_category=args.max_results_per_category,
+                daily_input_report_path=args.daily_input_report,
                 polite_delay_seconds=args.polite_delay_seconds,
                 allow_smtp_send=args.allow_smtp_send,
                 write=not args.no_write,

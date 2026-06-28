@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "project_id": "arxiv-daily-push",
+  "task_id": "LOCAL-DAILY-RESEND-REUSE-INPUT",
+  "task_ids": [
+    "LOCAL-DAILY-RESEND-REUSE-INPUT",
+    "ADP-S1P5T05",
+    "EMAIL_LEARNING_V1"
+  ],
+  "generated_at": "2026-06-28T11:12:24+10:00",
+  "summary": "本地 daily runner 支持通过 --daily-input-report 复用当天已生成输入进行 M1-M4 补发恢复，并阻断日期不一致的误发。",
+  "status": "pass",
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_LOCAL_DAILY_RESEND_REUSE_INPUT_20260628.md",
+    "arxiv-daily-push/src/arxiv_daily_push/local_runner.py",
+    "arxiv-daily-push/src/arxiv_daily_push/cli.py",
+    "arxiv-daily-push/tests/test_local_runner.py"
+  ],
+  "test_results": [
+    "local runner focused tests: 12 OK",
+    "full arxiv-daily-push unittest: 644 OK",
+    "git diff --check: PASS",
+    "user-center timestamp check: 18 pages valid"
+  ],
+  "real_smtp_sent": false,
+  "real_smtp_send_claimed": false,
+  "scheduler_enabled": false,
+  "release_uploaded": false,
+  "public_schema_changed": false,
+  "ranking_algorithm_changed": false,
+  "source_adapter_changed": false,
+  "current_pointer_changed": false,
+  "integrated_production_accepted": false,
+  "rollback": "Revert local_runner.py, cli.py, test_local_runner.py, and LOCAL-DAILY-RESEND-REUSE-INPUT governance records."
+}
