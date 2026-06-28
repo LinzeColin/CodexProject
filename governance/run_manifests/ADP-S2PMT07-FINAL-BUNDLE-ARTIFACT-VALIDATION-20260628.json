@@ -1,0 +1,337 @@
+{
+  "artifact_validation_state": {
+    "all_artifact_validations_passed": false,
+    "all_required_items_present": false,
+    "artifact_validations": {
+      "FINAL_ACCEPTANCE_BUNDLE_MANIFEST": {
+        "all_artifact_validations_passed": false,
+        "bundle_items_complete": false,
+        "daily_operation_enabled": false,
+        "integrated_production_accepted": false,
+        "manifest_path": "FINAL_ACCEPTANCE_BUNDLE/manifest.json",
+        "manifest_present": false,
+        "p0_zero_proven_by_manifest": false,
+        "p1_zero_proven_by_manifest": false,
+        "production_acceptance_claimed": false,
+        "production_restore_enabled": false,
+        "real_smtp_send_enabled": false,
+        "release_packaging_enabled": false,
+        "s2plt04_completed_by_manifest": false,
+        "scheduler_install_enabled": false,
+        "scope": "final_acceptance_bundle_manifest_validation_only_no_production_acceptance",
+        "state_hash": "3b3ecc8417d458a56e2a5dce5764f04eabfa44e7df3113fbbb88808d1115907b",
+        "status": "blocked",
+        "validation_errors": [
+          "final_acceptance_bundle_manifest_missing"
+        ]
+      },
+      "FINAL_COMMAND_EXECUTION": {
+        "all_required_commands_passed": false,
+        "artifact_path": "FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json",
+        "command_execution_present": false,
+        "daily_operation_enabled": false,
+        "final_commands_executed_by_payload": false,
+        "integrated_production_accepted": false,
+        "production_acceptance_claimed": false,
+        "production_restore_enabled": false,
+        "real_smtp_send_enabled": false,
+        "release_packaging_enabled": false,
+        "required_commands": [
+          "python tools/validate_task_pack.py --root .",
+          "python -m pytest -q",
+          "python tools/verify_acceptance_bundle.py --require-zero P0 P1"
+        ],
+        "scheduler_install_enabled": false,
+        "scope": "final_command_execution_validation_only_no_production_acceptance",
+        "state_hash": "a516f2d33fcd1e8de56d85ebf4bca6587757bf1f415502b97edbe5bed6298fbb",
+        "status": "blocked",
+        "validation_errors": [
+          "final_command_execution_missing"
+        ]
+      },
+      "INDEPENDENT_REVIEW_SIGNOFF": {
+        "all_required_artifact_validations_passed": false,
+        "artifact_path": "FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml",
+        "daily_operation_enabled": false,
+        "independent_review_signed_off_by_payload": false,
+        "integrated_production_accepted": false,
+        "production_acceptance_claimed": false,
+        "production_restore_enabled": false,
+        "real_smtp_send_enabled": false,
+        "release_packaging_enabled": false,
+        "required_artifact_validations": [
+          "P0_P1_ZERO_PROOF_ARTIFACT",
+          "S2PLT04_COMPLETION_REPORT",
+          "FINAL_COMMAND_EXECUTION",
+          "NO_PRODUCTION_SIDE_EFFECT_ATTESTATION",
+          "NEXT_AGENT_HANDOFF"
+        ],
+        "scheduler_install_enabled": false,
+        "scope": "independent_review_signoff_validation_only_no_production_acceptance",
+        "signoff_present": false,
+        "state_hash": "36709f2b703f3a1b1ed5155e98f2556a000705894f0b1676588793266c646896",
+        "status": "blocked",
+        "validation_errors": [
+          "independent_review_signoff_missing"
+        ]
+      },
+      "NEXT_AGENT_HANDOFF": {
+        "all_required_artifact_validations_passed": false,
+        "all_required_reader_files_declared": false,
+        "artifact_path": "HANDOFF/00_下一Agent先读.md",
+        "daily_operation_enabled": false,
+        "handoff_present": false,
+        "integrated_production_accepted": false,
+        "next_agent_handoff_ready_by_payload": false,
+        "production_acceptance_claimed": false,
+        "production_restore_enabled": false,
+        "real_smtp_send_enabled": false,
+        "release_packaging_enabled": false,
+        "required_artifact_validations": [
+          "P0_P1_ZERO_PROOF_ARTIFACT",
+          "S2PLT04_COMPLETION_REPORT",
+          "FINAL_COMMAND_EXECUTION",
+          "NO_PRODUCTION_SIDE_EFFECT_ATTESTATION"
+        ],
+        "required_reader_files": [
+          "docs/pursuing_goal/CURRENT.yaml",
+          "docs/pursuing_goal/v7_2/V7_2_ROOT_LOCK.yaml",
+          "docs/pursuing_goal/v7_2/HANDOFF/00_下一Agent先读.md",
+          "docs/pursuing_goal/v7_2/machine_readable/product_contract_v7_2.yaml",
+          "docs/pursuing_goal/v7_2/machine_readable/migration_matrix_v7_1_to_v7_2.yaml",
+          "docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml"
+        ],
+        "scheduler_install_enabled": false,
+        "scope": "next_agent_handoff_validation_only_no_production_acceptance",
+        "state_hash": "7619e3d7b921fe6cabcf1a77ff7ff66c519c2da57bb9cd97daa9533c43b18ac9",
+        "status": "blocked",
+        "validation_errors": [
+          "next_agent_handoff_missing"
+        ]
+      },
+      "NO_PRODUCTION_SIDE_EFFECT_ATTESTATION": {
+        "all_required_evidence_refs_passed": false,
+        "artifact_path": "FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json",
+        "attestation_present": false,
+        "daily_operation_enabled": false,
+        "integrated_production_accepted": false,
+        "no_production_side_effects_proven_by_payload": false,
+        "production_acceptance_claimed": false,
+        "production_restore_enabled": false,
+        "real_smtp_send_enabled": false,
+        "release_packaging_enabled": false,
+        "required_evidence_refs": [
+          "V7_2_VALIDATOR",
+          "PROJECT_GOVERNANCE",
+          "CHANGED_ONLY_SEMANTIC_GOVERNANCE",
+          "LEAN_RENDER",
+          "FULL_ADP_UNITTEST",
+          "OPEN_PR_COUNT_ZERO",
+          "REMOTE_ADP_BRANCH_SCAN",
+          "PRODUCTION_TRUE_FLAG_DIFF_SCAN"
+        ],
+        "scheduler_install_enabled": false,
+        "scope": "no_production_side_effect_attestation_validation_only_no_production_acceptance",
+        "state_hash": "084795b94b3e681d6dfa36938b0cc58c1170cddfc6e2c54fe30e5535818b23f2",
+        "status": "blocked",
+        "validation_errors": [
+          "no_production_side_effect_attestation_missing"
+        ]
+      },
+      "P0_P1_ZERO_PROOF_ARTIFACT": {
+        "artifact_path": "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
+        "artifact_present": false,
+        "daily_operation_enabled": false,
+        "integrated_production_accepted": false,
+        "p0_zero_proven_by_payload": false,
+        "p1_zero_proven_by_payload": false,
+        "production_acceptance_claimed": false,
+        "production_restore_enabled": false,
+        "real_smtp_send_enabled": false,
+        "release_packaging_enabled": false,
+        "scheduler_install_enabled": false,
+        "scope": "p0_p1_zero_proof_artifact_validation_only_no_production_acceptance",
+        "state_hash": "d50b2a0e3449204f62ed3103ad3c6aff283d2dac1a0a606ddefa78c142d96e4d",
+        "status": "blocked",
+        "validation_errors": [
+          "p0_p1_zero_proof_artifact_missing"
+        ]
+      },
+      "S2PLT04_COMPLETION_REPORT": {
+        "daily_operation_enabled": false,
+        "integrated_production_accepted": false,
+        "production_acceptance_claimed": false,
+        "production_restore_enabled": false,
+        "real_smtp_send_enabled": false,
+        "release_packaging_enabled": false,
+        "report_path": "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json",
+        "report_present": false,
+        "required_source_evidence_refs": [
+          "S2PLT01_REPLAY_REVIEW",
+          "S2PLT02_LIVE_2D_PROOF",
+          "S2PLT03_RESILIENCE_PROOF",
+          "P0_P1_ZERO_PROOF",
+          "FINAL_BUNDLE_MANIFEST"
+        ],
+        "required_terminal_dependencies": [
+          "S2PLT01_ACCEPTED",
+          "S2PLT02_ACCEPTED",
+          "S2PLT03_ACCEPTED",
+          "P0_ZERO_PROVEN",
+          "P1_ZERO_PROVEN",
+          "FINAL_ACCEPTANCE_BUNDLE_PRESENT"
+        ],
+        "s2plt04_completed_by_report": false,
+        "scheduler_install_enabled": false,
+        "scope": "s2plt04_completion_report_validation_only_no_production_acceptance",
+        "state_hash": "0a672c066cc354d3c78b11b20caffffc75fa6eebb2732a6600b85996fff2fcc6",
+        "status": "blocked",
+        "terminal_dependencies_passed": false,
+        "validation_errors": [
+          "s2plt04_completion_report_missing"
+        ]
+      }
+    },
+    "available_items": {
+      "FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json": false,
+      "FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml": false,
+      "FINAL_ACCEPTANCE_BUNDLE/manifest.json": false,
+      "FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json": false,
+      "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json": false,
+      "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json": false,
+      "HANDOFF/00_下一Agent先读.md": false
+    },
+    "blocking_reasons": [
+      "final_acceptance_bundle_directory_missing",
+      "final_acceptance_bundle_manifest_missing",
+      "p0_p1_zero_proof_missing",
+      "s2plt04_completion_evidence_missing",
+      "independent_review_signoff_missing",
+      "independent_final_command_execution_missing",
+      "no_production_side_effect_attestation_missing",
+      "next_agent_handoff_missing",
+      "final_acceptance_bundle_manifest_validation_blocked",
+      "p0_p1_zero_proof_artifact_validation_blocked",
+      "s2plt04_completion_report_validation_blocked",
+      "independent_review_signoff_validation_blocked",
+      "final_command_execution_validation_blocked",
+      "no_production_side_effect_attestation_validation_blocked",
+      "next_agent_handoff_validation_blocked"
+    ],
+    "bundle_directory_present": false,
+    "bundle_ready_by_artifact_validation": false,
+    "daily_operation_enabled": false,
+    "integrated_production_accepted": false,
+    "missing_items": [
+      "FINAL_ACCEPTANCE_BUNDLE/manifest.json",
+      "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
+      "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json",
+      "FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml",
+      "FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json",
+      "FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json",
+      "HANDOFF/00_下一Agent先读.md"
+    ],
+    "production_acceptance_claimed": false,
+    "production_restore_enabled": false,
+    "real_smtp_send_enabled": false,
+    "release_packaging_enabled": false,
+    "required_artifact_validation_keys": [
+      "FINAL_ACCEPTANCE_BUNDLE_MANIFEST",
+      "P0_P1_ZERO_PROOF_ARTIFACT",
+      "S2PLT04_COMPLETION_REPORT",
+      "INDEPENDENT_REVIEW_SIGNOFF",
+      "FINAL_COMMAND_EXECUTION",
+      "NO_PRODUCTION_SIDE_EFFECT_ATTESTATION",
+      "NEXT_AGENT_HANDOFF"
+    ],
+    "required_items": [
+      "FINAL_ACCEPTANCE_BUNDLE/manifest.json",
+      "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
+      "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json",
+      "FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml",
+      "FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json",
+      "FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json",
+      "HANDOFF/00_下一Agent先读.md"
+    ],
+    "scheduler_install_enabled": false,
+    "scope": "final_acceptance_bundle_artifact_validation_only_no_production_acceptance",
+    "state_hash": "85b48424485b02074853617a932f5ea11e10ece5e8d398a56b3edbcf8261eaf6",
+    "status": "blocked"
+  },
+  "base_commit": "20e3cbfcae539eabc700a88a95055a47a6aa7005",
+  "current_pointer_changed": false,
+  "daily_operation_enabled": false,
+  "db_migration_executed": false,
+  "evidence_refs": [
+    "governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-ARTIFACT-VALIDATION-20260628.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_ARTIFACT_VALIDATION.md",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py",
+    "arxiv-daily-push/tests/test_stage2_final_gate.py"
+  ],
+  "fact_level": "EXTRACTED",
+  "final_acceptance_bundle_artifact_validation_passed": false,
+  "final_acceptance_bundle_present": false,
+  "formula_ids_changed": [
+    "FORM-ADP-102"
+  ],
+  "generated_at": "2026-06-28T11:39:47+10:00",
+  "inherited_v7_1_open_p0_findings": 8,
+  "inherited_v7_1_open_p1_findings": 37,
+  "integrated_production_accepted": false,
+  "mail_production_code_changed": false,
+  "manifest_id": "ADP-S2PMT07-FINAL-BUNDLE-ARTIFACT-VALIDATION-20260628",
+  "model_ids_changed": [
+    "MOD-ADP-100"
+  ],
+  "next_task": "CONTINUE_S2PMT07_REAL_FINAL_BUNDLE_ARTIFACT_CREATION_ONLY_AFTER_ZERO_PROOF_AND_S2PLT04_CLOSURE",
+  "p0_closure_claimed": false,
+  "p0_zero_proven": false,
+  "p1_closure_claimed": false,
+  "p1_zero_proven": false,
+  "parameter_ids_changed": [
+    "PARAM-ADP-966",
+    "PARAM-ADP-1049",
+    "PARAM-ADP-1050"
+  ],
+  "phase": "S2PM",
+  "production_acceptance_claimed": false,
+  "production_queue_mutated": false,
+  "production_restore_enabled": false,
+  "production_restore_executed": false,
+  "project_id": "arxiv-daily-push",
+  "public_schema_changed": false,
+  "ranking_algorithm_changed": false,
+  "real_smtp_send_enabled": false,
+  "real_smtp_sent": false,
+  "release_packaging_enabled": false,
+  "release_uploaded": false,
+  "result": "blocked_final_bundle_artifact_validation_ready_bundle_missing_no_production",
+  "runtime_behavior_changed": true,
+  "s2plt04_completed": false,
+  "scheduler_enabled": false,
+  "scheduler_install_enabled": false,
+  "schema_version": 1,
+  "source_adapter_changed": false,
+  "source_or_board_changed": false,
+  "stage2_integrated_production_accepted": false,
+  "status": "blocked",
+  "summary": "S2PMT07 final acceptance bundle now has a directory-level artifact validation state while the real final bundle directory and all final artifacts remain missing.",
+  "task_id": "S2PMT07-FINAL-BUNDLE-ARTIFACT-VALIDATION",
+  "task_ids": [
+    "S2PMT07-FINAL-BUNDLE-ARTIFACT-VALIDATION",
+    "S2PMT07",
+    "ACC-S2PMT07-FINAL-REVIEW"
+  ],
+  "test_results": [
+    "TDD red failed because final bundle artifact validation API was missing",
+    "post-rebase focused final-gate tests: 58 OK"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_final_bundle_validation_red PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_final_bundle_validation_green1 PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_final_bundle_validation_literal PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q"
+  ],
+  "timestamp": "2026-06-28T11:39:47+10:00",
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false
+}

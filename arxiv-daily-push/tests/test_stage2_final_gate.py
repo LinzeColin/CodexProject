@@ -29,10 +29,10 @@ from arxiv_daily_push.stage2_final_gate import (
     S2PMT07_FINAL_ACCEPTANCE_BUNDLE_MANIFEST_REQUIRED_ARTIFACT_VALIDATIONS,
     S2PMT07_FINAL_ACCEPTANCE_BUNDLE_MANIFEST_SCHEMA_VERSION,
     S2PMT07_FINAL_ACCEPTANCE_BUNDLE_NO_PRODUCTION_FLAGS,
+    S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS,
     S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_BLOCKING_REASONS,
     S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_FORBIDDEN_FLAGS,
     S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_REQUIRED_STEPS,
-    S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS,
     S2PMT07_FINAL_COMMAND_EXECUTION_DECISION,
     S2PMT07_FINAL_COMMAND_EXECUTION_NO_PRODUCTION_FLAGS,
     S2PMT07_FINAL_COMMAND_EXECUTION_REQUIRED_FIELDS,
@@ -81,6 +81,7 @@ from arxiv_daily_push.stage2_final_gate import (
     S2PMT07_S2PLT04_COMPLETION_REPORT_REQUIRED_TERMINAL_DEPENDENCIES,
     S2PMT07_S2PLT04_COMPLETION_REPORT_SCHEMA_VERSION,
     build_final_acceptance_bundle_readiness_state,
+    build_final_acceptance_bundle_artifact_validation_state,
     build_final_bundle_prerequisite_plan_state,
     build_final_command_execution_hash,
     build_final_command_execution_validation_state,
@@ -124,6 +125,7 @@ from arxiv_daily_push.stage2_final_gate import (
     validate_s2plt03_local_resilience_drill_bundle,
     validate_s2plt03_resilience_precheck_report,
     validate_s2plt04_integration_candidate_report,
+    validate_final_acceptance_bundle_artifact_validation_state,
     validate_final_acceptance_bundle_readiness_state,
     validate_final_bundle_prerequisite_plan_state,
     validate_final_command_execution_artifact,
@@ -3141,6 +3143,54 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(plan["ready_for_final_bundle_manifest"])
         self.assertTrue(state["available_prebundle_evidence"]["FINAL_BUNDLE_PREREQUISITE_PLAN"])
         self.assertEqual(validate_final_bundle_prerequisite_plan_state(plan), [])
+        self.assertEqual(validate_final_acceptance_bundle_readiness_state(state), [])
+
+    def test_final_acceptance_bundle_artifact_validation_blocks_incomplete_bundle_directory(self) -> None:
+        state = build_final_acceptance_bundle_artifact_validation_state(bundle_directory_present=True)
+
+        self.assertEqual(state["status"], "blocked")
+        self.assertEqual(state["scope"], "final_acceptance_bundle_artifact_validation_only_no_production_acceptance")
+        self.assertTrue(state["bundle_directory_present"])
+        self.assertFalse(state["all_required_items_present"])
+        self.assertFalse(state["all_artifact_validations_passed"])
+        self.assertEqual(set(state["missing_items"]), set(S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS))
+        self.assertNotIn("final_acceptance_bundle_directory_missing", state["blocking_reasons"])
+        self.assertIn("final_acceptance_bundle_manifest_missing", state["blocking_reasons"])
+        self.assertIn("p0_p1_zero_proof_missing", state["blocking_reasons"])
+        self.assertIn("s2plt04_completion_evidence_missing", state["blocking_reasons"])
+        self.assertIn("independent_review_signoff_missing", state["blocking_reasons"])
+        self.assertIn("independent_final_command_execution_missing", state["blocking_reasons"])
+        self.assertIn("no_production_side_effect_attestation_missing", state["blocking_reasons"])
+        self.assertEqual(state["artifact_validations"]["FINAL_ACCEPTANCE_BUNDLE_MANIFEST"]["status"], "blocked")
+        self.assertEqual(state["artifact_validations"]["P0_P1_ZERO_PROOF_ARTIFACT"]["status"], "blocked")
+        self.assertEqual(state["artifact_validations"]["S2PLT04_COMPLETION_REPORT"]["status"], "blocked")
+        self.assertEqual(state["artifact_validations"]["INDEPENDENT_REVIEW_SIGNOFF"]["status"], "blocked")
+        self.assertEqual(state["artifact_validations"]["FINAL_COMMAND_EXECUTION"]["status"], "blocked")
+        self.assertEqual(
+            state["artifact_validations"]["NO_PRODUCTION_SIDE_EFFECT_ATTESTATION"]["status"],
+            "blocked",
+        )
+        self.assertEqual(state["artifact_validations"]["NEXT_AGENT_HANDOFF"]["status"], "blocked")
+        self.assertFalse(state["production_acceptance_claimed"])
+        self.assertFalse(state["integrated_production_accepted"])
+        self.assertEqual(validate_final_acceptance_bundle_artifact_validation_state(state), [])
+
+        tampered = json.loads(json.dumps(state))
+        tampered["all_artifact_validations_passed"] = True
+        self.assertIn(
+            "final acceptance bundle artifact validation cannot pass while artifact validations are blocked",
+            validate_final_acceptance_bundle_artifact_validation_state(tampered),
+        )
+
+    def test_final_acceptance_bundle_readiness_embeds_directory_level_artifact_validation(self) -> None:
+        state = build_final_acceptance_bundle_readiness_state()
+        directory_validation = state["final_acceptance_bundle_artifact_validation"]
+
+        self.assertEqual(directory_validation["status"], "blocked")
+        self.assertFalse(directory_validation["bundle_directory_present"])
+        self.assertFalse(state["available_prebundle_evidence"]["FINAL_ACCEPTANCE_BUNDLE_ARTIFACT_VALIDATION"])
+        self.assertIn("final_acceptance_bundle_directory_missing", directory_validation["blocking_reasons"])
+        self.assertEqual(validate_final_acceptance_bundle_artifact_validation_state(directory_validation), [])
         self.assertEqual(validate_final_acceptance_bundle_readiness_state(state), [])
 
     def test_p0_p1_technical_candidate_builder_fails_closed_without_closure(self) -> None:

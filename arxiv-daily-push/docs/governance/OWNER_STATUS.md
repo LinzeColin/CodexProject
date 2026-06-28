@@ -35,14 +35,11 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - responsible_role: `content_owner + product_owner`
 - acceptance_ids: `ACC-S2PLT01-30D`
 - unblock_condition: S2PLT01 replay payload execution package can be misread as S2PLT01 acceptance; inherited P0/P1, S2PLT04, S2PMT07 final independent review, and final production stop gates still block S2PLT01 and integrated production acceptance.
-- local_mail_runner_note: `LOCAL-DAILY-M1-M4-SEND-ORCHESTRATION` 已完成代码和测试证据；`2026-06-28` 的 M2-M4 真实补发已由 SMTP delivery report 追加到用户中心历史发送记录。
-- local_resend_recovery_note: `LOCAL-DAILY-RESEND-REUSE-INPUT` 已完成代码和测试证据，人工补发可复用同日 `adp-daily-input-report.json`，避免 live arXiv fetch 卡住；真实发送成功仍必须以 SMTP delivery report 和内容账本追加记录为准。
-- local_resend_execution_note: `2026-06-28` 今日 M1-M4 已补齐为 `4 / 4`；M1 是历史已发送证据，M2/M3/M4 是 `2026-06-28 11:26:41 AEST` 真实 SMTP 补发；这仍不等于 Stage 2 正式生产验收通过。
 
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `PARTIAL` (1026/1031 active parameters, 119/119 active formulas)
+- implementation_congruence: `PARTIAL` (1028/1033 active parameters, 119/119 active formulas)
 - parameter_source_quality: `PARTIAL`
 - methodological_rationale: `VERIFIED`
 - empirical_validation: `VERIFIED`
@@ -74,23 +71,23 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - model_count: `117`
 - total_formulas: `119`
 - active_formulas: `119`
-- total_parameters: `1048`
-- active_parameters: `1031`
+- total_parameters: `1050`
+- active_parameters: `1033`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PMT07_MAINLINE_ATTESTATION_PASS_NO_PRODUCTION`
+- release_gate: `S2PMT07_FINAL_BUNDLE_ARTIFACT_VALIDATION_BLOCKED_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `0`
 - commit_bound_events: `4`
-- legacy_unbound_events: `207`
+- legacy_unbound_events: `210`
 - precommit_pending_events: `40`
-- pending_or_stale_events: `246`
+- pending_or_stale_events: `249`
 
 ## 15. UNKNOWN
 
@@ -100,11 +97,11 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 - source_base_commit: `12e91a8e1b84fe29724f43229131bd43f8fa31cd`
 - source_tree_hash: `8caef1969ddfe23755890506daa0d02e6f6df81f`
-- source_snapshot_hash: `sha256:c24352a49a013b3e3018eb1b6e4c012076e2a3378c4b0b75b0a7c54d6c50ecc4`
-- snapshot_event_time: `2026-06-28T10:59:31+10:00`
+- source_snapshot_hash: `sha256:b73de879caeec70f188d04f118f5935cd40970adc17b88886541ee4102be0921`
+- snapshot_event_time: `2026-06-28T11:39:47+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PM / S2PMT07_MAINLINE_ATTESTATION_PASS_NO_PRODUCTION`
+- phase/gate: `S2PM / S2PMT07_FINAL_BUNDLE_ARTIFACT_VALIDATION_BLOCKED_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 
