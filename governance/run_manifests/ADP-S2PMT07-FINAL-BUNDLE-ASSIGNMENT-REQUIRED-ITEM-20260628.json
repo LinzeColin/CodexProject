@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PMT07-FINAL-BUNDLE-ASSIGNMENT-REQUIRED-ITEM",
+  "task_ids": [
+    "S2PMT07-FINAL-BUNDLE-ASSIGNMENT-REQUIRED-ITEM",
+    "S2PMT07",
+    "ACC-S2PMT07-FINAL-REVIEW"
+  ],
+  "iteration_id": "ITER-20260628-ADP-S2PMT07-FINAL-BUNDLE-ASSIGNMENT-REQUIRED-ITEM",
+  "phase": "S2PM",
+  "generated_at": "2026-06-28T20:43:00+10:00",
+  "base_commit": "1f4a0b3795e4a407a944c827f920b54be7581e59",
+  "result": "assignment_required_item_blocks_directory_validation_without_artifact",
+  "fact_level": "EXTRACTED",
+  "summary": "S2PMT07 final bundle required items and directory-level artifact validation now include the independent final reviewer assignment artifact.",
+  "assignment_artifact_path": "FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json",
+  "assignment_artifact_present": false,
+  "assignment_validation_status": "blocked",
+  "final_bundle_readiness_state_hash": "6dda08bd9d205450b13a5ec00b1f8d6dd919e7c56f1b463d0e246b83b7cbf213",
+  "final_acceptance_bundle_artifact_validation_state_hash": "f9c7b056f10e3439d377759bc3577c26c0e02fafddaba6d42023347777ca0487",
+  "required_items": [
+    "FINAL_ACCEPTANCE_BUNDLE/manifest.json",
+    "FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json",
+    "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
+    "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json",
+    "FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml",
+    "FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json",
+    "FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json",
+    "HANDOFF/00_下一Agent先读.md"
+  ],
+  "artifact_validation_keys": [
+    "FINAL_ACCEPTANCE_BUNDLE_MANIFEST",
+    "INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION",
+    "P0_P1_ZERO_PROOF_ARTIFACT",
+    "S2PLT04_COMPLETION_REPORT",
+    "INDEPENDENT_REVIEW_SIGNOFF",
+    "FINAL_COMMAND_EXECUTION",
+    "NO_PRODUCTION_SIDE_EFFECT_ATTESTATION",
+    "NEXT_AGENT_HANDOFF"
+  ],
+  "hard_gate_blocker": "independent_final_reviewer_assignment_missing",
+  "inherited_v7_1_open_p0_findings": 8,
+  "inherited_v7_1_open_p1_findings": 37,
+  "s2plt04_completed": false,
+  "final_acceptance_bundle_present": false,
+  "production_acceptance_claimed": false,
+  "integrated_production_accepted": false,
+  "stage2_integrated_production_accepted": false,
+  "daily_operation_enabled": false,
+  "real_smtp_sent": false,
+  "real_smtp_send_enabled": false,
+  "scheduler_enabled": false,
+  "scheduler_install_enabled": false,
+  "release_uploaded": false,
+  "release_packaging_enabled": false,
+  "production_restore_enabled": false,
+  "production_restore_executed": false,
+  "public_schema_changed": false,
+  "db_migration_executed": false,
+  "production_queue_mutated": false,
+  "source_adapter_changed": false,
+  "source_or_board_changed": false,
+  "ranking_algorithm_changed": false,
+  "current_pointer_changed": false,
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false,
+  "mail_production_code_changed": false,
+  "smtp_changed": false,
+  "scheduler_changed": false,
+  "release_changed": false,
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_ASSIGNMENT_REQUIRED_ITEM.md",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py",
+    "arxiv-daily-push/tests/test_stage2_final_gate.py",
+    "FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_required_assignment_red PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -k test_final_acceptance_bundle_required_items_include_independent_reviewer_assignment -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_required_assignment_green4 PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -k test_final_acceptance_bundle_required_items_include_independent_reviewer_assignment -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_required_assignment_finalgate2 PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q"
+  ],
+  "test_results": [
+    "TDD red failed as expected because assignment artifact was absent from final bundle required items",
+    "target required-item regression test OK",
+    "focused final-gate tests: 78 OK before governance sync"
+  ],
+  "branch_cleanup": {
+    "branch_or_pr_created_by_this_run": false,
+    "branches_deleted_by_this_run": [],
+    "branches_retained_by_this_run": [],
+    "closeout_recheck_required": true,
+    "note": "No branch or PR is created by this run. Closeout must recheck GitHub open PR count and ADP/arxiv/s2p remote branch scan before push."
+  },
+  "risks": [
+    "A final bundle directory can otherwise appear complete while the independent final reviewer assignment artifact is missing.",
+    "The current assignment artifact is still missing; owner/coordinator must supply a real independent reviewer assignment before final review can proceed."
+  ],
+  "rollback": "Revert assignment required-item aggregation, focused regression test, attestation/template required-item sync, phase record, run manifest, traceability/delivery/event records, generated views, and three base records; no runtime production state was changed."
+}

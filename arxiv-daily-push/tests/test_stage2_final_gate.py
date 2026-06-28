@@ -84,6 +84,7 @@ from arxiv_daily_push.stage2_final_gate import (
     S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_NO_PRODUCTION_FLAGS,
     S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_REQUIRED_FIELDS,
     S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_SCHEMA_VERSION,
+    S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_PATH,
     S2PMT07_MAINLINE_ATTESTATION_NO_PRODUCTION_FLAGS,
     S2PMT07_MAINLINE_ATTESTATION_REQUIRED_VALIDATIONS,
     S2PMT07_P0_P1_ZERO_PROOF_CLOSURE_DECISION,
@@ -2858,13 +2859,20 @@ class Stage2FinalGateTests(unittest.TestCase):
                 next_agent_handoff=self._valid_next_agent_handoff_payload(),
             )
 
-        self.assertEqual(state["final_acceptance_bundle_artifact_validation"]["status"], "pass")
+        self.assertEqual(state["final_acceptance_bundle_artifact_validation"]["status"], "blocked")
         self.assertEqual(state["independent_final_reviewer_assignment_validation"]["status"], "blocked")
         self.assertFalse(
             state["available_prebundle_evidence"]["INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION"]
         )
+        self.assertFalse(
+            state["available_prebundle_evidence"]["FINAL_ACCEPTANCE_BUNDLE_ARTIFACT_VALIDATION"]
+        )
         self.assertEqual(state["status"], "blocked")
         self.assertFalse(state["bundle_present"])
+        self.assertIn(
+            S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_PATH,
+            state["missing_items"],
+        )
         self.assertIn("independent_final_reviewer_assignment_missing", state["blocking_reasons"])
         self.assertFalse(state["production_acceptance_claimed"])
         self.assertFalse(state["integrated_production_accepted"])
@@ -3775,7 +3783,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(tuple(plan["required_steps"]), S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_REQUIRED_STEPS)
         self.assertFalse(plan["all_required_steps_passed"])
         self.assertFalse(plan["ready_for_final_bundle_manifest"])
-        self.assertEqual(plan["next_required_step"], "P0_P1_ZERO_PROOF_ARTIFACT")
+        self.assertEqual(plan["next_required_step"], "INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION")
         self.assertEqual([step["step_id"] for step in plan["ordered_steps"]], list(plan["required_steps"]))
         for reason in S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_BLOCKING_REASONS:
             self.assertIn(reason, plan["blocking_reasons"])
@@ -3843,6 +3851,53 @@ class Stage2FinalGateTests(unittest.TestCase):
             "final acceptance bundle artifact validation cannot pass while artifact validations are blocked",
             validate_final_acceptance_bundle_artifact_validation_state(tampered),
         )
+
+    def test_final_acceptance_bundle_required_items_include_independent_reviewer_assignment(self) -> None:
+        state = build_final_acceptance_bundle_readiness_state()
+        artifact_validation = state["final_acceptance_bundle_artifact_validation"]
+
+        self.assertIn(
+            S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_PATH,
+            S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS,
+        )
+        self.assertIn(
+            S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_PATH,
+            state["required_items"],
+        )
+        self.assertIn(
+            S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_PATH,
+            artifact_validation["required_items"],
+        )
+        self.assertIn(
+            S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_PATH,
+            state["missing_items"],
+        )
+        self.assertIn(
+            S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_PATH,
+            artifact_validation["missing_items"],
+        )
+        self.assertFalse(
+            artifact_validation["available_items"][
+                S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_PATH
+            ]
+        )
+        self.assertIn(
+            "INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION",
+            artifact_validation["artifact_validations"],
+        )
+        self.assertEqual(
+            artifact_validation["artifact_validations"][
+                "INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION"
+            ]["status"],
+            "blocked",
+        )
+        self.assertIn("independent_final_reviewer_assignment_missing", state["blocking_reasons"])
+        self.assertIn(
+            "independent_final_reviewer_assignment_missing",
+            artifact_validation["blocking_reasons"],
+        )
+        self.assertEqual(validate_final_acceptance_bundle_artifact_validation_state(artifact_validation), [])
+        self.assertEqual(validate_final_acceptance_bundle_readiness_state(state), [])
 
     def test_final_acceptance_bundle_readiness_embeds_directory_level_artifact_validation(self) -> None:
         state = build_final_acceptance_bundle_readiness_state()

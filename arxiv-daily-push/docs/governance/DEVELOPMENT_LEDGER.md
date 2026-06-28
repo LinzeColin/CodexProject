@@ -10,11 +10,29 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.1
 - Current phase: S2PM
-- Current gate: S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_HARD_GATE_BLOCKS_FINAL_BUNDLE
-- Confirmed iteration count: 211
+- Current gate: S2PMT07_FINAL_BUNDLE_ASSIGNMENT_REQUIRED_ITEM_BLOCKS_DIRECTORY_VALIDATION
+- Confirmed iteration count: 212
 - Reconstructed event count: 0
-- Current task: `S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-HARD-GATE` requires independent final reviewer assignment validation before top-level final bundle readiness can pass, even if directory-level final bundle artifact validation passes. The current real `FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json` artifact is still missing, so assignment validation remains blocked and final bundle readiness remains blocked. Existing templates under `FINAL_ACCEPTANCE_BUNDLE/templates/` remain template-only skeletons; `FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json` remains the only present passing artifact. The owner-visible next action is still to supply a real independent final reviewer assignment artifact and continue independent final review; P0/P1 closure, S2PLT04 completion, scheduler, Release, DAILY_OPERATION, and integrated production acceptance remain blocked/false.
+- Current task: `S2PMT07-FINAL-BUNDLE-ASSIGNMENT-REQUIRED-ITEM` makes `FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json` a formal final bundle required item and directory-level artifact validation key. The real artifact is still missing, so assignment validation, directory-level final bundle artifact validation, and top-level final bundle readiness remain blocked. `FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json` remains present and hash-valid after required-item sync, and `FINAL_ACCEPTANCE_BUNDLE/templates/` remains template-only preparation, but the attestation is only one sub-artifact; P0/P1 closure, S2PLT04 completion, scheduler, Release, DAILY_OPERATION, and integrated production acceptance remain blocked/false.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. Local daily M1-M4 orchestration is now recorded as readiness evidence, but V7.2 contract baseline migration blockers are zero while real restore, real SMTP production, scheduler installation, final acceptance bundle creation, independent final reviewer assignment validation, directory-level final bundle artifact validation pass, P0/P1 closure, S2PLT04 completion, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
+
+### `ITER-20260628-ADP-S2PMT07-FINAL-BUNDLE-ASSIGNMENT-REQUIRED-ITEM`
+
+- Timestamp: `2026-06-28T20:43:00+10:00`
+- Fact level: EXTRACTED from final-bundle required item constants, directory-level artifact validation helper, no-production attestation required-item sync, focused TDD regression test, phase record, run manifest, traceability row, delivery task, event record, and three base files.
+- Base commit: `1f4a0b3795e4a407a944c827f920b54be7581e59`
+- Product version: `0.23.1`
+- Status: independent final reviewer assignment is now part of the formal final bundle required item surface; the real artifact is still missing and final bundle remains blocked.
+- Task IDs: `S2PMT07-FINAL-BUNDLE-ASSIGNMENT-REQUIRED-ITEM`; parent `S2PMT07`; acceptance `ACC-S2PMT07-FINAL-REVIEW`.
+- Goal: Prevent a final bundle directory or manifest from looking complete while `FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json` is absent.
+- Files changed: S2PMT07 final gate helper, no-production attestation, final bundle templates, final-gate regression test, phase record, run manifest, traceability/delivery/event records, and three base files.
+- Decisions: assignment artifact is included in `S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS`, `S2PMT07_FINAL_ACCEPTANCE_BUNDLE_ARTIFACT_VALIDATION_KEYS`, final manifest required validations, prerequisite plan steps, and no-production attestation required bundle items.
+- Validation: TDD red failed because assignment artifact was absent from final bundle required items; target regression passed after required-item and validation-key sync; focused final-gate tests 78 OK before governance sync.
+- Boundaries: No independent reviewer assignment, no independent final closure decision, no zero-proof artifact, no P0/P1 closure, no S2PLT04 completion, no final bundle acceptance, no final command execution, no next-agent handoff, no SMTP send, no scheduler install/enablement, no Release, no restore, no CURRENT/V7 change, no source/ranking change, no DAILY_OPERATION, and no integrated production acceptance.
+- Branch hygiene: no branch or PR is created by this run; closeout must recheck open PR count and ADP/arxiv/s2p remote branch count.
+- Risks: A future final bundle manifest can be misread as complete unless the assignment artifact stays in the formal required item list.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-ASSIGNMENT-REQUIRED-ITEM-20260628.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_ASSIGNMENT_REQUIRED_ITEM.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`; `FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json`.
+- Next step: Owner/coordinator must supply a real `FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json` artifact using an independent reviewer not involved in S2PMT01-T06 implementation; do not claim P0/P1 zero proof, S2PLT04 completion, S2PMT07, DAILY_OPERATION, or production acceptance from required-item sync alone.
 
 ### `ITER-20260628-ADP-S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-HARD-GATE`
 
