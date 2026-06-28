@@ -7,8 +7,8 @@ from pathlib import Path
 from pfi_v02.stage_v021_frontend_contract import (
     STAGE1_TASK_IDS,
     build_v021_stage1_contract,
-    v021_navigation_labels,
 )
+from pfi_v02.stage_v0211_ui_recovery import v0211_stage1_navigation_labels
 
 
 class V021Stage1NavigationContractTest(unittest.TestCase):
@@ -53,9 +53,9 @@ class V021Stage1NavigationContractTest(unittest.TestCase):
             )
         )
 
-        self.assertEqual(labels, v021_navigation_labels())
-        self.assertIn('data-primary-workspaces="15"', self.html)
-        self.assertEqual(self.html.count('data-primary-entry="true"'), 15)
+        self.assertEqual(labels, v0211_stage1_navigation_labels())
+        self.assertIn('data-primary-workspaces="10"', self.html)
+        self.assertEqual(self.html.count('data-primary-entry="true"'), 10)
         self.assertNotIn("legacy-nav", self.html)
         self.assertNotIn('data-v01-entry="true"', self.html)
         for forbidden in build_v021_stage1_contract()["forbidden_visible_nav_group_labels"]:
@@ -69,16 +69,17 @@ class V021Stage1NavigationContractTest(unittest.TestCase):
         self.assertNotIn("数据源与同步", web_text)
         self.assertNotIn("低操作导入中心", web_text)
 
-    def test_strategy_lab_routes_to_investment_without_strategy_workspace(self) -> None:
-        self.assertIn('data-workspace="investment" data-route-alias="/investment/strategy-lab"', self.html)
-        self.assertIn('data-feature-view="single"', self.html)
+    def test_strategy_lab_routes_to_market_research_without_strategy_workspace(self) -> None:
+        self.assertIn('data-workspace="market_research" data-route-alias="/market-research"', self.html)
+        self.assertIn('data-command-workspace="market_research" data-command-route="/market-research/strategy-lab"', self.html)
+        self.assertIn('"/strategy-lab": "/market-research/strategy-lab"', self.js)
         self.assertNotIn('data-workspace="strategy"', self.html)
         self.assertNotIn('workspace: "strategy"', self.js)
         self.assertIn('"single"', self.js)
-        self.assertIn('"investment"', self.js)
+        self.assertIn('"market_research"', self.js)
 
     def test_settings_and_data_system_are_clickable_workspace_targets(self) -> None:
-        self.assertIn('data-workspace="settings" data-route-alias="/settings?tab=data-system"', self.html)
+        self.assertIn('data-command-workspace="settings" data-command-route="/settings?tab=data-system"', self.html)
         self.assertIn('data-workspace="settings" data-route-alias="/settings"', self.html)
         self.assertIn("WORKSPACES.settings", self.js)
         self.assertIn('setActiveWorkspace("settings"', self.js)

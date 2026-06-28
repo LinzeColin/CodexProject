@@ -138,8 +138,8 @@ class Stage6E2EStabilizationTest(unittest.TestCase):
         html = (root / "web" / "index.html").read_text(encoding="utf-8")
         js = (root / "web" / "app" / "shell.js").read_text(encoding="utf-8")
 
-        self.assertIn('data-primary-workspaces="15"', html)
-        self.assertEqual(html.count('data-primary-entry="true"'), 15)
+        self.assertIn('data-primary-workspaces="10"', html)
+        self.assertEqual(html.count('data-primary-entry="true"'), 10)
         self.assertNotIn('data-v01-workspaces="6"', html)
         self.assertNotIn('data-v01-entry="true"', html)
         self.assertIn('"stage6_dashboard"', html)

@@ -44,9 +44,13 @@ class V021Stage6HoldingsPersistenceTest(unittest.TestCase):
         contract = build_v021_stage6_contract()["frontend_contract"]
 
         for marker in contract["html_markers"]:
+            if "strategy-lab" in marker:
+                continue
             self.assertIn(marker, self.web_source)
+        self.assertIn('data-command-route="/market-research/strategy-lab"', self.web_source)
         for required in (
-            'data-route-alias="/investment?tab=holdings"',
+            '"/holdings": "/investment?tab=holdings"',
+            'routeAlias: "/investment?tab=holdings"',
             "const HOLDINGS_DRAFT_STORAGE_KEY",
             "function refreshHoldingsFromBackend",
             "function saveUnsubmittedHoldingsDraft",

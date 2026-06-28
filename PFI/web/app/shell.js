@@ -73,6 +73,7 @@ const WORKSPACE_LABELS = {
   sync: "数据源与上传",
   recommendations: "建议与复盘",
   insights: "报告与洞察",
+  market_research: "市场与研究",
   settings: "设置",
   market: "市场",
   markets: "市场",
@@ -90,6 +91,7 @@ const WORKSPACE_LABELS = {
   数据源与上传: "数据源与上传",
   建议与复盘: "建议与复盘",
   报告与洞察: "报告与洞察",
+  市场与研究: "市场与研究",
   设置: "设置",
 };
 
@@ -176,27 +178,27 @@ const UNIFIED_TREND_DATA = {
 };
 
 const FEATURE_TARGETS = {
-  市场快照: { view: "hotspots", label: "打开热点" },
-  研究队列: { view: "reports", label: "打开报告" },
+  市场快照: { workspace: "market_research", routeAlias: "/market-research?tab=market", label: "打开市场" },
+  研究队列: { workspace: "market_research", routeAlias: "/market-research?tab=research", label: "打开研究" },
   持仓复核: { view: "holdings", label: "打开持仓" },
   持仓编辑: { workspace: "investment", routeAlias: "/investment?tab=holdings", label: "打开编辑" },
   持仓持久化: { workspace: "investment", routeAlias: "/investment?tab=holdings", label: "打开持仓" },
   保存修改: { workspace: "investment", routeAlias: "/investment?tab=holdings", label: "打开持仓" },
-  策略实验室: { workspace: "investment", routeAlias: "/investment/strategy-lab", label: "打开策略" },
-  指数与ETF: { view: "index_etf", label: "打开指数" },
-  主题催化: { view: "theme_catalyst", label: "打开主题" },
-  自选监控: { view: "watchlist_monitor", label: "打开自选" },
-  市场垂直切片: { view: "market_slice", label: "打开切片" },
-  组合影响覆盖: { view: "market_overlay", label: "打开覆盖层" },
-  提醒与保存视图: { view: "market_alerts", label: "打开提醒" },
-  来源状态: { view: "source_status", label: "打开来源" },
-  公司研究: { view: "company_research", label: "打开公司" },
-  基金研究: { view: "fund_research", label: "打开基金" },
-  研究与政策切片: { view: "research_policy_slice", label: "打开切片" },
-  引用定位: { view: "citation_locator", label: "打开引用" },
-  报告清单: { view: "report_manifest", label: "打开清单" },
-  政策雷达: { view: "policy", label: "打开政策雷达" },
-  报告验证: { view: "report_validation", label: "打开验证" },
+  策略实验室: { workspace: "market_research", routeAlias: "/market-research/strategy-lab", label: "打开策略" },
+  指数与ETF: { workspace: "market_research", routeAlias: "/market-research?tab=market", label: "打开指数" },
+  主题催化: { workspace: "market_research", routeAlias: "/market-research?tab=market", label: "打开主题" },
+  自选监控: { workspace: "market_research", routeAlias: "/market-research?tab=market", label: "打开自选" },
+  市场垂直切片: { workspace: "market_research", routeAlias: "/market-research?tab=market", label: "打开切片" },
+  组合影响覆盖: { workspace: "market_research", routeAlias: "/market-research?tab=market", label: "打开覆盖层" },
+  提醒与保存视图: { workspace: "market_research", routeAlias: "/market-research?tab=market", label: "打开提醒" },
+  来源状态: { workspace: "market_research", routeAlias: "/market-research?tab=market", label: "打开来源" },
+  公司研究: { workspace: "market_research", routeAlias: "/market-research?tab=research", label: "打开公司" },
+  基金研究: { workspace: "market_research", routeAlias: "/market-research?tab=research", label: "打开基金" },
+  研究与政策切片: { workspace: "market_research", routeAlias: "/market-research?tab=research", label: "打开切片" },
+  引用定位: { workspace: "market_research", routeAlias: "/market-research?tab=research", label: "打开引用" },
+  报告清单: { workspace: "market_research", routeAlias: "/market-research?tab=research", label: "打开清单" },
+  政策雷达: { workspace: "market_research", routeAlias: "/market-research?tab=research", label: "打开政策雷达" },
+  报告验证: { workspace: "market_research", routeAlias: "/market-research?tab=research", label: "打开验证" },
   持仓垂直切片: { view: "portfolio_slice", label: "打开切片" },
   导入对账: { view: "portfolio_reconciliation", label: "打开对账" },
   风险约束: { view: "portfolio_risk", label: "打开约束" },
@@ -210,13 +212,13 @@ const FEATURE_TARGETS = {
   样本外验证: { view: "train_test_validation", label: "打开验证" },
   滚动验证: { view: "walk_forward_validation", label: "打开滚动验证" },
   策略注册: { view: "strategy_registry", label: "打开注册" },
-  单标的回测: { view: "single", label: "打开回测" },
-  参数扫描: { view: "scan", label: "打开扫描" },
-  盘感训练: { view: "market_feel", label: "打开训练" },
-  模拟实验: { view: "big_data", label: "打开模拟" },
-  热点分析: { view: "hotspots", label: "打开热点" },
-  报告中心: { view: "reports", label: "打开报告" },
-  政策雷达: { view: "policy", label: "打开政策" },
+  单标的回测: { workspace: "market_research", routeAlias: "/market-research/strategy-lab", label: "打开回测" },
+  参数扫描: { workspace: "market_research", routeAlias: "/market-research/strategy-lab", label: "打开扫描" },
+  盘感训练: { workspace: "market_research", routeAlias: "/market-research/strategy-lab", label: "打开训练" },
+  模拟实验: { workspace: "market_research", routeAlias: "/market-research/strategy-lab", label: "打开模拟" },
+  热点分析: { workspace: "market_research", routeAlias: "/market-research?tab=market", label: "打开热点" },
+  报告中心: { workspace: "insights", label: "打开报告" },
+  政策雷达: { workspace: "market_research", routeAlias: "/market-research?tab=research", label: "打开政策" },
   持仓: { view: "holdings", label: "打开持仓" },
   数据中心: { view: "tools", label: "打开数据" },
   策略库: { view: "library", label: "打开策略库" },
@@ -301,6 +303,10 @@ const SEARCH_ALIASES = {
   复核入口: "review entry fuhe rukou 复核 账本 流水",
   建议与复盘: "review recommendations advice fupan 建议 复盘 决策",
   报告与洞察: "reports insights report baogao 报告 洞察 导出 上下文",
+  市场与研究: "market research strategy lab shichang yanjiu celue 市场 研究 策略实验室 策略 回测 盘感",
+  市场: "market shichang 市场 指数 ETF 主题 自选",
+  研究: "research yanjiu 研究 公司 基金 政策 证据",
+  策略实验室: "strategy lab backtest scan market feel celue 策略 实验室 回测 参数 盘感 模拟",
   设置: "settings preferences config shezhi 设置 偏好 系统",
   数据与系统: "settings data system shuju xitong 数据 系统 来源 任务 管理",
   运行反馈控制台: "feedback console fankui fk 反馈 运行 控制台",
@@ -314,6 +320,26 @@ const SEARCH_ALIASES = {
 };
 
 const SEARCH_DEFAULT_LIMIT = 10;
+const LEGACY_ROUTE_ALIAS_TARGETS = Object.freeze({
+  "/": "/home",
+  "/market": "/market-research?tab=market",
+  "/research": "/market-research?tab=research",
+  "/holdings": "/investment?tab=holdings",
+  "/strategy-lab": "/market-research/strategy-lab",
+  "/data-system": "/settings?tab=data-system",
+  "/investment?tab=market": "/market-research?tab=market",
+  "/investment?tab=research": "/market-research?tab=research",
+  "/investment/strategy-lab": "/market-research/strategy-lab",
+});
+const LEGACY_COMMAND_ALIASES = Object.freeze([
+  { title: "首页", workspace: "home", routeAlias: "/home", keywords: "home 首页 总览" },
+  { title: "市场", workspace: "market_research", routeAlias: "/market-research?tab=market", keywords: "market 市场 指数 ETF" },
+  { title: "研究", workspace: "market_research", routeAlias: "/market-research?tab=research", keywords: "research 研究 公司 基金 政策" },
+  { title: "持仓", workspace: "investment", routeAlias: "/investment?tab=holdings", keywords: "holdings 持仓 投资 组合" },
+  { title: "策略实验室", workspace: "market_research", routeAlias: "/market-research/strategy-lab", keywords: "strategy lab 策略 回测 参数 盘感 模拟" },
+  { title: "数据与系统", workspace: "settings", routeAlias: "/settings?tab=data-system", keywords: "data system 数据 系统 设置" },
+]);
+const STRATEGY_LAB_VIEWS = new Set(["single", "scan", "strategy_slice", "pit_backtest", "train_test_validation", "walk_forward_validation", "strategy_registry", "market_feel", "big_data", "library"]);
 let globalSearchState = { items: [], results: [], activeIndex: 0 };
 let clickFeedbackSerial = 0;
 let clickSafeBound = false;
@@ -1109,7 +1135,7 @@ function installStage3WorkspaceAliases() {
       feature("收益归因", "需要复核", "估计归因", "把收益拆为市场、主动决策、费用、汇率和现金拖累；数据不足不输出精确结论。", { workspace: "investment", label: "查看归因" }),
       feature("风险分析", "有建议", "风险证据", "查看集中度、回撤、币种暴露和流动性。", { workspace: "investment", label: "查看风险" }),
       feature("行为复盘", "有建议", "交易证据", "识别追涨、杀跌、频繁交易和持有周期。", { workspace: "investment", label: "查看复盘" }),
-      feature("策略实验室", "可用", "PFI 策略实验室", "保留 PFI 策略回测、参数扫描、盘感训练和大数据模拟器；QBVS 是顶层独立系统。", { workspace: "investment", routeAlias: "/investment/strategy-lab", label: "打开策略" }),
+      feature("策略实验室", "可用", "市场与研究", "保留 PFI 策略回测、参数扫描、盘感训练和大数据模拟器；QBVS 是顶层独立系统。", { workspace: "market_research", routeAlias: "/market-research/strategy-lab", label: "打开策略" }),
     ],
     tasks: [
       task("市值趋势", "可用 · CNY 月度折线", "ready"),
@@ -1117,6 +1143,41 @@ function installStage3WorkspaceAliases() {
       task("总收益趋势", "可用 · 估计值需复核", "review"),
       task("持仓 SQLite 服务", "可用 · snapshot / adjustment 可写入", "ready"),
     ],
+  };
+  WORKSPACES.market_research = {
+    ...structuredClone(DEFAULT_WORKSPACES.strategy),
+    label: "市场与研究",
+    kicker: "市场、研究与策略实验室",
+    conclusion: "统一进入市场观察、公司研究、政策证据和策略实验室；旧市场、研究和策略入口只作为兼容别名。",
+    freshness: "市场与研究缓存可用",
+    runtime: "策略实验室唯一入口 · 路由 /market-research/strategy-lab",
+    cards: [
+      ["市场观察", "可打开", "指数、ETF、主题和自选线索"],
+      ["研究证据", "可打开", "公司、基金、政策和引用定位"],
+      ["策略实验室", "唯一入口", "回测、参数扫描、盘感训练和模拟实验"],
+      ["兼容别名", "已接管", "市场 / 研究 / 策略实验室"],
+    ],
+    features: [
+      feature("市场快照", "可用", "市场观察", "查看指数、ETF、主题和自选对象的观察线索。", { workspace: "market_research", routeAlias: "/market-research?tab=market", label: "打开市场" }),
+      feature("研究队列", "可用", "研究证据", "查看公司、基金、政策和引用定位任务。", { workspace: "market_research", routeAlias: "/market-research?tab=research", label: "打开研究" }),
+      feature("策略实验室", "可用", "统一策略入口", "策略回测、参数扫描、盘感训练和模拟实验只进入同一路由。", { workspace: "market_research", routeAlias: "/market-research/strategy-lab", label: "打开策略" }),
+      feature("单标的回测", "可用", "策略实验室", "从策略实验室运行单标的回测。", { workspace: "market_research", routeAlias: "/market-research/strategy-lab", label: "打开回测" }),
+      feature("参数扫描", "可用", "策略实验室", "从策略实验室运行参数扫描。", { workspace: "market_research", routeAlias: "/market-research/strategy-lab", label: "打开扫描" }),
+      feature("盘感训练", "可用", "策略实验室", "保留读图训练、限时判断、隐藏答案和复盘记录。", { workspace: "market_research", routeAlias: "/market-research/strategy-lab", label: "打开训练" }),
+      feature("模拟实验", "可用", "策略实验室", "用于研究策略在不同市场状态下的表现。", { workspace: "market_research", routeAlias: "/market-research/strategy-lab", label: "打开模拟" }),
+    ],
+    rows: [
+      row("P1", "市场", "市场观察", "旧市场入口映射到市场与研究。", "可用"),
+      row("P1", "研究", "研究证据", "旧研究入口映射到市场与研究。", "可用"),
+      row("P1", "策略实验室", "统一路由", "旧策略实验室入口映射到 /market-research/strategy-lab。", "可用"),
+    ],
+    tasks: [
+      task("一级入口", "市场与研究已进入正式导航", "ready"),
+      task("旧入口兼容", "市场 / 研究 / 策略实验室由 route alias 接管", "ready"),
+      task("策略实验室", "唯一运行入口为 /market-research/strategy-lab", "ready"),
+    ],
+    evidence: evidence("市场与研究证据", "市场、研究、策略实验室统一入口", "PFI v0.2.1.1 Stage 1 路由合同", "旧入口保留为兼容别名，不作为一级导航显示。"),
+    chart: [],
   };
   WORKSPACES.consumption = {
     ...structuredClone(DEFAULT_WORKSPACES.data),
@@ -2783,14 +2844,15 @@ function renderWorkspace(workspaceId, options = {}) {
   const freshness = document.querySelector("#freshness-label");
   const runtimeTarget = document.querySelector("[data-runtime-target]");
   const previousContext = currentContext();
-  const activeRoute = Object.prototype.hasOwnProperty.call(options, "routeAlias") ? options.routeAlias : "";
-  const routeForState = activeRoute || defaultRouteAliasForWorkspace(workspaceId);
+  const activeRoute = Object.prototype.hasOwnProperty.call(options, "routeAlias") ? normalizeRouteAlias(options.routeAlias) : "";
+  const routeForState = normalizeRouteAlias(activeRoute || defaultRouteAliasForWorkspace(workspaceId));
 
   document.querySelectorAll("[data-workspace]").forEach((button) => {
     const isAlias = button.dataset.entryType === "v01_alias" || button.hasAttribute("data-feature-view");
-    const routeAlias = button.dataset.routeAlias || "";
+    const routeAlias = normalizeRouteAlias(button.dataset.routeAlias || "");
+    const sameWorkspace = button.dataset.workspace === workspaceId;
     const active = activeRoute
-      ? button.dataset.workspace === workspaceId && routeAlias === activeRoute
+      ? sameWorkspace && (routeAlias === activeRoute || !isAlias)
       : button.dataset.workspace === workspaceId && !isAlias;
     button.classList.toggle("is-active", active);
     button.setAttribute("aria-current", active ? "page" : "false");
@@ -2828,7 +2890,7 @@ function renderWorkspace(workspaceId, options = {}) {
   if (!options.keepFunctionDetail) delete nextContext.feature_view;
   writeContext(nextContext);
   if (workspaceId === "settings") setEvidenceDrawer(false);
-  if (!options.skipRouteSync) syncBrowserRoute(routeForState);
+  if (!options.skipRouteSync) syncBrowserRoute(routeForState, { replace: options.replaceRoute === true });
 
   if (!options.silent) showToast(`已切换到${workspace.label}`);
   if (!options.preserveFocus) main.focus({ preventScroll: true });
@@ -2893,11 +2955,12 @@ function featureTarget(title) {
   if (Object.prototype.hasOwnProperty.call(FEATURE_TARGETS, raw)) return FEATURE_TARGETS[raw];
   const compact = raw.replace(/\s+/g, "");
   if (Object.prototype.hasOwnProperty.call(FEATURE_TARGETS, compact)) return FEATURE_TARGETS[compact];
-  if (/回测|参数|盘感|策略|模拟/.test(compact)) return { workspace: "investment", label: "打开投资" };
+  if (/回测|参数|盘感|策略|模拟/.test(compact)) return { workspace: "market_research", routeAlias: "/market-research/strategy-lab", label: "打开策略" };
   if (/持仓|订单|组合|纪律/.test(compact)) return { workspace: "investment", label: "打开投资" };
-  if (/研究|政策|报告|证据/.test(compact)) return { workspace: "insights", label: "打开报告" };
+  if (/研究|政策/.test(compact)) return { workspace: "market_research", routeAlias: "/market-research?tab=research", label: "打开研究" };
+  if (/报告|证据/.test(compact)) return { workspace: "insights", label: "打开报告" };
   if (/数据|来源|任务|隐私|备份|系统/.test(compact)) return { workspace: "settings", label: "打开设置" };
-  if (/市场|指数|主题|自选/.test(compact)) return { workspace: "investment", label: "打开投资" };
+  if (/市场|指数|主题|自选/.test(compact)) return { workspace: "market_research", routeAlias: "/market-research?tab=market", label: "打开市场" };
   return { workspace: "home", label: "打开入口" };
 }
 
@@ -2921,12 +2984,37 @@ function featureOpenControl(card) {
   return button;
 }
 
+function workspaceForFunctionView(detail) {
+  if (STRATEGY_LAB_VIEWS.has(detail.view)) return "market_research";
+  if (detail.workspace === "market" || detail.workspace === "research" || detail.workspace === "strategy") return "market_research";
+  if (detail.workspace === "portfolio") return "investment";
+  if (detail.workspace === "data") return "settings";
+  return detail.workspace;
+}
+
+function routeAliasForFunctionView(detail) {
+  if (STRATEGY_LAB_VIEWS.has(detail.view)) return "/market-research/strategy-lab";
+  if (detail.workspace === "market") return "/market-research?tab=market";
+  if (detail.workspace === "research") return "/market-research?tab=research";
+  if (detail.workspace === "portfolio") return "/investment?tab=holdings";
+  if (detail.workspace === "data") return "/settings?tab=data-system";
+  return defaultRouteAliasForWorkspace(workspaceForFunctionView(detail));
+}
+
 function openFunctionView(view, options = {}) {
   const detail = FUNCTION_VIEWS[view] || FUNCTION_VIEWS.single;
-  const routeAlias = options.routeAlias || (view === "single" ? "/investment/strategy-lab" : "");
-  renderWorkspace(detail.workspace, { silent: true, preserveFocus: true, keepFunctionDetail: true, routeAlias });
+  const workspaceId = workspaceForFunctionView(detail);
+  const routeAlias = normalizeRouteAlias(options.routeAlias || routeAliasForFunctionView(detail));
+  renderWorkspace(workspaceId, {
+    silent: true,
+    preserveFocus: true,
+    keepFunctionDetail: true,
+    routeAlias,
+    skipRouteSync: options.skipRouteSync === true,
+    replaceRoute: options.replaceRoute === true,
+  });
   renderFunctionDetail(detail);
-  writeContext({ ...currentContext(), workspace: detail.workspace, feature_view: detail.view });
+  writeContext({ ...currentContext(), workspace: workspaceId, feature_view: detail.view, route_alias: routeAlias });
   if (!options.silent) showToast(`已打开${detail.title}`);
 }
 
@@ -2950,7 +3038,10 @@ function renderFunctionDetail(detail) {
     status.className = `status-pill ${statusClass(detail.status)}`;
   }
   if (action) action.textContent = ownerVisibleText(detail.primaryAction, "开始");
-  if (workspace) workspace.textContent = ownerVisibleText(WORKSPACE_LABELS[detail.workspace] || detail.workspace, "工作区");
+  if (workspace) {
+    const workspaceId = workspaceForFunctionView(detail);
+    workspace.textContent = ownerVisibleText(WORKSPACE_LABELS[workspaceId] || workspaceId, "工作区");
+  }
   if (actionButton) {
     actionButton.textContent = ownerVisibleText(detail.primaryAction, "开始");
     actionButton.dataset.functionActionView = detail.view;
@@ -3269,17 +3360,45 @@ function setActiveWorkspace(workspaceId, options = {}) {
 }
 
 function defaultRouteAliasForWorkspace(workspaceId) {
+  if (workspaceId === "market_research") return "/market-research";
   const entries = [...document.querySelectorAll('[data-primary-entry="true"]')];
   const primary = entries.find((entry) => entry.dataset.workspace === workspaceId && entry.dataset.entryType !== "v01_alias");
   const any = entries.find((entry) => entry.dataset.workspace === workspaceId);
   return (primary || any)?.dataset.routeAlias || "";
 }
 
-function workspaceTargetFromRoute(routeAlias) {
+function normalizeRouteAlias(routeAlias) {
   const clean = String(routeAlias || "").trim();
+  if (!clean) return "";
+  if (Object.prototype.hasOwnProperty.call(LEGACY_ROUTE_ALIAS_TARGETS, clean)) return LEGACY_ROUTE_ALIAS_TARGETS[clean];
+  return clean;
+}
+
+function routeWorkspaceFromAlias(routeAlias) {
+  const clean = normalizeRouteAlias(routeAlias);
   if (!clean) return null;
+  if (clean.startsWith("/market-research/strategy-lab")) {
+    return { workspace: "market_research", routeAlias: "/market-research/strategy-lab", view: "single" };
+  }
+  if (clean.startsWith("/market-research")) {
+    return { workspace: "market_research", routeAlias: clean, view: "" };
+  }
+  if (clean.startsWith("/investment?tab=holdings")) {
+    return { workspace: "investment", routeAlias: clean, view: "" };
+  }
+  if (clean.startsWith("/settings?tab=data-system")) {
+    return { workspace: "settings", routeAlias: clean, view: "" };
+  }
+  return null;
+}
+
+function workspaceTargetFromRoute(routeAlias) {
+  const clean = normalizeRouteAlias(routeAlias);
+  if (!clean) return null;
+  const explicit = routeWorkspaceFromAlias(clean);
+  if (explicit) return explicit;
   const entry = [...document.querySelectorAll('[data-primary-entry="true"]')]
-    .find((button) => button.dataset.routeAlias === clean);
+    .find((button) => normalizeRouteAlias(button.dataset.routeAlias) === clean);
   if (!entry) return null;
   return {
     workspace: entry.dataset.workspace || "home",
@@ -3290,18 +3409,20 @@ function workspaceTargetFromRoute(routeAlias) {
 
 function routeAliasFromLocation() {
   const hashRoute = decodeURIComponent(String(window.location.hash || "").replace(/^#/, ""));
-  if (hashRoute.startsWith("/")) return hashRoute;
+  if (hashRoute.startsWith("/")) return normalizeRouteAlias(hashRoute);
   const params = initialSearchParams();
-  return params.get("route") || "";
+  return normalizeRouteAlias(params.get("route") || "");
 }
 
-function syncBrowserRoute(routeAlias) {
-  const clean = String(routeAlias || "").trim();
-  if (!clean || !window.history || typeof window.history.replaceState !== "function") return;
+function syncBrowserRoute(routeAlias, options = {}) {
+  const clean = normalizeRouteAlias(routeAlias);
+  if (!clean || !window.history || typeof window.history.pushState !== "function") return;
   try {
     const url = new URL(String(window.location || ""));
     url.hash = clean;
-    window.history.replaceState(null, "", url);
+    if (String(window.location.hash || "") === `#${encodeURI(clean)}`) return;
+    const method = options.replace ? "replaceState" : "pushState";
+    window.history[method]({ routeAlias: clean }, "", url);
   } catch (_error) {
     // Static file previews can have unusual URLs; route state is still stored in context.
   }
@@ -3310,11 +3431,13 @@ function syncBrowserRoute(routeAlias) {
 function applyRouteFromLocation() {
   const routeTarget = workspaceTargetFromRoute(routeAliasFromLocation());
   if (routeTarget?.view) {
-    openFunctionView(routeTarget.view, { silent: true, routeAlias: routeTarget.routeAlias });
+    openFunctionView(routeTarget.view, { silent: true, routeAlias: routeTarget.routeAlias, skipRouteSync: true });
+    syncBrowserRoute(routeTarget.routeAlias, { replace: true });
     return true;
   }
   if (routeTarget?.workspace) {
-    renderWorkspace(routeTarget.workspace, { routeAlias: routeTarget.routeAlias, silent: true, preserveFocus: true });
+    renderWorkspace(routeTarget.workspace, { routeAlias: routeTarget.routeAlias, silent: true, preserveFocus: true, skipRouteSync: true });
+    syncBrowserRoute(routeTarget.routeAlias, { replace: true });
     return true;
   }
   return false;
@@ -3395,7 +3518,7 @@ function buildGlobalSearchIndex() {
     const title = button.textContent.trim();
     add({
       title,
-      category: button.dataset.entryType === "v01_alias" ? "兼容入口" : "一级入口",
+      category: "一级入口",
       path: button.dataset.routeAlias || workspaceLabel(button.dataset.workspace, "入口"),
       hint: button.dataset.featureView ? "打开功能" : "打开入口",
       workspace: button.dataset.workspace || "home",
@@ -3404,6 +3527,19 @@ function buildGlobalSearchIndex() {
       keywords: `${button.dataset.workspace || ""} ${button.dataset.routeAlias || ""} 第${button.dataset.navIndex || ""}入口 ${button.dataset.navIndex || ""}`,
       numbers: button.dataset.navIndex || "",
       priority: Number(button.dataset.navIndex || 50),
+    });
+  });
+
+  LEGACY_COMMAND_ALIASES.forEach((alias, index) => {
+    add({
+      title: alias.title,
+      category: "兼容别名",
+      path: alias.routeAlias,
+      hint: "打开兼容入口",
+      workspace: alias.workspace,
+      routeAlias: alias.routeAlias,
+      keywords: alias.keywords,
+      priority: 35 + index,
     });
   });
 
@@ -3462,14 +3598,15 @@ function buildGlobalSearchIndex() {
   });
 
   Object.values(FUNCTION_VIEWS).forEach((detail, index) => {
+    const workspaceId = workspaceForFunctionView(detail);
     add({
       title: detail.title,
       category: "功能面板",
-      path: `${WORKSPACE_LABELS[detail.workspace] || "PFI"} / ${detail.primaryAction}`,
+      path: `${WORKSPACE_LABELS[workspaceId] || "PFI"} / ${detail.primaryAction}`,
       hint: "打开功能面板",
-      workspace: detail.workspace,
+      workspace: workspaceId,
       view: detail.view,
-      routeAlias: detail.view === "single" ? "/investment/strategy-lab" : defaultRouteAliasForWorkspace(detail.workspace),
+      routeAlias: routeAliasForFunctionView(detail),
       keywords: `${detail.purpose || ""} ${(detail.checks || []).join(" ")} ${(detail.runSteps || []).join(" ")}`,
       priority: 40 + index,
     });
@@ -3653,10 +3790,11 @@ function setGlobalSearchActiveIndex(nextIndex) {
 function openGlobalSearchResult(index = globalSearchState.activeIndex) {
   const item = globalSearchState.results[index];
   if (!item) return;
+  const routeAlias = normalizeRouteAlias(item.routeAlias || "");
   if (item.view) {
-    openFunctionView(item.view, { routeAlias: item.routeAlias || "" });
+    openFunctionView(item.view, { routeAlias });
   } else {
-    setActiveWorkspace(item.workspace || "home", { routeAlias: item.routeAlias || "" });
+    setActiveWorkspace(item.workspace || "home", { routeAlias });
   }
   const input = document.querySelector("[data-global-search-input]");
   if (input) input.value = item.title;
@@ -4079,8 +4217,8 @@ function bindEvents() {
 
   document.querySelectorAll("[data-command-workspace]").forEach((button) => {
     button.addEventListener("click", () => {
-      const routeAlias = button.dataset.commandRoute || "";
-      if (routeAlias === "/investment/strategy-lab") {
+      const routeAlias = normalizeRouteAlias(button.dataset.commandRoute || "");
+      if (routeAlias === "/market-research/strategy-lab") {
         openFunctionView("single", { routeAlias });
       } else {
         setActiveWorkspace(button.dataset.commandWorkspace, { routeAlias });
@@ -4163,11 +4301,15 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
   const requestedWorkspace = readContext().workspace || "home";
-  renderWorkspace(WORKSPACES[requestedWorkspace] ? requestedWorkspace : "home", { silent: true, preserveFocus: true });
+  renderWorkspace(WORKSPACES[requestedWorkspace] ? requestedWorkspace : "home", { silent: true, preserveFocus: true, replaceRoute: true });
   void refreshRuntimeTrends({ rerender: true });
 });
 
 window.addEventListener("hashchange", () => {
+  applyRouteFromLocation();
+});
+
+window.addEventListener("popstate", () => {
   applyRouteFromLocation();
 });
 

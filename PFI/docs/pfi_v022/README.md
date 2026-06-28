@@ -37,7 +37,7 @@
 本轮完成 CNY 基准与汇率规则：
 
 - 将当前主显示口径锁定为 `CNY`，原始币种仅作为辅助显示。
-- 顶部汇率徽标使用 `AUD/CNY=4.69（YYYYMMDD--HH:MM）`，含义为 `1 AUD = 4.69 CNY`。
+- 顶部汇率徽标使用 `AUD/CNY=4.69（YYYY/MM/DD HH:MM）`，含义为 `1 AUD = 4.69 CNY`。
 - 新增真实本地快照 `PFI/data/fx_snapshots/AUD_CNY/2026-06-28.json`。
 - 新增 `PFI/src/pfi_v02/stage_v022_fx.py`，实现 06:00 有效日、普通运行不联网、显式刷新、快照 hash 和账本金额字段。
 - 新增 `PFI/tests/test_v022_fx_effective_date.py`，验证 Stage 2 acceptance criteria 和 stop condition。

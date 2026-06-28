@@ -10,7 +10,8 @@
 
 - 一共有 6 个执行 Stage：`S0` 到 `S5`。
 - 每次 run work 最多完成 1 个 Stage。
-- 本轮只完成 `S0 准备轮`。
+- `S0 准备轮` 已完成并推送 GitHub main。
+- 本轮只完成 `S1 产品壳与路由`。
 - Stage 0 不修改正式 UI。
 - 后续 Stage 未开始前，不允许声明 v0.2.1.1 完成。
 
@@ -50,6 +51,18 @@ Stage 0 退出条件：
 - `src/pfi_v02/stage_v0211_ui_recovery.py` 存在。
 - `tests/test_v0211_stage0_preparation_contract.py` 通过。
 - 三基文件记录当前 v0.2.1.1 准备轮和下一轮 Stage 1 边界。
+
+## Stage 1 退出条件
+
+Stage 1 退出条件：
+
+- `web/index.html` 正式一级入口为 10 个。
+- 旧入口只作为 route alias、搜索别名或命令别名，不再污染侧边一级导航。
+- 策略实验室 canonical route 为 `/market-research/strategy-lab`。
+- `#/strategy-lab` 和 `#/investment/strategy-lab` 兼容跳转到同一个策略实验室。
+- 浏览器前进后退可用。
+- `tests/test_v0211_stage1_product_shell_contract.py` 通过。
+- `node --check web/app/shell.js` 通过。
 
 ## 后续停止条件
 

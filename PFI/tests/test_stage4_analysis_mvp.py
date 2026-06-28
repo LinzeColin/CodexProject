@@ -156,7 +156,7 @@ class Stage4AnalysisMvpTest(unittest.TestCase):
         html = (root / "web" / "index.html").read_text(encoding="utf-8")
         js = (root / "web" / "app" / "shell.js").read_text(encoding="utf-8")
 
-        self.assertIn('data-primary-workspaces="15"', html)
+        self.assertIn('data-primary-workspaces="10"', html)
         for label in ("投资总览", "收益归因", "风险分析", "行为复盘", "消费总览", "订阅检测", "异常消费", "现金流预测"):
             self.assertIn(label, js)
         self.assertIn("PFIV02Stage4AnalysisMVPV1", js)

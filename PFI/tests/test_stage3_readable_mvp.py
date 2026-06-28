@@ -151,7 +151,7 @@ class Stage3ReadableMvpTest(unittest.TestCase):
         html = (root / "web" / "index.html").read_text(encoding="utf-8")
         js = (root / "web" / "app" / "shell.js").read_text(encoding="utf-8")
 
-        self.assertIn('data-primary-workspaces="15"', html)
+        self.assertIn('data-primary-workspaces="10"', html)
         for label in ("首页总览", "账户与资产", "账本流水", "投资管理", "消费管理", "数据源与上传", "建议与复盘", "报告与洞察"):
             self.assertIn(label, html + js)
         self.assertIn("data_health", html + js)

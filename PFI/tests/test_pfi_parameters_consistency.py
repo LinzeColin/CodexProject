@@ -82,7 +82,7 @@ class TestPFIParametersConsistency(unittest.TestCase):
         self.assertEqual(params["currency"]["base_currency"]["value"], BASE_CURRENCY)
         self.assertEqual(params["currency"]["base_currency"]["value"], "CNY")
         self.assertEqual(params["currency"]["frontend_fx_badge_pair"]["value"], "AUD/CNY")
-        self.assertEqual(params["fx"]["frontend_badge_format"]["value"], "AUD/CNY=4.69（YYYYMMDD--HH:MM）")
+        self.assertEqual(params["fx"]["frontend_badge_format"]["value"], "AUD/CNY=4.69（YYYY/MM/DD HH:MM）")
         self.assertEqual(params["fx"]["snapshot_time_local"]["value"], "06:00")
         self.assertFalse(params["fx"]["default_network_refresh"]["value"])
         self.assertTrue(params["fx"]["explicit_refresh_requires_allow_network"]["value"])
@@ -99,7 +99,7 @@ class TestPFIParametersConsistency(unittest.TestCase):
 
         self.assertIn(f"{pair}={rate:.2f}", self.index_html)
         self.assertIn(snapshot_time, self.index_html)
-        self.assertRegex(self.index_html, re.compile(r"AUD/CNY=4\.69（\d{8}--06:00）"))
+        self.assertRegex(self.index_html, re.compile(r"AUD/CNY=4\.69（\d{4}/\d{2}/\d{2} 06:00）"))
         self.assertIn('data-fx-cache-state="cached"', self.index_html)
         self.assertEqual(params["fx"]["stage2_target_pair"]["value"], "AUD/CNY")
         self.assertEqual(params["fx"]["stage2_target_pair"]["value"], pair)

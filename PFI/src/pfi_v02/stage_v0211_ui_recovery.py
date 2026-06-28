@@ -5,6 +5,7 @@ from dataclasses import asdict, dataclass
 
 VERSION_NAME = "v0.2.1.1 Product UI Recovery"
 STAGE0_TASK_ID = "V0211-S0-T01"
+STAGE1_TASK_ID = "V0211-S1-T01"
 TOTAL_EXECUTION_STAGES = 6
 
 
@@ -123,6 +124,7 @@ EXECUTION_STAGES: tuple[V0211ExecutionStage, ...] = (
         ),
         (
             "真实浏览器点击路径：首页总览 -> 投资管理 -> 设置 -> 后退 -> 投资管理",
+            "浏览器前进后退可用",
             "首页无设置栏、运行边界、反馈控制台、手机预览和 Task Pack",
         ),
     ),
@@ -235,6 +237,17 @@ STAGE0_FORBIDDEN_FILE_CHANGES = (
     "PFI/src/pfi_os/app/streamlit_app.py",
 )
 
+STAGE1_PRIMARY_NAVIGATION = RTF_PRIMARY_NAVIGATION
+
+STAGE1_LEGACY_ROUTE_ALIASES = {
+    "首页": "/home",
+    "市场": "/market-research?tab=market",
+    "研究": "/market-research?tab=research",
+    "持仓": "/investment?tab=holdings",
+    "策略实验室": "/market-research/strategy-lab",
+    "数据与系统": "/settings?tab=data-system",
+}
+
 
 def build_v0211_stage0_contract() -> dict[str, object]:
     return {
@@ -271,9 +284,53 @@ def build_v0211_stage0_contract() -> dict[str, object]:
     }
 
 
+def build_v0211_stage1_contract() -> dict[str, object]:
+    stage = next(item for item in EXECUTION_STAGES if item.stage_id == "S1")
+    return {
+        "schema": "PFIV0211ProductUIRecoveryStage1ContractV1",
+        "version_name": VERSION_NAME,
+        "stage": "S1 产品壳与路由",
+        "task_id": STAGE1_TASK_ID,
+        "project_root": "CodexProject/PFI",
+        "primary_navigation_count": len(STAGE1_PRIMARY_NAVIGATION),
+        "primary_navigation": STAGE1_PRIMARY_NAVIGATION,
+        "legacy_route_aliases": STAGE1_LEGACY_ROUTE_ALIASES,
+        "delivery_focus": stage.delivery_focus,
+        "forbidden_work": stage.forbidden_work,
+        "acceptance_gate": stage.acceptance_gate,
+        "browser_route_contract": {
+            "state_source": "hash route",
+            "click_updates_history": True,
+            "back_forward_supported": True,
+            "home_route": "/home",
+            "strategy_lab_route": "/market-research/strategy-lab",
+        },
+        "home_forbidden_visible_text": (
+            "运行边界",
+            "Task Pack",
+            "Demo",
+            "Prototype",
+            "手机预览",
+            "运行反馈控制台",
+            "多模态交互反馈",
+        ),
+        "stage1_non_goals": (
+            "不做图表",
+            "不做上传闭环",
+            "不做持仓编辑",
+            "不做报告",
+            "不声明 v0.2.1.1 完成",
+        ),
+    }
+
+
 def v0211_stage_ids() -> tuple[str, ...]:
     return tuple(stage.stage_id for stage in EXECUTION_STAGES)
 
 
 def v0211_default_navigation_labels() -> tuple[str, ...]:
     return RTF_PRIMARY_NAVIGATION
+
+
+def v0211_stage1_navigation_labels() -> tuple[str, ...]:
+    return STAGE1_PRIMARY_NAVIGATION

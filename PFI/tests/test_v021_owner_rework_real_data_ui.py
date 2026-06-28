@@ -146,7 +146,7 @@ class V021OwnerReworkRealDataUiTest(unittest.TestCase):
         self.assertIn("metadatabase_transactions_path", result)
 
     def test_mobile_primary_entries_remain_visible_and_scrollable(self) -> None:
-        self.assertIn('data-primary-workspaces="15"', self.html)
+        self.assertIn('data-primary-workspaces="10"', self.html)
         self.assertNotIn(".side-nav {\n    display: none;", self.css)
         for required in (
             "grid-template-areas:\n      \"top\"\n      \"nav\"\n      \"main\"",
