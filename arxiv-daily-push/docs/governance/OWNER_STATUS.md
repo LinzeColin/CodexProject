@@ -39,7 +39,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `PARTIAL` (1024/1029 active parameters, 119/119 active formulas)
+- implementation_congruence: `PARTIAL` (1026/1031 active parameters, 119/119 active formulas)
 - parameter_source_quality: `PARTIAL`
 - methodological_rationale: `VERIFIED`
 - empirical_validation: `VERIFIED`
@@ -71,23 +71,23 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - model_count: `117`
 - total_formulas: `119`
 - active_formulas: `119`
-- total_parameters: `1046`
-- active_parameters: `1029`
+- total_parameters: `1048`
+- active_parameters: `1031`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_VALIDATOR_BLOCKED_NO_PRODUCTION`
+- release_gate: `S2PMT07_MAINLINE_ATTESTATION_PASS_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `0`
 - commit_bound_events: `4`
-- legacy_unbound_events: `204`
+- legacy_unbound_events: `205`
 - precommit_pending_events: `40`
-- pending_or_stale_events: `243`
+- pending_or_stale_events: `244`
 
 ## 15. UNKNOWN
 
@@ -97,11 +97,11 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 - source_base_commit: `12e91a8e1b84fe29724f43229131bd43f8fa31cd`
 - source_tree_hash: `8caef1969ddfe23755890506daa0d02e6f6df81f`
-- source_snapshot_hash: `sha256:9230d8760a2ce023022a7f4ad7b8b23dad53645b6177ccdb7c38b51cc21d61fe`
-- snapshot_event_time: `2026-06-28T09:26:37+10:00`
+- source_snapshot_hash: `sha256:4aca02d69498180095923ed7acf5c5b3f30c0dc147fd651170ece7545f1329d3`
+- snapshot_event_time: `2026-06-28T10:30:22+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PM / S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_VALIDATOR_BLOCKED_NO_PRODUCTION`
+- phase/gate: `S2PM / S2PMT07_MAINLINE_ATTESTATION_PASS_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 

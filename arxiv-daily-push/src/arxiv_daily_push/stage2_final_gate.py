@@ -506,6 +506,43 @@ S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_FORBIDDEN_FLAGS = (
     "v7_1_baseline_changed",
     "v7_2_contract_files_changed",
 )
+S2PMT07_MAINLINE_ATTESTATION_REQUIRED_VALIDATIONS = (
+    "FOCUSED_FINAL_GATE_TESTS",
+    "FULL_ADP_UNITTEST",
+    "PROJECT_GOVERNANCE",
+    "CHANGED_ONLY_SEMANTIC_GOVERNANCE",
+    "V7_2_VALIDATOR",
+    "LEAN_RENDER",
+    "USER_CENTER_TIMESTAMP_CHECK",
+    "STRUCTURED_PARSE",
+    "DIFF_CHECK",
+    "PRODUCTION_TRUE_FLAG_DIFF_SCAN",
+    "OPEN_PR_COUNT_ZERO",
+    "REMOTE_ADP_ARXIV_S2P_BRANCH_SCAN_EMPTY",
+    "PYCACHE_SCAN_EMPTY",
+)
+S2PMT07_MAINLINE_ATTESTATION_NO_PRODUCTION_FLAGS = (
+    "production_acceptance_claimed",
+    "integrated_production_accepted",
+    "stage2_integrated_production_accepted",
+    "daily_operation_enabled",
+    "real_smtp_sent",
+    "real_smtp_send_enabled",
+    "scheduler_enabled",
+    "scheduler_install_enabled",
+    "release_uploaded",
+    "release_packaging_enabled",
+    "production_restore_enabled",
+    "production_restore_executed",
+    "public_schema_changed",
+    "db_migration_executed",
+    "production_queue_mutated",
+    "source_adapter_changed",
+    "ranking_algorithm_changed",
+    "current_pointer_changed",
+    "v7_1_baseline_changed",
+    "v7_2_contract_files_changed",
+)
 S2PMT07_P0_TECHNICAL_CLOSURE_CANDIDATE_PACKAGE = (
     "governance/run_manifests/ADP-S2PMT07-P0-TECHNICAL-CLOSURE-CANDIDATE-PACKAGE-20260627.json"
 )
@@ -3201,6 +3238,135 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
             errors.append(f"{flag} must be false")
     if state.get("state_hash") != _stable_hash({key: value for key, value in state.items() if key != "state_hash"}):
         errors.append("final bundle prerequisite plan state_hash does not match state content")
+    return errors
+
+
+def build_s2pmt07_mainline_attestation_state(
+    *,
+    target_commit: str,
+    origin_main_commit: str,
+    target_commit_on_origin_main: bool,
+    open_pr_count: int,
+    remote_adp_arxiv_s2p_branch_count: int,
+    validations: Mapping[str, bool],
+) -> dict[str, Any]:
+    """Build a no-production attestation that a S2PMT07 evidence commit is contained in main."""
+
+    validation_results = {
+        name: bool(validations.get(name, False))
+        for name in S2PMT07_MAINLINE_ATTESTATION_REQUIRED_VALIDATIONS
+    }
+    missing_validations = [
+        name for name, passed in validation_results.items() if passed is not True
+    ]
+    target_commit_is_on_origin_main = bool(target_commit) and bool(origin_main_commit) and target_commit_on_origin_main
+    blocking_reasons: list[str] = []
+    if not target_commit_is_on_origin_main:
+        blocking_reasons.append("target_commit_not_on_origin_main")
+    if open_pr_count != 0:
+        blocking_reasons.append("open_pr_count_not_zero")
+    if remote_adp_arxiv_s2p_branch_count != 0:
+        blocking_reasons.append("remote_adp_arxiv_s2p_branch_count_not_zero")
+    if missing_validations:
+        blocking_reasons.append("required_validation_missing")
+
+    mainline_attested = not blocking_reasons
+    state = {
+        "status": "pass" if mainline_attested else "blocked",
+        "scope": "s2pmt07_mainline_attestation_only_no_final_acceptance",
+        "task_id": S2PMT07_TASK_ID,
+        "acceptance_id": S2PMT07_ACCEPTANCE_ID,
+        "attested_commit": target_commit,
+        "origin_main_commit": origin_main_commit,
+        "target_commit_on_origin_main": target_commit_is_on_origin_main,
+        "open_pr_count": open_pr_count,
+        "remote_adp_arxiv_s2p_branch_count": remote_adp_arxiv_s2p_branch_count,
+        "required_validations": list(S2PMT07_MAINLINE_ATTESTATION_REQUIRED_VALIDATIONS),
+        "validation_results": validation_results,
+        "missing_validations": missing_validations,
+        "mainline_attested": mainline_attested,
+        "blocking_reasons": blocking_reasons,
+        "p0_zero_proven": False,
+        "p1_zero_proven": False,
+        "p0_closure_claimed": False,
+        "p1_closure_claimed": False,
+        "final_acceptance_bundle_present": False,
+        **{flag: False for flag in S2PMT07_MAINLINE_ATTESTATION_NO_PRODUCTION_FLAGS},
+        "state_hash": "",
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
+def validate_s2pmt07_mainline_attestation_state(state: Mapping[str, Any]) -> list[str]:
+    """Validate a S2PMT07 mainline attestation without treating it as final acceptance."""
+
+    errors: list[str] = []
+    if state.get("status") not in {"pass", "blocked"}:
+        errors.append("mainline attestation status must be pass or blocked")
+    if state.get("scope") != "s2pmt07_mainline_attestation_only_no_final_acceptance":
+        errors.append("mainline attestation scope is invalid")
+    if state.get("task_id") != S2PMT07_TASK_ID:
+        errors.append("mainline attestation task_id is invalid")
+    if state.get("acceptance_id") != S2PMT07_ACCEPTANCE_ID:
+        errors.append("mainline attestation acceptance_id is invalid")
+
+    attested_commit = state.get("attested_commit")
+    origin_main_commit = state.get("origin_main_commit")
+    if not isinstance(attested_commit, str) or not attested_commit:
+        errors.append("mainline attestation attested_commit must be a non-empty string")
+    if not isinstance(origin_main_commit, str) or not origin_main_commit:
+        errors.append("mainline attestation origin_main_commit must be a non-empty string")
+    if state.get("target_commit_on_origin_main") is not True:
+        errors.append("mainline attestation target commit must be contained in origin/main")
+    if state.get("open_pr_count") != 0:
+        errors.append("mainline attestation open_pr_count must be 0")
+    if state.get("remote_adp_arxiv_s2p_branch_count") != 0:
+        errors.append("mainline attestation remote_adp_arxiv_s2p_branch_count must be 0")
+    if tuple(state.get("required_validations", [])) != S2PMT07_MAINLINE_ATTESTATION_REQUIRED_VALIDATIONS:
+        errors.append("mainline attestation required_validations are invalid")
+
+    validation_results = _mapping(state.get("validation_results"))
+    missing_validations = []
+    for name in S2PMT07_MAINLINE_ATTESTATION_REQUIRED_VALIDATIONS:
+        if validation_results.get(name) is not True:
+            missing_validations.append(name)
+    if state.get("missing_validations") != missing_validations:
+        errors.append("mainline attestation missing_validations are invalid")
+
+    for flag in (
+        "p0_zero_proven",
+        "p1_zero_proven",
+        "p0_closure_claimed",
+        "p1_closure_claimed",
+        "final_acceptance_bundle_present",
+    ):
+        if state.get(flag) is not False:
+            errors.append(f"{flag} must be false")
+    for flag in S2PMT07_MAINLINE_ATTESTATION_NO_PRODUCTION_FLAGS:
+        if state.get(flag) is not False:
+            errors.append(f"{flag} must be false")
+
+    expected_blocking_reasons: list[str] = []
+    if state.get("target_commit_on_origin_main") is not True:
+        expected_blocking_reasons.append("target_commit_not_on_origin_main")
+    if state.get("open_pr_count") != 0:
+        expected_blocking_reasons.append("open_pr_count_not_zero")
+    if state.get("remote_adp_arxiv_s2p_branch_count") != 0:
+        expected_blocking_reasons.append("remote_adp_arxiv_s2p_branch_count_not_zero")
+    if missing_validations:
+        expected_blocking_reasons.append("required_validation_missing")
+    for reason in expected_blocking_reasons:
+        if reason not in state.get("blocking_reasons", []):
+            errors.append(f"mainline attestation must include blocker {reason}")
+
+    expected_status = "blocked" if expected_blocking_reasons else "pass"
+    if state.get("status") != expected_status:
+        errors.append(f"mainline attestation status must be {expected_status}")
+    if state.get("mainline_attested") is not (not expected_blocking_reasons):
+        errors.append("mainline attestation mainline_attested is invalid")
+    if state.get("state_hash") != _stable_hash({key: value for key, value in state.items() if key != "state_hash"}):
+        errors.append("mainline attestation state_hash does not match state content")
     return errors
 
 

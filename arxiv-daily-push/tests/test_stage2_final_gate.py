@@ -67,6 +67,8 @@ from arxiv_daily_push.stage2_final_gate import (
     S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_NO_PRODUCTION_FLAGS,
     S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_REQUIRED_FIELDS,
     S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_SCHEMA_VERSION,
+    S2PMT07_MAINLINE_ATTESTATION_NO_PRODUCTION_FLAGS,
+    S2PMT07_MAINLINE_ATTESTATION_REQUIRED_VALIDATIONS,
     S2PMT07_P0_P1_ZERO_PROOF_CLOSURE_DECISION,
     S2PMT07_P0_P1_ZERO_PROOF_NO_PRODUCTION_FLAGS,
     S2PMT07_P0_P1_ZERO_PROOF_REQUIRED_FIELDS,
@@ -92,6 +94,7 @@ from arxiv_daily_push.stage2_final_gate import (
     build_independent_final_reviewer_assignment_hash,
     build_independent_final_reviewer_assignment_validation_state,
     build_independent_final_reviewer_assignment_request_state,
+    build_s2pmt07_mainline_attestation_state,
     build_final_acceptance_bundle_manifest_hash,
     build_final_acceptance_bundle_manifest_validation_state,
     build_p0_p1_zero_proof_assembly_state,
@@ -131,6 +134,7 @@ from arxiv_daily_push.stage2_final_gate import (
     validate_independent_final_closure_decision_request_state,
     validate_independent_final_reviewer_assignment_artifact,
     validate_independent_final_reviewer_assignment_request_state,
+    validate_s2pmt07_mainline_attestation_state,
     validate_p0_p1_zero_proof_assembly_state,
     validate_p0_p1_zero_proof_artifact,
     validate_p0_p1_zero_proof_readiness_state,
@@ -2413,6 +2417,61 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertIn("reviewer_independence.reviewer_involved_in_s2pmt01_t06 must be false", errors)
         self.assertIn("reviewer_assignment.reviewer_id must not be codex-current-agent", errors)
         self.assertIn("no_production_side_effects.real_smtp_sent must be false", errors)
+
+    def test_s2pmt07_mainline_attestation_binds_main_branch_without_production_acceptance(self) -> None:
+        target_commit = "729cda3c6b5d6618ab29afa3161fc3ecd721b87c"
+        origin_main_commit = "e7cdeb7a342a4ecee2bde43db479ee30ca72c042"
+        state = build_s2pmt07_mainline_attestation_state(
+            target_commit=target_commit,
+            origin_main_commit=origin_main_commit,
+            target_commit_on_origin_main=True,
+            open_pr_count=0,
+            remote_adp_arxiv_s2p_branch_count=0,
+            validations={name: True for name in S2PMT07_MAINLINE_ATTESTATION_REQUIRED_VALIDATIONS},
+        )
+
+        self.assertEqual(state["status"], "pass")
+        self.assertEqual(state["scope"], "s2pmt07_mainline_attestation_only_no_final_acceptance")
+        self.assertEqual(state["attested_commit"], target_commit)
+        self.assertEqual(state["origin_main_commit"], origin_main_commit)
+        self.assertTrue(state["target_commit_on_origin_main"])
+        self.assertEqual(state["open_pr_count"], 0)
+        self.assertEqual(state["remote_adp_arxiv_s2p_branch_count"], 0)
+        self.assertEqual(tuple(state["required_validations"]), S2PMT07_MAINLINE_ATTESTATION_REQUIRED_VALIDATIONS)
+        self.assertEqual(state["missing_validations"], [])
+        self.assertTrue(state["mainline_attested"])
+        self.assertFalse(state["p0_zero_proven"])
+        self.assertFalse(state["p1_zero_proven"])
+        self.assertFalse(state["integrated_production_accepted"])
+        self.assertFalse(state["daily_operation_enabled"])
+        for flag in S2PMT07_MAINLINE_ATTESTATION_NO_PRODUCTION_FLAGS:
+            self.assertFalse(state[flag])
+        self.assertEqual(validate_s2pmt07_mainline_attestation_state(state), [])
+
+        tampered = json.loads(json.dumps(state))
+        tampered["target_commit_on_origin_main"] = False
+        self.assertIn(
+            "mainline attestation target commit must be contained in origin/main",
+            validate_s2pmt07_mainline_attestation_state(tampered),
+        )
+
+        tampered_flag = json.loads(json.dumps(state))
+        tampered_flag["real_smtp_sent"] = True
+        self.assertIn("real_smtp_sent must be false", validate_s2pmt07_mainline_attestation_state(tampered_flag))
+
+        blocked = build_s2pmt07_mainline_attestation_state(
+            target_commit=target_commit,
+            origin_main_commit=origin_main_commit,
+            target_commit_on_origin_main=False,
+            open_pr_count=1,
+            remote_adp_arxiv_s2p_branch_count=1,
+            validations={name: True for name in S2PMT07_MAINLINE_ATTESTATION_REQUIRED_VALIDATIONS[:-1]},
+        )
+        self.assertEqual(blocked["status"], "blocked")
+        self.assertIn("target_commit_not_on_origin_main", blocked["blocking_reasons"])
+        self.assertIn("open_pr_count_not_zero", blocked["blocking_reasons"])
+        self.assertIn("remote_adp_arxiv_s2p_branch_count_not_zero", blocked["blocking_reasons"])
+        self.assertIn("required_validation_missing", blocked["blocking_reasons"])
 
     def _valid_zero_proof_payload(self) -> dict[str, object]:
         payload: dict[str, object] = {

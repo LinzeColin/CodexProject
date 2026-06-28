@@ -21,7 +21,7 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 215
+- task_count: 216
 - acceptance_count: 126
 
 ## Delivery Tasks
@@ -301,6 +301,14 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PMT07-P0-P1-ZERO-PROOF-ASSEMBLY | S2PM | blocked | `ACC-S2PMT07-FINAL-REVIEW` | Assembles P0/P1 technical candidate inputs for future zero-proof review; independent final closure decision and zero-proof artifact remain missing, so P0/P1 plus production gates remain blocked. |
 | S2PMT07-INDEPENDENT-FINAL-CLOSURE-DECISION-REQUEST | S2PM | blocked | `ACC-S2PMT07-FINAL-REVIEW` | Defines the independent final reviewer request state for the future P0/P1 closure decision; reviewer assignment, closure decision, zero-proof artifact, P0/P1 closure, and production gates remain blocked. |
 | S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-REQUEST | S2PM | blocked | `ACC-S2PMT07-FINAL-REVIEW` | Defines the independent final reviewer assignment request state for the future P0/P1 closure decision; reviewer assignment, closure decision, zero-proof artifact, P0/P1 closure, and production gates remain blocked. |
+| S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-ARTIFACT-VALIDATOR | S2PM | blocked | `ACC-S2PMT07-FINAL-REVIEW` | Defines the future independent final reviewer assignment artifact validator; assignment artifact, reviewer assignment, independent closure decision, zero-proof artifact, P0/P1 closure, S2PLT04, final bundle, and production gates remain blocked. |
+| S2PMT07-MAINLINE-ATTESTATION | S2PM | completed | `ACC-S2PMT07-FINAL-REVIEW` | Binds prior S2PMT07 evidence commit ancestry on origin/main, open PR count 0, and ADP/arxiv/s2p remote branch count 0; this is mainline hygiene evidence only and does not close P0/P1, complete S2PLT04, create final bundle, or change production state. |
+
+## 2026-06-28 10:08:17 Australia/Sydney - S2PMT07 mainline attestation
+
+- Added phase record `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_MAINLINE_ATTESTATION.md`.
+- Added manifest `governance/run_manifests/ADP-S2PMT07-MAINLINE-ATTESTATION-20260628.json`.
+- This is mainline hygiene evidence only: target S2PMT07 evidence commit is on `origin/main`, open PR count and ADP/arxiv/s2p remote branch count are `0`, while P0/P1 zero proof, S2PLT04 completion, final bundle, SMTP, scheduler, Release, restore, CURRENT/V7, daily operation, and integrated production acceptance remain blocked.
 
 ## 2026-06-28 08:48:03 Australia/Sydney - S2PMT07 independent final reviewer assignment request
 
