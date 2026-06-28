@@ -21,12 +21,19 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 247
+- task_count: 248
 - acceptance_count: 127
 
 ## Delivery Tasks
 
 The machine-readable task source is `delivery_tasks.yaml`.
+
+## 2026-06-28 23:58:57 Australia/Sydney - S2PMT07 Remaining Final-Bundle Artifact CLI Validators
+
+- `S2PMT07-REMAINING-FINAL-BUNDLE-ARTIFACT-CLI-VALIDATORS` exposes four artifact-level commands: `validate-final-bundle-manifest`, `validate-s2plt04-completion-report`, `validate-no-production-attestation`, and `validate-next-agent-handoff`.
+- Manifest, S2PLT04 completion report, and next-agent handoff remain missing and return `blocked` / exit 2; committed no-production attestation returns `pass` / exit 0.
+- These commands are validators only. They do not create final-bundle artifacts, assign a reviewer, close P0/P1, complete S2PLT04, execute final commands, or accept production.
+- No SMTP, scheduler, Release, restore, schema/DB, source/ranking, CURRENT/V7, DAILY_OPERATION, or integrated production acceptance side effect is claimed.
 
 ## 2026-06-28 23:41:05 Australia/Sydney - S2PMT07 Final Command Execution CLI Validator
 
