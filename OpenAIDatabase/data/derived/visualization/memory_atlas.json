@@ -1,6 +1,6 @@
 {
   "agent_recommendations": {
-    "generated_at": "2026-06-28T21:40:13Z",
+    "generated_at": "2026-06-28T21:41:00Z",
     "memory": {
       "added": [],
       "current": [
@@ -61,128 +61,7 @@
         }
       ],
       "deleted": [],
-      "modified": [
-        {
-          "after": {
-            "confidence": "high",
-            "evidence_count": 6007,
-            "id": "codex_signal_github_as_memory_source",
-            "importance": "高",
-            "reason": "从 401 个真实 Codex session 的用户消息和任务目标中检测到 6007 次相关信号。",
-            "scope": "ChatGPT / Codex / future agents",
-            "source": "real_codex_local_sessions",
-            "statement": "GitHub 上的 OpenAIDatabase 应作为任意 agent 可读取的长期记忆、画像、偏好和历史上下文数据库。",
-            "title": "OpenAIDatabase 是 durable memory source"
-          },
-          "before": {
-            "confidence": "high",
-            "evidence_count": 4789,
-            "id": "codex_signal_github_as_memory_source",
-            "importance": "高",
-            "reason": "从 393 个真实 Codex session 的用户消息和任务目标中检测到 4789 次相关信号。",
-            "scope": "ChatGPT / Codex / future agents",
-            "source": "real_codex_local_sessions",
-            "statement": "GitHub 上的 OpenAIDatabase 应作为任意 agent 可读取的长期记忆、画像、偏好和历史上下文数据库。",
-            "title": "OpenAIDatabase 是 durable memory source"
-          }
-        },
-        {
-          "after": {
-            "confidence": "high",
-            "evidence_count": 2645,
-            "id": "codex_signal_agent_personalization",
-            "importance": "高",
-            "reason": "从 401 个真实 Codex session 的用户消息和任务目标中检测到 2645 次相关信号。",
-            "scope": "ChatGPT / Codex / future agents",
-            "source": "real_codex_local_sessions",
-            "statement": "所有 agent 访问后都应能生成适配用户的 profile、preference、project context、rules 和 history summary。",
-            "title": "任意 agent personalization"
-          },
-          "before": {
-            "confidence": "high",
-            "evidence_count": 2425,
-            "id": "codex_signal_agent_personalization",
-            "importance": "高",
-            "reason": "从 393 个真实 Codex session 的用户消息和任务目标中检测到 2425 次相关信号。",
-            "scope": "ChatGPT / Codex / future agents",
-            "source": "real_codex_local_sessions",
-            "statement": "所有 agent 访问后都应能生成适配用户的 profile、preference、project context、rules 和 history summary。",
-            "title": "任意 agent personalization"
-          }
-        },
-        {
-          "after": {
-            "confidence": "high",
-            "evidence_count": 2502,
-            "id": "codex_signal_real_data_required",
-            "importance": "高",
-            "reason": "从 401 个真实 Codex session 的用户消息和任务目标中检测到 2502 次相关信号。",
-            "scope": "ChatGPT / Codex / future agents",
-            "source": "real_codex_local_sessions",
-            "statement": "用户明确要求使用真实 Codex / ChatGPT / GitHub 数据，不接受 mock、伪进度或只给概念演示。",
-            "title": "真实数据优先"
-          },
-          "before": {
-            "confidence": "high",
-            "evidence_count": 2242,
-            "id": "codex_signal_real_data_required",
-            "importance": "高",
-            "reason": "从 393 个真实 Codex session 的用户消息和任务目标中检测到 2242 次相关信号。",
-            "scope": "ChatGPT / Codex / future agents",
-            "source": "real_codex_local_sessions",
-            "statement": "用户明确要求使用真实 Codex / ChatGPT / GitHub 数据，不接受 mock、伪进度或只给概念演示。",
-            "title": "真实数据优先"
-          }
-        },
-        {
-          "after": {
-            "confidence": "high",
-            "evidence_count": 1331,
-            "id": "codex_signal_prefer_chinese",
-            "importance": "高",
-            "reason": "从 401 个真实 Codex session 的用户消息和任务目标中检测到 1331 次相关信号。",
-            "scope": "ChatGPT / Codex / future agents",
-            "source": "real_codex_local_sessions",
-            "statement": "用户长期偏好中文输出；代码、API、库名、错误信息和专业术语可保留英文。",
-            "title": "默认中文输出"
-          },
-          "before": {
-            "confidence": "high",
-            "evidence_count": 1227,
-            "id": "codex_signal_prefer_chinese",
-            "importance": "高",
-            "reason": "从 393 个真实 Codex session 的用户消息和任务目标中检测到 1227 次相关信号。",
-            "scope": "ChatGPT / Codex / future agents",
-            "source": "real_codex_local_sessions",
-            "statement": "用户长期偏好中文输出；代码、API、库名、错误信息和专业术语可保留英文。",
-            "title": "默认中文输出"
-          }
-        },
-        {
-          "after": {
-            "confidence": "high",
-            "evidence_count": 839,
-            "id": "codex_signal_human_readable_reports",
-            "importance": "高",
-            "reason": "从 401 个真实 Codex session 的用户消息和任务目标中检测到 839 次相关信号。",
-            "scope": "ChatGPT / Codex / future agents",
-            "source": "real_codex_local_sessions",
-            "statement": "处理记忆或行为数据后，应输出人能直接使用的话题、行动、建议、机会、ROI、能力成长和风险提醒。",
-            "title": "报告面向人类 ROI 和成长"
-          },
-          "before": {
-            "confidence": "high",
-            "evidence_count": 794,
-            "id": "codex_signal_human_readable_reports",
-            "importance": "高",
-            "reason": "从 393 个真实 Codex session 的用户消息和任务目标中检测到 794 次相关信号。",
-            "scope": "ChatGPT / Codex / future agents",
-            "source": "real_codex_local_sessions",
-            "statement": "处理记忆或行为数据后，应输出人能直接使用的话题、行动、建议、机会、ROI、能力成长和风险提醒。",
-            "title": "报告面向人类 ROI 和成长"
-          }
-        }
-      ]
+      "modified": []
     },
     "meta_data": {
       "added": [],
@@ -211,56 +90,7 @@
         }
       ],
       "deleted": [],
-      "modified": [
-        {
-          "after": {
-            "confidence": "high",
-            "evidence_count": 12085,
-            "id": "codex_signal_no_plaintext_secrets_in_git",
-            "importance": "高",
-            "reason": "从 401 个真实 Codex session 的用户消息和任务目标中检测到 12085 次相关信号。",
-            "scope": "ChatGPT / Codex / future agents",
-            "source": "real_codex_local_sessions",
-            "statement": "GitHub 备份中不得提交 plaintext high-risk secrets；金融/交易 agent 使用 secret_ref 和受控本地 resolver。",
-            "title": "GitHub secret 边界"
-          },
-          "before": {
-            "confidence": "high",
-            "evidence_count": 10054,
-            "id": "codex_signal_no_plaintext_secrets_in_git",
-            "importance": "高",
-            "reason": "从 393 个真实 Codex session 的用户消息和任务目标中检测到 10054 次相关信号。",
-            "scope": "ChatGPT / Codex / future agents",
-            "source": "real_codex_local_sessions",
-            "statement": "GitHub 备份中不得提交 plaintext high-risk secrets；金融/交易 agent 使用 secret_ref 和受控本地 resolver。",
-            "title": "GitHub secret 边界"
-          }
-        },
-        {
-          "after": {
-            "confidence": "high",
-            "evidence_count": 5393,
-            "id": "codex_signal_authorization_gate",
-            "importance": "高",
-            "reason": "从 401 个真实 Codex session 的用户消息和任务目标中检测到 5393 次相关信号。",
-            "scope": "ChatGPT / Codex / future agents",
-            "source": "real_codex_local_sessions",
-            "statement": "用户说先不开始时必须先澄清需求；用户授权开始后应持续推进到可验证结果。",
-            "title": "授权边界"
-          },
-          "before": {
-            "confidence": "high",
-            "evidence_count": 4269,
-            "id": "codex_signal_authorization_gate",
-            "importance": "高",
-            "reason": "从 393 个真实 Codex session 的用户消息和任务目标中检测到 4269 次相关信号。",
-            "scope": "ChatGPT / Codex / future agents",
-            "source": "real_codex_local_sessions",
-            "statement": "用户说先不开始时必须先澄清需求；用户授权开始后应持续推进到可验证结果。",
-            "title": "授权边界"
-          }
-        }
-      ]
+      "modified": []
     },
     "schema_version": "codex_agent_recommendations.v1",
     "session_count": 401,
@@ -4409,8 +4239,8 @@
       {
         "abort_count": 8,
         "activity_level": 5,
-        "activity_score": 452209,
-        "assistant_message_count": 51022,
+        "activity_score": 452294,
+        "assistant_message_count": 51031,
         "candidate_count": 0,
         "codex_session_count": 8,
         "conversation_count": 8,
@@ -4419,14 +4249,14 @@
         "decision_count": 0,
         "error_event_count": 0,
         "memory_count": 0,
-        "message_count": 56059,
+        "message_count": 56068,
         "mid_long_memory_count": 0,
         "short_memory_count": 0,
-        "tool_call_count": 198047,
+        "tool_call_count": 198085,
         "user_message_count": 4912
       }
     ],
-    "max_activity_score": 452209,
+    "max_activity_score": 452294,
     "metric_note": "conversation_activity combines OpenAI export manifest and real local Codex redacted session summaries; memory_activity is a derived-memory increment proxy. It is not token usage or active screen time.",
     "monthly": [
       {
@@ -4565,8 +4395,8 @@
       {
         "abort_count": 64,
         "activity_level": 5,
-        "activity_score": 1005078,
-        "assistant_message_count": 117437,
+        "activity_score": 1005163,
+        "assistant_message_count": 117446,
         "candidate_count": 112,
         "codex_session_count": 401,
         "conversation_count": 512,
@@ -4575,10 +4405,10 @@
         "decision_count": 4,
         "error_event_count": 0,
         "memory_count": 150,
-        "message_count": 133540,
+        "message_count": 133549,
         "mid_long_memory_count": 57,
         "short_memory_count": 87,
-        "tool_call_count": 434136,
+        "tool_call_count": 434174,
         "user_message_count": 15093
       }
     ],
@@ -5165,8 +4995,8 @@
       {
         "abort_count": 25,
         "activity_level": 5,
-        "activity_score": 782871,
-        "assistant_message_count": 90581,
+        "activity_score": 782956,
+        "assistant_message_count": 90590,
         "candidate_count": 0,
         "codex_session_count": 56,
         "conversation_count": 56,
@@ -5175,10 +5005,10 @@
         "decision_count": 0,
         "error_event_count": 0,
         "memory_count": 0,
-        "message_count": 101079,
+        "message_count": 101088,
         "mid_long_memory_count": 0,
         "short_memory_count": 0,
-        "tool_call_count": 340731,
+        "tool_call_count": 340769,
         "user_message_count": 10114
       }
     ],
@@ -5205,8 +5035,8 @@
       {
         "abort_count": 64,
         "activity_level": 5,
-        "activity_score": 1006055,
-        "assistant_message_count": 117718,
+        "activity_score": 1006140,
+        "assistant_message_count": 117727,
         "candidate_count": 158,
         "codex_session_count": 401,
         "conversation_count": 573,
@@ -5215,10 +5045,10 @@
         "decision_count": 4,
         "error_event_count": 0,
         "memory_count": 221,
-        "message_count": 133953,
+        "message_count": 133962,
         "mid_long_memory_count": 57,
         "short_memory_count": 158,
-        "tool_call_count": 434136,
+        "tool_call_count": 434174,
         "user_message_count": 15225
       }
     ]
@@ -31916,6 +31746,48 @@
       "weight": 0.35
     },
     {
+      "id": "edge:memory:codex_session_019ef70d-375e-7f70-a194-734dd9ed09f6:theme:memory-rag-continuity",
+      "kind": "belongs_to_theme",
+      "source": "memory:codex_session_019ef70d-375e-7f70-a194-734dd9ed09f6",
+      "target": "theme:memory-rag-continuity",
+      "weight": 0.83
+    },
+    {
+      "id": "edge:memory:codex_session_019ef70d-375e-7f70-a194-734dd9ed09f6:theme:codex-agent-workflow",
+      "kind": "belongs_to_theme",
+      "source": "memory:codex_session_019ef70d-375e-7f70-a194-734dd9ed09f6",
+      "target": "theme:codex-agent-workflow",
+      "weight": 0.83
+    },
+    {
+      "id": "edge:memory:codex_session_019ef70d-375e-7f70-a194-734dd9ed09f6:theme:learning-notion-nitrosend",
+      "kind": "belongs_to_theme",
+      "source": "memory:codex_session_019ef70d-375e-7f70-a194-734dd9ed09f6",
+      "target": "theme:learning-notion-nitrosend",
+      "weight": 0.83
+    },
+    {
+      "id": "edge:memory:codex_session_019ef70d-375e-7f70-a194-734dd9ed09f6:theme:finance-trading-probability",
+      "kind": "belongs_to_theme",
+      "source": "memory:codex_session_019ef70d-375e-7f70-a194-734dd9ed09f6",
+      "target": "theme:finance-trading-probability",
+      "weight": 0.83
+    },
+    {
+      "id": "edge:memory:codex_session_019ef70d-375e-7f70-a194-734dd9ed09f6:tier:一般",
+      "kind": "has_tier",
+      "source": "memory:codex_session_019ef70d-375e-7f70-a194-734dd9ed09f6",
+      "target": "tier:一般",
+      "weight": 0.83
+    },
+    {
+      "id": "edge:memory:codex_session_019ef70d-375e-7f70-a194-734dd9ed09f6:category:codex-development-record",
+      "kind": "has_category",
+      "source": "memory:codex_session_019ef70d-375e-7f70-a194-734dd9ed09f6",
+      "target": "category:codex-development-record",
+      "weight": 0.35
+    },
+    {
       "id": "edge:memory:codex_session_019ec852-ef9b-7992-ab1c-24f585e01266:theme:memory-rag-continuity",
       "kind": "belongs_to_theme",
       "source": "memory:codex_session_019ec852-ef9b-7992-ab1c-24f585e01266",
@@ -31996,48 +31868,6 @@
       "id": "edge:memory:codex_session_019edf8a-5baa-77f1-8caf-bfe65a42a816:category:codex-development-record",
       "kind": "has_category",
       "source": "memory:codex_session_019edf8a-5baa-77f1-8caf-bfe65a42a816",
-      "target": "category:codex-development-record",
-      "weight": 0.35
-    },
-    {
-      "id": "edge:memory:codex_session_019ef70d-375e-7f70-a194-734dd9ed09f6:theme:memory-rag-continuity",
-      "kind": "belongs_to_theme",
-      "source": "memory:codex_session_019ef70d-375e-7f70-a194-734dd9ed09f6",
-      "target": "theme:memory-rag-continuity",
-      "weight": 0.83
-    },
-    {
-      "id": "edge:memory:codex_session_019ef70d-375e-7f70-a194-734dd9ed09f6:theme:codex-agent-workflow",
-      "kind": "belongs_to_theme",
-      "source": "memory:codex_session_019ef70d-375e-7f70-a194-734dd9ed09f6",
-      "target": "theme:codex-agent-workflow",
-      "weight": 0.83
-    },
-    {
-      "id": "edge:memory:codex_session_019ef70d-375e-7f70-a194-734dd9ed09f6:theme:learning-notion-nitrosend",
-      "kind": "belongs_to_theme",
-      "source": "memory:codex_session_019ef70d-375e-7f70-a194-734dd9ed09f6",
-      "target": "theme:learning-notion-nitrosend",
-      "weight": 0.83
-    },
-    {
-      "id": "edge:memory:codex_session_019ef70d-375e-7f70-a194-734dd9ed09f6:theme:finance-trading-probability",
-      "kind": "belongs_to_theme",
-      "source": "memory:codex_session_019ef70d-375e-7f70-a194-734dd9ed09f6",
-      "target": "theme:finance-trading-probability",
-      "weight": 0.83
-    },
-    {
-      "id": "edge:memory:codex_session_019ef70d-375e-7f70-a194-734dd9ed09f6:tier:一般",
-      "kind": "has_tier",
-      "source": "memory:codex_session_019ef70d-375e-7f70-a194-734dd9ed09f6",
-      "target": "tier:一般",
-      "weight": 0.83
-    },
-    {
-      "id": "edge:memory:codex_session_019ef70d-375e-7f70-a194-734dd9ed09f6:category:codex-development-record",
-      "kind": "has_category",
-      "source": "memory:codex_session_019ef70d-375e-7f70-a194-734dd9ed09f6",
       "target": "category:codex-development-record",
       "weight": 0.35
     },
@@ -57727,6 +57557,43 @@
       "confidence": "high",
       "data_source": "codex",
       "date": "2026-06-28",
+      "id": "memory:codex_session_019ef70d-375e-7f70-a194-734dd9ed09f6",
+      "importance": "高",
+      "kind": "memory",
+      "label": "一般 · 长期记忆库 · 会话 / Stage",
+      "memory_id": "codex_session_019ef70d-375e-7f70-a194-734dd9ed09f6",
+      "memory_tier": "一般",
+      "metrics": {
+        "roi": {
+          "leverage_score": 0.73,
+          "recommended_action": "review_for_project_linkage",
+          "staleness_status": "current"
+        },
+        "weight_score": 0.83
+      },
+      "source_label": "Codex 本地数据",
+      "statement": "真实 Codex 本地会话派生摘要：消息 14663 条，工具调用 63828 次，错误事件 0 次；主题：长期记忆数据库 / RAG、Codex 本地数据 / agent 工作流、GitHub 备份 / durable state、高质量交付 / 验证 / CI、安全边界 / secret / 权限；偏好信号：默认中文输出，专业术语保留英文、偏好真实数据…",
+      "validity": "半年",
+      "visual": {
+        "brightness": 1.0,
+        "cluster": "memory-rag-continuity",
+        "color": "#8fd3ff",
+        "orbit_radius": 42.92,
+        "position": {
+          "x": 95.1016,
+          "y": 7.5292,
+          "z": 0.5114
+        },
+        "ring": "半年",
+        "sensitive": false,
+        "size": 10.64
+      }
+    },
+    {
+      "category": "codex_development_record",
+      "confidence": "high",
+      "data_source": "codex",
+      "date": "2026-06-28",
       "id": "memory:codex_session_019ec852-ef9b-7992-ab1c-24f585e01266",
       "importance": "高",
       "kind": "memory",
@@ -57742,7 +57609,7 @@
         "weight_score": 0.83
       },
       "source_label": "Codex 本地数据",
-      "statement": "真实 Codex 本地会话派生摘要：消息 3920 条，工具调用 15223 次，错误事件 0 次；主题：Memory Atlas / 记忆可视化、长期记忆数据库 / RAG、Codex 本地数据 / agent 工作流、GitHub 备份 / durable state、高质量交付 / 验证 / CI；偏好信号：默认中文输出，专业术语保留英文、偏好真实数…",
+      "statement": "真实 Codex 本地会话派生摘要：消息 3923 条，工具调用 15229 次，错误事件 0 次；主题：Memory Atlas / 记忆可视化、长期记忆数据库 / RAG、Codex 本地数据 / agent 工作流、GitHub 备份 / durable state、高质量交付 / 验证 / CI；偏好信号：默认中文输出，专业术语保留英文、偏好真实数…",
       "validity": "半年",
       "visual": {
         "brightness": 1.0,
@@ -57779,7 +57646,7 @@
         "weight_score": 0.83
       },
       "source_label": "Codex 本地数据",
-      "statement": "真实 Codex 本地会话派生摘要：消息 5921 条，工具调用 24201 次，错误事件 0 次；主题：Memory Atlas / 记忆可视化、长期记忆数据库 / RAG、Codex 本地数据 / agent 工作流、GitHub 备份 / durable state、高质量交付 / 验证 / CI；偏好信号：默认中文输出，专业术语保留英文、偏好真实数…",
+      "statement": "真实 Codex 本地会话派生摘要：消息 5923 条，工具调用 24208 次，错误事件 0 次；主题：Memory Atlas / 记忆可视化、长期记忆数据库 / RAG、Codex 本地数据 / agent 工作流、GitHub 备份 / durable state、高质量交付 / 验证 / CI；偏好信号：默认中文输出，专业术语保留英文、偏好真实数…",
       "validity": "半年",
       "visual": {
         "brightness": 1.0,
@@ -57798,50 +57665,13 @@
     },
     {
       "category": "codex_development_record",
-      "confidence": "high",
-      "data_source": "codex",
-      "date": "2026-06-28",
-      "id": "memory:codex_session_019ef70d-375e-7f70-a194-734dd9ed09f6",
-      "importance": "高",
-      "kind": "memory",
-      "label": "一般 · 长期记忆库 · 会话 / Stage",
-      "memory_id": "codex_session_019ef70d-375e-7f70-a194-734dd9ed09f6",
-      "memory_tier": "一般",
-      "metrics": {
-        "roi": {
-          "leverage_score": 0.73,
-          "recommended_action": "review_for_project_linkage",
-          "staleness_status": "current"
-        },
-        "weight_score": 0.83
-      },
-      "source_label": "Codex 本地数据",
-      "statement": "真实 Codex 本地会话派生摘要：消息 14661 条，工具调用 63825 次，错误事件 0 次；主题：长期记忆数据库 / RAG、Codex 本地数据 / agent 工作流、GitHub 备份 / durable state、高质量交付 / 验证 / CI、安全边界 / secret / 权限；偏好信号：默认中文输出，专业术语保留英文、偏好真实数据…",
-      "validity": "半年",
-      "visual": {
-        "brightness": 1.0,
-        "cluster": "memory-rag-continuity",
-        "color": "#8fd3ff",
-        "orbit_radius": 42.92,
-        "position": {
-          "x": 95.1016,
-          "y": 7.5292,
-          "z": 0.5114
-        },
-        "ring": "半年",
-        "sensitive": false,
-        "size": 10.64
-      }
-    },
-    {
-      "category": "codex_development_record",
       "confidence": "medium",
       "data_source": "codex",
       "date": "2026-06-28",
       "id": "memory:codex_session_019f102c-9903-7352-980d-5f93bfb1a9ac",
       "importance": "高",
       "kind": "memory",
-      "label": "一般 · 长期记忆库 · 会话 / 真实",
+      "label": "一般 · 长期记忆库 · 会话 / 复审S2PMT07零证明工件",
       "memory_id": "codex_session_019f102c-9903-7352-980d-5f93bfb1a9ac",
       "memory_tier": "一般",
       "metrics": {
@@ -57853,7 +57683,7 @@
         "weight_score": 0.774
       },
       "source_label": "Codex 本地数据",
-      "statement": "真实 Codex 本地会话派生摘要：消息 5 条，工具调用 4 次，错误事件 0 次；主题：Codex 本地数据 / agent 工作流、GitHub 备份 / durable state、高质量交付 / 验证 / CI、安全边界 / secret / 权限；偏好信号：默认中文输出，专业术语保留英文、偏好真实数据和可验证证据，反感 mock/伪进度、报告必…",
+      "statement": "真实 Codex 本地会话派生摘要：消息 7 条，工具调用 26 次，错误事件 0 次；主题：Codex 本地数据 / agent 工作流、GitHub 备份 / durable state、高质量交付 / 验证 / CI、安全边界 / secret / 权限；偏好信号：默认中文输出，专业术语保留英文、偏好真实数据和可验证证据，反感 mock/伪进度、报告…",
       "validity": "半年",
       "visual": {
         "brightness": 0.72,
@@ -58156,7 +57986,7 @@
     "codex_session_count": 401,
     "conversation_count": 201,
     "edge_count": 3857,
-    "generated_at": "2026-06-28T21:40:14.160Z",
+    "generated_at": "2026-06-28T21:41:01.389Z",
     "memory_node_count": 686,
     "node_count": 725,
     "theme_node_count": 9
@@ -64462,7 +64292,7 @@
       "category": "codex_development_record",
       "date": "2026-06-28",
       "importance": "高",
-      "label": "一般 · 长期记忆库 · 会话 / 真实",
+      "label": "一般 · 长期记忆库 · 会话 / 复审S2PMT07零证明工件",
       "memory_id": "codex_session_019f102c-9903-7352-980d-5f93bfb1a9ac",
       "memory_tier": "一般",
       "node_id": "memory:codex_session_019f102c-9903-7352-980d-5f93bfb1a9ac"
