@@ -21,7 +21,7 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 220
+- task_count: 221
 - acceptance_count: 126
 
 ## Delivery Tasks
@@ -305,6 +305,13 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-REQUEST | S2PM | blocked | `ACC-S2PMT07-FINAL-REVIEW` | Defines the independent final reviewer assignment request state for the future P0/P1 closure decision; reviewer assignment, closure decision, zero-proof artifact, P0/P1 closure, and production gates remain blocked. |
 | S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-ARTIFACT-VALIDATOR | S2PM | blocked | `ACC-S2PMT07-FINAL-REVIEW` | Defines the future independent final reviewer assignment artifact validator; assignment artifact, reviewer assignment, independent closure decision, zero-proof artifact, P0/P1 closure, S2PLT04, final bundle, and production gates remain blocked. |
 | S2PMT07-MAINLINE-ATTESTATION | S2PM | completed | `ACC-S2PMT07-FINAL-REVIEW` | Binds prior S2PMT07 evidence commit ancestry on origin/main, open PR count 0, and ADP/arxiv/s2p remote branch count 0; this is mainline hygiene evidence only and does not close P0/P1, complete S2PLT04, create final bundle, or change production state. |
+| S2PMT07-FINAL-BUNDLE-ARTIFACT-VALIDATION | S2PM | blocked | `ACC-S2PMT07-FINAL-REVIEW` | Adds directory-level final acceptance bundle artifact validation; final bundle directory and required artifacts remain missing, so P0/P1, S2PLT04, final commands, handoff, and production gates remain blocked. |
+
+## 2026-06-28 11:39:47 Australia/Sydney - S2PMT07 final bundle artifact validation
+
+- Added phase record `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_ARTIFACT_VALIDATION.md`.
+- Added manifest `governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-ARTIFACT-VALIDATION-20260628.json`.
+- This is blocked directory-level validation only: the real final bundle directory, P0/P1 zero proof, S2PLT04 completion report, independent signoff, final command execution, no-production attestation, next-agent handoff, and production acceptance remain missing or blocked.
 
 ## 2026-06-28 10:08:17 Australia/Sydney - S2PMT07 mainline attestation
 

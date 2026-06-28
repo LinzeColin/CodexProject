@@ -283,6 +283,7 @@ S2PMT07_FINAL_ACCEPTANCE_BUNDLE_BLOCKING_REASONS = (
     "independent_review_signoff_missing",
     "independent_final_command_execution_missing",
     "no_production_side_effect_attestation_missing",
+    "next_agent_handoff_missing",
 )
 S2PMT07_FINAL_ACCEPTANCE_BUNDLE_FORBIDDEN_FLAGS = (
     "bundle_claimed_ready",
@@ -465,6 +466,24 @@ S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_REQUIRED_ARTIFACT_VALIDATIONS = (
     "NEXT_AGENT_HANDOFF",
 )
 S2PMT07_INDEPENDENT_REVIEW_SIGNOFF_NO_PRODUCTION_FLAGS = S2PMT07_FINAL_ACCEPTANCE_BUNDLE_NO_PRODUCTION_FLAGS
+S2PMT07_FINAL_ACCEPTANCE_BUNDLE_ARTIFACT_VALIDATION_KEYS = (
+    "FINAL_ACCEPTANCE_BUNDLE_MANIFEST",
+    "P0_P1_ZERO_PROOF_ARTIFACT",
+    "S2PLT04_COMPLETION_REPORT",
+    "INDEPENDENT_REVIEW_SIGNOFF",
+    "FINAL_COMMAND_EXECUTION",
+    "NO_PRODUCTION_SIDE_EFFECT_ATTESTATION",
+    "NEXT_AGENT_HANDOFF",
+)
+S2PMT07_FINAL_ACCEPTANCE_BUNDLE_ITEM_BLOCKING_REASONS = {
+    "FINAL_ACCEPTANCE_BUNDLE/manifest.json": "final_acceptance_bundle_manifest_missing",
+    "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json": "p0_p1_zero_proof_missing",
+    "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json": "s2plt04_completion_evidence_missing",
+    "FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml": "independent_review_signoff_missing",
+    "FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json": "independent_final_command_execution_missing",
+    "FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json": "no_production_side_effect_attestation_missing",
+    "HANDOFF/00_下一Agent先读.md": "next_agent_handoff_missing",
+}
 S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_REQUIRED_STEPS = (
     "P0_P1_ZERO_PROOF_ARTIFACT",
     "S2PLT04_COMPLETION_REPORT",
@@ -3370,6 +3389,194 @@ def validate_s2pmt07_mainline_attestation_state(state: Mapping[str, Any]) -> lis
     return errors
 
 
+def build_final_acceptance_bundle_artifact_validation_state(
+    *,
+    bundle_directory_present: bool = False,
+    manifest: Mapping[str, Any] | None = None,
+    p0_p1_zero_proof: Mapping[str, Any] | None = None,
+    s2plt04_completion_report: Mapping[str, Any] | None = None,
+    independent_review_signoff: Mapping[str, Any] | None = None,
+    final_command_execution: Mapping[str, Any] | None = None,
+    no_production_side_effect_attestation: Mapping[str, Any] | None = None,
+    next_agent_handoff: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Validate a complete final bundle surface without creating or accepting it."""
+
+    available_items = {
+        "FINAL_ACCEPTANCE_BUNDLE/manifest.json": manifest is not None,
+        S2PMT07_P0_P1_ZERO_PROOF_ARTIFACT_PATH: p0_p1_zero_proof is not None,
+        "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json": s2plt04_completion_report is not None,
+        "FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml": independent_review_signoff is not None,
+        "FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json": final_command_execution is not None,
+        "FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json": (
+            no_production_side_effect_attestation is not None
+        ),
+        "HANDOFF/00_下一Agent先读.md": next_agent_handoff is not None,
+    }
+    missing_items = [item for item, present in available_items.items() if not present]
+    artifact_validations = {
+        "FINAL_ACCEPTANCE_BUNDLE_MANIFEST": build_final_acceptance_bundle_manifest_validation_state(manifest),
+        "P0_P1_ZERO_PROOF_ARTIFACT": build_p0_p1_zero_proof_artifact_validation_state(p0_p1_zero_proof),
+        "S2PLT04_COMPLETION_REPORT": build_s2plt04_completion_report_validation_state(s2plt04_completion_report),
+        "INDEPENDENT_REVIEW_SIGNOFF": build_independent_review_signoff_validation_state(
+            independent_review_signoff
+        ),
+        "FINAL_COMMAND_EXECUTION": build_final_command_execution_validation_state(final_command_execution),
+        "NO_PRODUCTION_SIDE_EFFECT_ATTESTATION": build_no_production_side_effect_attestation_validation_state(
+            no_production_side_effect_attestation
+        ),
+        "NEXT_AGENT_HANDOFF": build_next_agent_handoff_validation_state(next_agent_handoff),
+    }
+    all_required_items_present = bundle_directory_present and not missing_items
+    all_artifact_validations_passed = all(
+        validation["status"] == "pass" for validation in artifact_validations.values()
+    )
+    blocking_reasons: list[str] = []
+    if not bundle_directory_present:
+        blocking_reasons.append("final_acceptance_bundle_directory_missing")
+    for item in missing_items:
+        reason = S2PMT07_FINAL_ACCEPTANCE_BUNDLE_ITEM_BLOCKING_REASONS[item]
+        if reason not in blocking_reasons:
+            blocking_reasons.append(reason)
+    for key, validation in artifact_validations.items():
+        if validation["status"] != "pass":
+            reason = f"{key.lower()}_validation_blocked"
+            if reason not in blocking_reasons:
+                blocking_reasons.append(reason)
+    state = {
+        "status": (
+            "pass"
+            if bundle_directory_present
+            and all_required_items_present
+            and all_artifact_validations_passed
+            and not blocking_reasons
+            else "blocked"
+        ),
+        "scope": "final_acceptance_bundle_artifact_validation_only_no_production_acceptance",
+        "bundle_directory_present": bundle_directory_present,
+        "required_items": list(S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS),
+        "available_items": available_items,
+        "missing_items": missing_items,
+        "artifact_validations": artifact_validations,
+        "required_artifact_validation_keys": list(S2PMT07_FINAL_ACCEPTANCE_BUNDLE_ARTIFACT_VALIDATION_KEYS),
+        "all_required_items_present": all_required_items_present,
+        "all_artifact_validations_passed": all_artifact_validations_passed,
+        "bundle_ready_by_artifact_validation": (
+            bundle_directory_present and all_required_items_present and all_artifact_validations_passed
+        ),
+        "blocking_reasons": blocking_reasons,
+        "production_acceptance_claimed": False,
+        "integrated_production_accepted": False,
+        "daily_operation_enabled": False,
+        "real_smtp_send_enabled": False,
+        "scheduler_install_enabled": False,
+        "release_packaging_enabled": False,
+        "production_restore_enabled": False,
+        "state_hash": "",
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
+def validate_final_acceptance_bundle_artifact_validation_state(state: Mapping[str, Any]) -> list[str]:
+    """Validate the directory-level final bundle artifact validation state."""
+
+    errors: list[str] = []
+    if state.get("status") not in {"pass", "blocked"}:
+        errors.append("final acceptance bundle artifact validation status must be pass or blocked")
+    if state.get("scope") != "final_acceptance_bundle_artifact_validation_only_no_production_acceptance":
+        errors.append("final acceptance bundle artifact validation scope is invalid")
+    if state.get("bundle_directory_present") not in {True, False}:
+        errors.append("final acceptance bundle artifact validation bundle_directory_present must be boolean")
+    if tuple(state.get("required_items", [])) != S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS:
+        errors.append("final acceptance bundle artifact validation required_items are invalid")
+
+    available = _mapping(state.get("available_items"))
+    missing_items = list(state.get("missing_items", []))
+    expected_missing = [item for item in S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS if not available.get(item)]
+    if missing_items != expected_missing:
+        errors.append("final acceptance bundle artifact validation missing_items do not match available_items")
+    for item in S2PMT07_FINAL_ACCEPTANCE_BUNDLE_REQUIRED_ITEMS:
+        if item not in available:
+            errors.append(f"final acceptance bundle artifact validation available_items must include {item}")
+
+    artifact_validations = _mapping(state.get("artifact_validations"))
+    if tuple(state.get("required_artifact_validation_keys", [])) != (
+        S2PMT07_FINAL_ACCEPTANCE_BUNDLE_ARTIFACT_VALIDATION_KEYS
+    ):
+        errors.append("final acceptance bundle artifact validation required_artifact_validation_keys are invalid")
+    for key in S2PMT07_FINAL_ACCEPTANCE_BUNDLE_ARTIFACT_VALIDATION_KEYS:
+        validation = _mapping(artifact_validations.get(key))
+        if key not in artifact_validations:
+            errors.append(f"final acceptance bundle artifact validations must include {key}")
+            continue
+        if validation.get("status") not in {"pass", "blocked"}:
+            errors.append(f"final acceptance bundle artifact validation {key}.status is invalid")
+        expected_hash = _stable_hash({item: value for item, value in validation.items() if item != "state_hash"})
+        if validation.get("state_hash") != expected_hash:
+            errors.append(f"final acceptance bundle artifact validation {key}.state_hash is invalid")
+
+    expected_items_present = state.get("bundle_directory_present") is True and not missing_items
+    if state.get("all_required_items_present") is not expected_items_present:
+        errors.append("final acceptance bundle artifact validation all_required_items_present is invalid")
+
+    expected_artifacts_passed = all(
+        _mapping(artifact_validations.get(key)).get("status") == "pass"
+        for key in S2PMT07_FINAL_ACCEPTANCE_BUNDLE_ARTIFACT_VALIDATION_KEYS
+    )
+    if state.get("all_artifact_validations_passed") is not expected_artifacts_passed:
+        errors.append("final acceptance bundle artifact validation all_artifact_validations_passed is invalid")
+    if state.get("all_artifact_validations_passed") is True and not expected_artifacts_passed:
+        errors.append(
+            "final acceptance bundle artifact validation cannot pass while artifact validations are blocked"
+        )
+
+    expected_ready = expected_items_present and expected_artifacts_passed
+    if state.get("bundle_ready_by_artifact_validation") is not expected_ready:
+        errors.append("final acceptance bundle artifact validation bundle_ready_by_artifact_validation is invalid")
+
+    blocking_reasons = state.get("blocking_reasons", [])
+    if state.get("bundle_directory_present") is False:
+        if "final_acceptance_bundle_directory_missing" not in blocking_reasons:
+            errors.append("blocked final acceptance bundle artifact validation must include directory missing")
+    elif "final_acceptance_bundle_directory_missing" in blocking_reasons:
+        errors.append("final acceptance bundle artifact validation must not report directory missing when present")
+    for item in missing_items:
+        reason = S2PMT07_FINAL_ACCEPTANCE_BUNDLE_ITEM_BLOCKING_REASONS[item]
+        if reason not in blocking_reasons:
+            errors.append(f"blocked final acceptance bundle artifact validation must include {reason}")
+    for key in S2PMT07_FINAL_ACCEPTANCE_BUNDLE_ARTIFACT_VALIDATION_KEYS:
+        if _mapping(artifact_validations.get(key)).get("status") != "pass":
+            reason = f"{key.lower()}_validation_blocked"
+            if reason not in blocking_reasons:
+                errors.append(f"blocked final acceptance bundle artifact validation must include {reason}")
+
+    for flag in (
+        "production_acceptance_claimed",
+        "integrated_production_accepted",
+        "daily_operation_enabled",
+        "real_smtp_send_enabled",
+        "scheduler_install_enabled",
+        "release_packaging_enabled",
+        "production_restore_enabled",
+    ):
+        if state.get(flag) is not False:
+            errors.append(f"{flag} must be false")
+    if state.get("status") == "pass":
+        if blocking_reasons:
+            errors.append("passing final acceptance bundle artifact validation must not have blocking reasons")
+        if not expected_ready:
+            errors.append("passing final acceptance bundle artifact validation requires a ready bundle")
+    else:
+        if expected_ready and not blocking_reasons:
+            errors.append("blocked final acceptance bundle artifact validation needs a blocking reason")
+
+    expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    if state.get("state_hash") != expected_hash:
+        errors.append("final acceptance bundle artifact validation state_hash does not match state content")
+    return errors
+
+
 def build_final_acceptance_bundle_readiness_state() -> dict[str, Any]:
     """Build the current final acceptance bundle readiness state without packaging."""
 
@@ -3396,6 +3603,7 @@ def build_final_acceptance_bundle_readiness_state() -> dict[str, Any]:
     )
     next_agent_handoff_validation = build_next_agent_handoff_validation_state(None)
     independent_review_signoff_validation = build_independent_review_signoff_validation_state(None)
+    final_acceptance_bundle_artifact_validation = build_final_acceptance_bundle_artifact_validation_state()
     state = {
         "status": "blocked",
         "scope": "final_acceptance_bundle_readiness_precheck_only",
@@ -3429,6 +3637,9 @@ def build_final_acceptance_bundle_readiness_state() -> dict[str, Any]:
             "FINAL_ACCEPTANCE_BUNDLE_MANIFEST_VALIDATION": (
                 final_acceptance_bundle_manifest_validation["status"] == "pass"
             ),
+            "FINAL_ACCEPTANCE_BUNDLE_ARTIFACT_VALIDATION": (
+                final_acceptance_bundle_artifact_validation["status"] == "pass"
+            ),
             "S2PLT04_COMPLETION_REPORT_VALIDATION": s2plt04_completion_report_validation["status"] == "pass",
             "FINAL_COMMAND_EXECUTION_VALIDATION": final_command_execution_validation["status"] == "pass",
             "NO_PRODUCTION_SIDE_EFFECT_ATTESTATION_VALIDATION": (
@@ -3448,6 +3659,7 @@ def build_final_acceptance_bundle_readiness_state() -> dict[str, Any]:
         "p0_p1_zero_proof_readiness": p0_p1_zero_proof_readiness,
         "p0_p1_zero_proof_artifact_validation": p0_p1_zero_proof_artifact_validation,
         "final_acceptance_bundle_manifest_validation": final_acceptance_bundle_manifest_validation,
+        "final_acceptance_bundle_artifact_validation": final_acceptance_bundle_artifact_validation,
         "s2plt04_completion_report_validation": s2plt04_completion_report_validation,
         "final_command_execution_validation": final_command_execution_validation,
         "no_production_side_effect_attestation_validation": no_production_side_effect_attestation_validation,
@@ -3503,6 +3715,8 @@ def validate_final_acceptance_bundle_readiness_state(state: Mapping[str, Any]) -
         errors.append("final acceptance bundle readiness must not expose P0/P1 zero proof artifact validation as passing")
     if prebundle.get("FINAL_ACCEPTANCE_BUNDLE_MANIFEST_VALIDATION") is not False:
         errors.append("final acceptance bundle readiness must not expose final bundle manifest validation as passing")
+    if prebundle.get("FINAL_ACCEPTANCE_BUNDLE_ARTIFACT_VALIDATION") is not False:
+        errors.append("final acceptance bundle readiness must not expose final bundle artifact validation as passing")
     if prebundle.get("S2PLT04_COMPLETION_REPORT_VALIDATION") is not False:
         errors.append("final acceptance bundle readiness must not expose S2PLT04 completion report validation as passing")
     if prebundle.get("FINAL_COMMAND_EXECUTION_VALIDATION") is not False:
@@ -3544,6 +3758,13 @@ def validate_final_acceptance_bundle_readiness_state(state: Mapping[str, Any]) -
     manifest_validation = _mapping(state.get("final_acceptance_bundle_manifest_validation"))
     if manifest_validation.get("status") != "blocked":
         errors.append("final acceptance bundle readiness manifest validation must remain blocked")
+    artifact_validation = _mapping(state.get("final_acceptance_bundle_artifact_validation"))
+    if validate_final_acceptance_bundle_artifact_validation_state(artifact_validation):
+        errors.append("final acceptance bundle readiness artifact validation is invalid")
+    if artifact_validation.get("status") != "blocked":
+        errors.append("final acceptance bundle readiness artifact validation must remain blocked")
+    if artifact_validation.get("bundle_directory_present") != state.get("bundle_present"):
+        errors.append("final acceptance bundle readiness bundle_present must match artifact validation directory state")
     completion_report = _mapping(state.get("s2plt04_completion_report_validation"))
     if completion_report.get("status") != "blocked":
         errors.append("final acceptance bundle readiness S2PLT04 completion report validation must remain blocked")

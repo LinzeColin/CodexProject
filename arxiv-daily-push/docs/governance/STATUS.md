@@ -4,8 +4,8 @@
 
 - source_base_commit: `12e91a8e1b84fe29724f43229131bd43f8fa31cd`
 - source_tree_hash: `8caef1969ddfe23755890506daa0d02e6f6df81f`
-- source_snapshot_hash: `sha256:c24352a49a013b3e3018eb1b6e4c012076e2a3378c4b0b75b0a7c54d6c50ecc4`
-- snapshot_event_time: `2026-06-28T10:59:31+10:00`
+- source_snapshot_hash: `sha256:b73de879caeec70f188d04f118f5935cd40970adc17b88886541ee4102be0921`
+- snapshot_event_time: `2026-06-28T11:39:47+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -14,10 +14,10 @@
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - Product version: `0.23.1`
-- Phase/Gate: `S2PM / S2PMT07_MAINLINE_ATTESTATION_PASS_NO_PRODUCTION`
-- Models/Formulas/Parameters total: `117 / 119 / 1048`
-- Active formulas/parameters: `119 / 1031`
-- Machine checked formulas/parameters: `119 / 1026`
+- Phase/Gate: `S2PM / S2PMT07_FINAL_BUNDLE_ARTIFACT_VALIDATION_BLOCKED_NO_PRODUCTION`
+- Models/Formulas/Parameters total: `117 / 119 / 1050`
+- Active formulas/parameters: `119 / 1033`
+- Machine checked formulas/parameters: `119 / 1028`
 
 ## Assurance
 
@@ -35,7 +35,7 @@
 ## Delivery
 
 - Readiness: `VERIFIED`
-- Release gate: `S2PMT07_MAINLINE_ATTESTATION_PASS_NO_PRODUCTION`
+- Release gate: `S2PMT07_FINAL_BUNDLE_ARTIFACT_VALIDATION_BLOCKED_NO_PRODUCTION`
 - V7 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - V7 contract hash: `a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d`
 - V7 roadmap hash: `7c5f2d842d4f6b909343c953fe39b4a4aa540d168199747a9f7decdb1aad9bd1`
@@ -48,21 +48,8 @@
 - Next governance task: `S2PMT07`
 - Parallel shadow source task: `NONE_WHILE_S2PMT07_BLOCKED`
 - Next executable task: `S2PLT01`
-- Pending/stale events: `246`
+- Pending/stale events: `249`
 - Tree-bound events: `0`
 - Commit-bound events: `4`
-- Legacy unbound events: `207`
+- Legacy unbound events: `210`
 - Unresolved fact IDs: `1`
-
-## Local Daily Runner M1-M4
-
-- Local runner send orchestration: `LOCAL_DAILY_M1_M4_SEND_ORCHESTRATION_READY`
-- Local runner resend recovery: `LOCAL_DAILY_RESEND_REUSE_INPUT_READY`
-- 2026-06-28 resend execution: `M1 historical sent; M2/M3/M4 newly sent; total 4 / 4`
-- Planned daily mail products: `M1 / M2 / M3 / M4`
-- Evidence: `arxiv-daily-push/docs/phase_records/PHASE_LOCAL_DAILY_M1_M4_SEND_ORCHESTRATION_20260628.md`
-- Resend evidence: `arxiv-daily-push/docs/phase_records/PHASE_LOCAL_DAILY_RESEND_REUSE_INPUT_20260628.md`
-- Execution evidence: `arxiv-daily-push/docs/phase_records/PHASE_LOCAL_DAILY_M1_M4_RESEND_EXECUTION_20260628.md`
-- Boundary: this records local catch-up readiness and the 2026-06-28 M2-M4 real resend execution; it does not claim S2PMT07 final acceptance, scheduler enablement, Release upload, or integrated production acceptance.
-- Recovery rule: manual resend may pass `--daily-input-report` to reuse a same-day `adp-daily-input-report.json`; date mismatch blocks before SMTP.
-- Production acceptance boundary: the 2026-06-28 resend proves one local real-send execution only; Stage 2 integrated production acceptance remains `false`.

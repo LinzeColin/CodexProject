@@ -10,11 +10,28 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.1
 - Current phase: S2PM
-- Current gate: S2PMT07_MAINLINE_ATTESTATION_PASS_NO_PRODUCTION
-- Confirmed iteration count: 195
+- Current gate: S2PMT07_FINAL_BUNDLE_ARTIFACT_VALIDATION_BLOCKED_NO_PRODUCTION
+- Confirmed iteration count: 196
 - Reconstructed event count: 0
-- Current task: `S2PMT07-MAINLINE-ATTESTATION` records that the canonical VERSION_MATRIX current gate remains S2PMT07 mainline attestation, while the local daily M1-M4 orchestration is recorded below as a separate local-runner readiness entry; reviewer assignment, independent final closure decision, P0/P1 zero proof, S2PLT04 completion, final bundle, and all production gates remain closed.
-- Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. Local daily M1-M4 orchestration is now recorded as readiness evidence, but V7.2 contract baseline migration blockers are zero while real restore, real SMTP production, scheduler installation, final acceptance bundle creation, P0/P1 closure, S2PLT04 completion, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
+- Current task: `S2PMT07-FINAL-BUNDLE-ARTIFACT-VALIDATION` records that S2PMT07 final acceptance bundle readiness now includes directory-level artifact validation; the final bundle directory, all required artifacts, independent closure decision, P0/P1 zero proof, S2PLT04 completion, reviewer signoff, final command execution, next-agent handoff, and production acceptance remain blocked/false.
+- Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. Local daily M1-M4 orchestration is now recorded as readiness evidence, but V7.2 contract baseline migration blockers are zero while real restore, real SMTP production, scheduler installation, final acceptance bundle creation, directory-level final bundle artifact validation pass, P0/P1 closure, S2PLT04 completion, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
+
+### `ITER-20260628-ADP-S2PMT07-FINAL-BUNDLE-ARTIFACT-VALIDATION`
+
+- Timestamp: `2026-06-28T11:39:47+10:00`
+- Fact level: EXTRACTED from S2PMT07 final-gate implementation, focused RED/GREEN regression tests, semantic parameter refresh, traceability row, phase record, run manifest, and shallow user-center traceability page.
+- Base commit: `20e3cbfcae539eabc700a88a95055a47a6aa7005`
+- Product version: `0.23.1`
+- Status: blocked no-production final bundle artifact validation recorded; the final bundle directory and artifacts are still missing.
+- Task IDs: `S2PMT07-FINAL-BUNDLE-ARTIFACT-VALIDATION`; parent `S2PMT07`; acceptance `ACC-S2PMT07-FINAL-REVIEW`.
+- Goal: Prevent a future incomplete or fake `FINAL_ACCEPTANCE_BUNDLE/` directory from satisfying S2PMT07 by requiring directory presence, every required item, every sub-artifact validator, no-production flags, and deterministic state hash binding to pass together.
+- Files changed: S2PMT07 final-gate helper and tests, semantic registries, traceability matrix, shallow user-center traceability page, phase record, run manifest, delivery task, development events, status views, VERSION_MATRIX, changelog, and three base notes.
+- Decisions: `final_acceptance_bundle_artifact_validation` is embedded under final acceptance bundle readiness with `status=blocked`, `bundle_directory_present=false`, all required final bundle items missing, `all_artifact_validations_passed=false`, and every production side-effect flag false.
+- Validation so far: TDD red observed the missing final bundle artifact validation API; post-rebase focused final-gate tests 58 OK. Final governance and full target validation are recorded in the task closeout, not pre-claimed here.
+- Boundaries: No SMTP, scheduler, Release, production restore, public schema, DB, production queue, source adapter, ranking, CURRENT/V7 contract, V7.1 baseline, P0/P1 closure, DAILY_OPERATION, or integrated production acceptance changed.
+- Risks: This validation can be misread as final bundle creation. It is deliberately fail-closed directory-level validation only; S2PLT04 completion, P0/P1 zero proof, independent final review, final command execution, real final bundle artifacts, and S2PMT07 acceptance still control production acceptance.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-ARTIFACT-VALIDATION-20260628.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_ARTIFACT_VALIDATION.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`; `arxiv-daily-push/用户中心/功能任务测试证据追踪链.md`.
+- Next step: Continue real final-bundle artifact creation only after P0/P1 zero proof, S2PLT04 completion, no-production attestation, next-agent handoff, independent signoff, final command execution, and manifest evidence exist and pass their validators.
 
 ### `ITER-20260628-ADP-LOCAL-DAILY-M1-M4-SEND-ORCHESTRATION`
 

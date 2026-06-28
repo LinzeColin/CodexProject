@@ -7,12 +7,13 @@ machine_summary:
 
 - model_count: 117
 - formula_count: 119
-- parameter_count: 1048
+- parameter_count: 1050
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
 ## Governance Notes
 
+- `S2PMT07-FINAL-BUNDLE-ARTIFACT-VALIDATION` updates `PARAM-ADP-966` and adds `PARAM-ADP-1049` / `PARAM-ADP-1050` under `MOD-ADP-100` / `FORM-ADP-102`. It requires future final bundle readiness to pass a directory-level artifact validation: `FINAL_ACCEPTANCE_BUNDLE/` must exist, all required final bundle and handoff items must be present, every sub-artifact validator must pass, missing-item blockers must match the required item list, no-production flags must remain false, and the state hash must bind the full payload. Current status remains blocked because the real directory and artifacts are missing; no final bundle, P0/P1 closure, S2PLT04 completion, production action, CURRENT/V7 change, or integrated production acceptance is claimed.
 - `S2PMT07-MAINLINE-ATTESTATION` adds `PARAM-ADP-1047` and
   `PARAM-ADP-1048` under `MOD-ADP-100` / `FORM-ADP-102`. It binds a prior
   S2PMT07 evidence commit to current `origin/main` ancestry, open PR count 0,
