@@ -124,7 +124,7 @@ class V021Stage8FinalAcceptanceTest(unittest.TestCase):
             self.assertNotIn(forbidden, visible_surface)
         self.assertIn("不执行实盘自动下单", visible_surface)
 
-    def test_macos_app_entry_renders_web_shell_before_legacy_streamlit_upload_panel(self) -> None:
+    def test_macos_app_entry_renders_web_shell_before_native_upload_panel_without_nested_expander(self) -> None:
         start = self.app_source.index("def render_pfi_ui_v2_shell()")
         end = self.app_source.index("def main()", start)
         body = self.app_source[start:end]
@@ -133,7 +133,9 @@ class V021Stage8FinalAcceptanceTest(unittest.TestCase):
         upload_panel_index = body.index("render_pfi_local_data_upload_panel()")
 
         self.assertLess(web_shell_index, upload_panel_index)
-        self.assertIn('st.expander("本机真实上传与支付宝账本", expanded=False)', body)
+        self.assertNotIn('st.expander("本机真实上传与支付宝账本"', body)
+        self.assertIn("本机真实上传与支付宝账本", body)
+        self.assertIn("height=1120", body)
 
 
 if __name__ == "__main__":

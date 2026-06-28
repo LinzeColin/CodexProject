@@ -130,6 +130,8 @@ class V021Stage7ClicksafeFeedbackTest(unittest.TestCase):
             'button.dataset.clickSafe = "true"',
             'setActionFeedback("progress", `${label} · 正在处理`',
             'setActionFeedback("success", `${label} · 已响应`',
+            "function restoreOwnerHomeWorkflow",
+            "restoreOwnerHomeWorkflow();",
         ):
             self.assertIn(required, self.js)
         for required_css in (
