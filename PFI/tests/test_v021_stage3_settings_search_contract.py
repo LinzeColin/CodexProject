@@ -34,6 +34,8 @@ class V021Stage3SettingsSearchContractTest(unittest.TestCase):
         self.assertIn('data-workspace="settings" data-route-alias="/settings"', self.html)
         self.assertIn('data-workspace="settings" data-route-alias="/settings?tab=data-system"', self.html)
         self.assertIn('main.dataset.settingsSurface = workspaceId === "settings" ? "primary_workspace" : "none"', self.js)
+        self.assertIn("data-settings-feedback-console", self.html)
+        self.assertIn('settingsConsole.hidden = workspaceId !== "settings"', self.js)
         self.assertIn("syncBrowserRoute", self.js)
         self.assertIn("workspaceTargetFromRoute", self.js)
         self.assertIn("routeAliasFromLocation", self.js)

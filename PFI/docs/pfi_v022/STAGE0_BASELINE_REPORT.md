@@ -6,9 +6,9 @@
 
 PFI v0.2.2 本轮定位为数据库治理和 E2E 逻辑优化，不是 v0.2.1 前端重做。Stage 0 已按新版 Stage -> Phase -> Task roadmap 补做，任务 ID 为 `S0-P1-T1`、`S0-P1-T2`、`S0-P1-T3`、`S0-P2-T1`、`S0-P2-T2`。本轮已定位当前参数、公式、阈值、分类、数据源、账户角色、测试框架和 Stage 6 E2E 产物，并标记与 v0.2.2 要求冲突的部分。
 
-本轮不修改 `PFI/web/index.html`。  
-本轮不修改 `PFI/web/app/shell.js`。  
-本轮不新增 `PFI/web/pfi_v022_logic_review.html`。  
+本轮不修改 `PFI/web/index.html`。
+本轮不修改 `PFI/web/app/shell.js`。
+本轮不新增 `PFI/web/pfi_v022_logic_review.html`。
 `PFI_v0.2.2_UIUX_Logic_Review_Template.html` 只作为后续逻辑审查页的信息结构参考。
 
 ## Stage 0 补做任务表
@@ -116,7 +116,7 @@ Stage 3 账户视图当前有 9 个账户样本，账户类别包括 `daily`、`
 
 ### 现金流
 
-当前现金流窗口为 `30/90/180` 天。  
+当前现金流窗口为 `30/90/180` 天。
 v0.2.2 要求现金流窗口为 `7/21/30/60/90/180/360` 天。
 
 当前公式：

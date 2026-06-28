@@ -1127,8 +1127,6 @@ def render_pfi_ui_v2_shell() -> None:
     """,
         unsafe_allow_html=True,
     )
-    render_pfi_local_data_upload_panel()
-    st.divider()
     store = OperationalStore()
     try:
         store.initialize()
@@ -1136,7 +1134,9 @@ def render_pfi_ui_v2_shell() -> None:
         home_summary = build_homepage_summary(store)
     except Exception:
         home_summary = empty_homepage_summary()
-    _render_html_frame(_pfi_web_shell_html(home_summary), height=980, scrolling=True)
+    _render_html_frame(_pfi_web_shell_html(home_summary), height=820, scrolling=True)
+    with st.expander("本机真实上传与支付宝账本", expanded=False):
+        render_pfi_local_data_upload_panel()
 
 
 def main() -> None:

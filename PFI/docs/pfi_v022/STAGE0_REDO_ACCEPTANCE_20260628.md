@@ -1,8 +1,8 @@
 # PFI v0.2.2 Stage 0 补做验收记录
 
-补做日期：2026-06-28 Australia/Sydney  
-任务名称：`PFI v0.2.2 E2E 逻辑优化`  
-参数版本：`v0.2.2`  
+补做日期：2026-06-28 Australia/Sydney
+任务名称：`PFI v0.2.2 E2E 逻辑优化`
+参数版本：`v0.2.2`
 验收门禁：`PFI-V022-S0-REDO-ACCEPTANCE-GATE`
 
 ## 补做结论
