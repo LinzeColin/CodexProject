@@ -127,6 +127,10 @@
 | `INTERCONNECTION_MAP.md` | Stage 9 Mermaid 关系图，覆盖 `source -> raw -> normalized -> group -> event -> ledger -> metrics -> UI`。 |
 | `STAGE10_REPORT_ADVICE_REVIEW.md` | Stage 10 报告、行动建议与复盘生命周期验收报告。 |
 | `STAGE11_TEST_VALIDATION.md` | Stage 11 金融逻辑、跨板块一致性和可视化一致性测试验收报告。 |
+| `STAGE12_DELIVERY_REPORT.md` | Stage 12 文档同步与交付验收报告，采用 Stage -> Phase -> Task。 |
+| `SIX_AGENT_DELIVERY_REVIEW.md` | Stage 12 2 轮 × 6 Agent 自检报告。 |
+| `../../web/pfi_v022_logic_review.html` | Stage 12 本地 UI/UX 审查 HTML，覆盖参数、分类、标签、图表、diff、Interconnection。 |
+| `../../reports/pfi_v022_summary.md` | Stage 12 最终中文摘要，包含用户人工复核点。 |
 | `../../review_queue/CODEX_REVIEW_TICKET_TEMPLATE.md` | Stage 8 本地 Codex Review Ticket 中文模板。 |
 | `SOURCE_TASK_PACK_MANIFEST.md` | Downloads 来源文件、SHA-256 和使用边界。 |
 | `ROADMAP_LOCK.md` | v0.2.2 Stage / Phase / Task / Acceptance / Stop / Validation 锁定摘要。 |
@@ -176,3 +180,16 @@ Stage 11 - 测试与验证已完成 `S11-P1-T1..S11-P3-T3`：
 - 图表新鲜度必须在数据变化后标记 `needs_update` 或 `updated`；性能状态必须显示 `compute time` 和 `cache status`。
 - `PFI/config/pfi_parameters.yaml` 升级为 `PFIParametersV022Stage11`，新增 `test_validation` 参数域和 `stage11_task_ids`。
 - Stage 12 文档同步与最终交付不在本轮实现；Stage 13 后置触发型复核不在本轮实现；不修改 v0.2.1 主 Web Shell UIUX 基线。
+
+## Stage 12 范围
+
+Stage 12 - 文档同步与交付已完成 `S12-P1-T1..S12-P2-T3`：
+
+- `S12-P1-T1`：模型参数文件覆盖参数中心、公式、阈值、评分、分类、标签、可视化规则、双消费口径、现金流图表、diff ticket、Interconnection 可视化。
+- `S12-P1-T2`：功能清单列出参数中心、标签系统、Interconnection 可视化、双消费口径、现金流图表、diff ticket。
+- `S12-P1-T3`：开发记录记录完成任务、变更文件、测试结果、未完成项、下轮建议。
+- `S12-P2-T1`：新增 `PFI/web/pfi_v022_logic_review.html`，中文、可打开、可点击，覆盖参数、分类、标签、图表、diff、Interconnection。
+- `S12-P2-T2`：新增 Stage -> Phase -> Task Roadmap 与验证报告，不使用 milestone 列表替代。
+- `S12-P2-T3`：新增 `PFI/reports/pfi_v022_summary.md`，说明做了什么、怎么验收、哪些未做、哪些需要用户人工复核。
+- 2 轮 × 6 Agent 自检报告已生成，阻塞项为 0。
+- Stage 13 后置触发型复核不在本轮执行；Downloads 污染文件夹清理或迁移只在 Stage 13 后执行。

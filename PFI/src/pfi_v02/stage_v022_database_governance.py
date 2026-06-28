@@ -67,6 +67,12 @@ from pfi_v02.stage_v022_test_validation import (
     STAGE11_VISUALIZATION_CHART_IDS,
     build_stage11_contract_payload,
 )
+from pfi_v02.stage_v022_delivery import (
+    STAGE12_FINAL_ARTIFACTS,
+    STAGE12_REQUIRED_TRI_BASE_TERMS,
+    STAGE12_REVIEW_DIMENSIONS,
+    build_stage12_delivery_payload,
+)
 
 
 V022_STAGE1_TASK_IDS = (
@@ -212,6 +218,15 @@ V022_STAGE11_TASK_IDS = (
     "S11-P3-T1",
     "S11-P3-T2",
     "S11-P3-T3",
+)
+
+V022_STAGE12_TASK_IDS = (
+    "S12-P1-T1",
+    "S12-P1-T2",
+    "S12-P1-T3",
+    "S12-P2-T1",
+    "S12-P2-T2",
+    "S12-P2-T3",
 )
 
 V022_STAGE0_TASK_IDS = (
@@ -1428,4 +1443,89 @@ def build_v022_stage11_contract() -> dict[str, object]:
             "不新增真实交易、自动投资、支付或券商提交。",
             "不联网、不调用外部 LLM、不生成真实 agent 任务。",
         ),
+    }
+
+
+def build_v022_stage12_contract() -> dict[str, object]:
+    stage12_payload = build_stage12_delivery_payload(load_v022_parameter_catalog())
+    return {
+        "schema": "PFIV022DeliveryStage12ContractV1",
+        "version": "v0.2.2",
+        "stage": "Stage 12",
+        "stage_name_zh": "文档同步与交付",
+        "goal": "把 Stage 0-11 的参数、公式、分类、标签、可视化、Runtime Diff、Interconnection 和验证证据同步为用户可审查的三基文件、本地 HTML、Roadmap 验证报告与最终中文摘要。",
+        "task_ids": V022_STAGE12_TASK_IDS,
+        "phases": {
+            "Phase 12.1": ("三基文件更新", "S12-P1-T1", "S12-P1-T2", "S12-P1-T3"),
+            "Phase 12.2": ("本地交付物", "S12-P2-T1", "S12-P2-T2", "S12-P2-T3"),
+        },
+        "tri_base_documents": stage12_payload["tri_base_documents"],
+        "review_html": stage12_payload["review_html"],
+        "roadmap_validation": stage12_payload["roadmap_validation"],
+        "final_summary": stage12_payload["final_summary"],
+        "six_agent_review": stage12_payload["six_agent_review"],
+        "deliverables": (
+            "PFI/src/pfi_v02/stage_v022_delivery.py",
+            "PFI/src/pfi_v02/stage_v022_database_governance.py",
+            "PFI/tests/test_v022_stage12_delivery.py",
+            "PFI/web/pfi_v022_logic_review.html",
+            "PFI/docs/pfi_v022/STAGE12_DELIVERY_REPORT.md",
+            "PFI/docs/pfi_v022/SIX_AGENT_DELIVERY_REVIEW.md",
+            "PFI/reports/pfi_v022_summary.md",
+            "PFI/config/pfi_v022_parameters.yaml",
+            "PFI/config/pfi_parameters.yaml",
+            "PFI/模型参数文件.md",
+            "PFI/功能清单.md",
+            "PFI/开发记录.md",
+            "PFI/HANDOFF.md",
+            "PFI/README.md",
+        ),
+        "acceptance_criteria": (
+            "模型参数文件包含本次所有参数、公式、阈值、评分、分类、标签、可视化规则。",
+            "功能清单列出参数中心、标签系统、Interconnection 可视化、双消费口径、现金流图表、diff ticket。",
+            "开发记录记录完成任务、变更文件、测试结果、未完成项、下轮建议。",
+            "本地 UI/UX 审查 HTML 为中文、可打开、可点击，覆盖参数、分类、标签、图表、diff、Interconnection。",
+            "Roadmap 与验证报告采用 Stage -> Phase -> Task，不使用 milestone 列表替代。",
+            "最终变更摘要为中文，说明做了什么、怎么验收、哪些未做、哪些需要用户人工复核。",
+            "2 轮 × 6 Agent 自检报告包含每个 Agent 的两轮结论，问题状态只有已修复、非阻塞或阻塞，阻塞项为 0。",
+        ),
+        "stop_conditions": (
+            "参数缺失时停止。",
+            "功能未记录时停止。",
+            "无开发记录时停止。",
+            "HTML 无法本地打开时停止。",
+            "Roadmap 仍是 milestone 列表时停止。",
+            "没有中文摘要时停止。",
+            "第二轮没有交叉验证第一轮问题时停止。",
+            "Agent 报告只写通过且没有证据时停止。",
+            "存在阻塞项仍继续交付时停止。",
+            "Stage 13 后置触发型复核被提前执行时停止。",
+        ),
+        "validation_commands": (
+            "PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests/test_v022_stage12_delivery.py -q",
+            "PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests/test_v022_stage0_database_governance.py PFI/tests/test_pfi_parameters_consistency.py PFI/tests/test_v022_fx_effective_date.py PFI/tests/test_v022_stage3_source_account_profiles.py PFI/tests/test_v022_interconnection_no_double_count.py PFI/tests/test_v022_consumption_investment_outflow.py PFI/tests/test_v022_stage5_ledger_taxonomy.py PFI/tests/test_v022_stage6_tags_views.py PFI/tests/test_v022_stage7_formula_scoring.py PFI/tests/test_v022_stage8_runtime_diff.py PFI/tests/test_v022_stage9_visualization_uiux.py PFI/tests/test_v022_stage10_report_advice_review.py PFI/tests/test_v022_stage11_test_validation.py PFI/tests/test_v022_stage12_delivery.py -q",
+            "PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests -q",
+            "node --check PFI/web/app/shell.js",
+            "browser-open PFI/web/pfi_v022_logic_review.html",
+            "python3 scripts/validate_project_governance.py --project PFI",
+            "git diff --check -- PFI",
+        ),
+        "cross_review": {
+            "Agent 1": "金融事实层与口径审查：确认投资入金、基金申购、退款、信用卡还款在最终摘要和三基文件中保留。",
+            "Agent 2": "数据源、账户角色与 Interconnection 审查：确认 Interconnection Map/Matrix 和 diff 影响链可追溯。",
+            "Agent 3": "参数、公式、阈值与中文解释审查：确认模型参数文件覆盖 Stage 0-11 的参数域。",
+            "Agent 4": "消费、投资与现金流模型审查：确认双消费口径和现金流图表没有遗漏。",
+            "Agent 5": "UI/UX、可视化与中文可读性审查：确认本地审查 HTML 中文、可点击且不替代主 UI。",
+            "Agent 6": "测试、Runtime Diff 与 LLM Agent Trigger 审查：确认本轮只交付文档同步，不提前执行 Stage 13。",
+        },
+        "non_goals": (
+            "Stage 13 后置触发型复核不在本轮实现。",
+            "不修改 v0.2.1 主 Web Shell UIUX 基线。",
+            "不新增真实交易、自动投资、支付或券商提交。",
+            "不联网、不调用外部 LLM、不生成真实 agent 任务。",
+            "不清理或迁移 Downloads 污染文件夹；该动作仅在 Stage 13 后执行。",
+        ),
+        "final_artifacts": STAGE12_FINAL_ARTIFACTS,
+        "required_tri_base_terms": STAGE12_REQUIRED_TRI_BASE_TERMS,
+        "review_dimensions": STAGE12_REVIEW_DIMENSIONS,
     }

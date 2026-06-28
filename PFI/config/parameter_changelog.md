@@ -98,6 +98,12 @@
 | 2026-06-28 | `S11-P3-T1` | `test_validation.visualization_required_trace_fields` | `Stage 9 有数据状态字段，但没有 Stage 11 测试门必填字段` | `metric_id、formula_id、parameter_hash、data_hash` | 图表数字必须可追溯来源、公式、参数和数据 hash。 | 账户图表、投资图表、消费图表、现金流图表。 |
 | 2026-06-28 | `S11-P3-T2` | `test_validation.visualization_freshness_statuses` | `无正式图表新鲜度测试状态` | `needs_update、updated` | 数据变化后受影响图表不得继续显示旧数据。 | Runtime Diff、图表刷新、报告一致性。 |
 | 2026-06-28 | `S11-P3-T3` | `test_validation.performance_record_count` | `无正式 Stage 11 大量模拟记录数量` | `12000` | 性能测试需要证明大量模拟记录下不明显卡死，并显示 compute time/cache status。 | 可视化性能、缓存状态、用户验收。 |
+| 2026-06-28 | `S12-P1-T1..S12-P1-T3` | `delivery.tri_base_required_terms` | `无正式 Stage 12 三基交付参数` | `参数中心、标签系统、Interconnection 可视化、双消费口径、现金流图表、diff ticket、公式、阈值、评分、分类、可视化规则` | 三基文件必须同步本次所有参数、公式、阈值、评分、分类、标签和可视化规则。 | 模型参数文件、功能清单、开发记录。 |
+| 2026-06-28 | `S12-P2-T1` | `delivery.review_html_path` | `无 Stage 12 UI/UX 审查 HTML` | `PFI/web/pfi_v022_logic_review.html` | 交付本地中文、可打开、可点击的审查页，覆盖参数、分类、标签、图表、diff、Interconnection。 | 本地浏览器验收、用户人工复核。 |
+| 2026-06-28 | `S12-P2-T2` | `delivery.roadmap_structure` | `Roadmap 可退回 milestone 表达` | `Stage -> Phase -> Task` | 防止最终交付物丢失 Phase/Task 追踪。 | Roadmap、验证报告、GitHub 验收。 |
+| 2026-06-28 | `S12-P2-T3` | `delivery.final_summary_path` | `无最终中文摘要路径` | `PFI/reports/pfi_v022_summary.md` | 最终摘要必须说明做了什么、怎么验收、哪些未做、哪些需要用户人工复核。 | 用户验收、Stage 13 准备。 |
+| 2026-06-28 | `S12-P2-T3` | `delivery.six_agent_review_rounds` | `无正式交付前自检轮数` | `2` | 交付前必须保留 2 轮 × 6 Agent 自检证据。 | 自检报告、风险说明、交付门。 |
+| 2026-06-28 | `S12-P2-T3` | `delivery.six_agent_blocking_issue_count` | `无阻塞项计数参数` | `0` | 存在阻塞项时不得继续交付。 | 2 轮 × 6 Agent 自检、最终摘要。 |
 
 ## 记录规则
 

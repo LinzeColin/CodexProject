@@ -28,7 +28,7 @@ Roadmap 形态：`Stage -> Phase -> Task`
 | Stage 9 | 可视化与 UI/UX | 本轮完成 | 参数中心、Interconnection Map、Metric Dependency Graph、现金流可视化和 Metric Drilldown Debugger。 |
 | Stage 10 | 报告、建议与复盘 | 本轮完成 | 双消费口径报告、投资成本行为、Interconnection 数据质量报告、行动建议评分和生命周期。 |
 | Stage 11 | 测试与验证 | 本轮完成 | 金融逻辑、跨板块一致性、可视化一致性测试。 |
-| Stage 12 | 文档同步与交付 | 待 owner 开启 | 三基、审查 HTML、总结报告。 |
+| Stage 12 | 文档同步与交付 | 本轮完成 | 三基、审查 HTML、Roadmap 与验证报告、最终中文摘要、2 轮 × 6 Agent 自检。 |
 | Stage 13 | 后置触发型复核 | 非默认执行 | 仅在 diff/test/owner 指定触发时执行。 |
 
 ## Stage 0 Task Lock
@@ -590,6 +590,65 @@ git diff --check -- PFI
 - `git diff --check -- PFI` 通过。
 - macOS app 入口轻量验收：`29 pass / 0 fail / 2 info`，8501 健康。
 - 真实 8501 浏览器验收：`PFI`、`首页总览`、`数据源与上传`、`建议与复盘`、`报告与洞察`、`AUD/CNY` 可见；点击 `报告与洞察` 有响应；禁止正式 UI 出现 `Stage 11 - 测试与验证`、`STAGE11_TEST_VALIDATION`、`自动买入`、`自动卖出`；console errors `0`；截图 `/tmp/pfi-v022-stage11-app-verified.png`。
+
+## Stage 12 - 文档同步与交付 Task Lock
+
+| Task ID | Phase | 交付物 | 状态 |
+| --- | --- | --- | --- |
+| `S12-P1-T1` | Phase 12.1 | 更新模型参数文件，包含参数中心、公式、阈值、评分、分类、标签、可视化规则 | 本轮完成 |
+| `S12-P1-T2` | Phase 12.1 | 更新功能清单，列出参数中心、标签系统、Interconnection 可视化、双消费口径、现金流图表、diff ticket | 本轮完成 |
+| `S12-P1-T3` | Phase 12.1 | 更新开发记录，记录完成任务、变更文件、测试结果、未完成项、下轮建议 | 本轮完成 |
+| `S12-P2-T1` | Phase 12.2 | 生成 UI/UX 审查 HTML `PFI/web/pfi_v022_logic_review.html` | 本轮完成 |
+| `S12-P2-T2` | Phase 12.2 | 生成 Roadmap 与验证报告，结构为 Stage -> Phase -> Task | 本轮完成 |
+| `S12-P2-T3` | Phase 12.2 | 生成最终变更摘要 `PFI/reports/pfi_v022_summary.md` | 本轮完成 |
+
+## Stage 12 Acceptance Criteria
+
+- 模型参数文件包含本次所有参数、公式、阈值、评分、分类、标签、可视化规则。
+- 功能清单列出参数中心、标签系统、Interconnection 可视化、双消费口径、现金流图表、diff ticket。
+- 开发记录记录完成任务、变更文件、测试结果、未完成项、下轮建议。
+- UI/UX 审查 HTML 中文、可打开、可点击，覆盖参数、分类、标签、图表、diff、Interconnection。
+- Roadmap 与验证报告采用 Stage -> Phase -> Task，不是 milestone 列表。
+- 最终中文摘要说明做了什么、怎么验收、哪些未做、哪些需要用户人工复核。
+- 2 轮 × 6 Agent 自检报告包含每个 Agent 的两轮结论，每个问题都有已修复、非阻塞或阻塞状态，阻塞项为 0。
+
+## Stage 12 Stop Condition
+
+- 参数缺失时停止。
+- 功能未记录时停止。
+- 无开发记录时停止。
+- HTML 无法本地打开时停止。
+- Roadmap 仍是 milestone 列表时停止。
+- 没有中文摘要时停止。
+- 第二轮没有交叉验证第一轮问题时停止。
+- Agent 报告只写“通过”没有证据时停止。
+- 存在阻塞项仍继续交付时停止。
+- Stage 13 后置触发型复核被提前执行时停止。
+
+当前检查结论：以上停止条件均未触发。Stage 12 交付物为三基同步、本地审查 HTML、Roadmap 与验证报告、最终摘要和 2 轮 × 6 Agent 自检；不改 v0.2.1 主 Web Shell UIUX 基线，不联网，不调用外部 LLM，不提前执行 Stage 13。
+
+## Stage 12 Validation
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pytest tests/test_v022_stage12_delivery.py -q -p no:cacheprovider
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pytest tests/test_v022_stage0_database_governance.py tests/test_pfi_parameters_consistency.py tests/test_v022_fx_effective_date.py tests/test_v022_stage3_source_account_profiles.py tests/test_v022_interconnection_no_double_count.py tests/test_v022_consumption_investment_outflow.py tests/test_v022_stage5_ledger_taxonomy.py tests/test_v022_stage6_tags_views.py tests/test_v022_stage7_formula_scoring.py tests/test_v022_stage8_runtime_diff.py tests/test_v022_stage9_visualization_uiux.py tests/test_v022_stage10_report_advice_review.py tests/test_v022_stage11_test_validation.py tests/test_v022_stage12_delivery.py -q -p no:cacheprovider
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src .venv/bin/python -B -m pytest tests -q -p no:cacheprovider
+node --check web/app/shell.js
+python3 ../scripts/validate_project_governance.py --project PFI
+git diff --check -- PFI
+```
+
+当前运行结果：
+
+- Stage 12 合同测试：`5 passed`。
+- Stage 0-12 v0.2.2 回归：`92 passed`。
+- 完整 PFI pytest：`250 passed`。
+- Web shell 语法检查：`node --check web/app/shell.js` 通过。
+- 项目治理：`errors: 0`，`warnings: 0`。
+- `git diff --check -- PFI` 通过。
+- macOS app 入口轻量验收：`29 pass / 0 fail / 2 info`，8501 健康。
+- Stage 12 本地 HTML 浏览器验收：7 个区块可点击，缺失必填词 `0`，console errors `0`，外部请求 `0`，截图 `/tmp/pfi-v022-stage12-html-verified.png`。
+- 真实 8501 浏览器验收：`PFI`、`首页总览`、`数据源与上传`、`建议与复盘`、`报告与洞察`、`AUD/CNY` 可见；点击 `报告与洞察` 有响应；禁止正式 UI 出现 `Stage 12 - 文档同步与交付`、`pfi_v022_logic_review`、`STAGE12_DELIVERY_REPORT`、`自动买入`、`自动卖出`；console errors `0`；截图 `/tmp/pfi-v022-stage12-app-verified.png`。
 
 ## Stage 7 - 模型公式、阈值与评分标准 Task Lock
 

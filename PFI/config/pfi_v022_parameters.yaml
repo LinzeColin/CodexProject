@@ -1,0 +1,69 @@
+{
+  "schema": "PFIV022Stage12ParameterMirrorV1",
+  "canonical_parameter_file": "PFI/config/pfi_parameters.yaml",
+  "current_stage": "Stage 12 - 文档同步与交付",
+  "stage12_task_ids": [
+    "S12-P1-T1",
+    "S12-P1-T2",
+    "S12-P1-T3",
+    "S12-P2-T1",
+    "S12-P2-T2",
+    "S12-P2-T3"
+  ],
+  "delivery": {
+    "description_zh": "Stage 12 - 文档同步与交付的三基、HTML、Roadmap、最终摘要和 2 轮 × 6 Agent 自检交付参数。",
+    "roadmap_structure": {
+      "value": "Stage -> Phase -> Task",
+      "description_zh": "Roadmap 与验证报告必须按 Stage、Phase、Task 组织，禁止退回 milestone 列表。",
+      "impact_zh": "docs/pfi_v022/ROADMAP_LOCK.md、docs/pfi_v022/STAGE12_DELIVERY_REPORT.md、用户验收。"
+    },
+    "review_html_path": {
+      "value": "PFI/web/pfi_v022_logic_review.html",
+      "description_zh": "本地 UI/UX 逻辑审查 HTML，中文、可打开、可点击，覆盖参数、分类、标签、图表、diff、Interconnection。",
+      "impact_zh": "本地交付物、浏览器验收、GitHub 交付检查。"
+    },
+    "final_summary_path": {
+      "value": "PFI/reports/pfi_v022_summary.md",
+      "description_zh": "最终中文变更摘要，说明做了什么、怎么验收、哪些未做、哪些需要用户人工复核。",
+      "impact_zh": "用户验收、GitHub 备份、后续 Stage 13 入口。"
+    },
+    "six_agent_review_path": {
+      "value": "PFI/docs/pfi_v022/SIX_AGENT_DELIVERY_REVIEW.md",
+      "description_zh": "2 轮 × 6 Agent 自检报告路径，每个问题必须有状态。",
+      "impact_zh": "交付前复核、风险说明、验收证据。"
+    },
+    "six_agent_review_rounds": {
+      "value": 2,
+      "description_zh": "交付前自检轮数。",
+      "impact_zh": "6 Agent 自检报告、最终摘要。"
+    },
+    "six_agent_blocking_issue_count": {
+      "value": 0,
+      "description_zh": "Stage 12 交付前允许的阻塞项数量。",
+      "impact_zh": "存在阻塞项时不得声明可交付。"
+    },
+    "tri_base_required_terms": {
+      "value": [
+        "参数中心",
+        "标签系统",
+        "Interconnection 可视化",
+        "双消费口径",
+        "现金流图表",
+        "diff ticket",
+        "公式",
+        "阈值",
+        "评分",
+        "分类",
+        "可视化规则"
+      ],
+      "description_zh": "三基文件必须覆盖的 Stage 12 交付关键词。",
+      "impact_zh": "模型参数文件、功能清单、开发记录。"
+    },
+    "stage13_cleanup_after_completion_only": {
+      "value": true,
+      "description_zh": "Downloads 污染文件夹清理或迁移只在 Stage 13 后执行。",
+      "impact_zh": "本轮不清理 Downloads，避免误删交付来源文件。"
+    }
+  },
+  "note_zh": "此文件是 Stage 12 Task Pack 要求的 v0.2.2 参数交付镜像；机器运行仍以 PFI/config/pfi_parameters.yaml 为 canonical。"
+}
