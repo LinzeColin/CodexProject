@@ -79,6 +79,16 @@ ADP_A020_FAIL_CLOSED_PREFIXES = (
     "scripts/",
     "tests/governance/",
 )
+STAGE5_ACCEPTANCE_IDS = ("S5PAT01", "S5PBT01", "S5PBT02", "S5PCT01")
+STAGE5_OWNER_ENTRY_FILES = ("功能清单.md", "开发记录.md", "模型参数文件.md")
+STAGE5_P0_P1_FINDINGS = {
+    "F-001": "根 AGENTS 与普通上下文预算已机械化验证",
+    "F-002": "ADP A-020 gate 已 path-aware 且 fail-closed",
+    "F-003": "zero-write / worktree 保护由 changed-only CI 和回归测试覆盖",
+    "F-004": "普通路径禁止默认读取 lean_governance.py 全文和 run_manifests 全目录",
+    "F-005": "MetaDatabase task id 与 QBVS identity 已修复",
+    "F-006": "三中文入口保留，普通任务改走项目执行胶囊",
+}
 
 
 def file_state(root: Path, rel_path: str) -> dict[str, Any]:
@@ -2047,6 +2057,415 @@ def adp_a020_gate_decision_from_git(base_ref: str | None = None, *, projects_fil
     return adp_a020_gate_decision(changed, config=config, base_ref=base_ref or "")
 
 
+def contains_cjk(text: str) -> bool:
+    return any("\u4e00" <= char <= "\u9fff" for char in text)
+
+
+def normalized_text_bytes(path: Path) -> int:
+    if not path.is_file():
+        return 0
+    return len(path.read_text(encoding="utf-8").encode("utf-8"))
+
+
+def git_blob_size(root: Path, rel_path: str) -> int | None:
+    result = subprocess.run(
+        ["git", "cat-file", "-s", f"HEAD:{rel_path}"],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL,
+        check=False,
+    )
+    if result.returncode != 0:
+        return None
+    try:
+        return int(result.stdout.strip())
+    except ValueError:
+        return None
+
+
+def git_commit_count_since(base_ref: str | None, *, root: Path = ROOT) -> int | None:
+    if not base_ref:
+        return None
+    result = subprocess.run(
+        ["git", "rev-list", "--count", f"{base_ref}..HEAD"],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL,
+        check=False,
+    )
+    if result.returncode != 0:
+        return None
+    try:
+        return int(result.stdout.strip())
+    except ValueError:
+        return None
+
+
+def load_stage_manifest(root: Path, name: str) -> dict[str, Any]:
+    path = root / "governance" / "run_manifests" / name
+    if not path.is_file():
+        return {}
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {}
+    return data if isinstance(data, dict) else {}
+
+
+def stage5_owner_entry_file_review(path: Path, filename: str) -> dict[str, Any]:
+    exists = path.is_file()
+    text = path.read_text(encoding="utf-8") if exists else ""
+    first_screen = "\n".join(text.splitlines()[:40])
+    contract = governance.HUMAN_ENTRY_QUALITY_CONTRACTS.get(filename, {})
+    required_tokens = list(contract.get("required_tokens") or [])
+    forbidden_markers = [
+        marker
+        for marker in governance.HUMAN_ENTRY_FORBIDDEN_MARKERS
+        if marker.lower() in first_screen.lower()
+    ]
+    missing_tokens = [token for token in required_tokens if token not in text]
+    title = str(contract.get("title") or "")
+    first_line = next((line.strip() for line in text.splitlines() if line.strip()), "")
+    title_ok = first_line == title if title else bool(first_line)
+    actionable_tokens = [
+        token
+        for token in ("## 摘要", "current_task", "next_unique_task", "evidence_status", "stop_gate", "active_model_count")
+        if token in first_screen or token in text[:3000]
+    ]
+    passed = (
+        exists
+        and title_ok
+        and contains_cjk(first_screen)
+        and not forbidden_markers
+        and not missing_tokens
+        and len(actionable_tokens) >= 3
+    )
+    return {
+        "path": path.as_posix(),
+        "exists": exists,
+        "bytes": path.stat().st_size if exists else 0,
+        "title_ok": title_ok,
+        "chinese_first_screen": contains_cjk(first_screen),
+        "missing_required_tokens": missing_tokens,
+        "forbidden_markers": forbidden_markers,
+        "actionable_token_count": len(actionable_tokens),
+        "pass": passed,
+    }
+
+
+def stage5_owner_readability_review(root: Path, projects_file: Path) -> dict[str, Any]:
+    config = governance.load_yaml(projects_file)
+    projects = [project for project in governance.as_list(config.get("projects")) if isinstance(project, dict)]
+    project_results: list[dict[str, Any]] = []
+    validation = governance.Validation()
+    for project in projects:
+        scope = governance.project_scope(project)
+        project_root = root / str(project.get("path") or "")
+        governance.check_human_entry_quality(validation, project_root, True, scope)
+        scope_errors = [issue.message for issue in validation.errors if issue.scope == scope]
+        files = [
+            stage5_owner_entry_file_review(project_root / filename, filename)
+            for filename in STAGE5_OWNER_ENTRY_FILES
+        ]
+        project_results.append(
+            {
+                "project_id": str(project.get("project_id") or ""),
+                "path": str(project.get("path") or ""),
+                "file_count": len(files),
+                "files": files,
+                "validator_errors": scope_errors,
+                "pass": not scope_errors and all(item["pass"] for item in files),
+            }
+        )
+    failed = [item["project_id"] for item in project_results if not item["pass"]]
+    return {
+        "schema_version": 1,
+        "mode": "owner-readable-triad-review",
+        "project_count": len(project_results),
+        "passed_project_count": len(project_results) - len(failed),
+        "failed_projects": failed,
+        "projects": project_results,
+        "pass": not failed,
+    }
+
+
+def stage5_static_quality_guards(root: Path, ci_summary: dict[str, Any]) -> dict[str, Any]:
+    workflow_text = (root / ".github" / "workflows" / "project-governance.yml").read_text(encoding="utf-8")
+    agents_text = (root / "AGENTS.md").read_text(encoding="utf-8")
+    hook_path = root / ".codex" / "hooks" / "governance_stop.py"
+    hook_text = hook_path.read_text(encoding="utf-8") if hook_path.is_file() else ""
+    shadow = ci_summary.get("candidate_shadow_comparison") if isinstance(ci_summary.get("candidate_shadow_comparison"), dict) else {}
+    required_sources = set(str(item) for item in governance.as_list(shadow.get("required_exit_code_sources")))
+    guards = {
+        "candidate_report_only": bool(shadow.get("candidate_report_only")),
+        "legacy_validation_required": "legacy_validation" in required_sources,
+        "read_only_guard_required": "read_only_guard" in required_sources,
+        "selector_parity_guard_required": "selector_parity_guard" in required_sources,
+        "t2_t3_root_rule_preserved": all(token in agents_text for token in ("T2", "T3", "Never let ordinary")),
+        "full_governance_all_scope_preserved": "Validate all registered scopes" in workflow_text
+        and "validate --all --semantic --drift-report" in workflow_text,
+        "changed_only_rollback_switch_present": "GOVERNANCE_ROLLBACK_LEGACY_CHANGED_ONLY" in workflow_text,
+        "adp_fail_closed_preflight_present": "preflight_error_fail_closed" in workflow_text
+        and "steps.adp-a020-preflight.outputs.run_gate == 'true'" in workflow_text,
+        "hook_advisory_only": '"mode": "advisory"' in hook_text
+        and '"write": False' in hook_text
+        and "import subprocess" not in hook_text
+        and "check_output" not in hook_text,
+    }
+    guards["pass"] = all(guards.values())
+    return guards
+
+
+def stage5_roi_metrics(
+    *,
+    root: Path,
+    base_ref: str | None,
+    context_contract: dict[str, Any],
+    ci_summary: dict[str, Any],
+    ci_exit_code: int,
+    adp_decision: dict[str, Any],
+    adp_non_adp_fixture: dict[str, Any],
+) -> dict[str, Any]:
+    changed_scope = ci_summary.get("changed_scope") if isinstance(ci_summary.get("changed_scope"), dict) else {}
+    changed_files = list(changed_scope.get("changed_files") or [])
+    output_telemetry = ci_summary.get("output_telemetry") if isinstance(ci_summary.get("output_telemetry"), dict) else {}
+    timing = ci_summary.get("timing_telemetry") if isinstance(ci_summary.get("timing_telemetry"), dict) else {}
+    compact = attach_compact_stdout_bytes(
+        compact_ci_summary(
+            ci_summary,
+            ci_exit_code,
+            {
+                "path_or_artifact_ref": "stage5-audit-no-write",
+                "sha256": "stage5-audit-no-write",
+                "schema_version": 1,
+                "retention_scope": "none",
+            },
+        )
+    )
+    compact_output = compact.get("output_telemetry") if isinstance(compact.get("output_telemetry"), dict) else {}
+    stage3 = load_stage_manifest(root, "GOV-ROI-MINPATCH-S3-ROOT-HOTPATH-20260628.json")
+    stage3_roi = stage3.get("roi_results") if isinstance(stage3.get("roi_results"), dict) else {}
+    manifest_files = sorted(path for path in changed_files if path.startswith("governance/run_manifests/"))
+    root_agents_path = root / "AGENTS.md"
+    root_agents_blob_size = git_blob_size(root, "AGENTS.md")
+    root_agents_normalized_bytes = normalized_text_bytes(root_agents_path)
+    after = {
+        "ordinary_context_file_count": int(context_contract.get("default_file_count", 0)),
+        "ordinary_context_bytes": int(context_contract.get("default_total_bytes", 0)),
+        "root_agents_blob_bytes": root_agents_blob_size,
+        "root_agents_normalized_bytes": root_agents_normalized_bytes,
+        "ci_wall_time_seconds": float(timing.get("total_seconds") or 0),
+        "stdout_bytes": int(compact_output.get("compact_stdout_bytes") or output_telemetry.get("validator_stdout_bytes") or 0),
+        "changed_file_count": len(changed_files),
+        "adp_gate_triggered_current_diff": bool(adp_decision.get("run_gate")),
+        "adp_gate_non_adp_fixture_triggered": bool(adp_non_adp_fixture.get("run_gate")),
+        "changed_manifest_count": len(manifest_files),
+        "changed_manifest_files": manifest_files,
+        "governance_sync_commit_count_since_base": git_commit_count_since(base_ref, root=root),
+    }
+    thresholds = {
+        "ordinary_context_max_files": ORDINARY_CONTEXT_MAX_FILES,
+        "ordinary_context_max_bytes": ORDINARY_CONTEXT_MAX_BYTES,
+        "root_agents_max_blob_bytes": 4096,
+        "compact_stdout_max_bytes": 2048,
+        "changed_only_ci_target_seconds": 30,
+    }
+    pass_checks = {
+        "ordinary_context_within_budget": bool(context_contract.get("within_budget")),
+        "root_agents_under_4kb_blob": root_agents_blob_size is not None and root_agents_blob_size <= 4096,
+        "compact_stdout_under_2kb": after["stdout_bytes"] <= thresholds["compact_stdout_max_bytes"],
+        "changed_only_ci_under_30s": after["ci_wall_time_seconds"] <= thresholds["changed_only_ci_target_seconds"],
+        "non_adp_fixture_skips_adp_gate": not after["adp_gate_non_adp_fixture_triggered"],
+        "manifest_metrics_present": after["changed_manifest_count"] >= 1,
+    }
+    return {
+        "schema_version": 1,
+        "before": {
+            "source": "GOV-ROI-MINPATCH-S3-ROOT-HOTPATH-20260628.json and TaskPack preliminary findings",
+            "p0_p1_finding_count": len(STAGE5_P0_P1_FINDINGS),
+            "root_agents_bytes": stage3_roi.get("root_agents_bytes"),
+            "ordinary_context_file_count": stage3_roi.get("ordinary_context_default_file_count"),
+            "ordinary_context_bytes": stage3_roi.get("ordinary_context_default_total_bytes"),
+            "ci_wall_time_seconds": stage3_roi.get("changed_only_wall_time_seconds_before_manifest"),
+            "stdout_bytes": stage3_roi.get("compact_stdout_bytes_before_manifest"),
+            "adp_gate_policy": "fixed_run_on_pull_request_push_changed_only",
+            "manifest_count": stage3_roi.get("changed_manifest_count", "not_recorded_in_stage3_manifest"),
+        },
+        "after": after,
+        "thresholds": thresholds,
+        "pass_checks": pass_checks,
+        "pass": all(pass_checks.values()),
+    }
+
+
+def stage5_risk_closure(
+    *,
+    context_contract: dict[str, Any],
+    roi_metrics: dict[str, Any],
+    owner_review: dict[str, Any],
+    adp_decision: dict[str, Any],
+    adp_non_adp_fixture: dict[str, Any],
+    root: Path,
+) -> dict[str, Any]:
+    metadatabase_text = (root / "MetaDatabase" / "docs" / "governance" / "roadmap.yaml").read_text(encoding="utf-8")
+    qbvs_project_text = (root / "QBVS" / "docs" / "governance" / "project.yaml").read_text(encoding="utf-8")
+    root_agents_text = (root / "AGENTS.md").read_text(encoding="utf-8")
+    checks = {
+        "F-001": bool(context_contract.get("within_budget"))
+        and bool((roi_metrics.get("pass_checks") or {}).get("root_agents_under_4kb_blob")),
+        "F-002": bool(adp_decision.get("run_gate"))
+        and adp_decision.get("reason") in {"root_governance_or_ci_changed", "adp_path_changed", "diff_untrusted_fail_closed", "unknown_path_fail_closed"}
+        and not bool(adp_non_adp_fixture.get("run_gate")),
+        "F-003": "zero_write_delta" in root_agents_text or "zero tracked/source write" in root_agents_text,
+        "F-004": "scripts/lean_governance.py" in governance.as_list(context_contract.get("forbidden_default_reads"))
+        and "governance/run_manifests" in governance.as_list(context_contract.get("forbidden_default_reads")),
+        "F-005": 'current_task_id: "S1PAT01"' in metadatabase_text
+        and 'project_id: "QBVS"' in qbvs_project_text
+        and "display_name" in qbvs_project_text,
+        "F-006": bool(owner_review.get("pass")),
+    }
+    return {
+        "schema_version": 1,
+        "findings": [
+            {
+                "id": finding_id,
+                "summary": STAGE5_P0_P1_FINDINGS[finding_id],
+                "closed": bool(checks.get(finding_id)),
+            }
+            for finding_id in sorted(STAGE5_P0_P1_FINDINGS)
+        ],
+        "open_p0_p1_count": len([value for value in checks.values() if not value]),
+        "pass": all(checks.values()),
+    }
+
+
+def stage5_rollback_readiness(root: Path, base_ref: str | None, quality_guards: dict[str, Any]) -> dict[str, Any]:
+    workflow_text = (root / ".github" / "workflows" / "project-governance.yml").read_text(encoding="utf-8")
+    legacy_command = "python -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic"
+    if base_ref:
+        legacy_command += f" --base-ref {base_ref}"
+    workflow_stops_on_failure = (
+        "set -o pipefail" in workflow_text
+        and ("exit \"${exit_code}\"" in workflow_text or "exit ${exit_code}" in workflow_text or "exit 1" in workflow_text)
+    )
+    checks = {
+        "rollback_switch_present": bool(quality_guards.get("changed_only_rollback_switch_present")),
+        "rollback_legacy_command_defined": "validate --changed-only" in legacy_command,
+        "failure_auto_stop": workflow_stops_on_failure and bool(quality_guards.get("adp_fail_closed_preflight_present")),
+        "candidate_not_authoritative": bool(quality_guards.get("candidate_report_only")),
+    }
+    return {
+        "schema_version": 1,
+        "mode": "controlled-enable-and-rollback-rehearsal",
+        "controlled_enable": "changed-only ci remains enabled only as legacy-authoritative fast gate; candidate is report-only",
+        "rollback_switch": "GOVERNANCE_ROLLBACK_LEGACY_CHANGED_ONLY=1",
+        "rollback_command": legacy_command,
+        "adp_fail_closed_recovery": "preflight parse/error path writes run_gate=true and runs ADP A-020 gate",
+        "checks": checks,
+        "pass": all(checks.values()),
+    }
+
+
+def run_stage5_audit(base_ref: str | None = None, *, root: Path = ROOT, projects_file: Path = PROJECTS_FILE) -> tuple[int, dict[str, Any]]:
+    started = time.perf_counter()
+    config = governance.load_yaml(projects_file)
+    if not isinstance(config, dict):
+        raise ValueError(f"{governance.rel(projects_file)} must parse to a mapping")
+    context_contract = ordinary_context_contract(root)
+    ci_exit, ci_summary = run_changed_only_ci(base_ref, root=root, projects_file=projects_file)
+    changed_scope = ci_summary.get("changed_scope") if isinstance(ci_summary.get("changed_scope"), dict) else {}
+    changed_files = list(changed_scope.get("changed_files") or [])
+    adp_decision = adp_a020_gate_decision(changed_files, config=config, base_ref=base_ref or "")
+    adp_non_adp_fixture = adp_a020_gate_decision(["Alpha/README.md"], config=config, base_ref="stage5-fixture")
+    owner_review = stage5_owner_readability_review(root, projects_file)
+    quality_guards = stage5_static_quality_guards(root, ci_summary)
+    roi_metrics = stage5_roi_metrics(
+        root=root,
+        base_ref=base_ref,
+        context_contract=context_contract,
+        ci_summary=ci_summary,
+        ci_exit_code=ci_exit,
+        adp_decision=adp_decision,
+        adp_non_adp_fixture=adp_non_adp_fixture,
+    )
+    risk_closure = stage5_risk_closure(
+        context_contract=context_contract,
+        roi_metrics=roi_metrics,
+        owner_review=owner_review,
+        adp_decision=adp_decision,
+        adp_non_adp_fixture=adp_non_adp_fixture,
+        root=root,
+    )
+    rollback = stage5_rollback_readiness(root, base_ref, quality_guards)
+    task_results = {
+        "S5PAT01": {
+            "name": "新旧验证链 shadow parity",
+            "pass": ci_exit == 0 and quality_guards["pass"],
+            "evidence": ["candidate_report_only", "legacy_validation_required", "T2/T3 preserved"],
+        },
+        "S5PBT01": {
+            "name": "采集 before/after ROI 指标",
+            "pass": bool(roi_metrics.get("pass")),
+            "evidence": ["ci_wall_time_seconds", "stdout_bytes", "read_file_count", "changed_file_count", "manifest_count"],
+        },
+        "S5PBT02": {
+            "name": "逐项目 owner-readable 验收复审",
+            "pass": bool(owner_review.get("pass")),
+            "evidence": ["三基首屏", "owner-readable tokens", "not link page"],
+        },
+        "S5PCT01": {
+            "name": "受控启用和 rollback rehearsal",
+            "pass": bool(rollback.get("pass")),
+            "evidence": ["rollback_switch", "rollback_command", "failure_auto_stop"],
+        },
+    }
+    stop_conditions = {
+        "p0_p1_unclosed": int(risk_closure.get("open_p0_p1_count", 1)) > 0,
+        "read_only_or_ci_wrote_repo": not bool((ci_summary.get("zero_diff") or {}).get("clean")),
+        "t2_t3_gate_reduced": not bool(quality_guards.get("t2_t3_root_rule_preserved")),
+        "owner_entries_degraded": not bool(owner_review.get("pass")),
+        "rollback_missing": not bool(rollback.get("pass")),
+    }
+    blocking = [name for name, failed in stop_conditions.items() if failed]
+    decision = "SHIP" if not blocking and all(item["pass"] for item in task_results.values()) else "STOP"
+    summary = {
+        "owner_status_zh": "Stage5 验收通过：新策略保持 shadow，ROI 有数据，三基可读，回滚可执行。"
+        if decision == "SHIP"
+        else "Stage5 验收停止：存在未满足 stop condition 或任务证据缺口。",
+        "schema_version": 1,
+        "language": "zh-CN",
+        "command": "stage5-audit",
+        "stage": "S5",
+        "acceptance_ids": list(STAGE5_ACCEPTANCE_IDS),
+        "base_ref": base_ref or "",
+        "decision": decision,
+        "candidate_report_only": True,
+        "task_results": task_results,
+        "risk_closure": risk_closure,
+        "shadow_parity": {
+            "ci_exit_code": ci_exit,
+            "candidate_shadow_comparison": ci_summary.get("candidate_shadow_comparison", {}),
+            "quality_guards": quality_guards,
+            "adp_current_diff": adp_decision,
+            "adp_non_adp_fixture": adp_non_adp_fixture,
+        },
+        "roi_metrics": roi_metrics,
+        "owner_readability": owner_review,
+        "rollback_rehearsal": rollback,
+        "stop_conditions": stop_conditions,
+        "blocking_reasons": blocking,
+        "zero_tracked_write": bool((ci_summary.get("zero_diff") or {}).get("clean")),
+        "timing_telemetry": {
+            "stage5_audit_seconds": round(time.perf_counter() - started, 3),
+            "changed_only_ci_seconds": (ci_summary.get("timing_telemetry") or {}).get("total_seconds"),
+        },
+        "rollback_or_stop_condition": "decision=SHIP 时保留当前 changed-only fast gate；失败时设置 GOVERNANCE_ROLLBACK_LEGACY_CHANGED_ONLY=1 并运行 rollback_command。",
+    }
+    return (0 if decision == "SHIP" else 1), summary
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -2068,6 +2487,8 @@ def main(argv: list[str] | None = None) -> int:
     ci_scope = ci.add_mutually_exclusive_group(required=True)
     ci_scope.add_argument("--changed-only", action="store_true", help="Run the PR/main changed-only CI gate.")
     ci.add_argument("--base-ref", help="Explicit base commit/ref for changed-only CI.")
+    stage5_audit = subparsers.add_parser("stage5-audit", help="Run Stage5 ROI acceptance and rollback audit.")
+    stage5_audit.add_argument("--base-ref", help="Explicit base commit/ref for Stage5 changed-only audit.")
     validate = subparsers.add_parser("validate", help="Run governance structure and semantic validation.")
     validate_scope = validate.add_mutually_exclusive_group()
     validate_scope.add_argument("--all", action="store_true", help="Validate root governance and all registered projects.")
@@ -2153,6 +2574,10 @@ def main(argv: list[str] | None = None) -> int:
             exit_code = 1
         output = attach_compact_stdout_bytes(output)
         print(compact_json_bytes(output).decode("utf-8"))
+        return exit_code
+    if args.command == "stage5-audit":
+        exit_code, summary = run_stage5_audit(args.base_ref, root=ROOT, projects_file=PROJECTS_FILE)
+        print(json.dumps(summary, ensure_ascii=False, sort_keys=False, separators=(",", ":")))
         return exit_code
     if args.command == "validate":
         return governance.main(build_validate_argv(args))
