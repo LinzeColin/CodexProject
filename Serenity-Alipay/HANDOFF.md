@@ -1,5 +1,18 @@
 # HANDOFF: Serenity Daily Analysis
 
+Timestamp: 20260629 - 07:54 CST / 20260629 - 09:54 AEST
+
+## 最新交接摘要
+
+- 本轮目标：排查“为什么又不运行了”的高频问题，并修复导致用户误判的状态展示。
+- 结论：当前不是 launchd 没运行。北京时间 `2026-06-29 07:47` 尚未到首个正式 slot `08:30`；LaunchAgent `com.serenity.daily-analysis` 已加载，`runs=952`、`last exit code=0`、`run interval=180 seconds`，最近 `automation_tick_log` 持续写入 `no_due_slot`。
+- 当前真实链路：8765 `/api/health` 返回 `ok`；`launchctl print` 显示 WorkingDirectory 为 canonical `CodexProject/Serenity-Alipay`；runtime mail intent preflight 为 `production_ready=true`、`status=pass`，仅有可忽略的 sample Alipay overlay warning。
+- 根因：`/api/scheduler/status` 过去只读取 app 内置 `ApplicationAutoScheduler` 状态；而本机 app server 以 `--disable-autoscheduler` 启动，真实调度由外部 launchd 执行。因此用户会看到 `not_started`，误以为系统没运行。
+- 已修复：`app/core/application_server.py` 新增只读 launchd tick 聚合，从最新 `automation_tick_log` 判断外部 LaunchAgent 是否新鲜；若最近 420 秒内有 tick，则 `/api/scheduler/status` 返回 `status=success`、`scheduler_kind=launchd_interval`，并保留 `application_server_autoscheduler_status=not_started` 作为说明。
+- 已验证：`/api/scheduler/status` 当前返回 `status=success`、`scheduler_kind=launchd_interval`、最新 tick `2026-06-29T07:53:20+08:00 no_due_slot`，下一真实 slot `2026-06-29T08:30:00+08:00`；`/opt/anaconda3/bin/python -m pytest -q tests/test_application_server.py` 为 16 passed。
+- 服务状态：已通过 `/Applications/Serenity 每日分析.app` 重启 8765 app server，当前 PID `45696`，cwd 为 canonical Serenity-Alipay；没有启动/关闭 OpenD/MooMoo，没有触发真实 run。
+- 历史保护：本轮未提交 runtime DB/WAL/lock；`data/serenity_daily.sqlite`、`automation_tick.lock`、`sqlite-shm`、`sqlite-wal` 仍是本机运行态，不能纳入提交。
+
 Timestamp: 20260627 - 07:54 CST / 20260627 - 09:54 AEST
 
 ## 最新交接摘要

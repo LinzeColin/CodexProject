@@ -12,6 +12,7 @@ Purpose: record repeated production UX/runtime bugs that must not regress in fut
 4. OpenD/MooMoo lifecycle changes must preserve ownership: user-opened processes are never cleaned up; tool-opened processes are cleaned only after the relevant task completes and only when socket readiness/lifecycle state proves it is safe.
 5. Manual Review / data quality degradation / no-new-order informational states must not create noisy production email unless the configured urgent action threshold is met.
 6. First pool entry facts must be resolved from historical recommendations before insertion. Later runs must not change a fund's original candidate/holding/observation pool entry time, rank, or run id.
+7. Scheduler status must distinguish application-server internal autoscheduler state from external LaunchAgent state. `--disable-autoscheduler` does not mean production launchd scheduling is stopped.
 
 ## Repeated Bug 1: Manual Review Saved But Todo Remained
 
@@ -81,6 +82,18 @@ Purpose: record repeated production UX/runtime bugs that must not regress in fut
 - Regression shield:
   - `tests/test_history_integrity.py::test_asset_pool_entry_keeps_first_holding_pool_entry`.
 - Future agent warning: never "repair" first-entry timestamps by recalculating them from the latest run. If historical truth changes because older data is newly imported, handle it through an explicit migration/audit contract, not through normal runtime writes.
+
+## Related Stability Fix: Launchd Scheduler Status Clarity
+
+- Symptom: `/api/scheduler/status` showed `not_started` while launchd was actually ticking every 180 seconds, causing the system to look stopped.
+- Root cause: the endpoint only read `ApplicationAutoScheduler` status. The local app server intentionally runs with `--disable-autoscheduler` because production scheduling is owned by LaunchAgent `com.serenity.daily-analysis`.
+- Correct behavior: if recent `automation_tick_log` rows prove external launchd activity, report effective scheduler status as `status=success` and `scheduler_kind=launchd_interval`, while preserving `application_server_autoscheduler_status=not_started` for transparency.
+- Fix record:
+  - `app/core/application_server.py::_latest_launchd_tick_status()` reads the latest tick row without changing scheduling behavior.
+  - `read_autoscheduler_status()` now merges fresh launchd tick evidence into the status response.
+- Regression shield:
+  - `tests/test_application_server.py::test_read_autoscheduler_status_reports_recent_launchd_tick`.
+- Future agent warning: do not re-enable app-server autoscheduler merely to make `/api/scheduler/status` look active. That risks duplicate scheduling. Surface launchd state instead.
 
 ## Required Verification Before Marking This Cluster Fixed
 
