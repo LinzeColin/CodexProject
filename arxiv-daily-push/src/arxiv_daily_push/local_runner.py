@@ -270,8 +270,13 @@ def run_local_daily(
     release_errors = validate_release_delivery_report(release_report)
     if write:
         _write_json(run_dir / "adp-release-dry-run.json", release_report)
-    delivery_package = build_daily_delivery_package(daily_run, daily_input, release_report, generated_at=generated_at)
-    notification = delivery_package["notification"]
+    delivery_packages = _build_m1_m4_delivery_packages(
+        daily_run,
+        daily_input,
+        release_report,
+        generated_at=generated_at,
+    )
+    delivery_package = delivery_packages["M1"]
     planned_mail_delivery = _planned_mail_delivery_summary(delivery_package)
     user_center_sync = _sync_user_center_learning_snapshot(
         root=root,
@@ -281,44 +286,55 @@ def run_local_daily(
         daily_input_report=daily_input_report,
     )
     user_center_sync_ready = user_center_sync.get("status") == "pass"
-    if allow_smtp_send and not user_center_sync_ready:
-        notification_report = {
-            "delivery_id": "",
-            "message_id": "",
-            "status": "blocked",
-            "generated_at": generated_at,
-            "allow_send": False,
-            "real_send_attempted": False,
-            "blocking_reasons": ["user center sync not ready; real SMTP send blocked"],
-            "secret_values_logged": False,
-        }
-    else:
-        notification_report = deliver_notification(
-            notification,
-            generated_at=generated_at,
-            cycle_id=date,
-            product_id=str(delivery_package["mail_product_id"]),
-            allow_send=allow_smtp_send and _stage1_text_ready(delivery_package),
-            env=environment,
-            smtp_factory=smtp_factory,
-        )
-    smtp_errors = validate_smtp_delivery_report(notification_report)
+    historical_sent_reports = _historical_sent_mail_reports(content_ledger_path, date) if allow_smtp_send else {}
+    notification_reports = _deliver_mail_product_notifications(
+        delivery_packages=delivery_packages,
+        generated_at=generated_at,
+        date=date,
+        allow_smtp_send=allow_smtp_send,
+        user_center_sync_ready=user_center_sync_ready,
+        historical_sent_reports=historical_sent_reports,
+        env=environment,
+        smtp_factory=smtp_factory,
+    )
+    notification_report = notification_reports["M1"]
+    smtp_errors = [
+        f"{product_id}: {error}"
+        for product_id, report_item in notification_reports.items()
+        for error in validate_smtp_delivery_report(report_item)
+    ]
+    mail_delivery_summary = _mail_delivery_summary(
+        planned_mail_delivery=planned_mail_delivery,
+        notification_reports=notification_reports,
+    )
+    user_center_send_count_sync = _sync_user_center_send_count(
+        root=root,
+        write=write,
+        planned_mail_delivery=planned_mail_delivery,
+        sent_mail_count=int(mail_delivery_summary["sent_mail_count"]),
+        enabled=allow_smtp_send and user_center_sync_ready,
+    )
+    user_center_send_count_ready = user_center_send_count_sync.get("status") in {"pass", "skipped"}
     production_ready = (
-        notification_report.get("status") == "sent"
-        and _stage1_text_ready(delivery_package)
+        mail_delivery_summary["all_planned_products_sent"] is True
+        and all(_stage1_text_ready(package) for package in delivery_packages.values())
         and user_center_sync_ready
+        and user_center_send_count_ready
     )
     if write:
-        (run_dir / "email_preview.txt").write_text(notification.body, encoding="utf-8")
-        (run_dir / "email_preview.html").write_text(notification.html_body, encoding="utf-8")
-        _write_json(run_dir / "adp-smtp-delivery-report.json", notification_report)
+        _write_mail_product_artifacts(run_dir, delivery_packages=delivery_packages, notification_reports=notification_reports)
         _persist_queue(artifact_dir / "adp-candidate-queue.json", queue_state_path)
 
-    blocking_reasons = release_errors + smtp_errors + list(user_center_sync.get("blocking_reasons") or [])
+    blocking_reasons = (
+        release_errors
+        + smtp_errors
+        + list(user_center_sync.get("blocking_reasons") or [])
+        + list(user_center_send_count_sync.get("blocking_reasons") or [])
+    )
     if release_report.get("status") == "blocked":
         blocking_reasons.extend(release_report.get("blocking_reasons") or ["release dry-run blocked"])
-    if allow_smtp_send and notification_report.get("status") != "sent":
-        blocking_reasons.extend(notification_report.get("blocking_reasons") or ["real SMTP send did not complete"])
+    if allow_smtp_send and production_ready is not True:
+        blocking_reasons.extend(_unsent_mail_blocking_reasons(notification_reports))
 
     ledger_row = _content_ledger_row(
         date=date,
@@ -327,6 +343,8 @@ def run_local_daily(
         daily_input_report=daily_input_report,
         run_dir=run_dir,
         notification_report=notification_report,
+        notification_reports=notification_reports,
+        mail_delivery_summary=mail_delivery_summary,
         production_ready=production_ready,
     )
     if write:
@@ -355,20 +373,35 @@ def run_local_daily(
             "email_preview_paths": {
                 "plain": str(run_dir / "email_preview.txt"),
                 "html": str(run_dir / "email_preview.html"),
+                "by_product": {
+                    product_id: {
+                        "plain": str(run_dir / f"email_preview_{product_id}.txt"),
+                        "html": str(run_dir / f"email_preview_{product_id}.html"),
+                    }
+                    for product_id in M1_M4_MAIL_PRODUCTS
+                },
             },
             "email_preview_written": write,
             "user_center_sync": user_center_sync,
             "user_center_sync_ready": user_center_sync_ready,
+            "user_center_send_count_sync": user_center_send_count_sync,
             "planned_mail_delivery": planned_mail_delivery,
+            "mail_delivery_summary": mail_delivery_summary,
             "notification_report": notification_report,
+            "notification_reports": notification_reports,
+            "historical_sent_reports": historical_sent_reports,
             "delivery_package": {
                 key: value
                 for key, value in delivery_package.items()
                 if key != "notification"
             },
+            "delivery_packages": {
+                product_id: {key: value for key, value in package.items() if key != "notification"}
+                for product_id, package in delivery_packages.items()
+            },
             "release_report": release_report,
             "production_evidence_ready": production_ready,
-            "real_smtp_sent": notification_report.get("status") == "sent",
+            "real_smtp_sent": mail_delivery_summary["all_planned_products_sent"] is True,
         }
     )
     return _write_or_return(report, run_dir, write=write)
@@ -463,6 +496,15 @@ def validate_local_runner_report(report: Mapping[str, Any]) -> list[str]:
             errors.append("passing local daily report requires candidate_queue_persisted")
         if report.get("user_center_sync_ready") is not True:
             errors.append("passing local daily report requires user_center_sync_ready")
+        delivery_summary = report.get("mail_delivery_summary")
+        if isinstance(delivery_summary, Mapping):
+            planned_products = tuple(delivery_summary.get("planned_mail_products") or ())
+            if planned_products != tuple(M1_M4_MAIL_PRODUCTS):
+                errors.append("passing local daily report requires M1-M4 planned mail products")
+            if report.get("real_smtp_sent") is True and delivery_summary.get("all_planned_products_sent") is not True:
+                errors.append("real_smtp_sent requires all planned M1-M4 products sent")
+        elif report.get("real_smtp_sent") is True:
+            errors.append("real_smtp_sent requires mail_delivery_summary")
     if report.get("action") == "launchd_package":
         if report.get("applied") is not False or report.get("real_scheduler_installed") is not False:
             errors.append("launchd package must not be applied by the generator")
@@ -711,6 +753,309 @@ def _planned_mail_delivery_summary(delivery_package: Mapping[str, Any]) -> dict[
     }
 
 
+def _build_m1_m4_delivery_packages(
+    daily_run: Mapping[str, Any],
+    daily_input: Mapping[str, Any],
+    release_report: Mapping[str, Any],
+    *,
+    generated_at: str,
+) -> dict[str, dict[str, Any]]:
+    return {
+        product_id: build_daily_delivery_package(
+            daily_run,
+            daily_input,
+            release_report,
+            generated_at=generated_at,
+            mail_product_id=product_id,
+        )
+        for product_id in M1_M4_MAIL_PRODUCTS
+    }
+
+
+def _deliver_mail_product_notifications(
+    *,
+    delivery_packages: Mapping[str, Mapping[str, Any]],
+    generated_at: str,
+    date: str,
+    allow_smtp_send: bool,
+    user_center_sync_ready: bool,
+    historical_sent_reports: Mapping[str, Mapping[str, Any]],
+    env: Mapping[str, str],
+    smtp_factory: SmtpFactory | None,
+) -> dict[str, dict[str, Any]]:
+    reports: dict[str, dict[str, Any]] = {}
+    for product_id in M1_M4_MAIL_PRODUCTS:
+        package = delivery_packages[product_id]
+        notification = package["notification"]
+        if allow_smtp_send and product_id in historical_sent_reports:
+            reports[product_id] = _historical_sent_notification_report(
+                notification,
+                generated_at=generated_at,
+                date=date,
+                product_id=product_id,
+                historical_report=historical_sent_reports[product_id],
+            )
+            continue
+        if allow_smtp_send and user_center_sync_ready is not True:
+            reports[product_id] = _blocked_notification_report(
+                notification,
+                generated_at=generated_at,
+                date=date,
+                product_id=product_id,
+                reason="user center sync not ready; real SMTP send blocked",
+            )
+            continue
+        if allow_smtp_send and not _stage1_text_ready(package):
+            reports[product_id] = _blocked_notification_report(
+                notification,
+                generated_at=generated_at,
+                date=date,
+                product_id=product_id,
+                reason=f"{product_id} Email V1 package is not ready for real SMTP send",
+            )
+            continue
+        report = deliver_notification(
+            notification,
+            generated_at=generated_at,
+            cycle_id=date,
+            product_id=product_id,
+            allow_send=allow_smtp_send,
+            env=env,
+            smtp_factory=smtp_factory,
+        )
+        reports[product_id] = _with_delivery_attempt_fields(
+            report,
+            allow_send=allow_smtp_send,
+            attempted=allow_smtp_send and report.get("status") != "blocked",
+        )
+    return reports
+
+
+def _historical_sent_mail_reports(content_ledger_path: Path, date: str) -> dict[str, dict[str, Any]]:
+    reports: dict[str, dict[str, Any]] = {}
+    if not content_ledger_path.exists():
+        return reports
+    try:
+        lines = content_ledger_path.read_text(encoding="utf-8").splitlines()
+    except OSError:
+        return reports
+    for line in lines:
+        if not line.strip():
+            continue
+        try:
+            row = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if not isinstance(row, Mapping) or str(row.get("date") or "") != date:
+            continue
+        status_by_product = row.get("email_status_by_product")
+        ref_by_product = row.get("email_ref_by_product")
+        if isinstance(status_by_product, Mapping):
+            refs = ref_by_product if isinstance(ref_by_product, Mapping) else {}
+            for product_id in M1_M4_MAIL_PRODUCTS:
+                if status_by_product.get(product_id) == "sent":
+                    reports[product_id] = {
+                        "product_id": product_id,
+                        "delivery_ref": str(refs.get(product_id) or row.get("email_ref") or f"local-ledger://{date}/{product_id}"),
+                        "ledger_ref": str(content_ledger_path),
+                    }
+        elif row.get("email_status") == "sent":
+            product_id = str(row.get("mail_product_id") or "M1")
+            if product_id in M1_M4_MAIL_PRODUCTS:
+                reports[product_id] = {
+                    "product_id": product_id,
+                    "delivery_ref": str(row.get("email_ref") or f"local-ledger://{date}/{product_id}"),
+                    "ledger_ref": str(content_ledger_path),
+                }
+    return reports
+
+
+def _historical_sent_notification_report(
+    notification: Any,
+    *,
+    generated_at: str,
+    date: str,
+    product_id: str,
+    historical_report: Mapping[str, Any],
+) -> dict[str, Any]:
+    report = deliver_notification(
+        notification,
+        generated_at=generated_at,
+        cycle_id=date,
+        product_id=product_id,
+        allow_send=False,
+        env={},
+    )
+    sent = dict(report)
+    sent["status"] = "sent"
+    sent["dry_run"] = False
+    sent["real_smtp_send_enabled"] = False
+    sent["delivery_ref"] = str(historical_report.get("delivery_ref") or f"local-ledger://{date}/{product_id}")
+    sent["historical_delivery_evidence"] = True
+    sent["historical_ledger_ref"] = str(historical_report.get("ledger_ref") or "")
+    return _with_delivery_attempt_fields(sent, allow_send=False, attempted=False)
+
+
+def _blocked_notification_report(
+    notification: Any,
+    *,
+    generated_at: str,
+    date: str,
+    product_id: str,
+    reason: str,
+) -> dict[str, Any]:
+    report = deliver_notification(
+        notification,
+        generated_at=generated_at,
+        cycle_id=date,
+        product_id=product_id,
+        allow_send=False,
+        env={},
+    )
+    blocked = dict(report)
+    blocked["status"] = "blocked"
+    blocked["dry_run"] = False
+    blocked["real_smtp_send_enabled"] = False
+    blocked["blocking_reasons"] = [reason]
+    return _with_delivery_attempt_fields(blocked, allow_send=False, attempted=False)
+
+
+def _with_delivery_attempt_fields(report: Mapping[str, Any], *, allow_send: bool, attempted: bool) -> dict[str, Any]:
+    normalized = dict(report)
+    normalized["allow_send"] = bool(allow_send)
+    normalized["real_send_attempted"] = bool(attempted)
+    return normalized
+
+
+def _mail_delivery_summary(
+    *,
+    planned_mail_delivery: Mapping[str, Any],
+    notification_reports: Mapping[str, Mapping[str, Any]],
+) -> dict[str, Any]:
+    planned_products = [str(product) for product in planned_mail_delivery.get("planned_mail_products") or M1_M4_MAIL_PRODUCTS]
+    statuses = {product_id: str(notification_reports.get(product_id, {}).get("status") or "missing") for product_id in planned_products}
+    sent_products = [product_id for product_id, status in statuses.items() if status == "sent"]
+    historical_sent_products = [
+        product_id
+        for product_id in sent_products
+        if notification_reports.get(product_id, {}).get("historical_delivery_evidence") is True
+    ]
+    newly_sent_products = [
+        product_id
+        for product_id in sent_products
+        if notification_reports.get(product_id, {}).get("real_send_attempted") is True
+    ]
+    blocked_products = [product_id for product_id, status in statuses.items() if status == "blocked"]
+    dry_run_products = [product_id for product_id, status in statuses.items() if status == "dry_run"]
+    missing_products = [product_id for product_id, status in statuses.items() if status == "missing"]
+    return {
+        "source": "EMAIL_LEARNING_V1_M1_M4_CONTRACT",
+        "planned_send_total": int(planned_mail_delivery.get("planned_send_total") or len(planned_products)),
+        "planned_mail_products": planned_products,
+        "sent_mail_count": len(sent_products),
+        "sent_mail_products": sent_products,
+        "newly_sent_mail_products": newly_sent_products,
+        "historical_sent_mail_products": historical_sent_products,
+        "blocked_mail_products": blocked_products,
+        "dry_run_mail_products": dry_run_products,
+        "missing_mail_products": missing_products,
+        "status_by_product": statuses,
+        "delivery_ref_by_product": {
+            product_id: str(notification_reports.get(product_id, {}).get("delivery_ref") or "")
+            for product_id in planned_products
+        },
+        "all_planned_products_attempted": not missing_products,
+        "all_planned_products_sent": len(sent_products) == len(planned_products) and not missing_products,
+    }
+
+
+def _sync_user_center_send_count(
+    *,
+    root: Path,
+    write: bool,
+    planned_mail_delivery: Mapping[str, Any],
+    sent_mail_count: int,
+    enabled: bool,
+) -> dict[str, Any]:
+    mail_pages = [root / path for path in USER_CENTER_MAIL_STATUS_PAGES]
+    report = {
+        "status": "skipped",
+        "mail_status_pages": [str(path) for path in mail_pages],
+        "write_enabled": write,
+        "sent_mail_count": int(sent_mail_count),
+        "planned_mail_delivery": dict(planned_mail_delivery),
+        "blocking_reasons": [],
+    }
+    if not enabled:
+        return report
+    if not write:
+        report["status"] = "blocked"
+        report["blocking_reasons"] = ["user center sent count sync requires write mode"]
+        return report
+    missing = [str(path) for path in mail_pages if not path.exists()]
+    if missing:
+        report["status"] = "blocked"
+        report["blocking_reasons"] = ["user center sent count sync missing required files: " + ", ".join(missing)]
+        return report
+    try:
+        for mail_page in mail_pages:
+            current = mail_page.read_text(encoding="utf-8")
+            updated = _replace_user_center_planned_send_total(
+                current,
+                planned_mail_delivery,
+                sent_mail_count=sent_mail_count,
+            )
+            mail_page.write_text(updated, encoding="utf-8")
+            if (
+                _replace_user_center_planned_send_total(
+                    mail_page.read_text(encoding="utf-8"),
+                    planned_mail_delivery,
+                    sent_mail_count=sent_mail_count,
+                )
+                != updated
+            ):
+                report["status"] = "blocked"
+                report["blocking_reasons"] = [f"user center sent count verification failed after write: {mail_page}"]
+                return report
+    except (OSError, ValueError) as error:
+        report["status"] = "blocked"
+        report["blocking_reasons"] = [f"user center sent count sync failed: {error}"]
+        return report
+    report["status"] = "pass"
+    return report
+
+
+def _write_mail_product_artifacts(
+    run_dir: Path,
+    *,
+    delivery_packages: Mapping[str, Mapping[str, Any]],
+    notification_reports: Mapping[str, Mapping[str, Any]],
+) -> None:
+    for product_id in M1_M4_MAIL_PRODUCTS:
+        notification = delivery_packages[product_id]["notification"]
+        (run_dir / f"email_preview_{product_id}.txt").write_text(notification.body, encoding="utf-8")
+        (run_dir / f"email_preview_{product_id}.html").write_text(notification.html_body, encoding="utf-8")
+        _write_json(run_dir / f"adp-smtp-delivery-report-{product_id}.json", notification_reports[product_id])
+    m1_notification = delivery_packages["M1"]["notification"]
+    (run_dir / "email_preview.txt").write_text(m1_notification.body, encoding="utf-8")
+    (run_dir / "email_preview.html").write_text(m1_notification.html_body, encoding="utf-8")
+    _write_json(run_dir / "adp-smtp-delivery-report.json", notification_reports["M1"])
+
+
+def _unsent_mail_blocking_reasons(notification_reports: Mapping[str, Mapping[str, Any]]) -> list[str]:
+    reasons: list[str] = []
+    for product_id in M1_M4_MAIL_PRODUCTS:
+        report = notification_reports.get(product_id) or {}
+        if report.get("status") == "sent":
+            continue
+        product_reasons = [str(reason) for reason in report.get("blocking_reasons") or [] if reason]
+        if product_reasons:
+            reasons.extend(f"{product_id}: {reason}" for reason in product_reasons)
+        else:
+            reasons.append(f"{product_id}: real SMTP send did not complete")
+    return reasons
+
+
 def _user_center_report_passed(report: Mapping[str, Any] | None, ready_key: str) -> bool:
     return bool(report and report.get("status") == "pass" and report.get(ready_key) is True)
 
@@ -778,7 +1123,12 @@ def _replace_user_center_snapshot_values(text: str, values: Mapping[str, str]) -
     return "\n".join(changed_lines) + ("\n" if text.endswith("\n") else "")
 
 
-def _replace_user_center_planned_send_total(text: str, planned_mail_delivery: Mapping[str, Any]) -> str:
+def _replace_user_center_planned_send_total(
+    text: str,
+    planned_mail_delivery: Mapping[str, Any],
+    *,
+    sent_mail_count: int | None = None,
+) -> str:
     planned_total = int(planned_mail_delivery.get("planned_send_total") or 0)
     planned_products = ", ".join(str(product) for product in planned_mail_delivery.get("planned_mail_products") or [])
     if planned_total <= 0 or not planned_products:
@@ -791,9 +1141,12 @@ def _replace_user_center_planned_send_total(text: str, planned_mail_delivery: Ma
         if not match:
             continue
         current_value = match.group("value").strip()
-        sent_part = current_value.split("/", 1)[0].strip()
-        if not sent_part or sent_part == USER_CENTER_PENDING_PLANNED_SEND_TOTAL:
-            sent_part = "0"
+        if sent_mail_count is None:
+            sent_part = current_value.split("/", 1)[0].strip()
+            if not sent_part or sent_part == USER_CENTER_PENDING_PLANNED_SEND_TOTAL:
+                sent_part = "0"
+        else:
+            sent_part = str(max(0, int(sent_mail_count)))
         lines[index] = f"{match.group('prefix')}{sent_part} / {planned_total} {match.group('suffix').lstrip()}"
         changed = True
     if not changed:
@@ -908,18 +1261,31 @@ def _content_ledger_row(
     daily_input_report: Mapping[str, Any],
     run_dir: Path,
     notification_report: Mapping[str, Any],
+    notification_reports: Mapping[str, Mapping[str, Any]],
+    mail_delivery_summary: Mapping[str, Any],
     production_ready: bool,
 ) -> dict[str, Any]:
     source_item = daily_input["source_item"]
     queue = daily_input_report.get("candidate_queue") if isinstance(daily_input_report.get("candidate_queue"), Mapping) else {}
+    status_by_product = dict(mail_delivery_summary.get("status_by_product") or {})
+    ref_by_product = dict(mail_delivery_summary.get("delivery_ref_by_product") or {})
     return {
         "date": date,
         "generated_at": generated_at,
         "source_id": source_item.get("source_id", ""),
         "title": source_item.get("title", ""),
         "queue_item_count": len(queue.get("items") or []),
-        "email_status": notification_report.get("status", ""),
+        "email_status": "sent" if mail_delivery_summary.get("all_planned_products_sent") is True else notification_report.get("status", ""),
         "email_ref": notification_report.get("delivery_ref", ""),
+        "planned_mail_products": list(mail_delivery_summary.get("planned_mail_products") or M1_M4_MAIL_PRODUCTS),
+        "planned_mail_count": int(mail_delivery_summary.get("planned_send_total") or len(M1_M4_MAIL_PRODUCTS)),
+        "sent_mail_count": int(mail_delivery_summary.get("sent_mail_count") or 0),
+        "email_status_by_product": status_by_product,
+        "email_ref_by_product": ref_by_product,
+        "smtp_delivery_report_by_product": {
+            product_id: str(run_dir / f"adp-smtp-delivery-report-{product_id}.json")
+            for product_id in notification_reports
+        },
         "production_evidence_ready": bool(production_ready),
         "run_dir": str(run_dir),
         "daily_input_report": str(run_dir / "adp-daily-input-report.json"),

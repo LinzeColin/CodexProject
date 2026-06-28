@@ -8,6 +8,8 @@ arxiv-daily-push 当前治理结论：Stage 1 B1/arXiv 已达到 `ARXIV_PRODUCTI
 
 Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。
 
+本机 daily runner 已补上 M1-M4 四产品发送编排：后续真实补发可以按同一服务日期只发送缺口产品，并避免重复发送已有证据的产品。当前用户中心仍只记录真实已发送数，不把 dry-run 或未执行的 M2-M4 伪写成已发送。
+
 ## 3. 为什么重要
 
 在保持 arXiv 稳定运行的前提下，统一 V7.1 有效要求与 V1.1 新要求，并让 Stage2 agents 在 V7.2 下继续推进无冲突来源 Shadow。
@@ -35,6 +37,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - responsible_role: `content_owner + product_owner`
 - acceptance_ids: `ACC-S2PLT01-30D`
 - unblock_condition: S2PLT01 replay payload execution package can be misread as S2PLT01 acceptance; inherited P0/P1, S2PLT04, S2PMT07 final independent review, and final production stop gates still block S2PLT01 and integrated production acceptance.
+- local_mail_runner_note: `LOCAL-DAILY-M1-M4-SEND-ORCHESTRATION` 已完成代码和测试证据，但真实 M2-M4 补发仍必须由运行证据和 SMTP delivery report 追加到用户中心历史发送记录。
 
 ## 8. 九层 Assurance 状态
 
