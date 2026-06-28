@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PJT02-S2PJT03-OWNER-SNAPSHOT-SUMMARY-SYNC",
+  "parent_context": "S2PMT07",
+  "acceptance_id": "ACC-S2PJ-OWNER-USER-CENTER-SNAPSHOT",
+  "generated_at": "2026-06-28T18:00:24+10:00",
+  "status": "owner_snapshot_summary_synced_no_production_no_acceptance",
+  "scope": {
+    "changed_surfaces": [
+      "arxiv-daily-push/用户中心/README.md",
+      "arxiv-daily-push/用户中心/一看三查.md",
+      "arxiv-daily-push/tests/test_user_center_candidate_pool.py",
+      "arxiv-daily-push/功能清单.md",
+      "arxiv-daily-push/开发记录.md",
+      "arxiv-daily-push/模型参数文件.md",
+      "arxiv-daily-push/docs/phase_records/PHASE_S2PJT02_S2PJT03_OWNER_SNAPSHOT_SUMMARY_SYNC.md"
+    ],
+    "snapshot_source_page": "arxiv-daily-push/用户中心/复习行动与收益.md",
+    "runtime_report_sources_observed": [
+      "/Users/linzezhang/.adp/arxiv-daily-push/runs/20260628/s2pjt02-review-schedule/adp-s2pjt02-review-schedule-report.json",
+      "/Users/linzezhang/.adp/arxiv-daily-push/runs/20260628/s2pjt03-action-asset-roi/adp-s2pjt03-action-asset-roi-report.json"
+    ]
+  },
+  "snapshot_values": {
+    "review_due_today": 0,
+    "review_due_next_7_days": 1,
+    "review_overdue": 0,
+    "review_completed": 0,
+    "action_15m": 1,
+    "action_2h": 1,
+    "action_7d": 1,
+    "action_30d": 1,
+    "new_capability_assets": 1,
+    "verifiable_actual_roi": 0
+  },
+  "production_boundary": {
+    "real_smtp_sent_by_this_task": false,
+    "real_smtp_send_enabled_by_this_task": false,
+    "scheduler_enabled": false,
+    "scheduler_install_enabled": false,
+    "release_uploaded": false,
+    "release_packaging_enabled": false,
+    "production_restore_enabled": false,
+    "production_restore_executed": false,
+    "public_schema_changed": false,
+    "db_migration_executed": false,
+    "production_queue_mutated": false,
+    "source_adapter_changed": false,
+    "ranking_algorithm_changed": false,
+    "current_pointer_changed": false,
+    "v7_1_baseline_changed": false,
+    "v7_2_contract_files_changed": false,
+    "p0_p1_closed": false,
+    "s2plt02_completed": false,
+    "s2plt04_completed": false,
+    "s2pmt07_passed": false,
+    "integrated_production_accepted": false,
+    "daily_operation_enabled": false
+  },
+  "validation_plan": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_owner_snapshot_summary PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_user_center_candidate_pool.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_owner_snapshot_current_state PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_governance_current_state.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_owner_snapshot_full2 PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest discover -s arxiv-daily-push/tests -q",
+    "PYTHONPATH=arxiv-daily-push/src python3 arxiv-daily-push/scripts/update_user_center_timestamps.py --check",
+    "PYTHONPATH=arxiv-daily-push/src python3 arxiv-daily-push/scripts/update_user_center_learning_snapshot.py --check --state-dir /Users/linzezhang/.adp/arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_owner_snapshot_project PYTHONPATH=scripts:arxiv-daily-push/src python3 -B scripts/validate_project_governance.py --project arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_owner_snapshot_sync PYTHONPATH=scripts:arxiv-daily-push/src python3 -B scripts/validate_governance_sync.py",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_owner_snapshot_changed3 PYTHONPATH=scripts:arxiv-daily-push/src python3 -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_owner_snapshot_v72 PYTHONPATH=arxiv-daily-push/src python3 -B arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_owner_snapshot_render PYTHONPATH=scripts:arxiv-daily-push/src python3 -B scripts/lean_governance.py check-render --project arxiv-daily-push",
+    "ruby -ryaml -rjson -rcsv structured parse over touched YAML/JSON/JSONL/CSV files",
+    "production true-flag diff scan",
+    "git diff --check"
+  ],
+  "validation_results": {
+    "test_user_center_candidate_pool": "18 tests OK",
+    "test_governance_current_state": "4 tests OK",
+    "full_arxiv_daily_push_unittest": "666 tests OK",
+    "user_center_timestamps": "18 user-center timestamps validated",
+    "learning_snapshot_check": "validated against /Users/linzezhang/.adp/arxiv-daily-push reports",
+    "project_governance": "errors 0 warnings 0",
+    "governance_sync": "errors 0 warnings 0",
+    "changed_only_governance_semantic_sync": "errors 0 warnings 0",
+    "v7_2_validator": "PASS",
+    "lean_check_render": "drift_count 0 reference_issue_count 0",
+    "structured_parse": "OK",
+    "git_diff_check": "PASS",
+    "production_true_flag_scan": "PASS",
+    "branch_and_pr_closeout": "pending final closeout"
+  },
+  "branch_policy": {
+    "opened_pr": false,
+    "created_remote_branch": false,
+    "must_push_direct_to_main_or_report_blocker": true
+  }
+}

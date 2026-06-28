@@ -11,11 +11,29 @@ The append-only machine record is `development_events.jsonl`.
 - Product version: 0.23.1
 - Current phase: S2PM
 - Current gate: S2PMT07_NO_PRODUCTION_ATTESTATION_READINESS_SYNC_FINAL_BUNDLE_STILL_BLOCKED
-- Confirmed iteration count: 206
+- Confirmed iteration count: 207
 - Reconstructed event count: 0
-- Current task: `S2PMT07-NO-PRODUCTION-ATTESTATION-READINESS-SYNC` makes final bundle readiness consume the committed `FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json`; final bundle remains blocked because manifest, P0/P1 zero proof, S2PLT04 completion report, independent signoff, final command execution, and next-agent handoff are still missing. The owner-visible next action remains independent final reviewer assignment, and P0/P1 closure, scheduler, Release, DAILY_OPERATION, and integrated production acceptance remain blocked/false.
+- Current task: `S2PMT07-NO-PRODUCTION-ATTESTATION-READINESS-SYNC` makes final bundle readiness consume the committed `FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json`; final bundle remains blocked because manifest, P0/P1 zero proof, S2PLT04 completion report, independent signoff, final command execution, and next-agent handoff are still missing. Latest owner snapshot sync `S2PJT02-S2PJT03-OWNER-SNAPSHOT-SUMMARY-SYNC` only synchronizes shallow GitHub user-center summaries with the already-written 2026-06-28 review/action/capability/ROI snapshot. The owner-visible next action remains independent final reviewer assignment, and P0/P1 closure, scheduler, Release, DAILY_OPERATION, and integrated production acceptance remain blocked/false.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. Local daily M1-M4 orchestration is now recorded as readiness evidence, but V7.2 contract baseline migration blockers are zero while real restore, real SMTP production, scheduler installation, final acceptance bundle creation, directory-level final bundle artifact validation pass, P0/P1 closure, S2PLT04 completion, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
+
+### `ITER-20260628-ADP-S2PJT02-S2PJT03-OWNER-SNAPSHOT-SUMMARY-SYNC`
+
+- Timestamp: `2026-06-28T18:04:30+10:00`
+- Fact level: EXTRACTED from 2026-06-28 S2PJT02 review schedule report, S2PJT03 action/asset/ROI report, shallow GitHub user-center pages, regression test, phase record, run manifest, traceability row, delivery task, event record, and three base files.
+- Base commit: `b15bb02e85bd9b5041bf7035d6aba6491cbb5767`
+- Product version: `0.23.1`
+- Status: 2026-06-28 review/action/capability/ROI snapshot numbers are visible from shallow GitHub user-center summaries; S2PMT07 remains blocked.
+- Task IDs: `S2PJT02-S2PJT03-OWNER-SNAPSHOT-SUMMARY-SYNC`; parents `S2PJT02`, `S2PJT03`; acceptance `ACC-S2PJ-OWNER-USER-CENTER-SNAPSHOT`.
+- Goal: Remove stale owner-facing summary wording that still described the review/action/ROI page as pending after the 2026-06-28 snapshot had already been written.
+- Files changed: shallow user-center README and one-look/three-check summaries, user-center timestamp refresh, focused user-center regression test, phase record, run manifest, traceability/delivery/event records, and three base files.
+- Decisions: 2026-06-28 snapshot values remain factual display only: due review 0, next-seven-days review 1, overdue 0, completed 0, 15-minute action 1, 2-hour action 1, 7-day action 1, 30-day action 1, new capability asset 1, actual ROI 0. No P0/P1 closure, no S2PLT02 acceptance, no S2PMT07 acceptance, and every production/contract side-effect flag remains false.
+- Validation: targeted user-center tests 18 OK; timestamp check 18 pages valid; learning snapshot check against local state valid; project governance 0/0 before governance index sync. Final run-level validation is recorded in the run manifest and closeout.
+- Boundaries: No source adapter, ranking, queue schema, public schema, SMTP transport, scheduler install/enablement, Release, production restore, CURRENT/V7 contract, V7.1 baseline, P0/P1 closure, S2PLT02 acceptance, S2PLT04 completion, DAILY_OPERATION, or integrated production acceptance changed.
+- Branch hygiene: no branch or PR is created by this run; closeout rechecks open PR count and ADP/arxiv/s2p remote branch count.
+- Risks: A visible 2026-06-28 owner snapshot can be misread as daily operation acceptance. It is only owner-facing summary synchronization; S2PMT07 and Stage 2 production stop gates remain blocked.
+- Evidence: `governance/run_manifests/ADP-S2PJT02-S2PJT03-OWNER-SNAPSHOT-SUMMARY-SYNC-20260628.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PJT02_S2PJT03_OWNER_SNAPSHOT_SUMMARY_SYNC.md`; `arxiv-daily-push/用户中心/复习行动与收益.md`; `arxiv-daily-push/tests/test_user_center_candidate_pool.py`.
+- Next step: Continue only with the real independent final reviewer assignment artifact and remaining S2PMT07 final-bundle prerequisites; do not claim S2PLT02/S2PMT07/Stage2 production acceptance from this owner snapshot.
 
 ### `ITER-20260628-ADP-S2PMT07-NO-PRODUCTION-ATTESTATION-READINESS-SYNC`
 
