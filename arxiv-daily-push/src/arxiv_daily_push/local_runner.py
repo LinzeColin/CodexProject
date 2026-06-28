@@ -141,6 +141,7 @@ def run_local_daily(
     env: Mapping[str, str] | None = None,
     allow_smtp_send: bool = False,
     max_results_per_category: int = ALL_ARXIV_MAX_RESULTS_PER_CATEGORY,
+    daily_input_report_path: str | Path | None = None,
     fetcher: FetchAtom | None = None,
     source_batches: Mapping[str, Mapping[str, Any]] | None = None,
     polite_delay_seconds: float = 0.0,
@@ -158,6 +159,9 @@ def run_local_daily(
     artifact_dir = run_dir / "artifacts"
     queue_state_path = state / LOCAL_RUNNER_QUEUE_FILENAME
     content_ledger_path = state / LOCAL_RUNNER_CONTENT_LEDGER_FILENAME
+    explicit_daily_input_report_path = Path(daily_input_report_path).resolve() if daily_input_report_path else None
+    daily_input_source = "existing_report" if explicit_daily_input_report_path else "live_arxiv_fetch"
+    daily_input_report_ref = str(explicit_daily_input_report_path or (run_dir / "adp-daily-input-report.json"))
     environment = dict(os.environ if env is None else env)
     environment[LOCAL_DAILY_RUN_ENV_KEY] = "true"
     if allow_smtp_send:
@@ -190,27 +194,58 @@ def run_local_daily(
                 run_dir=run_dir,
                 blocking_reasons=list(preflight.get("blocking_reasons") or preflight_errors),
                 preflight=preflight,
+                daily_input_source=daily_input_source,
+                daily_input_report_path=daily_input_report_ref,
             ),
             run_dir,
             write=write,
         )
 
-    queue = _load_json(queue_state_path) if queue_state_path.exists() else None
-    daily_input_report = build_all_arxiv_daily_input(
-        date=date,
-        generated_at=generated_at,
-        queue=queue,
-        max_results_per_category=max_results_per_category,
-        fetcher=fetcher,
-        source_batches=source_batches,
-        artifact_dir=artifact_dir if write else None,
-        queue_output_path=artifact_dir / "adp-candidate-queue.json" if write else None,
-        polite_delay_seconds=polite_delay_seconds,
-        transient_retry_delay_seconds=0,
-    )
+    if explicit_daily_input_report_path:
+        try:
+            daily_input_report = _load_json(explicit_daily_input_report_path)
+        except (OSError, ValueError, json.JSONDecodeError) as error:
+            return _write_or_return(
+                _base_report(
+                    status="blocked",
+                    date=date,
+                    generated_at=generated_at,
+                    state=state,
+                    run_dir=run_dir,
+                    blocking_reasons=[f"daily input report could not be loaded: {error}"],
+                    preflight=preflight,
+                    daily_input_source=daily_input_source,
+                    daily_input_report_path=daily_input_report_ref,
+                ),
+                run_dir,
+                write=write,
+            )
+    else:
+        queue = _load_json(queue_state_path) if queue_state_path.exists() else None
+        daily_input_report = build_all_arxiv_daily_input(
+            date=date,
+            generated_at=generated_at,
+            queue=queue,
+            max_results_per_category=max_results_per_category,
+            fetcher=fetcher,
+            source_batches=source_batches,
+            artifact_dir=artifact_dir if write else None,
+            queue_output_path=artifact_dir / "adp-candidate-queue.json" if write else None,
+            polite_delay_seconds=polite_delay_seconds,
+            transient_retry_delay_seconds=0,
+        )
     if write:
         _write_json(run_dir / "adp-daily-input-report.json", daily_input_report)
     daily_errors = validate_all_arxiv_daily_input_report(daily_input_report)
+    daily_input_for_date = daily_input_report.get("daily_input") if isinstance(daily_input_report.get("daily_input"), Mapping) else {}
+    input_date = str(daily_input_for_date.get("date") or "")
+    report_date = str(daily_input_report.get("date") or "")
+    mismatched_dates = sorted({observed for observed in (input_date, report_date) if observed and observed != date})
+    if mismatched_dates:
+        daily_errors.append(
+            "daily input report date mismatch: "
+            f"requested {date}, observed {', '.join(mismatched_dates)}"
+        )
     if daily_errors or daily_input_report.get("daily_input_ready") is not True:
         return _write_or_return(
             _base_report(
@@ -222,6 +257,8 @@ def run_local_daily(
                 blocking_reasons=daily_errors or list(daily_input_report.get("blocking_reasons") or ["daily input blocked"]),
                 preflight=preflight,
                 daily_input_report=daily_input_report,
+                daily_input_source=daily_input_source,
+                daily_input_report_path=daily_input_report_ref,
             ),
             run_dir,
             write=write,
@@ -249,6 +286,8 @@ def run_local_daily(
                 blocking_reasons=[f"local daily pipeline failed: {error}"],
                 preflight=preflight,
                 daily_input_report=daily_input_report,
+                daily_input_source=daily_input_source,
+                daily_input_report_path=daily_input_report_ref,
             ),
             run_dir,
             write=write,
@@ -359,6 +398,8 @@ def run_local_daily(
         blocking_reasons=blocking_reasons,
         preflight=preflight,
         daily_input_report=daily_input_report,
+        daily_input_source=daily_input_source,
+        daily_input_report_path=daily_input_report_ref,
     )
     report.update(
         {
@@ -521,6 +562,8 @@ def _base_report(
     blocking_reasons: list[str],
     preflight: Mapping[str, Any],
     daily_input_report: Mapping[str, Any] | None = None,
+    daily_input_source: str = "not_started",
+    daily_input_report_path: str = "",
 ) -> dict[str, Any]:
     return {
         "model_id": LOCAL_RUNNER_MODEL_ID,
@@ -535,6 +578,8 @@ def _base_report(
         "state_dir": str(state),
         "run_dir": str(run_dir),
         "daily_input_ready": bool(daily_input_report and daily_input_report.get("daily_input_ready") is True),
+        "daily_input_source": daily_input_source,
+        "daily_input_report_path": daily_input_report_path,
         "preflight_status": preflight.get("status"),
         "production_evidence_ready": False,
         "github_cloud_schedule_required": False,

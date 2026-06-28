@@ -561,3 +561,4 @@
 - Added S2PLT03 local no-production resilience drill bundle evidence while preserving S2PLT02/P0/P1/S2PLT04/S2PMT07 blockers and all production stop gates.
 - Added S2PMT07 S2PLT04 completion report validator for future `FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json` payloads while preserving missing-report, missing-final-bundle, P0=8/P1=37, no-production, and no-integrated-acceptance blockers.
 - Added S2PMT07 independent final reviewer assignment artifact validator for future `FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json` payloads while preserving missing-artifact, missing-reviewer, P0=8/P1=37, no-production, and no-integrated-acceptance blockers.
+- Added local daily resend recovery support for `--daily-input-report`, allowing M1-M4 catch-up to reuse an existing same-day `adp-daily-input-report.json` without live arXiv fetch, with date-mismatch blocking and no production acceptance claim.

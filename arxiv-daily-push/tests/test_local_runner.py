@@ -8,6 +8,7 @@ from contextlib import redirect_stdout
 from email.message import EmailMessage
 from pathlib import Path
 
+import arxiv_daily_push.cli as cli_module
 import arxiv_daily_push.local_runner as local_runner_module
 from arxiv_daily_push.cli import main
 from arxiv_daily_push.global_scan import ALL_ARXIV_ARCHIVES
@@ -447,6 +448,121 @@ class LocalRunnerTests(unittest.TestCase):
                 page_text = (root / mail_status_page).read_text(encoding="utf-8")
                 self.assertIn("| 今日已发送 / 总应发送 | 4 / 4 |", page_text)
 
+    def test_local_daily_can_reuse_existing_daily_input_report_for_catch_up_without_live_fetch(self) -> None:
+        class FakeSMTP:
+            sent_messages: list[EmailMessage] = []
+
+            def __init__(self, host, port, timeout): pass
+            def __enter__(self): return self
+            def __exit__(self, exc_type, exc, traceback): return False
+            def starttls(self): return None
+            def login(self, username, password): return None
+            def send_message(self, message):
+                FakeSMTP.sent_messages.append(message)
+                return {}
+
+        candidate = source_item(
+            "arxiv:2606.24008",
+            "Resend recovery without live source fetch",
+            "cs.AI",
+            ["cs.AI", "q-fin.PM"],
+        )
+        original_builder = local_runner_module.build_all_arxiv_daily_input
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "repo"
+            root.mkdir()
+            state = Path(tmp) / "state"
+            write_user_center_sync_inputs(root, state)
+            initial_report = run_local_daily(
+                project_root=root,
+                state_dir=state,
+                date="2026-06-24",
+                generated_at=GENERATED_AT,
+                source_batches=source_batches(**{"cs": [candidate]}),
+                command_resolver=command_resolver,
+                disk_free_gib=120.0,
+                memory_total_gib=16.0,
+            )
+            daily_input_report_path = Path(initial_report["run_dir"]) / "adp-daily-input-report.json"
+
+            def fail_if_live_builder_called(*args, **kwargs):
+                raise AssertionError("live daily input builder must not run during resend recovery")
+
+            local_runner_module.build_all_arxiv_daily_input = fail_if_live_builder_called
+            try:
+                report = run_local_daily(
+                    project_root=root,
+                    state_dir=state,
+                    date="2026-06-24",
+                    generated_at=GENERATED_AT,
+                    env=smtp_env(),
+                    allow_smtp_send=True,
+                    daily_input_report_path=daily_input_report_path,
+                    command_resolver=command_resolver,
+                    disk_free_gib=120.0,
+                    memory_total_gib=16.0,
+                    smtp_factory=FakeSMTP,
+                )
+            finally:
+                local_runner_module.build_all_arxiv_daily_input = original_builder
+
+            self.assertEqual(report["status"], "pass")
+            self.assertEqual(report["daily_input_source"], "existing_report")
+            self.assertEqual(report["daily_input_report_path"], str(daily_input_report_path.resolve()))
+            self.assertEqual(report["mail_delivery_summary"]["sent_mail_count"], 4)
+            self.assertEqual(len(FakeSMTP.sent_messages), 4)
+            self.assertFalse(validate_local_runner_report(report))
+
+    def test_local_daily_blocks_reused_daily_input_report_with_mismatched_date(self) -> None:
+        candidate = source_item(
+            "arxiv:2606.24009",
+            "Date guard for resend recovery input",
+            "cs.AI",
+            ["cs.AI", "q-fin.PM"],
+        )
+        original_builder = local_runner_module.build_all_arxiv_daily_input
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "repo"
+            root.mkdir()
+            state = Path(tmp) / "state"
+            write_user_center_sync_inputs(root, state)
+            initial_report = run_local_daily(
+                project_root=root,
+                state_dir=state,
+                date="2026-06-24",
+                generated_at=GENERATED_AT,
+                source_batches=source_batches(**{"cs": [candidate]}),
+                command_resolver=command_resolver,
+                disk_free_gib=120.0,
+                memory_total_gib=16.0,
+            )
+            daily_input_report_path = Path(initial_report["run_dir"]) / "adp-daily-input-report.json"
+
+            def fail_if_live_builder_called(*args, **kwargs):
+                raise AssertionError("live daily input builder must not run when explicit input report is provided")
+
+            local_runner_module.build_all_arxiv_daily_input = fail_if_live_builder_called
+            try:
+                report = run_local_daily(
+                    project_root=root,
+                    state_dir=state,
+                    date="2026-06-25",
+                    generated_at=GENERATED_AT,
+                    daily_input_report_path=daily_input_report_path,
+                    command_resolver=command_resolver,
+                    disk_free_gib=120.0,
+                    memory_total_gib=16.0,
+                )
+            finally:
+                local_runner_module.build_all_arxiv_daily_input = original_builder
+
+            self.assertEqual(report["status"], "blocked")
+            self.assertEqual(report["daily_input_source"], "existing_report")
+            self.assertIn("daily input report date mismatch", " ".join(report["blocking_reasons"]))
+            self.assertFalse(validate_local_runner_report(report))
+
     def test_local_daily_blocks_when_user_center_sync_missing(self) -> None:
         class FakeSMTP:
             sent_messages: list[EmailMessage] = []
@@ -631,6 +747,59 @@ class LocalRunnerTests(unittest.TestCase):
             payload = json.loads(buffer.getvalue())
             self.assertEqual(result, 0)
             self.assertEqual(payload["model_id"], LOCAL_RUNNER_MODEL_ID)
+
+    def test_cli_local_daily_passes_explicit_daily_input_report_path(self) -> None:
+        captured: dict[str, object] = {}
+        original_runner = cli_module.run_local_daily
+
+        def fake_run_local_daily(**kwargs):
+            captured.update(kwargs)
+            return {
+                "model_id": local_runner_module.LOCAL_RUNNER_MODEL_ID,
+                "schema_version": local_runner_module.LOCAL_RUNNER_SCHEMA_VERSION,
+                "acceptance_id": local_runner_module.LOCAL_RUNNER_ACCEPTANCE_ID,
+                "action": "daily_run",
+                "status": "blocked",
+                "generated_at": kwargs["generated_at"],
+                "date": kwargs["date"],
+                "runner_strategy": "local_codex_runner",
+                "daily_input_ready": False,
+                "github_cloud_schedule_required": False,
+                "github_cloud_schedule_enabled": False,
+                "release_upload_enabled": False,
+                "video_generated": False,
+                "secret_values_logged": False,
+                "blocking_reasons": ["fake cli capture"],
+            }
+
+        cli_module.run_local_daily = fake_run_local_daily
+        try:
+            buffer = io.StringIO()
+            with redirect_stdout(buffer):
+                result = main(
+                    [
+                        "local-runner",
+                        "daily",
+                        "--project-root",
+                        "/tmp/repo",
+                        "--state-dir",
+                        "/tmp/state",
+                        "--date",
+                        "2026-06-24",
+                        "--generated-at",
+                        GENERATED_AT,
+                        "--daily-input-report",
+                        "/tmp/state/runs/20260624/adp-daily-input-report.json",
+                        "--json",
+                    ]
+                )
+        finally:
+            cli_module.run_local_daily = original_runner
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 2)
+        self.assertEqual(payload["status"], "blocked")
+        self.assertEqual(captured["daily_input_report_path"], "/tmp/state/runs/20260624/adp-daily-input-report.json")
 
 
 if __name__ == "__main__":

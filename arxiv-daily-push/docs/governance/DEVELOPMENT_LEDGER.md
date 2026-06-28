@@ -4299,3 +4299,12 @@ None for this new project baseline.
 - Files changed: S2PMT07 final gate helper, final-gate regression tests, `PARAM-ADP-1047..1048` / `FORM-ADP-102` semantic refresh, phase record, run manifest, traceability/delivery/event records, user-center traceability page, and three base files.
 - Boundary: no reviewer assignment, no independent final closure decision, no zero-proof artifact, no P0/P1 closure, no S2PLT04 completion, no final bundle creation, no SMTP/scheduler/Release/restore, no CURRENT/V7 change, and no integrated production acceptance.
 - Evidence: `governance/run_manifests/ADP-S2PMT07-MAINLINE-ATTESTATION-20260628.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_MAINLINE_ATTESTATION.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.
+
+### `ITER-20260628-ADP-LOCAL-DAILY-RESEND-REUSE-INPUT`
+
+- Timestamp: `2026-06-28T11:12:24+10:00`
+- Task IDs: `LOCAL-DAILY-RESEND-REUSE-INPUT`; parent `ADP-S1P5T05`; acceptance `ADP-ACC-S1P5T05-LOCAL-PRODUCTION-MIGRATION-PREP`.
+- Decisions: Added explicit `--daily-input-report` support so same-day M1-M4 resend/catch-up can reuse an existing `adp-daily-input-report.json` instead of blocking on live arXiv fetch. The runner records `daily_input_source` and `daily_input_report_path` and blocks if the requested date differs from the reused report date.
+- Files changed: local runner, CLI, local runner regression tests, phase record, run manifest, traceability/delivery/event records, and governance status files.
+- Boundary: no email template body change, no public schema change, no ranking/source change, no scheduler enablement, no Release upload, no CURRENT/V7 change, no integrated production acceptance, and no claim that the real resend has already completed.
+- Evidence: `governance/run_manifests/ADP-LOCAL-DAILY-RESEND-REUSE-INPUT-20260628.json`; `arxiv-daily-push/docs/phase_records/PHASE_LOCAL_DAILY_RESEND_REUSE_INPUT_20260628.md`; `arxiv-daily-push/src/arxiv_daily_push/local_runner.py`; `arxiv-daily-push/src/arxiv_daily_push/cli.py`; `arxiv-daily-push/tests/test_local_runner.py`.
