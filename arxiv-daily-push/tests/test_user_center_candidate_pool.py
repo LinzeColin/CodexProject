@@ -133,7 +133,7 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         readme = (USER_CENTER / "README.md").read_text(encoding="utf-8")
 
         self.assertGreaterEqual(len(matrix_rows), 245)
-        self.assertEqual(len(matrix_rows), 333)
+        self.assertEqual(len(matrix_rows), 334)
         self.assertEqual(len(table_rows), len(matrix_rows))
         self.assertTrue(page.startswith("# 功能任务测试证据追踪链\n"))
         self.assertRegex(page, r"更新时间：\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} Australia/Sydney")
@@ -142,7 +142,7 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("[运行清单](../../governance/run_manifests/ADP-S2PAT05-TRACEABILITY-CHAIN-C010-20260627.json)", page)
         self.assertIn("| 序号 | 需求 | 任务 | 验收 | 代码 | 配置 | 测试 | 运行证据 | 状态 |", page)
         self.assertIn("[test_stage2_sources.py](../tests/test_stage2_sources.py)", page)
-        self.assertIn("TRACEABILITY_MATRIX 行数 | 333", page)
+        self.assertIn("TRACEABILITY_MATRIX 行数 | 334", page)
         self.assertIn("REQ-ADP-LOCAL-DAILY-M1-M4-SEND-ORCHESTRATION", page)
         self.assertIn("LOCAL-DAILY-M1-M4-SEND-ORCHESTRATION", page)
         self.assertIn("PHASE_LOCAL_DAILY_M1_M4_SEND_ORCHESTRATION_20260628.md", page)
@@ -242,7 +242,15 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
             page,
         )
         self.assertIn("assignment_placeholder_gate_ready_artifact_missing_no_production", page)
+        self.assertIn("REQ-ADP-V7-039-FINAL-BUNDLE-TEMPLATE-PLACEHOLDER-GATE", page)
+        self.assertIn("S2PMT07-FINAL-BUNDLE-TEMPLATE-PLACEHOLDER-GATE", page)
+        self.assertIn(
+            "ADP-S2PMT07-FINAL-BUNDLE-TEMPLATE-PLACEHOLDER-GATE-20260628.json",
+            page,
+        )
+        self.assertIn("final_bundle_template_placeholder_gate_ready_artifacts_missing_no_production", page)
         self.assertIn("REPLACE_WITH", page)
+        self.assertIn("RECOMPUTE_WITH", page)
         self.assertIn("REQ-ADP-V7-039-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-HARD-GATE", page)
         self.assertIn("S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-HARD-GATE", page)
         self.assertIn("ADP-S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-HARD-GATE-20260628.json", page)

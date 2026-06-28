@@ -21,12 +21,19 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 242
+- task_count: 243
 - acceptance_count: 127
 
 ## Delivery Tasks
 
 The machine-readable task source is `delivery_tasks.yaml`.
+
+## 2026-06-28 22:23:15 Australia/Sydney - S2PMT07 Final Bundle Template Placeholder Gate
+
+- `S2PMT07-FINAL-BUNDLE-TEMPLATE-PLACEHOLDER-GATE` hardens all S2PMT07 final-bundle artifact validators.
+- Validators now recursively reject copied template values containing `REPLACE_WITH` or `RECOMPUTE_WITH`, including nested fields that a specific artifact validator would otherwise ignore after hash recomputation.
+- The real final-bundle artifacts remain missing except `FINAL_ACCEPTANCE_BUNDLE/no_production_side_effects.json`; this is not a reviewer assignment, not P0/P1 closure, not S2PLT04 completion, not final bundle acceptance, and not production acceptance.
+- No SMTP, scheduler, Release, restore, schema/DB, source/ranking, CURRENT/V7, DAILY_OPERATION, or integrated production acceptance side effect is claimed.
 
 ## 2026-06-28 22:03:08 Australia/Sydney - S2PMT07 Independent Final Reviewer Assignment Placeholder Gate
 

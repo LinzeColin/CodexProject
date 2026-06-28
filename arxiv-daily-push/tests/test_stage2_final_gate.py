@@ -3050,6 +3050,18 @@ class Stage2FinalGateTests(unittest.TestCase):
         payload["no_production_side_effects"]["real_smtp_sent"] = True
         self.assertIn("no_production_side_effects.real_smtp_sent must be false", validate_p0_p1_zero_proof_artifact(payload))
 
+    def test_p0_p1_zero_proof_artifact_rejects_template_placeholders_even_if_hash_matches(self) -> None:
+        payload = self._valid_zero_proof_payload()
+        payload["independent_closure_decision"]["reviewer_id"] = "REPLACE_WITH_REAL_INDEPENDENT_REVIEWER_ID"
+        payload["decision_hash"] = build_p0_p1_zero_proof_decision_hash(payload)
+
+        errors = validate_p0_p1_zero_proof_artifact(payload)
+
+        self.assertIn(
+            "template placeholder found at independent_closure_decision.reviewer_id",
+            errors,
+        )
+
     def _valid_final_acceptance_bundle_manifest_payload(self) -> dict[str, object]:
         payload: dict[str, object] = {
             "schema_version": S2PMT07_FINAL_ACCEPTANCE_BUNDLE_MANIFEST_SCHEMA_VERSION,

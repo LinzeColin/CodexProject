@@ -78,7 +78,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_PLACEHOLDER_GATE_READY_NO_ASSIGNMENT_NO_PRODUCTION`
+- release_gate: `S2PMT07_FINAL_BUNDLE_TEMPLATE_PLACEHOLDER_GATE_READY_ARTIFACTS_MISSING_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
@@ -98,7 +98,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - source_base_commit: `9fbb0c4eb240a1782bae3db4db873ded37ac21f4`
 - source_tree_hash: `23334defdf6e168d709c223d61c0998e594f6852`
 - source_snapshot_hash: `sha256:a68baa09e7ce2df698c1f653a64a9db8dea11b07ba731497245ee261d349151a`
-- snapshot_event_time: `2026-06-28T22:03:08+10:00`
+- snapshot_event_time: `2026-06-28T22:23:15+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
 - phase/gate: `S2PM / S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_CLI_VALIDATOR_READY_NO_ASSIGNMENT_NO_PRODUCTION`
