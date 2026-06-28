@@ -79,7 +79,7 @@
             data-fx-effective-date="2026-06-28"
             data-fx-cache-state="cached"
             data-fx-source-label="AUD/CNY=4.69（20260628--06:00）"
-          >CNY/AUD=4.69（20260628--06:00）</span>
+          >AUD/CNY=4.69（20260628--06:00）</span>
           <button class="icon-button" type="button" data-command-open aria-label="打开命令面板" title="命令面板">
             <span aria-hidden="true">⌘</span><span class="button-label">搜索</span>
           </button>
@@ -127,19 +127,34 @@
           </div>
         </section>
 
-        <section class="owner-feedback-strip" data-owner-feedback-strip aria-label="实时交互反馈">
-          <button class="feedback-signal" type="button" data-feedback-signal="visual" data-feedback-kind="confirm">
-            <span class="feedback-signal-icon" aria-hidden="true">◉</span>
-            <span><strong>视觉回弹</strong><small>波纹、状态条、轻提示</small></span>
-          </button>
-          <button class="feedback-signal" type="button" data-feedback-signal="haptic" data-feedback-kind="select">
-            <span class="feedback-signal-icon" aria-hidden="true">▰</span>
-            <span><strong>触感回馈</strong><small>点击、保存、复核分级</small></span>
-          </button>
-          <button class="feedback-signal" type="button" data-feedback-signal="sound" data-feedback-kind="warning">
-            <span class="feedback-signal-icon" aria-hidden="true">♪</span>
-            <span><strong>声音提示</strong><small>默认静音，设置页开启</small></span>
-          </button>
+        <section class="feedback-hub" data-feedback-hub aria-labelledby="feedback-hub-title">
+          <div class="feedback-hub-head">
+            <div>
+              <p class="panel-kicker">交互反馈</p>
+              <h2 id="feedback-hub-title">多模态交互反馈</h2>
+            </div>
+            <span class="feedback-hub-state" data-feedback-hub-state>就绪</span>
+          </div>
+          <div class="feedback-lanes" aria-label="反馈通道">
+            <button class="feedback-lane" type="button" data-feedback-lane="visual" data-feedback-kind="confirm">
+              <span class="feedback-lane-icon" aria-hidden="true">●</span>
+              <span><strong>视觉状态轨道</strong><small>按钮回弹、进度、错误横幅</small></span>
+              <span class="feedback-meter" data-feedback-meter="visual"><i></i></span>
+            </button>
+            <button class="feedback-lane" type="button" data-feedback-lane="haptic" data-feedback-kind="select">
+              <span class="feedback-lane-icon" aria-hidden="true">▦</span>
+              <span><strong>触感强度</strong><small>点击、保存、复核分级反馈</small></span>
+              <span class="feedback-meter" data-feedback-meter="haptic"><i></i></span>
+            </button>
+            <button class="feedback-lane" type="button" data-feedback-lane="sound" data-feedback-kind="warning">
+              <span class="feedback-lane-icon" aria-hidden="true">♪</span>
+              <span><strong>声音反馈</strong><small>默认静音，设置页开启</small></span>
+              <span class="feedback-meter" data-feedback-meter="sound"><i></i></span>
+            </button>
+          </div>
+          <ol class="feedback-event-log" data-feedback-event-log aria-live="polite" aria-label="反馈事件">
+            <li><span>刚刚</span><strong>界面就绪</strong><small>视觉、触感、声音反馈已接入当前工作流。</small></li>
+          </ol>
         </section>
 
         <section class="metric-grid" aria-label="工作区摘要">
@@ -477,7 +492,7 @@
             </label>
             <label class="toggle-item">
               <span><strong>视觉反馈</strong><small>控制按钮回弹、波纹和状态提示</small></span>
-              <input class="toggle" type="checkbox" data-feedback-toggle="motion" />
+              <input class="toggle" type="checkbox" data-feedback-toggle="motion" checked />
             </label>
           </div>
           <button class="primary-action" type="button" data-feedback-test>反馈测试</button>
