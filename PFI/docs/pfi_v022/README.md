@@ -43,6 +43,16 @@
 - 新增 `PFI/tests/test_v022_fx_effective_date.py`，验证 Stage 2 acceptance criteria 和 stop condition。
 - 不实现 Stage 3 数据源结构，不新增参数中心页面，不做真实交易、自动投资、支付或券商提交。
 
+## Stage 3 范围
+
+本轮完成数据源、账户角色与可扩展结构：
+
+- 新增 `PFI/src/pfi_v02/stage_v022_source_profile.py`，建立 source profile、capabilities、account role 和 role effective date 合同。
+- 新增 `PFI/tests/test_v022_stage3_source_account_profiles.py`，验证 `S3-P1-T1..S3-P2-T3`。
+- 新增 `PFI/docs/pfi_v022/STAGE3_SOURCE_ACCOUNT_PROFILE.md`，提供中文验收入口。
+- `PFI/config/pfi_parameters.yaml` 升级为 `PFIParametersV022Stage3`，记录 `source_profile_schema`、`other_source_template`、`account_role_schema` 和 role/event 计算策略。
+- 不实现 Stage 4 `economic_event_id` / `interconnection_group_id`，不修改 v0.2.1 Web Shell 交互架构，不做真实交易、自动投资、支付或券商提交。
+
 ## 文件
 
 | 文件 | 用途 |
@@ -51,5 +61,6 @@
 | `STAGE0_REDO_ACCEPTANCE_20260628.md` | Stage 0 独立补做验收记录，方便 GitHub 单独检查。 |
 | `STAGE1_PARAMETER_GOVERNANCE.md` | Stage 1 参数治理验收报告。 |
 | `STAGE2_CNY_FX_GOVERNANCE.md` | Stage 2 CNY 与汇率治理验收报告。 |
+| `STAGE3_SOURCE_ACCOUNT_PROFILE.md` | Stage 3 数据源 Profile、账户角色和生效期验收报告。 |
 | `SOURCE_TASK_PACK_MANIFEST.md` | Downloads 来源文件、SHA-256 和使用边界。 |
 | `ROADMAP_LOCK.md` | v0.2.2 Stage / Phase / Task / Acceptance / Stop / Validation 锁定摘要。 |

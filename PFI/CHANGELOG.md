@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v0.2.2 数据库治理 Stage 3 - 2026-06-28
+
+- 完成 Stage 3 `数据源、账户角色与可扩展结构`，覆盖 `S3-P1-T1..S3-P2-T3`。
+- 新增 `src/pfi_v02/stage_v022_source_profile.py`，建立 source profile schema、capabilities、`other_source_template`、账户多角色、角色生效期和 role-aware 计算合同。
+- 新增 `docs/pfi_v022/STAGE3_SOURCE_ACCOUNT_PROFILE.md` 与 `tests/test_v022_stage3_source_account_profiles.py`，把 Stage 3 acceptance criteria、stop condition 和 validation 固化为可重复验证合同。
+- `config/pfi_parameters.yaml` 升级为 `PFIParametersV022Stage3`，新增 `source_profile_schema`、`capability_labels_zh`、`other_source_template`、`account_role_schema` 和 `role_event_calculation_policy`。
+- 本轮不实现 Stage 4 Interconnection Matrix，不修改 v0.2.1 Web Shell 交互架构，不提交真实交易、支付、券商下单或自动投资能力。
+
 ## v0.2.2 数据库治理 Stage 0 补做复核 - 2026-06-28
 
 - 新增 `docs/pfi_v022/STAGE0_REDO_ACCEPTANCE_20260628.md`，把 Stage 0 的 `S0-P1-T1..S0-P2-T2`、Milestone 0 acceptance criteria、stop condition、Agent 1/3 自检和验证命令整理为独立中文验收入口。
