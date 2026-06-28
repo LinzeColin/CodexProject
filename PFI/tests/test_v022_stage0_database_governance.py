@@ -96,8 +96,13 @@ class TestV022Stage0DatabaseGovernance(unittest.TestCase):
         self.assertIn("Codex 自检 Agent 1 和 Agent 3 审核通过", report)
         self.assertIn("94950e0cc4a46cfd19dfa2ed5ff2ebcab10909775e20d8bae1a4a2fe6f8b879c", report)
 
-    def test_stage0_does_not_create_future_ui_review_page(self) -> None:
-        self.assertFalse((ROOT / "web" / "pfi_v022_logic_review.html").exists())
+    def test_logic_review_page_is_now_tracked_by_stage12_delivery(self) -> None:
+        html = (ROOT / "web" / "pfi_v022_logic_review.html")
+        report = (ROOT / "docs" / "pfi_v022" / "STAGE12_DELIVERY_REPORT.md").read_text(encoding="utf-8")
+
+        self.assertTrue(html.exists())
+        self.assertIn("S12-P2-T1", report)
+        self.assertIn("PFI/web/pfi_v022_logic_review.html", report)
 
     def test_parameter_changelog_exists_and_tracks_required_fields(self) -> None:
         changelog = (ROOT / "config" / "parameter_changelog.md").read_text(encoding="utf-8")

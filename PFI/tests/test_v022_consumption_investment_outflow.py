@@ -121,8 +121,8 @@ class TestV022ConsumptionInvestmentOutflow(unittest.TestCase):
         catalog = governance.load_v022_parameter_catalog(ROOT / "config" / "pfi_parameters.yaml")
         params = catalog["parameters"]
 
-        self.assertEqual(catalog["schema"], "PFIParametersV022Stage11")
-        self.assertEqual(catalog["current_stage"], "Stage 11 - 测试与验证")
+        self.assertEqual(catalog["schema"], "PFIParametersV022Stage12")
+        self.assertEqual(catalog["current_stage"], "Stage 12 - 文档同步与交付")
         self.assertEqual(catalog["stage4_task_ids"], ["S4-P1-T1", "S4-P1-T2", "S4-P1-T3", "S4-P2-T1", "S4-P2-T2", "S4-P2-T3"])
         self.assertIn("event_type_policies", params["interconnection"])
         deposit = params["interconnection"]["event_type_policies"]["investment_deposit"]

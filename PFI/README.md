@@ -7,16 +7,17 @@ PFI V0.2 is the Personal Financial Intelligence project under
 under `LinzeColin/CodexProject/QBVS`; PFI investment management does not own
 or cover QBVS.
 
-## v0.2.2 数据库治理 Stage 11
+## v0.2.2 数据库治理 Stage 12
 
-`v0.2.2 数据库治理` 当前完成 Stage 11 - 测试与验证。本轮新增金融逻辑测试门、跨板块一致性测试门和可视化一致性测试门；不实现 Stage 12 文档同步与最终交付，不执行 Stage 13 后置触发型复核，不修改 v0.2.1 主 Web Shell UIUX 基线，不新增真实交易、自动投资、支付或券商提交能力。
+`v0.2.2 数据库治理` 当前完成 Stage 12 - 文档同步与交付。本轮同步三基文件、生成 UI/UX 审查 HTML、生成 Stage -> Phase -> Task Roadmap 与验证报告、生成最终中文摘要，并完成 2 轮 × 6 Agent 自检；不执行 Stage 13 后置触发型复核，不修改 v0.2.1 主 Web Shell UIUX 基线，不新增真实交易、自动投资、支付或券商提交能力。
 
-Stage 11 source files:
+Stage 12 source files:
 
 | Purpose | Path |
 | --- | --- |
 | 中文参数总目录 | `模型参数文件.md` |
 | 机器可读参数源 | `config/pfi_parameters.yaml` |
+| v0.2.2 参数交付镜像 | `config/pfi_v022_parameters.yaml` |
 | 参数变更记录 | `config/parameter_changelog.md` |
 | Stage 1 验收报告 | `docs/pfi_v022/STAGE1_PARAMETER_GOVERNANCE.md` |
 | Stage 2 验收报告 | `docs/pfi_v022/STAGE2_CNY_FX_GOVERNANCE.md` |
@@ -26,6 +27,10 @@ Stage 11 source files:
 | Stage 6 验收报告 | `docs/pfi_v022/STAGE6_TAGS_CUSTOM_VIEWS.md` |
 | Stage 7 验收报告 | `docs/pfi_v022/STAGE7_FORMULA_SCORING.md` |
 | Stage 8 验收报告 | `docs/pfi_v022/STAGE8_RUNTIME_DIFF_IMPACTED_METRICS.md` |
+| Stage 12 交付报告 | `docs/pfi_v022/STAGE12_DELIVERY_REPORT.md` |
+| Stage 12 2 轮 × 6 Agent 自检 | `docs/pfi_v022/SIX_AGENT_DELIVERY_REVIEW.md` |
+| Stage 12 UI/UX 审查 HTML | `web/pfi_v022_logic_review.html` |
+| Stage 12 最终摘要 | `reports/pfi_v022_summary.md` |
 | Stage 9 验收报告 | `docs/pfi_v022/STAGE9_VISUALIZATION_UIUX.md` |
 | Stage 9 Interconnection Map | `docs/pfi_v022/INTERCONNECTION_MAP.md` |
 | Stage 10 验收报告 | `docs/pfi_v022/STAGE10_REPORT_ADVICE_REVIEW.md` |
@@ -330,3 +335,17 @@ Stage 11 - 测试与验证已加入 PFI 的数据库治理路线。
 - `S11-P2-T3` 跨板块一致性锁定：首页消费总流出 = 消费页消费总流出 = 月报消费总流出；首页投资资产 = 投资页投资资产 = 投资报告投资资产；现金流预测来源能追溯到账本事件和计划事件。
 - `S11-P3-T3` 可视化一致性锁定：每个图表必须追溯 `metric_id`、`formula_id`、`parameter_hash`、`data_hash`，并显示 `compute time` 和 `cache status`。
 - 本轮不实现 Stage 12 文档同步与最终交付，不执行 Stage 13 后置触发型复核，不修改 v0.2.1 主 Web Shell UIUX 基线，不联网、不调用外部 LLM、不生成真实 agent 任务。
+
+## v0.2.2 Stage 12
+
+Stage 12 - 文档同步与交付已加入 PFI 的数据库治理路线。
+
+- Task ID 清单：`S12-P1-T1`、`S12-P1-T2`、`S12-P1-T3`、`S12-P2-T1`、`S12-P2-T2`、`S12-P2-T3`。
+- 新增 `src/pfi_v02/stage_v022_delivery.py`：生成三基文件、本地 HTML、Roadmap 验证、最终摘要和 2 轮 × 6 Agent 自检交付模型。
+- 新增 `tests/test_v022_stage12_delivery.py`：验证 `S12-P1-T1..S12-P2-T3`，覆盖参数中心、标签系统、Interconnection 可视化、双消费口径、现金流图表、diff ticket、Stage -> Phase -> Task 和用户人工复核要求。
+- 新增 `web/pfi_v022_logic_review.html`：本地 UI/UX 审查 HTML，中文、可打开、可点击，覆盖参数、分类、标签、图表、diff、Interconnection。
+- 新增 `docs/pfi_v022/STAGE12_DELIVERY_REPORT.md`：Stage 12 Roadmap 与验证报告，采用 Stage -> Phase -> Task，不使用 milestone 列表替代。
+- 新增 `docs/pfi_v022/SIX_AGENT_DELIVERY_REVIEW.md`：2 轮 × 6 Agent 自检报告，阻塞项为 0。
+- 新增 `reports/pfi_v022_summary.md`：最终中文摘要，说明做了什么、怎么验收、哪些未做、哪些需要用户人工复核。
+- `config/pfi_parameters.yaml` 升级为 `PFIParametersV022Stage12`，新增 `delivery` 参数域和 `stage12_task_ids`；`config/pfi_v022_parameters.yaml` 是 Task Pack 要求的参数交付镜像。
+- 本轮不执行 Stage 13 后置触发型复核，不修改 v0.2.1 主 Web Shell UIUX 基线，不清理或迁移 Downloads 污染文件夹。

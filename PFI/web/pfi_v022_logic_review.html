@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PFI v0.2.2 逻辑审查</title>
+  <style>
+    :root { color-scheme: light; --ink:#1f2937; --muted:#667085; --line:#d7dde8; --paper:#f7f4ed; --panel:#ffffff; --accent:#0f766e; --warn:#9a3412; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; color:var(--ink); background:var(--paper); }
+    header { padding:32px clamp(20px,5vw,72px) 20px; border-bottom:1px solid var(--line); background:#fffdf8; }
+    h1 { margin:0; font-size:clamp(28px,4vw,48px); letter-spacing:0; }
+    h2 { margin:0 0 12px; font-size:24px; letter-spacing:0; }
+    p { line-height:1.75; }
+    .sub { max-width:980px; color:var(--muted); font-size:16px; }
+    .layout { display:grid; grid-template-columns:260px 1fr; gap:24px; padding:24px clamp(20px,5vw,72px) 56px; }
+    nav { position:sticky; top:16px; align-self:start; display:grid; gap:8px; }
+    button { width:100%; border:1px solid var(--line); background:var(--panel); color:var(--ink); border-radius:8px; min-height:44px; padding:10px 12px; text-align:left; font-size:15px; cursor:pointer; }
+    button[aria-pressed="true"] { border-color:var(--accent); box-shadow:inset 4px 0 0 var(--accent); font-weight:700; }
+    main { display:grid; gap:18px; }
+    section { border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:22px; }
+    .grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+    .metric { border:1px solid var(--line); border-radius:8px; padding:14px; background:#fbfcfe; min-height:108px; }
+    .label { color:var(--muted); font-size:13px; }
+    .value { margin-top:8px; font-size:22px; font-weight:800; }
+    table { width:100%; border-collapse:collapse; margin-top:10px; }
+    th, td { border-bottom:1px solid var(--line); padding:10px 8px; text-align:left; vertical-align:top; }
+    th { color:#344054; background:#f8fafc; }
+    .tag { display:inline-flex; align-items:center; min-height:28px; padding:4px 8px; border:1px solid var(--line); border-radius:999px; margin:4px 4px 0 0; background:#fff; }
+    .flow { display:grid; grid-template-columns:repeat(7,1fr); gap:8px; align-items:stretch; }
+    .node { border:1px solid var(--line); border-radius:8px; padding:12px 8px; text-align:center; background:#f8fbff; font-weight:700; }
+    .note { border-left:4px solid var(--accent); padding:10px 12px; background:#f0fdfa; }
+    .warn { border-left-color:var(--warn); background:#fff7ed; }
+    @media (max-width: 860px) {
+      .layout { grid-template-columns:1fr; }
+      nav { position:static; grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .grid, .flow { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>PFI v0.2.2 逻辑审查</h1>
+    <p class="sub">Stage 12 - 文档同步与交付。本页是本地 UI/UX 审查 HTML，不替代正式运行页面；用于检查参数中心、标签系统、Interconnection 可视化、双消费口径、现金流图表、diff ticket 和 2 轮 × 6 Agent 自检。</p>
+  </header>
+  <div class="layout">
+    <nav aria-label="审查导航">
+      <button data-section-target="parameters" aria-pressed="true">参数</button>
+      <button data-section-target="classification" aria-pressed="false">分类</button>
+      <button data-section-target="tags" aria-pressed="false">标签</button>
+      <button data-section-target="charts" aria-pressed="false">图表</button>
+      <button data-section-target="runtime-diff" aria-pressed="false">diff</button>
+      <button data-section-target="interconnection" aria-pressed="false">Interconnection</button>
+      <button data-section-target="six-agent" aria-pressed="false">2 轮 × 6 Agent 自检</button>
+    </nav>
+    <main>
+      <section id="parameters">
+        <h2>参数</h2>
+        <p>参数中心覆盖货币、汇率、分类、标签、阈值、公式、置信度和现金流窗口。Roadmap 与验证报告采用 Stage -> Phase -> Task。</p>
+        <div class="grid">
+          <div class="metric"><div class="label">Stage</div><div class="value">S12-P1-T1</div><p>模型参数文件同步。</p></div>
+          <div class="metric"><div class="label">参数镜像</div><div class="value">pfi_v022</div><p>canonical 仍是 pfi_parameters.yaml。</p></div>
+          <div class="metric"><div class="label">用户人工复核</div><div class="value">保留</div><p>参数含义需人工可读。</p></div>
+        </div>
+      </section>
+      <section id="classification">
+        <h2>分类</h2>
+        <p>分类继续保留 12 大类 / 50 中类、双消费口径、退款抵消、信用卡还款不重复计入生活消费。</p>
+        <table><thead><tr><th>口径</th><th>解释</th><th>验收</th></tr></thead><tbody>
+          <tr><td>消费总流出</td><td>包含生活消费、投资入金、基金申购、黄金申购、投资买入和金融费用，退款抵消。</td><td>保留</td></tr>
+          <tr><td>生活消费</td><td>排除投资入金、基金申购、投资买入、内部转账、信用卡还款。</td><td>保留</td></tr>
+        </tbody></table>
+      </section>
+      <section id="tags">
+        <h2>标签</h2>
+        <p>标签系统覆盖标签注册、赋值、规则、历史、自定义视图和数据质量复核。</p>
+        <span class="tag">订阅检查</span><span class="tag">投资追涨复盘</span><span class="tag">夜间大额复盘</span><span class="tag">低置信</span><span class="tag">现金流观察</span>
+      </section>
+      <section id="charts">
+        <h2>图表</h2>
+        <p>现金流图表、投资图表、消费图表和账户图表必须显示来源、新鲜度、公式、参数和缓存状态。</p>
+        <div class="grid">
+          <div class="metric"><div class="label">现金流图表</div><div class="value">7/21/30/60/90/180/360</div><p>阶梯图、瀑布图、储备金安全带、投资入金挤压图。</p></div>
+          <div class="metric"><div class="label">图表追溯</div><div class="value">4 字段</div><p>metric_id、formula_id、parameter_hash、data_hash。</p></div>
+          <div class="metric"><div class="label">状态</div><div class="value">updated</div><p>显示 compute time 与 cache status。</p></div>
+        </div>
+      </section>
+      <section id="runtime-diff">
+        <h2>diff</h2>
+        <p>diff ticket 仅在业务语义变化、公式逻辑变化、分类冲突、标签冲突、跨板块不一致、测试无法解释时生成本地中文票据。</p>
+        <div class="note warn">无 diff 不联网、不生成 Codex ticket、不触发 LLM。普通本地重算不调用外部 LLM。</div>
+      </section>
+      <section id="interconnection">
+        <h2>Interconnection</h2>
+        <p>Interconnection 可视化展示跨来源资金事件从 source 到 UI 指标的追踪链路。</p>
+        <div class="flow">
+          <div class="node">source</div><div class="node">raw</div><div class="node">normalized</div><div class="node">group</div><div class="node">event</div><div class="node">ledger</div><div class="node">UI</div>
+        </div>
+      </section>
+      <section id="six-agent">
+        <h2>2 轮 × 6 Agent 自检</h2>
+        <p>第一轮检查金融事实层、数据源、参数、消费投资现金流、UI/UX、测试与 Runtime Diff；第二轮检查第一轮问题是否修复、是否引入新冲突、参数文件/代码/UI/测试是否同步、用户特殊口径是否保留。</p>
+        <div class="note">阻塞项数量：0。Stage 13 后置触发型复核未在本页执行。</div>
+      </section>
+    </main>
+  </div>
+  <script>
+    const buttons = Array.from(document.querySelectorAll('[data-section-target]'));
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const target = document.getElementById(button.dataset.sectionTarget);
+        buttons.forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+  </script>
+</body>
+</html>

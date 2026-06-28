@@ -4,7 +4,7 @@ Last updated: 2026-06-28 Australia/Sydney
 
 ## Current Goal
 
-PFI v0.2.2 Stage 11 收口：完成测试与验证交付，包括金融逻辑单元测试、跨板块一致性测试和可视化一致性测试；本轮不实现 Stage 12 文档同步与最终交付，不执行 Stage 13 后置触发型复核，不修改 v0.2.1 Web Shell UIUX 基线。
+PFI v0.2.2 Stage 12 - 文档同步与交付收口：完成 `S12-P1-T1`、`S12-P1-T2`、`S12-P1-T3`、`S12-P2-T1`、`S12-P2-T2`、`S12-P2-T3`，包括参数中心、标签系统、Interconnection 可视化、双消费口径、现金流图表、diff ticket、三基文件更新、本地 UI/UX 审查 HTML、Stage -> Phase -> Task Roadmap 验证报告、最终中文摘要、用户人工复核清单和 2 轮 × 6 Agent 自检；本轮不执行 Stage 13 后置触发型复核，不修改 v0.2.1 Web Shell UIUX 基线。
 
 ## Current Status
 
@@ -169,6 +169,7 @@ PFI v0.2.2 Stage 11 收口：完成测试与验证交付，包括金融逻辑单
 - 2026-06-28 v0.2.2 Stage 9：新增 `src/pfi_v02/stage_v022_visualization_uiux.py`、`docs/pfi_v022/STAGE9_VISUALIZATION_UIUX.md`、`docs/pfi_v022/INTERCONNECTION_MAP.md`、`web/interconnection-map.html` 和 `tests/test_v022_stage9_visualization_uiux.py`；`config/pfi_parameters.yaml` 升级为 `PFIParametersV022Stage9`；三基文件、README、roadmap lock 和参数变更记录同步记录参数中心、Interconnection Map、Metric Dependency Graph、现金流可视化和 Metric Drilldown Debugger。
 - 2026-06-28 v0.2.2 Stage 10：新增 `src/pfi_v02/stage_v022_report_advice_review.py`、`docs/pfi_v022/STAGE10_REPORT_ADVICE_REVIEW.md` 和 `tests/test_v022_stage10_report_advice_review.py`；`config/pfi_parameters.yaml` 升级为 `PFIParametersV022Stage10`；三基文件、README、roadmap lock 和参数变更记录同步记录月报双消费口径、投资成本行为报告、Interconnection 数据质量报告、行动建议评分公式和建议生命周期。
 - 2026-06-28 v0.2.2 Stage 11：新增 `src/pfi_v02/stage_v022_test_validation.py`、`docs/pfi_v022/STAGE11_TEST_VALIDATION.md` 和 `tests/test_v022_stage11_test_validation.py`；`config/pfi_parameters.yaml` 升级为 `PFIParametersV022Stage11`；三基文件、README、roadmap lock 和参数变更记录同步记录金融逻辑单元测试、跨板块一致性测试和可视化一致性测试。
+- 2026-06-28 v0.2.2 Stage 12：新增 `src/pfi_v02/stage_v022_delivery.py`、`web/pfi_v022_logic_review.html`、`docs/pfi_v022/STAGE12_DELIVERY_REPORT.md`、`docs/pfi_v022/SIX_AGENT_DELIVERY_REVIEW.md`、`reports/pfi_v022_summary.md` 和 `tests/test_v022_stage12_delivery.py`；`config/pfi_parameters.yaml` 升级为 `PFIParametersV022Stage12`，新增 `delivery` 参数域和 `stage12_task_ids`；三基文件、README、roadmap lock 和参数变更记录同步记录参数中心、标签系统、Interconnection 可视化、双消费口径、现金流图表、diff ticket、Stage -> Phase -> Task 和用户人工复核。
 
 ## Decisions
 
@@ -227,8 +228,9 @@ Latest v0.2.2 Stage 8 target result: Stage 8 runtime diff contracts `8 passed`; 
 Latest v0.2.2 Stage 9 target result: Stage 9 visualization/UIUX contracts `8 passed`; Stage 0-9 v0.2.2 regression `74 passed`; full PFI pytest `232 passed`; project governance `errors 0 / warnings 0`; Web shell syntax `OK`; `git diff --check -- PFI` `OK`; macOS app acceptance lite `29 pass / 0 fail / 2 info`; Stage 9 local HTML browser validation confirmed required modules missing `0`, status fields rendered `144`, data-map-node and data-drilldown-metric clicks update detail panels, console errors `0`, external network requests `0`, screenshot `/tmp/pfi-v022-stage9-html-verified.png`; true 8501 browser validation confirmed `PFI`、`首页总览`、`数据源与上传`、`AUD/CNY` visible and Stage 9 review page not injected into main UI, console errors `0`, screenshot `/tmp/pfi-v022-stage9-app-verified.png`.
 Latest v0.2.2 Stage 10 target result: Stage 10 report/advice/review contracts `7 passed`; Stage 0-10 v0.2.2 regression `81 passed`; full PFI pytest `239 passed`; project governance `errors 0 / warnings 0`; Web shell syntax `OK`; `git diff --check -- PFI` `OK`; macOS app acceptance lite `29 pass / 0 fail / 2 info`; `http://127.0.0.1:8501/_stcore/health` returned `ok`; true 8501 browser validation confirmed `PFI`、`首页总览`、`数据源与上传`、`建议与复盘`、`报告与洞察`、`AUD/CNY` visible, Stage 10 review docs not injected into main UI, console errors `0`, screenshot `/tmp/pfi-v022-stage10-app-verified.png`.
 Latest v0.2.2 Stage 11 target result: Stage 11 contracts `6 passed`; Stage 0-11 v0.2.2 regression `87 passed`; full PFI pytest `245 passed`; project governance `errors 0 / warnings 0`; Web shell syntax `OK`; `git diff --check -- PFI` `OK`; macOS app acceptance lite `29 pass / 0 fail / 2 info`; `http://127.0.0.1:8501/_stcore/health` returned healthy through app acceptance; true 8501 browser validation confirmed `PFI`、`首页总览`、`数据源与上传`、`建议与复盘`、`报告与洞察`、`AUD/CNY` visible, clicked `报告与洞察`, forbidden visible Stage 11 development terms `0`, console errors `0`, screenshot `/tmp/pfi-v022-stage11-app-verified.png`.
+Latest v0.2.2 Stage 12 target result: Stage 12 contracts `5 passed`; Stage 0-12 v0.2.2 regression `92 passed`; full PFI pytest `250 passed`; project governance `errors 0 / warnings 0`; Web shell syntax `OK`; `git diff --check -- PFI` `OK`; macOS app acceptance lite `29 pass / 0 fail / 2 info`; `http://127.0.0.1:8501/_stcore/health` returned healthy through app acceptance; Stage 12 local HTML browser validation clicked 7 sections, missing required terms `0`, console errors `0`, external requests `0`, screenshot `/tmp/pfi-v022-stage12-html-verified.png`; true 8501 browser validation confirmed `PFI`、`首页总览`、`数据源与上传`、`建议与复盘`、`报告与洞察`、`AUD/CNY` visible, clicked `报告与洞察`, forbidden visible Stage 12 development terms `0`, console errors `0`, screenshot `/tmp/pfi-v022-stage12-app-verified.png`.
 
 ## Next
 
-1. 下一轮 pursuing goal 应从 v0.2.2 Stage 12 `文档同步与交付` 开始。
-2. 不得提前实现 Stage 13，不得修改 v0.2.1 Web Shell UIUX 基线，除非用户单独开启前端目标或 Stage 12 合同明确要求。
+1. 下一轮 pursuing goal 应从 v0.2.2 Stage 13 `后置触发型复核` 开始。
+2. 不得修改 v0.2.1 Web Shell UIUX 基线；Downloads 污染文件夹清理或迁移只在 Stage 13 后执行。
