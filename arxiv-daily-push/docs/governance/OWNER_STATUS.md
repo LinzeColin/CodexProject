@@ -78,7 +78,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_CLI_VALIDATOR_READY_NO_ASSIGNMENT_NO_PRODUCTION`
+- release_gate: `S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_OWNER_PACKET_CLI_READY_NO_ASSIGNMENT_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 

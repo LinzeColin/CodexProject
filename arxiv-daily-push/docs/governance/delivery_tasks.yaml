@@ -4319,3 +4319,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-OWNER-PACKET-CLI"
+    phase: "S2PM"
+    objective: "Expose the existing S2PMT07 owner/coordinator action packet through CLI without creating or validating a real independent final reviewer assignment artifact."
+    scope: "ADP CLI parser/dispatcher, focused CLI regression test, phase record, run manifest, traceability row, delivery task, event records, governance current state, user-center traceability page, and three base files."
+    non_scope: "No independent final reviewer assignment artifact creation, no independent final reviewer assignment validation pass, no independent final closure decision, no zero-proof artifact, no S2PLT04 completion, no final bundle acceptance, no live next-agent handoff, no independent signoff, no final command execution, no P0/P1 closure, no SMTP transport send, no scheduler install or enablement, no Release upload, no public schema or DB migration, no production queue mutation, no ranking/source-adapter change, no CURRENT pointer change, no V7.1/V7.2 contract-file edit, no DAILY_OPERATION, and no integrated production acceptance."
+    status: "blocked"
+    dependencies: ["S2PMT07", "S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-OWNER-PACKET", "S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-CLI-VALIDATOR"]
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_OWNER_PACKET_CLI.md", "governance/run_manifests/ADP-S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-OWNER-PACKET-CLI-20260628.json"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_assignment_owner_packet_cli_red PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_cli.py -k owner_packet -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_assignment_owner_packet_cli_green PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_cli.py -k owner_packet -q"]
+    test_results: ["TDD red failed as expected because build-final-reviewer-assignment-owner-packet was not a recognized CLI command", "focused CLI owner-packet test: 1 OK"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-OWNER-PACKET-CLI-20260628.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_OWNER_PACKET_CLI.md", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_cli.py"]
+    result: "Owner packet CLI is ready; the real assignment artifact is still missing and final bundle remains blocked."
+    risk: "The owner packet CLI can be misread as a real assignment artifact or final-gate progress. It only prints required owner actions and blocked state."
+    rollback: "Revert CLI parser/dispatcher changes, focused regression test, phase record, manifest, traceability row, delivery task, event records, generated views, and three base records; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
