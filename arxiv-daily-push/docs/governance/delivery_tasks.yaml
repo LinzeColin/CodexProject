@@ -3897,3 +3897,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "LOCAL-DAILY-M1-M4-RESEND-EXECUTION"
+    phase: "S1P5"
+    objective: "Record the real 2026-06-28 local M1-M4 resend execution and update GitHub user-center mail status to 4 / 4."
+    scope: "SMTP delivery evidence summary, GitHub user-center mail/status pages, phase record, run manifest, traceability row, delivery/event records, and governance status files."
+    non_scope: "No scheduler install or enablement, no Release upload, no public schema change, no source/ranking change, no CURRENT/V7 contract change, no S2PMT07 final acceptance, no DAILY_OPERATION, and no integrated production acceptance."
+    status: "completed"
+    dependencies: ["LOCAL-DAILY-RESEND-REUSE-INPUT", "LOCAL-DAILY-M1-M4-SEND-ORCHESTRATION", "EMAIL_LEARNING_V1"]
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/docs/phase_records/PHASE_LOCAL_DAILY_M1_M4_RESEND_EXECUTION_20260628.md", "governance/run_manifests/ADP-LOCAL-DAILY-M1-M4-RESEND-EXECUTION-20260628.json", "arxiv-daily-push/用户中心/邮件发送与队列状态.md", "arxiv-daily-push/用户中心/README.md", "arxiv-daily-push/用户中心/一看三查.md"]
+    acceptance_ids: ["ADP-ACC-S1P5T05-LOCAL-PRODUCTION-MIGRATION-PREP"]
+    test_commands: ["real local-runner daily --daily-input-report execution at 2026-06-28T01:26:41Z", "python3 arxiv-daily-push/scripts/update_user_center_timestamps.py --check", "git diff --check"]
+    test_results: ["M1 historical sent; M2/M3/M4 real SMTP sent", "mail_delivery_summary.sent_mail_count = 4", "user center mail status updated to 4 / 4"]
+    evidence_refs: ["governance/run_manifests/ADP-LOCAL-DAILY-M1-M4-RESEND-EXECUTION-20260628.json", "arxiv-daily-push/docs/phase_records/PHASE_LOCAL_DAILY_M1_M4_RESEND_EXECUTION_20260628.md", "arxiv-daily-push/用户中心/邮件发送与队列状态.md"]
+    result: "2026-06-28 local resend execution completed with M1 historical sent and M2-M4 newly sent by SMTP; Stage 2 production acceptance remains false."
+    risk: "A successful local resend can be misread as integrated production acceptance; user-center and governance records explicitly keep Stage 2 production acceptance false."
+    rollback: "Real email delivery cannot be undone by reverting Git. If evidence is wrong, append a corrective record and update the user-center history."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

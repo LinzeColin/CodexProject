@@ -58,8 +58,11 @@
 
 - Local runner send orchestration: `LOCAL_DAILY_M1_M4_SEND_ORCHESTRATION_READY`
 - Local runner resend recovery: `LOCAL_DAILY_RESEND_REUSE_INPUT_READY`
+- 2026-06-28 resend execution: `M1 historical sent; M2/M3/M4 newly sent; total 4 / 4`
 - Planned daily mail products: `M1 / M2 / M3 / M4`
 - Evidence: `arxiv-daily-push/docs/phase_records/PHASE_LOCAL_DAILY_M1_M4_SEND_ORCHESTRATION_20260628.md`
 - Resend evidence: `arxiv-daily-push/docs/phase_records/PHASE_LOCAL_DAILY_RESEND_REUSE_INPUT_20260628.md`
-- Boundary: this records code/test readiness for local catch-up and duplicate-send protection; it does not claim real M2-M4 delivery, S2PMT07 final acceptance, scheduler enablement, Release upload, or integrated production acceptance.
+- Execution evidence: `arxiv-daily-push/docs/phase_records/PHASE_LOCAL_DAILY_M1_M4_RESEND_EXECUTION_20260628.md`
+- Boundary: this records local catch-up readiness and the 2026-06-28 M2-M4 real resend execution; it does not claim S2PMT07 final acceptance, scheduler enablement, Release upload, or integrated production acceptance.
 - Recovery rule: manual resend may pass `--daily-input-report` to reuse a same-day `adp-daily-input-report.json`; date mismatch blocks before SMTP.
+- Production acceptance boundary: the 2026-06-28 resend proves one local real-send execution only; Stage 2 integrated production acceptance remains `false`.

@@ -1,5 +1,6 @@
 # Changelog
 - 2026-06-28 10:26:53 Australia/Sydney: Added local daily M1-M4 send orchestration; runner now builds four Email V1 products, records per-product SMTP evidence, syncs actual sent count to user center, and skips already-sent same-day products during catch-up.
+- 2026-06-28 11:28:25 Australia/Sydney: Recorded real 2026-06-28 M1-M4 resend execution evidence; M1 was treated as historical sent and M2-M4 were sent by SMTP, updating GitHub user center to 4 / 4 without claiming Stage 2 production acceptance.
 - 2026-06-28 10:08:17 Australia/Sydney: Added S2PMT07 mainline attestation state; target S2PMT07 evidence commit is contained in origin/main with open PR count 0 and ADP/arxiv/s2p remote branch count 0, while P0/P1 closure, final bundle, S2PLT04, and all production gates remain blocked.
 - 2026-06-28 08:48:03 Australia/Sydney: Added S2PMT07 independent final reviewer assignment request state; reviewer assignment, closure decision, zero-proof artifact, P0/P1 closure, S2PLT04, final bundle, and production gates remain blocked.
 - 2026-06-28 08:21:10 Australia/Sydney: Added S2PMT07 independent final closure decision request state; reviewer assignment, closure decision, zero-proof artifact, P0/P1 closure, S2PLT04, final bundle, and production gates remain blocked.

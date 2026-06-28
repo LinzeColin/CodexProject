@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "project_id": "arxiv-daily-push",
+  "task_id": "LOCAL-DAILY-M1-M4-RESEND-EXECUTION",
+  "task_ids": [
+    "LOCAL-DAILY-M1-M4-RESEND-EXECUTION",
+    "LOCAL-DAILY-RESEND-REUSE-INPUT",
+    "EMAIL_LEARNING_V1"
+  ],
+  "generated_at": "2026-06-28T11:28:25+10:00",
+  "service_date": "2026-06-28",
+  "summary": "2026-06-28 M1-M4 邮件补发完成：M1 识别为历史已发送，M2-M4 通过真实 SMTP 补发成功。",
+  "status": "pass",
+  "daily_input_source": "existing_report",
+  "daily_input_report_path": "/Users/linzezhang/.adp/arxiv-daily-push/runs/20260628/adp-daily-input-report.json",
+  "mail_delivery_summary": {
+    "planned_send_total": 4,
+    "sent_mail_count": 4,
+    "sent_mail_products": ["M1", "M2", "M3", "M4"],
+    "historical_sent_mail_products": ["M1"],
+    "newly_sent_mail_products": ["M2", "M3", "M4"],
+    "delivery_ref_by_product": {
+      "M1": "smtp://message/smtp-delivery:87f268d29a31288d",
+      "M2": "smtp://message/smtp-delivery:c72ffcd03a277e1d",
+      "M3": "smtp://message/smtp-delivery:590b7230463ff9f7",
+      "M4": "smtp://message/smtp-delivery:7f815186af789297"
+    }
+  },
+  "evidence_refs": [
+    "arxiv-daily-push/docs/phase_records/PHASE_LOCAL_DAILY_M1_M4_RESEND_EXECUTION_20260628.md",
+    "arxiv-daily-push/用户中心/邮件发送与队列状态.md",
+    "arxiv-daily-push/用户中心/README.md",
+    "arxiv-daily-push/用户中心/一看三查.md"
+  ],
+  "real_smtp_sent": true,
+  "real_smtp_send_enabled": true,
+  "stage2_integrated_production_accepted": false,
+  "integrated_production_accepted": false,
+  "scheduler_enabled": false,
+  "release_uploaded": false,
+  "public_schema_changed": false,
+  "ranking_algorithm_changed": false,
+  "source_adapter_changed": false,
+  "current_pointer_changed": false,
+  "rollback": "This is real-send evidence and cannot be undone by deleting the record. If the record is wrong, append a corrective evidence record and update the user-center history."
+}

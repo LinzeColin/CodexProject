@@ -4308,3 +4308,12 @@ None for this new project baseline.
 - Files changed: local runner, CLI, local runner regression tests, phase record, run manifest, traceability/delivery/event records, and governance status files.
 - Boundary: no email template body change, no public schema change, no ranking/source change, no scheduler enablement, no Release upload, no CURRENT/V7 change, no integrated production acceptance, and no claim that the real resend has already completed.
 - Evidence: `governance/run_manifests/ADP-LOCAL-DAILY-RESEND-REUSE-INPUT-20260628.json`; `arxiv-daily-push/docs/phase_records/PHASE_LOCAL_DAILY_RESEND_REUSE_INPUT_20260628.md`; `arxiv-daily-push/src/arxiv_daily_push/local_runner.py`; `arxiv-daily-push/src/arxiv_daily_push/cli.py`; `arxiv-daily-push/tests/test_local_runner.py`.
+
+### `ITER-20260628-ADP-LOCAL-DAILY-M1-M4-RESEND-EXECUTION`
+
+- Timestamp: `2026-06-28T11:28:25+10:00`
+- Task IDs: `LOCAL-DAILY-M1-M4-RESEND-EXECUTION`; parent `LOCAL-DAILY-RESEND-REUSE-INPUT`; acceptance `ADP-ACC-S1P5T05-LOCAL-PRODUCTION-MIGRATION-PREP`.
+- Decisions: Recorded the real 2026-06-28 local resend execution. The runner reused the same-day daily input report, recognized M1 as historical sent, and sent M2, M3, and M4 through SMTP.
+- Files changed: GitHub user center mail/status pages, resend execution phase record, run manifest, traceability/delivery/event records, and governance status files.
+- Boundary: real SMTP delivery evidence exists for this local catch-up execution, but scheduler enablement, Release upload, S2PMT07 final acceptance, DAILY_OPERATION, and integrated production acceptance remain false.
+- Evidence: `governance/run_manifests/ADP-LOCAL-DAILY-M1-M4-RESEND-EXECUTION-20260628.json`; `arxiv-daily-push/docs/phase_records/PHASE_LOCAL_DAILY_M1_M4_RESEND_EXECUTION_20260628.md`; `arxiv-daily-push/用户中心/邮件发送与队列状态.md`.

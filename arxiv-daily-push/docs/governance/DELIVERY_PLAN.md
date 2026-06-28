@@ -21,7 +21,7 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 219
+- task_count: 220
 - acceptance_count: 126
 
 ## Delivery Tasks
@@ -92,6 +92,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 | ADP-S1P5T04-PRODUCTION-SCHEDULE-OWNER-DECISION-041 | S1-A | deprecated | ADP-ACC-PHASE12-PRODUCTION-ENABLEMENT | Owner superseded the GitHub cloud scheduled-production path with local Mac + Codex/local runner; GitHub remains code, PR/CI, evidence, status, and backup only | `governance/run_manifests/ADP-S1P5T04-POST-MERGE-TEST10-VERIFIED-20260624.json` |
 | ADP-S1P5T05-LOCAL-PRODUCTION-AND-MIGRATION-PREP | S1-A | completed | ADP-ACC-S1P5T05-LOCAL-PRODUCTION-MIGRATION-PREP | local-runner daily/preflight, queue/ledger/report/email preview persistence, launchd package draft, and 2026-06-30 migration runbook pass focused tests without real SMTP send or GitHub cloud schedule | `governance/run_manifests/ADP-S1P5T05-LOCAL-PRODUCTION-AND-MIGRATION-PREP-20260624.json` |
 | LOCAL-DAILY-M1-M4-SEND-ORCHESTRATION | S1P5 | completed | ADP-ACC-S1P5T05-LOCAL-PRODUCTION-MIGRATION-PREP | local runner now builds M1-M4 Email V1 packages, records per-product SMTP evidence, syncs actual sent count, and skips same-day already-sent products; focused tests 9 OK and full unittest 641 OK after rebase | `docs/phase_records/PHASE_LOCAL_DAILY_M1_M4_SEND_ORCHESTRATION_20260628.md` |
+| LOCAL-DAILY-M1-M4-RESEND-EXECUTION | S1P5 | completed_real_send | ADP-ACC-S1P5T05-LOCAL-PRODUCTION-MIGRATION-PREP | 2026-06-28 local resend completed: M1 historical sent, M2-M4 real SMTP sent, user center updated to 4 / 4; Stage 2 production acceptance remains false | `docs/phase_records/PHASE_LOCAL_DAILY_M1_M4_RESEND_EXECUTION_20260628.md`; `governance/run_manifests/ADP-LOCAL-DAILY-M1-M4-RESEND-EXECUTION-20260628.json` |
 | S2PAT01 | S2PA | completed | ACC-S2PAT01-V7-AUDIT | V7 package integrity and V6-to-V7 conflict/alias boundary are locked without rewriting historical Stage 1 evidence | `docs/pursuing_goal/v7_1/CONTRACT_HASH.txt` |
 | S2PAT02 | S2PA | completed | ACC-S2PAT02-CONTRACT | V7 product contract, requirements, decision log, stop codes, roadmap, and repository lock file are present and hash-bound | `docs/pursuing_goal/v7_1/V7_1_ROOT_LOCK.yaml` |
 | S2PAT03 | S2PA | completed | ACC-S2PAT03-ROADMAP | root/ADP AGENTS and roadmap references now route new work through V7 while preserving legacy `S2P1T01` alias | `AGENTS.md`; `arxiv-daily-push/AGENTS.md` |
@@ -413,3 +414,10 @@ The machine-readable task source is `delivery_tasks.yaml`.
 - Added manifest `governance/run_manifests/ADP-LOCAL-DAILY-RESEND-REUSE-INPUT-20260628.json`.
 - Added phase record `arxiv-daily-push/docs/phase_records/PHASE_LOCAL_DAILY_RESEND_REUSE_INPUT_20260628.md`.
 - Local runner manual resend can now reuse a same-day `adp-daily-input-report.json` with `--daily-input-report`, records the input source/path, and blocks mismatched dates before SMTP. This is recovery capability evidence only; no real SMTP delivery, scheduler, Release, schema, source, ranking, CURRENT, V7 contract, daily operation, or integrated production acceptance is claimed by this record.
+
+## 2026-06-28 11:28:25 Australia/Sydney - local daily M1-M4 resend execution
+
+- Added manifest `governance/run_manifests/ADP-LOCAL-DAILY-M1-M4-RESEND-EXECUTION-20260628.json`.
+- Added phase record `arxiv-daily-push/docs/phase_records/PHASE_LOCAL_DAILY_M1_M4_RESEND_EXECUTION_20260628.md`.
+- 2026-06-28 M1-M4 mail state is now 4 / 4: M1 reused historical sent evidence, and M2/M3/M4 were sent by real SMTP from the local runner using the same-day daily input report.
+- This is local catch-up delivery evidence only; scheduler, Release, source, ranking, CURRENT, V7 contract, DAILY_OPERATION, and integrated production acceptance remain blocked.
