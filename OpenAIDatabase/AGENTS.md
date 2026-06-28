@@ -99,3 +99,12 @@ For broader OpenAIDatabase changes, add:
 python3 -m py_compile scripts/build_agent_context_pack.py scripts/sync_codex_memory_data.py
 python3 -m unittest discover -s tests -p "test_*.py" -q
 ```
+
+## S4 精简执行胶囊
+
+- 普通 T0/T1 任务先读本文件，并使用 `scripts/route_agent_resources.py` 返回的读取路线；
+  避免大范围数据扫描。
+- 不得读取完整 `模型参数文件.md`，除非变更涉及 profile scoring、路由、个性化规则、
+  评估指标、memory sync、隐私门禁或派生上下文生成。
+- 治理验证：`python -B scripts/lean_governance.py validate --project OpenAIDatabase --semantic`。
+- owner 预览：`python -B scripts/lean_governance.py check-render --project OpenAIDatabase`。

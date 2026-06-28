@@ -31,6 +31,10 @@
       "type": "string",
       "minLength": 1
     },
+    "display_name": {
+      "type": "string",
+      "minLength": 1
+    },
     "summary": {
       "type": "string",
       "minLength": 1

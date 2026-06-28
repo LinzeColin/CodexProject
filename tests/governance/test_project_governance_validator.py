@@ -12016,6 +12016,88 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "Unknown render view"):
                 cli.render_project_files(project_root, write=False, view="unknown-view")
 
+    def test_m1_s4_project_execution_capsules_define_verify_and_model_escalation(self) -> None:
+        projects = [
+            "PFI",
+            "arxiv-daily-push",
+            "Alpha",
+            "FIFA",
+            "OpMe_System",
+            "OpenAIDatabase",
+            "Serenity-Alipay",
+            "whkmSalary",
+        ]
+        for project in projects:
+            with self.subTest(project=project):
+                text = (ROOT / project / "AGENTS.md").read_text(encoding="utf-8")
+                self.assertIn("S4", text)
+                self.assertIn("精简执行胶囊", text)
+                self.assertIn("不得", text)
+                self.assertRegex(text, r"(?i)verify|验证")
+                self.assertIn("模型参数文件.md", text)
+                self.assertIn("lean_governance.py", text)
+
+    def test_m1_s4_adp_capsule_routes_source_changes_to_full_gate(self) -> None:
+        text = (ROOT / "arxiv-daily-push" / "AGENTS.md").read_text(encoding="utf-8")
+        self.assertIn("普通非来源变更", text)
+        self.assertIn("不得默认读取完整 `用户中心/`", text)
+        self.assertIn("来源、板块、scheduler、SMTP、storage、security、ranking", text)
+        self.assertIn("完整特殊", text)
+        self.assertIn("test_security_boundary.py", text)
+        self.assertIn("test_source_registry.py", text)
+
+    def test_m1_s4_metadatabase_current_task_uses_legal_lean_id(self) -> None:
+        current_files = [
+            ROOT / "MetaDatabase" / "docs" / "governance" / "roadmap.yaml",
+            ROOT / "MetaDatabase" / "docs" / "governance" / "ASSURANCE_STATUS.yaml",
+            ROOT / "MetaDatabase" / "docs" / "governance" / "TRACEABILITY_MATRIX.csv",
+            ROOT / "MetaDatabase" / "功能清单.md",
+            ROOT / "MetaDatabase" / "开发记录.md",
+        ]
+        for path in current_files:
+            with self.subTest(path=str(path.relative_to(ROOT))):
+                text = path.read_text(encoding="utf-8")
+                self.assertIn("S1PAT01", text)
+                self.assertNotIn("TASK-MDB-S0-001", text)
+
+        delivery = (ROOT / "MetaDatabase" / "docs" / "governance" / "delivery_tasks.yaml").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn('task_id: "S1PAT01"', delivery)
+        self.assertIn('legacy_task_ids:', delivery)
+        self.assertIn('"TASK-MDB-S0-001"', delivery)
+
+    def test_m1_s4_qbvs_identity_is_consistent_across_current_entries(self) -> None:
+        project_text = (ROOT / "QBVS" / "docs" / "governance" / "project.yaml").read_text(encoding="utf-8")
+        roadmap_text = (ROOT / "QBVS" / "docs" / "governance" / "roadmap.yaml").read_text(encoding="utf-8")
+        self.assertIn('project_id: "QBVS"', project_text)
+        self.assertIn('display_name: "大数据模拟器（QBVS / Quant Behavior Validation System）"', project_text)
+        self.assertIn('project_id: "QBVS"', roadmap_text)
+
+        for relative in ["README.md", "功能清单.md", "开发记录.md", "模型参数文件.md", "AGENTS.md"]:
+            with self.subTest(path=relative):
+                text = (ROOT / "QBVS" / relative).read_text(encoding="utf-8")
+                self.assertIn("QBVS", text)
+                self.assertIn("大数据模拟器", text)
+                self.assertNotIn("project_id: `PFI_BIG_DATA_SIMULATOR`", text)
+
+        rendered = load_lean_governance_module().check_render_registered_project("QBVS", root=ROOT)
+        self.assertEqual(rendered["drift_count"], 0, rendered["drift"])
+        self.assertEqual(rendered["reference_issue_count"], 0, rendered["reference_issues"])
+
+    def test_m1_s4_legacy_run_manifest_schema_version_is_skipped_as_v1(self) -> None:
+        spec = importlib.util.spec_from_file_location(
+            "validate_governance_sync_for_s4",
+            ROOT / "scripts" / "validate_governance_sync.py",
+        )
+        module = importlib.util.module_from_spec(spec)
+        sys.modules[spec.name] = module
+        assert spec.loader is not None
+        spec.loader.exec_module(module)
+
+        self.assertEqual(module.run_manifest_schema_version({"schema_version": "codexproject.run_manifest.v1"}), 1)
+        self.assertEqual(module.run_manifest_schema_version({"schema_version": 2}), 2)
+
 
 if __name__ == "__main__":
     unittest.main()

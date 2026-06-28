@@ -706,6 +706,17 @@ def load_json_object(path: Path) -> dict[str, Any] | None:
     return data if isinstance(data, dict) else None
 
 
+def run_manifest_schema_version(data: dict[str, Any]) -> int:
+    raw = data.get("schema_version") or 1
+    try:
+        return int(raw)
+    except (TypeError, ValueError):
+        value = str(raw).strip()
+        if value.endswith(".v1") or value in {"v1", "1"}:
+            return 1
+        return 2
+
+
 def attested_manifest_ids() -> set[str]:
     ids: set[str] = set()
     for path in sorted(CI_ATTESTATIONS_DIR.glob("*.json")):
@@ -758,7 +769,7 @@ def validate_run_manifests(validation: SyncValidation, changed: list[str], *, ch
         if not data:
             validation.error("root", f"Cannot parse run manifest: {path.relative_to(ROOT)}")
             continue
-        schema_version = int(data.get("schema_version") or 1)
+        schema_version = run_manifest_schema_version(data)
         if schema_version < 2:
             continue
         run_id = str(data.get("run_id") or path.stem)

@@ -1,8 +1,10 @@
 governance_spec_version: "1.0.0"
 project_id: "MetaDatabase"
 tasks:
-  - task_id: "TASK-MDB-S0-001"
-    phase: "S0PA"
+  - task_id: "S1PAT01"
+    legacy_task_ids:
+      - "TASK-MDB-S0-001"
+    phase: "S1PA"
     objective: "Register MetaDatabase as a governed top-level data archive."
     scope:
       - "MetaDatabase/README.md"

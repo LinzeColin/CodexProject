@@ -1,5 +1,6 @@
 schema_version: "codexproject.project.v1"
-project_id: "PFI_BIG_DATA_SIMULATOR"
+project_id: "QBVS"
+display_name: "大数据模拟器（QBVS / Quant Behavior Validation System）"
 project_name: "PFI 大数据模拟器"
 summary: "PFI 大数据模拟器是策略族、技术指标、回测、压力模拟、快速筛选、campaign、fund rules、QuantLab 证据和 provider probe 研究系统；本迁移保留策略/阈值/验证治理真相，不把模拟胜出、fast screening 或 evidence bundle 写成实盘有效或生产交付。"
 version: "0.1.0"
