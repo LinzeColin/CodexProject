@@ -1,9 +1,9 @@
 {
-  "schema": "PFIParametersV022Stage5",
+  "schema": "PFIParametersV022Stage6",
   "project_id": "PFI",
   "task_name": "PFI v0.2.2 E2E 逻辑优化",
   "parameter_version": "v0.2.2",
-  "current_stage": "Stage 5 - 统一账本事件、消费双口径与分类体系",
+  "current_stage": "Stage 6 - 标签系统与自定义视图",
   "canonical_parameter_file": "PFI/config/pfi_parameters.yaml",
   "machine_format": "JSON-compatible YAML",
   "uiux_baseline": "v0.2.1 HTML Web Shell",
@@ -1381,6 +1381,716 @@
           "报告"
         ],
         "user_editable": true
+      },
+      "default_tag_library": {
+        "value": [
+          {
+            "tag_id": "tag_general_planned",
+            "label_zh": "计划内",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "通用",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_general_unplanned",
+            "label_zh": "计划外",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "通用",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_general_recurring",
+            "label_zh": "周期性",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "通用",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_general_one_off",
+            "label_zh": "一次性",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "通用",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_general_reimbursable",
+            "label_zh": "可报销",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "通用",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_general_work_related",
+            "label_zh": "工作相关",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "通用",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_general_family_related",
+            "label_zh": "家庭相关",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "通用",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_general_tax_related",
+            "label_zh": "税务相关",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "通用",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_general_cash_related",
+            "label_zh": "现金相关",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "通用",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_general_manual_reviewed",
+            "label_zh": "人工已复核",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "通用",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_consumption_night",
+            "label_zh": "夜间消费",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "消费",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_consumption_large",
+            "label_zh": "大额消费",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "消费",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_consumption_duplicate_suspect",
+            "label_zh": "疑似重复",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "消费",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_consumption_refund_linked",
+            "label_zh": "已关联退款",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "消费",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_consumption_subscription",
+            "label_zh": "订阅扣费",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "消费",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_consumption_fixed",
+            "label_zh": "固定支出",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "消费",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_consumption_flexible",
+            "label_zh": "弹性支出",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "消费",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_consumption_weekend",
+            "label_zh": "周末消费",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "消费",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_consumption_social",
+            "label_zh": "社交消费",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "消费",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_consumption_impulse_candidate",
+            "label_zh": "冲动候选",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "消费",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_investment_deposit",
+            "label_zh": "投资入金",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "投资",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_investment_return",
+            "label_zh": "投资回流",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "投资",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_investment_buy",
+            "label_zh": "买入交易",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "投资",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_investment_sell",
+            "label_zh": "卖出交易",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "投资",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_investment_fund_subscription",
+            "label_zh": "基金申购",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "投资",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_investment_bullion_subscription",
+            "label_zh": "黄金申购",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "投资",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_investment_dividend",
+            "label_zh": "分红收入",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "投资",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_investment_fee",
+            "label_zh": "投资费用",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "投资",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_investment_fx_exposure",
+            "label_zh": "汇率暴露",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "投资",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_investment_chase_candidate",
+            "label_zh": "追涨候选",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "投资",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_investment_panic_sell_candidate",
+            "label_zh": "杀跌候选",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "投资",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_investment_short_hold_candidate",
+            "label_zh": "短持候选",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "投资",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_investment_idle_cash_candidate",
+            "label_zh": "闲置现金候选",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "投资",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_investment_concentration_exposure",
+            "label_zh": "集中度暴露",
+            "scope": "holding",
+            "tag_type": "default",
+            "group_zh": "投资",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_quality_low_confidence",
+            "label_zh": "低置信",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "数据质量",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_quality_unmatched_transfer",
+            "label_zh": "未匹配转账",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "数据质量",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_quality_matched_linked",
+            "label_zh": "已匹配关联",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "数据质量",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_quality_fx_snapshot_stale",
+            "label_zh": "汇率快照过期",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "数据质量",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_quality_missing_counterparty",
+            "label_zh": "缺少对手方",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "数据质量",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_quality_blurry_description",
+            "label_zh": "描述模糊",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "数据质量",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_quality_duplicate_raw",
+            "label_zh": "重复原始记录",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "数据质量",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_quality_parser_warning",
+            "label_zh": "解析器警告",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "数据质量",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_quality_category_user_modified",
+            "label_zh": "分类被用户修改",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "数据质量",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_quality_tag_user_modified",
+            "label_zh": "标签被用户修改",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "数据质量",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_cashflow_pressure",
+            "label_zh": "现金流压力",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "现金流",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_cashflow_safe",
+            "label_zh": "现金流安全",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "现金流",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_cashflow_investment_pressure",
+            "label_zh": "投资挤压现金",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "现金流",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_cashflow_income_related",
+            "label_zh": "收入相关",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "现金流",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_cashflow_refund_inflow",
+            "label_zh": "退款回流",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "现金流",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_cashflow_reserve_watch",
+            "label_zh": "储备金观察",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "现金流",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_review_needs_review",
+            "label_zh": "需要复核",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "复盘",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_review_action_candidate",
+            "label_zh": "行动候选",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "复盘",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_review_behavior_pattern",
+            "label_zh": "行为模式",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "复盘",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_review_monthly_focus",
+            "label_zh": "本月重点",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "复盘",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_review_resolved",
+            "label_zh": "已处理",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "复盘",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          },
+          {
+            "tag_id": "tag_review_follow_up",
+            "label_zh": "后续跟踪",
+            "scope": "transaction",
+            "tag_type": "default",
+            "group_zh": "复盘",
+            "is_system_default": true,
+            "is_editable": false,
+            "is_enabled": true
+          }
+        ],
+        "label_zh": "Stage 6 默认标签库",
+        "description_zh": "覆盖通用、消费、投资、数据质量、现金流、复盘标签；默认标签不可物理删除，作为历史追溯锚点。",
+        "impact_surfaces": [
+          "账本流水",
+          "消费管理",
+          "投资管理",
+          "报告与洞察",
+          "建议与复盘"
+        ],
+        "user_editable": false
+      },
+      "tag_tables": {
+        "value": [
+          "pfi_tags",
+          "pfi_tag_assignments",
+          "pfi_tag_rules",
+          "pfi_tag_history",
+          "pfi_custom_views"
+        ],
+        "label_zh": "Stage 6 标签持久化表",
+        "description_zh": "标签注册、标签赋值、标签规则、标签变更历史和自定义视图均进入 SQLite 或本地等价持久化层。",
+        "impact_surfaces": [
+          "数据库治理",
+          "账本流水",
+          "报告与洞察"
+        ],
+        "user_editable": false
+      },
+      "tag_rule_dimensions": {
+        "value": [
+          "amount_cny",
+          "time_window",
+          "l1_category",
+          "event_type",
+          "account_role"
+        ],
+        "label_zh": "Stage 6 自动打标签维度",
+        "description_zh": "支持按金额、时间、分类、事件类型和账户角色自动打标签。",
+        "impact_surfaces": [
+          "账本流水",
+          "消费管理",
+          "投资管理",
+          "复盘"
+        ],
+        "user_editable": false
+      },
+      "default_tag_rules": {
+        "value": [
+          {
+            "rule_id": "rule_large_consumption_cny",
+            "tag_id": "tag_consumption_large",
+            "label_zh": "CNY 大额消费",
+            "conditions": {
+              "amount_cny_gte": "2000",
+              "event_types": [
+                "consumption",
+                "ordinary_consumption"
+              ]
+            },
+            "is_enabled": true
+          },
+          {
+            "rule_id": "rule_night_consumption",
+            "tag_id": "tag_consumption_night",
+            "label_zh": "夜间消费窗口",
+            "conditions": {
+              "time_window": "22:00-06:00",
+              "event_types": [
+                "consumption",
+                "ordinary_consumption"
+              ]
+            },
+            "is_enabled": true
+          },
+          {
+            "rule_id": "rule_subscription_category",
+            "tag_id": "tag_consumption_subscription",
+            "label_zh": "订阅服务分类",
+            "conditions": {
+              "l1_categories": [
+                "订阅服务"
+              ],
+              "event_types": [
+                "consumption",
+                "ordinary_consumption"
+              ]
+            },
+            "is_enabled": true
+          },
+          {
+            "rule_id": "rule_investment_deposit_event",
+            "tag_id": "tag_investment_deposit",
+            "label_zh": "投资入金事件",
+            "conditions": {
+              "event_types": [
+                "investment_deposit"
+              ]
+            },
+            "is_enabled": true
+          },
+          {
+            "rule_id": "rule_investment_buy_event",
+            "tag_id": "tag_investment_buy",
+            "label_zh": "投资买入事件",
+            "conditions": {
+              "event_types": [
+                "investment_buy"
+              ]
+            },
+            "is_enabled": true
+          },
+          {
+            "rule_id": "rule_investment_funding_role",
+            "tag_id": "tag_cashflow_investment_pressure",
+            "label_zh": "投资入金来源账户",
+            "conditions": {
+              "account_roles": [
+                "investment_funding_source"
+              ]
+            },
+            "is_enabled": true
+          }
+        ],
+        "label_zh": "Stage 6 默认标签规则",
+        "description_zh": "默认规则覆盖大额、夜间、订阅、投资入金、投资买入和投资入金来源账户。",
+        "impact_surfaces": [
+          "账本流水",
+          "建议与复盘",
+          "报告与洞察"
+        ],
+        "user_editable": true
+      },
+      "custom_view_defaults": {
+        "value": [
+          "订阅检查",
+          "投资追涨复盘",
+          "夜间大额复盘"
+        ],
+        "label_zh": "Stage 6 自定义视图示例",
+        "description_zh": "自定义视图保存标签筛选条件，不改变原始账本金额。",
+        "impact_surfaces": [
+          "账本流水",
+          "报告与洞察",
+          "本地 HTML"
+        ],
+        "user_editable": true
       }
     },
     "confidence": {
@@ -1704,6 +2414,17 @@
         "value": "PFI/tests/test_v022_stage5_ledger_taxonomy.py",
         "label_zh": "Stage 5 账本与分类约束测试",
         "description_zh": "验证事件类型表、双消费口径、12/5/50 分类约束、未来合并字段和三基文件同步。",
+        "impact_surfaces": [
+          "测试",
+          "治理",
+          "GitHub 验收"
+        ],
+        "user_editable": false
+      },
+      "stage6_tags_views_test": {
+        "value": "PFI/tests/test_v022_stage6_tags_views.py",
+        "label_zh": "Stage 6 标签与自定义视图测试",
+        "description_zh": "验证标签持久化 schema、默认标签、自定义标签生命周期、标签历史、规则自动赋值、标签筛选、标签报告和本地 HTML 自定义视图。",
         "impact_surfaces": [
           "测试",
           "治理",
@@ -2069,5 +2790,16 @@
     "S5-P3-T2",
     "S5-P3-T3",
     "S5-P3-T4"
+  ],
+  "stage6_task_ids": [
+    "S6-P1-T1",
+    "S6-P1-T2",
+    "S6-P1-T3",
+    "S6-P2-T1",
+    "S6-P2-T2",
+    "S6-P2-T3",
+    "S6-P3-T1",
+    "S6-P3-T2",
+    "S6-P3-T3"
   ]
 }

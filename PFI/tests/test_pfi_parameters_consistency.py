@@ -10,6 +10,7 @@ from pfi_v02.stage_v022_database_governance import (
     V022_STAGE1_TASK_IDS,
     V022_STAGE3_TASK_IDS,
     V022_STAGE4_TASK_IDS,
+    V022_STAGE6_TASK_IDS,
     build_v022_stage1_contract,
     load_v022_parameter_catalog,
 )
@@ -37,7 +38,7 @@ class TestPFIParametersConsistency(unittest.TestCase):
         self.assertIn("JSON-compatible YAML", contract["machine_readable_parameter_file"]["format"])
 
     def test_machine_readable_catalog_has_chinese_domain_directory(self) -> None:
-        self.assertEqual(self.catalog["schema"], "PFIParametersV022Stage5")
+        self.assertEqual(self.catalog["schema"], "PFIParametersV022Stage6")
         self.assertEqual(self.catalog["parameter_version"], "v0.2.2")
         self.assertEqual(self.catalog["stage1_task_ids"], list(V022_STAGE1_TASK_IDS))
         self.assertEqual(
@@ -50,6 +51,7 @@ class TestPFIParametersConsistency(unittest.TestCase):
             self.catalog["stage5_task_ids"],
             ["S5-P1-T1", "S5-P1-T2", "S5-P2-T1", "S5-P2-T2", "S5-P2-T3", "S5-P3-T1", "S5-P3-T2", "S5-P3-T3", "S5-P3-T4"],
         )
+        self.assertEqual(self.catalog["stage6_task_ids"], list(V022_STAGE6_TASK_IDS))
 
         domains = {item["key"]: item for item in self.catalog["domains"]}
         self.assertEqual(set(domains), set(V022_STAGE1_REQUIRED_PARAMETER_DOMAINS))

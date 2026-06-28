@@ -7,11 +7,11 @@ PFI V0.2 is the Personal Financial Intelligence project under
 under `LinzeColin/CodexProject/QBVS`; PFI investment management does not own
 or cover QBVS.
 
-## v0.2.2 数据库治理 Stage 5
+## v0.2.2 数据库治理 Stage 6
 
-`v0.2.2 数据库治理` 当前完成 Stage 5：统一账本事件、消费双口径与分类体系。本轮在 Stage 4 的 Interconnection 事实层之上建立 Stage 5 事件类型表、首页 / 消费页 / 报告共用的双消费口径，以及 `L1 ≤ 12`、每类 `L2 ≤ 5`、总 `L2 ≤ 50` 的中文消费分类 taxonomy。本轮不实现 Stage 6 标签持久化，不新增真实交易、自动投资、支付或券商提交能力。
+`v0.2.2 数据库治理` 当前完成 Stage 6：标签系统与自定义视图。本轮在 Stage 5 单一主分类体系之外，建立可持久化标签注册、标签赋值、标签规则、默认/自定义标签、标签变更历史、标签筛选账本、标签驱动报告和本地 HTML 自定义视图。本轮不实现 Stage 7 现金流评分、Stage 8 Runtime Diff、Stage 9 参数中心，不新增真实交易、自动投资、支付或券商提交能力。
 
-Stage 5 source files:
+Stage 6 source files:
 
 | Purpose | Path |
 | --- | --- |
@@ -23,10 +23,13 @@ Stage 5 source files:
 | Stage 3 验收报告 | `docs/pfi_v022/STAGE3_SOURCE_ACCOUNT_PROFILE.md` |
 | Stage 4 验收报告 | `docs/pfi_v022/STAGE4_INTERCONNECTION.md` |
 | Stage 5 验收报告 | `docs/pfi_v022/STAGE5_LEDGER_TAXONOMY.md` |
+| Stage 6 验收报告 | `docs/pfi_v022/STAGE6_TAGS_CUSTOM_VIEWS.md` |
 | Interconnection Matrix | `docs/pfi_v02/INTERCONNECTION_MATRIX.md` |
 | Stage 0-13 roadmap lock | `docs/pfi_v022/ROADMAP_LOCK.md` |
 | Stage 4 contract | `src/pfi_v02/stage_v022_database_governance.py` |
 | Stage 5 ledger taxonomy | `src/pfi_v02/stage_v022_ledger_taxonomy.py` |
+| Stage 6 tags/views | `src/pfi_v02/stage_v022_tags_views.py` |
+| Stage 6 local HTML | `web/pfi_v022_tag_views.html` |
 | 汇率快照读取模块 | `src/pfi_v02/stage_v022_fx.py` |
 | 数据源与账户角色模块 | `src/pfi_v02/stage_v022_source_profile.py` |
 | Interconnection 模块 | `src/pfi_v02/stage_v022_interconnection.py` |
@@ -36,9 +39,10 @@ Stage 5 source files:
 | Stage 4 no-double-count test | `tests/test_v022_interconnection_no_double_count.py` |
 | Stage 4 consumption/investment outflow test | `tests/test_v022_consumption_investment_outflow.py` |
 | Stage 5 ledger taxonomy test | `tests/test_v022_stage5_ledger_taxonomy.py` |
+| Stage 6 tags/views test | `tests/test_v022_stage6_tags_views.py` |
 | 参数一致性测试 | `tests/test_pfi_parameters_consistency.py` |
 
-Stage 5 locked parameters:
+Stage 6 locked parameters:
 
 - 主货币：`CNY`。
 - 当前前端徽标：`AUD/CNY=4.69（YYYYMMDD--HH:MM）`。
@@ -66,7 +70,12 @@ Stage 5 locked parameters:
 - Stage 5 分类约束：`L1 ≤ 12`、每类 `L2 ≤ 5`、总 `L2 ≤ 50`、每笔交易主分类数量为 `1`。
 - Stage 5 默认 taxonomy：餐饮食品、居住家庭、交通出行、购物用品、医疗健康、教育成长、娱乐社交、订阅服务、金融费用、投资资金流出、家庭责任、调整其他。
 - Stage 5 stop condition：事件类型不足、影响口径缺失、投资入金或基金申购未进入消费总流出、生活消费被投资资金流污染、分类超限、后续无法合并分类。
-- Stage 6 标签持久化、自定义标签增删改、标签历史和标签视图仍是后续单独 gate。
+- Stage 6 标签表：`pfi_tags`、`pfi_tag_assignments`、`pfi_tag_rules`、`pfi_tag_history`、`pfi_custom_views`。
+- Stage 6 默认标签组：通用、消费、投资、数据质量、现金流、复盘。
+- Stage 6 自定义标签生命周期：新增、重命名、停用、删除；系统默认标签不可物理删除。
+- Stage 6 标签规则维度：金额、时间、分类、事件类型、账户角色。
+- Stage 6 自定义视图示例：订阅检查、投资追涨复盘、夜间大额复盘。
+- Stage 6 stop condition：标签不能持久化、一笔记录只能有一个标签、标签只能手动添加、默认标签缺失关键维度、自定义标签无法修改、标签历史不可追踪、标签无法筛选账本、标签不参与报告、自定义视图不能保存。
 
 ## v0.2.1 前端优化 Stage 0
 

@@ -50,6 +50,13 @@
 | 2026-06-28 | `S5-P2-T2` | `consumption_model.living_consumption_excludes` | `Stage 4 规则已排除投资入金、基金申购、投资买入` | `排除投资入金、基金申购、黄金申购、投资买入、内部转账、信用卡还款` | 保证生活消费不被投资资金流和还款污染。 | 消费管理、预算、报告、测试。 |
 | 2026-06-28 | `S5-P2-T3` | `consumption_model.double_consumption_surfaces` | `无正式 Stage 5 展示面参数` | `homepage, consumption_page, report 同时展示消费总流出与生活消费` | 避免只显示一个消费数字导致误解。 | 首页总览、消费管理、报告与洞察、测试。 |
 | 2026-06-28 | `S5-P3-T1..S5-P3-T4` | `consumption_categories.default_taxonomy` | `只有数量上限，无正式 12 大类 / 50 中类 taxonomy` | `12 个 L1、50 个 L2、每个 L1 有 future_merge_to / merge_candidate` | Stage 5 要求建立默认消费分类，并预留后续压缩到 10 类或更少的字段。 | 账本流水、消费管理、报告与洞察、参数中心、测试。 |
+| 2026-06-28 | `S6-P1-T1` | `tags.tag_tables` | `只有默认标签组和生命周期说明` | `pfi_tags, pfi_tag_assignments, pfi_tag_rules, pfi_tag_history, pfi_custom_views` | Stage 6 要求标签 registry、赋值、规则、历史和自定义视图可持久化。 | 账本流水、报告与洞察、数据库治理、测试。 |
+| 2026-06-28 | `S6-P1-T2` | `tags.assignment_policy` | `无机器可验收赋值表` | `同一 transaction/economic_event/holding/account 可拥有多个 tag_id` | 标签区别于主分类，必须支持多维分析。 | 账本筛选、报告聚合、建议复盘。 |
+| 2026-06-28 | `S6-P1-T3` | `tags.tag_rule_dimensions` | `无自动标签规则维度` | `amount_cny, time_window, l1_category, event_type, account_role` | 支持按金额、时间、分类、事件类型、账户角色自动打标签。 | 消费复盘、投资复盘、现金流观察、测试。 |
+| 2026-06-28 | `S6-P2-T1` | `tags.default_tag_library` | `default_tag_groups 只有组名` | `通用、消费、投资、数据质量、现金流、复盘默认标签库` | 默认标签必须覆盖关键分析维度。 | 账本流水、消费管理、投资管理、数据质量、报告。 |
+| 2026-06-28 | `S6-P2-T2` | `tags.custom_tag_lifecycle` | `新增、重命名、停用、删除、恢复说明` | `新增、重命名、停用、删除写入 SQLite；系统默认标签不可物理删除` | 自定义标签必须可修改并可追溯，默认标签保持历史锚点。 | 设置、账本流水、标签历史、测试。 |
+| 2026-06-28 | `S6-P2-T3` | `tags.history_policy` | `无正式历史表` | `pfi_tag_history 记录 old_value, new_value, impact_object, reason_zh, changed_at` | 标签变更必须可查，避免历史解释断裂。 | 审计、复盘、GitHub 验收。 |
+| 2026-06-28 | `S6-P3-T1..S6-P3-T3` | `tags.custom_view_defaults` | `无自定义标签视图` | `订阅检查、投资追涨复盘、夜间大额复盘` | 常用标签组合需要可保存和本地 HTML 展示。 | 账本流水、报告与洞察、本地 HTML、测试。 |
 
 ## 记录规则
 
