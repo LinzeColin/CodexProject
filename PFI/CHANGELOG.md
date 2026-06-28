@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## v0.2.2 数据库治理 Stage 4 - 2026-06-28
+
+- 完成 Stage 4 `Economic Event 与 Interconnection 逻辑`，覆盖 `S4-P1-T1..S4-P2-T3`。
+- 新增 `src/pfi_v02/stage_v022_interconnection.py`，建立 `economic_event_id`、`interconnection_group_id`、event type affects flags、Interconnection Matrix、Metric Dependency Graph 和 no-double-count 聚合函数。
+- 新增 `docs/pfi_v022/STAGE4_INTERCONNECTION.md`、`docs/pfi_v02/INTERCONNECTION_MATRIX.md`、`tests/test_v022_interconnection_no_double_count.py` 和 `tests/test_v022_consumption_investment_outflow.py`，把 Stage 4 acceptance criteria、stop condition 和 validation 固化为可重复验证合同。
+- `config/pfi_parameters.yaml` 升级为 `PFIParametersV022Stage4`，新增 `interconnection.event_type_policies`、`matrix_fields` 和 `metric_dependency_graph`。
+- 双消费口径已锁定：投资入金、基金申购、黄金申购、投资买入进入消费总流出但不进入生活消费；退款抵消原消费；信用卡还款不重复计入生活消费。
+- 本轮不实现 Stage 5 分类 taxonomy，不修改 v0.2.1 Web Shell UIUX 基线，不提交真实交易、支付、券商下单或自动投资能力。
+
 ## v0.2.2 数据库治理 Stage 3 - 2026-06-28
 
 - 完成 Stage 3 `数据源、账户角色与可扩展结构`，覆盖 `S3-P1-T1..S3-P2-T3`。

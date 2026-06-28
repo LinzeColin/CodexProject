@@ -1,7 +1,7 @@
 governance_spec_version: "1.0.0"
 project_id: "PFI"
-product_version: "v0.2.2 数据库治理 Stage 3"
-product_version_status: "stage3_verified"
+product_version: "v0.2.2 数据库治理 Stage 4"
+product_version_status: "stage4_verified"
 version_file_value: "v0.2.1 前端优化"
 schema_version: "1.0.0"
 model_versions:
@@ -9,6 +9,6 @@ model_versions:
 parameter_profile_versions:
   pfi_root_contract: "pfi-v0.2-root-contract"
 data_snapshot_version: "not_applicable_contract_only"
-current_iteration: "ITER-20260628-PFI-V022-STAGE3-SOURCE-ACCOUNT-PROFILE"
-current_phase: "Stage 3 / Phase 3.1-3.2"
-current_gate: "PFI-V022-S3-SOURCE-ACCOUNT-PROFILE-GATE"
+current_iteration: "ITER-20260628-PFI-V022-STAGE4-INTERCONNECTION"
+current_phase: "Stage 4 / Phase 4.1-4.2"
+current_gate: "PFI-V022-S4-INTERCONNECTION-GATE"

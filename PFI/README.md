@@ -7,11 +7,11 @@ PFI V0.2 is the Personal Financial Intelligence project under
 under `LinzeColin/CodexProject/QBVS`; PFI investment management does not own
 or cover QBVS.
 
-## v0.2.2 数据库治理 Stage 3
+## v0.2.2 数据库治理 Stage 4
 
-`v0.2.2 数据库治理` 当前完成 Stage 3：数据源、账户角色与可扩展结构。本轮建立 source profile schema、capabilities、`other_source_template`、账户多角色和角色生效期；所有相关计算按 role 和 event type，不按支付宝、微信、银行卡、券商等 source 名称硬编码。本轮不实现 Stage 4 Interconnection Matrix，不新增真实交易、自动投资、支付或券商提交能力。
+`v0.2.2 数据库治理` 当前完成 Stage 4：Economic Event 与 Interconnection 逻辑。本轮建立 `economic_event_id`、`interconnection_group_id`、事件影响 flags、Interconnection Matrix、Metric Dependency Graph 和 no-double-count 合同；同一真实经济事件可多处展示，但同一核心指标只计算一次。本轮不实现 Stage 5 分类 taxonomy，不新增真实交易、自动投资、支付或券商提交能力。
 
-Stage 3 source files:
+Stage 4 source files:
 
 | Purpose | Path |
 | --- | --- |
@@ -21,16 +21,21 @@ Stage 3 source files:
 | Stage 1 验收报告 | `docs/pfi_v022/STAGE1_PARAMETER_GOVERNANCE.md` |
 | Stage 2 验收报告 | `docs/pfi_v022/STAGE2_CNY_FX_GOVERNANCE.md` |
 | Stage 3 验收报告 | `docs/pfi_v022/STAGE3_SOURCE_ACCOUNT_PROFILE.md` |
+| Stage 4 验收报告 | `docs/pfi_v022/STAGE4_INTERCONNECTION.md` |
+| Interconnection Matrix | `docs/pfi_v02/INTERCONNECTION_MATRIX.md` |
 | Stage 0-13 roadmap lock | `docs/pfi_v022/ROADMAP_LOCK.md` |
-| Stage 3 contract | `src/pfi_v02/stage_v022_database_governance.py` |
+| Stage 4 contract | `src/pfi_v02/stage_v022_database_governance.py` |
 | 汇率快照读取模块 | `src/pfi_v02/stage_v022_fx.py` |
 | 数据源与账户角色模块 | `src/pfi_v02/stage_v022_source_profile.py` |
+| Interconnection 模块 | `src/pfi_v02/stage_v022_interconnection.py` |
 | 真实汇率快照 | `data/fx_snapshots/AUD_CNY/2026-06-28.json` |
 | Stage 2 FX test | `tests/test_v022_fx_effective_date.py` |
 | Stage 3 source/account test | `tests/test_v022_stage3_source_account_profiles.py` |
+| Stage 4 no-double-count test | `tests/test_v022_interconnection_no_double_count.py` |
+| Stage 4 consumption/investment outflow test | `tests/test_v022_consumption_investment_outflow.py` |
 | 参数一致性测试 | `tests/test_pfi_parameters_consistency.py` |
 
-Stage 3 locked parameters:
+Stage 4 locked parameters:
 
 - 主货币：`CNY`。
 - 当前前端徽标：`AUD/CNY=4.69（YYYYMMDD--HH:MM）`。
@@ -47,6 +52,12 @@ Stage 3 locked parameters:
 - source capabilities：现金流水、投资交易、基金交易、黄金交易、余额快照、费用、退款、转账。
 - 新增 source 模板：`other_source_template`。
 - 账户角色字段：`role_effective_from`、`role_effective_to`。
+- `economic_event_id`：同一真实经济事件只有一个 ID。
+- `interconnection_group_id`：同一资金链路进入一个关联组。
+- `消费总流出`：普通消费、投资入金、基金申购、黄金申购、投资买入、费用进入该口径，退款抵消。
+- `生活消费`：普通生活消费进入该口径，退款抵消；投资入金、基金申购、投资买入不进入。
+- Stage 4 stop condition：`投资入金未进入消费总流出`、`基金申购未进入消费总流出`、`投资入金错误进入生活消费`、同一 `interconnection_group_id` 重复进入核心金额。
+- Agent 1 复核消费、投资、现金流口径；Agent 2 复核 source -> transaction -> group -> economic event -> ledger -> metric 链路。
 
 ## v0.2.1 前端优化 Stage 0
 

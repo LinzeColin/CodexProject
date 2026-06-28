@@ -1,9 +1,9 @@
 {
-  "schema": "PFIParametersV022Stage3",
+  "schema": "PFIParametersV022Stage4",
   "project_id": "PFI",
   "task_name": "PFI v0.2.2 E2E 逻辑优化",
   "parameter_version": "v0.2.2",
-  "current_stage": "Stage 3 - 数据源、账户角色与可扩展结构",
+  "current_stage": "Stage 4 - Economic Event 与 Interconnection 逻辑",
   "canonical_parameter_file": "PFI/config/pfi_parameters.yaml",
   "machine_format": "JSON-compatible YAML",
   "uiux_baseline": "v0.2.1 HTML Web Shell",
@@ -543,6 +543,22 @@
         ],
         "user_editable": false
       },
+      "stage4_required_fields": {
+        "value": [
+          "economic_event_id",
+          "interconnection_group_id"
+        ],
+        "label_zh": "Stage 4 经济事件关联字段",
+        "description_zh": "多来源记录必须先归入 interconnection_group，再归并为单一 economic_event，避免核心金额重复计算。",
+        "impact_surfaces": [
+          "账本流水",
+          "消费管理",
+          "投资管理",
+          "现金流",
+          "报告与洞察"
+        ],
+        "user_editable": false
+      },
       "no_double_count_rule": {
         "value": "同一 economic_event 在同一 metric 口径只能计算一次",
         "label_zh": "单次计算规则",
@@ -554,6 +570,168 @@
           "报告"
         ],
         "user_editable": false
+      },
+      "matrix_fields": [
+        "event_type",
+        "label_zh",
+        "affects_total_consumption_outflow",
+        "affects_living_consumption",
+        "affects_investment",
+        "affects_net_worth",
+        "affects_cashflow",
+        "homepage_display",
+        "consumption_display",
+        "investment_display",
+        "cashflow_display",
+        "report_display",
+        "offset_rule_zh"
+      ],
+      "event_type_policies": {
+        "consumption": {
+          "label_zh": "普通消费",
+          "affects_total_consumption_outflow": true,
+          "affects_living_consumption": true,
+          "affects_investment": false,
+          "affects_net_worth": true,
+          "affects_cashflow": true,
+          "display_surfaces": {
+            "homepage": "本期支出与现金流压力",
+            "consumption": "消费总流出 + 生活消费",
+            "investment": "不计入投资",
+            "cashflow": "生活现金流出",
+            "report": "普通生活消费"
+          },
+          "offset_rule_zh": "退款抵消原消费。"
+        },
+        "investment_deposit": {
+          "label_zh": "投资入金",
+          "affects_total_consumption_outflow": true,
+          "affects_living_consumption": false,
+          "affects_investment": true,
+          "affects_net_worth": false,
+          "affects_cashflow": true,
+          "display_surfaces": {
+            "homepage": "投资现金增加，生活现金减少",
+            "consumption": "计入消费总流出，不计入生活消费",
+            "investment": "计入投资现金",
+            "cashflow": "生活现金流出，投资现金流入",
+            "report": "投资性资金流出"
+          },
+          "offset_rule_zh": "银行侧与券商侧同属一个 interconnection_group，只按一个 economic_event_id 计算一次。"
+        },
+        "fund_subscription": {
+          "label_zh": "基金申购",
+          "affects_total_consumption_outflow": true,
+          "affects_living_consumption": false,
+          "affects_investment": true,
+          "affects_net_worth": false,
+          "affects_cashflow": true,
+          "display_surfaces": {
+            "homepage": "基金资产增加",
+            "consumption": "计入消费总流出，不计入生活消费",
+            "investment": "计入基金资产",
+            "cashflow": "主钱包或基金平台现金流出",
+            "report": "基金申购"
+          },
+          "offset_rule_zh": "支付记录和份额记录归入一个 economic_event_id。"
+        },
+        "bullion_purchase": {
+          "label_zh": "黄金申购",
+          "affects_total_consumption_outflow": true,
+          "affects_living_consumption": false,
+          "affects_investment": true,
+          "affects_net_worth": false,
+          "affects_cashflow": true,
+          "display_surfaces": {
+            "homepage": "贵金属资产增加",
+            "consumption": "计入消费总流出，不计入生活消费",
+            "investment": "计入贵金属资产",
+            "cashflow": "现金流出",
+            "report": "贵金属申购"
+          },
+          "offset_rule_zh": "支付记录和贵金属持仓记录只按一个 economic_event_id 计算一次。"
+        },
+        "investment_buy": {
+          "label_zh": "投资买入",
+          "affects_total_consumption_outflow": true,
+          "affects_living_consumption": false,
+          "affects_investment": true,
+          "affects_net_worth": false,
+          "affects_cashflow": true,
+          "display_surfaces": {
+            "homepage": "投资持仓增加",
+            "consumption": "计入消费总流出，不计入生活消费",
+            "investment": "计入投资持仓",
+            "cashflow": "投资账户现金流出",
+            "report": "投资买入"
+          },
+          "offset_rule_zh": "现金减少和持仓增加同属一个 economic_event_id，不能重复计入总流出。"
+        },
+        "refund": {
+          "label_zh": "退款",
+          "affects_total_consumption_outflow": true,
+          "affects_living_consumption": true,
+          "affects_investment": false,
+          "affects_net_worth": true,
+          "affects_cashflow": true,
+          "display_surfaces": {
+            "homepage": "支出抵消或现金回流",
+            "consumption": "抵消原消费或对应总流出",
+            "investment": "通常不计入投资",
+            "cashflow": "现金流入",
+            "report": "退款抵消项"
+          },
+          "offset_rule_zh": "退款抵消原消费；有 offset_economic_event_id 时绑定原事件。"
+        },
+        "credit_card_repayment": {
+          "label_zh": "信用卡还款",
+          "affects_total_consumption_outflow": false,
+          "affects_living_consumption": false,
+          "affects_investment": false,
+          "affects_net_worth": false,
+          "affects_cashflow": true,
+          "display_surfaces": {
+            "homepage": "现金流还款压力",
+            "consumption": "不重复计入生活消费，可单列还款",
+            "investment": "不计入投资",
+            "cashflow": "生活现金流出",
+            "report": "信用卡还款"
+          },
+          "offset_rule_zh": "信用卡还款不重复计入生活消费；原消费已在账单发生时计算。"
+        }
+      },
+      "metric_dependency_graph": {
+        "total_consumption_outflow_cny": [
+          "consumption",
+          "investment_deposit",
+          "fund_subscription",
+          "bullion_purchase",
+          "investment_buy",
+          "fee",
+          "refund_offset"
+        ],
+        "living_consumption_cny": [
+          "consumption",
+          "refund_offset"
+        ],
+        "investment_cash_cny": [
+          "investment_deposit",
+          "investment_sell"
+        ],
+        "fund_asset_flow_cny": [
+          "fund_subscription"
+        ],
+        "investment_holding_flow_cny": [
+          "investment_buy",
+          "investment_sell"
+        ],
+        "cashflow": [
+          "income",
+          "refund",
+          "credit_card_repayment",
+          "internal_transfer",
+          "fx_conversion"
+        ]
       }
     },
     "consumption_categories": {
@@ -1273,5 +1451,13 @@
     "S3-P2-T1",
     "S3-P2-T2",
     "S3-P2-T3"
+  ],
+  "stage4_task_ids": [
+    "S4-P1-T1",
+    "S4-P1-T2",
+    "S4-P1-T3",
+    "S4-P2-T1",
+    "S4-P2-T2",
+    "S4-P2-T3"
   ]
 }
