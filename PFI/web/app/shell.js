@@ -3232,6 +3232,7 @@ function exportLedgerReview() {
   const rows = [...document.querySelectorAll("#decision-rows tr")]
     .filter((rowNode) => !rowNode.hidden)
     .map((rowNode) => [...rowNode.cells].map((cell) => cell.textContent.trim()));
+  const hasRealLedger = alipayImportState.transactionCount > 0 || Boolean(uploadCenterState.importedManifest);
   const header = ["优先级", "对象", "依据", "动作", "状态"];
   const payload = [header, ...rows].map((rowItems) => rowItems.map(csvCell).join(",")).join("\n");
   const blob = new Blob([payload], { type: "text/csv;charset=utf-8" });
@@ -3245,7 +3246,7 @@ function exportLedgerReview() {
     exportPreparedAt: new Date().toISOString(),
   };
   renderLedgerOperationFlow("ledger");
-  showToast(rows.length ? "账本流水导出已准备" : "暂无真实流水，已导出空表头");
+  showToast(rows.length ? "账本流水导出已准备" : hasRealLedger ? "当前筛选无结果，已导出空表头" : "暂无真实流水，已导出空表头");
 }
 
 function bindHoldingsPersistenceEvents() {
