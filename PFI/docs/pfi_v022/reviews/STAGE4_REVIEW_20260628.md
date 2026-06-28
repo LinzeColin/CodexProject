@@ -82,6 +82,7 @@ git diff --check -- PFI
 - `git diff --check -- PFI`：通过。
 - 参数 JSON 解析：`python3 -m json.tool PFI/config/pfi_parameters.yaml` 通过。
 - macOS app 轻量验收：`Blocked, pass=22, fail=7, info=2`；运行服务健康，8501 正常，阻塞项为 `/Users/linzezhang/Desktop/PFI.app` 缺失。按当前 goal 约束，本轮不重装 app 入口，整体复审完成后统一刷新入口。
+- GitHub main 同步：`795a509badd2f44de5ce95f67e07402b509b3b4b`。
 
 ## 剩余风险
 
