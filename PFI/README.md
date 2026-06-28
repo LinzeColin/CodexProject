@@ -7,11 +7,11 @@ PFI V0.2 is the Personal Financial Intelligence project under
 under `LinzeColin/CodexProject/QBVS`; PFI investment management does not own
 or cover QBVS.
 
-## v0.2.2 数据库治理 Stage 6
+## v0.2.2 数据库治理 Stage 7
 
-`v0.2.2 数据库治理` 当前完成 Stage 6：标签系统与自定义视图。本轮在 Stage 5 单一主分类体系之外，建立可持久化标签注册、标签赋值、标签规则、默认/自定义标签、标签变更历史、标签筛选账本、标签驱动报告和本地 HTML 自定义视图。本轮不实现 Stage 7 现金流评分、Stage 8 Runtime Diff、Stage 9 参数中心，不新增真实交易、自动投资、支付或券商提交能力。
+`v0.2.2 数据库治理` 当前完成 Stage 7：模型公式、阈值与评分标准。本轮把置信度、消费、投资、现金流公式和阈值集中到机器可读参数、中文参数说明、合同模块和行为测试中；不实现 Stage 8 Runtime Diff、Stage 9 参数中心、Stage 10 建议生命周期，不新增真实交易、自动投资、支付或券商提交能力。
 
-Stage 6 source files:
+Stage 7 source files:
 
 | Purpose | Path |
 | --- | --- |
@@ -24,11 +24,13 @@ Stage 6 source files:
 | Stage 4 验收报告 | `docs/pfi_v022/STAGE4_INTERCONNECTION.md` |
 | Stage 5 验收报告 | `docs/pfi_v022/STAGE5_LEDGER_TAXONOMY.md` |
 | Stage 6 验收报告 | `docs/pfi_v022/STAGE6_TAGS_CUSTOM_VIEWS.md` |
+| Stage 7 验收报告 | `docs/pfi_v022/STAGE7_FORMULA_SCORING.md` |
 | Interconnection Matrix | `docs/pfi_v02/INTERCONNECTION_MATRIX.md` |
 | Stage 0-13 roadmap lock | `docs/pfi_v022/ROADMAP_LOCK.md` |
-| Stage 4 contract | `src/pfi_v02/stage_v022_database_governance.py` |
+| Stage 7 contract | `src/pfi_v02/stage_v022_database_governance.py` |
 | Stage 5 ledger taxonomy | `src/pfi_v02/stage_v022_ledger_taxonomy.py` |
 | Stage 6 tags/views | `src/pfi_v02/stage_v022_tags_views.py` |
+| Stage 7 formula scoring | `src/pfi_v02/stage_v022_formula_scoring.py` |
 | Stage 6 local HTML | `web/pfi_v022_tag_views.html` |
 | 汇率快照读取模块 | `src/pfi_v02/stage_v022_fx.py` |
 | 数据源与账户角色模块 | `src/pfi_v02/stage_v022_source_profile.py` |
@@ -40,9 +42,10 @@ Stage 6 source files:
 | Stage 4 consumption/investment outflow test | `tests/test_v022_consumption_investment_outflow.py` |
 | Stage 5 ledger taxonomy test | `tests/test_v022_stage5_ledger_taxonomy.py` |
 | Stage 6 tags/views test | `tests/test_v022_stage6_tags_views.py` |
+| Stage 7 formula/scoring test | `tests/test_v022_stage7_formula_scoring.py` |
 | 参数一致性测试 | `tests/test_pfi_parameters_consistency.py` |
 
-Stage 6 locked parameters:
+Stage 7 locked parameters:
 
 - 主货币：`CNY`。
 - 当前前端徽标：`AUD/CNY=4.69（YYYYMMDD--HH:MM）`。
@@ -76,6 +79,15 @@ Stage 6 locked parameters:
 - Stage 6 标签规则维度：金额、时间、分类、事件类型、账户角色。
 - Stage 6 自定义视图示例：订阅检查、投资追涨复盘、夜间大额复盘。
 - Stage 6 stop condition：标签不能持久化、一笔记录只能有一个标签、标签只能手动添加、默认标签缺失关键维度、自定义标签无法修改、标签历史不可追踪、标签无法筛选账本、标签不参与报告、自定义视图不能保存。
+- Stage 7 置信度权重：字段完整度 30、金额方向 10、规则命中 20、商户/对手方 15、关联匹配 15、历史一致性 10，总分 100。
+- Stage 7 复核阈值：统一 `70`，不得按 source 名称设置分层阈值。
+- Stage 7 消费公式：`消费总流出 = 生活消费 + 投资入金 + 基金申购 + 黄金申购 + 投资买入 + 金融费用 - 退款抵消`；`生活消费 = 普通生活消费 - 退款抵消`。
+- Stage 7 大额消费：`CNY >= 2000` 或原币 `AUD >= 500`；夜间窗口 `22:00-06:00`；订阅评分阈值 `75`。
+- Stage 7 投资市值：`quantity * latest_price * fx_rate_to_cny`；成本、已实现、未实现、总收益均记录费用、税费和汇率影响。
+- Stage 7 投资行为：频繁交易、换手率、持仓周期、追涨、杀跌、现金拖累、集中度暴露。
+- Stage 7 现金流窗口：`7/21/30/60/90/180/360`。
+- Stage 7 储备金安全线：`max(user_min_reserve_cny, average_fixed_monthly_expense_cny * reserve_months)`，默认 `reserve_months=3`。
+- Stage 7 投资入金挤压：当 planned investment deposit 使未来生活现金低于储备金安全线时标记 `投资挤压现金`。
 
 ## v0.2.1 前端优化 Stage 0
 

@@ -57,6 +57,19 @@
 | 2026-06-28 | `S6-P2-T2` | `tags.custom_tag_lifecycle` | `新增、重命名、停用、删除、恢复说明` | `新增、重命名、停用、删除写入 SQLite；系统默认标签不可物理删除` | 自定义标签必须可修改并可追溯，默认标签保持历史锚点。 | 设置、账本流水、标签历史、测试。 |
 | 2026-06-28 | `S6-P2-T3` | `tags.history_policy` | `无正式历史表` | `pfi_tag_history 记录 old_value, new_value, impact_object, reason_zh, changed_at` | 标签变更必须可查，避免历史解释断裂。 | 审计、复盘、GitHub 验收。 |
 | 2026-06-28 | `S6-P3-T1..S6-P3-T3` | `tags.custom_view_defaults` | `无自定义标签视图` | `订阅检查、投资追涨复盘、夜间大额复盘` | 常用标签组合需要可保存和本地 HTML 展示。 | 账本流水、报告与洞察、本地 HTML、测试。 |
+| 2026-06-28 | `S7-P1-T1` | `confidence.score_weights` | `Stage 1 草案权重，缺少正式 Stage 7 合同` | `字段完整度30、金额方向10、规则命中20、商户/对手方15、关联匹配15、历史一致性10，总分100` | 置信度必须可解释、可测试，并与复核队列一致。 | 导入、分类、Interconnection、账本复核、报告。 |
+| 2026-06-28 | `S7-P1-T2` | `confidence.score_standards` | `部分说明分散在文档和测试中` | `每个评分项记录中文低分/中分/高分或满分标准` | 用户需要理解为什么一条记录低置信，不能只显示技术分数。 | 账本复核、报告解释、数据质量标签。 |
+| 2026-06-28 | `S7-P1-T3` | `confidence.review_threshold` | `70 分，缺少禁止 source 分层声明` | `统一 70；source_layered_thresholds_allowed=false` | 不允许按支付宝、银行、券商等来源设置不同复核线，避免口径漂移。 | 导入、分类、复核队列、测试。 |
+| 2026-06-28 | `S7-P2-T1` | `consumption_model.gross_consumption_formula` | `Stage 5 双消费口径` | `生活消费 + 投资入金 + 基金申购 + 黄金申购 + 投资买入 + 金融费用 - 退款抵消` | Stage 7 需要把双消费口径固化为正式公式和机器参数。 | 首页总览、消费管理、现金流、报告与洞察。 |
+| 2026-06-28 | `S7-P2-T2` | `consumption_model.living_consumption_formula` | `Stage 5 排除规则` | `普通生活消费 - 退款抵消；排除投资入金、基金申购、黄金申购、投资买入、内部转账、信用卡还款` | 防止投资动作污染生活消费分析。 | 消费管理、预算、报告、分类复核。 |
+| 2026-06-28 | `S7-P2-T3` | `consumption_model.large_spend_threshold` | `CNY 2000 / AUD 500 草案阈值` | `CNY >= 2000 或 original AUD >= 500` | 大额消费既要支持 CNY 主口径，也要保留原币异常识别。 | 消费管理、标签、复盘、测试。 |
+| 2026-06-28 | `S7-P2-T4` | `time.night_window` | `22:00-06:00；电子产品冲动候选未收口` | `22:00-06:00；电子产品冲动并入夜间/大额/计划外组合` | 减少单一品类硬编码，使用标签组合解释行为。 | 消费复盘、标签规则、报告。 |
+| 2026-06-28 | `S7-P3-T1` | `investment_model.market_value_formula` | `Stage 1 参数草案` | `market_value_cny = quantity * latest_price * fx_rate_to_cny` | 投资市值必须以 CNY 主口径并可追溯原币和汇率。 | 投资管理、首页摘要、趋势图、报告。 |
+| 2026-06-28 | `S7-P3-T2` | `investment_model.return_formulas` | `收益说明不完整` | `remaining_cost_cny、unrealized_pnl_cny、realized_pnl_cny、total_pnl_cny 均显式记录费用、税费、FX` | 成本和收益不能只看市价差，需要解释手续费、税费和汇率。 | 投资管理、报告、行为复盘、测试。 |
+| 2026-06-28 | `S7-P3-T3` | `investment_model.behavior_formula_scope` | `频率、集中度等阈值分散` | `frequency, turnover, holding_period, chase, panic_sell, cash_drag, concentration` | 投资行为复盘需要统一公式范围，后续建议评分才能复用。 | 投资管理、策略实验室、建议与复盘、报告。 |
+| 2026-06-28 | `S7-P4-T1` | `cashflow.windows_days` | `30/90/180 或分散草案` | `7/21/30/60/90/180/360` | 现金流预测需要短中长期窗口统一口径。 | 现金流、首页、报告、测试。 |
+| 2026-06-28 | `S7-P4-T2` | `cashflow.reserve_floor_formula` | `无正式公式` | `max(user_min_reserve_cny, average_fixed_monthly_expense_cny * reserve_months)` | 储备金安全线要同时支持用户底线和固定支出倍数。 | 现金流、安全带、建议、报告。 |
+| 2026-06-28 | `S7-P4-T3` | `cashflow.investment_squeeze_formula` | `无正式模型` | `investment_squeeze_cny = max(0, reserve_floor_cny - future_cash_balance_after_investment)` | 需要解释投资入金是否挤压生活现金，避免把投资计划误判为普通生活消费。 | 现金流、投资管理、报告、复盘。 |
 
 ## 记录规则
 

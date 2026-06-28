@@ -30,6 +30,12 @@ from pfi_v02.stage_v022_tags_views import (
     STAGE6_TAG_TABLES,
     build_stage6_contract_payload,
 )
+from pfi_v02.stage_v022_formula_scoring import (
+    STAGE7_CASHFLOW_WINDOWS_DAYS,
+    STAGE7_CONFIDENCE_WEIGHTS,
+    STAGE7_REVIEW_THRESHOLD,
+    build_stage7_contract_payload,
+)
 
 
 V022_STAGE1_TASK_IDS = (
@@ -108,6 +114,22 @@ V022_STAGE6_TASK_IDS = (
     "S6-P3-T1",
     "S6-P3-T2",
     "S6-P3-T3",
+)
+
+V022_STAGE7_TASK_IDS = (
+    "S7-P1-T1",
+    "S7-P1-T2",
+    "S7-P1-T3",
+    "S7-P2-T1",
+    "S7-P2-T2",
+    "S7-P2-T3",
+    "S7-P2-T4",
+    "S7-P3-T1",
+    "S7-P3-T2",
+    "S7-P3-T3",
+    "S7-P4-T1",
+    "S7-P4-T2",
+    "S7-P4-T3",
 )
 
 V022_STAGE0_TASK_IDS = (
@@ -824,5 +846,112 @@ def build_v022_stage6_contract() -> dict[str, object]:
             "不修改 v0.2.1 HTML Web Shell UIUX 基线。",
             "不新增真实交易、自动投资、支付或券商提交。",
             "不实现 Stage 8 runtime diff、Stage 9 参数中心或 Stage 12 逻辑审查页。",
+        ),
+    }
+
+
+def build_v022_stage7_contract() -> dict[str, object]:
+    stage7_payload = build_stage7_contract_payload()
+    return {
+        "schema": "PFIV022FormulaScoringStage7ContractV1",
+        "version": "v0.2.2",
+        "stage": "Stage 7",
+        "stage_name_zh": "模型公式、阈值与评分标准",
+        "goal": "把置信度、消费、投资和现金流模型公式固定为中文可解释、参数可追踪、测试可验证的 Stage 7 合同。",
+        "task_ids": V022_STAGE7_TASK_IDS,
+        "phases": {
+            "Phase 7.1": ("置信度评分", "S7-P1-T1", "S7-P1-T2", "S7-P1-T3"),
+            "Phase 7.2": ("消费模型公式", "S7-P2-T1", "S7-P2-T2", "S7-P2-T3", "S7-P2-T4"),
+            "Phase 7.3": ("投资模型公式", "S7-P3-T1", "S7-P3-T2", "S7-P3-T3"),
+            "Phase 7.4": ("现金流模型公式", "S7-P4-T1", "S7-P4-T2", "S7-P4-T3"),
+        },
+        "confidence_scoring": {
+            "total_score": 100,
+            "weights": stage7_payload["confidence_weights"],
+            "required_weight_phrase": "字段完整度 30 分，金额方向 10 分，规则命中 20 分，商户/对手方 15 分，关联匹配 15 分，历史一致性 10 分",
+            "review_threshold": STAGE7_REVIEW_THRESHOLD,
+            "threshold_policy": "统一复核阈值 70 分；不按 source 分层。",
+        },
+        "consumption_model": {
+            "gross_formula_zh": "消费总流出金额 = 生活消费 + 投资入金 + 基金申购 + 黄金申购 + 投资买入 + 金融费用 - 退款抵消。",
+            "living_formula_zh": "生活消费金额 = 普通生活消费 - 已关联退款 - 已关联撤销。",
+            "large_spend_threshold": "CNY ≥ 2000 或 AUD 原币 ≥ 500。",
+            "night_window": "22:00-06:00 本地时间；电子产品冲动独立规则已删除并并入夜间/大额逻辑。",
+        },
+        "investment_model": {
+            "market_value_formula_zh": "投资市值 = 投资现金 + Σ(持仓数量 × 最新价格 × 汇率)，主显示 CNY。",
+            "pnl_formula_scope": "成本、费用、税费、汇率影响、已实现、未实现、总收益均有中文解释。",
+            "behavior_scope": "交易频率、换手率、持仓周期、追涨候选、杀跌候选、现金拖累、集中度。",
+        },
+        "cashflow_model": {
+            "windows_days": STAGE7_CASHFLOW_WINDOWS_DAYS,
+            "windows_display": "7 / 21 / 30 / 60 / 90 / 180 / 360",
+            "reserve_floor_formula_zh": "储备金底线 = max(用户自定义最低储备金, 平均月固定支出 × 储备月份数)。",
+            "investment_squeeze_formula_zh": "若计划投资入金后未来生活现金低于储备金底线，则标记投资入金挤压生活现金。",
+            "visualizations": stage7_payload["cashflow_visualizations"],
+        },
+        "deliverables": (
+            "PFI/src/pfi_v02/stage_v022_formula_scoring.py",
+            "PFI/src/pfi_v02/stage_v022_database_governance.py",
+            "PFI/tests/test_v022_stage7_formula_scoring.py",
+            "PFI/docs/pfi_v022/STAGE7_FORMULA_SCORING.md",
+            "PFI/config/pfi_parameters.yaml",
+            "PFI/config/parameter_changelog.md",
+            "PFI/模型参数文件.md",
+            "PFI/功能清单.md",
+            "PFI/开发记录.md",
+            "PFI/HANDOFF.md",
+            "PFI/README.md",
+        ),
+        "acceptance_criteria": (
+            "置信度评分为 100 分制，权重严格为 30/10/20/15/15/10。",
+            "每个评分项都有 0 分、低分、中分、高分、满分中文解释。",
+            "统一复核阈值为 70 分，低于 70 分进入复核；不按 source 分层。",
+            "消费总流出金额包含生活消费、投资入金、基金申购、黄金申购、投资买入和金融费用。",
+            "生活消费金额排除投资入金、基金申购、投资买入、内部转账和信用卡还款。",
+            "大额消费阈值为 CNY ≥ 2000 或 AUD 原币 ≥ 500。",
+            "夜间消费窗口为 22:00-06:00，电子产品冲动独立规则并入夜间/大额逻辑。",
+            "投资市值公式为持仓数量 × 最新价格 × 汇率，主显示 CNY 且可追溯汇率。",
+            "成本、已实现、未实现、总收益公式解释费用、税费和汇率影响。",
+            "投资行为公式覆盖交易频率、换手率、持仓周期、追涨、杀跌、现金拖累和集中度。",
+            "现金流窗口支持 7/21/30/60/90/180/360 天。",
+            "储备金安全线支持用户自定义最低储备金和固定支出 × 月数。",
+            "投资入金挤压模型能说明投资入金是否挤压生活现金。",
+        ),
+        "stop_conditions": (
+            "权重与用户要求不一致。",
+            "只有公式没有中文评分标准。",
+            "出现按 source 分层的复核阈值。",
+            "消费总流出公式漏掉投资相关流出。",
+            "生活消费口径被投资入金或基金申购污染。",
+            "大额或夜间阈值与参数文件不一致。",
+            "仍存在独立电子产品冲动阈值。",
+            "投资市值无法追溯汇率。",
+            "收益公式忽略费用、税费或汇率。",
+            "投资行为只显示收益，不显示行为。",
+            "现金流窗口仍只有 30/90/180。",
+            "储备金不可解释。",
+            "投资入金只进投资、不影响现金流分析。",
+            "Stage 8 Runtime Diff 不在本轮实现。",
+        ),
+        "validation_commands": (
+            "PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests/test_v022_stage7_formula_scoring.py -q",
+            "PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests/test_v022_stage0_database_governance.py PFI/tests/test_pfi_parameters_consistency.py PFI/tests/test_v022_fx_effective_date.py PFI/tests/test_v022_stage3_source_account_profiles.py PFI/tests/test_v022_interconnection_no_double_count.py PFI/tests/test_v022_consumption_investment_outflow.py PFI/tests/test_v022_stage5_ledger_taxonomy.py PFI/tests/test_v022_stage6_tags_views.py PFI/tests/test_v022_stage7_formula_scoring.py -q",
+            "PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest PFI/tests -q",
+            "node --check PFI/web/app/shell.js",
+            "python3 scripts/validate_project_governance.py --project PFI",
+            "git diff --check -- PFI",
+        ),
+        "cross_review": {
+            "Agent 3": "参数、公式、阈值审查：检查权重、阈值、中文解释和参数一致性。",
+            "Agent 1": "消费、投资、现金流口径复核：检查投资流出、生活消费和现金流挤压不冲突。",
+            "Agent 4": "标签衔接复核：检查大额、夜间、订阅、追涨、杀跌等公式输出可被标签体系消费。",
+        },
+        "non_goals": (
+            "Stage 8 Runtime Diff 不在本轮实现。",
+            "Stage 9 参数中心和 HTML 关系图不在本轮实现。",
+            "Stage 10 建议评分生命周期不在本轮实现。",
+            "不修改 v0.2.1 HTML Web Shell UIUX 基线。",
+            "不新增真实交易、自动投资、支付或券商提交。",
         ),
     }

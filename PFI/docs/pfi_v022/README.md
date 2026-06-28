@@ -94,7 +94,20 @@
 - 标签组合可筛选账本，标签报告可聚合记录数与 CNY 金额。
 - 新增 `PFI/web/pfi_v022_tag_views.html`，作为 Stage 6 本地 HTML 自定义视图验收页。
 - 新增 `PFI/tests/test_v022_stage6_tags_views.py`，验证 Stage 6 acceptance criteria 和 stop condition。
-- 本轮不实现 Stage 7 现金流窗口和评分公式，不做 Stage 8 Runtime Diff，不改 v0.2.1 主 Web Shell UIUX 基线。
+- 本轮已完成；Stage 7 在后续单独 gate 中实现模型公式、阈值与评分标准。
+
+## Stage 7 范围
+
+本轮完成模型公式、阈值与评分标准：
+
+- 新增 `PFI/src/pfi_v02/stage_v022_formula_scoring.py`，建立置信度、消费、投资、现金流公式和阈值计算。
+- 新增 `PFI/tests/test_v022_stage7_formula_scoring.py`，用真实样本计算校验 Stage 7，不只检查字符串 marker。
+- 新增 `PFI/docs/pfi_v022/STAGE7_FORMULA_SCORING.md`，作为中文验收报告。
+- `PFI/config/pfi_parameters.yaml` 升级为 `PFIParametersV022Stage7`，保留 Stage 1-6 历史 task ids 并新增 `stage7_task_ids`。
+- 置信度 100 分权重锁定为字段完整度 30、金额方向 10、规则命中 20、商户/对手方 15、关联匹配 15、历史一致性 10。
+- 复核阈值统一为 `70`；不得按 source 名称分层。
+- 消费总流出、生活消费、大额消费、夜间消费、订阅识别、投资市值、收益、行为评分、现金流窗口、储备金安全线和投资挤压生活现金模型均有参数与中文解释。
+- 本轮不实现 Stage 8 Runtime Diff、Stage 9 参数中心、Stage 10 建议生命周期，不改 v0.2.1 主 Web Shell UIUX 基线。
 
 ## 文件
 
@@ -108,5 +121,6 @@
 | `STAGE4_INTERCONNECTION.md` | Stage 4 Economic Event、Interconnection Matrix、no-double-count 和双消费口径验收报告。 |
 | `STAGE5_LEDGER_TAXONOMY.md` | Stage 5 统一账本事件、消费双口径和消费分类 taxonomy 验收报告。 |
 | `STAGE6_TAGS_CUSTOM_VIEWS.md` | Stage 6 标签系统、标签持久化、标签规则、历史和自定义视图验收报告。 |
+| `STAGE7_FORMULA_SCORING.md` | Stage 7 模型公式、阈值与评分标准验收报告。 |
 | `SOURCE_TASK_PACK_MANIFEST.md` | Downloads 来源文件、SHA-256 和使用边界。 |
 | `ROADMAP_LOCK.md` | v0.2.2 Stage / Phase / Task / Acceptance / Stop / Validation 锁定摘要。 |
