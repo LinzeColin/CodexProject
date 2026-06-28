@@ -7,12 +7,21 @@ machine_summary:
 
 - model_count: 117
 - formula_count: 119
-- parameter_count: 1050
+- parameter_count: 1053
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
 ## Governance Notes
 
+- `S2PLT02-DELIVERY-EVIDENCE-LEDGER` adds `PARAM-ADP-1051`
+  through `PARAM-ADP-1053` under `MOD-ADP-104` / `FORM-ADP-106`, and
+  updates `PARAM-ADP-892` with `duplicate_emails_found`. It records a
+  delivery manifest ledger over committed real SMTP evidence while keeping
+  the current state partial: one natural day, four M1-M4 emails, duplicate
+  counts zero, and no S2PLT02 acceptance. It does not enable SMTP, install a
+  scheduler, upload Release assets, execute production restore, mutate queues,
+  change public schema/DB, change sources/ranking/CURRENT/V7, close inherited
+  P0/P1, enable DAILY_OPERATION, or claim integrated production acceptance.
 - `S2PMT07-FINAL-BUNDLE-ARTIFACT-VALIDATION` updates `PARAM-ADP-966` and adds `PARAM-ADP-1049` / `PARAM-ADP-1050` under `MOD-ADP-100` / `FORM-ADP-102`. It requires future final bundle readiness to pass a directory-level artifact validation: `FINAL_ACCEPTANCE_BUNDLE/` must exist, all required final bundle and handoff items must be present, every sub-artifact validator must pass, missing-item blockers must match the required item list, no-production flags must remain false, and the state hash must bind the full payload. Current status remains blocked because the real directory and artifacts are missing; no final bundle, P0/P1 closure, S2PLT04 completion, production action, CURRENT/V7 change, or integrated production acceptance is claimed.
 - `S2PMT07-MAINLINE-ATTESTATION` adds `PARAM-ADP-1047` and
   `PARAM-ADP-1048` under `MOD-ADP-100` / `FORM-ADP-102`. It binds a prior

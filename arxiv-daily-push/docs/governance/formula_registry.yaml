@@ -6297,7 +6297,7 @@ formulas:
     assumption_ids:
       - "ASM-ADP-035"
     status: "active"
-    expression: "S2PLT02 two-day live-run readiness remains blocked unless S2PLT01 is accepted; two consecutive real natural days are proven; eight real M1-M4 emails are sent without duplicates; the M4 watermark is correct; real scheduler and real SMTP proof are present; inherited V7.1 P0 and P1 findings are zero; and every S2PLT02 production, scheduler, SMTP, Release, restore, queue, schema, DB, source-adapter, ranking, CURRENT, V7.1, and V7.2 side-effect flag is false."
+    expression: "S2PLT02 two-day live-run readiness remains blocked unless S2PLT01 is accepted; the delivery evidence ledger proves two consecutive real natural days; eight real M1-M4 emails are sent without duplicates; the M4 watermark is correct; real scheduler and real SMTP proof are present; inherited V7.1 P0 and P1 findings are zero; and every S2PLT02 production, scheduler, SMTP, Release, restore, queue, schema, DB, source-adapter, ranking, CURRENT, V7.1, and V7.2 side-effect flag is false."
     variables:
       -
         name: "dependency_state"
@@ -6310,12 +6310,17 @@ formulas:
         unit: "two-day live mail evidence"
         input_domain: "real natural days, real M1-M4 emails, duplicate count, M4 watermark, scheduler proof, and SMTP proof"
       -
+        name: "delivery_evidence_ledger"
+        data_type: "object"
+        unit: "committed real delivery manifest ledger"
+        input_domain: "service dates, products, delivery refs, duplicate counts, and forbidden acceptance flags"
+      -
         name: "audit_blocker_state"
         data_type: "object"
         unit: "inherited V7.1 P0/P1 blocker counts"
         input_domain: "open P0 and P1 findings"
     constraints: "S2PLT02 precheck must not accept S2PLT02, start real two-day operation, claim INTEGRATED_PRODUCTION_ACCEPTED or DAILY_OPERATION, send SMTP, enable scheduler, upload Release, execute production restore, mutate production queues, change public schema or DB, change source adapters or ranking, change CURRENT, change V7.1 baseline, or edit V7.2 contract files."
-    missing_policy: "Missing S2PLT01 acceptance, missing two real natural days, fewer than eight real emails, missing duplicate proof, missing M4 watermark proof, missing real scheduler proof, missing real SMTP proof, nonzero inherited P0/P1, or any forbidden side-effect flag blocks S2PLT02."
+    missing_policy: "Missing S2PLT01 acceptance, missing delivery ledger proof for two real natural days, fewer than eight real emails, duplicate service-date/product evidence, missing M4 watermark proof, missing real scheduler proof, missing real SMTP proof, nonzero inherited P0/P1, or any forbidden side-effect flag blocks S2PLT02."
     output_range: "S2PLT02 live 2-day readiness precheck report with pass or blocked status, dependency state, live evidence state, audit blocker state, blocking reasons, deterministic report_hash, production_acceptance_claimed false, inherited_p0_p1_closed false, and all forbidden flags false."
     code_refs:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py"
@@ -6324,6 +6329,8 @@ formulas:
     evidence_refs:
       - "governance/run_manifests/ADP-S2PLT02-LIVE-2D-PRECHECK-20260626.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_LIVE_2D_PRECHECK.md"
+      - "governance/run_manifests/ADP-S2PLT02-DELIVERY-EVIDENCE-LEDGER-20260628.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_DELIVERY_EVIDENCE_LEDGER.md"
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_LIVE_2D_PRECHECK_MODEL_ID"
@@ -6337,14 +6344,19 @@ formulas:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_REQUIRED_EVIDENCE"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_FORBIDDEN_FLAGS"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_BLOCKING_REASONS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_DELIVERY_EVIDENCE_LEDGER_MODEL_ID"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_DELIVERY_EVIDENCE_LEDGER_SCOPE"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_DELIVERY_EVIDENCE_LEDGER_FORBIDDEN_SOURCE_FLAGS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_s2plt02_delivery_evidence_ledger_state"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::validate_s2plt02_delivery_evidence_ledger_state"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_s2plt02_dependency_state"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_s2plt02_live_evidence_state"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_s2plt02_live_2d_precheck_report"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::validate_s2plt02_live_2d_precheck_report"
-    implementation_fingerprint: "sha256:e5366499d0842e8b4d26fc30e5c2814e4c4f462222641b7ea6b174a2534603f0"
-    evidence_hash: "sha256:e5366499d0842e8b4d26fc30e5c2814e4c4f462222641b7ea6b174a2534603f0"
+    implementation_fingerprint: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+    evidence_hash: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
     last_verified_commit: "PRECOMMIT"
-    verified_at: "2026-06-26T19:00:00+10:00"
+    verified_at: "2026-06-28T12:47:11+10:00"
 
   -
     formula_id: "FORM-ADP-118"

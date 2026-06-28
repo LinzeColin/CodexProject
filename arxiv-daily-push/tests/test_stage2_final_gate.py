@@ -109,6 +109,7 @@ from arxiv_daily_push.stage2_final_gate import (
     build_s2plt04_completion_report_validation_state,
     build_p0_p1_technical_closure_candidate_state,
     build_s2plt02_dependency_state,
+    build_s2plt02_delivery_evidence_ledger_state,
     build_s2plt02_live_2d_precheck_report,
     build_s2plt02_live_evidence_state,
     build_s2plt02_partial_real_delivery_state,
@@ -126,6 +127,7 @@ from arxiv_daily_push.stage2_final_gate import (
     build_s2pmt07_precheck_report,
     build_test_gate_state,
     validate_s2plt02_live_2d_precheck_report,
+    validate_s2plt02_delivery_evidence_ledger_state,
     validate_s2plt03_local_resilience_drill_bundle,
     validate_s2plt03_resilience_precheck_report,
     validate_s2plt04_integration_candidate_report,
@@ -177,6 +179,54 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(state["s2plt02_accepted"])
         self.assertFalse(state["production_acceptance_claimed"])
 
+    def test_s2plt02_delivery_evidence_ledger_tracks_current_real_manifest_without_acceptance(self) -> None:
+        ledger = build_s2plt02_delivery_evidence_ledger_state()
+
+        self.assertEqual(ledger["status"], "partial")
+        self.assertEqual(ledger["scope"], "delivery_manifest_ledger_no_s2plt02_acceptance")
+        self.assertEqual(ledger["required_natural_days"], S2PLT02_REQUIRED_NATURAL_DAYS)
+        self.assertEqual(ledger["observed_natural_days"], 1)
+        self.assertEqual(ledger["required_email_count"], S2PLT02_REQUIRED_EMAIL_COUNT)
+        self.assertEqual(ledger["observed_email_count"], 4)
+        self.assertEqual(ledger["service_dates"], ["2026-06-28"])
+        self.assertEqual(ledger["products_by_service_date"]["2026-06-28"], list(S2PLT02_REQUIRED_MAIL_PRODUCTS))
+        self.assertEqual(ledger["duplicate_email_count"], 0)
+        self.assertEqual(ledger["duplicate_service_date_count"], 0)
+        self.assertTrue(ledger["real_smtp_evidence_present"])
+        self.assertFalse(ledger["two_day_delivery_evidence_present"])
+        self.assertFalse(ledger["s2plt02_accepted"])
+        self.assertEqual(validate_s2plt02_delivery_evidence_ledger_state(ledger), [])
+
+    def test_s2plt02_delivery_evidence_ledger_rejects_duplicate_service_date_product(self) -> None:
+        base_manifest = build_s2plt02_delivery_evidence_ledger_state()["source_manifests"][0]
+        duplicate = dict(base_manifest)
+        duplicate["manifest_ref"] = "governance/run_manifests/DUPLICATE-LOCAL-DAILY-M1-M4-20260628.json"
+
+        ledger = build_s2plt02_delivery_evidence_ledger_state(delivery_manifests=[base_manifest, duplicate])
+
+        self.assertEqual(ledger["observed_natural_days"], 1)
+        self.assertEqual(ledger["duplicate_service_date_count"], 1)
+        self.assertEqual(ledger["duplicate_email_count"], 4)
+        self.assertFalse(ledger["two_day_delivery_evidence_present"])
+        self.assertIn("duplicate service date manifest: 2026-06-28", ledger["validation_errors"])
+        self.assertIn("duplicate email evidence for 2026-06-28/M1", validate_s2plt02_delivery_evidence_ledger_state(ledger))
+
+    def test_s2plt02_delivery_evidence_ledger_rejects_missing_product_and_acceptance_flags(self) -> None:
+        base_manifest = build_s2plt02_delivery_evidence_ledger_state()["source_manifests"][0]
+        broken = json.loads(json.dumps(base_manifest))
+        broken["manifest_ref"] = "governance/run_manifests/BROKEN-LOCAL-DAILY-M1-M4-20260628.json"
+        broken["integrated_production_accepted"] = True
+        broken["mail_delivery_summary"]["sent_mail_products"] = ["M1", "M2", "M3"]
+        broken["mail_delivery_summary"]["sent_mail_count"] = 3
+        broken["mail_delivery_summary"]["delivery_ref_by_product"].pop("M4")
+
+        ledger = build_s2plt02_delivery_evidence_ledger_state(delivery_manifests=[broken])
+
+        errors = validate_s2plt02_delivery_evidence_ledger_state(ledger)
+        self.assertIn("manifest governance/run_manifests/BROKEN-LOCAL-DAILY-M1-M4-20260628.json sent products must be M1-M4", errors)
+        self.assertIn("manifest governance/run_manifests/BROKEN-LOCAL-DAILY-M1-M4-20260628.json integrated_production_accepted must be false", errors)
+        self.assertFalse(ledger["two_day_delivery_evidence_present"])
+
     def test_s2plt02_live_evidence_state_records_partial_real_run_without_acceptance(self) -> None:
         state = build_s2plt02_live_evidence_state()
 
@@ -196,6 +246,8 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertTrue(state["available_evidence"]["REAL_SMTP_PROVEN"])
         self.assertFalse(state["m4_watermark_correct"])
         self.assertEqual(state["partial_real_delivery_evidence"]["status"], "partial")
+        self.assertEqual(state["delivery_evidence_ledger"]["status"], "partial")
+        self.assertFalse(state["delivery_evidence_ledger"]["two_day_delivery_evidence_present"])
 
     def test_s2plt02_live_2d_precheck_fails_closed_without_production_side_effects(self) -> None:
         report = build_s2plt02_live_2d_precheck_report(generated_at="2026-06-26T19:00:00+10:00")

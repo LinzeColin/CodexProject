@@ -1,0 +1,126 @@
+{
+  "base_commit": "2005a7241a0e45dc53d7a49a91075199d47eb90a",
+  "current_pointer_changed": false,
+  "daily_operation_enabled": false,
+  "db_migration_executed": false,
+  "delivery_ref_by_service_date": {
+    "2026-06-28": {
+      "M1": "smtp://message/smtp-delivery:87f268d29a31288d",
+      "M2": "smtp://message/smtp-delivery:c72ffcd03a277e1d",
+      "M3": "smtp://message/smtp-delivery:590b7230463ff9f7",
+      "M4": "smtp://message/smtp-delivery:7f815186af789297"
+    }
+  },
+  "duplicate_email_count": 0,
+  "duplicate_service_date_count": 0,
+  "event_id": "EVENT-20260628-ADP-S2PLT02-DELIVERY-EVIDENCE-LEDGER",
+  "evidence_refs": [
+    "governance/run_manifests/ADP-LOCAL-DAILY-M1-M4-RESEND-EXECUTION-20260628.json",
+    "governance/run_manifests/ADP-S2PLT02-PARTIAL-REAL-DELIVERY-EVIDENCE-20260628.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_DELIVERY_EVIDENCE_LEDGER.md",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py",
+    "arxiv-daily-push/tests/test_stage2_final_gate.py"
+  ],
+  "fact_level": "EXTRACTED",
+  "files_changed": [
+    "arxiv-daily-push/docs/governance/MODEL_SPEC.md"
+  ],
+  "final_acceptance_bundle_present": false,
+  "generated_at": "2026-06-28T12:47:11+10:00",
+  "inherited_v7_1_open_p0_findings": 8,
+  "inherited_v7_1_open_p1_findings": 37,
+  "integrated_production_accepted": false,
+  "iteration_id": "ITER-20260628-ADP-S2PLT02-DELIVERY-EVIDENCE-LEDGER",
+  "ledger_hash": "555c0f122e65823a6311e1c4cc32f4b51253758d98f12db671453bd25378c70e",
+  "ledger_model_id": "adp-s2plt02-delivery-evidence-ledger-v1",
+  "ledger_scope": "delivery_manifest_ledger_no_s2plt02_acceptance",
+  "ledger_status": "partial",
+  "next_task": "CONTINUE_S2PLT02_ONLY_AFTER_SECOND_REAL_DAY_EIGHT_EMAILS_SCHEDULER_M4_WATERMARK_AND_FINAL_GATES",
+  "non_blocking_validation_notes": [
+    "Full semantic extractor was stopped after more than 60 seconds with exit 130; changed-only semantic/governance validation passed and this full semantic run is not claimed as passed."
+  ],
+  "observed_email_count": 4,
+  "observed_natural_days": 1,
+  "p0_closure_claimed": false,
+  "p0_zero_proven": false,
+  "p1_closure_claimed": false,
+  "p1_zero_proven": false,
+  "phase": "S2PL",
+  "production_acceptance_claimed": false,
+  "production_queue_mutated": false,
+  "production_restore_enabled": false,
+  "production_restore_executed": false,
+  "products_by_service_date": {
+    "2026-06-28": [
+      "M1",
+      "M2",
+      "M3",
+      "M4"
+    ]
+  },
+  "project_id": "arxiv-daily-push",
+  "public_schema_changed": false,
+  "ranking_algorithm_changed": false,
+  "real_smtp_send_enabled_by_this_task": false,
+  "real_smtp_sent_by_this_task": false,
+  "release_packaging_enabled": false,
+  "release_uploaded": false,
+  "required_email_count": 8,
+  "required_natural_days": 2,
+  "result": "blocked_delivery_ledger_partial_no_s2plt02_acceptance",
+  "s2plt02_accepted": false,
+  "s2plt04_completed": false,
+  "scheduler_enabled": false,
+  "scheduler_install_enabled": false,
+  "schema_version": 1,
+  "service_dates": [
+    "2026-06-28"
+  ],
+  "source_adapter_changed": false,
+  "source_manifest_count": 1,
+  "source_manifest_refs": [
+    "governance/run_manifests/ADP-LOCAL-DAILY-M1-M4-RESEND-EXECUTION-20260628.json"
+  ],
+  "source_real_smtp_evidence_present": true,
+  "stage2_integrated_production_accepted": false,
+  "status": "blocked",
+  "task_id": "S2PLT02-DELIVERY-EVIDENCE-LEDGER",
+  "task_ids": [
+    "S2PLT02-DELIVERY-EVIDENCE-LEDGER",
+    "S2PLT02",
+    "ACC-S2PLT02-2D"
+  ],
+  "test_results": [
+    "TDD red failed because delivery evidence ledger API was missing",
+    "focused stage2 final-gate tests: 62 OK",
+    "targeted final-gate/user-center/governance-current tests: 80 OK",
+    "full ADP unittest: 651 OK",
+    "project governance: errors 0 warnings 0",
+    "changed-only lean governance semantic/sync: errors 0 warnings 0",
+    "governance sync: errors 0 warnings 0",
+    "V7.2 validator: PASS",
+    "lean check-render: drift_count 0 reference_issue_count 0",
+    "user-center timestamp check: 18 timestamps validated",
+    "CSV/JSON/JSONL/YAML parse: OK",
+    "git diff --check: OK",
+    "full semantic extractor: interrupted after more than 60 seconds, not claimed as passed"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_ledger_red PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_ledger_target1 PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_ledger_target3 PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_user_center_candidate_pool.py arxiv-daily-push/tests/test_governance_current_state.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_ledger_full_final PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest discover -s arxiv-daily-push/tests -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_ledger_project2 PYTHONPATH=scripts:arxiv-daily-push/src python3 -B scripts/validate_project_governance.py --project arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_ledger_changed2 PYTHONPATH=scripts:arxiv-daily-push/src python3 -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_ledger_sync2 PYTHONPATH=scripts:arxiv-daily-push/src python3 -B scripts/validate_governance_sync.py",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_ledger_v72_final PYTHONPATH=arxiv-daily-push/src python3 -B arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_ledger_render_final PYTHONPATH=scripts:arxiv-daily-push/src python3 -B scripts/lean_governance.py check-render --project arxiv-daily-push",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_ledger_ts_final PYTHONPATH=arxiv-daily-push/src python3 -B arxiv-daily-push/scripts/update_user_center_timestamps.py --check",
+    "git diff --check",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_ledger_semantic_final PYTHONPATH=scripts:arxiv-daily-push/src python3 -B scripts/validate_semantic_extractors.py arxiv-daily-push # interrupted after >60s, exit 130"
+  ],
+  "two_day_delivery_evidence_present": false,
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false,
+  "validation_errors": []
+}

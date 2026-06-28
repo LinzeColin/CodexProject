@@ -3957,3 +3957,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PLT02-DELIVERY-EVIDENCE-LEDGER"
+    phase: "S2PL"
+    objective: "Add a committed delivery-manifest ledger for S2PLT02 two-day/eight-email evidence while keeping S2PLT02 blocked."
+    scope: "S2PLT02 delivery evidence ledger helper, focused duplicate/missing-product/forbidden-flag regression tests, phase record, run manifest, traceability row, event records, semantic registry updates, current status views, user-center traceability page, and three base files."
+    non_scope: "No new SMTP send, no scheduler install or enablement, no Release upload, no public schema or DB migration, no source/ranking change, no CURRENT/V7 contract change, no P0/P1 closure, no S2PLT02 acceptance, no S2PLT04 completion, no DAILY_OPERATION, and no integrated production acceptance."
+    status: "blocked"
+    dependencies: ["S2PLT02-PARTIAL-REAL-DELIVERY-EVIDENCE", "LOCAL-DAILY-M1-M4-RESEND-EXECUTION", "S2PMT07"]
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_DELIVERY_EVIDENCE_LEDGER.md", "governance/run_manifests/ADP-S2PLT02-DELIVERY-EVIDENCE-LEDGER-20260628.json", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
+    acceptance_ids: ["ACC-S2PLT02-2D"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_ledger_red PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_ledger_target1 PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_ledger_target3 PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_user_center_candidate_pool.py arxiv-daily-push/tests/test_governance_current_state.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_ledger_full_final PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest discover -s arxiv-daily-push/tests -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_ledger_project2 PYTHONPATH=scripts:arxiv-daily-push/src python3 -B scripts/validate_project_governance.py --project arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_ledger_changed2 PYTHONPATH=scripts:arxiv-daily-push/src python3 -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_ledger_v72_final PYTHONPATH=arxiv-daily-push/src python3 -B arxiv-daily-push/docs/pursuing_goal/v7_2/tools/validate_v7_2_contract.py --root arxiv-daily-push/docs/pursuing_goal/v7_2"]
+    test_results: ["TDD red failed because delivery evidence ledger API was missing", "focused stage2 final-gate tests: 62 OK", "targeted final-gate/user-center/governance-current tests: 80 OK", "full ADP unittest: 651 OK", "project governance: errors 0 warnings 0", "changed-only lean governance semantic/sync: errors 0 warnings 0", "V7.2 validator: PASS", "full semantic extractor interrupted after more than 60 seconds and is not claimed as passed"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PLT02-DELIVERY-EVIDENCE-LEDGER-20260628.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_DELIVERY_EVIDENCE_LEDGER.md", "governance/run_manifests/ADP-LOCAL-DAILY-M1-M4-RESEND-EXECUTION-20260628.json"]
+    result: "S2PLT02 delivery evidence ledger records one observed real natural day and four M1-M4 emails with duplicate counts zero while remaining blocked on second day, eight emails, scheduler proof, M4 watermark proof, S2PLT01, P0/P1, S2PLT04, and S2PMT07."
+    risk: "Delivery ledger evidence can be misread as S2PLT02 completion; all acceptance and production flags remain false."
+    rollback: "Revert S2PLT02 delivery ledger helpers/tests and governance records; no runtime production state was changed by this task."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

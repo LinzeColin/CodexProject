@@ -242,16 +242,16 @@ parameter_profile_versions:
   adp-s2pmt04-install-lifecycle-b001: "adp-s2pmt04-install-lifecycle-b001-v1"
   adp-s2pmt04-install-lifecycle-b001-parameters: "adp-s2pmt04-install-lifecycle-b001-parameters-v1"
 data_snapshot_version: "fixture_arxiv_atom_to_daily_dry_run_v1"
-current_iteration: "ITER-20260628-ADP-S2PLT02-PARTIAL-REAL-DELIVERY-EVIDENCE"
+current_iteration: "ITER-20260628-ADP-S2PLT02-DELIVERY-EVIDENCE-LEDGER"
 current_phase: "S2PL"
-current_gate: "S2PLT02_PARTIAL_REAL_DELIVERY_EVIDENCE_BLOCKED_NO_ACCEPTANCE"
+current_gate: "S2PLT02_DELIVERY_EVIDENCE_LEDGER_BLOCKED_NO_ACCEPTANCE"
 current_v6_task_id: "NOT_APPLICABLE"
 current_v7_contract_version: "ADP-PRODUCT-CONTRACT-V7.2"
 current_v7_roadmap_version: "ADP-ROADMAP-V7.2"
 current_v7_task_id: "S2PMT07"
 current_v7_shadow_source_task_id: "NONE_WHILE_S2PMT07_BLOCKED"
 current_v7_final_task_id: "S2PMT07"
-current_v7_legacy_alias: "S2PLT02-PARTIAL-REAL-DELIVERY-EVIDENCE records that the S2PLT02 live two-day precheck now consumes the 2026-06-28 M1-M4 resend as one real natural day and four observed emails. S2PLT02 remains blocked because S2PLT01 is not accepted, two consecutive real days, eight emails, scheduler proof, M4 watermark proof, inherited P0/P1 zero proof, S2PLT04, final bundle, S2PMT07 independent review, Release, scheduler, production restore, CURRENT/V7 change, DAILY_OPERATION, and integrated production acceptance are not claimed"
+current_v7_legacy_alias: "S2PLT02-DELIVERY-EVIDENCE-LEDGER records a manifest ledger over the 2026-06-28 M1-M4 resend as one real natural day and four observed emails with duplicate count zero. S2PLT02 remains blocked because S2PLT01 is not accepted, two consecutive real days, eight emails, scheduler proof, M4 watermark proof, inherited P0/P1 zero proof, S2PLT04, final bundle, S2PMT07 independent review, Release, scheduler, production restore, CURRENT/V7 change, DAILY_OPERATION, and integrated production acceptance are not claimed"
 s2plt02_partial_real_delivery_iteration: "ITER-20260628-ADP-S2PLT02-PARTIAL-REAL-DELIVERY-EVIDENCE"
 s2plt02_partial_real_delivery_gate: "S2PLT02_PARTIAL_REAL_DELIVERY_EVIDENCE_BLOCKED_NO_ACCEPTANCE"
 s2plt02_observed_natural_days: 1
@@ -261,6 +261,12 @@ s2plt02_required_email_count: 8
 s2plt02_real_smtp_evidence_present: true
 s2plt02_scheduler_evidence_present: false
 s2plt02_accepted: false
+s2plt02_delivery_evidence_ledger_iteration: "ITER-20260628-ADP-S2PLT02-DELIVERY-EVIDENCE-LEDGER"
+s2plt02_delivery_evidence_ledger_gate: "S2PLT02_DELIVERY_EVIDENCE_LEDGER_BLOCKED_NO_ACCEPTANCE"
+s2plt02_delivery_evidence_ledger_status: "partial"
+s2plt02_delivery_evidence_ledger_duplicate_email_count: 0
+s2plt02_delivery_evidence_ledger_duplicate_service_date_count: 0
+s2plt02_delivery_evidence_ledger_hash: "555c0f122e65823a6311e1c4cc32f4b51253758d98f12db671453bd25378c70e"
 local_daily_m1_m4_send_orchestration_iteration: "ITER-20260628-ADP-LOCAL-DAILY-M1-M4-SEND-ORCHESTRATION"
 local_daily_m1_m4_send_orchestration_gate: "LOCAL_DAILY_M1_M4_SEND_ORCHESTRATION_READY_NO_PRODUCTION_ACCEPTANCE"
 local_daily_m1_m4_real_m2_m4_delivery_claimed: true

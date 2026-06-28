@@ -10,11 +10,28 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.1
 - Current phase: S2PL
-- Current gate: S2PLT02_PARTIAL_REAL_DELIVERY_EVIDENCE_BLOCKED_NO_ACCEPTANCE
-- Confirmed iteration count: 196
+- Current gate: S2PLT02_DELIVERY_EVIDENCE_LEDGER_BLOCKED_NO_ACCEPTANCE
+- Confirmed iteration count: 197
 - Reconstructed event count: 0
-- Current task: `S2PLT02-PARTIAL-REAL-DELIVERY-EVIDENCE` records that S2PLT02 now consumes the 2026-06-28 M1-M4 resend as one real natural day and four observed emails. S2PLT02, S2PLT04, S2PMT07, inherited P0/P1 zero proof, final bundle, scheduler, Release, DAILY_OPERATION, and integrated production acceptance remain blocked/false.
+- Current task: `S2PLT02-DELIVERY-EVIDENCE-LEDGER` records that S2PLT02 now has a delivery evidence ledger over committed real SMTP manifests. Current ledger status is partial at one real natural day and four observed M1-M4 emails, with duplicate count zero; S2PLT02, S2PLT04, S2PMT07, inherited P0/P1 zero proof, final bundle, scheduler, Release, DAILY_OPERATION, and integrated production acceptance remain blocked/false.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. Local daily M1-M4 orchestration is now recorded as readiness evidence, but V7.2 contract baseline migration blockers are zero while real restore, real SMTP production, scheduler installation, final acceptance bundle creation, directory-level final bundle artifact validation pass, P0/P1 closure, S2PLT04 completion, and final integrated production acceptance remain forbidden until V7.2 production stop gates, required P0/P1 remediation, and `S2PMT07` independent review pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
+
+### `ITER-20260628-ADP-S2PLT02-DELIVERY-EVIDENCE-LEDGER`
+
+- Timestamp: `2026-06-28T12:43:50+10:00`
+- Fact level: EXTRACTED from the S2PLT02 delivery evidence ledger builder, focused regression tests, phase record, run manifest, traceability row, and owner-readable governance records.
+- Base commit: `2005a7241a0e45dc53d7a49a91075199d47eb90a`
+- Product version: `0.23.1`
+- Status: blocked delivery evidence ledger recorded; S2PLT02 is not accepted.
+- Task IDs: `S2PLT02-DELIVERY-EVIDENCE-LEDGER`; parent `S2PLT02`; acceptance `ACC-S2PLT02-2D`.
+- Goal: Make future S2PLT02 two-day evidence accumulation consume committed delivery manifests with duplicate and forbidden-flag checks, rather than relying on a one-off partial constant.
+- Files changed: S2PLT02 final-gate helper and tests, phase record, run manifest, traceability row, delivery/event records, current status views, semantic registries, user-center traceability page, and three base notes.
+- Decisions: `delivery_evidence_ledger` records service dates `2026-06-28`, observed natural days `1 / 2`, observed emails `4 / 8`, duplicate email count `0`, duplicate service date count `0`, source real SMTP evidence present, and `s2plt02_accepted=false`.
+- Validation so far: focused final-gate tests 62 OK. Final governance and full target validation are recorded in the task closeout, not pre-claimed here.
+- Boundaries: No new SMTP send, scheduler, Release, production restore, public schema, DB, production queue, source adapter, ranking, CURRENT/V7 contract, V7.1 baseline, P0/P1 closure, S2PLT02 acceptance, S2PLT04 completion, DAILY_OPERATION, or integrated production acceptance changed.
+- Risks: This ledger can be misread as S2PLT02 completion. It is deliberately blocked ledger evidence only; a second real day, eight total emails, real scheduler proof, M4 watermark proof, S2PLT01 acceptance, inherited P0/P1 zero proof, S2PLT04 completion, and S2PMT07 remain required.
+- Evidence: `governance/run_manifests/ADP-S2PLT02-DELIVERY-EVIDENCE-LEDGER-20260628.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_DELIVERY_EVIDENCE_LEDGER.md`; `governance/run_manifests/ADP-LOCAL-DAILY-M1-M4-RESEND-EXECUTION-20260628.json`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.
+- Next step: Continue S2PLT02 only with a second real natural day, eight total M1-M4 emails, real scheduler proof, M4 watermark proof, S2PLT01 acceptance, inherited P0/P1 zero proof, S2PLT04 completion, and S2PMT07 final gates; do not claim acceptance from this ledger.
 
 ### `ITER-20260628-ADP-S2PLT02-PARTIAL-REAL-DELIVERY-EVIDENCE`
 
