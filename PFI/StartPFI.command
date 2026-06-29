@@ -24,8 +24,9 @@ open_existing_service() {
         cwd_path="$(process_cwd "$pid")"
         if [[ "$command" == *"src/pfi_os/app/streamlit_app.py"* && ( "$command" == *"$PROJECT_DIR"* || "$cwd_path" == "$PROJECT_DIR" ) ]]; then
           EXISTING_URL="http://localhost:$EXISTING_PORT"
+          OPEN_URL="$EXISTING_URL/?pfi_app_version=0.2.1.1&pfi_build=20260629"
           echo "PFI 当前项目服务已在运行：$EXISTING_URL。复用现有服务。"
-          open "$EXISTING_URL" >/dev/null 2>&1
+          open "$OPEN_URL" >/dev/null 2>&1
           return 0
         fi
       done
@@ -130,6 +131,7 @@ while lsof -iTCP:"$HEARTBEAT_PORT" -sTCP:LISTEN >/dev/null 2>&1; do
 done
 
 URL="http://localhost:$PORT"
+OPEN_URL="$URL/?pfi_app_version=0.2.1.1&pfi_build=20260629"
 HEARTBEAT_TIMEOUT="${PFI_HEARTBEAT_TIMEOUT:-120}"
 export PFI_HEARTBEAT_URL="http://127.0.0.1:$HEARTBEAT_PORT/heartbeat"
 echo "正在启动 PFI：$URL"
@@ -172,8 +174,8 @@ if [ "$READY" != "1" ]; then
   exit 1
 fi
 
-echo "PFI 已就绪，正在打开：$URL"
-open "$URL" >/dev/null 2>&1
+echo "PFI 已就绪，正在打开：$OPEN_URL"
+open "$OPEN_URL" >/dev/null 2>&1
 
 wait "$STREAMLIT_PID" >/dev/null 2>&1 || true
 kill "$MONITOR_PID" >/dev/null 2>&1 || true
