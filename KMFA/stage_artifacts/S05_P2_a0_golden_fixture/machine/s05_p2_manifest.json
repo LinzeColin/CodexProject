@@ -11,12 +11,15 @@
     "KMFA/metadata/baseline/a0_golden_fixture_manifest.json",
     "KMFA/metadata/baseline/a0_golden_fixture_candidates.jsonl",
     "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/s05_p2_completion_record.md",
+    "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/private_backfill_record.md",
+    "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/private_backfill_manifest.json",
     "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/test_results.md"
   ],
   "field_count_per_candidate": 5,
   "fixture_candidate_count": 45,
-  "private_value_pending_count": 45,
-  "private_value_pending_reason": "private_sales_performance_zip_or_authorized_field_extract_not_found_on_this_machine",
+  "private_value_hash_recorded_count": 40,
+  "private_value_pending_count": 5,
+  "private_value_pending_reason": "excel_candidate_private_field_mapping_pending_after_pdf_hash_only_backfill",
   "project_id": "KMFA",
   "public_repo_raw_files_committed": false,
   "q4_human_confirmed": false,
@@ -24,13 +27,17 @@
   "raw_business_values_committed": false,
   "record_type": "stage_phase_manifest",
   "schema_version": "kmfa.stage_phase_manifest.v1",
-  "source_anchor_pending_count": 45,
+  "private_backfill_scope": "8_pdf_candidates_hash_recorded_1_excel_candidate_pending",
+  "source_anchor_pending_count": 5,
+  "source_anchor_recorded_count": 40,
   "stage_id": "S05",
   "phase_id": "S5PB",
-  "status": "public_safe_field_fixture_candidates_completed_with_private_values_pending",
+  "status": "partial_hash_only_private_backfill_excel_pending",
   "test_commands": [
     "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest KMFA.tests.test_a0_golden_fixture -q",
+    "PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/a0_golden_fixture.py --private-fields-csv <private-path> --generated-at 2026-06-30T02:30:00+10:00 --check-only",
+    "PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/a0_golden_fixture.py --private-fields-csv <private-path> --generated-at 2026-06-30T02:30:00+10:00",
     "PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_a0_golden_fixture.py"
   ],
-  "updated_at": "2026-06-30T01:00:00+10:00"
+  "updated_at": "2026-06-30T02:30:00+10:00"
 }
