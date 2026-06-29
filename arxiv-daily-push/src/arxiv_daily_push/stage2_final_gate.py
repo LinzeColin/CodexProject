@@ -597,6 +597,9 @@ S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_BLOCKING_REASONS = (
 S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_DEFAULT_ACTION = (
     "produce_artifact_then_revalidate_without_production_side_effects"
 )
+S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_WAIT_DEPENDENCIES_ACTION = (
+    "wait_for_declared_dependencies_before_artifact"
+)
 S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT04_UPSTREAM_ACTION = (
     "resolve_upstream_s2plt02_s2plt03_terminal_evidence_before_artifact"
 )
@@ -614,6 +617,30 @@ S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_UPSTREAM_UNBLOCK_ORDER = (
     "S2PLT03_TERMINAL_RESILIENCE_PROOF",
     "S2PLT04_COMPLETION_REPORT",
 )
+S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_STEP_DEPENDENCIES = {
+    "INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION": (),
+    "P0_P1_ZERO_PROOF_ARTIFACT": (),
+    "S2PLT04_COMPLETION_REPORT": (),
+    "FINAL_COMMAND_EXECUTION": ("S2PLT04_COMPLETION_REPORT",),
+    "NO_PRODUCTION_SIDE_EFFECT_ATTESTATION": (),
+    "NEXT_AGENT_HANDOFF": ("S2PLT04_COMPLETION_REPORT", "FINAL_COMMAND_EXECUTION"),
+    "INDEPENDENT_REVIEW_SIGNOFF": (
+        "P0_P1_ZERO_PROOF_ARTIFACT",
+        "S2PLT04_COMPLETION_REPORT",
+        "FINAL_COMMAND_EXECUTION",
+        "NO_PRODUCTION_SIDE_EFFECT_ATTESTATION",
+        "NEXT_AGENT_HANDOFF",
+    ),
+    "FINAL_ACCEPTANCE_BUNDLE_MANIFEST": (
+        "INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION",
+        "P0_P1_ZERO_PROOF_ARTIFACT",
+        "S2PLT04_COMPLETION_REPORT",
+        "INDEPENDENT_REVIEW_SIGNOFF",
+        "FINAL_COMMAND_EXECUTION",
+        "NO_PRODUCTION_SIDE_EFFECT_ATTESTATION",
+        "NEXT_AGENT_HANDOFF",
+    ),
+}
 S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_FORBIDDEN_FLAGS = (
     "production_acceptance_claimed",
     "integrated_production_accepted",
@@ -6332,10 +6359,22 @@ def build_final_bundle_prerequisite_plan_state(
             (validation[key] for key in artifact_keys if isinstance(validation.get(key), str)),
             "UNKNOWN_ARTIFACT_REF",
         )
+        depends_on_steps = list(S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_STEP_DEPENDENCIES[step_id])
+        blocked_by_steps = [
+            dependency for dependency in depends_on_steps
+            if validation_states[dependency].get("status") != "pass"
+        ]
         upstream_blocked = step_id == "S2PLT04_COMPLETION_REPORT" and validation.get("status") != "pass"
+        actionable_now = (
+            validation.get("status") != "pass"
+            and not blocked_by_steps
+            and not upstream_blocked
+        )
         default_action = (
             S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT04_UPSTREAM_ACTION
             if upstream_blocked
+            else S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_WAIT_DEPENDENCIES_ACTION
+            if blocked_by_steps
             else S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_DEFAULT_ACTION
         )
         ordered_steps.append(
@@ -6344,6 +6383,9 @@ def build_final_bundle_prerequisite_plan_state(
                 "status": validation.get("status"),
                 "artifact_ref": artifact_ref,
                 "validation_errors": list(validation.get("validation_errors", [])),
+                "depends_on_steps": depends_on_steps,
+                "blocked_by_steps": blocked_by_steps,
+                "actionable_now": actionable_now,
                 "upstream_blocked": upstream_blocked,
                 "default_action": default_action,
             }
@@ -6440,20 +6482,42 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
     ordered_steps = _list_of_mappings(state.get("ordered_steps"))
     if tuple(step.get("step_id") for step in ordered_steps) != S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_REQUIRED_STEPS:
         errors.append("final bundle prerequisite plan ordered_steps are invalid")
+    step_status_by_id = {step.get("step_id"): step.get("status") for step in ordered_steps}
     for step in ordered_steps:
         if not isinstance(step.get("artifact_ref"), str) or not step.get("artifact_ref"):
             errors.append(f"{step.get('step_id', 'UNKNOWN')}.artifact_ref must be a non-empty string")
         expected_status = "pass" if not step.get("validation_errors", []) else "blocked"
         if step.get("status") != expected_status:
             errors.append("final bundle prerequisite plan step statuses must match validation errors")
+        step_id = step.get("step_id")
+        expected_depends_on_steps = list(
+            S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_STEP_DEPENDENCIES.get(str(step_id), ())
+        )
+        if step.get("depends_on_steps") != expected_depends_on_steps:
+            errors.append("final bundle prerequisite plan depends_on_steps are invalid")
+        expected_blocked_by_steps = [
+            dependency for dependency in expected_depends_on_steps
+            if step_status_by_id.get(dependency) != "pass"
+        ]
+        if step.get("blocked_by_steps") != expected_blocked_by_steps:
+            errors.append("final bundle prerequisite plan blocked_by_steps are invalid")
         expected_upstream_blocked = (
             step.get("step_id") == "S2PLT04_COMPLETION_REPORT" and step.get("status") != "pass"
         )
         if step.get("upstream_blocked") is not expected_upstream_blocked:
             errors.append("final bundle prerequisite plan upstream_blocked flags are invalid")
+        expected_actionable_now = (
+            step.get("status") != "pass"
+            and not expected_blocked_by_steps
+            and not expected_upstream_blocked
+        )
+        if step.get("actionable_now") is not expected_actionable_now:
+            errors.append("final bundle prerequisite plan actionable_now flags are invalid")
         expected_default_action = (
             S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT04_UPSTREAM_ACTION
             if expected_upstream_blocked
+            else S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_WAIT_DEPENDENCIES_ACTION
+            if expected_blocked_by_steps
             else S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_DEFAULT_ACTION
         )
         if step.get("default_action") != expected_default_action:

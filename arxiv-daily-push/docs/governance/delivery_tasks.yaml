@@ -4942,3 +4942,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+  - task_id: "S2PMT07-FINAL-BUNDLE-STEP-ACTIONABILITY-SYNC"
+    title: "S2PMT07 final bundle step actionability sync"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-29T20:35:10+10:00"
+    summary: "Expose per-step depends_on_steps, blocked_by_steps, actionable_now, and dependency-wait default actions in the S2PMT07 final-bundle prerequisite plan."
+    owner: "engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_STEP_ACTIONABILITY_SYNC.md", "governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-STEP-ACTIONABILITY-SYNC-20260629.json"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_action_red PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_final_bundle_prerequisite_plan_consumes_committed_no_production_artifact", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_action_red2 PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_final_bundle_prerequisite_plan_consumes_committed_no_production_artifact", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_action_green2 PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_final_bundle_prerequisite_plan_consumes_committed_no_production_artifact arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_final_bundle_prerequisite_plan_consumes_committed_assignment_artifact arxiv-daily-push/tests/test_cli.py::CliTests::test_plan_final_bundle_prerequisites_json_command_blocks_without_artifacts", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_action_plan2 PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli plan-final-bundle-prerequisites --json"]
+    test_results: ["TDD red failed as expected because actionable_now was missing from prerequisite plan steps", "TDD red failed as expected because downstream default_action still allowed direct artifact production", "focused green tests: 3 passed", "plan CLI returned blocked / exit 2 with state_hash=18107f28508e105a0fb0be7a298d67a33f67442160a8502a399fbeb97d704e8f and plan_validation_errors=[]"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-STEP-ACTIONABILITY-SYNC-20260629.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_STEP_ACTIONABILITY_SYNC.md", "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py"]
+    result: "blocked_final_bundle_prerequisite_step_actionability_synced_no_production"
+    risk: "Agents can still confuse missing downstream artifacts with actionable work; keep default_action=wait_for_declared_dependencies_before_artifact until upstream validations pass."
+    rollback: "Revert step-actionability fields, tests, phase record, manifest, traceability row, delivery/event records, user-center traceability, and three base records; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

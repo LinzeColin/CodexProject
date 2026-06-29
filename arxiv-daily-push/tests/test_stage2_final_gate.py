@@ -4587,9 +4587,60 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(step_status["NO_PRODUCTION_SIDE_EFFECT_ATTESTATION"], "pass")
         step_by_id = {step["step_id"]: step for step in plan["ordered_steps"]}
         self.assertTrue(step_by_id["S2PLT04_COMPLETION_REPORT"]["upstream_blocked"])
+        self.assertFalse(step_by_id["S2PLT04_COMPLETION_REPORT"]["actionable_now"])
         self.assertEqual(
             step_by_id["S2PLT04_COMPLETION_REPORT"]["default_action"],
             "resolve_upstream_s2plt02_s2plt03_terminal_evidence_before_artifact",
+        )
+        self.assertEqual(
+            step_by_id["FINAL_COMMAND_EXECUTION"]["depends_on_steps"],
+            ["S2PLT04_COMPLETION_REPORT"],
+        )
+        self.assertFalse(step_by_id["FINAL_COMMAND_EXECUTION"]["actionable_now"])
+        self.assertEqual(
+            step_by_id["FINAL_COMMAND_EXECUTION"]["default_action"],
+            "wait_for_declared_dependencies_before_artifact",
+        )
+        self.assertEqual(
+            step_by_id["NEXT_AGENT_HANDOFF"]["depends_on_steps"],
+            ["S2PLT04_COMPLETION_REPORT", "FINAL_COMMAND_EXECUTION"],
+        )
+        self.assertFalse(step_by_id["NEXT_AGENT_HANDOFF"]["actionable_now"])
+        self.assertEqual(
+            step_by_id["NEXT_AGENT_HANDOFF"]["default_action"],
+            "wait_for_declared_dependencies_before_artifact",
+        )
+        self.assertEqual(
+            step_by_id["INDEPENDENT_REVIEW_SIGNOFF"]["depends_on_steps"],
+            [
+                "P0_P1_ZERO_PROOF_ARTIFACT",
+                "S2PLT04_COMPLETION_REPORT",
+                "FINAL_COMMAND_EXECUTION",
+                "NO_PRODUCTION_SIDE_EFFECT_ATTESTATION",
+                "NEXT_AGENT_HANDOFF",
+            ],
+        )
+        self.assertFalse(step_by_id["INDEPENDENT_REVIEW_SIGNOFF"]["actionable_now"])
+        self.assertEqual(
+            step_by_id["INDEPENDENT_REVIEW_SIGNOFF"]["default_action"],
+            "wait_for_declared_dependencies_before_artifact",
+        )
+        self.assertEqual(
+            step_by_id["FINAL_ACCEPTANCE_BUNDLE_MANIFEST"]["depends_on_steps"],
+            [
+                "INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION",
+                "P0_P1_ZERO_PROOF_ARTIFACT",
+                "S2PLT04_COMPLETION_REPORT",
+                "INDEPENDENT_REVIEW_SIGNOFF",
+                "FINAL_COMMAND_EXECUTION",
+                "NO_PRODUCTION_SIDE_EFFECT_ATTESTATION",
+                "NEXT_AGENT_HANDOFF",
+            ],
+        )
+        self.assertFalse(step_by_id["FINAL_ACCEPTANCE_BUNDLE_MANIFEST"]["actionable_now"])
+        self.assertEqual(
+            step_by_id["FINAL_ACCEPTANCE_BUNDLE_MANIFEST"]["default_action"],
+            "wait_for_declared_dependencies_before_artifact",
         )
         self.assertNotIn("independent_final_reviewer_assignment_missing", plan["blocking_reasons"])
         self.assertNotIn("p0_p1_zero_proof_artifact_missing", plan["blocking_reasons"])
