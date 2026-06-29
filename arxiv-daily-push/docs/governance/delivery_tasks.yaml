@@ -5108,3 +5108,26 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-RUNTIME-PHASE-RECORD-SYNC"
+    title: "S2PLT02 authorization draft runtime phase record sync"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-29T23:41:32+10:00"
+    objective: "Add the missing human-readable phase record for the S2PLT02 stdout-only authorization draft runtime hash sync and correct the traceability row to the runtime-sync evidence."
+    scope: "Runtime-sync phase record, traceability matrix correction, user-center traceability link, focused regression test, run manifest, delivery/event records, and three base notes."
+    non_scope: "No live authorization artifact, no SMTP send, no scheduler enable/install, no Release, no restore, no CURRENT/V7 change, no S2PLT02/S2PLT04/S2PMT07 acceptance, and no integrated production acceptance."
+    owner: "engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_DRAFT_CLI_RUNTIME_SYNC.md", "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv", "arxiv-daily-push/用户中心/功能任务测试证据追踪链.md", "arxiv-daily-push/tests/test_user_center_candidate_pool.py", "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-RUNTIME-PHASE-RECORD-SYNC-20260629.json"]
+    acceptance_ids: ["ACC-S2PLT02-2D", "ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_red PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_user_center_candidate_pool.py::UserCenterCandidatePoolTests::test_traceability_chain_page_exposes_all_matrix_rows_as_clickable_links", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_green2 PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_user_center_candidate_pool.py::UserCenterCandidatePoolTests::test_traceability_chain_page_exposes_all_matrix_rows_as_clickable_links", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_target PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_user_center_candidate_pool.py arxiv-daily-push/tests/test_governance_current_state.py arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_final_bundle_templates_exist_but_do_not_satisfy_readiness"]
+    test_results: ["TDD red failed because the user-center traceability page lacked the runtime-sync phase record", "focused traceability regression passed", "target test group passed: 24 passed, 32 subtests passed", "plan-final-bundle-prerequisites still returns blocked with live_authorization_artifact_status=missing"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-RUNTIME-PHASE-RECORD-SYNC-20260629.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_DRAFT_CLI_RUNTIME_SYNC.md", "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-CLI-RUNTIME-SYNC-20260629.json", "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv", "arxiv-daily-push/tests/test_user_center_candidate_pool.py"]
+    result: "s2plt02_authorization_draft_runtime_phase_record_synced_live_authorization_missing_no_production"
+    risk: "The runtime-sync draft can be misread as live owner authorization; proof capture remains blocked until a live authorization artifact is written and validated."
+    rollback: "Revert the phase record, traceability row correction, user-center link, focused assertion, run manifest, delivery/event records, and three base notes; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

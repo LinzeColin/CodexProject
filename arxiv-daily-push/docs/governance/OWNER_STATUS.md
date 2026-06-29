@@ -8,6 +8,8 @@ arxiv-daily-push 当前治理结论：实现一致性为 `VERIFIED`，方法/实
 
 Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。
 
+最新补丁只补齐 `S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-RUNTIME-PHASE-RECORD-SYNC` 的可点击 phase record，并把 traceability matrix 指向当前 runtime-sync manifest；这不是 owner 授权，`FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json` 仍缺失。
+
 ## 3. 为什么重要
 
 在保持 arXiv 稳定运行的前提下，统一 V7.1 有效要求与 V1.1 新要求，并让 Stage2 agents 在 V7.2 下聚焦 S2PMT07 独立终审、P0/P1 零证明、S2PLT04 完成和最终验收包证据。
@@ -35,6 +37,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - responsible_role: `content_owner + engineering_owner + independent_final_reviewer`
 - acceptance_ids: `ACC-S2PMT07-FINAL-REVIEW`
 - unblock_condition: First obtain explicit owner authorization for real SMTP/scheduler proof capture; then capture a second consecutive real M1-M4 SMTP service day, real launchd scheduler proof, and validate FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json before any S2PLT04 or final bundle closure claim.
+- latest_traceability_sync: `PHASE_S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_DRAFT_CLI_RUNTIME_SYNC.md` is now linked from the user center and traceability matrix; it remains stdout-draft evidence only.
 
 ## 8. 九层 Assurance 状态
 
