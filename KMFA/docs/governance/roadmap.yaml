@@ -2,11 +2,11 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KMFA"
 total_estimated_hours: 54
-completed_estimated_hours: 12
+completed_estimated_hours: 15
 current_stage_id: "S2"
-current_phase_id: "S2PA"
-current_task_id: "S2PAT03"
-next_gate_id: "KMFA-S02-P2-GATE"
+current_phase_id: "S2PB"
+current_task_id: "S2PBT03"
+next_gate_id: "KMFA-S02-P3-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -279,7 +279,7 @@ stages:
     person_goal: "建立不可污染、可追溯、可重跑、可审计的数据治理内核。"
     status: "in_progress"
     estimated_hours: 9
-    estimated_pct: 33.33
+    estimated_pct: 66.67
     stop_conditions:
       - "原始数据被污染"
       - "金额精度使用 float"
@@ -295,7 +295,9 @@ stages:
         - "Stage 2 复审问题已修复"
       evidence:
         - "KMFA/stage_artifacts/S02_P1_metadata_protocol/human/s02_p1_completion_record.md"
+        - "KMFA/stage_artifacts/S02_P2_immutability_policy/human/s02_p2_completion_record.md"
         - "KMFA/docs/governance/METADATA_PROTOCOL.md"
+        - "KMFA/docs/governance/IMMUTABILITY_POLICY.md"
       failure_action: "blocked"
     phases:
       - phase_id: "S2PA"
@@ -388,9 +390,93 @@ stages:
       - phase_id: "S2PB"
         name: "不可污染原则"
         objective: "实现 raw manifest 登记规范、派生数据版本化和前端写入边界。"
-        status: "planned"
+        status: "completed_validated"
         estimated_hours: 3
-        estimated_pct: 0
+        estimated_pct: 100
+        stop_conditions:
+          - "需要导入原始文件时停止"
+          - "需要保存原始抽取值时停止"
+          - "需要实现 S02-P3 质量等级时停止"
+          - "需要上传 GitHub 时停止"
+        stop_gate:
+          gate_id: "KMFA-S02-P2-GATE"
+          pass_criteria:
+            - "raw manifest 登记规范存在且 append-only"
+            - "原始文件和原始抽取值不可修改"
+            - "派生数据以版本号保存，可失效、可重跑、可对比"
+            - "前端只能写控制事件、映射规则、处理意见，不直接写 raw 层"
+            - "immutability_policy_check 通过"
+          evidence:
+            - "KMFA/stage_artifacts/S02_P2_immutability_policy/human/s02_p2_completion_record.md"
+            - "KMFA/docs/governance/IMMUTABILITY_POLICY.md"
+          failure_action: "fix_and_rerun"
+        tasks:
+          - task_id: "S2PBT01"
+            name: "实现 raw manifest 登记规范，不修改原始文件和原始抽取值"
+            objective: "定义 raw manifest schema 和 append-only 不可变字段。"
+            status: "completed_validated"
+            estimated_hours: 1
+            estimated_pct: 100
+            dependencies:
+              - "S2PAT03"
+            acceptance_ids:
+              - "ACC-KMFA-S02-P2"
+            test_commands:
+              - "python3 KMFA/tools/immutability_policy_check.py"
+            test_results:
+              - "PASS: raw manifest append-only and immutable fields validated"
+            evidence_refs:
+              - "KMFA/metadata/imports/raw_manifest_schema.json"
+              - "KMFA/metadata/imports/raw_manifest_policy.yaml"
+            risks:
+              - "不能登记原始文件 bytes 或原始抽取值。"
+            rollback: "删除 S02-P2 raw manifest policy 文件并恢复状态。"
+            current_result: "完成。"
+            completed_version: "0.1.0-s02p2"
+          - task_id: "S2PBT02"
+            name: "派生数据以版本号保存，可失效、可重跑、可对比"
+            objective: "定义派生数据版本、失效、重跑和对比协议。"
+            status: "completed_validated"
+            estimated_hours: 1
+            estimated_pct: 100
+            dependencies:
+              - "S2PBT01"
+            acceptance_ids:
+              - "ACC-KMFA-S02-P2"
+            test_commands:
+              - "python3 KMFA/tools/immutability_policy_check.py"
+            test_results:
+              - "PASS: derived data version policy is append-only and no overwrite"
+            evidence_refs:
+              - "KMFA/metadata/lineage/derived_data_policy.yaml"
+              - "KMFA/metadata/lineage/derived_data_versions.jsonl"
+            risks:
+              - "重跑不得覆盖旧版本或丢失 lineage。"
+            rollback: "删除 derived data policy 文件并恢复状态。"
+            current_result: "完成。"
+            completed_version: "0.1.0-s02p2"
+          - task_id: "S2PBT03"
+            name: "禁止前端直接写 raw 层；只能写控制事件、映射规则、处理意见"
+            objective: "定义前端/人工操作的 append-only control event 边界。"
+            status: "completed_validated"
+            estimated_hours: 1
+            estimated_pct: 100
+            dependencies:
+              - "S2PBT02"
+            acceptance_ids:
+              - "ACC-KMFA-S02-P2"
+            test_commands:
+              - "python3 KMFA/tools/immutability_policy_check.py"
+            test_results:
+              - "PASS: control events forbid raw layer writes"
+            evidence_refs:
+              - "KMFA/metadata/approvals/control_event_policy.yaml"
+              - "KMFA/metadata/approvals/control_events.jsonl"
+            risks:
+              - "前端不能静默改写原始事实或不可变 manifest 字段。"
+            rollback: "删除 control event policy 文件并恢复状态。"
+            current_result: "完成。"
+            completed_version: "0.1.0-s02p2"
       - phase_id: "S2PC"
         name: "数据质量等级"
         objective: "定义 Q0-Q5 数据质量等级、A/B/C/D 报告可信等级和发布门禁。"

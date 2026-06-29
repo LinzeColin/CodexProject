@@ -1,0 +1,1 @@
+{"record_type":"protocol_header","schema_version":"kmfa.control_events.v1","stage_phase":"S02-P2","status":"protocol_defined_no_control_events_committed","append_only":true,"raw_layer_write_allowed":false,"allowed_event_types":["mapping_rule","resolution_event","approval_event","comment","rerun_request","invalidation_request"],"forbidden_plaintext":true}

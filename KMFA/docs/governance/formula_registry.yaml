@@ -105,3 +105,33 @@ formulas:
     evidence_refs:
       - "KMFA/metadata/protocol/metadata_protocol.yaml"
       - "KMFA/stage_artifacts/S02_P1_metadata_protocol/human/s02_p1_completion_record.md"
+  - formula_id: "FORM-KMFA-IMMUTABILITY-001"
+    model_id: "MOD-KMFA-IMMUTABILITY-001"
+    assumption_ids:
+      - "ASM-KMFA-005"
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "immutability_valid = raw_manifest_append_only AND raw_manifest_immutable_fields_present AND derived_versions_append_only AND overwrite_old_version_allowed == false AND control_events_raw_layer_write_allowed == false"
+    variables:
+      - name: "raw_manifest_immutable_fields"
+        data_type: "string_list"
+        unit: "field"
+        input_domain: "import_run_id;source_id;file_hash;storage_ref;original_filename_hash"
+      - name: "frontend_allowed_write_event_types"
+        data_type: "string_list"
+        unit: "event_type"
+        input_domain: "mapping_rule;resolution_event;approval_event;comment;rerun_request;invalidation_request"
+    constraints:
+      - "raw manifest immutable fields cannot be changed in place."
+      - "Derived versions cannot overwrite old versions."
+      - "Frontend/control events cannot write raw layer or original extracted values."
+      - "Corrections must be append-only events."
+    missing_policy: "Missing policy, missing immutable fields, or raw-layer write allowance blocks S02-P2."
+    output_range: "valid or blocked"
+    code_refs:
+      - "KMFA/tools/immutability_policy_check.py"
+    test_refs:
+      - "python3 KMFA/tools/immutability_policy_check.py"
+    evidence_refs:
+      - "KMFA/docs/governance/IMMUTABILITY_POLICY.md"
+      - "KMFA/stage_artifacts/S02_P2_immutability_policy/human/s02_p2_completion_record.md"

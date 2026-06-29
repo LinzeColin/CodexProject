@@ -1,0 +1,40 @@
+{
+  "schema_version": "kmfa.control_event_policy.v1",
+  "stage_phase": "S02-P2",
+  "status": "active",
+  "event_file": "KMFA/metadata/approvals/control_events.jsonl",
+  "append_only": true,
+  "raw_layer_write_allowed": false,
+  "allowed_event_types": [
+    "mapping_rule",
+    "resolution_event",
+    "approval_event",
+    "comment",
+    "rerun_request",
+    "invalidation_request"
+  ],
+  "allowed_target_layers": [
+    "schema_maps",
+    "approvals",
+    "lineage",
+    "quality",
+    "reports"
+  ],
+  "forbidden_target_layers": [
+    "raw",
+    "raw_file_manifest_immutable_fields",
+    "original_extracted_values"
+  ],
+  "forbidden_fields": [
+    "raw_value",
+    "original_value",
+    "raw_file_bytes",
+    "plaintext_content",
+    "bank_account_number",
+    "identity_document_number",
+    "password",
+    "token",
+    "api_key",
+    "private_key"
+  ]
+}

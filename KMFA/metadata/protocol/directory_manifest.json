@@ -24,7 +24,13 @@
     "metadata/lineage/report_lineage.jsonl",
     "metadata/approvals/resolution_events.jsonl",
     "metadata/approvals/human_signoff_log.jsonl",
+    "metadata/approvals/control_event_policy.yaml",
+    "metadata/approvals/control_events.jsonl",
     "metadata/reports/report_manifest.jsonl",
+    "metadata/imports/raw_manifest_schema.json",
+    "metadata/imports/raw_manifest_policy.yaml",
+    "metadata/lineage/derived_data_policy.yaml",
+    "metadata/lineage/derived_data_versions.jsonl",
     "metadata/protocol/metadata_protocol.yaml",
     "metadata/protocol/directory_manifest.json",
     "metadata/protocol/field_dictionary.csv"

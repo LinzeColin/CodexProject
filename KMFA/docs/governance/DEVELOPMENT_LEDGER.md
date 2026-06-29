@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.0-s02p1
+product_version: 0.1.0-s02p2
 
 ## Current Iteration
 
 - project_id: `KMFA`
 - current_stage: `S02`
-- current_phase: `S02-P1`
-- current_tasks: `S2PAT01`, `S2PAT02`, `S2PAT03`
-- status: `s02_p1_completed_validated`
+- current_phase: `S02-P2`
+- current_tasks: `S2PBT01`, `S2PBT02`, `S2PBT03`
+- status: `s02_p2_completed_validated`
 - risk_tier: `T3`
 
 ## Completed
@@ -26,12 +26,14 @@ product_version: 0.1.0-s02p1
 | `S2PAT01` | metadata 七类目录和目录 manifest 创建 | `KMFA/metadata/protocol/directory_manifest.json` |
 | `S2PAT02` | metadata 核心标识符协议定义 | `KMFA/metadata/protocol/metadata_protocol.yaml` |
 | `S2PAT03` | metadata 公开仓库隐私边界和检查器建立 | `KMFA/docs/governance/METADATA_PROTOCOL.md`, `KMFA/tools/metadata_protocol_check.py` |
+| `S2PBT01` | raw manifest append-only 登记规范建立 | `KMFA/metadata/imports/raw_manifest_schema.json`, `KMFA/metadata/imports/raw_manifest_policy.yaml` |
+| `S2PBT02` | 派生数据版本、失效、重跑、对比协议建立 | `KMFA/metadata/lineage/derived_data_policy.yaml`, `KMFA/metadata/lineage/derived_data_versions.jsonl` |
+| `S2PBT03` | 前端/人工 control event raw 写入边界建立 | `KMFA/metadata/approvals/control_event_policy.yaml`, `KMFA/metadata/approvals/control_events.jsonl` |
 
 ## Not Completed
 
 | Task | Reason | Next |
 |---|---|---|
 | `S04/S06` amount and zero-delta implementation | 后续 Stage | 按 Roadmap 单 Stage/Phase 推进 |
-| `S02-P2` 不可污染原则 | 当前 run work 只允许一个 Phase | 下一轮执行 |
 | `S02-P3` 数据质量等级 | 当前 run work 只允许一个 Phase | S02-P2 完成后执行 |
 | Stage 2 GitHub upload | S02-P2/P3 和 Stage 2 复审未完成 | Stage 2 复审修复后整体上传 |

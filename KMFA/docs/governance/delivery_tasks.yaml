@@ -362,3 +362,87 @@ tasks:
     rollback: "Remove S02-P1 privacy protocol additions and restore previous governance state."
     target_version: "0.1.0-s02p1"
     completed_version: "0.1.0-s02p1"
+  - task_id: "S2PBT01"
+    phase: "S2PB"
+    objective: "实现 raw manifest 登记规范，不修改原始文件和原始抽取值。"
+    scope:
+      - "KMFA/metadata/imports/raw_manifest_schema.json"
+      - "KMFA/metadata/imports/raw_manifest_policy.yaml"
+    non_scope:
+      - "raw business file import"
+      - "raw value extraction"
+      - "GitHub upload"
+    status: "completed"
+    dependencies:
+      - "S2PAT03"
+    required_files:
+      - "KMFA/metadata/imports/raw_manifest_schema.json"
+      - "KMFA/metadata/imports/raw_manifest_policy.yaml"
+    acceptance_ids:
+      - "ACC-KMFA-S02-P2"
+    test_commands:
+      - "python3 KMFA/tools/immutability_policy_check.py"
+    test_results:
+      - "PASS: raw manifest append-only and immutable fields validated"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S02_P2_immutability_policy/human/s02_p2_completion_record.md"
+    risk: "Raw manifest must not store raw file bytes or extracted values."
+    rollback: "Remove raw manifest schema/policy and restore S02-P1 status."
+    target_version: "0.1.0-s02p2"
+    completed_version: "0.1.0-s02p2"
+  - task_id: "S2PBT02"
+    phase: "S2PB"
+    objective: "派生数据以版本号保存，可失效、可重跑、可对比。"
+    scope:
+      - "KMFA/metadata/lineage/derived_data_policy.yaml"
+      - "KMFA/metadata/lineage/derived_data_versions.jsonl"
+    non_scope:
+      - "derived data calculation engine"
+      - "report generation"
+    status: "completed"
+    dependencies:
+      - "S2PBT01"
+    required_files:
+      - "KMFA/metadata/lineage/derived_data_policy.yaml"
+      - "KMFA/metadata/lineage/derived_data_versions.jsonl"
+    acceptance_ids:
+      - "ACC-KMFA-S02-P2"
+    test_commands:
+      - "python3 KMFA/tools/immutability_policy_check.py"
+    test_results:
+      - "PASS: derived data version policy is append-only and no overwrite"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S02_P2_immutability_policy/human/s02_p2_completion_record.md"
+    risk: "Reruns must not overwrite old versions or lose lineage."
+    rollback: "Remove derived data policy files and restore S02-P1 status."
+    target_version: "0.1.0-s02p2"
+    completed_version: "0.1.0-s02p2"
+  - task_id: "S2PBT03"
+    phase: "S2PB"
+    objective: "禁止前端直接写 raw 层；只能写控制事件、映射规则、处理意见。"
+    scope:
+      - "KMFA/metadata/approvals/control_event_policy.yaml"
+      - "KMFA/metadata/approvals/control_events.jsonl"
+      - "KMFA/tools/immutability_policy_check.py"
+    non_scope:
+      - "frontend implementation"
+      - "quality grade gate"
+    status: "completed"
+    dependencies:
+      - "S2PBT02"
+    required_files:
+      - "KMFA/metadata/approvals/control_event_policy.yaml"
+      - "KMFA/metadata/approvals/control_events.jsonl"
+      - "KMFA/tools/immutability_policy_check.py"
+    acceptance_ids:
+      - "ACC-KMFA-S02-P2"
+    test_commands:
+      - "python3 KMFA/tools/immutability_policy_check.py"
+    test_results:
+      - "PASS: control events forbid raw layer writes"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S02_P2_immutability_policy/human/s02_p2_completion_record.md"
+    risk: "Frontend and manual actions must be append-only and must not write raw/original extracted values."
+    rollback: "Remove control event policy/checker and restore S02-P1 status."
+    target_version: "0.1.0-s02p2"
+    completed_version: "0.1.0-s02p2"
