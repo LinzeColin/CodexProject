@@ -4,14 +4,14 @@ project_id: "KMFA"
 total_estimated_hours: 54
 completed_estimated_hours: 27
 current_stage_id: "S3"
-current_phase_id: "S3PC"
-current_task_id: "S3PCT03"
-next_gate_id: "KMFA-S03-GITHUB-UPLOAD-GATE"
+current_phase_id: "S3UPLOAD"
+current_task_id: "KMFA-S03-GITHUB-UPLOAD-20260629"
+next_gate_id: "KMFA-S04-P1-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
     person_goal: "先建立 KMFA 项目骨架、中文入口、治理基线、防遗漏检查，不做业务实现。"
-    status: "review_passed_upload_ready"
+    status: "uploaded_to_github_main"
     estimated_hours: 9
     estimated_pct: 100
     stop_conditions:
@@ -548,7 +548,7 @@ stages:
     status: "review_passed_upload_ready"
     estimated_hours: 3
     estimated_pct: 100
-    current_result: "S03-P1 文件型导入、S03-P2 数据源检查矩阵和 S03-P3 源优先级已完成本地验证；Stage 3 复审已通过，待 GitHub 上传。"
+    current_result: "S03-P1 文件型导入、S03-P2 数据源检查矩阵和 S03-P3 源优先级已完成本地验证；Stage 3 复审已通过并已上传 GitHub main。"
     evidence_refs:
       - "KMFA/stage_artifacts/S03_P1_file_import/human/s03_p1_completion_record.md"
       - "KMFA/stage_artifacts/S03_P1_file_import/human/test_results.md"
@@ -557,6 +557,7 @@ stages:
       - "KMFA/stage_artifacts/S03_P3_source_priority/human/s03_p3_completion_record.md"
       - "KMFA/stage_artifacts/S03_P3_source_priority/human/test_results.md"
       - "KMFA/stage_artifacts/S03_STAGE_REVIEW/human/stage3_review_report.md"
+      - "KMFA/stage_artifacts/S03_STAGE_REVIEW/human/github_upload_record.md"
   - stage_id: "S4"
     name: "金额精度、字段标准化与基础工具"
     status: "planned"

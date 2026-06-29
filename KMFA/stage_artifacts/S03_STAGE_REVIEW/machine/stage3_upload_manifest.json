@@ -1,0 +1,18 @@
+{
+  "schema_version": "kmfa.github_upload_manifest.v1",
+  "project_id": "KMFA",
+  "upload_id": "KMFA-S03-GITHUB-UPLOAD-20260629",
+  "stage": "S03",
+  "target": "LinzeColin/CodexProject main",
+  "status": "uploaded_to_github_main",
+  "upload_time": "2026-06-29T20:35:00+10:00",
+  "reviewed_content_commit": "39b0eef52424a12b6c0c8ad368bd878b46300be4",
+  "review_refs": [
+    "KMFA/stage_artifacts/S03_STAGE_REVIEW/human/stage3_review_report.md",
+    "KMFA/stage_artifacts/S03_STAGE_REVIEW/human/test_results.md"
+  ],
+  "privacy_boundary": {
+    "raw_sensitive_data_uploaded": false,
+    "business_records_committed": false
+  }
+}

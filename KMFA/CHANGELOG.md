@@ -6,7 +6,7 @@
 - 新增 `KMFA/tools/source_priority.py`，支持源类别优先级排序、同源不一致失效重跑事件和跨源差异队列 metadata。
 - 新增 `KMFA/tests/test_source_priority.py`，覆盖原始上传/授权导出优先于处理后数据、同源失效重跑、跨源冲突不自动选边和 direct CLI。
 - 新增 `KMFA/metadata/sources/source_priority_policy.yaml`、`source_priority_events.jsonl` 和 `KMFA/metadata/quality/source_difference_queue.jsonl`。
-- Stage 3 三个 Phase 已本地完成；Stage 3 复审已通过，GitHub 上传尚未执行。
+- Stage 3 三个 Phase 已本地完成；Stage 3 复审已通过，并已整体上传 GitHub main。
 - 保持业务字段解析、金额、事实层、报告和外部接口为未完成；中间 Phase 不上传 GitHub。
 
 ## 0.1.0-s03p2 - 2026-06-29

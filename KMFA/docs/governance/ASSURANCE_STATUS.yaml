@@ -70,7 +70,6 @@ dimensions:
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "STAGE3_REVIEW_PASSED_UPLOAD_READY"
-  release_gate: "KMFA-S03-GITHUB-UPLOAD-GATE"
-  blocker_ids:
-    - "S03-GITHUB-UPLOAD"
+  status: "STAGE3_UPLOADED_TO_GITHUB_MAIN"
+  release_gate: "KMFA-S04-P1-GATE"
+  blocker_ids: []
