@@ -6,7 +6,7 @@ arxiv-daily-push 当前治理结论：实现一致性为 `VERIFIED`，方法/实
 
 ## 2. 本次运行改变了什么
 
-Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。本轮还修正 S2PLT04 completion evidence audit 的 S2PLT02 证据引用：移除不存在的旧 `ADP-S2PLT02-TERMINAL-READINESS-ZERO-PROOF-SYNC-20260629.json`，只列真实存在的非终态证据，并显式显示 S2PLT02 real-proof capture 授权仍 blocked。
+Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。
 
 ## 3. 为什么重要
 
@@ -33,13 +33,13 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 - next_task_id: `S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION`
 - responsible_role: `content_owner + engineering_owner + independent_final_reviewer`
-- acceptance_ids: `ACC-S2PLT02-2D, ACC-S2PMT07-FINAL-REVIEW`
-- unblock_condition: First obtain explicit owner authorization for real SMTP/scheduler proof capture; then capture a second consecutive real M1-M4 SMTP service day, real launchd scheduler proof, and validate FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json without claiming Stage2 production acceptance.
+- acceptance_ids: `ACC-S2PMT07-FINAL-REVIEW`
+- unblock_condition: First obtain explicit owner authorization for real SMTP/scheduler proof capture; then capture a second consecutive real M1-M4 SMTP service day, real launchd scheduler proof, and validate FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json before any S2PLT04 or final bundle closure claim.
 
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (1084/1084 active parameters, 123/123 active formulas)
+- implementation_congruence: `VERIFIED` (1091/1091 active parameters, 123/123 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `VERIFIED`
 - empirical_validation: `VERIFIED`
@@ -78,16 +78,16 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_TEMPLATE_READY_LIVE_AUTHORIZATION_MISSING_NO_PRODUCTION`
+- release_gate: `S2PMT07_FINAL_BUNDLE_MANIFEST_TEMPLATE_READY_FINAL_BUNDLE_STILL_BLOCKED_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `1`
 - commit_bound_events: `4`
-- legacy_unbound_events: `264`
+- legacy_unbound_events: `274`
 - precommit_pending_events: `40`
-- pending_or_stale_events: `304`
+- pending_or_stale_events: `314`
 
 ## 15. UNKNOWN
 
@@ -97,13 +97,13 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 - source_base_commit: `fd90a208c7b009aa11bc26c4629a7ea92679c5ff`
 - source_tree_hash: `c44d743a2833842b3cc0dd9e098fb70017cdc5a2`
-- source_snapshot_hash: `sha256:226986019bf48e97772205b136bdee71b6ea2164e555d58e7af27a9731754488`
-- snapshot_event_time: `2026-06-29T22:09:03+10:00`
+- source_snapshot_hash: `sha256:5d1e25e69f353a9b13a3f9d463b25d2f9ed93fb69d2ee3f860bedf4ac199fb98`
+- snapshot_event_time: `2026-06-29T23:21:34+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PL / S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_TEMPLATE_READY_LIVE_AUTHORIZATION_MISSING_NO_PRODUCTION`
+- phase/gate: `S2PL / S2PMT07_FINAL_BUNDLE_MANIFEST_TEMPLATE_READY_FINAL_BUNDLE_STILL_BLOCKED_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 
 - task_id: `S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION`
-- reason: S2PLT01 terminal acceptance and P0/P1 zero-proof are validated inputs, but S2PLT02 still lacks explicit owner authorization for real SMTP/scheduler capture, second consecutive real M1-M4 SMTP day, real launchd scheduler proof, and terminal delivery proof artifact.
+- reason: Current S2PMT07 blockers are mapped to required future evidence; independent reviewer assignment remains required before the future closure decision packet can be turned into a real P0/P1 zero-proof closure artifact.

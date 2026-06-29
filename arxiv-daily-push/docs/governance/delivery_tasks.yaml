@@ -5085,3 +5085,26 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PMT07-FINAL-BUNDLE-MANIFEST-TEMPLATE"
+    title: "S2PMT07 final bundle manifest template"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-29T23:21:34+10:00"
+    objective: "Provide a template-only final bundle manifest skeleton without creating the live final acceptance bundle manifest or satisfying final bundle readiness."
+    scope: "Final bundle manifest template, template index, focused final-gate regression test, phase record, run manifest, traceability row, delivery/event records, generated owner views, and three base files."
+    non_scope: "No live final manifest, no S2PLT04 completion report, no independent signoff, no final command execution, no next-agent handoff, no SMTP send, no scheduler enable/install, no Release, no restore, no CURRENT/V7 change, no S2PMT07 acceptance, and no integrated production acceptance."
+    owner: "engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    required_files: ["FINAL_ACCEPTANCE_BUNDLE/templates/manifest.template.json", "FINAL_ACCEPTANCE_BUNDLE/templates/TEMPLATE_INDEX.md", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_MANIFEST_TEMPLATE.md", "governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-MANIFEST-TEMPLATE-20260629.json"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_manifest_template_red PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_final_bundle_templates_exist_but_do_not_satisfy_readiness", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_manifest_template_green1 PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_final_bundle_templates_exist_but_do_not_satisfy_readiness"]
+    test_results: ["TDD red failed because manifest.template.json was missing", "focused final-bundle template guard: 1 passed"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-MANIFEST-TEMPLATE-20260629.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_MANIFEST_TEMPLATE.md", "FINAL_ACCEPTANCE_BUNDLE/templates/manifest.template.json", "FINAL_ACCEPTANCE_BUNDLE/templates/TEMPLATE_INDEX.md", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
+    result: "final_bundle_manifest_template_ready_live_manifest_missing_no_production"
+    risk: "The template can be misread as the live final bundle manifest if copied before all required final bundle items pass validation."
+    rollback: "Remove the manifest template, index entry, focused assertion, phase record, manifest, traceability row, delivery/event records, generated owner views, and three base notes; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
