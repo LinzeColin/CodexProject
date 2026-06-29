@@ -221,7 +221,7 @@ Stage 0 source files:
 Currency and header contract:
 
 - Base currency is `CNY`.
-- v0.2.1 historical header format was `CNY/AUD=4.70（YYYY/MM/DD HH:MM）`.
+- v0.2.1 historical header used the old CNY/AUD badge; current formal UI uses `AUD/CNY=4.69（YYYY/MM/DD HH:MM）`.
 - v0.2.2 Stage 2 current header format is `AUD/CNY=4.69（YYYY/MM/DD HH:MM）`, meaning `1 AUD = 4.69 CNY`.
 - The badge reads the effective local `06:00 Australia/Sydney` exchange snapshot from `data/fx_snapshots/`.
 - Missing exchange data must show `汇率数据待更新`; PFI must not invent a live rate.

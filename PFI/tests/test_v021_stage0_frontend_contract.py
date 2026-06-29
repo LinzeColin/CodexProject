@@ -34,15 +34,15 @@ class V021Stage0FrontendContractTest(unittest.TestCase):
 
         self.assertEqual(BASE_CURRENCY, "CNY")
         self.assertEqual(currency["base_currency"], "CNY")
-        self.assertEqual(currency["quote_pair"], "CNY/AUD")
+        self.assertEqual(currency["quote_pair"], "AUD/CNY")
         self.assertEqual(currency["placement"], "top_right")
         self.assertTrue(currency["visible_on_all_pages"])
         self.assertEqual(currency["snapshot_time_local"], "06:00")
         self.assertEqual(currency["snapshot_timezone"], "Australia/Sydney")
-        self.assertEqual(currency["display_format"], "CNY/AUD=4.70（YYYY/MM/DD HH:MM）")
+        self.assertEqual(currency["display_format"], "AUD/CNY=4.69（YYYY/MM/DD HH:MM）")
         self.assertRegex(
             currency["example_display"],
-            re.compile(r"^CNY/AUD=\d+\.\d{2}（\d{4}/\d{2}/\d{2} \d{2}:\d{2}）$"),
+            re.compile(r"^AUD/CNY=\d+\.\d{2}（\d{4}/\d{2}/\d{2} \d{2}:\d{2}）$"),
         )
         self.assertIn("do not invent rates", currency["refresh_policy"])
 
@@ -120,7 +120,7 @@ class V021Stage0FrontendContractTest(unittest.TestCase):
 
         record_text = record.read_text(encoding="utf-8")
         self.assertIn("v0.2.1 前端优化", record_text)
-        self.assertIn("CNY/AUD=4.70（YYYY/MM/DD HH:MM）", record_text)
+        self.assertIn("AUD/CNY=4.69（YYYY/MM/DD HH:MM）", record_text)
         self.assertIn("当日 06:00", record_text)
         self.assertIn("HTML Web Shell", record_text)
         self.assertIn("V021-P0-S0-T01", record_text)

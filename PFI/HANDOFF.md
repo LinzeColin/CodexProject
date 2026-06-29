@@ -73,7 +73,7 @@ PFI v0.2.2 Stage 1-13 复审并解决：第一阶段每次 run work 只复审解
 - v0.2.1 Stage 6 合同是 `src/pfi_v02/stage_v021_frontend_contract.py::build_v021_stage6_contract()`；SQLite 服务是 `src/pfi_v02/stage_v021_holdings_persistence.py`；测试是 `tests/test_v021_stage6_holdings_persistence.py`。
 - v0.2.1 Stage 7 合同是 `src/pfi_v02/stage_v021_frontend_contract.py::build_v021_stage7_contract()`；Web Shell 点击安全函数是 `buildClickSafeInventory()` / `bindClickSafeFeedback()` / `setActionFeedback()`；测试是 `tests/test_v021_stage7_clicksafe_feedback.py`。
 - v0.2.1 Stage 8 合同是 `src/pfi_v02/stage_v021_frontend_contract.py::build_v021_stage8_contract()`；最终验收审计是 `docs/pfi_v02/STAGE_V021_FINAL_ACCEPTANCE_AUDIT.md`；测试是 `tests/test_v021_stage8_final_acceptance.py`。
-- v0.2.1 UI 货币基准已锁定为 CNY；历史徽标为 `CNY/AUD=4.70（YYYY/MM/DD HH:MM）`。v0.2.2 Stage 2 当前徽标改为 `AUD/CNY=4.69（YYYY/MM/DD HH:MM）`，含义为 `1 AUD = 4.69 CNY`，读取本地 06:00 Australia/Sydney 有效快照。
+- v0.2.1 UI 货币基准已锁定为 CNY；历史旧徽标不再作为当前正式 UI。v0.2.2 Stage 2 当前徽标为 `AUD/CNY=4.69（YYYY/MM/DD HH:MM）`，含义为 `1 AUD = 4.69 CNY`，读取本地 06:00 Australia/Sydney 有效快照。
 - v0.2.1 正式前端目标是 `PFI/web` HTML Web Shell；多模态反馈、触感、声音、视觉、通知和运行反馈控制台后续必须收敛到设置页。
 - Web shell default homepage now restores owner workflow after consuming runtime summaries: 上传支付宝账单、同步全部、处理待复核、查看建议、生成报告、单标的回测、盘感训练。Stage 6 closeout status remains report/evidence content and must not replace homepage core actions.
 - Web shell shows one unified 15-entry navigation list: 首页总览、账户与资产、账本流水、投资管理、消费管理、数据源与上传、建议与复盘、报告与洞察、首页、市场、研究、持仓、策略实验室、数据与系统、设置.

@@ -135,12 +135,12 @@ STAGE_TASKS: tuple[V021StageTask, ...] = (
 def build_v021_fx_badge_contract() -> dict[str, object]:
     return {
         "base_currency": BASE_CURRENCY,
-        "quote_pair": "CNY/AUD",
-        "semantic": "one AUD converted to CNY, shown as CNY per AUD for owner readability",
+        "quote_pair": "AUD/CNY",
+        "semantic": "one AUD converted to CNY, shown as AUD/CNY for owner readability",
         "placement": "top_right",
         "visible_on_all_pages": True,
-        "display_format": "CNY/AUD=4.70（YYYY/MM/DD HH:MM）",
-        "example_display": "CNY/AUD=4.70（2026/06/27 06:00）",
+        "display_format": "AUD/CNY=4.69（YYYY/MM/DD HH:MM）",
+        "example_display": "AUD/CNY=4.69（2026/06/28 06:00）",
         "snapshot_time_local": "06:00",
         "snapshot_timezone": "Australia/Sydney",
         "refresh_policy": "read the current local day's 06:00 exchange snapshot; do not invent rates when unavailable",

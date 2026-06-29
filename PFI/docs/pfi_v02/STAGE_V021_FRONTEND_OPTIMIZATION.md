@@ -33,23 +33,23 @@
 - 不执行实盘下单、支付提交或券商提交。
 - 不在 stage0 提前实现导航、图表、上传、设置页、持仓持久化等后续 stage 功能。
 
-## CNY 基准与 CNY/AUD 汇率契约
+## CNY 基准与 AUD/CNY 汇率契约
 
 PFI v0.2.1 之后整体系统以 CNY 元为基准。所有页面顶部右上角必须常态化展示汇率徽标：
 
 ```text
-CNY/AUD=4.70（YYYY/MM/DD HH:MM）
+AUD/CNY=4.69（YYYY/MM/DD HH:MM）
 ```
 
 合同解释：
 
 - `base_currency = CNY`。
-- `quote_pair = CNY/AUD`。
+- `quote_pair = AUD/CNY`。
 - 展示语义：1 AUD 折算多少 CNY，用于用户读数和跨币种视图统一。
 - 展示位置：所有页面顶部右上角。
 - 数据时间：读取当日 06:00 Australia/Sydney 本地时间的汇率快照。
 - 时间格式：`YYYY/MM/DD HH:MM`。
-- 示例：`CNY/AUD=4.70（2026/06/27 06:00）`。
+- 示例：`AUD/CNY=4.69（2026/06/28 06:00）`。
 - 数据缺失时必须显示中文空状态：`汇率数据待更新`，不得伪造汇率。
 
 Stage 1 之后的实现验收必须检查 HTML 顶栏、路由切换后保留、桌面和手机视口均可见。
