@@ -462,6 +462,45 @@ class CliTests(unittest.TestCase):
         )
         self.assertEqual(payload["owner_packet_validation_errors"], [])
 
+    def test_build_s2plt02_real_proof_capture_authorization_artifact_draft_json_command(self):
+        buffer = io.StringIO()
+        with redirect_stdout(buffer):
+            result = main(
+                [
+                    "build-s2plt02-real-proof-capture-authorization-artifact-draft",
+                    "--owner-id",
+                    "owner",
+                    "--owner-role",
+                    "owner",
+                    "--generated-at",
+                    "2026-06-29T20:57:12+10:00",
+                    "--readiness-state-hash",
+                    "readiness-hash-001",
+                    "--json",
+                ]
+            )
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["status"], "draft")
+        self.assertEqual(
+            payload["scope"],
+            "s2plt02_real_proof_capture_authorization_artifact_draft_only_no_write_no_production",
+        )
+        self.assertEqual(
+            payload["artifact_path"],
+            "FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json",
+        )
+        self.assertFalse(payload["authorization_artifact_written"])
+        self.assertFalse(payload["authorization_artifact_present_in_repo"])
+        self.assertFalse(payload["real_proof_capture_authorized_by_this_command"])
+        self.assertFalse(payload["real_smtp_send_enabled"])
+        self.assertFalse(payload["scheduler_install_enabled"])
+        self.assertFalse(payload["production_acceptance_claimed"])
+        self.assertEqual(payload["validation_errors"], [])
+        self.assertEqual(payload["artifact"]["readiness_state_hash"], "readiness-hash-001")
+        self.assertEqual(payload["artifact"]["authorized_by"]["owner_id"], "owner")
+
     def test_validate_s2plt02_terminal_delivery_proof_json_blocks_missing_artifact(self):
         with tempfile.TemporaryDirectory() as tmp_dir:
             buffer = io.StringIO()

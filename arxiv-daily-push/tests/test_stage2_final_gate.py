@@ -147,6 +147,7 @@ from arxiv_daily_push.stage2_final_gate import (
     build_s2plt02_live_evidence_state,
     build_s2plt02_m4_watermark_proof_state,
     build_s2plt02_real_proof_capture_authorization_hash,
+    build_s2plt02_real_proof_capture_authorization_artifact_draft_state,
     build_s2plt02_real_proof_capture_authorization_owner_packet_state,
     build_s2plt02_real_proof_capture_authorization_validation_state,
     build_s2plt02_real_proof_capture_readiness_state,
@@ -522,6 +523,35 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(state["scheduler_install_enabled"])
         self.assertFalse(state["production_acceptance_claimed"])
         self.assertFalse(state["integrated_production_accepted"])
+
+    def test_s2plt02_real_proof_capture_authorization_artifact_draft_is_not_written_or_enabled(self) -> None:
+        draft = build_s2plt02_real_proof_capture_authorization_artifact_draft_state(
+            owner_id="owner",
+            owner_role="owner",
+            generated_at="2026-06-29T20:57:12+10:00",
+            readiness_state_hash="readiness-hash-001",
+        )
+
+        self.assertEqual(draft["status"], "draft")
+        self.assertEqual(
+            draft["scope"],
+            "s2plt02_real_proof_capture_authorization_artifact_draft_only_no_write_no_production",
+        )
+        self.assertEqual(draft["artifact_path"], S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_ARTIFACT_PATH)
+        self.assertFalse(draft["authorization_artifact_written"])
+        self.assertFalse(draft["authorization_artifact_present_in_repo"])
+        self.assertFalse(draft["real_proof_capture_authorized_by_this_command"])
+        self.assertFalse(draft["real_smtp_send_enabled"])
+        self.assertFalse(draft["scheduler_install_enabled"])
+        self.assertFalse(draft["production_acceptance_claimed"])
+        self.assertEqual(draft["validation_errors"], [])
+        self.assertEqual(
+            validate_s2plt02_real_proof_capture_authorization_artifact(
+                draft["artifact"],
+                expected_readiness_state_hash="readiness-hash-001",
+            ),
+            [],
+        )
 
     def test_s2plt02_terminal_delivery_proof_artifact_validation_blocks_missing_artifact(self) -> None:
         with TemporaryDirectory() as tmp_dir:

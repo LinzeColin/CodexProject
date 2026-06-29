@@ -131,6 +131,7 @@ from .stage2_final_gate import (
     build_no_production_side_effect_attestation_validation_state,
     build_p0_p1_zero_proof_artifact_validation_state,
     build_s2plt02_dry_run_second_day_audit_state,
+    build_s2plt02_real_proof_capture_authorization_artifact_draft_state,
     build_s2plt02_real_proof_capture_authorization_owner_packet_state,
     build_s2plt02_real_proof_capture_authorization_validation_state,
     build_s2plt02_real_proof_capture_readiness_state,
@@ -1291,6 +1292,40 @@ def build_parser() -> argparse.ArgumentParser:
         "--json",
         action="store_true",
         help="Print JSON owner action packet.",
+    )
+
+    s2plt02_real_proof_capture_authorization_draft = subparsers.add_parser(
+        "build-s2plt02-real-proof-capture-authorization-artifact-draft",
+        help=(
+            "Build a stdout-only S2PLT02 real-proof capture authorization artifact draft "
+            "from explicit owner inputs."
+        ),
+    )
+    s2plt02_real_proof_capture_authorization_draft.add_argument(
+        "--owner-id",
+        required=True,
+        help="Owner identity label to embed in the future authorization artifact.",
+    )
+    s2plt02_real_proof_capture_authorization_draft.add_argument(
+        "--owner-role",
+        required=True,
+        choices=("owner", "content_owner + engineering_owner"),
+        help="Owner role to embed in the future authorization artifact.",
+    )
+    s2plt02_real_proof_capture_authorization_draft.add_argument(
+        "--generated-at",
+        required=True,
+        help="Authorization artifact timestamp to embed in the draft.",
+    )
+    s2plt02_real_proof_capture_authorization_draft.add_argument(
+        "--readiness-state-hash",
+        required=True,
+        help="Current S2PLT02 real-proof capture readiness state hash to bind in the draft.",
+    )
+    s2plt02_real_proof_capture_authorization_draft.add_argument(
+        "--json",
+        action="store_true",
+        help="Print JSON draft wrapper. The command never writes the live authorization artifact.",
     )
 
     s2plt02_terminal_delivery_proof = subparsers.add_parser(
@@ -3799,6 +3834,28 @@ def main(argv: list[str] | None = None) -> int:
             for error in errors:
                 print(f"- error: {error}")
         return 0 if not errors else 2
+    if args.command == "build-s2plt02-real-proof-capture-authorization-artifact-draft":
+        report = build_s2plt02_real_proof_capture_authorization_artifact_draft_state(
+            owner_id=args.owner_id,
+            owner_role=args.owner_role,
+            generated_at=args.generated_at,
+            readiness_state_hash=args.readiness_state_hash,
+        )
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2))
+        else:
+            print(report["status"])
+            print(f"- task_id: {report.get('task_id')}")
+            print(f"- artifact_path: {report.get('artifact_path')}")
+            print(f"- authorization_artifact_written: {report.get('authorization_artifact_written')}")
+            print(
+                "- authorization_gate_satisfied_by_this_command: "
+                f"{report.get('authorization_gate_satisfied_by_this_command')}"
+            )
+            print(f"- next_required_action: {report.get('next_required_action')}")
+            for error in report.get("validation_errors", []):
+                print(f"- error: {error}")
+        return 0 if report["status"] == "draft" and not report.get("validation_errors") else 2
     if args.command == "validate-s2plt02-terminal-delivery-proof":
         report = build_s2plt02_terminal_delivery_proof_artifact_validation_state(repo_root=args.repo_root)
         if args.json:

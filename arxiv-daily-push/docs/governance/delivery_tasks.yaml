@@ -4962,3 +4962,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+  - task_id: "S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-CLI"
+    title: "S2PLT02 real-proof capture authorization artifact draft CLI"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-29T20:57:12+10:00"
+    summary: "Add a stdout-only CLI that emits a schema-valid S2PLT02 real-proof capture authorization artifact draft from explicit owner inputs without writing the live authorization artifact or satisfying the authorization gate."
+    owner: "content_owner + engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_DRAFT_CLI.md", "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-CLI-20260629.json"]
+    acceptance_ids: ["ACC-S2PLT02-2D", "ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_auth_draft_green PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_s2plt02_real_proof_capture_authorization_artifact_draft_is_not_written_or_enabled arxiv-daily-push/tests/test_cli.py::CliTests::test_build_s2plt02_real_proof_capture_authorization_artifact_draft_json_command", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_auth_draft_cli_actual PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli build-s2plt02-real-proof-capture-authorization-artifact-draft --owner-id owner_or_coordinator --owner-role owner --generated-at 2026-06-29T20:57:12+10:00 --readiness-state-hash 819b1c3911892ce861fd5ba5bdde0dc381e303076beea684f35eb94c75975463 --json"]
+    test_results: ["TDD red failed because the draft builder API was missing", "TDD red failed because the draft CLI command was not recognized", "focused draft builder and CLI tests: 2 passed", "draft CLI returned exit 0 with state_hash=b464cecac874de888d5ca3e025361ac523a6a89cabe7de560ace5d48e79f2eff and validation_errors=[]"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-CLI-20260629.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_DRAFT_CLI.md", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py"]
+    result: "draft_s2plt02_real_proof_capture_authorization_artifact_cli_ready_no_write_no_production"
+    risk: "The stdout draft can be misread as a real authorization artifact; the live file remains absent and must be written only after explicit owner approval."
+    rollback: "Revert draft builder, CLI parser/dispatcher, focused tests, phase record, manifest, traceability row, delivery/event records, user-center notes, and three base records; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
