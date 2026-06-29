@@ -7,6 +7,7 @@
     <title>PFI</title>
     <link rel="icon" href="data:," />
     <link rel="stylesheet" href="./styles/tokens.css" />
+    <link rel="stylesheet" href="./styles.css" />
   </head>
   <body
     data-shell-schema="PFIOSWebShellContractV1"
@@ -623,12 +624,17 @@
       </aside>
     </div>
 
-    <nav class="mobile-bottom-nav" aria-label="移动端底部入口">
-      <button type="button" class="mobile-tab is-active" data-mobile-workspace="home"><span aria-hidden="true">⌂</span><span>首页</span></button>
-      <button type="button" class="mobile-tab" data-mobile-workspace="accounts"><span aria-hidden="true">◫</span><span>账户</span></button>
-      <button type="button" class="mobile-tab" data-mobile-workspace="ledger"><span aria-hidden="true">≋</span><span>流水</span></button>
-      <button type="button" class="mobile-tab" data-mobile-workspace="sync"><span aria-hidden="true">⇄</span><span>上传</span></button>
-      <button type="button" class="mobile-tab" data-mobile-workspace="settings"><span aria-hidden="true">☰</span><span>更多</span></button>
+    <nav class="mobile-bottom-nav" aria-label="移动端一级工作区" data-stage3-mobile-primary="10">
+      <button type="button" class="mobile-tab is-active" data-mobile-primary-entry="true" data-mobile-workspace="home" data-route-alias="/home"><span aria-hidden="true">⌂</span><span>首页总览</span></button>
+      <button type="button" class="mobile-tab" data-mobile-primary-entry="true" data-mobile-workspace="accounts" data-route-alias="/accounts"><span aria-hidden="true">◫</span><span>账户与资产</span></button>
+      <button type="button" class="mobile-tab" data-mobile-primary-entry="true" data-mobile-workspace="ledger" data-route-alias="/ledger"><span aria-hidden="true">≋</span><span>账本流水</span></button>
+      <button type="button" class="mobile-tab" data-mobile-primary-entry="true" data-mobile-workspace="investment" data-route-alias="/investment"><span aria-hidden="true">↗</span><span>投资管理</span></button>
+      <button type="button" class="mobile-tab" data-mobile-primary-entry="true" data-mobile-workspace="consumption" data-route-alias="/consumption"><span aria-hidden="true">◌</span><span>消费管理</span></button>
+      <button type="button" class="mobile-tab" data-mobile-primary-entry="true" data-mobile-workspace="sync" data-route-alias="/sources-upload"><span aria-hidden="true">⇄</span><span>数据源与上传</span></button>
+      <button type="button" class="mobile-tab" data-mobile-primary-entry="true" data-mobile-workspace="recommendations" data-route-alias="/review"><span aria-hidden="true">✦</span><span>建议与复盘</span></button>
+      <button type="button" class="mobile-tab" data-mobile-primary-entry="true" data-mobile-workspace="insights" data-route-alias="/reports"><span aria-hidden="true">▣</span><span>报告与洞察</span></button>
+      <button type="button" class="mobile-tab" data-mobile-primary-entry="true" data-mobile-workspace="market_research" data-route-alias="/market-research"><span aria-hidden="true">⌁</span><span>市场与研究</span></button>
+      <button type="button" class="mobile-tab" data-mobile-primary-entry="true" data-mobile-workspace="settings" data-route-alias="/settings"><span aria-hidden="true">⚙</span><span>设置</span></button>
     </nav>
 
     <dialog class="command-palette" data-command-palette aria-label="命令面板">
@@ -693,6 +699,7 @@
         }
       }
     </script>
+    <script src="./app/routes.js"></script>
     <script src="./app/shell.js"></script>
   </body>
 </html>

@@ -4962,7 +4962,7 @@ function bindEvents() {
   document.querySelectorAll("[data-mobile-workspace]").forEach((button) => {
     button.addEventListener("click", () => {
       setPressedFeedback(button);
-      setActiveWorkspace(button.dataset.mobileWorkspace || "home");
+      setActiveWorkspace(button.dataset.mobileWorkspace || "home", { routeAlias: button.dataset.routeAlias || "" });
     });
   });
 
