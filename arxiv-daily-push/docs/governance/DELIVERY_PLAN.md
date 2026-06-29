@@ -21,12 +21,23 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 262
+- task_count: 263
 - acceptance_count: 127
 
 ## Delivery Tasks
 
 The machine-readable task source is `delivery_tasks.yaml`.
+
+## 2026-06-29 13:58:47 Australia/Sydney - S2PMT07 S2PLT04 Completion Evidence Latest Sync
+
+- `S2PMT07-S2PLT04-COMPLETION-EVIDENCE-LATEST-SYNC` refreshes the S2PLT04 completion evidence audit with the latest nonterminal S2PLT02 terminal-readiness zero-proof sync and S2PLT03 audit-blocker zero-proof sync evidence.
+- Current audit remains `blocked` / exit 2; `completion_report_ready=false` and `s2plt04_completion_report_written=false`.
+- Current audit state hash is `717822760035bbebe20c429cd2db4e11501e9ebecc2bbc633a04f72de9914c58`; it supersedes the earlier S2PLT04 completion evidence audit state hash `cce9241078f6f4e91bcdd4440642e252c5c6082830d8a61ca0dbe23a04f29729`.
+- S2PLT02 latest nonterminal input: state hash `b318db2e8f90efc9a09bdaea6ee75e6da87d929f844bc9c4a53816dd2b648d0c`, with `P0_ZERO=true`, `P1_ZERO=true`, `S2PLT02_ACCEPTED=false`, `TWO_CONSECUTIVE_REAL_NATURAL_DAYS=false`, `EIGHT_REAL_EMAILS_SENT=false`, and `REAL_SCHEDULER_PROVEN=false`.
+- S2PLT03 latest nonterminal input: `audit_blockers.status=pass`, report hash `3483d4a8c4248d3a41cfae5db4febbe7c9d42368ae6ae9311d0c5a9819d13466`, and `S2PLT03_ACCEPTED=false`.
+- Remaining S2PLT04 blockers: `s2plt01_not_accepted`, `s2plt02_live_2d_terminal_proof_missing`, and `s2plt03_resilience_terminal_proof_missing`.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-S2PLT04-COMPLETION-EVIDENCE-LATEST-SYNC-20260629.json` and `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT04_COMPLETION_EVIDENCE_LATEST_SYNC.md`.
+- No SMTP, scheduler, Release, restore, schema/DB, source/ranking, CURRENT/V7, DAILY_OPERATION, S2PLT04 report, final bundle acceptance, or integrated production acceptance side effect is claimed.
 
 ## 2026-06-29 13:34:38 Australia/Sydney - S2PLT03 Audit-Blocker Zero-Proof Sync
 

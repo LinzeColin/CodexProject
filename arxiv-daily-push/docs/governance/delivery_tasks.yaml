@@ -4759,3 +4759,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+  - task_id: "S2PMT07-S2PLT04-COMPLETION-EVIDENCE-LATEST-SYNC"
+    title: "S2PMT07 S2PLT04 completion evidence latest sync"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-29T13:58:47+10:00"
+    summary: "Refresh S2PLT04 completion evidence audit with the latest nonterminal S2PLT02 terminal-readiness zero-proof sync and S2PLT03 audit-blocker zero-proof sync evidence while keeping the S2PLT04 report blocked."
+    owner: "content_owner + engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT04_COMPLETION_EVIDENCE_LATEST_SYNC.md", "governance/run_manifests/ADP-S2PMT07-S2PLT04-COMPLETION-EVIDENCE-LATEST-SYNC-20260629.json"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt04_latest_red2 PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt04_latest_green PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt04_latest_probe PYTHONPATH=arxiv-daily-push/src python3 -B -m arxiv_daily_push.cli audit-s2plt04-completion-evidence --json"]
+    test_results: ["TDD red failed as expected because S2PLT04 completion evidence audit did not include the latest S2PLT02 terminal-readiness zero-proof sync ref", "focused final-gate tests: 85 OK", "audit CLI returned blocked / exit 2 with state_hash=717822760035bbebe20c429cd2db4e11501e9ebecc2bbc633a04f72de9914c58"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-S2PLT04-COMPLETION-EVIDENCE-LATEST-SYNC-20260629.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT04_COMPLETION_EVIDENCE_LATEST_SYNC.md", "governance/run_manifests/ADP-S2PLT02-ZERO-PROOF-READINESS-SYNC-20260629.json", "governance/run_manifests/ADP-S2PLT03-AUDIT-BLOCKER-ZERO-PROOF-SYNC-20260629.json", "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
+    result: "S2PLT04 completion evidence audit now includes the latest S2PLT02 terminal-readiness zero-proof sync and S2PLT03 audit-blocker zero-proof sync as nonterminal evidence; completion_report_ready remains false."
+    risk: "The refreshed nonterminal refs can be misread as S2PLT04 acceptance unless completion_report_ready=false and s2plt04_completion_report_written=false remain explicit."
+    rollback: "Revert S2PLT04 completion evidence latest-sync code, focused regression test, phase record, manifest, traceability row, delivery/event records, generated views, and three base records; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

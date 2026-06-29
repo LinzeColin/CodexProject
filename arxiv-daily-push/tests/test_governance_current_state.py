@@ -30,29 +30,29 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn(f"- Current task: `{expected_task}`", current_state)
         self.assertIn(f"### `{current_iteration}`", ledger)
 
-    def test_s2pmt07_current_state_summary_describes_s2plt03_audit_blocker_zero_proof_sync(self) -> None:
+    def test_s2pmt07_current_state_summary_describes_s2plt04_completion_evidence_latest_sync(self) -> None:
         ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
-            "S2PLT03_AUDIT_BLOCKER_ZERO_PROOF_SYNC_BLOCKED_S2PLT02_NOT_ACCEPTED",
+            "S2PMT07_S2PLT04_COMPLETION_EVIDENCE_LATEST_SYNC_BLOCKED_NO_REPORT_NO_PRODUCTION",
             current_state,
         )
-        self.assertIn("S2PLT03-AUDIT-BLOCKER-ZERO-PROOF-SYNC", current_state)
-        self.assertIn("p0_p1_zero_proof_artifact_validation.status=pass", current_state)
-        self.assertIn("audit_blockers.status=pass", current_state)
-        self.assertIn("audit_blockers.checks.P0_zero=true", current_state)
-        self.assertIn("audit_blockers.checks.P1_zero=true", current_state)
-        self.assertIn("P0=0", current_state)
-        self.assertIn("P1=0", current_state)
+        self.assertIn("S2PMT07-S2PLT04-COMPLETION-EVIDENCE-LATEST-SYNC", current_state)
+        self.assertIn("completion_report_ready=false", current_state)
+        self.assertIn("s2plt04_completion_report_written=false", current_state)
+        self.assertIn("717822760035bbebe20c429cd2db4e11501e9ebecc2bbc633a04f72de9914c58", current_state)
+        self.assertIn("cce9241078f6f4e91bcdd4440642e252c5c6082830d8a61ca0dbe23a04f29729", current_state)
+        self.assertIn("b318db2e8f90efc9a09bdaea6ee75e6da87d929f844bc9c4a53816dd2b648d0c", current_state)
         self.assertIn("3483d4a8c4248d3a41cfae5db4febbe7c9d42368ae6ae9311d0c5a9819d13466", current_state)
-        self.assertIn("d8cdd55b7848c6b7745a0707522f0277c7b7ef2f82e2ca2a0152e5c520211333", current_state)
-        self.assertIn("s2plt02_not_accepted", current_state)
-        self.assertIn("S2PLT02_ACCEPTED=false", current_state)
-        self.assertIn("S2PLT03_ACCEPTED=false", current_state)
-        self.assertIn("S2PLT03_RESILIENCE_DRILL_COMPLETED=false", current_state)
+        self.assertIn("P0_ZERO=true", current_state)
+        self.assertIn("P1_ZERO=true", current_state)
+        self.assertIn("audit_blockers.status=pass", current_state)
+        self.assertIn("s2plt01_not_accepted", current_state)
+        self.assertIn("s2plt02_live_2d_terminal_proof_missing", current_state)
+        self.assertIn("s2plt03_resilience_terminal_proof_missing", current_state)
         self.assertIn("FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json", current_state)
-        self.assertIn("does not accept S2PLT03", current_state)
+        self.assertIn("does not accept S2PLT02/S2PLT03/S2PLT04", current_state)
         self.assertIn("does not execute final commands", current_state)
         self.assertIn("does not accept production", current_state)
 
