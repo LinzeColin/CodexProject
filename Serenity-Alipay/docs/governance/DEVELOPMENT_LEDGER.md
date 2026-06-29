@@ -39,6 +39,30 @@ machine_summary:
 
 Do not infer iteration count from Git commit count.
 
+### `ITER-20260629-SERENITY-MAIL-FREQUENCY`
+
+- Date: 2026-06-29
+- Fact level: VERIFIED
+- Version before: `0.1.0`
+- Version after: `0.1.0`
+- Base commit: `b4a97ff2`
+- Result commit: `PENDING`
+- Task IDs: `SERENITY-MAIL-FREQUENCY-CONTROL`
+- Goal: stop repeated production actionable emails by comparing the current action conclusion with the last successfully sent actionable email and enforcing a Beijing-day cap.
+- Assumptions: action conclusion identity must be based on action fields only, not run id, run time, source timestamps, or ordinary evidence prose.
+- Files read: `app/core/mail_policy.py`, `app/core/notification.py`, `app/core/pipeline.py`, `app/db.py`, `tests/test_notification.py`, and current `HANDOFF.md`.
+- Files changed: mail policy, notification sender, pipeline sender, notification_log schema migration, notification regression tests, changelog, handoff, bug regression log, feature list, model spec, and rendered development record.
+- Model changes: no candidate scoring, ranking, allocation, risk gate, benchmark, scheduler slot, or trading model behavior changed.
+- Parameter changes: no active PARAM-001 through PARAM-049 value changed; runtime notification safety constants are documented as post-baseline mail-suppression controls.
+- Commands run: `py_compile` for edited runtime/test files; focused pytest set for notification, integration, automation tick, Serenity priority, and OpenD lifecycle.
+- Test results: `tests/test_notification.py` first failed against old behavior for duplicate and daily-cap cases; after implementation, focused set passed with 22 tests.
+- Successes: duplicate actionable signature suppresses across slots and days, third Beijing-day actionable mail suppresses, maintain/info outcomes suppress, and suppressed rows retain audit fields in `notification_log`.
+- Failures: none after implementation. Initial root-cwd notification pytest failed because sample data expects project cwd; rerunning from `Serenity-Alipay` cwd passed.
+- Decisions: keep email frequency as an action-conclusion policy; reports, homepage data, and database rows continue updating every run even when mail is suppressed.
+- Remaining risks: real Apple Mail delivery remains dependent on local macOS Mail automation and credentials; this task validates policy and logging, not external provider uptime.
+- Rollback: revert the mail policy, notification/pipeline sender changes, schema columns, and focused notification tests together.
+- Next step: observe the next production actionable run and verify `notification_log.suppress_reason` values match the policy before considering real-mail noise fully closed.
+
 ### `ITER-20260621-001`
 
 - Date: 2026-06-21

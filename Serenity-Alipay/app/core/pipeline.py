@@ -23,7 +23,11 @@ from app.core.fund_rule_autofill import autofill_fund_rules
 from app.core.fund_nav_history_collector import collect_fund_nav_history
 from app.core.indicator_discipline import calculate_indicator_days, evaluate_exclusion_rule
 from app.core.metrics import calculate_metrics
-from app.core.mail_policy import should_send_mail_for_run, suppressed_no_material_change_message
+from app.core.mail_policy import (
+    build_action_signature,
+    decide_mail_send_for_run,
+    suppressed_mail_message,
+)
 from app.core.reporting import (
     render_markdown_report,
     render_notification,
@@ -889,16 +893,37 @@ def run_slot(
 
         send_status = "drafted"
         send_error = None
+        suppress_reason = None
+        related_run_id = None
+        signature = build_action_signature(
+            severity,
+            notification_recommendations,
+            run_time_bj=run_time_bj,
+            data_quality_status=data_quality_status,
+            execution_locked=execution_locked,
+        )
+        signature_text = signature.text
+        signature_hash = signature.hash
+        notification_kind = signature.notification_kind
+        beijing_date = signature.beijing_date
         if send_mail and not dry_run:
-            should_send_mail = should_send_mail_for_run(
-                severity,
-                notification_recommendations,
+            mail_decision = decide_mail_send_for_run(
+                conn,
+                severity=severity,
+                recommendations=notification_recommendations,
+                run_time_bj=run_time_bj,
                 data_quality_status=data_quality_status,
                 execution_locked=execution_locked,
             )
-            if not should_send_mail:
-                send_status = "suppressed_no_material_change"
-                send_error = suppressed_no_material_change_message()
+            signature_text = mail_decision.action_signature
+            signature_hash = mail_decision.action_signature_hash
+            notification_kind = mail_decision.notification_kind
+            beijing_date = mail_decision.beijing_date
+            if not mail_decision.should_send:
+                send_status = "suppressed"
+                suppress_reason = mail_decision.suppress_reason
+                related_run_id = mail_decision.related_run_id
+                send_error = suppressed_mail_message(suppress_reason)
             elif settings.mail_send_enabled:
                 mail_result = send_with_apple_mail(
                     notification_title,
@@ -925,6 +950,13 @@ def run_slot(
                 "send_status": send_status,
                 "sent_at": created_at if send_status == "sent" else None,
                 "error_message": send_error,
+                "action_signature": signature_text,
+                "action_signature_hash": signature_hash,
+                "notification_kind": notification_kind,
+                "beijing_date": beijing_date,
+                "suppress_reason": suppress_reason,
+                "related_run_id": related_run_id,
+                "created_at": created_at,
             },
         )
         conn.execute(

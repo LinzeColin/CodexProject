@@ -1,5 +1,17 @@
 # HANDOFF: Serenity Daily Analysis
 
+Timestamp: 20260629 - 10:50 CST / 20260629 - 12:50 AEST
+
+## 最新交接摘要
+
+- 本轮目标：修复 Serenity actionable 邮件重复发送问题。邮件只应在当前建议动作相对上一封已成功发送 actionable 邮件发生实质变化时发送；同一天北京时间自然日最多 2 封。
+- 根因：旧策略只看本轮是否存在非维持动作或 Urgent，不查询上一封成功发送 actionable 邮件；同时 `run_slot()` 和 `notify_run()` 都可发送邮件，缺少统一 DB-aware 去重。
+- 已修复：`app/core/mail_policy.py` 新增 `ActionSignature` 和 `MailSendDecision`。签名包含总体动作、Top5 顺序、基金代码/名称、每只基金动作、两位百分比目标权重和关键动作旗标；明确排除 `run_id`、运行时间、source timestamp、普通证据文本和历史差异说明。
+- 已修复：`app/core/notification.py` 与 `app/core/pipeline.py` 统一使用同一 DB-aware 频控策略。相同结论抑制为 `duplicate_action_signature`；北京时间当日第 3 封及以后抑制为 `daily_email_cap_reached`；维持/Info/无新增实质动作抑制为 `non_actionable`。
+- 已修复：`notification_log` 增加 `action_signature`、`action_signature_hash`、`notification_kind`、`beijing_date`、`suppress_reason`、`related_run_id`、`created_at`，被抑制邮件也写入数据库日志。
+- 已验证：先运行通知测试确认旧代码会重复发送；修复后 `/opt/anaconda3/bin/python -m py_compile app/core/mail_policy.py app/core/notification.py app/core/pipeline.py app/db.py tests/test_notification.py` 通过；`/opt/anaconda3/bin/python -m pytest -q tests/test_notification.py tests/test_integration.py tests/test_automation_tick.py tests/test_pipeline_serenity_priority.py tests/test_pipeline_opend_lifecycle.py` 为 22 passed。
+- 边界：本轮未改选基、评分、排序、目标权重、基金费用、历史快照、旧报告、OpenD/MooMoo lifecycle 或交易行为；未触发真实 run、未发真实邮件、未启动或关闭 OpenD/MooMoo；runtime DB/WAL/lock 仍不得提交。
+
 Timestamp: 20260629 - 07:54 CST / 20260629 - 09:54 AEST
 
 ## 最新交接摘要
