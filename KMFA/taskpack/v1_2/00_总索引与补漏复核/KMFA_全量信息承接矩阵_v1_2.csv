@@ -1,0 +1,12 @@
+﻿类别,内容,所在文件/目录,状态
+正式TaskPack,阶段一、阶段二五环节、用户补充要求、业务线1-10、治理、公式、验收,01_KMFA_Codex_TaskPack_v1_2_完整防遗漏_含HTML验收样板.md,已覆盖
+正式Roadmap,18 Stage / 每Stage<=5 Phase / 每Phase<=5 Task,02_KMFA_Codex_Development_Roadmap_18_Stages_v1_2.md,已覆盖
+Codex启动提示,第一轮只读、计划、测试、回滚、停止条件,03_KMFA_Codex_第一轮只读启动提示词_v1_1.md,已继承
+需求追溯,用户要求到Task/Acceptance/Test/Evidence,04_KMFA_需求追溯矩阵_v1_1.csv,已继承
+HTML系统首页,系统首页与模块入口,20_HTML_UIUX_报告预览/01_核心HTML验收样板,已补齐
+HTML报告预览,经营分析报告、项目成本专题报告,20_HTML_UIUX_报告预览/01_核心HTML验收样板,已补齐
+HTML数据源检查,矩阵状态板,20_HTML_UIUX_报告预览/01_核心HTML验收样板,已补齐
+HTML人工处理,Resolution Workbench,20_HTML_UIUX_报告预览/01_核心HTML验收样板,已补齐
+前序包,Stage1/Stage2/Stage3历史包,21_前序生成包归档_可追溯,已补齐
+原始上传数据,销售绩效、财务、WPS、录屏、Pasted markdown,90_用户原始上传数据_仅本地私有_禁止提交GitHub,已归档但禁止提交公开GitHub
+代码工具,no omission、zero delta、HTML检查,tools/ 与 92_工具与代码,已覆盖

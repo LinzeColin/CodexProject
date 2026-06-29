@@ -43,6 +43,13 @@ assumptions:
       - "KMFA/docs/governance/QUALITY_GATE_POLICY.md"
       - "KMFA/metadata/quality/quality_grade_policy.yaml"
       - "KMFA/metadata/reports/report_release_gate.yaml"
+  - assumption_id: "ASM-KMFA-007"
+    statement: "后续开发必须以 v1.2 FULL_HTML_NO_OMISSION 任务包为基线；涉及 UI、报告、前端或验收的任务必须读取 HTML/UIUX/报告样板。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "KMFA/taskpack/v1_2/machine/source_package_manifest.json"
+      - "KMFA/tools/check_required_html.py"
 models:
   - model_id: "MOD-KMFA-GOV-001"
     name: "KMFA phase governance and public repository boundary"
@@ -55,6 +62,7 @@ models:
     assumptions:
       - "ASM-KMFA-001"
       - "ASM-KMFA-002"
+      - "ASM-KMFA-007"
     formula_ids:
       - "FORM-KMFA-GOV-001"
     parameter_ids:
@@ -70,6 +78,7 @@ models:
       - "phase scope gate"
       - "stage upload gate"
       - "privacy stop condition"
+      - "v1.2 baseline gate"
     code_refs:
       - "KMFA/AGENTS.md"
       - "KMFA/README.md"
@@ -80,6 +89,7 @@ models:
       - "KMFA/AGENTS.md"
       - "KMFA/docs/governance/project.yaml"
       - "KMFA/stage_artifacts/S01_STAGE_REVIEW/human/stage1_review_report.md"
+      - "KMFA/stage_artifacts/S01_REBASE_V12_FULL_TASKPACK/human/stage1_v12_replay_report.md"
   - model_id: "MOD-KMFA-COST-001"
     name: "KMFA file-based project cost analysis MVP"
     kind: "deterministic_financial_analysis_pipeline"

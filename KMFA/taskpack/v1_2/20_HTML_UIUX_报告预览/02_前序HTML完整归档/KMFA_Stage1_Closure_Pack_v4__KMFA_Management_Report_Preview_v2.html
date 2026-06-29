@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>KMFA 经营分析报告预览 v2</title>
+<style>
+:root{--ink:#141b2d;--muted:#677286;--line:#dbe2ec;--paper:#f2f5f9;--card:#fff;--navy:#08182b;--navy2:#132943;--gold:#b98b3c;--gold2:#e8c77d;--green:#12a66a;--yellow:#e5a031;--red:#d84b4b;--purple:#7556d9;--black:#171a21;--blue:#2b72d6;--shadow:0 22px 58px rgba(8,24,43,.14)}
+*{box-sizing:border-box}html,body{margin:0;background:linear-gradient(180deg,#e9eef5,#f8fafc);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",Arial,sans-serif;color:var(--ink);line-height:1.68}.wrap{max-width:1120px;margin:28px auto 58px;padding:0 20px}.toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;color:#596579}.toolbar button{border:1px solid var(--line);background:#fff;border-radius:12px;padding:9px 13px;cursor:pointer;box-shadow:0 8px 18px rgba(8,24,43,.07)}.cover{background:linear-gradient(135deg,var(--navy),#0d1f36 58%,#243a56);color:#fff;border-radius:28px;padding:34px;position:relative;overflow:hidden;box-shadow:var(--shadow)}.cover:before{content:"";position:absolute;right:-150px;top:-120px;width:430px;height:430px;border-radius:50%;background:radial-gradient(circle,rgba(232,199,125,.34),rgba(232,199,125,0) 70%)}.brand{display:flex;align-items:center;gap:14px;position:relative;z-index:1}.logo{width:56px;height:56px;border-radius:18px;background:linear-gradient(145deg,#f1d88f,#b98b3c 62%,#8b642a);color:#16100a;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:21px;letter-spacing:-1px}.brand h1{margin:0;font-size:22px}.brand p{margin:4px 0 0;color:#b7c7d8;font-size:13px}.cover-main{position:relative;z-index:1;margin-top:48px;display:grid;grid-template-columns:1.25fr .75fr;gap:34px;align-items:end}.cover h2{font-size:42px;line-height:1.12;margin:0 0 14px;letter-spacing:-1px}.cover .desc{color:#d9e4f0;max-width:620px}.meta{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:18px}.meta div{display:flex;justify-content:space-between;gap:18px;border-bottom:1px solid rgba(255,255,255,.12);padding:9px 0}.meta div:last-child{border-bottom:0}.meta b{color:#fff}.meta span{color:#b7c7d8}.page{background:var(--card);border:1px solid var(--line);border-radius:24px;box-shadow:0 14px 34px rgba(8,24,43,.08);padding:28px;margin-top:18px}.page h2{font-size:24px;margin:0 0 6px;letter-spacing:-.3px}.page .lead{color:var(--muted);margin:0 0 18px}.grid{display:grid;gap:14px}.cols4{grid-template-columns:repeat(4,1fr)}.cols3{grid-template-columns:repeat(3,1fr)}.cols2{grid-template-columns:repeat(2,1fr)}.kpi{border:1px solid #e2e8f0;border-radius:18px;padding:16px;background:linear-gradient(180deg,#fff,#fbfcfe)}.kpi .label{font-size:13px;color:var(--muted)}.kpi .value{font-size:27px;font-weight:850;margin:6px 0;letter-spacing:-.5px}.kpi .note{font-size:12.5px;color:#6f7a8b}.tag{display:inline-block;padding:5px 9px;border-radius:999px;background:#f2f5f9;color:#435063;font-size:12px}.tag.green{background:#e9f8f1;color:#08794c}.tag.yellow{background:#fff4db;color:#96620d}.tag.red{background:#fff0f0;color:#a73535}.tag.purple{background:#f1edff;color:#5536b8}.tag.black{background:#e9eaed;color:#111}.section-head{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:16px}.section-head p{margin:5px 0 0;color:var(--muted);font-size:13px}.table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px}.table th{background:#f3f6fa;color:#3f4b5d;padding:11px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}.table td{padding:11px;border-bottom:1px solid #edf1f5;vertical-align:top}.table th:first-child{border-radius:12px 0 0 12px}.table th:last-child{border-radius:0 12px 12px 0}.chart{height:270px;border:1px solid #e2e8f0;border-radius:20px;padding:12px;background:#fff}.svg{width:100%;height:100%;display:block}.callout{border:1px solid #ead9b7;background:#fbf6eb;border-radius:18px;padding:16px;color:#3a2a10}.callout b{display:block;margin-bottom:6px}.barline{display:grid;grid-template-columns:150px 1fr 54px;gap:12px;align-items:center;margin:12px 0}.bar{height:11px;background:#edf1f6;border-radius:999px;overflow:hidden}.bar i{height:100%;display:block;border-radius:999px;background:linear-gradient(90deg,var(--gold),var(--gold2))}.bar.green i{background:linear-gradient(90deg,#12a66a,#6bd6a9)}.bar.yellow i{background:linear-gradient(90deg,#e5a031,#efc46b)}.bar.red i{background:linear-gradient(90deg,#d84b4b,#ee8b8b)}.bar.purple i{background:linear-gradient(90deg,#7556d9,#a899ed)}.twocol{display:grid;grid-template-columns:1fr 1fr;gap:16px}.small{font-size:12px;color:var(--muted)}.foot{color:#6f7a8b;font-size:12px;margin-top:18px;border-top:1px solid #e5ebf2;padding-top:12px}.print-note{font-size:12px;color:#7b8797;text-align:center;margin:20px 0}.toc{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:22px}.toc div{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:13px;color:#d9e4f0}.toc b{display:block;color:#fff}.watermark{position:absolute;right:28px;bottom:24px;color:rgba(255,255,255,.22);font-size:80px;font-weight:900;letter-spacing:-3px}@media(max-width:920px){.cover-main,.twocol,.cols2,.cols3,.cols4{grid-template-columns:1fr}.cover h2{font-size:34px}}@media print{body{background:#fff}.wrap{max-width:none;margin:0;padding:0}.toolbar{display:none}.cover,.page{box-shadow:none;border-radius:0;margin:0;page-break-after:always}.page:last-child{page-break-after:auto}.chart{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="toolbar"><span>KMFA 经营分析报告预览 v2 · 样例数据，仅用于版式评审</span><button onclick="window.print()">打印 / 另存为 PDF</button></div>
+  <section class="cover">
+    <div class="brand"><div class="logo">KM</div><div><h1>经营分析系统</h1><p>项目制工程经营管理 · 内部经营资料</p></div></div>
+    <div class="cover-main">
+      <div><h2>月度经营分析报告</h2><p class="desc">面向经营负责人、财务负责人、税务政策负责人及董事层。报告重点呈现本期经营结果、现金安全、项目利润、回款质量、税务政策准备和下期重点事项。</p><div class="toc"><div><b>经营结果</b><span>项目、订单、客户与风险</span></div><div><b>财务资金</b><span>现金、利润、成本与账期</span></div><div><b>税务政策</b><span>发票、税率、资质与证据</span></div></div></div>
+      <div class="meta"><div><span>报告周期</span><b>2026年6月</b></div><div><span>适用主体</span><b>全部经营主体</b></div><div><span>报告版本</span><b>v0.2 预览</b></div><div><span>数据状态</span><b>部分数据待复核</b></div><div><span>阅读对象</span><b>经营层 / 董事层</b></div></div>
+    </div><div class="watermark">KM</div>
+  </section>
+
+  <section class="page">
+    <div class="section-head"><div><h2>一、本期经营摘要</h2><p>先给结论，再给证据。报告只保留对经营决策有帮助的信息。</p></div><span class="tag yellow">部分数据待复核</span></div>
+    <div class="grid cols4">
+      <div class="kpi"><div class="label">经营健康指数</div><div class="value">76</div><div class="note">现金与税务证据拉低评分</div></div>
+      <div class="kpi"><div class="label">现金安全天数</div><div class="value">94天</div><div class="note">取决于未来 8 周回款</div></div>
+      <div class="kpi"><div class="label">项目真实毛利</div><div class="value">18.6%</div><div class="note">已考虑外协、运输、签证与跨期成本</div></div>
+      <div class="kpi"><div class="label">本期重点事项</div><div class="value">5项</div><div class="note">回款 2 项，税务 1 项，项目 2 项</div></div>
+    </div>
+    <div class="twocol" style="margin-top:16px">
+      <div class="chart"><svg class="svg" viewBox="0 0 520 250"><text x="16" y="24" font-size="13" fill="#677286">经营健康结构</text><g transform="translate(130,128)"><polygon points="0,-82 71,-41 71,41 0,82 -71,41 -71,-41" fill="none" stroke="#dbe3ed"/><polygon points="0,-71 58,-33 44,25 0,62 -52,30 -60,-35" fill="rgba(185,139,60,.20)" stroke="#b98b3c" stroke-width="3"/><text x="-30" y="-96" font-size="11" fill="#4a5568">现金</text><text x="76" y="-42" font-size="11" fill="#4a5568">利润</text><text x="78" y="50" font-size="11" fill="#4a5568">回款</text><text x="-25" y="102" font-size="11" fill="#4a5568">税务</text><text x="-124" y="52" font-size="11" fill="#4a5568">合同</text><text x="-124" y="-42" font-size="11" fill="#4a5568">数据</text></g><g transform="translate(285,62)" font-size="12" fill="#4a5568"><text y="0">现金安全 73</text><text y="28">项目利润 84</text><text y="56">回款质量 66</text><text y="84">税务政策 77</text><text y="112">合同履约 80</text><text y="140">数据治理 70</text></g></svg></div>
+      <div class="callout"><b>本期经营判断</b>本期公司整体经营处于可控状态，项目真实利润较合同报价有回落，但仍高于风险线。主要压力来自部分客户回款延后、外协成本跨期归集、政策证据材料尚未形成稳定链路。下期优先处理回款、成本归集和税务政策材料。</div>
+    </div>
+    <div class="foot">口径说明：本报告为经营管理视图，基于唯一合法账本、项目系统、合同、银行、发票及补充台账形成；不替代财务报表、税务申报、审计报告或法律意见。</div>
+  </section>
+
+  <section class="page">
+    <div class="section-head"><div><h2>二、经营结果与项目组合</h2><p>从项目制工程视角判断订单质量、合同条件、执行风险和现金回收。</p></div><span class="tag green">经营数据可用</span></div>
+    <div class="grid cols3">
+      <div class="kpi"><div class="label">合同储备金额</div><div class="value">¥ 1,280万</div><div class="note">已签未开工、在执行、待结算</div></div>
+      <div class="kpi"><div class="label">报价转合同率</div><div class="value">74%</div><div class="note">低营销费用行业核心商务指标</div></div>
+      <div class="kpi"><div class="label">重点客户集中度</div><div class="value">42%</div><div class="note">需与回款质量一起判断</div></div>
+    </div>
+    <div class="twocol" style="margin-top:16px">
+      <div class="chart"><svg class="svg" viewBox="0 0 520 250"><text x="16" y="24" font-size="13" fill="#677286">项目类型真实毛利对比</text><g transform="translate(48,52)"><rect y="0" width="280" height="26" rx="8" fill="#12a66a"/><text x="292" y="18" font-size="12">水泥产线检修 22.4%</text><rect y="46" width="238" height="26" rx="8" fill="#b98b3c"/><text x="250" y="64" font-size="12">机加工配套 19.1%</text><rect y="92" width="172" height="26" rx="8" fill="#e5a031"/><text x="184" y="110" font-size="12">能源化工维修 15.8%</text><rect y="138" width="146" height="26" rx="8" fill="#d84b4b"/><text x="158" y="156" font-size="12">钢铁设备维修 13.8%</text></g></svg></div>
+      <div class="chart"><svg class="svg" viewBox="0 0 520 250"><text x="16" y="24" font-size="13" fill="#677286">项目风险矩阵</text><line x1="70" y1="202" x2="450" y2="202" stroke="#dbe2ec"/><line x1="70" y1="45" x2="70" y2="202" stroke="#dbe2ec"/><text x="188" y="232" font-size="12" fill="#677286">真实毛利</text><text x="16" y="124" font-size="12" fill="#677286" transform="rotate(-90 16,124)">履约/回款风险</text><circle cx="342" cy="86" r="18" fill="rgba(18,166,106,.85)"/><text x="366" y="90" font-size="12">优质项目</text><circle cx="242" cy="128" r="20" fill="rgba(185,139,60,.85)"/><text x="266" y="132" font-size="12">稳定项目</text><circle cx="154" cy="162" r="22" fill="rgba(216,75,75,.82)"/><text x="180" y="166" font-size="12">谨慎承接</text></svg></div>
+    </div>
+    <table class="table" style="margin-top:16px"><thead><tr><th>项目类型</th><th>经营判断</th><th>主要证据</th><th>下期动作</th></tr></thead><tbody><tr><td>水泥产线检修</td><td>可继续拓展</td><td>毛利稳定、客户配合度较好、回款节奏可控</td><td>报价中保留外协浮动和停工等待条款</td></tr><tr><td>钢铁设备维修</td><td>谨慎承接</td><td>回款延后、现场变量多、签证确认慢</td><td>先处理老项目回款，再承接新项目</td></tr><tr><td>机加工配套</td><td>稳定产能填充</td><td>交付风险低、毛利中等、现金回收较好</td><td>适合填补产能，但避免过度低价</td></tr></tbody></table>
+  </section>
+
+  <section class="page">
+    <div class="section-head"><div><h2>三、财务资金与利润质量</h2><p>以现金安全、项目真实利润、应收应付和成本归集为核心。</p></div><span class="tag yellow">银行数据有缺口</span></div>
+    <div class="twocol">
+      <div class="chart"><svg class="svg" viewBox="0 0 520 250"><text x="16" y="24" font-size="13" fill="#677286">未来 8 周现金安全预测</text><polyline points="35,178 95,150 155,162 215,126 275,142 335,98 395,116 465,92" fill="none" stroke="#b98b3c" stroke-width="4" stroke-linecap="round"/><path d="M35 178 L95 150 L155 162 L215 126 L275 142 L335 98 L395 116 L465 92 L465 214 L35 214 Z" fill="rgba(185,139,60,.16)"/><line x1="35" y1="184" x2="465" y2="184" stroke="#d84b4b" stroke-dasharray="6 6"/><text x="38" y="204" font-size="12" fill="#d84b4b">安全线</text></svg></div>
+      <div><div class="barline"><span>现金安全</span><div class="bar"><i style="width:73%"></i></div><b>73</b></div><div class="barline"><span>回款确定性</span><div class="bar yellow"><i style="width:61%"></i></div><b>61</b></div><div class="barline"><span>付款压力</span><div class="bar red"><i style="width:48%"></i></div><b>48</b></div><div class="barline"><span>成本完整性</span><div class="bar purple"><i style="width:67%"></i></div><b>67</b></div><div class="callout" style="margin-top:14px"><b>资金判断</b>本期不存在立即断裂风险，但现金预测对客户回款依赖较高。建议优先催收节点明确、争议较低的应收款，同时对非关键供应商付款做节奏安排。</div></div>
+    </div>
+    <table class="table" style="margin-top:16px"><thead><tr><th>项目</th><th>账面表现</th><th>管理调整因素</th><th>经营结论</th></tr></thead><tbody><tr><td>项目 A</td><td>利润良好</td><td>外协成本仍有跨期风险</td><td>可继续推进，但需锁定供应商结算</td></tr><tr><td>项目 B</td><td>账面利润一般</td><td>存在未确认签证，可能改善利润</td><td>先拿到甲方确认，再调整管理预测</td></tr><tr><td>项目 C</td><td>现金回收慢</td><td>合同付款节点与发票状态不匹配</td><td>列入回款专项处理</td></tr></tbody></table>
+  </section>
+
+  <section class="page">
+    <div class="section-head"><div><h2>四、税务政策与资质准备</h2><p>关注税率、发票、进销项、研发费用、科小、高新、专精特新、小巨人相关证据链。</p></div><span class="tag purple">需人工复核</span></div>
+    <div class="grid cols3">
+      <div class="kpi"><div class="label">发票税率匹配</div><div class="value">82</div><div class="note">合同税率与发票税率总体可控</div></div>
+      <div class="kpi"><div class="label">研发证据完整度</div><div class="value">58</div><div class="note">项目、工时、费用映射不足</div></div>
+      <div class="kpi"><div class="label">政策材料准备度</div><div class="value">63</div><div class="note">高新与加计扣除仍需补材料</div></div>
+    </div>
+    <table class="table" style="margin-top:16px"><thead><tr><th>方向</th><th>当前状态</th><th>主要缺口</th><th>经营建议</th></tr></thead><tbody><tr><td>研发费用加计扣除</td><td><span class="tag yellow">资料不完整</span></td><td>研发项目、人员工时、费用归集缺稳定关联</td><td>先建立项目—人员—费用—成果证据链</td></tr><tr><td>高新技术企业</td><td><span class="tag purple">需评估</span></td><td>知识产权、高新收入、研发费用专项口径需要核对</td><td>做缺口清单，不做无法验证的结论</td></tr><tr><td>科技型中小企业</td><td><span class="tag yellow">部分具备</span></td><td>科技人员与研发活动证据需规范</td><td>按季度维护证据包</td></tr><tr><td>专精特新 / 小巨人</td><td><span class="tag red">暂不判断</span></td><td>需要更完整的经营、创新、产业链配套材料</td><td>作为中长期政策准备项</td></tr></tbody></table>
+    <div class="foot">税务政策部分只输出内部经营提醒和材料准备建议；正式申报、审计、鉴证、税务处理仍需由公司财务、税务顾问或专业机构确认。</div>
+  </section>
+
+  <section class="page">
+    <div class="section-head"><div><h2>五、口径差异与管理调整摘要</h2><p>完整核对流程在系统内部完成。报告只披露影响经营判断的差异，不展示底层技术流程。</p></div><span class="tag yellow">摘要披露</span></div>
+    <table class="table"><thead><tr><th>差异来源</th><th>影响项目</th><th>对经营分析的影响</th><th>处理方式</th><th>复核状态</th></tr></thead><tbody><tr><td>合同签证未确认</td><td>项目 B</td><td>可能低估真实毛利</td><td>列为待确认收益，不进入确定性利润</td><td><span class="tag purple">人工复核</span></td></tr><tr><td>外协成本跨期</td><td>项目 A / 项目 C</td><td>可能高估本期利润</td><td>按项目发生期做管理归集</td><td><span class="tag yellow">资料补充</span></td></tr><tr><td>银行回款未核销</td><td>客户 D</td><td>现金已改善，但应收仍显示逾期</td><td>等待发票与客户匹配后核销</td><td><span class="tag green">可处理</span></td></tr></tbody></table>
+    <div class="callout" style="margin-top:16px"><b>说明</b>公司仍只有一套合法账本。系统所做的是在同一账本基础上，结合合同、项目、发票、银行和补充台账，形成不同阅读对象需要的经营视图，并记录每项差异的来源、原因、责任人和复核状态。</div>
+  </section>
+
+  <section class="page">
+    <div class="section-head"><div><h2>六、下期重点事项</h2><p>每条事项都必须有负责人、证据、期限和停止条件，避免“建议很多、行动很少”。</p></div><span class="tag green">可执行清单</span></div>
+    <table class="table"><thead><tr><th>优先级</th><th>事项</th><th>负责人</th><th>需要资料</th><th>期限</th><th>验收标准</th></tr></thead><tbody><tr><td>1</td><td>处理两笔重点回款</td><td>经营/财务</td><td>合同节点、发票状态、银行流水</td><td>本周</td><td>形成催收记录与预计到账日期</td></tr><tr><td>2</td><td>复核外协成本归集</td><td>财务/项目</td><td>红圈成本、金蝶凭证、WPS台账</td><td>本月</td><td>项目真实毛利重新计算</td></tr><tr><td>3</td><td>建立研发费用证据链</td><td>税务政策/项目</td><td>研发项目、人员工时、费用明细、成果材料</td><td>季度</td><td>政策材料检查板转为可评估</td></tr><tr><td>4</td><td>补齐银行账户导入状态</td><td>财务</td><td>各主体、各银行、各账户流水和余额</td><td>本周</td><td>现金安全报告不再降级</td></tr></tbody></table>
+    <div class="foot">报告生成记录：数据来源、参数版本、公式版本、人工复核事项、报告生成时间、通知记录均应写入 KMFA/metadata。报告正文不包含账号密码、完整银行账号、未脱敏合同全文或税务申报明细。</div>
+  </section>
+  <div class="print-note">KMFA 经营分析系统 · 报告预览 v2 · 当前为 Stage 1 讨论稿</div>
+</div>
+</body>
+</html>

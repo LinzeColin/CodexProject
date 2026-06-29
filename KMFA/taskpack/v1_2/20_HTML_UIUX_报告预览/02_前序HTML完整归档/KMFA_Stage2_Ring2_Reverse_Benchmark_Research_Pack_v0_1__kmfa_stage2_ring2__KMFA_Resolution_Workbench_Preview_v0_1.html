@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>KMFA｜数据复核与差异处理</title>
+<style>
+:root{
+  --navy:#102A43;
+  --blue:#1F5EFF;
+  --blue2:#2F80ED;
+  --sky:#EAF3FF;
+  --sky2:#F6FAFF;
+  --line:#D7E3F4;
+  --text:#172B4D;
+  --muted:#6B7C93;
+  --green:#138A5B;
+  --red:#C2413B;
+  --purple:#6D5BD0;
+  --black:#111827;
+  --card:#FFFFFF;
+}
+*{box-sizing:border-box}
+body{margin:0;background:#F3F7FC;color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",Arial,sans-serif;}
+.app{display:grid;grid-template-columns:260px 1fr;min-height:100vh;}
+.sidebar{background:linear-gradient(180deg,#0F2A44 0%,#163B62 100%);color:white;padding:24px 18px;}
+.logo{display:flex;align-items:center;gap:12px;margin-bottom:28px;}
+.logo-mark{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#EAF3FF,#69A7FF);color:#102A43;display:grid;place-items:center;font-weight:800;letter-spacing:-1px;box-shadow:0 10px 24px rgba(0,0,0,.18)}
+.logo h1{font-size:19px;margin:0;font-weight:750;}
+.logo p{font-size:12px;margin:2px 0 0;color:#BFD7F5;}
+.nav h3{font-size:12px;font-weight:700;color:#9FC2E8;margin:22px 10px 8px;}
+.nav a{display:flex;align-items:center;justify-content:space-between;padding:12px 12px;border-radius:12px;color:#ECF6FF;text-decoration:none;margin:4px 0;font-size:14px;}
+.nav a.active,.nav a:hover{background:rgba(255,255,255,.12)}
+.main{padding:24px 28px 40px;}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.title h2{font-size:24px;margin:0 0 6px;font-weight:760;color:#102A43;}
+.title p{margin:0;color:var(--muted);font-size:14px;}
+.actions{display:flex;gap:10px;}
+button{border:0;border-radius:12px;padding:11px 15px;font-weight:700;font-size:14px;cursor:pointer;}
+.btn-primary{background:var(--blue);color:white;box-shadow:0 10px 24px rgba(31,94,255,.20)}
+.btn-soft{background:#EAF3FF;color:#1451B8;border:1px solid #CFE0F8;}
+.metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:18px;}
+.metric{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 10px 26px rgba(16,42,67,.06)}
+.metric .label{font-size:12px;color:var(--muted);margin-bottom:8px;}
+.metric .value{font-size:24px;font-weight:780;color:#102A43;}
+.metric .hint{font-size:12px;color:var(--muted);margin-top:6px;}
+.grid{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:0 10px 28px rgba(16,42,67,.06);overflow:hidden;}
+.panel-head{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;background:#FBFDFF;}
+.panel-head h3{font-size:16px;margin:0;color:#102A43;}
+.panel-head span{font-size:12px;color:var(--muted)}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{color:#5D6B82;text-align:left;background:#F7FAFF;padding:12px;border-bottom:1px solid var(--line);font-weight:740;}
+td{padding:12px;border-bottom:1px solid #EDF3FB;vertical-align:top;}
+.badge{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:750;}
+.p0{background:#FFECEB;color:#A63530}.p1{background:#FFF3D6;color:#8A5A00}.p2{background:#EAF3FF;color:#1451B8}.review{background:#F1EEFF;color:#5B4BC5}.ready{background:#E7F7EF;color:#0F7A51}.outdated{background:#ECEFF3;color:#111827}
+.issue-row.selected{background:#F2F7FF;}
+.detail{padding:18px;}
+.diff-card{display:grid;grid-template-columns:1fr 82px 1fr;gap:12px;align-items:stretch;margin-bottom:14px;}
+.source{border:1px solid var(--line);border-radius:16px;padding:14px;background:#FBFDFF;}
+.source h4{margin:0 0 8px;font-size:13px;color:#43526A;}
+.amount{font-size:22px;font-weight:800;color:#102A43;}
+.ref{font-size:12px;color:var(--muted);line-height:1.6;margin-top:8px;}
+.delta{display:grid;place-items:center;border-radius:16px;background:#EAF3FF;color:#1451B8;font-weight:800;}
+.choice{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0;}
+.choice button{background:#F7FAFF;color:#102A43;border:1px solid var(--line);text-align:left;}
+.choice button:hover{border-color:#1F5EFF;background:#EAF3FF;}
+.flow{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0;}
+.step{padding:8px 10px;border-radius:12px;background:#F7FAFF;border:1px solid var(--line);font-size:12px;color:#43526A;font-weight:700;}
+.step.active{background:#EAF3FF;color:#1451B8;border-color:#BFD7F5;}
+.note{background:#F8FBFF;border:1px solid var(--line);border-radius:16px;padding:13px;color:#43526A;line-height:1.7;font-size:13px;}
+.footerline{margin-top:14px;display:flex;gap:10px;justify-content:flex-end;}
+.small{font-size:12px;color:var(--muted)}
+.kv{display:grid;grid-template-columns:110px 1fr;gap:8px;font-size:13px;margin:12px 0;}
+.kv div:nth-child(odd){color:#6B7C93}.kv div:nth-child(even){font-weight:700;color:#102A43}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-mark">KM</div>
+      <div><h1>KMFA</h1><p>经营分析系统</p></div>
+    </div>
+    <nav class="nav">
+      <h3>经营分析</h3>
+      <a href="#">经营总览 <span>›</span></a>
+      <a href="#">项目成本 <span>›</span></a>
+      <a href="#">财务资金 <span>›</span></a>
+      <a href="#">税务政策 <span>›</span></a>
+      <h3>数据治理</h3>
+      <a href="#">数据源检查 <span>›</span></a>
+      <a class="active" href="#">数据复核与差异处理 <span>›</span></a>
+      <a href="#">规则与参数 <span>›</span></a>
+      <a href="#">报告中心 <span>›</span></a>
+    </nav>
+  </aside>
+  <main class="main">
+    <div class="top">
+      <div class="title">
+        <h2>数据复核与差异处理</h2>
+        <p>处理项目成本、回款、开票、银行流水与源文件之间的差异；所有处理均保留审计记录，不修改原始上传文件。</p>
+      </div>
+      <div class="actions">
+        <button class="btn-soft">查看处理规则</button>
+        <button class="btn-primary">生成影响预览</button>
+      </div>
+    </div>
+    <section class="metrics">
+      <div class="metric"><div class="label">待处理差异</div><div class="value">18</div><div class="hint">其中 P0 金额差异 3 项</div></div>
+      <div class="metric"><div class="label">影响报告</div><div class="value">4</div><div class="hint">项目成本报告暂未发布</div></div>
+      <div class="metric"><div class="label">今日新增</div><div class="value">6</div><div class="hint">来自销售绩效基准包</div></div>
+      <div class="metric"><div class="label">已关闭</div><div class="value">27</div><div class="hint">全部保留处理记录</div></div>
+      <div class="metric"><div class="label">当前报告等级</div><div class="value">B</div><div class="hint">P0 清零后可升 A</div></div>
+    </section>
+    <div class="grid">
+      <section class="panel">
+        <div class="panel-head"><h3>差异队列</h3><span>按严重程度与报告影响排序</span></div>
+        <table>
+          <thead><tr><th>等级</th><th>项目/来源</th><th>差异说明</th><th>状态</th><th>下一步</th></tr></thead>
+          <tbody>
+            <tr class="issue-row selected"><td><span class="badge p0">P0</span></td><td>广安项目<br><span class="small">销售绩效基准 / 汇总表</span></td><td>毛利金额相差 ¥2,000.00</td><td><span class="badge review">人工复核</span></td><td>选择权威来源或要求重传</td></tr>
+            <tr><td><span class="badge p0">P0</span></td><td>某维修项目<br><span class="small">外协费用 / 项目成本表</span></td><td>外协费用合计与明细不一致</td><td><span class="badge review">人工复核</span></td><td>核对明细合计</td></tr>
+            <tr><td><span class="badge p1">P1</span></td><td>银行流水<br><span class="small">主体A / 基本户</span></td><td>3 笔回款未匹配项目</td><td><span class="badge p1">部分/阻塞</span></td><td>归项目或暂存未归集</td></tr>
+            <tr><td><span class="badge p2">P2</span></td><td>税务资料<br><span class="small">销项发票</span></td><td>税率字段缺失</td><td><span class="badge outdated">已过期</span></td><td>重新上传本期导出</td></tr>
+            <tr><td><span class="badge p2">P2</span></td><td>WPS 应收账龄<br><span class="small">客户台账</span></td><td>账期口径缺少说明</td><td><span class="badge p1">部分/阻塞</span></td><td>填写口径说明</td></tr>
+          </tbody>
+        </table>
+      </section>
+      <section class="panel">
+        <div class="panel-head"><h3>当前差异详情</h3><span>Issue #KMFA-P0-0007</span></div>
+        <div class="detail">
+          <div class="diff-card">
+            <div class="source"><h4>来源 A｜项目成本分析 PDF</h4><div class="amount">¥39,679.46</div><div class="ref">文件：销售绩效考核.zip<br>位置：PDF 第 1 页 / 毛利<br>Hash：sha256: 9f3a…c82d</div></div>
+            <div class="delta">差异<br>¥2,000.00</div>
+            <div class="source"><h4>来源 B｜项目成本汇总 Excel</h4><div class="amount">¥37,679.46</div><div class="ref">文件：项目成本汇总.xlsx<br>位置：Sheet 汇总 / G12<br>Hash：sha256: 21a4…88b1</div></div>
+          </div>
+          <div class="kv">
+            <div>影响范围</div><div>项目毛利、项目成本专题报告、经营总览摘要</div>
+            <div>当前等级</div><div>P0 金额核心差异，阻塞 A 级报告</div>
+            <div>原始数据</div><div>未被修改；本页仅记录处理意见</div>
+          </div>
+          <div class="flow">
+            <span class="step active">1 查看差异</span>
+            <span class="step">2 选择处理方式</span>
+            <span class="step">3 生成影响预览</span>
+            <span class="step">4 确认应用</span>
+          </div>
+          <div class="choice">
+            <button>采用来源 A<br><span class="small">保留 PDF 毛利作为本次基准</span></button>
+            <button>采用来源 B<br><span class="small">保留 Excel 汇总作为本次基准</span></button>
+            <button>要求重新上传<br><span class="small">源文件可能不是同一版本</span></button>
+            <button>暂缓处理<br><span class="small">进入人工复核队列</span></button>
+          </div>
+          <div class="note">系统将根据你的处理选择生成 resolution 事件，并重新计算受影响项目、指标和报告草稿。原始 PDF、Excel、抽取值和文件 hash 不会被修改。</div>
+          <div class="footerline"><button class="btn-soft">保存为待复核</button><button class="btn-primary">生成影响预览</button></div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KMFA 项目成本专题报告预览 v0.6</title>
+<style>
+:root{--navy:#0b1f3a;--blue:#1d4ed8;--sky:#eaf3ff;--line:#d8e4f5;--text:#152033;--muted:#64748b;--bg:#f6f9fe;--card:#ffffff;--ok:#0f766e;--partial:#dbeafe;--partial-text:#1e3a8a;--bad:#b91c1c;--out:#111827;--review:#5b21b6;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif;color:var(--text)}
+.header{background:linear-gradient(135deg,var(--navy),#123a70 55%,#2563eb);color:white;padding:34px 42px}.brand{display:flex;align-items:center;gap:14px}.logo{width:50px;height:50px;border:1px solid rgba(255,255,255,.45);border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;letter-spacing:.5px;background:rgba(255,255,255,.10)}h1{margin:18px 0 8px;font-size:30px}.sub{opacity:.85;line-height:1.7}.wrap{max-width:1180px;margin:0 auto;padding:28px}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 14px 34px rgba(17,45,88,.06)}.kpi .num{font-size:28px;font-weight:800;color:var(--navy);margin:10px 0}.label{font-size:13px;color:var(--muted)}.section{margin-top:22px}.section h2{font-size:21px;margin:0 0 14px;color:var(--navy)}table{width:100%;border-collapse:collapse;background:white;border-radius:14px;overflow:hidden;border:1px solid var(--line)}th{background:#eef5ff;text-align:left;color:#1e3a5f;font-size:13px;padding:12px;border-bottom:1px solid var(--line)}td{padding:12px;border-bottom:1px solid #edf2f7;font-size:14px}.pill{display:inline-block;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:700}.ok{background:#d9f4ee;color:var(--ok)}.partial{background:var(--partial);color:var(--partial-text)}.bad{background:#fee2e2;color:var(--bad)}.out{background:#e5e7eb;color:var(--out)}.review{background:#ede9fe;color:var(--review)}.bars{display:grid;gap:12px}.barline{display:grid;grid-template-columns:140px 1fr 70px;gap:12px;align-items:center}.track{height:10px;background:#e8eef7;border-radius:99px;overflow:hidden}.fill{height:100%;background:linear-gradient(90deg,#0b1f3a,#1d4ed8,#60a5fa)}.note{background:var(--sky);border:1px solid var(--line);border-radius:14px;padding:14px;line-height:1.7;color:#1e3a5f}.twocol{display:grid;grid-template-columns:1.25fr .75fr;gap:16px}@media(max-width:900px){.grid,.twocol{grid-template-columns:1fr}.wrap{padding:16px}.header{padding:24px}}
+</style></head><body>
+<header class="header"><div class="brand"><div class="logo">KM</div><div><strong>KMFA 经营分析系统</strong><div class="sub">项目成本专题报告 · 内部试运行预览 · 蓝色商务版 v0.6</div></div></div><h1>项目成本分析报告</h1><div class="sub">本报告用于经营管理复盘。正式使用前必须通过权威项目成本基准零差异校验；存在任何未解释差异时，报告自动降级。</div></header>
+<main class="wrap">
+<section class="grid">
+<div class="card kpi"><div class="label">报告等级</div><div class="num">A / B / C / D</div><div class="label">由数据质量与零差异校验决定</div></div>
+<div class="card kpi"><div class="label">项目成本准确性</div><div class="num">零差异</div><div class="label">金额容忍：0.00</div></div>
+<div class="card kpi"><div class="label">未归集成本</div><div class="num">需复核</div><div class="label">不得静默并入或丢弃</div></div>
+<div class="card kpi"><div class="label">报告口径</div><div class="num">管理分析</div><div class="label">与合法账本建立差异摘要</div></div>
+</section>
+<section class="section twocol"><div class="card"><h2>一、本期项目成本结果</h2><table><thead><tr><th>项目</th><th>收入</th><th>成本</th><th>毛利</th><th>回款状态</th><th>校验</th></tr></thead><tbody>
+<tr><td>权威样本项目 A</td><td>锁定值</td><td>锁定值</td><td>锁定值</td><td><span class="pill ok">已核对</span></td><td><span class="pill ok">零差异</span></td></tr>
+<tr><td>权威样本项目 B</td><td>锁定值</td><td>锁定值</td><td>锁定值</td><td><span class="pill partial">部分核对</span></td><td><span class="pill review">待复核</span></td></tr>
+<tr><td>权威样本项目 C</td><td>锁定值</td><td>锁定值</td><td>锁定值</td><td><span class="pill out">数据过期</span></td><td><span class="pill bad">阻断</span></td></tr>
+</tbody></table></div><div class="card"><h2>二、项目成本结构</h2><div class="bars">
+<div class="barline"><span>外协费用</span><div class="track"><div class="fill" style="width:72%"></div></div><b>72%</b></div>
+<div class="barline"><span>材料/领料</span><div class="track"><div class="fill" style="width:58%"></div></div><b>58%</b></div>
+<div class="barline"><span>人工/工时</span><div class="track"><div class="fill" style="width:44%"></div></div><b>44%</b></div>
+<div class="barline"><span>运输/差旅</span><div class="track"><div class="fill" style="width:31%"></div></div><b>31%</b></div>
+<div class="barline"><span>税费影响</span><div class="track"><div class="fill" style="width:25%"></div></div><b>25%</b></div>
+</div></div></section>
+<section class="section card"><h2>三、口径差异与管理调整摘要</h2><table><thead><tr><th>类别</th><th>说明</th><th>处理规则</th><th>状态</th></tr></thead><tbody>
+<tr><td>成本归属</td><td>部分费用缺少明确项目编号</td><td>进入未归集成本池，人工确认后归项</td><td><span class="pill review">人工复核</span></td></tr>
+<tr><td>时间差异</td><td>开票、回款、完工期间可能不一致</td><td>分别保留发生期间、开票期间、回款期间</td><td><span class="pill partial">部分核对</span></td></tr>
+<tr><td>税务口径</td><td>合同税率、发票税率、计税方式需一致</td><td>不一致时进入 CTO Tax 复核队列</td><td><span class="pill ok">已定义</span></td></tr>
+</tbody></table></section>
+<section class="section card"><h2>四、零差异校验结果</h2><div class="note">正式报告必须通过销售绩效考核权威基准的逐项复刻。任一项目、任一金额、任一汇总项出现 0.01 元差异，系统均不得生成正式报告，只能输出差异定位清单和人工复核任务。</div></section>
+</main></body></html>

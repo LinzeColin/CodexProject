@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>KMFA 经营分析系统｜Dashboard v2</title>
+  <style>
+    :root{
+      --bg:#07111f;
+      --bg2:#0b1728;
+      --panel:#101d30;
+      --panel2:#132238;
+      --card:#0f1b2e;
+      --line:rgba(255,255,255,.10);
+      --line2:rgba(255,255,255,.16);
+      --text:#eef5ff;
+      --muted:#91a3ba;
+      --soft:#c6d2e1;
+      --gold:#d7b36a;
+      --gold2:#f1d38a;
+      --green:#1fbf75;
+      --yellow:#f2b84b;
+      --red:#e05252;
+      --black:#06080c;
+      --purple:#8067ff;
+      --blue:#49a7ff;
+      --cyan:#55d6d0;
+      --shadow:0 24px 70px rgba(0,0,0,.34);
+      --radius:24px;
+      --radius2:16px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 18% 12%, rgba(215,179,106,.22), transparent 28%),
+        radial-gradient(circle at 84% 18%, rgba(73,167,255,.20), transparent 30%),
+        linear-gradient(135deg, #06101d 0%, #0b1728 48%, #09111e 100%);
+      letter-spacing:.1px;
+    }
+    .shell{display:grid;grid-template-columns:280px 1fr;min-height:100vh}
+    aside{
+      position:sticky;top:0;height:100vh;padding:24px 18px;border-right:1px solid var(--line);
+      background:linear-gradient(180deg,rgba(9,17,30,.92),rgba(10,18,31,.72));backdrop-filter: blur(18px);
+    }
+    .brand{display:flex;gap:14px;align-items:center;margin-bottom:28px;padding:10px 8px}
+    .brandmark{width:46px;height:46px;border-radius:16px;background:linear-gradient(135deg,var(--gold),#9a7133 55%,#33445c);display:grid;place-items:center;box-shadow:0 18px 40px rgba(215,179,106,.22);font-weight:800;color:#111827}
+    .brand h1{margin:0;font-size:20px;line-height:1.05}
+    .brand p{margin:5px 0 0;color:var(--muted);font-size:12px}
+    nav{display:flex;flex-direction:column;gap:8px}
+    .navbtn{border:1px solid transparent;background:transparent;color:var(--soft);padding:12px 14px;border-radius:16px;text-align:left;cursor:pointer;font-size:14px;display:flex;justify-content:space-between;align-items:center;transition:.18s}
+    .navbtn:hover{background:rgba(255,255,255,.06);border-color:var(--line)}
+    .navbtn.active{background:linear-gradient(135deg,rgba(215,179,106,.18),rgba(73,167,255,.09));border-color:rgba(215,179,106,.34);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.04)}
+    .navtag{font-size:11px;color:var(--gold2);border:1px solid rgba(215,179,106,.26);border-radius:999px;padding:2px 8px;background:rgba(215,179,106,.08)}
+    .aside-footer{position:absolute;bottom:24px;left:18px;right:18px;border:1px solid var(--line);border-radius:20px;padding:14px;background:rgba(255,255,255,.04)}
+    .aside-footer b{font-size:13px}
+    .aside-footer p{font-size:12px;color:var(--muted);line-height:1.55;margin:8px 0 0}
+    main{padding:26px 30px 40px;overflow:hidden}
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-bottom:22px}
+    .crumb{color:var(--muted);font-size:13px}.crumb b{color:#fff;font-weight:650}
+    .periods{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .pill{border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--soft);border-radius:999px;padding:8px 12px;font-size:12px;cursor:pointer}.pill.active{color:#111827;background:var(--gold2);border-color:var(--gold2);font-weight:700}
+    .hero{position:relative;border:1px solid var(--line2);border-radius:34px;padding:28px;background:linear-gradient(135deg,rgba(255,255,255,.10),rgba(255,255,255,.045));box-shadow:var(--shadow);overflow:hidden;margin-bottom:22px}
+    .hero:before{content:"";position:absolute;inset:-140px -160px auto auto;width:420px;height:420px;background:radial-gradient(circle,rgba(215,179,106,.26),transparent 62%);pointer-events:none}
+    .hero-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:24px;position:relative;z-index:1}
+    .eyebrow{display:inline-flex;gap:8px;align-items:center;color:var(--gold2);font-size:12px;text-transform:uppercase;letter-spacing:.12em;margin-bottom:12px}
+    .hero h2{font-size:34px;line-height:1.15;margin:0 0 10px}.hero p{color:var(--soft);line-height:1.75;margin:0;max-width:860px}.hero strong{color:#fff}
+    .hero-actions{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap}.btn{border:1px solid var(--line);padding:10px 14px;border-radius:14px;background:rgba(255,255,255,.06);color:#fff;cursor:pointer;font-weight:650}.btn.primary{background:linear-gradient(135deg,var(--gold2),#c9963e);color:#111827;border-color:rgba(255,255,255,.12)}
+    .mini-panel{border:1px solid var(--line);border-radius:24px;background:rgba(0,0,0,.18);padding:18px}.mini-panel h3{margin:0 0 12px;font-size:14px;color:var(--soft)}
+    .health-num{font-size:48px;font-weight:800;letter-spacing:-1.5px}.health-num small{font-size:16px;color:var(--muted)}
+    .delta{display:inline-flex;border-radius:999px;padding:5px 10px;background:rgba(31,191,117,.14);color:#76e3ae;font-size:12px;border:1px solid rgba(31,191,117,.25)}
+    .kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:22px}.kpi{border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.075),rgba(255,255,255,.035));border-radius:22px;padding:18px;min-height:132px;position:relative;overflow:hidden}.kpi:after{content:"";position:absolute;right:-40px;bottom:-52px;width:120px;height:120px;border-radius:50%;background:rgba(215,179,106,.10)}.kpi label{color:var(--muted);font-size:12px}.kpi .value{font-size:28px;font-weight:800;margin:12px 0 8px;letter-spacing:-.7px}.kpi .note{font-size:12px;color:var(--soft);line-height:1.5}.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.card{border:1px solid var(--line);background:rgba(255,255,255,.055);border-radius:24px;padding:20px;box-shadow:0 16px 44px rgba(0,0,0,.16)}.card h3{margin:0 0 14px;font-size:18px}.card h4{margin:0 0 10px;font-size:14px;color:#fff}.muted{color:var(--muted)}.soft{color:var(--soft)}.small{font-size:12px}.section{display:none;animation:fade .22s ease}.section.active{display:block}@keyframes fade{from{opacity:.2;transform:translateY(6px)}to{opacity:1;transform:none}}
+    .subnav{display:flex;gap:8px;margin:0 0 16px;overflow:auto}.subnav button{white-space:nowrap;border:1px solid var(--line);background:rgba(255,255,255,.035);color:var(--soft);border-radius:999px;padding:9px 12px;cursor:pointer}.subnav button.active{background:rgba(215,179,106,.18);border-color:rgba(215,179,106,.38);color:#fff}
+    table{width:100%;border-collapse:collapse}th,td{border-bottom:1px solid var(--line);padding:12px 10px;text-align:left;vertical-align:top}th{color:var(--muted);font-size:12px;font-weight:650}td{color:var(--soft);font-size:13px}tr:hover td{background:rgba(255,255,255,.025)}
+    .status{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:700;border:1px solid}.status:before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}.ready{color:#72e4ad;background:rgba(31,191,117,.12);border-color:rgba(31,191,117,.28)}.partial{color:#ffd27a;background:rgba(242,184,75,.12);border-color:rgba(242,184,75,.28)}.failed{color:#ff8989;background:rgba(224,82,82,.13);border-color:rgba(224,82,82,.30)}.outdated{color:#d6d8de;background:#05070a;border-color:rgba(255,255,255,.18)}.review{color:#c7bdff;background:rgba(128,103,255,.15);border-color:rgba(128,103,255,.34)}
+    .matrix-wrap{overflow:auto;border:1px solid var(--line);border-radius:24px}.matrix th{position:sticky;top:0;background:#0e1b2d;z-index:2}.matrix td:first-child,.matrix th:first-child{position:sticky;left:0;background:#0e1b2d;z-index:3}.cell{min-width:120px;text-align:center}.check{font-size:18px}.bar{height:9px;border-radius:999px;background:rgba(255,255,255,.10);overflow:hidden}.bar span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--gold2),var(--green));width:60%}.bars{display:grid;gap:12px}.rowline{display:grid;grid-template-columns:160px 1fr 48px;gap:10px;align-items:center;font-size:12px;color:var(--soft)}.radar{display:grid;grid-template-columns:260px 1fr;gap:18px;align-items:center}.radar svg{width:250px;height:250px}.radar-list{display:grid;gap:10px}.axis{display:grid;grid-template-columns:110px 1fr 48px;gap:10px;align-items:center}.axis .bar span{background:linear-gradient(90deg,var(--blue),var(--gold2))}.action{display:grid;grid-template-columns:34px 1fr auto;gap:12px;border:1px solid var(--line);border-radius:18px;padding:12px;background:rgba(255,255,255,.035);margin-bottom:10px}.rank{width:34px;height:34px;border-radius:12px;background:rgba(215,179,106,.16);display:grid;place-items:center;color:var(--gold2);font-weight:800}.score{font-size:12px;color:var(--muted)}
+    .timeline{display:grid;gap:10px}.tl{border-left:2px solid rgba(215,179,106,.35);padding-left:14px;position:relative}.tl:before{content:"";position:absolute;left:-6px;top:5px;width:10px;height:10px;border-radius:50%;background:var(--gold2)}.tl b{display:block}.tl span{font-size:12px;color:var(--muted)}
+    .tabs-content{display:none}.tabs-content.active{display:block}.callout{border:1px solid rgba(215,179,106,.28);background:linear-gradient(135deg,rgba(215,179,106,.11),rgba(255,255,255,.035));border-radius:20px;padding:16px;color:var(--soft);line-height:1.65}.warn{border-color:rgba(224,82,82,.35);background:rgba(224,82,82,.10)}
+    .policy-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.policy{border:1px solid var(--line);border-radius:20px;padding:16px;background:rgba(255,255,255,.04)}.policy b{font-size:15px}.policy .score2{font-size:30px;font-weight:800;margin:10px 0}.policy p{margin:0;color:var(--muted);font-size:12px;line-height:1.55}.footer-note{color:var(--muted);font-size:12px;line-height:1.7;margin-top:18px;border-top:1px solid var(--line);padding-top:14px}
+    .watermark{position:fixed;right:24px;bottom:18px;color:rgba(255,255,255,.16);font-size:11px;pointer-events:none}
+    @media(max-width:1120px){.shell{grid-template-columns:1fr}aside{position:relative;height:auto}.aside-footer{position:relative;left:0;right:0;bottom:0;margin-top:18px}.hero-grid,.grid-2,.grid-3,.radar{grid-template-columns:1fr}.kpi-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:680px){main{padding:18px}.kpi-grid,.policy-grid{grid-template-columns:1fr}.hero h2{font-size:26px}.topbar{align-items:flex-start;flex-direction:column}}
+  </style>
+</head>
+<body>
+<div class="shell">
+  <aside>
+    <div class="brand">
+      <div class="brandmark">K</div>
+      <div><h1>KMFA</h1><p>经营分析系统 · Stage 1 UI Preview</p></div>
+    </div>
+    <nav>
+      <button class="navbtn active" data-page="home">首页总览 <span class="navtag">Board</span></button>
+      <button class="navbtn" data-page="ceo">CEO 经营驾驶舱 <span>›</span></button>
+      <button class="navbtn" data-page="cfo">CFO 财务资金 <span>›</span></button>
+      <button class="navbtn" data-page="cto">CTO 税务政策 <span>›</span></button>
+      <button class="navbtn" data-page="data">数据源检查板 <span class="navtag">Gate</span></button>
+      <button class="navbtn" data-page="reports">报告中心 <span>›</span></button>
+      <button class="navbtn" data-page="governance">治理与参数 <span>›</span></button>
+    </nav>
+    <div class="aside-footer">
+      <b>后续集成原则</b>
+      <p>KMFA 前期独立开发；后期通过统一入口、报告中心、身份权限与 metadata manifest 接入 OpMe，不反向污染 OpMe 当前业务代码。</p>
+    </div>
+  </aside>
+
+  <main>
+    <div class="topbar">
+      <div class="crumb">武汉开明 · <b id="pageTitle">首页总览</b> · 项目制工程经营</div>
+      <div class="periods"><button class="pill active">周</button><button class="pill">月</button><button class="pill">季</button><button class="pill">半年</button><button class="pill">年</button></div>
+    </div>
+
+    <section id="home" class="section active">
+      <div class="hero">
+        <div class="hero-grid">
+          <div>
+            <div class="eyebrow">KMFA Executive Console</div>
+            <h2>把项目、财务、税务、合同与回款拉到同一张经营桌上。</h2>
+            <p>首页只呈现管理层最需要立即知道的事实：现金安全、项目毛利、回款质量、税务政策、数据就绪度和本周优先动作。所有结论必须能回溯到来源、公式、报告版本和人工确认记录。</p>
+            <div class="hero-actions"><button class="btn primary" onclick="showPage('data')">查看数据检查板</button><button class="btn" onclick="showPage('reports')">进入报告中心</button><button class="btn" onclick="showPage('governance')">查看公式参数</button></div>
+          </div>
+          <div class="mini-panel">
+            <h3>经营健康指数</h3>
+            <div class="health-num">76<small>/100</small></div>
+            <span class="delta">较上期 +4 · 样例数据</span>
+            <p class="small muted" style="line-height:1.7;margin-top:14px">由现金安全、项目利润、回款质量、税务政策、合同履约、数据治理六个轴计算。权重和阈值见 `formula_registry.yaml`。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi"><label>现金安全天数</label><div class="value">92 天</div><div class="note">扣除已确认付款计划后，短期安全；需要催收两笔超期应收。</div></div>
+        <div class="kpi"><label>项目真实毛利率</label><div class="value">18.6%</div><div class="note">比账面毛利低 3.2pt，主要来自未归集外协与运输成本。</div></div>
+        <div class="kpi"><label>应收回款质量</label><div class="value">B+</div><div class="note">超期应收集中在 2 个客户，建议本周处理。</div></div>
+        <div class="kpi"><label>政策资格准备度</label><div class="value">64%</div><div class="note">研发费用、科技人员、知识产权证据链仍需补齐。</div></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>经营健康雷达</h3>
+          <div class="radar">
+            <svg viewBox="0 0 240 240" aria-label="经营健康雷达">
+              <defs><linearGradient id="radarFill" x1="0" x2="1"><stop offset="0" stop-color="#49a7ff" stop-opacity=".48"/><stop offset="1" stop-color="#f1d38a" stop-opacity=".58"/></linearGradient></defs>
+              <g transform="translate(120 120)" stroke="rgba(255,255,255,.16)" fill="none">
+                <polygon points="0,-95 82,-47 82,47 0,95 -82,47 -82,-47"/><polygon points="0,-65 56,-33 56,33 0,65 -56,33 -56,-33"/><polygon points="0,-35 30,-18 30,18 0,35 -30,18 -30,-18"/>
+                <line x1="0" y1="0" x2="0" y2="-104"/><line x1="0" y1="0" x2="90" y2="-52"/><line x1="0" y1="0" x2="90" y2="52"/><line x1="0" y1="0" x2="0" y2="104"/><line x1="0" y1="0" x2="-90" y2="52"/><line x1="0" y1="0" x2="-90" y2="-52"/>
+                <polygon points="0,-78 64,-37 62,36 0,73 -58,34 -70,-40" fill="url(#radarFill)" stroke="#f1d38a" stroke-width="2"/>
+              </g>
+              <text x="105" y="14" fill="#c6d2e1" font-size="10">现金</text><text x="196" y="70" fill="#c6d2e1" font-size="10">利润</text><text x="194" y="174" fill="#c6d2e1" font-size="10">回款</text><text x="106" y="235" fill="#c6d2e1" font-size="10">税务</text><text x="18" y="174" fill="#c6d2e1" font-size="10">履约</text><text x="14" y="70" fill="#c6d2e1" font-size="10">数据</text>
+            </svg>
+            <div class="radar-list">
+              <div class="axis"><span>现金安全</span><div class="bar"><span style="width:82%"></span></div><b>82</b></div>
+              <div class="axis"><span>项目利润</span><div class="bar"><span style="width:74%"></span></div><b>74</b></div>
+              <div class="axis"><span>回款质量</span><div class="bar"><span style="width:69%"></span></div><b>69</b></div>
+              <div class="axis"><span>税务政策</span><div class="bar"><span style="width:64%"></span></div><b>64</b></div>
+              <div class="axis"><span>合同履约</span><div class="bar"><span style="width:72%"></span></div><b>72</b></div>
+              <div class="axis"><span>数据治理</span><div class="bar"><span style="width:70%"></span></div><b>70</b></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>本周优先动作</h3>
+          <div class="action"><div class="rank">1</div><div><b>催收 A 客户超期节点款</b><div class="small muted">合同节点已满足，超期 27 天；影响现金安全指数 8 分。</div></div><div class="score">ROI 91</div></div>
+          <div class="action"><div class="rank">2</div><div><b>复核 B 项目外协成本归集</b><div class="small muted">账面毛利与管理毛利差异 3.2pt；需核对红圈/WPS/金蝶。</div></div><div class="score">ROI 84</div></div>
+          <div class="action"><div class="rank">3</div><div><b>补齐研发项目证据链</b><div class="small muted">影响高新/科小 readiness；需关联项目、人员、工时、费用。</div></div><div class="score">ROI 78</div></div>
+          <div class="callout">系统不会在关键数据缺失时生成“完整结论”。缺失数据会在检查板转为黄色或红色，并阻塞对应报告章节。</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="ceo" class="section">
+      <div class="subnav"><button class="active" data-tab="ceo-overview">经营总览</button><button data-tab="ceo-projects">项目组合</button><button data-tab="ceo-commercial">商务订单</button><button data-tab="ceo-board">Board 决策</button></div>
+      <div id="ceo-overview" class="tabs-content active">
+        <div class="grid-3">
+          <div class="card"><h3>经营判断</h3><p class="soft">本期经营处于“可控但需加速回款”状态。利润质量中等，现金风险主要来自结算与回款节奏，而非单纯收入不足。</p></div>
+          <div class="card"><h3>资源配置</h3><p class="soft">优先保现金、保高毛利维修项目、控制低确定性安装项目垫资，不建议新增重资产投入。</p></div>
+          <div class="card"><h3>管理提醒</h3><p class="soft">三人多角色模式下，所有关键确认必须记录“以哪个角色帽子确认”，避免后续责任与口径混乱。</p></div>
+        </div>
+        <div class="card" style="margin-top:16px"><h3>CEO 一页表</h3><table><thead><tr><th>问题</th><th>当前结论</th><th>证据状态</th><th>下一步</th></tr></thead><tbody><tr><td>公司赚钱吗</td><td>样例期项目真实毛利率 18.6%，账面与管理口径存在差异</td><td><span class="status review">MANUAL REVIEW</span></td><td>做 reconciliation bridge</td></tr><tr><td>现金安全吗</td><td>92 天安全，但两笔应收影响 4 周后资金曲线</td><td><span class="status partial">PARTIAL</span></td><td>导入银行日余额与应收账龄</td></tr><tr><td>订单够不够</td><td>合同储备可覆盖 2.4 个月，报价项目需复核毛利</td><td><span class="status ready">READY</span></td><td>报价漏项扫描</td></tr><tr><td>政策能不能争取</td><td>科小/高新有准备价值，但证据链未闭合</td><td><span class="status partial">PARTIAL</span></td><td>补研发费用、人员、IP、项目证据</td></tr></tbody></table></div>
+      </div>
+      <div id="ceo-projects" class="tabs-content"><div class="grid-2"><div class="card"><h3>项目组合矩阵</h3><div class="bars"><div class="rowline"><span>高毛利维修</span><div class="bar"><span style="width:78%"></span></div><b>优先</b></div><div class="rowline"><span>机加工急单</span><div class="bar"><span style="width:64%"></span></div><b>选择</b></div><div class="rowline"><span>重垫资安装</span><div class="bar"><span style="width:38%"></span></div><b>谨慎</b></div><div class="rowline"><span>争议结算项目</span><div class="bar"><span style="width:28%"></span></div><b>止损</b></div></div></div><div class="card"><h3>项目制核心链路</h3><div class="timeline"><div class="tl"><b>合同</b><span>金额、税率、付款节点、质保金</span></div><div class="tl"><b>履约</b><span>人材机、外协、签证、返工、安全</span></div><div class="tl"><b>结算</b><span>验收、变更确认、未结算成本</span></div><div class="tl"><b>开票与回款</b><span>销项、进项、收款核销、账龄</span></div></div></div></div></div>
+      <div id="ceo-commercial" class="tabs-content"><div class="card"><h3>商务经营：并入 CEO 层</h3><table><thead><tr><th>阶段</th><th>样例数量</th><th>金额</th><th>质量判断</th><th>管理动作</th></tr></thead><tbody><tr><td>询价/机会</td><td>12</td><td>¥420万</td><td>来源稳定，但信息完整度一般</td><td>补客户预算与工期</td></tr><tr><td>报价/投标</td><td>7</td><td>¥260万</td><td>2 个项目毛利低于阈值</td><td>报价漏项扫描</td></tr><tr><td>合同待开工</td><td>3</td><td>¥118万</td><td>现金垫资可控</td><td>锁付款节点</td></tr><tr><td>结算待回款</td><td>5</td><td>¥96万</td><td>两笔超期</td><td>催收优先级引擎</td></tr></tbody></table></div></div>
+      <div id="ceo-board" class="tabs-content"><div class="card"><h3>Board 决策备忘录</h3><div class="callout">建议本周只处理三件事：回款、项目毛利差异、政策证据归集。任何新增项目必须先通过“现金影响 + 项目真实毛利 + 税务口径 + 数据完整性”四项门禁。</div></div></div>
+    </section>
+
+    <section id="cfo" class="section">
+      <div class="subnav"><button class="active" data-tab="cfo-cash">现金与资金</button><button data-tab="cfo-pl">利润与成本</button><button data-tab="cfo-rec">Reconciliation</button><button data-tab="cfo-arap">应收应付</button></div>
+      <div id="cfo-cash" class="tabs-content active"><div class="grid-2"><div class="card"><h3>现金流曲线</h3><div class="bars"><div class="rowline"><span>本周</span><div class="bar"><span style="width:88%"></span></div><b>安全</b></div><div class="rowline"><span>4 周</span><div class="bar"><span style="width:72%"></span></div><b>关注</b></div><div class="rowline"><span>8 周</span><div class="bar"><span style="width:58%"></span></div><b>压力</b></div><div class="rowline"><span>12 周</span><div class="bar"><span style="width:51%"></span></div><b>预警</b></div></div></div><div class="card"><h3>资金门禁</h3><table><tr><th>门禁</th><th>状态</th><th>说明</th></tr><tr><td>银行余额导入</td><td><span class="status partial">PARTIAL</span></td><td>缺日余额，已有交易流水</td></tr><tr><td>回款计划</td><td><span class="status ready">READY</span></td><td>来自合同与应收台账</td></tr><tr><td>付款计划</td><td><span class="status review">MANUAL REVIEW</span></td><td>需人工确认供应商优先级</td></tr></table></div></div></div>
+      <div id="cfo-pl" class="tabs-content"><div class="card"><h3>项目真实毛利与费用结构</h3><table><thead><tr><th>项目类型</th><th>收入</th><th>直接成本</th><th>真实毛利</th><th>风险</th></tr></thead><tbody><tr><td>水泥厂委外维修</td><td>¥128万</td><td>¥91万</td><td>28.9%</td><td><span class="status ready">READY</span></td></tr><tr><td>钢铁能源安装</td><td>¥210万</td><td>¥184万</td><td>12.4%</td><td><span class="status partial">PARTIAL</span></td></tr><tr><td>机加工急单</td><td>¥56万</td><td>¥43万</td><td>23.2%</td><td><span class="status review">MANUAL REVIEW</span></td></tr></tbody></table></div></div>
+      <div id="cfo-rec" class="tabs-content"><div class="grid-2"><div class="card"><h3>Reconciliation Bridge</h3><table><thead><tr><th>桥接项</th><th>影响</th><th>证据</th></tr></thead><tbody><tr><td>账面利润</td><td>¥72.0万</td><td>金蝶利润表</td></tr><tr><td>未归集外协成本</td><td>-¥11.5万</td><td>红圈/WPS/供应商台账</td></tr><tr><td>未结算签证变更</td><td>+¥6.8万</td><td>合同补充协议</td></tr><tr><td>应收坏账风险准备</td><td>-¥4.2万</td><td>账龄与客户状态</td></tr><tr><td><b>管理真实利润</b></td><td><b>¥63.1万</b></td><td>需人工确认</td></tr></tbody></table></div><div class="card"><h3>单账本，多口径说明</h3><p class="soft">KMFA 不设计“内外账”。系统只保留一套合法账本，并在其上建立管理分析口径、项目真实口径、税务政策口径的 reconciliation 视图。每一项调整必须有原因、来源、owner、时间和复核状态。</p></div></div></div>
+      <div id="cfo-arap" class="tabs-content"><div class="card"><h3>应收应付与回款优先级</h3><table><thead><tr><th>对象</th><th>金额</th><th>账龄</th><th>争议</th><th>建议</th></tr></thead><tbody><tr><td>A 客户</td><td>¥38万</td><td>27 天</td><td>低</td><td>本周催收</td></tr><tr><td>B 客户</td><td>¥22万</td><td>45 天</td><td>中</td><td>先补验收材料</td></tr><tr><td>C 供应商</td><td>¥16万</td><td>到期</td><td>低</td><td>按现金曲线安排</td></tr></tbody></table></div></div>
+    </section>
+
+    <section id="cto" class="section">
+      <div class="subnav"><button class="active" data-tab="cto-tax">税务风险</button><button data-tab="cto-policy">政策资格</button><button data-tab="cto-invoice">发票与税率</button><button data-tab="cto-evidence">证据归集</button></div>
+      <div id="cto-tax" class="tabs-content active"><div class="grid-2"><div class="card"><h3>CTO = Chief Tax Officer</h3><p class="soft">本板块聚焦税务、政策、账务处理与多方 stakeholder 口径 reconcile。技术/项目治理已打散进入 CEO 项目组合、CFO 项目毛利和数据治理。</p></div><div class="card"><h3>税务风险快照</h3><table><tr><th>事项</th><th>状态</th><th>动作</th></tr><tr><td>项目税率匹配</td><td><span class="status review">MANUAL REVIEW</span></td><td>按合同与开票复核</td></tr><tr><td>进销项匹配</td><td><span class="status partial">PARTIAL</span></td><td>补进项发票导出</td></tr><tr><td>研发费用归集</td><td><span class="status partial">PARTIAL</span></td><td>补人员/项目/工时证据</td></tr></table></div></div></div>
+      <div id="cto-policy" class="tabs-content"><div class="policy-grid"><div class="policy"><b>科技型中小企业</b><div class="score2">72%</div><p>人员、收入、资产、评分材料需年度更新。</p></div><div class="policy"><b>高新技术企业</b><div class="score2">61%</div><p>研发费用、科技人员、知识产权、高新收入证据链待补。</p></div><div class="policy"><b>专精特新</b><div class="score2">48%</div><p>专业化、精细化、特色化、创新能力材料需专项整理。</p></div><div class="policy"><b>研发加计扣除</b><div class="score2">66%</div><p>关键在准确归集、留存备查和项目证据闭环。</p></div></div></div>
+      <div id="cto-invoice" class="tabs-content"><div class="card"><h3>发票与税率匹配</h3><table><thead><tr><th>项目</th><th>合同税率</th><th>开票税率</th><th>进项匹配</th><th>状态</th></tr></thead><tbody><tr><td>水泥厂维修 A</td><td>9%/13%</td><td>待核</td><td>部分匹配</td><td><span class="status review">MANUAL REVIEW</span></td></tr><tr><td>机加工 B</td><td>13%</td><td>13%</td><td>良好</td><td><span class="status ready">READY</span></td></tr><tr><td>现场安装 C</td><td>9%</td><td>待开票</td><td>缺进项</td><td><span class="status partial">PARTIAL</span></td></tr></tbody></table></div></div>
+      <div id="cto-evidence" class="tabs-content"><div class="card"><h3>政策证据归集清单</h3><table><thead><tr><th>证据包</th><th>用途</th><th>状态</th><th>阻塞</th></tr></thead><tbody><tr><td>研发项目立项/结题</td><td>高新、加计扣除</td><td><span class="status partial">PARTIAL</span></td><td>政策报告</td></tr><tr><td>科技人员花名册与工时</td><td>高新、科小</td><td><span class="status review">MANUAL REVIEW</span></td><td>高新 readiness</td></tr><tr><td>知识产权与技术领域映射</td><td>高新、专精特新</td><td><span class="status failed">FAILED</span></td><td>政策评分</td></tr></tbody></table></div></div>
+    </section>
+
+    <section id="data" class="section">
+      <div class="hero" style="padding:22px"><h2 style="font-size:26px">数据源检查板</h2><p>行是数据源，列是该源应提供的文件/数据包。绿色表示可推进，黄色表示部分/阻塞合并，红色表示失败/不适用合并，黑色表示过期，紫色表示需要人工复核。</p></div>
+      <div class="card">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px"><span class="status ready">READY</span><span class="status partial">PARTIAL</span><span class="status failed">FAILED</span><span class="status outdated">OUTDATED</span><span class="status review">MANUAL REVIEW</span></div>
+        <div class="matrix-wrap"><table class="matrix"><thead><tr><th>数据源 / 文件包</th><th class="cell">授权/连接</th><th class="cell">主数据</th><th class="cell">本期业务数据</th><th class="cell">财务/金额</th><th class="cell">税务/票据</th><th class="cell">字段映射</th><th class="cell">质量校验</th><th class="cell">报告门禁</th></tr></thead><tbody>
+          <tr><td><b>红圈 ERP</b><br><span class="muted">项目、合同、进度、人材机、外协</span></td><td><span class="status partial">待授权</span></td><td><span class="status ready">已导入</span></td><td><span class="status partial">缺本周</span></td><td><span class="status review">复核</span></td><td><span class="status failed">不适用/失败</span></td><td><span class="status ready">完成</span></td><td><span class="status partial">警告</span></td><td><span class="status partial">部分阻塞</span></td></tr>
+          <tr><td><b>金蝶财务</b><br><span class="muted">凭证、科目余额、利润表、应收应付</span></td><td><span class="status ready">已接入</span></td><td><span class="status ready">已导入</span></td><td><span class="status ready">已导入</span></td><td><span class="status ready">已导入</span></td><td><span class="status partial">缺销项</span></td><td><span class="status ready">完成</span></td><td><span class="status review">复核</span></td><td><span class="status review">需确认</span></td></tr>
+          <tr><td><b>WPS 台账</b><br><span class="muted">报价、项目补充、采购、工时、临时表</span></td><td><span class="status partial">待授权</span></td><td><span class="status ready">已上传</span></td><td><span class="status outdated">过期</span></td><td><span class="status partial">部分</span></td><td><span class="status failed">不适用/失败</span></td><td><span class="status review">复核</span></td><td><span class="status partial">警告</span></td><td><span class="status partial">部分阻塞</span></td></tr>
+          <tr><td><b>银行流水</b><br><span class="muted">交易流水、日余额、回单</span></td><td><span class="status ready">已接入</span></td><td><span class="status failed">不适用/失败</span></td><td><span class="status ready">已导入</span></td><td><span class="status partial">缺日余额</span></td><td><span class="status failed">不适用/失败</span></td><td><span class="status ready">完成</span></td><td><span class="status partial">警告</span></td><td><span class="status partial">现金流阻塞</span></td></tr>
+          <tr><td><b>税务/数电票</b><br><span class="muted">销项、进项、税率、抵扣、红冲</span></td><td><span class="status partial">待授权</span></td><td><span class="status failed">不适用/失败</span></td><td><span class="status partial">部分</span></td><td><span class="status partial">部分</span></td><td><span class="status partial">缺进项</span></td><td><span class="status review">复核</span></td><td><span class="status partial">警告</span></td><td><span class="status partial">税务阻塞</span></td></tr>
+          <tr><td><b>合同/协议</b><br><span class="muted">合同、补充协议、签证、质保条款</span></td><td><span class="status ready">已上传</span></td><td><span class="status ready">已解析</span></td><td><span class="status review">复核</span></td><td><span class="status ready">完成</span></td><td><span class="status review">复核</span></td><td><span class="status partial">部分</span></td><td><span class="status review">复核</span></td><td><span class="status review">需确认</span></td></tr>
+          <tr><td><b>政策证据包</b><br><span class="muted">研发、人员、知识产权、技术领域、高新收入</span></td><td><span class="status ready">已建目录</span></td><td><span class="status partial">部分</span></td><td><span class="status partial">部分</span></td><td><span class="status partial">研发费用缺口</span></td><td><span class="status review">复核</span></td><td><span class="status partial">部分</span></td><td><span class="status partial">警告</span></td><td><span class="status partial">政策阻塞</span></td></tr>
+        </tbody></table></div>
+      </div>
+    </section>
+
+    <section id="reports" class="section">
+      <div class="grid-3"><div class="card"><h3>周报</h3><p class="soft">现金、回款、项目风险、数据缺口。</p><button class="btn primary">生成预览</button></div><div class="card"><h3>月报</h3><p class="soft">CEO/CFO/CTO 完整经营分析、Board Pack、附表。</p><button class="btn primary">生成预览</button></div><div class="card"><h3>季/半年/年</h3><p class="soft">战略复盘、政策资格、预算调整、年度证据归档。</p><button class="btn primary">查看模板</button></div></div>
+      <div class="card" style="margin-top:16px"><h3>报告产物</h3><table><thead><tr><th>报告</th><th>Dashboard</th><th>PDF</th><th>CSV/Excel</th><th>Evidence</th><th>状态</th></tr></thead><tbody><tr><td>CEO 经营月报</td><td>支持</td><td>支持</td><td>关键附表</td><td>完整</td><td><span class="status ready">READY</span></td></tr><tr><td>CFO 财务资金报告</td><td>支持</td><td>支持</td><td>明细附表</td><td>需复核</td><td><span class="status review">MANUAL REVIEW</span></td></tr><tr><td>CTO 税务政策报告</td><td>支持</td><td>支持</td><td>证据清单</td><td>部分</td><td><span class="status partial">PARTIAL</span></td></tr></tbody></table></div>
+    </section>
+
+    <section id="governance" class="section">
+      <div class="grid-2"><div class="card"><h3>公式与参数可见</h3><p class="soft">经营健康雷达、回款优先级、项目真实毛利、政策 readiness、数据源门禁全部进入 `KMFA/docs/governance/formula_registry.yaml` 与 `KMFA/metadata/...`，不隐藏在前端代码里。</p><table><tr><th>模型</th><th>位置</th><th>版本</th></tr><tr><td>经营健康雷达</td><td>formula_registry.yaml</td><td>v0.1</td></tr><tr><td>数据检查状态</td><td>data_quality_rules.yaml</td><td>v0.1</td></tr><tr><td>Reconciliation</td><td>reconciliation_rules.yaml</td><td>v0.1</td></tr></table></div><div class="card"><h3>长期运行原则</h3><div class="callout">确定性计算先行；报告生成后必须保存 manifest、hash、lineage、参数版本、数据质量状态和人工确认。任何自动同步、邮件通知、外部系统连接均需独立门禁。</div></div></div>
+    </section>
+
+    <div class="footer-note">本文件为 Stage 1 UI/UX 预览。所有金额与评分均为样例占位，不代表真实经营结果。正式实现时，原始敏感数据不进入公开 GitHub；`KMFA/metadata` 保存状态、索引、hash、证据链和报告 manifest。</div>
+  </main>
+</div>
+<div class="watermark">KMFA Preview · Sample Data</div>
+<script>
+  const titles={home:'首页总览',ceo:'CEO 经营驾驶舱',cfo:'CFO 财务资金',cto:'CTO 税务政策',data:'数据源检查板',reports:'报告中心',governance:'治理与参数'};
+  function showPage(id){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.page===id));document.getElementById('pageTitle').textContent=titles[id]||id;window.scrollTo({top:0,behavior:'smooth'});} 
+  document.querySelectorAll('.navbtn').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
+  document.querySelectorAll('.subnav').forEach(group=>{group.querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>{const parent=group.parentElement;group.querySelectorAll('button').forEach(x=>x.classList.remove('active'));btn.classList.add('active');parent.querySelectorAll('.tabs-content').forEach(c=>c.classList.remove('active'));parent.querySelector('#'+btn.dataset.tab).classList.add('active');}));});
+</script>
+</body>
+</html>

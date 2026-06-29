@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>KMFA 经营分析系统｜CxO Dashboard Preview</title>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --panel: #ffffff;
+      --text: #182033;
+      --muted: #667085;
+      --line: #e5e7ef;
+      --strong: #101828;
+      --ok: #0f766e;
+      --warn: #b45309;
+      --risk: #b42318;
+      --blue: #1d4ed8;
+      --purple: #6d28d9;
+      --shadow: 0 10px 28px rgba(16, 24, 40, .07);
+      --radius: 18px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+      line-height: 1.55;
+    }
+    .app { display: grid; grid-template-columns: 260px minmax(0, 1fr); min-height: 100vh; }
+    aside {
+      background: #101828;
+      color: #fff;
+      padding: 28px 20px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+    .brand { font-size: 22px; font-weight: 800; letter-spacing: .3px; }
+    .subtitle { color: #cbd5e1; font-size: 13px; margin: 6px 0 26px; }
+    .nav-title { color: #94a3b8; font-size: 12px; margin: 22px 0 8px; text-transform: uppercase; letter-spacing: .08em; }
+    .nav-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 12px; border-radius: 12px; color: #e5e7eb; margin: 4px 0; font-size: 14px;
+    }
+    .nav-item.active { background: rgba(255,255,255,.12); color: #fff; }
+    .pill { display: inline-flex; align-items: center; border-radius: 999px; padding: 2px 8px; font-size: 12px; font-weight: 700; }
+    .pill.ok { background: #d1fae5; color: var(--ok); }
+    .pill.warn { background: #fef3c7; color: var(--warn); }
+    .pill.risk { background: #fee4e2; color: var(--risk); }
+    .pill.info { background: #dbeafe; color: var(--blue); }
+    main { padding: 28px; }
+    .topbar { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 22px; }
+    h1 { margin: 0; font-size: 30px; letter-spacing: -.04em; }
+    .meta { color: var(--muted); margin-top: 6px; font-size: 14px; }
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    button {
+      border: 1px solid var(--line); background: var(--panel); border-radius: 12px; padding: 10px 14px;
+      font-weight: 700; color: var(--strong); box-shadow: 0 2px 8px rgba(16,24,40,.04);
+    }
+    button.primary { background: #155eef; color: #fff; border-color: #155eef; }
+    .periods { display: flex; gap: 8px; flex-wrap: wrap; margin: 16px 0 22px; }
+    .periods .active { background: #101828; color: #fff; }
+    .grid { display: grid; gap: 16px; }
+    .grid.cards { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+    .grid.two { grid-template-columns: 1.2fr .8fr; }
+    .grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .card {
+      background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px;
+      box-shadow: var(--shadow);
+    }
+    .card h2, .card h3 { margin: 0 0 12px; letter-spacing: -.02em; }
+    .card h2 { font-size: 20px; }
+    .card h3 { font-size: 16px; }
+    .kpi-label { color: var(--muted); font-size: 13px; }
+    .kpi-value { font-size: 28px; font-weight: 850; margin-top: 4px; color: var(--strong); letter-spacing: -.04em; }
+    .kpi-note { margin-top: 6px; color: var(--muted); font-size: 12px; }
+    .trend.up { color: var(--ok); } .trend.down { color: var(--risk); } .trend.flat { color: var(--warn); }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { padding: 11px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { color: var(--muted); font-size: 12px; font-weight: 800; background: #f9fafb; }
+    tr:last-child td { border-bottom: none; }
+    .bar-row { display: grid; grid-template-columns: 88px minmax(0,1fr) 64px; align-items: center; gap: 10px; margin: 10px 0; font-size: 13px; }
+    .bar { height: 10px; background: #eef2ff; border-radius: 999px; overflow: hidden; }
+    .bar > span { display: block; height: 100%; background: #155eef; border-radius: 999px; }
+    .bar.warn > span { background: #f59e0b; }
+    .bar.risk > span { background: #d92d20; }
+    .checklist { display: grid; gap: 10px; }
+    .check {
+      display: grid; grid-template-columns: 24px 1fr auto; gap: 10px; align-items: start;
+      padding: 12px; border: 1px solid var(--line); border-radius: 14px; background: #fcfcfd;
+    }
+    .box { width: 22px; height: 22px; border-radius: 6px; display: grid; place-items: center; font-weight: 900; }
+    .box.done { background: #d1fae5; color: var(--ok); }
+    .box.wait { background: #fff7ed; color: var(--warn); }
+    .box.block { background: #fee4e2; color: var(--risk); }
+    .small { color: var(--muted); font-size: 12px; }
+    .section { margin-top: 18px; }
+    .role-tabs { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+    .role-tabs .active { border-color: #155eef; color: #155eef; background: #eff6ff; }
+    .footer-note { color: var(--muted); font-size: 12px; margin-top: 22px; }
+    @media (max-width: 1100px) {
+      .app { grid-template-columns: 1fr; }
+      aside { position: relative; height: auto; }
+      .grid.cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid.two, .grid.three { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) { main { padding: 18px; } .grid.cards { grid-template-columns: 1fr; } .topbar { flex-direction: column; } }
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <div class="brand">KMFA</div>
+    <div class="subtitle">经营分析系统｜C-level & Board</div>
+    <div class="nav-title">核心看板</div>
+    <div class="nav-item active">CEO 总览 <span>⌘1</span></div>
+    <div class="nav-item">CFO 财务资金</div>
+    <div class="nav-item">CMO 商务增长</div>
+    <div class="nav-item">CTO 税务政策</div>
+    <div class="nav-item">CxO 项目/技术/治理</div>
+    <div class="nav-title">数据治理</div>
+    <div class="nav-item">数据源检查板 <span class="pill warn">2 阻塞</span></div>
+    <div class="nav-item">导入记录</div>
+    <div class="nav-item">证据链与口径</div>
+    <div class="nav-title">交付</div>
+    <div class="nav-item">报告中心</div>
+    <div class="nav-item">通知与预警</div>
+  </aside>
+  <main>
+    <div class="topbar">
+      <div>
+        <h1>CEO 经营总览</h1>
+        <div class="meta">周期：2026-W26｜版本：Preview v0.1｜数据状态：部分就绪｜适用：周 / 月 / 季 / 半年 / 年</div>
+      </div>
+      <div class="actions">
+        <button>导入数据</button>
+        <button>下载 CSV</button>
+        <button>导出 PDF</button>
+        <button class="primary">生成本期报告</button>
+      </div>
+    </div>
+
+    <div class="periods">
+      <button class="active">周报</button><button>月报</button><button>季报</button><button>半年报</button><button>年报</button>
+    </div>
+
+    <section class="grid cards">
+      <div class="card"><div class="kpi-label">现金安全天数</div><div class="kpi-value">-- 天</div><div class="kpi-note">需银行流水 + 应收应付</div></div>
+      <div class="card"><div class="kpi-label">项目毛利率</div><div class="kpi-value">--%</div><div class="kpi-note">需合同/成本/结算</div></div>
+      <div class="card"><div class="kpi-label">回款完成率</div><div class="kpi-value">--%</div><div class="kpi-note">需红圈/金蝶/银行对账</div></div>
+      <div class="card"><div class="kpi-label">税务风险</div><div class="kpi-value"><span class="pill warn">待评估</span></div><div class="kpi-note">需销项/进项/项目税率</div></div>
+      <div class="card"><div class="kpi-label">本周优先动作</div><div class="kpi-value">3</div><div class="kpi-note">自动生成，需人工确认</div></div>
+    </section>
+
+    <section class="grid two section">
+      <div class="card">
+        <h2>经营健康雷达</h2>
+        <div class="bar-row"><span>现金流</span><div class="bar warn"><span style="width: 56%"></span></div><strong>56</strong></div>
+        <div class="bar-row"><span>项目利润</span><div class="bar"><span style="width: 72%"></span></div><strong>72</strong></div>
+        <div class="bar-row"><span>回款质量</span><div class="bar risk"><span style="width: 42%"></span></div><strong>42</strong></div>
+        <div class="bar-row"><span>税务合规</span><div class="bar warn"><span style="width: 61%"></span></div><strong>61</strong></div>
+        <div class="bar-row"><span>数据完整</span><div class="bar warn"><span style="width: 48%"></span></div><strong>48</strong></div>
+        <p class="small">说明：本图为 UI 预览。正式版分值必须来自公式、数据源、证据链和人工确认口径。</p>
+      </div>
+      <div class="card">
+        <h2>重大风险提醒</h2>
+        <table>
+          <thead><tr><th>风险</th><th>等级</th><th>下一步</th></tr></thead>
+          <tbody>
+            <tr><td>金蝶账务与银行流水未对齐</td><td><span class="pill risk">阻塞</span></td><td>补充本期银行导出</td></tr>
+            <tr><td>项目成本缺少人材机拆分</td><td><span class="pill warn">高</span></td><td>上传项目成本表</td></tr>
+            <tr><td>税务政策口径未锁定</td><td><span class="pill warn">高</span></td><td>确认一般/简易计税项目</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="grid two section">
+      <div class="card">
+        <h2>数据源检查板</h2>
+        <div class="checklist">
+          <div class="check"><div class="box done">✓</div><div><strong>红圈 ERP / 工程项目</strong><div class="small">合同、项目、客户、回款计划、项目进度、成本归集；已配置导入规则草案</div></div><span class="pill ok">已接入草案</span></div>
+          <div class="check"><div class="box wait">!</div><div><strong>金蝶财务</strong><div class="small">凭证、科目余额、利润表、现金流、应收应付、进销项税额；等待账号/导出方式确认</div></div><span class="pill warn">待授权</span></div>
+          <div class="check"><div class="box wait">!</div><div><strong>WPS 数据</strong><div class="small">报价、项目台账、合同台账、采购台账、人员工时；等待文件目录和模板锁定</div></div><span class="pill warn">待模板</span></div>
+          <div class="check"><div class="box block">×</div><div><strong>银行流水 / 回单</strong><div class="small">现金流、回款核销、付款核销的必要证据；未上传则现金流报告不可推进</div></div><span class="pill risk">阻塞</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <h2>本期输出</h2>
+        <table>
+          <thead><tr><th>报告</th><th>状态</th><th>格式</th></tr></thead>
+          <tbody>
+            <tr><td>CEO Board Pack</td><td><span class="pill warn">待数据</span></td><td>Dashboard / PDF</td></tr>
+            <tr><td>CFO 财务资金报告</td><td><span class="pill warn">待银行流水</span></td><td>Dashboard / PDF / CSV</td></tr>
+            <tr><td>CMO 商务增长报告</td><td><span class="pill info">可试算</span></td><td>Dashboard / PDF</td></tr>
+            <tr><td>CTO 税务政策报告</td><td><span class="pill warn">待税率口径</span></td><td>Dashboard / PDF / 附表</td></tr>
+            <tr><td>CxO 项目治理报告</td><td><span class="pill info">可试算</span></td><td>Dashboard / PDF</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card section">
+      <h2>CxO 分角色摘要</h2>
+      <div class="role-tabs"><button class="active">CEO</button><button>CFO</button><button>CMO 商务</button><button>CTO 税务</button><button>CxO 项目/技术</button></div>
+      <table>
+        <thead><tr><th>角色</th><th>核心问题</th><th>本期判断</th><th>证据状态</th><th>建议动作</th></tr></thead>
+        <tbody>
+          <tr><td>CEO</td><td>资源是否投向最高 ROI 项目？</td><td>需先完成合同-成本-回款闭环</td><td><span class="pill warn">部分证据</span></td><td>锁定 3 个关键项目做试点</td></tr>
+          <tr><td>CFO</td><td>现金是否安全？利润是否真实？</td><td>未完成银行与金蝶对账前不可下结论</td><td><span class="pill risk">阻塞</span></td><td>补充银行流水、应收应付、凭证导出</td></tr>
+          <tr><td>CMO</td><td>订单来源、客户质量、投标报价是否健康？</td><td>低营销费用行业，重点看商机/报价/中标/复购</td><td><span class="pill info">可建模</span></td><td>建立商机漏斗和报价毛利预警</td></tr>
+          <tr><td>CTO</td><td>税务筹划、政策申报、账实差异是否可控？</td><td>需区分监管账本与管理账本</td><td><span class="pill warn">需口径</span></td><td>建立税务政策台账和项目税率矩阵</td></tr>
+          <tr><td>CxO</td><td>项目履约、技术能力、治理风险是否拖累利润？</td><td>需补充项目进度/质量/返工/外协数据</td><td><span class="pill warn">待补充</span></td><td>建立项目 War Room</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <p class="footer-note">KMFA Preview v0.1：此页面用于 Stage 1 UI/UX 讨论。所有数字为占位符，正式系统必须通过数据源检查板、证据链、公式注册表和人工确认门禁。</p>
+  </main>
+</div>
+</body>
+</html>

@@ -1,10 +1,10 @@
 # KMFA Model Spec
 
-product_version: 0.1.0-s02p3
+product_version: 0.1.0-s02p3-v12baseline
 
 ## Scope
 
-当前模型说明覆盖 S01 已建立的治理边界、S02-P1 metadata 协议、S02-P2 不可污染原则、S02-P3 质量等级门禁协议和后续业务模型草案，不声明项目成本计算、zero-delta、lineage 完整检查或正式报告生成已经实现。
+当前模型说明覆盖 S01 已建立并按 v1.2 重放的治理边界、S02-P1 metadata 协议、S02-P2 不可污染原则、S02-P3 质量等级门禁协议和后续业务模型草案，不声明项目成本计算、zero-delta、lineage 完整检查或正式报告生成已经实现。
 
 ## Active Model
 

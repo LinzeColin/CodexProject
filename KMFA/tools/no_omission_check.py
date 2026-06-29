@@ -19,6 +19,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 REQUIREMENTS = ROOT / "metadata" / "traceability" / "requirements.csv"
 STAGE_STATUS = ROOT / "metadata" / "stage_status.jsonl"
+BASELINE_V12 = ROOT / "taskpack" / "v1_2"
 
 REQUIRED_REQUIREMENT_COLUMNS = {
     "requirement_id",
@@ -41,11 +42,37 @@ PUBLIC_REPO_FORBIDDEN_SUFFIXES = {
     ".xls",
     ".xlsx",
     ".pdf",
+    ".mov",
+    ".mp4",
+    ".m4v",
     ".sqlite",
     ".db",
     ".sqlite-shm",
     ".sqlite-wal",
 }
+
+REQUIRED_V12_BASELINE_FILES = [
+    "01_KMFA_Codex_TaskPack_v1_2_完整防遗漏_含HTML验收样板.md",
+    "02_KMFA_Codex_Development_Roadmap_18_Stages_v1_2.md",
+    "00_总索引与补漏复核/KMFA_补漏复核报告_v1_2.md",
+    "00_总索引与补漏复核/KMFA_全量信息承接矩阵_v1_2.csv",
+    "20_HTML_UIUX_报告预览/00_HTML总入口_KMFA_v1_2.html",
+    "20_HTML_UIUX_报告预览/HTML文件索引_v1_2.csv",
+    "20_HTML_UIUX_报告预览/01_核心HTML验收样板/KMFA_系统首页预览_v4_blue.html",
+    "20_HTML_UIUX_报告预览/01_核心HTML验收样板/KMFA_经营分析报告预览_v3_blue.html",
+    "20_HTML_UIUX_报告预览/01_核心HTML验收样板/KMFA_数据源检查板_v0_5_blue.html",
+    "20_HTML_UIUX_报告预览/01_核心HTML验收样板/KMFA_项目成本专题报告预览_v0_6_blue_zero_delta.html",
+    "20_HTML_UIUX_报告预览/01_核心HTML验收样板/KMFA_Resolution_Workbench_v0_4.html",
+    "20_HTML_UIUX_报告预览/01_核心HTML验收样板/KMFA_Ring5_Final_Task_Control_Board.html",
+    "20_HTML_UIUX_报告预览/01_核心HTML验收样板/KMFA_阶段三任务控制台预览_v1_0.html",
+    "21_前序生成包归档_可追溯/前序生成压缩包_SHA256_v1_2.csv",
+    "source_manifests/用户原始上传数据_SHA256_v1_2.csv",
+    "source_manifests/前序散件_SHA256_v1_2.csv",
+    "92_工具与代码/check_required_html.py",
+    "92_工具与代码/check_v1_2_no_omission.py",
+    "machine/source_package_manifest.json",
+    "machine/repo_baseline_sha256.csv",
+]
 
 
 def fail(message: str) -> None:
@@ -162,22 +189,50 @@ def check_no_raw_sensitive_files() -> None:
     for path in ROOT.rglob("*"):
         if not path.is_file():
             continue
+        rel = path.relative_to(ROOT).as_posix()
+        if "90_用户原始上传数据_仅本地私有_禁止提交GitHub/" in rel:
+            matches.append(rel)
+            continue
         if path.suffix.lower() in PUBLIC_REPO_FORBIDDEN_SUFFIXES:
-            matches.append(str(path.relative_to(ROOT)))
+            matches.append(rel)
     if matches:
         fail("forbidden raw/sensitive file-like artifacts under KMFA: " + ", ".join(matches[:20]))
+
+
+def check_v12_baseline() -> None:
+    if not BASELINE_V12.is_dir():
+        fail("missing v1.2 full task-pack baseline: taskpack/v1_2")
+
+    missing = [rel for rel in REQUIRED_V12_BASELINE_FILES if not (BASELINE_V12 / rel).is_file()]
+    if missing:
+        fail("v1.2 baseline missing files: " + ", ".join(missing[:20]))
+
+    html_files = list((BASELINE_V12 / "20_HTML_UIUX_报告预览").rglob("*.html"))
+    core_html_files = list((BASELINE_V12 / "20_HTML_UIUX_报告预览" / "01_核心HTML验收样板").glob("*.html"))
+    if len(html_files) < 45:
+        fail(f"v1.2 baseline expected at least 45 HTML files, found {len(html_files)}")
+    if len(core_html_files) < 7:
+        fail(f"v1.2 baseline expected at least 7 core HTML files, found {len(core_html_files)}")
+
+    private_manifest = (BASELINE_V12 / "source_manifests" / "用户原始上传数据_SHA256_v1_2.csv").read_text(
+        encoding="utf-8-sig"
+    )
+    if "禁止提交公开GitHub" not in private_manifest:
+        fail("private source manifest does not preserve the public GitHub prohibition")
 
 
 def main() -> int:
     rows = load_requirements()
     stage_ids, _phase_ids, task_ids, records = load_status_records()
     check_requirements(rows, stage_ids, task_ids)
+    check_v12_baseline()
     check_no_raw_sensitive_files()
     priority_counts = Counter(row["priority"].strip() for row in rows)
     print(
         "PASS: KMFA no omission check passed "
         f"(requirements={len(rows)}, P0={priority_counts.get('P0', 0)}, "
-        f"P1={priority_counts.get('P1', 0)}, status_records={len(records)}, tasks={len(task_ids)})"
+        f"P1={priority_counts.get('P1', 0)}, status_records={len(records)}, tasks={len(task_ids)}, "
+        "v1.2_html=45+)"
     )
     return 0
 

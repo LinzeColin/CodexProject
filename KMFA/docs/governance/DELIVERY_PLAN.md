@@ -1,6 +1,6 @@
 # KMFA Delivery Plan
 
-product_version: 0.1.0-s02p3
+product_version: 0.1.0-s02p3-v12baseline
 
 ## Delivery Rule
 
@@ -26,10 +26,14 @@ KMFA delivery follows the owner contract:
 | S02-P3 | completed_validated |
 | Stage 2 review | passed |
 | Stage 2 GitHub upload | completed |
+| v1.2 full task pack baseline | completed_validated |
+| Stage 1 v1.2 replay | completed_validated |
 
 ## Upload Scope
 
-Stage 2 GitHub upload is complete on `origin/main` at `834ff75516405ddbc8289f00ba67579691473709`. The next development scope is S03 only.
+Stage 2 GitHub upload is complete on `origin/main`; the reviewed content commit was `834ff75516405ddbc8289f00ba67579691473709` and the final remote main commit observed before this rebaseline was `6178b5215f92f12d6facad9a990e8659b3a70ba4`.
+
+The active development baseline is now `KMFA/taskpack/v1_2/`. The next development scope must be selected against v1.2; if continuing S03, run only S03-P1.
 
 ## Rollback
 

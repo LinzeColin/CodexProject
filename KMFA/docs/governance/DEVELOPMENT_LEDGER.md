@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.0-s02p3
+product_version: 0.1.0-s02p3-v12baseline
 
 ## Current Iteration
 
 - project_id: `KMFA`
-- current_stage: `S02`
-- current_phase: `S02-P3`
-- current_tasks: `S2PCT01`, `S2PCT02`, `S2PCT03`
-- status: `s02_uploaded_to_github_main`
+- current_stage: `S01-v1.2-REPLAY`
+- current_phase: `FULL_HTML_NO_OMISSION baseline accepted`
+- current_tasks: `KMFA-S01-V12-REBASE-20260629`
+- status: `v12_stage1_replay_complete`
 - risk_tier: `T3`
 
 ## Completed
@@ -34,6 +34,7 @@ product_version: 0.1.0-s02p3
 | `S2PCT03` | 质量等级到报告发布权限门禁建立 | `KMFA/metadata/reports/report_release_gate.yaml`, `KMFA/tools/check_report_grade_gate.py` |
 | `KMFA-S02-STAGE-REVIEW-20260629` | Stage 2 整体复审通过，上传路径可用 | `KMFA/stage_artifacts/S02_STAGE_REVIEW/human/stage2_review_report.md` |
 | `KMFA-S02-GITHUB-UPLOAD-20260629` | Stage 2 整体上传 GitHub main | `834ff75516405ddbc8289f00ba67579691473709` |
+| `KMFA-S01-V12-REBASE-20260629` | v1.2 完整任务包承接并重放 Stage 1；45 个 HTML/7 个核心样板进入基线 | `KMFA/stage_artifacts/S01_REBASE_V12_FULL_TASKPACK/human/stage1_v12_replay_report.md` |
 
 ## Not Completed
 
@@ -41,3 +42,4 @@ product_version: 0.1.0-s02p3
 |---|---|---|
 | `S04/S06` amount and zero-delta implementation | 后续 Stage | 按 Roadmap 单 Stage/Phase 推进 |
 | S03-P1 文件型导入 | 后续 Stage，尚未开始 | 下一轮只执行 S03-P1 |
+| v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |
