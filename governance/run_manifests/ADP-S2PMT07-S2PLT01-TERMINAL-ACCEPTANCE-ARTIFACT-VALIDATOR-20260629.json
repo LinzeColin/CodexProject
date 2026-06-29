@@ -1,0 +1,99 @@
+{
+  "schema_version": "codexproject.run_manifest.v1",
+  "manifest_id": "ADP-S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-ARTIFACT-VALIDATOR-20260629",
+  "project_id": "arxiv-daily-push",
+  "phase": "S2PL",
+  "task_id": "S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-ARTIFACT-VALIDATOR",
+  "task_ids": [
+    "S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-ARTIFACT-VALIDATOR",
+    "S2PLT01",
+    "S2PMT07-S2PLT04-COMPLETION-REPORT",
+    "ACC-S2PLT01-30D"
+  ],
+  "generated_at": "2026-06-29T14:25:47+10:00",
+  "timestamp": "2026-06-29T14:25:47+10:00",
+  "base_commit": "c2c9369e9bc57277d2fe5d286cd76aa82b4e38fc",
+  "fact_level": "EXTRACTED",
+  "status": "blocked",
+  "result": "blocked_s2plt01_terminal_acceptance_artifact_validator_missing_artifact_no_production",
+  "summary": "S2PLT01 now has a live terminal acceptance artifact validator and CLI for FINAL_ACCEPTANCE_BUNDLE/s2plt01_terminal_acceptance.json, but the real artifact is still missing and S2PLT01 remains blocked.",
+  "cli_command": "adp validate-s2plt01-terminal-acceptance --json",
+  "cli_exit_code": 2,
+  "artifact_ref": "FINAL_ACCEPTANCE_BUNDLE/s2plt01_terminal_acceptance.json",
+  "artifact_present": false,
+  "artifact_validation_state_hash": "fcd71fb7e6c8f9956edd7fc3e33deadeeb4349183daf0f3950f10df6d8d03431",
+  "terminal_acceptance_audit_state_hash": "6461557654b36bb383b91eb98bc610c1cf497de8563f7f0aa897db08fc26d315",
+  "s2plt01_accepted_by_artifact": false,
+  "terminal_acceptance_ready": false,
+  "terminal_gates": {
+    "review_receipt_present": true,
+    "review_package_passed": true,
+    "replay_payload_execution_package_passed": true,
+    "current_entry_precheck_zero_proof_ready": true,
+    "inherited_p0_zero": true,
+    "inherited_p1_zero": true,
+    "s2plt01_accepted": false
+  },
+  "validation_errors": [
+    "s2plt01_terminal_acceptance_artifact_missing"
+  ],
+  "blocking_reasons": [
+    "review_receipt_is_nonterminal",
+    "s2plt01_not_accepted",
+    "s2plt01_terminal_acceptance_artifact_missing"
+  ],
+  "required_terminal_evidence_refs": [
+    "governance/run_manifests/ADP-S2PLT01-INDEPENDENT-REPLAY-REVIEW-20260626.json",
+    "governance/run_manifests/ADP-S2PLT01-REPLAY-PAYLOAD-EXECUTION-20260626.json",
+    "governance/run_manifests/ADP-S2PLT04-S2PLT01-REPLAY-REVIEW-EVIDENCE-SYNC-20260628.json",
+    "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json"
+  ],
+  "evidence_refs": [
+    "governance/run_manifests/ADP-S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-ARTIFACT-VALIDATOR-20260629.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT01_TERMINAL_ACCEPTANCE_ARTIFACT_VALIDATOR.md",
+    "governance/run_manifests/ADP-S2PLT01-INDEPENDENT-REPLAY-REVIEW-20260626.json",
+    "governance/run_manifests/ADP-S2PLT01-REPLAY-PAYLOAD-EXECUTION-20260626.json",
+    "governance/run_manifests/ADP-S2PLT04-S2PLT01-REPLAY-REVIEW-EVIDENCE-SYNC-20260628.json",
+    "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py",
+    "arxiv-daily-push/src/arxiv_daily_push/cli.py",
+    "arxiv-daily-push/tests/test_stage2_replay_gate.py"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt01_terminal_red PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_replay_gate.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt01_terminal_cli_red PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_replay_gate.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt01_terminal_green3 PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_replay_gate.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt01_terminal_cli_probe PYTHONPATH=arxiv-daily-push/src python3 -B -m arxiv_daily_push.cli validate-s2plt01-terminal-acceptance --json"
+  ],
+  "test_results": [
+    "TDD red failed as expected because S2PLT01 terminal acceptance artifact validator was not exposed",
+    "TDD red failed as expected because validate-s2plt01-terminal-acceptance CLI was not registered",
+    "focused S2PLT01 replay-gate tests: 26 OK",
+    "validation CLI returned blocked / exit 2 with artifact_present=false and validation_errors=[s2plt01_terminal_acceptance_artifact_missing]"
+  ],
+  "production_acceptance_claimed": false,
+  "integrated_production_accepted": false,
+  "stage2_integrated_production_accepted": false,
+  "daily_operation_enabled": false,
+  "real_smtp_sent": false,
+  "real_smtp_send_enabled": false,
+  "scheduler_enabled": false,
+  "scheduler_install_enabled": false,
+  "release_uploaded": false,
+  "release_packaging_enabled": false,
+  "production_restore_enabled": false,
+  "production_restore_executed": false,
+  "public_schema_changed": false,
+  "db_migration_executed": false,
+  "production_queue_mutated": false,
+  "source_adapter_changed": false,
+  "source_or_board_changed": false,
+  "ranking_algorithm_changed": false,
+  "current_pointer_changed": false,
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false,
+  "branch_or_pr_created_by_this_run": false,
+  "next_task": "SUPPLY_REAL_FINAL_ACCEPTANCE_BUNDLE_S2PLT01_TERMINAL_ACCEPTANCE_JSON_BEFORE_S2PLT04_REPORT",
+  "risk": "A future terminal acceptance artifact can be misread as production acceptance unless no-production flags and artifact validation status remain explicit.",
+  "rollback": "Revert S2PLT01 terminal acceptance artifact validator code, CLI, focused regression tests, phase record, manifest, traceability row, delivery/event records, generated views, and three base records; no runtime production state was changed."
+}

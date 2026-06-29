@@ -2,12 +2,14 @@ from __future__ import annotations
 
 import io
 import json
+import shutil
 import tempfile
 import unittest
 from contextlib import redirect_stdout
 from pathlib import Path
 
 from arxiv_daily_push.cli import main as cli_main
+from arxiv_daily_push import stage2_replay_gate as replay_gate
 from arxiv_daily_push.stage2_replay_gate import (
     S2PLT01_BLOCKING_REASONS,
     S2PLT01_FORBIDDEN_FLAGS,
@@ -561,6 +563,95 @@ class Stage2ReplayGateTests(unittest.TestCase):
         self.assertFalse(report["integrated_production_accepted"])
         self.assertFalse(report["real_smtp_sent"])
         self.assertFalse(report["scheduler_enabled"])
+
+    def test_s2plt01_terminal_acceptance_artifact_validation_blocks_missing_artifact(self) -> None:
+        self.assertTrue(
+            hasattr(replay_gate, "build_s2plt01_terminal_acceptance_artifact_validation_state"),
+            "S2PLT01 terminal acceptance must expose a live artifact validator",
+        )
+
+        report = replay_gate.build_s2plt01_terminal_acceptance_artifact_validation_state(
+            repo_root=Path(__file__).resolve().parents[2]
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertFalse(report["artifact_present"])
+        self.assertFalse(report["s2plt01_accepted_by_artifact"])
+        self.assertIn("s2plt01_terminal_acceptance_artifact_missing", report["validation_errors"])
+        self.assertFalse(report["production_acceptance_claimed"])
+        self.assertFalse(report["integrated_production_accepted"])
+        self.assertFalse(report["real_smtp_sent"])
+        self.assertFalse(report["scheduler_enabled"])
+
+    def test_validate_s2plt01_terminal_acceptance_cli_blocks_missing_artifact(self) -> None:
+        stdout = io.StringIO()
+
+        with redirect_stdout(stdout):
+            try:
+                exit_code = cli_main(["validate-s2plt01-terminal-acceptance", "--json"])
+            except SystemExit as exc:  # pragma: no cover - exercised only before CLI registration.
+                self.fail(f"validate-s2plt01-terminal-acceptance must be registered, got SystemExit({exc.code})")
+
+        report = json.loads(stdout.getvalue())
+        self.assertEqual(exit_code, 2)
+        self.assertEqual(report["status"], "blocked")
+        self.assertFalse(report["artifact_present"])
+        self.assertIn("s2plt01_terminal_acceptance_artifact_missing", report["validation_errors"])
+        self.assertFalse(report["s2plt01_accepted_by_artifact"])
+        self.assertFalse(report["production_acceptance_claimed"])
+        self.assertFalse(report["integrated_production_accepted"])
+
+    def test_s2plt01_terminal_acceptance_artifact_validation_accepts_valid_no_production_artifact(self) -> None:
+        repo_root = Path(__file__).resolve().parents[2]
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            tmp_root = Path(tmp_dir)
+            for ref in replay_gate.S2PLT01_TERMINAL_ACCEPTANCE_REQUIRED_EVIDENCE_REFS:
+                source = repo_root / ref
+                target = tmp_root / ref
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(source, target)
+
+            artifact_path = tmp_root / replay_gate.S2PLT01_TERMINAL_ACCEPTANCE_ARTIFACT_PATH
+            artifact_path.parent.mkdir(parents=True, exist_ok=True)
+            artifact = {
+                "model_id": replay_gate.S2PLT01_TERMINAL_ACCEPTANCE_MODEL_ID,
+                "schema_version": replay_gate.S2PLT01_TERMINAL_ACCEPTANCE_SCHEMA_VERSION,
+                "task_id": "S2PLT01",
+                "acceptance_id": "ACC-S2PLT01-30D",
+                "generated_at": "2026-06-29T14:22:00+10:00",
+                "reviewer_id": "codex-subthread-independent-final-reviewer",
+                "reviewer_role": "independent_final_reviewer",
+                "reviewer_involved_in_s2plt01_implementation": False,
+                "terminal_acceptance_decision": replay_gate.S2PLT01_TERMINAL_ACCEPTANCE_DECISION,
+                "s2plt01_accepted": True,
+                "terminal_gates": {
+                    "review_receipt_present": True,
+                    "review_package_passed": True,
+                    "replay_payload_execution_package_passed": True,
+                    "current_entry_precheck_zero_proof_ready": True,
+                    "inherited_p0_zero": True,
+                    "inherited_p1_zero": True,
+                },
+                "terminal_evidence_refs": list(replay_gate.S2PLT01_TERMINAL_ACCEPTANCE_REQUIRED_EVIDENCE_REFS),
+                "no_production_side_effects": {
+                    flag: False for flag in replay_gate.S2PLT01_TERMINAL_ACCEPTANCE_NO_PRODUCTION_FLAGS
+                },
+                **{flag: False for flag in replay_gate.S2PLT01_TERMINAL_ACCEPTANCE_NO_PRODUCTION_FLAGS},
+                "acceptance_hash": "",
+            }
+            artifact["acceptance_hash"] = replay_gate._stable_hash(
+                {key: value for key, value in artifact.items() if key != "acceptance_hash"}
+            )
+            artifact_path.write_text(json.dumps(artifact, ensure_ascii=False, indent=2, sort_keys=True), encoding="utf-8")
+
+            report = replay_gate.build_s2plt01_terminal_acceptance_artifact_validation_state(repo_root=tmp_root)
+
+        self.assertEqual(report["status"], "pass")
+        self.assertTrue(report["artifact_present"])
+        self.assertTrue(report["s2plt01_accepted_by_artifact"])
+        self.assertEqual(report["validation_errors"], [])
+        self.assertFalse(report["production_acceptance_claimed"])
+        self.assertFalse(report["integrated_production_accepted"])
 
     def test_terminal_acceptance_audit_consumes_committed_p0_p1_zero_proof(self) -> None:
         report = build_s2plt01_terminal_acceptance_audit_state(repo_root=Path(__file__).resolve().parents[2])

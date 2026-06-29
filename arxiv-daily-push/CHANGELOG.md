@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-06-29 14:25:47 Australia/Sydney - S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-ARTIFACT-VALIDATOR
+
+- Added `validate-s2plt01-terminal-acceptance` and a strict validator for future `FINAL_ACCEPTANCE_BUNDLE/s2plt01_terminal_acceptance.json`.
+- Current validation remains blocked / exit 2 because the live artifact is missing: `artifact_present=false`, `s2plt01_accepted_by_artifact=false`, validation state hash `fcd71fb7e6c8f9956edd7fc3e33deadeeb4349183daf0f3950f10df6d8d03431`, and terminal audit state hash `6461557654b36bb383b91eb98bc610c1cf497de8563f7f0aa897db08fc26d315`.
+- No S2PLT01/S2PLT04 acceptance, S2PLT04 completion report, final command execution, handoff, signoff, final manifest, SMTP, scheduler, Release, restore, CURRENT/V7 changes, DAILY_OPERATION, or integrated production acceptance is created or enabled.
+
 ## 2026-06-29 13:58:47 Australia/Sydney - S2PMT07-S2PLT04-COMPLETION-EVIDENCE-LATEST-SYNC
 
 - Updated `audit-s2plt04-completion-evidence` so S2PLT04 completion evidence audit consumes the latest nonterminal S2PLT02 terminal-readiness zero-proof sync and S2PLT03 audit-blocker zero-proof sync evidence.
