@@ -2,11 +2,11 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KMFA"
 total_estimated_hours: 54
-completed_estimated_hours: 36
-current_stage_id: "S4"
-current_phase_id: "S4UPLOAD"
-current_task_id: "KMFA-S04-GITHUB-UPLOAD-20260629"
-next_gate_id: "KMFA-S05-P1-GATE"
+completed_estimated_hours: 39
+current_stage_id: "S5"
+current_phase_id: "S5PB"
+current_task_id: "S5PBT01-S5PBT03"
+next_gate_id: "KMFA-S05-P2-PRIVATE-VALUE-BACKFILL-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -576,9 +576,19 @@ stages:
       - "KMFA/stage_artifacts/S04_STAGE_REVIEW/human/github_upload_record.md"
   - stage_id: "S5"
     name: "A0权威项目成本黄金基准"
-    status: "planned"
+    status: "in_progress_private_values_pending"
     estimated_hours: 3
-    estimated_pct: 0
+    estimated_pct: 33.33
+    current_result: "S05-P1 A0 文件登记已完成本地验证；S05-P2 已生成 public-safe 字段合同和 A0 golden fixture 候选，但真实字段值、source anchor 和 private value hash 待私有源或授权字段 CSV 回填。S05-P3、Stage 5 复审和 GitHub upload 未开始。"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S05_P1_a0_file_registration/human/s05_p1_completion_record.md"
+      - "KMFA/stage_artifacts/S05_P1_a0_file_registration/human/test_results.md"
+      - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/s05_p2_completion_record.md"
+      - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/test_results.md"
+      - "KMFA/metadata/baseline/a0_file_manifest.json"
+      - "KMFA/metadata/baseline/a0_project_candidates.jsonl"
+      - "KMFA/metadata/baseline/a0_golden_fixture_manifest.json"
+      - "KMFA/metadata/baseline/a0_golden_fixture_candidates.jsonl"
   - stage_id: "S6"
     name: "零差异校验与差异处理队列"
     status: "planned"

@@ -8,8 +8,8 @@
 - 中文名: 经营分析系统
 - GitHub 目录: `LinzeColin/CodexProject/KMFA`
 - 形态: 独立项目，稳定后再作为入口或模块接入 OpMe
-- 当前 Stage: `S04｜金额精度、字段标准化与基础工具`
-- 当前 Phase: `S04-GITHUB-UPLOAD｜Stage 4 已复审并上传，下一步 S05-P1`
+- 当前 Stage: `S05｜A0 权威项目成本黄金基准`
+- 当前 Phase: `S05-P2｜字段级黄金基准 public-safe 候选已生成，private values/source anchors pending`
 
 ## Execution Rules
 

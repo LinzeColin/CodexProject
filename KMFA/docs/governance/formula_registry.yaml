@@ -319,3 +319,73 @@ formulas:
       - "python3 -m unittest KMFA.tests.test_source_priority -q"
     evidence_refs:
       - "KMFA/stage_artifacts/S03_P3_source_priority/human/s03_p3_completion_record.md"
+  - formula_id: "FORM-KMFA-A0-FILE-REGISTRATION-001"
+    model_id: "MOD-KMFA-COST-001"
+    assumption_ids:
+      - "ASM-KMFA-003"
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "a0_file_registration_valid = expected_file_counts_met AND public_safe_inventory_only AND q3_machine_candidate == true AND q4_human_locked == false AND q5_formal_report_allowed == false"
+    variables:
+      - name: "a0_expected_file_counts"
+        data_type: "string"
+        unit: "count set"
+        input_domain: "total=9;pdf=8;excel=1"
+      - name: "a0_member_sha256_policy"
+        data_type: "enum"
+        unit: "policy"
+        input_domain: "recorded_if_private_zip_available;pending_private_zip_unavailable_allowed;legacy_crc_not_sha256"
+      - name: "a0_initial_candidate_quality"
+        data_type: "enum"
+        unit: "quality state"
+        input_domain: "Q3_machine_candidate;q4_human_locked=false;q5_formal_report_allowed=false"
+    constraints:
+      - "A0 registration records metadata only and never commits raw PDF, Excel, or zip files."
+      - "Legacy CRC/fingerprint values are not treated as member SHA256."
+      - "Q3 A0 candidates cannot be used for formal reporting before human lock and later Stage gates."
+    missing_policy: "Missing public-safe manifest, count mismatch, privacy uncertainty, or Q3/Q4/Q5 state mismatch blocks S05-P1 completion."
+    output_range: "public_safe_a0_file_manifest or blocked"
+    code_refs:
+      - "KMFA/tools/a0_file_register.py"
+      - "KMFA/tools/check_a0_file_registration.py"
+    test_refs:
+      - "python3 -m unittest KMFA.tests.test_a0_file_register -q"
+      - "python3 KMFA/tools/check_a0_file_registration.py"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S05_P1_a0_file_registration/human/s05_p1_completion_record.md"
+      - "KMFA/stage_artifacts/S05_P1_a0_file_registration/human/test_results.md"
+  - formula_id: "FORM-KMFA-A0-GOLDEN-FIXTURE-001"
+    model_id: "MOD-KMFA-COST-001"
+    assumption_ids:
+      - "ASM-KMFA-003"
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "a0_golden_fixture_candidate_valid = required_fields_present AND public_raw_values_allowed == false AND public_normalized_values_allowed == false AND q3_machine_candidate == true AND q4_human_confirmed == false AND q5_calculation_baseline_allowed == false"
+    variables:
+      - name: "required_a0_golden_fields"
+        data_type: "string_list"
+        unit: "field"
+        input_domain: "contract_amount;total_expense;gross_profit;gross_margin;cost_category"
+      - name: "a0_private_value_public_policy"
+        data_type: "enum"
+        unit: "privacy"
+        input_domain: "raw_value_public_committed=false;normalized_value_public_committed=false;hash_only_if_private_source_available"
+      - name: "a0_fixture_candidate_quality"
+        data_type: "enum"
+        unit: "quality state"
+        input_domain: "Q3_machine_candidate;q4_human_confirmed=false;q5_calculation_baseline_allowed=false"
+    constraints:
+      - "Public fixture candidates record field contract, private refs, hash status, and source anchor status only."
+      - "Raw and normalized business values must not be committed to the public repository."
+      - "S05-P2 candidates cannot become Q4/Q5 without private source backfill and later human confirmation."
+    missing_policy: "Missing private source values keeps private_value_pending and source_anchor_pending; missing public-safe candidate structure blocks validation."
+    output_range: "public_safe_a0_fixture_candidates or blocked"
+    code_refs:
+      - "KMFA/tools/a0_golden_fixture.py"
+      - "KMFA/tools/check_a0_golden_fixture.py"
+    test_refs:
+      - "python3 -m unittest KMFA.tests.test_a0_golden_fixture -q"
+      - "python3 KMFA/tools/check_a0_golden_fixture.py"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/s05_p2_completion_record.md"
+      - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/test_results.md"

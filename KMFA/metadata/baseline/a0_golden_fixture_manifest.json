@@ -1,0 +1,72 @@
+{
+  "a0_project_candidates_ref": "metadata/baseline/a0_project_candidates.jsonl",
+  "a0_registration_ref": "metadata/baseline/a0_file_manifest.json",
+  "field_contract": [
+    {
+      "field_key": "contract_amount",
+      "field_label": "合同额",
+      "private_binding_required": true,
+      "public_value_committed_allowed": false,
+      "required_for_a0": true,
+      "value_kind": "money_cents"
+    },
+    {
+      "field_key": "total_expense",
+      "field_label": "支出合计",
+      "private_binding_required": true,
+      "public_value_committed_allowed": false,
+      "required_for_a0": true,
+      "value_kind": "money_cents"
+    },
+    {
+      "field_key": "gross_profit",
+      "field_label": "毛利",
+      "private_binding_required": true,
+      "public_value_committed_allowed": false,
+      "required_for_a0": true,
+      "value_kind": "money_cents"
+    },
+    {
+      "field_key": "gross_margin",
+      "field_label": "毛利率",
+      "private_binding_required": true,
+      "public_value_committed_allowed": false,
+      "required_for_a0": true,
+      "value_kind": "ratio_basis_points"
+    },
+    {
+      "field_key": "cost_category",
+      "field_label": "成本分类",
+      "private_binding_required": true,
+      "public_value_committed_allowed": false,
+      "required_for_a0": true,
+      "value_kind": "category_string"
+    }
+  ],
+  "field_summary": {
+    "a0_project_candidates": 9,
+    "fixture_candidate_count": 45,
+    "private_value_hash_recorded_count": 0,
+    "private_value_pending_count": 45,
+    "required_fields_per_candidate": 5,
+    "source_anchor_pending_count": 45,
+    "source_anchor_recorded_count": 0
+  },
+  "generated_at": "2026-06-30T01:00:00+10:00",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "normalized_business_values_committed": false,
+    "private_values_may_be_pending_without_authorized_source": true,
+    "raw_business_values_committed": false,
+    "raw_file_bytes_committed": false
+  },
+  "quality_policy": {
+    "candidate_grade": "Q3",
+    "formal_report_allowed": false,
+    "q4_requires": "human confirmation against private source values in S05-P3",
+    "q5_requires": "locked authoritative baseline plus zero-delta validation in later stages"
+  },
+  "record_type": "a0_golden_fixture_manifest",
+  "schema_version": "kmfa.a0_golden_fixture.v1",
+  "stage_phase": "S05-P2"
+}

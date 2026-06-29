@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.0-s04p3
+product_version: 0.1.0-s05p2-contract
 
 ## Current Iteration
 
 - project_id: `KMFA`
-- current_stage: `S04`
-- current_phase: `S04-GITHUB-UPLOAD Stage 4 上传`
-- current_tasks: `KMFA-S04-GITHUB-UPLOAD-20260629`
-- status: `s04_uploaded_to_github_main`
+- current_stage: `S05`
+- current_phase: `S05-P2 字段级黄金基准 public-safe 候选`
+- current_tasks: `S5PBT01-S5PBT03`
+- status: `s05p2_public_safe_contract_private_values_pending`
 - risk_tier: `T3`
 
 ## Completed
@@ -44,11 +44,20 @@ product_version: 0.1.0-s04p3
 | `S4PBT01-S4PBT03` | S04-P2 字段标准化、字段别名字典和缺字段质量状态完成 | `KMFA/stage_artifacts/S04_P2_field_standardization/human/s04_p2_completion_record.md` |
 | `S4PCT01-S4PCT03` | S04-P3 基础工具边界测试和工具函数测试报告完成 | `KMFA/stage_artifacts/S04_P3_basic_tool_tests/human/s04_p3_completion_record.md` |
 | `KMFA-S04-STAGE-REVIEW-20260629` | Stage 4 整体复审通过，owner-readable 金额工具详情缺口已修复 | `KMFA/stage_artifacts/S04_STAGE_REVIEW/human/stage4_review_report.md` |
-| `KMFA-S04-GITHUB-UPLOAD-20260629` | Stage 4 final GitHub upload 证据已生成并准备上传 main | `KMFA/stage_artifacts/S04_STAGE_REVIEW/human/github_upload_record.md` |
+| `KMFA-S04-GITHUB-UPLOAD-20260629` | Stage 4 final GitHub upload 已完成 | `KMFA/stage_artifacts/S04_STAGE_REVIEW/human/github_upload_record.md` |
+| `S5PAT01-S5PAT03` | S05-P1 A0 文件登记、A0 项目候选清单和 Q3/Q4 状态完成本地验证 | `KMFA/stage_artifacts/S05_P1_a0_file_registration/human/s05_p1_completion_record.md` |
+
+## In Progress
+
+| Task | Result | Evidence |
+|---|---|---|
+| `S5PBT01-S5PBT03` | S05-P2 public-safe 字段合同和 A0 golden fixture 候选已生成；真实字段值、source anchor 和 private value hash 待私有源或授权字段 CSV 回填 | `KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/s05_p2_completion_record.md` |
 
 ## Not Completed
 
 | Task | Reason | Next |
 |---|---|---|
+| `S05-P2` private value backfill | 本机未找到私有 `销售绩效考核.zip` 或授权字段抽取 CSV | 下一轮仍执行 S05-P2 私有字段回填与 hash-only 验证 |
+| `S05-P3` authoritative baseline lock | S05-P2 私有字段值和 source anchor 尚未完成 | S05-P2 通过后再启动，不得提前进入 |
 | `S06` zero-delta implementation | 后续 Stage | 按 Roadmap 单 Stage/Phase 推进 |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |

@@ -1,7 +1,7 @@
 {
   "schema_version": "kmfa.metadata_directory_manifest.v1",
   "project_id": "KMFA",
-  "stage_phase": "S04-P3",
+  "stage_phase": "S05-P2",
   "directories": [
     "metadata/sources",
     "metadata/imports",
@@ -42,6 +42,8 @@
     "metadata/reports/report_release_gate.yaml",
     "metadata/baseline/a0_file_manifest.json",
     "metadata/baseline/a0_project_candidates.jsonl",
+    "metadata/baseline/a0_golden_fixture_manifest.json",
+    "metadata/baseline/a0_golden_fixture_candidates.jsonl",
     "metadata/imports/raw_manifest_schema.json",
     "metadata/imports/raw_manifest_policy.yaml",
     "metadata/imports/file_import_policy.yaml",
