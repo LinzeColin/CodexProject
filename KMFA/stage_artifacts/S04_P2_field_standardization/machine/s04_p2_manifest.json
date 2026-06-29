@@ -1,0 +1,42 @@
+{
+  "schema_version": "kmfa.stage_artifact_manifest.v1",
+  "project_id": "KMFA",
+  "stage": "S04",
+  "phase": "S04-P2",
+  "task_ids": ["S4PBT01", "S4PBT02", "S4PBT03"],
+  "status": "completed_validated_local_only",
+  "github_upload_allowed": false,
+  "created_at": "2026-06-29T22:36:43+10:00",
+  "implementation_files": [
+    "KMFA/tools/field_standardization.py",
+    "KMFA/tests/test_field_standardization.py",
+    "KMFA/metadata/schema_maps/field_alias_dictionary.csv",
+    "KMFA/metadata/schema_maps/field_standardization_policy.yaml",
+    "KMFA/metadata/quality/field_quality_status.jsonl",
+    "KMFA/metadata/schema_maps/source_mapping_versions.yaml"
+  ],
+  "evidence_files": [
+    "KMFA/stage_artifacts/S04_P2_field_standardization/human/s04_p2_completion_record.md",
+    "KMFA/stage_artifacts/S04_P2_field_standardization/human/test_results.md"
+  ],
+  "validation_commands": [
+    "python3 -m unittest KMFA.tests.test_field_standardization -q",
+    "python3 KMFA/tools/check_no_float_money.py",
+    "python3 KMFA/tools/metadata_protocol_check.py",
+    "python3 KMFA/tools/no_omission_check.py",
+    "python3 KMFA/tools/check_required_html.py",
+    "python3 scripts/lean_governance.py validate --project KMFA",
+    "python3 scripts/validate_project_governance.py --project KMFA",
+    "git diff --check -- README.md governance/projects.yaml KMFA"
+  ],
+  "non_scope": [
+    "raw business data import",
+    "A0 golden baseline",
+    "zero-delta validator",
+    "fact layer",
+    "report generation",
+    "UI",
+    "external connectors",
+    "GitHub upload"
+  ]
+}

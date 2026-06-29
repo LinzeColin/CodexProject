@@ -1,0 +1,1 @@
+{"forbidden_plaintext": true, "project_id": "KMFA", "record_type": "field_quality_status_protocol", "schema_version": "kmfa.field_quality_status.v1", "stage_phase": "S04-P2", "target_layer": "metadata", "raw_layer_write_allowed": false, "field_skipped_silently_allowed": false}

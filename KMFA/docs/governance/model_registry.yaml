@@ -114,20 +114,24 @@ models:
   - model_id: "MOD-KMFA-COST-001"
     name: "KMFA file-based project cost analysis MVP"
     kind: "deterministic_financial_analysis_pipeline"
-    purpose: "后续支持 A0 权威基准、金额标准化、零差异校验、差异队列和项目成本报告。"
+    purpose: "后续支持 A0 权威基准、字段标准化、金额标准化、零差异校验、差异队列和项目成本报告。"
     owner: "KMFA"
     status: "planned"
     fact_level: "EXTRACTED"
-    model_version: "0.1.0-s04p1-partial"
+    model_version: "0.1.0-s04p2-partial"
     assumptions:
       - "ASM-KMFA-003"
     formula_ids:
       - "FORM-KMFA-AMOUNT-001"
+      - "FORM-KMFA-FIELD-STANDARDIZATION-001"
     parameter_ids:
       - "PARAM-KMFA-101"
       - "PARAM-KMFA-102"
       - "PARAM-KMFA-103"
       - "PARAM-KMFA-104"
+      - "PARAM-KMFA-105"
+      - "PARAM-KMFA-106"
+      - "PARAM-KMFA-107"
     inputs:
       - "raw file hash and manifest"
       - "authorized extracted values"
@@ -138,14 +142,17 @@ models:
     code_refs:
       - "KMFA/tools/amount_tools.py"
       - "KMFA/tools/check_no_float_money.py"
+      - "KMFA/tools/field_standardization.py"
       - "remaining_cost_model_not_implemented_until_S05_S10"
     test_refs:
       - "python3 -m unittest KMFA.tests.test_amount_tools -q"
       - "python3 KMFA/tools/check_no_float_money.py"
+      - "python3 -m unittest KMFA.tests.test_field_standardization -q"
       - "planned: KMFA/tools/zero_delta_validator.py"
     evidence_refs:
       - "KMFA/模型参数文件.md"
       - "KMFA/stage_artifacts/S04_P1_amount_tools/human/s04_p1_completion_record.md"
+      - "KMFA/stage_artifacts/S04_P2_field_standardization/human/s04_p2_completion_record.md"
   - model_id: "MOD-KMFA-METADATA-001"
     name: "KMFA metadata protocol and identifier contract"
     kind: "deterministic_metadata_governance_contract"

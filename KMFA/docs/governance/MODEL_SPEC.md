@@ -1,10 +1,10 @@
 # KMFA Model Spec
 
-product_version: 0.1.0-s04p1
+product_version: 0.1.0-s04p2
 
 ## Scope
 
-当前模型说明覆盖 S01 已建立并按 v1.2 重放的治理边界、S02-P1 metadata 协议、S02-P2 不可污染原则、S02-P3 质量等级门禁协议、S03-P1 文件型导入登记模型、S03-P2 数据源检查矩阵模型、S03-P3 源优先级模型、S04-P1 金额工具和后续业务模型草案，不声明项目成本事实层、zero-delta、lineage 完整检查或正式报告生成已经实现。
+当前模型说明覆盖 S01 已建立并按 v1.2 重放的治理边界、S02-P1 metadata 协议、S02-P2 不可污染原则、S02-P3 质量等级门禁协议、S03-P1 文件型导入登记模型、S03-P2 数据源检查矩阵模型、S03-P3 源优先级模型、S04-P1 金额工具、S04-P2 字段标准化工具和后续业务模型草案，不声明项目成本事实层、zero-delta、lineage 完整检查或正式报告生成已经实现。
 
 ## Active Model
 
@@ -66,22 +66,30 @@ product_version: 0.1.0-s04p1
 - purpose: 将授权来源中的业务金额标准化为整数分，并阻断 float 金额用法。
 - fact_level: EXTRACTED
 - evidence: `KMFA/tools/amount_tools.py`, `KMFA/tools/check_no_float_money.py`, `KMFA/stage_artifacts/S04_P1_amount_tools/human/s04_p1_completion_record.md`
-- limitation: 不执行字段标准化，不做 zero-delta，不处理源冲突取舍。
+- limitation: 不做 zero-delta，不处理源冲突取舍。
+
+### FORM-KMFA-FIELD-STANDARDIZATION-001
+
+- type: deterministic field standardization
+- purpose: 将日期、期间、公司主体、项目名称、客户/对手方、合同编号映射到 canonical fields，并把缺字段或异常字段写入 metadata 质量状态。
+- fact_level: EXTRACTED
+- evidence: `KMFA/tools/field_standardization.py`, `KMFA/metadata/schema_maps/field_alias_dictionary.csv`, `KMFA/metadata/quality/field_quality_status.jsonl`, `KMFA/stage_artifacts/S04_P2_field_standardization/human/s04_p2_completion_record.md`
+- limitation: 不解析真实业务源，不建立事实层，不生成报告。
 
 ## Planned Business Model
 
 ### MOD-KMFA-COST-001
 
-- status: planned with S04-P1 amount formula active
+- status: planned with S04-P1 amount formula and S04-P2 field standardization formula active
 - purpose: 后续文件型项目成本分析 MVP。
-- dependency: S04-P2 字段标准化、S05 A0 基准、S06 零差异、S09 成本计算、S10 报告等级。
+- dependency: S04-P3 基础工具测试、S05 A0 基准、S06 零差异、S09 成本计算、S10 报告等级。
 - current limitation: no production data import, no official report generation.
 
 ## Counts
 
 - active models: 7
-- active formulas: 8
-- active parameters: 21
+- active formulas: 9
+- active parameters: 24
 - planned models: 1
 - planned formulas: 0
 - planned parameters: 4

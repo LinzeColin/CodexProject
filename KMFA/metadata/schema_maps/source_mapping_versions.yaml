@@ -1,7 +1,7 @@
 {
   "schema_version": "kmfa.source_mapping_versions.v1",
   "project_id": "KMFA",
-  "registry_status": "protocol_defined_no_mappings_registered",
+  "registry_status": "field_standardization_policy_registered_no_business_rows",
   "mapping_version_policy_ref": "KMFA/metadata/protocol/metadata_protocol.yaml#/identifiers/mapping_version",
   "formula_version_policy_ref": "KMFA/metadata/protocol/metadata_protocol.yaml#/identifiers/formula_version",
   "allowed_fields": [
@@ -11,12 +11,40 @@
     "canonical_field",
     "status",
     "formula_version",
-    "evidence_ref"
+    "evidence_ref",
+    "canonical_field_label_zh",
+    "source_field_alias_key",
+    "source_field_alias_hash",
+    "field_skipped_silently"
   ],
   "forbidden_fields": [
     "raw_value",
     "plaintext_content",
     "full_file_text"
   ],
-  "mapping_versions": []
+  "field_standardization_policy_ref": "KMFA/metadata/schema_maps/field_standardization_policy.yaml",
+  "field_alias_dictionary_ref": "KMFA/metadata/schema_maps/field_alias_dictionary.csv",
+  "field_quality_status_ref": "KMFA/metadata/quality/field_quality_status.jsonl",
+  "mapping_versions": [
+    {
+      "mapping_version": "MAP-SRC-kmfa-field-standardization-a1b2c3d4-v0.1.0",
+      "stage_phase": "S04-P2",
+      "status": "active",
+      "source_id": "SRC-kmfa-field-standardization-a1b2c3d4",
+      "scope": "canonical S04-P2 field alias dictionary and Chinese field mapping policy",
+      "canonical_fields": [
+        "document_date",
+        "period_month",
+        "company_entity",
+        "project_name",
+        "counterparty",
+        "contract_number"
+      ],
+      "raw_layer_write_allowed": false,
+      "raw_source_mutation_allowed": false,
+      "public_repo_business_rows_committed": false,
+      "field_skipped_silently_allowed": false,
+      "evidence_ref": "KMFA/stage_artifacts/S04_P2_field_standardization/human/s04_p2_completion_record.md"
+    }
+  ]
 }

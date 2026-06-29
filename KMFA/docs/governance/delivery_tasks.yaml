@@ -856,3 +856,84 @@ tasks:
     rollback: "Remove S04-P1 amount tests and restore S04 status."
     target_version: "0.1.0-s04p1"
     completed_version: "0.1.0-s04p1"
+  - task_id: "S4PBT01"
+    phase: "S4PB"
+    objective: "标准化日期、期间、公司主体、项目名称、客户/对手方、合同编号。"
+    scope:
+      - "KMFA/tools/field_standardization.py"
+    non_scope:
+      - "business source parsing"
+      - "fact layer"
+      - "zero-delta validation"
+      - "GitHub upload"
+    status: "completed"
+    dependencies:
+      - "S4PAT03"
+    required_files:
+      - "KMFA/tools/field_standardization.py"
+    acceptance_ids:
+      - "ACC-KMFA-S04-P2"
+    test_commands:
+      - "python3 -m unittest KMFA.tests.test_field_standardization -q"
+    test_results:
+      - "PASS: date, period, company entity, project name, counterparty, and contract number standardization covered"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S04_P2_field_standardization/human/s04_p2_completion_record.md"
+    risk: "Field standardization must not persist real business values in public metadata."
+    rollback: "Remove S04-P2 field standardization tools and restore S04 status."
+    target_version: "0.1.0-s04p2"
+    completed_version: "0.1.0-s04p2"
+  - task_id: "S4PBT02"
+    phase: "S4PB"
+    objective: "建立字段别名字典和中文字段映射。"
+    scope:
+      - "KMFA/metadata/schema_maps/field_alias_dictionary.csv"
+      - "KMFA/metadata/schema_maps/source_mapping_versions.yaml"
+    non_scope:
+      - "real source column extraction"
+      - "source adapter implementation"
+    status: "completed"
+    dependencies:
+      - "S4PBT01"
+    required_files:
+      - "KMFA/metadata/schema_maps/field_alias_dictionary.csv"
+      - "KMFA/metadata/schema_maps/field_standardization_policy.yaml"
+    acceptance_ids:
+      - "ACC-KMFA-S04-P2"
+    test_commands:
+      - "python3 -m unittest KMFA.tests.test_field_standardization -q"
+      - "python3 KMFA/tools/metadata_protocol_check.py"
+    test_results:
+      - "PASS: Chinese alias dictionary maps required headers to canonical fields"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S04_P2_field_standardization/human/test_results.md"
+    risk: "Alias mapping metadata must not include raw values or sensitive business rows."
+    rollback: "Restore schema_maps field alias dictionary and mapping version records."
+    target_version: "0.1.0-s04p2"
+    completed_version: "0.1.0-s04p2"
+  - task_id: "S4PBT03"
+    phase: "S4PB"
+    objective: "字段缺失进入质量状态，不静默跳过。"
+    scope:
+      - "KMFA/tools/field_standardization.py"
+      - "KMFA/metadata/quality/field_quality_status.jsonl"
+    non_scope:
+      - "manual resolution workbench"
+      - "report grade promotion"
+    status: "completed"
+    dependencies:
+      - "S4PBT02"
+    required_files:
+      - "KMFA/metadata/quality/field_quality_status.jsonl"
+    acceptance_ids:
+      - "ACC-KMFA-S04-P2"
+    test_commands:
+      - "python3 -m unittest KMFA.tests.test_field_standardization -q"
+    test_results:
+      - "PASS: missing and invalid fields create metadata quality status with field_skipped_silently=false"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S04_P2_field_standardization/human/test_results.md"
+    risk: "Missing fields must not be coerced to blanks or silently skipped in later facts."
+    rollback: "Restore field quality status protocol and S04 status."
+    target_version: "0.1.0-s04p2"
+    completed_version: "0.1.0-s04p2"

@@ -8,3 +8,9 @@ evidence_ref,true,false,all,true,Path or external reference proving the metadata
 status,true,false,all,true,Controlled lifecycle status.
 raw_value,false,false,none,false,Forbidden in public metadata.
 plaintext_content,false,false,none,false,Forbidden in public metadata.
+document_date,true,false,schema_maps,true,S04-P2 canonical business date field; standardized to YYYY-MM-DD without committing raw business values.
+period_month,true,false,schema_maps,true,S04-P2 canonical business period field; standardized to YYYY-MM without committing raw business values.
+company_entity,true,false,schema_maps,true,S04-P2 canonical company entity field; missing values enter field quality status.
+project_name,true,false,schema_maps,true,S04-P2 canonical project name field; missing values enter field quality status.
+counterparty,true,false,schema_maps,true,S04-P2 canonical customer or counterparty field; missing values enter field quality status.
+contract_number,true,false,schema_maps,true,S04-P2 canonical contract number field; missing values enter field quality status.
