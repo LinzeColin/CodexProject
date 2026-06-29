@@ -84,6 +84,21 @@ class Stage2Phase21Contract:
     explicitly_not_done: tuple[str, ...]
 
 
+@dataclass(frozen=True)
+class Stage2Phase23Contract:
+    version: str
+    stage: str
+    phase_id: str
+    phase_name: str
+    current_phase_only: bool
+    max_one_phase_per_run: bool
+    no_mock_financial_data: bool
+    allowed_files: tuple[str, ...]
+    validation_commands: tuple[str, ...]
+    evidence_files: tuple[str, ...]
+    explicitly_not_done: tuple[str, ...]
+
+
 def build_stage2_phase21_contract() -> dict[str, Any]:
     contract = Stage2Phase21Contract(
         version=VERSION,
@@ -129,6 +144,48 @@ def build_stage2_phase21_contract() -> dict[str, Any]:
     payload = asdict(contract)
     payload["financial_data_forbidden_terms"] = list(contract.financial_data_forbidden_terms)
     return payload
+
+
+def build_stage2_phase23_contract() -> dict[str, Any]:
+    contract = Stage2Phase23Contract(
+        version=VERSION,
+        stage=STAGE,
+        phase_id="V023-S2-P2.3",
+        phase_name="页面门禁",
+        current_phase_only=True,
+        max_one_phase_per_run=True,
+        no_mock_financial_data=True,
+        allowed_files=(
+            "PFI/src/pfi_v02/stage_v023_data_state.py",
+            "PFI/web/app/dataStatus.js",
+            "PFI/tests/test_v023_stage2_data_state_machine.py",
+            "PFI/tests/test_v023_no_mock_financial_data.py",
+            "PFI/docs/pfi_v023/STAGE2_DATA_TRUST.md",
+            "PFI/reports/pfi_v023/stage_2/*",
+        ),
+        validation_commands=(
+            "node --check PFI/web/app/dataStatus.js",
+            "python3 -m py_compile PFI/src/pfi_v02/stage_v023_data_state.py",
+            "python3 -m pytest PFI/tests/test_v023_stage2_data_state_machine.py -q",
+            "python3 -m pytest PFI/tests/test_v023_no_mock_financial_data.py -q",
+        ),
+        evidence_files=(
+            "PFI/docs/pfi_v023/STAGE2_DATA_TRUST.md",
+            "PFI/reports/pfi_v023/stage_2/phase_2_3/evidence.json",
+            "PFI/reports/pfi_v023/stage_2/phase_2_3/terminal.log",
+            "PFI/reports/pfi_v023/stage_2/phase_2_3/changed_files.txt",
+            "PFI/reports/pfi_v023/stage_2/phase_2_3/browser_validation.json",
+            "PFI/reports/pfi_v023/stage_2/phase_2_3/screenshots/data_gate.png",
+        ),
+        explicitly_not_done=(
+            "Stage 3 navigation routes",
+            "PFI/web/index.html route wiring",
+            "PFI/web/app/shell.js route wiring",
+            "app bundle reinstall",
+            "GitHub main upload before Stage 2 review",
+        ),
+    )
+    return asdict(contract)
 
 
 def build_status_copy_zh() -> dict[str, str]:
