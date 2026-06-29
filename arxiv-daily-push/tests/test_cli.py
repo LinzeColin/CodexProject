@@ -314,9 +314,14 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["next_required_artifact"], "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json")
         self.assertEqual(
             payload["source_evidence"]["S2PLT01_REPLAY_REVIEW"]["artifact_ref"],
+            "FINAL_ACCEPTANCE_BUNDLE/s2plt01_terminal_acceptance.json",
+        )
+        self.assertEqual(
+            payload["source_evidence"]["S2PLT01_REPLAY_REVIEW"]["nonterminal_ref"],
             "governance/run_manifests/ADP-S2PLT01-INDEPENDENT-REPLAY-REVIEW-20260626.json",
         )
-        self.assertEqual(payload["source_evidence"]["S2PLT01_REPLAY_REVIEW"]["artifact_status"], "nonterminal")
+        self.assertEqual(payload["source_evidence"]["S2PLT01_REPLAY_REVIEW"]["artifact_status"], "pass")
+        self.assertTrue(payload["source_evidence"]["S2PLT01_REPLAY_REVIEW"]["terminal_dependency_value"])
         self.assertEqual(payload["source_evidence"]["S2PLT02_LIVE_2D_PROOF"]["artifact_status"], "missing_terminal")
         s2plt02_evidence = payload["source_evidence"]["S2PLT02_LIVE_2D_PROOF"]
         self.assertIn(
@@ -344,12 +349,12 @@ class CliTests(unittest.TestCase):
             payload["source_evidence"]["S2PLT03_RESILIENCE_PROOF"]["nonterminal_refs"],
         )
         self.assertEqual(payload["source_evidence"]["P0_P1_ZERO_PROOF"]["artifact_status"], "pass")
-        self.assertFalse(payload["terminal_dependency_state"]["S2PLT01_ACCEPTED"])
+        self.assertTrue(payload["terminal_dependency_state"]["S2PLT01_ACCEPTED"])
         self.assertFalse(payload["terminal_dependency_state"]["S2PLT02_ACCEPTED"])
         self.assertFalse(payload["terminal_dependency_state"]["S2PLT03_ACCEPTED"])
         self.assertTrue(payload["terminal_dependency_state"]["P0_ZERO_PROVEN"])
         self.assertTrue(payload["terminal_dependency_state"]["P1_ZERO_PROVEN"])
-        self.assertIn("s2plt01_not_accepted", payload["blocking_reasons"])
+        self.assertNotIn("s2plt01_not_accepted", payload["blocking_reasons"])
         self.assertIn("s2plt02_live_2d_terminal_proof_missing", payload["blocking_reasons"])
         self.assertIn("s2plt03_resilience_terminal_proof_missing", payload["blocking_reasons"])
         self.assertFalse(payload["production_acceptance_claimed"])

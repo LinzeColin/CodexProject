@@ -531,27 +531,32 @@ class Stage2ReplayGateTests(unittest.TestCase):
             text = phase_path.read_text(encoding="utf-8")
             self.assertNotIn("independent S2PLT01 replay review: missing", text)
 
-    def test_terminal_acceptance_audit_cli_keeps_review_receipt_nonterminal(self) -> None:
+    def test_terminal_acceptance_audit_cli_accepts_committed_terminal_artifact_no_production(self) -> None:
         stdout = io.StringIO()
 
         with redirect_stdout(stdout):
             exit_code = cli_main(["audit-s2plt01-terminal-acceptance", "--json"])
 
         report = json.loads(stdout.getvalue())
-        self.assertEqual(exit_code, 2)
-        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(report["status"], "pass")
         self.assertEqual(report["scope"], "s2plt01_terminal_acceptance_audit_only_no_acceptance_claim")
-        self.assertFalse(report["terminal_acceptance_ready"])
-        self.assertFalse(report["s2plt01_accepted"])
+        self.assertTrue(report["terminal_acceptance_ready"])
+        self.assertTrue(report["s2plt01_accepted"])
         self.assertTrue(report["review_receipt_present"])
         self.assertTrue(report["review_package_passed"])
         self.assertFalse(report["full_replay_executed"])
         self.assertTrue(report["terminal_gates"]["replay_payload_execution_package_passed"])
+        self.assertTrue(report["terminal_gates"]["s2plt01_accepted"])
+        self.assertEqual(report["blocking_reasons"], [])
         self.assertEqual(report["replay_payload_execution_package_validation"]["status"], "pass")
         self.assertNotIn("full_replay_not_executed", report["blocking_reasons"])
-        self.assertIn("review_receipt_is_nonterminal", report["blocking_reasons"])
+        self.assertNotIn("review_receipt_is_nonterminal", report["blocking_reasons"])
         self.assertTrue(report["terminal_gates"]["inherited_p0_zero"])
         self.assertTrue(report["terminal_gates"]["inherited_p1_zero"])
+        self.assertEqual(report["terminal_acceptance_artifact_validation"]["status"], "pass")
+        self.assertTrue(report["terminal_acceptance_artifact_validation"]["artifact_present"])
+        self.assertTrue(report["terminal_acceptance_artifact_validation"]["s2plt01_accepted_by_artifact"])
         self.assertEqual(report["p0_p1_zero_proof_artifact_validation"]["status"], "pass")
         self.assertNotIn("inherited_v7_1_p0_findings_open", report["blocking_reasons"])
         self.assertNotIn("inherited_v7_1_p1_findings_open", report["blocking_reasons"])
@@ -570,9 +575,10 @@ class Stage2ReplayGateTests(unittest.TestCase):
             "S2PLT01 terminal acceptance must expose a live artifact validator",
         )
 
-        report = replay_gate.build_s2plt01_terminal_acceptance_artifact_validation_state(
-            repo_root=Path(__file__).resolve().parents[2]
-        )
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            report = replay_gate.build_s2plt01_terminal_acceptance_artifact_validation_state(
+                repo_root=Path(tmp_dir)
+            )
 
         self.assertEqual(report["status"], "blocked")
         self.assertFalse(report["artifact_present"])
@@ -586,11 +592,14 @@ class Stage2ReplayGateTests(unittest.TestCase):
     def test_validate_s2plt01_terminal_acceptance_cli_blocks_missing_artifact(self) -> None:
         stdout = io.StringIO()
 
-        with redirect_stdout(stdout):
-            try:
-                exit_code = cli_main(["validate-s2plt01-terminal-acceptance", "--json"])
-            except SystemExit as exc:  # pragma: no cover - exercised only before CLI registration.
-                self.fail(f"validate-s2plt01-terminal-acceptance must be registered, got SystemExit({exc.code})")
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            with redirect_stdout(stdout):
+                try:
+                    exit_code = cli_main(
+                        ["validate-s2plt01-terminal-acceptance", "--repo-root", str(Path(tmp_dir)), "--json"]
+                    )
+                except SystemExit as exc:  # pragma: no cover - exercised only before CLI registration.
+                    self.fail(f"validate-s2plt01-terminal-acceptance must be registered, got SystemExit({exc.code})")
 
         report = json.loads(stdout.getvalue())
         self.assertEqual(exit_code, 2)
@@ -656,8 +665,8 @@ class Stage2ReplayGateTests(unittest.TestCase):
     def test_terminal_acceptance_audit_consumes_committed_p0_p1_zero_proof(self) -> None:
         report = build_s2plt01_terminal_acceptance_audit_state(repo_root=Path(__file__).resolve().parents[2])
 
-        self.assertEqual(report["status"], "blocked")
-        self.assertFalse(report["terminal_acceptance_ready"])
+        self.assertEqual(report["status"], "pass")
+        self.assertTrue(report["terminal_acceptance_ready"])
         self.assertTrue(report["terminal_gates"]["inherited_p0_zero"])
         self.assertTrue(report["terminal_gates"]["inherited_p1_zero"])
         self.assertEqual(report["p0_p1_zero_proof_artifact_validation"]["status"], "pass")
@@ -666,8 +675,10 @@ class Stage2ReplayGateTests(unittest.TestCase):
         self.assertNotIn("inherited_v7_1_p0_findings_open", report["blocking_reasons"])
         self.assertNotIn("inherited_v7_1_p1_findings_open", report["blocking_reasons"])
         self.assertNotIn("full_replay_not_executed", report["blocking_reasons"])
-        self.assertIn("review_receipt_is_nonterminal", report["blocking_reasons"])
-        self.assertIn("s2plt01_not_accepted", report["blocking_reasons"])
+        self.assertNotIn("review_receipt_is_nonterminal", report["blocking_reasons"])
+        self.assertNotIn("s2plt01_not_accepted", report["blocking_reasons"])
+        self.assertEqual(report["blocking_reasons"], [])
+        self.assertTrue(report["s2plt01_accepted"])
         self.assertFalse(report["production_acceptance_claimed"])
         self.assertFalse(report["integrated_production_accepted"])
 
@@ -691,10 +702,11 @@ class Stage2ReplayGateTests(unittest.TestCase):
         self.assertTrue(readiness["gates"]["source_terminal_states_proven"])
         self.assertTrue(readiness["gates"]["future_leakage_zero"])
         self.assertTrue(report["terminal_gates"]["current_entry_precheck_zero_proof_ready"])
-        self.assertFalse(report["terminal_acceptance_ready"])
-        self.assertIn("review_receipt_is_nonterminal", report["blocking_reasons"])
-        self.assertIn("s2plt01_not_accepted", report["blocking_reasons"])
-        self.assertFalse(report["s2plt01_accepted"])
+        self.assertTrue(report["terminal_acceptance_ready"])
+        self.assertNotIn("review_receipt_is_nonterminal", report["blocking_reasons"])
+        self.assertNotIn("s2plt01_not_accepted", report["blocking_reasons"])
+        self.assertEqual(report["blocking_reasons"], [])
+        self.assertTrue(report["s2plt01_accepted"])
         self.assertFalse(report["production_acceptance_claimed"])
         self.assertFalse(report["integrated_production_accepted"])
 

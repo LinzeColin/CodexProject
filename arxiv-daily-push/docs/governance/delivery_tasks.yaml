@@ -4799,3 +4799,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+  - task_id: "S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-CONSUMPTION"
+    title: "S2PMT07 S2PLT01 terminal acceptance consumption"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-29T14:51:01+10:00"
+    summary: "Create the truthful S2PLT01 terminal acceptance artifact and update downstream S2PLT02/S2PLT04 gates to consume it while keeping S2PLT04 blocked by S2PLT02/S2PLT03 terminal proof."
+    owner: "content_owner + engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    required_files: ["FINAL_ACCEPTANCE_BUNDLE/s2plt01_terminal_acceptance.json", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT01_TERMINAL_ACCEPTANCE_CONSUMPTION.md", "governance/run_manifests/ADP-S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-CONSUMPTION-20260629.json"]
+    acceptance_ids: ["ACC-S2PLT01-30D"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt04_s2plt01_red PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q -k s2plt01_terminal_acceptance_artifact", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt04_s2plt01_finalgate4 PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q"]
+    test_results: ["TDD red failed as expected because S2PLT04 did not consume S2PLT01 terminal acceptance artifact", "focused final-gate tests: 86 OK", "S2PLT01 validator and audit pass", "S2PLT04 audit remains blocked only on S2PLT02/S2PLT03 terminal proof"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-CONSUMPTION-20260629.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT01_TERMINAL_ACCEPTANCE_CONSUMPTION.md", "FINAL_ACCEPTANCE_BUNDLE/s2plt01_terminal_acceptance.json", "governance/run_manifests/ADP-S2PLT01-INDEPENDENT-REPLAY-REVIEW-20260626.json", "governance/run_manifests/ADP-S2PLT01-REPLAY-PAYLOAD-EXECUTION-20260626.json", "governance/run_manifests/ADP-S2PLT04-S2PLT01-REPLAY-REVIEW-EVIDENCE-SYNC-20260628.json", "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json", "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_replay_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
+    result: "s2plt01_terminal_accepted_s2plt04_consumed_still_blocked_s2plt02_s2plt03_no_production"
+    risk: "S2PLT01 terminal acceptance can be misread as Stage2 or production acceptance; remaining S2PLT02/S2PLT03/S2PLT04 blockers must stay explicit."
+    rollback: "Revert S2PLT01 terminal artifact, downstream S2PLT02/S2PLT04 consumption changes, focused tests, phase record, manifest, traceability/delivery/event records, generated views, and three base records; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

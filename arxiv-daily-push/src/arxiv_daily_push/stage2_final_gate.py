@@ -13,6 +13,7 @@ from arxiv_daily_push.stage2_replay_gate import (
     S2PLT01_REQUIRED_MAIL_PRODUCTS,
     build_s2plt01_independent_replay_review_report,
     build_s2plt01_replay_payload_execution_report,
+    build_s2plt01_terminal_acceptance_audit_state,
     validate_s2plt01_independent_replay_review_report,
 )
 
@@ -982,12 +983,35 @@ S2PLT04_BLOCKING_REASONS = (
 def build_s2plt02_dependency_state() -> dict[str, Any]:
     """Build current S2PLT02 dependency state without accepting S2PLT01."""
 
+    return _build_s2plt02_dependency_state(repo_root=Path("."))
+
+
+def _build_s2plt01_terminal_acceptance_dependency_state(repo_root: str | Path = ".") -> dict[str, Any]:
+    audit = build_s2plt01_terminal_acceptance_audit_state(repo_root=repo_root)
+    accepted = audit.get("status") == "pass" and audit.get("s2plt01_accepted") is True
     return {
-        "status": "blocked",
+        "accepted": accepted,
+        "status": "terminal_accepted_no_production" if accepted else "blocked_by_terminal_acceptance_audit",
+        "audit_status": audit.get("status"),
+        "audit_state_hash": audit.get("state_hash"),
+        "artifact_ref": audit.get("terminal_acceptance_artifact_ref"),
+        "blocking_reasons": list(audit.get("blocking_reasons", [])),
+    }
+
+
+def _build_s2plt02_dependency_state(*, repo_root: str | Path = ".") -> dict[str, Any]:
+    """Build current S2PLT02 dependency state from S2PLT01 terminal acceptance."""
+
+    s2plt01 = _build_s2plt01_terminal_acceptance_dependency_state(repo_root)
+    completed = {"S2PLT01": s2plt01["status"]} if s2plt01["accepted"] else {}
+    unmet = [task_id for task_id in S2PLT02_REQUIRED_DEPENDENCIES if task_id not in completed]
+    return {
+        "status": "pass" if not unmet else "blocked",
         "required_dependencies": list(S2PLT02_REQUIRED_DEPENDENCIES),
-        "completed_dependencies": {},
-        "unmet_dependencies": list(S2PLT02_REQUIRED_DEPENDENCIES),
-        "s2plt01_acceptance_status": "blocked_by_inherited_p0_p1_and_final_gates",
+        "completed_dependencies": completed,
+        "unmet_dependencies": unmet,
+        "s2plt01_acceptance_status": s2plt01["status"],
+        "s2plt01_terminal_acceptance": s2plt01,
     }
 
 
@@ -1555,7 +1579,7 @@ def build_s2plt02_live_2d_precheck_report(
 ) -> dict[str, Any]:
     """Build a deterministic fail-closed S2PLT02 two-day live-run precheck."""
 
-    dependencies = build_s2plt02_dependency_state()
+    dependencies = _build_s2plt02_dependency_state(repo_root=repo_root or Path("."))
     evidence = build_s2plt02_live_evidence_state()
     audit_blockers = build_audit_blocker_state()
     if load_committed_artifacts and p0_p1_zero_proof is None:
@@ -1617,10 +1641,12 @@ def build_s2plt02_live_2d_precheck_report(
     return report
 
 
-def build_s2plt02_terminal_readiness_audit_state(*, generated_at: str) -> dict[str, Any]:
+def build_s2plt02_terminal_readiness_audit_state(
+    *, generated_at: str, repo_root: str | Path = "."
+) -> dict[str, Any]:
     """Expose current S2PLT02 terminal-readiness facts without accepting S2PLT02."""
 
-    precheck = build_s2plt02_live_2d_precheck_report(generated_at=generated_at)
+    precheck = build_s2plt02_live_2d_precheck_report(generated_at=generated_at, repo_root=Path(repo_root))
     evidence = _mapping(precheck.get("evidence"))
     m4_watermark = _mapping(evidence.get("m4_watermark_proof"))
     proof_refs = [str(ref) for ref in m4_watermark.get("proof_refs", [])]
@@ -2179,9 +2205,12 @@ def validate_s2plt03_resilience_precheck_report(report: Mapping[str, Any]) -> li
     return errors
 
 
-def build_s2plt04_dependency_state() -> dict[str, Any]:
+def build_s2plt04_dependency_state(*, repo_root: str | Path = ".") -> dict[str, Any]:
     """Build current S2PLT04 dependency state without accepting upstream tasks."""
 
+    s2plt01 = _build_s2plt01_terminal_acceptance_dependency_state(repo_root)
+    completed = {"S2PLT01": s2plt01["status"]} if s2plt01["accepted"] else {}
+    unmet = [task_id for task_id in S2PLT04_REQUIRED_DEPENDENCIES if task_id not in completed]
     available_local_evidence = {
         task_id: "local_evidence_present_not_terminal_acceptance"
         for task_id in S2PLT04_AVAILABLE_LOCAL_EVIDENCE
@@ -2189,10 +2218,11 @@ def build_s2plt04_dependency_state() -> dict[str, Any]:
     return {
         "status": "blocked",
         "required_dependencies": list(S2PLT04_REQUIRED_DEPENDENCIES),
-        "completed_dependencies": {},
-        "unmet_dependencies": list(S2PLT04_REQUIRED_DEPENDENCIES),
+        "completed_dependencies": completed,
+        "unmet_dependencies": unmet,
         "available_local_evidence": available_local_evidence,
-        "s2plt01_acceptance_status": "blocked_by_inherited_p0_p1_and_final_gates",
+        "s2plt01_acceptance_status": s2plt01["status"],
+        "s2plt01_terminal_acceptance": s2plt01,
         "s2plt02_status": "missing_authoritative_completion_evidence",
         "s2plt03_status": "missing_authoritative_completion_evidence",
     }
@@ -2290,6 +2320,7 @@ def _build_s2plt04_local_evidence_bundle(
 
 def build_s2plt04_evidence_state(
     *,
+    repo_root: str | Path = ".",
     independent_replay_review_report: Mapping[str, Any] | None = None,
     live_2d_precheck_report: Mapping[str, Any] | None = None,
     local_drill_bundle: Mapping[str, Any] | None = None,
@@ -2330,8 +2361,9 @@ def build_s2plt04_evidence_state(
         evidence_refs=S2PLT04_CONTENT_EVIDENCE_REFS,
     )
     final_acceptance_bundle_readiness = build_final_acceptance_bundle_readiness_state()
+    s2plt01 = _build_s2plt01_terminal_acceptance_dependency_state(repo_root)
     available = {
-        "S2PLT01_ACCEPTED": False,
+        "S2PLT01_ACCEPTED": s2plt01["accepted"],
         "S2PLT02_2D_REAL_RUN": False,
         "S2PLT03_RESILIENCE_DRILL": False,
         "STATE_CONSISTENCY_EVIDENCE": state_consistency_evidence_bundle["status"] == "pass",
@@ -2356,8 +2388,11 @@ def build_s2plt04_evidence_state(
             independent_replay_review_report.get("review_hash") if replay_review_valid else None
         ),
         "s2plt01_independent_replay_review_status": (
-            "blocked_review_package_passed_not_terminal_acceptance" if replay_review_present else "not_proven"
+            s2plt01["status"] if s2plt01["accepted"]
+            else "blocked_review_package_passed_not_terminal_acceptance" if replay_review_present
+            else "not_proven"
         ),
+        "s2plt01_terminal_acceptance": s2plt01,
         "s2plt01_independent_replay_review_generated_at": (
             independent_replay_review_report.get("generated_at") if replay_review_valid else None
         ),
@@ -2382,11 +2417,13 @@ def build_s2plt04_evidence_state(
     }
 
 
-def build_s2plt04_integration_candidate_report(*, generated_at: str) -> dict[str, Any]:
+def build_s2plt04_integration_candidate_report(
+    *, generated_at: str, repo_root: str | Path = "."
+) -> dict[str, Any]:
     """Build a deterministic fail-closed S2PLT04 integration-candidate precheck."""
 
-    dependencies = build_s2plt04_dependency_state()
-    evidence = build_s2plt04_evidence_state()
+    dependencies = build_s2plt04_dependency_state(repo_root=repo_root)
+    evidence = build_s2plt04_evidence_state(repo_root=repo_root)
     audit_blockers = build_audit_blocker_state()
     s2pmt07 = build_s2pmt07_precheck_report(generated_at=generated_at)
     gates = {
@@ -2516,7 +2553,23 @@ def validate_s2plt04_integration_candidate_report(report: Mapping[str, Any]) -> 
         if report.get("blocking_reasons"):
             errors.append("passing S2PLT04 report must not have blocking reasons")
     else:
-        for reason in S2PLT04_BLOCKING_REASONS:
+        gates = _mapping(report.get("gates"))
+        expected_reasons: list[str] = []
+        if not gates.get("s2plt01_accepted"):
+            expected_reasons.append("s2plt01_not_accepted")
+        if not gates.get("s2plt02_completed"):
+            expected_reasons.append("s2plt02_not_completed")
+        if not gates.get("s2plt03_completed"):
+            expected_reasons.append("s2plt03_not_completed")
+        if not gates.get("final_acceptance_bundle_present"):
+            expected_reasons.append("final_acceptance_bundle_missing")
+        if not gates.get("p0_zero"):
+            expected_reasons.append("inherited_v7_1_p0_findings_open")
+        if not gates.get("p1_zero"):
+            expected_reasons.append("inherited_v7_1_p1_findings_open")
+        if not gates.get("s2pmt07_precheck_passed"):
+            expected_reasons.append("s2pmt07_final_gate_precheck_blocked")
+        for reason in expected_reasons:
             if reason not in report.get("blocking_reasons", []):
                 errors.append(f"blocked S2PLT04 precheck must include {reason}")
     expected_hash = _stable_hash({key: value for key, value in report.items() if key != "candidate_hash"})
@@ -4123,8 +4176,13 @@ def build_s2plt04_completion_evidence_audit_state(
     root = Path(repo_root)
     zero_proof = _load_committed_p0_p1_zero_proof(root)
     zero_proof_state = build_p0_p1_zero_proof_artifact_validation_state(zero_proof)
+    s2plt01_terminal_audit = build_s2plt01_terminal_acceptance_audit_state(repo_root=root)
+    s2plt01_accepted = s2plt01_terminal_audit.get("status") == "pass" and (
+        s2plt01_terminal_audit.get("s2plt01_accepted") is True
+    )
     s2plt02_terminal_audit = build_s2plt02_terminal_readiness_audit_state(
-        generated_at="2026-06-29T10:35:11+10:00"
+        generated_at="2026-06-29T10:35:11+10:00",
+        repo_root=root,
     )
     s2plt03_resilience_audit = build_s2plt03_resilience_precheck_report(
         generated_at="2026-06-29T12:12:00+10:00",
@@ -4132,24 +4190,30 @@ def build_s2plt04_completion_evidence_audit_state(
     )
     p0_zero = zero_proof_state.get("p0_zero_proven_by_payload") is True
     p1_zero = zero_proof_state.get("p1_zero_proven_by_payload") is True
-    s2plt02_remaining_blockers = [
-        "s2plt01_not_accepted",
-        "two_consecutive_real_days_not_proven",
-        "eight_real_emails_not_proven",
-        "real_scheduler_not_proven",
-    ]
+    s2plt02_remaining_blockers = list(s2plt02_terminal_audit["blocking_reasons"])
     if not p0_zero:
         s2plt02_remaining_blockers.append("inherited_v7_1_p0_findings_open")
     if not p1_zero:
         s2plt02_remaining_blockers.append("inherited_v7_1_p1_findings_open")
     source_evidence = {
         "S2PLT01_REPLAY_REVIEW": {
-            "artifact_status": "nonterminal",
-            "artifact_ref": "governance/run_manifests/ADP-S2PLT01-INDEPENDENT-REPLAY-REVIEW-20260626.json",
+            "artifact_status": "pass" if s2plt01_accepted else "nonterminal",
+            "artifact_ref": (
+                s2plt01_terminal_audit["terminal_acceptance_artifact_ref"]
+                if s2plt01_accepted
+                else "governance/run_manifests/ADP-S2PLT01-INDEPENDENT-REPLAY-REVIEW-20260626.json"
+            ),
+            "nonterminal_ref": "governance/run_manifests/ADP-S2PLT01-INDEPENDENT-REPLAY-REVIEW-20260626.json",
             "terminal_dependency": "S2PLT01_ACCEPTED",
-            "terminal_dependency_value": False,
-            "blocking_reason": "s2plt01_not_accepted",
-            "note": "independent replay review artifact exists but recorded s2plt01_accepted=false",
+            "terminal_dependency_value": s2plt01_accepted,
+            "terminal_acceptance_audit_status": s2plt01_terminal_audit["status"],
+            "terminal_acceptance_audit_state_hash": s2plt01_terminal_audit["state_hash"],
+            "blocking_reason": None if s2plt01_accepted else "s2plt01_not_accepted",
+            "note": (
+                "terminal acceptance artifact passed; historical review receipt remains as supporting input"
+                if s2plt01_accepted
+                else "independent replay review artifact exists but recorded s2plt01_accepted=false"
+            ),
         },
         "S2PLT02_LIVE_2D_PROOF": {
             "artifact_status": "missing_terminal",
@@ -4203,7 +4267,7 @@ def build_s2plt04_completion_evidence_audit_state(
         },
     }
     terminal_dependency_state = {
-        "S2PLT01_ACCEPTED": False,
+        "S2PLT01_ACCEPTED": s2plt01_accepted,
         "S2PLT02_ACCEPTED": False,
         "S2PLT03_ACCEPTED": False,
         "P0_ZERO_PROVEN": p0_zero,
@@ -4236,7 +4300,6 @@ def build_s2plt04_completion_evidence_audit_state(
         "blocking_reasons": blocking_reasons,
         "default_next_actions": [
             "do_not_create_s2plt04_completion_report_until_terminal_dependencies_are_true",
-            "obtain_real_s2plt01_acceptance_or_keep_s2plt01_not_accepted_visible",
             "obtain_real_s2plt02_two_day_eight_email_terminal_proof",
             "obtain_real_s2plt03_terminal_resilience_proof_after_s2plt02_acceptance",
             "re-run validate-s2plt04-completion-report only after the real report exists",
@@ -4299,7 +4362,18 @@ def validate_s2plt04_completion_evidence_audit_state(state: Mapping[str, Any]) -
     if state.get("completion_report_ready") is not expected_ready:
         errors.append("S2PLT04 completion evidence audit readiness must match terminal dependencies and source evidence status")
     if state.get("status") == "blocked":
-        for reason in S2PMT07_S2PLT04_COMPLETION_EVIDENCE_AUDIT_BLOCKING_REASONS:
+        expected_reasons: list[str] = []
+        if terminal_dependencies.get("S2PLT01_ACCEPTED") is not True:
+            expected_reasons.append("s2plt01_not_accepted")
+        if terminal_dependencies.get("S2PLT02_ACCEPTED") is not True:
+            expected_reasons.append("s2plt02_live_2d_terminal_proof_missing")
+        if terminal_dependencies.get("S2PLT03_ACCEPTED") is not True:
+            expected_reasons.append("s2plt03_resilience_terminal_proof_missing")
+        if terminal_dependencies.get("P0_ZERO_PROVEN") is not True:
+            expected_reasons.append("p0_zero_not_proven")
+        if terminal_dependencies.get("P1_ZERO_PROVEN") is not True:
+            expected_reasons.append("p1_zero_not_proven")
+        for reason in expected_reasons:
             if reason not in state.get("blocking_reasons", []):
                 errors.append(f"blocked S2PLT04 completion evidence audit must include {reason}")
     else:
