@@ -1,0 +1,13 @@
+{
+  "phase_id": "V023-S2-P2.3",
+  "html_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_2/phase_2_3/data_gate_validation.html",
+  "screenshot_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_2/phase_2_3/screenshots/data_gate.png",
+  "browser": "Google Chrome headless via playwright-core",
+  "title_visible": true,
+  "metric_labels_visible": true,
+  "not_mounted_visible": true,
+  "no_financial_zero_when_not_mounted": true,
+  "path_permission_parse_errors_visible": true,
+  "gate_status": "not_mounted",
+  "console_errors": []
+}

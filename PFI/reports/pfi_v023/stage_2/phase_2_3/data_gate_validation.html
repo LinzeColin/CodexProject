@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PFI v0.2.3 Stage 2 Phase 2.3 Data Gate</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f6f7f4;
+        --ink: #17201c;
+        --muted: #5b6862;
+        --line: #d8ded8;
+        --panel: #ffffff;
+        --accent: #0f766e;
+        --warn: #a33a2b;
+        --soft: #eef5f2;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: var(--bg);
+        color: var(--ink);
+        font-family:
+          Inter,
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+        letter-spacing: 0;
+      }
+
+      main {
+        width: min(1180px, calc(100vw - 48px));
+        margin: 0 auto;
+        padding: 48px 0;
+      }
+
+      .pfi-data-gate {
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 18px;
+        align-items: start;
+      }
+
+      .pfi-data-gate__header {
+        grid-column: 1 / -1;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+        padding: 28px;
+      }
+
+      .pfi-data-gate__eyebrow {
+        margin: 0 0 8px;
+        color: var(--accent);
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+
+      h2 {
+        font-size: 34px;
+        line-height: 1.15;
+      }
+
+      h3 {
+        font-size: 16px;
+        line-height: 1.25;
+      }
+
+      .pfi-data-gate__header p:last-child {
+        margin-top: 10px;
+        color: var(--muted);
+        font-size: 16px;
+      }
+
+      .pfi-data-gate__metrics,
+      .pfi-data-gate__checks,
+      .pfi-data-gate__errors {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+        padding: 18px;
+      }
+
+      .pfi-data-gate__metrics {
+        display: grid;
+        gap: 12px;
+      }
+
+      .pfi-data-gate__metric {
+        min-height: 116px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--soft);
+        padding: 18px;
+      }
+
+      .pfi-data-gate__metric-label {
+        color: var(--muted);
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      .pfi-data-gate__metric-value {
+        margin-top: 12px;
+        color: var(--ink);
+        font-size: 24px;
+        font-weight: 760;
+        line-height: 1.2;
+      }
+
+      .pfi-data-gate__metric-meta {
+        margin-top: 12px;
+        color: var(--accent);
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .pfi-data-gate__checks,
+      .pfi-data-gate__errors {
+        display: grid;
+        gap: 12px;
+      }
+
+      .pfi-data-gate__check {
+        display: flex;
+        min-height: 42px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        border-bottom: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .pfi-data-gate__check:last-child {
+        border-bottom: 0;
+      }
+
+      .pfi-data-gate__check strong {
+        color: var(--ink);
+        font-size: 14px;
+      }
+
+      .pfi-data-gate__errors {
+        grid-column: 1 / -1;
+      }
+
+      .pfi-data-gate__error {
+        display: grid;
+        grid-template-columns: 120px 1fr 180px;
+        gap: 14px;
+        align-items: center;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 14px 16px;
+      }
+
+      .pfi-data-gate__error strong {
+        color: var(--warn);
+      }
+
+      .pfi-data-gate__error span {
+        color: var(--muted);
+      }
+
+      .pfi-data-gate__error em {
+        color: var(--accent);
+        font-style: normal;
+        font-weight: 700;
+        text-align: right;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="app"></main>
+    <script src="../../../../web/app/dataStatus.js"></script>
+    <script>
+      const audit = {
+        version: "v0.2.3",
+        stage: "Stage 2",
+        phase_id: "V023-S2-P2.2",
+        phase_name: "真实数据审计",
+        audit_status: "not_mounted",
+        file_count: 0,
+        raw_record_count: 0,
+        standardized_record_count: 0,
+        account_count: 0,
+        holding_count: 0,
+        read_model_hash: null,
+        as_of: null,
+        blocking_reasons: ["未挂载真实个人财务数据源；当前只发现 README、FX 快照或系统验收文件。"],
+        core_metric_states: [
+          {
+            metric_id: "net_worth_cny",
+            label: "净资产",
+            value: null,
+            currency: "CNY",
+            status: "not_mounted",
+            source: null,
+            as_of: null,
+            evidence_hash: null,
+            message_zh: "未挂载真实个人财务数据源",
+          },
+          {
+            metric_id: "cash_balance_cny",
+            label: "现金余额",
+            value: null,
+            currency: "CNY",
+            status: "not_mounted",
+            source: null,
+            as_of: null,
+            evidence_hash: null,
+            message_zh: "未挂载真实个人财务数据源",
+          },
+          {
+            metric_id: "investment_market_value_cny",
+            label: "投资市值",
+            value: null,
+            currency: "CNY",
+            status: "not_mounted",
+            source: null,
+            as_of: null,
+            evidence_hash: null,
+            message_zh: "未挂载真实个人财务数据源",
+          },
+        ],
+      };
+
+      window.PFI_STAGE2_DATA_STATUS.mountDataGate(document.getElementById("app"), audit);
+    </script>
+  </body>
+</html>

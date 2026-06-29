@@ -1,0 +1,101 @@
+{
+  "version": "v0.2.3",
+  "stage": "Stage 2",
+  "stage_name": "真实数据状态机与非假零门禁",
+  "phase_id": "V023-S2-P2.3",
+  "phase_name": "页面门禁",
+  "status": "candidate_pass",
+  "allowed_files_obeyed": true,
+  "history_deprecation_policy_obeyed": true,
+  "no_mock_financial_data": true,
+  "current_phase_only": true,
+  "max_one_phase_per_run": true,
+  "commands": [
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage2_data_state_machine.py -q",
+      "exit_code": 1,
+      "summary": "RED before implementation: 4 failed, 13 passed"
+    },
+    {
+      "command": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/dataStatus.js",
+      "exit_code": 0,
+      "summary": "passed"
+    },
+    {
+      "command": "Google Chrome headless via playwright-core on PFI/reports/pfi_v023/stage_2/phase_2_3/data_gate_validation.html",
+      "exit_code": 0,
+      "summary": "browser_validation.json written and screenshots/data_gate.png captured"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage2_data_state_machine.py -q",
+      "exit_code": 0,
+      "summary": "17 passed"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_no_mock_financial_data.py -q",
+      "exit_code": 0,
+      "summary": "4 passed"
+    },
+    {
+      "command": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js",
+      "exit_code": 0,
+      "summary": "passed"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q",
+      "exit_code": 0,
+      "summary": "43 passed"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/src/pfi_v02/stage_v023_contract.py PFI/src/pfi_v02/stage_v023_data_state.py PFI/src/pfi_v02/stage_v023_real_data_audit.py PFI/tests/test_v023_stage0_contract.py PFI/tests/test_v023_stage1_app_entry_bundle_contract.py PFI/tests/test_pfi_app_entry_version_contract.py PFI/tests/test_v023_stage2_phase1_taskpack_recovery.py PFI/tests/test_v023_stage2_data_state_machine.py PFI/tests/test_v023_no_mock_financial_data.py",
+      "exit_code": 0,
+      "summary": "passed"
+    },
+    {
+      "command": "git diff --check -- PFI && git diff --check origin/main...HEAD -- PFI",
+      "exit_code": 0,
+      "summary": "passed"
+    }
+  ],
+  "changed_files": [
+    "PFI/docs/pfi_v023/STAGE2_DATA_TRUST.md",
+    "PFI/reports/pfi_v023/stage_2/phase_2_3/browser_validation.json",
+    "PFI/reports/pfi_v023/stage_2/phase_2_3/changed_files.txt",
+    "PFI/reports/pfi_v023/stage_2/phase_2_3/data_gate_validation.html",
+    "PFI/reports/pfi_v023/stage_2/phase_2_3/evidence.json",
+    "PFI/reports/pfi_v023/stage_2/phase_2_3/screenshots/data_gate.png",
+    "PFI/reports/pfi_v023/stage_2/phase_2_3/terminal.log",
+    "PFI/src/pfi_v02/stage_v023_data_state.py",
+    "PFI/tests/test_v023_stage2_data_state_machine.py",
+    "PFI/web/app/dataStatus.js"
+  ],
+  "browser_validation": {
+    "path": "PFI/reports/pfi_v023/stage_2/phase_2_3/browser_validation.json",
+    "no_financial_zero_when_not_mounted": true,
+    "path_permission_parse_errors_visible": true,
+    "console_errors": []
+  },
+  "screenshots": [
+    "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_2/phase_2_3/screenshots/data_gate.png"
+  ],
+  "bundle_hash": null,
+  "app_entry_checked": false,
+  "localhost_checked": false,
+  "data_status_summary": {
+    "audit_status": "not_mounted",
+    "file_count": 0,
+    "raw_record_count": 0,
+    "standardized_record_count": 0,
+    "account_count": 0,
+    "holding_count": 0,
+    "read_model_hash": null
+  },
+  "explicitly_not_done": [
+    "Stage 3 navigation routes",
+    "PFI/web/index.html route wiring",
+    "PFI/web/app/shell.js route wiring",
+    "app bundle reinstall",
+    "GitHub main upload before Stage 2 review"
+  ],
+  "requires_user_acceptance": true
+}

@@ -3,7 +3,10 @@ from __future__ import annotations
 import importlib
 import importlib.util
 import json
+import os
 from pathlib import Path
+import shutil
+import subprocess
 import unittest
 
 
@@ -48,6 +51,18 @@ def load_real_data_audit_module():
     if spec is None:
         raise AssertionError("PFI/src/pfi_v02/stage_v023_real_data_audit.py is required for Stage 2 Phase 2.2")
     return importlib.import_module("pfi_v02.stage_v023_real_data_audit")
+
+
+def node_executable() -> str | None:
+    candidates = [
+        os.environ.get("PFI_NODE"),
+        shutil.which("node"),
+        "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    ]
+    for candidate in candidates:
+        if candidate and Path(candidate).exists():
+            return candidate
+    return None
 
 
 class TestV023Stage2DataStateMachine(unittest.TestCase):
@@ -308,6 +323,120 @@ class TestV023Stage2DataStateMachine(unittest.TestCase):
         terminal_log = terminal_log_path.read_text(encoding="utf-8")
         self.assertIn("python3 -m pytest PFI/tests/test_v023_stage2_data_state_machine.py -q", terminal_log)
         self.assertIn("PFI/src/pfi_v02/stage_v023_real_data_audit.py", terminal_log)
+
+    def test_phase23_contract_is_limited_to_page_gate(self) -> None:
+        module = load_data_state_module()
+        contract = module.build_stage2_phase23_contract()
+
+        self.assertEqual(contract["version"], "v0.2.3")
+        self.assertEqual(contract["stage"], "Stage 2")
+        self.assertEqual(contract["phase_id"], "V023-S2-P2.3")
+        self.assertEqual(contract["phase_name"], "页面门禁")
+        self.assertTrue(contract["current_phase_only"])
+        self.assertTrue(contract["max_one_phase_per_run"])
+        self.assertTrue(contract["no_mock_financial_data"])
+        self.assertIn("PFI/web/app/dataStatus.js", contract["allowed_files"])
+        self.assertIn("PFI/reports/pfi_v023/stage_2/*", contract["allowed_files"])
+        self.assertNotIn("PFI/web/index.html", contract["allowed_files"])
+        self.assertNotIn("PFI/web/app/shell.js", contract["allowed_files"])
+        self.assertIn("Stage 3 navigation routes", contract["explicitly_not_done"])
+
+    def test_javascript_page_gate_renders_core_metrics_without_zero_fallback(self) -> None:
+        node = node_executable()
+        if not node:
+            self.skipTest("node executable is not available")
+
+        audit = load_real_data_audit_module().build_real_data_audit(ROOT)
+        script = """
+const gate = require('./PFI/web/app/dataStatus.js');
+const audit = JSON.parse(process.argv[1]);
+const view = gate.buildDataGateViewModel(audit);
+const html = gate.renderDataGateHTML(audit);
+console.log(JSON.stringify({
+  title: view.title,
+  gateStatus: view.gateStatus,
+  metricCount: view.metrics.length,
+  html,
+}));
+"""
+        completed = subprocess.run(
+            [node, "-e", script, json.dumps(audit, ensure_ascii=False)],
+            cwd=ROOT.parent,
+            text=True,
+            check=True,
+            capture_output=True,
+        )
+        payload = json.loads(completed.stdout)
+
+        self.assertEqual(payload["title"], "真实数据门禁")
+        self.assertEqual(payload["gateStatus"], "not_mounted")
+        self.assertGreaterEqual(payload["metricCount"], 3)
+        self.assertIn("净资产", payload["html"])
+        self.assertIn("现金余额", payload["html"])
+        self.assertIn("投资市值", payload["html"])
+        self.assertIn("未挂载真实个人财务数据源", payload["html"])
+        self.assertNotIn("CNY 0.00", payload["html"])
+
+    def test_javascript_page_gate_makes_path_permission_and_parse_errors_visible(self) -> None:
+        node = node_executable()
+        if not node:
+            self.skipTest("node executable is not available")
+
+        script = """
+const gate = require('./PFI/web/app/dataStatus.js');
+const view = gate.buildDataGateViewModel({ audit_status: 'not_mounted', core_metric_states: [] });
+console.log(JSON.stringify(view.errorStates));
+"""
+        completed = subprocess.run(
+            [node, "-e", script],
+            cwd=ROOT.parent,
+            text=True,
+            check=True,
+            capture_output=True,
+        )
+        error_states = json.loads(completed.stdout)
+        labels = "\n".join(item["label"] + item["message"] + item["action"] for item in error_states)
+
+        self.assertIn("路径错误", labels)
+        self.assertIn("权限失败", labels)
+        self.assertIn("解析失败", labels)
+        self.assertIn("检查数据目录", labels)
+        self.assertIn("检查本机文件权限", labels)
+        self.assertIn("查看文件、行或字段", labels)
+
+    def test_phase23_browser_validation_and_screenshot_evidence_exist(self) -> None:
+        evidence_path = ROOT / "reports" / "pfi_v023" / "stage_2" / "phase_2_3" / "evidence.json"
+        changed_files_path = ROOT / "reports" / "pfi_v023" / "stage_2" / "phase_2_3" / "changed_files.txt"
+        terminal_log_path = ROOT / "reports" / "pfi_v023" / "stage_2" / "phase_2_3" / "terminal.log"
+        browser_validation_path = ROOT / "reports" / "pfi_v023" / "stage_2" / "phase_2_3" / "browser_validation.json"
+        screenshot_path = ROOT / "reports" / "pfi_v023" / "stage_2" / "phase_2_3" / "screenshots" / "data_gate.png"
+
+        self.assertTrue(evidence_path.exists())
+        self.assertTrue(changed_files_path.exists())
+        self.assertTrue(terminal_log_path.exists())
+        self.assertTrue(browser_validation_path.exists())
+        self.assertTrue(screenshot_path.exists())
+
+        evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
+        browser_validation = json.loads(browser_validation_path.read_text(encoding="utf-8"))
+        changed_files = [
+            line.strip()
+            for line in changed_files_path.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        ]
+
+        self.assertEqual(evidence["phase_id"], "V023-S2-P2.3")
+        self.assertEqual(evidence["status"], "candidate_pass")
+        self.assertEqual(evidence["changed_files"], changed_files)
+        self.assertIn("PFI/web/app/dataStatus.js", changed_files)
+        self.assertIn(str(screenshot_path), evidence["screenshots"])
+        self.assertTrue(browser_validation["no_financial_zero_when_not_mounted"])
+        self.assertTrue(browser_validation["path_permission_parse_errors_visible"])
+        self.assertEqual(browser_validation["console_errors"], [])
+
+        terminal_log = terminal_log_path.read_text(encoding="utf-8")
+        self.assertIn("browser_validation.json", terminal_log)
+        self.assertIn("screenshots/data_gate.png", terminal_log)
 
 
 if __name__ == "__main__":

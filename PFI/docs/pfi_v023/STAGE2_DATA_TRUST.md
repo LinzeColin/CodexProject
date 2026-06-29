@@ -45,3 +45,17 @@
 因此本 phase 不生成、复制或伪造任何个人财务数据；核心指标状态保持 `not_mounted`，未挂载时不得显示 `CNY 0.00`。
 
 本 phase 不做页面门禁接入、核心指标 UI 接入或截图验收；这些属于 Phase 2.3。
+
+## Stage 2 Phase 2.3 页面门禁
+
+本 phase 只交付 `Stage 2 Phase 2.3 — 页面门禁`。交付边界是把 Phase 2.1 的状态机和 Phase 2.2 的本机真实数据审计结果渲染成可验收的页面门禁模型、HTML 输出和浏览器截图证据。
+
+页面门禁必须展示：
+
+- 核心指标状态：`净资产`、`现金余额`、`投资市值`。
+- 数据检查板：文件数、原始记录数、标准化记录数、账户数、持仓数、read model hash、as of。
+- 路径错误、权限失败、解析失败三类错误状态及人工处理动作。
+
+当前本机真实个人财务数据源仍为 `not_mounted`，因此页面门禁展示 `未挂载真实个人财务数据源`。不得把缺失数据、路径错误、权限失败或解析失败显示成 `CNY 0.00`。
+
+本 phase 只改 `PFI/web/app/dataStatus.js` 的可调用门禁 renderer 和 `PFI/reports/pfi_v023/stage_2/phase_2_3/` 下的验收证据。`PFI/web/index.html` 与 `PFI/web/app/shell.js` 不在本 phase 修改范围内；正式导航接线属于后续 Stage 3。

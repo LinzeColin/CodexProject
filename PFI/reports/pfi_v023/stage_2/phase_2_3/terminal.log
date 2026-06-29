@@ -1,0 +1,84 @@
+# PFI v0.2.3 Stage 2 Phase 2.3 terminal summary
+phase_id=V023-S2-P2.3
+phase_name=页面门禁
+repo=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+branch=codex/pfi
+current_phase_only=true
+
+$ pwd -P
+/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+
+$ git status --short --branch
+## codex/pfi...origin/main [ahead 4]
+ M PFI/tests/test_v023_stage2_data_state_machine.py
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage2_data_state_machine.py -q
+red_exit_code=1
+red_summary=4 failed, 13 passed because Phase 2.3 contract, page gate API, browser validation, and screenshot evidence were missing
+
+$ /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/dataStatus.js
+exit_code=0
+passed
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage2_data_state_machine.py -q
+intermediate_exit_code=1
+intermediate_summary=1 failed, 16 passed because Phase 2.3 browser evidence had not yet been written
+
+$ Google Chrome headless via playwright-core
+html=PFI/reports/pfi_v023/stage_2/phase_2_3/data_gate_validation.html
+browser_validation=PFI/reports/pfi_v023/stage_2/phase_2_3/browser_validation.json
+screenshot=PFI/reports/pfi_v023/stage_2/phase_2_3/screenshots/data_gate.png
+exit_code=0
+title_visible=true
+metric_labels_visible=true
+not_mounted_visible=true
+no_financial_zero_when_not_mounted=true
+path_permission_parse_errors_visible=true
+console_errors=[]
+
+$ explicitly_not_done
+Stage 3 navigation routes
+PFI/web/index.html route wiring
+PFI/web/app/shell.js route wiring
+app bundle reinstall
+GitHub main upload before Stage 2 review
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage2_data_state_machine.py -q
+exit_code=0
+17 passed
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_no_mock_financial_data.py -q
+exit_code=0
+4 passed
+
+$ /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/dataStatus.js
+exit_code=0
+passed
+
+$ /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js
+exit_code=0
+passed
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q
+exit_code=0
+43 passed
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/src/pfi_v02/stage_v023_contract.py PFI/src/pfi_v02/stage_v023_data_state.py PFI/src/pfi_v02/stage_v023_real_data_audit.py PFI/tests/test_v023_stage0_contract.py PFI/tests/test_v023_stage1_app_entry_bundle_contract.py PFI/tests/test_pfi_app_entry_version_contract.py PFI/tests/test_v023_stage2_phase1_taskpack_recovery.py PFI/tests/test_v023_stage2_data_state_machine.py PFI/tests/test_v023_no_mock_financial_data.py
+exit_code=0
+passed
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m json.tool PFI/reports/pfi_v023/stage_2/phase_2_3/evidence.json >/dev/null
+exit_code=0
+passed
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m json.tool PFI/reports/pfi_v023/stage_2/phase_2_3/browser_validation.json >/dev/null
+exit_code=0
+passed
+
+$ git diff --check -- PFI
+exit_code=0
+passed
+
+$ git diff --check origin/main...HEAD -- PFI
+exit_code=0
+passed
