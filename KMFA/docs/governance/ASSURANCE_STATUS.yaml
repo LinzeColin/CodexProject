@@ -1,0 +1,57 @@
+project_id: "KMFA"
+as_of_event_id: "EVENT-KMFA-20260629-S01-STAGE-REVIEW"
+source_snapshot_hash: "sha256:precommit-pending"
+source_base_commit: "precommit-pending"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_STAGE_REVIEW"
+snapshot_event_time: "2026-06-29T18:15:00+10:00"
+generator_version: "manual-s01-stage-review"
+final_commit_binding: "pending_isolated_upload"
+dimensions:
+  structural_completeness:
+    status: "VERIFIED"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "KMFA/docs/governance"
+  implementation_congruence:
+    status: "PARTIAL"
+    fact_level: "EXTRACTED"
+    total_active_parameters: 4
+    total_active_formulas: 1
+    evidence_refs:
+      - "KMFA/docs/governance/parameter_registry.csv"
+      - "KMFA/docs/governance/formula_registry.yaml"
+  parameter_source_quality:
+    status: "PARTIAL"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "KMFA/docs/governance/parameter_registry.csv"
+  methodological_rationale:
+    status: "PARTIAL"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "KMFA/docs/governance/MODEL_SPEC.md"
+  empirical_validation:
+    status: "VERIFIED"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S01_P3_no_omission_baseline/human/test_results.md"
+  operational_validation:
+    status: "VERIFIED"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S01_STAGE_REVIEW/human/stage1_review_report.md"
+  delivery_evidence:
+    status: "VERIFIED"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "KMFA/docs/governance/delivery_tasks.yaml"
+  evidence_freshness:
+    status: "PARTIAL"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "KMFA/docs/governance/development_events.jsonl"
+delivery_readiness:
+  status: "READY_WITH_ISOLATED_WORKTREE"
+  release_gate: "KMFA-S01-GATE"
+  blocker_ids:
+    - "KMFA-UPLOAD-MUST-USE-CLEAN-WORKTREE"

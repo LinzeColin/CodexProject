@@ -1,0 +1,59 @@
+{
+  "schema_version": "kmfa.stage_review.v1",
+  "review_id": "KMFA-S01-STAGE-REVIEW-20260629",
+  "review_time": "2026-06-29T18:15:00+10:00",
+  "project_id": "KMFA",
+  "stage_id": "S01",
+  "stage_name": "只读启动与项目治理基线",
+  "result": "PASS_WITH_UPLOAD_ISOLATION_REQUIRED",
+  "phase_results": [
+    {
+      "phase_id": "S01-P1",
+      "status": "PASS",
+      "evidence_ref": "KMFA/stage_artifacts/S01_P1_read_only_plan/human/s01_p1_completion_record.md"
+    },
+    {
+      "phase_id": "S01-P2",
+      "status": "PASS",
+      "evidence_ref": "KMFA/stage_artifacts/S01_P2_project_skeleton/human/s01_p2_completion_record.md"
+    },
+    {
+      "phase_id": "S01-P3",
+      "status": "PASS",
+      "evidence_ref": "KMFA/stage_artifacts/S01_P3_no_omission_baseline/human/s01_p3_completion_record.md"
+    }
+  ],
+  "findings": [
+    {
+      "finding_id": "KMFA-S01-REV-F01",
+      "severity": "P1",
+      "status": "RESOLVED_BY_PROCESS",
+      "summary": "Canonical checkout is behind origin/main and contains non-KMFA dirty changes; direct commit/push is unsafe.",
+      "resolution": "Use a clean upload worktree based on origin/main and copy only README.md, governance/projects.yaml, and KMFA/."
+    },
+    {
+      "finding_id": "KMFA-S01-REV-F02",
+      "severity": "P2",
+      "status": "FIXED",
+      "summary": "S01-P3 stop gate evidence in roadmap.yaml was pending.",
+      "resolution": "Bind S01-P3 stop gate to the actual completion and test evidence."
+    },
+    {
+      "finding_id": "KMFA-S01-REV-F03",
+      "severity": "INFO",
+      "status": "ACCEPTED",
+      "summary": "S01-P2 historical evidence preserves then-current P3 incomplete wording.",
+      "resolution": "Keep historical snapshot unchanged; current truth is S01-P3 and this Stage review evidence."
+    }
+  ],
+  "upload_scope": [
+    "KMFA/",
+    "README.md",
+    "governance/projects.yaml"
+  ],
+  "upload_required_surface": "clean_worktree_from_origin_main",
+  "raw_sensitive_public_repo_allowed": false,
+  "business_mvp_ready": false,
+  "production_ready": false,
+  "next_stage_allowed_after_upload": "S02"
+}

@@ -1,0 +1,42 @@
+# KMFA Model Spec
+
+product_version: 0.1.0-s01p3
+
+## Scope
+
+当前模型说明只覆盖 S01-P2 已建立的治理边界和后续业务模型草案，不声明项目成本计算、zero-delta、lineage 或报告等级门禁已经实现。
+
+## Active Model
+
+### MOD-KMFA-GOV-001
+
+- type: deterministic governance contract
+- purpose: 控制 Stage/Phase 边界、GitHub 上传门禁、公开仓库隐私边界和质量优先规则。
+- fact_level: EXTRACTED
+- evidence: `KMFA/AGENTS.md`, `KMFA/docs/governance/model_registry.yaml`
+
+## Planned Business Model
+
+### MOD-KMFA-COST-001
+
+- status: planned
+- purpose: 后续文件型项目成本分析 MVP。
+- dependency: S04 金额工具、S05 A0 基准、S06 零差异、S09 成本计算、S10 报告等级。
+- current limitation: no production data import, no official report generation.
+
+## Counts
+
+- active models: 1
+- active formulas: 1
+- active parameters: 4
+- planned models: 1
+- planned formulas: 1
+- planned parameters: 4
+
+## Stop Conditions
+
+- 原始敏感经营数据进入公开仓库。
+- 业务金额使用 float。
+- 0.01 元差异被静默通过。
+- 缺数据报告被伪装为完整报告。
+- Stage 未完成复审修复即上传 GitHub。
