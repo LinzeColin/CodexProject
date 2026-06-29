@@ -13,6 +13,7 @@ Purpose: record repeated production UX/runtime bugs that must not regress in fut
 5. Manual Review / data quality degradation / no-new-order informational states must not create noisy production email unless the configured urgent action threshold is met.
 6. First pool entry facts must be resolved from historical recommendations before insertion. Later runs must not change a fund's original candidate/holding/observation pool entry time, rank, or run id.
 7. Scheduler status must distinguish application-server internal autoscheduler state from external LaunchAgent state. `--disable-autoscheduler` does not mean production launchd scheduling is stopped.
+8. Production actionable email must be frequency-controlled by the last successfully sent actionable `action_signature`, not by per-slot differences from older historical runs. Beijing natural-day actionable sends are capped at 2; all suppressions must be logged.
 
 ## Repeated Bug 1: Manual Review Saved But Todo Remained
 
@@ -94,6 +95,26 @@ Purpose: record repeated production UX/runtime bugs that must not regress in fut
 - Regression shield:
   - `tests/test_application_server.py::test_read_autoscheduler_status_reports_recent_launchd_tick`.
 - Future agent warning: do not re-enable app-server autoscheduler merely to make `/api/scheduler/status` look active. That risks duplicate scheduling. Surface launchd state instead.
+
+## Related Stability Fix: Actionable Mail Frequency Control
+
+- Symptom: each production slot could send a new email because the current recommendation still differed from older historical runs, even when the actual advice was identical to the previous actionable email.
+- Root cause: the mail policy was stateless. It only checked whether the current run had non-maintain action labels or urgent severity; it did not compare against the last successful actionable email and had no Beijing-day cap. `run_slot()` and `notify_run()` were also separate mail-capable paths.
+- Correct behavior:
+  - Generate an `action_signature` from overall action, Top5 fund code/name/order, per-fund action, two-decimal target weights, and critical action flags.
+  - Exclude `run_id`, run time, source timestamps, historical-diff prose, and ordinary evidence text from the signature.
+  - Suppress identical actionable conclusions across slots or days with `suppress_reason='duplicate_action_signature'`.
+  - Suppress the third and later distinct actionable email in the same Beijing natural day with `suppress_reason='daily_email_cap_reached'`.
+  - Suppress maintain/info/no-new-action outcomes with `suppress_reason='non_actionable'`.
+- Fix record:
+  - `app/core/mail_policy.py` now owns `ActionSignature` and DB-aware `MailSendDecision`.
+  - `app/core/notification.py` and `app/core/pipeline.py` both write `action_signature`, hash, kind, Beijing date, suppress reason, and related run id to `notification_log`.
+  - `app/db.py` migrates existing `notification_log` tables with the new audit columns.
+- Regression shield:
+  - `tests/test_notification.py::test_notify_run_suppresses_duplicate_action_signature_after_first_sent`.
+  - `tests/test_notification.py::test_notify_run_suppresses_cross_day_same_action_signature`.
+  - `tests/test_notification.py::test_notify_run_suppresses_third_different_actionable_mail_same_beijing_date`.
+- Future agent warning: do not reintroduce run-id/time/source-timestamp based mail deduplication. Email frequency is an action-conclusion problem; reports and database rows can still update every run.
 
 ## Required Verification Before Marking This Cluster Fixed
 

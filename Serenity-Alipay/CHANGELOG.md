@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased - Actionable Mail Frequency Control
+
+- Fixed production actionable mail deduplication so Serenity compares the current recommendation against the last successfully sent actionable mail, not against older historical runs at each slot.
+- Added `action_signature` and `action_signature_hash` fields to `notification_log`; signatures include overall action, Top5 order, fund code/name, per-fund action, and two-decimal target weights, while excluding run id, run time, source timestamps, and ordinary evidence text.
+- Added Beijing natural-day actionable mail cap: at most 2 sent actionable mails per day; additional actionable changes are logged as `suppressed` with `suppress_reason='daily_email_cap_reached'`.
+- Added suppression logging for `duplicate_action_signature` and `non_actionable`; homepage/report/database updates still proceed even when mail is suppressed.
+- Applied the same DB-aware policy to both `run_slot` and `notify_run` to prevent duplicate sends from the two notification paths.
+
+No candidate selection, scoring, ranking, target-weight, fund-fee, snapshot, report-history, OpenD/MooMoo lifecycle, or trading behavior was changed by this fix.
+
 ## Unreleased - Launchd Scheduler Status Clarity
 
 - Fixed `/api/scheduler/status` so a disabled application-server autoscheduler no longer makes the whole system look stopped when the external LaunchAgent is actively ticking.
