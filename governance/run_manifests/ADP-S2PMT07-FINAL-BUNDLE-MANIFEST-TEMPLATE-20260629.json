@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PMT07-FINAL-BUNDLE-MANIFEST-TEMPLATE",
+  "task_ids": [
+    "S2PMT07-FINAL-BUNDLE-MANIFEST-TEMPLATE",
+    "S2PMT07",
+    "ACC-S2PMT07-FINAL-REVIEW"
+  ],
+  "iteration_id": "ITER-20260629-ADP-S2PMT07-FINAL-BUNDLE-MANIFEST-TEMPLATE",
+  "phase": "S2PL",
+  "generated_at": "2026-06-29T23:21:34+10:00",
+  "base_commit": "1be409a6772a436b2960ef7b25962fdc0b961d23",
+  "result": "final_bundle_manifest_template_ready_live_manifest_missing_no_production",
+  "fact_level": "EXTRACTED",
+  "summary": "Added a template-only final acceptance bundle manifest skeleton while keeping the live FINAL_ACCEPTANCE_BUNDLE/manifest.json missing and final bundle readiness blocked.",
+  "template_file": "FINAL_ACCEPTANCE_BUNDLE/templates/manifest.template.json",
+  "template_hash": "sha256:318d504abeaf9ca7083d3ed7ff005f27b68314eaeac63a9bf5bcb86104e5ed26",
+  "template_index": "FINAL_ACCEPTANCE_BUNDLE/templates/TEMPLATE_INDEX.md",
+  "live_manifest_artifact": "FINAL_ACCEPTANCE_BUNDLE/manifest.json",
+  "live_manifest_artifact_created": false,
+  "final_bundle_manifest_gate_satisfied_by_this_template": false,
+  "required_precondition": "REPLACE_ONLY_AFTER_ALL_REQUIRED_ITEMS_PASS",
+  "missing_live_items_after_template": [
+    "FINAL_ACCEPTANCE_BUNDLE/manifest.json",
+    "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json",
+    "FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml",
+    "FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json",
+    "HANDOFF/00_下一Agent先读.md"
+  ],
+  "blocking_reasons": [
+    "final_acceptance_bundle_manifest_missing",
+    "s2plt04_completion_evidence_missing",
+    "independent_review_signoff_missing",
+    "independent_final_command_execution_missing",
+    "next_agent_handoff_missing"
+  ],
+  "evidence_refs": [
+    "governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-MANIFEST-TEMPLATE-20260629.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_MANIFEST_TEMPLATE.md",
+    "FINAL_ACCEPTANCE_BUNDLE/templates/manifest.template.json",
+    "FINAL_ACCEPTANCE_BUNDLE/templates/TEMPLATE_INDEX.md",
+    "arxiv-daily-push/tests/test_stage2_final_gate.py"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_manifest_template_red PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_final_bundle_templates_exist_but_do_not_satisfy_readiness",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_manifest_template_green1 PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_final_bundle_templates_exist_but_do_not_satisfy_readiness"
+  ],
+  "test_results": [
+    "TDD red failed because manifest.template.json was missing",
+    "focused final-bundle template guard passed: 1 passed"
+  ],
+  "production_acceptance_claimed": false,
+  "integrated_production_accepted": false,
+  "stage2_integrated_production_accepted": false,
+  "daily_operation_enabled": false,
+  "real_smtp_sent": false,
+  "real_smtp_send_enabled": false,
+  "scheduler_enabled": false,
+  "scheduler_install_enabled": false,
+  "release_uploaded": false,
+  "release_packaging_enabled": false,
+  "production_restore_enabled": false,
+  "production_restore_executed": false,
+  "public_schema_changed": false,
+  "db_migration_executed": false,
+  "production_queue_mutated": false,
+  "source_adapter_changed": false,
+  "source_or_board_changed": false,
+  "ranking_algorithm_changed": false,
+  "current_pointer_changed": false,
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false,
+  "mail_production_code_changed": false,
+  "smtp_changed": false,
+  "scheduler_changed": false,
+  "release_changed": false,
+  "risks": [
+    "The manifest template can be misread as the live final bundle manifest if copied before all required items pass.",
+    "Final bundle readiness must remain blocked until the real manifest and all required artifacts are present and validated."
+  ],
+  "rollback": "Remove the manifest template, index entry, focused test assertion, phase record, run manifest, traceability row, delivery/event records, generated owner views, and three base notes; no runtime production state was changed.",
+  "target_version": "0.24.0",
+  "completed_version": "0.23.1"
+}

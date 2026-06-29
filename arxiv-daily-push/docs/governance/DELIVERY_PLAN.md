@@ -21,10 +21,17 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 278
+- task_count: 279
 - acceptance_count: 127
 
 ## Delivery Tasks
+
+## 2026-06-29 23:21:34 Australia/Sydney - S2PMT07 Final Bundle Manifest Template
+
+- `S2PMT07-FINAL-BUNDLE-MANIFEST-TEMPLATE` adds `FINAL_ACCEPTANCE_BUNDLE/templates/manifest.template.json` as a template-only skeleton for the future live `FINAL_ACCEPTANCE_BUNDLE/manifest.json`.
+- The template requires `REPLACE_ONLY_AFTER_ALL_REQUIRED_ITEMS_PASS`, keeps `bundle_claimed_ready=false`, and does not satisfy final bundle readiness.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-MANIFEST-TEMPLATE-20260629.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_MANIFEST_TEMPLATE.md`; `FINAL_ACCEPTANCE_BUNDLE/templates/manifest.template.json`.
+- This does not write the live final manifest, complete S2PLT04, execute final commands, sign independent review, write next-agent handoff, send SMTP, enable scheduler, upload Release assets, execute restore, mutate schema/DB/source/ranking/CURRENT/V7, enable DAILY_OPERATION, or claim integrated production acceptance.
 
 ## 2026-06-29 23:05:25 Australia/Sydney - S2PLT02 Real-Proof Capture Authorization Template
 
