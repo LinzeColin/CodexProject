@@ -1,0 +1,21 @@
+{
+  "updated_at": "2026-06-29",
+  "hash_algorithm": "sha256",
+  "sources": [
+    {
+      "id": "taskpack_v1_1",
+      "path": "/Users/linzezhang/Downloads/KMFA v0.1/01_KMFA_Codex_TaskPack_v1_1_完整防遗漏.md",
+      "sha256": "6446d5bcaab11be2b2e7cb4b1db673782d785062d8e9071152cabdb74b9dfcd5"
+    },
+    {
+      "id": "roadmap_18_stages_v1_1",
+      "path": "/Users/linzezhang/Downloads/KMFA v0.1/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_1.md",
+      "sha256": "de08602f659b2618883e686f88d3427a76c5358ec4f1491062d0b5df8b304cc5"
+    },
+    {
+      "id": "delivery_pack_zip_v1_1",
+      "path": "/Users/linzezhang/Downloads/KMFA v0.1/KMFA_ChatGPT_Stage3_Codex_Delivery_Pack_v1_1_18Stages.zip",
+      "sha256": "647adacf89f9dd0f15ac61ac703193e20c9d13c7762008487f5cd026fb4f9a69"
+    }
+  ]
+}

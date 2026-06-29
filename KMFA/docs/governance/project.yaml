@@ -1,0 +1,53 @@
+schema_version: "codexproject.project.v1"
+project_id: "KMFA"
+project_name: "KMFA 经营分析系统"
+summary: "KMFA 是独立经营分析系统；当前已完成并复审通过 S01-P1 只读计划、S01-P2 项目骨架/中文入口、S01-P3 防遗漏基线，不声明业务 MVP、生产就绪、真实数据导入、正式报告或外部接口能力。"
+version: "0.1.0-s01p3"
+fact_level: "EXTRACTED"
+owner_role: "owner"
+current_status: "stage1_review_passed_upload_ready"
+features:
+  - feature_id: "FEAT-KMFA-001"
+    name: "项目治理骨架"
+    status: "active"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "KMFA/README.md"
+      - "KMFA/功能清单.md"
+      - "KMFA/docs/governance/roadmap.yaml"
+  - feature_id: "FEAT-KMFA-002"
+    name: "三中文入口"
+    status: "active"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "KMFA/功能清单.md"
+      - "KMFA/开发记录.md"
+      - "KMFA/模型参数文件.md"
+  - feature_id: "FEAT-KMFA-003"
+    name: "公开仓库隐私边界"
+    status: "active"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "KMFA/.gitignore"
+      - "KMFA/AGENTS.md"
+  - feature_id: "FEAT-KMFA-004"
+    name: "文件型项目成本分析 MVP"
+    status: "planned"
+    fact_level: "PROPOSED"
+    evidence_refs:
+      - "KMFA/模型参数文件.md"
+      - "KMFA/docs/governance/model_registry.yaml"
+limitations:
+  - statement: "S01 三个 Phase 已完成且 Stage 1 复审通过；上传必须使用基于 origin/main 的隔离 worktree，避免混入非 KMFA 脏改。"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S01_STAGE_REVIEW/human/stage1_review_report.md"
+  - statement: "正式 zero_delta、no_float_money、lineage、report grade gate 工具尚未创建。"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "KMFA/README.md"
+  - statement: "原始敏感经营数据、银行流水、合同、工资和税务申报明文不得进入公开仓库。"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "KMFA/AGENTS.md"
+      - "KMFA/.gitignore"

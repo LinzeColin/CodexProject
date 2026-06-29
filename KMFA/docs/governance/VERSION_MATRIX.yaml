@@ -1,0 +1,16 @@
+governance_spec_version: "1.0.0"
+project_id: "KMFA"
+product_version: "0.1.0-s01p3"
+product_version_status: "stage1_review_passed_upload_ready"
+version_file_value: "0.1.0-s01p3"
+schema_version: "1.0.0"
+model_versions:
+  MOD-KMFA-GOV-001: "0.1.0-s01p3"
+  MOD-KMFA-COST-001: "planned-s04-to-s10"
+parameter_profile_versions:
+  kmfa_governance_contract: "0.1.0-s01p3"
+  kmfa_project_cost_mvp: "planned"
+data_snapshot_version: "not_applicable_no_raw_data_committed"
+current_iteration: "ITER-20260629-KMFA-S01-STAGE-REVIEW"
+current_phase: "S01 Stage Review"
+current_gate: "KMFA-S02-START-GATE"

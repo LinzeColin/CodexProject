@@ -1,0 +1,271 @@
+governance_spec_version: "1.0.0"
+project_id: "KMFA"
+tasks:
+  - task_id: "S1PAT01"
+    phase: "S1PA"
+    objective: "读取根 AGENTS、项目治理文件和本 TaskPack。"
+    scope:
+      - "TaskPack"
+      - "Roadmap"
+      - "delivery zip"
+    non_scope:
+      - "business implementation"
+    status: "completed"
+    dependencies: []
+    required_files:
+      - "KMFA/stage_artifacts/S01_P1_read_only_plan/human/files_to_read.md"
+    acceptance_ids:
+      - "ACC-KMFA-S01-P1"
+    test_commands:
+      - "python3 /tmp/kmfa_s01p1_pack/KMFA_ChatGPT_Stage3_Codex_Delivery_v1_1/tools/no_omission_check.py"
+    test_results:
+      - "PASS: no omission check passed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S01_P1_read_only_plan/human/files_to_read.md"
+    risk: "Reference checks are not formal project checks."
+    rollback: "Remove migrated S01-P1 artifact directory."
+    target_version: "0.1.0-s01p1"
+    completed_version: "0.1.0-s01p1"
+  - task_id: "S1PAT02"
+    phase: "S1PA"
+    objective: "输出 S01-P1 implementation plan、文件清单、测试命令和回滚方案。"
+    scope:
+      - "S01-P1 plan files"
+    non_scope:
+      - "KMFA skeleton"
+    status: "completed"
+    dependencies:
+      - "S1PAT01"
+    required_files:
+      - "KMFA/stage_artifacts/S01_P1_read_only_plan/human/implementation_plan.md"
+    acceptance_ids:
+      - "ACC-KMFA-S01-P1"
+    test_commands:
+      - "S01-P1 required output file existence check"
+    test_results:
+      - "PASS_REQUIRED_S01P1_OUTPUTS"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S01_P1_read_only_plan/human/s01_p1_completion_record.md"
+    risk: "Do not expand to S01-P2 in read-only mode."
+    rollback: "Remove migrated S01-P1 artifact directory."
+    target_version: "0.1.0-s01p1"
+    completed_version: "0.1.0-s01p1"
+  - task_id: "S1PAT03"
+    phase: "S1PA"
+    objective: "确认 KMFA 独立项目路径、三中文入口、风险等级和非目标。"
+    scope:
+      - "path and scope lock"
+    non_scope:
+      - "GitHub upload"
+    status: "completed"
+    dependencies:
+      - "S1PAT01"
+    required_files:
+      - "KMFA/stage_artifacts/S01_P1_read_only_plan/human/risk_register.md"
+    acceptance_ids:
+      - "ACC-KMFA-S01-P1"
+    test_commands:
+      - "shasum -a 256 TaskPack Roadmap delivery zip"
+    test_results:
+      - "Source hashes recorded."
+    evidence_refs:
+      - "KMFA/stage_artifacts/S01_P1_read_only_plan/machine/source_hashes.json"
+    risk: "Canonical root must be CodexProject/KMFA."
+    rollback: "Remove migrated S01-P1 artifact directory."
+    target_version: "0.1.0-s01p1"
+    completed_version: "0.1.0-s01p1"
+  - task_id: "S1PBT01"
+    phase: "S1PB"
+    objective: "创建 KMFA/目录草案、README、功能清单、开发记录、模型参数文件。"
+    scope:
+      - "KMFA root human files"
+      - "KMFA machine-readable governance draft"
+    non_scope:
+      - "business imports"
+      - "UI"
+      - "reports"
+    status: "completed"
+    dependencies:
+      - "S1PAT03"
+    required_files:
+      - "KMFA/README.md"
+      - "KMFA/功能清单.md"
+      - "KMFA/开发记录.md"
+      - "KMFA/模型参数文件.md"
+    acceptance_ids:
+      - "ACC-KMFA-S01-P2"
+    test_commands:
+      - "test -f KMFA/README.md KMFA/功能清单.md KMFA/开发记录.md KMFA/模型参数文件.md"
+    test_results:
+      - "PASS: S01-P2 required files exist"
+    evidence_refs:
+      - "KMFA/README.md"
+      - "KMFA/功能清单.md"
+      - "KMFA/开发记录.md"
+      - "KMFA/模型参数文件.md"
+    risk: "Skeleton is not business MVP."
+    rollback: "Remove KMFA and root registry/README KMFA entries."
+    target_version: "0.1.0-s01p3"
+    completed_version: "0.1.0-s01p3"
+  - task_id: "S1PBT02"
+    phase: "S1PB"
+    objective: "登记 governance/project 配置草案，保持一次只处理一个项目。"
+    scope:
+      - "governance/projects.yaml"
+      - "KMFA/docs/governance/project.yaml"
+    non_scope:
+      - "other project governance"
+    status: "completed"
+    dependencies:
+      - "S1PBT01"
+    required_files:
+      - "governance/projects.yaml"
+      - "KMFA/docs/governance/project.yaml"
+    acceptance_ids:
+      - "ACC-KMFA-S01-P2"
+    test_commands:
+      - "python3 scripts/lean_governance.py validate --project KMFA"
+    test_results:
+      - "PASS: lean_governance.py validate --project KMFA errors 0 / warnings 0"
+      - "PASS: validate_project_governance.py --project KMFA errors 0 / warnings 0"
+    evidence_refs:
+      - "governance/projects.yaml"
+      - "KMFA/docs/governance/project.yaml"
+    risk: "Unrelated dirty changes in canonical repo must not be touched."
+    rollback: "Remove KMFA entry and delete KMFA directory."
+    target_version: "0.1.0-s01p3"
+    completed_version: "0.1.0-s01p3"
+  - task_id: "S1PBT03"
+    phase: "S1PB"
+    objective: "写入时间参考规则：质量通过可提前交付，未通过不得交付。"
+    scope:
+      - "KMFA/AGENTS.md"
+      - "KMFA/README.md"
+      - "KMFA/模型参数文件.md"
+    non_scope:
+      - "upload"
+    status: "completed"
+    dependencies:
+      - "S1PBT01"
+    required_files:
+      - "KMFA/AGENTS.md"
+      - "KMFA/HANDOFF.md"
+    acceptance_ids:
+      - "ACC-KMFA-S01-P2"
+    test_commands:
+      - "rg -n \"质量门禁|中间 Phase 不上传|Stage 完成复审\" KMFA"
+    test_results:
+      - "PASS: rule text found in KMFA records"
+    evidence_refs:
+      - "KMFA/AGENTS.md"
+      - "KMFA/HANDOFF.md"
+    risk: "Quality gate cannot be bypassed by time reference."
+    rollback: "Remove S01-P2 files."
+    target_version: "0.1.0-s01p3"
+    completed_version: "0.1.0-s01p3"
+  - task_id: "S1PCT01"
+    phase: "S1PC"
+    objective: "导入需求追溯矩阵，P0/P1 必须绑定任务、验收、测试。"
+    scope:
+      - "KMFA/metadata/traceability"
+    non_scope:
+      - "business implementation"
+    status: "completed"
+    dependencies:
+      - "S1PBT02"
+    required_files:
+      - "KMFA/metadata/traceability/requirements.csv"
+    acceptance_ids:
+      - "ACC-KMFA-S01-P3"
+    test_commands:
+      - "python3 KMFA/tools/no_omission_check.py"
+    test_results:
+      - "PASS: requirements=20, P0=9, P1=8"
+    evidence_refs:
+      - "KMFA/metadata/traceability/requirements.csv"
+    risk: "Omission blocks Stage 1."
+    rollback: "Remove imported traceability files."
+    target_version: "0.1.0-s01p3"
+    completed_version: "0.1.0-s01p3"
+  - task_id: "S1PCT02"
+    phase: "S1PC"
+    objective: "新增 no_omission 检查脚本并在 CI 中可运行。"
+    scope:
+      - "KMFA/tools/no_omission_check.py"
+    non_scope:
+      - "zero-delta implementation"
+    status: "completed"
+    dependencies:
+      - "S1PCT01"
+    required_files:
+      - "KMFA/tools/no_omission_check.py"
+    acceptance_ids:
+      - "ACC-KMFA-S01-P3"
+    test_commands:
+      - "python3 KMFA/tools/no_omission_check.py"
+    test_results:
+      - "PASS: KMFA no omission check passed"
+    evidence_refs:
+      - "KMFA/tools/no_omission_check.py"
+      - "KMFA/stage_artifacts/S01_P3_no_omission_baseline/human/test_results.md"
+    risk: "Must not be marker-only validation."
+    rollback: "Remove no_omission script."
+    target_version: "0.1.0-s01p3"
+    completed_version: "0.1.0-s01p3"
+  - task_id: "S1PCT03"
+    phase: "S1PC"
+    objective: "建立 Stage/Phase/Task 状态登记文件。"
+    scope:
+      - "KMFA/metadata/stage_status.jsonl"
+    non_scope:
+      - "Stage review"
+    status: "completed"
+    dependencies:
+      - "S1PCT01"
+    required_files:
+      - "KMFA/metadata/stage_status.jsonl"
+    acceptance_ids:
+      - "ACC-KMFA-S01-P3"
+    test_commands:
+      - "python3 KMFA/tools/no_omission_check.py"
+    test_results:
+      - "PASS: stage_status.jsonl records=234, tasks=162"
+    evidence_refs:
+      - "KMFA/metadata/stage_status.jsonl"
+    risk: "Status drift between metadata and 开发记录."
+    rollback: "Revert stage status update."
+    target_version: "0.1.0-s01p3"
+    completed_version: "0.1.0-s01p3"
+  - task_id: "KMFA-S01-STAGE-REVIEW-20260629"
+    phase: "S1REV"
+    objective: "复审 S01-P1/P2/P3 证据、修复状态漂移，并确认 Stage 1 上传条件。"
+    scope:
+      - "KMFA/stage_artifacts/S01_STAGE_REVIEW"
+      - "KMFA/docs/governance"
+      - "KMFA human-readable entries"
+    non_scope:
+      - "business implementation"
+      - "Stage 2 work"
+      - "direct commit from dirty canonical checkout"
+    status: "completed"
+    dependencies:
+      - "S1PCT03"
+    required_files:
+      - "KMFA/stage_artifacts/S01_STAGE_REVIEW/human/stage1_review_report.md"
+      - "KMFA/stage_artifacts/S01_STAGE_REVIEW/machine/stage1_review_manifest.json"
+    acceptance_ids:
+      - "ACC-KMFA-S01-STAGE-REVIEW"
+    test_commands:
+      - "python3 KMFA/tools/no_omission_check.py"
+      - "python3 scripts/lean_governance.py validate --project KMFA"
+      - "python3 scripts/validate_project_governance.py --project KMFA"
+      - "git diff --check -- README.md governance/projects.yaml KMFA"
+    test_results:
+      - "PASS_WITH_UPLOAD_ISOLATION_REQUIRED"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S01_STAGE_REVIEW/human/stage1_review_report.md"
+      - "KMFA/stage_artifacts/S01_STAGE_REVIEW/human/test_results.md"
+    risk: "Canonical checkout is behind origin/main and has non-KMFA dirty changes; upload must use clean worktree."
+    rollback: "Remove S01_STAGE_REVIEW artifacts and revert review status updates."
+    target_version: "0.1.0-s01p3"
+    completed_version: "0.1.0-s01p3"

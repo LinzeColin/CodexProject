@@ -1,0 +1,33 @@
+project_id: "KMFA"
+project_name: "KMFA 经营分析系统"
+version: "0.1.0-s01p3"
+current_stage: "S01"
+current_phase: "S01-P3"
+current_phase_status: "completed_validated"
+current_stage_status: "stage1_review_passed_upload_ready"
+github_directory: "LinzeColin/CodexProject/KMFA"
+human_plane:
+  - "README.md"
+  - "功能清单.md"
+  - "开发记录.md"
+  - "模型参数文件.md"
+machine_plane:
+  - "docs/governance/project.yaml"
+  - "docs/governance/roadmap.yaml"
+  - "docs/governance/events.jsonl"
+  - "metadata/project/project.yaml"
+  - "metadata/stage_status.jsonl"
+privacy_policy:
+  raw_sensitive_data_public_repo_allowed: false
+  metadata_plain_sensitive_data_allowed: false
+  allowed_public_data:
+    - "hash"
+    - "manifest"
+    - "status"
+    - "evidence index"
+upload_policy:
+  phase_upload_allowed: false
+  stage_upload_requires_review: true
+  stage_upload_requires_review_fixes: true
+  stage1_upload_ready_after_review: true
+  upload_surface: "clean_worktree_from_origin_main"

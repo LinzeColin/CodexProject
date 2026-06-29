@@ -1,0 +1,89 @@
+governance_spec_version: "1.0.0"
+project_id: "KMFA"
+assumptions:
+  - assumption_id: "ASM-KMFA-001"
+    statement: "KMFA 每次 pursuing goal 只处理一个 Stage，每次 run work 最多解决一个 Phase。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "KMFA/AGENTS.md"
+  - assumption_id: "ASM-KMFA-002"
+    statement: "KMFA Stage 完成后必须先整体复审并修复问题，之后才允许整体上传 GitHub；中间 Phase 不上传；当前 S01 上传必须走隔离 worktree。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "KMFA/AGENTS.md"
+      - "KMFA/HANDOFF.md"
+  - assumption_id: "ASM-KMFA-003"
+    statement: "P0 文件型项目成本分析必须基于授权导出或上传文件的 hash、manifest、字段映射、A0 黄金基准、整数分金额和 zero-delta 验证。"
+    status: "planned"
+    fact_level: "PROPOSED"
+    evidence_refs:
+      - "KMFA/模型参数文件.md"
+models:
+  - model_id: "MOD-KMFA-GOV-001"
+    name: "KMFA phase governance and public repository boundary"
+    kind: "deterministic_governance_contract"
+    purpose: "控制阶段推进、Phase 边界、GitHub 上传门禁和公开仓库隐私边界。"
+    owner: "KMFA"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "0.1.0-s01p3"
+    assumptions:
+      - "ASM-KMFA-001"
+      - "ASM-KMFA-002"
+    formula_ids:
+      - "FORM-KMFA-GOV-001"
+    parameter_ids:
+      - "PARAM-KMFA-001"
+      - "PARAM-KMFA-002"
+      - "PARAM-KMFA-003"
+      - "PARAM-KMFA-004"
+    inputs:
+      - "user objective"
+      - "KMFA TaskPack and Roadmap"
+      - "CodexProject root governance"
+    outputs:
+      - "phase scope gate"
+      - "stage upload gate"
+      - "privacy stop condition"
+    code_refs:
+      - "KMFA/AGENTS.md"
+      - "KMFA/README.md"
+    test_refs:
+      - "python3 scripts/lean_governance.py validate --project KMFA"
+      - "python3 scripts/validate_project_governance.py --project KMFA"
+    evidence_refs:
+      - "KMFA/AGENTS.md"
+      - "KMFA/docs/governance/project.yaml"
+      - "KMFA/stage_artifacts/S01_STAGE_REVIEW/human/stage1_review_report.md"
+  - model_id: "MOD-KMFA-COST-001"
+    name: "KMFA file-based project cost analysis MVP"
+    kind: "deterministic_financial_analysis_pipeline"
+    purpose: "后续支持 A0 权威基准、金额标准化、零差异校验、差异队列和项目成本报告。"
+    owner: "KMFA"
+    status: "planned"
+    fact_level: "PROPOSED"
+    model_version: "planned-s04-to-s10"
+    assumptions:
+      - "ASM-KMFA-003"
+    formula_ids:
+      - "FORM-KMFA-AMOUNT-001"
+    parameter_ids:
+      - "PARAM-KMFA-101"
+      - "PARAM-KMFA-102"
+      - "PARAM-KMFA-103"
+      - "PARAM-KMFA-104"
+    inputs:
+      - "raw file hash and manifest"
+      - "authorized extracted values"
+    outputs:
+      - "canonical project cost facts"
+      - "mismatch report"
+      - "report grade"
+    code_refs:
+      - "not_implemented_until_S04_S09"
+    test_refs:
+      - "planned: KMFA/tools/zero_delta_validator.py"
+    evidence_refs:
+      - "KMFA/模型参数文件.md"
