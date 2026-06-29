@@ -6053,11 +6053,21 @@ def build_final_bundle_prerequisite_plan_state(
                 and error not in blocking_reasons
             ):
                 blocking_reasons.append(error)
-    for inherited_blocker in (
-        "inherited_v7_1_p0_findings_open",
-        "inherited_v7_1_p1_findings_open",
-    ):
-        if inherited_blocker not in blocking_reasons:
+    zero_proof_validation = validation_states["P0_P1_ZERO_PROOF_ARTIFACT"]
+    inherited_zero_blockers = (
+        (
+            "inherited_v7_1_p0_findings_open"
+            if zero_proof_validation.get("p0_zero_proven_by_payload") is not True
+            else None
+        ),
+        (
+            "inherited_v7_1_p1_findings_open"
+            if zero_proof_validation.get("p1_zero_proven_by_payload") is not True
+            else None
+        ),
+    )
+    for inherited_blocker in inherited_zero_blockers:
+        if inherited_blocker and inherited_blocker not in blocking_reasons:
             blocking_reasons.append(inherited_blocker)
     state = {
         "status": "pass" if all_required_steps_passed else "blocked",
@@ -6123,12 +6133,14 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
                 and error not in expected_blocking_reasons
             ):
                 expected_blocking_reasons.append(error)
-    for inherited_blocker in (
-        "inherited_v7_1_p0_findings_open",
-        "inherited_v7_1_p1_findings_open",
-    ):
-        if inherited_blocker not in expected_blocking_reasons:
-            expected_blocking_reasons.append(inherited_blocker)
+    step_status = {step.get("step_id"): step.get("status") for step in ordered_steps}
+    if step_status.get("P0_P1_ZERO_PROOF_ARTIFACT") != "pass":
+        for inherited_blocker in (
+            "inherited_v7_1_p0_findings_open",
+            "inherited_v7_1_p1_findings_open",
+        ):
+            if inherited_blocker not in expected_blocking_reasons:
+                expected_blocking_reasons.append(inherited_blocker)
     if state.get("blocking_reasons") != expected_blocking_reasons:
         errors.append("final bundle prerequisite plan blocking_reasons must match blocked steps")
     for flag in S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_FORBIDDEN_FLAGS:

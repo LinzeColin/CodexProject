@@ -85,9 +85,9 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `1`
 - commit_bound_events: `4`
-- legacy_unbound_events: `263`
+- legacy_unbound_events: `264`
 - precommit_pending_events: `40`
-- pending_or_stale_events: `303`
+- pending_or_stale_events: `304`
 
 ## 15. UNKNOWN
 
@@ -97,8 +97,8 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 - source_base_commit: `fd90a208c7b009aa11bc26c4629a7ea92679c5ff`
 - source_tree_hash: `c44d743a2833842b3cc0dd9e098fb70017cdc5a2`
-- source_snapshot_hash: `sha256:f16c375c02b58f4e8af43fb816d646d0925c5c2a43ece6586c38e962f234a29b`
-- snapshot_event_time: `2026-06-29T18:29:22+10:00`
+- source_snapshot_hash: `sha256:226986019bf48e97772205b136bdee71b6ea2164e555d58e7af27a9731754488`
+- snapshot_event_time: `2026-06-29T18:47:58+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
 - phase/gate: `S2PL / S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_BLOCKED_ARTIFACT_MISSING_NO_PRODUCTION`
