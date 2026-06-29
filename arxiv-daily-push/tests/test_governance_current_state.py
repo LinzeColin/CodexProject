@@ -74,7 +74,7 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("real_proof_capture_is_next", generator)
         self.assertIn("current_v7_task_id", generator)
 
-    def test_user_center_default_next_step_prioritizes_s2pmt07_final_review(self) -> None:
+    def test_user_center_default_next_step_prioritizes_s2plt02_authorization(self) -> None:
         decisions = (ADP_ROOT / "用户中心/关键结论与用户决策.md").read_text(encoding="utf-8")
         roadmap = (ADP_ROOT / "用户中心/路线图与停止门.md").read_text(encoding="utf-8")
         default_next = decisions.split("## 默认下一步", 1)[1]
@@ -82,11 +82,15 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             line for line in default_next.splitlines() if line.startswith("| 1 |")
         )
 
-        self.assertIn("S2PMT07", first_action_row)
-        self.assertIn("独立终审", first_action_row)
+        self.assertIn("S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION", first_action_row)
+        self.assertIn("owner 决策", first_action_row)
+        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json", default_next)
+        self.assertIn("第二个真实 M1-M4 SMTP 日", default_next)
+        self.assertIn("真实 launchd scheduler proof", default_next)
         self.assertNotIn("候选池", first_action_row)
         self.assertNotIn("评分标准公开", first_action_row)
-        self.assertIn("独立终审 reviewer assignment artifact", default_next)
+        self.assertNotIn("独立终审 reviewer assignment artifact 准备", default_next)
+        self.assertIn("no-production attestation、independent reviewer assignment、P0/P1 zero-proof、S2PLT01 terminal acceptance 已是可用输入", decisions)
         self.assertNotIn("| 无冲突的影子数据源证据 | 可以 |", roadmap)
         self.assertIn("S2PMT07 阻断期暂停新增影子数据源", roadmap)
 
