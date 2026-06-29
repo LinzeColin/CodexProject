@@ -261,7 +261,10 @@ def can_display_financial_value(metric: dict[str, Any]) -> bool:
 
 def render_metric_value_zh(metric: dict[str, Any]) -> str:
     if not can_display_financial_value(metric):
-        return str(metric.get("message_zh") or STATUS_COPY_ZH.get(str(metric.get("status")), "数据状态未知"))
+        message = str(metric.get("message_zh") or STATUS_COPY_ZH.get(str(metric.get("status")), "数据状态未知"))
+        if metric.get("status") == "outdated" and metric.get("as_of"):
+            return f"{message}（快照日期：{metric['as_of']}）"
+        return message
     currency = metric.get("currency") or "CNY"
     return f"{currency} {float(metric['value']):,.2f}"
 

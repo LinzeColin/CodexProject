@@ -107,6 +107,22 @@ class TestV023Stage2DataStateMachine(unittest.TestCase):
             self.assertNotIn("CNY 0.00", rendered, status)
             self.assertIn(metric["message_zh"], rendered)
 
+    def test_outdated_state_displays_snapshot_date_without_financial_zero(self) -> None:
+        module = load_data_state_module()
+        metric = module.build_metric_state(
+            "net_worth_cny",
+            "净资产",
+            status="outdated",
+            as_of="2026-06-28T06:00:00+10:00",
+            evidence_hash="sha256:old-snapshot",
+        )
+
+        rendered = module.render_metric_value_zh(metric)
+
+        self.assertIn("使用旧快照", rendered)
+        self.assertIn("2026-06-28T06:00:00+10:00", rendered)
+        self.assertNotIn("CNY 0.00", rendered)
+
     def test_ready_and_confirmed_zero_require_full_evidence_chain(self) -> None:
         module = load_data_state_module()
 
@@ -377,6 +393,46 @@ console.log(JSON.stringify({
         self.assertIn("未挂载真实个人财务数据源", payload["html"])
         self.assertNotIn("CNY 0.00", payload["html"])
 
+    def test_javascript_page_gate_renders_outdated_snapshot_date_without_zero_fallback(self) -> None:
+        node = node_executable()
+        if not node:
+            self.skipTest("node executable is not available")
+
+        audit = {
+            "audit_status": "outdated",
+            "core_metric_states": [
+                {
+                    "metric_id": "net_worth_cny",
+                    "label": "净资产",
+                    "value": None,
+                    "currency": "CNY",
+                    "status": "outdated",
+                    "source": "read_model:net_worth",
+                    "as_of": "2026-06-28T06:00:00+10:00",
+                    "evidence_hash": "sha256:old-snapshot",
+                    "message_zh": "使用旧快照，请查看快照日期",
+                }
+            ],
+        }
+        script = """
+const gate = require('./PFI/web/app/dataStatus.js');
+const audit = JSON.parse(process.argv[1]);
+const html = gate.renderDataGateHTML(audit);
+console.log(JSON.stringify({ html }));
+"""
+        completed = subprocess.run(
+            [node, "-e", script, json.dumps(audit, ensure_ascii=False)],
+            cwd=ROOT.parent,
+            text=True,
+            check=True,
+            capture_output=True,
+        )
+        payload = json.loads(completed.stdout)
+
+        self.assertIn("使用旧快照", payload["html"])
+        self.assertIn("2026-06-28T06:00:00+10:00", payload["html"])
+        self.assertNotIn("CNY 0.00", payload["html"])
+
     def test_javascript_page_gate_makes_path_permission_and_parse_errors_visible(self) -> None:
         node = node_executable()
         if not node:
@@ -437,6 +493,50 @@ console.log(JSON.stringify(view.errorStates));
         terminal_log = terminal_log_path.read_text(encoding="utf-8")
         self.assertIn("browser_validation.json", terminal_log)
         self.assertIn("screenshots/data_gate.png", terminal_log)
+
+    def test_stage2_review_closeout_evidence_covers_all_phases_and_review_fix(self) -> None:
+        evidence_path = ROOT / "reports" / "pfi_v023" / "stage_2" / "evidence.json"
+        changed_files_path = ROOT / "reports" / "pfi_v023" / "stage_2" / "changed_files.txt"
+        terminal_log_path = ROOT / "reports" / "pfi_v023" / "stage_2" / "terminal.log"
+        browser_validation_path = ROOT / "reports" / "pfi_v023" / "stage_2" / "browser_validation.json"
+        screenshot_path = ROOT / "reports" / "pfi_v023" / "stage_2" / "screenshots" / "stage2_data_gate.png"
+
+        self.assertTrue(evidence_path.exists())
+        self.assertTrue(changed_files_path.exists())
+        self.assertTrue(terminal_log_path.exists())
+        self.assertTrue(browser_validation_path.exists())
+        self.assertTrue(screenshot_path.exists())
+
+        evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
+        browser_validation = json.loads(browser_validation_path.read_text(encoding="utf-8"))
+        changed_files = [
+            line.strip()
+            for line in changed_files_path.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        ]
+
+        self.assertEqual(evidence["version"], "v0.2.3")
+        self.assertEqual(evidence["stage"], "Stage 2")
+        self.assertEqual(evidence["status"], "candidate_pass")
+        self.assertTrue(evidence["stage_review_complete"])
+        self.assertEqual(evidence["changed_files"], changed_files)
+        self.assertEqual(
+            evidence["phases_covered"],
+            ["V023-S2-P1", "V023-S2-P2.1", "V023-S2-P2.2", "V023-S2-P2.3"],
+        )
+        self.assertTrue(evidence["taskpack_restored"])
+        self.assertIn("outdated_snapshot_date", evidence["review_fixes"])
+        self.assertTrue(evidence["allowed_files_obeyed"])
+        self.assertTrue(evidence["no_mock_financial_data"])
+        self.assertIn(str(screenshot_path), evidence["screenshots"])
+        self.assertTrue(browser_validation["no_financial_zero_when_not_mounted"])
+        self.assertTrue(browser_validation["outdated_snapshot_date_visible"])
+        self.assertEqual(browser_validation["console_errors"], [])
+
+        terminal_log = terminal_log_path.read_text(encoding="utf-8")
+        self.assertIn("Stage 2 review", terminal_log)
+        self.assertIn("outdated_snapshot_date", terminal_log)
+        self.assertRegex(terminal_log, r"full_v023_summary=\d+ passed")
 
 
 if __name__ == "__main__":

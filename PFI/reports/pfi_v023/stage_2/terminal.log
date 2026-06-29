@@ -1,0 +1,90 @@
+# PFI v0.2.3 Stage 2 review terminal summary
+Stage 2 review
+repo=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+branch=codex/pfi
+stage_name=真实数据状态机与非假零门禁
+
+$ git fetch origin main --prune
+exit_code=0
+origin_main=c7a2328e
+
+$ git rebase origin/main
+exit_code=0
+Successfully rebased and updated refs/heads/codex/pfi.
+
+$ Stage 2 review finding
+review_issue=outdated_snapshot_date
+before_fix=Python and JS non-display rendering returned only 使用旧快照，请查看快照日期
+required_by_taskpack=outdated data must show snapshot date
+fix=render outdated metric message with 快照日期 and as_of while still suppressing CNY 0.00
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage2_data_state_machine.py -q
+red_exit_code=1
+red_summary=2 failed, 17 passed before outdated snapshot date fix
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage2_data_state_machine.py -q
+green_exit_code=0
+green_summary=19 passed after outdated snapshot date fix
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage2_data_state_machine.py -q
+stage_evidence_red_exit_code=1
+stage_evidence_red_summary=1 failed, 19 passed before stage-level closeout evidence was written
+
+$ Google Chrome headless via playwright-core
+html=PFI/reports/pfi_v023/stage_2/stage2_review_validation.html
+browser_validation=PFI/reports/pfi_v023/stage_2/browser_validation.json
+screenshot=PFI/reports/pfi_v023/stage_2/screenshots/stage2_data_gate.png
+exit_code=0
+no_financial_zero_when_not_mounted=true
+outdated_snapshot_date_visible=true
+path_permission_parse_errors_visible=true
+console_errors=[]
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage2_data_state_machine.py -q
+exit_code=0
+20 passed
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q
+exit_code=0
+full_v023_summary=46 passed
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_no_mock_financial_data.py -q
+exit_code=0
+4 passed
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/src/pfi_v02/stage_v023_contract.py PFI/src/pfi_v02/stage_v023_data_state.py PFI/src/pfi_v02/stage_v023_real_data_audit.py PFI/tests/test_v023_stage0_contract.py PFI/tests/test_v023_stage1_app_entry_bundle_contract.py PFI/tests/test_pfi_app_entry_version_contract.py PFI/tests/test_v023_stage2_phase1_taskpack_recovery.py PFI/tests/test_v023_stage2_data_state_machine.py PFI/tests/test_v023_no_mock_financial_data.py
+exit_code=0
+passed
+
+$ /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/dataStatus.js
+exit_code=0
+passed
+
+$ /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js
+exit_code=0
+passed
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m json.tool PFI/reports/pfi_v023/stage_2/evidence.json >/dev/null
+exit_code=0
+passed
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m json.tool PFI/reports/pfi_v023/stage_2/browser_validation.json >/dev/null
+exit_code=0
+passed
+
+$ PFI real data audit current-machine summary
+audit_status=not_mounted
+file_count=0
+raw_record_count=0
+standardized_record_count=0
+account_count=0
+holding_count=0
+read_model_hash=None
+
+$ git diff --check -- PFI
+exit_code=0
+passed
+
+$ git diff --check origin/main...HEAD -- PFI
+exit_code=0
+passed

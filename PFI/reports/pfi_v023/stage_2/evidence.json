@@ -1,0 +1,111 @@
+{
+  "version": "v0.2.3",
+  "stage": "Stage 2",
+  "stage_name": "真实数据状态机与非假零门禁",
+  "status": "candidate_pass",
+  "allowed_files_obeyed": true,
+  "history_deprecation_policy_obeyed": true,
+  "no_mock_financial_data": true,
+  "current_stage_only": true,
+  "stage_review_complete": true,
+  "taskpack_restored": true,
+  "roadmap_sha256": "7b3871f98e1b991b3e7da715b5c1987d985114ed53d559c36f1a6180cd0e0ba1",
+  "taskpack_sha256": "d3e5842ad5a2a60ccbf312a977bc6313523052fd8db44db2687bf39e4c04e7a7",
+  "phases_covered": [
+    "V023-S2-P1",
+    "V023-S2-P2.1",
+    "V023-S2-P2.2",
+    "V023-S2-P2.3"
+  ],
+  "review_fixes": [
+    "outdated_snapshot_date"
+  ],
+  "commands": [
+    {
+      "command": "git fetch origin main --prune",
+      "exit_code": 0,
+      "summary": "origin/main refreshed to c7a2328e before upload planning"
+    },
+    {
+      "command": "git rebase origin/main",
+      "exit_code": 0,
+      "summary": "rebased PFI Stage 2 commits onto current GitHub main"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage2_data_state_machine.py -q",
+      "exit_code": 1,
+      "summary": "Stage 2 review RED: outdated snapshot date and stage-level evidence missing"
+    },
+    {
+      "command": "Google Chrome headless via playwright-core on PFI/reports/pfi_v023/stage_2/stage2_review_validation.html",
+      "exit_code": 0,
+      "summary": "browser_validation.json written and screenshots/stage2_data_gate.png captured"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage2_data_state_machine.py -q",
+      "exit_code": 0,
+      "summary": "20 passed"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q",
+      "exit_code": 0,
+      "summary": "46 passed"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_no_mock_financial_data.py -q",
+      "exit_code": 0,
+      "summary": "4 passed"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/src/pfi_v02/stage_v023_contract.py PFI/src/pfi_v02/stage_v023_data_state.py PFI/src/pfi_v02/stage_v023_real_data_audit.py PFI/tests/test_v023_stage0_contract.py PFI/tests/test_v023_stage1_app_entry_bundle_contract.py PFI/tests/test_pfi_app_entry_version_contract.py PFI/tests/test_v023_stage2_phase1_taskpack_recovery.py PFI/tests/test_v023_stage2_data_state_machine.py PFI/tests/test_v023_no_mock_financial_data.py",
+      "exit_code": 0,
+      "summary": "passed"
+    },
+    {
+      "command": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/dataStatus.js && /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js",
+      "exit_code": 0,
+      "summary": "passed"
+    },
+    {
+      "command": "git diff --check -- PFI && git diff --check origin/main...HEAD -- PFI",
+      "exit_code": 0,
+      "summary": "passed"
+    }
+  ],
+  "changed_files": [
+    "PFI/docs/pfi_v023/STAGE2_DATA_TRUST.md",
+    "PFI/reports/pfi_v023/stage_2/browser_validation.json",
+    "PFI/reports/pfi_v023/stage_2/changed_files.txt",
+    "PFI/reports/pfi_v023/stage_2/evidence.json",
+    "PFI/reports/pfi_v023/stage_2/screenshots/stage2_data_gate.png",
+    "PFI/reports/pfi_v023/stage_2/stage2_review_validation.html",
+    "PFI/reports/pfi_v023/stage_2/terminal.log",
+    "PFI/src/pfi_v02/stage_v023_data_state.py",
+    "PFI/tests/test_v023_stage2_data_state_machine.py",
+    "PFI/web/app/dataStatus.js"
+  ],
+  "screenshots": [
+    "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_2/screenshots/stage2_data_gate.png"
+  ],
+  "bundle_hash": null,
+  "app_entry_checked": false,
+  "localhost_checked": false,
+  "data_status_summary": {
+    "audit_status": "not_mounted",
+    "file_count": 0,
+    "raw_record_count": 0,
+    "standardized_record_count": 0,
+    "account_count": 0,
+    "holding_count": 0,
+    "read_model_hash": null,
+    "non_display_statuses_never_render_zero": true,
+    "outdated_snapshot_date_visible": true
+  },
+  "explicitly_not_done": [
+    "Stage 3 navigation routes",
+    "PFI/web/index.html route wiring",
+    "PFI/web/app/shell.js route wiring",
+    "app bundle reinstall in this Stage 2 review commit"
+  ],
+  "requires_user_acceptance": true
+}
