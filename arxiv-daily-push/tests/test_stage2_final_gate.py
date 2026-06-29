@@ -486,8 +486,8 @@ class Stage2FinalGateTests(unittest.TestCase):
         for flag in S2PLT03_FORBIDDEN_FLAGS:
             self.assertFalse(report[flag])
         self.assertIn("s2plt02_not_accepted", report["blocking_reasons"])
-        self.assertIn("inherited_v7_1_p0_findings_open", report["blocking_reasons"])
-        self.assertIn("inherited_v7_1_p1_findings_open", report["blocking_reasons"])
+        self.assertNotIn("inherited_v7_1_p0_findings_open", report["blocking_reasons"])
+        self.assertNotIn("inherited_v7_1_p1_findings_open", report["blocking_reasons"])
         self.assertNotIn("rate_limit_drill_not_proven", report["blocking_reasons"])
         self.assertNotIn("parser_drift_drill_not_proven", report["blocking_reasons"])
         self.assertNotIn("restart_recovery_drill_not_proven", report["blocking_reasons"])
@@ -496,6 +496,9 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertNotIn("rollback_executable_not_proven", report["blocking_reasons"])
         self.assertNotIn("ledger_count_conservation_not_proven", report["blocking_reasons"])
         self.assertFalse(report["gates"]["s2plt02_accepted"])
+        self.assertTrue(report["gates"]["p0_zero"])
+        self.assertTrue(report["gates"]["p1_zero"])
+        self.assertEqual(report["p0_p1_zero_proof_artifact_validation"]["status"], "pass")
         self.assertTrue(report["gates"]["ledger_count_conserved"])
         self.assertTrue(report["evidence"]["available_evidence"]["RATE_LIMIT_DRILL"])
         self.assertEqual(report["evidence"]["evidence_scope"], "local_no_production_drill_not_terminal_acceptance")
@@ -504,6 +507,23 @@ class Stage2FinalGateTests(unittest.TestCase):
         tampered = dict(report)
         tampered["production_restore_executed"] = True
         self.assertIn("production_restore_executed must be false", validate_s2plt03_resilience_precheck_report(tampered))
+
+    def test_s2plt03_resilience_precheck_consumes_committed_zero_proof_without_acceptance(self) -> None:
+        report = build_s2plt03_resilience_precheck_report(
+            generated_at="2026-06-29T12:12:00+10:00",
+            repo_root=REPO_ROOT,
+        )
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["p0_p1_zero_proof_artifact_validation"]["status"], "pass")
+        self.assertTrue(report["gates"]["p0_zero"])
+        self.assertTrue(report["gates"]["p1_zero"])
+        self.assertIn("s2plt02_not_accepted", report["blocking_reasons"])
+        self.assertNotIn("inherited_v7_1_p0_findings_open", report["blocking_reasons"])
+        self.assertNotIn("inherited_v7_1_p1_findings_open", report["blocking_reasons"])
+        self.assertFalse(report["s2plt03_accepted"])
+        self.assertFalse(report["s2plt03_resilience_drill_completed"])
+        self.assertEqual(validate_s2plt03_resilience_precheck_report(report), [])
 
     def test_s2plt04_dependency_state_keeps_unaccepted_upstream_tasks_blocked(self) -> None:
         state = build_s2plt04_dependency_state()

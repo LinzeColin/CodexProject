@@ -6,7 +6,7 @@ arxiv-daily-push 当前治理结论：实现一致性为 `VERIFIED`，方法/实
 
 ## 2. 本次运行改变了什么
 
-Owner 视图现在把 S2PLT02 readiness 与已提交的 P0/P1 zero-proof artifact 对齐：`P0_ZERO=true`、`P1_ZERO=true` 已被 S2PLT02 readiness 和 S2PLT04 evidence audit 消费；但 S2PLT01、第二真实自然日、8 封真实邮件、真实 scheduler、S2PLT03、S2PLT04 completion report 和最终包仍阻断。
+Owner 视图现在把 S2PLT02 和 S2PLT03 readiness 与已提交的 P0/P1 zero-proof artifact 对齐：`P0_ZERO=true`、`P1_ZERO=true` 已被 S2PLT02 readiness、S2PLT03 readiness 和 S2PLT04 evidence audit 消费；但 S2PLT01、第二真实自然日、8 封真实邮件、真实 scheduler、S2PLT03 terminal acceptance、S2PLT04 completion report 和最终包仍阻断。
 
 ## 3. 为什么重要
 
@@ -78,7 +78,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PLT02_ZERO_PROOF_READINESS_SYNC_BLOCKED_NO_ACCEPTANCE`
+- release_gate: `S2PLT03_ZERO_PROOF_RESILIENCE_SYNC_BLOCKED_NO_ACCEPTANCE`
 
 ## 14. Evidence Freshness
 
@@ -101,7 +101,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - snapshot_event_time: `2026-06-29T11:06:42+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PL / S2PLT02_ZERO_PROOF_READINESS_SYNC_BLOCKED_NO_ACCEPTANCE`
+- phase/gate: `S2PL / S2PLT03_ZERO_PROOF_RESILIENCE_SYNC_BLOCKED_NO_ACCEPTANCE`
 
 ## 17. Next Unique Task
 

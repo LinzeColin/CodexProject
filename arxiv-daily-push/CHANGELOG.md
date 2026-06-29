@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-06-29 12:12:00 Australia/Sydney - S2PLT03-ZERO-PROOF-RESILIENCE-SYNC
+
+- Added `audit-s2plt03-resilience-readiness` CLI and updated S2PLT03 resilience precheck to consume the committed `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json` artifact.
+- Current S2PLT03 readiness remains blocked, but now reports `p0_zero=true` and `p1_zero=true`; the only current S2PLT03 readiness blocker is `s2plt02_not_accepted`.
+- Updated S2PLT04 completion evidence audit to include the new S2PLT03 zero-proof readiness sync manifest as nonterminal evidence; no S2PLT03 acceptance, S2PLT04 completion report, final command execution, next-agent handoff, independent signoff, final manifest, SMTP, scheduler, Release, restore, CURRENT/V7 change, DAILY_OPERATION, or integrated production acceptance is created or enabled.
+
 ## 2026-06-29 11:06:42 Australia/Sydney - S2PLT02-ZERO-PROOF-READINESS-SYNC
 
 - Updated the S2PLT02 terminal-readiness audit to consume the committed `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json` artifact, so current readiness now reports `P0_ZERO=true` and `P1_ZERO=true`.

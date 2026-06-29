@@ -30,24 +30,21 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn(f"- Current task: `{expected_task}`", current_state)
         self.assertIn(f"### `{current_iteration}`", ledger)
 
-    def test_s2pmt07_current_state_summary_describes_s2plt02_zero_proof_sync(self) -> None:
+    def test_s2pmt07_current_state_summary_describes_s2plt03_zero_proof_resilience_sync(self) -> None:
         ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
-            "S2PLT02_ZERO_PROOF_READINESS_SYNC_BLOCKED_NO_ACCEPTANCE",
+            "S2PLT03_ZERO_PROOF_RESILIENCE_SYNC_BLOCKED_NO_ACCEPTANCE",
             current_state,
         )
-        self.assertIn("S2PLT02-ZERO-PROOF-READINESS-SYNC", current_state)
-        self.assertIn("m4_watermark_correct=true", current_state)
-        self.assertIn("observed_natural_days=1", current_state)
-        self.assertIn("observed_email_count=4", current_state)
-        self.assertIn("real_smtp_proven=true", current_state)
-        self.assertIn("P0_ZERO=true", current_state)
-        self.assertIn("P1_ZERO=true", current_state)
-        self.assertIn("REAL_SCHEDULER_PROVEN=false", current_state)
-        self.assertIn("S2PLT01_ACCEPTED=false", current_state)
+        self.assertIn("S2PLT03-ZERO-PROOF-RESILIENCE-SYNC", current_state)
+        self.assertIn("p0_zero=true", current_state)
+        self.assertIn("p1_zero=true", current_state)
+        self.assertIn("local no-production resilience drill remains pass", current_state)
         self.assertIn("S2PLT02_ACCEPTED=false", current_state)
+        self.assertIn("S2PLT03_ACCEPTED=false", current_state)
+        self.assertIn("S2PLT03_RESILIENCE_DRILL_COMPLETED=false", current_state)
         self.assertIn("FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json", current_state)
         self.assertIn("committed `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json`", current_state)
         self.assertIn("does not create the real S2PLT04 completion report", current_state)

@@ -256,6 +256,25 @@ class CliTests(unittest.TestCase):
         self.assertTrue(payload["terminal_dependency_state"]["P0_ZERO"])
         self.assertTrue(payload["terminal_dependency_state"]["P1_ZERO"])
 
+    def test_audit_s2plt03_resilience_readiness_json_command_consumes_zero_proof_but_blocks(self):
+        buffer = io.StringIO()
+        with redirect_stdout(buffer):
+            result = main(["audit-s2plt03-resilience-readiness", "--json"])
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(result, 2)
+        self.assertEqual(payload["status"], "blocked")
+        self.assertEqual(payload["p0_p1_zero_proof_artifact_validation"]["status"], "pass")
+        self.assertTrue(payload["gates"]["p0_zero"])
+        self.assertTrue(payload["gates"]["p1_zero"])
+        self.assertIn("s2plt02_not_accepted", payload["blocking_reasons"])
+        self.assertNotIn("inherited_v7_1_p0_findings_open", payload["blocking_reasons"])
+        self.assertNotIn("inherited_v7_1_p1_findings_open", payload["blocking_reasons"])
+        self.assertFalse(payload["s2plt03_accepted"])
+        self.assertFalse(payload["s2plt03_resilience_drill_completed"])
+        self.assertFalse(payload["integrated_production_accepted"])
+        self.assertFalse(payload["scheduler_install_enabled"])
+
     def test_plan_final_bundle_prerequisites_json_command_blocks_without_artifacts(self):
         buffer = io.StringIO()
         with redirect_stdout(buffer):
@@ -320,6 +339,10 @@ class CliTests(unittest.TestCase):
         self.assertNotIn("inherited_v7_1_p1_findings_open", s2plt02_evidence["remaining_terminal_blockers"])
         self.assertNotIn("m4_watermark_not_proven", s2plt02_evidence["remaining_terminal_blockers"])
         self.assertEqual(payload["source_evidence"]["S2PLT03_RESILIENCE_PROOF"]["artifact_status"], "missing_terminal")
+        self.assertIn(
+            "governance/run_manifests/ADP-S2PLT03-ZERO-PROOF-RESILIENCE-SYNC-20260629.json",
+            payload["source_evidence"]["S2PLT03_RESILIENCE_PROOF"]["nonterminal_refs"],
+        )
         self.assertEqual(payload["source_evidence"]["P0_P1_ZERO_PROOF"]["artifact_status"], "pass")
         self.assertFalse(payload["terminal_dependency_state"]["S2PLT01_ACCEPTED"])
         self.assertFalse(payload["terminal_dependency_state"]["S2PLT02_ACCEPTED"])

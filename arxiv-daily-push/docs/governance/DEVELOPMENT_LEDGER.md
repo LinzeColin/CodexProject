@@ -10,13 +10,30 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.1
 - Current phase: S2PL
-- Current gate: S2PLT02_ZERO_PROOF_READINESS_SYNC_BLOCKED_NO_ACCEPTANCE
+- Current gate: S2PLT03_ZERO_PROOF_RESILIENCE_SYNC_BLOCKED_NO_ACCEPTANCE
 - Confirmed iteration count: 227
 - Reconstructed event count: 0
-- Current task: `S2PLT02-ZERO-PROOF-READINESS-SYNC` keeps the S2PLT02 terminal-readiness audit aligned with the committed `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json`. The current S2PLT02 audit now reports `P0_ZERO=true` and `P1_ZERO=true`, while `m4_watermark_correct=true`, `observed_natural_days=1`, `observed_email_count=4`, and `real_smtp_proven=true` remain unchanged. S2PLT02 is still blocked because `S2PLT01_ACCEPTED=false`, `TWO_CONSECUTIVE_REAL_NATURAL_DAYS=false`, `EIGHT_REAL_EMAILS_SENT=false`, `REAL_SCHEDULER_PROVEN=false`, and `S2PLT02_ACCEPTED=false`. The S2PLT04 completion evidence audit consumes the same P0/P1 zero-proof state and no longer lists inherited P0/P1 as S2PLT02 remaining blockers, but `FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json` remains missing. This does not create the real S2PLT04 completion report, does not execute final commands, does not accept production, and does not enable DAILY_OPERATION, scheduler, SMTP, Release, or restore.
+- Current task: `S2PLT03-ZERO-PROOF-RESILIENCE-SYNC` keeps the S2PLT03 resilience readiness audit aligned with the committed `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json`. The current S2PLT03 audit now reports `p0_zero=true` and `p1_zero=true`, while the local no-production resilience drill remains pass. S2PLT03 is still blocked because `S2PLT02_ACCEPTED=false`, `S2PLT03_ACCEPTED=false`, and `S2PLT03_RESILIENCE_DRILL_COMPLETED=false`. The S2PLT04 completion evidence audit now references the S2PLT03 zero-proof resilience sync manifest as nonterminal evidence, but `FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json` remains missing. This does not create the real S2PLT04 completion report, does not execute final commands, does not accept production, and does not enable DAILY_OPERATION, scheduler, SMTP, Release, or restore.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. Local daily M1-M4 orchestration is now recorded as readiness evidence, but V7.2 contract baseline migration blockers are zero while real restore, real SMTP production, scheduler installation, S2PLT04 completion, final command execution, next-agent handoff, independent signoff, final bundle manifest, directory-level final bundle artifact validation pass, and final integrated production acceptance remain forbidden until V7.2 production stop gates and all `S2PMT07` final-bundle gates pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
 
+
+### `ITER-20260629-ADP-S2PLT03-ZERO-PROOF-RESILIENCE-SYNC`
+
+- Timestamp: `2026-06-29T12:12:00+10:00`
+- Fact level: EXTRACTED from S2PLT03 resilience-readiness audit CLI output, S2PLT04 completion evidence audit detail, focused CLI/final-gate regression tests, phase record, run manifest, traceability row, delivery task, and three base files.
+- Base commit: `250ff9eae6a117035e23e49eacf89d920369f84f`
+- Product version: `0.23.1`
+- Status: `adp audit-s2plt03-resilience-readiness --json` returns blocked / exit 2 with `s2plt03_accepted=false`, but now consumes the committed P0/P1 zero-proof artifact.
+- Task IDs: `S2PLT03-ZERO-PROOF-RESILIENCE-SYNC`; parent `S2PLT03`; acceptance `ACC-S2PLT03-RESILIENCE`.
+- Goal: Remove the stale S2PLT03 readiness blockers that kept `p0_zero=false` and `p1_zero=false` after `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json` had already validated pass.
+- Files changed: S2PMT07 final gate helper, ADP CLI, focused CLI/final-gate regression tests, phase record, run manifest, traceability/delivery/event records, user-center traceability page, and three base files.
+- Decisions: `p0_zero=true`, `p1_zero=true`, local resilience drill `status=pass`, `s2plt02_accepted=false`, `s2plt03_accepted=false`, `s2plt03_resilience_drill_completed=false`, and S2PLT03 `blocking_reasons=["s2plt02_not_accepted"]`.
+- Validation: TDD red failed because S2PLT03 readiness did not consume committed P0/P1 zero-proof and `audit-s2plt03-resilience-readiness` was not registered; focused final-gate and CLI tests then passed with 105 OK.
+- Boundaries: No S2PLT03 acceptance, S2PLT02 acceptance, S2PLT04 completion report, final command execution, next-agent handoff, independent signoff, final manifest, SMTP, scheduler, Release, restore, CURRENT/V7 change, source/ranking change, DAILY_OPERATION, or integrated production acceptance.
+- Branch hygiene: no PR is created by this run; closeout must recheck open PR count and ADP/arxiv/s2p remote branches.
+- Evidence: `governance/run_manifests/ADP-S2PLT03-ZERO-PROOF-RESILIENCE-SYNC-20260629.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PLT03_ZERO_PROOF_RESILIENCE_SYNC.md`; `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json`; `governance/run_manifests/ADP-S2PLT03-LOCAL-RESILIENCE-DRILL-20260628.json`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/src/arxiv_daily_push/cli.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`; `arxiv-daily-push/tests/test_cli.py`.
+- Next step: Supply truthful S2PLT02 terminal acceptance before S2PLT03/S2PLT04 can be accepted or written.
 
 ### `ITER-20260629-ADP-S2PLT02-ZERO-PROOF-READINESS-SYNC`
 

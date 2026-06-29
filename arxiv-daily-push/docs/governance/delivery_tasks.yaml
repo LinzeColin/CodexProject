@@ -4639,3 +4639,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+  - task_id: "S2PLT03-ZERO-PROOF-RESILIENCE-SYNC"
+    title: "S2PLT03 zero-proof resilience sync"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-29T12:12:00+10:00"
+    summary: "Align S2PLT03 resilience readiness and S2PLT04 completion evidence audit with the committed P0/P1 zero-proof artifact while keeping S2PLT03 and S2PLT04 blocked."
+    owner: "content_owner + engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT03_ZERO_PROOF_RESILIENCE_SYNC.md", "governance/run_manifests/ADP-S2PLT03-ZERO-PROOF-RESILIENCE-SYNC-20260629.json"]
+    acceptance_ids: ["ACC-S2PLT03-RESILIENCE"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt03_zero_red PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_cli.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt03_zero_green2 PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_cli.py -q"]
+    test_results: ["TDD red failed as expected because S2PLT03 readiness did not consume committed P0/P1 zero-proof and audit-s2plt03-resilience-readiness was not registered", "focused final-gate and CLI tests: 105 OK"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PLT03-ZERO-PROOF-RESILIENCE-SYNC-20260629.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT03_ZERO_PROOF_RESILIENCE_SYNC.md", "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json", "governance/run_manifests/ADP-S2PLT03-LOCAL-RESILIENCE-DRILL-20260628.json", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py"]
+    result: "S2PLT03 readiness now reports p0_zero=true and p1_zero=true from committed zero-proof artifact validation; remaining S2PLT03 blocker is S2PLT02 acceptance."
+    risk: "The zero-proof sync can be misread as S2PLT03/S2PLT04 acceptance unless S2PLT03_ACCEPTED=false, S2PLT03_RESILIENCE_DRILL_COMPLETED=false, completion_report_ready=false, and production flags remain explicit."
+    rollback: "Revert S2PLT03 zero-proof consumption logic, CLI parser/dispatcher changes, S2PLT04 nonterminal ref update, focused regression tests, phase record, manifest, traceability row, delivery/event records, generated views, and three base records; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
