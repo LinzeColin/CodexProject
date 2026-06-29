@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-06-29 12:01:17 Australia/Sydney - S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-DEPENDENCY-ORDER
+
+- Fixed the S2PLT01 terminal acceptance audit dependency order so S2PLT01 readiness no longer depends on later S2PLT04 completion or S2PMT07 final signoff.
+- Current S2PLT01 audit remains blocked: `full_replay_executed=false`, `S2PLT01_ACCEPTED=false`, inherited P0/P1 are still open, and the existing independent replay review receipt remains nonterminal.
+- No S2PLT01 acceptance is claimed; no S2PLT04 completion report, final command execution, handoff, signoff, final manifest, SMTP, scheduler, Release, restore, CURRENT/V7 changes, DAILY_OPERATION, or integrated production acceptance is created or enabled.
+
 ## 2026-06-29 12:12:00 Australia/Sydney - S2PLT03-ZERO-PROOF-RESILIENCE-SYNC
 
 - Added `audit-s2plt03-resilience-readiness` CLI and updated S2PLT03 resilience precheck to consume the committed `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json` artifact.

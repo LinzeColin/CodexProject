@@ -6,7 +6,7 @@ arxiv-daily-push 当前治理结论：实现一致性为 `VERIFIED`，方法/实
 
 ## 2. 本次运行改变了什么
 
-Owner 视图现在把 S2PLT02 和 S2PLT03 readiness 与已提交的 P0/P1 zero-proof artifact 对齐：`P0_ZERO=true`、`P1_ZERO=true` 已被 S2PLT02 readiness、S2PLT03 readiness 和 S2PLT04 evidence audit 消费；但 S2PLT01、第二真实自然日、8 封真实邮件、真实 scheduler、S2PLT03 terminal acceptance、S2PLT04 completion report 和最终包仍阻断。
+Owner 视图现在把 S2PLT01 terminal audit 的依赖顺序修正为不再要求后置 S2PLT04 completion / S2PMT07 final signoff；同时 S2PLT02 和 S2PLT03 readiness 已与提交的 P0/P1 zero-proof artifact 对齐。S2PLT01 仍因 full replay、非终局 review receipt、S2PLT01 accepted=false 和 inherited P0/P1 阻断；第二真实自然日、8 封真实邮件、真实 scheduler、S2PLT03 terminal acceptance、S2PLT04 completion report 和最终包仍阻断。
 
 ## 3. 为什么重要
 
@@ -21,7 +21,7 @@ Owner 视图现在把 S2PLT02 和 S2PLT03 readiness 与已提交的 P0/P1 zero-p
 
 ## 5. 默认建议
 
-- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat independent reviewer assignment and FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json as validated zero-proof inputs, and next obtain S2PLT01/S2PLT02/S2PLT03 terminal evidence before writing S2PLT04 completion proof, final bundle manifest, independent final signoff, final command execution proof, no-production attestation, and next-agent handoff.
+- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat independent reviewer assignment and FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json as validated zero-proof inputs, keep the repaired S2PLT01 dependency order, and next obtain S2PLT01/S2PLT02/S2PLT03 terminal evidence before writing S2PLT04 completion proof, final bundle manifest, independent final signoff, final command execution proof, no-production attestation, and next-agent handoff.
 - estimated_effort: P0/P1; contract hash, AGENTS, 三基文件, validator/test, no production side effect
 - estimated_cost_or_resource: local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner
 
@@ -56,7 +56,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 10. Current Blockers
 
-1. S2PLT01 terminal acceptance is still false.
+1. S2PLT01 terminal audit dependency order is repaired, but full replay, terminal acceptance, terminal review receipt, and inherited P0/P1 zero state are still missing.
 2. S2PLT02 still lacks second real natural day, eight total real emails, and real scheduler proof.
 3. S2PLT03 terminal resilience proof, S2PLT04 completion report, final bundle manifest, independent signoff, final command execution, and production acceptance remain blocked.
 

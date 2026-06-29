@@ -1,0 +1,83 @@
+{
+  "schema_version": "codexproject.run_manifest.v1",
+  "manifest_id": "ADP-S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-DEPENDENCY-ORDER-20260629",
+  "project_id": "arxiv-daily-push",
+  "phase": "S2PM",
+  "task_id": "S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-DEPENDENCY-ORDER",
+  "task_ids": [
+    "S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-DEPENDENCY-ORDER",
+    "S2PMT07-S2PLT04-COMPLETION-REPORT",
+    "S2PLT01",
+    "ACC-S2PLT01-30D"
+  ],
+  "generated_at": "2026-06-29T12:01:17+10:00",
+  "fact_level": "EXTRACTED",
+  "summary": "S2PLT01 terminal acceptance audit no longer blocks on later S2PLT04 completion or S2PMT07 final signoff; S2PLT01 remains blocked by real replay, nonterminal review receipt, S2PLT01 acceptance, and inherited P0/P1 zero state.",
+  "result": "blocked_s2plt01_terminal_acceptance_dependency_order_fixed_no_acceptance_no_production",
+  "cli_command": "adp audit-s2plt01-terminal-acceptance --json",
+  "cli_exit_code": 2,
+  "audit_state_hash": "26391f610caaaf83da91463de4db2eec9d1a60034ba2742f39ce56cdb28832ff",
+  "terminal_acceptance_ready": false,
+  "review_receipt_present": true,
+  "review_package_passed": true,
+  "full_replay_executed": false,
+  "s2plt01_accepted": false,
+  "s2plt04_completed": false,
+  "s2pmt07_final_signoff_claimed": false,
+  "terminal_gates": {
+    "review_receipt_present": true,
+    "review_package_passed": true,
+    "full_replay_executed": false,
+    "s2plt01_accepted": false,
+    "inherited_p0_zero": false,
+    "inherited_p1_zero": false
+  },
+  "removed_downstream_blockers": [
+    "s2plt04_not_completed",
+    "s2pmt07_not_completed"
+  ],
+  "blocking_reasons": [
+    "full_replay_not_executed",
+    "inherited_v7_1_p0_findings_open",
+    "inherited_v7_1_p1_findings_open",
+    "review_receipt_is_nonterminal",
+    "s2plt01_not_accepted"
+  ],
+  "top_level_p0_p1_stop_gate_closed": false,
+  "final_acceptance_bundle_present": false,
+  "production_acceptance_claimed": false,
+  "integrated_production_accepted": false,
+  "stage2_integrated_production_accepted": false,
+  "daily_operation_enabled": false,
+  "real_smtp_sent": false,
+  "real_smtp_send_enabled": false,
+  "scheduler_enabled": false,
+  "scheduler_install_enabled": false,
+  "release_uploaded": false,
+  "release_packaging_enabled": false,
+  "production_restore_enabled": false,
+  "production_restore_executed": false,
+  "public_schema_changed": false,
+  "db_migration_executed": false,
+  "production_queue_mutated": false,
+  "source_adapter_changed": false,
+  "source_or_board_changed": false,
+  "ranking_algorithm_changed": false,
+  "current_pointer_changed": false,
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false,
+  "evidence_refs": [
+    "governance/run_manifests/ADP-S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-DEPENDENCY-ORDER-20260629.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT01_TERMINAL_ACCEPTANCE_DEPENDENCY_ORDER.md",
+    "governance/run_manifests/ADP-S2PLT01-INDEPENDENT-REPLAY-REVIEW-20260626.json",
+    "governance/run_manifests/ADP-S2PLT04-S2PLT01-REPLAY-REVIEW-EVIDENCE-SYNC-20260628.json",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py",
+    "arxiv-daily-push/tests/test_stage2_replay_gate.py"
+  ],
+  "test_results": [
+    "TDD red failed as expected because S2PLT01 terminal acceptance audit still listed downstream S2PLT04/S2PMT07 blockers",
+    "focused S2PLT01 replay-gate tests: 21 OK"
+  ],
+  "next_task": "SUPPLY_REAL_S2PLT01_FULL_REPLAY_TERMINAL_REVIEW_ACCEPTANCE_AND_P0_P1_ZERO_BEFORE_S2PLT04_REPORT",
+  "rollback": "Revert the S2PLT01 terminal acceptance audit dependency-order change, focused regression test, phase record, manifest, traceability row, delivery/event records, generated views, and three base records; no runtime production state was changed."
+}
