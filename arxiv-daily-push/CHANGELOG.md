@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-06-29 10:35:11 Australia/Sydney - S2PLT02-TERMINAL-READINESS-AUDIT
+
+- Added `audit-s2plt02-terminal-readiness` CLI so owner/coordinator and future reviewers can see the current S2PLT02 terminal-readiness state without treating partial evidence as acceptance.
+- Current audit result is blocked: M4 watermark proof is ready, one natural day and four real emails are recorded, and real SMTP evidence is present, but S2PLT01 acceptance, a second real natural day, eight total real emails, real scheduler proof, and inherited P0/P1 top-level stop gates remain missing.
+- The S2PLT04 completion evidence audit now references this S2PLT02 nonterminal readiness manifest; no S2PLT02 acceptance, S2PLT04 completion report, final command execution, handoff, signoff, final manifest, SMTP, scheduler, Release, restore, CURRENT/V7 changes, DAILY_OPERATION, or integrated production acceptance is created or enabled.
+
 ## 2026-06-29 10:12:17 Australia/Sydney - S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-AUDIT
 
 - Added `audit-s2plt01-terminal-acceptance` CLI so owner/coordinator and future reviewers can see that the existing S2PLT01 independent replay review receipt is nonterminal evidence only.

@@ -4599,3 +4599,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+  - task_id: "S2PLT02-TERMINAL-READINESS-AUDIT"
+    title: "S2PLT02 terminal readiness audit"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-29T10:35:11+10:00"
+    summary: "Expose a fail-closed CLI audit for S2PLT02 terminal readiness so M4 watermark readiness is visible while two-day/eight-email/scheduler and upstream gates remain blocked."
+    owner: "content_owner + engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_READINESS_AUDIT.md", "governance/run_manifests/ADP-S2PLT02-TERMINAL-READINESS-AUDIT-20260629.json"]
+    acceptance_ids: ["ACC-S2PLT02-2D"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_terminal_red PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_cli.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_terminal_green PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_cli.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_terminal_probe PYTHONPATH=arxiv-daily-push/src python3 -B -m arxiv_daily_push.cli audit-s2plt02-terminal-readiness --json"]
+    test_results: ["TDD red failed as expected because audit-s2plt02-terminal-readiness was not a recognized CLI command", "focused CLI tests: 21 OK", "audit CLI returned blocked / exit 2 with m4_watermark_correct=true and s2plt02_accepted=false"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PLT02-TERMINAL-READINESS-AUDIT-20260629.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_READINESS_AUDIT.md", "governance/run_manifests/ADP-S2PLT02-M4-WATERMARK-PROOF-RECORD-20260628.json", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py"]
+    result: "S2PLT02 terminal readiness audit is available through CLI and remains blocked with M4 watermark proof ready, one day and four emails recorded, scheduler missing, and no S2PLT02 acceptance."
+    risk: "The ready M4 watermark can be misread as S2PLT02 acceptance unless the remaining blockers and acceptance=false fields stay explicit."
+    rollback: "Revert CLI parser/dispatcher changes, terminal-readiness audit builder, S2PLT04 evidence detail update, focused regression test, phase record, manifest, traceability row, delivery/event records, generated views, and three base records; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
