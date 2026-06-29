@@ -21,7 +21,7 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 253
+- task_count: 254
 - acceptance_count: 127
 
 ## Delivery Tasks
@@ -609,3 +609,10 @@ The machine-readable task source is `delivery_tasks.yaml`.
 - This is local catch-up delivery evidence only; scheduler, Release, source, ranking, CURRENT, V7 contract, DAILY_OPERATION, and integrated production acceptance remain blocked.
 | S2PLT02-M4-WATERMARK-PROOF | S2PL | blocked | ACC-S2PLT02-2D | focused final-gate tests 65 OK before governance sync; final validation recorded in run manifest | `docs/phase_records/PHASE_S2PLT02_M4_WATERMARK_PROOF.md` |
 | S2PLT02-M4-WATERMARK-PROOF-RECORD | S2PL | ready_m4_proof_s2plt02_blocked | ACC-S2PLT02-2D | focused final-gate tests 66 OK before governance sync; final validation recorded in run manifest | `docs/phase_records/PHASE_S2PLT02_M4_WATERMARK_PROOF_RECORD.md`; `governance/run_manifests/ADP-S2PLT02-M4-WATERMARK-PROOF-RECORD-20260628.json` |
+
+## 2026-06-29 10:12:17 Australia/Sydney - S2PLT01 terminal acceptance audit
+
+- Added manifest `governance/run_manifests/ADP-S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-AUDIT-20260629.json`.
+- Added phase record `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT01_TERMINAL_ACCEPTANCE_AUDIT.md`.
+- `adp audit-s2plt01-terminal-acceptance --json` returns blocked / exit 2 with `review_receipt_present=true`, `review_package_passed=true`, `full_replay_executed=false`, and `s2plt01_accepted=false`.
+- S2PLT01 acceptance, S2PLT04 completion report, final command execution, handoff, signoff, final manifest, SMTP, scheduler, Release, restore, CURRENT/V7 contract edits, DAILY_OPERATION, and integrated production acceptance remain blocked.

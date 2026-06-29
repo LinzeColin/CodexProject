@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-06-29 10:12:17 Australia/Sydney - S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-AUDIT
+
+- Added `audit-s2plt01-terminal-acceptance` CLI so owner/coordinator and future reviewers can see that the existing S2PLT01 independent replay review receipt is nonterminal evidence only.
+- Current audit result is blocked: review receipt is present and review package passed, but `full_replay_executed=false`, `S2PLT01_ACCEPTED=false`, `S2PLT04_COMPLETED=false`, `S2PMT07_FINAL_SIGNOFF=false`, and inherited V7.1 P0/P1 production stop gates remain open.
+- No S2PLT01 acceptance is claimed; no S2PLT04 completion report, final command execution, handoff, signoff, final manifest, SMTP, scheduler, Release, restore, CURRENT/V7 changes, DAILY_OPERATION, or integrated production acceptance is created or enabled.
+
 ## 2026-06-29 09:41:06 Australia/Sydney - S2PMT07-S2PLT04-COMPLETION-EVIDENCE-AUDIT
 
 - Added `audit-s2plt04-completion-evidence` CLI so owner/coordinator and future reviewers can see the exact terminal evidence gaps before any S2PLT04 completion report is written.

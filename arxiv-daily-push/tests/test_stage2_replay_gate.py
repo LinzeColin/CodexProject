@@ -528,6 +528,29 @@ class Stage2ReplayGateTests(unittest.TestCase):
             text = phase_path.read_text(encoding="utf-8")
             self.assertNotIn("independent S2PLT01 replay review: missing", text)
 
+    def test_terminal_acceptance_audit_cli_keeps_review_receipt_nonterminal(self) -> None:
+        stdout = io.StringIO()
+
+        with redirect_stdout(stdout):
+            exit_code = cli_main(["audit-s2plt01-terminal-acceptance", "--json"])
+
+        report = json.loads(stdout.getvalue())
+        self.assertEqual(exit_code, 2)
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["scope"], "s2plt01_terminal_acceptance_audit_only_no_acceptance_claim")
+        self.assertFalse(report["terminal_acceptance_ready"])
+        self.assertFalse(report["s2plt01_accepted"])
+        self.assertTrue(report["review_receipt_present"])
+        self.assertTrue(report["review_package_passed"])
+        self.assertFalse(report["full_replay_executed"])
+        self.assertIn("review_receipt_is_nonterminal", report["blocking_reasons"])
+        self.assertIn("s2plt04_not_completed", report["blocking_reasons"])
+        self.assertIn("s2pmt07_not_completed", report["blocking_reasons"])
+        self.assertFalse(report["production_acceptance_claimed"])
+        self.assertFalse(report["integrated_production_accepted"])
+        self.assertFalse(report["real_smtp_sent"])
+        self.assertFalse(report["scheduler_enabled"])
+
 
 if __name__ == "__main__":
     unittest.main()

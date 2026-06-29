@@ -4579,3 +4579,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+  - task_id: "S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-AUDIT"
+    title: "S2PMT07 S2PLT01 terminal acceptance audit"
+    phase: "S2PM"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-29T10:12:17+10:00"
+    summary: "Expose a fail-closed CLI audit for S2PLT01 terminal acceptance so the independent replay review receipt remains nonterminal evidence and cannot be used to write the S2PLT04 completion report."
+    owner: "content_owner + engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_replay_gate.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT01_TERMINAL_ACCEPTANCE_AUDIT.md", "governance/run_manifests/ADP-S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-AUDIT-20260629.json"]
+    acceptance_ids: ["ACC-S2PLT01-30D", "ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt01_terminal_red PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_replay_gate.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt01_terminal_green PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_replay_gate.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt01_terminal_audit_probe PYTHONPATH=arxiv-daily-push/src python3 -B -m arxiv_daily_push.cli audit-s2plt01-terminal-acceptance --json"]
+    test_results: ["TDD red failed as expected because audit-s2plt01-terminal-acceptance was not a recognized CLI command", "focused S2PLT01 replay-gate tests: 21 OK", "audit CLI returned blocked / exit 2 with terminal_acceptance_ready=false and s2plt01_accepted=false"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-AUDIT-20260629.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT01_TERMINAL_ACCEPTANCE_AUDIT.md", "governance/run_manifests/ADP-S2PLT01-INDEPENDENT-REPLAY-REVIEW-20260626.json", "governance/run_manifests/ADP-S2PLT04-S2PLT01-REPLAY-REVIEW-EVIDENCE-SYNC-20260628.json", "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_replay_gate.py"]
+    result: "S2PLT01 terminal acceptance audit is available through CLI and remains blocked with review_receipt_present=true, review_package_passed=true, full_replay_executed=false, and s2plt01_accepted=false."
+    risk: "The existing independent replay review receipt can be misread as terminal acceptance unless the audit keeps terminal_acceptance_ready=false explicit."
+    rollback: "Revert S2PLT01 terminal audit builder, CLI parser/dispatcher, focused regression test, phase record, manifest, traceability row, delivery/event records, generated views, and three base records; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

@@ -109,6 +109,7 @@ from .stage1_runtime import (
 from .stage2_replay_gate import (
     build_s2plt01_independent_replay_review_report,
     build_s2plt01_replay_payload_execution_report,
+    build_s2plt01_terminal_acceptance_audit_state,
     validate_s2plt01_independent_replay_review_report,
     validate_s2plt01_replay_payload_execution_report,
 )
@@ -1174,6 +1175,13 @@ def build_parser() -> argparse.ArgumentParser:
     s2plt01_independent_review.add_argument("--ci-evidence-ref", action="append", default=[], help="CI/workflow evidence ref. May be repeated.")
     s2plt01_independent_review.add_argument("--evidence-ref", action="append", default=[], help="Durable review evidence ref. May be repeated.")
     s2plt01_independent_review.add_argument("--json", action="store_true", help="Print JSON independent replay review report.")
+
+    s2plt01_terminal_audit = subparsers.add_parser(
+        "audit-s2plt01-terminal-acceptance",
+        help="Audit current S2PLT01 terminal acceptance evidence without accepting S2PLT01.",
+    )
+    s2plt01_terminal_audit.add_argument("--repo-root", default=".", help="Repository root containing governance manifests.")
+    s2plt01_terminal_audit.add_argument("--json", action="store_true", help="Print JSON terminal acceptance audit state.")
 
     final_reviewer_assignment = subparsers.add_parser(
         "validate-final-reviewer-assignment",
@@ -3502,6 +3510,18 @@ def main(argv: list[str] | None = None) -> int:
             for error in errors:
                 print(f"- error: {error}")
         return 0 if report["review_package_passed"] and not errors else 2
+    if args.command == "audit-s2plt01-terminal-acceptance":
+        report = build_s2plt01_terminal_acceptance_audit_state(repo_root=args.repo_root)
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- terminal_acceptance_ready: {report.get('terminal_acceptance_ready')}")
+            print(f"- review_receipt_present: {report.get('review_receipt_present')}")
+            print(f"- review_package_passed: {report.get('review_package_passed')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+        return 0 if report["status"] == "pass" else 2
     if args.command == "validate-final-reviewer-assignment":
         artifact_path = Path(args.path)
         payload = load_json_mapping(artifact_path) if artifact_path.exists() else None
