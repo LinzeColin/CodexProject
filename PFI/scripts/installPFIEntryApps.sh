@@ -61,9 +61,18 @@ install_optional_app() {
 }
 
 install_desktop_link() {
-  rm -rf "$DESKTOP_APP"
-  ln -s "$APPLICATIONS_APP" "$DESKTOP_APP"
-  echo "optional=$DESKTOP_APP status=linked_to_applications"
+  if [[ -L "$DESKTOP_APP" && "$(readlink "$DESKTOP_APP")" == "$APPLICATIONS_APP" ]]; then
+    echo "optional=$DESKTOP_APP status=already_linked_to_applications"
+    return 0
+  fi
+  if rm -rf "$DESKTOP_APP" 2>/dev/null && ln -s "$APPLICATIONS_APP" "$DESKTOP_APP" 2>/dev/null; then
+    echo "optional=$DESKTOP_APP status=linked_to_applications"
+  else
+    echo "optional=$DESKTOP_APP status=warning desktop_link_not_changed" >&2
+    if [[ -e "$DESKTOP_APP" || -L "$DESKTOP_APP" ]]; then
+      echo "optional=$DESKTOP_APP existing_target=$(readlink "$DESKTOP_APP" 2>/dev/null || printf existing_non_symlink)" >&2
+    fi
+  fi
 }
 
 install_required_app "$DOWNLOADS_APP"
