@@ -245,16 +245,16 @@ parameter_profile_versions:
   adp-s2pmt07-local-runtime-no-production: "adp-s2pmt07-local-runtime-no-production-v1"
   adp-s2pmt07-local-runtime-no-production-parameters: "adp-s2pmt07-local-runtime-no-production-parameters-v1"
 data_snapshot_version: "fixture_arxiv_atom_to_daily_dry_run_v1"
-current_iteration: "ITER-20260629-ADP-S2PMT07-S2PLT04-COMPLETION-REPORT-DEPENDENCY-ORDER"
+current_iteration: "ITER-20260629-ADP-S2PMT07-S2PLT04-COMPLETION-EVIDENCE-AUDIT"
 current_phase: "S2PM"
-current_gate: "S2PMT07_S2PLT04_COMPLETION_REPORT_DEPENDENCY_ORDER_FIXED_STILL_BLOCKED_NO_PRODUCTION"
+current_gate: "S2PMT07_S2PLT04_COMPLETION_EVIDENCE_AUDIT_BLOCKED_NO_REPORT_NO_PRODUCTION"
 current_v6_task_id: "NOT_APPLICABLE"
 current_v7_contract_version: "ADP-PRODUCT-CONTRACT-V7.2"
 current_v7_roadmap_version: "ADP-ROADMAP-V7.2"
 current_v7_task_id: "S2PMT07"
 current_v7_shadow_source_task_id: "NONE_WHILE_S2PMT07_BLOCKED"
 current_v7_final_task_id: "S2PMT07"
-current_v7_legacy_alias: "S2PMT07-S2PLT04-COMPLETION-REPORT-DEPENDENCY-ORDER removes the circular requirement that S2PLT04 completion report already include later final bundle manifest evidence; the real S2PLT04 report, final command execution, next-agent handoff, independent signoff, manifest, scheduler/SMTP/Release/restore, CURRENT/V7 change, DAILY_OPERATION, and integrated production acceptance remain blocked or false."
+current_v7_legacy_alias: "S2PMT07-S2PLT04-COMPLETION-EVIDENCE-AUDIT exposes the terminal source evidence gaps before S2PLT04 completion report can be written; S2PLT01 is nonterminal, S2PLT02 and S2PLT03 terminal proofs are missing, the real S2PLT04 report, final command execution, next-agent handoff, independent signoff, manifest, scheduler/SMTP/Release/restore, CURRENT/V7 change, DAILY_OPERATION, and integrated production acceptance remain blocked or false."
 s2plt02_partial_real_delivery_iteration: "ITER-20260628-ADP-S2PLT02-PARTIAL-REAL-DELIVERY-EVIDENCE"
 s2plt02_partial_real_delivery_gate: "S2PLT02_PARTIAL_REAL_DELIVERY_EVIDENCE_BLOCKED_NO_ACCEPTANCE"
 s2plt02_observed_natural_days: 1
@@ -473,3 +473,13 @@ s2pmt07_independent_final_reviewer_assignment_artifact_draft_cli_state_hash: "5b
 s2pmt07_independent_final_reviewer_assignment_artifact_draft_cli_artifact_written: false
 s2pmt07_independent_final_reviewer_assignment_artifact_draft_cli_gate_satisfied: false
 s2pmt07_independent_final_reviewer_assignment_artifact_draft_cli_recommended_next: "SUPPLY_REAL_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT"
+
+s2pmt07_s2plt04_completion_evidence_audit_iteration: "ITER-20260629-ADP-S2PMT07-S2PLT04-COMPLETION-EVIDENCE-AUDIT"
+s2pmt07_s2plt04_completion_evidence_audit_gate: "S2PMT07_S2PLT04_COMPLETION_EVIDENCE_AUDIT_BLOCKED_NO_REPORT_NO_PRODUCTION"
+s2pmt07_s2plt04_completion_evidence_audit_status: "blocked_s2plt04_completion_evidence_audit_terminal_gaps_visible_no_report_no_production"
+s2pmt07_s2plt04_completion_evidence_audit_command: "adp audit-s2plt04-completion-evidence --json"
+s2pmt07_s2plt04_completion_evidence_audit_state_hash: "cce9241078f6f4e91bcdd4440642e252c5c6082830d8a61ca0dbe23a04f29729"
+s2pmt07_s2plt04_completion_evidence_audit_completion_report_ready: false
+s2pmt07_s2plt04_completion_evidence_audit_completion_report_written: false
+s2pmt07_s2plt04_completion_evidence_audit_blocking_reasons: "s2plt01_not_accepted; s2plt02_live_2d_terminal_proof_missing; s2plt03_resilience_terminal_proof_missing"
+s2pmt07_s2plt04_completion_evidence_audit_recommended_next: "SUPPLY_REAL_S2PLT01_S2PLT02_S2PLT03_TERMINAL_EVIDENCE_BEFORE_S2PLT04_REPORT"

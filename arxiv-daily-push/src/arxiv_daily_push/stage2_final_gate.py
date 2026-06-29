@@ -421,6 +421,14 @@ S2PMT07_S2PLT04_COMPLETION_REPORT_REQUIRED_TERMINAL_DEPENDENCIES = (
     "P1_ZERO_PROVEN",
 )
 S2PMT07_S2PLT04_COMPLETION_REPORT_NO_PRODUCTION_FLAGS = S2PMT07_FINAL_ACCEPTANCE_BUNDLE_NO_PRODUCTION_FLAGS
+S2PMT07_S2PLT04_COMPLETION_EVIDENCE_AUDIT_SCOPE = (
+    "s2plt04_completion_evidence_audit_only_no_report_creation"
+)
+S2PMT07_S2PLT04_COMPLETION_EVIDENCE_AUDIT_BLOCKING_REASONS = (
+    "s2plt01_not_accepted",
+    "s2plt02_live_2d_terminal_proof_missing",
+    "s2plt03_resilience_terminal_proof_missing",
+)
 S2PMT07_FINAL_COMMAND_EXECUTION_SCHEMA_VERSION = "adp.final_command_execution.v1"
 S2PMT07_FINAL_COMMAND_EXECUTION_DECISION = "FINAL_COMMANDS_EXECUTED_NO_PRODUCTION_ACCEPTANCE"
 S2PMT07_FINAL_COMMAND_EXECUTION_REQUIRED_FIELDS = (
@@ -4014,6 +4022,168 @@ def build_s2plt04_completion_report_validation_state(payload: Mapping[str, Any] 
     }
     state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
     return state
+
+
+def build_s2plt04_completion_evidence_audit_state(
+    *, repo_root: str | Path = "."
+) -> dict[str, Any]:
+    """Audit whether S2PLT04 completion-report source evidence is terminal-ready."""
+
+    root = Path(repo_root)
+    zero_proof = _load_committed_p0_p1_zero_proof(root)
+    zero_proof_state = build_p0_p1_zero_proof_artifact_validation_state(zero_proof)
+    p0_zero = zero_proof_state.get("p0_zero_proven_by_payload") is True
+    p1_zero = zero_proof_state.get("p1_zero_proven_by_payload") is True
+    source_evidence = {
+        "S2PLT01_REPLAY_REVIEW": {
+            "artifact_status": "nonterminal",
+            "artifact_ref": "governance/run_manifests/ADP-S2PLT01-INDEPENDENT-REPLAY-REVIEW-20260626.json",
+            "terminal_dependency": "S2PLT01_ACCEPTED",
+            "terminal_dependency_value": False,
+            "blocking_reason": "s2plt01_not_accepted",
+            "note": "independent replay review artifact exists but recorded s2plt01_accepted=false",
+        },
+        "S2PLT02_LIVE_2D_PROOF": {
+            "artifact_status": "missing_terminal",
+            "artifact_ref": "governance/run_manifests/MISSING_REAL_S2PLT02_TERMINAL_PROOF.json",
+            "nonterminal_refs": [
+                "governance/run_manifests/ADP-S2PLT02-LIVE-2D-PRECHECK-20260626.json",
+                "governance/run_manifests/ADP-S2PLT02-PARTIAL-REAL-DELIVERY-EVIDENCE-20260628.json",
+            ],
+            "terminal_dependency": "S2PLT02_ACCEPTED",
+            "terminal_dependency_value": False,
+            "blocking_reason": "s2plt02_live_2d_terminal_proof_missing",
+        },
+        "S2PLT03_RESILIENCE_PROOF": {
+            "artifact_status": "missing_terminal",
+            "artifact_ref": "governance/run_manifests/MISSING_REAL_S2PLT03_TERMINAL_PROOF.json",
+            "nonterminal_refs": [
+                "governance/run_manifests/ADP-S2PLT03-RESILIENCE-PRECHECK-20260628.json",
+                "governance/run_manifests/ADP-S2PLT03-LOCAL-RESILIENCE-DRILL-20260628.json",
+            ],
+            "terminal_dependency": "S2PLT03_ACCEPTED",
+            "terminal_dependency_value": False,
+            "blocking_reason": "s2plt03_resilience_terminal_proof_missing",
+        },
+        "P0_P1_ZERO_PROOF": {
+            "artifact_status": "pass" if zero_proof_state.get("status") == "pass" else "blocked",
+            "artifact_ref": S2PMT07_P0_P1_ZERO_PROOF_ARTIFACT_PATH,
+            "terminal_dependencies": {
+                "P0_ZERO_PROVEN": p0_zero,
+                "P1_ZERO_PROVEN": p1_zero,
+            },
+            "validation_errors": list(zero_proof_state.get("validation_errors", [])),
+        },
+    }
+    terminal_dependency_state = {
+        "S2PLT01_ACCEPTED": False,
+        "S2PLT02_ACCEPTED": False,
+        "S2PLT03_ACCEPTED": False,
+        "P0_ZERO_PROVEN": p0_zero,
+        "P1_ZERO_PROVEN": p1_zero,
+    }
+    blocking_reasons = [
+        evidence["blocking_reason"]
+        for evidence in source_evidence.values()
+        if evidence.get("blocking_reason")
+    ]
+    if not p0_zero and "p0_zero_not_proven" not in blocking_reasons:
+        blocking_reasons.append("p0_zero_not_proven")
+    if not p1_zero and "p1_zero_not_proven" not in blocking_reasons:
+        blocking_reasons.append("p1_zero_not_proven")
+    completion_report_ready = (
+        all(terminal_dependency_state.values())
+        and all(evidence.get("artifact_status") == "pass" for evidence in source_evidence.values())
+    )
+    state = {
+        "status": "pass" if completion_report_ready else "blocked",
+        "scope": S2PMT07_S2PLT04_COMPLETION_EVIDENCE_AUDIT_SCOPE,
+        "task_id": "S2PMT07-S2PLT04-COMPLETION-REPORT",
+        "contract_id": "ADP-PRODUCT-CONTRACT-V7.2",
+        "next_required_artifact": "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json",
+        "completion_report_ready": completion_report_ready,
+        "s2plt04_completion_report_written": False,
+        "required_source_evidence_refs": list(S2PMT07_S2PLT04_COMPLETION_REPORT_REQUIRED_SOURCE_EVIDENCE_REFS),
+        "source_evidence": source_evidence,
+        "terminal_dependency_state": terminal_dependency_state,
+        "blocking_reasons": blocking_reasons,
+        "default_next_actions": [
+            "do_not_create_s2plt04_completion_report_until_terminal_dependencies_are_true",
+            "obtain_real_s2plt01_acceptance_or_keep_s2plt01_not_accepted_visible",
+            "obtain_real_s2plt02_two_day_eight_email_terminal_proof",
+            "obtain_real_s2plt03_terminal_resilience_proof_after_s2plt02_acceptance",
+            "re-run validate-s2plt04-completion-report only after the real report exists",
+        ],
+        "production_acceptance_claimed": False,
+        "integrated_production_accepted": False,
+        "daily_operation_enabled": False,
+        "real_smtp_sent": False,
+        "real_smtp_send_enabled": False,
+        "scheduler_enabled": False,
+        "scheduler_install_enabled": False,
+        "release_uploaded": False,
+        "release_packaging_enabled": False,
+        "production_restore_enabled": False,
+        "production_restore_executed": False,
+        "public_schema_changed": False,
+        "db_migration_executed": False,
+        "production_queue_mutated": False,
+        "source_adapter_changed": False,
+        "ranking_algorithm_changed": False,
+        "current_pointer_changed": False,
+        "v7_1_baseline_changed": False,
+        "v7_2_contract_files_changed": False,
+        "state_hash": "",
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
+def validate_s2plt04_completion_evidence_audit_state(state: Mapping[str, Any]) -> list[str]:
+    """Validate S2PLT04 completion evidence audit output."""
+
+    errors: list[str] = []
+    if state.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PLT04 completion evidence audit status must be pass or blocked")
+    if state.get("scope") != S2PMT07_S2PLT04_COMPLETION_EVIDENCE_AUDIT_SCOPE:
+        errors.append("S2PLT04 completion evidence audit scope is invalid")
+    if state.get("task_id") != "S2PMT07-S2PLT04-COMPLETION-REPORT":
+        errors.append("S2PLT04 completion evidence audit task_id is invalid")
+    if state.get("next_required_artifact") != "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json":
+        errors.append("S2PLT04 completion evidence audit next_required_artifact is invalid")
+    if state.get("s2plt04_completion_report_written") is not False:
+        errors.append("S2PLT04 completion evidence audit must not write completion report")
+    if tuple(state.get("required_source_evidence_refs", [])) != (
+        S2PMT07_S2PLT04_COMPLETION_REPORT_REQUIRED_SOURCE_EVIDENCE_REFS
+    ):
+        errors.append("S2PLT04 completion evidence audit source refs are invalid")
+    source_evidence = _mapping(state.get("source_evidence"))
+    for ref in S2PMT07_S2PLT04_COMPLETION_REPORT_REQUIRED_SOURCE_EVIDENCE_REFS:
+        if ref not in source_evidence:
+            errors.append(f"S2PLT04 completion evidence audit must include {ref}")
+    terminal_dependencies = _mapping(state.get("terminal_dependency_state"))
+    for dependency in S2PMT07_S2PLT04_COMPLETION_REPORT_REQUIRED_TERMINAL_DEPENDENCIES:
+        if dependency not in terminal_dependencies:
+            errors.append(f"S2PLT04 completion evidence audit terminal dependencies must include {dependency}")
+    expected_ready = all(terminal_dependencies.values()) and all(
+        _mapping(source_evidence.get(ref)).get("artifact_status") == "pass"
+        for ref in S2PMT07_S2PLT04_COMPLETION_REPORT_REQUIRED_SOURCE_EVIDENCE_REFS
+    )
+    if state.get("completion_report_ready") is not expected_ready:
+        errors.append("S2PLT04 completion evidence audit readiness must match terminal dependencies and source evidence status")
+    if state.get("status") == "blocked":
+        for reason in S2PMT07_S2PLT04_COMPLETION_EVIDENCE_AUDIT_BLOCKING_REASONS:
+            if reason not in state.get("blocking_reasons", []):
+                errors.append(f"blocked S2PLT04 completion evidence audit must include {reason}")
+    else:
+        if state.get("blocking_reasons"):
+            errors.append("passing S2PLT04 completion evidence audit must not have blocking reasons")
+    for flag in S2PMT07_FINAL_ACCEPTANCE_BUNDLE_NO_PRODUCTION_FLAGS:
+        if state.get(flag) is not False:
+            errors.append(f"{flag} must be false")
+    if state.get("state_hash") != _stable_hash({key: value for key, value in state.items() if key != "state_hash"}):
+        errors.append("S2PLT04 completion evidence audit state_hash does not match state content")
+    return errors
 
 
 def build_final_command_execution_hash(payload: Mapping[str, Any]) -> str:

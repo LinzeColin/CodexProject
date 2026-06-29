@@ -126,11 +126,13 @@ from .stage2_final_gate import (
     build_next_agent_handoff_validation_state,
     build_no_production_side_effect_attestation_validation_state,
     build_p0_p1_zero_proof_artifact_validation_state,
+    build_s2plt04_completion_evidence_audit_state,
     build_s2plt04_completion_report_validation_state,
     validate_final_acceptance_bundle_readiness_state,
     validate_final_bundle_prerequisite_plan_state,
     validate_independent_final_closure_decision_owner_packet_state,
     validate_independent_final_reviewer_assignment_owner_packet_state,
+    validate_s2plt04_completion_evidence_audit_state,
 )
 from .stage2_sources import (
     run_s2pgt05_cross_board_calibration,
@@ -1227,6 +1229,17 @@ def build_parser() -> argparse.ArgumentParser:
         help="Path to FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json.",
     )
     s2plt04_completion_report.add_argument("--json", action="store_true", help="Print JSON validation state.")
+
+    s2plt04_completion_evidence_audit = subparsers.add_parser(
+        "audit-s2plt04-completion-evidence",
+        help="Audit S2PLT04 completion-report source evidence without writing the report.",
+    )
+    s2plt04_completion_evidence_audit.add_argument(
+        "--repo-root",
+        default=".",
+        help="Repository root containing committed S2PLT04 prerequisite artifacts.",
+    )
+    s2plt04_completion_evidence_audit.add_argument("--json", action="store_true", help="Print JSON audit state.")
 
     no_production_attestation = subparsers.add_parser(
         "validate-no-production-attestation",
@@ -3549,6 +3562,21 @@ def main(argv: list[str] | None = None) -> int:
             for error in report.get("validation_errors", []):
                 print(f"- error: {error}")
         return 0 if report["status"] == "pass" else 2
+    if args.command == "audit-s2plt04-completion-evidence":
+        report = build_s2plt04_completion_evidence_audit_state(repo_root=Path(args.repo_root))
+        errors = validate_s2plt04_completion_evidence_audit_state(report)
+        output = {**report, "audit_validation_errors": errors}
+        if args.json:
+            print(json.dumps(output, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- next_required_artifact: {report.get('next_required_artifact')}")
+            print(f"- completion_report_ready: {report.get('completion_report_ready')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if report["status"] == "pass" and not errors else 2
     if args.command == "validate-no-production-attestation":
         artifact_path = Path(args.path)
         payload = load_json_mapping(artifact_path) if artifact_path.exists() else None

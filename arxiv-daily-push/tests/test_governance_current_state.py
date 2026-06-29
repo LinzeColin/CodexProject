@@ -30,21 +30,21 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn(f"- Current task: `{expected_task}`", current_state)
         self.assertIn(f"### `{current_iteration}`", ledger)
 
-    def test_s2pmt07_current_state_summary_describes_completion_report_dependency_order(self) -> None:
+    def test_s2pmt07_current_state_summary_describes_completion_evidence_audit(self) -> None:
         ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
-            "S2PMT07_S2PLT04_COMPLETION_REPORT_DEPENDENCY_ORDER_FIXED_STILL_BLOCKED_NO_PRODUCTION",
+            "S2PMT07_S2PLT04_COMPLETION_EVIDENCE_AUDIT_BLOCKED_NO_REPORT_NO_PRODUCTION",
             current_state,
         )
-        self.assertIn("S2PMT07-S2PLT04-COMPLETION-REPORT-DEPENDENCY-ORDER", current_state)
-        self.assertIn("FINAL_BUNDLE_MANIFEST", current_state)
-        self.assertIn("FINAL_ACCEPTANCE_BUNDLE_PRESENT", current_state)
-        self.assertIn("next_required_step=S2PLT04_COMPLETION_REPORT", current_state)
+        self.assertIn("S2PMT07-S2PLT04-COMPLETION-EVIDENCE-AUDIT", current_state)
+        self.assertIn("S2PLT01_ACCEPTED=false", current_state)
+        self.assertIn("S2PLT02 live two-day terminal proof is missing", current_state)
+        self.assertIn("S2PLT03 terminal resilience proof is missing", current_state)
+        self.assertIn("does not create the real S2PLT04 completion report", current_state)
         self.assertIn("P0=8", current_state)
         self.assertIn("P1=37", current_state)
-        self.assertIn("does not complete S2PLT04", current_state)
         self.assertIn("does not execute final commands", current_state)
         self.assertIn("does not accept production", current_state)
         self.assertNotIn("M4 watermark proof record", current_state)

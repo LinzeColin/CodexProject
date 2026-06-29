@@ -21,13 +21,19 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 252
+- task_count: 253
 - acceptance_count: 127
 
 ## Delivery Tasks
 
 The machine-readable task source is `delivery_tasks.yaml`.
 
+## 2026-06-29 09:41:06 Australia/Sydney - S2PMT07 S2PLT04 Completion Evidence Audit
+
+- `S2PMT07-S2PLT04-COMPLETION-EVIDENCE-AUDIT` exposes `adp audit-s2plt04-completion-evidence --json`.
+- Current result is `blocked` / exit 2: S2PLT01 independent replay review is present but nonterminal, S2PLT02 live two-day terminal proof is missing, and S2PLT03 terminal resilience proof is missing.
+- The command does not write `FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json`; it only prevents partial/precheck evidence from being misread as S2PLT04 completion.
+- No SMTP, scheduler, Release, restore, schema/DB, source/ranking, CURRENT/V7, DAILY_OPERATION, final bundle acceptance, or integrated production acceptance side effect is claimed.
 
 ## 2026-06-29 09:09:03 Australia/Sydney - S2PMT07 S2PLT04 Completion Report Dependency Order
 

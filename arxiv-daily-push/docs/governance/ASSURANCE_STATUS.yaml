@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260629-ADP-S2PMT07-S2PLT04-COMPLETION-REPORT-DEPENDENCY-ORDER"
-source_snapshot_hash: "sha256:fbb753580c6a34841d09662c4f7665503ceab6db3f93606566ba6e0d8a144b04"
+as_of_event_id: "EVENT-20260629-ADP-S2PMT07-S2PLT04-COMPLETION-EVIDENCE-AUDIT"
+source_snapshot_hash: "sha256:1faff2074ec0495e255f414d37e6ee174ae51cb7c497a37b00f789cdf10db26b"
 source_base_commit: "9fbb0c4eb240a1782bae3db4db873ded37ac21f4"
 source_tree_hash: "23334defdf6e168d709c223d61c0998e594f6852"
-snapshot_event_time: "2026-06-29T09:09:03+10:00"
+snapshot_event_time: "2026-06-29T09:41:06+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -60,13 +60,13 @@ dimensions:
     fact_level: "EXTRACTED"
     tree_bound_events: 0
     commit_bound_events: 4
-    legacy_unbound_events: 246
+    legacy_unbound_events: 247
     precommit_pending_events: 40
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "BLOCKED_PRECHECK"
-  release_gate: "S2PMT07_S2PLT04_COMPLETION_REPORT_DEPENDENCY_ORDER_FIXED_STILL_BLOCKED_NO_PRODUCTION"
+  release_gate: "S2PMT07_S2PLT04_COMPLETION_EVIDENCE_AUDIT_BLOCKED_NO_REPORT_NO_PRODUCTION"
   blocker_ids:
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
