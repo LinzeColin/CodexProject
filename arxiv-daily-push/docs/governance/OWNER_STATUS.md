@@ -8,7 +8,7 @@ arxiv-daily-push 当前治理结论：实现一致性为 `VERIFIED`，方法/实
 
 Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。
 
-最新补丁已写入并校验 `S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION` 的 live artifact：`FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json`；这是 no-production live authorization，不是 S2PLT02 terminal proof、S2PLT03 proof、S2PLT04 completion、final bundle 或生产验收。
+最新补丁已写入并校验 `S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION` 的 live artifact，并继续以 `S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT` 审计授权后的捕获窗口：`2026-06-29` 与 `2026-06-30` 的 M1-M4 运行仍是 dry-run，`ADP_ALLOW_SMTP_SEND=false`，ADP launchd labels 仍被 disabled override 阻断；这不是 S2PLT02 terminal proof、S2PLT03 proof、S2PLT04 completion、final bundle 或生产验收。
 
 ## 3. 为什么重要
 
@@ -37,7 +37,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - responsible_role: `content_owner + engineering_owner + independent_final_reviewer`
 - acceptance_ids: `ACC-S2PMT07-FINAL-REVIEW`
 - unblock_condition: Use the validated live authorization for real SMTP/scheduler proof capture only to collect a second consecutive real M1-M4 SMTP service day, real launchd scheduler proof, and validate FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json before any S2PLT04 or final bundle closure claim.
-- latest_traceability_sync: `PHASE_S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_LIVE.md` is now linked from the user center and traceability matrix; it remains authorization-only evidence, not terminal delivery proof.
+- latest_traceability_sync: `S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT` / `PHASE_S2PLT02_TERMINAL_CAPTURE_WINDOW_AUDIT.md` is now linked from the user center and traceability matrix; it records current dry-run/scheduler-disabled capture-window blockers after live authorization, not terminal delivery proof.
 
 ## 8. 九层 Assurance 状态
 
@@ -104,9 +104,9 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - snapshot_event_time: `2026-06-29T23:21:34+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PL / S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_LIVE_READY_TERMINAL_PROOF_BLOCKED_NO_PRODUCTION`
+- phase/gate: `S2PL / S2PLT02_TERMINAL_CAPTURE_WINDOW_AUDIT_BLOCKED_DRY_RUN_SCHEDULER_DISABLED_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 
 - task_id: `S2PLT02-TERMINAL-DELIVERY-PROOF`
-- reason: Live authorization is validated, but second real SMTP day, 8 real emails, real scheduler proof, and terminal delivery proof artifact are still missing before S2PLT02 can be accepted.
+- reason: Live authorization is validated, but the current capture window is still dry-run/scheduler-disabled: 2026-06-29 and 2026-06-30 provide no terminal delivery credit, so second real SMTP day, 8 real emails, real scheduler proof, and terminal delivery proof artifact are still missing before S2PLT02 can be accepted.

@@ -35,21 +35,17 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
-            "S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_LIVE_READY_TERMINAL_PROOF_BLOCKED_NO_PRODUCTION",
+            "S2PLT02_TERMINAL_CAPTURE_WINDOW_AUDIT_BLOCKED_DRY_RUN_SCHEDULER_DISABLED_NO_PRODUCTION",
             current_state,
         )
-        self.assertIn("S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION", current_state)
+        self.assertIn("S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT", current_state)
         self.assertIn("S2PLT02-TERMINAL-DELIVERY-PROOF", current_state)
-        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json", current_state)
-        self.assertIn("authorization_artifact_present=true", current_state)
-        self.assertIn("live_authorization_artifact_status=pass", current_state)
-        self.assertIn("real_proof_capture_authorized_by_payload=true", current_state)
-        self.assertIn("real_smtp_send_enabled_by_this_packet=false", current_state)
-        self.assertIn("scheduler_install_enabled_by_this_packet=false", current_state)
-        self.assertIn("terminal_delivery_proof_artifact_written_by_this_packet=false", current_state)
-        self.assertIn("79ac4987239ecad8d4eee82de0157901b59259100e6d738bd1b15d17a37dc76e", current_state)
-        self.assertIn("68cb9b1f0ae26262a42aa703567a9bf6409fe4e0fbdca12233f553f63879f3c1", current_state)
-        self.assertIn("sha256:d98242a6c95c6ba62e7e926bf3613e36339d398f70bf9e44b1af1d95794c6c79", current_state)
+        self.assertIn("2026-06-29", current_state)
+        self.assertIn("2026-06-30", current_state)
+        self.assertIn("ADP_ALLOW_SMTP_SEND=false", current_state)
+        self.assertIn("terminal_delivery_credit=false", current_state)
+        self.assertIn("counts_toward_s2plt02_terminal_proof=false", current_state)
+        self.assertIn("1f5abf4e3def35129bc6a360722b10087880dfb49f904d6f9b267cb796d7f8f1", current_state)
         self.assertIn("s2plt02_terminal_delivery_proof_artifact_missing", current_state)
         self.assertIn("no production acceptance", current_state.lower())
 
@@ -66,12 +62,13 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         for text in (assurance, owner_status):
             text_lower = text.lower()
             self.assertIn("S2PMT07", text)
-            self.assertIn("S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION", text)
+            self.assertIn("S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT", text)
             self.assertIn("S2PLT02-TERMINAL-DELIVERY-PROOF", text)
             self.assertIn("ACC-S2PMT07-FINAL-REVIEW", text)
             self.assertIn("real smtp/scheduler", text_lower)
             self.assertIn("P0/P1 zero-proof", text)
             self.assertIn("live authorization", text_lower)
+            self.assertIn("dry-run", text_lower)
             self.assertNotIn(stale_option, text)
         self.assertIn("adp_s2pmt07_blocked_next_task", generator)
         self.assertIn("terminal_delivery_proof_is_next", generator)
@@ -86,10 +83,10 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         )
 
         self.assertIn("S2PLT02 终态交付 proof", first_action_row)
-        self.assertIn("live 授权", first_action_row)
+        self.assertIn("dry-run/scheduler-disabled", first_action_row)
         self.assertIn("FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json", default_next)
         self.assertIn("FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json", default_next)
-        self.assertIn("第二个真实 M1-M4 SMTP 日", default_next)
+        self.assertIn("受控真实捕获窗口", default_next)
         self.assertIn("真实 launchd scheduler proof", default_next)
         self.assertNotIn("候选池", first_action_row)
         self.assertNotIn("评分标准公开", first_action_row)
