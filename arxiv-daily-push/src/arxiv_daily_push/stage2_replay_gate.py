@@ -641,6 +641,7 @@ def build_s2plt01_terminal_acceptance_audit_state(*, repo_root: str | Path = "."
     s2plt04_sync = _load_json_mapping(root / S2PLT01_S2PLT04_REVIEW_SYNC_MANIFEST_PATH)
     replay_payload_execution_validation = _build_s2plt01_replay_payload_execution_package_validation_state(root)
     zero_proof_validation = _build_s2plt01_p0_p1_zero_proof_artifact_validation_state(root)
+    current_entry_precheck_readiness = _build_s2plt01_current_entry_precheck_zero_proof_readiness_state(root)
     p0_zero_proven = (
         zero_proof_validation["p0_zero_proven_by_payload"] is True
         or int(s2plt04_sync.get("inherited_v7_1_open_p0_findings") or 0) == 0
@@ -660,6 +661,7 @@ def build_s2plt01_terminal_acceptance_audit_state(*, repo_root: str | Path = "."
         "review_receipt_present": review_receipt_present,
         "review_package_passed": review_package_passed,
         "replay_payload_execution_package_passed": replay_payload_execution_validation["status"] == "pass",
+        "current_entry_precheck_zero_proof_ready": current_entry_precheck_readiness["status"] == "pass",
         "s2plt01_accepted": review_manifest.get("s2plt01_accepted") is True,
         "inherited_p0_zero": p0_zero_proven,
         "inherited_p1_zero": p1_zero_proven,
@@ -671,6 +673,8 @@ def build_s2plt01_terminal_acceptance_audit_state(*, repo_root: str | Path = "."
         blocking_reasons.append("review_receipt_is_nonterminal")
     if not terminal_gates["replay_payload_execution_package_passed"]:
         blocking_reasons.append("replay_payload_execution_package_not_passed")
+    if not terminal_gates["current_entry_precheck_zero_proof_ready"]:
+        blocking_reasons.append("current_entry_precheck_zero_proof_not_ready")
     if not terminal_gates["s2plt01_accepted"]:
         blocking_reasons.append("s2plt01_not_accepted")
     if not terminal_gates["inherited_p0_zero"]:
@@ -692,6 +696,7 @@ def build_s2plt01_terminal_acceptance_audit_state(*, repo_root: str | Path = "."
         "s2plt04_review_sync_ref": S2PLT01_S2PLT04_REVIEW_SYNC_MANIFEST_PATH,
         "replay_payload_execution_package_validation": replay_payload_execution_validation,
         "p0_p1_zero_proof_artifact_validation": zero_proof_validation,
+        "current_entry_precheck_zero_proof_readiness": current_entry_precheck_readiness,
         "terminal_gates": terminal_gates,
         "blocking_reasons": sorted(set(blocking_reasons)),
         "full_replay_executed": review_manifest.get("full_replay_executed") is True,
@@ -718,16 +723,18 @@ def build_s2plt01_entry_precheck_report(
     *,
     generated_at: str,
     replay_evidence: Mapping[str, Any] | None = None,
+    audit_blockers: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Build a deterministic fail-closed S2PLT01 entry precheck report."""
 
     dependencies = build_s2plt01_dependency_state()
-    audit = build_s2plt01_audit_blocker_state()
+    audit = dict(audit_blockers) if isinstance(audit_blockers, Mapping) else build_s2plt01_audit_blocker_state()
     replay = dict(replay_evidence) if isinstance(replay_evidence, Mapping) else build_s2plt01_replay_evidence_state()
+    audit_checks = _mapping(audit.get("checks"))
     gates = {
         "dependencies_complete": dependencies["status"] == "pass",
-        "p0_zero": audit["checks"]["P0_zero"],
-        "p1_zero": audit["checks"]["P1_zero"],
+        "p0_zero": audit_checks.get("P0_zero") is True,
+        "p1_zero": audit_checks.get("P1_zero") is True,
         "replay_evidence_passed": replay["status"] == "pass",
         "thirty_independent_days_proven": replay["observed_replay_days"] >= S2PLT01_REQUIRED_REPLAY_DAYS,
         "mail_previews_proven": replay["observed_mail_previews"] >= S2PLT01_REQUIRED_MAIL_PREVIEWS,
@@ -973,6 +980,60 @@ def _build_s2plt01_p0_p1_zero_proof_artifact_validation_state(root: Path) -> dic
         "p1_zero_proven_by_payload": bool(artifact) and p1_zero and not validation_errors,
         "production_acceptance_claimed": decision.get("production_acceptance_claimed") if artifact else None,
         "validation_errors": validation_errors,
+    }
+
+
+def _build_s2plt01_current_entry_precheck_zero_proof_readiness_state(root: Path) -> dict[str, Any]:
+    zero_proof_validation = _build_s2plt01_p0_p1_zero_proof_artifact_validation_state(root)
+    replay_evidence = build_s2plt01_replay_evidence_from_records(
+        replay_records=_build_s2plt01_committed_replay_records(),
+        mail_preview_records=_build_s2plt01_committed_mail_preview_records(),
+        source_terminal_states=_build_s2plt01_committed_source_terminal_states(),
+    )
+    audit_blockers = build_s2plt01_audit_blocker_state(
+        inherited_p0=0
+        if zero_proof_validation.get("p0_zero_proven_by_payload") is True
+        else S2PLT01_INHERITED_V7_1_OPEN_P0_FINDINGS,
+        inherited_p1=0
+        if zero_proof_validation.get("p1_zero_proven_by_payload") is True
+        else S2PLT01_INHERITED_V7_1_OPEN_P1_FINDINGS,
+    )
+    entry_precheck = build_s2plt01_entry_precheck_report(
+        generated_at=S2PLT01_REPLAY_PAYLOAD_EXECUTION_GENERATED_AT,
+        replay_evidence=replay_evidence,
+        audit_blockers=audit_blockers,
+    )
+    entry_precheck_errors = validate_s2plt01_entry_precheck_report(entry_precheck)
+    validation_errors: list[str] = []
+    if zero_proof_validation.get("status") != "pass":
+        validation_errors.append("p0_p1_zero_proof_artifact_not_passed")
+    if replay_evidence.get("status") != "pass":
+        validation_errors.append("committed_replay_evidence_not_passed")
+    if entry_precheck_errors:
+        validation_errors.append("entry_precheck_report_invalid")
+    if entry_precheck.get("status") != "pass":
+        validation_errors.append("entry_precheck_not_ready")
+
+    return {
+        "status": "pass" if not validation_errors else "blocked",
+        "scope": "current_entry_precheck_zero_proof_readiness_no_acceptance_claim",
+        "generated_at": S2PLT01_REPLAY_PAYLOAD_EXECUTION_GENERATED_AT,
+        "zero_proof_artifact_ref": S2PLT01_P0_P1_ZERO_PROOF_ARTIFACT_PATH,
+        "zero_proof_artifact_status": zero_proof_validation.get("status"),
+        "entry_precheck_passed": entry_precheck.get("status") == "pass" and not entry_precheck_errors,
+        "entry_precheck_report_hash": entry_precheck.get("report_hash"),
+        "gates": dict(entry_precheck.get("gates") or {}),
+        "blocking_reasons": list(entry_precheck.get("blocking_reasons") or []),
+        "observed_replay_days": replay_evidence.get("observed_replay_days"),
+        "observed_mail_previews": replay_evidence.get("observed_mail_previews"),
+        "source_terminal_states_proven": replay_evidence.get("source_terminal_states_proven"),
+        "future_leakage_count": replay_evidence.get("future_leakage_count"),
+        "p0_p1_blocker_count": replay_evidence.get("p0_p1_blocker_count"),
+        "validation_errors": validation_errors,
+        "entry_precheck_errors": entry_precheck_errors,
+        "s2plt01_accepted": False,
+        "production_acceptance_claimed": False,
+        **{flag: False for flag in S2PLT01_FORBIDDEN_FLAGS},
     }
 
 

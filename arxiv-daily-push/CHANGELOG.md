@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-06-29 13:10:37 Australia/Sydney - S2PMT07-S2PLT01-ENTRY-PRECHECK-ZERO-PROOF-SYNC
+
+- Updated `audit-s2plt01-terminal-acceptance` to expose `current_entry_precheck_zero_proof_readiness.status=pass` from committed replay evidence plus committed P0/P1 zero-proof artifact validation.
+- Current S2PLT01 audit remains blocked, but now reports `entry_precheck_passed=true`, `entry_precheck_report_hash=b7c0b96f4cdc570a935680f52dd3804b262ef4898630df8cfadc9ce2796eb55b`, `observed_replay_days=30`, `observed_mail_previews=120`, `source_terminal_states_proven=true`, `future_leakage_count=0`, and `p0_p1_blocker_count=0`.
+- The historical no-production replay execution hash remains `47394faede126c943dc46b3ca2ae0c8680d5ef32f1f26f4618e3064fcbc28171`; no S2PLT01 acceptance is claimed, and no S2PLT04 completion report, final command execution, handoff, signoff, final manifest, SMTP, scheduler, Release, restore, CURRENT/V7 changes, DAILY_OPERATION, or integrated production acceptance is created or enabled.
+
 ## 2026-06-29 12:42:41 Australia/Sydney - S2PMT07-S2PLT01-REPLAY-PAYLOAD-READINESS-SYNC
 
 - Updated `audit-s2plt01-terminal-acceptance` to verify the existing no-production S2PLT01 replay payload execution package and bind its execution hash.
