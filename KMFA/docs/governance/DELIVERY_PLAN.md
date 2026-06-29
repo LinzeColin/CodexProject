@@ -39,7 +39,7 @@ KMFA delivery follows the owner contract:
 | Stage 4 review | passed |
 | Stage 4 GitHub upload | completed |
 | S05-P1 | completed_validated_local_only |
-| S05-P2 | in_progress_partial_hash_only_backfill_excel_pending |
+| S05-P2 | in_progress_excel_resolution_pending_human_decision_required |
 | S05-P3 | not_started |
 | Stage 5 review | not_allowed |
 | Stage 5 GitHub upload | not_allowed |
@@ -48,7 +48,7 @@ KMFA delivery follows the owner contract:
 
 Stage 4 GitHub upload is complete on `origin/main`; the reviewed content commit was `25c85dcee55679d0789f8462a7c7875188d0aa9f`.
 
-The active development baseline is `KMFA/taskpack/v1_2/`. S05-P1 is complete and locally validated with public-safe A0 file registration. S05-P2 has generated the public-safe field contract and A0 golden fixture candidates, and 40 of 45 field candidates now have hash-only private values and source anchors from local private input. Five Excel candidate fields remain pending. Stage 5 review and GitHub upload are not allowed until S05-P2 private backfill is complete or explicitly resolved, S05-P3 is complete, full Stage 5 review runs, and review fixes are complete.
+The active development baseline is `KMFA/taskpack/v1_2/`. S05-P1 is complete and locally validated with public-safe A0 file registration. S05-P2 has generated the public-safe field contract and A0 golden fixture candidates, and 40 of 45 field candidates now have hash-only private values and source anchors from local private input. Five Excel candidate fields remain pending after machine review because the workbook is only cross-source support and cannot be safely synthesized into a standalone A0 project baseline. Stage 5 review and GitHub upload are not allowed until S05-P2 private backfill is complete or explicitly resolved by owner/authorized decision, S05-P3 is complete, full Stage 5 review runs, and review fixes are complete.
 
 ## Rollback
 

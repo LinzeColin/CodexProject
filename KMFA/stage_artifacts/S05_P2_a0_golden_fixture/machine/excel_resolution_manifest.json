@@ -1,0 +1,79 @@
+{
+  "business_plaintext_committed": false,
+  "candidate_id": "A0-CAND-70023EFC7305",
+  "decision": {
+    "aggregate_workbook_values_allowed": false,
+    "next_required_action": "owner_or_authorized_private_mapping_must_confirm_excel_candidate_role_or_field_bindings",
+    "placeholder_hashes_allowed": false,
+    "q4_human_confirmed": false,
+    "q5_calculation_baseline_allowed": false
+  },
+  "evidence_refs": [
+    "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/excel_resolution_record.md",
+    "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/private_backfill_record.md",
+    "KMFA/metadata/approvals/resolution_events.jsonl",
+    "KMFA/metadata/approvals/control_events.jsonl"
+  ],
+  "field_coverage_summary": {
+    "contract_amount": "partial_support_evidence_not_standalone_binding",
+    "cost_category": "no_project_level_cost_category_binding",
+    "gross_margin": "support_evidence_not_standalone_binding",
+    "gross_profit": "partial_support_evidence_not_standalone_binding",
+    "total_expense": "no_direct_excel_summary_field"
+  },
+  "file_id": "A0-FILE-BAE6D90834C5",
+  "generated_at": "2026-06-30T09:18:43+10:00",
+  "private_csv_public_committed": false,
+  "private_field_hash_recorded_count": 40,
+  "private_field_pending_count": 5,
+  "project_id": "KMFA",
+  "public_repo_raw_files_committed": false,
+  "record_type": "s05_p2_excel_resolution_manifest",
+  "resolution_reason_code": "excel_workbook_is_cross_source_summary_not_standalone_project_fixture",
+  "resolution_status": "machine_reviewed_human_resolution_required",
+  "ring4_excel_audit": {
+    "cross_pdf_project_rows_with_excel_match": 4,
+    "cross_source_rows": 8,
+    "cross_status_counts": {
+      "NO_MATCH_FOUND": 4,
+      "PASS": 3,
+      "REQUIRES_RESOLUTION": 1
+    },
+    "excel_cell_extract_rows": 276,
+    "excel_cell_keyword_counts": {
+      "contract_amount": 2,
+      "cost_category": 2,
+      "gross_margin": 9,
+      "gross_profit": 4,
+      "total_expense": 0
+    },
+    "excel_summary_nonempty_counts": {
+      "company_name": 10,
+      "contract_no": 6,
+      "end_date_excel_serial": 6,
+      "gross_profit": 4,
+      "invoice_amount": 4,
+      "quality_status": 10,
+      "start_date_excel_serial": 6,
+      "status": 6,
+      "tax_included_contract_amount": 6
+    },
+    "excel_summary_rows": 10,
+    "match_score_buckets": {
+      "<0.50": 4,
+      ">=0.90": 4
+    },
+    "summary_quality_counts": {
+      "Q3_XML_EXTRACT": 10
+    }
+  },
+  "schema_version": "kmfa.s05_p2_excel_resolution_manifest.v1",
+  "source_anchor_recorded_count": 40,
+  "source_anchor_pending_count": 5,
+  "stage_id": "S05",
+  "task_ids": [
+    "S5PBT01",
+    "S5PBT02",
+    "S5PBT03"
+  ]
+}

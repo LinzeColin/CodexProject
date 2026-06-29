@@ -1,11 +1,11 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260630-S05P2-PARTIAL-PRIVATE-BACKFILL"
+as_of_event_id: "EVENT-KMFA-20260630-S05P2-EXCEL-RESOLUTION-PENDING"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "precommit-pending"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S05P2_EXCEL_PRIVATE_VALUES"
-snapshot_event_time: "2026-06-30T02:30:00+10:00"
-generator_version: "manual-s05p2-partial-private-backfill"
-final_commit_binding: "precommit-pending-s05p2-private-backfill-partial"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S05P2_EXCEL_RESOLUTION"
+snapshot_event_time: "2026-06-30T09:18:43+10:00"
+generator_version: "manual-s05p2-excel-resolution-pending"
+final_commit_binding: "precommit-pending-s05p2-excel-resolution-pending"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -50,6 +50,7 @@ dimensions:
       - "KMFA/stage_artifacts/S05_P1_a0_file_registration/human/test_results.md"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/test_results.md"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/private_backfill_record.md"
+      - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/excel_resolution_record.md"
   operational_validation:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
@@ -88,22 +89,25 @@ dimensions:
       - "KMFA/stage_artifacts/S05_P1_a0_file_registration/human/s05_p1_completion_record.md"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/s05_p2_completion_record.md"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/private_backfill_record.md"
+      - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/excel_resolution_record.md"
       - "KMFA/metadata/baseline/a0_file_manifest.json"
       - "KMFA/metadata/baseline/a0_project_candidates.jsonl"
       - "KMFA/metadata/baseline/a0_golden_fixture_manifest.json"
       - "KMFA/metadata/baseline/a0_golden_fixture_candidates.jsonl"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/private_backfill_manifest.json"
+      - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/excel_resolution_manifest.json"
   evidence_freshness:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "S05P2_PRIVATE_BACKFILL_PARTIAL_EXCEL_PENDING"
+  status: "S05P2_EXCEL_RESOLUTION_PENDING_HUMAN_DECISION_REQUIRED"
   release_gate: "KMFA-S05-P2-EXCEL-PRIVATE-VALUE-RESOLUTION-GATE"
   blocker_ids:
     - "S05P2_EXCEL_PRIVATE_VALUES_PENDING"
     - "S05P2_EXCEL_SOURCE_ANCHORS_PENDING"
+    - "S05P2_EXCEL_OWNER_DECISION_PENDING"
     - "S05P2_Q4_HUMAN_CONFIRMATION_NOT_STARTED"
     - "S05P3_NOT_STARTED"
     - "S05_STAGE_REVIEW_NOT_STARTED"

@@ -22,7 +22,7 @@
 - Hash/source anchor recorded: `40`
 - Pending: `5`
 - 已回填范围: 8 个 PDF A0 候选，每个候选覆盖合同额、支出合计、毛利、毛利率、成本分类。
-- 未回填范围: 1 个 Excel A0 候选仍需后续私有映射或人工确认。
+- 未回填范围: 1 个 Excel A0 候选仍需后续私有映射或人工确认；本轮已新增机器复核记录，结论为 Excel workbook 不能安全机器合成为单一 A0 项目基准。
 - 所有候选仍保持 `Q3`，`q4_human_confirmed=false`，`q5_calculation_baseline_allowed=false`。
 
 ## 公开仓库边界
@@ -31,8 +31,9 @@
 - 未提交合同额、支出合计、毛利、毛利率、成本分类的 raw value 或 normalized value。
 - 公开 metadata 只保存 `sha256:<hash>`、private refs、source anchor 状态、质量状态和审计计数。
 - 因仍有 5 条字段 pending 且未做 Q4 人工确认，S05-P2 不能声明完成，不能进入 S05-P3 锁定或 Stage 5 复审。
+- Excel 待决策证据已记录在 `KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/excel_resolution_record.md` 和 machine manifest；该记录不等同于字段回填完成。
 
 ## 下一步
 
-- 继续停留在 `S05-P2`，补齐 Excel 候选的 5 条字段 private hash/source anchor，或形成明确人工豁免/不适用决策。
+- 继续停留在 `S05-P2`，由 owner 或授权私有映射确认 Excel candidate 的角色：补齐 5 条字段 private hash/source anchor，或形成明确人工豁免/不适用/降级决策。
 - 补齐后再运行 `KMFA/tools/check_a0_golden_fixture.py --require-private-values` 和整套治理 validator。
