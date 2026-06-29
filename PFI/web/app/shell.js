@@ -326,6 +326,25 @@ const SEARCH_ALIASES = {
 };
 
 const SEARCH_DEFAULT_LIMIT = 10;
+const STAGE3_NAV = window.PFI_V023_STAGE3_NAV || Object.freeze({
+  legacyAliasEntries: Object.freeze([
+    Object.freeze({ taskId: "T3.2.1", label: "首页", targetWorkspace: "home", routeAlias: "/home/today", resolvedRouteAlias: "/home" }),
+    Object.freeze({ taskId: "T3.2.2", label: "市场", targetWorkspace: "market_research", routeAlias: "/market/watch", resolvedRouteAlias: "/market-research?tab=market" }),
+    Object.freeze({ taskId: "T3.2.2", label: "研究", targetWorkspace: "market_research", routeAlias: "/market/research", resolvedRouteAlias: "/market-research?tab=research" }),
+    Object.freeze({ taskId: "T3.2.3", label: "持仓", targetWorkspace: "investment", routeAlias: "/investment/holdings", resolvedRouteAlias: "/investment?tab=holdings" }),
+    Object.freeze({ taskId: "T3.2.4", label: "策略实验室", targetWorkspace: "market_research", routeAlias: "/market/lab", resolvedRouteAlias: "/market-research/strategy-lab" }),
+    Object.freeze({ taskId: "T3.2.4", label: "数据与系统", targetWorkspace: "settings", routeAlias: "/settings/data", resolvedRouteAlias: "/settings?tab=data-system" }),
+  ]),
+});
+const LEGACY_ALIAS_ENTRIES = Object.freeze([...(STAGE3_NAV.legacyAliasEntries || [])]);
+const LEGACY_ALIAS_KEYWORDS = Object.freeze({
+  首页: "home 首页 今日 总览",
+  市场: "market 市场 指数 ETF 主题 自选",
+  研究: "research 研究 公司 基金 政策 证据",
+  持仓: "holdings 持仓 投资 组合 编辑",
+  策略实验室: "strategy lab 策略 回测 参数 盘感 模拟",
+  数据与系统: "data system 数据 系统 设置 来源",
+});
 const LEGACY_ROUTE_ALIAS_TARGETS = Object.freeze({
   "/": "/home",
   "/market": "/market-research?tab=market",
@@ -336,15 +355,14 @@ const LEGACY_ROUTE_ALIAS_TARGETS = Object.freeze({
   "/investment?tab=market": "/market-research?tab=market",
   "/investment?tab=research": "/market-research?tab=research",
   "/investment/strategy-lab": "/market-research/strategy-lab",
+  ...Object.fromEntries(LEGACY_ALIAS_ENTRIES.map((entry) => [entry.routeAlias, entry.resolvedRouteAlias || entry.routeAlias])),
 });
-const LEGACY_COMMAND_ALIASES = Object.freeze([
-  { title: "首页", workspace: "home", routeAlias: "/home", keywords: "home 首页 总览" },
-  { title: "市场", workspace: "market_research", routeAlias: "/market-research?tab=market", keywords: "market 市场 指数 ETF" },
-  { title: "研究", workspace: "market_research", routeAlias: "/market-research?tab=research", keywords: "research 研究 公司 基金 政策" },
-  { title: "持仓", workspace: "investment", routeAlias: "/investment?tab=holdings", keywords: "holdings 持仓 投资 组合" },
-  { title: "策略实验室", workspace: "market_research", routeAlias: "/market-research/strategy-lab", keywords: "strategy lab 策略 回测 参数 盘感 模拟" },
-  { title: "数据与系统", workspace: "settings", routeAlias: "/settings?tab=data-system", keywords: "data system 数据 系统 设置" },
-]);
+const LEGACY_COMMAND_ALIASES = Object.freeze(LEGACY_ALIAS_ENTRIES.map((entry) => Object.freeze({
+  title: entry.label,
+  workspace: entry.targetWorkspace,
+  routeAlias: entry.routeAlias,
+  keywords: LEGACY_ALIAS_KEYWORDS[entry.label] || "",
+})));
 const STRATEGY_LAB_VIEWS = new Set(["single", "scan", "strategy_slice", "pit_backtest", "train_test_validation", "walk_forward_validation", "strategy_registry", "market_feel", "big_data", "library"]);
 const STAGE2_SECONDARY_TABS = {
   home: [

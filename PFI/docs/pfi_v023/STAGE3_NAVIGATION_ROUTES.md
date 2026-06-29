@@ -1,8 +1,8 @@
-# PFI v0.2.3 Stage 3 Phase 3.1 一级入口实现
+# PFI v0.2.3 Stage 3 导航与路由
 
-本 phase 只交付 `Stage 3 Phase 3.1 — 一级入口实现`。目标是把正式一级入口固定为 10 个，并确保桌面和移动端都以同一组入口作为同层主导航。
+本文件记录 Stage 3 已完成 phase 的导航合同。Stage 3 总目标是把正式一级入口固定为 10 个，并让 v0.1 旧入口只作为兼容 route、二级入口、重定向或搜索命令存在。
 
-## 范围
+## Phase 3.1 范围
 
 - 桌面 `side-nav` 保持 10 个正式一级入口，顺序与 Task Pack 一致。
 - 新增 `PFI/web/app/routes.js`，把 10 个正式入口和 v0.1 兼容入口归属写成可测试合同。
@@ -22,6 +22,21 @@
 9. 市场与研究
 10. 设置
 
+## Phase 3.2 兼容 route
+
+本 phase 只交付 `Stage 3 Phase 3.2 — v0.1 兼容路由`。6 个旧入口不恢复为同层一级入口，只作为 public compatibility route 或命令入口存在，并解析到 v0.2.3 正式工作区：
+
+| Task | v0.1 入口 | public route | 解析到 |
+|---|---|---|---|
+| T3.2.1 | 首页 | `/home/today` | `/home` |
+| T3.2.2 | 市场 | `/market/watch` | `/market-research?tab=market` |
+| T3.2.2 | 研究 | `/market/research` | `/market-research?tab=research` |
+| T3.2.3 | 持仓 | `/investment/holdings` | `/investment?tab=holdings` |
+| T3.2.4 | 策略实验室 | `/market/lab` | `/market-research/strategy-lab` |
+| T3.2.4 | 数据与系统 | `/settings/data` | `/settings?tab=data-system` |
+
+兼容 route 合同在 `PFI/web/app/routes.js` 中暴露，`PFI/web/app/shell.js` 使用同一合同生成命令别名并做 route normalize。浏览器验收记录在 `PFI/reports/pfi_v023/stage_3/phase_3_2/browser_validation.json`。
+
 ## 明确未做
 
-本 phase 不做 v0.1 alias 路由实现细化、不做 browser history/popstate 验收、不做二级页面差异化、不做 Stage 3 整体复审、不上传 GitHub main。上述内容分别属于 Stage 3 Phase 3.2、Phase 3.3、Stage 4 或 Stage 3 整体复审。
+已完成 phase 不做 browser history/popstate 验收、不做二级页面差异化、不做 Stage 3 整体复审、不上传 GitHub main。上述内容分别属于 Stage 3 Phase 3.3、Stage 4 或 Stage 3 整体复审。
