@@ -1,0 +1,100 @@
+{
+  "authorization_artifact_present": false,
+  "base_commit": "a0f5855a907393e1fbabe2e0173c66cb0f580fa2",
+  "blocking_reasons": [
+    "s2plt02_real_proof_capture_authorization_missing",
+    "second_real_delivery_day_missing",
+    "real_scheduler_not_proven",
+    "s2plt02_terminal_delivery_proof_artifact_missing"
+  ],
+  "current_pointer_changed": false,
+  "daily_operation_enabled": false,
+  "db_migration_executed": false,
+  "evidence_refs": [
+    "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-TEMPLATE-20260629.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_TEMPLATE.md",
+    "FINAL_ACCEPTANCE_BUNDLE/templates/s2plt02_real_proof_capture_authorization.template.json",
+    "FINAL_ACCEPTANCE_BUNDLE/templates/TEMPLATE_INDEX.md",
+    "arxiv-daily-push/tests/test_stage2_final_gate.py"
+  ],
+  "fact_level": "EXTRACTED",
+  "formula_ids_changed": [
+    "FORM-ADP-123"
+  ],
+  "generated_at": "2026-06-29T23:05:25+10:00",
+  "integrated_production_accepted": false,
+  "iteration_id": "ITER-20260629-ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-TEMPLATE",
+  "live_authorization_artifact": "FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json",
+  "live_authorization_artifact_created": false,
+  "mail_production_code_changed": false,
+  "model_ids_changed": [
+    "MOD-ADP-121"
+  ],
+  "parameter_ids_changed": [
+    "PARAM-ADP-1091",
+    "PARAM-ADP-1092",
+    "PARAM-ADP-1093",
+    "PARAM-ADP-1094",
+    "PARAM-ADP-1095",
+    "PARAM-ADP-1096",
+    "PARAM-ADP-1097",
+    "PARAM-ADP-1098",
+    "PARAM-ADP-1099",
+    "PARAM-ADP-1100",
+    "PARAM-ADP-1101"
+  ],
+  "phase": "S2PL",
+  "production_acceptance_claimed": false,
+  "production_queue_mutated": false,
+  "production_restore_enabled": false,
+  "production_restore_executed": false,
+  "project_id": "arxiv-daily-push",
+  "public_schema_changed": false,
+  "ranking_algorithm_changed": false,
+  "readiness_state_hash": "79ac4987239ecad8d4eee82de0157901b59259100e6d738bd1b15d17a37dc76e",
+  "real_proof_capture_authorized": false,
+  "real_smtp_send_enabled": false,
+  "real_smtp_send_enabled_by_this_packet": false,
+  "real_smtp_sent": false,
+  "release_changed": false,
+  "release_packaging_enabled": false,
+  "release_uploaded": false,
+  "result": "authorization_template_ready_live_authorization_missing_no_production",
+  "risks": [
+    "The template can be misread as live authorization if copied without explicit owner approval and hash recomputation.",
+    "S2PLT02 remains blocked until a live valid authorization artifact exists and terminal proof evidence is captured."
+  ],
+  "rollback": "Remove the authorization template, template index entry, focused test assertion, phase record, manifest, traceability row, delivery/event records, user-center traceability note, and three base notes; no runtime production state was changed.",
+  "scheduler_changed": false,
+  "scheduler_enabled": false,
+  "scheduler_install_enabled": false,
+  "scheduler_install_enabled_by_this_packet": false,
+  "schema_version": 1,
+  "smtp_changed": false,
+  "source_adapter_changed": false,
+  "source_or_board_changed": false,
+  "stage2_integrated_production_accepted": false,
+  "summary": "Added an owner-fillable S2PLT02 real-proof capture authorization template while keeping the live authorization artifact missing and all production gates blocked.",
+  "task_id": "S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-TEMPLATE",
+  "task_ids": [
+    "S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-TEMPLATE",
+    "S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION",
+    "S2PLT02",
+    "S2PMT07",
+    "ACC-S2PLT02-2D"
+  ],
+  "template_file": "FINAL_ACCEPTANCE_BUNDLE/templates/s2plt02_real_proof_capture_authorization.template.json",
+  "template_hash": "sha256:3f8f6abd40d39a8ef7e830228d680a21b3001422d39998bd59422c2bfa55393b",
+  "template_index": "FINAL_ACCEPTANCE_BUNDLE/templates/TEMPLATE_INDEX.md",
+  "terminal_delivery_proof_artifact_written_by_this_packet": false,
+  "test_results": [
+    "TDD red failed because s2plt02_real_proof_capture_authorization.template.json was missing",
+    "focused template guard passed: 1 passed"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_auth_template_red PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_final_bundle_templates_exist_but_do_not_satisfy_readiness",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_auth_template_green PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_final_bundle_templates_exist_but_do_not_satisfy_readiness"
+  ],
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false
+}
