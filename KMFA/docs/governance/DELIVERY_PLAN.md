@@ -24,12 +24,12 @@ KMFA delivery follows the owner contract:
 | S02-P1 | completed_validated |
 | S02-P2 | completed_validated |
 | S02-P3 | completed_validated |
-| Stage 2 review | pending |
-| Stage 2 GitHub upload | blocked_until_stage2_review_fix |
+| Stage 2 review | passed |
+| Stage 2 GitHub upload | pending_push |
 
 ## Upload Scope
 
-No GitHub upload is allowed immediately after S02-P3 alone. The next upload may happen only after Stage 2 review is complete and review findings are fixed.
+GitHub upload is now allowed because S02-P1/P2/P3 are complete and Stage 2 review passed. Upload remains pending until the reviewed tree is pushed to `origin/main`.
 
 ## Rollback
 

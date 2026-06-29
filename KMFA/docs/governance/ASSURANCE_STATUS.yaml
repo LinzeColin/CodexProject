@@ -1,11 +1,11 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260629-S02P3-QUALITY-GATE"
+as_of_event_id: "EVENT-KMFA-20260629-S02-STAGE-REVIEW"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "precommit-pending"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_STAGE_REVIEW"
-snapshot_event_time: "2026-06-29T19:10:00+10:00"
-generator_version: "manual-s02p3-quality-gate"
-final_commit_binding: "pending_stage2_review_and_upload"
+snapshot_event_time: "2026-06-29T19:40:00+10:00"
+generator_version: "manual-s02-stage-review"
+final_commit_binding: "pending_stage2_github_push"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -51,14 +51,13 @@ dimensions:
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/docs/governance/delivery_tasks.yaml"
+      - "KMFA/stage_artifacts/S02_STAGE_REVIEW/human/stage2_review_report.md"
   evidence_freshness:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "BLOCKED_PENDING_STAGE_REVIEW"
+  status: "READY_FOR_STAGE2_UPLOAD"
   release_gate: "KMFA-S02-GATE"
-  blocker_ids:
-    - "KMFA-STAGE2-REVIEW-NOT-DONE"
-    - "KMFA-STAGE2-REVIEW-FIXES-NOT-DONE"
+  blocker_ids: []

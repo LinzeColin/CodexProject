@@ -1,0 +1,53 @@
+{
+  "schema_version": "kmfa.stage_review.v1",
+  "review_id": "KMFA-S02-STAGE-REVIEW-20260629",
+  "review_time": "2026-06-29T19:40:00+10:00",
+  "project_id": "KMFA",
+  "stage_id": "S02",
+  "stage_name": "数据治理内核与 metadata 协议",
+  "result": "PASS_UPLOAD_READY",
+  "phase_results": [
+    {
+      "phase_id": "S02-P1",
+      "status": "PASS",
+      "evidence_ref": "KMFA/stage_artifacts/S02_P1_metadata_protocol/human/s02_p1_completion_record.md"
+    },
+    {
+      "phase_id": "S02-P2",
+      "status": "PASS",
+      "evidence_ref": "KMFA/stage_artifacts/S02_P2_immutability_policy/human/s02_p2_completion_record.md"
+    },
+    {
+      "phase_id": "S02-P3",
+      "status": "PASS",
+      "evidence_ref": "KMFA/stage_artifacts/S02_P3_quality_gate/human/s02_p3_completion_record.md"
+    }
+  ],
+  "findings": [
+    {
+      "finding_id": "KMFA-S02-REV-F01",
+      "severity": "INFO",
+      "status": "RESOLVED_BY_PROCESS",
+      "summary": "origin/main contained non-KMFA ADP commits during Stage 2 development.",
+      "resolution": "Merged origin/main into codex/kmfa-stage2 before Stage 2 review and upload."
+    },
+    {
+      "finding_id": "KMFA-S02-REV-F02",
+      "severity": "INFO",
+      "status": "ACCEPTED",
+      "summary": "S02-P3 defines quality/report gate protocols only; runtime zero-delta, lineage completeness, and report generation remain later-stage work.",
+      "resolution": "Kept non-goal boundary in owner-facing and machine-readable documents."
+    }
+  ],
+  "upload_scope": [
+    "KMFA/",
+    "README.md",
+    "governance/projects.yaml"
+  ],
+  "upload_required_surface": "branch_contains_origin_main",
+  "origin_main_merged_before_review": true,
+  "raw_sensitive_public_repo_allowed": false,
+  "business_mvp_ready": false,
+  "production_ready": false,
+  "next_stage_allowed_after_upload": "S03"
+}
