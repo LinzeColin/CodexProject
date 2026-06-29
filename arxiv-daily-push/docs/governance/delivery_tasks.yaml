@@ -4922,3 +4922,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+  - task_id: "S2PMT07-FINAL-BUNDLE-UPSTREAM-BLOCKER-SYNC"
+    title: "S2PMT07 final bundle upstream blocker sync"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-29T20:14:34+10:00"
+    summary: "Expose that S2PLT04_COMPLETION_REPORT is the first missing final-bundle artifact but is not directly actionable until S2PLT02 authorization, S2PLT02 terminal delivery proof, and S2PLT03 terminal resilience proof exist."
+    owner: "engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_UPSTREAM_BLOCKER_SYNC.md", "governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-UPSTREAM-BLOCKER-SYNC-20260629.json"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_upstream_red PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_final_bundle_prerequisite_plan_consumes_committed_no_production_artifact", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_upstream_red_cli PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_cli.py::CliTests::test_plan_final_bundle_prerequisites_json_command_blocks_without_artifacts", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_upstream_green PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_final_bundle_prerequisite_plan_consumes_committed_no_production_artifact arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_final_acceptance_bundle_readiness_embeds_prerequisite_plan_as_valid_blocked_evidence arxiv-daily-push/tests/test_cli.py::CliTests::test_plan_final_bundle_prerequisites_json_command_blocks_without_artifacts arxiv-daily-push/tests/test_cli.py::CliTests::test_module_entrypoint_executes_final_bundle_plan_command", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_upstream_plan_cli PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli plan-final-bundle-prerequisites --json"]
+    test_results: ["TDD red failed as expected because next_required_step_is_actionable was missing", "CLI red failed as expected because next_required_step_is_actionable was missing", "focused green tests: 4 passed", "plan CLI returned blocked / exit 2 with state_hash=78e0fe8b225465479bbd6e10174ad3f870429b40b279d62d40558d19e86e9606 and plan_validation_errors=[]"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-UPSTREAM-BLOCKER-SYNC-20260629.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_UPSTREAM_BLOCKER_SYNC.md", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py"]
+    result: "blocked_final_bundle_prerequisite_upstream_blockers_synced_no_production"
+    risk: "Agents can misread next_required_step=S2PLT04_COMPLETION_REPORT as permission to write a completion report before S2PLT02/S2PLT03 terminal evidence; the new next_executable_task field must remain authoritative."
+    rollback: "Revert upstream-blocker fields, tests, phase record, manifest, traceability row, delivery/event records, user-center traceability, and three base records; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

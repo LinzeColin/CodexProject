@@ -21,12 +21,20 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 270
+- task_count: 271
 - acceptance_count: 127
 
 ## Delivery Tasks
 
 The machine-readable task source is `delivery_tasks.yaml`.
+
+## 2026-06-29 20:14:34 Australia/Sydney - S2PMT07 Final Bundle Upstream Blocker Sync
+
+- `S2PMT07-FINAL-BUNDLE-UPSTREAM-BLOCKER-SYNC` keeps `next_required_step=S2PLT04_COMPLETION_REPORT` as the first missing final-bundle artifact, but now marks it `next_required_step_is_actionable=false`.
+- The plan now exposes `next_executable_task=S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION` and the upstream unblock order: S2PLT02 authorization, S2PLT02 terminal delivery proof, S2PLT03 terminal resilience proof, then S2PLT04 completion report.
+- Current plan remains `blocked`, `ready_for_final_bundle_manifest=false`, and `state_hash=78e0fe8b225465479bbd6e10174ad3f870429b40b279d62d40558d19e86e9606`.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-UPSTREAM-BLOCKER-SYNC-20260629.json` and `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_UPSTREAM_BLOCKER_SYNC.md`.
+- This does not create S2PLT04 completion report, execute final commands, write signoff/manifest, enable SMTP/scheduler/Release/restore, mutate schema/DB/source/ranking/CURRENT/V7, enable DAILY_OPERATION, or claim integrated production acceptance.
 
 ## 2026-06-29 19:06:06 Australia/Sydney - S2PMT07 Final Command Root Tools
 
