@@ -4902,3 +4902,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+  - task_id: "S2PMT07-FINAL-COMMAND-ROOT-TOOLS"
+    title: "S2PMT07 final command root tool entrypoints"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-29T19:06:06+10:00"
+    summary: "Add the exact root tools required by the final-command contract; task-pack validation passes while acceptance-bundle verification remains fail-closed until final artifacts are complete."
+    owner: "engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    required_files: ["tools/validate_task_pack.py", "tools/verify_acceptance_bundle.py", "arxiv-daily-push/tests/test_final_command_root_tools.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_COMMAND_ROOT_TOOLS.md", "governance/run_manifests/ADP-S2PMT07-FINAL-COMMAND-ROOT-TOOLS-20260629.json"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_root_tool_pycache PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_final_command_root_tools.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_root_tool_pycache PYTHONPATH=arxiv-daily-push/src python3 tools/validate_task_pack.py --root .", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_root_tool_pycache PYTHONPATH=arxiv-daily-push/src python3 tools/verify_acceptance_bundle.py --require-zero P0 P1"]
+    test_results: ["root tool regression tests: 2 OK", "validate_task_pack root tool: exit 0 status PASS", "verify_acceptance_bundle root tool: exit 2 status FAIL because final bundle remains incomplete; P0/P1 zero checks pass"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-FINAL-COMMAND-ROOT-TOOLS-20260629.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_COMMAND_ROOT_TOOLS.md", "tools/validate_task_pack.py", "tools/verify_acceptance_bundle.py", "arxiv-daily-push/tests/test_final_command_root_tools.py", "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json"]
+    result: "blocked_final_command_root_tools_ready_bundle_still_incomplete_no_production"
+    risk: "A root command existing could be misread as final command execution; final_command_execution.json must remain absent until independent reviewer truly runs and records all required commands."
+    rollback: "Revert root wrappers, root-tool test, phase record, manifest, traceability row, delivery/event records, and three base records; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

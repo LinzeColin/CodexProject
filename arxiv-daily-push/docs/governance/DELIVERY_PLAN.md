@@ -21,12 +21,21 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 269
+- task_count: 270
 - acceptance_count: 127
 
 ## Delivery Tasks
 
 The machine-readable task source is `delivery_tasks.yaml`.
+
+## 2026-06-29 19:06:06 Australia/Sydney - S2PMT07 Final Command Root Tools
+
+- `S2PMT07-FINAL-COMMAND-ROOT-TOOLS` adds the exact root tool entrypoints required by the final-command contract: `python tools/validate_task_pack.py --root .` and `python tools/verify_acceptance_bundle.py --require-zero P0 P1`.
+- Current task-pack root validation passes with `status=PASS` and `exit_code=0`.
+- Current acceptance-bundle root verification remains `FAIL` / exit 2 because final bundle artifacts are incomplete even though P0/P1 zero checks pass.
+- Remaining final-bundle blockers: `final_acceptance_bundle_manifest_missing`, `s2plt04_completion_evidence_missing`, `independent_review_signoff_missing`, `independent_final_command_execution_missing`, and `next_agent_handoff_missing`.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-FINAL-COMMAND-ROOT-TOOLS-20260629.json` and `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_COMMAND_ROOT_TOOLS.md`.
+- This does not create `FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json`, complete S2PLT04, enable SMTP/scheduler/Release/restore, mutate schema/DB/source/ranking/CURRENT/V7, enable DAILY_OPERATION, or claim integrated production acceptance.
 
 ## 2026-06-29 18:04:46 Australia/Sydney - S2PLT02 Real-Proof Capture Authorization
 
