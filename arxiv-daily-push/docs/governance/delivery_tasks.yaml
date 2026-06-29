@@ -5002,3 +5002,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+  - task_id: "S2PMT07-FINAL-BUNDLE-AUTH-DRAFT-LIVE-GUARD"
+    title: "S2PMT07 final bundle authorization draft live guard"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-29T21:49:37+10:00"
+    summary: "Expose in the final-bundle prerequisite plan that the S2PLT02 authorization draft CLI dry-run evidence is present and passing while the live authorization artifact remains missing."
+    owner: "engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_AUTH_DRAFT_LIVE_GUARD.md", "governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-AUTH-DRAFT-LIVE-GUARD-20260629.json"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_next_guard_red PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_final_bundle_prerequisite_plan_consumes_committed_no_production_artifact arxiv-daily-push/tests/test_cli.py::CliTests::test_plan_final_bundle_prerequisites_json_command_blocks_without_artifacts", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_next_guard_green PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_final_bundle_prerequisite_plan_consumes_committed_no_production_artifact arxiv-daily-push/tests/test_cli.py::CliTests::test_plan_final_bundle_prerequisites_json_command_blocks_without_artifacts", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_next_guard_plan PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli plan-final-bundle-prerequisites --json"]
+    test_results: ["TDD red failed as expected because next_executable_command_dry_run_status was missing", "focused green tests: 2 passed", "plan CLI returned blocked / exit 2 with dry_run_status=pass, live_authorization_artifact_status=missing, state_hash=6c452e9e59c107f99c0b881fec64da2df9b7fa0d7428f69218dc22bd83f03eb1, and plan_validation_errors=[]"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-AUTH-DRAFT-LIVE-GUARD-20260629.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_AUTH_DRAFT_LIVE_GUARD.md", "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-CLI-20260629.json", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py"]
+    result: "blocked_final_bundle_auth_draft_live_guard_no_authorization_no_production"
+    risk: "Agents can misread the passing stdout-only authorization draft as a live owner authorization artifact; keep draft_authorization_is_live_authorization=false and live_authorization_artifact_status=missing explicit."
+    rollback: "Revert auth-draft/live guard fields, validator checks, focused tests, phase record, manifest, traceability row, delivery/event records, user-center traceability, and three base records; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

@@ -4607,6 +4607,22 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertFalse(plan["next_executable_command_writes_artifact"])
         self.assertFalse(plan["next_executable_command_satisfies_gate"])
+        self.assertEqual(plan["next_executable_command_dry_run_status"], "pass")
+        self.assertEqual(
+            plan["next_executable_command_dry_run_evidence_ref"],
+            "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-CLI-20260629.json",
+        )
+        self.assertFalse(plan["next_executable_command_dry_run_wrote_artifact"])
+        self.assertFalse(plan["draft_authorization_is_live_authorization"])
+        self.assertEqual(plan["live_authorization_artifact_status"], "missing")
+        self.assertEqual(
+            plan["live_authorization_artifact_path"],
+            "FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json",
+        )
+        self.assertIn(
+            "s2plt02_real_proof_capture_authorization_missing",
+            plan["live_authorization_validation_errors"],
+        )
         self.assertEqual(
             plan["next_executable_command_validation_command"],
             "validate-s2plt02-real-proof-capture-authorization "

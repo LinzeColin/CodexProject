@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-06-29 21:49:37 Australia/Sydney - S2PMT07-FINAL-BUNDLE-AUTH-DRAFT-LIVE-GUARD
+
+- Updated `plan-final-bundle-prerequisites --json` so the blocked prerequisite plan exposes the current distinction between a passing S2PLT02 authorization draft CLI dry-run and the missing live authorization artifact.
+- Current guard fields are `next_executable_command_dry_run_status=pass`, `next_executable_command_dry_run_wrote_artifact=false`, `draft_authorization_is_live_authorization=false`, `live_authorization_artifact_status=missing`, `live_authorization_validation_errors=["s2plt02_real_proof_capture_authorization_missing"]`, and state hash `6c452e9e59c107f99c0b881fec64da2df9b7fa0d7428f69218dc22bd83f03eb1`.
+- This does not create `FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json`, authorize real proof capture, send SMTP, enable scheduler, upload Release assets, restore production, change CURRENT/V7, mutate public schema/DB/source/ranking/queue, enable DAILY_OPERATION, or claim Stage2/S3 production acceptance.
+
 ## 2026-06-29 21:20:40 Australia/Sydney - S2PMT07-FINAL-BUNDLE-NEXT-EXECUTABLE-COMMAND-SYNC
 
 - Updated `plan-final-bundle-prerequisites --json` so the blocked prerequisite plan exposes `next_executable_command=build-s2plt02-real-proof-capture-authorization-artifact-draft`, owner input argument names, validation command, and evidence refs when `next_executable_task=S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION`.
