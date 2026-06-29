@@ -94,6 +94,25 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertNotIn("| 无冲突的影子数据源证据 | 可以 |", roadmap)
         self.assertIn("S2PMT07 阻断期暂停新增影子数据源", roadmap)
 
+    def test_three_base_model_parameter_summary_matches_governance_counts(self) -> None:
+        model_spec = (ADP_ROOT / "docs/governance/MODEL_SPEC.md").read_text(encoding="utf-8")
+        owner_status = (ADP_ROOT / "docs/governance/OWNER_STATUS.md").read_text(encoding="utf-8")
+        model_params = (ADP_ROOT / "模型参数文件.md").read_text(encoding="utf-8")
+        summary = model_params.split("\n## 2026-", 1)[0]
+
+        model_count = re.search(r"(?m)^- model_count: (\d+)$", model_spec)
+        active_formulas = re.search(r"(?m)^- active_formulas: `(\d+)`$", owner_status)
+        active_parameters = re.search(r"(?m)^- active_parameters: `(\d+)`$", owner_status)
+        if not model_count or not active_formulas or not active_parameters:
+            raise AssertionError("governance model/formula/parameter counts are missing")
+
+        self.assertIn(f"- active_model_count: `{model_count.group(1)}`", summary)
+        self.assertIn(f"- active_formula_count: `{active_formulas.group(1)}`", summary)
+        self.assertIn(f"- active_parameter_count: `{active_parameters.group(1)}`", summary)
+        self.assertNotIn("- active_model_count: `120`", summary)
+        self.assertNotIn("- active_formula_count: `122`", summary)
+        self.assertNotIn("- active_parameter_count: `1073`", summary)
+
 
 if __name__ == "__main__":
     unittest.main()
