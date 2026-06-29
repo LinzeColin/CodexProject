@@ -51,7 +51,7 @@ product_version: 0.1.0-s05p2-private-backfill-partial
 
 | Task | Result | Evidence |
 |---|---|---|
-| `S5PBT01-S5PBT03` | S05-P2 public-safe 字段合同和 A0 golden fixture 候选已生成；8 个 PDF 候选共 40 条字段已 hash-only 回填，1 个 Excel 候选已机器复核并生成 owner 决策包，但 5 条字段仍 pending | `KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/excel_owner_decision_packet.md` |
+| `S5PBT01-S5PBT03` | S05-P2 public-safe 字段合同和 A0 golden fixture 候选已生成；8 个 PDF 候选共 40 条字段已 hash-only 回填，1 个 Excel 候选已机器复核并生成 owner 决策包和 validator，但 5 条字段仍 pending | `KMFA/tools/check_s05_p2_excel_owner_decision.py` |
 
 ## Not Completed
 

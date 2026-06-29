@@ -42,7 +42,7 @@
 - S05-P1 A0 文件登记已完成本地验证：`KMFA/tools/a0_file_register.py` 生成 8 个 PDF + 1 个 Excel 的 public-safe A0 文件清单和项目候选清单。
 - S05-P2 已生成 public-safe 字段合同和 A0 golden fixture 候选结构：`KMFA/tools/a0_golden_fixture.py` 生成 5 个字段合同和 45 条字段候选。
 - S05-P2 已对 8 个 PDF A0 候选执行 hash-only 部分回填：40 条字段候选已记录 private value hash/source anchor，1 个 Excel 候选的 5 条字段仍 pending。
-- S05-P2 已完成 Excel 候选机器复核记录和 owner 决策包：当前证据只能证明交叉来源支持，不能安全机器合成为单一 A0 项目基准；仍需 owner 或授权私有映射决策。
+- S05-P2 已完成 Excel 候选机器复核记录、owner 决策包和 owner decision validator：当前证据只能证明交叉来源支持，不能安全机器合成为单一 A0 项目基准；仍需 owner 或授权私有映射决策。
 
 ## 未完成
 
