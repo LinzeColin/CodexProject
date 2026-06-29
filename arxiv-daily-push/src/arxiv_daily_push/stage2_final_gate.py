@@ -1546,12 +1546,23 @@ def build_s2plt02_live_evidence_state() -> dict[str, Any]:
     }
 
 
-def build_s2plt02_live_2d_precheck_report(*, generated_at: str) -> dict[str, Any]:
+def build_s2plt02_live_2d_precheck_report(
+    *,
+    generated_at: str,
+    repo_root: Path | None = None,
+    p0_p1_zero_proof: Mapping[str, Any] | None = None,
+    load_committed_artifacts: bool = True,
+) -> dict[str, Any]:
     """Build a deterministic fail-closed S2PLT02 two-day live-run precheck."""
 
     dependencies = build_s2plt02_dependency_state()
     evidence = build_s2plt02_live_evidence_state()
     audit_blockers = build_audit_blocker_state()
+    if load_committed_artifacts and p0_p1_zero_proof is None:
+        p0_p1_zero_proof = _load_committed_p0_p1_zero_proof(repo_root)
+    p0_p1_zero_proof_artifact_validation = build_p0_p1_zero_proof_artifact_validation_state(
+        p0_p1_zero_proof
+    )
     gates = {
         "s2plt01_accepted": "S2PLT01" in dependencies["completed_dependencies"],
         "two_consecutive_real_days": evidence["observed_natural_days"] >= S2PLT02_REQUIRED_NATURAL_DAYS,
@@ -1560,8 +1571,8 @@ def build_s2plt02_live_2d_precheck_report(*, generated_at: str) -> dict[str, Any
         "m4_watermark_correct": evidence["m4_watermark_correct"],
         "real_scheduler_proven": evidence["real_scheduler_proven"],
         "real_smtp_proven": evidence["real_smtp_proven"],
-        "p0_zero": audit_blockers["checks"]["P0_zero"],
-        "p1_zero": audit_blockers["checks"]["P1_zero"],
+        "p0_zero": p0_p1_zero_proof_artifact_validation["p0_zero_proven_by_payload"],
+        "p1_zero": p0_p1_zero_proof_artifact_validation["p1_zero_proven_by_payload"],
         "no_production_side_effect": True,
     }
     blocking_reasons: list[str] = []
@@ -1595,6 +1606,7 @@ def build_s2plt02_live_2d_precheck_report(*, generated_at: str) -> dict[str, Any
         "dependencies": dependencies,
         "evidence": evidence,
         "audit_blockers": audit_blockers,
+        "p0_p1_zero_proof_artifact_validation": p0_p1_zero_proof_artifact_validation,
         "blocking_reasons": blocking_reasons,
         "production_acceptance_claimed": False,
         "inherited_p0_p1_closed": False,
@@ -4090,6 +4102,16 @@ def build_s2plt04_completion_evidence_audit_state(
     zero_proof_state = build_p0_p1_zero_proof_artifact_validation_state(zero_proof)
     p0_zero = zero_proof_state.get("p0_zero_proven_by_payload") is True
     p1_zero = zero_proof_state.get("p1_zero_proven_by_payload") is True
+    s2plt02_remaining_blockers = [
+        "s2plt01_not_accepted",
+        "two_consecutive_real_days_not_proven",
+        "eight_real_emails_not_proven",
+        "real_scheduler_not_proven",
+    ]
+    if not p0_zero:
+        s2plt02_remaining_blockers.append("inherited_v7_1_p0_findings_open")
+    if not p1_zero:
+        s2plt02_remaining_blockers.append("inherited_v7_1_p1_findings_open")
     source_evidence = {
         "S2PLT01_REPLAY_REVIEW": {
             "artifact_status": "nonterminal",
@@ -4105,7 +4127,7 @@ def build_s2plt04_completion_evidence_audit_state(
             "nonterminal_refs": [
                 "governance/run_manifests/ADP-S2PLT02-LIVE-2D-PRECHECK-20260626.json",
                 "governance/run_manifests/ADP-S2PLT02-PARTIAL-REAL-DELIVERY-EVIDENCE-20260628.json",
-                "governance/run_manifests/ADP-S2PLT02-TERMINAL-READINESS-AUDIT-20260629.json",
+                "governance/run_manifests/ADP-S2PLT02-ZERO-PROOF-READINESS-SYNC-20260629.json",
             ],
             "terminal_dependency": "S2PLT02_ACCEPTED",
             "terminal_dependency_value": False,
@@ -4118,14 +4140,7 @@ def build_s2plt04_completion_evidence_audit_state(
             "m4_watermark_proof_ref": (
                 "governance/run_manifests/ADP-S2PLT02-M4-WATERMARK-PROOF-RECORD-20260628.json"
             ),
-            "remaining_terminal_blockers": [
-                "s2plt01_not_accepted",
-                "two_consecutive_real_days_not_proven",
-                "eight_real_emails_not_proven",
-                "real_scheduler_not_proven",
-                "inherited_v7_1_p0_findings_open",
-                "inherited_v7_1_p1_findings_open",
-            ],
+            "remaining_terminal_blockers": s2plt02_remaining_blockers,
         },
         "S2PLT03_RESILIENCE_PROOF": {
             "artifact_status": "missing_terminal",

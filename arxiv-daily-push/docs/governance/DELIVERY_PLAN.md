@@ -21,12 +21,20 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 255
+- task_count: 256
 - acceptance_count: 127
 
 ## Delivery Tasks
 
 The machine-readable task source is `delivery_tasks.yaml`.
+
+## 2026-06-29 11:06:42 Australia/Sydney - S2PLT02 Zero-Proof Readiness Sync
+
+- `S2PLT02-ZERO-PROOF-READINESS-SYNC` makes `adp audit-s2plt02-terminal-readiness --json` consume committed `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json`.
+- Current result remains `blocked` / exit 2, but `P0_ZERO=true` and `P1_ZERO=true` now reflect the committed zero-proof artifact instead of stale inherited counts.
+- Remaining terminal blockers are still explicit: S2PLT01 is not accepted, two consecutive real natural days are not proven, eight total real emails are not proven, and real scheduler proof is missing.
+- The S2PLT04 completion evidence audit now treats P0/P1 zero-proof as `pass` while keeping S2PLT01/S2PLT02/S2PLT03 terminal evidence blocked.
+- No SMTP, scheduler, Release, restore, schema/DB, source/ranking, CURRENT/V7, DAILY_OPERATION, S2PLT02 acceptance, S2PLT04 report, final bundle acceptance, or integrated production acceptance side effect is claimed.
 
 ## 2026-06-29 10:35:11 Australia/Sydney - S2PLT02 Terminal Readiness Audit
 

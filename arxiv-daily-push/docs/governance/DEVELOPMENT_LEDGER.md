@@ -10,13 +10,30 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.1
 - Current phase: S2PL
-- Current gate: S2PLT02_TERMINAL_READINESS_AUDIT_BLOCKED_M4_READY_NO_ACCEPTANCE
+- Current gate: S2PLT02_ZERO_PROOF_READINESS_SYNC_BLOCKED_NO_ACCEPTANCE
 - Confirmed iteration count: 227
 - Reconstructed event count: 0
-- Current task: `S2PLT02-TERMINAL-READINESS-AUDIT` exposes a fail-closed CLI audit for the S2PLT02 terminal-readiness state consumed by the S2PMT07 final-gate chain. The audit makes the current S2PLT02 state explicit: `m4_watermark_correct=true`, `observed_natural_days=1`, `observed_email_count=4`, and `real_smtp_proven=true`, but `S2PLT01_ACCEPTED=false`, `TWO_CONSECUTIVE_REAL_NATURAL_DAYS=false`, `EIGHT_REAL_EMAILS_SENT=false`, `REAL_SCHEDULER_PROVEN=false`, `P0_ZERO=false`, `P1_ZERO=false`, and `S2PLT02_ACCEPTED=false`. The audit is nonterminal evidence only; `FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json` remains the next blocked artifact in the S2PMT07 chain. Inherited V7.1 top-level stop gates remain open at `P0=8` and `P1=37`. This does not create the real S2PLT04 completion report, does not execute final commands, does not accept production, and does not enable DAILY_OPERATION, scheduler, SMTP, Release, or restore.
+- Current task: `S2PLT02-ZERO-PROOF-READINESS-SYNC` keeps the S2PLT02 terminal-readiness audit aligned with the committed `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json`. The current S2PLT02 audit now reports `P0_ZERO=true` and `P1_ZERO=true`, while `m4_watermark_correct=true`, `observed_natural_days=1`, `observed_email_count=4`, and `real_smtp_proven=true` remain unchanged. S2PLT02 is still blocked because `S2PLT01_ACCEPTED=false`, `TWO_CONSECUTIVE_REAL_NATURAL_DAYS=false`, `EIGHT_REAL_EMAILS_SENT=false`, `REAL_SCHEDULER_PROVEN=false`, and `S2PLT02_ACCEPTED=false`. The S2PLT04 completion evidence audit consumes the same P0/P1 zero-proof state and no longer lists inherited P0/P1 as S2PLT02 remaining blockers, but `FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json` remains missing. This does not create the real S2PLT04 completion report, does not execute final commands, does not accept production, and does not enable DAILY_OPERATION, scheduler, SMTP, Release, or restore.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. Local daily M1-M4 orchestration is now recorded as readiness evidence, but V7.2 contract baseline migration blockers are zero while real restore, real SMTP production, scheduler installation, S2PLT04 completion, final command execution, next-agent handoff, independent signoff, final bundle manifest, directory-level final bundle artifact validation pass, and final integrated production acceptance remain forbidden until V7.2 production stop gates and all `S2PMT07` final-bundle gates pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
 
+
+### `ITER-20260629-ADP-S2PLT02-ZERO-PROOF-READINESS-SYNC`
+
+- Timestamp: `2026-06-29T11:06:42+10:00`
+- Fact level: EXTRACTED from S2PLT02 terminal-readiness audit CLI output, S2PLT04 completion evidence audit detail, focused CLI/final-gate regression tests, phase record, run manifest, traceability row, delivery task, and three base files.
+- Base commit: `6134a70f9006ae5b1e779852438a973947c95995`
+- Product version: `0.23.1`
+- Status: `adp audit-s2plt02-terminal-readiness --json` still returns blocked / exit 2 with `s2plt02_accepted=false`, but now consumes the committed P0/P1 zero-proof artifact.
+- Task IDs: `S2PLT02-ZERO-PROOF-READINESS-SYNC`; parent `S2PLT02`; acceptance `ACC-S2PLT02-2D`.
+- Goal: Remove the stale S2PLT02 readiness blocker that kept `P0_ZERO=false` and `P1_ZERO=false` after `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json` had already validated pass.
+- Files changed: S2PMT07 final gate helper, focused CLI/final-gate regression tests, phase record, run manifest, traceability/delivery/event records, user-center traceability page, and three base files.
+- Decisions: `P0_ZERO=true`, `P1_ZERO=true`, `m4_watermark_correct=true`, `observed_natural_days=1`, `required_natural_days=2`, `observed_email_count=4`, `required_email_count=8`, `real_smtp_proven=true`, `real_scheduler_proven=false`, and `S2PLT02_ACCEPTED=false`.
+- Validation: TDD red failed because the current audit lacked zero-proof consumption and still listed inherited P0/P1 blockers; focused final-gate and CLI tests then passed with 103 OK.
+- Boundaries: No S2PLT02 acceptance, S2PLT04 completion report, final command execution, next-agent handoff, independent signoff, final manifest, SMTP, scheduler, Release, restore, CURRENT/V7 change, source/ranking change, DAILY_OPERATION, or integrated production acceptance.
+- Branch hygiene: no PR is created by this run; closeout must recheck open PR count and ADP/arxiv/s2p remote branches.
+- Evidence: `governance/run_manifests/ADP-S2PLT02-ZERO-PROOF-READINESS-SYNC-20260629.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_ZERO_PROOF_READINESS_SYNC.md`; `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`; `arxiv-daily-push/tests/test_cli.py`.
+- Next step: Supply truthful S2PLT01 terminal acceptance, second real natural day, eight total real emails, real scheduler proof, and S2PLT03 terminal resilience proof before S2PLT02/S2PLT04 can be accepted or written.
 
 ### `ITER-20260629-ADP-S2PLT02-TERMINAL-READINESS-AUDIT`
 
