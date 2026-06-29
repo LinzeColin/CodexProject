@@ -1,7 +1,7 @@
 {
   "schema_version": "kmfa.metadata_directory_manifest.v1",
   "project_id": "KMFA",
-  "stage_phase": "S03-P3",
+  "stage_phase": "S04-P3",
   "directories": [
     "metadata/sources",
     "metadata/imports",

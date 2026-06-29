@@ -1,0 +1,57 @@
+{
+  "schema_version": "kmfa.stage_artifact_manifest.v1",
+  "project_id": "KMFA",
+  "stage": "S04",
+  "phase": "S04-P3",
+  "task_ids": ["S4PCT01", "S4PCT02", "S4PCT03"],
+  "status": "completed_validated_local_only",
+  "github_upload_allowed": false,
+  "created_at": "2026-06-29T23:05:00+10:00",
+  "implementation_files": [
+    "KMFA/tools/generate_tool_test_report.py",
+    "KMFA/tools/field_standardization.py",
+    "KMFA/tests/test_basic_tool_boundaries.py"
+  ],
+  "evidence_files": [
+    "KMFA/stage_artifacts/S04_P3_basic_tool_tests/human/s04_p3_completion_record.md",
+    "KMFA/stage_artifacts/S04_P3_basic_tool_tests/human/test_results.md",
+    "KMFA/stage_artifacts/S04_P3_basic_tool_tests/human/tool_function_test_report.md"
+  ],
+  "validation_commands": [
+    "python3 -m unittest KMFA.tests.test_basic_tool_boundaries -q",
+    "python3 -m unittest KMFA.tests.test_field_standardization -q",
+    "python3 KMFA/tools/generate_tool_test_report.py --format json",
+    "python3 KMFA/tools/generate_tool_test_report.py --format markdown",
+    "python3 KMFA/tools/check_no_float_money.py",
+    "python3 -m unittest KMFA.tests.test_amount_tools -q",
+    "python3 -m unittest KMFA.tests.test_field_standardization -q",
+    "python3 -m unittest KMFA.tests.test_source_priority -q",
+    "python3 -m unittest KMFA.tests.test_source_check_matrix -q",
+    "python3 -m unittest KMFA.tests.test_file_import_register -q",
+    "python3 KMFA/tools/metadata_protocol_check.py",
+    "python3 KMFA/tools/no_omission_check.py",
+    "python3 KMFA/tools/check_required_html.py",
+    "python3 KMFA/tools/immutability_policy_check.py",
+    "python3 KMFA/tools/check_report_grade_gate.py",
+    "python3 scripts/lean_governance.py validate --project KMFA",
+    "python3 scripts/validate_project_governance.py --project KMFA",
+    "git diff --check -- README.md governance/projects.yaml KMFA",
+    "find KMFA -type f (sensitive suffix scan)"
+  ],
+  "validation_summary": {
+    "tool_boundary_cases_total": 22,
+    "tool_boundary_cases_passed": 22,
+    "tool_boundary_cases_failed": 0,
+    "raw_business_data_used": false
+  },
+  "non_scope": [
+    "raw business data import",
+    "A0 golden baseline",
+    "zero-delta validator",
+    "fact layer",
+    "report generation",
+    "UI",
+    "external connectors",
+    "GitHub upload"
+  ]
+}
