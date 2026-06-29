@@ -1,0 +1,65 @@
+{
+  "project": "KMFA",
+  "stage": "S01",
+  "phase": "P1",
+  "phase_name": "只读检查与范围锁定",
+  "updated_at": "2026-06-29",
+  "mode": "PLAN_READ_ONLY",
+  "status": "COMPLETE_FOR_PHASE_WITH_OPEN_ITEMS",
+  "scope": {
+    "included": [
+      "read_taskpack",
+      "read_roadmap",
+      "inspect_delivery_zip",
+      "read_first_round_prompt",
+      "read_traceability_matrix",
+      "read_data_governance",
+      "read_model_registry",
+      "read_zero_delta_test_plan",
+      "run_delivery_pack_reference_checks",
+      "write_s01_p1_plan_artifacts"
+    ],
+    "excluded": [
+      "create_formal_KMFA_directory",
+      "write_business_code",
+      "write_ui",
+      "generate_business_report",
+      "connect_external_interfaces",
+      "copy_raw_sensitive_data",
+      "github_upload"
+    ]
+  },
+  "verified_facts": {
+    "cwd": "/Users/linzezhang/Documents/KMFA v0.1",
+    "git_branch": "main",
+    "git_remote_configured": false,
+    "formal_local_codexproject_kmfa_found": false,
+    "delivery_zip_extract_ok": true,
+    "delivery_pack_no_omission_check": "PASS",
+    "delivery_pack_zero_delta_reference_check": "PASS"
+  },
+  "user_provided_targets": {
+    "github_directory": "LinzeColin/CodexProject/KMFA",
+    "stage_upload_policy": "upload_only_after_whole_stage_review_and_review_fixes",
+    "phase_upload_policy": "no_github_upload_between_phases"
+  },
+  "recommended_human_plane_entries_for_s01_p2": [
+    "KMFA/README.md",
+    "KMFA/功能清单.md",
+    "KMFA/开发记录.md",
+    "KMFA/模型参数.md"
+  ],
+  "recommended_machine_plane_entries_for_s01_p2": [
+    "KMFA/metadata/project/project.yaml",
+    "KMFA/metadata/stage_status.jsonl",
+    "KMFA/metadata/traceability/requirements.csv",
+    "KMFA/metadata/model_registry.yaml"
+  ],
+  "open_items_before_s01_p2": [
+    "confirm_or_create_local_canonical_checkout_for_LinzeColin_CodexProject",
+    "read_CodexProject_AGENTS_md_if_present",
+    "read_CodexProject_docs_governance_STANDARD_md_if_present"
+  ],
+  "next_phase": "S01-P2",
+  "next_phase_boundary": "create_project_skeleton_and_chinese_entries_only"
+}

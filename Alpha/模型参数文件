@@ -1,0 +1,168 @@
+# 模型参数文件
+
+## 摘要
+
+- 中文可读评分: `100/100`
+- 中文判定: `通过，参数含义、来源、风险和交易边界可读`
+- 评分口径: 本文件必须让 owner 看懂每个模型、公式和关键参数为什么存在、当前值是什么、来自哪里、对交易安全有什么影响。公式和变量名可以保留英文，但每一处重要数值都必须有中文含义和风险说明。
+- 第一眼结论: 这些模型和参数当前服务于研究、fixture 回测、Paper/Shadow、订单意图审核和 dashboard；它们不是实盘授权，也不能证明策略已经可以真实下单赚钱。
+- 参数阅读方法: 先看“当前速读”确认数量和安全结论，再看“模型总览”理解模块职责，再看“公式逻辑”和“参数表”检查具体数值，最后看“Owner 需要关注的参数”确认哪些值影响交易边界。
+- 关键风险提醒: `live_trading.enabled=false` 和 `fail_closed_live_broker=true` 是当前最重要的保护；如果未来任何改动试图放开实盘，必须先通过 owner gate、审计、风控、broker health、对账和授权文件校验。
+- Agent 接手规则: 新 agent 更新参数时必须同步中文含义、当前值、来源和风险，不允许只改 CSV、YAML 或代码常量而不更新 owner 可读说明。
+- 中文可读保障: 本文件要把技术参数翻译成 owner 能直接使用的判断依据。每个关键值都要回答三个问题：这个值控制什么、为什么现在这样设置、改错会造成什么交易风险。英文符号只是机器锚点，中文解释才是主要内容。
+- 维护红线: 参数表不能只堆数字。凡是和实盘开关、单笔金额、订单有效期、刷新间隔、风控阈值、禁止交易类型有关的参数，都必须写出中文含义和安全影响；没有验证来源的值不能包装成可靠收益依据。
+- Owner 读法提醒: 如果只想快速判断安全性，请优先确认实盘开关仍关闭、真实 broker 仍 fail-closed、订单意图仍需要审核、观察时间仍未完成。这些结论比单个模型分数更重要，因为它们决定系统会不会越过 owner 控制线。
+
+- project_id: `Alpha`
+- current_stage: `G6`
+- current_phase: `Phase 6`
+- current_task: `OWNER-GATE-01 前 48 小时 Paper/Shadow 观察`
+- active_model_count: `9`
+- active_formula_count: `9`
+- active_parameter_count: `57`
+- evidence_status: `从代码、配置、测试和 Phase 6 evidence 提取；实盘参数仍被 owner gate 阻塞`
+- 中文验收: `用户可读优先；参数必须说明中文含义、当前值、来源和 owner 需要关注的风险`
+
+## 当前速读
+
+本节把参数系统翻译成人能判断的语言。owner 不需要先理解所有代码，只需要先确认三件事：当前模型数量是否明确、参数来源是否可追溯、实盘是否仍被硬门禁阻止。只要 Phase 6 未完成，这里的任何参数都不能被解读成真实交易许可。
+
+| 项目 | 当前值 |
+|---|---|
+| 项目名称 | Alpha |
+| 当前模型数量 | 9 个 |
+| 当前公式数量 | 9 个 |
+| 当前参数数量 | 57 个 |
+| 当前用途 | 研究、fixture 回测、Paper/Shadow、订单意图审核、dashboard 与 Phase 6 OWNER-GATE 证据 |
+| 当前安全结论 | 实盘默认关闭；live broker 保持 fail-closed；LLM/agent 不能直接提交真实订单 |
+| 当前主要 blocker | Phase 6 48 小时连续 Paper/Shadow 观察未完成 |
+
+## 事实等级说明
+
+| 显示值 | 含义 |
+|---|---|
+| 已提取 | 从代码、配置、测试或治理文件中直接提取 |
+| 重建 | 从历史 handoff 或旧证据重建，可信但不是新运行结果 |
+| 提议 | 已记录但需要后续 CI、PR 或 owner gate 绑定 |
+
+## 模型总览
+
+模型总览说明每个模块负责什么，以及为什么不会直接变成真实下单。这里的“模型”包括排序、风控、审批新鲜度、paper 记账和 dashboard 相关规则；它们的共同目标是提高证据质量和可审核性，而不是绕过 owner 决策。
+
+| 模型 ID | 中文名称 | 作用 | 关键安全点 | 关联公式 | 关联参数 |
+|---|---|---|---|---|---|
+| MOD-001 | 动量策略锦标赛排序 | 对 fixture 价格中的候选标的和 lookback 做打分排序，选出可进入 paper 的候选。 | 只用于研究和 paper，不直接下真实订单。 | FORM-001 | PARAM-001 至 PARAM-008 |
+| MOD-002 | 研究风险评分 | 根据回测最大回撤、交易次数和换手率给策略打风险分。 | 分数低时保持研究或拒绝，不提升到真实交易。 | FORM-002 | PARAM-009 至 PARAM-016 |
+| MOD-003 | 交易前 owner-review 门禁 | 在订单意图进入 owner 审核队列前检查基础安全条件。 | kill switch、幂等键、方向、数量、价格、名义金额不过关就拒绝。 | FORM-003 | PARAM-017 至 PARAM-022 |
+| MOD-004 | 实盘策略与 fail-closed broker | 防止已提交默认配置进入无人值守真实下单。 | `live_trading.enabled=false`；live adapter 即使 policy 允许也返回拒绝。 | FORM-004 | PARAM-023 至 PARAM-030 |
+| MOD-005 | Paper trading loop | 生成 paper order intent、风控、ticket、模拟成交、审计 payload 和 runtime 状态。 | 只写 paper 状态与审核队列，不写真实 broker。 | FORM-005 | PARAM-031 至 PARAM-037 |
+| MOD-006 | Paper broker 记账 | 维护 paper 现金、持仓、幂等、交易日志和组合净值。 | 用文件锁和原子替换保护本地 JSON 状态。 | FORM-006 | PARAM-038 至 PARAM-041 |
+| MOD-007 | 审批队列新鲜度 | 判断 owner-review ticket 是 fresh、expired、blocked 还是 unknown。 | 过期或 blocked 的 ticket 不应被当作可执行订单。 | FORM-007 | PARAM-042 至 PARAM-044 |
+| MOD-008 | Strategy DSL 安全校验 | 校验策略输入边界并拒绝 MVP 禁止交易类型。 | 拒绝杠杆、做空、期权、加密提现等风险项。 | FORM-008 | PARAM-045 至 PARAM-051 |
+| MOD-009 | 等权买入持有基准 | 用 fixture 数据计算等权买入持有的收益、回撤、波动和净值。 | 仅用于对照基准，不触发交易。 | FORM-009 | PARAM-052 至 PARAM-055 |
+
+## 公式逻辑
+
+| 公式 ID | 中文逻辑 | 工程表达保留 |
+|---|---|---|
+| FORM-001 | 对每个标的和 `5/10/20` 天 lookback 计算总收益、最大回撤、样本外收益和命中率；综合分数越高、且风险决策允许进入 paper 的候选排在越前。 | `score=total_return+0.5*oos_return+0.01*hit_rate-abs(drawdown)` |
+| FORM-002 | 风险分从 100 开始；最大回撤超过 10%、交易次数少于 10、换手率超过 3 时分别扣分；分数高才允许进入 paper。 | `score>=70 -> promote_to_paper; score<50 -> reject` |
+| FORM-003 | 按固定顺序拒绝不安全订单意图：kill switch、缺少幂等键、方向非法、数量/价格/名义金额非正、单笔上限无效、名义金额超过上限。 | `approved_for_owner_review` 只代表进入人工审核，不代表实盘 |
+| FORM-004 | 如果 `live_trading.enabled=false` 直接拒绝；即使为 true，也要求环境变量、kill switch、审计、broker health、幂等和名义金额全部通过；当前 fail-closed adapter 仍拒绝。 | `FailClosedLiveBroker` 永不提交真实订单 |
+| FORM-005 | 每个 paper 周期运行策略锦标赛，默认生成 1 股买入 intent；如果现金不足但已有同一标的仓位，则生成卖出 intent，避免 Phase 6 sampler 因纸面现金耗尽被拒；broker-ready ticket 在 paper loop 中强制使用 `limit`。 | `OrderIntent -> risk_check -> BrokerReadyOrderTicket -> PaperOrder` |
+| FORM-006 | Paper broker 拒绝重复幂等键、非法数量/价格/方向、现金不足或持仓不足；买入扣现金加持仓，卖出扣持仓加现金；组合净值等于现金加持仓市值。 | `cash + sum(quantity * mark_price)` |
+| FORM-007 | 用 ticket 的 `expires_at` 减当前时间得到剩余秒数；剩余秒数大于 0 为 fresh，否则 expired；风控拒绝的 ticket 标记为 blocked。 | `seconds_until_expiry > 0` |
+| FORM-008 | Pydantic 校验 strategy payload；标的代码去空格、转大写、拒绝重复；MVP 禁止项为 false 时拒绝。 | `no_leverage/no_short/no_options/no_crypto_withdrawal` 必须保持 true |
+| FORM-009 | 读取 fixture 价格，计算每日收益，等权平均成组合收益，扣一次成本和滑点后滚动得到净值。 | `equity=initial_capital*(1-one_time_cost)*cumprod(1+returns)` |
+
+## 参数表
+
+参数表中的数值是当前代码和配置的可追溯事实，不是投资建议。owner 重点看单笔上限、live trading 开关、fail-closed broker、刷新间隔、ticket 有效期和 kill switch 要求；这些参数共同决定系统会停在审核和 paper 路径，不会自动触发真实订单。
+
+| 参数 ID | 符号 | 中文含义 | 当前值 | 来源 |
+|---|---|---|---|---|
+| PARAM-001 | `lookbacks` | 策略锦标赛使用的回看窗口 | `5|10|20` | 函数默认值 |
+| PARAM-002 | `w_oos` | 样本外收益在综合分中的权重 | `0.5` | 动量评分表达式 |
+| PARAM-003 | `w_hit` | 命中率在综合分中的权重 | `0.01` | 动量评分表达式 |
+| PARAM-004 | `w_drawdown` | 回撤惩罚权重 | `1.0` | `-abs(drawdown)` 表达式 |
+| PARAM-005 | `min_rows_gt_lookback` | 数据行数必须大于 lookback 才计算 | `true` | 策略跳过分支 |
+| PARAM-006 | `rank_decision_priority` | 排序时优先选择可进入 paper 的候选 | `promote_to_paper first` | 排序键 |
+| PARAM-007 | `default_turnover` | 风险评分默认换手率 | `1.0` | metrics 字典 |
+| PARAM-008 | `signal_positive_rule` | 正动量规则 | `close_t > close_t_minus_lookback` | walk-forward 动量函数 |
+| PARAM-009 | `risk_score_start` | 风险分起始值 | `100` | 风险评分函数 |
+| PARAM-010 | `max_drawdown_threshold` | 最大回撤阈值 | `0.10` | 风险评分函数 |
+| PARAM-011 | `max_drawdown_penalty` | 超过回撤阈值后的扣分 | `30` | 风险评分函数 |
+| PARAM-012 | `min_trade_count_threshold` | 最低交易次数阈值 | `10` | 风险评分函数 |
+| PARAM-013 | `low_trade_count_penalty` | 交易次数过低扣分 | `20` | 风险评分函数 |
+| PARAM-014 | `turnover_threshold` | 高换手率阈值 | `3` | 风险评分函数 |
+| PARAM-015 | `high_turnover_penalty` | 换手率过高扣分 | `20` | 风险评分函数 |
+| PARAM-016 | `promote_score_threshold` | 进入 paper 的分数阈值 | `70` | 风险评分函数 |
+| PARAM-017 | `max_order_value_aud` | 单笔订单最大名义金额，单位 AUD | `100` | policy 配置 |
+| PARAM-018 | `allowed_sides` | 允许的订单方向 | `buy|sell` | 交易前风控 |
+| PARAM-019 | `require_positive_quantity` | 数量必须大于 0 | `true` | 交易前风控 |
+| PARAM-020 | `require_positive_price` | 价格必须大于 0 | `true` | 交易前风控 |
+| PARAM-021 | `require_positive_notional` | 名义金额必须大于 0 | `true` | 交易前风控 |
+| PARAM-022 | `require_idempotency_key` | 订单意图必须有幂等键 | `true` | 交易前风控 |
+| PARAM-023 | `live_trading.enabled` | 提交配置中的实盘开关 | `false` | 已提交配置 |
+| PARAM-024 | `require_environment_flag` | 实盘还需要环境变量二次确认 | `true` | 已提交配置 |
+| PARAM-025 | `environment_flag_name` | 实盘环境变量名 | `LIVE_TRADING_ENABLED` | 已提交配置 |
+| PARAM-026 | `require_audit_sink` | 实盘前必须有审计写入能力 | `true` | 已提交配置 |
+| PARAM-027 | `require_broker_health_check` | 实盘前必须通过 broker 健康检查 | `true` | 已提交配置 |
+| PARAM-028 | `live_require_idempotency_key` | 实盘路径也必须有幂等键 | `true` | 已提交配置 |
+| PARAM-029 | `require_kill_switch_clear` | kill switch 必须未触发 | `true` | 已提交配置 |
+| PARAM-030 | `fail_closed_live_broker` | 当前 live broker adapter 永不提交真实订单 | `true` | adapter 代码 |
+| PARAM-031 | `DEFAULT_REFRESH_INTERVAL_SECONDS` | paper loop 默认刷新间隔，单位秒 | `300` | 服务和配置 |
+| PARAM-032 | `order_ticket_ttl_seconds` | 订单审核 ticket 有效期，单位秒 | `300` | 配置和 OrderIntent |
+| PARAM-033 | `generated_quantity` | 自动生成 paper intent 的数量 | `1` | intent 生成器 |
+| PARAM-034 | `generated_side` | 自动生成 paper intent 的方向 | 默认 `buy`；现金不足且已有同标的持仓时改为 `sell` | intent 生成器 |
+| PARAM-035 | `order_type` | broker payload 订单类型 | paper loop 强制 `limit`；dataclass 默认值不能作为 Phase 6 合约依据 | intent 生成器与 broker-ready ticket |
+| PARAM-036 | `time_in_force` | broker payload 有效时间 | `day` | dataclass factory |
+| PARAM-037 | `paper_price_path` | paper loop 使用的 fixture 价格文件 | `data/sample_prices.csv` | build_default_loop |
+| PARAM-038 | `initial_cash` | paper 账户初始现金 | `10000` | dataclass 和状态加载 |
+| PARAM-039 | `duplicate_idempotency_reject` | 重复幂等键是否拒绝 | `true` | submit_order |
+| PARAM-040 | `round_cash_digits` | 现金展示保留小数位 | `2` | portfolio snapshot |
+| PARAM-041 | `round_mark_price_digits` | 标记价格展示保留小数位 | `4` | portfolio snapshot |
+| PARAM-042 | `latest_limit` | approval queue 默认展示条数 | `20` | 方法默认值 |
+| PARAM-043 | `fresh_seconds_rule` | ticket 新鲜度规则 | `seconds_until_expiry > 0` | freshness 函数 |
+| PARAM-044 | `missing_expires_policy` | 缺失过期时间时的处理 | `unknown` | freshness 函数 |
+| PARAM-045 | `lookback_days_min` | Strategy DSL 最小 lookback 天数 | `2` | schema |
+| PARAM-046 | `lookback_days_max` | Strategy DSL 最大 lookback 天数 | `756` | schema |
+| PARAM-047 | `max_positions_default` | Strategy DSL 默认最大持仓数 | `2` | schema |
+| PARAM-048 | `max_weight_per_asset_default` | Strategy DSL 单资产最大权重 | `0.5` | schema |
+| PARAM-049 | `no_leverage` | 禁止杠杆 | `true` | model validator |
+| PARAM-050 | `no_short` | 禁止做空 | `true` | model validator |
+| PARAM-051 | `no_options` | 禁止期权 | `true` | model validator |
+| PARAM-052 | `initial_capital` | fixture 基准初始资金 | `10000` | 函数签名 |
+| PARAM-053 | `cost_bps` | fixture 基准成本，单位 bps | `2` | 函数签名 |
+| PARAM-054 | `slippage_bps` | fixture 基准滑点，单位 bps | `5` | 函数签名 |
+| PARAM-055 | `periods_per_year` | 年化波动率使用的一年周期数 | `252` | 函数签名 |
+| PARAM-056 | `phase6_sampler_interval_seconds` | Phase 6 sampler LaunchAgent 自动采样间隔 | `300` | LaunchAgent plist 与安装脚本 |
+| PARAM-057 | `phase6_max_sample_age_seconds` | dashboard 和状态脚本判断 sampler 新鲜度的最大样本年龄 | `900` | Phase 6 owner-gate status |
+
+## Owner 需要关注的参数
+
+本节是 owner 判断风险的快速入口。新增的 sampler 参数不是为了扩大交易权限，而是为了证明系统真的在按固定节奏采集证据；新增的订单方向规则也不是投资判断，只是防止纸面账户现金耗尽后继续买入，导致合格样本被错误打成失败。后续 agent 如果调整这些值，必须同时说明对采样连续性、订单新鲜度、人工审核和实盘边界的影响。
+
+| 参数 | 当前值 | 为什么重要 |
+|---|---|---|
+| `live_trading.enabled` | `false` | 这是实盘关闭的第一层硬门禁。 |
+| `fail_closed_live_broker` | `true` | 当前提交代码不会向真实 broker 提交订单。 |
+| `max_order_value_aud` | `100` | 控制订单意图的单笔上限；当前仍用于审核和 paper，不代表真实授权额度。 |
+| `DEFAULT_REFRESH_INTERVAL_SECONDS` | `300` | Paper/Shadow 和 dashboard 默认 5 分钟节奏。 |
+| `order_ticket_ttl_seconds` | `300` | owner-review ticket 过期后不能被当作可执行。 |
+| `phase6_sampler_interval_seconds` | `300` | sampler 必须自动追加样本，不能只靠手动运行。 |
+| `order_type` | `limit` | Phase 6 hard gate 要求 broker-ready order intent 是限价单，不接受 `market`。 |
+| `require_kill_switch_clear` | `true` | kill switch 未清除时不能进入交易路径。 |
+
+## 追溯来源
+
+| 来源 | 用途 |
+|---|---|
+| `docs/governance/model_registry.yaml` | 模型定义 |
+| `docs/governance/formula_registry.yaml` | 公式定义 |
+| `docs/governance/parameter_registry.csv` | 参数定义与代码绑定 |
+| `configs/trading_governor_policy.yaml` | 实盘关闭、风控和审计配置 |
+| `tests/test_policy.py` | 交易前风控测试 |
+| `tests/test_live_broker_fail_closed.py` | fail-closed live broker 测试 |
+| `tests/test_paper_trading_loop.py` | paper loop 测试 |
+| `tests/test_phase6_owner_gate.py` | Phase 6 owner-gate 测试 |

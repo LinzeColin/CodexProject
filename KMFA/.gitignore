@@ -1,0 +1,15 @@
+# Raw or sensitive business data must not enter the public repository.
+raw/
+private/
+private_exports/
+exports/private/
+data/private/
+data/raw/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+*.db
+*.xls
+*.xlsx
+*.pdf
+*.zip

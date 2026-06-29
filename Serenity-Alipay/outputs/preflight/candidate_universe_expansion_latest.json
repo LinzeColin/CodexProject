@@ -1,0 +1,350 @@
+{
+  "generated_at": "2026-06-29T17:27:38+08:00",
+  "status": "pass",
+  "message": "all-market public fund universe expanded",
+  "base_candidates_path": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Serenity-Alipay/data/manual/candidates.csv",
+  "expanded_candidates_path": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Serenity-Alipay/outputs/preflight/candidate_universe_expanded_latest.csv",
+  "expanded_price_history_path": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Serenity-Alipay/outputs/preflight/price_history_expanded_latest.csv",
+  "scanned_count": 27139,
+  "base_count": 8,
+  "added_count": 25,
+  "expanded_count": 33,
+  "live_fetch": true,
+  "cache_used": false,
+  "fetch_error": "",
+  "source_name": "Eastmoney/Tiantian Fund all-market fund list",
+  "source_type": "public_aggregation",
+  "source_url": "https://fund.eastmoney.com/js/fundcode_search.js",
+  "additions": [
+    {
+      "code": "016667",
+      "name": "景顺长城全球半导体芯片股票A(QDII-LOF)(美元现汇)",
+      "fund_type": "QDII-普通股票",
+      "pinyin": "JINGSHUNCHANGCHENGQUANQIUBANDAOTIXINPIANGUPIAOAQDIILOFMEIYUANXIANHUI",
+      "theme_score": 19,
+      "matched_keywords": [
+        "半导体",
+        "芯片",
+        "QDII"
+      ]
+    },
+    {
+      "code": "016668",
+      "name": "景顺长城全球半导体芯片股票C(QDII-LOF)(人民币)",
+      "fund_type": "QDII-普通股票",
+      "pinyin": "JINGSHUNCHANGCHENGQUANQIUBANDAOTIXINPIANGUPIAOCQDIILOFRENMINBI",
+      "theme_score": 19,
+      "matched_keywords": [
+        "半导体",
+        "芯片",
+        "QDII"
+      ]
+    },
+    {
+      "code": "501225",
+      "name": "景顺长城全球半导体芯片股票A(QDII-LOF)(人民币)",
+      "fund_type": "QDII-普通股票",
+      "pinyin": "JINGSHUNCHANGCHENGQUANQIUBANDAOTIXINPIANGUPIAOAQDIILOFRENMINBI",
+      "theme_score": 19,
+      "matched_keywords": [
+        "半导体",
+        "芯片",
+        "QDII"
+      ]
+    },
+    {
+      "code": "000157",
+      "name": "富国全球科技互联网股票(QDII)A(后端)",
+      "fund_type": "QDII-普通股票",
+      "pinyin": "FUGUOQUANQIUKEJIHULIANWANGGUPIAOQDIIA",
+      "theme_score": 17,
+      "matched_keywords": [
+        "科技",
+        "互联网",
+        "QDII"
+      ]
+    },
+    {
+      "code": "013172",
+      "name": "华夏恒生互联网科技业ETF联接(QDII)C",
+      "fund_type": "指数型-海外股票",
+      "pinyin": "HUAXIAHENGSHENGHULIANWANGKEJIYEETFLIANJIEQDIIC",
+      "theme_score": 17,
+      "matched_keywords": [
+        "科技",
+        "互联网",
+        "QDII"
+      ]
+    },
+    {
+      "code": "017091",
+      "name": "景顺长城纳斯达克科技ETF联接(QDII)A人民币",
+      "fund_type": "指数型-海外股票",
+      "pinyin": "JINGSHUNCHANGCHENGNASIDAKEKEJIETFLIANJIEQDIIARENMINBI",
+      "theme_score": 17,
+      "matched_keywords": [
+        "科技",
+        "纳斯达克",
+        "QDII"
+      ]
+    },
+    {
+      "code": "017092",
+      "name": "景顺长城纳斯达克科技ETF联接(QDII)A美元现汇",
+      "fund_type": "指数型-海外股票",
+      "pinyin": "JINGSHUNCHANGCHENGNASIDAKEKEJIETFLIANJIEQDIIAMEIYUANXIANHUI",
+      "theme_score": 17,
+      "matched_keywords": [
+        "科技",
+        "纳斯达克",
+        "QDII"
+      ]
+    },
+    {
+      "code": "017093",
+      "name": "景顺长城纳斯达克科技ETF联接(QDII)C人民币",
+      "fund_type": "指数型-海外股票",
+      "pinyin": "JINGSHUNCHANGCHENGNASIDAKEKEJIETFLIANJIEQDIICRENMINBI",
+      "theme_score": 17,
+      "matched_keywords": [
+        "科技",
+        "纳斯达克",
+        "QDII"
+      ]
+    },
+    {
+      "code": "017894",
+      "name": "汇添富纳斯达克生物科技ETF发起式联接(QDII)人民币A",
+      "fund_type": "指数型-海外股票",
+      "pinyin": "HUITIANFUNASIDAKESHENGWUKEJIETFFAQISHILIANJIEQDIIRENMINBIA",
+      "theme_score": 17,
+      "matched_keywords": [
+        "科技",
+        "纳斯达克",
+        "QDII"
+      ]
+    },
+    {
+      "code": "017895",
+      "name": "汇添富纳斯达克生物科技ETF发起式联接(QDII)人民币C",
+      "fund_type": "指数型-海外股票",
+      "pinyin": "HUITIANFUNASIDAKESHENGWUKEJIETFFAQISHILIANJIEQDIIRENMINBIC",
+      "theme_score": 17,
+      "matched_keywords": [
+        "科技",
+        "纳斯达克",
+        "QDII"
+      ]
+    },
+    {
+      "code": "017951",
+      "name": "汇添富纳斯达克生物科技ETF发起式联接(QDII)美元现汇",
+      "fund_type": "指数型-海外股票",
+      "pinyin": "HUITIANFUNASIDAKESHENGWUKEJIETFFAQISHILIANJIEQDIIMEIYUANXIANHUI",
+      "theme_score": 17,
+      "matched_keywords": [
+        "科技",
+        "纳斯达克",
+        "QDII"
+      ]
+    },
+    {
+      "code": "017952",
+      "name": "汇添富纳斯达克生物科技ETF发起式联接(QDII)美元现钞",
+      "fund_type": "指数型-海外股票",
+      "pinyin": "HUITIANFUNASIDAKESHENGWUKEJIETFFAQISHILIANJIEQDIIMEIYUANXIANCHAO",
+      "theme_score": 17,
+      "matched_keywords": [
+        "科技",
+        "纳斯达克",
+        "QDII"
+      ]
+    },
+    {
+      "code": "018475",
+      "name": "万家恒生互联网科技业ETF发起式联接(QDII)A",
+      "fund_type": "指数型-海外股票",
+      "pinyin": "WANJIAHENGSHENGHULIANWANGKEJIYEETFFAQISHILIANJIEQDIIA",
+      "theme_score": 17,
+      "matched_keywords": [
+        "科技",
+        "互联网",
+        "QDII"
+      ]
+    },
+    {
+      "code": "018476",
+      "name": "万家恒生互联网科技业ETF发起式联接(QDII)C",
+      "fund_type": "指数型-海外股票",
+      "pinyin": "WANJIAHENGSHENGHULIANWANGKEJIYEETFFAQISHILIANJIEQDIIC",
+      "theme_score": 17,
+      "matched_keywords": [
+        "科技",
+        "互联网",
+        "QDII"
+      ]
+    },
+    {
+      "code": "018523",
+      "name": "华泰紫金恒生互联网科技业指数型发起基金(QDII)A",
+      "fund_type": "指数型-海外股票",
+      "pinyin": "HUATAIZIJINHENGSHENGHULIANWANGKEJIYEZHISHUXINGFAQIJIJINQDIIA",
+      "theme_score": 17,
+      "matched_keywords": [
+        "科技",
+        "互联网",
+        "QDII"
+      ]
+    },
+    {
+      "code": "018524",
+      "name": "华泰紫金恒生互联网科技业指数型发起基金(QDII)C",
+      "fund_type": "指数型-海外股票",
+      "pinyin": "HUATAIZIJINHENGSHENGHULIANWANGKEJIYEZHISHUXINGFAQIJIJINQDIIC",
+      "theme_score": 17,
+      "matched_keywords": [
+        "科技",
+        "互联网",
+        "QDII"
+      ]
+    },
+    {
+      "code": "019118",
+      "name": "景顺长城纳斯达克科技ETF联接(QDII)E人民币",
+      "fund_type": "指数型-海外股票",
+      "pinyin": "JINGSHUNCHANGCHENGNASIDAKEKEJIETFLIANJIEQDIIERENMINBI",
+      "theme_score": 17,
+      "matched_keywords": [
+        "科技",
+        "纳斯达克",
+        "QDII"
+      ]
+    },
+    {
+      "code": "019936",
+      "name": "华安恒生互联网科技业ETF发起式联接(QDII)A",
+      "fund_type": "指数型-海外股票",
+      "pinyin": "HUAANHENGSHENGHULIANWANGKEJIYEETFFAQISHILIANJIEQDIIA",
+      "theme_score": 17,
+      "matched_keywords": [
+        "科技",
+        "互联网",
+        "QDII"
+      ]
+    },
+    {
+      "code": "019937",
+      "name": "华安恒生互联网科技业ETF发起式联接(QDII)C",
+      "fund_type": "指数型-海外股票",
+      "pinyin": "HUAANHENGSHENGHULIANWANGKEJIYEETFFAQISHILIANJIEQDIIC",
+      "theme_score": 17,
+      "matched_keywords": [
+        "科技",
+        "互联网",
+        "QDII"
+      ]
+    },
+    {
+      "code": "022184",
+      "name": "富国全球科技互联网股票(QDII)C",
+      "fund_type": "QDII-普通股票",
+      "pinyin": "FUGUOQUANQIUKEJIHULIANWANGGUPIAOQDIIC",
+      "theme_score": 17,
+      "matched_keywords": [
+        "科技",
+        "互联网",
+        "QDII"
+      ]
+    },
+    {
+      "code": "023764",
+      "name": "华夏恒生互联网科技业ETF发起式联接(QDII)D",
+      "fund_type": "指数型-海外股票",
+      "pinyin": "HUAXIAHENGSHENGHULIANWANGKEJIYEETFFAQISHILIANJIEQDIID",
+      "theme_score": 17,
+      "matched_keywords": [
+        "科技",
+        "互联网",
+        "QDII"
+      ]
+    },
+    {
+      "code": "026228",
+      "name": "富国全球科技互联网股票(QDII)D",
+      "fund_type": "QDII-普通股票",
+      "pinyin": "FUGUOQUANQIUKEJIHULIANWANGGUPIAOQDIID",
+      "theme_score": 17,
+      "matched_keywords": [
+        "科技",
+        "互联网",
+        "QDII"
+      ]
+    },
+    {
+      "code": "100055",
+      "name": "富国全球科技互联网股票(QDII)A",
+      "fund_type": "QDII-普通股票",
+      "pinyin": "FUGUOQUANQIUKEJIHULIANWANGGUPIAOQDIIA",
+      "theme_score": 17,
+      "matched_keywords": [
+        "科技",
+        "互联网",
+        "QDII"
+      ]
+    },
+    {
+      "code": "012570",
+      "name": "建信恒生科技指数发起(QDII)A",
+      "fund_type": "指数型-海外股票",
+      "pinyin": "JIANXINHENGSHENGKEJIZHISHUFAQIQDIIA",
+      "theme_score": 16,
+      "matched_keywords": [
+        "科技",
+        "QDII",
+        "恒生科技"
+      ]
+    },
+    {
+      "code": "012571",
+      "name": "建信恒生科技指数发起(QDII)C",
+      "fund_type": "指数型-海外股票",
+      "pinyin": "JIANXINHENGSHENGKEJIZHISHUFAQIQDIIC",
+      "theme_score": 16,
+      "matched_keywords": [
+        "科技",
+        "QDII",
+        "恒生科技"
+      ]
+    }
+  ],
+  "price_history_expansion": {
+    "base_price_history_path": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Serenity-Alipay/data/manual/price_history.csv",
+    "expanded_price_history_path": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Serenity-Alipay/outputs/preflight/price_history_expanded_latest.csv",
+    "base_price_rows": 3596,
+    "nav_backfill_enabled": true,
+    "nav_backfill_attempted_count": 8,
+    "nav_backfilled_count": 7,
+    "nav_backfilled_codes": [
+      "016667",
+      "016668",
+      "501225",
+      "013172",
+      "017091",
+      "017092",
+      "017093"
+    ],
+    "nav_short_count": 1,
+    "nav_short": [
+      {
+        "asset_code": "000157",
+        "asset_name": "富国全球科技互联网股票(QDII)A(后端)",
+        "span_days": 0,
+        "rows": 0
+      }
+    ],
+    "nav_error_count": 0,
+    "nav_errors": []
+  },
+  "json_path": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Serenity-Alipay/outputs/preflight/candidate_universe_expansion_latest.json",
+  "markdown_path": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Serenity-Alipay/outputs/preflight/candidate_universe_expansion_latest.md"
+}

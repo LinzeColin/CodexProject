@@ -11,6 +11,7 @@ from backend.app.services.policy import GovernorPolicy
 from backend.app.services.live_broker import FailClosedLiveBroker, LiveOrderIntent
 from backend.app.services.paper_trading_loop import DEFAULT_REFRESH_INTERVAL_SECONDS, build_default_loop, latest_mark_prices
 from backend.app.services.paper_broker import PaperBroker
+from backend.app.services.phase6_owner_gate import DEFAULT_MAX_SAMPLE_AGE_SECONDS, DEFAULT_MAX_SAMPLE_GAP_SECONDS, build_phase6_owner_gate_status
 from backend.app.services.strategy_iteration import run_strategy_tournament
 
 router = APIRouter()
@@ -20,6 +21,15 @@ POLICY_PATH = ROOT / "configs" / "trading_governor_policy.yaml"
 DATA_PATH = ROOT / "data" / "sample_prices.csv"
 QUEUE_PATH = ROOT / "runtime" / "approval_queue.json"
 PAPER_STATE_PATH = ROOT / "runtime" / "paper_portfolio.json"
+PHASE6_EVIDENCE_ROOT = ROOT / "runtime" / "phase6_owner_gate_latest"
+PHASE6_HISTORY_PATH = ROOT / "runtime" / "phase6_soak_history.jsonl"
+LIVE_AUTHORIZATION_PATH = ROOT / "runtime" / "LIVE_AUTHORIZATION.json"
+OWNER_BASE_FILES = {
+    "功能清单": ["中文可读评分", "第一眼结论", "当前速读", "用户第一眼应看到的信息", "已实现功能", "明确禁止或尚未完成"],
+    "开发记录": ["中文可读评分", "第一眼结论", "当前速读", "安全边界", "当前运行路线", "近期开发事件"],
+    "模型参数文件": ["中文可读评分", "第一眼结论", "当前速读", "模型总览", "公式逻辑", "参数表", "Owner 需要关注的参数"],
+}
+OWNER_BASE_MIN_CHINESE_RATIO = 0.30
 
 
 @router.get("/health")
@@ -30,6 +40,54 @@ def health() -> dict:
         "live_trading_enabled": False,
         "kill_switch_active": False,
         "refresh_interval_seconds": DEFAULT_REFRESH_INTERVAL_SECONDS,
+    }
+
+
+def _chinese_ratio(text: str) -> float:
+    meaningful = [char for char in text if not char.isspace()]
+    if not meaningful:
+        return 0.0
+    chinese = [char for char in meaningful if "\u4e00" <= char <= "\u9fff"]
+    return len(chinese) / len(meaningful)
+
+
+@router.get("/owner/base-files/readability")
+def owner_base_files_readability() -> dict:
+    files = []
+    for filename, required_sections in OWNER_BASE_FILES.items():
+        path = ROOT / filename
+        exists = path.exists()
+        text = path.read_text(encoding="utf-8") if exists else ""
+        ratio = _chinese_ratio(text)
+        missing_sections = [section for section in required_sections if section not in text]
+        has_score = "中文可读评分: `100/100`" in text
+        passed = exists and ratio >= OWNER_BASE_MIN_CHINESE_RATIO and has_score and not missing_sections
+        files.append(
+            {
+                "filename": filename,
+                "exists": exists,
+                "chinese_ratio": round(ratio, 4),
+                "chinese_percent": round(ratio * 100, 2),
+                "score": 100 if passed else 0,
+                "score_text": "100/100" if passed else "0/100",
+                "status": "pass" if passed else "fail",
+                "status_zh": "通过" if passed else "未通过",
+                "missing_sections": missing_sections,
+                "has_declared_score": has_score,
+                "required_min_chinese_percent": round(OWNER_BASE_MIN_CHINESE_RATIO * 100, 2),
+            }
+        )
+    overall_pass = all(item["status"] == "pass" for item in files)
+    return {
+        "schema_version": "2026-06-27.alpha.owner_base_files_readability",
+        "title_zh": "三基文件中文可读性",
+        "status": "pass" if overall_pass else "fail",
+        "status_zh": "通过" if overall_pass else "未通过",
+        "score": 100 if overall_pass else 0,
+        "score_text": "100/100" if overall_pass else "0/100",
+        "required_min_chinese_percent": round(OWNER_BASE_MIN_CHINESE_RATIO * 100, 2),
+        "files": files,
+        "summary_zh": "三基文件已达到中文优先、首屏可读、安全边界明确的 owner 可读标准。" if overall_pass else "三基文件仍未达到中文 owner 可读标准。",
     }
 
 
@@ -113,15 +171,28 @@ def strategy_tournament_run() -> dict:
     return run_strategy_tournament(DATA_PATH)
 
 
+@router.get("/phase6/owner-gate/status")
+def phase6_owner_gate_status() -> dict:
+    return build_phase6_owner_gate_status(
+        evidence_root=PHASE6_EVIDENCE_ROOT,
+        history_path=PHASE6_HISTORY_PATH,
+        max_sample_gap_seconds=DEFAULT_MAX_SAMPLE_GAP_SECONDS,
+        max_sample_age_seconds=DEFAULT_MAX_SAMPLE_AGE_SECONDS,
+        live_authorization_path=LIVE_AUTHORIZATION_PATH,
+    )
+
+
 @router.get("/dashboard/state")
 def dashboard_state() -> dict:
     return {
         "health": health(),
+        "owner_base_files_readability": owner_base_files_readability(),
         "owner_summary": owner_summary(),
         "agent_status": agent_status(),
         "paper_portfolio": paper_portfolio(),
         "strategy_tournament": strategy_tournament_run(),
         "approval_queue": approval_queue(),
+        "phase6_owner_gate": phase6_owner_gate_status(),
     }
 
 
@@ -129,11 +200,11 @@ def dashboard_state() -> dict:
 def dashboard() -> str:
     return """
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Alpha Dashboard</title>
+  <title>Alpha 交易驾驶舱</title>
   <style>
     :root { color-scheme: light; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
     body { margin: 0; background: #f5f6f3; color: #1d1f21; }
@@ -164,25 +235,27 @@ def dashboard() -> str:
 <body>
   <header>
     <div>
-      <h1>Alpha Dashboard</h1>
-      <div class="status" id="lastUpdated">Loading</div>
+      <h1>Alpha 交易驾驶舱</h1>
+      <div class="status" id="lastUpdated">加载中</div>
     </div>
     <div>
-      <button onclick="runCycle()">Run Paper Cycle</button>
-      <button class="secondary" onclick="loadState()">Refresh</button>
+      <button onclick="runCycle()">运行一次虚拟交易</button>
+      <button class="secondary" onclick="loadState()">刷新</button>
     </div>
   </header>
   <main>
     <section>
-      <h2>System Snapshot</h2>
+      <h2>系统快照</h2>
       <div class="metric-grid" id="metrics"></div>
     </section>
+    <section><h2>三基文件中文可读性</h2><div id="ownerBaseFiles"></div></section>
+    <section><h2>Phase 6 OWNER-GATE 状态</h2><div id="phase6"></div></section>
     <div class="grid-two">
-      <section><h2>Paper Portfolio</h2><div id="portfolio"></div></section>
-      <section><h2>Agent Status</h2><div id="agent"></div></section>
+      <section><h2>虚拟交易组合</h2><div id="portfolio"></div></section>
+      <section><h2>Agent 运行状态</h2><div id="agent"></div></section>
     </div>
-    <section><h2>Strategy Tournament</h2><div id="tournament"></div></section>
-    <section><h2>Approval Queue</h2><div id="queue"></div></section>
+    <section><h2>策略锦标赛</h2><div id="tournament"></div></section>
+    <section><h2>人工确认队列</h2><div id="queue"></div></section>
   </main>
   <script>
     function pill(text, kind) {
@@ -191,6 +264,32 @@ def dashboard() -> str:
     function metric(label, value) {
       return `<div class="metric"><div class="label">${label}</div><div class="value">${value}</div></div>`;
     }
+    const STATUS_LABELS = {
+      blocked_not_ready_for_owner_gate: '未达 OWNER-GATE',
+      ready_for_owner_gate: '可进入 OWNER-GATE',
+      pass: '通过',
+      fail: '未通过',
+      unknown: '未知',
+      missing: '缺失',
+      ready: '就绪',
+      sleeping: '休眠中',
+      completed: '已完成',
+      filled: '已成交（虚拟）',
+      pending_owner_approval: '待人工确认',
+      fresh_pending_owner_approval: '新鲜，待人工确认',
+      expired_owner_approval: '已过期',
+      approved_for_owner_review: '风控通过，待确认',
+      promote_to_paper: '晋级虚拟交易',
+      fresh: '新鲜',
+      expired: '已过期'
+    };
+    function statusText(value) {
+      if (!value) return '无';
+      return STATUS_LABELS[value] || value;
+    }
+    function formatHours(value) {
+      return Number(value || 0).toFixed(4);
+    }
     function renderMetrics(data) {
       const portfolio = data.paper_portfolio || {};
       const queue = data.approval_queue || {};
@@ -198,25 +297,73 @@ def dashboard() -> str:
       const health = data.health || {};
       const loop = (data.agent_status && data.agent_status.loop) || {};
       document.getElementById('metrics').innerHTML = [
-        metric('Agent', pill(data.agent_status.status, 'ok')),
-        metric('Loop', pill(loop.status || 'unknown', loop.error_count ? 'danger' : 'ok')),
-        metric('Paper Equity', Number(portfolio.total_equity || 0).toFixed(2)),
-        metric('Paper Trades', portfolio.trade_count || 0),
-        metric('Fresh Tickets', queueSummary.fresh_pending_count || queue.count || 0),
-        metric('Expired Tickets', queueSummary.expired_pending_count || 0),
-        metric('Refresh', `${health.refresh_interval_seconds || 300}s`)
+        metric('Agent', pill(statusText(data.agent_status.status), 'ok')),
+        metric('运行循环', pill(statusText(loop.status || 'unknown'), loop.error_count ? 'danger' : 'ok')),
+        metric('虚拟总权益', Number(portfolio.total_equity || 0).toFixed(2)),
+        metric('虚拟成交数', portfolio.trade_count || 0),
+        metric('新鲜待确认', queueSummary.fresh_pending_count || queue.count || 0),
+        metric('已过期工单', queueSummary.expired_pending_count || 0),
+        metric('刷新间隔', `${health.refresh_interval_seconds || 300}s`)
       ].join('');
+    }
+    function renderOwnerBaseFiles(readability) {
+      const files = readability.files || [];
+      const rows = files.map(file => `
+        <tr>
+          <td>${file.filename}</td>
+          <td>${pill(statusText(file.status), file.status === 'pass' ? 'ok' : 'danger')}</td>
+          <td>${file.score_text || '0/100'}</td>
+          <td>${Number(file.chinese_percent || 0).toFixed(2)}%</td>
+          <td>${Number(file.required_min_chinese_percent || 30).toFixed(2)}%</td>
+          <td>${(file.missing_sections || []).join(', ') || '无'}</td>
+        </tr>`).join('');
+      document.getElementById('ownerBaseFiles').innerHTML = `
+        <div class="metric-grid">
+          ${metric('整体评分', readability.score_text || '0/100')}
+          ${metric('中文状态', pill(readability.status_zh || statusText(readability.status), readability.status === 'pass' ? 'ok' : 'danger'))}
+          ${metric('最低中文占比', `${Number(readability.required_min_chinese_percent || 30).toFixed(2)}%`)}
+        </div>
+        <div class="status">${readability.summary_zh || ''}</div>
+        <table><thead><tr><th>文件</th><th>状态</th><th>评分</th><th>中文占比</th><th>最低要求</th><th>缺失章节</th></tr></thead><tbody>${rows}</tbody></table>
+      `;
+    }
+    function renderPhase6(phase6) {
+      const blockers = (phase6.blocking_conditions || []).join(', ') || '无';
+      const statusKind = phase6.status === 'ready_for_owner_gate' ? 'ok' : 'warn';
+      const freshKind = phase6.sampler_freshness_status === 'pass' ? 'ok' : 'danger';
+      const liveKind = phase6.live_authorization_absent ? 'ok' : 'danger';
+      document.getElementById('phase6').innerHTML = `
+        <div class="metric-grid">
+          ${metric('收口状态', pill(statusText(phase6.status || 'unknown'), statusKind))}
+          ${metric('连续观察', `${formatHours(phase6.observed_hours)} / ${phase6.duration_hours_required || 48}h`)}
+          ${metric('剩余观察', `${formatHours(phase6.remaining_hours)}h`)}
+          ${metric('最新样本', pill(statusText(phase6.sampler_freshness_status || 'unknown'), freshKind))}
+          ${metric('实盘授权文件', pill(phase6.live_authorization_absent ? '不存在' : '存在', liveKind))}
+        </div>
+        <table>
+          <tbody>
+            <tr><th>连续窗口</th><td>${phase6.window_start || '缺失'} → ${phase6.window_end || '缺失'}</td></tr>
+            <tr><th>预计达标</th><td>${phase6.estimated_ready_at || '缺失'}</td></tr>
+            <tr><th>样本</th><td>总数 ${phase6.sample_count || 0}，连续 ${phase6.continuous_sample_count || 0}</td></tr>
+            <tr><th>样本间隔</th><td>最大 ${phase6.max_observed_gap_seconds || 0}s，阈值 ${phase6.max_sample_gap_seconds || 900}s，gap ${phase6.gap_violation_count || 0}</td></tr>
+            <tr><th>最新样本年龄</th><td>${phase6.latest_sample_age_seconds ?? 'n/a'}s / ${phase6.max_sample_age_seconds || 900}s</td></tr>
+            <tr><th>Paper/Shadow 报告</th><td>${statusText(phase6.paper_shadow_status || 'missing')}</td></tr>
+            <tr><th>Shadow Live 约束</th><td>${statusText(phase6.shadow_live_constraints_status || 'missing')}</td></tr>
+            <tr><th>当前阻塞</th><td>${blockers}</td></tr>
+          </tbody>
+        </table>
+      `;
     }
     function renderPortfolio(portfolio) {
       const positions = portfolio.positions || [];
       const rows = positions.map(row => `<tr><td>${row.symbol}</td><td>${row.quantity}</td><td>${row.mark_price}</td><td>${row.market_value}</td></tr>`).join('');
       document.getElementById('portfolio').innerHTML = `
         <div class="metric-grid">
-          ${metric('Cash', Number(portfolio.cash || 0).toFixed(2))}
-          ${metric('Positions Value', Number(portfolio.positions_value || 0).toFixed(2))}
-          ${metric('Total Equity', Number(portfolio.total_equity || 0).toFixed(2))}
+          ${metric('现金', Number(portfolio.cash || 0).toFixed(2))}
+          ${metric('持仓市值', Number(portfolio.positions_value || 0).toFixed(2))}
+          ${metric('总权益', Number(portfolio.total_equity || 0).toFixed(2))}
         </div>
-        <table><thead><tr><th>Symbol</th><th>Qty</th><th>Mark</th><th>Value</th></tr></thead><tbody>${rows || '<tr><td colspan="4" class="muted">No paper positions yet</td></tr>'}</tbody></table>
+        <table><thead><tr><th>标的</th><th>数量</th><th>标记价</th><th>市值</th></tr></thead><tbody>${rows || '<tr><td colspan="4" class="muted">暂无虚拟持仓</td></tr>'}</tbody></table>
       `;
     }
     function renderAgent(agent) {
@@ -227,18 +374,18 @@ def dashboard() -> str:
         <table>
           <tbody>
             <tr><th>ID</th><td>${agent.agent_id}</td></tr>
-            <tr><th>Status</th><td>${pill(agent.status, 'ok')}</td></tr>
-            <tr><th>Loop</th><td>${pill(loop.status || 'unknown', loopKind)}</td></tr>
-            <tr><th>Run Count</th><td>${loop.run_count || 0}</td></tr>
-            <tr><th>Refresh</th><td>${agent.refresh_interval_seconds}s</td></tr>
-            <tr><th>Last Run</th><td>${loop.last_run_completed_at || 'Not yet'}</td></tr>
-            <tr><th>Next Run</th><td>${loop.next_run_at || 'Pending'}</td></tr>
-            <tr><th>Latest Ticket</th><td>${agent.latest_ticket_created_at || 'None'}</td></tr>
-            <tr><th>Latest Fresh Ticket</th><td>${agent.latest_fresh_ticket_created_at || 'None'}</td></tr>
-            <tr><th>Expired Tickets</th><td>${agent.expired_tickets || 0}</td></tr>
-            <tr><th>Last Result</th><td>${summary.intent_symbol || 'None'} / ${summary.ticket_status || 'None'} / ${summary.paper_order_status || 'None'}</td></tr>
-            <tr><th>Errors</th><td>${loop.error_count || 0}${loop.last_error ? ': ' + loop.last_error : ''}</td></tr>
-            <tr><th>Capabilities</th><td>${(agent.capabilities || []).join(', ')}</td></tr>
+            <tr><th>状态</th><td>${pill(statusText(agent.status), 'ok')}</td></tr>
+            <tr><th>循环</th><td>${pill(statusText(loop.status || 'unknown'), loopKind)}</td></tr>
+            <tr><th>运行次数</th><td>${loop.run_count || 0}</td></tr>
+            <tr><th>刷新间隔</th><td>${agent.refresh_interval_seconds}s</td></tr>
+            <tr><th>上次运行</th><td>${loop.last_run_completed_at || '尚未运行'}</td></tr>
+            <tr><th>下次运行</th><td>${loop.next_run_at || '等待中'}</td></tr>
+            <tr><th>最新工单</th><td>${agent.latest_ticket_created_at || '无'}</td></tr>
+            <tr><th>最新新鲜工单</th><td>${agent.latest_fresh_ticket_created_at || '无'}</td></tr>
+            <tr><th>过期工单</th><td>${agent.expired_tickets || 0}</td></tr>
+            <tr><th>最新结果</th><td>${summary.intent_symbol || '无'} / ${statusText(summary.ticket_status)} / ${statusText(summary.paper_order_status)}</td></tr>
+            <tr><th>错误</th><td>${loop.error_count || 0}${loop.last_error ? ': ' + loop.last_error : ''}</td></tr>
+            <tr><th>能力</th><td>${(agent.capabilities || []).join(', ')}</td></tr>
           </tbody>
         </table>
       `;
@@ -249,11 +396,11 @@ def dashboard() -> str:
           <td>${row.strategy_id}</td><td>${row.symbol}</td><td>${row.lookback_days}</td>
           <td>${Number(row.total_return * 100).toFixed(2)}%</td><td>${Number(row.oos_return * 100).toFixed(2)}%</td>
           <td>${Number(row.hit_rate * 100).toFixed(2)}%</td><td>${row.validation_windows}</td>
-          <td>${Number(row.max_drawdown * 100).toFixed(2)}%</td><td>${Number(row.score).toFixed(4)}</td><td>${row.decision}</td>
+          <td>${Number(row.max_drawdown * 100).toFixed(2)}%</td><td>${Number(row.score).toFixed(4)}</td><td>${statusText(row.decision)}</td>
         </tr>`).join('');
       document.getElementById('tournament').innerHTML = `
-        <div class="status">Winner: ${(tournament.winner && tournament.winner.strategy_id) || 'None'}</div>
-        <table><thead><tr><th>Strategy</th><th>Symbol</th><th>Lookback</th><th>Return</th><th>OOS Return</th><th>Hit Rate</th><th>Windows</th><th>Drawdown</th><th>Score</th><th>Decision</th></tr></thead><tbody>${rows}</tbody></table>
+        <div class="status">当前优胜策略：${(tournament.winner && tournament.winner.strategy_id) || '无'}</div>
+        <table><thead><tr><th>策略</th><th>标的</th><th>回看天数</th><th>收益</th><th>样本外收益</th><th>胜率</th><th>验证窗口</th><th>最大回撤</th><th>分数</th><th>决策</th></tr></thead><tbody>${rows}</tbody></table>
       `;
     }
     function renderQueue(queue) {
@@ -261,24 +408,26 @@ def dashboard() -> str:
         const payload = ticket.broker_payload || {};
         const risk = ticket.risk_check || {};
         return `<tr>
-          <td>${ticket.ticket_id}</td><td>${ticket.actionability || ticket.status}</td><td>${payload.symbol || ''}</td>
+          <td>${ticket.ticket_id}</td><td>${statusText(ticket.actionability || ticket.status)}</td><td>${payload.symbol || ''}</td>
           <td>${payload.side || ''}</td><td>${payload.quantity || ''}</td>
-          <td>${payload.estimated_price || ''}</td><td>${risk.status || 'unknown'}</td>
-          <td>${(ticket.freshness && ticket.freshness.status) || 'unknown'}</td>
+          <td>${payload.estimated_price || ''}</td><td>${statusText(risk.status || 'unknown')}</td>
+          <td>${statusText((ticket.freshness && ticket.freshness.status) || 'unknown')}</td>
           <td>${(ticket.freshness && ticket.freshness.seconds_until_expiry) ?? 'n/a'}</td>
         </tr>`;
       }).join('');
-      document.getElementById('queue').innerHTML = `<table><thead><tr><th>Ticket</th><th>Actionability</th><th>Symbol</th><th>Side</th><th>Qty</th><th>Price</th><th>Risk</th><th>Freshness</th><th>Seconds Left</th></tr></thead><tbody>${rows || '<tr><td colspan="9" class="muted">No pending tickets</td></tr>'}</tbody></table>`;
+      document.getElementById('queue').innerHTML = `<table><thead><tr><th>工单</th><th>可操作状态</th><th>标的</th><th>方向</th><th>数量</th><th>价格</th><th>风控</th><th>新鲜度</th><th>剩余秒数</th></tr></thead><tbody>${rows || '<tr><td colspan="9" class="muted">暂无待确认工单</td></tr>'}</tbody></table>`;
     }
     async function loadState() {
       const response = await fetch('/dashboard/state');
       const data = await response.json();
       renderMetrics(data);
+      renderOwnerBaseFiles(data.owner_base_files_readability || {});
+      renderPhase6(data.phase6_owner_gate || {});
       renderPortfolio(data.paper_portfolio || {});
       renderAgent(data.agent_status || {});
       renderTournament(data.strategy_tournament || {});
       renderQueue(data.approval_queue || {});
-      document.getElementById('lastUpdated').textContent = 'Last updated: ' + new Date().toLocaleString();
+      document.getElementById('lastUpdated').textContent = '最后更新：' + new Date().toLocaleString();
     }
     async function runCycle() {
       await fetch('/paper/run-once', { method: 'POST' });

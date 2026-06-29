@@ -1,0 +1,102 @@
+# 开发记录
+
+## 摘要
+
+- 中文可读评分: `100/100`
+- 中文判定: `通过，按时间和交易影响可追溯`
+- 评分口径: 本文件必须让 owner 不看代码也能知道当前开发进度、交易状态、安全边界、最近改了什么、下一步为什么不能跳过。英文任务号和文件路径只用于定位证据，不能代替中文说明。
+- 第一眼结论: 当前开发重点不是开启实盘，而是把 Phase 6 Paper/Shadow 连续观察跑满并生成 OWNER-GATE-01 证据包。未满 48 小时前，任何 agent 都不能把系统描述成可实盘。
+- 当前开发状态: Paper/Shadow 报告、Shadow live 约束、限价订单契约、dashboard 状态和证据包工具已经存在；真正阻塞项是连续观察时间还没达到验收要求。
+- 下一步动作: 继续保持采样，定期同步 `docs/evidence/phase6_closeout_latest/`，每次 meaningful run 都要把验证结果、剩余风险和推荐下一步写清楚。
+- Agent 接手规则: 新 agent 不能只看最近 commit 或测试通过就宣布完成，必须先读本文件的当前速读、安全边界和近期开发事件，再核对 runtime 证据和 GitHub 分支。
+- 中文可读保障: 本文件按“先结论、再边界、再时间线”的顺序维护。owner 不需要理解所有任务号，也能判断当前是否允许交易、哪些证据已经存在、哪些证据仍缺失、为什么下一步只能继续观察。
+- 维护红线: 任何开发记录都不能用模糊词掩盖真实状态。没有跑过的测试不能写通过，没有完成的观察不能写完成，没有 owner 授权不能写可实盘；如果只是历史治理完成，必须明确它不等于当前交易准备完成。
+
+- project_id: `Alpha`
+- current_stage: `G6`
+- current_phase: `Phase 6`
+- current_task: `OWNER-GATE-01 前 48 小时 Paper/Shadow 观察`
+- Stage -> Phase -> Task: `G6 -> Phase 6 -> OWNER-GATE-01 soak closeout`
+- stop_gate: `OWNER-GATE-01；48 小时连续观察未通过前不得进入 MICRO_LIVE`
+- evidence_status: `进行中，尚未 ready_for_owner_gate`
+- 中文验收: `用户可读优先；先说明交易状态、阻塞原因、证据位置和下一步`
+
+## 当前速读
+
+本节是开发记录的中文首页。owner 需要先看到“交易状态”和“阻塞原因”，再看到技术细节。只要这里显示仍在观察中，后续任何脚本、dashboard 卡片、证据包或 agent 汇报都必须保持一致，不能把历史 S5/S6 治理完成误读成 G6 实盘准备完成。
+
+| 项目 | 当前值 |
+|---|---|
+| 项目名称 | Alpha |
+| 当前交付目标 | G6 Phase 6：累计 48 小时自然日 Paper/Shadow 观察，形成 OWNER-GATE-01 可审核证据包 |
+| 当前状态 | 观察中，尚未达到 OWNER-GATE-01 |
+| 已完成 | Paper/Shadow 报告、Shadow live 约束、限价订单契约、证据包发布与校验工具、dashboard 状态展示 |
+| 未完成 | 48 小时连续自然日 soak validation |
+| 当前唯一关键阻塞 | 48 小时连续 Paper/Shadow 观察时间未满 |
+| 实盘状态 | 已提交默认配置保持关闭；不得创建 `runtime/LIVE_AUTHORIZATION.json` |
+| 下一步 | 继续采样，周期性刷新 `docs/evidence/phase6_closeout_latest/`，直到 `phase6_closeout.json` 变为 `ready_for_owner_gate` |
+
+## 安全边界
+
+安全边界是当前开发的停止线。它约束所有 agent、脚本、dashboard、测试和证据发布流程：可以读取状态、生成 Paper/Shadow 证据、排队 owner-review order intent，但不能提交真实 broker mutation，不能写入交易解锁材料，不能为了赶进度把默认 live trading 改成 true。
+
+- Alpha 当前只允许研究、回测、Paper/Shadow、订单意图审核和 dashboard 展示。
+- 本阶段不得进入 MICRO_LIVE，不得提交真实 broker mutation。
+- `live_trading.enabled` 必须保持 `false`，`runtime/LIVE_AUTHORIZATION.json` 必须不存在。
+- GitHub 交付只认 `LinzeColin/CodexProject` 仓库下的 `Alpha/` 路径。
+
+## 当前运行路线
+
+| 层级 | 说明 | 当前状态 |
+|---|---|---|
+| G6 Phase 6 | Paper/Shadow 长时间观察与 OWNER-GATE-01 证据收口 | 进行中 |
+| Paper/Shadow 报告 | 证明 paper 订单生命周期、报告 schema、hard gate 和 shadow 约束 | 已通过，需随采样保持新鲜 |
+| Soak validation | 证明连续 48 小时自然日运行无失败样本和过期间隔 | 未通过，继续累计 |
+| Closeout evidence | 生成 owner 可审核的 closeout JSON、报告、manifest 和决策页 | 已生成，状态仍为未就绪 |
+| Owner gate | 所有人选择 A/B/C 的决策入口 | 等待 48 小时观察完成 |
+
+## 历史治理迁移记录
+
+这部分保留 S5 迁移事实，作为项目治理来源追溯，不代表当前 G6 已完成。
+
+| 字段 | 中文说明 | 当前值 |
+|---|---|---|
+| 历史阶段 | S5：其余九个项目逐项迁移 | 已记录 |
+| 历史任务 | S5PAT01：迁移 Alpha | 已完成 |
+| 历史验收 | 结构、准确性、人类可读性、无空泛模板 | 已形成迁移证据 |
+| 当前限制 | 历史迁移完成不等于交易系统已上线 | 仍需 G6 Phase 6 证据 |
+
+## 近期开发事件
+
+阅读顺序建议从最新事件往下看。每条事件都要回答：这次改动解决了什么实际问题、是否影响交易路径、证据在哪里、事实等级是什么。如果某条事件只是历史治理迁移，不能把它当成当前 Phase 6 已完成的证明。
+
+| 时间 | 类型 | 中文摘要 | 任务 | 事实等级 |
+|---|---|---|---|---|
+| 2026-06-29T12:29:20+10:00 | Phase 6 sampler 自动采集修复 | 修复本机 sampler 漏检问题：恢复 Phase 6 脚本、虚拟环境、dashboard owner-gate 路由和三基文件精确路径；修复 paper loop 继续生成 `market` intent 与现金不足仍买入导致采样失败的问题。当前自动 sampler 已从 `sample_count=408` 自然增加到 `409`，最新样本 `paper_shadow_status=pass`、`sampler_freshness_status=pass`、最新 order intent 为 `limit`，但 48 小时连续观察仍未完成。 | ALPHA-G6-PHASE6-SAMPLER-AUTO-RECOVERY-20260629 | 已运行验证 |
+| 2026-06-27T19:36:43+10:00 | 三基文件中文可读性修复 | 修复 `功能清单`、`开发记录`、`模型参数文件` 中文体感不足的问题：三份文件新增 `中文可读评分: 100/100`、第一眼结论、维护红线和 owner 读法说明，dashboard 新增“三基文件中文可读性”面板，并把测试门槛从 20% 汉字占比提高到 30%；本次不改变交易逻辑、不创建 live authorization。 | ALPHA-G6-OWNER-BASE-CHINESE-READABILITY-20260627 | 已提取 |
+| 2026-06-27T16:15:00+10:00 | Phase 6 soak 现金耗尽恢复 | 修复长时间 paper 观察中现金耗尽导致样本被拒的问题：当买入资金不足时，paper loop 会先卖出已有持仓；soak validation 从最近一次失败样本后重新计算连续 48 小时窗口，避免旧失败永久污染新证据。 | ALPHA-G6-PHASE6-SOAK-CASH-RECOVERY-20260627 | 已提取 |
+| 2026-06-27T12:47:00+10:00 | Phase 6 finalize 状态文件 | 只读 finalizer 默认写入 `FINALIZE_STATUS.json`，后续 agent 和 owner 可以直接查看最近一次收口尝试结果。 | ALPHA-G6-PHASE6-FINALIZE-STATUS-20260627 | 已提取 |
+| 2026-06-27T12:42:00+10:00 | Phase 6 只读 finalizer | 新增一条命令完成发布运行证据、执行 ready 校验、在 48 小时未满时返回 not_ready；不创建 live authorization，不触碰 broker mutation。 | ALPHA-G6-PHASE6-READONLY-FINALIZE-20260627 | 已提取 |
+| 2026-06-27T12:37:00+10:00 | Soak 剩余时间可见 | 在 soak validation、状态 API、dashboard、manifest、OWNER_DECISION 和 closeout report 中显示剩余秒数、剩余小时和预计 ready 时间。 | ALPHA-G6-PHASE6-SOAK-ETA-20260627 | 已提取 |
+| 2026-06-27T12:30:00+10:00 | 证据发布同步 | 新增只读发布器，把运行时 Phase 6 OWNER-GATE 证据同步到 `docs/evidence/phase6_closeout_latest`，用于 GitHub 备份和 owner 审核。 | ALPHA-G6-PHASE6-EVIDENCE-PUBLISH-20260627 | 已提取 |
+| 2026-06-27T12:25:00+10:00 | Dashboard Owner-Gate 状态 | Dashboard 新增只读 Phase 6 OWNER-GATE 面板，展示 blocker、连续观察窗口、sampler 新鲜度、Paper/Shadow、Shadow live 约束和 live authorization 缺席。 | ALPHA-G6-PHASE6-DASHBOARD-STATUS-20260627 | 已提取 |
+| 2026-06-27T12:15:00+10:00 | 连续 soak gap 门禁 | Soak validation 改为只计算当前连续 Paper/Shadow 观察窗口，暴露采样间隔统计，并在 sampler 断档后重新计算 ready 时间。 | ALPHA-G6-PHASE6-CONTINUOUS-SOAK-GAP-20260627 | 已提取 |
+| 2026-06-27T12:05:00+10:00 | Sampler 新鲜度 watchdog | 新增只读 sampler freshness 报告和 `--require-fresh` 选项，用于发现 Phase 6 采样停滞。 | ALPHA-G6-PHASE6-SAMPLER-FRESHNESS-20260627 | 已提取 |
+| 2026-06-27T11:55:00+10:00 | Soak 窗口证据 | Soak validation 增加 `window_start` 和 `window_end`，owner 不需要重算 JSONL 也能看到真实观察窗口。 | ALPHA-G6-PHASE6-SOAK-WINDOW-20260627 | 已提取 |
+| 2026-06-27T11:40:00+10:00 | 证据包校验器 | 新增只读 Phase 6 evidence verifier，检查 artifact hash、一致性、Paper/Shadow hard gate、Shadow live 约束和 live authorization 缺席。 | ALPHA-G6-PHASE6-EVIDENCE-VERIFIER-20260627 | 已提取 |
+| 2026-06-27T11:35:00+10:00 | Evidence manifest | 新增 `EVIDENCE_MANIFEST.json`，记录必要证据文件、SHA-256、验收状态、soak 进度和 live authorization 缺席。 | ALPHA-G6-PHASE6-EVIDENCE-MANIFEST-20260627 | 已提取 |
+| 2026-06-27T11:30:00+10:00 | Closeout 报告 | 新增 `PHASE6_CLOSEOUT_REPORT.md`，把 OWNER-GATE 每项验收映射到具体证据文件，并保留 48 小时 blocker。 | ALPHA-G6-PHASE6-CLOSEOUT-REPORT-20260627 | 已提取 |
+| 2026-06-27T11:20:00+10:00 | Owner 决策页 | `OWNER_DECISION.md` 改为由证据生成的 A/B/C 决策页；当前 A 是继续累计证据，不是进入 MICRO_LIVE。 | ALPHA-G6-PHASE6-OWNER-DECISION-20260627 | 已提取 |
+| 2026-06-27T11:10:00+10:00 | 运行时 owner-gate 状态 | Phase 6 sampler 写入 runtime rolling evidence，并提供只读状态检查，避免每次采样都污染已提交 docs evidence。 | ALPHA-G6-PHASE6-RUNTIME-STATUS-20260627 | 已提取 |
+| 2026-06-27T10:20:00+10:00 | Owner-gate sampler | 新增用户级 LaunchAgent 安装器，让 Phase 6 OWNER-GATE sampler 每 300 秒累计一次证据，不需要 live authorization。 | ALPHA-G6-PHASE6-SAMPLER-20260627 | 已提取 |
+| 2026-06-27T10:11:04+10:00 | Owner-gate 证据工具 | 恢复 Phase 6 证据工具：Paper/Shadow hard gate、Shadow live 约束、限价订单契约、soak JSONL 采样和 closeout 汇总。 | ALPHA-G6-PHASE6-EVIDENCE-TOOLING-20260627 | 已提取 |
+| 2026-06-27T10:00:00+10:00 | Owner-gate gap audit | 重新锚定 canonical root 到 `LinzeColin/CodexProject/Alpha`，确认 live authorization 缺席，并记录 Phase 6 初始证据缺口。 | ALPHA-G6-PHASE6-OWNER-GATE-GAP-20260627 | 已提取 |
+
+## 历史基础事件
+
+| 时间 | 中文摘要 | 任务 | 事实等级 |
+|---|---|---|---|
+| 2026-06-24T00:00:00+10:00 | S3PBT03 证明本地 shutdown 故障路径不会破坏已提交 JSON 状态，PID 判断保守，live trading 仍关闭。 | S3PBT03 | 已提取 |
+| 2026-06-24T00:00:00+10:00 | S3PBT02 修正 AutoPaperAgent 停止状态和 dashboard PID 生命周期管理。 | S3PBT02 | 已提取 |
+| 2026-06-24T00:00:00+10:00 | S3PBT01 用文件锁和原子替换保护 approval queue 与 paper broker JSON 状态。 | S3PBT01 | 已提取 |
+| 2026-06-13T00:00:00+10:00 | 从历史 handoff 重建 Alpha 当时的 paper loop、dashboard、策略锦标赛、审批队列和 fail-closed live broker 状态。 | EVENT-RECON-ALPHA-20260613-001 | 重建 |

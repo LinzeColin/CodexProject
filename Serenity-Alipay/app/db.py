@@ -242,7 +242,14 @@ CREATE TABLE IF NOT EXISTS notification_log (
   body_path TEXT NOT NULL,
   send_status TEXT NOT NULL,
   sent_at TEXT,
-  error_message TEXT
+  error_message TEXT,
+  action_signature TEXT,
+  action_signature_hash TEXT,
+  notification_kind TEXT,
+  beijing_date TEXT,
+  suppress_reason TEXT,
+  related_run_id TEXT,
+  created_at TEXT
 );
 
 CREATE TABLE IF NOT EXISTS missing_data_log (
@@ -406,6 +413,19 @@ def init_db(db_path: Path) -> None:
                     "refresh_status": "TEXT",
                     "refresh_message": "TEXT",
                     "refresh_run_id": "TEXT",
+                },
+            )
+            _ensure_columns(
+                conn,
+                "notification_log",
+                {
+                    "action_signature": "TEXT",
+                    "action_signature_hash": "TEXT",
+                    "notification_kind": "TEXT",
+                    "beijing_date": "TEXT",
+                    "suppress_reason": "TEXT",
+                    "related_run_id": "TEXT",
+                    "created_at": "TEXT",
                 },
             )
             _backfill_asset_pool_entries(conn)

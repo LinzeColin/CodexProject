@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>EnvironmentVariables</key>
+	<dict>
+		<key>ALPHA_LAUNCHD</key>
+		<string>1</string>
+		<key>HOME</key>
+		<string>/Users/linzezhang</string>
+		<key>PATH</key>
+		<string>/Users/linzezhang/.local/bin:/Users/linzezhang/.npm-global/bin:/Library/Frameworks/Python.framework/Versions/3.13/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/opt/homebrew/bin:/Users/linzezhang/.codex/tmp/arg0/codex-arg0OXyPwU:/Applications/Codex.app/Contents/Resources</string>
+		<key>PYTHONPATH</key>
+			<string>/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Alpha</string>
+	</dict>
+	<key>KeepAlive</key>
+	<true/>
+	<key>Label</key>
+	<string>com.linze.alpha.dashboard</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/bin/zsh</string>
+		<string>-lc</string>
+			<string>cd /Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Alpha &amp;&amp; if [ ! -x .venv/bin/python ]; then /Library/Frameworks/Python.framework/Versions/3.13/bin/python3 -m venv .venv &amp;&amp; .venv/bin/python -m pip install -e .; fi &amp;&amp; exec .venv/bin/python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000</string>
+	</array>
+	<key>RunAtLoad</key>
+	<true/>
+	<key>StandardErrorPath</key>
+	<string>/Users/linzezhang/Library/Logs/Alpha/alpha_dashboard.launchd.err.log</string>
+	<key>StandardOutPath</key>
+	<string>/Users/linzezhang/Library/Logs/Alpha/alpha_dashboard.launchd.out.log</string>
+	<key>WorkingDirectory</key>
+		<string>/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Alpha</string>
+</dict>
+</plist>

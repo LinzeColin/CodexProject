@@ -72,6 +72,15 @@ Machine-readable formulas live in `formula_registry.yaml`. Key exact logic:
 - FORM-011 discipline triggers: absolute deviation `>0.01` and overexpansion `consecutive > 2`.
 - FORM-012 scheduler gate: Beijing business day, slot tolerance `<=3` minutes, and dry-run forced when preflight blocks.
 
+Post-baseline operational notification policy:
+
+- Runtime mail frequency control is implemented in `app/core/mail_policy.py` and does not change MOD-001 through MOD-005 investment scoring, ranking, or discipline outputs.
+- `action_signature` contains overall action, Top5 fund order, fund code/name, per-fund action, target weight rounded to two decimal percent, and key action flags such as Block, clear, pause-new, and rebalance.
+- `action_signature` excludes `run_id`, run time, source timestamps, historical-difference prose, and ordinary evidence text.
+- Beijing natural-day actionable mail cap is `2`. The third and later distinct actionable mail is suppressed with `daily_email_cap_reached`.
+- Identical actionable conclusions compared with the last successfully sent actionable email are suppressed with `duplicate_action_signature`, including across Beijing natural days.
+- Maintain/info/no-new-action outcomes are suppressed with `non_actionable`; reports, database rows, and homepage state still update.
+
 Variables, units, input domains, output ranges, boundary inclusivity, missing
 policy, fallback behavior, code refs, and test refs are specified per formula in
 `formula_registry.yaml`.
@@ -87,6 +96,13 @@ Parameter classes:
 - Ranking and Top5 allocation constants: PARAM-026 through PARAM-033.
 - Comparison and discipline constants: PARAM-034 through PARAM-042.
 - Scheduler and safety defaults: PARAM-043 through PARAM-049.
+
+Runtime notification safety constants introduced after this governance baseline:
+
+- `ACTIONABLE_MAIL_DAILY_CAP = 2` by Beijing natural day.
+- `ACTION_SIGNATURE_WEIGHT_PRECISION = two decimal percent`.
+- `ACTION_SIGNATURE_LOOKBACK = last successfully sent notification_log row where notification_kind='actionable' and send_status='sent'`.
+- These constants are operational mail-suppression controls, not candidate-scoring or allocation parameters.
 
 No runtime parameter value is changed by this governance baseline. Non-weight
 parameters explicitly use `weight=NOT_APPLICABLE`. Score component point caps use
@@ -113,7 +129,8 @@ parameters explicitly use `weight=NOT_APPLICABLE`. Score component point caps us
 - Fallback: missing values reduce score, create missing-data logs, cap grade, or force review. Aggregated fallback cannot make a candidate Action-Ready.
 - Stop conditions: no due Beijing slot, weekend, duplicate slot, preflight blocker, production evidence blocker, hard risk gate, or missing execution evidence.
 - Human approval: Manual Review queue and notification drafts are the approval points; no code path places trades.
-- Failure behavior: degrade to draft, manual review, Pause New, Block, no_due_slot, non_business_day, or dry-run.
+- Mail behavior: production mail is sent only for changed actionable conclusions and remains capped at 2 actionable sends per Beijing day; suppressed mail still writes `notification_log`.
+- Failure behavior: degrade to draft, manual review, Pause New, Block, no_due_slot, non_business_day, dry-run, or suppressed notification.
 
 ## G. Validation
 

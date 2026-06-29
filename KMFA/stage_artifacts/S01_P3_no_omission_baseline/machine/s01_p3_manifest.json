@@ -1,0 +1,71 @@
+{
+  "project": "KMFA",
+  "stage": "S01",
+  "phase": "S01-P3",
+  "phase_name": "防遗漏基线",
+  "updated_at": "2026-06-29",
+  "status": "COMPLETE_FOR_PHASE_VALIDATED",
+  "scope": {
+    "included": [
+      "full requirements traceability import",
+      "formal no_omission check",
+      "Stage/Phase/Task status registry",
+      "human entry synchronization",
+      "machine governance synchronization"
+    ],
+    "excluded": [
+      "Stage 1 whole-stage review",
+      "GitHub upload",
+      "business import implementation",
+      "amount normalization implementation",
+      "zero-delta validator implementation",
+      "UI",
+      "business report generation",
+      "external connectors"
+    ]
+  },
+  "no_omission": {
+    "requirements": 20,
+    "p0": 9,
+    "p1": 8,
+    "stage_status_records": 234,
+    "task_records": 162,
+    "result": "PASS"
+  },
+  "validation": [
+    {
+      "command": "python3 KMFA/tools/no_omission_check.py",
+      "result": "PASS"
+    },
+    {
+      "command": "python3 scripts/lean_governance.py validate --project KMFA",
+      "result": "PASS",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --project KMFA",
+      "result": "PASS",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "command": "python3 -m py_compile KMFA/tools/no_omission_check.py",
+      "result": "PASS"
+    },
+    {
+      "command": "git diff --check -- README.md governance/projects.yaml KMFA",
+      "result": "PASS"
+    },
+    {
+      "command": "sensitive/raw file suffix scan under KMFA",
+      "result": "PASS"
+    },
+    {
+      "command": "common secret pattern scan under KMFA",
+      "result": "PASS"
+    }
+  ],
+  "next_step": "KMFA-S01-REVIEW",
+  "github_upload_allowed": false
+}

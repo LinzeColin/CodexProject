@@ -23,6 +23,7 @@ def test_paper_loop_generates_ticket_and_fills_paper_order(tmp_path):
     assert result["approval_queue"]["ticket"]["human_action_required"] is True
     assert result["approval_queue"]["ticket"]["expires_at"] == result["intent"]["expires_at"]
     assert result["approval_queue"]["ticket"]["broker_payload"]["client_order_id"] == result["intent"]["idempotency_key"]
+    assert result["approval_queue"]["ticket"]["broker_payload"]["order_type"] == "limit"
     assert any(candidate["strategy_id"] == result["intent"]["strategy_id"] for candidate in result["strategy_tournament"]["candidates"])
     assert result["paper_portfolio"]["trade_count"] == 1
     assert state_path.exists()
@@ -97,3 +98,23 @@ def test_concurrent_paper_loop_instances_do_not_drop_queue_or_portfolio_updates(
     assert all(result["paper_order"]["status"] == "filled" for result in results)
     assert len(queue) == 12
     assert broker.portfolio_snapshot()["trade_count"] == 12
+
+
+def test_paper_loop_sells_existing_position_when_cash_cannot_fund_next_buy(tmp_path):
+    policy = GovernorPolicy.load(Path("configs/trading_governor_policy.yaml"))
+    state_path = tmp_path / "portfolio.json"
+    queue_path = tmp_path / "queue.json"
+    PaperBroker(cash=1.0, positions={"TLT": 1.0}).save(state_path)
+    loop = PaperTradingLoop(
+        policy=policy,
+        price_path=Path("data/sample_prices.csv"),
+        approval_queue=ApprovalQueue(queue_path),
+        paper_state_path=state_path,
+    )
+
+    result = loop.run_once()
+
+    assert result["intent"]["symbol"] == "TLT"
+    assert result["intent"]["side"] == "sell"
+    assert result["paper_order"]["status"] == "filled"
+    assert result["paper_portfolio"]["cash"] > 1.0

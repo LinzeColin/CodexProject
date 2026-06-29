@@ -1,0 +1,73 @@
+{
+  "generated_at": "2026-06-29T17:27:41+08:00",
+  "status": "pass",
+  "attempted_count": 8,
+  "filled_count": 8,
+  "complete_count": 8,
+  "rows": [
+    {
+      "asset_code": "016667",
+      "asset_name": "景顺长城全球半导体芯片股票A(QDII-LOF)(美元现汇)",
+      "status": "pass",
+      "source_url": "https://fundf10.eastmoney.com/jjfl_016667.html",
+      "missing_fields": [],
+      "message": "自动补齐完成"
+    },
+    {
+      "asset_code": "016668",
+      "asset_name": "景顺长城全球半导体芯片股票C(QDII-LOF)(人民币)",
+      "status": "pass",
+      "source_url": "https://fundf10.eastmoney.com/jjfl_016668.html",
+      "missing_fields": [],
+      "message": "自动补齐完成"
+    },
+    {
+      "asset_code": "501225",
+      "asset_name": "景顺长城全球半导体芯片股票A(QDII-LOF)(人民币)",
+      "status": "pass",
+      "source_url": "https://fundf10.eastmoney.com/jjfl_501225.html",
+      "missing_fields": [],
+      "message": "自动补齐完成"
+    },
+    {
+      "asset_code": "000157",
+      "asset_name": "富国全球科技互联网股票(QDII)A(后端)",
+      "status": "pass",
+      "source_url": "https://fundf10.eastmoney.com/jjfl_000157.html",
+      "missing_fields": [],
+      "message": "自动补齐完成"
+    },
+    {
+      "asset_code": "013172",
+      "asset_name": "华夏恒生互联网科技业ETF联接(QDII)C",
+      "status": "pass",
+      "source_url": "https://fundf10.eastmoney.com/jjfl_013172.html",
+      "missing_fields": [],
+      "message": "自动补齐完成"
+    },
+    {
+      "asset_code": "017091",
+      "asset_name": "景顺长城纳斯达克科技ETF联接(QDII)A人民币",
+      "status": "pass",
+      "source_url": "https://fundf10.eastmoney.com/jjfl_017091.html",
+      "missing_fields": [],
+      "message": "自动补齐完成"
+    },
+    {
+      "asset_code": "017092",
+      "asset_name": "景顺长城纳斯达克科技ETF联接(QDII)A美元现汇",
+      "status": "pass",
+      "source_url": "https://fundf10.eastmoney.com/jjfl_017092.html",
+      "missing_fields": [],
+      "message": "自动补齐完成"
+    },
+    {
+      "asset_code": "017093",
+      "asset_name": "景顺长城纳斯达克科技ETF联接(QDII)C人民币",
+      "status": "pass",
+      "source_url": "https://fundf10.eastmoney.com/jjfl_017093.html",
+      "missing_fields": [],
+      "message": "自动补齐完成"
+    }
+  ]
+}

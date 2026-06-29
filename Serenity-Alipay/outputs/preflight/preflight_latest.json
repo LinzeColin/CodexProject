@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-14T10:06:57+08:00",
+  "generated_at": "2026-06-29T17:31:30+08:00",
   "production_ready": true,
   "shadow_ready": true,
   "status": "pass",
@@ -11,7 +11,7 @@
       "severity": "warn",
       "message": "Optional Alipay CSV appears to be sample data; ignored for production baseline",
       "evidence": {
-        "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/imports/alipay_positions.csv",
+        "path": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Serenity-Alipay/data/imports/alipay_positions.csv",
         "rows": 4,
         "warnings": [],
         "sample_data": true,
@@ -28,13 +28,13 @@
       "name": "moomoo_opend",
       "status": "pass",
       "severity": "info",
-      "message": "OpenD socket reachable at 127.0.0.1:11111; Python import `moomoo` is available; installed distribution version=10.6.6608",
+      "message": "moomoo_OpenD socket reachable at 127.0.0.1:11111; Python import `moomoo` is available; installed distribution version=10.6.6608",
       "evidence": {
         "socket": {
           "host": "127.0.0.1",
           "port": 11111,
           "reachable": true,
-          "detail": "OpenD socket reachable at 127.0.0.1:11111"
+          "detail": "moomoo_OpenD socket reachable at 127.0.0.1:11111"
         },
         "sdk": {
           "import_available": true,
@@ -43,23 +43,61 @@
         },
         "workbenches": [
           {
+            "path": "/Users/linzezhang/Applications/MoomooOpenD",
+            "exists": true,
+            "start_script": null,
+            "check_script": null,
+            "quote_script": null,
+            "config_path": null,
+            "sdk_vendor_path": null,
+            "opend_vendor_path": null,
+            "moomoo_opend_app_path": "/Users/linzezhang/Applications/MoomooOpenD/moomoo_OpenD.app"
+          },
+          {
+            "path": "/Users/linzezhang/Applications/MoomooOpenD/moomoo_OpenD_10.6.6608_Mac/moomoo_OpenD_10.6.6608_Mac",
+            "exists": true,
+            "start_script": null,
+            "check_script": null,
+            "quote_script": null,
+            "config_path": null,
+            "sdk_vendor_path": null,
+            "opend_vendor_path": null,
+            "moomoo_opend_app_path": "/Users/linzezhang/Applications/MoomooOpenD/moomoo_OpenD_10.6.6608_Mac/moomoo_OpenD_10.6.6608_Mac/OpenD.app"
+          },
+          {
+            "path": "/Users/linzezhang/Applications/MoomooOpenD/moomoo_OpenD_10.6.6608_Mac/moomoo_OpenD-GUI_10.6.6608_Mac",
+            "exists": true,
+            "start_script": null,
+            "check_script": null,
+            "quote_script": null,
+            "config_path": null,
+            "sdk_vendor_path": null,
+            "opend_vendor_path": null,
+            "moomoo_opend_app_path": null
+          },
+          {
             "path": "/Users/linzezhang/Documents/Codex/2026-06-02/new-chat/outputs/moomoo-api-workbench",
             "exists": true,
             "start_script": "/Users/linzezhang/Documents/Codex/2026-06-02/new-chat/outputs/moomoo-api-workbench/start_opend.sh",
             "check_script": "/Users/linzezhang/Documents/Codex/2026-06-02/new-chat/outputs/moomoo-api-workbench/check_opend.py",
             "quote_script": "/Users/linzezhang/Documents/Codex/2026-06-02/new-chat/outputs/moomoo-api-workbench/quote_smoke_test.py",
             "config_path": "/Users/linzezhang/Documents/Codex/2026-06-02/new-chat/outputs/moomoo-api-workbench/config.json",
-            "sdk_vendor_path": "/Users/linzezhang/Documents/Codex/2026-06-02/new-chat/outputs/moomoo-api-workbench/vendor/MMAPI4Python_10.6.6608",
-            "opend_vendor_path": "/Users/linzezhang/Documents/Codex/2026-06-02/new-chat/outputs/moomoo-api-workbench/vendor/moomoo_OpenD_GUI"
+            "sdk_vendor_path": null,
+            "opend_vendor_path": null,
+            "moomoo_opend_app_path": null
           }
         ],
         "recommended_actions": [
-          "Moomoo/OpenD smoke is ready for read-only market data collection",
-          "Optional independent quote smoke: python /Users/linzezhang/Documents/Codex/2026-06-02/new-chat/outputs/moomoo-api-workbench/quote_smoke_test.py",
-          "Keep OpenD running and logged in before scheduled collection windows"
+          "moomoo_OpenD smoke is ready for read-only market data collection",
+          "Keep moomoo_OpenD running and logged in before scheduled collection windows"
         ],
-        "json_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/moomoo_smoke_latest.json",
-        "markdown_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/moomoo_smoke_latest.md"
+        "latest_failure_hint": null,
+        "opend_lifecycle": null,
+        "cleanup": null,
+        "auto_start_skipped_for_preflight": true,
+        "production_dependency": false,
+        "json_path": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Serenity-Alipay/outputs/preflight/moomoo_smoke_latest.json",
+        "markdown_path": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Serenity-Alipay/outputs/preflight/moomoo_smoke_latest.md"
       }
     },
     {
@@ -68,7 +106,7 @@
       "severity": "warn",
       "message": "Optional Alipay CSV appears to be sample data; ignored for production baseline",
       "evidence": {
-        "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/imports/alipay_positions.csv",
+        "path": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Serenity-Alipay/data/imports/alipay_positions.csv",
         "rows": 4,
         "warnings": [],
         "sample_data": true,
@@ -85,9 +123,20 @@
       "severity": "info",
       "message": "Candidate universe has non-sample source references",
       "evidence": {
-        "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/manual/candidates.csv",
+        "path": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Serenity-Alipay/data/manual/candidates.csv",
         "rows": 8,
         "sample_like": false
+      }
+    },
+    {
+      "name": "candidate_nav_history",
+      "status": "pass",
+      "severity": "info",
+      "message": "Candidate NAV history covers at least 24 months",
+      "evidence": {
+        "path": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Serenity-Alipay/data/manual/price_history.csv",
+        "rows": 3596,
+        "min_span_days": 730
       }
     },
     {
@@ -96,7 +145,7 @@
       "severity": "info",
       "message": "Fund rules ready",
       "evidence": {
-        "path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/manual/fund_rules.csv",
+        "path": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Serenity-Alipay/data/manual/fund_rules.csv",
         "rows": 8
       }
     },
@@ -114,8 +163,9 @@
           "S&P 500": true,
           "Shanghai Composite": false
         },
-        "json_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/benchmark_smoke_latest.json",
-        "markdown_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/benchmark_smoke_latest.md"
+        "auto_start_skipped_for_preflight": true,
+        "json_path": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Serenity-Alipay/outputs/preflight/benchmark_smoke_latest.json",
+        "markdown_path": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Serenity-Alipay/outputs/preflight/benchmark_smoke_latest.md"
       }
     },
     {
@@ -134,11 +184,11 @@
       "name": "mail_send_config",
       "status": "pass",
       "severity": "info",
-      "message": "Real Apple Mail sending is enabled for production alerts",
+      "message": "Real Apple Mail sending is enabled for this runtime",
       "evidence": {
         "mail_send_enabled": true,
         "recipient_email": "linzezhang35@gmail.com",
-        "env_var": "SERENITY_MAIL_SEND_ENABLED"
+        "activation_hint": "--send-mail"
       }
     },
     {
@@ -148,8 +198,8 @@
       "message": "Scheduler artifacts present",
       "evidence": {
         "missing": [],
-        "plist": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/implementation/com.serenity.daily-analysis.plist",
-        "manifest": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/implementation/automation_manifest.json"
+        "plist": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Serenity-Alipay/outputs/implementation/com.serenity.daily-analysis.plist",
+        "manifest": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Serenity-Alipay/outputs/implementation/automation_manifest.json"
       }
     },
     {
@@ -158,10 +208,12 @@
       "severity": "info",
       "message": "Latest run is success/pass",
       "evidence": {
-        "run_id": "sda_20260613T094539Z_r7_31fb1cc3",
+        "run_id": "sda_20260629T092738Z_r10_0e1f8b98",
         "status": "success",
         "data_quality_status": "pass",
-        "report_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/reports/sda_20260613T094539Z_r7_31fb1cc3_report.md"
+        "report_path": "/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Serenity-Alipay/data/reports/sda_20260629T092738Z_r10_0e1f8b98_report.md",
+        "run_time_bj": "2026-06-29T17:30:00+08:00",
+        "created_at": "2026-06-29T09:27:38+00:00"
       }
     }
   ],

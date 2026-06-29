@@ -1,0 +1,95 @@
+# 功能清单
+
+## 摘要
+
+- 中文可读评分: `100/100`
+- 中文判定: `通过，首屏可直接读懂`
+- 评分口径: 本文件必须先回答 owner 最关心的三个问题：现在能不能交易、为什么不能进入实盘、下一步应该看哪里。英文路径、接口名、证据 ID 只作为证据锚点保留，不能取代中文解释。
+- 第一眼结论: Alpha 当前仍处在 Phase 6 观察期，只允许研究、回测、Paper/Shadow 和订单意图审核；真实下单没有开放，不能创建 `LIVE_AUTHORIZATION.json`。
+- Owner 最该看: 先看“当前速读”和“用户第一眼应看到的信息”，再看“已实现功能”确认系统能力，最后看“明确禁止或尚未完成”确认哪些动作绝对不能做。
+- Agent 接手规则: 新 agent 接手时必须优先维护这份中文功能清单，任何新增功能都要写清楚用户价值、交易影响、证据位置和安全边界，不能只写英文类名或抽象技术词。
+- 中文可读保障: 本文件要像产品状态页，不像代码索引。owner 打开后必须马上看到清楚结论：系统在运行、证据在累计、真实下单仍关闭、下一步继续观察。后面的英文技术标识只负责帮助定位代码和证据，不负责承载主要含义。
+- 维护红线: 如果新增功能让用户误以为已经可以真实交易，必须在同一段中文里写出限制和阻塞原因；如果证据还没有跑完，不能把“可用”写成“已上线实盘”。
+
+- project_id: `Alpha`
+- current_stage: `G6`
+- current_phase: `Phase 6`
+- current_task: `OWNER-GATE-01 前 48 小时 Paper/Shadow 观察`
+- evidence_status: `进行中，尚未 ready_for_owner_gate`
+- 中文验收: `用户可读优先；中文优先，默认全局中文；第一屏必须说明能不能交易、为什么不能进入实盘、下一步看哪里`
+- 当前结论: `Paper/Shadow 与 Shadow live 约束已通过；48 小时连续观察仍未完成；不得创建 LIVE_AUTHORIZATION.json`
+
+## 当前速读
+
+这张表是 owner 第一屏判断交易状态的入口。读完后应该能立刻知道：系统还不能实盘、原因是 48 小时连续观察未完成、下一步是继续累计证据并刷新 closeout 包。只要这里没有明确写成 ready_for_owner_gate，就不能把任何订单意图理解为真实下单指令。
+
+| 项目 | 当前值 |
+|---|---|
+| 项目名称 | Alpha |
+| 当前用途 | 本地优先的个人量化 agent workspace：研究、回测、paper trading、订单意图审核、证据包和 dashboard |
+| 当前最重要功能 | Phase 6 OWNER-GATE 证据收口与 dashboard 可视化 |
+| 当前可交易状态 | 只能 Paper/Shadow 和生成 owner-review 订单意图；不能自动实盘 |
+| 当前不能做 | 不能创建 `LIVE_AUTHORIZATION.json`，不能绕过 owner gate，不能让 agent 直接下真实订单 |
+| 当前关键 blocker | 48 小时连续 Paper/Shadow 观察未完成 |
+
+## 用户第一眼应看到的信息
+
+| 信息 | 应显示在哪里 | 当前状态 |
+|---|---|---|
+| 是否允许实盘 | `/health`、dashboard、closeout evidence | 必须显示为关闭 |
+| 是否有 live authorization | owner-gate status、evidence manifest | 必须显示为不存在 |
+| Paper/Shadow 是否通过 | dashboard Phase 6 面板、`paper_shadow_report_latest.json` | 已通过，需保持新鲜 |
+| Shadow live 约束是否通过 | dashboard Phase 6 面板、`shadow_live_constraints_latest.json` | 已通过，需保持新鲜 |
+| 48 小时观察进度 | dashboard Phase 6 面板、`soak_validation_latest.json` | 进行中 |
+| Owner 下一步选择 | `OWNER_DECISION.md` | A/B/C 决策页已生成，但还不能批准 MICRO_LIVE |
+
+## 已实现功能
+
+下面列出的功能只说明“系统已经具备什么能力”，不等于“允许真实交易”。每一行都必须把用户价值说清楚：它能帮 owner 更快看清状态、减少误操作、保留证据，或让 Paper/Shadow 更接近可审核流程。任何功能如果可能影响交易路径，都必须同时写出安全限制。
+
+| 功能 ID | 中文名称 | 当前状态 | 用户价值 | 主要证据 |
+|---|---|---|---|---|
+| FEAT-ALPHA-001 | 动量策略锦标赛与 fixture 基准 | 可用 | 用固定样本价格生成候选策略、风险排序、胜出策略和等权买入持有基准，便于比较策略表现。 | `tests/test_strategy_iteration.py`、`tests/test_backtest_fixture.py` |
+| FEAT-ALPHA-002 | 交易前风控与 owner-review 门禁 | 可用 | 在进入审批队列前检查 kill switch、幂等键、买卖方向、数量、价格、名义金额和单笔上限，拦截不安全订单意图。 | `tests/test_policy.py` |
+| FEAT-ALPHA-003 | 实盘 fail-closed 保护 | 可用 | 默认禁用实盘；即使策略或配置误触发，已提交 live broker adapter 也返回拒绝，不会提交真实订单。 | `tests/test_live_broker_fail_closed.py` |
+| FEAT-ALPHA-004 | Paper trading loop 与 paper broker | 可用 | 自动生成 paper order intent、执行 risk check、写入 broker-ready ticket、模拟成交并生成组合快照和审计 payload。 | `tests/test_paper_trading_loop.py`、`tests/test_paper_broker_persistence.py` |
+| FEAT-ALPHA-005 | 审批队列新鲜度 | 可用 | 区分 fresh、expired、blocked、unknown，让 dashboard 和 owner 知道哪些订单意图还能审核。 | `tests/test_approval_queue.py`、`tests/test_dashboard_state.py` |
+| FEAT-ALPHA-006 | Strategy DSL 安全边界 | 可用 | 校验策略输入的 lookback、持仓数量、单资产权重，并拒绝杠杆、做空、期权和加密提现等 MVP 禁止项。 | `tests/test_strategy_dsl.py` |
+| FEAT-ALPHA-007 | Phase 6 OWNER-GATE 证据包 | 可用但未 ready | 汇总 Paper/Shadow、Shadow live 约束、limit order contract、soak validation、manifest、closeout report 和 owner decision。 | `scripts/verify_phase6_evidence_package.py`、`docs/evidence/phase6_closeout_latest/` |
+| FEAT-ALPHA-008 | Dashboard 运行状态 | 可用 | 在网页中展示 agent 状态、交易状态、Phase 6 blocker、采样新鲜度、live authorization 缺席和剩余观察时间。 | `/dashboard`、`/dashboard/state`、`tests/test_dashboard_state.py` |
+| FEAT-ALPHA-009 | Phase 6 sampler 自动采集恢复 | 可用 | LaunchAgent 每 300 秒自动追加 Phase 6 样本；最新自动样本必须同时满足 Paper/Shadow pass、Shadow live pass、broker-ready limit order、live authorization 缺席。 | `runtime/phase6_soak_history.jsonl`、`scripts/check_phase6_owner_gate_status.py --require-fresh`、`tests/test_phase6_owner_gate.py` |
+
+## 明确禁止或尚未完成
+
+这一节是硬边界，不是建议。只要 Phase 6 未完成、owner gate 未通过、live authorization 不存在，Alpha 就不能从“订单意图”跳到“真实 broker mutation”。如果 dashboard、脚本、agent 输出和本节冲突，以本节和 AGENTS 安全规则为准，并且必须先停下来修正。
+
+| 项目 | 当前状态 | 原因 |
+|---|---|---|
+| Agent 自动真实下单 | 禁止 | 未过 OWNER-GATE-01，且当前规则要求默认关闭 live trading |
+| MICRO_LIVE | 未进入 | Phase 6 48 小时观察未完成，owner 未授权 |
+| 第三方资金管理 | 禁止 | 超出个人本地 workspace 范围 |
+| 杠杆、融资融券、做空、期权、CFD、加密提现 | 禁止 | MVP 安全边界明确排除 |
+| 公开个性化买卖建议 | 禁止 | Alpha 只服务 owner 本人，不做公开投顾 |
+
+## 证据索引
+
+| 证据 ID | 中文类型 | 引用 | 事实等级 |
+|---|---|---|---|
+| EVID-ALPHA-README | 项目说明 | `README.md` | 已提取 |
+| EVID-ALPHA-MODEL-SPEC | 模型与安全说明 | `docs/governance/MODEL_SPEC.md` | 已提取 |
+| EVID-ALPHA-PARAMETER-REGISTRY | 参数注册表 | `docs/governance/parameter_registry.csv` | 已提取 |
+| EVID-ALPHA-TRACEABILITY-MATRIX | 追溯矩阵 | `docs/governance/TRACEABILITY_MATRIX.csv` | 已提取 |
+| EVID-ALPHA-PHASE6-CLOSEOUT | Phase 6 closeout 证据包 | `docs/evidence/phase6_closeout_latest/` | 已提取 |
+| EVID-ALPHA-S3PBT01-ATOMIC | 本地原子写入证据 | `governance/stage_gates/s3pb/atomic_write_tests.log` | 已提取 |
+| EVID-ALPHA-S3PBT02-LIFECYCLE | Runtime 生命周期证据 | `governance/stage_gates/s3pb/shutdown_fault_tests.log` | 已提取 |
+| EVID-ALPHA-S3PBT03-FAULT | Shutdown 故障注入证据 | `governance/run_manifests/GOV-OTHER8-S3PBT03-ALPHA-SHUTDOWN-FAULTS-20260624.json` | 已提取 |
+
+## 用户操作入口
+
+| 入口 | 用途 |
+|---|---|
+| `http://127.0.0.1:8000/dashboard` | 查看 dashboard、agent 状态、Paper/Shadow 状态和 Phase 6 blocker |
+| `http://127.0.0.1:8000/health` | 快速确认服务运行、live trading 是否关闭、kill switch 是否激活 |
+| `docs/evidence/phase6_closeout_latest/OWNER_DECISION.md` | OWNER-GATE-01 决策页 |
+| `scripts/verify_phase6_evidence_package.py` | 校验 closeout 证据包是否一致 |
+| `scripts/finalize_phase6_owner_gate_if_ready.py` | 只读收口命令；未满 48 小时时返回 not ready |

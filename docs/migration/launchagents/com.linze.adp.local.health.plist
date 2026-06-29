@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>com.linze.adp.local.health</string>
+	<key>Disabled</key>
+	<false/>
+	<key>StartCalendarInterval</key>
+	<dict>
+		<key>Hour</key>
+		<integer>4</integer>
+		<key>Minute</key>
+		<integer>45</integer>
+	</dict>
+	<key>RunAtLoad</key>
+	<false/>
+	<key>StandardOutPath</key>
+	<string>/tmp/adp-local-health.out</string>
+	<key>StandardErrorPath</key>
+	<string>/tmp/adp-local-health.err</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/bin/zsh</string>
+		<string>-lc</string>
+		<string>env_file="${ADP_LOCAL_ENV_FILE:-$HOME/.config/arxiv-daily-push/local-runner.env}"; if [ -f "$env_file" ]; then set -a; . "$env_file"; set +a; fi; cert_file="/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/certifi/cacert.pem"; if [ -f "$cert_file" ]; then export SSL_CERT_FILE="$cert_file"; fi; mkdir -p /Users/linzezhang/.adp/arxiv-daily-push/health; cd /Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject &amp;&amp; PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push local-runner preflight --project-root /Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/arxiv-daily-push --state-dir /Users/linzezhang/.adp/arxiv-daily-push --generated-at "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" --require-smtp --json &gt; /Users/linzezhang/.adp/arxiv-daily-push/health/latest-preflight.json</string>
+	</array>
+</dict>
+</plist>

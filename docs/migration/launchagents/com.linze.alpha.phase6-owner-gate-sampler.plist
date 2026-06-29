@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>EnvironmentVariables</key>
+	<dict>
+		<key>ALPHA_LAUNCHD</key>
+		<string>1</string>
+		<key>HOME</key>
+		<string>/Users/linzezhang</string>
+		<key>PATH</key>
+		<string>/Users/linzezhang/.local/bin:/Users/linzezhang/.npm-global/bin:/Library/Frameworks/Python.framework/Versions/3.13/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/opt/homebrew/bin:/Users/linzezhang/.codex/tmp/arg0/codex-arg0RBTsDT:/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin:/Users/linzezhang/.railway/bin:/Users/linzezhang/.npm-global/bin:/opt/anaconda3/bin:/opt/anaconda3/condabin:/Users/linzezhang/.local/bin:/Library/Frameworks/Python.framework/Versions/3.13/bin:/Applications/Codex.app/Contents/Resources</string>
+		<key>PYTHONPATH</key>
+		<string>/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Alpha</string>
+	</dict>
+	<key>Label</key>
+	<string>com.linze.alpha.phase6-owner-gate-sampler</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/bin/zsh</string>
+		<string>-lc</string>
+		<string>cd /Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Alpha &amp;&amp; exec /Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Alpha/.venv/bin/python /Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Alpha/scripts/build_phase6_owner_gate_evidence.py --sample-count 1 --evidence-root /Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Alpha/runtime/phase6_owner_gate_latest</string>
+	</array>
+	<key>RunAtLoad</key>
+	<true/>
+	<key>StandardErrorPath</key>
+	<string>/Users/linzezhang/Library/Logs/Alpha/phase6_owner_gate_sampler.err.log</string>
+	<key>StandardOutPath</key>
+	<string>/Users/linzezhang/Library/Logs/Alpha/phase6_owner_gate_sampler.out.log</string>
+	<key>StartInterval</key>
+	<integer>300</integer>
+	<key>WorkingDirectory</key>
+	<string>/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Alpha</string>
+</dict>
+</plist>

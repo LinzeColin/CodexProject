@@ -7,7 +7,11 @@ from pathlib import Path
 from app.adapters.mail_notifier import send_with_apple_mail, write_mail_ready_draft
 from app.adapters.macos_notifier import send_local_notification, write_local_notification_script
 from app.config import Settings
-from app.core.mail_policy import should_send_mail_for_run, suppressed_no_material_change_message
+from app.core.mail_policy import (
+    build_action_signature,
+    decide_mail_send_for_run,
+    suppressed_mail_message,
+)
 from app.core.reporting import (
     _notification_deadline,
     _notification_next_step,
@@ -196,16 +200,35 @@ def notify_run(
     rendered = render_notification_for_run(settings, run_id)
     send_status = "drafted"
     error = None
+    suppress_reason = None
+    related_run_id = None
+    notification_rows = _notification_recommendations(settings, run_id)
+    run_quality = _run_quality(settings, run_id)
+    run_time_bj = _run_time_bj(settings, run_id)
+    execution_locked = run_quality != "pass"
+    signature = build_action_signature(
+        rendered.severity,
+        notification_rows,
+        run_time_bj=run_time_bj,
+        data_quality_status=run_quality,
+        execution_locked=execution_locked,
+    )
     if send_mail and not dry_run:
-        notification_rows = _notification_recommendations(settings, run_id)
-        should_send_mail = should_send_mail_for_run(
-            rendered.severity,
-            notification_rows,
-            data_quality_status=_run_quality(settings, run_id),
-        )
-        if not should_send_mail:
-            send_status = "suppressed_no_material_change"
-            error = suppressed_no_material_change_message()
+        with connect(settings.db_path) as conn:
+            mail_decision = decide_mail_send_for_run(
+                conn,
+                severity=rendered.severity,
+                recommendations=notification_rows,
+                run_time_bj=run_time_bj,
+                data_quality_status=run_quality,
+                execution_locked=execution_locked,
+            )
+        signature_hash = mail_decision.action_signature_hash
+        if not mail_decision.should_send:
+            send_status = "suppressed"
+            suppress_reason = mail_decision.suppress_reason
+            related_run_id = mail_decision.related_run_id
+            error = suppressed_mail_message(suppress_reason)
         elif settings.mail_send_enabled:
             result = send_with_apple_mail(
                 rendered.title,
@@ -218,6 +241,14 @@ def notify_run(
         else:
             send_status = "blocked_by_config"
             error = "SERENITY_MAIL_SEND_ENABLED is false"
+        signature_text = mail_decision.action_signature
+        notification_kind = mail_decision.notification_kind
+        beijing_date = mail_decision.beijing_date
+    else:
+        signature_text = signature.text
+        signature_hash = signature.hash
+        notification_kind = signature.notification_kind
+        beijing_date = signature.beijing_date
     local_status = "scripted"
     local_error = None
     if local and not dry_run:
@@ -235,9 +266,14 @@ def notify_run(
             """
             INSERT OR REPLACE INTO notification_log (
               notification_id, run_id, channel, severity, title, body_path,
-              send_status, sent_at, error_message
+              send_status, sent_at, error_message,
+              action_signature, action_signature_hash, notification_kind,
+              beijing_date, suppress_reason, related_run_id, created_at
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, CASE WHEN ? THEN datetime('now') ELSE NULL END, ?)
+            VALUES (
+              ?, ?, ?, ?, ?, ?, ?, CASE WHEN ? THEN datetime('now') ELSE NULL END, ?,
+              ?, ?, ?, ?, ?, ?, datetime('now')
+            )
             """,
             (
                 notification_id,
@@ -249,6 +285,12 @@ def notify_run(
                 send_status if local_status == "scripted" else f"{send_status};local={local_status}",
                 0 if dry_run or send_status != "sent" else 1,
                 error or local_error,
+                signature_text,
+                signature_hash,
+                notification_kind,
+                beijing_date,
+                suppress_reason,
+                related_run_id,
             ),
         )
         if not dry_run:
@@ -266,6 +308,9 @@ def notify_run(
         "local_script_path": str(rendered.local_script_path),
         "send_status": send_status,
         "local_status": local_status,
+        "notification_kind": notification_kind,
+        "suppress_reason": suppress_reason,
+        "action_signature_hash": signature_hash,
         "error": error or local_error,
     }
 
@@ -274,6 +319,12 @@ def _run_quality(settings: Settings, run_id: str) -> str:
     with connect(settings.db_path) as conn:
         row = conn.execute("SELECT data_quality_status FROM run_log WHERE run_id=?", (run_id,)).fetchone()
     return str(row["data_quality_status"]) if row else "missing"
+
+
+def _run_time_bj(settings: Settings, run_id: str) -> str | None:
+    with connect(settings.db_path) as conn:
+        row = conn.execute("SELECT run_time_bj FROM run_log WHERE run_id=?", (run_id,)).fetchone()
+    return str(row["run_time_bj"]) if row else None
 
 
 def _notification_recommendations(settings: Settings, run_id: str) -> list[dict[str, object]]:

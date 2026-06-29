@@ -1,0 +1,50 @@
+{
+  "project": "KMFA",
+  "stage": "S01",
+  "phase": "S01-P2",
+  "phase_name": "项目骨架与中文入口",
+  "updated_at": "2026-06-29",
+  "status": "COMPLETE_FOR_PHASE_VALIDATED",
+  "scope": {
+    "included": [
+      "KMFA project root skeleton",
+      "Chinese human entries",
+      "Lean v2 project governance draft",
+      "v1 compatible governance files",
+      "metadata draft",
+      "root README project row",
+      "governance/projects.yaml registration",
+      "S01-P1 evidence migration"
+    ],
+    "excluded": [
+      "business import implementation",
+      "amount normalization implementation",
+      "zero-delta formal validator",
+      "UI",
+      "business report generation",
+      "external system connectors",
+      "GitHub upload"
+    ]
+  },
+  "validation": [
+    {
+      "command": "python3 scripts/lean_governance.py validate --project KMFA",
+      "result": "PASS",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --project KMFA",
+      "result": "PASS",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "command": "git diff --check -- README.md governance/projects.yaml KMFA",
+      "result": "PASS"
+    }
+  ],
+  "next_phase": "S01-P3",
+  "github_upload_allowed": false,
+  "stage_review_required_before_upload": true
+}

@@ -45,6 +45,7 @@ resolve to this checkout.
 | `OpMe_System` | `OpMe_System` | https://github.com/LinzeColin/OpMe_System |
 | `OpenAIDatabase` | `OpenAIDatabase` | https://github.com/LinzeColin/CodexProject/tree/main/OpenAIDatabase |
 | `MetaDatabase` | `MetaDatabase` | https://github.com/LinzeColin/CodexProject/tree/main/MetaDatabase |
+| `KMFA` | `KMFA` | https://github.com/LinzeColin/CodexProject/tree/main/KMFA |
 | `PFI` | `PFI` | https://github.com/LinzeColin/CodexProject/tree/main/PFI |
 | `QBVS` | `QBVS` | https://github.com/LinzeColin/CodexProject/tree/main/QBVS |
 | `Serenity-Alipay` | `Serenity-Alipay` | https://github.com/LinzeColin/Serenity-Alipay |
