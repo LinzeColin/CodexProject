@@ -8,9 +8,9 @@
 - version: `0.1.0-s02p3`
 - current_stage: `S02`
 - current_phase: `S02-P3`
-- status: `s02_p3_completed_validated_pending_stage_review`
+- status: `s02_stage_review_passed_upload_ready`
 - production_ready: `false`
-- github_upload_ready: `false_pending_stage2_review`
+- github_upload_ready: `true_pending_push`
 
 ## 已完成
 
@@ -23,13 +23,14 @@
 - S02-P1 metadata 目录协议完成：七类 metadata 目录、核心标识符规则、公开仓库隐私边界和协议检查器。
 - S02-P2 不可污染原则完成：raw manifest append-only 规范、派生版本失效/重跑/对比协议、前端 raw 写入边界和检查器。
 - S02-P3 数据质量等级完成：Q0-Q5 数据质量等级、A/B/C/D 报告可信等级、报告发布门禁和检查器。
+- Stage 2 整体复审通过：`KMFA/stage_artifacts/S02_STAGE_REVIEW/`。
 
 ## 未完成
 
-- Stage 2 整体复审、复审问题修复和 GitHub 上传尚未执行。
+- Stage 2 GitHub 上传尚未执行。
 
 ## 阻塞条件
 
 - 不能把 Stage 1 治理基线当成业务 MVP。
 - 不能上传原始敏感经营数据。
-- 中间 Phase 不上传 GitHub；S02 完成复审修复后再整体上传。
+- 中间 Phase 不上传 GitHub；S02 复审已通过，当前可整体上传。

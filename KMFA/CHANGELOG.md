@@ -7,7 +7,7 @@
 - 新增 `A/B/C/D` 报告可信等级协议，要求 A 级报告必须满足 `Q5`、zero-delta、关键差异关闭和人工确认。
 - 新增报告发布门禁，缺少门禁证据时默认阻断发布或降级。
 - 新增 `KMFA/tools/check_report_grade_gate.py`，验证质量等级、报告等级和发布权限映射。
-- S02 三个 Phase 已完成；仍需 Stage 2 整体复审、修复问题后再上传 GitHub。
+- S02 三个 Phase 已完成；Stage 2 整体复审已通过，进入 GitHub 上传步骤。
 
 ## 0.1.0-s02p2 - 2026-06-29
 

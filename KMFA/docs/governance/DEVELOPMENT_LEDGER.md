@@ -8,7 +8,7 @@ product_version: 0.1.0-s02p3
 - current_stage: `S02`
 - current_phase: `S02-P3`
 - current_tasks: `S2PCT01`, `S2PCT02`, `S2PCT03`
-- status: `s02_p3_completed_validated_pending_stage_review`
+- status: `s02_stage_review_passed_upload_ready`
 - risk_tier: `T3`
 
 ## Completed
@@ -32,11 +32,11 @@ product_version: 0.1.0-s02p3
 | `S2PCT01` | Q0-Q5 数据质量等级定义建立 | `KMFA/docs/governance/QUALITY_GATE_POLICY.md`, `KMFA/metadata/quality/quality_grade_policy.yaml` |
 | `S2PCT02` | A/B/C/D 报告可信等级定义建立 | `KMFA/metadata/reports/report_grade_policy.yaml`, `KMFA/metadata/reports/report_manifest.jsonl` |
 | `S2PCT03` | 质量等级到报告发布权限门禁建立 | `KMFA/metadata/reports/report_release_gate.yaml`, `KMFA/tools/check_report_grade_gate.py` |
+| `KMFA-S02-STAGE-REVIEW-20260629` | Stage 2 整体复审通过，上传路径可用 | `KMFA/stage_artifacts/S02_STAGE_REVIEW/human/stage2_review_report.md` |
 
 ## Not Completed
 
 | Task | Reason | Next |
 |---|---|---|
 | `S04/S06` amount and zero-delta implementation | 后续 Stage | 按 Roadmap 单 Stage/Phase 推进 |
-| Stage 2 review | S02-P1/P2/P3 已完成但尚未复审 | 下一轮执行 Stage 2 整体复审 |
-| Stage 2 GitHub upload | Stage 2 复审和复审问题修复未完成 | Stage 2 复审修复后整体上传 |
+| Stage 2 GitHub upload | Stage 2 复审已通过但尚未 push | 当前收口整体上传 |

@@ -277,7 +277,7 @@ stages:
   - stage_id: "S2"
     name: "数据治理内核与metadata协议"
     person_goal: "建立不可污染、可追溯、可重跑、可审计的数据治理内核。"
-    status: "completed_pending_stage_review"
+    status: "review_passed_upload_ready"
     estimated_hours: 9
     estimated_pct: 100
     stop_conditions:
@@ -298,6 +298,7 @@ stages:
         - "KMFA/stage_artifacts/S02_P1_metadata_protocol/human/s02_p1_completion_record.md"
         - "KMFA/stage_artifacts/S02_P2_immutability_policy/human/s02_p2_completion_record.md"
         - "KMFA/stage_artifacts/S02_P3_quality_gate/human/s02_p3_completion_record.md"
+        - "KMFA/stage_artifacts/S02_STAGE_REVIEW/human/stage2_review_report.md"
         - "KMFA/docs/governance/METADATA_PROTOCOL.md"
         - "KMFA/docs/governance/IMMUTABILITY_POLICY.md"
         - "KMFA/docs/governance/QUALITY_GATE_POLICY.md"
