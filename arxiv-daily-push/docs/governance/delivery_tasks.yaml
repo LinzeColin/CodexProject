@@ -4859,3 +4859,24 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PLT02-REAL-PROOF-CAPTURE-READINESS"
+    title: "S2PLT02 real-proof capture readiness"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-29T17:41:57+10:00"
+    summary: "Fail-close S2PLT02 real SMTP/scheduler proof capture until explicit owner authorization, second real M1-M4 SMTP day, real scheduler proof, and terminal proof artifact exist."
+    owner: "content_owner + engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_READINESS.md", "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-20260629.json"]
+    acceptance_ids: ["ACC-S2PLT02-2D", "ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_realproof_target PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_cli.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_realproof_cli_final PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli audit-s2plt02-real-proof-capture-readiness --repo-root . --state-dir /Users/linzezhang/.adp/arxiv-daily-push --service-date 2026-06-29 --json"]
+    test_results: ["focused final-gate and CLI tests cover blocked readiness", "real local CLI returns blocked / exit 2 with state_hash=819b1c3911892ce861fd5ba5bdde0dc381e303076beea684f35eb94c75975463"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-20260629.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_READINESS.md", "FINAL_ACCEPTANCE_BUNDLE/s2plt01_terminal_acceptance.json", "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json", "governance/run_manifests/ADP-S2PLT02-DRY-RUN-SECOND-DAY-AUDIT-20260629.json", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py"]
+    result: "blocked_real_proof_capture_readiness_no_authorization_no_production"
+    risk: "The gate can be misread as permission to run real SMTP/scheduler proof capture; keep safe_to_collect_terminal_proof=false until explicit owner authorization and terminal proof evidence exist."
+    rollback: "Revert readiness code, CLI, focused tests, registry rows, phase record, manifest, traceability row, delivery/event records, generated views, and three base records; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

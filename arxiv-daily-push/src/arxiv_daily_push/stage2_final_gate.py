@@ -876,6 +876,29 @@ S2PLT02_DRY_RUN_SECOND_DAY_AUDIT_NO_PRODUCTION_FLAGS = (
     "v7_1_baseline_changed",
     "v7_2_contract_files_changed",
 )
+S2PLT02_REAL_PROOF_CAPTURE_READINESS_MODEL_ID = "adp-s2plt02-real-proof-capture-readiness-v1"
+S2PLT02_REAL_PROOF_CAPTURE_READINESS_SCOPE = (
+    "real_second_day_smtp_scheduler_capture_readiness_no_production_enablement"
+)
+S2PLT02_REAL_PROOF_CAPTURE_READINESS_REQUIRED_NEXT_ACTIONS = (
+    "obtain_explicit_owner_authorization_for_real_smtp_scheduler",
+    "capture_second_consecutive_real_m1_m4_smtp_day",
+    "capture_real_launchd_scheduler_proof",
+    "write_and_validate_s2plt02_terminal_delivery_proof_artifact",
+)
+S2PLT02_REAL_PROOF_CAPTURE_READINESS_NO_PRODUCTION_FLAGS = (
+    "production_acceptance_claimed",
+    "integrated_production_accepted",
+    "stage2_integrated_production_accepted",
+    "daily_operation_enabled",
+    "real_smtp_send_enabled",
+    "scheduler_install_enabled",
+    "release_packaging_enabled",
+    "production_restore_enabled",
+    "current_pointer_changed",
+    "v7_1_baseline_changed",
+    "v7_2_contract_files_changed",
+)
 S2PLT02_M4_WATERMARK_FORBIDDEN_SOURCE_FLAGS = (
     "integrated_production_accepted",
     "stage2_integrated_production_accepted",
@@ -1445,6 +1468,162 @@ def validate_s2plt02_dry_run_second_day_audit_state(state: Mapping[str, Any]) ->
     expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
     if state.get("state_hash") != expected_hash:
         errors.append("S2PLT02 dry-run second-day audit state_hash does not match state content")
+    return errors
+
+
+def build_s2plt02_real_proof_capture_readiness_state(
+    *,
+    repo_root: str | Path = ".",
+    state_dir: str | Path | None = None,
+    service_date: str = S2PLT02_DRY_RUN_SECOND_DAY_AUDIT_SERVICE_DATE,
+    launchctl_disabled_text: str = "",
+) -> dict[str, Any]:
+    """Build the no-production gate before any real S2PLT02 proof capture can be accepted."""
+
+    launchd_states = _parse_launchd_disabled_states(launchctl_disabled_text)
+    required_labels = S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS
+    launchagent_disabled_states = {
+        label: launchd_states.get(label, "missing")
+        for label in required_labels
+    }
+    validation_errors = [
+        f"launchagent_state_unknown:{label}"
+        for label, state in launchagent_disabled_states.items()
+        if state == "missing"
+    ]
+    all_required_launchagents_disabled = all(
+        state == "disabled" for state in launchagent_disabled_states.values()
+    )
+
+    dry_run_audit = build_s2plt02_dry_run_second_day_audit_state(
+        state_dir=state_dir,
+        service_date=service_date,
+    )
+    delivery_ledger = build_s2plt02_delivery_evidence_ledger_state()
+    terminal_proof = build_s2plt02_terminal_delivery_proof_artifact_validation_state(repo_root=repo_root)
+    terminal_gates = _mapping(terminal_proof.get("terminal_gates"))
+    second_real_delivery_day_present = (
+        terminal_gates.get("two_consecutive_real_days") is True
+        and terminal_gates.get("eight_real_emails_sent") is True
+        and delivery_ledger.get("two_day_delivery_evidence_present") is True
+    )
+    real_scheduler_proven = terminal_gates.get("real_scheduler_proven") is True
+    terminal_delivery_proof_artifact_present = terminal_proof.get("artifact_present") is True
+
+    blocking_reasons: list[str] = ["real_proof_capture_authorization_missing"]
+    if validation_errors:
+        blocking_reasons.append("required_launchagent_state_unknown")
+    if all_required_launchagents_disabled:
+        blocking_reasons.append("required_launchagents_disabled")
+    else:
+        blocking_reasons.append("required_launchagents_not_all_disabled")
+    if not second_real_delivery_day_present:
+        blocking_reasons.append("second_real_delivery_day_missing")
+    if dry_run_audit.get("dry_run_evidence_present") is True:
+        blocking_reasons.append("dry_run_second_day_not_terminal")
+    if not terminal_delivery_proof_artifact_present:
+        blocking_reasons.append("s2plt02_terminal_delivery_proof_artifact_missing")
+    if not real_scheduler_proven:
+        blocking_reasons.append("real_scheduler_not_proven")
+
+    state = {
+        "model_id": S2PLT02_REAL_PROOF_CAPTURE_READINESS_MODEL_ID,
+        "schema_version": S2PLT02_SCHEMA_VERSION,
+        "task_id": "S2PLT02-REAL-PROOF-CAPTURE-READINESS",
+        "parent_task_id": S2PLT02_TASK_ID,
+        "acceptance_id": S2PLT02_ACCEPTANCE_ID,
+        "status": "blocked",
+        "scope": S2PLT02_REAL_PROOF_CAPTURE_READINESS_SCOPE,
+        "service_date": service_date,
+        "required_launchagent_labels": list(required_labels),
+        "launchagent_disabled_states": launchagent_disabled_states,
+        "all_required_launchagents_disabled": all_required_launchagents_disabled,
+        "real_proof_capture_authorized": False,
+        "safe_to_collect_terminal_proof": False,
+        "second_real_delivery_day_present": second_real_delivery_day_present,
+        "terminal_delivery_proof_artifact_present": terminal_delivery_proof_artifact_present,
+        "real_scheduler_proven": real_scheduler_proven,
+        "dry_run_second_day_audit": dry_run_audit,
+        "delivery_evidence_ledger": delivery_ledger,
+        "terminal_delivery_proof_validation": terminal_proof,
+        "required_next_actions": list(S2PLT02_REAL_PROOF_CAPTURE_READINESS_REQUIRED_NEXT_ACTIONS),
+        "validation_errors": validation_errors,
+        "blocking_reasons": blocking_reasons,
+        "production_acceptance_claimed": False,
+        "integrated_production_accepted": False,
+        "stage2_integrated_production_accepted": False,
+        "daily_operation_enabled": False,
+        "real_smtp_send_enabled": False,
+        "scheduler_install_enabled": False,
+        "release_packaging_enabled": False,
+        "production_restore_enabled": False,
+        "current_pointer_changed": False,
+        "v7_1_baseline_changed": False,
+        "v7_2_contract_files_changed": False,
+        "state_hash": "",
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
+def validate_s2plt02_real_proof_capture_readiness_state(state: Mapping[str, Any]) -> list[str]:
+    """Validate the S2PLT02 real-proof capture readiness gate."""
+
+    errors: list[str] = []
+    if state.get("model_id") != S2PLT02_REAL_PROOF_CAPTURE_READINESS_MODEL_ID:
+        errors.append("S2PLT02 real-proof capture readiness model_id is invalid")
+    if state.get("schema_version") != S2PLT02_SCHEMA_VERSION:
+        errors.append("S2PLT02 real-proof capture readiness schema_version must be 1")
+    if state.get("task_id") != "S2PLT02-REAL-PROOF-CAPTURE-READINESS":
+        errors.append("S2PLT02 real-proof capture readiness task_id is invalid")
+    if state.get("acceptance_id") != S2PLT02_ACCEPTANCE_ID:
+        errors.append("S2PLT02 real-proof capture readiness acceptance_id is invalid")
+    if state.get("status") != "blocked":
+        errors.append("S2PLT02 real-proof capture readiness must stay blocked")
+    if state.get("scope") != S2PLT02_REAL_PROOF_CAPTURE_READINESS_SCOPE:
+        errors.append("S2PLT02 real-proof capture readiness scope is invalid")
+    if tuple(state.get("required_launchagent_labels", [])) != S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS:
+        errors.append("S2PLT02 real-proof capture readiness required launchagents are invalid")
+    if tuple(state.get("required_next_actions", [])) != S2PLT02_REAL_PROOF_CAPTURE_READINESS_REQUIRED_NEXT_ACTIONS:
+        errors.append("S2PLT02 real-proof capture readiness next actions are invalid")
+    for field in (
+        "real_proof_capture_authorized",
+        "safe_to_collect_terminal_proof",
+    ):
+        if state.get(field) is not False:
+            errors.append(f"{field} must be false until explicit owner authorization and terminal evidence exist")
+    for reason in (
+        "real_proof_capture_authorization_missing",
+        "second_real_delivery_day_missing",
+        "s2plt02_terminal_delivery_proof_artifact_missing",
+        "real_scheduler_not_proven",
+    ):
+        if reason not in state.get("blocking_reasons", []):
+            errors.append(f"{reason} blocker is required")
+    if (
+        state.get("all_required_launchagents_disabled") is True
+        and "required_launchagents_disabled" not in state.get("blocking_reasons", [])
+    ):
+        errors.append("required_launchagents_disabled blocker is required")
+    if state.get("all_required_launchagents_disabled") is False and not (
+        "required_launchagents_not_all_disabled" in state.get("blocking_reasons", [])
+        or "required_launchagent_state_unknown" in state.get("blocking_reasons", [])
+    ):
+        errors.append("launchagent state blocker is required")
+    dry_run_evidence_present = _mapping(state.get("dry_run_second_day_audit")).get(
+        "dry_run_evidence_present"
+    )
+    if (
+        dry_run_evidence_present is True
+        and "dry_run_second_day_not_terminal" not in state.get("blocking_reasons", [])
+    ):
+        errors.append("dry_run_second_day_not_terminal blocker is required")
+    for flag in S2PLT02_REAL_PROOF_CAPTURE_READINESS_NO_PRODUCTION_FLAGS:
+        if state.get(flag) is not False:
+            errors.append(f"{flag} must be false")
+    expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    if state.get("state_hash") != expected_hash:
+        errors.append("S2PLT02 real-proof capture readiness state_hash does not match state content")
     return errors
 
 

@@ -21,12 +21,21 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 267
+- task_count: 268
 - acceptance_count: 127
 
 ## Delivery Tasks
 
 The machine-readable task source is `delivery_tasks.yaml`.
+
+## 2026-06-29 17:41:57 Australia/Sydney - S2PLT02 Real-Proof Capture Readiness
+
+- `S2PLT02-REAL-PROOF-CAPTURE-READINESS` records that real S2PLT02 proof capture is not yet authorized and is not safe to treat as terminal evidence.
+- Current readiness remains `blocked` / exit 2 with `safe_to_collect_terminal_proof=false`, `real_proof_capture_authorized=false`, `all_required_launchagents_disabled=true`, `second_real_delivery_day_present=false`, `terminal_delivery_proof_artifact_present=false`, and `real_scheduler_proven=false`.
+- Current readiness state hash is `819b1c3911892ce861fd5ba5bdde0dc381e303076beea684f35eb94c75975463`.
+- Remaining blockers: `real_proof_capture_authorization_missing`, `required_launchagents_disabled`, `second_real_delivery_day_missing`, `dry_run_second_day_not_terminal`, `s2plt02_terminal_delivery_proof_artifact_missing`, and `real_scheduler_not_proven`.
+- Evidence: `governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-20260629.json` and `arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_READINESS.md`.
+- S2PLT01 terminal acceptance and P0/P1 zero-proof are validated inputs, but this does not enable SMTP, scheduler, Release, restore, schema/DB, source/ranking, CURRENT/V7, DAILY_OPERATION, S2PLT02/S2PLT03/S2PLT04/S2PMT07 acceptance, final bundle acceptance, or integrated production acceptance.
 
 ## 2026-06-29 16:33:19 Australia/Sydney - S2PLT02 Dry-Run Second-Day Audit
 
