@@ -26,3 +26,9 @@ Set `PFI_HOME` before launching if a future agent moves the local checkout.
 ```bash
 ./scripts/installPFIEntryApps.sh
 ```
+
+For Stage 1 entry verification that only refreshes the Downloads launcher:
+
+```bash
+./scripts/installPFIEntryApps.sh --downloads-only
+```

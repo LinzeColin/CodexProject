@@ -1,6 +1,22 @@
 const CONTEXT_STORAGE_KEY = "pfi-context-v2";
 const RUNTIME_CONFIG = readRuntimeConfig();
 const PFI_RUNTIME_API_BASE_URL = RUNTIME_CONFIG.apiBaseUrl || "http://127.0.0.1:8766";
+const PFI_STAGE1_ENTRY_METADATA = Object.freeze({
+  schema: RUNTIME_CONFIG.schema || "PFIV023Stage1RuntimeMetadataV1",
+  pfiVersion: RUNTIME_CONFIG.pfiVersion || document.body?.dataset.pfiVersion || "v0.2.3",
+  appVersion: RUNTIME_CONFIG.appVersion || document.body?.dataset.pfiAppVersion || "0.2.3",
+  buildId: RUNTIME_CONFIG.buildId || document.body?.dataset.pfiBuildId || "20260629-stage1",
+  bundleVersion: RUNTIME_CONFIG.bundleVersion || "20260629.1",
+  uiContractVersion:
+    RUNTIME_CONFIG.uiContractVersion ||
+    document.body?.dataset.pfiUiContractVersion ||
+    "PFI-V023-STAGE1-APP-ENTRY-BUNDLE-CONSISTENCY",
+  stage: RUNTIME_CONFIG.stage || document.body?.dataset.pfiStage || "Stage 1",
+  webBundleHash: RUNTIME_CONFIG.webBundleHash || "",
+  webIndexSha256: RUNTIME_CONFIG.webIndexSha256 || "",
+  shellJsSha256: RUNTIME_CONFIG.shellJsSha256 || "",
+});
+window.PFI_STAGE1_ENTRY_METADATA = PFI_STAGE1_ENTRY_METADATA;
 const FEEDBACK_SLA_MS = {
   instant: 100,
   skeleton: 300,

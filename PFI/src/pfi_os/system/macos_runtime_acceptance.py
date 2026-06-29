@@ -11,7 +11,7 @@ from urllib.request import urlopen
 
 from pfi_os.config import PROJECT_ROOT
 from pfi_os.storage import atomic_write_json
-from pfi_os.system.macos_acceptance import build_macos_app_acceptance_lite
+from pfi_os.system.macos_acceptance import AppTarget, build_macos_app_acceptance_lite
 
 
 MACOS_RUNTIME_ACCEPTANCE_SCHEMA = "PFIOSMacOSRuntimeAcceptanceV1"
@@ -38,7 +38,7 @@ def run_macos_runtime_acceptance(
     started_process: subprocess.Popen[str] | None = None
     started_by_acceptance = False
 
-    app_acceptance = _app_acceptance_summary(root) if include_app_acceptance else {"status": "Skipped"}
+    app_acceptance = _app_acceptance_summary(root, app_path=app_path if method == "app" else None) if include_app_acceptance else {"status": "Skipped"}
     if include_app_acceptance:
         checks.append(_app_acceptance_check(app_acceptance))
 
@@ -209,12 +209,16 @@ def _payload(
     }
 
 
-def _app_acceptance_summary(root: Path) -> dict[str, Any]:
+def _app_acceptance_summary(root: Path, *, app_path: Path | str | None = None) -> dict[str, Any]:
     attempts = []
     payload: dict[str, Any] = {}
+    app_targets = None
+    if app_path is not None:
+        app_targets = (AppTarget("Requested App", Path(app_path).expanduser()),)
     for attempt in range(APP_ACCEPTANCE_RETRY_COUNT + 1):
         payload = build_macos_app_acceptance_lite(
             project_root=root,
+            app_targets=app_targets,
             run_status_script=False,
             dry_run_timeout_seconds=APP_ACCEPTANCE_DRY_RUN_TIMEOUT_SECONDS,
         )

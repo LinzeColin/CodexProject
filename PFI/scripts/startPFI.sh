@@ -13,6 +13,7 @@ export PFI_UI_V2="${PFI_UI_V2:-1}"
 PYTHON_BIN="$(pfi_os_ensure_app_python "$PROJECT_DIR")"
 LOG_DIR="$PROJECT_DIR/data/cache"
 LOG_FILE="$LOG_DIR/pfi_streamlit.log"
+PFI_VERSION_QUERY="pfi_app_version=0.2.3&pfi_build=20260629-stage1&pfi_ui_contract=PFI-V023-STAGE1-APP-ENTRY-BUNDLE-CONSISTENCY"
 mkdir -p "$LOG_DIR"
 
 process_cwd() {
@@ -39,7 +40,7 @@ service_url_if_current_project() {
 }
 
 if URL="$(service_url_if_current_project)"; then
-  OPEN_URL="$URL/?pfi_app_version=0.2.1.1&pfi_build=20260629"
+  OPEN_URL="$URL/?$PFI_VERSION_QUERY"
   echo "PFI 已在运行：$URL"
   if [[ -t 1 && "${PFI_START_OPEN_BROWSER:-1}" == "1" ]]; then
     open "$OPEN_URL" >/dev/null 2>&1 || true
@@ -53,7 +54,7 @@ while lsof -iTCP:"$PORT" -sTCP:LISTEN >/dev/null 2>&1; do
 done
 
 URL="http://localhost:$PORT"
-OPEN_URL="$URL/?pfi_app_version=0.2.1.1&pfi_build=20260629"
+OPEN_URL="$URL/?$PFI_VERSION_QUERY"
 echo "正在启动 PFI：$URL"
 echo "研究和回测专用；禁止实盘自动下单、券商提交、支付或无人值守执行。"
 

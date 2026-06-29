@@ -4,6 +4,7 @@ set -euo pipefail
 SCRIPT_DIR="${0:A:h}"
 PROJECT_DIR="${SCRIPT_DIR:h}"
 cd "$PROJECT_DIR"
+source "$PROJECT_DIR/scripts/pfiRuntime.sh"
 
 process_cwd() {
   local pid="$1"
@@ -50,7 +51,11 @@ if [[ "$DRY_RUN" == "0" ]] && pfi_os_is_running; then
   exit 2
 fi
 
-PYTHON_BIN="${PFI_CLEANUP_PYTHON:-${PFI_PYTHON:-${PFI_PYTHON:-python3}}}"
+if [[ -n "${PFI_CLEANUP_PYTHON:-}" ]]; then
+  PYTHON_BIN="$PFI_CLEANUP_PYTHON"
+else
+  PYTHON_BIN="$(pfi_os_ensure_app_python "$PROJECT_DIR")"
+fi
 export PYTHONDONTWRITEBYTECODE=1
 export PYTHONPYCACHEPREFIX="${PYTHONPYCACHEPREFIX:-/private/tmp/pfi_os-pycache}"
 ARGS=(--root "$PROJECT_DIR")

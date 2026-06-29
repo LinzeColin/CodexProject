@@ -1,11 +1,27 @@
 from __future__ import annotations
 
+import hashlib
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
 
 version = "v0.2.3"
+app_version = "0.2.3"
+stage1_build_id = "20260629-stage1"
+stage1_bundle_version = "20260629.1"
+stage1_ui_contract_version = "PFI-V023-STAGE1-APP-ENTRY-BUNDLE-CONSISTENCY"
+stage1_query_string = (
+    f"pfi_app_version={app_version}"
+    f"&pfi_build={stage1_build_id}"
+    f"&pfi_ui_contract={stage1_ui_contract_version}"
+)
+
+stage1_web_bundle_files = (
+    "web/index.html",
+    "web/styles/tokens.css",
+    "web/app/shell.js",
+)
 
 official_nav = [
     "首页总览",
@@ -111,6 +127,27 @@ class V023Stage0Contract:
     evidence_files: tuple[str, ...]
 
 
+@dataclass(frozen=True)
+class V023Stage1Contract:
+    version: str
+    stage: str
+    stage_name: str
+    task_id: str
+    current_stage_only: bool
+    no_stage2: bool
+    app_version: str
+    build_id: str
+    bundle_version: str
+    ui_contract_version: str
+    app_entry_targets: tuple[str, ...]
+    app_entry_focus: str
+    frontend_bundle_files: tuple[str, ...]
+    required_consistency_fields: tuple[str, ...]
+    validation_commands: tuple[V023EvidenceCommand, ...]
+    evidence_files: tuple[str, ...]
+    explicitly_not_done: tuple[str, ...]
+
+
 def build_stage0_contract() -> dict[str, Any]:
     contract = V023Stage0Contract(
         version=version,
@@ -161,6 +198,64 @@ def build_stage0_contract() -> dict[str, Any]:
     return payload
 
 
+def build_stage1_contract() -> dict[str, Any]:
+    contract = V023Stage1Contract(
+        version=version,
+        stage="Stage 1",
+        stage_name="App 入口与前端版本一致性",
+        task_id="V023-S1-T01",
+        current_stage_only=True,
+        no_stage2=True,
+        app_version=app_version,
+        build_id=stage1_build_id,
+        bundle_version=stage1_bundle_version,
+        ui_contract_version=stage1_ui_contract_version,
+        app_entry_targets=(
+            "~/Downloads/PFI.app",
+            "/Applications/PFI.app",
+            "~/Desktop/PFI.app",
+        ),
+        app_entry_focus="~/Downloads/PFI.app",
+        frontend_bundle_files=stage1_web_bundle_files,
+        required_consistency_fields=(
+            "project_root",
+            "app_version",
+            "build_id",
+            "ui_contract_version",
+            "web_bundle_hash",
+            "web_index_sha256",
+            "shell_js_sha256",
+            "served_url",
+            "browser_profile",
+        ),
+        validation_commands=(
+            V023EvidenceCommand("node --check PFI/web/app/shell.js", True),
+            V023EvidenceCommand("python3 -m pytest PFI/tests/test_v023_stage0_contract.py PFI/tests/test_v023_stage1_app_entry_bundle_contract.py PFI/tests/test_pfi_app_entry_version_contract.py -q", True),
+            V023EvidenceCommand("PFI/scripts/installPFIEntryApps.sh --downloads-only", True),
+            V023EvidenceCommand("PFI/scripts/macosRuntimeAcceptance.sh --launch-method app --app-path ~/Downloads/PFI.app --skip-app-acceptance --summary-json", True),
+            V023EvidenceCommand("fresh browser profile bundle verification", True),
+            V023EvidenceCommand("git diff --check -- PFI", True),
+        ),
+        evidence_files=(
+            "PFI/docs/pfi_v023/STAGE1_APP_ENTRY_BUNDLE_CONSISTENCY.md",
+            "PFI/reports/pfi_v023/stage_1/evidence.json",
+            "PFI/reports/pfi_v023/stage_1/terminal.log",
+            "PFI/reports/pfi_v023/stage_1/changed_files.txt",
+            "PFI/reports/pfi_v023/stage_1/browser_fresh_profile.json",
+        ),
+        explicitly_not_done=(
+            "Stage 2 page rebuild",
+            "route implementation changes",
+            "data computation or read-model changes",
+            "report generation implementation",
+            "mock/sample/synthetic/fixture/demo/fake financial data",
+        ),
+    )
+    payload = asdict(contract)
+    payload["validation_commands"] = [asdict(item) for item in contract.validation_commands]
+    return payload
+
+
 def current_stage0_baseline(root: Path | None = None) -> dict[str, Any]:
     project_root = root or Path(__file__).resolve().parents[2]
     web_index = project_root / "web" / "index.html"
@@ -175,4 +270,54 @@ def current_stage0_baseline(root: Path | None = None) -> dict[str, Any]:
         "shell_has_market_research": "市场与研究" in shell_text,
         "shell_has_strategy_lab_keyword": "策略实验室" in shell_text,
         "stage0_modifies_ui": False,
+    }
+
+
+def stage1_file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    digest.update(path.read_bytes())
+    return digest.hexdigest()
+
+
+def build_stage1_web_bundle_manifest(root: Path | None = None) -> dict[str, Any]:
+    project_root = root or Path(__file__).resolve().parents[2]
+    files = []
+    bundle_digest = hashlib.sha256()
+    for relative in stage1_web_bundle_files:
+        path = project_root / relative
+        file_hash = stage1_file_sha256(path)
+        files.append(
+            {
+                "path": f"PFI/{relative}",
+                "sha256": file_hash,
+                "bytes": path.stat().st_size,
+            }
+        )
+        bundle_digest.update(relative.encode("utf-8"))
+        bundle_digest.update(b"\0")
+        bundle_digest.update(file_hash.encode("ascii"))
+        bundle_digest.update(b"\0")
+    return {
+        "schema": "PFIV023Stage1WebBundleManifestV1",
+        "files": files,
+        "web_bundle_hash": bundle_digest.hexdigest(),
+    }
+
+
+def build_stage1_runtime_metadata(root: Path | None = None) -> dict[str, Any]:
+    manifest = build_stage1_web_bundle_manifest(root)
+    hash_by_path = {item["path"]: item["sha256"] for item in manifest["files"]}
+    return {
+        "schema": "PFIV023Stage1RuntimeMetadataV1",
+        "pfiVersion": version,
+        "appVersion": app_version,
+        "buildId": stage1_build_id,
+        "bundleVersion": stage1_bundle_version,
+        "uiContractVersion": stage1_ui_contract_version,
+        "stage": "Stage 1",
+        "stageName": "App 入口与前端版本一致性",
+        "webBundleHash": manifest["web_bundle_hash"],
+        "webIndexSha256": hash_by_path["PFI/web/index.html"],
+        "shellJsSha256": hash_by_path["PFI/web/app/shell.js"],
+        "frontendBundleFiles": tuple(stage1_web_bundle_files),
     }

@@ -1,0 +1,175 @@
+{
+  "schema": "PFIV023Stage1FreshBrowserProfileAcceptanceV1",
+  "generated_at": "2026-06-29T12:36:57.662Z",
+  "status": "Pass",
+  "app_path": "/Users/linzezhang/Downloads/PFI.app",
+  "project_root": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi-stage1/PFI",
+  "served_url": "http://127.0.0.1:8501/?pfi_app_version=0.2.3&pfi_build=20260629-stage1&pfi_ui_contract=PFI-V023-STAGE1-APP-ENTRY-BUNDLE-CONSISTENCY",
+  "browser": "Google Chrome via Playwright persistent context",
+  "browser_executable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "browser_profile": "/var/folders/w9/fnb1wnyd3dg6npzvt909scm80000gn/T/pfi-stage1-chrome-profile-o3VrUJ",
+  "expected": {
+    "pfiVersion": "v0.2.3",
+    "appVersion": "0.2.3",
+    "buildId": "20260629-stage1",
+    "bundleVersion": "20260629.1",
+    "uiContractVersion": "PFI-V023-STAGE1-APP-ENTRY-BUNDLE-CONSISTENCY",
+    "webBundleHash": "6820bb9d9994fedfa1acb93e1621f4cecbffd9d0e302f0fcefc653ee989bfacb",
+    "webIndexSha256": "49cb3af69f833dade5cc50d96b8455c685e092da8c867f0e8b876fde96ae645e",
+    "shellJsSha256": "44b979a6259c5bd3a19b9dad60f6ba6d1fc9184d0b7550bc187a458671f41b7c"
+  },
+  "file_records": [
+    {
+      "path": "PFI/web/index.html",
+      "sha256": "49cb3af69f833dade5cc50d96b8455c685e092da8c867f0e8b876fde96ae645e",
+      "bytes": 38876
+    },
+    {
+      "path": "PFI/web/styles/tokens.css",
+      "sha256": "32c1c9bbbbb4f695b99ec761413dba91c8ed3cc74cda67fae996eeb914e3f919",
+      "bytes": 43725
+    },
+    {
+      "path": "PFI/web/app/shell.js",
+      "sha256": "44b979a6259c5bd3a19b9dad60f6ba6d1fc9184d0b7550bc187a458671f41b7c",
+      "bytes": 255384
+    }
+  ],
+  "checks": [
+    {
+      "name": "FreshProfileDirectoryCreated",
+      "status": "Pass",
+      "evidence": "/var/folders/w9/fnb1wnyd3dg6npzvt909scm80000gn/T/pfi-stage1-chrome-profile-o3VrUJ"
+    },
+    {
+      "name": "TopUrlUsesStage1Query",
+      "status": "Pass",
+      "evidence": "http://127.0.0.1:8501/?pfi_app_version=0.2.3&pfi_build=20260629-stage1&pfi_ui_contract=PFI-V023-STAGE1-APP-ENTRY-BUNDLE-CONSISTENCY"
+    },
+    {
+      "name": "Stage1MetadataPresent",
+      "status": "Pass",
+      "evidence": "{\"schema\":\"PFIV023Stage1RuntimeMetadataV1\",\"pfiVersion\":\"v0.2.3\",\"appVersion\":\"0.2.3\",\"buildId\":\"20260629-stage1\",\"bundleVersion\":\"20260629.1\",\"uiContractVersion\":\"PFI-V023-STAGE1-APP-ENTRY-BUNDLE-CONSISTENCY\",\"stage\":\"Stage 1\",\"webBundleHash\":\"6820bb9d9994fedfa1acb93e1621f4cecbffd9d0e302f0fcefc653ee989bfacb\",\"webIndexSha256\":\"49cb3af69f833dade5cc50d96b8455c685e092da8c867f0e8b876fde96ae645e\",\"shellJsSha256\":\"44b979a6259c5bd3a19b9dad60f6ba6d1fc9184d0b7550bc187a458671f41b7c\"}"
+    },
+    {
+      "name": "Metadata.pfiVersion",
+      "status": "Pass",
+      "evidence": "actual=v0.2.3 expected=v0.2.3"
+    },
+    {
+      "name": "Metadata.appVersion",
+      "status": "Pass",
+      "evidence": "actual=0.2.3 expected=0.2.3"
+    },
+    {
+      "name": "Metadata.buildId",
+      "status": "Pass",
+      "evidence": "actual=20260629-stage1 expected=20260629-stage1"
+    },
+    {
+      "name": "Metadata.bundleVersion",
+      "status": "Pass",
+      "evidence": "actual=20260629.1 expected=20260629.1"
+    },
+    {
+      "name": "Metadata.uiContractVersion",
+      "status": "Pass",
+      "evidence": "actual=PFI-V023-STAGE1-APP-ENTRY-BUNDLE-CONSISTENCY expected=PFI-V023-STAGE1-APP-ENTRY-BUNDLE-CONSISTENCY"
+    },
+    {
+      "name": "Metadata.webBundleHash",
+      "status": "Pass",
+      "evidence": "actual=6820bb9d9994fedfa1acb93e1621f4cecbffd9d0e302f0fcefc653ee989bfacb expected=6820bb9d9994fedfa1acb93e1621f4cecbffd9d0e302f0fcefc653ee989bfacb"
+    },
+    {
+      "name": "Metadata.webIndexSha256",
+      "status": "Pass",
+      "evidence": "actual=49cb3af69f833dade5cc50d96b8455c685e092da8c867f0e8b876fde96ae645e expected=49cb3af69f833dade5cc50d96b8455c685e092da8c867f0e8b876fde96ae645e"
+    },
+    {
+      "name": "Metadata.shellJsSha256",
+      "status": "Pass",
+      "evidence": "actual=44b979a6259c5bd3a19b9dad60f6ba6d1fc9184d0b7550bc187a458671f41b7c expected=44b979a6259c5bd3a19b9dad60f6ba6d1fc9184d0b7550bc187a458671f41b7c"
+    },
+    {
+      "name": "RuntimeConfigProjectRoot",
+      "status": "Pass",
+      "evidence": "actual=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi-stage1/PFI"
+    },
+    {
+      "name": "BodyDatasetContractVersion",
+      "status": "Pass",
+      "evidence": "actual=PFI-V023-STAGE1-APP-ENTRY-BUNDLE-CONSISTENCY"
+    },
+    {
+      "name": "OfficialNavCount",
+      "status": "Pass",
+      "evidence": "navCount=10"
+    },
+    {
+      "name": "NoServiceWorkersInFreshProfile",
+      "status": "Pass",
+      "evidence": "[]"
+    },
+    {
+      "name": "NoConsoleErrors",
+      "status": "Pass",
+      "evidence": "[]"
+    },
+    {
+      "name": "NoPageErrors",
+      "status": "Pass",
+      "evidence": "[]"
+    }
+  ],
+  "metadata": {
+    "schema": "PFIV023Stage1RuntimeMetadataV1",
+    "pfiVersion": "v0.2.3",
+    "appVersion": "0.2.3",
+    "buildId": "20260629-stage1",
+    "bundleVersion": "20260629.1",
+    "uiContractVersion": "PFI-V023-STAGE1-APP-ENTRY-BUNDLE-CONSISTENCY",
+    "stage": "Stage 1",
+    "webBundleHash": "6820bb9d9994fedfa1acb93e1621f4cecbffd9d0e302f0fcefc653ee989bfacb",
+    "webIndexSha256": "49cb3af69f833dade5cc50d96b8455c685e092da8c867f0e8b876fde96ae645e",
+    "shellJsSha256": "44b979a6259c5bd3a19b9dad60f6ba6d1fc9184d0b7550bc187a458671f41b7c"
+  },
+  "runtime_config": {
+    "apiBaseUrl": "http://127.0.0.1:8766",
+    "projectRoot": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi-stage1/PFI",
+    "schema": "PFIV023Stage1RuntimeMetadataV1",
+    "pfiVersion": "v0.2.3",
+    "appVersion": "0.2.3",
+    "buildId": "20260629-stage1",
+    "bundleVersion": "20260629.1",
+    "uiContractVersion": "PFI-V023-STAGE1-APP-ENTRY-BUNDLE-CONSISTENCY",
+    "stage": "Stage 1",
+    "stageName": "App 入口与前端版本一致性",
+    "webBundleHash": "6820bb9d9994fedfa1acb93e1621f4cecbffd9d0e302f0fcefc653ee989bfacb",
+    "webIndexSha256": "49cb3af69f833dade5cc50d96b8455c685e092da8c867f0e8b876fde96ae645e",
+    "shellJsSha256": "44b979a6259c5bd3a19b9dad60f6ba6d1fc9184d0b7550bc187a458671f41b7c",
+    "frontendBundleFiles": [
+      "web/index.html",
+      "web/styles/tokens.css",
+      "web/app/shell.js"
+    ]
+  },
+  "body_dataset": {
+    "shellSchema": "PFIOSWebShellContractV1",
+    "featureFlag": "PFI_UI_V2",
+    "fallbackFlagValue": "1",
+    "cachedHomeTargetSeconds": "2",
+    "uiuxDeliveryTarget": "v021_feedback_preferences",
+    "pfiVersion": "v0.2.3",
+    "pfiAppVersion": "0.2.3",
+    "pfiBuildId": "20260629-stage1",
+    "pfiUiContractVersion": "PFI-V023-STAGE1-APP-ENTRY-BUNDLE-CONSISTENCY",
+    "pfiStage": "Stage 1"
+  },
+  "nav_count": 10,
+  "frame_url": "about:srcdoc#/home",
+  "top_url": "http://127.0.0.1:8501/?pfi_app_version=0.2.3&pfi_build=20260629-stage1&pfi_ui_contract=PFI-V023-STAGE1-APP-ENTRY-BUNDLE-CONSISTENCY",
+  "service_workers": [],
+  "console_errors": [],
+  "page_errors": []
+}
