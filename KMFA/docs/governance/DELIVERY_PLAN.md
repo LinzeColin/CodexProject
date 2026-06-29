@@ -1,6 +1,6 @@
 # KMFA Delivery Plan
 
-product_version: 0.1.0-s04p3
+product_version: 0.1.0-s05p2-contract
 
 ## Delivery Rule
 
@@ -36,14 +36,19 @@ KMFA delivery follows the owner contract:
 | S04-P1 | completed_validated_local_only |
 | S04-P2 | completed_validated_local_only |
 | S04-P3 | completed_validated_local_only |
-| Stage 4 review | not_started |
-| Stage 4 GitHub upload | not_allowed |
+| Stage 4 review | passed |
+| Stage 4 GitHub upload | completed |
+| S05-P1 | completed_validated_local_only |
+| S05-P2 | in_progress_private_values_pending |
+| S05-P3 | not_started |
+| Stage 5 review | not_allowed |
+| Stage 5 GitHub upload | not_allowed |
 
 ## Upload Scope
 
-Stage 2 GitHub upload is complete on `origin/main`; the reviewed content commit was `834ff75516405ddbc8289f00ba67579691473709` and the final remote main commit observed before this rebaseline was `6178b5215f92f12d6facad9a990e8659b3a70ba4`.
+Stage 4 GitHub upload is complete on `origin/main`; the reviewed content commit was `25c85dcee55679d0789f8462a7c7875188d0aa9f`.
 
-The active development baseline is `KMFA/taskpack/v1_2/`. S04-P1 is complete and locally validated with amount normalization and no-float checks. S04-P2 is complete and locally validated with field standardization and missing-field quality status. S04-P3 is complete and locally validated with synthetic boundary tests and a tool function test report. Stage 4 has not been reviewed, so GitHub upload is not allowed.
+The active development baseline is `KMFA/taskpack/v1_2/`. S05-P1 is complete and locally validated with public-safe A0 file registration. S05-P2 has generated the public-safe field contract and A0 golden fixture candidates, but private field values, source anchors, and private value hashes remain pending because the private source zip or authorized field CSV is not available. Stage 5 review and GitHub upload are not allowed until S05-P2 private backfill, S05-P3, full Stage 5 review, and review fixes are complete.
 
 ## Rollback
 

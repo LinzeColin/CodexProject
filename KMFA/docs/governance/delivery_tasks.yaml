@@ -1164,3 +1164,98 @@ tasks:
     rollback: "Remove candidate JSONL and restore S05-P1 status to pending."
     target_version: "0.1.0-s05p1"
     completed_version: "0.1.0-s05p1"
+  - task_id: "S5PBT01"
+    phase: "S5PB"
+    objective: "提取合同额、支出合计、毛利、毛利率、成本分类字段。"
+    scope:
+      - "KMFA/tools/a0_golden_fixture.py"
+      - "KMFA/metadata/baseline/a0_golden_fixture_manifest.json"
+      - "S05-P2 public-safe field contract"
+    non_scope:
+      - "raw business value commit"
+      - "Q4 human confirmation"
+      - "Q5 calculation baseline"
+      - "zero-delta"
+      - "GitHub upload"
+    status: "in_progress"
+    dependencies:
+      - "S5PAT03"
+    required_files:
+      - "KMFA/metadata/baseline/a0_golden_fixture_manifest.json"
+      - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/s05_p2_completion_record.md"
+    acceptance_ids:
+      - "ACC-KMFA-S05-P2"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest KMFA.tests.test_a0_golden_fixture -q"
+      - "PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_a0_golden_fixture.py"
+    test_results:
+      - "PASS: field contract contains contract_amount, total_expense, gross_profit, gross_margin and cost_category"
+      - "PENDING_PRIVATE_VALUES: no private source zip or authorized field CSV found; real field extraction is not complete"
+    evidence_refs:
+      - "KMFA/metadata/baseline/a0_golden_fixture_manifest.json"
+      - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/s05_p2_completion_record.md"
+      - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/test_results.md"
+    risk: "Public-safe field contract does not prove real extracted field values until private values are provided and hashed."
+    rollback: "Remove a0_golden_fixture.py, check_a0_golden_fixture.py, S05-P2 metadata/artifacts, and restore S05-P2 status to planned."
+    target_version: "0.1.0-s05p2-contract"
+    completed_version: "pending_private_value_backfill"
+  - task_id: "S5PBT02"
+    phase: "S5PB"
+    objective: "每个字段绑定 source_file、page/sheet/cell、raw_value、normalized_value。"
+    scope:
+      - "KMFA/metadata/baseline/a0_golden_fixture_candidates.jsonl"
+      - "private raw/normalized value refs"
+      - "source anchor status"
+    non_scope:
+      - "public raw_value"
+      - "public normalized_value"
+      - "real source anchor completion without private source"
+      - "GitHub upload"
+    status: "in_progress"
+    dependencies:
+      - "S5PBT01"
+    required_files:
+      - "KMFA/metadata/baseline/a0_golden_fixture_candidates.jsonl"
+    acceptance_ids:
+      - "ACC-KMFA-S05-P2"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_a0_golden_fixture.py"
+    test_results:
+      - "PASS_WITH_PENDING_PRIVATE_VALUES: 45 candidates have private refs and pending source anchors; raw/normalized values are not public"
+    evidence_refs:
+      - "KMFA/metadata/baseline/a0_golden_fixture_candidates.jsonl"
+      - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/test_results.md"
+    risk: "Page/sheet/cell and value hashes remain pending until private source or authorized field CSV is available."
+    rollback: "Remove A0 golden fixture candidate JSONL and rerun S05-P2 status update."
+    target_version: "0.1.0-s05p2-contract"
+    completed_version: "pending_private_value_backfill"
+  - task_id: "S5PBT03"
+    phase: "S5PB"
+    objective: "生成 A0_golden_fixture 候选并待人工确认。"
+    scope:
+      - "KMFA/metadata/baseline/a0_golden_fixture_candidates.jsonl"
+      - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture"
+    non_scope:
+      - "Q4 human confirmation"
+      - "Q5 calculation baseline"
+      - "Stage 5 review"
+      - "GitHub upload"
+    status: "in_progress"
+    dependencies:
+      - "S5PBT02"
+    required_files:
+      - "KMFA/metadata/baseline/a0_golden_fixture_candidates.jsonl"
+      - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/s05_p2_manifest.json"
+    acceptance_ids:
+      - "ACC-KMFA-S05-P2"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_a0_golden_fixture.py"
+    test_results:
+      - "PASS_WITH_PRIVATE_VALUES_PENDING: 45 public-safe fixture candidates generated; q4_human_confirmed=false and q5_calculation_baseline_allowed=false"
+    evidence_refs:
+      - "KMFA/metadata/baseline/a0_golden_fixture_candidates.jsonl"
+      - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/s05_p2_manifest.json"
+    risk: "Generated candidates are not authoritative golden fixtures until private values and human confirmation are complete."
+    rollback: "Remove S05-P2 golden fixture artifacts and restore S05-P2 status to planned."
+    target_version: "0.1.0-s05p2-contract"
+    completed_version: "pending_private_value_backfill"

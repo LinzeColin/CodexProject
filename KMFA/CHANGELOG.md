@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.1.0-s05p2-contract - 2026-06-30
+
+- 生成 `S05-P2｜字段级黄金基准` 的 public-safe 字段合同和 A0 golden fixture 候选结构，保持本阶段本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/a0_golden_fixture.py` 和 `KMFA/tools/check_a0_golden_fixture.py`，为合同额、支出合计、毛利、毛利率、成本分类生成 private refs、source anchor 状态和 hash-only 输出能力。
+- 新增 `KMFA/tests/test_a0_golden_fixture.py`，覆盖无私有源 pending 输出、合成私有 CSV hash-only 输出、公开 metadata 禁止 raw/normalized 明文键。
+- 新增 `KMFA/metadata/baseline/a0_golden_fixture_manifest.json` 和 `KMFA/metadata/baseline/a0_golden_fixture_candidates.jsonl`，当前 45 条字段候选均为 private values pending。
+- 保持 S05-P2 真实字段值、S05-P3 权威锁定、zero-delta、事实层、报告、UI 和 GitHub upload 为未完成。
+
+## 0.1.0-s05p1 - 2026-06-30
+
+- 完成 `S05-P1｜A0 文件登记` 的 public-safe 登记和本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/a0_file_register.py` 和 `KMFA/tools/check_a0_file_registration.py`，登记 `销售绩效考核.zip` source package SHA256、8 个 PDF、1 个 Excel、legacy inventory 指纹和 Q3/Q4 状态。
+- 新增 `KMFA/tests/test_a0_file_register.py`、`KMFA/metadata/baseline/a0_file_manifest.json`、`KMFA/metadata/baseline/a0_project_candidates.jsonl` 和 S05-P1 证据包。
+- 私有 `销售绩效考核.zip` 未找到，成员级 SHA256 显式记录为 pending，不用 legacy CRC/指纹冒充 SHA256。
+- 保持字段级黄金基准、S05-P3 权威锁定、zero-delta、事实层、报告、UI 和 GitHub upload 为未完成。
+
 ## Stage 4 Review - 2026-06-29
 
 - 完成 Stage 4 整体复审，结果为 `PASS_UPLOAD_READY_LOCAL_ONLY`，尚未 push GitHub。

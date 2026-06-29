@@ -1,0 +1,43 @@
+# S05-P2 字段级黄金基准候选完成记录
+
+## 范围
+
+- Stage/Phase: `S05-P2`
+- Task: `S5PBT01-S5PBT03`
+- 目标: 建立 A0 字段级黄金基准候选结构，为合同额、支出合计、毛利、毛利率、成本分类提供 source/value binding contract，并待后续人工确认。
+
+## 已完成
+
+- 新增 `KMFA/tools/a0_golden_fixture.py`，从 S05-P1 A0 文件清单和项目候选清单生成字段级黄金基准候选 metadata。
+- 新增 `KMFA/tools/check_a0_golden_fixture.py`，验证字段合同、候选数量、source binding、private value ref、Q3/Q4/Q5 状态和公开仓库安全边界。
+- 新增 `KMFA/metadata/baseline/a0_golden_fixture_manifest.json`，登记 5 个 S05-P2 必需字段合同：合同额、支出合计、毛利、毛利率、成本分类。
+- 新增 `KMFA/metadata/baseline/a0_golden_fixture_candidates.jsonl`，为 9 个 A0 项目候选生成 45 条字段级候选记录。
+- 新增 `KMFA/tests/test_a0_golden_fixture.py`，覆盖无私有源时 pending 输出、合成私有 CSV 的 hash-only 输出、禁止公开 raw/normalized 明文键。
+
+## 边界
+
+- 未提交 `销售绩效考核.zip`、PDF、Excel 或任何原始业务文件。
+- 未提交真实合同额、支出合计、毛利、毛利率、成本分类 raw value 或 normalized value。
+- 本机仍未找到私有 `销售绩效考核.zip`，所以 45 条字段候选的 source anchor 和 private value hash 均为 `pending_private_source_unavailable`。
+- S05-P2 只生成字段级候选和 private refs；未执行 S05-P3 人工锁定、Q5 计算基准、zero-delta、事实层、报告生成或 UI。
+
+## 结果
+
+- `S5PBT01`: 已建立 5 个字段级黄金基准候选合同；真实字段值抽取待私有源或授权人工录入 CSV 后补算 hash。
+- `S5PBT02`: 每条字段候选均绑定 `source_file_ref`、`page_ref`、`sheet_ref`、`cell_ref`、`raw_value_private_ref`、`normalized_value_private_ref` 和 pending/hash 状态；公开仓库不保存 raw/normalized 明文。
+- `S5PBT03`: 已生成 A0 golden fixture 候选 JSONL，所有记录保持 `Q3` 机器候选、`q4_human_confirmed=false`、`q5_calculation_baseline_allowed=false`。
+
+## 风险
+
+- 若后续要完成真实字段级黄金基准，必须在本地私有路径提供字段抽取 CSV 或私有源文件，并运行 `KMFA/tools/a0_golden_fixture.py --private-fields-csv <private-path>`；公开仓库只允许保存 hash/ref/status，不允许保存真实字段值。
+- 45 条字段候选不是正式 A0 golden fixture，不能用于正式报告或 zero-delta 通过声明。
+
+## 回滚
+
+- 删除 `KMFA/tools/a0_golden_fixture.py`
+- 删除 `KMFA/tools/check_a0_golden_fixture.py`
+- 删除 `KMFA/tests/test_a0_golden_fixture.py`
+- 删除 `KMFA/metadata/baseline/a0_golden_fixture_manifest.json`
+- 删除 `KMFA/metadata/baseline/a0_golden_fixture_candidates.jsonl`
+- 删除 `KMFA/stage_artifacts/S05_P2_a0_golden_fixture/`
+- 恢复 S05 stage status 和中文入口记录。

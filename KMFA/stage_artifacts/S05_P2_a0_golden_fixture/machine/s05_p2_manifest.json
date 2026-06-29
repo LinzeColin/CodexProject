@@ -1,0 +1,36 @@
+{
+  "acceptance_ids": [
+    "ACC-KMFA-S05-P2"
+  ],
+  "completed_task_ids": [
+    "S5PBT01",
+    "S5PBT02",
+    "S5PBT03"
+  ],
+  "evidence_refs": [
+    "KMFA/metadata/baseline/a0_golden_fixture_manifest.json",
+    "KMFA/metadata/baseline/a0_golden_fixture_candidates.jsonl",
+    "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/s05_p2_completion_record.md",
+    "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/test_results.md"
+  ],
+  "field_count_per_candidate": 5,
+  "fixture_candidate_count": 45,
+  "private_value_pending_count": 45,
+  "private_value_pending_reason": "private_sales_performance_zip_or_authorized_field_extract_not_found_on_this_machine",
+  "project_id": "KMFA",
+  "public_repo_raw_files_committed": false,
+  "q4_human_confirmed": false,
+  "q5_calculation_baseline_allowed": false,
+  "raw_business_values_committed": false,
+  "record_type": "stage_phase_manifest",
+  "schema_version": "kmfa.stage_phase_manifest.v1",
+  "source_anchor_pending_count": 45,
+  "stage_id": "S05",
+  "phase_id": "S5PB",
+  "status": "public_safe_field_fixture_candidates_completed_with_private_values_pending",
+  "test_commands": [
+    "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest KMFA.tests.test_a0_golden_fixture -q",
+    "PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_a0_golden_fixture.py"
+  ],
+  "updated_at": "2026-06-30T01:00:00+10:00"
+}

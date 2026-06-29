@@ -1,10 +1,10 @@
 # KMFA Model Spec
 
-product_version: 0.1.0-s04p3
+product_version: 0.1.0-s05p2-contract
 
 ## Scope
 
-当前模型说明覆盖 S01 已建立并按 v1.2 重放的治理边界、S02-P1 metadata 协议、S02-P2 不可污染原则、S02-P3 质量等级门禁协议、S03-P1 文件型导入登记模型、S03-P2 数据源检查矩阵模型、S03-P3 源优先级模型、S04-P1 金额工具、S04-P2 字段标准化工具、S04-P3 基础工具测试、Stage 4 整体复审和后续业务模型草案，不声明项目成本事实层、zero-delta、lineage 完整检查或正式报告生成已经实现。
+当前模型说明覆盖 S01 已建立并按 v1.2 重放的治理边界、S02-P1 metadata 协议、S02-P2 不可污染原则、S02-P3 质量等级门禁协议、S03-P1 文件型导入登记模型、S03-P2 数据源检查矩阵模型、S03-P3 源优先级模型、S04-P1 金额工具、S04-P2 字段标准化工具、S04-P3 基础工具测试、Stage 4 整体复审与上传、S05-P1 A0 文件登记，以及 S05-P2 public-safe A0 字段级黄金基准候选合同。不声明真实字段值、项目成本事实层、zero-delta、lineage 完整检查或正式报告生成已经实现。
 
 ## Active Model
 
@@ -86,23 +86,39 @@ product_version: 0.1.0-s04p3
 - evidence: `KMFA/tools/generate_tool_test_report.py`, `KMFA/stage_artifacts/S04_P3_basic_tool_tests/human/tool_function_test_report.md`
 - limitation: 只验证基础工具边界，不替代 A0、zero-delta、事实层或报告验收。
 
+### FORM-KMFA-A0-FILE-REGISTRATION-001
+
+- type: deterministic public-safe A0 file registration
+- purpose: 登记 A0 文件数量、source package SHA256、legacy 指纹、A0 项目候选和 Q3/Q4/Q5 状态，不提交 raw PDF、Excel 或 zip。
+- fact_level: EXTRACTED
+- evidence: `KMFA/tools/a0_file_register.py`, `KMFA/tools/check_a0_file_registration.py`, `KMFA/stage_artifacts/S05_P1_a0_file_registration/human/s05_p1_completion_record.md`
+- limitation: 私有 `销售绩效考核.zip` 不可用时成员 SHA256 保持 pending；不抽取字段值，不完成 Q4/Q5。
+
+### FORM-KMFA-A0-GOLDEN-FIXTURE-001
+
+- type: deterministic public-safe A0 golden fixture candidate contract
+- purpose: 为合同额、支出合计、毛利、毛利率、成本分类建立字段合同、private refs、hash/status 和 source anchor 状态。
+- fact_level: EXTRACTED
+- evidence: `KMFA/tools/a0_golden_fixture.py`, `KMFA/tools/check_a0_golden_fixture.py`, `KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/s05_p2_completion_record.md`
+- limitation: 真实 `raw_value`、`normalized_value`、source anchor 和 private value hash 待私有源或授权字段 CSV 回填；当前只生成 Q3 候选，不允许 Q4/Q5 或正式报告。
+
 ## Planned Business Model
 
 ### MOD-KMFA-COST-001
 
-- status: planned with S04-P1 amount formula, S04-P2 field standardization formula, S04-P3 boundary validation and Stage 4 review active
+- status: planned with S04-P1 amount formula, S04-P2 field standardization formula, S04-P3 boundary validation, S05-P1 A0 file registration, and S05-P2 public-safe fixture contract active
 - purpose: 后续文件型项目成本分析 MVP。
 - dependency: S05 A0 基准、S06 零差异、S09 成本计算、S10 报告等级。
-- current limitation: no production data import, no official report generation.
+- current limitation: no true A0 field values/source anchors/private value hashes, no production data import, no zero-delta, no official report generation.
 
 ## Counts
 
 - active models: 7
-- active formulas: 9
-- active parameters: 24
+- active formulas: 11
+- active parameters: 30
 - planned models: 1
 - planned formulas: 0
-- planned parameters: 4
+- planned parameters: 3
 
 ## Stop Conditions
 
