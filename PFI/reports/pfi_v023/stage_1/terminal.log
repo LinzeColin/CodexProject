@@ -1,0 +1,50 @@
+# PFI v0.2.3 Stage 1 terminal summary
+generated_at=2026-06-29T12:39:30.863291+00:00
+repo=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi-stage1
+branch=codex/pfi-v023-stage1-app-entry
+base_origin_main=74ee15f96c78b30e22aa243a4e6939a443f4600b
+
+$ PFI/scripts/installPFIEntryApps.sh --downloads-only
+exit_code=0
+installed ~/Downloads/PFI.app and bound PFI_PROJECT_ROOT to current checkout
+
+$ PFI_APP_LAUNCH_DRY_RUN=1 ~/Downloads/PFI.app/Contents/MacOS/PFI
+exit_code=0
+PFI_APP_LAUNCH: project=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi-stage1/PFI command=./StartPFI.command command_path=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi-stage1/PFI/StartPFI.command mode=spawn-command
+
+$ PFI/scripts/macosRuntimeAcceptance.sh --launch-method app --app-path ~/Downloads/PFI.app --output-dir PFI/reports/pfi_v023/stage_1 --json
+exit_code=0
+Pass pass=10 fail=0
+
+$ fresh Chrome profile Playwright browser verification
+exit_code=0
+Pass profile=/var/folders/w9/fnb1wnyd3dg6npzvt909scm80000gn/T/pfi-stage1-chrome-profile-o3VrUJ webBundleHash=6820bb9d9994fedfa1acb93e1621f4cecbffd9d0e302f0fcefc653ee989bfacb
+
+$ node --check PFI/web/app/shell.js
+exit_code=0
+passed
+
+$ python -m pytest PFI/tests/test_v023_stage0_contract.py PFI/tests/test_v023_stage1_app_entry_bundle_contract.py PFI/tests/test_pfi_app_entry_version_contract.py -q
+exit_code=0
+19 passed
+
+$ python -m pytest PFI/tests -q
+exit_code=0
+370 passed
+
+$ python -m py_compile Stage 1 touched Python files
+exit_code=0
+passed
+
+$ zsh -n Stage 1 touched shell scripts
+exit_code=0
+passed
+
+$ git diff --check -- PFI
+exit_code=0
+passed
+
+$ git cherry-pick 6043d047e121319c03474bfc53bf2cc437c6e9a5 onto origin/main
+exit_code=0
+base_origin_main=ff469213cd5acbec7a0183a5d6e9109b94ea1097
+push_ready_head_before_evidence_amend=4273515d3af56bbb49a76e37f2a8fc0756dda6fb

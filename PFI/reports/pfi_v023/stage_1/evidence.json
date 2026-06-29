@@ -1,0 +1,274 @@
+{
+  "version": "v0.2.3",
+  "stage": "Stage 1",
+  "stage_name": "App 入口与前端版本一致性",
+  "status": "pass",
+  "current_stage_only": true,
+  "stage2_not_done": true,
+  "repo_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi-stage1",
+  "pfi_root": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi-stage1/PFI",
+  "branch": "codex/pfi-v023-stage1-app-entry",
+  "base_origin_main": "ff469213cd5acbec7a0183a5d6e9109b94ea1097",
+  "working_tree_evidence_generated_at": "2026-06-29T12:39:30.863291+00:00",
+  "downloads_app": {
+    "path": "/Users/linzezhang/Downloads/PFI.app",
+    "exists": true,
+    "plist_version": "0.2.3",
+    "plist_build": "20260629.1",
+    "project_binding": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi-stage1/PFI",
+    "binding_matches_current_checkout": true,
+    "dry_run_exit_code": 0,
+    "dry_run_output": "PFI_APP_LAUNCH: project=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi-stage1/PFI command=./StartPFI.command command_path=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi-stage1/PFI/StartPFI.command mode=spawn-command"
+  },
+  "runtime_acceptance": {
+    "path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi-stage1/PFI/reports/pfi_v023/stage_1/MacOSRuntimeAcceptance_latest.json",
+    "schema": "PFIOSMacOSRuntimeAcceptanceV1",
+    "status": "Pass",
+    "summary": {
+      "pass": 10,
+      "fail": 0,
+      "info": 0,
+      "total": 10
+    },
+    "launch_method": "app",
+    "started_by_acceptance": true,
+    "pre_existing_healthy_ports": [],
+    "post_healthy_ports": [],
+    "app_acceptance": {
+      "schema": "PFIOSMacOSAppAcceptanceLiteV1",
+      "status": "Pass",
+      "summary": {
+        "pass": 10,
+        "fail": 0,
+        "info": 0,
+        "total": 10
+      },
+      "attempts": 1,
+      "failed_checks": [],
+      "attempt_history": [
+        {
+          "status": "Pass",
+          "fail": 0,
+          "failed_checks": []
+        }
+      ],
+      "heavy_smoke_policy": "Lite acceptance does not run scripts/finalAcceptanceCheck.sh, scripts/ciSmoke.sh, full pytest, market-data refresh, or browser automation."
+    }
+  },
+  "browser_fresh_profile": {
+    "path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi-stage1/PFI/reports/pfi_v023/stage_1/browser_fresh_profile.json",
+    "schema": "PFIV023Stage1FreshBrowserProfileAcceptanceV1",
+    "status": "Pass",
+    "served_url": "http://127.0.0.1:8501/?pfi_app_version=0.2.3&pfi_build=20260629-stage1&pfi_ui_contract=PFI-V023-STAGE1-APP-ENTRY-BUNDLE-CONSISTENCY",
+    "profile": "/var/folders/w9/fnb1wnyd3dg6npzvt909scm80000gn/T/pfi-stage1-chrome-profile-o3VrUJ",
+    "browser_executable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "nav_count": 10,
+    "service_workers": [],
+    "console_errors": [],
+    "page_errors": [],
+    "metadata": {
+      "schema": "PFIV023Stage1RuntimeMetadataV1",
+      "pfiVersion": "v0.2.3",
+      "appVersion": "0.2.3",
+      "buildId": "20260629-stage1",
+      "bundleVersion": "20260629.1",
+      "uiContractVersion": "PFI-V023-STAGE1-APP-ENTRY-BUNDLE-CONSISTENCY",
+      "stage": "Stage 1",
+      "webBundleHash": "6820bb9d9994fedfa1acb93e1621f4cecbffd9d0e302f0fcefc653ee989bfacb",
+      "webIndexSha256": "49cb3af69f833dade5cc50d96b8455c685e092da8c867f0e8b876fde96ae645e",
+      "shellJsSha256": "44b979a6259c5bd3a19b9dad60f6ba6d1fc9184d0b7550bc187a458671f41b7c"
+    },
+    "checks": [
+      {
+        "name": "FreshProfileDirectoryCreated",
+        "status": "Pass",
+        "evidence": "/var/folders/w9/fnb1wnyd3dg6npzvt909scm80000gn/T/pfi-stage1-chrome-profile-o3VrUJ"
+      },
+      {
+        "name": "TopUrlUsesStage1Query",
+        "status": "Pass",
+        "evidence": "http://127.0.0.1:8501/?pfi_app_version=0.2.3&pfi_build=20260629-stage1&pfi_ui_contract=PFI-V023-STAGE1-APP-ENTRY-BUNDLE-CONSISTENCY"
+      },
+      {
+        "name": "Stage1MetadataPresent",
+        "status": "Pass",
+        "evidence": "{\"schema\":\"PFIV023Stage1RuntimeMetadataV1\",\"pfiVersion\":\"v0.2.3\",\"appVersion\":\"0.2.3\",\"buildId\":\"20260629-stage1\",\"bundleVersion\":\"20260629.1\",\"uiContractVersion\":\"PFI-V023-STAGE1-APP-ENTRY-BUNDLE-CONSISTENCY\",\"stage\":\"Stage 1\",\"webBundleHash\":\"6820bb9d9994fedfa1acb93e1621f4cecbffd9d0e302f0fcefc653ee989bfacb\",\"webIndexSha256\":\"49cb3af69f833dade5cc50d96b8455c685e092da8c867f0e8b876fde96ae645e\",\"shellJsSha256\":\"44b979a6259c5bd3a19b9dad60f6ba6d1fc9184d0b7550bc187a458671f41b7c\"}"
+      },
+      {
+        "name": "Metadata.pfiVersion",
+        "status": "Pass",
+        "evidence": "actual=v0.2.3 expected=v0.2.3"
+      },
+      {
+        "name": "Metadata.appVersion",
+        "status": "Pass",
+        "evidence": "actual=0.2.3 expected=0.2.3"
+      },
+      {
+        "name": "Metadata.buildId",
+        "status": "Pass",
+        "evidence": "actual=20260629-stage1 expected=20260629-stage1"
+      },
+      {
+        "name": "Metadata.bundleVersion",
+        "status": "Pass",
+        "evidence": "actual=20260629.1 expected=20260629.1"
+      },
+      {
+        "name": "Metadata.uiContractVersion",
+        "status": "Pass",
+        "evidence": "actual=PFI-V023-STAGE1-APP-ENTRY-BUNDLE-CONSISTENCY expected=PFI-V023-STAGE1-APP-ENTRY-BUNDLE-CONSISTENCY"
+      },
+      {
+        "name": "Metadata.webBundleHash",
+        "status": "Pass",
+        "evidence": "actual=6820bb9d9994fedfa1acb93e1621f4cecbffd9d0e302f0fcefc653ee989bfacb expected=6820bb9d9994fedfa1acb93e1621f4cecbffd9d0e302f0fcefc653ee989bfacb"
+      },
+      {
+        "name": "Metadata.webIndexSha256",
+        "status": "Pass",
+        "evidence": "actual=49cb3af69f833dade5cc50d96b8455c685e092da8c867f0e8b876fde96ae645e expected=49cb3af69f833dade5cc50d96b8455c685e092da8c867f0e8b876fde96ae645e"
+      },
+      {
+        "name": "Metadata.shellJsSha256",
+        "status": "Pass",
+        "evidence": "actual=44b979a6259c5bd3a19b9dad60f6ba6d1fc9184d0b7550bc187a458671f41b7c expected=44b979a6259c5bd3a19b9dad60f6ba6d1fc9184d0b7550bc187a458671f41b7c"
+      },
+      {
+        "name": "RuntimeConfigProjectRoot",
+        "status": "Pass",
+        "evidence": "actual=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi-stage1/PFI"
+      },
+      {
+        "name": "BodyDatasetContractVersion",
+        "status": "Pass",
+        "evidence": "actual=PFI-V023-STAGE1-APP-ENTRY-BUNDLE-CONSISTENCY"
+      },
+      {
+        "name": "OfficialNavCount",
+        "status": "Pass",
+        "evidence": "navCount=10"
+      },
+      {
+        "name": "NoServiceWorkersInFreshProfile",
+        "status": "Pass",
+        "evidence": "[]"
+      },
+      {
+        "name": "NoConsoleErrors",
+        "status": "Pass",
+        "evidence": "[]"
+      },
+      {
+        "name": "NoPageErrors",
+        "status": "Pass",
+        "evidence": "[]"
+      }
+    ]
+  },
+  "consistency": {
+    "app_version": true,
+    "build_id": true,
+    "bundle_version": true,
+    "ui_contract_version": true,
+    "web_bundle_hash": true,
+    "web_index_sha256": true,
+    "shell_js_sha256": true,
+    "clean_first_launch_lock_path": true
+  },
+  "commands": [
+    {
+      "command": "PFI/scripts/installPFIEntryApps.sh --downloads-only",
+      "exit_code": 0,
+      "summary": "installed ~/Downloads/PFI.app and bound PFI_PROJECT_ROOT to current checkout"
+    },
+    {
+      "command": "PFI_APP_LAUNCH_DRY_RUN=1 ~/Downloads/PFI.app/Contents/MacOS/PFI",
+      "exit_code": 0,
+      "summary": "PFI_APP_LAUNCH: project=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi-stage1/PFI command=./StartPFI.command command_path=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi-stage1/PFI/StartPFI.command mode=spawn-command"
+    },
+    {
+      "command": "PFI/scripts/macosRuntimeAcceptance.sh --launch-method app --app-path ~/Downloads/PFI.app --output-dir PFI/reports/pfi_v023/stage_1 --json",
+      "exit_code": 0,
+      "summary": "Pass pass=10 fail=0"
+    },
+    {
+      "command": "fresh Chrome profile Playwright browser verification",
+      "exit_code": 0,
+      "summary": "Pass profile=/var/folders/w9/fnb1wnyd3dg6npzvt909scm80000gn/T/pfi-stage1-chrome-profile-o3VrUJ webBundleHash=6820bb9d9994fedfa1acb93e1621f4cecbffd9d0e302f0fcefc653ee989bfacb"
+    },
+    {
+      "command": "node --check PFI/web/app/shell.js",
+      "exit_code": 0,
+      "summary": "passed"
+    },
+    {
+      "command": "python -m pytest PFI/tests/test_v023_stage0_contract.py PFI/tests/test_v023_stage1_app_entry_bundle_contract.py PFI/tests/test_pfi_app_entry_version_contract.py -q",
+      "exit_code": 0,
+      "summary": "19 passed"
+    },
+    {
+      "command": "python -m pytest PFI/tests -q",
+      "exit_code": 0,
+      "summary": "370 passed"
+    },
+    {
+      "command": "python -m py_compile Stage 1 touched Python files",
+      "exit_code": 0,
+      "summary": "passed"
+    },
+    {
+      "command": "zsh -n Stage 1 touched shell scripts",
+      "exit_code": 0,
+      "summary": "passed"
+    },
+    {
+      "command": "git diff --check -- PFI",
+      "exit_code": 0,
+      "summary": "passed"
+    }
+  ],
+  "changed_files": [
+    "PFI/HANDOFF.md",
+    "PFI/StartPFI.command",
+    "PFI/docs/pfi_v023/STAGE1_APP_ENTRY_BUNDLE_CONSISTENCY.md",
+    "PFI/macos/PFI.app/Contents/Info.plist",
+    "PFI/macos/README.md",
+    "PFI/reports/pfi_v023/stage_1/MacOSRuntimeAcceptance_latest.json",
+    "PFI/reports/pfi_v023/stage_1/browser_fresh_profile.json",
+    "PFI/reports/pfi_v023/stage_1/changed_files.txt",
+    "PFI/reports/pfi_v023/stage_1/evidence.json",
+    "PFI/reports/pfi_v023/stage_1/terminal.log",
+    "PFI/scripts/cleanCache.sh",
+    "PFI/scripts/installPFIEntryApps.sh",
+    "PFI/scripts/startPFI.sh",
+    "PFI/src/pfi_os/app/streamlit_app.py",
+    "PFI/src/pfi_os/system/macos_runtime_acceptance.py",
+    "PFI/src/pfi_v02/stage_v023_contract.py",
+    "PFI/tests/test_pfi_app_entry_version_contract.py",
+    "PFI/tests/test_v023_stage1_app_entry_bundle_contract.py",
+    "PFI/web/app/shell.js",
+    "PFI/web/index.html"
+  ],
+  "explicitly_not_done": [
+    "Stage 2 page rebuild",
+    "route implementation changes",
+    "data computation or read-model changes",
+    "report generation implementation",
+    "mock/sample/synthetic/fixture/demo/fake financial data"
+  ],
+  "push_ready_head": "4273515d3af56bbb49a76e37f2a8fc0756dda6fb",
+  "push_ready_generated_at": "2026-06-29T21:32:07.060325+00:00",
+  "notes": [
+    "Runtime and browser evidence was generated from the validated Stage 1 app worktree bound to ~/Downloads/PFI.app.",
+    "The push-ready worktree rebases the same PFI Stage 1 changes onto the latest origin/main without altering runtime/browser facts."
+  ],
+  "push_ready": {
+    "repo_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi-stage1-push-ready",
+    "branch": "codex/pfi-v023-stage1-push-ready",
+    "head_before_evidence_amend": "4273515d3af56bbb49a76e37f2a8fc0756dda6fb",
+    "base_origin_main": "ff469213cd5acbec7a0183a5d6e9109b94ea1097",
+    "generated_at": "2026-06-29T21:32:29.608546+00:00",
+    "changed_files_match_validated_stage1_scope": true
+  }
+}
