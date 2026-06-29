@@ -779,3 +779,80 @@ tasks:
     rollback: "Restore source difference queue policy and source priority policy."
     target_version: "0.1.0-s03p3"
     completed_version: "0.1.0-s03p3"
+  - task_id: "S4PAT01"
+    phase: "S4PA"
+    objective: "实现 normalize_amount_to_cents，支持元、万元、千分位、负数、括号负数。"
+    scope:
+      - "KMFA/tools/amount_tools.py"
+    non_scope:
+      - "field standardization"
+      - "zero-delta validation"
+      - "GitHub upload"
+    status: "completed"
+    dependencies:
+      - "S3PCT03"
+    required_files:
+      - "KMFA/tools/amount_tools.py"
+    acceptance_ids:
+      - "ACC-KMFA-S04-P1"
+    test_commands:
+      - "python3 -m unittest KMFA.tests.test_amount_tools -q"
+    test_results:
+      - "PASS: normalize_amount_to_cents covers yuan, ten-thousand-yuan, thousand separators, negatives, parentheses negatives, and integer cents"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S04_P1_amount_tools/human/s04_p1_completion_record.md"
+    risk: "Amount normalization must not use float or silently round fractional cents."
+    rollback: "Remove S04-P1 amount tools and restore S04 status."
+    target_version: "0.1.0-s04p1"
+    completed_version: "0.1.0-s04p1"
+  - task_id: "S4PAT02"
+    phase: "S4PA"
+    objective: "禁止业务金额使用 float，使用整数分或 Decimal。"
+    scope:
+      - "KMFA/tools/check_no_float_money.py"
+    non_scope:
+      - "zero-delta validation"
+      - "lineage completeness"
+    status: "completed"
+    dependencies:
+      - "S4PAT01"
+    required_files:
+      - "KMFA/tools/check_no_float_money.py"
+    acceptance_ids:
+      - "ACC-KMFA-S04-P1"
+    test_commands:
+      - "python3 KMFA/tools/check_no_float_money.py"
+    test_results:
+      - "PASS: no KMFA Python float money usage found"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S04_P1_amount_tools/human/test_results.md"
+    risk: "No-float scan is a code safety gate, not a replacement for S06 zero-delta."
+    rollback: "Remove check_no_float_money.py and restore S04-P1 status."
+    target_version: "0.1.0-s04p1"
+    completed_version: "0.1.0-s04p1"
+  - task_id: "S4PAT03"
+    phase: "S4PA"
+    objective: "空白、横杠、井号、异常符号不得静默转 0。"
+    scope:
+      - "KMFA/tools/amount_tools.py"
+      - "KMFA/tests/test_amount_tools.py"
+    non_scope:
+      - "field quality status propagation"
+      - "manual resolution workbench"
+    status: "completed"
+    dependencies:
+      - "S4PAT02"
+    required_files:
+      - "KMFA/tests/test_amount_tools.py"
+    acceptance_ids:
+      - "ACC-KMFA-S04-P1"
+    test_commands:
+      - "python3 -m unittest KMFA.tests.test_amount_tools -q"
+    test_results:
+      - "PASS: blank, dash, hash, abnormal text and non-cent values raise errors"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S04_P1_amount_tools/human/test_results.md"
+    risk: "Invalid amount values must not be coerced to zero in later facts or reports."
+    rollback: "Remove S04-P1 amount tests and restore S04 status."
+    target_version: "0.1.0-s04p1"
+    completed_version: "0.1.0-s04p1"

@@ -117,8 +117,8 @@ models:
     purpose: "后续支持 A0 权威基准、金额标准化、零差异校验、差异队列和项目成本报告。"
     owner: "KMFA"
     status: "planned"
-    fact_level: "PROPOSED"
-    model_version: "planned-s04-to-s10"
+    fact_level: "EXTRACTED"
+    model_version: "0.1.0-s04p1-partial"
     assumptions:
       - "ASM-KMFA-003"
     formula_ids:
@@ -136,11 +136,16 @@ models:
       - "mismatch report"
       - "report grade"
     code_refs:
-      - "not_implemented_until_S04_S09"
+      - "KMFA/tools/amount_tools.py"
+      - "KMFA/tools/check_no_float_money.py"
+      - "remaining_cost_model_not_implemented_until_S05_S10"
     test_refs:
+      - "python3 -m unittest KMFA.tests.test_amount_tools -q"
+      - "python3 KMFA/tools/check_no_float_money.py"
       - "planned: KMFA/tools/zero_delta_validator.py"
     evidence_refs:
       - "KMFA/模型参数文件.md"
+      - "KMFA/stage_artifacts/S04_P1_amount_tools/human/s04_p1_completion_record.md"
   - model_id: "MOD-KMFA-METADATA-001"
     name: "KMFA metadata protocol and identifier contract"
     kind: "deterministic_metadata_governance_contract"

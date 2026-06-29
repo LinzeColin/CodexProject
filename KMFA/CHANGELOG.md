@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-s04p1 - 2026-06-29
+
+- 完成 `S04-P1｜金额工具`，保持本 Phase 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/amount_tools.py`，提供 `normalize_amount_to_cents`，支持元、万元、千元、千分位、负数和括号负数，输出整数分。
+- 新增 `KMFA/tools/check_no_float_money.py`，检查 KMFA Python 文件中的 float literal、`float()` 调用和 float 标注。
+- 新增 `KMFA/tests/test_amount_tools.py`，覆盖金额标准化、float 禁止、异常输入不默认为 0、CLI 和 no-float 检查。
+- 新增 `KMFA/stage_artifacts/S04_P1_amount_tools/` 证据包。
+- 保持 S04-P2 字段标准化、S04-P3 工具测试报告、A0 基准、zero-delta、事实层、报告、UI 和外部接口为未完成。
+
 ## 0.1.0-s03p3 - 2026-06-29
 
 - 完成 `S03-P3｜源优先级`。
