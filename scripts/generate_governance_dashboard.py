@@ -151,6 +151,12 @@ def adp_s2pmt07_blocked_next_task(
         or "S2PLT04_COMPLETION_REPORT" in current_gate
         or "S2PLT04 report" in current_alias
     )
+    terminal_delivery_proof_is_next = (
+        "S2PLT02-TERMINAL-DELIVERY-PROOF" in current_iteration
+        or "S2PLT02_TERMINAL_DELIVERY_PROOF" in current_gate
+        or "S2PLT02 terminal delivery proof" in current_alias
+        or "terminal proof" in current_alias
+    )
     real_proof_capture_is_next = (
         "S2PLT02-REAL-PROOF-CAPTURE" in current_iteration
         or "S2PLT02_REAL_PROOF_CAPTURE" in current_gate
@@ -176,6 +182,27 @@ def adp_s2pmt07_blocked_next_task(
                 "then proceed to final command execution, next-agent handoff, independent "
                 "signoff, and final bundle manifest without claiming production acceptance "
                 "until all final-bundle gates pass."
+            ),
+            "stale_candidates": stale_candidates or [],
+        }
+    if terminal_delivery_proof_is_next:
+        return {
+            "task_id": "S2PLT02-TERMINAL-DELIVERY-PROOF",
+            "status": "blocked",
+            "reason": (
+                "The live S2PLT02 real-proof capture authorization artifact is "
+                "validated, but S2PLT02 still lacks a second consecutive real "
+                "M1-M4 SMTP service day, eight real emails, real launchd scheduler "
+                "proof, and terminal delivery proof artifact."
+            ),
+            "acceptance_ids": ["ACC-S2PLT02-2D", "ACC-S2PMT07-FINAL-REVIEW"],
+            "owner": "content_owner + engineering_owner + independent_final_reviewer",
+            "human_owner_role": "content_owner + engineering_owner + independent_final_reviewer",
+            "unblock_condition": (
+                "Use the validated no-production authorization only to collect "
+                "the missing S2PLT02 terminal evidence, then validate "
+                "FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json "
+                "without claiming Stage2 production acceptance."
             ),
             "stale_candidates": stale_candidates or [],
         }

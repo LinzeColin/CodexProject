@@ -1,6 +1,6 @@
 # ADP 用户中心
 
-更新时间：2026-06-29 23:41:32 Australia/Sydney
+更新时间：2026-06-30 08:01:19 Australia/Sydney
 
 这里是 ADP 在 GitHub 上的唯一中文用户入口。你不需要打开本机目录、运行文件、深层治理文件或原始 JSON，也能判断今天邮件是否正常、队列里还有什么、学习闭环到了哪一步、哪些结论仍被停止门禁止。
 
@@ -13,7 +13,7 @@
 | 截至今日总候选池 | [299 条总候选记录](./截至今日候选池.md)；候选队列前20精选已列分数 | 总候选池来源是 `docs/owner/CONTENT_LEDGER.csv`，前20精选是按公开评分抽取的阅读入口 |
 | 各板块数据源 | [5 个板块 / 6 个数据源](./数据源与板块健康.md)；当前生产启用 1 个来源 | 公开每个板块对应来源、启用状态、影子测试/规划状态和证据链接 |
 | 复习、行动、收益 | [复习行动与收益](./复习行动与收益.md) 已显示字段、证据链和 2026-06-28 今日快照数字 | 今日数字已由当日运行快照写入；后续每日必须继续由真实运行报告同步 |
-| Stage 2 是否正式生产通过 | 没有；最终门仍阻断；S2PLT03 本地演练不等于生产验收 | 不能宣称正式生产通过、每日生产运行已验收或 M1-M4 全量自动发送已通过 |
+| Stage 2 是否正式生产通过 | 没有；最终门仍阻断；S2PLT02 live 授权不等于 terminal proof 或生产验收 | 不能宣称正式生产通过、每日生产运行已验收或 M1-M4 全量自动发送已通过 |
 
 ## 一看三查
 
@@ -89,10 +89,16 @@
 
 计划来源：Email V1 每日 3+1（M1, M2, M3, M4），总应发送 4 封；这不是 Stage 2 生产验收通过声明。
 
-## 2026-06-29 18:04:46 Australia/Sydney - S2PLT02 授权门状态
+## 2026-06-30 07:41:53 Australia/Sydney - S2PLT02 live 授权状态
 
-- 最新下一步为 `S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION`：需要 owner 后续显式写入 `FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json` 才能授权真实 SMTP/scheduler proof capture。
-- 当前 `authorization_artifact_present=false`，owner packet 不等于授权；SMTP、scheduler、Release、restore、DAILY_OPERATION 和 integrated production acceptance 均未启用。
+- 已写入并校验 `FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json`；`live_authorization_artifact_status=pass`。
+- 当前下一任务是 `S2PLT02_TERMINAL_DELIVERY_PROOF`：仍需第二个真实 M1-M4 SMTP 日、8 封真实邮件总量、真实 launchd scheduler proof 和 terminal delivery proof artifact。
+- SMTP、scheduler、Release、restore、DAILY_OPERATION 和 integrated production acceptance 均未启用。
+
+## 2026-06-29 18:04:46 Australia/Sydney - S2PLT02 历史授权门状态
+
+- 当时下一步为 `S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION`，且 `authorization_artifact_present=false`。
+- 当前状态以上方 2026-06-30 live 授权记录为准；历史 owner packet 不等于 terminal proof。
 
 ## 2026-06-29 22:44:04 Australia/Sydney - S2PLT02 runtime readiness 状态
 
@@ -106,4 +112,5 @@
 - 当前 `authorization_artifact_written=false`、`authorization_artifact_present_in_repo=false`、`authorization_gate_satisfied_by_this_command=false`；正式授权文件仍缺失。
 - 不启用 SMTP、scheduler、Release、restore、DAILY_OPERATION，也不声明 S2PLT02/S2PMT07 或 integrated production acceptance。
 
-- 2026-06-29 23:05:25 Australia/Sydney：已补齐 S2PLT02 授权模板 `FINAL_ACCEPTANCE_BUNDLE/templates/s2plt02_real_proof_capture_authorization.template.json`；live 授权 artifact 仍缺失，S2PLT02/S2PMT07 不因此通过。
+- 2026-06-29 23:05:25 Australia/Sydney：已补齐 S2PLT02 授权模板 `FINAL_ACCEPTANCE_BUNDLE/templates/s2plt02_real_proof_capture_authorization.template.json`；该模板当时不等于 live 授权，当前 live 授权以上方 2026-06-30 记录为准。
+- 2026-06-30 07:41:53 Australia/Sydney：已写入并校验 S2PLT02 live authorization artifact；下一步为 `S2PLT02_TERMINAL_DELIVERY_PROOF`，但 S2PLT02/S2PMT07/production acceptance 仍未通过。

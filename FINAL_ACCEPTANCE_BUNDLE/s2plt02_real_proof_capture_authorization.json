@@ -1,0 +1,53 @@
+{
+  "schema_version": "adp.s2plt02_real_proof_capture_authorization.v1",
+  "contract_id": "ADP-PRODUCT-CONTRACT-V7.2",
+  "generated_at": "2026-06-30T07:34:01+10:00",
+  "authorization_decision": "S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZED_NO_PRODUCTION_ACCEPTANCE",
+  "authorized_by": {
+    "owner_id": "linzezhang_owner_coordinator",
+    "owner_role": "owner",
+    "authorization_source": "explicit_owner_instruction"
+  },
+  "authorization_scope": "S2PLT02_REAL_SMTP_SCHEDULER_PROOF_CAPTURE_ONLY",
+  "authorized_actions": [
+    "capture_second_consecutive_real_m1_m4_smtp_day",
+    "capture_real_launchd_scheduler_proof",
+    "validate_s2plt02_terminal_delivery_proof_artifact"
+  ],
+  "authorization_constraints": {
+    "stage2_production_acceptance_not_granted": true,
+    "daily_operation_not_enabled": true,
+    "release_not_enabled": true,
+    "current_v7_unchanged": true,
+    "only_capture_second_day_and_scheduler_proof": true
+  },
+  "readiness_state_hash": "79ac4987239ecad8d4eee82de0157901b59259100e6d738bd1b15d17a37dc76e",
+  "evidence_refs": [
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_READINESS.md",
+    "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-20260629.json"
+  ],
+  "no_production_side_effects": {
+    "production_acceptance_claimed": false,
+    "integrated_production_accepted": false,
+    "stage2_integrated_production_accepted": false,
+    "daily_operation_enabled": false,
+    "real_smtp_sent": false,
+    "real_smtp_send_enabled": false,
+    "scheduler_enabled": false,
+    "scheduler_install_enabled": false,
+    "release_uploaded": false,
+    "release_packaging_enabled": false,
+    "production_restore_enabled": false,
+    "production_restore_executed": false,
+    "public_schema_changed": false,
+    "db_migration_executed": false,
+    "production_queue_mutated": false,
+    "source_adapter_changed": false,
+    "ranking_algorithm_changed": false,
+    "current_pointer_changed": false,
+    "v7_1_baseline_changed": false,
+    "v7_2_contract_files_changed": false
+  },
+  "authorization_hash": "sha256:d98242a6c95c6ba62e7e926bf3613e36339d398f70bf9e44b1af1d95794c6c79"
+}

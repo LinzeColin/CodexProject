@@ -572,62 +572,29 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["scope"], "final_bundle_prerequisite_plan_only_no_production_acceptance")
         self.assertEqual(payload["next_required_step"], "S2PLT04_COMPLETION_REPORT")
         self.assertFalse(payload["next_required_step_is_actionable"])
-        self.assertEqual(payload["next_executable_task"], "S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION")
-        self.assertEqual(
-            payload["next_executable_command"],
-            "build-s2plt02-real-proof-capture-authorization-artifact-draft",
-        )
-        self.assertEqual(
-            payload["next_executable_command_args"],
-            {
-                "owner_id": "owner_or_coordinator",
-                "owner_role": "owner",
-                "generated_at_source": "current Australia/Sydney timestamp at execution time",
-                "readiness_state_hash": "79ac4987239ecad8d4eee82de0157901b59259100e6d738bd1b15d17a37dc76e",
-            },
-        )
+        self.assertEqual(payload["next_executable_task"], "S2PLT02_TERMINAL_DELIVERY_PROOF")
+        self.assertEqual(payload["next_executable_command"], "")
+        self.assertEqual(payload["next_executable_command_args"], {})
         self.assertFalse(payload["next_executable_command_writes_artifact"])
         self.assertFalse(payload["next_executable_command_satisfies_gate"])
-        self.assertEqual(payload["next_executable_command_dry_run_status"], "pass")
-        self.assertEqual(
-            payload["next_executable_command_dry_run_evidence_ref"],
-            "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-CLI-RUNTIME-SYNC-20260629.json",
-        )
+        self.assertEqual(payload["next_executable_command_dry_run_status"], "")
+        self.assertEqual(payload["next_executable_command_dry_run_evidence_ref"], "")
         self.assertFalse(payload["next_executable_command_dry_run_wrote_artifact"])
         self.assertFalse(payload["draft_authorization_is_live_authorization"])
-        self.assertEqual(payload["live_authorization_artifact_status"], "missing")
+        self.assertEqual(payload["live_authorization_artifact_status"], "pass")
         self.assertEqual(
             payload["live_authorization_artifact_path"],
             "FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json",
         )
-        self.assertIn(
-            "s2plt02_real_proof_capture_authorization_missing",
-            payload["live_authorization_validation_errors"],
-        )
-        self.assertEqual(
-            payload["next_executable_command_validation_command"],
-            "validate-s2plt02-real-proof-capture-authorization "
-            "--path FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json "
-            "--expected-readiness-state-hash "
-            "79ac4987239ecad8d4eee82de0157901b59259100e6d738bd1b15d17a37dc76e "
-            "--json",
-        )
-        self.assertEqual(
-            payload["next_executable_evidence_refs"],
-            [
-                "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-CLI-RUNTIME-SYNC-20260629.json",
-                "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_DRAFT_CLI.md",
-                "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_READINESS_RUNTIME_STATE_SYNC.md",
-                "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION.md",
-            ],
-        )
+        self.assertEqual(payload["live_authorization_validation_errors"], [])
+        self.assertEqual(payload["next_executable_command_validation_command"], "")
+        self.assertEqual(payload["next_executable_evidence_refs"], [])
         self.assertTrue(payload["next_required_step_blocked_by_upstream_evidence"])
         self.assertEqual(
             payload["upstream_blockers"],
             [
                 "s2plt04_completion_report_blocked_by_s2plt02_terminal_delivery_proof_missing",
                 "s2plt04_completion_report_blocked_by_s2plt03_terminal_resilience_proof_missing",
-                "s2plt02_terminal_delivery_proof_blocked_by_real_proof_capture_authorization_missing",
             ],
         )
         self.assertFalse(payload["all_required_steps_passed"])
@@ -737,7 +704,7 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["status"], "blocked")
         self.assertEqual(payload["next_required_step"], "S2PLT04_COMPLETION_REPORT")
         self.assertFalse(payload["next_required_step_is_actionable"])
-        self.assertEqual(payload["next_executable_task"], "S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION")
+        self.assertEqual(payload["next_executable_task"], "S2PLT02_TERMINAL_DELIVERY_PROOF")
         self.assertFalse(payload["integrated_production_accepted"])
         self.assertFalse(payload["real_smtp_send_enabled"])
         self.assertFalse(payload["scheduler_install_enabled"])

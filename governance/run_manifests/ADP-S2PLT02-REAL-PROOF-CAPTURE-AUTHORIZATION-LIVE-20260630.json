@@ -1,0 +1,118 @@
+{
+  "schema_version": "codexproject.event.v1",
+  "manifest_id": "ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-LIVE-20260630",
+  "project_id": "arxiv-daily-push",
+  "phase": "S2PL",
+  "task_id": "S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION",
+  "task_ids": [
+    "S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION",
+    "S2PLT02_TERMINAL_DELIVERY_PROOF",
+    "S2PLT02",
+    "S2PMT07",
+    "ACC-S2PLT02-2D",
+    "ACC-S2PMT07-FINAL-REVIEW"
+  ],
+  "generated_at": "2026-06-30T07:41:53+10:00",
+  "fact_level": "EXTRACTED",
+  "status": "pass",
+  "result": "s2plt02_real_proof_capture_authorization_live_ready_terminal_proof_blocked_no_production",
+  "summary": "Owner/coordinator authorization has been written to FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json and validates against the S2PLT02 readiness hash. This authorizes only S2PLT02 real proof capture; S2PLT02 terminal delivery proof, S2PLT03 terminal resilience proof, S2PLT04 completion, final bundle, DAILY_OPERATION, and production acceptance remain blocked.",
+  "authorization_artifact_ref": "FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json",
+  "authorization_artifact_present": true,
+  "authorization_artifact_generated_at": "2026-06-30T07:34:01+10:00",
+  "authorization_hash": "sha256:d98242a6c95c6ba62e7e926bf3613e36339d398f70bf9e44b1af1d95794c6c79",
+  "readiness_state_hash": "79ac4987239ecad8d4eee82de0157901b59259100e6d738bd1b15d17a37dc76e",
+  "authorization_validation_state_hash": "68cb9b1f0ae26262a42aa703567a9bf6409fe4e0fbdca12233f553f63879f3c1",
+  "final_bundle_prerequisite_plan_state_hash": "f4e063d993557ac8e2fc19885c76a7fcc7d48bb482aaf66c35e0c76d5c02bf7b",
+  "live_authorization_artifact_status": "pass",
+  "live_authorization_validation_errors": [],
+  "next_executable_task_after_authorization": "S2PLT02_TERMINAL_DELIVERY_PROOF",
+  "remaining_upstream_blockers": [
+    "s2plt04_completion_report_blocked_by_s2plt02_terminal_delivery_proof_missing",
+    "s2plt04_completion_report_blocked_by_s2plt03_terminal_resilience_proof_missing"
+  ],
+  "remaining_upstream_unblock_order": [
+    "S2PLT02_TERMINAL_DELIVERY_PROOF",
+    "S2PLT03_TERMINAL_RESILIENCE_PROOF",
+    "S2PLT04_COMPLETION_REPORT"
+  ],
+  "s2plt02_terminal_delivery_proof_artifact_present": false,
+  "s2plt02_accepted": false,
+  "s2plt03_accepted": false,
+  "s2plt04_completed": false,
+  "final_acceptance_bundle_manifest_present": false,
+  "production_acceptance_claimed": false,
+  "integrated_production_accepted": false,
+  "stage2_integrated_production_accepted": false,
+  "daily_operation_enabled": false,
+  "real_smtp_sent": false,
+  "real_smtp_send_enabled": false,
+  "scheduler_enabled": false,
+  "scheduler_install_enabled": false,
+  "release_uploaded": false,
+  "release_packaging_enabled": false,
+  "production_restore_enabled": false,
+  "production_restore_executed": false,
+  "public_schema_changed": false,
+  "db_migration_executed": false,
+  "production_queue_mutated": false,
+  "source_adapter_changed": false,
+  "source_or_board_changed": false,
+  "ranking_algorithm_changed": false,
+  "current_pointer_changed": false,
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false,
+  "mail_production_code_changed": false,
+  "smtp_changed": false,
+  "scheduler_changed": false,
+  "release_changed": false,
+  "model_ids_changed": [
+    "MOD-ADP-100",
+    "MOD-ADP-121"
+  ],
+  "formula_ids_changed": [
+    "FORM-ADP-102",
+    "FORM-ADP-123"
+  ],
+  "parameter_ids_changed": [
+    "PARAM-ADP-1091",
+    "PARAM-ADP-1092",
+    "PARAM-ADP-1093",
+    "PARAM-ADP-1094",
+    "PARAM-ADP-1095",
+    "PARAM-ADP-1096",
+    "PARAM-ADP-1097",
+    "PARAM-ADP-1098",
+    "PARAM-ADP-1099",
+    "PARAM-ADP-1100",
+    "PARAM-ADP-1101"
+  ],
+  "evidence_refs": [
+    "FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json",
+    "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-LIVE-20260630.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_LIVE.md",
+    "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-20260629.json",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py",
+    "arxiv-daily-push/tests/test_stage2_final_gate.py",
+    "arxiv-daily-push/tests/test_cli.py"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_auth_live_validate PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli validate-s2plt02-real-proof-capture-authorization --path FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json --expected-readiness-state-hash 79ac4987239ecad8d4eee82de0157901b59259100e6d738bd1b15d17a37dc76e --json",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_auth_plan_after_fix PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli plan-final-bundle-prerequisites --json",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_auth_stage2_target2 PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_final_bundle_prerequisite_plan_consumes_committed_no_production_artifact arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_final_bundle_prerequisite_plan_routes_to_authorization_when_live_artifact_missing arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_final_acceptance_bundle_readiness_embeds_prerequisite_plan_as_valid_blocked_evidence",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_auth_cli_target2 PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_cli.py::CliTests::test_plan_final_bundle_prerequisites_json_command_blocks_without_artifacts"
+  ],
+  "test_results": [
+    "authorization validator returned pass with validation_errors=[] and state_hash=68cb9b1f0ae26262a42aa703567a9bf6409fe4e0fbdca12233f553f63879f3c1",
+    "plan-final-bundle-prerequisites still returns blocked / exit 2 but now reports live_authorization_artifact_status=pass and next_executable_task=S2PLT02_TERMINAL_DELIVERY_PROOF",
+    "focused final-gate tests passed: 3 passed",
+    "focused CLI plan test passed: 1 passed"
+  ],
+  "risks": [
+    "The live authorization artifact can be misread as S2PLT02 acceptance; it only authorizes proof capture.",
+    "The next S2PLT02 terminal proof still requires second real M1-M4 SMTP day, eight total real emails, real launchd scheduler proof, and a validated terminal delivery proof artifact."
+  ],
+  "rollback": "Remove FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json, revert prerequisite-plan dynamic routing, tests, phase record, manifest, traceability/user-center/governance/three-base records, and keep production flags false; no SMTP/scheduler/Release/restore was enabled by this run.",
+  "version_before": "0.23.1",
+  "version_after": "0.23.1"
+}
