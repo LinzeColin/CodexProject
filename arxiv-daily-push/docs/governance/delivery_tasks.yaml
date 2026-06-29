@@ -5022,3 +5022,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+  - task_id: "S2PMT07-S2PLT04-COMPLETION-EVIDENCE-REF-CORRECTION"
+    title: "S2PMT07 S2PLT04 completion evidence ref correction"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-29T22:09:03+10:00"
+    summary: "Correct S2PLT04 completion evidence audit refs so it lists only existing S2PLT02 nonterminal evidence and explicitly binds the blocked S2PLT02 real-proof capture authorization artifact."
+    owner: "engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT04_COMPLETION_EVIDENCE_REF_CORRECTION.md", "governance/run_manifests/ADP-S2PMT07-S2PLT04-COMPLETION-EVIDENCE-REF-CORRECTION-20260629.json"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt04_ref_red PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_s2plt04_completion_evidence_audit_consumes_latest_nonterminal_terminal_audits", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt04_ref_green PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_s2plt04_completion_evidence_audit_consumes_latest_nonterminal_terminal_audits", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt04_ref_cli PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli audit-s2plt04-completion-evidence --repo-root . --json"]
+    test_results: ["TDD red failed as expected because existing_nonterminal_refs and authorization binding fields were absent", "focused green test: 1 passed", "audit CLI returned blocked / exit 2 with corrected existing S2PLT02 refs, authorization_status=blocked, real_proof_capture_authorized=false, and state_hash=c76a75f1a6ca28b0cf5aac92cc95e5d66ad039755e221ecdd1535342a605e926"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-S2PLT04-COMPLETION-EVIDENCE-REF-CORRECTION-20260629.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT04_COMPLETION_EVIDENCE_REF_CORRECTION.md", "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-20260629.json", "governance/run_manifests/ADP-S2PLT02-TERMINAL-READINESS-AUDIT-20260629.json", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
+    result: "blocked_s2plt04_completion_evidence_refs_corrected_no_authorization_no_production"
+    risk: "Corrected nonterminal refs can still be misread as S2PLT02 or S2PLT04 acceptance; terminal delivery, resilience, and authorization artifacts remain missing."
+    rollback: "Revert S2PLT04 audit ref correction fields, focused test, phase record, manifest, traceability row, delivery/event records, user-center traceability, and three base notes; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

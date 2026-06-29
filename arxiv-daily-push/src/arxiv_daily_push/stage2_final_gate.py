@@ -5625,6 +5625,44 @@ def build_s2plt04_completion_evidence_audit_state(
         s2plt02_remaining_blockers.append("inherited_v7_1_p0_findings_open")
     if not p1_zero:
         s2plt02_remaining_blockers.append("inherited_v7_1_p1_findings_open")
+    s2plt02_authorization_manifest_ref = (
+        "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-20260629.json"
+    )
+    s2plt02_authorization_manifest = _load_json_mapping_artifact(root / s2plt02_authorization_manifest_ref)
+    s2plt02_authorization_status = str(
+        s2plt02_authorization_manifest.get("status", "missing")
+        if s2plt02_authorization_manifest is not None
+        else "missing"
+    )
+    if s2plt02_authorization_manifest is not None:
+        s2plt02_authorization_blocking_reasons = [
+            reason
+            for reason in s2plt02_authorization_manifest.get("blocking_reasons", [])
+            if isinstance(reason, str)
+        ]
+        s2plt02_real_proof_capture_authorized = (
+            s2plt02_authorization_manifest.get("real_proof_capture_authorized") is True
+        )
+    else:
+        s2plt02_authorization_blocking_reasons = [
+            "s2plt02_real_proof_capture_authorization_missing"
+        ]
+        s2plt02_real_proof_capture_authorized = False
+    if not s2plt02_real_proof_capture_authorized:
+        for reason in s2plt02_authorization_blocking_reasons:
+            if reason not in s2plt02_remaining_blockers:
+                s2plt02_remaining_blockers.append(reason)
+    s2plt02_existing_nonterminal_refs = [
+        ref
+        for ref in (
+            "governance/run_manifests/ADP-S2PLT02-LIVE-2D-PRECHECK-20260626.json",
+            "governance/run_manifests/ADP-S2PLT02-PARTIAL-REAL-DELIVERY-EVIDENCE-20260628.json",
+            "governance/run_manifests/ADP-S2PLT02-ZERO-PROOF-READINESS-SYNC-20260629.json",
+            "governance/run_manifests/ADP-S2PLT02-TERMINAL-READINESS-AUDIT-20260629.json",
+            s2plt02_authorization_manifest_ref,
+        )
+        if (root / ref).exists()
+    ]
     source_evidence = {
         "S2PLT01_REPLAY_REVIEW": {
             "artifact_status": "pass" if s2plt01_accepted else "nonterminal",
@@ -5648,12 +5686,13 @@ def build_s2plt04_completion_evidence_audit_state(
         "S2PLT02_LIVE_2D_PROOF": {
             "artifact_status": "missing_terminal",
             "artifact_ref": "governance/run_manifests/MISSING_REAL_S2PLT02_TERMINAL_PROOF.json",
-            "nonterminal_refs": [
-                "governance/run_manifests/ADP-S2PLT02-LIVE-2D-PRECHECK-20260626.json",
-                "governance/run_manifests/ADP-S2PLT02-PARTIAL-REAL-DELIVERY-EVIDENCE-20260628.json",
-                "governance/run_manifests/ADP-S2PLT02-ZERO-PROOF-READINESS-SYNC-20260629.json",
-                "governance/run_manifests/ADP-S2PLT02-TERMINAL-READINESS-ZERO-PROOF-SYNC-20260629.json",
-            ],
+            "nonterminal_refs": s2plt02_existing_nonterminal_refs,
+            "existing_nonterminal_refs": s2plt02_existing_nonterminal_refs,
+            "real_proof_capture_authorization_manifest_ref": s2plt02_authorization_manifest_ref,
+            "real_proof_capture_authorization_artifact_ref": S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_ARTIFACT_PATH,
+            "real_proof_capture_authorization_status": s2plt02_authorization_status,
+            "real_proof_capture_authorized": s2plt02_real_proof_capture_authorized,
+            "real_proof_capture_authorization_blocking_reasons": s2plt02_authorization_blocking_reasons,
             "terminal_dependency": "S2PLT02_ACCEPTED",
             "terminal_dependency_value": False,
             "blocking_reason": "s2plt02_live_2d_terminal_proof_missing",

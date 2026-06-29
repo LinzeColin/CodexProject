@@ -3969,9 +3969,35 @@ class Stage2FinalGateTests(unittest.TestCase):
 
         self.assertEqual(state["status"], "blocked")
         self.assertFalse(state["completion_report_ready"])
-        self.assertIn(
+        self.assertNotIn(
             "governance/run_manifests/ADP-S2PLT02-TERMINAL-READINESS-ZERO-PROOF-SYNC-20260629.json",
             s2plt02["nonterminal_refs"],
+        )
+        self.assertNotIn(
+            "governance/run_manifests/ADP-S2PLT02-TERMINAL-READINESS-ZERO-PROOF-SYNC-20260629.json",
+            s2plt02["existing_nonterminal_refs"],
+        )
+        self.assertIn(
+            "governance/run_manifests/ADP-S2PLT02-TERMINAL-READINESS-AUDIT-20260629.json",
+            s2plt02["existing_nonterminal_refs"],
+        )
+        self.assertIn(
+            "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-20260629.json",
+            s2plt02["existing_nonterminal_refs"],
+        )
+        self.assertEqual(
+            s2plt02["real_proof_capture_authorization_manifest_ref"],
+            "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-20260629.json",
+        )
+        self.assertEqual(
+            s2plt02["real_proof_capture_authorization_artifact_ref"],
+            "FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json",
+        )
+        self.assertEqual(s2plt02["real_proof_capture_authorization_status"], "blocked")
+        self.assertFalse(s2plt02["real_proof_capture_authorized"])
+        self.assertIn(
+            "s2plt02_real_proof_capture_authorization_missing",
+            s2plt02["real_proof_capture_authorization_blocking_reasons"],
         )
         self.assertEqual(s2plt02["terminal_readiness_audit_status"], "blocked")
         self.assertEqual(

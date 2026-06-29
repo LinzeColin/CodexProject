@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260629-ADP-S2PMT07-FINAL-BUNDLE-PREREQUISITE-ZERO-PROOF-BLOCKER-SYNC"
+as_of_event_id: "EVENT-20260629-ADP-S2PMT07-S2PLT04-COMPLETION-EVIDENCE-REF-CORRECTION"
 source_snapshot_hash: "sha256:226986019bf48e97772205b136bdee71b6ea2164e555d58e7af27a9731754488"
 source_base_commit: "fd90a208c7b009aa11bc26c4629a7ea92679c5ff"
 source_tree_hash: "c44d743a2833842b3cc0dd9e098fb70017cdc5a2"
-snapshot_event_time: "2026-06-29T18:47:58+10:00"
+snapshot_event_time: "2026-06-29T22:09:03+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -66,7 +66,7 @@ dimensions:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "BLOCKED_PRECHECK"
-  release_gate: "S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_BLOCKED_ARTIFACT_MISSING_NO_PRODUCTION"
+  release_gate: "S2PMT07_S2PLT04_COMPLETION_EVIDENCE_REF_CORRECTION_BLOCKED_NO_AUTHORIZATION_NO_PRODUCTION"
   blocker_ids:
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"

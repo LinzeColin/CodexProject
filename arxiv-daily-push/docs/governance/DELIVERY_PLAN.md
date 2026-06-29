@@ -21,12 +21,21 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 275
+- task_count: 276
 - acceptance_count: 127
 
 ## Delivery Tasks
 
 The machine-readable task source is `delivery_tasks.yaml`.
+
+## 2026-06-29 22:09:03 Australia/Sydney - S2PMT07 S2PLT04 Completion Evidence Ref Correction
+
+- `S2PMT07-S2PLT04-COMPLETION-EVIDENCE-REF-CORRECTION` corrects the S2PLT04 completion evidence audit's S2PLT02 evidence refs.
+- Removed stale nonexistent ref: `governance/run_manifests/ADP-S2PLT02-TERMINAL-READINESS-ZERO-PROOF-SYNC-20260629.json`.
+- Current audit remains `blocked` / exit 2 with `state_hash=c76a75f1a6ca28b0cf5aac92cc95e5d66ad039755e221ecdd1535342a605e926`.
+- The audit now exposes `real_proof_capture_authorization_status=blocked`, `real_proof_capture_authorized=false`, and `real_proof_capture_authorization_artifact_ref=FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json`.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-S2PLT04-COMPLETION-EVIDENCE-REF-CORRECTION-20260629.json` and `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT04_COMPLETION_EVIDENCE_REF_CORRECTION.md`.
+- This does not write S2PLT04 completion report, authorize proof capture, send SMTP, enable scheduler, upload Release assets, execute restore, mutate schema/DB/source/ranking/CURRENT/V7, enable DAILY_OPERATION, accept S2PLT02/S2PLT03/S2PLT04/S2PMT07, or claim integrated production acceptance.
 
 ## 2026-06-29 21:49:37 Australia/Sydney - S2PMT07 Final Bundle Auth Draft Live Guard
 
