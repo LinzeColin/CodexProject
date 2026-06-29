@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-06-29 23:05:25 Australia/Sydney - S2PLT02 authorization template
+
+- Added owner-fillable `s2plt02_real_proof_capture_authorization.template.json` under final bundle templates.
+- Kept live `FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json` missing and S2PLT02/S2PMT07 blocked.
+- No SMTP, scheduler, Release, restore, CURRENT/V7, DAILY_OPERATION, or production acceptance was enabled.
+
 ## 2026-06-29 22:44:04 Australia/Sydney - S2PLT02-REAL-PROOF-CAPTURE-READINESS-RUNTIME-STATE-SYNC
 
 - Updated `audit-s2plt02-real-proof-capture-readiness --json` to include `launchctl print` runtime state for daily/health/watchdog LaunchAgents in addition to disabled-state parsing.

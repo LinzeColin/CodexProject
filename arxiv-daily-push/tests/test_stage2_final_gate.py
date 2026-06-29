@@ -4400,6 +4400,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse((template_dir / "README.md").exists())
 
         expected_templates = (
+            "s2plt02_real_proof_capture_authorization.template.json",
             "independent_final_reviewer_assignment.template.json",
             "p0_p1_zero_proof.template.json",
             "s2plt04_completion_report.template.json",
@@ -4412,6 +4413,15 @@ class Stage2FinalGateTests(unittest.TestCase):
             template_path = template_dir / filename
             self.assertTrue(template_path.exists(), str(template_path))
             self.assertGreater(template_path.stat().st_size, 200, str(template_path))
+
+        authorization_template = (
+            template_dir / "s2plt02_real_proof_capture_authorization.template.json"
+        ).read_text(encoding="utf-8")
+        index = (template_dir / "TEMPLATE_INDEX.md").read_text(encoding="utf-8")
+        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json", index)
+        self.assertIn("S2PLT02_REAL_SMTP_SCHEDULER_PROOF_CAPTURE_ONLY", authorization_template)
+        self.assertIn("REPLACE_WITH_EXPLICIT_OWNER_APPROVAL", authorization_template)
+        self.assertIn("RECOMPUTE_WITH_build_s2plt02_real_proof_capture_authorization_hash", authorization_template)
 
         state = build_final_acceptance_bundle_readiness_state()
 

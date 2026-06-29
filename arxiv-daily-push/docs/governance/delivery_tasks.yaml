@@ -5062,3 +5062,26 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-TEMPLATE"
+    title: "S2PLT02 real-proof capture authorization template"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-29T23:05:25+10:00"
+    objective: "Provide an owner-fillable S2PLT02 authorization artifact template without creating live authorization or enabling production."
+    scope: "S2PLT02 authorization template, template index, focused final-gate regression test, phase record, run manifest, traceability row, delivery/event records, user-center traceability, and three base files."
+    non_scope: "No live authorization artifact, no SMTP send, no scheduler enable/install, no Release, no restore, no CURRENT/V7 change, no S2PLT02/S2PLT04/S2PMT07 acceptance, and no integrated production acceptance."
+    owner: "engineering_owner + owner/coordinator"
+    risk_tier: "T1"
+    required_files: ["FINAL_ACCEPTANCE_BUNDLE/templates/s2plt02_real_proof_capture_authorization.template.json", "FINAL_ACCEPTANCE_BUNDLE/templates/TEMPLATE_INDEX.md", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_TEMPLATE.md", "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-TEMPLATE-20260629.json"]
+    acceptance_ids: ["ACC-S2PLT02-2D", "ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_auth_template_red PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_final_bundle_templates_exist_but_do_not_satisfy_readiness", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_auth_template_green PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_final_bundle_templates_exist_but_do_not_satisfy_readiness"]
+    test_results: ["TDD red failed because authorization template was missing", "focused template guard: 1 passed"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-TEMPLATE-20260629.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_TEMPLATE.md", "FINAL_ACCEPTANCE_BUNDLE/templates/s2plt02_real_proof_capture_authorization.template.json", "FINAL_ACCEPTANCE_BUNDLE/templates/TEMPLATE_INDEX.md", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
+    result: "authorization_template_ready_live_authorization_missing_no_production"
+    risk: "The template can be misread as live authorization if copied without explicit owner approval, current readiness hash binding, and hash recomputation."
+    rollback: "Remove the template, index entry, focused assertion, phase record, manifest, traceability row, delivery/event records, user-center traceability note, and three base notes; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

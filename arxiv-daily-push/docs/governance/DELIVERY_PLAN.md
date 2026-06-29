@@ -21,10 +21,17 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 277
+- task_count: 278
 - acceptance_count: 127
 
 ## Delivery Tasks
+
+## 2026-06-29 23:05:25 Australia/Sydney - S2PLT02 Real-Proof Capture Authorization Template
+
+- `S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-TEMPLATE` adds an owner-fillable template for `FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json`.
+- The template binds the current readiness hash and required no-production constraints, but remains under `FINAL_ACCEPTANCE_BUNDLE/templates/` and does not satisfy the live authorization gate.
+- Evidence: `governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-TEMPLATE-20260629.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_TEMPLATE.md`; `FINAL_ACCEPTANCE_BUNDLE/templates/s2plt02_real_proof_capture_authorization.template.json`.
+- This does not write the live authorization artifact, authorize proof capture, send SMTP, enable scheduler, upload Release assets, execute restore, mutate schema/DB/source/ranking/CURRENT/V7, enable DAILY_OPERATION, or claim integrated production acceptance.
 
 The machine-readable task source is `delivery_tasks.yaml`.
 
