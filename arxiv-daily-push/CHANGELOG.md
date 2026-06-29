@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-06-29 21:20:40 Australia/Sydney - S2PMT07-FINAL-BUNDLE-NEXT-EXECUTABLE-COMMAND-SYNC
+
+- Updated `plan-final-bundle-prerequisites --json` so the blocked prerequisite plan exposes `next_executable_command=build-s2plt02-real-proof-capture-authorization-artifact-draft`, owner input argument names, validation command, and evidence refs when `next_executable_task=S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION`.
+- Current plan remains blocked / exit 2 with `next_required_step=S2PLT04_COMPLETION_REPORT`, `next_required_step_is_actionable=false`, `next_executable_command_writes_artifact=false`, `next_executable_command_satisfies_gate=false`, and state hash `dd5fc312ae8ce8f70dbdc291d55dfd987686de3c5de0daa4bd1b57f1857c92db`.
+- This does not create `FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json`, authorize real proof capture, send SMTP, enable scheduler, upload Release assets, restore production, change CURRENT/V7, mutate public schema/DB/source/ranking/queue, enable DAILY_OPERATION, or claim Stage2/S3 production acceptance.
+
 ## 2026-06-29 17:41:57 Australia/Sydney - S2PLT02-REAL-PROOF-CAPTURE-READINESS
 
 - Added `audit-s2plt02-real-proof-capture-readiness --json` and fail-closed readiness logic before any real S2PLT02 SMTP/scheduler proof capture can be treated as terminal evidence.
