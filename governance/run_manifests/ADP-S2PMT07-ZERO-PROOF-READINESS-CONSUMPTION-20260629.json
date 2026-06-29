@@ -1,0 +1,111 @@
+{
+  "schema_version": "codexproject.event.v1",
+  "manifest_id": "ADP-S2PMT07-ZERO-PROOF-READINESS-CONSUMPTION-20260629",
+  "event_id": "EVENT-20260629-ADP-S2PMT07-ZERO-PROOF-READINESS-CONSUMPTION",
+  "event_type": "stage2_s2pmt07_zero_proof_readiness_consumption",
+  "project_id": "arxiv-daily-push",
+  "phase": "S2PL",
+  "task_id": "S2PMT07-ZERO-PROOF-READINESS-CONSUMPTION",
+  "task_ids": [
+    "S2PMT07-ZERO-PROOF-READINESS-CONSUMPTION",
+    "S2PMT07",
+    "ACC-S2PMT07-FINAL-REVIEW"
+  ],
+  "generated_at": "2026-06-29T18:29:22+10:00",
+  "occurred_at": "2026-06-29T18:29:22+10:00",
+  "timestamp": "2026-06-29T18:29:22+10:00",
+  "fact_level": "EXTRACTED",
+  "status": "blocked",
+  "result": "blocked_final_bundle_zero_proof_readiness_consumed_no_production",
+  "summary": "S2PMT07 final bundle readiness now consumes the committed valid P0/P1 zero-proof artifact in the embedded zero-proof readiness state instead of reporting stale missing/open blockers.",
+  "model_ids_changed": [],
+  "formula_ids_changed": [],
+  "parameter_ids_changed": [],
+  "reused_model_ids": [
+    "MOD-ADP-100"
+  ],
+  "reused_formula_ids": [
+    "FORM-ADP-102"
+  ],
+  "zero_proof_artifact_ref": "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
+  "zero_proof_artifact_validation_status": "pass",
+  "zero_proof_readiness_status": "pass",
+  "zero_proof_artifact_present": true,
+  "p0_zero_proven": true,
+  "p1_zero_proven": true,
+  "observed_open_p0_findings": 0,
+  "observed_open_p1_findings": 0,
+  "zero_proof_readiness_state_hash": "ca4bed05c3f7a57af14fa2afd6e585f7b5720b69431aff40cd5106f1fe285e80",
+  "final_bundle_readiness_state_hash": "742d92e4cab0c884b52a346f7024e8917b6caaca2d171b15000d8147c2bee09e",
+  "final_bundle_status": "blocked",
+  "remaining_missing_items": [
+    "FINAL_ACCEPTANCE_BUNDLE/manifest.json",
+    "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json",
+    "FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml",
+    "FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json",
+    "HANDOFF/00_\u4e0b\u4e00Agent\u5148\u8bfb.md"
+  ],
+  "remaining_blocking_reasons": [
+    "final_acceptance_bundle_manifest_missing",
+    "s2plt04_completion_evidence_missing",
+    "independent_review_signoff_missing",
+    "independent_final_command_execution_missing",
+    "next_agent_handoff_missing",
+    "final_acceptance_bundle_manifest_validation_blocked",
+    "s2plt04_completion_report_validation_blocked",
+    "independent_review_signoff_validation_blocked",
+    "final_command_execution_validation_blocked",
+    "next_agent_handoff_validation_blocked"
+  ],
+  "production_acceptance_claimed": false,
+  "integrated_production_accepted": false,
+  "stage2_integrated_production_accepted": false,
+  "daily_operation_enabled": false,
+  "real_smtp_sent": false,
+  "real_smtp_send_enabled": false,
+  "scheduler_enabled": false,
+  "scheduler_install_enabled": false,
+  "release_uploaded": false,
+  "release_packaging_enabled": false,
+  "production_restore_enabled": false,
+  "production_restore_executed": false,
+  "public_schema_changed": false,
+  "db_migration_executed": false,
+  "production_queue_mutated": false,
+  "source_adapter_changed": false,
+  "ranking_algorithm_changed": false,
+  "current_pointer_changed": false,
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false,
+  "evidence_refs": [
+    "governance/run_manifests/ADP-S2PMT07-ZERO-PROOF-READINESS-CONSUMPTION-20260629.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_ZERO_PROOF_READINESS_CONSUMPTION.md",
+    "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py",
+    "arxiv-daily-push/tests/test_stage2_final_gate.py",
+    "arxiv-daily-push/tests/test_cli.py"
+  ],
+  "files_changed": [
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py",
+    "arxiv-daily-push/tests/test_stage2_final_gate.py",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_ZERO_PROOF_READINESS_CONSUMPTION.md",
+    "governance/run_manifests/ADP-S2PMT07-ZERO-PROOF-READINESS-CONSUMPTION-20260629.json",
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/MODEL_SPEC.md",
+    "arxiv-daily-push/\u529f\u80fd\u6e05\u5355.md",
+    "arxiv-daily-push/\u5f00\u53d1\u8bb0\u5f55.md",
+    "arxiv-daily-push/\u6a21\u578b\u53c2\u6570\u6587\u4ef6.md"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s3_zero_target PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s3_zero_cli PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_cli.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s3_zero_probe PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli validate-final-acceptance-bundle --json"
+  ],
+  "test_results": [
+    "stage2_final_gate tests: 98 OK",
+    "CLI tests: 27 OK",
+    "validate-final-acceptance-bundle remains blocked / exit 2 with readiness_validation_errors=[] and zero-proof readiness pass"
+  ],
+  "next_task": "OBTAIN_EXPLICIT_S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_THEN_CAPTURE_TERMINAL_DELIVERY_PROOF"
+}

@@ -4774,31 +4774,37 @@ def validate_independent_final_closure_decision_owner_packet_state(
     return errors
 
 
-def build_p0_p1_zero_proof_readiness_state() -> dict[str, Any]:
-    """Build a fail-closed schema contract for the future P0/P1 zero proof artifact."""
+def build_p0_p1_zero_proof_readiness_state(
+    p0_p1_zero_proof: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Build P0/P1 zero-proof readiness from a payload, or fail closed when absent."""
 
     assembly_state = build_p0_p1_zero_proof_assembly_state()
+    artifact_errors = validate_p0_p1_zero_proof_artifact(p0_p1_zero_proof)
+    artifact_ready = p0_p1_zero_proof is not None and not artifact_errors
+    decision = _mapping(p0_p1_zero_proof.get("independent_closure_decision")) if artifact_ready else {}
+    blocking_reasons = [] if artifact_ready else list(S2PMT07_P0_P1_ZERO_PROOF_BLOCKING_REASONS)
     state = {
-        "status": "blocked",
+        "status": "pass" if artifact_ready else "blocked",
         "scope": "p0_p1_zero_proof_readiness_schema_only_no_closure",
         "zero_proof_artifact_path": S2PMT07_P0_P1_ZERO_PROOF_ARTIFACT_PATH,
-        "zero_proof_artifact_present": False,
+        "zero_proof_artifact_present": p0_p1_zero_proof is not None,
         "required_zero_severities": list(S2PMT07_REQUIRED_ZERO_FINDING_SEVERITIES),
         "required_fields": list(S2PMT07_P0_P1_ZERO_PROOF_REQUIRED_FIELDS),
         "required_open_p0_findings": 0,
         "required_open_p1_findings": 0,
-        "observed_open_p0_findings": S2PMT07_INHERITED_V7_1_OPEN_P0_FINDINGS,
-        "observed_open_p1_findings": S2PMT07_INHERITED_V7_1_OPEN_P1_FINDINGS,
+        "observed_open_p0_findings": 0 if artifact_ready else S2PMT07_INHERITED_V7_1_OPEN_P0_FINDINGS,
+        "observed_open_p1_findings": 0 if artifact_ready else S2PMT07_INHERITED_V7_1_OPEN_P1_FINDINGS,
         "candidate_evidence_refs": [
             S2PMT07_P0_TECHNICAL_CLOSURE_CANDIDATE_PACKAGE,
             S2PMT07_P1_TECHNICAL_CLOSURE_CANDIDATE_RECEIPT,
             *S2PMT07_P1_TECHNICAL_CLOSURE_CANDIDATE_MANIFESTS,
         ],
         "zero_proof_assembly_state": assembly_state,
-        "candidate_evidence_only": True,
-        "independent_final_closure_decision_present": False,
-        "p0_zero_proven": False,
-        "p1_zero_proven": False,
+        "candidate_evidence_only": not artifact_ready,
+        "independent_final_closure_decision_present": artifact_ready,
+        "p0_zero_proven": artifact_ready and decision.get("p0_zero_proven") is True,
+        "p1_zero_proven": artifact_ready and decision.get("p1_zero_proven") is True,
         "closure_claimed": False,
         "production_acceptance_claimed": False,
         "integrated_production_accepted": False,
@@ -4807,7 +4813,7 @@ def build_p0_p1_zero_proof_readiness_state() -> dict[str, Any]:
         "scheduler_install_enabled": False,
         "release_packaging_enabled": False,
         "production_restore_enabled": False,
-        "blocking_reasons": list(S2PMT07_P0_P1_ZERO_PROOF_BLOCKING_REASONS),
+        "blocking_reasons": blocking_reasons,
         "state_hash": "",
     }
     state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
@@ -4818,14 +4824,13 @@ def validate_p0_p1_zero_proof_readiness_state(state: Mapping[str, Any]) -> list[
     """Validate P0/P1 zero-proof readiness without accepting closure."""
 
     errors: list[str] = []
-    if state.get("status") != "blocked":
-        errors.append("P0/P1 zero proof readiness status must remain blocked")
+    if state.get("status") not in {"pass", "blocked"}:
+        errors.append("P0/P1 zero proof readiness status must be pass or blocked")
     if state.get("scope") != "p0_p1_zero_proof_readiness_schema_only_no_closure":
         errors.append("P0/P1 zero proof readiness scope is invalid")
     if state.get("zero_proof_artifact_path") != S2PMT07_P0_P1_ZERO_PROOF_ARTIFACT_PATH:
         errors.append("P0/P1 zero proof readiness artifact path is invalid")
-    if state.get("zero_proof_artifact_present") is not False:
-        errors.append("P0/P1 zero proof readiness must not claim artifact presence")
+    artifact_present = state.get("zero_proof_artifact_present") is True
     if tuple(state.get("required_zero_severities", [])) != S2PMT07_REQUIRED_ZERO_FINDING_SEVERITIES:
         errors.append("P0/P1 zero proof readiness required zero severities are invalid")
     if tuple(state.get("required_fields", [])) != S2PMT07_P0_P1_ZERO_PROOF_REQUIRED_FIELDS:
@@ -4834,10 +4839,12 @@ def validate_p0_p1_zero_proof_readiness_state(state: Mapping[str, Any]) -> list[
         errors.append("P0/P1 zero proof readiness required open P0 findings must be zero")
     if state.get("required_open_p1_findings") != 0:
         errors.append("P0/P1 zero proof readiness required open P1 findings must be zero")
-    if state.get("observed_open_p0_findings") != S2PMT07_INHERITED_V7_1_OPEN_P0_FINDINGS:
-        errors.append("P0/P1 zero proof readiness must preserve inherited open P0 count until artifact exists")
-    if state.get("observed_open_p1_findings") != S2PMT07_INHERITED_V7_1_OPEN_P1_FINDINGS:
-        errors.append("P0/P1 zero proof readiness must preserve inherited open P1 count until artifact exists")
+    expected_observed_p0 = 0 if artifact_present else S2PMT07_INHERITED_V7_1_OPEN_P0_FINDINGS
+    expected_observed_p1 = 0 if artifact_present else S2PMT07_INHERITED_V7_1_OPEN_P1_FINDINGS
+    if state.get("observed_open_p0_findings") != expected_observed_p0:
+        errors.append("P0/P1 zero proof readiness observed open P0 count is invalid")
+    if state.get("observed_open_p1_findings") != expected_observed_p1:
+        errors.append("P0/P1 zero proof readiness observed open P1 count is invalid")
     refs = state.get("candidate_evidence_refs", [])
     for ref in (
         S2PMT07_P0_TECHNICAL_CLOSURE_CANDIDATE_PACKAGE,
@@ -4846,16 +4853,18 @@ def validate_p0_p1_zero_proof_readiness_state(state: Mapping[str, Any]) -> list[
     ):
         if ref not in refs:
             errors.append(f"P0/P1 zero proof readiness refs must include {ref}")
-    if state.get("candidate_evidence_only") is not True:
-        errors.append("P0/P1 zero proof readiness must label candidate evidence as non-closure")
+    if state.get("candidate_evidence_only") is not (not artifact_present):
+        errors.append("P0/P1 zero proof readiness candidate_evidence_only is invalid")
     assembly_state = _mapping(state.get("zero_proof_assembly_state"))
     if validate_p0_p1_zero_proof_assembly_state(assembly_state):
         errors.append("P0/P1 zero proof readiness assembly state is invalid")
-    if state.get("independent_final_closure_decision_present") is not False:
-        errors.append("P0/P1 zero proof readiness must not claim independent final closure decision")
+    if state.get("independent_final_closure_decision_present") is not artifact_present:
+        errors.append("P0/P1 zero proof readiness independent decision presence is invalid")
+    if state.get("p0_zero_proven") is not artifact_present:
+        errors.append("P0/P1 zero proof readiness p0_zero_proven is invalid")
+    if state.get("p1_zero_proven") is not artifact_present:
+        errors.append("P0/P1 zero proof readiness p1_zero_proven is invalid")
     for flag in (
-        "p0_zero_proven",
-        "p1_zero_proven",
         "closure_claimed",
         "production_acceptance_claimed",
         "integrated_production_accepted",
@@ -4867,9 +4876,17 @@ def validate_p0_p1_zero_proof_readiness_state(state: Mapping[str, Any]) -> list[
     ):
         if state.get(flag) is not False:
             errors.append(f"{flag} must be false")
-    for reason in S2PMT07_P0_P1_ZERO_PROOF_BLOCKING_REASONS:
-        if reason not in state.get("blocking_reasons", []):
-            errors.append(f"P0/P1 zero proof readiness must include blocker {reason}")
+    if artifact_present:
+        if state.get("status") != "pass":
+            errors.append("P0/P1 zero proof readiness with artifact must pass")
+        if state.get("blocking_reasons") != []:
+            errors.append("P0/P1 zero proof readiness with artifact must not have blocking reasons")
+    else:
+        if state.get("status") != "blocked":
+            errors.append("P0/P1 zero proof readiness without artifact must remain blocked")
+        for reason in S2PMT07_P0_P1_ZERO_PROOF_BLOCKING_REASONS:
+            if reason not in state.get("blocking_reasons", []):
+                errors.append(f"P0/P1 zero proof readiness must include blocker {reason}")
     expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
     if state.get("state_hash") != expected_hash:
         errors.append("P0/P1 zero proof readiness state_hash does not match state content")
@@ -6578,7 +6595,7 @@ def build_final_acceptance_bundle_readiness_state(
     independent_final_closure_decision_owner_packet = (
         build_independent_final_closure_decision_owner_packet_state()
     )
-    p0_p1_zero_proof_readiness = build_p0_p1_zero_proof_readiness_state()
+    p0_p1_zero_proof_readiness = build_p0_p1_zero_proof_readiness_state(p0_p1_zero_proof)
     p0_p1_zero_proof_artifact_validation = build_p0_p1_zero_proof_artifact_validation_state(
         p0_p1_zero_proof
     )
@@ -6804,8 +6821,13 @@ def validate_final_acceptance_bundle_readiness_state(state: Mapping[str, Any]) -
         errors.append("final acceptance bundle readiness must expose independent final closure decision request")
     if prebundle.get("INDEPENDENT_FINAL_CLOSURE_DECISION_OWNER_PACKET") is not True:
         errors.append("final acceptance bundle readiness must expose independent final closure decision owner packet")
-    if prebundle.get("P0_P1_ZERO_PROOF_READINESS") is not False:
-        errors.append("final acceptance bundle readiness must not expose P0/P1 zero proof readiness as passing")
+    expected_zero_proof_readiness_ready = _mapping(
+        state.get("p0_p1_zero_proof_readiness")
+    ).get("status") == "pass"
+    if prebundle.get("P0_P1_ZERO_PROOF_READINESS") is not expected_zero_proof_readiness_ready:
+        errors.append(
+            "final acceptance bundle readiness P0/P1 zero proof readiness flag must match readiness status"
+        )
     prebundle_validation_checks = (
         ("P0_P1_ZERO_PROOF_ARTIFACT_VALIDATION", p0_p1_zero_proof_artifact),
         ("FINAL_ACCEPTANCE_BUNDLE_MANIFEST_VALIDATION", manifest_validation),

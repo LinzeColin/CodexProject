@@ -2963,23 +2963,45 @@ class Stage2FinalGateTests(unittest.TestCase):
         tampered["observed_open_p0_findings"] = 0
         tampered["p0_zero_proven"] = True
         self.assertIn(
-            "P0/P1 zero proof readiness must preserve inherited open P0 count until artifact exists",
+            "P0/P1 zero proof readiness observed open P0 count is invalid",
             validate_p0_p1_zero_proof_readiness_state(tampered),
         )
 
-    def test_final_acceptance_bundle_readiness_embeds_zero_proof_readiness_not_closure(self) -> None:
+    def test_p0_p1_zero_proof_readiness_passes_with_valid_artifact_without_production(self) -> None:
+        payload = json.loads((REPO_ROOT / "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json").read_text())
+        state = build_p0_p1_zero_proof_readiness_state(payload)
+
+        self.assertEqual(state["status"], "pass")
+        self.assertTrue(state["zero_proof_artifact_present"])
+        self.assertEqual(state["observed_open_p0_findings"], 0)
+        self.assertEqual(state["observed_open_p1_findings"], 0)
+        self.assertFalse(state["candidate_evidence_only"])
+        self.assertTrue(state["independent_final_closure_decision_present"])
+        self.assertTrue(state["p0_zero_proven"])
+        self.assertTrue(state["p1_zero_proven"])
+        self.assertFalse(state["closure_claimed"])
+        self.assertFalse(state["production_acceptance_claimed"])
+        self.assertFalse(state["integrated_production_accepted"])
+        self.assertFalse(state["daily_operation_enabled"])
+        self.assertEqual(state["blocking_reasons"], [])
+        self.assertEqual(validate_p0_p1_zero_proof_readiness_state(state), [])
+
+    def test_final_acceptance_bundle_readiness_embeds_committed_zero_proof_readiness(self) -> None:
         state = build_final_acceptance_bundle_readiness_state()
         assembly = state["p0_p1_zero_proof_assembly"]
         zero_proof = state["p0_p1_zero_proof_readiness"]
 
         self.assertEqual(assembly["status"], "blocked_candidate_inputs_ready_no_closure")
         self.assertTrue(state["available_prebundle_evidence"]["P0_P1_ZERO_PROOF_ASSEMBLY"])
-        self.assertEqual(zero_proof["status"], "blocked")
-        self.assertFalse(zero_proof["zero_proof_artifact_present"])
-        self.assertFalse(zero_proof["p0_zero_proven"])
-        self.assertFalse(zero_proof["p1_zero_proven"])
-        self.assertFalse(state["available_prebundle_evidence"]["P0_P1_ZERO_PROOF_READINESS"])
-        self.assertIn("p0_p1_zero_proof_artifact_missing", zero_proof["blocking_reasons"])
+        self.assertEqual(zero_proof["status"], "pass")
+        self.assertTrue(zero_proof["zero_proof_artifact_present"])
+        self.assertEqual(zero_proof["observed_open_p0_findings"], 0)
+        self.assertEqual(zero_proof["observed_open_p1_findings"], 0)
+        self.assertTrue(zero_proof["p0_zero_proven"])
+        self.assertTrue(zero_proof["p1_zero_proven"])
+        self.assertFalse(zero_proof["closure_claimed"])
+        self.assertTrue(state["available_prebundle_evidence"]["P0_P1_ZERO_PROOF_READINESS"])
+        self.assertEqual(zero_proof["blocking_reasons"], [])
         self.assertEqual(validate_p0_p1_zero_proof_readiness_state(zero_proof), [])
         self.assertEqual(validate_final_acceptance_bundle_readiness_state(state), [])
 
