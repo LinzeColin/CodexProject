@@ -1,11 +1,11 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260630-S05P2-EXCEL-RESOLUTION-PENDING"
+as_of_event_id: "EVENT-KMFA-20260630-S05P2-EXCEL-OWNER-DECISION-PACKET"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "precommit-pending"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S05P2_EXCEL_RESOLUTION"
-snapshot_event_time: "2026-06-30T09:18:43+10:00"
-generator_version: "manual-s05p2-excel-resolution-pending"
-final_commit_binding: "precommit-pending-s05p2-excel-resolution-pending"
+snapshot_event_time: "2026-06-30T09:33:17+10:00"
+generator_version: "manual-s05p2-excel-owner-decision-packet"
+final_commit_binding: "precommit-pending-s05p2-excel-owner-decision-packet"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -51,6 +51,7 @@ dimensions:
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/test_results.md"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/private_backfill_record.md"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/excel_resolution_record.md"
+      - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/excel_owner_decision_packet.md"
   operational_validation:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
@@ -90,12 +91,14 @@ dimensions:
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/s05_p2_completion_record.md"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/private_backfill_record.md"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/excel_resolution_record.md"
+      - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/excel_owner_decision_packet.md"
       - "KMFA/metadata/baseline/a0_file_manifest.json"
       - "KMFA/metadata/baseline/a0_project_candidates.jsonl"
       - "KMFA/metadata/baseline/a0_golden_fixture_manifest.json"
       - "KMFA/metadata/baseline/a0_golden_fixture_candidates.jsonl"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/private_backfill_manifest.json"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/excel_resolution_manifest.json"
+      - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/excel_owner_decision_packet.json"
   evidence_freshness:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
