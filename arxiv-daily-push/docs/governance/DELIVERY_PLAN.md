@@ -21,12 +21,20 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 264
+- task_count: 265
 - acceptance_count: 127
 
 ## Delivery Tasks
 
 The machine-readable task source is `delivery_tasks.yaml`.
+
+## 2026-06-29 14:51:01 Australia/Sydney - S2PMT07 S2PLT01 Terminal Acceptance Consumption
+
+- `S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-CONSUMPTION` records a truthful S2PLT01 terminal acceptance artifact after independent reviewer PASS.
+- `validate-s2plt01-terminal-acceptance --json` now returns `pass`; artifact validation state hash is `47fceec1911e8d2f3b8b43356058d58d22b48eaabf3be174e18292e0c816e7e6` and terminal audit state hash is `49f4ca23db902dcffc554b6dd50204944b9b1d5d86c0eb8dc3e9b8040c17fa35`.
+- Downstream S2PLT02/S2PLT04 gates now consume `S2PLT01_ACCEPTED=true`; S2PLT04 remains blocked by `s2plt02_live_2d_terminal_proof_missing` and `s2plt03_resilience_terminal_proof_missing`.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-CONSUMPTION-20260629.json` and `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT01_TERMINAL_ACCEPTANCE_CONSUMPTION.md`.
+- No SMTP, scheduler, Release, restore, schema/DB, source/ranking, CURRENT/V7, DAILY_OPERATION, S2PLT02/S2PLT03/S2PLT04 acceptance, final bundle acceptance, or integrated production acceptance side effect is claimed.
 
 ## 2026-06-29 14:25:47 Australia/Sydney - S2PMT07 S2PLT01 Terminal Acceptance Artifact Validator
 
