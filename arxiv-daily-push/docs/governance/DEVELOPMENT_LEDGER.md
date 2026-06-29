@@ -5201,3 +5201,12 @@ None for this new project baseline.
 - Current state: `next_required_step_is_actionable=false`, `next_required_step_blocked_by_upstream_evidence=true`, `next_executable_task=S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION`, and `upstream_unblock_order` is S2PLT02 authorization, S2PLT02 terminal delivery proof, S2PLT03 terminal resilience proof, then S2PLT04 completion report.
 - Boundary: no S2PLT04 completion report creation, no final command execution, no independent signoff, no manifest, no SMTP/scheduler/Release/restore, no public schema/DB/queue/source/ranking/CURRENT/V7 change, DAILY_OPERATION, S2PLT02/S2PLT03/S2PLT04 acceptance, final bundle acceptance, or Stage2/S3 production acceptance.
 - Evidence: `governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-UPSTREAM-BLOCKER-SYNC-20260629.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_UPSTREAM_BLOCKER_SYNC.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`; `arxiv-daily-push/tests/test_cli.py`.
+
+### `ITER-20260629-ADP-S2PMT07-FINAL-BUNDLE-STEP-ACTIONABILITY-SYNC`
+
+- Timestamp: `2026-06-29T20:35:10+10:00`
+- Task IDs: `S2PMT07-FINAL-BUNDLE-STEP-ACTIONABILITY-SYNC`; parent `S2PMT07`; acceptance `ACC-S2PMT07-FINAL-REVIEW`.
+- Decisions: Final bundle prerequisite planning now exposes per-step `depends_on_steps`, `blocked_by_steps`, `actionable_now`, and dependency-wait `default_action`. Downstream artifact steps cannot be treated as executable until their declared upstream validations pass.
+- Current state: prerequisite plan remains `blocked`; `next_required_step=S2PLT04_COMPLETION_REPORT`; `next_executable_task=S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION`; `FINAL_COMMAND_EXECUTION`, `NEXT_AGENT_HANDOFF`, `INDEPENDENT_REVIEW_SIGNOFF`, and `FINAL_ACCEPTANCE_BUNDLE_MANIFEST` are non-actionable waiting states.
+- Boundary: no S2PLT04 completion report creation, no final command execution, no handoff, no independent signoff, no manifest, no SMTP/scheduler/Release/restore, no public schema/DB/queue/source/ranking/CURRENT/V7 change, DAILY_OPERATION, S2PLT02/S2PLT03/S2PLT04 acceptance, final bundle acceptance, or Stage2/S3 production acceptance.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-STEP-ACTIONABILITY-SYNC-20260629.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_STEP_ACTIONABILITY_SYNC.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`; `arxiv-daily-push/tests/test_cli.py`.

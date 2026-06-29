@@ -21,12 +21,20 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 271
+- task_count: 272
 - acceptance_count: 127
 
 ## Delivery Tasks
 
 The machine-readable task source is `delivery_tasks.yaml`.
+
+## 2026-06-29 20:35:10 Australia/Sydney - S2PMT07 Final Bundle Step Actionability Sync
+
+- `S2PMT07-FINAL-BUNDLE-STEP-ACTIONABILITY-SYNC` adds per-step `depends_on_steps`, `blocked_by_steps`, and `actionable_now` fields to the final-bundle prerequisite plan.
+- Downstream missing artifacts now explicitly wait for declared dependencies: final command execution waits for S2PLT04 completion; next-agent handoff waits for S2PLT04 plus final commands; independent review signoff waits for S2PLT04, final commands, and handoff; final manifest waits for S2PLT04, signoff, final commands, and handoff.
+- Current plan remains `blocked`, `ready_for_final_bundle_manifest=false`, `next_executable_task=S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION`, and `state_hash=18107f28508e105a0fb0be7a298d67a33f67442160a8502a399fbeb97d704e8f`.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-STEP-ACTIONABILITY-SYNC-20260629.json` and `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_STEP_ACTIONABILITY_SYNC.md`.
+- This does not create S2PLT04 completion report, execute final commands, write handoff/signoff/manifest, enable SMTP/scheduler/Release/restore, mutate schema/DB/source/ranking/CURRENT/V7, enable DAILY_OPERATION, or claim integrated production acceptance.
 
 ## 2026-06-29 20:14:34 Australia/Sydney - S2PMT07 Final Bundle Upstream Blocker Sync
 
