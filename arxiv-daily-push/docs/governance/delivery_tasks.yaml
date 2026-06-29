@@ -4619,6 +4619,26 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+  - task_id: "S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-DEPENDENCY-ORDER"
+    title: "S2PMT07 S2PLT01 terminal acceptance dependency order"
+    phase: "S2PM"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-29T12:01:17+10:00"
+    summary: "Remove downstream S2PLT04 completion and S2PMT07 final signoff from the S2PLT01 terminal acceptance audit readiness gates while keeping S2PLT01 blocked."
+    owner: "content_owner + engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py", "arxiv-daily-push/tests/test_stage2_replay_gate.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT01_TERMINAL_ACCEPTANCE_DEPENDENCY_ORDER.md", "governance/run_manifests/ADP-S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-DEPENDENCY-ORDER-20260629.json"]
+    acceptance_ids: ["ACC-S2PLT01-30D", "ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt01_order_red PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_replay_gate.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt01_order_green1 PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_replay_gate.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt01_order_cli PYTHONPATH=arxiv-daily-push/src python3 -B -m arxiv_daily_push.cli audit-s2plt01-terminal-acceptance --json"]
+    test_results: ["TDD red failed as expected because S2PLT01 terminal acceptance audit still listed downstream S2PLT04/S2PMT07 blockers", "focused S2PLT01 replay-gate tests: 21 OK", "audit CLI returned blocked / exit 2 with downstream blockers removed and S2PLT01 still not accepted"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-DEPENDENCY-ORDER-20260629.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT01_TERMINAL_ACCEPTANCE_DEPENDENCY_ORDER.md", "governance/run_manifests/ADP-S2PLT01-INDEPENDENT-REPLAY-REVIEW-20260626.json", "governance/run_manifests/ADP-S2PLT04-S2PLT01-REPLAY-REVIEW-EVIDENCE-SYNC-20260628.json", "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py", "arxiv-daily-push/tests/test_stage2_replay_gate.py"]
+    result: "S2PLT01 terminal acceptance audit no longer blocks on later S2PLT04/S2PMT07 gates; remaining blockers are full replay, inherited P0/P1, nonterminal review receipt, and S2PLT01 acceptance."
+    risk: "The dependency-order fix can be misread as S2PLT01 acceptance unless terminal_acceptance_ready=false and s2plt01_accepted=false remain explicit."
+    rollback: "Revert S2PLT01 terminal audit dependency-order change, focused regression test, phase record, manifest, traceability row, delivery/event records, generated views, and three base records; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
   - task_id: "S2PLT02-ZERO-PROOF-READINESS-SYNC"
     title: "S2PLT02 zero-proof readiness sync"
     phase: "S2PL"

@@ -21,12 +21,19 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 257
+- task_count: 258
 - acceptance_count: 127
 
 ## Delivery Tasks
 
 The machine-readable task source is `delivery_tasks.yaml`.
+
+## 2026-06-29 12:01:17 Australia/Sydney - S2PMT07 S2PLT01 Terminal Acceptance Dependency Order
+
+- `S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-DEPENDENCY-ORDER` removes later S2PLT04 completion and S2PMT07 final signoff from the S2PLT01 terminal acceptance audit readiness gates.
+- Current result remains `blocked` / exit 2: the review receipt is present and the review package passed, but `full_replay_executed=false`, `S2PLT01_ACCEPTED=false`, inherited P0/P1 remain open, and the review receipt is still nonterminal.
+- Remaining S2PLT01 blockers are now limited to real S2PLT01 evidence and inherited zero state: `full_replay_not_executed`, inherited P0/P1, `review_receipt_is_nonterminal`, and `s2plt01_not_accepted`.
+- No SMTP, scheduler, Release, restore, schema/DB, source/ranking, CURRENT/V7, DAILY_OPERATION, S2PLT01 acceptance, S2PLT04 report, final bundle acceptance, or integrated production acceptance side effect is claimed.
 
 ## 2026-06-29 12:12:00 Australia/Sydney - S2PLT03 Zero-Proof Resilience Sync
 

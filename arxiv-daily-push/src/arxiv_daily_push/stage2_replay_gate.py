@@ -622,8 +622,6 @@ def build_s2plt01_terminal_acceptance_audit_state(*, repo_root: str | Path = "."
         "review_package_passed": review_package_passed,
         "full_replay_executed": review_manifest.get("full_replay_executed") is True,
         "s2plt01_accepted": review_manifest.get("s2plt01_accepted") is True,
-        "s2plt04_completed": review_manifest.get("s2plt04_completed") is True,
-        "s2pmt07_final_signoff_claimed": review_manifest.get("s2pmt07_final_signoff_claimed") is True,
         "inherited_p0_zero": int(s2plt04_sync.get("inherited_v7_1_open_p0_findings") or 0) == 0,
         "inherited_p1_zero": int(s2plt04_sync.get("inherited_v7_1_open_p1_findings") or 0) == 0,
     }
@@ -636,10 +634,6 @@ def build_s2plt01_terminal_acceptance_audit_state(*, repo_root: str | Path = "."
         blocking_reasons.append("full_replay_not_executed")
     if not terminal_gates["s2plt01_accepted"]:
         blocking_reasons.append("s2plt01_not_accepted")
-    if not terminal_gates["s2plt04_completed"]:
-        blocking_reasons.append("s2plt04_not_completed")
-    if not terminal_gates["s2pmt07_final_signoff_claimed"]:
-        blocking_reasons.append("s2pmt07_not_completed")
     if not terminal_gates["inherited_p0_zero"]:
         blocking_reasons.append("inherited_v7_1_p0_findings_open")
     if not terminal_gates["inherited_p1_zero"]:
