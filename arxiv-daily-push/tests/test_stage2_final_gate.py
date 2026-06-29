@@ -35,6 +35,9 @@ from arxiv_daily_push.stage2_final_gate import (
     S2PLT03_LOCAL_DRILL_REQUIRED_CASES,
     S2PLT03_REQUIRED_DEPENDENCIES,
     S2PLT03_REQUIRED_EVIDENCE,
+    S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT_PATH,
+    S2PLT03_TERMINAL_RESILIENCE_PROOF_NO_PRODUCTION_FLAGS,
+    S2PLT03_TERMINAL_RESILIENCE_PROOF_REQUIRED_EVIDENCE_ROLES,
     S2PLT04_BLOCKING_REASONS,
     S2PLT04_FORBIDDEN_FLAGS,
     S2PLT04_REQUIRED_DEPENDENCIES,
@@ -153,6 +156,8 @@ from arxiv_daily_push.stage2_final_gate import (
     build_s2plt03_local_resilience_drill_bundle,
     build_s2plt03_resilience_evidence_state,
     build_s2plt03_resilience_precheck_report,
+    build_s2plt03_terminal_resilience_proof_artifact_validation_state,
+    build_s2plt03_terminal_resilience_proof_hash,
     build_s2plt04_dependency_state,
     build_s2plt04_evidence_state,
     build_s2plt04_completion_evidence_audit_state,
@@ -174,6 +179,8 @@ from arxiv_daily_push.stage2_final_gate import (
     validate_s2plt02_terminal_delivery_proof_artifact_validation_state,
     validate_s2plt03_local_resilience_drill_bundle,
     validate_s2plt03_resilience_precheck_report,
+    validate_s2plt03_terminal_resilience_proof_artifact,
+    validate_s2plt03_terminal_resilience_proof_artifact_validation_state,
     validate_s2plt04_integration_candidate_report,
     validate_final_acceptance_bundle_artifact_validation_state,
     validate_final_acceptance_bundle_readiness_state,
@@ -1001,6 +1008,146 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(report["inherited_p0_p1_closed"])
         self.assertFalse(report["s2plt03_accepted"])
         self.assertFalse(report["integrated_production_accepted"])
+
+    def test_s2plt03_terminal_resilience_proof_blocks_missing_artifact(self) -> None:
+        report = build_s2plt03_terminal_resilience_proof_artifact_validation_state(repo_root=REPO_ROOT)
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["artifact_ref"], S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT_PATH)
+        self.assertFalse(report["artifact_present"])
+        self.assertFalse(report["terminal_resilience_proof_ready"])
+        self.assertFalse(report["s2plt03_accepted_by_artifact"])
+        self.assertFalse(report["s2plt03_resilience_drill_completed_by_artifact"])
+        self.assertIn("s2plt03_terminal_resilience_proof_artifact_missing", report["validation_errors"])
+        self.assertIn("s2plt03_terminal_resilience_proof_artifact_missing", report["blocking_reasons"])
+        self.assertIn("s2plt02_not_accepted", report["blocking_reasons"])
+        self.assertFalse(report["terminal_gates"]["s2plt02_accepted"])
+        self.assertTrue(report["terminal_gates"]["rate_limit_drill_proven"])
+        self.assertTrue(report["terminal_gates"]["parser_drift_drill_proven"])
+        self.assertTrue(report["terminal_gates"]["restart_recovery_drill_proven"])
+        self.assertTrue(report["terminal_gates"]["disk_pressure_drill_proven"])
+        self.assertTrue(report["terminal_gates"]["backup_restore_point_proven"])
+        self.assertTrue(report["terminal_gates"]["rollback_executable"])
+        self.assertTrue(report["terminal_gates"]["ledger_count_conserved"])
+        self.assertTrue(report["terminal_gates"]["p0_zero"])
+        self.assertTrue(report["terminal_gates"]["p1_zero"])
+        self.assertEqual(validate_s2plt03_terminal_resilience_proof_artifact_validation_state(report), [])
+        for flag in S2PLT03_TERMINAL_RESILIENCE_PROOF_NO_PRODUCTION_FLAGS:
+            self.assertFalse(report[flag])
+
+    def test_s2plt03_terminal_resilience_proof_accepts_valid_no_production_artifact(self) -> None:
+        with TemporaryDirectory() as tmp_dir:
+            tmp_root = Path(tmp_dir)
+            artifact_path = tmp_root / S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT_PATH
+            artifact_path.parent.mkdir(parents=True, exist_ok=True)
+            artifact = {
+                "model_id": "adp-s2plt03-terminal-resilience-proof-v1",
+                "schema_version": 1,
+                "task_id": "S2PLT03",
+                "acceptance_id": "ACC-S2PLT03-RESILIENCE",
+                "generated_at": "2026-06-30T12:12:00+10:00",
+                "terminal_resilience_decision": "S2PLT03_TERMINAL_RESILIENCE_PROOF_READY_NO_PRODUCTION_ACCEPTANCE",
+                "s2plt03_accepted": True,
+                "s2plt03_resilience_drill_completed": True,
+                "no_production_side_effects": True,
+                "terminal_gates": {
+                    "s2plt02_accepted": True,
+                    "rate_limit_drill_proven": True,
+                    "parser_drift_drill_proven": True,
+                    "restart_recovery_drill_proven": True,
+                    "disk_pressure_drill_proven": True,
+                    "backup_restore_point_proven": True,
+                    "rollback_executable": True,
+                    "ledger_count_conserved": True,
+                    "p0_zero": True,
+                    "p1_zero": True,
+                    "no_production_side_effects": True,
+                },
+                "terminal_evidence_refs": [
+                    "FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json",
+                    "governance/run_manifests/ADP-S2PLT03-LOCAL-RESILIENCE-DRILL-20260628.json",
+                    "governance/run_manifests/ADP-S2PLT03-AUDIT-BLOCKER-ZERO-PROOF-SYNC-20260629.json",
+                    "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
+                ],
+                "terminal_evidence_refs_by_role": {
+                    "s2plt02_terminal_delivery_proof": "FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json",
+                    "local_resilience_drill": "governance/run_manifests/ADP-S2PLT03-LOCAL-RESILIENCE-DRILL-20260628.json",
+                    "resilience_precheck": "governance/run_manifests/ADP-S2PLT03-AUDIT-BLOCKER-ZERO-PROOF-SYNC-20260629.json",
+                    "p0_p1_zero_proof": "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
+                },
+                **{flag: False for flag in S2PLT03_TERMINAL_RESILIENCE_PROOF_NO_PRODUCTION_FLAGS},
+                "acceptance_hash": "",
+            }
+            artifact["acceptance_hash"] = build_s2plt03_terminal_resilience_proof_hash(artifact)
+            artifact_path.write_text(json.dumps(artifact, ensure_ascii=False, indent=2, sort_keys=True), encoding="utf-8")
+
+            report = build_s2plt03_terminal_resilience_proof_artifact_validation_state(repo_root=tmp_root)
+
+        self.assertEqual(report["status"], "pass")
+        self.assertTrue(report["artifact_present"])
+        self.assertTrue(report["terminal_resilience_proof_ready"])
+        self.assertTrue(report["s2plt03_accepted_by_artifact"])
+        self.assertTrue(report["s2plt03_resilience_drill_completed_by_artifact"])
+        self.assertEqual(report["validation_errors"], [])
+        self.assertEqual(report["blocking_reasons"], [])
+        self.assertEqual(validate_s2plt03_terminal_resilience_proof_artifact_validation_state(report), [])
+        for flag in S2PLT03_TERMINAL_RESILIENCE_PROOF_NO_PRODUCTION_FLAGS:
+            self.assertFalse(report[flag])
+
+    def test_s2plt03_terminal_resilience_proof_requires_role_mapped_evidence_refs(self) -> None:
+        artifact = {
+            "model_id": "adp-s2plt03-terminal-resilience-proof-v1",
+            "schema_version": 1,
+            "task_id": "S2PLT03",
+            "acceptance_id": "ACC-S2PLT03-RESILIENCE",
+            "terminal_resilience_decision": "S2PLT03_TERMINAL_RESILIENCE_PROOF_READY_NO_PRODUCTION_ACCEPTANCE",
+            "s2plt03_accepted": True,
+            "s2plt03_resilience_drill_completed": True,
+            "no_production_side_effects": True,
+            "terminal_gates": {
+                "s2plt02_accepted": True,
+                "rate_limit_drill_proven": True,
+                "parser_drift_drill_proven": True,
+                "restart_recovery_drill_proven": True,
+                "disk_pressure_drill_proven": True,
+                "backup_restore_point_proven": True,
+                "rollback_executable": True,
+                "ledger_count_conserved": True,
+                "p0_zero": True,
+                "p1_zero": True,
+                "no_production_side_effects": True,
+            },
+            "terminal_evidence_refs": [
+                "FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json",
+                "governance/run_manifests/ADP-S2PLT03-LOCAL-RESILIENCE-DRILL-20260628.json",
+                "governance/run_manifests/ADP-S2PLT03-AUDIT-BLOCKER-ZERO-PROOF-SYNC-20260629.json",
+                "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
+            ],
+            "terminal_evidence_refs_by_role": {
+                "s2plt02_terminal_delivery_proof": "FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json",
+                "local_resilience_drill": "governance/run_manifests/ADP-S2PLT03-LOCAL-RESILIENCE-DRILL-20260628.json",
+                "p0_p1_zero_proof": "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
+            },
+            **{flag: False for flag in S2PLT03_TERMINAL_RESILIENCE_PROOF_NO_PRODUCTION_FLAGS},
+            "acceptance_hash": "",
+        }
+        artifact["acceptance_hash"] = build_s2plt03_terminal_resilience_proof_hash(artifact)
+
+        errors = validate_s2plt03_terminal_resilience_proof_artifact(artifact)
+
+        self.assertIn(
+            "terminal_evidence_refs_by_role.resilience_precheck is required",
+            errors,
+        )
+        self.assertEqual(
+            tuple(S2PLT03_TERMINAL_RESILIENCE_PROOF_REQUIRED_EVIDENCE_ROLES),
+            (
+                "s2plt02_terminal_delivery_proof",
+                "local_resilience_drill",
+                "resilience_precheck",
+                "p0_p1_zero_proof",
+            ),
+        )
 
     def test_s2plt04_dependency_state_consumes_s2plt01_terminal_acceptance(self) -> None:
         state = build_s2plt04_dependency_state()
@@ -3807,6 +3954,12 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertIn(
             "governance/run_manifests/ADP-S2PLT03-AUDIT-BLOCKER-ZERO-PROOF-SYNC-20260629.json",
             s2plt03["nonterminal_refs"],
+        )
+        self.assertEqual(s2plt03["artifact_ref"], S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT_PATH)
+        self.assertEqual(s2plt03["terminal_artifact_validation_status"], "blocked")
+        self.assertIn(
+            "s2plt03_terminal_resilience_proof_artifact_missing",
+            s2plt03["terminal_artifact_validation_errors"],
         )
         self.assertEqual(s2plt03["audit_blockers_status"], "pass")
         self.assertEqual(s2plt03["latest_audit_report_hash"], "3483d4a8c4248d3a41cfae5db4febbe7c9d42368ae6ae9311d0c5a9819d13466")
