@@ -256,6 +256,76 @@ class CliTests(unittest.TestCase):
         self.assertTrue(payload["terminal_dependency_state"]["P0_ZERO"])
         self.assertTrue(payload["terminal_dependency_state"]["P1_ZERO"])
 
+    def test_audit_s2plt02_dry_run_second_day_json_blocks_terminal_credit(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            state_dir = Path(tmp_dir)
+            run_dir = state_dir / "runs" / "20260629"
+            run_dir.mkdir(parents=True)
+            products = ["M1", "M2", "M3", "M4"]
+            for product in products:
+                (run_dir / f"adp-smtp-delivery-report-{product}.json").write_text(
+                    json.dumps(
+                        {
+                            "status": "dry_run",
+                            "product_id": product,
+                            "cycle_id": "2026-06-29",
+                            "generated_at": "2026-06-28T19:00:02Z",
+                            "dry_run": True,
+                            "allow_send": False,
+                            "real_send_attempted": False,
+                            "real_smtp_send_enabled": False,
+                        }
+                    ),
+                    encoding="utf-8",
+                )
+            (run_dir / "adp-local-runner-report.json").write_text(
+                json.dumps(
+                    {
+                        "status": "pass",
+                        "date": "2026-06-29",
+                        "generated_at": "2026-06-28T19:00:02Z",
+                        "production_evidence_ready": False,
+                        "real_smtp_sent": False,
+                        "mail_delivery_summary": {
+                            "planned_send_total": 4,
+                            "planned_mail_products": products,
+                            "sent_mail_count": 0,
+                            "sent_mail_products": [],
+                            "dry_run_mail_products": products,
+                            "status_by_product": {product: "dry_run" for product in products},
+                        },
+                    }
+                ),
+                encoding="utf-8",
+            )
+            buffer = io.StringIO()
+            with redirect_stdout(buffer):
+                result = main(
+                    [
+                        "audit-s2plt02-dry-run-second-day",
+                        "--state-dir",
+                        str(state_dir),
+                        "--service-date",
+                        "2026-06-29",
+                        "--json",
+                    ]
+                )
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(result, 2)
+        self.assertEqual(payload["status"], "blocked")
+        self.assertEqual(payload["service_date"], "2026-06-29")
+        self.assertEqual(payload["dry_run_mail_count"], 4)
+        self.assertEqual(payload["real_sent_mail_count"], 0)
+        self.assertFalse(payload["counts_toward_s2plt02_terminal_proof"])
+        self.assertFalse(payload["terminal_delivery_credit"])
+        self.assertFalse(payload["real_smtp_proven"])
+        self.assertFalse(payload["real_scheduler_proven"])
+        self.assertFalse(payload["s2plt02_accepted"])
+        self.assertIn("dry_run_evidence_only_not_real_smtp", payload["blocking_reasons"])
+        self.assertIn("two_consecutive_real_days_not_proven", payload["blocking_reasons"])
+        self.assertIn("eight_real_emails_not_proven", payload["blocking_reasons"])
+
     def test_validate_s2plt02_terminal_delivery_proof_json_blocks_missing_artifact(self):
         with tempfile.TemporaryDirectory() as tmp_dir:
             buffer = io.StringIO()

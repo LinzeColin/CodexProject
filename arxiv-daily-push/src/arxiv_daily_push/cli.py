@@ -128,6 +128,7 @@ from .stage2_final_gate import (
     build_next_agent_handoff_validation_state,
     build_no_production_side_effect_attestation_validation_state,
     build_p0_p1_zero_proof_artifact_validation_state,
+    build_s2plt02_dry_run_second_day_audit_state,
     build_s2plt02_terminal_delivery_proof_artifact_validation_state,
     build_s2plt02_terminal_readiness_audit_state,
     build_s2plt03_resilience_precheck_report,
@@ -137,6 +138,7 @@ from .stage2_final_gate import (
     validate_final_bundle_prerequisite_plan_state,
     validate_independent_final_closure_decision_owner_packet_state,
     validate_independent_final_reviewer_assignment_owner_packet_state,
+    validate_s2plt02_dry_run_second_day_audit_state,
     validate_s2plt04_completion_evidence_audit_state,
 )
 from .stage2_sources import (
@@ -1204,6 +1206,22 @@ def build_parser() -> argparse.ArgumentParser:
         help="Evidence timestamp for the deterministic audit payload.",
     )
     s2plt02_terminal_audit.add_argument("--json", action="store_true", help="Print JSON S2PLT02 terminal-readiness audit state.")
+
+    s2plt02_dry_run_second_day_audit = subparsers.add_parser(
+        "audit-s2plt02-dry-run-second-day",
+        help="Audit a second-day local dry-run trace without granting S2PLT02 terminal delivery credit.",
+    )
+    s2plt02_dry_run_second_day_audit.add_argument(
+        "--state-dir",
+        default=None,
+        help="ADP state directory containing runs/YYYYMMDD reports; defaults to ~/.adp/arxiv-daily-push.",
+    )
+    s2plt02_dry_run_second_day_audit.add_argument(
+        "--service-date",
+        default="2026-06-29",
+        help="Service date to audit as a dry-run-only trace.",
+    )
+    s2plt02_dry_run_second_day_audit.add_argument("--json", action="store_true", help="Print JSON dry-run second-day audit state.")
 
     s2plt02_terminal_delivery_proof = subparsers.add_parser(
         "validate-s2plt02-terminal-delivery-proof",
@@ -3594,6 +3612,30 @@ def main(argv: list[str] | None = None) -> int:
             for reason in report.get("blocking_reasons", []):
                 print(f"- blocked: {reason}")
         return 0 if report["status"] == "pass" else 2
+    if args.command == "audit-s2plt02-dry-run-second-day":
+        report = build_s2plt02_dry_run_second_day_audit_state(
+            state_dir=args.state_dir,
+            service_date=args.service_date,
+        )
+        validation_errors = validate_s2plt02_dry_run_second_day_audit_state(report)
+        if validation_errors:
+            report = dict(report)
+            report["validator_errors"] = validation_errors
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- service_date: {report.get('service_date')}")
+            print(f"- dry_run_mail_count: {report.get('dry_run_mail_count')}")
+            print(f"- real_sent_mail_count: {report.get('real_sent_mail_count')}")
+            print(f"- counts_toward_s2plt02_terminal_proof: {report.get('counts_toward_s2plt02_terminal_proof')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in report.get("validation_errors", []):
+                print(f"- evidence_error: {error}")
+            for error in validation_errors:
+                print(f"- validator_error: {error}")
+        return 0 if report["status"] == "pass" and not validation_errors else 2
     if args.command == "validate-s2plt02-terminal-delivery-proof":
         report = build_s2plt02_terminal_delivery_proof_artifact_validation_state(repo_root=args.repo_root)
         if args.json:

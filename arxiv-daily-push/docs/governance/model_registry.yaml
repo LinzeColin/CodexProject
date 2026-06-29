@@ -6366,3 +6366,58 @@ models:
     evidence_hash: "PENDING_MAIN_COMMIT"
     last_verified_commit: "PRECOMMIT"
     verified_at: "2026-06-28T16:32:45+10:00"
+
+  -
+    model_id: "MOD-ADP-119"
+    name: "S2PLT02 dry-run second-day nonterminal audit model"
+    purpose: "Bind the 2026-06-29 M1-M4 local dry-run trace into S2PLT02 evidence governance while preventing dry-run SMTP reports from counting as the second real delivery day, real scheduler proof, or terminal S2PLT02 acceptance."
+    owner: "arxiv-daily-push"
+    status: "active"
+    task_ids:
+      - "S2PLT02-DRY-RUN-SECOND-DAY-AUDIT"
+      - "S2PLT02"
+    assumption_ids:
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-121"
+    parameter_ids:
+      - "PARAM-ADP-1081"
+      - "PARAM-ADP-1082"
+      - "PARAM-ADP-1083"
+      - "PARAM-ADP-1084"
+      - "PARAM-ADP-1085"
+      - "PARAM-ADP-1086"
+    inputs:
+      - "local ADP state_dir runs/YYYYMMDD/adp-local-runner-report.json"
+      - "local ADP state_dir runs/YYYYMMDD/adp-smtp-delivery-report-M1..M4.json"
+    outputs:
+      - "dry_run_evidence_present"
+      - "dry_run_mail_count"
+      - "real_sent_mail_count"
+      - "counts_toward_s2plt02_terminal_proof"
+      - "state_hash"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    config_refs:
+      - "local ~/.adp/arxiv-daily-push state directory read only as evidence"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_final_gate.py"
+      - "arxiv-daily-push/tests/test_cli.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_DRY_RUN_SECOND_DAY_AUDIT.md"
+      - "governance/run_manifests/ADP-S2PLT02-DRY-RUN-SECOND-DAY-AUDIT-20260629.json"
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_DRY_RUN_SECOND_DAY_AUDIT_MODEL_ID"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_DRY_RUN_SECOND_DAY_AUDIT_SCOPE"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_DRY_RUN_SECOND_DAY_AUDIT_SERVICE_DATE"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_DRY_RUN_SECOND_DAY_AUDIT_RUNNER_REPORT"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_DRY_RUN_SECOND_DAY_AUDIT_PRODUCT_REPORT_TEMPLATE"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_DRY_RUN_SECOND_DAY_AUDIT_NO_PRODUCTION_FLAGS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_s2plt02_dry_run_second_day_audit_state"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::validate_s2plt02_dry_run_second_day_audit_state"
+    implementation_fingerprint: "PENDING_MAIN_COMMIT"
+    evidence_hash: "PENDING_MAIN_COMMIT"
+    last_verified_commit: "PRECOMMIT"
+    verified_at: "2026-06-29T16:33:19+10:00"

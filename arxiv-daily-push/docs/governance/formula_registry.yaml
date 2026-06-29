@@ -7158,3 +7158,57 @@ formulas:
     evidence_hash: "PENDING_MAIN_COMMIT"
     last_verified_commit: "PRECOMMIT"
     verified_at: "2026-06-28T16:32:45+10:00"
+
+  -
+    formula_id: "FORM-ADP-121"
+    model_id: "MOD-ADP-119"
+    assumption_ids:
+      - "ASM-ADP-035"
+    task_ids:
+      - "S2PLT02-DRY-RUN-SECOND-DAY-AUDIT"
+      - "S2PLT02"
+    status: "active"
+    expression: "S2PLT02 dry-run second-day audit remains blocked when the service-date runner report and M1-M4 product reports show dry_run=true, allow_send=false, real_send_attempted=false, real_smtp_send_enabled=false, sent_mail_count=0, and production_evidence_ready=false; that trace may set dry_run_evidence_present=true, but observed_natural_days_credit, observed_email_count_credit, terminal_delivery_credit, real_smtp_proven, real_scheduler_proven, counts_toward_s2plt02_terminal_proof, and s2plt02_accepted must all remain false or zero."
+    variables:
+      -
+        name: "runner_report"
+        data_type: "object"
+        unit: "local runner report JSON"
+        input_domain: "adp-local-runner-report.json for service date"
+      -
+        name: "product_delivery_reports"
+        data_type: "object"
+        unit: "M1-M4 local SMTP delivery report JSON"
+        input_domain: "adp-smtp-delivery-report-M1..M4.json"
+      -
+        name: "dry_run_flags"
+        data_type: "object"
+        unit: "boolean flags"
+        input_domain: "dry_run true, allow_send false, real_send_attempted false, real_smtp_send_enabled false"
+      -
+        name: "terminal_credit_flags"
+        data_type: "object"
+        unit: "boolean or count"
+        input_domain: "terminal credit and observed credit must stay false or zero"
+    constraints: "Dry-run evidence must not satisfy S2PLT02 real two-day/eight-email/scheduler terminal proof, must not accept S2PLT02, and must not enable SMTP, scheduler, Release, restore, DAILY_OPERATION, schema/DB migration, queue mutation, source/ranking changes, CURRENT/V7 changes, S2PLT03/S2PLT04/S2PMT07 completion, or integrated production acceptance."
+    missing_policy: "Missing runner report, missing product report, non-dry-run product status, real-send flag, nonzero sent count, or invalid state hash keeps the audit blocked and prevents any terminal credit."
+    output_range: "Blocked dry-run audit state with dry_run_evidence_present, dry_run_mail_count, real_sent_mail_count, terminal credit false, blocking reasons, validation errors, evidence refs, and deterministic state_hash."
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_final_gate.py"
+      - "arxiv-daily-push/tests/test_cli.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_DRY_RUN_SECOND_DAY_AUDIT.md"
+      - "governance/run_manifests/ADP-S2PLT02-DRY-RUN-SECOND-DAY-AUDIT-20260629.json"
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_DRY_RUN_SECOND_DAY_AUDIT_MODEL_ID"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_DRY_RUN_SECOND_DAY_AUDIT_SCOPE"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_s2plt02_dry_run_second_day_audit_state"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::validate_s2plt02_dry_run_second_day_audit_state"
+    implementation_fingerprint: "PENDING_MAIN_COMMIT"
+    evidence_hash: "PENDING_MAIN_COMMIT"
+    last_verified_commit: "PRECOMMIT"
+    verified_at: "2026-06-29T16:33:19+10:00"

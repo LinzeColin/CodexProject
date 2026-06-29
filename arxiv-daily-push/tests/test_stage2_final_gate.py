@@ -132,6 +132,7 @@ from arxiv_daily_push.stage2_final_gate import (
     build_s2pmt07_remaining_blocker_matrix_state,
     build_s2plt02_dependency_state,
     build_s2plt02_delivery_evidence_ledger_state,
+    build_s2plt02_dry_run_second_day_audit_state,
     build_s2plt02_live_2d_precheck_report,
     build_s2plt02_live_evidence_state,
     build_s2plt02_m4_watermark_proof_state,
@@ -153,6 +154,7 @@ from arxiv_daily_push.stage2_final_gate import (
     build_test_gate_state,
     validate_s2plt02_live_2d_precheck_report,
     validate_s2plt02_delivery_evidence_ledger_state,
+    validate_s2plt02_dry_run_second_day_audit_state,
     validate_s2plt02_m4_watermark_proof_state,
     validate_s2plt02_terminal_delivery_proof_artifact,
     validate_s2plt02_terminal_delivery_proof_artifact_validation_state,
@@ -187,6 +189,52 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
 class Stage2FinalGateTests(unittest.TestCase):
+    def _write_s2plt02_second_day_dry_run_reports(self, state_dir: Path) -> Path:
+        run_dir = state_dir / "runs" / "20260629"
+        run_dir.mkdir(parents=True)
+        products = ["M1", "M2", "M3", "M4"]
+        notification_reports = {}
+        for product in products:
+            report = {
+                "status": "dry_run",
+                "product_id": product,
+                "cycle_id": "2026-06-29",
+                "generated_at": "2026-06-28T19:00:02Z",
+                "dry_run": True,
+                "allow_send": False,
+                "real_send_attempted": False,
+                "real_smtp_send_enabled": False,
+                "message_id": f"<adp-{product.lower()}@arxiv-daily-push.local>",
+                "delivery_id": f"smtp-delivery:dry-run-{product.lower()}",
+            }
+            notification_reports[product] = report
+            (run_dir / f"adp-smtp-delivery-report-{product}.json").write_text(
+                json.dumps(report, ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
+        runner_report = {
+            "status": "pass",
+            "date": "2026-06-29",
+            "generated_at": "2026-06-28T19:00:02Z",
+            "production_evidence_ready": False,
+            "real_smtp_sent": False,
+            "mail_delivery_summary": {
+                "planned_send_total": 4,
+                "planned_mail_products": products,
+                "sent_mail_count": 0,
+                "sent_mail_products": [],
+                "dry_run_mail_products": products,
+                "status_by_product": {product: "dry_run" for product in products},
+                "delivery_ref_by_product": {product: "" for product in products},
+            },
+            "notification_reports": notification_reports,
+        }
+        (run_dir / "adp-local-runner-report.json").write_text(
+            json.dumps(runner_report, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+        return run_dir
+
     def test_s2plt02_dependency_state_consumes_s2plt01_terminal_acceptance(self) -> None:
         state = build_s2plt02_dependency_state()
 
@@ -259,6 +307,52 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertIn("manifest governance/run_manifests/BROKEN-LOCAL-DAILY-M1-M4-20260628.json sent products must be M1-M4", errors)
         self.assertIn("manifest governance/run_manifests/BROKEN-LOCAL-DAILY-M1-M4-20260628.json integrated_production_accepted must be false", errors)
         self.assertFalse(ledger["two_day_delivery_evidence_present"])
+
+    def test_s2plt02_second_day_dry_run_audit_does_not_count_as_terminal_delivery(self) -> None:
+        with TemporaryDirectory() as tmp_dir:
+            state_dir = Path(tmp_dir)
+            self._write_s2plt02_second_day_dry_run_reports(state_dir)
+
+            audit = build_s2plt02_dry_run_second_day_audit_state(
+                state_dir=state_dir,
+                service_date="2026-06-29",
+            )
+
+        self.assertEqual(audit["status"], "blocked")
+        self.assertEqual(audit["service_date"], "2026-06-29")
+        self.assertEqual(audit["planned_mail_count"], 4)
+        self.assertEqual(audit["dry_run_mail_count"], 4)
+        self.assertEqual(audit["real_sent_mail_count"], 0)
+        self.assertEqual(audit["observed_email_count_credit"], 0)
+        self.assertEqual(audit["observed_natural_days_credit"], 0)
+        self.assertTrue(audit["dry_run_evidence_present"])
+        self.assertFalse(audit["terminal_delivery_credit"])
+        self.assertFalse(audit["counts_toward_s2plt02_terminal_proof"])
+        self.assertFalse(audit["real_smtp_proven"])
+        self.assertFalse(audit["real_scheduler_proven"])
+        self.assertFalse(audit["s2plt02_accepted"])
+        self.assertIn("dry_run_evidence_only_not_real_smtp", audit["blocking_reasons"])
+        self.assertIn("real_scheduler_not_proven", audit["blocking_reasons"])
+        self.assertIn("two_consecutive_real_days_not_proven", audit["blocking_reasons"])
+        self.assertIn("eight_real_emails_not_proven", audit["blocking_reasons"])
+        self.assertEqual(validate_s2plt02_dry_run_second_day_audit_state(audit), [])
+
+    def test_s2plt02_second_day_dry_run_audit_blocks_missing_product_reports(self) -> None:
+        with TemporaryDirectory() as tmp_dir:
+            state_dir = Path(tmp_dir)
+            run_dir = self._write_s2plt02_second_day_dry_run_reports(state_dir)
+            (run_dir / "adp-smtp-delivery-report-M4.json").unlink()
+
+            audit = build_s2plt02_dry_run_second_day_audit_state(
+                state_dir=state_dir,
+                service_date="2026-06-29",
+            )
+
+        self.assertEqual(audit["status"], "blocked")
+        self.assertFalse(audit["dry_run_evidence_present"])
+        self.assertIn("missing_product_delivery_report:M4", audit["validation_errors"])
+        self.assertIn("dry_run_product_report_set_incomplete", audit["blocking_reasons"])
+        self.assertEqual(validate_s2plt02_dry_run_second_day_audit_state(audit), [])
 
     def test_s2plt02_terminal_delivery_proof_artifact_validation_blocks_missing_artifact(self) -> None:
         with TemporaryDirectory() as tmp_dir:

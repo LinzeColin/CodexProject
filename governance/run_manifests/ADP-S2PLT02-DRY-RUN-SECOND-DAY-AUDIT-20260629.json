@@ -1,0 +1,87 @@
+{
+  "acceptance_id": "ACC-S2PLT02-2D",
+  "blocking_reasons": [
+    "dry_run_evidence_only_not_real_smtp",
+    "real_scheduler_not_proven",
+    "two_consecutive_real_days_not_proven",
+    "eight_real_emails_not_proven"
+  ],
+  "counts_toward_s2plt02_terminal_proof": false,
+  "current_pointer_changed": false,
+  "daily_operation_enabled": false,
+  "dry_run_evidence_present": true,
+  "dry_run_mail_count": 4,
+  "dry_run_mail_products": [
+    "M1",
+    "M2",
+    "M3",
+    "M4"
+  ],
+  "dry_run_report_products": [
+    "M1",
+    "M2",
+    "M3",
+    "M4"
+  ],
+  "evidence_refs": [
+    "/Users/linzezhang/.adp/arxiv-daily-push/runs/20260629/adp-local-runner-report.json",
+    "/Users/linzezhang/.adp/arxiv-daily-push/runs/20260629/adp-smtp-delivery-report-M1.json",
+    "/Users/linzezhang/.adp/arxiv-daily-push/runs/20260629/adp-smtp-delivery-report-M2.json",
+    "/Users/linzezhang/.adp/arxiv-daily-push/runs/20260629/adp-smtp-delivery-report-M3.json",
+    "/Users/linzezhang/.adp/arxiv-daily-push/runs/20260629/adp-smtp-delivery-report-M4.json"
+  ],
+  "integrated_production_accepted": false,
+  "model_id": "adp-s2plt02-dry-run-second-day-audit-v1",
+  "observed_email_count_credit": 0,
+  "observed_natural_days_credit": 0,
+  "parent_task_id": "S2PLT02",
+  "planned_mail_count": 4,
+  "planned_mail_products": [
+    "M1",
+    "M2",
+    "M3",
+    "M4"
+  ],
+  "product_report_refs": {
+    "M1": "/Users/linzezhang/.adp/arxiv-daily-push/runs/20260629/adp-smtp-delivery-report-M1.json",
+    "M2": "/Users/linzezhang/.adp/arxiv-daily-push/runs/20260629/adp-smtp-delivery-report-M2.json",
+    "M3": "/Users/linzezhang/.adp/arxiv-daily-push/runs/20260629/adp-smtp-delivery-report-M3.json",
+    "M4": "/Users/linzezhang/.adp/arxiv-daily-push/runs/20260629/adp-smtp-delivery-report-M4.json"
+  },
+  "product_report_status": {
+    "M1": "dry_run",
+    "M2": "dry_run",
+    "M3": "dry_run",
+    "M4": "dry_run"
+  },
+  "production_acceptance_claimed": false,
+  "production_restore_enabled": false,
+  "real_scheduler_proven": false,
+  "real_sent_mail_count": 0,
+  "real_smtp_proven": false,
+  "real_smtp_send_enabled": false,
+  "release_packaging_enabled": false,
+  "required_mail_products": [
+    "M1",
+    "M2",
+    "M3",
+    "M4"
+  ],
+  "run_dir": "/Users/linzezhang/.adp/arxiv-daily-push/runs/20260629",
+  "runner_report_ref": "/Users/linzezhang/.adp/arxiv-daily-push/runs/20260629/adp-local-runner-report.json",
+  "s2plt02_accepted": false,
+  "scheduler_install_enabled": false,
+  "schema_version": 1,
+  "scope": "second_day_dry_run_trace_no_terminal_delivery_credit",
+  "sent_mail_products": [],
+  "service_date": "2026-06-29",
+  "stage2_integrated_production_accepted": false,
+  "state_dir": "/Users/linzezhang/.adp/arxiv-daily-push",
+  "state_hash": "9fbd118380da579c2cd47a92e6fe3e54fc89ffd9b76dddb8d3a7199e5821e965",
+  "status": "blocked",
+  "task_id": "S2PLT02-DRY-RUN-SECOND-DAY-AUDIT",
+  "terminal_delivery_credit": false,
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false,
+  "validation_errors": []
+}
