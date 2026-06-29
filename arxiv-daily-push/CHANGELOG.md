@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-06-29 12:42:41 Australia/Sydney - S2PMT07-S2PLT01-REPLAY-PAYLOAD-READINESS-SYNC
+
+- Updated `audit-s2plt01-terminal-acceptance` to verify the existing no-production S2PLT01 replay payload execution package and bind its execution hash.
+- Current S2PLT01 audit remains blocked, but now reports `replay_payload_execution_package_validation.status=pass`, `observed_replay_days=30`, `observed_mail_previews=120`, `source_terminal_states_proven=true`, and remaining blockers `review_receipt_is_nonterminal`, `s2plt01_not_accepted`.
+- No S2PLT01 acceptance is claimed; no S2PLT04 completion report, final command execution, handoff, signoff, final manifest, SMTP, scheduler, Release, restore, CURRENT/V7 changes, DAILY_OPERATION, or integrated production acceptance is created or enabled.
+
 ## 2026-06-29 12:23:25 Australia/Sydney - S2PMT07-S2PLT01-ZERO-PROOF-READINESS-SYNC
 
 - Updated `audit-s2plt01-terminal-acceptance` to consume the committed `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json` artifact.

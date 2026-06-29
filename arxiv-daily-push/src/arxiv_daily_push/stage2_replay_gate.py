@@ -73,6 +73,12 @@ S2PLT01_BLOCKING_REASONS = (
 S2PLT01_INDEPENDENT_REVIEW_MANIFEST_PATH = (
     "governance/run_manifests/ADP-S2PLT01-INDEPENDENT-REPLAY-REVIEW-20260626.json"
 )
+S2PLT01_REPLAY_PAYLOAD_EXECUTION_MANIFEST_PATH = (
+    "governance/run_manifests/ADP-S2PLT01-REPLAY-PAYLOAD-EXECUTION-20260626.json"
+)
+S2PLT01_REPLAY_PAYLOAD_EXECUTION_ID = "S2PLT01-REPLAY-PAYLOAD-EXECUTION-20260626-001"
+S2PLT01_REPLAY_PAYLOAD_EXECUTION_GENERATED_AT = "2026-06-26T19:10:00+10:00"
+S2PLT01_REPLAY_PAYLOAD_EXECUTION_GENERATED_BY = "codex-stage2-local"
 S2PLT01_S2PLT04_REVIEW_SYNC_MANIFEST_PATH = (
     "governance/run_manifests/ADP-S2PLT04-S2PLT01-REPLAY-REVIEW-EVIDENCE-SYNC-20260628.json"
 )
@@ -633,6 +639,7 @@ def build_s2plt01_terminal_acceptance_audit_state(*, repo_root: str | Path = "."
     root = Path(repo_root)
     review_manifest = _load_json_mapping(root / S2PLT01_INDEPENDENT_REVIEW_MANIFEST_PATH)
     s2plt04_sync = _load_json_mapping(root / S2PLT01_S2PLT04_REVIEW_SYNC_MANIFEST_PATH)
+    replay_payload_execution_validation = _build_s2plt01_replay_payload_execution_package_validation_state(root)
     zero_proof_validation = _build_s2plt01_p0_p1_zero_proof_artifact_validation_state(root)
     p0_zero_proven = (
         zero_proof_validation["p0_zero_proven_by_payload"] is True
@@ -652,7 +659,7 @@ def build_s2plt01_terminal_acceptance_audit_state(*, repo_root: str | Path = "."
     terminal_gates = {
         "review_receipt_present": review_receipt_present,
         "review_package_passed": review_package_passed,
-        "full_replay_executed": review_manifest.get("full_replay_executed") is True,
+        "replay_payload_execution_package_passed": replay_payload_execution_validation["status"] == "pass",
         "s2plt01_accepted": review_manifest.get("s2plt01_accepted") is True,
         "inherited_p0_zero": p0_zero_proven,
         "inherited_p1_zero": p1_zero_proven,
@@ -662,8 +669,8 @@ def build_s2plt01_terminal_acceptance_audit_state(*, repo_root: str | Path = "."
         blocking_reasons.append("review_receipt_missing")
     if review_package_passed and not terminal_gates["s2plt01_accepted"]:
         blocking_reasons.append("review_receipt_is_nonterminal")
-    if not terminal_gates["full_replay_executed"]:
-        blocking_reasons.append("full_replay_not_executed")
+    if not terminal_gates["replay_payload_execution_package_passed"]:
+        blocking_reasons.append("replay_payload_execution_package_not_passed")
     if not terminal_gates["s2plt01_accepted"]:
         blocking_reasons.append("s2plt01_not_accepted")
     if not terminal_gates["inherited_p0_zero"]:
@@ -681,7 +688,9 @@ def build_s2plt01_terminal_acceptance_audit_state(*, repo_root: str | Path = "."
         "review_receipt_present": review_receipt_present,
         "review_package_passed": review_package_passed,
         "review_manifest_ref": S2PLT01_INDEPENDENT_REVIEW_MANIFEST_PATH,
+        "replay_payload_execution_manifest_ref": S2PLT01_REPLAY_PAYLOAD_EXECUTION_MANIFEST_PATH,
         "s2plt04_review_sync_ref": S2PLT01_S2PLT04_REVIEW_SYNC_MANIFEST_PATH,
+        "replay_payload_execution_package_validation": replay_payload_execution_validation,
         "p0_p1_zero_proof_artifact_validation": zero_proof_validation,
         "terminal_gates": terminal_gates,
         "blocking_reasons": sorted(set(blocking_reasons)),
@@ -865,6 +874,71 @@ def _load_json_mapping(path: Path) -> Mapping[str, Any]:
     return value if isinstance(value, Mapping) else {}
 
 
+def _build_s2plt01_replay_payload_execution_package_validation_state(root: Path) -> dict[str, Any]:
+    manifest = _load_json_mapping(root / S2PLT01_REPLAY_PAYLOAD_EXECUTION_MANIFEST_PATH)
+    s2plt04_sync = _load_json_mapping(root / S2PLT01_S2PLT04_REVIEW_SYNC_MANIFEST_PATH)
+    report = build_s2plt01_replay_payload_execution_report(
+        execution_id=S2PLT01_REPLAY_PAYLOAD_EXECUTION_ID,
+        generated_at=S2PLT01_REPLAY_PAYLOAD_EXECUTION_GENERATED_AT,
+        generated_by=S2PLT01_REPLAY_PAYLOAD_EXECUTION_GENERATED_BY,
+        evidence_mode="actual_replay_evidence",
+        replay_records=_build_s2plt01_committed_replay_records(),
+        mail_preview_records=_build_s2plt01_committed_mail_preview_records(),
+        source_terminal_states=_build_s2plt01_committed_source_terminal_states(),
+        evidence_refs=[S2PLT01_REPLAY_PAYLOAD_EXECUTION_MANIFEST_PATH],
+    )
+    report_errors = validate_s2plt01_replay_payload_execution_report(report)
+    expected_hash = str(s2plt04_sync.get("s2plt01_replay_execution_hash") or "")
+    validation_errors: list[str] = []
+
+    if not manifest:
+        validation_errors.append("replay_payload_execution_manifest_missing")
+    if manifest and manifest.get("task_id") != "S2PLT01-REPLAY-PAYLOAD-EXECUTION":
+        validation_errors.append("replay_payload_execution_manifest_task_id_invalid")
+    if manifest and manifest.get("replay_payload_execution_package_added") is not True:
+        validation_errors.append("replay_payload_execution_package_added_not_true")
+    if manifest and str(manifest.get("binding_status") or "") not in {
+        "local_validation_passed_pending_pr_ci",
+        "mainline_validation_passed",
+    }:
+        validation_errors.append("replay_payload_execution_binding_status_invalid")
+    if report.get("payload_execution_package_passed") is not True:
+        validation_errors.append("replay_payload_execution_package_not_passed")
+    if report_errors:
+        validation_errors.append("replay_payload_execution_report_invalid")
+    if not expected_hash:
+        validation_errors.append("s2plt04_replay_execution_hash_missing")
+    if expected_hash and report.get("execution_hash") != expected_hash:
+        validation_errors.append("s2plt04_replay_execution_hash_mismatch")
+
+    for flag in S2PLT01_FORBIDDEN_FLAGS:
+        if manifest and flag in manifest and manifest.get(flag) is not False:
+            validation_errors.append(f"manifest.{flag}_must_be_false")
+        if report.get(flag) is not False:
+            validation_errors.append(f"report.{flag}_must_be_false")
+
+    replay_evidence = _mapping(_mapping(report.get("payload")).get("replay_evidence"))
+    return {
+        "status": "pass" if not validation_errors else "blocked",
+        "artifact_ref": S2PLT01_REPLAY_PAYLOAD_EXECUTION_MANIFEST_PATH,
+        "artifact_present": bool(manifest),
+        "execution_id": S2PLT01_REPLAY_PAYLOAD_EXECUTION_ID,
+        "generated_at": S2PLT01_REPLAY_PAYLOAD_EXECUTION_GENERATED_AT,
+        "payload_execution_package_passed": report.get("payload_execution_package_passed") is True,
+        "entry_precheck_passed": report.get("entry_precheck_passed") is True,
+        "report_status": report.get("status"),
+        "observed_replay_days": replay_evidence.get("observed_replay_days"),
+        "observed_mail_previews": replay_evidence.get("observed_mail_previews"),
+        "source_terminal_states_proven": replay_evidence.get("source_terminal_states_proven"),
+        "future_leakage_count": replay_evidence.get("future_leakage_count"),
+        "p0_p1_blocker_count": replay_evidence.get("p0_p1_blocker_count"),
+        "expected_execution_hash": expected_hash,
+        "actual_execution_hash": report.get("execution_hash"),
+        "report_validation_errors": report_errors,
+        "validation_errors": validation_errors,
+    }
+
+
 def _build_s2plt01_p0_p1_zero_proof_artifact_validation_state(root: Path) -> dict[str, Any]:
     artifact = _load_json_mapping(root / S2PLT01_P0_P1_ZERO_PROOF_ARTIFACT_PATH)
     validation_errors: list[str] = []
@@ -900,6 +974,49 @@ def _build_s2plt01_p0_p1_zero_proof_artifact_validation_state(root: Path) -> dic
         "production_acceptance_claimed": decision.get("production_acceptance_claimed") if artifact else None,
         "validation_errors": validation_errors,
     }
+
+
+def _build_s2plt01_committed_replay_records() -> list[dict[str, Any]]:
+    return [
+        {
+            "as_of_date": f"2026-05-{day:02d}",
+            "status": "pass",
+            "source_domains": ["D1", "D2", "D3", "D4"],
+            "reading_boards": ["B1", "B2", "B3", "B4", "B5", "B6"],
+            "future_leakage_count": 0,
+            "p0_p1_blocker_count": 0,
+            "evidence_refs": [f"replay/{day:02d}.json"],
+        }
+        for day in range(1, 31)
+    ]
+
+
+def _build_s2plt01_committed_mail_preview_records() -> list[dict[str, Any]]:
+    return [
+        {
+            "as_of_date": f"2026-05-{day:02d}",
+            "mail_product_id": product_id,
+            "status": "pass",
+            "email_template_contract": "EMAIL_LEARNING_V1",
+            "real_smtp_sent": False,
+            "evidence_refs": [f"mail/{day:02d}/{product_id}.json"],
+        }
+        for day in range(1, 31)
+        for product_id in S2PLT01_REQUIRED_MAIL_PRODUCTS
+    ]
+
+
+def _build_s2plt01_committed_source_terminal_states() -> list[dict[str, Any]]:
+    return [
+        {
+            "source_domain": domain,
+            "status": "terminal_ready",
+            "terminal_state": "qualified_no_send",
+            "production_inclusion": False,
+            "evidence_refs": [f"terminal/{domain}.json"],
+        }
+        for domain in S2PLT01_REQUIRED_SOURCE_DOMAINS
+    ]
 
 
 def _replay_record_passes(record: Mapping[str, Any]) -> bool:

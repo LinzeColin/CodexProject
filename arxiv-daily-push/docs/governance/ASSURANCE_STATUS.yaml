@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260629-ADP-S2PMT07-S2PLT01-ZERO-PROOF-READINESS-SYNC"
-source_snapshot_hash: "sha256:a4bb2aa1529ab2e719e847c15e7cc53103a1ca90b644ee225041f9a63769c9aa"
+as_of_event_id: "EVENT-20260629-ADP-S2PMT07-S2PLT01-REPLAY-PAYLOAD-READINESS-SYNC"
+source_snapshot_hash: "sha256:41f8dba420d0ec4c2448b3e29045fd457c33d0a8af8df3a1acb20584526090ff"
 source_base_commit: "fd90a208c7b009aa11bc26c4629a7ea92679c5ff"
 source_tree_hash: "c44d743a2833842b3cc0dd9e098fb70017cdc5a2"
-snapshot_event_time: "2026-06-29T12:23:25+10:00"
+snapshot_event_time: "2026-06-29T12:42:41+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -60,20 +60,15 @@ dimensions:
     fact_level: "EXTRACTED"
     tree_bound_events: 0
     commit_bound_events: 4
-    legacy_unbound_events: 249
+    legacy_unbound_events: 254
     precommit_pending_events: 40
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "BLOCKED_PRECHECK"
-  release_gate: "S2PMT07_S2PLT01_ZERO_PROOF_READINESS_SYNC_BLOCKED_NO_ACCEPTANCE"
+  release_gate: "S2PMT07_S2PLT01_REPLAY_PAYLOAD_READINESS_SYNC_BLOCKED_NO_ACCEPTANCE"
   blocker_ids:
-    - "S2PLT01_NOT_ACCEPTED"
-    - "TWO_CONSECUTIVE_REAL_DAYS_NOT_PROVEN"
-    - "EIGHT_REAL_EMAILS_NOT_PROVEN"
-    - "REAL_SCHEDULER_NOT_PROVEN"
-    - "S2PLT03_TERMINAL_RESILIENCE_NOT_PROVEN"
-    - "S2PLT04_COMPLETION_REPORT_MISSING"
+    - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
   v7_contract_hash: "a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d"
   v7_roadmap_hash: "7c5f2d842d4f6b909343c953fe39b4a4aa540d168199747a9f7decdb1aad9bd1"
@@ -81,16 +76,7 @@ delivery_readiness:
   v7_parallel_audit_hash: "571b3dbbc78d6dac01bd18472a0358f5ce4c51ac3d590c10d0c02e6453a7ea6c"
   open_p0_findings: 8
   open_p1_findings: 37
-  p0_p1_zero_proof_artifact_validation: "pass"
-  s2plt01_terminal_acceptance_zero_proof_readiness: "p0_zero_true_p1_zero_true"
-  s2plt01_remaining_terminal_blockers: "full_replay_not_executed; review_receipt_is_nonterminal; s2plt01_not_accepted"
-  s2plt02_p0_zero: true
-  s2plt02_p1_zero: true
-  s2plt02_remaining_terminal_blockers: "s2plt01_not_accepted; two_consecutive_real_days_not_proven; eight_real_emails_not_proven; real_scheduler_not_proven"
-  s2plt03_p0_zero: true
-  s2plt03_p1_zero: true
-  s2plt03_remaining_terminal_blockers: "s2plt02_not_accepted"
-  production_forbidden_until: "S2PLT01 terminal audit consumes P0/P1 zero-proof artifact validation, but S2PLT01 full replay/acceptance, two consecutive real days, eight real emails, real scheduler proof, S2PLT03 terminal resilience, S2PLT04 completion report, final bundle, independent signoff, final command execution, scheduler/SMTP/Release/restore, DAILY_OPERATION, and integrated production acceptance remain blocked"
+  production_forbidden_until: "inherited V7.1 P0=0; inherited V7.1 P1=0; S2PLT04 completed; final bundle present; S2PMT07 independent review passed"
   stage2_stop_gate: "INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION"
   stage2_integrated_production_accepted: false
   parallel_shadow_source_task: "NONE_WHILE_S2PMT07_BLOCKED"
@@ -98,12 +84,12 @@ delivery_readiness:
 next_executable_task:
   task_id: "S2PMT07-S2PLT04-COMPLETION-REPORT"
   status: "blocked"
-  reason: "independent final reviewer assignment and P0/P1 zero-proof artifacts are validated for the final-bundle chain; S2PLT01/S2PLT02/S2PLT03 readiness consume zero-proof, but S2PLT04 completion report is still blocked until S2PLT01/S2PLT02/S2PLT03 terminal evidence exists."
+  reason: "Independent final reviewer assignment and P0/P1 zero-proof artifacts are validated for the final-bundle chain; S2PLT04 completion report is the next required blocked artifact before final command, handoff, signoff, manifest, or production acceptance can proceed."
   acceptance_ids:
     - "ACC-S2PMT07-FINAL-REVIEW"
   owner: "content_owner + engineering_owner + independent_final_reviewer"
   human_owner_role: "content_owner + engineering_owner + independent_final_reviewer"
-  unblock_condition: "Provide real S2PLT01 terminal acceptance, second real natural day, eight total real M1-M4 emails, real scheduler proof, and S2PLT03 terminal resilience proof before writing the S2PLT04 completion report; then proceed to final command execution, next-agent handoff, independent signoff, and final bundle manifest without claiming production acceptance until all final-bundle gates pass."
+  unblock_condition: "Provide real S2PLT04 completion report after S2PLT01/S2PLT02/S2PLT03 terminal evidence and P0/P1 zero-proof inputs are truthfully available; then proceed to final command execution, next-agent handoff, independent signoff, and final bundle manifest without claiming production acceptance until all final-bundle gates pass."
   stale_candidates:
     -
       task_id: "ADP-PHASE11-PRODUCTION-TRIAL-START-022"

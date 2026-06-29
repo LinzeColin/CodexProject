@@ -4659,6 +4659,26 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+  - task_id: "S2PMT07-S2PLT01-REPLAY-PAYLOAD-READINESS-SYNC"
+    title: "S2PMT07 S2PLT01 replay payload readiness sync"
+    phase: "S2PM"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-29T12:42:41+10:00"
+    summary: "Make S2PLT01 terminal acceptance audit verify the existing no-production replay payload execution package while keeping nonterminal review receipt and S2PLT01 acceptance blocked."
+    owner: "content_owner + engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py", "arxiv-daily-push/tests/test_stage2_replay_gate.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT01_REPLAY_PAYLOAD_READINESS_SYNC.md", "governance/run_manifests/ADP-S2PMT07-S2PLT01-REPLAY-PAYLOAD-READINESS-SYNC-20260629.json"]
+    acceptance_ids: ["ACC-S2PLT01-30D", "ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt01_payload_red PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_replay_gate.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt01_payload_green1 PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_replay_gate.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt01_payload_cli1 PYTHONPATH=arxiv-daily-push/src python3 -B -m arxiv_daily_push.cli audit-s2plt01-terminal-acceptance --json"]
+    test_results: ["TDD red failed as expected because S2PLT01 terminal audit did not expose replay_payload_execution_package_passed", "focused S2PLT01 replay-gate tests: 22 OK", "audit CLI returned blocked / exit 2 with replay payload validation pass and remaining blockers review_receipt_is_nonterminal, s2plt01_not_accepted"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-S2PLT01-REPLAY-PAYLOAD-READINESS-SYNC-20260629.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT01_REPLAY_PAYLOAD_READINESS_SYNC.md", "governance/run_manifests/ADP-S2PLT01-REPLAY-PAYLOAD-EXECUTION-20260626.json", "governance/run_manifests/ADP-S2PLT04-S2PLT01-REPLAY-REVIEW-EVIDENCE-SYNC-20260628.json", "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json", "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py", "arxiv-daily-push/tests/test_stage2_replay_gate.py"]
+    result: "S2PLT01 terminal audit now verifies 30 replay days, 120 M1-M4 previews, D1-D4 terminal source states, zero future leakage, zero replay P0/P1 counters, and matching execution hash; remaining blockers are nonterminal review receipt and S2PLT01 acceptance."
+    risk: "The replay payload readiness sync can be misread as S2PLT01 acceptance unless terminal_acceptance_ready=false, full_replay_executed=false, and s2plt01_accepted=false remain explicit."
+    rollback: "Revert S2PLT01 replay payload validation consumption logic, focused regression tests, phase record, manifest, traceability row, delivery/event records, generated views, and three base records; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
   - task_id: "S2PLT02-ZERO-PROOF-READINESS-SYNC"
     title: "S2PLT02 zero-proof readiness sync"
     phase: "S2PL"

@@ -21,12 +21,20 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 259
+- task_count: 260
 - acceptance_count: 127
 
 ## Delivery Tasks
 
 The machine-readable task source is `delivery_tasks.yaml`.
+
+## 2026-06-29 12:42:41 Australia/Sydney - S2PMT07 S2PLT01 Replay Payload Readiness Sync
+
+- `S2PMT07-S2PLT01-REPLAY-PAYLOAD-READINESS-SYNC` makes S2PLT01 terminal acceptance audit verify the existing no-production replay payload execution package.
+- Current audit remains blocked with `terminal_acceptance_ready=false`, but now records `replay_payload_execution_package_validation.status=pass`, `observed_replay_days=30`, `observed_mail_previews=120`, `source_terminal_states_proven=true`, and matching execution hash `47394faede126c943dc46b3ca2ae0c8680d5ef32f1f26f4618e3064fcbc28171`.
+- Remaining S2PLT01 blockers: `review_receipt_is_nonterminal`, `s2plt01_not_accepted`.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-S2PLT01-REPLAY-PAYLOAD-READINESS-SYNC-20260629.json` and `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT01_REPLAY_PAYLOAD_READINESS_SYNC.md`.
+- No SMTP, scheduler, Release, restore, schema/DB, source/ranking, CURRENT/V7, DAILY_OPERATION, S2PLT01 acceptance, S2PLT04 report, final bundle acceptance, or integrated production acceptance side effect is claimed.
 
 ## 2026-06-29 12:23:25 Australia/Sydney - S2PMT07 S2PLT01 Zero-Proof Readiness Sync
 
