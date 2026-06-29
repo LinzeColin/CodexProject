@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260629-S04P1-AMOUNT-TOOLS"
+as_of_event_id: "EVENT-KMFA-20260629-S04P2-FIELD-STANDARDIZATION"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "precommit-pending"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_STAGE_REVIEW"
-snapshot_event_time: "2026-06-29T22:30:00+10:00"
-generator_version: "manual-s04p1-amount-tools"
+snapshot_event_time: "2026-06-29T22:36:43+10:00"
+generator_version: "manual-s04p2-field-standardization"
 final_commit_binding: "precommit-pending-v12-baseline"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 21
-    total_active_formulas: 8
+    total_active_parameters: 24
+    total_active_formulas: 9
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -43,6 +43,7 @@ dimensions:
       - "KMFA/stage_artifacts/S03_P2_source_check_matrix/human/test_results.md"
       - "KMFA/stage_artifacts/S03_P3_source_priority/human/test_results.md"
       - "KMFA/stage_artifacts/S04_P1_amount_tools/human/test_results.md"
+      - "KMFA/stage_artifacts/S04_P2_field_standardization/human/test_results.md"
   operational_validation:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
@@ -56,6 +57,7 @@ dimensions:
       - "KMFA/tools/source_priority.py"
       - "KMFA/tools/amount_tools.py"
       - "KMFA/tools/check_no_float_money.py"
+      - "KMFA/tools/field_standardization.py"
       - "KMFA/stage_artifacts/S02_P3_quality_gate/human/test_results.md"
   delivery_evidence:
     status: "VERIFIED"
@@ -68,12 +70,13 @@ dimensions:
       - "KMFA/stage_artifacts/S03_P2_source_check_matrix/human/s03_p2_completion_record.md"
       - "KMFA/stage_artifacts/S03_P3_source_priority/human/s03_p3_completion_record.md"
       - "KMFA/stage_artifacts/S04_P1_amount_tools/human/s04_p1_completion_record.md"
+      - "KMFA/stage_artifacts/S04_P2_field_standardization/human/s04_p2_completion_record.md"
   evidence_freshness:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "S04_P1_COMPLETED_VALIDATED_LOCAL_ONLY"
-  release_gate: "KMFA-S04-P2-GATE"
+  status: "S04_P2_COMPLETED_VALIDATED_LOCAL_ONLY"
+  release_gate: "KMFA-S04-P3-GATE"
   blocker_ids: []

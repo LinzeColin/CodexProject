@@ -1,4 +1,4 @@
-version: "0.1.0-s04p1"
+version: "0.1.0-s04p2"
 project: "KMFA"
 active_model_ids:
   - "MOD-KMFA-GOV-001"
@@ -12,6 +12,7 @@ planned_model_ids:
   - "MOD-KMFA-COST-001"
 active_formula_ids:
   - "FORM-KMFA-AMOUNT-001"
+  - "FORM-KMFA-FIELD-STANDARDIZATION-001"
 source_of_truth:
   - "KMFA/docs/governance/model_registry.yaml"
   - "KMFA/docs/governance/formula_registry.yaml"

@@ -5,10 +5,10 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.0-s04p1`
+- version: `0.1.0-s04p2`
 - current_stage: `S04`
-- current_phase: `S04-P1 金额工具`
-- status: `s04_p1_completed_validated_local_only`
+- current_phase: `S04-P2 字段标准化`
+- status: `s04_p2_completed_validated_local_only`
 - production_ready: `false`
 - github_upload_ready: `false`
 
@@ -35,15 +35,16 @@
 - Stage 3 整体复审已通过：`KMFA/stage_artifacts/S03_STAGE_REVIEW/`。
 - Stage 3 已整体上传 GitHub main，reviewed content commit `39b0eef52424a12b6c0c8ad368bd878b46300be4`。
 - S04-P1 金额工具已完成本地验证：`KMFA/tools/amount_tools.py` 支持金额标准化到整数分，`KMFA/tools/check_no_float_money.py` 阻断业务金额 float 用法。
+- S04-P2 字段标准化已完成本地验证：`KMFA/tools/field_standardization.py` 支持字段别名、日期、期间、主体、项目、客户/对手方和合同编号标准化，缺字段进入 metadata 质量状态。
 
 ## 未完成
 
-- S04-P2 字段标准化、S04-P3 基础工具测试、A0 基准、zero-delta、事实层、报告、UI 和外部接口尚未完成。
+- S04-P3 基础工具测试、A0 基准、zero-delta、事实层、报告、UI 和外部接口尚未完成。
 - Stage 4 尚未整体复审，不能上传 GitHub。
 
 ## 阻塞条件
 
 - 不能把 Stage 1 治理基线当成业务 MVP。
 - 不能上传原始敏感经营数据。
-- S04-P1 已完成；后续开发仍必须每次 run 最多一个 Phase。
+- S04-P1/S04-P2 已完成；后续开发仍必须每次 run 最多一个 Phase。
 - 后续所有开发必须建立在 v1.2 完整任务包和 HTML 样板基线上。

@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-s04p2 - 2026-06-29
+
+- 完成 `S04-P2｜字段标准化`，保持本 Phase 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/field_standardization.py`，支持日期、期间、公司主体、项目名称、客户/对手方、合同编号标准化。
+- 新增 `KMFA/tests/test_field_standardization.py`，覆盖中文字段映射、缺字段质量状态、异常字段质量状态和 CLI。
+- 新增 `KMFA/metadata/schema_maps/field_alias_dictionary.csv`、`field_standardization_policy.yaml` 和 `KMFA/metadata/quality/field_quality_status.jsonl`。
+- 更新 mapping version 登记、字段字典、目录 manifest 和 S04-P2 证据包。
+- 保持 S04-P3 基础工具测试报告、A0 基准、zero-delta、事实层、报告、UI 和外部接口为未完成。
+
 ## 0.1.0-s04p1 - 2026-06-29
 
 - 完成 `S04-P1｜金额工具`，保持本 Phase 本地验证，不上传 GitHub。

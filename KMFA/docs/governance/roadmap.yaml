@@ -2,11 +2,11 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KMFA"
 total_estimated_hours: 54
-completed_estimated_hours: 27
-current_stage_id: "S3"
-current_phase_id: "S3UPLOAD"
-current_task_id: "KMFA-S03-GITHUB-UPLOAD-20260629"
-next_gate_id: "KMFA-S04-P1-GATE"
+completed_estimated_hours: 33
+current_stage_id: "S4"
+current_phase_id: "S4PB"
+current_task_id: "S4PBT03"
+next_gate_id: "KMFA-S04-P3-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -562,11 +562,13 @@ stages:
     name: "金额精度、字段标准化与基础工具"
     status: "in_progress_local_only"
     estimated_hours: 3
-    estimated_pct: 33
-    current_result: "S04-P1 金额工具已完成本地验证；S04-P2 字段标准化和 S04-P3 基础工具测试未开始。"
+    estimated_pct: 67
+    current_result: "S04-P1 金额工具和 S04-P2 字段标准化已完成本地验证；S04-P3 基础工具测试未开始。"
     evidence_refs:
       - "KMFA/stage_artifacts/S04_P1_amount_tools/human/s04_p1_completion_record.md"
       - "KMFA/stage_artifacts/S04_P1_amount_tools/human/test_results.md"
+      - "KMFA/stage_artifacts/S04_P2_field_standardization/human/s04_p2_completion_record.md"
+      - "KMFA/stage_artifacts/S04_P2_field_standardization/human/test_results.md"
   - stage_id: "S5"
     name: "A0权威项目成本黄金基准"
     status: "planned"

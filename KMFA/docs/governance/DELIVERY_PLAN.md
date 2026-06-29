@@ -1,6 +1,6 @@
 # KMFA Delivery Plan
 
-product_version: 0.1.0-s04p1
+product_version: 0.1.0-s04p2
 
 ## Delivery Rule
 
@@ -34,7 +34,7 @@ KMFA delivery follows the owner contract:
 | Stage 3 review | passed_upload_ready |
 | Stage 3 GitHub upload | completed |
 | S04-P1 | completed_validated_local_only |
-| S04-P2 | planned |
+| S04-P2 | completed_validated_local_only |
 | S04-P3 | planned |
 | Stage 4 review | not_started |
 | Stage 4 GitHub upload | not_allowed |
@@ -43,7 +43,7 @@ KMFA delivery follows the owner contract:
 
 Stage 2 GitHub upload is complete on `origin/main`; the reviewed content commit was `834ff75516405ddbc8289f00ba67579691473709` and the final remote main commit observed before this rebaseline was `6178b5215f92f12d6facad9a990e8659b3a70ba4`.
 
-The active development baseline is `KMFA/taskpack/v1_2/`. S04-P1 is complete and locally validated with amount normalization and no-float checks. S04-P2 and S04-P3 are not started. Stage 4 has not been reviewed, so GitHub upload is not allowed.
+The active development baseline is `KMFA/taskpack/v1_2/`. S04-P1 is complete and locally validated with amount normalization and no-float checks. S04-P2 is complete and locally validated with field standardization and missing-field quality status. S04-P3 is not started. Stage 4 has not been reviewed, so GitHub upload is not allowed.
 
 ## Rollback
 

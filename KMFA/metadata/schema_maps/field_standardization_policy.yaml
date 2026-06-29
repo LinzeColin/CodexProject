@@ -1,0 +1,43 @@
+{
+  "schema_version": "kmfa.field_standardization_policy.v1",
+  "project_id": "KMFA",
+  "stage_phase": "S04-P2",
+  "status": "active",
+  "canonical_fields": [
+    "document_date",
+    "period_month",
+    "company_entity",
+    "project_name",
+    "counterparty",
+    "contract_number"
+  ],
+  "field_alias_dictionary_ref": "KMFA/metadata/schema_maps/field_alias_dictionary.csv",
+  "quality_status_ref": "KMFA/metadata/quality/field_quality_status.jsonl",
+  "normalization_rules": {
+    "document_date": "YYYY-MM-DD",
+    "period_month": "YYYY-MM",
+    "company_entity": "NFKC trim and whitespace collapse",
+    "project_name": "NFKC trim and whitespace collapse",
+    "counterparty": "NFKC trim and whitespace collapse",
+    "contract_number": "NFKC trim, dash normalization, whitespace removal, uppercase ASCII"
+  },
+  "missing_field_policy": {
+    "missing_or_blank_markers": ["", "-", "--", "---", "#", "##", "###", "n/a", "na", "null", "none", "无", "暂无", "不适用"],
+    "field_skipped_silently_allowed": false,
+    "quality_status": "field_missing_requires_review",
+    "quality_grade": "Q1",
+    "target_layer": "metadata"
+  },
+  "privacy_policy": {
+    "raw_layer_write_allowed": false,
+    "raw_source_mutation_allowed": false,
+    "public_repo_raw_values_allowed": false,
+    "public_repo_business_rows_committed": false
+  },
+  "code_refs": [
+    "KMFA/tools/field_standardization.py"
+  ],
+  "test_refs": [
+    "python3 -m unittest KMFA.tests.test_field_standardization -q"
+  ]
+}

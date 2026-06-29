@@ -78,6 +78,44 @@ formulas:
     evidence_refs:
       - "KMFA/stage_artifacts/S04_P1_amount_tools/human/s04_p1_completion_record.md"
       - "KMFA/stage_artifacts/S04_P1_amount_tools/human/test_results.md"
+  - formula_id: "FORM-KMFA-FIELD-STANDARDIZATION-001"
+    model_id: "MOD-KMFA-COST-001"
+    assumption_ids:
+      - "ASM-KMFA-003"
+      - "ASM-KMFA-004"
+      - "ASM-KMFA-005"
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "canonical_field = field_alias_dictionary[source_field_alias]; document_date -> YYYY-MM-DD; period_month -> YYYY-MM; missing_or_invalid_required_field -> field_quality_status with field_skipped_silently=false"
+    variables:
+      - name: "required_canonical_fields_s04p2"
+        data_type: "string_list"
+        unit: "field"
+        input_domain: "document_date;period_month;company_entity;project_name;counterparty;contract_number"
+      - name: "field_alias_dictionary_version"
+        data_type: "mapping_version"
+        unit: "mapping_version"
+        input_domain: "MAP-SRC-kmfa-field-standardization-a1b2c3d4-v0.1.0"
+      - name: "missing_field_quality_status"
+        data_type: "enum"
+        unit: "status"
+        input_domain: "field_missing_requires_review;field_skipped_silently=false"
+    constraints:
+      - "Dates standardize to YYYY-MM-DD."
+      - "Periods standardize to YYYY-MM."
+      - "Company entity, project name, counterparty, and contract number are required canonical fields."
+      - "Missing or invalid required fields enter metadata quality status."
+      - "Field issues must not be silently skipped."
+      - "Field quality status must not write raw layer or mutate raw sources."
+    missing_policy: "Missing, blank, dash, hash, null-ish, invalid date, or invalid period values produce field_quality_status metadata."
+    output_range: "standardized field value, field_quality_status metadata, or blocked"
+    code_refs:
+      - "KMFA/tools/field_standardization.py"
+    test_refs:
+      - "python3 -m unittest KMFA.tests.test_field_standardization -q"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S04_P2_field_standardization/human/s04_p2_completion_record.md"
+      - "KMFA/stage_artifacts/S04_P2_field_standardization/human/test_results.md"
   - formula_id: "FORM-KMFA-METADATA-ID-001"
     model_id: "MOD-KMFA-METADATA-001"
     assumption_ids:
