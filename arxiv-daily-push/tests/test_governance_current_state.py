@@ -45,7 +45,7 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("real_smtp_send_enabled_by_this_packet=false", current_state)
         self.assertIn("scheduler_install_enabled_by_this_packet=false", current_state)
         self.assertIn("terminal_delivery_proof_artifact_written_by_this_packet=false", current_state)
-        self.assertIn("819b1c3911892ce861fd5ba5bdde0dc381e303076beea684f35eb94c75975463", current_state)
+        self.assertIn("79ac4987239ecad8d4eee82de0157901b59259100e6d738bd1b15d17a37dc76e", current_state)
         self.assertIn("005e2294441b6aa6e827b0acb8f30916c59cc994768f0562a248a49c9dd6dae7", current_state)
         self.assertIn("2d9892b750815a0e9540d49dbd2ac65d13dbd8c866651720d1cbf96dd49ffe94", current_state)
         self.assertIn("s2plt02_real_proof_capture_authorization_missing", current_state)

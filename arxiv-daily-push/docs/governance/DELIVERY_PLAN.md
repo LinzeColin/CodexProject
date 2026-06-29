@@ -21,12 +21,20 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 276
+- task_count: 277
 - acceptance_count: 127
 
 ## Delivery Tasks
 
 The machine-readable task source is `delivery_tasks.yaml`.
+
+## 2026-06-29 22:44:04 Australia/Sydney - S2PLT02 Real-Proof Capture Readiness Runtime State Sync
+
+- `S2PLT02-REAL-PROOF-CAPTURE-READINESS-RUNTIME-STATE-SYNC` records that the required ADP LaunchAgents are loaded with calendar triggers but still disabled and not running.
+- Current readiness remains `blocked` / exit 2 with `launchagents_loaded_but_disabled=true`, `scheduler_runtime_evidence_status=launchagents_loaded_but_disabled_not_terminal_scheduler_proof`, and state hash `79ac4987239ecad8d4eee82de0157901b59259100e6d738bd1b15d17a37dc76e`.
+- The final-bundle prerequisite plan now consumes `governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-CLI-RUNTIME-SYNC-20260629.json` and returns `next_executable_command_dry_run_status=pass`, `live_authorization_artifact_status=missing`, and state hash `f05b64685d487f28c9ddabb1216e5c67c5c4391ba86e5d5d5341aa398fa9a3a4`.
+- Evidence: `governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-RUNTIME-STATE-SYNC-20260629.json`; `governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-CLI-RUNTIME-SYNC-20260629.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_READINESS_RUNTIME_STATE_SYNC.md`.
+- This does not write S2PLT02 authorization/terminal proof artifacts, authorize proof capture, enable SMTP/scheduler/Release/restore, mutate schema/DB/source/ranking/CURRENT/V7, enable DAILY_OPERATION, or claim integrated production acceptance.
 
 ## 2026-06-29 22:09:03 Australia/Sydney - S2PMT07 S2PLT04 Completion Evidence Ref Correction
 
@@ -50,7 +58,7 @@ The machine-readable task source is `delivery_tasks.yaml`.
 
 - `S2PMT07-FINAL-BUNDLE-NEXT-EXECUTABLE-COMMAND-SYNC` makes the final-bundle prerequisite plan expose the exact command for the current next executable task.
 - Current plan remains `blocked` / exit 2: `next_required_step=S2PLT04_COMPLETION_REPORT`, `next_required_step_is_actionable=false`, and `next_executable_task=S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION`.
-- New command metadata: `next_executable_command=build-s2plt02-real-proof-capture-authorization-artifact-draft`, `generated_at_source=current Australia/Sydney timestamp at execution time`, `readiness_state_hash=819b1c3911892ce861fd5ba5bdde0dc381e303076beea684f35eb94c75975463`.
+- New command metadata: `next_executable_command=build-s2plt02-real-proof-capture-authorization-artifact-draft`, `generated_at_source=current Australia/Sydney timestamp at execution time`, `readiness_state_hash=79ac4987239ecad8d4eee82de0157901b59259100e6d738bd1b15d17a37dc76e`.
 - New fail-closed booleans: `next_executable_command_writes_artifact=false` and `next_executable_command_satisfies_gate=false`.
 - Current plan state hash is `dd5fc312ae8ce8f70dbdc291d55dfd987686de3c5de0daa4bd1b57f1857c92db`; `plan_validation_errors=[]`.
 - Evidence: `governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-NEXT-EXECUTABLE-COMMAND-SYNC-20260629.json` and `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_NEXT_EXECUTABLE_COMMAND_SYNC.md`.

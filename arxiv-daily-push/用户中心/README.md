@@ -1,6 +1,6 @@
 # ADP 用户中心
 
-更新时间：2026-06-29 22:21:43 Australia/Sydney
+更新时间：2026-06-29 22:53:35 Australia/Sydney
 
 这里是 ADP 在 GitHub 上的唯一中文用户入口。你不需要打开本机目录、运行文件、深层治理文件或原始 JSON，也能判断今天邮件是否正常、队列里还有什么、学习闭环到了哪一步、哪些结论仍被停止门禁止。
 
@@ -26,7 +26,7 @@
 | [已生成报告与邮件预览](./已生成报告与邮件预览.md) | 看 30 条已生成报告 / 邮件预览的状态索引 | 需要跳转已生成记录证据时 |
 | [邮件模板预览](./邮件模板预览.md) | 看 M1-M4 邮件在用户面前应呈现的界面版本 | 关心邮件长什么样时 |
 | [复习行动与收益](./复习行动与收益.md) | 看复习到期、行动窗口、能力资产、收益复盘和真实快照状态 | 关心学习闭环是否落地时 |
-| [功能任务测试证据追踪链](./功能任务测试证据追踪链.md) | 看功能/需求、任务、验收、代码、测试和运行证据的 369 条可点击链路 | 需要复审某项功能是否有测试和证据时 |
+| [功能任务测试证据追踪链](./功能任务测试证据追踪链.md) | 看功能/需求、任务、验收、代码、测试和运行证据的 370 条可点击链路 | 需要复审某项功能是否有测试和证据时 |
 | [恢复路径安全扫描](./恢复路径安全扫描.md) | 看 P0 A-001 恢复路径穿越、绝对路径、符号链接逃逸和阻断保留探针 | 复审恢复安全阻断项时 |
 | [恢复原子替换扫描](./恢复原子替换扫描.md) | 看 P0 A-002 新目标恢复、覆盖保留旧目标备份、无效覆盖保留原目标探针 | 复审恢复原子替换阻断项时 |
 | [事务发件箱与消息ID扫描](./事务发件箱与消息ID扫描.md) | 看 P0 A-003 Message-ID、outbox claim、SMTP accepted-before-commit 和 at-least-once/no-exactly-once 探针 | 复审事务发件箱与消息 ID 阻断项时 |
@@ -93,6 +93,12 @@
 
 - 最新下一步为 `S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION`：需要 owner 后续显式写入 `FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json` 才能授权真实 SMTP/scheduler proof capture。
 - 当前 `authorization_artifact_present=false`，owner packet 不等于授权；SMTP、scheduler、Release、restore、DAILY_OPERATION 和 integrated production acceptance 均未启用。
+
+## 2026-06-29 22:44:04 Australia/Sydney - S2PLT02 runtime readiness 状态
+
+- readiness 现在显示 daily/health/watchdog LaunchAgents 已加载且有 calendar trigger，但仍 disabled 且 not running。
+- 当前 `scheduler_runtime_evidence_status=launchagents_loaded_but_disabled_not_terminal_scheduler_proof`；这不是 scheduler proof，不允许推进 S2PLT02 terminal delivery proof。
+- 不启用 SMTP、scheduler、Release、restore、DAILY_OPERATION，也不声明 S2PLT02/S2PMT07 或 integrated production acceptance。
 
 ## 2026-06-29 20:57:12 Australia/Sydney - S2PLT02 授权草稿 CLI 状态
 

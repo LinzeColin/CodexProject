@@ -5042,3 +5042,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+  - task_id: "S2PLT02-REAL-PROOF-CAPTURE-READINESS-RUNTIME-STATE-SYNC"
+    title: "S2PLT02 real-proof capture readiness runtime state sync"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-29T22:44:04+10:00"
+    summary: "Record that ADP LaunchAgents are loaded with calendar triggers but disabled and not running, so runtime visibility is not terminal scheduler proof."
+    owner: "engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_READINESS_RUNTIME_STATE_SYNC.md", "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-RUNTIME-STATE-SYNC-20260629.json", "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-CLI-RUNTIME-SYNC-20260629.json"]
+    acceptance_ids: ["ACC-S2PLT02-2D", "ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_runtime_green PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_s2plt02_real_proof_capture_readiness_reports_loaded_disabled_launchagents", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_runtime_cli2 PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli audit-s2plt02-real-proof-capture-readiness --repo-root . --state-dir /Users/linzezhang/.adp/arxiv-daily-push --service-date 2026-06-29 --json", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_runtime_plan_cli2 PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli plan-final-bundle-prerequisites --json"]
+    test_results: ["TDD red failed because launchctl_print_outputs was unsupported", "focused runtime readiness test passed", "readiness CLI returned blocked / exit 2 with state_hash=79ac4987239ecad8d4eee82de0157901b59259100e6d738bd1b15d17a37dc76e", "plan CLI returned blocked / exit 2 with dry_run_status=pass and state_hash=f05b64685d487f28c9ddabb1216e5c67c5c4391ba86e5d5d5341aa398fa9a3a4"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-RUNTIME-STATE-SYNC-20260629.json", "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-CLI-RUNTIME-SYNC-20260629.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_READINESS_RUNTIME_STATE_SYNC.md", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
+    result: "blocked_s2plt02_runtime_launchagents_loaded_but_disabled_no_scheduler_proof_no_production"
+    risk: "Loaded LaunchAgents can be misread as terminal scheduler proof even though disabled state still blocks proof capture."
+    rollback: "Revert runtime readiness fields, CLI launchctl print collection, focused test, phase record, manifests, traceability row, delivery/event records, user-center notes, and three base records; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

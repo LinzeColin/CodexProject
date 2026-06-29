@@ -3767,11 +3767,25 @@ def main(argv: list[str] | None = None) -> int:
                 text=True,
             )
             launchctl_disabled_text = completed.stdout
+        launchctl_print_outputs: dict[str, str] = {}
+        for label in (
+            "com.linze.adp.local.daily",
+            "com.linze.adp.local.health",
+            "com.linze.adp.local.watchdog",
+        ):
+            completed = subprocess.run(
+                ["launchctl", "print", f"gui/{os.getuid()}/{label}"],
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            launchctl_print_outputs[label] = completed.stdout
         report = build_s2plt02_real_proof_capture_readiness_state(
             repo_root=args.repo_root,
             state_dir=args.state_dir,
             service_date=args.service_date,
             launchctl_disabled_text=launchctl_disabled_text,
+            launchctl_print_outputs=launchctl_print_outputs,
         )
         validation_errors = validate_s2plt02_real_proof_capture_readiness_state(report)
         if validation_errors:
