@@ -152,6 +152,7 @@ from arxiv_daily_push.stage2_final_gate import (
     build_s2plt02_real_proof_capture_authorization_validation_state,
     build_s2plt02_real_proof_capture_readiness_state,
     build_s2plt02_partial_real_delivery_state,
+    build_s2plt02_terminal_delivery_proof_artifact_draft_state,
     build_s2plt02_terminal_delivery_proof_artifact_validation_state,
     build_s2plt03_dependency_state,
     build_s2plt03_local_resilience_drill_bundle,
@@ -803,6 +804,110 @@ class Stage2FinalGateTests(unittest.TestCase):
                 "p0_p1_zero_proof",
             ),
         )
+
+    def test_s2plt02_terminal_delivery_proof_draft_builder_generates_valid_candidate_from_terminal_inputs(self) -> None:
+        day1 = {
+            "manifest_ref": "governance/run_manifests/FUTURE-S2PLT02-DAY1.json",
+            "schema_version": 1,
+            "project_id": "arxiv-daily-push",
+            "task_id": "LOCAL-DAILY-M1-M4-RESEND-EXECUTION",
+            "status": "pass",
+            "generated_at": "2026-06-28T11:28:25+10:00",
+            "service_date": "2026-06-28",
+            "mail_delivery_summary": {
+                "planned_send_total": 4,
+                "sent_mail_count": 4,
+                "sent_mail_products": ["M1", "M2", "M3", "M4"],
+                "delivery_ref_by_product": {
+                    "M1": "smtp://message/day1-m1",
+                    "M2": "smtp://message/day1-m2",
+                    "M3": "smtp://message/day1-m3",
+                    "M4": "smtp://message/day1-m4",
+                },
+            },
+            "real_smtp_sent": True,
+            "real_smtp_send_enabled": True,
+            "stage2_integrated_production_accepted": False,
+            "integrated_production_accepted": False,
+            "daily_operation_enabled": False,
+            "release_uploaded": False,
+            "production_restore_executed": False,
+            "production_queue_mutated": False,
+            "public_schema_changed": False,
+            "db_migration_executed": False,
+            "source_adapter_changed": False,
+            "ranking_algorithm_changed": False,
+            "current_pointer_changed": False,
+            "v7_1_baseline_changed": False,
+            "v7_2_contract_files_changed": False,
+            "evidence_refs": ["governance/run_manifests/FUTURE-S2PLT02-DAY1.json"],
+        }
+        day2 = json.loads(json.dumps(day1))
+        day2["manifest_ref"] = "governance/run_manifests/FUTURE-S2PLT02-DAY2.json"
+        day2["generated_at"] = "2026-06-29T05:02:00+10:00"
+        day2["service_date"] = "2026-06-29"
+        day2["evidence_refs"] = ["governance/run_manifests/FUTURE-S2PLT02-DAY2.json"]
+        day2["mail_delivery_summary"]["delivery_ref_by_product"] = {
+            "M1": "smtp://message/day2-m1",
+            "M2": "smtp://message/day2-m2",
+            "M3": "smtp://message/day2-m3",
+            "M4": "smtp://message/day2-m4",
+        }
+        scheduler_proof = {
+            "proof_ref": "governance/run_manifests/FUTURE-S2PLT02-SCHEDULER-PROOF.json",
+            "status": "pass",
+            "real_scheduler_proven": True,
+            "scheduler_evidence_present": True,
+            "production_acceptance_claimed": False,
+            "integrated_production_accepted": False,
+            "stage2_integrated_production_accepted": False,
+            "daily_operation_enabled": False,
+            "release_uploaded": False,
+            "production_restore_enabled": False,
+            "production_restore_executed": False,
+            "public_schema_changed": False,
+            "db_migration_executed": False,
+            "production_queue_mutated": False,
+            "source_adapter_changed": False,
+            "ranking_algorithm_changed": False,
+            "current_pointer_changed": False,
+            "v7_1_baseline_changed": False,
+            "v7_2_contract_files_changed": False,
+        }
+
+        state = build_s2plt02_terminal_delivery_proof_artifact_draft_state(
+            generated_at="2026-06-30T10:35:11+10:00",
+            delivery_manifests=[day1, day2],
+            scheduler_proof=scheduler_proof,
+        )
+
+        self.assertEqual(state["status"], "pass")
+        self.assertRegex(state["state_hash"], r"^[0-9a-f]{64}$")
+        self.assertEqual(state["validation_errors"], [])
+        artifact = state["artifact_draft"]
+        self.assertEqual(validate_s2plt02_terminal_delivery_proof_artifact(artifact), [])
+        self.assertEqual(artifact["service_dates"], ["2026-06-28", "2026-06-29"])
+        self.assertEqual(artifact["observed_email_count"], 8)
+        self.assertEqual(
+            artifact["terminal_evidence_refs_by_role"]["real_scheduler_proof"],
+            "governance/run_manifests/FUTURE-S2PLT02-SCHEDULER-PROOF.json",
+        )
+        self.assertFalse(artifact["integrated_production_accepted"])
+        self.assertFalse(state["artifact_written"])
+
+    def test_s2plt02_terminal_delivery_proof_draft_builder_blocks_without_scheduler_proof(self) -> None:
+        state = build_s2plt02_terminal_delivery_proof_artifact_draft_state(
+            generated_at="2026-06-30T10:35:11+10:00",
+            delivery_manifests=[],
+            scheduler_proof={"proof_ref": "governance/run_manifests/FUTURE-S2PLT02-SCHEDULER-PROOF.json"},
+        )
+
+        self.assertEqual(state["status"], "blocked")
+        self.assertRegex(state["state_hash"], r"^[0-9a-f]{64}$")
+        self.assertNotIn("artifact_draft", state)
+        self.assertIn("real_scheduler_proof_not_valid", state["blocking_reasons"])
+        self.assertIn("two_consecutive_real_days_not_proven", state["blocking_reasons"])
+        self.assertFalse(state["artifact_written"])
 
     def test_s2plt02_m4_watermark_proof_blocks_when_current_m4_has_no_explicit_watermark(self) -> None:
         proof = build_s2plt02_m4_watermark_proof_state(watermark_proofs=[])

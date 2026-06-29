@@ -21,10 +21,18 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 282
+- task_count: 283
 - acceptance_count: 127
 
 ## Delivery Tasks
+
+## 2026-06-30 09:19:10 Australia/Sydney - S2PLT02 Terminal Delivery Proof Artifact Draft Builder
+
+- `S2PLT02-TERMINAL-DELIVERY-PROOF-ARTIFACT-DRAFT-BUILDER` adds a stdout-only candidate builder for future `FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json`.
+- The builder consumes explicit future real M1-M4 delivery manifests plus a real scheduler proof manifest, self-validates the candidate, and keeps `artifact_written=false`.
+- Sample fixture result: `status=pass`, `artifact_validation_errors=[]`, state hash `beb8f19417b694428749bef5eb01de375ce2321f209c9086dfe4862bf48c2a8b`, acceptance hash `5aa91771f2900db713fb865a12cb69f5c09bd6b03761083337c2d58af13a3b96`.
+- Evidence: `governance/run_manifests/ADP-S2PLT02-TERMINAL-DELIVERY-PROOF-ARTIFACT-DRAFT-BUILDER-20260630.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_DRAFT_BUILDER.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/src/arxiv_daily_push/cli.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`; `arxiv-daily-push/tests/test_cli.py`.
+- This does not write terminal proof, send SMTP, enable scheduler, upload Release assets, execute restore, mutate schema/DB/source/ranking/CURRENT/V7, enable DAILY_OPERATION, or claim S2PLT02/S2PMT07/integrated production acceptance.
 
 ## 2026-06-30 07:41:53 Australia/Sydney - S2PLT02 Real-Proof Capture Authorization Live
 

@@ -14,7 +14,7 @@
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - Product version: `0.23.1`
-- Phase/Gate: `S2PL / S2PLT02_TERMINAL_CAPTURE_WINDOW_AUDIT_BLOCKED_DRY_RUN_SCHEDULER_DISABLED_NO_PRODUCTION`
+- Phase/Gate: `S2PL / S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_DRAFT_BUILDER_READY_NO_WRITE_NO_PRODUCTION`
 - Models/Formulas/Parameters total: `121 / 123 / 1108`
 - Active formulas/parameters: `123 / 1091`
 - Machine checked formulas/parameters: `123 / 1091`
@@ -35,7 +35,7 @@
 ## Delivery
 
 - Readiness: `BLOCKED_PRECHECK`
-- Release gate: `S2PLT02_TERMINAL_CAPTURE_WINDOW_AUDIT_BLOCKED_DRY_RUN_SCHEDULER_DISABLED_NO_PRODUCTION`
+- Release gate: `S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_DRAFT_BUILDER_READY_NO_WRITE_NO_PRODUCTION`
 - V7 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - V7 contract hash: `a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d`
 - V7 roadmap hash: `7c5f2d842d4f6b909343c953fe39b4a4aa540d168199747a9f7decdb1aad9bd1`
@@ -48,7 +48,7 @@
 - Next governance task: `S2PMT07`
 - Parallel shadow source task: `NONE_WHILE_S2PMT07_BLOCKED`
 - Next executable task: `S2PLT02-TERMINAL-DELIVERY-PROOF`
-- Latest evidence sync: `S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT` records that live authorization is valid, but 2026-06-29/2026-06-30 are dry-run only, ADP_ALLOW_SMTP_SEND=false, launchd labels remain disabled, and terminal delivery proof, S2PLT03 proof, S2PLT04 completion, final bundle, and production acceptance remain blocked.
+- Latest evidence sync: `S2PLT02-TERMINAL-DELIVERY-PROOF-ARTIFACT-DRAFT-BUILDER` adds a stdout-only candidate builder for future real terminal delivery proof inputs; `artifact_written=false`, current 2026-06-29/2026-06-30 capture evidence remains dry-run/scheduler-disabled, and terminal delivery proof, S2PLT03 proof, S2PLT04 completion, final bundle, and production acceptance remain blocked.
 - Pending/stale events: `314`
 - Tree-bound events: `1`
 - Commit-bound events: `4`

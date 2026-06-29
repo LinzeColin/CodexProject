@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-06-30 09:19:10 Australia/Sydney - S2PLT02 terminal delivery proof artifact draft builder
+
+- Added `build-s2plt02-terminal-delivery-proof-artifact-draft`, a stdout-only builder for future `FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json` candidates.
+- Sample fixture output self-validates with `artifact_written=false`, `artifact_validation_errors=[]`, state hash `beb8f19417b694428749bef5eb01de375ce2321f209c9086dfe4862bf48c2a8b`, and acceptance hash `5aa91771f2900db713fb865a12cb69f5c09bd6b03761083337c2d58af13a3b96`.
+- No live terminal proof artifact, SMTP, scheduler, Release, restore, CURRENT/V7, public schema, DB, source, ranking, queue, DAILY_OPERATION, or production acceptance was enabled.
+
 ## 2026-06-30 08:01:19 Australia/Sydney - S2PLT02 live authorization
 
 - Added and validated live no-production `FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json`.

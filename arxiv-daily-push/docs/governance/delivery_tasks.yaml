@@ -5172,3 +5172,27 @@ tasks:
     target_version: "0.23.1"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PLT02-TERMINAL-DELIVERY-PROOF-ARTIFACT-DRAFT-BUILDER"
+    title: "S2PLT02 terminal delivery proof artifact draft builder"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-30T09:19:10+10:00"
+    objective: "Add a stdout-only S2PLT02 terminal delivery proof artifact draft builder for future explicit real delivery and scheduler inputs."
+    scope: "Final-gate builder, CLI command, focused tests, phase record, run manifest, traceability row, delivery/event records, user-center status, and three base notes."
+    non_scope: "No live terminal delivery proof artifact, no SMTP send, no scheduler enable/install/kickstart, no Release, no restore, no CURRENT/V7 change, no public schema/DB/source/ranking/queue mutation, no S2PLT02/S2PLT04/S2PMT07 acceptance, and no integrated production acceptance."
+    owner: "engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    dependencies: ["S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION", "S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_DRAFT_BUILDER.md", "governance/run_manifests/ADP-S2PLT02-TERMINAL-DELIVERY-PROOF-ARTIFACT-DRAFT-BUILDER-20260630.json"]
+    acceptance_ids: ["ACC-S2PLT02-2D", "ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_terminal_builder_green3 PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_s2plt02_terminal_delivery_proof_draft_builder_generates_valid_candidate_from_terminal_inputs arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_s2plt02_terminal_delivery_proof_draft_builder_blocks_without_scheduler_proof", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_terminal_builder_cli_green3 PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_cli.py::CliTests::test_build_s2plt02_terminal_delivery_proof_artifact_draft_json_command", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_terminal_builder_cli_sample2 PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli build-s2plt02-terminal-delivery-proof-artifact-draft --generated-at 2026-06-30T10:35:11+10:00 --delivery-manifest FUTURE-S2PLT02-DAY1.json --delivery-manifest FUTURE-S2PLT02-DAY2.json --scheduler-proof FUTURE-S2PLT02-SCHEDULER-PROOF.json --json"]
+    test_results: ["TDD red failed before build_s2plt02_terminal_delivery_proof_artifact_draft_state existed", "TDD red failed before build-s2plt02-terminal-delivery-proof-artifact-draft was recognized by the CLI", "focused builder tests: 2 passed", "focused CLI test: 1 passed", "stdout fixture command: exit 0, status pass, artifact_written false, artifact_validation_errors []"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PLT02-TERMINAL-DELIVERY-PROOF-ARTIFACT-DRAFT-BUILDER-20260630.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_DRAFT_BUILDER.md", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py"]
+    result: "s2plt02_terminal_delivery_proof_artifact_draft_builder_ready_no_write_no_production"
+    risk: "A passing sample candidate can be misread as the live terminal delivery proof; the builder writes no artifact and must only consume future real delivery/scheduler manifests."
+    rollback: "Revert the builder, CLI command, focused tests, phase record, run manifest, traceability row, delivery/event records, user-center notes, and three base notes; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

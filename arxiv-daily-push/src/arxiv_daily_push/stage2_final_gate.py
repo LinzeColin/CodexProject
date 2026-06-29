@@ -2680,6 +2680,118 @@ def build_s2plt02_terminal_delivery_proof_hash(payload: Mapping[str, Any]) -> st
     return _stable_hash({key: value for key, value in payload.items() if key != "acceptance_hash"})
 
 
+def build_s2plt02_terminal_delivery_proof_artifact_draft_state(
+    *,
+    generated_at: str,
+    delivery_manifests: list[Mapping[str, Any]],
+    scheduler_proof: Mapping[str, Any],
+    s2plt01_terminal_acceptance_ref: str = "FINAL_ACCEPTANCE_BUNDLE/s2plt01_terminal_acceptance.json",
+    p0_p1_zero_proof_ref: str = "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
+) -> dict[str, Any]:
+    """Build a no-write S2PLT02 terminal delivery proof candidate from explicit terminal inputs."""
+
+    ledger = build_s2plt02_delivery_evidence_ledger_state(delivery_manifests=delivery_manifests)
+    service_dates = [str(item) for item in ledger.get("service_dates", [])]
+    products_by_date = {
+        str(service_date): [str(product) for product in products]
+        for service_date, products in _mapping(ledger.get("products_by_service_date")).items()
+    }
+    scheduler_ref = str(scheduler_proof.get("proof_ref") or "")
+    scheduler_valid = (
+        scheduler_proof.get("status") == "pass"
+        and scheduler_proof.get("real_scheduler_proven") is True
+        and scheduler_proof.get("scheduler_evidence_present") is True
+        and bool(scheduler_ref)
+    )
+
+    blocking_reasons: list[str] = []
+    validation_errors = list(ledger.get("validation_errors") or [])
+    if len(service_dates) < S2PLT02_REQUIRED_NATURAL_DAYS or not _s2plt02_terminal_delivery_proof_consecutive_dates(service_dates):
+        blocking_reasons.append("two_consecutive_real_days_not_proven")
+    if int(ledger.get("observed_email_count") or 0) < S2PLT02_REQUIRED_EMAIL_COUNT:
+        blocking_reasons.append("eight_real_emails_not_proven")
+    if int(ledger.get("duplicate_email_count") or 0) != 0 or int(ledger.get("duplicate_service_date_count") or 0) != 0:
+        blocking_reasons.append("duplicate_emails_found")
+    if ledger.get("real_smtp_evidence_present") is not True:
+        blocking_reasons.append("real_smtp_not_proven")
+    if scheduler_valid is not True:
+        blocking_reasons.append("real_scheduler_proof_not_valid")
+    for flag in S2PLT02_TERMINAL_DELIVERY_PROOF_NO_PRODUCTION_FLAGS:
+        if scheduler_proof.get(flag) is not False:
+            validation_errors.append(f"scheduler_proof.{flag} must be false")
+
+    state: dict[str, Any] = {
+        "model_id": S2PLT02_TERMINAL_DELIVERY_PROOF_MODEL_ID,
+        "schema_version": S2PLT02_SCHEMA_VERSION,
+        "task_id": "S2PLT02-TERMINAL-DELIVERY-PROOF-ARTIFACT-DRAFT-BUILDER",
+        "acceptance_id": S2PLT02_ACCEPTANCE_ID,
+        "generated_at": generated_at,
+        "status": "blocked" if blocking_reasons or validation_errors else "pass",
+        "scope": "terminal_delivery_proof_candidate_builder_no_write_no_production_acceptance",
+        "artifact_written": False,
+        "delivery_evidence_ledger": ledger,
+        "scheduler_proof_ref": scheduler_ref,
+        "blocking_reasons": blocking_reasons,
+        "validation_errors": validation_errors,
+        "production_acceptance_claimed": False,
+        "integrated_production_accepted": False,
+        "stage2_integrated_production_accepted": False,
+        "daily_operation_enabled": False,
+        "state_hash": "",
+    }
+    if state["status"] == "blocked":
+        state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+        return state
+
+    day_refs = {
+        str(manifest.get("service_date") or ""): str(manifest.get("manifest_ref") or "")
+        for manifest in delivery_manifests
+    }
+    evidence_refs_by_role = {
+        "s2plt01_terminal_acceptance": s2plt01_terminal_acceptance_ref,
+        "day_1_delivery": day_refs[service_dates[0]],
+        "day_2_delivery": day_refs[service_dates[1]],
+        "real_scheduler_proof": scheduler_ref,
+        "p0_p1_zero_proof": p0_p1_zero_proof_ref,
+    }
+    evidence_refs = list(dict.fromkeys(evidence_refs_by_role.values()))
+    for ref in ledger.get("evidence_refs") or []:
+        if isinstance(ref, str) and ref and ref not in evidence_refs:
+            evidence_refs.append(ref)
+
+    artifact = {
+        "model_id": S2PLT02_TERMINAL_DELIVERY_PROOF_MODEL_ID,
+        "schema_version": S2PLT02_SCHEMA_VERSION,
+        "task_id": S2PLT02_TASK_ID,
+        "acceptance_id": S2PLT02_ACCEPTANCE_ID,
+        "generated_at": generated_at,
+        "terminal_delivery_decision": S2PLT02_TERMINAL_DELIVERY_PROOF_DECISION,
+        "s2plt02_accepted": True,
+        "service_dates": service_dates,
+        "mail_products_by_service_date": products_by_date,
+        "observed_natural_days": S2PLT02_REQUIRED_NATURAL_DAYS,
+        "observed_email_count": S2PLT02_REQUIRED_EMAIL_COUNT,
+        "terminal_gates": {gate: True for gate in S2PLT02_TERMINAL_DELIVERY_PROOF_REQUIRED_GATES},
+        "terminal_evidence_refs": evidence_refs,
+        "terminal_evidence_refs_by_role": evidence_refs_by_role,
+        **{flag: False for flag in S2PLT02_TERMINAL_DELIVERY_PROOF_NO_PRODUCTION_FLAGS},
+        "acceptance_hash": "",
+    }
+    artifact["acceptance_hash"] = build_s2plt02_terminal_delivery_proof_hash(artifact)
+    artifact_errors = validate_s2plt02_terminal_delivery_proof_artifact(artifact)
+    if artifact_errors:
+        blocked_state = {**state, "status": "blocked", "validation_errors": artifact_errors}
+        blocked_state["state_hash"] = _stable_hash(
+            {key: value for key, value in blocked_state.items() if key != "state_hash"}
+        )
+        return blocked_state
+    state_with_artifact = {**state, "artifact_draft": artifact}
+    state_with_artifact["state_hash"] = _stable_hash(
+        {key: value for key, value in state_with_artifact.items() if key != "state_hash"}
+    )
+    return state_with_artifact
+
+
 def _s2plt02_terminal_delivery_proof_consecutive_dates(service_dates: list[str]) -> bool:
     if len(service_dates) != S2PLT02_REQUIRED_NATURAL_DAYS:
         return False
