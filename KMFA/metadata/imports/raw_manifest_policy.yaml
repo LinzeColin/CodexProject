@@ -1,0 +1,19 @@
+{
+  "schema_version": "kmfa.raw_manifest_policy.v1",
+  "stage_phase": "S02-P2",
+  "status": "active",
+  "manifest_file": "KMFA/metadata/imports/raw_file_manifest.jsonl",
+  "schema_ref": "KMFA/metadata/imports/raw_manifest_schema.json",
+  "append_only": true,
+  "mutates_original_file": false,
+  "mutates_original_extracted_value": false,
+  "immutable_fields": [
+    "import_run_id",
+    "source_id",
+    "file_hash",
+    "storage_ref",
+    "original_filename_hash"
+  ],
+  "correction_model": "append_new_manifest_record_or_resolution_event",
+  "public_repo_sensitive_plaintext_allowed": false
+}

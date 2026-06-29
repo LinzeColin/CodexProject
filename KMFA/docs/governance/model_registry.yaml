@@ -27,6 +27,14 @@ assumptions:
     evidence_refs:
       - "KMFA/docs/governance/METADATA_PROTOCOL.md"
       - "KMFA/metadata/protocol/metadata_protocol.yaml"
+  - assumption_id: "ASM-KMFA-005"
+    statement: "raw manifest、派生数据版本和前端控制事件必须 append-only；纠错、失效、重跑、处理意见只能追加事件，不能改写原始文件、原始抽取值或 raw 层。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "KMFA/docs/governance/IMMUTABILITY_POLICY.md"
+      - "KMFA/metadata/imports/raw_manifest_policy.yaml"
+      - "KMFA/metadata/approvals/control_event_policy.yaml"
 models:
   - model_id: "MOD-KMFA-GOV-001"
     name: "KMFA phase governance and public repository boundary"
@@ -123,3 +131,32 @@ models:
     evidence_refs:
       - "KMFA/docs/governance/METADATA_PROTOCOL.md"
       - "KMFA/metadata/protocol/metadata_protocol.yaml"
+  - model_id: "MOD-KMFA-IMMUTABILITY-001"
+    name: "KMFA raw immutability and append-only governance"
+    kind: "deterministic_immutability_contract"
+    purpose: "定义 raw manifest 不可变字段、派生数据版本化、控制事件写入边界，防止原始数据污染。"
+    owner: "KMFA"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "0.1.0-s02p2"
+    assumptions:
+      - "ASM-KMFA-005"
+    formula_ids:
+      - "FORM-KMFA-IMMUTABILITY-001"
+    parameter_ids:
+      - "PARAM-KMFA-203"
+      - "PARAM-KMFA-204"
+    inputs:
+      - "KMFA Roadmap S02-P2"
+      - "KMFA data governance gate"
+    outputs:
+      - "raw manifest append-only contract"
+      - "derived version append-only contract"
+      - "control event no-raw-write contract"
+    code_refs:
+      - "KMFA/tools/immutability_policy_check.py"
+    test_refs:
+      - "python3 KMFA/tools/immutability_policy_check.py"
+    evidence_refs:
+      - "KMFA/docs/governance/IMMUTABILITY_POLICY.md"
+      - "KMFA/stage_artifacts/S02_P2_immutability_policy/human/s02_p2_completion_record.md"

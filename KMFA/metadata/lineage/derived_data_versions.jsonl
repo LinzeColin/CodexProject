@@ -1,0 +1,1 @@
+{"record_type":"protocol_header","schema_version":"kmfa.derived_data_versions.v1","stage_phase":"S02-P2","status":"protocol_defined_no_derived_versions_committed","append_only":true,"overwrite_old_version_allowed":false,"required_identifiers":["derived_dataset_id","derived_version","source_refs","formula_version","mapping_version","lineage_ref"],"forbidden_plaintext":true}

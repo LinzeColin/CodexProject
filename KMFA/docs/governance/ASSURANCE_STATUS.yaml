@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260629-S02P1-METADATA-PROTOCOL"
+as_of_event_id: "EVENT-KMFA-20260629-S02P2-IMMUTABILITY-POLICY"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "precommit-pending"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_STAGE_REVIEW"
-snapshot_event_time: "2026-06-29T18:30:00+10:00"
-generator_version: "manual-s02p1-metadata-protocol"
+snapshot_event_time: "2026-06-29T18:45:00+10:00"
+generator_version: "manual-s02p2-immutability-policy"
 final_commit_binding: "pending_stage2_review_and_upload"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 6
-    total_active_formulas: 2
+    total_active_parameters: 8
+    total_active_formulas: 3
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -31,6 +31,7 @@ dimensions:
     evidence_refs:
       - "KMFA/docs/governance/MODEL_SPEC.md"
       - "KMFA/docs/governance/METADATA_PROTOCOL.md"
+      - "KMFA/docs/governance/IMMUTABILITY_POLICY.md"
   empirical_validation:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
@@ -41,7 +42,8 @@ dimensions:
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/tools/metadata_protocol_check.py"
-      - "KMFA/stage_artifacts/S02_P1_metadata_protocol/human/test_results.md"
+      - "KMFA/tools/immutability_policy_check.py"
+      - "KMFA/stage_artifacts/S02_P2_immutability_policy/human/test_results.md"
   delivery_evidence:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
@@ -56,6 +58,5 @@ delivery_readiness:
   status: "BLOCKED_INTERMEDIATE_PHASE"
   release_gate: "KMFA-S02-GATE"
   blocker_ids:
-    - "KMFA-S02-P2-NOT-STARTED"
     - "KMFA-S02-P3-NOT-STARTED"
     - "KMFA-STAGE2-REVIEW-NOT-DONE"

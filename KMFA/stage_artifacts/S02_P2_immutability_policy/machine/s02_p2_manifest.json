@@ -1,0 +1,37 @@
+{
+  "schema_version": "kmfa.phase_manifest.v1",
+  "run_id": "KMFA-S02-P2-20260629",
+  "project_id": "KMFA",
+  "stage_id": "S02",
+  "phase_id": "S02-P2",
+  "phase_name": "不可污染原则",
+  "status": "completed_validated",
+  "completion_time": "2026-06-29T18:45:00+10:00",
+  "tasks": [
+    {
+      "task_id": "S2PBT01",
+      "status": "completed",
+      "evidence_ref": "KMFA/metadata/imports/raw_manifest_schema.json"
+    },
+    {
+      "task_id": "S2PBT02",
+      "status": "completed",
+      "evidence_ref": "KMFA/metadata/lineage/derived_data_policy.yaml"
+    },
+    {
+      "task_id": "S2PBT03",
+      "status": "completed",
+      "evidence_ref": "KMFA/metadata/approvals/control_event_policy.yaml"
+    }
+  ],
+  "immutability_guards": [
+    "raw_manifest_append_only",
+    "raw_manifest_immutable_fields",
+    "derived_versions_append_only",
+    "control_events_no_raw_layer_writes"
+  ],
+  "raw_sensitive_public_repo_allowed": false,
+  "business_records_committed": false,
+  "github_upload_performed": false,
+  "next_phase": "S02-P3"
+}

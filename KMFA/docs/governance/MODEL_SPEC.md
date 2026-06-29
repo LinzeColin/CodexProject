@@ -1,10 +1,10 @@
 # KMFA Model Spec
 
-product_version: 0.1.0-s02p1
+product_version: 0.1.0-s02p2
 
 ## Scope
 
-当前模型说明覆盖 S01 已建立的治理边界、S02-P1 metadata 协议和后续业务模型草案，不声明项目成本计算、zero-delta、lineage 完整检查或报告等级门禁已经实现。
+当前模型说明覆盖 S01 已建立的治理边界、S02-P1 metadata 协议、S02-P2 不可污染原则和后续业务模型草案，不声明项目成本计算、zero-delta、lineage 完整检查或报告等级门禁已经实现。
 
 ## Active Model
 
@@ -22,6 +22,13 @@ product_version: 0.1.0-s02p1
 - fact_level: EXTRACTED
 - evidence: `KMFA/docs/governance/METADATA_PROTOCOL.md`, `KMFA/metadata/protocol/metadata_protocol.yaml`, `KMFA/tools/metadata_protocol_check.py`
 
+### MOD-KMFA-IMMUTABILITY-001
+
+- type: deterministic immutability contract
+- purpose: 定义 raw manifest 不可变字段、派生数据版本化、前端/人工控制事件写入边界，防止原始数据污染。
+- fact_level: EXTRACTED
+- evidence: `KMFA/docs/governance/IMMUTABILITY_POLICY.md`, `KMFA/metadata/imports/raw_manifest_policy.yaml`, `KMFA/tools/immutability_policy_check.py`
+
 ## Planned Business Model
 
 ### MOD-KMFA-COST-001
@@ -33,9 +40,9 @@ product_version: 0.1.0-s02p1
 
 ## Counts
 
-- active models: 2
-- active formulas: 2
-- active parameters: 6
+- active models: 3
+- active formulas: 3
+- active parameters: 8
 - planned models: 1
 - planned formulas: 1
 - planned parameters: 4

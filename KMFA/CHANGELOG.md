@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-s02p2 - 2026-06-29
+
+- 完成 `S02-P2｜不可污染原则`。
+- 新增 raw manifest append-only schema 和 policy，禁止修改原始文件、原始抽取值和不可变 manifest 字段。
+- 新增派生数据版本协议，支持失效、重跑、对比，禁止覆盖旧版本。
+- 新增前端/人工控制事件写入边界，禁止直接写 raw 层。
+- 新增 `KMFA/tools/immutability_policy_check.py`，验证不可污染原则。
+- 保持中间 Phase 不上传 GitHub；S02-P3 与 Stage 2 复审尚未完成。
+
 ## 0.1.0-s02p1 - 2026-06-29
 
 - 完成 `S02-P1｜metadata目录协议`。

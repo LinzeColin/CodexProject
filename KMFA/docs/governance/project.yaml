@@ -1,11 +1,11 @@
 schema_version: "codexproject.project.v1"
 project_id: "KMFA"
 project_name: "KMFA 经营分析系统"
-summary: "KMFA 是独立经营分析系统；当前已完成 Stage 1 治理基线和 S02-P1 metadata 目录协议，不声明业务 MVP、生产就绪、真实数据导入、正式报告或外部接口能力。"
-version: "0.1.0-s02p1"
+summary: "KMFA 是独立经营分析系统；当前已完成 Stage 1 治理基线、S02-P1 metadata 目录协议和 S02-P2 不可污染原则，不声明业务 MVP、生产就绪、真实数据导入、正式报告或外部接口能力。"
+version: "0.1.0-s02p2"
 fact_level: "EXTRACTED"
 owner_role: "owner"
-current_status: "s02_p1_completed_validated"
+current_status: "s02_p2_completed_validated"
 features:
   - feature_id: "FEAT-KMFA-001"
     name: "项目治理骨架"
@@ -45,11 +45,19 @@ features:
       - "KMFA/docs/governance/METADATA_PROTOCOL.md"
       - "KMFA/metadata/protocol/metadata_protocol.yaml"
       - "KMFA/tools/metadata_protocol_check.py"
-limitations:
-  - statement: "S02-P1 已完成但 S02-P2/P3 尚未完成，Stage 2 不能复审或上传 GitHub。"
+  - feature_id: "FEAT-KMFA-006"
+    name: "不可污染原则"
+    status: "active"
     fact_level: "EXTRACTED"
     evidence_refs:
-      - "KMFA/stage_artifacts/S02_P1_metadata_protocol/human/s02_p1_completion_record.md"
+      - "KMFA/docs/governance/IMMUTABILITY_POLICY.md"
+      - "KMFA/metadata/imports/raw_manifest_schema.json"
+      - "KMFA/tools/immutability_policy_check.py"
+limitations:
+  - statement: "S02-P1/P2 已完成但 S02-P3 尚未完成，Stage 2 不能复审或上传 GitHub。"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S02_P2_immutability_policy/human/s02_p2_completion_record.md"
   - statement: "正式 zero_delta、no_float_money、lineage、report grade gate 工具尚未创建。"
     fact_level: "EXTRACTED"
     evidence_refs:
