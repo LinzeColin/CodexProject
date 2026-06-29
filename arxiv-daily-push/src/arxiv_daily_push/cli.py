@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+from collections.abc import Mapping
 from pathlib import Path
 import subprocess
 
@@ -135,6 +136,7 @@ from .stage2_final_gate import (
     build_s2plt02_real_proof_capture_authorization_owner_packet_state,
     build_s2plt02_real_proof_capture_authorization_validation_state,
     build_s2plt02_real_proof_capture_readiness_state,
+    build_s2plt02_terminal_delivery_proof_artifact_draft_state,
     build_s2plt02_terminal_delivery_proof_artifact_validation_state,
     build_s2plt02_terminal_readiness_audit_state,
     build_s2plt03_terminal_resilience_proof_artifact_validation_state,
@@ -148,6 +150,7 @@ from .stage2_final_gate import (
     validate_s2plt02_real_proof_capture_authorization_owner_packet_state,
     validate_s2plt02_dry_run_second_day_audit_state,
     validate_s2plt02_real_proof_capture_readiness_state,
+    validate_s2plt02_terminal_delivery_proof_artifact,
     validate_s2plt03_terminal_resilience_proof_artifact_validation_state,
     validate_s2plt04_completion_evidence_audit_state,
 )
@@ -1342,6 +1345,30 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Print JSON S2PLT02 terminal delivery proof validation state.",
     )
+    s2plt02_terminal_delivery_proof_draft = subparsers.add_parser(
+        "build-s2plt02-terminal-delivery-proof-artifact-draft",
+        help=(
+            "Build a stdout-only S2PLT02 terminal delivery proof artifact candidate "
+            "from explicit delivery and scheduler evidence inputs."
+        ),
+    )
+    s2plt02_terminal_delivery_proof_draft.add_argument(
+        "--generated-at",
+        required=True,
+        help="Terminal proof candidate timestamp.",
+    )
+    s2plt02_terminal_delivery_proof_draft.add_argument(
+        "--delivery-manifest",
+        action="append",
+        required=True,
+        help="Real M1-M4 delivery manifest JSON. Pass exactly two consecutive service-date manifests.",
+    )
+    s2plt02_terminal_delivery_proof_draft.add_argument(
+        "--scheduler-proof",
+        required=True,
+        help="Real launchd scheduler proof manifest JSON.",
+    )
+    s2plt02_terminal_delivery_proof_draft.add_argument("--json", action="store_true", help="Print JSON draft wrapper.")
 
     s2plt03_resilience_audit = subparsers.add_parser(
         "audit-s2plt03-resilience-readiness",
@@ -3884,6 +3911,28 @@ def main(argv: list[str] | None = None) -> int:
             for error in report.get("validation_errors", []):
                 print(f"- error: {error}")
         return 0 if report["status"] == "pass" else 2
+    if args.command == "build-s2plt02-terminal-delivery-proof-artifact-draft":
+        report = build_s2plt02_terminal_delivery_proof_artifact_draft_state(
+            generated_at=args.generated_at,
+            delivery_manifests=[load_json_mapping(path) for path in args.delivery_manifest],
+            scheduler_proof=load_json_mapping(args.scheduler_proof),
+        )
+        artifact = report.get("artifact_draft")
+        artifact_validation_errors = (
+            validate_s2plt02_terminal_delivery_proof_artifact(artifact) if isinstance(artifact, Mapping) else []
+        )
+        report = {**report, "artifact_validation_errors": artifact_validation_errors}
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in report.get("validation_errors", []):
+                print(f"- error: {error}")
+            for error in artifact_validation_errors:
+                print(f"- artifact_error: {error}")
+        return 0 if report["status"] == "pass" and not artifact_validation_errors else 2
     if args.command == "audit-s2plt03-resilience-readiness":
         report = build_s2plt03_resilience_precheck_report(generated_at=args.generated_at)
         if args.json:

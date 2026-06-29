@@ -521,6 +521,111 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["integrated_production_accepted"])
         self.assertFalse(payload["daily_operation_enabled"])
 
+    def test_build_s2plt02_terminal_delivery_proof_artifact_draft_json_command(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            tmp = Path(tmp_dir)
+            day1 = tmp / "day1.json"
+            day2 = tmp / "day2.json"
+            scheduler = tmp / "scheduler.json"
+            base_manifest = {
+                "manifest_ref": "governance/run_manifests/FUTURE-S2PLT02-DAY1.json",
+                "schema_version": 1,
+                "project_id": "arxiv-daily-push",
+                "task_id": "LOCAL-DAILY-M1-M4-RESEND-EXECUTION",
+                "status": "pass",
+                "generated_at": "2026-06-28T11:28:25+10:00",
+                "service_date": "2026-06-28",
+                "mail_delivery_summary": {
+                    "planned_send_total": 4,
+                    "sent_mail_count": 4,
+                    "sent_mail_products": ["M1", "M2", "M3", "M4"],
+                    "delivery_ref_by_product": {
+                        "M1": "smtp://message/day1-m1",
+                        "M2": "smtp://message/day1-m2",
+                        "M3": "smtp://message/day1-m3",
+                        "M4": "smtp://message/day1-m4",
+                    },
+                },
+                "real_smtp_sent": True,
+                "real_smtp_send_enabled": True,
+                "stage2_integrated_production_accepted": False,
+                "integrated_production_accepted": False,
+                "daily_operation_enabled": False,
+                "release_uploaded": False,
+                "production_restore_executed": False,
+                "production_queue_mutated": False,
+                "public_schema_changed": False,
+                "db_migration_executed": False,
+                "source_adapter_changed": False,
+                "ranking_algorithm_changed": False,
+                "current_pointer_changed": False,
+                "v7_1_baseline_changed": False,
+                "v7_2_contract_files_changed": False,
+                "evidence_refs": ["governance/run_manifests/FUTURE-S2PLT02-DAY1.json"],
+            }
+            day1.write_text(json.dumps(base_manifest), encoding="utf-8")
+            day2_payload = json.loads(json.dumps(base_manifest))
+            day2_payload["manifest_ref"] = "governance/run_manifests/FUTURE-S2PLT02-DAY2.json"
+            day2_payload["service_date"] = "2026-06-29"
+            day2_payload["mail_delivery_summary"]["delivery_ref_by_product"] = {
+                "M1": "smtp://message/day2-m1",
+                "M2": "smtp://message/day2-m2",
+                "M3": "smtp://message/day2-m3",
+                "M4": "smtp://message/day2-m4",
+            }
+            day2_payload["evidence_refs"] = ["governance/run_manifests/FUTURE-S2PLT02-DAY2.json"]
+            day2.write_text(json.dumps(day2_payload), encoding="utf-8")
+            scheduler.write_text(
+                json.dumps(
+                    {
+                        "proof_ref": "governance/run_manifests/FUTURE-S2PLT02-SCHEDULER-PROOF.json",
+                        "status": "pass",
+                        "real_scheduler_proven": True,
+                        "scheduler_evidence_present": True,
+                        "production_acceptance_claimed": False,
+                        "integrated_production_accepted": False,
+                        "stage2_integrated_production_accepted": False,
+                        "daily_operation_enabled": False,
+                        "release_uploaded": False,
+                        "production_restore_enabled": False,
+                        "production_restore_executed": False,
+                        "public_schema_changed": False,
+                        "db_migration_executed": False,
+                        "production_queue_mutated": False,
+                        "source_adapter_changed": False,
+                        "ranking_algorithm_changed": False,
+                        "current_pointer_changed": False,
+                        "v7_1_baseline_changed": False,
+                        "v7_2_contract_files_changed": False,
+                    }
+                ),
+                encoding="utf-8",
+            )
+            buffer = io.StringIO()
+            with redirect_stdout(buffer):
+                result = main(
+                    [
+                        "build-s2plt02-terminal-delivery-proof-artifact-draft",
+                        "--generated-at",
+                        "2026-06-30T10:35:11+10:00",
+                        "--delivery-manifest",
+                        str(day1),
+                        "--delivery-manifest",
+                        str(day2),
+                        "--scheduler-proof",
+                        str(scheduler),
+                        "--json",
+                    ]
+                )
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["status"], "pass")
+        self.assertFalse(payload["artifact_written"])
+        self.assertEqual(payload["artifact_draft"]["observed_email_count"], 8)
+        self.assertEqual(payload["artifact_validation_errors"], [])
+        self.assertFalse(payload["artifact_draft"]["integrated_production_accepted"])
+
     def test_audit_s2plt03_resilience_readiness_json_command_consumes_zero_proof_but_blocks(self):
         buffer = io.StringIO()
         with redirect_stdout(buffer):

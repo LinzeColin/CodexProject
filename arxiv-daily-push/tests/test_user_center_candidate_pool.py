@@ -228,6 +228,21 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("ADP_ALLOW_SMTP_SEND=false", page)
         self.assertIn("all_required_launchagents_disabled=true", page)
         self.assertIn("1f5abf4e3def35129bc6a360722b10087880dfb49f904d6f9b267cb796d7f8f1", page)
+        self.assertIn(
+            "REQ-ADP-V7-041-S2PLT02-TERMINAL-DELIVERY-PROOF-ARTIFACT-DRAFT-BUILDER",
+            page,
+        )
+        self.assertIn("S2PLT02-TERMINAL-DELIVERY-PROOF-ARTIFACT-DRAFT-BUILDER", page)
+        self.assertIn(
+            "ADP-S2PLT02-TERMINAL-DELIVERY-PROOF-ARTIFACT-DRAFT-BUILDER-20260630.json",
+            page,
+        )
+        self.assertIn("PHASE_S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_DRAFT_BUILDER.md", page)
+        self.assertIn("s2plt02_terminal_delivery_proof_artifact_draft_builder_ready_no_write_no_production", page)
+        self.assertIn("artifact_written=false", page)
+        self.assertIn("artifact_validation_errors=[]", page)
+        self.assertIn("beb8f19417b694428749bef5eb01de375ce2321f209c9086dfe4862bf48c2a8b", page)
+        self.assertIn("5aa91771f2900db713fb865a12cb69f5c09bd6b03761083337c2d58af13a3b96", page)
         self.assertIn("005e2294441b6aa6e827b0acb8f30916c59cc994768f0562a248a49c9dd6dae7", page)
         self.assertIn("2d9892b750815a0e9540d49dbd2ac65d13dbd8c866651720d1cbf96dd49ffe94", page)
         self.assertIn("PHASE_S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_LIVE.md", page)
