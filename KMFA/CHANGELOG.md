@@ -8,6 +8,13 @@
 - 复跑 S04-P1/S04-P2/S04-P3 工具测试、治理 validator、no-float 检查和敏感文件扫描。
 - 保持 A0 基准、zero-delta、事实层、报告、UI 和外部接口为未完成。
 
+## Stage 4 GitHub Upload - 2026-06-29
+
+- 完成 Stage 4 final GitHub upload 证据记录，目标为 `LinzeColin/CodexProject main`。
+- 基于 `origin/main` commit `e6e69d387fc842102931090ffbffe18e54b63c0c` 纳入完整 Stage 4 提交栈。
+- reviewed content commit 为 `25c85dcee55679d0789f8462a7c7875188d0aa9f`。
+- 新增 `KMFA/stage_artifacts/S04_STAGE_REVIEW/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S04_STAGE_REVIEW/machine/stage4_upload_manifest.json`。
+
 ## 0.1.0-s04p3 - 2026-06-29
 
 - 完成 `S04-P3｜基础工具测试`，保持本 Phase 本地验证，不上传 GitHub。

@@ -1,0 +1,42 @@
+{
+  "schema_version": "kmfa.github_upload_manifest.v1",
+  "project_id": "KMFA",
+  "upload_id": "KMFA-S04-GITHUB-UPLOAD-20260629",
+  "stage": "S04",
+  "target": "LinzeColin/CodexProject main",
+  "status": "uploaded_to_github_main",
+  "upload_time": "2026-06-29T23:50:52+10:00",
+  "upload_base_origin_main": "e6e69d387fc842102931090ffbffe18e54b63c0c",
+  "reviewed_content_commit": "25c85dcee55679d0789f8462a7c7875188d0aa9f",
+  "review_refs": [
+    "KMFA/stage_artifacts/S04_STAGE_REVIEW/human/stage4_review_report.md",
+    "KMFA/stage_artifacts/S04_STAGE_REVIEW/human/test_results.md",
+    "KMFA/stage_artifacts/S04_STAGE_REVIEW/machine/stage4_review_manifest.json"
+  ],
+  "upload_refs": [
+    "KMFA/stage_artifacts/S04_STAGE_REVIEW/human/github_upload_record.md",
+    "KMFA/stage_artifacts/S04_STAGE_REVIEW/machine/stage4_upload_manifest.json"
+  ],
+  "validation_summary": {
+    "unit_tests": "PASS: 26 tests",
+    "tool_report": "PASS: 22 total / 22 passed / 0 failed",
+    "no_float_money": "PASS",
+    "no_omission": "PASS: requirements=20, P0=9, P1=8, status_records=239, tasks=162, v1.2_html=45+",
+    "governance": "PASS: errors 0 / warnings 0",
+    "sensitive_file_scan": "PASS",
+    "secret_scan": "PASS_WITH_POLICY_TEXT_MATCHES_ONLY"
+  },
+  "privacy_boundary": {
+    "raw_sensitive_data_uploaded": false,
+    "business_records_committed": false,
+    "credentials_committed": false
+  },
+  "non_scope": [
+    "S05 A0 baseline",
+    "zero-delta validation",
+    "fact layer",
+    "management report generation",
+    "UI",
+    "external connectors"
+  ]
+}
