@@ -76,6 +76,29 @@ S2PLT01_INDEPENDENT_REVIEW_MANIFEST_PATH = (
 S2PLT01_S2PLT04_REVIEW_SYNC_MANIFEST_PATH = (
     "governance/run_manifests/ADP-S2PLT04-S2PLT01-REPLAY-REVIEW-EVIDENCE-SYNC-20260628.json"
 )
+S2PLT01_P0_P1_ZERO_PROOF_ARTIFACT_PATH = "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json"
+S2PLT01_P0_P1_ZERO_PROOF_SCHEMA_VERSION = "adp.p0_p1_zero_proof.v1"
+S2PLT01_P0_P1_ZERO_PROOF_CLOSURE_DECISION = "P0_P1_ZERO_PROVEN_NO_PRODUCTION_ACCEPTANCE"
+S2PLT01_P0_P1_ZERO_PROOF_NO_PRODUCTION_FLAGS = (
+    "integrated_production_accepted",
+    "daily_operation_enabled",
+    "real_smtp_sent",
+    "real_smtp_send_enabled",
+    "scheduler_enabled",
+    "scheduler_install_enabled",
+    "release_uploaded",
+    "release_packaging_enabled",
+    "production_restore_enabled",
+    "production_restore_executed",
+    "public_schema_changed",
+    "db_migration_executed",
+    "production_queue_mutated",
+    "source_adapter_changed",
+    "ranking_algorithm_changed",
+    "current_pointer_changed",
+    "v7_1_baseline_changed",
+    "v7_2_contract_files_changed",
+)
 
 
 def build_s2plt01_dependency_state() -> dict[str, Any]:
@@ -610,6 +633,15 @@ def build_s2plt01_terminal_acceptance_audit_state(*, repo_root: str | Path = "."
     root = Path(repo_root)
     review_manifest = _load_json_mapping(root / S2PLT01_INDEPENDENT_REVIEW_MANIFEST_PATH)
     s2plt04_sync = _load_json_mapping(root / S2PLT01_S2PLT04_REVIEW_SYNC_MANIFEST_PATH)
+    zero_proof_validation = _build_s2plt01_p0_p1_zero_proof_artifact_validation_state(root)
+    p0_zero_proven = (
+        zero_proof_validation["p0_zero_proven_by_payload"] is True
+        or int(s2plt04_sync.get("inherited_v7_1_open_p0_findings") or 0) == 0
+    )
+    p1_zero_proven = (
+        zero_proof_validation["p1_zero_proven_by_payload"] is True
+        or int(s2plt04_sync.get("inherited_v7_1_open_p1_findings") or 0) == 0
+    )
     review_receipt_present = bool(review_manifest)
     review_package_passed = (
         review_manifest.get("independent_replay_review_receipt_added") is True
@@ -622,8 +654,8 @@ def build_s2plt01_terminal_acceptance_audit_state(*, repo_root: str | Path = "."
         "review_package_passed": review_package_passed,
         "full_replay_executed": review_manifest.get("full_replay_executed") is True,
         "s2plt01_accepted": review_manifest.get("s2plt01_accepted") is True,
-        "inherited_p0_zero": int(s2plt04_sync.get("inherited_v7_1_open_p0_findings") or 0) == 0,
-        "inherited_p1_zero": int(s2plt04_sync.get("inherited_v7_1_open_p1_findings") or 0) == 0,
+        "inherited_p0_zero": p0_zero_proven,
+        "inherited_p1_zero": p1_zero_proven,
     }
     blocking_reasons: list[str] = []
     if not review_receipt_present:
@@ -650,6 +682,7 @@ def build_s2plt01_terminal_acceptance_audit_state(*, repo_root: str | Path = "."
         "review_package_passed": review_package_passed,
         "review_manifest_ref": S2PLT01_INDEPENDENT_REVIEW_MANIFEST_PATH,
         "s2plt04_review_sync_ref": S2PLT01_S2PLT04_REVIEW_SYNC_MANIFEST_PATH,
+        "p0_p1_zero_proof_artifact_validation": zero_proof_validation,
         "terminal_gates": terminal_gates,
         "blocking_reasons": sorted(set(blocking_reasons)),
         "full_replay_executed": review_manifest.get("full_replay_executed") is True,
@@ -830,6 +863,43 @@ def _load_json_mapping(path: Path) -> Mapping[str, Any]:
     except (OSError, json.JSONDecodeError):
         return {}
     return value if isinstance(value, Mapping) else {}
+
+
+def _build_s2plt01_p0_p1_zero_proof_artifact_validation_state(root: Path) -> dict[str, Any]:
+    artifact = _load_json_mapping(root / S2PLT01_P0_P1_ZERO_PROOF_ARTIFACT_PATH)
+    validation_errors: list[str] = []
+    if not artifact:
+        validation_errors.append("p0_p1_zero_proof_artifact_missing")
+    if artifact and artifact.get("schema_version") != S2PLT01_P0_P1_ZERO_PROOF_SCHEMA_VERSION:
+        validation_errors.append("schema_version_invalid")
+
+    finding_counts = _mapping(artifact.get("finding_counts"))
+    zero_severity_counts = _mapping(artifact.get("zero_severity_counts"))
+    decision = _mapping(artifact.get("independent_closure_decision"))
+    no_production = _mapping(artifact.get("no_production_side_effects"))
+    p0_zero = finding_counts.get("P0") == 0 and zero_severity_counts.get("P0") == 0
+    p1_zero = finding_counts.get("P1") == 0 and zero_severity_counts.get("P1") == 0
+    if artifact and not p0_zero:
+        validation_errors.append("p0_zero_not_proven")
+    if artifact and not p1_zero:
+        validation_errors.append("p1_zero_not_proven")
+    if artifact and decision.get("decision") != S2PLT01_P0_P1_ZERO_PROOF_CLOSURE_DECISION:
+        validation_errors.append("independent_closure_decision_invalid")
+    if artifact and decision.get("production_acceptance_claimed") is not False:
+        validation_errors.append("production_acceptance_claimed_must_be_false")
+    for flag in S2PLT01_P0_P1_ZERO_PROOF_NO_PRODUCTION_FLAGS:
+        if artifact and no_production.get(flag) is not False:
+            validation_errors.append(f"no_production_side_effects.{flag}_must_be_false")
+
+    return {
+        "status": "pass" if not validation_errors else "blocked",
+        "artifact_ref": S2PLT01_P0_P1_ZERO_PROOF_ARTIFACT_PATH,
+        "artifact_present": bool(artifact),
+        "p0_zero_proven_by_payload": bool(artifact) and p0_zero and not validation_errors,
+        "p1_zero_proven_by_payload": bool(artifact) and p1_zero and not validation_errors,
+        "production_acceptance_claimed": decision.get("production_acceptance_claimed") if artifact else None,
+        "validation_errors": validation_errors,
+    }
 
 
 def _replay_record_passes(record: Mapping[str, Any]) -> bool:

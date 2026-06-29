@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260629-ADP-S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-DEPENDENCY-ORDER"
+as_of_event_id: "EVENT-20260629-ADP-S2PMT07-S2PLT01-ZERO-PROOF-READINESS-SYNC"
 source_snapshot_hash: "sha256:a4bb2aa1529ab2e719e847c15e7cc53103a1ca90b644ee225041f9a63769c9aa"
 source_base_commit: "fd90a208c7b009aa11bc26c4629a7ea92679c5ff"
 source_tree_hash: "c44d743a2833842b3cc0dd9e098fb70017cdc5a2"
-snapshot_event_time: "2026-06-29T12:01:17+10:00"
+snapshot_event_time: "2026-06-29T12:23:25+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -66,7 +66,7 @@ dimensions:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "BLOCKED_PRECHECK"
-  release_gate: "S2PMT07_S2PLT01_TERMINAL_ACCEPTANCE_DEPENDENCY_ORDER_BLOCKED_NO_ACCEPTANCE"
+  release_gate: "S2PMT07_S2PLT01_ZERO_PROOF_READINESS_SYNC_BLOCKED_NO_ACCEPTANCE"
   blocker_ids:
     - "S2PLT01_NOT_ACCEPTED"
     - "TWO_CONSECUTIVE_REAL_DAYS_NOT_PROVEN"
@@ -82,15 +82,15 @@ delivery_readiness:
   open_p0_findings: 8
   open_p1_findings: 37
   p0_p1_zero_proof_artifact_validation: "pass"
-  s2plt01_terminal_acceptance_dependency_order: "downstream_s2plt04_s2pmt07_blockers_removed"
-  s2plt01_remaining_terminal_blockers: "full_replay_not_executed; inherited_v7_1_p0_findings_open; inherited_v7_1_p1_findings_open; review_receipt_is_nonterminal; s2plt01_not_accepted"
+  s2plt01_terminal_acceptance_zero_proof_readiness: "p0_zero_true_p1_zero_true"
+  s2plt01_remaining_terminal_blockers: "full_replay_not_executed; review_receipt_is_nonterminal; s2plt01_not_accepted"
   s2plt02_p0_zero: true
   s2plt02_p1_zero: true
   s2plt02_remaining_terminal_blockers: "s2plt01_not_accepted; two_consecutive_real_days_not_proven; eight_real_emails_not_proven; real_scheduler_not_proven"
   s2plt03_p0_zero: true
   s2plt03_p1_zero: true
   s2plt03_remaining_terminal_blockers: "s2plt02_not_accepted"
-  production_forbidden_until: "S2PLT01 terminal audit dependency order is fixed and P0/P1 zero-proof artifact validation is consumed, but S2PLT01 full replay/acceptance, two consecutive real days, eight real emails, real scheduler proof, S2PLT03 terminal resilience, S2PLT04 completion report, final bundle, independent signoff, final command execution, scheduler/SMTP/Release/restore, DAILY_OPERATION, and integrated production acceptance remain blocked"
+  production_forbidden_until: "S2PLT01 terminal audit consumes P0/P1 zero-proof artifact validation, but S2PLT01 full replay/acceptance, two consecutive real days, eight real emails, real scheduler proof, S2PLT03 terminal resilience, S2PLT04 completion report, final bundle, independent signoff, final command execution, scheduler/SMTP/Release/restore, DAILY_OPERATION, and integrated production acceptance remain blocked"
   stage2_stop_gate: "INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION"
   stage2_integrated_production_accepted: false
   parallel_shadow_source_task: "NONE_WHILE_S2PMT07_BLOCKED"
@@ -98,7 +98,7 @@ delivery_readiness:
 next_executable_task:
   task_id: "S2PMT07-S2PLT04-COMPLETION-REPORT"
   status: "blocked"
-  reason: "independent final reviewer assignment and P0/P1 zero-proof artifacts are validated for the final-bundle chain; S2PLT01 terminal audit no longer blocks on later S2PLT04/S2PMT07 outputs, and S2PLT02/S2PLT03 readiness consume zero-proof, but S2PLT04 completion report is still blocked until S2PLT01/S2PLT02/S2PLT03 terminal evidence exists."
+  reason: "independent final reviewer assignment and P0/P1 zero-proof artifacts are validated for the final-bundle chain; S2PLT01/S2PLT02/S2PLT03 readiness consume zero-proof, but S2PLT04 completion report is still blocked until S2PLT01/S2PLT02/S2PLT03 terminal evidence exists."
   acceptance_ids:
     - "ACC-S2PMT07-FINAL-REVIEW"
   owner: "content_owner + engineering_owner + independent_final_reviewer"

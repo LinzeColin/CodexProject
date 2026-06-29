@@ -1,0 +1,122 @@
+{
+  "schema_version": 1,
+  "manifest_id": "ADP-S2PMT07-S2PLT01-ZERO-PROOF-READINESS-SYNC-20260629",
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PMT07-S2PLT01-ZERO-PROOF-READINESS-SYNC",
+  "task_ids": [
+    "S2PMT07-S2PLT01-ZERO-PROOF-READINESS-SYNC",
+    "S2PMT07-S2PLT04-COMPLETION-REPORT",
+    "S2PLT01",
+    "ACC-S2PLT01-30D"
+  ],
+  "parent_task_id": "S2PMT07-S2PLT04-COMPLETION-REPORT",
+  "acceptance_id": "ACC-S2PLT01-30D",
+  "phase": "S2PM",
+  "generated_at": "2026-06-29T12:23:25+10:00",
+  "base_commit": "0350a4c64cb1a12fcc8a6e53ea7c67221431d8a0",
+  "status": "blocked",
+  "result": "blocked_s2plt01_zero_proof_consumed_terminal_evidence_still_missing_no_production",
+  "fact_level": "EXTRACTED",
+  "summary": "S2PLT01 terminal acceptance audit now consumes committed FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json: inherited_p0_zero=true and inherited_p1_zero=true, while full replay, nonterminal review receipt, and S2PLT01 acceptance still block terminal acceptance.",
+  "cli_command": "adp audit-s2plt01-terminal-acceptance --json",
+  "cli_exit_code": 2,
+  "audit_state_hash": "4712401f3ec8d96b059a8b8644b8da906304031cda0442195dcd2b3317e24cda",
+  "terminal_acceptance_ready": false,
+  "review_receipt_present": true,
+  "review_package_passed": true,
+  "full_replay_executed": false,
+  "s2plt01_accepted": false,
+  "p0_p1_zero_proof_artifact_validation_status": "pass",
+  "p0_zero": true,
+  "p1_zero": true,
+  "removed_blockers": [
+    "inherited_v7_1_p0_findings_open",
+    "inherited_v7_1_p1_findings_open"
+  ],
+  "blocking_reasons": [
+    "full_replay_not_executed",
+    "review_receipt_is_nonterminal",
+    "s2plt01_not_accepted"
+  ],
+  "model_ids_changed": [
+    "MOD-ADP-101"
+  ],
+  "formula_ids_changed": [
+    "FORM-ADP-103"
+  ],
+  "parameter_ids_changed": [],
+  "top_level_p0_p1_stop_gate_closed": false,
+  "final_acceptance_bundle_present": false,
+  "s2plt04_completed": false,
+  "production_acceptance_claimed": false,
+  "integrated_production_accepted": false,
+  "stage2_integrated_production_accepted": false,
+  "daily_operation_enabled": false,
+  "real_smtp_sent": false,
+  "real_smtp_send_enabled": false,
+  "scheduler_enabled": false,
+  "scheduler_install_enabled": false,
+  "release_uploaded": false,
+  "release_packaging_enabled": false,
+  "production_restore_enabled": false,
+  "production_restore_executed": false,
+  "public_schema_changed": false,
+  "db_migration_executed": false,
+  "production_queue_mutated": false,
+  "source_adapter_changed": false,
+  "source_or_board_changed": false,
+  "ranking_algorithm_changed": false,
+  "current_pointer_changed": false,
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false,
+  "next_task": "SUPPLY_REAL_S2PLT01_FULL_REPLAY_TERMINAL_REVIEW_AND_ACCEPTANCE_BEFORE_S2PLT04_REPORT",
+  "files_changed": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+    "arxiv-daily-push/docs/governance/DELIVERY_PLAN.md",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/OWNER_STATUS.md",
+    "arxiv-daily-push/docs/governance/STATUS.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/governance/events.jsonl",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT01_ZERO_PROOF_READINESS_SYNC.md",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py",
+    "arxiv-daily-push/tests/test_governance_current_state.py",
+    "arxiv-daily-push/tests/test_stage2_replay_gate.py",
+    "arxiv-daily-push/tests/test_user_center_candidate_pool.py",
+    "arxiv-daily-push/功能清单.md",
+    "arxiv-daily-push/开发记录.md",
+    "arxiv-daily-push/模型参数文件.md",
+    "arxiv-daily-push/用户中心/README.md",
+    "arxiv-daily-push/用户中心/功能任务测试证据追踪链.md",
+    "governance/run_manifests/ADP-S2PMT07-S2PLT01-ZERO-PROOF-READINESS-SYNC-20260629.json"
+  ],
+  "evidence_refs": [
+    "governance/run_manifests/ADP-S2PMT07-S2PLT01-ZERO-PROOF-READINESS-SYNC-20260629.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT01_ZERO_PROOF_READINESS_SYNC.md",
+    "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
+    "FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json",
+    "governance/run_manifests/ADP-S2PLT01-INDEPENDENT-REPLAY-REVIEW-20260626.json",
+    "governance/run_manifests/ADP-S2PLT04-S2PLT01-REPLAY-REVIEW-EVIDENCE-SYNC-20260628.json",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py",
+    "arxiv-daily-push/tests/test_stage2_replay_gate.py"
+  ],
+  "test_results": [
+    "TDD red failed as expected because S2PLT01 terminal acceptance audit still used inherited P0/P1 blockers despite committed zero-proof artifact",
+    "focused S2PLT01 replay-gate tests: 22 OK",
+    "audit CLI returned blocked / exit 2 with zero-proof pass and remaining blockers full_replay_not_executed, review_receipt_is_nonterminal, s2plt01_not_accepted"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt01_zero_red PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_replay_gate.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt01_zero_green1 PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_replay_gate.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt01_zero_cli PYTHONPATH=arxiv-daily-push/src python3 -B -m arxiv_daily_push.cli audit-s2plt01-terminal-acceptance --json"
+  ],
+  "risks": [
+    "This zero-proof sync can be misread as S2PLT01 acceptance; terminal_acceptance_ready remains false.",
+    "Full replay, terminal review receipt, and S2PLT01 acceptance remain required before S2PLT04 can consume S2PLT01 as terminal evidence."
+  ],
+  "rollback": "Revert S2PLT01 zero-proof consumption logic, focused regression tests, phase record, manifest, traceability row, delivery/event records, generated views, and three base records; no runtime production state was changed."
+}

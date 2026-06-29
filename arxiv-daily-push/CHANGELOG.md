@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-06-29 12:23:25 Australia/Sydney - S2PMT07-S2PLT01-ZERO-PROOF-READINESS-SYNC
+
+- Updated `audit-s2plt01-terminal-acceptance` to consume the committed `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json` artifact.
+- Current S2PLT01 audit remains blocked, but now reports `inherited_p0_zero=true` and `inherited_p1_zero=true`; remaining blockers are `full_replay_not_executed`, `review_receipt_is_nonterminal`, and `s2plt01_not_accepted`.
+- No S2PLT01 acceptance is claimed; no S2PLT04 completion report, final command execution, handoff, signoff, final manifest, SMTP, scheduler, Release, restore, CURRENT/V7 changes, DAILY_OPERATION, or integrated production acceptance is created or enabled.
+
 ## 2026-06-29 12:01:17 Australia/Sydney - S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-DEPENDENCY-ORDER
 
 - Fixed the S2PLT01 terminal acceptance audit dependency order so S2PLT01 readiness no longer depends on later S2PLT04 completion or S2PMT07 final signoff.
