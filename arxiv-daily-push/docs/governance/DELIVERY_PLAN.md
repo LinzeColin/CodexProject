@@ -21,12 +21,22 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 273
+- task_count: 274
 - acceptance_count: 127
 
 ## Delivery Tasks
 
 The machine-readable task source is `delivery_tasks.yaml`.
+
+## 2026-06-29 21:20:40 Australia/Sydney - S2PMT07 Final Bundle Next Executable Command Sync
+
+- `S2PMT07-FINAL-BUNDLE-NEXT-EXECUTABLE-COMMAND-SYNC` makes the final-bundle prerequisite plan expose the exact command for the current next executable task.
+- Current plan remains `blocked` / exit 2: `next_required_step=S2PLT04_COMPLETION_REPORT`, `next_required_step_is_actionable=false`, and `next_executable_task=S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION`.
+- New command metadata: `next_executable_command=build-s2plt02-real-proof-capture-authorization-artifact-draft`, `generated_at_source=current Australia/Sydney timestamp at execution time`, `readiness_state_hash=819b1c3911892ce861fd5ba5bdde0dc381e303076beea684f35eb94c75975463`.
+- New fail-closed booleans: `next_executable_command_writes_artifact=false` and `next_executable_command_satisfies_gate=false`.
+- Current plan state hash is `dd5fc312ae8ce8f70dbdc291d55dfd987686de3c5de0daa4bd1b57f1857c92db`; `plan_validation_errors=[]`.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-NEXT-EXECUTABLE-COMMAND-SYNC-20260629.json` and `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_NEXT_EXECUTABLE_COMMAND_SYNC.md`.
+- This does not write `FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json`, authorize proof capture, send SMTP, enable scheduler, upload Release assets, execute restore, mutate schema/DB/source/ranking/CURRENT/V7, enable DAILY_OPERATION, accept S2PLT02/S2PLT03/S2PLT04/S2PMT07, or claim integrated production acceptance.
 
 ## 2026-06-29 20:57:12 Australia/Sydney - S2PLT02 Real Proof Capture Authorization Draft CLI
 

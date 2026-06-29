@@ -1023,6 +1023,30 @@ S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_BLOCKING_REASONS = (
     "real_scheduler_not_proven",
     "s2plt02_terminal_delivery_proof_artifact_missing",
 )
+S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT02_AUTH_READINESS_STATE_HASH = (
+    "819b1c3911892ce861fd5ba5bdde0dc381e303076beea684f35eb94c75975463"
+)
+S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT02_AUTH_DRAFT_COMMAND = (
+    "build-s2plt02-real-proof-capture-authorization-artifact-draft"
+)
+S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT02_AUTH_DRAFT_ARGS = {
+    "owner_id": "owner_or_coordinator",
+    "owner_role": "owner",
+    "generated_at_source": "current Australia/Sydney timestamp at execution time",
+    "readiness_state_hash": S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT02_AUTH_READINESS_STATE_HASH,
+}
+S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT02_AUTH_VALIDATION_COMMAND = (
+    "validate-s2plt02-real-proof-capture-authorization "
+    "--path FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json "
+    "--expected-readiness-state-hash "
+    f"{S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT02_AUTH_READINESS_STATE_HASH} "
+    "--json"
+)
+S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT02_AUTH_DRAFT_EVIDENCE_REFS = (
+    "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-CLI-20260629.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_DRAFT_CLI.md",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION.md",
+)
 S2PLT02_M4_WATERMARK_FORBIDDEN_SOURCE_FLAGS = (
     "integrated_production_accepted",
     "stage2_integrated_production_accepted",
@@ -6509,6 +6533,15 @@ def build_final_bundle_prerequisite_plan_state(
         and s2plt04_step.get("upstream_blocked") is True
         and next_required_step == "S2PLT04_COMPLETION_REPORT"
     )
+    next_executable_task = (
+        S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_NEXT_EXECUTABLE_TASK_WHEN_S2PLT04_BLOCKED
+        if s2plt04_blocked_by_upstream_evidence
+        else next_required_step
+    )
+    next_executable_is_s2plt02_auth = (
+        next_executable_task
+        == S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_NEXT_EXECUTABLE_TASK_WHEN_S2PLT04_BLOCKED
+    )
     state = {
         "status": "pass" if all_required_steps_passed else "blocked",
         "scope": "final_bundle_prerequisite_plan_only_no_production_acceptance",
@@ -6519,10 +6552,28 @@ def build_final_bundle_prerequisite_plan_state(
         "next_required_step": next_required_step,
         "next_required_step_is_actionable": not s2plt04_blocked_by_upstream_evidence,
         "next_required_step_blocked_by_upstream_evidence": s2plt04_blocked_by_upstream_evidence,
-        "next_executable_task": (
-            S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_NEXT_EXECUTABLE_TASK_WHEN_S2PLT04_BLOCKED
-            if s2plt04_blocked_by_upstream_evidence
-            else next_required_step
+        "next_executable_task": next_executable_task,
+        "next_executable_command": (
+            S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT02_AUTH_DRAFT_COMMAND
+            if next_executable_is_s2plt02_auth
+            else ""
+        ),
+        "next_executable_command_args": (
+            dict(S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT02_AUTH_DRAFT_ARGS)
+            if next_executable_is_s2plt02_auth
+            else {}
+        ),
+        "next_executable_command_writes_artifact": False,
+        "next_executable_command_satisfies_gate": False,
+        "next_executable_command_validation_command": (
+            S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT02_AUTH_VALIDATION_COMMAND
+            if next_executable_is_s2plt02_auth
+            else ""
+        ),
+        "next_executable_evidence_refs": (
+            list(S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT02_AUTH_DRAFT_EVIDENCE_REFS)
+            if next_executable_is_s2plt02_auth
+            else []
         ),
         "upstream_blockers": (
             list(S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_UPSTREAM_BLOCKERS)
@@ -6630,6 +6681,45 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
     )
     if state.get("next_executable_task") != expected_next_executable_task:
         errors.append("final bundle prerequisite plan next_executable_task is invalid")
+    expected_next_executable_is_s2plt02_auth = (
+        expected_next_executable_task
+        == S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_NEXT_EXECUTABLE_TASK_WHEN_S2PLT04_BLOCKED
+    )
+    expected_next_executable_command = (
+        S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT02_AUTH_DRAFT_COMMAND
+        if expected_next_executable_is_s2plt02_auth
+        else ""
+    )
+    if state.get("next_executable_command") != expected_next_executable_command:
+        errors.append("final bundle prerequisite plan next_executable_command is invalid")
+    expected_next_executable_command_args = (
+        dict(S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT02_AUTH_DRAFT_ARGS)
+        if expected_next_executable_is_s2plt02_auth
+        else {}
+    )
+    if state.get("next_executable_command_args") != expected_next_executable_command_args:
+        errors.append("final bundle prerequisite plan next_executable_command_args are invalid")
+    if state.get("next_executable_command_writes_artifact") is not False:
+        errors.append("final bundle prerequisite plan next_executable_command_writes_artifact must be false")
+    if state.get("next_executable_command_satisfies_gate") is not False:
+        errors.append("final bundle prerequisite plan next_executable_command_satisfies_gate must be false")
+    expected_next_executable_command_validation_command = (
+        S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT02_AUTH_VALIDATION_COMMAND
+        if expected_next_executable_is_s2plt02_auth
+        else ""
+    )
+    if (
+        state.get("next_executable_command_validation_command")
+        != expected_next_executable_command_validation_command
+    ):
+        errors.append("final bundle prerequisite plan next_executable_command_validation_command is invalid")
+    expected_next_executable_evidence_refs = (
+        list(S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT02_AUTH_DRAFT_EVIDENCE_REFS)
+        if expected_next_executable_is_s2plt02_auth
+        else []
+    )
+    if state.get("next_executable_evidence_refs") != expected_next_executable_evidence_refs:
+        errors.append("final bundle prerequisite plan next_executable_evidence_refs are invalid")
     expected_upstream_blockers = (
         list(S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_UPSTREAM_BLOCKERS)
         if expected_s2plt04_upstream_blocked

@@ -6,7 +6,7 @@ arxiv-daily-push 当前治理结论：实现一致性为 `VERIFIED`，方法/实
 
 ## 2. 本次运行改变了什么
 
-Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。
+Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。本轮还把 final-bundle prerequisite plan 的下一可执行命令显式化为 `build-s2plt02-real-proof-capture-authorization-artifact-draft`，但该命令只生成 stdout 草稿，不写授权 artifact，也不满足授权门。
 
 ## 3. 为什么重要
 
@@ -78,7 +78,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_BLOCKED_ARTIFACT_MISSING_NO_PRODUCTION`
+- release_gate: `S2PMT07_FINAL_BUNDLE_NEXT_EXECUTABLE_COMMAND_SYNC_BLOCKED_NO_AUTHORIZATION_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 

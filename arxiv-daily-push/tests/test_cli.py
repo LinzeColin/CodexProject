@@ -573,6 +573,37 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["next_required_step"], "S2PLT04_COMPLETION_REPORT")
         self.assertFalse(payload["next_required_step_is_actionable"])
         self.assertEqual(payload["next_executable_task"], "S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION")
+        self.assertEqual(
+            payload["next_executable_command"],
+            "build-s2plt02-real-proof-capture-authorization-artifact-draft",
+        )
+        self.assertEqual(
+            payload["next_executable_command_args"],
+            {
+                "owner_id": "owner_or_coordinator",
+                "owner_role": "owner",
+                "generated_at_source": "current Australia/Sydney timestamp at execution time",
+                "readiness_state_hash": "819b1c3911892ce861fd5ba5bdde0dc381e303076beea684f35eb94c75975463",
+            },
+        )
+        self.assertFalse(payload["next_executable_command_writes_artifact"])
+        self.assertFalse(payload["next_executable_command_satisfies_gate"])
+        self.assertEqual(
+            payload["next_executable_command_validation_command"],
+            "validate-s2plt02-real-proof-capture-authorization "
+            "--path FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json "
+            "--expected-readiness-state-hash "
+            "819b1c3911892ce861fd5ba5bdde0dc381e303076beea684f35eb94c75975463 "
+            "--json",
+        )
+        self.assertEqual(
+            payload["next_executable_evidence_refs"],
+            [
+                "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-CLI-20260629.json",
+                "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_DRAFT_CLI.md",
+                "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION.md",
+            ],
+        )
         self.assertTrue(payload["next_required_step_blocked_by_upstream_evidence"])
         self.assertEqual(
             payload["upstream_blockers"],
