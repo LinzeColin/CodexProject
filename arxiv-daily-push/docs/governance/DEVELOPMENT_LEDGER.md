@@ -10,13 +10,29 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.1
 - Current phase: S2PL
-- Current gate: S2PLT02_DRY_RUN_SECOND_DAY_AUDIT_BLOCKED_NOT_TERMINAL_NO_PRODUCTION
-- Confirmed iteration count: 236
+- Current gate: S2PLT02_REAL_PROOF_CAPTURE_READINESS_BLOCKED_NO_AUTHORIZATION_NO_PRODUCTION
+- Confirmed iteration count: 237
 - Reconstructed event count: 0
-- Current task: `S2PLT02-DRY-RUN-SECOND-DAY-AUDIT` records the 2026-06-29 local M1-M4 dry-run trace as visible but nonterminal evidence. Current audit remains blocked with `dry_run_evidence_present=true`, `dry_run_mail_count=4`, `real_sent_mail_count=0`, `observed_natural_days_credit=0`, `observed_email_count_credit=0`, `counts_toward_s2plt02_terminal_proof=false`, `terminal_delivery_credit=false`, `real_smtp_proven=false`, `real_scheduler_proven=false`, `s2plt02_accepted=false`, state hash `9fbd118380da579c2cd47a92e6fe3e54fc89ffd9b76dddb8d3a7199e5821e965`, and blockers `dry_run_evidence_only_not_real_smtp`, `real_scheduler_not_proven`, `two_consecutive_real_days_not_proven`, and `eight_real_emails_not_proven`. S2PLT01 remains accepted by its terminal artifact, but S2PLT02/S2PLT03/S2PLT04/S2PMT07 and production acceptance remain blocked; no production acceptance or production side effect is claimed.
+- Current task: `S2PLT02-REAL-PROOF-CAPTURE-READINESS` records that real S2PLT02 proof capture is not authorized and is not safe to treat as terminal evidence. Current readiness remains blocked with `safe_to_collect_terminal_proof=false`, `real_proof_capture_authorized=false`, `all_required_launchagents_disabled=true`, `second_real_delivery_day_present=false`, `terminal_delivery_proof_artifact_present=false`, `real_scheduler_proven=false`, state hash `819b1c3911892ce861fd5ba5bdde0dc381e303076beea684f35eb94c75975463`, and blockers `real_proof_capture_authorization_missing;required_launchagents_disabled;second_real_delivery_day_missing;dry_run_second_day_not_terminal;s2plt02_terminal_delivery_proof_artifact_missing;real_scheduler_not_proven`. S2PLT01 terminal acceptance and P0/P1 zero-proof are validated inputs, but S2PLT02/S2PLT03/S2PLT04/S2PMT07 and production acceptance remain blocked; no production acceptance or production side effect is claimed.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. Local daily M1-M4 orchestration is now recorded as readiness evidence, but V7.2 contract baseline migration blockers are zero while real restore, real SMTP production, scheduler installation, S2PLT04 completion, final command execution, next-agent handoff, independent signoff, final bundle manifest, directory-level final bundle artifact validation pass, and final integrated production acceptance remain forbidden until V7.2 production stop gates and all `S2PMT07` final-bundle gates pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
 
+
+
+### `ITER-20260629-ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS`
+
+- Timestamp: `2026-06-29T17:41:57+10:00`
+- Fact level: EXTRACTED from S2PLT02 real-proof capture readiness CLI output, launchctl disabled-state read-only evidence, local ADP state-dir reports, committed S2PLT01/P0-P1 artifacts, focused final-gate/CLI regression tests, phase record, run manifest, traceability row, delivery task, and three base files.
+- Product version: `0.23.1`
+- Status: `audit-s2plt02-real-proof-capture-readiness --json` returns blocked / exit 2 because real-proof capture lacks explicit owner authorization, second real day, terminal proof artifact, and real scheduler proof.
+- Task IDs: `S2PLT02-REAL-PROOF-CAPTURE-READINESS`; parent `S2PLT02`; acceptance `ACC-S2PLT02-2D`.
+- Goal: Fail-close any transition from dry-run/partial S2PLT02 evidence to real terminal proof capture until the owner explicitly authorizes real SMTP/scheduler proof capture.
+- Files changed: S2PMT07 final gate helper, ADP CLI, focused final-gate/CLI regression tests, phase record, run manifest, traceability/delivery/event records, user-center traceability page, and three base files.
+- Decisions: `safe_to_collect_terminal_proof=false`, `real_proof_capture_authorized=false`, `all_required_launchagents_disabled=true`, `second_real_delivery_day_present=false`, `terminal_delivery_proof_artifact_present=false`, `real_scheduler_proven=false`, state hash `819b1c3911892ce861fd5ba5bdde0dc381e303076beea684f35eb94c75975463`, and blockers `real_proof_capture_authorization_missing;required_launchagents_disabled;second_real_delivery_day_missing;dry_run_second_day_not_terminal;s2plt02_terminal_delivery_proof_artifact_missing;real_scheduler_not_proven`.
+- Validation: focused final-gate and CLI tests cover blocked readiness; real local state CLI returns blocked / exit 2 with state hash `819b1c3911892ce861fd5ba5bdde0dc381e303076beea684f35eb94c75975463`.
+- Boundaries: No S2PLT02/S2PLT03/S2PLT04/S2PMT07 acceptance, S2PLT04 completion report, final command execution, next-agent handoff, independent signoff, final manifest, SMTP enablement, scheduler enablement, Release, restore, CURRENT/V7 change, source/ranking change, DAILY_OPERATION, or integrated production acceptance.
+- Evidence: `governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-20260629.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_READINESS.md`; `FINAL_ACCEPTANCE_BUNDLE/s2plt01_terminal_acceptance.json`; `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/src/arxiv_daily_push/cli.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`; `arxiv-daily-push/tests/test_cli.py`.
+- Next step: Obtain explicit owner authorization for real SMTP/scheduler proof capture before collecting a second real M1-M4 SMTP day, real launchd scheduler proof, and `FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json`.
 
 ### `ITER-20260629-ADP-S2PLT02-DRY-RUN-SECOND-DAY-AUDIT`
 
