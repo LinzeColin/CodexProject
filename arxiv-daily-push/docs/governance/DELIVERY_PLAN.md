@@ -21,12 +21,21 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 268
+- task_count: 269
 - acceptance_count: 127
 
 ## Delivery Tasks
 
 The machine-readable task source is `delivery_tasks.yaml`.
+
+## 2026-06-29 18:04:46 Australia/Sydney - S2PLT02 Real-Proof Capture Authorization
+
+- `S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION` adds a fail-closed validator and owner packet for future explicit owner authorization at `FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json`.
+- Current authorization validation remains `blocked` / exit 2 because `authorization_artifact_present=false` and `s2plt02_real_proof_capture_authorization_missing`.
+- Owner packet output remains `blocked_owner_action_packet_ready_no_authorization` and records `real_proof_capture_authorized=false`, `real_smtp_send_enabled_by_this_packet=false`, `scheduler_install_enabled_by_this_packet=false`, and `terminal_delivery_proof_artifact_written_by_this_packet=false`.
+- Current hashes: readiness `819b1c3911892ce861fd5ba5bdde0dc381e303076beea684f35eb94c75975463`, missing-artifact validation `005e2294441b6aa6e827b0acb8f30916c59cc994768f0562a248a49c9dd6dae7`, owner packet `2d9892b750815a0e9540d49dbd2ac65d13dbd8c866651720d1cbf96dd49ffe94`.
+- Evidence: `governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-20260629.json` and `arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION.md`.
+- This does not create the authorization artifact, enable SMTP, enable scheduler, write terminal proof, enable Release/restore, mutate schema/DB/source/ranking/CURRENT/V7, enable DAILY_OPERATION, or claim integrated production acceptance.
 
 ## 2026-06-29 17:41:57 Australia/Sydney - S2PLT02 Real-Proof Capture Readiness
 

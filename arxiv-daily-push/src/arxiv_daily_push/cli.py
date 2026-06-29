@@ -131,6 +131,8 @@ from .stage2_final_gate import (
     build_no_production_side_effect_attestation_validation_state,
     build_p0_p1_zero_proof_artifact_validation_state,
     build_s2plt02_dry_run_second_day_audit_state,
+    build_s2plt02_real_proof_capture_authorization_owner_packet_state,
+    build_s2plt02_real_proof_capture_authorization_validation_state,
     build_s2plt02_real_proof_capture_readiness_state,
     build_s2plt02_terminal_delivery_proof_artifact_validation_state,
     build_s2plt02_terminal_readiness_audit_state,
@@ -141,6 +143,7 @@ from .stage2_final_gate import (
     validate_final_bundle_prerequisite_plan_state,
     validate_independent_final_closure_decision_owner_packet_state,
     validate_independent_final_reviewer_assignment_owner_packet_state,
+    validate_s2plt02_real_proof_capture_authorization_owner_packet_state,
     validate_s2plt02_dry_run_second_day_audit_state,
     validate_s2plt02_real_proof_capture_readiness_state,
     validate_s2plt04_completion_evidence_audit_state,
@@ -1252,6 +1255,41 @@ def build_parser() -> argparse.ArgumentParser:
         help="Optional sanitized launchctl print-disabled text file for deterministic validation.",
     )
     s2plt02_real_proof_capture_readiness.add_argument("--json", action="store_true", help="Print JSON real-proof capture readiness state.")
+
+    s2plt02_real_proof_capture_authorization = subparsers.add_parser(
+        "validate-s2plt02-real-proof-capture-authorization",
+        help="Validate the future S2PLT02 owner authorization artifact without enabling SMTP or scheduler.",
+    )
+    s2plt02_real_proof_capture_authorization.add_argument(
+        "--path",
+        default="FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json",
+        help="Path to FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json.",
+    )
+    s2plt02_real_proof_capture_authorization.add_argument(
+        "--expected-readiness-state-hash",
+        default=None,
+        help="Optional readiness state hash that the authorization artifact must bind.",
+    )
+    s2plt02_real_proof_capture_authorization.add_argument(
+        "--json",
+        action="store_true",
+        help="Print JSON authorization validation state.",
+    )
+
+    s2plt02_real_proof_capture_authorization_owner_packet = subparsers.add_parser(
+        "build-s2plt02-real-proof-capture-authorization-owner-packet",
+        help="Print the owner action packet for explicit S2PLT02 real SMTP/scheduler proof capture authorization.",
+    )
+    s2plt02_real_proof_capture_authorization_owner_packet.add_argument(
+        "--readiness-state-hash",
+        default="",
+        help="Optional current S2PLT02 real-proof capture readiness state hash to bind in the packet.",
+    )
+    s2plt02_real_proof_capture_authorization_owner_packet.add_argument(
+        "--json",
+        action="store_true",
+        help="Print JSON owner action packet.",
+    )
 
     s2plt02_terminal_delivery_proof = subparsers.add_parser(
         "validate-s2plt02-terminal-delivery-proof",
@@ -3705,6 +3743,45 @@ def main(argv: list[str] | None = None) -> int:
             for error in validation_errors:
                 print(f"- validator_error: {error}")
         return 0 if report["status"] == "pass" and not validation_errors else 2
+    if args.command == "validate-s2plt02-real-proof-capture-authorization":
+        artifact_path = Path(args.path)
+        payload = load_json_mapping(artifact_path) if artifact_path.exists() else None
+        report = build_s2plt02_real_proof_capture_authorization_validation_state(
+            payload,
+            expected_readiness_state_hash=args.expected_readiness_state_hash,
+        )
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- artifact_path: {report.get('artifact_path')}")
+            print(f"- authorization_present: {report.get('authorization_present')}")
+            print(
+                "- real_proof_capture_authorized_by_payload: "
+                f"{report.get('real_proof_capture_authorized_by_payload')}"
+            )
+            for error in report.get("validation_errors", []):
+                print(f"- error: {error}")
+        return 0 if report["status"] == "pass" else 2
+    if args.command == "build-s2plt02-real-proof-capture-authorization-owner-packet":
+        readiness_state = {}
+        if args.readiness_state_hash:
+            readiness_state = {"state_hash": args.readiness_state_hash, "status": "blocked"}
+        report = build_s2plt02_real_proof_capture_authorization_owner_packet_state(readiness_state)
+        errors = validate_s2plt02_real_proof_capture_authorization_owner_packet_state(report)
+        output = {**report, "owner_packet_validation_errors": errors}
+        if args.json:
+            print(json.dumps(output, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- task_id: {report.get('task_id')}")
+            print(f"- artifact_path: {report.get('artifact_path')}")
+            print(f"- next_required_action: {report.get('next_required_action')}")
+            for action in report.get("required_owner_actions", []):
+                print(f"- required_owner_action: {action}")
+            for error in errors:
+                print(f"- error: {error}")
+        return 0 if not errors else 2
     if args.command == "validate-s2plt02-terminal-delivery-proof":
         report = build_s2plt02_terminal_delivery_proof_artifact_validation_state(repo_root=args.repo_root)
         if args.json:

@@ -4880,3 +4880,25 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+
+  - task_id: "S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION"
+    title: "S2PLT02 real-proof capture authorization artifact gate"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-29T18:04:46+10:00"
+    summary: "Expose a fail-closed authorization artifact validator and owner packet for future S2PLT02 real SMTP/scheduler proof capture; missing artifact remains blocked and owner packet output is not authorization."
+    owner: "content_owner + engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION.md", "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-20260629.json"]
+    acceptance_ids: ["ACC-S2PLT02-2D", "ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_auth_target PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_cli.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_auth_cli PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli validate-s2plt02-real-proof-capture-authorization --path /tmp/missing-s2plt02-auth.json --expected-readiness-state-hash 819b1c3911892ce861fd5ba5bdde0dc381e303076beea684f35eb94c75975463 --json", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_auth_cli PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli build-s2plt02-real-proof-capture-authorization-owner-packet --readiness-state-hash 819b1c3911892ce861fd5ba5bdde0dc381e303076beea684f35eb94c75975463 --json"]
+    test_results: ["targeted stage2_final_gate and CLI tests: 124 OK", "missing authorization artifact CLI returned blocked / exit 2 with state_hash=005e2294441b6aa6e827b0acb8f30916c59cc994768f0562a248a49c9dd6dae7", "owner packet CLI returned 0 with status=blocked_owner_action_packet_ready_no_authorization and state_hash=2d9892b750815a0e9540d49dbd2ac65d13dbd8c866651720d1cbf96dd49ffe94"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-20260629.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION.md", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py"]
+    result: "blocked_s2plt02_real_proof_capture_authorization_artifact_missing_no_production"
+    risk: "Owner packet readiness can be misread as explicit authorization; the real artifact must remain missing/blocked until the owner writes a valid authorization artifact with all no-production flags false."
+    rollback: "Revert authorization gate code, CLI, tests, registry rows, phase record, manifest, traceability row, delivery/event records, generated views, and three base records; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

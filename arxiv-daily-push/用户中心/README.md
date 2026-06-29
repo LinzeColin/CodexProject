@@ -88,3 +88,8 @@
 | 具体更新时间必须由脚本写入 | 避免人工手写未来时间或静态时间漂移 |
 
 计划来源：Email V1 每日 3+1（M1, M2, M3, M4），总应发送 4 封；这不是 Stage 2 生产验收通过声明。
+
+## 2026-06-29 18:04:46 Australia/Sydney - S2PLT02 授权门状态
+
+- 最新下一步为 `S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION`：需要 owner 后续显式写入 `FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json` 才能授权真实 SMTP/scheduler proof capture。
+- 当前 `authorization_artifact_present=false`，owner packet 不等于授权；SMTP、scheduler、Release、restore、DAILY_OPERATION 和 integrated production acceptance 均未启用。

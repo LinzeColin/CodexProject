@@ -899,6 +899,83 @@ S2PLT02_REAL_PROOF_CAPTURE_READINESS_NO_PRODUCTION_FLAGS = (
     "v7_1_baseline_changed",
     "v7_2_contract_files_changed",
 )
+S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_ARTIFACT_PATH = (
+    "FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json"
+)
+S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_SCHEMA_VERSION = (
+    "adp.s2plt02_real_proof_capture_authorization.v1"
+)
+S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_MODEL_ID = (
+    "adp-s2plt02-real-proof-capture-authorization-v1"
+)
+S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_SCOPE = (
+    "s2plt02_real_smtp_scheduler_capture_authorization_only_no_production_acceptance"
+)
+S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_DECISION = (
+    "S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZED_NO_PRODUCTION_ACCEPTANCE"
+)
+S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_REQUIRED_FIELDS = (
+    "schema_version",
+    "contract_id",
+    "generated_at",
+    "authorization_decision",
+    "authorized_by",
+    "authorization_scope",
+    "authorized_actions",
+    "authorization_constraints",
+    "readiness_state_hash",
+    "evidence_refs",
+    "no_production_side_effects",
+    "authorization_hash",
+)
+S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_AUTHORIZED_ACTIONS = (
+    "capture_second_consecutive_real_m1_m4_smtp_day",
+    "capture_real_launchd_scheduler_proof",
+    "validate_s2plt02_terminal_delivery_proof_artifact",
+)
+S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_CONSTRAINTS = (
+    "stage2_production_acceptance_not_granted",
+    "daily_operation_not_enabled",
+    "release_not_enabled",
+    "current_v7_unchanged",
+    "only_capture_second_day_and_scheduler_proof",
+)
+S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_NO_PRODUCTION_FLAGS = (
+    "production_acceptance_claimed",
+    "integrated_production_accepted",
+    "stage2_integrated_production_accepted",
+    "daily_operation_enabled",
+    "real_smtp_sent",
+    "real_smtp_send_enabled",
+    "scheduler_enabled",
+    "scheduler_install_enabled",
+    "release_uploaded",
+    "release_packaging_enabled",
+    "production_restore_enabled",
+    "production_restore_executed",
+    "public_schema_changed",
+    "db_migration_executed",
+    "production_queue_mutated",
+    "source_adapter_changed",
+    "ranking_algorithm_changed",
+    "current_pointer_changed",
+    "v7_1_baseline_changed",
+    "v7_2_contract_files_changed",
+)
+S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_OWNER_ACTIONS = (
+    "review_s2plt02_real_proof_capture_readiness_state",
+    "write_authorization_artifact_only_if_owner_explicitly_approves_real_smtp_scheduler_capture",
+    "keep_all_no_production_side_effect_flags_false",
+    "capture_second_real_m1_m4_smtp_day_after_authorization",
+    "capture_real_launchd_scheduler_proof_after_authorization",
+    "validate_terminal_delivery_proof_artifact_before_s2plt02_acceptance",
+)
+S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_BLOCKING_REASONS = (
+    "s2plt02_real_proof_capture_authorization_missing",
+    "second_real_delivery_day_missing",
+    "real_scheduler_not_proven",
+    "s2plt02_terminal_delivery_proof_artifact_missing",
+)
 S2PLT02_M4_WATERMARK_FORBIDDEN_SOURCE_FLAGS = (
     "integrated_production_accepted",
     "stage2_integrated_production_accepted",
@@ -1624,6 +1701,237 @@ def validate_s2plt02_real_proof_capture_readiness_state(state: Mapping[str, Any]
     expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
     if state.get("state_hash") != expected_hash:
         errors.append("S2PLT02 real-proof capture readiness state_hash does not match state content")
+    return errors
+
+
+def build_s2plt02_real_proof_capture_authorization_hash(payload: Mapping[str, Any]) -> str:
+    """Return the canonical authorization hash excluding its hash field."""
+
+    payload_without_hash = {key: value for key, value in payload.items() if key != "authorization_hash"}
+    return f"sha256:{_stable_hash(payload_without_hash)}"
+
+
+def validate_s2plt02_real_proof_capture_authorization_artifact(
+    payload: Mapping[str, Any] | None,
+    *,
+    expected_readiness_state_hash: str | None = None,
+) -> list[str]:
+    """Validate a future owner authorization artifact for real S2PLT02 proof capture."""
+
+    if payload is None:
+        return ["s2plt02_real_proof_capture_authorization_missing"]
+    errors: list[str] = []
+    errors.extend(_final_bundle_template_placeholder_errors(payload))
+    for field in S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_REQUIRED_FIELDS:
+        if field not in payload:
+            errors.append(f"{field} is required")
+    if tuple(payload.keys()) != S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_REQUIRED_FIELDS:
+        errors.append("S2PLT02 real-proof capture authorization field order is invalid")
+    if payload.get("schema_version") != S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_SCHEMA_VERSION:
+        errors.append("schema_version is invalid")
+    if payload.get("contract_id") != "ADP-PRODUCT-CONTRACT-V7.2":
+        errors.append("contract_id must be ADP-PRODUCT-CONTRACT-V7.2")
+    if not isinstance(payload.get("generated_at"), str) or not payload.get("generated_at"):
+        errors.append("generated_at must be a non-empty string")
+    if payload.get("authorization_decision") != S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_DECISION:
+        errors.append("authorization_decision is invalid")
+
+    authorized_by = _mapping(payload.get("authorized_by"))
+    if not isinstance(authorized_by.get("owner_id"), str) or not authorized_by.get("owner_id"):
+        errors.append("authorized_by.owner_id must be a non-empty string")
+    if authorized_by.get("owner_role") not in {"owner", "content_owner + engineering_owner"}:
+        errors.append("authorized_by.owner_role must be owner or content_owner + engineering_owner")
+    if authorized_by.get("authorization_source") != "explicit_owner_instruction":
+        errors.append("authorized_by.authorization_source must be explicit_owner_instruction")
+
+    if payload.get("authorization_scope") != "S2PLT02_REAL_SMTP_SCHEDULER_PROOF_CAPTURE_ONLY":
+        errors.append("authorization_scope is invalid")
+    if tuple(payload.get("authorized_actions", [])) != S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_AUTHORIZED_ACTIONS:
+        errors.append("authorized_actions are invalid")
+    constraints = _mapping(payload.get("authorization_constraints"))
+    for key in S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_CONSTRAINTS:
+        if constraints.get(key) is not True:
+            errors.append(f"authorization_constraints.{key} must be true")
+
+    readiness_hash = payload.get("readiness_state_hash")
+    if not isinstance(readiness_hash, str) or not readiness_hash:
+        errors.append("readiness_state_hash must be a non-empty string")
+    if expected_readiness_state_hash and readiness_hash != expected_readiness_state_hash:
+        errors.append("readiness_state_hash does not match current readiness state")
+
+    evidence_refs = payload.get("evidence_refs", [])
+    required_refs = (
+        "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+        "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_READINESS.md",
+        "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-20260629.json",
+    )
+    if not isinstance(evidence_refs, list) or any(ref not in evidence_refs for ref in required_refs):
+        errors.append("evidence_refs must include the current readiness gate, phase record, and run manifest")
+
+    no_production = _mapping(payload.get("no_production_side_effects"))
+    for flag in S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_NO_PRODUCTION_FLAGS:
+        if no_production.get(flag) is not False:
+            errors.append(f"no_production_side_effects.{flag} must be false")
+
+    if payload.get("authorization_hash") != build_s2plt02_real_proof_capture_authorization_hash(payload):
+        errors.append("authorization_hash does not match payload content")
+    return errors
+
+
+def build_s2plt02_real_proof_capture_authorization_validation_state(
+    payload: Mapping[str, Any] | None,
+    *,
+    expected_readiness_state_hash: str | None = None,
+) -> dict[str, Any]:
+    """Build validation state for a future S2PLT02 real-proof capture authorization artifact."""
+
+    errors = validate_s2plt02_real_proof_capture_authorization_artifact(
+        payload,
+        expected_readiness_state_hash=expected_readiness_state_hash,
+    )
+    state = {
+        "status": "pass" if not errors else "blocked",
+        "scope": S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_SCOPE,
+        "model_id": S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_MODEL_ID,
+        "artifact_path": S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_ARTIFACT_PATH,
+        "authorization_present": payload is not None,
+        "validation_errors": errors,
+        "required_fields": list(S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_REQUIRED_FIELDS),
+        "required_authorized_actions": list(
+            S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_AUTHORIZED_ACTIONS
+        ),
+        "expected_readiness_state_hash": expected_readiness_state_hash or "",
+        "real_proof_capture_authorized_by_payload": not errors and payload is not None,
+        "production_acceptance_claimed": False,
+        "integrated_production_accepted": False,
+        "stage2_integrated_production_accepted": False,
+        "daily_operation_enabled": False,
+        "real_smtp_sent": False,
+        "real_smtp_send_enabled": False,
+        "scheduler_enabled": False,
+        "scheduler_install_enabled": False,
+        "release_uploaded": False,
+        "release_packaging_enabled": False,
+        "production_restore_enabled": False,
+        "production_restore_executed": False,
+        "public_schema_changed": False,
+        "db_migration_executed": False,
+        "production_queue_mutated": False,
+        "source_adapter_changed": False,
+        "ranking_algorithm_changed": False,
+        "current_pointer_changed": False,
+        "v7_1_baseline_changed": False,
+        "v7_2_contract_files_changed": False,
+        "state_hash": "",
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
+def build_s2plt02_real_proof_capture_authorization_owner_packet_state(
+    readiness_state: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Build the owner packet for explicit S2PLT02 real SMTP/scheduler proof capture authorization."""
+
+    readiness = dict(readiness_state or {})
+    readiness_hash = str(readiness.get("state_hash") or "")
+    state = {
+        "status": "blocked_owner_action_packet_ready_no_authorization",
+        "scope": "owner_authorization_packet_only_no_real_smtp_scheduler_enablement",
+        "task_id": "S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION",
+        "parent_task_id": S2PLT02_TASK_ID,
+        "acceptance_id": S2PLT02_ACCEPTANCE_ID,
+        "artifact_path": S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_ARTIFACT_PATH,
+        "schema_version": S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_SCHEMA_VERSION,
+        "authorization_model_id": S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_MODEL_ID,
+        "authorization_decision": S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_DECISION,
+        "authorization_required_fields": list(S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_REQUIRED_FIELDS),
+        "required_owner_actions": list(S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_OWNER_ACTIONS),
+        "authorized_actions_after_approval": list(
+            S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_AUTHORIZED_ACTIONS
+        ),
+        "required_constraints": list(S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_CONSTRAINTS),
+        "required_no_production_flags": list(S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_NO_PRODUCTION_FLAGS),
+        "readiness_state_hash": readiness_hash,
+        "readiness_status": readiness.get("status", "unknown"),
+        "readiness_blocking_reasons": list(readiness.get("blocking_reasons", [])),
+        "authorization_artifact_present": False,
+        "real_proof_capture_authorized": False,
+        "real_smtp_send_enabled_by_this_packet": False,
+        "scheduler_install_enabled_by_this_packet": False,
+        "terminal_delivery_proof_artifact_written_by_this_packet": False,
+        "next_required_action": "owner_must_write_valid_authorization_artifact_before_real_smtp_scheduler_capture",
+        "blocking_reasons": list(S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_BLOCKING_REASONS),
+        **{flag: False for flag in S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_NO_PRODUCTION_FLAGS},
+        "state_hash": "",
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
+def validate_s2plt02_real_proof_capture_authorization_owner_packet_state(
+    state: Mapping[str, Any],
+) -> list[str]:
+    """Validate the owner authorization packet without treating it as authorization."""
+
+    errors: list[str] = []
+    if state.get("status") != "blocked_owner_action_packet_ready_no_authorization":
+        errors.append("S2PLT02 real-proof capture authorization owner packet status is invalid")
+    if state.get("scope") != "owner_authorization_packet_only_no_real_smtp_scheduler_enablement":
+        errors.append("S2PLT02 real-proof capture authorization owner packet scope is invalid")
+    if state.get("task_id") != "S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION":
+        errors.append("S2PLT02 real-proof capture authorization owner packet task_id is invalid")
+    if state.get("artifact_path") != S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_ARTIFACT_PATH:
+        errors.append("S2PLT02 real-proof capture authorization owner packet artifact_path is invalid")
+    if state.get("schema_version") != S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_SCHEMA_VERSION:
+        errors.append("S2PLT02 real-proof capture authorization owner packet schema_version is invalid")
+    if state.get("authorization_model_id") != S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_MODEL_ID:
+        errors.append("S2PLT02 real-proof capture authorization owner packet model_id is invalid")
+    if state.get("authorization_decision") != S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_DECISION:
+        errors.append("S2PLT02 real-proof capture authorization owner packet decision is invalid")
+    if (
+        tuple(state.get("authorization_required_fields", []))
+        != S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_REQUIRED_FIELDS
+    ):
+        errors.append("S2PLT02 real-proof capture authorization owner packet required fields are invalid")
+    if tuple(state.get("required_owner_actions", [])) != S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_OWNER_ACTIONS:
+        errors.append("S2PLT02 real-proof capture authorization owner packet owner actions are invalid")
+    if (
+        tuple(state.get("authorized_actions_after_approval", []))
+        != S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_AUTHORIZED_ACTIONS
+    ):
+        errors.append("S2PLT02 real-proof capture authorization owner packet authorized actions are invalid")
+    if tuple(state.get("required_constraints", [])) != S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_CONSTRAINTS:
+        errors.append("S2PLT02 real-proof capture authorization owner packet constraints are invalid")
+    if (
+        tuple(state.get("required_no_production_flags", []))
+        != S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_NO_PRODUCTION_FLAGS
+    ):
+        errors.append("S2PLT02 real-proof capture authorization owner packet no-production flags are invalid")
+    if state.get("authorization_artifact_present") is not False:
+        errors.append("authorization_artifact_present must remain false until owner supplies artifact")
+    for field in (
+        "real_proof_capture_authorized",
+        "real_smtp_send_enabled_by_this_packet",
+        "scheduler_install_enabled_by_this_packet",
+        "terminal_delivery_proof_artifact_written_by_this_packet",
+    ):
+        if state.get(field) is not False:
+            errors.append(f"{field} must be false")
+    if (
+        state.get("next_required_action")
+        != "owner_must_write_valid_authorization_artifact_before_real_smtp_scheduler_capture"
+    ):
+        errors.append("S2PLT02 real-proof capture authorization owner packet next action is invalid")
+    for reason in S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_BLOCKING_REASONS:
+        if reason not in state.get("blocking_reasons", []):
+            errors.append(f"S2PLT02 real-proof capture authorization owner packet must include blocker {reason}")
+    for flag in S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_NO_PRODUCTION_FLAGS:
+        if state.get(flag) is not False:
+            errors.append(f"{flag} must be false")
+    expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    if state.get("state_hash") != expected_hash:
+        errors.append("S2PLT02 real-proof capture authorization owner packet state_hash does not match state content")
     return errors
 
 

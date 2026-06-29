@@ -39,7 +39,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (1073/1073 active parameters, 122/122 active formulas)
+- implementation_congruence: `VERIFIED` (1084/1084 active parameters, 123/123 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `VERIFIED`
 - empirical_validation: `VERIFIED`
@@ -68,26 +68,26 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 12. Model Formula Parameter Change
 
-- model_count: `120`
-- total_formulas: `122`
-- active_formulas: `122`
-- total_parameters: `1090`
-- active_parameters: `1073`
+- model_count: `121`
+- total_formulas: `123`
+- active_formulas: `123`
+- total_parameters: `1101`
+- active_parameters: `1084`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PLT02_REAL_PROOF_CAPTURE_READINESS_BLOCKED_NO_AUTHORIZATION_NO_PRODUCTION`
+- release_gate: `S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_BLOCKED_ARTIFACT_MISSING_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `1`
 - commit_bound_events: `4`
-- legacy_unbound_events: `261`
+- legacy_unbound_events: `262`
 - precommit_pending_events: `40`
-- pending_or_stale_events: `301`
+- pending_or_stale_events: `302`
 
 ## 15. UNKNOWN
 
@@ -97,11 +97,11 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 - source_base_commit: `fd90a208c7b009aa11bc26c4629a7ea92679c5ff`
 - source_tree_hash: `c44d743a2833842b3cc0dd9e098fb70017cdc5a2`
-- source_snapshot_hash: `sha256:459d698f94706568e2fc19fb6ea983f7e26efc6ffe816fa93adcf5138e69f143`
-- snapshot_event_time: `2026-06-29T17:41:57+10:00`
+- source_snapshot_hash: `sha256:545665e928f873e0e407864e9e5de3ea1a0ba22407e8b2defaa90704385cf9f4`
+- snapshot_event_time: `2026-06-29T18:04:46+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PL / S2PLT02_REAL_PROOF_CAPTURE_READINESS_BLOCKED_NO_AUTHORIZATION_NO_PRODUCTION`
+- phase/gate: `S2PL / S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_BLOCKED_ARTIFACT_MISSING_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 
