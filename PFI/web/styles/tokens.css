@@ -1656,6 +1656,7 @@ button.is-pressed,
 .side-nav {
   position: sticky;
   top: 92px;
+  z-index: 25;
   height: calc(100vh - 116px);
   gap: 8px;
   overflow: auto;

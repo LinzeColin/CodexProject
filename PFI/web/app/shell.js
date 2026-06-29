@@ -4931,6 +4931,7 @@ function bindEvents() {
     const featureControl = event.target.closest("[data-feature-view]");
     if (featureControl) {
       event.preventDefault();
+      closeGlobalSearchResults();
       setPressedFeedback(featureControl);
       openFunctionView(featureControl.dataset.featureView, { routeAlias: featureControl.dataset.routeAlias || "" });
       return;
@@ -4938,6 +4939,7 @@ function bindEvents() {
     const workspaceControl = event.target.closest("[data-feature-workspace]");
     if (workspaceControl) {
       event.preventDefault();
+      closeGlobalSearchResults();
       setPressedFeedback(workspaceControl);
       setActiveWorkspace(workspaceControl.dataset.featureWorkspace || "home", { routeAlias: workspaceControl.dataset.routeAlias || "" });
       return;
@@ -4989,6 +4991,10 @@ function bindEvents() {
     const result = event.target.closest("[data-search-index]");
     if (!result) return;
     openGlobalSearchResult(Number(result.dataset.searchIndex || 0));
+  });
+
+  document.querySelectorAll('[data-primary-entry="true"], [data-secondary-tab], [data-mobile-workspace]').forEach((button) => {
+    button.addEventListener("pointerdown", closeGlobalSearchResults);
   });
 
   document.querySelector("[data-command-input]")?.addEventListener("input", (event) => {
