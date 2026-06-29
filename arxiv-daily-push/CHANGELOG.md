@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-06-30 08:01:19 Australia/Sydney - S2PLT02 live authorization
+
+- Added and validated live no-production `FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json`.
+- Updated final-bundle prerequisite routing so the next executable task is now `S2PLT02_TERMINAL_DELIVERY_PROOF` while S2PLT04/final bundle/production acceptance remain blocked.
+- No SMTP, scheduler, Release, restore, CURRENT/V7, public schema, DB, source, ranking, queue, DAILY_OPERATION, or production acceptance was enabled.
+
 ## 2026-06-29 23:21:34 Australia/Sydney - S2PMT07 final bundle manifest template
 
 - Added template-only `FINAL_ACCEPTANCE_BUNDLE/templates/manifest.template.json` for the future live final bundle manifest.

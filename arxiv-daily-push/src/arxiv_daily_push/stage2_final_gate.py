@@ -6647,8 +6647,40 @@ def build_final_bundle_prerequisite_plan_state(
         and s2plt04_step.get("upstream_blocked") is True
         and next_required_step == "S2PLT04_COMPLETION_REPORT"
     )
+    live_authorization_artifact = _load_json_mapping_artifact(
+        root / S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_ARTIFACT_PATH
+    )
+    live_authorization_validation = build_s2plt02_real_proof_capture_authorization_validation_state(
+        live_authorization_artifact,
+        expected_readiness_state_hash=(
+            S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT02_AUTH_READINESS_STATE_HASH
+        ),
+    )
+    live_authorization_artifact_status = (
+        "missing" if live_authorization_artifact is None else str(live_authorization_validation["status"])
+    )
+    live_authorization_passed = (
+        live_authorization_artifact_status == "pass"
+        and live_authorization_artifact is not None
+        and not live_authorization_validation.get("validation_errors")
+    )
+    upstream_blockers = list(S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_UPSTREAM_BLOCKERS)
+    upstream_unblock_order = list(S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_UPSTREAM_UNBLOCK_ORDER)
+    if live_authorization_passed:
+        upstream_blockers = [
+            blocker for blocker in upstream_blockers
+            if blocker != "s2plt02_terminal_delivery_proof_blocked_by_real_proof_capture_authorization_missing"
+        ]
+        upstream_unblock_order = [
+            step for step in upstream_unblock_order
+            if step != S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_NEXT_EXECUTABLE_TASK_WHEN_S2PLT04_BLOCKED
+        ]
     next_executable_task = (
-        S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_NEXT_EXECUTABLE_TASK_WHEN_S2PLT04_BLOCKED
+        (
+            "S2PLT02_TERMINAL_DELIVERY_PROOF"
+            if live_authorization_passed
+            else S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_NEXT_EXECUTABLE_TASK_WHEN_S2PLT04_BLOCKED
+        )
         if s2plt04_blocked_by_upstream_evidence
         else next_required_step
     )
@@ -6667,18 +6699,6 @@ def build_final_bundle_prerequisite_plan_state(
         and draft_manifest.get("authorization_gate_satisfied_by_this_command") is False
         and draft_manifest.get("real_proof_capture_authorized_by_this_command") is False
         and draft_manifest.get("validation_errors") == []
-    )
-    live_authorization_artifact = _load_json_mapping_artifact(
-        root / S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_ARTIFACT_PATH
-    )
-    live_authorization_validation = build_s2plt02_real_proof_capture_authorization_validation_state(
-        live_authorization_artifact,
-        expected_readiness_state_hash=(
-            S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT02_AUTH_READINESS_STATE_HASH
-        ),
-    )
-    live_authorization_artifact_status = (
-        "missing" if live_authorization_artifact is None else str(live_authorization_validation["status"])
     )
     draft_authorization_hash = str(draft_manifest.get("draft_authorization_hash") or "") if draft_manifest else ""
     live_authorization_hash = (
@@ -6733,16 +6753,16 @@ def build_final_bundle_prerequisite_plan_state(
             and live_authorization_hash == draft_authorization_hash
         ),
         "live_authorization_artifact_status": (
-            live_authorization_artifact_status if next_executable_is_s2plt02_auth else ""
+            live_authorization_artifact_status if s2plt04_blocked_by_upstream_evidence else ""
         ),
         "live_authorization_artifact_path": (
             S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_ARTIFACT_PATH
-            if next_executable_is_s2plt02_auth
+            if s2plt04_blocked_by_upstream_evidence
             else ""
         ),
         "live_authorization_validation_errors": (
             list(live_authorization_validation.get("validation_errors", []))
-            if next_executable_is_s2plt02_auth
+            if s2plt04_blocked_by_upstream_evidence
             else []
         ),
         "next_executable_command_validation_command": (
@@ -6756,12 +6776,12 @@ def build_final_bundle_prerequisite_plan_state(
             else []
         ),
         "upstream_blockers": (
-            list(S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_UPSTREAM_BLOCKERS)
+            upstream_blockers
             if s2plt04_step and s2plt04_step.get("upstream_blocked") is True
             else []
         ),
         "upstream_unblock_order": (
-            list(S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_UPSTREAM_UNBLOCK_ORDER)
+            upstream_unblock_order
             if s2plt04_step and s2plt04_step.get("upstream_blocked") is True
             else []
         ),
@@ -6854,8 +6874,24 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
         errors.append("final bundle prerequisite plan upstream evidence marker is invalid")
     if state.get("next_required_step_is_actionable") is not (not expected_next_step_upstream_blocked):
         errors.append("final bundle prerequisite plan next_required_step_is_actionable is invalid")
+    live_authorization_passed = state.get("live_authorization_artifact_status") == "pass"
+    expected_upstream_blockers = list(S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_UPSTREAM_BLOCKERS)
+    expected_upstream_unblock_order = list(S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_UPSTREAM_UNBLOCK_ORDER)
+    if live_authorization_passed:
+        expected_upstream_blockers = [
+            blocker for blocker in expected_upstream_blockers
+            if blocker != "s2plt02_terminal_delivery_proof_blocked_by_real_proof_capture_authorization_missing"
+        ]
+        expected_upstream_unblock_order = [
+            step for step in expected_upstream_unblock_order
+            if step != S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_NEXT_EXECUTABLE_TASK_WHEN_S2PLT04_BLOCKED
+        ]
     expected_next_executable_task = (
-        S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_NEXT_EXECUTABLE_TASK_WHEN_S2PLT04_BLOCKED
+        (
+            "S2PLT02_TERMINAL_DELIVERY_PROOF"
+            if live_authorization_passed
+            else S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_NEXT_EXECUTABLE_TASK_WHEN_S2PLT04_BLOCKED
+        )
         if expected_next_step_upstream_blocked
         else expected_next_required_step
     )
@@ -6919,12 +6955,27 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
             errors.append("final bundle prerequisite plan dry-run artifact write flag must be false")
         if state.get("draft_authorization_is_live_authorization") is not False:
             errors.append("final bundle prerequisite plan draft/live authorization marker must be false")
-        if state.get("live_authorization_artifact_status") != "":
-            errors.append("final bundle prerequisite plan live_authorization_artifact_status must be empty")
-        if state.get("live_authorization_artifact_path") != "":
-            errors.append("final bundle prerequisite plan live_authorization_artifact_path must be empty")
-        if state.get("live_authorization_validation_errors") != []:
-            errors.append("final bundle prerequisite plan live_authorization_validation_errors must be empty")
+        if expected_next_step_upstream_blocked:
+            if state.get("live_authorization_artifact_status") not in {"pass", "blocked", "missing"}:
+                errors.append("final bundle prerequisite plan live_authorization_artifact_status is invalid")
+            if (
+                state.get("live_authorization_artifact_path")
+                != S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_ARTIFACT_PATH
+            ):
+                errors.append("final bundle prerequisite plan live_authorization_artifact_path is invalid")
+            if not isinstance(state.get("live_authorization_validation_errors"), list):
+                errors.append("final bundle prerequisite plan live_authorization_validation_errors must be a list")
+            if state.get("live_authorization_artifact_status") == "pass" and state.get(
+                "live_authorization_validation_errors"
+            ) != []:
+                errors.append("passing live authorization artifact must have no validation errors")
+        else:
+            if state.get("live_authorization_artifact_status") != "":
+                errors.append("final bundle prerequisite plan live_authorization_artifact_status must be empty")
+            if state.get("live_authorization_artifact_path") != "":
+                errors.append("final bundle prerequisite plan live_authorization_artifact_path must be empty")
+            if state.get("live_authorization_validation_errors") != []:
+                errors.append("final bundle prerequisite plan live_authorization_validation_errors must be empty")
     expected_next_executable_command_validation_command = (
         S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT02_AUTH_VALIDATION_COMMAND
         if expected_next_executable_is_s2plt02_auth
@@ -6942,19 +6993,15 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
     )
     if state.get("next_executable_evidence_refs") != expected_next_executable_evidence_refs:
         errors.append("final bundle prerequisite plan next_executable_evidence_refs are invalid")
-    expected_upstream_blockers = (
-        list(S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_UPSTREAM_BLOCKERS)
-        if expected_s2plt04_upstream_blocked
-        else []
+    expected_state_upstream_blockers = (
+        expected_upstream_blockers if expected_s2plt04_upstream_blocked else []
     )
-    if state.get("upstream_blockers") != expected_upstream_blockers:
+    if state.get("upstream_blockers") != expected_state_upstream_blockers:
         errors.append("final bundle prerequisite plan upstream_blockers are invalid")
-    expected_upstream_unblock_order = (
-        list(S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_UPSTREAM_UNBLOCK_ORDER)
-        if expected_s2plt04_upstream_blocked
-        else []
+    expected_state_upstream_unblock_order = (
+        expected_upstream_unblock_order if expected_s2plt04_upstream_blocked else []
     )
-    if state.get("upstream_unblock_order") != expected_upstream_unblock_order:
+    if state.get("upstream_unblock_order") != expected_state_upstream_unblock_order:
         errors.append("final bundle prerequisite plan upstream_unblock_order is invalid")
     if state.get("all_required_steps_passed") is not False:
         errors.append("final bundle prerequisite plan all_required_steps_passed must remain false")

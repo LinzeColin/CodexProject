@@ -4687,60 +4687,27 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(plan["ready_for_final_bundle_manifest"])
         self.assertEqual(plan["next_required_step"], "S2PLT04_COMPLETION_REPORT")
         self.assertFalse(plan["next_required_step_is_actionable"])
-        self.assertEqual(plan["next_executable_task"], "S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION")
-        self.assertEqual(
-            plan["next_executable_command"],
-            "build-s2plt02-real-proof-capture-authorization-artifact-draft",
-        )
-        self.assertEqual(
-            plan["next_executable_command_args"],
-            {
-                "owner_id": "owner_or_coordinator",
-                "owner_role": "owner",
-                "generated_at_source": "current Australia/Sydney timestamp at execution time",
-                "readiness_state_hash": "79ac4987239ecad8d4eee82de0157901b59259100e6d738bd1b15d17a37dc76e",
-            },
-        )
+        self.assertEqual(plan["next_executable_task"], "S2PLT02_TERMINAL_DELIVERY_PROOF")
+        self.assertEqual(plan["next_executable_command"], "")
+        self.assertEqual(plan["next_executable_command_args"], {})
         self.assertFalse(plan["next_executable_command_writes_artifact"])
         self.assertFalse(plan["next_executable_command_satisfies_gate"])
-        self.assertEqual(plan["next_executable_command_dry_run_status"], "pass")
-        self.assertEqual(
-            plan["next_executable_command_dry_run_evidence_ref"],
-            "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-CLI-RUNTIME-SYNC-20260629.json",
-        )
+        self.assertEqual(plan["next_executable_command_dry_run_status"], "")
+        self.assertEqual(plan["next_executable_command_dry_run_evidence_ref"], "")
         self.assertFalse(plan["next_executable_command_dry_run_wrote_artifact"])
         self.assertFalse(plan["draft_authorization_is_live_authorization"])
-        self.assertEqual(plan["live_authorization_artifact_status"], "missing")
+        self.assertEqual(plan["live_authorization_artifact_status"], "pass")
         self.assertEqual(
             plan["live_authorization_artifact_path"],
             "FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json",
         )
-        self.assertIn(
-            "s2plt02_real_proof_capture_authorization_missing",
-            plan["live_authorization_validation_errors"],
-        )
-        self.assertEqual(
-            plan["next_executable_command_validation_command"],
-            "validate-s2plt02-real-proof-capture-authorization "
-            "--path FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json "
-            "--expected-readiness-state-hash "
-            "79ac4987239ecad8d4eee82de0157901b59259100e6d738bd1b15d17a37dc76e "
-            "--json",
-        )
-        self.assertEqual(
-            plan["next_executable_evidence_refs"],
-            [
-                "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-CLI-RUNTIME-SYNC-20260629.json",
-                "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_DRAFT_CLI.md",
-                "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_READINESS_RUNTIME_STATE_SYNC.md",
-                "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION.md",
-            ],
-        )
+        self.assertEqual(plan["live_authorization_validation_errors"], [])
+        self.assertEqual(plan["next_executable_command_validation_command"], "")
+        self.assertEqual(plan["next_executable_evidence_refs"], [])
         self.assertTrue(plan["next_required_step_blocked_by_upstream_evidence"])
         self.assertEqual(
             plan["upstream_unblock_order"],
             [
-                "S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION",
                 "S2PLT02_TERMINAL_DELIVERY_PROOF",
                 "S2PLT03_TERMINAL_RESILIENCE_PROOF",
                 "S2PLT04_COMPLETION_REPORT",
@@ -4751,7 +4718,6 @@ class Stage2FinalGateTests(unittest.TestCase):
             [
                 "s2plt04_completion_report_blocked_by_s2plt02_terminal_delivery_proof_missing",
                 "s2plt04_completion_report_blocked_by_s2plt03_terminal_resilience_proof_missing",
-                "s2plt02_terminal_delivery_proof_blocked_by_real_proof_capture_authorization_missing",
             ],
         )
         self.assertEqual([step["step_id"] for step in plan["ordered_steps"]], list(plan["required_steps"]))
@@ -4840,6 +4806,47 @@ class Stage2FinalGateTests(unittest.TestCase):
             validate_final_bundle_prerequisite_plan_state(tampered_flag),
         )
 
+    def test_final_bundle_prerequisite_plan_routes_to_authorization_when_live_artifact_missing(self) -> None:
+        assignment = self._valid_independent_final_reviewer_assignment_payload()
+        no_production = self._valid_no_production_side_effect_attestation_payload()
+        zero_proof = self._valid_zero_proof_payload()
+
+        with TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            bundle_dir = root / "FINAL_ACCEPTANCE_BUNDLE"
+            bundle_dir.mkdir()
+            (bundle_dir / "independent_final_reviewer_assignment.json").write_text(
+                json.dumps(assignment, ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
+            (bundle_dir / "no_production_side_effects.json").write_text(
+                json.dumps(no_production, ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
+            (bundle_dir / "p0_p1_zero_proof.json").write_text(
+                json.dumps(zero_proof, ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
+
+            plan = build_final_bundle_prerequisite_plan_state(repo_root=root)
+
+        self.assertEqual(plan["next_required_step"], "S2PLT04_COMPLETION_REPORT")
+        self.assertEqual(plan["next_executable_task"], "S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION")
+        self.assertEqual(
+            plan["next_executable_command"],
+            "build-s2plt02-real-proof-capture-authorization-artifact-draft",
+        )
+        self.assertEqual(plan["live_authorization_artifact_status"], "missing")
+        self.assertIn(
+            "s2plt02_real_proof_capture_authorization_missing",
+            plan["live_authorization_validation_errors"],
+        )
+        self.assertIn(
+            "s2plt02_terminal_delivery_proof_blocked_by_real_proof_capture_authorization_missing",
+            plan["upstream_blockers"],
+        )
+        self.assertEqual(validate_final_bundle_prerequisite_plan_state(plan), [])
+
     def test_final_bundle_prerequisite_plan_consumes_committed_assignment_artifact(self) -> None:
         assignment = self._valid_independent_final_reviewer_assignment_payload()
         no_production = self._valid_no_production_side_effect_attestation_payload()
@@ -4880,7 +4887,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(plan["ready_for_final_bundle_manifest"])
         self.assertTrue(state["available_prebundle_evidence"]["FINAL_BUNDLE_PREREQUISITE_PLAN"])
         self.assertFalse(plan["next_required_step_is_actionable"])
-        self.assertEqual(plan["next_executable_task"], "S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION")
+        self.assertEqual(plan["next_executable_task"], "S2PLT02_TERMINAL_DELIVERY_PROOF")
         self.assertEqual(validate_final_bundle_prerequisite_plan_state(plan), [])
         self.assertEqual(validate_final_acceptance_bundle_readiness_state(state), [])
 

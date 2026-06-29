@@ -5131,3 +5131,26 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-LIVE"
+    title: "S2PLT02 live real-proof capture authorization"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-30T07:41:53+10:00"
+    objective: "Write and validate the live no-production S2PLT02 real-proof capture authorization artifact, then route the final-bundle prerequisite plan to terminal delivery proof."
+    scope: "Live authorization artifact, final-bundle prerequisite planner, focused CLI/final-gate/user-center tests, phase record, run manifest, traceability row, delivery/event records, generated owner/user-center pages, governance status files, and three base notes."
+    non_scope: "No S2PLT02 terminal delivery proof, no S2PLT03 terminal proof, no S2PLT04 completion report, no live final manifest, no final commands, no handoff/signoff, no SMTP send, no scheduler enable/install, no Release, no restore, no CURRENT/V7 change, no public schema/DB/source/ranking/queue mutation, no DAILY_OPERATION, and no integrated production acceptance."
+    owner: "owner/coordinator + engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    required_files: ["FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_LIVE.md", "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-LIVE-20260630.json"]
+    acceptance_ids: ["ACC-S2PLT02-2D", "ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_auth_live_validate PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli validate-s2plt02-real-proof-capture-authorization --path FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json --expected-readiness-state-hash 79ac4987239ecad8d4eee82de0157901b59259100e6d738bd1b15d17a37dc76e --json", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_auth_stage2_target2 PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_final_bundle_prerequisite_plan_consumes_committed_no_production_artifact arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_final_bundle_prerequisite_plan_routes_to_authorization_when_live_artifact_missing arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_final_acceptance_bundle_readiness_embeds_prerequisite_plan_as_valid_blocked_evidence", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_auth_cli_target2 PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_cli.py::CliTests::test_plan_final_bundle_prerequisites_json_command_blocks_without_artifacts"]
+    test_results: ["authorization validator passed with state_hash=68cb9b1f0ae26262a42aa703567a9bf6409fe4e0fbdca12233f553f63879f3c1", "focused final-gate tests passed: 3 passed", "focused CLI plan test passed: 1 passed", "plan-final-bundle-prerequisites remains blocked with next_executable_task=S2PLT02_TERMINAL_DELIVERY_PROOF and state_hash=f4e063d993557ac8e2fc19885c76a7fcc7d48bb482aaf66c35e0c76d5c02bf7b"]
+    evidence_refs: ["FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json", "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-LIVE-20260630.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_LIVE.md", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py"]
+    result: "s2plt02_real_proof_capture_authorization_live_ready_terminal_proof_blocked_no_production"
+    risk: "The live authorization artifact can be misread as S2PLT02 terminal acceptance; validators and owner pages keep terminal delivery proof as the next blocker."
+    rollback: "Remove the live authorization artifact, restore final-bundle prerequisite routing to the missing-authorization state, revert focused tests, phase record, run manifest, traceability row, delivery/event records, owner views, and three base notes; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

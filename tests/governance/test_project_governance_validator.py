@@ -9457,6 +9457,19 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertEqual(s2plt04_next_task["task_id"], "S2PMT07-S2PLT04-COMPLETION-REPORT")
         self.assertIn("S2PLT04 completion report", s2plt04_next_task["reason"])
         self.assertEqual(s2plt04_next_task["acceptance_ids"], ["ACC-S2PMT07-FINAL-REVIEW"])
+        s2plt02_terminal_next_task = dashboard.adp_s2pmt07_blocked_next_task(
+            matrix={
+                "current_iteration": "ITER-20260630-ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-LIVE",
+                "current_gate": "S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_LIVE_READY_TERMINAL_PROOF_BLOCKED_NO_PRODUCTION",
+                "current_v7_legacy_alias": "S2PLT02 terminal delivery proof remains blocked after live authorization",
+            }
+        )
+        self.assertEqual(s2plt02_terminal_next_task["task_id"], "S2PLT02-TERMINAL-DELIVERY-PROOF")
+        self.assertIn("live S2PLT02 real-proof capture authorization", s2plt02_terminal_next_task["reason"])
+        self.assertEqual(
+            s2plt02_terminal_next_task["acceptance_ids"],
+            ["ACC-S2PLT02-2D", "ACC-S2PMT07-FINAL-REVIEW"],
+        )
 
     def test_other8_s6pbt02_owner_flow_task_is_not_product_current_task(self) -> None:
         owner_flow_readmes = [
