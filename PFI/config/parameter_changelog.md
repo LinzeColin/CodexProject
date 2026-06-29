@@ -21,10 +21,10 @@
 | 2026-06-28 | `S1-P2-T1` | `formula_explanations` | `部分公式只散见于代码或 Stage 0 baseline` | `每个核心公式有中文名称、用途、输入、输出、计算逻辑、示例` | 用户要求人类可读；不能只有英文变量或代码名。 | 模型参数文件、报告解释、后续参数中心。 |
 | 2026-06-28 | `S1-P2-T2` | `threshold_rationale` | `阈值解释不集中` | `每个核心阈值有当前值、存在原因、影响页面、能否用户修改` | 用户质疑阈值设计依据，需要集中解释和可验收。 | 消费管理、投资管理、现金流、建议与复盘、测试。 |
 | 2026-06-28 | `S1-P2-T3` | `variable_alias_dictionary` | `无统一中文别名` | `gross_consumption_cny = 消费总流出金额；living_consumption_cny = 生活消费金额；future_cash_balance = 未来现金余额` | 公式变量必须能被非专业用户理解。 | 模型参数文件、后续 UI 参数中心、报告说明。 |
-| 2026-06-28 | `S1-P1-T3` | `Markdown/YAML/前端显示一致性` | `未建立 Stage 1 gate` | `一致性测试覆盖 CNY、CNY/AUD=4.70、06:00、70 分、CNY 2000、AUD 500、22:00-06:00、7/21/30/60/90/180/360` | 防止参数文件、YAML、UI fixture 和测试 fixture 分裂。 | 参数治理、前端合同、Stage 2 入口。 |
+| 2026-06-28 | `S1-P1-T3` | `Markdown/YAML/前端显示一致性` | `未建立 Stage 1 gate` | `一致性测试覆盖 CNY、AUD/CNY 当前徽标、06:00、70 分、CNY 2000、AUD 500、22:00-06:00、7/21/30/60/90/180/360` | 防止参数文件、YAML、UI 展示和测试口径分裂。 | 参数治理、前端合同、Stage 2 入口。 |
 | 2026-06-28 | `S2-P1-T1` | `currency.base_currency` | `CNY 已锁定但部分前端主金额仍显示 AUD` | `CNY 主显示` | Stage 2 要求首页、投资、消费、现金流、报告主口径统一为 CNY。 | Web Shell 主金额、参数文件、合同测试。 |
 | 2026-06-28 | `S2-P1-T2` | `currency.frontend_fx_badge_pair` | `CNY/AUD` | `AUD/CNY` | 任务包目标为 `AUD/CNY=4.81`，含义是 1 AUD 折 CNY；当前真实快照为 4.6874。 | 顶部徽标、README、模型参数、Web Shell、测试。 |
-| 2026-06-28 | `S2-P1-T2` | `fx.frontend_badge_format` | `CNY/AUD=4.70（YYYY/MM/DD HH:MM）` | `AUD/CNY=4.69（YYYY/MM/DD HH:MM）` | 当前展示应对应真实 `AUD/CNY` 本地快照，保留 06:00 时间格式。 | Web Shell、参数一致性测试、Stage 2 文档。 |
+| 2026-06-28 | `S2-P1-T2` | `fx.frontend_badge_format` | `旧 CNY/AUD 徽标` | `AUD/CNY=4.69（YYYY/MM/DD HH:MM）` | 当前展示应对应真实 `AUD/CNY` 本地快照，保留 06:00 时间格式。 | Web Shell、参数一致性测试、Stage 2 文档。 |
 | 2026-06-28 | `S2-P1-T3` | `ledger.amount_fields` | `未统一记录 Stage 2 必填金额字段` | `原始金额、原始币种、CNY金额、汇率快照ID` | 账本必须同时保留原始币种和 CNY 主口径，后续审计可追溯快照。 | 统一账本、导入管线、报告、测试。 |
 | 2026-06-28 | `S2-P2-T1` | `fx.effective_date_cutoff` | `06:00 已记录但未实现函数` | `effective_fx_date(timezone=Australia/Sydney, cutoff=06:00)` | Stage 2 要求 06:00 前使用前一日，06:00 及之后使用当天。 | 汇率快照读取、报告 gate、测试。 |
 | 2026-06-28 | `S2-P2-T2` | `fx.default_network_refresh` | `false，文档约束` | `false，代码强制` | 普通本地运行不得默认联网刷新汇率。 | 本地运行、CLI、测试、隐私边界。 |
