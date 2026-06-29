@@ -32,8 +32,19 @@ def test_current_fx_badge_format_is_slash_date_not_compact_date() -> None:
 
     index = (ROOT / "web" / "index.html").read_text(encoding="utf-8")
     interconnection = (ROOT / "web" / "interconnection-map.html").read_text(encoding="utf-8")
+    shell = (ROOT / "web" / "app" / "shell.js").read_text(encoding="utf-8")
     params = (ROOT / "config" / "pfi_parameters.yaml").read_text(encoding="utf-8")
     assert "AUD/CNY=4.69（2026/06/28 06:00）" in index
     assert "AUD/CNY=4.69（2026/06/28 06:00）" in interconnection
+    assert 'CURRENT_FX_BADGE_DISPLAY = "AUD/CNY=4.69（2026/06/28 06:00）"' in shell
     assert "AUD/CNY=4.69（YYYY/MM/DD HH:MM）" in params
 
+
+def test_fx_badge_is_not_restored_from_local_storage_context() -> None:
+    shell = (ROOT / "web" / "app" / "shell.js").read_text(encoding="utf-8")
+
+    assert "delete values.fx_badge" in shell
+    assert "delete cleanContext.fx_badge" in shell
+    assert 'if (field.dataset.contextField === "fx_badge") return' in shell
+    assert 'if (key === "fx_badge") return' in shell
+    assert "refreshFxBadgeDisplay();" in shell

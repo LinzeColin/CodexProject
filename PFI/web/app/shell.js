@@ -27,6 +27,7 @@ const FX_SNAPSHOT = Object.freeze({
   effectiveTimeLocal: "06:00",
   cacheState: "cached",
 });
+const CURRENT_FX_BADGE_DISPLAY = "AUD/CNY=4.69（2026/06/28 06:00）";
 const FX_TO_CNY = Object.freeze({
   CNY: 1,
   AUD: FX_SNAPSHOT.rateAudToCny,
@@ -1826,14 +1827,33 @@ function evidence(title, evidenceText, source, lineage) {
 
 function readContext() {
   try {
-    return JSON.parse(localStorage.getItem(CONTEXT_STORAGE_KEY) || "{}");
+    const values = JSON.parse(localStorage.getItem(CONTEXT_STORAGE_KEY) || "{}");
+    if (values && typeof values === "object") {
+      delete values.fx_badge;
+    }
+    return values;
   } catch (_error) {
     return {};
   }
 }
 
 function writeContext(nextContext) {
-  localStorage.setItem(CONTEXT_STORAGE_KEY, JSON.stringify(nextContext));
+  const cleanContext = { ...(nextContext || {}) };
+  delete cleanContext.fx_badge;
+  localStorage.setItem(CONTEXT_STORAGE_KEY, JSON.stringify(cleanContext));
+}
+
+function refreshFxBadgeDisplay() {
+  document.querySelectorAll('[data-fx-badge], [data-context-field="fx_badge"]').forEach((node) => {
+    if ("value" in node) {
+      node.value = CURRENT_FX_BADGE_DISPLAY;
+    } else {
+      node.textContent = CURRENT_FX_BADGE_DISPLAY;
+    }
+    node.dataset.fxSourceLabel = CURRENT_FX_BADGE_DISPLAY;
+    node.dataset.fxEffectiveDate = FX_SNAPSHOT.effectiveDate;
+    node.dataset.fxCacheState = FX_SNAPSHOT.cacheState;
+  });
 }
 
 function readRuntimeConfig() {
@@ -1950,6 +1970,7 @@ function applyOperationalReadModel(model) {
 function currentContext() {
   const values = readContext();
   document.querySelectorAll("[data-context-field]").forEach((field) => {
+    if (field.dataset.contextField === "fx_badge") return;
     values[field.dataset.contextField] = field.value || field.textContent || "";
   });
   return values;
@@ -1959,6 +1980,7 @@ function restoreContext() {
   const values = readContext();
   document.querySelectorAll("[data-context-field]").forEach((field) => {
     const key = field.dataset.contextField;
+    if (key === "fx_badge") return;
     if (!Object.prototype.hasOwnProperty.call(values, key)) return;
     if ("value" in field) {
       field.value = values[key];
@@ -1966,6 +1988,7 @@ function restoreContext() {
       field.textContent = values[key];
     }
   });
+  refreshFxBadgeDisplay();
   if (!Object.prototype.hasOwnProperty.call(values, "as_of")) {
     const asOf = document.querySelector('[data-context-field="as_of"]');
     if (asOf && "value" in asOf) asOf.value = localDateValue(new Date());
