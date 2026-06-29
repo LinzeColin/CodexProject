@@ -6433,12 +6433,13 @@ def build_final_bundle_prerequisite_plan_state(
 ) -> dict[str, Any]:
     """Build the current fail-closed execution order for final-bundle prerequisites."""
 
+    root = Path(repo_root) if repo_root is not None else _repo_root_from_source_tree()
     if load_committed_artifacts and no_production_side_effect_attestation is None:
-        no_production_side_effect_attestation = _load_committed_no_production_side_effect_attestation(repo_root)
+        no_production_side_effect_attestation = _load_committed_no_production_side_effect_attestation(root)
     if load_committed_artifacts and independent_final_reviewer_assignment is None:
-        independent_final_reviewer_assignment = _load_committed_independent_final_reviewer_assignment(repo_root)
+        independent_final_reviewer_assignment = _load_committed_independent_final_reviewer_assignment(root)
     if load_committed_artifacts and p0_p1_zero_proof is None:
-        p0_p1_zero_proof = _load_committed_p0_p1_zero_proof(repo_root)
+        p0_p1_zero_proof = _load_committed_p0_p1_zero_proof(root)
     validation_states: dict[str, Mapping[str, Any]] = {
         "INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION": (
             build_independent_final_reviewer_assignment_validation_state(independent_final_reviewer_assignment)
@@ -6542,6 +6543,36 @@ def build_final_bundle_prerequisite_plan_state(
         next_executable_task
         == S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_NEXT_EXECUTABLE_TASK_WHEN_S2PLT04_BLOCKED
     )
+    draft_manifest_ref = S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT02_AUTH_DRAFT_EVIDENCE_REFS[0]
+    draft_manifest = _load_json_mapping_artifact(root / draft_manifest_ref)
+    draft_manifest_valid = (
+        draft_manifest is not None
+        and draft_manifest.get("cli_exit_code") == 0
+        and draft_manifest.get("status") == "draft"
+        and draft_manifest.get("artifact_ref") == S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_ARTIFACT_PATH
+        and draft_manifest.get("authorization_artifact_written") is False
+        and draft_manifest.get("authorization_gate_satisfied_by_this_command") is False
+        and draft_manifest.get("real_proof_capture_authorized_by_this_command") is False
+        and draft_manifest.get("validation_errors") == []
+    )
+    live_authorization_artifact = _load_json_mapping_artifact(
+        root / S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_ARTIFACT_PATH
+    )
+    live_authorization_validation = build_s2plt02_real_proof_capture_authorization_validation_state(
+        live_authorization_artifact,
+        expected_readiness_state_hash=(
+            S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT02_AUTH_READINESS_STATE_HASH
+        ),
+    )
+    live_authorization_artifact_status = (
+        "missing" if live_authorization_artifact is None else str(live_authorization_validation["status"])
+    )
+    draft_authorization_hash = str(draft_manifest.get("draft_authorization_hash") or "") if draft_manifest else ""
+    live_authorization_hash = (
+        str(live_authorization_artifact.get("authorization_hash") or "")
+        if live_authorization_artifact is not None
+        else ""
+    )
     state = {
         "status": "pass" if all_required_steps_passed else "blocked",
         "scope": "final_bundle_prerequisite_plan_only_no_production_acceptance",
@@ -6565,6 +6596,42 @@ def build_final_bundle_prerequisite_plan_state(
         ),
         "next_executable_command_writes_artifact": False,
         "next_executable_command_satisfies_gate": False,
+        "next_executable_command_dry_run_status": (
+            "pass"
+            if next_executable_is_s2plt02_auth and draft_manifest_valid
+            else "missing"
+            if next_executable_is_s2plt02_auth and draft_manifest is None
+            else "blocked"
+            if next_executable_is_s2plt02_auth
+            else ""
+        ),
+        "next_executable_command_dry_run_evidence_ref": (
+            draft_manifest_ref if next_executable_is_s2plt02_auth else ""
+        ),
+        "next_executable_command_dry_run_wrote_artifact": (
+            bool(draft_manifest.get("authorization_artifact_written"))
+            if next_executable_is_s2plt02_auth and draft_manifest is not None
+            else False
+        ),
+        "draft_authorization_is_live_authorization": bool(
+            next_executable_is_s2plt02_auth
+            and live_authorization_artifact is not None
+            and draft_authorization_hash
+            and live_authorization_hash == draft_authorization_hash
+        ),
+        "live_authorization_artifact_status": (
+            live_authorization_artifact_status if next_executable_is_s2plt02_auth else ""
+        ),
+        "live_authorization_artifact_path": (
+            S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_ARTIFACT_PATH
+            if next_executable_is_s2plt02_auth
+            else ""
+        ),
+        "live_authorization_validation_errors": (
+            list(live_authorization_validation.get("validation_errors", []))
+            if next_executable_is_s2plt02_auth
+            else []
+        ),
         "next_executable_command_validation_command": (
             S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT02_AUTH_VALIDATION_COMMAND
             if next_executable_is_s2plt02_auth
@@ -6703,6 +6770,48 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
         errors.append("final bundle prerequisite plan next_executable_command_writes_artifact must be false")
     if state.get("next_executable_command_satisfies_gate") is not False:
         errors.append("final bundle prerequisite plan next_executable_command_satisfies_gate must be false")
+    if expected_next_executable_is_s2plt02_auth:
+        if state.get("next_executable_command_dry_run_status") not in {"pass", "blocked", "missing"}:
+            errors.append("final bundle prerequisite plan next_executable_command_dry_run_status is invalid")
+        if (
+            state.get("next_executable_command_dry_run_evidence_ref")
+            != S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT02_AUTH_DRAFT_EVIDENCE_REFS[0]
+        ):
+            errors.append("final bundle prerequisite plan next_executable_command_dry_run_evidence_ref is invalid")
+        if state.get("next_executable_command_dry_run_wrote_artifact") is not False:
+            errors.append("final bundle prerequisite plan dry-run command must not write the authorization artifact")
+        if state.get("draft_authorization_is_live_authorization") is not False and state.get(
+            "live_authorization_artifact_status"
+        ) == "missing":
+            errors.append("draft authorization cannot be live authorization while live artifact is missing")
+        if state.get("live_authorization_artifact_status") not in {"pass", "blocked", "missing"}:
+            errors.append("final bundle prerequisite plan live_authorization_artifact_status is invalid")
+        if state.get("live_authorization_artifact_path") != S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_ARTIFACT_PATH:
+            errors.append("final bundle prerequisite plan live_authorization_artifact_path is invalid")
+        live_authorization_validation_errors = state.get("live_authorization_validation_errors")
+        if not isinstance(live_authorization_validation_errors, list):
+            errors.append("final bundle prerequisite plan live_authorization_validation_errors must be a list")
+        elif (
+            state.get("live_authorization_artifact_status") == "missing"
+            and "s2plt02_real_proof_capture_authorization_missing"
+            not in live_authorization_validation_errors
+        ):
+            errors.append("missing live authorization artifact must expose the S2PLT02 authorization blocker")
+    else:
+        if state.get("next_executable_command_dry_run_status") != "":
+            errors.append("final bundle prerequisite plan next_executable_command_dry_run_status must be empty")
+        if state.get("next_executable_command_dry_run_evidence_ref") != "":
+            errors.append("final bundle prerequisite plan next_executable_command_dry_run_evidence_ref must be empty")
+        if state.get("next_executable_command_dry_run_wrote_artifact") is not False:
+            errors.append("final bundle prerequisite plan dry-run artifact write flag must be false")
+        if state.get("draft_authorization_is_live_authorization") is not False:
+            errors.append("final bundle prerequisite plan draft/live authorization marker must be false")
+        if state.get("live_authorization_artifact_status") != "":
+            errors.append("final bundle prerequisite plan live_authorization_artifact_status must be empty")
+        if state.get("live_authorization_artifact_path") != "":
+            errors.append("final bundle prerequisite plan live_authorization_artifact_path must be empty")
+        if state.get("live_authorization_validation_errors") != []:
+            errors.append("final bundle prerequisite plan live_authorization_validation_errors must be empty")
     expected_next_executable_command_validation_command = (
         S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT02_AUTH_VALIDATION_COMMAND
         if expected_next_executable_is_s2plt02_auth

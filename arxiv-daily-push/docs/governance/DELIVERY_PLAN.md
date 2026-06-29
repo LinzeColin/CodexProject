@@ -21,12 +21,21 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 274
+- task_count: 275
 - acceptance_count: 127
 
 ## Delivery Tasks
 
 The machine-readable task source is `delivery_tasks.yaml`.
+
+## 2026-06-29 21:49:37 Australia/Sydney - S2PMT07 Final Bundle Auth Draft Live Guard
+
+- `S2PMT07-FINAL-BUNDLE-AUTH-DRAFT-LIVE-GUARD` makes the final-bundle prerequisite plan expose the difference between the passing stdout-only S2PLT02 authorization draft CLI and the still-missing live authorization artifact.
+- Current plan remains `blocked` / exit 2: `next_required_step=S2PLT04_COMPLETION_REPORT`, `next_required_step_is_actionable=false`, and `next_executable_task=S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION`.
+- New guard fields: `next_executable_command_dry_run_status=pass`, `next_executable_command_dry_run_wrote_artifact=false`, `draft_authorization_is_live_authorization=false`, `live_authorization_artifact_status=missing`, and `live_authorization_validation_errors=["s2plt02_real_proof_capture_authorization_missing"]`.
+- Current plan state hash is `6c452e9e59c107f99c0b881fec64da2df9b7fa0d7428f69218dc22bd83f03eb1`; `plan_validation_errors=[]`.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-AUTH-DRAFT-LIVE-GUARD-20260629.json` and `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_AUTH_DRAFT_LIVE_GUARD.md`.
+- This does not write `FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json`, authorize proof capture, send SMTP, enable scheduler, upload Release assets, execute restore, mutate schema/DB/source/ranking/CURRENT/V7, enable DAILY_OPERATION, accept S2PLT02/S2PLT03/S2PLT04/S2PMT07, or claim integrated production acceptance.
 
 ## 2026-06-29 21:20:40 Australia/Sydney - S2PMT07 Final Bundle Next Executable Command Sync
 
