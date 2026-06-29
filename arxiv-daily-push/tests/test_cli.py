@@ -403,6 +403,65 @@ class CliTests(unittest.TestCase):
         self.assertIn("required_launchagents_disabled", payload["blocking_reasons"])
         self.assertIn("dry_run_second_day_not_terminal", payload["blocking_reasons"])
 
+    def test_validate_s2plt02_real_proof_capture_authorization_blocks_missing_artifact(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            path = Path(tmp_dir) / "s2plt02_real_proof_capture_authorization.json"
+            buffer = io.StringIO()
+            with redirect_stdout(buffer):
+                result = main(
+                    [
+                        "validate-s2plt02-real-proof-capture-authorization",
+                        "--path",
+                        str(path),
+                        "--json",
+                    ]
+                )
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(result, 2)
+        self.assertEqual(payload["status"], "blocked")
+        self.assertFalse(payload["authorization_present"])
+        self.assertFalse(payload["real_proof_capture_authorized_by_payload"])
+        self.assertIn("s2plt02_real_proof_capture_authorization_missing", payload["validation_errors"])
+        self.assertFalse(payload["real_smtp_send_enabled"])
+        self.assertFalse(payload["scheduler_install_enabled"])
+        self.assertFalse(payload["production_acceptance_claimed"])
+        self.assertFalse(payload["integrated_production_accepted"])
+
+    def test_build_s2plt02_real_proof_capture_authorization_owner_packet_json_command(self):
+        buffer = io.StringIO()
+        with redirect_stdout(buffer):
+            result = main(
+                [
+                    "build-s2plt02-real-proof-capture-authorization-owner-packet",
+                    "--readiness-state-hash",
+                    "readiness-hash-001",
+                    "--json",
+                ]
+            )
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["status"], "blocked_owner_action_packet_ready_no_authorization")
+        self.assertEqual(payload["task_id"], "S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION")
+        self.assertEqual(
+            payload["artifact_path"],
+            "FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json",
+        )
+        self.assertEqual(payload["readiness_state_hash"], "readiness-hash-001")
+        self.assertFalse(payload["authorization_artifact_present"])
+        self.assertFalse(payload["real_proof_capture_authorized"])
+        self.assertFalse(payload["real_smtp_send_enabled_by_this_packet"])
+        self.assertFalse(payload["scheduler_install_enabled_by_this_packet"])
+        self.assertFalse(payload["production_acceptance_claimed"])
+        self.assertFalse(payload["integrated_production_accepted"])
+        self.assertIn("s2plt02_real_proof_capture_authorization_missing", payload["blocking_reasons"])
+        self.assertIn(
+            "write_authorization_artifact_only_if_owner_explicitly_approves_real_smtp_scheduler_capture",
+            payload["required_owner_actions"],
+        )
+        self.assertEqual(payload["owner_packet_validation_errors"], [])
+
     def test_validate_s2plt02_terminal_delivery_proof_json_blocks_missing_artifact(self):
         with tempfile.TemporaryDirectory() as tmp_dir:
             buffer = io.StringIO()

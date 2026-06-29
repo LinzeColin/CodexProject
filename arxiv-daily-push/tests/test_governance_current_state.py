@@ -30,28 +30,25 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn(f"- Current task: `{expected_task}`", current_state)
         self.assertIn(f"### `{current_iteration}`", ledger)
 
-    def test_current_state_summary_describes_s2plt02_real_proof_capture_readiness(self) -> None:
+    def test_current_state_summary_describes_s2plt02_real_proof_capture_authorization(self) -> None:
         ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
-            "S2PLT02_REAL_PROOF_CAPTURE_READINESS_BLOCKED_NO_AUTHORIZATION_NO_PRODUCTION",
+            "S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_BLOCKED_ARTIFACT_MISSING_NO_PRODUCTION",
             current_state,
         )
-        self.assertIn("S2PLT02-REAL-PROOF-CAPTURE-READINESS", current_state)
-        self.assertIn("safe_to_collect_terminal_proof=false", current_state)
+        self.assertIn("S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION", current_state)
+        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json", current_state)
+        self.assertIn("authorization_artifact_present=false", current_state)
         self.assertIn("real_proof_capture_authorized=false", current_state)
-        self.assertIn("all_required_launchagents_disabled=true", current_state)
-        self.assertIn("second_real_delivery_day_present=false", current_state)
-        self.assertIn("terminal_delivery_proof_artifact_present=false", current_state)
-        self.assertIn("real_scheduler_proven=false", current_state)
+        self.assertIn("real_smtp_send_enabled_by_this_packet=false", current_state)
+        self.assertIn("scheduler_install_enabled_by_this_packet=false", current_state)
+        self.assertIn("terminal_delivery_proof_artifact_written_by_this_packet=false", current_state)
         self.assertIn("819b1c3911892ce861fd5ba5bdde0dc381e303076beea684f35eb94c75975463", current_state)
-        self.assertIn("real_proof_capture_authorization_missing", current_state)
-        self.assertIn("required_launchagents_disabled", current_state)
-        self.assertIn("second_real_delivery_day_missing", current_state)
-        self.assertIn("dry_run_second_day_not_terminal", current_state)
-        self.assertIn("s2plt02_terminal_delivery_proof_artifact_missing", current_state)
-        self.assertIn("real_scheduler_not_proven", current_state)
+        self.assertIn("005e2294441b6aa6e827b0acb8f30916c59cc994768f0562a248a49c9dd6dae7", current_state)
+        self.assertIn("2d9892b750815a0e9540d49dbd2ac65d13dbd8c866651720d1cbf96dd49ffe94", current_state)
+        self.assertIn("s2plt02_real_proof_capture_authorization_missing", current_state)
         self.assertIn("no production acceptance", current_state.lower())
 
     def test_owner_next_action_points_to_s2plt02_real_proof_capture_authorization(self) -> None:
