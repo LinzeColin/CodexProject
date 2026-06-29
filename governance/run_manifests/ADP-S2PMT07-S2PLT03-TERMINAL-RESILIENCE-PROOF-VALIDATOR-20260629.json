@@ -1,0 +1,119 @@
+{
+  "schema_version": "codexproject.run_manifest.v1",
+  "manifest_id": "ADP-S2PMT07-S2PLT03-TERMINAL-RESILIENCE-PROOF-VALIDATOR-20260629",
+  "project_id": "arxiv-daily-push",
+  "phase": "S2PL",
+  "task_id": "S2PMT07-S2PLT03-TERMINAL-RESILIENCE-PROOF-VALIDATOR",
+  "task_ids": [
+    "S2PMT07-S2PLT03-TERMINAL-RESILIENCE-PROOF-VALIDATOR",
+    "S2PLT03",
+    "S2PMT07-S2PLT04-COMPLETION-REPORT",
+    "ACC-S2PLT03-RESILIENCE"
+  ],
+  "generated_at": "2026-06-29T19:32:30+10:00",
+  "fact_level": "EXTRACTED",
+  "base_commit": "b72216af37b706ab233adeceeaee1969a673d0a3",
+  "result": "blocked_s2plt03_terminal_resilience_proof_validator_ready_artifact_missing_no_production",
+  "summary": "Add a fail-closed S2PLT03 terminal resilience proof artifact validator and CLI while keeping S2PLT03 blocked because the terminal proof artifact is missing and S2PLT02 is not accepted.",
+  "artifact_ref": "FINAL_ACCEPTANCE_BUNDLE/s2plt03_terminal_resilience_proof.json",
+  "artifact_present": false,
+  "terminal_resilience_proof_ready": false,
+  "s2plt03_accepted_by_artifact": false,
+  "s2plt03_resilience_drill_completed_by_artifact": false,
+  "validation_errors": [
+    "s2plt03_terminal_resilience_proof_artifact_missing"
+  ],
+  "blocking_reasons": [
+    "s2plt03_terminal_resilience_proof_artifact_missing",
+    "s2plt02_not_accepted"
+  ],
+  "state_hash": "1e514b2b4052f1ba1820b5918b681ebbf419b6c96e3cbbccedcef0814adf7ca1",
+  "resilience_precheck_report_hash": "3483d4a8c4248d3a41cfae5db4febbe7c9d42368ae6ae9311d0c5a9819d13466",
+  "artifact_ref_bound_in_s2plt04_audit": true,
+  "previous_placeholder_removed_from_s2plt04_audit": "governance/run_manifests/MISSING_REAL_S2PLT03_TERMINAL_PROOF.json",
+  "required_terminal_gates": [
+    "s2plt02_accepted",
+    "rate_limit_drill_proven",
+    "parser_drift_drill_proven",
+    "restart_recovery_drill_proven",
+    "disk_pressure_drill_proven",
+    "backup_restore_point_proven",
+    "rollback_executable",
+    "ledger_count_conserved",
+    "p0_zero",
+    "p1_zero",
+    "no_production_side_effects"
+  ],
+  "terminal_gates_current_missing_artifact_state": {
+    "s2plt02_accepted": false,
+    "rate_limit_drill_proven": true,
+    "parser_drift_drill_proven": true,
+    "restart_recovery_drill_proven": true,
+    "disk_pressure_drill_proven": true,
+    "backup_restore_point_proven": true,
+    "rollback_executable": true,
+    "ledger_count_conserved": true,
+    "p0_zero": true,
+    "p1_zero": true,
+    "no_production_side_effects": true
+  },
+  "required_terminal_evidence_roles": [
+    "s2plt02_terminal_delivery_proof",
+    "local_resilience_drill",
+    "resilience_precheck",
+    "p0_p1_zero_proof"
+  ],
+  "files_changed": [
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT03_TERMINAL_RESILIENCE_PROOF_VALIDATOR.md",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py",
+    "arxiv-daily-push/src/arxiv_daily_push/cli.py",
+    "arxiv-daily-push/tests/test_stage2_final_gate.py",
+    "arxiv-daily-push/tests/test_cli.py",
+    "arxiv-daily-push/功能清单.md",
+    "arxiv-daily-push/开发记录.md",
+    "arxiv-daily-push/模型参数文件.md",
+    "governance/run_manifests/ADP-S2PMT07-S2PLT03-TERMINAL-RESILIENCE-PROOF-VALIDATOR-20260629.json"
+  ],
+  "evidence_refs": [
+    "governance/run_manifests/ADP-S2PMT07-S2PLT03-TERMINAL-RESILIENCE-PROOF-VALIDATOR-20260629.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT03_TERMINAL_RESILIENCE_PROOF_VALIDATOR.md",
+    "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
+    "governance/run_manifests/ADP-S2PLT03-LOCAL-RESILIENCE-DRILL-20260628.json",
+    "governance/run_manifests/ADP-S2PLT03-AUDIT-BLOCKER-ZERO-PROOF-SYNC-20260629.json",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py",
+    "arxiv-daily-push/src/arxiv_daily_push/cli.py",
+    "arxiv-daily-push/tests/test_stage2_final_gate.py",
+    "arxiv-daily-push/tests/test_cli.py"
+  ],
+  "cli_command": "python3 -m arxiv_daily_push.cli validate-s2plt03-terminal-resilience-proof --repo-root . --json",
+  "cli_exit_code": 2,
+  "test_results": [
+    "targeted stage2_final_gate and CLI tests passed with 129 tests",
+    "CLI returned blocked / exit 2 because FINAL_ACCEPTANCE_BUNDLE/s2plt03_terminal_resilience_proof.json is missing and S2PLT02 is not accepted"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s3_s2plt03_pycache PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_cli.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s3_s2plt03_cli PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli validate-s2plt03-terminal-resilience-proof --repo-root . --json"
+  ],
+  "production_acceptance_claimed": false,
+  "integrated_production_accepted": false,
+  "stage2_integrated_production_accepted": false,
+  "daily_operation_enabled": false,
+  "real_smtp_sent": false,
+  "real_smtp_send_enabled": false,
+  "scheduler_enabled": false,
+  "scheduler_install_enabled": false,
+  "release_uploaded": false,
+  "release_packaging_enabled": false,
+  "production_restore_enabled": false,
+  "production_restore_executed": false,
+  "public_schema_changed": false,
+  "db_migration_executed": false,
+  "production_queue_mutated": false,
+  "source_adapter_changed": false,
+  "ranking_algorithm_changed": false,
+  "current_pointer_changed": false,
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false,
+  "next_task": "SUPPLY_REAL_S2PLT02_TERMINAL_DELIVERY_PROOF_BEFORE_S2PLT03_TERMINAL_RESILIENCE_PROOF_OR_S2PLT04_REPORT"
+}

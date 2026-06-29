@@ -501,6 +501,27 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["integrated_production_accepted"])
         self.assertFalse(payload["scheduler_install_enabled"])
 
+    def test_validate_s2plt03_terminal_resilience_proof_json_blocks_missing_artifact(self):
+        buffer = io.StringIO()
+        with redirect_stdout(buffer):
+            result = main(["validate-s2plt03-terminal-resilience-proof", "--repo-root", ".", "--json"])
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(result, 2)
+        self.assertEqual(payload["status"], "blocked")
+        self.assertFalse(payload["artifact_present"])
+        self.assertFalse(payload["terminal_resilience_proof_ready"])
+        self.assertFalse(payload["s2plt03_accepted_by_artifact"])
+        self.assertIn("s2plt03_terminal_resilience_proof_artifact_missing", payload["validation_errors"])
+        self.assertIn("s2plt03_terminal_resilience_proof_artifact_missing", payload["blocking_reasons"])
+        self.assertIn("s2plt02_not_accepted", payload["blocking_reasons"])
+        self.assertFalse(payload["terminal_gates"]["s2plt02_accepted"])
+        self.assertTrue(payload["terminal_gates"]["rate_limit_drill_proven"])
+        self.assertTrue(payload["terminal_gates"]["p0_zero"])
+        self.assertTrue(payload["terminal_gates"]["p1_zero"])
+        self.assertFalse(payload["integrated_production_accepted"])
+        self.assertFalse(payload["scheduler_install_enabled"])
+
     def test_plan_final_bundle_prerequisites_json_command_blocks_without_artifacts(self):
         buffer = io.StringIO()
         with redirect_stdout(buffer):

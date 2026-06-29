@@ -1038,6 +1038,59 @@ S2PLT03_BLOCKING_REASONS = (
     "inherited_v7_1_p0_findings_open",
     "inherited_v7_1_p1_findings_open",
 )
+S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT_PATH = "FINAL_ACCEPTANCE_BUNDLE/s2plt03_terminal_resilience_proof.json"
+S2PLT03_TERMINAL_RESILIENCE_PROOF_MODEL_ID = "adp-s2plt03-terminal-resilience-proof-v1"
+S2PLT03_TERMINAL_RESILIENCE_PROOF_SCOPE = (
+    "s2plt03_terminal_resilience_proof_artifact_validation_only_no_production_acceptance"
+)
+S2PLT03_TERMINAL_RESILIENCE_PROOF_DECISION = (
+    "S2PLT03_TERMINAL_RESILIENCE_PROOF_READY_NO_PRODUCTION_ACCEPTANCE"
+)
+S2PLT03_TERMINAL_RESILIENCE_PROOF_REQUIRED_GATES = (
+    "s2plt02_accepted",
+    "rate_limit_drill_proven",
+    "parser_drift_drill_proven",
+    "restart_recovery_drill_proven",
+    "disk_pressure_drill_proven",
+    "backup_restore_point_proven",
+    "rollback_executable",
+    "ledger_count_conserved",
+    "p0_zero",
+    "p1_zero",
+    "no_production_side_effects",
+)
+S2PLT03_TERMINAL_RESILIENCE_PROOF_REQUIRED_EVIDENCE_REFS = (
+    "FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json",
+    "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
+)
+S2PLT03_TERMINAL_RESILIENCE_PROOF_REQUIRED_EVIDENCE_ROLES = (
+    "s2plt02_terminal_delivery_proof",
+    "local_resilience_drill",
+    "resilience_precheck",
+    "p0_p1_zero_proof",
+)
+S2PLT03_TERMINAL_RESILIENCE_PROOF_NO_PRODUCTION_FLAGS = (
+    "production_acceptance_claimed",
+    "integrated_production_accepted",
+    "stage2_integrated_production_accepted",
+    "daily_operation_enabled",
+    "real_smtp_sent",
+    "real_smtp_send_enabled",
+    "scheduler_enabled",
+    "scheduler_install_enabled",
+    "release_uploaded",
+    "release_packaging_enabled",
+    "production_restore_enabled",
+    "production_restore_executed",
+    "production_queue_mutated",
+    "public_schema_changed",
+    "db_migration_executed",
+    "source_adapter_changed",
+    "ranking_algorithm_changed",
+    "current_pointer_changed",
+    "v7_1_baseline_changed",
+    "v7_2_contract_files_changed",
+)
 S2PLT03_LOCAL_DRILL_MODEL_ID = "adp-s2plt03-local-resilience-drill-v1"
 S2PLT03_LOCAL_DRILL_SCOPE = "local_no_production_drill_not_terminal_acceptance"
 S2PLT03_LOCAL_DRILL_REQUIRED_CASES = (
@@ -3197,6 +3250,220 @@ def validate_s2plt03_resilience_precheck_report(report: Mapping[str, Any]) -> li
     return errors
 
 
+def build_s2plt03_terminal_resilience_proof_hash(payload: Mapping[str, Any]) -> str:
+    """Return the canonical S2PLT03 terminal resilience proof hash."""
+
+    return _stable_hash({key: value for key, value in payload.items() if key != "acceptance_hash"})
+
+
+def validate_s2plt03_terminal_resilience_proof_artifact(payload: Mapping[str, Any] | None) -> list[str]:
+    """Validate a future S2PLT03 terminal resilience proof artifact without accepting production."""
+
+    if payload is None:
+        return ["s2plt03_terminal_resilience_proof_artifact_missing"]
+    errors: list[str] = []
+    if payload.get("model_id") != S2PLT03_TERMINAL_RESILIENCE_PROOF_MODEL_ID:
+        errors.append("model_id is invalid")
+    if payload.get("schema_version") != S2PLT03_SCHEMA_VERSION:
+        errors.append("schema_version must be 1")
+    if payload.get("task_id") != S2PLT03_TASK_ID:
+        errors.append("task_id must be S2PLT03")
+    if payload.get("acceptance_id") != S2PLT03_ACCEPTANCE_ID:
+        errors.append("acceptance_id must be ACC-S2PLT03-RESILIENCE")
+    if payload.get("terminal_resilience_decision") != S2PLT03_TERMINAL_RESILIENCE_PROOF_DECISION:
+        errors.append("terminal_resilience_decision is invalid")
+    if payload.get("s2plt03_accepted") is not True:
+        errors.append("s2plt03_accepted must be true")
+    if payload.get("s2plt03_resilience_drill_completed") is not True:
+        errors.append("s2plt03_resilience_drill_completed must be true")
+    if payload.get("no_production_side_effects") is not True:
+        errors.append("no_production_side_effects must be true")
+
+    terminal_gates = _mapping(payload.get("terminal_gates"))
+    for gate in S2PLT03_TERMINAL_RESILIENCE_PROOF_REQUIRED_GATES:
+        if terminal_gates.get(gate) is not True:
+            errors.append(f"terminal_gates.{gate} must be true")
+
+    refs = payload.get("terminal_evidence_refs", [])
+    if not isinstance(refs, list) or any(not isinstance(ref, str) or not ref for ref in refs):
+        errors.append("terminal_evidence_refs must be a list of non-empty strings")
+    else:
+        for required_ref in S2PLT03_TERMINAL_RESILIENCE_PROOF_REQUIRED_EVIDENCE_REFS:
+            if required_ref not in refs:
+                errors.append(f"terminal_evidence_refs must include {required_ref}")
+        if len(refs) < 4:
+            errors.append("terminal_evidence_refs must include S2PLT02, local drill, resilience precheck, and zero-proof refs")
+
+    refs_by_role = _mapping(payload.get("terminal_evidence_refs_by_role"))
+    for role in S2PLT03_TERMINAL_RESILIENCE_PROOF_REQUIRED_EVIDENCE_ROLES:
+        role_ref = refs_by_role.get(role)
+        if not isinstance(role_ref, str) or not role_ref:
+            errors.append(f"terminal_evidence_refs_by_role.{role} is required")
+        elif isinstance(refs, list) and role_ref not in refs:
+            errors.append(f"terminal_evidence_refs_by_role.{role} must also appear in terminal_evidence_refs")
+    if refs_by_role.get("s2plt02_terminal_delivery_proof") != S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH:
+        errors.append(
+            "terminal_evidence_refs_by_role.s2plt02_terminal_delivery_proof must point to S2PLT02 terminal proof"
+        )
+    if refs_by_role.get("p0_p1_zero_proof") != S2PMT07_P0_P1_ZERO_PROOF_ARTIFACT_PATH:
+        errors.append("terminal_evidence_refs_by_role.p0_p1_zero_proof must point to P0/P1 zero proof")
+
+    for flag in S2PLT03_TERMINAL_RESILIENCE_PROOF_NO_PRODUCTION_FLAGS:
+        if payload.get(flag) is not False:
+            errors.append(f"{flag} must be false")
+
+    if payload.get("acceptance_hash") != build_s2plt03_terminal_resilience_proof_hash(payload):
+        errors.append("acceptance_hash does not match payload content")
+    return errors
+
+
+def build_s2plt03_terminal_resilience_proof_artifact_validation_state(
+    *,
+    repo_root: str | Path = ".",
+    artifact: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Build artifact-level validation for future S2PLT03 terminal resilience proof."""
+
+    root = Path(repo_root)
+    artifact_path = root / S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT_PATH
+    artifact_present = artifact is not None or artifact_path.exists()
+    loaded_artifact: Mapping[str, Any] | None = artifact
+    load_error = ""
+    if loaded_artifact is None and artifact_path.exists():
+        try:
+            loaded = json.loads(artifact_path.read_text(encoding="utf-8"))
+            loaded_artifact = loaded if isinstance(loaded, Mapping) else None
+            if loaded_artifact is None:
+                load_error = "s2plt03_terminal_resilience_proof_artifact_must_be_object"
+        except json.JSONDecodeError:
+            load_error = "s2plt03_terminal_resilience_proof_artifact_invalid_json"
+
+    validation_errors = validate_s2plt03_terminal_resilience_proof_artifact(loaded_artifact)
+    if load_error and load_error not in validation_errors:
+        validation_errors.append(load_error)
+    resilience_precheck = build_s2plt03_resilience_precheck_report(
+        generated_at="2026-06-29T12:12:00+10:00",
+        repo_root=root,
+    )
+    precheck_gates = _mapping(resilience_precheck.get("gates"))
+    if loaded_artifact is not None:
+        terminal_gates = _mapping(loaded_artifact.get("terminal_gates"))
+    else:
+        terminal_gates = {
+            "s2plt02_accepted": precheck_gates.get("s2plt02_accepted") is True,
+            "rate_limit_drill_proven": precheck_gates.get("rate_limit_drill_proven") is True,
+            "parser_drift_drill_proven": precheck_gates.get("parser_drift_drill_proven") is True,
+            "restart_recovery_drill_proven": precheck_gates.get("restart_recovery_drill_proven") is True,
+            "disk_pressure_drill_proven": precheck_gates.get("disk_pressure_drill_proven") is True,
+            "backup_restore_point_proven": precheck_gates.get("backup_restore_point_proven") is True,
+            "rollback_executable": precheck_gates.get("rollback_executable") is True,
+            "ledger_count_conserved": precheck_gates.get("ledger_count_conserved") is True,
+            "p0_zero": precheck_gates.get("p0_zero") is True,
+            "p1_zero": precheck_gates.get("p1_zero") is True,
+            "no_production_side_effects": True,
+        }
+    missing_gate_reasons = {
+        "s2plt02_accepted": "s2plt02_not_accepted",
+        "rate_limit_drill_proven": "rate_limit_drill_not_proven",
+        "parser_drift_drill_proven": "parser_drift_drill_not_proven",
+        "restart_recovery_drill_proven": "restart_recovery_drill_not_proven",
+        "disk_pressure_drill_proven": "disk_pressure_drill_not_proven",
+        "backup_restore_point_proven": "backup_restore_point_not_proven",
+        "rollback_executable": "rollback_executable_not_proven",
+        "ledger_count_conserved": "ledger_count_conservation_not_proven",
+        "p0_zero": "inherited_v7_1_p0_findings_open",
+        "p1_zero": "inherited_v7_1_p1_findings_open",
+        "no_production_side_effects": "production_side_effects_not_ruled_out",
+    }
+    blocking_reasons: list[str] = []
+    if not artifact_present:
+        blocking_reasons.append("s2plt03_terminal_resilience_proof_artifact_missing")
+        for reason in resilience_precheck.get("blocking_reasons", []):
+            if isinstance(reason, str) and reason not in blocking_reasons:
+                blocking_reasons.append(reason)
+    else:
+        for gate, reason in missing_gate_reasons.items():
+            if terminal_gates.get(gate) is not True and reason not in blocking_reasons:
+                blocking_reasons.append(reason)
+
+    expected_acceptance_hash = (
+        build_s2plt03_terminal_resilience_proof_hash(loaded_artifact) if loaded_artifact is not None else ""
+    )
+    terminal_resilience_proof_ready = artifact_present and not validation_errors and not blocking_reasons
+    no_production_flag_values = {
+        flag: (loaded_artifact.get(flag) if loaded_artifact is not None else False)
+        for flag in S2PLT03_TERMINAL_RESILIENCE_PROOF_NO_PRODUCTION_FLAGS
+    }
+    state = {
+        "status": "pass" if terminal_resilience_proof_ready else "blocked",
+        "scope": S2PLT03_TERMINAL_RESILIENCE_PROOF_SCOPE,
+        "artifact_ref": S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT_PATH,
+        "artifact_present": artifact_present,
+        "model_id": (
+            loaded_artifact.get("model_id") if loaded_artifact is not None else S2PLT03_TERMINAL_RESILIENCE_PROOF_MODEL_ID
+        ),
+        "schema_version": loaded_artifact.get("schema_version") if loaded_artifact is not None else S2PLT03_SCHEMA_VERSION,
+        "task_id": S2PLT03_TASK_ID,
+        "acceptance_id": S2PLT03_ACCEPTANCE_ID,
+        "terminal_resilience_decision": (
+            loaded_artifact.get("terminal_resilience_decision") if loaded_artifact is not None else None
+        ),
+        "terminal_resilience_proof_ready": terminal_resilience_proof_ready,
+        "s2plt03_accepted_by_artifact": terminal_resilience_proof_ready
+        and loaded_artifact is not None
+        and loaded_artifact.get("s2plt03_accepted") is True,
+        "s2plt03_resilience_drill_completed_by_artifact": terminal_resilience_proof_ready
+        and loaded_artifact is not None
+        and loaded_artifact.get("s2plt03_resilience_drill_completed") is True,
+        "terminal_gates": {gate: terminal_gates.get(gate) is True for gate in S2PLT03_TERMINAL_RESILIENCE_PROOF_REQUIRED_GATES},
+        "terminal_evidence_refs": list(loaded_artifact.get("terminal_evidence_refs", [])) if loaded_artifact is not None else [],
+        "terminal_evidence_refs_by_role": dict(_mapping(loaded_artifact.get("terminal_evidence_refs_by_role")))
+        if loaded_artifact is not None
+        else {},
+        "resilience_precheck_status": resilience_precheck.get("status"),
+        "resilience_precheck_report_hash": resilience_precheck.get("report_hash"),
+        "audit_blockers_status": _mapping(resilience_precheck.get("audit_blockers")).get("status"),
+        "validation_errors": validation_errors,
+        "blocking_reasons": blocking_reasons,
+        "acceptance_hash": loaded_artifact.get("acceptance_hash") if loaded_artifact is not None else "",
+        "expected_acceptance_hash": expected_acceptance_hash,
+        "state_hash": "",
+        **no_production_flag_values,
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
+def validate_s2plt03_terminal_resilience_proof_artifact_validation_state(state: Mapping[str, Any]) -> list[str]:
+    """Validate S2PLT03 terminal resilience proof artifact validation state."""
+
+    errors: list[str] = []
+    if state.get("scope") != S2PLT03_TERMINAL_RESILIENCE_PROOF_SCOPE:
+        errors.append("S2PLT03 terminal resilience proof validation scope is invalid")
+    if state.get("artifact_ref") != S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT_PATH:
+        errors.append("S2PLT03 terminal resilience proof artifact_ref is invalid")
+    if state.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PLT03 terminal resilience proof validation status is invalid")
+    terminal_gates = _mapping(state.get("terminal_gates"))
+    for gate in S2PLT03_TERMINAL_RESILIENCE_PROOF_REQUIRED_GATES:
+        if gate not in terminal_gates:
+            errors.append(f"S2PLT03 terminal resilience proof terminal_gates must include {gate}")
+    ready = state.get("terminal_resilience_proof_ready") is True
+    if state.get("status") == "pass" and not ready:
+        errors.append("pass status requires terminal_resilience_proof_ready")
+    if ready and state.get("s2plt03_accepted_by_artifact") is not True:
+        errors.append("terminal_resilience_proof_ready requires s2plt03_accepted_by_artifact")
+    if ready and state.get("s2plt03_resilience_drill_completed_by_artifact") is not True:
+        errors.append("terminal_resilience_proof_ready requires s2plt03_resilience_drill_completed_by_artifact")
+    for flag in S2PLT03_TERMINAL_RESILIENCE_PROOF_NO_PRODUCTION_FLAGS:
+        if state.get(flag) is not False:
+            errors.append(f"{flag} must be false")
+    expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    if state.get("state_hash") != expected_hash:
+        errors.append("S2PLT03 terminal resilience proof validation state_hash does not match state content")
+    return errors
+
+
 def build_s2plt04_dependency_state(*, repo_root: str | Path = ".") -> dict[str, Any]:
     """Build current S2PLT04 dependency state without accepting upstream tasks."""
 
@@ -5197,6 +5464,9 @@ def build_s2plt04_completion_evidence_audit_state(
         generated_at="2026-06-29T12:12:00+10:00",
         repo_root=root,
     )
+    s2plt03_terminal_artifact_audit = build_s2plt03_terminal_resilience_proof_artifact_validation_state(
+        repo_root=root,
+    )
     p0_zero = zero_proof_state.get("p0_zero_proven_by_payload") is True
     p1_zero = zero_proof_state.get("p1_zero_proven_by_payload") is True
     s2plt02_remaining_blockers = list(s2plt02_terminal_audit["blocking_reasons"])
@@ -5251,8 +5521,8 @@ def build_s2plt04_completion_evidence_audit_state(
             "remaining_terminal_blockers": s2plt02_remaining_blockers,
         },
         "S2PLT03_RESILIENCE_PROOF": {
-            "artifact_status": "missing_terminal",
-            "artifact_ref": "governance/run_manifests/MISSING_REAL_S2PLT03_TERMINAL_PROOF.json",
+            "artifact_status": "pass" if s2plt03_terminal_artifact_audit["status"] == "pass" else "missing_terminal",
+            "artifact_ref": S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT_PATH,
             "nonterminal_refs": [
                 "governance/run_manifests/ADP-S2PLT03-RESILIENCE-PRECHECK-20260628.json",
                 "governance/run_manifests/ADP-S2PLT03-LOCAL-RESILIENCE-DRILL-20260628.json",
@@ -5260,10 +5530,18 @@ def build_s2plt04_completion_evidence_audit_state(
                 "governance/run_manifests/ADP-S2PLT03-AUDIT-BLOCKER-ZERO-PROOF-SYNC-20260629.json",
             ],
             "terminal_dependency": "S2PLT03_ACCEPTED",
-            "terminal_dependency_value": False,
-            "blocking_reason": "s2plt03_resilience_terminal_proof_missing",
+            "terminal_dependency_value": s2plt03_terminal_artifact_audit["s2plt03_accepted_by_artifact"] is True,
+            "blocking_reason": (
+                None
+                if s2plt03_terminal_artifact_audit["s2plt03_accepted_by_artifact"] is True
+                else "s2plt03_resilience_terminal_proof_missing"
+            ),
             "audit_blockers_status": s2plt03_resilience_audit["audit_blockers"]["status"],
             "latest_audit_report_hash": s2plt03_resilience_audit["report_hash"],
+            "terminal_artifact_validation_status": s2plt03_terminal_artifact_audit["status"],
+            "terminal_artifact_validation_state_hash": s2plt03_terminal_artifact_audit["state_hash"],
+            "terminal_artifact_validation_errors": list(s2plt03_terminal_artifact_audit["validation_errors"]),
+            "terminal_artifact_blocking_reasons": list(s2plt03_terminal_artifact_audit["blocking_reasons"]),
         },
         "P0_P1_ZERO_PROOF": {
             "artifact_status": "pass" if zero_proof_state.get("status") == "pass" else "blocked",
@@ -5278,7 +5556,7 @@ def build_s2plt04_completion_evidence_audit_state(
     terminal_dependency_state = {
         "S2PLT01_ACCEPTED": s2plt01_accepted,
         "S2PLT02_ACCEPTED": False,
-        "S2PLT03_ACCEPTED": False,
+        "S2PLT03_ACCEPTED": s2plt03_terminal_artifact_audit["s2plt03_accepted_by_artifact"] is True,
         "P0_ZERO_PROVEN": p0_zero,
         "P1_ZERO_PROVEN": p1_zero,
     }
