@@ -1,11 +1,11 @@
 schema_version: "codexproject.project.v1"
 project_id: "KMFA"
 project_name: "KMFA 经营分析系统"
-summary: "KMFA 是独立经营分析系统；当前已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 S04-P1 金额工具、S04-P2 字段标准化、S04-P3 基础工具测试和 Stage 4 整体复审；不声明业务 MVP、生产就绪、真实数据导入、正式报告或外部接口能力。"
+summary: "KMFA 是独立经营分析系统；当前已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 S04-P1 金额工具、S04-P2 字段标准化、S04-P3 基础工具测试、Stage 4 整体复审和 final GitHub upload；不声明业务 MVP、生产就绪、真实数据导入、正式报告或外部接口能力。"
 version: "0.1.0-s04p3"
 fact_level: "EXTRACTED"
 owner_role: "owner"
-current_status: "s04_stage_review_passed_upload_ready_local_only"
+current_status: "s04_uploaded_to_github_main"
 features:
   - feature_id: "FEAT-KMFA-001"
     name: "项目治理骨架"
@@ -127,6 +127,13 @@ features:
     evidence_refs:
       - "KMFA/stage_artifacts/S04_STAGE_REVIEW/human/stage4_review_report.md"
       - "KMFA/stage_artifacts/S04_STAGE_REVIEW/human/test_results.md"
+  - feature_id: "FEAT-KMFA-016"
+    name: "S04 GitHub Upload"
+    status: "active"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S04_STAGE_REVIEW/human/github_upload_record.md"
+      - "KMFA/stage_artifacts/S04_STAGE_REVIEW/machine/stage4_upload_manifest.json"
 limitations:
   - statement: "S02-P1/P2/P3 已完成、Stage 2 复审通过并已上传 GitHub main。"
     fact_level: "EXTRACTED"
@@ -145,13 +152,14 @@ limitations:
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/metadata/stage_status.jsonl"
-  - statement: "S04-P1 金额工具、S04-P2 字段标准化、S04-P3 基础工具测试和 Stage 4 整体复审已本地完成；Stage 4 尚未上传 GitHub。"
+  - statement: "S04-P1 金额工具、S04-P2 字段标准化、S04-P3 基础工具测试、Stage 4 整体复审和 final GitHub upload 已完成。"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/stage_artifacts/S04_P1_amount_tools/human/s04_p1_completion_record.md"
       - "KMFA/stage_artifacts/S04_P2_field_standardization/human/s04_p2_completion_record.md"
       - "KMFA/stage_artifacts/S04_P3_basic_tool_tests/human/s04_p3_completion_record.md"
       - "KMFA/stage_artifacts/S04_STAGE_REVIEW/human/stage4_review_report.md"
+      - "KMFA/stage_artifacts/S04_STAGE_REVIEW/human/github_upload_record.md"
   - statement: "原始敏感经营数据、银行流水、合同、工资和税务申报明文不得进入公开仓库。"
     fact_level: "EXTRACTED"
     evidence_refs:

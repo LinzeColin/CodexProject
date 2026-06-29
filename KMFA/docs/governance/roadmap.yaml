@@ -4,9 +4,9 @@ project_id: "KMFA"
 total_estimated_hours: 54
 completed_estimated_hours: 36
 current_stage_id: "S4"
-current_phase_id: "S4REV"
-current_task_id: "KMFA-S04-STAGE-REVIEW-20260629"
-next_gate_id: "KMFA-S04-FINAL-GITHUB-UPLOAD-GATE"
+current_phase_id: "S4UPLOAD"
+current_task_id: "KMFA-S04-GITHUB-UPLOAD-20260629"
+next_gate_id: "KMFA-S05-P1-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -560,10 +560,10 @@ stages:
       - "KMFA/stage_artifacts/S03_STAGE_REVIEW/human/github_upload_record.md"
   - stage_id: "S4"
     name: "金额精度、字段标准化与基础工具"
-    status: "review_passed_upload_ready_local_only"
+    status: "uploaded_to_github_main"
     estimated_hours: 3
     estimated_pct: 100
-    current_result: "S04-P1 金额工具、S04-P2 字段标准化、S04-P3 基础工具测试和 Stage 4 整体复审已完成；GitHub 上传尚未执行。"
+    current_result: "S04-P1 金额工具、S04-P2 字段标准化、S04-P3 基础工具测试、Stage 4 整体复审和 final GitHub upload 已完成。"
     evidence_refs:
       - "KMFA/stage_artifacts/S04_P1_amount_tools/human/s04_p1_completion_record.md"
       - "KMFA/stage_artifacts/S04_P1_amount_tools/human/test_results.md"
@@ -573,6 +573,7 @@ stages:
       - "KMFA/stage_artifacts/S04_P3_basic_tool_tests/human/test_results.md"
       - "KMFA/stage_artifacts/S04_STAGE_REVIEW/human/stage4_review_report.md"
       - "KMFA/stage_artifacts/S04_STAGE_REVIEW/human/test_results.md"
+      - "KMFA/stage_artifacts/S04_STAGE_REVIEW/human/github_upload_record.md"
   - stage_id: "S5"
     name: "A0权威项目成本黄金基准"
     status: "planned"

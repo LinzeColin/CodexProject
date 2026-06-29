@@ -7,10 +7,10 @@
 - project_id: `KMFA`
 - version: `0.1.0-s04p3`
 - current_stage: `S04`
-- current_phase: `S04-STAGE-REVIEW 整体复审`
-- status: `s04_stage_review_passed_upload_ready_local_only`
+- current_phase: `S04-GITHUB-UPLOAD Stage 4 上传`
+- status: `s04_uploaded_to_github_main`
 - production_ready: `false`
-- github_upload_ready: `true_local_only_not_pushed`
+- github_upload_ready: `uploaded`
 
 ## 已完成
 
@@ -38,15 +38,15 @@
 - S04-P2 字段标准化已完成本地验证：`KMFA/tools/field_standardization.py` 支持字段别名、日期、期间、主体、项目、客户/对手方和合同编号标准化，缺字段进入 metadata 质量状态。
 - S04-P3 基础工具测试已完成本地验证：`KMFA/tests/test_basic_tool_boundaries.py` 覆盖 22 个合成边界用例，`KMFA/tools/generate_tool_test_report.py` 可生成 JSON/Markdown 工具函数测试报告。
 - Stage 4 整体复审已通过：`KMFA/stage_artifacts/S04_STAGE_REVIEW/` 记录复审报告、测试结果和 machine manifest；owner-readable 金额工具详情缺口已修复。
+- Stage 4 final GitHub upload 证据已生成：`KMFA/stage_artifacts/S04_STAGE_REVIEW/human/github_upload_record.md`。
 
 ## 未完成
 
-- Stage 4 尚未上传 GitHub，不能声明 Stage 4 已进入 GitHub main。
 - A0 基准、zero-delta、事实层、报告、UI 和外部接口尚未完成。
 
 ## 阻塞条件
 
 - 不能把 Stage 1 治理基线当成业务 MVP。
 - 不能上传原始敏感经营数据。
-- S04-P1/S04-P2/S04-P3 和 Stage 4 整体复审已完成；下一步只能执行 Stage 4 final GitHub upload。
+- S04-P1/S04-P2/S04-P3、Stage 4 整体复审和 final GitHub upload 已完成；下一步只能执行 S05-P1。
 - 后续所有开发必须建立在 v1.2 完整任务包和 HTML 样板基线上。
