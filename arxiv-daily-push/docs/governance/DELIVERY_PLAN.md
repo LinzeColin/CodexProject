@@ -21,12 +21,21 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 265
+- task_count: 266
 - acceptance_count: 127
 
 ## Delivery Tasks
 
 The machine-readable task source is `delivery_tasks.yaml`.
+
+## 2026-06-29 15:59:53 Australia/Sydney - S2PMT07 S2PLT02 Terminal Delivery Proof Validator
+
+- `S2PMT07-S2PLT02-TERMINAL-DELIVERY-PROOF-VALIDATOR` adds a fail-closed validator and CLI for future `FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json`.
+- Current validator remains `blocked` / exit 2 because the live S2PLT02 terminal delivery proof artifact is missing.
+- Current artifact validation state hash is `3fbde96111dd78d3ffe4474e012fa5d86de76a24e6fa7640d0310c178003e1db`; current S2PLT02 readiness state hash is `faedeea7dcc41d0122044cbdd07c1901f01fa6a7ca39f0d580f9f6844fc3f9b2`; current precheck report hash is `94bd3841adf70c44e10963ad94da2dd3b57b68152882639ca2637997bdbf1ca1`.
+- Current prerequisite state records `observed_natural_days=1/2`, `observed_email_count=4/8`, `S2PLT01_ACCEPTED=true`, `P0_ZERO=true`, `P1_ZERO=true`, `real_smtp_proven=true`, and blockers `two_consecutive_real_days_not_proven`, `eight_real_emails_not_proven`, `real_scheduler_not_proven`.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-S2PLT02-TERMINAL-DELIVERY-PROOF-VALIDATOR-20260629.json` and `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT02_TERMINAL_DELIVERY_PROOF_VALIDATOR.md`.
+- No SMTP, scheduler, Release, restore, schema/DB, source/ranking, CURRENT/V7, DAILY_OPERATION, S2PLT02/S2PLT03/S2PLT04/S2PMT07 acceptance, final bundle acceptance, or integrated production acceptance side effect is claimed.
 
 ## 2026-06-29 14:51:01 Australia/Sydney - S2PMT07 S2PLT01 Terminal Acceptance Consumption
 

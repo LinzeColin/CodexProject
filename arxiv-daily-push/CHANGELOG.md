@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-06-29 15:59:53 Australia/Sydney - S2PMT07-S2PLT02-TERMINAL-DELIVERY-PROOF-VALIDATOR
+
+- Added `validate-s2plt02-terminal-delivery-proof` and a strict validator for future `FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json`.
+- Current validation remains blocked / exit 2 because the live terminal delivery proof artifact is missing: `artifact_present=false`, `terminal_delivery_proof_ready=false`, `s2plt02_accepted_by_artifact=false`, validation state hash `3fbde96111dd78d3ffe4474e012fa5d86de76a24e6fa7640d0310c178003e1db`, S2PLT02 readiness hash `faedeea7dcc41d0122044cbdd07c1901f01fa6a7ca39f0d580f9f6844fc3f9b2`, and precheck hash `94bd3841adf70c44e10963ad94da2dd3b57b68152882639ca2637997bdbf1ca1`.
+- No S2PLT02/S2PLT03/S2PLT04/S2PMT07 acceptance, S2PLT04 completion report, final command execution, handoff, signoff, final manifest, SMTP, scheduler, Release, restore, CURRENT/V7 changes, DAILY_OPERATION, or integrated production acceptance is created or enabled.
+
 ## 2026-06-29 14:51:01 Australia/Sydney - S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-CONSUMPTION
 
 - Created `FINAL_ACCEPTANCE_BUNDLE/s2plt01_terminal_acceptance.json` after independent reviewer PASS; `validate-s2plt01-terminal-acceptance --json` and `audit-s2plt01-terminal-acceptance --json` now pass with acceptance hash `510ffaf0c3b9de5cb2398cc9cb2c1ffa652ffe6f7a4026abe3c0484275b5d615`.

@@ -128,6 +128,7 @@ from .stage2_final_gate import (
     build_next_agent_handoff_validation_state,
     build_no_production_side_effect_attestation_validation_state,
     build_p0_p1_zero_proof_artifact_validation_state,
+    build_s2plt02_terminal_delivery_proof_artifact_validation_state,
     build_s2plt02_terminal_readiness_audit_state,
     build_s2plt03_resilience_precheck_report,
     build_s2plt04_completion_evidence_audit_state,
@@ -1203,6 +1204,21 @@ def build_parser() -> argparse.ArgumentParser:
         help="Evidence timestamp for the deterministic audit payload.",
     )
     s2plt02_terminal_audit.add_argument("--json", action="store_true", help="Print JSON S2PLT02 terminal-readiness audit state.")
+
+    s2plt02_terminal_delivery_proof = subparsers.add_parser(
+        "validate-s2plt02-terminal-delivery-proof",
+        help="Validate future S2PLT02 terminal delivery proof artifact without accepting production.",
+    )
+    s2plt02_terminal_delivery_proof.add_argument(
+        "--repo-root",
+        default=".",
+        help="Repository root containing final-bundle artifacts.",
+    )
+    s2plt02_terminal_delivery_proof.add_argument(
+        "--json",
+        action="store_true",
+        help="Print JSON S2PLT02 terminal delivery proof validation state.",
+    )
 
     s2plt03_resilience_audit = subparsers.add_parser(
         "audit-s2plt03-resilience-readiness",
@@ -3577,6 +3593,20 @@ def main(argv: list[str] | None = None) -> int:
             print(f"- s2plt02_accepted: {report.get('s2plt02_accepted')}")
             for reason in report.get("blocking_reasons", []):
                 print(f"- blocked: {reason}")
+        return 0 if report["status"] == "pass" else 2
+    if args.command == "validate-s2plt02-terminal-delivery-proof":
+        report = build_s2plt02_terminal_delivery_proof_artifact_validation_state(repo_root=args.repo_root)
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- artifact_present: {report.get('artifact_present')}")
+            print(f"- terminal_delivery_proof_ready: {report.get('terminal_delivery_proof_ready')}")
+            print(f"- s2plt02_accepted_by_artifact: {report.get('s2plt02_accepted_by_artifact')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in report.get("validation_errors", []):
+                print(f"- error: {error}")
         return 0 if report["status"] == "pass" else 2
     if args.command == "audit-s2plt03-resilience-readiness":
         report = build_s2plt03_resilience_precheck_report(generated_at=args.generated_at)

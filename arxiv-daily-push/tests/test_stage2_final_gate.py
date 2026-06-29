@@ -20,6 +20,8 @@ from arxiv_daily_push.stage2_final_gate import (
     S2PLT02_M4_WATERMARK_PROOF_RECORD_REF,
     S2PLT02_M4_WATERMARK_PROOF_SCOPE,
     S2PLT02_M4_WATERMARK_REQUIRED_TERMINAL_PRODUCTS,
+    S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH,
+    S2PLT02_TERMINAL_DELIVERY_PROOF_REQUIRED_EVIDENCE_ROLES,
     S2PLT03_BLOCKING_REASONS,
     S2PLT03_FORBIDDEN_FLAGS,
     S2PLT03_LOCAL_DRILL_FORBIDDEN_FLAGS,
@@ -134,6 +136,7 @@ from arxiv_daily_push.stage2_final_gate import (
     build_s2plt02_live_evidence_state,
     build_s2plt02_m4_watermark_proof_state,
     build_s2plt02_partial_real_delivery_state,
+    build_s2plt02_terminal_delivery_proof_artifact_validation_state,
     build_s2plt03_dependency_state,
     build_s2plt03_local_resilience_drill_bundle,
     build_s2plt03_resilience_evidence_state,
@@ -151,6 +154,8 @@ from arxiv_daily_push.stage2_final_gate import (
     validate_s2plt02_live_2d_precheck_report,
     validate_s2plt02_delivery_evidence_ledger_state,
     validate_s2plt02_m4_watermark_proof_state,
+    validate_s2plt02_terminal_delivery_proof_artifact,
+    validate_s2plt02_terminal_delivery_proof_artifact_validation_state,
     validate_s2plt03_local_resilience_drill_bundle,
     validate_s2plt03_resilience_precheck_report,
     validate_s2plt04_integration_candidate_report,
@@ -254,6 +259,203 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertIn("manifest governance/run_manifests/BROKEN-LOCAL-DAILY-M1-M4-20260628.json sent products must be M1-M4", errors)
         self.assertIn("manifest governance/run_manifests/BROKEN-LOCAL-DAILY-M1-M4-20260628.json integrated_production_accepted must be false", errors)
         self.assertFalse(ledger["two_day_delivery_evidence_present"])
+
+    def test_s2plt02_terminal_delivery_proof_artifact_validation_blocks_missing_artifact(self) -> None:
+        with TemporaryDirectory() as tmp_dir:
+            report = build_s2plt02_terminal_delivery_proof_artifact_validation_state(repo_root=Path(tmp_dir))
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(report["artifact_ref"], S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH)
+        self.assertFalse(report["artifact_present"])
+        self.assertFalse(report["s2plt02_accepted_by_artifact"])
+        self.assertFalse(report["terminal_delivery_proof_ready"])
+        self.assertIn("s2plt02_terminal_delivery_proof_artifact_missing", report["validation_errors"])
+        self.assertIn("two_consecutive_real_days_not_proven", report["blocking_reasons"])
+        self.assertIn("eight_real_emails_not_proven", report["blocking_reasons"])
+        self.assertIn("real_scheduler_not_proven", report["blocking_reasons"])
+        self.assertFalse(report["production_acceptance_claimed"])
+        self.assertFalse(report["integrated_production_accepted"])
+        self.assertFalse(report["daily_operation_enabled"])
+
+    def test_s2plt02_terminal_delivery_proof_missing_artifact_consumes_current_readiness_gates(self) -> None:
+        report = build_s2plt02_terminal_delivery_proof_artifact_validation_state(repo_root=REPO_ROOT)
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertFalse(report["artifact_present"])
+        self.assertIn("s2plt02_terminal_delivery_proof_artifact_missing", report["blocking_reasons"])
+        self.assertTrue(report["terminal_gates"]["s2plt01_accepted"])
+        self.assertTrue(report["terminal_gates"]["m4_watermark_correct"])
+        self.assertTrue(report["terminal_gates"]["real_smtp_proven"])
+        self.assertTrue(report["terminal_gates"]["p0_zero"])
+        self.assertTrue(report["terminal_gates"]["p1_zero"])
+        self.assertFalse(report["terminal_gates"]["two_consecutive_real_days"])
+        self.assertFalse(report["terminal_gates"]["eight_real_emails_sent"])
+        self.assertFalse(report["terminal_gates"]["real_scheduler_proven"])
+        self.assertNotIn("s2plt01_not_accepted", report["blocking_reasons"])
+        self.assertNotIn("m4_watermark_not_proven", report["blocking_reasons"])
+        self.assertNotIn("real_smtp_not_proven", report["blocking_reasons"])
+        self.assertNotIn("inherited_v7_1_p0_findings_open", report["blocking_reasons"])
+        self.assertNotIn("inherited_v7_1_p1_findings_open", report["blocking_reasons"])
+
+    def test_s2plt02_terminal_delivery_proof_artifact_validation_accepts_valid_no_production_artifact(self) -> None:
+        with TemporaryDirectory() as tmp_dir:
+            tmp_root = Path(tmp_dir)
+            artifact_path = tmp_root / S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH
+            artifact_path.parent.mkdir(parents=True, exist_ok=True)
+            artifact = {
+                "model_id": "adp-s2plt02-terminal-delivery-proof-v1",
+                "schema_version": 1,
+                "task_id": "S2PLT02",
+                "acceptance_id": "ACC-S2PLT02-2D",
+                "generated_at": "2026-06-30T10:35:11+10:00",
+                "terminal_delivery_decision": "S2PLT02_TERMINAL_DELIVERY_PROOF_READY_NO_PRODUCTION_ACCEPTANCE",
+                "s2plt02_accepted": True,
+                "service_dates": ["2026-06-28", "2026-06-29"],
+                "mail_products_by_service_date": {
+                    "2026-06-28": ["M1", "M2", "M3", "M4"],
+                    "2026-06-29": ["M1", "M2", "M3", "M4"],
+                },
+                "observed_natural_days": 2,
+                "observed_email_count": 8,
+                "terminal_gates": {
+                    "s2plt01_accepted": True,
+                    "two_consecutive_real_days": True,
+                    "eight_real_emails_sent": True,
+                    "no_duplicate_emails": True,
+                    "m4_watermark_correct": True,
+                    "real_scheduler_proven": True,
+                    "real_smtp_proven": True,
+                    "p0_zero": True,
+                    "p1_zero": True,
+                },
+                "terminal_evidence_refs": [
+                    "FINAL_ACCEPTANCE_BUNDLE/s2plt01_terminal_acceptance.json",
+                    "governance/run_manifests/FUTURE-S2PLT02-DAY1.json",
+                    "governance/run_manifests/FUTURE-S2PLT02-DAY2.json",
+                    "governance/run_manifests/FUTURE-S2PLT02-SCHEDULER-PROOF.json",
+                    "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
+                ],
+                "terminal_evidence_refs_by_role": {
+                    "s2plt01_terminal_acceptance": "FINAL_ACCEPTANCE_BUNDLE/s2plt01_terminal_acceptance.json",
+                    "day_1_delivery": "governance/run_manifests/FUTURE-S2PLT02-DAY1.json",
+                    "day_2_delivery": "governance/run_manifests/FUTURE-S2PLT02-DAY2.json",
+                    "real_scheduler_proof": "governance/run_manifests/FUTURE-S2PLT02-SCHEDULER-PROOF.json",
+                    "p0_p1_zero_proof": "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
+                },
+                "production_acceptance_claimed": False,
+                "integrated_production_accepted": False,
+                "stage2_integrated_production_accepted": False,
+                "daily_operation_enabled": False,
+                "release_uploaded": False,
+                "production_restore_enabled": False,
+                "production_restore_executed": False,
+                "public_schema_changed": False,
+                "db_migration_executed": False,
+                "production_queue_mutated": False,
+                "source_adapter_changed": False,
+                "ranking_algorithm_changed": False,
+                "current_pointer_changed": False,
+                "v7_1_baseline_changed": False,
+                "v7_2_contract_files_changed": False,
+                "acceptance_hash": "",
+            }
+            artifact["acceptance_hash"] = build_s2plt02_terminal_delivery_proof_artifact_validation_state(
+                artifact=artifact, repo_root=tmp_root
+            )["expected_acceptance_hash"]
+            artifact_path.write_text(json.dumps(artifact, ensure_ascii=False, indent=2, sort_keys=True), encoding="utf-8")
+
+            report = build_s2plt02_terminal_delivery_proof_artifact_validation_state(repo_root=tmp_root)
+
+        self.assertEqual(report["status"], "pass")
+        self.assertTrue(report["artifact_present"])
+        self.assertTrue(report["s2plt02_accepted_by_artifact"])
+        self.assertTrue(report["terminal_delivery_proof_ready"])
+        self.assertEqual(report["observed_natural_days"], 2)
+        self.assertEqual(report["observed_email_count"], 8)
+        self.assertEqual(report["validation_errors"], [])
+        self.assertEqual(report["blocking_reasons"], [])
+        self.assertEqual(validate_s2plt02_terminal_delivery_proof_artifact_validation_state(report), [])
+        self.assertFalse(report["production_acceptance_claimed"])
+        self.assertFalse(report["integrated_production_accepted"])
+
+    def test_s2plt02_terminal_delivery_proof_artifact_requires_role_mapped_evidence_refs(self) -> None:
+        artifact = {
+            "model_id": "adp-s2plt02-terminal-delivery-proof-v1",
+            "schema_version": 1,
+            "task_id": "S2PLT02",
+            "acceptance_id": "ACC-S2PLT02-2D",
+            "terminal_delivery_decision": "S2PLT02_TERMINAL_DELIVERY_PROOF_READY_NO_PRODUCTION_ACCEPTANCE",
+            "s2plt02_accepted": True,
+            "service_dates": ["2026-06-28", "2026-06-29"],
+            "mail_products_by_service_date": {
+                "2026-06-28": ["M1", "M2", "M3", "M4"],
+                "2026-06-29": ["M1", "M2", "M3", "M4"],
+            },
+            "observed_natural_days": 2,
+            "observed_email_count": 8,
+            "terminal_gates": {gate: True for gate in (
+                "s2plt01_accepted",
+                "two_consecutive_real_days",
+                "eight_real_emails_sent",
+                "no_duplicate_emails",
+                "m4_watermark_correct",
+                "real_scheduler_proven",
+                "real_smtp_proven",
+                "p0_zero",
+                "p1_zero",
+            )},
+            "terminal_evidence_refs": [
+                "FINAL_ACCEPTANCE_BUNDLE/s2plt01_terminal_acceptance.json",
+                "governance/run_manifests/FUTURE-S2PLT02-DAY1.json",
+                "governance/run_manifests/FUTURE-S2PLT02-DAY2.json",
+                "governance/run_manifests/FUTURE-S2PLT02-SCHEDULER-PROOF.json",
+                "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
+            ],
+            "terminal_evidence_refs_by_role": {
+                "s2plt01_terminal_acceptance": "FINAL_ACCEPTANCE_BUNDLE/s2plt01_terminal_acceptance.json",
+                "day_1_delivery": "governance/run_manifests/FUTURE-S2PLT02-DAY1.json",
+                "day_2_delivery": "governance/run_manifests/FUTURE-S2PLT02-DAY2.json",
+                "p0_p1_zero_proof": "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
+            },
+            **{flag: False for flag in (
+                "production_acceptance_claimed",
+                "integrated_production_accepted",
+                "stage2_integrated_production_accepted",
+                "daily_operation_enabled",
+                "release_uploaded",
+                "production_restore_enabled",
+                "production_restore_executed",
+                "public_schema_changed",
+                "db_migration_executed",
+                "production_queue_mutated",
+                "source_adapter_changed",
+                "ranking_algorithm_changed",
+                "current_pointer_changed",
+                "v7_1_baseline_changed",
+                "v7_2_contract_files_changed",
+            )},
+            "acceptance_hash": "",
+        }
+        artifact["acceptance_hash"] = build_s2plt02_terminal_delivery_proof_artifact_validation_state(
+            artifact=artifact
+        )["expected_acceptance_hash"]
+
+        errors = validate_s2plt02_terminal_delivery_proof_artifact(artifact)
+
+        self.assertIn(
+            "terminal_evidence_refs_by_role.real_scheduler_proof is required",
+            errors,
+        )
+        self.assertEqual(
+            tuple(S2PLT02_TERMINAL_DELIVERY_PROOF_REQUIRED_EVIDENCE_ROLES),
+            (
+                "s2plt01_terminal_acceptance",
+                "day_1_delivery",
+                "day_2_delivery",
+                "real_scheduler_proof",
+                "p0_p1_zero_proof",
+            ),
+        )
 
     def test_s2plt02_m4_watermark_proof_blocks_when_current_m4_has_no_explicit_watermark(self) -> None:
         proof = build_s2plt02_m4_watermark_proof_state(watermark_proofs=[])

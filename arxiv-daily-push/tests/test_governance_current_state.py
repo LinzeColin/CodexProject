@@ -30,24 +30,28 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn(f"- Current task: `{expected_task}`", current_state)
         self.assertIn(f"### `{current_iteration}`", ledger)
 
-    def test_s2pmt07_current_state_summary_describes_s2plt01_terminal_acceptance_consumption(self) -> None:
+    def test_s2pmt07_current_state_summary_describes_s2plt02_terminal_delivery_proof_validator(self) -> None:
         ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
-            "S2PMT07_S2PLT01_TERMINAL_ACCEPTED_S2PLT04_CONSUMED_BLOCKED_S2PLT02_S2PLT03_NO_PRODUCTION",
+            "S2PMT07_S2PLT02_TERMINAL_DELIVERY_PROOF_VALIDATOR_BLOCKED_ARTIFACT_MISSING_NO_PRODUCTION",
             current_state,
         )
-        self.assertIn("S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-CONSUMPTION", current_state)
-        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/s2plt01_terminal_acceptance.json", current_state)
-        self.assertIn("artifact_present=true", current_state)
-        self.assertIn("s2plt01_accepted_by_artifact=true", current_state)
-        self.assertIn("47fceec1911e8d2f3b8b43356058d58d22b48eaabf3be174e18292e0c816e7e6", current_state)
-        self.assertIn("49f4ca23db902dcffc554b6dd50204944b9b1d5d86c0eb8dc3e9b8040c17fa35", current_state)
+        self.assertIn("S2PMT07-S2PLT02-TERMINAL-DELIVERY-PROOF-VALIDATOR", current_state)
+        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json", current_state)
+        self.assertIn("artifact_present=false", current_state)
+        self.assertIn("terminal_delivery_proof_ready=false", current_state)
+        self.assertIn("s2plt02_accepted_by_artifact=false", current_state)
+        self.assertIn("s2plt02_terminal_delivery_proof_artifact_missing", current_state)
+        self.assertIn("3fbde96111dd78d3ffe4474e012fa5d86de76a24e6fa7640d0310c178003e1db", current_state)
         self.assertIn("faedeea7dcc41d0122044cbdd07c1901f01fa6a7ca39f0d580f9f6844fc3f9b2", current_state)
-        self.assertIn("f2307d2d12c3c847ec782802621c0547c8362c56e5e2cfa57b2c9a12253c9e78", current_state)
-        self.assertIn("s2plt02_live_2d_terminal_proof_missing", current_state)
-        self.assertIn("s2plt03_resilience_terminal_proof_missing", current_state)
+        self.assertIn("94bd3841adf70c44e10963ad94da2dd3b57b68152882639ca2637997bdbf1ca1", current_state)
+        self.assertIn("observed_natural_days=1/2", current_state)
+        self.assertIn("observed_email_count=4/8", current_state)
+        self.assertIn("two_consecutive_real_days_not_proven", current_state)
+        self.assertIn("eight_real_emails_not_proven", current_state)
+        self.assertIn("real_scheduler_not_proven", current_state)
         self.assertIn("no production acceptance", current_state.lower())
 
     def test_owner_next_action_points_to_s2pmt07_not_stale_s2plt02(self) -> None:

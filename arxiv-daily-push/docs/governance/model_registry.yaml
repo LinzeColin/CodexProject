@@ -5693,6 +5693,14 @@ models:
       - "PARAM-ADP-1058"
       - "PARAM-ADP-1059"
       - "PARAM-ADP-1060"
+      - "PARAM-ADP-1073"
+      - "PARAM-ADP-1074"
+      - "PARAM-ADP-1075"
+      - "PARAM-ADP-1076"
+      - "PARAM-ADP-1077"
+      - "PARAM-ADP-1078"
+      - "PARAM-ADP-1079"
+      - "PARAM-ADP-1080"
     inputs:
       - "S2PLT01 acceptance state"
       - "two consecutive real natural day evidence"
@@ -5700,6 +5708,8 @@ models:
       - "committed delivery manifest ledger records"
       - "duplicate email evidence and explicit M4 watermark proof records"
       - "real scheduler and real SMTP proof"
+      - "future S2PLT02 terminal delivery proof artifact"
+      - "role-mapped terminal evidence refs"
       - "inherited V7.1 P0/P1 blocker counts"
       - "no-production side-effect flags"
     outputs:
@@ -5707,6 +5717,8 @@ models:
       - "S2PLT02 dependency and live evidence state"
       - "S2PLT02 delivery evidence ledger"
       - "S2PLT02 M4 watermark proof state"
+      - "S2PLT02 terminal delivery proof artifact validation state"
+      - "S2PLT02 terminal evidence role-map validation state"
       - "deterministic report hash"
       - "forbidden production flag state"
     code_refs:
@@ -5724,6 +5736,8 @@ models:
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_M4_WATERMARK_PROOF.md"
       - "governance/run_manifests/ADP-S2PLT02-M4-WATERMARK-PROOF-RECORD-20260628.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_M4_WATERMARK_PROOF_RECORD.md"
+      - "governance/run_manifests/ADP-S2PMT07-S2PLT02-TERMINAL-DELIVERY-PROOF-VALIDATOR-20260629.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT02_TERMINAL_DELIVERY_PROOF_VALIDATOR.md"
 
   -
     model_id: "MOD-ADP-116"

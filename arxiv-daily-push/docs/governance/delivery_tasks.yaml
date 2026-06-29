@@ -4819,3 +4819,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+  - task_id: "S2PMT07-S2PLT02-TERMINAL-DELIVERY-PROOF-VALIDATOR"
+    title: "S2PMT07 S2PLT02 terminal delivery proof validator"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-29T15:59:53+10:00"
+    summary: "Add a fail-closed validator and CLI for the future S2PLT02 two-day/eight-email/scheduler terminal delivery proof artifact while keeping S2PLT02 blocked because the artifact is missing."
+    owner: "content_owner + engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT02_TERMINAL_DELIVERY_PROOF_VALIDATOR.md", "governance/run_manifests/ADP-S2PMT07-S2PLT02-TERMINAL-DELIVERY-PROOF-VALIDATOR-20260629.json"]
+    acceptance_ids: ["ACC-S2PLT02-2D"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_terminal_proof_red3 PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q -k role_mapped_evidence_refs", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_terminal_proof_green3 PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q -k role_mapped_evidence_refs", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_terminal_proof_target_pre_gov PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_cli.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_terminal_proof_cli_current3 PYTHONPATH=arxiv-daily-push/src python3 -B -m arxiv_daily_push.cli validate-s2plt02-terminal-delivery-proof --json"]
+    test_results: ["TDD red failed as expected because S2PLT02 terminal delivery proof role-mapped evidence contract was missing", "focused role-mapped evidence test passed", "targeted stage2_final_gate and CLI tests passed with 113 tests", "validation CLI returned blocked / exit 2 with artifact_present=false and validation_errors=[s2plt02_terminal_delivery_proof_artifact_missing]"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-S2PLT02-TERMINAL-DELIVERY-PROOF-VALIDATOR-20260629.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT02_TERMINAL_DELIVERY_PROOF_VALIDATOR.md", "FINAL_ACCEPTANCE_BUNDLE/s2plt01_terminal_acceptance.json", "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json", "governance/run_manifests/ADP-S2PLT02-PARTIAL-REAL-DELIVERY-EVIDENCE-20260628.json", "governance/run_manifests/ADP-S2PLT02-M4-WATERMARK-PROOF-RECORD-20260628.json", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py"]
+    result: "S2PLT02 terminal delivery proof validator is ready and remains blocked because FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json is missing."
+    risk: "The validator can be misread as S2PLT02 acceptance unless artifact_present=false, terminal_delivery_proof_ready=false, and s2plt02_accepted_by_artifact=false remain explicit."
+    rollback: "Revert S2PLT02 terminal delivery proof validator code, CLI, focused regression tests, phase record, manifest, traceability row, delivery/event records, generated views, and three base records; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
