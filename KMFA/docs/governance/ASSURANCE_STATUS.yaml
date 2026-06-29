@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260629-S04P3-BASIC-TOOL-TESTS"
+as_of_event_id: "EVENT-KMFA-20260629-S04-STAGE-REVIEW"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "precommit-pending"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_STAGE_REVIEW"
-snapshot_event_time: "2026-06-29T23:05:00+10:00"
-generator_version: "manual-s04p3-basic-tool-tests"
+snapshot_event_time: "2026-06-29T23:14:00+10:00"
+generator_version: "manual-s04-stage-review"
 final_commit_binding: "precommit-pending-v12-baseline"
 dimensions:
   structural_completeness:
@@ -45,6 +45,7 @@ dimensions:
       - "KMFA/stage_artifacts/S04_P1_amount_tools/human/test_results.md"
       - "KMFA/stage_artifacts/S04_P2_field_standardization/human/test_results.md"
       - "KMFA/stage_artifacts/S04_P3_basic_tool_tests/human/test_results.md"
+      - "KMFA/stage_artifacts/S04_STAGE_REVIEW/human/test_results.md"
   operational_validation:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
@@ -74,12 +75,13 @@ dimensions:
       - "KMFA/stage_artifacts/S04_P1_amount_tools/human/s04_p1_completion_record.md"
       - "KMFA/stage_artifacts/S04_P2_field_standardization/human/s04_p2_completion_record.md"
       - "KMFA/stage_artifacts/S04_P3_basic_tool_tests/human/s04_p3_completion_record.md"
+      - "KMFA/stage_artifacts/S04_STAGE_REVIEW/human/stage4_review_report.md"
   evidence_freshness:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "S04_P3_COMPLETED_VALIDATED_LOCAL_ONLY_STAGE_REVIEW_PENDING"
-  release_gate: "KMFA-S04-STAGE-REVIEW-GATE"
+  status: "S04_STAGE_REVIEW_PASSED_UPLOAD_READY_LOCAL_ONLY"
+  release_gate: "KMFA-S04-FINAL-GITHUB-UPLOAD-GATE"
   blocker_ids: []

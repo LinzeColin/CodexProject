@@ -1026,3 +1026,47 @@ tasks:
     rollback: "Remove S04-P3 report generator/artifacts and restore S04-P3 status."
     target_version: "0.1.0-s04p3"
     completed_version: "0.1.0-s04p3"
+  - task_id: "KMFA-S04-STAGE-REVIEW-20260629"
+    phase: "S4REV"
+    objective: "复审 S04-P1/P2/P3 金额、字段标准化和基础工具测试证据，修复复审发现，并确认 Stage 4 final GitHub upload 条件。"
+    scope:
+      - "KMFA/stage_artifacts/S04_STAGE_REVIEW"
+      - "KMFA human-readable entries"
+      - "KMFA governance status"
+      - "Stage 4 public repository safety boundary"
+    non_scope:
+      - "GitHub push"
+      - "A0 baseline"
+      - "zero-delta validation"
+      - "fact layer"
+      - "management report generation"
+      - "UI"
+    status: "completed"
+    dependencies:
+      - "S4PCT03"
+    required_files:
+      - "KMFA/stage_artifacts/S04_STAGE_REVIEW/human/stage4_review_report.md"
+      - "KMFA/stage_artifacts/S04_STAGE_REVIEW/human/test_results.md"
+      - "KMFA/stage_artifacts/S04_STAGE_REVIEW/machine/stage4_review_manifest.json"
+    acceptance_ids:
+      - "ACC-KMFA-S04-STAGE-REVIEW"
+    test_commands:
+      - "python3 -m unittest KMFA.tests.test_amount_tools -q"
+      - "python3 -m unittest KMFA.tests.test_field_standardization -q"
+      - "python3 -m unittest KMFA.tests.test_basic_tool_boundaries -q"
+      - "python3 KMFA/tools/check_no_float_money.py"
+      - "python3 KMFA/tools/no_omission_check.py"
+      - "python3 scripts/lean_governance.py validate --project KMFA"
+      - "python3 scripts/validate_project_governance.py --project KMFA"
+    test_results:
+      - "PASS: S04-P1/S04-P2/S04-P3 unit tests and tool report passed"
+      - "PASS: governance validators and no-omission checks passed"
+      - "PASS_WITH_POLICY_TEXT_MATCHES_ONLY: sensitive text scan only matched policy/prohibition text"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S04_STAGE_REVIEW/human/stage4_review_report.md"
+      - "KMFA/stage_artifacts/S04_STAGE_REVIEW/human/test_results.md"
+      - "KMFA/stage_artifacts/S04_STAGE_REVIEW/machine/stage4_review_manifest.json"
+    risk: "Stage 4 review evidence is upload-ready local-only; final GitHub push still requires a clean upload worktree and rerun validation."
+    rollback: "Remove S04_STAGE_REVIEW artifacts and restore Stage 4 status to review pending."
+    target_version: "0.1.0-s04p3"
+    completed_version: "0.1.0-s04p3"

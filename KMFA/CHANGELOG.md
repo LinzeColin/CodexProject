@@ -1,5 +1,13 @@
 # Changelog
 
+## Stage 4 Review - 2026-06-29
+
+- 完成 Stage 4 整体复审，结果为 `PASS_UPLOAD_READY_LOCAL_ONLY`，尚未 push GitHub。
+- 新增 `KMFA/stage_artifacts/S04_STAGE_REVIEW/` 复审证据包。
+- 修复 `功能清单.md` 中 `FEAT-KMFA-016` 金额标准化与 no-float 检查详情缺口。
+- 复跑 S04-P1/S04-P2/S04-P3 工具测试、治理 validator、no-float 检查和敏感文件扫描。
+- 保持 A0 基准、zero-delta、事实层、报告、UI 和外部接口为未完成。
+
 ## 0.1.0-s04p3 - 2026-06-29
 
 - 完成 `S04-P3｜基础工具测试`，保持本 Phase 本地验证，不上传 GitHub。

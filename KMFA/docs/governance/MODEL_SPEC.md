@@ -4,7 +4,7 @@ product_version: 0.1.0-s04p3
 
 ## Scope
 
-当前模型说明覆盖 S01 已建立并按 v1.2 重放的治理边界、S02-P1 metadata 协议、S02-P2 不可污染原则、S02-P3 质量等级门禁协议、S03-P1 文件型导入登记模型、S03-P2 数据源检查矩阵模型、S03-P3 源优先级模型、S04-P1 金额工具、S04-P2 字段标准化工具、S04-P3 基础工具测试和后续业务模型草案，不声明项目成本事实层、zero-delta、lineage 完整检查或正式报告生成已经实现。
+当前模型说明覆盖 S01 已建立并按 v1.2 重放的治理边界、S02-P1 metadata 协议、S02-P2 不可污染原则、S02-P3 质量等级门禁协议、S03-P1 文件型导入登记模型、S03-P2 数据源检查矩阵模型、S03-P3 源优先级模型、S04-P1 金额工具、S04-P2 字段标准化工具、S04-P3 基础工具测试、Stage 4 整体复审和后续业务模型草案，不声明项目成本事实层、zero-delta、lineage 完整检查或正式报告生成已经实现。
 
 ## Active Model
 
@@ -90,7 +90,7 @@ product_version: 0.1.0-s04p3
 
 ### MOD-KMFA-COST-001
 
-- status: planned with S04-P1 amount formula, S04-P2 field standardization formula and S04-P3 boundary validation active
+- status: planned with S04-P1 amount formula, S04-P2 field standardization formula, S04-P3 boundary validation and Stage 4 review active
 - purpose: 后续文件型项目成本分析 MVP。
 - dependency: S05 A0 基准、S06 零差异、S09 成本计算、S10 报告等级。
 - current limitation: no production data import, no official report generation.

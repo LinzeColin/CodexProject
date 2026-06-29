@@ -6,9 +6,9 @@ product_version: 0.1.0-s04p3
 
 - project_id: `KMFA`
 - current_stage: `S04`
-- current_phase: `S04-P3 基础工具测试`
-- current_tasks: `S4PCT01-S4PCT03`
-- status: `s04_p3_completed_validated_local_only_stage_review_pending`
+- current_phase: `S04-STAGE-REVIEW 整体复审`
+- current_tasks: `KMFA-S04-STAGE-REVIEW-20260629`
+- status: `s04_stage_review_passed_upload_ready_local_only`
 - risk_tier: `T3`
 
 ## Completed
@@ -43,11 +43,12 @@ product_version: 0.1.0-s04p3
 | `S4PAT01-S4PAT03` | S04-P1 金额标准化、no-float 检查和异常输入拒绝策略完成 | `KMFA/stage_artifacts/S04_P1_amount_tools/human/s04_p1_completion_record.md` |
 | `S4PBT01-S4PBT03` | S04-P2 字段标准化、字段别名字典和缺字段质量状态完成 | `KMFA/stage_artifacts/S04_P2_field_standardization/human/s04_p2_completion_record.md` |
 | `S4PCT01-S4PCT03` | S04-P3 基础工具边界测试和工具函数测试报告完成 | `KMFA/stage_artifacts/S04_P3_basic_tool_tests/human/s04_p3_completion_record.md` |
+| `KMFA-S04-STAGE-REVIEW-20260629` | Stage 4 整体复审通过，owner-readable 金额工具详情缺口已修复，当前 upload-ready local-only | `KMFA/stage_artifacts/S04_STAGE_REVIEW/human/stage4_review_report.md` |
 
 ## Not Completed
 
 | Task | Reason | Next |
 |---|---|---|
-| Stage 4 整体复审 | 三个 Phase 已完成，尚未复审 | 下一轮只执行 Stage 4 review/fix/upload gate |
+| Stage 4 GitHub 上传 | Stage 4 review 已通过，但尚未 push GitHub | 下一轮只执行 Stage 4 final GitHub upload |
 | `S06` zero-delta implementation | 后续 Stage | 按 Roadmap 单 Stage/Phase 推进 |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |
