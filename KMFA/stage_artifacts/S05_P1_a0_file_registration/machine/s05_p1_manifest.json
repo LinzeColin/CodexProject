@@ -1,0 +1,34 @@
+{
+  "acceptance_ids": [
+    "ACC-KMFA-S05-P1"
+  ],
+  "completed_task_ids": [
+    "S5PAT01",
+    "S5PAT02",
+    "S5PAT03"
+  ],
+  "evidence_refs": [
+    "KMFA/metadata/baseline/a0_file_manifest.json",
+    "KMFA/metadata/baseline/a0_project_candidates.jsonl",
+    "KMFA/stage_artifacts/S05_P1_a0_file_registration/human/s05_p1_completion_record.md",
+    "KMFA/stage_artifacts/S05_P1_a0_file_registration/human/test_results.md"
+  ],
+  "member_sha256_pending_reason": "private_sales_performance_zip_not_found_on_this_machine",
+  "member_sha256_recorded_count": 0,
+  "member_sha256_pending_count": 9,
+  "phase_id": "S5PA",
+  "project_id": "KMFA",
+  "public_repo_raw_files_committed": false,
+  "raw_business_values_committed": false,
+  "record_type": "stage_phase_manifest",
+  "schema_version": "kmfa.stage_phase_manifest.v1",
+  "source_package_hash": "sha256:8c952f81409663ab862c42fb8ec91f2e9bbe30bc62b6fee9714f95cd689c36d1",
+  "source_package_name": "销售绩效考核.zip",
+  "stage_id": "S05",
+  "status": "completed_validated_local_only_with_private_member_sha256_pending",
+  "test_commands": [
+    "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest KMFA.tests.test_a0_file_register -q",
+    "PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_a0_file_registration.py"
+  ],
+  "updated_at": "2026-06-30T00:00:00+10:00"
+}
