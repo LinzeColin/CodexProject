@@ -1,0 +1,49 @@
+# PFI v0.2.3 Stage 2 Phase 2.1 terminal summary
+phase_id=V023-S2-P2.1
+phase_name=数据状态合同
+repo=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+branch=codex/pfi
+current_phase_only=true
+
+$ env LC_ALL=C LANG=C shasum -a 256 /Users/linzezhang/Downloads/PFI_v0.2.3_Human_Product_Experience_Recovery_Roadmap.txt /Users/linzezhang/Downloads/PFI_v0.2.3_Human_Product_Experience_Recovery_TaskPack.zip
+exit_code=0
+roadmap_sha256=7b3871f98e1b991b3e7da715b5c1987d985114ed53d559c36f1a6180cd0e0ba1
+taskpack_sha256=d3e5842ad5a2a60ccbf312a977bc6313523052fd8db44db2687bf39e4c04e7a7
+
+$ python3 -m pytest PFI/tests/test_v023_stage2_data_state_machine.py -q
+runtime=PYTHONPATH=PFI/src PFI/.venv/bin/python
+red_exit_code=1
+red_summary=8 failed because Stage 2 Phase 2.1 module, JS contract, doc, and evidence were missing
+green_exit_code=0
+green_summary=8 passed
+
+$ python3 -m pytest PFI/tests/test_v023_no_mock_financial_data.py -q
+runtime=PYTHONPATH=PFI/src PFI/.venv/bin/python
+red_exit_code=1
+red_summary=4 failed because Stage 2 Phase 2.1 scanner contract was missing
+green_exit_code=0
+green_summary=4 passed
+
+$ /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/dataStatus.js
+exit_code=0
+passed
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q
+exit_code=0
+34 passed
+
+$ /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js
+exit_code=0
+passed
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/src/pfi_v02/stage_v023_contract.py PFI/src/pfi_v02/stage_v023_data_state.py PFI/tests/test_v023_stage0_contract.py PFI/tests/test_v023_stage1_app_entry_bundle_contract.py PFI/tests/test_pfi_app_entry_version_contract.py PFI/tests/test_v023_stage2_phase1_taskpack_recovery.py PFI/tests/test_v023_stage2_data_state_machine.py PFI/tests/test_v023_no_mock_financial_data.py
+exit_code=0
+passed
+
+$ git diff --check -- PFI
+exit_code=0
+passed
+
+$ git diff --check origin/main...HEAD -- PFI
+exit_code=0
+passed

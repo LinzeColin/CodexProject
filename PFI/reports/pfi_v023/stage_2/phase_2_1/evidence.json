@@ -1,0 +1,101 @@
+{
+  "version": "v0.2.3",
+  "stage": "Stage 2",
+  "stage_name": "真实数据状态机与非假零门禁",
+  "phase_id": "V023-S2-P2.1",
+  "phase_name": "数据状态合同",
+  "status": "candidate_pass",
+  "allowed_files_obeyed": true,
+  "history_deprecation_policy_obeyed": true,
+  "no_mock_financial_data": true,
+  "current_phase_only": true,
+  "max_one_phase_per_run": true,
+  "taskpack_restored": true,
+  "roadmap_sha256": "7b3871f98e1b991b3e7da715b5c1987d985114ed53d559c36f1a6180cd0e0ba1",
+  "taskpack_sha256": "d3e5842ad5a2a60ccbf312a977bc6313523052fd8db44db2687bf39e4c04e7a7",
+  "commands": [
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage2_data_state_machine.py -q",
+      "exit_code": 0,
+      "summary": "8 passed"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_no_mock_financial_data.py -q",
+      "exit_code": 0,
+      "summary": "4 passed"
+    },
+    {
+      "command": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/dataStatus.js",
+      "exit_code": 0,
+      "summary": "passed"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q",
+      "exit_code": 0,
+      "summary": "34 passed"
+    },
+    {
+      "command": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js",
+      "exit_code": 0,
+      "summary": "passed"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/src/pfi_v02/stage_v023_contract.py PFI/src/pfi_v02/stage_v023_data_state.py PFI/tests/test_v023_stage0_contract.py PFI/tests/test_v023_stage1_app_entry_bundle_contract.py PFI/tests/test_pfi_app_entry_version_contract.py PFI/tests/test_v023_stage2_phase1_taskpack_recovery.py PFI/tests/test_v023_stage2_data_state_machine.py PFI/tests/test_v023_no_mock_financial_data.py",
+      "exit_code": 0,
+      "summary": "passed"
+    },
+    {
+      "command": "git diff --check -- PFI",
+      "exit_code": 0,
+      "summary": "passed"
+    },
+    {
+      "command": "git diff --check origin/main...HEAD -- PFI",
+      "exit_code": 0,
+      "summary": "passed"
+    }
+  ],
+  "changed_files": [
+    "PFI/docs/pfi_v023/STAGE2_DATA_TRUST.md",
+    "PFI/reports/pfi_v023/stage_2/phase_2_1/changed_files.txt",
+    "PFI/reports/pfi_v023/stage_2/phase_2_1/evidence.json",
+    "PFI/reports/pfi_v023/stage_2/phase_2_1/terminal.log",
+    "PFI/src/pfi_v02/stage_v023_data_state.py",
+    "PFI/tests/test_v023_no_mock_financial_data.py",
+    "PFI/tests/test_v023_stage2_data_state_machine.py",
+    "PFI/web/app/dataStatus.js"
+  ],
+  "screenshots": [],
+  "bundle_hash": null,
+  "app_entry_checked": false,
+  "localhost_checked": false,
+  "data_status_summary": {
+    "required_fields": [
+      "metric_id",
+      "label",
+      "value",
+      "currency",
+      "status",
+      "source",
+      "as_of",
+      "evidence_hash",
+      "message_zh"
+    ],
+    "display_value_statuses": [
+      "ready",
+      "confirmed_zero"
+    ],
+    "non_display_statuses_never_render_zero": true,
+    "core_metrics_default_to_not_loaded": true
+  },
+  "explicitly_not_done": [
+    "真实数据源路径审计",
+    "文件数/记录数统计",
+    "账户/持仓/read model 统计",
+    "页面门禁接入",
+    "核心指标接入 UI",
+    "app bundle reinstall",
+    "GitHub main upload for intermediate phase"
+  ],
+  "requires_user_acceptance": true
+}
