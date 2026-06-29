@@ -21,10 +21,17 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 279
+- task_count: 280
 - acceptance_count: 127
 
 ## Delivery Tasks
+
+## 2026-06-29 23:41:32 Australia/Sydney - S2PLT02 Authorization Draft Runtime Phase Record Sync
+
+- `S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-RUNTIME-PHASE-RECORD-SYNC` adds the missing human-readable phase record for the stdout-only S2PLT02 authorization draft runtime hash sync.
+- The traceability matrix now points the existing draft CLI row at the current runtime-sync manifest and phase record instead of the superseded draft-only manifest.
+- Evidence: `governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-RUNTIME-PHASE-RECORD-SYNC-20260629.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_DRAFT_CLI_RUNTIME_SYNC.md`; `governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-CLI-RUNTIME-SYNC-20260629.json`.
+- This does not write the live authorization artifact, authorize proof capture, send SMTP, enable scheduler, upload Release assets, execute restore, mutate schema/DB/source/ranking/CURRENT/V7, enable DAILY_OPERATION, or claim integrated production acceptance.
 
 ## 2026-06-29 23:21:34 Australia/Sydney - S2PMT07 Final Bundle Manifest Template
 

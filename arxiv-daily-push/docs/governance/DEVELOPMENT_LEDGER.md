@@ -11,15 +11,27 @@ The append-only machine record is `development_events.jsonl`.
 - Product version: 0.23.1
 - Current phase: S2PL
 - Current gate: S2PMT07_FINAL_BUNDLE_MANIFEST_TEMPLATE_READY_FINAL_BUNDLE_STILL_BLOCKED_NO_PRODUCTION
-- Confirmed iteration count: 240
+- Confirmed iteration count: 241
 - Reconstructed event count: 0
 - Current task: `S2PMT07-FINAL-BUNDLE-MANIFEST-TEMPLATE` adds a template-only `FINAL_ACCEPTANCE_BUNDLE/templates/manifest.template.json` for the future live path `FINAL_ACCEPTANCE_BUNDLE/manifest.json`. The live final bundle manifest is still missing under `final_acceptance_bundle_manifest_missing`; `final_bundle_manifest_gate_satisfied_by_this_template=false`, `bundle_claimed_ready=false`, and missing live items remain `FINAL_ACCEPTANCE_BUNDLE/manifest.json`, `FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json`, `FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml`, `FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json`, and `HANDOFF/00_下一Agent先读.md`. The upstream S2PLT02 authorization blocker also remains explicit under `S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_BLOCKED_ARTIFACT_MISSING_NO_PRODUCTION`: `S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION`, `FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json`, `authorization_artifact_present=false`, `real_proof_capture_authorized=false`, `real_smtp_send_enabled_by_this_packet=false`, `scheduler_install_enabled_by_this_packet=false`, `terminal_delivery_proof_artifact_written_by_this_packet=false`, readiness state hash `79ac4987239ecad8d4eee82de0157901b59259100e6d738bd1b15d17a37dc76e`, authorization validation state hash `005e2294441b6aa6e827b0acb8f30916c59cc994768f0562a248a49c9dd6dae7`, owner packet state hash `2d9892b750815a0e9540d49dbd2ac65d13dbd8c866651720d1cbf96dd49ffe94`, and blocker `s2plt02_real_proof_capture_authorization_missing`. S2PLT01 terminal acceptance, P0/P1 zero-proof, no-production attestation, and independent reviewer assignment remain validated inputs, but S2PLT02/S2PLT03/S2PLT04/S2PMT07 and production acceptance remain blocked; no production acceptance or production side effect is claimed.
 - Current plan routing: `S2PMT07-FINAL-BUNDLE-MANIFEST-TEMPLATE` preserves `next_executable_task=S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION` and keeps the future manifest under templates only. It does not create S2PLT04 completion report, create the live authorization artifact, write the live final bundle manifest, authorize proof capture, or accept production.
+- Latest traceability correction: `S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-RUNTIME-PHASE-RECORD-SYNC` adds the missing human-readable phase record for the current stdout-only authorization draft runtime hash sync and corrects the existing traceability row to use the runtime-sync manifest. This still leaves `FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json` absent and keeps S2PLT02/S2PLT03/S2PLT04/S2PMT07 blocked with no production acceptance.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. Local daily M1-M4 orchestration is now recorded as readiness evidence, but V7.2 contract baseline migration blockers are zero while real restore, real SMTP production, scheduler installation, S2PLT04 completion, final command execution, next-agent handoff, independent signoff, final bundle manifest, directory-level final bundle artifact validation pass, and final integrated production acceptance remain forbidden until V7.2 production stop gates and all `S2PMT07` final-bundle gates pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
 
 
 
+
+### `ITER-20260629-ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-RUNTIME-PHASE-RECORD-SYNC`
+
+- Timestamp: 2026-06-29 23:41:32 Australia/Sydney
+- Fact level: EXTRACTED from the runtime-sync manifest, new phase record, traceability matrix correction, user-center traceability page, focused regression test, delivery task, and run manifest.
+- Status: runtime authorization draft phase record is synced; live S2PLT02 authorization remains missing and proof capture remains blocked.
+- Task IDs: `S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-RUNTIME-PHASE-RECORD-SYNC`; parent `S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-CLI`; acceptance `ACC-S2PLT02-2D`.
+- Files changed: runtime-sync phase record, traceability row, user-center traceability page, focused regression test, run manifest, delivery/event records, and three base files.
+- Evidence: `governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-RUNTIME-PHASE-RECORD-SYNC-20260629.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_DRAFT_CLI_RUNTIME_SYNC.md`; `governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-CLI-RUNTIME-SYNC-20260629.json`; `arxiv-daily-push/tests/test_user_center_candidate_pool.py`.
+- Risk: runtime-sync draft evidence can still be misread as live owner authorization; validators continue to require `FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json`.
+- No-production boundary: no SMTP, scheduler, Release, restore, CURRENT/V7, source/ranking/schema/DB/queue, DAILY_OPERATION, or integrated production acceptance changed.
 
 ### `ITER-20260629-ADP-S2PMT07-FINAL-BUNDLE-MANIFEST-TEMPLATE`
 

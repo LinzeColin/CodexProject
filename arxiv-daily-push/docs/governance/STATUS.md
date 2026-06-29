@@ -48,6 +48,7 @@
 - Next governance task: `S2PMT07`
 - Parallel shadow source task: `NONE_WHILE_S2PMT07_BLOCKED`
 - Next executable task: `S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION`
+- Latest evidence sync: `S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-RUNTIME-PHASE-RECORD-SYNC` added the missing runtime-sync phase record and corrected the existing traceability row; live authorization remains missing and no production gate changed.
 - Pending/stale events: `314`
 - Tree-bound events: `1`
 - Commit-bound events: `4`

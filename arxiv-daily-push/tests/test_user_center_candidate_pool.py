@@ -157,6 +157,21 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-CLI-RUNTIME-SYNC-20260629.json", page)
         self.assertIn("draft_s2plt02_real_proof_capture_authorization_artifact_cli_runtime_hash_synced_no_write_no_production", page)
         self.assertIn("authorization_artifact_written=false", page)
+        self.assertIn("PHASE_S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_DRAFT_CLI_RUNTIME_SYNC.md", page)
+        runtime_sync_rows = [
+            row
+            for row in matrix_rows
+            if row["task_id"] == "S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-CLI"
+        ]
+        self.assertEqual(len(runtime_sync_rows), 1)
+        self.assertIn(
+            "ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-CLI-RUNTIME-SYNC-20260629.json",
+            runtime_sync_rows[0]["evidence_ref"],
+        )
+        self.assertIn(
+            "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_DRAFT_CLI_RUNTIME_SYNC.md",
+            runtime_sync_rows[0]["code_ref"],
+        )
         self.assertIn("REQ-ADP-V7-041-S2PLT02-REAL-PROOF-CAPTURE-READINESS-RUNTIME-STATE-SYNC", page)
         self.assertIn("S2PLT02-REAL-PROOF-CAPTURE-READINESS-RUNTIME-STATE-SYNC", page)
         self.assertIn("ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-RUNTIME-STATE-SYNC-20260629.json", page)
