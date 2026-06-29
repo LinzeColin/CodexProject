@@ -20,6 +20,21 @@ The append-only machine record is `development_events.jsonl`.
 
 
 
+### `ITER-20260629-ADP-S2PMT07-FINAL-COMMAND-ROOT-TOOLS`
+
+- Timestamp: `2026-06-29T19:06:06+10:00`
+- Fact level: EXTRACTED from root final-command tool execution, ADP V7.2 validator, ADP project governance validator, final bundle validator, focused root-tool regression tests, phase record, run manifest, traceability row, delivery task, and three base files.
+- Product version: `0.23.1`
+- Status: `python tools/validate_task_pack.py --root .` returns pass / exit 0; `python tools/verify_acceptance_bundle.py --require-zero P0 P1` returns fail / exit 2 because final bundle artifacts remain incomplete while P0/P1 zero checks pass.
+- Task IDs: `S2PMT07-FINAL-COMMAND-ROOT-TOOLS`; parent `S2PMT07`; acceptance `ACC-S2PMT07-FINAL-REVIEW`.
+- Goal: Provide the exact root command entrypoints required by the S2PMT07 final-command contract so a future independent final reviewer can execute the contracted commands without missing-script ambiguity.
+- Files changed: root final-command wrappers, root-tool regression tests, phase record, run manifest, traceability/delivery/event records, and three base files.
+- Decisions: `validate_task_pack_status=PASS`, `verify_acceptance_bundle_status=FAIL`, `zero_checks.P0=true`, `zero_checks.P1=true`, `missing_required_zero=[]`, `final_bundle_status=blocked`, and final-bundle blockers remain `final_acceptance_bundle_manifest_missing`, `s2plt04_completion_evidence_missing`, `independent_review_signoff_missing`, `independent_final_command_execution_missing`, and `next_agent_handoff_missing`.
+- Validation: focused root-tool tests cover root task-pack pass and final-bundle fail-closed behavior; direct CLI probes confirm root `validate_task_pack` exits 0 and root `verify_acceptance_bundle` exits 2 until final bundle is complete.
+- Boundaries: No final command execution artifact, S2PLT04 completion report, next-agent handoff, independent signoff, final manifest, SMTP enablement, scheduler enablement, Release, restore, CURRENT/V7 change, source/ranking change, DAILY_OPERATION, or integrated production acceptance.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-FINAL-COMMAND-ROOT-TOOLS-20260629.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_COMMAND_ROOT_TOOLS.md`; `tools/validate_task_pack.py`; `tools/verify_acceptance_bundle.py`; `arxiv-daily-push/tests/test_final_command_root_tools.py`; `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json`.
+- Next step: Complete truthful S2PLT04 terminal dependencies and final bundle artifacts before any independent reviewer can record `FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json` and pass the root acceptance-bundle verifier.
+
 ### `ITER-20260629-ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION`
 
 - Timestamp: `2026-06-29T18:04:46+10:00`

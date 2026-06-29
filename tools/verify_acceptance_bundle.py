@@ -1,0 +1,113 @@
+#!/usr/bin/env python3
+"""Verify the ADP final acceptance bundle from the repository root.
+
+The S2PMT07 final-command contract requires this root entrypoint.  It is
+fail-closed: P0/P1 zero proof is necessary, but the command still returns
+non-zero until the full final acceptance bundle validator passes.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import subprocess
+import sys
+from pathlib import Path
+from typing import Any
+
+
+def _load_cli_report(root: Path) -> tuple[int, dict[str, Any], str]:
+    project_root = root / "arxiv-daily-push"
+    env = {
+        **os.environ,
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONPATH": str(project_root / "src"),
+    }
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "arxiv_daily_push.cli",
+            "validate-final-acceptance-bundle",
+            "--repo-root",
+            ".",
+            "--json",
+        ],
+        cwd=root,
+        env=env,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    try:
+        payload = json.loads(completed.stdout)
+    except json.JSONDecodeError:
+        payload = {}
+    stderr_tail = "\n".join(completed.stderr.strip().splitlines()[-20:])
+    return completed.returncode, payload, stderr_tail
+
+
+def build_verification_report(root: Path, required_zero: list[str]) -> dict[str, Any]:
+    required_zero_set = {item.upper() for item in required_zero}
+    unsupported = sorted(required_zero_set.difference({"P0", "P1"}))
+    exit_code, payload, stderr_tail = _load_cli_report(root)
+    zero_state = payload.get("p0_p1_zero_proof_artifact_validation", {})
+    zero_checks = {
+        "P0": zero_state.get("p0_zero_proven_by_payload") is True,
+        "P1": zero_state.get("p1_zero_proven_by_payload") is True,
+    }
+    missing_zero = sorted(item for item in required_zero_set if not zero_checks.get(item, False))
+    validation_errors = list(payload.get("readiness_validation_errors", []))
+    blocking_reasons = list(payload.get("blocking_reasons", []))
+    bundle_status = payload.get("status", "blocked")
+    passed = (
+        not unsupported
+        and not missing_zero
+        and exit_code == 0
+        and bundle_status == "pass"
+        and not validation_errors
+    )
+    return {
+        "status": "PASS" if passed else "FAIL",
+        "scope": "adp_final_acceptance_bundle_root_verification_no_production_side_effects",
+        "contract_id": "ADP-PRODUCT-CONTRACT-V7.2",
+        "task_id": "S2PMT07",
+        "required_zero": sorted(required_zero_set),
+        "unsupported_required_zero": unsupported,
+        "zero_checks": zero_checks,
+        "missing_required_zero": missing_zero,
+        "bundle_validator_exit_code": exit_code,
+        "bundle_status": bundle_status,
+        "blocking_reasons": blocking_reasons,
+        "readiness_validation_errors": validation_errors,
+        "missing_items": list(payload.get("missing_items", [])),
+        "stderr_tail": stderr_tail,
+        "production_acceptance_claimed": False,
+        "integrated_production_accepted": False,
+        "daily_operation_enabled": False,
+        "real_smtp_send_enabled": False,
+        "scheduler_install_enabled": False,
+        "release_packaging_enabled": False,
+        "production_restore_enabled": False,
+    }
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--root", default=".", help="CodexProject repository root.")
+    parser.add_argument(
+        "--require-zero",
+        nargs="+",
+        default=[],
+        help="Required zero severities. Supported values: P0 P1.",
+    )
+    args = parser.parse_args(argv)
+    report = build_verification_report(Path(args.root).resolve(), args.require_zero)
+    print(json.dumps(report, ensure_ascii=False, indent=2))
+    return 0 if report["status"] == "PASS" else 2
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
