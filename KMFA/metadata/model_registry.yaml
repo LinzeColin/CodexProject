@@ -1,7 +1,8 @@
-version: "0.1.0-s01p3"
+version: "0.1.0-s02p1"
 project: "KMFA"
 active_model_ids:
   - "MOD-KMFA-GOV-001"
+  - "MOD-KMFA-METADATA-001"
 planned_model_ids:
   - "MOD-KMFA-COST-001"
 source_of_truth:

@@ -8,7 +8,7 @@ assumptions:
     evidence_refs:
       - "KMFA/AGENTS.md"
   - assumption_id: "ASM-KMFA-002"
-    statement: "KMFA Stage 完成后必须先整体复审并修复问题，之后才允许整体上传 GitHub；中间 Phase 不上传；当前 S01 上传必须走隔离 worktree。"
+    statement: "KMFA Stage 完成后必须先整体复审并修复问题，之后才允许整体上传 GitHub；中间 Phase 不上传。"
     status: "active"
     fact_level: "EXTRACTED"
     evidence_refs:
@@ -20,6 +20,13 @@ assumptions:
     fact_level: "PROPOSED"
     evidence_refs:
       - "KMFA/模型参数文件.md"
+  - assumption_id: "ASM-KMFA-004"
+    statement: "公开仓库 metadata 只能保存索引、hash、状态、证据、schema/mapping/lineage/approval metadata，不能保存敏感明文或原始业务文件。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "KMFA/docs/governance/METADATA_PROTOCOL.md"
+      - "KMFA/metadata/protocol/metadata_protocol.yaml"
 models:
   - model_id: "MOD-KMFA-GOV-001"
     name: "KMFA phase governance and public repository boundary"
@@ -87,3 +94,32 @@ models:
       - "planned: KMFA/tools/zero_delta_validator.py"
     evidence_refs:
       - "KMFA/模型参数文件.md"
+  - model_id: "MOD-KMFA-METADATA-001"
+    name: "KMFA metadata protocol and identifier contract"
+    kind: "deterministic_metadata_governance_contract"
+    purpose: "定义 metadata 目录、核心标识符、公开仓库隐私边界和协议检查。"
+    owner: "KMFA"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "0.1.0-s02p1"
+    assumptions:
+      - "ASM-KMFA-004"
+    formula_ids:
+      - "FORM-KMFA-METADATA-ID-001"
+    parameter_ids:
+      - "PARAM-KMFA-201"
+      - "PARAM-KMFA-202"
+    inputs:
+      - "KMFA Roadmap S02-P1"
+      - "KMFA data governance gate"
+    outputs:
+      - "metadata directory contract"
+      - "identifier validation contract"
+      - "public repository metadata privacy boundary"
+    code_refs:
+      - "KMFA/tools/metadata_protocol_check.py"
+    test_refs:
+      - "python3 KMFA/tools/metadata_protocol_check.py"
+    evidence_refs:
+      - "KMFA/docs/governance/METADATA_PROTOCOL.md"
+      - "KMFA/metadata/protocol/metadata_protocol.yaml"

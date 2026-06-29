@@ -75,3 +75,33 @@ formulas:
       - "planned: S04/S06/S18 amount and zero-delta tests"
     evidence_refs:
       - "KMFA/模型参数文件.md"
+  - formula_id: "FORM-KMFA-METADATA-ID-001"
+    model_id: "MOD-KMFA-METADATA-001"
+    assumption_ids:
+      - "ASM-KMFA-004"
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "metadata_protocol_valid = required_directories_exist AND required_files_exist AND identifier_examples_match_regex AND public_repo_sensitive_plaintext_allowed == false"
+    variables:
+      - name: "required_metadata_identifiers"
+        data_type: "string_list"
+        unit: "identifier"
+        input_domain: "import_run_id;source_id;file_hash;formula_version;mapping_version"
+      - name: "allowed_public_metadata_categories"
+        data_type: "string_list"
+        unit: "category"
+        input_domain: "hash;manifest_index;status;evidence_ref;schema_version;mapping_version;quality_grade;lineage_ref;approval_event_metadata"
+    constraints:
+      - "Required metadata directories must exist before S02-P1 is complete."
+      - "Identifier examples must match their regex definitions."
+      - "Public metadata must not contain raw sensitive plaintext."
+      - "S02-P1 does not commit business records."
+    missing_policy: "Missing directory, missing identifier, parse error, or privacy uncertainty blocks the phase."
+    output_range: "valid or blocked"
+    code_refs:
+      - "KMFA/tools/metadata_protocol_check.py"
+    test_refs:
+      - "python3 KMFA/tools/metadata_protocol_check.py"
+    evidence_refs:
+      - "KMFA/metadata/protocol/metadata_protocol.yaml"
+      - "KMFA/stage_artifacts/S02_P1_metadata_protocol/human/s02_p1_completion_record.md"

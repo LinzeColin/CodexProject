@@ -269,3 +269,96 @@ tasks:
     rollback: "Remove S01_STAGE_REVIEW artifacts and revert review status updates."
     target_version: "0.1.0-s01p3"
     completed_version: "0.1.0-s01p3"
+  - task_id: "S2PAT01"
+    phase: "S2PA"
+    objective: "创建 sources、imports、schema_maps、quality、lineage、reports、approvals 目录。"
+    scope:
+      - "KMFA/metadata"
+      - "KMFA/metadata/protocol"
+    non_scope:
+      - "raw business file import"
+      - "GitHub upload"
+    status: "completed"
+    dependencies:
+      - "S1PCT03"
+    required_files:
+      - "KMFA/metadata/protocol/directory_manifest.json"
+      - "KMFA/metadata/sources/source_registry.yaml"
+      - "KMFA/metadata/imports/import_runs.jsonl"
+      - "KMFA/metadata/imports/raw_file_manifest.jsonl"
+      - "KMFA/metadata/schema_maps/source_mapping_versions.yaml"
+      - "KMFA/metadata/quality/data_quality_results.jsonl"
+      - "KMFA/metadata/quality/zero_delta_results.jsonl"
+      - "KMFA/metadata/lineage/field_lineage.jsonl"
+      - "KMFA/metadata/lineage/metric_lineage.jsonl"
+      - "KMFA/metadata/lineage/report_lineage.jsonl"
+      - "KMFA/metadata/reports/report_manifest.jsonl"
+      - "KMFA/metadata/approvals/resolution_events.jsonl"
+      - "KMFA/metadata/approvals/human_signoff_log.jsonl"
+    acceptance_ids:
+      - "ACC-KMFA-S02-P1"
+    test_commands:
+      - "python3 KMFA/tools/metadata_protocol_check.py"
+    test_results:
+      - "PASS: metadata dirs and required files exist"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S02_P1_metadata_protocol/human/s02_p1_completion_record.md"
+    risk: "Protocol files must not be mistaken for imported business records."
+    rollback: "Remove S02-P1 metadata protocol files and restore S01 status."
+    target_version: "0.1.0-s02p1"
+    completed_version: "0.1.0-s02p1"
+  - task_id: "S2PAT02"
+    phase: "S2PA"
+    objective: "定义 import_run_id、source_id、file_hash、formula_version、mapping_version。"
+    scope:
+      - "KMFA/metadata/protocol/metadata_protocol.yaml"
+      - "KMFA/metadata/protocol/field_dictionary.csv"
+    non_scope:
+      - "business identifier matching"
+      - "source adapter implementation"
+    status: "completed"
+    dependencies:
+      - "S2PAT01"
+    required_files:
+      - "KMFA/metadata/protocol/metadata_protocol.yaml"
+      - "KMFA/metadata/protocol/field_dictionary.csv"
+    acceptance_ids:
+      - "ACC-KMFA-S02-P1"
+    test_commands:
+      - "python3 KMFA/tools/metadata_protocol_check.py"
+    test_results:
+      - "PASS: identifier regex and examples validate"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S02_P1_metadata_protocol/human/s02_p1_completion_record.md"
+    risk: "Identifiers must not include sensitive plaintext."
+    rollback: "Restore metadata_protocol.yaml and field_dictionary.csv."
+    target_version: "0.1.0-s02p1"
+    completed_version: "0.1.0-s02p1"
+  - task_id: "S2PAT03"
+    phase: "S2PA"
+    objective: "定义 metadata 只保存索引、hash、状态、证据，不保存明文敏感数据。"
+    scope:
+      - "KMFA/docs/governance/METADATA_PROTOCOL.md"
+      - "KMFA/tools/metadata_protocol_check.py"
+    non_scope:
+      - "S02-P2 raw manifest registry"
+      - "S02-P3 quality grade gate"
+    status: "completed"
+    dependencies:
+      - "S2PAT02"
+    required_files:
+      - "KMFA/docs/governance/METADATA_PROTOCOL.md"
+      - "KMFA/tools/metadata_protocol_check.py"
+    acceptance_ids:
+      - "ACC-KMFA-S02-P1"
+    test_commands:
+      - "python3 KMFA/tools/metadata_protocol_check.py"
+      - "find KMFA -type f \\( -name '*.zip' -o -name '*.xlsx' -o -name '*.xls' -o -name '*.pdf' -o -name '*.sqlite' -o -name '*.db' \\) -print"
+    test_results:
+      - "PASS: metadata privacy boundary validated"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S02_P1_metadata_protocol/human/s02_p1_completion_record.md"
+    risk: "Sensitive raw finance, contract, payroll, bank, or tax data must not enter the public repo."
+    rollback: "Remove S02-P1 privacy protocol additions and restore previous governance state."
+    target_version: "0.1.0-s02p1"
+    completed_version: "0.1.0-s02p1"

@@ -1,0 +1,22 @@
+{
+  "schema_version": "kmfa.source_mapping_versions.v1",
+  "project_id": "KMFA",
+  "registry_status": "protocol_defined_no_mappings_registered",
+  "mapping_version_policy_ref": "KMFA/metadata/protocol/metadata_protocol.yaml#/identifiers/mapping_version",
+  "formula_version_policy_ref": "KMFA/metadata/protocol/metadata_protocol.yaml#/identifiers/formula_version",
+  "allowed_fields": [
+    "mapping_version",
+    "source_id",
+    "field_path",
+    "canonical_field",
+    "status",
+    "formula_version",
+    "evidence_ref"
+  ],
+  "forbidden_fields": [
+    "raw_value",
+    "plaintext_content",
+    "full_file_text"
+  ],
+  "mapping_versions": []
+}

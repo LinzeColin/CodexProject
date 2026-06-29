@@ -1,10 +1,10 @@
 # KMFA Model Spec
 
-product_version: 0.1.0-s01p3
+product_version: 0.1.0-s02p1
 
 ## Scope
 
-当前模型说明只覆盖 S01-P2 已建立的治理边界和后续业务模型草案，不声明项目成本计算、zero-delta、lineage 或报告等级门禁已经实现。
+当前模型说明覆盖 S01 已建立的治理边界、S02-P1 metadata 协议和后续业务模型草案，不声明项目成本计算、zero-delta、lineage 完整检查或报告等级门禁已经实现。
 
 ## Active Model
 
@@ -14,6 +14,13 @@ product_version: 0.1.0-s01p3
 - purpose: 控制 Stage/Phase 边界、GitHub 上传门禁、公开仓库隐私边界和质量优先规则。
 - fact_level: EXTRACTED
 - evidence: `KMFA/AGENTS.md`, `KMFA/docs/governance/model_registry.yaml`
+
+### MOD-KMFA-METADATA-001
+
+- type: deterministic metadata governance contract
+- purpose: 定义 metadata 七类目录、核心标识符、公开仓库隐私边界和协议检查。
+- fact_level: EXTRACTED
+- evidence: `KMFA/docs/governance/METADATA_PROTOCOL.md`, `KMFA/metadata/protocol/metadata_protocol.yaml`, `KMFA/tools/metadata_protocol_check.py`
 
 ## Planned Business Model
 
@@ -26,9 +33,9 @@ product_version: 0.1.0-s01p3
 
 ## Counts
 
-- active models: 1
-- active formulas: 1
-- active parameters: 4
+- active models: 2
+- active formulas: 2
+- active parameters: 6
 - planned models: 1
 - planned formulas: 1
 - planned parameters: 4

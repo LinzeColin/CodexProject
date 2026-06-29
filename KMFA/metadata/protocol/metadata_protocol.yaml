@@ -1,0 +1,70 @@
+{
+  "schema_version": "kmfa.metadata_protocol.v1",
+  "project_id": "KMFA",
+  "stage_phase": "S02-P1",
+  "status": "active",
+  "source_roadmap": "02_KMFA_Codex_Development_Roadmap_18_Stages_v1_1.md:S02-P1",
+  "directories": [
+    {"path": "metadata/sources", "purpose": "source aliases and source registry"},
+    {"path": "metadata/imports", "purpose": "import runs and raw file manifest index"},
+    {"path": "metadata/schema_maps", "purpose": "source mapping version registry"},
+    {"path": "metadata/quality", "purpose": "data quality, zero-delta, and mismatch indexes"},
+    {"path": "metadata/lineage", "purpose": "field, metric, and report lineage indexes"},
+    {"path": "metadata/reports", "purpose": "report manifest indexes"},
+    {"path": "metadata/approvals", "purpose": "resolution events and human signoff indexes"}
+  ],
+  "identifiers": {
+    "import_run_id": {
+      "regex": "^IMP-[0-9]{8}-[0-9]{6}-[a-z0-9-]{3,40}-[a-f0-9]{8}$",
+      "example": "IMP-20260629-181500-finance-a1b2c3d4",
+      "description": "One immutable import attempt or authorized file batch."
+    },
+    "source_id": {
+      "regex": "^SRC-[a-z0-9-]{3,40}-[a-f0-9]{8}$",
+      "example": "SRC-finance-ledger-a1b2c3d4",
+      "description": "A non-sensitive alias for an upstream source, system, or package."
+    },
+    "file_hash": {
+      "regex": "^sha256:[a-f0-9]{64}$",
+      "example": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "description": "SHA-256 digest of a file whose raw bytes stay outside the public repo."
+    },
+    "formula_version": {
+      "regex": "^FORM-[A-Z0-9-]+-v[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "example": "FORM-KMFA-AMOUNT-001-v0.1.0",
+      "description": "Version binding for formula behavior used by derived data."
+    },
+    "mapping_version": {
+      "regex": "^MAP-SRC-[a-z0-9-]{3,40}-[a-f0-9]{8}-v[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "example": "MAP-SRC-finance-ledger-a1b2c3d4-v0.1.0",
+      "description": "Version binding for source field mapping."
+    }
+  },
+  "metadata_storage_policy": {
+    "allowed_categories": [
+      "hash",
+      "manifest_index",
+      "status",
+      "evidence_ref",
+      "schema_version",
+      "mapping_version",
+      "quality_grade",
+      "lineage_ref",
+      "approval_event_metadata"
+    ],
+    "forbidden_plaintext_categories": [
+      "raw_file_bytes",
+      "bank_flow_rows",
+      "contract_full_text",
+      "payroll_rows",
+      "tax_declaration_rows",
+      "password",
+      "token",
+      "api_key",
+      "private_key",
+      "bank_account_number",
+      "identity_document_number"
+    ],
+    "public_repo_sensitive_plaintext_allowed": false
+  }
+}

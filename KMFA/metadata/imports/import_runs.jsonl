@@ -1,0 +1,1 @@
+{"record_type":"protocol_header","schema_version":"kmfa.import_runs.v1","stage_phase":"S02-P1","status":"protocol_defined_no_import_runs_committed","required_identifiers":["import_run_id","source_id"],"forbidden_plaintext":true}
