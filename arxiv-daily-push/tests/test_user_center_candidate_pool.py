@@ -133,7 +133,7 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         readme = (USER_CENTER / "README.md").read_text(encoding="utf-8")
 
         self.assertGreaterEqual(len(matrix_rows), 245)
-        self.assertEqual(len(matrix_rows), 361)
+        self.assertEqual(len(matrix_rows), 362)
         self.assertEqual(len(table_rows), len(matrix_rows))
         self.assertTrue(page.startswith("# 功能任务测试证据追踪链\n"))
         self.assertRegex(page, r"更新时间：\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} Australia/Sydney")
@@ -142,13 +142,24 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("[运行清单](../../governance/run_manifests/ADP-S2PAT05-TRACEABILITY-CHAIN-C010-20260627.json)", page)
         self.assertIn("| 序号 | 需求 | 任务 | 验收 | 代码 | 配置 | 测试 | 运行证据 | 状态 |", page)
         self.assertIn("[test_stage2_sources.py](../tests/test_stage2_sources.py)", page)
-        self.assertIn("TRACEABILITY_MATRIX 行数 | 361", page)
+        self.assertIn("TRACEABILITY_MATRIX 行数 | 362", page)
         self.assertIn("REQ-ADP-V7-041-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION", page)
         self.assertIn("S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION", page)
         self.assertIn("ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-20260629.json", page)
         self.assertIn("REQ-ADP-V7-041-S2PMT07-ZERO-PROOF-READINESS-CONSUMPTION", page)
         self.assertIn("S2PMT07-ZERO-PROOF-READINESS-CONSUMPTION", page)
         self.assertIn("ADP-S2PMT07-ZERO-PROOF-READINESS-CONSUMPTION-20260629.json", page)
+        self.assertIn(
+            "REQ-ADP-V7-041-S2PMT07-FINAL-BUNDLE-PREREQUISITE-ZERO-PROOF-BLOCKER-SYNC",
+            page,
+        )
+        self.assertIn("S2PMT07-FINAL-BUNDLE-PREREQUISITE-ZERO-PROOF-BLOCKER-SYNC", page)
+        self.assertIn(
+            "ADP-S2PMT07-FINAL-BUNDLE-PREREQUISITE-ZERO-PROOF-BLOCKER-SYNC-20260629.json",
+            page,
+        )
+        self.assertIn("blocked_final_bundle_prerequisite_zero_proof_blockers_synced_no_production", page)
+        self.assertIn("prerequisite plan 不再重复显示", page)
         self.assertIn("blocked_s2plt02_real_proof_capture_authorization_artifact_missing_no_production", page)
         self.assertIn("authorization_artifact_present=false", page)
         self.assertIn("real_proof_capture_authorized=false", page)

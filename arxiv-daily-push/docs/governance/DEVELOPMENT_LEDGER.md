@@ -5168,3 +5168,12 @@ None for this new project baseline.
 - Current state: remaining missing items are final bundle manifest, S2PLT04 completion report, independent review signoff, final command execution, and next-agent handoff. S2PLT02 terminal delivery proof still requires explicit owner authorization, second real M1-M4 SMTP day, eight real emails total, and real scheduler proof.
 - Boundary: no SMTP send, scheduler install/enablement, Release upload, production restore, public schema/DB/production queue/source/ranking/CURRENT/V7 change, DAILY_OPERATION, S2PLT02 acceptance, S2PLT04 completion, final bundle manifest acceptance, or Stage2/S3 production acceptance.
 - Evidence: `governance/run_manifests/ADP-S2PMT07-ZERO-PROOF-READINESS-CONSUMPTION-20260629.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_ZERO_PROOF_READINESS_CONSUMPTION.md`; `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`; `arxiv-daily-push/tests/test_cli.py`.
+
+### `ITER-20260629-ADP-S2PMT07-FINAL-BUNDLE-PREREQUISITE-ZERO-PROOF-BLOCKER-SYNC`
+
+- Timestamp: `2026-06-29T18:47:58+10:00`
+- Task IDs: `S2PMT07-FINAL-BUNDLE-PREREQUISITE-ZERO-PROOF-BLOCKER-SYNC`; parent `S2PMT07`; acceptance `ACC-S2PMT07-FINAL-REVIEW`.
+- Decisions: Final bundle prerequisite planning now derives inherited P0/P1 blocker visibility from committed `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json` validation. With zero-proof validation passing, prerequisite blockers no longer repeat `inherited_v7_1_p0_findings_open` / `inherited_v7_1_p1_findings_open`.
+- Current state: prerequisite plan remains `blocked`; next required step remains `S2PLT04_COMPLETION_REPORT`; remaining prerequisite blockers are S2PLT04 completion report, final command execution, next-agent handoff, independent review signoff, and final bundle manifest.
+- Boundary: no SMTP send, scheduler install/enablement, Release upload, production restore, public schema/DB/production queue/source/ranking/CURRENT/V7 change, DAILY_OPERATION, S2PLT02 acceptance, S2PLT04 completion, final bundle manifest acceptance, or Stage2/S3 production acceptance.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-PREREQUISITE-ZERO-PROOF-BLOCKER-SYNC-20260629.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_PREREQUISITE_ZERO_PROOF_BLOCKER_SYNC.md`; `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.

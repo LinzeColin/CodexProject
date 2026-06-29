@@ -4414,6 +4414,8 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(step_status["NO_PRODUCTION_SIDE_EFFECT_ATTESTATION"], "pass")
         self.assertNotIn("independent_final_reviewer_assignment_missing", plan["blocking_reasons"])
         self.assertNotIn("p0_p1_zero_proof_artifact_missing", plan["blocking_reasons"])
+        self.assertNotIn("inherited_v7_1_p0_findings_open", plan["blocking_reasons"])
+        self.assertNotIn("inherited_v7_1_p1_findings_open", plan["blocking_reasons"])
         self.assertIn("s2plt04_completion_report_missing", plan["blocking_reasons"])
         self.assertNotIn("no_production_side_effect_attestation_missing", plan["blocking_reasons"])
         for flag in S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_FORBIDDEN_FLAGS:
@@ -4459,6 +4461,8 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(plan["next_required_step"], "P0_P1_ZERO_PROOF_ARTIFACT")
         self.assertNotIn("independent_final_reviewer_assignment_missing", plan["blocking_reasons"])
         self.assertIn("p0_p1_zero_proof_artifact_missing", plan["blocking_reasons"])
+        self.assertIn("inherited_v7_1_p0_findings_open", plan["blocking_reasons"])
+        self.assertIn("inherited_v7_1_p1_findings_open", plan["blocking_reasons"])
         self.assertFalse(plan["production_acceptance_claimed"])
         self.assertFalse(plan["integrated_production_accepted"])
         self.assertFalse(plan["daily_operation_enabled"])
