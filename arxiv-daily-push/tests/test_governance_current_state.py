@@ -30,18 +30,22 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn(f"- Current task: `{expected_task}`", current_state)
         self.assertIn(f"### `{current_iteration}`", ledger)
 
-    def test_s2pmt07_current_state_summary_describes_completion_evidence_audit(self) -> None:
+    def test_s2pmt07_current_state_summary_describes_s2plt01_terminal_acceptance_audit(self) -> None:
         ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
-            "S2PMT07_S2PLT04_COMPLETION_EVIDENCE_AUDIT_BLOCKED_NO_REPORT_NO_PRODUCTION",
+            "S2PMT07_S2PLT01_TERMINAL_ACCEPTANCE_AUDIT_BLOCKED_NONTERMINAL_NO_PRODUCTION",
             current_state,
         )
-        self.assertIn("S2PMT07-S2PLT04-COMPLETION-EVIDENCE-AUDIT", current_state)
+        self.assertIn("S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-AUDIT", current_state)
+        self.assertIn("review receipt present=true", current_state)
+        self.assertIn("review package passed=true", current_state)
+        self.assertIn("full_replay_executed=false", current_state)
         self.assertIn("S2PLT01_ACCEPTED=false", current_state)
-        self.assertIn("S2PLT02 live two-day terminal proof is missing", current_state)
-        self.assertIn("S2PLT03 terminal resilience proof is missing", current_state)
+        self.assertIn("S2PLT04_COMPLETED=false", current_state)
+        self.assertIn("S2PMT07_FINAL_SIGNOFF=false", current_state)
+        self.assertIn("nonterminal evidence only", current_state)
         self.assertIn("does not create the real S2PLT04 completion report", current_state)
         self.assertIn("P0=8", current_state)
         self.assertIn("P1=37", current_state)

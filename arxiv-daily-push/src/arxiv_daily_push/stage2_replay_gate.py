@@ -6,6 +6,7 @@ import hashlib
 import json
 from collections.abc import Mapping
 from datetime import date
+from pathlib import Path
 from typing import Any
 
 
@@ -68,6 +69,12 @@ S2PLT01_BLOCKING_REASONS = (
     "full_30_day_replay_not_executed",
     "mail_preview_count_not_proven",
     "source_terminal_states_not_proven",
+)
+S2PLT01_INDEPENDENT_REVIEW_MANIFEST_PATH = (
+    "governance/run_manifests/ADP-S2PLT01-INDEPENDENT-REPLAY-REVIEW-20260626.json"
+)
+S2PLT01_S2PLT04_REVIEW_SYNC_MANIFEST_PATH = (
+    "governance/run_manifests/ADP-S2PLT04-S2PLT01-REPLAY-REVIEW-EVIDENCE-SYNC-20260628.json"
 )
 
 
@@ -597,6 +604,80 @@ def validate_s2plt01_independent_replay_review_report(report: Mapping[str, Any])
     return errors
 
 
+def build_s2plt01_terminal_acceptance_audit_state(*, repo_root: str | Path = ".") -> dict[str, Any]:
+    """Audit current S2PLT01 terminal acceptance without claiming acceptance."""
+
+    root = Path(repo_root)
+    review_manifest = _load_json_mapping(root / S2PLT01_INDEPENDENT_REVIEW_MANIFEST_PATH)
+    s2plt04_sync = _load_json_mapping(root / S2PLT01_S2PLT04_REVIEW_SYNC_MANIFEST_PATH)
+    review_receipt_present = bool(review_manifest)
+    review_package_passed = (
+        review_manifest.get("independent_replay_review_receipt_added") is True
+        and "independent_s2plt01_review_not_completed" not in list(review_manifest.get("blocking_reasons") or [])
+        and bool(s2plt04_sync.get("s2plt01_independent_replay_review_hash"))
+        and "S2PLT01_INDEPENDENT_REPLAY_REVIEW" in list(s2plt04_sync.get("consumed_nonterminal_evidence") or [])
+    )
+    terminal_gates = {
+        "review_receipt_present": review_receipt_present,
+        "review_package_passed": review_package_passed,
+        "full_replay_executed": review_manifest.get("full_replay_executed") is True,
+        "s2plt01_accepted": review_manifest.get("s2plt01_accepted") is True,
+        "s2plt04_completed": review_manifest.get("s2plt04_completed") is True,
+        "s2pmt07_final_signoff_claimed": review_manifest.get("s2pmt07_final_signoff_claimed") is True,
+        "inherited_p0_zero": int(s2plt04_sync.get("inherited_v7_1_open_p0_findings") or 0) == 0,
+        "inherited_p1_zero": int(s2plt04_sync.get("inherited_v7_1_open_p1_findings") or 0) == 0,
+    }
+    blocking_reasons: list[str] = []
+    if not review_receipt_present:
+        blocking_reasons.append("review_receipt_missing")
+    if review_package_passed and not terminal_gates["s2plt01_accepted"]:
+        blocking_reasons.append("review_receipt_is_nonterminal")
+    if not terminal_gates["full_replay_executed"]:
+        blocking_reasons.append("full_replay_not_executed")
+    if not terminal_gates["s2plt01_accepted"]:
+        blocking_reasons.append("s2plt01_not_accepted")
+    if not terminal_gates["s2plt04_completed"]:
+        blocking_reasons.append("s2plt04_not_completed")
+    if not terminal_gates["s2pmt07_final_signoff_claimed"]:
+        blocking_reasons.append("s2pmt07_not_completed")
+    if not terminal_gates["inherited_p0_zero"]:
+        blocking_reasons.append("inherited_v7_1_p0_findings_open")
+    if not terminal_gates["inherited_p1_zero"]:
+        blocking_reasons.append("inherited_v7_1_p1_findings_open")
+
+    terminal_acceptance_ready = all(terminal_gates.values())
+    state = {
+        "status": "pass" if terminal_acceptance_ready else "blocked",
+        "scope": "s2plt01_terminal_acceptance_audit_only_no_acceptance_claim",
+        "task_id": "S2PLT01",
+        "acceptance_id": S2PLT01_ACCEPTANCE_ID,
+        "terminal_acceptance_ready": terminal_acceptance_ready,
+        "review_receipt_present": review_receipt_present,
+        "review_package_passed": review_package_passed,
+        "review_manifest_ref": S2PLT01_INDEPENDENT_REVIEW_MANIFEST_PATH,
+        "s2plt04_review_sync_ref": S2PLT01_S2PLT04_REVIEW_SYNC_MANIFEST_PATH,
+        "terminal_gates": terminal_gates,
+        "blocking_reasons": sorted(set(blocking_reasons)),
+        "full_replay_executed": review_manifest.get("full_replay_executed") is True,
+        "s2plt01_accepted": review_manifest.get("s2plt01_accepted") is True,
+        "s2plt04_completed": review_manifest.get("s2plt04_completed") is True,
+        "s2pmt07_final_signoff_claimed": review_manifest.get("s2pmt07_final_signoff_claimed") is True,
+        "production_acceptance_claimed": False,
+        "integrated_production_accepted": False,
+        "real_smtp_sent": False,
+        "scheduler_enabled": False,
+        "release_uploaded": False,
+        "public_schema_changed": False,
+        "db_migration_executed": False,
+        "current_pointer_changed": False,
+        "v7_1_baseline_changed": False,
+        "v7_2_contract_files_changed": False,
+        "state_hash": "",
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
 def build_s2plt01_entry_precheck_report(
     *,
     generated_at: str,
@@ -744,6 +825,16 @@ def _validate_s2plt01_replay_payload_inputs(
 
 
 def _mapping(value: Any) -> Mapping[str, Any]:
+    return value if isinstance(value, Mapping) else {}
+
+
+def _load_json_mapping(path: Path) -> Mapping[str, Any]:
+    if not path.exists():
+        return {}
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
     return value if isinstance(value, Mapping) else {}
 
 

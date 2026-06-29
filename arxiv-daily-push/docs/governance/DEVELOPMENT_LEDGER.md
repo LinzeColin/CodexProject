@@ -10,13 +10,30 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.1
 - Current phase: S2PM
-- Current gate: S2PMT07_S2PLT04_COMPLETION_EVIDENCE_AUDIT_BLOCKED_NO_REPORT_NO_PRODUCTION
-- Confirmed iteration count: 225
+- Current gate: S2PMT07_S2PLT01_TERMINAL_ACCEPTANCE_AUDIT_BLOCKED_NONTERMINAL_NO_PRODUCTION
+- Confirmed iteration count: 226
 - Reconstructed event count: 0
-- Current task: `S2PMT07-S2PLT04-COMPLETION-EVIDENCE-AUDIT` exposes a fail-closed CLI audit for the future S2PLT04 completion report. The audit makes the current terminal gaps explicit: S2PLT01 replay review is nonterminal because `S2PLT01_ACCEPTED=false`, S2PLT02 live two-day terminal proof is missing, and S2PLT03 terminal resilience proof is missing. Inherited V7.1 top-level stop gates remain open at `P0=8` and `P1=37`. This does not create the real S2PLT04 completion report, does not execute final commands, does not accept production, and does not enable DAILY_OPERATION, scheduler, SMTP, Release, or restore.
+- Current task: `S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-AUDIT` exposes a fail-closed CLI audit for the first S2PLT04 completion-report dependency. The audit makes the current S2PLT01 state explicit: review receipt present=true, review package passed=true, but `full_replay_executed=false`, `S2PLT01_ACCEPTED=false`, `S2PLT04_COMPLETED=false`, and `S2PMT07_FINAL_SIGNOFF=false`. The existing S2PLT01 independent replay review receipt is nonterminal evidence only and cannot be used as terminal acceptance. Inherited V7.1 top-level stop gates remain open at `P0=8` and `P1=37`. This does not create the real S2PLT04 completion report, does not execute final commands, does not accept production, and does not enable DAILY_OPERATION, scheduler, SMTP, Release, or restore.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. Local daily M1-M4 orchestration is now recorded as readiness evidence, but V7.2 contract baseline migration blockers are zero while real restore, real SMTP production, scheduler installation, S2PLT04 completion, final command execution, next-agent handoff, independent signoff, final bundle manifest, directory-level final bundle artifact validation pass, and final integrated production acceptance remain forbidden until V7.2 production stop gates and all `S2PMT07` final-bundle gates pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
 
+
+### `ITER-20260629-ADP-S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-AUDIT`
+
+- Timestamp: `2026-06-29T10:12:17+10:00`
+- Fact level: EXTRACTED from S2PLT01 terminal acceptance audit CLI output, focused S2PLT01 replay-gate regression test, phase record, run manifest, traceability row, delivery task, and three base files.
+- Base commit: `6ff46be872ae777e4539124f1fef34d773ded0e8`
+- Product version: `0.23.1`
+- Status: `adp audit-s2plt01-terminal-acceptance --json` returns blocked / exit 2 with `terminal_acceptance_ready=false` and `s2plt01_accepted=false`.
+- Task IDs: `S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-AUDIT`; parent `S2PMT07-S2PLT04-COMPLETION-REPORT`; acceptance `ACC-S2PLT01-30D`.
+- Goal: Prevent future agents from treating the existing S2PLT01 independent replay review receipt as S2PLT01 terminal acceptance or S2PLT04 completion-report readiness.
+- Files changed: S2PLT01 replay gate helper, ADP CLI, focused S2PLT01 replay-gate regression test, phase record, run manifest, traceability/delivery/event records, user-center traceability page, and three base files.
+- Decisions: `review_receipt_present=true` and `review_package_passed=true`, but `full_replay_executed=false`, `S2PLT01_ACCEPTED=false`, `S2PLT04_COMPLETED=false`, `S2PMT07_FINAL_SIGNOFF=false`, and inherited V7.1 P0/P1 remain open.
+- Validation: TDD red failed because `audit-s2plt01-terminal-acceptance` was not recognized; focused S2PLT01 replay-gate tests then passed with 21 OK.
+- Boundaries: No S2PLT01 acceptance, S2PLT04 completion report, final command execution, next-agent handoff, independent signoff, final manifest, SMTP, scheduler, Release, restore, CURRENT/V7 change, source/ranking change, DAILY_OPERATION, or integrated production acceptance.
+- Branch hygiene: no branch or PR is created by this run; closeout must recheck open PR count and ADP/arxiv/s2p remote branches.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-AUDIT-20260629.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT01_TERMINAL_ACCEPTANCE_AUDIT.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py`; `arxiv-daily-push/src/arxiv_daily_push/cli.py`; `arxiv-daily-push/tests/test_stage2_replay_gate.py`.
+- Next step: Supply truthful terminal evidence for S2PLT01, S2PLT02, and S2PLT03 before writing `FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json`.
 
 ### `ITER-20260629-ADP-S2PMT07-S2PLT04-COMPLETION-EVIDENCE-AUDIT`
 
