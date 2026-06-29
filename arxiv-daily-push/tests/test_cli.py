@@ -532,6 +532,17 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["status"], "blocked")
         self.assertEqual(payload["scope"], "final_bundle_prerequisite_plan_only_no_production_acceptance")
         self.assertEqual(payload["next_required_step"], "S2PLT04_COMPLETION_REPORT")
+        self.assertFalse(payload["next_required_step_is_actionable"])
+        self.assertEqual(payload["next_executable_task"], "S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION")
+        self.assertTrue(payload["next_required_step_blocked_by_upstream_evidence"])
+        self.assertEqual(
+            payload["upstream_blockers"],
+            [
+                "s2plt04_completion_report_blocked_by_s2plt02_terminal_delivery_proof_missing",
+                "s2plt04_completion_report_blocked_by_s2plt03_terminal_resilience_proof_missing",
+                "s2plt02_terminal_delivery_proof_blocked_by_real_proof_capture_authorization_missing",
+            ],
+        )
         self.assertFalse(payload["all_required_steps_passed"])
         self.assertFalse(payload["ready_for_final_bundle_manifest"])
         step_status = {step["step_id"]: step["status"] for step in payload["ordered_steps"]}
@@ -638,6 +649,8 @@ class CliTests(unittest.TestCase):
         payload = json.loads(completed.stdout)
         self.assertEqual(payload["status"], "blocked")
         self.assertEqual(payload["next_required_step"], "S2PLT04_COMPLETION_REPORT")
+        self.assertFalse(payload["next_required_step_is_actionable"])
+        self.assertEqual(payload["next_executable_task"], "S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION")
         self.assertFalse(payload["integrated_production_accepted"])
         self.assertFalse(payload["real_smtp_send_enabled"])
         self.assertFalse(payload["scheduler_install_enabled"])

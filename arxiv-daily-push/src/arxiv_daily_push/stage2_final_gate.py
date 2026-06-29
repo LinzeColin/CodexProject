@@ -594,6 +594,26 @@ S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_BLOCKING_REASONS = (
     "inherited_v7_1_p0_findings_open",
     "inherited_v7_1_p1_findings_open",
 )
+S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_DEFAULT_ACTION = (
+    "produce_artifact_then_revalidate_without_production_side_effects"
+)
+S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT04_UPSTREAM_ACTION = (
+    "resolve_upstream_s2plt02_s2plt03_terminal_evidence_before_artifact"
+)
+S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_NEXT_EXECUTABLE_TASK_WHEN_S2PLT04_BLOCKED = (
+    "S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION"
+)
+S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_UPSTREAM_BLOCKERS = (
+    "s2plt04_completion_report_blocked_by_s2plt02_terminal_delivery_proof_missing",
+    "s2plt04_completion_report_blocked_by_s2plt03_terminal_resilience_proof_missing",
+    "s2plt02_terminal_delivery_proof_blocked_by_real_proof_capture_authorization_missing",
+)
+S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_UPSTREAM_UNBLOCK_ORDER = (
+    "S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION",
+    "S2PLT02_TERMINAL_DELIVERY_PROOF",
+    "S2PLT03_TERMINAL_RESILIENCE_PROOF",
+    "S2PLT04_COMPLETION_REPORT",
+)
 S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_FORBIDDEN_FLAGS = (
     "production_acceptance_claimed",
     "integrated_production_accepted",
@@ -6312,13 +6332,20 @@ def build_final_bundle_prerequisite_plan_state(
             (validation[key] for key in artifact_keys if isinstance(validation.get(key), str)),
             "UNKNOWN_ARTIFACT_REF",
         )
+        upstream_blocked = step_id == "S2PLT04_COMPLETION_REPORT" and validation.get("status") != "pass"
+        default_action = (
+            S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT04_UPSTREAM_ACTION
+            if upstream_blocked
+            else S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_DEFAULT_ACTION
+        )
         ordered_steps.append(
             {
                 "step_id": step_id,
                 "status": validation.get("status"),
                 "artifact_ref": artifact_ref,
                 "validation_errors": list(validation.get("validation_errors", [])),
-                "default_action": "produce_artifact_then_revalidate_without_production_side_effects",
+                "upstream_blocked": upstream_blocked,
+                "default_action": default_action,
             }
         )
 
@@ -6347,6 +6374,19 @@ def build_final_bundle_prerequisite_plan_state(
     for inherited_blocker in inherited_zero_blockers:
         if inherited_blocker and inherited_blocker not in blocking_reasons:
             blocking_reasons.append(inherited_blocker)
+    next_required_step = next(
+        (step["step_id"] for step in ordered_steps if step["status"] != "pass"),
+        None,
+    )
+    s2plt04_step = next(
+        (step for step in ordered_steps if step["step_id"] == "S2PLT04_COMPLETION_REPORT"),
+        None,
+    )
+    s2plt04_blocked_by_upstream_evidence = (
+        bool(s2plt04_step)
+        and s2plt04_step.get("upstream_blocked") is True
+        and next_required_step == "S2PLT04_COMPLETION_REPORT"
+    )
     state = {
         "status": "pass" if all_required_steps_passed else "blocked",
         "scope": "final_bundle_prerequisite_plan_only_no_production_acceptance",
@@ -6354,9 +6394,23 @@ def build_final_bundle_prerequisite_plan_state(
         "acceptance_id": S2PMT07_ACCEPTANCE_ID,
         "required_steps": list(S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_REQUIRED_STEPS),
         "ordered_steps": ordered_steps,
-        "next_required_step": next(
-            (step["step_id"] for step in ordered_steps if step["status"] != "pass"),
-            None,
+        "next_required_step": next_required_step,
+        "next_required_step_is_actionable": not s2plt04_blocked_by_upstream_evidence,
+        "next_required_step_blocked_by_upstream_evidence": s2plt04_blocked_by_upstream_evidence,
+        "next_executable_task": (
+            S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_NEXT_EXECUTABLE_TASK_WHEN_S2PLT04_BLOCKED
+            if s2plt04_blocked_by_upstream_evidence
+            else next_required_step
+        ),
+        "upstream_blockers": (
+            list(S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_UPSTREAM_BLOCKERS)
+            if s2plt04_step and s2plt04_step.get("upstream_blocked") is True
+            else []
+        ),
+        "upstream_unblock_order": (
+            list(S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_UPSTREAM_UNBLOCK_ORDER)
+            if s2plt04_step and s2plt04_step.get("upstream_blocked") is True
+            else []
         ),
         "all_required_steps_passed": all_required_steps_passed,
         "ready_for_final_bundle_manifest": False,
@@ -6392,6 +6446,18 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
         expected_status = "pass" if not step.get("validation_errors", []) else "blocked"
         if step.get("status") != expected_status:
             errors.append("final bundle prerequisite plan step statuses must match validation errors")
+        expected_upstream_blocked = (
+            step.get("step_id") == "S2PLT04_COMPLETION_REPORT" and step.get("status") != "pass"
+        )
+        if step.get("upstream_blocked") is not expected_upstream_blocked:
+            errors.append("final bundle prerequisite plan upstream_blocked flags are invalid")
+        expected_default_action = (
+            S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT04_UPSTREAM_ACTION
+            if expected_upstream_blocked
+            else S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_DEFAULT_ACTION
+        )
+        if step.get("default_action") != expected_default_action:
+            errors.append("final bundle prerequisite plan step default_action is invalid")
 
     expected_next_required_step = next(
         (step.get("step_id") for step in ordered_steps if step.get("status") != "pass"),
@@ -6399,6 +6465,41 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
     )
     if state.get("next_required_step") != expected_next_required_step:
         errors.append("final bundle prerequisite plan next_required_step must match first blocked step")
+    s2plt04_step = next(
+        (step for step in ordered_steps if step.get("step_id") == "S2PLT04_COMPLETION_REPORT"),
+        None,
+    )
+    expected_s2plt04_upstream_blocked = bool(
+        s2plt04_step and s2plt04_step.get("upstream_blocked") is True
+    )
+    expected_next_step_upstream_blocked = (
+        expected_next_required_step == "S2PLT04_COMPLETION_REPORT" and expected_s2plt04_upstream_blocked
+    )
+    if state.get("next_required_step_blocked_by_upstream_evidence") is not expected_next_step_upstream_blocked:
+        errors.append("final bundle prerequisite plan upstream evidence marker is invalid")
+    if state.get("next_required_step_is_actionable") is not (not expected_next_step_upstream_blocked):
+        errors.append("final bundle prerequisite plan next_required_step_is_actionable is invalid")
+    expected_next_executable_task = (
+        S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_NEXT_EXECUTABLE_TASK_WHEN_S2PLT04_BLOCKED
+        if expected_next_step_upstream_blocked
+        else expected_next_required_step
+    )
+    if state.get("next_executable_task") != expected_next_executable_task:
+        errors.append("final bundle prerequisite plan next_executable_task is invalid")
+    expected_upstream_blockers = (
+        list(S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_UPSTREAM_BLOCKERS)
+        if expected_s2plt04_upstream_blocked
+        else []
+    )
+    if state.get("upstream_blockers") != expected_upstream_blockers:
+        errors.append("final bundle prerequisite plan upstream_blockers are invalid")
+    expected_upstream_unblock_order = (
+        list(S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_UPSTREAM_UNBLOCK_ORDER)
+        if expected_s2plt04_upstream_blocked
+        else []
+    )
+    if state.get("upstream_unblock_order") != expected_upstream_unblock_order:
+        errors.append("final bundle prerequisite plan upstream_unblock_order is invalid")
     if state.get("all_required_steps_passed") is not False:
         errors.append("final bundle prerequisite plan all_required_steps_passed must remain false")
     if state.get("ready_for_final_bundle_manifest") is not False:

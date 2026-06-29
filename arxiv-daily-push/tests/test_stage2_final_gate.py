@@ -4560,11 +4560,37 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(plan["all_required_steps_passed"])
         self.assertFalse(plan["ready_for_final_bundle_manifest"])
         self.assertEqual(plan["next_required_step"], "S2PLT04_COMPLETION_REPORT")
+        self.assertFalse(plan["next_required_step_is_actionable"])
+        self.assertEqual(plan["next_executable_task"], "S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION")
+        self.assertTrue(plan["next_required_step_blocked_by_upstream_evidence"])
+        self.assertEqual(
+            plan["upstream_unblock_order"],
+            [
+                "S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION",
+                "S2PLT02_TERMINAL_DELIVERY_PROOF",
+                "S2PLT03_TERMINAL_RESILIENCE_PROOF",
+                "S2PLT04_COMPLETION_REPORT",
+            ],
+        )
+        self.assertEqual(
+            plan["upstream_blockers"],
+            [
+                "s2plt04_completion_report_blocked_by_s2plt02_terminal_delivery_proof_missing",
+                "s2plt04_completion_report_blocked_by_s2plt03_terminal_resilience_proof_missing",
+                "s2plt02_terminal_delivery_proof_blocked_by_real_proof_capture_authorization_missing",
+            ],
+        )
         self.assertEqual([step["step_id"] for step in plan["ordered_steps"]], list(plan["required_steps"]))
         step_status = {step["step_id"]: step["status"] for step in plan["ordered_steps"]}
         self.assertEqual(step_status["INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION"], "pass")
         self.assertEqual(step_status["P0_P1_ZERO_PROOF_ARTIFACT"], "pass")
         self.assertEqual(step_status["NO_PRODUCTION_SIDE_EFFECT_ATTESTATION"], "pass")
+        step_by_id = {step["step_id"]: step for step in plan["ordered_steps"]}
+        self.assertTrue(step_by_id["S2PLT04_COMPLETION_REPORT"]["upstream_blocked"])
+        self.assertEqual(
+            step_by_id["S2PLT04_COMPLETION_REPORT"]["default_action"],
+            "resolve_upstream_s2plt02_s2plt03_terminal_evidence_before_artifact",
+        )
         self.assertNotIn("independent_final_reviewer_assignment_missing", plan["blocking_reasons"])
         self.assertNotIn("p0_p1_zero_proof_artifact_missing", plan["blocking_reasons"])
         self.assertNotIn("inherited_v7_1_p0_findings_open", plan["blocking_reasons"])
@@ -4628,6 +4654,8 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(plan["status"], "blocked")
         self.assertFalse(plan["ready_for_final_bundle_manifest"])
         self.assertTrue(state["available_prebundle_evidence"]["FINAL_BUNDLE_PREREQUISITE_PLAN"])
+        self.assertFalse(plan["next_required_step_is_actionable"])
+        self.assertEqual(plan["next_executable_task"], "S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION")
         self.assertEqual(validate_final_bundle_prerequisite_plan_state(plan), [])
         self.assertEqual(validate_final_acceptance_bundle_readiness_state(state), [])
 
