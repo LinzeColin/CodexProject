@@ -20,14 +20,14 @@ shadow folders as product roots. Before cleanup or migration, verify `.app`
 launchers, LaunchAgents, PID files, and listening process cwd so PFI, EEI,
 Alpha, Serenity, OpenAIDatabase/Memory Atlas, and arxiv-daily-push continue to
 resolve to this checkout.
-总工作区：
-/Users/linzezhang/Documents/Codex
-主仓库 / 主 working tree：
-/Users/linzezhang/Documents/Codex/CodexProject
-GitHub source of truth：
-https://github.com/LinzeColin/CodexProject.git
-worktree 根目录：
-/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/
+
+总工作区：/Users/linzezhang/Documents/Codex
+
+主仓库 / 主 working tree：/Users/linzezhang/Documents/Codex/CodexProject
+
+GitHub source of truth：https://github.com/LinzeColin/CodexProject.git
+
+worktree 根目录：/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/
 
 ## Assurance Vocabulary
 
@@ -45,17 +45,17 @@ worktree 根目录：
 
 | Project | Path | Repository |
 |---|---|---|
-| `Alpha` | `Alpha` | https://github.com/LinzeColin/Alpha |
+| `Alpha` | `Alpha` | https://github.com/LinzeColin/CodexProject/Alpha |
 | `EEI` | `EEI` | https://github.com/LinzeColin/CodexProject/tree/main/EEI |
-| `FIFA` | `FIFA` | https://github.com/LinzeColin/FIFA |
-| `OpMe_System` | `OpMe_System` | https://github.com/LinzeColin/OpMe_System |
+| `FIFA` | `FIFA` | https://github.com/LinzeColin/CodexProject/FIFA |
+| `OpMe_System` | `OpMe_System` | https://github.com/LinzeColin/CodexProject/OpMe_System |
 | `OpenAIDatabase` | `OpenAIDatabase` | https://github.com/LinzeColin/CodexProject/tree/main/OpenAIDatabase |
 | `MetaDatabase` | `MetaDatabase` | https://github.com/LinzeColin/CodexProject/tree/main/MetaDatabase |
 | `KMFA` | `KMFA` | https://github.com/LinzeColin/CodexProject/tree/main/KMFA |
 | `PFI` | `PFI` | https://github.com/LinzeColin/CodexProject/tree/main/PFI |
 | `QBVS` | `QBVS` | https://github.com/LinzeColin/CodexProject/tree/main/QBVS |
-| `Serenity-Alipay` | `Serenity-Alipay` | https://github.com/LinzeColin/Serenity-Alipay |
-| `whkmSalary` | `whkmSalary` | https://github.com/LinzeColin/whkmSalary |
+| `Serenity-Alipay` | `Serenity-Alipay` | https://github.com/LinzeColin/CodexProject/Serenity-Alipay |
+| `whkmSalary` | `whkmSalary` | https://github.com/LinzeColin/CodexProject/whkmSalary |
 | `arxiv-daily-push` | `arxiv-daily-push` | https://github.com/LinzeColin/CodexProject/tree/main/arxiv-daily-push |
 
 ## Required Checks
