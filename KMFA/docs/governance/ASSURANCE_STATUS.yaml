@@ -5,7 +5,7 @@ source_base_commit: "precommit-pending"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_STAGE_REVIEW"
 snapshot_event_time: "2026-06-29T19:40:00+10:00"
 generator_version: "manual-s02-stage-review"
-final_commit_binding: "pending_stage2_github_push"
+final_commit_binding: "834ff75516405ddbc8289f00ba67579691473709"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -58,6 +58,6 @@ dimensions:
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "READY_FOR_STAGE2_UPLOAD"
+  status: "UPLOADED_TO_GITHUB_MAIN"
   release_gate: "KMFA-S02-GATE"
   blocker_ids: []

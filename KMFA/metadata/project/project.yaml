@@ -4,7 +4,7 @@ version: "0.1.0-s02p3"
 current_stage: "S02"
 current_phase: "S02-P3"
 current_phase_status: "completed_validated"
-current_stage_status: "review_passed_upload_ready"
+current_stage_status: "uploaded_to_github_main"
 github_directory: "LinzeColin/CodexProject/KMFA"
 human_plane:
   - "README.md"
@@ -37,4 +37,6 @@ upload_policy:
   stage_upload_requires_review: true
   stage_upload_requires_review_fixes: true
   stage2_upload_ready_after_review: true
+  stage2_uploaded_to_github_main: true
+  stage2_uploaded_commit: "834ff75516405ddbc8289f00ba67579691473709"
   upload_surface: "clean_worktree_from_origin_main_after_stage2_review"

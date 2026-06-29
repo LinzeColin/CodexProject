@@ -8,7 +8,7 @@ product_version: 0.1.0-s02p3
 - current_stage: `S02`
 - current_phase: `S02-P3`
 - current_tasks: `S2PCT01`, `S2PCT02`, `S2PCT03`
-- status: `s02_stage_review_passed_upload_ready`
+- status: `s02_uploaded_to_github_main`
 - risk_tier: `T3`
 
 ## Completed
@@ -33,10 +33,11 @@ product_version: 0.1.0-s02p3
 | `S2PCT02` | A/B/C/D 报告可信等级定义建立 | `KMFA/metadata/reports/report_grade_policy.yaml`, `KMFA/metadata/reports/report_manifest.jsonl` |
 | `S2PCT03` | 质量等级到报告发布权限门禁建立 | `KMFA/metadata/reports/report_release_gate.yaml`, `KMFA/tools/check_report_grade_gate.py` |
 | `KMFA-S02-STAGE-REVIEW-20260629` | Stage 2 整体复审通过，上传路径可用 | `KMFA/stage_artifacts/S02_STAGE_REVIEW/human/stage2_review_report.md` |
+| `KMFA-S02-GITHUB-UPLOAD-20260629` | Stage 2 整体上传 GitHub main | `834ff75516405ddbc8289f00ba67579691473709` |
 
 ## Not Completed
 
 | Task | Reason | Next |
 |---|---|---|
 | `S04/S06` amount and zero-delta implementation | 后续 Stage | 按 Roadmap 单 Stage/Phase 推进 |
-| Stage 2 GitHub upload | Stage 2 复审已通过但尚未 push | 当前收口整体上传 |
+| S03-P1 文件型导入 | 后续 Stage，尚未开始 | 下一轮只执行 S03-P1 |
