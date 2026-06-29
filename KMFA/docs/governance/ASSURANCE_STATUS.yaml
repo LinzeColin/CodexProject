@@ -52,6 +52,7 @@ dimensions:
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/private_backfill_record.md"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/excel_resolution_record.md"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/excel_owner_decision_packet.md"
+      - "KMFA/tools/check_s05_p2_excel_owner_decision.py"
   operational_validation:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
@@ -71,6 +72,7 @@ dimensions:
       - "KMFA/tools/check_a0_file_registration.py"
       - "KMFA/tools/a0_golden_fixture.py"
       - "KMFA/tools/check_a0_golden_fixture.py"
+      - "KMFA/tools/check_s05_p2_excel_owner_decision.py"
       - "KMFA/stage_artifacts/S02_P3_quality_gate/human/test_results.md"
   delivery_evidence:
     status: "VERIFIED"
@@ -99,6 +101,7 @@ dimensions:
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/private_backfill_manifest.json"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/excel_resolution_manifest.json"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/excel_owner_decision_packet.json"
+      - "KMFA/tools/check_s05_p2_excel_owner_decision.py"
   evidence_freshness:
     status: "PARTIAL"
     fact_level: "EXTRACTED"

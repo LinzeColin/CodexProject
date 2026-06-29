@@ -151,6 +151,8 @@ features:
     evidence_refs:
       - "KMFA/tools/a0_golden_fixture.py"
       - "KMFA/tests/test_a0_golden_fixture.py"
+      - "KMFA/tools/check_s05_p2_excel_owner_decision.py"
+      - "KMFA/tests/test_s05_p2_excel_owner_decision.py"
       - "KMFA/metadata/baseline/a0_golden_fixture_manifest.json"
       - "KMFA/metadata/baseline/a0_golden_fixture_candidates.jsonl"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/s05_p2_completion_record.md"
@@ -182,13 +184,14 @@ limitations:
       - "KMFA/stage_artifacts/S04_P3_basic_tool_tests/human/s04_p3_completion_record.md"
       - "KMFA/stage_artifacts/S04_STAGE_REVIEW/human/stage4_review_report.md"
       - "KMFA/stage_artifacts/S04_STAGE_REVIEW/human/github_upload_record.md"
-  - statement: "S05-P1 A0 文件登记已完成本地验证；S05-P2 public-safe 字段候选已生成，40 条 PDF 字段已 hash-only 回填；5 条 Excel 字段已机器复核并生成 owner 决策包，但仍待 owner/授权私有映射决策。"
+  - statement: "S05-P1 A0 文件登记已完成本地验证；S05-P2 public-safe 字段候选已生成，40 条 PDF 字段已 hash-only 回填；5 条 Excel 字段已机器复核并生成 owner 决策包和 validator，但仍待 owner/授权私有映射决策。"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/stage_artifacts/S05_P1_a0_file_registration/human/s05_p1_completion_record.md"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/s05_p2_completion_record.md"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/excel_resolution_record.md"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/excel_owner_decision_packet.md"
+      - "KMFA/tools/check_s05_p2_excel_owner_decision.py"
   - statement: "原始敏感经营数据、银行流水、合同、工资和税务申报明文不得进入公开仓库。"
     fact_level: "EXTRACTED"
     evidence_refs:
