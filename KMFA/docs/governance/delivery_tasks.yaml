@@ -1070,3 +1070,97 @@ tasks:
     rollback: "Remove S04_STAGE_REVIEW artifacts and restore Stage 4 status to review pending."
     target_version: "0.1.0-s04p3"
     completed_version: "0.1.0-s04p3"
+  - task_id: "S5PAT01"
+    phase: "S5PA"
+    objective: "登记销售绩效考核压缩包内 8 个 PDF 和 1 个 Excel 的 public-safe inventory、source package SHA256 和成员 SHA256 待补状态。"
+    scope:
+      - "KMFA/tools/a0_file_register.py"
+      - "KMFA/metadata/baseline/a0_file_manifest.json"
+      - "KMFA/stage_artifacts/S05_P1_a0_file_registration"
+    non_scope:
+      - "raw zip/pdf/excel commit"
+      - "field value extraction"
+      - "zero-delta"
+      - "GitHub upload"
+    status: "completed"
+    dependencies:
+      - "KMFA-S04-GITHUB-UPLOAD-20260629"
+    required_files:
+      - "KMFA/metadata/baseline/a0_file_manifest.json"
+      - "KMFA/stage_artifacts/S05_P1_a0_file_registration/human/s05_p1_completion_record.md"
+    acceptance_ids:
+      - "ACC-KMFA-S05-P1"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest KMFA.tests.test_a0_file_register -q"
+      - "PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_a0_file_registration.py"
+    test_results:
+      - "PASS: A0 registration contains 9 files, 8 PDF, 1 Excel, raw_file_committed=false and raw_content_committed=false"
+      - "PASS_WITH_PENDING_MEMBER_SHA256: private source zip not found, member_sha256_pending=9 and legacy fingerprints are not treated as SHA256"
+    evidence_refs:
+      - "KMFA/metadata/baseline/a0_file_manifest.json"
+      - "KMFA/stage_artifacts/S05_P1_a0_file_registration/human/s05_p1_completion_record.md"
+      - "KMFA/stage_artifacts/S05_P1_a0_file_registration/human/test_results.md"
+    risk: "Member-level SHA256 remains pending until the private source zip is provided locally; no raw source file may be committed."
+    rollback: "Remove a0_file_register.py, check_a0_file_registration.py, A0 baseline metadata, S05-P1 artifacts, and restore S05 status."
+    target_version: "0.1.0-s05p1"
+    completed_version: "0.1.0-s05p1"
+  - task_id: "S5PAT02"
+    phase: "S5PA"
+    objective: "生成 A0 权威项目成本文件清单和项目候选清单。"
+    scope:
+      - "KMFA/metadata/baseline/a0_file_manifest.json"
+      - "KMFA/metadata/baseline/a0_project_candidates.jsonl"
+    non_scope:
+      - "field-level golden baseline"
+      - "human lock"
+      - "report generation"
+      - "GitHub upload"
+    status: "completed"
+    dependencies:
+      - "S5PAT01"
+    required_files:
+      - "KMFA/metadata/baseline/a0_file_manifest.json"
+      - "KMFA/metadata/baseline/a0_project_candidates.jsonl"
+    acceptance_ids:
+      - "ACC-KMFA-S05-P1"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_a0_file_registration.py"
+    test_results:
+      - "PASS: manifest and candidate list align 1:1 with 9 A0 source file records"
+    evidence_refs:
+      - "KMFA/metadata/baseline/a0_file_manifest.json"
+      - "KMFA/metadata/baseline/a0_project_candidates.jsonl"
+      - "KMFA/stage_artifacts/S05_P1_a0_file_registration/machine/s05_p1_manifest.json"
+    risk: "Candidate list is not the field-level golden baseline and cannot support formal reports."
+    rollback: "Remove A0 manifest and candidate JSONL and rerun S05-P1 status update."
+    target_version: "0.1.0-s05p1"
+    completed_version: "0.1.0-s05p1"
+  - task_id: "S5PAT03"
+    phase: "S5PA"
+    objective: "标记 Q3 机器候选与 Q4 人工锁定状态。"
+    scope:
+      - "KMFA/metadata/baseline/a0_project_candidates.jsonl"
+      - "KMFA/tools/check_a0_file_registration.py"
+    non_scope:
+      - "Q4 human lock completion"
+      - "Q5 formal report approval"
+      - "zero-delta"
+      - "GitHub upload"
+    status: "completed"
+    dependencies:
+      - "S5PAT02"
+    required_files:
+      - "KMFA/metadata/baseline/a0_project_candidates.jsonl"
+    acceptance_ids:
+      - "ACC-KMFA-S05-P1"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_a0_file_registration.py"
+    test_results:
+      - "PASS: candidates are Q3 machine candidates, q4_human_locked=false and q5_formal_report_allowed=false"
+    evidence_refs:
+      - "KMFA/metadata/baseline/a0_project_candidates.jsonl"
+      - "KMFA/stage_artifacts/S05_P1_a0_file_registration/human/test_results.md"
+    risk: "Q3 machine candidates require S05-P2/S05-P3 human-confirmed field baseline before release use."
+    rollback: "Remove candidate JSONL and restore S05-P1 status to pending."
+    target_version: "0.1.0-s05p1"
+    completed_version: "0.1.0-s05p1"
