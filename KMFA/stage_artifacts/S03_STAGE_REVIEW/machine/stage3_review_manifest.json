@@ -1,0 +1,40 @@
+{
+  "schema_version": "kmfa.stage_review_manifest.v1",
+  "project_id": "KMFA",
+  "review_id": "KMFA-S03-STAGE-REVIEW-20260629",
+  "stage": "S03",
+  "version": "0.1.0-s03p3",
+  "status": "pass_upload_ready",
+  "review_time": "2026-06-29T20:15:00+10:00",
+  "phase_artifacts": [
+    "KMFA/stage_artifacts/S03_P1_file_import",
+    "KMFA/stage_artifacts/S03_P2_source_check_matrix",
+    "KMFA/stage_artifacts/S03_P3_source_priority"
+  ],
+  "review_artifacts": [
+    "KMFA/stage_artifacts/S03_STAGE_REVIEW/human/stage3_review_report.md",
+    "KMFA/stage_artifacts/S03_STAGE_REVIEW/human/test_results.md",
+    "KMFA/stage_artifacts/S03_STAGE_REVIEW/machine/stage3_review_manifest.json"
+  ],
+  "findings": [
+    {
+      "finding_id": "KMFA-S03-REV-F01",
+      "severity": "IMPORTANT",
+      "status": "RESOLVED",
+      "summary": "Expanded source priority order to match TaskPack Section 6 data priority chain."
+    },
+    {
+      "finding_id": "KMFA-S03-REV-F02",
+      "severity": "INFO",
+      "status": "ACCEPTED",
+      "summary": "Stage 3 does not implement business parsing, amount calculation, fact layer, reports, UI, or external interfaces."
+    },
+    {
+      "finding_id": "KMFA-S03-REV-F03",
+      "severity": "INFO",
+      "status": "RESOLVED_BY_UPLOAD_PROCESS",
+      "summary": "Latest origin/main must be preserved before upload."
+    }
+  ],
+  "upload_gate": "rebase_or_merge_origin_main_then_validate_then_push"
+}

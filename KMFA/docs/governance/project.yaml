@@ -1,11 +1,11 @@
 schema_version: "codexproject.project.v1"
 project_id: "KMFA"
 project_name: "KMFA 经营分析系统"
-summary: "KMFA 是独立经营分析系统；当前已承接 v1.2 FULL_HTML_NO_OMISSION 完整任务包并重放 Stage 1，同时保留 Stage 2 三个协议 Phase 已完成历史；不声明业务 MVP、生产就绪、真实数据导入、正式报告或外部接口能力。"
-version: "0.1.0-s02p3-v12baseline"
+summary: "KMFA 是独立经营分析系统；当前已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 S03-P1 文件型导入、S03-P2 数据源检查矩阵和 S03-P3 源优先级；不声明业务 MVP、生产就绪、真实数据导入、正式报告或外部接口能力。"
+version: "0.1.0-s03p3"
 fact_level: "EXTRACTED"
 owner_role: "owner"
-current_status: "v12_stage1_replay_complete"
+current_status: "s03_review_passed_upload_ready"
 features:
   - feature_id: "FEAT-KMFA-001"
     name: "项目治理骨架"
@@ -69,6 +69,30 @@ features:
       - "KMFA/taskpack/v1_2/machine/source_package_manifest.json"
       - "KMFA/metadata/baseline/source_package_v1_2.json"
       - "KMFA/tools/check_required_html.py"
+  - feature_id: "FEAT-KMFA-009"
+    name: "S03-P1 文件型导入登记"
+    status: "active"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "KMFA/tools/file_import_register.py"
+      - "KMFA/tests/test_file_import_register.py"
+      - "KMFA/stage_artifacts/S03_P1_file_import/human/s03_p1_completion_record.md"
+  - feature_id: "FEAT-KMFA-010"
+    name: "S03-P2 数据源检查矩阵"
+    status: "active"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "KMFA/tools/source_check_matrix.py"
+      - "KMFA/tests/test_source_check_matrix.py"
+      - "KMFA/stage_artifacts/S03_P2_source_check_matrix/human/s03_p2_completion_record.md"
+  - feature_id: "FEAT-KMFA-011"
+    name: "S03-P3 源优先级"
+    status: "active"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "KMFA/tools/source_priority.py"
+      - "KMFA/tests/test_source_priority.py"
+      - "KMFA/stage_artifacts/S03_P3_source_priority/human/s03_p3_completion_record.md"
 limitations:
   - statement: "S02-P1/P2/P3 已完成、Stage 2 复审通过并已上传 GitHub main。"
     fact_level: "EXTRACTED"
@@ -83,6 +107,10 @@ limitations:
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/README.md"
+  - statement: "S03-P3 源优先级已本地完成；Stage 3 复审已通过，GitHub 上传尚未完成。"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "KMFA/metadata/stage_status.jsonl"
   - statement: "原始敏感经营数据、银行流水、合同、工资和税务申报明文不得进入公开仓库。"
     fact_level: "EXTRACTED"
     evidence_refs:

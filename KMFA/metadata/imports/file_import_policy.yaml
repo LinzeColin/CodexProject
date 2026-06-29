@@ -1,0 +1,40 @@
+{
+  "schema_version": "kmfa.s03p1.file_import_policy.v1",
+  "project_id": "KMFA",
+  "stage_phase": "S03-P1",
+  "status": "active",
+  "tool_ref": "KMFA/tools/file_import_register.py",
+  "test_ref": "python3 -m unittest KMFA.tests.test_file_import_register -q",
+  "supported_extensions": [".zip", ".xlsx", ".xls", ".csv", ".pdf", ".wps", ".et", ".dps"],
+  "registration_outputs": [
+    "import_run",
+    "source_registry_entry",
+    "raw_file_manifest"
+  ],
+  "required_metadata_fields": [
+    "import_run_id",
+    "source_id",
+    "file_hash",
+    "file_size_bytes",
+    "storage_ref",
+    "original_filename_hash",
+    "file_format",
+    "container_type",
+    "source_package_ref"
+  ],
+  "zip_safety_rules": [
+    "reject_absolute_paths",
+    "reject_parent_directory_traversal",
+    "reject_symlinks",
+    "extract_only_to_private_local_directory"
+  ],
+  "wps_ole_rules": [
+    "detect_wps_native_extensions",
+    "detect_ole_compound_magic",
+    "emit_actionable_conversion_guidance",
+    "do_not_parse_business_fields_in_s03p1"
+  ],
+  "public_repo_raw_file_bytes_allowed": false,
+  "public_repo_plaintext_filename_allowed": false,
+  "public_repo_business_rows_allowed": false
+}

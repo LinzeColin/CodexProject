@@ -5,12 +5,12 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.0-s02p3-v12baseline`
-- current_stage: `S01-v1.2-replay`
-- current_phase: `FULL_HTML_NO_OMISSION baseline accepted`
-- status: `v12_stage1_replay_complete`
+- version: `0.1.0-s03p3`
+- current_stage: `S03`
+- current_phase: `S03 Stage Review`
+- status: `s03_review_passed_upload_ready`
 - production_ready: `false`
-- github_upload_ready: `completed`
+- github_upload_ready: `true_pending_push`
 
 ## 已完成
 
@@ -29,15 +29,19 @@
 - v1.2 HTML 样板已承接：45 个 HTML，7 个核心验收样板。
 - 原始私有源数据未提交公开仓库；只保存 `source_manifests/用户原始上传数据_SHA256_v1_2.csv`。
 - Stage 1 已按 v1.2 重新走完，证据目录为 `KMFA/stage_artifacts/S01_REBASE_V12_FULL_TASKPACK/`。
+- S03-P1 文件型导入已完成：`KMFA/tools/file_import_register.py` 支持文件登记、hash/size/import_run/source package metadata、私有 storage ref、zip 安全解包和 WPS/OLE 提示。
+- S03-P2 数据源检查矩阵已完成：`KMFA/tools/source_check_matrix.py` 支持矩阵维度生成、五状态枚举和 metadata-only 状态事件。
+- S03-P3 源优先级已完成：`KMFA/tools/source_priority.py` 支持源类别优先级、同源失效重跑事件和跨源差异队列 metadata。
+- Stage 3 整体复审已通过：`KMFA/stage_artifacts/S03_STAGE_REVIEW/`。
 
 ## 未完成
 
-- S03 尚未开始。
-- S02 是 v1.1/v1.2 前的历史完成项；继续 S03 前需以 v1.2 HTML/报告门禁为基线复核影响面。
+- Stage 3 尚未上传 GitHub。
+- S02 是 v1.1/v1.2 前的历史完成项；继续后续 UI/报告任务仍需以 v1.2 HTML/报告门禁为基线复核影响面。
 
 ## 阻塞条件
 
 - 不能把 Stage 1 治理基线当成业务 MVP。
 - 不能上传原始敏感经营数据。
-- Stage 2 已按复审后整体上传规则上传 GitHub main。
+- Stage 3 当前已完成复审；上传前必须保留最新 `origin/main` 远端历史并重跑验证。
 - 后续所有开发必须建立在 v1.2 完整任务包和 HTML 样板基线上。

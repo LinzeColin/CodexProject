@@ -1,0 +1,40 @@
+{
+  "schema_version": "kmfa.source_check_matrix_schema.v1",
+  "project_id": "KMFA",
+  "stage_phase": "S03-P2",
+  "record_type": "source_check_matrix_row",
+  "required_dimensions": [
+    "source_system",
+    "business_segment",
+    "source_package_ref",
+    "entity_ref",
+    "account_ref",
+    "frequency"
+  ],
+  "required_fields": [
+    "matrix_id",
+    "source_id",
+    "import_run_id",
+    "file_hash",
+    "source_system",
+    "business_segment",
+    "source_package_ref",
+    "entity_ref",
+    "account_ref",
+    "frequency",
+    "status",
+    "evidence_ref"
+  ],
+  "allowed_statuses": [
+    "已就绪",
+    "部分/阻塞",
+    "失败/不适用",
+    "已过期",
+    "人工复核"
+  ],
+  "status_event_log": "KMFA/metadata/sources/source_status_events.jsonl",
+  "raw_layer_write_allowed": false,
+  "raw_source_mutation_allowed": false,
+  "raw_file_bytes_public_repo_allowed": false,
+  "business_rows_public_repo_allowed": false
+}

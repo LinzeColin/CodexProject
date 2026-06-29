@@ -1,12 +1,54 @@
 {
   "schema_version": "kmfa.source_registry.v1",
   "project_id": "KMFA",
-  "registry_status": "protocol_defined_no_sources_registered",
+  "registry_status": "s03p3_source_priority_supported_no_source_rows_committed",
   "source_id_policy_ref": "KMFA/metadata/protocol/metadata_protocol.yaml#/identifiers/source_id",
+  "registration_tool_ref": "KMFA/tools/file_import_register.py",
+  "source_check_matrix_tool_ref": "KMFA/tools/source_check_matrix.py",
+  "source_priority_tool_ref": "KMFA/tools/source_priority.py",
+  "source_check_matrix_refs": [
+    "KMFA/metadata/sources/source_check_matrix_schema.json",
+    "KMFA/metadata/sources/source_check_matrix_policy.yaml",
+    "KMFA/metadata/sources/source_check_matrix.jsonl",
+    "KMFA/metadata/sources/source_status_events.jsonl"
+  ],
+  "source_check_allowed_statuses": [
+    "已就绪",
+    "部分/阻塞",
+    "失败/不适用",
+    "已过期",
+    "人工复核"
+  ],
+  "source_priority_refs": [
+    "KMFA/metadata/sources/source_priority_policy.yaml",
+    "KMFA/metadata/sources/source_priority_events.jsonl",
+    "KMFA/metadata/quality/source_difference_queue.jsonl"
+  ],
+  "source_priority_order": [
+    "raw_upload",
+    "authorized_export",
+    "raw_extracted_value",
+    "staging_structured_row",
+    "canonical_fact",
+    "derived_metric",
+    "report_reference",
+    "frontend_display",
+    "processed_data"
+  ],
+  "same_source_inconsistency_actions": [
+    "invalidate_derived_cache",
+    "request_rerun"
+  ],
+  "cross_source_conflict_policy": {
+    "target_queue": "KMFA/metadata/quality/source_difference_queue.jsonl",
+    "resolution_policy": "manual_review_required",
+    "auto_selection_allowed": false
+  },
   "allowed_fields": [
     "source_id",
     "source_category",
     "source_label",
+    "source_class",
     "owner_role",
     "status",
     "evidence_ref"
@@ -14,6 +56,8 @@
   "forbidden_fields": [
     "raw_file_bytes",
     "raw_rows",
+    "raw_value",
+    "original_value",
     "bank_account_number",
     "password",
     "token",

@@ -1,0 +1,47 @@
+{
+  "schema_version": "kmfa.source_priority_policy.v1",
+  "project_id": "KMFA",
+  "stage_phase": "S03-P3",
+  "status": "active",
+  "tool_ref": "KMFA/tools/source_priority.py",
+  "test_ref": "python3 -m unittest KMFA.tests.test_source_priority -q",
+  "priority_event_file": "KMFA/metadata/sources/source_priority_events.jsonl",
+  "difference_queue_file": "KMFA/metadata/quality/source_difference_queue.jsonl",
+  "source_priority_order": [
+    "raw_upload",
+    "authorized_export",
+    "raw_extracted_value",
+    "staging_structured_row",
+    "canonical_fact",
+    "derived_metric",
+    "report_reference",
+    "frontend_display",
+    "processed_data"
+  ],
+  "source_priority_rank": {
+    "raw_upload": 10,
+    "authorized_export": 20,
+    "raw_extracted_value": 30,
+    "staging_structured_row": 40,
+    "canonical_fact": 50,
+    "derived_metric": 60,
+    "report_reference": 70,
+    "frontend_display": 80,
+    "processed_data": 90
+  },
+  "same_source_inconsistency_actions": [
+    "invalidate_derived_cache",
+    "request_rerun"
+  ],
+  "cross_source_conflict_policy": {
+    "target_queue": "source_difference_queue",
+    "resolution_policy": "manual_review_required",
+    "auto_selection_allowed": false,
+    "auto_selected_source_id": null
+  },
+  "target_layer": "metadata",
+  "raw_layer_write_allowed": false,
+  "raw_source_mutation_allowed": false,
+  "public_repo_raw_file_bytes_allowed": false,
+  "public_repo_business_rows_allowed": false
+}

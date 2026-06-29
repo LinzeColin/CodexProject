@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.0-s02p3-v12baseline
+product_version: 0.1.0-s03p3
 
 ## Current Iteration
 
 - project_id: `KMFA`
-- current_stage: `S01-v1.2-REPLAY`
-- current_phase: `FULL_HTML_NO_OMISSION baseline accepted`
-- current_tasks: `KMFA-S01-V12-REBASE-20260629`
-- status: `v12_stage1_replay_complete`
+- current_stage: `S03`
+- current_phase: `S03-P3 源优先级`
+- current_tasks: `S3PCT01-S3PCT03`
+- status: `s03_review_passed_upload_ready`
 - risk_tier: `T3`
 
 ## Completed
@@ -35,11 +35,15 @@ product_version: 0.1.0-s02p3-v12baseline
 | `KMFA-S02-STAGE-REVIEW-20260629` | Stage 2 整体复审通过，上传路径可用 | `KMFA/stage_artifacts/S02_STAGE_REVIEW/human/stage2_review_report.md` |
 | `KMFA-S02-GITHUB-UPLOAD-20260629` | Stage 2 整体上传 GitHub main | `834ff75516405ddbc8289f00ba67579691473709` |
 | `KMFA-S01-V12-REBASE-20260629` | v1.2 完整任务包承接并重放 Stage 1；45 个 HTML/7 个核心样板进入基线 | `KMFA/stage_artifacts/S01_REBASE_V12_FULL_TASKPACK/human/stage1_v12_replay_report.md` |
+| `S3PAT01-S3PAT03` | S03-P1 文件型导入登记、安全解包、hash/size/import_run/source package metadata 和 WPS/OLE 提示完成 | `KMFA/stage_artifacts/S03_P1_file_import/human/s03_p1_completion_record.md` |
+| `S3PBT01-S3PBT03` | S03-P2 数据源检查矩阵、五状态枚举和 metadata-only 状态事件完成 | `KMFA/stage_artifacts/S03_P2_source_check_matrix/human/s03_p2_completion_record.md` |
+| `S3PCT01-S3PCT03` | S03-P3 源优先级、同源失效重跑事件和跨源差异队列入口完成 | `KMFA/stage_artifacts/S03_P3_source_priority/human/s03_p3_completion_record.md` |
+| `KMFA-S03-STAGE-REVIEW-20260629` | Stage 3 整体复审通过，源优先级链路对齐 finding 已修复 | `KMFA/stage_artifacts/S03_STAGE_REVIEW/human/stage3_review_report.md` |
 
 ## Not Completed
 
 | Task | Reason | Next |
 |---|---|---|
 | `S04/S06` amount and zero-delta implementation | 后续 Stage | 按 Roadmap 单 Stage/Phase 推进 |
-| S03-P1 文件型导入 | 后续 Stage，尚未开始 | 下一轮只执行 S03-P1 |
+| Stage 3 GitHub upload | Stage 3 复审已通过，尚未上传 | rebase/validate/push |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |

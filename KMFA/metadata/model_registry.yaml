@@ -1,10 +1,13 @@
-version: "0.1.0-s02p3"
+version: "0.1.0-s03p3"
 project: "KMFA"
 active_model_ids:
   - "MOD-KMFA-GOV-001"
   - "MOD-KMFA-METADATA-001"
   - "MOD-KMFA-IMMUTABILITY-001"
   - "MOD-KMFA-QUALITY-GATE-001"
+  - "MOD-KMFA-FILE-IMPORT-001"
+  - "MOD-KMFA-SOURCE-CHECK-001"
+  - "MOD-KMFA-SOURCE-PRIORITY-001"
 planned_model_ids:
   - "MOD-KMFA-COST-001"
 source_of_truth:
