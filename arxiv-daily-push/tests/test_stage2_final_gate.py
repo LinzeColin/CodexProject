@@ -433,6 +433,60 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertIn("required_launchagent_state_unknown", readiness["blocking_reasons"])
         self.assertEqual(validate_s2plt02_real_proof_capture_readiness_state(readiness), [])
 
+    def test_s2plt02_real_proof_capture_readiness_reports_loaded_disabled_launchagents(self) -> None:
+        launchctl_disabled_text = """
+            "com.linze.adp.local.daily" => disabled
+            "com.linze.adp.local.health" => disabled
+            "com.linze.adp.local.watchdog" => disabled
+        """
+        launchctl_print_outputs = {
+            label: """
+                type = LaunchAgent
+                state = not running
+                event triggers = {
+                    com.linze.adp.local.daily.268435486 => {
+                        stream = com.apple.launchd.calendarinterval
+                    }
+                }
+            """
+            for label in (
+                "com.linze.adp.local.daily",
+                "com.linze.adp.local.health",
+                "com.linze.adp.local.watchdog",
+            )
+        }
+        with TemporaryDirectory() as tmp_dir:
+            tmp_root = Path(tmp_dir)
+            state_dir = tmp_root / "state"
+            self._write_s2plt02_second_day_dry_run_reports(state_dir)
+
+            readiness = build_s2plt02_real_proof_capture_readiness_state(
+                repo_root=tmp_root,
+                state_dir=state_dir,
+                service_date="2026-06-29",
+                launchctl_disabled_text=launchctl_disabled_text,
+                launchctl_print_outputs=launchctl_print_outputs,
+            )
+
+        self.assertTrue(readiness["all_required_launchagents_disabled"])
+        self.assertTrue(readiness["all_required_launchagents_loaded"])
+        self.assertTrue(readiness["all_required_launchagents_not_running"])
+        self.assertTrue(readiness["all_required_launchagents_have_calendar_triggers"])
+        self.assertTrue(readiness["launchagents_loaded_but_disabled"])
+        self.assertEqual(
+            readiness["scheduler_runtime_evidence_status"],
+            "launchagents_loaded_but_disabled_not_terminal_scheduler_proof",
+        )
+        self.assertEqual(
+            readiness["launchagent_runtime_states"],
+            {
+                "com.linze.adp.local.daily": "not running",
+                "com.linze.adp.local.health": "not running",
+                "com.linze.adp.local.watchdog": "not running",
+            },
+        )
+        self.assertEqual(validate_s2plt02_real_proof_capture_readiness_state(readiness), [])
+
     def test_s2plt02_real_proof_capture_authorization_blocks_missing_artifact(self) -> None:
         state = build_s2plt02_real_proof_capture_authorization_validation_state(None)
 
@@ -4628,7 +4682,7 @@ class Stage2FinalGateTests(unittest.TestCase):
                 "owner_id": "owner_or_coordinator",
                 "owner_role": "owner",
                 "generated_at_source": "current Australia/Sydney timestamp at execution time",
-                "readiness_state_hash": "819b1c3911892ce861fd5ba5bdde0dc381e303076beea684f35eb94c75975463",
+                "readiness_state_hash": "79ac4987239ecad8d4eee82de0157901b59259100e6d738bd1b15d17a37dc76e",
             },
         )
         self.assertFalse(plan["next_executable_command_writes_artifact"])
@@ -4636,7 +4690,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(plan["next_executable_command_dry_run_status"], "pass")
         self.assertEqual(
             plan["next_executable_command_dry_run_evidence_ref"],
-            "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-CLI-20260629.json",
+            "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-CLI-RUNTIME-SYNC-20260629.json",
         )
         self.assertFalse(plan["next_executable_command_dry_run_wrote_artifact"])
         self.assertFalse(plan["draft_authorization_is_live_authorization"])
@@ -4654,14 +4708,15 @@ class Stage2FinalGateTests(unittest.TestCase):
             "validate-s2plt02-real-proof-capture-authorization "
             "--path FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json "
             "--expected-readiness-state-hash "
-            "819b1c3911892ce861fd5ba5bdde0dc381e303076beea684f35eb94c75975463 "
+            "79ac4987239ecad8d4eee82de0157901b59259100e6d738bd1b15d17a37dc76e "
             "--json",
         )
         self.assertEqual(
             plan["next_executable_evidence_refs"],
             [
-                "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-CLI-20260629.json",
+                "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-CLI-RUNTIME-SYNC-20260629.json",
                 "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_DRAFT_CLI.md",
+                "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_READINESS_RUNTIME_STATE_SYNC.md",
                 "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION.md",
             ],
         )

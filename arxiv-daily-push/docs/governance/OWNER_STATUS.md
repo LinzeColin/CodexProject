@@ -71,14 +71,14 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - model_count: `121`
 - total_formulas: `123`
 - active_formulas: `123`
-- total_parameters: `1101`
-- active_parameters: `1084`
+- total_parameters: `1108`
+- active_parameters: `1091`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PMT07_S2PLT04_COMPLETION_EVIDENCE_REF_CORRECTION_BLOCKED_NO_AUTHORIZATION_NO_PRODUCTION`
+- release_gate: `S2PLT02_REAL_PROOF_CAPTURE_READINESS_RUNTIME_STATE_SYNC_BLOCKED_NO_SCHEDULER_PROOF_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
@@ -101,7 +101,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - snapshot_event_time: `2026-06-29T22:09:03+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PL / S2PMT07_S2PLT04_COMPLETION_EVIDENCE_REF_CORRECTION_BLOCKED_NO_AUTHORIZATION_NO_PRODUCTION`
+- phase/gate: `S2PL / S2PLT02_REAL_PROOF_CAPTURE_READINESS_RUNTIME_STATE_SYNC_BLOCKED_NO_SCHEDULER_PROOF_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 

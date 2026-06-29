@@ -1,5 +1,5 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260629-ADP-S2PMT07-S2PLT04-COMPLETION-EVIDENCE-REF-CORRECTION"
+as_of_event_id: "EVENT-20260629-ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-RUNTIME-STATE-SYNC"
 source_snapshot_hash: "sha256:226986019bf48e97772205b136bdee71b6ea2164e555d58e7af27a9731754488"
 source_base_commit: "fd90a208c7b009aa11bc26c4629a7ea92679c5ff"
 source_tree_hash: "c44d743a2833842b3cc0dd9e098fb70017cdc5a2"
@@ -16,8 +16,8 @@ dimensions:
     status: "VERIFIED"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 1084
-    total_active_parameters: 1084
+    checked_active_parameters: 1091
+    total_active_parameters: 1091
     checked_active_formulas: 123
     total_active_formulas: 123
     unresolved_fact_ids: []
@@ -27,8 +27,8 @@ dimensions:
   parameter_source_quality:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 1084
-    total_active_parameters: 1084
+    checked_active_parameters: 1091
+    total_active_parameters: 1091
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -66,7 +66,7 @@ dimensions:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "BLOCKED_PRECHECK"
-  release_gate: "S2PMT07_S2PLT04_COMPLETION_EVIDENCE_REF_CORRECTION_BLOCKED_NO_AUTHORIZATION_NO_PRODUCTION"
+  release_gate: "S2PLT02_REAL_PROOF_CAPTURE_READINESS_RUNTIME_STATE_SYNC_BLOCKED_NO_SCHEDULER_PROOF_NO_PRODUCTION"
   blocker_ids:
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"

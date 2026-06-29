@@ -6426,7 +6426,7 @@ models:
   -
     model_id: "MOD-ADP-120"
     name: "S2PLT02 real-proof capture readiness model"
-    purpose: "Fail-close the step before any real S2PLT02 SMTP/scheduler proof capture can proceed, requiring explicit owner authorization, second real M1-M4 SMTP day, real scheduler proof, terminal proof artifact, and no production side effects."
+    purpose: "Fail-close the step before any real S2PLT02 SMTP/scheduler proof capture can proceed, requiring explicit owner authorization, second real M1-M4 SMTP day, real scheduler proof, terminal proof artifact, runtime LaunchAgent state visibility, and no production side effects."
     owner: "arxiv-daily-push"
     status: "active"
     task_ids:
@@ -6442,8 +6442,16 @@ models:
       - "PARAM-ADP-1088"
       - "PARAM-ADP-1089"
       - "PARAM-ADP-1090"
+      - "PARAM-ADP-1102"
+      - "PARAM-ADP-1103"
+      - "PARAM-ADP-1104"
+      - "PARAM-ADP-1105"
+      - "PARAM-ADP-1106"
+      - "PARAM-ADP-1107"
+      - "PARAM-ADP-1108"
     inputs:
       - "launchctl print-disabled gui/$UID read-only output"
+      - "launchctl print gui/$UID/$label read-only runtime output"
       - "local ADP state_dir runs/YYYYMMDD reports"
       - "FINAL_ACCEPTANCE_BUNDLE/s2plt01_terminal_acceptance.json"
       - "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json"
@@ -6451,6 +6459,13 @@ models:
       - "safe_to_collect_terminal_proof"
       - "real_proof_capture_authorized"
       - "all_required_launchagents_disabled"
+      - "launchagent_runtime_states"
+      - "launchagent_calendar_triggers_present"
+      - "all_required_launchagents_loaded"
+      - "all_required_launchagents_not_running"
+      - "all_required_launchagents_have_calendar_triggers"
+      - "launchagents_loaded_but_disabled"
+      - "scheduler_runtime_evidence_status"
       - "second_real_delivery_day_present"
       - "terminal_delivery_proof_artifact_present"
       - "real_scheduler_proven"
@@ -6466,6 +6481,8 @@ models:
     evidence_refs:
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_READINESS.md"
       - "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-20260629.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_READINESS_RUNTIME_STATE_SYNC.md"
+      - "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-RUNTIME-STATE-SYNC-20260629.json"
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_REAL_PROOF_CAPTURE_READINESS_MODEL_ID"
@@ -6474,10 +6491,11 @@ models:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_REAL_PROOF_CAPTURE_READINESS_NO_PRODUCTION_FLAGS"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_s2plt02_real_proof_capture_readiness_state"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::validate_s2plt02_real_proof_capture_readiness_state"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::_launchd_calendar_trigger_present"
     implementation_fingerprint: "PENDING_MAIN_COMMIT"
     evidence_hash: "PENDING_MAIN_COMMIT"
     last_verified_commit: "PRECOMMIT"
-    verified_at: "2026-06-29T17:41:57+10:00"
+    verified_at: "2026-06-29T22:44:04+10:00"
 
 
   -

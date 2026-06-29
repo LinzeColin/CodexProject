@@ -583,7 +583,7 @@ class CliTests(unittest.TestCase):
                 "owner_id": "owner_or_coordinator",
                 "owner_role": "owner",
                 "generated_at_source": "current Australia/Sydney timestamp at execution time",
-                "readiness_state_hash": "819b1c3911892ce861fd5ba5bdde0dc381e303076beea684f35eb94c75975463",
+                "readiness_state_hash": "79ac4987239ecad8d4eee82de0157901b59259100e6d738bd1b15d17a37dc76e",
             },
         )
         self.assertFalse(payload["next_executable_command_writes_artifact"])
@@ -591,7 +591,7 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["next_executable_command_dry_run_status"], "pass")
         self.assertEqual(
             payload["next_executable_command_dry_run_evidence_ref"],
-            "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-CLI-20260629.json",
+            "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-CLI-RUNTIME-SYNC-20260629.json",
         )
         self.assertFalse(payload["next_executable_command_dry_run_wrote_artifact"])
         self.assertFalse(payload["draft_authorization_is_live_authorization"])
@@ -609,14 +609,15 @@ class CliTests(unittest.TestCase):
             "validate-s2plt02-real-proof-capture-authorization "
             "--path FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json "
             "--expected-readiness-state-hash "
-            "819b1c3911892ce861fd5ba5bdde0dc381e303076beea684f35eb94c75975463 "
+            "79ac4987239ecad8d4eee82de0157901b59259100e6d738bd1b15d17a37dc76e "
             "--json",
         )
         self.assertEqual(
             payload["next_executable_evidence_refs"],
             [
-                "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-CLI-20260629.json",
+                "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-CLI-RUNTIME-SYNC-20260629.json",
                 "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_DRAFT_CLI.md",
+                "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_READINESS_RUNTIME_STATE_SYNC.md",
                 "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION.md",
             ],
         )

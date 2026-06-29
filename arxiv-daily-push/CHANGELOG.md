@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-06-29 22:44:04 Australia/Sydney - S2PLT02-REAL-PROOF-CAPTURE-READINESS-RUNTIME-STATE-SYNC
+
+- Updated `audit-s2plt02-real-proof-capture-readiness --json` to include `launchctl print` runtime state for daily/health/watchdog LaunchAgents in addition to disabled-state parsing.
+- Current readiness remains blocked / exit 2 with `all_required_launchagents_disabled=true`, `all_required_launchagents_loaded=true`, `all_required_launchagents_not_running=true`, `all_required_launchagents_have_calendar_triggers=true`, `launchagents_loaded_but_disabled=true`, `scheduler_runtime_evidence_status=launchagents_loaded_but_disabled_not_terminal_scheduler_proof`, and state hash `79ac4987239ecad8d4eee82de0157901b59259100e6d738bd1b15d17a37dc76e`.
+- Re-ran the stdout-only S2PLT02 authorization draft CLI against the new readiness hash; draft state hash `03f6910d79ca02f6447ebdb3409892008841a1a9752d59d29e9bc38dd1fdea83`, draft authorization hash `sha256:a2262579bac6f9d4594a46d06424eb40f7c953de246a9ffc7e9ae3f4389db1a2`, live authorization artifact still missing, and final-bundle prerequisite plan hash `f05b64685d487f28c9ddabb1216e5c67c5c4391ba86e5d5d5341aa398fa9a3a4`.
+- This does not create `FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json`, authorize real proof capture, send SMTP, enable scheduler, upload Release assets, restore production, change CURRENT/V7, mutate public schema/DB/source/ranking/queue, enable DAILY_OPERATION, or claim Stage2/S3 production acceptance.
+
 ## 2026-06-29 21:49:37 Australia/Sydney - S2PMT07-FINAL-BUNDLE-AUTH-DRAFT-LIVE-GUARD
 
 - Updated `plan-final-bundle-prerequisites --json` so the blocked prerequisite plan exposes the current distinction between a passing S2PLT02 authorization draft CLI dry-run and the missing live authorization artifact.

@@ -1,0 +1,90 @@
+{
+  "schema_version": "codexproject.event.v1",
+  "manifest_id": "ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-CLI-RUNTIME-SYNC-20260629",
+  "project_id": "arxiv-daily-push",
+  "phase": "S2PL",
+  "task_id": "S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-CLI-RUNTIME-SYNC",
+  "task_ids": [
+    "S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-CLI-RUNTIME-SYNC",
+    "S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-CLI",
+    "S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION",
+    "S2PLT02",
+    "S2PMT07",
+    "ACC-S2PLT02-2D"
+  ],
+  "generated_at": "2026-06-29T22:44:04+10:00",
+  "fact_level": "EXTRACTED",
+  "status": "draft",
+  "result": "draft_s2plt02_real_proof_capture_authorization_artifact_cli_runtime_hash_synced_no_write_no_production",
+  "summary": "The stdout-only S2PLT02 real-proof capture authorization draft CLI has been re-run against the latest runtime-state readiness hash. It emits a valid draft but writes no live authorization artifact and does not authorize SMTP or scheduler proof capture.",
+  "cli_command": "adp build-s2plt02-real-proof-capture-authorization-artifact-draft --owner-id owner_or_coordinator --owner-role owner --generated-at 2026-06-29T22:38:56+10:00 --readiness-state-hash 79ac4987239ecad8d4eee82de0157901b59259100e6d738bd1b15d17a37dc76e --json",
+  "cli_exit_code": 0,
+  "artifact_ref": "FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json",
+  "authorization_artifact_written": false,
+  "authorization_artifact_present_in_repo": false,
+  "authorization_gate_satisfied_by_this_command": false,
+  "real_proof_capture_authorized_by_this_command": false,
+  "readiness_state_hash": "79ac4987239ecad8d4eee82de0157901b59259100e6d738bd1b15d17a37dc76e",
+  "supersedes_readiness_state_hash": "819b1c3911892ce861fd5ba5bdde0dc381e303076beea684f35eb94c75975463",
+  "draft_state_hash": "03f6910d79ca02f6447ebdb3409892008841a1a9752d59d29e9bc38dd1fdea83",
+  "draft_authorization_hash": "sha256:a2262579bac6f9d4594a46d06424eb40f7c953de246a9ffc7e9ae3f4389db1a2",
+  "validation_errors": [],
+  "next_required_action": "owner_must_review_and_write_authorization_artifact_if_explicitly_approved",
+  "production_acceptance_claimed": false,
+  "integrated_production_accepted": false,
+  "stage2_integrated_production_accepted": false,
+  "daily_operation_enabled": false,
+  "real_smtp_sent": false,
+  "real_smtp_send_enabled": false,
+  "scheduler_enabled": false,
+  "scheduler_install_enabled": false,
+  "release_uploaded": false,
+  "release_packaging_enabled": false,
+  "production_restore_enabled": false,
+  "production_restore_executed": false,
+  "public_schema_changed": false,
+  "db_migration_executed": false,
+  "production_queue_mutated": false,
+  "source_adapter_changed": false,
+  "ranking_algorithm_changed": false,
+  "current_pointer_changed": false,
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false,
+  "mail_production_code_changed": false,
+  "smtp_changed": false,
+  "scheduler_changed": false,
+  "release_changed": false,
+  "evidence_refs": [
+    "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-CLI-RUNTIME-SYNC-20260629.json",
+    "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-RUNTIME-STATE-SYNC-20260629.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_READINESS_RUNTIME_STATE_SYNC.md",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_DRAFT_CLI.md",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py",
+    "arxiv-daily-push/src/arxiv_daily_push/cli.py",
+    "arxiv-daily-push/tests/test_stage2_final_gate.py",
+    "arxiv-daily-push/tests/test_cli.py"
+  ],
+  "model_ids_changed": [
+    "MOD-ADP-121"
+  ],
+  "formula_ids_changed": [
+    "FORM-ADP-123"
+  ],
+  "parameter_ids_changed": [],
+  "test_results": [
+    "runtime readiness hash updated to 79ac4987239ecad8d4eee82de0157901b59259100e6d738bd1b15d17a37dc76e",
+    "draft CLI returned exit 0 with draft_state_hash=03f6910d79ca02f6447ebdb3409892008841a1a9752d59d29e9bc38dd1fdea83 and validation_errors=[]",
+    "live authorization artifact remains absent"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_runtime_draft PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli build-s2plt02-real-proof-capture-authorization-artifact-draft --owner-id owner_or_coordinator --owner-role owner --generated-at 2026-06-29T22:38:56+10:00 --readiness-state-hash 79ac4987239ecad8d4eee82de0157901b59259100e6d738bd1b15d17a37dc76e --json"
+  ],
+  "risks": [
+    "The stdout draft can be misread as the real S2PLT02 authorization artifact.",
+    "The live authorization artifact remains absent and proof capture must stay blocked until owner approval is written and validated."
+  ],
+  "rollback": "Revert runtime-sync draft manifest, readiness hash constant, plan evidence refs, phase record, governance/user-center notes, and tests; no runtime production state was changed.",
+  "version_before": "0.23.1",
+  "version_after": "0.23.1",
+  "next_task": "OWNER_MUST_WRITE_VALID_AUTHORIZATION_ARTIFACT_BEFORE_REAL_SMTP_SCHEDULER_CAPTURE"
+}
