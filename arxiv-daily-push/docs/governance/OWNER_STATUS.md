@@ -78,16 +78,16 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PMT07_S2PLT01_TERMINAL_ACCEPTANCE_AUDIT_BLOCKED_NONTERMINAL_NO_PRODUCTION`
+- release_gate: `S2PLT02_TERMINAL_READINESS_AUDIT_BLOCKED_M4_READY_NO_ACCEPTANCE`
 
 ## 14. Evidence Freshness
 
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `0`
 - commit_bound_events: `4`
-- legacy_unbound_events: `248`
+- legacy_unbound_events: `249`
 - precommit_pending_events: `40`
-- pending_or_stale_events: `287`
+- pending_or_stale_events: `288`
 
 ## 15. UNKNOWN
 
@@ -95,13 +95,13 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 16. 技术元数据
 
-- source_base_commit: `9fbb0c4eb240a1782bae3db4db873ded37ac21f4`
-- source_tree_hash: `23334defdf6e168d709c223d61c0998e594f6852`
-- source_snapshot_hash: `sha256:09398abbbb10a48d2218029474acd64bd9438372573e40faa3e8310d8b6189f4`
-- snapshot_event_time: `2026-06-29T10:12:17+10:00`
+- source_base_commit: `fd90a208c7b009aa11bc26c4629a7ea92679c5ff`
+- source_tree_hash: `c44d743a2833842b3cc0dd9e098fb70017cdc5a2`
+- source_snapshot_hash: `sha256:a4bb2aa1529ab2e719e847c15e7cc53103a1ca90b644ee225041f9a63769c9aa`
+- snapshot_event_time: `2026-06-29T10:35:11+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PM / S2PMT07_S2PLT01_TERMINAL_ACCEPTANCE_AUDIT_BLOCKED_NONTERMINAL_NO_PRODUCTION`
+- phase/gate: `S2PL / S2PLT02_TERMINAL_READINESS_AUDIT_BLOCKED_M4_READY_NO_ACCEPTANCE`
 
 ## 17. Next Unique Task
 

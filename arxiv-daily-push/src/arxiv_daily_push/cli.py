@@ -127,6 +127,7 @@ from .stage2_final_gate import (
     build_next_agent_handoff_validation_state,
     build_no_production_side_effect_attestation_validation_state,
     build_p0_p1_zero_proof_artifact_validation_state,
+    build_s2plt02_terminal_readiness_audit_state,
     build_s2plt04_completion_evidence_audit_state,
     build_s2plt04_completion_report_validation_state,
     validate_final_acceptance_bundle_readiness_state,
@@ -1182,6 +1183,17 @@ def build_parser() -> argparse.ArgumentParser:
     )
     s2plt01_terminal_audit.add_argument("--repo-root", default=".", help="Repository root containing governance manifests.")
     s2plt01_terminal_audit.add_argument("--json", action="store_true", help="Print JSON terminal acceptance audit state.")
+
+    s2plt02_terminal_audit = subparsers.add_parser(
+        "audit-s2plt02-terminal-readiness",
+        help="Audit current S2PLT02 terminal readiness without accepting S2PLT02.",
+    )
+    s2plt02_terminal_audit.add_argument(
+        "--generated-at",
+        default="2026-06-29T10:35:11+10:00",
+        help="Evidence timestamp for the deterministic audit payload.",
+    )
+    s2plt02_terminal_audit.add_argument("--json", action="store_true", help="Print JSON S2PLT02 terminal-readiness audit state.")
 
     final_reviewer_assignment = subparsers.add_parser(
         "validate-final-reviewer-assignment",
@@ -3519,6 +3531,19 @@ def main(argv: list[str] | None = None) -> int:
             print(f"- terminal_acceptance_ready: {report.get('terminal_acceptance_ready')}")
             print(f"- review_receipt_present: {report.get('review_receipt_present')}")
             print(f"- review_package_passed: {report.get('review_package_passed')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+        return 0 if report["status"] == "pass" else 2
+    if args.command == "audit-s2plt02-terminal-readiness":
+        report = build_s2plt02_terminal_readiness_audit_state(generated_at=args.generated_at)
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- observed_natural_days: {report.get('observed_natural_days')}")
+            print(f"- observed_email_count: {report.get('observed_email_count')}")
+            print(f"- m4_watermark_correct: {report.get('m4_watermark_correct')}")
+            print(f"- s2plt02_accepted: {report.get('s2plt02_accepted')}")
             for reason in report.get("blocking_reasons", []):
                 print(f"- blocked: {reason}")
         return 0 if report["status"] == "pass" else 2

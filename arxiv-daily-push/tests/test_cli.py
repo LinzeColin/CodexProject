@@ -227,6 +227,31 @@ class CliTests(unittest.TestCase):
                 self.assertFalse(payload["real_smtp_send_enabled"], command)
                 self.assertFalse(payload["scheduler_install_enabled"], command)
 
+    def test_audit_s2plt02_terminal_readiness_json_exposes_current_partial_state(self):
+        buffer = io.StringIO()
+        with redirect_stdout(buffer):
+            result = main(["audit-s2plt02-terminal-readiness", "--json"])
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(result, 2)
+        self.assertEqual(payload["status"], "blocked")
+        self.assertEqual(payload["scope"], "s2plt02_terminal_readiness_audit_only_no_acceptance_claim")
+        self.assertFalse(payload["s2plt02_accepted"])
+        self.assertFalse(payload["production_acceptance_claimed"])
+        self.assertFalse(payload["integrated_production_accepted"])
+        self.assertFalse(payload["daily_operation_enabled"])
+        self.assertEqual(payload["observed_natural_days"], 1)
+        self.assertEqual(payload["observed_email_count"], 4)
+        self.assertTrue(payload["m4_watermark_correct"])
+        self.assertEqual(
+            payload["m4_watermark_proof_ref"],
+            "governance/run_manifests/ADP-S2PLT02-M4-WATERMARK-PROOF-RECORD-20260628.json",
+        )
+        self.assertIn("two_consecutive_real_days_not_proven", payload["blocking_reasons"])
+        self.assertIn("eight_real_emails_not_proven", payload["blocking_reasons"])
+        self.assertIn("real_scheduler_not_proven", payload["blocking_reasons"])
+        self.assertNotIn("m4_watermark_not_proven", payload["blocking_reasons"])
+
     def test_plan_final_bundle_prerequisites_json_command_blocks_without_artifacts(self):
         buffer = io.StringIO()
         with redirect_stdout(buffer):
@@ -270,6 +295,24 @@ class CliTests(unittest.TestCase):
         )
         self.assertEqual(payload["source_evidence"]["S2PLT01_REPLAY_REVIEW"]["artifact_status"], "nonterminal")
         self.assertEqual(payload["source_evidence"]["S2PLT02_LIVE_2D_PROOF"]["artifact_status"], "missing_terminal")
+        s2plt02_evidence = payload["source_evidence"]["S2PLT02_LIVE_2D_PROOF"]
+        self.assertIn(
+            "governance/run_manifests/ADP-S2PLT02-TERMINAL-READINESS-AUDIT-20260629.json",
+            s2plt02_evidence["nonterminal_refs"],
+        )
+        self.assertEqual(s2plt02_evidence["observed_natural_days"], 1)
+        self.assertEqual(s2plt02_evidence["required_natural_days"], 2)
+        self.assertEqual(s2plt02_evidence["observed_email_count"], 4)
+        self.assertEqual(s2plt02_evidence["required_email_count"], 8)
+        self.assertTrue(s2plt02_evidence["m4_watermark_correct"])
+        self.assertEqual(
+            s2plt02_evidence["m4_watermark_proof_ref"],
+            "governance/run_manifests/ADP-S2PLT02-M4-WATERMARK-PROOF-RECORD-20260628.json",
+        )
+        self.assertIn("two_consecutive_real_days_not_proven", s2plt02_evidence["remaining_terminal_blockers"])
+        self.assertIn("eight_real_emails_not_proven", s2plt02_evidence["remaining_terminal_blockers"])
+        self.assertIn("real_scheduler_not_proven", s2plt02_evidence["remaining_terminal_blockers"])
+        self.assertNotIn("m4_watermark_not_proven", s2plt02_evidence["remaining_terminal_blockers"])
         self.assertEqual(payload["source_evidence"]["S2PLT03_RESILIENCE_PROOF"]["artifact_status"], "missing_terminal")
         self.assertEqual(payload["source_evidence"]["P0_P1_ZERO_PROOF"]["artifact_status"], "pass")
         self.assertFalse(payload["terminal_dependency_state"]["S2PLT01_ACCEPTED"])

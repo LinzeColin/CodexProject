@@ -21,12 +21,20 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 254
+- task_count: 255
 - acceptance_count: 127
 
 ## Delivery Tasks
 
 The machine-readable task source is `delivery_tasks.yaml`.
+
+## 2026-06-29 10:35:11 Australia/Sydney - S2PLT02 Terminal Readiness Audit
+
+- `S2PLT02-TERMINAL-READINESS-AUDIT` exposes `adp audit-s2plt02-terminal-readiness --json`.
+- Current result is `blocked` / exit 2: M4 watermark proof is ready, one real natural day and four real emails are recorded, and real SMTP evidence is present.
+- Remaining terminal blockers are still explicit: S2PLT01 is not accepted, two consecutive real natural days are not proven, eight total real emails are not proven, real scheduler proof is missing, inherited P0/P1 top-level stop gates remain open, and S2PLT02 is not accepted.
+- The S2PLT04 completion evidence audit now references this nonterminal readiness manifest so future final-bundle work cannot lose the current S2PLT02 state.
+- No SMTP, scheduler, Release, restore, schema/DB, source/ranking, CURRENT/V7, DAILY_OPERATION, S2PLT02 acceptance, S2PLT04 report, final bundle acceptance, or integrated production acceptance side effect is claimed.
 
 ## 2026-06-29 09:41:06 Australia/Sydney - S2PMT07 S2PLT04 Completion Evidence Audit
 

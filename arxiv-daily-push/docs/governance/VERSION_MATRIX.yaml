@@ -245,16 +245,31 @@ parameter_profile_versions:
   adp-s2pmt07-local-runtime-no-production: "adp-s2pmt07-local-runtime-no-production-v1"
   adp-s2pmt07-local-runtime-no-production-parameters: "adp-s2pmt07-local-runtime-no-production-parameters-v1"
 data_snapshot_version: "fixture_arxiv_atom_to_daily_dry_run_v1"
-current_iteration: "ITER-20260629-ADP-S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-AUDIT"
-current_phase: "S2PM"
-current_gate: "S2PMT07_S2PLT01_TERMINAL_ACCEPTANCE_AUDIT_BLOCKED_NONTERMINAL_NO_PRODUCTION"
+current_iteration: "ITER-20260629-ADP-S2PLT02-TERMINAL-READINESS-AUDIT"
+current_phase: "S2PL"
+current_gate: "S2PLT02_TERMINAL_READINESS_AUDIT_BLOCKED_M4_READY_NO_ACCEPTANCE"
 current_v6_task_id: "NOT_APPLICABLE"
 current_v7_contract_version: "ADP-PRODUCT-CONTRACT-V7.2"
 current_v7_roadmap_version: "ADP-ROADMAP-V7.2"
 current_v7_task_id: "S2PMT07"
 current_v7_shadow_source_task_id: "NONE_WHILE_S2PMT07_BLOCKED"
 current_v7_final_task_id: "S2PMT07"
-current_v7_legacy_alias: "S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-AUDIT exposes that the S2PLT01 independent replay review receipt is nonterminal: review receipt present=true, review package passed=true, full_replay_executed=false, S2PLT01_ACCEPTED=false, S2PLT04 completed=false, S2PMT07 signoff=false, and the S2PLT04 report / S2PLT04-COMPLETION-REPORT remains the next blocked artifact before final command execution, next-agent handoff, independent signoff, manifest, scheduler/SMTP/Release/restore, CURRENT/V7 change, DAILY_OPERATION, or integrated production acceptance."
+current_v7_legacy_alias: "S2PLT02-TERMINAL-READINESS-AUDIT exposes the latest S2PLT02 partial terminal-readiness state for the S2PMT07 final-gate chain: M4 watermark proof is ready, one real natural day and four real emails are recorded, real SMTP evidence is present, but S2PLT01 accepted=false, two consecutive real natural days=false, eight real emails=false, real scheduler proven=false, inherited P0/P1 top-level stop gates remain open, S2PLT02 accepted=false, and the S2PLT04 report / S2PLT04-COMPLETION-REPORT remains the next blocked artifact before final command execution, next-agent handoff, independent signoff, manifest, scheduler/SMTP/Release/restore, CURRENT/V7 change, DAILY_OPERATION, or integrated production acceptance."
+s2plt02_terminal_readiness_iteration: "ITER-20260629-ADP-S2PLT02-TERMINAL-READINESS-AUDIT"
+s2plt02_terminal_readiness_gate: "S2PLT02_TERMINAL_READINESS_AUDIT_BLOCKED_M4_READY_NO_ACCEPTANCE"
+s2plt02_terminal_readiness_status: "blocked"
+s2plt02_terminal_readiness_state_hash: "6eba30182d72513ac15c2d4fc7d6d3921e7043e4de2536e4e3421d7cf1dc93ba"
+s2plt02_terminal_readiness_precheck_hash: "158e43c781705cc10dc05eeeeac891c686ae42263be49da4d42d7508677d5311"
+s2plt02_terminal_readiness_m4_watermark_correct: true
+s2plt02_terminal_readiness_observed_natural_days: 1
+s2plt02_terminal_readiness_required_natural_days: 2
+s2plt02_terminal_readiness_observed_email_count: 4
+s2plt02_terminal_readiness_required_email_count: 8
+s2plt02_terminal_readiness_real_smtp_proven: true
+s2plt02_terminal_readiness_real_scheduler_proven: false
+s2plt02_terminal_readiness_s2plt02_accepted: false
+s2plt02_terminal_readiness_manifest: "governance/run_manifests/ADP-S2PLT02-TERMINAL-READINESS-AUDIT-20260629.json"
+s2plt02_terminal_readiness_m4_watermark_proof_ref: "governance/run_manifests/ADP-S2PLT02-M4-WATERMARK-PROOF-RECORD-20260628.json"
 s2plt02_partial_real_delivery_iteration: "ITER-20260628-ADP-S2PLT02-PARTIAL-REAL-DELIVERY-EVIDENCE"
 s2plt02_partial_real_delivery_gate: "S2PLT02_PARTIAL_REAL_DELIVERY_EVIDENCE_BLOCKED_NO_ACCEPTANCE"
 s2plt02_observed_natural_days: 1

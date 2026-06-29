@@ -30,29 +30,29 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn(f"- Current task: `{expected_task}`", current_state)
         self.assertIn(f"### `{current_iteration}`", ledger)
 
-    def test_s2pmt07_current_state_summary_describes_s2plt01_terminal_acceptance_audit(self) -> None:
+    def test_s2pmt07_current_state_summary_describes_s2plt02_terminal_readiness_audit(self) -> None:
         ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
-            "S2PMT07_S2PLT01_TERMINAL_ACCEPTANCE_AUDIT_BLOCKED_NONTERMINAL_NO_PRODUCTION",
+            "S2PLT02_TERMINAL_READINESS_AUDIT_BLOCKED_M4_READY_NO_ACCEPTANCE",
             current_state,
         )
-        self.assertIn("S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-AUDIT", current_state)
-        self.assertIn("review receipt present=true", current_state)
-        self.assertIn("review package passed=true", current_state)
-        self.assertIn("full_replay_executed=false", current_state)
+        self.assertIn("S2PLT02-TERMINAL-READINESS-AUDIT", current_state)
+        self.assertIn("m4_watermark_correct=true", current_state)
+        self.assertIn("observed_natural_days=1", current_state)
+        self.assertIn("observed_email_count=4", current_state)
+        self.assertIn("real_smtp_proven=true", current_state)
+        self.assertIn("REAL_SCHEDULER_PROVEN=false", current_state)
         self.assertIn("S2PLT01_ACCEPTED=false", current_state)
-        self.assertIn("S2PLT04_COMPLETED=false", current_state)
-        self.assertIn("S2PMT07_FINAL_SIGNOFF=false", current_state)
+        self.assertIn("S2PLT02_ACCEPTED=false", current_state)
+        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json", current_state)
         self.assertIn("nonterminal evidence only", current_state)
         self.assertIn("does not create the real S2PLT04 completion report", current_state)
         self.assertIn("P0=8", current_state)
         self.assertIn("P1=37", current_state)
         self.assertIn("does not execute final commands", current_state)
         self.assertIn("does not accept production", current_state)
-        self.assertNotIn("M4 watermark proof record", current_state)
-        self.assertNotIn("m4_watermark_correct=true", current_state)
 
     def test_owner_next_action_points_to_s2pmt07_not_stale_s2plt02(self) -> None:
         assurance = (ADP_ROOT / "docs/governance/ASSURANCE_STATUS.yaml").read_text(encoding="utf-8")

@@ -812,6 +812,7 @@ S2PLT02_M4_WATERMARK_PROOF_RECORD_REF = (
 S2PLT02_M4_WATERMARK_PROOF_GENERATED_AT = "2026-06-28T01:26:41Z"
 S2PLT02_M4_WATERMARK_PROOF_CYCLE_ID = "2026-06-28"
 S2PLT02_M4_WATERMARK_REQUIRED_TERMINAL_PRODUCTS = ("M1", "M2", "M3")
+S2PLT02_TERMINAL_READINESS_AUDIT_SCOPE = "s2plt02_terminal_readiness_audit_only_no_acceptance_claim"
 S2PLT02_M4_WATERMARK_FORBIDDEN_SOURCE_FLAGS = (
     "integrated_production_accepted",
     "stage2_integrated_production_accepted",
@@ -1602,6 +1603,61 @@ def build_s2plt02_live_2d_precheck_report(*, generated_at: str) -> dict[str, Any
     }
     report["report_hash"] = _stable_hash({key: value for key, value in report.items() if key != "report_hash"})
     return report
+
+
+def build_s2plt02_terminal_readiness_audit_state(*, generated_at: str) -> dict[str, Any]:
+    """Expose current S2PLT02 terminal-readiness facts without accepting S2PLT02."""
+
+    precheck = build_s2plt02_live_2d_precheck_report(generated_at=generated_at)
+    evidence = _mapping(precheck.get("evidence"))
+    m4_watermark = _mapping(evidence.get("m4_watermark_proof"))
+    proof_refs = [str(ref) for ref in m4_watermark.get("proof_refs", [])]
+    state = {
+        "model_id": S2PLT02_LIVE_2D_PRECHECK_MODEL_ID,
+        "schema_version": S2PLT02_SCHEMA_VERSION,
+        "task_id": "S2PLT02-TERMINAL-READINESS-AUDIT",
+        "parent_task_id": S2PLT02_TASK_ID,
+        "acceptance_id": S2PLT02_ACCEPTANCE_ID,
+        "generated_at": generated_at,
+        "status": "blocked",
+        "scope": S2PLT02_TERMINAL_READINESS_AUDIT_SCOPE,
+        "required_natural_days": S2PLT02_REQUIRED_NATURAL_DAYS,
+        "observed_natural_days": evidence.get("observed_natural_days"),
+        "required_email_count": S2PLT02_REQUIRED_EMAIL_COUNT,
+        "observed_email_count": evidence.get("observed_email_count"),
+        "m4_watermark_correct": evidence.get("m4_watermark_correct") is True,
+        "m4_watermark_proof_ref": proof_refs[0] if proof_refs else "",
+        "m4_watermark_proof_status": m4_watermark.get("status"),
+        "real_smtp_proven": evidence.get("real_smtp_proven") is True,
+        "real_scheduler_proven": evidence.get("real_scheduler_proven") is True,
+        "s2plt02_accepted": False,
+        "blocking_reasons": list(precheck.get("blocking_reasons", [])),
+        "precheck_report_hash": precheck.get("report_hash"),
+        "terminal_dependency_state": {
+            "S2PLT01_ACCEPTED": precheck.get("gates", {}).get("s2plt01_accepted") is True,
+            "TWO_CONSECUTIVE_REAL_NATURAL_DAYS": precheck.get("gates", {}).get("two_consecutive_real_days") is True,
+            "EIGHT_REAL_EMAILS_SENT": precheck.get("gates", {}).get("eight_real_emails_sent") is True,
+            "M4_WATERMARK_CORRECT": precheck.get("gates", {}).get("m4_watermark_correct") is True,
+            "REAL_SCHEDULER_PROVEN": precheck.get("gates", {}).get("real_scheduler_proven") is True,
+            "REAL_SMTP_PROVEN": precheck.get("gates", {}).get("real_smtp_proven") is True,
+            "P0_ZERO": precheck.get("gates", {}).get("p0_zero") is True,
+            "P1_ZERO": precheck.get("gates", {}).get("p1_zero") is True,
+        },
+        "production_acceptance_claimed": False,
+        "integrated_production_accepted": False,
+        "stage2_integrated_production_accepted": False,
+        "daily_operation_enabled": False,
+        "real_smtp_send_enabled": False,
+        "scheduler_install_enabled": False,
+        "release_packaging_enabled": False,
+        "production_restore_enabled": False,
+        "current_pointer_changed": False,
+        "v7_1_baseline_changed": False,
+        "v7_2_contract_files_changed": False,
+        "state_hash": "",
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
 
 
 def validate_s2plt02_live_2d_precheck_report(report: Mapping[str, Any]) -> list[str]:
@@ -4049,10 +4105,27 @@ def build_s2plt04_completion_evidence_audit_state(
             "nonterminal_refs": [
                 "governance/run_manifests/ADP-S2PLT02-LIVE-2D-PRECHECK-20260626.json",
                 "governance/run_manifests/ADP-S2PLT02-PARTIAL-REAL-DELIVERY-EVIDENCE-20260628.json",
+                "governance/run_manifests/ADP-S2PLT02-TERMINAL-READINESS-AUDIT-20260629.json",
             ],
             "terminal_dependency": "S2PLT02_ACCEPTED",
             "terminal_dependency_value": False,
             "blocking_reason": "s2plt02_live_2d_terminal_proof_missing",
+            "observed_natural_days": 1,
+            "required_natural_days": 2,
+            "observed_email_count": 4,
+            "required_email_count": 8,
+            "m4_watermark_correct": True,
+            "m4_watermark_proof_ref": (
+                "governance/run_manifests/ADP-S2PLT02-M4-WATERMARK-PROOF-RECORD-20260628.json"
+            ),
+            "remaining_terminal_blockers": [
+                "s2plt01_not_accepted",
+                "two_consecutive_real_days_not_proven",
+                "eight_real_emails_not_proven",
+                "real_scheduler_not_proven",
+                "inherited_v7_1_p0_findings_open",
+                "inherited_v7_1_p1_findings_open",
+            ],
         },
         "S2PLT03_RESILIENCE_PROOF": {
             "artifact_status": "missing_terminal",
