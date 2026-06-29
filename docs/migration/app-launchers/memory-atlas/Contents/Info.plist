@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDisplayName</key>
+	<string>Memory Atlas</string>
+	<key>CFBundleExecutable</key>
+	<string>memory-atlas-launcher</string>
+	<key>CFBundleIconFile</key>
+	<string>MemoryAtlas</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.linze.openai-database.memory-atlas</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>Memory Atlas</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>0.1.0</string>
+	<key>CFBundleVersion</key>
+	<string>767</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>13.0</string>
+	<key>NSDocumentsFolderUsageDescription</key>
+	<string>Memory Atlas 默认使用 Application Support 中的运行副本刷新脱敏快照，不需要每次打开访问 Documents 主仓库。</string>
+	<key>NSHighResolutionCapable</key>
+	<true/>
+</dict>
+</plist>

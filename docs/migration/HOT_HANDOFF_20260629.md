@@ -35,6 +35,7 @@ This backup includes:
 - current `Serenity-Alipay` source, governance, reports, notifications, preflight outputs, and database snapshot
 - current root governance/project registration changes
 - LaunchAgent copies under `docs/migration/launchagents/`
+- macOS app launcher snapshots under `docs/migration/app-launchers/`
 
 This backup deliberately excludes:
 
@@ -92,6 +93,22 @@ They preserve old-Mac command shape and paths for:
 
 On the new computer, update paths before loading them. Do not load these files
 unchanged unless the new checkout uses the same absolute path.
+
+## App Launchers
+
+Copied app launcher snapshots are under:
+
+```text
+docs/migration/app-launchers/
+```
+
+They preserve `Info.plist`, `PkgInfo`, and text launcher scripts for:
+
+- `/Applications/Memory Atlas.app`
+- `/Applications/Serenity 每日分析.app`
+
+Review and update absolute paths in the launcher scripts before rebuilding or
+installing these launchers on the new computer.
 
 ## New Computer First Checks
 

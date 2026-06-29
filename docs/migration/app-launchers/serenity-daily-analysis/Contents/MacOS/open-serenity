@@ -1,0 +1,46 @@
+#!/bin/sh
+ROOT="/Users/linzezhang/Documents/Codex/2026-06-19/current-phase-phase-0-goal-scope/work/CodexProject/Serenity-Alipay"
+PYTHON="/opt/anaconda3/bin/python"
+PORT="${SERENITY_APP_PORT:-8765}"
+HEALTH="http://127.0.0.1:$PORT/api/health"
+LOG_DIR="$HOME/Library/Logs/SerenityDailyAnalysis"
+LOG_FILE="$LOG_DIR/application-server.log"
+mkdir -p "$LOG_DIR"
+cd "$ROOT" || exit 1
+is_serenity_health() {
+  /usr/bin/curl --connect-timeout 0.2 --max-time 0.5 -fsS "$1" 2>/dev/null | /usr/bin/grep -q '"status": "ok"'
+}
+open_serenity_home() {
+  /usr/bin/open "http://127.0.0.1:$PORT/" >/dev/null 2>&1 || true
+}
+if is_serenity_health "$HEALTH"; then
+  open_serenity_home
+  exit 0
+fi
+if ! is_serenity_health "$HEALTH"; then
+  for CANDIDATE in "$PORT" $(seq 8765 8795); do
+    CANDIDATE_HEALTH="http://127.0.0.1:$CANDIDATE/api/health"
+    if is_serenity_health "$CANDIDATE_HEALTH"; then
+      PORT="$CANDIDATE"
+      break
+    fi
+    if ! /usr/bin/nc -z 127.0.0.1 "$CANDIDATE" >/dev/null 2>&1; then
+      PORT="$CANDIDATE"
+      break
+    fi
+  done
+  HEALTH="http://127.0.0.1:$PORT/api/health"
+fi
+if ! is_serenity_health "$HEALTH"; then
+  nohup "$PYTHON" -m app.core.application_server --host 127.0.0.1 --port "$PORT" --disable-autoscheduler >> "$LOG_FILE" 2>&1 </dev/null &
+  for _ in $(seq 1 60); do
+    is_serenity_health "$HEALTH" && break
+    sleep 0.5
+  done
+fi
+if is_serenity_health "$HEALTH"; then
+  open_serenity_home
+else
+  /usr/bin/osascript -e 'display notification "本地服务启动失败，请查看 ~/Library/Logs/SerenityDailyAnalysis/application-server.log" with title "Serenity 每日分析"' >/dev/null 2>&1 || true
+fi
+exit 0
