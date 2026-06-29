@@ -1190,14 +1190,16 @@ tasks:
       - "PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_a0_golden_fixture.py"
     test_results:
       - "PASS: field contract contains contract_amount, total_expense, gross_profit, gross_margin and cost_category"
-      - "PARTIAL_HASH_ONLY_BACKFILL: 40 PDF field candidates have private value hashes; 5 Excel field candidates remain pending"
+      - "PARTIAL_HASH_ONLY_BACKFILL: 40 PDF field candidates have private value hashes; 5 Excel field candidates remain pending after machine review"
     evidence_refs:
       - "KMFA/metadata/baseline/a0_golden_fixture_manifest.json"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/s05_p2_completion_record.md"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/private_backfill_record.md"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/private_backfill_manifest.json"
+      - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/excel_resolution_record.md"
+      - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/excel_resolution_manifest.json"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/test_results.md"
-    risk: "Public-safe field contract and 40 hash-only rows do not prove the full A0 baseline until Excel pending fields and human confirmation are resolved."
+    risk: "Public-safe field contract and 40 hash-only rows do not prove the full A0 baseline until Excel pending fields receive owner/authorized resolution and human confirmation."
     rollback: "Remove a0_golden_fixture.py, check_a0_golden_fixture.py, S05-P2 metadata/artifacts, and restore S05-P2 status to planned."
     target_version: "0.1.0-s05p2-private-backfill-partial"
     completed_version: "pending_private_value_backfill"
@@ -1223,12 +1225,13 @@ tasks:
     test_commands:
       - "PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_a0_golden_fixture.py"
     test_results:
-      - "PASS_WITH_EXCEL_PENDING: 40 field candidates have hash/source anchors; 5 Excel field candidates remain pending; raw/normalized values are not public"
+      - "PASS_WITH_EXCEL_PENDING: 40 field candidates have hash/source anchors; 5 Excel field candidates remain pending after machine review; raw/normalized values are not public"
     evidence_refs:
       - "KMFA/metadata/baseline/a0_golden_fixture_candidates.jsonl"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/test_results.md"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/private_backfill_record.md"
-    risk: "Excel page/sheet/cell and value hashes remain pending until private mapping or an explicit human resolution exists."
+      - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/excel_resolution_record.md"
+    risk: "Excel page/sheet/cell and value hashes remain pending until private mapping or an explicit owner/authorized resolution exists."
     rollback: "Remove A0 golden fixture candidate JSONL and rerun S05-P2 status update."
     target_version: "0.1.0-s05p2-private-backfill-partial"
     completed_version: "pending_private_value_backfill"
@@ -1259,6 +1262,7 @@ tasks:
       - "KMFA/metadata/baseline/a0_golden_fixture_candidates.jsonl"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/s05_p2_manifest.json"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/private_backfill_manifest.json"
+      - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/excel_resolution_manifest.json"
     risk: "Generated candidates are not authoritative golden fixtures until Excel pending fields and human confirmation are complete."
     rollback: "Remove S05-P2 golden fixture artifacts and restore S05-P2 status to planned."
     target_version: "0.1.0-s05p2-private-backfill-partial"
