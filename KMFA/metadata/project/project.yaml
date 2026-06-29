@@ -1,10 +1,10 @@
 project_id: "KMFA"
 project_name: "KMFA 经营分析系统"
-version: "0.1.0-s02p3"
-current_stage: "S02"
-current_phase: "S02-P3"
-current_phase_status: "completed_validated"
-current_stage_status: "uploaded_to_github_main"
+version: "0.1.0-s04p3"
+current_stage: "S04"
+current_phase: "S04-P3"
+current_phase_status: "completed_validated_local_only"
+current_stage_status: "phase_completed_local_only_stage_review_pending"
 github_directory: "LinzeColin/CodexProject/KMFA"
 human_plane:
   - "README.md"
@@ -24,6 +24,7 @@ machine_plane:
   - "metadata/quality/quality_grade_policy.yaml"
   - "metadata/reports/report_grade_policy.yaml"
   - "metadata/reports/report_release_gate.yaml"
+  - "stage_artifacts/S04_P3_basic_tool_tests/human/tool_function_test_report.md"
 privacy_policy:
   raw_sensitive_data_public_repo_allowed: false
   metadata_plain_sensitive_data_allowed: false
@@ -39,4 +40,7 @@ upload_policy:
   stage2_upload_ready_after_review: true
   stage2_uploaded_to_github_main: true
   stage2_uploaded_commit: "834ff75516405ddbc8289f00ba67579691473709"
-  upload_surface: "clean_worktree_from_origin_main_after_stage2_review"
+  stage3_uploaded_commit: "39b0eef52424a12b6c0c8ad368bd878b46300be4"
+  stage4_phase_completion_upload_allowed: false
+  stage4_review_required_before_upload: true
+  upload_surface: "clean_stage4_review_worktree_from_origin_main_after_review_fixes"

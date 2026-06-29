@@ -213,7 +213,7 @@ def standardize_period(value: Any) -> str:
     else:
         text = (
             text.replace("年", "-")
-            .replace("月", "")
+            .replace("月", "-")
             .replace("日", "")
             .replace("号", "")
             .replace("/", "-")

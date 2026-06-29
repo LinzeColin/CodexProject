@@ -118,7 +118,7 @@ models:
     owner: "KMFA"
     status: "planned"
     fact_level: "EXTRACTED"
-    model_version: "0.1.0-s04p2-partial"
+    model_version: "0.1.0-s04p3-partial"
     assumptions:
       - "ASM-KMFA-003"
     formula_ids:
@@ -143,16 +143,20 @@ models:
       - "KMFA/tools/amount_tools.py"
       - "KMFA/tools/check_no_float_money.py"
       - "KMFA/tools/field_standardization.py"
+      - "KMFA/tools/generate_tool_test_report.py"
       - "remaining_cost_model_not_implemented_until_S05_S10"
     test_refs:
       - "python3 -m unittest KMFA.tests.test_amount_tools -q"
       - "python3 KMFA/tools/check_no_float_money.py"
       - "python3 -m unittest KMFA.tests.test_field_standardization -q"
+      - "python3 -m unittest KMFA.tests.test_basic_tool_boundaries -q"
+      - "python3 KMFA/tools/generate_tool_test_report.py --format json"
       - "planned: KMFA/tools/zero_delta_validator.py"
     evidence_refs:
       - "KMFA/模型参数文件.md"
       - "KMFA/stage_artifacts/S04_P1_amount_tools/human/s04_p1_completion_record.md"
       - "KMFA/stage_artifacts/S04_P2_field_standardization/human/s04_p2_completion_record.md"
+      - "KMFA/stage_artifacts/S04_P3_basic_tool_tests/human/s04_p3_completion_record.md"
   - model_id: "MOD-KMFA-METADATA-001"
     name: "KMFA metadata protocol and identifier contract"
     kind: "deterministic_metadata_governance_contract"

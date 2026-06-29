@@ -937,3 +937,92 @@ tasks:
     rollback: "Restore field quality status protocol and S04 status."
     target_version: "0.1.0-s04p2"
     completed_version: "0.1.0-s04p2"
+  - task_id: "S4PCT01"
+    phase: "S4PC"
+    objective: "金额解析边界测试覆盖小数、负数、万元、异常字符。"
+    scope:
+      - "KMFA/tests/test_basic_tool_boundaries.py"
+      - "KMFA/tools/generate_tool_test_report.py"
+    non_scope:
+      - "raw business data"
+      - "A0 baseline"
+      - "zero-delta validation"
+      - "GitHub upload"
+    status: "completed"
+    dependencies:
+      - "S4PBT03"
+    required_files:
+      - "KMFA/tests/test_basic_tool_boundaries.py"
+    acceptance_ids:
+      - "ACC-KMFA-S04-P3"
+    test_commands:
+      - "python3 -m unittest KMFA.tests.test_basic_tool_boundaries -q"
+      - "python3 KMFA/tools/generate_tool_test_report.py --format json"
+    test_results:
+      - "PASS: amount decimal, negative, ten-thousand-yuan, abnormal-character and fractional-cent boundary cases covered"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S04_P3_basic_tool_tests/human/test_results.md"
+      - "KMFA/stage_artifacts/S04_P3_basic_tool_tests/human/tool_function_test_report.md"
+    risk: "Synthetic amount boundary tests must not be mistaken for zero-delta or source conflict validation."
+    rollback: "Remove S04-P3 boundary tests and restore S04-P3 status."
+    target_version: "0.1.0-s04p3"
+    completed_version: "0.1.0-s04p3"
+  - task_id: "S4PCT02"
+    phase: "S4PC"
+    objective: "日期和期间解析覆盖中文日期、年月、空值。"
+    scope:
+      - "KMFA/tests/test_basic_tool_boundaries.py"
+      - "KMFA/tools/field_standardization.py"
+    non_scope:
+      - "real source row parsing"
+      - "fact layer"
+      - "report generation"
+    status: "completed"
+    dependencies:
+      - "S4PCT01"
+    required_files:
+      - "KMFA/tests/test_basic_tool_boundaries.py"
+    acceptance_ids:
+      - "ACC-KMFA-S04-P3"
+    test_commands:
+      - "python3 -m unittest KMFA.tests.test_basic_tool_boundaries -q"
+      - "python3 -m unittest KMFA.tests.test_field_standardization -q"
+    test_results:
+      - "PASS: Chinese date, compact date, slash date, Chinese year-month, compact period, nullish values and invalid dates covered"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S04_P3_basic_tool_tests/human/test_results.md"
+    risk: "Date/period tests use synthetic values only and do not prove source adapter completeness."
+    rollback: "Restore field_standardization.py period behavior and S04-P3 status."
+    target_version: "0.1.0-s04p3"
+    completed_version: "0.1.0-s04p3"
+  - task_id: "S4PCT03"
+    phase: "S4PC"
+    objective: "生成工具函数测试报告。"
+    scope:
+      - "KMFA/tools/generate_tool_test_report.py"
+      - "KMFA/stage_artifacts/S04_P3_basic_tool_tests"
+    non_scope:
+      - "management report generation"
+      - "Stage 4 review"
+      - "GitHub upload"
+    status: "completed"
+    dependencies:
+      - "S4PCT02"
+    required_files:
+      - "KMFA/stage_artifacts/S04_P3_basic_tool_tests/human/tool_function_test_report.md"
+      - "KMFA/stage_artifacts/S04_P3_basic_tool_tests/machine/s04_p3_manifest.json"
+    acceptance_ids:
+      - "ACC-KMFA-S04-P3"
+    test_commands:
+      - "python3 KMFA/tools/generate_tool_test_report.py --format json"
+      - "python3 KMFA/tools/generate_tool_test_report.py --format markdown"
+    test_results:
+      - "PASS: S04-P3 tool function test report generated with 22 total / 22 passed / 0 failed and raw_business_data_used=false"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S04_P3_basic_tool_tests/human/s04_p3_completion_record.md"
+      - "KMFA/stage_artifacts/S04_P3_basic_tool_tests/human/tool_function_test_report.md"
+      - "KMFA/stage_artifacts/S04_P3_basic_tool_tests/machine/s04_p3_manifest.json"
+    risk: "Tool function test report is not a business management report or release artifact."
+    rollback: "Remove S04-P3 report generator/artifacts and restore S04-P3 status."
+    target_version: "0.1.0-s04p3"
+    completed_version: "0.1.0-s04p3"

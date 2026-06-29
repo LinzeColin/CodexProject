@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-s04p3 - 2026-06-29
+
+- 完成 `S04-P3｜基础工具测试`，保持本 Phase 本地验证，不上传 GitHub。
+- 新增 `KMFA/tests/test_basic_tool_boundaries.py`，覆盖金额小数、负数、万元、异常字符，以及日期/期间中文日期、年月、空值边界。
+- 新增 `KMFA/tools/generate_tool_test_report.py`，生成 S04-P3 工具函数测试报告，支持 JSON 和 Markdown 输出。
+- 修复 `KMFA/tools/field_standardization.py` 的中文完整日期转期间边界。
+- 新增 `KMFA/stage_artifacts/S04_P3_basic_tool_tests/` 证据包。
+- Stage 4 三个 Phase 已全部本地验证；Stage 4 整体复审、复审问题修复和 GitHub 上传尚未完成。
+
 ## 0.1.0-s04p2 - 2026-06-29
 
 - 完成 `S04-P2｜字段标准化`，保持本 Phase 本地验证，不上传 GitHub。

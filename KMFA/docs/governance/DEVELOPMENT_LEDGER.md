@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.0-s04p2
+product_version: 0.1.0-s04p3
 
 ## Current Iteration
 
 - project_id: `KMFA`
 - current_stage: `S04`
-- current_phase: `S04-P2 字段标准化`
-- current_tasks: `S4PBT01-S4PBT03`
-- status: `s04_p2_completed_validated_local_only`
+- current_phase: `S04-P3 基础工具测试`
+- current_tasks: `S4PCT01-S4PCT03`
+- status: `s04_p3_completed_validated_local_only_stage_review_pending`
 - risk_tier: `T3`
 
 ## Completed
@@ -42,11 +42,12 @@ product_version: 0.1.0-s04p2
 | `KMFA-S03-GITHUB-UPLOAD-20260629` | Stage 3 整体上传 GitHub main | `39b0eef52424a12b6c0c8ad368bd878b46300be4` |
 | `S4PAT01-S4PAT03` | S04-P1 金额标准化、no-float 检查和异常输入拒绝策略完成 | `KMFA/stage_artifacts/S04_P1_amount_tools/human/s04_p1_completion_record.md` |
 | `S4PBT01-S4PBT03` | S04-P2 字段标准化、字段别名字典和缺字段质量状态完成 | `KMFA/stage_artifacts/S04_P2_field_standardization/human/s04_p2_completion_record.md` |
+| `S4PCT01-S4PCT03` | S04-P3 基础工具边界测试和工具函数测试报告完成 | `KMFA/stage_artifacts/S04_P3_basic_tool_tests/human/s04_p3_completion_record.md` |
 
 ## Not Completed
 
 | Task | Reason | Next |
 |---|---|---|
-| S04-P3 基础工具测试 | 后续 Phase，尚未开始 | 下一轮只执行 S04-P3 |
+| Stage 4 整体复审 | 三个 Phase 已完成，尚未复审 | 下一轮只执行 Stage 4 review/fix/upload gate |
 | `S06` zero-delta implementation | 后续 Stage | 按 Roadmap 单 Stage/Phase 推进 |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |

@@ -75,9 +75,12 @@ formulas:
     test_refs:
       - "python3 -m unittest KMFA.tests.test_amount_tools -q"
       - "python3 KMFA/tools/check_no_float_money.py"
+      - "python3 -m unittest KMFA.tests.test_basic_tool_boundaries -q"
     evidence_refs:
       - "KMFA/stage_artifacts/S04_P1_amount_tools/human/s04_p1_completion_record.md"
       - "KMFA/stage_artifacts/S04_P1_amount_tools/human/test_results.md"
+      - "KMFA/stage_artifacts/S04_P3_basic_tool_tests/human/test_results.md"
+      - "KMFA/stage_artifacts/S04_P3_basic_tool_tests/human/tool_function_test_report.md"
   - formula_id: "FORM-KMFA-FIELD-STANDARDIZATION-001"
     model_id: "MOD-KMFA-COST-001"
     assumption_ids:
@@ -113,9 +116,12 @@ formulas:
       - "KMFA/tools/field_standardization.py"
     test_refs:
       - "python3 -m unittest KMFA.tests.test_field_standardization -q"
+      - "python3 -m unittest KMFA.tests.test_basic_tool_boundaries -q"
     evidence_refs:
       - "KMFA/stage_artifacts/S04_P2_field_standardization/human/s04_p2_completion_record.md"
       - "KMFA/stage_artifacts/S04_P2_field_standardization/human/test_results.md"
+      - "KMFA/stage_artifacts/S04_P3_basic_tool_tests/human/test_results.md"
+      - "KMFA/stage_artifacts/S04_P3_basic_tool_tests/human/tool_function_test_report.md"
   - formula_id: "FORM-KMFA-METADATA-ID-001"
     model_id: "MOD-KMFA-METADATA-001"
     assumption_ids:
