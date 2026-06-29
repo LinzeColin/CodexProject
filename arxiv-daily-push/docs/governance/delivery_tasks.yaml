@@ -5154,3 +5154,21 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT"
+    phase: "S2PL"
+    objective: "Record post-authorization S2PLT02 terminal proof capture-window facts without production side effects."
+    scope: "Local runtime reports, non-secret SMTP enablement flag, launchd disabled state, phase record, run manifest, traceability, owner/user-center status, and focused regression checks."
+    non_scope: "No SMTP send, scheduler enablement, Release, production restore, public schema, DB migration, queue mutation, source/ranking change, CURRENT/V7 contract edit, P0/P1 closure, S2PLT02 acceptance, S2PLT04 completion, or integrated production acceptance."
+    status: "blocked"
+    dependencies: ["S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION"]
+    required_files: ["governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-20260630.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_CAPTURE_WINDOW_AUDIT.md"]
+    acceptance_ids: ["ACC-S2PLT02-2D"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_capture_target3 PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_governance_current_state.py arxiv-daily-push/tests/test_user_center_candidate_pool.py", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_capture_s2plt02 PYTHONPATH=arxiv-daily-push/src python3 -B -m arxiv_daily_push.cli validate-s2plt02-terminal-delivery-proof --json", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_capture_full PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_capture_gov2 python3 scripts/validate_project_governance.py --project arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_capture_lean python3 scripts/lean_governance.py check-render --project arxiv-daily-push", "ruby -ryaml -rjson -rcsv -e '<parse changed JSON/YAML/JSONL/CSV>'"]
+    test_results: ["target governance and user-center regression: 23 passed, 32 subtests passed", "S2PLT02 terminal delivery proof validator correctly blocked / exit 2 with artifact_present=false and blockers=s2plt02_terminal_delivery_proof_artifact_missing;two_consecutive_real_days_not_proven;eight_real_emails_not_proven;real_scheduler_not_proven", "full ADP tests: 729 passed, 64 subtests passed", "project governance: errors 0 warnings 0", "lean governance check-render: drift_count 0 reference_issue_count 0", "changed JSON/YAML/JSONL/CSV parse OK", "semantic extractor long-run validation was interrupted after more than 60 seconds and is recorded as non-blocking incomplete; no pass was claimed"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-20260630.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_CAPTURE_WINDOW_AUDIT.md"]
+    risk: "Dry-run reports and disabled launchd labels can be misread as terminal delivery proof if not explicitly blocked."
+    rollback: "Remove the capture-window manifest, phase record, traceability row, owner/user-center status updates, event records, and three base notes; no runtime production state was changed."
+    target_version: "0.23.1"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

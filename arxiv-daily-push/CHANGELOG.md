@@ -749,3 +749,5 @@
 - Fixed S2PMT07 final bundle readiness to consume the committed valid P0/P1 zero-proof artifact in embedded zero-proof readiness, removing stale zero-proof missing/open blockers while keeping S2PLT02, S2PLT04, final bundle, SMTP/scheduler/Release/restore, CURRENT/V7, and integrated production acceptance blocked.
 - Fixed S2PMT07 final bundle prerequisite plan to stop repeating inherited P0/P1 blockers after committed zero-proof artifact validation passes, while keeping S2PLT04, final command execution, handoff, signoff, manifest, and all production acceptance gates blocked.
 - Fixed S2PMT07 S2PLT04 completion evidence audit refs to remove a nonexistent S2PLT02 manifest, list only existing S2PLT02 nonterminal refs, and expose the blocked S2PLT02 real-proof capture authorization state without enabling production.
+
+- Record S2PLT02 terminal capture window audit: live authorization is valid, but current 2026-06-29/2026-06-30 dry-run evidence and disabled launchd state do not satisfy terminal delivery proof.
