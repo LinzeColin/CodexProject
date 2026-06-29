@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-06-29 16:33:19 Australia/Sydney - S2PLT02-DRY-RUN-SECOND-DAY-AUDIT
+
+- Added `audit-s2plt02-dry-run-second-day --json` and fail-closed S2PLT02 dry-run audit logic so the 2026-06-29 local M1-M4 dry-run trace is visible but cannot be counted as the second real delivery day.
+- Current audit result is blocked / exit 2 with `dry_run_mail_count=4`, `real_sent_mail_count=0`, `observed_natural_days_credit=0`, `observed_email_count_credit=0`, `counts_toward_s2plt02_terminal_proof=false`, and state hash `9fbd118380da579c2cd47a92e6fe3e54fc89ffd9b76dddb8d3a7199e5821e965`.
+- Remaining S2PLT02 blockers are still `dry_run_evidence_only_not_real_smtp`, `real_scheduler_not_proven`, `two_consecutive_real_days_not_proven`, and `eight_real_emails_not_proven`; S2PLT02/S2PLT03/S2PLT04/S2PMT07 acceptance and integrated production acceptance remain false.
+- No SMTP, scheduler, Release, production restore, CURRENT/V7 contract, public schema, DB migration, source adapter, ranking, or production queue behavior was enabled or changed.
+
 ## 2026-06-29 15:59:53 Australia/Sydney - S2PMT07-S2PLT02-TERMINAL-DELIVERY-PROOF-VALIDATOR
 
 - Added `validate-s2plt02-terminal-delivery-proof` and a strict validator for future `FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json`.

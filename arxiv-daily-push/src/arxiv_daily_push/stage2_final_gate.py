@@ -858,6 +858,24 @@ S2PLT02_TERMINAL_DELIVERY_PROOF_NO_PRODUCTION_FLAGS = (
     "v7_1_baseline_changed",
     "v7_2_contract_files_changed",
 )
+S2PLT02_DRY_RUN_SECOND_DAY_AUDIT_MODEL_ID = "adp-s2plt02-dry-run-second-day-audit-v1"
+S2PLT02_DRY_RUN_SECOND_DAY_AUDIT_SCOPE = "second_day_dry_run_trace_no_terminal_delivery_credit"
+S2PLT02_DRY_RUN_SECOND_DAY_AUDIT_SERVICE_DATE = "2026-06-29"
+S2PLT02_DRY_RUN_SECOND_DAY_AUDIT_RUNNER_REPORT = "adp-local-runner-report.json"
+S2PLT02_DRY_RUN_SECOND_DAY_AUDIT_PRODUCT_REPORT_TEMPLATE = "adp-smtp-delivery-report-{product}.json"
+S2PLT02_DRY_RUN_SECOND_DAY_AUDIT_NO_PRODUCTION_FLAGS = (
+    "production_acceptance_claimed",
+    "integrated_production_accepted",
+    "stage2_integrated_production_accepted",
+    "daily_operation_enabled",
+    "real_smtp_send_enabled",
+    "scheduler_install_enabled",
+    "release_packaging_enabled",
+    "production_restore_enabled",
+    "current_pointer_changed",
+    "v7_1_baseline_changed",
+    "v7_2_contract_files_changed",
+)
 S2PLT02_M4_WATERMARK_FORBIDDEN_SOURCE_FLAGS = (
     "integrated_production_accepted",
     "stage2_integrated_production_accepted",
@@ -1218,6 +1236,216 @@ def build_s2plt02_delivery_evidence_ledger_state(
     }
     state["ledger_hash"] = _stable_hash({key: value for key, value in state.items() if key != "ledger_hash"})
     return state
+
+
+def _load_s2plt02_audit_json(path: Path) -> tuple[Mapping[str, Any], str]:
+    if not path.exists():
+        return {}, "missing"
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {}, "invalid_json"
+    if not isinstance(payload, Mapping):
+        return {}, "not_object"
+    return payload, ""
+
+
+def build_s2plt02_dry_run_second_day_audit_state(
+    *,
+    state_dir: str | Path | None = None,
+    service_date: str = S2PLT02_DRY_RUN_SECOND_DAY_AUDIT_SERVICE_DATE,
+) -> dict[str, Any]:
+    """Audit a second-day dry-run trace without granting S2PLT02 terminal credit."""
+
+    state_root = Path(state_dir).expanduser() if state_dir is not None else Path.home() / ".adp" / "arxiv-daily-push"
+    run_dir = state_root / "runs" / service_date.replace("-", "")
+    runner_report_path = run_dir / S2PLT02_DRY_RUN_SECOND_DAY_AUDIT_RUNNER_REPORT
+    validation_errors: list[str] = []
+    evidence_refs = [str(runner_report_path)]
+
+    runner_report, load_error = _load_s2plt02_audit_json(runner_report_path)
+    if load_error:
+        validation_errors.append(f"runner_report_{load_error}")
+
+    mail_summary = _mapping(runner_report.get("mail_delivery_summary"))
+    planned_products = [str(product) for product in mail_summary.get("planned_mail_products", [])]
+    dry_run_products = [str(product) for product in mail_summary.get("dry_run_mail_products", [])]
+    sent_products = [str(product) for product in mail_summary.get("sent_mail_products", [])]
+    status_by_product = _mapping(mail_summary.get("status_by_product"))
+    planned_mail_count = int(mail_summary.get("planned_send_total") or len(planned_products))
+    sent_mail_count = int(mail_summary.get("sent_mail_count") or len(sent_products))
+
+    if tuple(planned_products) != S2PLT02_REQUIRED_MAIL_PRODUCTS:
+        validation_errors.append("planned_mail_products_must_be_M1_M4")
+    if sent_mail_count != 0 or sent_products:
+        validation_errors.append("dry_run_runner_report_must_have_zero_sent_mail")
+    if runner_report.get("real_smtp_sent") is not False:
+        validation_errors.append("runner_report_real_smtp_sent_must_be_false")
+    if runner_report.get("production_evidence_ready") is not False:
+        validation_errors.append("runner_report_production_evidence_ready_must_be_false")
+
+    product_report_status: dict[str, str] = {}
+    product_report_refs: dict[str, str] = {}
+    dry_run_report_products: list[str] = []
+    missing_product_report = False
+    for product in S2PLT02_REQUIRED_MAIL_PRODUCTS:
+        report_path = run_dir / S2PLT02_DRY_RUN_SECOND_DAY_AUDIT_PRODUCT_REPORT_TEMPLATE.format(product=product)
+        evidence_refs.append(str(report_path))
+        product_report_refs[product] = str(report_path)
+        product_report, product_error = _load_s2plt02_audit_json(report_path)
+        if product_error:
+            missing_product_report = True
+            validation_errors.append(f"missing_product_delivery_report:{product}" if product_error == "missing" else f"product_delivery_report_{product}_{product_error}")
+            continue
+
+        status = str(product_report.get("status") or status_by_product.get(product) or "")
+        product_report_status[product] = status
+        is_dry_run_report = (
+            status == "dry_run"
+            and product_report.get("dry_run") is True
+            and product_report.get("allow_send") is False
+            and product_report.get("real_send_attempted") is False
+            and product_report.get("real_smtp_send_enabled") is False
+        )
+        if is_dry_run_report:
+            dry_run_report_products.append(product)
+        else:
+            validation_errors.append(f"product_delivery_report_not_dry_run:{product}")
+        if (
+            product_report.get("status") == "sent"
+            or product_report.get("real_send_attempted") is True
+            or product_report.get("real_smtp_send_enabled") is True
+            or product_report.get("real_smtp_sent") is True
+        ):
+            validation_errors.append(f"product_delivery_report_has_real_send:{product}")
+
+    all_required_products_dry_run = tuple(dry_run_products) == S2PLT02_REQUIRED_MAIL_PRODUCTS and tuple(
+        dry_run_report_products
+    ) == S2PLT02_REQUIRED_MAIL_PRODUCTS
+    dry_run_evidence_present = (
+        all_required_products_dry_run
+        and planned_mail_count == len(S2PLT02_REQUIRED_MAIL_PRODUCTS)
+        and sent_mail_count == 0
+        and not missing_product_report
+        and not any(error.startswith("product_delivery_report_not_dry_run") for error in validation_errors)
+        and not any(error.startswith("product_delivery_report_has_real_send") for error in validation_errors)
+    )
+
+    blocking_reasons: list[str] = []
+    if missing_product_report:
+        blocking_reasons.append("dry_run_product_report_set_incomplete")
+    if dry_run_evidence_present:
+        blocking_reasons.append("dry_run_evidence_only_not_real_smtp")
+    else:
+        blocking_reasons.append("dry_run_evidence_not_complete")
+    for reason in (
+        "real_scheduler_not_proven",
+        "two_consecutive_real_days_not_proven",
+        "eight_real_emails_not_proven",
+    ):
+        if reason not in blocking_reasons:
+            blocking_reasons.append(reason)
+
+    state = {
+        "model_id": S2PLT02_DRY_RUN_SECOND_DAY_AUDIT_MODEL_ID,
+        "schema_version": S2PLT02_SCHEMA_VERSION,
+        "task_id": "S2PLT02-DRY-RUN-SECOND-DAY-AUDIT",
+        "parent_task_id": S2PLT02_TASK_ID,
+        "acceptance_id": S2PLT02_ACCEPTANCE_ID,
+        "status": "blocked",
+        "scope": S2PLT02_DRY_RUN_SECOND_DAY_AUDIT_SCOPE,
+        "service_date": service_date,
+        "state_dir": str(state_root),
+        "run_dir": str(run_dir),
+        "runner_report_ref": str(runner_report_path),
+        "product_report_refs": product_report_refs,
+        "required_mail_products": list(S2PLT02_REQUIRED_MAIL_PRODUCTS),
+        "planned_mail_products": planned_products,
+        "dry_run_mail_products": dry_run_products,
+        "dry_run_report_products": dry_run_report_products,
+        "sent_mail_products": sent_products,
+        "product_report_status": product_report_status,
+        "planned_mail_count": planned_mail_count,
+        "dry_run_mail_count": len(dry_run_report_products),
+        "real_sent_mail_count": sent_mail_count,
+        "observed_natural_days_credit": 0,
+        "observed_email_count_credit": 0,
+        "dry_run_evidence_present": dry_run_evidence_present,
+        "terminal_delivery_credit": False,
+        "counts_toward_s2plt02_terminal_proof": False,
+        "real_smtp_proven": False,
+        "real_scheduler_proven": False,
+        "s2plt02_accepted": False,
+        "production_acceptance_claimed": False,
+        "integrated_production_accepted": False,
+        "stage2_integrated_production_accepted": False,
+        "daily_operation_enabled": False,
+        "real_smtp_send_enabled": False,
+        "scheduler_install_enabled": False,
+        "release_packaging_enabled": False,
+        "production_restore_enabled": False,
+        "current_pointer_changed": False,
+        "v7_1_baseline_changed": False,
+        "v7_2_contract_files_changed": False,
+        "validation_errors": validation_errors,
+        "blocking_reasons": blocking_reasons,
+        "evidence_refs": evidence_refs,
+        "state_hash": "",
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
+def validate_s2plt02_dry_run_second_day_audit_state(state: Mapping[str, Any]) -> list[str]:
+    """Validate a S2PLT02 dry-run second-day audit state."""
+
+    errors: list[str] = []
+    if state.get("model_id") != S2PLT02_DRY_RUN_SECOND_DAY_AUDIT_MODEL_ID:
+        errors.append("S2PLT02 dry-run second-day audit model_id is invalid")
+    if state.get("schema_version") != S2PLT02_SCHEMA_VERSION:
+        errors.append("S2PLT02 dry-run second-day audit schema_version must be 1")
+    if state.get("task_id") != "S2PLT02-DRY-RUN-SECOND-DAY-AUDIT":
+        errors.append("S2PLT02 dry-run second-day audit task_id is invalid")
+    if state.get("acceptance_id") != S2PLT02_ACCEPTANCE_ID:
+        errors.append("S2PLT02 dry-run second-day audit acceptance_id is invalid")
+    if state.get("status") != "blocked":
+        errors.append("S2PLT02 dry-run second-day audit must stay blocked")
+    if state.get("scope") != S2PLT02_DRY_RUN_SECOND_DAY_AUDIT_SCOPE:
+        errors.append("S2PLT02 dry-run second-day audit scope is invalid")
+    if tuple(state.get("required_mail_products", [])) != S2PLT02_REQUIRED_MAIL_PRODUCTS:
+        errors.append("S2PLT02 dry-run second-day audit required_mail_products must be M1-M4")
+    for field in (
+        "terminal_delivery_credit",
+        "counts_toward_s2plt02_terminal_proof",
+        "real_smtp_proven",
+        "real_scheduler_proven",
+        "s2plt02_accepted",
+    ):
+        if state.get(field) is not False:
+            errors.append(f"{field} must be false")
+    if state.get("observed_natural_days_credit") != 0:
+        errors.append("observed_natural_days_credit must be 0")
+    if state.get("observed_email_count_credit") != 0:
+        errors.append("observed_email_count_credit must be 0")
+    for flag in S2PLT02_DRY_RUN_SECOND_DAY_AUDIT_NO_PRODUCTION_FLAGS:
+        if state.get(flag) is not False:
+            errors.append(f"{flag} must be false")
+    blocking_reasons = state.get("blocking_reasons", [])
+    for reason in (
+        "real_scheduler_not_proven",
+        "two_consecutive_real_days_not_proven",
+        "eight_real_emails_not_proven",
+    ):
+        if reason not in blocking_reasons:
+            errors.append(f"{reason} blocker is required")
+    if state.get("dry_run_evidence_present") is True and "dry_run_evidence_only_not_real_smtp" not in blocking_reasons:
+        errors.append("dry_run_evidence_only_not_real_smtp blocker is required")
+    if state.get("dry_run_evidence_present") is False and "dry_run_evidence_not_complete" not in blocking_reasons:
+        errors.append("dry_run_evidence_not_complete blocker is required")
+    expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    if state.get("state_hash") != expected_hash:
+        errors.append("S2PLT02 dry-run second-day audit state_hash does not match state content")
+    return errors
 
 
 def _default_s2plt02_m4_watermark_proof_records() -> list[dict[str, Any]]:

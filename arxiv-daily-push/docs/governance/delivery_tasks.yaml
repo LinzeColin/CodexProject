@@ -4839,3 +4839,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+  - task_id: "S2PLT02-DRY-RUN-SECOND-DAY-AUDIT"
+    title: "S2PLT02 dry-run second-day nonterminal audit"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-29T16:33:19+10:00"
+    summary: "Audit the 2026-06-29 local M1-M4 dry-run trace and explicitly prevent it from counting as S2PLT02 second real delivery day, real SMTP proof, scheduler proof, or terminal acceptance."
+    owner: "content_owner + engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_DRY_RUN_SECOND_DAY_AUDIT.md", "governance/run_manifests/ADP-S2PLT02-DRY-RUN-SECOND-DAY-AUDIT-20260629.json"]
+    acceptance_ids: ["ACC-S2PLT02-2D"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s2plt02_dryrun_red PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s2plt02_dryrun_green PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s2plt02_dryrun_cli PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_cli.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s2plt02_dryrun_real PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli audit-s2plt02-dry-run-second-day --state-dir /Users/linzezhang/.adp/arxiv-daily-push --service-date 2026-06-29 --json"]
+    test_results: ["TDD red failed as expected because build_s2plt02_dry_run_second_day_audit_state was missing", "focused final-gate tests: 92 OK", "targeted stage2_final_gate and CLI tests: 116 OK", "real local state CLI returned blocked / exit 2 with dry_run_mail_count=4, real_sent_mail_count=0, counts_toward_s2plt02_terminal_proof=false, state_hash=9fbd118380da579c2cd47a92e6fe3e54fc89ffd9b76dddb8d3a7199e5821e965"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PLT02-DRY-RUN-SECOND-DAY-AUDIT-20260629.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_DRY_RUN_SECOND_DAY_AUDIT.md", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py"]
+    result: "2026-06-29 dry-run trace is recorded as nonterminal evidence only; it grants zero natural-day credit and zero email credit toward S2PLT02."
+    risk: "The 05:00-shaped dry-run trace can be misread as a second real scheduler/SMTP day unless counts_toward_s2plt02_terminal_proof=false remains explicit."
+    rollback: "Revert S2PLT02 dry-run audit code, CLI, focused tests, phase record, manifest, traceability row, delivery/event records, generated views, and three base records; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

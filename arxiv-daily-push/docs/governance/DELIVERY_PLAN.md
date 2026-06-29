@@ -21,12 +21,21 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 266
+- task_count: 267
 - acceptance_count: 127
 
 ## Delivery Tasks
 
 The machine-readable task source is `delivery_tasks.yaml`.
+
+## 2026-06-29 16:33:19 Australia/Sydney - S2PLT02 Dry-Run Second-Day Audit
+
+- `S2PLT02-DRY-RUN-SECOND-DAY-AUDIT` records the 2026-06-29 local M1-M4 dry-run trace as visible but nonterminal S2PLT02 evidence.
+- Current audit remains `blocked` / exit 2 with `dry_run_mail_count=4`, `real_sent_mail_count=0`, `observed_natural_days_credit=0`, `observed_email_count_credit=0`, and `counts_toward_s2plt02_terminal_proof=false`.
+- Current audit state hash is `9fbd118380da579c2cd47a92e6fe3e54fc89ffd9b76dddb8d3a7199e5821e965`.
+- Remaining blockers: `dry_run_evidence_only_not_real_smtp`, `real_scheduler_not_proven`, `two_consecutive_real_days_not_proven`, and `eight_real_emails_not_proven`.
+- Evidence: `governance/run_manifests/ADP-S2PLT02-DRY-RUN-SECOND-DAY-AUDIT-20260629.json` and `arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_DRY_RUN_SECOND_DAY_AUDIT.md`.
+- No SMTP, scheduler, Release, restore, schema/DB, source/ranking, CURRENT/V7, DAILY_OPERATION, S2PLT02/S2PLT03/S2PLT04/S2PMT07 acceptance, final bundle acceptance, or integrated production acceptance side effect is claimed.
 
 ## 2026-06-29 15:59:53 Australia/Sydney - S2PMT07 S2PLT02 Terminal Delivery Proof Validator
 
