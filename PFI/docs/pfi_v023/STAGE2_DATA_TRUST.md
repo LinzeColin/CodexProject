@@ -59,3 +59,11 @@
 当前本机真实个人财务数据源仍为 `not_mounted`，因此页面门禁展示 `未挂载真实个人财务数据源`。不得把缺失数据、路径错误、权限失败或解析失败显示成 `CNY 0.00`。
 
 本 phase 只改 `PFI/web/app/dataStatus.js` 的可调用门禁 renderer 和 `PFI/reports/pfi_v023/stage_2/phase_2_3/` 下的验收证据。`PFI/web/index.html` 与 `PFI/web/app/shell.js` 不在本 phase 修改范围内；正式导航接线属于后续 Stage 3。
+
+## Stage 2 整体复审
+
+Stage 2 整体复审覆盖 Phase 1、Phase 2.1、Phase 2.2 和 Phase 2.3，确认当前本机 `Downloads` 中的 v0.2.3 Roadmap 与 TaskPack 已恢复，哈希与 Phase 2.1 evidence 记录一致。
+
+复审发现并修复 `outdated_snapshot_date` 缺口：任务包要求过期数据显示快照日期，复审前 Python/JS 非数值状态渲染只显示“使用旧快照，请查看快照日期”，没有输出 `as_of`。复审修复后，`outdated` 且包含 `as_of` 的核心指标会显示 `快照日期`，仍不显示 `CNY 0.00`。
+
+本复审不进入 Stage 3，不改 `PFI/web/index.html`、`PFI/web/app/shell.js` 或正式导航路由；Stage 3 navigation routes 仍为下一 Stage 范围。

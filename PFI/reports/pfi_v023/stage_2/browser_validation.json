@@ -1,0 +1,13 @@
+{
+  "phase_id": "V023-S2-REVIEW",
+  "html_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_2/stage2_review_validation.html",
+  "screenshot_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_2/screenshots/stage2_data_gate.png",
+  "browser": "Google Chrome headless via playwright-core",
+  "title_visible": true,
+  "not_mounted_visible": true,
+  "no_financial_zero_when_not_mounted": true,
+  "outdated_snapshot_date_visible": true,
+  "path_permission_parse_errors_visible": true,
+  "metrics_visible": true,
+  "console_errors": []
+}

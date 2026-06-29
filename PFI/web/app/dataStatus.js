@@ -85,7 +85,11 @@
 
   function renderMetricValueZh(metric) {
     if (!canDisplayFinancialValue(metric)) {
-      return metric && metric.message_zh ? metric.message_zh : "数据状态未知";
+      const message = metric && metric.message_zh ? metric.message_zh : "数据状态未知";
+      if (metric && metric.status === "outdated" && metric.as_of) {
+        return `${message}（快照日期：${metric.as_of}）`;
+      }
+      return message;
     }
     const currency = metric.currency || "CNY";
     return `${currency} ${Number(metric.value).toLocaleString("zh-CN", {

@@ -1,0 +1,10 @@
+PFI/docs/pfi_v023/STAGE2_DATA_TRUST.md
+PFI/reports/pfi_v023/stage_2/browser_validation.json
+PFI/reports/pfi_v023/stage_2/changed_files.txt
+PFI/reports/pfi_v023/stage_2/evidence.json
+PFI/reports/pfi_v023/stage_2/screenshots/stage2_data_gate.png
+PFI/reports/pfi_v023/stage_2/stage2_review_validation.html
+PFI/reports/pfi_v023/stage_2/terminal.log
+PFI/src/pfi_v02/stage_v023_data_state.py
+PFI/tests/test_v023_stage2_data_state_machine.py
+PFI/web/app/dataStatus.js
