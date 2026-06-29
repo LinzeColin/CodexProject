@@ -4123,6 +4123,13 @@ def build_s2plt04_completion_evidence_audit_state(
     root = Path(repo_root)
     zero_proof = _load_committed_p0_p1_zero_proof(root)
     zero_proof_state = build_p0_p1_zero_proof_artifact_validation_state(zero_proof)
+    s2plt02_terminal_audit = build_s2plt02_terminal_readiness_audit_state(
+        generated_at="2026-06-29T10:35:11+10:00"
+    )
+    s2plt03_resilience_audit = build_s2plt03_resilience_precheck_report(
+        generated_at="2026-06-29T12:12:00+10:00",
+        repo_root=root,
+    )
     p0_zero = zero_proof_state.get("p0_zero_proven_by_payload") is True
     p1_zero = zero_proof_state.get("p1_zero_proven_by_payload") is True
     s2plt02_remaining_blockers = [
@@ -4151,10 +4158,15 @@ def build_s2plt04_completion_evidence_audit_state(
                 "governance/run_manifests/ADP-S2PLT02-LIVE-2D-PRECHECK-20260626.json",
                 "governance/run_manifests/ADP-S2PLT02-PARTIAL-REAL-DELIVERY-EVIDENCE-20260628.json",
                 "governance/run_manifests/ADP-S2PLT02-ZERO-PROOF-READINESS-SYNC-20260629.json",
+                "governance/run_manifests/ADP-S2PLT02-TERMINAL-READINESS-ZERO-PROOF-SYNC-20260629.json",
             ],
             "terminal_dependency": "S2PLT02_ACCEPTED",
             "terminal_dependency_value": False,
             "blocking_reason": "s2plt02_live_2d_terminal_proof_missing",
+            "terminal_readiness_audit_status": s2plt02_terminal_audit["status"],
+            "terminal_readiness_audit_state_hash": s2plt02_terminal_audit["state_hash"],
+            "terminal_readiness_precheck_report_hash": s2plt02_terminal_audit["precheck_report_hash"],
+            "terminal_dependency_state": dict(s2plt02_terminal_audit["terminal_dependency_state"]),
             "observed_natural_days": 1,
             "required_natural_days": 2,
             "observed_email_count": 4,
@@ -4172,10 +4184,13 @@ def build_s2plt04_completion_evidence_audit_state(
                 "governance/run_manifests/ADP-S2PLT03-RESILIENCE-PRECHECK-20260628.json",
                 "governance/run_manifests/ADP-S2PLT03-LOCAL-RESILIENCE-DRILL-20260628.json",
                 "governance/run_manifests/ADP-S2PLT03-ZERO-PROOF-RESILIENCE-SYNC-20260629.json",
+                "governance/run_manifests/ADP-S2PLT03-AUDIT-BLOCKER-ZERO-PROOF-SYNC-20260629.json",
             ],
             "terminal_dependency": "S2PLT03_ACCEPTED",
             "terminal_dependency_value": False,
             "blocking_reason": "s2plt03_resilience_terminal_proof_missing",
+            "audit_blockers_status": s2plt03_resilience_audit["audit_blockers"]["status"],
+            "latest_audit_report_hash": s2plt03_resilience_audit["report_hash"],
         },
         "P0_P1_ZERO_PROOF": {
             "artifact_status": "pass" if zero_proof_state.get("status") == "pass" else "blocked",

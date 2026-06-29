@@ -140,6 +140,7 @@ from arxiv_daily_push.stage2_final_gate import (
     build_s2plt03_resilience_precheck_report,
     build_s2plt04_dependency_state,
     build_s2plt04_evidence_state,
+    build_s2plt04_completion_evidence_audit_state,
     build_s2plt04_integration_candidate_report,
     build_audit_blocker_state,
     build_dependency_state,
@@ -3293,6 +3294,33 @@ class Stage2FinalGateTests(unittest.TestCase):
             "source_evidence_refs must include S2PLT03_RESILIENCE_PROOF",
             validate_s2plt04_completion_report(payload),
         )
+
+    def test_s2plt04_completion_evidence_audit_consumes_latest_nonterminal_terminal_audits(self) -> None:
+        state = build_s2plt04_completion_evidence_audit_state()
+        s2plt02 = state["source_evidence"]["S2PLT02_LIVE_2D_PROOF"]
+        s2plt03 = state["source_evidence"]["S2PLT03_RESILIENCE_PROOF"]
+
+        self.assertEqual(state["status"], "blocked")
+        self.assertFalse(state["completion_report_ready"])
+        self.assertIn(
+            "governance/run_manifests/ADP-S2PLT02-TERMINAL-READINESS-ZERO-PROOF-SYNC-20260629.json",
+            s2plt02["nonterminal_refs"],
+        )
+        self.assertEqual(s2plt02["terminal_readiness_audit_status"], "blocked")
+        self.assertEqual(
+            s2plt02["terminal_readiness_audit_state_hash"],
+            "b318db2e8f90efc9a09bdaea6ee75e6da87d929f844bc9c4a53816dd2b648d0c",
+        )
+        self.assertTrue(s2plt02["terminal_dependency_state"]["P0_ZERO"])
+        self.assertTrue(s2plt02["terminal_dependency_state"]["P1_ZERO"])
+        self.assertIn(
+            "governance/run_manifests/ADP-S2PLT03-AUDIT-BLOCKER-ZERO-PROOF-SYNC-20260629.json",
+            s2plt03["nonterminal_refs"],
+        )
+        self.assertEqual(s2plt03["audit_blockers_status"], "pass")
+        self.assertEqual(s2plt03["latest_audit_report_hash"], "3483d4a8c4248d3a41cfae5db4febbe7c9d42368ae6ae9311d0c5a9819d13466")
+        self.assertIn("s2plt02_live_2d_terminal_proof_missing", state["blocking_reasons"])
+        self.assertIn("s2plt03_resilience_terminal_proof_missing", state["blocking_reasons"])
 
     def test_final_acceptance_bundle_readiness_embeds_s2plt04_completion_report_validation_as_blocked(self) -> None:
         state = build_final_acceptance_bundle_readiness_state()

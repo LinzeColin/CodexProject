@@ -10,13 +10,30 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.1
 - Current phase: S2PL
-- Current gate: S2PLT03_AUDIT_BLOCKER_ZERO_PROOF_SYNC_BLOCKED_S2PLT02_NOT_ACCEPTED
-- Confirmed iteration count: 231
+- Current gate: S2PMT07_S2PLT04_COMPLETION_EVIDENCE_LATEST_SYNC_BLOCKED_NO_REPORT_NO_PRODUCTION
+- Confirmed iteration count: 232
 - Reconstructed event count: 0
-- Current task: `S2PLT03-AUDIT-BLOCKER-ZERO-PROOF-SYNC` makes S2PLT03 `audit_blockers` match the committed P0/P1 zero-proof artifact validation. The current S2PLT03 audit records `p0_p1_zero_proof_artifact_validation.status=pass`, `audit_blockers.status=pass`, `audit_blockers.checks.P0_zero=true`, `audit_blockers.checks.P1_zero=true`, inherited open audit blocker counts `P0=0` / `P1=0`, current report hash `3483d4a8c4248d3a41cfae5db4febbe7c9d42368ae6ae9311d0c5a9819d13466`, and superseded report hash `d8cdd55b7848c6b7745a0707522f0277c7b7ef2f82e2ca2a0152e5c520211333`; it remains blocked because `s2plt02_not_accepted`, with `S2PLT02_ACCEPTED=false`, `S2PLT03_ACCEPTED=false`, and `S2PLT03_RESILIENCE_DRILL_COMPLETED=false`. This does not accept S2PLT03, does not create the real S2PLT04 completion report at `FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json`, does not execute final commands, does not accept production, and does not enable DAILY_OPERATION, scheduler, SMTP, Release, or restore.
+- Current task: `S2PMT07-S2PLT04-COMPLETION-EVIDENCE-LATEST-SYNC` refreshes the S2PLT04 completion evidence audit so it consumes the latest nonterminal S2PLT02 terminal-readiness zero-proof sync and S2PLT03 audit-blocker zero-proof sync. The current S2PLT04 audit records `completion_report_ready=false`, `s2plt04_completion_report_written=false`, state hash `717822760035bbebe20c429cd2db4e11501e9ebecc2bbc633a04f72de9914c58`, superseded state hash `cce9241078f6f4e91bcdd4440642e252c5c6082830d8a61ca0dbe23a04f29729`, S2PLT02 terminal-readiness state hash `b318db2e8f90efc9a09bdaea6ee75e6da87d929f844bc9c4a53816dd2b648d0c`, S2PLT03 latest audit report hash `3483d4a8c4248d3a41cfae5db4febbe7c9d42368ae6ae9311d0c5a9819d13466`, `P0_ZERO=true`, `P1_ZERO=true`, `audit_blockers.status=pass`, and remaining blockers `s2plt01_not_accepted`, `s2plt02_live_2d_terminal_proof_missing`, and `s2plt03_resilience_terminal_proof_missing`. This does not accept S2PLT02/S2PLT03/S2PLT04, does not create the real S2PLT04 completion report at `FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json`, does not execute final commands, does not accept production, and does not enable DAILY_OPERATION, scheduler, SMTP, Release, or restore.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. Local daily M1-M4 orchestration is now recorded as readiness evidence, but V7.2 contract baseline migration blockers are zero while real restore, real SMTP production, scheduler installation, S2PLT04 completion, final command execution, next-agent handoff, independent signoff, final bundle manifest, directory-level final bundle artifact validation pass, and final integrated production acceptance remain forbidden until V7.2 production stop gates and all `S2PMT07` final-bundle gates pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
 
+
+### `ITER-20260629-ADP-S2PMT07-S2PLT04-COMPLETION-EVIDENCE-LATEST-SYNC`
+
+- Timestamp: `2026-06-29T13:58:47+10:00`
+- Fact level: EXTRACTED from S2PLT04 completion-evidence audit CLI output, S2PLT02 terminal-readiness zero-proof state, S2PLT03 audit-blocker zero-proof state, focused final-gate regression test, phase record, run manifest, traceability row, delivery task, and three base files.
+- Base commit: `beadae95f197ffa648c88635d34839deaeb087df`
+- Product version: `0.23.1`
+- Status: `adp audit-s2plt04-completion-evidence --json` returns blocked / exit 2 with latest nonterminal S2PLT02/S2PLT03 evidence refs present.
+- Task IDs: `S2PMT07-S2PLT04-COMPLETION-EVIDENCE-LATEST-SYNC`; parent `S2PMT07-S2PLT04-COMPLETION-REPORT`; acceptance `ACC-S2PMT07-FINAL-REVIEW`.
+- Goal: Keep S2PLT04 completion evidence audit current with the latest S2PLT02 terminal-readiness zero-proof sync and S2PLT03 audit-blocker zero-proof sync without creating or accepting the S2PLT04 completion report.
+- Files changed: S2PMT07 final gate helper, focused final-gate regression test, phase record, run manifest, traceability/delivery/event records, user-center traceability page, and three base files.
+- Decisions: `completion_report_ready=false`, `s2plt04_completion_report_written=false`, `S2PLT02_ACCEPTED=false`, `S2PLT03_ACCEPTED=false`, S2PLT02 terminal-readiness state hash `b318db2e8f90efc9a09bdaea6ee75e6da87d929f844bc9c4a53816dd2b648d0c`, S2PLT03 latest audit report hash `3483d4a8c4248d3a41cfae5db4febbe7c9d42368ae6ae9311d0c5a9819d13466`, and S2PLT04 audit state hash `717822760035bbebe20c429cd2db4e11501e9ebecc2bbc633a04f72de9914c58`.
+- Validation: TDD red failed because S2PLT04 completion evidence audit did not include the latest S2PLT02 terminal-readiness zero-proof sync ref; focused final-gate tests then passed with 85 OK; audit CLI still returns blocked / exit 2 because terminal source evidence is not accepted.
+- Boundaries: No S2PLT02/S2PLT03/S2PLT04 acceptance, S2PLT04 completion report, final command execution, next-agent handoff, independent signoff, final manifest, SMTP, scheduler, Release, restore, CURRENT/V7 change, source/ranking change, DAILY_OPERATION, or integrated production acceptance.
+- Branch hygiene: no PR is created by this run; closeout must recheck open PR count and ADP/arxiv/s2p remote branches.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-S2PLT04-COMPLETION-EVIDENCE-LATEST-SYNC-20260629.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT04_COMPLETION_EVIDENCE_LATEST_SYNC.md`; `governance/run_manifests/ADP-S2PLT02-ZERO-PROOF-READINESS-SYNC-20260629.json`; `governance/run_manifests/ADP-S2PLT03-AUDIT-BLOCKER-ZERO-PROOF-SYNC-20260629.json`; `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.
+- Next step: Supply truthful S2PLT01/S2PLT02/S2PLT03 terminal evidence before writing S2PLT04 completion report or final bundle manifest.
 
 ### `ITER-20260629-ADP-S2PLT03-AUDIT-BLOCKER-ZERO-PROOF-SYNC`
 
