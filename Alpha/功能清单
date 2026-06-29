@@ -57,6 +57,7 @@
 | FEAT-ALPHA-006 | Strategy DSL 安全边界 | 可用 | 校验策略输入的 lookback、持仓数量、单资产权重，并拒绝杠杆、做空、期权和加密提现等 MVP 禁止项。 | `tests/test_strategy_dsl.py` |
 | FEAT-ALPHA-007 | Phase 6 OWNER-GATE 证据包 | 可用但未 ready | 汇总 Paper/Shadow、Shadow live 约束、limit order contract、soak validation、manifest、closeout report 和 owner decision。 | `scripts/verify_phase6_evidence_package.py`、`docs/evidence/phase6_closeout_latest/` |
 | FEAT-ALPHA-008 | Dashboard 运行状态 | 可用 | 在网页中展示 agent 状态、交易状态、Phase 6 blocker、采样新鲜度、live authorization 缺席和剩余观察时间。 | `/dashboard`、`/dashboard/state`、`tests/test_dashboard_state.py` |
+| FEAT-ALPHA-009 | Phase 6 sampler 自动采集恢复 | 可用 | LaunchAgent 每 300 秒自动追加 Phase 6 样本；最新自动样本必须同时满足 Paper/Shadow pass、Shadow live pass、broker-ready limit order、live authorization 缺席。 | `runtime/phase6_soak_history.jsonl`、`scripts/check_phase6_owner_gate_status.py --require-fresh`、`tests/test_phase6_owner_gate.py` |
 
 ## 明确禁止或尚未完成
 

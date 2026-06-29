@@ -19,7 +19,7 @@
 - current_task: `OWNER-GATE-01 前 48 小时 Paper/Shadow 观察`
 - active_model_count: `9`
 - active_formula_count: `9`
-- active_parameter_count: `55`
+- active_parameter_count: `57`
 - evidence_status: `从代码、配置、测试和 Phase 6 evidence 提取；实盘参数仍被 owner gate 阻塞`
 - 中文验收: `用户可读优先；参数必须说明中文含义、当前值、来源和 owner 需要关注的风险`
 
@@ -32,7 +32,7 @@
 | 项目名称 | Alpha |
 | 当前模型数量 | 9 个 |
 | 当前公式数量 | 9 个 |
-| 当前参数数量 | 55 个 |
+| 当前参数数量 | 57 个 |
 | 当前用途 | 研究、fixture 回测、Paper/Shadow、订单意图审核、dashboard 与 Phase 6 OWNER-GATE 证据 |
 | 当前安全结论 | 实盘默认关闭；live broker 保持 fail-closed；LLM/agent 不能直接提交真实订单 |
 | 当前主要 blocker | Phase 6 48 小时连续 Paper/Shadow 观察未完成 |
@@ -69,7 +69,7 @@
 | FORM-002 | 风险分从 100 开始；最大回撤超过 10%、交易次数少于 10、换手率超过 3 时分别扣分；分数高才允许进入 paper。 | `score>=70 -> promote_to_paper; score<50 -> reject` |
 | FORM-003 | 按固定顺序拒绝不安全订单意图：kill switch、缺少幂等键、方向非法、数量/价格/名义金额非正、单笔上限无效、名义金额超过上限。 | `approved_for_owner_review` 只代表进入人工审核，不代表实盘 |
 | FORM-004 | 如果 `live_trading.enabled=false` 直接拒绝；即使为 true，也要求环境变量、kill switch、审计、broker health、幂等和名义金额全部通过；当前 fail-closed adapter 仍拒绝。 | `FailClosedLiveBroker` 永不提交真实订单 |
-| FORM-005 | 每个 paper 周期运行策略锦标赛，生成 1 股买入 intent，做风控，生成 broker-ready ticket，写入锁定队列；如果允许则通过 paper broker 模拟成交。 | `OrderIntent -> risk_check -> BrokerReadyOrderTicket -> PaperOrder` |
+| FORM-005 | 每个 paper 周期运行策略锦标赛，默认生成 1 股买入 intent；如果现金不足但已有同一标的仓位，则生成卖出 intent，避免 Phase 6 sampler 因纸面现金耗尽被拒；broker-ready ticket 在 paper loop 中强制使用 `limit`。 | `OrderIntent -> risk_check -> BrokerReadyOrderTicket -> PaperOrder` |
 | FORM-006 | Paper broker 拒绝重复幂等键、非法数量/价格/方向、现金不足或持仓不足；买入扣现金加持仓，卖出扣持仓加现金；组合净值等于现金加持仓市值。 | `cash + sum(quantity * mark_price)` |
 | FORM-007 | 用 ticket 的 `expires_at` 减当前时间得到剩余秒数；剩余秒数大于 0 为 fresh，否则 expired；风控拒绝的 ticket 标记为 blocked。 | `seconds_until_expiry > 0` |
 | FORM-008 | Pydantic 校验 strategy payload；标的代码去空格、转大写、拒绝重复；MVP 禁止项为 false 时拒绝。 | `no_leverage/no_short/no_options/no_crypto_withdrawal` 必须保持 true |
@@ -114,8 +114,8 @@
 | PARAM-031 | `DEFAULT_REFRESH_INTERVAL_SECONDS` | paper loop 默认刷新间隔，单位秒 | `300` | 服务和配置 |
 | PARAM-032 | `order_ticket_ttl_seconds` | 订单审核 ticket 有效期，单位秒 | `300` | 配置和 OrderIntent |
 | PARAM-033 | `generated_quantity` | 自动生成 paper intent 的数量 | `1` | intent 生成器 |
-| PARAM-034 | `generated_side` | 自动生成 paper intent 的方向 | `buy` | intent 生成器 |
-| PARAM-035 | `order_type` | broker payload 订单类型 | `market` | dataclass factory |
+| PARAM-034 | `generated_side` | 自动生成 paper intent 的方向 | 默认 `buy`；现金不足且已有同标的持仓时改为 `sell` | intent 生成器 |
+| PARAM-035 | `order_type` | broker payload 订单类型 | paper loop 强制 `limit`；dataclass 默认值不能作为 Phase 6 合约依据 | intent 生成器与 broker-ready ticket |
 | PARAM-036 | `time_in_force` | broker payload 有效时间 | `day` | dataclass factory |
 | PARAM-037 | `paper_price_path` | paper loop 使用的 fixture 价格文件 | `data/sample_prices.csv` | build_default_loop |
 | PARAM-038 | `initial_cash` | paper 账户初始现金 | `10000` | dataclass 和状态加载 |
@@ -136,8 +136,12 @@
 | PARAM-053 | `cost_bps` | fixture 基准成本，单位 bps | `2` | 函数签名 |
 | PARAM-054 | `slippage_bps` | fixture 基准滑点，单位 bps | `5` | 函数签名 |
 | PARAM-055 | `periods_per_year` | 年化波动率使用的一年周期数 | `252` | 函数签名 |
+| PARAM-056 | `phase6_sampler_interval_seconds` | Phase 6 sampler LaunchAgent 自动采样间隔 | `300` | LaunchAgent plist 与安装脚本 |
+| PARAM-057 | `phase6_max_sample_age_seconds` | dashboard 和状态脚本判断 sampler 新鲜度的最大样本年龄 | `900` | Phase 6 owner-gate status |
 
 ## Owner 需要关注的参数
+
+本节是 owner 判断风险的快速入口。新增的 sampler 参数不是为了扩大交易权限，而是为了证明系统真的在按固定节奏采集证据；新增的订单方向规则也不是投资判断，只是防止纸面账户现金耗尽后继续买入，导致合格样本被错误打成失败。后续 agent 如果调整这些值，必须同时说明对采样连续性、订单新鲜度、人工审核和实盘边界的影响。
 
 | 参数 | 当前值 | 为什么重要 |
 |---|---|---|
@@ -146,6 +150,8 @@
 | `max_order_value_aud` | `100` | 控制订单意图的单笔上限；当前仍用于审核和 paper，不代表真实授权额度。 |
 | `DEFAULT_REFRESH_INTERVAL_SECONDS` | `300` | Paper/Shadow 和 dashboard 默认 5 分钟节奏。 |
 | `order_ticket_ttl_seconds` | `300` | owner-review ticket 过期后不能被当作可执行。 |
+| `phase6_sampler_interval_seconds` | `300` | sampler 必须自动追加样本，不能只靠手动运行。 |
+| `order_type` | `limit` | Phase 6 hard gate 要求 broker-ready order intent 是限价单，不接受 `market`。 |
 | `require_kill_switch_clear` | `true` | kill switch 未清除时不能进入交易路径。 |
 
 ## 追溯来源

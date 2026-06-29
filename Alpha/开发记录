@@ -72,6 +72,7 @@
 
 | 时间 | 类型 | 中文摘要 | 任务 | 事实等级 |
 |---|---|---|---|---|
+| 2026-06-29T12:29:20+10:00 | Phase 6 sampler 自动采集修复 | 修复本机 sampler 漏检问题：恢复 Phase 6 脚本、虚拟环境、dashboard owner-gate 路由和三基文件精确路径；修复 paper loop 继续生成 `market` intent 与现金不足仍买入导致采样失败的问题。当前自动 sampler 已从 `sample_count=408` 自然增加到 `409`，最新样本 `paper_shadow_status=pass`、`sampler_freshness_status=pass`、最新 order intent 为 `limit`，但 48 小时连续观察仍未完成。 | ALPHA-G6-PHASE6-SAMPLER-AUTO-RECOVERY-20260629 | 已运行验证 |
 | 2026-06-27T19:36:43+10:00 | 三基文件中文可读性修复 | 修复 `功能清单`、`开发记录`、`模型参数文件` 中文体感不足的问题：三份文件新增 `中文可读评分: 100/100`、第一眼结论、维护红线和 owner 读法说明，dashboard 新增“三基文件中文可读性”面板，并把测试门槛从 20% 汉字占比提高到 30%；本次不改变交易逻辑、不创建 live authorization。 | ALPHA-G6-OWNER-BASE-CHINESE-READABILITY-20260627 | 已提取 |
 | 2026-06-27T16:15:00+10:00 | Phase 6 soak 现金耗尽恢复 | 修复长时间 paper 观察中现金耗尽导致样本被拒的问题：当买入资金不足时，paper loop 会先卖出已有持仓；soak validation 从最近一次失败样本后重新计算连续 48 小时窗口，避免旧失败永久污染新证据。 | ALPHA-G6-PHASE6-SOAK-CASH-RECOVERY-20260627 | 已提取 |
 | 2026-06-27T12:47:00+10:00 | Phase 6 finalize 状态文件 | 只读 finalizer 默认写入 `FINALIZE_STATUS.json`，后续 agent 和 owner 可以直接查看最近一次收口尝试结果。 | ALPHA-G6-PHASE6-FINALIZE-STATUS-20260627 | 已提取 |
