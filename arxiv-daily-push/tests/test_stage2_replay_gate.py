@@ -580,6 +580,33 @@ class Stage2ReplayGateTests(unittest.TestCase):
         self.assertFalse(report["production_acceptance_claimed"])
         self.assertFalse(report["integrated_production_accepted"])
 
+    def test_terminal_acceptance_audit_exposes_current_entry_precheck_zero_proof_readiness(self) -> None:
+        report = build_s2plt01_terminal_acceptance_audit_state(repo_root=Path(__file__).resolve().parents[2])
+
+        readiness = report["current_entry_precheck_zero_proof_readiness"]
+        self.assertEqual(readiness["status"], "pass")
+        self.assertTrue(readiness["entry_precheck_passed"])
+        self.assertEqual(readiness["validation_errors"], [])
+        self.assertEqual(readiness["observed_replay_days"], 30)
+        self.assertEqual(readiness["observed_mail_previews"], 120)
+        self.assertTrue(readiness["source_terminal_states_proven"])
+        self.assertEqual(readiness["future_leakage_count"], 0)
+        self.assertEqual(readiness["p0_p1_blocker_count"], 0)
+        self.assertTrue(readiness["gates"]["p0_zero"])
+        self.assertTrue(readiness["gates"]["p1_zero"])
+        self.assertTrue(readiness["gates"]["replay_evidence_passed"])
+        self.assertTrue(readiness["gates"]["thirty_independent_days_proven"])
+        self.assertTrue(readiness["gates"]["mail_previews_proven"])
+        self.assertTrue(readiness["gates"]["source_terminal_states_proven"])
+        self.assertTrue(readiness["gates"]["future_leakage_zero"])
+        self.assertTrue(report["terminal_gates"]["current_entry_precheck_zero_proof_ready"])
+        self.assertFalse(report["terminal_acceptance_ready"])
+        self.assertIn("review_receipt_is_nonterminal", report["blocking_reasons"])
+        self.assertIn("s2plt01_not_accepted", report["blocking_reasons"])
+        self.assertFalse(report["s2plt01_accepted"])
+        self.assertFalse(report["production_acceptance_claimed"])
+        self.assertFalse(report["integrated_production_accepted"])
+
 
 if __name__ == "__main__":
     unittest.main()

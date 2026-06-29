@@ -1,0 +1,102 @@
+{
+  "schema_version": "codexproject.run_manifest.v1",
+  "manifest_id": "ADP-S2PMT07-S2PLT01-ENTRY-PRECHECK-ZERO-PROOF-SYNC-20260629",
+  "project_id": "arxiv-daily-push",
+  "phase": "S2PM",
+  "task_id": "S2PMT07-S2PLT01-ENTRY-PRECHECK-ZERO-PROOF-SYNC",
+  "task_ids": [
+    "S2PMT07-S2PLT01-ENTRY-PRECHECK-ZERO-PROOF-SYNC",
+    "S2PMT07-S2PLT04-COMPLETION-REPORT",
+    "S2PLT01",
+    "ACC-S2PLT01-30D"
+  ],
+  "generated_at": "2026-06-29T13:10:37+10:00",
+  "occurred_at": "2026-06-29T13:10:37+10:00",
+  "timestamp": "2026-06-29T13:10:37+10:00",
+  "fact_level": "EXTRACTED",
+  "base_commit": "b3abfeaadd7b3970ddb9afce39c8c98a0cbe0a73",
+  "summary": "S2PLT01 terminal acceptance audit now exposes current entry precheck zero-proof readiness as pass while preserving the historical no-production replay execution hash and keeping S2PLT01 acceptance blocked.",
+  "result": "blocked_s2plt01_entry_precheck_zero_proof_ready_acceptance_still_missing_no_production",
+  "cli_command": "adp audit-s2plt01-terminal-acceptance --json",
+  "cli_exit_code": 2,
+  "audit_state_hash": "4958b943871d0c5b99fe855e9d68242374b5c8248ed822505b15aeaf4267a1ba",
+  "current_entry_precheck_zero_proof_readiness_status": "pass",
+  "entry_precheck_passed": true,
+  "entry_precheck_report_hash": "b7c0b96f4cdc570a935680f52dd3804b262ef4898630df8cfadc9ce2796eb55b",
+  "replay_payload_execution_package_validation_status": "pass",
+  "replay_payload_execution_hash": "47394faede126c943dc46b3ca2ae0c8680d5ef32f1f26f4618e3064fcbc28171",
+  "observed_replay_days": 30,
+  "observed_mail_previews": 120,
+  "source_terminal_states_proven": true,
+  "future_leakage_count": 0,
+  "p0_p1_blocker_count": 0,
+  "p0_p1_zero_proof_artifact_validation_status": "pass",
+  "p0_zero": true,
+  "p1_zero": true,
+  "terminal_acceptance_ready": false,
+  "review_receipt_present": true,
+  "review_package_passed": true,
+  "full_replay_executed": false,
+  "s2plt01_accepted": false,
+  "blocking_reasons": [
+    "review_receipt_is_nonterminal",
+    "s2plt01_not_accepted"
+  ],
+  "model_ids_changed": [
+    "MOD-ADP-101"
+  ],
+  "formula_ids_changed": [
+    "FORM-ADP-103"
+  ],
+  "parameter_ids_changed": [],
+  "top_level_p0_p1_stop_gate_closed": false,
+  "final_acceptance_bundle_present": false,
+  "s2plt04_completed": false,
+  "production_acceptance_claimed": false,
+  "integrated_production_accepted": false,
+  "stage2_integrated_production_accepted": false,
+  "daily_operation_enabled": false,
+  "real_smtp_sent": false,
+  "real_smtp_send_enabled": false,
+  "scheduler_enabled": false,
+  "scheduler_install_enabled": false,
+  "release_uploaded": false,
+  "release_packaging_enabled": false,
+  "production_restore_enabled": false,
+  "production_restore_executed": false,
+  "public_schema_changed": false,
+  "db_migration_executed": false,
+  "production_queue_mutated": false,
+  "source_adapter_changed": false,
+  "source_or_board_changed": false,
+  "ranking_algorithm_changed": false,
+  "current_pointer_changed": false,
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false,
+  "evidence_refs": [
+    "governance/run_manifests/ADP-S2PMT07-S2PLT01-ENTRY-PRECHECK-ZERO-PROOF-SYNC-20260629.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT01_ENTRY_PRECHECK_ZERO_PROOF_SYNC.md",
+    "governance/run_manifests/ADP-S2PLT01-REPLAY-PAYLOAD-EXECUTION-20260626.json",
+    "governance/run_manifests/ADP-S2PLT04-S2PLT01-REPLAY-REVIEW-EVIDENCE-SYNC-20260628.json",
+    "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py",
+    "arxiv-daily-push/tests/test_stage2_replay_gate.py"
+  ],
+  "files_changed": [
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py",
+    "arxiv-daily-push/tests/test_stage2_replay_gate.py",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT01_ENTRY_PRECHECK_ZERO_PROOF_SYNC.md",
+    "governance/run_manifests/ADP-S2PMT07-S2PLT01-ENTRY-PRECHECK-ZERO-PROOF-SYNC-20260629.json"
+  ],
+  "next_task": "SUPPLY_REAL_S2PLT01_TERMINAL_ACCEPTANCE_AND_TERMINAL_REVIEW_RECEIPT_BEFORE_S2PLT04_REPORT",
+  "test_results": [
+    "TDD red failed as expected because S2PLT01 terminal audit did not expose current_entry_precheck_zero_proof_readiness",
+    "focused S2PLT01 replay-gate tests: 23 OK",
+    "audit CLI returned blocked / exit 2 with current entry precheck zero-proof readiness pass and remaining blockers review_receipt_is_nonterminal, s2plt01_not_accepted"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt01_entry_red PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_replay_gate.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt01_entry_target1 PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_replay_gate.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt01_entry_cli1 PYTHONPATH=arxiv-daily-push/src python3 -B -m arxiv_daily_push.cli audit-s2plt01-terminal-acceptance --json"
+  ]
+}

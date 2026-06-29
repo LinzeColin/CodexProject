@@ -10,13 +10,30 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.1
 - Current phase: S2PM
-- Current gate: S2PMT07_S2PLT01_REPLAY_PAYLOAD_READINESS_SYNC_BLOCKED_NO_ACCEPTANCE
-- Confirmed iteration count: 229
+- Current gate: S2PMT07_S2PLT01_ENTRY_PRECHECK_ZERO_PROOF_SYNC_BLOCKED_NO_ACCEPTANCE
+- Confirmed iteration count: 230
 - Reconstructed event count: 0
-- Current task: `S2PMT07-S2PLT01-REPLAY-PAYLOAD-READINESS-SYNC` verifies the existing no-production S2PLT01 replay payload execution package inside the S2PLT01 terminal acceptance audit. The current S2PLT01 audit records `replay_payload_execution_package_passed=true`, `observed_replay_days=30`, `observed_mail_previews=120`, `source_terminal_states_proven=true`, `future_leakage_count=0`, `p0_p1_blocker_count=0`, and execution hash `47394faede126c943dc46b3ca2ae0c8680d5ef32f1f26f4618e3064fcbc28171`; it remains blocked because `full_replay_executed=false`, `review_receipt_is_nonterminal`, and `S2PLT01_ACCEPTED=false`. This does not accept S2PLT01, does not create the real S2PLT04 completion report at `FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json`, does not execute final commands, does not accept production, and does not enable DAILY_OPERATION, scheduler, SMTP, Release, or restore.
+- Current task: `S2PMT07-S2PLT01-ENTRY-PRECHECK-ZERO-PROOF-SYNC` exposes `current_entry_precheck_zero_proof_readiness.status=pass` inside the S2PLT01 terminal acceptance audit. The current S2PLT01 audit records `entry_precheck_passed=true`, `entry_precheck_report_hash=b7c0b96f4cdc570a935680f52dd3804b262ef4898630df8cfadc9ce2796eb55b`, `replay_payload_execution_package_passed=true`, `observed_replay_days=30`, `observed_mail_previews=120`, `source_terminal_states_proven=true`, `future_leakage_count=0`, `p0_p1_blocker_count=0`, and historical execution hash `47394faede126c943dc46b3ca2ae0c8680d5ef32f1f26f4618e3064fcbc28171`; it remains blocked because `full_replay_executed=false`, `review_receipt_is_nonterminal`, and `S2PLT01_ACCEPTED=false`. This does not accept S2PLT01, does not create the real S2PLT04 completion report at `FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json`, does not execute final commands, does not accept production, and does not enable DAILY_OPERATION, scheduler, SMTP, Release, or restore.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. Local daily M1-M4 orchestration is now recorded as readiness evidence, but V7.2 contract baseline migration blockers are zero while real restore, real SMTP production, scheduler installation, S2PLT04 completion, final command execution, next-agent handoff, independent signoff, final bundle manifest, directory-level final bundle artifact validation pass, and final integrated production acceptance remain forbidden until V7.2 production stop gates and all `S2PMT07` final-bundle gates pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
 
+
+### `ITER-20260629-ADP-S2PMT07-S2PLT01-ENTRY-PRECHECK-ZERO-PROOF-SYNC`
+
+- Timestamp: `2026-06-29T13:10:37+10:00`
+- Fact level: EXTRACTED from S2PLT01 terminal acceptance audit CLI output, current entry precheck zero-proof readiness state, committed P0/P1 zero-proof artifact, focused S2PLT01 replay-gate regression tests, phase record, run manifest, traceability row, delivery task, and three base files.
+- Base commit: `b3abfeaadd7b3970ddb9afce39c8c98a0cbe0a73`
+- Product version: `0.23.1`
+- Status: `adp audit-s2plt01-terminal-acceptance --json` returns blocked / exit 2 with `current_entry_precheck_zero_proof_readiness.status=pass`.
+- Task IDs: `S2PMT07-S2PLT01-ENTRY-PRECHECK-ZERO-PROOF-SYNC`; parent `S2PMT07-S2PLT04-COMPLETION-REPORT`; acceptance `ACC-S2PLT01-30D`.
+- Goal: Align S2PLT01 terminal-readiness audit with the current zero-proof state so the audit can prove entry precheck readiness without changing the historical replay payload execution package.
+- Files changed: S2PLT01 replay-gate helper, focused replay-gate regression test, phase record, run manifest, traceability/delivery/event records, user-center traceability page, and three base files.
+- Decisions: `terminal_acceptance_ready=false`, `current_entry_precheck_zero_proof_readiness.status=pass`, `entry_precheck_passed=true`, `entry_precheck_report_hash=b7c0b96f4cdc570a935680f52dd3804b262ef4898630df8cfadc9ce2796eb55b`, `full_replay_executed=false`, `s2plt01_accepted=false`, and remaining blockers are `review_receipt_is_nonterminal` and `s2plt01_not_accepted`.
+- Validation: TDD red failed because S2PLT01 terminal audit did not expose `current_entry_precheck_zero_proof_readiness`; focused S2PLT01 replay-gate tests then passed with 23 OK.
+- Boundaries: No S2PLT01 acceptance, S2PLT04 completion report, final command execution, next-agent handoff, independent signoff, final manifest, SMTP, scheduler, Release, restore, CURRENT/V7 change, source/ranking change, DAILY_OPERATION, or integrated production acceptance.
+- Branch hygiene: no PR is created by this run; closeout must recheck open PR count and ADP/arxiv/s2p remote branches.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-S2PLT01-ENTRY-PRECHECK-ZERO-PROOF-SYNC-20260629.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT01_ENTRY_PRECHECK_ZERO_PROOF_SYNC.md`; `governance/run_manifests/ADP-S2PLT01-REPLAY-PAYLOAD-EXECUTION-20260626.json`; `governance/run_manifests/ADP-S2PLT04-S2PLT01-REPLAY-REVIEW-EVIDENCE-SYNC-20260628.json`; `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json`; `arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py`; `arxiv-daily-push/tests/test_stage2_replay_gate.py`.
+- Next step: Supply truthful terminal S2PLT01 acceptance evidence and a terminal review receipt before S2PLT04 can use S2PLT01 as terminal source evidence.
 
 ### `ITER-20260629-ADP-S2PMT07-S2PLT01-REPLAY-PAYLOAD-READINESS-SYNC`
 

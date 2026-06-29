@@ -21,12 +21,21 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 260
+- task_count: 261
 - acceptance_count: 127
 
 ## Delivery Tasks
 
 The machine-readable task source is `delivery_tasks.yaml`.
+
+## 2026-06-29 13:10:37 Australia/Sydney - S2PMT07 S2PLT01 Entry Precheck Zero-Proof Sync
+
+- `S2PMT07-S2PLT01-ENTRY-PRECHECK-ZERO-PROOF-SYNC` makes S2PLT01 terminal acceptance audit expose current entry precheck zero-proof readiness.
+- Current audit remains blocked with `terminal_acceptance_ready=false`, but now records `current_entry_precheck_zero_proof_readiness.status=pass`, `entry_precheck_passed=true`, and `entry_precheck_report_hash=b7c0b96f4cdc570a935680f52dd3804b262ef4898630df8cfadc9ce2796eb55b`.
+- The historical no-production replay execution hash remains `47394faede126c943dc46b3ca2ae0c8680d5ef32f1f26f4618e3064fcbc28171`.
+- Remaining S2PLT01 blockers: `review_receipt_is_nonterminal`, `s2plt01_not_accepted`.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-S2PLT01-ENTRY-PRECHECK-ZERO-PROOF-SYNC-20260629.json` and `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT01_ENTRY_PRECHECK_ZERO_PROOF_SYNC.md`.
+- No SMTP, scheduler, Release, restore, schema/DB, source/ranking, CURRENT/V7, DAILY_OPERATION, S2PLT01 acceptance, S2PLT04 report, final bundle acceptance, or integrated production acceptance side effect is claimed.
 
 ## 2026-06-29 12:42:41 Australia/Sydney - S2PMT07 S2PLT01 Replay Payload Readiness Sync
 

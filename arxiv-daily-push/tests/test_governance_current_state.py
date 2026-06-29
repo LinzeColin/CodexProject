@@ -30,21 +30,25 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn(f"- Current task: `{expected_task}`", current_state)
         self.assertIn(f"### `{current_iteration}`", ledger)
 
-    def test_s2pmt07_current_state_summary_describes_s2plt01_replay_payload_sync(self) -> None:
+    def test_s2pmt07_current_state_summary_describes_s2plt01_entry_precheck_zero_proof_sync(self) -> None:
         ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
-            "S2PMT07_S2PLT01_REPLAY_PAYLOAD_READINESS_SYNC_BLOCKED_NO_ACCEPTANCE",
+            "S2PMT07_S2PLT01_ENTRY_PRECHECK_ZERO_PROOF_SYNC_BLOCKED_NO_ACCEPTANCE",
             current_state,
         )
-        self.assertIn("S2PMT07-S2PLT01-REPLAY-PAYLOAD-READINESS-SYNC", current_state)
-        self.assertIn("verifies the existing no-production S2PLT01 replay payload execution package", current_state)
+        self.assertIn("S2PMT07-S2PLT01-ENTRY-PRECHECK-ZERO-PROOF-SYNC", current_state)
+        self.assertIn("current_entry_precheck_zero_proof_readiness.status=pass", current_state)
+        self.assertIn("entry_precheck_passed=true", current_state)
         self.assertIn("replay_payload_execution_package_passed=true", current_state)
         self.assertIn("observed_replay_days=30", current_state)
         self.assertIn("observed_mail_previews=120", current_state)
         self.assertIn("source_terminal_states_proven=true", current_state)
+        self.assertIn("future_leakage_count=0", current_state)
+        self.assertIn("p0_p1_blocker_count=0", current_state)
         self.assertIn("47394faede126c943dc46b3ca2ae0c8680d5ef32f1f26f4618e3064fcbc28171", current_state)
+        self.assertIn("b7c0b96f4cdc570a935680f52dd3804b262ef4898630df8cfadc9ce2796eb55b", current_state)
         self.assertIn("full_replay_executed=false", current_state)
         self.assertIn("S2PLT01_ACCEPTED=false", current_state)
         self.assertIn("review_receipt_is_nonterminal", current_state)

@@ -4,8 +4,8 @@
 
 - source_base_commit: `fd90a208c7b009aa11bc26c4629a7ea92679c5ff`
 - source_tree_hash: `c44d743a2833842b3cc0dd9e098fb70017cdc5a2`
-- source_snapshot_hash: `sha256:41f8dba420d0ec4c2448b3e29045fd457c33d0a8af8df3a1acb20584526090ff`
-- snapshot_event_time: `2026-06-29T12:42:41+10:00`
+- source_snapshot_hash: `sha256:20fd5c043c4219f99a93a9e92a5ad15d6768fdaeee0eba0c209f79c285c1367a`
+- snapshot_event_time: `2026-06-29T13:10:37+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -14,7 +14,7 @@
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - Product version: `0.23.1`
-- Phase/Gate: `S2PM / S2PMT07_S2PLT01_REPLAY_PAYLOAD_READINESS_SYNC_BLOCKED_NO_ACCEPTANCE`
+- Phase/Gate: `S2PM / S2PMT07_S2PLT01_ENTRY_PRECHECK_ZERO_PROOF_SYNC_BLOCKED_NO_ACCEPTANCE`
 - Models/Formulas/Parameters total: `118 / 120 / 1072`
 - Active formulas/parameters: `120 / 1055`
 - Machine checked formulas/parameters: `120 / 1055`
@@ -35,7 +35,7 @@
 ## Delivery
 
 - Readiness: `BLOCKED_PRECHECK`
-- Release gate: `S2PMT07_S2PLT01_REPLAY_PAYLOAD_READINESS_SYNC_BLOCKED_NO_ACCEPTANCE`
+- Release gate: `S2PMT07_S2PLT01_ENTRY_PRECHECK_ZERO_PROOF_SYNC_BLOCKED_NO_ACCEPTANCE`
 - V7 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - V7 contract hash: `a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d`
 - V7 roadmap hash: `7c5f2d842d4f6b909343c953fe39b4a4aa540d168199747a9f7decdb1aad9bd1`
@@ -48,8 +48,8 @@
 - Next governance task: `S2PMT07`
 - Parallel shadow source task: `NONE_WHILE_S2PMT07_BLOCKED`
 - Next executable task: `S2PMT07-S2PLT04-COMPLETION-REPORT`
-- Pending/stale events: `293`
+- Pending/stale events: `294`
 - Tree-bound events: `0`
 - Commit-bound events: `4`
-- Legacy unbound events: `254`
+- Legacy unbound events: `255`
 - Unresolved fact IDs: `0`
