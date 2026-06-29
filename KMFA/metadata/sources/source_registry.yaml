@@ -1,0 +1,23 @@
+{
+  "schema_version": "kmfa.source_registry.v1",
+  "project_id": "KMFA",
+  "registry_status": "protocol_defined_no_sources_registered",
+  "source_id_policy_ref": "KMFA/metadata/protocol/metadata_protocol.yaml#/identifiers/source_id",
+  "allowed_fields": [
+    "source_id",
+    "source_category",
+    "source_label",
+    "owner_role",
+    "status",
+    "evidence_ref"
+  ],
+  "forbidden_fields": [
+    "raw_file_bytes",
+    "raw_rows",
+    "bank_account_number",
+    "password",
+    "token",
+    "private_key"
+  ],
+  "sources": []
+}

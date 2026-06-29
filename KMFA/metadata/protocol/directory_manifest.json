@@ -1,0 +1,34 @@
+{
+  "schema_version": "kmfa.metadata_directory_manifest.v1",
+  "project_id": "KMFA",
+  "stage_phase": "S02-P1",
+  "directories": [
+    "metadata/sources",
+    "metadata/imports",
+    "metadata/schema_maps",
+    "metadata/quality",
+    "metadata/lineage",
+    "metadata/reports",
+    "metadata/approvals"
+  ],
+  "required_files": [
+    "metadata/sources/source_registry.yaml",
+    "metadata/imports/import_runs.jsonl",
+    "metadata/imports/raw_file_manifest.jsonl",
+    "metadata/schema_maps/source_mapping_versions.yaml",
+    "metadata/quality/data_quality_results.jsonl",
+    "metadata/quality/zero_delta_results.jsonl",
+    "metadata/quality/mismatch_report.csv",
+    "metadata/lineage/field_lineage.jsonl",
+    "metadata/lineage/metric_lineage.jsonl",
+    "metadata/lineage/report_lineage.jsonl",
+    "metadata/approvals/resolution_events.jsonl",
+    "metadata/approvals/human_signoff_log.jsonl",
+    "metadata/reports/report_manifest.jsonl",
+    "metadata/protocol/metadata_protocol.yaml",
+    "metadata/protocol/directory_manifest.json",
+    "metadata/protocol/field_dictionary.csv"
+  ],
+  "raw_sensitive_data_public_repo_allowed": false,
+  "business_records_committed": false
+}

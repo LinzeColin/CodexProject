@@ -1,11 +1,11 @@
 schema_version: "codexproject.project.v1"
 project_id: "KMFA"
 project_name: "KMFA 经营分析系统"
-summary: "KMFA 是独立经营分析系统；当前已完成并复审通过 S01-P1 只读计划、S01-P2 项目骨架/中文入口、S01-P3 防遗漏基线，不声明业务 MVP、生产就绪、真实数据导入、正式报告或外部接口能力。"
-version: "0.1.0-s01p3"
+summary: "KMFA 是独立经营分析系统；当前已完成 Stage 1 治理基线和 S02-P1 metadata 目录协议，不声明业务 MVP、生产就绪、真实数据导入、正式报告或外部接口能力。"
+version: "0.1.0-s02p1"
 fact_level: "EXTRACTED"
 owner_role: "owner"
-current_status: "stage1_review_passed_upload_ready"
+current_status: "s02_p1_completed_validated"
 features:
   - feature_id: "FEAT-KMFA-001"
     name: "项目治理骨架"
@@ -37,11 +37,19 @@ features:
     evidence_refs:
       - "KMFA/模型参数文件.md"
       - "KMFA/docs/governance/model_registry.yaml"
-limitations:
-  - statement: "S01 三个 Phase 已完成且 Stage 1 复审通过；上传必须使用基于 origin/main 的隔离 worktree，避免混入非 KMFA 脏改。"
+  - feature_id: "FEAT-KMFA-005"
+    name: "metadata 目录协议"
+    status: "active"
     fact_level: "EXTRACTED"
     evidence_refs:
-      - "KMFA/stage_artifacts/S01_STAGE_REVIEW/human/stage1_review_report.md"
+      - "KMFA/docs/governance/METADATA_PROTOCOL.md"
+      - "KMFA/metadata/protocol/metadata_protocol.yaml"
+      - "KMFA/tools/metadata_protocol_check.py"
+limitations:
+  - statement: "S02-P1 已完成但 S02-P2/P3 尚未完成，Stage 2 不能复审或上传 GitHub。"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S02_P1_metadata_protocol/human/s02_p1_completion_record.md"
   - statement: "正式 zero_delta、no_float_money、lineage、report grade gate 工具尚未创建。"
     fact_level: "EXTRACTED"
     evidence_refs:

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-s02p1 - 2026-06-29
+
+- 完成 `S02-P1｜metadata目录协议`。
+- 创建 metadata 七类目录：sources、imports、schema_maps、quality、lineage、reports、approvals。
+- 定义 `import_run_id`、`source_id`、`file_hash`、`formula_version`、`mapping_version` 标识符协议。
+- 新增 `KMFA/tools/metadata_protocol_check.py`，验证目录、协议文件、标识符和公开仓库隐私边界。
+- 保持中间 Phase 不上传 GitHub；S02-P2/S02-P3 与 Stage 2 复审尚未完成。
+
 ## 0.1.0-s01p3 - 2026-06-29
 
 - 完成 `S01-P3｜防遗漏基线`。

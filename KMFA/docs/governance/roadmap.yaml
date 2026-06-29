@@ -2,11 +2,11 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KMFA"
 total_estimated_hours: 54
-completed_estimated_hours: 9
-current_stage_id: "S1"
-current_phase_id: "S1PC"
-current_task_id: "S1PCT03"
-next_gate_id: "KMFA-S02-START-GATE"
+completed_estimated_hours: 12
+current_stage_id: "S2"
+current_phase_id: "S2PA"
+current_task_id: "S2PAT03"
+next_gate_id: "KMFA-S02-P2-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -276,9 +276,127 @@ stages:
             completed_version: "0.1.0-s01p3"
   - stage_id: "S2"
     name: "数据治理内核与metadata协议"
-    status: "planned"
-    estimated_hours: 3
-    estimated_pct: 0
+    person_goal: "建立不可污染、可追溯、可重跑、可审计的数据治理内核。"
+    status: "in_progress"
+    estimated_hours: 9
+    estimated_pct: 33.33
+    stop_conditions:
+      - "原始数据被污染"
+      - "金额精度使用 float"
+      - "0.01 元差异被忽略"
+      - "报告绕过质量等级"
+      - "缺少可追溯证据"
+    stop_gate:
+      gate_id: "KMFA-S02-GATE"
+      pass_criteria:
+        - "S02-P1/P2/P3 验收证据存在"
+        - "metadata 目录协议、不可污染原则、质量等级定义同步"
+        - "metadata_protocol_check 可运行"
+        - "Stage 2 复审问题已修复"
+      evidence:
+        - "KMFA/stage_artifacts/S02_P1_metadata_protocol/human/s02_p1_completion_record.md"
+        - "KMFA/docs/governance/METADATA_PROTOCOL.md"
+      failure_action: "blocked"
+    phases:
+      - phase_id: "S2PA"
+        name: "metadata目录协议"
+        objective: "创建 metadata 七类目录，定义核心标识符，确认公开仓库 metadata 隐私边界。"
+        status: "completed_validated"
+        estimated_hours: 3
+        estimated_pct: 100
+        stop_conditions:
+          - "需要导入原始文件时停止"
+          - "需要实现 raw manifest 登记器时停止"
+          - "需要上传 GitHub 时停止"
+        stop_gate:
+          gate_id: "KMFA-S02-P1-GATE"
+          pass_criteria:
+            - "sources/imports/schema_maps/quality/lineage/reports/approvals 目录和协议文件存在"
+            - "import_run_id/source_id/file_hash/formula_version/mapping_version 定义存在"
+            - "metadata 只保存索引、hash、状态、证据，不保存敏感明文"
+            - "metadata_protocol_check 通过"
+          evidence:
+            - "KMFA/stage_artifacts/S02_P1_metadata_protocol/human/s02_p1_completion_record.md"
+            - "KMFA/metadata/protocol/metadata_protocol.yaml"
+          failure_action: "fix_and_rerun"
+        tasks:
+          - task_id: "S2PAT01"
+            name: "创建 sources、imports、schema_maps、quality、lineage、reports、approvals 目录"
+            objective: "建立 metadata 目录协议和必需文件骨架。"
+            status: "completed_validated"
+            estimated_hours: 1
+            estimated_pct: 100
+            dependencies:
+              - "S1PCT03"
+            acceptance_ids:
+              - "ACC-KMFA-S02-P1"
+            test_commands:
+              - "python3 KMFA/tools/metadata_protocol_check.py"
+            test_results:
+              - "PASS: required metadata dirs and files exist"
+            evidence_refs:
+              - "KMFA/metadata/protocol/directory_manifest.json"
+            risks:
+              - "不能把协议文件误写成实际业务导入。"
+            rollback: "删除 S02-P1 metadata 协议文件并恢复状态。"
+            current_result: "完成。"
+            completed_version: "0.1.0-s02p1"
+          - task_id: "S2PAT02"
+            name: "定义 import_run_id、source_id、file_hash、formula_version、mapping_version"
+            objective: "为后续导入、字段映射、公式版本和 lineage 建立稳定标识符。"
+            status: "completed_validated"
+            estimated_hours: 1
+            estimated_pct: 100
+            dependencies:
+              - "S2PAT01"
+            acceptance_ids:
+              - "ACC-KMFA-S02-P1"
+            test_commands:
+              - "python3 KMFA/tools/metadata_protocol_check.py"
+            test_results:
+              - "PASS: identifier regex and examples validate"
+            evidence_refs:
+              - "KMFA/metadata/protocol/metadata_protocol.yaml"
+              - "KMFA/metadata/protocol/field_dictionary.csv"
+            risks:
+              - "标识符不能包含敏感业务原文。"
+            rollback: "恢复 metadata_protocol.yaml 和 field_dictionary.csv。"
+            current_result: "完成。"
+            completed_version: "0.1.0-s02p1"
+          - task_id: "S2PAT03"
+            name: "定义 metadata 只保存索引、hash、状态、证据，不保存明文敏感数据"
+            objective: "建立公开仓库 metadata 存储边界。"
+            status: "completed_validated"
+            estimated_hours: 1
+            estimated_pct: 100
+            dependencies:
+              - "S2PAT02"
+            acceptance_ids:
+              - "ACC-KMFA-S02-P1"
+            test_commands:
+              - "python3 KMFA/tools/metadata_protocol_check.py"
+            test_results:
+              - "PASS: privacy boundary and forbidden keys validated"
+            evidence_refs:
+              - "KMFA/docs/governance/METADATA_PROTOCOL.md"
+              - "KMFA/metadata/protocol/metadata_protocol.yaml"
+            risks:
+              - "公开仓库不能出现原始银行流水、合同、工资或税务明文。"
+            rollback: "恢复 S02-P1 前 metadata 协议文件。"
+            current_result: "完成。"
+            completed_version: "0.1.0-s02p1"
+      - phase_id: "S2PB"
+        name: "不可污染原则"
+        objective: "实现 raw manifest 登记规范、派生数据版本化和前端写入边界。"
+        status: "planned"
+        estimated_hours: 3
+        estimated_pct: 0
+      - phase_id: "S2PC"
+        name: "数据质量等级"
+        objective: "定义 Q0-Q5 数据质量等级、A/B/C/D 报告可信等级和发布门禁。"
+        status: "planned"
+        estimated_hours: 3
+        estimated_pct: 0
   - stage_id: "S3"
     name: "原始文件导入与数据源检查矩阵"
     status: "planned"

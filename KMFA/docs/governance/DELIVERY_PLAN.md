@@ -1,6 +1,6 @@
 # KMFA Delivery Plan
 
-product_version: 0.1.0-s01p3
+product_version: 0.1.0-s02p1
 
 ## Delivery Rule
 
@@ -20,17 +20,16 @@ KMFA delivery follows the owner contract:
 | S01-P2 | completed_validated |
 | S01-P3 | completed_validated |
 | Stage 1 review | passed |
-| GitHub upload | ready_with_clean_worktree |
+| Stage 1 GitHub upload | completed |
+| S02-P1 | completed_validated |
+| S02-P2 | not_started |
+| S02-P3 | not_started |
+| Stage 2 review | blocked_until_s02_p2_p3_complete |
+| Stage 2 GitHub upload | blocked_until_stage2_review_fix |
 
 ## Upload Scope
 
-Only these paths may be staged for Stage 1 upload:
-
-- `KMFA/`
-- `README.md`
-- `governance/projects.yaml`
-
-The canonical checkout contains unrelated dirty state and is behind `origin/main`; final upload must be prepared in a clean worktree based on `origin/main`.
+No GitHub upload is allowed after S02-P1 alone. The next upload may happen only after S02-P1/P2/P3 are complete, Stage 2 review is complete, and review findings are fixed.
 
 ## Rollback
 

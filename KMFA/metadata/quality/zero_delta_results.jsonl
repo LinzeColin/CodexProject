@@ -1,0 +1,1 @@
+{"record_type":"protocol_header","schema_version":"kmfa.zero_delta_results.v1","stage_phase":"S02-P1","status":"protocol_defined_no_zero_delta_results_committed","allowed_record_types":["zero_delta_result"],"forbidden_plaintext":true}

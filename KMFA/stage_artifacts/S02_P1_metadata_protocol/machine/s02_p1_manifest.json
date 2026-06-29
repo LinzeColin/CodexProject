@@ -1,0 +1,47 @@
+{
+  "schema_version": "kmfa.phase_manifest.v1",
+  "run_id": "KMFA-S02-P1-20260629",
+  "project_id": "KMFA",
+  "stage_id": "S02",
+  "phase_id": "S02-P1",
+  "phase_name": "metadata目录协议",
+  "status": "completed_validated",
+  "completion_time": "2026-06-29T18:30:00+10:00",
+  "tasks": [
+    {
+      "task_id": "S2PAT01",
+      "status": "completed",
+      "evidence_ref": "KMFA/metadata/protocol/directory_manifest.json"
+    },
+    {
+      "task_id": "S2PAT02",
+      "status": "completed",
+      "evidence_ref": "KMFA/metadata/protocol/metadata_protocol.yaml"
+    },
+    {
+      "task_id": "S2PAT03",
+      "status": "completed",
+      "evidence_ref": "KMFA/docs/governance/METADATA_PROTOCOL.md"
+    }
+  ],
+  "created_directories": [
+    "KMFA/metadata/sources",
+    "KMFA/metadata/imports",
+    "KMFA/metadata/schema_maps",
+    "KMFA/metadata/quality",
+    "KMFA/metadata/lineage",
+    "KMFA/metadata/reports",
+    "KMFA/metadata/approvals"
+  ],
+  "identifier_contracts": [
+    "import_run_id",
+    "source_id",
+    "file_hash",
+    "formula_version",
+    "mapping_version"
+  ],
+  "raw_sensitive_public_repo_allowed": false,
+  "business_records_committed": false,
+  "github_upload_performed": false,
+  "next_phase": "S02-P2"
+}

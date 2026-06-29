@@ -1,0 +1,1 @@
+{"record_type":"protocol_header","schema_version":"kmfa.field_lineage.v1","stage_phase":"S02-P1","status":"protocol_defined_no_field_lineage_committed","required_identifiers":["source_id","file_hash","mapping_version"],"forbidden_plaintext":true}
