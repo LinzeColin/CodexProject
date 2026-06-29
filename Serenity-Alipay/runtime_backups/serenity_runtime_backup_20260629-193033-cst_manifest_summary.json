@@ -1,0 +1,21 @@
+{
+  "archive": "serenity_runtime_backup_20260629-193033-cst.tar.gz",
+  "archive_sha256": "b80da6b792e04f83c9ed5ef8247589370a51383f5c02c37db1c3ed22de41f140",
+  "archive_size_bytes": 1450114,
+  "backup_branch": "backup/serenity-runtime-20260629-192907-cst",
+  "created_at_beijing": "2026-06-29T19:30:33+08:00",
+  "file_count": 193,
+  "sqlite_table_counts_sample": {
+    "asset_exclusion_event": 16,
+    "asset_indicator_snapshot": 1080,
+    "asset_master": 48,
+    "asset_pool_entry": 38,
+    "audit_log": 79,
+    "automation_tick_log": 882,
+    "baseline_snapshot": 123,
+    "comparison_snapshot": 640,
+    "conflict_log": 0,
+    "decision_record": 208
+  },
+  "total_payload_bytes": 14534034
+}
