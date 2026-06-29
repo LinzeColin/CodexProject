@@ -21,12 +21,20 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 256
+- task_count: 257
 - acceptance_count: 127
 
 ## Delivery Tasks
 
 The machine-readable task source is `delivery_tasks.yaml`.
+
+## 2026-06-29 12:12:00 Australia/Sydney - S2PLT03 Zero-Proof Resilience Sync
+
+- `S2PLT03-ZERO-PROOF-RESILIENCE-SYNC` exposes `adp audit-s2plt03-resilience-readiness --json`.
+- Current result remains `blocked` / exit 2, but `p0_zero=true` and `p1_zero=true` now reflect the committed zero-proof artifact instead of stale inherited counts.
+- The current S2PLT03 local resilience drill remains pass, but terminal S2PLT03 acceptance is still blocked by `s2plt02_not_accepted`.
+- The S2PLT04 completion evidence audit now references this S2PLT03 nonterminal readiness manifest while keeping S2PLT03 terminal proof blocked.
+- No SMTP, scheduler, Release, restore, schema/DB, source/ranking, CURRENT/V7, DAILY_OPERATION, S2PLT03 acceptance, S2PLT04 report, final bundle acceptance, or integrated production acceptance side effect is claimed.
 
 ## 2026-06-29 11:06:42 Australia/Sydney - S2PLT02 Zero-Proof Readiness Sync
 

@@ -2016,13 +2016,24 @@ def build_s2plt03_resilience_evidence_state(
     }
 
 
-def build_s2plt03_resilience_precheck_report(*, generated_at: str) -> dict[str, Any]:
+def build_s2plt03_resilience_precheck_report(
+    *,
+    generated_at: str,
+    repo_root: Path | None = None,
+    p0_p1_zero_proof: Mapping[str, Any] | None = None,
+    load_committed_artifacts: bool = True,
+) -> dict[str, Any]:
     """Build a deterministic fail-closed S2PLT03 resilience precheck."""
 
     dependencies = build_s2plt03_dependency_state()
     local_drill_bundle = build_s2plt03_local_resilience_drill_bundle(generated_at=generated_at)
     evidence = build_s2plt03_resilience_evidence_state(local_drill_bundle=local_drill_bundle)
     audit_blockers = build_audit_blocker_state()
+    if load_committed_artifacts and p0_p1_zero_proof is None:
+        p0_p1_zero_proof = _load_committed_p0_p1_zero_proof(repo_root)
+    p0_p1_zero_proof_artifact_validation = build_p0_p1_zero_proof_artifact_validation_state(
+        p0_p1_zero_proof
+    )
     available_evidence = evidence["available_evidence"]
     gates = {
         "s2plt02_accepted": "S2PLT02" in dependencies["completed_dependencies"],
@@ -2033,8 +2044,8 @@ def build_s2plt03_resilience_precheck_report(*, generated_at: str) -> dict[str, 
         "backup_restore_point_proven": available_evidence["BACKUP_RESTORE_POINT_PROVEN"],
         "rollback_executable": available_evidence["ROLLBACK_EXECUTABLE"],
         "ledger_count_conserved": available_evidence["LEDGER_COUNT_CONSERVATION"],
-        "p0_zero": audit_blockers["checks"]["P0_zero"],
-        "p1_zero": audit_blockers["checks"]["P1_zero"],
+        "p0_zero": p0_p1_zero_proof_artifact_validation["p0_zero_proven_by_payload"],
+        "p1_zero": p0_p1_zero_proof_artifact_validation["p1_zero_proven_by_payload"],
         "no_production_side_effect": True,
     }
     blocking_reasons: list[str] = []
@@ -2071,6 +2082,7 @@ def build_s2plt03_resilience_precheck_report(*, generated_at: str) -> dict[str, 
         "evidence": evidence,
         "local_drill_bundle": local_drill_bundle,
         "audit_blockers": audit_blockers,
+        "p0_p1_zero_proof_artifact_validation": p0_p1_zero_proof_artifact_validation,
         "blocking_reasons": blocking_reasons,
         "production_acceptance_claimed": False,
         "inherited_p0_p1_closed": False,
@@ -2115,14 +2127,18 @@ def validate_s2plt03_resilience_precheck_report(report: Mapping[str, Any]) -> li
     local_drill_errors = validate_s2plt03_local_resilience_drill_bundle(local_drill_bundle)
     if local_drill_errors:
         errors.append("S2PLT03 local drill bundle is invalid")
+    gates = _mapping(report.get("gates"))
+    zero_proof_validation = _mapping(report.get("p0_p1_zero_proof_artifact_validation"))
+    if gates.get("p0_zero") is not zero_proof_validation.get("p0_zero_proven_by_payload"):
+        errors.append("S2PLT03 p0_zero gate must match zero-proof artifact validation")
+    if gates.get("p1_zero") is not zero_proof_validation.get("p1_zero_proven_by_payload"):
+        errors.append("S2PLT03 p1_zero gate must match zero-proof artifact validation")
     if report.get("status") == "pass":
-        gates = _mapping(report.get("gates"))
         if not all(gates.values()):
             errors.append("passing S2PLT03 report requires every gate true")
         if report.get("blocking_reasons"):
             errors.append("passing S2PLT03 report must not have blocking reasons")
     else:
-        gates = _mapping(report.get("gates"))
         expected_reasons = []
         if not gates.get("s2plt02_accepted"):
             expected_reasons.append("s2plt02_not_accepted")
@@ -4148,6 +4164,7 @@ def build_s2plt04_completion_evidence_audit_state(
             "nonterminal_refs": [
                 "governance/run_manifests/ADP-S2PLT03-RESILIENCE-PRECHECK-20260628.json",
                 "governance/run_manifests/ADP-S2PLT03-LOCAL-RESILIENCE-DRILL-20260628.json",
+                "governance/run_manifests/ADP-S2PLT03-ZERO-PROOF-RESILIENCE-SYNC-20260629.json",
             ],
             "terminal_dependency": "S2PLT03_ACCEPTED",
             "terminal_dependency_value": False,
