@@ -24,11 +24,12 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 `S03-P1｜文件型导入
 - S03-P2 数据源检查矩阵工具已存在，状态只允许 `已就绪`、`部分/阻塞`、`失败/不适用`、`已过期`、`人工复核`。
 - S03-P3 源优先级工具已存在，固定 `raw_upload -> authorized_export -> raw_extracted_value -> staging_structured_row -> canonical_fact -> derived_metric -> report_reference -> frontend_display -> processed_data`，同源不一致失效重跑，跨源冲突不自动选边。
 - Stage 3 整体复审已通过，发现的源优先级链路对齐问题已修复。
+- Stage 3 已整体上传 GitHub main，reviewed content commit `39b0eef52424a12b6c0c8ad368bd878b46300be4`。
 
 ## 你现在不能信任什么
 
 - 不能认为项目成本分析已经实现。
-- 不能认为 Stage 3 已经上传 GitHub。
+- 不能认为金额精度、字段解析、事实层或报告已经实现。
 - 不能认为金额精度、zero-delta 或 lineage 完整检查已正式实现。
 - 不能认为 Stage 1 已经实现业务功能。
 - 不能把 S02-P3 的报告等级协议当成真实报告生成能力。
@@ -37,4 +38,4 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 `S03-P1｜文件型导入
 
 ## 下一步
 
-下一步只执行 Stage 3 GitHub 上传前的 rebase/validate/push，不扩大到 UI、报告、金额或自动接口。
+下一步只执行 `S04-P1｜金额工具`，不扩大到 UI、报告、事实层或自动接口。

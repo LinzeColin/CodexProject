@@ -5,7 +5,7 @@ summary: "KMFA 是独立经营分析系统；当前已在 v1.2 FULL_HTML_NO_OMIS
 version: "0.1.0-s03p3"
 fact_level: "EXTRACTED"
 owner_role: "owner"
-current_status: "s03_review_passed_upload_ready"
+current_status: "s03_uploaded_to_github_main"
 features:
   - feature_id: "FEAT-KMFA-001"
     name: "项目治理骨架"
@@ -107,7 +107,7 @@ limitations:
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/README.md"
-  - statement: "S03-P3 源优先级已本地完成；Stage 3 复审已通过，GitHub 上传尚未完成。"
+  - statement: "S03-P3 源优先级已本地完成；Stage 3 复审已通过并已上传 GitHub main。"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/metadata/stage_status.jsonl"

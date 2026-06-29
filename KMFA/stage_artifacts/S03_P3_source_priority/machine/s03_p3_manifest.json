@@ -32,5 +32,5 @@
     "cross_source_auto_selection",
     "github_upload"
   ],
-  "next_gate": "KMFA-S03-GITHUB-UPLOAD-GATE"
+  "next_gate": "KMFA-S04-P1-GATE"
 }

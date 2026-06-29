@@ -32,13 +32,13 @@ KMFA delivery follows the owner contract:
 | S03-P2 | completed_validated_local_only |
 | S03-P3 | completed_validated_local_only |
 | Stage 3 review | passed_upload_ready |
-| Stage 3 GitHub upload | pending_rebase_validate_push |
+| Stage 3 GitHub upload | completed |
 
 ## Upload Scope
 
 Stage 2 GitHub upload is complete on `origin/main`; the reviewed content commit was `834ff75516405ddbc8289f00ba67579691473709` and the final remote main commit observed before this rebaseline was `6178b5215f92f12d6facad9a990e8659b3a70ba4`.
 
-The active development baseline is `KMFA/taskpack/v1_2/`. S03-P1, S03-P2, and S03-P3 are complete locally, and Stage 3 review has passed after fixing the source-priority chain alignment finding. Upload requires rebase/merge with latest `origin/main`, full validation, and push.
+The active development baseline is `KMFA/taskpack/v1_2/`. S03-P1, S03-P2, and S03-P3 are complete, Stage 3 review has passed after fixing the source-priority chain alignment finding, and Stage 3 has been uploaded to GitHub main. The reviewed content commit is `39b0eef52424a12b6c0c8ad368bd878b46300be4`.
 
 ## Rollback
 
