@@ -29,6 +29,6 @@ parameter_profile_versions:
   kmfa_a0_golden_fixture_contract: "0.1.0-s05p2-private-backfill-partial"
   kmfa_project_cost_mvp: "planned_excel_resolution_pending"
 data_snapshot_version: "not_applicable_no_raw_data_committed"
-current_iteration: "ITER-20260630-KMFA-S05P2-EXCEL-RESOLUTION-PENDING"
+current_iteration: "ITER-20260630-KMFA-S05P2-EXCEL-OWNER-DECISION-PACKET"
 current_phase: "S05-P2"
 current_gate: "KMFA-S05-P2-EXCEL-RESOLUTION-GATE"

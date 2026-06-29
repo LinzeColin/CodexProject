@@ -1,7 +1,7 @@
 schema_version: "codexproject.project.v1"
 project_id: "KMFA"
 project_name: "KMFA 经营分析系统"
-summary: "KMFA 是独立经营分析系统；当前已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload 和 S05-P1 A0 文件登记，并生成 S05-P2 public-safe 字段合同/A0 golden fixture 候选；40 条 PDF 字段候选已 hash-only 回填，5 条 Excel 字段已机器复核但仍需 owner/授权决策，S05-P3、正式报告和外部接口仍未完成。"
+summary: "KMFA 是独立经营分析系统；当前已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload 和 S05-P1 A0 文件登记，并生成 S05-P2 public-safe 字段合同/A0 golden fixture 候选；40 条 PDF 字段候选已 hash-only 回填，5 条 Excel 字段已机器复核并生成 owner 决策包但仍需 owner/授权决策，S05-P3、正式报告和外部接口仍未完成。"
 version: "0.1.0-s05p2-private-backfill-partial"
 fact_level: "EXTRACTED"
 owner_role: "owner"
@@ -155,6 +155,7 @@ features:
       - "KMFA/metadata/baseline/a0_golden_fixture_candidates.jsonl"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/s05_p2_completion_record.md"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/excel_resolution_record.md"
+      - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/excel_owner_decision_packet.md"
 limitations:
   - statement: "S02-P1/P2/P3 已完成、Stage 2 复审通过并已上传 GitHub main。"
     fact_level: "EXTRACTED"
@@ -181,12 +182,13 @@ limitations:
       - "KMFA/stage_artifacts/S04_P3_basic_tool_tests/human/s04_p3_completion_record.md"
       - "KMFA/stage_artifacts/S04_STAGE_REVIEW/human/stage4_review_report.md"
       - "KMFA/stage_artifacts/S04_STAGE_REVIEW/human/github_upload_record.md"
-  - statement: "S05-P1 A0 文件登记已完成本地验证；S05-P2 public-safe 字段候选已生成，40 条 PDF 字段已 hash-only 回填；5 条 Excel 字段已机器复核但仍待 owner/授权私有映射决策。"
+  - statement: "S05-P1 A0 文件登记已完成本地验证；S05-P2 public-safe 字段候选已生成，40 条 PDF 字段已 hash-only 回填；5 条 Excel 字段已机器复核并生成 owner 决策包，但仍待 owner/授权私有映射决策。"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/stage_artifacts/S05_P1_a0_file_registration/human/s05_p1_completion_record.md"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/s05_p2_completion_record.md"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/excel_resolution_record.md"
+      - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/excel_owner_decision_packet.md"
   - statement: "原始敏感经营数据、银行流水、合同、工资和税务申报明文不得进入公开仓库。"
     fact_level: "EXTRACTED"
     evidence_refs:

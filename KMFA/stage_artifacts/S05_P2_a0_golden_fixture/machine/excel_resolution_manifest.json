@@ -10,6 +10,8 @@
   },
   "evidence_refs": [
     "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/excel_resolution_record.md",
+    "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/excel_owner_decision_packet.md",
+    "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/excel_owner_decision_packet.json",
     "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/private_backfill_record.md",
     "KMFA/metadata/approvals/resolution_events.jsonl",
     "KMFA/metadata/approvals/control_events.jsonl"

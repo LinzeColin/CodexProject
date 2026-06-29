@@ -26,6 +26,7 @@
 - decision_status: `machine_reviewed_human_resolution_required`
 - reason_code: `excel_workbook_is_cross_source_summary_not_standalone_project_fixture`
 - S05-P2 仍未完成；S05-P3 仍不得启动。
+- Owner 决策包已生成: `KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/excel_owner_decision_packet.md`
 - 下一步必须由 owner 或授权私有映射明确 Excel 候选角色：
   - 补齐 Excel candidate 的 5 条字段 private hash/source anchor；或
   - 确认 Excel candidate 不是独立 A0 项目基准，并以人工决策形式保留/豁免/降级。
@@ -33,6 +34,8 @@
 ## 关联证据
 
 - `KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/excel_resolution_manifest.json`
+- `KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/excel_owner_decision_packet.md`
+- `KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/excel_owner_decision_packet.json`
 - `KMFA/metadata/approvals/resolution_events.jsonl`
 - `KMFA/metadata/approvals/control_events.jsonl`
 - `KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/private_backfill_record.md`

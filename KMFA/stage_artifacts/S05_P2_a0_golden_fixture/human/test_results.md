@@ -2,6 +2,7 @@
 
 | 命令 | 结果 |
 |---|---|
+| `python3 -m json.tool KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/excel_owner_decision_packet.json >/dev/null` | PASS: parseable JSON |
 | `python3 -m json.tool KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/excel_resolution_manifest.json >/dev/null` | PASS: parseable JSON |
 | `python3 -m json.tool KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/private_backfill_manifest.json >/dev/null` | PASS: parseable JSON |
 | `python3 - <<'PY' ... validate resolution/control/stage/event JSONL ... PY` | PASS: approval, stage status and governance JSONL files parse |
@@ -12,7 +13,7 @@
 | `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest KMFA.tests.test_a0_golden_fixture KMFA.tests.test_a0_file_register KMFA.tests.test_file_import_register KMFA.tests.test_source_check_matrix KMFA.tests.test_source_priority KMFA.tests.test_amount_tools KMFA.tests.test_field_standardization KMFA.tests.test_basic_tool_boundaries -q` | PASS: Ran 32 tests in 0.525s; OK |
 | `PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_a0_file_registration.py` | PASS: files=9, pdf=8, excel=1, member_sha256_recorded=0, member_sha256_pending=9, candidates=9 |
 | `PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/metadata_protocol_check.py` | PASS: dirs=8, files=19, identifiers=5 |
-| `PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/no_omission_check.py` | PASS: requirements=20, P0=9, P1=8, status_records=259, tasks=162, v1.2_html=45+ |
+| `PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/no_omission_check.py` | PASS: requirements=20, P0=9, P1=8, status_records=261, tasks=162, v1.2_html=45+ |
 | `PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_required_html.py` | PASS: required KMFA v1.2 HTML/UIUX/report samples are present (html=45, core=7) |
 | `PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/immutability_policy_check.py` | PASS: raw_manifest=append_only, derived_versions=append_only, control_events=no_raw_writes |
 | `PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_report_grade_gate.py` | PASS: quality_grades=Q0-Q5, report_grades=A-D, release_gate=blocked_by_missing_evidence |
@@ -29,5 +30,6 @@
 - `private_value_hash_recorded=40` 来自仓库外私有 CSV；公开仓库只记录 hash/private refs/status，不记录 CSV 路径或字段明文。
 - `private_value_pending=5` 是预期结果：1 个 Excel A0 候选已机器复核但仍需后续私有映射或 owner/授权人工确认。
 - Excel resolution manifest 只记录候选/file id、字段 key、计数、状态和证据引用，不记录业务明文值。
+- Excel owner decision packet 只定义允许决策和所需证据，不等同于 Q4/Q5 确认，不完成 S05-P2。
 - 本机提供的 `销售绩效考核.zip` 整包 hash/size 与登记 source package 不匹配；真实 9 个业务成员 hash 与 Stage2 Ring4 registry 匹配。
 - 未提交 raw PDF、Excel、zip、私有 CSV、合同额、支出合计、毛利、毛利率、成本分类明文、银行流水、合同、薪资、税务申报或业务明细。

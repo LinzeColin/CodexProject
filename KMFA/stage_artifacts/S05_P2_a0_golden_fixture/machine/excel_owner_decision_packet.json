@@ -1,0 +1,69 @@
+{
+  "allowed_decision_codes": [
+    "provide_private_field_mapping",
+    "downgrade_to_cross_source_support",
+    "keep_pending"
+  ],
+  "business_plaintext_committed": false,
+  "candidate_id": "A0-CAND-70023EFC7305",
+  "current_counts": {
+    "fixture_candidate_count": 45,
+    "private_field_hash_recorded_count": 40,
+    "private_field_pending_count": 5,
+    "source_anchor_recorded_count": 40,
+    "source_anchor_pending_count": 5
+  },
+  "current_gate": "KMFA-S05-P2-EXCEL-RESOLUTION-GATE",
+  "decision_required": true,
+  "evidence_refs": [
+    "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/excel_owner_decision_packet.md",
+    "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/excel_resolution_record.md",
+    "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/excel_resolution_manifest.json"
+  ],
+  "file_id": "A0-FILE-BAE6D90834C5",
+  "generated_at": "2026-06-30T09:33:17+10:00",
+  "pending_field_keys": [
+    "contract_amount",
+    "total_expense",
+    "gross_profit",
+    "gross_margin",
+    "cost_category"
+  ],
+  "placeholder_hashes_allowed": false,
+  "private_csv_public_committed": false,
+  "project_id": "KMFA",
+  "public_repo_raw_files_committed": false,
+  "record_type": "s05_p2_excel_owner_decision_packet",
+  "required_decision_inputs": {
+    "downgrade_to_cross_source_support": [
+      "owner_or_authorized_actor",
+      "decision_time",
+      "candidate_role",
+      "q5_exclusion_confirmed",
+      "cross_source_support_scope"
+    ],
+    "keep_pending": [
+      "owner_or_authorized_actor",
+      "decision_time",
+      "reason_pending",
+      "next_review_trigger"
+    ],
+    "provide_private_field_mapping": [
+      "owner_or_authorized_actor",
+      "decision_time",
+      "candidate_id",
+      "file_id",
+      "field_keys",
+      "source_anchor_refs",
+      "private_hash_refs"
+    ]
+  },
+  "resolution_status": "awaiting_owner_or_authorized_decision",
+  "schema_version": "kmfa.s05_p2_excel_owner_decision_packet.v1",
+  "stage_id": "S05",
+  "task_ids": [
+    "S5PBT01",
+    "S5PBT02",
+    "S5PBT03"
+  ]
+}

@@ -33,7 +33,7 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 - S05-P1 A0 文件登记已存在，登记了 `销售绩效考核.zip` 的 source package hash、8 个 PDF、1 个 Excel、A0 项目候选和 Q3/Q4 状态。
 - S05-P2 public-safe 字段合同已存在，覆盖合同额、支出合计、毛利、毛利率、成本分类。
 - S05-P2 A0 golden fixture 候选已存在，共 45 条；其中 40 条 PDF 字段候选已保存 hash/source anchor，5 条 Excel 字段候选仍 pending。公开仓库只保存 private refs、hash/status 和 source anchor 状态，不保存真实字段值。
-- Excel 候选已有机器复核记录：当前 workbook 证据只能作为交叉来源支持，不能机器合成为单一 A0 项目基准；需要 owner 或授权私有映射决策。
+- Excel 候选已有机器复核记录和 owner 决策包：当前 workbook 证据只能作为交叉来源支持，不能机器合成为单一 A0 项目基准；需要 owner 或授权私有映射决策。
 
 ## 你现在不能信任什么
 
