@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-06-29 09:41:06 Australia/Sydney - S2PMT07-S2PLT04-COMPLETION-EVIDENCE-AUDIT
+
+- Added `audit-s2plt04-completion-evidence` CLI so owner/coordinator and future reviewers can see the exact terminal evidence gaps before any S2PLT04 completion report is written.
+- Current audit result is blocked: `S2PLT01_REPLAY_REVIEW` is nonterminal because `S2PLT01_ACCEPTED=false`, `S2PLT02_LIVE_2D_PROOF` terminal proof is missing, and `S2PLT03_RESILIENCE_PROOF` terminal proof is missing; committed `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json` remains pass for zero-proof artifact validation only.
+- No `FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json` is created; S2PLT04, final command execution, handoff, signoff, final manifest, SMTP, scheduler, Release, restore, CURRENT/V7 changes, DAILY_OPERATION, and integrated production acceptance remain blocked or false.
+
 ## 2026-06-29 09:09:03 Australia/Sydney - S2PMT07-S2PLT04-COMPLETION-REPORT-DEPENDENCY-ORDER
 
 - Fixed the S2PLT04 completion report validator/template ordering so the report no longer requires later final-bundle manifest evidence (`FINAL_BUNDLE_MANIFEST` / `FINAL_ACCEPTANCE_BUNDLE_PRESENT`) as a prerequisite.

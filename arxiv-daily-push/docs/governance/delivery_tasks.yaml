@@ -4559,3 +4559,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+  - task_id: "S2PMT07-S2PLT04-COMPLETION-EVIDENCE-AUDIT"
+    title: "S2PMT07 S2PLT04 completion evidence audit"
+    phase: "S2PM"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-29T09:41:06+10:00"
+    summary: "Expose a fail-closed CLI audit for S2PLT04 completion-report inputs so nonterminal S2PLT01/S2PLT02/S2PLT03 evidence cannot be misread as report readiness."
+    owner: "content_owner + engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/tests/test_governance_current_state.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT04_COMPLETION_EVIDENCE_AUDIT.md", "governance/run_manifests/ADP-S2PMT07-S2PLT04-COMPLETION-EVIDENCE-AUDIT-20260629.json"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt04_audit_red PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_cli.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt04_audit_green PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_cli.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt04_audit_govstate PYTHONPATH=scripts:arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_governance_current_state.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt04_audit_semantic PYTHONPATH=scripts:arxiv-daily-push/src python3 -B scripts/validate_semantic_extractors.py arxiv-daily-push # timeout after 60s, not claimed as passed"]
+    test_results: ["TDD red failed as expected because audit-s2plt04-completion-evidence was not a recognized CLI command", "focused CLI tests: 20 OK", "governance current-state tests: 4 OK", "full semantic extractor timed out after 60 seconds and is not claimed as passed"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-S2PLT04-COMPLETION-EVIDENCE-AUDIT-20260629.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT04_COMPLETION_EVIDENCE_AUDIT.md", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/tests/test_governance_current_state.py"]
+    result: "S2PLT04 completion evidence audit is available through CLI and remains blocked with S2PLT01/S2PLT02/S2PLT03 terminal gaps visible; no completion report is written."
+    risk: "The audit can be misread as S2PLT04 completion unless completion_report_ready=false and s2plt04_completion_report_written=false remain explicit."
+    rollback: "Revert CLI parser/dispatcher changes, final-gate audit builder/validator, focused regression test, phase record, manifest, traceability row, delivery/event records, generated views, and three base records; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
