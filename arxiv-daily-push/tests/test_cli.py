@@ -250,7 +250,11 @@ class CliTests(unittest.TestCase):
         self.assertIn("two_consecutive_real_days_not_proven", payload["blocking_reasons"])
         self.assertIn("eight_real_emails_not_proven", payload["blocking_reasons"])
         self.assertIn("real_scheduler_not_proven", payload["blocking_reasons"])
+        self.assertNotIn("inherited_v7_1_p0_findings_open", payload["blocking_reasons"])
+        self.assertNotIn("inherited_v7_1_p1_findings_open", payload["blocking_reasons"])
         self.assertNotIn("m4_watermark_not_proven", payload["blocking_reasons"])
+        self.assertTrue(payload["terminal_dependency_state"]["P0_ZERO"])
+        self.assertTrue(payload["terminal_dependency_state"]["P1_ZERO"])
 
     def test_plan_final_bundle_prerequisites_json_command_blocks_without_artifacts(self):
         buffer = io.StringIO()
@@ -297,7 +301,7 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["source_evidence"]["S2PLT02_LIVE_2D_PROOF"]["artifact_status"], "missing_terminal")
         s2plt02_evidence = payload["source_evidence"]["S2PLT02_LIVE_2D_PROOF"]
         self.assertIn(
-            "governance/run_manifests/ADP-S2PLT02-TERMINAL-READINESS-AUDIT-20260629.json",
+            "governance/run_manifests/ADP-S2PLT02-ZERO-PROOF-READINESS-SYNC-20260629.json",
             s2plt02_evidence["nonterminal_refs"],
         )
         self.assertEqual(s2plt02_evidence["observed_natural_days"], 1)
@@ -312,6 +316,8 @@ class CliTests(unittest.TestCase):
         self.assertIn("two_consecutive_real_days_not_proven", s2plt02_evidence["remaining_terminal_blockers"])
         self.assertIn("eight_real_emails_not_proven", s2plt02_evidence["remaining_terminal_blockers"])
         self.assertIn("real_scheduler_not_proven", s2plt02_evidence["remaining_terminal_blockers"])
+        self.assertNotIn("inherited_v7_1_p0_findings_open", s2plt02_evidence["remaining_terminal_blockers"])
+        self.assertNotIn("inherited_v7_1_p1_findings_open", s2plt02_evidence["remaining_terminal_blockers"])
         self.assertNotIn("m4_watermark_not_proven", s2plt02_evidence["remaining_terminal_blockers"])
         self.assertEqual(payload["source_evidence"]["S2PLT03_RESILIENCE_PROOF"]["artifact_status"], "missing_terminal")
         self.assertEqual(payload["source_evidence"]["P0_P1_ZERO_PROOF"]["artifact_status"], "pass")

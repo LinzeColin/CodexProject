@@ -386,12 +386,13 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(state["delivery_evidence_ledger"]["status"], "partial")
         self.assertFalse(state["delivery_evidence_ledger"]["two_day_delivery_evidence_present"])
 
-    def test_s2plt02_live_2d_precheck_fails_closed_without_production_side_effects(self) -> None:
+    def test_s2plt02_live_2d_precheck_consumes_committed_zero_proof_without_acceptance(self) -> None:
         report = build_s2plt02_live_2d_precheck_report(generated_at="2026-06-26T19:00:00+10:00")
 
         self.assertEqual(report["status"], "blocked")
         self.assertFalse(report["production_acceptance_claimed"])
         self.assertFalse(report["inherited_p0_p1_closed"])
+        self.assertEqual(report["p0_p1_zero_proof_artifact_validation"]["status"], "pass")
         for flag in S2PLT02_FORBIDDEN_FLAGS:
             self.assertFalse(report[flag])
         for reason in (
@@ -399,15 +400,17 @@ class Stage2FinalGateTests(unittest.TestCase):
             "two_consecutive_real_days_not_proven",
             "eight_real_emails_not_proven",
             "real_scheduler_not_proven",
-            "inherited_v7_1_p0_findings_open",
-            "inherited_v7_1_p1_findings_open",
         ):
             self.assertIn(reason, report["blocking_reasons"])
+        self.assertNotIn("inherited_v7_1_p0_findings_open", report["blocking_reasons"])
+        self.assertNotIn("inherited_v7_1_p1_findings_open", report["blocking_reasons"])
         self.assertNotIn("m4_watermark_not_proven", report["blocking_reasons"])
         self.assertNotIn("real_smtp_not_proven", report["blocking_reasons"])
         self.assertFalse(report["gates"]["s2plt01_accepted"])
         self.assertFalse(report["gates"]["real_scheduler_proven"])
         self.assertTrue(report["gates"]["real_smtp_proven"])
+        self.assertTrue(report["gates"]["p0_zero"])
+        self.assertTrue(report["gates"]["p1_zero"])
         self.assertEqual(report["evidence"]["observed_natural_days"], 1)
         self.assertEqual(report["evidence"]["observed_email_count"], 4)
         self.assertEqual(validate_s2plt02_live_2d_precheck_report(report), [])

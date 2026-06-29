@@ -4619,3 +4619,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+  - task_id: "S2PLT02-ZERO-PROOF-READINESS-SYNC"
+    title: "S2PLT02 zero-proof readiness sync"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-29T11:06:42+10:00"
+    summary: "Align S2PLT02 terminal-readiness and S2PLT04 completion evidence audit with the committed P0/P1 zero-proof artifact while keeping S2PLT02 and S2PLT04 blocked."
+    owner: "content_owner + engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_ZERO_PROOF_READINESS_SYNC.md", "governance/run_manifests/ADP-S2PLT02-ZERO-PROOF-READINESS-SYNC-20260629.json"]
+    acceptance_ids: ["ACC-S2PLT02-2D"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_zero_red PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_cli.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_zero_green1 PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_cli.py -q"]
+    test_results: ["TDD red failed as expected because S2PLT02 readiness did not consume the committed P0/P1 zero-proof artifact and still listed inherited P0/P1 blockers", "focused final-gate and CLI tests: 103 OK"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PLT02-ZERO-PROOF-READINESS-SYNC-20260629.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_ZERO_PROOF_READINESS_SYNC.md", "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py"]
+    result: "S2PLT02 readiness now reports P0_ZERO=true and P1_ZERO=true from committed zero-proof artifact validation; remaining S2PLT02 blockers are S2PLT01 acceptance, second real day, eight real emails, and real scheduler proof."
+    risk: "The zero-proof sync can be misread as S2PLT02/S2PLT04 acceptance unless S2PLT02_ACCEPTED=false, completion_report_ready=false, and production flags remain explicit."
+    rollback: "Revert S2PLT02 zero-proof consumption logic, S2PLT04 remaining blocker/ref update, focused regression tests, phase record, manifest, traceability row, delivery/event records, generated views, and three base records; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

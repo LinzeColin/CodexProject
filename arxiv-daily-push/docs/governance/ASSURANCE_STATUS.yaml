@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260629-ADP-S2PLT02-TERMINAL-READINESS-AUDIT"
+as_of_event_id: "EVENT-20260629-ADP-S2PLT02-ZERO-PROOF-READINESS-SYNC"
 source_snapshot_hash: "sha256:a4bb2aa1529ab2e719e847c15e7cc53103a1ca90b644ee225041f9a63769c9aa"
 source_base_commit: "fd90a208c7b009aa11bc26c4629a7ea92679c5ff"
 source_tree_hash: "c44d743a2833842b3cc0dd9e098fb70017cdc5a2"
-snapshot_event_time: "2026-06-29T10:35:11+10:00"
+snapshot_event_time: "2026-06-29T11:06:42+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -66,9 +66,14 @@ dimensions:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "BLOCKED_PRECHECK"
-  release_gate: "S2PLT02_TERMINAL_READINESS_AUDIT_BLOCKED_M4_READY_NO_ACCEPTANCE"
+  release_gate: "S2PLT02_ZERO_PROOF_READINESS_SYNC_BLOCKED_NO_ACCEPTANCE"
   blocker_ids:
-    - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
+    - "S2PLT01_NOT_ACCEPTED"
+    - "TWO_CONSECUTIVE_REAL_DAYS_NOT_PROVEN"
+    - "EIGHT_REAL_EMAILS_NOT_PROVEN"
+    - "REAL_SCHEDULER_NOT_PROVEN"
+    - "S2PLT03_TERMINAL_RESILIENCE_NOT_PROVEN"
+    - "S2PLT04_COMPLETION_REPORT_MISSING"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
   v7_contract_hash: "a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d"
   v7_roadmap_hash: "7c5f2d842d4f6b909343c953fe39b4a4aa540d168199747a9f7decdb1aad9bd1"
@@ -76,7 +81,11 @@ delivery_readiness:
   v7_parallel_audit_hash: "571b3dbbc78d6dac01bd18472a0358f5ce4c51ac3d590c10d0c02e6453a7ea6c"
   open_p0_findings: 8
   open_p1_findings: 37
-  production_forbidden_until: "inherited V7.1 P0=0; inherited V7.1 P1=0; S2PLT04 completed; final bundle present; S2PMT07 independent review passed"
+  p0_p1_zero_proof_artifact_validation: "pass"
+  s2plt02_p0_zero: true
+  s2plt02_p1_zero: true
+  s2plt02_remaining_terminal_blockers: "s2plt01_not_accepted; two_consecutive_real_days_not_proven; eight_real_emails_not_proven; real_scheduler_not_proven"
+  production_forbidden_until: "P0/P1 zero-proof artifact validation is consumed, but S2PLT01 terminal acceptance, two consecutive real days, eight real emails, real scheduler proof, S2PLT03 terminal resilience, S2PLT04 completion report, final bundle, independent signoff, final command execution, scheduler/SMTP/Release/restore, DAILY_OPERATION, and integrated production acceptance remain blocked"
   stage2_stop_gate: "INTEGRATED_PRODUCTION_ACCEPTED -> DAILY_OPERATION"
   stage2_integrated_production_accepted: false
   parallel_shadow_source_task: "NONE_WHILE_S2PMT07_BLOCKED"
@@ -84,12 +93,12 @@ delivery_readiness:
 next_executable_task:
   task_id: "S2PMT07-S2PLT04-COMPLETION-REPORT"
   status: "blocked"
-  reason: "Independent final reviewer assignment and P0/P1 zero-proof artifacts are validated for the final-bundle chain; S2PLT04 completion report is the next required blocked artifact before final command, handoff, signoff, manifest, or production acceptance can proceed."
+  reason: "independent final reviewer assignment and P0/P1 zero-proof artifacts are validated for the final-bundle chain; S2PLT02 readiness now consumes that zero-proof artifact, but S2PLT04 completion report is still blocked until S2PLT01/S2PLT02/S2PLT03 terminal evidence exists."
   acceptance_ids:
     - "ACC-S2PMT07-FINAL-REVIEW"
   owner: "content_owner + engineering_owner + independent_final_reviewer"
   human_owner_role: "content_owner + engineering_owner + independent_final_reviewer"
-  unblock_condition: "Provide real S2PLT04 completion report after S2PLT01/S2PLT02/S2PLT03 terminal evidence and P0/P1 zero-proof inputs are truthfully available; then proceed to final command execution, next-agent handoff, independent signoff, and final bundle manifest without claiming production acceptance until all final-bundle gates pass."
+  unblock_condition: "Provide real S2PLT01 terminal acceptance, second real natural day, eight total real M1-M4 emails, real scheduler proof, and S2PLT03 terminal resilience proof before writing the S2PLT04 completion report; then proceed to final command execution, next-agent handoff, independent signoff, and final bundle manifest without claiming production acceptance until all final-bundle gates pass."
   stale_candidates:
     -
       task_id: "ADP-PHASE11-PRODUCTION-TRIAL-START-022"
@@ -103,19 +112,19 @@ owner_decision:
   question: "是否接受 V7.2 作为 CURRENT 产品合同，保留 V7.1 为只读历史基线，并要求所有 Stage2 agent 先按 V7.2 复审已完成工作，不满足的先修复，再继续新任务。"
   human_owner_role: "content_owner + engineering_owner"
   human_assignment_status: "CODEX_CAN_CONTINUE_WITH_STAGE2_CONTRACT"
-  current_recommendation: "A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, require independent final reviewer assignment, independent final closure decision, valid FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json, S2PLT04 completion proof, final bundle manifest, independent final signoff, final command execution proof, no-production attestation, and next-agent handoff before inherited P0/P1 can be treated as zero or any production acceptance claim can be made."
-  option_a: "继续 S2PMT07 独立终审 reviewer assignment artifact 准备和验证，保持 P0/P1、S2PLT04、final bundle 和 production gate 阻断状态。"
+  current_recommendation: "A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat independent reviewer assignment and FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json as validated zero-proof inputs, and next obtain S2PLT01/S2PLT02/S2PLT03 terminal evidence before writing S2PLT04 completion proof, final bundle manifest, independent final signoff, final command execution proof, no-production attestation, and next-agent handoff."
+  option_a: "继续 S2PMT07 / S2PLT04 前置证据链：先补 S2PLT01 终态验收、第二真实自然日、8 封真实邮件、真实 scheduler proof 和 S2PLT03 终态韧性 proof，保持 S2PLT04/final bundle/production gate 阻断。"
   option_b: "暂停所有 Stage2 任务等待真实 scheduler/SMTP 生产启用；会不必要阻塞无冲突证据工作。"
   option_c: "越过 S2PMT07 直接声称 P0/P1 关闭或启用 scheduler/SMTP；禁止。"
   options:
-    - "继续 S2PMT07 独立终审 reviewer assignment artifact 准备和验证，保持 P0/P1、S2PLT04、final bundle 和 production gate 阻断状态。"
+    - "继续 S2PMT07 / S2PLT04 前置证据链：先补 S2PLT01 终态验收、第二真实自然日、8 封真实邮件、真实 scheduler proof 和 S2PLT03 终态韧性 proof，保持 S2PLT04/final bundle/production gate 阻断。"
     - "暂停所有 Stage2 任务等待真实 scheduler/SMTP 生产启用；会不必要阻塞无冲突证据工作。"
     - "越过 S2PMT07 直接声称 P0/P1 关闭或启用 scheduler/SMTP；禁止。"
   estimated_effort: "P0/P1; contract hash, AGENTS, 三基文件, validator/test, no production side effect"
   estimated_cost_or_resource: "local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner"
   expected_benefit: "在保持 arXiv 稳定运行的前提下，统一 V7.1 有效要求与 V1.1 新要求，并让 Stage2 agents 在 V7.2 下聚焦 S2PMT07 独立终审、P0/P1 零证明、S2PLT04 完成和最终验收包证据。"
-  principal_risks: "将 validate-final-command-execution CLI validator、validate-p0-p1-zero-proof CLI validator、S2PLT02 delivery evidence ledger 或 2026-06-28 M4 watermark proof record 误读为 final commands executed、P0/P1 清零、S2PLT02 acceptance、真实两日运行、scheduler proof、S2PLT04 完成、S2PMT07 通过或生产 stop gate 解除"
-  evidence_required: "S2PMT07 independent final review, inherited P0/P1 closure proof, S2PLT04 completion, governance validator, lean render proof, and no-production-side-effect evidence"
+  principal_risks: "将 validate-final-command-execution CLI validator、P0/P1 zero-proof artifact validation、S2PLT02 delivery evidence ledger 或 2026-06-28 M4 watermark proof record 误读为 final commands executed、S2PLT02 acceptance、真实两日运行、scheduler proof、S2PLT04 完成、S2PMT07 通过或生产 stop gate 解除"
+  evidence_required: "S2PLT01 terminal acceptance, S2PLT02 two-day/eight-email/scheduler terminal proof, S2PLT03 terminal resilience proof, S2PLT04 completion report, governance validator, lean render proof, and no-production-side-effect evidence"
   decision_deadline_or_priority: "P1"
   consequence_of_no_decision: "Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract drift."
   unblock_task_id: "S2PMT07-INDEPENDENT-FINAL-CLOSURE-DECISION"
@@ -124,5 +133,5 @@ owner_decision:
   generated_from_refs:
     - "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml"
     - "arxiv-daily-push/docs/governance/delivery_tasks.yaml"
-  last_reviewed_at: "2026-06-27T00:30:00+10:00"
+  last_reviewed_at: "2026-06-29T11:06:42+10:00"
   parallel_shadow_task_id: "NONE_WHILE_S2PMT07_BLOCKED"

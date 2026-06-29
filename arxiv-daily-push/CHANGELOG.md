@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-06-29 11:06:42 Australia/Sydney - S2PLT02-ZERO-PROOF-READINESS-SYNC
+
+- Updated the S2PLT02 terminal-readiness audit to consume the committed `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json` artifact, so current readiness now reports `P0_ZERO=true` and `P1_ZERO=true`.
+- Updated the S2PLT04 completion evidence audit so S2PLT02 remaining blockers no longer include inherited P0/P1 after zero-proof validation; the remaining S2PLT02 blockers are S2PLT01 acceptance, a second consecutive real natural day, eight total real emails, and real scheduler proof.
+- This is still a blocked readiness sync only: no S2PLT02 acceptance, S2PLT04 completion report, final command execution, next-agent handoff, independent signoff, final manifest, SMTP, scheduler, Release, restore, CURRENT/V7 change, DAILY_OPERATION, or integrated production acceptance is created or enabled.
+
 ## 2026-06-29 10:35:11 Australia/Sydney - S2PLT02-TERMINAL-READINESS-AUDIT
 
 - Added `audit-s2plt02-terminal-readiness` CLI so owner/coordinator and future reviewers can see the current S2PLT02 terminal-readiness state without treating partial evidence as acceptance.
