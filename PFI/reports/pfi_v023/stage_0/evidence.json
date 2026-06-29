@@ -1,0 +1,102 @@
+{
+  "version": "v0.2.3",
+  "stage": "Stage 0",
+  "stage_name": "需求锁定、历史约束废弃、证据基线建立",
+  "status": "candidate_pass",
+  "allowed_files_obeyed": true,
+  "history_deprecation_policy_obeyed": true,
+  "no_mock_financial_data": true,
+  "one_stage_per_run": true,
+  "requires_user_acceptance": true,
+  "official_nav": [
+    "首页总览",
+    "账户与资产",
+    "账本流水",
+    "投资管理",
+    "消费管理",
+    "数据源与上传",
+    "建议与复盘",
+    "报告与洞察",
+    "市场与研究",
+    "设置"
+  ],
+  "deprecated_constraints": [
+    "9 个一级入口",
+    "市场与研究不得作为一级入口",
+    "暗色 AI 控制台风格",
+    "演示数据可用于验收",
+    "README/docs 写完成即可 closeout"
+  ],
+  "source_inputs": [
+    {
+      "path": "/Users/linzezhang/Downloads/PFI_v0.2.3_Human_Product_Experience_Recovery_Roadmap.txt",
+      "sha256": "7b3871f98e1b991b3e7da715b5c1987d985114ed53d559c36f1a6180cd0e0ba1"
+    },
+    {
+      "path": "/Users/linzezhang/Downloads/PFI_v0.2.3_Human_Product_Experience_Recovery_TaskPack.zip",
+      "sha256": "d3e5842ad5a2a60ccbf312a977bc6313523052fd8db44db2687bf39e4c04e7a7"
+    }
+  ],
+  "baseline": {
+    "web_index_sha256": "aca9724003e696e0f1bbb88d8b1fdc605a736de47eba2a87330bb652203716bc",
+    "shell_js_sha256": "d416bf8413974ad821e1c5ae38044d5d50ad586c909be38b88c9733f23648a51",
+    "web_index_primary_entry_count_marker": true,
+    "web_index_has_market_research": true,
+    "shell_js_has_market_research": true,
+    "stage0_ui_changed": false
+  },
+  "commands": [
+    {
+      "command": "node --check PFI/web/app/shell.js",
+      "exit_code": 0,
+      "summary": "shell.js syntax check passed"
+    },
+    {
+      "command": "python3 -m py_compile PFI/src/pfi_v02/stage_v023_contract.py",
+      "exit_code": 0,
+      "summary": "stage_v023_contract.py compiled"
+    },
+    {
+      "command": "python3 -m py_compile PFI/tests/test_v023_stage0_contract.py",
+      "exit_code": 0,
+      "summary": "test_v023_stage0_contract.py compiled"
+    },
+    {
+      "command": "python3 -m pytest PFI/tests/test_v023_stage0_contract.py -q",
+      "exit_code": 0,
+      "summary": "8 passed"
+    },
+    {
+      "command": "git diff --check -- PFI",
+      "exit_code": 0,
+      "summary": "no whitespace errors"
+    }
+  ],
+  "changed_files": [
+    "PFI/docs/pfi_v023/DATA_TRUST_RULES.md",
+    "PFI/docs/pfi_v023/HISTORY_DEPRECATION_POLICY.md",
+    "PFI/docs/pfi_v023/README.md",
+    "PFI/docs/pfi_v023/STAGE0_BASELINE.md",
+    "PFI/reports/pfi_v023/stage_0/changed_files.txt",
+    "PFI/reports/pfi_v023/stage_0/evidence.json",
+    "PFI/reports/pfi_v023/stage_0/terminal.log",
+    "PFI/src/pfi_v02/stage_v023_contract.py",
+    "PFI/tests/test_v023_stage0_contract.py"
+  ],
+  "screenshots": [],
+  "bundle_hash": null,
+  "app_entry_checked": false,
+  "localhost_checked": false,
+  "data_status_summary": {
+    "stage0_data_computation_changed": false,
+    "mock_sample_synthetic_fixture_demo_fake_financial_data_used": false
+  },
+  "explicitly_not_done": [
+    "Stage 1 app/localhost/frontend bundle consistency",
+    "UI visual rebuild",
+    "route implementation",
+    "data computation or read-model changes",
+    "report generation implementation",
+    "app bundle reinstall"
+  ]
+}
