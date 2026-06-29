@@ -1,0 +1,43 @@
+{
+  "schema_version": "kmfa.report_grade_policy.v1",
+  "project_id": "KMFA",
+  "stage_phase": "S02-P3",
+  "source_taskpack": "01_KMFA_Codex_TaskPack_v1_1_完整防遗漏.md:10.2",
+  "append_only": true,
+  "forbidden_plaintext": true,
+  "report_grades": [
+    {
+      "grade": "A",
+      "minimum_quality_grade": "Q5",
+      "zero_delta_required": true,
+      "critical_differences_closed_required": true,
+      "human_confirmation_required": true,
+      "limitations_required": false,
+      "release_permission": "formal_internal_report",
+      "business_decision_basis_allowed": true
+    },
+    {
+      "grade": "B",
+      "minimum_quality_grade": "Q4",
+      "zero_delta_required": false,
+      "critical_differences_explainable_required": true,
+      "limitations_required": true,
+      "release_permission": "internal_review_report",
+      "business_decision_basis_allowed": false
+    },
+    {
+      "grade": "C",
+      "minimum_quality_grade": "Q3",
+      "preview_only": true,
+      "release_permission": "preview_only",
+      "business_decision_basis_allowed": false
+    },
+    {
+      "grade": "D",
+      "blocked_reason": "关键数据缺失、过期或差异未处理",
+      "release_permission": "blocked_decision_use",
+      "business_decision_basis_allowed": false
+    }
+  ],
+  "runtime_status": "protocol_defined_no_reports_committed"
+}

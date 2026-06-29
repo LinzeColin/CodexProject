@@ -1,0 +1,50 @@
+{
+  "schema_version": "kmfa.report_release_gate.v1",
+  "project_id": "KMFA",
+  "stage_phase": "S02-P3",
+  "source_governance": "05_KMFA_数据治理与质量门禁_v1_1.md:4",
+  "append_only": true,
+  "forbidden_plaintext": true,
+  "quality_to_report_gate": [
+    {
+      "quality_grade": "Q0",
+      "maximum_report_grade": "D",
+      "release_permission": "blocked"
+    },
+    {
+      "quality_grade": "Q1",
+      "maximum_report_grade": "D",
+      "release_permission": "blocked"
+    },
+    {
+      "quality_grade": "Q2",
+      "maximum_report_grade": "D",
+      "release_permission": "blocked"
+    },
+    {
+      "quality_grade": "Q3",
+      "maximum_report_grade": "C",
+      "release_permission": "preview_only"
+    },
+    {
+      "quality_grade": "Q4",
+      "maximum_report_grade": "B",
+      "release_permission": "internal_review_report"
+    },
+    {
+      "quality_grade": "Q5",
+      "maximum_report_grade": "A",
+      "release_permission": "formal_internal_report"
+    }
+  ],
+  "hard_blocks": [
+    "unresolved_critical_difference",
+    "zero_delta_failed",
+    "missing_required_lineage",
+    "missing_human_confirmation_for_A",
+    "stale_or_expired_input",
+    "raw_data_mutation_detected"
+  ],
+  "missing_gate_evidence_policy": "block_release",
+  "runtime_status": "protocol_defined_no_release_events_committed"
+}

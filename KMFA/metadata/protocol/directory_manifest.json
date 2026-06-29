@@ -1,7 +1,7 @@
 {
   "schema_version": "kmfa.metadata_directory_manifest.v1",
   "project_id": "KMFA",
-  "stage_phase": "S02-P1",
+  "stage_phase": "S02-P3",
   "directories": [
     "metadata/sources",
     "metadata/imports",
@@ -19,6 +19,7 @@
     "metadata/quality/data_quality_results.jsonl",
     "metadata/quality/zero_delta_results.jsonl",
     "metadata/quality/mismatch_report.csv",
+    "metadata/quality/quality_grade_policy.yaml",
     "metadata/lineage/field_lineage.jsonl",
     "metadata/lineage/metric_lineage.jsonl",
     "metadata/lineage/report_lineage.jsonl",
@@ -27,6 +28,8 @@
     "metadata/approvals/control_event_policy.yaml",
     "metadata/approvals/control_events.jsonl",
     "metadata/reports/report_manifest.jsonl",
+    "metadata/reports/report_grade_policy.yaml",
+    "metadata/reports/report_release_gate.yaml",
     "metadata/imports/raw_manifest_schema.json",
     "metadata/imports/raw_manifest_policy.yaml",
     "metadata/lineage/derived_data_policy.yaml",

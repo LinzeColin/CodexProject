@@ -4,7 +4,7 @@
 
 ## 当前目标
 
-Stage 2 数据治理内核与 metadata 协议。当前已完成 `S02-P1｜metadata目录协议` 和 `S02-P2｜不可污染原则`，下一步是 `S02-P3｜数据质量等级`。
+Stage 2 数据治理内核与 metadata 协议。当前已完成 `S02-P1｜metadata目录协议`、`S02-P2｜不可污染原则` 和 `S02-P3｜数据质量等级`，下一步是 Stage 2 整体复审。
 
 ## 当前状态
 
@@ -15,7 +15,8 @@ Stage 2 数据治理内核与 metadata 协议。当前已完成 `S02-P1｜metada
 - Stage 1 已上传到 GitHub main: `ff834578e640dc360e764ab18f9da2003c735e3e`。
 - `S02-P1` 已建立 metadata 七类目录、标识符协议、公开仓库隐私边界和 `KMFA/tools/metadata_protocol_check.py`。
 - `S02-P2` 已建立 raw manifest append-only 规范、派生版本协议、前端 raw 写入边界和 `KMFA/tools/immutability_policy_check.py`。
-- `S02-P3` 尚未开始；Stage 2 尚未复审，尚未上传 GitHub。
+- `S02-P3` 已建立 Q0-Q5 数据质量等级、A/B/C/D 报告可信等级、发布门禁和 `KMFA/tools/check_report_grade_gate.py`。
+- Stage 2 尚未复审，尚未上传 GitHub。
 
 ## 关键决策
 
@@ -38,6 +39,7 @@ Stage 2 数据治理内核与 metadata 协议。当前已完成 `S02-P1｜metada
 - `KMFA/stage_artifacts/S01_STAGE_REVIEW/*`
 - `KMFA/stage_artifacts/S02_P1_metadata_protocol/*`
 - `KMFA/stage_artifacts/S02_P2_immutability_policy/*`
+- `KMFA/stage_artifacts/S02_P3_quality_gate/*`
 - `KMFA/metadata/protocol/*`
 - `KMFA/metadata/{sources,imports,schema_maps,quality,lineage,reports,approvals}/*`
 - `governance/projects.yaml`
@@ -48,15 +50,17 @@ Stage 2 数据治理内核与 metadata 协议。当前已完成 `S02-P1｜metada
 ```bash
 python3 scripts/lean_governance.py validate --project KMFA
 python3 scripts/validate_project_governance.py --project KMFA
+python3 KMFA/tools/check_report_grade_gate.py
 git diff --check -- README.md governance/projects.yaml KMFA
 ```
 
 ## 未解决风险
 
 - 当前 canonical repo 有大量与 KMFA 无关的脏改，不能直接提交或回滚。
-- S02-P3 未完成，Stage 2 不能复审，不能上传 GitHub。
-- 正式金额工具、zero-delta、lineage、report grade gate 尚未实现。
+- 正式金额工具、zero-delta、lineage 完整检查和运行时报告生成尚未实现。
+- S02-P3 只实现 report grade gate 协议；正式报告生成、zero-delta 和 lineage 完整检查仍属后续 Stage。
+- Stage 2 复审未完成，不能上传 GitHub。
 
 ## 下一步
 
-下一轮只执行 S02-P3，不做 Stage 2 复审。S02 三个 Phase 都完成后，再做 Stage 2 整体复审、修复问题、整体上传 GitHub。
+下一轮执行 Stage 2 整体复审；复审发现的问题修复后，再整体上传 GitHub。

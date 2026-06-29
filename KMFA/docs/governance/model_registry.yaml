@@ -35,6 +35,14 @@ assumptions:
       - "KMFA/docs/governance/IMMUTABILITY_POLICY.md"
       - "KMFA/metadata/imports/raw_manifest_policy.yaml"
       - "KMFA/metadata/approvals/control_event_policy.yaml"
+  - assumption_id: "ASM-KMFA-006"
+    statement: "报告可信等级必须受数据质量等级门禁约束；缺少 zero-delta、关键差异关闭、人类确认或 lineage 证据时不得升级为 A 或正式内部报告。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "KMFA/docs/governance/QUALITY_GATE_POLICY.md"
+      - "KMFA/metadata/quality/quality_grade_policy.yaml"
+      - "KMFA/metadata/reports/report_release_gate.yaml"
 models:
   - model_id: "MOD-KMFA-GOV-001"
     name: "KMFA phase governance and public repository boundary"
@@ -160,3 +168,33 @@ models:
     evidence_refs:
       - "KMFA/docs/governance/IMMUTABILITY_POLICY.md"
       - "KMFA/stage_artifacts/S02_P2_immutability_policy/human/s02_p2_completion_record.md"
+  - model_id: "MOD-KMFA-QUALITY-GATE-001"
+    name: "KMFA data quality and report release gate"
+    kind: "deterministic_quality_gate_contract"
+    purpose: "定义 Q0-Q5 数据质量等级、A/B/C/D 报告可信等级和报告发布权限门禁。"
+    owner: "KMFA"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "0.1.0-s02p3"
+    assumptions:
+      - "ASM-KMFA-006"
+    formula_ids:
+      - "FORM-KMFA-QUALITY-GATE-001"
+    parameter_ids:
+      - "PARAM-KMFA-205"
+      - "PARAM-KMFA-206"
+      - "PARAM-KMFA-207"
+    inputs:
+      - "KMFA Roadmap S02-P3"
+      - "KMFA data governance quality gate"
+    outputs:
+      - "Q0-Q5 quality grade contract"
+      - "A/B/C/D report trust grade contract"
+      - "report release permission gate"
+    code_refs:
+      - "KMFA/tools/check_report_grade_gate.py"
+    test_refs:
+      - "python3 KMFA/tools/check_report_grade_gate.py"
+    evidence_refs:
+      - "KMFA/docs/governance/QUALITY_GATE_POLICY.md"
+      - "KMFA/stage_artifacts/S02_P3_quality_gate/human/s02_p3_completion_record.md"

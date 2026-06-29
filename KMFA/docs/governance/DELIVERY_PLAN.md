@@ -1,6 +1,6 @@
 # KMFA Delivery Plan
 
-product_version: 0.1.0-s02p2
+product_version: 0.1.0-s02p3
 
 ## Delivery Rule
 
@@ -23,13 +23,13 @@ KMFA delivery follows the owner contract:
 | Stage 1 GitHub upload | completed |
 | S02-P1 | completed_validated |
 | S02-P2 | completed_validated |
-| S02-P3 | not_started |
-| Stage 2 review | blocked_until_s02_p3_complete |
+| S02-P3 | completed_validated |
+| Stage 2 review | pending |
 | Stage 2 GitHub upload | blocked_until_stage2_review_fix |
 
 ## Upload Scope
 
-No GitHub upload is allowed after S02-P2 alone. The next upload may happen only after S02-P1/P2/P3 are complete, Stage 2 review is complete, and review findings are fixed.
+No GitHub upload is allowed immediately after S02-P3 alone. The next upload may happen only after Stage 2 review is complete and review findings are fixed.
 
 ## Rollback
 
