@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260629-ADP-S2PMT07-S2PLT01-ENTRY-PRECHECK-ZERO-PROOF-SYNC"
-source_snapshot_hash: "sha256:20fd5c043c4219f99a93a9e92a5ad15d6768fdaeee0eba0c209f79c285c1367a"
+as_of_event_id: "EVENT-20260629-ADP-S2PLT03-AUDIT-BLOCKER-ZERO-PROOF-SYNC"
+source_snapshot_hash: "sha256:7d342429a039a4aa5a12ccdb22a82c3da1d044c0cf63a1ff6f137808254acfbe"
 source_base_commit: "fd90a208c7b009aa11bc26c4629a7ea92679c5ff"
 source_tree_hash: "c44d743a2833842b3cc0dd9e098fb70017cdc5a2"
-snapshot_event_time: "2026-06-29T13:10:37+10:00"
+snapshot_event_time: "2026-06-29T13:34:38+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -60,13 +60,13 @@ dimensions:
     fact_level: "EXTRACTED"
     tree_bound_events: 0
     commit_bound_events: 4
-    legacy_unbound_events: 255
+    legacy_unbound_events: 256
     precommit_pending_events: 40
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "BLOCKED_PRECHECK"
-  release_gate: "S2PMT07_S2PLT01_ENTRY_PRECHECK_ZERO_PROOF_SYNC_BLOCKED_NO_ACCEPTANCE"
+  release_gate: "S2PLT03_AUDIT_BLOCKER_ZERO_PROOF_SYNC_BLOCKED_S2PLT02_NOT_ACCEPTED"
   blocker_ids:
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"

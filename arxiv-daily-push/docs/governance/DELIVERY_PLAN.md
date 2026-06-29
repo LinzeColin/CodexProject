@@ -21,12 +21,21 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 261
+- task_count: 262
 - acceptance_count: 127
 
 ## Delivery Tasks
 
 The machine-readable task source is `delivery_tasks.yaml`.
+
+## 2026-06-29 13:34:38 Australia/Sydney - S2PLT03 Audit-Blocker Zero-Proof Sync
+
+- `S2PLT03-AUDIT-BLOCKER-ZERO-PROOF-SYNC` makes S2PLT03 `audit_blockers` match the committed P0/P1 zero-proof artifact validation.
+- Current audit remains `blocked` / exit 2, but now records `audit_blockers.status=pass`, `audit_blockers.checks.P0_zero=true`, `audit_blockers.checks.P1_zero=true`, and inherited audit-blocker counts `P0=0` / `P1=0`.
+- Current report hash is `3483d4a8c4248d3a41cfae5db4febbe7c9d42368ae6ae9311d0c5a9819d13466`; it supersedes `d8cdd55b7848c6b7745a0707522f0277c7b7ef2f82e2ca2a0152e5c520211333`.
+- Remaining S2PLT03 blocker: `s2plt02_not_accepted`; `S2PLT03_ACCEPTED=false` and `S2PLT03_RESILIENCE_DRILL_COMPLETED=false`.
+- Evidence: `governance/run_manifests/ADP-S2PLT03-AUDIT-BLOCKER-ZERO-PROOF-SYNC-20260629.json` and `arxiv-daily-push/docs/phase_records/PHASE_S2PLT03_AUDIT_BLOCKER_ZERO_PROOF_SYNC.md`.
+- No SMTP, scheduler, Release, restore, schema/DB, source/ranking, CURRENT/V7, DAILY_OPERATION, S2PLT03 acceptance, S2PLT04 report, final bundle acceptance, or integrated production acceptance side effect is claimed.
 
 ## 2026-06-29 13:10:37 Australia/Sydney - S2PMT07 S2PLT01 Entry Precheck Zero-Proof Sync
 
