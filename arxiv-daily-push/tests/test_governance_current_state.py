@@ -30,52 +30,48 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn(f"- Current task: `{expected_task}`", current_state)
         self.assertIn(f"### `{current_iteration}`", ledger)
 
-    def test_current_state_summary_describes_s2plt02_dry_run_second_day_audit(self) -> None:
+    def test_current_state_summary_describes_s2plt02_real_proof_capture_authorization(self) -> None:
         ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
-            "S2PLT02_DRY_RUN_SECOND_DAY_AUDIT_BLOCKED_NOT_TERMINAL_NO_PRODUCTION",
+            "S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_BLOCKED_ARTIFACT_MISSING_NO_PRODUCTION",
             current_state,
         )
-        self.assertIn("S2PLT02-DRY-RUN-SECOND-DAY-AUDIT", current_state)
-        self.assertIn("dry_run_evidence_present=true", current_state)
-        self.assertIn("dry_run_mail_count=4", current_state)
-        self.assertIn("real_sent_mail_count=0", current_state)
-        self.assertIn("observed_natural_days_credit=0", current_state)
-        self.assertIn("observed_email_count_credit=0", current_state)
-        self.assertIn("counts_toward_s2plt02_terminal_proof=false", current_state)
-        self.assertIn("terminal_delivery_credit=false", current_state)
-        self.assertIn("real_smtp_proven=false", current_state)
-        self.assertIn("real_scheduler_proven=false", current_state)
-        self.assertIn("s2plt02_accepted=false", current_state)
-        self.assertIn("9fbd118380da579c2cd47a92e6fe3e54fc89ffd9b76dddb8d3a7199e5821e965", current_state)
-        self.assertIn("dry_run_evidence_only_not_real_smtp", current_state)
-        self.assertIn("two_consecutive_real_days_not_proven", current_state)
-        self.assertIn("eight_real_emails_not_proven", current_state)
-        self.assertIn("real_scheduler_not_proven", current_state)
+        self.assertIn("S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION", current_state)
+        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json", current_state)
+        self.assertIn("authorization_artifact_present=false", current_state)
+        self.assertIn("real_proof_capture_authorized=false", current_state)
+        self.assertIn("real_smtp_send_enabled_by_this_packet=false", current_state)
+        self.assertIn("scheduler_install_enabled_by_this_packet=false", current_state)
+        self.assertIn("terminal_delivery_proof_artifact_written_by_this_packet=false", current_state)
+        self.assertIn("819b1c3911892ce861fd5ba5bdde0dc381e303076beea684f35eb94c75975463", current_state)
+        self.assertIn("005e2294441b6aa6e827b0acb8f30916c59cc994768f0562a248a49c9dd6dae7", current_state)
+        self.assertIn("2d9892b750815a0e9540d49dbd2ac65d13dbd8c866651720d1cbf96dd49ffe94", current_state)
+        self.assertIn("s2plt02_real_proof_capture_authorization_missing", current_state)
         self.assertIn("no production acceptance", current_state.lower())
 
-    def test_owner_next_action_points_to_real_s2plt02_proof_not_stale_assignment(self) -> None:
+    def test_owner_next_action_points_to_s2plt02_real_proof_capture_authorization(self) -> None:
         assurance = (ADP_ROOT / "docs/governance/ASSURANCE_STATUS.yaml").read_text(encoding="utf-8")
         owner_status = (ADP_ROOT / "docs/governance/OWNER_STATUS.md").read_text(encoding="utf-8")
         generator = (REPO_ROOT / "scripts/generate_governance_dashboard.py").read_text(encoding="utf-8")
 
         stale_option = "继续 S2PLT02 no-production readiness evidence work under V7.2 boundaries"
-        self.assertIn('task_id: "S2PLT02-REAL-SECOND-DAY-SMTP-SCHEDULER-PROOF"', assurance)
-        self.assertIn("next_task_id: `S2PLT02-REAL-SECOND-DAY-SMTP-SCHEDULER-PROOF`", owner_status)
+        self.assertIn('task_id: "S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION"', assurance)
+        self.assertIn("next_task_id: `S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION`", owner_status)
         self.assertNotIn('task_id: "S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT"', assurance)
         self.assertNotIn("next_task_id: `S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT`", owner_status)
         for text in (assurance, owner_status):
             text_lower = text.lower()
             self.assertIn("S2PMT07", text)
-            self.assertIn("S2PLT02-REAL-SECOND-DAY-SMTP-SCHEDULER-PROOF", text)
+            self.assertIn("S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION", text)
             self.assertIn("ACC-S2PMT07-FINAL-REVIEW", text)
-            self.assertIn("real scheduler proof", text_lower)
+            self.assertIn("real smtp/scheduler", text_lower)
             self.assertIn("P0/P1 zero-proof", text)
+            self.assertIn("owner authorization", text_lower)
             self.assertNotIn(stale_option, text)
         self.assertIn("adp_s2pmt07_blocked_next_task", generator)
-        self.assertIn("adp_s2pmt07_gate_is_current", generator)
+        self.assertIn("real_proof_capture_is_next", generator)
         self.assertIn("current_v7_task_id", generator)
 
     def test_user_center_default_next_step_prioritizes_s2pmt07_final_review(self) -> None:

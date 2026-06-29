@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260629-ADP-S2PLT02-DRY-RUN-SECOND-DAY-AUDIT"
-source_snapshot_hash: "sha256:772aded96fdace15d83da797772b24fd6e64df47615e90b621f67242d5169563"
+as_of_event_id: "EVENT-20260629-ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION"
+source_snapshot_hash: "sha256:545665e928f873e0e407864e9e5de3ea1a0ba22407e8b2defaa90704385cf9f4"
 source_base_commit: "fd90a208c7b009aa11bc26c4629a7ea92679c5ff"
 source_tree_hash: "c44d743a2833842b3cc0dd9e098fb70017cdc5a2"
-snapshot_event_time: "2026-06-29T16:33:19+10:00"
+snapshot_event_time: "2026-06-29T18:04:46+10:00"
 generator_version: "4.0.0"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -16,10 +16,10 @@ dimensions:
     status: "VERIFIED"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 1069
-    total_active_parameters: 1069
-    checked_active_formulas: 121
-    total_active_formulas: 121
+    checked_active_parameters: 1084
+    total_active_parameters: 1084
+    checked_active_formulas: 123
+    total_active_formulas: 123
     unresolved_fact_ids: []
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
@@ -27,8 +27,8 @@ dimensions:
   parameter_source_quality:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 1069
-    total_active_parameters: 1069
+    checked_active_parameters: 1084
+    total_active_parameters: 1084
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -58,15 +58,15 @@ dimensions:
   evidence_freshness:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    tree_bound_events: 0
+    tree_bound_events: 1
     commit_bound_events: 4
-    legacy_unbound_events: 260
-    precommit_pending_events: 41
+    legacy_unbound_events: 262
+    precommit_pending_events: 40
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "BLOCKED_PRECHECK"
-  release_gate: "S2PLT02_DRY_RUN_SECOND_DAY_AUDIT_BLOCKED_NOT_TERMINAL_NO_PRODUCTION"
+  release_gate: "S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_BLOCKED_ARTIFACT_MISSING_NO_PRODUCTION"
   blocker_ids:
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
@@ -82,14 +82,15 @@ delivery_readiness:
   parallel_shadow_source_task: "NONE_WHILE_S2PMT07_BLOCKED"
   current_v7_task_id: "S2PMT07"
 next_executable_task:
-  task_id: "S2PLT02-REAL-SECOND-DAY-SMTP-SCHEDULER-PROOF"
+  task_id: "S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION"
   status: "blocked"
-  reason: "The 2026-06-29 local M1-M4 trace is dry-run only, so S2PLT02 still needs a real second consecutive SMTP day, eight total real emails, and real scheduler proof before S2PLT02 terminal delivery proof or S2PLT04 completion can proceed."
+  reason: "S2PLT01 terminal acceptance and P0/P1 zero-proof are validated inputs, but S2PLT02 still lacks explicit owner authorization for real SMTP/scheduler capture, second consecutive real M1-M4 SMTP day, real launchd scheduler proof, and terminal delivery proof artifact."
   acceptance_ids:
+    - "ACC-S2PLT02-2D"
     - "ACC-S2PMT07-FINAL-REVIEW"
   owner: "content_owner + engineering_owner + independent_final_reviewer"
   human_owner_role: "content_owner + engineering_owner + independent_final_reviewer"
-  unblock_condition: "Provide a real second consecutive SMTP service day, eight total real M1-M4 emails, and real scheduler proof; then write and validate FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json before S2PLT03 terminal proof or S2PLT04 completion report."
+  unblock_condition: "First obtain explicit owner authorization for real SMTP/scheduler proof capture; then capture a second consecutive real M1-M4 SMTP service day, real launchd scheduler proof, and validate FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json without claiming Stage2 production acceptance."
   stale_candidates:
     -
       task_id: "ADP-PHASE11-PRODUCTION-TRIAL-START-022"

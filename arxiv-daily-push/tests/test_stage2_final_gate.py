@@ -20,6 +20,13 @@ from arxiv_daily_push.stage2_final_gate import (
     S2PLT02_M4_WATERMARK_PROOF_RECORD_REF,
     S2PLT02_M4_WATERMARK_PROOF_SCOPE,
     S2PLT02_M4_WATERMARK_REQUIRED_TERMINAL_PRODUCTS,
+    S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_ARTIFACT_PATH,
+    S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_AUTHORIZED_ACTIONS,
+    S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_CONSTRAINTS,
+    S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_DECISION,
+    S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_NO_PRODUCTION_FLAGS,
+    S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_REQUIRED_FIELDS,
+    S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_SCHEMA_VERSION,
     S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH,
     S2PLT02_TERMINAL_DELIVERY_PROOF_REQUIRED_EVIDENCE_ROLES,
     S2PLT03_BLOCKING_REASONS,
@@ -136,6 +143,10 @@ from arxiv_daily_push.stage2_final_gate import (
     build_s2plt02_live_2d_precheck_report,
     build_s2plt02_live_evidence_state,
     build_s2plt02_m4_watermark_proof_state,
+    build_s2plt02_real_proof_capture_authorization_hash,
+    build_s2plt02_real_proof_capture_authorization_owner_packet_state,
+    build_s2plt02_real_proof_capture_authorization_validation_state,
+    build_s2plt02_real_proof_capture_readiness_state,
     build_s2plt02_partial_real_delivery_state,
     build_s2plt02_terminal_delivery_proof_artifact_validation_state,
     build_s2plt03_dependency_state,
@@ -156,6 +167,9 @@ from arxiv_daily_push.stage2_final_gate import (
     validate_s2plt02_delivery_evidence_ledger_state,
     validate_s2plt02_dry_run_second_day_audit_state,
     validate_s2plt02_m4_watermark_proof_state,
+    validate_s2plt02_real_proof_capture_authorization_artifact,
+    validate_s2plt02_real_proof_capture_authorization_owner_packet_state,
+    validate_s2plt02_real_proof_capture_readiness_state,
     validate_s2plt02_terminal_delivery_proof_artifact,
     validate_s2plt02_terminal_delivery_proof_artifact_validation_state,
     validate_s2plt03_local_resilience_drill_bundle,
@@ -353,6 +367,154 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertIn("missing_product_delivery_report:M4", audit["validation_errors"])
         self.assertIn("dry_run_product_report_set_incomplete", audit["blocking_reasons"])
         self.assertEqual(validate_s2plt02_dry_run_second_day_audit_state(audit), [])
+
+    def test_s2plt02_real_proof_capture_readiness_blocks_when_launchagents_disabled_and_dry_run_only(self) -> None:
+        launchctl_disabled_text = """
+            "com.linze.adp.local.daily" => disabled
+            "com.linze.adp.local.health" => disabled
+            "com.linze.adp.local.watchdog" => disabled
+        """
+        with TemporaryDirectory() as tmp_dir:
+            tmp_root = Path(tmp_dir)
+            state_dir = tmp_root / "state"
+            self._write_s2plt02_second_day_dry_run_reports(state_dir)
+
+            readiness = build_s2plt02_real_proof_capture_readiness_state(
+                repo_root=tmp_root,
+                state_dir=state_dir,
+                service_date="2026-06-29",
+                launchctl_disabled_text=launchctl_disabled_text,
+            )
+
+        self.assertEqual(readiness["status"], "blocked")
+        self.assertEqual(readiness["task_id"], "S2PLT02-REAL-PROOF-CAPTURE-READINESS")
+        self.assertFalse(readiness["safe_to_collect_terminal_proof"])
+        self.assertFalse(readiness["real_proof_capture_authorized"])
+        self.assertTrue(readiness["all_required_launchagents_disabled"])
+        self.assertFalse(readiness["second_real_delivery_day_present"])
+        self.assertFalse(readiness["terminal_delivery_proof_artifact_present"])
+        self.assertEqual(readiness["dry_run_second_day_audit"]["dry_run_mail_count"], 4)
+        self.assertEqual(readiness["dry_run_second_day_audit"]["real_sent_mail_count"], 0)
+        self.assertIn("real_proof_capture_authorization_missing", readiness["blocking_reasons"])
+        self.assertIn("required_launchagents_disabled", readiness["blocking_reasons"])
+        self.assertIn("second_real_delivery_day_missing", readiness["blocking_reasons"])
+        self.assertIn("dry_run_second_day_not_terminal", readiness["blocking_reasons"])
+        self.assertIn("s2plt02_terminal_delivery_proof_artifact_missing", readiness["blocking_reasons"])
+        self.assertIn("real_scheduler_not_proven", readiness["blocking_reasons"])
+        self.assertIn("obtain_explicit_owner_authorization_for_real_smtp_scheduler", readiness["required_next_actions"])
+        self.assertEqual(validate_s2plt02_real_proof_capture_readiness_state(readiness), [])
+
+    def test_s2plt02_real_proof_capture_readiness_requires_known_launchagent_states(self) -> None:
+        launchctl_disabled_text = '"com.linze.adp.local.daily" => disabled'
+        with TemporaryDirectory() as tmp_dir:
+            tmp_root = Path(tmp_dir)
+            state_dir = tmp_root / "state"
+            self._write_s2plt02_second_day_dry_run_reports(state_dir)
+
+            readiness = build_s2plt02_real_proof_capture_readiness_state(
+                repo_root=tmp_root,
+                state_dir=state_dir,
+                service_date="2026-06-29",
+                launchctl_disabled_text=launchctl_disabled_text,
+            )
+
+        self.assertEqual(readiness["status"], "blocked")
+        self.assertFalse(readiness["all_required_launchagents_disabled"])
+        self.assertIn("launchagent_state_unknown:com.linze.adp.local.health", readiness["validation_errors"])
+        self.assertIn("launchagent_state_unknown:com.linze.adp.local.watchdog", readiness["validation_errors"])
+        self.assertIn("required_launchagent_state_unknown", readiness["blocking_reasons"])
+        self.assertEqual(validate_s2plt02_real_proof_capture_readiness_state(readiness), [])
+
+    def test_s2plt02_real_proof_capture_authorization_blocks_missing_artifact(self) -> None:
+        state = build_s2plt02_real_proof_capture_authorization_validation_state(None)
+
+        self.assertEqual(state["status"], "blocked")
+        self.assertEqual(state["artifact_path"], S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_ARTIFACT_PATH)
+        self.assertFalse(state["authorization_present"])
+        self.assertFalse(state["real_proof_capture_authorized_by_payload"])
+        self.assertIn("s2plt02_real_proof_capture_authorization_missing", state["validation_errors"])
+        self.assertFalse(state["real_smtp_send_enabled"])
+        self.assertFalse(state["scheduler_install_enabled"])
+        self.assertFalse(state["production_acceptance_claimed"])
+        self.assertFalse(state["integrated_production_accepted"])
+
+    def test_s2plt02_real_proof_capture_authorization_owner_packet_is_ready_but_not_authorization(self) -> None:
+        packet = build_s2plt02_real_proof_capture_authorization_owner_packet_state(
+            {"state_hash": "readiness-hash-001", "status": "blocked", "blocking_reasons": ["real_scheduler_not_proven"]}
+        )
+
+        self.assertEqual(packet["status"], "blocked_owner_action_packet_ready_no_authorization")
+        self.assertEqual(packet["task_id"], "S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION")
+        self.assertEqual(packet["artifact_path"], S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_ARTIFACT_PATH)
+        self.assertEqual(packet["readiness_state_hash"], "readiness-hash-001")
+        self.assertFalse(packet["authorization_artifact_present"])
+        self.assertFalse(packet["real_proof_capture_authorized"])
+        self.assertFalse(packet["real_smtp_send_enabled_by_this_packet"])
+        self.assertFalse(packet["scheduler_install_enabled_by_this_packet"])
+        self.assertFalse(packet["terminal_delivery_proof_artifact_written_by_this_packet"])
+        self.assertIn("real_scheduler_not_proven", packet["readiness_blocking_reasons"])
+        for action in (
+            "write_authorization_artifact_only_if_owner_explicitly_approves_real_smtp_scheduler_capture",
+            "capture_second_real_m1_m4_smtp_day_after_authorization",
+        ):
+            self.assertIn(action, packet["required_owner_actions"])
+        for reason in (
+            "s2plt02_real_proof_capture_authorization_missing",
+            "second_real_delivery_day_missing",
+            "real_scheduler_not_proven",
+            "s2plt02_terminal_delivery_proof_artifact_missing",
+        ):
+            self.assertIn(reason, packet["blocking_reasons"])
+        self.assertEqual(validate_s2plt02_real_proof_capture_authorization_owner_packet_state(packet), [])
+
+    def test_s2plt02_real_proof_capture_authorization_accepts_valid_no_production_artifact(self) -> None:
+        artifact = {
+            "schema_version": S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_SCHEMA_VERSION,
+            "contract_id": "ADP-PRODUCT-CONTRACT-V7.2",
+            "generated_at": "2026-06-29T18:30:00+10:00",
+            "authorization_decision": S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_DECISION,
+            "authorized_by": {
+                "owner_id": "owner",
+                "owner_role": "owner",
+                "authorization_source": "explicit_owner_instruction",
+            },
+            "authorization_scope": "S2PLT02_REAL_SMTP_SCHEDULER_PROOF_CAPTURE_ONLY",
+            "authorized_actions": list(S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_AUTHORIZED_ACTIONS),
+            "authorization_constraints": {
+                key: True for key in S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_CONSTRAINTS
+            },
+            "readiness_state_hash": "readiness-hash-001",
+            "evidence_refs": [
+                "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+                "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_READINESS.md",
+                "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-20260629.json",
+            ],
+            "no_production_side_effects": {
+                flag: False for flag in S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_NO_PRODUCTION_FLAGS
+            },
+            "authorization_hash": "",
+        }
+        artifact["authorization_hash"] = build_s2plt02_real_proof_capture_authorization_hash(artifact)
+
+        self.assertEqual(list(artifact), list(S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_REQUIRED_FIELDS))
+        self.assertEqual(
+            validate_s2plt02_real_proof_capture_authorization_artifact(
+                artifact,
+                expected_readiness_state_hash="readiness-hash-001",
+            ),
+            [],
+        )
+        state = build_s2plt02_real_proof_capture_authorization_validation_state(
+            artifact,
+            expected_readiness_state_hash="readiness-hash-001",
+        )
+        self.assertEqual(state["status"], "pass")
+        self.assertTrue(state["authorization_present"])
+        self.assertTrue(state["real_proof_capture_authorized_by_payload"])
+        self.assertFalse(state["real_smtp_send_enabled"])
+        self.assertFalse(state["scheduler_install_enabled"])
+        self.assertFalse(state["production_acceptance_claimed"])
+        self.assertFalse(state["integrated_production_accepted"])
 
     def test_s2plt02_terminal_delivery_proof_artifact_validation_blocks_missing_artifact(self) -> None:
         with TemporaryDirectory() as tmp_dir:
