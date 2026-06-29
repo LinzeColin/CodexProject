@@ -1,0 +1,109 @@
+{
+  "version": "v0.2.3",
+  "stage": "Stage 2",
+  "phase_id": "V023-S2-P1",
+  "phase_name": "任务包恢复与防幻觉门",
+  "status": "phase_1_pass_taskpack_missing",
+  "generated_at_utc": "2026-06-29T22:05:10Z",
+  "repo_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi",
+  "pfi_root": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI",
+  "branch": "codex/pfi",
+  "head_at_phase_start": "1a41c1a1e543f12e72c5307ae8084e14bea24021",
+  "origin_main_at_phase_start": "1a41c1a1e543f12e72c5307ae8084e14bea24021",
+  "current_phase_only": true,
+  "max_one_phase_per_run": true,
+  "taskpack_status": "missing",
+  "taskpack_required_before_ui_implementation": true,
+  "checked_inputs": [
+    {
+      "path": "/Users/linzezhang/Downloads/PFI_v0.2.3_Human_Product_Experience_Recovery_Roadmap.txt",
+      "exists": false,
+      "role": "Stage 0 recorded original roadmap input"
+    },
+    {
+      "path": "/Users/linzezhang/Downloads/PFI_v0.2.3_Human_Product_Experience_Recovery_TaskPack.zip",
+      "exists": false,
+      "role": "Stage 0 recorded original taskpack input"
+    },
+    {
+      "path": "PFI/docs/pfi_v023/README.md",
+      "exists": true,
+      "role": "v0.2.3 Stage 0 contract"
+    },
+    {
+      "path": "PFI/docs/pfi_v023/STAGE0_BASELINE.md",
+      "exists": true,
+      "role": "v0.2.3 Stage 0 baseline"
+    },
+    {
+      "path": "PFI/reports/pfi_v023/stage_1/evidence.json",
+      "exists": true,
+      "role": "v0.2.3 Stage 1 app-entry evidence"
+    }
+  ],
+  "stage0_contract_preserved": {
+    "official_nav_count": 10,
+    "market_research_is_primary_entry": true,
+    "deprecated_9_entry_constraint": true,
+    "no_mock_financial_data": true,
+    "one_stage_per_run": true
+  },
+  "stage1_contract_preserved": {
+    "app_entry_binding_not_modified": true,
+    "app_reinstall_not_run": true,
+    "web_bundle_not_modified": true
+  },
+  "ui_changes_made": false,
+  "route_changes_made": false,
+  "data_changes_made": false,
+  "report_changes_made": false,
+  "app_reinstall_run": false,
+  "github_upload_required": false,
+  "github_upload_run": false,
+  "blocked_next_phase_until": [
+    "User restores or supplies the v0.2.3 Human Product Experience Recovery Roadmap and TaskPack.",
+    "GitHub main receives a current v0.2.3 Stage 2 phase/task definition.",
+    "User explicitly confirms a concrete current v0.2.3 document as the Stage 2 taskpack replacement source."
+  ],
+  "explicitly_not_done": [
+    "Stage 2 page rebuild",
+    "route implementation changes",
+    "data computation or read-model changes",
+    "report generation implementation",
+    "app bundle reinstall",
+    "GitHub main upload for intermediate phase",
+    "mock/sample/synthetic/fixture/demo/fake financial data"
+  ],
+  "validation_commands": [
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage2_phase1_taskpack_recovery.py -q",
+      "required": true
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage0_contract.py PFI/tests/test_v023_stage1_app_entry_bundle_contract.py PFI/tests/test_pfi_app_entry_version_contract.py PFI/tests/test_v023_stage2_phase1_taskpack_recovery.py -q",
+      "required": true
+    },
+    {
+      "command": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js",
+      "required": true
+    },
+    {
+      "command": "git diff --check -- PFI",
+      "required": true
+    },
+    {
+      "command": "git diff --check origin/main...HEAD -- PFI",
+      "required": true
+    }
+  ],
+  "changed_files": [
+    "PFI/HANDOFF.md",
+    "PFI/docs/pfi_v023/README.md",
+    "PFI/docs/pfi_v023/STAGE2_PHASE1_TASKPACK_RECOVERY.md",
+    "PFI/reports/pfi_v023/stage_2/phase_1/changed_files.txt",
+    "PFI/reports/pfi_v023/stage_2/phase_1/evidence.json",
+    "PFI/reports/pfi_v023/stage_2/phase_1/terminal.log",
+    "PFI/src/pfi_v02/stage_v023_contract.py",
+    "PFI/tests/test_v023_stage2_phase1_taskpack_recovery.py"
+  ]
+}

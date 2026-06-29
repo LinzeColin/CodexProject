@@ -58,3 +58,14 @@ v0.1 习惯入口不得再作为同层一级入口堆叠，只能作为兼容路
 ## 后续 Stage 进入条件
 
 Stage 0 候选通过后，仍需用户确认本合同。未确认前不得进入 Stage 1。Stage 1 才处理 app/localhost/frontend bundle 一致性。
+
+## Stage 2 Phase 1 状态
+
+Stage 2 每次 run work 最多只解决一个 phase。当前 Phase 1 只完成任务包恢复与防幻觉门：
+
+- 真实检查当前 GitHub main 和新电脑本机输入路径。
+- 未找到 Stage 0 记录的 `PFI_v0.2.3_Human_Product_Experience_Recovery_Roadmap.txt` 和 `PFI_v0.2.3_Human_Product_Experience_Recovery_TaskPack.zip`。
+- 不得把 v0.2.1.1、v0.2.2 或旧 PFI V0.2 的 Stage 2 当作 v0.2.3 Stage 2 任务包。
+- 缺少真实 v0.2.3 Stage 2 任务包时，不做页面重建、路由修改、数据计算、报告生成或 app 重装。
+
+记录文件：`STAGE2_PHASE1_TASKPACK_RECOVERY.md`。

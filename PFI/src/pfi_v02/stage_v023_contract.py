@@ -23,6 +23,16 @@ stage1_web_bundle_files = (
     "web/app/shell.js",
 )
 
+stage2_phase1_id = "V023-S2-P1"
+stage2_phase1_name = "任务包恢复与防幻觉门"
+stage2_expected_taskpack_inputs = (
+    "~/Downloads/PFI_v0.2.3_Human_Product_Experience_Recovery_Roadmap.txt",
+    "~/Downloads/PFI_v0.2.3_Human_Product_Experience_Recovery_TaskPack.zip",
+    "PFI/docs/pfi_v023/README.md",
+    "PFI/docs/pfi_v023/STAGE0_BASELINE.md",
+    "PFI/reports/pfi_v023/stage_1/evidence.json",
+)
+
 official_nav = [
     "首页总览",
     "账户与资产",
@@ -148,6 +158,23 @@ class V023Stage1Contract:
     explicitly_not_done: tuple[str, ...]
 
 
+@dataclass(frozen=True)
+class V023Stage2Phase1Contract:
+    version: str
+    stage: str
+    phase_id: str
+    phase_name: str
+    current_phase_only: bool
+    max_one_phase_per_run: bool
+    taskpack_required_before_ui_implementation: bool
+    expected_taskpack_inputs: tuple[str, ...]
+    allowed_files: tuple[str, ...]
+    validation_commands: tuple[V023EvidenceCommand, ...]
+    evidence_files: tuple[str, ...]
+    stop_conditions: tuple[str, ...]
+    explicitly_not_done: tuple[str, ...]
+
+
 def build_stage0_contract() -> dict[str, Any]:
     contract = V023Stage0Contract(
         version=version,
@@ -191,6 +218,60 @@ def build_stage0_contract() -> dict[str, Any]:
             "PFI/reports/pfi_v023/stage_0/evidence.json",
             "PFI/reports/pfi_v023/stage_0/terminal.log",
             "PFI/reports/pfi_v023/stage_0/changed_files.txt",
+        ),
+    )
+    payload = asdict(contract)
+    payload["validation_commands"] = [asdict(item) for item in contract.validation_commands]
+    return payload
+
+
+def build_stage2_phase1_contract() -> dict[str, Any]:
+    contract = V023Stage2Phase1Contract(
+        version=version,
+        stage="Stage 2",
+        phase_id=stage2_phase1_id,
+        phase_name=stage2_phase1_name,
+        current_phase_only=True,
+        max_one_phase_per_run=True,
+        taskpack_required_before_ui_implementation=True,
+        expected_taskpack_inputs=stage2_expected_taskpack_inputs,
+        allowed_files=(
+            "PFI/HANDOFF.md",
+            "PFI/docs/pfi_v023/*",
+            "PFI/src/pfi_v02/stage_v023_contract.py",
+            "PFI/tests/test_v023_stage2_phase1_taskpack_recovery.py",
+            "PFI/reports/pfi_v023/stage_2/phase_1/*",
+        ),
+        validation_commands=(
+            V023EvidenceCommand("python3 -m pytest PFI/tests/test_v023_stage2_phase1_taskpack_recovery.py -q", True),
+            V023EvidenceCommand(
+                "python3 -m pytest PFI/tests/test_v023_stage0_contract.py "
+                "PFI/tests/test_v023_stage1_app_entry_bundle_contract.py "
+                "PFI/tests/test_pfi_app_entry_version_contract.py "
+                "PFI/tests/test_v023_stage2_phase1_taskpack_recovery.py -q",
+                True,
+            ),
+            V023EvidenceCommand("git diff --check -- PFI", True),
+        ),
+        evidence_files=(
+            "PFI/docs/pfi_v023/STAGE2_PHASE1_TASKPACK_RECOVERY.md",
+            "PFI/reports/pfi_v023/stage_2/phase_1/evidence.json",
+            "PFI/reports/pfi_v023/stage_2/phase_1/terminal.log",
+            "PFI/reports/pfi_v023/stage_2/phase_1/changed_files.txt",
+        ),
+        stop_conditions=(
+            "Official v0.2.3 Stage 2 Roadmap or TaskPack is missing from current GitHub main and checked local input paths.",
+            "Do not infer Stage 2 page, route, read-model, report, or data behavior from older v0.2.1/v0.2.2 stage names.",
+            "Do not implement UI changes until the real v0.2.3 Stage 2 phase/task list is restored or supplied.",
+        ),
+        explicitly_not_done=(
+            "Stage 2 page rebuild",
+            "route implementation changes",
+            "data computation or read-model changes",
+            "report generation implementation",
+            "app bundle reinstall",
+            "GitHub main upload for intermediate phase",
+            "mock/sample/synthetic/fixture/demo/fake financial data",
         ),
     )
     payload = asdict(contract)

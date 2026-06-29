@@ -1,0 +1,8 @@
+PFI/HANDOFF.md
+PFI/docs/pfi_v023/README.md
+PFI/docs/pfi_v023/STAGE2_PHASE1_TASKPACK_RECOVERY.md
+PFI/reports/pfi_v023/stage_2/phase_1/changed_files.txt
+PFI/reports/pfi_v023/stage_2/phase_1/evidence.json
+PFI/reports/pfi_v023/stage_2/phase_1/terminal.log
+PFI/src/pfi_v02/stage_v023_contract.py
+PFI/tests/test_v023_stage2_phase1_taskpack_recovery.py

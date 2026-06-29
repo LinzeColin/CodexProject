@@ -1,0 +1,59 @@
+# PFI v0.2.3 Stage 2 Phase 1 terminal summary
+generated_at_utc=2026-06-29T21:55:01Z
+refreshed_at_utc=2026-06-29T22:05:10Z
+repo=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+branch=codex/pfi
+head_at_phase_start=1a41c1a1e543f12e72c5307ae8084e14bea24021
+origin_main_at_phase_start=1a41c1a1e543f12e72c5307ae8084e14bea24021
+worktree_policy=project-level-pfi
+
+$ test -e ~/Downloads/PFI_v0.2.3_Human_Product_Experience_Recovery_Roadmap.txt
+exit_code=1
+missing /Users/linzezhang/Downloads/PFI_v0.2.3_Human_Product_Experience_Recovery_Roadmap.txt
+
+$ test -e ~/Downloads/PFI_v0.2.3_Human_Product_Experience_Recovery_TaskPack.zip
+exit_code=1
+missing /Users/linzezhang/Downloads/PFI_v0.2.3_Human_Product_Experience_Recovery_TaskPack.zip
+
+$ find PFI/docs/pfi_v023 -maxdepth 2 -type f -print
+exit_code=0
+README.md, HISTORY_DEPRECATION_POLICY.md, DATA_TRUST_RULES.md, STAGE0_BASELINE.md, STAGE1_APP_ENTRY_BUNDLE_CONSISTENCY.md
+
+$ rg "Stage 2|S2" PFI/docs/pfi_v023 PFI/src/pfi_v02/stage_v023_contract.py PFI/tests -g '*v023*'
+exit_code=0
+only Stage 1 explicitly marks Stage 2 page rebuild as not done before this phase
+
+$ python3 -m pytest PFI/tests/test_v023_stage2_phase1_taskpack_recovery.py -q
+exit_code=1
+system python did not have pytest; reran with validated PFI venv
+
+$ python3 -m pytest PFI/tests/test_v023_stage0_contract.py PFI/tests/test_v023_stage1_app_entry_bundle_contract.py PFI/tests/test_pfi_app_entry_version_contract.py PFI/tests/test_v023_stage2_phase1_taskpack_recovery.py -q
+exit_code=1
+system python did not have pytest; reran with validated PFI venv
+
+$ git diff --check -- PFI
+exit_code=0
+passed
+
+$ python3 -m py_compile PFI/src/pfi_v02/stage_v023_contract.py PFI/tests/test_v023_stage2_phase1_taskpack_recovery.py
+runtime=PFI/.venv/bin/python
+exit_code=0
+passed
+
+$ python3 -m pytest PFI/tests/test_v023_stage2_phase1_taskpack_recovery.py -q
+runtime=PYTHONPATH=PFI/src PFI/.venv/bin/python
+exit_code=0
+5 passed
+
+$ python3 -m pytest PFI/tests/test_v023_stage0_contract.py PFI/tests/test_v023_stage1_app_entry_bundle_contract.py PFI/tests/test_pfi_app_entry_version_contract.py PFI/tests/test_v023_stage2_phase1_taskpack_recovery.py -q
+runtime=PYTHONPATH=PFI/src PFI/.venv/bin/python
+exit_code=0
+24 passed
+
+$ /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js
+exit_code=0
+passed
+
+$ git diff --check origin/main...HEAD -- PFI
+exit_code=0
+passed
