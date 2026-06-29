@@ -39,7 +39,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (1055/1055 active parameters, 120/120 active formulas)
+- implementation_congruence: `VERIFIED` (1063/1063 active parameters, 120/120 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `VERIFIED`
 - empirical_validation: `VERIFIED`
@@ -71,23 +71,23 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - model_count: `118`
 - total_formulas: `120`
 - active_formulas: `120`
-- total_parameters: `1072`
-- active_parameters: `1055`
+- total_parameters: `1080`
+- active_parameters: `1063`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PMT07_S2PLT01_TERMINAL_ACCEPTED_S2PLT04_CONSUMED_BLOCKED_S2PLT02_S2PLT03_NO_PRODUCTION`
+- release_gate: `S2PMT07_S2PLT02_TERMINAL_DELIVERY_PROOF_VALIDATOR_BLOCKED_ARTIFACT_MISSING_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `0`
 - commit_bound_events: `4`
-- legacy_unbound_events: `259`
+- legacy_unbound_events: `260`
 - precommit_pending_events: `40`
-- pending_or_stale_events: `298`
+- pending_or_stale_events: `299`
 
 ## 15. UNKNOWN
 
@@ -97,11 +97,11 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 - source_base_commit: `fd90a208c7b009aa11bc26c4629a7ea92679c5ff`
 - source_tree_hash: `c44d743a2833842b3cc0dd9e098fb70017cdc5a2`
-- source_snapshot_hash: `sha256:e65f9a9eed025fdc6a0cb736cbb79323b4000b29d788719310c0653dd2018445`
-- snapshot_event_time: `2026-06-29T14:51:01+10:00`
+- source_snapshot_hash: `sha256:772aded96fdace15d83da797772b24fd6e64df47615e90b621f67242d5169563`
+- snapshot_event_time: `2026-06-29T15:59:53+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PL / S2PMT07_S2PLT01_TERMINAL_ACCEPTED_S2PLT04_CONSUMED_BLOCKED_S2PLT02_S2PLT03_NO_PRODUCTION`
+- phase/gate: `S2PL / S2PMT07_S2PLT02_TERMINAL_DELIVERY_PROOF_VALIDATOR_BLOCKED_ARTIFACT_MISSING_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 

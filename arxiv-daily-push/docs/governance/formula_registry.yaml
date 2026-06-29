@@ -6312,7 +6312,7 @@ formulas:
     assumption_ids:
       - "ASM-ADP-035"
     status: "active"
-    expression: "S2PLT02 two-day live-run readiness remains blocked unless S2PLT01 is accepted; the delivery evidence ledger proves two consecutive real natural days; eight real M1-M4 emails are sent without duplicates; the explicit M4 watermark proof validator proves every delivery-ledger service date; real scheduler and real SMTP proof are present; inherited V7.1 P0 and P1 findings are zero; and every S2PLT02 production, scheduler, SMTP, Release, restore, queue, schema, DB, source-adapter, ranking, CURRENT, V7.1, and V7.2 side-effect flag is false."
+    expression: "S2PLT02 two-day live-run readiness remains blocked unless S2PLT01 is accepted; the delivery evidence ledger proves two consecutive real natural days; eight real M1-M4 emails are sent without duplicates; the explicit M4 watermark proof validator proves every delivery-ledger service date; real scheduler and real SMTP proof are present; inherited V7.1 P0 and P1 findings are zero; every S2PLT02 production, scheduler, SMTP, Release, restore, queue, schema, DB, source-adapter, ranking, CURRENT, V7.1, and V7.2 side-effect flag is false; and final terminal delivery proof can only pass when the future artifact declares the exact S2PLT02 terminal decision, all required terminal gates, role-mapped terminal evidence refs for S2PLT01/day1/day2/scheduler/P0-P1-zero, no-production flags, and matching artifact hash."
     variables:
       -
         name: "dependency_state"
@@ -6334,9 +6334,14 @@ formulas:
         data_type: "object"
         unit: "inherited V7.1 P0/P1 blocker counts"
         input_domain: "open P0 and P1 findings"
+      -
+        name: "terminal_delivery_proof_artifact_validation_state"
+        data_type: "object"
+        unit: "future S2PLT02 terminal delivery proof artifact validation"
+        input_domain: "two-day/eight-email/scheduler terminal artifact, role-mapped evidence refs, no-production flags, and artifact hash"
     constraints: "S2PLT02 precheck must not accept S2PLT02, start real two-day operation, claim INTEGRATED_PRODUCTION_ACCEPTED or DAILY_OPERATION, send SMTP, enable scheduler, upload Release, execute production restore, mutate production queues, change public schema or DB, change source adapters or ranking, change CURRENT, change V7.1 baseline, or edit V7.2 contract files."
-    missing_policy: "Missing S2PLT01 acceptance, missing delivery ledger proof for two real natural days, fewer than eight real emails, duplicate service-date/product evidence, missing explicit M4 watermark proof record, missing real scheduler proof, missing real SMTP proof, nonzero inherited P0/P1, or any forbidden side-effect flag blocks S2PLT02."
-    output_range: "S2PLT02 live 2-day readiness precheck report with pass or blocked status, dependency state, live evidence state, audit blocker state, blocking reasons, deterministic report_hash, production_acceptance_claimed false, inherited_p0_p1_closed false, and all forbidden flags false."
+    missing_policy: "Missing S2PLT01 acceptance, missing delivery ledger proof for two real natural days, fewer than eight real emails, duplicate service-date/product evidence, missing explicit M4 watermark proof record, missing real scheduler proof, missing real SMTP proof, nonzero inherited P0/P1, missing terminal delivery proof artifact, missing required role-mapped evidence refs, mismatched artifact hash, or any forbidden side-effect flag blocks S2PLT02."
+    output_range: "S2PLT02 live 2-day readiness precheck report and terminal delivery proof artifact validation state with pass or blocked status, dependency state, live evidence state, audit blocker state, role-mapped terminal evidence validation, blocking reasons, deterministic report_hash or state_hash, production_acceptance_claimed false, inherited_p0_p1_closed false, and all forbidden flags false."
     code_refs:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py"
     test_refs:
@@ -6350,6 +6355,8 @@ formulas:
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_M4_WATERMARK_PROOF.md"
       - "governance/run_manifests/ADP-S2PLT02-M4-WATERMARK-PROOF-RECORD-20260628.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_M4_WATERMARK_PROOF_RECORD.md"
+      - "governance/run_manifests/ADP-S2PMT07-S2PLT02-TERMINAL-DELIVERY-PROOF-VALIDATOR-20260629.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT02_TERMINAL_DELIVERY_PROOF_VALIDATOR.md"
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_LIVE_2D_PRECHECK_MODEL_ID"
@@ -6374,6 +6381,18 @@ formulas:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::_default_s2plt02_m4_watermark_proof_records"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_M4_WATERMARK_REQUIRED_TERMINAL_PRODUCTS"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_M4_WATERMARK_FORBIDDEN_SOURCE_FLAGS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_TERMINAL_DELIVERY_PROOF_MODEL_ID"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_TERMINAL_DELIVERY_PROOF_SCOPE"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_TERMINAL_DELIVERY_PROOF_DECISION"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_TERMINAL_DELIVERY_PROOF_REQUIRED_GATES"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_TERMINAL_DELIVERY_PROOF_REQUIRED_EVIDENCE_REFS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_TERMINAL_DELIVERY_PROOF_REQUIRED_EVIDENCE_ROLES"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_TERMINAL_DELIVERY_PROOF_NO_PRODUCTION_FLAGS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_s2plt02_terminal_delivery_proof_hash"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::validate_s2plt02_terminal_delivery_proof_artifact"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_s2plt02_terminal_delivery_proof_artifact_validation_state"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::validate_s2plt02_terminal_delivery_proof_artifact_validation_state"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_s2plt02_m4_watermark_proof_state"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::validate_s2plt02_m4_watermark_proof_state"
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_s2plt02_delivery_evidence_ledger_state"

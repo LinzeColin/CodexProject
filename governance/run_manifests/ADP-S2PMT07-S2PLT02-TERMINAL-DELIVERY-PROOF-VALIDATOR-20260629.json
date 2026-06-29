@@ -1,0 +1,162 @@
+{
+  "schema_version": "codexproject.run_manifest.v1",
+  "manifest_id": "ADP-S2PMT07-S2PLT02-TERMINAL-DELIVERY-PROOF-VALIDATOR-20260629",
+  "project_id": "arxiv-daily-push",
+  "phase": "S2PL",
+  "task_id": "S2PMT07-S2PLT02-TERMINAL-DELIVERY-PROOF-VALIDATOR",
+  "task_ids": [
+    "S2PMT07-S2PLT02-TERMINAL-DELIVERY-PROOF-VALIDATOR",
+    "S2PLT02",
+    "S2PMT07-S2PLT04-COMPLETION-REPORT",
+    "ACC-S2PLT02-2D"
+  ],
+  "generated_at": "2026-06-29T15:59:53+10:00",
+  "fact_level": "EXTRACTED",
+  "base_commit": "de40bcf515c26639706b0ecab83e540178fce4f9",
+  "result": "blocked_s2plt02_terminal_delivery_proof_validator_ready_artifact_missing_no_production",
+  "summary": "Add a fail-closed S2PLT02 terminal delivery proof artifact validator and CLI while keeping S2PLT02 blocked because the live two-day/eight-email/scheduler proof artifact is missing.",
+  "artifact_ref": "FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json",
+  "artifact_present": false,
+  "terminal_delivery_proof_ready": false,
+  "s2plt02_accepted_by_artifact": false,
+  "validation_errors": [
+    "s2plt02_terminal_delivery_proof_artifact_missing"
+  ],
+  "blocking_reasons": [
+    "s2plt02_terminal_delivery_proof_artifact_missing",
+    "two_consecutive_real_days_not_proven",
+    "eight_real_emails_not_proven",
+    "real_scheduler_not_proven"
+  ],
+  "state_hash": "3fbde96111dd78d3ffe4474e012fa5d86de76a24e6fa7640d0310c178003e1db",
+  "s2plt02_terminal_readiness_state_hash": "faedeea7dcc41d0122044cbdd07c1901f01fa6a7ca39f0d580f9f6844fc3f9b2",
+  "s2plt02_terminal_readiness_precheck_hash": "94bd3841adf70c44e10963ad94da2dd3b57b68152882639ca2637997bdbf1ca1",
+  "observed_natural_days_current_readiness": 1,
+  "required_natural_days": 2,
+  "observed_email_count_current_readiness": 4,
+  "required_email_count": 8,
+  "required_mail_products": [
+    "M1",
+    "M2",
+    "M3",
+    "M4"
+  ],
+  "required_terminal_gates": [
+    "s2plt01_accepted",
+    "two_consecutive_real_days",
+    "eight_real_emails_sent",
+    "no_duplicate_emails",
+    "m4_watermark_correct",
+    "real_scheduler_proven",
+    "real_smtp_proven",
+    "p0_zero",
+    "p1_zero"
+  ],
+  "required_terminal_evidence_roles": [
+    "s2plt01_terminal_acceptance",
+    "day_1_delivery",
+    "day_2_delivery",
+    "real_scheduler_proof",
+    "p0_p1_zero_proof"
+  ],
+  "terminal_gates_current_missing_artifact_state": {
+    "s2plt01_accepted": true,
+    "two_consecutive_real_days": false,
+    "eight_real_emails_sent": false,
+    "no_duplicate_emails": true,
+    "m4_watermark_correct": true,
+    "real_scheduler_proven": false,
+    "real_smtp_proven": true,
+    "p0_zero": true,
+    "p1_zero": true
+  },
+  "files_changed": [
+    "arxiv-daily-push/CHANGELOG.md",
+    "arxiv-daily-push/docs/governance/DELIVERY_PLAN.md",
+    "arxiv-daily-push/docs/governance/DEVELOPMENT_LEDGER.md",
+    "arxiv-daily-push/docs/governance/MODEL_SPEC.md",
+    "arxiv-daily-push/docs/governance/TRACEABILITY_MATRIX.csv",
+    "arxiv-daily-push/docs/governance/VERSION_MATRIX.yaml",
+    "arxiv-daily-push/docs/governance/delivery_tasks.yaml",
+    "arxiv-daily-push/docs/governance/development_events.jsonl",
+    "arxiv-daily-push/docs/governance/events.jsonl",
+    "arxiv-daily-push/docs/governance/formula_registry.yaml",
+    "arxiv-daily-push/docs/governance/model_registry.yaml",
+    "arxiv-daily-push/docs/governance/parameter_registry.csv",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT02_TERMINAL_DELIVERY_PROOF_VALIDATOR.md",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py",
+    "arxiv-daily-push/src/arxiv_daily_push/cli.py",
+    "arxiv-daily-push/tests/test_stage2_final_gate.py",
+    "arxiv-daily-push/tests/test_cli.py",
+    "arxiv-daily-push/tests/test_governance_current_state.py",
+    "arxiv-daily-push/tests/test_user_center_candidate_pool.py",
+    "arxiv-daily-push/功能清单.md",
+    "arxiv-daily-push/开发记录.md",
+    "arxiv-daily-push/模型参数文件.md",
+    "arxiv-daily-push/用户中心/功能任务测试证据追踪链.md",
+    "governance/run_manifests/ADP-S2PMT07-S2PLT02-TERMINAL-DELIVERY-PROOF-VALIDATOR-20260629.json"
+  ],
+  "evidence_refs": [
+    "governance/run_manifests/ADP-S2PMT07-S2PLT02-TERMINAL-DELIVERY-PROOF-VALIDATOR-20260629.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT02_TERMINAL_DELIVERY_PROOF_VALIDATOR.md",
+    "FINAL_ACCEPTANCE_BUNDLE/s2plt01_terminal_acceptance.json",
+    "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
+    "governance/run_manifests/ADP-S2PLT02-PARTIAL-REAL-DELIVERY-EVIDENCE-20260628.json",
+    "governance/run_manifests/ADP-S2PLT02-M4-WATERMARK-PROOF-RECORD-20260628.json",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py",
+    "arxiv-daily-push/src/arxiv_daily_push/cli.py",
+    "arxiv-daily-push/tests/test_stage2_final_gate.py",
+    "arxiv-daily-push/tests/test_cli.py"
+  ],
+  "cli_command": "python3 -B -m arxiv_daily_push.cli validate-s2plt02-terminal-delivery-proof --json",
+  "cli_exit_code": 2,
+  "test_results": [
+    "TDD red failed as expected because S2PLT02 terminal delivery proof role-mapped evidence contract was missing",
+    "focused role-mapped evidence test passed",
+    "targeted stage2_final_gate and CLI tests passed with 113 tests",
+    "CLI returned blocked / exit 2 because FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json is missing"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_terminal_proof_red3 PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q -k role_mapped_evidence_refs",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_terminal_proof_green3 PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q -k role_mapped_evidence_refs",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_terminal_proof_target_pre_gov PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_cli.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt02_terminal_proof_cli_current3 PYTHONPATH=arxiv-daily-push/src python3 -B -m arxiv_daily_push.cli validate-s2plt02-terminal-delivery-proof --json"
+  ],
+  "model_ids_changed": [
+    "MOD-ADP-104"
+  ],
+  "formula_ids_changed": [
+    "FORM-ADP-106"
+  ],
+  "parameter_ids_changed": [
+    "PARAM-ADP-1073",
+    "PARAM-ADP-1074",
+    "PARAM-ADP-1075",
+    "PARAM-ADP-1076",
+    "PARAM-ADP-1077",
+    "PARAM-ADP-1078",
+    "PARAM-ADP-1079",
+    "PARAM-ADP-1080"
+  ],
+  "production_acceptance_claimed": false,
+  "integrated_production_accepted": false,
+  "stage2_integrated_production_accepted": false,
+  "daily_operation_enabled": false,
+  "real_smtp_sent": false,
+  "real_smtp_send_enabled": false,
+  "scheduler_enabled": false,
+  "scheduler_install_enabled": false,
+  "release_uploaded": false,
+  "release_packaging_enabled": false,
+  "production_restore_enabled": false,
+  "production_restore_executed": false,
+  "public_schema_changed": false,
+  "db_migration_executed": false,
+  "production_queue_mutated": false,
+  "source_adapter_changed": false,
+  "ranking_algorithm_changed": false,
+  "current_pointer_changed": false,
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false,
+  "next_task": "SUPPLY_REAL_S2PLT02_TWO_DAY_EIGHT_EMAIL_SCHEDULER_TERMINAL_PROOF_BEFORE_S2PLT03_OR_S2PLT04_REPORT"
+}

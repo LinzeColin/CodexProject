@@ -256,6 +256,26 @@ class CliTests(unittest.TestCase):
         self.assertTrue(payload["terminal_dependency_state"]["P0_ZERO"])
         self.assertTrue(payload["terminal_dependency_state"]["P1_ZERO"])
 
+    def test_validate_s2plt02_terminal_delivery_proof_json_blocks_missing_artifact(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            buffer = io.StringIO()
+            with redirect_stdout(buffer):
+                result = main(["validate-s2plt02-terminal-delivery-proof", "--repo-root", tmp_dir, "--json"])
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(result, 2)
+        self.assertEqual(payload["status"], "blocked")
+        self.assertFalse(payload["artifact_present"])
+        self.assertFalse(payload["s2plt02_accepted_by_artifact"])
+        self.assertFalse(payload["terminal_delivery_proof_ready"])
+        self.assertIn("s2plt02_terminal_delivery_proof_artifact_missing", payload["validation_errors"])
+        self.assertIn("two_consecutive_real_days_not_proven", payload["blocking_reasons"])
+        self.assertIn("eight_real_emails_not_proven", payload["blocking_reasons"])
+        self.assertIn("real_scheduler_not_proven", payload["blocking_reasons"])
+        self.assertFalse(payload["production_acceptance_claimed"])
+        self.assertFalse(payload["integrated_production_accepted"])
+        self.assertFalse(payload["daily_operation_enabled"])
+
     def test_audit_s2plt03_resilience_readiness_json_command_consumes_zero_proof_but_blocks(self):
         buffer = io.StringIO()
         with redirect_stdout(buffer):

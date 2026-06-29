@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 from collections.abc import Mapping
+from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -814,6 +815,49 @@ S2PLT02_M4_WATERMARK_PROOF_GENERATED_AT = "2026-06-28T01:26:41Z"
 S2PLT02_M4_WATERMARK_PROOF_CYCLE_ID = "2026-06-28"
 S2PLT02_M4_WATERMARK_REQUIRED_TERMINAL_PRODUCTS = ("M1", "M2", "M3")
 S2PLT02_TERMINAL_READINESS_AUDIT_SCOPE = "s2plt02_terminal_readiness_audit_only_no_acceptance_claim"
+S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH = "FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json"
+S2PLT02_TERMINAL_DELIVERY_PROOF_MODEL_ID = "adp-s2plt02-terminal-delivery-proof-v1"
+S2PLT02_TERMINAL_DELIVERY_PROOF_SCOPE = "s2plt02_terminal_delivery_proof_artifact_validation_only_no_production_acceptance"
+S2PLT02_TERMINAL_DELIVERY_PROOF_DECISION = "S2PLT02_TERMINAL_DELIVERY_PROOF_READY_NO_PRODUCTION_ACCEPTANCE"
+S2PLT02_TERMINAL_DELIVERY_PROOF_REQUIRED_GATES = (
+    "s2plt01_accepted",
+    "two_consecutive_real_days",
+    "eight_real_emails_sent",
+    "no_duplicate_emails",
+    "m4_watermark_correct",
+    "real_scheduler_proven",
+    "real_smtp_proven",
+    "p0_zero",
+    "p1_zero",
+)
+S2PLT02_TERMINAL_DELIVERY_PROOF_REQUIRED_EVIDENCE_REFS = (
+    "FINAL_ACCEPTANCE_BUNDLE/s2plt01_terminal_acceptance.json",
+    "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
+)
+S2PLT02_TERMINAL_DELIVERY_PROOF_REQUIRED_EVIDENCE_ROLES = (
+    "s2plt01_terminal_acceptance",
+    "day_1_delivery",
+    "day_2_delivery",
+    "real_scheduler_proof",
+    "p0_p1_zero_proof",
+)
+S2PLT02_TERMINAL_DELIVERY_PROOF_NO_PRODUCTION_FLAGS = (
+    "production_acceptance_claimed",
+    "integrated_production_accepted",
+    "stage2_integrated_production_accepted",
+    "daily_operation_enabled",
+    "release_uploaded",
+    "production_restore_enabled",
+    "production_restore_executed",
+    "public_schema_changed",
+    "db_migration_executed",
+    "production_queue_mutated",
+    "source_adapter_changed",
+    "ranking_algorithm_changed",
+    "current_pointer_changed",
+    "v7_1_baseline_changed",
+    "v7_2_contract_files_changed",
+)
 S2PLT02_M4_WATERMARK_FORBIDDEN_SOURCE_FLAGS = (
     "integrated_production_accepted",
     "stage2_integrated_production_accepted",
@@ -1639,6 +1683,239 @@ def build_s2plt02_live_2d_precheck_report(
     }
     report["report_hash"] = _stable_hash({key: value for key, value in report.items() if key != "report_hash"})
     return report
+
+
+def build_s2plt02_terminal_delivery_proof_hash(payload: Mapping[str, Any]) -> str:
+    """Return the canonical S2PLT02 terminal delivery proof hash."""
+
+    return _stable_hash({key: value for key, value in payload.items() if key != "acceptance_hash"})
+
+
+def _s2plt02_terminal_delivery_proof_consecutive_dates(service_dates: list[str]) -> bool:
+    if len(service_dates) != S2PLT02_REQUIRED_NATURAL_DAYS:
+        return False
+    try:
+        first, second = [date.fromisoformat(value) for value in service_dates]
+    except ValueError:
+        return False
+    return (second - first).days == 1
+
+
+def validate_s2plt02_terminal_delivery_proof_artifact(payload: Mapping[str, Any] | None) -> list[str]:
+    """Validate a future S2PLT02 terminal delivery proof artifact without accepting production."""
+
+    if payload is None:
+        return ["s2plt02_terminal_delivery_proof_artifact_missing"]
+    errors: list[str] = []
+    if payload.get("model_id") != S2PLT02_TERMINAL_DELIVERY_PROOF_MODEL_ID:
+        errors.append("model_id is invalid")
+    if payload.get("schema_version") != S2PLT02_SCHEMA_VERSION:
+        errors.append("schema_version must be 1")
+    if payload.get("task_id") != S2PLT02_TASK_ID:
+        errors.append("task_id must be S2PLT02")
+    if payload.get("acceptance_id") != S2PLT02_ACCEPTANCE_ID:
+        errors.append("acceptance_id must be ACC-S2PLT02-2D")
+    if payload.get("terminal_delivery_decision") != S2PLT02_TERMINAL_DELIVERY_PROOF_DECISION:
+        errors.append("terminal_delivery_decision is invalid")
+    if payload.get("s2plt02_accepted") is not True:
+        errors.append("s2plt02_accepted must be true")
+
+    service_dates = [str(item) for item in payload.get("service_dates", [])]
+    if not _s2plt02_terminal_delivery_proof_consecutive_dates(service_dates):
+        errors.append("service_dates must contain exactly two consecutive ISO dates")
+    if payload.get("observed_natural_days") != S2PLT02_REQUIRED_NATURAL_DAYS:
+        errors.append("observed_natural_days must be 2")
+    if payload.get("observed_email_count") != S2PLT02_REQUIRED_EMAIL_COUNT:
+        errors.append("observed_email_count must be 8")
+
+    products_by_date = _mapping(payload.get("mail_products_by_service_date"))
+    for service_date in service_dates:
+        if tuple(products_by_date.get(service_date, [])) != S2PLT02_REQUIRED_MAIL_PRODUCTS:
+            errors.append(f"mail_products_by_service_date.{service_date} must be M1-M4")
+
+    terminal_gates = _mapping(payload.get("terminal_gates"))
+    for gate in S2PLT02_TERMINAL_DELIVERY_PROOF_REQUIRED_GATES:
+        if terminal_gates.get(gate) is not True:
+            errors.append(f"terminal_gates.{gate} must be true")
+
+    refs = payload.get("terminal_evidence_refs", [])
+    if not isinstance(refs, list) or any(not isinstance(ref, str) or not ref for ref in refs):
+        errors.append("terminal_evidence_refs must be a list of non-empty strings")
+    else:
+        for required_ref in S2PLT02_TERMINAL_DELIVERY_PROOF_REQUIRED_EVIDENCE_REFS:
+            if required_ref not in refs:
+                errors.append(f"terminal_evidence_refs must include {required_ref}")
+        if len(refs) < 5:
+            errors.append("terminal_evidence_refs must include S2PLT01, two delivery days, scheduler proof, and zero-proof refs")
+
+    refs_by_role = _mapping(payload.get("terminal_evidence_refs_by_role"))
+    for role in S2PLT02_TERMINAL_DELIVERY_PROOF_REQUIRED_EVIDENCE_ROLES:
+        role_ref = refs_by_role.get(role)
+        if not isinstance(role_ref, str) or not role_ref:
+            errors.append(f"terminal_evidence_refs_by_role.{role} is required")
+        elif isinstance(refs, list) and role_ref not in refs:
+            errors.append(f"terminal_evidence_refs_by_role.{role} must also appear in terminal_evidence_refs")
+    if refs_by_role.get("s2plt01_terminal_acceptance") != "FINAL_ACCEPTANCE_BUNDLE/s2plt01_terminal_acceptance.json":
+        errors.append("terminal_evidence_refs_by_role.s2plt01_terminal_acceptance must point to S2PLT01 terminal acceptance")
+    if refs_by_role.get("p0_p1_zero_proof") != "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json":
+        errors.append("terminal_evidence_refs_by_role.p0_p1_zero_proof must point to P0/P1 zero proof")
+
+    for flag in S2PLT02_TERMINAL_DELIVERY_PROOF_NO_PRODUCTION_FLAGS:
+        if payload.get(flag) is not False:
+            errors.append(f"{flag} must be false")
+
+    if payload.get("acceptance_hash") != build_s2plt02_terminal_delivery_proof_hash(payload):
+        errors.append("acceptance_hash does not match payload content")
+    return errors
+
+
+def build_s2plt02_terminal_delivery_proof_artifact_validation_state(
+    *,
+    repo_root: str | Path = ".",
+    artifact: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Build artifact-level validation for future S2PLT02 terminal delivery proof."""
+
+    root = Path(repo_root)
+    artifact_path = root / S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH
+    artifact_present = artifact is not None or artifact_path.exists()
+    loaded_artifact: Mapping[str, Any] | None = artifact
+    load_error = ""
+    if loaded_artifact is None and artifact_path.exists():
+        try:
+            loaded = json.loads(artifact_path.read_text(encoding="utf-8"))
+            loaded_artifact = loaded if isinstance(loaded, Mapping) else None
+            if loaded_artifact is None:
+                load_error = "s2plt02_terminal_delivery_proof_artifact_must_be_object"
+        except json.JSONDecodeError:
+            load_error = "s2plt02_terminal_delivery_proof_artifact_invalid_json"
+
+    validation_errors = validate_s2plt02_terminal_delivery_proof_artifact(loaded_artifact)
+    if load_error and load_error not in validation_errors:
+        validation_errors.append(load_error)
+    readiness_precheck = build_s2plt02_live_2d_precheck_report(
+        generated_at="2026-06-29T10:35:11+10:00",
+        repo_root=root,
+    )
+    terminal_gates = (
+        _mapping(loaded_artifact.get("terminal_gates"))
+        if loaded_artifact is not None
+        else _mapping(readiness_precheck.get("gates"))
+    )
+    missing_gate_reasons = {
+        "s2plt01_accepted": "s2plt01_not_accepted",
+        "two_consecutive_real_days": "two_consecutive_real_days_not_proven",
+        "eight_real_emails_sent": "eight_real_emails_not_proven",
+        "no_duplicate_emails": "duplicate_emails_found",
+        "m4_watermark_correct": "m4_watermark_not_proven",
+        "real_scheduler_proven": "real_scheduler_not_proven",
+        "real_smtp_proven": "real_smtp_not_proven",
+        "p0_zero": "inherited_v7_1_p0_findings_open",
+        "p1_zero": "inherited_v7_1_p1_findings_open",
+    }
+    blocking_reasons: list[str] = []
+    if not artifact_present:
+        blocking_reasons.append("s2plt02_terminal_delivery_proof_artifact_missing")
+        for reason in readiness_precheck.get("blocking_reasons", []):
+            if isinstance(reason, str) and reason not in blocking_reasons:
+                blocking_reasons.append(reason)
+    else:
+        for gate, reason in missing_gate_reasons.items():
+            if terminal_gates.get(gate) is not True and reason not in blocking_reasons:
+                blocking_reasons.append(reason)
+
+    expected_acceptance_hash = (
+        build_s2plt02_terminal_delivery_proof_hash(loaded_artifact) if loaded_artifact is not None else ""
+    )
+    terminal_delivery_proof_ready = artifact_present and not validation_errors and not blocking_reasons
+    state = {
+        "status": "pass" if terminal_delivery_proof_ready else "blocked",
+        "scope": S2PLT02_TERMINAL_DELIVERY_PROOF_SCOPE,
+        "artifact_ref": S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH,
+        "artifact_present": artifact_present,
+        "model_id": loaded_artifact.get("model_id") if loaded_artifact is not None else S2PLT02_TERMINAL_DELIVERY_PROOF_MODEL_ID,
+        "schema_version": loaded_artifact.get("schema_version") if loaded_artifact is not None else S2PLT02_SCHEMA_VERSION,
+        "task_id": S2PLT02_TASK_ID,
+        "acceptance_id": S2PLT02_ACCEPTANCE_ID,
+        "terminal_delivery_decision": (
+            loaded_artifact.get("terminal_delivery_decision") if loaded_artifact is not None else None
+        ),
+        "terminal_delivery_proof_ready": terminal_delivery_proof_ready,
+        "s2plt02_accepted_by_artifact": terminal_delivery_proof_ready
+        and loaded_artifact is not None
+        and loaded_artifact.get("s2plt02_accepted") is True,
+        "required_natural_days": S2PLT02_REQUIRED_NATURAL_DAYS,
+        "observed_natural_days": loaded_artifact.get("observed_natural_days") if loaded_artifact is not None else 0,
+        "required_email_count": S2PLT02_REQUIRED_EMAIL_COUNT,
+        "observed_email_count": loaded_artifact.get("observed_email_count") if loaded_artifact is not None else 0,
+        "required_mail_products": list(S2PLT02_REQUIRED_MAIL_PRODUCTS),
+        "service_dates": list(loaded_artifact.get("service_dates", [])) if loaded_artifact is not None else [],
+        "terminal_gates": {gate: terminal_gates.get(gate) is True for gate in S2PLT02_TERMINAL_DELIVERY_PROOF_REQUIRED_GATES},
+        "terminal_evidence_refs": list(loaded_artifact.get("terminal_evidence_refs", [])) if loaded_artifact is not None else [],
+        "terminal_evidence_refs_by_role": dict(_mapping(loaded_artifact.get("terminal_evidence_refs_by_role")))
+        if loaded_artifact is not None
+        else {},
+        "validation_errors": validation_errors,
+        "blocking_reasons": blocking_reasons,
+        "acceptance_hash": loaded_artifact.get("acceptance_hash") if loaded_artifact is not None else "",
+        "expected_acceptance_hash": expected_acceptance_hash,
+        "production_acceptance_claimed": False,
+        "integrated_production_accepted": False,
+        "stage2_integrated_production_accepted": False,
+        "daily_operation_enabled": False,
+        "real_smtp_send_enabled": False,
+        "scheduler_install_enabled": False,
+        "release_packaging_enabled": False,
+        "production_restore_enabled": False,
+        "current_pointer_changed": False,
+        "v7_1_baseline_changed": False,
+        "v7_2_contract_files_changed": False,
+        "state_hash": "",
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
+def validate_s2plt02_terminal_delivery_proof_artifact_validation_state(state: Mapping[str, Any]) -> list[str]:
+    """Validate S2PLT02 terminal delivery proof artifact validation state."""
+
+    errors: list[str] = []
+    if state.get("scope") != S2PLT02_TERMINAL_DELIVERY_PROOF_SCOPE:
+        errors.append("S2PLT02 terminal delivery proof validation scope is invalid")
+    if state.get("artifact_ref") != S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH:
+        errors.append("S2PLT02 terminal delivery proof artifact_ref is invalid")
+    if state.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PLT02 terminal delivery proof validation status is invalid")
+    if state.get("required_natural_days") != S2PLT02_REQUIRED_NATURAL_DAYS:
+        errors.append("S2PLT02 terminal delivery proof required_natural_days must be 2")
+    if state.get("required_email_count") != S2PLT02_REQUIRED_EMAIL_COUNT:
+        errors.append("S2PLT02 terminal delivery proof required_email_count must be 8")
+    if tuple(state.get("required_mail_products", [])) != S2PLT02_REQUIRED_MAIL_PRODUCTS:
+        errors.append("S2PLT02 terminal delivery proof required_mail_products must be M1-M4")
+    ready = state.get("terminal_delivery_proof_ready") is True
+    if state.get("status") == "pass" and not ready:
+        errors.append("pass status requires terminal_delivery_proof_ready")
+    if ready and state.get("s2plt02_accepted_by_artifact") is not True:
+        errors.append("terminal_delivery_proof_ready requires s2plt02_accepted_by_artifact")
+    for flag in (
+        "production_acceptance_claimed",
+        "integrated_production_accepted",
+        "stage2_integrated_production_accepted",
+        "daily_operation_enabled",
+        "real_smtp_send_enabled",
+        "scheduler_install_enabled",
+        "release_packaging_enabled",
+        "production_restore_enabled",
+        "current_pointer_changed",
+        "v7_1_baseline_changed",
+        "v7_2_contract_files_changed",
+    ):
+        if state.get(flag) is not False:
+            errors.append(f"{flag} must be false")
+    expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    if state.get("state_hash") != expected_hash:
+        errors.append("S2PLT02 terminal delivery proof validation state_hash does not match state content")
+    return errors
 
 
 def build_s2plt02_terminal_readiness_audit_state(
