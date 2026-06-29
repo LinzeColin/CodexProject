@@ -105,6 +105,37 @@ S2PLT01_P0_P1_ZERO_PROOF_NO_PRODUCTION_FLAGS = (
     "v7_1_baseline_changed",
     "v7_2_contract_files_changed",
 )
+S2PLT01_TERMINAL_ACCEPTANCE_MODEL_ID = "adp-s2plt01-terminal-acceptance-v1"
+S2PLT01_TERMINAL_ACCEPTANCE_ARTIFACT_PATH = "FINAL_ACCEPTANCE_BUNDLE/s2plt01_terminal_acceptance.json"
+S2PLT01_TERMINAL_ACCEPTANCE_SCHEMA_VERSION = "adp.s2plt01_terminal_acceptance.v1"
+S2PLT01_TERMINAL_ACCEPTANCE_DECISION = "S2PLT01_TERMINAL_ACCEPTED_NO_PRODUCTION_ACCEPTANCE"
+S2PLT01_TERMINAL_ACCEPTANCE_REQUIRED_EVIDENCE_REFS = (
+    S2PLT01_INDEPENDENT_REVIEW_MANIFEST_PATH,
+    S2PLT01_REPLAY_PAYLOAD_EXECUTION_MANIFEST_PATH,
+    S2PLT01_S2PLT04_REVIEW_SYNC_MANIFEST_PATH,
+    S2PLT01_P0_P1_ZERO_PROOF_ARTIFACT_PATH,
+)
+S2PLT01_TERMINAL_ACCEPTANCE_NO_PRODUCTION_FLAGS = (
+    "production_acceptance_claimed",
+    "integrated_production_accepted",
+    "daily_operation_enabled",
+    "real_smtp_sent",
+    "real_smtp_send_enabled",
+    "scheduler_enabled",
+    "scheduler_install_enabled",
+    "release_uploaded",
+    "release_packaging_enabled",
+    "production_restore_enabled",
+    "production_restore_executed",
+    "public_schema_changed",
+    "db_migration_executed",
+    "production_queue_mutated",
+    "source_adapter_changed",
+    "ranking_algorithm_changed",
+    "current_pointer_changed",
+    "v7_1_baseline_changed",
+    "v7_2_contract_files_changed",
+)
 
 
 def build_s2plt01_dependency_state() -> dict[str, Any]:
@@ -633,10 +664,7 @@ def validate_s2plt01_independent_replay_review_report(report: Mapping[str, Any])
     return errors
 
 
-def build_s2plt01_terminal_acceptance_audit_state(*, repo_root: str | Path = ".") -> dict[str, Any]:
-    """Audit current S2PLT01 terminal acceptance without claiming acceptance."""
-
-    root = Path(repo_root)
+def _build_s2plt01_terminal_acceptance_prerequisite_snapshot(root: Path) -> dict[str, Any]:
     review_manifest = _load_json_mapping(root / S2PLT01_INDEPENDENT_REVIEW_MANIFEST_PATH)
     s2plt04_sync = _load_json_mapping(root / S2PLT01_S2PLT04_REVIEW_SYNC_MANIFEST_PATH)
     replay_payload_execution_validation = _build_s2plt01_replay_payload_execution_package_validation_state(root)
@@ -662,15 +690,150 @@ def build_s2plt01_terminal_acceptance_audit_state(*, repo_root: str | Path = "."
         "review_package_passed": review_package_passed,
         "replay_payload_execution_package_passed": replay_payload_execution_validation["status"] == "pass",
         "current_entry_precheck_zero_proof_ready": current_entry_precheck_readiness["status"] == "pass",
-        "s2plt01_accepted": review_manifest.get("s2plt01_accepted") is True,
         "inherited_p0_zero": p0_zero_proven,
         "inherited_p1_zero": p1_zero_proven,
+    }
+    return {
+        "terminal_gates": terminal_gates,
+        "review_manifest_ref": S2PLT01_INDEPENDENT_REVIEW_MANIFEST_PATH,
+        "s2plt04_review_sync_ref": S2PLT01_S2PLT04_REVIEW_SYNC_MANIFEST_PATH,
+        "replay_payload_execution_package_validation": replay_payload_execution_validation,
+        "p0_p1_zero_proof_artifact_validation": zero_proof_validation,
+        "current_entry_precheck_zero_proof_readiness": current_entry_precheck_readiness,
+    }
+
+
+def build_s2plt01_terminal_acceptance_artifact_validation_state(
+    *, repo_root: str | Path = "."
+) -> dict[str, Any]:
+    """Validate the future live S2PLT01 terminal acceptance artifact."""
+
+    root = Path(repo_root)
+    artifact = _load_json_mapping(root / S2PLT01_TERMINAL_ACCEPTANCE_ARTIFACT_PATH)
+    prerequisites = _build_s2plt01_terminal_acceptance_prerequisite_snapshot(root)
+    validation_errors: list[str] = []
+
+    if not artifact:
+        validation_errors.append("s2plt01_terminal_acceptance_artifact_missing")
+    else:
+        if artifact.get("model_id") != S2PLT01_TERMINAL_ACCEPTANCE_MODEL_ID:
+            validation_errors.append("model_id_invalid")
+        if artifact.get("schema_version") != S2PLT01_TERMINAL_ACCEPTANCE_SCHEMA_VERSION:
+            validation_errors.append("schema_version_invalid")
+        if artifact.get("task_id") != S2PLT01_TASK_ID:
+            validation_errors.append("task_id_invalid")
+        if artifact.get("acceptance_id") != S2PLT01_ACCEPTANCE_ID:
+            validation_errors.append("acceptance_id_invalid")
+        if artifact.get("terminal_acceptance_decision") != S2PLT01_TERMINAL_ACCEPTANCE_DECISION:
+            validation_errors.append("terminal_acceptance_decision_invalid")
+        if artifact.get("s2plt01_accepted") is not True:
+            validation_errors.append("s2plt01_accepted_must_be_true")
+        if not str(artifact.get("generated_at") or "").strip():
+            validation_errors.append("generated_at_required")
+        if not str(artifact.get("reviewer_id") or "").strip():
+            validation_errors.append("reviewer_id_required")
+        if not str(artifact.get("reviewer_role") or "").strip():
+            validation_errors.append("reviewer_role_required")
+        if artifact.get("reviewer_involved_in_s2plt01_implementation") is not False:
+            validation_errors.append("reviewer_independence_not_proven")
+
+        terminal_gates = _mapping(artifact.get("terminal_gates"))
+        for gate_name, gate_value in prerequisites["terminal_gates"].items():
+            if gate_value is not True:
+                validation_errors.append(f"current_prerequisite_{gate_name}_not_true")
+            if terminal_gates.get(gate_name) is not True:
+                validation_errors.append(f"terminal_gates.{gate_name}_must_be_true")
+
+        evidence_refs = artifact.get("terminal_evidence_refs")
+        if not isinstance(evidence_refs, list) or not evidence_refs:
+            validation_errors.append("terminal_evidence_refs_required")
+            evidence_refs = []
+        for required_ref in S2PLT01_TERMINAL_ACCEPTANCE_REQUIRED_EVIDENCE_REFS:
+            if required_ref not in evidence_refs:
+                validation_errors.append(f"terminal_evidence_refs_missing:{required_ref}")
+
+        no_production = _mapping(artifact.get("no_production_side_effects"))
+        for flag in S2PLT01_TERMINAL_ACCEPTANCE_NO_PRODUCTION_FLAGS:
+            if artifact.get(flag) is not False:
+                validation_errors.append(f"{flag}_must_be_false")
+            if no_production.get(flag) is not False:
+                validation_errors.append(f"no_production_side_effects.{flag}_must_be_false")
+
+        expected_hash = _stable_hash({key: value for key, value in artifact.items() if key != "acceptance_hash"})
+        if artifact.get("acceptance_hash") != expected_hash:
+            validation_errors.append("acceptance_hash_mismatch")
+
+    state = {
+        "status": "pass" if artifact and not validation_errors else "blocked",
+        "scope": "s2plt01_terminal_acceptance_artifact_validation_only_no_production_acceptance",
+        "artifact_ref": S2PLT01_TERMINAL_ACCEPTANCE_ARTIFACT_PATH,
+        "artifact_present": bool(artifact),
+        "model_id": S2PLT01_TERMINAL_ACCEPTANCE_MODEL_ID,
+        "schema_version": S2PLT01_TERMINAL_ACCEPTANCE_SCHEMA_VERSION,
+        "task_id": S2PLT01_TASK_ID,
+        "acceptance_id": S2PLT01_ACCEPTANCE_ID,
+        "terminal_acceptance_decision": artifact.get("terminal_acceptance_decision") if artifact else None,
+        "s2plt01_accepted_by_artifact": bool(artifact) and artifact.get("s2plt01_accepted") is True and not validation_errors,
+        "terminal_gates": dict(prerequisites["terminal_gates"]),
+        "required_terminal_evidence_refs": list(S2PLT01_TERMINAL_ACCEPTANCE_REQUIRED_EVIDENCE_REFS),
+        "validation_errors": sorted(set(validation_errors)),
+        "acceptance_hash": artifact.get("acceptance_hash") if artifact else "",
+        "production_acceptance_claimed": False,
+        "integrated_production_accepted": False,
+        "daily_operation_enabled": False,
+        "real_smtp_sent": False,
+        "real_smtp_send_enabled": False,
+        "scheduler_enabled": False,
+        "scheduler_install_enabled": False,
+        "release_uploaded": False,
+        "release_packaging_enabled": False,
+        "production_restore_enabled": False,
+        "production_restore_executed": False,
+        "public_schema_changed": False,
+        "db_migration_executed": False,
+        "production_queue_mutated": False,
+        "source_adapter_changed": False,
+        "ranking_algorithm_changed": False,
+        "current_pointer_changed": False,
+        "v7_1_baseline_changed": False,
+        "v7_2_contract_files_changed": False,
+        "state_hash": "",
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
+def build_s2plt01_terminal_acceptance_audit_state(*, repo_root: str | Path = ".") -> dict[str, Any]:
+    """Audit current S2PLT01 terminal acceptance without claiming acceptance."""
+
+    root = Path(repo_root)
+    review_manifest = _load_json_mapping(root / S2PLT01_INDEPENDENT_REVIEW_MANIFEST_PATH)
+    prerequisites = _build_s2plt01_terminal_acceptance_prerequisite_snapshot(root)
+    replay_payload_execution_validation = prerequisites["replay_payload_execution_package_validation"]
+    zero_proof_validation = prerequisites["p0_p1_zero_proof_artifact_validation"]
+    current_entry_precheck_readiness = prerequisites["current_entry_precheck_zero_proof_readiness"]
+    terminal_acceptance_artifact_validation = build_s2plt01_terminal_acceptance_artifact_validation_state(repo_root=root)
+    review_receipt_present = prerequisites["terminal_gates"]["review_receipt_present"]
+    review_package_passed = prerequisites["terminal_gates"]["review_package_passed"]
+    s2plt01_accepted_by_artifact = terminal_acceptance_artifact_validation["s2plt01_accepted_by_artifact"] is True
+    terminal_gates = {
+        "review_receipt_present": review_receipt_present,
+        "review_package_passed": review_package_passed,
+        "replay_payload_execution_package_passed": replay_payload_execution_validation["status"] == "pass",
+        "current_entry_precheck_zero_proof_ready": current_entry_precheck_readiness["status"] == "pass",
+        "s2plt01_accepted": s2plt01_accepted_by_artifact,
+        "inherited_p0_zero": prerequisites["terminal_gates"]["inherited_p0_zero"],
+        "inherited_p1_zero": prerequisites["terminal_gates"]["inherited_p1_zero"],
     }
     blocking_reasons: list[str] = []
     if not review_receipt_present:
         blocking_reasons.append("review_receipt_missing")
     if review_package_passed and not terminal_gates["s2plt01_accepted"]:
         blocking_reasons.append("review_receipt_is_nonterminal")
+    if not terminal_acceptance_artifact_validation["artifact_present"]:
+        blocking_reasons.append("s2plt01_terminal_acceptance_artifact_missing")
+    elif terminal_acceptance_artifact_validation["status"] != "pass":
+        blocking_reasons.append("s2plt01_terminal_acceptance_artifact_invalid")
     if not terminal_gates["replay_payload_execution_package_passed"]:
         blocking_reasons.append("replay_payload_execution_package_not_passed")
     if not terminal_gates["current_entry_precheck_zero_proof_ready"]:
@@ -694,13 +857,15 @@ def build_s2plt01_terminal_acceptance_audit_state(*, repo_root: str | Path = "."
         "review_manifest_ref": S2PLT01_INDEPENDENT_REVIEW_MANIFEST_PATH,
         "replay_payload_execution_manifest_ref": S2PLT01_REPLAY_PAYLOAD_EXECUTION_MANIFEST_PATH,
         "s2plt04_review_sync_ref": S2PLT01_S2PLT04_REVIEW_SYNC_MANIFEST_PATH,
+        "terminal_acceptance_artifact_ref": S2PLT01_TERMINAL_ACCEPTANCE_ARTIFACT_PATH,
+        "terminal_acceptance_artifact_validation": terminal_acceptance_artifact_validation,
         "replay_payload_execution_package_validation": replay_payload_execution_validation,
         "p0_p1_zero_proof_artifact_validation": zero_proof_validation,
         "current_entry_precheck_zero_proof_readiness": current_entry_precheck_readiness,
         "terminal_gates": terminal_gates,
         "blocking_reasons": sorted(set(blocking_reasons)),
         "full_replay_executed": review_manifest.get("full_replay_executed") is True,
-        "s2plt01_accepted": review_manifest.get("s2plt01_accepted") is True,
+        "s2plt01_accepted": s2plt01_accepted_by_artifact,
         "s2plt04_completed": review_manifest.get("s2plt04_completed") is True,
         "s2pmt07_final_signoff_claimed": review_manifest.get("s2pmt07_final_signoff_claimed") is True,
         "production_acceptance_claimed": False,

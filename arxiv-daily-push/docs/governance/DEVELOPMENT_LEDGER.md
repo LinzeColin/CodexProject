@@ -10,13 +10,30 @@ The append-only machine record is `development_events.jsonl`.
 
 - Product version: 0.23.1
 - Current phase: S2PL
-- Current gate: S2PMT07_S2PLT04_COMPLETION_EVIDENCE_LATEST_SYNC_BLOCKED_NO_REPORT_NO_PRODUCTION
-- Confirmed iteration count: 232
+- Current gate: S2PMT07_S2PLT01_TERMINAL_ACCEPTANCE_ARTIFACT_VALIDATOR_BLOCKED_MISSING_ARTIFACT_NO_PRODUCTION
+- Confirmed iteration count: 233
 - Reconstructed event count: 0
-- Current task: `S2PMT07-S2PLT04-COMPLETION-EVIDENCE-LATEST-SYNC` refreshes the S2PLT04 completion evidence audit so it consumes the latest nonterminal S2PLT02 terminal-readiness zero-proof sync and S2PLT03 audit-blocker zero-proof sync. The current S2PLT04 audit records `completion_report_ready=false`, `s2plt04_completion_report_written=false`, state hash `717822760035bbebe20c429cd2db4e11501e9ebecc2bbc633a04f72de9914c58`, superseded state hash `cce9241078f6f4e91bcdd4440642e252c5c6082830d8a61ca0dbe23a04f29729`, S2PLT02 terminal-readiness state hash `b318db2e8f90efc9a09bdaea6ee75e6da87d929f844bc9c4a53816dd2b648d0c`, S2PLT03 latest audit report hash `3483d4a8c4248d3a41cfae5db4febbe7c9d42368ae6ae9311d0c5a9819d13466`, `P0_ZERO=true`, `P1_ZERO=true`, `audit_blockers.status=pass`, and remaining blockers `s2plt01_not_accepted`, `s2plt02_live_2d_terminal_proof_missing`, and `s2plt03_resilience_terminal_proof_missing`. This does not accept S2PLT02/S2PLT03/S2PLT04, does not create the real S2PLT04 completion report at `FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json`, does not execute final commands, does not accept production, and does not enable DAILY_OPERATION, scheduler, SMTP, Release, or restore.
+- Current task: `S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-ARTIFACT-VALIDATOR` adds a fail-closed validator and CLI for the future live S2PLT01 terminal acceptance artifact at `FINAL_ACCEPTANCE_BUNDLE/s2plt01_terminal_acceptance.json`. The current validator records `artifact_present=false`, `s2plt01_accepted_by_artifact=false`, validation state hash `fcd71fb7e6c8f9956edd7fc3e33deadeeb4349183daf0f3950f10df6d8d03431`, terminal acceptance audit state hash `6461557654b36bb383b91eb98bc610c1cf497de8563f7f0aa897db08fc26d315`, and blockers `review_receipt_is_nonterminal`, `s2plt01_not_accepted`, and `s2plt01_terminal_acceptance_artifact_missing`. This does not accept S2PLT01/S2PLT02/S2PLT03/S2PLT04, does not create the real S2PLT01 terminal acceptance artifact or S2PLT04 completion report, does not execute final commands, does not accept production, and does not enable DAILY_OPERATION, scheduler, SMTP, Release, or restore.
 - Blockers: No S1P5T03-R delivery blocker remains after GitHub Actions run `28027759062` uploaded artifact `7821452823` and passed 30/30 real historical as-of replay gates. Test10 (`28059194999`) proved the post-merge controlled Gmail SMTP path. `ADP-S1P5T05` prepared local Mac + Codex/local runner operation with state-dir queue/ledger/report/email evidence and launchd package draft. Local daily M1-M4 orchestration is now recorded as readiness evidence, but V7.2 contract baseline migration blockers are zero while real restore, real SMTP production, scheduler installation, S2PLT04 completion, final command execution, next-agent handoff, independent signoff, final bundle manifest, directory-level final bundle artifact validation pass, and final integrated production acceptance remain forbidden until V7.2 production stop gates and all `S2PMT07` final-bundle gates pass. GitHub cloud scheduled production remains disabled and is not the daily production runner; `INTEGRATED_PRODUCTION_ACCEPTED` is not claimed.
 
 
+
+### `ITER-20260629-ADP-S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-ARTIFACT-VALIDATOR`
+
+- Timestamp: `2026-06-29T14:25:47+10:00`
+- Fact level: EXTRACTED from S2PLT01 terminal acceptance artifact validation CLI output, focused S2PLT01 replay-gate regression tests, phase record, run manifest, traceability row, delivery task, and three base files.
+- Base commit: `c2c9369e9bc57277d2fe5d286cd76aa82b4e38fc`
+- Product version: `0.23.1`
+- Status: `adp validate-s2plt01-terminal-acceptance --json` returns blocked / exit 2 with `artifact_present=false`.
+- Task IDs: `S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-ARTIFACT-VALIDATOR`; parent `S2PLT01`; acceptance `ACC-S2PLT01-30D`.
+- Goal: Add a strict future-artifact validator and CLI for `FINAL_ACCEPTANCE_BUNDLE/s2plt01_terminal_acceptance.json` without creating that live artifact or accepting S2PLT01.
+- Files changed: S2PLT01 replay-gate helper, CLI parser/dispatcher, focused replay-gate regression tests, phase record, run manifest, traceability/delivery/event records, user-center traceability page, and three base files.
+- Decisions: `artifact_present=false`, `s2plt01_accepted_by_artifact=false`, `terminal_acceptance_ready=false`, `validation_errors=["s2plt01_terminal_acceptance_artifact_missing"]`, artifact validation state hash `fcd71fb7e6c8f9956edd7fc3e33deadeeb4349183daf0f3950f10df6d8d03431`, and terminal audit state hash `6461557654b36bb383b91eb98bc610c1cf497de8563f7f0aa897db08fc26d315`.
+- Validation: TDD red failed because the artifact validator was missing; TDD red failed because `validate-s2plt01-terminal-acceptance` was not registered; focused S2PLT01 replay-gate tests then passed with 26 OK; validation CLI still returns blocked / exit 2 because the live artifact is missing.
+- Boundaries: No S2PLT01/S2PLT02/S2PLT03/S2PLT04 acceptance, S2PLT01 terminal acceptance artifact, S2PLT04 completion report, final command execution, next-agent handoff, independent signoff, final manifest, SMTP, scheduler, Release, restore, CURRENT/V7 change, source/ranking change, DAILY_OPERATION, or integrated production acceptance.
+- Branch hygiene: no PR is created by this run; closeout must recheck open PR count and ADP/arxiv/s2p remote branches.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-ARTIFACT-VALIDATOR-20260629.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT01_TERMINAL_ACCEPTANCE_ARTIFACT_VALIDATOR.md`; `governance/run_manifests/ADP-S2PLT01-INDEPENDENT-REPLAY-REVIEW-20260626.json`; `governance/run_manifests/ADP-S2PLT01-REPLAY-PAYLOAD-EXECUTION-20260626.json`; `governance/run_manifests/ADP-S2PLT04-S2PLT01-REPLAY-REVIEW-EVIDENCE-SYNC-20260628.json`; `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json`; `arxiv-daily-push/src/arxiv_daily_push/stage2_replay_gate.py`; `arxiv-daily-push/src/arxiv_daily_push/cli.py`; `arxiv-daily-push/tests/test_stage2_replay_gate.py`.
+- Next step: Supply truthful `FINAL_ACCEPTANCE_BUNDLE/s2plt01_terminal_acceptance.json` only after terminal independent reviewer approval; then re-run S2PLT01 and S2PLT04 audits.
 
 ### `ITER-20260629-ADP-S2PMT07-S2PLT04-COMPLETION-EVIDENCE-LATEST-SYNC`
 

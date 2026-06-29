@@ -109,6 +109,7 @@ from .stage1_runtime import (
 from .stage2_replay_gate import (
     build_s2plt01_independent_replay_review_report,
     build_s2plt01_replay_payload_execution_report,
+    build_s2plt01_terminal_acceptance_artifact_validation_state,
     build_s2plt01_terminal_acceptance_audit_state,
     validate_s2plt01_independent_replay_review_report,
     validate_s2plt01_replay_payload_execution_report,
@@ -1184,6 +1185,13 @@ def build_parser() -> argparse.ArgumentParser:
     )
     s2plt01_terminal_audit.add_argument("--repo-root", default=".", help="Repository root containing governance manifests.")
     s2plt01_terminal_audit.add_argument("--json", action="store_true", help="Print JSON terminal acceptance audit state.")
+
+    s2plt01_terminal_acceptance = subparsers.add_parser(
+        "validate-s2plt01-terminal-acceptance",
+        help="Validate future S2PLT01 terminal acceptance artifact without accepting production.",
+    )
+    s2plt01_terminal_acceptance.add_argument("--repo-root", default=".", help="Repository root containing final-bundle artifacts.")
+    s2plt01_terminal_acceptance.add_argument("--json", action="store_true", help="Print JSON artifact validation state.")
 
     s2plt02_terminal_audit = subparsers.add_parser(
         "audit-s2plt02-terminal-readiness",
@@ -3545,6 +3553,17 @@ def main(argv: list[str] | None = None) -> int:
             print(f"- review_package_passed: {report.get('review_package_passed')}")
             for reason in report.get("blocking_reasons", []):
                 print(f"- blocked: {reason}")
+        return 0 if report["status"] == "pass" else 2
+    if args.command == "validate-s2plt01-terminal-acceptance":
+        report = build_s2plt01_terminal_acceptance_artifact_validation_state(repo_root=args.repo_root)
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- artifact_present: {report.get('artifact_present')}")
+            print(f"- s2plt01_accepted_by_artifact: {report.get('s2plt01_accepted_by_artifact')}")
+            for error in report.get("validation_errors", []):
+                print(f"- error: {error}")
         return 0 if report["status"] == "pass" else 2
     if args.command == "audit-s2plt02-terminal-readiness":
         report = build_s2plt02_terminal_readiness_audit_state(generated_at=args.generated_at)

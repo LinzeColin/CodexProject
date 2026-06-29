@@ -21,12 +21,22 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 263
+- task_count: 264
 - acceptance_count: 127
 
 ## Delivery Tasks
 
 The machine-readable task source is `delivery_tasks.yaml`.
+
+## 2026-06-29 14:25:47 Australia/Sydney - S2PMT07 S2PLT01 Terminal Acceptance Artifact Validator
+
+- `S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-ARTIFACT-VALIDATOR` adds a fail-closed validator and CLI for `FINAL_ACCEPTANCE_BUNDLE/s2plt01_terminal_acceptance.json`.
+- Current validator remains `blocked` / exit 2 because the live terminal acceptance artifact is missing.
+- Current artifact validation state hash is `fcd71fb7e6c8f9956edd7fc3e33deadeeb4349183daf0f3950f10df6d8d03431`; current S2PLT01 terminal audit state hash is `6461557654b36bb383b91eb98bc610c1cf497de8563f7f0aa897db08fc26d315`.
+- Current prerequisite gates are true for existing replay review, replay execution, entry precheck zero-proof readiness, and P0/P1 zero proof; `s2plt01_accepted=false` because the terminal acceptance artifact is absent.
+- Remaining S2PLT01 blockers: `review_receipt_is_nonterminal`, `s2plt01_not_accepted`, and `s2plt01_terminal_acceptance_artifact_missing`.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-ARTIFACT-VALIDATOR-20260629.json` and `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT01_TERMINAL_ACCEPTANCE_ARTIFACT_VALIDATOR.md`.
+- No SMTP, scheduler, Release, restore, schema/DB, source/ranking, CURRENT/V7, DAILY_OPERATION, S2PLT01/S2PLT04 acceptance, final bundle acceptance, or integrated production acceptance side effect is claimed.
 
 ## 2026-06-29 13:58:47 Australia/Sydney - S2PMT07 S2PLT04 Completion Evidence Latest Sync
 
