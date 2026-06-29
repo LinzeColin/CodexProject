@@ -1,0 +1,114 @@
+{
+  "schema": "PFIOSMacOSRuntimeAcceptanceV1",
+  "system": "PFI",
+  "subsystem": "macOS Runtime Acceptance",
+  "generated_at": "2026-06-29T22:37:39",
+  "status": "Pass",
+  "project_root": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi-stage1/PFI",
+  "summary": {
+    "pass": 10,
+    "fail": 0,
+    "info": 0,
+    "total": 10
+  },
+  "pre_existing_healthy_ports": [],
+  "post_healthy_ports": [],
+  "started_by_acceptance": true,
+  "launch_method": "app",
+  "app_acceptance": {
+    "schema": "PFIOSMacOSAppAcceptanceLiteV1",
+    "status": "Pass",
+    "summary": {
+      "pass": 10,
+      "fail": 0,
+      "info": 0,
+      "total": 10
+    },
+    "attempts": 1,
+    "failed_checks": [],
+    "attempt_history": [
+      {
+        "status": "Pass",
+        "fail": 0,
+        "failed_checks": []
+      }
+    ],
+    "heavy_smoke_policy": "Lite acceptance does not run scripts/finalAcceptanceCheck.sh, scripts/ciSmoke.sh, full pytest, market-data refresh, or browser automation."
+  },
+  "checks": [
+    {
+      "target": "App",
+      "check": "LiteAcceptancePasses",
+      "status": "Pass",
+      "evidence": "status=Pass; fail=0"
+    },
+    {
+      "target": "Runtime",
+      "check": "NoPreExistingService",
+      "status": "Pass",
+      "evidence": "healthy_ports=[]"
+    },
+    {
+      "target": "Start",
+      "check": "AppOpenLaunched",
+      "status": "Pass",
+      "evidence": "returncode=0; output=opened=/Users/linzezhang/Downloads/PFI.app | direct_fallback=/Users/linzezhang/Downloads/PFI.app/Contents/MacOS/PFI; returncode=0"
+    },
+    {
+      "target": "Start",
+      "check": "HealthAfterStart",
+      "status": "Pass",
+      "evidence": "healthy_ports=[8501]"
+    },
+    {
+      "target": "Runtime",
+      "check": "StatusSeesRunning",
+      "status": "Pass",
+      "evidence": "returncode=0; output=PFI 正在运行：http://localhost:8501\n进程 id: 28489"
+    },
+    {
+      "target": "Cache",
+      "check": "CleanCacheRefusesWhileRunning",
+      "status": "Pass",
+      "evidence": "returncode=2; output=PFI appears to be running. Stop it before cleaning cache."
+    },
+    {
+      "target": "Stop",
+      "check": "StopScriptRuns",
+      "status": "Pass",
+      "evidence": "returncode=0; output=Checking service on port 8501\n正在停止 PFI 服务 pid 28489\n正在停止 PFI 启动器 pid 28386\nPFI 停止命令已完成。"
+    },
+    {
+      "target": "Stop",
+      "check": "HealthAfterStop",
+      "status": "Pass",
+      "evidence": "healthy_ports=[]"
+    },
+    {
+      "target": "Stop",
+      "check": "StatusSeesStopped",
+      "status": "Pass",
+      "evidence": "returncode=0; output=PFI 未在端口 8501-8510 运行。"
+    },
+    {
+      "target": "Cache",
+      "check": "CleanCacheDryRunAfterStop",
+      "status": "Pass",
+      "evidence": "returncode=0; summary=candidates=27; files=251; kb=4116.02"
+    }
+  ],
+  "runtime_contract": {
+    "start": "Launches scripts/startPFI.sh or opens a configured PFI.app in controlled mode when no existing service is running.",
+    "health": "Requires a local /_stcore/health response on 127.0.0.1 ports 8501-8510.",
+    "cache_guard": "Verifies scripts/cleanCache.sh refuses delete mode while the service is running.",
+    "stop": "Runs scripts/stopPFI.sh and verifies local health disappears.",
+    "post_stop_cache": "Verifies cleanCache dry-run works after the service is stopped."
+  },
+  "heavy_smoke_policy": "Runtime acceptance does not run scripts/finalAcceptanceCheck.sh, scripts/ciSmoke.sh, full pytest, browser automation, market-data refresh, broker connections, orders, payments, or holdings writes.",
+  "safety_boundary": "Controlled local start/health/stop/cache-guard acceptance. Script mode does not open a browser; app mode uses the real macOS app entry and may open the default browser. It refuses to proceed by default if a pre-existing PFI service is already running.",
+  "next_action": "If this passes on the Mac, the next acceptance step can be optional visual UI verification or app-click verification.",
+  "outputs": {
+    "json": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi-stage1/PFI/reports/pfi_v023/stage_1/MacOSRuntimeAcceptance_29062026.json",
+    "latest_json": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi-stage1/PFI/reports/pfi_v023/stage_1/MacOSRuntimeAcceptance_latest.json"
+  }
+}

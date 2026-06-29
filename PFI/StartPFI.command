@@ -8,6 +8,7 @@ mkdir -p "$PROJECT_DIR/data/cache"
 LOG_FILE="$PROJECT_DIR/data/cache/pfi_macos_app.log"
 exec >> "$LOG_FILE" 2>&1
 echo "==== PFI launch $(date -u +"%Y-%m-%dT%H:%M:%SZ") pid=$$ ===="
+PFI_VERSION_QUERY="pfi_app_version=0.2.3&pfi_build=20260629-stage1&pfi_ui_contract=PFI-V023-STAGE1-APP-ENTRY-BUNDLE-CONSISTENCY"
 
 process_cwd() {
   local pid="$1"
@@ -24,7 +25,7 @@ open_existing_service() {
         cwd_path="$(process_cwd "$pid")"
         if [[ "$command" == *"src/pfi_os/app/streamlit_app.py"* && ( "$command" == *"$PROJECT_DIR"* || "$cwd_path" == "$PROJECT_DIR" ) ]]; then
           EXISTING_URL="http://localhost:$EXISTING_PORT"
-          OPEN_URL="$EXISTING_URL/?pfi_app_version=0.2.1.1&pfi_build=20260629"
+          OPEN_URL="$EXISTING_URL/?$PFI_VERSION_QUERY"
           echo "PFI 当前项目服务已在运行：$EXISTING_URL。复用现有服务。"
           open "$OPEN_URL" >/dev/null 2>&1
           return 0
@@ -83,7 +84,10 @@ APPLESCRIPT
 
 LOCK_DIR="$PROJECT_DIR/data/cache/pfi_launch.lockdir"
 LOCK_PID_FILE="$LOCK_DIR/pid"
-if ! mkdir "$LOCK_DIR" 2>/dev/null; then
+LOCK_ACQUIRED=0
+if mkdir "$LOCK_DIR" 2>/dev/null; then
+  LOCK_ACQUIRED=1
+else
   EXISTING_LOCK_PID="$(cat "$LOCK_PID_FILE" 2>/dev/null || true)"
   if [[ -n "$EXISTING_LOCK_PID" ]] && ! kill -0 "$EXISTING_LOCK_PID" >/dev/null 2>&1; then
     echo "正在清理过期 PFI 启动锁：pid $EXISTING_LOCK_PID。"
@@ -93,7 +97,7 @@ if ! mkdir "$LOCK_DIR" 2>/dev/null; then
     rm -rf "$LOCK_DIR" >/dev/null 2>&1 || true
   fi
 fi
-if ! mkdir "$LOCK_DIR" 2>/dev/null; then
+if [[ "$LOCK_ACQUIRED" != "1" ]] && ! mkdir "$LOCK_DIR" 2>/dev/null; then
   echo "另一个 PFI 启动流程正在进行，正在等待其完成。"
   if wait_for_existing_service; then
     close_launcher_terminal
@@ -131,7 +135,7 @@ while lsof -iTCP:"$HEARTBEAT_PORT" -sTCP:LISTEN >/dev/null 2>&1; do
 done
 
 URL="http://localhost:$PORT"
-OPEN_URL="$URL/?pfi_app_version=0.2.1.1&pfi_build=20260629"
+OPEN_URL="$URL/?$PFI_VERSION_QUERY"
 HEARTBEAT_TIMEOUT="${PFI_HEARTBEAT_TIMEOUT:-120}"
 export PFI_HEARTBEAT_URL="http://127.0.0.1:$HEARTBEAT_PORT/heartbeat"
 echo "正在启动 PFI：$URL"
