@@ -29,3 +29,19 @@
 - `test_v023_stage2_data_state_machine.py` 验证 schema、状态、证据链、中文文案、JS 合同和 evidence。
 - `test_v023_no_mock_financial_data.py` 验证禁止假财务数据扫描规则。
 - `node --check PFI/web/app/dataStatus.js` 验证 JS 合同语法。
+
+## Stage 2 Phase 2.2 真实数据审计
+
+本 phase 只交付 `Stage 2 Phase 2.2 — 真实数据审计`。审计范围是定位当前本机真实个人财务数据源路径，并统计文件数、记录数、日期范围、账户/持仓/read model 状态。
+
+当前本机真实个人财务数据源状态为 not_mounted：
+
+- `/Users/linzezhang/MetaDatabase/PFI`：不存在。
+- `/Users/linzezhang/Documents/MetaDatabase/PFI`：不存在。
+- `/Users/linzezhang/Documents/Codex/MetaDatabase/PFI`：不存在。
+- `PFI/MetaDatabase`：只包含 README 指针，不包含真实个人财务数据文件。
+- `PFI/data`：只包含 v0.2.2 FX 快照和系统验收文件，不作为 v0.2.3 个人财务 read model。
+
+因此本 phase 不生成、复制或伪造任何个人财务数据；核心指标状态保持 `not_mounted`，未挂载时不得显示 `CNY 0.00`。
+
+本 phase 不做页面门禁接入、核心指标 UI 接入或截图验收；这些属于 Phase 2.3。

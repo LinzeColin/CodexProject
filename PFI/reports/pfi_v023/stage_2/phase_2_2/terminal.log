@@ -1,0 +1,62 @@
+# PFI v0.2.3 Stage 2 Phase 2.2 terminal summary
+phase_id=V023-S2-P2.2
+phase_name=真实数据审计
+repo=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+branch=codex/pfi
+current_phase_only=true
+
+$ pwd -P
+/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+
+$ git status --short --branch
+## codex/pfi...origin/main [ahead 3]
+
+$ python3 -m pytest PFI/tests/test_v023_stage2_data_state_machine.py -q
+runtime=PYTHONPATH=PFI/src PFI/.venv/bin/python
+red_exit_code=1
+red_summary=5 failed because PFI/src/pfi_v02/stage_v023_real_data_audit.py and phase_2_2 evidence were missing
+green_exit_code=0
+green_summary=13 passed
+
+$ python3 -m pytest PFI/tests/test_v023_no_mock_financial_data.py -q
+runtime=PYTHONPATH=PFI/src PFI/.venv/bin/python
+exit_code=0
+4 passed
+
+$ python3 -m py_compile PFI/src/pfi_v02/stage_v023_real_data_audit.py PFI/tests/test_v023_stage2_data_state_machine.py
+runtime=PYTHONPATH=PFI/src PFI/.venv/bin/python
+exit_code=0
+passed
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q
+exit_code=0
+39 passed
+
+$ /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js
+exit_code=0
+passed
+
+$ /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/dataStatus.js
+exit_code=0
+passed
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/src/pfi_v02/stage_v023_contract.py PFI/src/pfi_v02/stage_v023_data_state.py PFI/src/pfi_v02/stage_v023_real_data_audit.py PFI/tests/test_v023_stage0_contract.py PFI/tests/test_v023_stage1_app_entry_bundle_contract.py PFI/tests/test_pfi_app_entry_version_contract.py PFI/tests/test_v023_stage2_phase1_taskpack_recovery.py PFI/tests/test_v023_stage2_data_state_machine.py PFI/tests/test_v023_no_mock_financial_data.py
+exit_code=0
+passed
+
+$ PFI real data audit current-machine summary
+audit_status=not_mounted
+file_count=0
+raw_record_count=0
+standardized_record_count=0
+account_count=0
+holding_count=0
+read_model_hash=null
+
+$ git diff --check -- PFI
+exit_code=0
+passed
+
+$ git diff --check origin/main...HEAD -- PFI
+exit_code=0
+passed

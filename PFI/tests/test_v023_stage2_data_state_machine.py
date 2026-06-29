@@ -43,6 +43,13 @@ def load_data_state_module():
     return importlib.import_module("pfi_v02.stage_v023_data_state")
 
 
+def load_real_data_audit_module():
+    spec = importlib.util.find_spec("pfi_v02.stage_v023_real_data_audit")
+    if spec is None:
+        raise AssertionError("PFI/src/pfi_v02/stage_v023_real_data_audit.py is required for Stage 2 Phase 2.2")
+    return importlib.import_module("pfi_v02.stage_v023_real_data_audit")
+
+
 class TestV023Stage2DataStateMachine(unittest.TestCase):
     def test_phase21_contract_is_limited_to_data_state_contract(self) -> None:
         module = load_data_state_module()
@@ -199,6 +206,108 @@ class TestV023Stage2DataStateMachine(unittest.TestCase):
         terminal_log = terminal_log_path.read_text(encoding="utf-8")
         self.assertIn("python3 -m pytest PFI/tests/test_v023_stage2_data_state_machine.py -q", terminal_log)
         self.assertIn("node --check PFI/web/app/dataStatus.js", terminal_log)
+
+    def test_phase22_contract_is_limited_to_real_data_audit(self) -> None:
+        audit = load_real_data_audit_module()
+        contract = audit.build_stage2_phase22_contract()
+
+        self.assertEqual(contract["version"], "v0.2.3")
+        self.assertEqual(contract["stage"], "Stage 2")
+        self.assertEqual(contract["phase_id"], "V023-S2-P2.2")
+        self.assertEqual(contract["phase_name"], "真实数据审计")
+        self.assertTrue(contract["current_phase_only"])
+        self.assertTrue(contract["max_one_phase_per_run"])
+        self.assertTrue(contract["no_mock_financial_data"])
+        self.assertIn("PFI/src/pfi_v02/stage_v023_real_data_audit.py", contract["allowed_files"])
+        self.assertIn("PFI/reports/pfi_v023/stage_2/*", contract["allowed_files"])
+        self.assertNotIn("PFI/web/index.html", contract["allowed_files"])
+        self.assertNotIn("PFI/web/app/shell.js", contract["allowed_files"])
+        self.assertIn("页面门禁接入", contract["explicitly_not_done"])
+
+    def test_phase22_current_machine_audit_reports_not_mounted_without_fake_fallback(self) -> None:
+        audit = load_real_data_audit_module()
+        result = audit.build_real_data_audit(ROOT)
+
+        self.assertEqual(result["version"], "v0.2.3")
+        self.assertEqual(result["phase_id"], "V023-S2-P2.2")
+        self.assertEqual(result["audit_status"], "not_mounted")
+        self.assertEqual(result["file_count"], 0)
+        self.assertEqual(result["raw_record_count"], 0)
+        self.assertEqual(result["standardized_record_count"], 0)
+        self.assertEqual(result["account_count"], 0)
+        self.assertEqual(result["holding_count"], 0)
+        self.assertIsNone(result["read_model_hash"])
+        self.assertIsNone(result["date_range"]["start"])
+        self.assertIsNone(result["date_range"]["end"])
+        self.assertIsNone(result["as_of"])
+        self.assertTrue(result["no_mock_financial_data"])
+        self.assertIn("未挂载真实个人财务数据源", "\n".join(result["blocking_reasons"]))
+        self.assertGreaterEqual(len(result["candidate_paths"]), 4)
+        for path_record in result["candidate_paths"]:
+            self.assertIn("path", path_record)
+            self.assertIn("exists", path_record)
+            self.assertIn("role", path_record)
+
+    def test_phase22_does_not_treat_fx_or_system_audit_files_as_personal_finance_data(self) -> None:
+        audit = load_real_data_audit_module()
+        result = audit.build_real_data_audit(ROOT)
+        ignored = "\n".join(result["ignored_repo_files"])
+
+        self.assertIn("PFI/data/fx_snapshots/AUD_CNY/2026-06-28.json", ignored)
+        self.assertIn("PFI/data/systemAudit/PFIManualNavigationAcceptance_latest.json", ignored)
+        self.assertEqual(result["file_count"], 0)
+        self.assertEqual(result["audit_status"], "not_mounted")
+
+    def test_phase22_metric_states_use_not_mounted_for_missing_real_data(self) -> None:
+        audit = load_real_data_audit_module()
+        result = audit.build_real_data_audit(ROOT)
+
+        metric_ids = {item["metric_id"] for item in result["core_metric_states"]}
+        self.assertIn("net_worth_cny", metric_ids)
+        self.assertIn("cash_balance_cny", metric_ids)
+        self.assertIn("investment_market_value_cny", metric_ids)
+        for metric in result["core_metric_states"]:
+            self.assertEqual(metric["status"], "not_mounted")
+            self.assertIsNone(metric["value"])
+            self.assertIsNone(metric["source"])
+            self.assertIsNone(metric["as_of"])
+            self.assertIsNone(metric["evidence_hash"])
+            self.assertIn("未挂载", metric["message_zh"])
+
+    def test_phase22_doc_and_evidence_record_current_audit_summary(self) -> None:
+        doc_path = ROOT / "docs" / "pfi_v023" / "STAGE2_DATA_TRUST.md"
+        evidence_path = ROOT / "reports" / "pfi_v023" / "stage_2" / "phase_2_2" / "evidence.json"
+        changed_files_path = ROOT / "reports" / "pfi_v023" / "stage_2" / "phase_2_2" / "changed_files.txt"
+        terminal_log_path = ROOT / "reports" / "pfi_v023" / "stage_2" / "phase_2_2" / "terminal.log"
+
+        self.assertTrue(doc_path.exists())
+        self.assertTrue(evidence_path.exists())
+        self.assertTrue(changed_files_path.exists())
+        self.assertTrue(terminal_log_path.exists())
+
+        doc_text = doc_path.read_text(encoding="utf-8")
+        self.assertIn("Stage 2 Phase 2.2", doc_text)
+        self.assertIn("真实数据审计", doc_text)
+        self.assertIn("当前本机真实个人财务数据源状态为 not_mounted", doc_text)
+
+        evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
+        changed_files = [
+            line.strip()
+            for line in changed_files_path.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        ]
+        self.assertEqual(evidence["version"], "v0.2.3")
+        self.assertEqual(evidence["stage"], "Stage 2")
+        self.assertEqual(evidence["phase_id"], "V023-S2-P2.2")
+        self.assertEqual(evidence["status"], "candidate_pass")
+        self.assertEqual(evidence["data_status_summary"]["audit_status"], "not_mounted")
+        self.assertEqual(evidence["data_status_summary"]["file_count"], 0)
+        self.assertEqual(evidence["changed_files"], changed_files)
+        self.assertIn("PFI/src/pfi_v02/stage_v023_real_data_audit.py", changed_files)
+
+        terminal_log = terminal_log_path.read_text(encoding="utf-8")
+        self.assertIn("python3 -m pytest PFI/tests/test_v023_stage2_data_state_machine.py -q", terminal_log)
+        self.assertIn("PFI/src/pfi_v02/stage_v023_real_data_audit.py", terminal_log)
 
 
 if __name__ == "__main__":
