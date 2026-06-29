@@ -1,0 +1,393 @@
+# KMFA 经营分析系统 - 公式与参数注册表 v0.1
+# Stage 1 Draft. 作用：让经营健康雷达、数据检查板、行动优先级、Reconciliation 的函数、阈值、权重可见、可审计、可维护。
+# 注意：本文件是产品与开发合同草案，不是会计、税务、审计或法律意见。
+
+registry:
+  project: KMFA
+  chinese_name: 经营分析系统
+  version: 0.1-stage1
+  owner: C-level management / board
+  default_currency: CNY
+  data_sensitivity: internal_management
+  design_principles:
+    - deterministic_calculation_first
+    - no_llm_direct_financial_math
+    - evidence_required_for_key_numbers
+    - one_legal_ledger_multiple_management_views
+    - report_generation_blocked_by_missing_required_data
+    - human_signoff_required_for_high_risk_actions
+
+status_taxonomy:
+  READY:
+    color: green
+    meaning: 数据完整、映射通过、质量校验通过、可推进相关报告章节。
+  PARTIAL:
+    color: yellow
+    meaning: PARTIAL 与 BLOCKING 合并；表示部分数据可用但存在缺口，相关结论必须降级或阻塞。
+  FAILED:
+    color: red
+    meaning: FAILED 与 NOT_APPLICABLE 合并；表示导入失败、缺关键数据、或该文件包不适用于当前源但仍需明确记录。
+  OUTDATED:
+    color: black
+    meaning: 原 STALE 改名；数据超过 freshness 阈值，不能支撑当前周期结论。
+  MANUAL_REVIEW:
+    color: purple
+    meaning: 需要人工复核；推荐 UI 使用紫色，因为它区别于成功/警告/失败/过期，适合作为“审阅中”的中性状态。
+
+report_periods:
+  weekly:
+    primary_outputs: [dashboard, pdf]
+    optional_outputs: [csv, xlsx]
+    core_focus: [cash, collection, project_risk, data_blockers]
+  monthly:
+    primary_outputs: [dashboard, pdf]
+    optional_outputs: [csv, xlsx]
+    core_focus: [ceo_board_pack, cfo_finance, cto_tax_policy, reconciliation]
+  quarterly:
+    primary_outputs: [dashboard, pdf]
+    optional_outputs: [csv, xlsx]
+    core_focus: [strategy_review, budget_adjustment, customer_project_mix, policy_readiness]
+  half_year:
+    primary_outputs: [dashboard, pdf]
+    optional_outputs: [xlsx]
+    core_focus: [mid_year_diagnosis, policy_evidence_gap, governance_review]
+  yearly:
+    primary_outputs: [dashboard, pdf]
+    optional_outputs: [csv, xlsx]
+    core_focus: [annual_board_report, management_ledger_review, policy_archive, next_year_budget]
+
+health_radar:
+  name: 经营健康雷达
+  score_scale: 0_to_100
+  calculation: weighted_average
+  formula: |
+    health_score = sum(axis_score_i * axis_weight_i) / sum(axis_weight_i)
+    axis_score_i = clamp(sum(component_score_j * component_weight_j), 0, 100)
+  axes:
+    cash_safety:
+      label: 现金安全
+      axis_weight: 0.22
+      owner_role: CFO
+      required_sources: [bank_statement, receivables_ledger, payables_ledger, contract_payment_schedule]
+      components:
+        cash_runway_days:
+          component_weight: 0.40
+          formula: |
+            cash_runway_days = available_cash / max(avg_daily_net_cash_outflow_8w, minimum_cash_burn_floor)
+          thresholds:
+            green: ">= 90 days"
+            yellow: "45-89 days"
+            red: "< 45 days"
+        near_term_cash_gap:
+          component_weight: 0.25
+          formula: |
+            near_term_cash_gap = projected_cash_balance_4w - minimum_operating_cash_reserve
+          thresholds:
+            green: ">= 0"
+            yellow: "-10% to 0 of monthly_fixed_cost"
+            red: "< -10% of monthly_fixed_cost"
+        collection_dependency:
+          component_weight: 0.20
+          formula: |
+            collection_dependency = required_collections_4w / projected_cash_inflows_4w
+          thresholds:
+            green: "<= 35%"
+            yellow: "35%-60%"
+            red: "> 60%"
+        payment_pressure:
+          component_weight: 0.15
+          formula: |
+            payment_pressure = due_payables_4w / available_cash
+          thresholds:
+            green: "<= 30%"
+            yellow: "30%-55%"
+            red: "> 55%"
+    project_profitability:
+      label: 项目真实利润
+      axis_weight: 0.20
+      owner_role: CFO
+      required_sources: [kingdee_finance, redcircle_project, wps_project_ledger, contract_files]
+      components:
+        real_gross_margin:
+          component_weight: 0.35
+          formula: |
+            real_gross_margin = (recognized_project_revenue - true_direct_project_cost) / recognized_project_revenue
+          thresholds:
+            green: ">= 25%"
+            yellow: "12%-25%"
+            red: "< 12%"
+        ledger_margin_gap:
+          component_weight: 0.25
+          formula: |
+            ledger_margin_gap = accounting_gross_margin - management_real_gross_margin
+          thresholds:
+            green: "absolute gap <= 2 percentage points"
+            yellow: "2-6 percentage points"
+            red: "> 6 percentage points"
+        cost_completeness:
+          component_weight: 0.25
+          formula: |
+            cost_completeness = classified_project_cost_amount / total_project_cost_amount_detected
+          thresholds:
+            green: ">= 95%"
+            yellow: "85%-95%"
+            red: "< 85%"
+        change_order_recovery:
+          component_weight: 0.15
+          formula: |
+            change_order_recovery = approved_change_order_amount / submitted_change_order_amount
+          thresholds:
+            green: ">= 80%"
+            yellow: "50%-80%"
+            red: "< 50%"
+    collection_quality:
+      label: 回款质量
+      axis_weight: 0.16
+      owner_role: CEO
+      required_sources: [receivables_ledger, bank_statement, contract_payment_schedule, customer_master]
+      components:
+        overdue_receivable_ratio:
+          component_weight: 0.35
+          formula: |
+            overdue_receivable_ratio = overdue_receivables / total_receivables
+          thresholds:
+            green: "<= 10%"
+            yellow: "10%-25%"
+            red: "> 25%"
+        collection_plan_hit_rate:
+          component_weight: 0.30
+          formula: |
+            collection_plan_hit_rate = actual_collections_current_period / planned_collections_current_period
+          thresholds:
+            green: ">= 90%"
+            yellow: "70%-90%"
+            red: "< 70%"
+        customer_concentration_risk:
+          component_weight: 0.20
+          formula: |
+            customer_concentration_risk = top_3_customer_receivables / total_receivables
+          thresholds:
+            green: "<= 35%"
+            yellow: "35%-55%"
+            red: "> 55%"
+        dispute_ratio:
+          component_weight: 0.15
+          formula: |
+            dispute_ratio = disputed_receivables / total_receivables
+          thresholds:
+            green: "<= 5%"
+            yellow: "5%-15%"
+            red: "> 15%"
+    tax_policy_readiness:
+      label: 税务政策
+      axis_weight: 0.16
+      owner_role: CTO_Tax
+      required_sources: [tax_invoice, kingdee_finance, policy_evidence_pack, payroll_summary, r_and_d_project_files]
+      components:
+        invoice_tax_rate_match:
+          component_weight: 0.25
+          formula: |
+            invoice_tax_rate_match = matched_invoice_amount / invoice_amount_requiring_tax_rate_match
+          thresholds:
+            green: ">= 98%"
+            yellow: "90%-98%"
+            red: "< 90%"
+        input_output_vat_match:
+          component_weight: 0.20
+          formula: |
+            input_output_vat_match = matched_input_vat_amount / eligible_input_vat_amount
+          thresholds:
+            green: ">= 95%"
+            yellow: "85%-95%"
+            red: "< 85%"
+        r_and_d_evidence_completeness:
+          component_weight: 0.25
+          formula: |
+            r_and_d_evidence_completeness = completed_r_and_d_evidence_items / required_r_and_d_evidence_items
+          thresholds:
+            green: ">= 90%"
+            yellow: "70%-90%"
+            red: "< 70%"
+        high_tech_policy_readiness:
+          component_weight: 0.20
+          formula: |
+            high_tech_policy_readiness = weighted_score(ip, tech_staff, r_and_d_expense_ratio, high_tech_income_ratio, safety_quality_environment_record, audit_materials)
+          thresholds:
+            green: ">= 85"
+            yellow: "60-85"
+            red: "< 60"
+        policy_risk_review_status:
+          component_weight: 0.10
+          formula: |
+            policy_risk_review_status_score = 100 if all_high_risk_policy_items_have_human_signoff else 50 if review_in_progress else 0
+    contract_delivery:
+      label: 合同履约
+      axis_weight: 0.14
+      owner_role: CEO
+      required_sources: [redcircle_project, contract_files, change_order_files, project_site_records]
+      components:
+        schedule_adherence:
+          component_weight: 0.25
+          formula: |
+            schedule_adherence = completed_milestones_on_time / planned_milestones_due
+        quality_rework_risk:
+          component_weight: 0.20
+          formula: |
+            quality_rework_risk = rework_cost / project_revenue
+        safety_environment_events:
+          component_weight: 0.20
+          formula: |
+            safety_environment_score = 100 - weighted_event_penalty(safety_events, quality_events, environmental_events)
+        contract_term_risk:
+          component_weight: 0.20
+          formula: |
+            contract_term_risk_score = 100 - weighted_risk_terms(payment_terms, retention, acceptance_clause, change_order_clause, penalty_clause)
+        subcontractor_risk:
+          component_weight: 0.15
+          formula: |
+            subcontractor_risk_score = weighted_score(delivery_rate, quality_rate, invoice_compliance, dispute_history)
+    data_governance:
+      label: 数据治理
+      axis_weight: 0.12
+      owner_role: System_Admin
+      required_sources: [metadata_import_runs, data_quality_results, evidence_index, report_manifest]
+      components:
+        data_readiness_rate:
+          component_weight: 0.35
+          formula: |
+            data_readiness_rate = ready_required_data_contracts / total_required_data_contracts
+        freshness_score:
+          component_weight: 0.25
+          formula: |
+            freshness_score = 100 - freshness_penalty(days_since_last_successful_import, freshness_threshold_by_report_period)
+        lineage_completeness:
+          component_weight: 0.25
+          formula: |
+            lineage_completeness = metrics_with_lineage / key_metrics_total
+        manual_review_backlog:
+          component_weight: 0.15
+          formula: |
+            manual_review_backlog_score = 100 - min(manual_review_items_overdue * 8, 100)
+
+action_priority:
+  name: 行动优先级评分
+  formula: |
+    action_score = (impact * confidence * urgency * strategic_fit) / max(effort * cash_cost_factor * execution_risk, 1)
+    normalized_action_score = min(round(action_score * 10), 100)
+  components:
+    impact:
+      scale: 1_to_5
+      description: 对现金、利润、税务风险、客户关系或项目交付的影响。
+    confidence:
+      scale: 1_to_5
+      description: 数据证据充分度与人工确认程度。
+    urgency:
+      scale: 1_to_5
+      description: 不处理会造成损失或错过窗口的紧迫程度。
+    strategic_fit:
+      scale: 1_to_5
+      description: 是否符合当前经营目标与项目制行业定位。
+    effort:
+      scale: 1_to_5
+      description: 执行难度、人力和协调成本。
+    cash_cost_factor:
+      scale: 1_to_5
+      description: 现金投入压力。
+    execution_risk:
+      scale: 1_to_5
+      description: 落地失败或引发副作用的概率。
+  required_fields: [action, owner_role, evidence_refs, expected_impact, deadline, stop_condition, review_date]
+  block_if_missing: [owner_role, stop_condition, evidence_refs]
+
+reconciliation:
+  name: 单账本多视图 Reconciliation
+  principle: 不设计内外账；在唯一合法账本基础上建立管理视图、项目真实视图、税务政策视图、董事层经营视图。
+  bridge_formula: |
+    management_true_profit = accounting_profit
+      + management_adjustments
+      + project_cost_reclassifications
+      + unbilled_or_unsettled_change_orders
+      - estimated_unrecorded_costs
+      - receivable_risk_reserve
+      + tax_timing_or_classification_adjustments
+  required_adjustment_fields:
+    - adjustment_id
+    - period
+    - related_project_id
+    - adjustment_type
+    - adjustment_amount
+    - adjustment_reason
+    - source_system
+    - source_ref
+    - evidence_hash
+    - owner_role
+    - created_at
+    - review_status
+    - human_signoff_ref
+  adjustment_types:
+    project_cost_reclassification:
+      examples: [未归集外协, 运输吊装, 现场差旅, 返工成本, 材料补差]
+    timing_difference:
+      examples: [未开票收入, 未结算成本, 应收未核销, 付款跨期]
+    tax_policy_view:
+      examples: [研发费用归集, 税率匹配, 进销项抵扣, 加计扣除测算]
+    risk_reserve:
+      examples: [坏账风险, 质保风险, 合同争议, 结算折让]
+  validation_rules:
+    - 每个 adjustment 必须有 source_ref 和 evidence_hash。
+    - 金额超过 materiality_threshold 的 adjustment 必须 MANUAL_REVIEW 或 human signoff。
+    - Reconciliation 输出必须同时展示账面口径、管理口径、差异原因、复核状态。
+  materiality_threshold:
+    amount_cny: 10000
+    or_percentage_of_monthly_revenue: 0.01
+
+data_readiness_gate:
+  name: 数据源门禁
+  formula: |
+    report_section_ready = all(required_data_contract.status == READY for required_data_contract in section.required_contracts)
+    report_section_partial = any(status in [PARTIAL, MANUAL_REVIEW, OUTDATED] for required_contracts) and no critical_contract.status == FAILED
+    report_section_blocked = any(critical_contract.status in [FAILED, OUTDATED] for critical_contract in section.critical_contracts)
+  rules:
+    - 关键数据源缺失时，不得输出完整结论。
+    - PARTIAL 状态可以生成降级报告，但必须显示限制、水印和缺口。
+    - OUTDATED 状态不得支撑周报和现金流实时判断。
+    - MANUAL_REVIEW 状态必须在报告中列出复核事项和 owner。
+    - FAILED 状态默认阻塞对应报告章节。
+
+notification_rules:
+  principle: 只发提醒，不发完整报告正文；不在 email 中包含敏感财务明细。
+  recipient_default: linzezhang35@gmail.com
+  triggers:
+    report_ready:
+      content_allowed: [report_id, period, generated_at, dashboard_link_or_local_path, data_status_summary]
+      content_forbidden: [bank_balance_detail, payroll_detail, invoice_detail, contract_full_text]
+    major_cash_risk:
+      content_allowed: [risk_level, report_id, instruction_to_login]
+      content_forbidden: [full_cash_balance, bank_account_number]
+    data_import_failed:
+      content_allowed: [source_name, run_id, error_category, next_action]
+      content_forbidden: [password, token, raw_file_content]
+    tax_policy_risk:
+      content_allowed: [risk_category, report_id, required_review_role]
+      content_forbidden: [invoice_full_detail, taxpayer_sensitive_detail]
+
+maintenance_governance:
+  code_quality:
+    - typed_data_contracts
+    - deterministic_tests_for_formulas
+    - snapshot_tests_for_report_templates
+    - metadata_manifest_for_every_import_and_report
+    - rollback_plan_for_external_connectors
+  long_running_stability:
+    - scheduled_import_with_retry_and_idempotency
+    - alert_on_failed_imports
+    - report_generation_queue
+    - data_retention_policy
+    - secret_rotation_policy
+    - offline_fallback_for_manual_upload
+  opme_future_integration:
+    mode: independent_core_then_launcher_or_report_center_integration
+    constraints:
+      - 不在 KMFA MVP 阶段修改 OpMe 主业务代码。
+      - 通过 manifest、report center、shared auth 或 dashboard card 接入。
+      - KMFA 与 OpMe 的数据域、权限、报告、metadata 必须隔离。

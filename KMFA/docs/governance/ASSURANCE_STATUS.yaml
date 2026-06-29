@@ -1,11 +1,11 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260629-S02-STAGE-REVIEW"
+as_of_event_id: "EVENT-KMFA-20260629-S01-V12-REPLAY"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "precommit-pending"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_STAGE_REVIEW"
-snapshot_event_time: "2026-06-29T19:40:00+10:00"
-generator_version: "manual-s02-stage-review"
-final_commit_binding: "834ff75516405ddbc8289f00ba67579691473709"
+snapshot_event_time: "2026-06-29T18:42:29+10:00"
+generator_version: "manual-s01-v12-replay"
+final_commit_binding: "precommit-pending-v12-baseline"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -38,6 +38,7 @@ dimensions:
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/stage_artifacts/S01_P3_no_omission_baseline/human/test_results.md"
+      - "KMFA/stage_artifacts/S01_REBASE_V12_FULL_TASKPACK/human/test_results.md"
   operational_validation:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
@@ -45,12 +46,14 @@ dimensions:
       - "KMFA/tools/metadata_protocol_check.py"
       - "KMFA/tools/immutability_policy_check.py"
       - "KMFA/tools/check_report_grade_gate.py"
+      - "KMFA/tools/check_required_html.py"
       - "KMFA/stage_artifacts/S02_P3_quality_gate/human/test_results.md"
   delivery_evidence:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/docs/governance/delivery_tasks.yaml"
+      - "KMFA/taskpack/v1_2/machine/source_package_manifest.json"
       - "KMFA/stage_artifacts/S02_STAGE_REVIEW/human/stage2_review_report.md"
   evidence_freshness:
     status: "PARTIAL"
@@ -58,6 +61,6 @@ dimensions:
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "UPLOADED_TO_GITHUB_MAIN"
-  release_gate: "KMFA-S02-GATE"
+  status: "V12_BASELINE_READY_FOR_UPLOAD"
+  release_gate: "KMFA-S01-V12-REPLAY-GATE"
   blocker_ids: []

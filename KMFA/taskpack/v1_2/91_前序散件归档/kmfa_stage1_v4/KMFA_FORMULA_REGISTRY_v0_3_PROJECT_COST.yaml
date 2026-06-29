@@ -1,0 +1,85 @@
+# KMFA_FORMULA_REGISTRY_v0_3_PROJECT_COST.yaml
+project: KMFA
+name_zh: 经营分析系统
+version: 0.3-stage1-closure
+scope: 项目制工程经营分析；15天MVP优先项目成本分析；20天稳定准确生成
+urgent_mvp:
+  day_15_goal: 文件型导入 + 数据检查板 + 项目成本分析 + 经营摘要报告 + HTML/PDF输出
+  day_20_goal: 稳定运行、准确生成、回归测试、人工复核闭环、异常报警
+  excluded_before_day_15:
+    - 红圈/金蝶/WPS自动登录抓取
+    - 自动报税、自动付款、自动对外发送完整报告
+    - 全量政策资格申报材料生成
+    - 合同全文自动OCR解析
+    - 报价漏项检测与合同风险扫描的完整实现
+roles:
+  CEO: 经营总览、项目组合、客户回款、董事层事项
+  CFO: 项目成本、现金资金、利润质量、应收应付
+  CTO_Tax: 税务政策、发票税率、政策资格、研发费用证据
+status_palette:
+  READY: {zh: 已就绪, hex: '#16a34a'}
+  PARTIAL: {zh: 部分/阻塞, hex: '#f59e0b'}
+  FAILED: {zh: 失败/不适用, hex: '#dc2626'}
+  OUTDATED: {zh: 已过期, hex: '#111827'}
+  MANUAL_REVIEW: {zh: 人工复核, hex: '#7c3aed'}
+project_cost_engine:
+  required_entities: [project_id, project_name, customer_name, company_entity, contract_amount, invoice_amount, received_amount, direct_material_cost, subcontract_cost, labor_cost, machine_cost, transport_cost, site_expense, tax_amount, retention_or_deposit, settlement_amount]
+  formulas:
+    project_actual_cost:
+      formula: direct_material_cost + subcontract_cost + labor_cost + machine_cost + transport_cost + site_expense + allocated_overhead + tax_non_deductible_cost
+      owner: CFO
+      evidence_required: [项目成本明细, 费用明细, 外协费用, 采购/领料, 银行付款, 金蝶凭证]
+    project_management_profit:
+      formula: management_revenue - project_actual_cost
+      owner: CFO
+      evidence_required: [合同, 结算, 开票, 回款, 项目成本明细]
+    project_management_margin:
+      formula: safe_divide(project_management_profit, management_revenue)
+      thresholds: {green: '>=18%', yellow: '8%-18%', red: '<8% or negative'}
+    cost_completeness_score:
+      formula: weighted_presence(material, subcontract, labor, machine, transport, site_expense, tax, payment_match)
+      weights: {material: 0.16, subcontract: 0.18, labor: 0.14, machine: 0.08, transport: 0.08, site_expense: 0.10, tax: 0.12, payment_match: 0.14}
+    project_profit_bridge:
+      formula: contract_expected_margin -> settlement_adjustment -> cost_overrun -> invoice_tax_adjustment -> collection_risk -> management_margin
+      output: 报告中展示为利润桥，不显示内部reconciliation英文术语
+cash_and_collection:
+  formulas:
+    collection_rate: safe_divide(received_amount, invoice_amount_or_receivable_base)
+    overdue_receivable_amount: sum(receivable where due_date < report_date and unpaid_amount > 0)
+    cash_runway_days: cash_balance / avg_daily_net_cash_outflow_rolling_30d
+    payment_pressure_30d: due_payables_next_30d + loan_repayments_next_30d + payroll_estimate_next_30d
+internal_reconciliation:
+  report_label: 口径差异与管理调整摘要
+  bridges:
+    project_to_finance: 项目台账成本 ↔ 财务成本/费用/外协/采购/领料
+    invoice_to_contract: 开票明细 ↔ 合同金额/结算金额/税率
+    bank_to_receivable: 银行回款 ↔ 应收账龄/回款表/客户名称
+    tax_to_policy: 研发费用/开票纳税 ↔ 科小/高新/小巨人/加计扣除证据
+  every_adjustment_requires: [source_id, file_hash, row_reference_or_sheet, reason, owner, review_status, timestamp]
+management_health_score:
+  formula: sum(axis_score * axis_weight) / sum(axis_weight)
+  axes:
+    project_cost_quality: {weight: 0.28, source: [项目成本明细, 费用明细, 外协, 采购领料], owner: CFO}
+    project_margin_quality: {weight: 0.22, source: [合同, 结算, 开票, 成本], owner: CFO}
+    cash_collection: {weight: 0.20, source: [银行, 回款表, 应收账龄, 资金计划], owner: CEO/CFO}
+    tax_invoice_policy: {weight: 0.14, source: [开票纳税, 税负率, 研发费用], owner: CTO_Tax}
+    data_readiness: {weight: 0.12, source: [metadata, 导入日志, 检查板], owner: System}
+    governance_action_closure: {weight: 0.04, source: [行动清单, 人工复核日志], owner: CEO}
+report_generation_gate:
+  may_generate_with_partial_data: true
+  must_show_limitations: true
+  hard_blocks: [project_cost_report_without_any_project_cost_source, cash_safety_report_without_bank_or_cash_proxy, tax_policy_report_without_invoice_or_tax_source]
+  all_key_numbers_require_lineage: true
+metadata_required:
+  import_runs_jsonl: 每次导入记录source、file_hash、row_count、schema_status、operator、timestamp
+  data_readiness_board_json: 每个文件包的状态、影响报告、阻塞规则、下一步
+  metric_lineage_jsonl: 每个指标的公式、来源、批次、字段映射、质量等级
+  report_manifest_jsonl: 每份报告的周期、版本、输入数据快照、生成状态、人工确认状态
+  adjustment_log_jsonl: 口径差异与管理调整记录
+notification_rules:
+  report_ready: 只提醒查看，不发送完整报告正文
+  major_risk: 现金、回款、税务、数据失败重大风险发邮件提醒
+  email_target: linzezhang35@gmail.com
+opme_future_integration:
+  phase: MVP稳定后
+  method: 统一入口/报告中心/轻量卡片，不合并核心数据域

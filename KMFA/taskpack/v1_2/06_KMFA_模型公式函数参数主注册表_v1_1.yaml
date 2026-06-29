@@ -1,0 +1,47 @@
+version: v1.1
+project: KMFA
+amount_precision:
+  storage: integer_cents_or_decimal
+  float_allowed: false
+  zero_delta_cents: 0
+  failure_threshold_cents: 1
+source_priority:
+  - raw_uploaded_or_authorized_export
+  - raw_extracted_value
+  - staging_structured_row
+  - canonical_fact
+  - derived_metric
+  - report_reference
+  - dashboard_display
+project_identity_weighting:
+  contract_no: 0.20
+  project_name: 0.18
+  counterparty: 0.15
+  company_entity: 0.10
+  occurrence_or_project_date: 0.12
+  amount_signature: 0.12
+  responsible_person: 0.06
+  source_hash: 0.07
+matching_thresholds:
+  strong_auto_match: 0.85
+  human_review: 0.70
+  weak_candidate: 0.50
+  reject_below: 0.50
+report_grades:
+  A: Q5 data, zero delta passed, key mismatches closed, human signoff complete
+  B: Q4 data, key differences explained, limitations visible
+  C: Q3 candidate data, preview only
+  D: missing, outdated, failed, or unresolved critical differences
+project_cost_formulas:
+  authoritative_margin_cents: authoritative_revenue_cents - authoritative_total_cost_cents
+  system_recomputed_margin_cents: normalized_revenue_cents - normalized_total_cost_cents
+  margin_delta_cents: authoritative_margin_cents - system_recomputed_margin_cents
+  gross_margin_rate: margin_cents / revenue_cents
+  cash_margin_cents: collected_cash_cents - paid_cash_cost_cents
+  unassigned_cost_pool_cents: sum(cost_rows where project_match_status != strong_auto_match)
+quality_gates:
+  no_float_money: required
+  raw_immutable: required
+  lineage_complete: required
+  zero_delta_or_mismatch_queue: required
+  report_grade_gate: required

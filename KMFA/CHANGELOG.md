@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-s02p3-v12baseline - 2026-06-29
+
+- 承接 `KMFA_ChatGPT_Stage3_Codex_Delivery_Pack_v1_2_FULL_HTML_NO_OMISSION.zip` 为后续正式开发基线。
+- 新增 `KMFA/taskpack/v1_2/`，保存可提交的 v1.2 TaskPack、Roadmap、HTML/UIUX/报告样板、前序散件、工具和机器清单。
+- 完整纳入 HTML 验收面：45 个 HTML 文件，7 个核心 HTML 验收样板。
+- 新增 `KMFA/tools/check_required_html.py`，并强化 `KMFA/tools/no_omission_check.py` 检查 v1.2 基线与私有源数据禁提交边界。
+- 只保存 `90_用户原始上传数据` 的 SHA256 登记和禁止提交规则，未提交原始 zip、mov、Excel、PDF 或数据库类文件。
+- 按 v1.2 重新走完 Stage 1，新增证据目录 `KMFA/stage_artifacts/S01_REBASE_V12_FULL_TASKPACK/`。
+
 ## 0.1.0-s02p3 - 2026-06-29
 
 - 完成 `S02-P3｜数据质量等级`。

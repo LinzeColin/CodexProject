@@ -3,10 +3,10 @@ roadmap_kind: "product"
 project_id: "KMFA"
 total_estimated_hours: 54
 completed_estimated_hours: 18
-current_stage_id: "S2"
-current_phase_id: "S2PC"
-current_task_id: "S2PCT03"
-next_gate_id: "KMFA-S02-STAGE-REVIEW-GATE"
+current_stage_id: "S1"
+current_phase_id: "S01-v1.2-REPLAY"
+current_task_id: "KMFA-S01-V12-REBASE-20260629"
+next_gate_id: "KMFA-S03-GATE_AFTER_V12_BASELINE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -61,9 +61,11 @@ stages:
             acceptance_ids:
               - "ACC-KMFA-S01-P1"
             test_commands:
-              - "python3 /tmp/kmfa_s01p1_pack/KMFA_ChatGPT_Stage3_Codex_Delivery_v1_1/tools/no_omission_check.py"
+              - "python3 KMFA/tools/check_required_html.py"
+              - "python3 KMFA/tools/no_omission_check.py"
             test_results:
-              - "PASS: no omission check passed"
+              - "PASS: required KMFA v1.2 HTML/UIUX/report samples are present"
+              - "PASS: KMFA no omission check passed with v1.2 baseline"
             evidence_refs:
               - "KMFA/stage_artifacts/S01_P1_read_only_plan/human/files_to_read.md"
             risks:

@@ -1,0 +1,42 @@
+{
+  "schema_version": "kmfa.source_package_manifest.v1",
+  "project_id": "KMFA",
+  "baseline_version": "v1.2_FULL_HTML_NO_OMISSION",
+  "created_at": "2026-06-29T18:42:29+10:00",
+  "source_zip_path": "/Users/linzezhang/Downloads/KMFA v0.1/KMFA_ChatGPT_Stage3_Codex_Delivery_Pack_v1_2_FULL_HTML_NO_OMISSION.zip",
+  "source_zip_bytes": null,
+  "source_zip_sha256": null,
+  "source_extracted_root": "/tmp/kmfa_v12_full_pack/KMFA_ChatGPT_Stage3_Codex_Delivery_v1_2_FULL_HTML_NO_OMISSION",
+  "repo_baseline_root": "KMFA/taskpack/v1_2",
+  "repo_file_count": 107,
+  "repo_html_file_count": 45,
+  "repo_core_html_file_count": 7,
+  "copied_policy": "Copied only public-safe task-pack documents, HTML acceptance samples, package manifests, reference scripts, and prior loose non-binary artifacts.",
+  "excluded_policy": "Did not copy raw/private user uploads, screen recording, Excel/PDF/zip/database artifacts, or prior generated zip archives into the public repo.",
+  "excluded_components": [
+    {
+      "path": "90_用户原始上传数据_仅本地私有_禁止提交GitHub/",
+      "reason": "private raw user data; forbidden in public GitHub"
+    },
+    {
+      "path": "21_前序生成包归档_可追溯/*.zip",
+      "reason": "bulk prior generated archives; represented by SHA256 manifest only"
+    }
+  ],
+  "required_core_html": [
+    "20_HTML_UIUX_报告预览/01_核心HTML验收样板/KMFA_Resolution_Workbench_v0_4.html",
+    "20_HTML_UIUX_报告预览/01_核心HTML验收样板/KMFA_Ring5_Final_Task_Control_Board.html",
+    "20_HTML_UIUX_报告预览/01_核心HTML验收样板/KMFA_数据源检查板_v0_5_blue.html",
+    "20_HTML_UIUX_报告预览/01_核心HTML验收样板/KMFA_系统首页预览_v4_blue.html",
+    "20_HTML_UIUX_报告预览/01_核心HTML验收样板/KMFA_经营分析报告预览_v3_blue.html",
+    "20_HTML_UIUX_报告预览/01_核心HTML验收样板/KMFA_阶段三任务控制台预览_v1_0.html",
+    "20_HTML_UIUX_报告预览/01_核心HTML验收样板/KMFA_项目成本专题报告预览_v0_6_blue_zero_delta.html"
+  ],
+  "validation_commands": [
+    "python3 KMFA/tools/check_required_html.py",
+    "python3 KMFA/tools/no_omission_check.py",
+    "python3 scripts/lean_governance.py validate --project KMFA",
+    "python3 scripts/validate_project_governance.py --project KMFA",
+    "git diff --check -- KMFA"
+  ]
+}

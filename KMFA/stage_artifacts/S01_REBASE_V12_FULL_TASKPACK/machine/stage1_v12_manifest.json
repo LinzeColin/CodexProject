@@ -1,0 +1,47 @@
+{
+  "schema_version": "kmfa.stage_artifact.v1",
+  "project_id": "KMFA",
+  "artifact_id": "KMFA-S01-V12-REBASE-20260629",
+  "stage": "S01",
+  "phase": "S01-v1.2-REPLAY",
+  "status": "completed_validated",
+  "created_at": "2026-06-29T18:42:29+10:00",
+  "baseline_version": "v1.2_FULL_HTML_NO_OMISSION",
+  "source_zip_sha256": "3bb2ebf16fb4ad8b9d198484e9d80ea2aed3c19c54c483efebe023b772ad0e66",
+  "repo_baseline_root": "KMFA/taskpack/v1_2",
+  "html_file_count": 45,
+  "core_html_file_count": 7,
+  "raw_private_files_committed": false,
+  "validation": [
+    {
+      "command": "python3 KMFA/tools/check_required_html.py",
+      "result": "PASS"
+    },
+    {
+      "command": "python3 KMFA/tools/no_omission_check.py",
+      "result": "PASS"
+    },
+    {
+      "command": "python3 -m json.tool KMFA/metadata/baseline/source_package_v1_2.json",
+      "result": "PASS"
+    },
+    {
+      "command": "python3 -m json.tool KMFA/metadata/baseline/html_acceptance_samples_v1_2.json",
+      "result": "PASS"
+    },
+    {
+      "command": "python3 scripts/lean_governance.py validate --project KMFA",
+      "result": "PASS"
+    },
+    {
+      "command": "python3 scripts/validate_project_governance.py --project KMFA",
+      "result": "PASS"
+    },
+    {
+      "command": "git diff --check -- KMFA",
+      "result": "PASS"
+    }
+  ],
+  "stage_review_status": "PASS_UPLOAD_READY",
+  "next_gate": "KMFA-S03-GATE_AFTER_V12_BASELINE"
+}

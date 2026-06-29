@@ -1,0 +1,430 @@
+# KMFA 经营分析系统 - 公式、阈值、权重与参数注册表 v0.2
+# 阶段：ChatGPT 阶段一讨论稿
+# 作用：确保经营健康雷达、数据源检查板、资金预警、项目真实利润、税务政策准备度等不是装饰图，而是有函数、参数、证据和维护边界。
+# 注意：本文件是系统设计与开发合同草案，不构成会计、税务、审计、法律或投资建议。
+
+registry:
+  project: KMFA
+  chinese_name: 经营分析系统
+  project_path: CodexProject/KMFA
+  stage: chatgpt_stage_1
+  version: 0.2-stage1
+  ui_logo_text: KM
+  report_language: zh-CN
+  primary_users:
+    - 经营负责人
+    - 财务负责人
+    - 税务政策负责人
+    - 董事层
+  industry_scope:
+    - 建工建安
+    - 机电机加工
+    - 水泥钢铁能源化工委外安装维修
+  design_principles:
+    - 先算清楚，再解释清楚
+    - 报告呈现经营结果，不暴露内部技术流程
+    - 唯一合法账本，多阅读视图，多口径核对
+    - 缺关键数据时，对应报告章节降级或阻塞
+    - 所有关键数字必须有来源、公式、期间和证据索引
+    - 不保存明文账号密码，不把敏感原始数据提交到公开 GitHub
+    - 前期独立开发，后期保留 OpMe 接入位
+
+status_taxonomy:
+  READY:
+    zh_label: 已就绪
+    color: green
+    meaning: 数据已上传或已同步，字段映射、质量校验和新鲜度校验通过，可推进相关报告章节。
+  PARTIAL:
+    zh_label: 部分/阻塞
+    color: yellow
+    meaning: PARTIAL 与 BLOCKING 合并；部分数据可用，但存在字段缺口、新鲜度问题或关键映射缺失，相关结论必须降级或阻塞。
+  FAILED:
+    zh_label: 失败/不适用
+    color: red
+    meaning: FAILED 与 NOT_APPLICABLE 合并；表示导入失败、缺关键文件包、权限失败、或当前场景不适用但仍需记录原因。
+  OUTDATED:
+    zh_label: 已过期
+    color: black
+    meaning: 原 STALE 改名；数据超过 freshness 阈值，不能支撑当前报告周期的确定结论。
+  MANUAL_REVIEW:
+    zh_label: 人工复核
+    color: purple
+    meaning: 数据存在口径冲突、异常金额、项目归属不明、税率/发票不一致或需要负责人确认。
+
+# 经营健康指数：系统首页可视化使用；报告中只显示结果与影响因素。
+operating_health_index:
+  function: weighted_average
+  formula: "sum(axis_score_i * axis_weight_i) / sum(axis_weight_i)"
+  score_range: [0, 100]
+  display_name: 经营健康指数
+  axes:
+    cash_safety:
+      zh_name: 现金安全
+      weight: 0.22
+      owner: 财务负责人
+      data_sources:
+        - 银行流水.交易流水
+        - 银行流水.余额表
+        - 金蝶.应收应付明细
+        - 红圈.回款计划
+        - 合同与协议.付款节点
+      components:
+        cash_runway_days:
+          zh_name: 现金安全天数
+          weight: 0.35
+          formula: "score_by_threshold(runway_days, safe>=120, caution>=60, danger<60)"
+        near_term_cash_gap:
+          zh_name: 未来八周资金缺口
+          weight: 0.25
+          formula: "100 - min(max(projected_gap / monthly_fixed_outflow * 100, 0), 100)"
+        collection_dependency:
+          zh_name: 回款依赖度
+          weight: 0.20
+          formula: "100 - concentration_score(top_3_expected_collections / total_expected_collections)"
+        payment_pressure:
+          zh_name: 应付压力
+          weight: 0.20
+          formula: "100 - score_by_ratio(due_payables_next_30d / available_cash)"
+      thresholds:
+        safe: ">=80"
+        watch: "60-79"
+        risk: "<60"
+    real_project_profit:
+      zh_name: 项目真实利润
+      weight: 0.20
+      owner: 财务负责人
+      data_sources:
+        - 红圈.项目收入支出
+        - 金蝶.凭证明细
+        - WPS.报价与投标表
+        - 合同与协议.签证变更
+        - 税务/数电票.进项发票明细
+      components:
+        real_gross_margin:
+          zh_name: 项目真实毛利率
+          weight: 0.34
+          formula: "(recognized_project_revenue - normalized_project_cost - management_adjustments) / recognized_project_revenue"
+        ledger_margin_gap:
+          zh_name: 账面与管理视图差异
+          weight: 0.22
+          formula: "100 - min(abs(book_margin - management_margin) * 250, 100)"
+        cost_completeness:
+          zh_name: 成本完整度
+          weight: 0.24
+          formula: "required_cost_fields_ready / required_cost_fields_total * 100"
+        change_order_recovery:
+          zh_name: 签证变更回收质量
+          weight: 0.20
+          formula: "confirmed_change_order_amount / submitted_change_order_amount * 100"
+    collection_quality:
+      zh_name: 回款质量
+      weight: 0.16
+      owner: 经营负责人
+      data_sources:
+        - 红圈.回款计划
+        - 金蝶.应收应付明细
+        - WPS.账期与催收表
+        - 银行流水.交易流水
+      components:
+        overdue_ratio:
+          zh_name: 逾期应收占比
+          weight: 0.32
+          formula: "100 - min(overdue_receivables / total_receivables * 100, 100)"
+        dispute_ratio:
+          zh_name: 争议款占比
+          weight: 0.22
+          formula: "100 - min(disputed_receivables / total_receivables * 100, 100)"
+        collection_plan_accuracy:
+          zh_name: 回款计划准确度
+          weight: 0.24
+          formula: "collected_as_planned / planned_collections * 100"
+        bank_matching_rate:
+          zh_name: 银行入账匹配率
+          weight: 0.22
+          formula: "matched_bank_receipts / total_bank_receipts * 100"
+    tax_policy:
+      zh_name: 税务政策
+      weight: 0.16
+      owner: 税务政策负责人
+      data_sources:
+        - 税务/数电票.销项发票明细
+        - 税务/数电票.进项发票明细
+        - 金蝶.科目余额表
+        - WPS.发票台账
+        - 政策证据材料
+      components:
+        invoice_tax_rate_match:
+          zh_name: 发票税率匹配
+          weight: 0.25
+          formula: "matched_invoice_tax_rate_count / invoice_count * 100"
+        input_output_vat_match:
+          zh_name: 进销项匹配质量
+          weight: 0.25
+          formula: "matched_input_output_tax_items / required_tax_items * 100"
+        r_and_d_evidence_completeness:
+          zh_name: 研发证据完整度
+          weight: 0.25
+          formula: "ready_rd_evidence_items / required_rd_evidence_items * 100"
+        policy_readiness:
+          zh_name: 政策资质准备度
+          weight: 0.25
+          formula: "weighted_average(kexiao_readiness, high_tech_readiness, specialized_sme_readiness, rd_super_deduction_readiness)"
+    contract_delivery:
+      zh_name: 合同履约
+      weight: 0.14
+      owner: 经营负责人
+      data_sources:
+        - 红圈.项目进度
+        - 合同与协议.主合同与补充协议
+        - WPS.项目台账
+      components:
+        on_time_progress:
+          zh_name: 进度匹配度
+          weight: 0.30
+          formula: "actual_progress / planned_progress * 100 capped at 100"
+        quality_rework_pressure:
+          zh_name: 返工压力
+          weight: 0.20
+          formula: "100 - rework_cost / recognized_project_revenue * 100"
+        contract_clause_risk:
+          zh_name: 合同条款风险
+          weight: 0.25
+          formula: "100 - clause_risk_points"
+        settlement_completion:
+          zh_name: 结算完成度
+          weight: 0.25
+          formula: "confirmed_settlement_amount / expected_settlement_amount * 100"
+    data_governance:
+      zh_name: 数据治理
+      weight: 0.12
+      owner: 系统管理员
+      data_sources:
+        - metadata.imports
+        - metadata.data_quality
+        - metadata.lineage
+        - metadata.report_manifest
+      components:
+        source_readiness:
+          zh_name: 数据源就绪度
+          weight: 0.35
+          formula: "ready_required_packages / required_packages * 100"
+        freshness:
+          zh_name: 数据新鲜度
+          weight: 0.25
+          formula: "fresh_packages / required_packages * 100"
+        lineage_completeness:
+          zh_name: 证据链完整度
+          weight: 0.25
+          formula: "metrics_with_lineage / key_metrics_total * 100"
+        manual_review_backlog:
+          zh_name: 人工复核积压
+          weight: 0.15
+          formula: "100 - min(open_manual_review_items * 8, 100)"
+
+# 系统内部机制：报告中不出现英文 Reconciliation，不把内部流程当成经营结论。
+accounting_view_bridge:
+  display_policy:
+    internal_name: accounting_view_bridge
+    report_label: 口径差异与管理调整摘要
+    report_rule: 报告只披露影响经营判断的差异摘要；完整核对流程留在系统治理和证据链中。
+  principle: 唯一合法账本 + 经营补充数据 + 资金核对 + 税务匹配 + 管理视图
+  input_layers:
+    legal_ledger:
+      zh_name: 唯一账本
+      primary_sources:
+        - 金蝶.科目余额表
+        - 金蝶.凭证明细
+        - 金蝶.利润表/现金流量表
+    project_layer:
+      zh_name: 项目经营层
+      primary_sources:
+        - 红圈.项目主数据
+        - 红圈.项目收入支出
+        - WPS.项目台账
+    contract_layer:
+      zh_name: 合同与结算层
+      primary_sources:
+        - 合同与协议.主合同
+        - 合同与协议.补充协议
+        - 合同与协议.签证变更
+    cash_layer:
+      zh_name: 资金核对层
+      primary_sources:
+        - 银行流水.交易流水
+        - 银行流水.余额表
+        - 银行流水.回单
+    tax_layer:
+      zh_name: 税务政策层
+      primary_sources:
+        - 税务/数电票.销项发票
+        - 税务/数电票.进项发票
+        - WPS.发票台账
+  adjustment_types:
+    unconfirmed_change_order:
+      zh_name: 未确认签证变更
+      report_treatment: 暂列待确认收益，不进入确定性利润。
+    cross_period_cost:
+      zh_name: 成本跨期归集
+      report_treatment: 按项目发生期形成管理分析，不改变法定账本。
+    unmatched_bank_receipt:
+      zh_name: 银行回款未核销
+      report_treatment: 现金已改善，应收账龄待匹配后更新。
+    invoice_tax_rate_mismatch:
+      zh_name: 发票税率不一致
+      report_treatment: 进入税务政策复核清单，不自动处理。
+  required_fields_per_adjustment:
+    - adjustment_id
+    - source_record_ids
+    - source_hashes
+    - company_entity
+    - project_id
+    - amount
+    - period
+    - reason
+    - owner
+    - review_status
+    - report_visibility
+
+cash_forecast:
+  display_name: 现金安全预测
+  periods:
+    weekly: 8
+    monthly: 6
+  formula: "opening_cash + confirmed_collections + probability_weighted_expected_collections - committed_payments - expected_operating_outflows"
+  collection_probability_factors:
+    contract_due_status: 0.25
+    invoice_issued_status: 0.20
+    customer_payment_history: 0.20
+    dispute_status: 0.20
+    bank_matching_history: 0.15
+  alert_thresholds:
+    red: "projected_cash < safety_cash_floor or runway_days < 45"
+    yellow: "runway_days between 45 and 90 or top_3_collections_dependency > 0.55"
+    green: "runway_days >= 90 and no critical_account_missing"
+
+project_profit_engine:
+  display_name: 项目真实利润引擎
+  core_formula: "management_project_profit = recognized_revenue - direct_material - direct_labor - subcontract_cost - machine_cost - logistics_cost - tax_cost - site_expense - warranty_risk_reserve - confirmed_adjustments"
+  margin_formula: "management_project_margin = management_project_profit / recognized_revenue"
+  required_dimensions:
+    - project_id
+    - contract_id
+    - customer_id
+    - company_entity
+    - project_type
+    - period
+    - cost_category
+    - invoice_status
+    - collection_status
+  cost_categories:
+    - 人工
+    - 材料
+    - 机械
+    - 外协
+    - 运输吊装
+    - 加工
+    - 差旅
+    - 安全环保
+    - 质保风险
+    - 税费
+    - 其他现场费用
+
+policy_readiness:
+  display_name: 政策资质准备度
+  policy_types:
+    kexiao:
+      zh_name: 科技型中小企业
+      required_evidence:
+        - 企业基础信息
+        - 科技人员
+        - 研发项目
+        - 研发费用
+        - 知识产权或科技成果
+    high_tech:
+      zh_name: 高新技术企业
+      required_evidence:
+        - 知识产权
+        - 技术领域匹配
+        - 科技人员比例
+        - 研发费用专项口径
+        - 高新收入映射
+        - 近三年财务资料
+        - 企业所得税年度纳税申报资料
+    rd_super_deduction:
+      zh_name: 研发费用加计扣除
+      required_evidence:
+        - 研发项目立项
+        - 研发人员工时
+        - 研发费用归集
+        - 研发成果或过程记录
+        - 非研发活动剔除记录
+    specialized_sme:
+      zh_name: 专精特新/小巨人
+      required_evidence:
+        - 主营业务与产业链配套
+        - 创新能力材料
+        - 经营指标材料
+        - 质量管理材料
+        - 知识产权和研发材料
+  report_rule: 缺证据时只生成材料缺口清单，不生成肯定性政策资格结论。
+
+data_readiness_gate:
+  display_name: 数据源检查板
+  hierarchy:
+    - 来源系统
+    - 业务板块
+    - 文件包/数据包
+    - 公司主体
+    - 银行/系统账户
+    - 账户/报表
+  rules:
+    missing_required_package:
+      status: PARTIAL
+      effect: 相关报告章节阻塞或降级。
+    expired_package:
+      status: OUTDATED
+      effect: 周报/月报不能使用该数据生成确定性结论。
+    import_error:
+      status: FAILED
+      effect: 记录失败原因并提示重新上传或授权。
+    data_conflict:
+      status: MANUAL_REVIEW
+      effect: 进入人工复核队列；复核前只能生成差异提示。
+    ready_package:
+      status: READY
+      effect: 允许进入指标计算和报告生成。
+
+notification_rules:
+  email_to: linzezhang35@gmail.com
+  principle: 只发提醒，不发送完整财务、合同、税务、银行或工资明细。
+  triggers:
+    weekly_report_ready: 周报生成完成，提醒查看。
+    monthly_report_ready: 月报生成完成，提醒查看。
+    critical_cash_risk: 现金安全低于阈值，提醒登录查看。
+    data_source_outdated: 关键数据源过期，提醒补充。
+    manual_review_backlog: 人工复核事项积压，提醒处理。
+    tax_policy_risk: 税率、发票或政策证据异常，提醒复核。
+
+metadata_required_files:
+  - metadata/sources/source_registry.yaml
+  - metadata/sources/source_schedule.yaml
+  - metadata/imports/import_runs.jsonl
+  - metadata/data_quality/data_readiness_board.json
+  - metadata/data_quality/validation_results.jsonl
+  - metadata/lineage/evidence_index.jsonl
+  - metadata/lineage/metric_lineage.jsonl
+  - metadata/reports/report_manifest.jsonl
+  - metadata/notifications/notification_log.jsonl
+  - metadata/approvals/human_review_log.jsonl
+
+opme_future_integration:
+  phase: after_KMFA_MVP_stabilized
+  allowed_integration:
+    - OpMe 首页入口卡片
+    - 统一报告中心索引
+    - 共享运行状态 manifest
+    - 只读跨系统导航
+  forbidden_in_stage_1_to_mvp:
+    - 直接改造 OpMe 主业务代码
+    - 把 KMFA 敏感数据写入 OpMe 运行目录
+    - 与 OpMe 工业运维模型混用财务税务数据
