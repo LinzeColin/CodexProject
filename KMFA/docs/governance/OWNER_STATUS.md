@@ -4,7 +4,7 @@
 
 ## 一句话状态
 
-KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 `S03-P1｜文件型导入`、`S03-P2｜数据源检查矩阵` 和 `S03-P3｜源优先级`：现在可以生成文件登记 metadata、数据源检查矩阵，并把跨源冲突放入人工差异队列；项目仍不是可用业务系统。
+KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 `S04-P1｜金额工具`：现在可以把金额标准化为整数分，并检查 KMFA Python 代码中禁止的 float 金额用法；项目仍不是可用业务系统。
 
 ## 你现在能信任什么
 
@@ -25,12 +25,13 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 `S03-P1｜文件型导入
 - S03-P3 源优先级工具已存在，固定 `raw_upload -> authorized_export -> raw_extracted_value -> staging_structured_row -> canonical_fact -> derived_metric -> report_reference -> frontend_display -> processed_data`，同源不一致失效重跑，跨源冲突不自动选边。
 - Stage 3 整体复审已通过，发现的源优先级链路对齐问题已修复。
 - Stage 3 已整体上传 GitHub main，reviewed content commit `39b0eef52424a12b6c0c8ad368bd878b46300be4`。
+- S04-P1 金额工具已存在，覆盖元、万元、千元、千分位、负数、括号负数、float 禁止和异常输入不默认为 0。
 
 ## 你现在不能信任什么
 
 - 不能认为项目成本分析已经实现。
-- 不能认为金额精度、字段解析、事实层或报告已经实现。
-- 不能认为金额精度、zero-delta 或 lineage 完整检查已正式实现。
+- 不能认为字段解析、事实层或报告已经实现。
+- 不能认为 zero-delta 或 lineage 完整检查已正式实现。
 - 不能认为 Stage 1 已经实现业务功能。
 - 不能把 S02-P3 的报告等级协议当成真实报告生成能力。
 - 不能跳过 v1.2 HTML/报告样板门禁继续做 S10/S11/S12/S18。
@@ -38,4 +39,4 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 `S03-P1｜文件型导入
 
 ## 下一步
 
-下一步只执行 `S04-P1｜金额工具`，不扩大到 UI、报告、事实层或自动接口。
+下一步只执行 `S04-P2｜字段标准化`，不扩大到 S04-P3、UI、报告、事实层或自动接口。

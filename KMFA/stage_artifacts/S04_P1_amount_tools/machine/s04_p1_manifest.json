@@ -1,0 +1,24 @@
+{
+  "acceptance_gate": "KMFA-S04-P1-GATE",
+  "evidence_refs": [
+    "KMFA/tools/amount_tools.py",
+    "KMFA/tools/check_no_float_money.py",
+    "KMFA/tests/test_amount_tools.py",
+    "KMFA/stage_artifacts/S04_P1_amount_tools/human/s04_p1_completion_record.md",
+    "KMFA/stage_artifacts/S04_P1_amount_tools/human/test_results.md"
+  ],
+  "fact_level": "EXTRACTED",
+  "github_upload": false,
+  "phase": "S04-P1",
+  "private_or_raw_business_data_committed": false,
+  "record_type": "phase_manifest",
+  "stage": "S04",
+  "status": "completed_validated_local_only",
+  "tasks": [
+    "S4PAT01",
+    "S4PAT02",
+    "S4PAT03"
+  ],
+  "updated_at": "2026-06-29",
+  "version": "0.1.0-s04p1"
+}

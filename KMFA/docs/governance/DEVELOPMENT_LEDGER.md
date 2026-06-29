@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.0-s03p3
+product_version: 0.1.0-s04p1
 
 ## Current Iteration
 
 - project_id: `KMFA`
-- current_stage: `S03`
-- current_phase: `S03-P3 源优先级`
-- current_tasks: `S3PCT01-S3PCT03`
-- status: `s03_uploaded_to_github_main`
+- current_stage: `S04`
+- current_phase: `S04-P1 金额工具`
+- current_tasks: `S4PAT01-S4PAT03`
+- status: `s04_p1_completed_validated_local_only`
 - risk_tier: `T3`
 
 ## Completed
@@ -40,11 +40,13 @@ product_version: 0.1.0-s03p3
 | `S3PCT01-S3PCT03` | S03-P3 源优先级、同源失效重跑事件和跨源差异队列入口完成 | `KMFA/stage_artifacts/S03_P3_source_priority/human/s03_p3_completion_record.md` |
 | `KMFA-S03-STAGE-REVIEW-20260629` | Stage 3 整体复审通过，源优先级链路对齐 finding 已修复 | `KMFA/stage_artifacts/S03_STAGE_REVIEW/human/stage3_review_report.md` |
 | `KMFA-S03-GITHUB-UPLOAD-20260629` | Stage 3 整体上传 GitHub main | `39b0eef52424a12b6c0c8ad368bd878b46300be4` |
+| `S4PAT01-S4PAT03` | S04-P1 金额标准化、no-float 检查和异常输入拒绝策略完成 | `KMFA/stage_artifacts/S04_P1_amount_tools/human/s04_p1_completion_record.md` |
 
 ## Not Completed
 
 | Task | Reason | Next |
 |---|---|---|
-| `S04/S06` amount and zero-delta implementation | 后续 Stage | 按 Roadmap 单 Stage/Phase 推进 |
-| S04-P1 金额工具 | 后续 Stage，尚未开始 | 下一轮只执行 S04-P1 |
+| S04-P2 字段标准化 | 后续 Phase，尚未开始 | 下一轮只执行 S04-P2 |
+| S04-P3 基础工具测试 | 后续 Phase，尚未开始 | S04-P2 完成后再执行 |
+| `S06` zero-delta implementation | 后续 Stage | 按 Roadmap 单 Stage/Phase 推进 |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |
