@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-06-29 13:34:38 Australia/Sydney - S2PLT03-AUDIT-BLOCKER-ZERO-PROOF-SYNC
+
+- Updated `audit-s2plt03-resilience-readiness` so S2PLT03 `audit_blockers` derives P0/P1 zero state from the committed `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json` artifact validation.
+- Current S2PLT03 audit remains blocked / exit 2, but now reports `audit_blockers.status=pass`, `audit_blockers.checks.P0_zero=true`, `audit_blockers.checks.P1_zero=true`, inherited audit-blocker counts `P0=0` / `P1=0`, and report hash `3483d4a8c4248d3a41cfae5db4febbe7c9d42368ae6ae9311d0c5a9819d13466`, superseding `d8cdd55b7848c6b7745a0707522f0277c7b7ef2f82e2ca2a0152e5c520211333`.
+- Remaining blocker is `s2plt02_not_accepted`; no S2PLT03 acceptance, S2PLT04 completion report, final command execution, handoff, signoff, final manifest, SMTP, scheduler, Release, restore, CURRENT/V7 changes, DAILY_OPERATION, or integrated production acceptance is created or enabled.
+
 ## 2026-06-29 13:10:37 Australia/Sydney - S2PMT07-S2PLT01-ENTRY-PRECHECK-ZERO-PROOF-SYNC
 
 - Updated `audit-s2plt01-terminal-acceptance` to expose `current_entry_precheck_zero_proof_readiness.status=pass` from committed replay evidence plus committed P0/P1 zero-proof artifact validation.

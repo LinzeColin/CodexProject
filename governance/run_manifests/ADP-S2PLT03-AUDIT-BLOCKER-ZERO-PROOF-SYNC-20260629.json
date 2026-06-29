@@ -1,0 +1,95 @@
+{
+  "schema_version": "codexproject.run_manifest.v1",
+  "project_id": "arxiv-daily-push",
+  "task_id": "S2PLT03-AUDIT-BLOCKER-ZERO-PROOF-SYNC",
+  "task_ids": [
+    "S2PLT03-AUDIT-BLOCKER-ZERO-PROOF-SYNC",
+    "S2PLT03",
+    "S2PLT04",
+    "ACC-S2PLT03-RESILIENCE"
+  ],
+  "phase": "S2PL",
+  "generated_at": "2026-06-29T13:34:38+10:00",
+  "base_commit": "6d6b1d545665fb80077136472c8be52e99cfa7fa",
+  "fact_level": "EXTRACTED",
+  "summary": "S2PLT03 resilience readiness audit now makes audit_blockers match the committed P0/P1 zero-proof artifact validation while keeping S2PLT03 blocked by S2PLT02 acceptance.",
+  "result": "blocked_s2plt03_audit_blocker_zero_proof_consistent_s2plt02_not_accepted_no_production",
+  "cli_command": "adp audit-s2plt03-resilience-readiness --json",
+  "cli_exit_code": 2,
+  "report_hash": "3483d4a8c4248d3a41cfae5db4febbe7c9d42368ae6ae9311d0c5a9819d13466",
+  "supersedes_report_hash": "d8cdd55b7848c6b7745a0707522f0277c7b7ef2f82e2ca2a0152e5c520211333",
+  "local_drill_bundle_hash": "23eb644a4fc53afcf3ca78a0e5ee6fa2c998057ccfa953143e9ffb7c1b91115f",
+  "p0_p1_zero_proof_artifact_validation_status": "pass",
+  "p0_zero": true,
+  "p1_zero": true,
+  "audit_blockers_status": "pass",
+  "audit_blockers_p0_zero": true,
+  "audit_blockers_p1_zero": true,
+  "audit_blockers_inherited_v7_1_open_p0_findings": 0,
+  "audit_blockers_inherited_v7_1_open_p1_findings": 0,
+  "s2plt02_accepted": false,
+  "s2plt03_accepted": false,
+  "s2plt03_resilience_drill_completed": false,
+  "blocking_reasons": [
+    "s2plt02_not_accepted"
+  ],
+  "model_ids_changed": [
+    "MOD-ADP-116"
+  ],
+  "formula_ids_changed": [
+    "FORM-ADP-118"
+  ],
+  "parameter_ids_changed": [],
+  "top_level_p0_p1_stop_gate_closed": false,
+  "final_acceptance_bundle_present": false,
+  "s2plt04_completed": false,
+  "production_acceptance_claimed": false,
+  "integrated_production_accepted": false,
+  "stage2_integrated_production_accepted": false,
+  "daily_operation_enabled": false,
+  "real_smtp_sent": false,
+  "real_smtp_send_enabled": false,
+  "scheduler_enabled": false,
+  "scheduler_install_enabled": false,
+  "release_uploaded": false,
+  "release_packaging_enabled": false,
+  "production_restore_enabled": false,
+  "production_restore_executed": false,
+  "public_schema_changed": false,
+  "db_migration_executed": false,
+  "production_queue_mutated": false,
+  "source_adapter_changed": false,
+  "source_or_board_changed": false,
+  "ranking_algorithm_changed": false,
+  "current_pointer_changed": false,
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false,
+  "evidence_refs": [
+    "governance/run_manifests/ADP-S2PLT03-AUDIT-BLOCKER-ZERO-PROOF-SYNC-20260629.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PLT03_AUDIT_BLOCKER_ZERO_PROOF_SYNC.md",
+    "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
+    "governance/run_manifests/ADP-S2PLT03-ZERO-PROOF-RESILIENCE-SYNC-20260629.json",
+    "governance/run_manifests/ADP-S2PLT03-LOCAL-RESILIENCE-DRILL-20260628.json",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py",
+    "arxiv-daily-push/tests/test_stage2_final_gate.py"
+  ],
+  "test_results": [
+    "TDD red failed as expected because S2PLT03 audit_blockers still reported blocked even though the committed zero-proof artifact validation passed",
+    "focused final-gate tests: 84 OK",
+    "audit CLI returned blocked / exit 2 with audit_blockers.status=pass and remaining blocker s2plt02_not_accepted"
+  ],
+  "tests_run": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt03_zero_red PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt03_zero_green PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt03_zero_cli_now PYTHONPATH=arxiv-daily-push/src python3 -B -m arxiv_daily_push.cli audit-s2plt03-resilience-readiness --json"
+  ],
+  "branch_cleanup": {
+    "branch_or_pr_created_by_this_run": false,
+    "branches_deleted_by_this_run": [],
+    "branches_retained_by_this_run": [],
+    "closeout_recheck_required": true,
+    "note": "No PR is created by this run. Closeout must recheck GitHub open PR count and ADP/arxiv/s2p remote branch scan before push."
+  },
+  "rollback": "Revert S2PLT03 audit_blockers zero-proof consistency logic, focused regression test, phase record, manifest, traceability row, delivery/event records, generated views, and three base records; no runtime production state was changed.",
+  "next_task": "SUPPLY_REAL_S2PLT02_ACCEPTANCE_BEFORE_S2PLT03_TERMINAL_ACCEPTANCE_OR_S2PLT04_REPORT"
+}

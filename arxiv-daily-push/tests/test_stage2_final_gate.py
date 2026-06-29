@@ -525,6 +525,23 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(report["s2plt03_resilience_drill_completed"])
         self.assertEqual(validate_s2plt03_resilience_precheck_report(report), [])
 
+    def test_s2plt03_resilience_precheck_audit_blockers_match_committed_zero_proof(self) -> None:
+        report = build_s2plt03_resilience_precheck_report(
+            generated_at="2026-06-29T12:12:00+10:00",
+            repo_root=REPO_ROOT,
+        )
+
+        self.assertEqual(report["p0_p1_zero_proof_artifact_validation"]["status"], "pass")
+        self.assertEqual(report["audit_blockers"]["status"], "pass")
+        self.assertTrue(report["audit_blockers"]["checks"]["P0_zero"])
+        self.assertTrue(report["audit_blockers"]["checks"]["P1_zero"])
+        self.assertEqual(report["audit_blockers"]["inherited_v7_1_open_p0_findings"], 0)
+        self.assertEqual(report["audit_blockers"]["inherited_v7_1_open_p1_findings"], 0)
+        self.assertEqual(report["blocking_reasons"], ["s2plt02_not_accepted"])
+        self.assertFalse(report["inherited_p0_p1_closed"])
+        self.assertFalse(report["s2plt03_accepted"])
+        self.assertFalse(report["integrated_production_accepted"])
+
     def test_s2plt04_dependency_state_keeps_unaccepted_upstream_tasks_blocked(self) -> None:
         state = build_s2plt04_dependency_state()
 

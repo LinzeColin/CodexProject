@@ -4739,3 +4739,23 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+  - task_id: "S2PLT03-AUDIT-BLOCKER-ZERO-PROOF-SYNC"
+    title: "S2PLT03 audit-blocker zero-proof sync"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-29T13:34:38+10:00"
+    summary: "Make S2PLT03 audit_blockers match the committed P0/P1 zero-proof artifact validation while keeping S2PLT03 and S2PLT04 blocked by S2PLT02 acceptance."
+    owner: "content_owner + engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT03_AUDIT_BLOCKER_ZERO_PROOF_SYNC.md", "governance/run_manifests/ADP-S2PLT03-AUDIT-BLOCKER-ZERO-PROOF-SYNC-20260629.json"]
+    acceptance_ids: ["ACC-S2PLT03-RESILIENCE"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt03_zero_red PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt03_zero_green PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt03_zero_cli_now PYTHONPATH=arxiv-daily-push/src python3 -B -m arxiv_daily_push.cli audit-s2plt03-resilience-readiness --json"]
+    test_results: ["TDD red failed as expected because S2PLT03 audit_blockers still reported blocked even though the committed zero-proof artifact validation passed", "focused final-gate tests: 84 OK", "audit CLI returned blocked / exit 2 with audit_blockers.status=pass and remaining blocker s2plt02_not_accepted"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PLT03-AUDIT-BLOCKER-ZERO-PROOF-SYNC-20260629.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT03_AUDIT_BLOCKER_ZERO_PROOF_SYNC.md", "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json", "governance/run_manifests/ADP-S2PLT03-ZERO-PROOF-RESILIENCE-SYNC-20260629.json", "governance/run_manifests/ADP-S2PLT03-LOCAL-RESILIENCE-DRILL-20260628.json", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
+    result: "S2PLT03 audit_blockers now report status=pass, P0_zero=true, P1_zero=true, and inherited open P0/P1 counts 0 from committed zero-proof artifact validation; remaining blocker is S2PLT02 acceptance."
+    risk: "The audit-blocker pass can be misread as S2PLT03 acceptance unless s2plt03_accepted=false and s2plt03_resilience_drill_completed=false remain explicit."
+    rollback: "Revert S2PLT03 audit_blockers zero-proof consistency logic, focused regression test, phase record, manifest, traceability row, delivery/event records, generated views, and three base records; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

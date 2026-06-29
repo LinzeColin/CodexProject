@@ -2028,11 +2028,18 @@ def build_s2plt03_resilience_precheck_report(
     dependencies = build_s2plt03_dependency_state()
     local_drill_bundle = build_s2plt03_local_resilience_drill_bundle(generated_at=generated_at)
     evidence = build_s2plt03_resilience_evidence_state(local_drill_bundle=local_drill_bundle)
-    audit_blockers = build_audit_blocker_state()
     if load_committed_artifacts and p0_p1_zero_proof is None:
         p0_p1_zero_proof = _load_committed_p0_p1_zero_proof(repo_root)
     p0_p1_zero_proof_artifact_validation = build_p0_p1_zero_proof_artifact_validation_state(
         p0_p1_zero_proof
+    )
+    audit_blockers = build_audit_blocker_state(
+        inherited_p0=0
+        if p0_p1_zero_proof_artifact_validation["p0_zero_proven_by_payload"]
+        else S2PMT07_INHERITED_V7_1_OPEN_P0_FINDINGS,
+        inherited_p1=0
+        if p0_p1_zero_proof_artifact_validation["p1_zero_proven_by_payload"]
+        else S2PMT07_INHERITED_V7_1_OPEN_P1_FINDINGS,
     )
     available_evidence = evidence["available_evidence"]
     gates = {

@@ -30,30 +30,29 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn(f"- Current task: `{expected_task}`", current_state)
         self.assertIn(f"### `{current_iteration}`", ledger)
 
-    def test_s2pmt07_current_state_summary_describes_s2plt01_entry_precheck_zero_proof_sync(self) -> None:
+    def test_s2pmt07_current_state_summary_describes_s2plt03_audit_blocker_zero_proof_sync(self) -> None:
         ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
-            "S2PMT07_S2PLT01_ENTRY_PRECHECK_ZERO_PROOF_SYNC_BLOCKED_NO_ACCEPTANCE",
+            "S2PLT03_AUDIT_BLOCKER_ZERO_PROOF_SYNC_BLOCKED_S2PLT02_NOT_ACCEPTED",
             current_state,
         )
-        self.assertIn("S2PMT07-S2PLT01-ENTRY-PRECHECK-ZERO-PROOF-SYNC", current_state)
-        self.assertIn("current_entry_precheck_zero_proof_readiness.status=pass", current_state)
-        self.assertIn("entry_precheck_passed=true", current_state)
-        self.assertIn("replay_payload_execution_package_passed=true", current_state)
-        self.assertIn("observed_replay_days=30", current_state)
-        self.assertIn("observed_mail_previews=120", current_state)
-        self.assertIn("source_terminal_states_proven=true", current_state)
-        self.assertIn("future_leakage_count=0", current_state)
-        self.assertIn("p0_p1_blocker_count=0", current_state)
-        self.assertIn("47394faede126c943dc46b3ca2ae0c8680d5ef32f1f26f4618e3064fcbc28171", current_state)
-        self.assertIn("b7c0b96f4cdc570a935680f52dd3804b262ef4898630df8cfadc9ce2796eb55b", current_state)
-        self.assertIn("full_replay_executed=false", current_state)
-        self.assertIn("S2PLT01_ACCEPTED=false", current_state)
-        self.assertIn("review_receipt_is_nonterminal", current_state)
+        self.assertIn("S2PLT03-AUDIT-BLOCKER-ZERO-PROOF-SYNC", current_state)
+        self.assertIn("p0_p1_zero_proof_artifact_validation.status=pass", current_state)
+        self.assertIn("audit_blockers.status=pass", current_state)
+        self.assertIn("audit_blockers.checks.P0_zero=true", current_state)
+        self.assertIn("audit_blockers.checks.P1_zero=true", current_state)
+        self.assertIn("P0=0", current_state)
+        self.assertIn("P1=0", current_state)
+        self.assertIn("3483d4a8c4248d3a41cfae5db4febbe7c9d42368ae6ae9311d0c5a9819d13466", current_state)
+        self.assertIn("d8cdd55b7848c6b7745a0707522f0277c7b7ef2f82e2ca2a0152e5c520211333", current_state)
+        self.assertIn("s2plt02_not_accepted", current_state)
+        self.assertIn("S2PLT02_ACCEPTED=false", current_state)
+        self.assertIn("S2PLT03_ACCEPTED=false", current_state)
+        self.assertIn("S2PLT03_RESILIENCE_DRILL_COMPLETED=false", current_state)
         self.assertIn("FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json", current_state)
-        self.assertIn("does not accept S2PLT01", current_state)
+        self.assertIn("does not accept S2PLT03", current_state)
         self.assertIn("does not execute final commands", current_state)
         self.assertIn("does not accept production", current_state)
 
