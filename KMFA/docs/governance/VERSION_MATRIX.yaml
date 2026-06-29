@@ -1,7 +1,7 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
 product_version: "0.1.0-s04p3"
-product_version_status: "s04_p3_completed_validated_local_only_stage_review_pending"
+product_version_status: "s04_stage_review_passed_upload_ready_local_only"
 version_file_value: "0.1.0-s04p3"
 schema_version: "1.0.0"
 model_versions:
@@ -27,6 +27,6 @@ parameter_profile_versions:
   kmfa_basic_tool_tests: "0.1.0-s04p3"
   kmfa_project_cost_mvp: "planned"
 data_snapshot_version: "not_applicable_no_raw_data_committed"
-current_iteration: "ITER-20260629-KMFA-S04-P3-BASIC-TOOL-TESTS"
-current_phase: "S04-P3"
-current_gate: "KMFA-S04-STAGE-REVIEW-GATE"
+current_iteration: "ITER-20260629-KMFA-S04-STAGE-REVIEW"
+current_phase: "S04-STAGE-REVIEW"
+current_gate: "KMFA-S04-FINAL-GITHUB-UPLOAD-GATE"

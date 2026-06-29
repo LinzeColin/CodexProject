@@ -1,0 +1,51 @@
+{
+  "acceptance_gate": "KMFA-S04-STAGE-REVIEW-GATE",
+  "branch": "codex/kmfa-s04-stage-review",
+  "github_upload_status": "not_pushed",
+  "raw_business_data_used": false,
+  "review_id": "KMFA-S04-STAGE-REVIEW-20260629",
+  "review_time": "2026-06-29T23:14:00+10:00",
+  "reviewed_head": "e098d16bb036282120e1ec31ce0c2af573269237",
+  "scope": [
+    "S04-P1",
+    "S04-P2",
+    "S04-P3",
+    "Stage 4 owner-readable entries",
+    "Stage 4 governance status",
+    "public repository safety boundary"
+  ],
+  "stage": "S04",
+  "status": "pass_upload_ready_local_only",
+  "findings": [
+    {
+      "finding_id": "KMFA-S04-REV-F01",
+      "severity": "P2",
+      "status": "fixed",
+      "summary": "FEAT-KMFA-016 detail was missing from 功能清单.md and has been added."
+    },
+    {
+      "finding_id": "KMFA-S04-REV-F02",
+      "severity": "P2",
+      "status": "passed",
+      "summary": "Stage 4 artifacts use synthetic boundary values and no raw business data."
+    },
+    {
+      "finding_id": "KMFA-S04-REV-F03",
+      "severity": "P2",
+      "status": "passed",
+      "summary": "Stage 4 remains tooling only and does not claim A0, zero-delta, fact, report, UI, or connector capability."
+    },
+    {
+      "finding_id": "KMFA-S04-REV-F04",
+      "severity": "P3",
+      "status": "accepted_next_step",
+      "summary": "GitHub upload remains a separate final upload step with required push proof."
+    }
+  ],
+  "evidence_refs": [
+    "KMFA/stage_artifacts/S04_STAGE_REVIEW/human/stage4_review_report.md",
+    "KMFA/stage_artifacts/S04_STAGE_REVIEW/human/test_results.md",
+    "KMFA/stage_artifacts/S04_STAGE_REVIEW/machine/stage4_review_manifest.json"
+  ],
+  "next_gate": "KMFA-S04-FINAL-GITHUB-UPLOAD-GATE"
+}
