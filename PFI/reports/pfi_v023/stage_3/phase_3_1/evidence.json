@@ -1,0 +1,123 @@
+{
+  "version": "v0.2.3",
+  "stage": "Stage 3",
+  "stage_name": "10 个一级入口与真实路由系统",
+  "phase_id": "V023-S3-P3.1",
+  "phase_name": "一级入口实现",
+  "status": "candidate_pass",
+  "allowed_files_obeyed": true,
+  "history_deprecation_policy_obeyed": true,
+  "no_mock_financial_data": true,
+  "current_phase_only": true,
+  "max_one_phase_per_run": true,
+  "commands": [
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage3_navigation_routes.py -q",
+      "exit_code": 1,
+      "summary": "RED before implementation: 3 failed, 2 passed"
+    },
+    {
+      "command": "git fetch origin main --prune",
+      "exit_code": 0,
+      "summary": "origin/main advanced from c27c89e9 to a9a97e64; no PFI file changes in the remote delta"
+    },
+    {
+      "command": "git merge --ff-only origin/main",
+      "exit_code": 0,
+      "summary": "worktree fast-forwarded to a9a97e64 before final Phase 3.1 validation"
+    },
+    {
+      "command": "Google Chrome headless via playwright-core on PFI/web/index.html",
+      "exit_code": 0,
+      "summary": "browser_validation.json written and screenshots/primary_nav.png captured"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage3_navigation_routes.py -q",
+      "exit_code": 0,
+      "summary": "GREEN after implementation: 5 passed"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q",
+      "exit_code": 0,
+      "summary": "v0.2.3 regression suite: 51 passed"
+    },
+    {
+      "command": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/routes.js",
+      "exit_code": 0,
+      "summary": "routes.js syntax check passed"
+    },
+    {
+      "command": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js",
+      "exit_code": 0,
+      "summary": "shell.js syntax check passed"
+    },
+    {
+      "command": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/dataStatus.js",
+      "exit_code": 0,
+      "summary": "dataStatus.js syntax check passed"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/tests/test_v023_stage3_navigation_routes.py",
+      "exit_code": 0,
+      "summary": "Stage 3 navigation test compiles"
+    },
+    {
+      "command": "PFI/.venv/bin/python -m json.tool PFI/reports/pfi_v023/stage_3/phase_3_1/evidence.json",
+      "exit_code": 0,
+      "summary": "evidence.json is valid JSON"
+    },
+    {
+      "command": "PFI/.venv/bin/python -m json.tool PFI/reports/pfi_v023/stage_3/phase_3_1/browser_validation.json",
+      "exit_code": 0,
+      "summary": "browser_validation.json is valid JSON"
+    },
+    {
+      "command": "git diff --check -- PFI",
+      "exit_code": 0,
+      "summary": "no whitespace errors in working diff"
+    },
+    {
+      "command": "git diff --check origin/main...HEAD -- PFI",
+      "exit_code": 0,
+      "summary": "no whitespace errors against origin/main comparison"
+    }
+  ],
+  "changed_files": [
+    "PFI/docs/pfi_v023/STAGE3_NAVIGATION_ROUTES.md",
+    "PFI/reports/pfi_v023/stage_3/phase_3_1/browser_validation.json",
+    "PFI/reports/pfi_v023/stage_3/phase_3_1/changed_files.txt",
+    "PFI/reports/pfi_v023/stage_3/phase_3_1/evidence.json",
+    "PFI/reports/pfi_v023/stage_3/phase_3_1/screenshots/primary_nav.png",
+    "PFI/reports/pfi_v023/stage_3/phase_3_1/terminal.log",
+    "PFI/tests/test_v023_stage3_navigation_routes.py",
+    "PFI/web/app/routes.js",
+    "PFI/web/app/shell.js",
+    "PFI/web/index.html",
+    "PFI/web/styles.css"
+  ],
+  "screenshots": [
+    "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_3/phase_3_1/screenshots/primary_nav.png"
+  ],
+  "bundle_hash": null,
+  "app_entry_checked": false,
+  "localhost_checked": false,
+  "data_status_summary": {
+    "stage2_status_preserved": true,
+    "data_changes_made": false
+  },
+  "navigation_summary": {
+    "desktop_primary_count": 10,
+    "mobile_primary_count": 10,
+    "market_research_is_primary": true,
+    "v01_aliases_not_top_level": true,
+    "active_state_updates": true
+  },
+  "explicitly_not_done": [
+    "Stage 3 Phase 3.2 v0.1 compatibility route implementation",
+    "Stage 3 Phase 3.3 browser history and direct URL acceptance",
+    "Stage 3 review not run",
+    "Stage 4 subpage differentiation",
+    "GitHub main upload for intermediate phase"
+  ],
+  "requires_user_acceptance": true
+}

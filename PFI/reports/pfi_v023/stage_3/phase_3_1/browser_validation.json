@@ -1,0 +1,33 @@
+{
+  "phase_id": "V023-S3-P3.1",
+  "index_url": "file:///Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/web/index.html",
+  "screenshot_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_3/phase_3_1/screenshots/primary_nav.png",
+  "browser": "Google Chrome headless via playwright-core",
+  "desktop_primary_count_is_10": true,
+  "desktop_labels_match_taskpack": true,
+  "v01_aliases_not_top_level": true,
+  "market_research_is_primary": true,
+  "mobile_primary_count_is_10": true,
+  "mobile_labels_match_taskpack": true,
+  "mobile_has_no_more_bucket": true,
+  "mobile_nav_scrolls_when_needed": true,
+  "active_state_updates": true,
+  "mobile_active_state_updates": true,
+  "desktop_active_state": {
+    "activeLabel": "市场与研究",
+    "workspace": "market_research",
+    "title": "市场与研究",
+    "routeAlias": "/market-research"
+  },
+  "mobile_active_state": {
+    "activeLabel": "投资管理",
+    "workspace": "investment",
+    "title": "投资管理",
+    "routeAlias": "/investment"
+  },
+  "console_errors": [],
+  "network_resource_errors": [
+    "Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  ]
+}

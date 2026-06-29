@@ -1,0 +1,84 @@
+# PFI v0.2.3 Stage 3 Phase 3.1 terminal summary
+phase_id=V023-S3-P3.1
+phase_name=一级入口实现
+repo=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+branch=codex/pfi
+current_phase_only=true
+
+$ pwd -P
+/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+
+$ git status --short --branch
+## codex/pfi...origin/main
+
+$ git fetch origin main --prune
+exit_code=0
+summary=origin/main advanced from c27c89e9 to a9a97e64; no PFI file changes in the remote delta
+
+$ git merge --ff-only origin/main
+exit_code=0
+summary=worktree fast-forwarded to a9a97e64 before final Phase 3.1 validation
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage3_navigation_routes.py -q
+red_exit_code=1
+red_summary=3 failed, 2 passed because mobile primary entries, routes.js, and Phase 3.1 evidence were missing
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage3_navigation_routes.py -q
+exit_code=0
+summary=5 passed
+
+$ /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/routes.js
+exit_code=0
+passed
+
+$ /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js
+exit_code=0
+passed
+
+$ /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/dataStatus.js
+exit_code=0
+passed
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/tests/test_v023_stage3_navigation_routes.py
+exit_code=0
+passed
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q
+exit_code=0
+summary=51 passed
+
+$ PFI/.venv/bin/python -m json.tool PFI/reports/pfi_v023/stage_3/phase_3_1/evidence.json
+exit_code=0
+passed
+
+$ PFI/.venv/bin/python -m json.tool PFI/reports/pfi_v023/stage_3/phase_3_1/browser_validation.json
+exit_code=0
+passed
+
+$ git diff --check -- PFI
+exit_code=0
+passed
+
+$ git diff --check origin/main...HEAD -- PFI
+exit_code=0
+passed
+
+$ Google Chrome headless via playwright-core
+target=PFI/web/index.html
+browser_validation=PFI/reports/pfi_v023/stage_3/phase_3_1/browser_validation.json
+screenshot=PFI/reports/pfi_v023/stage_3/phase_3_1/screenshots/primary_nav.png
+desktop_primary_count_is_10=true
+mobile_primary_count_is_10=true
+v01_aliases_not_top_level=true
+market_research_is_primary=true
+active_state_updates=true
+mobile_active_state_updates=true
+console_errors=[]
+network_resource_errors=2
+
+$ explicitly_not_done
+Stage 3 Phase 3.2 v0.1 compatibility route implementation
+Stage 3 Phase 3.3 browser history and direct URL acceptance
+Stage 3 review not run
+Stage 4 subpage differentiation
+GitHub main upload for intermediate phase
