@@ -151,6 +151,12 @@ def adp_s2pmt07_blocked_next_task(
         or "S2PLT04_COMPLETION_REPORT" in current_gate
         or "S2PLT04 report" in current_alias
     )
+    real_proof_capture_is_next = (
+        "S2PLT02-REAL-PROOF-CAPTURE" in current_iteration
+        or "S2PLT02_REAL_PROOF_CAPTURE" in current_gate
+        or "real-proof capture" in current_alias
+        or "real proof capture" in current_alias
+    )
     if completion_report_is_next:
         return {
             "task_id": "S2PMT07-S2PLT04-COMPLETION-REPORT",
@@ -170,6 +176,28 @@ def adp_s2pmt07_blocked_next_task(
                 "then proceed to final command execution, next-agent handoff, independent "
                 "signoff, and final bundle manifest without claiming production acceptance "
                 "until all final-bundle gates pass."
+            ),
+            "stale_candidates": stale_candidates or [],
+        }
+    if real_proof_capture_is_next:
+        return {
+            "task_id": "S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION",
+            "status": "blocked",
+            "reason": (
+                "S2PLT01 terminal acceptance and P0/P1 zero-proof are validated inputs, "
+                "but S2PLT02 still lacks explicit owner authorization for real SMTP/"
+                "scheduler capture, second consecutive real M1-M4 SMTP day, real "
+                "launchd scheduler proof, and terminal delivery proof artifact."
+            ),
+            "acceptance_ids": ["ACC-S2PLT02-2D", "ACC-S2PMT07-FINAL-REVIEW"],
+            "owner": "content_owner + engineering_owner + independent_final_reviewer",
+            "human_owner_role": "content_owner + engineering_owner + independent_final_reviewer",
+            "unblock_condition": (
+                "First obtain explicit owner authorization for real SMTP/scheduler proof "
+                "capture; then capture a second consecutive real M1-M4 SMTP service day, "
+                "real launchd scheduler proof, and validate "
+                "FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json without "
+                "claiming Stage2 production acceptance."
             ),
             "stale_candidates": stale_candidates or [],
         }

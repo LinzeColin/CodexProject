@@ -326,6 +326,142 @@ class CliTests(unittest.TestCase):
         self.assertIn("two_consecutive_real_days_not_proven", payload["blocking_reasons"])
         self.assertIn("eight_real_emails_not_proven", payload["blocking_reasons"])
 
+    def test_audit_s2plt02_real_proof_capture_readiness_json_blocks_without_authorization_or_scheduler(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            tmp_root = Path(tmp_dir)
+            state_dir = tmp_root / "state"
+            run_dir = state_dir / "runs" / "20260629"
+            run_dir.mkdir(parents=True)
+            products = ["M1", "M2", "M3", "M4"]
+            for product in products:
+                (run_dir / f"adp-smtp-delivery-report-{product}.json").write_text(
+                    json.dumps(
+                        {
+                            "status": "dry_run",
+                            "product_id": product,
+                            "dry_run": True,
+                            "allow_send": False,
+                            "real_send_attempted": False,
+                            "real_smtp_send_enabled": False,
+                        }
+                    ),
+                    encoding="utf-8",
+                )
+            (run_dir / "adp-local-runner-report.json").write_text(
+                json.dumps(
+                    {
+                        "status": "pass",
+                        "production_evidence_ready": False,
+                        "real_smtp_sent": False,
+                        "mail_delivery_summary": {
+                            "planned_send_total": 4,
+                            "planned_mail_products": products,
+                            "dry_run_mail_products": products,
+                            "sent_mail_products": [],
+                            "sent_mail_count": 0,
+                            "status_by_product": {product: "dry_run" for product in products},
+                        },
+                    }
+                ),
+                encoding="utf-8",
+            )
+            launchctl_file = tmp_root / "launchctl-disabled.txt"
+            launchctl_file.write_text(
+                "\n".join(
+                    [
+                        '"com.linze.adp.local.daily" => disabled',
+                        '"com.linze.adp.local.health" => disabled',
+                        '"com.linze.adp.local.watchdog" => disabled',
+                    ]
+                ),
+                encoding="utf-8",
+            )
+            buffer = io.StringIO()
+            with redirect_stdout(buffer):
+                result = main(
+                    [
+                        "audit-s2plt02-real-proof-capture-readiness",
+                        "--repo-root",
+                        str(tmp_root),
+                        "--state-dir",
+                        str(state_dir),
+                        "--service-date",
+                        "2026-06-29",
+                        "--launchctl-disabled-file",
+                        str(launchctl_file),
+                        "--json",
+                    ]
+                )
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(result, 2)
+        self.assertEqual(payload["status"], "blocked")
+        self.assertFalse(payload["safe_to_collect_terminal_proof"])
+        self.assertFalse(payload["real_proof_capture_authorized"])
+        self.assertTrue(payload["all_required_launchagents_disabled"])
+        self.assertIn("real_proof_capture_authorization_missing", payload["blocking_reasons"])
+        self.assertIn("required_launchagents_disabled", payload["blocking_reasons"])
+        self.assertIn("dry_run_second_day_not_terminal", payload["blocking_reasons"])
+
+    def test_validate_s2plt02_real_proof_capture_authorization_blocks_missing_artifact(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            path = Path(tmp_dir) / "s2plt02_real_proof_capture_authorization.json"
+            buffer = io.StringIO()
+            with redirect_stdout(buffer):
+                result = main(
+                    [
+                        "validate-s2plt02-real-proof-capture-authorization",
+                        "--path",
+                        str(path),
+                        "--json",
+                    ]
+                )
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(result, 2)
+        self.assertEqual(payload["status"], "blocked")
+        self.assertFalse(payload["authorization_present"])
+        self.assertFalse(payload["real_proof_capture_authorized_by_payload"])
+        self.assertIn("s2plt02_real_proof_capture_authorization_missing", payload["validation_errors"])
+        self.assertFalse(payload["real_smtp_send_enabled"])
+        self.assertFalse(payload["scheduler_install_enabled"])
+        self.assertFalse(payload["production_acceptance_claimed"])
+        self.assertFalse(payload["integrated_production_accepted"])
+
+    def test_build_s2plt02_real_proof_capture_authorization_owner_packet_json_command(self):
+        buffer = io.StringIO()
+        with redirect_stdout(buffer):
+            result = main(
+                [
+                    "build-s2plt02-real-proof-capture-authorization-owner-packet",
+                    "--readiness-state-hash",
+                    "readiness-hash-001",
+                    "--json",
+                ]
+            )
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["status"], "blocked_owner_action_packet_ready_no_authorization")
+        self.assertEqual(payload["task_id"], "S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION")
+        self.assertEqual(
+            payload["artifact_path"],
+            "FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json",
+        )
+        self.assertEqual(payload["readiness_state_hash"], "readiness-hash-001")
+        self.assertFalse(payload["authorization_artifact_present"])
+        self.assertFalse(payload["real_proof_capture_authorized"])
+        self.assertFalse(payload["real_smtp_send_enabled_by_this_packet"])
+        self.assertFalse(payload["scheduler_install_enabled_by_this_packet"])
+        self.assertFalse(payload["production_acceptance_claimed"])
+        self.assertFalse(payload["integrated_production_accepted"])
+        self.assertIn("s2plt02_real_proof_capture_authorization_missing", payload["blocking_reasons"])
+        self.assertIn(
+            "write_authorization_artifact_only_if_owner_explicitly_approves_real_smtp_scheduler_capture",
+            payload["required_owner_actions"],
+        )
+        self.assertEqual(payload["owner_packet_validation_errors"], [])
+
     def test_validate_s2plt02_terminal_delivery_proof_json_blocks_missing_artifact(self):
         with tempfile.TemporaryDirectory() as tmp_dir:
             buffer = io.StringIO()

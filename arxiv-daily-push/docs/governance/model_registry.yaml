@@ -6421,3 +6421,123 @@ models:
     evidence_hash: "PENDING_MAIN_COMMIT"
     last_verified_commit: "PRECOMMIT"
     verified_at: "2026-06-29T16:33:19+10:00"
+
+
+  -
+    model_id: "MOD-ADP-120"
+    name: "S2PLT02 real-proof capture readiness model"
+    purpose: "Fail-close the step before any real S2PLT02 SMTP/scheduler proof capture can proceed, requiring explicit owner authorization, second real M1-M4 SMTP day, real scheduler proof, terminal proof artifact, and no production side effects."
+    owner: "arxiv-daily-push"
+    status: "active"
+    task_ids:
+      - "S2PLT02-REAL-PROOF-CAPTURE-READINESS"
+      - "S2PLT02"
+      - "S2PMT07"
+    assumption_ids:
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-122"
+    parameter_ids:
+      - "PARAM-ADP-1087"
+      - "PARAM-ADP-1088"
+      - "PARAM-ADP-1089"
+      - "PARAM-ADP-1090"
+    inputs:
+      - "launchctl print-disabled gui/$UID read-only output"
+      - "local ADP state_dir runs/YYYYMMDD reports"
+      - "FINAL_ACCEPTANCE_BUNDLE/s2plt01_terminal_acceptance.json"
+      - "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json"
+    outputs:
+      - "safe_to_collect_terminal_proof"
+      - "real_proof_capture_authorized"
+      - "all_required_launchagents_disabled"
+      - "second_real_delivery_day_present"
+      - "terminal_delivery_proof_artifact_present"
+      - "real_scheduler_proven"
+      - "state_hash"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_final_gate.py"
+      - "arxiv-daily-push/tests/test_cli.py"
+      - "arxiv-daily-push/tests/test_governance_current_state.py"
+      - "arxiv-daily-push/tests/test_user_center_candidate_pool.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_READINESS.md"
+      - "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-20260629.json"
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_REAL_PROOF_CAPTURE_READINESS_MODEL_ID"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_REAL_PROOF_CAPTURE_READINESS_SCOPE"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_REAL_PROOF_CAPTURE_READINESS_REQUIRED_NEXT_ACTIONS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_REAL_PROOF_CAPTURE_READINESS_NO_PRODUCTION_FLAGS"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_s2plt02_real_proof_capture_readiness_state"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::validate_s2plt02_real_proof_capture_readiness_state"
+    implementation_fingerprint: "PENDING_MAIN_COMMIT"
+    evidence_hash: "PENDING_MAIN_COMMIT"
+    last_verified_commit: "PRECOMMIT"
+    verified_at: "2026-06-29T17:41:57+10:00"
+
+
+  -
+    model_id: "MOD-ADP-121"
+    name: "S2PLT02 real-proof capture authorization artifact gate"
+    purpose: "Validate only an explicit owner authorization artifact for future S2PLT02 real SMTP/scheduler proof capture while keeping the current state blocked when the artifact is missing and preserving all no-production flags."
+    owner: "arxiv-daily-push"
+    status: "active"
+    task_ids:
+      - "S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION"
+      - "S2PLT02"
+      - "S2PMT07"
+    assumption_ids:
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-123"
+    parameter_ids:
+      - "PARAM-ADP-1091"
+      - "PARAM-ADP-1092"
+      - "PARAM-ADP-1093"
+      - "PARAM-ADP-1094"
+      - "PARAM-ADP-1095"
+      - "PARAM-ADP-1096"
+      - "PARAM-ADP-1097"
+      - "PARAM-ADP-1098"
+      - "PARAM-ADP-1099"
+      - "PARAM-ADP-1100"
+      - "PARAM-ADP-1101"
+    inputs:
+      - "FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json"
+      - "S2PLT02 real-proof capture readiness state hash"
+      - "explicit owner/coordinator authorization fields"
+      - "no-production side-effect flags"
+    outputs:
+      - "authorization_present"
+      - "real_proof_capture_authorized_by_payload"
+      - "owner packet state"
+      - "validation_errors"
+      - "state_hash"
+    code_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py"
+      - "arxiv-daily-push/src/arxiv_daily_push/cli.py"
+    test_refs:
+      - "arxiv-daily-push/tests/test_stage2_final_gate.py"
+      - "arxiv-daily-push/tests/test_cli.py"
+      - "arxiv-daily-push/tests/test_governance_current_state.py"
+      - "arxiv-daily-push/tests/test_user_center_candidate_pool.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION.md"
+      - "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-20260629.json"
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs:
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_ARTIFACT_PATH"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_SCHEMA_VERSION"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_MODEL_ID"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_SCOPE"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::validate_s2plt02_real_proof_capture_authorization_artifact"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_s2plt02_real_proof_capture_authorization_owner_packet_state"
+      - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::build_s2plt02_real_proof_capture_authorization_validation_state"
+    implementation_fingerprint: "PENDING_MAIN_COMMIT"
+    evidence_hash: "PENDING_MAIN_COMMIT"
+    last_verified_commit: "PRECOMMIT"
+    verified_at: "2026-06-29T18:04:46+10:00"

@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-06-29 17:41:57 Australia/Sydney - S2PLT02-REAL-PROOF-CAPTURE-READINESS
+
+- Added `audit-s2plt02-real-proof-capture-readiness --json` and fail-closed readiness logic before any real S2PLT02 SMTP/scheduler proof capture can be treated as terminal evidence.
+- Current readiness is blocked / exit 2 with `safe_to_collect_terminal_proof=false`, `real_proof_capture_authorized=false`, `all_required_launchagents_disabled=true`, `second_real_delivery_day_present=false`, `terminal_delivery_proof_artifact_present=false`, `real_scheduler_proven=false`, and state hash `819b1c3911892ce861fd5ba5bdde0dc381e303076beea684f35eb94c75975463`.
+- Remaining blockers are `real_proof_capture_authorization_missing;required_launchagents_disabled;second_real_delivery_day_missing;dry_run_second_day_not_terminal;s2plt02_terminal_delivery_proof_artifact_missing;real_scheduler_not_proven`. S2PLT01 terminal acceptance and P0/P1 zero-proof are validated inputs, but S2PLT02/S2PLT03/S2PLT04/S2PMT07 acceptance and integrated production acceptance remain false.
+- No SMTP, scheduler, Release, production restore, CURRENT/V7 contract, public schema, DB migration, source adapter, ranking, or production queue behavior was enabled or changed.
+
 ## 2026-06-29 16:33:19 Australia/Sydney - S2PLT02-DRY-RUN-SECOND-DAY-AUDIT
 
 - Added `audit-s2plt02-dry-run-second-day --json` and fail-closed S2PLT02 dry-run audit logic so the 2026-06-29 local M1-M4 dry-run trace is visible but cannot be counted as the second real delivery day.
@@ -701,3 +708,4 @@
 - Added S2PLT02 partial real delivery evidence binding for the recorded 2026-06-28 M1-M4 resend: one observed real natural day and four observed emails now feed the two-day precheck, while S2PLT02 acceptance and production gates remain blocked.
 - Added S2PMT07 independent final reviewer assignment owner packet while preserving missing assignment artifact, P0=8/P1=37, no-production, and no-integrated-acceptance blockers.
 - Added S2PMT07 final bundle committed artifact consumption so readiness consumes committed final-bundle artifacts through nested validators while preserving missing-final-bundle, P0=8/P1=37, no-production, and no-integrated-acceptance blockers.
+- Added S2PLT02 real-proof capture authorization artifact gate and owner packet validation while preserving missing-authorization, no SMTP/scheduler, no Release/restore, no CURRENT/V7 change, and no integrated production acceptance blockers.
