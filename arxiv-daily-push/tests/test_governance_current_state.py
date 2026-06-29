@@ -30,22 +30,26 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn(f"- Current task: `{expected_task}`", current_state)
         self.assertIn(f"### `{current_iteration}`", ledger)
 
-    def test_s2pmt07_current_state_summary_describes_s2plt01_zero_proof_sync(self) -> None:
+    def test_s2pmt07_current_state_summary_describes_s2plt01_replay_payload_sync(self) -> None:
         ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
-            "S2PMT07_S2PLT01_ZERO_PROOF_READINESS_SYNC_BLOCKED_NO_ACCEPTANCE",
+            "S2PMT07_S2PLT01_REPLAY_PAYLOAD_READINESS_SYNC_BLOCKED_NO_ACCEPTANCE",
             current_state,
         )
-        self.assertIn("S2PMT07-S2PLT01-ZERO-PROOF-READINESS-SYNC", current_state)
-        self.assertIn("consumes committed `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json`", current_state)
-        self.assertIn("P0/P1 zero-proof is now `pass`", current_state)
+        self.assertIn("S2PMT07-S2PLT01-REPLAY-PAYLOAD-READINESS-SYNC", current_state)
+        self.assertIn("verifies the existing no-production S2PLT01 replay payload execution package", current_state)
+        self.assertIn("replay_payload_execution_package_passed=true", current_state)
+        self.assertIn("observed_replay_days=30", current_state)
+        self.assertIn("observed_mail_previews=120", current_state)
+        self.assertIn("source_terminal_states_proven=true", current_state)
+        self.assertIn("47394faede126c943dc46b3ca2ae0c8680d5ef32f1f26f4618e3064fcbc28171", current_state)
         self.assertIn("full_replay_executed=false", current_state)
         self.assertIn("S2PLT01_ACCEPTED=false", current_state)
-        self.assertIn("independent replay review receipt remains nonterminal", current_state)
+        self.assertIn("review_receipt_is_nonterminal", current_state)
         self.assertIn("FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json", current_state)
-        self.assertIn("does not create the real S2PLT04 completion report", current_state)
+        self.assertIn("does not accept S2PLT01", current_state)
         self.assertIn("does not execute final commands", current_state)
         self.assertIn("does not accept production", current_state)
 
@@ -60,10 +64,11 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertNotIn('task_id: "S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT"', assurance)
         self.assertNotIn("next_task_id: `S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT`", owner_status)
         for text in (assurance, owner_status):
+            text_lower = text.lower()
             self.assertIn("S2PMT07", text)
             self.assertIn("S2PMT07-S2PLT04-COMPLETION-REPORT", text)
             self.assertIn("ACC-S2PMT07-FINAL-REVIEW", text)
-            self.assertIn("independent final reviewer assignment", text)
+            self.assertIn("independent final reviewer assignment", text_lower)
             self.assertIn("P0/P1 zero-proof", text)
             self.assertNotIn(stale_option, text)
             self.assertNotIn("ACC-S2PLT02-2D", text)

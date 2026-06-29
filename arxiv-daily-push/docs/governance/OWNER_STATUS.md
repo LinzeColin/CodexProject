@@ -6,7 +6,7 @@ arxiv-daily-push 当前治理结论：实现一致性为 `VERIFIED`，方法/实
 
 ## 2. 本次运行改变了什么
 
-Owner 视图现在把 S2PLT01 terminal audit 与提交的 P0/P1 zero-proof artifact 对齐：`inherited_p0_zero=true`、`inherited_p1_zero=true`。S2PLT01 仍因 full replay、非终局 review receipt 和 `S2PLT01_ACCEPTED=false` 阻断；第二真实自然日、8 封真实邮件、真实 scheduler、S2PLT03 terminal acceptance、S2PLT04 completion report 和最终包仍阻断。
+Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。
 
 ## 3. 为什么重要
 
@@ -21,7 +21,7 @@ Owner 视图现在把 S2PLT01 terminal audit 与提交的 P0/P1 zero-proof artif
 
 ## 5. 默认建议
 
-- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat independent reviewer assignment and FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json as validated zero-proof inputs, keep S2PLT01 zero-proof readiness aligned, and next obtain S2PLT01/S2PLT02/S2PLT03 terminal evidence before writing S2PLT04 completion proof, final bundle manifest, independent final signoff, final command execution proof, no-production attestation, and next-agent handoff.
+- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat independent reviewer assignment and FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json as validated zero-proof inputs, and next obtain S2PLT01/S2PLT02/S2PLT03 terminal evidence before writing S2PLT04 completion proof, final bundle manifest, independent final signoff, final command execution proof, no-production attestation, and next-agent handoff.
 - estimated_effort: P0/P1; contract hash, AGENTS, 三基文件, validator/test, no production side effect
 - estimated_cost_or_resource: local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner
 
@@ -34,7 +34,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - next_task_id: `S2PMT07-S2PLT04-COMPLETION-REPORT`
 - responsible_role: `content_owner + engineering_owner + independent_final_reviewer`
 - acceptance_ids: `ACC-S2PMT07-FINAL-REVIEW`
-- unblock_condition: Provide real S2PLT01 terminal acceptance, second real natural day, eight total real M1-M4 emails, real scheduler proof, and S2PLT03 terminal resilience proof before writing the S2PLT04 completion report; then proceed to final command execution, next-agent handoff, independent signoff, and final bundle manifest without claiming production acceptance until all final-bundle gates pass.
+- unblock_condition: Provide real S2PLT04 completion report after S2PLT01/S2PLT02/S2PLT03 terminal evidence and P0/P1 zero-proof inputs are truthfully available; then proceed to final command execution, next-agent handoff, independent signoff, and final bundle manifest without claiming production acceptance until all final-bundle gates pass.
 
 ## 8. 九层 Assurance 状态
 
@@ -56,14 +56,14 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 ## 10. Current Blockers
 
-1. S2PLT01 terminal audit now consumes P0/P1 zero-proof, but full replay, terminal acceptance, and terminal review receipt are still missing.
-2. S2PLT02 still lacks second real natural day, eight total real emails, and real scheduler proof.
-3. S2PLT03 terminal resilience proof, S2PLT04 completion report, final bundle manifest, independent signoff, final command execution, and production acceptance remain blocked.
+1. S2PLT01 terminal acceptance, S2PLT02 two-day/eight-email/scheduler terminal proof, S2PLT03 terminal resilience proof, S2PLT04 completion report, governance validator, lean render proof, and no-production-side-effect evidence
+2. content_owner + engineering_owner must provide project-specific evidence before readiness can improve.
+3. content_owner + engineering_owner must provide project-specific evidence before readiness can improve.
 
 ## 11. Evidence Required To Unblock
 
 - evidence_required: S2PLT01 terminal acceptance, S2PLT02 two-day/eight-email/scheduler terminal proof, S2PLT03 terminal resilience proof, S2PLT04 completion report, governance validator, lean render proof, and no-production-side-effect evidence
-- principal_risks: 将 validate-final-command-execution CLI validator、P0/P1 zero-proof artifact validation、S2PLT02 delivery evidence ledger 或 2026-06-28 M4 watermark proof record 误读为 final commands executed、S2PLT02 acceptance、真实两日运行、scheduler proof、S2PLT04 完成、S2PMT07 通过或 production stop gate 解除
+- principal_risks: 将 validate-final-command-execution CLI validator、P0/P1 zero-proof artifact validation、S2PLT02 delivery evidence ledger 或 2026-06-28 M4 watermark proof record 误读为 final commands executed、S2PLT02 acceptance、真实两日运行、scheduler proof、S2PLT04 完成、S2PMT07 通过或生产 stop gate 解除
 - generated_from_refs: `arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml, arxiv-daily-push/docs/governance/delivery_tasks.yaml`
 
 ## 12. Model Formula Parameter Change
@@ -78,16 +78,16 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PMT07_S2PLT01_ZERO_PROOF_READINESS_SYNC_BLOCKED_NO_ACCEPTANCE`
+- release_gate: `S2PMT07_S2PLT01_REPLAY_PAYLOAD_READINESS_SYNC_BLOCKED_NO_ACCEPTANCE`
 
 ## 14. Evidence Freshness
 
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `0`
 - commit_bound_events: `4`
-- legacy_unbound_events: `249`
+- legacy_unbound_events: `254`
 - precommit_pending_events: `40`
-- pending_or_stale_events: `288`
+- pending_or_stale_events: `293`
 
 ## 15. UNKNOWN
 
@@ -97,13 +97,13 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 
 - source_base_commit: `fd90a208c7b009aa11bc26c4629a7ea92679c5ff`
 - source_tree_hash: `c44d743a2833842b3cc0dd9e098fb70017cdc5a2`
-- source_snapshot_hash: `sha256:a4bb2aa1529ab2e719e847c15e7cc53103a1ca90b644ee225041f9a63769c9aa`
-- snapshot_event_time: `2026-06-29T12:23:25+10:00`
+- source_snapshot_hash: `sha256:41f8dba420d0ec4c2448b3e29045fd457c33d0a8af8df3a1acb20584526090ff`
+- snapshot_event_time: `2026-06-29T12:42:41+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PM / S2PMT07_S2PLT01_ZERO_PROOF_READINESS_SYNC_BLOCKED_NO_ACCEPTANCE`
+- phase/gate: `S2PM / S2PMT07_S2PLT01_REPLAY_PAYLOAD_READINESS_SYNC_BLOCKED_NO_ACCEPTANCE`
 
 ## 17. Next Unique Task
 
 - task_id: `S2PMT07-S2PLT04-COMPLETION-REPORT`
-- reason: independent final reviewer assignment and P0/P1 zero-proof artifacts are validated for the final-bundle chain; S2PLT04 completion report is the next required blocked artifact before final command, handoff, signoff, manifest, or production acceptance can proceed.
+- reason: Independent final reviewer assignment and P0/P1 zero-proof artifacts are validated for the final-bundle chain; S2PLT04 completion report is the next required blocked artifact before final command, handoff, signoff, manifest, or production acceptance can proceed.
