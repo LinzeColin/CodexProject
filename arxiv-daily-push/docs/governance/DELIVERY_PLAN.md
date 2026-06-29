@@ -21,12 +21,19 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 258
+- task_count: 259
 - acceptance_count: 127
 
 ## Delivery Tasks
 
 The machine-readable task source is `delivery_tasks.yaml`.
+
+## 2026-06-29 12:23:25 Australia/Sydney - S2PMT07 S2PLT01 Zero-Proof Readiness Sync
+
+- `S2PMT07-S2PLT01-ZERO-PROOF-READINESS-SYNC` makes S2PLT01 terminal acceptance audit consume the committed P0/P1 zero-proof artifact.
+- Current audit remains blocked with `terminal_acceptance_ready=false`, but `inherited_p0_zero=true` and `inherited_p1_zero=true`.
+- Remaining S2PLT01 blockers: `full_replay_not_executed`, `review_receipt_is_nonterminal`, `s2plt01_not_accepted`.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-S2PLT01-ZERO-PROOF-READINESS-SYNC-20260629.json` and `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_S2PLT01_ZERO_PROOF_READINESS_SYNC.md`.
 
 ## 2026-06-29 12:01:17 Australia/Sydney - S2PMT07 S2PLT01 Terminal Acceptance Dependency Order
 

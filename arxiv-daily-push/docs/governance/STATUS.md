@@ -5,7 +5,7 @@
 - source_base_commit: `fd90a208c7b009aa11bc26c4629a7ea92679c5ff`
 - source_tree_hash: `c44d743a2833842b3cc0dd9e098fb70017cdc5a2`
 - source_snapshot_hash: `sha256:a4bb2aa1529ab2e719e847c15e7cc53103a1ca90b644ee225041f9a63769c9aa`
-- snapshot_event_time: `2026-06-29T12:01:17+10:00`
+- snapshot_event_time: `2026-06-29T12:23:25+10:00`
 - generator_version: `4.0.0`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -14,7 +14,7 @@
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - Product version: `0.23.1`
-- Phase/Gate: `S2PM / S2PMT07_S2PLT01_TERMINAL_ACCEPTANCE_DEPENDENCY_ORDER_BLOCKED_NO_ACCEPTANCE`
+- Phase/Gate: `S2PM / S2PMT07_S2PLT01_ZERO_PROOF_READINESS_SYNC_BLOCKED_NO_ACCEPTANCE`
 - Models/Formulas/Parameters total: `118 / 120 / 1072`
 - Active formulas/parameters: `120 / 1055`
 - Machine checked formulas/parameters: `120 / 1055`
@@ -35,15 +35,15 @@
 ## Delivery
 
 - Readiness: `BLOCKED_PRECHECK`
-- Release gate: `S2PMT07_S2PLT01_TERMINAL_ACCEPTANCE_DEPENDENCY_ORDER_BLOCKED_NO_ACCEPTANCE`
+- Release gate: `S2PMT07_S2PLT01_ZERO_PROOF_READINESS_SYNC_BLOCKED_NO_ACCEPTANCE`
 - V7 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - V7 contract hash: `a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d`
 - V7 roadmap hash: `7c5f2d842d4f6b909343c953fe39b4a4aa540d168199747a9f7decdb1aad9bd1`
 - V7.1 parallel audit: `ADP-V7.2-FINAL-BASELINE-REVIEW`
 - V7.1 audit hash: `571b3dbbc78d6dac01bd18472a0358f5ce4c51ac3d590c10d0c02e6453a7ea6c`
 - P0/P1 zero-proof artifact: `pass`
-- S2PLT01 terminal audit dependency order: `downstream S2PLT04/S2PMT07 blockers removed`
-- S2PLT01 remaining blockers: `full_replay_not_executed; inherited_v7_1_p0_findings_open; inherited_v7_1_p1_findings_open; review_receipt_is_nonterminal; s2plt01_not_accepted`
+- S2PLT01 terminal audit zero-proof readiness: `P0_ZERO=true / P1_ZERO=true`
+- S2PLT01 remaining blockers: `full_replay_not_executed; review_receipt_is_nonterminal; s2plt01_not_accepted`
 - S2PLT02 P0/P1 readiness: `P0_ZERO=true / P1_ZERO=true`
 - S2PLT03 P0/P1 readiness: `p0_zero=true / p1_zero=true`
 - S2PLT03 remaining blocker: `s2plt02_not_accepted`

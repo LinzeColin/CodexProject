@@ -30,16 +30,17 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn(f"- Current task: `{expected_task}`", current_state)
         self.assertIn(f"### `{current_iteration}`", ledger)
 
-    def test_s2pmt07_current_state_summary_describes_s2plt01_dependency_order(self) -> None:
+    def test_s2pmt07_current_state_summary_describes_s2plt01_zero_proof_sync(self) -> None:
         ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
-            "S2PMT07_S2PLT01_TERMINAL_ACCEPTANCE_DEPENDENCY_ORDER_BLOCKED_NO_ACCEPTANCE",
+            "S2PMT07_S2PLT01_ZERO_PROOF_READINESS_SYNC_BLOCKED_NO_ACCEPTANCE",
             current_state,
         )
-        self.assertIn("S2PMT07-S2PLT01-TERMINAL-ACCEPTANCE-DEPENDENCY-ORDER", current_state)
-        self.assertIn("removes downstream `s2plt04_not_completed` and `s2pmt07_not_completed`", current_state)
+        self.assertIn("S2PMT07-S2PLT01-ZERO-PROOF-READINESS-SYNC", current_state)
+        self.assertIn("consumes committed `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json`", current_state)
+        self.assertIn("P0/P1 zero-proof is now `pass`", current_state)
         self.assertIn("full_replay_executed=false", current_state)
         self.assertIn("S2PLT01_ACCEPTED=false", current_state)
         self.assertIn("independent replay review receipt remains nonterminal", current_state)

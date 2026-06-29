@@ -23,6 +23,7 @@ from arxiv_daily_push.stage2_replay_gate import (
     build_s2plt01_replay_evidence_state,
     build_s2plt01_replay_payload,
     build_s2plt01_replay_payload_execution_report,
+    build_s2plt01_terminal_acceptance_audit_state,
     validate_s2plt01_entry_precheck_report,
     validate_s2plt01_independent_replay_review_report,
     validate_s2plt01_replay_payload,
@@ -544,6 +545,11 @@ class Stage2ReplayGateTests(unittest.TestCase):
         self.assertTrue(report["review_package_passed"])
         self.assertFalse(report["full_replay_executed"])
         self.assertIn("review_receipt_is_nonterminal", report["blocking_reasons"])
+        self.assertTrue(report["terminal_gates"]["inherited_p0_zero"])
+        self.assertTrue(report["terminal_gates"]["inherited_p1_zero"])
+        self.assertEqual(report["p0_p1_zero_proof_artifact_validation"]["status"], "pass")
+        self.assertNotIn("inherited_v7_1_p0_findings_open", report["blocking_reasons"])
+        self.assertNotIn("inherited_v7_1_p1_findings_open", report["blocking_reasons"])
         self.assertNotIn("s2plt04_not_completed", report["blocking_reasons"])
         self.assertNotIn("s2pmt07_not_completed", report["blocking_reasons"])
         self.assertNotIn("s2plt04_completed", report["terminal_gates"])
@@ -552,6 +558,22 @@ class Stage2ReplayGateTests(unittest.TestCase):
         self.assertFalse(report["integrated_production_accepted"])
         self.assertFalse(report["real_smtp_sent"])
         self.assertFalse(report["scheduler_enabled"])
+
+    def test_terminal_acceptance_audit_consumes_committed_p0_p1_zero_proof(self) -> None:
+        report = build_s2plt01_terminal_acceptance_audit_state(repo_root=Path(__file__).resolve().parents[2])
+
+        self.assertEqual(report["status"], "blocked")
+        self.assertFalse(report["terminal_acceptance_ready"])
+        self.assertTrue(report["terminal_gates"]["inherited_p0_zero"])
+        self.assertTrue(report["terminal_gates"]["inherited_p1_zero"])
+        self.assertEqual(report["p0_p1_zero_proof_artifact_validation"]["status"], "pass")
+        self.assertNotIn("inherited_v7_1_p0_findings_open", report["blocking_reasons"])
+        self.assertNotIn("inherited_v7_1_p1_findings_open", report["blocking_reasons"])
+        self.assertIn("full_replay_not_executed", report["blocking_reasons"])
+        self.assertIn("review_receipt_is_nonterminal", report["blocking_reasons"])
+        self.assertIn("s2plt01_not_accepted", report["blocking_reasons"])
+        self.assertFalse(report["production_acceptance_claimed"])
+        self.assertFalse(report["integrated_production_accepted"])
 
 
 if __name__ == "__main__":
