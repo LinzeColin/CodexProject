@@ -1,0 +1,196 @@
+{
+  "phase_id": "V023-S3-P3.2",
+  "index_url": "file:///Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/web/index.html",
+  "screenshot_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_3/phase_3_2/screenshots/alias_routes.png",
+  "browser": "Google Chrome headless via playwright-core",
+  "alias_route_results": [
+    {
+      "label": "首页",
+      "targetWorkspace": "home",
+      "routeAlias": "/home/today",
+      "resolvedRouteAlias": "/home",
+      "observed": {
+        "workspace": "home",
+        "routeAlias": "/home",
+        "title": "首页总览",
+        "activePrimary": [
+          "首页总览"
+        ],
+        "primaryLabels": [
+          "首页总览",
+          "账户与资产",
+          "账本流水",
+          "投资管理",
+          "消费管理",
+          "数据源与上传",
+          "建议与复盘",
+          "报告与洞察",
+          "市场与研究",
+          "设置"
+        ],
+        "hash": "#/home",
+        "functionDetailVisible": false
+      },
+      "pass": true
+    },
+    {
+      "label": "市场",
+      "targetWorkspace": "market_research",
+      "routeAlias": "/market/watch",
+      "resolvedRouteAlias": "/market-research?tab=market",
+      "observed": {
+        "workspace": "market_research",
+        "routeAlias": "/market-research?tab=market",
+        "title": "市场与研究",
+        "activePrimary": [
+          "市场与研究"
+        ],
+        "primaryLabels": [
+          "首页总览",
+          "账户与资产",
+          "账本流水",
+          "投资管理",
+          "消费管理",
+          "数据源与上传",
+          "建议与复盘",
+          "报告与洞察",
+          "市场与研究",
+          "设置"
+        ],
+        "hash": "#/market-research?tab=market",
+        "functionDetailVisible": false
+      },
+      "pass": true
+    },
+    {
+      "label": "研究",
+      "targetWorkspace": "market_research",
+      "routeAlias": "/market/research",
+      "resolvedRouteAlias": "/market-research?tab=research",
+      "observed": {
+        "workspace": "market_research",
+        "routeAlias": "/market-research?tab=research",
+        "title": "市场与研究",
+        "activePrimary": [
+          "市场与研究"
+        ],
+        "primaryLabels": [
+          "首页总览",
+          "账户与资产",
+          "账本流水",
+          "投资管理",
+          "消费管理",
+          "数据源与上传",
+          "建议与复盘",
+          "报告与洞察",
+          "市场与研究",
+          "设置"
+        ],
+        "hash": "#/market-research?tab=research",
+        "functionDetailVisible": false
+      },
+      "pass": true
+    },
+    {
+      "label": "持仓",
+      "targetWorkspace": "investment",
+      "routeAlias": "/investment/holdings",
+      "resolvedRouteAlias": "/investment?tab=holdings",
+      "observed": {
+        "workspace": "investment",
+        "routeAlias": "/investment?tab=holdings",
+        "title": "投资管理",
+        "activePrimary": [
+          "投资管理"
+        ],
+        "primaryLabels": [
+          "首页总览",
+          "账户与资产",
+          "账本流水",
+          "投资管理",
+          "消费管理",
+          "数据源与上传",
+          "建议与复盘",
+          "报告与洞察",
+          "市场与研究",
+          "设置"
+        ],
+        "hash": "#/investment?tab=holdings",
+        "functionDetailVisible": false
+      },
+      "pass": true
+    },
+    {
+      "label": "策略实验室",
+      "targetWorkspace": "market_research",
+      "routeAlias": "/market/lab",
+      "resolvedRouteAlias": "/market-research/strategy-lab",
+      "observed": {
+        "workspace": "market_research",
+        "routeAlias": "/market-research/strategy-lab",
+        "title": "市场与研究",
+        "activePrimary": [
+          "市场与研究"
+        ],
+        "primaryLabels": [
+          "首页总览",
+          "账户与资产",
+          "账本流水",
+          "投资管理",
+          "消费管理",
+          "数据源与上传",
+          "建议与复盘",
+          "报告与洞察",
+          "市场与研究",
+          "设置"
+        ],
+        "hash": "#/market-research/strategy-lab",
+        "functionDetailVisible": true
+      },
+      "pass": true
+    },
+    {
+      "label": "数据与系统",
+      "targetWorkspace": "settings",
+      "routeAlias": "/settings/data",
+      "resolvedRouteAlias": "/settings?tab=data-system",
+      "observed": {
+        "workspace": "settings",
+        "routeAlias": "/settings?tab=data-system",
+        "title": "设置",
+        "activePrimary": [
+          "设置"
+        ],
+        "primaryLabels": [
+          "首页总览",
+          "账户与资产",
+          "账本流水",
+          "投资管理",
+          "消费管理",
+          "数据源与上传",
+          "建议与复盘",
+          "报告与洞察",
+          "市场与研究",
+          "设置"
+        ],
+        "hash": "#/settings?tab=data-system",
+        "functionDetailVisible": false
+      },
+      "pass": true
+    }
+  ],
+  "v01_alias_routes_resolve": true,
+  "alias_count_is_6": true,
+  "desktop_primary_count_is_10": true,
+  "desktop_labels_match_taskpack": true,
+  "v01_aliases_not_top_level": true,
+  "strategy_lab_alias_opens_shared_state": true,
+  "command_palette_aliases_static_checked_by_pytest": true,
+  "browser_history_acceptance_deferred_to_phase_3_3": true,
+  "console_errors": [],
+  "network_resource_errors": [
+    "http://127.0.0.1:8766/api/trends net::ERR_CONNECTION_REFUSED",
+    "Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "http://127.0.0.1:8766/api/holdings net::ERR_CONNECTION_REFUSED"
+  ]
+}

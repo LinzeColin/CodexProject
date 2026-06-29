@@ -1,0 +1,10 @@
+PFI/docs/pfi_v023/STAGE3_NAVIGATION_ROUTES.md
+PFI/reports/pfi_v023/stage_3/phase_3_2/browser_validation.json
+PFI/reports/pfi_v023/stage_3/phase_3_2/changed_files.txt
+PFI/reports/pfi_v023/stage_3/phase_3_2/evidence.json
+PFI/reports/pfi_v023/stage_3/phase_3_2/screenshots/alias_routes.png
+PFI/reports/pfi_v023/stage_3/phase_3_2/terminal.log
+PFI/tests/test_v023_stage3_navigation_routes.py
+PFI/web/app/routes.js
+PFI/web/app/shell.js
+PFI/web/index.html

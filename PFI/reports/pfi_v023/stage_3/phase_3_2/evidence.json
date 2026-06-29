@@ -1,0 +1,110 @@
+{
+  "version": "v0.2.3",
+  "stage": "Stage 3",
+  "stage_name": "10 个一级入口与真实路由系统",
+  "phase_id": "V023-S3-P3.2",
+  "phase_name": "v0.1 兼容路由",
+  "status": "candidate_pass",
+  "allowed_files_obeyed": true,
+  "history_deprecation_policy_obeyed": true,
+  "no_mock_financial_data": true,
+  "current_phase_only": true,
+  "max_one_phase_per_run": true,
+  "commands": [
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage3_navigation_routes.py -q",
+      "exit_code": 1,
+      "summary": "RED before implementation: 3 failed, 5 passed because routes.js was still Phase 3.1, shell was not using the Stage 3 alias contract, and Phase 3.2 evidence was missing"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage3_navigation_routes.py -q",
+      "exit_code": 1,
+      "summary": "RED after adding command palette coverage: 2 failed, 7 passed because static command aliases still used old internal routes and Phase 3.2 evidence was missing"
+    },
+    {
+      "command": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/routes.js",
+      "exit_code": 0,
+      "summary": "routes.js syntax check passed"
+    },
+    {
+      "command": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js",
+      "exit_code": 0,
+      "summary": "shell.js syntax check passed"
+    },
+    {
+      "command": "Google Chrome headless via playwright-core on PFI/web/index.html",
+      "exit_code": 0,
+      "summary": "6 public v0.1 alias routes resolve to owned v0.2.3 workspaces; console_errors=0; screenshot captured"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage3_navigation_routes.py -q",
+      "exit_code": 0,
+      "summary": "GREEN after implementation and evidence: 9 passed"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q",
+      "exit_code": 0,
+      "summary": "v0.2.3 regression suite: 55 passed"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/tests/test_v023_stage3_navigation_routes.py",
+      "exit_code": 0,
+      "summary": "Stage 3 navigation test compiles"
+    },
+    {
+      "command": "PFI/.venv/bin/python -m json.tool PFI/reports/pfi_v023/stage_3/phase_3_2/evidence.json",
+      "exit_code": 0,
+      "summary": "evidence.json is valid JSON"
+    },
+    {
+      "command": "PFI/.venv/bin/python -m json.tool PFI/reports/pfi_v023/stage_3/phase_3_2/browser_validation.json",
+      "exit_code": 0,
+      "summary": "browser_validation.json is valid JSON"
+    },
+    {
+      "command": "git rebase origin/main",
+      "exit_code": 0,
+      "summary": "local Phase 3.1 and Phase 3.2 commits rebased onto origin/main 74b357f1"
+    },
+    {
+      "command": "git diff --check origin/main...HEAD -- PFI",
+      "exit_code": 0,
+      "summary": "no whitespace errors in the Stage 3 local diff against origin/main"
+    }
+  ],
+  "changed_files": [
+    "PFI/docs/pfi_v023/STAGE3_NAVIGATION_ROUTES.md",
+    "PFI/reports/pfi_v023/stage_3/phase_3_2/browser_validation.json",
+    "PFI/reports/pfi_v023/stage_3/phase_3_2/changed_files.txt",
+    "PFI/reports/pfi_v023/stage_3/phase_3_2/evidence.json",
+    "PFI/reports/pfi_v023/stage_3/phase_3_2/screenshots/alias_routes.png",
+    "PFI/reports/pfi_v023/stage_3/phase_3_2/terminal.log",
+    "PFI/tests/test_v023_stage3_navigation_routes.py",
+    "PFI/web/app/routes.js",
+    "PFI/web/app/shell.js",
+    "PFI/web/index.html"
+  ],
+  "screenshots": [
+    "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_3/phase_3_2/screenshots/alias_routes.png"
+  ],
+  "bundle_hash": null,
+  "app_entry_checked": false,
+  "localhost_checked": false,
+  "data_status_summary": {
+    "stage2_status_preserved": true,
+    "data_changes_made": false
+  },
+  "alias_route_summary": {
+    "alias_count": 6,
+    "task_ids": ["T3.2.1", "T3.2.2", "T3.2.3", "T3.2.4"],
+    "public_routes": ["/home/today", "/market/watch", "/market/research", "/investment/holdings", "/market/lab", "/settings/data"],
+    "resolved_routes": ["/home", "/market-research?tab=market", "/market-research?tab=research", "/investment?tab=holdings", "/market-research/strategy-lab", "/settings?tab=data-system"]
+  },
+  "explicitly_not_done": [
+    "Stage 3 Phase 3.3 browser history acceptance",
+    "Stage 4 subpage differentiation",
+    "Stage 3 review not run",
+    "GitHub main upload for intermediate phase"
+  ],
+  "requires_user_acceptance": true
+}

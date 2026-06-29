@@ -21,19 +21,30 @@
   ]);
 
   const legacyAliasEntries = Object.freeze([
-    Object.freeze({ label: "首页", targetWorkspace: "home", routeAlias: "/home" }),
-    Object.freeze({ label: "市场", targetWorkspace: "market_research", routeAlias: "/market-research?tab=market" }),
-    Object.freeze({ label: "研究", targetWorkspace: "market_research", routeAlias: "/market-research?tab=research" }),
-    Object.freeze({ label: "持仓", targetWorkspace: "investment", routeAlias: "/investment?tab=holdings" }),
-    Object.freeze({ label: "策略实验室", targetWorkspace: "market_research", routeAlias: "/market-research/strategy-lab" }),
-    Object.freeze({ label: "数据与系统", targetWorkspace: "settings", routeAlias: "/settings?tab=data-system" }),
+    Object.freeze({ taskId: "T3.2.1", label: "首页", targetWorkspace: "home", routeAlias: "/home/today", resolvedRouteAlias: "/home" }),
+    Object.freeze({ taskId: "T3.2.2", label: "市场", targetWorkspace: "market_research", routeAlias: "/market/watch", resolvedRouteAlias: "/market-research?tab=market" }),
+    Object.freeze({ taskId: "T3.2.2", label: "研究", targetWorkspace: "market_research", routeAlias: "/market/research", resolvedRouteAlias: "/market-research?tab=research" }),
+    Object.freeze({ taskId: "T3.2.3", label: "持仓", targetWorkspace: "investment", routeAlias: "/investment/holdings", resolvedRouteAlias: "/investment?tab=holdings" }),
+    Object.freeze({ taskId: "T3.2.4", label: "策略实验室", targetWorkspace: "market_research", routeAlias: "/market/lab", resolvedRouteAlias: "/market-research/strategy-lab" }),
+    Object.freeze({ taskId: "T3.2.4", label: "数据与系统", targetWorkspace: "settings", routeAlias: "/settings/data", resolvedRouteAlias: "/settings?tab=data-system" }),
   ]);
+
+  const legacyRouteAliasTargets = Object.freeze(Object.fromEntries(
+    legacyAliasEntries.map((entry) => [entry.routeAlias, entry.resolvedRouteAlias])
+  ));
+
+  function resolveLegacyRouteAlias(routeAlias) {
+    const clean = String(routeAlias || "").trim();
+    return legacyRouteAliasTargets[clean] || clean;
+  }
 
   return Object.freeze({
     version: "v0.2.3",
     stage: "Stage 3",
-    phaseId: "V023-S3-P3.1",
+    phaseId: "V023-S3-P3.2",
     officialPrimaryEntries,
     legacyAliasEntries,
+    legacyRouteAliasTargets,
+    resolveLegacyRouteAlias,
   });
 });

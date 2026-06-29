@@ -1,0 +1,74 @@
+# PFI v0.2.3 Stage 3 Phase 3.2 terminal summary
+phase_id=V023-S3-P3.2
+phase_name=v0.1 兼容路由
+repo=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+branch=codex/pfi
+current_phase_only=true
+
+$ pwd -P
+/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+
+$ git status --short --branch
+## codex/pfi...origin/main [ahead 2]
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage3_navigation_routes.py -q
+red_exit_code=1
+red_summary=3 failed, 5 passed because routes.js was still Phase 3.1, shell was not using the Stage 3 alias contract, and Phase 3.2 evidence was missing
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage3_navigation_routes.py -q
+red_exit_code=1
+red_summary=2 failed, 7 passed because static command aliases still used old internal routes and Phase 3.2 evidence was missing
+
+$ /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/routes.js
+exit_code=0
+passed
+
+$ /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js
+exit_code=0
+passed
+
+$ Google Chrome headless via playwright-core
+target=PFI/web/index.html
+browser_validation=PFI/reports/pfi_v023/stage_3/phase_3_2/browser_validation.json
+screenshot=PFI/reports/pfi_v023/stage_3/phase_3_2/screenshots/alias_routes.png
+v01_alias_routes_resolve=true
+alias_count_is_6=true
+desktop_primary_count_is_10=true
+v01_aliases_not_top_level=true
+strategy_lab_alias_opens_shared_state=true
+console_errors=[]
+network_resource_errors=3
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage3_navigation_routes.py -q
+exit_code=0
+summary=9 passed
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q
+exit_code=0
+summary=55 passed
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/tests/test_v023_stage3_navigation_routes.py
+exit_code=0
+passed
+
+$ PFI/.venv/bin/python -m json.tool PFI/reports/pfi_v023/stage_3/phase_3_2/evidence.json
+exit_code=0
+passed
+
+$ PFI/.venv/bin/python -m json.tool PFI/reports/pfi_v023/stage_3/phase_3_2/browser_validation.json
+exit_code=0
+passed
+
+$ git rebase origin/main
+exit_code=0
+summary=local Phase 3.1 and Phase 3.2 commits rebased onto origin/main 74b357f1
+
+$ git diff --check origin/main...HEAD -- PFI
+exit_code=0
+passed
+
+$ explicitly_not_done
+Stage 3 Phase 3.3 browser history acceptance
+Stage 4 subpage differentiation
+Stage 3 review not run
+GitHub main upload for intermediate phase
