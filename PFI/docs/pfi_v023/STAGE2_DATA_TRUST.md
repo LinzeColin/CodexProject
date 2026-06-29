@@ -1,0 +1,31 @@
+# PFI v0.2.3 Stage 2 Phase 2.1 数据状态合同
+
+本 phase 只交付 `Stage 2 Phase 2.1 — 数据状态合同`。目标是把真实数据状态机、核心指标字段、中文状态文案和禁止假财务数据扫描规则固定下来，作为后续真实数据审计与页面门禁的基础。
+
+## 本 Phase 范围
+
+- 定义 `PFI/src/pfi_v02/stage_v023_data_state.py`。
+- 定义 `PFI/web/app/dataStatus.js`。
+- 定义核心指标必须包含的字段：`metric_id`、`label`、`value`、`currency`、`status`、`source`、`as_of`、`evidence_hash`、`message_zh`。
+- 定义状态：`ready`、`confirmed_zero`、`not_loaded`、`not_mounted`、`path_error`、`permission_error`、`parse_error`、`outdated`、`filter_empty`、`calculation_error`、`review_required`。
+- 定义中文空状态和错误状态文案。
+- 定义禁止假财务数据扫描规则。
+
+## 非假零规则
+
+未加载真实数据时不显示 CNY 0.00。只有以下状态允许显示财务数值：
+
+- `ready`：真实数据已加载，并且包含 `source`、`as_of`、`evidence_hash`。
+- `confirmed_zero`：真实数据确认数值为零，并且包含 `source`、`as_of`、`evidence_hash`。
+
+其他状态必须显示中文说明，不得把缺失、路径错误、权限错误、解析失败、过期、筛选为空或计算失败渲染成财务 0。
+
+## 明确未做
+
+本 phase 不做真实数据源路径审计，不统计文件数、记录数、账户数、持仓数或 read model hash；这些属于 Phase 2.2。本 phase 不做页面门禁接入、核心指标 UI 接入或截图验收；这些属于 Phase 2.3。
+
+## 验收
+
+- `test_v023_stage2_data_state_machine.py` 验证 schema、状态、证据链、中文文案、JS 合同和 evidence。
+- `test_v023_no_mock_financial_data.py` 验证禁止假财务数据扫描规则。
+- `node --check PFI/web/app/dataStatus.js` 验证 JS 合同语法。
