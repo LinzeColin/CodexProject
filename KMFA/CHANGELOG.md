@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-s05p2-private-backfill-partial - 2026-06-30
+
+- 对 `S05-P2｜字段级黄金基准` 执行本地私有 hash-only 部分回填，不上传 GitHub。
+- 使用仓库外私有 CSV 回填 8 个 PDF A0 候选的 40 条字段候选 hash/source anchor；1 个 Excel 候选的 5 条字段候选继续 pending。
+- 记录审计结论：本机提供的 `销售绩效考核.zip` 整包 hash/size 与登记 source package 不匹配，但 9 个真实业务成员 hash 与 Stage2 Ring4 registry 匹配；Ring4 前序包 hash 匹配登记值。
+- 新增 S05-P2 private backfill public-safe 证据；公开仓库仍不提交 raw PDF/Excel/zip、私有 CSV、真实字段 raw value 或 normalized value。
+- 保持 S05-P2 未完成、S05-P3 权威锁定未开始、Stage 5 复审和 GitHub upload 不允许。
+
 ## 0.1.0-s05p2-contract - 2026-06-30
 
 - 生成 `S05-P2｜字段级黄金基准` 的 public-safe 字段合同和 A0 golden fixture 候选结构，保持本阶段本地验证，不上传 GitHub。

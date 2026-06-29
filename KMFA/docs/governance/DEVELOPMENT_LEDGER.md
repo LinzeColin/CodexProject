@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.0-s05p2-contract
+product_version: 0.1.0-s05p2-private-backfill-partial
 
 ## Current Iteration
 
 - project_id: `KMFA`
 - current_stage: `S05`
-- current_phase: `S05-P2 字段级黄金基准 public-safe 候选`
+- current_phase: `S05-P2 字段级黄金基准 hash-only 部分回填`
 - current_tasks: `S5PBT01-S5PBT03`
-- status: `s05p2_public_safe_contract_private_values_pending`
+- status: `s05p2_private_backfill_partial_excel_pending`
 - risk_tier: `T3`
 
 ## Completed
@@ -51,13 +51,13 @@ product_version: 0.1.0-s05p2-contract
 
 | Task | Result | Evidence |
 |---|---|---|
-| `S5PBT01-S5PBT03` | S05-P2 public-safe 字段合同和 A0 golden fixture 候选已生成；真实字段值、source anchor 和 private value hash 待私有源或授权字段 CSV 回填 | `KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/s05_p2_completion_record.md` |
+| `S5PBT01-S5PBT03` | S05-P2 public-safe 字段合同和 A0 golden fixture 候选已生成；8 个 PDF 候选共 40 条字段已 hash-only 回填，1 个 Excel 候选 5 条字段仍 pending | `KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/private_backfill_record.md` |
 
 ## Not Completed
 
 | Task | Reason | Next |
 |---|---|---|
-| `S05-P2` private value backfill | 本机未找到私有 `销售绩效考核.zip` 或授权字段抽取 CSV | 下一轮仍执行 S05-P2 私有字段回填与 hash-only 验证 |
-| `S05-P3` authoritative baseline lock | S05-P2 私有字段值和 source anchor 尚未完成 | S05-P2 通过后再启动，不得提前进入 |
+| `S05-P2` Excel private value backfill | 1 个 Excel 候选的 5 条字段仍 pending | 下一轮仍执行 S05-P2 Excel 私有字段回填，或形成人工豁免/不适用决策 |
+| `S05-P3` authoritative baseline lock | S05-P2 仍有 5 条字段 pending，且未做 Q4 人工确认 | S05-P2 完整通过或明确 resolved 后再启动，不得提前进入 |
 | `S06` zero-delta implementation | 后续 Stage | 按 Roadmap 单 Stage/Phase 推进 |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |

@@ -46,13 +46,13 @@
   "field_summary": {
     "a0_project_candidates": 9,
     "fixture_candidate_count": 45,
-    "private_value_hash_recorded_count": 0,
-    "private_value_pending_count": 45,
+    "private_value_hash_recorded_count": 40,
+    "private_value_pending_count": 5,
     "required_fields_per_candidate": 5,
-    "source_anchor_pending_count": 45,
-    "source_anchor_recorded_count": 0
+    "source_anchor_pending_count": 5,
+    "source_anchor_recorded_count": 40
   },
-  "generated_at": "2026-06-30T01:00:00+10:00",
+  "generated_at": "2026-06-30T02:30:00+10:00",
   "project_id": "KMFA",
   "public_repo_safety": {
     "normalized_business_values_committed": false,

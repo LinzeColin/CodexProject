@@ -5,10 +5,10 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.0-s05p2-contract`
+- version: `0.1.0-s05p2-private-backfill-partial`
 - current_stage: `S05`
-- current_phase: `S05-P2 字段级黄金基准 public-safe 候选`
-- status: `s05p2_public_safe_contract_private_values_pending`
+- current_phase: `S05-P2 字段级黄金基准 hash-only 部分回填`
+- status: `s05p2_private_backfill_partial_excel_pending`
 - production_ready: `false`
 - github_upload_ready: `false_until_stage5_review`
 
@@ -40,15 +40,16 @@
 - Stage 4 整体复审已通过：`KMFA/stage_artifacts/S04_STAGE_REVIEW/` 记录复审报告、测试结果和 machine manifest；owner-readable 金额工具详情缺口已修复。
 - Stage 4 final GitHub upload 证据已生成：`KMFA/stage_artifacts/S04_STAGE_REVIEW/human/github_upload_record.md`。
 - S05-P1 A0 文件登记已完成本地验证：`KMFA/tools/a0_file_register.py` 生成 8 个 PDF + 1 个 Excel 的 public-safe A0 文件清单和项目候选清单。
-- S05-P2 已生成 public-safe 字段合同和 A0 golden fixture 候选结构：`KMFA/tools/a0_golden_fixture.py` 生成 5 个字段合同和 45 条字段候选；真实字段值/source anchor/private value hash 仍 pending。
+- S05-P2 已生成 public-safe 字段合同和 A0 golden fixture 候选结构：`KMFA/tools/a0_golden_fixture.py` 生成 5 个字段合同和 45 条字段候选。
+- S05-P2 已对 8 个 PDF A0 候选执行 hash-only 部分回填：40 条字段候选已记录 private value hash/source anchor，1 个 Excel 候选的 5 条字段仍 pending。
 
 ## 未完成
 
-- S05-P2 真实字段值回填、S05-P3 权威锁定、zero-delta、事实层、报告、UI 和外部接口尚未完成。
+- S05-P2 Excel 候选 5 条字段 hash/source anchor 回填、S05-P3 权威锁定、zero-delta、事实层、报告、UI 和外部接口尚未完成。
 
 ## 阻塞条件
 
 - 不能把 Stage 1 治理基线当成业务 MVP。
 - 不能上传原始敏感经营数据。
-- S05-P2 public-safe 字段候选已生成但真实字段值仍 pending；下一步仍只能执行 S05-P2 私有字段回填与 hash-only 验证，不能进入 S05-P3。
+- S05-P2 已完成 40/45 hash-only 部分回填，但 5 条 Excel 字段仍 pending；下一步仍只能执行 S05-P2 Excel 私有字段回填或人工豁免/不适用决策，不能进入 S05-P3。
 - 后续所有开发必须建立在 v1.2 完整任务包和 HTML 样板基线上。
