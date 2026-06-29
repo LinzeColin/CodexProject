@@ -1,0 +1,1 @@
+{"record_type":"protocol_header","schema_version":"kmfa.source_status_event.v1","stage_phase":"S03-P2","status":"protocol_defined_no_status_events_committed","append_only":true,"target_layer":"metadata","allowed_statuses":["已就绪","部分/阻塞","失败/不适用","已过期","人工复核"],"raw_layer_write_allowed":false,"raw_source_mutation_allowed":false,"forbidden_plaintext":true}

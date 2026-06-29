@@ -1,0 +1,75 @@
+{
+  "schema_version": "kmfa.stage_artifact.v1",
+  "project_id": "KMFA",
+  "stage_id": "S03",
+  "phase_id": "S3PB",
+  "phase_name": "数据源检查矩阵",
+  "status": "completed_validated_local_only",
+  "updated_at": "2026-06-29",
+  "completed_task_ids": [
+    "S3PBT01",
+    "S3PBT02",
+    "S3PBT03"
+  ],
+  "implementation_refs": [
+    "KMFA/tools/source_check_matrix.py",
+    "KMFA/tests/test_source_check_matrix.py",
+    "KMFA/metadata/sources/source_check_matrix_schema.json",
+    "KMFA/metadata/sources/source_check_matrix_policy.yaml",
+    "KMFA/metadata/sources/source_check_matrix.jsonl",
+    "KMFA/metadata/sources/source_status_events.jsonl"
+  ],
+  "required_dimensions": [
+    "source_system",
+    "business_segment",
+    "source_package_ref",
+    "entity_ref",
+    "account_ref",
+    "frequency"
+  ],
+  "allowed_statuses": [
+    "已就绪",
+    "部分/阻塞",
+    "失败/不适用",
+    "已过期",
+    "人工复核"
+  ],
+  "status_changes_append_only": true,
+  "status_changes_target_layer": "metadata",
+  "raw_layer_write_allowed": false,
+  "business_records_committed": false,
+  "non_scope": [
+    "S03-P3 source priority",
+    "business field parsing",
+    "amount normalization",
+    "report generation",
+    "UI source board",
+    "external connectors"
+  ],
+  "validation_commands": [
+    "python3 -m unittest KMFA.tests.test_source_check_matrix -q",
+    "python3 -m unittest KMFA.tests.test_file_import_register -q",
+    "python3 KMFA/tools/check_required_html.py",
+    "python3 KMFA/tools/no_omission_check.py",
+    "python3 KMFA/tools/check_report_grade_gate.py",
+    "python3 KMFA/tools/immutability_policy_check.py",
+    "python3 KMFA/tools/metadata_protocol_check.py",
+    "python3 scripts/lean_governance.py validate --project KMFA",
+    "python3 scripts/validate_project_governance.py --project KMFA",
+    "git diff --check -- KMFA"
+  ],
+  "validation_summary": {
+    "source_check_unit_tests": "PASS",
+    "file_import_unit_tests": "PASS",
+    "cli_smoke": "PASS",
+    "html_gate": "PASS",
+    "no_omission_gate": "PASS",
+    "quality_gate": "PASS",
+    "immutability_gate": "PASS",
+    "metadata_protocol_gate": "PASS",
+    "lean_governance": "PASS",
+    "project_governance": "PASS",
+    "diff_check": "PASS",
+    "sensitive_suffix_scan": "PASS"
+  }
+}

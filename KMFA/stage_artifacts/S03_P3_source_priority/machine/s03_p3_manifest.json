@@ -1,0 +1,36 @@
+{
+  "schema_version": "kmfa.stage_artifact_manifest.v1",
+  "project_id": "KMFA",
+  "stage": "S03",
+  "phase": "S03-P3",
+  "version": "0.1.0-s03p3",
+  "status": "completed_validated_local_only_stage_review_passed",
+  "task_ids": [
+    "S3PCT01",
+    "S3PCT02",
+    "S3PCT03"
+  ],
+  "human_artifacts": [
+    "KMFA/stage_artifacts/S03_P3_source_priority/human/s03_p3_completion_record.md",
+    "KMFA/stage_artifacts/S03_P3_source_priority/human/test_results.md"
+  ],
+  "machine_artifacts": [
+    "KMFA/stage_artifacts/S03_P3_source_priority/machine/s03_p3_manifest.json"
+  ],
+  "implementation_refs": [
+    "KMFA/tools/source_priority.py",
+    "KMFA/tests/test_source_priority.py",
+    "KMFA/metadata/sources/source_priority_policy.yaml",
+    "KMFA/metadata/sources/source_priority_events.jsonl",
+    "KMFA/metadata/quality/source_difference_queue.jsonl"
+  ],
+  "non_scope": [
+    "business_field_parsing",
+    "amount_calculation",
+    "fact_layer_generation",
+    "report_generation",
+    "cross_source_auto_selection",
+    "github_upload"
+  ],
+  "next_gate": "KMFA-S03-GITHUB-UPLOAD-GATE"
+}

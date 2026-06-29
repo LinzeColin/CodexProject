@@ -50,6 +50,27 @@ assumptions:
     evidence_refs:
       - "KMFA/taskpack/v1_2/machine/source_package_manifest.json"
       - "KMFA/tools/check_required_html.py"
+  - assumption_id: "ASM-KMFA-008"
+    statement: "S03-P1 文件型导入只登记 hash、大小、批次、来源包、私有 storage ref 和操作提示；公开仓库不得保存原始文件 bytes、明文原始文件名或业务抽取值。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S03_P1_file_import/human/s03_p1_completion_record.md"
+      - "KMFA/metadata/imports/file_import_policy.yaml"
+  - assumption_id: "ASM-KMFA-009"
+    statement: "S03-P2 数据源检查矩阵只登记 metadata 维度和状态事件；状态变化必须 append-only 写入 metadata，不得污染原始源。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S03_P2_source_check_matrix/human/s03_p2_completion_record.md"
+      - "KMFA/metadata/sources/source_check_matrix_policy.yaml"
+  - assumption_id: "ASM-KMFA-010"
+    statement: "S03-P3 源优先级只生成 metadata 排序、失效重跑事件和人工差异队列项；跨源冲突不得自动选边。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S03_P3_source_priority/human/s03_p3_completion_record.md"
+      - "KMFA/metadata/sources/source_priority_policy.yaml"
 models:
   - model_id: "MOD-KMFA-GOV-001"
     name: "KMFA phase governance and public repository boundary"
@@ -208,3 +229,100 @@ models:
     evidence_refs:
       - "KMFA/docs/governance/QUALITY_GATE_POLICY.md"
       - "KMFA/stage_artifacts/S02_P3_quality_gate/human/s02_p3_completion_record.md"
+  - model_id: "MOD-KMFA-FILE-IMPORT-001"
+    name: "KMFA file import registration"
+    kind: "deterministic_file_metadata_registration"
+    purpose: "对授权文件生成可追溯 metadata bundle，覆盖 hash、大小、导入批次、来源包记录、私有 storage ref、zip 安全解包和 WPS/OLE 提示。"
+    owner: "KMFA"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "0.1.0-s03p1"
+    assumptions:
+      - "ASM-KMFA-004"
+      - "ASM-KMFA-005"
+      - "ASM-KMFA-008"
+    formula_ids:
+      - "FORM-KMFA-FILE-REGISTER-001"
+    parameter_ids:
+      - "PARAM-KMFA-301"
+      - "PARAM-KMFA-302"
+      - "PARAM-KMFA-303"
+    inputs:
+      - "authorized local file path"
+      - "batch_slug"
+      - "source_slug"
+      - "received_at"
+    outputs:
+      - "import_run metadata"
+      - "source_registry_entry metadata"
+      - "raw_file_manifest metadata"
+      - "operator_guidance"
+    code_refs:
+      - "KMFA/tools/file_import_register.py"
+    test_refs:
+      - "python3 -m unittest KMFA.tests.test_file_import_register -q"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S03_P1_file_import/human/s03_p1_completion_record.md"
+  - model_id: "MOD-KMFA-SOURCE-CHECK-001"
+    name: "KMFA source check matrix"
+    kind: "deterministic_source_readiness_matrix"
+    purpose: "按来源系统、业务板块、文件包、主体、账户、频率生成数据源检查矩阵，并以 append-only metadata event 记录状态变化。"
+    owner: "KMFA"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "0.1.0-s03p2"
+    assumptions:
+      - "ASM-KMFA-004"
+      - "ASM-KMFA-005"
+      - "ASM-KMFA-009"
+    formula_ids:
+      - "FORM-KMFA-SOURCE-CHECK-001"
+    parameter_ids:
+      - "PARAM-KMFA-304"
+      - "PARAM-KMFA-305"
+      - "PARAM-KMFA-306"
+    inputs:
+      - "S03-P1 registration bundle"
+      - "source dimensions"
+      - "controlled status"
+    outputs:
+      - "source_check_matrix_row"
+      - "source_status_event"
+    code_refs:
+      - "KMFA/tools/source_check_matrix.py"
+    test_refs:
+      - "python3 -m unittest KMFA.tests.test_source_check_matrix -q"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S03_P2_source_check_matrix/human/s03_p2_completion_record.md"
+  - model_id: "MOD-KMFA-SOURCE-PRIORITY-001"
+    name: "KMFA source priority and difference queue entry"
+    kind: "deterministic_source_priority_contract"
+    purpose: "固化源类别优先级、同源不一致失效重跑动作和跨源冲突人工差异队列入口。"
+    owner: "KMFA"
+    status: "active"
+    fact_level: "EXTRACTED"
+    model_version: "0.1.0-s03p3"
+    assumptions:
+      - "ASM-KMFA-004"
+      - "ASM-KMFA-005"
+      - "ASM-KMFA-010"
+    formula_ids:
+      - "FORM-KMFA-SOURCE-PRIORITY-001"
+    parameter_ids:
+      - "PARAM-KMFA-307"
+      - "PARAM-KMFA-308"
+      - "PARAM-KMFA-309"
+    inputs:
+      - "source_class"
+      - "same-source reference metadata"
+      - "cross-source conflict metadata"
+    outputs:
+      - "ranked_source_candidate"
+      - "source_priority_event"
+      - "source_difference_queue_item"
+    code_refs:
+      - "KMFA/tools/source_priority.py"
+    test_refs:
+      - "python3 -m unittest KMFA.tests.test_source_priority -q"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S03_P3_source_priority/human/s03_p3_completion_record.md"

@@ -8,8 +8,8 @@
 - 中文名: 经营分析系统
 - GitHub 目录: `LinzeColin/CodexProject/KMFA`
 - 形态: 独立项目，稳定后再作为入口或模块接入 OpMe
-- 当前 Stage: `S01｜v1.2 完整任务包重放已完成`
-- 当前 Phase: `S01-v1.2-REPLAY｜FULL_HTML_NO_OMISSION 基线承接`
+- 当前 Stage: `S03｜原始文件导入与数据源检查矩阵`
+- 当前 Phase: `S03-P3｜源优先级`
 
 ## Execution Rules
 
@@ -40,6 +40,6 @@
 
 - 不写 UI。
 - 不生成经营报告。
-- 不实现导入器、金额工具、匹配引擎或 zero-delta 正式脚本。
+- 不实现业务字段解析、金额工具、匹配引擎或 zero-delta 正式脚本。
 - 不接红圈、金蝶、WPS、银行、税务自动接口。
 - 不做付款、报税、开票、工资或奖金审批执行。

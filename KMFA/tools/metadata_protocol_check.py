@@ -32,12 +32,15 @@ REQUIRED_DIRS = [
 
 REQUIRED_FILES = [
     "sources/source_registry.yaml",
+    "sources/source_priority_policy.yaml",
+    "sources/source_priority_events.jsonl",
     "imports/import_runs.jsonl",
     "imports/raw_file_manifest.jsonl",
     "schema_maps/source_mapping_versions.yaml",
     "quality/data_quality_results.jsonl",
     "quality/zero_delta_results.jsonl",
     "quality/mismatch_report.csv",
+    "quality/source_difference_queue.jsonl",
     "lineage/field_lineage.jsonl",
     "lineage/metric_lineage.jsonl",
     "lineage/report_lineage.jsonl",
@@ -215,6 +218,7 @@ def check_privacy_boundary() -> None:
     json_subset_yaml_files = [
         METADATA / "protocol" / "metadata_protocol.yaml",
         METADATA / "sources" / "source_registry.yaml",
+        METADATA / "sources" / "source_priority_policy.yaml",
         METADATA / "schema_maps" / "source_mapping_versions.yaml",
     ]
     for path in list(METADATA.rglob("*.json")) + json_subset_yaml_files:

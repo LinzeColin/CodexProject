@@ -1,6 +1,6 @@
 {
   "schema_version": "kmfa.derived_data_policy.v1",
-  "stage_phase": "S02-P2",
+  "stage_phase": "S03-P3",
   "status": "active",
   "version_file": "KMFA/metadata/lineage/derived_data_versions.jsonl",
   "append_only": true,
@@ -28,5 +28,12 @@
     "rerun_version",
     "compare_versions"
   ],
+  "same_source_inconsistency_actions": [
+    "invalidate_derived_cache",
+    "request_rerun"
+  ],
+  "source_priority_policy_ref": "KMFA/metadata/sources/source_priority_policy.yaml",
+  "source_priority_event_ref": "KMFA/metadata/sources/source_priority_events.jsonl",
+  "source_difference_queue_ref": "KMFA/metadata/quality/source_difference_queue.jsonl",
   "raw_layer_write_allowed": false
 }

@@ -1,6 +1,6 @@
 {
   "schema_version": "kmfa.raw_manifest_schema.v1",
-  "stage_phase": "S02-P2",
+  "stage_phase": "S03-P1",
   "record_type": "raw_file_manifest",
   "required_fields": [
     "record_type",
@@ -10,8 +10,11 @@
     "file_size_bytes",
     "storage_ref",
     "original_filename_hash",
+    "file_format",
+    "container_type",
     "received_at",
     "manifest_status",
+    "source_package_ref",
     "evidence_ref"
   ],
   "immutable_fields": [
@@ -26,6 +29,14 @@
     "superseded",
     "rejected",
     "quarantined"
+  ],
+  "supported_s03p1_file_formats": [
+    "zip",
+    "xlsx",
+    "xls",
+    "csv",
+    "pdf",
+    "wps"
   ],
   "forbidden_fields": [
     "raw_file_bytes",

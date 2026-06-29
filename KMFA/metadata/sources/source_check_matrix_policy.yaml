@@ -1,0 +1,31 @@
+{
+  "schema_version": "kmfa.source_check_matrix_policy.v1",
+  "project_id": "KMFA",
+  "stage_phase": "S03-P2",
+  "status": "active",
+  "tool_ref": "KMFA/tools/source_check_matrix.py",
+  "test_ref": "python3 -m unittest KMFA.tests.test_source_check_matrix -q",
+  "matrix_file": "KMFA/metadata/sources/source_check_matrix.jsonl",
+  "status_event_file": "KMFA/metadata/sources/source_status_events.jsonl",
+  "required_dimensions": [
+    "source_system",
+    "business_segment",
+    "source_package_ref",
+    "entity_ref",
+    "account_ref",
+    "frequency"
+  ],
+  "allowed_statuses": [
+    "已就绪",
+    "部分/阻塞",
+    "失败/不适用",
+    "已过期",
+    "人工复核"
+  ],
+  "status_changes_append_only": true,
+  "status_changes_target_layer": "metadata",
+  "raw_layer_write_allowed": false,
+  "raw_source_mutation_allowed": false,
+  "public_repo_raw_file_bytes_allowed": false,
+  "public_repo_business_rows_allowed": false
+}

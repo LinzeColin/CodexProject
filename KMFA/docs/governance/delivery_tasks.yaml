@@ -527,3 +527,255 @@ tasks:
     rollback: "Remove release gate/checker and restore S02-P2 status."
     target_version: "0.1.0-s02p3"
     completed_version: "0.1.0-s02p3"
+  - task_id: "S3PAT01"
+    phase: "S3PA"
+    objective: "支持 zip、xlsx、xls、csv、pdf 文件登记和 zip 安全解包。"
+    scope:
+      - "KMFA/tools/file_import_register.py"
+      - "KMFA/tests/test_file_import_register.py"
+    non_scope:
+      - "business field parsing"
+      - "GitHub upload"
+    status: "completed"
+    dependencies:
+      - "S2PCT03"
+    required_files:
+      - "KMFA/tools/file_import_register.py"
+      - "KMFA/tests/test_file_import_register.py"
+    acceptance_ids:
+      - "ACC-KMFA-S03-P1"
+    test_commands:
+      - "python3 -m unittest KMFA.tests.test_file_import_register -q"
+    test_results:
+      - "PASS: safe zip extraction allows nested members and rejects traversal"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S03_P1_file_import/human/s03_p1_completion_record.md"
+    risk: "Raw files and zip contents must stay private and outside public GitHub."
+    rollback: "Remove file_import_register.py, tests, and S03-P1 metadata policy additions."
+    target_version: "0.1.0-s03p1"
+    completed_version: "0.1.0-s03p1"
+  - task_id: "S3PAT02"
+    phase: "S3PA"
+    objective: "为每个文件生成 hash、大小、上传批次、来源包记录。"
+    scope:
+      - "KMFA/metadata/imports/raw_manifest_schema.json"
+      - "KMFA/metadata/imports/import_runs.jsonl"
+      - "KMFA/metadata/imports/raw_file_manifest.jsonl"
+      - "KMFA/metadata/sources/source_registry.yaml"
+    non_scope:
+      - "raw file bytes"
+      - "plaintext original filename"
+      - "business extracted values"
+    status: "completed"
+    dependencies:
+      - "S3PAT01"
+    required_files:
+      - "KMFA/metadata/imports/raw_manifest_schema.json"
+      - "KMFA/metadata/imports/import_runs.jsonl"
+      - "KMFA/metadata/imports/raw_file_manifest.jsonl"
+    acceptance_ids:
+      - "ACC-KMFA-S03-P1"
+    test_commands:
+      - "python3 -m unittest KMFA.tests.test_file_import_register -q"
+      - "python3 KMFA/tools/immutability_policy_check.py"
+    test_results:
+      - "PASS: registration emits hash, size, import_run, source package and private storage_ref"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S03_P1_file_import/human/test_results.md"
+    risk: "Public metadata cannot contain raw file bytes or plaintext original filename."
+    rollback: "Restore S03-P1 import metadata policy and registry additions."
+    target_version: "0.1.0-s03p1"
+    completed_version: "0.1.0-s03p1"
+  - task_id: "S3PAT03"
+    phase: "S3PA"
+    objective: "识别 WPS/OLE 特殊格式并给出可操作提示。"
+    scope:
+      - "KMFA/metadata/imports/file_import_policy.yaml"
+      - "KMFA/tools/file_import_register.py"
+    non_scope:
+      - "WPS/OLE business field parser"
+      - "source priority"
+    status: "completed"
+    dependencies:
+      - "S3PAT02"
+    required_files:
+      - "KMFA/metadata/imports/file_import_policy.yaml"
+      - "KMFA/tools/file_import_register.py"
+    acceptance_ids:
+      - "ACC-KMFA-S03-P1"
+    test_commands:
+      - "python3 -m unittest KMFA.tests.test_file_import_register -q"
+    test_results:
+      - "PASS: OLE and WPS guidance returned"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S03_P1_file_import/human/s03_p1_completion_record.md"
+    risk: "WPS/OLE guidance must not be interpreted as trusted parsing."
+    rollback: "Restore file import policy and registry additions."
+    target_version: "0.1.0-s03p1"
+    completed_version: "0.1.0-s03p1"
+  - task_id: "S3PBT01"
+    phase: "S3PB"
+    objective: "按来源系统、业务板块、文件包、主体、账户、频率生成矩阵。"
+    scope:
+      - "KMFA/tools/source_check_matrix.py"
+      - "KMFA/metadata/sources/source_check_matrix_schema.json"
+    non_scope:
+      - "source priority"
+      - "business field parsing"
+      - "GitHub upload"
+    status: "completed"
+    dependencies:
+      - "S3PAT03"
+    required_files:
+      - "KMFA/tools/source_check_matrix.py"
+      - "KMFA/metadata/sources/source_check_matrix_schema.json"
+    acceptance_ids:
+      - "ACC-KMFA-S03-P2"
+    test_commands:
+      - "python3 -m unittest KMFA.tests.test_source_check_matrix -q"
+    test_results:
+      - "PASS: matrix row contains required source dimensions"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S03_P2_source_check_matrix/human/s03_p2_completion_record.md"
+    risk: "Do not commit real source rows or business data."
+    rollback: "Remove S03-P2 source check matrix files and restore S03-P1 status."
+    target_version: "0.1.0-s03p2"
+    completed_version: "0.1.0-s03p2"
+  - task_id: "S3PBT02"
+    phase: "S3PB"
+    objective: "状态仅使用已就绪、部分/阻塞、失败/不适用、已过期、人工复核。"
+    scope:
+      - "KMFA/metadata/sources/source_check_matrix_policy.yaml"
+      - "KMFA/tests/test_source_check_matrix.py"
+    non_scope:
+      - "status colors"
+      - "UI rendering"
+    status: "completed"
+    dependencies:
+      - "S3PBT01"
+    required_files:
+      - "KMFA/metadata/sources/source_check_matrix_policy.yaml"
+      - "KMFA/tests/test_source_check_matrix.py"
+    acceptance_ids:
+      - "ACC-KMFA-S03-P2"
+    test_commands:
+      - "python3 -m unittest KMFA.tests.test_source_check_matrix -q"
+    test_results:
+      - "PASS: allowed statuses exactly match TaskPack values and invalid status fails"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S03_P2_source_check_matrix/human/test_results.md"
+    risk: "Status drift can corrupt source readiness interpretation."
+    rollback: "Restore S03-P2 policy/schema and tests."
+    target_version: "0.1.0-s03p2"
+    completed_version: "0.1.0-s03p2"
+  - task_id: "S3PBT03"
+    phase: "S3PB"
+    objective: "状态变化写入 metadata，不污染原始源。"
+    scope:
+      - "KMFA/tools/source_check_matrix.py"
+      - "KMFA/metadata/sources/source_status_events.jsonl"
+    non_scope:
+      - "raw source writes"
+      - "S03-P3 cache invalidation"
+    status: "completed"
+    dependencies:
+      - "S3PBT02"
+    required_files:
+      - "KMFA/tools/source_check_matrix.py"
+      - "KMFA/metadata/sources/source_status_events.jsonl"
+    acceptance_ids:
+      - "ACC-KMFA-S03-P2"
+    test_commands:
+      - "python3 -m unittest KMFA.tests.test_source_check_matrix -q"
+    test_results:
+      - "PASS: status event appends metadata JSONL with raw_layer_write_allowed=false"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S03_P2_source_check_matrix/human/s03_p2_completion_record.md"
+    risk: "Status changes must not mutate raw source or original extracted values."
+    rollback: "Restore source status event policy and tool."
+    target_version: "0.1.0-s03p2"
+    completed_version: "0.1.0-s03p2"
+  - task_id: "S3PCT01"
+    phase: "S3PC"
+    objective: "固化原始上传/授权导出数据优先于处理后数据。"
+    scope:
+      - "KMFA/tools/source_priority.py"
+      - "KMFA/metadata/sources/source_priority_policy.yaml"
+    non_scope:
+      - "cross-source auto selection"
+      - "business value parsing"
+      - "GitHub upload"
+    status: "completed"
+    dependencies:
+      - "S3PBT03"
+    required_files:
+      - "KMFA/tools/source_priority.py"
+      - "KMFA/metadata/sources/source_priority_policy.yaml"
+    acceptance_ids:
+      - "ACC-KMFA-S03-P3"
+    test_commands:
+      - "python3 -m unittest KMFA.tests.test_source_priority -q"
+    test_results:
+      - "PASS: source priority follows TaskPack data priority chain and keeps processed_data as lowest generic alias"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S03_P3_source_priority/human/s03_p3_completion_record.md"
+    risk: "Priority ranking must not be interpreted as permission to auto-select cross-source conflicts."
+    rollback: "Remove S03-P3 source priority files and restore S03-P2 status."
+    target_version: "0.1.0-s03p3"
+    completed_version: "0.1.0-s03p3"
+  - task_id: "S3PCT02"
+    phase: "S3PC"
+    objective: "同源不同引用不一致时失效缓存并重跑。"
+    scope:
+      - "KMFA/tools/source_priority.py"
+      - "KMFA/metadata/sources/source_priority_events.jsonl"
+      - "KMFA/metadata/lineage/derived_data_policy.yaml"
+    non_scope:
+      - "derived dataset recomputation"
+      - "raw source writes"
+    status: "completed"
+    dependencies:
+      - "S3PCT01"
+    required_files:
+      - "KMFA/tools/source_priority.py"
+      - "KMFA/metadata/sources/source_priority_events.jsonl"
+    acceptance_ids:
+      - "ACC-KMFA-S03-P3"
+    test_commands:
+      - "python3 -m unittest KMFA.tests.test_source_priority -q"
+    test_results:
+      - "PASS: same-source inconsistency event invalidates derived cache and requests rerun"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S03_P3_source_priority/human/test_results.md"
+    risk: "Invalidation and rerun requests must remain append-only metadata events."
+    rollback: "Restore source priority event policy and derived data policy."
+    target_version: "0.1.0-s03p3"
+    completed_version: "0.1.0-s03p3"
+  - task_id: "S3PCT03"
+    phase: "S3PC"
+    objective: "跨源冲突进入差异队列，不自动选边。"
+    scope:
+      - "KMFA/tools/source_priority.py"
+      - "KMFA/metadata/quality/source_difference_queue.jsonl"
+    non_scope:
+      - "difference resolution"
+      - "report grade promotion"
+      - "business amount parsing"
+    status: "completed"
+    dependencies:
+      - "S3PCT02"
+    required_files:
+      - "KMFA/tools/source_priority.py"
+      - "KMFA/metadata/quality/source_difference_queue.jsonl"
+    acceptance_ids:
+      - "ACC-KMFA-S03-P3"
+    test_commands:
+      - "python3 -m unittest KMFA.tests.test_source_priority -q"
+    test_results:
+      - "PASS: cross-source conflict enters manual-review difference queue with auto_selection_allowed=false"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S03_P3_source_priority/human/s03_p3_completion_record.md"
+    risk: "Cross-source conflicts must not be silently resolved or averaged."
+    rollback: "Restore source difference queue policy and source priority policy."
+    target_version: "0.1.0-s03p3"
+    completed_version: "0.1.0-s03p3"

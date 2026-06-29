@@ -1,10 +1,10 @@
 # KMFA Model Spec
 
-product_version: 0.1.0-s02p3-v12baseline
+product_version: 0.1.0-s03p3
 
 ## Scope
 
-当前模型说明覆盖 S01 已建立并按 v1.2 重放的治理边界、S02-P1 metadata 协议、S02-P2 不可污染原则、S02-P3 质量等级门禁协议和后续业务模型草案，不声明项目成本计算、zero-delta、lineage 完整检查或正式报告生成已经实现。
+当前模型说明覆盖 S01 已建立并按 v1.2 重放的治理边界、S02-P1 metadata 协议、S02-P2 不可污染原则、S02-P3 质量等级门禁协议、S03-P1 文件型导入登记模型、S03-P2 数据源检查矩阵模型、S03-P3 源优先级模型和后续业务模型草案，不声明项目成本计算、zero-delta、lineage 完整检查或正式报告生成已经实现。
 
 ## Active Model
 
@@ -36,6 +36,30 @@ product_version: 0.1.0-s02p3-v12baseline
 - fact_level: EXTRACTED
 - evidence: `KMFA/docs/governance/QUALITY_GATE_POLICY.md`, `KMFA/metadata/reports/report_release_gate.yaml`, `KMFA/tools/check_report_grade_gate.py`
 
+### MOD-KMFA-FILE-IMPORT-001
+
+- type: deterministic file metadata registration
+- purpose: 对授权本地文件生成 hash、大小、导入批次、来源包记录、私有 storage ref 和操作提示，并安全解包 zip。
+- fact_level: EXTRACTED
+- evidence: `KMFA/tools/file_import_register.py`, `KMFA/metadata/imports/file_import_policy.yaml`, `KMFA/stage_artifacts/S03_P1_file_import/human/s03_p1_completion_record.md`
+- limitation: 只登记 metadata，不解析业务字段，不保存原始文件 bytes，不提交原始文件。
+
+### MOD-KMFA-SOURCE-CHECK-001
+
+- type: deterministic source readiness matrix
+- purpose: 按来源系统、业务板块、文件包、主体、账户、频率生成检查矩阵，并以 metadata event 追加状态变化。
+- fact_level: EXTRACTED
+- evidence: `KMFA/tools/source_check_matrix.py`, `KMFA/metadata/sources/source_check_matrix_policy.yaml`, `KMFA/stage_artifacts/S03_P2_source_check_matrix/human/s03_p2_completion_record.md`
+- limitation: 不实现自动选边、业务字段解析或 UI 检查板。
+
+### MOD-KMFA-SOURCE-PRIORITY-001
+
+- type: deterministic source priority contract
+- purpose: 固化原始上传/授权导出优先于处理后数据；同源不一致失效缓存并请求重跑；跨源冲突进入人工差异队列。
+- fact_level: EXTRACTED
+- evidence: `KMFA/tools/source_priority.py`, `KMFA/metadata/sources/source_priority_policy.yaml`, `KMFA/metadata/quality/source_difference_queue.jsonl`, `KMFA/stage_artifacts/S03_P3_source_priority/human/s03_p3_completion_record.md`
+- limitation: 不解析金额，不读取真实业务源值，不自动选择跨源冲突一边。
+
 ## Planned Business Model
 
 ### MOD-KMFA-COST-001
@@ -47,9 +71,9 @@ product_version: 0.1.0-s02p3-v12baseline
 
 ## Counts
 
-- active models: 4
-- active formulas: 4
-- active parameters: 11
+- active models: 7
+- active formulas: 7
+- active parameters: 20
 - planned models: 1
 - planned formulas: 1
 - planned parameters: 4
