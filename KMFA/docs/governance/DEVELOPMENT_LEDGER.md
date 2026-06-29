@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.0-s02p2
+product_version: 0.1.0-s02p3
 
 ## Current Iteration
 
 - project_id: `KMFA`
 - current_stage: `S02`
-- current_phase: `S02-P2`
-- current_tasks: `S2PBT01`, `S2PBT02`, `S2PBT03`
-- status: `s02_p2_completed_validated`
+- current_phase: `S02-P3`
+- current_tasks: `S2PCT01`, `S2PCT02`, `S2PCT03`
+- status: `s02_p3_completed_validated_pending_stage_review`
 - risk_tier: `T3`
 
 ## Completed
@@ -29,11 +29,14 @@ product_version: 0.1.0-s02p2
 | `S2PBT01` | raw manifest append-only 登记规范建立 | `KMFA/metadata/imports/raw_manifest_schema.json`, `KMFA/metadata/imports/raw_manifest_policy.yaml` |
 | `S2PBT02` | 派生数据版本、失效、重跑、对比协议建立 | `KMFA/metadata/lineage/derived_data_policy.yaml`, `KMFA/metadata/lineage/derived_data_versions.jsonl` |
 | `S2PBT03` | 前端/人工 control event raw 写入边界建立 | `KMFA/metadata/approvals/control_event_policy.yaml`, `KMFA/metadata/approvals/control_events.jsonl` |
+| `S2PCT01` | Q0-Q5 数据质量等级定义建立 | `KMFA/docs/governance/QUALITY_GATE_POLICY.md`, `KMFA/metadata/quality/quality_grade_policy.yaml` |
+| `S2PCT02` | A/B/C/D 报告可信等级定义建立 | `KMFA/metadata/reports/report_grade_policy.yaml`, `KMFA/metadata/reports/report_manifest.jsonl` |
+| `S2PCT03` | 质量等级到报告发布权限门禁建立 | `KMFA/metadata/reports/report_release_gate.yaml`, `KMFA/tools/check_report_grade_gate.py` |
 
 ## Not Completed
 
 | Task | Reason | Next |
 |---|---|---|
 | `S04/S06` amount and zero-delta implementation | 后续 Stage | 按 Roadmap 单 Stage/Phase 推进 |
-| `S02-P3` 数据质量等级 | 当前 run work 只允许一个 Phase | S02-P2 完成后执行 |
-| Stage 2 GitHub upload | S02-P2/P3 和 Stage 2 复审未完成 | Stage 2 复审修复后整体上传 |
+| Stage 2 review | S02-P1/P2/P3 已完成但尚未复审 | 下一轮执行 Stage 2 整体复审 |
+| Stage 2 GitHub upload | Stage 2 复审和复审问题修复未完成 | Stage 2 复审修复后整体上传 |

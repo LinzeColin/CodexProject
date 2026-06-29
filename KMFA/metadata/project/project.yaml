@@ -1,10 +1,10 @@
 project_id: "KMFA"
 project_name: "KMFA 经营分析系统"
-version: "0.1.0-s02p2"
+version: "0.1.0-s02p3"
 current_stage: "S02"
-current_phase: "S02-P2"
+current_phase: "S02-P3"
 current_phase_status: "completed_validated"
-current_stage_status: "in_progress"
+current_stage_status: "completed_pending_stage_review"
 github_directory: "LinzeColin/CodexProject/KMFA"
 human_plane:
   - "README.md"
@@ -21,6 +21,9 @@ machine_plane:
   - "metadata/imports/raw_manifest_policy.yaml"
   - "metadata/lineage/derived_data_policy.yaml"
   - "metadata/approvals/control_event_policy.yaml"
+  - "metadata/quality/quality_grade_policy.yaml"
+  - "metadata/reports/report_grade_policy.yaml"
+  - "metadata/reports/report_release_gate.yaml"
 privacy_policy:
   raw_sensitive_data_public_repo_allowed: false
   metadata_plain_sensitive_data_allowed: false

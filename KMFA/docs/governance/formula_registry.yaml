@@ -135,3 +135,39 @@ formulas:
     evidence_refs:
       - "KMFA/docs/governance/IMMUTABILITY_POLICY.md"
       - "KMFA/stage_artifacts/S02_P2_immutability_policy/human/s02_p2_completion_record.md"
+  - formula_id: "FORM-KMFA-QUALITY-GATE-001"
+    model_id: "MOD-KMFA-QUALITY-GATE-001"
+    assumption_ids:
+      - "ASM-KMFA-006"
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "report_release_allowed = quality_grade_gate_passed AND report_grade_requirements_met AND missing_gate_evidence_policy != block_release; A requires Q5 AND zero_delta_passed AND critical_differences_closed AND human_confirmation_completed"
+    variables:
+      - name: "allowed_quality_grades"
+        data_type: "string_list"
+        unit: "grade"
+        input_domain: "Q0;Q1;Q2;Q3;Q4;Q5"
+      - name: "allowed_report_grades"
+        data_type: "string_list"
+        unit: "grade"
+        input_domain: "A;B;C;D"
+      - name: "missing_gate_evidence_policy"
+        data_type: "enum"
+        unit: "policy"
+        input_domain: "block_release"
+    constraints:
+      - "Q0-Q2 cannot generate internal reports."
+      - "Q3 is preview only."
+      - "Q4 can support internal review reports with limitations."
+      - "Q5 is required for formal internal reports."
+      - "A requires Q5, zero-delta pass, closed critical differences, and human confirmation."
+      - "Missing gate evidence blocks release."
+    missing_policy: "Missing quality grade, report grade, zero-delta, critical-difference, human confirmation, or lineage evidence blocks promotion."
+    output_range: "formal_internal_report, internal_review_report, preview_only, blocked"
+    code_refs:
+      - "KMFA/tools/check_report_grade_gate.py"
+    test_refs:
+      - "python3 KMFA/tools/check_report_grade_gate.py"
+    evidence_refs:
+      - "KMFA/docs/governance/QUALITY_GATE_POLICY.md"
+      - "KMFA/stage_artifacts/S02_P3_quality_gate/human/s02_p3_completion_record.md"

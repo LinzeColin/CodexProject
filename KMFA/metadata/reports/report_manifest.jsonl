@@ -1,1 +1,1 @@
-{"record_type":"protocol_header","schema_version":"kmfa.report_manifest.v1","stage_phase":"S02-P1","status":"protocol_defined_no_reports_committed","required_identifiers":["formula_version","mapping_version"],"forbidden_plaintext":true}
+{"record_type":"protocol_header","schema_version":"kmfa.report_manifest.v1","stage_phase":"S02-P3","status":"protocol_defined_no_reports_committed","required_identifiers":["formula_version","mapping_version","quality_grade","report_grade"],"allowed_report_grades":["A","B","C","D"],"quality_gate_required":true,"forbidden_plaintext":true}

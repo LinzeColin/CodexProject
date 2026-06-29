@@ -5,12 +5,12 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.0-s02p2`
+- version: `0.1.0-s02p3`
 - current_stage: `S02`
-- current_phase: `S02-P2`
-- status: `s02_p2_completed_validated`
+- current_phase: `S02-P3`
+- status: `s02_p3_completed_validated_pending_stage_review`
 - production_ready: `false`
-- github_upload_ready: `false_intermediate_phase`
+- github_upload_ready: `false_pending_stage2_review`
 
 ## 已完成
 
@@ -22,10 +22,10 @@
 - Stage 1 整体复审通过，复审 finding 已处理或转为隔离上传约束。
 - S02-P1 metadata 目录协议完成：七类 metadata 目录、核心标识符规则、公开仓库隐私边界和协议检查器。
 - S02-P2 不可污染原则完成：raw manifest append-only 规范、派生版本失效/重跑/对比协议、前端 raw 写入边界和检查器。
+- S02-P3 数据质量等级完成：Q0-Q5 数据质量等级、A/B/C/D 报告可信等级、报告发布门禁和检查器。
 
 ## 未完成
 
-- S02-P3 数据质量等级尚未实现。
 - Stage 2 整体复审、复审问题修复和 GitHub 上传尚未执行。
 
 ## 阻塞条件

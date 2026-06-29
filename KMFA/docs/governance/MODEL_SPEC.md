@@ -1,10 +1,10 @@
 # KMFA Model Spec
 
-product_version: 0.1.0-s02p2
+product_version: 0.1.0-s02p3
 
 ## Scope
 
-当前模型说明覆盖 S01 已建立的治理边界、S02-P1 metadata 协议、S02-P2 不可污染原则和后续业务模型草案，不声明项目成本计算、zero-delta、lineage 完整检查或报告等级门禁已经实现。
+当前模型说明覆盖 S01 已建立的治理边界、S02-P1 metadata 协议、S02-P2 不可污染原则、S02-P3 质量等级门禁协议和后续业务模型草案，不声明项目成本计算、zero-delta、lineage 完整检查或正式报告生成已经实现。
 
 ## Active Model
 
@@ -29,6 +29,13 @@ product_version: 0.1.0-s02p2
 - fact_level: EXTRACTED
 - evidence: `KMFA/docs/governance/IMMUTABILITY_POLICY.md`, `KMFA/metadata/imports/raw_manifest_policy.yaml`, `KMFA/tools/immutability_policy_check.py`
 
+### MOD-KMFA-QUALITY-GATE-001
+
+- type: deterministic quality gate contract
+- purpose: 定义 Q0-Q5 数据质量等级、A/B/C/D 报告可信等级和报告发布权限门禁。
+- fact_level: EXTRACTED
+- evidence: `KMFA/docs/governance/QUALITY_GATE_POLICY.md`, `KMFA/metadata/reports/report_release_gate.yaml`, `KMFA/tools/check_report_grade_gate.py`
+
 ## Planned Business Model
 
 ### MOD-KMFA-COST-001
@@ -40,9 +47,9 @@ product_version: 0.1.0-s02p2
 
 ## Counts
 
-- active models: 3
-- active formulas: 3
-- active parameters: 8
+- active models: 4
+- active formulas: 4
+- active parameters: 11
 - planned models: 1
 - planned formulas: 1
 - planned parameters: 4

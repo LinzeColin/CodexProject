@@ -1,0 +1,35 @@
+{
+  "schema_version": "kmfa.phase_manifest.v1",
+  "run_id": "KMFA-S02-P3-20260629",
+  "project_id": "KMFA",
+  "stage_id": "S02",
+  "phase_id": "S02-P3",
+  "phase_name": "数据质量等级",
+  "status": "completed_validated",
+  "completion_time": "2026-06-29T19:10:00+10:00",
+  "tasks": [
+    {
+      "task_id": "S2PCT01",
+      "status": "completed",
+      "evidence_ref": "KMFA/metadata/quality/quality_grade_policy.yaml"
+    },
+    {
+      "task_id": "S2PCT02",
+      "status": "completed",
+      "evidence_ref": "KMFA/metadata/reports/report_grade_policy.yaml"
+    },
+    {
+      "task_id": "S2PCT03",
+      "status": "completed",
+      "evidence_ref": "KMFA/metadata/reports/report_release_gate.yaml"
+    }
+  ],
+  "quality_grades": ["Q0", "Q1", "Q2", "Q3", "Q4", "Q5"],
+  "report_grades": ["A", "B", "C", "D"],
+  "missing_gate_evidence_policy": "block_release",
+  "business_records_committed": false,
+  "formal_reports_generated": false,
+  "stage_review_performed": false,
+  "github_upload_performed": false,
+  "next_phase": "S02_STAGE_REVIEW"
+}

@@ -2,11 +2,11 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KMFA"
 total_estimated_hours: 54
-completed_estimated_hours: 15
+completed_estimated_hours: 18
 current_stage_id: "S2"
-current_phase_id: "S2PB"
-current_task_id: "S2PBT03"
-next_gate_id: "KMFA-S02-P3-GATE"
+current_phase_id: "S2PC"
+current_task_id: "S2PCT03"
+next_gate_id: "KMFA-S02-STAGE-REVIEW-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -277,9 +277,9 @@ stages:
   - stage_id: "S2"
     name: "数据治理内核与metadata协议"
     person_goal: "建立不可污染、可追溯、可重跑、可审计的数据治理内核。"
-    status: "in_progress"
+    status: "completed_pending_stage_review"
     estimated_hours: 9
-    estimated_pct: 66.67
+    estimated_pct: 100
     stop_conditions:
       - "原始数据被污染"
       - "金额精度使用 float"
@@ -292,12 +292,15 @@ stages:
         - "S02-P1/P2/P3 验收证据存在"
         - "metadata 目录协议、不可污染原则、质量等级定义同步"
         - "metadata_protocol_check 可运行"
+        - "immutability_policy_check 和 check_report_grade_gate 可运行"
         - "Stage 2 复审问题已修复"
       evidence:
         - "KMFA/stage_artifacts/S02_P1_metadata_protocol/human/s02_p1_completion_record.md"
         - "KMFA/stage_artifacts/S02_P2_immutability_policy/human/s02_p2_completion_record.md"
+        - "KMFA/stage_artifacts/S02_P3_quality_gate/human/s02_p3_completion_record.md"
         - "KMFA/docs/governance/METADATA_PROTOCOL.md"
         - "KMFA/docs/governance/IMMUTABILITY_POLICY.md"
+        - "KMFA/docs/governance/QUALITY_GATE_POLICY.md"
       failure_action: "blocked"
     phases:
       - phase_id: "S2PA"
@@ -480,9 +483,63 @@ stages:
       - phase_id: "S2PC"
         name: "数据质量等级"
         objective: "定义 Q0-Q5 数据质量等级、A/B/C/D 报告可信等级和发布门禁。"
-        status: "planned"
+        status: "completed_validated"
         estimated_hours: 3
-        estimated_pct: 0
+        estimated_pct: 100
+        acceptance:
+          - "ACC-KMFA-S02-P3"
+        validation_commands:
+          - "python3 KMFA/tools/check_report_grade_gate.py"
+        evidence_refs:
+          - "KMFA/stage_artifacts/S02_P3_quality_gate/human/s02_p3_completion_record.md"
+          - "KMFA/stage_artifacts/S02_P3_quality_gate/human/test_results.md"
+        tasks:
+          - task_id: "S2PCT01"
+            objective: "实现 Q0-Q5 数据质量等级定义。"
+            status: "completed_validated"
+            required_files:
+              - "KMFA/docs/governance/QUALITY_GATE_POLICY.md"
+              - "KMFA/metadata/quality/quality_grade_policy.yaml"
+            test_commands:
+              - "python3 KMFA/tools/check_report_grade_gate.py"
+            evidence_refs:
+              - "KMFA/metadata/quality/quality_grade_policy.yaml"
+            risks:
+              - "Q0-Q5 只定义门禁协议，不代表真实数据已达到对应等级。"
+            rollback: "删除 quality grade policy 文件并恢复状态。"
+            current_result: "完成。"
+            completed_version: "0.1.0-s02p3"
+          - task_id: "S2PCT02"
+            objective: "实现 A/B/C/D 报告可信等级定义。"
+            status: "completed_validated"
+            required_files:
+              - "KMFA/metadata/reports/report_grade_policy.yaml"
+              - "KMFA/metadata/reports/report_manifest.jsonl"
+            test_commands:
+              - "python3 KMFA/tools/check_report_grade_gate.py"
+            evidence_refs:
+              - "KMFA/metadata/reports/report_grade_policy.yaml"
+            risks:
+              - "报告可信等级协议不能替代 S10 的真实报告生成和运行时判定。"
+            rollback: "删除 report grade policy 文件并恢复状态。"
+            current_result: "完成。"
+            completed_version: "0.1.0-s02p3"
+          - task_id: "S2PCT03"
+            objective: "建立质量等级到报告发布权限的门禁。"
+            status: "completed_validated"
+            required_files:
+              - "KMFA/metadata/reports/report_release_gate.yaml"
+              - "KMFA/tools/check_report_grade_gate.py"
+            test_commands:
+              - "python3 KMFA/tools/check_report_grade_gate.py"
+            evidence_refs:
+              - "KMFA/metadata/reports/report_release_gate.yaml"
+              - "KMFA/tools/check_report_grade_gate.py"
+            risks:
+              - "缺少门禁证据必须阻断发布，不能默认通过。"
+            rollback: "删除 report release gate 和检查器并恢复状态。"
+            current_result: "完成。"
+            completed_version: "0.1.0-s02p3"
   - stage_id: "S3"
     name: "原始文件导入与数据源检查矩阵"
     status: "planned"

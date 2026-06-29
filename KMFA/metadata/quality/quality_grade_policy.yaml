@@ -1,0 +1,67 @@
+{
+  "schema_version": "kmfa.quality_grade_policy.v1",
+  "project_id": "KMFA",
+  "stage_phase": "S02-P3",
+  "source_roadmap": "02_KMFA_Codex_Development_Roadmap_18_Stages_v1_1.md:S02-P3",
+  "append_only": true,
+  "forbidden_plaintext": true,
+  "quality_grades": [
+    {
+      "grade": "Q0",
+      "meaning": "未导入或无法读取",
+      "formal_internal_report_allowed": false,
+      "internal_review_report_allowed": false,
+      "preview_allowed": false,
+      "decision_use_allowed": false
+    },
+    {
+      "grade": "Q1",
+      "meaning": "已登记但未解析",
+      "formal_internal_report_allowed": false,
+      "internal_review_report_allowed": false,
+      "preview_allowed": false,
+      "decision_use_allowed": false
+    },
+    {
+      "grade": "Q2",
+      "meaning": "已解析但字段不完整",
+      "formal_internal_report_allowed": false,
+      "internal_review_report_allowed": false,
+      "preview_allowed": false,
+      "decision_use_allowed": false
+    },
+    {
+      "grade": "Q3",
+      "meaning": "机器候选结构化",
+      "formal_internal_report_allowed": false,
+      "internal_review_report_allowed": false,
+      "preview_allowed": true,
+      "decision_use_allowed": false
+    },
+    {
+      "grade": "Q4",
+      "meaning": "人工确认黄金字段",
+      "formal_internal_report_allowed": false,
+      "internal_review_report_allowed": true,
+      "preview_allowed": true,
+      "decision_use_allowed": false
+    },
+    {
+      "grade": "Q5",
+      "meaning": "零差异验证通过并完成追溯",
+      "formal_internal_report_allowed": true,
+      "internal_review_report_allowed": true,
+      "preview_allowed": true,
+      "decision_use_allowed": true
+    }
+  ],
+  "promotion_blocks": [
+    "unresolved_critical_difference",
+    "zero_delta_failed",
+    "missing_lineage",
+    "missing_human_confirmation",
+    "stale_input",
+    "raw_data_mutation_detected"
+  ],
+  "runtime_status": "protocol_defined_no_business_data_committed"
+}

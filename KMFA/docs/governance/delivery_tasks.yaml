@@ -446,3 +446,84 @@ tasks:
     rollback: "Remove control event policy/checker and restore S02-P1 status."
     target_version: "0.1.0-s02p2"
     completed_version: "0.1.0-s02p2"
+  - task_id: "S2PCT01"
+    phase: "S2PC"
+    objective: "实现 Q0-Q5 数据质量等级定义。"
+    scope:
+      - "KMFA/docs/governance/QUALITY_GATE_POLICY.md"
+      - "KMFA/metadata/quality/quality_grade_policy.yaml"
+    non_scope:
+      - "business data import"
+      - "real zero-delta validation"
+    status: "completed"
+    dependencies:
+      - "S2PBT03"
+    required_files:
+      - "KMFA/docs/governance/QUALITY_GATE_POLICY.md"
+      - "KMFA/metadata/quality/quality_grade_policy.yaml"
+    acceptance_ids:
+      - "ACC-KMFA-S02-P3"
+    test_commands:
+      - "python3 KMFA/tools/check_report_grade_gate.py"
+    test_results:
+      - "PASS: quality grades Q0-Q5 defined and permission-bounded"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S02_P3_quality_gate/human/s02_p3_completion_record.md"
+    risk: "Quality grade definitions must not imply real data has been imported or validated."
+    rollback: "Remove quality grade policy and restore S02-P2 status."
+    target_version: "0.1.0-s02p3"
+    completed_version: "0.1.0-s02p3"
+  - task_id: "S2PCT02"
+    phase: "S2PC"
+    objective: "实现 A/B/C/D 报告可信等级定义。"
+    scope:
+      - "KMFA/metadata/reports/report_grade_policy.yaml"
+      - "KMFA/metadata/reports/report_manifest.jsonl"
+    non_scope:
+      - "HTML report generation"
+      - "runtime report scoring"
+    status: "completed"
+    dependencies:
+      - "S2PCT01"
+    required_files:
+      - "KMFA/metadata/reports/report_grade_policy.yaml"
+      - "KMFA/metadata/reports/report_manifest.jsonl"
+    acceptance_ids:
+      - "ACC-KMFA-S02-P3"
+    test_commands:
+      - "python3 KMFA/tools/check_report_grade_gate.py"
+    test_results:
+      - "PASS: report grades A-D defined with A requiring Q5 and gate evidence"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S02_P3_quality_gate/human/s02_p3_completion_record.md"
+    risk: "Report trust grade definitions must not imply formal report generation exists."
+    rollback: "Remove report grade policy and restore S02-P2 status."
+    target_version: "0.1.0-s02p3"
+    completed_version: "0.1.0-s02p3"
+  - task_id: "S2PCT03"
+    phase: "S2PC"
+    objective: "建立质量等级到报告发布权限的门禁。"
+    scope:
+      - "KMFA/metadata/reports/report_release_gate.yaml"
+      - "KMFA/tools/check_report_grade_gate.py"
+    non_scope:
+      - "Stage 2 review"
+      - "GitHub upload"
+    status: "completed"
+    dependencies:
+      - "S2PCT02"
+    required_files:
+      - "KMFA/metadata/reports/report_release_gate.yaml"
+      - "KMFA/tools/check_report_grade_gate.py"
+    acceptance_ids:
+      - "ACC-KMFA-S02-P3"
+    test_commands:
+      - "python3 KMFA/tools/check_report_grade_gate.py"
+    test_results:
+      - "PASS: release gate blocks missing evidence and maps Q0-Q5 to D/C/B/A permissions"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S02_P3_quality_gate/human/s02_p3_completion_record.md"
+    risk: "Missing evidence must block or downgrade release, never pass by default."
+    rollback: "Remove release gate/checker and restore S02-P2 status."
+    target_version: "0.1.0-s02p3"
+    completed_version: "0.1.0-s02p3"
