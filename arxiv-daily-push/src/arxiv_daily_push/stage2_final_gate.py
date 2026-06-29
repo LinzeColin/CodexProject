@@ -1928,6 +1928,86 @@ def build_s2plt02_real_proof_capture_authorization_validation_state(
     return state
 
 
+def build_s2plt02_real_proof_capture_authorization_artifact_draft_state(
+    *,
+    owner_id: str,
+    owner_role: str,
+    generated_at: str,
+    readiness_state_hash: str,
+) -> dict[str, Any]:
+    """Build a stdout-only S2PLT02 authorization artifact draft from explicit owner inputs."""
+
+    artifact = {
+        "schema_version": S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_SCHEMA_VERSION,
+        "contract_id": "ADP-PRODUCT-CONTRACT-V7.2",
+        "generated_at": generated_at,
+        "authorization_decision": S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_DECISION,
+        "authorized_by": {
+            "owner_id": owner_id,
+            "owner_role": owner_role,
+            "authorization_source": "explicit_owner_instruction",
+        },
+        "authorization_scope": "S2PLT02_REAL_SMTP_SCHEDULER_PROOF_CAPTURE_ONLY",
+        "authorized_actions": list(S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_AUTHORIZED_ACTIONS),
+        "authorization_constraints": {
+            key: True for key in S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_CONSTRAINTS
+        },
+        "readiness_state_hash": readiness_state_hash,
+        "evidence_refs": [
+            "arxiv-daily-push/docs/governance/ASSURANCE_STATUS.yaml",
+            "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_READINESS.md",
+            "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-20260629.json",
+        ],
+        "no_production_side_effects": {
+            flag: False for flag in S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_NO_PRODUCTION_FLAGS
+        },
+        "authorization_hash": "",
+    }
+    artifact["authorization_hash"] = build_s2plt02_real_proof_capture_authorization_hash(artifact)
+    validation_errors = validate_s2plt02_real_proof_capture_authorization_artifact(
+        artifact,
+        expected_readiness_state_hash=readiness_state_hash,
+    )
+    state = {
+        "status": "draft" if not validation_errors else "blocked",
+        "scope": "s2plt02_real_proof_capture_authorization_artifact_draft_only_no_write_no_production",
+        "task_id": "S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION",
+        "parent_task_id": S2PLT02_TASK_ID,
+        "acceptance_id": S2PLT02_ACCEPTANCE_ID,
+        "artifact_path": S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_ARTIFACT_PATH,
+        "artifact": artifact,
+        "validation_errors": validation_errors,
+        "authorization_artifact_written": False,
+        "authorization_artifact_present_in_repo": False,
+        "authorization_gate_satisfied_by_this_command": False,
+        "real_proof_capture_authorized_by_this_command": False,
+        "next_required_action": "owner_must_review_and_write_authorization_artifact_if_explicitly_approved",
+        "production_acceptance_claimed": False,
+        "integrated_production_accepted": False,
+        "stage2_integrated_production_accepted": False,
+        "daily_operation_enabled": False,
+        "real_smtp_sent": False,
+        "real_smtp_send_enabled": False,
+        "scheduler_enabled": False,
+        "scheduler_install_enabled": False,
+        "release_uploaded": False,
+        "release_packaging_enabled": False,
+        "production_restore_enabled": False,
+        "production_restore_executed": False,
+        "public_schema_changed": False,
+        "db_migration_executed": False,
+        "production_queue_mutated": False,
+        "source_adapter_changed": False,
+        "ranking_algorithm_changed": False,
+        "current_pointer_changed": False,
+        "v7_1_baseline_changed": False,
+        "v7_2_contract_files_changed": False,
+        "state_hash": "",
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
 def build_s2plt02_real_proof_capture_authorization_owner_packet_state(
     readiness_state: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:

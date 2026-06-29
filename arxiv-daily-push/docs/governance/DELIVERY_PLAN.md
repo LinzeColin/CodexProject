@@ -21,12 +21,21 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 272
+- task_count: 273
 - acceptance_count: 127
 
 ## Delivery Tasks
 
 The machine-readable task source is `delivery_tasks.yaml`.
+
+## 2026-06-29 20:57:12 Australia/Sydney - S2PLT02 Real Proof Capture Authorization Draft CLI
+
+- `S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-CLI` adds `build-s2plt02-real-proof-capture-authorization-artifact-draft`.
+- The CLI emits a schema-valid stdout JSON draft for `FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json` from explicit owner inputs, including the current readiness hash and no-production flags.
+- Current draft state is `status=draft`, `state_hash=b464cecac874de888d5ca3e025361ac523a6a89cabe7de560ace5d48e79f2eff`, and `validation_errors=[]`.
+- The live authorization artifact is still absent: `authorization_artifact_written=false`, `authorization_artifact_present_in_repo=false`, `authorization_gate_satisfied_by_this_command=false`.
+- Evidence: `governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-DRAFT-CLI-20260629.json` and `arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_DRAFT_CLI.md`.
+- This does not authorize real proof capture, send SMTP, enable scheduler, upload Release assets, execute restore, mutate schema/DB/source/ranking/CURRENT/V7, enable DAILY_OPERATION, accept S2PLT02/S2PLT03/S2PLT04/S2PMT07, or claim integrated production acceptance.
 
 ## 2026-06-29 20:35:10 Australia/Sydney - S2PMT07 Final Bundle Step Actionability Sync
 
