@@ -1,5 +1,5 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260630-ADP-S2PLT02-TERMINAL-DELIVERY-INPUT-INVENTORY"
+as_of_event_id: "EVENT-20260630-ADP-S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN"
 source_snapshot_hash: "sha256:5d1e25e69f353a9b13a3f9d463b25d2f9ed93fb69d2ee3f860bedf4ac199fb98"
 source_base_commit: "fd90a208c7b009aa11bc26c4629a7ea92679c5ff"
 source_tree_hash: "c44d743a2833842b3cc0dd9e098fb70017cdc5a2"
@@ -66,7 +66,7 @@ dimensions:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "BLOCKED_PRECHECK"
-  release_gate: "S2PLT02_TERMINAL_DELIVERY_INPUT_INVENTORY_READY_NO_WRITE_NO_PRODUCTION"
+  release_gate: "S2PLT02_TERMINAL_DELIVERY_PROOF_CAPTURE_PLAN_READY_NO_WRITE_NO_PRODUCTION"
   blocker_ids:
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
@@ -84,7 +84,7 @@ delivery_readiness:
 next_executable_task:
   task_id: "S2PLT02-TERMINAL-DELIVERY-PROOF"
   status: "blocked"
-  reason: "S2PLT02-TERMINAL-DELIVERY-INPUT-INVENTORY now aggregates the terminal proof inputs and consumes the preceding S2PLT02-REAL-SCHEDULER-PROOF-INPUT-VALIDATOR boundary: S2PLT01 terminal acceptance, first real delivery day, no-duplicate evidence, M4 watermark proof, real SMTP proof, and P0/P1 zero proof are ready, but the second consecutive real M1-M4 SMTP day, eight real emails, real launchd scheduler proof, and reviewed terminal delivery proof artifact are still missing. S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT still shows 2026-06-29/2026-06-30 are dry-run only, ADP_ALLOW_SMTP_SEND=false, and launchd labels remain disabled."
+  reason: "S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN now consumes S2PLT02-TERMINAL-DELIVERY-INPUT-INVENTORY and orders the remaining terminal proof work without writing artifacts or enabling production: capture the second consecutive real M1-M4 SMTP day, collect real launchd scheduler proof, build the stdout-only terminal proof draft, run independent review, then write and validate FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json. The same missing inputs remain: second real delivery day, eight real emails, real launchd scheduler proof, and reviewed terminal delivery proof artifact. S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT still shows 2026-06-29/2026-06-30 are dry-run only, ADP_ALLOW_SMTP_SEND=false, and launchd labels remain disabled."
   acceptance_ids:
     - "ACC-S2PLT02-2D"
     - "ACC-S2PMT07-FINAL-REVIEW"
@@ -104,7 +104,7 @@ owner_decision:
   question: "是否接受 V7.2 作为 CURRENT 产品合同，保留 V7.1 为只读历史基线，并要求所有 Stage2 agent 先按 V7.2 复审已完成工作，不满足的先修复，再继续新任务。"
   human_owner_role: "content_owner + engineering_owner"
   human_assignment_status: "CODEX_CAN_CONTINUE_WITH_STAGE2_CONTRACT"
-  current_recommendation: "A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat live authorization, independent reviewer assignment, FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json, the stdout-only terminal proof draft builder, S2PLT02-REAL-SCHEDULER-PROOF-INPUT-VALIDATOR, and S2PLT02 terminal delivery input inventory as validated inputs, record the current dry-run/scheduler-disabled capture window as blocked evidence, and next collect S2PLT02 terminal delivery proof only from a controlled real capture window before S2PLT03 terminal proof, S2PLT04 completion proof, final bundle manifest, independent final signoff, final command execution proof, no-production attestation, and next-agent handoff."
+  current_recommendation: "A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat live authorization, independent reviewer assignment, FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json, the stdout-only terminal proof draft builder, S2PLT02-REAL-SCHEDULER-PROOF-INPUT-VALIDATOR, S2PLT02 terminal delivery input inventory, and S2PLT02 capture plan as validated no-write inputs, record the current dry-run/scheduler-disabled capture window as blocked evidence, and next collect S2PLT02 terminal delivery proof only from a controlled real capture window before S2PLT03 terminal proof, S2PLT04 completion proof, final bundle manifest, independent final signoff, final command execution proof, no-production attestation, and next-agent handoff."
   option_a: "继续 S2PMT07 / S2PLT04 前置证据链：先补 S2PLT01 终态验收、第二真实自然日、8 封真实邮件、真实 scheduler proof 和 S2PLT03 终态韧性 proof，保持 S2PLT04/final bundle/production gate 阻断。"
   option_b: "暂停所有 Stage2 任务等待真实 scheduler/SMTP 生产启用；会不必要阻塞无冲突证据工作。"
   option_c: "越过 S2PMT07 直接声称 P0/P1 关闭或启用 scheduler/SMTP；禁止。"

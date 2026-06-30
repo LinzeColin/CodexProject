@@ -154,6 +154,7 @@ from arxiv_daily_push.stage2_final_gate import (
     build_s2plt02_real_scheduler_proof_validation_state,
     build_s2plt02_partial_real_delivery_state,
     build_s2plt02_terminal_delivery_input_inventory_state,
+    build_s2plt02_terminal_delivery_proof_capture_plan_state,
     build_s2plt02_terminal_delivery_proof_artifact_draft_state,
     build_s2plt02_terminal_delivery_proof_artifact_validation_state,
     build_s2plt03_dependency_state,
@@ -181,6 +182,7 @@ from arxiv_daily_push.stage2_final_gate import (
     validate_s2plt02_real_proof_capture_readiness_state,
     validate_s2plt02_real_scheduler_proof_validation_state,
     validate_s2plt02_terminal_delivery_input_inventory_state,
+    validate_s2plt02_terminal_delivery_proof_capture_plan_state,
     validate_s2plt02_terminal_delivery_proof_artifact,
     validate_s2plt02_terminal_delivery_proof_artifact_validation_state,
     validate_s2plt03_local_resilience_drill_bundle,
@@ -680,6 +682,48 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(inventory["scheduler_install_enabled"])
         self.assertFalse(inventory["daily_operation_enabled"])
         self.assertEqual(validate_s2plt02_terminal_delivery_input_inventory_state(inventory), [])
+
+    def test_s2plt02_terminal_delivery_proof_capture_plan_exposes_blocked_next_steps(self) -> None:
+        plan = build_s2plt02_terminal_delivery_proof_capture_plan_state(
+            generated_at="2026-06-30T10:41:36+10:00",
+            repo_root=REPO_ROOT,
+        )
+
+        self.assertEqual(plan["status"], "blocked")
+        self.assertEqual(plan["task_id"], "S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN")
+        self.assertFalse(plan["terminal_delivery_proof_ready"])
+        self.assertFalse(plan["artifact_written"])
+        self.assertEqual(plan["observed_real_delivery_days"], 1)
+        self.assertEqual(plan["observed_real_email_count"], 4)
+        self.assertIn("SECOND_REAL_DELIVERY_DAY", plan["blocked_by_missing_inputs"])
+        self.assertIn("EIGHT_REAL_EMAILS", plan["blocked_by_missing_inputs"])
+        self.assertIn("REAL_SCHEDULER_PROOF", plan["blocked_by_missing_inputs"])
+        self.assertIn("S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT", plan["blocked_by_missing_inputs"])
+        self.assertEqual(
+            [step["step_id"] for step in plan["capture_steps"]],
+            [
+                "CAPTURE_SECOND_REAL_M1_M4_SMTP_DAY",
+                "COLLECT_REAL_LAUNCHD_SCHEDULER_PROOF",
+                "BUILD_TERMINAL_DELIVERY_PROOF_ARTIFACT_DRAFT",
+                "RUN_INDEPENDENT_TERMINAL_PROOF_REVIEW",
+                "WRITE_REVIEWED_TERMINAL_DELIVERY_PROOF_ARTIFACT",
+                "VALIDATE_TERMINAL_DELIVERY_PROOF_ARTIFACT",
+            ],
+        )
+        self.assertEqual(
+            plan["capture_steps"][2]["command"],
+            "adp build-s2plt02-terminal-delivery-proof-artifact-draft --delivery-manifest DAY1.json --delivery-manifest DAY2.json --scheduler-proof REAL-SCHEDULER-PROOF.json --json",
+        )
+        self.assertEqual(
+            plan["capture_steps"][5]["command"],
+            "adp validate-s2plt02-terminal-delivery-proof --repo-root . --json",
+        )
+        self.assertTrue(plan["no_production_side_effects"])
+        self.assertFalse(plan["real_smtp_send_enabled"])
+        self.assertFalse(plan["scheduler_install_enabled"])
+        self.assertFalse(plan["daily_operation_enabled"])
+        self.assertFalse(plan["production_acceptance_claimed"])
+        self.assertEqual(validate_s2plt02_terminal_delivery_proof_capture_plan_state(plan), [])
 
     def test_s2plt02_terminal_delivery_proof_artifact_validation_accepts_valid_no_production_artifact(self) -> None:
         with TemporaryDirectory() as tmp_dir:

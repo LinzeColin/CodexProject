@@ -14,7 +14,7 @@
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - Product version: `0.23.1`
-- Phase/Gate: `S2PL / S2PLT02_TERMINAL_DELIVERY_INPUT_INVENTORY_READY_NO_WRITE_NO_PRODUCTION`
+- Phase/Gate: `S2PL / S2PLT02_TERMINAL_DELIVERY_PROOF_CAPTURE_PLAN_READY_NO_WRITE_NO_PRODUCTION`
 - Models/Formulas/Parameters total: `121 / 123 / 1108`
 - Active formulas/parameters: `123 / 1091`
 - Machine checked formulas/parameters: `123 / 1091`
@@ -35,7 +35,7 @@
 ## Delivery
 
 - Readiness: `BLOCKED_PRECHECK`
-- Release gate: `S2PLT02_TERMINAL_DELIVERY_INPUT_INVENTORY_READY_NO_WRITE_NO_PRODUCTION`
+- Release gate: `S2PLT02_TERMINAL_DELIVERY_PROOF_CAPTURE_PLAN_READY_NO_WRITE_NO_PRODUCTION`
 - V7 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - V7 contract hash: `a4de9e5d0fcd2be0290916bc50028b0c5cdeb1d84a57191b298ccfe0ec79428d`
 - V7 roadmap hash: `7c5f2d842d4f6b909343c953fe39b4a4aa540d168199747a9f7decdb1aad9bd1`
@@ -48,7 +48,7 @@
 - Next governance task: `S2PMT07`
 - Parallel shadow source task: `NONE_WHILE_S2PMT07_BLOCKED`
 - Next executable task: `S2PLT02-TERMINAL-DELIVERY-PROOF`
-- Latest evidence sync: `S2PLT02-TERMINAL-DELIVERY-INPUT-INVENTORY` adds a no-write input inventory for the future terminal delivery proof. Current ready inputs are S2PLT01 terminal acceptance, the first real delivery day, no-duplicate evidence, M4 watermark proof, real SMTP proof, and P0/P1 zero proof. Missing inputs remain the second real delivery day, eight real emails, real scheduler proof, and `FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json`; `artifact_written=false`, current 2026-06-29/2026-06-30 capture evidence remains dry-run/scheduler-disabled, and S2PLT02/S2PLT03/S2PLT04/final bundle/production acceptance remain blocked.
+- Latest evidence sync: `S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN` adds a no-write ordered plan for the future terminal delivery proof capture/review sequence. Current missing inputs remain the second real delivery day, eight real emails, real scheduler proof, and `FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json`; `next_executable_step=CAPTURE_SECOND_REAL_M1_M4_SMTP_DAY`, `artifact_written=false`, `real_smtp_send_enabled=false`, `scheduler_install_enabled=false`, current 2026-06-29/2026-06-30 capture evidence remains dry-run/scheduler-disabled, and S2PLT02/S2PLT03/S2PLT04/final bundle/production acceptance remain blocked.
 - Pending/stale events: `314`
 - Tree-bound events: `1`
 - Commit-bound events: `4`

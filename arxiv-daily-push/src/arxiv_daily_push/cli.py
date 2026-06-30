@@ -138,6 +138,7 @@ from .stage2_final_gate import (
     build_s2plt02_real_proof_capture_readiness_state,
     build_s2plt02_real_scheduler_proof_validation_state,
     build_s2plt02_terminal_delivery_input_inventory_state,
+    build_s2plt02_terminal_delivery_proof_capture_plan_state,
     build_s2plt02_terminal_delivery_proof_artifact_draft_state,
     build_s2plt02_terminal_delivery_proof_artifact_validation_state,
     build_s2plt02_terminal_readiness_audit_state,
@@ -154,6 +155,7 @@ from .stage2_final_gate import (
     validate_s2plt02_real_proof_capture_readiness_state,
     validate_s2plt02_real_scheduler_proof_validation_state,
     validate_s2plt02_terminal_delivery_input_inventory_state,
+    validate_s2plt02_terminal_delivery_proof_capture_plan_state,
     validate_s2plt02_terminal_delivery_proof_artifact,
     validate_s2plt03_terminal_resilience_proof_artifact_validation_state,
     validate_s2plt04_completion_evidence_audit_state,
@@ -1367,6 +1369,26 @@ def build_parser() -> argparse.ArgumentParser:
         "--json",
         action="store_true",
         help="Print JSON S2PLT02 terminal delivery input inventory.",
+    )
+
+    s2plt02_terminal_delivery_capture_plan = subparsers.add_parser(
+        "plan-s2plt02-terminal-delivery-proof-capture",
+        help="Print the safe S2PLT02 terminal proof capture plan without sending mail or enabling scheduler.",
+    )
+    s2plt02_terminal_delivery_capture_plan.add_argument(
+        "--repo-root",
+        default=".",
+        help="Repository root containing final-bundle artifacts.",
+    )
+    s2plt02_terminal_delivery_capture_plan.add_argument(
+        "--generated-at",
+        required=True,
+        help="Capture-plan timestamp.",
+    )
+    s2plt02_terminal_delivery_capture_plan.add_argument(
+        "--json",
+        action="store_true",
+        help="Print JSON S2PLT02 terminal delivery proof capture plan.",
     )
 
     s2plt02_terminal_delivery_proof = subparsers.add_parser(
@@ -3986,6 +4008,27 @@ def main(argv: list[str] | None = None) -> int:
             print(f"- observed_real_email_count: {report.get('observed_real_email_count')}")
             for item in report.get("missing_inputs", []):
                 print(f"- missing_input: {item}")
+            for error in state_errors:
+                print(f"- state_error: {error}")
+        return 0 if report["status"] == "pass" and not state_errors else 2
+    if args.command == "plan-s2plt02-terminal-delivery-proof-capture":
+        report = build_s2plt02_terminal_delivery_proof_capture_plan_state(
+            generated_at=args.generated_at,
+            repo_root=args.repo_root,
+        )
+        state_errors = validate_s2plt02_terminal_delivery_proof_capture_plan_state(report)
+        if state_errors:
+            report = {**report, "state_validation_errors": state_errors}
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- terminal_delivery_proof_ready: {report.get('terminal_delivery_proof_ready')}")
+            print(f"- next_executable_step: {report.get('next_executable_step')}")
+            for item in report.get("blocked_by_missing_inputs", []):
+                print(f"- missing_input: {item}")
+            for step in report.get("capture_steps", []):
+                print(f"- capture_step: {step.get('step_id')}")
             for error in state_errors:
                 print(f"- state_error: {error}")
         return 0 if report["status"] == "pass" and not state_errors else 2
