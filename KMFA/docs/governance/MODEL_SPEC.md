@@ -1,6 +1,6 @@
 # KMFA Model Spec
 
-product_version: 0.1.0-s07-stage-review
+product_version: 0.1.0-s07-github-upload
 
 ## Scope
 

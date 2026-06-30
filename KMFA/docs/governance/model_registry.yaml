@@ -118,7 +118,7 @@ models:
     owner: "KMFA"
     status: "planned"
     fact_level: "EXTRACTED"
-    model_version: "0.1.0-s07-stage-review"
+    model_version: "0.1.0-s07-github-upload"
     assumptions:
       - "ASM-KMFA-003"
     formula_ids:
