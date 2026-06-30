@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-06-30 10:12:54 Australia/Sydney - S2PLT02 terminal delivery input inventory
+
+- Added `audit-s2plt02-terminal-delivery-inputs`, a no-write inventory of current S2PLT02 terminal delivery proof inputs.
+- Current inventory returns blocked / exit 2 with ready inputs `S2PLT01_TERMINAL_ACCEPTANCE`, `FIRST_REAL_DELIVERY_DAY`, `NO_DUPLICATE_EMAILS`, `M4_WATERMARK_PROOF`, `REAL_SMTP_PROOF`, and `P0_P1_ZERO_PROOF`; missing inputs remain `SECOND_REAL_DELIVERY_DAY`, `EIGHT_REAL_EMAILS`, `REAL_SCHEDULER_PROOF`, and `S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`.
+- Current observed real delivery remains `1/2` day and `4/8` emails; `artifact_written=false`, `real_smtp_send_enabled=false`, `scheduler_install_enabled=false`, `daily_operation_enabled=false`, and state hash `5976272c0102361222027116f94f5a73cc53e87fa18d1b0e9a5d82208e7c4444`.
+- No live terminal proof artifact, SMTP, scheduler, Release, restore, CURRENT/V7, public schema, DB, source, ranking, queue, DAILY_OPERATION, or production acceptance was enabled.
+
 ## 2026-06-30 09:48:07 Australia/Sydney - S2PLT02 real scheduler proof input validator
 
 - Added `validate-s2plt02-real-scheduler-proof`, a no-write validator for the future real launchd scheduler proof manifest consumed by the S2PLT02 terminal proof draft builder.
