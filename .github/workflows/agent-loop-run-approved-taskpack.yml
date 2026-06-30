@@ -67,6 +67,15 @@ jobs:
       TASKPACK_STATUS: FAIL
       NEEDS_AUTOFIX: "false"
       REVIEW_NEEDS_AUTOFIX: "false"
+      EXECUTOR_MODE: ""
+      ENABLE_CODEX_REVIEW: "false"
+      ENABLE_ARCHITECT_REVIEW: "false"
+      MAX_PAID_CODEX_CALLS: "0"
+      PAID_CALLS_ATTEMPTED: "0"
+      VALUE_SCORE: "0"
+      ROI_BUDGET_USD: "0"
+      RERUN_ALLOWED: "false"
+      NEXT_RECOMMENDED_ACTION: "Review failure artifacts before rerun."
 
     steps:
       - name: Checkout repository
@@ -329,6 +338,91 @@ jobs:
             exit "$status"
           fi
 
+      - name: Resolve ROI execution defaults
+        if: ${{ steps.preflight.outputs.should_continue == 'true' }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          metadata = json.load(open("agent-loop-work/metadata.json", encoding="utf-8"))
+          risk = str(metadata.get("risk_tier", "")).strip()
+          if risk not in {"T1", "T2"}:
+              raise SystemExit(f"unsupported risk_tier for ROI defaults: {risk}")
+
+          def bool_value(name: str, default: bool = False) -> bool:
+              value = metadata.get(name, default)
+              if isinstance(value, bool):
+                  return value
+              if isinstance(value, str):
+                  return value.strip().lower() in {"1", "true", "yes", "on"}
+              return bool(value)
+
+          def int_value(name: str, default: int) -> int:
+              value = metadata.get(name, default)
+              try:
+                  result = int(value)
+              except (TypeError, ValueError) as exc:
+                  raise SystemExit(f"{name} must be an integer") from exc
+              if result < 0:
+                  raise SystemExit(f"{name} must be non-negative")
+              return result
+
+          if risk == "T1":
+              executor_mode = str(metadata.get("executor_mode") or "codex-one-shot").strip()
+              if executor_mode != "codex-one-shot":
+                  raise SystemExit(f"T1 supports only executor_mode=codex-one-shot in ROI hotfix v1, got {executor_mode}")
+              max_paid_calls = min(int_value("max_paid_codex_calls", 1), 1)
+              effective_autofix_loops = 0
+              plan_status = "N/A"
+              next_action = "Do not rerun blindly; inspect artifacts first if the paid call fails."
+          else:
+              executor_mode = "codex-full"
+              max_paid_calls = 0
+              effective_autofix_loops = 0
+              plan_status = "FAIL"
+              next_action = "T2 requires separate-job plan/implement orchestration before paid Codex calls."
+
+          env_updates = {
+              "EXECUTOR_MODE": executor_mode,
+              "ENABLE_CODEX_REVIEW": str(bool_value("enable_codex_review", False)).lower(),
+              "ENABLE_ARCHITECT_REVIEW": str(bool_value("enable_architect_review", False)).lower(),
+              "MAX_PAID_CODEX_CALLS": str(max_paid_calls),
+              "PAID_CALLS_ATTEMPTED": "0",
+              "VALUE_SCORE": str(metadata.get("value_score", 0)),
+              "ROI_BUDGET_USD": str(metadata.get("roi_budget_usd", 0)),
+              "MAX_AUTOFIX_LOOPS": str(effective_autofix_loops),
+              "PLAN_STATUS": plan_status,
+              "RERUN_ALLOWED": "false",
+              "NEXT_RECOMMENDED_ACTION": next_action,
+          }
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as env:
+              for key, value in env_updates.items():
+                  env.write(f"{key}={value}\n")
+
+          Path("agent-loop-work/roi-defaults.txt").write_text(
+              "\n".join(f"{key}={value}" for key, value in env_updates.items()) + "\n",
+              encoding="utf-8",
+          )
+          print(Path("agent-loop-work/roi-defaults.txt").read_text(encoding="utf-8"))
+          PY
+
+      - name: Block unsupported T2 ROI mode
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.RISK_TIER == 'T2' }}
+        run: |
+          {
+            echo "T2_MULTI_JOB_NOT_IMPLEMENTED"
+            echo
+            echo "T2 plan/implement split must run in fresh jobs before paid Codex calls are enabled."
+            echo "This hotfix intentionally blocks T2 to avoid multiple openai/codex-action@v1 calls in one job."
+          } > "$WORK_DIR/t2-block.txt"
+          gh issue edit "$AUDIT_ISSUE" --remove-label "agent:running" || true
+          gh issue edit "$AUDIT_ISSUE" --add-label "agent:blocked" || true
+          gh issue comment "$AUDIT_ISSUE" --body-file "$WORK_DIR/t2-block.txt"
+          cat "$WORK_DIR/t2-block.txt"
+          exit 1
+
       - name: Apply risk label
         if: ${{ steps.preflight.outputs.should_continue == 'true' }}
         run: |
@@ -337,7 +431,7 @@ jobs:
           gh issue edit "$AUDIT_ISSUE" --add-label "risk:${RISK_TIER}" || true
 
       - name: Check OPENAI_API_KEY
-        if: ${{ steps.preflight.outputs.should_continue == 'true' }}
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN != 'true' && env.MAX_PAID_CODEX_CALLS != '0' }}
         env:
           OPENAI_API_KEY_PRESENT: ${{ secrets.OPENAI_API_KEY != '' }}
         run: |
@@ -381,7 +475,7 @@ jobs:
           git checkout -B "$BRANCH_NAME"
 
       - name: Build Codex plan prompt
-        if: ${{ steps.preflight.outputs.should_continue == 'true' }}
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.EXECUTOR_MODE == 'codex-full' }}
         run: |
           {
             cat .github/codex/prompts/codex-plan.md
@@ -390,8 +484,28 @@ jobs:
             cat "$TASKPACK_PATH"
           } > "$WORK_DIR/codex-plan-prompt.md"
 
+      - name: Reserve paid Codex call for plan
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.EXECUTOR_MODE == 'codex-full' }}
+        run: |
+          next=$((PAID_CALLS_ATTEMPTED + 1))
+          if [ "$next" -gt "$MAX_PAID_CODEX_CALLS" ]; then
+            {
+              echo "PAID_CALL_LIMIT_REACHED"
+              echo "Requested step: codex-plan"
+              echo "Paid calls attempted: $PAID_CALLS_ATTEMPTED"
+              echo "Max paid calls: $MAX_PAID_CODEX_CALLS"
+            } > "$WORK_DIR/paid-call-limit.txt"
+            gh issue edit "$AUDIT_ISSUE" --remove-label "agent:running" || true
+            gh issue edit "$AUDIT_ISSUE" --add-label "agent:blocked" || true
+            gh issue comment "$AUDIT_ISSUE" --body-file "$WORK_DIR/paid-call-limit.txt"
+            cat "$WORK_DIR/paid-call-limit.txt"
+            exit 1
+          fi
+          echo "PAID_CALLS_ATTEMPTED=$next" >> "$GITHUB_ENV"
+          echo "LAST_PAID_STEP=codex-plan" >> "$GITHUB_ENV"
+
       - name: Run Codex plan
-        if: ${{ steps.preflight.outputs.should_continue == 'true' }}
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.EXECUTOR_MODE == 'codex-full' }}
         id: codex_plan
         uses: openai/codex-action@v1
         with:
@@ -402,13 +516,13 @@ jobs:
           safety-strategy: drop-sudo
 
       - name: Verify plan made no repository changes
-        if: ${{ steps.preflight.outputs.should_continue == 'true' }}
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.EXECUTOR_MODE == 'codex-full' }}
         run: |
           git diff --quiet
           git diff --cached --quiet
 
       - name: Validate Codex plan
-        if: ${{ steps.preflight.outputs.should_continue == 'true' }}
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.EXECUTOR_MODE == 'codex-full' }}
         run: |
           set +e
           python3 scripts/agent_loop/validate_plan.py \
@@ -425,7 +539,7 @@ jobs:
           fi
 
       - name: Comment plan on audit issue
-        if: ${{ steps.preflight.outputs.should_continue == 'true' }}
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.EXECUTOR_MODE == 'codex-full' }}
         run: |
           {
             echo "## Codex Plan"
@@ -439,7 +553,7 @@ jobs:
           gh issue comment "$AUDIT_ISSUE" --body-file "$WORK_DIR/plan-comment.md"
 
       - name: Upload plan artifact
-        if: ${{ steps.preflight.outputs.should_continue == 'true' }}
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.EXECUTOR_MODE == 'codex-full' }}
         uses: actions/upload-artifact@v4
         with:
           name: agent-loop-plan-${{ github.run_id }}
@@ -451,11 +565,79 @@ jobs:
       - name: Stop after dry run
         if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN == 'true' }}
         run: |
-          gh issue comment "$AUDIT_ISSUE" --body "Dry run complete. Plan validation passed. No implementation, PR, or merge was attempted."
+          gh issue comment "$AUDIT_ISSUE" --body "Dry run complete. Task Pack, routing, and ROI defaults were validated. No paid Codex call, implementation, PR, or merge was attempted."
           exit 0
 
+      - name: Build Codex one-shot prompt
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN != 'true' && env.EXECUTOR_MODE == 'codex-one-shot' }}
+        run: |
+          {
+            cat .github/codex/prompts/codex-implement.md
+            echo
+            echo "# ROI One-Shot Mode"
+            echo
+            echo "This is a T1 codex-one-shot run. There is no separate paid plan call."
+            echo "First state a brief implementation plan, then implement within the approved scope."
+            echo "Do not call for review/autofix/architect stages. Return the required Result Pack."
+            echo
+            echo "# Approved Task Pack"
+            cat "$TASKPACK_PATH"
+          } > "$WORK_DIR/codex-one-shot-prompt.md"
+          {
+            echo "# Codex Plan"
+            echo
+            echo "PLAN_STATUS=N/A"
+            echo
+            echo "T1 ROI hotfix uses codex-one-shot. The implementation prompt requires Codex to state a brief plan before modifying files."
+          } > "$WORK_DIR/codex-plan.md"
+          {
+            echo "PLAN_VALIDATION=N/A"
+            echo "T1 codex-one-shot skips the separate paid plan gate by design."
+          } > "$WORK_DIR/plan-validation.txt"
+
+      - name: Reserve paid Codex call for one-shot
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN != 'true' && env.EXECUTOR_MODE == 'codex-one-shot' }}
+        run: |
+          next=$((PAID_CALLS_ATTEMPTED + 1))
+          if [ "$next" -gt "$MAX_PAID_CODEX_CALLS" ]; then
+            {
+              echo "PAID_CALL_LIMIT_REACHED"
+              echo "Requested step: codex-one-shot"
+              echo "Paid calls attempted: $PAID_CALLS_ATTEMPTED"
+              echo "Max paid calls: $MAX_PAID_CODEX_CALLS"
+            } > "$WORK_DIR/paid-call-limit.txt"
+            gh issue edit "$AUDIT_ISSUE" --remove-label "agent:running" || true
+            gh issue edit "$AUDIT_ISSUE" --add-label "agent:blocked" || true
+            gh issue comment "$AUDIT_ISSUE" --body-file "$WORK_DIR/paid-call-limit.txt"
+            cat "$WORK_DIR/paid-call-limit.txt"
+            exit 1
+          fi
+          echo "PAID_CALLS_ATTEMPTED=$next" >> "$GITHUB_ENV"
+          echo "LAST_PAID_STEP=codex-one-shot" >> "$GITHUB_ENV"
+
+      - name: Run Codex one-shot implementation
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN != 'true' && env.EXECUTOR_MODE == 'codex-one-shot' }}
+        id: codex_one_shot
+        uses: openai/codex-action@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          prompt-file: agent-loop-work/codex-one-shot-prompt.md
+          output-file: /tmp/agent_loop/codex-one-shot-output.md
+          sandbox: workspace-write
+          effort: low
+          safety-strategy: drop-sudo
+
+      - name: Validate Codex one-shot result pack
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN != 'true' && env.EXECUTOR_MODE == 'codex-one-shot' }}
+        run: |
+          python3 scripts/agent_loop/extract_result_pack.py \
+            --result-pack /tmp/agent_loop/codex-one-shot-output.md \
+            --output "$WORK_DIR/codex-implement.md" \
+            > "$WORK_DIR/result-pack-validation.txt" 2>&1
+          cat "$WORK_DIR/result-pack-validation.txt"
+
       - name: Build Codex implementation prompt
-        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN != 'true' }}
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN != 'true' && env.EXECUTOR_MODE == 'codex-full' }}
         run: |
           {
             cat .github/codex/prompts/codex-implement.md
@@ -467,8 +649,28 @@ jobs:
             cat "$WORK_DIR/codex-plan.md"
           } > "$WORK_DIR/codex-implement-prompt.md"
 
+      - name: Reserve paid Codex call for implementation
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN != 'true' && env.EXECUTOR_MODE == 'codex-full' }}
+        run: |
+          next=$((PAID_CALLS_ATTEMPTED + 1))
+          if [ "$next" -gt "$MAX_PAID_CODEX_CALLS" ]; then
+            {
+              echo "PAID_CALL_LIMIT_REACHED"
+              echo "Requested step: codex-implementation"
+              echo "Paid calls attempted: $PAID_CALLS_ATTEMPTED"
+              echo "Max paid calls: $MAX_PAID_CODEX_CALLS"
+            } > "$WORK_DIR/paid-call-limit.txt"
+            gh issue edit "$AUDIT_ISSUE" --remove-label "agent:running" || true
+            gh issue edit "$AUDIT_ISSUE" --add-label "agent:blocked" || true
+            gh issue comment "$AUDIT_ISSUE" --body-file "$WORK_DIR/paid-call-limit.txt"
+            cat "$WORK_DIR/paid-call-limit.txt"
+            exit 1
+          fi
+          echo "PAID_CALLS_ATTEMPTED=$next" >> "$GITHUB_ENV"
+          echo "LAST_PAID_STEP=codex-implementation" >> "$GITHUB_ENV"
+
       - name: Run Codex implementation
-        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN != 'true' }}
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN != 'true' && env.EXECUTOR_MODE == 'codex-full' }}
         id: codex_implement
         uses: openai/codex-action@v1
         with:
@@ -517,7 +719,7 @@ jobs:
           {
             git diff --name-only
             git diff --cached --name-only
-            git ls-files --others --exclude-standard
+            git ls-files --others --exclude-standard | grep -v "^${WORK_DIR}/" || true
           } | sort -u > "$WORK_DIR/changed-files.txt"
           args=()
           while IFS= read -r file; do
@@ -544,6 +746,18 @@ jobs:
             echo "NEEDS_AUTOFIX=false" >> "$GITHUB_ENV"
           fi
 
+      - name: Stop if validation failed and autofix is disabled
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN != 'true' && env.NEEDS_AUTOFIX == 'true' && fromJSON(env.MAX_AUTOFIX_LOOPS) == 0 }}
+        run: |
+          {
+            echo "AUTOFIX_SKIPPED=ROI_DEFAULT"
+            echo
+            echo "Validation or changed-files policy failed, and ROI hotfix v1 disables T1 autofix by default."
+            echo "No PR or merge will be attempted."
+          } > "$WORK_DIR/autofix-skipped.md"
+          cat "$WORK_DIR/autofix-skipped.md"
+          exit 1
+
       - name: Build Codex autofix prompt
         if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN != 'true' && env.NEEDS_AUTOFIX == 'true' && fromJSON(env.MAX_AUTOFIX_LOOPS) > 0 }}
         run: |
@@ -562,6 +776,26 @@ jobs:
             echo "# Changed Files Policy"
             cat "$WORK_DIR/changed-files-policy.txt" || true
           } > "$WORK_DIR/codex-autofix-prompt.md"
+
+      - name: Reserve paid Codex call for initial autofix
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN != 'true' && env.NEEDS_AUTOFIX == 'true' && fromJSON(env.MAX_AUTOFIX_LOOPS) > 0 }}
+        run: |
+          next=$((PAID_CALLS_ATTEMPTED + 1))
+          if [ "$next" -gt "$MAX_PAID_CODEX_CALLS" ]; then
+            {
+              echo "PAID_CALL_LIMIT_REACHED"
+              echo "Requested step: codex-autofix-before-pr"
+              echo "Paid calls attempted: $PAID_CALLS_ATTEMPTED"
+              echo "Max paid calls: $MAX_PAID_CODEX_CALLS"
+            } > "$WORK_DIR/paid-call-limit.txt"
+            gh issue edit "$AUDIT_ISSUE" --remove-label "agent:running" || true
+            gh issue edit "$AUDIT_ISSUE" --add-label "agent:blocked" || true
+            gh issue comment "$AUDIT_ISSUE" --body-file "$WORK_DIR/paid-call-limit.txt"
+            cat "$WORK_DIR/paid-call-limit.txt"
+            exit 1
+          fi
+          echo "PAID_CALLS_ATTEMPTED=$next" >> "$GITHUB_ENV"
+          echo "LAST_PAID_STEP=codex-autofix-before-pr" >> "$GITHUB_ENV"
 
       - name: Run Codex autofix before PR
         if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN != 'true' && env.NEEDS_AUTOFIX == 'true' && fromJSON(env.MAX_AUTOFIX_LOOPS) > 0 }}
@@ -590,7 +824,7 @@ jobs:
           {
             git diff --name-only
             git diff --cached --name-only
-            git ls-files --others --exclude-standard
+            git ls-files --others --exclude-standard | grep -v "^${WORK_DIR}/" || true
           } | sort -u > "$WORK_DIR/changed-files.txt"
           args=()
           while IFS= read -r file; do
@@ -611,7 +845,8 @@ jobs:
       - name: Commit and push implementation branch
         if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN != 'true' }}
         run: |
-          if git diff --quiet && git diff --cached --quiet && [ -z "$(git ls-files --others --exclude-standard)" ]; then
+          untracked_changes="$(git ls-files --others --exclude-standard | grep -v "^${WORK_DIR}/" || true)"
+          if git diff --quiet && git diff --cached --quiet && [ -z "$untracked_changes" ]; then
             echo "Codex implementation produced no repository changes." >&2
             exit 1
           fi
@@ -682,8 +917,51 @@ jobs:
             cat "$WORK_DIR/changed-files-policy.txt" || true
           } > "$WORK_DIR/codex-review-prompt.md"
 
-      - name: Run Codex review
+      - name: Write skipped review artifacts
         if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN != 'true' }}
+        run: |
+          if [ "$ENABLE_CODEX_REVIEW" != "true" ]; then
+            {
+              echo "## Codex Review"
+              echo
+              echo "CODEX_REVIEW_SKIPPED=ROI_DEFAULT"
+              echo
+              echo "Unresolved P0/P1: no"
+            } > "$WORK_DIR/codex-review.md"
+          fi
+          if [ "$ENABLE_ARCHITECT_REVIEW" != "true" ]; then
+            {
+              echo "## Architect Review"
+              echo
+              echo "ARCHITECT_REVIEW=N/A"
+              echo "ARCHITECT_REVIEW_SKIPPED=ROI_DEFAULT"
+              echo
+              echo "Unresolved P0/P1: no"
+            } > "$WORK_DIR/architect-review.md"
+          fi
+
+      - name: Reserve paid Codex call for review
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN != 'true' && env.ENABLE_CODEX_REVIEW == 'true' }}
+        run: |
+          next=$((PAID_CALLS_ATTEMPTED + 1))
+          if [ "$next" -gt "$MAX_PAID_CODEX_CALLS" ]; then
+            {
+              echo "PAID_CALL_LIMIT_REACHED"
+              echo "Requested step: codex-review"
+              echo "Paid calls attempted: $PAID_CALLS_ATTEMPTED"
+              echo "Max paid calls: $MAX_PAID_CODEX_CALLS"
+            } > "$WORK_DIR/paid-call-limit.txt"
+            gh issue edit "$AUDIT_ISSUE" --remove-label "agent:running" || true
+            gh issue edit "$AUDIT_ISSUE" --add-label "agent:blocked" || true
+            gh issue comment "$AUDIT_ISSUE" --body-file "$WORK_DIR/paid-call-limit.txt"
+            cat "$WORK_DIR/paid-call-limit.txt"
+            exit 1
+          fi
+          echo "PAID_CALLS_ATTEMPTED=$next" >> "$GITHUB_ENV"
+          echo "LAST_PAID_STEP=codex-review" >> "$GITHUB_ENV"
+
+      - name: Run Codex review
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN != 'true' && env.ENABLE_CODEX_REVIEW == 'true' }}
         id: codex_review
         uses: openai/codex-action@v1
         with:
@@ -694,7 +972,7 @@ jobs:
           safety-strategy: drop-sudo
 
       - name: Run optional Architect Review
-        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN != 'true' }}
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN != 'true' && env.ENABLE_ARCHITECT_REVIEW == 'true' }}
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
@@ -745,6 +1023,26 @@ jobs:
             cat "$WORK_DIR/architect-review.md" || true
           } > "$WORK_DIR/codex-autofix-review-prompt.md"
 
+      - name: Reserve paid Codex call for review autofix
+        if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN != 'true' && env.REVIEW_NEEDS_AUTOFIX == 'true' && fromJSON(env.MAX_AUTOFIX_LOOPS) > fromJSON(env.AUTOFIX_LOOPS_USED) }}
+        run: |
+          next=$((PAID_CALLS_ATTEMPTED + 1))
+          if [ "$next" -gt "$MAX_PAID_CODEX_CALLS" ]; then
+            {
+              echo "PAID_CALL_LIMIT_REACHED"
+              echo "Requested step: codex-autofix-after-review"
+              echo "Paid calls attempted: $PAID_CALLS_ATTEMPTED"
+              echo "Max paid calls: $MAX_PAID_CODEX_CALLS"
+            } > "$WORK_DIR/paid-call-limit.txt"
+            gh issue edit "$AUDIT_ISSUE" --remove-label "agent:running" || true
+            gh issue edit "$AUDIT_ISSUE" --add-label "agent:blocked" || true
+            gh issue comment "$AUDIT_ISSUE" --body-file "$WORK_DIR/paid-call-limit.txt"
+            cat "$WORK_DIR/paid-call-limit.txt"
+            exit 1
+          fi
+          echo "PAID_CALLS_ATTEMPTED=$next" >> "$GITHUB_ENV"
+          echo "LAST_PAID_STEP=codex-autofix-after-review" >> "$GITHUB_ENV"
+
       - name: Run Codex autofix after review
         if: ${{ steps.preflight.outputs.should_continue == 'true' && env.DRY_RUN != 'true' && env.REVIEW_NEEDS_AUTOFIX == 'true' && fromJSON(env.MAX_AUTOFIX_LOOPS) > fromJSON(env.AUTOFIX_LOOPS_USED) }}
         id: codex_autofix_review
@@ -781,8 +1079,15 @@ jobs:
           else
             echo "CHANGED_FILES_STATUS=FAIL" >> "$GITHUB_ENV"
           fi
-          if ! git diff --quiet || ! git diff --cached --quiet || [ -n "$(git ls-files --others --exclude-standard)" ]; then
-            git add .
+          untracked_changes="$(git ls-files --others --exclude-standard | grep -v "^${WORK_DIR}/" || true)"
+          if ! git diff --quiet || ! git diff --cached --quiet || [ -n "$untracked_changes" ]; then
+            {
+              git diff --name-only
+              git diff --cached --name-only
+              printf "%s\n" "$untracked_changes"
+            } | sort -u | while IFS= read -r file; do
+              [ -n "$file" ] && git add "$file"
+            done
             git commit -m "Autofix Agent Loop review findings"
             git push
           fi
@@ -841,6 +1146,22 @@ jobs:
           gh issue comment "$AUDIT_ISSUE" --body "PR #${PR_NUMBER} merged with squash. Production deployment was not attempted."
           gh issue close "$AUDIT_ISSUE" --comment "Agent Loop completed and audit issue closed."
 
+      - name: Capture failure git diagnostics
+        if: ${{ failure() && steps.preflight.outputs.should_continue != 'false' }}
+        run: |
+          mkdir -p "$WORK_DIR"
+          git status --short > "$WORK_DIR/failure-git-status.txt" || true
+          git diff --name-only > "$WORK_DIR/failure-diff-name-only.txt" || true
+          git diff --stat > "$WORK_DIR/failure-diff-stat.txt" || true
+          {
+            echo "FAILURE_ARTIFACT_CAPTURE=PASS"
+            echo "Artifacts:"
+            echo "- $WORK_DIR/failure-git-status.txt"
+            echo "- $WORK_DIR/failure-diff-name-only.txt"
+            echo "- $WORK_DIR/failure-diff-stat.txt"
+          } > "$WORK_DIR/failure-artifacts.md"
+          cat "$WORK_DIR/failure-artifacts.md"
+
       - name: Mark audit issue blocked on failure
         if: ${{ failure() && env.AUDIT_ISSUE != '' && steps.preflight.outputs.should_continue != 'false' }}
         run: |
@@ -859,14 +1180,34 @@ jobs:
             echo "Plan status: ${PLAN_STATUS}"
             echo "Validation status: ${VALIDATION_STATUS}"
             echo "Changed-files status: ${CHANGED_FILES_STATUS}"
+            echo "Executor mode: ${EXECUTOR_MODE}"
+            echo "Paid calls attempted: ${PAID_CALLS_ATTEMPTED}"
+            echo "Max paid calls: ${MAX_PAID_CODEX_CALLS}"
+            echo "Last paid step: ${LAST_PAID_STEP:-N/A}"
+            echo
+            echo "Do not rerun until artifacts are reviewed."
+            echo
+            echo "Expected artifacts:"
+            echo "- agent-loop-run-${GITHUB_RUN_ID}"
+            echo "- agent-loop-roi-summary.md"
+            echo "- failure-git-status.txt"
+            echo "- failure-diff-name-only.txt"
+            echo "- failure-diff-stat.txt"
             echo
             for file in \
+              "$WORK_DIR/paid-call-limit.txt" \
+              "$WORK_DIR/roi-defaults.txt" \
               "$WORK_DIR/routing-output.txt" \
               "$WORK_DIR/routing-report.json" \
               "$WORK_DIR/taskpack-validation.txt" \
               "$WORK_DIR/plan-validation.txt" \
+              "$WORK_DIR/result-pack-validation.txt" \
               "$WORK_DIR/validation-output.txt" \
               "$WORK_DIR/changed-files-policy.txt" \
+              "$WORK_DIR/autofix-skipped.md" \
+              "$WORK_DIR/failure-git-status.txt" \
+              "$WORK_DIR/failure-diff-name-only.txt" \
+              "$WORK_DIR/failure-diff-stat.txt" \
               "$WORK_DIR/merge-policy.txt"; do
               if [ -f "$file" ]; then
                 echo "### $file"
@@ -877,6 +1218,42 @@ jobs:
             done
           } > "$WORK_DIR/failure-summary.md"
           gh issue comment "$AUDIT_ISSUE" --body-file "$WORK_DIR/failure-summary.md"
+
+      - name: Write ROI summary artifact
+        if: ${{ always() && steps.preflight.outputs.should_continue == 'true' }}
+        run: |
+          mkdir -p "$WORK_DIR"
+          {
+            echo "# Agent Loop ROI Summary"
+            echo
+            echo "| Field | Value |"
+            echo "|---|---|"
+            echo "| Risk tier | ${RISK_TIER:-N/A} |"
+            echo "| Executor mode | ${EXECUTOR_MODE:-N/A} |"
+            echo "| Paid calls attempted | ${PAID_CALLS_ATTEMPTED:-0} |"
+            echo "| Max paid calls | ${MAX_PAID_CODEX_CALLS:-0} |"
+            echo "| Codex review enabled | ${ENABLE_CODEX_REVIEW:-false} |"
+            echo "| Architect Review enabled | ${ENABLE_ARCHITECT_REVIEW:-false} |"
+            echo "| Autofix loops allowed | ${MAX_AUTOFIX_LOOPS:-0} |"
+            echo "| Value score | ${VALUE_SCORE:-0} |"
+            echo "| ROI budget USD | ${ROI_BUDGET_USD:-0} |"
+            echo "| Rerun allowed | ${RERUN_ALLOWED:-false} |"
+            echo "| Next recommended action | ${NEXT_RECOMMENDED_ACTION:-Review artifacts before rerun.} |"
+            echo
+            if [ -f "$WORK_DIR/paid-call-limit.txt" ]; then
+              echo "## Paid Call Limit"
+              echo
+              cat "$WORK_DIR/paid-call-limit.txt"
+              echo
+            fi
+            if [ -f "$WORK_DIR/failure-artifacts.md" ]; then
+              echo "## Failure Artifacts"
+              echo
+              cat "$WORK_DIR/failure-artifacts.md"
+              echo
+            fi
+          } > "$WORK_DIR/agent-loop-roi-summary.md"
+          cat "$WORK_DIR/agent-loop-roi-summary.md"
 
       - name: Write summary artifact
         if: ${{ always() && steps.preflight.outputs.should_continue == 'true' }}

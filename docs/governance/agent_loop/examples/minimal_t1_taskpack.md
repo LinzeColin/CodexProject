@@ -34,7 +34,14 @@
   "validation_commands": [
     "python3 -m py_compile scripts/agent_loop/*.py"
   ],
-  "max_autofix_loops": 1
+  "max_autofix_loops": 0,
+  "executor_mode": "codex-one-shot",
+  "enable_codex_review": false,
+  "enable_architect_review": false,
+  "max_paid_codex_calls": 1,
+  "roi_budget_usd": 2.0,
+  "value_score": 1,
+  "debug_rerun_requires_artifact_review": true
 }
 END_AGENT_LOOP_METADATA -->
 
