@@ -4446,6 +4446,11 @@ h3 {
     gap: 8px;
   }
 
+  .workspace.visual-focus-workspace,
+  .workspace.contribution-workspace {
+    min-width: 0;
+  }
+
   .timeline-map .timeline-canvas {
     min-height: 240px;
   }
@@ -4519,10 +4524,40 @@ h3 {
 
   .controls {
     grid-template-columns: 1fr 1fr;
+    min-width: 0;
   }
 
   .search-box {
     grid-column: 1 / -1;
+  }
+
+  .visual-focus-workspace .stat-strip,
+  .contribution-workspace .stat-strip {
+    min-width: 0;
+  }
+
+  .galaxy-workspace .stat-strip {
+    display: none;
+  }
+
+  .visual-focus-workspace .controls,
+  .contribution-workspace .controls {
+    grid-template-columns: 1fr 1fr;
+    min-width: 0;
+  }
+
+  .galaxy-workspace .controls {
+    max-height: 86px;
+    overflow: auto;
+  }
+
+  .visual-focus-workspace .search-box {
+    grid-column: 1 / -1;
+  }
+
+  .visual-focus-workspace .interaction-lens {
+    grid-template-columns: minmax(0, 1fr) auto;
+    min-width: 0;
   }
 
   .workspace.contribution-workspace {
@@ -4819,12 +4854,52 @@ h3 {
     white-space: normal;
   }
 
-  .content-grid {
+  .content-grid,
+  .content-grid.wide-view,
+  .content-grid.wide-view[data-view="contribution"] {
+    grid-template-columns: minmax(0, 1fr);
     grid-template-rows: minmax(320px, 1fr) minmax(0, 240px);
+    width: 100%;
+    min-width: 0;
+  }
+
+  .view-surface,
+  .galaxy-view,
+  .galaxy-view > .surface-heading {
+    min-width: 0;
+  }
+
+  .galaxy-heading-actions {
+    justify-items: start;
+  }
+
+  .galaxy-view > .surface-heading h2 {
+    overflow-wrap: anywhere;
   }
 
   .galaxy-view {
     grid-template-rows: auto auto minmax(220px, 1fr);
+  }
+
+  .galaxy-view > .delta-strip {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 4px;
+    width: 100%;
+    min-width: 0;
+    padding: 0 10px 6px;
+  }
+
+  .galaxy-view > .delta-strip div {
+    gap: 2px;
+    padding: 5px 4px;
+  }
+
+  .galaxy-view > .delta-strip span {
+    font-size: 9px;
+  }
+
+  .galaxy-view > .delta-strip strong {
+    font-size: 12px;
   }
 
   .galaxy-scene {
@@ -4836,9 +4911,15 @@ h3 {
   }
 
   .galaxy-controls {
+    flex-wrap: wrap;
     right: 10px;
     left: 10px;
     max-width: none;
+  }
+
+  .galaxy-quality-tabs,
+  .galaxy-mode-tabs {
+    flex: 0 1 auto;
   }
 
   .galaxy-terrain-panel {

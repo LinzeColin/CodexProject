@@ -12,7 +12,10 @@
   adding deterministic interaction contract validation and visual acceptance
   coverage for Stage 4.3.
 - Completed the Stage 4 whole-stage review for visual roadmap `记忆星系生产集成`
-  and recorded the remaining browser-automation evidence caveat.
+  with Chrome CDP desktop/mobile screenshot, canvas-pixel and FPS evidence.
+- Tightened mobile Galaxy layout so visual-focus controls, delta cards and
+  Galaxy scene no longer inherit desktop/tablet minimum widths on 390px
+  viewports.
 
 No Timeline replacement, ingestion, raw/private data access, direct writeback,
 Cloudflare live deploy, or external account operation was added.
