@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Memory Atlas Universe State Snapshot v1",
+  "type": "object",
+  "required": ["schema_version", "generated_at", "source_snapshot", "state", "consumer_map", "diagnostics"],
+  "properties": {
+    "schema_version": { "const": "universe_state_snapshot.v1" },
+    "generated_at": { "type": "string" },
+    "source_snapshot": {
+      "type": "object",
+      "required": ["schema_version", "generated_at", "source_scope", "time_range", "redaction_mode"]
+    },
+    "state": {
+      "type": "object",
+      "required": [
+        "memory_weather",
+        "dominant_clusters",
+        "rising_clusters",
+        "declining_clusters",
+        "conflict_zones",
+        "black_holes",
+        "proto_stars",
+        "stale_orbits",
+        "memory_terrain",
+        "river_pulse",
+        "mini_starfield",
+        "recommended_next_actions"
+      ],
+      "properties": {
+        "memory_weather": {
+          "type": "object",
+          "required": ["label", "summary", "drivers", "confidence", "coverage"]
+        },
+        "dominant_clusters": { "type": "array", "minItems": 1 },
+        "rising_clusters": { "type": "array", "minItems": 1 },
+        "declining_clusters": { "type": "array", "minItems": 1 },
+        "conflict_zones": { "type": "array", "minItems": 1 },
+        "black_holes": { "type": "array", "minItems": 1 },
+        "proto_stars": { "type": "array", "minItems": 1 },
+        "stale_orbits": { "type": "array", "minItems": 1 },
+        "memory_terrain": { "type": "array", "minItems": 1 },
+        "river_pulse": {
+          "type": "object",
+          "required": [
+            "recent_window_days",
+            "activity_density",
+            "dominant_lane_ids",
+            "black_hole_band_ids",
+            "proto_star_marker_ids",
+            "summary"
+          ]
+        },
+        "mini_starfield": {
+          "type": "object",
+          "required": ["preview_cluster_ids", "black_hole_ids", "proto_star_ids", "density_hint", "target_view"]
+        },
+        "recommended_next_actions": { "type": "array", "minItems": 1 }
+      }
+    },
+    "consumer_map": {
+      "type": "object",
+      "required": ["memory_overview", "memory_starfield", "memory_river", "inspector", "roi_dashboard"]
+    },
+    "diagnostics": {
+      "type": "object",
+      "required": ["lifecycle_state", "privacy_status", "parameter_source", "formula_version", "missing_inputs", "score_weight_sums"]
+    }
+  }
+}
