@@ -20,7 +20,7 @@ def load_installer():
 
 
 class CodexAutoUpdateLaunchAgentTests(unittest.TestCase):
-    def test_launchagent_runs_monday_and_friday_at_0300(self) -> None:
+    def test_launchagent_runs_monday_wednesday_and_friday_at_0300(self) -> None:
         module = load_installer()
         with tempfile.TemporaryDirectory() as temp_dir:
             plist_path = Path(temp_dir) / "com.linze.openai-database.codex-daily-sync.plist"
@@ -32,11 +32,15 @@ class CodexAutoUpdateLaunchAgentTests(unittest.TestCase):
             self.assertEqual(plist["Label"], "com.linze.openai-database.codex-daily-sync")
             self.assertEqual(
                 plist["StartCalendarInterval"],
-                [{"Hour": 3, "Minute": 0, "Weekday": 1}, {"Hour": 3, "Minute": 0, "Weekday": 5}],
+                [
+                    {"Hour": 3, "Minute": 0, "Weekday": 1},
+                    {"Hour": 3, "Minute": 0, "Weekday": 3},
+                    {"Hour": 3, "Minute": 0, "Weekday": 5},
+                ],
             )
             self.assertIn("run_codex_memory_auto_update.py", plist["ProgramArguments"][1])
             self.assertIn("--publish-runtime", plist["ProgramArguments"])
-            self.assertEqual(result["schedule"], "每周一和周五 03:00 本地时间")
+            self.assertEqual(result["schedule"], "每周一、周三和周五 03:00 本地时间")
 
     def test_non_git_runtime_source_omits_commit_and_push(self) -> None:
         module = load_installer()

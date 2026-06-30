@@ -65,6 +65,21 @@ class AuditError(RuntimeError):
     pass
 
 
+def is_allowed_managed_session_history_file(relative: str) -> bool:
+    """Allow explicit history archives without allowing live Codex state paths."""
+    if not (relative == "session_history/README.md" or relative.startswith("session_history/")):
+        return False
+    relative_path = Path(relative)
+    lower = relative.lower()
+    if any(part.lower() in {".codex", "sessions", ".local_keys"} for part in relative_path.parts):
+        return False
+    if any(marker in lower for marker in ["openai-export.zip", "chatgpt_memory_vault", "cookie", "auth.json", ".env"]):
+        return False
+    if relative_path.suffix.lower() in {".app", ".key", ".pem", ".env"}:
+        return False
+    return True
+
+
 def audit_release(repo_root: Path, publish_dir: Path) -> dict[str, Any]:
     repo_root = repo_root.resolve()
     publish_dir = publish_dir.resolve()
@@ -177,7 +192,7 @@ def audit_tracked_files(repo_root: Path) -> list[str]:
 
     problems: list[str] = []
     for line in result.stdout.splitlines():
-        if line in ALLOWED_TRACKED_FILES:
+        if line in ALLOWED_TRACKED_FILES or is_allowed_managed_session_history_file(line):
             continue
         if any(pattern.search(line) for pattern in FORBIDDEN_NAME_PATTERNS):
             problems.append(f"forbidden tracked filename: {line}")
@@ -196,7 +211,7 @@ def audit_source_workspace_files(repo_root: Path) -> list[str]:
         relative = relative_path.as_posix()
         if any(part in SOURCE_SCAN_EXCLUDED_DIRS for part in relative_path.parts):
             continue
-        if relative in ALLOWED_TRACKED_FILES:
+        if relative in ALLOWED_TRACKED_FILES or is_allowed_managed_session_history_file(relative):
             continue
         if any(pattern.search(relative) for pattern in FORBIDDEN_NAME_PATTERNS):
             problems.append(f"forbidden source workspace filename: {relative}")

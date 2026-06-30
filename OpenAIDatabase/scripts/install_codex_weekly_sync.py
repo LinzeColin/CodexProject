@@ -3,7 +3,7 @@
 
 The filename is kept for compatibility with existing docs and operator
 commands. The installed LaunchAgent label is kept stable, while the schedule is
-Monday and Friday at 03:00 local time.
+Monday, Wednesday, and Friday at 03:00 local time.
 """
 
 from __future__ import annotations
@@ -22,9 +22,10 @@ DEFAULT_PLIST = Path.home() / "Library/LaunchAgents" / f"{LABEL}.plist"
 DEFAULT_LOG_DIR = Path.home() / "Library/Logs/OpenAIDatabase"
 SCHEDULE = [
     {"Weekday": 1, "Hour": 3, "Minute": 0},
+    {"Weekday": 3, "Hour": 3, "Minute": 0},
     {"Weekday": 5, "Hour": 3, "Minute": 0},
 ]
-SCHEDULE_LABEL = "每周一和周五 03:00 本地时间"
+SCHEDULE_LABEL = "每周一、周三和周五 03:00 本地时间"
 
 
 def write_plist(path: Path, data: dict[str, Any]) -> None:
@@ -130,7 +131,7 @@ def install_agent(repo_root: Path, plist_path: Path, *, load: bool) -> dict[str,
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Install Monday/Friday 03:00 Codex data sync LaunchAgent.")
+    parser = argparse.ArgumentParser(description="Install Monday/Wednesday/Friday 03:00 Codex data sync LaunchAgent.")
     parser.add_argument("--repo-root", type=Path, default=Path(__file__).resolve().parents[1])
     parser.add_argument("--plist", type=Path, default=DEFAULT_PLIST)
     parser.add_argument("--load", action="store_true", help="Load or reload the LaunchAgent after writing the plist.")
