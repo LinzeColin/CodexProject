@@ -253,6 +253,43 @@ class TestV023Stage1To3GroupReview(unittest.TestCase):
         self.assertTrue(evidence["known_historical_stage1_path_is_reference_only"])
 
 
+class TestV023Stage4To6GroupReview(unittest.TestCase):
+    def test_stage4_to_6_group_review_evidence_covers_subpages_home_and_core_metrics(self) -> None:
+        review_dir = ROOT / "reports" / "pfi_v023" / "group_reviews" / "stage_4_6"
+        evidence_path = review_dir / "evidence.json"
+        browser_path = review_dir / "browser_audit.json"
+        changed_files_path = review_dir / "changed_files.txt"
+
+        for path in (evidence_path, browser_path, changed_files_path):
+            self.assertTrue(path.exists(), str(path))
+
+        evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
+        browser = json.loads(browser_path.read_text(encoding="utf-8"))
+        changed_files = [line.strip() for line in changed_files_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+
+        self.assertEqual(evidence["schema"], "PFIV023Stage4To6GroupReviewEvidenceV1")
+        self.assertEqual(evidence["review_id"], "V023-S4-S6-GROUP-REVIEW")
+        self.assertEqual(evidence["status"], "review_pass")
+        self.assertEqual(evidence["review_scope"], ["Stage 4", "Stage 5", "Stage 6"])
+        self.assertEqual(evidence["changed_files"], changed_files)
+
+        self.assertEqual(evidence["stage4_subpage_contract"]["primary_entry_count"], 10)
+        self.assertEqual(evidence["stage4_subpage_contract"]["subpage_count"], 45)
+        self.assertTrue(evidence["stage4_subpage_contract"]["all_primary_entries_have_3_to_5_subpages"])
+        self.assertTrue(evidence["stage5_home_contract"]["home_no_task_pack_or_run_boundary"])
+        self.assertTrue(evidence["stage5_home_contract"]["home_no_visible_evidence_drawer"])
+        self.assertTrue(evidence["stage6_metric_contract"]["blocked_core_metrics_show_status_not_zero"])
+        self.assertTrue(evidence["stage6_metric_contract"]["consumption_fixed_flex_unconfigured_not_zero"])
+
+        self.assertEqual(browser["console_errors"], [])
+        self.assertEqual(browser["page_errors"], [])
+        self.assertEqual(browser["routes"]["home"]["primary_count"], 10)
+        self.assertEqual(browser["routes"]["home"]["primary"], EXPECTED_PRIMARY_NAV)
+        self.assertEqual(browser["routes"]["consumption"]["cny_zero_count"], 0)
+        self.assertIn("未配置 / CNY 7,153.98", browser["routes"]["consumption"]["fixed_elastic_text"])
+        self.assertNotIn("固定支出 · CNY 0", browser["routes"]["consumption"]["trend_text"])
+
+
 class TestV023Stage11Phase112DocFreeze(unittest.TestCase):
     def test_t1121_phase112_evidence_records_readme_candidate_boundary(self) -> None:
         evidence = read_json("reports/pfi_v023/stage_11/phase_11_2/evidence.json")

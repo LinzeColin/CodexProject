@@ -75,3 +75,13 @@ Stage 0 候选通过后，仍需用户确认本合同。未确认前不得进入
 - Stage 3：正式一级入口为 10 个，包含 `市场与研究`，旧入口只保留兼容 route/命令入口。
 
 记录文件：`STAGE1_3_GROUP_REVIEW.md`。
+
+## Stage 4-6 Group Review 状态
+
+第二阶段第二组整体复审覆盖 Stage 4、Stage 5、Stage 6：
+
+- Stage 4：10 个正式一级入口均保持 3-5 个差异化二级页面，共 45 个二级页。
+- Stage 5：首页保持个人经济总览，不暴露 Task Pack、运行边界、AI 控制台、反馈控制台或证据抽屉。
+- Stage 6：核心指标继续遵守真实 read model 或中文阻断状态；本轮修复消费页未配置固定支出规则时误显示 `CNY 0.00` 的问题。
+
+记录文件：`STAGE4_6_GROUP_REVIEW.md`。

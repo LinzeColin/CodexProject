@@ -1955,6 +1955,8 @@ function applyOperationalReadModel(model) {
   const hasInvestment = hasRealInvestmentReadModel(investment);
   const hasAccounts = hasRealAccountsReadModel(accounts);
   const hasConsumption = consumption.has_real_transactions === true;
+  const fixedSpendHasRule = consumption.fixed_spend_cny_has_rule === true || hasConfiguredSpendPolicy(consumption.fixed_flex_policy);
+  const budgetHasRule = consumption.budget_remaining_cny_has_rule === true || consumption.budget_configured === true;
   if (hasInvestment && WORKSPACES.investment) {
     WORKSPACES.investment.cards = [
       ["投资市值", formatCnyAmount(investment.market_value_cny), "SQLite 持仓读模型"],
@@ -1976,8 +1978,13 @@ function applyOperationalReadModel(model) {
       ["本月支出", formatCnyAmount(consumption.month_spend_cny), "MetaDatabase 真实支付宝流水"],
       ["待复核流水", String(consumption.review_count || 0), `${consumption.transaction_count || 0} 条真实流水`],
       ["近30天支出", formatCnyAmount(consumption.cashflow_forecast_cny), "最近30天真实消费流出"],
-      ["固定/弹性", `${formatCnyAmount(consumption.fixed_spend_cny)} / ${formatCnyAmount(consumption.flex_spend_cny)}`, consumption.fixed_flex_policy || "真实流水派生"],
+      [
+        "固定/弹性",
+        `${formatOptionalCnyAmount(consumption.fixed_spend_cny, fixedSpendHasRule, "未配置")} / ${formatOptionalCnyAmount(consumption.flex_spend_cny, true)}`,
+        consumption.fixed_flex_policy || "真实流水派生",
+      ],
     ];
+    applyConsumptionOptionalPolicyToTrend({ fixedSpendHasRule, budgetHasRule });
   }
   if (hasInvestment && WORKSPACES.insights) {
     const report = runtimeStage4SyncState?.report || {};
@@ -2021,6 +2028,26 @@ function hasRealInvestmentReadModel(investment) {
   const holdingCount = Number(investment?.holding_count || 0);
   const snapshotCount = Number(runtimeStage4SyncState?.sqlite?.snapshot_count || 0);
   return (holdingCount > 0 || snapshotCount > 0) && Number.isFinite(Number(investment?.market_value_cny));
+}
+
+function hasConfiguredSpendPolicy(policy) {
+  const text = String(policy || "");
+  if (!text) return false;
+  return !/未配置|未设置|待配置|未接入|待接入/.test(text);
+}
+
+function applyConsumptionOptionalPolicyToTrend({ fixedSpendHasRule, budgetHasRule }) {
+  const trend = runtimeTrendState?.consumption;
+  if (!trend || !Array.isArray(trend.series)) return;
+  const blockedSeriesIds = new Set();
+  if (!fixedSpendHasRule) blockedSeriesIds.add("fixed_spend_cny");
+  if (!budgetHasRule) blockedSeriesIds.add("budget_remaining_cny");
+  if (!blockedSeriesIds.size) return;
+  runtimeTrendState.consumption = {
+    ...trend,
+    title: "本月支出、弹性支出与现金流预测",
+    series: trend.series.filter((item) => !blockedSeriesIds.has(item.id)),
+  };
 }
 
 function currentContext() {
@@ -5129,6 +5156,11 @@ function formatCnyAmount(value) {
   const numeric = Number(value);
   if (!Number.isFinite(numeric)) return "暂无真实数据";
   return `CNY ${numeric.toLocaleString("zh-CN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
+function formatOptionalCnyAmount(value, hasRealValue, missingLabel = "暂无真实数据") {
+  if (!hasRealValue) return missingLabel;
+  return formatCnyAmount(value);
 }
 
 function moneyLabel(value, sourceCurrency = "CNY") {

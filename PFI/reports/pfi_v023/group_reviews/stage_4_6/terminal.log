@@ -1,0 +1,41 @@
+PFI v0.2.3 Stage 4-6 group review terminal log
+Generated at: 2026-06-30T08:56:13Z
+Worktree: /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+Scope: second-phase group review for Stage 4, Stage 5, Stage 6 only.
+
+TDD RED observed:
+- PFI/tests/test_v023_stage6_core_metrics.py failed because shell.js still rendered unconfigured fixed_spend_cny=0 as CNY 0.00.
+- PFI/tests/test_v023_regression.py failed because group_reviews/stage_4_6/evidence.json was missing.
+
+Fixes applied:
+- shell.js now formats optional fixed spend as 未配置 when fixed-spend rules are not configured.
+- shell.js removes unconfigured fixed-spend and budget-zero series from the consumption trend.
+
+Fresh validation output is appended after final commands.
+
+Final validation output:
+- PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage4_subpage_differentiation.py PFI/tests/test_v023_stage5_home_experience.py PFI/tests/test_v023_stage6_core_metrics.py -q
+  49 passed in 1.31s
+- PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_regression.py -q
+  21 passed in 0.05s
+- PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q
+  191 passed in 2.26s
+- PATH=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH node --check PFI/web/app/shell.js
+  pass
+- python3 -m json.tool group review JSON files and git diff --check -- PFI
+  json-and-diff-ok
+- Browser audit
+  console_errors=0; page_errors=0; consumption_cny_zero_count=0; fixed/elastic=未配置 / CNY 7,153.98
+- PFI/scripts/macosAppAcceptanceLite.sh --project-root /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI --summary-json
+  initial Blocked: 15 pass / 14 fail / 2 info because /Applications/PFI.app and ~/Desktop/PFI.app were missing
+  after PFI/scripts/installPFIEntryApps.sh --all: status=Pass; 29 pass / 0 fail / 2 info
+- health checks
+  8501 ok
+  8766 {"status": "ok", "schema": "PFIV021RuntimeAPIV1"}
+Last verified at: 2026-06-30T08:58:08Z
+
+Final recheck after evidence timestamp update:
+- PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q
+  191 passed in 2.33s
+- JSON/diff, node check, app acceptance, and health checks remained pass in the same verification batch.
+Last evidence timestamp update: 2026-06-30T08:58:42Z

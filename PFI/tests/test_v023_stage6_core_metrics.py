@@ -177,6 +177,14 @@ class TestV023Stage6CoreMetrics(unittest.TestCase):
             self.assertIsNone(metric["evidence_hash"], metric["metric_id"])
             self.assertRegex(metric["message_zh"], r"未挂载|路径")
 
+    def test_runtime_consumption_fixed_flex_missing_policy_does_not_render_fake_zero(self) -> None:
+        shell = (ROOT / "web" / "app" / "shell.js").read_text(encoding="utf-8")
+
+        self.assertIn("function formatOptionalCnyAmount", shell)
+        self.assertIn("fixed_spend_cny_has_rule", shell)
+        self.assertNotIn('${formatCnyAmount(consumption.fixed_spend_cny)} / ${formatCnyAmount(consumption.flex_spend_cny)}', shell)
+        self.assertIn('"未配置"', shell)
+
     def test_phase61_javascript_contract_matches_python_adapter_contract(self) -> None:
         module = load_core_metrics_module()
         js_path = ROOT / "web" / "app" / "data" / "coreMetrics.js"

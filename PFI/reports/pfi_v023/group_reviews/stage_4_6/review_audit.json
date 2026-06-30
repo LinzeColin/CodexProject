@@ -1,0 +1,54 @@
+{
+  "schema": "PFIV023Stage4To6GroupReviewAuditV1",
+  "version": "v0.2.3",
+  "review_id": "V023-S4-S6-GROUP-REVIEW",
+  "generated_at": "2026-06-30T08:56:13Z",
+  "blocker_count": 0,
+  "checks": [
+    {
+      "id": "stage4_subpage_differentiation_current",
+      "status": "pass",
+      "evidence": "10 primary entries and 45 differentiated subpages; browser audit rechecked current localhost navigation"
+    },
+    {
+      "id": "stage5_home_surface_current",
+      "status": "pass",
+      "evidence": "home route has no Task Pack, run boundary, visible evidence drawer, or 查看说明 count"
+    },
+    {
+      "id": "stage6_core_metric_real_or_blocked",
+      "status": "pass",
+      "evidence": "3 ready metrics from MetaDatabase/PFI and 3 blocked metrics with null values"
+    },
+    {
+      "id": "stage6_consumption_fixed_flex_no_fake_zero",
+      "status": "fixed",
+      "evidence": "visible consumption page now shows 未配置 / CNY 7,153.98 and no CNY 0.00"
+    }
+  ],
+  "findings_fixed": [
+    {
+      "id": "S4-6-FIX-1",
+      "title": "消费页未配置固定支出规则时显示 CNY 0.00",
+      "source": "Stage 6 no-fake-zero review over current localhost consumption page",
+      "resolution": "shell.js now displays 未配置 for missing fixed-spend policy and removes unconfigured zero series from the consumption trend."
+    }
+  ],
+  "remaining_items": [
+    {
+      "id": "S4-6-REMAINING-1",
+      "title": "Stage 7-9 分组整体复审",
+      "status": "pending"
+    },
+    {
+      "id": "S4-6-REMAINING-2",
+      "title": "Stage 10-11 分组整体复审",
+      "status": "pending"
+    },
+    {
+      "id": "S4-6-REMAINING-3",
+      "title": "v0.2.3 项目级整体复审、同步 GitHub、备份和清理",
+      "status": "pending"
+    }
+  ]
+}

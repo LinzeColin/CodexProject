@@ -1,0 +1,156 @@
+{
+  "schema": "PFIV023Stage4To6GroupReviewEvidenceV1",
+  "version": "v0.2.3",
+  "review_id": "V023-S4-S6-GROUP-REVIEW",
+  "review_name": "Stage 4-6 human product experience group review",
+  "status": "review_pass",
+  "generated_at": "2026-06-30T08:56:13Z",
+  "current_group_only": true,
+  "review_scope": [
+    "Stage 4",
+    "Stage 5",
+    "Stage 6"
+  ],
+  "source_roadmap": "/Users/linzezhang/Downloads/PFI_v0.2.3_Human_Product_Experience_Recovery_Roadmap.txt",
+  "source_taskpack": "/Users/linzezhang/Downloads/PFI_v0.2.3_Human_Product_Experience_Recovery_TaskPack.zip",
+  "git": {
+    "head_at_evidence_write": "0c6f0ece35303c79aaaaeaf957f580fd9523cdea",
+    "origin_main_at_evidence_write": "db88b0f4574cc26c43649e221efc053d30748cf9",
+    "head_semantics": "Group-review evidence is written before the local group-review commit; final Git state is verified by terminal output for this run."
+  },
+  "stage_statuses": [
+    {
+      "stage": "Stage 4",
+      "evidence": "PFI/reports/pfi_v023/stage_4/stage4_review/evidence.json",
+      "status": "pass",
+      "current_binding_reverified_in_group_review": true
+    },
+    {
+      "stage": "Stage 5",
+      "evidence": "PFI/reports/pfi_v023/stage_5/stage5_review/evidence.json",
+      "status": "candidate_pass",
+      "current_binding_reverified_in_group_review": true
+    },
+    {
+      "stage": "Stage 6",
+      "evidence": "PFI/reports/pfi_v023/stage_6/stage6_review/evidence.json",
+      "status": "candidate_pass",
+      "group_review_fix": "unconfigured fixed-spend policy no longer renders as CNY 0.00"
+    }
+  ],
+  "stage4_subpage_contract": {
+    "primary_entry_count": 10,
+    "subpage_count": 45,
+    "all_primary_entries_have_3_to_5_subpages": true,
+    "home_subpages_differentiated": true,
+    "url_state_breadcrumb_title_changed": true,
+    "screenshots_show_differences": true
+  },
+  "stage5_home_contract": {
+    "home_key_financial_state": true,
+    "home_next_actions": true,
+    "home_report_entry": true,
+    "home_no_task_pack_or_run_boundary": true,
+    "home_no_visible_evidence_drawer": true,
+    "stage5_review_browser_evidence_drawer_closed": true
+  },
+  "stage6_metric_contract": {
+    "read_model_hash": "sha256:b5616d2c2ba17a73fb101d0c184d65c6ebbea904287074f1a9b1965dcd49b675",
+    "as_of": "2026-06-03",
+    "ready_metric_ids": [
+      "life_consumption_cny",
+      "total_consumption_outflow_cny",
+      "data_health"
+    ],
+    "blocked_metric_ids": [
+      "net_worth_cny",
+      "cash_balance_cny",
+      "investment_market_value_cny"
+    ],
+    "blocked_core_metrics_show_status_not_zero": true,
+    "consumption_fixed_flex_unconfigured_not_zero": true,
+    "consumption_trend_removes_unconfigured_zero_series": true,
+    "real_consumption_value_preserved": true,
+    "no_console_or_page_errors": true
+  },
+  "browser_audit": {
+    "path": "PFI/reports/pfi_v023/group_reviews/stage_4_6/browser_audit.json",
+    "primary_count": 10,
+    "home_secondary_count": 4,
+    "consumption_secondary_count": 5,
+    "consumption_cny_zero_count": 0,
+    "screenshots": {
+      "PFI/reports/pfi_v023/group_reviews/stage_4_6/screenshots/consumption_desktop.png": 281201,
+      "PFI/reports/pfi_v023/group_reviews/stage_4_6/screenshots/home_desktop.png": 275465,
+      "PFI/reports/pfi_v023/group_reviews/stage_4_6/screenshots/home_mobile.png": 76391,
+      "PFI/reports/pfi_v023/group_reviews/stage_4_6/screenshots/investment_desktop.png": 272911
+    }
+  },
+  "fixes": [
+    {
+      "id": "S4-6-FIX-1",
+      "title": "消费页未配置固定支出规则时显示 CNY 0.00",
+      "source": "Stage 6 no-fake-zero review over current localhost consumption page",
+      "resolution": "shell.js now displays 未配置 for missing fixed-spend policy and removes unconfigured zero series from the consumption trend."
+    }
+  ],
+  "acceptance_checks": {
+    "stage4_all_primary_entries_have_subpages": true,
+    "stage5_home_surface_clean": true,
+    "stage6_blocked_metrics_not_zero": true,
+    "consumption_fixed_flex_no_fake_zero": true,
+    "real_alipay_consumption_preserved": true,
+    "browser_console_clean": true,
+    "current_group_only": true,
+    "app_entry_acceptance_recovered": true
+  },
+  "validation_commands": [
+    "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage4_subpage_differentiation.py PFI/tests/test_v023_stage5_home_experience.py PFI/tests/test_v023_stage6_core_metrics.py -q",
+    "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_regression.py -q",
+    "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q",
+    "PATH=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH node --check PFI/web/app/shell.js",
+    "python3 -m json.tool PFI/reports/pfi_v023/group_reviews/stage_4_6/evidence.json >/dev/null and git diff --check -- PFI",
+    "PFI/scripts/macosAppAcceptanceLite.sh --project-root /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI --summary-json",
+    "http://127.0.0.1:8501/_stcore/health and http://127.0.0.1:8766/health"
+  ],
+  "validation_results": {
+    "stage4_5_6_target_tests": "49 passed in 1.31s",
+    "regression": "21 passed in 0.05s",
+    "all_v023_tests": "191 passed",
+    "node_check_shell_js": "pass",
+    "json_and_git_diff_check": "pass",
+    "browser_audit": "console_errors=0; page_errors=0; consumption_cny_zero_count=0",
+    "macos_app_acceptance_lite": "29 pass / 0 fail / 2 info",
+    "localhost_health": {
+      "8501": "ok",
+      "8766": "{\"status\": \"ok\", \"schema\": \"PFIV021RuntimeAPIV1\"}"
+    },
+    "app_entry_repair": {
+      "root_cause": "/Applications/PFI.app and ~/Desktop/PFI.app were missing while ~/Downloads/PFI.app was bound to the current checkout.",
+      "command": "PFI/scripts/installPFIEntryApps.sh --all",
+      "result": "/Applications/PFI.app rebuilt, ~/Desktop/PFI.app linked to /Applications/PFI.app, ~/Downloads/PFI.app rebuilt; all bind to current PFI root."
+    }
+  },
+  "changed_files": [
+    "PFI/docs/pfi_v023/README.md",
+    "PFI/docs/pfi_v023/STAGE4_6_GROUP_REVIEW.md",
+    "PFI/reports/pfi_v023/group_reviews/stage_4_6/browser_audit.json",
+    "PFI/reports/pfi_v023/group_reviews/stage_4_6/changed_files.txt",
+    "PFI/reports/pfi_v023/group_reviews/stage_4_6/evidence.json",
+    "PFI/reports/pfi_v023/group_reviews/stage_4_6/review_audit.json",
+    "PFI/reports/pfi_v023/group_reviews/stage_4_6/screenshots/consumption_desktop.png",
+    "PFI/reports/pfi_v023/group_reviews/stage_4_6/screenshots/home_desktop.png",
+    "PFI/reports/pfi_v023/group_reviews/stage_4_6/screenshots/home_mobile.png",
+    "PFI/reports/pfi_v023/group_reviews/stage_4_6/screenshots/investment_desktop.png",
+    "PFI/reports/pfi_v023/group_reviews/stage_4_6/terminal.log",
+    "PFI/tests/test_v023_regression.py",
+    "PFI/tests/test_v023_stage6_core_metrics.py",
+    "PFI/web/app/shell.js"
+  ],
+  "remaining_groups": [
+    "Stage 7-9 group review",
+    "Stage 10-11 group review",
+    "v0.2.3 overall project review and cleanup"
+  ],
+  "last_verified_at": "2026-06-30T08:59:07Z"
+}
