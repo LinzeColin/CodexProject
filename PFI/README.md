@@ -7,6 +7,22 @@ PFI V0.2 is the Personal Financial Intelligence project under
 under `LinzeColin/CodexProject/QBVS`; PFI investment management does not own
 or cover QBVS.
 
+## v0.2.3 Candidate Status
+
+PFI v0.2.3 当前处于 Stage 11 Phase 11.2 文档冻结候选状态。
+Stage 0-10 已按阶段完成并上传到 GitHub main；Stage 11 Phase 11.1
+回归测试已完成本地候选提交；本轮 Phase 11.2 只冻结文档约束和剩余风险。
+
+- user_acceptance_claimed=false
+- Stage 11 Phase 11.3 未执行
+- Stage 11 whole-stage review 未执行
+- Stage 11 GitHub main upload 未执行
+- 当前状态只能写候选通过，不能写最终完成、用户已验收或 closeout 完成
+
+v0.2.3 后续开发必须遵守 `docs/pfi_v023/STAGE11_DOC_FREEZE.md`：
+固定 10 个一级入口，`市场与研究` 是正式一级入口，历史 9 入口约束作废，
+禁止虚构财务数据，每次 run work 最多只解决一个 phase，用户明确验收前不能 closeout。
+
 ## v0.2.1.1 Product UI Recovery Stage 0
 
 `v0.2.1.1 Product UI Recovery` 是当前前端 UIUX 逻辑优化准备轮。用户已明确：当前 v0.2.1 前端优化不再作为正式 UI 完成状态，后续不能继续在 AI 化 Web Shell 上补丁式堆卡片、堆关键词或用字符串测试冒充验收。

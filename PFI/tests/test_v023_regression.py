@@ -208,5 +208,93 @@ class TestV023Stage11Phase111Regression(unittest.TestCase):
             self.assertTrue(evidence["acceptance_checks"][key], key)
 
 
+class TestV023Stage11Phase112DocFreeze(unittest.TestCase):
+    def test_t1121_readme_is_candidate_status_without_user_acceptance_claim(self) -> None:
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+
+        self.assertIn("## v0.2.3 Candidate Status", readme)
+        self.assertIn("Stage 11 Phase 11.2 文档冻结候选", readme)
+        self.assertIn("user_acceptance_claimed=false", readme)
+        self.assertIn("Stage 11 Phase 11.3 未执行", readme)
+        self.assertIn("Stage 11 whole-stage review 未执行", readme)
+        self.assertNotIn("v0.2.3 用户已验收", readme)
+        self.assertNotIn("v0.2.3 closeout complete", readme)
+
+    def test_t1122_future_development_constraints_are_documented_and_machine_checkable(self) -> None:
+        doc_path = ROOT / "docs" / "pfi_v023" / "STAGE11_DOC_FREEZE.md"
+        self.assertTrue(doc_path.exists(), str(doc_path))
+        text = doc_path.read_text(encoding="utf-8")
+
+        required_clauses = [
+            "固定 10 个一级入口",
+            "市场与研究 是正式一级入口",
+            "历史 9 入口约束作废",
+            "禁止虚构财务数据",
+            "每次 run work 最多只解决一个 phase",
+            "用户明确验收前只能写候选通过",
+            "不得以 README 或 docs 声明替代真实验证",
+        ]
+        for clause in required_clauses:
+            self.assertIn(clause, text)
+        self.assertIn("Phase 11.2", text)
+        self.assertNotIn("Phase 11.3 已完成", text)
+
+    def test_t1123_history_deprecation_policy_is_frozen_against_old_constraints(self) -> None:
+        policy = (ROOT / "docs" / "pfi_v023" / "HISTORY_DEPRECATION_POLICY.md").read_text(encoding="utf-8")
+
+        self.assertIn("## Stage 11.2 Freeze", policy)
+        self.assertIn("一级入口 9 个", policy)
+        self.assertIn("作废。v0.2.3 固定 10 个一级入口。", policy)
+        self.assertIn("市场与研究", policy)
+        self.assertIn("作废。`市场与研究` 是正式一级入口。", policy)
+        self.assertIn("冻结后不得恢复历史 9 入口约束", policy)
+        self.assertIn("冻结后不得把历史完成声明写成当前用户验收", policy)
+
+    def test_t1124_residual_risks_are_explicit_and_do_not_claim_closeout(self) -> None:
+        doc = (ROOT / "docs" / "pfi_v023" / "STAGE11_DOC_FREEZE.md").read_text(encoding="utf-8")
+
+        required_risks = [
+            "用户手动验收未完成",
+            "Stage 11 Phase 11.3 最终候选交付未执行",
+            "Stage 11 whole-stage review 未执行",
+            "Stage 11 GitHub main upload 未执行",
+        ]
+        for risk in required_risks:
+            self.assertIn(risk, doc)
+        self.assertIn("阻塞项数量：0", doc)
+        self.assertNotIn("最终 closeout 已完成", doc)
+
+    def test_phase112_evidence_pack_is_candidate_only_and_keeps_intermediate_phase_local(self) -> None:
+        phase_dir = ROOT / "reports" / "pfi_v023" / "stage_11" / "phase_11_2"
+        evidence_path = phase_dir / "evidence.json"
+        changed_files_path = phase_dir / "changed_files.txt"
+        terminal_log_path = phase_dir / "terminal.log"
+
+        for path in (evidence_path, changed_files_path, terminal_log_path):
+            self.assertTrue(path.exists(), str(path))
+
+        evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
+        changed_files = [line.strip() for line in changed_files_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+
+        self.assertEqual(evidence["schema"], "PFIV023Stage11Phase112EvidenceV1")
+        self.assertEqual(evidence["version"], "v0.2.3")
+        self.assertEqual(evidence["stage"], "Stage 11")
+        self.assertEqual(evidence["phase_id"], "V023-S11-P11.2")
+        self.assertEqual(evidence["phase_name"], "文档冻结")
+        self.assertEqual(evidence["status"], "candidate_pass")
+        self.assertTrue(evidence["current_phase_only"])
+        self.assertTrue(evidence["max_one_phase_per_run"])
+        self.assertEqual(evidence["task_ids"], ["T11.2.1", "T11.2.2", "T11.2.3", "T11.2.4"])
+        self.assertTrue(evidence["stage_contract"]["phase_11_1_regression_tests_done"])
+        self.assertTrue(evidence["stage_contract"]["phase_11_2_doc_freeze_done"])
+        self.assertFalse(evidence["stage_contract"]["phase_11_3_final_candidate_delivery_done"])
+        self.assertFalse(evidence["stage_contract"]["stage_11_whole_review_done"])
+        self.assertFalse(evidence["stage_contract"]["github_main_upload_done"])
+        self.assertFalse(evidence["human_acceptance_claimed"])
+        self.assertEqual(evidence["changed_files"], changed_files)
+        for key in ("readme_candidate_status", "future_development_constraints", "history_deprecation_frozen", "residual_risks_listed"):
+            self.assertTrue(evidence["acceptance_checks"][key], key)
+
+
 if __name__ == "__main__":
     unittest.main()

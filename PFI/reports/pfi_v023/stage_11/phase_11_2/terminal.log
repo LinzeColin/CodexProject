@@ -1,0 +1,19 @@
+PFI v0.2.3 Stage 11 Phase 11.2 doc freeze evidence
+generated_at=2026-06-30T07:25:14Z
+base_head_at_evidence_write=d635ca85bf688a986b1ce2e1379e4d64f45ab233
+scope=Stage 11 Phase 11.2 only
+tasks=T11.2.1 README candidate status; T11.2.2 future development constraints; T11.2.3 history deprecation freeze; T11.2.4 residual risks
+red_result=PFI/tests/test_v023_regression.py failed because README candidate status, STAGE11_DOC_FREEZE.md, HISTORY_DEPRECATION_POLICY.md freeze section, and Phase 11.2 evidence were missing
+phase_11_3_final_candidate_delivery_done=false
+stage_11_whole_review_done=false
+github_main_upload_done=false
+human_acceptance_claimed=false
+final validation commands are run after evidence creation and before local commit.
+green_result=PFI/tests/test_v023_regression.py 10 passed in 0.03s
+v023_regression_result=PFI/tests/test_v023_*.py 178 passed in 2.45s
+node_check_result=shell.js routes.js reports.js upload.js passed
+json_validation_result=phase_11_1 and phase_11_2 evidence passed
+diff_check_result=git diff --check -- PFI passed
+health_result=8501 ok; 8766 status ok schema PFIV021RuntimeAPIV1
+scope_check_result=only README, pfi_v023 doc freeze/history policy, regression test, and phase_11_2 evidence changed
+forbidden_term_scan_result=phase_11_2 new docs and evidence passed
