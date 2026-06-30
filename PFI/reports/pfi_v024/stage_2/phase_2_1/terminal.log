@@ -1,0 +1,22 @@
+generated_at=2026-06-30T12:46:45Z
+pwd=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+head_at_evidence_write=3a0cbd902867c356a8e08f844a838304e61f9c65
+origin_main_at_evidence_write=0203d5abed2b58e23ae98f1145c157ec5bc53b0a
+local_ahead_origin_main_at_evidence_write=1
+remote_main_observed_after_rebase=0203d5abed2b58e23ae98f1145c157ec5bc53b0a
+phase21_red_test=5 failed before implementation
+app_dry_run_applications=PFI_APP_LAUNCH project=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI command=./StartPFI.command mode=spawn-command
+app_dry_run_downloads=PFI_APP_LAUNCH project=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI command=./StartPFI.command mode=spawn-command
+app_dry_run_desktop=PFI_APP_LAUNCH project=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI command=./StartPFI.command mode=spawn-command
+node_check_shell_js=pass with Codex bundled Node executable
+node_check_version_js=pass with Codex bundled Node executable
+pytest_stage2_phase21_contract=5 passed
+pytest_v024_current_regression_set_through_stage2_phase21=40 passed
+py_compile_stage2_phase21=pass
+json_tool_evidence_and_old_ui_signatures=pass
+git_diff_check=pass
+phase_2_1_complete=true
+phase_2_2_complete=false
+phase_2_3_complete=false
+stage_2_complete=false
+github_main_uploaded=false

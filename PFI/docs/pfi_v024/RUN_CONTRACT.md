@@ -2,36 +2,23 @@
 
 ## Current Run
 
-本轮只执行：PFI v0.2.4 Stage 1 whole-stage review - 复审并解决暴露问题。
-不执行 Stage 2，不执行 GitHub main upload。
+本轮只执行：PFI v0.2.4 Stage 2 / Phase 2.1 - 入口链路映射。
+不执行 Phase 2.2、Phase 2.3、Stage 2 whole-stage review 或 GitHub main upload。
 
 ## Goal
 
-Review the complete Stage 1 shell integrity work after Phase 1.1, Phase 1.2,
-and Phase 1.3 candidate pass. The review must add a whole-stage review
-contract, evidence pack, and status updates. It may mark Stage 1 complete at
-local review level, but it must not claim Stage 2 entry or GitHub main upload.
+Map the app, localhost, Streamlit, static HTML, shell runtime, and version
+surfaces that must become consistent in Stage 2. Record old UI signatures and
+define the build/hash display locations for Phase 2.2. This phase may mark
+Phase 2.1 candidate pass, but it must not claim entry consistency is fixed.
 
 ## Allowed Files
 
 ```text
 PFI/docs/pfi_v024/*
-PFI/src/pfi_v02/stage_v024_stage1_shell_integrity.py
-PFI/web/app/shell.js
-PFI/web/app/version.js
-PFI/tests/test_v024_pre_stage0_contract.py
-PFI/tests/test_v024_stage0_phase01_contract.py
-PFI/tests/test_v024_stage0_phase02_contract.py
-PFI/tests/test_v024_stage0_phase03_contract.py
-PFI/tests/test_v024_stage0_whole_review_contract.py
-PFI/tests/test_v024_stage1_phase11_shell_diagnosis.py
-PFI/tests/test_v024_stage1_phase12_shell_repair.py
-PFI/tests/test_v024_stage1_phase13_validation_closeout.py
-PFI/tests/test_v024_stage1_whole_review_contract.py
-PFI/reports/pfi_v024/stage_1/phase_1_1/*
-PFI/reports/pfi_v024/stage_1/phase_1_2/*
-PFI/reports/pfi_v024/stage_1/phase_1_3/*
-PFI/reports/pfi_v024/stage_1/whole_stage_review/*
+PFI/src/pfi_v02/stage_v024_stage2_entry_consistency.py
+PFI/tests/test_v024_stage2_phase21_entry_mapping.py
+PFI/reports/pfi_v024/stage_2/phase_2_1/*
 PFI/README.md
 PFI/HANDOFF.md
 PFI/CHANGELOG.md
@@ -40,25 +27,39 @@ PFI/开发记录.md
 PFI/模型参数文件.md
 ```
 
+Read-only inspection allowed:
+
+```text
+PFI/web/index.html
+PFI/web/app/shell.js
+PFI/web/app/version.js
+PFI/src/pfi_os/app/streamlit_app.py
+PFI/scripts/startPFI.sh
+PFI/scripts/installPFIEntryApps.sh
+PFI/macos/PFI_launcher.c
+PFI/macos/PFI.app/Contents/Info.plist
+/Applications/PFI.app
+~/Downloads/PFI.app
+~/Desktop/PFI.app
+```
+
 ## Validation
 
 ```bash
 PATH=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH node --check PFI/web/app/shell.js
 PATH=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH node --check PFI/web/app/version.js
-PYTHONDONTWRITEBYTECODE=1 python3 -B -m py_compile PFI/src/pfi_v02/stage_v024_stage1_shell_integrity.py PFI/tests/test_v024_stage1_whole_review_contract.py
-PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage1_whole_review_contract.py -q
-PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage1_phase11_shell_diagnosis.py PFI/tests/test_v024_stage1_phase12_shell_repair.py PFI/tests/test_v024_stage1_phase13_validation_closeout.py PFI/tests/test_v024_stage1_whole_review_contract.py -q
-PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_pre_stage0_contract.py PFI/tests/test_v024_stage0_phase01_contract.py PFI/tests/test_v024_stage0_phase02_contract.py PFI/tests/test_v024_stage0_phase03_contract.py PFI/tests/test_v024_stage0_whole_review_contract.py PFI/tests/test_v024_stage1_phase11_shell_diagnosis.py PFI/tests/test_v024_stage1_phase12_shell_repair.py PFI/tests/test_v024_stage1_phase13_validation_closeout.py PFI/tests/test_v024_stage1_whole_review_contract.py -q
-python3 -m json.tool PFI/reports/pfi_v024/stage_1/whole_stage_review/evidence.json
+PYTHONDONTWRITEBYTECODE=1 python3 -B -m py_compile PFI/src/pfi_v02/stage_v024_stage2_entry_consistency.py PFI/tests/test_v024_stage2_phase21_entry_mapping.py
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage2_phase21_entry_mapping.py -q
+python3 -m json.tool PFI/reports/pfi_v024/stage_2/phase_2_1/evidence.json
+python3 -m json.tool PFI/reports/pfi_v024/stage_2/phase_2_1/old_ui_signatures.json
 git diff --check -- PFI
 ```
 
 ## Explicit Non-Goals
 
-- Do not execute Stage 2 in this run.
-- Do not claim Stage 2 entry consistency.
-- Do not push to GitHub main in this run.
-- Do not modify business UI, app bundle, runtime launcher, or data logic.
+- Do not implement Phase 2.2 version-link changes in this run.
+- Do not execute Phase 2.3 real app/browser validation in this run.
+- Do not claim app and localhost entry consistency is fixed.
+- Do not modify `PFI/web/index.html`, `PFI/web/app/shell.js`, `PFI/web/app/version.js`, app bundles, launchers, or data logic.
 - Do not add mock/sample/demo/synthetic/fixture/fake financial data.
-- Do not reconstruct or fabricate data.
-- Do not rely on README/docs declarations without evidence and test output.
+- Do not push to GitHub main in this run.

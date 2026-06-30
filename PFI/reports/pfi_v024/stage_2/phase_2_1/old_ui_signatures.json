@@ -1,0 +1,26 @@
+{
+  "schema": "PFIV024Stage2Phase21OldUISignaturesV1",
+  "generated_at": "2026-06-30T12:40:53Z",
+  "remediation_phase": "2.2",
+  "fixed_in_phase_2_1": false,
+  "old_ui_signatures": [
+    {
+      "signature_id": "legacy_query_contract_v023_stage1",
+      "surface": "PFI/scripts/startPFI.sh",
+      "observed_value": "pfi_build=20260629-stage1&pfi_ui_contract=PFI-V023-STAGE1-APP-ENTRY-BUNDLE-CONSISTENCY",
+      "status": "recorded_for_phase_2_2"
+    },
+    {
+      "signature_id": "legacy_index_dataset_v023_stage1",
+      "surface": "PFI/web/index.html",
+      "observed_value": "data-pfi-build-id=20260629-stage1; data-pfi-ui-contract-version=PFI-V023-STAGE1-APP-ENTRY-BUNDLE-CONSISTENCY",
+      "status": "recorded_for_phase_2_2"
+    },
+    {
+      "signature_id": "legacy_shell_fallback_v023_stage1",
+      "surface": "PFI/web/app/shell.js",
+      "observed_value": "buildId fallback 20260629-stage1; uiContractVersion fallback PFI-V023-STAGE1-APP-ENTRY-BUNDLE-CONSISTENCY",
+      "status": "recorded_for_phase_2_2"
+    }
+  ]
+}

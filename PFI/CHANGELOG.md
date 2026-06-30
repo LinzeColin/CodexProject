@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 2 Phase 2.1 - 2026-06-30
+
+- 完成 `Stage 2 / Phase 2.1 - 入口链路映射`：定位 macOS app、StartPFI、Streamlit、静态 HTML、shell runtime 和 version runtime 的当前链路。
+- 新增 `src/pfi_v02/stage_v024_stage2_entry_consistency.py`、`tests/test_v024_stage2_phase21_entry_mapping.py` 和 `reports/pfi_v024/stage_2/phase_2_1/evidence.json`。
+- 新增 `entry_map.md`、`old_ui_signatures.json` 和 `build_hash_display_spec.md`，记录旧 v0.2.3 Stage 1 入口签名并指定 Phase 2.2 的 build/hash 展示位置。
+- 本轮未实现 Phase 2.2、未执行 Phase 2.3 实机验收、未修改 app bundle/launcher/业务 UI/真实数据逻辑、未上传 GitHub main。
+
 ## v0.2.4 Repair Pack Stage 1 Whole-Stage Review - 2026-06-30
 
 - 完成 `Stage 1 whole-stage review - 复审并解决暴露问题`，复审 Phase 1.1、Phase 1.2、Phase 1.3 的合同、证据、测试和状态文件。
