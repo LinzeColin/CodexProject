@@ -21,10 +21,18 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 315
+- task_count: 316
 - acceptance_count: 127
 
 ## Delivery Tasks
+
+## 2026-07-01 02:10:46 Australia/Sydney - S2PMT07 Final Bundle Prerequisite Missing Inventory Sync
+
+- `S2PMT07-FINAL-BUNDLE-PREREQUISITE-MISSING-INVENTORY-SYNC` makes `plan-final-bundle-prerequisites` expose `final_bundle_missing_artifact_inventory`, matching `validate-final-acceptance-bundle`.
+- Current live CLIs remain blocked / exit 2: prerequisite plan `state_hash=447072118012325d6b8740d76f37b1838ec788e09e591fbe451fe3a61b0f8d04`, final validator `state_hash=45669a5d11c178dc6f2eaf23c806fabc420c2e20b2bf4f6b0fbd4f79504d1048`, missing inventory `state_hash=51d89042f47937b6ef65862d30dff1d8398caf21f5d8f875709ac6e6ff255cf0`.
+- Missing live artifact refs: `FINAL_ACCEPTANCE_BUNDLE/manifest.json;FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json;FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml;FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json;HANDOFF/00_下一Agent先读.md`; `missing_item_count=5`; `ready_to_write_live_artifacts=false`; next executable task remains `S2PLT02_TERMINAL_DELIVERY_PROOF` / `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-PREREQUISITE-MISSING-INVENTORY-SYNC-20260701.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_PREREQUISITE_MISSING_INVENTORY_SYNC.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`; `arxiv-daily-push/tests/test_cli.py`.
+- No S2PLT02/S2PLT03 terminal proof artifact, S2PLT04 completion report, final-bundle manifest/handoff/signoff/final-command proof, SMTP send, scheduler enable/install/kickstart, Release, restore, CURRENT/V7 change, public schema/DB/source/ranking/queue mutation, P0/P1 closure claim, S2PLT02/S2PLT03/S2PLT04/S2PMT07 acceptance, DAILY_OPERATION, Stage2/S3 production acceptance, or production side effect is introduced.
 
 ## 2026-07-01 01:50:16 Australia/Sydney - S2PLT02 Terminal Capture Wait-State Readonly Command Contract
 

@@ -5644,6 +5644,29 @@ class Stage2FinalGateTests(unittest.TestCase):
                 "s2plt04_completion_report_blocked_by_s2plt03_terminal_resilience_proof_missing",
             ],
         )
+        missing_inventory = plan["final_bundle_missing_artifact_inventory"]
+        self.assertEqual(missing_inventory["status"], "blocked")
+        self.assertEqual(
+            missing_inventory["scope"],
+            "final_bundle_missing_artifact_inventory_no_production_acceptance",
+        )
+        self.assertEqual(missing_inventory["missing_item_count"], 5)
+        self.assertEqual(missing_inventory["missing_live_artifact_refs"], [
+            "FINAL_ACCEPTANCE_BUNDLE/manifest.json",
+            "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json",
+            "FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml",
+            "FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json",
+            "HANDOFF/00_下一Agent先读.md",
+        ])
+        self.assertEqual(
+            missing_inventory["next_executable_task"],
+            plan["next_executable_task"],
+        )
+        self.assertEqual(
+            missing_inventory["next_executable_runtime_step"],
+            plan["next_executable_runtime_step"],
+        )
+        self.assertFalse(missing_inventory["ready_to_write_live_artifacts"])
         self.assertEqual([step["step_id"] for step in plan["ordered_steps"]], list(plan["required_steps"]))
         step_status = {step["step_id"]: step["status"] for step in plan["ordered_steps"]}
         self.assertEqual(step_status["INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_VALIDATION"], "pass")

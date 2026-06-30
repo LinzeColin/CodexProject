@@ -9284,6 +9284,24 @@ def build_final_bundle_prerequisite_plan_state(
         "release_packaging_enabled": False,
         "production_restore_enabled": False,
     }
+    final_bundle_directory = root / "FINAL_ACCEPTANCE_BUNDLE"
+    final_acceptance_bundle_artifact_validation = build_final_acceptance_bundle_artifact_validation_state(
+        bundle_directory_present=final_bundle_directory.is_dir(),
+        manifest=_load_json_mapping_artifact(final_bundle_directory / "manifest.json"),
+        independent_final_reviewer_assignment=independent_final_reviewer_assignment,
+        p0_p1_zero_proof=p0_p1_zero_proof,
+        s2plt04_completion_report=_load_json_mapping_artifact(
+            final_bundle_directory / "s2plt04_completion_report.json"
+        ),
+        independent_review_signoff=_load_yaml_mapping_artifact(
+            final_bundle_directory / "independent_review_signoff.yaml"
+        ),
+        final_command_execution=_load_json_mapping_artifact(
+            final_bundle_directory / "final_command_execution.json"
+        ),
+        no_production_side_effect_attestation=no_production_side_effect_attestation,
+        next_agent_handoff=_load_json_mapping_artifact(root / "HANDOFF" / "00_下一Agent先读.md"),
+    )
     state = {
         "status": "pass" if all_required_steps_passed else "blocked",
         "scope": "final_bundle_prerequisite_plan_only_no_production_acceptance",
@@ -9394,6 +9412,10 @@ def build_final_bundle_prerequisite_plan_state(
         **{flag: False for flag in S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_FORBIDDEN_FLAGS},
         "state_hash": "",
     }
+    state["final_bundle_missing_artifact_inventory"] = _build_final_bundle_missing_artifact_inventory_state(
+        final_acceptance_bundle_artifact_validation,
+        state,
+    )
     state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
     return state
 
@@ -9572,6 +9594,49 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
     ):
         if live_artifact_write_guard.get(flag) is not False:
             errors.append(f"final bundle live artifact write guard {flag} must be false")
+    missing_inventory = _mapping(state.get("final_bundle_missing_artifact_inventory"))
+    if missing_inventory.get("scope") != S2PMT07_FINAL_BUNDLE_MISSING_ARTIFACT_INVENTORY_SCOPE:
+        errors.append("final bundle prerequisite plan missing artifact inventory scope is invalid")
+    if missing_inventory.get("status") not in {"pass", "blocked"}:
+        errors.append("final bundle prerequisite plan missing artifact inventory status is invalid")
+    if missing_inventory.get("next_executable_task") != state.get("next_executable_task"):
+        errors.append("final bundle prerequisite plan missing artifact inventory next task must match plan")
+    if missing_inventory.get("next_executable_runtime_step") != state.get("next_executable_runtime_step"):
+        errors.append("final bundle prerequisite plan missing artifact inventory runtime step must match plan")
+    missing_live_refs = list(missing_inventory.get("missing_live_artifact_refs", []))
+    if missing_inventory.get("missing_item_count") != len(missing_live_refs):
+        errors.append("final bundle prerequisite plan missing artifact inventory count is invalid")
+    if missing_inventory.get("missing_items") != missing_live_refs:
+        errors.append("final bundle prerequisite plan missing artifact inventory refs must match missing items")
+    expected_missing_inventory_status = (
+        "pass"
+        if (
+            missing_inventory.get("bundle_directory_present") is True
+            and missing_inventory.get("missing_item_count") == 0
+            and missing_inventory.get("validation_blocked_ref_count") == 0
+        )
+        else "blocked"
+    )
+    if missing_inventory.get("status") != expected_missing_inventory_status:
+        errors.append("final bundle prerequisite plan missing artifact inventory status is inconsistent")
+    if missing_inventory.get("ready_to_write_live_artifacts") is not False:
+        errors.append("final bundle prerequisite plan missing artifact inventory must not allow live writes")
+    for flag in (
+        "production_acceptance_claimed",
+        "integrated_production_accepted",
+        "daily_operation_enabled",
+        "real_smtp_send_enabled",
+        "scheduler_install_enabled",
+        "release_packaging_enabled",
+        "production_restore_enabled",
+    ):
+        if missing_inventory.get(flag) is not False:
+            errors.append(f"final bundle prerequisite plan missing artifact inventory {flag} must be false")
+    expected_missing_inventory_hash = _stable_hash({
+        key: value for key, value in missing_inventory.items() if key != "state_hash"
+    })
+    if missing_inventory.get("state_hash") != expected_missing_inventory_hash:
+        errors.append("final bundle prerequisite plan missing artifact inventory state_hash does not match content")
     capture_plan_summary = _mapping(state.get("s2plt02_terminal_delivery_capture_plan_summary"))
     if expected_next_step_upstream_blocked:
         if capture_plan_summary.get("status") not in {"pass", "blocked"}:
