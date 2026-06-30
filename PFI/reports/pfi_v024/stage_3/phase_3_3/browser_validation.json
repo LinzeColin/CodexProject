@@ -1,0 +1,96 @@
+{
+  "contract": "PFI-V024-STAGE3-PHASE33-BROWSER-NAVIGATION",
+  "status": "pass",
+  "source": "http://127.0.0.1:54915/index.html",
+  "desktop_primary_count": 10,
+  "mobile_primary_count": 10,
+  "desktop_primary_labels": [
+    "首页总览",
+    "账户与资产",
+    "账本流水",
+    "投资管理",
+    "消费管理",
+    "数据源与上传",
+    "建议与复盘",
+    "报告与洞察",
+    "市场与研究",
+    "设置"
+  ],
+  "mobile_primary_labels": [
+    "⌂首页总览",
+    "◫账户与资产",
+    "≋账本流水",
+    "↗投资管理",
+    "◌消费管理",
+    "⇄数据源与上传",
+    "✦建议与复盘",
+    "▣报告与洞察",
+    "⌁市场与研究",
+    "⚙设置"
+  ],
+  "market_research_index": 9,
+  "legacy_labels_absent_as_primary_exact": true,
+  "click_navigation_passed": true,
+  "back_forward_passed": true,
+  "direct_url_alias_passed": true,
+  "direct_aliases": {
+    "/home/today": {
+      "inputRoute": "/home/today",
+      "resolvedRoute": "/home",
+      "expectedWorkspace": "home",
+      "workspace": "home",
+      "route": "/home",
+      "hash": "#/home"
+    },
+    "/market/watch": {
+      "inputRoute": "/market/watch",
+      "resolvedRoute": "/market-research?tab=market",
+      "expectedWorkspace": "market_research",
+      "workspace": "market_research",
+      "route": "/market-research?tab=market",
+      "hash": "#/market-research?tab=market"
+    },
+    "/market/research": {
+      "inputRoute": "/market/research",
+      "resolvedRoute": "/market-research?tab=research",
+      "expectedWorkspace": "market_research",
+      "workspace": "market_research",
+      "route": "/market-research?tab=research",
+      "hash": "#/market-research?tab=research"
+    },
+    "/investment/holdings": {
+      "inputRoute": "/investment/holdings",
+      "resolvedRoute": "/investment?tab=holdings",
+      "expectedWorkspace": "investment",
+      "workspace": "investment",
+      "route": "/investment?tab=holdings",
+      "hash": "#/investment?tab=holdings"
+    },
+    "/market/lab": {
+      "inputRoute": "/market/lab",
+      "resolvedRoute": "/market-research/strategy-lab",
+      "expectedWorkspace": "market_research",
+      "workspace": "market_research",
+      "route": "/market-research/strategy-lab",
+      "hash": "#/market-research/strategy-lab"
+    },
+    "/settings/data": {
+      "inputRoute": "/settings/data",
+      "resolvedRoute": "/settings?tab=data-system",
+      "expectedWorkspace": "settings",
+      "workspace": "settings",
+      "route": "/settings?tab=data-system",
+      "hash": "#/settings?tab=data-system"
+    }
+  },
+  "final_workspace_after_forward": "settings",
+  "final_route_after_forward": "/settings",
+  "console_errors": [],
+  "page_errors": [],
+  "screenshots": {
+    "desktop_nav": "screenshots/desktop_nav.png",
+    "browser_back_after_forward": "screenshots/browser_back_after_forward.png"
+  },
+  "generated_at": "2026-06-30T21:39:00.756Z",
+  "validation_hash": "386660499cc7446376faa8bc787fc0ea04c77d45409c82c38eb150f73f228142"
+}

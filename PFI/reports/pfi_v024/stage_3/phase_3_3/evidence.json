@@ -1,0 +1,150 @@
+{
+  "schema": "PFIV024Stage3Phase33BrowserNavigationEvidenceV1",
+  "version": "v0.2.3-repair",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Stage 3",
+  "phase_id": "3.3",
+  "phase_name": "导航验收",
+  "status": "candidate_pass",
+  "allowed_files_obeyed": true,
+  "generated_at": "2026-07-01T07:39:25+10:00",
+  "repo": {
+    "path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi",
+    "branch": "codex/pfi",
+    "remote": "git@github.com:LinzeColin/CodexProject.git",
+    "head_at_evidence_write": "9163bbf538960f7b116bbb44d9a5f2a6dbd9084d",
+    "origin_main_at_evidence_write": "70177651a15f3b693b3527213a3fbd6e6276bef2",
+    "local_ahead_origin_main_at_evidence_write": 2,
+    "local_behind_origin_main_at_evidence_write": 28,
+    "origin_main_delta_touches_pfi": false
+  },
+  "tasks": {
+    "T3.3.1": {
+      "status": "done",
+      "artifact": "PFI/reports/pfi_v024/stage_3/phase_3_3/browser_validation.json",
+      "summary": "Real browser DOM validation found exactly 10 desktop primary entries and 10 mobile primary entries."
+    },
+    "T3.3.2": {
+      "status": "done",
+      "artifact": "PFI/reports/pfi_v024/stage_3/phase_3_3/legacy_routes_validation.json",
+      "summary": "All 6 v0.1 aliases resolve as legacy redirects to owned v0.2.4 routes."
+    },
+    "T3.3.3": {
+      "status": "done",
+      "artifact": "PFI/reports/pfi_v024/stage_3/phase_3_3/screenshots/browser_back_after_forward.png",
+      "summary": "Browser back/forward validation passed and screenshot evidence was captured."
+    }
+  },
+  "browser_navigation_contract": "PFI-V024-STAGE3-PHASE33-BROWSER-NAVIGATION",
+  "route_counts": {
+    "desktop_primary_entries": 10,
+    "mobile_primary_entries": 10,
+    "legacy_alias_routes": 6
+  },
+  "phase_3_1_complete": true,
+  "phase_3_2_complete": true,
+  "phase_3_3_complete": true,
+  "stage_3_candidate_complete": true,
+  "stage_3_complete": false,
+  "current_phase_only": true,
+  "max_one_phase_per_run": true,
+  "requires_user_acceptance": true,
+  "next_phase_requires_user_instruction": true,
+  "browser_history_validation_done": true,
+  "github_main_uploaded": false,
+  "app_bundle_changes_made": false,
+  "app_bundle_reinstall_executed": false,
+  "launcher_c_or_plist_changes_made": false,
+  "data_logic_changes_made": false,
+  "formal_fake_financial_data_added": false,
+  "acceptance_checks": {
+    "dom_primary_entries_are_10": true,
+    "market_research_is_primary_index_9": true,
+    "legacy_alias_routes_resolve": true,
+    "browser_back_forward_passed": true,
+    "direct_url_alias_passed": true,
+    "click_navigation_passed": true,
+    "console_errors_empty": true,
+    "page_errors_empty": true,
+    "no_financial_data_logic_changes": true,
+    "github_main_not_uploaded": true
+  },
+  "commands": [
+    {
+      "cmd": "pytest stage3 phase33 navigation acceptance red run",
+      "status": "expected_fail",
+      "detail": "missing phase33 contract, browser validation script, and evidence pack before implementation"
+    },
+    {
+      "cmd": "node --check PFI/scripts/validate_v024_stage3_phase33_browser.js",
+      "status": "pass"
+    },
+    {
+      "cmd": "py_compile stage3 phase33 contract and test",
+      "status": "pass"
+    },
+    {
+      "cmd": "node playwright validate_v024_stage3_phase33_browser.js",
+      "status": "pass",
+      "detail": "desktop_primary_count=10; mobile_primary_count=10; legacy_alias_count=6; screenshots captured"
+    },
+    {
+      "cmd": "pytest stage3 phase33 navigation acceptance",
+      "status": "pass",
+      "detail": "3 passed"
+    },
+    {
+      "cmd": "pytest v024 regression through stage3 phase33",
+      "status": "pass",
+      "detail": "70 passed"
+    },
+    {
+      "cmd": "pytest v023 stage3 navigation compatibility",
+      "status": "pass",
+      "detail": "13 passed"
+    },
+    {
+      "cmd": "json.tool phase33 evidence/browser/legacy",
+      "status": "pass"
+    },
+    {
+      "cmd": "git diff --check -- PFI",
+      "status": "pass"
+    }
+  ],
+  "evidence_files": [
+    "PFI/reports/pfi_v024/stage_3/phase_3_3/browser_validation.json",
+    "PFI/reports/pfi_v024/stage_3/phase_3_3/legacy_routes_validation.json",
+    "PFI/reports/pfi_v024/stage_3/phase_3_3/screenshots/desktop_nav.png",
+    "PFI/reports/pfi_v024/stage_3/phase_3_3/screenshots/browser_back_after_forward.png"
+  ],
+  "changed_files": [
+    "PFI/CHANGELOG.md",
+    "PFI/HANDOFF.md",
+    "PFI/README.md",
+    "PFI/docs/pfi_v024/RUN_CONTRACT.md",
+    "PFI/docs/pfi_v024/STAGE3_NAVIGATION_ROUTING.md",
+    "PFI/reports/pfi_v024/stage_3/phase_3_3/browser_validation.json",
+    "PFI/reports/pfi_v024/stage_3/phase_3_3/changed_files.txt",
+    "PFI/reports/pfi_v024/stage_3/phase_3_3/evidence.json",
+    "PFI/reports/pfi_v024/stage_3/phase_3_3/legacy_routes_validation.json",
+    "PFI/reports/pfi_v024/stage_3/phase_3_3/risk_and_rollback.md",
+    "PFI/reports/pfi_v024/stage_3/phase_3_3/screenshots/browser_back_after_forward.png",
+    "PFI/reports/pfi_v024/stage_3/phase_3_3/screenshots/desktop_nav.png",
+    "PFI/reports/pfi_v024/stage_3/phase_3_3/terminal.log",
+    "PFI/scripts/validate_v024_stage3_phase33_browser.js",
+    "PFI/src/pfi_v02/stage_v024_stage3_navigation.py",
+    "PFI/tests/test_v024_stage3_phase33_navigation_acceptance.py",
+    "PFI/功能清单.md",
+    "PFI/开发记录.md",
+    "PFI/模型参数文件.md"
+  ],
+  "explicitly_not_done": [
+    "Stage 3 whole-stage review",
+    "GitHub main upload",
+    "app bundle reinstall",
+    "launcher C or Info.plist changes",
+    "financial data or metric logic changes"
+  ]
+}

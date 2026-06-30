@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 3 Phase 3.3 - 2026-07-01
+
+- 完成 `Stage 3 / Phase 3.3 - 导航验收`：真实浏览器验证 desktop/mobile 各 10 个一级入口，`市场与研究` 保持第 9 个正式一级入口。
+- 新增 `PFI/scripts/validate_v024_stage3_phase33_browser.js`，用 Node Playwright 启动本地静态 HTTP server，实际加载 `PFI/web/index.html` 验证点击导航、direct URL alias 和 browser back/forward。
+- 新增 `PFI/tests/test_v024_stage3_phase33_navigation_acceptance.py`，锁定 Phase 3.3 contract、browser validation JSON、legacy route JSON、截图和 evidence pack。
+- 扩展 `PFI/src/pfi_v02/stage_v024_stage3_navigation.py`，新增 Phase 3.3 navigation acceptance contract。
+- 新增 `PFI/reports/pfi_v024/stage_3/phase_3_3/` evidence，包括 `browser_validation.json`、`legacy_routes_validation.json`、`desktop_nav.png` 和 `browser_back_after_forward.png`。
+- 本轮未执行 Stage 3 whole-stage review、app bundle reinstall、真实数据逻辑修改或 GitHub main upload。
+
 ## v0.2.4 Repair Pack Stage 3 Phase 3.2 - 2026-07-01
 
 - 完成 `Stage 3 / Phase 3.2 - 路由实现`：`PFI/web/app/routes.js` 暴露 `window.PFI_V024_STAGE3_ROUTES`，可解析一级 route、二级 route 和 v0.1 alias redirect。

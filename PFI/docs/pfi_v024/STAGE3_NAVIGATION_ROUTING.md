@@ -1,7 +1,7 @@
-# PFI v0.2.4 Stage 3 Phase 3.1 Navigation Contract
+# PFI v0.2.4 Stage 3 Navigation Routing
 
-本轮只执行：`Stage 3 / Phase 3.1 - 导航合同`。
-本轮不执行 Phase 3.2 路由实现、不执行 Phase 3.3 浏览器历史验收、不执行 Stage 3 whole-stage review、不上传 GitHub main。
+当前已完成至：`Stage 3 / Phase 3.3 - 导航验收`。
+Stage 3 whole-stage review 和 GitHub main upload 尚未执行。
 
 ## Scope
 
@@ -23,6 +23,9 @@ Phase 3.1 固定当前 v0.2.4 修补包的一级导航合同：
 | `PFI/web/index.html` | 加载 `navigation.js`，并保持 desktop/mobile/no-js 只有 10 个一级入口。 |
 | `PFI/src/pfi_os/app/streamlit_app.py` | 在 PFI.app / localhost 的 Streamlit embed 中内联 `navigation.js`。 |
 | `PFI/tests/test_v024_stage3_phase31_navigation_contract.py` | Phase 3.1 合同、HTML、JS、Streamlit embed 和 evidence 测试。 |
+| `PFI/tests/test_v024_stage3_phase32_route_implementation.py` | Phase 3.2 route 解析、redirect 和 runtime 声明测试。 |
+| `PFI/tests/test_v024_stage3_phase33_navigation_acceptance.py` | Phase 3.3 浏览器验收 evidence 合同测试。 |
+| `PFI/scripts/validate_v024_stage3_phase33_browser.js` | Phase 3.3 Node Playwright 真实浏览器验收脚本。 |
 
 ## Official Primary Entries
 
@@ -76,11 +79,27 @@ Phase 3.1 固定当前 v0.2.4 修补包的一级导航合同：
   - `/settings/data` -> `/settings?tab=data-system`
 - `PFI/web/app/shell.js` uses `PFI_V024_STAGE3_ROUTES.resolveRouteAlias()` before fallback route parsing.
 - Runtime declarations exist for hash routes, `pushState`, `replaceState`, `hashchange`, and `popstate`.
-- Browser back/forward validation is intentionally left for Phase 3.3.
+- Browser back/forward validation is completed by Phase 3.3 evidence.
+
+### Phase 3.3
+
+- Node Playwright browser validation contract: `PFI-V024-STAGE3-PHASE33-BROWSER-NAVIGATION`.
+- Real browser DOM found exactly 10 desktop primary entries and 10 mobile primary entries.
+- `市场与研究` remains `data-nav-index="9"`.
+- v0.1 labels `首页`、`市场`、`研究`、`持仓`、`策略实验室`、`数据与系统` are absent as exact primary entries.
+- Browser route API resolves all 6 v0.1 legacy aliases as `legacy_redirect`.
+- Direct URL aliases such as `#/market/watch` replace to owned v0.2.4 routes such as `#/market-research?tab=market`.
+- Click navigation across primary routes passes.
+- Browser back/forward across `/accounts` -> `/market-research` -> `/settings` passes.
+- Screenshots are recorded at:
+  - `PFI/reports/pfi_v024/stage_3/phase_3_3/screenshots/desktop_nav.png`
+  - `PFI/reports/pfi_v024/stage_3/phase_3_3/screenshots/browser_back_after_forward.png`
+- Browser JSON evidence is recorded at:
+  - `PFI/reports/pfi_v024/stage_3/phase_3_3/browser_validation.json`
+  - `PFI/reports/pfi_v024/stage_3/phase_3_3/legacy_routes_validation.json`
 
 ## Explicitly Not Done
 
-- Phase 3.3 browser back/forward/direct URL validation is not completed in this run.
 - Stage 3 whole-stage review is not completed in this run.
 - GitHub main upload is not completed in this run.
 - No app bundle reinstall, launcher source change, or financial data logic change was made.

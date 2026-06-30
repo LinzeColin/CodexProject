@@ -1,0 +1,67 @@
+{
+  "contract": "PFI-V024-STAGE3-PHASE33-BROWSER-NAVIGATION",
+  "status": "pass",
+  "cases": {
+    "/home/today": {
+      "status": "resolved",
+      "routeType": "legacy_redirect",
+      "inputRouteAlias": "/home/today",
+      "routeAlias": "/home",
+      "redirectedFrom": "/home/today",
+      "workspace": "home",
+      "primaryRouteAlias": "/home",
+      "tab": ""
+    },
+    "/market/watch": {
+      "status": "resolved",
+      "routeType": "legacy_redirect",
+      "inputRouteAlias": "/market/watch",
+      "routeAlias": "/market-research?tab=market",
+      "redirectedFrom": "/market/watch",
+      "workspace": "market_research",
+      "primaryRouteAlias": "/market-research",
+      "tab": "market"
+    },
+    "/market/research": {
+      "status": "resolved",
+      "routeType": "legacy_redirect",
+      "inputRouteAlias": "/market/research",
+      "routeAlias": "/market-research?tab=research",
+      "redirectedFrom": "/market/research",
+      "workspace": "market_research",
+      "primaryRouteAlias": "/market-research",
+      "tab": "research"
+    },
+    "/investment/holdings": {
+      "status": "resolved",
+      "routeType": "legacy_redirect",
+      "inputRouteAlias": "/investment/holdings",
+      "routeAlias": "/investment?tab=holdings",
+      "redirectedFrom": "/investment/holdings",
+      "workspace": "investment",
+      "primaryRouteAlias": "/investment",
+      "tab": "holdings"
+    },
+    "/market/lab": {
+      "status": "resolved",
+      "routeType": "legacy_redirect",
+      "inputRouteAlias": "/market/lab",
+      "routeAlias": "/market-research/strategy-lab",
+      "redirectedFrom": "/market/lab",
+      "workspace": "market_research",
+      "primaryRouteAlias": "/market-research",
+      "tab": "strategy_lab"
+    },
+    "/settings/data": {
+      "status": "resolved",
+      "routeType": "legacy_redirect",
+      "inputRouteAlias": "/settings/data",
+      "routeAlias": "/settings?tab=data-system",
+      "redirectedFrom": "/settings/data",
+      "workspace": "settings",
+      "primaryRouteAlias": "/settings",
+      "tab": "data-system"
+    }
+  },
+  "generated_at": "2026-06-30T21:39:00.756Z"
+}

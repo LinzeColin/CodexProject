@@ -10,9 +10,12 @@ PHASE_3_1_ID = "3.1"
 PHASE_3_1_NAME = "导航合同"
 PHASE_3_2_ID = "3.2"
 PHASE_3_2_NAME = "路由实现"
+PHASE_3_3_ID = "3.3"
+PHASE_3_3_NAME = "导航验收"
 REPAIR_LABEL = "PFI v0.2.3 Repair"
 NAVIGATION_CONTRACT_VERSION = "PFI-V024-STAGE3-PHASE31-NAVIGATION"
 ROUTE_CONTRACT_VERSION = "PFI-V024-STAGE3-PHASE32-ROUTES"
+BROWSER_NAVIGATION_CONTRACT_VERSION = "PFI-V024-STAGE3-PHASE33-BROWSER-NAVIGATION"
 
 OFFICIAL_PRIMARY_NAV = [
     {"index": 1, "label": "首页总览", "workspace": "home", "routeAlias": "/home", "icon": "⌂"},
@@ -216,6 +219,13 @@ HISTORY_RUNTIME_CONTRACT = {
     "browser_history_validation_done": False,
 }
 
+PHASE_3_3_EVIDENCE_FILES = [
+    "browser_validation.json",
+    "legacy_routes_validation.json",
+    "desktop_nav.png",
+    "browser_back_after_forward.png",
+]
+
 
 def resolve_legacy_route_alias(route_alias: str) -> str:
     clean = str(route_alias or "").strip()
@@ -348,6 +358,71 @@ def build_v024_stage3_phase32_contract() -> V024Stage3Phase32RouteContract:
         max_phases_per_run=1,
         explicitly_not_done=[
             "Stage 3 Phase 3.3 browser history validation",
+            "Stage 3 whole-stage review",
+            "GitHub main upload",
+        ],
+    )
+
+
+@dataclass(frozen=True)
+class V024Stage3Phase33NavigationAcceptanceContract:
+    target_version: str
+    source_package_version: str
+    repair_label: str
+    stage_id: str
+    phase_id: str
+    phase_name: str
+    task_ids: list[str]
+    browser_navigation_contract_version: str
+    official_primary_entry_count: int
+    desktop_primary_entry_count: int
+    mobile_primary_entry_count: int
+    legacy_alias_route_count: int
+    evidence_files: list[str]
+    phase_3_1_complete: bool
+    phase_3_2_complete: bool
+    phase_3_3_complete: bool
+    stage_3_candidate_complete: bool
+    stage_3_complete: bool
+    browser_history_validation_done: bool
+    app_bundle_changes_allowed: bool
+    data_logic_changes_allowed: bool
+    formal_fake_financial_data_allowed: bool
+    github_main_upload_allowed: bool
+    max_phases_per_run: int
+    explicitly_not_done: list[str]
+
+    def to_dict(self) -> dict[str, object]:
+        return asdict(self)
+
+
+def build_v024_stage3_phase33_contract() -> V024Stage3Phase33NavigationAcceptanceContract:
+    return V024Stage3Phase33NavigationAcceptanceContract(
+        target_version=TARGET_VERSION,
+        source_package_version=SOURCE_PACKAGE_VERSION,
+        repair_label=REPAIR_LABEL,
+        stage_id=STAGE_ID,
+        phase_id=PHASE_3_3_ID,
+        phase_name=PHASE_3_3_NAME,
+        task_ids=["T3.3.1", "T3.3.2", "T3.3.3"],
+        browser_navigation_contract_version=BROWSER_NAVIGATION_CONTRACT_VERSION,
+        official_primary_entry_count=len(OFFICIAL_PRIMARY_NAV),
+        desktop_primary_entry_count=10,
+        mobile_primary_entry_count=10,
+        legacy_alias_route_count=len(LEGACY_ALIAS_ROUTES),
+        evidence_files=PHASE_3_3_EVIDENCE_FILES,
+        phase_3_1_complete=True,
+        phase_3_2_complete=True,
+        phase_3_3_complete=True,
+        stage_3_candidate_complete=True,
+        stage_3_complete=False,
+        browser_history_validation_done=True,
+        app_bundle_changes_allowed=False,
+        data_logic_changes_allowed=False,
+        formal_fake_financial_data_allowed=False,
+        github_main_upload_allowed=False,
+        max_phases_per_run=1,
+        explicitly_not_done=[
             "Stage 3 whole-stage review",
             "GitHub main upload",
         ],
