@@ -1,0 +1,91 @@
+{
+  "acceptance_gate": "KMFA-S09-STAGE-REVIEW-GATE",
+  "branch": "codex/kmfa",
+  "github_upload_status": "not_pushed",
+  "raw_business_data_used": false,
+  "review_id": "KMFA-S09-STAGE-REVIEW-20260630",
+  "review_time": "2026-06-30T23:59:00+10:00",
+  "reviewed_head": "db9169464f71",
+  "scope": [
+    "S09-P1",
+    "S09-P2",
+    "S09-P3",
+    "Stage 9 owner-readable entries",
+    "Stage 9 governance status",
+    "public repository safety boundary"
+  ],
+  "stage": "S09",
+  "status": "pass_upload_ready_local_only",
+  "stage_phase_status": {
+    "S09-P1": "completed_validated_local_only_project_cost_fact_layer",
+    "S09-P2": "completed_validated_local_only_margin_cash_margin",
+    "S09-P3": "completed_validated_local_only_scope_reconciliation"
+  },
+  "validator_ref": "KMFA/tools/check_s09_stage_review.py",
+  "review_counts": {
+    "project_cost_fact_records": 4,
+    "cost_categories": 9,
+    "unallocated_project_cost_pool_records": 9,
+    "project_margin_records": 4,
+    "scope_difference_summary_records": 12,
+    "scope_reconciliation_records": 12,
+    "scope_reconciliation_domain_controls": 6,
+    "pending_owner_or_authorized_review_records": 12,
+    "confirmed_reconciliation_records": 0,
+    "full_kmfa_unit_tests": 100
+  },
+  "findings": [
+    {
+      "finding_id": "KMFA-S09-REV-F01",
+      "severity": "P2",
+      "status": "fixed",
+      "summary": "Stage 9 review evidence and governance status were missing before this review; both were fixed."
+    },
+    {
+      "finding_id": "KMFA-S09-REV-F02",
+      "severity": "P2",
+      "status": "passed",
+      "summary": "S09-P1 keeps the project cost fact layer public-safe and blocks formal reports and GitHub upload."
+    },
+    {
+      "finding_id": "KMFA-S09-REV-F03",
+      "severity": "P2",
+      "status": "passed",
+      "summary": "S09-P2 keeps authority display refs, system recomputed refs and cash refs separated."
+    },
+    {
+      "finding_id": "KMFA-S09-REV-F04",
+      "severity": "P2",
+      "status": "passed",
+      "summary": "S09-P3 keeps all reconciliation records pending and blocks derived metric reruns and formal reports."
+    },
+    {
+      "finding_id": "KMFA-S09-REV-F05",
+      "severity": "P3",
+      "status": "fixed",
+      "summary": "A high-signal secret scan false positive caused by the local variable name normalized_token was fixed by renaming it to normalized_hash_source."
+    },
+    {
+      "finding_id": "KMFA-S09-REV-F06",
+      "severity": "P3",
+      "status": "accepted_next_step",
+      "summary": "GitHub upload remains a separate final upload step with required rebase and push proof."
+    }
+  ],
+  "evidence_refs": [
+    "KMFA/stage_artifacts/S09_STAGE_REVIEW/human/stage9_review_report.md",
+    "KMFA/stage_artifacts/S09_STAGE_REVIEW/human/test_results.md",
+    "KMFA/stage_artifacts/S09_STAGE_REVIEW/machine/stage9_review_manifest.json",
+    "KMFA/tools/check_s09_stage_review.py",
+    "KMFA/stage_artifacts/S09_P1_project_cost_fact_layer/human/test_results.md",
+    "KMFA/stage_artifacts/S09_P2_margin_cash_margin/human/test_results.md",
+    "KMFA/stage_artifacts/S09_P3_scope_reconciliation/human/test_results.md"
+  ],
+  "next_gate": "KMFA-S09-FINAL-GITHUB-UPLOAD-GATE",
+  "upload_allowed_after_review": true,
+  "upload_performed": false,
+  "s10_allowed": false,
+  "lineage_full_check_performed": false,
+  "formal_report_generated": false,
+  "external_connector_included": false
+}
