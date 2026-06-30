@@ -5,7 +5,7 @@
   "stage_name": "人工处理工作台与重跑机制",
   "review_id": "KMFA-S12-STAGE-REVIEW-20260701",
   "generated_at": "2026-07-01T15:00:00+10:00",
-  "source_head": "2f237b0ab69b0943a27a7fe92466a804de5f6df4",
+  "source_head": "0ae2d65732a9ab3a75f3aa580244369c10cfd095",
   "status": "review_passed_upload_ready_local_only",
   "github_upload_status": "not_pushed",
   "next_gate_id": "KMFA-S12-GITHUB-UPLOAD-GATE",

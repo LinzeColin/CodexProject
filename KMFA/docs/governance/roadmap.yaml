@@ -3,10 +3,10 @@ roadmap_kind: "product"
 project_id: "KMFA"
 total_estimated_hours: 54
 completed_estimated_hours: 54
-current_stage_id: "S12"
-current_phase_id: "S12-GITHUB-UPLOAD"
-current_task_id: "KMFA-S12-GITHUB-UPLOAD"
-next_gate_id: "KMFA-S12-GITHUB-UPLOAD-GATE"
+current_stage_id: "S13"
+current_phase_id: "S13PA"
+current_task_id: "S13PAT01"
+next_gate_id: "KMFA-S13-P1-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -718,10 +718,10 @@ stages:
       - "KMFA/stage_artifacts/S11_STAGE_REVIEW/machine/stage11_upload_manifest.json"
   - stage_id: "S12"
     name: "人工处理工作台与重跑机制"
-    status: "review_passed_upload_ready_local_only"
+    status: "uploaded_to_github_main"
     estimated_hours: 3
     estimated_pct: 100.0
-    current_result: "S12-P1 人工处理事件、S12-P2 影响预览、S12-P3 重跑机制和 Stage 12 整体复审已完成本地验证：5 条 public-safe append-only 事件对应 5 条影响预览，其中 2 条 preview passed/publish-allowed 事件失效派生缓存并重跑字段映射、事实层、指标和报告引用，2 条同源一致性校验通过；3 条高风险 pending preview 不进入重跑。Stage 12 review 复跑 S12-P1/P2/P3 validators、Stage 12 review validator、全量 KMFA tests、治理 validator、raw/secret scan 和 parse checks；GitHub upload、S13、lineage full check、正式报告和外部接口均未执行。"
+    current_result: "S12-P1 人工处理事件、S12-P2 影响预览、S12-P3 重跑机制、Stage 12 整体复审和 final GitHub upload 均已完成：5 条 public-safe append-only 事件对应 5 条影响预览，其中 2 条 preview passed/publish-allowed 事件失效派生缓存并重跑字段映射、事实层、指标和报告引用，2 条同源一致性校验通过；3 条高风险 pending preview 不进入重跑。Stage 12 upload 复跑 S12 validators、Stage 12 review validator、全量 KMFA tests、治理 validator、raw/secret scan、parse checks、dry-run push、push 和 post-push parity；S13、lineage full check、正式报告和外部接口均未执行。"
     evidence_refs:
       - "KMFA/stage_artifacts/S12_P1_manual_resolution_events/human/s12_p1_completion_record.md"
       - "KMFA/stage_artifacts/S12_P1_manual_resolution_events/human/test_results.md"
@@ -744,6 +744,8 @@ stages:
       - "KMFA/stage_artifacts/S12_STAGE_REVIEW/human/test_results.md"
       - "KMFA/stage_artifacts/S12_STAGE_REVIEW/machine/stage12_review_manifest.json"
       - "KMFA/tools/check_s12_stage_review.py"
+      - "KMFA/stage_artifacts/S12_GITHUB_UPLOAD/human/github_upload_record.md"
+      - "KMFA/stage_artifacts/S12_GITHUB_UPLOAD/machine/stage12_upload_manifest.json"
   - stage_id: "S13"
     name: "财务经营报表与回款应收扩展"
     status: "planned"
