@@ -5,7 +5,14 @@
   "raw_business_data_used": false,
   "review_id": "KMFA-S06-STAGE-REVIEW-20260630",
   "review_time": "2026-06-30T15:10:00+10:00",
-  "reviewed_head": "cadb1e814bb06f8b65dd5ca84befb973b465bce6",
+  "reviewed_head": "c66c8b44c17ae760a5a6da4b98ab5892d90d73d0",
+  "review_evidence_commit_before_upload_gate": "5cd284e500fec5ff215741b0e8ee164912f50268",
+  "upload_gate_rebase_binding": {
+    "origin_main_base": "fd14057e7427d7f275fdb62a33619936618d0d35",
+    "reviewed_head_before_rebase": "cadb1e814bb06f8b65dd5ca84befb973b465bce6",
+    "reviewed_head_after_rebase": "c66c8b44c17ae760a5a6da4b98ab5892d90d73d0",
+    "stage_review_commit_after_rebase": "5cd284e500fec5ff215741b0e8ee164912f50268"
+  },
   "scope": [
     "S06-P1",
     "S06-P2",
@@ -66,11 +73,14 @@
     "KMFA/stage_artifacts/S06_STAGE_REVIEW/human/stage6_review_report.md",
     "KMFA/stage_artifacts/S06_STAGE_REVIEW/human/test_results.md",
     "KMFA/stage_artifacts/S06_STAGE_REVIEW/machine/stage6_review_manifest.json",
+    "KMFA/stage_artifacts/S06_STAGE_REVIEW/human/github_upload_record.md",
+    "KMFA/stage_artifacts/S06_STAGE_REVIEW/machine/stage6_upload_manifest.json",
     "KMFA/stage_artifacts/S06_P1_zero_delta_validator/human/test_results.md",
     "KMFA/stage_artifacts/S06_P2_cross_source_difference_queue/human/test_results.md",
     "KMFA/stage_artifacts/S06_P3_validation_evidence_output/human/test_results.md"
   ],
-  "next_gate": "KMFA-S06-FINAL-GITHUB-UPLOAD-GATE",
+  "next_gate": "KMFA-S07-P1-GATE",
+  "review_next_gate_before_upload_step": "KMFA-S06-FINAL-GITHUB-UPLOAD-GATE",
   "upload_allowed_after_review": true,
   "upload_performed": false
 }
