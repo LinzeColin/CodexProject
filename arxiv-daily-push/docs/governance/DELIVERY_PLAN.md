@@ -21,10 +21,18 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 308
+- task_count: 309
 - acceptance_count: 127
 
 ## Delivery Tasks
+
+## 2026-06-30 23:18:23 Australia/Sydney - S2PMT07 Final Bundle S2PLT04 Completion Evidence Summary
+
+- `S2PMT07-FINAL-BUNDLE-S2PLT04-COMPLETION-EVIDENCE-SUMMARY` makes `plan-final-bundle-prerequisites` and `validate-final-acceptance-bundle` expose `s2plt04_completion_evidence_audit_summary`.
+- Current live CLIs remain blocked / exit 2: prerequisite plan `state_hash=b9d7ce5a9011f44fa66250d174da9731238f1914a008ba5d61e81c85192eb8a4`, final validator `state_hash=5e0d1a81d1f8f8de49721844d8b96f376a74a11ee69170e30685c915032ed8e2`, and S2PLT04 audit `state_hash=ee3917fedcd96e10a23fbd228367e6837ffca092734d98288502d9702514165f`.
+- Summary fields keep `completion_report_ready=false`, `s2plt04_completion_report_written=false`, `S2PLT02_ACCEPTED=false`, `S2PLT03_ACCEPTED=false`, and blocking reasons `s2plt02_live_2d_terminal_proof_missing;s2plt03_resilience_terminal_proof_missing`.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-S2PLT04-COMPLETION-EVIDENCE-SUMMARY-20260630.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_S2PLT04_COMPLETION_EVIDENCE_SUMMARY.md`; `FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json`; `FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`; `arxiv-daily-push/tests/test_cli.py`.
+- This does not mutate V7.1/V7.2 contract baseline counts, write S2PLT02 terminal proof, write S2PLT03 terminal proof, write S2PLT04 completion report, create final-bundle manifest/handoff/signoff/final-command proof, send SMTP, enable scheduler, upload Release assets, execute restore, mutate schema/DB/source/ranking/CURRENT/V7, enable DAILY_OPERATION, or claim S2PLT02/S2PLT03/S2PLT04/S2PMT07/integrated production acceptance.
 
 ## 2026-06-30 22:46:02 Australia/Sydney - S2PMT07 Final Bundle P0/P1 Zero-Proof Status Summary
 

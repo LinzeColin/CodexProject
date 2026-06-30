@@ -1856,6 +1856,23 @@ class CliTests(unittest.TestCase):
             payload["final_bundle_prerequisite_plan"]["s2plt03_terminal_resilience_capture_plan_summary"],
         )
         self.assertEqual(
+            payload["s2plt04_completion_evidence_audit_summary"],
+            payload["final_bundle_prerequisite_plan"]["s2plt04_completion_evidence_audit_summary"],
+        )
+        self.assertEqual(payload["s2plt04_completion_evidence_audit_summary"]["status"], "blocked")
+        self.assertFalse(payload["s2plt04_completion_evidence_audit_summary"]["completion_report_ready"])
+        self.assertFalse(
+            payload["s2plt04_completion_evidence_audit_summary"]["s2plt04_completion_report_written"]
+        )
+        self.assertIn(
+            "s2plt02_live_2d_terminal_proof_missing",
+            payload["s2plt04_completion_evidence_audit_summary"]["blocking_reasons"],
+        )
+        self.assertIn(
+            "s2plt03_resilience_terminal_proof_missing",
+            payload["s2plt04_completion_evidence_audit_summary"]["blocking_reasons"],
+        )
+        self.assertEqual(
             payload["s2plt03_terminal_resilience_capture_plan_summary"]["next_executable_step"],
             "WAIT_FOR_S2PLT02_TERMINAL_ACCEPTANCE",
         )

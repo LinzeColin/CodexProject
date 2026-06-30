@@ -5812,3 +5812,28 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PMT07-FINAL-BUNDLE-S2PLT04-COMPLETION-EVIDENCE-SUMMARY"
+    title: "S2PMT07 final bundle S2PLT04 completion evidence summary"
+    parent_task_id: "S2PMT07-FINAL-BUNDLE-PREREQUISITES"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-30T23:18:23+10:00"
+    objective: "Expose S2PLT04 completion evidence audit summary at the final-bundle prerequisite and validation layer without writing the completion report."
+    scope: "Final-bundle prerequisite plan builder/validator, final bundle readiness validator, focused final-gate and CLI regressions, phase record, run manifest, traceability row, delivery/event records, owner/user-center status, and three base notes."
+    non_scope: "No S2PLT02 terminal proof artifact, no S2PLT03 terminal proof artifact, no S2PLT04 completion report, no final-bundle manifest/handoff/signoff/final-command proof, no SMTP send, no scheduler enable/install/kickstart, no Release, no restore, no public schema/DB/source/ranking/queue mutation, no S2PLT02/S2PLT03/S2PLT04/S2PMT07 acceptance, and no integrated production acceptance."
+    owner: "engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    dependencies: ["S2PMT07-FINAL-BUNDLE-P0P1-ZERO-PROOF-STATUS-SUMMARY", "S2PLT02-TERMINAL-DELIVERY-PROOF", "S2PLT03-TERMINAL-RESILIENCE-PROOF", "S2PLT04-COMPLETION-REPORT"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_S2PLT04_COMPLETION_EVIDENCE_SUMMARY.md", "governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-S2PLT04-COMPLETION-EVIDENCE-SUMMARY-20260630.json"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt04_summary_red PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_final_acceptance_bundle_readiness_embeds_directory_level_artifact_validation arxiv-daily-push/tests/test_cli.py::CliTests::test_validate_final_acceptance_bundle_json_command_blocks_without_live_artifacts", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt04_summary_green PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_final_acceptance_bundle_readiness_embeds_directory_level_artifact_validation arxiv-daily-push/tests/test_cli.py::CliTests::test_validate_final_acceptance_bundle_json_command_blocks_without_live_artifacts", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt04_summary_cli PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli plan-final-bundle-prerequisites --json", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt04_summary_cli PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli validate-final-acceptance-bundle --repo-root . --json", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_s2plt04_summary_cli PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli audit-s2plt04-completion-evidence --repo-root . --json"]
+    test_results: ["TDD red failed because s2plt04_completion_evidence_audit_summary was missing from final-bundle readiness", "TDD red failed because s2plt04_completion_evidence_audit_summary was missing from validate-final-acceptance-bundle JSON", "focused S2PLT04 completion summary tests: 2 OK", "plan-final-bundle-prerequisites live CLI: blocked / exit 2 with state_hash b9d7ce5a9011f44fa66250d174da9731238f1914a008ba5d61e81c85192eb8a4", "validate-final-acceptance-bundle live CLI: blocked / exit 2 with state_hash 5e0d1a81d1f8f8de49721844d8b96f376a74a11ee69170e30685c915032ed8e2", "audit-s2plt04-completion-evidence live CLI: blocked / exit 2 with state_hash ee3917fedcd96e10a23fbd228367e6837ffca092734d98288502d9702514165f"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-S2PLT04-COMPLETION-EVIDENCE-SUMMARY-20260630.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_S2PLT04_COMPLETION_EVIDENCE_SUMMARY.md", "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json", "FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/tests/test_governance_current_state.py", "arxiv-daily-push/tests/test_user_center_candidate_pool.py"]
+    result: "blocked_final_bundle_s2plt04_completion_evidence_summary_synced_no_production"
+    risk: "A final bundle reviewer can miss that S2PLT04 completion remains blocked if only the standalone S2PLT04 audit exposes missing S2PLT02/S2PLT03 terminal proofs."
+    rollback: "Revert the S2PLT04 completion evidence summary fields, focused tests, phase record, run manifest, traceability row, delivery/event records, user-center notes, and three base notes; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

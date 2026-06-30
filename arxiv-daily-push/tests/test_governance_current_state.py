@@ -35,6 +35,20 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
+            "S2PMT07_FINAL_BUNDLE_S2PLT04_COMPLETION_EVIDENCE_SUMMARY_BLOCKED_NO_PRODUCTION",
+            current_state,
+        )
+        self.assertIn("S2PMT07-FINAL-BUNDLE-S2PLT04-COMPLETION-EVIDENCE-SUMMARY", current_state)
+        self.assertIn("s2plt04_completion_evidence_audit_summary", current_state)
+        self.assertIn("b9d7ce5a9011f44fa66250d174da9731238f1914a008ba5d61e81c85192eb8a4", current_state)
+        self.assertIn("5e0d1a81d1f8f8de49721844d8b96f376a74a11ee69170e30685c915032ed8e2", current_state)
+        self.assertIn("ee3917fedcd96e10a23fbd228367e6837ffca092734d98288502d9702514165f", current_state)
+        self.assertIn("s2plt04_completion_report_written=false", current_state)
+        self.assertIn("completion_report_ready=false", current_state)
+        self.assertIn("s2plt02_live_2d_terminal_proof_missing;s2plt03_resilience_terminal_proof_missing", current_state)
+        self.assertIn("ADP-S2PMT07-FINAL-BUNDLE-S2PLT04-COMPLETION-EVIDENCE-SUMMARY-20260630.json", current_state)
+        self.assertIn("PHASE_S2PMT07_FINAL_BUNDLE_S2PLT04_COMPLETION_EVIDENCE_SUMMARY.md", ledger)
+        self.assertIn(
             "S2PMT07_FINAL_BUNDLE_P0P1_ZERO_PROOF_STATUS_SUMMARY_BLOCKED_NO_PRODUCTION",
             current_state,
         )

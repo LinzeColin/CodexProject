@@ -5884,6 +5884,23 @@ class Stage2FinalGateTests(unittest.TestCase):
             state["s2plt02_runtime_readiness_summary"],
             prerequisite_plan["s2plt02_runtime_readiness_summary"],
         )
+        self.assertEqual(
+            state["s2plt04_completion_evidence_audit_summary"],
+            prerequisite_plan["s2plt04_completion_evidence_audit_summary"],
+        )
+        self.assertEqual(state["s2plt04_completion_evidence_audit_summary"]["status"], "blocked")
+        self.assertFalse(state["s2plt04_completion_evidence_audit_summary"]["completion_report_ready"])
+        self.assertFalse(
+            state["s2plt04_completion_evidence_audit_summary"]["s2plt04_completion_report_written"]
+        )
+        self.assertIn(
+            "s2plt02_live_2d_terminal_proof_missing",
+            state["s2plt04_completion_evidence_audit_summary"]["blocking_reasons"],
+        )
+        self.assertIn(
+            "s2plt03_resilience_terminal_proof_missing",
+            state["s2plt04_completion_evidence_audit_summary"]["blocking_reasons"],
+        )
         self.assertFalse(state["available_prebundle_evidence"]["FINAL_ACCEPTANCE_BUNDLE_ARTIFACT_VALIDATION"])
         self.assertNotIn("final_acceptance_bundle_directory_missing", directory_validation["blocking_reasons"])
         self.assertNotIn("no_production_side_effect_attestation_missing", directory_validation["blocking_reasons"])
