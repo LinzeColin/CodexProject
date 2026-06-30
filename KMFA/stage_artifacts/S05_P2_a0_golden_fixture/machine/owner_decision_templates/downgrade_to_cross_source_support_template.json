@@ -1,0 +1,45 @@
+{
+  "activation_requires": [
+    "owner_or_authorized_actor",
+    "decision_time",
+    "candidate_role_cross_source_support_only",
+    "q5_exclusion_confirmed_true",
+    "remove_template_marker",
+    "change_record_type_to_s05_p2_excel_owner_resolution_decision"
+  ],
+  "business_plaintext_committed": false,
+  "candidate_id": "A0-CAND-70023EFC7305",
+  "current_gate": "KMFA-S05-P2-EXCEL-RESOLUTION-GATE",
+  "decision_code": "downgrade_to_cross_source_support",
+  "field_keys": [
+    "contract_amount",
+    "total_expense",
+    "gross_profit",
+    "gross_margin",
+    "cost_category"
+  ],
+  "file_id": "A0-FILE-BAE6D90834C5",
+  "not_decision_record": true,
+  "output_record_type_after_activation": "s05_p2_excel_owner_resolution_decision",
+  "phase_id": "S05-P2",
+  "private_csv_committed": false,
+  "private_hash_refs_allowed": false,
+  "project_id": "KMFA",
+  "q4_confirmation_claimed": false,
+  "q5_baseline_claimed": false,
+  "raw_source_committed": false,
+  "record_type": "s05_p2_excel_owner_resolution_decision_template",
+  "required_candidate_role": "cross_source_support_only",
+  "required_fill_fields": [
+    "actor_role",
+    "actor_ref",
+    "decision_time",
+    "candidate_role",
+    "cross_source_support_scope",
+    "q5_exclusion_confirmed"
+  ],
+  "schema_version": "kmfa.s05_p2_excel_owner_resolution_decision_template.v1",
+  "source_layer_write_allowed": false,
+  "stage_id": "S05",
+  "template_id": "TPL-KMFA-S05P2-DOWNGRADE-TO-CROSS-SOURCE-SUPPORT"
+}

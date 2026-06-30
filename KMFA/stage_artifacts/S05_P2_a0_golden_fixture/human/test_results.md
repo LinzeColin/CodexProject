@@ -11,14 +11,16 @@
 | `PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_s05_p2_excel_owner_decision.py` | PASS: allowed_decisions=3, pending_fields=5, status=awaiting_owner_or_authorized_decision |
 | `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest KMFA.tests.test_s05_p2_owner_decision_intake -q` | PASS: Ran 4 tests; OK |
 | `PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_s05_p2_owner_decision_intake.py` | PASS: contract_status=ready_for_owner_decision_record, decision_status=no_decision_supplied, decision_code=none |
+| `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest KMFA.tests.test_s05_p2_owner_decision_templates -q` | PASS: Ran 3 tests; OK |
+| `PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_s05_p2_owner_decision_templates.py` | PASS: template_count=3, active_decision_records=0 |
 | `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest KMFA.tests.test_a0_golden_fixture -q` | PASS: 3 tests OK |
 | `PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/a0_golden_fixture.py --private-fields-csv <private-path> --generated-at 2026-06-30T02:30:00+10:00 --check-only` | PASS: candidates=45, fields_per_candidate=5, private_value_hash_recorded=40, private_value_pending=5 |
 | `PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/a0_golden_fixture.py --private-fields-csv <private-path> --generated-at 2026-06-30T02:30:00+10:00` | PASS: A0 golden fixture candidate metadata generated with 40 hash-recorded / 5 pending |
 | `PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_a0_golden_fixture.py` | PASS: fixture_candidates=45, fields_per_candidate=5, private_value_hash_recorded=40, private_value_pending=5, source_anchor_recorded=40, source_anchor_pending=5 |
-| `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest KMFA.tests.test_a0_golden_fixture KMFA.tests.test_s05_p2_excel_owner_decision KMFA.tests.test_s05_p2_owner_decision_intake KMFA.tests.test_a0_file_register KMFA.tests.test_file_import_register KMFA.tests.test_source_check_matrix KMFA.tests.test_source_priority KMFA.tests.test_amount_tools KMFA.tests.test_field_standardization KMFA.tests.test_basic_tool_boundaries -q` | PASS: Ran 38 tests; OK |
+| `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest KMFA.tests.test_a0_golden_fixture KMFA.tests.test_s05_p2_excel_owner_decision KMFA.tests.test_s05_p2_owner_decision_intake KMFA.tests.test_s05_p2_owner_decision_templates KMFA.tests.test_a0_file_register KMFA.tests.test_file_import_register KMFA.tests.test_source_check_matrix KMFA.tests.test_source_priority KMFA.tests.test_amount_tools KMFA.tests.test_field_standardization KMFA.tests.test_basic_tool_boundaries -q` | PASS: Ran 41 tests; OK |
 | `PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_a0_file_registration.py` | PASS: files=9, pdf=8, excel=1, member_sha256_recorded=0, member_sha256_pending=9, candidates=9 |
 | `PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/metadata_protocol_check.py` | PASS: dirs=8, files=19, identifiers=5 |
-| `PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/no_omission_check.py` | PASS: requirements=20, P0=9, P1=8, status_records=266, tasks=162, v1.2_html=45+ |
+| `PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/no_omission_check.py` | PASS: requirements=20, P0=9, P1=8, status_records=271, tasks=162, v1.2_html=45+ |
 | `PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_required_html.py` | PASS: required KMFA v1.2 HTML/UIUX/report samples are present (html=45, core=7) |
 | `PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/immutability_policy_check.py` | PASS: raw_manifest=append_only, derived_versions=append_only, control_events=no_raw_writes |
 | `PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_report_grade_gate.py` | PASS: quality_grades=Q0-Q5, report_grades=A-D, release_gate=blocked_by_missing_evidence |
@@ -37,5 +39,6 @@
 - Excel resolution manifest 只记录候选/file id、字段 key、计数、状态和证据引用，不记录业务明文值。
 - Excel owner decision packet 只定义允许决策和所需证据，并已有专门 validator 覆盖；不等同于 Q4/Q5 确认，不完成 S05-P2。
 - Excel owner decision intake contract 只验证后续决策记录格式、actor role、禁止明文键和 Q4/Q5 边界；当前没有 owner 决策记录，不完成 S05-P2。
+- Excel owner decision templates 只是三种允许决策的 public-safe 非决策模板；当前没有 active owner 决策记录，不完成 S05-P2。
 - 本机提供的 `销售绩效考核.zip` 整包 hash/size 与登记 source package 不匹配；真实 9 个业务成员 hash 与 Stage2 Ring4 registry 匹配。
 - 未提交 raw PDF、Excel、zip、私有 CSV、合同额、支出合计、毛利、毛利率、成本分类明文、银行流水、合同、薪资、税务申报或业务明细。
