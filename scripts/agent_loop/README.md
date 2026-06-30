@@ -20,6 +20,14 @@ These scripts are stdlib-only helpers for the Agent Loop workflows.
 All scripts avoid third-party dependencies so GitHub Actions can run them on a
 stock runner.
 
+## C3 Issue Form Behavior
+
+Issue Form labels are convenience only. The main workflow starts on trusted
+`issues: opened` and `issues: edited` events when the issue body contains
+`AGENT_LOOP_METADATA` and metadata `source` is `chatgpt-approved`. The workflow
+creates missing labels itself and then routes/autofills before any Codex
+implementation step.
+
 ## Routing And Autofill
 
 Routing reads `docs/governance/agent_loop/PROJECT_ROUTING_MATRIX.md` as the

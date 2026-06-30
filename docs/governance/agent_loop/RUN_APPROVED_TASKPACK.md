@@ -17,21 +17,20 @@
 
 1. 创建 issue，或使用 `Codex Task Pack` Issue Form。
 2. 把完整 dual-plane Task Pack 放在 issue body。
-3. 给 issue 添加 `source:chatgpt-approved`。
-4. 给 issue 添加 `agent:run`。
-5. Workflow 触发后使用这个 issue 作为 audit issue。
+3. 可信 issue 作者不需要手动添加 labels。
+4. Workflow 触发后使用这个 issue 作为 audit issue。
 
 触发条件：
 
 - Issue body 必须包含 `AGENT_LOOP_METADATA`。
-- Issue 必须有 `source:chatgpt-approved`。
-- Issue 必须有 `agent:run`。
-- Issue 不得有 `agent:running`、`agent:done`、`agent:blocked`。
 - Metadata 中 `source` 必须是 `chatgpt-approved`。
+- Issue 作者必须是 repository owner、member 或 collaborator。
+- Issue 不得有 `agent:running`、`agent:done`、`agent:blocked`。
 
 状态标签：
 
-- 开始时添加 `agent:running`。
+- 开始时自动创建缺失 labels，并添加 `source:chatgpt-approved`、`agent:run`、
+  `agent:running` 和 `risk:T1/T2`。
 - 成功时移除 `agent:running`，添加 `agent:done`，并关闭 issue。
 - 失败时移除 `agent:running`，添加 `agent:blocked`，并评论失败摘要。
 
@@ -42,7 +41,8 @@
 - 粘贴完整 Task Pack。
 - 不需要手选 project。
 - 不需要手选 risk tier。
-- 默认带 `source:chatgpt-approved` 和 `agent:run`。
+- Issue Form 声明了 `source:chatgpt-approved` 和 `agent:run` convenience
+  labels，但 workflow 不依赖它们预先存在。
 
 也可以生成预填 issue URL：
 
@@ -53,6 +53,11 @@ python3 scripts/agent_loop/build_prefilled_issue_url.py \
 ```
 
 如果 URL 太长，直接使用普通 issue 表单粘贴 Task Pack；D1 只是可选本地工具。
+
+旧 issue 重新触发：部署修复后，编辑 issue body，例如添加
+`<!-- rerun: after-c3-opened-trigger-fix -->`，即可触发 `issues: edited`。
+如果路由仍然模糊，预期结果是 issue 变成 `agent:blocked`，不会创建 PR、
+不会 merge、不会部署生产。
 
 ## 入口 4: D1 local gh submitter
 
