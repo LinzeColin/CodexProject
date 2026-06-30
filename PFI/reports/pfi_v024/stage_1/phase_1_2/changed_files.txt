@@ -1,0 +1,16 @@
+PFI/CHANGELOG.md
+PFI/HANDOFF.md
+PFI/README.md
+PFI/功能清单.md
+PFI/开发记录.md
+PFI/模型参数文件.md
+PFI/docs/pfi_v024/RUN_CONTRACT.md
+PFI/reports/pfi_v024/stage_1/phase_1_2/changed_files.txt
+PFI/reports/pfi_v024/stage_1/phase_1_2/evidence.json
+PFI/reports/pfi_v024/stage_1/phase_1_2/risk_and_rollback.md
+PFI/reports/pfi_v024/stage_1/phase_1_2/shell_before_after_summary.md
+PFI/reports/pfi_v024/stage_1/phase_1_2/terminal.log
+PFI/src/pfi_v02/stage_v024_stage1_shell_integrity.py
+PFI/tests/test_v024_stage1_phase12_shell_repair.py
+PFI/web/app/shell.js
+PFI/web/app/version.js
