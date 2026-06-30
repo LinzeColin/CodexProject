@@ -1,0 +1,14 @@
+Stage 9 Phase 9.2 motion feedback
+RED: PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage9_visual_feedback.py -q -> 4 failed, 5 passed
+Implemented feedback model in PFI/web/app/feedback.js and motion/status CSS in PFI/web/styles.css.
+No route, data, haptics, settings toggle, Stage 9 review, or GitHub upload changed in this phase.
+GREEN: PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage9_visual_feedback.py -q -> 9 passed in 0.10s
+REGRESSION: PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q -> 148 passed, 100 subtests passed in 2.11s
+NODE: node --check PFI/web/app/feedback.js -> passed
+NODE: node --check PFI/web/app/shell.js -> passed
+COMPILE: py_compile PFI/tests/test_v023_stage9_visual_feedback.py -> passed
+JSON: evidence.json, feedback_audit.json, no_source_term_scan.json -> passed
+DIFF: git diff --check -- PFI -> passed
+RENDER: /tmp/pfi_v023_stage9_phase92_desktop.png -> 1440x1100, 274053 bytes
+RENDER: /tmp/pfi_v023_stage9_phase92_mobile.png -> 390x844, 80256 bytes
+BOUNDARY: Phase 9.3, Stage 9 whole-stage review, and GitHub main upload remain not done.

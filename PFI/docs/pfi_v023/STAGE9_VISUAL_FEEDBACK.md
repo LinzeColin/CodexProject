@@ -24,7 +24,29 @@ Phase 9.1 证据：
 - `PFI/reports/pfi_v023/stage_9/phase_9_1/no_source_term_scan.json`
 - `PFI/reports/pfi_v023/stage_9/phase_9_1/terminal.log`
 
-Phase 9.2 未执行。
+## Stage 9 Phase 9.2 动效反馈
+
+Phase 9.2 只实现状态服务型动效反馈，不实现触感反馈，不新增设置页反馈偏好，不执行 Stage 9 whole-stage review。
+
+本 phase 覆盖：
+
+- `T9.2.1` 页面转场：定义 `data-route-transition` 进入/退出状态和 180ms 页面切换动效，上限不超过 220ms。
+- `T9.2.2` `loading/success/error/blocked` 状态组件：为全局 action feedback 和骨架屏提供差异化视觉状态。
+- `T9.2.3` 报告生成进度：定义报告范围、真实数据状态检查、公式与参数、可复核报告 4 步进度模型。
+- `T9.2.4` 减少动画模式：支持 `prefers-reduced-motion` 和 `body.reduce-motion`，将 transition/animation 降为 1ms 并关闭页面进入动画。
+
+实现边界：
+
+- `PFI/web/app/feedback.js` 只提供可测试的 Phase 9.2 feedback model，不绑定触感，不修改 app 启动入口。
+- `PFI/web/styles.css` 提供当前页面可用的转场、状态和报告进度样式。
+- 不修改 route、数据计算、报告生成、触感能力检测或设置页开关。
+
+Phase 9.2 证据：
+
+- `PFI/reports/pfi_v023/stage_9/phase_9_2/evidence.json`
+- `PFI/reports/pfi_v023/stage_9/phase_9_2/feedback_audit.json`
+- `PFI/reports/pfi_v023/stage_9/phase_9_2/no_source_term_scan.json`
+- `PFI/reports/pfi_v023/stage_9/phase_9_2/terminal.log`
 
 Phase 9.3 未执行。
 

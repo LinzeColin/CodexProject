@@ -1,0 +1,113 @@
+{
+  "schema": "PFIV023Stage9Phase92EvidenceV1",
+  "version": "v0.2.3",
+  "stage": "Stage 9",
+  "stage_name": "明亮视觉系统、动效与触感反馈",
+  "phase_id": "V023-S9-P9.2",
+  "phase_name": "动效反馈",
+  "status": "candidate_pass",
+  "generated_at_utc": "2026-06-30T05:38:48Z",
+  "validated_at_utc": "2026-06-30T05:41:42Z",
+  "current_phase_only": true,
+  "max_one_phase_per_run": true,
+  "task_ids": [
+    "T9.2.1",
+    "T9.2.2",
+    "T9.2.3",
+    "T9.2.4"
+  ],
+  "stage_contract": {
+    "phase_9_1_design_system_done": true,
+    "phase_9_2_motion_feedback_done": true,
+    "phase_9_3_haptics_settings_done": false,
+    "stage_9_whole_review_done": false,
+    "github_main_upload_done": false
+  },
+  "outputs": {
+    "styles": "PFI/web/styles.css",
+    "feedback_model": "PFI/web/app/feedback.js",
+    "doc": "PFI/docs/pfi_v023/STAGE9_VISUAL_FEEDBACK.md",
+    "feedback_audit": "PFI/reports/pfi_v023/stage_9/phase_9_2/feedback_audit.json",
+    "no_source_term_scan": "PFI/reports/pfi_v023/stage_9/phase_9_2/no_source_term_scan.json"
+  },
+  "acceptance_checks": {
+    "page_transition": true,
+    "feedback_state_components": true,
+    "report_generation_progress": true,
+    "reduced_motion": true,
+    "no_forbidden_financial_data_terms": true
+  },
+  "validation_results": {
+    "target_stage9_visual_feedback_tests": {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage9_visual_feedback.py -q",
+      "result": "9 passed in 0.10s"
+    },
+    "v023_regression_tests": {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q",
+      "result": "148 passed, 100 subtests passed in 2.11s"
+    },
+    "node_check_feedback": {
+      "command": "node --check PFI/web/app/feedback.js",
+      "result": "passed"
+    },
+    "node_check_shell": {
+      "command": "node --check PFI/web/app/shell.js",
+      "result": "passed"
+    },
+    "python_compile": {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/tests/test_v023_stage9_visual_feedback.py",
+      "result": "passed"
+    },
+    "json_validation": {
+      "command": "python3 -m json.tool PFI/reports/pfi_v023/stage_9/phase_9_2/{evidence,feedback_audit,no_source_term_scan}.json",
+      "result": "passed"
+    },
+    "diff_whitespace": {
+      "command": "git diff --check -- PFI",
+      "result": "passed"
+    }
+  },
+  "render_evidence": {
+    "desktop_screenshot": {
+      "path": "/tmp/pfi_v023_stage9_phase92_desktop.png",
+      "width": 1440,
+      "height": 1100,
+      "bytes": 274053,
+      "result": "rendered"
+    },
+    "mobile_screenshot": {
+      "path": "/tmp/pfi_v023_stage9_phase92_mobile.png",
+      "width": 390,
+      "height": 844,
+      "bytes": 80256,
+      "result": "rendered"
+    }
+  },
+  "validation_commands": [
+    "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage9_visual_feedback.py -q",
+    "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q",
+    "PATH=$PATH:/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin node --check PFI/web/app/feedback.js",
+    "PATH=$PATH:/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin node --check PFI/web/app/shell.js",
+    "PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/tests/test_v023_stage9_visual_feedback.py",
+    "python3 -m json.tool PFI/reports/pfi_v023/stage_9/phase_9_2/evidence.json",
+    "python3 -m json.tool PFI/reports/pfi_v023/stage_9/phase_9_2/feedback_audit.json",
+    "python3 -m json.tool PFI/reports/pfi_v023/stage_9/phase_9_2/no_source_term_scan.json",
+    "git diff --check -- PFI"
+  ],
+  "changed_files": [
+    "PFI/web/styles.css",
+    "PFI/web/app/feedback.js",
+    "PFI/tests/test_v023_stage9_visual_feedback.py",
+    "PFI/docs/pfi_v023/STAGE9_VISUAL_FEEDBACK.md",
+    "PFI/reports/pfi_v023/stage_9/phase_9_2/evidence.json",
+    "PFI/reports/pfi_v023/stage_9/phase_9_2/feedback_audit.json",
+    "PFI/reports/pfi_v023/stage_9/phase_9_2/no_source_term_scan.json",
+    "PFI/reports/pfi_v023/stage_9/phase_9_2/terminal.log",
+    "PFI/reports/pfi_v023/stage_9/phase_9_2/changed_files.txt"
+  ],
+  "explicitly_not_done": [
+    "Phase 9.3 触感与设置隔离",
+    "Stage 9 whole-stage review",
+    "GitHub main upload for intermediate phase"
+  ]
+}
