@@ -418,17 +418,16 @@ const STAGE2_SECONDARY_TABS = {
   ],
   market_research: [
     { title: "市场观察", routeAlias: "/market-research?tab=market" },
+    { title: "研究笔记", routeAlias: "/market-research?tab=research" },
     { title: "公司研究", routeAlias: "/market-research?tab=company" },
     { title: "基金研究", routeAlias: "/market-research?tab=fund" },
-    { title: "政策研究", routeAlias: "/market-research?tab=policy" },
-    { title: "策略实验室", routeAlias: "/market-research/strategy-lab", view: "single" },
+    { title: "策略实验室", routeAlias: "/market-research/strategy-lab" },
   ],
   settings: [
     { title: "账户偏好", routeAlias: "/settings?tab=account" },
     { title: "数据与系统", routeAlias: "/settings?tab=data-system" },
     { title: "隐私与本地存储", routeAlias: "/settings?tab=privacy" },
     { title: "反馈偏好", routeAlias: "/settings?tab=feedback" },
-    { title: "主题语言", routeAlias: "/settings?tab=theme" },
     { title: "备份恢复", routeAlias: "/settings?tab=backup" },
   ],
 };
@@ -3754,16 +3753,20 @@ function resolveStage4Subpage(workspaceId, routeAlias) {
   const pages = catalog[workspaceId] || [];
   if (!pages.length) return null;
   const cleanRoute = normalizeRouteAlias(routeAlias || defaultRouteAliasForWorkspace(workspaceId));
-  return pages.find((page) => normalizeRouteAlias(page.routeAlias) === cleanRoute) || pages[0] || null;
+  return pages.find((page) => {
+    if (normalizeRouteAlias(page.routeAlias) === cleanRoute) return true;
+    return (page.alternateRoutes || []).some((alternateRoute) => normalizeRouteAlias(alternateRoute) === cleanRoute);
+  }) || pages[0] || null;
 }
 
-function stage4SubpageCatalog() {
-  stage4PagesCatalog = stage4PagesCatalog || window.PFI_V023_STAGE4_PAGES || null;
-  return {
-    ...(stage4PagesCatalog?.phase41Subpages || {}),
-    ...(stage4PagesCatalog?.phase42Subpages || {}),
-  };
-}
+  function stage4SubpageCatalog() {
+    stage4PagesCatalog = stage4PagesCatalog || window.PFI_V023_STAGE4_PAGES || null;
+    return {
+      ...(stage4PagesCatalog?.phase41Subpages || {}),
+      ...(stage4PagesCatalog?.phase42Subpages || {}),
+      ...(stage4PagesCatalog?.phase43Subpages || {}),
+    };
+  }
 
 function renderStage4SubpageSurface(page, workspaceId, routeForState) {
   const surface = ensureStage4SubpageSurface();
@@ -4342,7 +4345,7 @@ function routeWorkspaceFromAlias(routeAlias) {
   const clean = normalizeRouteAlias(routeAlias);
   if (!clean) return null;
   if (clean.startsWith("/market-research/strategy-lab")) {
-    return { workspace: "market_research", routeAlias: "/market-research/strategy-lab", view: "single" };
+    return { workspace: "market_research", routeAlias: "/market-research/strategy-lab", view: "" };
   }
   const routePrefixes = [
     ["/home", "home"],
@@ -5203,11 +5206,7 @@ function bindEvents() {
   document.querySelectorAll("[data-command-workspace]").forEach((button) => {
     button.addEventListener("click", () => {
       const routeAlias = normalizeRouteAlias(button.dataset.commandRoute || "");
-      if (routeAlias === "/market-research/strategy-lab") {
-        openFunctionView("single", { routeAlias });
-      } else {
-        setActiveWorkspace(button.dataset.commandWorkspace, { routeAlias });
-      }
+      setActiveWorkspace(button.dataset.commandWorkspace, { routeAlias });
       closeCommandPalette();
       showToast(`已打开${button.textContent.trim()}`, "success");
     });

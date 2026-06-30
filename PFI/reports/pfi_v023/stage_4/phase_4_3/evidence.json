@@ -1,0 +1,170 @@
+{
+  "version": "v0.2.3",
+  "stage": "Stage 4",
+  "stage_name": "二级页面差异化重建",
+  "phase_id": "V023-S4-P4.3",
+  "phase_name": "市场/设置/建议二级页",
+  "created_at": "2026-06-30T11:00:48+10:00",
+  "status": "candidate_pass",
+  "allowed_files_obeyed": true,
+  "history_deprecation_policy_obeyed": true,
+  "no_mock_financial_data": true,
+  "current_phase_only": true,
+  "max_one_phase_per_run": true,
+  "phase43_summary": {
+    "workspaces": [
+      "market_research",
+      "settings",
+      "recommendations"
+    ],
+    "subpage_count": 14,
+    "v01_compat_routes": {
+      "/market/watch": "/market-research?tab=market",
+      "/market/research": "/market-research?tab=research",
+      "/market/lab": "/market-research/strategy-lab",
+      "/settings/data": "/settings?tab=data-system"
+    },
+    "market_research_subpages": [
+      "/market-research?tab=market",
+      "/market-research?tab=research",
+      "/market-research?tab=company",
+      "/market-research?tab=fund",
+      "/market-research/strategy-lab"
+    ],
+    "settings_subpages": [
+      "/settings?tab=account",
+      "/settings?tab=data-system",
+      "/settings?tab=privacy",
+      "/settings?tab=feedback",
+      "/settings?tab=backup"
+    ],
+    "recommendations_subpages": [
+      "/review?tab=list",
+      "/review?tab=detail",
+      "/review?tab=decision",
+      "/review?tab=history"
+    ]
+  },
+  "acceptance_summary": {
+    "three_to_five_subpages_per_phase43_workspace": true,
+    "subpages_have_independent_layouts": true,
+    "subpages_have_independent_primary_objects": true,
+    "subpages_have_independent_primary_actions": true,
+    "subpages_have_empty_and_error_states": true,
+    "url_state_breadcrumb_title_change": true,
+    "v01_alias_routes_land_on_differentiated_pages": true,
+    "no_template_clone": true,
+    "screenshots_show_differences": true
+  },
+  "commands": [
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage4_subpage_differentiation.py -q",
+      "exit_code": 1,
+      "summary": "RED before implementation: 4 failed because Phase 4.3 catalog, shell merge, and evidence were missing"
+    },
+    {
+      "command": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/pages/stage4Subpages.js && /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js",
+      "exit_code": 0,
+      "summary": "Stage 4 pages catalog and shell syntax checks passed"
+    },
+    {
+      "command": "Google Chrome headless via playwright on PFI/web/index.html",
+      "exit_code": 0,
+      "summary": "14 Phase 4.3 subpages and 4 v0.1 aliases passed URL/state/breadcrumb/title, differentiation, empty/error state, and compatibility checks; screenshots captured"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage4_subpage_differentiation.py -q",
+      "exit_code": 0,
+      "summary": "Stage 4 target test before rebase: 14 passed, 50 subtests passed"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q",
+      "exit_code": 0,
+      "summary": "v0.2.3 regression suite before rebase: 73 passed, 50 subtests passed"
+    },
+    {
+      "command": "PFI/.venv/bin/python -m json.tool Stage 4 Phase 4.1/4.2/4.3 evidence and browser validation JSON files",
+      "exit_code": 0,
+      "summary": "Stage 4 JSON evidence files are valid"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/tests/test_v023_stage4_subpage_differentiation.py",
+      "exit_code": 0,
+      "summary": "Stage 4 subpage differentiation test compiles"
+    },
+    {
+      "command": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/pages/stage4Subpages.js && /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js && /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/routes.js",
+      "exit_code": 0,
+      "summary": "Stage 4 pages, shell, and routes syntax checks passed"
+    },
+    {
+      "command": "rg -n -i \"\\b(mock|sample|synthetic|fixture|demo|fake)\\b\" PFI/web/app/pages/stage4Subpages.js PFI/web/app/shell.js PFI/tests/test_v023_stage4_subpage_differentiation.py PFI/docs/pfi_v023/STAGE4_SUBPAGES.md",
+      "exit_code": 1,
+      "summary": "No forbidden fake-data terms found in Phase 4.3 source, test, or docs files"
+    },
+    {
+      "command": "git diff --check -- PFI",
+      "exit_code": 0,
+      "summary": "No whitespace errors in Phase 4.3 diff"
+    },
+    {
+      "command": "git fetch https://github.com/LinzeColin/CodexProject.git main:refs/remotes/origin/main && git rev-list --left-right --count HEAD...origin/main",
+      "exit_code": 0,
+      "summary": "origin/main advanced to a5caba74 with arxiv-daily-push changes; local PFI branch was ahead 2 and behind 1 before Phase 4.3 commit/rebase"
+    },
+    {
+      "command": "git rebase origin/main",
+      "exit_code": 0,
+      "summary": "Rebased Stage 4 Phase 4.1, Phase 4.2, and Phase 4.3 commits onto origin/main a5caba74 without conflicts"
+    },
+    {
+      "command": "post-rebase git status and rev-list",
+      "exit_code": 0,
+      "summary": "HEAD 65b71645 on codex/pfi; origin/main a5caba74; branch ahead 3 and behind 0 before final amend"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage4_subpage_differentiation.py -q",
+      "exit_code": 0,
+      "summary": "Post-rebase Stage 4 target test: 14 passed, 50 subtests passed"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q",
+      "exit_code": 0,
+      "summary": "Post-rebase v0.2.3 regression suite: 73 passed, 50 subtests passed"
+    },
+    {
+      "command": "post-rebase JSON, py_compile, node --check, forbidden fake-data term scan, and git diff --check",
+      "exit_code": 0,
+      "summary": "Post-rebase evidence JSON, test compile, JS syntax, forbidden-term scan, and whitespace checks passed"
+    }
+  ],
+  "changed_files": [
+    "PFI/docs/pfi_v023/STAGE4_SUBPAGES.md",
+    "PFI/reports/pfi_v023/stage_4/phase_4_3/browser_validation.json",
+    "PFI/reports/pfi_v023/stage_4/phase_4_3/changed_files.txt",
+    "PFI/reports/pfi_v023/stage_4/phase_4_3/evidence.json",
+    "PFI/reports/pfi_v023/stage_4/phase_4_3/screenshots/market_research_subpages.png",
+    "PFI/reports/pfi_v023/stage_4/phase_4_3/screenshots/recommendations_subpages.png",
+    "PFI/reports/pfi_v023/stage_4/phase_4_3/screenshots/settings_subpages.png",
+    "PFI/reports/pfi_v023/stage_4/phase_4_3/terminal.log",
+    "PFI/tests/test_v023_stage4_subpage_differentiation.py",
+    "PFI/web/app/pages/stage4Subpages.js",
+    "PFI/web/app/shell.js"
+  ],
+  "screenshots": [
+    "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_4/phase_4_3/screenshots/market_research_subpages.png",
+    "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_4/phase_4_3/screenshots/settings_subpages.png",
+    "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_4/phase_4_3/screenshots/recommendations_subpages.png"
+  ],
+  "data_status_summary": {
+    "data_changes_made": false,
+    "financial_values_fabricated": false,
+    "real_empty_states_used": true
+  },
+  "explicitly_not_done": [
+    "Stage 4 whole-stage review and fixes",
+    "Stage 5 and later work",
+    "GitHub main upload before Stage 4 review"
+  ],
+  "requires_user_acceptance": true
+}

@@ -1,0 +1,677 @@
+{
+  "phase_id": "V023-S4-P4.3",
+  "index_url": "file:///Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/web/index.html",
+  "browser": "Google Chrome headless via playwright",
+  "screenshot_paths": {
+    "market_research": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_4/phase_4_3/screenshots/market_research_subpages.png",
+    "settings": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_4/phase_4_3/screenshots/settings_subpages.png",
+    "recommendations": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_4/phase_4_3/screenshots/recommendations_subpages.png"
+  },
+  "workspace_results": {
+    "market_research": [
+      {
+        "hash": "#/market-research?tab=market",
+        "title": "PFI",
+        "h1": "市场与研究 · 市场观察",
+        "workspace": "market_research",
+        "routeAlias": "/market-research?tab=market",
+        "stage4Route": "/market-research?tab=market",
+        "surfaceVisible": true,
+        "layoutKind": "market-watch",
+        "primaryObject": "市场观察",
+        "primaryAction": "打开观察清单",
+        "emptyState": "未加载真实市场观察资料时，只显示市场观察空态和来源说明。",
+        "errorState": "无法读取市场观察，请检查市场资料来源、更新时间和本机缓存。",
+        "dataSource": "市场观察资料 / local research cache",
+        "breadcrumb": [
+          "市场与研究",
+          "市场观察"
+        ],
+        "sectionKinds": [
+          "watch",
+          "signal",
+          "compat",
+          "action"
+        ],
+        "activeSecondary": [
+          "市场观察"
+        ],
+        "secondaryRoutes": [
+          "/market-research?tab=market",
+          "/market-research?tab=research",
+          "/market-research?tab=company",
+          "/market-research?tab=fund",
+          "/market-research/strategy-lab"
+        ],
+        "scrollY": 0
+      },
+      {
+        "hash": "#/market-research?tab=research",
+        "title": "PFI",
+        "h1": "市场与研究 · 研究笔记",
+        "workspace": "market_research",
+        "routeAlias": "/market-research?tab=research",
+        "stage4Route": "/market-research?tab=research",
+        "surfaceVisible": true,
+        "layoutKind": "research-notes",
+        "primaryObject": "研究笔记",
+        "primaryAction": "整理研究笔记",
+        "emptyState": "未加载真实研究笔记时，只显示研究空态和证据要求。",
+        "errorState": "无法读取研究笔记，请检查研究文件、引用位置和来源权限。",
+        "dataSource": "研究笔记 / citation index",
+        "breadcrumb": [
+          "市场与研究",
+          "研究笔记"
+        ],
+        "sectionKinds": [
+          "notebook",
+          "evidence",
+          "compat",
+          "action"
+        ],
+        "activeSecondary": [
+          "研究笔记"
+        ],
+        "secondaryRoutes": [
+          "/market-research?tab=market",
+          "/market-research?tab=research",
+          "/market-research?tab=company",
+          "/market-research?tab=fund",
+          "/market-research/strategy-lab"
+        ],
+        "scrollY": 0
+      },
+      {
+        "hash": "#/market-research?tab=company",
+        "title": "PFI",
+        "h1": "市场与研究 · 公司研究",
+        "workspace": "market_research",
+        "routeAlias": "/market-research?tab=company",
+        "stage4Route": "/market-research?tab=company",
+        "surfaceVisible": true,
+        "layoutKind": "company-research",
+        "primaryObject": "公司研究",
+        "primaryAction": "打开公司档案",
+        "emptyState": "未加载真实公司资料时，只显示公司研究空态和资料清单。",
+        "errorState": "无法读取公司研究，请检查公司资料、财报引用和研究索引。",
+        "dataSource": "公司资料 / filing citations",
+        "breadcrumb": [
+          "市场与研究",
+          "公司研究"
+        ],
+        "sectionKinds": [
+          "profile",
+          "thesis",
+          "action"
+        ],
+        "activeSecondary": [
+          "公司研究"
+        ],
+        "secondaryRoutes": [
+          "/market-research?tab=market",
+          "/market-research?tab=research",
+          "/market-research?tab=company",
+          "/market-research?tab=fund",
+          "/market-research/strategy-lab"
+        ],
+        "scrollY": 0
+      },
+      {
+        "hash": "#/market-research?tab=fund",
+        "title": "PFI",
+        "h1": "市场与研究 · 基金研究",
+        "workspace": "market_research",
+        "routeAlias": "/market-research?tab=fund",
+        "stage4Route": "/market-research?tab=fund",
+        "surfaceVisible": true,
+        "layoutKind": "fund-research",
+        "primaryObject": "基金研究",
+        "primaryAction": "核对基金资料",
+        "emptyState": "未加载真实基金资料时，只显示基金研究空态和来源要求。",
+        "errorState": "无法读取基金研究，请检查基金持仓、费用、风格和披露来源。",
+        "dataSource": "基金资料 / holdings disclosure",
+        "breadcrumb": [
+          "市场与研究",
+          "基金研究"
+        ],
+        "sectionKinds": [
+          "holding",
+          "cost",
+          "action"
+        ],
+        "activeSecondary": [
+          "基金研究"
+        ],
+        "secondaryRoutes": [
+          "/market-research?tab=market",
+          "/market-research?tab=research",
+          "/market-research?tab=company",
+          "/market-research?tab=fund",
+          "/market-research/strategy-lab"
+        ],
+        "scrollY": 0
+      },
+      {
+        "hash": "#/market-research/strategy-lab",
+        "title": "PFI",
+        "h1": "市场与研究 · 策略实验室",
+        "workspace": "market_research",
+        "routeAlias": "/market-research/strategy-lab",
+        "stage4Route": "/market-research/strategy-lab",
+        "surfaceVisible": true,
+        "layoutKind": "strategy-lab",
+        "primaryObject": "策略实验室",
+        "primaryAction": "进入策略实验",
+        "emptyState": "未选择真实策略和数据范围时，只显示策略实验空态。",
+        "errorState": "无法打开策略实验室，请检查策略定义、数据范围和运行权限。",
+        "dataSource": "策略注册表 / historical market data",
+        "breadcrumb": [
+          "市场与研究",
+          "策略实验室"
+        ],
+        "sectionKinds": [
+          "experiment",
+          "result",
+          "compat",
+          "action"
+        ],
+        "activeSecondary": [
+          "策略实验室"
+        ],
+        "secondaryRoutes": [
+          "/market-research?tab=market",
+          "/market-research?tab=research",
+          "/market-research?tab=company",
+          "/market-research?tab=fund",
+          "/market-research/strategy-lab"
+        ],
+        "scrollY": 0
+      }
+    ],
+    "settings": [
+      {
+        "hash": "#/settings?tab=account",
+        "title": "PFI",
+        "h1": "设置 · 账户偏好",
+        "workspace": "settings",
+        "routeAlias": "/settings?tab=account",
+        "stage4Route": "/settings?tab=account",
+        "surfaceVisible": true,
+        "layoutKind": "account-preferences",
+        "primaryObject": "账户偏好",
+        "primaryAction": "保存账户偏好",
+        "emptyState": "未加载真实偏好文件时，只显示账户偏好空态。",
+        "errorState": "无法读取账户偏好，请检查本机设置文件和写入权限。",
+        "dataSource": "local preferences file",
+        "breadcrumb": [
+          "设置",
+          "账户偏好"
+        ],
+        "sectionKinds": [
+          "identity",
+          "scope",
+          "action"
+        ],
+        "activeSecondary": [
+          "账户偏好"
+        ],
+        "secondaryRoutes": [
+          "/settings?tab=account",
+          "/settings?tab=data-system",
+          "/settings?tab=privacy",
+          "/settings?tab=feedback",
+          "/settings?tab=backup"
+        ],
+        "scrollY": 0
+      },
+      {
+        "hash": "#/settings?tab=data-system",
+        "title": "PFI",
+        "h1": "设置 · 数据与系统",
+        "workspace": "settings",
+        "routeAlias": "/settings?tab=data-system",
+        "stage4Route": "/settings?tab=data-system",
+        "surfaceVisible": true,
+        "layoutKind": "data-system-settings",
+        "primaryObject": "数据与系统",
+        "primaryAction": "检查数据系统",
+        "emptyState": "未加载真实数据目录状态时，只显示数据与系统空态。",
+        "errorState": "无法读取数据与系统，请检查数据目录、权限和服务状态。",
+        "dataSource": "MetaDatabase/PFI path registry",
+        "breadcrumb": [
+          "设置",
+          "数据与系统"
+        ],
+        "sectionKinds": [
+          "directory",
+          "service",
+          "compat",
+          "action"
+        ],
+        "activeSecondary": [
+          "数据与系统"
+        ],
+        "secondaryRoutes": [
+          "/settings?tab=account",
+          "/settings?tab=data-system",
+          "/settings?tab=privacy",
+          "/settings?tab=feedback",
+          "/settings?tab=backup"
+        ],
+        "scrollY": 0
+      },
+      {
+        "hash": "#/settings?tab=privacy",
+        "title": "PFI",
+        "h1": "设置 · 隐私与本地存储",
+        "workspace": "settings",
+        "routeAlias": "/settings?tab=privacy",
+        "stage4Route": "/settings?tab=privacy",
+        "surfaceVisible": true,
+        "layoutKind": "privacy-storage",
+        "primaryObject": "隐私与本地存储",
+        "primaryAction": "检查隐私边界",
+        "emptyState": "未加载真实本机存储状态时，只显示隐私空态和排除规则。",
+        "errorState": "无法读取隐私与本地存储，请检查目录权限和提交排除规则。",
+        "dataSource": "local storage boundary / ignore rules",
+        "breadcrumb": [
+          "设置",
+          "隐私与本地存储"
+        ],
+        "sectionKinds": [
+          "boundary",
+          "audit",
+          "action"
+        ],
+        "activeSecondary": [
+          "隐私与本地存储"
+        ],
+        "secondaryRoutes": [
+          "/settings?tab=account",
+          "/settings?tab=data-system",
+          "/settings?tab=privacy",
+          "/settings?tab=feedback",
+          "/settings?tab=backup"
+        ],
+        "scrollY": 0
+      },
+      {
+        "hash": "#/settings?tab=feedback",
+        "title": "PFI",
+        "h1": "设置 · 反馈偏好",
+        "workspace": "settings",
+        "routeAlias": "/settings?tab=feedback",
+        "stage4Route": "/settings?tab=feedback",
+        "surfaceVisible": true,
+        "layoutKind": "feedback-preferences",
+        "primaryObject": "反馈偏好",
+        "primaryAction": "调整反馈偏好",
+        "emptyState": "未加载真实反馈偏好时，只显示反馈设置空态。",
+        "errorState": "无法读取反馈偏好，请检查本机偏好文件和浏览器权限。",
+        "dataSource": "feedback preferences / browser capability",
+        "breadcrumb": [
+          "设置",
+          "反馈偏好"
+        ],
+        "sectionKinds": [
+          "haptic",
+          "visual",
+          "action"
+        ],
+        "activeSecondary": [
+          "反馈偏好"
+        ],
+        "secondaryRoutes": [
+          "/settings?tab=account",
+          "/settings?tab=data-system",
+          "/settings?tab=privacy",
+          "/settings?tab=feedback",
+          "/settings?tab=backup"
+        ],
+        "scrollY": 0
+      },
+      {
+        "hash": "#/settings?tab=backup",
+        "title": "PFI",
+        "h1": "设置 · 备份恢复",
+        "workspace": "settings",
+        "routeAlias": "/settings?tab=backup",
+        "stage4Route": "/settings?tab=backup",
+        "surfaceVisible": true,
+        "layoutKind": "backup-restore",
+        "primaryObject": "备份恢复",
+        "primaryAction": "检查备份恢复",
+        "emptyState": "未加载真实备份记录时，只显示备份恢复空态。",
+        "errorState": "无法读取备份恢复，请检查备份目录、校验文件和权限。",
+        "dataSource": "backup manifest / restore checkpoints",
+        "breadcrumb": [
+          "设置",
+          "备份恢复"
+        ],
+        "sectionKinds": [
+          "backup",
+          "restore",
+          "action"
+        ],
+        "activeSecondary": [
+          "备份恢复"
+        ],
+        "secondaryRoutes": [
+          "/settings?tab=account",
+          "/settings?tab=data-system",
+          "/settings?tab=privacy",
+          "/settings?tab=feedback",
+          "/settings?tab=backup"
+        ],
+        "scrollY": 0
+      }
+    ],
+    "recommendations": [
+      {
+        "hash": "#/review?tab=list",
+        "title": "PFI",
+        "h1": "建议与复盘 · 建议列表",
+        "workspace": "recommendations",
+        "routeAlias": "/review?tab=list",
+        "stage4Route": "/review?tab=list",
+        "surfaceVisible": true,
+        "layoutKind": "recommendation-list",
+        "primaryObject": "建议列表",
+        "primaryAction": "查看建议列表",
+        "emptyState": "未加载真实建议时，只显示建议列表空态和生成条件。",
+        "errorState": "无法读取建议列表，请检查证据引用、规则结果和复盘状态。",
+        "dataSource": "recommendation registry / evidence refs",
+        "breadcrumb": [
+          "建议与复盘",
+          "建议列表"
+        ],
+        "sectionKinds": [
+          "queue",
+          "evidence",
+          "action"
+        ],
+        "activeSecondary": [
+          "建议列表"
+        ],
+        "secondaryRoutes": [
+          "/review?tab=list",
+          "/review?tab=detail",
+          "/review?tab=decision",
+          "/review?tab=history"
+        ],
+        "scrollY": 0
+      },
+      {
+        "hash": "#/review?tab=detail",
+        "title": "PFI",
+        "h1": "建议与复盘 · 建议详情",
+        "workspace": "recommendations",
+        "routeAlias": "/review?tab=detail",
+        "stage4Route": "/review?tab=detail",
+        "surfaceVisible": true,
+        "layoutKind": "recommendation-detail",
+        "primaryObject": "建议详情",
+        "primaryAction": "复核建议详情",
+        "emptyState": "未选择真实建议时，只显示详情空态和选择入口。",
+        "errorState": "无法读取建议详情，请检查建议 ID、证据引用和来源数据。",
+        "dataSource": "recommendation detail / source evidence",
+        "breadcrumb": [
+          "建议与复盘",
+          "建议详情"
+        ],
+        "sectionKinds": [
+          "summary",
+          "trace",
+          "action"
+        ],
+        "activeSecondary": [
+          "建议详情"
+        ],
+        "secondaryRoutes": [
+          "/review?tab=list",
+          "/review?tab=detail",
+          "/review?tab=decision",
+          "/review?tab=history"
+        ],
+        "scrollY": 0
+      },
+      {
+        "hash": "#/review?tab=decision",
+        "title": "PFI",
+        "h1": "建议与复盘 · 决策记录",
+        "workspace": "recommendations",
+        "routeAlias": "/review?tab=decision",
+        "stage4Route": "/review?tab=decision",
+        "surfaceVisible": true,
+        "layoutKind": "decision-record",
+        "primaryObject": "决策记录",
+        "primaryAction": "记录建议决策",
+        "emptyState": "未存在真实决策记录时，只显示决策记录空态。",
+        "errorState": "无法读取决策记录，请检查复盘日志、建议 ID 和写入权限。",
+        "dataSource": "decision log / review lifecycle",
+        "breadcrumb": [
+          "建议与复盘",
+          "决策记录"
+        ],
+        "sectionKinds": [
+          "decision",
+          "owner",
+          "action"
+        ],
+        "activeSecondary": [
+          "决策记录"
+        ],
+        "secondaryRoutes": [
+          "/review?tab=list",
+          "/review?tab=detail",
+          "/review?tab=decision",
+          "/review?tab=history"
+        ],
+        "scrollY": 0
+      },
+      {
+        "hash": "#/review?tab=history",
+        "title": "PFI",
+        "h1": "建议与复盘 · 复盘记录",
+        "workspace": "recommendations",
+        "routeAlias": "/review?tab=history",
+        "stage4Route": "/review?tab=history",
+        "surfaceVisible": true,
+        "layoutKind": "review-history",
+        "primaryObject": "复盘记录",
+        "primaryAction": "打开复盘记录",
+        "emptyState": "未存在真实复盘记录时，只显示复盘空态和触发条件。",
+        "errorState": "无法读取复盘记录，请检查建议生命周期、执行记录和证据链。",
+        "dataSource": "review history / outcome evidence",
+        "breadcrumb": [
+          "建议与复盘",
+          "复盘记录"
+        ],
+        "sectionKinds": [
+          "timeline",
+          "outcome",
+          "action"
+        ],
+        "activeSecondary": [
+          "复盘记录"
+        ],
+        "secondaryRoutes": [
+          "/review?tab=list",
+          "/review?tab=detail",
+          "/review?tab=decision",
+          "/review?tab=history"
+        ],
+        "scrollY": 0
+      }
+    ]
+  },
+  "legacy_alias_results": [
+    {
+      "publicRoute": "/market/watch",
+      "resolvedRoute": "/market-research?tab=market",
+      "hash": "#/market-research?tab=market",
+      "title": "PFI",
+      "h1": "市场与研究 · 市场观察",
+      "workspace": "market_research",
+      "routeAlias": "/market-research?tab=market",
+      "stage4Route": "/market-research?tab=market",
+      "surfaceVisible": true,
+      "layoutKind": "market-watch",
+      "primaryObject": "市场观察",
+      "primaryAction": "打开观察清单",
+      "emptyState": "未加载真实市场观察资料时，只显示市场观察空态和来源说明。",
+      "errorState": "无法读取市场观察，请检查市场资料来源、更新时间和本机缓存。",
+      "dataSource": "市场观察资料 / local research cache",
+      "breadcrumb": [
+        "市场与研究",
+        "市场观察"
+      ],
+      "sectionKinds": [
+        "watch",
+        "signal",
+        "compat",
+        "action"
+      ],
+      "activeSecondary": [
+        "市场观察"
+      ],
+      "secondaryRoutes": [
+        "/market-research?tab=market",
+        "/market-research?tab=research",
+        "/market-research?tab=company",
+        "/market-research?tab=fund",
+        "/market-research/strategy-lab"
+      ],
+      "scrollY": 0
+    },
+    {
+      "publicRoute": "/market/research",
+      "resolvedRoute": "/market-research?tab=research",
+      "hash": "#/market-research?tab=research",
+      "title": "PFI",
+      "h1": "市场与研究 · 研究笔记",
+      "workspace": "market_research",
+      "routeAlias": "/market-research?tab=research",
+      "stage4Route": "/market-research?tab=research",
+      "surfaceVisible": true,
+      "layoutKind": "research-notes",
+      "primaryObject": "研究笔记",
+      "primaryAction": "整理研究笔记",
+      "emptyState": "未加载真实研究笔记时，只显示研究空态和证据要求。",
+      "errorState": "无法读取研究笔记，请检查研究文件、引用位置和来源权限。",
+      "dataSource": "研究笔记 / citation index",
+      "breadcrumb": [
+        "市场与研究",
+        "研究笔记"
+      ],
+      "sectionKinds": [
+        "notebook",
+        "evidence",
+        "compat",
+        "action"
+      ],
+      "activeSecondary": [
+        "研究笔记"
+      ],
+      "secondaryRoutes": [
+        "/market-research?tab=market",
+        "/market-research?tab=research",
+        "/market-research?tab=company",
+        "/market-research?tab=fund",
+        "/market-research/strategy-lab"
+      ],
+      "scrollY": 0
+    },
+    {
+      "publicRoute": "/market/lab",
+      "resolvedRoute": "/market-research/strategy-lab",
+      "hash": "#/market-research/strategy-lab",
+      "title": "PFI",
+      "h1": "市场与研究 · 策略实验室",
+      "workspace": "market_research",
+      "routeAlias": "/market-research/strategy-lab",
+      "stage4Route": "/market-research/strategy-lab",
+      "surfaceVisible": true,
+      "layoutKind": "strategy-lab",
+      "primaryObject": "策略实验室",
+      "primaryAction": "进入策略实验",
+      "emptyState": "未选择真实策略和数据范围时，只显示策略实验空态。",
+      "errorState": "无法打开策略实验室，请检查策略定义、数据范围和运行权限。",
+      "dataSource": "策略注册表 / historical market data",
+      "breadcrumb": [
+        "市场与研究",
+        "策略实验室"
+      ],
+      "sectionKinds": [
+        "experiment",
+        "result",
+        "compat",
+        "action"
+      ],
+      "activeSecondary": [
+        "策略实验室"
+      ],
+      "secondaryRoutes": [
+        "/market-research?tab=market",
+        "/market-research?tab=research",
+        "/market-research?tab=company",
+        "/market-research?tab=fund",
+        "/market-research/strategy-lab"
+      ],
+      "scrollY": 0
+    },
+    {
+      "publicRoute": "/settings/data",
+      "resolvedRoute": "/settings?tab=data-system",
+      "hash": "#/settings?tab=data-system",
+      "title": "PFI",
+      "h1": "设置 · 数据与系统",
+      "workspace": "settings",
+      "routeAlias": "/settings?tab=data-system",
+      "stage4Route": "/settings?tab=data-system",
+      "surfaceVisible": true,
+      "layoutKind": "data-system-settings",
+      "primaryObject": "数据与系统",
+      "primaryAction": "检查数据系统",
+      "emptyState": "未加载真实数据目录状态时，只显示数据与系统空态。",
+      "errorState": "无法读取数据与系统，请检查数据目录、权限和服务状态。",
+      "dataSource": "MetaDatabase/PFI path registry",
+      "breadcrumb": [
+        "设置",
+        "数据与系统"
+      ],
+      "sectionKinds": [
+        "directory",
+        "service",
+        "compat",
+        "action"
+      ],
+      "activeSecondary": [
+        "数据与系统"
+      ],
+      "secondaryRoutes": [
+        "/settings?tab=account",
+        "/settings?tab=data-system",
+        "/settings?tab=privacy",
+        "/settings?tab=feedback",
+        "/settings?tab=backup"
+      ],
+      "scrollY": 0
+    }
+  ],
+  "market_research_subpages_differentiated": true,
+  "settings_subpages_differentiated": true,
+  "recommendations_subpages_differentiated": true,
+  "url_state_breadcrumb_title_changed": true,
+  "empty_and_error_states_present": true,
+  "v01_alias_routes_differentiated": true,
+  "console_errors": [],
+  "page_errors": [],
+  "network_resource_errors": [
+    {
+      "url": "http://127.0.0.1:8766/api/trends",
+      "error": "net::ERR_CONNECTION_REFUSED"
+    }
+  ],
+  "generated_at": "2026-06-30T01:00:33.824Z"
+}

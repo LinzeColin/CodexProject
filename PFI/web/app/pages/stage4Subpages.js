@@ -175,18 +175,105 @@
     ]),
   });
 
+  const phase43Subpages = Object.freeze({
+    market_research: Object.freeze([
+      page("market_research", "/market-research?tab=market", "市场与研究 · 市场观察", ["市场与研究", "市场观察"], "market-watch", "市场观察", "打开观察清单", "未加载真实市场观察资料时，只显示市场观察空态和来源说明。", "无法读取市场观察，请检查市场资料来源、更新时间和本机缓存。", "市场观察资料 / local research cache", [
+        section("watch", "观察清单", "按指数、ETF、主题和自选对象组织观察对象。"),
+        section("signal", "状态信号", "展示价格、事件、来源时间和待复核状态。"),
+        section("compat", "兼容入口", "v0.1 市场入口 /market/watch 进入本页面。"),
+        section("action", "观察动作", "打开对象、保存观察视图或跳转研究笔记。"),
+      ], { legacyAliases: ["/market/watch"] }),
+      page("market_research", "/market-research?tab=research", "市场与研究 · 研究笔记", ["市场与研究", "研究笔记"], "research-notes", "研究笔记", "整理研究笔记", "未加载真实研究笔记时，只显示研究空态和证据要求。", "无法读取研究笔记，请检查研究文件、引用位置和来源权限。", "研究笔记 / citation index", [
+        section("notebook", "研究笔记", "按公司、基金、政策和主题组织研究条目。"),
+        section("evidence", "引用证据", "展示来源、引用位置、更新时间和反方条件。"),
+        section("compat", "兼容入口", "v0.1 研究入口 /market/research 进入本页面。"),
+        section("action", "研究动作", "新建笔记、打开引用或标记待复核。"),
+      ], { legacyAliases: ["/market/research"], alternateRoutes: ["/market-research?tab=policy"] }),
+      page("market_research", "/market-research?tab=company", "市场与研究 · 公司研究", ["市场与研究", "公司研究"], "company-research", "公司研究", "打开公司档案", "未加载真实公司资料时，只显示公司研究空态和资料清单。", "无法读取公司研究，请检查公司资料、财报引用和研究索引。", "公司资料 / filing citations", [
+        section("profile", "公司档案", "展示业务、财务资料、关键假设和风险点。"),
+        section("thesis", "假设面板", "把正向、反向和验证条件分开记录。"),
+        section("action", "公司动作", "打开档案、补充证据或进入基金研究。"),
+      ]),
+      page("market_research", "/market-research?tab=fund", "市场与研究 · 基金研究", ["市场与研究", "基金研究"], "fund-research", "基金研究", "核对基金资料", "未加载真实基金资料时，只显示基金研究空态和来源要求。", "无法读取基金研究，请检查基金持仓、费用、风格和披露来源。", "基金资料 / holdings disclosure", [
+        section("holding", "持仓拆分", "展示基金持仓、行业、地区和集中度。"),
+        section("cost", "费用与风格", "记录费用、风格漂移、跟踪误差和风险。"),
+        section("action", "基金动作", "打开基金资料、记录观察或加入研究笔记。"),
+      ]),
+      page("market_research", "/market-research/strategy-lab", "市场与研究 · 策略实验室", ["市场与研究", "策略实验室"], "strategy-lab", "策略实验室", "进入策略实验", "未选择真实策略和数据范围时，只显示策略实验空态。", "无法打开策略实验室，请检查策略定义、数据范围和运行权限。", "策略注册表 / historical market data", [
+        section("experiment", "实验配置", "选择策略、标的、周期、成本和数据范围。"),
+        section("result", "结果证据", "展示收益、回撤、交易、风险闸门和报告证据。"),
+        section("compat", "兼容入口", "v0.1 策略实验室入口 /market/lab 进入本页面。"),
+        section("action", "策略动作", "运行回测、保存实验或打开复盘记录。"),
+      ], { legacyAliases: ["/market/lab"] }),
+    ]),
+    settings: Object.freeze([
+      page("settings", "/settings?tab=account", "设置 · 账户偏好", ["设置", "账户偏好"], "account-preferences", "账户偏好", "保存账户偏好", "未加载真实偏好文件时，只显示账户偏好空态。", "无法读取账户偏好，请检查本机设置文件和写入权限。", "local preferences file", [
+        section("identity", "账户显示", "设置默认账户、显示币种、首页偏好和主题语言。"),
+        section("scope", "应用范围", "展示影响首页、账户和报告的设置项。"),
+        section("action", "偏好动作", "保存、恢复默认或记录变更理由。"),
+      ], { alternateRoutes: ["/settings?tab=theme"] }),
+      page("settings", "/settings?tab=data-system", "设置 · 数据与系统", ["设置", "数据与系统"], "data-system-settings", "数据与系统", "检查数据系统", "未加载真实数据目录状态时，只显示数据与系统空态。", "无法读取数据与系统，请检查数据目录、权限和服务状态。", "MetaDatabase/PFI path registry", [
+        section("directory", "数据目录", "展示真实数据目录、来源状态和最近检查时间。"),
+        section("service", "系统状态", "展示本机服务、缓存、质量报告和任务状态。"),
+        section("compat", "兼容入口", "v0.1 数据与系统入口 /settings/data 进入本页面。"),
+        section("action", "系统动作", "刷新检查、打开目录或进入备份恢复。"),
+      ], { legacyAliases: ["/settings/data"] }),
+      page("settings", "/settings?tab=privacy", "设置 · 隐私与本地存储", ["设置", "隐私与本地存储"], "privacy-storage", "隐私与本地存储", "检查隐私边界", "未加载真实本机存储状态时，只显示隐私空态和排除规则。", "无法读取隐私与本地存储，请检查目录权限和提交排除规则。", "local storage boundary / ignore rules", [
+        section("boundary", "本地边界", "列出本机数据、原始文件和不进入仓库的路径。"),
+        section("audit", "隐私检查", "展示提交排除规则、敏感目录和最近检查结果。"),
+        section("action", "隐私动作", "打开边界说明、复制路径或标记待处理。"),
+      ]),
+      page("settings", "/settings?tab=feedback", "设置 · 反馈偏好", ["设置", "反馈偏好"], "feedback-preferences", "反馈偏好", "调整反馈偏好", "未加载真实反馈偏好时，只显示反馈设置空态。", "无法读取反馈偏好，请检查本机偏好文件和浏览器权限。", "feedback preferences / browser capability", [
+        section("haptic", "触感反馈", "设置选择、确认、阻断和危险反馈强度。"),
+        section("visual", "视觉声音", "设置视觉状态、声音反馈和静默降级。"),
+        section("action", "反馈动作", "保存偏好、测试反馈或恢复默认。"),
+      ]),
+      page("settings", "/settings?tab=backup", "设置 · 备份恢复", ["设置", "备份恢复"], "backup-restore", "备份恢复", "检查备份恢复", "未加载真实备份记录时，只显示备份恢复空态。", "无法读取备份恢复，请检查备份目录、校验文件和权限。", "backup manifest / restore checkpoints", [
+        section("backup", "备份记录", "展示备份时间、范围、校验状态和目标目录。"),
+        section("restore", "恢复检查", "列出可恢复点、风险和需要确认的操作。"),
+        section("action", "备份动作", "打开备份目录、校验备份或准备恢复。"),
+      ]),
+    ]),
+    recommendations: Object.freeze([
+      page("recommendations", "/review?tab=list", "建议与复盘 · 建议列表", ["建议与复盘", "建议列表"], "recommendation-list", "建议列表", "查看建议列表", "未加载真实建议时，只显示建议列表空态和生成条件。", "无法读取建议列表，请检查证据引用、规则结果和复盘状态。", "recommendation registry / evidence refs", [
+        section("queue", "建议队列", "按消费、预算、现金流、持仓和数据质量分组。"),
+        section("evidence", "证据状态", "展示每条建议的证据引用、预期效果和代价。"),
+        section("action", "列表动作", "打开详情、标记优先级或进入决策记录。"),
+      ]),
+      page("recommendations", "/review?tab=detail", "建议与复盘 · 建议详情", ["建议与复盘", "建议详情"], "recommendation-detail", "建议详情", "复核建议详情", "未选择真实建议时，只显示详情空态和选择入口。", "无法读取建议详情，请检查建议 ID、证据引用和来源数据。", "recommendation detail / source evidence", [
+        section("summary", "建议摘要", "展示建议原因、数据范围、预期效果和执行代价。"),
+        section("trace", "证据链", "列出引用记录、公式、参数和不确定性。"),
+        section("action", "详情动作", "接受、暂缓、忽略或补充证据。"),
+      ]),
+      page("recommendations", "/review?tab=decision", "建议与复盘 · 决策记录", ["建议与复盘", "决策记录"], "decision-record", "决策记录", "记录建议决策", "未存在真实决策记录时，只显示决策记录空态。", "无法读取决策记录，请检查复盘日志、建议 ID 和写入权限。", "decision log / review lifecycle", [
+        section("decision", "决策表", "记录接受、暂缓、忽略、执行状态和理由。"),
+        section("owner", "责任与时间", "展示决策时间、复核时间和后续动作。"),
+        section("action", "决策动作", "保存决策、撤回或进入复盘记录。"),
+      ]),
+      page("recommendations", "/review?tab=history", "建议与复盘 · 复盘记录", ["建议与复盘", "复盘记录"], "review-history", "复盘记录", "打开复盘记录", "未存在真实复盘记录时，只显示复盘空态和触发条件。", "无法读取复盘记录，请检查建议生命周期、执行记录和证据链。", "review history / outcome evidence", [
+        section("timeline", "复盘时间线", "展示建议提出、决策、执行、结果和二次调整。"),
+        section("outcome", "结果评估", "记录实际效果、偏差原因和后续修正。"),
+        section("action", "复盘动作", "新增复盘、导出记录或回到建议详情。"),
+      ]),
+    ]),
+  });
+
   return Object.freeze({
     version: "v0.2.3",
     stage: "Stage 4",
-    phaseId: "V023-S4-P4.2",
-    phaseIds: Object.freeze(["V023-S4-P4.1", "V023-S4-P4.2"]),
-    phaseName: "资产/账本/投资 + 消费/数据/报告二级页",
+    phaseId: "V023-S4-P4.3",
+    phaseIds: Object.freeze(["V023-S4-P4.1", "V023-S4-P4.2", "V023-S4-P4.3"]),
+    phaseName: "资产/账本/投资 + 消费/数据/报告 + 市场/设置/建议二级页",
     phase41Subpages,
     phase42Subpages,
+    phase43Subpages,
   });
 });
 
-function page(workspace, routeAlias, title, breadcrumb, layoutKind, primaryObject, primaryAction, emptyState, errorState, dataSource, sections) {
+function page(workspace, routeAlias, title, breadcrumb, layoutKind, primaryObject, primaryAction, emptyState, errorState, dataSource, sections, extras = {}) {
+  const extraFields = Object.fromEntries(
+    Object.entries(extras).map(([key, value]) => [key, Array.isArray(value) ? Object.freeze(value) : value])
+  );
   return Object.freeze({
     workspace,
     routeAlias,
@@ -199,6 +286,7 @@ function page(workspace, routeAlias, title, breadcrumb, layoutKind, primaryObjec
     errorState,
     dataSource,
     sections: Object.freeze(sections),
+    ...extraFields,
   });
 }
 
