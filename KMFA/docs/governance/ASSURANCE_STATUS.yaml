@@ -1,11 +1,11 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260630-S05P2-EXCEL-OWNER-DECISION-PACKET"
+as_of_event_id: "EVENT-KMFA-20260630-S05P2-OWNER-DECISION-TEMPLATES"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "precommit-pending"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S05P2_EXCEL_RESOLUTION"
 snapshot_event_time: "2026-06-30T09:33:17+10:00"
-generator_version: "manual-s05p2-excel-owner-decision-packet"
-final_commit_binding: "precommit-pending-s05p2-excel-owner-decision-packet"
+generator_version: "manual-s05p2-owner-decision-templates"
+final_commit_binding: "precommit-pending-s05p2-owner-decision-templates"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -54,6 +54,7 @@ dimensions:
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/excel_owner_decision_packet.md"
       - "KMFA/tools/check_s05_p2_excel_owner_decision.py"
       - "KMFA/tools/check_s05_p2_owner_decision_intake.py"
+      - "KMFA/tools/check_s05_p2_owner_decision_templates.py"
   operational_validation:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
@@ -75,6 +76,7 @@ dimensions:
       - "KMFA/tools/check_a0_golden_fixture.py"
       - "KMFA/tools/check_s05_p2_excel_owner_decision.py"
       - "KMFA/tools/check_s05_p2_owner_decision_intake.py"
+      - "KMFA/tools/check_s05_p2_owner_decision_templates.py"
       - "KMFA/stage_artifacts/S02_P3_quality_gate/human/test_results.md"
   delivery_evidence:
     status: "VERIFIED"
@@ -104,8 +106,10 @@ dimensions:
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/excel_resolution_manifest.json"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/excel_owner_decision_packet.json"
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/excel_owner_decision_intake_contract.json"
+      - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/owner_decision_templates"
       - "KMFA/tools/check_s05_p2_excel_owner_decision.py"
       - "KMFA/tools/check_s05_p2_owner_decision_intake.py"
+      - "KMFA/tools/check_s05_p2_owner_decision_templates.py"
   evidence_freshness:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
