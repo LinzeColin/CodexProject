@@ -1,0 +1,152 @@
+{
+  "schema": "PFIV024Stage1WholeReviewEvidenceV1",
+  "version": "v0.2.3-repair",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Stage 1",
+  "review_id": "stage_1_whole_review",
+  "review_name": "Stage 1 整体复审",
+  "status": "pass",
+  "allowed_files_obeyed": true,
+  "generated_at": "2026-06-30T12:24:28Z",
+  "repo": {
+    "path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi",
+    "branch": "codex/pfi",
+    "remote": "git@github.com:LinzeColin/CodexProject.git",
+    "head_at_evidence_write": "a1f56c6796a8d6a163f4972d41db5ace53e53623",
+    "origin_main_at_evidence_write": "e6476826df9570c56aab7c71a72953c0186f9730",
+    "local_ahead_origin_main_at_evidence_write": 3
+  },
+  "reviewed_inputs": [
+    "PFI/src/pfi_v02/stage_v024_stage1_shell_integrity.py",
+    "PFI/tests/test_v024_stage1_phase11_shell_diagnosis.py",
+    "PFI/tests/test_v024_stage1_phase12_shell_repair.py",
+    "PFI/tests/test_v024_stage1_phase13_validation_closeout.py",
+    "PFI/reports/pfi_v024/stage_1/phase_1_1/evidence.json",
+    "PFI/reports/pfi_v024/stage_1/phase_1_2/evidence.json",
+    "PFI/reports/pfi_v024/stage_1/phase_1_3/evidence.json",
+    "PFI/reports/pfi_v024/stage_1/phase_1_1/shell.js.snapshot",
+    "PFI/reports/pfi_v024/stage_1/phase_1_2/shell_before_after_summary.md",
+    "PFI/reports/pfi_v024/stage_1/phase_1_3/changed_files.txt"
+  ],
+  "review_findings": [
+    {
+      "finding_id": "V024-S1-REVIEW-F1",
+      "severity": "medium",
+      "status": "fixed",
+      "summary": "Stage 1 had Phase 1.1-1.3 candidate evidence but no whole-stage review contract or evidence pack.",
+      "resolution": "Added the Stage 1 whole-stage review contract, test, report, and evidence pack."
+    },
+    {
+      "finding_id": "V024-S1-REVIEW-F2",
+      "severity": "medium",
+      "status": "fixed",
+      "summary": "Top-level status files still described Phase 1.3 as the current terminal state.",
+      "resolution": "Updated RUN_CONTRACT, README, HANDOFF, CHANGELOG, and root project record files for Stage 1 review completion."
+    }
+  ],
+  "phase_1_1_complete": true,
+  "phase_1_2_complete": true,
+  "phase_1_3_complete": true,
+  "stage_1_candidate_complete": true,
+  "stage_1_review_complete": true,
+  "stage_1_complete": true,
+  "stage_2_started": false,
+  "stage_2_allowed_without_user_instruction": false,
+  "next_stage_requires_user_acceptance": true,
+  "no_auto_next_stage": true,
+  "no_auto_closeout": true,
+  "github_main_upload_allowed": false,
+  "github_main_uploaded": false,
+  "business_ui_changes_made": false,
+  "data_logic_changes_made": false,
+  "app_bundle_or_launcher_changes_made": false,
+  "formal_fake_financial_data_added": false,
+  "validation_surface": {
+    "shell_js_sha256": "e8fded83cf99a0c7e2df6891a2f4273b2a311d070639ea42b58605ab80c30151",
+    "version_js_sha256": "0eb03a0345480823ff191cae8046b0a69a231e76219f26f7ef94b45740f05a71",
+    "shell_integrity_api": "window.PFI_STAGE1_SHELL",
+    "version_read_interface": "window.PFI_READ_STAGE1_VERSION",
+    "initialization_entry": "initializePFIStage1Shell",
+    "route_mount_entry": "mountPFIStage1Route",
+    "error_boundary_entry": "handlePFIStage1ShellError"
+  },
+  "acceptance_checks": {
+    "all_phase_evidence_present": true,
+    "shell_js_syntax_passes": true,
+    "version_js_syntax_passes": true,
+    "shell_integrity_api_present": true,
+    "version_read_interface_present": true,
+    "no_fake_financial_data_added": true,
+    "no_business_ui_or_data_logic_changes": true,
+    "github_main_not_uploaded": true
+  },
+  "commands": [
+    {
+      "cmd": "node --check PFI/web/app/shell.js",
+      "status": "pass",
+      "detail": "executed with PATH including Codex bundled Node"
+    },
+    {
+      "cmd": "node --check PFI/web/app/version.js",
+      "status": "pass",
+      "detail": "executed with PATH including Codex bundled Node"
+    },
+    {
+      "cmd": "pytest stage1 whole review contract",
+      "status": "pass",
+      "detail": "5 passed after evidence finalization"
+    },
+    {
+      "cmd": "pytest v024 stage1 regression",
+      "status": "pass",
+      "detail": "19 passed after evidence finalization"
+    },
+    {
+      "cmd": "pytest v024 pre-stage0 stage0 stage1 regression",
+      "status": "pass",
+      "detail": "35 passed after evidence finalization"
+    },
+    {
+      "cmd": "git diff --check -- PFI",
+      "status": "pass"
+    }
+  ],
+  "changed_files": [
+    "PFI/CHANGELOG.md",
+    "PFI/HANDOFF.md",
+    "PFI/README.md",
+    "PFI/功能清单.md",
+    "PFI/开发记录.md",
+    "PFI/模型参数文件.md",
+    "PFI/docs/pfi_v024/RUN_CONTRACT.md",
+    "PFI/docs/pfi_v024/STAGE1_WHOLE_STAGE_REVIEW.md",
+    "PFI/reports/pfi_v024/stage_1/whole_stage_review/changed_files.txt",
+    "PFI/reports/pfi_v024/stage_1/whole_stage_review/evidence.json",
+    "PFI/reports/pfi_v024/stage_1/whole_stage_review/risk_and_rollback.md",
+    "PFI/reports/pfi_v024/stage_1/whole_stage_review/terminal.log",
+    "PFI/src/pfi_v02/stage_v024_stage1_shell_integrity.py",
+    "PFI/tests/test_v024_stage1_whole_review_contract.py"
+  ],
+  "stage1_accumulated_commits_not_uploaded_at_evidence_write": [
+    "28567287 PFI v0.2.4 stage1 phase1.1 shell diagnosis",
+    "5403090b PFI v0.2.4 stage1 phase1.2 shell repair",
+    "a1f56c67 PFI v0.2.4 stage1 phase1.3 validation"
+  ],
+  "explicitly_not_done": [
+    "Stage 2 entry consistency",
+    "GitHub main upload",
+    "business UI changes",
+    "app bundle or launcher changes",
+    "data logic changes",
+    "mock/sample/demo/synthetic/fixture/fake financial data"
+  ],
+  "validation_results": {
+    "node_check_shell_js": "pass",
+    "node_check_version_js": "pass",
+    "pytest_stage1_whole_review": "5 passed",
+    "pytest_v024_stage1_regression": "19 passed",
+    "pytest_v024_pre_stage0_stage0_stage1_regression": "35 passed",
+    "json_and_git_diff_check": "pass"
+  }
+}

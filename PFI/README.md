@@ -30,15 +30,18 @@ Records:
 - `docs/pfi_v024/RUN_CONTRACT.md`
 - `reports/pfi_v024/pre_stage_0/evidence.json`
 
-## v0.2.4 Stage 1 Phase 1.1 Status
+## v0.2.4 Stage 1 Status
 
-Current run unit: `Stage 1 / Phase 1.3 - 验证`.
+Current run unit: `Stage 1 whole-stage review - 复审并解决暴露问题`.
 
 - Phase 1.1: candidate pass.
 - Phase 1.2: candidate pass.
 - Phase 1.3: candidate pass.
 - Stage 1 candidate complete: yes.
-- Stage 1 complete: no.
+- Stage 1 whole-stage review: pass.
+- Stage 1 complete: yes at local review level.
+- Stage 2: not started.
+- GitHub main upload: not executed in this run.
 - `PFI/web/app/shell.js`: minimum shell integrity API added in Phase 1.2.
 - `PFI/web/app/version.js`: added as the Stage 1 version read interface.
 - Business UI changes: none.
@@ -47,8 +50,9 @@ Current run unit: `Stage 1 / Phase 1.3 - 验证`.
   1.2 adds `window.PFI_STAGE1_SHELL` with version, initialization, route mount,
   and error boundary entries.
 - Phase 1.3 records `node --check`, pytest, JSON, diff, and changed-files audit.
+- Whole-stage review records the two review findings and their fixes.
 
-Phase 1.1 records:
+Stage 1 records:
 
 - `src/pfi_v02/stage_v024_stage1_shell_integrity.py`
 - `tests/test_v024_stage1_phase11_shell_diagnosis.py`
@@ -62,6 +66,9 @@ Phase 1.1 records:
 - `reports/pfi_v024/stage_1/phase_1_3/evidence.json`
 - `reports/pfi_v024/stage_1/phase_1_3/changed_files.txt`
 - `reports/pfi_v024/stage_1/phase_1_3/terminal.log`
+- `docs/pfi_v024/STAGE1_WHOLE_STAGE_REVIEW.md`
+- `tests/test_v024_stage1_whole_review_contract.py`
+- `reports/pfi_v024/stage_1/whole_stage_review/evidence.json`
 
 ## v0.2.4 Stage 0 Status
 
@@ -73,7 +80,7 @@ Current run unit: `Stage 0 whole-stage review - 复审并解决暴露问题`.
 - Stage 0 candidate: complete.
 - Stage 0 whole-stage review: pass.
 - Stage 0 complete: yes.
-- Stage 1: candidate complete; whole-stage review not started.
+- Stage 1: whole-stage review complete; Stage 2 not started.
 - Business UI changes: none.
 - Data logic changes: none.
 
