@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.0-s09-github-upload
+product_version: 0.1.0-s10p1-report-templates
 
 ## Current Iteration
 
 - project_id: `KMFA`
 - current_stage: `S10`
-- current_phase: `S10-P1｜报告模板 待开始`
-- current_tasks: `S10-P1`
-- status: `stage9_uploaded_to_github_main`
+- current_phase: `S10-P2｜报告可信等级 待开始`
+- current_tasks: `S10-P2`
+- status: `s10_p1_completed_validated_local_only`
 - risk_tier: `T3`
 
 ## Completed
@@ -70,16 +70,18 @@ product_version: 0.1.0-s09-github-upload
 | `S9PCT01-S9PCT03` | S09-P3 口径转换与差异核对完成本地验证：12 条 public-safe reconciliation records、6 条 domain controls；记录原因候选、依据 refs、影响范围、责任角色、reviewer 和 pending 状态，不执行 Stage 9 review 或 GitHub upload | `KMFA/stage_artifacts/S09_P3_scope_reconciliation/human/s09_p3_completion_record.md` |
 | `KMFA-S09-STAGE-REVIEW-20260630` | Stage 9 整体复审本地通过；复跑 S09-P1/P2/P3 validators、`check_s09_stage_review.py`、全量 KMFA tests、治理 validator、raw/secret scan 和 parse checks，并修复 secret scan 误报 finding；复审步骤未执行 GitHub upload | `KMFA/stage_artifacts/S09_STAGE_REVIEW/human/stage9_review_report.md` |
 | `KMFA-S09-GITHUB-UPLOAD-20260630` | Stage 9 final GitHub upload 已完成；基于最新 origin/main rebase Stage 9 栈，复跑 validators、安全扫描和 parse checks，并留下 dry-run push、push 与 post-push parity 证据 | `KMFA/stage_artifacts/S09_STAGE_REVIEW/human/github_upload_record.md` |
+| `S10-P1` | S10-P1 报告模板完成本地验证：2 个 public-safe 报告模板、11 个管理可读章节、HTML 样板引用和 scope gate 均已锁定；不执行 S10-P2/S10-P3、Stage 10 review 或 GitHub upload | `KMFA/stage_artifacts/S10_P1_report_templates/human/s10_p1_completion_record.md` |
 
 ## In Progress
 
 | Task | Result | Evidence |
 |---|---|---|
-| `S10-P1` | 报告模板待开始；下一轮只允许实现项目成本专题报告、经营总览报告和管理可读摘要模板，不得跳到 S10-P2/S10-P3、UI、lineage full check 或外部接口 | `KMFA/stage_artifacts/S09_STAGE_REVIEW/human/github_upload_record.md` |
+| `S10-P2` | 报告可信等级待开始；下一轮只允许实现 A/B/C/D 运行时判定、缺关键数据或未关闭差异阻断、报告版本/公式/字段映射版本记录，不得跳到 S10-P3、UI、lineage full check 或外部接口 | `KMFA/stage_artifacts/S10_P1_report_templates/human/s10_p1_completion_record.md` |
 
 ## Not Completed
 
 | Task | Reason | Next |
 |---|---|---|
-| S10-P1 报告模板 | Stage 9 已上传 GitHub main；报告模板尚未实现 | 下一轮只执行 S10-P1 报告模板 |
+| S10-P2 报告可信等级 | S10-P1 仅完成模板；可信等级运行时尚未实现 | 下一轮只执行 S10-P2 报告可信等级 |
+| S10-P3 导出 | 必须等待 S10-P2 完成后再做 | 暂不执行 HTML/CSV/Excel/PDF 导出 |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |

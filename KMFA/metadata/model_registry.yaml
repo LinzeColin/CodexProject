@@ -1,4 +1,4 @@
-version: "0.1.0-s08-github-upload"
+version: "0.1.0-s10p1-report-templates"
 project: "KMFA"
 active_model_ids:
   - "MOD-KMFA-GOV-001"
@@ -25,6 +25,10 @@ active_formula_ids:
   - "FORM-KMFA-PROJECT-COMPOSITE-KEY-001"
   - "FORM-KMFA-BUSINESS-ENTITY-MODEL-001"
   - "FORM-KMFA-ENTITY-MATCHING-QUALITY-001"
+  - "FORM-KMFA-PROJECT-COST-FACT-LAYER-001"
+  - "FORM-KMFA-MARGIN-CASH-MARGIN-001"
+  - "FORM-KMFA-SCOPE-RECONCILIATION-001"
+  - "FORM-KMFA-REPORT-TEMPLATE-001"
 source_of_truth:
   - "KMFA/docs/governance/model_registry.yaml"
   - "KMFA/docs/governance/formula_registry.yaml"
