@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 1 Phase 1.1 - 2026-06-30
+
+- 完成 `Stage 1 / Phase 1.1 - 现状定位`：保存当前 `PFI/web/app/shell.js` 快照，记录语法检查结果，并定位当前残缺片段范围。
+- 新增 `src/pfi_v02/stage_v024_stage1_shell_integrity.py`、`tests/test_v024_stage1_phase11_shell_diagnosis.py` 和 `reports/pfi_v024/stage_1/phase_1_1/evidence.json`。
+- 当前 `shell.js` 在 Codex bundled Node 下语法检查通过；未发现 merge marker 或 syntax-fragment range。
+- Phase 1.1 不修改 `shell.js`；Phase 1.2 仍需最小 shell integrity repair，Phase 1.3 和 Stage 1 whole-stage review 尚未执行。
+- 本轮未修改业务 UI、app bundle、launcher 或数据逻辑。
+
 ## v0.2.4 Repair Pack Stage 0 Whole-Stage Review - 2026-06-30
 
 - 完成 `Stage 0 whole-stage review - 复审并解决暴露问题`，复审 Phase 0.1、0.2、0.3 的合同、证据、测试和状态文件。

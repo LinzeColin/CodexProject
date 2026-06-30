@@ -30,6 +30,31 @@ Records:
 - `docs/pfi_v024/RUN_CONTRACT.md`
 - `reports/pfi_v024/pre_stage_0/evidence.json`
 
+## v0.2.4 Stage 1 Phase 1.1 Status
+
+Current run unit: `Stage 1 / Phase 1.1 - 现状定位`.
+
+- Phase 1.1: candidate pass.
+- Phase 1.2: not started; minimum shell integrity repair remains required.
+- Phase 1.3: not started.
+- Stage 1 complete: no.
+- `PFI/web/app/shell.js`: not modified in Phase 1.1.
+- Business UI changes: none.
+- Data logic changes: none.
+- Diagnosis: current `shell.js` is syntactically complete via Codex bundled Node
+  and has no merge markers or syntax-fragment range; it still lacks a stable
+  Stage 1 shell integrity API exposing version, initialization, route mount,
+  and error boundary together.
+
+Phase 1.1 records:
+
+- `src/pfi_v02/stage_v024_stage1_shell_integrity.py`
+- `tests/test_v024_stage1_phase11_shell_diagnosis.py`
+- `reports/pfi_v024/stage_1/phase_1_1/evidence.json`
+- `reports/pfi_v024/stage_1/phase_1_1/shell.js.snapshot`
+- `reports/pfi_v024/stage_1/phase_1_1/shell_before_after_summary.md`
+- `reports/pfi_v024/stage_1/phase_1_1/terminal.log`
+
 ## v0.2.4 Stage 0 Status
 
 Current run unit: `Stage 0 whole-stage review - 复审并解决暴露问题`.
@@ -40,7 +65,7 @@ Current run unit: `Stage 0 whole-stage review - 复审并解决暴露问题`.
 - Stage 0 candidate: complete.
 - Stage 0 whole-stage review: pass.
 - Stage 0 complete: yes.
-- Stage 1: not started; requires user acceptance or explicit instruction.
+- Stage 1: started; Phase 1.1 candidate pass, Phase 1.2 and 1.3 not started.
 - Business UI changes: none.
 - Data logic changes: none.
 
