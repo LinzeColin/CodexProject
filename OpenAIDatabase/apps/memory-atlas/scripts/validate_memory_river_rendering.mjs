@@ -109,8 +109,8 @@ requireCheck(
   "memory_river_parameters_match_phase",
   hasAll(modelParams, [
     "schema_version: memory_river_params.v1",
-    'stage: "5.1"',
-    'task: "5.1 Memory River Rendering"',
+    'stage: "5.2"',
+    'task: "5.2 Memory River Interaction"',
     "renderer_default: memory-river",
     "legacy_renderer: legacy",
     "use_utc_scale: true",
@@ -119,12 +119,13 @@ requireCheck(
     "label: Meso",
     "label: Micro",
     "marker_cap: 64",
-    "brush_enabled: false",
-    "click_event_card_enabled: false",
-    "no Stage 5.2 brush interaction in Phase 5.1",
+    "pan_enabled: true",
+    "brush_enabled: true",
+    "click_event_card_enabled: true",
+    "reduced_motion_suppresses_feedback: true",
   ]),
-  "Memory River model parameters document the production Phase 5.1 renderer, UTC scale, lane grouping, marker cap, rollback, and deferred Stage 5.2 interactions",
-  "Memory River model parameters are missing Phase 5.1 status, UTC/lane/marker values, rollback, or deferred interaction boundaries",
+  "Memory River model parameters document the current Phase 5.2 renderer, UTC scale, lane grouping, marker cap, rollback, and enabled interaction boundaries",
+  "Memory River model parameters are missing Phase 5.2 status, UTC/lane/marker values, rollback, or interaction boundaries",
 );
 
 const failed = checks.filter((check) => check.status !== "PASS");

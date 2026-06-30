@@ -267,11 +267,13 @@ Current visualization modes:
   by real event dates. 横轴必须显示可读的真实事件日期标签，淡色月份网格只作为背景定位参考。
   Stage 5.1 默认使用 Memory River renderer，以 UTC day scale 显示
   Macro / Meso / Micro 河道、主题/项目/分类 lane、black-hole/proto-star/event
-  markers，并保留 `legacy` renderer 回滚。Timeline is a dynamic interactive
-  workspace, not a table/list or static dot chart: it has a 动态窗口, zoom
-  controls, replay 播放游标, wheel zoom, density track, density backdrops, hover
-  detail strip, and click-to-sync Inspector. Stage 5.2 的 brush 和专用
-  hover/click event cards 仍是后续交互阶段。
+  markers，并保留 `legacy` renderer 回滚。Stage 5.2 支持 Pan/Brush 模式：
+  横向拖拽平移时间窗，Brush 选择 UTC 时间段并同步到 Interaction Lens、首页和星系
+  heading；hover 显示 redacted derived event card，click 锁定事件并同步
+  Inspector。Timeline is a dynamic interactive workspace, not a table/list or
+  static dot chart: it has a 动态窗口, zoom controls, replay 播放游标, wheel zoom,
+  density track, density backdrops, safe feedback settings, and click-to-sync
+  Inspector. Stage 5.3 的 evidence layers 仍是后续阶段。
 - Contribution Grid: daily/weekly/monthly/yearly interaction and memory
   increment proxy. 贡献网格一屏优先：日/周显示全年 365/366 格，月/年显示
   连续两年 24 列；尺度按钮和增量指标合并，主网格必须优先保留全景空间，

@@ -1,5 +1,25 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.5 Stage 5.2 Memory River Interaction
+
+- Added Memory River interaction modes: `Pan` for horizontal pointer panning
+  and `Brush` for selecting a UTC time range directly on the river canvas.
+- Added shared selected-time-range state. Brush selections now render as a
+  Memory River range overlay and surface in Interaction Lens, Home Overview and
+  Galaxy headings so the selection is visible outside the Timeline page.
+- Added hover/click Memory River event cards backed only by redacted derived
+  event data. Hover previews the event; click locks it and syncs the Inspector
+  when the event has a linked node.
+- Added safe feedback settings for Reduced Motion, optional pseudo-haptic
+  vibration and optional low-gain audio. Defaults remain no sound and no
+  vibration; Reduced Motion stops playback and suppresses optional feedback.
+- Updated Memory River model parameters, visual acceptance and deterministic
+  validators for Stage 5.2.
+
+No Stage 5.3 evidence layers, Stage 5 whole-stage review, ingestion,
+raw/private data access, direct writeback, Cloudflare live deploy, or external
+account operation was added.
+
 ## Unreleased - Memory Atlas v1.1.5 Stage 5.1 Memory River Rendering
 
 - Added the production Timeline renderer flag with `memory-river` as the

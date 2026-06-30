@@ -22,7 +22,7 @@ import {
   ZoomIn,
   ZoomOut,
 } from "lucide-react";
-import type { ComponentType, CSSProperties, KeyboardEvent, WheelEvent } from "react";
+import type { ComponentType, CSSProperties, KeyboardEvent, PointerEvent, WheelEvent } from "react";
 import { Suspense, lazy, useCallback, useEffect, useMemo, useState } from "react";
 import {
   emptyAtlas,
@@ -75,6 +75,7 @@ const defaultFilters: AtlasFilters = {
 type ContributionScale = "day" | "week" | "month" | "year";
 type WritebackAction = "update_statement" | "add_context" | "change_tier" | "flag_conflict" | "rollback_to_version";
 type FilterKey = keyof AtlasFilters;
+type TimelineInteractionMode = "pan" | "brush";
 
 interface TimelineEvent {
   date: string;
@@ -109,6 +110,36 @@ interface TimelineDisplayEvent {
   shortLabel: string;
 }
 
+interface TimelineTimeRangeSelection {
+  id: string;
+  source: "memory-river-brush";
+  startDate: string;
+  endDate: string;
+  label: string;
+  eventCount: number;
+  decisionCount: number;
+  coreMemoryCount: number;
+  topTheme: string;
+}
+
+interface TimelineBrushDraft {
+  pointerId: number;
+  startX: number;
+  endX: number;
+}
+
+interface TimelinePanDraft {
+  pointerId: number;
+  startX: number;
+  startCenter: number;
+}
+
+interface TimelineFeedbackSettings {
+  reducedMotion: boolean;
+  pseudoHaptic: boolean;
+  audio: boolean;
+}
+
 interface MemoryRiverLevelBand {
   level: MemoryRiverLevel;
   note: string;
@@ -133,6 +164,7 @@ interface MemoryRiverLane {
 interface MemoryRiverMarker {
   id: string;
   kind: "black-hole" | "proto-star" | "memory-event";
+  event: TimelineDisplayEvent;
   title: string;
   x: number;
   y: number;
@@ -351,9 +383,13 @@ interface RuntimeState {
 }
 
 const WRITEBACK_QUEUE_KEY = "memory-atlas.writeback.proposals.v1";
+const TIMELINE_FEEDBACK_SETTINGS_KEY = "memory-atlas.timeline.feedback";
 const TRANSIENT_STORAGE_PREFIXES = ["memory-atlas.runtime.", "memory-atlas.cache.", "memory-atlas.temp.", "memory-atlas.view."];
 const TRANSIENT_CACHE_PREFIXES = ["memory-atlas", "memory_atlas", "vite-memory-atlas"];
 const LOCAL_RUNTIME_HEARTBEAT_MS = 10_000;
+const MEMORY_RIVER_MIN_X = 80;
+const MEMORY_RIVER_MAX_X = 960;
+const MEMORY_RIVER_WIDTH = MEMORY_RIVER_MAX_X - MEMORY_RIVER_MIN_X;
 const weekdayLabels = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"];
 const heatStops: HeatStop[] = [
   { stop: 0, rgb: [15, 17, 22] },
@@ -425,6 +461,7 @@ export function App() {
   const [atlas, setAtlas] = useState<MemoryAtlas>(emptyAtlas);
   const [selectedNode, setSelectedNode] = useState<AtlasNode | null>(null);
   const [selectedContributionPeriod, setSelectedContributionPeriod] = useState<ContributionPeriodDetail | null>(null);
+  const [timelineTimeRange, setTimelineTimeRange] = useState<TimelineTimeRangeSelection | null>(null);
   const [loadState, setLoadState] = useState<"loading" | "ready" | "error">("loading");
   const [loadError, setLoadError] = useState("");
   const [runtimeState, setRuntimeState] = useState<RuntimeState>(() => ({
@@ -563,6 +600,12 @@ export function App() {
   }, []);
   const handleSelectContributionPeriod = useCallback((detail: ContributionPeriodDetail) => {
     setSelectedContributionPeriod(detail);
+  }, []);
+  const handleSelectTimelineRange = useCallback((range: TimelineTimeRangeSelection) => {
+    setTimelineTimeRange(range);
+  }, []);
+  const clearTimelineRange = useCallback(() => {
+    setTimelineTimeRange(null);
   }, []);
   const updateFilters = useCallback((updater: (current: AtlasFilters) => AtlasFilters) => {
     setSelectedContributionPeriod(null);
@@ -739,7 +782,9 @@ export function App() {
           selectedNode={selectedNode}
           slice={slice}
           sourceOptions={sourceOptions}
+          timelineTimeRange={timelineTimeRange}
           onClearFilter={clearFilter}
+          onClearTimelineRange={clearTimelineRange}
           onFocusTheme={focusSelectedTheme}
           onResetFilters={resetFilters}
           onSelectAdjacent={selectAdjacentNode}
@@ -755,8 +800,11 @@ export function App() {
               nodeMap={nodeMap}
               selectedNode={selectedNode}
               loadState={loadState}
+              timelineTimeRange={timelineTimeRange}
               onSelectNode={handleSelectNode}
               onSelectContributionPeriod={handleSelectContributionPeriod}
+              onSelectTimelineRange={handleSelectTimelineRange}
+              onClearTimelineRange={clearTimelineRange}
               onSwitchView={switchView}
             />
           </section>
@@ -781,8 +829,11 @@ function ViewRouter({
   nodeMap,
   selectedNode,
   loadState,
+  timelineTimeRange,
   onSelectNode,
   onSelectContributionPeriod,
+  onSelectTimelineRange,
+  onClearTimelineRange,
   onSwitchView,
 }: {
   activeView: ViewKey;
@@ -792,8 +843,11 @@ function ViewRouter({
   nodeMap: Map<string, AtlasNode>;
   selectedNode: AtlasNode | null;
   loadState: "loading" | "ready" | "error";
+  timelineTimeRange: TimelineTimeRangeSelection | null;
   onSelectNode: (node: AtlasNode) => void;
   onSelectContributionPeriod: (detail: ContributionPeriodDetail) => void;
+  onSelectTimelineRange: (range: TimelineTimeRangeSelection) => void;
+  onClearTimelineRange: () => void;
   onSwitchView: (view: ViewKey) => void;
 }) {
   if (loadState === "loading") {
@@ -805,6 +859,7 @@ function ViewRouter({
         nodes={slice.memoryNodes}
         graphEdges={slice.graphEdges}
         deltaStats={slice.deltaStats}
+        timelineTimeRange={timelineTimeRange}
         onSelectNode={onSelectNode}
         onSwitchView={onSwitchView}
       />
@@ -818,6 +873,7 @@ function ViewRouter({
         memoryCount={slice.memoryNodes.length}
         selectedNode={selectedNode}
         deltaStats={slice.deltaStats}
+        timelineTimeRange={timelineTimeRange}
         onSelectNode={onSelectNode}
       />
     );
@@ -832,7 +888,18 @@ function ViewRouter({
     return <ObsidianGraph nodes={slice.graphNodes} edges={slice.graphEdges} selectedNode={selectedNode} deltaStats={slice.deltaStats} onSelectNode={onSelectNode} />;
   }
   if (activeView === "timeline") {
-    return <TimelineView timeline={slice.timeline} nodeMap={nodeMap} selectedNode={selectedNode} deltaStats={slice.deltaStats} onSelectNode={onSelectNode} />;
+    return (
+      <TimelineView
+        timeline={slice.timeline}
+        nodeMap={nodeMap}
+        selectedNode={selectedNode}
+        selectedTimelineRange={timelineTimeRange}
+        deltaStats={slice.deltaStats}
+        onSelectNode={onSelectNode}
+        onSelectTimelineRange={onSelectTimelineRange}
+        onClearTimelineRange={onClearTimelineRange}
+      />
+    );
   }
   if (activeView === "contribution") {
     return (
@@ -858,12 +925,14 @@ function HomeOverviewView({
   nodes,
   graphEdges,
   deltaStats,
+  timelineTimeRange,
   onSelectNode,
   onSwitchView,
 }: {
   nodes: AtlasNode[];
   graphEdges: AtlasEdge[];
   deltaStats: DeltaStats;
+  timelineTimeRange: TimelineTimeRangeSelection | null;
   onSelectNode: (node: AtlasNode) => void;
   onSwitchView: (view: ViewKey) => void;
 }) {
@@ -889,7 +958,7 @@ function HomeOverviewView({
           <p className="eyebrow">记忆总览 / Universe State / 下一步行动</p>
           <h2>打开后先判断当前认知天气、主题趋势、机会、风险和建议动作</h2>
         </div>
-        <span>{nodes.length.toLocaleString()} 条筛选记忆 · 默认入口</span>
+        <span>{timelineRangeSummary(timelineTimeRange) ?? `${nodes.length.toLocaleString()} 条筛选记忆 · 默认入口`}</span>
       </div>
       <section className="home-primary-band" aria-label="当前认知状态">
         <article className={`home-weather-panel ${model.weatherTone}`}>
@@ -1008,6 +1077,7 @@ function GalaxyView({
   memoryCount,
   selectedNode,
   deltaStats,
+  timelineTimeRange,
   onSelectNode,
 }: {
   graphNodes: AtlasNode[];
@@ -1015,6 +1085,7 @@ function GalaxyView({
   memoryCount: number;
   selectedNode: AtlasNode | null;
   deltaStats: DeltaStats;
+  timelineTimeRange: TimelineTimeRangeSelection | null;
   onSelectNode: (node: AtlasNode) => void;
 }) {
   const [galaxyRendererMode, setGalaxyRendererMode] = useState<GalaxyRendererMode>(() => getInitialGalaxyRendererMode());
@@ -1033,6 +1104,7 @@ function GalaxyView({
         </div>
         <div className="galaxy-heading-actions">
           <span>{memoryCount} 条记忆 / {graphNodes.length} 个节点 / {graphEdges.length} 条连接</span>
+          {timelineTimeRange ? <span className="timeline-sync-pill">时间河选择 · {timelineTimeRange.label}</span> : null}
           <div className="galaxy-renderer-toggle" aria-label="Galaxy renderer feature flag">
             <button
               aria-pressed={galaxyRendererMode === "memory-starfield"}
@@ -1224,30 +1296,46 @@ function TimelineView({
   timeline,
   nodeMap,
   selectedNode,
+  selectedTimelineRange,
   deltaStats,
   onSelectNode,
+  onSelectTimelineRange,
+  onClearTimelineRange,
 }: {
   timeline: TimelineEvent[];
   nodeMap: Map<string, AtlasNode>;
   selectedNode: AtlasNode | null;
+  selectedTimelineRange: TimelineTimeRangeSelection | null;
   deltaStats: DeltaStats;
   onSelectNode: (node: AtlasNode) => void;
+  onSelectTimelineRange: (range: TimelineTimeRangeSelection) => void;
+  onClearTimelineRange: () => void;
 }) {
   const [timelineZoom, setTimelineZoom] = useState(1);
   const [timelineCenter, setTimelineCenter] = useState(0.5);
   const [timelineCursor, setTimelineCursor] = useState(1);
   const [timelinePlaying, setTimelinePlaying] = useState(false);
   const [hoveredEventId, setHoveredEventId] = useState<string | null>(null);
+  const [lockedEventId, setLockedEventId] = useState<string | null>(null);
+  const [interactionMode, setInteractionMode] = useState<TimelineInteractionMode>("pan");
+  const [brushDraft, setBrushDraft] = useState<TimelineBrushDraft | null>(null);
+  const [panDraft, setPanDraft] = useState<TimelinePanDraft | null>(null);
+  const [feedbackSettings, setFeedbackSettings] = useState<TimelineFeedbackSettings>(() => getInitialTimelineFeedbackSettings());
   const [timelineRendererMode, setTimelineRendererMode] = useState<TimelineRendererMode>(() => getInitialTimelineRendererMode());
   const display = useMemo(
     () => buildTimelineLayout(timeline, nodeMap, { zoom: timelineZoom, center: timelineCenter, cursor: timelineCursor }),
     [timeline, nodeMap, timelineCenter, timelineCursor, timelineZoom],
   );
   const riverDisplay = useMemo(() => buildMemoryRiverLayout(display.events, display.cursorX), [display.cursorX, display.events]);
+  const selectedRangeOverlay = useMemo(() => buildMemoryRiverRangeOverlay(selectedTimelineRange, display), [display, selectedTimelineRange]);
+  const brushDraftOverlay = brushDraft ? buildMemoryRiverDraftOverlay(brushDraft) : null;
+  const lockedEvent = useMemo(() => display.events.find((event) => event.id === lockedEventId) ?? null, [display.events, lockedEventId]);
+  const hoveredRiverEvent = useMemo(() => display.events.find((event) => event.id === hoveredEventId) ?? null, [display.events, hoveredEventId]);
   const hoveredEvent = useMemo(
-    () => display.events.find((event) => event.id === hoveredEventId) ?? display.events.find((event) => event.source.node_id === selectedNode?.id) ?? display.events[display.events.length - 1] ?? null,
-    [display.events, hoveredEventId, selectedNode?.id],
+    () => hoveredRiverEvent ?? display.events.find((event) => event.source.node_id === selectedNode?.id) ?? display.events[display.events.length - 1] ?? null,
+    [display.events, hoveredRiverEvent, selectedNode?.id],
   );
+  const activeRiverEvent = lockedEvent ?? hoveredRiverEvent;
 
   useEffect(() => {
     setTimelinePlaying(false);
@@ -1255,7 +1343,7 @@ function TimelineView({
   }, [timeline.length]);
 
   useEffect(() => {
-    if (!timelinePlaying) return undefined;
+    if (!timelinePlaying || feedbackSettings.reducedMotion) return undefined;
     const timer = window.setInterval(() => {
       setTimelineCursor((current) => {
         if (current >= 0.995) {
@@ -1266,7 +1354,12 @@ function TimelineView({
       });
     }, 180);
     return () => window.clearInterval(timer);
-  }, [timelinePlaying]);
+  }, [feedbackSettings.reducedMotion, timelinePlaying]);
+
+  useEffect(() => {
+    if (feedbackSettings.reducedMotion) setTimelinePlaying(false);
+    persistTimelineFeedbackSettings(feedbackSettings);
+  }, [feedbackSettings]);
 
   const clampTimelineCenter = useCallback((value: number) => {
     setTimelineCenter(Math.min(1, Math.max(0, value)));
@@ -1278,17 +1371,89 @@ function TimelineView({
     event.preventDefault();
     clampTimelineZoom(timelineZoom + (event.deltaY < 0 ? 0.45 : -0.45));
   }, [clampTimelineZoom, timelineZoom]);
+  const handleMemoryRiverPointerDown = useCallback((event: PointerEvent<SVGSVGElement>) => {
+    if (timelineRendererMode !== "memory-river") return;
+    event.preventDefault();
+    const x = memoryRiverPointerX(event);
+    setTimelinePlaying(false);
+    if (interactionMode === "brush") {
+      setBrushDraft({ pointerId: event.pointerId, startX: x, endX: x });
+    } else {
+      setPanDraft({ pointerId: event.pointerId, startX: x, startCenter: timelineCenter });
+    }
+    event.currentTarget.setPointerCapture(event.pointerId);
+  }, [interactionMode, timelineCenter, timelineRendererMode]);
+  const handleMemoryRiverPointerMove = useCallback((event: PointerEvent<SVGSVGElement>) => {
+    if (timelineRendererMode !== "memory-river") return;
+    const x = memoryRiverPointerX(event);
+    if (brushDraft && event.pointerId === brushDraft.pointerId) {
+      event.preventDefault();
+      setBrushDraft({ ...brushDraft, endX: x });
+      return;
+    }
+    if (panDraft && event.pointerId === panDraft.pointerId) {
+      event.preventDefault();
+      const deltaRatio = (x - panDraft.startX) / MEMORY_RIVER_WIDTH / Math.max(1, timelineZoom);
+      clampTimelineCenter(panDraft.startCenter - deltaRatio);
+    }
+  }, [brushDraft, clampTimelineCenter, panDraft, timelineRendererMode, timelineZoom]);
+  const handleMemoryRiverPointerUp = useCallback((event: PointerEvent<SVGSVGElement>) => {
+    if (timelineRendererMode !== "memory-river") return;
+    if (brushDraft && event.pointerId === brushDraft.pointerId) {
+      event.preventDefault();
+      const endX = memoryRiverPointerX(event);
+      const nextDraft = { ...brushDraft, endX };
+      const selection = buildTimelineRangeSelection(display, nextDraft.startX, nextDraft.endX);
+      if (selection) {
+        onSelectTimelineRange(selection);
+        setTimelineCursor(memoryRiverXToRatio((clampMemoryRiverX(nextDraft.startX) + clampMemoryRiverX(nextDraft.endX)) / 2));
+        emitTimelineFeedback(feedbackSettings, "brush");
+      }
+      setBrushDraft(null);
+      event.currentTarget.releasePointerCapture(event.pointerId);
+      return;
+    }
+    if (panDraft && event.pointerId === panDraft.pointerId) {
+      event.preventDefault();
+      setPanDraft(null);
+      emitTimelineFeedback(feedbackSettings, "pan");
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+  }, [brushDraft, display, feedbackSettings, onSelectTimelineRange, panDraft, timelineRendererMode]);
+  const handleMemoryRiverPointerCancel = useCallback((event: PointerEvent<SVGSVGElement>) => {
+    if (brushDraft?.pointerId === event.pointerId) setBrushDraft(null);
+    if (panDraft?.pointerId === event.pointerId) setPanDraft(null);
+  }, [brushDraft?.pointerId, panDraft?.pointerId]);
 
   function resetTimelineView() {
     setTimelineZoom(1);
     setTimelineCenter(0.5);
     setTimelineCursor(1);
     setTimelinePlaying(false);
+    setBrushDraft(null);
+    setPanDraft(null);
+    setLockedEventId(null);
+    onClearTimelineRange();
   }
 
   function updateTimelineRendererMode(mode: TimelineRendererMode) {
     setTimelineRendererMode(mode);
     persistTimelineRendererMode(mode);
+  }
+
+  function updateFeedbackSettings(patch: Partial<TimelineFeedbackSettings>) {
+    setFeedbackSettings((current) => {
+      const next = { ...current, ...patch };
+      if (next.reducedMotion) setTimelinePlaying(false);
+      return next;
+    });
+  }
+
+  function lockMemoryRiverEvent(event: TimelineDisplayEvent) {
+    setLockedEventId(event.id);
+    setHoveredEventId(event.id);
+    if (event.node) onSelectNode(event.node);
+    emitTimelineFeedback(feedbackSettings, "event");
   }
 
   return (
@@ -1318,7 +1483,7 @@ function TimelineView({
             Legacy
           </button>
         </div>
-        <button aria-label={timelinePlaying ? "暂停时间轴播放" : "播放时间轴"} className="icon-control" onClick={() => setTimelinePlaying((value) => !value)} type="button">
+        <button aria-label={timelinePlaying ? "暂停时间轴播放" : "播放时间轴"} className="icon-control" onClick={() => setTimelinePlaying((value) => !value)} disabled={feedbackSettings.reducedMotion} type="button">
           {timelinePlaying ? <Pause size={15} /> : <Play size={15} />}
         </button>
         <button aria-label="缩小时间窗口" className="icon-control" onClick={() => clampTimelineZoom(timelineZoom - 0.5)} disabled={timelineZoom <= 1} type="button">
@@ -1341,6 +1506,55 @@ function TimelineView({
         </button>
         <span className="timeline-zoom-readout">{timelineZoom.toFixed(1)}x · {display.cursorLabel}</span>
       </div>
+      <div
+        className="memory-river-interaction-bar"
+        data-interaction-mode={interactionMode}
+        data-reduced-motion={feedbackSettings.reducedMotion ? "true" : "false"}
+        aria-label="记忆时间河交互设置"
+      >
+        <div className="river-mode-tabs" role="group" aria-label="记忆时间河交互模式">
+          <button aria-pressed={interactionMode === "pan"} onClick={() => setInteractionMode("pan")} type="button">
+            Pan
+          </button>
+          <button aria-pressed={interactionMode === "brush"} onClick={() => setInteractionMode("brush")} type="button">
+            Brush
+          </button>
+        </div>
+        <span className="timeline-range-readout">
+          {selectedTimelineRange
+            ? `${selectedTimelineRange.label} · ${selectedTimelineRange.eventCount.toLocaleString()} 事件 · ${selectedTimelineRange.topTheme}`
+            : interactionMode === "brush"
+              ? "拖拽选择时间段；选择会同步到首页、星系和交互焦点"
+              : "在河道区域横向拖拽平移；滚轮缩放，选择不会丢失"}
+        </span>
+        <label className="feedback-toggle">
+          <input
+            checked={feedbackSettings.reducedMotion}
+            onChange={(event) => updateFeedbackSettings({ reducedMotion: event.target.checked })}
+            type="checkbox"
+          />
+          <span>Reduced Motion</span>
+        </label>
+        <label className="feedback-toggle">
+          <input
+            checked={feedbackSettings.pseudoHaptic}
+            onChange={(event) => updateFeedbackSettings({ pseudoHaptic: event.target.checked })}
+            type="checkbox"
+          />
+          <span>伪触感</span>
+        </label>
+        <label className="feedback-toggle">
+          <input
+            checked={feedbackSettings.audio}
+            onChange={(event) => updateFeedbackSettings({ audio: event.target.checked })}
+            type="checkbox"
+          />
+          <span>音频</span>
+        </label>
+        <button className="segmented" disabled={!selectedTimelineRange} onClick={onClearTimelineRange} type="button">
+          清除区间
+        </button>
+      </div>
       <div className="timeline-summary-grid" aria-label="时间轴摘要">
         <div><span>窗口事件</span><strong>{display.visibleCount.toLocaleString()}</strong></div>
         <div><span>{timelineRendererMode === "memory-river" ? "Macro 河道" : "高重要/决策"}</span><strong>{timelineRendererMode === "memory-river" ? riverDisplay.levelCounts.Macro.toLocaleString() : display.importantCount.toLocaleString()}</strong></div>
@@ -1361,7 +1575,21 @@ function TimelineView({
         ))}
       </div>
       {timelineRendererMode === "memory-river" ? (
-        <svg className="memory-river-canvas timeline-canvas" data-utc-time-scale="true" viewBox="0 0 1000 640" role="img" aria-label="记忆时间河 Macro Meso Micro UTC 河道" onWheel={handleTimelineWheel}>
+        <svg
+          className="memory-river-canvas timeline-canvas"
+          data-utc-time-scale="true"
+          data-interaction-mode={interactionMode}
+          data-selected-time-range={selectedTimelineRange ? "true" : "false"}
+          data-feedback-reduced-motion={feedbackSettings.reducedMotion ? "true" : "false"}
+          viewBox="0 0 1000 640"
+          role="img"
+          aria-label="记忆时间河 Macro Meso Micro UTC 河道"
+          onPointerCancel={handleMemoryRiverPointerCancel}
+          onPointerDown={handleMemoryRiverPointerDown}
+          onPointerMove={handleMemoryRiverPointerMove}
+          onPointerUp={handleMemoryRiverPointerUp}
+          onWheel={handleTimelineWheel}
+        >
           <defs>
             <filter id="memoryRiverGlow">
               <feGaussianBlur stdDeviation="4.4" result="blur" />
@@ -1402,6 +1630,17 @@ function TimelineView({
               <text x={lane.labelX} y={lane.labelY} className="memory-river-lane-label">{lane.label}</text>
             </g>
           ))}
+          {selectedRangeOverlay ? (
+            <g className="memory-river-selected-range" data-selected-time-range="active">
+              <rect x={selectedRangeOverlay.x} y="64" width={selectedRangeOverlay.width} height="486" />
+              <text x={selectedRangeOverlay.labelX} y="86" textAnchor="middle">{selectedRangeOverlay.label}</text>
+            </g>
+          ) : null}
+          {brushDraftOverlay ? (
+            <g className="memory-river-brush-draft" data-brush-range="draft">
+              <rect x={brushDraftOverlay.x} y="64" width={brushDraftOverlay.width} height="486" />
+            </g>
+          ) : null}
           {display.eventTicks.map((tick) => (
             <g className="event-date-tick memory-river-date-tick" key={tick.date}>
               <title>{`${tick.date} UTC · ${tick.count} 个真实事件`}</title>
@@ -1410,7 +1649,24 @@ function TimelineView({
             </g>
           ))}
           {riverDisplay.markers.map((marker) => (
-            <g className={`memory-river-marker ${marker.kind}`} key={marker.id}>
+            <g
+              className={`memory-river-marker ${marker.kind}${marker.event.id === lockedEventId ? " locked" : ""}`}
+              key={marker.id}
+              role="button"
+              tabIndex={marker.event.node ? 0 : -1}
+              onClick={(event) => {
+                event.stopPropagation();
+                lockMemoryRiverEvent(marker.event);
+              }}
+              onKeyDown={(keyboardEvent) => {
+                if (marker.event.node && isActivationKey(keyboardEvent)) lockMemoryRiverEvent(marker.event);
+              }}
+              onPointerDown={(event) => event.stopPropagation()}
+              onPointerEnter={() => setHoveredEventId(marker.event.id)}
+              onPointerLeave={() => {
+                if (marker.event.id !== lockedEventId) setHoveredEventId(null);
+              }}
+            >
               <title>{marker.title}</title>
               <circle cx={marker.x} cy={marker.y} r={marker.radius + 6} />
               <circle cx={marker.x} cy={marker.y} r={marker.radius} />
@@ -1490,6 +1746,23 @@ function TimelineView({
           })}
         </svg>
       )}
+      {timelineRendererMode === "memory-river" && activeRiverEvent ? (
+        <div className={`memory-river-event-card${lockedEvent ? " locked" : ""}`} data-event-card={lockedEvent ? "locked" : "hover"}>
+          <div>
+            <span>{activeRiverEvent.utcDate} UTC · {normalizeMemoryTier(activeRiverEvent.source.memory_tier)} · {humanCategoryLabel(activeRiverEvent.source.category)}</span>
+            <strong>{humanizeStatement(activeRiverEvent.node?.statement) || activeRiverEvent.source.label}</strong>
+            <small>redacted derived event · {activeRiverEvent.source.importance || "普通"} · {activeRiverEvent.node ? humanThemeLabel(activeRiverEvent.node) : "未连接节点"}</small>
+          </div>
+          <div className="event-card-actions">
+            <button disabled={!activeRiverEvent.node} onClick={() => activeRiverEvent.node && onSelectNode(activeRiverEvent.node)} type="button">
+              同步 Inspector
+            </button>
+            <button onClick={() => lockedEvent ? setLockedEventId(null) : lockMemoryRiverEvent(activeRiverEvent)} type="button">
+              {lockedEvent ? "解除锁定" : "锁定事件"}
+            </button>
+          </div>
+        </div>
+      ) : null}
       <div className="timeline-event-detail-strip" aria-label="时间轴事件详情">
         {hoveredEvent ? (
           <>
@@ -1884,7 +2157,9 @@ function InteractionLens({
   selectedNode,
   slice,
   sourceOptions,
+  timelineTimeRange,
   onClearFilter,
+  onClearTimelineRange,
   onFocusTheme,
   onResetFilters,
   onSelectAdjacent,
@@ -1895,7 +2170,9 @@ function InteractionLens({
   selectedNode: AtlasNode | null;
   slice: FilteredAtlasSlice;
   sourceOptions: SourceOption[];
+  timelineTimeRange: TimelineTimeRangeSelection | null;
   onClearFilter: (key: FilterKey) => void;
+  onClearTimelineRange: () => void;
   onFocusTheme: () => void;
   onResetFilters: () => void;
   onSelectAdjacent: (direction: -1 | 1) => void;
@@ -1946,14 +2223,23 @@ function InteractionLens({
         </button>
       </div>
       <div className="filter-chip-row" aria-label="活跃筛选">
-        {chips.length ? (
-          chips.map((chip) => (
+        {chips.length || timelineTimeRange ? (
+          <>
+          {timelineTimeRange ? (
+            <button className="timeline-range-chip" onClick={onClearTimelineRange} title="清除时间河选择" type="button">
+              <span>时间河</span>
+              <strong>{timelineTimeRange.label}</strong>
+              <em aria-hidden="true">×</em>
+            </button>
+          ) : null}
+          {chips.map((chip) => (
             <button key={chip.key} onClick={() => onClearFilter(chip.key)} title={`清除${chip.label}`} type="button">
               <span>{chip.label}</span>
               <strong>{chip.value}</strong>
               <em aria-hidden="true">×</em>
             </button>
-          ))
+          ))}
+          </>
         ) : (
           <span className="filter-empty">全部数据</span>
         )}
@@ -4460,8 +4746,8 @@ function buildTimelineLayout(timeline: TimelineEvent[], nodeMap: Map<string, Atl
     color: laneColor(key, index),
   }));
   const laneMap = new Map(lanes.map((lane) => [lane.key, lane]));
-  const ticks = buildMonthTicks(minDay, maxDay, 80, 960);
-  const eventTicks = buildEventDateTicks(visibleEvents, minDay, maxDay, 80, 960);
+  const ticks = buildMonthTicks(minDay, maxDay, MEMORY_RIVER_MIN_X, MEMORY_RIVER_MAX_X);
+  const eventTicks = buildEventDateTicks(visibleEvents, minDay, maxDay, MEMORY_RIVER_MIN_X, MEMORY_RIVER_MAX_X);
   const densityBands = buildTimelineDensityBands(allEvents, minAllDay, maxAllDay, windowStartMs, windowEndMs);
   const densityBars = buildTimelineDensityBackdrops(visibleEvents, minDay, maxDay);
   const importantCount = visibleEvents.filter((event) => event.source.importance === "高" || event.source.category === "decision").length;
@@ -4474,7 +4760,9 @@ function buildTimelineLayout(timeline: TimelineEvent[], nodeMap: Map<string, Atl
     densityBars,
     rangeLabel: `${formatAxisDate(minDay)} - ${formatAxisDate(maxDay)}`,
     cursorLabel: formatAxisDate(new Date(cursorMs)),
-    cursorX: 80 + cursor * 880,
+    cursorX: MEMORY_RIVER_MIN_X + cursor * MEMORY_RIVER_WIDTH,
+    windowStartMs,
+    windowEndMs,
     totalCount: allEvents.length,
     visibleCount: visibleEvents.length,
     importantCount,
@@ -4483,7 +4771,7 @@ function buildTimelineLayout(timeline: TimelineEvent[], nodeMap: Map<string, Atl
     events: visibleEvents.map((event, index) => {
       const lane = laneMap.get(normalizeMemoryTier(event.source.memory_tier) || event.source.category) ?? lanes[index % Math.max(lanes.length, 1)];
       const eventMs = timelineUtcMs(event.day);
-      const x = 80 + ((eventMs - timelineUtcMs(minDay)) / span) * 880;
+      const x = MEMORY_RIVER_MIN_X + ((eventMs - timelineUtcMs(minDay)) / span) * MEMORY_RIVER_WIDTH;
       const major = event.source.importance === "高" || event.source.category === "decision" || index % 11 === 0;
       return {
         id: `${event.source.date}-${event.source.node_id}-${event.source.memory_id || index}`,
@@ -4501,6 +4789,133 @@ function buildTimelineLayout(timeline: TimelineEvent[], nodeMap: Map<string, Atl
       };
     }),
   };
+}
+
+function getInitialTimelineFeedbackSettings(): TimelineFeedbackSettings {
+  const reducedMotion = typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+  const defaults: TimelineFeedbackSettings = { reducedMotion: Boolean(reducedMotion), pseudoHaptic: false, audio: false };
+  if (typeof window === "undefined") return defaults;
+  try {
+    const stored = window.localStorage.getItem(TIMELINE_FEEDBACK_SETTINGS_KEY);
+    if (!stored) return defaults;
+    const parsed = JSON.parse(stored) as Partial<TimelineFeedbackSettings>;
+    return {
+      reducedMotion: Boolean(parsed.reducedMotion ?? defaults.reducedMotion),
+      pseudoHaptic: Boolean(parsed.pseudoHaptic),
+      audio: Boolean(parsed.audio),
+    };
+  } catch {
+    return defaults;
+  }
+}
+
+function persistTimelineFeedbackSettings(settings: TimelineFeedbackSettings): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(TIMELINE_FEEDBACK_SETTINGS_KEY, JSON.stringify(settings));
+  } catch {
+    // Preference persistence is best-effort for locked-down local previews.
+  }
+}
+
+function timelineRangeSummary(range: TimelineTimeRangeSelection | null): string | null {
+  if (!range) return null;
+  return `时间河选择 ${range.label} · ${range.eventCount.toLocaleString()} 事件 · ${range.topTheme}`;
+}
+
+function memoryRiverPointerX(event: PointerEvent<SVGSVGElement>): number {
+  const rect = event.currentTarget.getBoundingClientRect();
+  const ratio = rect.width > 0 ? (event.clientX - rect.left) / rect.width : 0;
+  return clampMemoryRiverX(ratio * 1000);
+}
+
+function clampMemoryRiverX(value: number): number {
+  return Math.min(MEMORY_RIVER_MAX_X, Math.max(MEMORY_RIVER_MIN_X, value));
+}
+
+function memoryRiverXToRatio(x: number): number {
+  return Math.min(1, Math.max(0, (clampMemoryRiverX(x) - MEMORY_RIVER_MIN_X) / MEMORY_RIVER_WIDTH));
+}
+
+function memoryRiverDateAtX(display: ReturnType<typeof buildTimelineLayout>, x: number): Date {
+  const ratio = memoryRiverXToRatio(x);
+  return new Date(display.windowStartMs + (display.windowEndMs - display.windowStartMs) * ratio);
+}
+
+function memoryRiverXForUtcMs(display: ReturnType<typeof buildTimelineLayout>, utcMs: number): number {
+  const span = Math.max(1, display.windowEndMs - display.windowStartMs);
+  return MEMORY_RIVER_MIN_X + ((utcMs - display.windowStartMs) / span) * MEMORY_RIVER_WIDTH;
+}
+
+function buildTimelineRangeSelection(
+  display: ReturnType<typeof buildTimelineLayout>,
+  startX: number,
+  endX: number,
+): TimelineTimeRangeSelection | null {
+  const left = clampMemoryRiverX(Math.min(startX, endX));
+  const right = clampMemoryRiverX(Math.max(startX, endX));
+  if (right - left < 14) return null;
+  const startDate = memoryRiverDateAtX(display, left);
+  const endDate = memoryRiverDateAtX(display, right);
+  const startKey = toDayKey(startDate);
+  const endKey = toDayKey(endDate);
+  const events = display.events.filter((event) => event.utcDate >= startKey && event.utcDate <= endKey);
+  const topTheme = topRows(countBy(events, (event) => event.node ? compactThemeLabel(humanThemeLabel(event.node)) || "未归类主题" : "未归类主题"), 1)[0]?.label ?? "暂无主题";
+  return {
+    id: `memory-river-brush-${startKey}-${endKey}-${stableHash(`${startKey}:${endKey}:${events.length}`)}`,
+    source: "memory-river-brush",
+    startDate: startKey,
+    endDate: endKey,
+    label: `${formatAxisDate(startDate)} - ${formatAxisDate(endDate)}`,
+    eventCount: events.length,
+    decisionCount: events.filter((event) => event.source.category === "decision").length,
+    coreMemoryCount: events.filter((event) => normalizeMemoryTier(event.source.memory_tier) === "核心画像").length,
+    topTheme,
+  };
+}
+
+function buildMemoryRiverRangeOverlay(range: TimelineTimeRangeSelection | null, display: ReturnType<typeof buildTimelineLayout>) {
+  if (!range) return null;
+  const startDay = parseTimelineUtcDay(range.startDate);
+  const endDay = parseTimelineUtcDay(range.endDate);
+  if (!startDay || !endDay) return null;
+  const startX = memoryRiverXForUtcMs(display, timelineUtcMs(startDay));
+  const endX = memoryRiverXForUtcMs(display, timelineUtcMs(endDay));
+  if (endX < MEMORY_RIVER_MIN_X || startX > MEMORY_RIVER_MAX_X) return null;
+  const x = clampMemoryRiverX(Math.min(startX, endX));
+  const right = clampMemoryRiverX(Math.max(startX, endX));
+  const width = Math.max(3, right - x);
+  return { x, width, labelX: x + width / 2, label: `${range.label} · ${range.eventCount}` };
+}
+
+function buildMemoryRiverDraftOverlay(draft: TimelineBrushDraft) {
+  const x = clampMemoryRiverX(Math.min(draft.startX, draft.endX));
+  const right = clampMemoryRiverX(Math.max(draft.startX, draft.endX));
+  return { x, width: Math.max(3, right - x) };
+}
+
+function emitTimelineFeedback(settings: TimelineFeedbackSettings, kind: "pan" | "brush" | "event"): void {
+  if (settings.reducedMotion) return;
+  if (settings.pseudoHaptic && typeof navigator !== "undefined" && navigator.vibrate) {
+    navigator.vibrate(kind === "brush" ? [8, 24, 8] : 10);
+  }
+  if (!settings.audio || typeof window === "undefined" || typeof window.AudioContext === "undefined") return;
+  try {
+    const context = new window.AudioContext();
+    const oscillator = context.createOscillator();
+    const gain = context.createGain();
+    oscillator.frequency.value = kind === "event" ? 660 : kind === "brush" ? 520 : 390;
+    gain.gain.value = 0.018;
+    oscillator.connect(gain);
+    gain.connect(context.destination);
+    oscillator.start();
+    window.setTimeout(() => {
+      oscillator.stop();
+      void context.close();
+    }, 55);
+  } catch {
+    // Optional audio feedback must never break the visualization.
+  }
 }
 
 function buildMemoryRiverLayout(events: TimelineDisplayEvent[], cursorX: number): MemoryRiverLayout {
@@ -4562,6 +4977,7 @@ function buildMemoryRiverLayout(events: TimelineDisplayEvent[], cursorX: number)
     return {
       id: `river-marker-${event.id}`,
       kind,
+      event,
       title: `${event.utcDate} UTC · ${kind === "black-hole" ? "Black Hole" : kind === "proto-star" ? "Proto-Star" : "Memory Event"} · ${event.source.label}`,
       x: Math.max(86, Math.min(954, event.x)),
       y: (lane?.y ?? 300) + (stableUnit(`${event.id}:${level}`, "memory-river-marker-y") - 0.5) * 26,

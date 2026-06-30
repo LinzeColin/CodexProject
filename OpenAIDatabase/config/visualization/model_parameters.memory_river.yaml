@@ -1,8 +1,8 @@
 schema_version: memory_river_params.v1
 product_target: Memory Atlas v1.1.5
-stage: "5.1"
-task: "5.1 Memory River Rendering"
-status: production_phase_5_1_heuristic
+stage: "5.2"
+task: "5.2 Memory River Interaction"
+status: production_phase_5_2_heuristic
 last_updated: "2026-07-01"
 data_boundary:
   allowed_inputs:
@@ -13,8 +13,8 @@ data_boundary:
   local_absolute_paths_allowed: false
   writeback_allowed: false
 notes:
-  purpose: "Production Stage 5.1 parameters for Timeline renderer flag, UTC day scale, and Macro/Meso/Micro Memory River lanes."
-  calibration_status: "heuristic layout constants; source-level and browser-smoke validated, not empirically calibrated"
+  purpose: "Production Stage 5.2 parameters for Timeline renderer flag, UTC day scale, Macro/Meso/Micro Memory River lanes, pan, brush, event card, and safe feedback."
+  calibration_status: "heuristic layout and interaction constants; source-level and browser-smoke validated, not empirically calibrated"
   rollback: "Set timelineRenderer=legacy, timeline=legacy, VITE_MEMORY_ATLAS_TIMELINE_RENDERER=legacy, or localStorage memory-atlas.timeline-renderer=legacy."
 time:
   use_utc_scale: true
@@ -73,17 +73,29 @@ interaction:
   legacy_rollback_enabled: true
   wheel_zoom_inherited_from_legacy_timeline: true
   playback_cursor_inherited_from_legacy_timeline: true
-  brush_enabled: false
-  hover_card_delay_ms: null
-  click_event_card_enabled: false
-  deferred_to_stage_5_2:
-    - brush selection
-    - hover/click event cards
-    - multimodal feedback
+  pan_enabled: true
+  pointer_pan_mode: pan
+  brush_enabled: true
+  brush_mode: brush
+  brush_min_width_px: 14
+  selected_range_sync_targets:
+    - Interaction Lens
+    - Home Overview heading
+    - Galaxy heading
+  hover_card_delay_ms: 0
+  click_event_card_enabled: true
+  event_card_payload: redacted_derived_event_only
+  event_card_syncs_inspector: true
 feedback:
-  pseudo_haptic_enabled: false
+  reduced_motion_default_from_media_query: true
+  reduced_motion_stops_playback: true
+  reduced_motion_suppresses_feedback: true
+  pseudo_haptic_enabled: optional_user_enabled
+  pseudo_haptic_default: false
   audio_feedback_default: false
   vibration_default: false
+  audio_feedback_max_gain: 0.018
+  audio_feedback_max_duration_ms: 55
 validation_hints:
   required_sections:
     - time
@@ -98,11 +110,18 @@ validation_hints:
     - Macro lane
     - Meso lane
     - Micro lane
+    - pan mode
+    - brush range
+    - selected time range sync
+    - hover event card
+    - click event lock
     - black hole marker
     - proto-star marker
+    - reduced motion setting
+    - default no audio
+    - default no vibration
   non_goals:
-    - no Stage 5.2 brush interaction in Phase 5.1
-    - no Stage 5.2 hover/click event card in Phase 5.1
-    - no multimodal feedback in Phase 5.1
+    - no Stage 5.3 evidence layers in Phase 5.2
+    - no Stage 5 whole-stage review in Phase 5.2
     - no raw transcript access
     - no writeback

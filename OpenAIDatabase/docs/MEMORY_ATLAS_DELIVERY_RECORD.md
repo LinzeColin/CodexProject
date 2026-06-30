@@ -63,7 +63,7 @@ Cloudflare 方案：
 - 数据导图：应使用框架导图格式展示来源、画像、项目决策和行动机会，不是普通列表。
 - ROI Dashboard：显示 leverage score、推荐动作、层级、主题、增量信号；用于 ROI 排序和决策。
 - Obsidian Graph：支持 global/local graph、图谱设置折叠、Focus - Connectivity、节点显示名 `层级 · 主题 · 关键词`，并同步 Inspector。
-- Timeline：默认使用 Memory River 渲染器，以 UTC 日期尺度展示 Macro / Meso / Micro 河道、主题/项目/分类 lane、密度背景、真实事件日期 tick、播放游标、black-hole / proto-star / event marker；保留 legacy Timeline feature flag 回滚。Stage 5.2 之前，brush、hover/click event card 和专用多模态反馈仍未完成。
+- Timeline：默认使用 Memory River 渲染器，以 UTC 日期尺度展示 Macro / Meso / Micro 河道、主题/项目/分类 lane、密度背景、真实事件日期 tick、播放游标、black-hole / proto-star / event marker；保留 legacy Timeline feature flag 回滚。Stage 5.2 已支持 Pan/Brush 模式、横向拖拽平移、UTC 时间段 brush selection、Interaction Lens / 首页 / 星系 heading 同步、hover/click redacted event card、click 锁定事件并同步 Inspector，以及 Reduced Motion / optional pseudo-haptic / optional audio 的安全反馈设置。Stage 5.3 evidence layers 仍未完成。
 - Contribution Grid：支持日/周/月/年和年份选择。日/周共享 7 行 x 52-54 列全年坐标，周模式以一整列自然周为对象；月/年共享两年 24 列，年视图纵向展示。
 - Word Cloud：Heatmap、Bubble Chart、Word Cloud 三层都可点击并同步右侧详情。
 - Search/Review：搜索与复盘必须输出人能直接用的结论和行动，不只给数据库字段。
@@ -125,6 +125,7 @@ Writeback：
 - 2026-07-01：完成 Memory Atlas v1.1.5 Stage 4.3 Starfield Interaction；生产 Galaxy 保留 hover preview 和 capped click focus，新增 Freeze / Resume Flow，新增 Presentation / Analysis mode selector；Analysis 显示公式摘要、terrain legend 和当前 Inspector 上下文；Stage 5 Timeline 替换、写回、Cloudflare 部署和 raw/private data 仍未进入。
 - 2026-07-01：完成 Memory Atlas v1.1.5 Stage 4 整体复审；复审确认 visual roadmap `记忆星系生产集成` 的 4.1/4.2/4.3 均通过，本地 contract、build、visual acceptance、release acceptance、preview HTTP 和 4177 清理通过；随后用 Chrome CDP 隔离 profile 补齐桌面/移动 WebGL screenshot、canvas-pixel 和 FPS 证据，并修复 390px 移动端 Galaxy 横向溢出与首屏画布露出不足问题。
 - 2026-07-01：完成 Memory Atlas v1.1.5 Stage 5.1 Memory River Rendering；生产 Timeline 默认进入 `memory-river` renderer，保留 `legacy` 回滚；新增 UTC 日期尺度、Macro/Meso/Micro 河道、主题/项目/分类 lane、black-hole/proto-star/event markers、Stage 5.1 validator、visual acceptance 钩子和 Memory River 参数文件更新；Stage 5.2 brush、hover/click event card、多模态反馈仍未进入。
+- 2026-07-01：完成 Memory Atlas v1.1.5 Stage 5.2 Memory River Interaction；新增 Pan/Brush 模式、pointer pan、UTC brush range selection、range overlay、Interaction Lens/Home/Galaxy range sync、hover/click redacted event card、click lock + Inspector sync、Reduced Motion / optional pseudo-haptic / optional audio 安全反馈设置，并新增 Stage 5.2 validator 和 visual acceptance 钩子；Stage 5.3 evidence layers、Stage 5 整体复审和 GitHub main 上传仍未进入。
 
 近期提交参考：
 
@@ -137,7 +138,7 @@ Writeback：
 
 高优先级：
 
-- Timeline 增加刷选区间、多阶段聚类摘要、相邻时间段差异解释。
+- Timeline 增加 Stage 5.3 evidence layers、多阶段聚类摘要、相邻时间段差异解释。
 - Writeback 增加 agent apply CLI：读取 proposal、冲突检测、写 history、更新 active memory、生成 git rollback commit。
 - Summary & Iteration 增加更强人类版输出：ROI 建议、能力成长建议、机会地图、下周行动建议。
 - Galaxy 增强天体语义：核心画像为核心星系，项目为旋臂，决策为高亮事件，临时信息为外层低亮星云。
