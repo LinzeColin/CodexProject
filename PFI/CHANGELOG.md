@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 3 Whole-Stage Review - 2026-07-01
+
+- 完成 `Stage 3 whole-stage review - 复审并解决暴露问题`，复审 Phase 3.1、Phase 3.2 和 Phase 3.3 的合同、route、DOM、browser history 和 evidence。
+- 新增 `PFI/docs/pfi_v024/STAGE3_WHOLE_STAGE_REVIEW.md`、`PFI/tests/test_v024_stage3_whole_review_contract.py` 和 `PFI/reports/pfi_v024/stage_3/whole_stage_review/evidence.json`。
+- 修复复审发现的 3 个 Stage 3 范围问题：缺少 whole-stage review gate、顶层状态仍停在 Phase 3.3、Phase 3.3 浏览器证据需要 review-time refresh。
+- 重新运行 Node Playwright 验收，刷新 `phase_3_3/browser_validation.json`、`legacy_routes_validation.json` 和截图证据。
+- Stage 3 本地整阶段复审完成；本轮未执行 GitHub main upload、Stage 4、app bundle reinstall、真实数据逻辑修改。
+
 ## v0.2.4 Repair Pack Stage 3 Phase 3.3 - 2026-07-01
 
 - 完成 `Stage 3 / Phase 3.3 - 导航验收`：真实浏览器验证 desktop/mobile 各 10 个一级入口，`市场与研究` 保持第 9 个正式一级入口。

@@ -72,14 +72,15 @@ Stage 1 records:
 
 ## v0.2.4 Stage 3 Status
 
-Current run unit: `Stage 3 / Phase 3.3 - 导航验收`.
+Current run unit: `Stage 3 whole-stage review - 复审并解决暴露问题`.
 
 - Stage 2 GitHub main upload: complete at `c34af606f9793272e92d067fbe808dfdf100ec84`.
 - Phase 3.1: candidate pass.
 - Phase 3.2: candidate pass.
 - Phase 3.3: candidate pass.
 - Stage 3 candidate complete: yes.
-- Stage 3 whole-stage review: not executed.
+- Stage 3 whole-stage review: pass.
+- Stage 3 complete: yes at local review level.
 - GitHub main upload: not executed in this run.
 - Current navigation contract: `PFI-V024-STAGE3-PHASE31-NAVIGATION`.
 - Current route contract: `PFI-V024-STAGE3-PHASE32-ROUTES`.
@@ -91,7 +92,7 @@ Current run unit: `Stage 3 / Phase 3.3 - 导航验收`.
 - `PFI/web/app/shell.js` uses the v0.2.4 route table before fallback parsing; Phase 3.3 real browser validation passed for DOM 10 entries, v0.1 direct alias URLs, click navigation, and browser back/forward.
 - Business financial data logic changes: none.
 - App bundle changes: none.
-- Next gate: Stage 3 whole-stage review only after user instruction.
+- Next gate: Stage 3 GitHub main upload after explicit instruction.
 
 Phase 3.1 records:
 
@@ -115,6 +116,12 @@ Phase 3.3 records:
 - `reports/pfi_v024/stage_3/phase_3_3/legacy_routes_validation.json`
 - `reports/pfi_v024/stage_3/phase_3_3/screenshots/desktop_nav.png`
 - `reports/pfi_v024/stage_3/phase_3_3/screenshots/browser_back_after_forward.png`
+
+Stage 3 whole-stage review records:
+
+- `docs/pfi_v024/STAGE3_WHOLE_STAGE_REVIEW.md`
+- `tests/test_v024_stage3_whole_review_contract.py`
+- `reports/pfi_v024/stage_3/whole_stage_review/evidence.json`
 
 ## v0.2.4 Stage 2 Status
 

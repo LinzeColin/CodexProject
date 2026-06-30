@@ -16,6 +16,7 @@ REPAIR_LABEL = "PFI v0.2.3 Repair"
 NAVIGATION_CONTRACT_VERSION = "PFI-V024-STAGE3-PHASE31-NAVIGATION"
 ROUTE_CONTRACT_VERSION = "PFI-V024-STAGE3-PHASE32-ROUTES"
 BROWSER_NAVIGATION_CONTRACT_VERSION = "PFI-V024-STAGE3-PHASE33-BROWSER-NAVIGATION"
+WHOLE_REVIEW_ID = "stage_3_whole_review"
 
 OFFICIAL_PRIMARY_NAV = [
     {"index": 1, "label": "首页总览", "workspace": "home", "routeAlias": "/home", "icon": "⌂"},
@@ -425,5 +426,85 @@ def build_v024_stage3_phase33_contract() -> V024Stage3Phase33NavigationAcceptanc
         explicitly_not_done=[
             "Stage 3 whole-stage review",
             "GitHub main upload",
+        ],
+    )
+
+
+@dataclass(frozen=True)
+class V024Stage3WholeReviewContract:
+    target_version: str
+    source_package_version: str
+    repair_label: str
+    stage_id: str
+    review_id: str
+    reviewed_phase_ids: list[str]
+    navigation_contract_version: str
+    route_contract_version: str
+    browser_navigation_contract_version: str
+    official_primary_entry_count: int
+    market_research_primary_index: int
+    legacy_alias_route_count: int
+    validation_commands: list[str]
+    phase_3_1_complete: bool
+    phase_3_2_complete: bool
+    phase_3_3_complete: bool
+    stage_3_candidate_complete: bool
+    stage_3_review_complete: bool
+    stage_3_complete: bool
+    browser_history_validation_done: bool
+    stage_4_allowed_without_user_instruction: bool
+    app_bundle_changes_allowed: bool
+    data_logic_changes_allowed: bool
+    formal_fake_financial_data_allowed: bool
+    github_main_upload_allowed: bool
+    github_main_uploaded: bool
+    max_phases_per_run: int
+    explicitly_not_done: list[str]
+
+    def to_dict(self) -> dict[str, object]:
+        return asdict(self)
+
+
+def build_v024_stage3_whole_review_contract() -> V024Stage3WholeReviewContract:
+    return V024Stage3WholeReviewContract(
+        target_version=TARGET_VERSION,
+        source_package_version=SOURCE_PACKAGE_VERSION,
+        repair_label=REPAIR_LABEL,
+        stage_id=STAGE_ID,
+        review_id=WHOLE_REVIEW_ID,
+        reviewed_phase_ids=[PHASE_3_1_ID, PHASE_3_2_ID, PHASE_3_3_ID],
+        navigation_contract_version=NAVIGATION_CONTRACT_VERSION,
+        route_contract_version=ROUTE_CONTRACT_VERSION,
+        browser_navigation_contract_version=BROWSER_NAVIGATION_CONTRACT_VERSION,
+        official_primary_entry_count=len(OFFICIAL_PRIMARY_NAV),
+        market_research_primary_index=9,
+        legacy_alias_route_count=len(LEGACY_ALIAS_ROUTES),
+        validation_commands=[
+            "node playwright stage3 phase33 browser validation",
+            "pytest stage3 whole review contract",
+            "pytest v024 regression through stage3 whole review",
+            "pytest v023 stage3 navigation compatibility",
+            "git diff --check -- PFI",
+        ],
+        phase_3_1_complete=True,
+        phase_3_2_complete=True,
+        phase_3_3_complete=True,
+        stage_3_candidate_complete=True,
+        stage_3_review_complete=True,
+        stage_3_complete=True,
+        browser_history_validation_done=True,
+        stage_4_allowed_without_user_instruction=False,
+        app_bundle_changes_allowed=False,
+        data_logic_changes_allowed=False,
+        formal_fake_financial_data_allowed=False,
+        github_main_upload_allowed=False,
+        github_main_uploaded=False,
+        max_phases_per_run=1,
+        explicitly_not_done=[
+            "Stage 4",
+            "GitHub main upload",
+            "app bundle reinstall",
+            "launcher C or Info.plist changes",
+            "financial data or metric logic changes",
         ],
     )
