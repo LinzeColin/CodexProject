@@ -10,6 +10,7 @@ SOURCE_PACKAGE_VERSION = "v0.2.3-repair"
 STAGE_ID = "Stage 2"
 PHASE_2_1_ID = "2.1"
 PHASE_2_2_ID = "2.2"
+PHASE_2_3_ID = "2.3"
 
 PROJECT_ROOT = "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI"
 REPAIR_LABEL = "PFI v0.2.3 Repair"
@@ -337,4 +338,72 @@ def build_v024_stage2_phase22_contract() -> V024Stage2Phase22Contract:
         data_logic_changes_allowed=False,
         github_main_upload_allowed=False,
         next_phase_requires_user_acceptance=True,
+    )
+
+
+@dataclass(frozen=True)
+class V024Stage2Phase23Contract:
+    target_version: str
+    source_package_version: str
+    stage_id: str
+    phase_id: str
+    phase_name: str
+    task_ids: list[str]
+    phase_2_1_complete: bool
+    phase_2_2_complete: bool
+    phase_2_3_complete: bool
+    stage_2_candidate_complete: bool
+    stage_2_complete: bool
+    max_phases_per_run: int
+    validation_paths: list[str]
+    required_browser_evidence: list[str]
+    repair_label: str
+    build_id: str
+    bundle_version: str
+    ui_contract_version: str
+    app_bundle_changes_allowed: bool
+    app_bundle_reinstall_allowed: bool
+    launcher_source_changes_allowed: bool
+    data_logic_changes_allowed: bool
+    business_ui_changes_allowed: bool
+    github_main_upload_allowed: bool
+    next_step_requires_whole_stage_review: bool
+
+    def to_dict(self) -> dict[str, object]:
+        return asdict(self)
+
+
+def build_v024_stage2_phase23_contract() -> V024Stage2Phase23Contract:
+    return V024Stage2Phase23Contract(
+        target_version=TARGET_VERSION,
+        source_package_version=SOURCE_PACKAGE_VERSION,
+        stage_id=STAGE_ID,
+        phase_id=PHASE_2_3_ID,
+        phase_name="实机验收",
+        task_ids=["T2.3.1", "T2.3.2", "T2.3.3", "T2.3.4"],
+        phase_2_1_complete=True,
+        phase_2_2_complete=True,
+        phase_2_3_complete=True,
+        stage_2_candidate_complete=True,
+        stage_2_complete=False,
+        max_phases_per_run=1,
+        validation_paths=["localhost", "app", "clear_cache", "new_profile"],
+        required_browser_evidence=[
+            "PFI/reports/pfi_v024/stage_2/phase_2_3/browser_validation.json",
+            "PFI/reports/pfi_v024/stage_2/phase_2_3/screenshots/localhost_home.png",
+            "PFI/reports/pfi_v024/stage_2/phase_2_3/screenshots/app_home.png",
+            "PFI/reports/pfi_v024/stage_2/phase_2_3/screenshots/clear_cache_home.png",
+            "PFI/reports/pfi_v024/stage_2/phase_2_3/screenshots/new_profile_home.png",
+        ],
+        repair_label=REPAIR_LABEL,
+        build_id=STAGE2_BUILD_ID,
+        bundle_version=STAGE2_BUNDLE_VERSION,
+        ui_contract_version=STAGE2_UI_CONTRACT_VERSION,
+        app_bundle_changes_allowed=False,
+        app_bundle_reinstall_allowed=False,
+        launcher_source_changes_allowed=False,
+        data_logic_changes_allowed=False,
+        business_ui_changes_allowed=False,
+        github_main_upload_allowed=False,
+        next_step_requires_whole_stage_review=True,
     )

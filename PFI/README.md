@@ -72,20 +72,22 @@ Stage 1 records:
 
 ## v0.2.4 Stage 2 Status
 
-Current run unit: `Stage 2 / Phase 2.2 - 版本链路实现`.
+Current run unit: `Stage 2 / Phase 2.3 - 实机验收`.
 
 - Stage 1 GitHub main upload: complete at `99dea6212dd79b1b0027e8152fa18d81321d46a8`.
 - Phase 2.1: candidate pass.
 - Phase 2.2: candidate pass.
-- Phase 2.3: not started.
+- Phase 2.3: candidate pass.
+- Stage 2 candidate complete: yes.
 - Stage 2 complete: no.
 - Business UI changes: limited to entry identity status strip and version metadata visibility.
 - Data logic changes: none.
 - App bundle changes: none.
-- Launcher source changes: versioned URL query updated in `PFI/StartPFI.command` and `PFI/scripts/startPFI.sh`; app bundle reinstall not executed.
+- Launcher source changes: versioned URL query updated and build-scoped active service marker added in `PFI/StartPFI.command` and `PFI/scripts/startPFI.sh`; app bundle reinstall not executed.
 - Current build identity: `PFI v0.2.3 Repair` / `pfi-v024-stage2-phase22` / `PFI-V024-STAGE2-ENTRY-CONSISTENCY`.
 - Current bundle hash: `e8928ed7f3067ae3e732aacda74427a61b69fbcfe855b2254118e7dafe38f8e4`.
 - Current installed app dry-run mapping resolves `/Applications/PFI.app`, `~/Downloads/PFI.app`, and `~/Desktop/PFI.app` to the canonical PFI project root.
+- Current real browser validation service: `http://127.0.0.1:8502` with matching app/local/clear-cache/new-profile build id and bundle hash.
 
 Phase 2.1 records:
 
@@ -105,6 +107,14 @@ Phase 2.2 records:
 - `reports/pfi_v024/stage_2/phase_2_2/evidence.json`
 - `reports/pfi_v024/stage_2/phase_2_2/bundle_hash.txt`
 - `reports/pfi_v024/stage_2/phase_2_2/version_link_summary.md`
+
+Phase 2.3 records:
+
+- `tests/test_v024_stage2_phase23_real_entry_validation.py`
+- `scripts/validate_v024_stage2_phase23_entry.js`
+- `reports/pfi_v024/stage_2/phase_2_3/evidence.json`
+- `reports/pfi_v024/stage_2/phase_2_3/browser_validation.json`
+- `reports/pfi_v024/stage_2/phase_2_3/screenshots/`
 
 ## v0.2.4 Stage 0 Status
 
