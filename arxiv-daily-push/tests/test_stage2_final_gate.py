@@ -1153,7 +1153,10 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(wait_guard["blocked_by_missing_inputs"], plan["blocked_by_missing_inputs"])
         self.assertEqual(wait_guard["remaining_runtime_actions"], plan["remaining_runtime_actions"])
         self.assertEqual(wait_guard["allowed_readonly_commands"], [
-            "adp plan-s2plt02-terminal-delivery-proof-capture --repo-root . --json",
+            (
+                "adp plan-s2plt02-terminal-delivery-proof-capture --repo-root . "
+                f"--generated-at {plan['generated_at']} --json"
+            ),
             "adp audit-s2plt02-terminal-capture-window --repo-root . --json",
             "adp audit-s2plt02-terminal-proof-evidence-inventory --repo-root . --json",
             "adp validate-s2plt02-terminal-delivery-proof --repo-root . --json",
@@ -6048,12 +6051,21 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertEqual(
             state["s2plt02_terminal_delivery_capture_plan_summary"]["state_hash"],
-            "2b82aea9755bc7d3d2f316cc48dcbc89a0cd1f9c324f687e385dc780a24d3997",
+            "5b344929d8d00c9cf881accbbd9abd68963b5f40cbd975a805fa4da62a8a8a25",
+        )
+        self.assertEqual(
+            state["s2plt02_terminal_delivery_capture_plan_summary"]["generated_at"],
+            "2026-06-30T18:03:24+10:00",
         )
         self.assertFalse(state["s2plt02_terminal_delivery_capture_plan_summary"]["runtime_capture_ready"])
         wait_guard = state["s2plt02_terminal_delivery_capture_plan_summary"]["capture_wait_state_guard"]
-        self.assertEqual(wait_guard["state_hash"], "693c4a0f9c57a2a3c7f1a7bfeb6683fda661a9456a5010ee773cbd00f487fdcf")
+        self.assertEqual(wait_guard["state_hash"], "581fe9f53d82db88959196f874d312e50b1739a839158f7bf2d38cc186c03506")
         self.assertEqual(wait_guard["current_wait_state"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
+        self.assertEqual(
+            wait_guard["allowed_readonly_commands"][0],
+            "adp plan-s2plt02-terminal-delivery-proof-capture --repo-root . "
+            "--generated-at 2026-06-30T18:03:24+10:00 --json",
+        )
         self.assertIn(
             S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH,
             wait_guard["forbidden_until_terminal_dependencies_pass"],

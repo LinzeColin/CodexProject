@@ -5962,3 +5962,29 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+
+  - task_id: "S2PLT02-TERMINAL-CAPTURE-WAIT-STATE-READONLY-COMMAND-CONTRACT"
+    title: "S2PLT02 terminal capture wait-state readonly command contract"
+    parent_task_id: "S2PLT02-TERMINAL-DELIVERY-PROOF"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-07-01T01:50:16+10:00"
+    objective: "Make the S2PLT02 wait-state guard readonly plan command match the real CLI contract."
+    scope: "S2PLT02 capture plan wait guard, validator, CLI regression, phase record, run manifest, traceability row, delivery/event records, user-center status, and three base notes."
+    non_scope: "No S2PLT02/S2PLT03 terminal proof artifact, no S2PLT04 completion report, no final-bundle manifest/handoff/signoff/final-command proof, no SMTP send, no scheduler enable/install/kickstart, no Release, no restore, no CURRENT/V7 change, no public schema/DB/source/ranking/queue mutation, no P0/P1 closure claim, no S2PLT02/S2PLT03/S2PLT04/S2PMT07 acceptance, and no integrated production acceptance."
+    owner: "engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    dependencies: ["S2PLT02-TERMINAL-CAPTURE-WAIT-STATE-GUARD", "S2PLT02-TERMINAL-DELIVERY-PROOF", "S2PMT07-FINAL-BUNDLE-PREREQUISITES"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/tests/test_governance_current_state.py", "arxiv-daily-push/tests/test_user_center_candidate_pool.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_CAPTURE_WAIT_STATE_READONLY_COMMAND_CONTRACT.md", "governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-WAIT-STATE-READONLY-COMMAND-CONTRACT-20260701.json"]
+    acceptance_ids: ["ACC-S2PLT02-2D", "ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_cmd_contract_red PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_cmd_contract_cli PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_cli.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_cmd_contract_gate PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q"]
+    test_results: ["TDD red failed because the wait guard command lacked --generated-at", "CLI regression requires the wait guard command to return blocked JSON", "capture plan state_hash 5b344929d8d00c9cf881accbbd9abd68963b5f40cbd975a805fa4da62a8a8a25; wait guard state_hash 581fe9f53d82db88959196f874d312e50b1739a839158f7bf2d38cc186c03506; prerequisite plan state_hash 8409313fd39c4627122aca97cc80d28480f65b5230f6982ae7e720b6e0134b73; final validator state_hash eef4f33e08feb99de67c24c9339ae204658f6b0ac4d0e5cd810092b5a3246aff"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-WAIT-STATE-READONLY-COMMAND-CONTRACT-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_CAPTURE_WAIT_STATE_READONLY_COMMAND_CONTRACT.md", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/tests/test_governance_current_state.py", "arxiv-daily-push/tests/test_user_center_candidate_pool.py"]
+    result: "blocked_s2plt02_terminal_capture_wait_state_readonly_command_contract_synced_no_production"
+    risk: "Future agents can copy a readonly command that fails parser validation instead of returning the blocked S2PLT02 capture plan."
+    rollback: "Revert the command-contract field, summary timestamp propagation, CLI/final-gate tests, phase record, run manifest, traceability row, delivery/event records, user-center notes, and three base notes; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

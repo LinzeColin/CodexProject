@@ -36,15 +36,21 @@ class GovernanceCurrentStateTests(unittest.TestCase):
 
 
         self.assertIn(
-            "S2PLT02_TERMINAL_CAPTURE_WAIT_STATE_GUARD_BLOCKED_NO_PRODUCTION",
+            "S2PLT02_TERMINAL_CAPTURE_WAIT_STATE_READONLY_COMMAND_CONTRACT_BLOCKED_NO_PRODUCTION",
             current_state,
         )
-        self.assertIn("S2PLT02-TERMINAL-CAPTURE-WAIT-STATE-GUARD", current_state)
+        self.assertIn("S2PLT02-TERMINAL-CAPTURE-WAIT-STATE-READONLY-COMMAND-CONTRACT", current_state)
         self.assertIn("capture_wait_state_guard", current_state)
-        self.assertIn("2b82aea9755bc7d3d2f316cc48dcbc89a0cd1f9c324f687e385dc780a24d3997", current_state)
-        self.assertIn("693c4a0f9c57a2a3c7f1a7bfeb6683fda661a9456a5010ee773cbd00f487fdcf", current_state)
-        self.assertIn("b22c4110a1fa85ec1ddd004a8c52962f9daa61f16fb83cbfdb2f796ea84198ed", current_state)
-        self.assertIn("f1fab7374737527ffb5278b4d9a476e27d708d61b88e0dbe57a60e56085f39bd", current_state)
+        self.assertIn("5b344929d8d00c9cf881accbbd9abd68963b5f40cbd975a805fa4da62a8a8a25", current_state)
+        self.assertIn("581fe9f53d82db88959196f874d312e50b1739a839158f7bf2d38cc186c03506", current_state)
+        self.assertIn("8409313fd39c4627122aca97cc80d28480f65b5230f6982ae7e720b6e0134b73", current_state)
+        self.assertIn("eef4f33e08feb99de67c24c9339ae204658f6b0ac4d0e5cd810092b5a3246aff", current_state)
+        self.assertIn(
+            "adp plan-s2plt02-terminal-delivery-proof-capture --repo-root . --generated-at 2026-06-30T18:03:24+10:00 --json",
+            current_state,
+        )
+        self.assertIn("ADP-S2PLT02-TERMINAL-CAPTURE-WAIT-STATE-READONLY-COMMAND-CONTRACT-20260701.json", current_state)
+        self.assertIn("PHASE_S2PLT02_TERMINAL_CAPTURE_WAIT_STATE_READONLY_COMMAND_CONTRACT.md", ledger)
         self.assertIn("ADP-S2PLT02-TERMINAL-CAPTURE-WAIT-STATE-GUARD-20260701.json", current_state)
         self.assertIn("PHASE_S2PLT02_TERMINAL_CAPTURE_WAIT_STATE_GUARD.md", ledger)
 

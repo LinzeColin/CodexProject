@@ -1,6 +1,7 @@
 import io
 import json
 import os
+import shlex
 import subprocess
 import sys
 import tempfile
@@ -999,6 +1000,28 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["smtp_secret_env_ready"])
         self.assertFalse(payload["smtp_secret_values_logged"])
         self.assertEqual(payload["next_executable_step"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
+        guard_command = payload["capture_wait_state_guard"]["allowed_readonly_commands"][0]
+        self.assertEqual(
+            guard_command,
+            "adp plan-s2plt02-terminal-delivery-proof-capture --repo-root . "
+            "--generated-at 2026-06-30T10:41:36+10:00 --json",
+        )
+        repo_root = Path(__file__).resolve().parents[2]
+        previous_cwd = Path.cwd()
+        try:
+            os.chdir(repo_root)
+            guard_buffer = io.StringIO()
+            with redirect_stdout(guard_buffer):
+                guard_result = main(shlex.split(guard_command)[1:])
+        finally:
+            os.chdir(previous_cwd)
+        guard_payload = json.loads(guard_buffer.getvalue())
+        self.assertEqual(guard_result, 2)
+        self.assertEqual(guard_payload["status"], "blocked")
+        self.assertEqual(
+            guard_payload["capture_wait_state_guard"]["allowed_readonly_commands"][0],
+            guard_command,
+        )
         self.assertEqual(payload["capture_steps"][0]["step_id"], "CAPTURE_SECOND_REAL_M1_M4_SMTP_DAY")
         self.assertEqual(
             payload["capture_steps"][-1]["command"],

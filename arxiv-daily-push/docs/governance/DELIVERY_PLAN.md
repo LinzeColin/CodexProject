@@ -21,10 +21,18 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 314
+- task_count: 315
 - acceptance_count: 127
 
 ## Delivery Tasks
+
+## 2026-07-01 01:50:16 Australia/Sydney - S2PLT02 Terminal Capture Wait-State Readonly Command Contract
+
+- `S2PLT02-TERMINAL-CAPTURE-WAIT-STATE-READONLY-COMMAND-CONTRACT` fixes the wait guard copy-paste plan command so it includes the real CLI-required `--generated-at` argument.
+- Current live CLIs remain blocked / exit 2: S2PLT02 capture plan `state_hash=5b344929d8d00c9cf881accbbd9abd68963b5f40cbd975a805fa4da62a8a8a25`, wait guard `state_hash=581fe9f53d82db88959196f874d312e50b1739a839158f7bf2d38cc186c03506`, prerequisite plan `state_hash=8409313fd39c4627122aca97cc80d28480f65b5230f6982ae7e720b6e0134b73`, final validator `state_hash=eef4f33e08feb99de67c24c9339ae204658f6b0ac4d0e5cd810092b5a3246aff`.
+- Guard command: `adp plan-s2plt02-terminal-delivery-proof-capture --repo-root . --generated-at 2026-06-30T18:03:24+10:00 --json`. The CLI regression executes this command through the parser and confirms it returns blocked JSON instead of argparse usage.
+- Evidence: `governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-WAIT-STATE-READONLY-COMMAND-CONTRACT-20260701.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_CAPTURE_WAIT_STATE_READONLY_COMMAND_CONTRACT.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`; `arxiv-daily-push/tests/test_cli.py`.
+- No S2PLT02/S2PLT03 terminal proof artifact, S2PLT04 completion report, final-bundle manifest/handoff/signoff/final-command proof, SMTP send, scheduler enable/install/kickstart, Release, restore, CURRENT/V7 change, public schema/DB/source/ranking/queue mutation, P0/P1 closure claim, S2PLT02/S2PLT03/S2PLT04/S2PMT07 acceptance, DAILY_OPERATION, Stage2/S3 production acceptance, or production side effect is introduced.
 
 ## 2026-07-01 01:32:33 Australia/Sydney - S2PLT02 Terminal Capture Wait-State Guard
 
