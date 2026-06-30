@@ -3,10 +3,10 @@ roadmap_kind: "product"
 project_id: "KMFA"
 total_estimated_hours: 54
 completed_estimated_hours: 54
-current_stage_id: "S8"
-current_phase_id: "S8UPLOAD"
-current_task_id: "KMFA-S08-FINAL-GITHUB-UPLOAD-20260630"
-next_gate_id: "KMFA-S08-FINAL-GITHUB-UPLOAD-GATE"
+current_stage_id: "S9"
+current_phase_id: "S9PA"
+current_task_id: "S9PAT01"
+next_gate_id: "KMFA-S09-P1-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -631,10 +631,10 @@ stages:
       - "KMFA/stage_artifacts/S07_STAGE_REVIEW/machine/stage7_upload_manifest.json"
   - stage_id: "S8"
     name: "业务实体与项目身份匹配"
-    status: "review_passed_upload_ready_local_only"
+    status: "uploaded_to_github_main"
     estimated_hours: 3
     estimated_pct: 100
-    current_result: "S08-P1 项目组合键、S08-P2 业务实体模型、S08-P3 匹配质量测试和 Stage 8 整体复审已本地验证完成；下一门禁仅为 Stage 8 final GitHub upload。"
+    current_result: "S08-P1 项目组合键、S08-P2 业务实体模型、S08-P3 匹配质量测试、Stage 8 整体复审和 final GitHub upload 已完成；下一门禁仅为 S09-P1 项目成本事实层。"
     evidence_refs:
       - "KMFA/stage_artifacts/S08_P1_project_composite_key/human/s08_p1_completion_record.md"
       - "KMFA/stage_artifacts/S08_P1_project_composite_key/human/test_results.md"
@@ -648,6 +648,8 @@ stages:
       - "KMFA/stage_artifacts/S08_STAGE_REVIEW/human/stage8_review_report.md"
       - "KMFA/stage_artifacts/S08_STAGE_REVIEW/human/test_results.md"
       - "KMFA/stage_artifacts/S08_STAGE_REVIEW/machine/stage8_review_manifest.json"
+      - "KMFA/stage_artifacts/S08_STAGE_REVIEW/human/github_upload_record.md"
+      - "KMFA/stage_artifacts/S08_STAGE_REVIEW/machine/stage8_upload_manifest.json"
   - stage_id: "S9"
     name: "项目成本计算引擎"
     status: "planned"

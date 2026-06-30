@@ -4,7 +4,7 @@
 
 ## 一句话状态
 
-KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload、Stage 5 全部 Phase/复审/upload、Stage 6 全部 Phase/复审/upload、Stage 7 的 S07-P1 财务文件适配、S07-P2 WPS 文件适配、S07-P3 红圈导出后置策略、整体复审和 final GitHub upload，以及 S08-P1 项目组合键、S08-P2 业务实体模型、S08-P3 匹配质量测试和 Stage 8 整体复审本地验证。Stage 8 review 已复跑 validators、治理检查、raw/secret scan、parse checks 和 evidence consistency checks；Stage 8 final GitHub upload、事实层、lineage 和报告仍未完成，项目仍不是可用业务系统。
+KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload、Stage 5 全部 Phase/复审/upload、Stage 6 全部 Phase/复审/upload、Stage 7 全部 Phase/复审/upload，以及 S08-P1 项目组合键、S08-P2 业务实体模型、S08-P3 匹配质量测试、Stage 8 整体复审和 Stage 8 final GitHub upload。Stage 8 upload 已复跑 validators、治理检查、raw/secret scan、parse checks、evidence consistency checks、dry-run push、push 和 post-push parity；S09-P1 事实层、lineage 和报告仍未完成，项目仍不是可用业务系统。
 
 ## 你现在能信任什么
 
@@ -49,6 +49,7 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 - S08-P2 业务实体模型已本地验证完成：customer、contract、project、cost_record、invoice、collection、receivable、tax_evidence 8 类实体只保存 public-safe schema/hash/ref/status/evidence metadata；14 条关系和 32 条生命周期状态已写入 metadata/schema_maps。
 - S08-P3 匹配质量测试已本地验证完成：same-name project、multiple company entities、multiple accounts、multiple periods 4 类质量场景全部使用 public-safe refs/hash/status/evidence，3 条中高风险候选进入人工复核队列且 `auto_merge_allowed=false`，并输出 `entity_matching_report`。
 - Stage 8 整体复审已本地通过：`KMFA/stage_artifacts/S08_STAGE_REVIEW/` 记录 review report、test results 和 machine manifest；raw/secret scan 未发现可提交 raw 文件或 high-signal secret。
+- Stage 8 final GitHub upload 已完成：`KMFA/stage_artifacts/S08_STAGE_REVIEW/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S08_STAGE_REVIEW/machine/stage8_upload_manifest.json` 记录 rebase、validators、raw/secret scan、dry-run push、push 和 post-push parity。
 
 ## 你现在不能信任什么
 
@@ -56,7 +57,7 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 - 不能认为真实业务源解析、事实层或报告已经实现。
 - 不能认为 S05-P3 已经提交真实合同额、支出合计、毛利、毛利率或成本分类明文；公开仓库只保存 public-safe hash/source-anchor baseline。
 - 不能认为 A0 authority baseline 已经可以发布正式经营报告；lineage 和报告发布门禁尚未完成。
-- 不能认为 Stage 6 upload、S07-P1 finance adapter、S07-P2 WPS adapter、S07-P3 redcircle policy、Stage 7 review、S08-P1 project composite key、S08-P2 business entity model、S08-P3 matching quality test 或 Stage 8 review 代表正式经营报告、事实层、lineage、自动接口或差异关闭能力已经实现。
+- 不能认为 Stage 6 upload、Stage 7 upload、S08-P1 project composite key、S08-P2 business entity model、S08-P3 matching quality test 或 Stage 8 upload 代表正式经营报告、事实层、lineage、自动接口或差异关闭能力已经实现。
 - 不能认为 lineage 完整检查已正式实现。
 - 不能认为 Stage 1 已经实现业务功能。
 - 不能把 S02-P3 的报告等级协议当成真实报告生成能力。
@@ -65,4 +66,4 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 
 ## 下一步
 
-下一步只执行 `Stage 8 final GitHub upload`；不得扩大到 S09、UI、正式报告、事实层、lineage 或自动接口。上传门禁必须先对齐最新 `origin/main`，复跑 S08-P1/P2/P3 validators、治理 validator、raw/secret scan、parse checks 和 evidence consistency checks，并记录 dry-run push、push 和 post-push parity。
+下一步只执行 `S09-P1｜项目成本事实层`；不得扩大到 S09-P2、UI、正式报告、lineage 或自动接口。S09-P1 必须继续使用 public-safe metadata、整数分金额、A0 authority baseline、zero-delta/差异队列边界，不提交 raw business data。

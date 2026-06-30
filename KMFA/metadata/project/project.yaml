@@ -1,10 +1,10 @@
 project_id: "KMFA"
 project_name: "KMFA 经营分析系统"
-version: "0.1.0-s08-stage-review"
-current_stage: "S08"
-current_phase: "S08-FINAL-GITHUB-UPLOAD"
+version: "0.1.0-s08-github-upload"
+current_stage: "S09"
+current_phase: "S09-P1"
 current_phase_status: "not_started"
-current_stage_status: "stage8_review_passed_upload_ready_local_only"
+current_stage_status: "stage8_uploaded_to_github_main_s09p1_next"
 github_directory: "LinzeColin/CodexProject/KMFA"
 human_plane:
   - "README.md"
@@ -110,6 +110,8 @@ machine_plane:
   - "stage_artifacts/S08_STAGE_REVIEW/human/stage8_review_report.md"
   - "stage_artifacts/S08_STAGE_REVIEW/human/test_results.md"
   - "stage_artifacts/S08_STAGE_REVIEW/machine/stage8_review_manifest.json"
+  - "stage_artifacts/S08_STAGE_REVIEW/human/github_upload_record.md"
+  - "stage_artifacts/S08_STAGE_REVIEW/machine/stage8_upload_manifest.json"
 privacy_policy:
   raw_sensitive_data_public_repo_allowed: false
   metadata_plain_sensitive_data_allowed: false
@@ -164,8 +166,10 @@ upload_policy:
   stage8_review_required_before_upload: true
   stage8_review_passed: true
   stage8_review_evidence: "KMFA/stage_artifacts/S08_STAGE_REVIEW/human/stage8_review_report.md"
-  stage8_upload_ready_local_only: true
-  stage8_uploaded_to_github_main: false
-  stage8_blocker: "Stage 8 final GitHub upload not started"
+  stage8_upload_ready_local_only: false
+  stage8_uploaded_to_github_main: true
+  stage8_upload_evidence: "KMFA/stage_artifacts/S08_STAGE_REVIEW/human/github_upload_record.md"
+  stage8_upload_manifest: "KMFA/stage_artifacts/S08_STAGE_REVIEW/machine/stage8_upload_manifest.json"
+  stage8_blocker: "none"
   next_phase_upload_allowed: false
-  upload_surface: "project_level_kmfa_worktree_s08_review_local_only"
+  upload_surface: "project_level_kmfa_worktree_s08_uploaded_s09p1_next"

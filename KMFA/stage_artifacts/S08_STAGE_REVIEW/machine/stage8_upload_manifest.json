@@ -1,0 +1,61 @@
+{
+  "schema_version": "kmfa.github_upload_manifest.v1",
+  "project_id": "KMFA",
+  "upload_id": "KMFA-S08-GITHUB-UPLOAD-20260630",
+  "stage": "S08",
+  "target": "LinzeColin/CodexProject main",
+  "status": "uploaded_to_github_main",
+  "upload_time": "2026-06-30T23:20:00+10:00",
+  "upload_base_origin_main": "ce2881204c49a56da463893db5314ff180c7812d",
+  "reviewed_content_commit": "4add0b6a00798008f6eb3439ff5a8da10279265f",
+  "reviewed_s08p1_commit": "c728f4a84eec99c716e36738966ea9f6de80be41",
+  "reviewed_s08p2_commit": "aab6bb8e13298ffa63e65eaf1290d65036326e57",
+  "reviewed_s08p3_commit": "15e4782e063a4c53b0549ecc674a9c321ec69913",
+  "review_refs": [
+    "KMFA/stage_artifacts/S08_STAGE_REVIEW/human/stage8_review_report.md",
+    "KMFA/stage_artifacts/S08_STAGE_REVIEW/human/test_results.md",
+    "KMFA/stage_artifacts/S08_STAGE_REVIEW/machine/stage8_review_manifest.json"
+  ],
+  "upload_refs": [
+    "KMFA/stage_artifacts/S08_STAGE_REVIEW/human/github_upload_record.md",
+    "KMFA/stage_artifacts/S08_STAGE_REVIEW/machine/stage8_upload_manifest.json"
+  ],
+  "validation_summary": {
+    "s08_p1": "PASS: components=8, profiles=4, matches=3, manual_review_queue=2, strong_threshold_bps=8500, human_review_threshold_bps=7000, formal_report_allowed=false, github_upload_allowed=false",
+    "s08_p2": "PASS: entities=8, relationships=14, lifecycle_statuses=32, s08_p3_scope=false, fact_layer_scope=false, formal_report_allowed=false, github_upload_allowed=false",
+    "s08_p3": "PASS: scenarios=4, quality_cases=4, manual_review_queue=3, stage8_review_scope=false, fact_layer_scope=false, formal_report_allowed=false, github_upload_allowed=false",
+    "full_unit_tests": "PASS: 88 tests",
+    "governance": "PASS: lean_governance and project_governance errors 0 / warnings 0",
+    "no_float_money": "PASS",
+    "required_html": "PASS: html=45, core=7",
+    "no_omission": "PASS: requirements=20, P0=9, P1=8, status_records=352, tasks=162",
+    "metadata_protocol": "PASS",
+    "immutability_policy": "PASS",
+    "report_grade_gate": "PASS",
+    "yaml_parse": "PASS: files=30",
+    "json_jsonl_csv_parse": "PASS: json=77, jsonl=39, jsonl_records=733, csv=24, csv_rows=676",
+    "stage8_evidence_consistency": "PASS",
+    "raw_private_artifact_scan": "PASS",
+    "secret_scan": "PASS",
+    "dry_run_push_pre_evidence_commit": "PASS",
+    "final_dry_run_push": "PASS",
+    "push": "PASS",
+    "post_push_parity": "PASS: HEAD == origin/main"
+  },
+  "privacy_boundary": {
+    "raw_sensitive_data_uploaded": false,
+    "raw_business_files_uploaded": false,
+    "business_records_committed": false,
+    "credentials_committed": false,
+    "private_csv_committed": false,
+    "bank_contract_payroll_tax_files_uploaded": false
+  },
+  "non_scope": [
+    "S09 fact layer",
+    "lineage full check",
+    "management report generation",
+    "UI",
+    "external connectors"
+  ],
+  "next_gate": "KMFA-S09-P1-GATE"
+}

@@ -5,7 +5,7 @@
 - stage: `S08 - 业务实体与项目身份匹配`
 - scope: `S08-P1`, `S08-P2`, `S08-P3`, Stage 8 owner-readable entries, governance status, public-repo safety boundary
 - result: `PASS_UPLOAD_READY_LOCAL_ONLY`
-- reviewed_head: `e60b8924b1f3`
+- reviewed_head: `15e4782e063a`
 - worktree: `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa`
 - branch: `codex/kmfa`
 - github_upload_status: `not_pushed`

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-s08-github-upload - 2026-06-30
+
+- 完成 Stage 8 final GitHub upload gate，目标为 `LinzeColin/CodexProject main`。
+- 基于最新 `origin/main` commit `ce2881204c49a56da463893db5314ff180c7812d` rebase 完整 Stage 8 栈，并复跑 S08-P1/P2/P3 validators、全量 KMFA tests、治理 validator、raw/secret scan、parse checks 和 evidence consistency check。
+- 新增 `KMFA/stage_artifacts/S08_STAGE_REVIEW/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S08_STAGE_REVIEW/machine/stage8_upload_manifest.json`。
+- 修复 upload gate finding：rebase 后 Stage 8 review evidence 的 `reviewed_head` 已更新为当前 rebased S08-P3 commit `15e4782e063a4c53b0549ecc674a9c321ec69913`。
+- 保持 S09 事实层、lineage 完整检查、正式报告、UI 和外部接口为未完成。
+
 ## 0.1.0-s08-stage-review - 2026-06-30
 
 - 完成 Stage 8 整体复审，结果为 `PASS_UPLOAD_READY_LOCAL_ONLY`，尚未 push GitHub。

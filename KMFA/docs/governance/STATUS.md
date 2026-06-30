@@ -5,12 +5,12 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.0-s08-stage-review`
-- current_stage: `S08`
-- current_phase: `S08-FINAL-GITHUB-UPLOAD｜Stage 8 final GitHub upload 待开始`
-- status: `stage8_review_passed_upload_ready_local_only`
+- version: `0.1.0-s08-github-upload`
+- current_stage: `S09`
+- current_phase: `S09-P1｜项目成本事实层 待开始`
+- status: `stage8_uploaded_to_github_main_s09p1_next`
 - production_ready: `false`
-- github_upload_ready: `true_local_only_pending_final_upload`
+- github_upload_ready: `false_until_stage9_review`
 
 ## 已完成
 
@@ -67,14 +67,15 @@
 - S08-P3 匹配质量测试已完成本地验证：`KMFA/tools/entity_matching_quality.py` 生成同名项目、多主体、多账户、多期间 4 类 public-safe 质量场景、4 条 quality cases、3 条人工复核队列记录和 1 份 entity_matching_report；`KMFA/tools/check_s08_p3_entity_matching_quality.py` 验证 Stage 8 review、事实层、lineage、正式报告、UI、外部接口和 GitHub upload scope 均为 false。
 - S08-P3 证据位于 `KMFA/stage_artifacts/S08_P3_entity_matching_quality/`；当前中间 Phase 未执行 GitHub upload。
 - Stage 8 整体复审已本地通过：`KMFA/stage_artifacts/S08_STAGE_REVIEW/` 记录复审报告、测试结果和 machine manifest；复审确认 S08-P1/P2/P3 validators、治理 validator、raw/secret scan、parse checks 和 evidence consistency check 通过。
+- Stage 8 final GitHub upload 已完成：`KMFA/stage_artifacts/S08_STAGE_REVIEW/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S08_STAGE_REVIEW/machine/stage8_upload_manifest.json` 记录 rebase binding、validator、raw/secret scan、dry-run push、push 和 post-push parity 证据。
 
 ## 未完成
 
-- Stage 8 final GitHub upload、事实层、lineage 完整检查、报告、UI 和外部接口尚未完成；S05-P3 authority baseline lock、Stage 6 upload、Stage 7 upload、S08-P1 项目组合键、S08-P2 业务实体模型、S08-P3 匹配质量测试和 Stage 8 review 不代表正式报告可发布。
+- S09-P1 项目成本事实层、lineage 完整检查、报告、UI 和外部接口尚未完成；S05-P3 authority baseline lock、Stage 6 upload、Stage 7 upload、Stage 8 upload 不代表正式报告可发布。
 
 ## 阻塞条件
 
 - 不能把 Stage 1 治理基线当成业务 MVP。
 - 不能上传原始敏感经营数据。
-- S05-P3 已完成 40 条 public-safe hash/source-anchor 字段锁定并排除 5 条 Excel 字段，Stage 5 review/upload、S06-P1、S06-P2、S06-P3、Stage 6 review/upload、S07-P1 finance adapter、S07-P2 WPS adapter、S07-P3 redcircle postponement policy、Stage 7 review/upload、S08-P1 project composite key、S08-P2 business entity model、S08-P3 matching quality test 和 Stage 8 review 已完成；下一步只能执行 Stage 8 final GitHub upload，不能跳到 S09、UI、报告、事实层、lineage 或外部接口。
+- S05-P3 已完成 40 条 public-safe hash/source-anchor 字段锁定并排除 5 条 Excel 字段，Stage 5 review/upload、S06-P1、S06-P2、S06-P3、Stage 6 review/upload、S07-P1 finance adapter、S07-P2 WPS adapter、S07-P3 redcircle postponement policy、Stage 7 review/upload、S08-P1 project composite key、S08-P2 business entity model、S08-P3 matching quality test、Stage 8 review/upload 已完成；下一步只能执行 S09-P1 项目成本事实层，不能跳到 S09-P2、UI、报告、lineage 或外部接口。
 - 后续所有开发必须建立在 v1.2 完整任务包和 HTML 样板基线上。

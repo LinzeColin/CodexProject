@@ -1,6 +1,6 @@
 # KMFA Delivery Plan
 
-product_version: 0.1.0-s08-stage-review
+product_version: 0.1.0-s08-github-upload
 
 ## Delivery Rule
 
@@ -57,13 +57,14 @@ KMFA delivery follows the owner contract:
 | S08-P2 | completed_validated_local_only |
 | S08-P3 | completed_validated_local_only |
 | Stage 8 review | passed_upload_ready_local_only |
-| Stage 8 GitHub upload | not_started |
+| Stage 8 GitHub upload | completed |
+| S09-P1 | not_started |
 
 ## Upload Scope
 
-Stage 5, Stage 6 and Stage 7 GitHub uploads are complete on `origin/main`. Stage 7 upload reconciled with latest `origin/main`, reran validation, and recorded push proof under `KMFA/stage_artifacts/S07_STAGE_REVIEW/`. S08-P1, S08-P2 and S08-P3 are complete local-only and have not been uploaded as standalone phases. Stage 8 review passed local-only and has not been uploaded.
+Stage 5, Stage 6, Stage 7 and Stage 8 GitHub uploads are complete on `origin/main`. Stage 8 upload reconciled with latest `origin/main`, reran validation, and recorded push proof under `KMFA/stage_artifacts/S08_STAGE_REVIEW/`. S08-P1, S08-P2 and S08-P3 were not uploaded as standalone phases; they were uploaded as part of the full Stage 8 upload gate.
 
-The active development baseline is `KMFA/taskpack/v1_2/`. S05-P1 is complete and locally validated with public-safe A0 file registration. S05-P2 has generated the public-safe field contract and A0 golden fixture candidates, recorded hash-only private values and source anchors for 40 PDF field candidates, and resolved the Excel candidate through an active owner/authorized downgrade decision as cross-source support only. S05-P3 has locked those 40 public-safe hash/source-anchor fields into the A0 authority baseline and excluded the 5 Excel fields from Q5 calculation baseline. Stage 5 review/upload, Stage 6 review/upload and Stage 7 review/upload are complete. S07-P1 financial file adaptation is complete with 9 finance categories, 45 field candidates, and 9 read-only field reports. S07-P2 WPS file adaptation is complete with 4 WPS export types, 20 field mappings, 4 conversion guidance records, 4 read-only field reports, and 1 mapping rule version. S07-P3 redcircle postponement policy is complete with 4 reserved export templates, automatic connector blocked for D15 file MVP, and future read-only/hash/rollback/manual approval controls. S08-P1 project composite key is complete local-only with 4 public-safe profiles, 3 match records, 2 manual-review queue records, integer weights and no raw business values. S08-P2 business entity model is complete local-only with 8 public-safe entity types, 14 relationships, 32 lifecycle statuses, schema docs and metadata. S08-P3 matching quality test is complete local-only with 4 public-safe scenarios, 4 quality cases, 3 manual-review queue records and an entity_matching_report. Stage 8 review is complete local-only after rerunning validators, governance checks, raw/secret scan, parse checks and evidence consistency checks. Next scope is Stage 8 final GitHub upload only; S09/fact layer/report/UI work remains blocked.
+The active development baseline is `KMFA/taskpack/v1_2/`. S05-P1 is complete and locally validated with public-safe A0 file registration. S05-P2 has generated the public-safe field contract and A0 golden fixture candidates, recorded hash-only private values and source anchors for 40 PDF field candidates, and resolved the Excel candidate through an active owner/authorized downgrade decision as cross-source support only. S05-P3 has locked those 40 public-safe hash/source-anchor fields into the A0 authority baseline and excluded the 5 Excel fields from Q5 calculation baseline. Stage 5 review/upload, Stage 6 review/upload, Stage 7 review/upload and Stage 8 review/upload are complete. S08-P1 project composite key is complete with 4 public-safe profiles, 3 match records, 2 manual-review queue records, integer weights and no raw business values. S08-P2 business entity model is complete with 8 public-safe entity types, 14 relationships, 32 lifecycle statuses, schema docs and metadata. S08-P3 matching quality test is complete with 4 public-safe scenarios, 4 quality cases, 3 manual-review queue records and an entity_matching_report. Next scope is S09-P1 project cost fact layer only; S09-P2/report/UI work remains blocked.
 
 ## Rollback
 
