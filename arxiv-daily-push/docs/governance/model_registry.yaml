@@ -6453,11 +6453,16 @@ models:
       - "launchctl print-disabled gui/$UID read-only output"
       - "launchctl print gui/$UID/$label read-only runtime output"
       - "local ADP state_dir runs/YYYYMMDD reports"
+      - "FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json"
       - "FINAL_ACCEPTANCE_BUNDLE/s2plt01_terminal_acceptance.json"
       - "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json"
     outputs:
       - "safe_to_collect_terminal_proof"
+      - "authorization_artifact_status"
+      - "authorization_validation_errors"
       - "real_proof_capture_authorized"
+      - "completed_next_actions"
+      - "remaining_next_actions"
       - "all_required_launchagents_disabled"
       - "launchagent_runtime_states"
       - "launchagent_calendar_triggers_present"
@@ -6483,6 +6488,8 @@ models:
       - "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-20260629.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_READINESS_RUNTIME_STATE_SYNC.md"
       - "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-RUNTIME-STATE-SYNC-20260629.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_READINESS_LIVE_AUTH_SYNC.md"
+      - "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-LIVE-AUTH-SYNC-20260630.json"
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_REAL_PROOF_CAPTURE_READINESS_MODEL_ID"
@@ -6495,7 +6502,7 @@ models:
     implementation_fingerprint: "PENDING_MAIN_COMMIT"
     evidence_hash: "PENDING_MAIN_COMMIT"
     last_verified_commit: "PRECOMMIT"
-    verified_at: "2026-06-29T22:44:04+10:00"
+    verified_at: "2026-06-30T13:33:22+10:00"
 
 
   -

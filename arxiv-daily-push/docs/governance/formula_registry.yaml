@@ -7224,13 +7224,13 @@ formulas:
       - "S2PLT02"
       - "S2PMT07"
     status: "active"
-    expression: "S2PLT02 real-proof capture readiness remains blocked unless explicit owner authorization exists, the required real SMTP/scheduler LaunchAgents are not being silently used as production enablement, loaded disabled LaunchAgents are not misread as terminal scheduler proof, a second consecutive real M1-M4 SMTP day is present, FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json exists and validates, real scheduler proof is present, and all no-production flags remain false; before those conditions are met, safe_to_collect_terminal_proof must be false."
+    expression: "S2PLT02 real-proof capture readiness consumes FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json as the explicit owner authorization source; readiness remains blocked unless authorization exists and validates, the required real SMTP/scheduler LaunchAgents are not being silently used as production enablement, loaded disabled LaunchAgents are not misread as terminal scheduler proof, a second consecutive real M1-M4 SMTP day is present, FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json exists and validates, real scheduler proof is present, and all no-production flags remain false; before those terminal conditions are met, safe_to_collect_terminal_proof must be false."
     variables:
       -
         name: "owner_authorization"
-        data_type: "boolean"
-        unit: "authorization state"
-        input_domain: "true only after explicit owner authorization for real SMTP/scheduler proof capture"
+        data_type: "object"
+        unit: "authorization artifact validation state"
+        input_domain: "FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json"
       -
         name: "launchagent_disabled_states"
         data_type: "object"
@@ -7251,7 +7251,7 @@ formulas:
         data_type: "object"
         unit: "boolean flags"
         input_domain: "all false"
-    constraints: "Missing owner authorization, disabled/unknown LaunchAgents, loaded-but-disabled LaunchAgents, missing second real day, dry-run evidence, missing terminal proof artifact, or missing real scheduler proof blocks readiness and forbids production acceptance claims."
+    constraints: "Missing or invalid owner authorization, disabled/unknown LaunchAgents, loaded-but-disabled LaunchAgents, missing second real day, dry-run evidence, missing terminal proof artifact, or missing real scheduler proof blocks readiness and forbids production acceptance claims."
     missing_policy: "Any missing authorization, evidence, artifact, or launchd state is represented as blocked rather than assumed safe."
     output_range: "blocked readiness state with deterministic state_hash and explicit required next actions."
     code_refs:
@@ -7265,6 +7265,8 @@ formulas:
       - "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-20260629.json"
       - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_READINESS_RUNTIME_STATE_SYNC.md"
       - "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-RUNTIME-STATE-SYNC-20260629.json"
+      - "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_READINESS_LIVE_AUTH_SYNC.md"
+      - "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-LIVE-AUTH-SYNC-20260630.json"
     semantic_status: "MACHINE_VERIFIED"
     implementation_refs:
       - "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py::S2PLT02_REAL_PROOF_CAPTURE_READINESS_MODEL_ID"
@@ -7274,7 +7276,7 @@ formulas:
     implementation_fingerprint: "PENDING_MAIN_COMMIT"
     evidence_hash: "PENDING_MAIN_COMMIT"
     last_verified_commit: "PRECOMMIT"
-    verified_at: "2026-06-29T22:44:04+10:00"
+    verified_at: "2026-06-30T13:33:22+10:00"
 
 
   -

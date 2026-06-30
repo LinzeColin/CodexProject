@@ -21,10 +21,18 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 291
+- task_count: 292
 - acceptance_count: 127
 
 ## Delivery Tasks
+
+## 2026-06-30 13:33:22 Australia/Sydney - S2PLT02 Real-Proof Capture Readiness Live Authorization Sync
+
+- `S2PLT02-REAL-PROOF-CAPTURE-READINESS-LIVE-AUTH-SYNC` updates `audit-s2plt02-real-proof-capture-readiness` so the readiness gate consumes the live authorization artifact instead of reporting the superseded authorization-missing state.
+- Actual CLI remains blocked / exit 2 with `state_hash=7647b32a4ec17c9687e71238ee0ddf2d184ea666d84982dd77e7f2a2d2e427a9`, `authorization_artifact_status=pass`, `real_proof_capture_authorized=true`, `completed_next_actions=obtain_explicit_owner_authorization_for_real_smtp_scheduler`, and `safe_to_collect_terminal_proof=false`.
+- Remaining blockers are `required_launchagents_disabled`, `second_real_delivery_day_missing`, `dry_run_second_day_not_terminal`, `s2plt02_terminal_delivery_proof_artifact_missing`, and `real_scheduler_not_proven`.
+- Evidence: `governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-LIVE-AUTH-SYNC-20260630.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_READINESS_LIVE_AUTH_SYNC.md`; `FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.
+- This does not send SMTP, enable scheduler, upload Release assets, execute restore, mutate schema/DB/source/ranking/CURRENT/V7, enable DAILY_OPERATION, write `FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json`, or claim S2PLT02/S2PMT07/integrated production acceptance.
 
 ## 2026-06-30 13:02:33 Australia/Sydney - S2PLT02 Terminal Proof Evidence Inventory
 

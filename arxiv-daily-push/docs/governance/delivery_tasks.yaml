@@ -5389,3 +5389,27 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PLT02-REAL-PROOF-CAPTURE-READINESS-LIVE-AUTH-SYNC"
+    title: "S2PLT02 real-proof capture readiness live authorization sync"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-30T13:33:22+10:00"
+    objective: "Make S2PLT02 real-proof capture readiness consume the live authorization artifact while keeping terminal proof blocked until real terminal evidence exists."
+    scope: "Readiness builder, validator, focused regression test, phase record, run manifest, traceability row, delivery/event records, owner/user-center status, and three base notes."
+    non_scope: "No S2PLT02 terminal proof artifact, no SMTP send, no scheduler enable/install/kickstart, no Release, no restore, no CURRENT/V7 change, no public schema/DB/source/ranking/queue mutation, no S2PLT02/S2PLT03/S2PLT04/S2PMT07 acceptance, and no integrated production acceptance."
+    owner: "engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    dependencies: ["S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION-LIVE", "S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_READINESS_LIVE_AUTH_SYNC.md", "governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-LIVE-AUTH-SYNC-20260630.json"]
+    acceptance_ids: ["ACC-S2PLT02-2D", "ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_readiness_auth_red PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_s2plt02_real_proof_capture_readiness_consumes_live_authorization_artifact", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_readiness_auth_green PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py::Stage2FinalGateTests::test_s2plt02_real_proof_capture_readiness_consumes_live_authorization_artifact", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_readiness_auth_related PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py -k 'real_proof_capture_readiness or real_proof_capture_authorization' arxiv-daily-push/tests/test_cli.py -k 'real_proof_capture_readiness or real_proof_capture_authorization'", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_readiness_auth_manifest PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli audit-s2plt02-real-proof-capture-readiness --repo-root . --state-dir /Users/linzezhang/.adp/arxiv-daily-push --json"]
+    test_results: ["TDD red failed before readiness consumed the live authorization artifact", "focused live authorization readiness regression: 1 passed", "focused readiness/authorization tests: 12 passed", "actual CLI readiness audit: blocked / exit 2 with authorization_artifact_status=pass and state_hash 7647b32a4ec17c9687e71238ee0ddf2d184ea666d84982dd77e7f2a2d2e427a9"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PLT02-REAL-PROOF-CAPTURE-READINESS-LIVE-AUTH-SYNC-20260630.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_READINESS_LIVE_AUTH_SYNC.md", "FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py"]
+    result: "blocked_s2plt02_real_proof_capture_readiness_live_authorization_pass_terminal_gaps_visible_no_production"
+    risk: "A valid authorization artifact can be misread as terminal delivery proof; this sync marks only the authorization action completed and keeps all terminal proof blockers active."
+    rollback: "Revert the readiness authorization consumption change, focused test, phase record, run manifest, traceability row, delivery/event records, user-center notes, and three base notes; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
