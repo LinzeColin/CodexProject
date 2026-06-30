@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>PFI v0.2.3 Stage 7 Phase 7.3 Quality Tuning</title>
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif; background: #f5f6f3; color: #1d2620; }
+main { width: 1180px; margin: 0 auto; padding: 42px 0 70px; }
+header { display: flex; justify-content: space-between; gap: 24px; align-items: flex-end; border-bottom: 2px solid #1f2a23; padding-bottom: 22px; margin-bottom: 24px; }
+h1 { font-size: 40px; line-height: 1.08; margin: 0 0 10px; letter-spacing: 0; }
+header p { max-width: 760px; margin: 0; color: #4f5b53; line-height: 1.55; }
+.badge { border: 1px solid #1f2a23; padding: 8px 10px; font-size: 13px; font-weight: 700; white-space: nowrap; }
+.summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 18px; }
+.summary div { background: #fff; border: 1px solid #d9ddd4; padding: 14px; min-height: 76px; }
+.summary b { display: block; font-size: 26px; line-height: 1.1; margin-top: 6px; }
+.section { margin: 18px 0 26px; }
+.section h2 { font-size: 24px; margin: 0 0 12px; }
+.quality { background: #fff; border: 1px solid #d9ddd4; border-left: 8px solid #b98224; padding: 20px; }
+.quality p { line-height: 1.6; margin: 10px 0; }
+.grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.card { background: #fff; border: 1px solid #d9ddd4; padding: 15px; min-height: 142px; }
+.card.blocked, .card.blocked_by_read_model { border-left: 6px solid #a43d37; }
+.card.ready, .card.not_adjustable { border-left: 6px solid #4a8462; }
+.card-head { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+h3 { margin: 0; font-size: 17px; }
+.card-head span { border: 1px solid currentColor; padding: 4px 7px; font-size: 12px; font-weight: 700; }
+.card p { margin: 10px 0 0; line-height: 1.5; }
+.muted { color: #5b665f; font-size: 13px; }
+ul { margin: 8px 0 0; padding-left: 18px; }
+li { margin: 5px 0; line-height: 1.45; }
+.policy { background: #fff; border: 1px solid #d9ddd4; padding: 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+footer { margin-top: 24px; color: #5b665f; font-size: 13px; }
+</style>
+</head>
+<body>
+<main>
+<header><div><h1>Stage 7 Phase 7.3 数据质量与调参</h1><p>展示数据质量报告、公式解释、参数影响预览与导出/保存策略；缺失 read model 不补零。</p></div><div class="badge">sha256:b5616d2c2ba17a73fb101d0c184d65c6ebbea904287074f1a9b1965dcd49b675</div></header>
+<section class="summary"><div>阻断指标<b>3</b></div><div>公式解释<b>6</b></div><div>参数预览<b>14</b></div><div>as of<b>2026-06-03</b></div></section>
+<section class="section"><h2>数据质量报告</h2><div class="quality"><p>数据质量报告解释当前阻断项：净资产与现金余额缺少账户余额 read model，投资市值缺少持仓市值 read model；缺失输入补齐前不得生成正式报告结论。</p><p>数据范围：2022-06-06 至 2026-06-03；样本量：8815 条交易 / 4 个原始文件。</p><p class="muted">阻断指标：net_worth_cny、cash_balance_cny、investment_market_value_cny</p></div></section>
+<section class="section"><h2>公式解释</h2><div class="grid">
+        <article class="card formula blocked">
+          <div class="card-head"><h3>净资产</h3><span>blocked</span></div>
+          <p>净资产 = 现金余额 + 投资市值 + 其他可确认资产 - 可确认负债。</p>
+          <p class="muted">缺失输入：cash_balance_cny、investment_market_value_cny</p>
+          <p class="muted">输入指标为 ready 或 confirmed_zero 且带 source/as_of/evidence_hash 时才允许报告显示完整结论。</p>
+        </article>
+
+        <article class="card formula blocked">
+          <div class="card-head"><h3>现金余额</h3><span>blocked</span></div>
+          <p>现金余额 = 已挂载真实账户余额 read model 的 CNY 汇总。</p>
+          <p class="muted">缺失输入：cash_balance_cny</p>
+          <p class="muted">输入指标为 ready 或 confirmed_zero 且带 source/as_of/evidence_hash 时才允许报告显示完整结论。</p>
+        </article>
+
+        <article class="card formula blocked">
+          <div class="card-head"><h3>投资市值</h3><span>blocked</span></div>
+          <p>投资市值 = 持仓数量 × 最新可确认价格 × 对应 CNY 汇率。</p>
+          <p class="muted">缺失输入：investment_market_value_cny</p>
+          <p class="muted">输入指标为 ready 或 confirmed_zero 且带 source/as_of/evidence_hash 时才允许报告显示完整结论。</p>
+        </article>
+
+        <article class="card formula ready">
+          <div class="card-head"><h3>生活消费</h3><span>ready</span></div>
+          <p>生活消费 = 真实 Alipay 交易中的生活消费流出减退款。</p>
+          <p class="muted">缺失输入：无</p>
+          <p class="muted">输入指标为 ready 或 confirmed_zero 且带 source/as_of/evidence_hash 时才允许报告显示完整结论。</p>
+        </article>
+
+        <article class="card formula ready">
+          <div class="card-head"><h3>消费总流出</h3><span>ready</span></div>
+          <p>消费总流出 = 生活消费 + 基金申购 + 资产买入流出 - 退款。</p>
+          <p class="muted">缺失输入：无</p>
+          <p class="muted">输入指标为 ready 或 confirmed_zero 且带 source/as_of/evidence_hash 时才允许报告显示完整结论。</p>
+        </article>
+
+        <article class="card formula ready">
+          <div class="card-head"><h3>数据健康</h3><span>ready</span></div>
+          <p>数据健康 = 已通过导入清单校验的真实标准化交易记录数。</p>
+          <p class="muted">缺失输入：无</p>
+          <p class="muted">输入指标为 ready 或 confirmed_zero 且带 source/as_of/evidence_hash 时才允许报告显示完整结论。</p>
+        </article>
+        </div></section>
+<section class="section"><h2>参数影响预览</h2><div class="grid">
+        <article class="card parameter blocked_by_read_model">
+          <div class="card-head"><h3>净资产币种</h3><span>blocked_by_read_model</span></div>
+          <p>当前值：<b>CNY</b></p>
+          <p class="muted">影响指标：net_worth_cny</p>
+          <p>当前 read model 输入不完整，仅显示参数来源；不计算调参后财务值。</p>
+        </article>
+
+        <article class="card parameter blocked_by_read_model">
+          <div class="card-head"><h3>资产范围</h3><span>blocked_by_read_model</span></div>
+          <p>当前值：<b>现金余额、投资市值、其他已确认资产</b></p>
+          <p class="muted">影响指标：net_worth_cny</p>
+          <p>当前 read model 输入不完整，仅显示参数来源；不计算调参后财务值。</p>
+        </article>
+
+        <article class="card parameter blocked_by_read_model">
+          <div class="card-head"><h3>负债范围</h3><span>blocked_by_read_model</span></div>
+          <p>当前值：<b>可确认负债</b></p>
+          <p class="muted">影响指标：net_worth_cny</p>
+          <p>当前 read model 输入不完整，仅显示参数来源；不计算调参后财务值。</p>
+        </article>
+
+        <article class="card parameter blocked_by_read_model">
+          <div class="card-head"><h3>现金币种</h3><span>blocked_by_read_model</span></div>
+          <p>当前值：<b>CNY</b></p>
+          <p class="muted">影响指标：cash_balance_cny</p>
+          <p>当前 read model 输入不完整，仅显示参数来源；不计算调参后财务值。</p>
+        </article>
+
+        <article class="card parameter blocked_by_read_model">
+          <div class="card-head"><h3>现金账户范围</h3><span>blocked_by_read_model</span></div>
+          <p>当前值：<b>真实账户余额 read model</b></p>
+          <p class="muted">影响指标：cash_balance_cny</p>
+          <p>当前 read model 输入不完整，仅显示参数来源；不计算调参后财务值。</p>
+        </article>
+
+        <article class="card parameter blocked_by_read_model">
+          <div class="card-head"><h3>投资市值币种</h3><span>blocked_by_read_model</span></div>
+          <p>当前值：<b>CNY</b></p>
+          <p class="muted">影响指标：investment_market_value_cny</p>
+          <p>当前 read model 输入不完整，仅显示参数来源；不计算调参后财务值。</p>
+        </article>
+
+        <article class="card parameter blocked_by_read_model">
+          <div class="card-head"><h3>价格口径</h3><span>blocked_by_read_model</span></div>
+          <p>当前值：<b>最新可确认价格</b></p>
+          <p class="muted">影响指标：investment_market_value_cny</p>
+          <p>当前 read model 输入不完整，仅显示参数来源；不计算调参后财务值。</p>
+        </article>
+
+        <article class="card parameter blocked_by_read_model">
+          <div class="card-head"><h3>汇率口径</h3><span>blocked_by_read_model</span></div>
+          <p>当前值：<b>对应 CNY 汇率</b></p>
+          <p class="muted">影响指标：investment_market_value_cny</p>
+          <p>当前 read model 输入不完整，仅显示参数来源；不计算调参后财务值。</p>
+        </article>
+
+        <article class="card parameter not_adjustable">
+          <div class="card-head"><h3>生活消费事件类型</h3><span>not_adjustable</span></div>
+          <p>当前值：<b>CASH</b></p>
+          <p class="muted">影响指标：life_consumption_cny、total_consumption_outflow_cny</p>
+          <p>当前参数为只读口径；Phase 7.3 展示影响范围，不重新计算财务值。</p>
+        </article>
+
+        <article class="card parameter not_adjustable">
+          <div class="card-head"><h3>退款抵消</h3><span>not_adjustable</span></div>
+          <p>当前值：<b>REFUND 抵消</b></p>
+          <p class="muted">影响指标：life_consumption_cny、total_consumption_outflow_cny</p>
+          <p>当前参数为只读口径；Phase 7.3 展示影响范围，不重新计算财务值。</p>
+        </article>
+
+        <article class="card parameter not_adjustable">
+          <div class="card-head"><h3>基金申购事件类型</h3><span>not_adjustable</span></div>
+          <p>当前值：<b>FUND</b></p>
+          <p class="muted">影响指标：total_consumption_outflow_cny</p>
+          <p>当前参数为只读口径；Phase 7.3 展示影响范围，不重新计算财务值。</p>
+        </article>
+
+        <article class="card parameter not_adjustable">
+          <div class="card-head"><h3>资产买入事件类型</h3><span>not_adjustable</span></div>
+          <p>当前值：<b>BUY_ASSET</b></p>
+          <p class="muted">影响指标：total_consumption_outflow_cny</p>
+          <p>当前参数为只读口径；Phase 7.3 展示影响范围，不重新计算财务值。</p>
+        </article>
+
+        <article class="card parameter not_adjustable">
+          <div class="card-head"><h3>交易记录来源</h3><span>not_adjustable</span></div>
+          <p>当前值：<b>/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/MetaDatabase/PFI/alipay_daily/processed/alipay_import_manifest.json</b></p>
+          <p class="muted">影响指标：data_health</p>
+          <p>当前参数为只读口径；Phase 7.3 展示影响范围，不重新计算财务值。</p>
+        </article>
+
+        <article class="card parameter not_adjustable">
+          <div class="card-head"><h3>原始文件数</h3><span>not_adjustable</span></div>
+          <p>当前值：<b>4</b></p>
+          <p class="muted">影响指标：data_health</p>
+          <p>当前参数为只读口径；Phase 7.3 展示影响范围，不重新计算财务值。</p>
+        </article>
+        </div></section>
+<section class="section"><h2>导出/保存策略</h2><div class="policy"><div><h3>已保存</h3><ul><li>PFI/reports/pfi_v023/stage_7/phase_7_3/quality_tuning.json</li><li>PFI/reports/pfi_v023/stage_7/phase_7_3/quality_tuning_page_model.json</li><li>PFI/reports/pfi_v023/stage_7/phase_7_3/quality_tuning_snapshot.html</li><li>PFI/reports/pfi_v023/stage_7/phase_7_3/screenshots/quality_tuning.png</li></ul></div><div><h3>未实现范围</h3><ul><li>PDF export in Stage 7 Phase 7.3</li><li>CSV export in Stage 7 Phase 7.3</li></ul><p>Phase 7.3 只保存只读证据包和页面快照；PDF/CSV 导出记录为未实现范围，不用假导出占位。</p></div></div></section>
+<footer>Stage 7 whole-stage review 和 GitHub main upload 均未执行。</footer>
+</main>
+</body>
+</html>

@@ -12,6 +12,8 @@ PHASE_ID = "V023-S7-P7.1"
 PHASE_NAME = "报告合同"
 PHASE72_ID = "V023-S7-P7.2"
 PHASE72_NAME = "核心报告"
+PHASE73_ID = "V023-S7-P7.3"
+PHASE73_NAME = "数据质量与调参"
 REPORT_STATUSES = ("complete", "partial", "blocked", "outdated", "review_required")
 REQUIRED_REPORT_FIELDS = (
     "report_id",
@@ -49,6 +51,22 @@ class Stage7Phase71Contract:
 
 @dataclass(frozen=True)
 class Stage7Phase72Contract:
+    version: str
+    stage: str
+    phase_id: str
+    phase_name: str
+    current_phase_only: bool
+    max_one_phase_per_run: bool
+    task_ids: tuple[str, ...]
+    allowed_files: tuple[str, ...]
+    changed_in_this_phase: tuple[str, ...]
+    validation_commands: tuple[str, ...]
+    evidence_files: tuple[str, ...]
+    explicitly_not_done: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class Stage7Phase73Contract:
     version: str
     stage: str
     phase_id: str
@@ -168,6 +186,56 @@ def build_stage7_phase72_contract() -> dict[str, Any]:
     return payload
 
 
+def build_stage7_phase73_contract() -> dict[str, Any]:
+    contract = Stage7Phase73Contract(
+        version=VERSION,
+        stage=STAGE,
+        phase_id=PHASE73_ID,
+        phase_name=PHASE73_NAME,
+        current_phase_only=True,
+        max_one_phase_per_run=True,
+        task_ids=("T7.3.1", "T7.3.2", "T7.3.3", "T7.3.4"),
+        allowed_files=(
+            "PFI/src/pfi_v02/stage_v023_reports.py",
+            "PFI/src/pfi_v02/stage_v023_formula_registry.py",
+            "PFI/web/app/pages/reports.js",
+            "PFI/web/app/components/report*.js",
+            "PFI/tests/test_v023_stage7_reports.py",
+            "PFI/docs/pfi_v023/STAGE7_REPORTS.md",
+            "PFI/reports/pfi_v023/stage_7/*",
+        ),
+        changed_in_this_phase=(
+            "PFI/src/pfi_v02/stage_v023_reports.py",
+            "PFI/web/app/pages/reports.js",
+            "PFI/tests/test_v023_stage7_reports.py",
+            "PFI/docs/pfi_v023/STAGE7_REPORTS.md",
+            "PFI/reports/pfi_v023/stage_7/phase_7_3/*",
+        ),
+        validation_commands=(
+            "node --check PFI/web/app/pages/reports.js",
+            "python3 -m pytest PFI/tests/test_v023_stage7_reports.py -q",
+            "python3 -m pytest PFI/tests/test_v023_*.py -q",
+        ),
+        evidence_files=(
+            "PFI/docs/pfi_v023/STAGE7_REPORTS.md",
+            "PFI/reports/pfi_v023/stage_7/phase_7_3/evidence.json",
+            "PFI/reports/pfi_v023/stage_7/phase_7_3/quality_tuning.json",
+            "PFI/reports/pfi_v023/stage_7/phase_7_3/quality_tuning_page_model.json",
+            "PFI/reports/pfi_v023/stage_7/phase_7_3/no_source_term_scan.json",
+            "PFI/reports/pfi_v023/stage_7/phase_7_3/terminal.log",
+            "PFI/reports/pfi_v023/stage_7/phase_7_3/changed_files.txt",
+        ),
+        explicitly_not_done=(
+            "Stage 7 whole-stage review",
+            "GitHub main upload for intermediate phase",
+        ),
+    )
+    payload = asdict(contract)
+    for key in ("task_ids", "allowed_files", "changed_in_this_phase", "validation_commands", "evidence_files", "explicitly_not_done"):
+        payload[key] = list(payload[key])
+    return payload
+
+
 def build_stage7_report_contract(core_metrics_read_model: dict[str, Any] | None = None) -> dict[str, Any]:
     read_model = core_metrics_read_model or {}
     metrics = {str(item.get("metric_id")): item for item in read_model.get("core_metrics", [])}
@@ -230,6 +298,78 @@ def build_stage7_report_contract(core_metrics_read_model: dict[str, Any] | None 
         "read_model_hash": read_model.get("read_model_hash"),
         "as_of": read_model.get("as_of"),
         "reports": reports,
+    }
+
+
+def build_stage7_quality_tuning(core_metrics_read_model: dict[str, Any] | None = None) -> dict[str, Any]:
+    read_model = core_metrics_read_model or {}
+    source = read_model.get("source", {})
+    contract = build_stage7_report_contract(read_model)
+    reports = {str(item["report_id"]): item for item in contract["reports"]}
+    registry = build_stage7_formula_registry(read_model)
+    formulas = list(registry["formulas"])
+    data_quality = dict(reports["data_quality_report"])
+    blocked_metric_ids = list(read_model.get("blocked_metric_ids") or _blocked_metric_ids(read_model))
+    data_quality.update(
+        {
+            "phase_id": PHASE73_ID,
+            "title": "数据质量报告",
+            "blocked_metric_ids": blocked_metric_ids,
+            "source_audit": {
+                "data_root": source.get("data_root"),
+                "transaction_count": source.get("transaction_count", 0),
+                "raw_file_count": source.get("raw_file_count", 0),
+                "date_range": source.get("date_range", {"start": None, "end": None}),
+                "read_model_hash": read_model.get("read_model_hash"),
+                "as_of": read_model.get("as_of"),
+            },
+            "conclusion_zh": _phase73_quality_conclusion(blocked_metric_ids),
+            "next_actions": [
+                "接入账户余额 read model 后重新生成净资产与现金余额报告",
+                "接入持仓市值 read model 后重新生成净资产与投资市值报告",
+                "保留当前 Alipay 消费输入的 evidence hash，不用缺失输入补零",
+            ],
+        }
+    )
+    return {
+        "schema": "PFIV023Stage7QualityTuningV1",
+        "version": VERSION,
+        "stage": STAGE,
+        "phase_id": PHASE73_ID,
+        "phase_name": PHASE73_NAME,
+        "source_core_metrics": {
+            "path": "PFI/reports/pfi_v023/stage_6/phase_6_1/core_metrics.json",
+            "read_model_hash": read_model.get("read_model_hash"),
+            "as_of": read_model.get("as_of"),
+        },
+        "data_quality_report": data_quality,
+        "formula_explanations": [_formula_explanation(item) for item in formulas],
+        "parameter_impact_preview": _parameter_impact_preview(formulas),
+        "export_save_policy": {
+            "phase_id": PHASE73_ID,
+            "title": "导出/保存策略",
+            "saved_artifacts": [
+                "PFI/reports/pfi_v023/stage_7/phase_7_3/quality_tuning.json",
+                "PFI/reports/pfi_v023/stage_7/phase_7_3/quality_tuning_page_model.json",
+                "PFI/reports/pfi_v023/stage_7/phase_7_3/quality_tuning_snapshot.html",
+                "PFI/reports/pfi_v023/stage_7/phase_7_3/screenshots/quality_tuning.png",
+            ],
+            "export_ready_formats": ["JSON evidence pack", "HTML snapshot", "PNG screenshot"],
+            "explicitly_not_implemented": [
+                "PDF export in Stage 7 Phase 7.3",
+                "CSV export in Stage 7 Phase 7.3",
+            ],
+            "save_policy_zh": "Phase 7.3 只保存只读证据包和页面快照；PDF/CSV 导出记录为未实现范围，不用假导出占位。",
+        },
+        "summary": {
+            "blocked_metric_count": len(blocked_metric_ids),
+            "formula_count": len(formulas),
+            "parameter_preview_count": len(_parameter_impact_preview(formulas)),
+        },
+        "explicitly_not_done": [
+            "Stage 7 whole-stage review",
+            "GitHub main upload for intermediate phase",
+        ],
     }
 
 
@@ -430,3 +570,87 @@ def _display_metric_value(metric: dict[str, Any]) -> str:
     if currency == "records":
         return f"{int(value):,} records"
     return f"{currency} {float(value):,.2f}"
+
+
+def _blocked_metric_ids(read_model: dict[str, Any]) -> list[str]:
+    return [
+        str(item.get("metric_id"))
+        for item in read_model.get("core_metrics", [])
+        if item.get("status") not in {"ready", "confirmed_zero"}
+    ]
+
+
+def _phase73_quality_conclusion(blocked_metric_ids: list[str]) -> str:
+    if not blocked_metric_ids:
+        return "数据质量报告当前未发现核心指标阻断项。"
+    return (
+        "数据质量报告解释当前阻断项："
+        "净资产与现金余额缺少账户余额 read model，"
+        "投资市值缺少持仓市值 read model；缺失输入补齐前不得生成正式报告结论。"
+    )
+
+
+def _formula_explanation(formula: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "section": "公式解释",
+        "formula_id": formula["formula_id"],
+        "metric_id": formula["metric_id"],
+        "label": formula["label"],
+        "formula_zh": formula["formula_zh"],
+        "input_status": formula["input_status"],
+        "required_inputs": formula["required_inputs"],
+        "missing_inputs": formula["missing_inputs"],
+        "parameters": formula["parameters"],
+        "data_sources": formula["data_sources"],
+        "status_policy_zh": formula["status_policy_zh"],
+        "explanation_zh": (
+            "公式输入完整时才允许形成完整结论；"
+            "当前缺失输入会保留 blocked/partial 状态并显示修复动作。"
+        ),
+    }
+
+
+def _parameter_impact_preview(formulas: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    grouped: dict[str, dict[str, Any]] = {}
+    for formula in formulas:
+        for parameter in formula.get("parameters", []):
+            parameter_id = str(parameter["parameter_id"])
+            row = grouped.setdefault(
+                parameter_id,
+                {
+                    "section": "参数影响预览",
+                    "parameter_id": parameter_id,
+                    "label_zh": parameter.get("label_zh"),
+                    "current_value": parameter.get("value"),
+                    "current_source": parameter.get("source"),
+                    "adjustable": bool(parameter.get("adjustable")),
+                    "impacted_metric_ids": [],
+                    "blocked_missing_inputs": [],
+                },
+            )
+            row["impacted_metric_ids"].append(formula["metric_id"])
+            row["blocked_missing_inputs"].extend(formula.get("missing_inputs", []))
+    preview = []
+    for row in grouped.values():
+        missing_inputs = sorted(set(row["blocked_missing_inputs"]))
+        impact_status = "blocked_by_read_model" if missing_inputs else "not_adjustable"
+        if impact_status == "blocked_by_read_model":
+            impact_summary = "当前 read model 输入不完整，仅显示参数来源；不计算调参后财务值。"
+        else:
+            impact_summary = "当前参数为只读口径；Phase 7.3 展示影响范围，不重新计算财务值。"
+        preview.append(
+            {
+                "section": row["section"],
+                "parameter_id": row["parameter_id"],
+                "label_zh": row["label_zh"],
+                "current_value": row["current_value"],
+                "current_source": row["current_source"],
+                "adjustable": row["adjustable"],
+                "impacted_metric_ids": sorted(set(row["impacted_metric_ids"])),
+                "blocked_missing_inputs": missing_inputs,
+                "impact_status": impact_status,
+                "impact_summary_zh": impact_summary,
+                "preview_value": None,
+            }
+        )
+    return preview
