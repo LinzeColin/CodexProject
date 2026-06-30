@@ -1,10 +1,10 @@
 project_id: "KMFA"
 project_name: "KMFA 经营分析系统"
-version: "0.1.0-s04p3"
-current_stage: "S04"
-current_phase: "S04-GITHUB-UPLOAD"
-current_phase_status: "uploaded_to_github_main"
-current_stage_status: "uploaded_to_github_main"
+version: "0.1.0-s05p2-private-backfill-partial"
+current_stage: "S05"
+current_phase: "S05-P2"
+current_phase_status: "s05p2_owner_decision_application_preview_blocked_expected"
+current_stage_status: "in_progress_local_only"
 github_directory: "LinzeColin/CodexProject/KMFA"
 human_plane:
   - "README.md"
@@ -27,6 +27,9 @@ machine_plane:
   - "stage_artifacts/S04_P3_basic_tool_tests/human/tool_function_test_report.md"
   - "stage_artifacts/S04_STAGE_REVIEW/human/stage4_review_report.md"
   - "stage_artifacts/S04_STAGE_REVIEW/human/github_upload_record.md"
+  - "stage_artifacts/S05_P1_a0_file_registration/human/s05_p1_completion_record.md"
+  - "stage_artifacts/S05_P2_a0_golden_fixture/human/s05_p2_completion_record.md"
+  - "stage_artifacts/S05_P2_a0_golden_fixture/machine/no_owner_decision_application_preview.json"
 privacy_policy:
   raw_sensitive_data_public_repo_allowed: false
   metadata_plain_sensitive_data_allowed: false
@@ -50,4 +53,9 @@ upload_policy:
   stage4_upload_ready_local_only: false
   stage4_uploaded_to_github_main: true
   stage4_upload_evidence: "KMFA/stage_artifacts/S04_STAGE_REVIEW/human/github_upload_record.md"
-  upload_surface: "clean_stage4_upload_worktree_from_origin_main_after_review_fixes"
+  stage5_phase_completion_upload_allowed: false
+  stage5_review_required_before_upload: true
+  stage5_review_passed: false
+  stage5_uploaded_to_github_main: false
+  stage5_blocker: "S05-P2 Excel fields pending owner/authorized decision; S05-P3 not started"
+  upload_surface: "project_level_kmfa_worktree_stage5_local_only_no_upload"

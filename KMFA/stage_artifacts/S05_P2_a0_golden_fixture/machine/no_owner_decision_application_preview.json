@@ -1,0 +1,34 @@
+{
+  "application_status": "blocked",
+  "blocker": "no_owner_or_authorized_decision_supplied",
+  "business_plaintext_committed": false,
+  "candidate_application": {
+    "candidate_role": "pending_excel_candidate",
+    "field_actions": [
+      "contract_amount",
+      "total_expense",
+      "gross_profit",
+      "gross_margin",
+      "cost_category"
+    ],
+    "pending_field_count": 5
+  },
+  "candidate_id": "A0-CAND-70023EFC7305",
+  "completion_gate_effect": "does_not_resolve_excel_candidate",
+  "decision_code": "none",
+  "file_id": "A0-FILE-BAE6D90834C5",
+  "phase_id": "S05-P2",
+  "private_csv_committed": false,
+  "project_id": "KMFA",
+  "public_safety": {
+    "github_upload_allowed_by_preview": false,
+    "raw_or_plaintext_values_included": false,
+    "source_layer_write_allowed": false
+  },
+  "q4_confirmation_claimed": false,
+  "q5_baseline_claimed": false,
+  "raw_source_committed": false,
+  "record_type": "s05_p2_owner_decision_application_preview",
+  "schema_version": "kmfa.s05_p2_owner_decision_application_preview.v1",
+  "stage_id": "S05"
+}
