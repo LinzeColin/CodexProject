@@ -18,17 +18,4 @@ COPY infra ./infra
 COPY scripts ./scripts
 COPY specs ./specs
 
-CMD [
-  ".venv/bin/python",
-  "-m",
-  "apps.worker.app.main",
-  "supervise",
-  "--worker-id",
-  "eei-compose-worker",
-  "--max-jobs-per-cycle",
-  "1",
-  "--max-outbox-per-cycle",
-  "5",
-  "--poll-interval-seconds",
-  "5"
-]
+CMD [".venv/bin/python", "-m", "apps.worker.app.main", "supervise", "--worker-id", "eei-compose-worker", "--max-jobs-per-cycle", "1", "--max-outbox-per-cycle", "5", "--poll-interval-seconds", "5"]

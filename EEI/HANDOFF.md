@@ -1,6 +1,6 @@
 # HANDOFF
 
-Updated: 2026-06-29 Australia/Sydney
+Updated: 2026-06-30 Australia/Sydney
 
 ## Current Goal
 
@@ -8,6 +8,11 @@ Updated: 2026-06-29 Australia/Sydney
 
 ## Current Status
 
+- 2026-06-30 PR #258 GitHub sync note: the current EEI runtime-recovery PR is based on GitHub `main` commit `a8514593` and remains scoped to EEI runtime recovery, roadmap context, and release-artifact consistency. It intentionally does not close A209 or mark MVP release-ready.
+- PR #258 regenerates clean-room and release artifacts because the submitted tree changes `docs/07_MVP_ROADMAP.md`, `infra/docker/worker.Dockerfile`, and `scripts/manage_clean_room_release.py`; `CHECKSUMS.sha256`, `artifacts/release_evidence_t1211.json`, `artifacts/tests/a200/t1215_clean_room_release.json`, and `artifacts/tests/a200/Enterprise_Ecosystem_Intelligence_clean_room_t1215.zip` must therefore be refreshed as governed outputs.
+- PR #258 validation evidence: `make validate-clean-room-release validate-release-artifacts` passed; `PNPM=<bundled-pnpm> make verify` passed locally with browser scale benchmark, 3s soak smoke, 3s operator runner, Ruff lint, typecheck, and 137 unit tests. Current-head GitHub validation must be read from the PR checks because each evidence-refresh commit necessarily creates a new head SHA.
+- The generated `source_commit` fields in T1211/T1215 artifacts identify the pre-artifact input commit used by the generator. The reviewable proof for the submitted PR head is the artifact checksum validation plus the GitHub workflow result, not an A209 release-ready signal.
+- `validate_operator_soak_evidence.py validate --require-release-ready` still returns `PARTIAL_OPERATOR_EVIDENCE` because the 24h A209 artifact is missing. The previous `/private/tmp` A209 reruns remain failed or partial evidence only and must not be promoted.
 - 2026-06-26 CI retry note: Project Governance run `28207602139` failed before changed-scope validation because the forced update from `064caf7f` to `1d6ea340` left `GOVERNANCE_BASE_REF=064caf7f32e4ff612fb95d4b15f24944fd9da0c6` unavailable in the runner checkout. Use a normal follow-up push from `1d6ea340` so the next push `before` SHA resolves; no A209 release gate is closed by this retry.
 - 2026-06-26 A209 repair update: the clean 24h operator soak restarted at `2026-06-25T21:33:19Z` / `2026-06-26 07:33 AEST` failed at checkpoint window `7/288`.
 - Latest A209 failure evidence: `artifacts/tests/a209/t1307_operator_soak_24h.checkpoints.jsonl` has 7 rows, 6 PASS windows and 1 FAIL window; window 7 reports `child_status=NO_OUTPUT`, `exit_status=1`, and `page.evaluate: Target page, context or browser has been closed`; `/private/tmp/eei-operator-soak-61143-7.json` is missing.

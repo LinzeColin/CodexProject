@@ -24,9 +24,6 @@ FIXED_ZIP_DATETIME = (2026, 6, 19, 0, 0, 0)
 BINARY_SUFFIXES = {".gif", ".gz", ".ico", ".jpg", ".jpeg", ".pdf", ".png", ".webp", ".zip"}
 
 
-def path_id(path: Path) -> str:
-    return path.as_posix()
-
 REQUIRED_MARKDOWN = {
     "README.md",
     "GOVERNANCE_INDEX.md",
@@ -134,13 +131,6 @@ def run_git_bytes(*args: str) -> bytes:
 
 def path_id(path: str | Path) -> str:
     return Path(path).as_posix()
-
-
-def canonical_file_bytes(path: Path) -> bytes:
-    payload = path.read_bytes()
-    if path.suffix.lower() in BINARY_SUFFIXES or b"\0" in payload:
-        return payload
-    return payload.replace(b"\r\n", b"\n")
 
 
 def sha256_bytes(payload: bytes) -> str:
