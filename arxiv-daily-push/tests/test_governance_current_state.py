@@ -30,14 +30,30 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn(f"- Current task: `{expected_task}`", current_state)
         self.assertIn(f"### `{current_iteration}`", ledger)
 
-    def test_current_state_summary_describes_s2plt02_daily_run_dry_run_terminal_classification(self) -> None:
+    def test_current_state_summary_describes_assignment_live_validation_and_s2plt02_blockers(self) -> None:
         ledger = (ADP_ROOT / "docs/governance/DEVELOPMENT_LEDGER.md").read_text(encoding="utf-8")
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
-            "S2PLT02_DAILY_RUN_DRY_RUN_TERMINAL_CLASSIFICATION_BLOCKED_NO_PRODUCTION",
+            "S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_LIVE_VALIDATION_SYNC_BLOCKED_FINAL_BUNDLE_INCOMPLETE_NO_PRODUCTION",
             current_state,
         )
+        self.assertIn("S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-LIVE-VALIDATION-SYNC", current_state)
+        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json", current_state)
+        self.assertIn("assignment_present=true", current_state)
+        self.assertIn("independent_final_reviewer_assigned_by_payload=true", current_state)
+        self.assertIn("reviewer `codex-subthread-independent-final-reviewer`", current_state)
+        self.assertIn("b5b117307bd61f168ae6a422b24c865227f4824191348b851081af66730ed2c2", current_state)
+        self.assertIn("f12f50fe2d474010ab3f93023759872593bdbb3ad65bfbf645287f21a76ef2a3", current_state)
+        self.assertIn("ADP-S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-LIVE-VALIDATION-SYNC-20260630.json", current_state)
+        self.assertIn("PHASE_S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_LIVE_VALIDATION_SYNC.md", ledger)
+        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/manifest.json", current_state)
+        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json", current_state)
+        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml", current_state)
+        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json", current_state)
+        self.assertIn("HANDOFF/00_下一Agent先读.md", current_state)
+        self.assertNotIn("Current task: `S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT`", current_state)
+        self.assertNotIn("current agent cannot fabricate it", current_state)
         self.assertIn("S2PLT02-DAILY-RUN-DRY-RUN-TERMINAL-CLASSIFICATION", current_state)
         self.assertIn("daily_run_succeeded_but_smtp_dry_run_not_terminal", current_state)
         self.assertIn("daily_run_succeeded_service_dates=2026-06-29,2026-06-30", current_state)
@@ -148,6 +164,7 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         for text in (assurance, owner_status):
             text_lower = text.lower()
             self.assertIn("S2PMT07", text)
+            self.assertIn("validated independent reviewer assignment", text)
             self.assertIn("S2PLT02-REAL-DELIVERY-MANIFEST-INPUT-VALIDATOR", text)
             self.assertIn("S2PLT02-REAL-DELIVERY-MANIFEST-NORMALIZATION", text)
             self.assertIn("S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN", text)
@@ -192,6 +209,9 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json", default_next)
         self.assertIn("受控真实捕获窗口", default_next)
         self.assertIn("真实 launchd scheduler proof", default_next)
+        self.assertIn("独立最终复审人分配已验证", decisions)
+        self.assertIn("validate-final-reviewer-assignment", decisions)
+        self.assertIn("b5b117307bd61f168ae6a422b24c865227f4824191348b851081af66730ed2c2", decisions)
         self.assertIn("S2PLT02 terminal proof 输入仍不完整", decisions)
         self.assertIn("S2PLT02 terminal proof 捕获计划仍 blocked", decisions)
         self.assertIn("S2PLT02 capture-window CLI 已可复现但仍 blocked", decisions)
@@ -204,7 +224,7 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertNotIn("候选池", first_action_row)
         self.assertNotIn("评分标准公开", first_action_row)
         self.assertNotIn("独立终审 reviewer assignment artifact 准备", default_next)
-        self.assertIn("no-production attestation、independent reviewer assignment、P0/P1 zero-proof、S2PLT01 terminal acceptance 已是可用输入", decisions)
+        self.assertIn("no-production attestation、independent reviewer assignment validator pass、P0/P1 zero-proof、S2PLT01 terminal acceptance 已是可用输入", decisions)
         self.assertNotIn("| 无冲突的影子数据源证据 | 可以 |", roadmap)
         self.assertIn("S2PMT07 阻断期暂停新增影子数据源", roadmap)
 

@@ -5512,3 +5512,28 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-LIVE-VALIDATION-SYNC"
+    title: "S2PMT07 independent final reviewer assignment live validation sync"
+    parent_task_id: "S2PMT07"
+    phase: "S2PM"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-30T16:11:06+10:00"
+    objective: "Record that the committed independent final reviewer assignment artifact validates while keeping final bundle acceptance blocked."
+    scope: "Current-state governance, phase record, run manifest, user-center status, three base notes, and regression coverage."
+    non_scope: "No SMTP send, no scheduler enable/install/kickstart, no Release, no restore, no CURRENT/V7 change, no public schema/DB/source/ranking/queue mutation, no P0/P1 closure claim, no S2PLT04 completion report, no final command execution, no final bundle acceptance, no DAILY_OPERATION, and no Stage2/S3 production acceptance."
+    owner: "owner/coordinator + engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    dependencies: ["S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-AND-ZERO-PROOF", "S2PLT02-DAILY-RUN-DRY-RUN-TERMINAL-CLASSIFICATION"]
+    required_files: ["FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_LIVE_VALIDATION_SYNC.md", "governance/run_manifests/ADP-S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-LIVE-VALIDATION-SYNC-20260630.json", "arxiv-daily-push/tests/test_governance_current_state.py", "arxiv-daily-push/tests/test_user_center_candidate_pool.py"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_assignment_validate PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli validate-final-reviewer-assignment --path FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json --json", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_assignment_tests PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_cli.py arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_governance_current_state.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_target_suite PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_cli.py arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_governance_current_state.py arxiv-daily-push/tests/test_user_center_candidate_pool.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_full_unittest PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest discover -s arxiv-daily-push/tests -q", "python3 tools/validate_task_pack.py --root .", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_project_gov2 python3 scripts/validate_project_governance.py --project arxiv-daily-push", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_gov_sync2 python3 scripts/validate_governance_sync.py", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_ts_check3 PYTHONPATH=arxiv-daily-push/src python3 arxiv-daily-push/scripts/update_user_center_timestamps.py --check", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_lean python3 scripts/lean_governance.py check-render --project arxiv-daily-push", "python3 scripts/validate_semantic_extractors.py arxiv-daily-push with 120s wrapper timeout", "git diff --check", "curl -fsSL 'https://api.github.com/repos/LinzeColin/CodexProject/pulls?state=open&per_page=100' | python3 -c 'import sys,json; print(len(json.load(sys.stdin)))'"]
+    test_results: ["assignment validator: pass with state_hash b5b117307bd61f168ae6a422b24c865227f4824191348b851081af66730ed2c2", "targeted CLI/final-gate/current-state tests before sync: 158 OK", "targeted CLI/final-gate/current-state/user-center tests after sync: 176 OK", "full ADP unittest: 749 OK", "task pack validator: PASS", "project governance: errors 0 warnings 0", "governance sync: errors 0 warnings 0", "user-center timestamps: validated 18 files", "lean governance check-render: drift_count 0 reference_issue_count 0", "semantic extractor: timeout after 120s; recorded as non-blocking long-run validation not completed", "git diff --check: exit 0", "GitHub open PR count: 0"]
+    evidence_refs: ["FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json", "governance/run_manifests/ADP-S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-LIVE-VALIDATION-SYNC-20260630.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_LIVE_VALIDATION_SYNC.md"]
+    result: "blocked_assignment_live_validation_pass_final_bundle_incomplete_no_production"
+    risk: "A valid reviewer assignment can be misread as S2PMT07 acceptance; this only validates the assignment input and preserves downstream final-bundle blockers."
+    rollback: "Revert the current-state governance sync, phase record, run manifest, user-center notes, tests, and three base notes; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
