@@ -21,10 +21,19 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 297
+- task_count: 298
 - acceptance_count: 127
 
 ## Delivery Tasks
+
+## 2026-06-30 16:36:09 Australia/Sydney - S2PLT02 Terminal Proof Evidence Inventory Input Hardening
+
+- `S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY-INPUT-HARDENING` fixes `audit-s2plt02-terminal-proof-evidence-inventory --launchctl-disabled-file MISSING --json` so a missing launchctl disabled-state file returns blocked JSON instead of a Python `FileNotFoundError` traceback.
+- Missing-file CLI now returns blocked / exit 2 with `launchctl_disabled_file_missing`, `launchctl_disabled_file_status=missing`, `state_hash=b43760c8150155bb0f40e627cdec97443451bfad63e1257b08d1fd572dccda39`, and no state validation errors.
+- Normal read-only local evidence inventory remains blocked / exit 2 with `state_hash=d2f12b5f3fbe439fdd0b2d420706700f5a0aa6b3d9ba691da67f2ffe4758d117`, `observed_real_delivery_days=1/2`, `observed_real_email_count=4/8`, and `nonterminal_succeeded_dry_run_count=2`.
+- Remaining S2PLT02 terminal inputs are still `SECOND_REAL_DELIVERY_DAY`, `EIGHT_REAL_EMAILS`, `REAL_SCHEDULER_PROOF`, and `S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`.
+- Evidence: `governance/run_manifests/ADP-S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY-INPUT-HARDENING-20260630.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_PROOF_EVIDENCE_INVENTORY_INPUT_HARDENING.md`; `arxiv-daily-push/src/arxiv_daily_push/cli.py`; `arxiv-daily-push/tests/test_cli.py`.
+- This does not write S2PLT02 terminal proof, write S2PLT04 completion report, send SMTP, enable scheduler, upload Release assets, execute restore, mutate schema/DB/source/ranking/CURRENT/V7, enable DAILY_OPERATION, or claim S2PLT02/S2PLT04/S2PMT07/integrated production acceptance.
 
 ## 2026-06-30 15:31:00 Australia/Sydney - S2PLT02 Daily-Run Dry-Run Terminal Classification
 

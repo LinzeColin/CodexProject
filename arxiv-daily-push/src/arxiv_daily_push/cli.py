@@ -121,6 +121,7 @@ from .stage2_final_gate import (
     S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_ARTIFACT_PATH,
     S2PMT07_LOCAL_RUNTIME_NO_PRODUCTION_REQUIRED_LABELS,
     S2PMT07_P0_P1_ZERO_PROOF_ARTIFACT_PATH,
+    _stable_hash,
     build_final_acceptance_bundle_readiness_state,
     build_final_acceptance_bundle_manifest_validation_state,
     build_final_bundle_prerequisite_plan_state,
@@ -4241,8 +4242,17 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"- state_error: {error}")
         return 0 if report["status"] == "pass" and not state_errors else 2
     if args.command == "audit-s2plt02-terminal-proof-evidence-inventory":
+        launchctl_disabled_file_ref = ""
+        launchctl_disabled_file_status = "not_requested"
         if args.launchctl_disabled_file:
-            launchctl_disabled_text = Path(args.launchctl_disabled_file).read_text(encoding="utf-8")
+            launchctl_disabled_path = Path(args.launchctl_disabled_file)
+            launchctl_disabled_file_ref = str(launchctl_disabled_path)
+            if launchctl_disabled_path.exists():
+                launchctl_disabled_text = launchctl_disabled_path.read_text(encoding="utf-8")
+                launchctl_disabled_file_status = "loaded"
+            else:
+                launchctl_disabled_text = ""
+                launchctl_disabled_file_status = "missing"
         else:
             completed = subprocess.run(
                 ["launchctl", "print-disabled", f"gui/{os.getuid()}"],
@@ -4265,6 +4275,26 @@ def main(argv: list[str] | None = None) -> int:
             adp_allow_smtp_send=str(os.environ.get("ADP_ALLOW_SMTP_SEND", "false")).strip().lower()
             in {"true", "1", "yes", "on"},
         )
+        if launchctl_disabled_file_status == "missing":
+            report = {
+                **report,
+                "status": "blocked",
+                "safe_to_build_terminal_artifact": False,
+                "counts_toward_s2plt02_terminal_proof": False,
+                "launchctl_disabled_file_ref": launchctl_disabled_file_ref,
+                "launchctl_disabled_file_status": launchctl_disabled_file_status,
+                "blocking_reasons": sorted(
+                    set([*report.get("blocking_reasons", []), "launchctl_disabled_file_missing"])
+                ),
+            }
+            report = {**report, "state_hash": _stable_hash({key: value for key, value in report.items() if key != "state_hash"})}
+        elif args.launchctl_disabled_file:
+            report = {
+                **report,
+                "launchctl_disabled_file_ref": launchctl_disabled_file_ref,
+                "launchctl_disabled_file_status": launchctl_disabled_file_status,
+            }
+            report = {**report, "state_hash": _stable_hash({key: value for key, value in report.items() if key != "state_hash"})}
         state_errors = validate_s2plt02_terminal_proof_evidence_inventory_state(report)
         if state_errors:
             report = {**report, "state_validation_errors": state_errors}

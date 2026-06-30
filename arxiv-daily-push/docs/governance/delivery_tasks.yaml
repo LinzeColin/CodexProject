@@ -5537,3 +5537,28 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY-INPUT-HARDENING"
+    title: "S2PLT02 terminal proof evidence inventory input hardening"
+    parent_task_id: "S2PLT02-TERMINAL-DELIVERY-PROOF"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-30T16:36:09+10:00"
+    objective: "Make S2PLT02 terminal proof evidence inventory fail closed when an explicit launchctl disabled-state input file is missing."
+    scope: "CLI input handling, focused regression test, phase record, run manifest, traceability row, delivery/event records, owner/user-center status, and three base notes."
+    non_scope: "No S2PLT02 terminal proof artifact, no SMTP send, no scheduler enable/install/kickstart, no Release, no restore, no CURRENT/V7 change, no public schema/DB/source/ranking/queue mutation, no S2PLT02/S2PLT03/S2PLT04/S2PMT07 acceptance, and no integrated production acceptance."
+    owner: "engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    dependencies: ["S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY", "S2PLT02-TERMINAL-CAPTURE-WINDOW-RUNTIME-STATE-SYNC"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_PROOF_EVIDENCE_INVENTORY_INPUT_HARDENING.md", "governance/run_manifests/ADP-S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY-INPUT-HARDENING-20260630.json"]
+    acceptance_ids: ["ACC-S2PLT02-2D", "ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_tdd_red PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_cli.py::CliTests::test_audit_s2plt02_terminal_proof_evidence_inventory_json_blocks_missing_launchctl_file", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_tdd_green3 PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_cli.py::CliTests::test_audit_s2plt02_terminal_proof_evidence_inventory_json_blocks_missing_launchctl_file", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_audit_missing_launchctl_green2 PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli audit-s2plt02-terminal-proof-evidence-inventory --repo-root . --state-dir /Users/linzezhang/.adp/arxiv-daily-push --candidate-service-dates 2026-06-28,2026-06-29,2026-06-30 --launchctl-disabled-file /tmp/nonexistent_adp_launchctl_disabled_20260630.txt --generated-at 2026-06-30T16:36:09+10:00 --json", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_audit_inventory_live4 PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli audit-s2plt02-terminal-proof-evidence-inventory --repo-root . --state-dir /Users/linzezhang/.adp/arxiv-daily-push --candidate-service-dates 2026-06-28,2026-06-29,2026-06-30 --generated-at 2026-06-30T16:36:09+10:00 --json"]
+    test_results: ["TDD red failed with FileNotFoundError", "focused CLI regression: 1 passed", "missing launchctl file CLI: blocked / exit 2 with state_hash b43760c8150155bb0f40e627cdec97443451bfad63e1257b08d1fd572dccda39 and no state validation errors", "normal local evidence inventory CLI: blocked / exit 2 with state_hash d2f12b5f3fbe439fdd0b2d420706700f5a0aa6b3d9ba691da67f2ffe4758d117 and no state validation errors"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY-INPUT-HARDENING-20260630.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_PROOF_EVIDENCE_INVENTORY_INPUT_HARDENING.md", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_cli.py"]
+    result: "blocked_s2plt02_inventory_launchctl_missing_file_fail_closed_no_production"
+    risk: "A missing launchctl evidence file can otherwise abort the terminal-proof audit and hide the real blocker set."
+    rollback: "Revert the CLI missing-file handling, focused test, phase record, run manifest, traceability row, delivery/event records, user-center notes, and three base notes; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

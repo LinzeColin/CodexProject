@@ -212,6 +212,20 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("nonterminal_succeeded_dry_run_count=2", page)
         self.assertIn("a9179f2a386c23d6efb0495659f434a3991736ce7a10ec6e234659a4e6a0accf", page)
         self.assertIn(
+            "REQ-ADP-V7-041-S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY-INPUT-HARDENING",
+            page,
+        )
+        self.assertIn("S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY-INPUT-HARDENING", page)
+        self.assertIn(
+            "ADP-S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY-INPUT-HARDENING-20260630.json",
+            page,
+        )
+        self.assertIn("PHASE_S2PLT02_TERMINAL_PROOF_EVIDENCE_INVENTORY_INPUT_HARDENING.md", page)
+        self.assertIn("launchctl_disabled_file_missing", page)
+        self.assertIn("launchctl_disabled_file_status=missing", page)
+        self.assertIn("b43760c8150155bb0f40e627cdec97443451bfad63e1257b08d1fd572dccda39", page)
+        self.assertIn("d2f12b5f3fbe439fdd0b2d420706700f5a0aa6b3d9ba691da67f2ffe4758d117", page)
+        self.assertIn(
             "REQ-ADP-V7-041-S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-LIVE-VALIDATION-SYNC",
             page,
         )

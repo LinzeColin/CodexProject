@@ -35,6 +35,17 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
+            "S2PLT02_TERMINAL_PROOF_EVIDENCE_INVENTORY_INPUT_HARDENING_BLOCKED_NO_PRODUCTION",
+            current_state,
+        )
+        self.assertIn("S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY-INPUT-HARDENING", current_state)
+        self.assertIn("launchctl_disabled_file_missing", current_state)
+        self.assertIn("launchctl_disabled_file_status=missing", current_state)
+        self.assertIn("b43760c8150155bb0f40e627cdec97443451bfad63e1257b08d1fd572dccda39", current_state)
+        self.assertIn("d2f12b5f3fbe439fdd0b2d420706700f5a0aa6b3d9ba691da67f2ffe4758d117", current_state)
+        self.assertIn("PHASE_S2PLT02_TERMINAL_PROOF_EVIDENCE_INVENTORY_INPUT_HARDENING.md", ledger)
+        self.assertIn("no Python traceback", ledger)
+        self.assertIn(
             "S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_LIVE_VALIDATION_SYNC_BLOCKED_FINAL_BUNDLE_INCOMPLETE_NO_PRODUCTION",
             current_state,
         )
