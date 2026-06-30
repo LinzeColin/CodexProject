@@ -131,7 +131,8 @@ class TestV023Stage10E2EAcceptance(unittest.TestCase):
         self.assertIn("清缓存验证", doc)
         self.assertIn("Stage 10 Phase 10.2", doc)
         self.assertIn("Stage 10 Phase 10.3", doc)
-        self.assertIn("GitHub main upload 未执行", doc)
+        self.assertIn("Stage 10 Whole-stage Review", doc)
+        self.assertIn("GitHub main upload terminal gate", doc)
 
         terms = ["mo" + "ck", "sam" + "ple", "synthe" + "tic", "fix" + "ture", "de" + "mo", "fa" + "ke"]
         paths = [
@@ -322,6 +323,105 @@ class TestV023Stage10E2EAcceptance(unittest.TestCase):
         self.assertEqual(payload["error_state_path"]["workspace"], "market_research")
         self.assertTrue(payload["error_state_path"]["has_explanatory_empty_state"])
         self.assertTrue(payload["error_state_path"]["has_next_action"])
+
+    def test_whole_stage_review_evidence_pack_closes_stage10_without_stage11_work(self) -> None:
+        review_dir = ROOT / "reports" / "pfi_v023" / "stage_10" / "whole_stage_review"
+        evidence_path = review_dir / "evidence.json"
+        browser_validation_path = review_dir / "browser_validation.json"
+        changed_files_path = review_dir / "changed_files.txt"
+        terminal_log_path = review_dir / "terminal.log"
+        doc_path = ROOT / "docs" / "pfi_v023" / "STAGE10_E2E_ACCEPTANCE.md"
+        screenshots = [
+            review_dir / "screenshots" / "app_entry_review.png",
+            review_dir / "screenshots" / "navigation_review.png",
+            review_dir / "screenshots" / "data_report_review.png",
+            review_dir / "screenshots" / "mobile_review.png",
+        ]
+
+        for path in (evidence_path, browser_validation_path, changed_files_path, terminal_log_path, doc_path, *screenshots):
+            self.assertTrue(path.exists(), str(path))
+
+        evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
+        changed_files = [line.strip() for line in changed_files_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+
+        self.assertEqual(evidence["schema"], "PFIV023Stage10WholeStageReviewEvidenceV1")
+        self.assertEqual(evidence["version"], "v0.2.3")
+        self.assertEqual(evidence["stage"], "Stage 10")
+        self.assertEqual(evidence["review_id"], "V023-S10-WHOLE-STAGE-REVIEW")
+        self.assertEqual(evidence["status"], "review_pass")
+        self.assertTrue(evidence["current_stage_only"])
+        self.assertTrue(evidence["no_stage11_work"])
+        self.assertEqual(evidence["completed_phases"], ["V023-S10-P10.1", "V023-S10-P10.2", "V023-S10-P10.3"])
+        self.assertTrue(evidence["stage_contract"]["phase_10_1_entry_e2e_done"])
+        self.assertTrue(evidence["stage_contract"]["phase_10_2_navigation_e2e_done"])
+        self.assertTrue(evidence["stage_contract"]["phase_10_3_data_report_e2e_done"])
+        self.assertTrue(evidence["stage_contract"]["stage_10_whole_review_done"])
+        self.assertEqual(evidence["stage_contract"]["github_main_upload_gate"], "terminal_verified_after_commit")
+        self.assertEqual(evidence["changed_files"], changed_files)
+        for key in (
+            "app_opens_new_ui",
+            "localhost_same_ui",
+            "ten_first_level_entries_clickable",
+            "secondary_paths_clickable",
+            "core_metrics_not_masked_zero",
+            "report_center_conclusion_or_blocker_visible",
+            "browser_back_forward_works",
+            "screenshots_and_json_present",
+        ):
+            self.assertTrue(evidence["acceptance_checks"][key], key)
+
+        doc = doc_path.read_text(encoding="utf-8")
+        self.assertIn("Stage 10 Whole-stage Review", doc)
+        self.assertIn("GitHub main upload terminal gate", doc)
+        self.assertNotIn("Stage 10 whole-stage review 未执行", doc)
+        self.assertNotIn("GitHub main upload 未执行", doc)
+
+    def test_whole_stage_browser_review_proves_current_runtime_acceptance(self) -> None:
+        payload = json.loads(
+            (
+                ROOT
+                / "reports"
+                / "pfi_v023"
+                / "stage_10"
+                / "whole_stage_review"
+                / "browser_validation.json"
+            ).read_text(encoding="utf-8")
+        )
+
+        expected_nav = [
+            "首页总览",
+            "账户与资产",
+            "账本流水",
+            "投资管理",
+            "消费管理",
+            "数据源与上传",
+            "建议与复盘",
+            "报告与洞察",
+            "市场与研究",
+            "设置",
+        ]
+        self.assertEqual(payload["schema"], "PFIV023Stage10WholeStageBrowserValidationV1")
+        self.assertEqual(payload["review_id"], "V023-S10-WHOLE-STAGE-REVIEW")
+        self.assertEqual(payload["localhost"]["url"], "http://127.0.0.1:8501")
+        self.assertEqual(payload["localhost"]["health"], "ok")
+        self.assertEqual(payload["app_entry"]["downloads_app_project_binding"], str(ROOT))
+        self.assertEqual(payload["official_nav_labels"], expected_nav)
+        self.assertTrue(all(row["clicked"] for row in payload["entry_clicks"]))
+        self.assertTrue(all(row["clicked"] for row in payload["secondary_clicks"]))
+        self.assertEqual(payload["history_validation"]["back"]["ok"], True)
+        self.assertEqual(payload["history_validation"]["forward"]["ok"], True)
+        self.assertEqual(payload["core_metrics"]["monthly_spending"]["value_text"], "CNY 7,153.98")
+        self.assertEqual(payload["core_metrics"]["pending_review"]["value_text"], "406")
+        self.assertTrue(payload["core_metrics"]["all_zero_values_explained"])
+        self.assertTrue(payload["data_check_board"]["contains_data_source_status"])
+        self.assertTrue(payload["report_center"]["has_conclusion_or_blocker"])
+        self.assertTrue(payload["error_state_path"]["has_explanatory_empty_state"])
+        self.assertTrue(payload["error_state_path"]["has_next_action"])
+        self.assertEqual(payload["console_errors"], [])
+        self.assertEqual(payload["page_errors"], [])
+        self.assertEqual(payload["http_errors"], [])
+        for shot in payload["screenshots"].values():
+            self.assertGreater(shot["bytes"], 20000)
 
 
 if __name__ == "__main__":

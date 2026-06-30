@@ -59,10 +59,38 @@ Stage 10 Phase 10.3 数据和报告 E2E 已完成候选验收，覆盖：
 - `error_state_paths.json`
 - `screenshots/*.png`
 
-## Scope Guard
+## Stage 10 Whole-stage Review
 
-Stage 10 whole-stage review 未执行。
+Stage 10 Whole-stage Review 已完成本地整阶段复审，覆盖：
 
-GitHub main upload 未执行。
+- app 入口：`~/Downloads/PFI.app` dry-run 成功，项目绑定当前 checkout。
+- localhost：`http://127.0.0.1:8501` 与 app 入口展示同一正式 PFI UI。
+- 10 个一级入口：全部逐项点击通过。
+- 二级页面：每个一级入口至少一个二级 tab 点击通过。
+- 核心指标：`本月支出 CNY 7,153.98` 和 `待复核交易 406` 来自 MetaDatabase 真实支付宝流水；0 值均有来源或缺口说明。
+- 报告中心：可打开，并展示月报阻断原因和数据门禁说明。
+- 浏览器历史：back / forward 在账户与资产和账本流水之间通过。
+- 证据完整性：整阶段 review 包含 screenshot 和 JSON。
+
+证据包位置：`PFI/reports/pfi_v023/stage_10/whole_stage_review/`
+
+已记录：
+
+- `browser_validation.json`
+- `evidence.json`
+- `changed_files.txt`
+- `terminal.log`
+- `screenshots/app_entry_review.png`
+- `screenshots/navigation_review.png`
+- `screenshots/data_report_review.png`
+- `screenshots/mobile_review.png`
+
+## Stage Closeout
+
+Stage 10 自动验收与真实浏览器复审已通过。用户手动验收仍需用户在本轮最终报告后按 checklist 实际点击确认，Codex 不冒充用户确认。
+
+GitHub main upload terminal gate：本文件所在 Stage 10 closeout commit 推送后，通过 `git fetch origin main`、`git rev-parse HEAD`、`git rev-parse origin/main` 和 ahead/behind 结果验证远端一致。由于 commit hash 不能在同一 commit 内自包含，最终 GitHub main commit 以本轮 terminal 验证和最终报告为准。
 
 本轮未创建、填充或替换任何财务数据；所有可见金额和流水状态来自当前本机 PFI 运行态与 MetaDatabase 读取结果。
+
+本轮未进入 Stage 11。

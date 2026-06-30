@@ -1,0 +1,20 @@
+PFI v0.2.3 Stage 10 whole-stage review browser validation
+generated_at=2026-06-30T07:05:53.277Z
+head=7892474ea494b3d56abccaa64ad311bc49f01104
+origin_main=3a1769d4745e510a3e895c814b897cd5943eff7a
+status=## codex/pfi...origin/main [ahead 3, behind 1] |  M PFI/tests/test_v023_stage10_e2e_acceptance.py | ?? PFI/reports/pfi_v023/stage_10/whole_stage_review/
+8501_health=ok
+8766_health={"status": "ok", "schema": "PFIV021RuntimeAPIV1"}
+app_dry_run_exit_code=0
+project_binding=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI
+official_nav=首页总览 / 账户与资产 / 账本流水 / 投资管理 / 消费管理 / 数据源与上传 / 建议与复盘 / 报告与洞察 / 市场与研究 / 设置
+entry_clicks=10/10
+secondary_clicks=10/10
+history_back=true
+history_forward=true
+monthly_spending=CNY 7,153.98
+pending_review=406
+console_errors=0
+page_errors=0
+http_errors=0
+final validation commands are run separately after evidence generation and before GitHub upload.
