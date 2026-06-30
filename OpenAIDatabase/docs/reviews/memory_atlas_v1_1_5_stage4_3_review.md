@@ -10,7 +10,7 @@
 
 ## Review Result
 
-Stage 4.3 is review-passed with one browser-automation caveat.
+Stage 4.3 is review-passed.
 
 The implementation satisfies the phase acceptance target: hover preview remains
 transient and does not select the node; click focus keeps camera fly-in,
@@ -68,15 +68,28 @@ Observed results:
    `galaxy_stage4_3_interaction_ready`.
 3. `pnpm build`: PASS, with the existing Vite warning that `GalaxyScene` is
    larger than 500 kB after minification.
-4. The full fresh verification set is recorded in the Stage 4 whole-stage
-   review after this phase review.
+4. Chrome CDP desktop evidence: screenshot
+   `/tmp/memory-atlas-stage4-galaxy-webgl.png`, sha256
+   `dae4d9d01459e829f2c770f772803bfe5fe634a460b8aaeabd22c2b4abd83cee`;
+   `fallbackMode=webgl`, `lit=69717`, `alpha=70400`, `max=765`,
+   `frameDelta=24` over 1257.3 ms, approx 19.09 FPS.
+5. Chrome CDP interaction evidence: screenshot
+   `/tmp/memory-atlas-stage4-galaxy-webgl-analysis.png`, sha256
+   `36b7b87f30d93d42e130c63c026b3a4a4a5162dbc08f2dc510047fb589c1a7fb`;
+   Freeze produced `frozenDelta=0`, `flowPaused=true` and the button title
+   changed to `Resume Flow Field`; Analysis produced
+   `starfieldMode=analysis`; projected click target lookup returned a live
+   Galaxy target and neighbor cards remained capped at 5.
+6. Chrome CDP visible-mobile evidence: screenshot
+   `/tmp/memory-atlas-stage4-galaxy-webgl-mobile-visible.png`, sha256
+   `fe243c9f03c2c011a4eda04c7e5bc38f1fa7d835748f0fa7b05f8272f04ae619`;
+   390x844 viewport, `visibility=visible`, no horizontal overflow,
+   `sceneVisiblePixels=220`, `fallbackMode=webgl`, `lit=63292`,
+   `frameDelta=25` over 1517.9 ms, approx 16.47 FPS.
 
-Browser-automation caveat: Python Playwright and Node Playwright are not
-available in this local runtime, and the in-app browser control entry point was
-not exposed when checked in this thread. This review therefore does not claim a
-fresh screenshot, mobile viewport screenshot, canvas-pixel check or FPS reading.
-The phase is covered by TypeScript build, interaction contract, deterministic
-visual audit, release acceptance, preview HTTP and built-asset evidence.
+Python Playwright and Node Playwright are not available in this local runtime,
+so the browser evidence was collected through Chrome DevTools Protocol with an
+isolated Chrome profile and SwiftShader WebGL flags instead of Playwright.
 
 ## Boundary Review
 
@@ -90,10 +103,8 @@ Stage 4.3 did not:
 
 ## Residual Risks
 
-1. Browser screenshot, canvas-pixel and FPS evidence remains pending until a
-   browser automation surface is available.
-2. The existing GalaxyScene chunk-size warning remains.
-3. Freeze/Resume is currently scoped to flow-time, automatic rotation and pulse
+1. The existing GalaxyScene chunk-size warning remains.
+2. Freeze/Resume is currently scoped to flow-time, automatic rotation and pulse
    animation; camera focus and pointer interactions intentionally remain active
    so the paused scene can still be inspected.
 

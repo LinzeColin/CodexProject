@@ -4,7 +4,7 @@
 - Worktree: canonical project-level `CodexProject` Memory Atlas worktree
 - Branch: `codex/memory-atlas`
 - Stage scope: visual roadmap Stage 4, `记忆星系生产集成`
-- Stage result: PASS with browser-automation caveat
+- Stage result: PASS
 
 ## Scope Clarification
 
@@ -45,6 +45,8 @@ Completed phases:
 | Presentation / Analysis mode | `StarfieldViewMode`, `Starfield mode selector`, formula summary, terrain legend and Inspector strip separate clean presentation from explanation. | PASS |
 | Data safety | Release acceptance reports no tracked live raw exports, app bundles, env/key files, cookies, live sessions or auth files; app consumes redacted `memory_atlas.json`. | PASS |
 | Runtime cleanup | `runtime_tab_close_cache_cleanup_contract` remains PASS; local preview cleanup confirms no `4177` listener after shutdown. | PASS |
+| Desktop browser evidence | Chrome CDP desktop run confirms WebGL canvas, nonblank bounded pixel sample and motion. | PASS |
+| Mobile browser evidence | Chrome CDP visible-mobile run confirms 390x844 layout without horizontal overflow, full scene visibility, nonblank WebGL canvas and motion. | PASS |
 
 ## Validation Evidence
 
@@ -95,21 +97,36 @@ Observed results:
 9. Preview `/memory_atlas.json` returned `HTTP/1.1 200 OK`.
 10. Built asset marker scan found Freeze, Resume, mode selector, formula
     summary, Inspector summary, `flowPaused` and `starfieldMode`.
-11. Port `4177` had no listener after preview shutdown.
+11. Chrome CDP desktop evidence:
+    `/tmp/memory-atlas-stage4-galaxy-webgl.png`, sha256
+    `dae4d9d01459e829f2c770f772803bfe5fe634a460b8aaeabd22c2b4abd83cee`;
+    `fallbackMode=webgl`, `width=1162`, `height=647`, `lit=69717`,
+    `alpha=70400`, `max=765`, `frameDelta=24` over 1257.3 ms, approx
+    19.09 FPS.
+12. Chrome CDP interaction evidence:
+    `/tmp/memory-atlas-stage4-galaxy-webgl-analysis.png`, sha256
+    `36b7b87f30d93d42e130c63c026b3a4a4a5162dbc08f2dc510047fb589c1a7fb`;
+    Freeze produced `frozenDelta=0`, `flowPaused=true`; Analysis produced
+    `starfieldMode=analysis`; projected target lookup and neighbor cards
+    remained live.
+13. Chrome CDP visible-mobile evidence:
+    `/tmp/memory-atlas-stage4-galaxy-webgl-mobile-visible.png`, sha256
+    `fe243c9f03c2c011a4eda04c7e5bc38f1fa7d835748f0fa7b05f8272f04ae619`;
+    390x844 viewport, `visibility=visible`, `docScrollWidth=390`,
+    `bodyScrollWidth=390`, no overflow boxes, `sceneVisiblePixels=220`,
+    `fallbackMode=webgl`, `width=720`, `height=440`, `lit=63292`,
+    `frameDelta=25` over 1517.9 ms, approx 16.47 FPS.
+14. Port `4177` had no listener after preview shutdown.
 
-## Browser Automation Caveat
+## Browser Evidence Note
 
 Python Playwright is missing in both system Python and the bundled Python
-runtime, Node Playwright is unavailable, and `tool_search` did not expose the
-in-app browser `node_repl js` control entry point in this thread. A low-risk
-attempt to inspect the local page through Chrome + Computer Use was stopped by
-the user-side app session, so this review does not claim fresh screenshot,
-canvas-pixel, mobile viewport or FPS evidence.
-
-The stage is accepted on deterministic source contracts, TypeScript build,
-unit-style interaction and mapping contracts, visual audit, release audit, local
-preview HTTP and built-asset evidence. Browser screenshot/FPS evidence remains
-a residual validation gap for a later environment that has browser automation.
+runtime, and Node Playwright is unavailable. Browser evidence was therefore
+collected through Chrome DevTools Protocol with isolated Chrome profiles and
+SwiftShader WebGL flags. A hidden headless mobile target was explicitly
+rejected for FPS evidence because `document.visibilityState=hidden` made
+`requestAnimationFrame` stop; the accepted mobile FPS reading came from a
+temporary visible Chrome target with `visibility=visible`.
 
 ## Boundary Review
 
@@ -126,18 +143,24 @@ Stage 4 did not:
 
 No blocking Stage 4 review findings remain after this pass.
 
-One review issue was found and fixed during Stage 4.3 verification: the Stage
-4.2 visual audit looked for the old terrain-only toggle after Stage 4.3 promoted
-that UI into the formal Presentation/Analysis selector. The audit now accepts
-the Stage 4.3 selector and still requires the terrain panel.
+Two review issues were found and fixed during Stage 4.3 verification:
+
+1. The Stage 4.2 visual audit looked for the old terrain-only toggle after
+   Stage 4.3 promoted that UI into the formal Presentation/Analysis selector.
+   The audit now accepts the Stage 4.3 selector and still requires the terrain
+   panel.
+2. Mobile Galaxy inherited visual-focus desktop/tablet minimum grid widths and
+   the five-card delta strip could push the scene horizontally and below the
+   first viewport. The mobile CSS now constrains visual-focus grids to one
+   column, compacts Galaxy delta cards, wraps Galaxy controls and hides the
+   duplicate top stat strip for the Galaxy board.
 
 ## Residual Risks
 
-1. Real browser screenshot, canvas-pixel and FPS evidence remains pending.
-2. `GalaxyScene` still emits the existing Vite chunk-size warning.
-3. Memory Terrain remains parameter-backed and auditable, but not empirically
+1. `GalaxyScene` still emits the existing Vite chunk-size warning.
+2. Memory Terrain remains parameter-backed and auditable, but not empirically
    calibrated.
-4. Freeze/Resume intentionally leaves camera focus, hover and click interaction
+3. Freeze/Resume intentionally leaves camera focus, hover and click interaction
    active so a frozen scene can still be inspected.
 
 ## Next Stage Gate
