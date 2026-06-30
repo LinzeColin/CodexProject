@@ -1,0 +1,10 @@
+last_verified_at=2026-06-30T10:41:07Z
+pwd=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+head_at_final_validation=20681b1c59551798ad2dc6273ea93d9da6a988f6
+origin_main_at_final_validation=20681b1c59551798ad2dc6273ea93d9da6a988f6
+node_check_shell_js=pass
+py_compile_contract_and_test=pass
+pytest_pre_stage0_contract=3 passed in 0.10s
+json_and_git_diff_check=pass
+project_cache_after_validation=0 dirs / 0 files outside PFI/.venv
+stage_0_executed=false

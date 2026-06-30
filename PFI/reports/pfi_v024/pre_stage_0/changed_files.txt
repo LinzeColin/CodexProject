@@ -1,0 +1,13 @@
+PFI/CHANGELOG.md
+PFI/HANDOFF.md
+PFI/README.md
+PFI/开发记录.md
+PFI/docs/pfi_v024/PRE_STAGE0_CONTEXT_LOCK.md
+PFI/docs/pfi_v024/RUN_CONTRACT.md
+PFI/docs/pfi_v024/SOURCE_TASK_PACK_MANIFEST.md
+PFI/src/pfi_v02/stage_v024_pre_stage0_contract.py
+PFI/tests/test_v024_pre_stage0_contract.py
+PFI/reports/pfi_v024/pre_stage_0/changed_files.txt
+PFI/reports/pfi_v024/pre_stage_0/current_main_audit.md
+PFI/reports/pfi_v024/pre_stage_0/evidence.json
+PFI/reports/pfi_v024/pre_stage_0/terminal.log

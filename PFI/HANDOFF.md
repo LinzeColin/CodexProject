@@ -2,6 +2,25 @@
 
 Last updated: 2026-06-30 Australia/Sydney
 
+## Current v0.2.4 Repair Pack Handoff
+
+PFI v0.2.4 是 v0.2.3 closeout 后的修补包。用户提供的来源文件命名为
+`v0.2.3-repair`，当前线程按用户最新要求映射为 `v0.2.4`。
+
+当前状态：
+
+- 当前事实源：`/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi`。
+- 当前 run：`Pre Stage 0 / Phase P0.0`，不是 Stage 0。
+- 每次 run work 最多完成一个 phase；未获用户验收或明确指令不得进入 Stage 0。
+- 本轮不修改业务 UI、app bundle、launcher 或数据逻辑。
+- 来源资料：`/Users/linzezhang/Downloads/PFI_v0.2.3_Repair_Roadmap.md` 和 `/Users/linzezhang/Downloads/PFI_v0.2.3_Repair_TaskPack.zip`。
+- 当前 main 复核结论：TaskPack 内关于 `pfi_v023` docs/tests 缺失、`shell.js` 阻断的 GitHub audit 已对当前 checkout 过时；当前 `PFI/docs/pfi_v023` 存在，`test_v023_*.py` 存在，`PFI/web/app/shell.js` 通过 `node --check`。
+- v0.2.4 pre-stage evidence 位于 `PFI/reports/pfi_v024/pre_stage_0/`。
+
+---
+
+Last updated: 2026-06-30 Australia/Sydney
+
 ## Current v0.2.3 Recovery Handoff
 
 PFI v0.2.3 Human Product Experience Recovery 已进入第三阶段整体项目复审 closeout。
