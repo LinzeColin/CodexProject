@@ -1,6 +1,6 @@
 # ADP 用户中心
 
-更新时间：2026-06-30 09:32:37 Australia/Sydney
+更新时间：2026-06-30 09:57:34 Australia/Sydney
 
 这里是 ADP 在 GitHub 上的唯一中文用户入口。你不需要打开本机目录、运行文件、深层治理文件或原始 JSON，也能判断今天邮件是否正常、队列里还有什么、学习闭环到了哪一步、哪些结论仍被停止门禁止。
 
@@ -26,7 +26,7 @@
 | [已生成报告与邮件预览](./已生成报告与邮件预览.md) | 看 30 条已生成报告 / 邮件预览的状态索引 | 需要跳转已生成记录证据时 |
 | [邮件模板预览](./邮件模板预览.md) | 看 M1-M4 邮件在用户面前应呈现的界面版本 | 关心邮件长什么样时 |
 | [复习行动与收益](./复习行动与收益.md) | 看复习到期、行动窗口、能力资产、收益复盘和真实快照状态 | 关心学习闭环是否落地时 |
-| [功能任务测试证据追踪链](./功能任务测试证据追踪链.md) | 看功能/需求、任务、验收、代码、测试和运行证据的 374 条可点击链路 | 需要复审某项功能是否有测试和证据时 |
+| [功能任务测试证据追踪链](./功能任务测试证据追踪链.md) | 看功能/需求、任务、验收、代码、测试和运行证据的 375 条可点击链路 | 需要复审某项功能是否有测试和证据时 |
 | [恢复路径安全扫描](./恢复路径安全扫描.md) | 看 P0 A-001 恢复路径穿越、绝对路径、符号链接逃逸和阻断保留探针 | 复审恢复安全阻断项时 |
 | [恢复原子替换扫描](./恢复原子替换扫描.md) | 看 P0 A-002 新目标恢复、覆盖保留旧目标备份、无效覆盖保留原目标探针 | 复审恢复原子替换阻断项时 |
 | [事务发件箱与消息ID扫描](./事务发件箱与消息ID扫描.md) | 看 P0 A-003 Message-ID、outbox claim、SMTP accepted-before-commit 和 at-least-once/no-exactly-once 探针 | 复审事务发件箱与消息 ID 阻断项时 |
@@ -101,6 +101,12 @@
 - 当前 `artifact_written=false`、`artifact_validation_errors=[]`、sample state hash `beb8f19417b694428749bef5eb01de375ce2321f209c9086dfe4862bf48c2a8b`；这不是 `FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json` live proof。
 - 当前 dry-run/scheduler-disabled 捕获窗口仍 blocked；不启用 SMTP、scheduler、Release、restore、DAILY_OPERATION，也不声明 S2PLT02/S2PMT07 或 integrated production acceptance。
 
+## 2026-06-30 09:48:07 Australia/Sydney - S2PLT02 scheduler proof 输入验证器
+
+- 新增 `validate-s2plt02-real-scheduler-proof`，用于未来先校验真实 launchd scheduler proof manifest，再交给 terminal proof 候选生成器。
+- 当前 `scheduler_proof_ready=true` 只来自 fixture；`artifact_written=false`、`scheduler_install_enabled=false`、sample state hash `5e1157dc9c710501cb2bf2e5dcdd3cc09afb40ee68164ff32d844e993843fb80`。
+- 这不是当前 runtime scheduler proof；不启用 SMTP、scheduler、Release、restore、DAILY_OPERATION，也不声明 S2PLT02/S2PMT07 或 integrated production acceptance。
+
 ## 2026-06-29 18:04:46 Australia/Sydney - S2PLT02 历史授权门状态
 
 - 当时下一步为 `S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION`，且 `authorization_artifact_present=false`。
@@ -131,3 +137,8 @@
 
 - 最新记录：[PHASE_S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_DRAFT_BUILDER.md](../docs/phase_records/PHASE_S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_DRAFT_BUILDER.md) / [运行清单](../../governance/run_manifests/ADP-S2PLT02-TERMINAL-DELIVERY-PROOF-ARTIFACT-DRAFT-BUILDER-20260630.json)
 - 结论：builder 只能从未来真实 evidence manifests 输出候选 `FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json` 内容到 stdout；本轮 `artifact_written=false`，不能代替真实 terminal proof 或 production acceptance。
+
+## S2PLT02 scheduler proof 输入验证器
+
+- 最新记录：[PHASE_S2PLT02_REAL_SCHEDULER_PROOF_INPUT_VALIDATOR.md](../docs/phase_records/PHASE_S2PLT02_REAL_SCHEDULER_PROOF_INPUT_VALIDATOR.md) / [运行清单](../../governance/run_manifests/ADP-S2PLT02-REAL-SCHEDULER-PROOF-INPUT-VALIDATOR-20260630.json)
+- 结论：validator 只能校验未来真实 launchd scheduler proof manifest；当前 `artifact_written=false`、`scheduler_install_enabled=false`，不能代替真实 scheduler proof、terminal proof 或 production acceptance。

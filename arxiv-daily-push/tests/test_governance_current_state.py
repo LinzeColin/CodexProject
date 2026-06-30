@@ -35,16 +35,17 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
-            "S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_DRAFT_BUILDER_READY_NO_WRITE_NO_PRODUCTION",
+            "S2PLT02_REAL_SCHEDULER_PROOF_INPUT_VALIDATOR_READY_NO_WRITE_NO_PRODUCTION",
             current_state,
         )
+        self.assertIn("S2PLT02-REAL-SCHEDULER-PROOF-INPUT-VALIDATOR", current_state)
         self.assertIn("S2PLT02-TERMINAL-DELIVERY-PROOF-ARTIFACT-DRAFT-BUILDER", current_state)
         self.assertIn("S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT", current_state)
         self.assertIn("S2PLT02-TERMINAL-DELIVERY-PROOF", current_state)
         self.assertIn("artifact_written=false", current_state)
-        self.assertIn("artifact_validation_errors=[]", current_state)
-        self.assertIn("beb8f19417b694428749bef5eb01de375ce2321f209c9086dfe4862bf48c2a8b", current_state)
-        self.assertIn("5aa91771f2900db713fb865a12cb69f5c09bd6b03761083337c2d58af13a3b96", current_state)
+        self.assertIn("scheduler_install_enabled=false", current_state)
+        self.assertIn("daily_operation_enabled=false", current_state)
+        self.assertIn("5e1157dc9c710501cb2bf2e5dcdd3cc09afb40ee68164ff32d844e993843fb80", current_state)
         self.assertIn("2026-06-29", current_state)
         self.assertIn("2026-06-30", current_state)
         self.assertIn("ADP_ALLOW_SMTP_SEND=false", current_state)
@@ -67,7 +68,7 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         for text in (assurance, owner_status):
             text_lower = text.lower()
             self.assertIn("S2PMT07", text)
-            self.assertIn("S2PLT02-TERMINAL-DELIVERY-PROOF-ARTIFACT-DRAFT-BUILDER", text)
+            self.assertIn("S2PLT02-REAL-SCHEDULER-PROOF-INPUT-VALIDATOR", text)
             self.assertIn("S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT", text)
             self.assertIn("S2PLT02-TERMINAL-DELIVERY-PROOF", text)
             self.assertIn("ACC-S2PMT07-FINAL-REVIEW", text)

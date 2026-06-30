@@ -151,6 +151,7 @@ from arxiv_daily_push.stage2_final_gate import (
     build_s2plt02_real_proof_capture_authorization_owner_packet_state,
     build_s2plt02_real_proof_capture_authorization_validation_state,
     build_s2plt02_real_proof_capture_readiness_state,
+    build_s2plt02_real_scheduler_proof_validation_state,
     build_s2plt02_partial_real_delivery_state,
     build_s2plt02_terminal_delivery_proof_artifact_draft_state,
     build_s2plt02_terminal_delivery_proof_artifact_validation_state,
@@ -177,6 +178,7 @@ from arxiv_daily_push.stage2_final_gate import (
     validate_s2plt02_real_proof_capture_authorization_artifact,
     validate_s2plt02_real_proof_capture_authorization_owner_packet_state,
     validate_s2plt02_real_proof_capture_readiness_state,
+    validate_s2plt02_real_scheduler_proof_validation_state,
     validate_s2plt02_terminal_delivery_proof_artifact,
     validate_s2plt02_terminal_delivery_proof_artifact_validation_state,
     validate_s2plt03_local_resilience_drill_bundle,
@@ -907,6 +909,74 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertNotIn("artifact_draft", state)
         self.assertIn("real_scheduler_proof_not_valid", state["blocking_reasons"])
         self.assertIn("two_consecutive_real_days_not_proven", state["blocking_reasons"])
+        self.assertFalse(state["artifact_written"])
+
+    def test_s2plt02_real_scheduler_proof_validation_passes_without_writing_or_enabling_production(self) -> None:
+        scheduler_proof = {
+            "proof_ref": "governance/run_manifests/FUTURE-S2PLT02-SCHEDULER-PROOF.json",
+            "status": "pass",
+            "real_scheduler_proven": True,
+            "scheduler_evidence_present": True,
+            "production_acceptance_claimed": False,
+            "integrated_production_accepted": False,
+            "stage2_integrated_production_accepted": False,
+            "daily_operation_enabled": False,
+            "release_uploaded": False,
+            "production_restore_enabled": False,
+            "production_restore_executed": False,
+            "public_schema_changed": False,
+            "db_migration_executed": False,
+            "production_queue_mutated": False,
+            "source_adapter_changed": False,
+            "ranking_algorithm_changed": False,
+            "current_pointer_changed": False,
+            "v7_1_baseline_changed": False,
+            "v7_2_contract_files_changed": False,
+        }
+
+        state = build_s2plt02_real_scheduler_proof_validation_state(scheduler_proof=scheduler_proof)
+
+        self.assertEqual(state["status"], "pass")
+        self.assertTrue(state["scheduler_proof_ready"])
+        self.assertEqual(state["proof_ref"], "governance/run_manifests/FUTURE-S2PLT02-SCHEDULER-PROOF.json")
+        self.assertEqual(state["validation_errors"], [])
+        self.assertEqual(validate_s2plt02_real_scheduler_proof_validation_state(state), [])
+        self.assertFalse(state["artifact_written"])
+        self.assertFalse(state["scheduler_install_enabled"])
+        self.assertFalse(state["daily_operation_enabled"])
+        self.assertFalse(state["integrated_production_accepted"])
+        self.assertRegex(state["state_hash"], r"^[0-9a-f]{64}$")
+
+    def test_s2plt02_real_scheduler_proof_validation_blocks_production_side_effect_flags(self) -> None:
+        scheduler_proof = {
+            "proof_ref": "governance/run_manifests/FUTURE-S2PLT02-SCHEDULER-PROOF.json",
+            "status": "pass",
+            "real_scheduler_proven": True,
+            "scheduler_evidence_present": True,
+            "production_acceptance_claimed": False,
+            "integrated_production_accepted": False,
+            "stage2_integrated_production_accepted": False,
+            "daily_operation_enabled": False,
+            "release_uploaded": True,
+            "production_restore_enabled": False,
+            "production_restore_executed": False,
+            "public_schema_changed": False,
+            "db_migration_executed": False,
+            "production_queue_mutated": False,
+            "source_adapter_changed": False,
+            "ranking_algorithm_changed": False,
+            "current_pointer_changed": False,
+            "v7_1_baseline_changed": False,
+            "v7_2_contract_files_changed": False,
+        }
+
+        state = build_s2plt02_real_scheduler_proof_validation_state(scheduler_proof=scheduler_proof)
+
+        self.assertEqual(state["status"], "blocked")
+        self.assertFalse(state["scheduler_proof_ready"])
+        self.assertIn("real_scheduler_proof_not_valid", state["blocking_reasons"])
+        self.assertIn("scheduler_proof.release_uploaded must be false", state["validation_errors"])
+        self.assertEqual(validate_s2plt02_real_scheduler_proof_validation_state(state), [])
         self.assertFalse(state["artifact_written"])
 
     def test_s2plt02_m4_watermark_proof_blocks_when_current_m4_has_no_explicit_watermark(self) -> None:

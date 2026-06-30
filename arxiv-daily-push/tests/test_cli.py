@@ -626,6 +626,48 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["artifact_validation_errors"], [])
         self.assertFalse(payload["artifact_draft"]["integrated_production_accepted"])
 
+    def test_validate_s2plt02_real_scheduler_proof_json_command(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            scheduler = Path(tmp_dir) / "scheduler.json"
+            scheduler.write_text(
+                json.dumps(
+                    {
+                        "proof_ref": "governance/run_manifests/FUTURE-S2PLT02-SCHEDULER-PROOF.json",
+                        "status": "pass",
+                        "real_scheduler_proven": True,
+                        "scheduler_evidence_present": True,
+                        "production_acceptance_claimed": False,
+                        "integrated_production_accepted": False,
+                        "stage2_integrated_production_accepted": False,
+                        "daily_operation_enabled": False,
+                        "release_uploaded": False,
+                        "production_restore_enabled": False,
+                        "production_restore_executed": False,
+                        "public_schema_changed": False,
+                        "db_migration_executed": False,
+                        "production_queue_mutated": False,
+                        "source_adapter_changed": False,
+                        "ranking_algorithm_changed": False,
+                        "current_pointer_changed": False,
+                        "v7_1_baseline_changed": False,
+                        "v7_2_contract_files_changed": False,
+                    }
+                ),
+                encoding="utf-8",
+            )
+            buffer = io.StringIO()
+            with redirect_stdout(buffer):
+                result = main(["validate-s2plt02-real-scheduler-proof", "--scheduler-proof", str(scheduler), "--json"])
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["status"], "pass")
+        self.assertTrue(payload["scheduler_proof_ready"])
+        self.assertFalse(payload["artifact_written"])
+        self.assertFalse(payload["scheduler_install_enabled"])
+        self.assertFalse(payload["daily_operation_enabled"])
+        self.assertEqual(payload["validation_errors"], [])
+
     def test_audit_s2plt03_resilience_readiness_json_command_consumes_zero_proof_but_blocks(self):
         buffer = io.StringIO()
         with redirect_stdout(buffer):
