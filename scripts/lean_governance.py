@@ -1008,10 +1008,16 @@ def check_render_project_files(project_root: Path, view: str | None = None) -> d
         actual = path.read_text(encoding="utf-8") if path.exists() else ""
         if project_id == "arxiv-daily-push" and rel_path in {"功能清单.md", "开发记录.md", "模型参数文件.md"}:
             # ADP keeps these three root files owner-readable in Chinese. They
-            # may intentionally differ from the compact machine render, but the
-            # project validator still enforces required traceability tokens.
+            # may intentionally differ from the compact machine render, while
+            # project validators still enforce traceability.
             readable_title = Path(rel_path).stem
             if actual.startswith(f"# {readable_title}") and "## 中文速读" in actual and "## 摘要" in actual:
+                continue
+        if project_id == "Serenity-Alipay" and rel_path in {"功能清单.md", "开发记录.md", "模型参数文件.md"}:
+            # Serenity keeps these files as owner-facing Chinese documents.
+            # Code identifiers remain in English, but prose must stay Chinese.
+            readable_title = Path(rel_path).stem
+            if actual.startswith(f"# {readable_title}") and "## 中文速读" in actual:
                 continue
         if actual != expected:
             drift.append(
