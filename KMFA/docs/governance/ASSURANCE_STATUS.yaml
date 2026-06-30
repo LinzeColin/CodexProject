@@ -1,11 +1,11 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260630-S06P1-ZERO-DELTA-VALIDATOR"
+as_of_event_id: "EVENT-KMFA-20260630-S06P2-CROSS-SOURCE-DIFFERENCE-QUEUE"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "precommit-pending"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S06_P1"
-snapshot_event_time: "2026-06-30T13:35:00+10:00"
-generator_version: "manual-s06-p1"
-final_commit_binding: "precommit-pending-s06-p1"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S06_P2"
+snapshot_event_time: "2026-06-30T14:20:00+10:00"
+generator_version: "manual-s06-p2"
+final_commit_binding: "precommit-pending-s06-p2"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 36
-    total_active_formulas: 13
+    total_active_parameters: 40
+    total_active_formulas: 14
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -65,6 +65,9 @@ dimensions:
       - "KMFA/tools/check_a0_authority_baseline_lock.py"
       - "KMFA/stage_artifacts/S06_P1_zero_delta_validator/human/test_results.md"
       - "KMFA/tools/zero_delta_validator.py"
+      - "KMFA/stage_artifacts/S06_P2_cross_source_difference_queue/human/test_results.md"
+      - "KMFA/tools/cross_source_difference_queue.py"
+      - "KMFA/tools/check_s06_p2_difference_queue.py"
   operational_validation:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
@@ -92,6 +95,8 @@ dimensions:
       - "KMFA/tools/a0_authority_baseline_lock.py"
       - "KMFA/tools/check_a0_authority_baseline_lock.py"
       - "KMFA/tools/zero_delta_validator.py"
+      - "KMFA/tools/cross_source_difference_queue.py"
+      - "KMFA/tools/check_s06_p2_difference_queue.py"
       - "KMFA/stage_artifacts/S02_P3_quality_gate/human/test_results.md"
   delivery_evidence:
     status: "VERIFIED"
@@ -148,15 +153,21 @@ dimensions:
       - "KMFA/stage_artifacts/S06_P1_zero_delta_validator/machine/s06_p1_synthetic_zero_delta_result.json"
       - "KMFA/stage_artifacts/S06_P1_zero_delta_validator/machine/s06_p1_synthetic_mismatch_report.csv"
       - "KMFA/tools/zero_delta_validator.py"
+      - "KMFA/stage_artifacts/S06_P2_cross_source_difference_queue/human/s06_p2_completion_record.md"
+      - "KMFA/stage_artifacts/S06_P2_cross_source_difference_queue/human/test_results.md"
+      - "KMFA/stage_artifacts/S06_P2_cross_source_difference_queue/machine/s06_p2_manifest.json"
+      - "KMFA/stage_artifacts/S06_P2_cross_source_difference_queue/machine/s06_p2_synthetic_difference_queue.jsonl"
+      - "KMFA/stage_artifacts/S06_P2_cross_source_difference_queue/machine/s06_p2_report_grade_gate.json"
+      - "KMFA/tools/cross_source_difference_queue.py"
+      - "KMFA/tools/check_s06_p2_difference_queue.py"
   evidence_freshness:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "S06_P1_COMPLETED_VALIDATED_LOCAL_ONLY_S06_P2_NOT_STARTED"
-  release_gate: "KMFA-S06-P2-GATE"
+  status: "S06_P2_COMPLETED_VALIDATED_LOCAL_ONLY_S06_P3_NOT_STARTED"
+  release_gate: "KMFA-S06-P3-GATE"
   blocker_ids:
-    - "S06_P2_DIFFERENCE_QUEUE_NOT_STARTED"
     - "S06_P3_EVIDENCE_OUTPUT_NOT_STARTED"
     - "LINEAGE_AND_REPORT_RELEASE_GATE_NOT_STARTED"

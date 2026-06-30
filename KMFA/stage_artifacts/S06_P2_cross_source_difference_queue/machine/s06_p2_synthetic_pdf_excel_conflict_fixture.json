@@ -1,0 +1,20 @@
+{
+  "project_ref": "SYN-PROJECT-S06P2-001",
+  "field": "contract_amount_cents",
+  "pdf_source_ref": {
+    "source_id": "SRC-S06P2-PDF-SYNTHETIC",
+    "source_type": "pdf",
+    "source_class": "raw_upload",
+    "source_anchor_ref": "sha256:synthetic-pdf-anchor"
+  },
+  "excel_source_ref": {
+    "source_id": "SRC-S06P2-EXCEL-SYNTHETIC",
+    "source_type": "excel",
+    "source_class": "authorized_export",
+    "source_anchor_ref": "sha256:synthetic-excel-anchor"
+  },
+  "pdf_value_cents": 10000,
+  "excel_value_cents": 9999,
+  "event_time": "2026-06-30T14:20:00+10:00",
+  "evidence_ref": "KMFA/stage_artifacts/S06_P2_cross_source_difference_queue/machine/s06_p2_synthetic_pdf_excel_conflict_fixture.json"
+}
