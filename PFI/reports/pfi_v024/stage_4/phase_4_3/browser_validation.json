@@ -1,0 +1,47 @@
+{
+  "blocked_metric_ids": [
+    "net_worth_cny",
+    "cash_balance_cny",
+    "investment_market_value_cny"
+  ],
+  "chrome_path": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "confirmed_zero_gate_visible": true,
+  "console_errors": [],
+  "dom_assertions": {
+    "confirmed_zero_text": "CNY 0.00 manual_balance_snapshot:cash:zero-proof-gate · 1 条记录 · 截至 2026-06-30 · cash_balance_v1 真实余额快照确认现金为零",
+    "data_missing_text": "net_worth_cny 未挂链账户余额与持仓 read model，无法计算净资产 read_model:accounts_holdings · net_worth_v1 cash_balance_cny 未挂链账户余额 read model，无法计算现金余额 read_model:accounts · cash_balance_v1 investment_market_value_cny 未挂链持仓市值 read model，无法计算投资市值 read_model:holdings · investment_market_value_v1 consumption_outflow_cny CNY 1,727,278.37 MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv · 8,815 条记录 · 截至 2026-06-03 · total_consumption_outflow_v1 report_summary_status 真实数据源已加载，仍有 3 个核心指标等待 read model 挂链 /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/MetaDatabase/PFI/alipay_daily/processed/alipay_import_manifest.json · 8,815 条记录 · 截至 2026-06-03 · report_summary_status_v1"
+  },
+  "generated_at": "2026-06-30T23:39:10Z",
+  "method": "chrome_headless_screenshot_and_state_assertions",
+  "missing_state_reason_visible": true,
+  "no_financial_zero_when_data_missing": true,
+  "phase_id": "4.3",
+  "real_confirmed_zero_metric_count": 0,
+  "rendered_files": [
+    "reports/pfi_v024/stage_4/phase_4_3/rendered/stage4_phase43_missing_state.html",
+    "reports/pfi_v024/stage_4/phase_4_3/rendered/stage4_phase43_confirmed_zero_gate.html"
+  ],
+  "rendered_urls": [
+    "file:///Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v024/stage_4/phase_4_3/rendered/stage4_phase43_missing_state.html",
+    "file:///Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v024/stage_4/phase_4_3/rendered/stage4_phase43_confirmed_zero_gate.html"
+  ],
+  "schema": "PFIV024Stage4Phase43BrowserValidationV1",
+  "screenshot_bytes": {
+    "confirmed_zero_gate": 265472,
+    "data_missing_state": 131111
+  },
+  "screenshots": {
+    "confirmed_zero_gate": "screenshots/confirmed_zero_gate.png",
+    "data_missing_state": "screenshots/data_missing_state.png"
+  },
+  "source_package_version": "v0.2.3-repair",
+  "source_summary": {
+    "as_of": "2026-06-03",
+    "raw_file_count": 4,
+    "record_count": 8815,
+    "status": "ready"
+  },
+  "stage": "Stage 4",
+  "status": "pass",
+  "target_version": "v0.2.4"
+}

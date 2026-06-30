@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 4 Phase 4.3 - 2026-07-01
+
+- 完成 `Stage 4 / Phase 4.3 - 验收`：用测试和 Chrome headless 截图验证缺失数据不显示财务 0、真零必须携带证据链。
+- 新增 `PFI/tests/test_v024_stage4_phase43_acceptance.py`，覆盖 blocked 指标不渲染 `CNY 0.00`、`confirmed_zero` 缺证据报错、前端 null `record_count/confidence` 不得变成 0。
+- 新增 `PFI/scripts/validate_v024_stage4_phase43_chrome.py`，生成 Phase 4.3 browser validation、两张截图和 evidence pack。
+- 修复 `PFI/web/app/data_state.js` 与 `PFI/web/app/shell.js`：`record_count=null` 和 `confidence=null` 保持未知，不再显示成 `0 条记录`。
+- 当前真实数据状态仍为 `MetaDatabase/PFI` ready，`8815` 条记录、`4` 个原始文件、as of `2026-06-03`；真实生产指标中 `confirmed_zero` 数量为 `0`。
+- 本轮不执行 Stage 4 whole-stage review 或 GitHub main upload；不重装 app bundle，不修改真实财务数据源。
+
 ## v0.2.4 Repair Pack Stage 4 Phase 4.2 - 2026-07-01
 
 - 完成 `Stage 4 / Phase 4.2 - read model 挂链`：新增 shared read model status，把 Phase 4.1 数据状态机接入首页、账户、投资、消费和报告卡片状态。
