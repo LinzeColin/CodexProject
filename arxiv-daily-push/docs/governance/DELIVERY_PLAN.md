@@ -21,10 +21,18 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 316
+- task_count: 317
 - acceptance_count: 127
 
 ## Delivery Tasks
+
+## 2026-07-01 02:36:08 Australia/Sydney - S2PMT07 Final Bundle S2PLT02 Current Wait State Summary
+
+- `S2PMT07-FINAL-BUNDLE-S2PLT02-CURRENT-WAIT-STATE-SUMMARY` makes `plan-s2plt02-terminal-delivery-proof-capture`, `plan-final-bundle-prerequisites`, and `validate-final-acceptance-bundle` expose top-level `current_wait_state`, matching `capture_wait_state_guard.current_wait_state`.
+- Current live CLIs remain blocked / exit 2: S2PLT02 capture plan `state_hash=c9216c53cedf0cb5fcc12fd15ffb021b83586906f233a4f78ed96ecfe84f9b13`, wait guard `state_hash=581fe9f53d82db88959196f874d312e50b1739a839158f7bf2d38cc186c03506`, prerequisite plan `state_hash=0b6753d007633aaeca00368eb29ebe54cc677846085051988a60854713c93b42`, final validator `state_hash=4f1e0e311ea68a5cc320e1c0a5d11985b2a256acbeb06217a57e86d6fa217d65`.
+- Current wait state remains `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`; next executable task remains `S2PLT02_TERMINAL_DELIVERY_PROOF`; `ready_to_write_live_artifacts=false`.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-S2PLT02-CURRENT-WAIT-STATE-SUMMARY-20260701.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_S2PLT02_CURRENT_WAIT_STATE_SUMMARY.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`; `arxiv-daily-push/tests/test_cli.py`.
+- No S2PLT02/S2PLT03 terminal proof artifact, S2PLT04 completion report, final-bundle manifest/handoff/signoff/final-command proof, SMTP send, scheduler enable/install/kickstart, Release, restore, CURRENT/V7 change, public schema/DB/source/ranking/queue mutation, P0/P1 closure claim, S2PLT02/S2PLT03/S2PLT04/S2PMT07 acceptance, DAILY_OPERATION, Stage2/S3 production acceptance, or production side effect is introduced.
 
 ## 2026-07-01 02:10:46 Australia/Sydney - S2PMT07 Final Bundle Prerequisite Missing Inventory Sync
 
