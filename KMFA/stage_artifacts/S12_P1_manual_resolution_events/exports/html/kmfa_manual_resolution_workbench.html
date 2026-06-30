@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>KMFA 人工处理工作台</title>
+  <style>
+    :root {
+      --navy:#0b1f3a;
+      --blue:#1d4ed8;
+      --sky:#eaf3ff;
+      --line:#d8e4f5;
+      --text:#152033;
+      --muted:#64748b;
+      --bg:#f6f9fe;
+      --card:#ffffff;
+      --ok:#166534;
+      --review:#5b21b6;
+    }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif; }
+    .header { background:linear-gradient(135deg,var(--navy),#123a70 55%,#2563eb); color:#fff; padding:30px 40px; }
+    .brand { display:flex; align-items:center; gap:14px; }
+    .logo { width:52px; height:52px; border:1px solid rgba(255,255,255,.45); border-radius:12px; display:flex; align-items:center; justify-content:center; font-weight:800; background:rgba(255,255,255,.10); }
+    h1 { margin:0; font-size:28px; letter-spacing:0; }
+    .sub { margin-top:8px; color:#d6e7ff; line-height:1.65; }
+    .wrap { max-width:1220px; margin:0 auto; padding:24px; }
+    .cards { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:18px; }
+    .card { background:#fff; border:1px solid var(--line); border-radius:8px; padding:16px; box-shadow:0 12px 28px rgba(17,45,88,.06); }
+    .card span { display:block; color:var(--muted); font-size:13px; }
+    .card b { display:block; color:#0b2b59; font-size:26px; margin:6px 0; }
+    .card small { color:#475569; }
+    .toolbar { display:flex; justify-content:space-between; gap:16px; align-items:flex-start; margin-bottom:14px; }
+    .note { color:#475569; line-height:1.7; max-width:760px; }
+    .pill { border:1px solid #bfdbfe; background:#fff; color:var(--blue); border-radius:999px; padding:7px 12px; font-size:12px; font-weight:800; white-space:nowrap; }
+    .grid { display:grid; grid-template-columns:1.15fr .85fr; gap:14px; align-items:start; }
+    .panel { background:#fff; border:1px solid var(--line); border-radius:8px; padding:16px; }
+    .panel h2 { margin:0 0 10px; color:#0b2b59; font-size:18px; }
+    .actions { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
+    button { border:1px solid #bfdbfe; background:#eff6ff; color:#1e3a8a; border-radius:8px; padding:11px 12px; font-weight:800; text-align:left; }
+    button.secondary { background:#f8fafc; color:#334155; }
+    table { width:100%; border-collapse:separate; border-spacing:0; }
+    th { background:#0f2f5f; color:#fff; text-align:left; font-size:13px; padding:12px; }
+    td { padding:12px; font-size:13px; line-height:1.55; border-bottom:1px solid #edf2f7; vertical-align:top; }
+    .audit { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; }
+    .audit div { border:1px solid var(--line); border-radius:8px; background:var(--sky); padding:12px; color:#1e3a5f; line-height:1.6; }
+    .footer { margin-top:14px; color:#64748b; font-size:12px; line-height:1.6; }
+    @media(max-width:980px) { .cards,.grid { grid-template-columns:1fr 1fr; } .toolbar { display:block; } .pill { display:inline-flex; margin-top:10px; } }
+    @media(max-width:720px) { .cards,.grid,.actions,.audit { grid-template-columns:1fr; } .wrap { padding:16px; } .header { padding:24px; } }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="brand"><div class="logo">KM</div><div><h1>KMFA 人工处理工作台</h1><div class="sub">差异处理工作台采用 v1.2 蓝色商务样板，只写处理事件，不修改原始上传数据。</div></div></div>
+  </header>
+  <main class="wrap">
+    <section class="cards" aria-label="人工处理摘要"><div class="card"><span>处理事件</span><b>5</b><small>只追加写入</small></div><div class="card"><span>动作类型</span><b>4</b><small>字段/项目/差异/备注</small></div><div class="card"><span>原始数据 0 写入</span><b>0</b><small>只写控制事件</small></div><div class="card"><span>追加反向事件</span><b>1</b><small>禁止静默改写</small></div></section>
+    <section class="toolbar">
+      <div class="note">本页展示 S12-P1 事件写入协议：字段映射、项目匹配、差异处理和备注均写为追加事件。影响预览未发布，重跑未执行，正式报告仍阻断。</div>
+      <span class="pill">S12-P1 local only</span>
+    </section>
+    <section class="grid">
+      <div class="panel">
+        <h2>处理事件</h2>
+        <div class="actions">
+          <button type="button">字段映射</button>
+          <button type="button">项目匹配</button>
+          <button type="button">差异处理</button>
+          <button type="button" class="secondary">备注</button>
+        </div>
+        <div class="audit">
+          <div>处理人、时间、原因、影响范围、版本均为必填。</div>
+          <div>已批准事件不可静默改写，只能追加反向事件。</div>
+          <div>影响预览未发布，高风险二次确认留到 S12-P2。</div>
+          <div>重跑未执行，派生链路留到 S12-P3。</div>
+        </div>
+      </div>
+      <div class="panel">
+        <h2>治理门禁</h2>
+        <p class="note">原始文件、原始抽取、历史报告和已批准历史处理事件不可被前端覆盖。当前只验证事件结构和不可污染边界。</p>
+      </div>
+    </section>
+    <section class="panel" style="margin-top:14px" aria-label="事件列表">
+      <h2>事件列表</h2>
+      <table>
+        <thead><tr><th>动作</th><th>状态</th><th>原因</th><th>影响范围</th><th>版本</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>字段映射</td>
+            <td>recorded_pending_approval</td>
+            <td>FIELD_ALIAS_REVIEW_REQUIRED</td>
+            <td>field_mapping_catalog、source_check_board_status</td>
+            <td>MANUAL-EVENT-KMFA-S12P1-001.001</td>
+          </tr>
+          <tr>
+            <td>项目匹配</td>
+            <td>recorded_pending_approval</td>
+            <td>PROJECT_MATCH_REVIEW_REQUIRED</td>
+            <td>project_identity_review_queue、project_cost_page_pending_actions</td>
+            <td>MANUAL-EVENT-KMFA-S12P1-001.002</td>
+          </tr>
+          <tr>
+            <td>差异处理</td>
+            <td>approved</td>
+            <td>DIFFERENCE_HANDLING_APPROVED</td>
+            <td>scope_reconciliation_queue、project_cost_report_preview_grade</td>
+            <td>MANUAL-EVENT-KMFA-S12P1-001.003</td>
+          </tr>
+          <tr>
+            <td>备注</td>
+            <td>recorded_pending_approval</td>
+            <td>OWNER_NOTE_RECORDED</td>
+            <td>manual_resolution_workbench、review_note_log</td>
+            <td>MANUAL-EVENT-KMFA-S12P1-001.004</td>
+          </tr>
+          <tr>
+            <td>差异处理</td>
+            <td>reverse_event_recorded</td>
+            <td>APPROVED_EVENT_REVERSAL_RECORDED</td>
+            <td>scope_reconciliation_queue、manual_resolution_audit_log</td>
+            <td>MANUAL-EVENT-KMFA-S12P1-001.005</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+    <div class="footer">KMFA 经营分析系统 · S12-P1 人工处理事件 · 本页面不执行影响预览、重跑机制、Stage 12 复审、上传、完整追溯检查或外部接口。</div>
+  </main>
+</body>
+</html>

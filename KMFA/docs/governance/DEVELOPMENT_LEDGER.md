@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.0-s11-github-upload
+product_version: 0.1.0-s12p1-manual-resolution-events
 
 ## Current Iteration
 
 - project_id: `KMFA`
 - current_stage: `S12`
-- current_phase: `S12-P1｜待开始`
-- current_tasks: `KMFA-S12-P1`
-- status: `s11_uploaded_to_github_main_s12_p1_pending`
+- current_phase: `S12-P2｜待开始`
+- current_tasks: `KMFA-S12-P2`
+- status: `s12p1_completed_validated_local_only_s12_p2_pending`
 - risk_tier: `T3`
 
 ## Completed
@@ -80,16 +80,18 @@ product_version: 0.1.0-s11-github-upload
 | `S11PCT01-S11PCT03` | S11-P3 项目成本页面完成本地验证：生成 4 条 public-safe 项目页面记录、9 类成本结构、12 条 pending reconciliation、项目详情、来源证据、待处理事项、D 级报告预览、HTML 页面、manifest、records 和 validator；不执行 Stage 11 review 或 GitHub upload | `KMFA/stage_artifacts/S11_P3_project_cost_page/human/s11_p3_completion_record.md` |
 | `KMFA-S11-STAGE-REVIEW-20260701` | Stage 11 整体复审本地通过；复跑 S11-P1/P2/P3 validators、`check_s11_stage_review.py`、全量 132 个 KMFA tests、治理 validator、raw/secret scan、parse checks 和 evidence consistency；复审步骤未执行 GitHub upload、S12、lineage full check、正式报告或外部接口 | `KMFA/stage_artifacts/S11_STAGE_REVIEW/human/stage11_review_report.md` |
 | `KMFA-S11-GITHUB-UPLOAD-20260701` | Stage 11 final GitHub upload 完成；基于最新 origin/main rebase Stage 11 栈，复跑 S11 validators、Stage 11 review validator、全量 KMFA tests、治理 validator、required HTML/no-omission、raw/secret scan、parse checks、dry-run push、push 和 post-push parity | `KMFA/stage_artifacts/S11_STAGE_REVIEW/human/github_upload_record.md` |
+| `S12PAT01-S12PAT03` | S12-P1 人工处理事件完成本地验证：生成 5 条 public-safe append-only manual resolution events、manifest、HTML 工作台和 validator；覆盖字段映射、项目匹配、差异处理、备注、处理人/时间/原因/影响范围/版本，以及已批准事件只能追加反向事件；不执行影响预览、重跑机制、Stage 12 review 或 GitHub upload | `KMFA/stage_artifacts/S12_P1_manual_resolution_events/human/s12_p1_completion_record.md` |
 
 ## In Progress
 
 | Task | Result | Evidence |
 |---|---|---|
-| `KMFA-S12-P1` | S12-P1 待开始；下一轮只允许执行一个 phase，不得跳到 S12-P2/P3、lineage full check、正式报告或外部接口 | `KMFA/docs/governance/roadmap.yaml` |
+| `KMFA-S12-P2` | S12-P2 待开始；下一轮只允许执行一个 phase，不得跳到 S12-P3、Stage 12 review、lineage full check、正式报告或外部接口 | `KMFA/docs/governance/roadmap.yaml` |
 
 ## Not Completed
 
 | Task | Reason | Next |
 |---|---|---|
-| S12-P1 | 尚未执行；Stage 11 upload 后下一阶段只能从 S12-P1 开始 | 下一轮只执行 S12-P1 |
+| S12-P2 | 尚未执行；S12-P1 仅完成人工事件写入协议，影响预览必须单独执行 | 下一轮只执行 S12-P2 |
+| S12-P3 | 尚未执行；重跑机制必须等待 S12-P2 影响预览完成后独立执行 | 后续只在 S12-P2 完成后执行 |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |
