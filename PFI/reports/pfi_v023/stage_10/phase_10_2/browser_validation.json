@@ -1,0 +1,599 @@
+{
+  "schema": "PFIV023Stage10Phase102BrowserValidationV1",
+  "version": "v0.2.3",
+  "stage": "Stage 10",
+  "phase_id": "V023-S10-P10.2",
+  "phase_name": "导航和页面 E2E",
+  "generated_at": "2026-06-30T06:43:23Z",
+  "repo": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi",
+  "pfi_root": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI",
+  "git": {
+    "branch": "codex/pfi",
+    "head": "41c8d66e31813364f89f80f02553c895dda36cef",
+    "remote": "git@github.com:LinzeColin/CodexProject.git",
+    "head_semantics": "base_head_at_generation_before_phase_commit"
+  },
+  "browser": {
+    "executable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "engine": "playwright.chromium",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "color_scheme": "light"
+  },
+  "localhost": {
+    "url": "http://127.0.0.1:8501",
+    "health": "ok",
+    "response_status": 200
+  },
+  "runtime_api": {
+    "url": "http://127.0.0.1:8766/health",
+    "health": {
+      "status": "ok",
+      "schema": "PFIV021RuntimeAPIV1"
+    }
+  },
+  "official_entries": [
+    {
+      "index": 1,
+      "label": "首页总览",
+      "workspace": "home"
+    },
+    {
+      "index": 2,
+      "label": "账户与资产",
+      "workspace": "accounts"
+    },
+    {
+      "index": 3,
+      "label": "账本流水",
+      "workspace": "ledger"
+    },
+    {
+      "index": 4,
+      "label": "投资管理",
+      "workspace": "investment"
+    },
+    {
+      "index": 5,
+      "label": "消费管理",
+      "workspace": "consumption"
+    },
+    {
+      "index": 6,
+      "label": "数据源与上传",
+      "workspace": "sync"
+    },
+    {
+      "index": 7,
+      "label": "建议与复盘",
+      "workspace": "recommendations"
+    },
+    {
+      "index": 8,
+      "label": "报告与洞察",
+      "workspace": "insights"
+    },
+    {
+      "index": 9,
+      "label": "市场与研究",
+      "workspace": "market_research"
+    },
+    {
+      "index": 10,
+      "label": "设置",
+      "workspace": "settings"
+    }
+  ],
+  "entry_clicks": [
+    {
+      "index": 1,
+      "label": "首页总览",
+      "workspace": "home",
+      "clicked": true,
+      "active_label_visible": true,
+      "state": {
+        "frame_url": "about:srcdoc#/home",
+        "workspace": "home",
+        "route_alias": "/home",
+        "stage4_subpage_route": "/home?tab=status",
+        "title": "首页总览 · 财务状态",
+        "secondary_title": "",
+        "body_text_length": 1203
+      },
+      "screenshot": {
+        "path": "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/entries/entry_01_home.png",
+        "width": 1440,
+        "height": 1000,
+        "bytes": 243578
+      }
+    },
+    {
+      "index": 2,
+      "label": "账户与资产",
+      "workspace": "accounts",
+      "clicked": true,
+      "active_label_visible": true,
+      "state": {
+        "frame_url": "about:srcdoc#/accounts",
+        "workspace": "accounts",
+        "route_alias": "/accounts",
+        "stage4_subpage_route": "/accounts?tab=overview",
+        "title": "账户与资产 · 账户地图",
+        "secondary_title": "",
+        "body_text_length": 966
+      },
+      "screenshot": {
+        "path": "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/entries/entry_02_accounts.png",
+        "width": 1440,
+        "height": 1000,
+        "bytes": 248454
+      }
+    },
+    {
+      "index": 3,
+      "label": "账本流水",
+      "workspace": "ledger",
+      "clicked": true,
+      "active_label_visible": true,
+      "state": {
+        "frame_url": "about:srcdoc#/ledger",
+        "workspace": "ledger",
+        "route_alias": "/ledger",
+        "stage4_subpage_route": "/ledger?tab=list",
+        "title": "账本流水 · 流水列表",
+        "secondary_title": "",
+        "body_text_length": 1047
+      },
+      "screenshot": {
+        "path": "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/entries/entry_03_ledger.png",
+        "width": 1440,
+        "height": 1000,
+        "bytes": 256421
+      }
+    },
+    {
+      "index": 4,
+      "label": "投资管理",
+      "workspace": "investment",
+      "clicked": true,
+      "active_label_visible": true,
+      "state": {
+        "frame_url": "about:srcdoc#/investment",
+        "workspace": "investment",
+        "route_alias": "/investment",
+        "stage4_subpage_route": "/investment?tab=overview",
+        "title": "投资管理 · 投资总览",
+        "secondary_title": "",
+        "body_text_length": 977
+      },
+      "screenshot": {
+        "path": "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/entries/entry_04_investment.png",
+        "width": 1440,
+        "height": 1000,
+        "bytes": 250072
+      }
+    },
+    {
+      "index": 5,
+      "label": "消费管理",
+      "workspace": "consumption",
+      "clicked": true,
+      "active_label_visible": true,
+      "state": {
+        "frame_url": "about:srcdoc#/consumption",
+        "workspace": "consumption",
+        "route_alias": "/consumption",
+        "stage4_subpage_route": "/consumption?tab=overview",
+        "title": "消费管理 · 消费总览",
+        "secondary_title": "",
+        "body_text_length": 1161
+      },
+      "screenshot": {
+        "path": "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/entries/entry_05_consumption.png",
+        "width": 1440,
+        "height": 1000,
+        "bytes": 265350
+      }
+    },
+    {
+      "index": 6,
+      "label": "数据源与上传",
+      "workspace": "sync",
+      "clicked": true,
+      "active_label_visible": true,
+      "state": {
+        "frame_url": "about:srcdoc#/sources-upload",
+        "workspace": "sync",
+        "route_alias": "/sources-upload",
+        "stage4_subpage_route": "/sources-upload?tab=upload",
+        "title": "数据源与上传 · 上传中心",
+        "secondary_title": "",
+        "body_text_length": 1547
+      },
+      "screenshot": {
+        "path": "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/entries/entry_06_sync.png",
+        "width": 1440,
+        "height": 1000,
+        "bytes": 258195
+      }
+    },
+    {
+      "index": 7,
+      "label": "建议与复盘",
+      "workspace": "recommendations",
+      "clicked": true,
+      "active_label_visible": true,
+      "state": {
+        "frame_url": "about:srcdoc#/review",
+        "workspace": "recommendations",
+        "route_alias": "/review",
+        "stage4_subpage_route": "/review?tab=list",
+        "title": "建议与复盘 · 建议列表",
+        "secondary_title": "",
+        "body_text_length": 1017
+      },
+      "screenshot": {
+        "path": "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/entries/entry_07_recommendations.png",
+        "width": 1440,
+        "height": 1000,
+        "bytes": 259533
+      }
+    },
+    {
+      "index": 8,
+      "label": "报告与洞察",
+      "workspace": "insights",
+      "clicked": true,
+      "active_label_visible": true,
+      "state": {
+        "frame_url": "about:srcdoc#/reports",
+        "workspace": "insights",
+        "route_alias": "/reports",
+        "stage4_subpage_route": "/reports?tab=monthly",
+        "title": "报告与洞察 · 月报",
+        "secondary_title": "",
+        "body_text_length": 1022
+      },
+      "screenshot": {
+        "path": "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/entries/entry_08_insights.png",
+        "width": 1440,
+        "height": 1000,
+        "bytes": 240967
+      }
+    },
+    {
+      "index": 9,
+      "label": "市场与研究",
+      "workspace": "market_research",
+      "clicked": true,
+      "active_label_visible": true,
+      "state": {
+        "frame_url": "about:srcdoc#/market-research",
+        "workspace": "market_research",
+        "route_alias": "/market-research",
+        "stage4_subpage_route": "/market-research?tab=market",
+        "title": "市场与研究 · 市场观察",
+        "secondary_title": "",
+        "body_text_length": 967
+      },
+      "screenshot": {
+        "path": "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/entries/entry_09_market_research.png",
+        "width": 1440,
+        "height": 1000,
+        "bytes": 254065
+      }
+    },
+    {
+      "index": 10,
+      "label": "设置",
+      "workspace": "settings",
+      "clicked": true,
+      "active_label_visible": true,
+      "state": {
+        "frame_url": "about:srcdoc#/settings",
+        "workspace": "settings",
+        "route_alias": "/settings",
+        "stage4_subpage_route": "/settings?tab=account",
+        "title": "设置 · 账户偏好",
+        "secondary_title": "",
+        "body_text_length": 1281
+      },
+      "screenshot": {
+        "path": "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/entries/entry_10_settings.png",
+        "width": 1440,
+        "height": 1000,
+        "bytes": 249069
+      }
+    }
+  ],
+  "secondary_clicks": [
+    {
+      "entry_label": "首页总览",
+      "workspace": "home",
+      "secondary_label": "待办事项",
+      "route_alias": "/home?tab=todo",
+      "clicked": true,
+      "state": {
+        "frame_url": "about:srcdoc#/home?tab=todo",
+        "workspace": "home",
+        "route_alias": "/home?tab=todo",
+        "stage4_subpage_route": "/home?tab=todo",
+        "title": "首页总览 · 待办事项",
+        "secondary_title": "待办事项",
+        "body_text_length": 1163
+      },
+      "screenshot": {
+        "path": "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/secondary/secondary_01_home.png",
+        "width": 1440,
+        "height": 1000,
+        "bytes": 242187
+      }
+    },
+    {
+      "entry_label": "账户与资产",
+      "workspace": "accounts",
+      "secondary_label": "账户列表",
+      "route_alias": "/accounts?tab=list",
+      "clicked": true,
+      "state": {
+        "frame_url": "about:srcdoc#/accounts?tab=list",
+        "workspace": "accounts",
+        "route_alias": "/accounts?tab=list",
+        "stage4_subpage_route": "/accounts?tab=list",
+        "title": "账户与资产 · 账户清单",
+        "secondary_title": "账户列表",
+        "body_text_length": 941
+      },
+      "screenshot": {
+        "path": "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/secondary/secondary_02_accounts.png",
+        "width": 1440,
+        "height": 1000,
+        "bytes": 253560
+      }
+    },
+    {
+      "entry_label": "账本流水",
+      "workspace": "ledger",
+      "secondary_label": "筛选搜索",
+      "route_alias": "/ledger?tab=filter",
+      "clicked": true,
+      "state": {
+        "frame_url": "about:srcdoc#/ledger?tab=filter",
+        "workspace": "ledger",
+        "route_alias": "/ledger?tab=filter",
+        "stage4_subpage_route": "/ledger?tab=filter",
+        "title": "账本流水 · 筛选搜索",
+        "secondary_title": "筛选搜索",
+        "body_text_length": 1004
+      },
+      "screenshot": {
+        "path": "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/secondary/secondary_03_ledger.png",
+        "width": 1440,
+        "height": 1000,
+        "bytes": 260240
+      }
+    },
+    {
+      "entry_label": "投资管理",
+      "workspace": "investment",
+      "secondary_label": "持仓",
+      "route_alias": "/investment?tab=holdings",
+      "clicked": true,
+      "state": {
+        "frame_url": "about:srcdoc#/investment?tab=holdings",
+        "workspace": "investment",
+        "route_alias": "/investment?tab=holdings",
+        "stage4_subpage_route": "/investment?tab=holdings",
+        "title": "投资管理 · 持仓",
+        "secondary_title": "持仓",
+        "body_text_length": 1201
+      },
+      "screenshot": {
+        "path": "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/secondary/secondary_04_investment.png",
+        "width": 1440,
+        "height": 1000,
+        "bytes": 256588
+      }
+    },
+    {
+      "entry_label": "消费管理",
+      "workspace": "consumption",
+      "secondary_label": "分类分析",
+      "route_alias": "/consumption?tab=category",
+      "clicked": true,
+      "state": {
+        "frame_url": "about:srcdoc#/consumption?tab=category",
+        "workspace": "consumption",
+        "route_alias": "/consumption?tab=category",
+        "stage4_subpage_route": "/consumption?tab=category",
+        "title": "消费管理 · 分类分析",
+        "secondary_title": "分类分析",
+        "body_text_length": 1144
+      },
+      "screenshot": {
+        "path": "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/secondary/secondary_05_consumption.png",
+        "width": 1440,
+        "height": 1000,
+        "bytes": 264426
+      }
+    },
+    {
+      "entry_label": "数据源与上传",
+      "workspace": "sync",
+      "secondary_label": "导入中心",
+      "route_alias": "/sources-upload?tab=import",
+      "clicked": true,
+      "state": {
+        "frame_url": "about:srcdoc#/sources-upload?tab=import",
+        "workspace": "sync",
+        "route_alias": "/sources-upload?tab=import",
+        "stage4_subpage_route": "/sources-upload?tab=import",
+        "title": "数据源与上传 · 导入中心",
+        "secondary_title": "导入中心",
+        "body_text_length": 1552
+      },
+      "screenshot": {
+        "path": "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/secondary/secondary_06_sync.png",
+        "width": 1440,
+        "height": 1000,
+        "bytes": 265618
+      }
+    },
+    {
+      "entry_label": "建议与复盘",
+      "workspace": "recommendations",
+      "secondary_label": "建议详情",
+      "route_alias": "/review?tab=detail",
+      "clicked": true,
+      "state": {
+        "frame_url": "about:srcdoc#/review?tab=detail",
+        "workspace": "recommendations",
+        "route_alias": "/review?tab=detail",
+        "stage4_subpage_route": "/review?tab=detail",
+        "title": "建议与复盘 · 建议详情",
+        "secondary_title": "建议详情",
+        "body_text_length": 1006
+      },
+      "screenshot": {
+        "path": "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/secondary/secondary_07_recommendations.png",
+        "width": 1440,
+        "height": 1000,
+        "bytes": 259023
+      }
+    },
+    {
+      "entry_label": "报告与洞察",
+      "workspace": "insights",
+      "secondary_label": "季报",
+      "route_alias": "/reports?tab=quarterly",
+      "clicked": true,
+      "state": {
+        "frame_url": "about:srcdoc#/reports?tab=quarterly",
+        "workspace": "insights",
+        "route_alias": "/reports?tab=quarterly",
+        "stage4_subpage_route": "/reports?tab=quarterly",
+        "title": "报告与洞察 · 季报",
+        "secondary_title": "季报",
+        "body_text_length": 1030
+      },
+      "screenshot": {
+        "path": "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/secondary/secondary_08_insights.png",
+        "width": 1440,
+        "height": 1000,
+        "bytes": 248752
+      }
+    },
+    {
+      "entry_label": "市场与研究",
+      "workspace": "market_research",
+      "secondary_label": "研究笔记",
+      "route_alias": "/market-research?tab=research",
+      "clicked": true,
+      "state": {
+        "frame_url": "about:srcdoc#/market-research?tab=research",
+        "workspace": "market_research",
+        "route_alias": "/market-research?tab=research",
+        "stage4_subpage_route": "/market-research?tab=research",
+        "title": "市场与研究 · 研究笔记",
+        "secondary_title": "研究笔记",
+        "body_text_length": 951
+      },
+      "screenshot": {
+        "path": "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/secondary/secondary_09_market_research.png",
+        "width": 1440,
+        "height": 1000,
+        "bytes": 255147
+      }
+    },
+    {
+      "entry_label": "设置",
+      "workspace": "settings",
+      "secondary_label": "数据与系统",
+      "route_alias": "/settings?tab=data-system",
+      "clicked": true,
+      "state": {
+        "frame_url": "about:srcdoc#/settings?tab=data-system",
+        "workspace": "settings",
+        "route_alias": "/settings?tab=data-system",
+        "stage4_subpage_route": "/settings?tab=data-system",
+        "title": "设置 · 数据与系统",
+        "secondary_title": "数据与系统",
+        "body_text_length": 1347
+      },
+      "screenshot": {
+        "path": "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/secondary/secondary_10_settings.png",
+        "width": 1440,
+        "height": 1000,
+        "bytes": 265840
+      }
+    }
+  ],
+  "history_validation": {
+    "before": {
+      "frame_url": "about:srcdoc#/ledger",
+      "workspace": "ledger",
+      "route_alias": "/ledger",
+      "stage4_subpage_route": "/ledger?tab=list",
+      "title": "账本流水 · 流水列表",
+      "secondary_title": "",
+      "body_text_length": 1038
+    },
+    "back": {
+      "ok": true,
+      "state": {
+        "frame_url": "about:srcdoc#/accounts",
+        "workspace": "accounts",
+        "route_alias": "/accounts",
+        "stage4_subpage_route": "/accounts?tab=overview",
+        "title": "账户与资产 · 账户地图",
+        "secondary_title": "",
+        "body_text_length": 955
+      }
+    },
+    "forward": {
+      "ok": true,
+      "state": {
+        "frame_url": "about:srcdoc#/ledger",
+        "workspace": "ledger",
+        "route_alias": "/ledger",
+        "stage4_subpage_route": "/ledger?tab=list",
+        "title": "账本流水 · 流水列表",
+        "secondary_title": "",
+        "body_text_length": 1038
+      }
+    }
+  },
+  "mobile_basic": {
+    "response_status": 200,
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "mobile_nav_count": 10,
+    "mobile_nav_visible_count": 10,
+    "state": {
+      "frame_url": "about:srcdoc#/home",
+      "workspace": "home",
+      "route_alias": "/home",
+      "stage4_subpage_route": "/home?tab=status",
+      "title": "首页总览 · 财务状态",
+      "secondary_title": "",
+      "body_text_length": 1159
+    },
+    "screenshot": {
+      "path": "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/mobile_basic.png",
+      "width": 390,
+      "height": 844,
+      "bytes": 161016
+    },
+    "console_errors": [],
+    "page_errors": [],
+    "http_errors": []
+  },
+  "console_errors": [],
+  "page_errors": [],
+  "http_errors": [],
+  "failed_requests": []
+}

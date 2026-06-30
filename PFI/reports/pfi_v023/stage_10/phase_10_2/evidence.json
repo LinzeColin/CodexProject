@@ -1,0 +1,131 @@
+{
+  "schema": "PFIV023Stage10Phase102EvidenceV1",
+  "version": "v0.2.3",
+  "stage": "Stage 10",
+  "phase_id": "V023-S10-P10.2",
+  "phase_name": "导航和页面 E2E",
+  "generated_at": "2026-06-30T06:43:23Z",
+  "status": "candidate_pass",
+  "current_phase_only": true,
+  "max_one_phase_per_run": true,
+  "task_ids": [
+    "T10.2.1",
+    "T10.2.2",
+    "T10.2.3",
+    "T10.2.4"
+  ],
+  "repo": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi",
+  "git": {
+    "branch": "codex/pfi",
+    "head": "41c8d66e31813364f89f80f02553c895dda36cef",
+    "remote": "git@github.com:LinzeColin/CodexProject.git",
+    "head_semantics": "base_head_at_generation_before_phase_commit"
+  },
+  "stage_contract": {
+    "phase_10_1_entry_e2e_done": true,
+    "phase_10_2_navigation_e2e_done": true,
+    "phase_10_3_data_report_e2e_done": false,
+    "stage_10_whole_review_done": false,
+    "github_main_upload_done": false
+  },
+  "acceptance_checks": {
+    "ten_first_level_entries_clickable": true,
+    "secondary_main_paths_clickable": true,
+    "browser_back_forward_works": true,
+    "mobile_basic_screenshot_exists": true,
+    "no_browser_page_errors": true
+  },
+  "evidence_files": {
+    "browser_validation": "PFI/reports/pfi_v023/stage_10/phase_10_2/browser_validation.json",
+    "browser_probe_raw": "PFI/reports/pfi_v023/stage_10/phase_10_2/browser_probe_raw.json",
+    "entry_screenshots_dir": "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/entries",
+    "secondary_screenshots_dir": "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/secondary",
+    "mobile_basic_screenshot": "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/mobile_basic.png"
+  },
+  "changed_files": [
+    "PFI/docs/pfi_v023/STAGE10_E2E_ACCEPTANCE.md",
+    "PFI/reports/pfi_v023/stage_10/phase_10_1/browser_validation.json",
+    "PFI/reports/pfi_v023/stage_10/phase_10_1/evidence.json",
+    "PFI/reports/pfi_v023/stage_10/phase_10_1/terminal.log",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/browser_probe_raw.json",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/browser_validation.json",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/changed_files.txt",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/evidence.json",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/terminal.log",
+    "PFI/tests/test_v023_stage10_e2e_acceptance.py",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/entries/entry_01_home.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/entries/entry_02_accounts.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/entries/entry_03_ledger.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/entries/entry_04_investment.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/entries/entry_05_consumption.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/entries/entry_06_sync.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/entries/entry_07_recommendations.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/entries/entry_08_insights.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/entries/entry_09_market_research.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/entries/entry_10_settings.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/mobile_basic.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/secondary/secondary_01_home.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/secondary/secondary_02_accounts.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/secondary/secondary_03_ledger.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/secondary/secondary_04_investment.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/secondary/secondary_05_consumption.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/secondary/secondary_06_sync.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/secondary/secondary_07_recommendations.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/secondary/secondary_08_insights.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/secondary/secondary_09_market_research.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/secondary/secondary_10_settings.png"
+  ],
+  "validation_commands": [
+    {
+      "command": "PATH=\"$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH\" node --check PFI/web/app/shell.js",
+      "status": "pass"
+    },
+    {
+      "command": "PATH=\"$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH\" node --check PFI/web/app/routes.js",
+      "status": "pass"
+    },
+    {
+      "command": "PATH=\"$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH\" node --check PFI/web/app/pages/stage4Subpages.js",
+      "status": "pass"
+    },
+    {
+      "command": "PATH=\"$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH\" node --check PFI/web/app/pages/home.js",
+      "status": "pass"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/tests/test_v023_stage10_e2e_acceptance.py",
+      "status": "pass"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage10_e2e_acceptance.py -q",
+      "status": "pass",
+      "summary": "7 passed in 0.02s"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q",
+      "status": "pass",
+      "summary": "164 passed in 2.33s"
+    },
+    {
+      "command": "python3 -m json.tool stage_10 phase_10_1/phase_10_2 evidence files",
+      "status": "pass"
+    },
+    {
+      "command": "git diff --check -- PFI",
+      "status": "pass"
+    },
+    {
+      "command": "Stage 10 docs/tests/reports placeholder-term scan",
+      "status": "pass"
+    },
+    {
+      "command": "curl 8501 /_stcore/health and 8766 /health",
+      "status": "pass"
+    }
+  ],
+  "not_done": [
+    "Phase 10.3",
+    "Stage 10 whole-stage review",
+    "GitHub main upload"
+  ]
+}

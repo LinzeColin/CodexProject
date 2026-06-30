@@ -2,7 +2,7 @@
 
 ## Stage 10 Phase 10.1
 
-本轮只执行 Stage 10 Phase 10.1 入口 E2E，覆盖：
+Stage 10 Phase 10.1 入口 E2E 已完成候选验收，覆盖：
 
 - app 打开验证：`~/Downloads/PFI.app` dry-run 指向当前 checkout，并通过 app 入口版本参数打开同一 Streamlit UI。
 - localhost 打开验证：`http://127.0.0.1:8501` 健康，浏览器截图显示当前 PFI UI。
@@ -21,9 +21,25 @@
 - `screenshots/app_entry.png`
 - `screenshots/localhost.png`
 
-## Scope Guard
+## Stage 10 Phase 10.2
 
-Phase 10.2 未执行。
+Stage 10 Phase 10.2 导航和页面 E2E 已完成候选验收，覆盖：
+
+- 10 个入口点击：按 v0.2.3 固定 10 个一级入口逐个点击并截图。
+- 二级页点击：每个一级入口至少点击一个主要二级页并截图。
+- 前进/后退：浏览器 back 从账本流水回到账户与资产，forward 再回到账本流水。
+- 移动端基础验收：390 x 844 视口截图，移动端导航存在 10 个入口。
+
+证据包位置：`PFI/reports/pfi_v023/stage_10/phase_10_2/`
+
+已记录：
+
+- `browser_validation.json`
+- `screenshots/entries/*.png`
+- `screenshots/secondary/*.png`
+- `screenshots/mobile_basic.png`
+
+## Scope Guard
 
 Phase 10.3 未执行。
 

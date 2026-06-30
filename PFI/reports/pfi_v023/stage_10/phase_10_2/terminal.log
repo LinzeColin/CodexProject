@@ -1,0 +1,33 @@
+PFI v0.2.3 Stage 10 Phase 10.2 terminal evidence
+Generated at: 2026-06-30T06:43:23Z
+Repo: /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+Branch: codex/pfi
+HEAD: 41c8d66e31813364f89f80f02553c895dda36cef
+Remote: git@github.com:LinzeColin/CodexProject.git
+
+Service health:
+- 8501 /_stcore/health => ok
+- 8766 /health => {"status": "ok", "schema": "PFIV021RuntimeAPIV1"}
+
+Browser evidence:
+- first-level entries clicked: 10/10
+- secondary paths clicked: 10/10
+- history back ok: True
+- history forward ok: True
+- mobile screenshot bytes: 161016
+- console errors: 0
+- page errors: 0
+- HTTP errors: 0
+
+Validation results:
+- pass: PATH="$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH" node --check PFI/web/app/shell.js
+- pass: PATH="$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH" node --check PFI/web/app/routes.js
+- pass: PATH="$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH" node --check PFI/web/app/pages/stage4Subpages.js
+- pass: PATH="$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH" node --check PFI/web/app/pages/home.js
+- pass: PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/tests/test_v023_stage10_e2e_acceptance.py
+- pass: PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage10_e2e_acceptance.py -q => 7 passed in 0.02s
+- pass: PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q => 164 passed in 2.33s
+- pass: python3 -m json.tool stage_10 phase_10_1/phase_10_2 evidence files
+- pass: git diff --check -- PFI
+- pass: Stage 10 docs/tests/reports placeholder-term scan
+- pass: curl 8501 /_stcore/health and 8766 /health
