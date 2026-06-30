@@ -45,6 +45,23 @@ class Stage6Phase61Contract:
     explicitly_not_done: tuple[str, ...]
 
 
+@dataclass(frozen=True)
+class Stage6Phase62Contract:
+    version: str
+    stage: str
+    phase_id: str
+    phase_name: str
+    current_phase_only: bool
+    max_one_phase_per_run: bool
+    real_data_only_financial_metrics: bool
+    task_ids: tuple[str, ...]
+    allowed_files: tuple[str, ...]
+    changed_in_this_phase: tuple[str, ...]
+    validation_commands: tuple[str, ...]
+    evidence_files: tuple[str, ...]
+    explicitly_not_done: tuple[str, ...]
+
+
 def build_stage6_phase61_contract() -> dict[str, Any]:
     contract = Stage6Phase61Contract(
         version=VERSION,
@@ -85,6 +102,67 @@ def build_stage6_phase61_contract() -> dict[str, Any]:
         ),
         explicitly_not_done=(
             "Phase 6.2 UI wiring",
+            "Phase 6.3 cross-page consistency",
+            "Stage 6 whole-stage review",
+            "GitHub main upload for intermediate phase",
+        ),
+    )
+    payload = asdict(contract)
+    for key in ("task_ids", "allowed_files", "changed_in_this_phase", "validation_commands", "evidence_files", "explicitly_not_done"):
+        payload[key] = list(payload[key])
+    return payload
+
+
+def build_stage6_phase62_contract() -> dict[str, Any]:
+    contract = Stage6Phase62Contract(
+        version=VERSION,
+        stage=STAGE,
+        phase_id="V023-S6-P6.2",
+        phase_name="页面接入",
+        current_phase_only=True,
+        max_one_phase_per_run=True,
+        real_data_only_financial_metrics=True,
+        task_ids=("T6.2.1", "T6.2.2", "T6.2.3", "T6.2.4"),
+        allowed_files=(
+            "PFI/src/pfi_v02/stage_v023_core_metrics.py",
+            "PFI/src/pfi_v02/stage_v023_read_model.py",
+            "PFI/web/app/data/*.js",
+            "PFI/web/app/data/coreMetrics.js",
+            "PFI/web/app/pages/home.js",
+            "PFI/web/app/pages/accounts.js",
+            "PFI/web/app/pages/investment.js",
+            "PFI/web/app/pages/consumption.js",
+            "PFI/tests/test_v023_stage6_core_metrics.py",
+            "PFI/docs/pfi_v023/STAGE6_CORE_METRICS.md",
+            "PFI/reports/pfi_v023/stage_6/*",
+        ),
+        changed_in_this_phase=(
+            "PFI/src/pfi_v02/stage_v023_core_metrics.py",
+            "PFI/web/app/data/coreMetrics.js",
+            "PFI/web/app/pages/home.js",
+            "PFI/web/app/pages/accounts.js",
+            "PFI/web/app/pages/investment.js",
+            "PFI/web/app/pages/consumption.js",
+            "PFI/tests/test_v023_stage6_core_metrics.py",
+            "PFI/docs/pfi_v023/STAGE6_CORE_METRICS.md",
+            "PFI/reports/pfi_v023/stage_6/phase_6_2/*",
+        ),
+        validation_commands=(
+            "node --check PFI/web/app/data/coreMetrics.js",
+            "node --check PFI/web/app/pages/home.js",
+            "node --check PFI/web/app/pages/accounts.js",
+            "node --check PFI/web/app/pages/investment.js",
+            "node --check PFI/web/app/pages/consumption.js",
+            "python3 -m pytest PFI/tests/test_v023_stage6_core_metrics.py -q",
+        ),
+        evidence_files=(
+            "PFI/docs/pfi_v023/STAGE6_CORE_METRICS.md",
+            "PFI/reports/pfi_v023/stage_6/phase_6_2/evidence.json",
+            "PFI/reports/pfi_v023/stage_6/phase_6_2/page_view_models.json",
+            "PFI/reports/pfi_v023/stage_6/phase_6_2/terminal.log",
+            "PFI/reports/pfi_v023/stage_6/phase_6_2/changed_files.txt",
+        ),
+        explicitly_not_done=(
             "Phase 6.3 cross-page consistency",
             "Stage 6 whole-stage review",
             "GitHub main upload for intermediate phase",
