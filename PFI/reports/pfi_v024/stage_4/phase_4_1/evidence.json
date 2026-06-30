@@ -1,0 +1,128 @@
+{
+  "schema": "PFIV024Stage4Phase41EvidenceV1",
+  "version": "v0.2.3-repair",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Stage 4",
+  "phase_id": "4.1",
+  "phase_name": "状态机定义",
+  "status": "candidate_pass",
+  "generated_at": "2026-07-01T08:57:01+10:00",
+  "repo": {
+    "path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi",
+    "branch": "codex/pfi",
+    "remote": "git@github.com:LinzeColin/CodexProject.git",
+    "head_at_phase_start": "ce78364bc4c68c1ce5eadedf3247c07407f7360d",
+    "origin_main_at_phase_start": "ce78364bc4c68c1ce5eadedf3247c07407f7360d",
+    "local_ahead_origin_main_at_phase_start": 0,
+    "local_behind_origin_main_at_phase_start": 0
+  },
+  "current_phase_only": true,
+  "max_phases_per_run": 1,
+  "phase_4_1_complete": true,
+  "phase_4_2_started": false,
+  "phase_4_3_started": false,
+  "stage_4_whole_review_complete": false,
+  "github_main_uploaded": false,
+  "read_model_wiring_done": false,
+  "ui_core_cards_wiring_done": false,
+  "no_mock_financial_data": true,
+  "status_values": [
+    "ready",
+    "confirmed_zero",
+    "not_loaded",
+    "source_missing",
+    "path_error",
+    "parse_failed",
+    "outdated_snapshot",
+    "permission_denied",
+    "calculation_failed",
+    "filtered_empty"
+  ],
+  "required_metric_fields": [
+    "metric_id",
+    "value",
+    "currency",
+    "status",
+    "source_id",
+    "record_count",
+    "as_of",
+    "formula_id",
+    "confidence",
+    "blocking_reason_zh",
+    "calculation_state"
+  ],
+  "acceptance_checks": {
+    "state_enum_defined": true,
+    "metric_schema_defined": true,
+    "blocking_reason_zh_defined": true,
+    "non_ready_statuses_do_not_display_zero": true,
+    "confirmed_zero_requires_evidence": true,
+    "ready_requires_evidence": true,
+    "no_runtime_forbidden_financial_data_terms": true
+  },
+  "commands": [
+    {
+      "cmd": "pytest stage4 phase41 data state contract red run",
+      "status": "expected_fail",
+      "detail": "missing v0.2.4 Stage 4 data state module, JS contract, doc, and evidence"
+    },
+    {
+      "cmd": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/data_state.js",
+      "status": "pass",
+      "detail": "bundled Node v24.14.0; global node is not on PATH"
+    },
+    {
+      "cmd": "python py_compile stage4 data state and tests",
+      "status": "pass"
+    },
+    {
+      "cmd": "pytest stage4 phase41 data state and no mock",
+      "status": "pass",
+      "detail": "11 passed in 0.13s"
+    },
+    {
+      "cmd": "python3 -m json.tool phase41 evidence",
+      "status": "pass"
+    },
+    {
+      "cmd": "git diff --check -- PFI",
+      "status": "pass"
+    },
+    {
+      "cmd": "git rebase origin/main after origin/main advanced with non-PFI changes",
+      "status": "pass",
+      "detail": "post-rebase validation repeated; branch remains local-only ahead 1"
+    }
+  ],
+  "changed_files": [
+    "PFI/CHANGELOG.md",
+    "PFI/HANDOFF.md",
+    "PFI/README.md",
+    "PFI/docs/pfi_v024/RUN_CONTRACT.md",
+    "PFI/docs/pfi_v024/STAGE4_DATA_STATE_MACHINE.md",
+    "PFI/reports/pfi_v024/stage_4/phase_4_1/changed_files.txt",
+    "PFI/reports/pfi_v024/stage_4/phase_4_1/evidence.json",
+    "PFI/reports/pfi_v024/stage_4/phase_4_1/risk_and_rollback.md",
+    "PFI/reports/pfi_v024/stage_4/phase_4_1/terminal.log",
+    "PFI/src/pfi_v02/stage_v024_stage4_data_state.py",
+    "PFI/tests/test_v024_stage4_no_mock_financial_data.py",
+    "PFI/tests/test_v024_stage4_phase41_data_state_contract.py",
+    "PFI/web/app/data_state.js",
+    "PFI/功能清单.md",
+    "PFI/开发记录.md",
+    "PFI/模型参数文件.md"
+  ],
+  "explicitly_not_done": [
+    "Stage 4 Phase 4.2 read model 挂链",
+    "Stage 4 Phase 4.3 验收",
+    "Stage 4 whole-stage review",
+    "GitHub main upload",
+    "首页核心卡片挂链",
+    "账户/投资/消费/报告共享状态挂链",
+    "app bundle reinstall",
+    "financial data or metric logic changes beyond state contract"
+  ],
+  "requires_user_acceptance": true,
+  "no_auto_next_stage": true
+}

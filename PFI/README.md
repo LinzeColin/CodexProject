@@ -70,6 +70,38 @@ Stage 1 records:
 - `tests/test_v024_stage1_whole_review_contract.py`
 - `reports/pfi_v024/stage_1/whole_stage_review/evidence.json`
 
+## v0.2.4 Stage 4 Status
+
+Current run unit: `Stage 4 / Phase 4.1 - 状态机定义`.
+
+- Stage 3 GitHub main upload: complete before this run.
+- Phase 4.1: candidate pass.
+- Phase 4.2 read model 挂链: not started.
+- Phase 4.3 验收: not started.
+- Stage 4 whole-stage review: not executed.
+- GitHub main upload: not executed in this run.
+- Current data state contract: `PFI-V024-STAGE4-PHASE41-DATA-STATE`.
+- Core metric status values: `ready`、`confirmed_zero`、`not_loaded`、`source_missing`、`path_error`、`parse_failed`、`outdated_snapshot`、`permission_denied`、`calculation_failed`、`filtered_empty`.
+- Every core metric state requires `metric_id`、`value`、`currency`、`status`、`source_id`、`record_count`、`as_of`、`formula_id`、`confidence`、`blocking_reason_zh`、`calculation_state`.
+- Non-ready statuses must not render `CNY 0.00`.
+- `confirmed_zero` may render `CNY 0.00` only with source, as-of time, record count, formula, and confidence evidence.
+- Phase 4.1 only freezes the data-state contract and browser-side rendering helper; it does not wire Home/accounts/investment/consumption/reports read models yet.
+- Business financial source data changes: none.
+- App bundle changes: none.
+- Next gate: Stage 4 Phase 4.2 only after explicit user instruction.
+
+Stage 4 Phase 4.1 records:
+
+- `src/pfi_v02/stage_v024_stage4_data_state.py`
+- `web/app/data_state.js`
+- `docs/pfi_v024/STAGE4_DATA_STATE_MACHINE.md`
+- `tests/test_v024_stage4_phase41_data_state_contract.py`
+- `tests/test_v024_stage4_no_mock_financial_data.py`
+- `reports/pfi_v024/stage_4/phase_4_1/evidence.json`
+- `reports/pfi_v024/stage_4/phase_4_1/changed_files.txt`
+- `reports/pfi_v024/stage_4/phase_4_1/terminal.log`
+- `reports/pfi_v024/stage_4/phase_4_1/risk_and_rollback.md`
+
 ## v0.2.4 Stage 3 Status
 
 Current run unit: `Stage 3 GitHub main upload gate`.

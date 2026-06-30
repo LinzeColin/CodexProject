@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 4 Phase 4.1 - 2026-07-01
+
+- 完成 `Stage 4 / Phase 4.1 - 状态机定义`：冻结核心财务指标数据状态枚举、指标状态 schema、中文阻断原因和禁止假零规则。
+- 新增 `PFI/src/pfi_v02/stage_v024_stage4_data_state.py`，提供 `PFI-V024-STAGE4-PHASE41-DATA-STATE` 合同、metric state builder、渲染守卫和运行时禁用词扫描。
+- 新增 `PFI/web/app/data_state.js`，供后续 Phase 4.2/4.3 前端挂链复用；非 ready 状态返回中文原因，不渲染 `CNY 0.00`。
+- 新增 `PFI/docs/pfi_v024/STAGE4_DATA_STATE_MACHINE.md`、`PFI/tests/test_v024_stage4_phase41_data_state_contract.py`、`PFI/tests/test_v024_stage4_no_mock_financial_data.py` 和 `PFI/reports/pfi_v024/stage_4/phase_4_1/evidence.json`。
+- 本轮不执行 Phase 4.2 read model 挂链、Phase 4.3 验收、Stage 4 whole-stage review 或 GitHub main upload；不重装 app bundle，不修改真实财务数据源。
+
 ## v0.2.4 Repair Pack Stage 3 GitHub Main Upload - 2026-07-01
 
 - 完成 `Stage 3 GitHub main upload gate`：将 Stage 3 Phase 3.1、Phase 3.2、Phase 3.3 和 whole-stage review package rebase 到当前 `origin/main` 后上传。
