@@ -36,6 +36,22 @@ class GovernanceCurrentStateTests(unittest.TestCase):
 
 
         self.assertIn(
+            "S2PMT07_FINAL_BUNDLE_LIVE_ARTIFACT_WRITE_GUARD_BLOCKED_NO_PRODUCTION",
+            current_state,
+        )
+        self.assertIn("S2PMT07-FINAL-BUNDLE-LIVE-ARTIFACT-WRITE-GUARD", current_state)
+        self.assertIn("live_artifact_write_guard", current_state)
+        self.assertIn("9454e47e36d6cc04e20918f50d8f7d6be6e5c12fadfc4a6f5f86144562199eb9", current_state)
+        self.assertIn("1146133f14fe04dba14e0313409fad828bfe2d6439adefc68a640d5500568b85", current_state)
+        self.assertIn("HANDOFF/00_下一Agent先读.md", current_state)
+        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/manifest.json", current_state)
+        self.assertIn("write_live_next_agent_handoff", current_state)
+        self.assertIn("write_final_acceptance_bundle_manifest", current_state)
+        self.assertIn("claim_stage2_or_s3_production_acceptance", current_state)
+        self.assertIn("ADP-S2PMT07-FINAL-BUNDLE-LIVE-ARTIFACT-WRITE-GUARD-20260701.json", current_state)
+        self.assertIn("PHASE_S2PMT07_FINAL_BUNDLE_LIVE_ARTIFACT_WRITE_GUARD.md", ledger)
+
+        self.assertIn(
             "S2PMT07_FINAL_BUNDLE_S2PLT02_TERMINAL_COUNT_SPLIT_BLOCKED_NO_PRODUCTION",
             current_state,
         )
