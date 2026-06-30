@@ -43,6 +43,26 @@
   ]);
 
   const displayStatuses = Object.freeze(["ready", "confirmed_zero"]);
+  const metricBasis = Object.freeze({
+    net_worth_cny: Object.freeze({
+      basis_zh: "来自真实账户余额与持仓 read model；未挂载时返回中文阻塞状态。",
+    }),
+    cash_balance_cny: Object.freeze({
+      basis_zh: "来自真实账户余额 read model；当前未挂载账户余额时不得显示金额替代。",
+    }),
+    investment_market_value_cny: Object.freeze({
+      basis_zh: "来自真实持仓市值 read model；当前未挂载持仓市值时不得显示金额替代。",
+    }),
+    life_consumption_cny: Object.freeze({
+      basis_zh: "来自真实 Alipay 交易，口径为生活消费流出减退款。",
+    }),
+    total_consumption_outflow_cny: Object.freeze({
+      basis_zh: "来自真实 Alipay 交易，口径为生活消费、基金申购、资产买入流出减退款。",
+    }),
+    data_health: Object.freeze({
+      basis_zh: "来自真实导入清单的交易记录数、原始文件数和数据时间范围。",
+    }),
+  });
 
   function canDisplayValue(metric) {
     return Boolean(
@@ -125,6 +145,7 @@
     });
     return Object.freeze({
       ...metric,
+      basis_zh: basisForMetric(metric.metric_id),
       display_value: renderMetricValueZh(metric),
       detail: metric.source
         ? `${metric.status} · ${metric.source} · as_of ${metric.as_of} · ${metric.evidence_hash}`
@@ -136,11 +157,17 @@
     return Object.freeze(metricIdsForPage.map((metricId) => buildMetricCard(readModel, metricId)));
   }
 
+  function basisForMetric(metricId) {
+    return metricBasis[metricId] ? metricBasis[metricId].basis_zh : "按核心 read model 状态展示。";
+  }
+
   return Object.freeze({
     metricIds,
     statuses,
     requiredFields,
     displayStatuses,
+    metricBasis,
+    basisForMetric,
     canDisplayValue,
     buildMetricCard,
     buildMetricCards,

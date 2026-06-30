@@ -383,7 +383,6 @@ console.log(JSON.stringify({
         doc_text = doc_path.read_text(encoding="utf-8")
         self.assertIn("Stage 6 Phase 6.2", doc_text)
         self.assertIn("页面接入", doc_text)
-        self.assertIn("Phase 6.3 cross-page consistency 未执行", doc_text)
 
         evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
         page_models = json.loads(page_models_path.read_text(encoding="utf-8"))
@@ -404,6 +403,119 @@ console.log(JSON.stringify({
         terminal_log = terminal_log_path.read_text(encoding="utf-8")
         self.assertIn("PFI/tests/test_v023_stage6_core_metrics.py -q", terminal_log)
         self.assertIn("node --check PFI/web/app/pages/accounts.js", terminal_log)
+
+    def test_phase63_contract_is_limited_to_metric_consistency(self) -> None:
+        module = load_core_metrics_module()
+        contract = module.build_stage6_phase63_contract()
+
+        self.assertEqual(contract["version"], "v0.2.3")
+        self.assertEqual(contract["stage"], "Stage 6")
+        self.assertEqual(contract["phase_id"], "V023-S6-P6.3")
+        self.assertEqual(contract["phase_name"], "指标一致性")
+        self.assertTrue(contract["current_phase_only"])
+        self.assertTrue(contract["max_one_phase_per_run"])
+        self.assertEqual(contract["task_ids"], ["T6.3.1", "T6.3.2", "T6.3.3", "T6.3.4"])
+        self.assertIn("PFI/src/pfi_v02/stage_v023_core_metrics.py", contract["allowed_files"])
+        self.assertIn("PFI/web/app/data/coreMetrics.js", contract["allowed_files"])
+        self.assertIn("PFI/tests/test_v023_stage6_core_metrics.py", contract["allowed_files"])
+        self.assertNotIn("PFI/web/app/shell.js", contract["changed_in_this_phase"])
+        self.assertNotIn("PFI/web/index.html", contract["changed_in_this_phase"])
+        self.assertIn("Stage 6 whole-stage review", contract["explicitly_not_done"])
+        self.assertIn("GitHub main upload for intermediate phase", contract["explicitly_not_done"])
+
+    def test_phase63_home_accounts_report_share_same_metric_source_chain(self) -> None:
+        module = load_core_metrics_module()
+        core_metrics = json.loads((ROOT / "reports" / "pfi_v023" / "stage_6" / "phase_6_1" / "core_metrics.json").read_text(encoding="utf-8"))
+        page_models = json.loads((ROOT / "reports" / "pfi_v023" / "stage_6" / "phase_6_2" / "page_view_models.json").read_text(encoding="utf-8"))
+
+        matrix = module.build_stage6_phase63_consistency_matrix(core_metrics, page_models)
+
+        self.assertEqual(matrix["schema"], "PFIV023Stage6MetricConsistencyMatrixV1")
+        self.assertEqual(matrix["phase_id"], "V023-S6-P6.3")
+        self.assertEqual(matrix["source_core_metrics"]["read_model_hash"], core_metrics["read_model_hash"])
+        self.assertEqual(matrix["source_core_metrics"]["as_of"], "2026-06-03")
+        self.assertEqual(matrix["findings"], [])
+
+        surfaces = matrix["surfaces"]
+        self.assertEqual(set(surfaces), {"home", "accounts", "report"})
+        for surface_name, surface in surfaces.items():
+            self.assertEqual(surface["read_model_hash"], core_metrics["read_model_hash"], surface_name)
+            self.assertEqual(surface["as_of"], core_metrics["as_of"], surface_name)
+            for metric in surface["metrics"]:
+                source_metric = next(item for item in core_metrics["core_metrics"] if item["metric_id"] == metric["metric_id"])
+                self.assertEqual(metric["status"], source_metric["status"], metric["metric_id"])
+                self.assertEqual(metric["value"], source_metric["value"], metric["metric_id"])
+                self.assertEqual(metric["source"], source_metric["source"], metric["metric_id"])
+                self.assertEqual(metric["as_of"], source_metric["as_of"], metric["metric_id"])
+                self.assertEqual(metric["evidence_hash"], source_metric["evidence_hash"], metric["metric_id"])
+
+        accounts_ids = {item["metric_id"] for item in surfaces["accounts"]["metrics"]}
+        report_ids = {item["metric_id"] for item in surfaces["report"]["metrics"]}
+        self.assertTrue({"net_worth_cny", "cash_balance_cny", "data_health"}.issubset(accounts_ids))
+        self.assertEqual(report_ids, EXPECTED_METRIC_IDS)
+
+    def test_phase63_metric_basis_copy_covers_cash_investment_and_consumption(self) -> None:
+        module = load_core_metrics_module()
+        basis = module.build_stage6_metric_basis_catalog()
+
+        self.assertEqual(basis["schema"], "PFIV023Stage6MetricBasisCatalogV1")
+        entries = basis["metrics"]
+        for metric_id in ("cash_balance_cny", "investment_market_value_cny", "life_consumption_cny", "total_consumption_outflow_cny"):
+            self.assertIn(metric_id, entries)
+            self.assertRegex(entries[metric_id]["basis_zh"], r"[\u4e00-\u9fff]")
+            self.assertIn("status_policy_zh", entries[metric_id])
+            self.assertIn("as_of_hash_policy_zh", entries[metric_id])
+        self.assertIn("账户余额 read model", entries["cash_balance_cny"]["basis_zh"])
+        self.assertIn("持仓市值 read model", entries["investment_market_value_cny"]["basis_zh"])
+        self.assertIn("生活消费流出减退款", entries["life_consumption_cny"]["basis_zh"])
+        self.assertIn("基金申购", entries["total_consumption_outflow_cny"]["basis_zh"])
+
+        script = """
+const core = require('./PFI/web/app/data/coreMetrics.js');
+const fs = require('fs');
+const readModel = JSON.parse(fs.readFileSync('./PFI/reports/pfi_v023/stage_6/phase_6_1/core_metrics.json', 'utf8'));
+const card = core.buildMetricCard(readModel, 'total_consumption_outflow_cny');
+console.log(JSON.stringify(card));
+"""
+        card = node_json(script)
+        self.assertIn("basis_zh", card)
+        self.assertIn("基金申购", card["basis_zh"])
+        self.assertIn("as_of 2026-06-03", card["detail"])
+
+    def test_phase63_error_state_screenshot_and_source_term_scan_evidence_exist(self) -> None:
+        phase_dir = ROOT / "reports" / "pfi_v023" / "stage_6" / "phase_6_3"
+        evidence_path = phase_dir / "evidence.json"
+        consistency_path = phase_dir / "consistency_matrix.json"
+        basis_path = phase_dir / "metric_basis.json"
+        scan_path = phase_dir / "no_source_term_scan.json"
+        error_view_path = phase_dir / "error_state_view_models.json"
+        screenshot_path = phase_dir / "screenshots" / "error_states.png"
+        changed_files_path = phase_dir / "changed_files.txt"
+        terminal_log_path = phase_dir / "terminal.log"
+
+        for path in (evidence_path, consistency_path, basis_path, scan_path, error_view_path, screenshot_path, changed_files_path, terminal_log_path):
+            self.assertTrue(path.exists(), str(path))
+
+        evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
+        consistency = json.loads(consistency_path.read_text(encoding="utf-8"))
+        basis = json.loads(basis_path.read_text(encoding="utf-8"))
+        scan = json.loads(scan_path.read_text(encoding="utf-8"))
+        error_view = json.loads(error_view_path.read_text(encoding="utf-8"))
+
+        self.assertEqual(evidence["phase_id"], "V023-S6-P6.3")
+        self.assertEqual(evidence["status"], "candidate_pass")
+        self.assertEqual(consistency["findings"], [])
+        self.assertEqual(basis["schema"], "PFIV023Stage6MetricBasisCatalogV1")
+        self.assertEqual(scan["violations"], [])
+        self.assertFalse(evidence["stage_contract"]["stage_6_whole_review_done"])
+        self.assertFalse(evidence["stage_contract"]["github_main_upload_done"])
+        self.assertGreater(screenshot_path.stat().st_size, 10000)
+        self.assertIn("未挂载真实个人财务数据源", json.dumps(error_view, ensure_ascii=False))
+        self.assertNotIn("CNY 0.00", json.dumps(error_view, ensure_ascii=False))
+
+        terminal_log = terminal_log_path.read_text(encoding="utf-8")
+        self.assertIn("PFI/tests/test_v023_stage6_core_metrics.py -q", terminal_log)
+        self.assertIn("blocked source term scan", terminal_log)
 
 
 if __name__ == "__main__":

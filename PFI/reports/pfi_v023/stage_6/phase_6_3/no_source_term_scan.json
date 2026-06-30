@@ -1,0 +1,21 @@
+{
+  "schema": "PFIV023Stage6Phase63SourceTermScanV1",
+  "version": "v0.2.3",
+  "stage": "Stage 6",
+  "phase_id": "V023-S6-P6.3",
+  "scanned_files": [
+    "PFI/src/pfi_v02/stage_v023_core_metrics.py",
+    "PFI/web/app/data/coreMetrics.js",
+    "PFI/tests/test_v023_stage6_core_metrics.py",
+    "PFI/docs/pfi_v023/STAGE6_CORE_METRICS.md",
+    "PFI/reports/pfi_v023/stage_6/phase_6_3/evidence.json",
+    "PFI/reports/pfi_v023/stage_6/phase_6_3/consistency_matrix.json",
+    "PFI/reports/pfi_v023/stage_6/phase_6_3/metric_basis.json",
+    "PFI/reports/pfi_v023/stage_6/phase_6_3/no_source_term_scan.json",
+    "PFI/reports/pfi_v023/stage_6/phase_6_3/error_state_view_models.json",
+    "PFI/reports/pfi_v023/stage_6/phase_6_3/error_state_snapshot.html",
+    "PFI/reports/pfi_v023/stage_6/phase_6_3/terminal.log",
+    "PFI/reports/pfi_v023/stage_6/phase_6_3/changed_files.txt"
+  ],
+  "violations": []
+}

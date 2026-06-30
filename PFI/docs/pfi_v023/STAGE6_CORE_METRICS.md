@@ -40,6 +40,25 @@ Phase 6.2 将 Phase 6.1 read model 输出接入页面级 view model，覆盖：
 - 当前净资产、现金余额、投资市值仍为 `not_mounted`，等待真实账户余额与持仓 read model。
 - 当前生活消费、消费总流出、数据健康来自 Phase 6.1 的真实 `MetaDatabase/PFI` read model。
 
-Phase 6.3 cross-page consistency 未执行。
+## Stage 6 Phase 6.3 指标一致性
+
+Phase 6.3 建立首页、账户与资产、报告 projection 的同源一致性矩阵。
+
+同源规则：
+
+- 首页、账户与资产、报告 projection 均使用 Phase 6.1 `core_metrics.json` 的同一个 `read_model_hash`。
+- 页面指标不得改写 `status`、`value`、`source`、`as_of`、`evidence_hash`。
+- 报告 projection 直接承接核心 read model 的全部 6 个指标。
+- 账户与资产页面只展示净资产、现金余额、数据健康，但这 3 个指标仍必须与核心 read model 完全一致。
+
+口径说明：
+
+- 现金余额：来自真实账户余额 read model；未挂载时只显示中文阻塞状态。
+- 投资市值：来自真实持仓市值 read model；未挂载时只显示中文阻塞状态。
+- 生活消费：真实 Alipay 交易中的生活消费流出减退款。
+- 消费总流出：真实 Alipay 交易中的生活消费、基金申购、资产买入流出减退款。
+
+错误状态截图位于 `PFI/reports/pfi_v023/stage_6/phase_6_3/screenshots/error_states.png`，用于证明未挂载数据源时所有页面显示中文阻塞状态且不显示 `CNY 0.00`。
+
 Stage 6 whole-stage review 未执行。
 GitHub main upload 未执行。

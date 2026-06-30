@@ -1,0 +1,44 @@
+{
+  "schema": "PFIV023Stage6MetricBasisCatalogV1",
+  "version": "v0.2.3",
+  "stage": "Stage 6",
+  "phase_id": "V023-S6-P6.3",
+  "metrics": {
+    "net_worth_cny": {
+      "label": "净资产",
+      "basis_zh": "来自真实账户余额与持仓 read model；未挂载时返回中文阻塞状态。",
+      "status_policy_zh": "只有 ready 或 confirmed_zero 且带 source/as_of/evidence_hash 时显示数值；其他状态显示中文原因。",
+      "as_of_hash_policy_zh": "所有可显示值必须保留 as_of 和 evidence_hash，跨页面不得改写。"
+    },
+    "cash_balance_cny": {
+      "label": "现金余额",
+      "basis_zh": "来自真实账户余额 read model；当前未挂载账户余额时不得显示金额替代。",
+      "status_policy_zh": "只有 ready 或 confirmed_zero 且带 source/as_of/evidence_hash 时显示数值；其他状态显示中文原因。",
+      "as_of_hash_policy_zh": "所有可显示值必须保留 as_of 和 evidence_hash，跨页面不得改写。"
+    },
+    "investment_market_value_cny": {
+      "label": "投资市值",
+      "basis_zh": "来自真实持仓市值 read model；当前未挂载持仓市值时不得显示金额替代。",
+      "status_policy_zh": "只有 ready 或 confirmed_zero 且带 source/as_of/evidence_hash 时显示数值；其他状态显示中文原因。",
+      "as_of_hash_policy_zh": "所有可显示值必须保留 as_of 和 evidence_hash，跨页面不得改写。"
+    },
+    "life_consumption_cny": {
+      "label": "生活消费",
+      "basis_zh": "来自真实 Alipay 交易，口径为生活消费流出减退款。",
+      "status_policy_zh": "只有 ready 或 confirmed_zero 且带 source/as_of/evidence_hash 时显示数值；其他状态显示中文原因。",
+      "as_of_hash_policy_zh": "所有可显示值必须保留 as_of 和 evidence_hash，跨页面不得改写。"
+    },
+    "total_consumption_outflow_cny": {
+      "label": "消费总流出",
+      "basis_zh": "来自真实 Alipay 交易，口径为生活消费、基金申购、资产买入流出减退款。",
+      "status_policy_zh": "只有 ready 或 confirmed_zero 且带 source/as_of/evidence_hash 时显示数值；其他状态显示中文原因。",
+      "as_of_hash_policy_zh": "所有可显示值必须保留 as_of 和 evidence_hash，跨页面不得改写。"
+    },
+    "data_health": {
+      "label": "数据健康",
+      "basis_zh": "来自真实导入清单的交易记录数、原始文件数和数据时间范围。",
+      "status_policy_zh": "只有 ready 或 confirmed_zero 且带 source/as_of/evidence_hash 时显示数值；其他状态显示中文原因。",
+      "as_of_hash_policy_zh": "所有可显示值必须保留 as_of 和 evidence_hash，跨页面不得改写。"
+    }
+  }
+}

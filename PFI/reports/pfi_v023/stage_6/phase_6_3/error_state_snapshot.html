@@ -1,0 +1,73 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><title>PFI Stage 6.3 Error States</title><style>
+body{margin:0;background:#f7f3eb;color:#18212b;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;}
+main{max-width:1280px;margin:0 auto;padding:36px;}h1{font-size:30px;margin:0 0 8px;}p{color:#526070;margin:0 0 14px;}section{margin:0 0 30px;}h2{font-size:20px;margin:0 0 8px;}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;}.card{background:white;border:1px solid #dccfc0;border-left:5px solid #b65c21;border-radius:8px;padding:16px;min-height:128px;box-shadow:0 1px 2px rgba(20,32,45,.08);}.card span{display:block;color:#667085;font-size:13px;margin-bottom:10px;}.card strong{display:block;font-size:18px;line-height:1.3;margin-bottom:12px;}.card small{display:block;color:#526070;line-height:1.45;word-break:break-word;}</style></head><body><main><h1>PFI v0.2.3 Stage 6 Phase 6.3 错误状态截图</h1><p>所有核心指标在未挂载真实个人财务数据源时显示中文阻塞状态，不显示 CNY 0.00。</p><section><h2>首页核心指标</h2><p>核心指标 0 项可显示，6 项保留中文状态。</p><div class="grid">
+    <article class="card">
+      <span>净资产</span>
+      <strong>未挂载真实个人财务数据源</strong>
+      <small>not_mounted · 来自真实账户余额与持仓 read model；未挂载时返回中文阻塞状态。</small>
+    </article>
+    <article class="card">
+      <span>现金余额</span>
+      <strong>未挂载真实个人财务数据源</strong>
+      <small>not_mounted · 来自真实账户余额 read model；当前未挂载账户余额时不得显示金额替代。</small>
+    </article>
+    <article class="card">
+      <span>投资市值</span>
+      <strong>未挂载真实个人财务数据源</strong>
+      <small>not_mounted · 来自真实持仓市值 read model；当前未挂载持仓市值时不得显示金额替代。</small>
+    </article>
+    <article class="card">
+      <span>生活消费</span>
+      <strong>未挂载真实个人财务数据源</strong>
+      <small>not_mounted · 来自真实 Alipay 交易，口径为生活消费流出减退款。</small>
+    </article>
+    <article class="card">
+      <span>消费总流出</span>
+      <strong>未挂载真实个人财务数据源</strong>
+      <small>not_mounted · 来自真实 Alipay 交易，口径为生活消费、基金申购、资产买入流出减退款。</small>
+    </article>
+    <article class="card">
+      <span>数据健康</span>
+      <strong>未挂载真实个人财务数据源</strong>
+      <small>not_mounted · 来自真实导入清单的交易记录数、原始文件数和数据时间范围。</small>
+    </article></div></section><section><h2>账户与资产指标</h2><p>账户与资产页面只展示净资产、现金余额和数据健康的真实状态。</p><div class="grid">
+    <article class="card">
+      <span>净资产</span>
+      <strong>未挂载真实个人财务数据源</strong>
+      <small>not_mounted · 来自真实账户余额与持仓 read model；未挂载时返回中文阻塞状态。</small>
+    </article>
+    <article class="card">
+      <span>现金余额</span>
+      <strong>未挂载真实个人财务数据源</strong>
+      <small>not_mounted · 来自真实账户余额 read model；当前未挂载账户余额时不得显示金额替代。</small>
+    </article>
+    <article class="card">
+      <span>数据健康</span>
+      <strong>未挂载真实个人财务数据源</strong>
+      <small>not_mounted · 来自真实导入清单的交易记录数、原始文件数和数据时间范围。</small>
+    </article></div></section><section><h2>投资管理指标</h2><p>投资管理页面只展示投资市值和数据健康的真实状态。</p><div class="grid">
+    <article class="card">
+      <span>投资市值</span>
+      <strong>未挂载真实个人财务数据源</strong>
+      <small>not_mounted · 来自真实持仓市值 read model；当前未挂载持仓市值时不得显示金额替代。</small>
+    </article>
+    <article class="card">
+      <span>数据健康</span>
+      <strong>未挂载真实个人财务数据源</strong>
+      <small>not_mounted · 来自真实导入清单的交易记录数、原始文件数和数据时间范围。</small>
+    </article></div></section><section><h2>消费管理指标</h2><p>消费管理页面展示生活消费、消费总流出和数据健康的真实状态。</p><div class="grid">
+    <article class="card">
+      <span>生活消费</span>
+      <strong>未挂载真实个人财务数据源</strong>
+      <small>not_mounted · 来自真实 Alipay 交易，口径为生活消费流出减退款。</small>
+    </article>
+    <article class="card">
+      <span>消费总流出</span>
+      <strong>未挂载真实个人财务数据源</strong>
+      <small>not_mounted · 来自真实 Alipay 交易，口径为生活消费、基金申购、资产买入流出减退款。</small>
+    </article>
+    <article class="card">
+      <span>数据健康</span>
+      <strong>未挂载真实个人财务数据源</strong>
+      <small>not_mounted · 来自真实导入清单的交易记录数、原始文件数和数据时间范围。</small>
+    </article></div></section></main></body></html>
