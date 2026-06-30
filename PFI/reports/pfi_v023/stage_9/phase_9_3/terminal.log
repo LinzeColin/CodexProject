@@ -1,0 +1,19 @@
+Stage 9 Phase 9.3 haptics and settings isolation
+RED: PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage9_visual_feedback.py -q -> 4 failed, 10 passed
+Implemented Phase 9.3 haptic capability and level model in PFI/web/app/feedback.js.
+Implemented settings feedback preference model in PFI/web/app/pages/settings.js.
+No route, data, report generation, Stage 9 whole-stage review, or GitHub upload changed in this phase.
+GREEN: PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage9_visual_feedback.py -q -> 14 passed in 0.23s
+REGRESSION: PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q -> 153 passed, 100 subtests passed in 2.22s
+NODE: node --check PFI/web/app/feedback.js -> passed
+NODE: node --check PFI/web/app/pages/settings.js -> passed
+NODE: node --check PFI/web/app/shell.js -> passed
+COMPILE: py_compile PFI/tests/test_v023_stage9_visual_feedback.py -> passed
+JSON: evidence.json, haptic_settings_audit.json, no_source_term_scan.json -> passed
+DIFF: git diff --check -- PFI -> passed
+SCAN: blocked source terms -> only ignored sample_size occurrence in test guard
+RENDER: /tmp/pfi_v023_stage9_phase93_settings_desktop.png -> 1440x1100, 277087 bytes
+RENDER: /tmp/pfi_v023_stage9_phase93_home_mobile.png -> 390x844, 80256 bytes
+DOM: settings route active workspace settings, settings feedback console visible
+DOM: home route active workspace home, settings feedback console hidden
+BOUNDARY: Stage 9 whole-stage review, GitHub main upload, and Stage 10 remain not done.

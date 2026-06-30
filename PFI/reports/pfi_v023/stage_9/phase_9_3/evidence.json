@@ -1,0 +1,133 @@
+{
+  "schema": "PFIV023Stage9Phase93EvidenceV1",
+  "version": "v0.2.3",
+  "stage": "Stage 9",
+  "stage_name": "明亮视觉系统、动效与触感反馈",
+  "phase_id": "V023-S9-P9.3",
+  "phase_name": "触感与设置隔离",
+  "status": "candidate_pass",
+  "generated_at_utc": "2026-06-30T05:46:49Z",
+  "validated_at_utc": "2026-06-30T05:51:24Z",
+  "current_phase_only": true,
+  "max_one_phase_per_run": true,
+  "task_ids": [
+    "T9.3.1",
+    "T9.3.2",
+    "T9.3.3",
+    "T9.3.4"
+  ],
+  "stage_contract": {
+    "phase_9_1_design_system_done": true,
+    "phase_9_2_motion_feedback_done": true,
+    "phase_9_3_haptics_settings_done": true,
+    "stage_9_whole_review_done": false,
+    "github_main_upload_done": false
+  },
+  "outputs": {
+    "feedback_model": "PFI/web/app/feedback.js",
+    "settings_model": "PFI/web/app/pages/settings.js",
+    "doc": "PFI/docs/pfi_v023/STAGE9_VISUAL_FEEDBACK.md",
+    "haptic_settings_audit": "PFI/reports/pfi_v023/stage_9/phase_9_3/haptic_settings_audit.json",
+    "no_source_term_scan": "PFI/reports/pfi_v023/stage_9/phase_9_3/no_source_term_scan.json"
+  },
+  "acceptance_checks": {
+    "navigator_vibrate_capability_detection": true,
+    "haptic_levels": true,
+    "settings_page_toggles": true,
+    "business_pages_without_feedback_console": true,
+    "no_forbidden_financial_data_terms": true
+  },
+  "validation_results": {
+    "target_stage9_visual_feedback_tests": {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage9_visual_feedback.py -q",
+      "result": "14 passed in 0.23s"
+    },
+    "v023_regression_tests": {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q",
+      "result": "153 passed, 100 subtests passed in 2.22s"
+    },
+    "node_check_feedback": {
+      "command": "node --check PFI/web/app/feedback.js",
+      "result": "passed"
+    },
+    "node_check_settings": {
+      "command": "node --check PFI/web/app/pages/settings.js",
+      "result": "passed"
+    },
+    "node_check_shell": {
+      "command": "node --check PFI/web/app/shell.js",
+      "result": "passed"
+    },
+    "python_compile": {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/tests/test_v023_stage9_visual_feedback.py",
+      "result": "passed"
+    },
+    "json_validation": {
+      "command": "python3 -m json.tool PFI/reports/pfi_v023/stage_9/phase_9_3/{evidence,haptic_settings_audit,no_source_term_scan}.json",
+      "result": "passed"
+    },
+    "diff_whitespace": {
+      "command": "git diff --check -- PFI",
+      "result": "passed"
+    },
+    "source_term_scan": {
+      "command": "rg -n -i \"mock|sample|synthetic|fixture|demo|fake\" PFI/web/app/feedback.js PFI/web/app/pages/settings.js PFI/tests/test_v023_stage9_visual_feedback.py PFI/docs/pfi_v023/STAGE9_VISUAL_FEEDBACK.md",
+      "result": "only ignored sample_size occurrence in test guard"
+    }
+  },
+  "render_evidence": {
+    "settings_desktop_screenshot": {
+      "path": "/tmp/pfi_v023_stage9_phase93_settings_desktop.png",
+      "width": 1440,
+      "height": 1100,
+      "bytes": 277087,
+      "result": "rendered"
+    },
+    "home_mobile_screenshot": {
+      "path": "/tmp/pfi_v023_stage9_phase93_home_mobile.png",
+      "width": 390,
+      "height": 844,
+      "bytes": 80256,
+      "result": "rendered"
+    }
+  },
+  "dom_evidence": {
+    "settings_route": {
+      "data_active_workspace": "settings",
+      "data_settings_surface": "primary_workspace",
+      "settings_feedback_console_hidden": false
+    },
+    "home_route": {
+      "data_active_workspace": "home",
+      "data_settings_surface": "none",
+      "settings_feedback_console_hidden": true
+    }
+  },
+  "validation_commands": [
+    "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage9_visual_feedback.py -q",
+    "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q",
+    "PATH=$PATH:/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin node --check PFI/web/app/feedback.js",
+    "PATH=$PATH:/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin node --check PFI/web/app/pages/settings.js",
+    "PATH=$PATH:/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin node --check PFI/web/app/shell.js",
+    "PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/tests/test_v023_stage9_visual_feedback.py",
+    "python3 -m json.tool PFI/reports/pfi_v023/stage_9/phase_9_3/evidence.json",
+    "python3 -m json.tool PFI/reports/pfi_v023/stage_9/phase_9_3/haptic_settings_audit.json",
+    "python3 -m json.tool PFI/reports/pfi_v023/stage_9/phase_9_3/no_source_term_scan.json",
+    "git diff --check -- PFI"
+  ],
+  "changed_files": [
+    "PFI/web/app/feedback.js",
+    "PFI/web/app/pages/settings.js",
+    "PFI/tests/test_v023_stage9_visual_feedback.py",
+    "PFI/docs/pfi_v023/STAGE9_VISUAL_FEEDBACK.md",
+    "PFI/reports/pfi_v023/stage_9/phase_9_3/evidence.json",
+    "PFI/reports/pfi_v023/stage_9/phase_9_3/haptic_settings_audit.json",
+    "PFI/reports/pfi_v023/stage_9/phase_9_3/no_source_term_scan.json",
+    "PFI/reports/pfi_v023/stage_9/phase_9_3/terminal.log"
+  ],
+  "explicitly_not_done": [
+    "Stage 9 whole-stage review",
+    "GitHub main upload for intermediate phase",
+    "Stage 10 end-to-end app and browser acceptance"
+  ]
+}

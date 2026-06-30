@@ -1,0 +1,12 @@
+{
+  "schema": "PFIV023Stage9Phase93NoSourceTermScanV1",
+  "version": "v0.2.3",
+  "phase_id": "V023-S9-P9.3",
+  "scanned_files": [
+    "PFI/web/app/feedback.js",
+    "PFI/web/app/pages/settings.js",
+    "PFI/tests/test_v023_stage9_visual_feedback.py",
+    "PFI/docs/pfi_v023/STAGE9_VISUAL_FEEDBACK.md"
+  ],
+  "violations": []
+}

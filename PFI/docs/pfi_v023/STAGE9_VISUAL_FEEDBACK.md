@@ -48,7 +48,30 @@ Phase 9.2 证据：
 - `PFI/reports/pfi_v023/stage_9/phase_9_2/no_source_term_scan.json`
 - `PFI/reports/pfi_v023/stage_9/phase_9_2/terminal.log`
 
-Phase 9.3 未执行。
+## Stage 9 Phase 9.3 触感与设置隔离
+
+Phase 9.3 只实现触感能力、触感层级和设置页反馈偏好隔离，不执行 Stage 9 whole-stage review，不上传 GitHub main。
+
+本 phase 覆盖：
+
+- `T9.3.1` navigator.vibrate 能力检测：通过 `detectHapticCapability()` 判断浏览器是否支持触感震动，不在模块加载时触发震动。
+- `T9.3.2` 触感层级：定义 `select`、`confirm`、`warning`、`blocked` 四类短触感模式，并在不可用时降级为视觉反馈。
+- `T9.3.3` 设置页开关：`PFI/web/app/pages/settings.js` 提供设置页反馈偏好模型，覆盖触感、声音和动效开关。
+- `T9.3.4` 主业务页无反馈控制台：反馈偏好只归属 `settings` workspace，业务页面不承载设置反馈控制台。
+
+实现边界：
+
+- 不修改 `PFI/web/index.html`、`PFI/web/app/shell.js`、route、数据计算或报告生成。
+- `PFI/web/app/feedback.js` 提供 Phase 9.3 合同、触感能力检测和触感层级模型。
+- `PFI/web/app/pages/settings.js` 只提供设置页偏好模型，不把反馈控制台挂到业务页面。
+- Stage 9 整阶段复审和 GitHub main 上传需在 Stage 9 全部 phase 完成后单独执行。
+
+Phase 9.3 证据：
+
+- `PFI/reports/pfi_v023/stage_9/phase_9_3/evidence.json`
+- `PFI/reports/pfi_v023/stage_9/phase_9_3/haptic_settings_audit.json`
+- `PFI/reports/pfi_v023/stage_9/phase_9_3/no_source_term_scan.json`
+- `PFI/reports/pfi_v023/stage_9/phase_9_3/terminal.log`
 
 Stage 9 whole-stage review 未执行。
 
