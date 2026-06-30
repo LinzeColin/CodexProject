@@ -76,3 +76,24 @@ Phase 9.3 证据：
 Stage 9 whole-stage review 未执行。
 
 GitHub main upload 未执行。
+
+## Stage 9 Whole-Stage Review
+
+`V023-S9-REVIEW` 覆盖 Phase 9.1、Phase 9.2 和 Phase 9.3 的整阶段复审。复审结论为 candidate pass，未发现需要跨 phase 修复的问题。
+
+复审覆盖：
+
+- Phase 9.1 设计系统：默认亮色、设计 token、卡片/表格/按钮规范、图表空状态和移动端适配。
+- Phase 9.2 动效反馈：页面转场、loading/success/error/blocked 状态、报告生成进度和减少动画模式。
+- Phase 9.3 触感与设置隔离：navigator.vibrate 能力检测、触感层级、设置页反馈偏好开关和业务页无反馈控制台。
+
+复审证据：
+
+- `PFI/reports/pfi_v023/stage_9/stage9_review/evidence.json`
+- `PFI/reports/pfi_v023/stage_9/stage9_review/review_audit.json`
+- `PFI/reports/pfi_v023/stage_9/stage9_review/no_source_term_scan.json`
+- `PFI/reports/pfi_v023/stage_9/stage9_review/terminal.log`
+
+GitHub main upload proof: not embedded in commit；Stage 9 closeout commit 推送后，以 remote HEAD 和 `git ls-remote origin refs/heads/main` 证明。
+
+Stage 10 未执行。

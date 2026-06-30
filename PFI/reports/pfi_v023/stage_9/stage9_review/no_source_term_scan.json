@@ -1,0 +1,14 @@
+{
+  "schema": "PFIV023Stage9ReviewNoSourceTermScanV1",
+  "version": "v0.2.3",
+  "review_id": "V023-S9-REVIEW",
+  "scanned_files": [
+    "PFI/web/styles.css",
+    "PFI/web/app/feedback.js",
+    "PFI/web/app/pages/settings.js",
+    "PFI/tests/test_v023_stage9_visual_feedback.py",
+    "PFI/tests/test_v023_stage9_review.py",
+    "PFI/docs/pfi_v023/STAGE9_VISUAL_FEEDBACK.md"
+  ],
+  "violations": []
+}
