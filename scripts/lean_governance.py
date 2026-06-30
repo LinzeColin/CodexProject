@@ -1376,7 +1376,51 @@ def evidence_directory(root: Path = ROOT) -> tuple[Path, str]:
     configured = os.environ.get("GOVERNANCE_EVIDENCE_DIR")
     if configured:
         return Path(configured), "ci_artifact" if os.environ.get("GITHUB_ACTIONS") else "configured"
-    return root / ".git" / "codex-review" / "lean-governance", "local_only"
+    git_root = resolved_git_evidence_root(root)
+    if git_root:
+        evidence_dir = git_root / "codex-review" / "lean-governance"
+        try:
+            evidence_dir.mkdir(parents=True, exist_ok=True)
+            return evidence_dir, "local_only"
+        except OSError as exc:
+            print(f"WARNING: cannot write governance evidence under Git directory {git_root}: {exc}", file=sys.stderr)
+    fallback = root / ".governance-evidence" / "lean-governance"
+    print(
+        f"WARNING: using repository-local governance evidence directory outside .git: {fallback}",
+        file=sys.stderr,
+    )
+    return fallback, "local_fallback"
+
+
+def resolved_git_evidence_root(root: Path = ROOT) -> Path | None:
+    try:
+        result = subprocess.run(
+            ["git", "rev-parse", "--path-format=absolute", "--git-common-dir"],
+            cwd=root,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+            check=True,
+        )
+        git_common_dir = Path(result.stdout.strip())
+        if git_common_dir:
+            return git_common_dir
+    except (OSError, subprocess.CalledProcessError):
+        pass
+
+    dot_git = root / ".git"
+    if dot_git.is_dir():
+        return dot_git
+    if dot_git.is_file():
+        try:
+            text = dot_git.read_text(encoding="utf-8").strip()
+        except OSError:
+            return None
+        prefix = "gitdir:"
+        if text.lower().startswith(prefix):
+            gitdir = Path(text[len(prefix) :].strip())
+            return gitdir if gitdir.is_absolute() else (root / gitdir).resolve()
+    return None
 
 
 def write_full_evidence(summary: dict[str, Any], *, root: Path = ROOT) -> dict[str, Any]:
