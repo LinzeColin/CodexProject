@@ -211,6 +211,24 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("nonterminal_succeeded_dry_run_service_dates=2026-06-29,2026-06-30", page)
         self.assertIn("nonterminal_succeeded_dry_run_count=2", page)
         self.assertIn("a9179f2a386c23d6efb0495659f434a3991736ce7a10ec6e234659a4e6a0accf", page)
+        self.assertIn(
+            "REQ-ADP-V7-041-S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-LIVE-VALIDATION-SYNC",
+            page,
+        )
+        self.assertIn("S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-LIVE-VALIDATION-SYNC", page)
+        self.assertIn(
+            "ADP-S2PMT07-INDEPENDENT-FINAL-REVIEWER-ASSIGNMENT-LIVE-VALIDATION-SYNC-20260630.json",
+            page,
+        )
+        self.assertIn(
+            "PHASE_S2PMT07_INDEPENDENT_FINAL_REVIEWER_ASSIGNMENT_LIVE_VALIDATION_SYNC.md",
+            page,
+        )
+        self.assertIn("assignment_present=true", page)
+        self.assertIn("independent_final_reviewer_assigned_by_payload=true", page)
+        self.assertIn("codex-subthread-independent-final-reviewer", page)
+        self.assertIn("b5b117307bd61f168ae6a422b24c865227f4824191348b851081af66730ed2c2", page)
+        self.assertIn("f12f50fe2d474010ab3f93023759872593bdbb3ad65bfbf645287f21a76ef2a3", page)
         self.assertIn("REQ-ADP-V7-041-S2PMT07-FINAL-COMMAND-ROOT-TOOLS", page)
         self.assertIn("S2PMT07-FINAL-COMMAND-ROOT-TOOLS", page)
         self.assertIn("ADP-S2PMT07-FINAL-COMMAND-ROOT-TOOLS-20260629.json", page)
