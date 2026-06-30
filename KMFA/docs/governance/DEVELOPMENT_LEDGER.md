@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.0-s10-stage-review
+product_version: 0.1.0-s10-github-upload
 
 ## Current Iteration
 
 - project_id: `KMFA`
-- current_stage: `S10`
-- current_phase: `S10-GITHUB-UPLOAD｜待开始`
-- current_tasks: `KMFA-S10-GITHUB-UPLOAD-20260630`
-- status: `s10_stage_review_passed_local_only_pending_github_upload`
+- current_stage: `S11`
+- current_phase: `S11-P1｜首页与导航｜待开始`
+- current_tasks: `S11PAT01-S11PAT03`
+- status: `s10_uploaded_to_github_main_s11_p1_pending`
 - risk_tier: `T3`
 
 ## Completed
@@ -74,16 +74,17 @@ product_version: 0.1.0-s10-stage-review
 | `S10-P2` | S10-P2 报告可信等级完成本地验证：基于质量、差异、人工确认和时效判定锁定 2 条报告等级记录为 D；缺关键 lineage、zero-delta 失败和 12 条 pending reconciliation 阻断完整可信报告、正式报告和经营决策依据；每条记录绑定报告版本、公式版本和字段映射版本；不执行 S10-P3、Stage 10 review 或 GitHub upload | `KMFA/stage_artifacts/S10_P2_report_grade_runtime/human/s10_p2_completion_record.md` |
 | `S10-P3` | S10-P3 导出完成本地验证：生成 2 个 public-safe HTML 报告、2 个 public-safe CSV 附表、2 个 Excel 兼容 CSV 下载记录和 PDF private-runtime-only 策略；报告等级保持 D，正式报告和经营决策依据继续阻断；不提交 `.xlsx` 或 `.pdf`，不执行 Stage 10 review 或 GitHub upload | `KMFA/stage_artifacts/S10_P3_report_export/human/s10_p3_completion_record.md` |
 | `KMFA-S10-STAGE-REVIEW-20260630` | Stage 10 整体复审本地通过；复跑 S10-P1/P2/P3 validators、`check_s10_stage_review.py`、全量 KMFA tests、治理 validator、raw/secret scan 和 parse checks；复审步骤未执行 GitHub upload、S11、UI、lineage full check、正式报告或外部接口 | `KMFA/stage_artifacts/S10_STAGE_REVIEW/human/stage10_review_report.md` |
+| `KMFA-S10-GITHUB-UPLOAD-20260630` | Stage 10 final GitHub upload 已完成；基于最新 origin/main rebase Stage 10 栈，复跑 validators、安全扫描和 parse checks，并留下 dry-run push、push 与 post-push parity 证据 | `KMFA/stage_artifacts/S10_STAGE_REVIEW/human/github_upload_record.md` |
 
 ## In Progress
 
 | Task | Result | Evidence |
 |---|---|---|
-| `KMFA-S10-GITHUB-UPLOAD-20260630` | Stage 10 final GitHub upload 待开始；下一轮只允许对齐最新 origin/main、复跑 S10 validators/治理 validator/raw/secret scan/parse checks，并留下 push proof，不得进入 S11 | `KMFA/stage_artifacts/S10_STAGE_REVIEW/human/stage10_review_report.md` |
+| `S11PAT01-S11PAT03` | S11-P1 首页与导航待开始；下一轮只允许读取 v1.2 S11 roadmap 和 HTML/UIUX 样板，并实现经营总览、项目成本、回款应收、财务资金、开票纳税、数据源检查、待处理事项、报告中心入口与 KM 蓝色商务中文导航 | `KMFA/taskpack/v1_2/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_2.md` |
 
 ## Not Completed
 
 | Task | Reason | Next |
 |---|---|---|
-| Stage 10 final GitHub upload | Stage 10 review 本轮只完成本地复审；upload 不在本 phase 范围 | 下一轮只执行 Stage 10 final GitHub upload |
+| S11-P1 首页与导航 | 尚未实现；Stage 10 upload 刚完成 | 下一轮只执行 S11-P1 |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |
