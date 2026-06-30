@@ -4,9 +4,9 @@ project_id: "KMFA"
 total_estimated_hours: 54
 completed_estimated_hours: 54
 current_stage_id: "S12"
-current_phase_id: "S12-P1"
-current_task_id: "KMFA-S12-P1"
-next_gate_id: "KMFA-S12-P1-GATE"
+current_phase_id: "S12-P2"
+current_task_id: "KMFA-S12-P2"
+next_gate_id: "KMFA-S12-P2-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -718,9 +718,16 @@ stages:
       - "KMFA/stage_artifacts/S11_STAGE_REVIEW/machine/stage11_upload_manifest.json"
   - stage_id: "S12"
     name: "人工处理工作台与重跑机制"
-    status: "planned"
+    status: "in_progress_s12p1_completed_local_only"
     estimated_hours: 3
-    estimated_pct: 0
+    estimated_pct: 33.3333
+    current_result: "S12-P1 人工处理事件已完成本地验证：5 条 public-safe append-only 事件覆盖字段映射、项目匹配、差异处理和备注；approved 事件不可静默改写，只能追加反向事件。S12-P2 影响预览、S12-P3 派生重跑、Stage 12 整体复审、lineage full check、正式报告和 GitHub upload 均未执行。"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S12_P1_manual_resolution_events/human/s12_p1_completion_record.md"
+      - "KMFA/stage_artifacts/S12_P1_manual_resolution_events/human/test_results.md"
+      - "KMFA/stage_artifacts/S12_P1_manual_resolution_events/machine/s12_p1_manifest.json"
+      - "KMFA/metadata/approvals/manual_resolution_event_manifest.json"
+      - "KMFA/metadata/approvals/manual_resolution_events.jsonl"
   - stage_id: "S13"
     name: "财务经营报表与回款应收扩展"
     status: "planned"

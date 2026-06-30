@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.1.0-s12p1-manual-resolution-events - 2026-07-01
+
+- 完成 `S12-P1｜人工处理事件` 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/manual_resolution_events.py`、`KMFA/tools/check_s12_p1_manual_resolution_events.py` 和 `KMFA/tests/test_manual_resolution_events.py`。
+- 生成 public-safe manual resolution event manifest、5 条 append-only manual event records 和 1 个蓝色商务风 HTML 人工处理工作台样张。
+- 覆盖字段映射、项目匹配、差异处理、备注四类人工动作；每个事件都有处理人、时间、原因、影响范围和版本。
+- 已批准事件不可静默改写；变更只能追加反向事件。
+- 保持 `raw_layer_write_allowed=false`、`impact_preview_publish_allowed=false`、`derived_rerun_allowed=false`、`formal_report_allowed=false`、`stage12_review_scope_included=false`、`github_upload_scope_included=false`。
+- 不提交 raw business data、zip、Excel workbook、PDF、private CSV、sqlite/db、字段明文、真实账号、真实金额或 credentials。
+- 下一轮只能执行 `S12-P2｜影响预览`；不得做 S12-P3、Stage 12 整体复审、GitHub upload、lineage full check、正式报告或外部接口。
+
 ## 0.1.0-s11-github-upload - 2026-07-01
 
 - 完成 Stage 11 final GitHub upload gate，目标为 `LinzeColin/CodexProject main`。

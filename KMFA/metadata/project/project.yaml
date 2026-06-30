@@ -1,10 +1,10 @@
 project_id: "KMFA"
 project_name: "KMFA 经营分析系统"
-version: "0.1.0-s11-github-upload"
+version: "0.1.0-s12p1-manual-resolution-events"
 current_stage: "S12"
-current_phase: "S12-P1"
+current_phase: "S12-P2"
 current_phase_status: "pending"
-current_stage_status: "s11_uploaded_to_github_main_s12_p1_pending"
+current_stage_status: "s12p1_completed_validated_local_only_s12_p2_pending"
 github_directory: "LinzeColin/CodexProject/KMFA"
 human_plane:
   - "README.md"
@@ -63,6 +63,12 @@ machine_plane:
   - "stage_artifacts/S11_STAGE_REVIEW/machine/stage11_review_manifest.json"
   - "stage_artifacts/S11_STAGE_REVIEW/human/github_upload_record.md"
   - "stage_artifacts/S11_STAGE_REVIEW/machine/stage11_upload_manifest.json"
+  - "metadata/approvals/manual_resolution_event_manifest.json"
+  - "metadata/approvals/manual_resolution_events.jsonl"
+  - "stage_artifacts/S12_P1_manual_resolution_events/human/s12_p1_completion_record.md"
+  - "stage_artifacts/S12_P1_manual_resolution_events/human/test_results.md"
+  - "stage_artifacts/S12_P1_manual_resolution_events/machine/s12_p1_manifest.json"
+  - "stage_artifacts/S12_P1_manual_resolution_events/exports/html/kmfa_manual_resolution_workbench.html"
   - "stage_artifacts/S04_P3_basic_tool_tests/human/tool_function_test_report.md"
   - "stage_artifacts/S04_STAGE_REVIEW/human/stage4_review_report.md"
   - "stage_artifacts/S04_STAGE_REVIEW/human/github_upload_record.md"
@@ -269,5 +275,11 @@ upload_policy:
   stage11_upload_evidence: "KMFA/stage_artifacts/S11_STAGE_REVIEW/human/github_upload_record.md"
   stage11_upload_manifest: "KMFA/stage_artifacts/S11_STAGE_REVIEW/machine/stage11_upload_manifest.json"
   stage11_blocker: "none"
+  stage12_phase_completion_upload_allowed: false
+  stage12_s12p1_completed_validated_local_only: true
+  stage12_review_required_before_upload: true
+  stage12_review_passed: false
+  stage12_uploaded_to_github_main: false
+  stage12_blocker: "S12-P2 and S12-P3 not started; Stage 12 review not performed"
   next_phase_upload_allowed: false
-  upload_surface: "project_level_kmfa_worktree_s12_p1_next"
+  upload_surface: "project_level_kmfa_worktree_s12_p2_next"
