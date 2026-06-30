@@ -61,7 +61,7 @@ Stage 0 候选通过后，仍需用户确认本合同。未确认前不得进入
 
 ## Stage 1-3 Group Review 状态
 
-当前本机 Downloads 中已存在 v0.2.3 roadmap 和 taskpack：
+Stage 1-3 复审当时使用过 v0.2.3 roadmap、taskpack 和 Phase 1 preview：
 
 - `/Users/linzezhang/Downloads/PFI_v0.2.3_Human_Product_Experience_Recovery_Roadmap.txt`
 - `/Users/linzezhang/Downloads/PFI_v0.2.3_Human_Product_Experience_Recovery_TaskPack.zip`
@@ -85,3 +85,15 @@ Stage 0 候选通过后，仍需用户确认本合同。未确认前不得进入
 - Stage 6：核心指标继续遵守真实 read model 或中文阻断状态；本轮修复消费页未配置固定支出规则时误显示 `CNY 0.00` 的问题。
 
 记录文件：`STAGE4_6_GROUP_REVIEW.md`。
+
+## Stage 7-9 Group Review 状态
+
+第二阶段第三组整体复审覆盖 Stage 7、Stage 8、Stage 9。本轮重新检查时，
+`/Users/linzezhang/Downloads` 下的外部 roadmap/taskpack 文件已缺失，因此本组只使用
+repo 内当前合同、stage evidence、测试和真实 localhost/browser 证据，不用缺失文件替代事实。
+
+- Stage 7：报告与洞察页面恢复到报告合同状态；净资产、现金余额、投资市值报告因缺少正式 read model 显示阻断，不再展示项目级总验收门禁或伪完成状态。
+- Stage 8：数据源与上传页面继续显示真实支付宝流水、8815 条记录、4 个原始文件和待复核数量；缺失账户/持仓来源不得被财务假 0 替代。
+- Stage 9：设置页集中展示反馈偏好、触感、声音、视觉、通知和反馈测试；业务页面不展示反馈控制台。
+
+记录文件：`STAGE7_9_GROUP_REVIEW.md`。

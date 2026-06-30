@@ -33,6 +33,7 @@ const FEEDBACK_HUB_LANES = {
   visual: "视觉状态轨道",
   haptic: "触感强度",
   sound: "声音反馈",
+  notification: "通知反馈",
 };
 
 const FX_SNAPSHOT = Object.freeze({
@@ -2438,6 +2439,7 @@ function applyHomeSummary(summary) {
   applyStage5Dashboard(summary.stage5_dashboard || {});
   applyStage6Dashboard(summary.stage6_dashboard || {});
   restoreOwnerHomeWorkflow();
+  applyStage7ReportCenterContract();
 }
 
 function restoreOwnerHomeWorkflow() {
@@ -2736,6 +2738,48 @@ function applyStage6Dashboard(dashboard) {
     task("建议闭环", `${recommendationLoop.generated_count || 0} 条建议 · 生命周期 ${recommendationLoop.lifecycle_row_count || 0}`, recommendationLoop.status === "PASS" ? "ready" : "review"),
     task("回归命令", regression.status === "PASS" ? "冒烟检查 / 聚焦测试 / 治理已记录" : "等待回归治理", regression.status === "PASS" ? "ready" : "review"),
   ];
+  applyStage7ReportCenterContract();
+}
+
+function applyStage7ReportCenterContract() {
+  if (!WORKSPACES.insights) return;
+  WORKSPACES.insights = {
+    ...WORKSPACES.insights,
+    label: "报告与洞察",
+    kicker: "Stage 7 报告中心",
+    conclusion: "净资产、现金余额和投资市值报告因账户余额或持仓 read model 未挂载而阻断；消费结构和数据质量只展示真实支付宝流水支持的部分结论。",
+    freshness: "真实支付宝流水截至 2026-06-03",
+    runtime: "Stage 7 报告合同：阻断或部分可用时不生成伪结论",
+    secondaryTabs: STAGE2_SECONDARY_TABS.insights,
+    cards: [
+      ["净资产报告", "已阻断", "未挂载账户余额与持仓 read model"],
+      ["现金余额报告", "已阻断", "未挂载账户余额 read model"],
+      ["投资市值报告", "已阻断", "未挂载持仓市值 read model"],
+      ["消费结构报告", "部分可用", "MetaDatabase 真实支付宝流水"],
+      ["数据质量报告", "部分可用", "展示样本范围、缺失输入和阻断项"],
+    ],
+    features: [
+      feature("净资产报告", "阻塞", "未挂载账户余额与持仓 read model", "缺少正式账户余额和持仓市值输入，不能输出净资产结论。", { workspace: "insights", routeAlias: "/reports?tab=monthly", label: "查看阻断" }),
+      feature("现金余额报告", "阻塞", "未挂载账户余额 read model", "缺少现金账户余额输入，不能用 CNY 0.00 代替。", { workspace: "insights", routeAlias: "/reports?tab=monthly", label: "查看阻断" }),
+      feature("投资市值报告", "阻塞", "未挂载持仓市值 read model", "缺少真实持仓市值输入，不能生成投资市值结论。", { workspace: "insights", routeAlias: "/reports?tab=monthly", label: "查看阻断" }),
+      feature("消费结构报告", "部分可用", "8815 条真实支付宝流水", "仅展示真实流水可支持的消费流出、退款和待复核范围。", { workspace: "insights", routeAlias: "/reports?tab=monthly", label: "查看部分报告" }),
+      feature("数据质量报告", "部分可用", "4 个原始文件 · 2022-06-06 至 2026-06-03", "列出已接入来源、缺失 read model、阻断公式和下一步补数动作。", { workspace: "insights", routeAlias: "/reports?tab=export", label: "查看质量" }),
+    ],
+    rows: [
+      row("P0", "净资产报告", "账户余额/持仓缺失", "未挂载账户余额与持仓 read model，阻断净资产结论。", "阻塞"),
+      row("P0", "现金余额报告", "账户余额缺失", "未挂载账户余额 read model，阻断现金余额结论。", "阻塞"),
+      row("P0", "投资市值报告", "持仓市值缺失", "未挂载持仓市值 read model，阻断投资市值结论。", "阻塞"),
+      row("P1", "消费结构报告", "支付宝流水", "4 个原始文件、8815 条标准化流水，消费相关结论部分可用。", "部分可用"),
+      row("P1", "数据质量报告", "缺失输入清单", "展示阻断项、样本范围、证据哈希和下一步补数动作。", "部分可用"),
+    ],
+    tasks: [
+      task("阻断报告", "净资产、现金余额、投资市值等待正式 read model", "review"),
+      task("消费结构", "8815 条真实支付宝流水可支持部分报告", "ready"),
+      task("数据质量", "缺失输入、样本范围和阻断公式可见", "ready"),
+      task("伪零拦截", "阻断报告不显示财务假零", "ready"),
+    ],
+    evidence: evidence("Stage 7 报告证据", "报告合同、公式、参数、样本范围和阻断项", "Stage 6 core read model + MetaDatabase/PFI", "阻断或部分可用报告只展示真实来源支持的结论。"),
+  };
 }
 
 function recommendationTypeLabel(value) {
