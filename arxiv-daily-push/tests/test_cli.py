@@ -688,6 +688,74 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["artifact_validation_errors"], [])
         self.assertFalse(payload["artifact_draft"]["integrated_production_accepted"])
 
+    def test_validate_s2plt02_real_delivery_manifest_json_command(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            manifest = Path(tmp_dir) / "delivery.json"
+            manifest.write_text(
+                json.dumps(
+                    {
+                        "manifest_ref": "governance/run_manifests/FUTURE-S2PLT02-DAY2.json",
+                        "schema_version": 1,
+                        "project_id": "arxiv-daily-push",
+                        "task_id": "LOCAL-DAILY-M1-M4-RESEND-EXECUTION",
+                        "status": "pass",
+                        "generated_at": "2026-06-29T11:28:25+10:00",
+                        "service_date": "2026-06-29",
+                        "mail_delivery_summary": {
+                            "planned_send_total": 4,
+                            "sent_mail_count": 4,
+                            "sent_mail_products": ["M1", "M2", "M3", "M4"],
+                            "delivery_ref_by_product": {
+                                "M1": "smtp://message/day2-m1",
+                                "M2": "smtp://message/day2-m2",
+                                "M3": "smtp://message/day2-m3",
+                                "M4": "smtp://message/day2-m4",
+                            },
+                        },
+                        "real_smtp_sent": True,
+                        "real_smtp_send_enabled": True,
+                        "stage2_integrated_production_accepted": False,
+                        "integrated_production_accepted": False,
+                        "daily_operation_enabled": False,
+                        "release_uploaded": False,
+                        "production_restore_executed": False,
+                        "production_queue_mutated": False,
+                        "public_schema_changed": False,
+                        "db_migration_executed": False,
+                        "source_adapter_changed": False,
+                        "ranking_algorithm_changed": False,
+                        "current_pointer_changed": False,
+                        "v7_1_baseline_changed": False,
+                        "v7_2_contract_files_changed": False,
+                        "evidence_refs": ["governance/run_manifests/FUTURE-S2PLT02-DAY2.json"],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            buffer = io.StringIO()
+            with redirect_stdout(buffer):
+                result = main(
+                    [
+                        "validate-s2plt02-real-delivery-manifest",
+                        "--delivery-manifest",
+                        str(manifest),
+                        "--json",
+                    ]
+                )
+
+        payload = json.loads(buffer.getvalue())
+        self.assertEqual(result, 0)
+        self.assertEqual(payload["status"], "pass")
+        self.assertTrue(payload["delivery_manifest_ready"])
+        self.assertEqual(payload["service_date"], "2026-06-29")
+        self.assertEqual(payload["observed_email_count"], 4)
+        self.assertEqual(payload["sent_mail_products"], ["M1", "M2", "M3", "M4"])
+        self.assertEqual(payload["validation_errors"], [])
+        self.assertFalse(payload["artifact_written"])
+        self.assertFalse(payload["real_smtp_send_enabled"])
+        self.assertFalse(payload["scheduler_install_enabled"])
+        self.assertFalse(payload["daily_operation_enabled"])
+
     def test_validate_s2plt02_real_scheduler_proof_json_command(self):
         with tempfile.TemporaryDirectory() as tmp_dir:
             scheduler = Path(tmp_dir) / "scheduler.json"

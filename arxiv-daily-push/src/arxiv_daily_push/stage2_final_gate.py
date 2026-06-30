@@ -838,6 +838,9 @@ S2PLT02_PARTIAL_REAL_DELIVERY_REFS = {
 }
 S2PLT02_DELIVERY_EVIDENCE_LEDGER_MODEL_ID = "adp-s2plt02-delivery-evidence-ledger-v1"
 S2PLT02_DELIVERY_EVIDENCE_LEDGER_SCOPE = "delivery_manifest_ledger_no_s2plt02_acceptance"
+S2PLT02_REAL_DELIVERY_MANIFEST_VALIDATION_SCOPE = (
+    "real_delivery_manifest_input_validation_no_smtp_send_no_write"
+)
 S2PLT02_DELIVERY_EVIDENCE_LEDGER_FORBIDDEN_SOURCE_FLAGS = (
     "integrated_production_accepted",
     "stage2_integrated_production_accepted",
@@ -2340,6 +2343,150 @@ def validate_s2plt02_delivery_evidence_ledger_state(state: Mapping[str, Any]) ->
     expected_hash = _stable_hash({key: value for key, value in state.items() if key != "ledger_hash"})
     if state.get("ledger_hash") != expected_hash:
         errors.append("S2PLT02 delivery ledger_hash does not match ledger content")
+    return errors
+
+
+def build_s2plt02_real_delivery_manifest_validation_state(
+    *,
+    delivery_manifest: Mapping[str, Any] | None,
+) -> dict[str, Any]:
+    """Build a no-write validation state for one real M1-M4 delivery manifest input."""
+
+    if delivery_manifest is None:
+        ledger = build_s2plt02_delivery_evidence_ledger_state(delivery_manifests=[])
+        validation_errors = ["delivery_manifest is required"]
+        manifest_ref = ""
+        service_date = ""
+    else:
+        ledger = build_s2plt02_delivery_evidence_ledger_state(delivery_manifests=[delivery_manifest])
+        validation_errors = validate_s2plt02_delivery_evidence_ledger_state(ledger)
+        manifest_ref = str(delivery_manifest.get("manifest_ref") or "")
+        service_date = str(delivery_manifest.get("service_date") or "")
+
+    products_by_service_date = _mapping(ledger.get("products_by_service_date"))
+    delivery_ref_by_service_date = _mapping(ledger.get("delivery_ref_by_service_date"))
+    sent_mail_products = [
+        str(product)
+        for product in products_by_service_date.get(service_date, [])
+        if isinstance(product, str)
+    ]
+    delivery_ref_by_product = _mapping(delivery_ref_by_service_date.get(service_date))
+    observed_email_count = len(sent_mail_products)
+    delivery_manifest_ready = (
+        not validation_errors
+        and ledger.get("source_manifest_count") == 1
+        and ledger.get("observed_natural_days") == 1
+        and observed_email_count == len(S2PLT02_REQUIRED_MAIL_PRODUCTS)
+        and tuple(sent_mail_products) == S2PLT02_REQUIRED_MAIL_PRODUCTS
+        and ledger.get("real_smtp_evidence_present") is True
+        and ledger.get("duplicate_email_count") == 0
+        and ledger.get("duplicate_service_date_count") == 0
+    )
+    state: dict[str, Any] = {
+        "model_id": S2PLT02_DELIVERY_EVIDENCE_LEDGER_MODEL_ID,
+        "schema_version": S2PLT02_SCHEMA_VERSION,
+        "task_id": "S2PLT02-REAL-DELIVERY-MANIFEST-INPUT-VALIDATOR",
+        "acceptance_id": S2PLT02_ACCEPTANCE_ID,
+        "status": "pass" if delivery_manifest_ready else "blocked",
+        "scope": S2PLT02_REAL_DELIVERY_MANIFEST_VALIDATION_SCOPE,
+        "delivery_manifest_ready": delivery_manifest_ready,
+        "manifest_ref": manifest_ref,
+        "service_date": service_date,
+        "required_mail_products": list(S2PLT02_REQUIRED_MAIL_PRODUCTS),
+        "sent_mail_products": sent_mail_products,
+        "observed_email_count": observed_email_count,
+        "delivery_ref_by_product": delivery_ref_by_product,
+        "source_ledger_status": ledger.get("status"),
+        "source_ledger_hash": ledger.get("ledger_hash"),
+        "validation_errors": validation_errors,
+        "blocking_reasons": [] if delivery_manifest_ready else ["real_delivery_manifest_not_valid"],
+        "artifact_written": False,
+        "s2plt02_accepted": False,
+        "production_acceptance_claimed": False,
+        "integrated_production_accepted": False,
+        "stage2_integrated_production_accepted": False,
+        "daily_operation_enabled": False,
+        "real_smtp_send_enabled": False,
+        "scheduler_enabled": False,
+        "scheduler_install_enabled": False,
+        "release_packaging_enabled": False,
+        "production_restore_enabled": False,
+        "public_schema_changed": False,
+        "db_migration_executed": False,
+        "production_queue_mutated": False,
+        "source_adapter_changed": False,
+        "ranking_algorithm_changed": False,
+        "current_pointer_changed": False,
+        "v7_1_baseline_changed": False,
+        "v7_2_contract_files_changed": False,
+        "state_hash": "",
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
+def validate_s2plt02_real_delivery_manifest_validation_state(state: Mapping[str, Any]) -> list[str]:
+    """Validate a no-write real-delivery manifest input validation state."""
+
+    errors: list[str] = []
+    if state.get("model_id") != S2PLT02_DELIVERY_EVIDENCE_LEDGER_MODEL_ID:
+        errors.append("S2PLT02 real delivery manifest validation model_id is invalid")
+    if state.get("schema_version") != S2PLT02_SCHEMA_VERSION:
+        errors.append("S2PLT02 real delivery manifest validation schema_version must be 1")
+    if state.get("task_id") != "S2PLT02-REAL-DELIVERY-MANIFEST-INPUT-VALIDATOR":
+        errors.append("S2PLT02 real delivery manifest validation task_id is invalid")
+    if state.get("acceptance_id") != S2PLT02_ACCEPTANCE_ID:
+        errors.append("S2PLT02 real delivery manifest validation acceptance_id is invalid")
+    if state.get("scope") != S2PLT02_REAL_DELIVERY_MANIFEST_VALIDATION_SCOPE:
+        errors.append("S2PLT02 real delivery manifest validation scope is invalid")
+    if state.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PLT02 real delivery manifest validation status must be pass or blocked")
+    ready = state.get("delivery_manifest_ready") is True
+    if state.get("status") == "pass" and not ready:
+        errors.append("pass status requires delivery_manifest_ready")
+    if ready and state.get("validation_errors"):
+        errors.append("delivery_manifest_ready requires no validation_errors")
+    if not ready and "real_delivery_manifest_not_valid" not in state.get("blocking_reasons", []):
+        errors.append("blocked delivery manifest state must include real_delivery_manifest_not_valid")
+    if ready:
+        if tuple(state.get("sent_mail_products", [])) != S2PLT02_REQUIRED_MAIL_PRODUCTS:
+            errors.append("ready delivery manifest state requires M1-M4 sent_mail_products")
+        if state.get("observed_email_count") != len(S2PLT02_REQUIRED_MAIL_PRODUCTS):
+            errors.append("ready delivery manifest state requires four observed emails")
+    if tuple(state.get("required_mail_products", [])) != S2PLT02_REQUIRED_MAIL_PRODUCTS:
+        errors.append("S2PLT02 real delivery manifest validation required_mail_products must be M1-M4")
+    for error in state.get("validation_errors", []):
+        if isinstance(error, str) and not ready:
+            continue
+        if isinstance(error, str) and ready:
+            errors.append(error)
+    if state.get("artifact_written") is not False:
+        errors.append("artifact_written must be false")
+    for flag in (
+        "s2plt02_accepted",
+        "production_acceptance_claimed",
+        "integrated_production_accepted",
+        "stage2_integrated_production_accepted",
+        "daily_operation_enabled",
+        "real_smtp_send_enabled",
+        "scheduler_enabled",
+        "scheduler_install_enabled",
+        "release_packaging_enabled",
+        "production_restore_enabled",
+        "public_schema_changed",
+        "db_migration_executed",
+        "production_queue_mutated",
+        "source_adapter_changed",
+        "ranking_algorithm_changed",
+        "current_pointer_changed",
+        "v7_1_baseline_changed",
+        "v7_2_contract_files_changed",
+    ):
+        if state.get(flag) is not False:
+            errors.append(f"{flag} must be false")
+    expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    if state.get("state_hash") != expected_hash:
+        errors.append("S2PLT02 real delivery manifest validation state_hash does not match state content")
     return errors
 
 

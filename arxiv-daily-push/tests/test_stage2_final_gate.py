@@ -151,6 +151,7 @@ from arxiv_daily_push.stage2_final_gate import (
     build_s2plt02_real_proof_capture_authorization_owner_packet_state,
     build_s2plt02_real_proof_capture_authorization_validation_state,
     build_s2plt02_real_proof_capture_readiness_state,
+    build_s2plt02_real_delivery_manifest_validation_state,
     build_s2plt02_real_scheduler_proof_validation_state,
     build_s2plt02_partial_real_delivery_state,
     build_s2plt02_terminal_delivery_input_inventory_state,
@@ -180,6 +181,7 @@ from arxiv_daily_push.stage2_final_gate import (
     validate_s2plt02_real_proof_capture_authorization_artifact,
     validate_s2plt02_real_proof_capture_authorization_owner_packet_state,
     validate_s2plt02_real_proof_capture_readiness_state,
+    validate_s2plt02_real_delivery_manifest_validation_state,
     validate_s2plt02_real_scheduler_proof_validation_state,
     validate_s2plt02_terminal_delivery_input_inventory_state,
     validate_s2plt02_terminal_delivery_proof_capture_plan_state,
@@ -336,6 +338,53 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertIn("manifest governance/run_manifests/BROKEN-LOCAL-DAILY-M1-M4-20260628.json sent products must be M1-M4", errors)
         self.assertIn("manifest governance/run_manifests/BROKEN-LOCAL-DAILY-M1-M4-20260628.json integrated_production_accepted must be false", errors)
         self.assertFalse(ledger["two_day_delivery_evidence_present"])
+
+    def test_s2plt02_real_delivery_manifest_validation_passes_without_writing_or_sending(self) -> None:
+        manifest = build_s2plt02_delivery_evidence_ledger_state()["source_manifests"][0]
+
+        state = build_s2plt02_real_delivery_manifest_validation_state(delivery_manifest=manifest)
+
+        self.assertEqual(state["status"], "pass")
+        self.assertEqual(state["task_id"], "S2PLT02-REAL-DELIVERY-MANIFEST-INPUT-VALIDATOR")
+        self.assertTrue(state["delivery_manifest_ready"])
+        self.assertEqual(state["manifest_ref"], manifest["manifest_ref"])
+        self.assertEqual(state["service_date"], "2026-06-28")
+        self.assertEqual(state["sent_mail_products"], ["M1", "M2", "M3", "M4"])
+        self.assertEqual(state["observed_email_count"], 4)
+        self.assertEqual(state["validation_errors"], [])
+        self.assertEqual(validate_s2plt02_real_delivery_manifest_validation_state(state), [])
+        self.assertFalse(state["artifact_written"])
+        self.assertFalse(state["real_smtp_send_enabled"])
+        self.assertFalse(state["scheduler_install_enabled"])
+        self.assertFalse(state["daily_operation_enabled"])
+        self.assertFalse(state["integrated_production_accepted"])
+        self.assertRegex(state["state_hash"], r"^[0-9a-f]{64}$")
+
+    def test_s2plt02_real_delivery_manifest_validation_blocks_missing_product_and_acceptance_flags(self) -> None:
+        manifest = build_s2plt02_delivery_evidence_ledger_state()["source_manifests"][0]
+        broken = json.loads(json.dumps(manifest))
+        broken["manifest_ref"] = "governance/run_manifests/BROKEN-S2PLT02-DELIVERY-MANIFEST.json"
+        broken["integrated_production_accepted"] = True
+        broken["mail_delivery_summary"]["sent_mail_products"] = ["M1", "M2", "M3"]
+        broken["mail_delivery_summary"]["sent_mail_count"] = 3
+        broken["mail_delivery_summary"]["delivery_ref_by_product"].pop("M4")
+
+        state = build_s2plt02_real_delivery_manifest_validation_state(delivery_manifest=broken)
+
+        self.assertEqual(state["status"], "blocked")
+        self.assertFalse(state["delivery_manifest_ready"])
+        self.assertIn("real_delivery_manifest_not_valid", state["blocking_reasons"])
+        self.assertIn(
+            "manifest governance/run_manifests/BROKEN-S2PLT02-DELIVERY-MANIFEST.json sent products must be M1-M4",
+            state["validation_errors"],
+        )
+        self.assertIn(
+            "manifest governance/run_manifests/BROKEN-S2PLT02-DELIVERY-MANIFEST.json integrated_production_accepted must be false",
+            state["validation_errors"],
+        )
+        self.assertEqual(validate_s2plt02_real_delivery_manifest_validation_state(state), [])
+        self.assertFalse(state["artifact_written"])
+        self.assertFalse(state["real_smtp_send_enabled"])
 
     def test_s2plt02_second_day_dry_run_audit_does_not_count_as_terminal_delivery(self) -> None:
         with TemporaryDirectory() as tmp_dir:
