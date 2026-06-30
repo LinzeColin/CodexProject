@@ -118,7 +118,7 @@ models:
     owner: "KMFA"
     status: "planned"
     fact_level: "EXTRACTED"
-    model_version: "0.1.0-s10p3-report-export"
+    model_version: "0.1.0-s10-stage-review"
     assumptions:
       - "ASM-KMFA-003"
     formula_ids:
@@ -289,7 +289,7 @@ models:
       - "KMFA/tools/check_s09_stage_review.py"
       - "KMFA/stage_artifacts/S09_STAGE_REVIEW/human/stage9_review_report.md"
       - "KMFA/stage_artifacts/S09_STAGE_REVIEW/human/github_upload_record.md"
-      - "remaining_lineage_review_ui_components_not_implemented_until_S10_STAGE_REVIEW_or_later"
+      - "remaining_lineage_ui_formal_report_components_not_implemented_until_S11_or_later"
     test_refs:
       - "python3 -m unittest KMFA.tests.test_amount_tools -q"
       - "python3 KMFA/tools/check_no_float_money.py"

@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-s10-stage-review - 2026-06-30
+
+- 完成 Stage 10 整体复审，结果为 `PASS_UPLOAD_READY_LOCAL_ONLY`，尚未 push GitHub。
+- 新增 `KMFA/tools/check_s10_stage_review.py`、`KMFA/tests/test_s10_stage_review.py` 和 `KMFA/stage_artifacts/S10_STAGE_REVIEW/` 复审证据包。
+- 复跑并锁定 S10-P1/P2/P3 validator 证据：2 个报告模板、11 个章节、2 条 D 级报告等级记录、2 个 HTML 导出和 2 个 CSV appendix 均保持 public-safe。
+- 复审确认完整可信报告、正式报告、经营决策依据、S11、UI、lineage full check、外部 connector 和 GitHub upload 仍未执行。
+- 全量 KMFA 单测当前为 116 tests；公开仓库未提交 raw business data、zip、Excel workbook、PDF、sqlite/db、private CSV、字段明文或 credentials。
+- 下一步只能执行 Stage 10 final GitHub upload gate：对齐最新 `origin/main`，复跑 validators 和安全检查，并留下 push proof。
+
 ## 0.1.0-s10p3-report-export - 2026-06-30
 
 - 完成 `S10-P3｜导出` 本地验证，不上传 GitHub。

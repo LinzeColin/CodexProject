@@ -4,7 +4,7 @@
 
 ## 一句话状态
 
-KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload、Stage 5 全部 Phase/复审/upload、Stage 6 全部 Phase/复审/upload、Stage 7 全部 Phase/复审/upload、Stage 8 全部 Phase/复审/upload，以及 Stage 9 全部 Phase/复审/upload。S09-P1 项目成本事实层、S09-P2 毛利与现金毛利、S09-P3 口径转换与差异核对均已验证并上传 GitHub main；S10-P1 public-safe 报告模板、S10-P2 public-safe 报告可信等级运行时和 S10-P3 public-safe 报告导出已完成本地验证。但 Stage 10 整体复审、lineage 和正式报告运行时仍未完成，且当前 2 条报告等级记录均为 D，项目仍不是可用业务系统。
+KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload、Stage 5 全部 Phase/复审/upload、Stage 6 全部 Phase/复审/upload、Stage 7 全部 Phase/复审/upload、Stage 8 全部 Phase/复审/upload，以及 Stage 9 全部 Phase/复审/upload。S09-P1 项目成本事实层、S09-P2 毛利与现金毛利、S09-P3 口径转换与差异核对均已验证并上传 GitHub main；S10-P1 public-safe 报告模板、S10-P2 public-safe 报告可信等级运行时、S10-P3 public-safe 报告导出和 Stage 10 整体复审已完成本地验证。但 Stage 10 final GitHub upload、lineage 和正式报告运行时仍未完成，且当前 2 条报告等级记录均为 D，项目仍不是可用业务系统。
 
 ## 你现在能信任什么
 
@@ -54,11 +54,12 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 - S09-P2 毛利与现金毛利已本地验证完成：`KMFA/tools/project_margin_cash_margin.py` 使用整数分和 basis points 建立 authority gross profit、system recomputed gross profit、cash gross profit 和 gross margin rate 的 public-safe 计算合同，生成 4 条 margin records 和 12 条 scope difference summary records；`KMFA/tools/check_s09_p2_margin_cash_margin.py` 验证 S09-P3、Stage 9 review、lineage、报告、UI、外部接口和 GitHub upload 均未执行。
 - S09-P3 口径转换与差异核对已本地验证完成：`KMFA/tools/project_scope_reconciliation.py` 将 12 条 scope difference summary 转为 12 条 public-safe reconciliation records，并建立 6 条 domain controls；`KMFA/tools/check_s09_p3_scope_reconciliation.py` 验证原因候选、依据 refs、影响范围、责任角色、reviewer、pending 状态和禁止 raw/private value 边界。
 - Stage 9 整体复审已本地通过：`KMFA/stage_artifacts/S09_STAGE_REVIEW/` 记录 S09-P1/P2/P3 validators、`KMFA/tools/check_s09_stage_review.py`、全量 KMFA tests、治理 validator、raw/secret scan 和 parse checks；复审修复了 `a0_golden_fixture.py` 中 high-signal secret scan 误报的变量命名 finding。
+- Stage 10 整体复审已本地通过：`KMFA/stage_artifacts/S10_STAGE_REVIEW/` 记录 S10-P1/P2/P3 validators、`KMFA/tools/check_s10_stage_review.py`、全量 KMFA tests、治理 validator、raw/secret scan 和 parse checks；复审未执行 GitHub upload、S11、UI、lineage full check、正式报告或外部接口。
 
 ## 你现在不能信任什么
 
 - 不能认为项目成本分析已经完整实现。
-- 不能认为 S10-P3 public-safe 导出等于正式报告；S10-P3 只生成带 D 级阻断提示的 HTML/CSV 预览，不提交 Excel/PDF 文件，也不能作为经营决策依据。
+- 不能认为 S10-P3 public-safe 导出或 Stage 10 review 等于正式报告；S10 只生成带 D 级阻断提示的 HTML/CSV 预览，不提交 Excel/PDF 文件，也不能作为经营决策依据。
 - 不能认为 S05-P3 已经提交真实合同额、支出合计、毛利、毛利率或成本分类明文；公开仓库只保存 public-safe hash/source-anchor baseline。
 - 不能认为 A0 authority baseline 已经可以发布正式经营报告；lineage 和报告发布门禁尚未完成。
 - 不能认为 Stage 6 upload、Stage 7 upload、S08-P1 project composite key、S08-P2 business entity model、S08-P3 matching quality test、Stage 8 upload、S09-P1 fact layer、S09-P2 margin/cash margin layer 或 S09-P3 scope reconciliation 代表正式经营报告、lineage、自动接口或差异关闭能力已经实现。
@@ -70,4 +71,4 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 
 ## 下一步
 
-下一步只执行 `S10-STAGE-REVIEW｜整体复审`；不得扩大到 GitHub upload、S11、UI、lineage full check 或自动接口。复审必须复跑 S10-P1/P2/P3 validators、治理 validator、required HTML/no-omission、raw/secret scan 和解析检查，并修复 findings。
+下一步只执行 `S10-GITHUB-UPLOAD｜final upload gate`；不得扩大到 S11、UI、lineage full check、正式报告或自动接口。上传门禁必须先对齐最新 `origin/main`，复跑 S10-P1/P2/P3 validators、`check_s10_stage_review.py`、全量 KMFA tests、治理 validator、required HTML/no-omission、raw/secret scan 和解析检查，并留下 dry-run push、push 与 post-push parity 证据。
