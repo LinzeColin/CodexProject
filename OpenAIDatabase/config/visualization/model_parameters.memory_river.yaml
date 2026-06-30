@@ -1,0 +1,59 @@
+schema_version: memory_river_params.v1
+product_target: Memory Atlas v1.1.5
+stage: "0"
+task: "0.5 Model Parameters Templates"
+status: template_v1_heuristic
+last_updated: "2026-06-30"
+data_boundary:
+  allowed_inputs:
+    - data/derived/visualization/memory_atlas.json
+    - redacted derived Universe State Snapshot
+  raw_private_data_allowed: false
+  plaintext_secrets_allowed: false
+  local_absolute_paths_allowed: false
+  writeback_allowed: false
+notes:
+  purpose: "Parameter template for the future isolated Memory River spike and production integration."
+  calibration_status: "initial heuristic from taskpack; not empirically calibrated"
+  rollback: "Delete this file or reduce to the minimal time/interaction parameter set."
+time:
+  default_window_days: 90
+  min_zoom_days: 1
+  max_zoom_days: 1460
+  use_utc_scale: true
+lanes:
+  max_visible_theme_lanes: 12
+  lane_grouping: topic_then_project
+visual:
+  river_smoothing: 0.72
+  pulse_decay: 0.86
+  black_hole_band_opacity: 0.62
+  proto_star_marker_intensity: 1.2
+interaction:
+  brush_enabled: true
+  zoom_enabled: true
+  hover_card_delay_ms: 120
+  reduced_motion_default_safe: true
+feedback:
+  pseudo_haptic_enabled: true
+  audio_feedback_default: false
+  vibration_default: false
+validation_hints:
+  required_sections:
+    - time
+    - lanes
+    - visual
+    - interaction
+    - feedback
+  required_interactions:
+    - zoom
+    - brush
+    - theme lanes
+    - black hole band
+    - proto-star marker
+    - pseudo-haptic
+    - reduced motion
+  non_goals:
+    - no production import in Stage 0
+    - no raw transcript access
+    - no writeback
