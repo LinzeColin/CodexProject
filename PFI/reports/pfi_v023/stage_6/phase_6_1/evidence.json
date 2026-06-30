@@ -1,0 +1,57 @@
+{
+  "version": "v0.2.3",
+  "stage": "Stage 6",
+  "phase_id": "V023-S6-P6.1",
+  "phase_name": "read model adapter",
+  "status": "candidate_pass",
+  "current_phase_only": true,
+  "max_one_phase_per_run": true,
+  "real_data_only_financial_metrics": true,
+  "source": {
+    "type": "metadatabase_pfi",
+    "status": "ready",
+    "transaction_count": 8815,
+    "raw_file_count": 4,
+    "date_range": {
+      "start": "2022-06-06",
+      "end": "2026-06-03"
+    },
+    "evidence_hash": "sha256:174c37726d9ab434dca7316029d6b1e499e320c0ab00fd82c6549a110258c18a"
+  },
+  "metrics": {
+    "ready": [
+      "life_consumption_cny",
+      "total_consumption_outflow_cny",
+      "data_health"
+    ],
+    "blocked": [
+      "net_worth_cny",
+      "cash_balance_cny",
+      "investment_market_value_cny"
+    ],
+    "as_of": "2026-06-03",
+    "read_model_hash": "sha256:b5616d2c2ba17a73fb101d0c184d65c6ebbea904287074f1a9b1965dcd49b675"
+  },
+  "stage_contract": {
+    "phase_6_2_ui_wiring_done": false,
+    "phase_6_3_consistency_done": false,
+    "stage_6_whole_review_done": false,
+    "github_main_upload_done": false
+  },
+  "validation_commands": [
+    "node --check PFI/web/app/data/coreMetrics.js",
+    "python3 -m pytest PFI/tests/test_v023_stage6_core_metrics.py -q"
+  ],
+  "changed_files": [
+    "PFI/src/pfi_v02/stage_v023_read_model.py",
+    "PFI/src/pfi_v02/stage_v023_core_metrics.py",
+    "PFI/web/app/data/coreMetrics.js",
+    "PFI/tests/test_v023_stage6_core_metrics.py",
+    "PFI/docs/pfi_v023/STAGE6_CORE_METRICS.md",
+    "PFI/reports/pfi_v023/stage_6/phase_6_1/evidence.json",
+    "PFI/reports/pfi_v023/stage_6/phase_6_1/core_metrics.json",
+    "PFI/reports/pfi_v023/stage_6/phase_6_1/read_model_audit.json",
+    "PFI/reports/pfi_v023/stage_6/phase_6_1/terminal.log",
+    "PFI/reports/pfi_v023/stage_6/phase_6_1/changed_files.txt"
+  ]
+}

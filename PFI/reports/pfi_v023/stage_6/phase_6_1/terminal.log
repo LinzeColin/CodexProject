@@ -1,0 +1,24 @@
+Stage 6 Phase 6.1 validation log
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage6_core_metrics.py -q
+.......                                                                  [100%]
+7 passed in 0.15s
+
+$ node --check PFI/web/app/data/coreMetrics.js
+zsh:1: command not found: node
+
+$ /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/data/coreMetrics.js
+exit 0
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q
+..................................................................................................                   [100%]
+98 passed, 100 subtests passed in 1.41s
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/src/pfi_v02/stage_v023_read_model.py PFI/src/pfi_v02/stage_v023_core_metrics.py PFI/tests/test_v023_stage6_core_metrics.py
+exit 0
+
+$ git diff --check -- PFI
+exit 0
+
+$ blocked source term scan over Stage 6.1 files
+no matches
