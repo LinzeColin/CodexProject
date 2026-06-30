@@ -1,5 +1,8 @@
 # PFI v0.2.4 Stage 0 Phase 0.1 Repair Scope Lock
 
+Status note: this file is the Phase 0.1 record. Current Stage 0 status is
+tracked in `RUN_CONTRACT.md` and later phase evidence files.
+
 ## Run Boundary
 
 本轮只执行 `PFI v0.2.4 Stage 0 / Phase 0.1 - 需求合同冻结`。
@@ -72,4 +75,3 @@ v0.2.4 修补包继承 v0.2.3 closeout 后的正式产品合同：
 | T0.1.2 写 10 入口机器合同 | done | `PFI/src/pfi_v02/stage_v024_repair_contract.py` |
 | T0.1.3 写真实数据禁令 | done | 本文件与机器合同 |
 | T0.1.4 写一轮一 Stage/Phase 规则 | done | 本文件与机器合同 |
-

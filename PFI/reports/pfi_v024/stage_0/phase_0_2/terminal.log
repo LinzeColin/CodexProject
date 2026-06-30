@@ -1,0 +1,16 @@
+last_verified_at=2026-06-30T10:56:30Z
+pwd=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+head_at_final_validation=38021e805c3b84b3589b42e2f5b4d5db69f8be87
+origin_main_at_final_validation=38021e805c3b84b3589b42e2f5b4d5db69f8be87
+node_on_path=unavailable
+node_check_shell_js=pass via /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node
+py_compile_phase02_contract_and_test=pass
+pytest_phase02_contract=3 passed in 0.10s
+pytest_phase01_and_pre_stage0_regression=6 passed in 0.12s
+json_and_git_diff_check=pass
+project_cache_after_validation=0 dirs / 0 files outside PFI/.venv
+stage_0_complete=false
+
+last_verified_at=2026-06-30T11:04:39Z
+command_v_node=unavailable exit=1
+bundled_node_check_shell_js=pass

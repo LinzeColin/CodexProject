@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 0 Phase 0.2 - 2026-06-30
+
+- 完成 `Stage 0 / Phase 0.2 - 历史约束废弃`，明确历史 9 入口约束、市场与研究一级入口禁令、暗色 AI 控制台方向和样例财务数据验收均已作废。
+- 新增 `docs/pfi_v024/HISTORY_DEPRECATION_POLICY.md`、`tests/test_v024_stage0_phase02_contract.py` 和 `reports/pfi_v024/stage_0/phase_0_2/evidence.json`。
+- 扩展 `src/pfi_v02/stage_v024_repair_contract.py`，记录废弃约束和仍保留的历史参考原则。
+- 本轮未执行 Phase 0.3 或 Stage 0 whole-stage review，未修改业务 UI、app bundle、launcher 或数据逻辑。
+
 ## v0.2.4 Repair Pack Stage 0 Phase 0.1 - 2026-06-30
 
 - 完成 `Stage 0 / Phase 0.1 - 需求合同冻结`，记录 v0.2.4 修补包定位、10 个正式一级入口、真实数据禁令和每轮最多一个 phase 的执行规则。
