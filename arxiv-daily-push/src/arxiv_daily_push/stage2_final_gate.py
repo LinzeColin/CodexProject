@@ -8595,15 +8595,40 @@ def build_final_bundle_prerequisite_plan_state(
             ):
                 blocking_reasons.append(error)
     zero_proof_validation = validation_states["P0_P1_ZERO_PROOF_ARTIFACT"]
+    zero_finding_counts = _mapping(p0_p1_zero_proof.get("finding_counts")) if p0_p1_zero_proof is not None else {}
+    p0_zero_proven = zero_proof_validation.get("p0_zero_proven_by_payload") is True
+    p1_zero_proven = zero_proof_validation.get("p1_zero_proven_by_payload") is True
+    p0_p1_zero_proof_status_summary = {
+        "artifact_status": zero_proof_validation.get("status"),
+        "artifact_ref": S2PMT07_P0_P1_ZERO_PROOF_ARTIFACT_PATH,
+        "artifact_present": zero_proof_validation.get("artifact_present") is True,
+        "artifact_state_hash": zero_proof_validation.get("state_hash"),
+        "validation_errors": list(zero_proof_validation.get("validation_errors", [])),
+        "current_zero_proof_counts": {
+            "P0": int(zero_finding_counts.get("P0", 0 if p0_zero_proven else 8)),
+            "P1": int(zero_finding_counts.get("P1", 0 if p1_zero_proven else 37)),
+        },
+        "inherited_v7_1_baseline_counts": {"P0": 8, "P1": 37},
+        "p0_zero_proven_by_payload": p0_zero_proven,
+        "p1_zero_proven_by_payload": p1_zero_proven,
+        "baseline_counts_mutated": False,
+        "production_acceptance_claimed": False,
+        "integrated_production_accepted": False,
+        "daily_operation_enabled": False,
+        "real_smtp_send_enabled": False,
+        "scheduler_install_enabled": False,
+        "release_packaging_enabled": False,
+        "production_restore_enabled": False,
+    }
     inherited_zero_blockers = (
         (
             "inherited_v7_1_p0_findings_open"
-            if zero_proof_validation.get("p0_zero_proven_by_payload") is not True
+            if p0_zero_proven is not True
             else None
         ),
         (
             "inherited_v7_1_p1_findings_open"
-            if zero_proof_validation.get("p1_zero_proven_by_payload") is not True
+            if p1_zero_proven is not True
             else None
         ),
     )
@@ -8824,6 +8849,7 @@ def build_final_bundle_prerequisite_plan_state(
         "s2plt02_terminal_delivery_capture_plan_summary": s2plt02_capture_plan_summary,
         "s2plt02_runtime_readiness_summary": s2plt02_runtime_readiness_summary,
         "s2plt03_terminal_resilience_capture_plan_summary": s2plt03_capture_plan_summary,
+        "p0_p1_zero_proof_status_summary": p0_p1_zero_proof_status_summary,
         "next_executable_command": (
             S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT02_AUTH_DRAFT_COMMAND
             if next_executable_is_s2plt02_auth
@@ -9310,6 +9336,36 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
                 expected_blocking_reasons.append(inherited_blocker)
     if state.get("blocking_reasons") != expected_blocking_reasons:
         errors.append("final bundle prerequisite plan blocking_reasons must match blocked steps")
+    zero_summary = _mapping(state.get("p0_p1_zero_proof_status_summary"))
+    if not zero_summary:
+        errors.append("final bundle prerequisite plan p0_p1_zero_proof_status_summary is required")
+    else:
+        if zero_summary.get("artifact_ref") != S2PMT07_P0_P1_ZERO_PROOF_ARTIFACT_PATH:
+            errors.append("final bundle prerequisite plan P0/P1 zero-proof artifact_ref is invalid")
+        if zero_summary.get("inherited_v7_1_baseline_counts") != {"P0": 8, "P1": 37}:
+            errors.append("final bundle prerequisite plan inherited V7.1 P0/P1 baseline counts must remain 8/37")
+        if zero_summary.get("baseline_counts_mutated") is not False:
+            errors.append("final bundle prerequisite plan inherited V7.1 baseline counts must not be mutated")
+        if step_status.get("P0_P1_ZERO_PROOF_ARTIFACT") == "pass":
+            if zero_summary.get("artifact_status") != "pass":
+                errors.append("final bundle prerequisite plan P0/P1 zero-proof summary artifact_status must be pass")
+            if zero_summary.get("current_zero_proof_counts") != {"P0": 0, "P1": 0}:
+                errors.append("final bundle prerequisite plan P0/P1 zero-proof current counts must be zero")
+            if zero_summary.get("p0_zero_proven_by_payload") is not True:
+                errors.append("final bundle prerequisite plan P0 zero-proof summary must prove P0 zero")
+            if zero_summary.get("p1_zero_proven_by_payload") is not True:
+                errors.append("final bundle prerequisite plan P1 zero-proof summary must prove P1 zero")
+        for flag in (
+            "production_acceptance_claimed",
+            "integrated_production_accepted",
+            "daily_operation_enabled",
+            "real_smtp_send_enabled",
+            "scheduler_install_enabled",
+            "release_packaging_enabled",
+            "production_restore_enabled",
+        ):
+            if zero_summary.get(flag) is not False:
+                errors.append(f"final bundle prerequisite plan P0/P1 zero-proof summary {flag} must be false")
     for flag in S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_FORBIDDEN_FLAGS:
         if state.get(flag) is not False:
             errors.append(f"{flag} must be false")
@@ -9885,6 +9941,9 @@ def build_final_acceptance_bundle_readiness_state(
         "s2plt03_terminal_resilience_capture_plan_summary": dict(
             final_bundle_prerequisite_plan.get("s2plt03_terminal_resilience_capture_plan_summary", {})
         ),
+        "p0_p1_zero_proof_status_summary": dict(
+            final_bundle_prerequisite_plan.get("p0_p1_zero_proof_status_summary", {})
+        ),
         "final_bundle_prerequisite_plan": final_bundle_prerequisite_plan,
         "p0_p1_technical_closure_candidate_state": p0_p1_technical_candidate_state,
         "p0_p1_zero_proof_assembly": p0_p1_zero_proof_assembly,
@@ -10061,6 +10120,12 @@ def validate_final_acceptance_bundle_readiness_state(state: Mapping[str, Any]) -
     ):
         errors.append(
             "final acceptance bundle readiness S2PLT03 capture-plan summary must match nested prerequisite plan"
+        )
+    if state.get("p0_p1_zero_proof_status_summary") != final_bundle_prerequisite_plan.get(
+        "p0_p1_zero_proof_status_summary"
+    ):
+        errors.append(
+            "final acceptance bundle readiness P0/P1 zero-proof summary must match nested prerequisite plan"
         )
     p0_p1_candidate = _mapping(state.get("p0_p1_technical_closure_candidate_state"))
     if validate_p0_p1_technical_closure_candidate_state(p0_p1_candidate):

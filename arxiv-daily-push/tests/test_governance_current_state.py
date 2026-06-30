@@ -35,6 +35,22 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
+            "S2PMT07_FINAL_BUNDLE_P0P1_ZERO_PROOF_STATUS_SUMMARY_BLOCKED_NO_PRODUCTION",
+            current_state,
+        )
+        self.assertIn("S2PMT07-FINAL-BUNDLE-P0P1-ZERO-PROOF-STATUS-SUMMARY", current_state)
+        self.assertIn("p0_p1_zero_proof_status_summary", current_state)
+        self.assertIn("6036321e310edadb57834353b45c08a632100caab1f61dfd00fa7c108a57b05f", current_state)
+        self.assertIn("b0fc0aefd87ee9ed3c412024d534ec23a6fdf5d32316b6089fee769a3d24d758", current_state)
+        self.assertIn("bf966c244f9f7c52b75ae7d56ff8f8c0fbda498cd678f4003ee3ed2c40961786", current_state)
+        self.assertIn("current_zero_proof_counts=P0=0;P1=0", current_state)
+        self.assertIn("inherited_v7_1_baseline_counts=P0=8;P1=37", current_state)
+        self.assertIn("baseline_counts_mutated=false", current_state)
+        self.assertIn("production_acceptance_claimed=false", current_state)
+        self.assertIn("integrated_production_accepted=false", current_state)
+        self.assertIn("ADP-S2PMT07-FINAL-BUNDLE-P0P1-ZERO-PROOF-STATUS-SUMMARY-20260630.json", current_state)
+        self.assertIn("PHASE_S2PMT07_FINAL_BUNDLE_P0P1_ZERO_PROOF_STATUS_SUMMARY.md", ledger)
+        self.assertIn(
             "S2PMT07_FINAL_BUNDLE_S2PLT02_ARTIFACT_VALIDATION_SUMMARY_BLOCKED_NO_PRODUCTION",
             current_state,
         )

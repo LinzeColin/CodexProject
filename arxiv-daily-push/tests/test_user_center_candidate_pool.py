@@ -143,6 +143,22 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("[test_stage2_sources.py](../tests/test_stage2_sources.py)", page)
         self.assertIn(f"TRACEABILITY_MATRIX 行数 | {len(matrix_rows)}", page)
         self.assertIn(f"{len(matrix_rows)} 条可点击链路", readme)
+        self.assertIn("REQ-ADP-V7-054-S2PMT07-FINAL-BUNDLE-P0P1-ZERO-PROOF-STATUS-SUMMARY", page)
+        self.assertIn("S2PMT07-FINAL-BUNDLE-P0P1-ZERO-PROOF-STATUS-SUMMARY", page)
+        self.assertIn(
+            "ADP-S2PMT07-FINAL-BUNDLE-P0P1-ZERO-PROOF-STATUS-SUMMARY-20260630.json",
+            page,
+        )
+        self.assertIn("PHASE_S2PMT07_FINAL_BUNDLE_P0P1_ZERO_PROOF_STATUS_SUMMARY.md", page)
+        self.assertIn("blocked_final_bundle_p0p1_zero_proof_status_summary_synced_no_production", page)
+        self.assertIn("6036321e310edadb57834353b45c08a632100caab1f61dfd00fa7c108a57b05f", page)
+        self.assertIn("b0fc0aefd87ee9ed3c412024d534ec23a6fdf5d32316b6089fee769a3d24d758", page)
+        self.assertIn("bf966c244f9f7c52b75ae7d56ff8f8c0fbda498cd678f4003ee3ed2c40961786", page)
+        self.assertIn("current_zero_proof_counts=P0=0;P1=0", page)
+        self.assertIn("inherited_v7_1_baseline_counts=P0=8;P1=37", page)
+        self.assertIn("baseline_counts_mutated=false", page)
+        self.assertIn("production_acceptance_claimed=false", page)
+        self.assertIn("integrated_production_accepted=false", page)
         self.assertIn("REQ-ADP-V7-053-S2PMT07-FINAL-BUNDLE-S2PLT02-ARTIFACT-VALIDATION-SUMMARY", page)
         self.assertIn("S2PMT07-FINAL-BUNDLE-S2PLT02-ARTIFACT-VALIDATION-SUMMARY", page)
         self.assertIn(

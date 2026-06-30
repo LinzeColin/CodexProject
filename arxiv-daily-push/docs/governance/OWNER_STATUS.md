@@ -6,7 +6,7 @@ arxiv-daily-push 当前治理结论：实现一致性为 `VERIFIED`，方法/实
 
 ## 2. 本次运行改变了什么
 
-Owner 视图现在明确区分：`plan-final-bundle-prerequisites`、`validate-final-acceptance-bundle` 与 `plan-s2plt02-terminal-delivery-proof-capture` 已公开 S2PLT02 terminal delivery proof artifact validation summary。当前 prerequisite plan blocked / exit 2，`state_hash=084c08ec36f925dedb7ecb3488874a23d82090e124b0a791ecd34a998691e54c`；final validator blocked / exit 2，`state_hash=8b7dc7003c7f60c9065448b2c86d7e1089aedc022b56a84a36487899aa604fa9`；S2PLT02 capture plan `state_hash=797c920987dcb0f38a1af8c8dc2ed80633c412cf9bb5f91686a7c29bfeaa68f8`。`FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json` 目前 `terminal_artifact_validation_status=blocked`、`terminal_artifact_present=false`、`terminal_artifact_ready=false`，验证错误为 `s2plt02_terminal_delivery_proof_artifact_missing`，阻断原因为 `s2plt02_terminal_delivery_proof_artifact_missing;two_consecutive_real_days_not_proven;eight_real_emails_not_proven;real_scheduler_not_proven`。这只强化 final bundle / S2PLT02 artifact 阻断可见性，不发送 SMTP、不启用 scheduler、不写 S2PLT02/S2PLT03 terminal proof；S2PLT02 终态 proof、S2PLT03 终态 proof、S2PLT04 completion report、final command、handoff、signoff、manifest 和生产验收仍保持阻断。
+Owner 视图现在明确区分：`plan-final-bundle-prerequisites` 与 `validate-final-acceptance-bundle` 已公开 P0/P1 zero-proof 状态摘要，同时保留 V7.1 inherited baseline。当前 prerequisite plan blocked / exit 2，`state_hash=6036321e310edadb57834353b45c08a632100caab1f61dfd00fa7c108a57b05f`；final validator blocked / exit 2，`state_hash=b0fc0aefd87ee9ed3c412024d534ec23a6fdf5d32316b6089fee769a3d24d758`；P0/P1 zero-proof artifact validator pass，`state_hash=bf966c244f9f7c52b75ae7d56ff8f8c0fbda498cd678f4003ee3ed2c40961786`，`current_zero_proof_counts=P0=0;P1=0`。V7.1 inherited audit baseline 仍是 `P0=8;P1=37`，`baseline_counts_mutated=false`，不得被改写成合同关闭。这只强化 final bundle P0/P1 输入可见性，不发送 SMTP、不启用 scheduler、不写 S2PLT02/S2PLT03 terminal proof；S2PLT02 终态 proof、S2PLT03 终态 proof、S2PLT04 completion report、final command、handoff、signoff、manifest 和生产验收仍保持阻断。
 
 ## 3. 为什么重要
 
@@ -21,7 +21,7 @@ Owner 视图现在明确区分：`plan-final-bundle-prerequisites`、`validate-f
 
 ## 5. 默认建议
 
-- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat the validated independent reviewer assignment and S2PLT02 artifact validation summary as blocked final-bundle visibility inputs only, keep `FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json` missing/not ready until two consecutive real M1-M4 SMTP days, eight real emails, real scheduler proof, reviewed artifact write, and artifact validation are all present, do not write S2PLT03 terminal proof or S2PLT04 completion proof before S2PLT02 terminal delivery proof validates, keep live authorization hash-bound and stale hashes fail-closed, and continue only through no-write evidence gates until the terminal capture window is actually satisfied.
+- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat the validated independent reviewer assignment, P0/P1 zero-proof artifact, and S2PLT02 artifact validation summary as blocked final-bundle visibility inputs only, keep V7.1 inherited baseline counts separate from the current zero-proof artifact, keep `FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json` missing/not ready until two consecutive real M1-M4 SMTP days, eight real emails, real scheduler proof, reviewed artifact write, and artifact validation are all present, do not write S2PLT03 terminal proof or S2PLT04 completion proof before S2PLT02 terminal delivery proof validates, keep live authorization hash-bound and stale hashes fail-closed, and continue only through no-write evidence gates until the terminal capture window is actually satisfied.
 - estimated_effort: P0/P1; contract hash, AGENTS, 三基文件, validator/test, no production side effect
 - estimated_cost_or_resource: local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner
 
@@ -78,7 +78,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PMT07_FINAL_BUNDLE_S2PLT02_ARTIFACT_VALIDATION_SUMMARY_BLOCKED_NO_PRODUCTION`
+- release_gate: `S2PMT07_FINAL_BUNDLE_P0P1_ZERO_PROOF_STATUS_SUMMARY_BLOCKED_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
@@ -101,7 +101,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - snapshot_event_time: `2026-06-30T15:31:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PL / S2PMT07_FINAL_BUNDLE_S2PLT02_ARTIFACT_VALIDATION_SUMMARY_BLOCKED_NO_PRODUCTION`
+- phase/gate: `S2PL / S2PMT07_FINAL_BUNDLE_P0P1_ZERO_PROOF_STATUS_SUMMARY_BLOCKED_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-06-30 22:46:02 Australia/Sydney - S2PMT07 final bundle P0/P1 zero-proof status summary
+
+- Added top-level `p0_p1_zero_proof_status_summary` to `plan-final-bundle-prerequisites` and `validate-final-acceptance-bundle`.
+- The summary separates immutable V7.1 inherited baseline counts `P0=8;P1=37` from the current valid zero-proof artifact `current_zero_proof_counts=P0=0;P1=0`.
+- Current live CLIs remain blocked / exit 2 for final-bundle prerequisites and final bundle validation; `validate-p0-p1-zero-proof --json` passes with state hash `bf966c244f9f7c52b75ae7d56ff8f8c0fbda498cd678f4003ee3ed2c40961786`.
+- No S2PLT02/S2PLT03 terminal proof, S2PLT04 completion report, final-bundle manifest/handoff/signoff/final-command proof, SMTP, scheduler, Release, restore, CURRENT/V7, public schema, DB, source, ranking, queue, DAILY_OPERATION, or production acceptance was enabled.
+
 ## 2026-06-30 11:45:16 Australia/Sydney - S2PLT02 real delivery manifest normalization
 
 - Added `build-s2plt02-normalized-delivery-manifest`, a no-write builder that converts the historical 2026-06-28 real M1-M4 manifest into a strict normalized S2PLT02 input.
