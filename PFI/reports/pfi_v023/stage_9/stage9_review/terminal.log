@@ -1,0 +1,18 @@
+Stage 9 whole-stage review
+RED: PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage9_review.py -q -> 3 failed, 1 passed
+Review scope: Phase 9.1 design system, Phase 9.2 motion feedback, Phase 9.3 haptics/settings isolation.
+Findings: none requiring code changes before upload.
+Stage 10 remains not started.
+GitHub main upload proof is not embedded in this commit; prove after push by remote HEAD parity.
+GREEN: PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage9_review.py -q -> 4 passed in 0.02s
+STAGE9: PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage9_visual_feedback.py PFI/tests/test_v023_stage9_review.py -q -> 18 passed in 0.23s
+REGRESSION: PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q -> 157 passed, 100 subtests passed in 2.28s
+NODE: feedback.js, pages/settings.js, shell.js -> passed
+COMPILE: test_v023_stage9_review.py and test_v023_stage9_visual_feedback.py -> passed
+JSON: evidence.json, review_audit.json, no_source_term_scan.json -> passed
+DIFF: git diff --check -- PFI -> passed
+SCAN: blocked source terms -> only ignored sample_size guard occurrences in tests
+RENDER: /tmp/pfi_v023_stage9_review_settings_desktop.png -> 1440x1100, 277087 bytes
+RENDER: /tmp/pfi_v023_stage9_review_home_mobile.png -> 390x844, 80256 bytes
+DOM: settings route active workspace settings, settings feedback console visible
+DOM: home route active workspace home, settings feedback console hidden

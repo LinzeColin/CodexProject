@@ -1,0 +1,142 @@
+{
+  "schema": "PFIV023Stage9WholeStageReviewEvidenceV1",
+  "version": "v0.2.3",
+  "stage": "Stage 9",
+  "stage_name": "明亮视觉系统、动效与触感反馈",
+  "review_id": "V023-S9-REVIEW",
+  "status": "candidate_pass",
+  "generated_at_utc": "2026-06-30T05:56:39Z",
+  "validated_at_utc": "2026-06-30T06:00:22Z",
+  "stage9_whole_stage_review": true,
+  "findings_fixed": true,
+  "stage10_started": false,
+  "github_main_uploaded_before_review": false,
+  "phase_evidence": {
+    "phase_9_1": "PFI/reports/pfi_v023/stage_9/phase_9_1/evidence.json",
+    "phase_9_2": "PFI/reports/pfi_v023/stage_9/phase_9_2/evidence.json",
+    "phase_9_3": "PFI/reports/pfi_v023/stage_9/phase_9_3/evidence.json"
+  },
+  "review_audit": "PFI/reports/pfi_v023/stage_9/stage9_review/review_audit.json",
+  "source_term_scan": "PFI/reports/pfi_v023/stage_9/stage9_review/no_source_term_scan.json",
+  "review_findings": [],
+  "acceptance_checks": {
+    "light_design_system_default": true,
+    "design_tokens_present": true,
+    "motion_feedback_for_transition_loading_success_error_blocked": true,
+    "haptics_can_disable_and_degrade": true,
+    "settings_page_manages_feedback_preferences": true,
+    "business_pages_without_feedback_console": true,
+    "desktop_mobile_screenshots_exist": true,
+    "no_forbidden_financial_data_terms": true
+  },
+  "stop_condition_checks": {
+    "not_dark_ai_console": true,
+    "feedback_settings_not_polluting_home": true,
+    "motion_has_business_state_meaning": true,
+    "success_error_blocked_feedback_are_distinct": true
+  },
+  "validation_commands": [
+    "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage9_review.py -q",
+    "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage9_visual_feedback.py -q",
+    "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q",
+    "PATH=$PATH:/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin node --check PFI/web/app/feedback.js",
+    "PATH=$PATH:/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin node --check PFI/web/app/pages/settings.js",
+    "PATH=$PATH:/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin node --check PFI/web/app/shell.js",
+    "PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/tests/test_v023_stage9_review.py PFI/tests/test_v023_stage9_visual_feedback.py",
+    "python3 -m json.tool PFI/reports/pfi_v023/stage_9/stage9_review/evidence.json",
+    "python3 -m json.tool PFI/reports/pfi_v023/stage_9/stage9_review/review_audit.json",
+    "python3 -m json.tool PFI/reports/pfi_v023/stage_9/stage9_review/no_source_term_scan.json",
+    "git diff --check -- PFI"
+  ],
+  "changed_files": [
+    "PFI/tests/test_v023_stage9_review.py",
+    "PFI/docs/pfi_v023/STAGE9_VISUAL_FEEDBACK.md",
+    "PFI/reports/pfi_v023/stage_9/stage9_review/evidence.json",
+    "PFI/reports/pfi_v023/stage_9/stage9_review/review_audit.json",
+    "PFI/reports/pfi_v023/stage_9/stage9_review/no_source_term_scan.json",
+    "PFI/reports/pfi_v023/stage_9/stage9_review/terminal.log",
+    "PFI/reports/pfi_v023/stage_9/stage9_review/changed_files.txt"
+  ],
+  "github_main_upload_proof": "not embedded in commit; prove by git push and remote HEAD after closeout commit"
+  ,
+  "validation_results": [
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage9_review.py -q",
+      "exit_code": 0,
+      "result": "4 passed in 0.02s"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage9_visual_feedback.py PFI/tests/test_v023_stage9_review.py -q",
+      "exit_code": 0,
+      "result": "18 passed in 0.23s"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q",
+      "exit_code": 0,
+      "result": "157 passed, 100 subtests passed in 2.28s"
+    },
+    {
+      "command": "node --check PFI/web/app/feedback.js",
+      "exit_code": 0,
+      "result": "syntax check passed"
+    },
+    {
+      "command": "node --check PFI/web/app/pages/settings.js",
+      "exit_code": 0,
+      "result": "syntax check passed"
+    },
+    {
+      "command": "node --check PFI/web/app/shell.js",
+      "exit_code": 0,
+      "result": "syntax check passed"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/tests/test_v023_stage9_review.py PFI/tests/test_v023_stage9_visual_feedback.py",
+      "exit_code": 0,
+      "result": "syntax check passed"
+    },
+    {
+      "command": "python3 -m json.tool stage9_review evidence/audit/scan",
+      "exit_code": 0,
+      "result": "all JSON files parse"
+    },
+    {
+      "command": "blocked source term scan over Stage 9 review files",
+      "exit_code": 0,
+      "result": "only ignored sample_size guard occurrences in tests"
+    },
+    {
+      "command": "git diff --check -- PFI",
+      "exit_code": 0,
+      "result": "no whitespace errors"
+    }
+  ],
+  "browser_evidence": {
+    "settings_desktop_screenshot": {
+      "path": "/tmp/pfi_v023_stage9_review_settings_desktop.png",
+      "width": 1440,
+      "height": 1100,
+      "bytes": 277087,
+      "result": "rendered"
+    },
+    "home_mobile_screenshot": {
+      "path": "/tmp/pfi_v023_stage9_review_home_mobile.png",
+      "width": 390,
+      "height": 844,
+      "bytes": 80256,
+      "result": "rendered"
+    }
+  },
+  "dom_evidence": {
+    "settings_route": {
+      "data_active_workspace": "settings",
+      "data_settings_surface": "primary_workspace",
+      "settings_feedback_console_hidden": false
+    },
+    "home_route": {
+      "data_active_workspace": "home",
+      "data_settings_surface": "none",
+      "settings_feedback_console_hidden": true
+    }
+  }
+}
