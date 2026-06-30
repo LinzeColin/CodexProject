@@ -117,6 +117,8 @@ SECRET_PATTERNS = [
     re.compile(r"(?i)\b(password|secret|token)\s*[:=]\s*['\"]?[A-Za-z0-9_./+=-]{16,}"),
 ]
 
+OPTIONAL_EXECUTOR_MODES = {"codex-one-shot", "codex-full"}
+
 
 def fail(errors: list[str], message: str) -> None:
     errors.append(message)
@@ -254,6 +256,17 @@ def validate(text: str, allow_production: bool = False) -> tuple[dict | None, li
         fail(errors, "allowed_paths and forbidden_paths overlap")
     if not isinstance(metadata.get("max_autofix_loops"), int) or metadata.get("max_autofix_loops", -1) < 0:
         fail(errors, "max_autofix_loops must be a non-negative integer")
+    executor_mode = metadata.get("executor_mode")
+    if executor_mode is not None and executor_mode not in OPTIONAL_EXECUTOR_MODES:
+        fail(errors, "executor_mode must be codex-one-shot or codex-full when provided")
+    for key in ["enable_codex_review", "enable_architect_review", "debug_rerun_requires_artifact_review"]:
+        if key in metadata and not isinstance(metadata.get(key), bool):
+            fail(errors, f"{key} must be a boolean when provided")
+    for key in ["max_paid_codex_calls", "value_score"]:
+        if key in metadata and (not isinstance(metadata.get(key), int) or metadata.get(key, -1) < 0):
+            fail(errors, f"{key} must be a non-negative integer when provided")
+    if "roi_budget_usd" in metadata and not isinstance(metadata.get("roi_budget_usd"), (int, float)):
+        fail(errors, "roi_budget_usd must be a number when provided")
 
     for canonical_key in SECTION_ALIASES:
         if not has_section(text, canonical_key):

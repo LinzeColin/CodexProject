@@ -27,6 +27,33 @@ work. If an `opened` event and a `labeled` event both fire for the same issue,
 one run acquires `agent:running`; the later duplicate run exits successfully as
 `DUPLICATE_IGNORED`.
 
+## ROI Hotfix v1 Runtime Defaults
+
+T1 tasks default to `executor_mode=codex-one-shot`. The workflow validates the
+Task Pack and routing first, then makes one paid `openai/codex-action@v1` call.
+That single prompt requires Codex to state a brief implementation plan, make the
+scoped change, and return the Result Pack.
+
+T1 does not run separate paid plan + implementation calls. Codex review,
+Architect Review, and autofix are disabled by default. This protects the Owner's
+trial budget and avoids the same-job second `drop-sudo` failure seen in run
+`28429923364`.
+
+T2 remains plan-first, but ROI Hotfix v1 does not implement the future multi-job
+T2 orchestration. T2 is blocked before paid calls with
+`T2_MULTI_JOB_NOT_IMPLEMENTED`.
+
+After any paid-call failure, do not blindly rerun. Inspect these artifacts first:
+
+- `agent-loop-roi-summary.md`
+- `failure-git-status.txt`
+- `failure-diff-name-only.txt`
+- `failure-diff-stat.txt`
+
+For Issue #257 or similar blocked smoke issues, remove `agent:blocked` and edit
+the issue only after the hotfix is on `main` and the artifact review is complete.
+The expected T1 paid-call count after this hotfix is `1`.
+
 ## C3: Issue Form / Prefilled Issue
 
 Use `.github/ISSUE_TEMPLATE/codex-task.yml` when the Owner does not want to

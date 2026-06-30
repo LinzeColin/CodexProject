@@ -45,7 +45,14 @@
     "python3 scripts/agent_loop/validate_taskpack.py --taskpack docs/governance/agent_loop/examples/minimal_t1_taskpack_zh.md",
     "git diff --check"
   ],
-  "max_autofix_loops": 1
+  "max_autofix_loops": 0,
+  "executor_mode": "codex-one-shot",
+  "enable_codex_review": false,
+  "enable_architect_review": false,
+  "max_paid_codex_calls": 1,
+  "roi_budget_usd": 2.0,
+  "value_score": 1,
+  "debug_rerun_requires_artifact_review": true
 }
 END_AGENT_LOOP_METADATA -->
 
