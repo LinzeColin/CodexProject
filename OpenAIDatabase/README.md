@@ -334,12 +334,13 @@ Real Codex local data sync:
   through `secret_ref` metadata and controlled local resolvers, not GitHub
   plaintext.
 - `scripts/install_codex_weekly_sync.py --load` installs a macOS LaunchAgent
-  that runs every Monday and Friday 03:00 local time, rebuilds the Atlas
-  snapshot, publishes the latest runtime `memory_atlas.json`, and writes a
-  fresh runtime build manifest. When installed from a Git worktree it also
-  commits the redacted Codex-derived data and pushes to GitHub; when installed
-  from the Application Support runtime source it skips Git backup so local
-  refresh does not fail on a missing `.git` directory.
+  that runs every Monday, Wednesday, and Friday 03:00 local time, rebuilds the
+  Atlas snapshot, exports numeric token usage on every run, exports a session
+  history snapshot only on Monday runs, publishes the latest runtime
+  `memory_atlas.json`, and writes a fresh runtime build manifest. When
+  installed from a Git worktree it also commits the generated data and pushes to
+  GitHub; when installed from the Application Support runtime source it skips
+  Git backup so local refresh does not fail on a missing `.git` directory.
 
 数据导图使用框架卡片显示节点名称、类型和摘要状态；详情通过点击卡片、title、aria 和 Inspector 查看。
 Obsidian Graph 按 Obsidian Graph View 的文字淡出阈值显示节点标签：默认保持克制，

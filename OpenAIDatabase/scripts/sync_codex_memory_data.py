@@ -700,6 +700,8 @@ def git_commit_and_push(repo_root: Path, push: bool) -> dict[str, Any]:
         "data/derived/visualization/memory_atlas.json",
         "data/derived/personalization",
         "data/run_logs",
+        "token_usage/current-mac-latest",
+        "session_history/current-mac-latest",
     ]
     run_command(["git", "add", *targets], repo_root)
     diff_result = subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=str(repo_root))

@@ -9,6 +9,7 @@ import shutil
 import subprocess
 import sys
 import time
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -93,6 +94,32 @@ def run_sync(database_dir: Path, codex_home: Path, *, commit: bool, push: bool) 
         return {"status": "PASS", "stdout": proc.stdout.strip()}
 
 
+def should_export_session_history(now: datetime | None = None) -> bool:
+    return (now or datetime.now()).isoweekday() == 1
+
+
+def run_history_exports(database_dir: Path, codex_home: Path, *, include_session_history: bool) -> dict[str, Any]:
+    script = database_dir / "scripts/export_codex_history_archives.py"
+    if not script.exists():
+        raise AutoUpdateError(f"missing history export script: {script}")
+    args = [
+        sys.executable,
+        str(script),
+        "--database-dir",
+        str(database_dir),
+        "--codex-home",
+        str(codex_home),
+        "--token-usage",
+    ]
+    if include_session_history:
+        args.append("--session-history")
+    proc = run_command(args, database_dir)
+    try:
+        return json.loads(proc.stdout)
+    except json.JSONDecodeError:
+        return {"status": "PASS", "stdout": proc.stdout.strip()}
+
+
 def write_runtime_build_info(repo_root: Path, runtime_dir: Path) -> dict[str, Any]:
     snapshot_path = runtime_dir / "memory_atlas.json"
     snapshot_generated_at = ""
@@ -168,6 +195,11 @@ def main(argv: list[str] | None = None) -> int:
     result = {
         "status": "PASS",
         "database_dir": str(database_dir),
+        "history_exports": run_history_exports(
+            database_dir,
+            args.codex_home,
+            include_session_history=should_export_session_history(),
+        ),
         "sync": run_sync(database_dir, args.codex_home, commit=args.commit or args.push, push=args.push),
         "runtime": {"published": False, "reason": "not_requested"},
     }
