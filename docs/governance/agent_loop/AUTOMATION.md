@@ -140,3 +140,17 @@ T2 的 plan-first 是自动化质量门，不是人工审批门。Plan 必须列
 - Audit issue: workflow 自动创建或复用，并评论 plan、validation、review、merge 结果。
 - Artifacts: plan、result pack、review、architect review、validation summary。
 - PR: 自动创建的实现 PR。
+
+## Memory Sync / Backup 覆盖保护
+
+Memory sync、backup、history import 或本地恢复类提交不得覆盖 Agent Loop
+control-plane 文件。以下路径属于 Agent Loop control plane：
+
+- `.github/workflows/agent-loop-*`
+- `scripts/agent_loop/**`
+- `docs/governance/agent_loop/**`
+- `.github/codex/prompts/**`
+- `.github/ISSUE_TEMPLATE/codex-task.yml`
+
+如果 memory sync 或 backup 流程需要移动、导入或重写文件，必须显式排除以上路径，
+除非当前 Task Pack 明确授权修改 Agent Loop control plane。

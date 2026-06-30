@@ -14,6 +14,38 @@ body:
         - Do not choose project or risk manually in this form; workflow routing reads the Task Pack and routing matrix.
         - No manual labels are required. The workflow starts for trusted issue authors and adds missing labels itself.
         - Do not add `agent:run` manually unless you are deliberately rerunning an older issue.
+        - Labels are convenience metadata only. The workflow must not depend on issue-template labels being pre-applied.
+        - If labels are missing, the workflow creates and applies them after validating the Task Pack metadata.
+        - If project/path/risk routing is unclear, the workflow blocks instead of letting Codex guess.
+        - For multi-project work, ask ChatGPT to split the request into multiple Task Packs by default.
+        - For T1 work, Agent Loop uses ROI one-shot execution by default.
+        - For T2 work, Agent Loop blocks until separate-job plan/implement orchestration is available.
+        - Production deployment is disabled unless a separate authorized Task Pack explicitly changes that policy.
+
+        Before submitting:
+
+        1. Confirm the machine plane JSON is inside `AGENT_LOOP_METADATA`.
+        2. Confirm `source` is `chatgpt-approved`.
+        3. Confirm `repository` is `LinzeColin/CodexProject`.
+        4. Confirm `project` is explicit, not `unknown`, `TBD`, or multiple projects.
+        5. Confirm `allowed_paths` is narrow.
+        6. Confirm `forbidden_paths` protects `AGENTS.md`, business directories, secrets, env files, and dependencies.
+        7. Confirm the human plane includes background, scope, implementation requirements, acceptance criteria, validation tests, stop conditions, review requirements, rollback plan, and required result pack.
+        8. Confirm no secrets or API keys are pasted.
+        9. Confirm the Task Pack is approved by the Owner before opening the issue.
+
+        Expected behavior:
+
+        - Trusted issue author creates the issue.
+        - Workflow starts on `opened` or `edited`.
+        - Workflow validates metadata source.
+        - Workflow creates missing labels.
+        - Workflow adds `agent:running`.
+        - Routing/autofill either normalizes the Task Pack or blocks safely.
+        - T1 runs at most one paid Codex call.
+        - Validation and changed-files gates run before merge.
+        - Successful runs add `agent:done` and close the issue.
+        - Blocked runs add `agent:blocked` and comment the reason.
   - type: textarea
     id: taskpack
     attributes:
@@ -42,6 +74,81 @@ body:
         # Task Pack: Title
 
         ## Human Summary
-        ...
+
+        | Field | Value |
+        |---|---|
+        | Project | agent-loop |
+        | Risk Tier | T1 |
+        | Production Deploy | false |
+
+        ## Background
+
+        Explain the current context and why this task exists.
+
+        ## Scope
+
+        Define exactly what is in scope and what is out of scope.
+
+        ## Files To Inspect
+
+        - `docs/governance/agent_loop/...`
+
+        ## Files Allowed To Modify
+
+        - `docs/governance/agent_loop/...`
+
+        ## Files Forbidden
+
+        - `AGENTS.md`
+        - `Alpha/**`
+        - `EEI/**`
+        - `FIFA/**`
+        - `KMFA/**`
+        - `MetaDatabase/**`
+        - `OpenAIDatabase/**`
+        - `OpMe_System/**`
+        - `PFI/**`
+        - `QBVS/**`
+        - `Serenity-Alipay/**`
+        - `arxiv-daily-push/**`
+        - `whkmSalary/**`
+        - `.env`
+        - `.env.*`
+
+        ## Implementation Requirements
+
+        - Keep changes inside `allowed_paths`.
+        - Stop if forbidden paths are required.
+        - Do not deploy production.
+
+        ## Acceptance Criteria
+
+        - Describe concrete pass/fail outcomes.
+        - Include file-scope expectations.
+
+        ## Validation Tests
+
+        - `python3 -m py_compile scripts/agent_loop/*.py`
+        - `git diff --check`
+
+        ## Stop Conditions
+
+        - Stop on ambiguous project routing.
+        - Stop if secrets or env files are required.
+        - Stop if production deployment is required.
+
+        ## Review Requirements
+
+        - Check scope drift.
+        - Check changed files.
+        - Check validation output.
+
+        ## Rollback Plan
+
+        Use `git revert <merge_commit>`.
+
+        ## Required Codex Result Pack
+
+        Return summary, files changed, validation results, known risks, and rollback plan.
     validations:
       required: true
