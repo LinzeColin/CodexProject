@@ -30,6 +30,15 @@ FORBIDDEN_FINANCIAL_DATA_LABELS = [
     "fake",
 ]
 
+DEPRECATED_TOP_LEVEL_ALIASES = [
+    "首页",
+    "市场",
+    "研究",
+    "持仓",
+    "策略实验室",
+    "数据与系统",
+]
+
 DATA_STATE_REQUIREMENTS = [
     "confirmed_zero",
     "not_loaded",
@@ -77,6 +86,12 @@ RETAINED_REFERENCE_PRINCIPLES = [
     "不得用 long page 或 anchor scroll 冒充真实页面路由",
     "不得用 localStorage/sessionStorage/IndexedDB 冒充生产持久化",
 ]
+
+FINANCIAL_DATA_ACCEPTANCE_POLICY = {
+    "allowed": "real_data_or_real_empty_blocking_state",
+    "forbidden": "mock/sample/demo/synthetic/fixture/fake financial data",
+    "not_loaded_zero_policy": "not_loaded_must_not_render_as_confirmed_financial_zero",
+}
 
 
 @dataclass(frozen=True)
@@ -171,5 +186,70 @@ def build_v024_stage0_phase02_contract() -> V024Stage0Phase02Contract:
         default_visual_direction="light_human_product_experience",
         business_ui_changes_allowed=False,
         data_logic_changes_allowed=False,
+        next_phase_requires_user_acceptance=True,
+    )
+
+
+@dataclass(frozen=True)
+class V024Stage0Phase03Contract:
+    target_version: str
+    source_package_version: str
+    stage_id: str
+    phase_id: str
+    phase_name: str
+    task_ids: list[str]
+    phase_0_1_complete: bool
+    phase_0_2_complete: bool
+    phase_0_3_complete: bool
+    stage_0_candidate_complete: bool
+    stage_0_complete: bool
+    max_phases_per_run: int
+    official_nav: list[str]
+    official_nav_count: int
+    deprecated_top_level_aliases: list[str]
+    market_research_top_level: bool
+    no_mock_financial_data: bool
+    forbidden_financial_data_labels: list[str]
+    financial_data_acceptance_policy: dict[str, str]
+    evidence_pack_required: list[str]
+    business_ui_changes_allowed: bool
+    data_logic_changes_allowed: bool
+    whole_stage_review_required: bool
+    next_phase_requires_user_acceptance: bool
+
+    def to_dict(self) -> dict[str, object]:
+        return asdict(self)
+
+
+def build_v024_stage0_phase03_contract() -> V024Stage0Phase03Contract:
+    return V024Stage0Phase03Contract(
+        target_version=TARGET_VERSION,
+        source_package_version=SOURCE_PACKAGE_VERSION,
+        stage_id=STAGE_ID,
+        phase_id="0.3",
+        phase_name="Stage 0 测试与证据",
+        task_ids=["T0.3.1", "T0.3.2", "T0.3.3", "T0.3.4"],
+        phase_0_1_complete=True,
+        phase_0_2_complete=True,
+        phase_0_3_complete=True,
+        stage_0_candidate_complete=True,
+        stage_0_complete=False,
+        max_phases_per_run=1,
+        official_nav=OFFICIAL_NAV,
+        official_nav_count=len(OFFICIAL_NAV),
+        deprecated_top_level_aliases=DEPRECATED_TOP_LEVEL_ALIASES,
+        market_research_top_level=True,
+        no_mock_financial_data=True,
+        forbidden_financial_data_labels=FORBIDDEN_FINANCIAL_DATA_LABELS,
+        financial_data_acceptance_policy=FINANCIAL_DATA_ACCEPTANCE_POLICY,
+        evidence_pack_required=[
+            "evidence.json",
+            "terminal.log",
+            "changed_files.txt",
+            "risk_and_rollback.md",
+        ],
+        business_ui_changes_allowed=False,
+        data_logic_changes_allowed=False,
+        whole_stage_review_required=True,
         next_phase_requires_user_acceptance=True,
     )

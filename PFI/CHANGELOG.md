@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 0 Phase 0.3 - 2026-06-30
+
+- 完成 `Stage 0 / Phase 0.3 - Stage 0 测试与证据`，用合同测试覆盖 10 个正式一级入口、`市场与研究` 一级入口、禁止假财务数据和 evidence pack 完整性。
+- 新增 `tests/test_v024_stage0_phase03_contract.py` 和 `reports/pfi_v024/stage_0/phase_0_3/evidence.json`。
+- 扩展 `src/pfi_v02/stage_v024_repair_contract.py`，记录 Phase 0.3 机器合同和 Stage 0 candidate complete 状态。
+- 本轮未执行 Stage 0 whole-stage review、Stage 1 或后续阶段，未修改业务 UI、app bundle、launcher 或数据逻辑。
+
 ## v0.2.4 Repair Pack Stage 0 Phase 0.2 - 2026-06-30
 
 - 完成 `Stage 0 / Phase 0.2 - 历史约束废弃`，明确历史 9 入口约束、市场与研究一级入口禁令、暗色 AI 控制台方向和样例财务数据验收均已作废。
