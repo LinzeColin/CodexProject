@@ -72,17 +72,19 @@ Stage 1 records:
 
 ## v0.2.4 Stage 2 Status
 
-Current run unit: `Stage 2 / Phase 2.1 - 入口链路映射`.
+Current run unit: `Stage 2 / Phase 2.2 - 版本链路实现`.
 
 - Stage 1 GitHub main upload: complete at `99dea6212dd79b1b0027e8152fa18d81321d46a8`.
 - Phase 2.1: candidate pass.
-- Phase 2.2: not started.
+- Phase 2.2: candidate pass.
 - Phase 2.3: not started.
 - Stage 2 complete: no.
-- Business UI changes: none.
+- Business UI changes: limited to entry identity status strip and version metadata visibility.
 - Data logic changes: none.
-- App bundle or launcher changes: none.
-- Current finding: `PFI/scripts/startPFI.sh`, `PFI/web/index.html`, and `PFI/web/app/shell.js` still carry v0.2.3 Stage 1 entry signatures; Phase 2.1 records them for Phase 2.2.
+- App bundle changes: none.
+- Launcher source changes: versioned URL query updated in `PFI/StartPFI.command` and `PFI/scripts/startPFI.sh`; app bundle reinstall not executed.
+- Current build identity: `PFI v0.2.3 Repair` / `pfi-v024-stage2-phase22` / `PFI-V024-STAGE2-ENTRY-CONSISTENCY`.
+- Current bundle hash: `e8928ed7f3067ae3e732aacda74427a61b69fbcfe855b2254118e7dafe38f8e4`.
 - Current installed app dry-run mapping resolves `/Applications/PFI.app`, `~/Downloads/PFI.app`, and `~/Desktop/PFI.app` to the canonical PFI project root.
 
 Phase 2.1 records:
@@ -94,6 +96,15 @@ Phase 2.1 records:
 - `reports/pfi_v024/stage_2/phase_2_1/old_ui_signatures.json`
 - `reports/pfi_v024/stage_2/phase_2_1/build_hash_display_spec.md`
 - `reports/pfi_v024/stage_2/phase_2_1/evidence.json`
+
+Phase 2.2 records:
+
+- `tests/test_v024_stage2_phase22_version_link.py`
+- `web/app/entry_audit.js`
+- `web/styles/tokens.css`
+- `reports/pfi_v024/stage_2/phase_2_2/evidence.json`
+- `reports/pfi_v024/stage_2/phase_2_2/bundle_hash.txt`
+- `reports/pfi_v024/stage_2/phase_2_2/version_link_summary.md`
 
 ## v0.2.4 Stage 0 Status
 

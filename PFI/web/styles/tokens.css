@@ -122,7 +122,7 @@ button:active {
   grid-area: top;
   min-width: 0;
   display: grid;
-  grid-template-columns: 180px minmax(220px, 1fr) minmax(520px, 1.25fr) auto;
+  grid-template-columns: 180px minmax(210px, 0.82fr) minmax(220px, 1fr) minmax(520px, 1.25fr) auto;
   gap: 12px;
   align-items: center;
   padding: 10px 16px;
@@ -151,6 +151,33 @@ button:active {
 .brand-name {
   font-size: 1.05rem;
   font-weight: 760;
+}
+
+.entry-status-strip {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+  white-space: nowrap;
+  color: var(--pfi-muted);
+  font-size: 0.72rem;
+  font-weight: 720;
+}
+
+.entry-status-strip span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 3px 7px;
+  border: 1px solid var(--pfi-border);
+  border-radius: 999px;
+  background: var(--pfi-surface-muted);
+}
+
+.entry-status-strip [data-pfi-entry-repair-label] {
+  color: var(--pfi-ink);
+  background: var(--pfi-surface);
 }
 
 .global-search input,
@@ -1406,7 +1433,7 @@ button:active {
   }
 
   .top-bar {
-    grid-template-columns: 150px minmax(160px, 1fr) auto;
+    grid-template-columns: 150px minmax(190px, 0.8fr) minmax(160px, 1fr) auto;
   }
 
   .global-context {
@@ -1443,6 +1470,10 @@ button:active {
 
   .top-bar {
     grid-template-columns: 1fr;
+  }
+
+  .entry-status-strip {
+    width: 100%;
   }
 
   .top-actions,
@@ -1589,7 +1620,7 @@ body.reduce-motion *::after {
   position: sticky;
   top: 14px;
   z-index: 20;
-  grid-template-columns: 150px minmax(220px, 1fr) minmax(450px, 1.2fr) auto;
+  grid-template-columns: 150px minmax(220px, 0.8fr) minmax(220px, 1fr) minmax(450px, 1.2fr) auto;
   border-radius: var(--pfi-radius);
   padding: 10px;
 }
@@ -2133,7 +2164,7 @@ button.is-pressed,
 }
 
 .top-bar {
-  grid-template-columns: 118px minmax(230px, 1fr) minmax(390px, 1fr) minmax(520px, auto);
+  grid-template-columns: 118px minmax(220px, 0.8fr) minmax(230px, 1fr) minmax(390px, 1fr) minmax(520px, auto);
 }
 
 .global-context {
@@ -2208,7 +2239,7 @@ button.is-pressed,
   }
 
   .top-bar {
-    grid-template-columns: 140px minmax(200px, 1fr) auto;
+    grid-template-columns: 140px minmax(190px, 0.8fr) minmax(200px, 1fr) auto;
   }
 
   .button-label {
@@ -2253,6 +2284,7 @@ button.is-pressed,
   }
 
   .brand,
+  .entry-status-strip,
   .global-search,
   .top-actions {
     min-width: 0;

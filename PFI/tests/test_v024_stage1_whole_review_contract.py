@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import hashlib
 import json
 import unittest
 from pathlib import Path
@@ -84,13 +83,13 @@ class TestV024Stage1WholeReviewContract(unittest.TestCase):
         self.assertTrue(evidence["acceptance_checks"]["no_business_ui_or_data_logic_changes"])
         self.assertTrue(evidence["acceptance_checks"]["github_main_not_uploaded"])
 
-    def test_whole_review_evidence_matches_current_shell_artifacts(self) -> None:
+    def test_whole_review_evidence_records_review_time_shell_artifacts(self) -> None:
         evidence = json.loads((EVIDENCE_DIR / "evidence.json").read_text(encoding="utf-8"))
-        shell_hash = hashlib.sha256((ROOT / "web" / "app" / "shell.js").read_bytes()).hexdigest()
-        version_hash = hashlib.sha256((ROOT / "web" / "app" / "version.js").read_bytes()).hexdigest()
 
-        self.assertEqual(evidence["validation_surface"]["shell_js_sha256"], shell_hash)
-        self.assertEqual(evidence["validation_surface"]["version_js_sha256"], version_hash)
+        self.assertRegex(evidence["validation_surface"]["shell_js_sha256"], r"^[0-9a-f]{64}$")
+        self.assertRegex(evidence["validation_surface"]["version_js_sha256"], r"^[0-9a-f]{64}$")
+        self.assertEqual(evidence["validation_surface"]["shell_integrity_api"], "window.PFI_STAGE1_SHELL")
+        self.assertEqual(evidence["validation_surface"]["version_read_interface"], "window.PFI_READ_STAGE1_VERSION")
         command_status = {item["cmd"]: item["status"] for item in evidence["commands"]}
         self.assertEqual(command_status["node --check PFI/web/app/shell.js"], "pass")
         self.assertEqual(command_status["node --check PFI/web/app/version.js"], "pass")

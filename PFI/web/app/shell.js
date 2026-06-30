@@ -2,33 +2,78 @@ const CONTEXT_STORAGE_KEY = "pfi-context-v2";
 const RUNTIME_CONFIG = readRuntimeConfig();
 const PFI_RUNTIME_API_BASE_URL = RUNTIME_CONFIG.apiBaseUrl || "http://127.0.0.1:8766";
 const PFI_STAGE1_SHELL_INTEGRITY_CONTRACT = "PFI-V024-STAGE1-SHELL-INTEGRITY";
-const PFI_STAGE1_ENTRY_METADATA = Object.freeze({
-  schema: RUNTIME_CONFIG.schema || "PFIV023Stage1RuntimeMetadataV1",
+const PFI_STAGE2_ENTRY_CONSISTENCY_CONTRACT = "PFI-V024-STAGE2-ENTRY-CONSISTENCY";
+const PFI_STAGE2_ENTRY_METADATA = Object.freeze({
+  schema: RUNTIME_CONFIG.schema || "PFIV024Stage2EntryRuntimeMetadataV1",
+  targetVersion: RUNTIME_CONFIG.targetVersion || document.body?.dataset.pfiTargetVersion || "v0.2.4",
+  sourcePackageVersion: RUNTIME_CONFIG.sourcePackageVersion || "v0.2.3-repair",
   pfiVersion: RUNTIME_CONFIG.pfiVersion || document.body?.dataset.pfiVersion || "v0.2.3",
   appVersion: RUNTIME_CONFIG.appVersion || document.body?.dataset.pfiAppVersion || "0.2.3",
-  buildId: RUNTIME_CONFIG.buildId || document.body?.dataset.pfiBuildId || "20260629-stage1",
-  bundleVersion: RUNTIME_CONFIG.bundleVersion || "20260629.1",
+  repairLabel: RUNTIME_CONFIG.repairLabel || document.body?.dataset.pfiRepairLabel || "PFI v0.2.3 Repair",
+  buildId: RUNTIME_CONFIG.buildId || document.body?.dataset.pfiBuildId || "pfi-v024-stage2-phase22",
+  bundleVersion: RUNTIME_CONFIG.bundleVersion || document.body?.dataset.pfiBundleVersion || "20260630.2",
   uiContractVersion:
     RUNTIME_CONFIG.uiContractVersion ||
     document.body?.dataset.pfiUiContractVersion ||
-    "PFI-V023-STAGE1-APP-ENTRY-BUNDLE-CONSISTENCY",
-  stage: RUNTIME_CONFIG.stage || document.body?.dataset.pfiStage || "Stage 1",
-  webBundleHash: RUNTIME_CONFIG.webBundleHash || "",
-  webIndexSha256: RUNTIME_CONFIG.webIndexSha256 || "",
-  shellJsSha256: RUNTIME_CONFIG.shellJsSha256 || "",
+    PFI_STAGE2_ENTRY_CONSISTENCY_CONTRACT,
+  shellIntegrityContract: RUNTIME_CONFIG.shellIntegrityContract || PFI_STAGE1_SHELL_INTEGRITY_CONTRACT,
+  entryConsistencyContract: RUNTIME_CONFIG.entryConsistencyContract || PFI_STAGE2_ENTRY_CONSISTENCY_CONTRACT,
+  stage: RUNTIME_CONFIG.stage || document.body?.dataset.pfiStage || "Stage 2",
+  phase: RUNTIME_CONFIG.phase || document.body?.dataset.pfiPhase || "2.2",
+  webBundleHash: RUNTIME_CONFIG.webBundleHash || document.body?.dataset.pfiWebBundleHash || "",
+  webIndexSha256: RUNTIME_CONFIG.webIndexSha256 || document.body?.dataset.pfiWebIndexSha256 || "",
+  tokensCssSha256: RUNTIME_CONFIG.tokensCssSha256 || document.body?.dataset.pfiTokensCssSha256 || "",
+  versionJsSha256: RUNTIME_CONFIG.versionJsSha256 || document.body?.dataset.pfiVersionJsSha256 || "",
+  entryAuditJsSha256: RUNTIME_CONFIG.entryAuditJsSha256 || document.body?.dataset.pfiEntryAuditJsSha256 || "",
+  routesJsSha256: RUNTIME_CONFIG.routesJsSha256 || document.body?.dataset.pfiRoutesJsSha256 || "",
+  shellJsSha256: RUNTIME_CONFIG.shellJsSha256 || document.body?.dataset.pfiShellJsSha256 || "",
 });
+const PFI_STAGE1_ENTRY_METADATA = PFI_STAGE2_ENTRY_METADATA;
+window.PFI_STAGE2_ENTRY_METADATA = PFI_STAGE2_ENTRY_METADATA;
 window.PFI_STAGE1_ENTRY_METADATA = PFI_STAGE1_ENTRY_METADATA;
 
+function applyPFIStage2EntryMetadata(metadata = PFI_STAGE2_ENTRY_METADATA) {
+  const body = document.body;
+  if (!body) return metadata;
+  body.dataset.pfiTargetVersion = metadata.targetVersion || "v0.2.4";
+  body.dataset.pfiRepairLabel = metadata.repairLabel || "PFI v0.2.3 Repair";
+  body.dataset.pfiBuildId = metadata.buildId || "pfi-v024-stage2-phase22";
+  body.dataset.pfiBundleVersion = metadata.bundleVersion || "20260630.2";
+  body.dataset.pfiUiContractVersion = metadata.uiContractVersion || PFI_STAGE2_ENTRY_CONSISTENCY_CONTRACT;
+  body.dataset.pfiStage = metadata.stage || "Stage 2";
+  body.dataset.pfiPhase = metadata.phase || "2.2";
+  if (metadata.webBundleHash) body.dataset.pfiWebBundleHash = metadata.webBundleHash;
+  if (metadata.webIndexSha256) body.dataset.pfiWebIndexSha256 = metadata.webIndexSha256;
+  if (metadata.tokensCssSha256) body.dataset.pfiTokensCssSha256 = metadata.tokensCssSha256;
+  if (metadata.versionJsSha256) body.dataset.pfiVersionJsSha256 = metadata.versionJsSha256;
+  if (metadata.entryAuditJsSha256) body.dataset.pfiEntryAuditJsSha256 = metadata.entryAuditJsSha256;
+  if (metadata.shellJsSha256) body.dataset.pfiShellJsSha256 = metadata.shellJsSha256;
+
+  const write = (selector, value) => {
+    const node = document.querySelector(selector);
+    if (node) node.textContent = value;
+  };
+  const hash = metadata.webBundleHash || body.dataset.pfiWebBundleHash || "runtime-computed";
+  write("[data-pfi-entry-repair-label]", metadata.repairLabel || "PFI v0.2.3 Repair");
+  write("[data-pfi-entry-build-id]", metadata.buildId || "pfi-v024-stage2-phase22");
+  write("[data-pfi-entry-bundle-hash]", `bundle ${String(hash).slice(0, 16)}`);
+  write("[data-pfi-entry-ui-contract]", metadata.uiContractVersion || PFI_STAGE2_ENTRY_CONSISTENCY_CONTRACT);
+  return metadata;
+}
+
 function readPFIStage1Version() {
-  const externalVersion = typeof window.PFI_READ_STAGE1_VERSION === "function"
+  const externalVersion = typeof window.PFI_READ_STAGE2_ENTRY_VERSION === "function"
+    ? window.PFI_READ_STAGE2_ENTRY_VERSION()
+    : typeof window.PFI_READ_STAGE1_VERSION === "function"
     ? window.PFI_READ_STAGE1_VERSION()
-    : window.PFI_STAGE1_VERSION;
+    : window.PFI_STAGE2_ENTRY_VERSION || window.PFI_STAGE1_VERSION;
   return Object.freeze({
     schema: "PFIV024Stage1ShellVersionReadModelV1",
     targetVersion: "v0.2.4",
     sourcePackageVersion: "v0.2.3-repair",
     shellIntegrityContract: PFI_STAGE1_SHELL_INTEGRITY_CONTRACT,
-    ...PFI_STAGE1_ENTRY_METADATA,
+    entryConsistencyContract: PFI_STAGE2_ENTRY_CONSISTENCY_CONTRACT,
+    ...PFI_STAGE2_ENTRY_METADATA,
     ...(externalVersion && typeof externalVersion === "object" ? externalVersion : {}),
   });
 }
@@ -83,6 +128,7 @@ function mountPFIStage1Route(routeAlias = "", options = {}) {
 
 function initializePFIStage1Shell(options = {}) {
   try {
+    applyPFIStage2EntryMetadata(PFI_STAGE2_ENTRY_METADATA);
     bootPFIShell();
     return {
       status: "initialized",
@@ -101,6 +147,7 @@ window.PFI_STAGE1_SHELL = Object.freeze({
   mountRoute: mountPFIStage1Route,
   errorBoundary: handlePFIStage1ShellError,
   metadata: PFI_STAGE1_ENTRY_METADATA,
+  entryMetadata: PFI_STAGE2_ENTRY_METADATA,
 });
 const FEEDBACK_SLA_MS = {
   instant: 100,

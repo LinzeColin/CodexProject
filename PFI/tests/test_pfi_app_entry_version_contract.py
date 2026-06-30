@@ -18,8 +18,8 @@ def test_pfi_app_bundle_version_matches_v023_stage1_delivery() -> None:
 def test_pfi_launchers_open_versioned_url_to_avoid_stale_browser_tabs() -> None:
     required = (
         "pfi_app_version=0.2.3"
-        "&pfi_build=20260629-stage1"
-        "&pfi_ui_contract=PFI-V023-STAGE1-APP-ENTRY-BUNDLE-CONSISTENCY"
+        "&pfi_build=pfi-v024-stage2-phase22"
+        "&pfi_ui_contract=PFI-V024-STAGE2-ENTRY-CONSISTENCY"
     )
 
     assert required in (ROOT / "StartPFI.command").read_text(encoding="utf-8")
