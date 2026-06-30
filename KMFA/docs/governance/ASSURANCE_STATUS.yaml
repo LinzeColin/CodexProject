@@ -1,11 +1,11 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260630-S08P3-ENTITY-MATCHING-QUALITY"
+as_of_event_id: "EVENT-KMFA-20260630-S08-STAGE-REVIEW"
 source_snapshot_hash: "sha256:precommit-pending"
-source_base_commit: "c8f9a9c9b59b023d713d55adbb0106f19d4e897d"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S08P3_LOCAL_COMMIT"
-snapshot_event_time: "2026-06-30T22:00:00+10:00"
-generator_version: "manual-s08p3-entity-matching-quality"
-final_commit_binding: "precommit-pending-s08p3-local"
+source_base_commit: "e60b8924b1f311a5b2e3d0113b88594b0485e51d"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S08_REVIEW_LOCAL_COMMIT"
+snapshot_event_time: "2026-06-30T23:00:00+10:00"
+generator_version: "manual-s08-stage-review"
+final_commit_binding: "precommit-pending-s08-review-local"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -92,6 +92,7 @@ dimensions:
       - "KMFA/stage_artifacts/S08_P3_entity_matching_quality/human/test_results.md"
       - "KMFA/tools/entity_matching_quality.py"
       - "KMFA/tools/check_s08_p3_entity_matching_quality.py"
+      - "KMFA/stage_artifacts/S08_STAGE_REVIEW/human/test_results.md"
   operational_validation:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
@@ -134,6 +135,7 @@ dimensions:
       - "KMFA/tools/entity_matching_quality.py"
       - "KMFA/tools/check_s08_p3_entity_matching_quality.py"
       - "KMFA/stage_artifacts/S08_P3_entity_matching_quality/human/test_results.md"
+      - "KMFA/stage_artifacts/S08_STAGE_REVIEW/human/test_results.md"
   delivery_evidence:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
@@ -252,14 +254,17 @@ dimensions:
       - "KMFA/metadata/quality/entity_matching_quality_manifest.json"
       - "KMFA/metadata/quality/entity_matching_quality_cases.jsonl"
       - "KMFA/metadata/quality/entity_matching_review_queue.jsonl"
+      - "KMFA/stage_artifacts/S08_STAGE_REVIEW/human/stage8_review_report.md"
+      - "KMFA/stage_artifacts/S08_STAGE_REVIEW/human/test_results.md"
+      - "KMFA/stage_artifacts/S08_STAGE_REVIEW/machine/stage8_review_manifest.json"
   evidence_freshness:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "S08P3_COMPLETED_VALIDATED_LOCAL_ONLY"
-  release_gate: "KMFA-S08-STAGE-REVIEW-GATE"
+  status: "S08_REVIEW_PASSED_UPLOAD_READY_LOCAL_ONLY"
+  release_gate: "KMFA-S08-FINAL-GITHUB-UPLOAD-GATE"
   blocker_ids:
-    - "STAGE8_REVIEW_NOT_STARTED"
+    - "STAGE8_GITHUB_UPLOAD_NOT_STARTED"
     - "LINEAGE_AND_REPORT_RELEASE_GATE_NOT_STARTED"
