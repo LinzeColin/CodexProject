@@ -197,6 +197,20 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
             page,
         )
         self.assertIn("ee3917fedcd96e10a23fbd228367e6837ffca092734d98288502d9702514165f", page)
+        self.assertIn(
+            "REQ-ADP-V7-041-S2PLT02-DAILY-RUN-DRY-RUN-TERMINAL-CLASSIFICATION",
+            page,
+        )
+        self.assertIn("S2PLT02-DAILY-RUN-DRY-RUN-TERMINAL-CLASSIFICATION", page)
+        self.assertIn(
+            "ADP-S2PLT02-DAILY-RUN-DRY-RUN-TERMINAL-CLASSIFICATION-20260630.json",
+            page,
+        )
+        self.assertIn("PHASE_S2PLT02_DAILY_RUN_DRY_RUN_TERMINAL_CLASSIFICATION.md", page)
+        self.assertIn("daily_run_succeeded_but_smtp_dry_run_not_terminal", page)
+        self.assertIn("nonterminal_succeeded_dry_run_service_dates=2026-06-29,2026-06-30", page)
+        self.assertIn("nonterminal_succeeded_dry_run_count=2", page)
+        self.assertIn("a9179f2a386c23d6efb0495659f434a3991736ce7a10ec6e234659a4e6a0accf", page)
         self.assertIn("REQ-ADP-V7-041-S2PMT07-FINAL-COMMAND-ROOT-TOOLS", page)
         self.assertIn("S2PMT07-FINAL-COMMAND-ROOT-TOOLS", page)
         self.assertIn("ADP-S2PMT07-FINAL-COMMAND-ROOT-TOOLS-20260629.json", page)

@@ -21,7 +21,7 @@ Owner 视图现在把实现一致性、参数来源、方法依据、实证验�
 
 ## 5. 默认建议
 
-- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat live authorization, independent reviewer assignment, P0/P1 zero-proof artifact FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json, the stdout-only terminal proof draft builder, S2PLT02-REAL-SCHEDULER-PROOF-INPUT-VALIDATOR, S2PLT02-TERMINAL-DELIVERY-INPUT-INVENTORY input inventory, S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN capture plan, S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT dry-run blocker evidence, S2PLT02-REAL-DELIVERY-MANIFEST-INPUT-VALIDATOR manifest gate, S2PLT02-REAL-DELIVERY-MANIFEST-NORMALIZATION normalized manifest gate, S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-CLI reproducible dry-run blocker CLI, S2PLT02-TERMINAL-CAPTURE-WINDOW-RUNTIME-STATE-SYNC loaded-but-disabled scheduler boundary, S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY usable/blocked/missing classification, S2PMT07-S2PLT04-S2PLT02-LATEST-NONTERMINAL-EVIDENCE-SYNC evidence freshness gate, S2PMT07-S2PLT04-NONTERMINAL-SUMMARY-SYNC top-level nonterminal summary gate, and only current explicit no-production real-delivery manifest inputs as validated no-write inputs, record the current dry-run/scheduler-disabled capture window as blocked evidence, and next collect S2PLT02 terminal delivery proof only from complete real delivery/scheduler manifests in a controlled real capture window before S2PLT03 terminal proof, S2PLT04 completion proof, final bundle manifest, independent final signoff, final command execution proof, no-production attestation, and next-agent handoff.
+- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat live authorization, independent reviewer assignment, P0/P1 zero-proof artifact FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json, the stdout-only terminal proof draft builder, S2PLT02-REAL-SCHEDULER-PROOF-INPUT-VALIDATOR, S2PLT02-TERMINAL-DELIVERY-INPUT-INVENTORY input inventory, S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN capture plan, S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT dry-run blocker evidence, S2PLT02-REAL-DELIVERY-MANIFEST-INPUT-VALIDATOR manifest gate, S2PLT02-REAL-DELIVERY-MANIFEST-NORMALIZATION normalized manifest gate, S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-CLI reproducible dry-run blocker CLI, S2PLT02-TERMINAL-CAPTURE-WINDOW-RUNTIME-STATE-SYNC loaded-but-disabled scheduler boundary, S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY usable/blocked/missing classification, S2PLT02-DAILY-RUN-DRY-RUN-TERMINAL-CLASSIFICATION daily-run success dry-run nonterminal gate, S2PMT07-S2PLT04-S2PLT02-LATEST-NONTERMINAL-EVIDENCE-SYNC evidence freshness gate, S2PMT07-S2PLT04-NONTERMINAL-SUMMARY-SYNC top-level nonterminal summary gate, and only current explicit no-production real-delivery manifest inputs as validated no-write inputs, record the current dry-run/scheduler-disabled capture window as blocked evidence, and next collect S2PLT02 terminal delivery proof only from complete real delivery/scheduler manifests in a controlled real capture window before S2PLT03 terminal proof, S2PLT04 completion proof, final bundle manifest, independent final signoff, final command execution proof, no-production attestation, and next-agent handoff.
 - estimated_effort: P0/P1; contract hash, AGENTS, 三基文件, validator/test, no production side effect
 - estimated_cost_or_resource: local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner
 
@@ -78,7 +78,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PMT07_S2PLT04_NONTERMINAL_SUMMARY_SYNC_BLOCKED_NO_PRODUCTION`
+- release_gate: `S2PLT02_DAILY_RUN_DRY_RUN_TERMINAL_CLASSIFICATION_BLOCKED_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
@@ -98,10 +98,10 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - source_base_commit: `fd90a208c7b009aa11bc26c4629a7ea92679c5ff`
 - source_tree_hash: `c44d743a2833842b3cc0dd9e098fb70017cdc5a2`
 - source_snapshot_hash: `sha256:33d61400aa5e461ec4512d546b2ceca25cac9804e4261e1a994ba1e9aa56fc01`
-- snapshot_event_time: `2026-06-30T15:04:03+10:00`
+- snapshot_event_time: `2026-06-30T15:31:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PL / S2PMT07_S2PLT04_NONTERMINAL_SUMMARY_SYNC_BLOCKED_NO_PRODUCTION`
+- phase/gate: `S2PL / S2PLT02_DAILY_RUN_DRY_RUN_TERMINAL_CLASSIFICATION_BLOCKED_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 

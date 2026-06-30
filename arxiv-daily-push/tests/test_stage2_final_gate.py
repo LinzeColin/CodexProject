@@ -270,6 +270,22 @@ class Stage2FinalGateTests(unittest.TestCase):
             json.dumps(runner_report, ensure_ascii=False, indent=2),
             encoding="utf-8",
         )
+        daily_run_report = {
+            "status": "succeeded",
+            "run_record": {
+                "run_id": "daily:2026-06-29:arxiv:2606.26919",
+                "date": "2026-06-29",
+                "current_state": "completed",
+                "status": "SUCCESS",
+            },
+            "email_preview": {
+                "subject": "[arXiv Daily Push][SUCCESS][2026-06-29] daily dry-run pipeline completed",
+            },
+        }
+        (run_dir / "adp-daily-run.json").write_text(
+            json.dumps(daily_run_report, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
         return run_dir
 
     def test_s2plt02_dependency_state_consumes_s2plt01_terminal_acceptance(self) -> None:
@@ -722,6 +738,20 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertTrue(capture_window["all_required_launchagents_not_running"])
         self.assertTrue(capture_window["all_required_launchagents_have_calendar_triggers"])
         self.assertTrue(capture_window["launchagents_loaded_but_disabled"])
+        self.assertEqual(capture_window["daily_run_succeeded_service_dates"], ["2026-06-29"])
+        self.assertEqual(capture_window["nonterminal_succeeded_dry_run_service_dates"], ["2026-06-29"])
+        self.assertEqual(capture_window["nonterminal_succeeded_dry_run_count"], 1)
+        self.assertIn(
+            "daily_run_succeeded_but_smtp_dry_run_not_terminal",
+            capture_window["blocking_reasons"],
+        )
+        self.assertTrue(capture_window["dry_run_audits"][0]["daily_run_report_present"])
+        self.assertEqual(capture_window["dry_run_audits"][0]["daily_run_status"], "succeeded")
+        self.assertTrue(capture_window["dry_run_audits"][0]["daily_run_succeeded"])
+        self.assertTrue(
+            capture_window["dry_run_audits"][0]["daily_run_succeeded_but_smtp_dry_run_not_terminal"]
+        )
+        self.assertFalse(capture_window["dry_run_audits"][0]["daily_run_counts_toward_terminal_proof"])
         self.assertEqual(
             capture_window["scheduler_runtime_evidence_status"],
             "launchagents_loaded_but_disabled_not_terminal_scheduler_proof",

@@ -21,10 +21,18 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 295
+- task_count: 296
 - acceptance_count: 127
 
 ## Delivery Tasks
+
+## 2026-06-30 15:31:00 Australia/Sydney - S2PLT02 Daily-Run Dry-Run Terminal Classification
+
+- `S2PLT02-DAILY-RUN-DRY-RUN-TERMINAL-CLASSIFICATION` updates `audit-s2plt02-terminal-proof-evidence-inventory` so `adp-daily-run.json status=succeeded` is visible but cannot be counted as terminal proof when linked SMTP reports are dry-run.
+- Actual CLI remains blocked / exit 2 with `state_hash=a9179f2a386c23d6efb0495659f434a3991736ce7a10ec6e234659a4e6a0accf`, `daily_run_succeeded_service_dates=2026-06-29,2026-06-30`, `nonterminal_succeeded_dry_run_service_dates=2026-06-29,2026-06-30`, `nonterminal_succeeded_dry_run_count=2`, `observed_candidate_dry_run_email_count=8`, and `observed_candidate_real_sent_email_count=0`.
+- The current blocker is explicit: `daily_run_succeeded_but_smtp_dry_run_not_terminal`. Remaining terminal inputs are still `SECOND_REAL_DELIVERY_DAY`, `EIGHT_REAL_EMAILS`, `REAL_SCHEDULER_PROOF`, and `S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`.
+- Evidence: `governance/run_manifests/ADP-S2PLT02-DAILY-RUN-DRY-RUN-TERMINAL-CLASSIFICATION-20260630.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_DAILY_RUN_DRY_RUN_TERMINAL_CLASSIFICATION.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`; `arxiv-daily-push/tests/test_cli.py`.
+- This does not write S2PLT02 terminal proof, write S2PLT04 completion report, send SMTP, enable scheduler, upload Release assets, execute restore, mutate schema/DB/source/ranking/CURRENT/V7, enable DAILY_OPERATION, or claim S2PLT02/S2PLT04/S2PMT07/integrated production acceptance.
 
 ## 2026-06-30 15:04:03 Australia/Sydney - S2PMT07 S2PLT04 Nonterminal Summary Sync
 
