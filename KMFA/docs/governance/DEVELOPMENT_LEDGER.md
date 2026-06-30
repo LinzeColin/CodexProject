@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.0-s09-stage-review
+product_version: 0.1.0-s09-github-upload
 
 ## Current Iteration
 
 - project_id: `KMFA`
-- current_stage: `S09`
-- current_phase: `S09-FINAL-GITHUB-UPLOAD｜Stage 9 final GitHub upload 待开始`
-- current_tasks: `KMFA-S09-GITHUB-UPLOAD-20260630`
-- status: `stage9_review_passed_upload_ready_local_only`
+- current_stage: `S10`
+- current_phase: `S10-P1｜报告模板 待开始`
+- current_tasks: `S10-P1`
+- status: `stage9_uploaded_to_github_main`
 - risk_tier: `T3`
 
 ## Completed
@@ -69,16 +69,17 @@ product_version: 0.1.0-s09-stage-review
 | `S9PBT01-S9PBT03` | S09-P2 毛利与现金毛利完成本地验证：4 条 project margin records、12 条 scope difference summary records；权威显示值和系统复算值分开保留，不执行 S09-P3、Stage 9 review 或 GitHub upload | `KMFA/stage_artifacts/S09_P2_margin_cash_margin/human/s09_p2_completion_record.md` |
 | `S9PCT01-S9PCT03` | S09-P3 口径转换与差异核对完成本地验证：12 条 public-safe reconciliation records、6 条 domain controls；记录原因候选、依据 refs、影响范围、责任角色、reviewer 和 pending 状态，不执行 Stage 9 review 或 GitHub upload | `KMFA/stage_artifacts/S09_P3_scope_reconciliation/human/s09_p3_completion_record.md` |
 | `KMFA-S09-STAGE-REVIEW-20260630` | Stage 9 整体复审本地通过；复跑 S09-P1/P2/P3 validators、`check_s09_stage_review.py`、全量 KMFA tests、治理 validator、raw/secret scan 和 parse checks，并修复 secret scan 误报 finding；复审步骤未执行 GitHub upload | `KMFA/stage_artifacts/S09_STAGE_REVIEW/human/stage9_review_report.md` |
+| `KMFA-S09-GITHUB-UPLOAD-20260630` | Stage 9 final GitHub upload 已完成；基于最新 origin/main rebase Stage 9 栈，复跑 validators、安全扫描和 parse checks，并留下 dry-run push、push 与 post-push parity 证据 | `KMFA/stage_artifacts/S09_STAGE_REVIEW/human/github_upload_record.md` |
 
 ## In Progress
 
 | Task | Result | Evidence |
 |---|---|---|
-| `KMFA-S09-GITHUB-UPLOAD-20260630` | Stage 9 final GitHub upload 待开始；下一轮只允许对齐最新 `origin/main`、复跑 Stage 9 review validator set、安全扫描和 push proof，不得进入 S10 | `KMFA/stage_artifacts/S09_STAGE_REVIEW/human/stage9_review_report.md` |
+| `S10-P1` | 报告模板待开始；下一轮只允许实现项目成本专题报告、经营总览报告和管理可读摘要模板，不得跳到 S10-P2/S10-P3、UI、lineage full check 或外部接口 | `KMFA/stage_artifacts/S09_STAGE_REVIEW/human/github_upload_record.md` |
 
 ## Not Completed
 
 | Task | Reason | Next |
 |---|---|---|
-| Stage 9 GitHub upload | Stage 9 review 已本地通过，但本轮禁止执行 upload；当前 branch 相对 `origin/main` behind，需要 upload gate 单独对齐远端 | 下一轮只执行 Stage 9 final GitHub upload |
+| S10-P1 报告模板 | Stage 9 已上传 GitHub main；报告模板尚未实现 | 下一轮只执行 S10-P1 报告模板 |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |

@@ -1,11 +1,11 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260630-S09-STAGE-REVIEW"
+as_of_event_id: "EVENT-KMFA-20260630-S09-GITHUB-UPLOAD"
 source_snapshot_hash: "sha256:precommit-pending"
-source_base_commit: "precommit-pending-s09-stage-review-local"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S09_STAGE_REVIEW_LOCAL_COMMIT"
-snapshot_event_time: "2026-06-30T23:59:00+10:00"
-generator_version: "manual-s09-stage-review"
-final_commit_binding: "precommit-pending-s09-stage-review-local"
+source_base_commit: "e2ba650ba79446453fd276f453785d9b695608ec"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S09_UPLOAD_LOCAL_COMMIT"
+snapshot_event_time: "2026-06-30T23:59:30+10:00"
+generator_version: "manual-s09-github-upload"
+final_commit_binding: "precommit-pending-s09-upload-local"
 dimensions:
   structural_completeness:
     status: "VERIFIED"

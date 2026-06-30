@@ -4,7 +4,7 @@
 
 ## 一句话状态
 
-KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload、Stage 5 全部 Phase/复审/upload、Stage 6 全部 Phase/复审/upload、Stage 7 全部 Phase/复审/upload、S08-P1/P2/P3、Stage 8 整体复审和 Stage 8 final GitHub upload。S09-P1 项目成本事实层、S09-P2 毛利与现金毛利、S09-P3 口径转换与差异核对均已本地验证完成；Stage 9 整体复审也已本地通过，但 Stage 9 final GitHub upload、lineage 和报告仍未完成，项目仍不是可用业务系统。
+KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload、Stage 5 全部 Phase/复审/upload、Stage 6 全部 Phase/复审/upload、Stage 7 全部 Phase/复审/upload、Stage 8 全部 Phase/复审/upload，以及 Stage 9 全部 Phase/复审/upload。S09-P1 项目成本事实层、S09-P2 毛利与现金毛利、S09-P3 口径转换与差异核对均已验证并上传 GitHub main；但 S10 报告模板、lineage 和报告运行时仍未完成，项目仍不是可用业务系统。
 
 ## 你现在能信任什么
 
@@ -58,7 +58,7 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 ## 你现在不能信任什么
 
 - 不能认为项目成本分析已经完整实现。
-- 不能认为真实业务源解析、Stage 9 final GitHub upload、lineage 或报告已经实现。
+- 不能认为真实业务源解析、S10 报告模板、lineage 或报告运行时已经实现。
 - 不能认为 S05-P3 已经提交真实合同额、支出合计、毛利、毛利率或成本分类明文；公开仓库只保存 public-safe hash/source-anchor baseline。
 - 不能认为 A0 authority baseline 已经可以发布正式经营报告；lineage 和报告发布门禁尚未完成。
 - 不能认为 Stage 6 upload、Stage 7 upload、S08-P1 project composite key、S08-P2 business entity model、S08-P3 matching quality test、Stage 8 upload、S09-P1 fact layer、S09-P2 margin/cash margin layer 或 S09-P3 scope reconciliation 代表正式经营报告、lineage、自动接口或差异关闭能力已经实现。
@@ -70,4 +70,4 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 
 ## 下一步
 
-下一步只执行 `Stage 9 final GitHub upload`；不得扩大到 S10、UI、正式报告、lineage full check 或自动接口。Upload gate 必须先对齐最新 `origin/main`，复跑 S09-P1/P2/P3 validators、Stage 9 review validator set、治理 validator、raw/secret scan、parse checks 和 evidence consistency check，并留下 dry-run push、push 和 post-push parity 证据。
+下一步只执行 `S10-P1｜报告模板`；不得扩大到 S10-P2、S10-P3、UI、lineage full check 或自动接口。S10-P1 必须读取 v1.2 HTML/报告样板，只实现 public-safe 项目成本专题报告和经营总览报告模板，不关闭 S09-P3 pending 差异，不生成正式可信报告。

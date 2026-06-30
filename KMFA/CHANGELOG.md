@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-s09-github-upload - 2026-06-30
+
+- 完成 Stage 9 final GitHub upload gate，目标为 `LinzeColin/CodexProject main`。
+- 基于最新 `origin/main` commit `70ee64c3e0995c68dceffa24ded1950e692c42cf` rebase 完整 Stage 9 栈，并复跑 S09-P1/P2/P3 validators、`check_s09_stage_review.py`、全量 KMFA tests、治理 validator、raw/secret scan 和 parse checks。
+- 新增 `KMFA/stage_artifacts/S09_STAGE_REVIEW/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S09_STAGE_REVIEW/machine/stage9_upload_manifest.json`。
+- 保持 12 条 reconciliation records 为 `pending_owner_or_authorized_review`；不关闭差异、不重跑派生指标、不生成正式报告、不执行 S10、lineage full check、UI 或外部接口。
+- 后续只能执行 `S10-P1｜报告模板`，作为独立 phase。
+
 ## 0.1.0-s09-stage-review - 2026-06-30
 
 - 完成 Stage 9 整体复审，结果为 `PASS_UPLOAD_READY_LOCAL_ONLY`，尚未 push GitHub。

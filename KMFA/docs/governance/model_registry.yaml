@@ -118,7 +118,7 @@ models:
     owner: "KMFA"
     status: "planned"
     fact_level: "EXTRACTED"
-    model_version: "0.1.0-s09-stage-review"
+    model_version: "0.1.0-s09-github-upload"
     assumptions:
       - "ASM-KMFA-003"
     formula_ids:
@@ -259,6 +259,7 @@ models:
       - "KMFA/tools/check_s09_p3_scope_reconciliation.py"
       - "KMFA/tools/check_s09_stage_review.py"
       - "KMFA/stage_artifacts/S09_STAGE_REVIEW/human/stage9_review_report.md"
+      - "KMFA/stage_artifacts/S09_STAGE_REVIEW/human/github_upload_record.md"
       - "remaining_report_lineage_components_not_implemented_until_S10"
     test_refs:
       - "python3 -m unittest KMFA.tests.test_amount_tools -q"
@@ -328,6 +329,8 @@ models:
       - "KMFA/stage_artifacts/S09_STAGE_REVIEW/human/test_results.md"
       - "KMFA/stage_artifacts/S09_STAGE_REVIEW/machine/stage9_review_manifest.json"
       - "KMFA/tools/check_s09_stage_review.py"
+      - "KMFA/stage_artifacts/S09_STAGE_REVIEW/human/github_upload_record.md"
+      - "KMFA/stage_artifacts/S09_STAGE_REVIEW/machine/stage9_upload_manifest.json"
   - model_id: "MOD-KMFA-METADATA-001"
     name: "KMFA metadata protocol and identifier contract"
     kind: "deterministic_metadata_governance_contract"

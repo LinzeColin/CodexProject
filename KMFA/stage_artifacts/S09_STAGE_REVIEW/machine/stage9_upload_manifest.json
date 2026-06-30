@@ -1,0 +1,65 @@
+{
+  "schema_version": "kmfa.github_upload_manifest.v1",
+  "project_id": "KMFA",
+  "upload_id": "KMFA-S09-GITHUB-UPLOAD-20260630",
+  "stage": "S09",
+  "target": "LinzeColin/CodexProject main",
+  "status": "uploaded_to_github_main",
+  "upload_time": "2026-06-30T23:59:30+10:00",
+  "upload_base_origin_main": "e2ba650ba79446453fd276f453785d9b695608ec",
+  "reviewed_content_commit": "5168473ffddf7852b4d85de627554d4053273bde",
+  "reviewed_s09p1_commit": "ef3d81458d3898e44b487288b4387412108ce641",
+  "reviewed_s09p2_commit": "04f007aea5022c7b6b86c4568ee194c5aa9c810b",
+  "reviewed_s09p3_commit": "6b7601d7dee9570775119b0df74f9e478aec5e15",
+  "review_refs": [
+    "KMFA/stage_artifacts/S09_STAGE_REVIEW/human/stage9_review_report.md",
+    "KMFA/stage_artifacts/S09_STAGE_REVIEW/human/test_results.md",
+    "KMFA/stage_artifacts/S09_STAGE_REVIEW/machine/stage9_review_manifest.json"
+  ],
+  "upload_refs": [
+    "KMFA/stage_artifacts/S09_STAGE_REVIEW/human/github_upload_record.md",
+    "KMFA/stage_artifacts/S09_STAGE_REVIEW/machine/stage9_upload_manifest.json"
+  ],
+  "validation_summary": {
+    "s09_p1": "PASS: fact_records=4, cost_categories=9, unallocated_pool=9, manual_review_queue=3, unresolved_differences=1, s09_p2_scope=false, s09_p3_scope=false, formal_report_allowed=false, github_upload_allowed=false",
+    "s09_p2": "PASS: margin_records=4, difference_summary=12, upstream_manual_review_queue=3, upstream_unresolved_differences=1, s09_p3_scope=false, formal_report_allowed=false, github_upload_allowed=false",
+    "s09_p3": "PASS: reconciliation_records=12, domain_controls=6, confirmed_resolutions=0, pending_resolutions=12, derived_metric_rerun_allowed=false, formal_report_allowed=false, stage9_review_allowed=false, github_upload_allowed=false",
+    "stage9_review": "PASS: project_cost_fact_records=4, project_margin_records=4, scope_reconciliation_records=12, pending_owner_or_authorized_review_records=12, upload_allowed_after_review=true, s10_allowed=false, github_upload_status=not_pushed",
+    "a0_fixture_regression": "PASS: 3 tests; A0 golden fixture validator passed",
+    "full_unit_tests": "PASS: 100 tests",
+    "governance": "PASS: lean_governance and project_governance errors 0 / warnings 0",
+    "no_float_money": "PASS",
+    "metadata_protocol": "PASS: dirs=8, files=19, identifiers=5",
+    "immutability_policy": "PASS",
+    "report_grade_gate": "PASS",
+    "required_html": "PASS: html=45, core=7",
+    "no_omission": "PASS: requirements=20, P0=9, P1=8, status_records=369, tasks=162, v1.2_html=45+",
+    "yaml_parse": "PASS: files=30",
+    "json_jsonl_csv_parse": "PASS: json=85, jsonl=45, jsonl_records=810, csv=24, csv_rows=694",
+    "raw_private_artifact_scan": "PASS",
+    "secret_scan": "PASS: hits=0",
+    "diff_check": "PASS",
+    "dry_run_push_pre_evidence_commit": "PASS: e2ba650b..5168473f HEAD -> main",
+    "final_dry_run_push": "PASS",
+    "push": "PASS",
+    "post_push_parity": "PASS: HEAD == origin/main == remote main"
+  },
+  "privacy_boundary": {
+    "raw_sensitive_data_uploaded": false,
+    "raw_business_files_uploaded": false,
+    "business_records_committed": false,
+    "credentials_committed": false,
+    "private_csv_committed": false,
+    "bank_contract_payroll_tax_files_uploaded": false
+  },
+  "non_scope": [
+    "S10 report templates",
+    "report grade runtime",
+    "HTML report export",
+    "CSV or Excel report export",
+    "UI",
+    "lineage full check",
+    "external connectors"
+  ],
+  "next_gate": "KMFA-S10-P1-GATE"
+}

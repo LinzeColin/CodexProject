@@ -4,9 +4,9 @@ project_id: "KMFA"
 total_estimated_hours: 54
 completed_estimated_hours: 54
 current_stage_id: "S9"
-current_phase_id: "S9UPLOAD"
-current_task_id: "KMFA-S09-GITHUB-UPLOAD-20260630"
-next_gate_id: "KMFA-S09-FINAL-GITHUB-UPLOAD-GATE"
+current_phase_id: "S10P1"
+current_task_id: "S10-P1"
+next_gate_id: "KMFA-S10-P1-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -652,10 +652,10 @@ stages:
       - "KMFA/stage_artifacts/S08_STAGE_REVIEW/machine/stage8_upload_manifest.json"
   - stage_id: "S9"
     name: "项目成本计算引擎"
-    status: "review_passed_upload_ready_local_only"
+    status: "uploaded_to_github_main"
     estimated_hours: 3
     estimated_pct: 100
-    current_result: "S09-P1 项目成本事实层、S09-P2 毛利与现金毛利、S09-P3 口径转换与差异核对已完成本地验证，Stage 9 整体复审已本地通过：4 条 public-safe 项目事实记录、4 条 margin records、12 条 scope difference summary records、12 条 reconciliation records 和 6 条 domain controls；正式报告、UI、外部接口、lineage full check 和 GitHub upload 未执行。"
+    current_result: "S09-P1 项目成本事实层、S09-P2 毛利与现金毛利、S09-P3 口径转换与差异核对已完成本地验证，Stage 9 整体复审和 final GitHub upload 已完成：4 条 public-safe 项目事实记录、4 条 margin records、12 条 scope difference summary records、12 条 reconciliation records 和 6 条 domain controls；正式报告、UI、外部接口和 lineage full check 未执行。"
     evidence_refs:
       - "KMFA/stage_artifacts/S09_P1_project_cost_fact_layer/human/s09_p1_completion_record.md"
       - "KMFA/stage_artifacts/S09_P1_project_cost_fact_layer/human/test_results.md"
@@ -669,6 +669,8 @@ stages:
       - "KMFA/stage_artifacts/S09_STAGE_REVIEW/human/stage9_review_report.md"
       - "KMFA/stage_artifacts/S09_STAGE_REVIEW/human/test_results.md"
       - "KMFA/stage_artifacts/S09_STAGE_REVIEW/machine/stage9_review_manifest.json"
+      - "KMFA/stage_artifacts/S09_STAGE_REVIEW/human/github_upload_record.md"
+      - "KMFA/stage_artifacts/S09_STAGE_REVIEW/machine/stage9_upload_manifest.json"
   - stage_id: "S10"
     name: "报告可信等级与经营报告生成"
     status: "planned"
