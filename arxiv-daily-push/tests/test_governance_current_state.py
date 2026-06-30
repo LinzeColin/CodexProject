@@ -35,7 +35,7 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
-            "S2PLT02_TERMINAL_CAPTURE_WINDOW_AUDIT_CLI_BLOCKED_DRY_RUN_SCHEDULER_DISABLED_NO_PRODUCTION",
+            "S2PLT02_TERMINAL_PROOF_EVIDENCE_INVENTORY_BLOCKED_DRY_RUN_CANDIDATES_NO_PRODUCTION",
             current_state,
         )
         self.assertIn("S2PLT02-REAL-DELIVERY-MANIFEST-NORMALIZATION", current_state)
@@ -46,9 +46,12 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("S2PLT02-TERMINAL-DELIVERY-PROOF-ARTIFACT-DRAFT-BUILDER", current_state)
         self.assertIn("S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT", current_state)
         self.assertIn("S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-CLI", current_state)
+        self.assertIn("S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY", current_state)
+        self.assertIn("audit-s2plt02-terminal-proof-evidence-inventory", current_state)
         self.assertIn("S2PLT02-TERMINAL-DELIVERY-PROOF", current_state)
-        self.assertIn("ready inputs", current_state)
-        self.assertIn("missing inputs", current_state)
+        self.assertIn("usable terminal inputs", current_state)
+        self.assertIn("blocked dry-run candidates", current_state)
+        self.assertIn("missing terminal inputs", current_state)
         self.assertIn("SECOND_REAL_DELIVERY_DAY", current_state)
         self.assertIn("EIGHT_REAL_EMAILS", current_state)
         self.assertIn("REAL_SCHEDULER_PROOF", current_state)
@@ -73,6 +76,9 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("dry_run_email_count=8", current_state)
         self.assertIn("real_sent_candidate_email_count=0", current_state)
         self.assertIn("s2plt02_terminal_delivery_proof_artifact_missing", current_state)
+        self.assertIn("431949620cef28641fcd606ee5646c006cd5cf9fd412daadc899a534185ac613", current_state)
+        self.assertIn("blocked_dry_run_not_real_terminal_input", current_state)
+        self.assertIn("safe_to_build_terminal_artifact=false", current_state)
         self.assertIn("no production acceptance", current_state.lower())
 
     def test_owner_next_action_points_to_s2plt02_terminal_delivery_proof(self) -> None:
@@ -95,6 +101,7 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             self.assertIn("S2PLT02-REAL-SCHEDULER-PROOF-INPUT-VALIDATOR", text)
             self.assertIn("S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT", text)
             self.assertIn("S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-CLI", text)
+            self.assertIn("S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY", text)
             self.assertIn("S2PLT02-TERMINAL-DELIVERY-PROOF", text)
             self.assertIn("ACC-S2PMT07-FINAL-REVIEW", text)
             self.assertIn("real", text_lower)

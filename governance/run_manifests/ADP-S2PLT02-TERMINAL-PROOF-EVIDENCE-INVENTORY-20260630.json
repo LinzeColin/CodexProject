@@ -1,0 +1,165 @@
+{
+  "acceptance_id": "ACC-S2PLT02-2D",
+  "artifact_written": false,
+  "blocked_candidate_inputs": [
+    {
+      "blocking_reasons": [
+        "dry_run_evidence_only_not_real_smtp",
+        "real_scheduler_not_proven",
+        "two_consecutive_real_days_not_proven",
+        "eight_real_emails_not_proven"
+      ],
+      "classification": "blocked_dry_run_not_real_terminal_input",
+      "counts_toward_s2plt02_terminal_proof": false,
+      "dry_run_evidence_present": true,
+      "dry_run_mail_count": 4,
+      "evidence_refs": [
+        "/Users/linzezhang/.adp/arxiv-daily-push/runs/20260629/adp-local-runner-report.json",
+        "/Users/linzezhang/.adp/arxiv-daily-push/runs/20260629/adp-smtp-delivery-report-M1.json",
+        "/Users/linzezhang/.adp/arxiv-daily-push/runs/20260629/adp-smtp-delivery-report-M2.json",
+        "/Users/linzezhang/.adp/arxiv-daily-push/runs/20260629/adp-smtp-delivery-report-M3.json",
+        "/Users/linzezhang/.adp/arxiv-daily-push/runs/20260629/adp-smtp-delivery-report-M4.json"
+      ],
+      "real_sent_mail_count": 0,
+      "role": "day_2_delivery_candidate",
+      "service_date": "2026-06-29",
+      "state_hash": "9fbd118380da579c2cd47a92e6fe3e54fc89ffd9b76dddb8d3a7199e5821e965",
+      "terminal_delivery_credit": false,
+      "validation_errors": []
+    },
+    {
+      "blocking_reasons": [
+        "dry_run_evidence_only_not_real_smtp",
+        "real_scheduler_not_proven",
+        "two_consecutive_real_days_not_proven",
+        "eight_real_emails_not_proven"
+      ],
+      "classification": "blocked_dry_run_not_real_terminal_input",
+      "counts_toward_s2plt02_terminal_proof": false,
+      "dry_run_evidence_present": true,
+      "dry_run_mail_count": 4,
+      "evidence_refs": [
+        "/Users/linzezhang/.adp/arxiv-daily-push/runs/20260630/adp-local-runner-report.json",
+        "/Users/linzezhang/.adp/arxiv-daily-push/runs/20260630/adp-smtp-delivery-report-M1.json",
+        "/Users/linzezhang/.adp/arxiv-daily-push/runs/20260630/adp-smtp-delivery-report-M2.json",
+        "/Users/linzezhang/.adp/arxiv-daily-push/runs/20260630/adp-smtp-delivery-report-M3.json",
+        "/Users/linzezhang/.adp/arxiv-daily-push/runs/20260630/adp-smtp-delivery-report-M4.json"
+      ],
+      "real_sent_mail_count": 0,
+      "role": "day_2_delivery_candidate",
+      "service_date": "2026-06-30",
+      "state_hash": "be9dddcd5443b5c015923b58ad5467820f2327586b2bc5432bf576146807ea2b",
+      "terminal_delivery_credit": false,
+      "validation_errors": []
+    }
+  ],
+  "blocked_candidate_service_dates": [
+    "2026-06-29",
+    "2026-06-30"
+  ],
+  "blocking_reasons": [
+    "two_consecutive_real_days_not_proven",
+    "eight_real_emails_not_proven",
+    "real_scheduler_not_proven",
+    "s2plt02_terminal_delivery_proof_artifact_missing",
+    "second_consecutive_real_m1_m4_smtp_day_missing",
+    "real_launchd_scheduler_proof_missing",
+    "adp_allow_smtp_send_false",
+    "adp_launchagents_disabled_by_user_domain_override",
+    "blocked_candidate_inputs_present"
+  ],
+  "candidate_service_dates": [
+    "2026-06-29",
+    "2026-06-30"
+  ],
+  "capture_window_state_hash": "6ad683a0590f9d43c808cf7812edc7c7f93feabec52d365ddb2a8abbbf42b4bf",
+  "counts_toward_s2plt02_terminal_proof": false,
+  "current_pointer_changed": false,
+  "daily_operation_enabled": false,
+  "generated_at": "2026-06-30T13:02:33+10:00",
+  "input_inventory_state_hash": "0b45b4a39ea4c5f7f2024fd7055a8f8d0f8c1b6949e03bee2e696232face69d7",
+  "integrated_production_accepted": false,
+  "missing_terminal_inputs": [
+    "SECOND_REAL_DELIVERY_DAY",
+    "EIGHT_REAL_EMAILS",
+    "REAL_SCHEDULER_PROOF",
+    "S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT"
+  ],
+  "model_id": "adp-s2plt02-terminal-delivery-proof-v1",
+  "next_allowed_builder_unblocked": false,
+  "next_draft_command": "adp build-s2plt02-terminal-delivery-proof-artifact-draft --delivery-manifest DAY1.json --delivery-manifest DAY2.json --scheduler-proof REAL-SCHEDULER-PROOF.json --json",
+  "next_validation_command": "adp validate-s2plt02-terminal-delivery-proof --repo-root . --json",
+  "observed_candidate_dry_run_email_count": 8,
+  "observed_candidate_real_sent_email_count": 0,
+  "observed_real_delivery_days": 1,
+  "observed_real_email_count": 4,
+  "parent_task_id": "S2PLT02-TERMINAL-DELIVERY-PROOF",
+  "production_acceptance_claimed": false,
+  "production_restore_enabled": false,
+  "ready_inputs": [
+    "S2PLT01_TERMINAL_ACCEPTANCE",
+    "FIRST_REAL_DELIVERY_DAY",
+    "NO_DUPLICATE_EMAILS",
+    "M4_WATERMARK_PROOF",
+    "REAL_SMTP_PROOF",
+    "P0_P1_ZERO_PROOF"
+  ],
+  "real_smtp_send_enabled": false,
+  "release_packaging_enabled": false,
+  "safe_to_build_terminal_artifact": false,
+  "scheduler_enabled": false,
+  "scheduler_install_enabled": false,
+  "schema_version": 1,
+  "scope": "s2plt02_terminal_proof_evidence_inventory_no_write_no_production",
+  "stage2_integrated_production_accepted": false,
+  "state_hash": "431949620cef28641fcd606ee5646c006cd5cf9fd412daadc899a534185ac613",
+  "status": "blocked",
+  "task_id": "S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY",
+  "terminal_delivery_credit": false,
+  "terminal_delivery_proof_artifact_present": false,
+  "terminal_delivery_proof_artifact_ref": "FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json",
+  "terminal_delivery_proof_ready": false,
+  "terminal_validation_state_hash": "3fbde96111dd78d3ffe4474e012fa5d86de76a24e6fa7640d0310c178003e1db",
+  "usable_terminal_inputs": [
+    {
+      "counts_toward_s2plt02_terminal_proof": true,
+      "input_name": "S2PLT01_TERMINAL_ACCEPTANCE",
+      "ready": true,
+      "ref": "FINAL_ACCEPTANCE_BUNDLE/s2plt01_terminal_acceptance.json",
+      "role": "s2plt01_terminal_acceptance"
+    },
+    {
+      "counts_toward_s2plt02_terminal_proof": true,
+      "input_name": "FIRST_REAL_DELIVERY_DAY",
+      "ready": true,
+      "ref": "governance/run_manifests/ADP-S2PLT02-NORMALIZED-REAL-DELIVERY-MANIFEST-20260628.json",
+      "role": "day_1_delivery",
+      "service_date": "2026-06-28"
+    },
+    {
+      "counts_toward_s2plt02_terminal_proof": true,
+      "input_name": "M4_WATERMARK_PROOF",
+      "ready": true,
+      "ref": "governance/run_manifests/ADP-S2PLT02-M4-WATERMARK-PROOF-RECORD-20260628.json",
+      "role": "m4_watermark_proof",
+      "service_date": "2026-06-28"
+    },
+    {
+      "counts_toward_s2plt02_terminal_proof": true,
+      "input_name": "REAL_SMTP_PROOF",
+      "ready": true,
+      "ref": "governance/run_manifests/ADP-S2PLT02-NORMALIZED-REAL-DELIVERY-MANIFEST-20260628.json",
+      "role": "real_smtp_proof",
+      "service_date": "2026-06-28"
+    },
+    {
+      "counts_toward_s2plt02_terminal_proof": true,
+      "input_name": "P0_P1_ZERO_PROOF",
+      "ready": true,
+      "ref": "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
+      "role": "p0_p1_zero_proof"
+    }
+  ],
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false
+}

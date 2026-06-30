@@ -966,6 +966,9 @@ S2PLT02_TERMINAL_CAPTURE_WINDOW_AUDIT_MODEL_ID = "adp-s2plt02-terminal-capture-w
 S2PLT02_TERMINAL_CAPTURE_WINDOW_AUDIT_SCOPE = (
     "terminal_capture_window_runtime_audit_no_smtp_send_no_scheduler_enablement"
 )
+S2PLT02_TERMINAL_PROOF_EVIDENCE_INVENTORY_SCOPE = (
+    "s2plt02_terminal_proof_evidence_inventory_no_write_no_production"
+)
 S2PLT02_TERMINAL_CAPTURE_WINDOW_DEFAULT_CANDIDATE_DATES = (
     "2026-06-29",
     "2026-06-30",
@@ -3436,6 +3439,255 @@ def validate_s2plt02_terminal_delivery_input_inventory_state(state: Mapping[str,
     expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
     if state.get("state_hash") != expected_hash:
         errors.append("S2PLT02 terminal input inventory state_hash does not match state content")
+    return errors
+
+
+def build_s2plt02_terminal_proof_evidence_inventory_state(
+    *,
+    generated_at: str,
+    repo_root: str | Path = ".",
+    state_dir: str | Path | None = None,
+    candidate_service_dates: tuple[str, ...] = S2PLT02_TERMINAL_CAPTURE_WINDOW_DEFAULT_CANDIDATE_DATES,
+    launchctl_disabled_text: str = "",
+    adp_allow_smtp_send: bool = False,
+) -> dict[str, Any]:
+    """Classify current terminal-proof evidence inputs without writing the terminal proof artifact."""
+
+    input_inventory = build_s2plt02_terminal_delivery_input_inventory_state(
+        generated_at=generated_at,
+        repo_root=repo_root,
+    )
+    capture_window = build_s2plt02_terminal_capture_window_audit_state(
+        repo_root=repo_root,
+        state_dir=state_dir,
+        candidate_service_dates=candidate_service_dates,
+        launchctl_disabled_text=launchctl_disabled_text,
+        adp_allow_smtp_send=adp_allow_smtp_send,
+    )
+    terminal_validation = build_s2plt02_terminal_delivery_proof_artifact_validation_state(
+        repo_root=repo_root,
+    )
+
+    ready_inputs = [str(item) for item in input_inventory.get("ready_inputs", [])]
+    missing_inputs = [str(item) for item in input_inventory.get("missing_inputs", [])]
+    usable_terminal_inputs: list[dict[str, Any]] = []
+    ready_input_refs = {
+        "S2PLT01_TERMINAL_ACCEPTANCE": {
+            "role": "s2plt01_terminal_acceptance",
+            "ref": "FINAL_ACCEPTANCE_BUNDLE/s2plt01_terminal_acceptance.json",
+        },
+        "FIRST_REAL_DELIVERY_DAY": {
+            "role": "day_1_delivery",
+            "ref": S2PLT02_NORMALIZED_REAL_DELIVERY_MANIFEST_REF,
+            "service_date": S2PLT02_PARTIAL_REAL_DELIVERY_SERVICE_DATE,
+        },
+        "M4_WATERMARK_PROOF": {
+            "role": "m4_watermark_proof",
+            "ref": S2PLT02_M4_WATERMARK_PROOF_RECORD_REF,
+            "service_date": S2PLT02_PARTIAL_REAL_DELIVERY_SERVICE_DATE,
+        },
+        "REAL_SMTP_PROOF": {
+            "role": "real_smtp_proof",
+            "ref": S2PLT02_NORMALIZED_REAL_DELIVERY_MANIFEST_REF,
+            "service_date": S2PLT02_PARTIAL_REAL_DELIVERY_SERVICE_DATE,
+        },
+        "P0_P1_ZERO_PROOF": {
+            "role": "p0_p1_zero_proof",
+            "ref": "FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json",
+        },
+    }
+    for input_name, ref_payload in ready_input_refs.items():
+        if input_name in ready_inputs:
+            usable_terminal_inputs.append(
+                {
+                    "input_name": input_name,
+                    "ready": True,
+                    "counts_toward_s2plt02_terminal_proof": True,
+                    **ref_payload,
+                }
+            )
+
+    blocked_candidate_inputs: list[dict[str, Any]] = []
+    for audit in capture_window.get("dry_run_audits", []):
+        if not isinstance(audit, Mapping):
+            continue
+        service_date = str(audit.get("service_date") or "")
+        dry_run_present = audit.get("dry_run_evidence_present") is True
+        classification = (
+            "blocked_dry_run_not_real_terminal_input"
+            if dry_run_present
+            else "blocked_candidate_missing_or_invalid"
+        )
+        blocked_candidate_inputs.append(
+            {
+                "role": "day_2_delivery_candidate",
+                "service_date": service_date,
+                "classification": classification,
+                "dry_run_evidence_present": dry_run_present,
+                "dry_run_mail_count": int(audit.get("dry_run_mail_count") or 0),
+                "real_sent_mail_count": int(audit.get("real_sent_mail_count") or 0),
+                "terminal_delivery_credit": False,
+                "counts_toward_s2plt02_terminal_proof": False,
+                "blocking_reasons": [
+                    str(reason)
+                    for reason in audit.get("blocking_reasons", [])
+                    if isinstance(reason, str)
+                ],
+                "validation_errors": [
+                    str(error)
+                    for error in audit.get("validation_errors", [])
+                    if isinstance(error, str)
+                ],
+                "evidence_refs": [
+                    str(ref)
+                    for ref in audit.get("evidence_refs", [])
+                    if isinstance(ref, str)
+                ],
+                "state_hash": str(audit.get("state_hash") or ""),
+            }
+        )
+
+    blocked_candidate_service_dates = [
+        item["service_date"]
+        for item in blocked_candidate_inputs
+        if item.get("service_date")
+    ]
+    safe_to_build_terminal_artifact = (
+        input_inventory.get("terminal_delivery_proof_ready") is True
+        and not missing_inputs
+        and not blocked_candidate_inputs
+        and terminal_validation.get("terminal_delivery_proof_ready") is True
+    )
+    blocking_reasons = list(
+        dict.fromkeys(
+            [
+                *[str(reason) for reason in input_inventory.get("blocking_reasons", []) if isinstance(reason, str)],
+                *[
+                    str(reason)
+                    for reason in capture_window.get("blocking_reasons", [])
+                    if isinstance(reason, str)
+                ],
+                *[
+                    "blocked_candidate_inputs_present"
+                    if blocked_candidate_inputs
+                    else ""
+                ],
+            ]
+        )
+    )
+    blocking_reasons = [reason for reason in blocking_reasons if reason]
+
+    state: dict[str, Any] = {
+        "model_id": S2PLT02_TERMINAL_DELIVERY_PROOF_MODEL_ID,
+        "schema_version": S2PLT02_SCHEMA_VERSION,
+        "task_id": "S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY",
+        "parent_task_id": "S2PLT02-TERMINAL-DELIVERY-PROOF",
+        "acceptance_id": S2PLT02_ACCEPTANCE_ID,
+        "generated_at": generated_at,
+        "status": "pass" if safe_to_build_terminal_artifact else "blocked",
+        "scope": S2PLT02_TERMINAL_PROOF_EVIDENCE_INVENTORY_SCOPE,
+        "candidate_service_dates": list(candidate_service_dates),
+        "ready_inputs": ready_inputs,
+        "missing_terminal_inputs": missing_inputs,
+        "usable_terminal_inputs": usable_terminal_inputs,
+        "blocked_candidate_inputs": blocked_candidate_inputs,
+        "blocked_candidate_service_dates": blocked_candidate_service_dates,
+        "safe_to_build_terminal_artifact": safe_to_build_terminal_artifact,
+        "terminal_delivery_credit": False,
+        "counts_toward_s2plt02_terminal_proof": False,
+        "terminal_delivery_proof_ready": input_inventory.get("terminal_delivery_proof_ready") is True,
+        "terminal_delivery_proof_artifact_present": terminal_validation.get("artifact_present") is True,
+        "terminal_delivery_proof_artifact_ref": S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH,
+        "observed_real_delivery_days": int(input_inventory.get("observed_real_delivery_days") or 0),
+        "observed_real_email_count": int(input_inventory.get("observed_real_email_count") or 0),
+        "observed_candidate_dry_run_email_count": int(capture_window.get("dry_run_email_count") or 0),
+        "observed_candidate_real_sent_email_count": int(capture_window.get("real_sent_candidate_email_count") or 0),
+        "input_inventory_state_hash": str(input_inventory.get("state_hash") or ""),
+        "capture_window_state_hash": str(capture_window.get("state_hash") or ""),
+        "terminal_validation_state_hash": str(terminal_validation.get("state_hash") or ""),
+        "next_draft_command": input_inventory.get("next_draft_command"),
+        "next_validation_command": input_inventory.get("next_validation_command"),
+        "next_allowed_builder_unblocked": False,
+        "blocking_reasons": blocking_reasons,
+        "artifact_written": False,
+        "production_acceptance_claimed": False,
+        "integrated_production_accepted": False,
+        "stage2_integrated_production_accepted": False,
+        "daily_operation_enabled": False,
+        "real_smtp_send_enabled": False,
+        "scheduler_enabled": False,
+        "scheduler_install_enabled": False,
+        "release_packaging_enabled": False,
+        "production_restore_enabled": False,
+        "current_pointer_changed": False,
+        "v7_1_baseline_changed": False,
+        "v7_2_contract_files_changed": False,
+        "state_hash": "",
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
+def validate_s2plt02_terminal_proof_evidence_inventory_state(state: Mapping[str, Any]) -> list[str]:
+    """Validate the no-write S2PLT02 terminal proof evidence inventory."""
+
+    errors: list[str] = []
+    if state.get("model_id") != S2PLT02_TERMINAL_DELIVERY_PROOF_MODEL_ID:
+        errors.append("S2PLT02 terminal proof evidence inventory model_id is invalid")
+    if state.get("schema_version") != S2PLT02_SCHEMA_VERSION:
+        errors.append("S2PLT02 terminal proof evidence inventory schema_version must be 1")
+    if state.get("task_id") != "S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY":
+        errors.append("S2PLT02 terminal proof evidence inventory task_id is invalid")
+    if state.get("parent_task_id") != "S2PLT02-TERMINAL-DELIVERY-PROOF":
+        errors.append("S2PLT02 terminal proof evidence inventory parent_task_id is invalid")
+    if state.get("acceptance_id") != S2PLT02_ACCEPTANCE_ID:
+        errors.append("S2PLT02 terminal proof evidence inventory acceptance_id is invalid")
+    if state.get("scope") != S2PLT02_TERMINAL_PROOF_EVIDENCE_INVENTORY_SCOPE:
+        errors.append("S2PLT02 terminal proof evidence inventory scope is invalid")
+    if state.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PLT02 terminal proof evidence inventory status is invalid")
+    if state.get("terminal_delivery_proof_artifact_ref") != S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH:
+        errors.append("S2PLT02 terminal proof evidence inventory artifact ref is invalid")
+    missing_inputs = [str(item) for item in state.get("missing_terminal_inputs", [])]
+    blocked_candidates = [item for item in state.get("blocked_candidate_inputs", []) if isinstance(item, Mapping)]
+    if state.get("safe_to_build_terminal_artifact") is True and (missing_inputs or blocked_candidates):
+        errors.append("safe_to_build_terminal_artifact requires no missing inputs and no blocked candidates")
+    if state.get("status") == "pass" and state.get("safe_to_build_terminal_artifact") is not True:
+        errors.append("pass status requires safe_to_build_terminal_artifact")
+    for item in blocked_candidates:
+        if item.get("counts_toward_s2plt02_terminal_proof") is not False:
+            errors.append("blocked candidates must not count toward S2PLT02 terminal proof")
+        if item.get("terminal_delivery_credit") is not False:
+            errors.append("blocked candidates must not grant terminal delivery credit")
+        if not item.get("classification"):
+            errors.append("blocked candidate classification is required")
+    if state.get("terminal_delivery_credit") is not False:
+        errors.append("terminal_delivery_credit must be false")
+    if state.get("counts_toward_s2plt02_terminal_proof") is not False:
+        errors.append("counts_toward_s2plt02_terminal_proof must be false")
+    if state.get("next_allowed_builder_unblocked") is not False:
+        errors.append("next_allowed_builder_unblocked must be false while terminal inputs are missing")
+    if state.get("artifact_written") is not False:
+        errors.append("artifact_written must be false")
+    for flag in (
+        "production_acceptance_claimed",
+        "integrated_production_accepted",
+        "stage2_integrated_production_accepted",
+        "daily_operation_enabled",
+        "real_smtp_send_enabled",
+        "scheduler_enabled",
+        "scheduler_install_enabled",
+        "release_packaging_enabled",
+        "production_restore_enabled",
+        "current_pointer_changed",
+        "v7_1_baseline_changed",
+        "v7_2_contract_files_changed",
+    ):
+        if state.get(flag) is not False:
+            errors.append(f"{flag} must be false")
+    expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    if state.get("state_hash") != expected_hash:
+        errors.append("S2PLT02 terminal proof evidence inventory state_hash does not match state content")
     return errors
 
 

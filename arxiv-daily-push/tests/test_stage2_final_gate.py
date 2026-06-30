@@ -156,6 +156,7 @@ from arxiv_daily_push.stage2_final_gate import (
     build_s2plt02_real_scheduler_proof_validation_state,
     build_s2plt02_partial_real_delivery_state,
     build_s2plt02_terminal_delivery_input_inventory_state,
+    build_s2plt02_terminal_proof_evidence_inventory_state,
     build_s2plt02_terminal_delivery_proof_capture_plan_state,
     build_s2plt02_terminal_delivery_proof_artifact_draft_state,
     build_s2plt02_terminal_delivery_proof_artifact_validation_state,
@@ -186,6 +187,7 @@ from arxiv_daily_push.stage2_final_gate import (
     validate_s2plt02_normalized_delivery_manifest_state,
     validate_s2plt02_real_scheduler_proof_validation_state,
     validate_s2plt02_terminal_delivery_input_inventory_state,
+    validate_s2plt02_terminal_proof_evidence_inventory_state,
     validate_s2plt02_terminal_delivery_proof_capture_plan_state,
     validate_s2plt02_terminal_delivery_proof_artifact,
     validate_s2plt02_terminal_delivery_proof_artifact_validation_state,
@@ -799,6 +801,48 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(inventory["scheduler_install_enabled"])
         self.assertFalse(inventory["daily_operation_enabled"])
         self.assertEqual(validate_s2plt02_terminal_delivery_input_inventory_state(inventory), [])
+
+    def test_s2plt02_terminal_proof_evidence_inventory_classifies_blocked_dry_run_candidates(self) -> None:
+        with TemporaryDirectory() as tmp_dir:
+            state_dir = Path(tmp_dir)
+            self._write_s2plt02_second_day_dry_run_reports(state_dir)
+
+            inventory = build_s2plt02_terminal_proof_evidence_inventory_state(
+                generated_at="2026-06-30T13:24:00+10:00",
+                repo_root=REPO_ROOT,
+                state_dir=state_dir,
+                candidate_service_dates=("2026-06-29",),
+            )
+
+        self.assertEqual(inventory["status"], "blocked")
+        self.assertEqual(inventory["task_id"], "S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY")
+        self.assertFalse(inventory["safe_to_build_terminal_artifact"])
+        self.assertFalse(inventory["artifact_written"])
+        self.assertIn("S2PLT01_TERMINAL_ACCEPTANCE", inventory["ready_inputs"])
+        self.assertIn("FIRST_REAL_DELIVERY_DAY", inventory["ready_inputs"])
+        self.assertIn("P0_P1_ZERO_PROOF", inventory["ready_inputs"])
+        self.assertIn("SECOND_REAL_DELIVERY_DAY", inventory["missing_terminal_inputs"])
+        self.assertIn("EIGHT_REAL_EMAILS", inventory["missing_terminal_inputs"])
+        self.assertIn("REAL_SCHEDULER_PROOF", inventory["missing_terminal_inputs"])
+        self.assertIn("S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT", inventory["missing_terminal_inputs"])
+        self.assertEqual(inventory["usable_terminal_inputs"][0]["role"], "s2plt01_terminal_acceptance")
+        self.assertIn(
+            "governance/run_manifests/ADP-S2PLT02-NORMALIZED-REAL-DELIVERY-MANIFEST-20260628.json",
+            [item["ref"] for item in inventory["usable_terminal_inputs"]],
+        )
+        self.assertEqual(len(inventory["blocked_candidate_inputs"]), 1)
+        blocked = inventory["blocked_candidate_inputs"][0]
+        self.assertEqual(blocked["role"], "day_2_delivery_candidate")
+        self.assertEqual(blocked["service_date"], "2026-06-29")
+        self.assertEqual(blocked["classification"], "blocked_dry_run_not_real_terminal_input")
+        self.assertFalse(blocked["counts_toward_s2plt02_terminal_proof"])
+        self.assertIn("dry_run_evidence_only_not_real_smtp", blocked["blocking_reasons"])
+        self.assertEqual(inventory["blocked_candidate_service_dates"], ["2026-06-29"])
+        self.assertEqual(inventory["terminal_delivery_credit"], False)
+        self.assertFalse(inventory["real_smtp_send_enabled"])
+        self.assertFalse(inventory["scheduler_install_enabled"])
+        self.assertFalse(inventory["daily_operation_enabled"])
+        self.assertEqual(validate_s2plt02_terminal_proof_evidence_inventory_state(inventory), [])
 
     def test_s2plt02_terminal_delivery_proof_capture_plan_exposes_blocked_next_steps(self) -> None:
         plan = build_s2plt02_terminal_delivery_proof_capture_plan_state(

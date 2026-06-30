@@ -21,10 +21,19 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 290
+- task_count: 291
 - acceptance_count: 127
 
 ## Delivery Tasks
+
+## 2026-06-30 13:02:33 Australia/Sydney - S2PLT02 Terminal Proof Evidence Inventory
+
+- `S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY` adds `audit-s2plt02-terminal-proof-evidence-inventory` as a no-write CLI that classifies current terminal proof inputs as usable, blocked candidate, or missing.
+- Actual CLI remains blocked / exit 2 with `state_hash=431949620cef28641fcd606ee5646c006cd5cf9fd412daadc899a534185ac613`, `usable_terminal_inputs=5`, `blocked_candidate_service_dates=2026-06-29,2026-06-30`, `observed_candidate_dry_run_email_count=8`, `observed_candidate_real_sent_email_count=0`, `safe_to_build_terminal_artifact=false`, and `artifact_written=false`.
+- The two blocked candidate days are both classified as `blocked_dry_run_not_real_terminal_input`; they do not count toward S2PLT02 terminal proof.
+- Remaining S2PLT02 terminal inputs are still `SECOND_REAL_DELIVERY_DAY`, `EIGHT_REAL_EMAILS`, `REAL_SCHEDULER_PROOF`, and `S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`.
+- Evidence: `governance/run_manifests/ADP-S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY-20260630.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_PROOF_EVIDENCE_INVENTORY.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/src/arxiv_daily_push/cli.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`; `arxiv-daily-push/tests/test_cli.py`.
+- This does not write S2PLT02 terminal proof, send SMTP, enable scheduler, upload Release assets, execute restore, mutate schema/DB/source/ranking/CURRENT/V7, enable DAILY_OPERATION, or claim S2PLT02/S2PMT07/integrated production acceptance.
 
 ## 2026-06-30 12:37:34 Australia/Sydney - S2PMT07 S2PLT04 S2PLT02 Latest Evidence Sync
 
