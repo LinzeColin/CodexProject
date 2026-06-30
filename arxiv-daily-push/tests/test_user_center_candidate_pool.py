@@ -132,7 +132,7 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         table_rows = re.findall(r"^\| \d+ \|", page, flags=re.MULTILINE)
         readme = (USER_CENTER / "README.md").read_text(encoding="utf-8")
 
-        self.assertGreaterEqual(len(matrix_rows), 245)
+        self.assertGreaterEqual(len(matrix_rows), 396)
         self.assertEqual(len(table_rows), len(matrix_rows))
         self.assertTrue(page.startswith("# 功能任务测试证据追踪链\n"))
         self.assertRegex(page, r"更新时间：\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} Australia/Sydney")
@@ -143,6 +143,23 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("[test_stage2_sources.py](../tests/test_stage2_sources.py)", page)
         self.assertIn(f"TRACEABILITY_MATRIX 行数 | {len(matrix_rows)}", page)
         self.assertIn(f"{len(matrix_rows)} 条可点击链路", readme)
+        self.assertIn("REQ-ADP-V7-052-S2PMT07-FINAL-BUNDLE-S2PLT03-SUMMARY-SYNC", page)
+        self.assertIn("S2PMT07-FINAL-BUNDLE-S2PLT03-SUMMARY-SYNC", page)
+        self.assertIn(
+            "ADP-S2PMT07-FINAL-BUNDLE-S2PLT03-SUMMARY-SYNC-20260630.json",
+            page,
+        )
+        self.assertIn("PHASE_S2PMT07_FINAL_BUNDLE_S2PLT03_SUMMARY_SYNC.md", page)
+        self.assertIn("blocked_final_bundle_s2plt03_summary_synced_no_production", page)
+        self.assertIn("3b2475e26547816b77885fddb170944fb858a4aa14fc04305de6798c288a8651", page)
+        self.assertIn("55e5d994d17ceb53cb8e8a1729c52e29d7808dd07527e9ee9a48f52982e129f5", page)
+        self.assertIn("s2plt03_terminal_resilience_capture_plan_summary", page)
+        self.assertIn("next_executable_step=WAIT_FOR_S2PLT02_TERMINAL_ACCEPTANCE", page)
+        self.assertIn("S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT;S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT", page)
+        self.assertIn("s2plt03_terminal_resilience_proof_artifact_missing;s2plt02_not_accepted", page)
+        self.assertIn("artifact_written=false", page)
+        self.assertIn("s2plt03_accepted=false", page)
+        self.assertIn("s2plt03_resilience_drill_completed=false", page)
         self.assertIn("REQ-ADP-V7-051-S2PMT07-FINAL-BUNDLE-S2PLT02-CAPTURE-COMMAND-SYNC", page)
         self.assertIn("S2PMT07-FINAL-BUNDLE-S2PLT02-CAPTURE-COMMAND-SYNC", page)
         self.assertIn(

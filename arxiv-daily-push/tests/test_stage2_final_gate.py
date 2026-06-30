@@ -5468,6 +5468,18 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertFalse(capture_summary["smtp_secret_env_ready"])
         self.assertFalse(capture_summary["smtp_secret_values_logged"])
+        s2plt03_summary = plan["s2plt03_terminal_resilience_capture_plan_summary"]
+        self.assertEqual(s2plt03_summary["status"], "blocked")
+        self.assertEqual(s2plt03_summary["state_hash"], "bd5f74277b41f7e43ec1a907f6d13eee215808e86d04594e03bd4ed71091ddd5")
+        self.assertEqual(s2plt03_summary["next_executable_step"], "WAIT_FOR_S2PLT02_TERMINAL_ACCEPTANCE")
+        self.assertEqual(s2plt03_summary["terminal_artifact_ref"], S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT_PATH)
+        self.assertEqual(s2plt03_summary["s2plt02_terminal_delivery_proof_ref"], S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH)
+        self.assertIn("S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT", s2plt03_summary["missing_terminal_inputs"])
+        self.assertIn("S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT", s2plt03_summary["missing_terminal_inputs"])
+        self.assertIn("s2plt02_not_accepted", s2plt03_summary["blocking_reasons"])
+        self.assertFalse(s2plt03_summary["artifact_written"])
+        self.assertFalse(s2plt03_summary["s2plt03_accepted"])
+        self.assertFalse(s2plt03_summary["s2plt03_resilience_drill_completed"])
         self.assertEqual(plan["next_executable_command"], "plan-s2plt02-terminal-delivery-proof-capture")
         self.assertEqual(plan["next_executable_command_args"], {
             "repo_root": ".",
