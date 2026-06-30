@@ -11,6 +11,7 @@
     "validate:memory-river-evidence": "node scripts/validate_memory_river_evidence_layers.mjs",
     "validate:memory-river-interaction": "node scripts/validate_memory_river_interaction.mjs",
     "validate:memory-river-rendering": "node scripts/validate_memory_river_rendering.mjs",
+    "validate:memory-river-stage5": "node scripts/validate_memory_river_stage5.mjs",
     "validate:memory-starfield-interaction": "node scripts/validate_memory_starfield_interaction.mjs",
     "validate:memory-starfield-mapping": "node scripts/validate_memory_starfield_mapping.mjs",
     "validate:universe-state-spike": "node --experimental-strip-types scripts/validate_universe_state_spike.mjs"
