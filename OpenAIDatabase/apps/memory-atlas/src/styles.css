@@ -1650,6 +1650,121 @@ h3 {
   outline: none;
 }
 
+.galaxy-controls button[aria-pressed="true"] {
+  border-color: rgba(126, 232, 212, 0.56);
+  background: rgba(126, 232, 212, 0.14);
+  color: #ffffff;
+}
+
+.galaxy-terrain-panel {
+  position: absolute;
+  top: 62px;
+  right: 14px;
+  z-index: 5;
+  display: grid;
+  gap: 9px;
+  width: min(360px, calc(100% - 28px));
+  max-height: min(48%, 390px);
+  overflow: hidden;
+  border: 1px solid rgba(126, 232, 212, 0.22);
+  border-radius: 8px;
+  background: rgba(5, 8, 14, 0.82);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(12px);
+  padding: 10px;
+}
+
+.terrain-panel-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 0;
+}
+
+.terrain-panel-heading strong {
+  color: #f4f1e8;
+  font-size: 13px;
+}
+
+.terrain-panel-heading span {
+  color: #8fd3ff;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.terrain-row-list {
+  display: grid;
+  gap: 6px;
+  overflow: auto;
+  padding-right: 2px;
+}
+
+.terrain-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 3px 8px;
+  min-width: 0;
+  border: 1px solid rgba(244, 241, 232, 0.1);
+  border-left: 3px solid #8fd3ff;
+  border-radius: 7px;
+  background: rgba(244, 241, 232, 0.045);
+  padding: 8px;
+}
+
+.terrain-row[data-terrain-type="ridge"] {
+  border-left-color: #7ee8d4;
+}
+
+.terrain-row[data-terrain-type="shoreline"] {
+  border-left-color: #bcdfff;
+}
+
+.terrain-row[data-terrain-type="valley"] {
+  border-left-color: #8fd3ff;
+}
+
+.terrain-row[data-terrain-type="basin"] {
+  border-left-color: #94a3b8;
+}
+
+.terrain-row[data-terrain-type="fault-line"] {
+  border-left-color: #f48fb1;
+}
+
+.terrain-row b,
+.terrain-row span,
+.terrain-row em,
+.terrain-row small {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  line-height: 1.28;
+}
+
+.terrain-row b {
+  color: #ffffff;
+  font-size: 12px;
+}
+
+.terrain-row span {
+  color: #7ee8d4;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.terrain-row em {
+  grid-column: 1 / -1;
+  color: #b6b1a6;
+  font-size: 11px;
+  font-style: normal;
+}
+
+.terrain-row small {
+  grid-column: 1 / -1;
+  color: #8fd3ff;
+  font-size: 10px;
+}
+
 .galaxy-hover-preview {
   position: absolute;
   top: var(--preview-y);
@@ -4029,6 +4144,11 @@ h3 {
     max-width: min(430px, calc(100% - 28px));
   }
 
+  .galaxy-terrain-panel {
+    top: 92px;
+    max-height: min(42%, 320px);
+  }
+
   .semantic-panel {
     min-height: 260px;
   }
@@ -4220,6 +4340,12 @@ h3 {
 
   .neighbor-card-list {
     max-height: 150px;
+  }
+
+  .galaxy-terrain-panel {
+    right: 10px;
+    width: min(310px, calc(100% - 20px));
+    padding: 8px;
   }
 }
 
@@ -4659,6 +4785,14 @@ h3 {
     right: 10px;
     left: 10px;
     max-width: none;
+  }
+
+  .galaxy-terrain-panel {
+    top: 102px;
+    right: 10px;
+    left: 10px;
+    width: auto;
+    max-height: 36%;
   }
 
   .galaxy-flow-control {
