@@ -1,5 +1,20 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.5 Stage 3.1 Default Home
+
+- Made `记忆总览` the default Memory Atlas startup board while preserving the
+  left sidebar navigation and all existing visual boards.
+- Added the first production Home Overview surface with Memory Weather,
+  dominant/rising/declining state cards, Black Hole risk, Proto-Star
+  opportunity signals, Next Best Actions, and topic/tier/category summaries.
+- Kept frontend writeback proposal-only; the Home actions navigate to existing
+  review surfaces and never directly mutate active memory.
+- Extended visual acceptance with a deterministic default-home contract check.
+
+No Galaxy replacement, Timeline replacement, ingestion, raw/private data access,
+direct writeback, Cloudflare live deploy, or external account operation was
+added.
+
 ## Unreleased - Memory Atlas v1.1.5 Stage 2 Planning
 
 - Added the Stage 2.1 default-home integration plan for making `记忆总览`

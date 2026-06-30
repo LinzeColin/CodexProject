@@ -70,7 +70,28 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
 
     require(
         checks,
-        'const visualFocusViews: ViewKey[] = ["galaxy", "notion", "roi", "obsidian", "timeline", "contribution", "wordcloud", "summary"]' in app_source
+        '{ key: "home", label: "记忆总览", icon: Home }' in app_source
+        and 'const [activeView, setActiveView] = useState<ViewKey>("home")' in app_source
+        and 'if (activeView === "home")' in app_source
+        and "function HomeOverviewView" in app_source
+        and "function buildHomeOverviewModel" in app_source
+        and "Memory Weather" in app_source
+        and "Next Best Actions" in app_source
+        and "Black Hole 风险" in app_source
+        and "Proto-Star 机会" in app_source
+        and "proposal-only，不直接写长期记忆" in app_source
+        and ".home-overview-view" in css_source
+        and ".home-status-grid" in css_source
+        and ".home-action-list" in css_source
+        and ".home-topic-strip" in css_source,
+        "memory_home_default_overview_ready",
+        "Memory Atlas defaults to a Chinese-first overview with weather, state cards, next actions, preserved navigation, and proposal-only wording",
+        "Memory Atlas default overview route, state cards, next actions, or proposal-only guard is missing",
+    )
+
+    require(
+        checks,
+        'const visualFocusViews: ViewKey[] = ["home", "galaxy", "notion", "roi", "obsidian", "timeline", "contribution", "wordcloud", "summary"]' in app_source
         and "const wideView = visualFocusViews.includes(activeView)" in app_source
         and "const workspaceClassName = wideView ? `workspace visual-focus-workspace ${activeView}-workspace` : \"workspace\"" in app_source
         and "const showSideInspector = activeView === \"contribution\" || !wideView" in app_source
