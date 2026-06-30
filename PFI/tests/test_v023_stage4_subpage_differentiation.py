@@ -27,6 +27,42 @@ PHASE41_WORKSPACES = {
     },
 }
 
+PHASE42_WORKSPACES = {
+    "consumption": {
+        "label": "消费管理",
+        "routes": [
+            "/consumption?tab=overview",
+            "/consumption?tab=category",
+            "/consumption?tab=budget",
+            "/consumption?tab=subscription",
+            "/consumption?tab=anomaly",
+        ],
+        "required_objects": {"消费总览", "分类分析", "预算", "订阅", "异常消费"},
+    },
+    "sync": {
+        "label": "数据源与上传",
+        "routes": [
+            "/sources-upload?tab=upload",
+            "/sources-upload?tab=import",
+            "/sources-upload?tab=sources",
+            "/sources-upload?tab=review",
+            "/sources-upload?tab=history",
+        ],
+        "required_objects": {"上传中心", "导入中心", "数据源管理", "待复核", "导入历史"},
+    },
+    "insights": {
+        "label": "报告与洞察",
+        "routes": [
+            "/reports?tab=monthly",
+            "/reports?tab=quarterly",
+            "/reports?tab=yearly",
+            "/reports?tab=custom",
+            "/reports?tab=export",
+        ],
+        "required_objects": {"月报", "季报", "年报", "自定义报告", "导出"},
+    },
+}
+
 REQUIRED_PAGE_FIELDS = {
     "routeAlias",
     "title",
@@ -69,7 +105,7 @@ class TestV023Stage4SubpageDifferentiation(unittest.TestCase):
 
         self.assertEqual(payload["version"], "v0.2.3")
         self.assertEqual(payload["stage"], "Stage 4")
-        self.assertEqual(payload["phaseId"], "V023-S4-P4.1")
+        self.assertIn("V023-S4-P4.1", payload["phaseIds"])
         self.assertEqual(set(catalog), set(PHASE41_WORKSPACES))
 
         for workspace_id, expected in PHASE41_WORKSPACES.items():
@@ -142,6 +178,61 @@ class TestV023Stage4SubpageDifferentiation(unittest.TestCase):
         self.assertNotIn("settings", catalog)
         self.assertNotIn("recommendations", catalog)
 
+    def test_phase42_catalog_has_consumption_sync_insights_subpages(self) -> None:
+        payload = load_stage4_pages()
+        catalog = payload["phase42Subpages"]
+
+        self.assertEqual(payload["version"], "v0.2.3")
+        self.assertEqual(payload["stage"], "Stage 4")
+        self.assertIn("V023-S4-P4.2", payload["phaseIds"])
+        self.assertEqual(set(catalog), set(PHASE42_WORKSPACES))
+
+        for workspace_id, expected in PHASE42_WORKSPACES.items():
+            with self.subTest(workspace=workspace_id):
+                pages = catalog[workspace_id]
+                self.assertGreaterEqual(len(pages), 3)
+                self.assertLessEqual(len(pages), 5)
+                self.assertEqual([page["routeAlias"] for page in pages], expected["routes"])
+                self.assertEqual({page["primaryObject"] for page in pages}, expected["required_objects"])
+
+    def test_phase42_each_subpage_has_independent_object_action_gate_states_and_source(self) -> None:
+        catalog = load_stage4_pages()["phase42Subpages"]
+
+        for workspace_id, pages in catalog.items():
+            signatures = set()
+            for page in pages:
+                with self.subTest(workspace=workspace_id, route=page.get("routeAlias")):
+                    self.assertTrue(REQUIRED_PAGE_FIELDS <= set(page))
+                    self.assertEqual(page["workspace"], workspace_id)
+                    self.assertIn(PHASE42_WORKSPACES[workspace_id]["label"], page["breadcrumb"])
+                    self.assertGreaterEqual(len(page["breadcrumb"]), 2)
+                    self.assertNotEqual(page["primaryObject"], page["primaryAction"])
+                    self.assertNotEqual(page["emptyState"], page["errorState"])
+                    self.assertIn("真实", page["emptyState"])
+                    self.assertTrue(page["errorState"].startswith("无法"))
+                    self.assertTrue(page["dataSource"])
+                    self.assertGreaterEqual(len(page["sections"]), 3)
+                    signature = (
+                        page["layoutKind"],
+                        page["primaryObject"],
+                        page["primaryAction"],
+                        tuple(section["kind"] for section in page["sections"]),
+                    )
+                    signatures.add(signature)
+            self.assertEqual(len(signatures), len(pages))
+
+    def test_phase42_shell_uses_combined_stage4_catalog_without_touching_phase43(self) -> None:
+        shell_text = (ROOT / "web" / "app" / "shell.js").read_text(encoding="utf-8")
+        catalog = load_stage4_pages()
+
+        self.assertIn("stage4SubpageCatalog", shell_text)
+        self.assertIn("phase42Subpages", shell_text)
+        self.assertIn("/sources-upload?tab=upload", json.dumps(catalog, ensure_ascii=False))
+        self.assertIn("/reports?tab=monthly", json.dumps(catalog, ensure_ascii=False))
+        self.assertNotIn("market_research", catalog["phase42Subpages"])
+        self.assertNotIn("settings", catalog["phase42Subpages"])
+        self.assertNotIn("recommendations", catalog["phase42Subpages"])
+
     def test_phase41_evidence_exists_before_later_stage4_phases_or_upload(self) -> None:
         evidence_root = ROOT / "reports" / "pfi_v023" / "stage_4" / "phase_4_1"
         evidence_path = evidence_root / "evidence.json"
@@ -187,6 +278,55 @@ class TestV023Stage4SubpageDifferentiation(unittest.TestCase):
         self.assertTrue(browser_validation["empty_and_error_states_present"])
         self.assertEqual(browser_validation["console_errors"], [])
         self.assertIn("Stage 4 Phase 4.2 consumption/data/reports subpages", evidence["explicitly_not_done"])
+        self.assertIn("GitHub main upload for intermediate phase", evidence["explicitly_not_done"])
+
+    def test_phase42_evidence_exists_before_later_stage4_phase_or_upload(self) -> None:
+        evidence_root = ROOT / "reports" / "pfi_v023" / "stage_4" / "phase_4_2"
+        evidence_path = evidence_root / "evidence.json"
+        changed_files_path = evidence_root / "changed_files.txt"
+        terminal_log_path = evidence_root / "terminal.log"
+        browser_validation_path = evidence_root / "browser_validation.json"
+        screenshot_paths = [
+            evidence_root / "screenshots" / "consumption_subpages.png",
+            evidence_root / "screenshots" / "sync_subpages.png",
+            evidence_root / "screenshots" / "insights_subpages.png",
+        ]
+
+        self.assertTrue(evidence_path.exists())
+        self.assertTrue(changed_files_path.exists())
+        self.assertTrue(terminal_log_path.exists())
+        self.assertTrue(browser_validation_path.exists())
+        for screenshot_path in screenshot_paths:
+            self.assertTrue(screenshot_path.exists())
+
+        evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
+        browser_validation = json.loads(browser_validation_path.read_text(encoding="utf-8"))
+        changed_files = [
+            line.strip()
+            for line in changed_files_path.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        ]
+
+        self.assertEqual(evidence["version"], "v0.2.3")
+        self.assertEqual(evidence["stage"], "Stage 4")
+        self.assertEqual(evidence["phase_id"], "V023-S4-P4.2")
+        self.assertEqual(evidence["status"], "candidate_pass")
+        self.assertTrue(evidence["current_phase_only"])
+        self.assertTrue(evidence["max_one_phase_per_run"])
+        self.assertTrue(evidence["allowed_files_obeyed"])
+        self.assertTrue(evidence["no_mock_financial_data"])
+        self.assertEqual(evidence["changed_files"], changed_files)
+        self.assertEqual(evidence["phase42_summary"]["workspaces"], ["consumption", "sync", "insights"])
+        self.assertEqual(evidence["phase42_summary"]["subpage_count"], 15)
+        self.assertTrue(evidence["phase42_summary"]["data_gate_integrated"])
+        self.assertTrue(browser_validation["consumption_subpages_differentiated"])
+        self.assertTrue(browser_validation["sync_subpages_differentiated"])
+        self.assertTrue(browser_validation["insights_subpages_differentiated"])
+        self.assertTrue(browser_validation["url_state_breadcrumb_title_changed"])
+        self.assertTrue(browser_validation["empty_and_error_states_present"])
+        self.assertTrue(browser_validation["data_gate_integrated"])
+        self.assertEqual(browser_validation["console_errors"], [])
+        self.assertIn("Stage 4 Phase 4.3 market/settings/recommendations subpages", evidence["explicitly_not_done"])
         self.assertIn("GitHub main upload for intermediate phase", evidence["explicitly_not_done"])
 
 

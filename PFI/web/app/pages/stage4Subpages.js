@@ -76,12 +76,113 @@
     ]),
   });
 
+  const phase42Subpages = Object.freeze({
+    consumption: Object.freeze([
+      page("consumption", "/consumption?tab=overview", "消费管理 · 消费总览", ["消费管理", "消费总览"], "spend-overview", "消费总览", "检查消费概览", "未加载真实消费流水时，只显示消费总览空态和导入入口。", "无法读取消费总览，请检查账本流水、分类结果和币种基准。", "MetaDatabase/PFI ledger categories", [
+        section("summary", "消费摘要", "按月份、账户和分类汇总真实消费覆盖范围。"),
+        section("trend", "消费趋势", "显示已加载期间、缺失期间和异常月份提示。"),
+        section("gate", "数据门禁", "未通过真实流水门禁前，不生成总额结论或趋势判断。"),
+        section("action", "总览动作", "进入分类、预算或异常消费复核。"),
+      ]),
+      page("consumption", "/consumption?tab=category", "消费管理 · 分类分析", ["消费管理", "分类分析"], "category-analysis", "分类分析", "复核消费分类", "未加载真实分类结果时，只显示分类待复核状态。", "无法读取分类分析，请检查分类规则、低置信度队列和原始流水。", "分类规则 / processed ledger", [
+        section("matrix", "分类矩阵", "按一级分类、二级分类和账户来源拆分消费记录。"),
+        section("confidence", "置信度", "展示低置信度、未知分类和人工覆盖记录。"),
+        section("gate", "数据门禁", "分类覆盖率不足时阻断洞察和报告引用。"),
+        section("action", "分类动作", "打开复核队列并保存分类理由。"),
+      ]),
+      page("consumption", "/consumption?tab=budget", "消费管理 · 预算", ["消费管理", "预算"], "budget-control", "预算", "调整预算规则", "未加载真实预算和消费流水时，只显示预算设置空态。", "无法读取预算，请检查预算文件、币种设置和消费分类。", "预算规则 / ledger monthly rollup", [
+        section("rule", "预算规则", "按分类、账户和周期展示预算阈值。"),
+        section("usage", "使用进度", "只基于已加载真实流水计算预算进度。"),
+        section("gate", "数据门禁", "预算期流水不完整时标记为不可判定。"),
+        section("action", "预算动作", "调整规则、记录变更原因或跳转导入中心。"),
+      ]),
+      page("consumption", "/consumption?tab=subscription", "消费管理 · 订阅", ["消费管理", "订阅"], "subscription-tracker", "订阅", "标记订阅状态", "未识别真实周期扣款时，只显示订阅侦测空态。", "无法读取订阅，请检查周期扣款识别、账户来源和商户字段。", "周期扣款识别 / merchant index", [
+        section("list", "订阅清单", "展示候选订阅、频率、最近扣款和来源流水。"),
+        section("evidence", "流水证据", "每项订阅保留匹配记录和识别理由。"),
+        section("gate", "数据门禁", "缺少连续账期时阻断订阅确认。"),
+        section("action", "订阅动作", "确认、忽略或进入商户规则复核。"),
+      ]),
+      page("consumption", "/consumption?tab=anomaly", "消费管理 · 异常消费", ["消费管理", "异常消费"], "spend-anomaly", "异常消费", "处理异常消费", "未加载真实流水和历史基线时，只显示异常检测空态。", "无法读取异常消费，请检查历史基线、分类覆盖和金额字段。", "历史消费基线 / anomaly queue", [
+        section("queue", "异常队列", "按金额突增、重复扣款、未知商户和异常币种分组。"),
+        section("reason", "异常理由", "显示触发条件、对比周期和证据流水。"),
+        section("gate", "数据门禁", "基线不足时只允许复核，不输出异常结论。"),
+        section("action", "异常动作", "确认、忽略或标记为待补证据。"),
+      ]),
+    ]),
+    sync: Object.freeze([
+      page("sync", "/sources-upload?tab=upload", "数据源与上传 · 上传中心", ["数据源与上传", "上传中心"], "upload-center", "上传中心", "选择上传文件", "未选择真实本机文件时，只显示上传空态和格式要求。", "无法启动上传，请检查本机文件权限、目录和解析器配置。", "本机上传目录 / parser registry", [
+        section("dropzone", "文件入口", "展示可上传来源、格式和目标数据域。"),
+        section("parser", "解析器", "匹配解析器版本、字段要求和拒绝原因。"),
+        section("gate", "数据门禁", "未完成文件校验前不写入正式 PFI 数据。"),
+        section("action", "上传动作", "选择文件、校验格式或转到导入中心。"),
+      ]),
+      page("sync", "/sources-upload?tab=import", "数据源与上传 · 导入中心", ["数据源与上传", "导入中心"], "import-center", "导入中心", "执行导入批次", "未校验真实上传文件时，只显示导入待准备状态。", "无法执行导入，请检查字段映射、重复记录和批次权限。", "staging import batch / field mapping", [
+        section("mapping", "字段映射", "展示来源字段、目标字段和缺失字段。"),
+        section("dedupe", "去重检查", "按记录 hash、时间和金额识别重复导入风险。"),
+        section("gate", "数据门禁", "批次未通过复核前不进入 processed ledger。"),
+        section("action", "导入动作", "执行导入、保存映射或退回上传。"),
+      ]),
+      page("sync", "/sources-upload?tab=sources", "数据源与上传 · 数据源管理", ["数据源与上传", "数据源管理"], "source-management", "数据源管理", "维护数据源", "未配置真实数据源时，只显示来源清单空态。", "无法读取数据源，请检查来源 profile、凭据状态和本机权限。", "source profile registry", [
+        section("registry", "来源登记", "按账户、平台、文件夹和导入方式管理数据源。"),
+        section("health", "来源健康", "展示最近更新、缺失字段和权限状态。"),
+        section("gate", "数据门禁", "来源未达最低字段要求时阻断导入。"),
+        section("action", "来源动作", "新增来源、停用来源或打开权限检查。"),
+      ]),
+      page("sync", "/sources-upload?tab=review", "数据源与上传 · 待复核", ["数据源与上传", "待复核"], "import-review", "待复核", "处理导入复核", "没有真实待复核记录时，只显示复核队列为空。", "无法读取待复核记录，请检查导入批次、字段映射和错误日志。", "import review queue", [
+        section("queue", "复核队列", "按缺字段、低置信度、重复疑似和解析失败分组。"),
+        section("decision", "复核决策", "保留、修正、拒绝或补充字段均记录理由。"),
+        section("gate", "数据门禁", "未完成复核的记录不得进入正式账本。"),
+        section("action", "复核动作", "保存决策、退回导入或打开证据。"),
+      ]),
+      page("sync", "/sources-upload?tab=history", "数据源与上传 · 导入历史", ["数据源与上传", "导入历史"], "import-history", "导入历史", "打开导入证据", "未存在真实导入批次时，只显示历史空态。", "无法读取导入历史，请检查批次索引、日志文件和本机权限。", "import batch log / evidence files", [
+        section("timeline", "批次时间线", "展示上传、校验、导入、复核和写入状态。"),
+        section("evidence", "证据文件", "保留文件 hash、记录数量和解析器版本。"),
+        section("gate", "数据门禁", "缺少证据文件的批次标记为不可追溯。"),
+        section("action", "历史动作", "打开证据、重新复核或导出批次日志。"),
+      ]),
+    ]),
+    insights: Object.freeze([
+      page("insights", "/reports?tab=monthly", "报告与洞察 · 月报", ["报告与洞察", "月报"], "monthly-report", "月报", "生成月报草稿", "未加载真实月度账本时，只显示月报空态和缺口说明。", "无法生成月报，请检查月度流水、账户快照和分类覆盖。", "monthly ledger rollup / account snapshot", [
+        section("period", "报告期间", "显示月份、数据覆盖天数和缺失来源。"),
+        section("finding", "月度发现", "只呈现已通过门禁的数据项和待复核项。"),
+        section("gate", "数据门禁", "关键数据未齐时阻断报告结论生成。"),
+        section("action", "月报动作", "生成草稿、补齐数据或导出证据。"),
+      ]),
+      page("insights", "/reports?tab=quarterly", "报告与洞察 · 季报", ["报告与洞察", "季报"], "quarterly-report", "季报", "生成季报草稿", "未加载真实季度数据时，只显示季报空态和待补月份。", "无法生成季报，请检查季度账本、投资快照和消费分类。", "quarterly rollup / holdings snapshot", [
+        section("coverage", "季度覆盖", "逐月展示收入、消费、投资和账户数据完整度。"),
+        section("compare", "季度对比", "对比上一季度但标明缺失项和不可比项。"),
+        section("gate", "数据门禁", "季度覆盖不足时只保留草稿，不输出总结。"),
+        section("action", "季报动作", "生成草稿、打开缺口或导出对比表。"),
+      ]),
+      page("insights", "/reports?tab=yearly", "报告与洞察 · 年报", ["报告与洞察", "年报"], "yearly-report", "年报", "生成年报草稿", "未加载真实年度数据时，只显示年报空态和年度覆盖表。", "无法生成年报，请检查年度账本、账户历史和投资收益证据。", "yearly rollup / audited evidence", [
+        section("calendar", "年度日历", "展示每月数据状态、关闭状态和复核状态。"),
+        section("theme", "年度主题", "从真实记录中提取消费、资产和投资变化。"),
+        section("gate", "数据门禁", "未关闭月份不得进入年度结论。"),
+        section("action", "年报动作", "生成草稿、锁定期间或导出证据包。"),
+      ]),
+      page("insights", "/reports?tab=custom", "报告与洞察 · 自定义报告", ["报告与洞察", "自定义报告"], "custom-report", "自定义报告", "配置报告范围", "未选择真实报告范围时，只显示自定义报告空态。", "无法配置自定义报告，请检查筛选范围、数据域和权限。", "report query scope / local read-model", [
+        section("builder", "范围构建", "按账户、分类、日期、币种和数据域组合报告范围。"),
+        section("preview", "结果预览", "显示可用记录数、缺口和门禁状态。"),
+        section("gate", "数据门禁", "筛选范围没有真实记录时阻断报告生成。"),
+        section("action", "自定义动作", "保存范围、生成草稿或清空条件。"),
+      ]),
+      page("insights", "/reports?tab=export", "报告与洞察 · 导出", ["报告与洞察", "导出"], "report-export", "导出", "导出报告文件", "未生成真实报告草稿时，只显示导出空态。", "无法导出报告，请检查报告草稿、目标目录和文件权限。", "report draft / local export directory", [
+        section("format", "导出格式", "选择 PDF、Markdown 或 evidence bundle。"),
+        section("destination", "保存位置", "展示本机目标目录和覆盖策略。"),
+        section("gate", "数据门禁", "报告草稿未通过证据检查时阻断导出。"),
+        section("action", "导出动作", "生成文件、打开目录或复制证据路径。"),
+      ]),
+    ]),
+  });
+
   return Object.freeze({
     version: "v0.2.3",
     stage: "Stage 4",
-    phaseId: "V023-S4-P4.1",
-    phaseName: "资产/账本/投资二级页",
+    phaseId: "V023-S4-P4.2",
+    phaseIds: Object.freeze(["V023-S4-P4.1", "V023-S4-P4.2"]),
+    phaseName: "资产/账本/投资 + 消费/数据/报告二级页",
     phase41Subpages,
+    phase42Subpages,
   });
 });
 

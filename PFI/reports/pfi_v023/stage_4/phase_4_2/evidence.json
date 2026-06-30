@@ -1,0 +1,142 @@
+{
+  "version": "v0.2.3",
+  "stage": "Stage 4",
+  "stage_name": "二级页面差异化重建",
+  "phase_id": "V023-S4-P4.2",
+  "phase_name": "消费/数据/报告二级页",
+  "created_at": "2026-06-30T10:47:45+10:00",
+  "status": "candidate_pass",
+  "allowed_files_obeyed": true,
+  "history_deprecation_policy_obeyed": true,
+  "no_mock_financial_data": true,
+  "current_phase_only": true,
+  "max_one_phase_per_run": true,
+  "phase42_summary": {
+    "workspaces": [
+      "consumption",
+      "sync",
+      "insights"
+    ],
+    "subpage_count": 15,
+    "data_gate_integrated": true,
+    "consumption_subpages": [
+      "/consumption?tab=overview",
+      "/consumption?tab=category",
+      "/consumption?tab=budget",
+      "/consumption?tab=subscription",
+      "/consumption?tab=anomaly"
+    ],
+    "sync_subpages": [
+      "/sources-upload?tab=upload",
+      "/sources-upload?tab=import",
+      "/sources-upload?tab=sources",
+      "/sources-upload?tab=review",
+      "/sources-upload?tab=history"
+    ],
+    "insights_subpages": [
+      "/reports?tab=monthly",
+      "/reports?tab=quarterly",
+      "/reports?tab=yearly",
+      "/reports?tab=custom",
+      "/reports?tab=export"
+    ]
+  },
+  "acceptance_summary": {
+    "three_to_five_subpages_per_phase42_workspace": true,
+    "subpages_have_independent_layouts": true,
+    "subpages_have_independent_primary_objects": true,
+    "subpages_have_independent_primary_actions": true,
+    "subpages_have_empty_and_error_states": true,
+    "url_state_breadcrumb_title_change": true,
+    "data_gate_integrated": true,
+    "no_template_clone": true,
+    "screenshots_show_differences": true
+  },
+  "commands": [
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage4_subpage_differentiation.py -q",
+      "exit_code": 1,
+      "summary": "RED before implementation: 5 failed because Phase 4.2 catalog, shell merge, and evidence were missing"
+    },
+    {
+      "command": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/pages/stage4Subpages.js && /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js",
+      "exit_code": 0,
+      "summary": "Stage 4 pages catalog and shell syntax checks passed"
+    },
+	    {
+	      "command": "Google Chrome headless via playwright on PFI/web/index.html",
+	      "exit_code": 0,
+	      "summary": "15 Phase 4.2 subpages passed URL/state/breadcrumb/title, differentiation, empty/error state, and data gate checks; screenshots captured"
+	    },
+	    {
+	      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage4_subpage_differentiation.py -q",
+	      "exit_code": 0,
+	      "summary": "Stage 4 target test: 10 passed, 33 subtests passed"
+	    },
+	    {
+	      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q",
+	      "exit_code": 0,
+	      "summary": "v0.2.3 regression suite: 69 passed, 33 subtests passed"
+	    },
+	    {
+	      "command": "PFI/.venv/bin/python -m json.tool PFI/reports/pfi_v023/stage_4/phase_4_2/evidence.json and browser_validation.json plus Phase 4.1 evidence files",
+	      "exit_code": 0,
+	      "summary": "Stage 4 Phase 4.1 and Phase 4.2 JSON evidence files are valid"
+	    },
+	    {
+	      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/tests/test_v023_stage4_subpage_differentiation.py",
+	      "exit_code": 0,
+	      "summary": "Stage 4 subpage differentiation test compiles"
+	    },
+	    {
+	      "command": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/pages/stage4Subpages.js && /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js && /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/routes.js",
+	      "exit_code": 0,
+	      "summary": "Stage 4 pages, shell, and routes syntax checks passed"
+	    },
+	    {
+	      "command": "rg -n -i \"\\b(mock|sample|synthetic|fixture|demo|fake)\\b\" PFI/web/app/pages/stage4Subpages.js PFI/web/app/shell.js PFI/tests/test_v023_stage4_subpage_differentiation.py PFI/docs/pfi_v023/STAGE4_SUBPAGES.md",
+	      "exit_code": 1,
+	      "summary": "No forbidden fake-data terms found in Phase 4.2 source, test, or docs files"
+	    },
+	    {
+	      "command": "git diff --check -- PFI",
+	      "exit_code": 0,
+	      "summary": "No whitespace errors in Phase 4.2 diff"
+	    },
+	    {
+	      "command": "git fetch https://github.com/LinzeColin/CodexProject.git main:refs/remotes/origin/main && git rev-list --left-right --count HEAD...origin/main",
+	      "exit_code": 0,
+	      "summary": "origin/main remained at 30c3c8da; local branch was ahead 1 from Phase 4.1 before Phase 4.2 commit"
+	    }
+	  ],
+  "changed_files": [
+    "PFI/docs/pfi_v023/STAGE4_SUBPAGES.md",
+    "PFI/reports/pfi_v023/stage_4/phase_4_2/browser_validation.json",
+    "PFI/reports/pfi_v023/stage_4/phase_4_2/changed_files.txt",
+    "PFI/reports/pfi_v023/stage_4/phase_4_2/evidence.json",
+    "PFI/reports/pfi_v023/stage_4/phase_4_2/screenshots/consumption_subpages.png",
+    "PFI/reports/pfi_v023/stage_4/phase_4_2/screenshots/insights_subpages.png",
+    "PFI/reports/pfi_v023/stage_4/phase_4_2/screenshots/sync_subpages.png",
+    "PFI/reports/pfi_v023/stage_4/phase_4_2/terminal.log",
+    "PFI/tests/test_v023_stage4_subpage_differentiation.py",
+    "PFI/web/app/pages/stage4Subpages.js",
+    "PFI/web/app/shell.js"
+  ],
+  "screenshots": [
+    "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_4/phase_4_2/screenshots/consumption_subpages.png",
+    "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_4/phase_4_2/screenshots/sync_subpages.png",
+    "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_4/phase_4_2/screenshots/insights_subpages.png"
+  ],
+  "data_status_summary": {
+    "data_changes_made": false,
+    "financial_values_fabricated": false,
+    "real_empty_states_used": true
+  },
+  "explicitly_not_done": [
+    "Stage 4 Phase 4.3 market/settings/recommendations subpages",
+    "Stage 4 review not run",
+    "Stage 5 and later work",
+    "GitHub main upload for intermediate phase"
+  ],
+  "requires_user_acceptance": true
+}

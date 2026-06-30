@@ -1,0 +1,573 @@
+{
+  "phase_id": "V023-S4-P4.2",
+  "index_url": "file:///Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/web/index.html",
+  "browser": "Google Chrome headless via playwright",
+  "screenshot_paths": {
+    "consumption": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_4/phase_4_2/screenshots/consumption_subpages.png",
+    "sync": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_4/phase_4_2/screenshots/sync_subpages.png",
+    "insights": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_4/phase_4_2/screenshots/insights_subpages.png"
+  },
+  "workspace_results": {
+    "consumption": [
+      {
+        "hash": "#/consumption?tab=overview",
+        "title": "PFI",
+        "h1": "消费管理 · 消费总览",
+        "workspace": "consumption",
+        "routeAlias": "/consumption?tab=overview",
+        "stage4Route": "/consumption?tab=overview",
+        "surfaceVisible": true,
+        "layoutKind": "spend-overview",
+        "primaryObject": "消费总览",
+        "primaryAction": "检查消费概览",
+        "emptyState": "未加载真实消费流水时，只显示消费总览空态和导入入口。",
+        "errorState": "无法读取消费总览，请检查账本流水、分类结果和币种基准。",
+        "dataSource": "MetaDatabase/PFI ledger categories",
+        "breadcrumb": [
+          "消费管理",
+          "消费总览"
+        ],
+        "sectionKinds": [
+          "summary",
+          "trend",
+          "gate",
+          "action"
+        ],
+        "activeSecondary": [
+          "消费总览"
+        ],
+        "secondaryRoutes": [
+          "/consumption?tab=overview",
+          "/consumption?tab=category",
+          "/consumption?tab=budget",
+          "/consumption?tab=subscription",
+          "/consumption?tab=anomaly"
+        ],
+        "scrollY": 0
+      },
+      {
+        "hash": "#/consumption?tab=category",
+        "title": "PFI",
+        "h1": "消费管理 · 分类分析",
+        "workspace": "consumption",
+        "routeAlias": "/consumption?tab=category",
+        "stage4Route": "/consumption?tab=category",
+        "surfaceVisible": true,
+        "layoutKind": "category-analysis",
+        "primaryObject": "分类分析",
+        "primaryAction": "复核消费分类",
+        "emptyState": "未加载真实分类结果时，只显示分类待复核状态。",
+        "errorState": "无法读取分类分析，请检查分类规则、低置信度队列和原始流水。",
+        "dataSource": "分类规则 / processed ledger",
+        "breadcrumb": [
+          "消费管理",
+          "分类分析"
+        ],
+        "sectionKinds": [
+          "matrix",
+          "confidence",
+          "gate",
+          "action"
+        ],
+        "activeSecondary": [
+          "分类分析"
+        ],
+        "secondaryRoutes": [
+          "/consumption?tab=overview",
+          "/consumption?tab=category",
+          "/consumption?tab=budget",
+          "/consumption?tab=subscription",
+          "/consumption?tab=anomaly"
+        ],
+        "scrollY": 0
+      },
+      {
+        "hash": "#/consumption?tab=budget",
+        "title": "PFI",
+        "h1": "消费管理 · 预算",
+        "workspace": "consumption",
+        "routeAlias": "/consumption?tab=budget",
+        "stage4Route": "/consumption?tab=budget",
+        "surfaceVisible": true,
+        "layoutKind": "budget-control",
+        "primaryObject": "预算",
+        "primaryAction": "调整预算规则",
+        "emptyState": "未加载真实预算和消费流水时，只显示预算设置空态。",
+        "errorState": "无法读取预算，请检查预算文件、币种设置和消费分类。",
+        "dataSource": "预算规则 / ledger monthly rollup",
+        "breadcrumb": [
+          "消费管理",
+          "预算"
+        ],
+        "sectionKinds": [
+          "rule",
+          "usage",
+          "gate",
+          "action"
+        ],
+        "activeSecondary": [
+          "预算"
+        ],
+        "secondaryRoutes": [
+          "/consumption?tab=overview",
+          "/consumption?tab=category",
+          "/consumption?tab=budget",
+          "/consumption?tab=subscription",
+          "/consumption?tab=anomaly"
+        ],
+        "scrollY": 0
+      },
+      {
+        "hash": "#/consumption?tab=subscription",
+        "title": "PFI",
+        "h1": "消费管理 · 订阅",
+        "workspace": "consumption",
+        "routeAlias": "/consumption?tab=subscription",
+        "stage4Route": "/consumption?tab=subscription",
+        "surfaceVisible": true,
+        "layoutKind": "subscription-tracker",
+        "primaryObject": "订阅",
+        "primaryAction": "标记订阅状态",
+        "emptyState": "未识别真实周期扣款时，只显示订阅侦测空态。",
+        "errorState": "无法读取订阅，请检查周期扣款识别、账户来源和商户字段。",
+        "dataSource": "周期扣款识别 / merchant index",
+        "breadcrumb": [
+          "消费管理",
+          "订阅"
+        ],
+        "sectionKinds": [
+          "list",
+          "evidence",
+          "gate",
+          "action"
+        ],
+        "activeSecondary": [
+          "订阅"
+        ],
+        "secondaryRoutes": [
+          "/consumption?tab=overview",
+          "/consumption?tab=category",
+          "/consumption?tab=budget",
+          "/consumption?tab=subscription",
+          "/consumption?tab=anomaly"
+        ],
+        "scrollY": 0
+      },
+      {
+        "hash": "#/consumption?tab=anomaly",
+        "title": "PFI",
+        "h1": "消费管理 · 异常消费",
+        "workspace": "consumption",
+        "routeAlias": "/consumption?tab=anomaly",
+        "stage4Route": "/consumption?tab=anomaly",
+        "surfaceVisible": true,
+        "layoutKind": "spend-anomaly",
+        "primaryObject": "异常消费",
+        "primaryAction": "处理异常消费",
+        "emptyState": "未加载真实流水和历史基线时，只显示异常检测空态。",
+        "errorState": "无法读取异常消费，请检查历史基线、分类覆盖和金额字段。",
+        "dataSource": "历史消费基线 / anomaly queue",
+        "breadcrumb": [
+          "消费管理",
+          "异常消费"
+        ],
+        "sectionKinds": [
+          "queue",
+          "reason",
+          "gate",
+          "action"
+        ],
+        "activeSecondary": [
+          "异常消费"
+        ],
+        "secondaryRoutes": [
+          "/consumption?tab=overview",
+          "/consumption?tab=category",
+          "/consumption?tab=budget",
+          "/consumption?tab=subscription",
+          "/consumption?tab=anomaly"
+        ],
+        "scrollY": 0
+      }
+    ],
+    "sync": [
+      {
+        "hash": "#/sources-upload?tab=upload",
+        "title": "PFI",
+        "h1": "数据源与上传 · 上传中心",
+        "workspace": "sync",
+        "routeAlias": "/sources-upload?tab=upload",
+        "stage4Route": "/sources-upload?tab=upload",
+        "surfaceVisible": true,
+        "layoutKind": "upload-center",
+        "primaryObject": "上传中心",
+        "primaryAction": "选择上传文件",
+        "emptyState": "未选择真实本机文件时，只显示上传空态和格式要求。",
+        "errorState": "无法启动上传，请检查本机文件权限、目录和解析器配置。",
+        "dataSource": "本机上传目录 / parser registry",
+        "breadcrumb": [
+          "数据源与上传",
+          "上传中心"
+        ],
+        "sectionKinds": [
+          "dropzone",
+          "parser",
+          "gate",
+          "action"
+        ],
+        "activeSecondary": [
+          "上传中心"
+        ],
+        "secondaryRoutes": [
+          "/sources-upload?tab=upload",
+          "/sources-upload?tab=import",
+          "/sources-upload?tab=sources",
+          "/sources-upload?tab=review",
+          "/sources-upload?tab=history"
+        ],
+        "scrollY": 0
+      },
+      {
+        "hash": "#/sources-upload?tab=import",
+        "title": "PFI",
+        "h1": "数据源与上传 · 导入中心",
+        "workspace": "sync",
+        "routeAlias": "/sources-upload?tab=import",
+        "stage4Route": "/sources-upload?tab=import",
+        "surfaceVisible": true,
+        "layoutKind": "import-center",
+        "primaryObject": "导入中心",
+        "primaryAction": "执行导入批次",
+        "emptyState": "未校验真实上传文件时，只显示导入待准备状态。",
+        "errorState": "无法执行导入，请检查字段映射、重复记录和批次权限。",
+        "dataSource": "staging import batch / field mapping",
+        "breadcrumb": [
+          "数据源与上传",
+          "导入中心"
+        ],
+        "sectionKinds": [
+          "mapping",
+          "dedupe",
+          "gate",
+          "action"
+        ],
+        "activeSecondary": [
+          "导入中心"
+        ],
+        "secondaryRoutes": [
+          "/sources-upload?tab=upload",
+          "/sources-upload?tab=import",
+          "/sources-upload?tab=sources",
+          "/sources-upload?tab=review",
+          "/sources-upload?tab=history"
+        ],
+        "scrollY": 0
+      },
+      {
+        "hash": "#/sources-upload?tab=sources",
+        "title": "PFI",
+        "h1": "数据源与上传 · 数据源管理",
+        "workspace": "sync",
+        "routeAlias": "/sources-upload?tab=sources",
+        "stage4Route": "/sources-upload?tab=sources",
+        "surfaceVisible": true,
+        "layoutKind": "source-management",
+        "primaryObject": "数据源管理",
+        "primaryAction": "维护数据源",
+        "emptyState": "未配置真实数据源时，只显示来源清单空态。",
+        "errorState": "无法读取数据源，请检查来源 profile、凭据状态和本机权限。",
+        "dataSource": "source profile registry",
+        "breadcrumb": [
+          "数据源与上传",
+          "数据源管理"
+        ],
+        "sectionKinds": [
+          "registry",
+          "health",
+          "gate",
+          "action"
+        ],
+        "activeSecondary": [
+          "数据源管理"
+        ],
+        "secondaryRoutes": [
+          "/sources-upload?tab=upload",
+          "/sources-upload?tab=import",
+          "/sources-upload?tab=sources",
+          "/sources-upload?tab=review",
+          "/sources-upload?tab=history"
+        ],
+        "scrollY": 0
+      },
+      {
+        "hash": "#/sources-upload?tab=review",
+        "title": "PFI",
+        "h1": "数据源与上传 · 待复核",
+        "workspace": "sync",
+        "routeAlias": "/sources-upload?tab=review",
+        "stage4Route": "/sources-upload?tab=review",
+        "surfaceVisible": true,
+        "layoutKind": "import-review",
+        "primaryObject": "待复核",
+        "primaryAction": "处理导入复核",
+        "emptyState": "没有真实待复核记录时，只显示复核队列为空。",
+        "errorState": "无法读取待复核记录，请检查导入批次、字段映射和错误日志。",
+        "dataSource": "import review queue",
+        "breadcrumb": [
+          "数据源与上传",
+          "待复核"
+        ],
+        "sectionKinds": [
+          "queue",
+          "decision",
+          "gate",
+          "action"
+        ],
+        "activeSecondary": [
+          "待复核"
+        ],
+        "secondaryRoutes": [
+          "/sources-upload?tab=upload",
+          "/sources-upload?tab=import",
+          "/sources-upload?tab=sources",
+          "/sources-upload?tab=review",
+          "/sources-upload?tab=history"
+        ],
+        "scrollY": 0
+      },
+      {
+        "hash": "#/sources-upload?tab=history",
+        "title": "PFI",
+        "h1": "数据源与上传 · 导入历史",
+        "workspace": "sync",
+        "routeAlias": "/sources-upload?tab=history",
+        "stage4Route": "/sources-upload?tab=history",
+        "surfaceVisible": true,
+        "layoutKind": "import-history",
+        "primaryObject": "导入历史",
+        "primaryAction": "打开导入证据",
+        "emptyState": "未存在真实导入批次时，只显示历史空态。",
+        "errorState": "无法读取导入历史，请检查批次索引、日志文件和本机权限。",
+        "dataSource": "import batch log / evidence files",
+        "breadcrumb": [
+          "数据源与上传",
+          "导入历史"
+        ],
+        "sectionKinds": [
+          "timeline",
+          "evidence",
+          "gate",
+          "action"
+        ],
+        "activeSecondary": [
+          "导入历史"
+        ],
+        "secondaryRoutes": [
+          "/sources-upload?tab=upload",
+          "/sources-upload?tab=import",
+          "/sources-upload?tab=sources",
+          "/sources-upload?tab=review",
+          "/sources-upload?tab=history"
+        ],
+        "scrollY": 0
+      }
+    ],
+    "insights": [
+      {
+        "hash": "#/reports?tab=monthly",
+        "title": "PFI",
+        "h1": "报告与洞察 · 月报",
+        "workspace": "insights",
+        "routeAlias": "/reports?tab=monthly",
+        "stage4Route": "/reports?tab=monthly",
+        "surfaceVisible": true,
+        "layoutKind": "monthly-report",
+        "primaryObject": "月报",
+        "primaryAction": "生成月报草稿",
+        "emptyState": "未加载真实月度账本时，只显示月报空态和缺口说明。",
+        "errorState": "无法生成月报，请检查月度流水、账户快照和分类覆盖。",
+        "dataSource": "monthly ledger rollup / account snapshot",
+        "breadcrumb": [
+          "报告与洞察",
+          "月报"
+        ],
+        "sectionKinds": [
+          "period",
+          "finding",
+          "gate",
+          "action"
+        ],
+        "activeSecondary": [
+          "月报"
+        ],
+        "secondaryRoutes": [
+          "/reports?tab=monthly",
+          "/reports?tab=quarterly",
+          "/reports?tab=yearly",
+          "/reports?tab=custom",
+          "/reports?tab=export"
+        ],
+        "scrollY": 0
+      },
+      {
+        "hash": "#/reports?tab=quarterly",
+        "title": "PFI",
+        "h1": "报告与洞察 · 季报",
+        "workspace": "insights",
+        "routeAlias": "/reports?tab=quarterly",
+        "stage4Route": "/reports?tab=quarterly",
+        "surfaceVisible": true,
+        "layoutKind": "quarterly-report",
+        "primaryObject": "季报",
+        "primaryAction": "生成季报草稿",
+        "emptyState": "未加载真实季度数据时，只显示季报空态和待补月份。",
+        "errorState": "无法生成季报，请检查季度账本、投资快照和消费分类。",
+        "dataSource": "quarterly rollup / holdings snapshot",
+        "breadcrumb": [
+          "报告与洞察",
+          "季报"
+        ],
+        "sectionKinds": [
+          "coverage",
+          "compare",
+          "gate",
+          "action"
+        ],
+        "activeSecondary": [
+          "季报"
+        ],
+        "secondaryRoutes": [
+          "/reports?tab=monthly",
+          "/reports?tab=quarterly",
+          "/reports?tab=yearly",
+          "/reports?tab=custom",
+          "/reports?tab=export"
+        ],
+        "scrollY": 0
+      },
+      {
+        "hash": "#/reports?tab=yearly",
+        "title": "PFI",
+        "h1": "报告与洞察 · 年报",
+        "workspace": "insights",
+        "routeAlias": "/reports?tab=yearly",
+        "stage4Route": "/reports?tab=yearly",
+        "surfaceVisible": true,
+        "layoutKind": "yearly-report",
+        "primaryObject": "年报",
+        "primaryAction": "生成年报草稿",
+        "emptyState": "未加载真实年度数据时，只显示年报空态和年度覆盖表。",
+        "errorState": "无法生成年报，请检查年度账本、账户历史和投资收益证据。",
+        "dataSource": "yearly rollup / audited evidence",
+        "breadcrumb": [
+          "报告与洞察",
+          "年报"
+        ],
+        "sectionKinds": [
+          "calendar",
+          "theme",
+          "gate",
+          "action"
+        ],
+        "activeSecondary": [
+          "年报"
+        ],
+        "secondaryRoutes": [
+          "/reports?tab=monthly",
+          "/reports?tab=quarterly",
+          "/reports?tab=yearly",
+          "/reports?tab=custom",
+          "/reports?tab=export"
+        ],
+        "scrollY": 0
+      },
+      {
+        "hash": "#/reports?tab=custom",
+        "title": "PFI",
+        "h1": "报告与洞察 · 自定义报告",
+        "workspace": "insights",
+        "routeAlias": "/reports?tab=custom",
+        "stage4Route": "/reports?tab=custom",
+        "surfaceVisible": true,
+        "layoutKind": "custom-report",
+        "primaryObject": "自定义报告",
+        "primaryAction": "配置报告范围",
+        "emptyState": "未选择真实报告范围时，只显示自定义报告空态。",
+        "errorState": "无法配置自定义报告，请检查筛选范围、数据域和权限。",
+        "dataSource": "report query scope / local read-model",
+        "breadcrumb": [
+          "报告与洞察",
+          "自定义报告"
+        ],
+        "sectionKinds": [
+          "builder",
+          "preview",
+          "gate",
+          "action"
+        ],
+        "activeSecondary": [
+          "自定义报告"
+        ],
+        "secondaryRoutes": [
+          "/reports?tab=monthly",
+          "/reports?tab=quarterly",
+          "/reports?tab=yearly",
+          "/reports?tab=custom",
+          "/reports?tab=export"
+        ],
+        "scrollY": 0
+      },
+      {
+        "hash": "#/reports?tab=export",
+        "title": "PFI",
+        "h1": "报告与洞察 · 导出",
+        "workspace": "insights",
+        "routeAlias": "/reports?tab=export",
+        "stage4Route": "/reports?tab=export",
+        "surfaceVisible": true,
+        "layoutKind": "report-export",
+        "primaryObject": "导出",
+        "primaryAction": "导出报告文件",
+        "emptyState": "未生成真实报告草稿时，只显示导出空态。",
+        "errorState": "无法导出报告，请检查报告草稿、目标目录和文件权限。",
+        "dataSource": "report draft / local export directory",
+        "breadcrumb": [
+          "报告与洞察",
+          "导出"
+        ],
+        "sectionKinds": [
+          "format",
+          "destination",
+          "gate",
+          "action"
+        ],
+        "activeSecondary": [
+          "导出"
+        ],
+        "secondaryRoutes": [
+          "/reports?tab=monthly",
+          "/reports?tab=quarterly",
+          "/reports?tab=yearly",
+          "/reports?tab=custom",
+          "/reports?tab=export"
+        ],
+        "scrollY": 0
+      }
+    ]
+  },
+  "consumption_subpages_differentiated": true,
+  "sync_subpages_differentiated": true,
+  "insights_subpages_differentiated": true,
+  "url_state_breadcrumb_title_changed": true,
+  "empty_and_error_states_present": true,
+  "data_gate_integrated": true,
+  "console_errors": [],
+  "page_errors": [],
+  "network_resource_errors": [
+    {
+      "url": "http://127.0.0.1:8766/api/trends",
+      "error": "net::ERR_CONNECTION_REFUSED"
+    }
+  ],
+  "generated_at": "2026-06-30T00:47:34.727Z"
+}

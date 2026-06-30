@@ -1,0 +1,57 @@
+PFI v0.2.3 Stage 4 Phase 4.2 terminal evidence
+Worktree: /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+Branch: codex/pfi
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage4_subpage_differentiation.py -q
+RED before implementation: 5 failed because Phase 4.2 catalog, shell merge, and evidence were missing.
+
+$ /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/pages/stage4Subpages.js && /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js
+Exit code: 0
+
+$ Google Chrome headless via playwright on PFI/web/index.html
+Routes checked: 15
+consumption_subpages_differentiated: true
+sync_subpages_differentiated: true
+insights_subpages_differentiated: true
+url_state_breadcrumb_title_changed: true
+empty_and_error_states_present: true
+data_gate_integrated: true
+console_errors: 0
+page_errors: 0
+network_resource_errors: 1 for local 8766 trend API unavailable during file-based browser check
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage4_subpage_differentiation.py -q
+10 passed, 33 subtests passed in 0.29s
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q
+69 passed, 33 subtests passed in 0.64s
+
+$ PFI/.venv/bin/python -m json.tool PFI/reports/pfi_v023/stage_4/phase_4_2/evidence.json
+Exit code: 0
+
+$ PFI/.venv/bin/python -m json.tool PFI/reports/pfi_v023/stage_4/phase_4_2/browser_validation.json
+Exit code: 0
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m py_compile PFI/tests/test_v023_stage4_subpage_differentiation.py
+Exit code: 0
+
+$ /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/pages/stage4Subpages.js
+Exit code: 0
+
+$ /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js
+Exit code: 0
+
+$ /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/routes.js
+Exit code: 0
+
+$ rg -n -i "\b(mock|sample|synthetic|fixture|demo|fake)\b" PFI/web/app/pages/stage4Subpages.js PFI/web/app/shell.js PFI/tests/test_v023_stage4_subpage_differentiation.py PFI/docs/pfi_v023/STAGE4_SUBPAGES.md
+Exit code: 1, no matches
+
+$ git diff --check -- PFI
+Exit code: 0
+
+$ git fetch https://github.com/LinzeColin/CodexProject.git main:refs/remotes/origin/main
+Exit code: 0
+
+$ git rev-list --left-right --count HEAD...origin/main
+1 0
