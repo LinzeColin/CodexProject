@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.0-s12p3-rerun-mechanism
+product_version: 0.1.0-s12-stage-review
 
 ## Current Iteration
 
 - project_id: `KMFA`
 - current_stage: `S12`
-- current_phase: `S12-STAGE-REVIEW｜待开始`
-- current_tasks: `KMFA-S12-STAGE-REVIEW`
-- status: `s12p3_completed_validated_local_only_stage12_review_pending`
+- current_phase: `S12-GITHUB-UPLOAD｜待开始`
+- current_tasks: `KMFA-S12-GITHUB-UPLOAD`
+- status: `s12_stage_review_passed_upload_ready_local_only`
 - risk_tier: `T3`
 
 ## Completed
@@ -83,16 +83,17 @@ product_version: 0.1.0-s12p3-rerun-mechanism
 | `S12PAT01-S12PAT03` | S12-P1 人工处理事件完成本地验证：生成 5 条 public-safe append-only manual resolution events、manifest、HTML 工作台和 validator；覆盖字段映射、项目匹配、差异处理、备注、处理人/时间/原因/影响范围/版本，以及已批准事件只能追加反向事件；不执行影响预览、重跑机制、Stage 12 review 或 GitHub upload | `KMFA/stage_artifacts/S12_P1_manual_resolution_events/human/s12_p1_completion_record.md` |
 | `S12PBT01-S12PBT03` | S12-P2 影响预览完成本地验证：基于 5 条 S12-P1 manual resolution events 生成 5 条 public-safe impact previews、manifest、HTML 影响预览和 validator；提交前展示受影响项目、指标、报告，高风险二次确认 pending 时阻断发布；不执行重跑机制、Stage 12 review 或 GitHub upload | `KMFA/stage_artifacts/S12_P2_manual_impact_preview/human/s12_p2_completion_record.md` |
 | `S12PCT01-S12PCT03` | S12-P3 重跑机制完成本地验证：2 条 preview passed/publish-allowed 事件失效派生缓存，重跑字段映射、事实层、指标和报告引用，2 条同源一致性校验通过；3 条高风险 pending preview 不进入重跑；不执行 Stage 12 review 或 GitHub upload | `KMFA/stage_artifacts/S12_P3_manual_rerun_mechanism/human/s12_p3_completion_record.md` |
+| `KMFA-S12-STAGE-REVIEW-20260701` | Stage 12 整体复审本地通过；复跑 S12-P1/P2/P3 validators、`check_s12_stage_review.py`、全量 152 个 KMFA tests、治理 validator、raw/secret scan、parse checks 和 evidence consistency；修复 HANDOFF stale next-step finding；复审步骤未执行 GitHub upload、S13、lineage full check、正式报告或外部接口 | `KMFA/stage_artifacts/S12_STAGE_REVIEW/human/stage12_review_report.md` |
 
 ## In Progress
 
 | Task | Result | Evidence |
 |---|---|---|
-| `KMFA-S12-STAGE-REVIEW` | Stage 12 整体复审待开始；下一轮只允许复跑 S12-P1/P2/P3 validators、治理 validator、安全扫描和 evidence consistency，不得直接 upload、进入 S13、lineage full check、正式报告或外部接口 | `KMFA/docs/governance/roadmap.yaml` |
+| `KMFA-S12-GITHUB-UPLOAD` | Stage 12 final GitHub upload gate 待开始；下一轮只允许对齐最新 `origin/main`，复跑 S12 validators、治理 validator、安全扫描、parse checks、dry-run/push proof 和 post-push parity，不得进入 S13、lineage full check、正式报告或外部接口 | `KMFA/stage_artifacts/S12_STAGE_REVIEW/human/stage12_review_report.md` |
 
 ## Not Completed
 
 | Task | Reason | Next |
 |---|---|---|
-| Stage 12 review/upload | 尚未执行；S12-P1/P2/P3 已本地完成，必须先整体复审并修复 findings，之后才允许 upload gate | 下一轮只执行 Stage 12 整体复审 |
+| Stage 12 final GitHub upload | 尚未执行；S12-P1/P2/P3 和 Stage 12 review 已本地完成，必须先复跑 validators、治理 validator、安全扫描和 dry-run/push proof | 下一轮只执行 Stage 12 final GitHub upload gate |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |

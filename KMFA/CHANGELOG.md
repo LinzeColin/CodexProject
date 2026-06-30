@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.0-s12-stage-review - 2026-07-01
+
+- 完成 Stage 12 整体复审，本地状态为 `review_passed_upload_ready_local_only`，尚未 push GitHub。
+- 新增 `KMFA/tools/check_s12_stage_review.py`、`KMFA/tests/test_s12_stage_review.py` 和 `KMFA/stage_artifacts/S12_STAGE_REVIEW/` 复审证据包。
+- 复跑并锁定 S12-P1/P2/P3 validator 证据：5 条人工处理事件、5 条影响预览、3 条高风险 pending 阻断、2 条 cache invalidation、8 条 rerun step、2 条 same-source consistency check 和 3 个 public-safe HTML 样张。
+- 复审修复 `KMFA/HANDOFF.md` 末尾仍指向 S12-P3 的治理 finding，下一 gate 改为 `KMFA-S12-GITHUB-UPLOAD-GATE`。
+- 复审确认 GitHub upload、S13、lineage full check、正式报告、差异关闭、外部接口和业务决策依据输出均未执行。
+- 不提交 raw business data、zip、Excel workbook、PDF、private CSV、sqlite/db、字段明文、真实账号、真实金额或 credentials。
+- 下一轮只能执行 Stage 12 final GitHub upload gate：先对齐最新 `origin/main`，复跑 validators、治理校验、raw/secret scan、parse checks 和 dry-run/push proof。
+
 ## 0.1.0-s12p3-rerun-mechanism - 2026-07-01
 
 - 完成 `S12-P3｜重跑机制` 本地验证，不上传 GitHub。
