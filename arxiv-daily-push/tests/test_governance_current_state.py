@@ -35,6 +35,30 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
+            "S2PLT02_TERMINAL_CAPTURE_READONLY_COMMAND_EXECUTABILITY_SYNC_BLOCKED_NO_PRODUCTION",
+            current_state,
+        )
+        self.assertIn("S2PLT02-TERMINAL-CAPTURE-READONLY-COMMAND-EXECUTABILITY-SYNC", current_state)
+        self.assertIn("allowed_readonly_commands", current_state)
+        self.assertIn(
+            "adp audit-s2plt02-terminal-proof-evidence-inventory --repo-root . --generated-at 2026-07-01T05:42:34+10:00 --json",
+            current_state,
+        )
+        self.assertIn("aafb8d5147d8c7849a2489bfb4991376e978d646b5e149156cbba58ae513aff1", current_state)
+        self.assertIn("502a892c3a207233c0d9ea985685c5064e2aaa279ca9010a490b30190aefecfe", current_state)
+        self.assertIn("30235e5dd5cd5afabda6de1fdedbfeab5faeb93f61dd076f46a41b2a56bb25a1", current_state)
+        self.assertIn("26207ef1ba63b2fe56d7904e141cf20dbd49268d98407a45a73dbf2fcfd0ed4c", current_state)
+        self.assertIn("94fbe44f8211dff645ad5939696843122191b5b10ed939a1e04105c5e312c6b9", current_state)
+        self.assertIn("bb901dfd9fdb65683c0d76ca413ba1d9df853169bc63e7c9d37ef1ebc343a723", current_state)
+        self.assertIn("a6f7e782a8e62a223087ee08ffebbf444c46909ef096e878849af079400abc47", current_state)
+        self.assertIn("6ae337c9dd434e0f43909cf2ddc13f3d0de3a1bb5beb919ac2323ee61b8ef48f", current_state)
+        self.assertIn(
+            "ADP-S2PLT02-TERMINAL-CAPTURE-READONLY-COMMAND-EXECUTABILITY-SYNC-20260701.json",
+            current_state,
+        )
+        self.assertIn("PHASE_S2PLT02_TERMINAL_CAPTURE_READONLY_COMMAND_EXECUTABILITY_SYNC.md", ledger)
+        self.assertIn("Previous inventory summary sync remains visible", current_state)
+        self.assertIn(
             "S2PLT02_TERMINAL_CAPTURE_INVENTORY_SUMMARY_SYNC_BLOCKED_NO_PRODUCTION",
             current_state,
         )

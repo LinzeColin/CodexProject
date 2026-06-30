@@ -4304,7 +4304,10 @@ def build_s2plt02_terminal_delivery_proof_capture_plan_state(
         "allowed_readonly_commands": [
             capture_plan_readonly_command,
             "adp audit-s2plt02-terminal-capture-window --repo-root . --json",
-            "adp audit-s2plt02-terminal-proof-evidence-inventory --repo-root . --json",
+            (
+                "adp audit-s2plt02-terminal-proof-evidence-inventory --repo-root . "
+                f"--generated-at {generated_at} --json"
+            ),
             "adp validate-s2plt02-terminal-delivery-proof --repo-root . --json",
         ],
         "forbidden_until_terminal_dependencies_pass": [
@@ -4655,7 +4658,10 @@ def validate_s2plt02_terminal_delivery_proof_capture_plan_state(state: Mapping[s
             f"--generated-at {generated_at} --json"
         ),
         "adp audit-s2plt02-terminal-capture-window --repo-root . --json",
-        "adp audit-s2plt02-terminal-proof-evidence-inventory --repo-root . --json",
+        (
+            "adp audit-s2plt02-terminal-proof-evidence-inventory --repo-root . "
+            f"--generated-at {generated_at} --json"
+        ),
         "adp validate-s2plt02-terminal-delivery-proof --repo-root . --json",
     ]
     if wait_guard.get("allowed_readonly_commands") != expected_wait_readonly_commands:
@@ -10187,7 +10193,10 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
                 f"--generated-at {capture_plan_summary.get('generated_at')} --json"
             ),
             "adp audit-s2plt02-terminal-capture-window --repo-root . --json",
-            "adp audit-s2plt02-terminal-proof-evidence-inventory --repo-root . --json",
+            (
+                "adp audit-s2plt02-terminal-proof-evidence-inventory --repo-root . "
+                f"--generated-at {capture_plan_summary.get('generated_at')} --json"
+            ),
             "adp validate-s2plt02-terminal-delivery-proof --repo-root . --json",
         ]
         if wait_guard.get("allowed_readonly_commands") != expected_wait_readonly_commands:

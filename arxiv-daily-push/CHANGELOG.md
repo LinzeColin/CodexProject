@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-07-01 05:42:34 Australia/Sydney - S2PLT02 terminal capture readonly command executability sync
+
+- Updated `capture_wait_state_guard.allowed_readonly_commands` so every listed readonly command is parser-executable and returns blocked JSON.
+- Added `--generated-at 2026-07-01T05:42:34+10:00` to `adp audit-s2plt02-terminal-proof-evidence-inventory` in the wait guard command list.
+- Added CLI regression coverage that executes every allowed readonly command through the parser.
+- Current live CLIs remain blocked with capture plan `aafb8d5147d8c7849a2489bfb4991376e978d646b5e149156cbba58ae513aff1`, wait guard `502a892c3a207233c0d9ea985685c5064e2aaa279ca9010a490b30190aefecfe`, inventory command `26207ef1ba63b2fe56d7904e141cf20dbd49268d98407a45a73dbf2fcfd0ed4c`, prerequisite plan `94fbe44f8211dff645ad5939696843122191b5b10ed939a1e04105c5e312c6b9`, and final readiness `6ae337c9dd434e0f43909cf2ddc13f3d0de3a1bb5beb919ac2323ee61b8ef48f`.
+- No S2PLT02/S2PLT03 terminal proof artifact, S2PLT04 completion report, final-bundle manifest/handoff/signoff/final-command proof, SMTP, scheduler, Release, restore, CURRENT/V7, public schema, DB, source, ranking, queue, DAILY_OPERATION, or production acceptance was enabled.
+
 ## 2026-07-01 05:17:15 Australia/Sydney - S2PLT02 terminal capture inventory summary sync
 
 - Added `terminal_delivery_input_inventory_summary` and `terminal_delivery_artifact_validation_summary` to `plan-s2plt02-terminal-delivery-proof-capture`.
