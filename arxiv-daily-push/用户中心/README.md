@@ -1,6 +1,6 @@
 # ADP 用户中心
 
-更新时间：2026-06-30 09:57:34 Australia/Sydney
+更新时间：2026-06-30 10:27:23 Australia/Sydney
 
 这里是 ADP 在 GitHub 上的唯一中文用户入口。你不需要打开本机目录、运行文件、深层治理文件或原始 JSON，也能判断今天邮件是否正常、队列里还有什么、学习闭环到了哪一步、哪些结论仍被停止门禁止。
 
@@ -13,7 +13,7 @@
 | 截至今日总候选池 | [299 条总候选记录](./截至今日候选池.md)；候选队列前20精选已列分数 | 总候选池来源是 `docs/owner/CONTENT_LEDGER.csv`，前20精选是按公开评分抽取的阅读入口 |
 | 各板块数据源 | [5 个板块 / 6 个数据源](./数据源与板块健康.md)；当前生产启用 1 个来源 | 公开每个板块对应来源、启用状态、影子测试/规划状态和证据链接 |
 | 复习、行动、收益 | [复习行动与收益](./复习行动与收益.md) 已显示字段、证据链和 2026-06-28 今日快照数字 | 今日数字已由当日运行快照写入；后续每日必须继续由真实运行报告同步 |
-| Stage 2 是否正式生产通过 | 没有；最终门仍阻断；S2PLT02 live 授权不等于 terminal proof 或生产验收 | 不能宣称正式生产通过、每日生产运行已验收或 M1-M4 全量自动发送已通过 |
+| Stage 2 是否正式生产通过 | 没有；最终门仍阻断；S2PLT02 input inventory 已列出 ready/missing inputs，但缺第二真实日、8 封真实邮件、真实 scheduler proof 和 live terminal proof artifact | 不能宣称正式生产通过、每日生产运行已验收或 M1-M4 全量自动发送已通过 |
 
 ## 一看三查
 
@@ -26,7 +26,7 @@
 | [已生成报告与邮件预览](./已生成报告与邮件预览.md) | 看 30 条已生成报告 / 邮件预览的状态索引 | 需要跳转已生成记录证据时 |
 | [邮件模板预览](./邮件模板预览.md) | 看 M1-M4 邮件在用户面前应呈现的界面版本 | 关心邮件长什么样时 |
 | [复习行动与收益](./复习行动与收益.md) | 看复习到期、行动窗口、能力资产、收益复盘和真实快照状态 | 关心学习闭环是否落地时 |
-| [功能任务测试证据追踪链](./功能任务测试证据追踪链.md) | 看功能/需求、任务、验收、代码、测试和运行证据的 375 条可点击链路 | 需要复审某项功能是否有测试和证据时 |
+| [功能任务测试证据追踪链](./功能任务测试证据追踪链.md) | 看功能/需求、任务、验收、代码、测试和运行证据的 376 条可点击链路 | 需要复审某项功能是否有测试和证据时 |
 | [恢复路径安全扫描](./恢复路径安全扫描.md) | 看 P0 A-001 恢复路径穿越、绝对路径、符号链接逃逸和阻断保留探针 | 复审恢复安全阻断项时 |
 | [恢复原子替换扫描](./恢复原子替换扫描.md) | 看 P0 A-002 新目标恢复、覆盖保留旧目标备份、无效覆盖保留原目标探针 | 复审恢复原子替换阻断项时 |
 | [事务发件箱与消息ID扫描](./事务发件箱与消息ID扫描.md) | 看 P0 A-003 Message-ID、outbox claim、SMTP accepted-before-commit 和 at-least-once/no-exactly-once 探针 | 复审事务发件箱与消息 ID 阻断项时 |
@@ -107,6 +107,13 @@
 - 当前 `scheduler_proof_ready=true` 只来自 fixture；`artifact_written=false`、`scheduler_install_enabled=false`、sample state hash `5e1157dc9c710501cb2bf2e5dcdd3cc09afb40ee68164ff32d844e993843fb80`。
 - 这不是当前 runtime scheduler proof；不启用 SMTP、scheduler、Release、restore、DAILY_OPERATION，也不声明 S2PLT02/S2PMT07 或 integrated production acceptance。
 
+## 2026-06-30 10:12:54 Australia/Sydney - S2PLT02 terminal proof 输入清单
+
+- 新增 `audit-s2plt02-terminal-delivery-inputs`，用于在写任何 live terminal proof 前列出当前输入清单。
+- 已就绪：S2PLT01 terminal acceptance、第一真实发送日、无重复邮件、M4 水印 proof、真实 SMTP proof、P0/P1 zero-proof。
+- 仍缺失：第二真实发送日、8 封真实邮件、真实 launchd scheduler proof、`FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json`；当前 `artifact_written=false`、`real_smtp_send_enabled=false`、`scheduler_install_enabled=false`、state hash `5976272c0102361222027116f94f5a73cc53e87fa18d1b0e9a5d82208e7c4444`。
+- 这不是 S2PLT02 accepted；不启用 SMTP、scheduler、Release、restore、DAILY_OPERATION，也不声明 S2PLT02/S2PMT07 或 integrated production acceptance。
+
 ## 2026-06-29 18:04:46 Australia/Sydney - S2PLT02 历史授权门状态
 
 - 当时下一步为 `S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION`，且 `authorization_artifact_present=false`。
@@ -142,3 +149,8 @@
 
 - 最新记录：[PHASE_S2PLT02_REAL_SCHEDULER_PROOF_INPUT_VALIDATOR.md](../docs/phase_records/PHASE_S2PLT02_REAL_SCHEDULER_PROOF_INPUT_VALIDATOR.md) / [运行清单](../../governance/run_manifests/ADP-S2PLT02-REAL-SCHEDULER-PROOF-INPUT-VALIDATOR-20260630.json)
 - 结论：validator 只能校验未来真实 launchd scheduler proof manifest；当前 `artifact_written=false`、`scheduler_install_enabled=false`，不能代替真实 scheduler proof、terminal proof 或 production acceptance。
+
+## S2PLT02 terminal delivery 输入清单
+
+- 最新记录：[PHASE_S2PLT02_TERMINAL_DELIVERY_INPUT_INVENTORY.md](../docs/phase_records/PHASE_S2PLT02_TERMINAL_DELIVERY_INPUT_INVENTORY.md) / [运行清单](../../governance/run_manifests/ADP-S2PLT02-TERMINAL-DELIVERY-INPUT-INVENTORY-20260630.json)
+- 结论：ready inputs 已公开，missing inputs 仍阻断 terminal proof；该清单只读且 `artifact_written=false`，不能代替真实 terminal proof 或 production acceptance。

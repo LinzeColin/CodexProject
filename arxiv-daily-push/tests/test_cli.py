@@ -521,6 +521,35 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["integrated_production_accepted"])
         self.assertFalse(payload["daily_operation_enabled"])
 
+    def test_audit_s2plt02_terminal_delivery_inputs_json_lists_missing_inputs(self):
+        repo_root = Path(__file__).resolve().parents[2]
+        buffer = io.StringIO()
+        with redirect_stdout(buffer):
+            result = main(
+                [
+                    "audit-s2plt02-terminal-delivery-inputs",
+                    "--repo-root",
+                    str(repo_root),
+                    "--generated-at",
+                    "2026-06-30T10:12:54+10:00",
+                    "--json",
+                ]
+            )
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(result, 2)
+        self.assertEqual(payload["status"], "blocked")
+        self.assertEqual(payload["task_id"], "S2PLT02-TERMINAL-DELIVERY-INPUT-INVENTORY")
+        self.assertFalse(payload["terminal_delivery_proof_ready"])
+        self.assertFalse(payload["artifact_written"])
+        self.assertIn("SECOND_REAL_DELIVERY_DAY", payload["missing_inputs"])
+        self.assertIn("EIGHT_REAL_EMAILS", payload["missing_inputs"])
+        self.assertIn("REAL_SCHEDULER_PROOF", payload["missing_inputs"])
+        self.assertIn("S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT", payload["missing_inputs"])
+        self.assertFalse(payload["real_smtp_send_enabled"])
+        self.assertFalse(payload["scheduler_install_enabled"])
+        self.assertFalse(payload["daily_operation_enabled"])
+
     def test_build_s2plt02_terminal_delivery_proof_artifact_draft_json_command(self):
         with tempfile.TemporaryDirectory() as tmp_dir:
             tmp = Path(tmp_dir)

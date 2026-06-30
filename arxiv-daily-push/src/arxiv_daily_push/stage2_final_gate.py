@@ -2785,6 +2785,158 @@ def validate_s2plt02_real_scheduler_proof_validation_state(state: Mapping[str, A
     return errors
 
 
+def build_s2plt02_terminal_delivery_input_inventory_state(
+    *,
+    generated_at: str,
+    repo_root: str | Path = ".",
+) -> dict[str, Any]:
+    """Summarize S2PLT02 terminal proof inputs without writing the terminal artifact."""
+
+    inventory_scope = "s2plt02_terminal_delivery_input_inventory_no_write_no_production"
+    root = Path(repo_root)
+    precheck = build_s2plt02_live_2d_precheck_report(generated_at=generated_at, repo_root=root)
+    evidence = _mapping(precheck.get("evidence"))
+    gates = _mapping(precheck.get("gates"))
+    terminal_validation = build_s2plt02_terminal_delivery_proof_artifact_validation_state(repo_root=root)
+
+    input_gate_map = {
+        "S2PLT01_TERMINAL_ACCEPTANCE": gates.get("s2plt01_accepted") is True,
+        "FIRST_REAL_DELIVERY_DAY": int(evidence.get("observed_natural_days") or 0) >= 1,
+        "SECOND_REAL_DELIVERY_DAY": gates.get("two_consecutive_real_days") is True,
+        "EIGHT_REAL_EMAILS": gates.get("eight_real_emails_sent") is True,
+        "NO_DUPLICATE_EMAILS": gates.get("no_duplicate_emails") is True,
+        "M4_WATERMARK_PROOF": gates.get("m4_watermark_correct") is True,
+        "REAL_SCHEDULER_PROOF": gates.get("real_scheduler_proven") is True,
+        "REAL_SMTP_PROOF": gates.get("real_smtp_proven") is True,
+        "P0_P1_ZERO_PROOF": gates.get("p0_zero") is True and gates.get("p1_zero") is True,
+        "S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT": terminal_validation.get("terminal_delivery_proof_ready") is True,
+    }
+    ready_inputs = [name for name, ready in input_gate_map.items() if ready]
+    missing_inputs = [name for name, ready in input_gate_map.items() if not ready]
+    blocking_reasons = list(
+        dict.fromkeys(
+            [
+                *[str(reason) for reason in precheck.get("blocking_reasons", []) if isinstance(reason, str)],
+                *[
+                    str(reason)
+                    for reason in terminal_validation.get("blocking_reasons", [])
+                    if isinstance(reason, str)
+                ],
+            ]
+        )
+    )
+    terminal_delivery_proof_ready = terminal_validation.get("terminal_delivery_proof_ready") is True
+    state: dict[str, Any] = {
+        "model_id": S2PLT02_TERMINAL_DELIVERY_PROOF_MODEL_ID,
+        "schema_version": S2PLT02_SCHEMA_VERSION,
+        "task_id": "S2PLT02-TERMINAL-DELIVERY-INPUT-INVENTORY",
+        "parent_task_id": "S2PLT02-TERMINAL-DELIVERY-PROOF",
+        "acceptance_id": S2PLT02_ACCEPTANCE_ID,
+        "generated_at": generated_at,
+        "status": "pass" if terminal_delivery_proof_ready and not missing_inputs else "blocked",
+        "scope": inventory_scope,
+        "required_inputs": list(input_gate_map),
+        "ready_inputs": ready_inputs,
+        "missing_inputs": missing_inputs,
+        "input_gates": input_gate_map,
+        "blocking_reasons": blocking_reasons,
+        "observed_real_delivery_days": int(evidence.get("observed_natural_days") or 0),
+        "required_real_delivery_days": S2PLT02_REQUIRED_NATURAL_DAYS,
+        "observed_real_email_count": int(evidence.get("observed_email_count") or 0),
+        "required_real_email_count": S2PLT02_REQUIRED_EMAIL_COUNT,
+        "required_mail_products": list(S2PLT02_REQUIRED_MAIL_PRODUCTS),
+        "terminal_delivery_proof_ready": terminal_delivery_proof_ready,
+        "terminal_delivery_proof_artifact_present": terminal_validation.get("artifact_present") is True,
+        "terminal_delivery_proof_artifact_ref": S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH,
+        "precheck_report_hash": precheck.get("report_hash"),
+        "terminal_validation_state_hash": terminal_validation.get("state_hash"),
+        "next_draft_command": (
+            "adp build-s2plt02-terminal-delivery-proof-artifact-draft "
+            "--delivery-manifest DAY1.json --delivery-manifest DAY2.json "
+            "--scheduler-proof REAL-SCHEDULER-PROOF.json --json"
+        ),
+        "next_validation_command": "adp validate-s2plt02-terminal-delivery-proof --repo-root . --json",
+        "artifact_written": False,
+        "production_acceptance_claimed": False,
+        "integrated_production_accepted": False,
+        "stage2_integrated_production_accepted": False,
+        "daily_operation_enabled": False,
+        "real_smtp_send_enabled": False,
+        "scheduler_enabled": False,
+        "scheduler_install_enabled": False,
+        "release_packaging_enabled": False,
+        "production_restore_enabled": False,
+        "current_pointer_changed": False,
+        "v7_1_baseline_changed": False,
+        "v7_2_contract_files_changed": False,
+        "state_hash": "",
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
+def validate_s2plt02_terminal_delivery_input_inventory_state(state: Mapping[str, Any]) -> list[str]:
+    """Validate the no-write S2PLT02 terminal delivery input inventory."""
+
+    inventory_scope = "s2plt02_terminal_delivery_input_inventory_no_write_no_production"
+    errors: list[str] = []
+    if state.get("model_id") != S2PLT02_TERMINAL_DELIVERY_PROOF_MODEL_ID:
+        errors.append("S2PLT02 terminal input inventory model_id is invalid")
+    if state.get("schema_version") != S2PLT02_SCHEMA_VERSION:
+        errors.append("S2PLT02 terminal input inventory schema_version must be 1")
+    if state.get("task_id") != "S2PLT02-TERMINAL-DELIVERY-INPUT-INVENTORY":
+        errors.append("S2PLT02 terminal input inventory task_id is invalid")
+    if state.get("parent_task_id") != "S2PLT02-TERMINAL-DELIVERY-PROOF":
+        errors.append("S2PLT02 terminal input inventory parent_task_id is invalid")
+    if state.get("acceptance_id") != S2PLT02_ACCEPTANCE_ID:
+        errors.append("S2PLT02 terminal input inventory acceptance_id is invalid")
+    if state.get("scope") != inventory_scope:
+        errors.append("S2PLT02 terminal input inventory scope is invalid")
+    if state.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PLT02 terminal input inventory status is invalid")
+    if state.get("required_real_delivery_days") != S2PLT02_REQUIRED_NATURAL_DAYS:
+        errors.append("S2PLT02 terminal input inventory required_real_delivery_days must be 2")
+    if state.get("required_real_email_count") != S2PLT02_REQUIRED_EMAIL_COUNT:
+        errors.append("S2PLT02 terminal input inventory required_real_email_count must be 8")
+    if tuple(state.get("required_mail_products", [])) != S2PLT02_REQUIRED_MAIL_PRODUCTS:
+        errors.append("S2PLT02 terminal input inventory required_mail_products must be M1-M4")
+    input_gates = _mapping(state.get("input_gates"))
+    ready_inputs = [str(item) for item in state.get("ready_inputs", [])]
+    missing_inputs = [str(item) for item in state.get("missing_inputs", [])]
+    if set(ready_inputs) & set(missing_inputs):
+        errors.append("S2PLT02 terminal input inventory cannot mark an input both ready and missing")
+    if set(ready_inputs) | set(missing_inputs) != set(input_gates):
+        errors.append("S2PLT02 terminal input inventory ready/missing inputs must cover input_gates")
+    if state.get("terminal_delivery_proof_ready") is True and missing_inputs:
+        errors.append("terminal_delivery_proof_ready requires no missing_inputs")
+    if state.get("status") == "pass" and state.get("terminal_delivery_proof_ready") is not True:
+        errors.append("pass status requires terminal_delivery_proof_ready")
+    if state.get("terminal_delivery_proof_artifact_ref") != S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH:
+        errors.append("S2PLT02 terminal input inventory artifact ref is invalid")
+    if state.get("artifact_written") is not False:
+        errors.append("artifact_written must be false")
+    for flag in (
+        "production_acceptance_claimed",
+        "integrated_production_accepted",
+        "stage2_integrated_production_accepted",
+        "daily_operation_enabled",
+        "real_smtp_send_enabled",
+        "scheduler_enabled",
+        "scheduler_install_enabled",
+        "release_packaging_enabled",
+        "production_restore_enabled",
+        "current_pointer_changed",
+        "v7_1_baseline_changed",
+        "v7_2_contract_files_changed",
+    ):
+        if state.get(flag) is not False:
+            errors.append(f"{flag} must be false")
+    expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    if state.get("state_hash") != expected_hash:
+        errors.append("S2PLT02 terminal input inventory state_hash does not match state content")
+    return errors
+
+
 def build_s2plt02_terminal_delivery_proof_artifact_draft_state(
     *,
     generated_at: str,

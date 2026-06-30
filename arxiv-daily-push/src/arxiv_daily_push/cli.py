@@ -137,6 +137,7 @@ from .stage2_final_gate import (
     build_s2plt02_real_proof_capture_authorization_validation_state,
     build_s2plt02_real_proof_capture_readiness_state,
     build_s2plt02_real_scheduler_proof_validation_state,
+    build_s2plt02_terminal_delivery_input_inventory_state,
     build_s2plt02_terminal_delivery_proof_artifact_draft_state,
     build_s2plt02_terminal_delivery_proof_artifact_validation_state,
     build_s2plt02_terminal_readiness_audit_state,
@@ -152,6 +153,7 @@ from .stage2_final_gate import (
     validate_s2plt02_dry_run_second_day_audit_state,
     validate_s2plt02_real_proof_capture_readiness_state,
     validate_s2plt02_real_scheduler_proof_validation_state,
+    validate_s2plt02_terminal_delivery_input_inventory_state,
     validate_s2plt02_terminal_delivery_proof_artifact,
     validate_s2plt03_terminal_resilience_proof_artifact_validation_state,
     validate_s2plt04_completion_evidence_audit_state,
@@ -1346,6 +1348,25 @@ def build_parser() -> argparse.ArgumentParser:
         "--json",
         action="store_true",
         help="Print JSON scheduler proof validation state.",
+    )
+    s2plt02_terminal_delivery_inputs = subparsers.add_parser(
+        "audit-s2plt02-terminal-delivery-inputs",
+        help="Audit current S2PLT02 terminal proof inputs without writing the proof artifact.",
+    )
+    s2plt02_terminal_delivery_inputs.add_argument(
+        "--repo-root",
+        default=".",
+        help="Repository root containing final-bundle artifacts.",
+    )
+    s2plt02_terminal_delivery_inputs.add_argument(
+        "--generated-at",
+        required=True,
+        help="Inventory timestamp.",
+    )
+    s2plt02_terminal_delivery_inputs.add_argument(
+        "--json",
+        action="store_true",
+        help="Print JSON S2PLT02 terminal delivery input inventory.",
     )
 
     s2plt02_terminal_delivery_proof = subparsers.add_parser(
@@ -3945,6 +3966,26 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"- blocked: {reason}")
             for error in report.get("validation_errors", []):
                 print(f"- error: {error}")
+            for error in state_errors:
+                print(f"- state_error: {error}")
+        return 0 if report["status"] == "pass" and not state_errors else 2
+    if args.command == "audit-s2plt02-terminal-delivery-inputs":
+        report = build_s2plt02_terminal_delivery_input_inventory_state(
+            generated_at=args.generated_at,
+            repo_root=args.repo_root,
+        )
+        state_errors = validate_s2plt02_terminal_delivery_input_inventory_state(report)
+        if state_errors:
+            report = {**report, "state_validation_errors": state_errors}
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- terminal_delivery_proof_ready: {report.get('terminal_delivery_proof_ready')}")
+            print(f"- observed_real_delivery_days: {report.get('observed_real_delivery_days')}")
+            print(f"- observed_real_email_count: {report.get('observed_real_email_count')}")
+            for item in report.get("missing_inputs", []):
+                print(f"- missing_input: {item}")
             for error in state_errors:
                 print(f"- state_error: {error}")
         return 0 if report["status"] == "pass" and not state_errors else 2

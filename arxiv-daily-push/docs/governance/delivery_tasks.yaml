@@ -5220,3 +5220,27 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PLT02-TERMINAL-DELIVERY-INPUT-INVENTORY"
+    title: "S2PLT02 terminal delivery input inventory"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-30T10:12:54+10:00"
+    objective: "Add a no-write inventory of current S2PLT02 terminal delivery proof ready and missing inputs before any live terminal proof artifact can be written."
+    scope: "Final-gate input inventory builder, CLI command, focused tests, phase record, run manifest, traceability row, delivery/event records, user-center status, and three base notes."
+    non_scope: "No live terminal delivery proof artifact, no SMTP send, no scheduler enable/install/kickstart, no Release, no restore, no CURRENT/V7 change, no public schema/DB/source/ranking/queue mutation, no S2PLT02/S2PLT04/S2PMT07 acceptance, and no integrated production acceptance."
+    owner: "engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    dependencies: ["S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION", "S2PLT02-TERMINAL-DELIVERY-PROOF-ARTIFACT-DRAFT-BUILDER", "S2PLT02-REAL-SCHEDULER-PROOF-INPUT-VALIDATOR"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_DELIVERY_INPUT_INVENTORY.md", "governance/run_manifests/ADP-S2PLT02-TERMINAL-DELIVERY-INPUT-INVENTORY-20260630.json"]
+    acceptance_ids: ["ACC-S2PLT02-2D", "ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s2plt02_inventory_red PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py -k 'terminal_delivery_input_inventory'", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s2plt02_inventory_focus2 PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_cli.py -k 'terminal_delivery_input_inventory or terminal_delivery_inputs'", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s2plt02_inventory_cli2 PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli audit-s2plt02-terminal-delivery-inputs --repo-root . --generated-at 2026-06-30T10:12:54+10:00 --json"]
+    test_results: ["TDD red failed before build_s2plt02_terminal_delivery_input_inventory_state existed", "focused final-gate and CLI inventory tests: 2 passed", "CLI inventory returned blocked / exit 2 with the expected missing input set"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PLT02-TERMINAL-DELIVERY-INPUT-INVENTORY-20260630.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_DELIVERY_INPUT_INVENTORY.md", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py"]
+    result: "s2plt02_terminal_delivery_input_inventory_ready_no_write_no_production"
+    risk: "Ready inputs can be misread as S2PLT02 acceptance; the inventory writes no artifact and exists only to expose the remaining missing inputs."
+    rollback: "Revert the input inventory builder, CLI command, focused tests, phase record, run manifest, traceability row, delivery/event records, user-center notes, and three base notes; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

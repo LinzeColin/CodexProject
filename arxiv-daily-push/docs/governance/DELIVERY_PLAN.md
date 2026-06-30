@@ -21,10 +21,18 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 284
+- task_count: 285
 - acceptance_count: 127
 
 ## Delivery Tasks
+
+## 2026-06-30 10:12:54 Australia/Sydney - S2PLT02 Terminal Delivery Input Inventory
+
+- `S2PLT02-TERMINAL-DELIVERY-INPUT-INVENTORY` adds a no-write CLI inventory for the current S2PLT02 terminal delivery proof prerequisites.
+- Current inventory is blocked / exit 2: ready inputs are `S2PLT01_TERMINAL_ACCEPTANCE`, `FIRST_REAL_DELIVERY_DAY`, `NO_DUPLICATE_EMAILS`, `M4_WATERMARK_PROOF`, `REAL_SMTP_PROOF`, and `P0_P1_ZERO_PROOF`; missing inputs are `SECOND_REAL_DELIVERY_DAY`, `EIGHT_REAL_EMAILS`, `REAL_SCHEDULER_PROOF`, and `S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`.
+- Current observed real delivery remains `1/2` day and `4/8` emails; `artifact_written=false`, `real_smtp_send_enabled=false`, `scheduler_install_enabled=false`, `daily_operation_enabled=false`, and state hash `5976272c0102361222027116f94f5a73cc53e87fa18d1b0e9a5d82208e7c4444`.
+- Evidence: `governance/run_manifests/ADP-S2PLT02-TERMINAL-DELIVERY-INPUT-INVENTORY-20260630.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_DELIVERY_INPUT_INVENTORY.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/src/arxiv_daily_push/cli.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`; `arxiv-daily-push/tests/test_cli.py`.
+- This does not write terminal proof, send SMTP, enable scheduler, upload Release assets, execute restore, mutate schema/DB/source/ranking/CURRENT/V7, enable DAILY_OPERATION, or claim S2PLT02/S2PMT07/integrated production acceptance.
 
 ## 2026-06-30 09:48:07 Australia/Sydney - S2PLT02 Real Scheduler Proof Input Validator
 

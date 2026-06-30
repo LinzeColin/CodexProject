@@ -153,6 +153,7 @@ from arxiv_daily_push.stage2_final_gate import (
     build_s2plt02_real_proof_capture_readiness_state,
     build_s2plt02_real_scheduler_proof_validation_state,
     build_s2plt02_partial_real_delivery_state,
+    build_s2plt02_terminal_delivery_input_inventory_state,
     build_s2plt02_terminal_delivery_proof_artifact_draft_state,
     build_s2plt02_terminal_delivery_proof_artifact_validation_state,
     build_s2plt03_dependency_state,
@@ -179,6 +180,7 @@ from arxiv_daily_push.stage2_final_gate import (
     validate_s2plt02_real_proof_capture_authorization_owner_packet_state,
     validate_s2plt02_real_proof_capture_readiness_state,
     validate_s2plt02_real_scheduler_proof_validation_state,
+    validate_s2plt02_terminal_delivery_input_inventory_state,
     validate_s2plt02_terminal_delivery_proof_artifact,
     validate_s2plt02_terminal_delivery_proof_artifact_validation_state,
     validate_s2plt03_local_resilience_drill_bundle,
@@ -646,6 +648,38 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertNotIn("real_smtp_not_proven", report["blocking_reasons"])
         self.assertNotIn("inherited_v7_1_p0_findings_open", report["blocking_reasons"])
         self.assertNotIn("inherited_v7_1_p1_findings_open", report["blocking_reasons"])
+
+    def test_s2plt02_terminal_delivery_input_inventory_lists_current_missing_inputs_without_writing(self) -> None:
+        inventory = build_s2plt02_terminal_delivery_input_inventory_state(
+            generated_at="2026-06-30T10:12:54+10:00",
+            repo_root=REPO_ROOT,
+        )
+
+        self.assertEqual(inventory["status"], "blocked")
+        self.assertEqual(inventory["task_id"], "S2PLT02-TERMINAL-DELIVERY-INPUT-INVENTORY")
+        self.assertFalse(inventory["terminal_delivery_proof_ready"])
+        self.assertFalse(inventory["artifact_written"])
+        self.assertEqual(inventory["observed_real_delivery_days"], 1)
+        self.assertEqual(inventory["observed_real_email_count"], 4)
+        self.assertIn("S2PLT01_TERMINAL_ACCEPTANCE", inventory["ready_inputs"])
+        self.assertIn("P0_P1_ZERO_PROOF", inventory["ready_inputs"])
+        self.assertIn("M4_WATERMARK_PROOF", inventory["ready_inputs"])
+        self.assertIn("SECOND_REAL_DELIVERY_DAY", inventory["missing_inputs"])
+        self.assertIn("EIGHT_REAL_EMAILS", inventory["missing_inputs"])
+        self.assertIn("REAL_SCHEDULER_PROOF", inventory["missing_inputs"])
+        self.assertIn("S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT", inventory["missing_inputs"])
+        self.assertEqual(
+            inventory["next_draft_command"],
+            "adp build-s2plt02-terminal-delivery-proof-artifact-draft --delivery-manifest DAY1.json --delivery-manifest DAY2.json --scheduler-proof REAL-SCHEDULER-PROOF.json --json",
+        )
+        self.assertEqual(
+            inventory["next_validation_command"],
+            "adp validate-s2plt02-terminal-delivery-proof --repo-root . --json",
+        )
+        self.assertFalse(inventory["real_smtp_send_enabled"])
+        self.assertFalse(inventory["scheduler_install_enabled"])
+        self.assertFalse(inventory["daily_operation_enabled"])
+        self.assertEqual(validate_s2plt02_terminal_delivery_input_inventory_state(inventory), [])
 
     def test_s2plt02_terminal_delivery_proof_artifact_validation_accepts_valid_no_production_artifact(self) -> None:
         with TemporaryDirectory() as tmp_dir:
