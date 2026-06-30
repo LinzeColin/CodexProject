@@ -9324,6 +9324,11 @@ def build_final_bundle_prerequisite_plan_state(
             if next_executable_task == "S2PLT02_TERMINAL_DELIVERY_PROOF"
             else ""
         ),
+        "current_wait_state": (
+            s2plt02_capture_plan_summary.get("current_wait_state", "")
+            if next_executable_task == "S2PLT02_TERMINAL_DELIVERY_PROOF"
+            else ""
+        ),
         "s2plt02_terminal_delivery_capture_plan_summary": s2plt02_capture_plan_summary,
         "s2plt02_runtime_readiness_summary": s2plt02_runtime_readiness_summary,
         "s2plt03_terminal_resilience_capture_plan_summary": s2plt03_capture_plan_summary,
@@ -9645,6 +9650,13 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
         errors.append("final bundle prerequisite plan missing artifact inventory state_hash does not match content")
     capture_plan_summary = _mapping(state.get("s2plt02_terminal_delivery_capture_plan_summary"))
     if expected_next_step_upstream_blocked:
+        if state.get("next_executable_task") == "S2PLT02_TERMINAL_DELIVERY_PROOF":
+            if state.get("current_wait_state") != capture_plan_summary.get("current_wait_state"):
+                errors.append("final bundle prerequisite plan current_wait_state must match S2PLT02 capture summary")
+        elif state.get("current_wait_state") not in {"", None}:
+            errors.append(
+                "final bundle prerequisite plan current_wait_state must stay empty before S2PLT02 terminal proof routing"
+            )
         if capture_plan_summary.get("status") not in {"pass", "blocked"}:
             errors.append("S2PLT02 capture plan summary status is invalid")
         for field in (
@@ -10779,6 +10791,7 @@ def build_final_acceptance_bundle_readiness_state(
         "next_required_step": final_bundle_prerequisite_plan.get("next_required_step"),
         "next_executable_task": final_bundle_prerequisite_plan.get("next_executable_task"),
         "next_executable_runtime_step": final_bundle_prerequisite_plan.get("next_executable_runtime_step"),
+        "current_wait_state": final_bundle_prerequisite_plan.get("current_wait_state"),
         "s2plt02_terminal_delivery_capture_plan_summary": dict(
             final_bundle_prerequisite_plan.get("s2plt02_terminal_delivery_capture_plan_summary", {})
         ),
@@ -10951,7 +10964,7 @@ def validate_final_acceptance_bundle_readiness_state(state: Mapping[str, Any]) -
         errors.append("final acceptance bundle readiness final-bundle prerequisite plan is invalid")
     if state.get("final_bundle_prerequisite_plan_state_hash") != final_bundle_prerequisite_plan.get("state_hash"):
         errors.append("final acceptance bundle readiness prerequisite plan hash must match nested plan")
-    for field in ("next_required_step", "next_executable_task", "next_executable_runtime_step"):
+    for field in ("next_required_step", "next_executable_task", "next_executable_runtime_step", "current_wait_state"):
         if state.get(field) != final_bundle_prerequisite_plan.get(field):
             errors.append(f"final acceptance bundle readiness {field} must match nested prerequisite plan")
     if state.get("s2plt02_terminal_delivery_capture_plan_summary") != final_bundle_prerequisite_plan.get(

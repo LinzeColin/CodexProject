@@ -5518,7 +5518,9 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(plan["next_required_step_is_actionable"])
         self.assertEqual(plan["next_executable_task"], "S2PLT02_TERMINAL_DELIVERY_PROOF")
         self.assertEqual(plan["next_executable_runtime_step"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
+        self.assertEqual(plan["current_wait_state"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
         capture_summary = plan["s2plt02_terminal_delivery_capture_plan_summary"]
+        self.assertEqual(plan["current_wait_state"], capture_summary["current_wait_state"])
         self.assertEqual(capture_summary["status"], "blocked")
         self.assertEqual(capture_summary["next_executable_step"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
         self.assertEqual(capture_summary["current_wait_state"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
@@ -6074,10 +6076,15 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(state["next_required_step"], "S2PLT04_COMPLETION_REPORT")
         self.assertEqual(state["next_executable_task"], "S2PLT02_TERMINAL_DELIVERY_PROOF")
         self.assertEqual(state["next_executable_runtime_step"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
+        self.assertEqual(state["current_wait_state"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
         self.assertEqual(state["final_bundle_prerequisite_plan_state_hash"], prerequisite_plan["state_hash"])
         self.assertEqual(
             state["s2plt02_terminal_delivery_capture_plan_summary"],
             prerequisite_plan["s2plt02_terminal_delivery_capture_plan_summary"],
+        )
+        self.assertEqual(
+            state["current_wait_state"],
+            state["s2plt02_terminal_delivery_capture_plan_summary"]["current_wait_state"],
         )
         self.assertEqual(
             state["s2plt02_terminal_delivery_capture_plan_summary"]["state_hash"],

@@ -144,6 +144,19 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn(f"TRACEABILITY_MATRIX 行数 | {len(matrix_rows)}", page)
         self.assertIn(f"{len(matrix_rows)} 条可点击链路", readme)
 
+        self.assertIn("REQ-ADP-V7-064-S2PMT07-FINAL-BUNDLE-TOP-LEVEL-WAIT-STATE-SYNC", page)
+        self.assertIn("S2PMT07-FINAL-BUNDLE-TOP-LEVEL-WAIT-STATE-SYNC", page)
+        self.assertIn(
+            "ADP-S2PMT07-FINAL-BUNDLE-TOP-LEVEL-WAIT-STATE-SYNC-20260701.json",
+            page,
+        )
+        self.assertIn("PHASE_S2PMT07_FINAL_BUNDLE_TOP_LEVEL_WAIT_STATE_SYNC.md", page)
+        self.assertIn("blocked_final_bundle_top_level_wait_state_synced_no_production", page)
+        self.assertIn("current_wait_state=WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW", page)
+        self.assertIn("c9216c53cedf0cb5fcc12fd15ffb021b83586906f233a4f78ed96ecfe84f9b13", page)
+        self.assertIn("2ee61c653d48b74f03505221adf6e37039d9cd4339b5554ba145dd02f9ec6198", page)
+        self.assertIn("3ba4d2fdcc2ea9bfc268f7f579ce8e8e4e3458ee6c69400e157571906ba16b29", page)
+
         self.assertIn("REQ-ADP-V7-063-S2PMT07-FINAL-BUNDLE-S2PLT02-CURRENT-WAIT-STATE-SUMMARY", page)
         self.assertIn("S2PMT07-FINAL-BUNDLE-S2PLT02-CURRENT-WAIT-STATE-SUMMARY", page)
         self.assertIn(
@@ -156,7 +169,7 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("c9216c53cedf0cb5fcc12fd15ffb021b83586906f233a4f78ed96ecfe84f9b13", page)
         self.assertIn("0b6753d007633aaeca00368eb29ebe54cc677846085051988a60854713c93b42", page)
         self.assertIn("4f1e0e311ea68a5cc320e1c0a5d11985b2a256acbeb06217a57e86d6fa217d65", page)
-        self.assertIn("407 条可点击链路", readme)
+        self.assertIn("408 条可点击链路", readme)
 
         self.assertIn("REQ-ADP-V7-061-S2PLT02-TERMINAL-CAPTURE-WAIT-STATE-READONLY-COMMAND-CONTRACT", page)
         self.assertIn("S2PLT02-TERMINAL-CAPTURE-WAIT-STATE-READONLY-COMMAND-CONTRACT", page)

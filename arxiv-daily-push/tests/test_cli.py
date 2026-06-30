@@ -1406,7 +1406,9 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["next_required_step_is_actionable"])
         self.assertEqual(payload["next_executable_task"], "S2PLT02_TERMINAL_DELIVERY_PROOF")
         self.assertEqual(payload["next_executable_runtime_step"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
+        self.assertEqual(payload["current_wait_state"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
         capture_summary = payload["s2plt02_terminal_delivery_capture_plan_summary"]
+        self.assertEqual(payload["current_wait_state"], capture_summary["current_wait_state"])
         self.assertEqual(capture_summary["status"], "blocked")
         self.assertEqual(capture_summary["next_executable_step"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
         self.assertEqual(capture_summary["current_wait_state"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
@@ -1895,6 +1897,7 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["next_required_step"], "S2PLT04_COMPLETION_REPORT")
         self.assertEqual(payload["next_executable_task"], "S2PLT02_TERMINAL_DELIVERY_PROOF")
         self.assertEqual(payload["next_executable_runtime_step"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
+        self.assertEqual(payload["current_wait_state"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
         self.assertEqual(
             payload["final_bundle_prerequisite_plan_state_hash"],
             payload["final_bundle_prerequisite_plan"]["state_hash"],
@@ -1902,6 +1905,10 @@ class CliTests(unittest.TestCase):
         self.assertEqual(
             payload["s2plt02_terminal_delivery_capture_plan_summary"],
             payload["final_bundle_prerequisite_plan"]["s2plt02_terminal_delivery_capture_plan_summary"],
+        )
+        self.assertEqual(
+            payload["current_wait_state"],
+            payload["s2plt02_terminal_delivery_capture_plan_summary"]["current_wait_state"],
         )
         self.assertEqual(
             payload["s2plt02_terminal_delivery_capture_plan_summary"]["current_wait_state"],
