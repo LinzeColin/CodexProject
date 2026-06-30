@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.0-s11p3-project-cost-page
+product_version: 0.1.0-s11-stage-review
 
 ## Current Iteration
 
 - project_id: `KMFA`
 - current_stage: `S11`
-- current_phase: `S11-P3｜项目成本页面｜本地验证完成`
-- current_tasks: `S11PCT01-S11PCT03`
-- status: `s11_p3_completed_validated_local_only_stage11_review_pending`
+- current_phase: `S11_STAGE_REVIEW｜整体复审｜本地通过`
+- current_tasks: `KMFA-S11-STAGE-REVIEW-20260701`
+- status: `s11_review_passed_upload_ready_local_only`
 - risk_tier: `T3`
 
 ## Completed
@@ -78,16 +78,17 @@ product_version: 0.1.0-s11p3-project-cost-page
 | `S11PAT01-S11PAT03` | S11-P1 首页与导航完成本地验证：生成 8 个 public-safe 首页模块、1 个蓝色商务风 HTML 首页样张、manifest、records 和 validator；覆盖经营总览、项目成本、回款应收、财务资金、开票纳税、数据源检查、待处理事项、报告中心；不执行 S11-P2、S11-P3、Stage 11 review 或 GitHub upload | `KMFA/stage_artifacts/S11_P1_home_navigation/human/s11_p1_completion_record.md` |
 | `S11PBT01-S11PBT03` | S11-P2 数据源检查板完成本地验证：生成 13 行 public-safe 来源状态矩阵、固定 11 列、5 种状态、状态点击详情、蓝灰低干扰 HTML 样张、manifest、rows 和 validator；不执行 S11-P3、Stage 11 review 或 GitHub upload | `KMFA/stage_artifacts/S11_P2_source_check_board/human/s11_p2_completion_record.md` |
 | `S11PCT01-S11PCT03` | S11-P3 项目成本页面完成本地验证：生成 4 条 public-safe 项目页面记录、9 类成本结构、12 条 pending reconciliation、项目详情、来源证据、待处理事项、D 级报告预览、HTML 页面、manifest、records 和 validator；不执行 Stage 11 review 或 GitHub upload | `KMFA/stage_artifacts/S11_P3_project_cost_page/human/s11_p3_completion_record.md` |
+| `KMFA-S11-STAGE-REVIEW-20260701` | Stage 11 整体复审本地通过；复跑 S11-P1/P2/P3 validators、`check_s11_stage_review.py`、全量 132 个 KMFA tests、治理 validator、raw/secret scan、parse checks 和 evidence consistency；复审步骤未执行 GitHub upload、S12、lineage full check、正式报告或外部接口 | `KMFA/stage_artifacts/S11_STAGE_REVIEW/human/stage11_review_report.md` |
 
 ## In Progress
 
 | Task | Result | Evidence |
 |---|---|---|
-| `KMFA-S11-STAGE-REVIEW` | Stage 11 整体复审待执行；下一轮只允许复跑 S11-P1/S11-P2/S11-P3 validators、治理 validator、raw/secret scan、parse checks 和 evidence consistency，不进入 GitHub upload | `KMFA/stage_artifacts/S11_P3_project_cost_page/human/s11_p3_completion_record.md` |
+| `KMFA-S11-GITHUB-UPLOAD` | Stage 11 final GitHub upload gate 待执行；下一轮必须先对齐最新 `origin/main`，复跑 S11 validators、治理 validator、raw/secret scan、parse checks、dry-run push 和 post-push parity，不进入 S12 | `KMFA/stage_artifacts/S11_STAGE_REVIEW/human/stage11_review_report.md` |
 
 ## Not Completed
 
 | Task | Reason | Next |
 |---|---|---|
-| Stage 11 整体复审 | 尚未执行；S11-P1/S11-P2/S11-P3 刚完成本地验证 | 下一轮只执行 Stage 11 整体复审 |
+| Stage 11 final GitHub upload | 尚未执行；当前分支 fetch 后相对 `origin/main` behind 1，upload gate 需先对齐远端 main | 下一轮只执行 Stage 11 final GitHub upload gate |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |
