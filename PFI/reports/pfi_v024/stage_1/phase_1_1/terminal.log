@@ -1,0 +1,22 @@
+generated_at=2026-06-30T11:34:00Z
+pwd=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+head_at_evidence_write=e2ba650ba79446453fd276f453785d9b695608ec
+origin_main_at_evidence_write=e2ba650ba79446453fd276f453785d9b695608ec
+fast_forwarded_before_commit=true
+shell_js_sha256=bb2492ead4404dd8affd730b3c231884281aa163ce3adb1a438a3e26e9c3aa90
+shell_js_bytes=272357
+shell_js_lines_wc=5510
+shell_snapshot_cmp=identical
+node_on_path=unavailable exit=127
+bundled_node_check_shell_js=pass
+merge_markers=0
+fragmented_ranges=0
+py_compile_stage1_phase11=pass
+pytest_stage1_phase11=4 passed in 0.11s
+pytest_v024_pre_stage0_stage0_phase11_regression=20 passed in 0.18s
+json_tool_stage1_phase11_evidence=pass
+git_diff_check_pfi=pass
+phase_1_1_complete=true
+phase_1_2_complete=false
+phase_1_3_complete=false
+stage_1_complete=false

@@ -1,0 +1,143 @@
+{
+  "schema": "PFIV024Stage1Phase11EvidenceV1",
+  "version": "v0.2.3-repair",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Stage 1",
+  "phase_id": "1.1",
+  "phase_name": "现状定位",
+  "status": "candidate_pass",
+  "allowed_files_obeyed": true,
+  "generated_at": "2026-06-30T11:34:00Z",
+  "last_verified_at": "2026-06-30T11:42:25Z",
+  "repo": {
+    "path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi",
+    "branch": "codex/pfi",
+    "remote": "git@github.com:LinzeColin/CodexProject.git",
+    "head_at_evidence_write": "e2ba650ba79446453fd276f453785d9b695608ec",
+    "origin_main_at_evidence_write": "e2ba650ba79446453fd276f453785d9b695608ec",
+    "fast_forwarded_before_commit": true
+  },
+  "tasks": {
+    "T1.1.1": {
+      "status": "done",
+      "artifact": "PFI/reports/pfi_v024/stage_1/phase_1_1/shell.js.snapshot"
+    },
+    "T1.1.2": {
+      "status": "done",
+      "artifact": "PFI/reports/pfi_v024/stage_1/phase_1_1/terminal.log"
+    },
+    "T1.1.3": {
+      "status": "done",
+      "artifact": "PFI/reports/pfi_v024/stage_1/phase_1_1/shell_before_after_summary.md"
+    }
+  },
+  "shell_snapshot": {
+    "source_path": "PFI/web/app/shell.js",
+    "snapshot_path": "PFI/reports/pfi_v024/stage_1/phase_1_1/shell.js.snapshot",
+    "sha256": "bb2492ead4404dd8affd730b3c231884281aa163ce3adb1a438a3e26e9c3aa90",
+    "bytes": 272357,
+    "lines_wc": 5510,
+    "cmp_identical_to_source_at_capture": true
+  },
+  "diagnosis": {
+    "node_on_path": "unavailable",
+    "bundled_node_check_shell_js": "pass",
+    "merge_markers_found": 0,
+    "fragmented_ranges_found": 0,
+    "syntax_fragment_blocker": false,
+    "phase_1_2_required": true,
+    "phase_1_2_reason": "shell.js lacks a stable exported Stage 1 shell integrity API for version, initialization, route mount, and error boundary."
+  },
+  "phase_1_1_complete": true,
+  "phase_1_2_complete": false,
+  "phase_1_3_complete": false,
+  "stage_1_complete": false,
+  "requires_user_acceptance": true,
+  "no_auto_next_phase": true,
+  "no_auto_closeout": true,
+  "business_ui_changes_made": false,
+  "data_logic_changes_made": false,
+  "shell_js_modified": false,
+  "acceptance_checks": {
+    "shell_snapshot_saved": true,
+    "node_check_recorded": true,
+    "fragment_range_summary_recorded": true,
+    "no_shell_js_modification": true,
+    "no_business_ui_or_data_logic_changes": true
+  },
+  "commands": [
+    {
+      "cmd": "node --check PFI/web/app/shell.js",
+      "status": "unavailable",
+      "detail": "node is not on PATH in this Codex environment"
+    },
+    {
+      "cmd": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js",
+      "status": "pass"
+    },
+    {
+      "cmd": "LC_ALL=C LANG=C shasum -a 256 PFI/web/app/shell.js PFI/reports/pfi_v024/stage_1/phase_1_1/shell.js.snapshot",
+      "status": "pass"
+    },
+    {
+      "cmd": "cmp -s PFI/web/app/shell.js PFI/reports/pfi_v024/stage_1/phase_1_1/shell.js.snapshot",
+      "status": "pass"
+    },
+    {
+      "cmd": "python3 -B -m py_compile PFI/src/pfi_v02/stage_v024_stage1_shell_integrity.py PFI/tests/test_v024_stage1_phase11_shell_diagnosis.py",
+      "status": "pass"
+    },
+    {
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage1_phase11_shell_diagnosis.py -q",
+      "status": "pass",
+      "detail": "4 passed in 0.11s"
+    },
+    {
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_pre_stage0_contract.py PFI/tests/test_v024_stage0_phase01_contract.py PFI/tests/test_v024_stage0_phase02_contract.py PFI/tests/test_v024_stage0_phase03_contract.py PFI/tests/test_v024_stage0_whole_review_contract.py PFI/tests/test_v024_stage1_phase11_shell_diagnosis.py -q",
+      "status": "pass",
+      "detail": "20 passed in 0.18s"
+    },
+    {
+      "cmd": "python3 -m json.tool PFI/reports/pfi_v024/stage_1/phase_1_1/evidence.json",
+      "status": "pass"
+    },
+    {
+      "cmd": "git diff --check -- PFI",
+      "status": "pass"
+    }
+  ],
+  "changed_files": [
+    "PFI/CHANGELOG.md",
+    "PFI/HANDOFF.md",
+    "PFI/README.md",
+    "PFI/功能清单.md",
+    "PFI/开发记录.md",
+    "PFI/模型参数文件.md",
+    "PFI/docs/pfi_v024/RUN_CONTRACT.md",
+    "PFI/reports/pfi_v024/stage_1/phase_1_1/changed_files.txt",
+    "PFI/reports/pfi_v024/stage_1/phase_1_1/evidence.json",
+    "PFI/reports/pfi_v024/stage_1/phase_1_1/risk_and_rollback.md",
+    "PFI/reports/pfi_v024/stage_1/phase_1_1/shell.js.snapshot",
+    "PFI/reports/pfi_v024/stage_1/phase_1_1/shell_before_after_summary.md",
+    "PFI/reports/pfi_v024/stage_1/phase_1_1/terminal.log",
+    "PFI/src/pfi_v02/stage_v024_stage1_shell_integrity.py",
+    "PFI/tests/test_v024_stage1_phase11_shell_diagnosis.py"
+  ],
+  "explicitly_not_done": [
+    "Stage 1 Phase 1.2 minimum shell repair",
+    "Stage 1 Phase 1.3 validation closeout",
+    "Stage 1 whole-stage review",
+    "business UI changes",
+    "data logic changes"
+  ],
+  "validation_results": {
+    "node_on_path": "unavailable",
+    "node_check_shell_js": "pass via Codex bundled Node",
+    "snapshot_hash_and_cmp": "pass",
+    "py_compile": "pass",
+    "pytest_phase11_contract": "4 passed in 0.11s",
+    "pytest_v024_pre_stage0_stage0_phase11_regression": "20 passed in 0.18s",
+    "json_and_git_diff_check": "pass"
+  }
+}
