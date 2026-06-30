@@ -1,11 +1,11 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260630-S06P2-CROSS-SOURCE-DIFFERENCE-QUEUE"
+as_of_event_id: "EVENT-KMFA-20260630-S06P3-VALIDATION-EVIDENCE-OUTPUT"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "precommit-pending"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S06_P2"
-snapshot_event_time: "2026-06-30T14:20:00+10:00"
-generator_version: "manual-s06-p2"
-final_commit_binding: "precommit-pending-s06-p2"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S06_P3"
+snapshot_event_time: "2026-06-30T14:30:00+10:00"
+generator_version: "manual-s06-p3"
+final_commit_binding: "precommit-pending-s06-p3"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 40
-    total_active_formulas: 14
+    total_active_parameters: 44
+    total_active_formulas: 15
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -68,6 +68,9 @@ dimensions:
       - "KMFA/stage_artifacts/S06_P2_cross_source_difference_queue/human/test_results.md"
       - "KMFA/tools/cross_source_difference_queue.py"
       - "KMFA/tools/check_s06_p2_difference_queue.py"
+      - "KMFA/stage_artifacts/S06_P3_validation_evidence_output/human/test_results.md"
+      - "KMFA/tools/validation_evidence_output.py"
+      - "KMFA/tools/check_s06_p3_validation_evidence.py"
   operational_validation:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
@@ -166,8 +169,8 @@ dimensions:
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "S06_P2_COMPLETED_VALIDATED_LOCAL_ONLY_S06_P3_NOT_STARTED"
-  release_gate: "KMFA-S06-P3-GATE"
+  status: "S06_P3_COMPLETED_VALIDATED_LOCAL_ONLY_STAGE_REVIEW_NOT_STARTED"
+  release_gate: "KMFA-S06-STAGE-REVIEW-GATE"
   blocker_ids:
-    - "S06_P3_EVIDENCE_OUTPUT_NOT_STARTED"
+    - "S06_STAGE_REVIEW_NOT_STARTED"
     - "LINEAGE_AND_REPORT_RELEASE_GATE_NOT_STARTED"

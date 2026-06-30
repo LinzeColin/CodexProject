@@ -1,10 +1,10 @@
 # KMFA Model Spec
 
-product_version: 0.1.0-s06-p2-cross-source-difference-queue
+product_version: 0.1.0-s06-p3-validation-evidence-output
 
 ## Scope
 
-当前模型说明覆盖 S01 已建立并按 v1.2 重放的治理边界、S02-P1 metadata 协议、S02-P2 不可污染原则、S02-P3 质量等级门禁协议、S03-P1 文件型导入登记模型、S03-P2 数据源检查矩阵模型、S03-P3 源优先级模型、S04-P1 金额工具、S04-P2 字段标准化工具、S04-P3 基础工具测试、Stage 4 整体复审与上传、S05-P1 A0 文件登记、S05-P2 public-safe A0 字段级黄金基准候选合同、S05-P3 public-safe A0 authority baseline lock、Stage 5 整体复审与上传、S06-P1 public-safe zero-delta validator，以及 S06-P2 public-safe cross-source difference queue。不声明项目成本事实层、S06-P3、lineage 完整检查或正式报告生成已经实现。
+当前模型说明覆盖 S01 已建立并按 v1.2 重放的治理边界、S02-P1 metadata 协议、S02-P2 不可污染原则、S02-P3 质量等级门禁协议、S03-P1 文件型导入登记模型、S03-P2 数据源检查矩阵模型、S03-P3 源优先级模型、S04-P1 金额工具、S04-P2 字段标准化工具、S04-P3 基础工具测试、Stage 4 整体复审与上传、S05-P1 A0 文件登记、S05-P2 public-safe A0 字段级黄金基准候选合同、S05-P3 public-safe A0 authority baseline lock、Stage 5 整体复审与上传、S06-P1 public-safe zero-delta validator、S06-P2 public-safe cross-source difference queue，以及 S06-P3 public-safe validation evidence output。不声明项目成本事实层、lineage 完整检查、Stage 6 复审或正式报告生成已经实现。
 
 ## Active Model
 

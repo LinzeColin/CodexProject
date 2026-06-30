@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-s06-p3-validation-evidence-output - 2026-06-30
+
+- 完成 `S06-P3｜校验证据输出` 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/validation_evidence_output.py`、`KMFA/tools/check_s06_p3_validation_evidence.py` 和 `KMFA/tests/test_validation_evidence_output.py`。
+- 输出 S06-P3 `zero_delta_result.json`、sanitized `mismatch_report.csv` 和 per-project validation status JSONL。
+- 将 public-safe zero-delta summary、data quality status、source difference queue status 和 mismatch index 写入 `KMFA/metadata/quality`。
+- metadata/quality 只保存 hash/ref/status/evidence，不新增字段明文、权威原值、系统原值、PDF 原值或 Excel 原值。
+- 保持事实层、lineage 完整检查、正式报告、UI、外部接口、Stage 6 复审和 GitHub upload 为未完成。
+
 ## 0.1.0-s06-p2-cross-source-difference-queue - 2026-06-30
 
 - 完成 `S06-P2｜跨源差异队列` 本地验证，不上传 GitHub。
