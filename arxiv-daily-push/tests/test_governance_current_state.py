@@ -35,6 +35,17 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
+            "S2PMT07_FINAL_BUNDLE_PREREQUISITE_S2PLT02_RUNTIME_STEP_SYNC_BLOCKED_NO_PRODUCTION",
+            current_state,
+        )
+        self.assertIn("S2PMT07-FINAL-BUNDLE-PREREQUISITE-S2PLT02-RUNTIME-STEP-SYNC", current_state)
+        self.assertIn("next_executable_runtime_step=WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW", current_state)
+        self.assertIn("bc5c75ce6138842f2b3de247420260b55d3b1a5f7cfb6f10dc44f91efb594af6", current_state)
+        self.assertIn("ADP-S2PMT07-FINAL-BUNDLE-PREREQUISITE-S2PLT02-RUNTIME-STEP-SYNC-20260630.json", current_state)
+        self.assertIn("PHASE_S2PMT07_FINAL_BUNDLE_PREREQUISITE_S2PLT02_RUNTIME_STEP_SYNC.md", ledger)
+        self.assertIn("next_required_step=S2PLT04_COMPLETION_REPORT", current_state)
+        self.assertIn("next_executable_task=S2PLT02_TERMINAL_DELIVERY_PROOF", current_state)
+        self.assertIn(
             "S2PLT02_TERMINAL_CAPTURE_PLAN_RUNTIME_AUTH_GATE_BLOCKED_NO_PRODUCTION",
             current_state,
         )

@@ -21,10 +21,19 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 301
+- task_count: 302
 - acceptance_count: 127
 
 ## Delivery Tasks
+
+## 2026-06-30 18:38:53 Australia/Sydney - S2PMT07 Final Bundle Prerequisite S2PLT02 Runtime Step Sync
+
+- `S2PMT07-FINAL-BUNDLE-PREREQUISITE-S2PLT02-RUNTIME-STEP-SYNC` makes `plan-final-bundle-prerequisites` expose the nested S2PLT02 capture-plan summary and top-level `next_executable_runtime_step=WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`.
+- Current live CLI remains blocked / exit 2: `state_hash=bc5c75ce6138842f2b3de247420260b55d3b1a5f7cfb6f10dc44f91efb594af6`, `next_required_step=S2PLT04_COMPLETION_REPORT`, `next_executable_task=S2PLT02_TERMINAL_DELIVERY_PROOF`, and `next_executable_runtime_step=WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`.
+- Nested S2PLT02 summary remains blocked with `s2plt02_capture_plan_state_hash=6fa850a802d93e839146cabf158689af05941a54e895911220cc9c077efde7d2`, `authorization_artifact_status=pass`, `terminal_evidence_inventory_state_hash=e8942077e2a2448ab8c354c1680e9d634872b4bea8f9e0f9006efac1cbd91336`, and `runtime_capture_ready=false`.
+- Runtime blockers are `second_consecutive_real_m1_m4_smtp_day_missing;real_launchd_scheduler_proof_missing;adp_allow_smtp_send_false;daily_run_succeeded_but_smtp_dry_run_not_terminal;blocked_candidate_inputs_present`; missing terminal inputs remain `SECOND_REAL_DELIVERY_DAY`, `EIGHT_REAL_EMAILS`, `REAL_SCHEDULER_PROOF`, and `S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-PREREQUISITE-S2PLT02-RUNTIME-STEP-SYNC-20260630.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_PREREQUISITE_S2PLT02_RUNTIME_STEP_SYNC.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`; `arxiv-daily-push/tests/test_cli.py`.
+- This does not write S2PLT02 terminal proof, write S2PLT04 completion report, create final-bundle manifest/handoff/signoff/final-command proof, send SMTP, enable scheduler, upload Release assets, execute restore, mutate schema/DB/source/ranking/CURRENT/V7, enable DAILY_OPERATION, or claim S2PLT02/S2PLT04/S2PMT07/integrated production acceptance.
 
 ## 2026-06-30 18:11:03 Australia/Sydney - S2PLT02 Terminal Capture Plan Runtime Auth Gate
 
