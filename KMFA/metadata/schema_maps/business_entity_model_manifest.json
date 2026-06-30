@@ -1,0 +1,55 @@
+{
+  "artifact_refs": {
+    "completion_record": "KMFA/stage_artifacts/S08_P2_business_entity_model/human/s08_p2_completion_record.md",
+    "lifecycle_statuses": "KMFA/metadata/schema_maps/business_entity_lifecycle_statuses.jsonl",
+    "relationships": "KMFA/metadata/schema_maps/business_entity_relationships.jsonl",
+    "schema": "KMFA/metadata/schema_maps/business_entity_model_schema.json",
+    "schema_doc": "KMFA/docs/governance/BUSINESS_ENTITY_MODEL_SCHEMA.md",
+    "test_results": "KMFA/stage_artifacts/S08_P2_business_entity_model/human/test_results.md"
+  },
+  "generated_at": "2026-06-30T21:00:00+10:00",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "field_plaintext_committed": false,
+    "normalized_business_values_committed": false,
+    "private_tabular_files_committed": false,
+    "raw_business_values_committed": false,
+    "raw_file_committed": false
+  },
+  "quality_gate": {
+    "automatic_external_action_allowed": false,
+    "formal_report_allowed": false,
+    "github_upload_allowed": false,
+    "phase_completion_upload_allowed": false,
+    "q5_calculation_baseline_allowed": false,
+    "raw_layer_write_allowed": false
+  },
+  "record_type": "s08_p2_business_entity_model_manifest",
+  "required_entity_types": [
+    "customer",
+    "contract",
+    "project",
+    "cost_record",
+    "invoice",
+    "collection",
+    "receivable",
+    "tax_evidence"
+  ],
+  "schema_version": "kmfa.business_entity_model_manifest.v1",
+  "stage_phase": "S08-P2",
+  "stage_scope": {
+    "external_connector_scope_included": false,
+    "fact_layer_scope_included": false,
+    "lineage_full_check_scope_included": false,
+    "report_scope_included": false,
+    "s08_p1_project_composite_key_scope_included": false,
+    "s08_p2_entity_model_scope_included": true,
+    "s08_p3_matching_quality_scope_included": false,
+    "ui_scope_included": false
+  },
+  "summary": {
+    "entity_type_count": 8,
+    "lifecycle_status_count": 32,
+    "relationship_count": 14
+  }
+}

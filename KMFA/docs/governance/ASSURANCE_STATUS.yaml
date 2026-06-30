@@ -1,11 +1,11 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260630-S08P1-PROJECT-COMPOSITE-KEY"
+as_of_event_id: "EVENT-KMFA-20260630-S08P2-BUSINESS-ENTITY-MODEL"
 source_snapshot_hash: "sha256:precommit-pending"
-source_base_commit: "946f5c41c8db1ec4eb5e289ae35696ccb6d42f47"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S08P1_LOCAL_COMMIT"
-snapshot_event_time: "2026-06-30T20:00:00+10:00"
-generator_version: "manual-s08p1-project-composite-key"
-final_commit_binding: "precommit-pending-s08p1-local"
+source_base_commit: "c8f9a9c9b59b023d713d55adbb0106f19d4e897d"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S08P2_LOCAL_COMMIT"
+snapshot_event_time: "2026-06-30T21:00:00+10:00"
+generator_version: "manual-s08p2-business-entity-model"
+final_commit_binding: "precommit-pending-s08p2-local"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 66
-    total_active_formulas: 19
+    total_active_parameters: 72
+    total_active_formulas: 20
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -86,6 +86,9 @@ dimensions:
       - "KMFA/stage_artifacts/S08_P1_project_composite_key/human/test_results.md"
       - "KMFA/tools/project_composite_key.py"
       - "KMFA/tools/check_s08_p1_project_composite_key.py"
+      - "KMFA/stage_artifacts/S08_P2_business_entity_model/human/test_results.md"
+      - "KMFA/tools/business_entity_model.py"
+      - "KMFA/tools/check_s08_p2_business_entity_model.py"
   operational_validation:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
@@ -122,6 +125,9 @@ dimensions:
       - "KMFA/tools/project_composite_key.py"
       - "KMFA/tools/check_s08_p1_project_composite_key.py"
       - "KMFA/stage_artifacts/S08_P1_project_composite_key/human/test_results.md"
+      - "KMFA/tools/business_entity_model.py"
+      - "KMFA/tools/check_s08_p2_business_entity_model.py"
+      - "KMFA/stage_artifacts/S08_P2_business_entity_model/human/test_results.md"
   delivery_evidence:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
@@ -225,16 +231,23 @@ dimensions:
       - "KMFA/metadata/schema_maps/project_identity_profiles.jsonl"
       - "KMFA/metadata/schema_maps/project_composite_key_matches.jsonl"
       - "KMFA/metadata/quality/project_identity_review_queue.jsonl"
+      - "KMFA/stage_artifacts/S08_P2_business_entity_model/human/s08_p2_completion_record.md"
+      - "KMFA/stage_artifacts/S08_P2_business_entity_model/human/test_results.md"
+      - "KMFA/stage_artifacts/S08_P2_business_entity_model/machine/s08_p2_manifest.json"
+      - "KMFA/metadata/schema_maps/business_entity_model_manifest.json"
+      - "KMFA/metadata/schema_maps/business_entity_model_schema.json"
+      - "KMFA/metadata/schema_maps/business_entity_relationships.jsonl"
+      - "KMFA/metadata/schema_maps/business_entity_lifecycle_statuses.jsonl"
+      - "KMFA/docs/governance/BUSINESS_ENTITY_MODEL_SCHEMA.md"
   evidence_freshness:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "S08P1_COMPLETED_VALIDATED_LOCAL_ONLY"
-  release_gate: "KMFA-S08-P2-GATE"
+  status: "S08P2_COMPLETED_VALIDATED_LOCAL_ONLY"
+  release_gate: "KMFA-S08-P3-GATE"
   blocker_ids:
-    - "S08_P2_BUSINESS_ENTITY_MODEL_NOT_STARTED"
     - "S08_P3_MATCH_QUALITY_TEST_NOT_STARTED"
     - "STAGE8_REVIEW_NOT_STARTED"
     - "LINEAGE_AND_REPORT_RELEASE_GATE_NOT_STARTED"

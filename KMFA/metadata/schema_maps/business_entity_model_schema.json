@@ -1,0 +1,298 @@
+{
+  "entity_definitions": [
+    {
+      "automatic_external_action_allowed": false,
+      "entity_role": "counterparty identity anchor for contracts, invoices, collections, receivables, and tax evidence",
+      "entity_type": "customer",
+      "private_ref_required": true,
+      "project_id": "KMFA",
+      "public_repo_safety": {
+        "field_plaintext_committed": false,
+        "normalized_business_values_committed": false,
+        "private_tabular_files_committed": false,
+        "raw_business_values_committed": false,
+        "raw_file_committed": false
+      },
+      "raw_layer_write_allowed": false,
+      "record_type": "business_entity_definition",
+      "required_public_safe_fields": [
+        "entity_ref",
+        "source_ref",
+        "source_hash",
+        "lifecycle_status",
+        "quality_status",
+        "evidence_ref",
+        "customer_hash",
+        "counterparty_role"
+      ],
+      "schema_version": "kmfa.business_entity_definition.v1",
+      "stage_phase": "S08-P2",
+      "upstream_refs": [
+        "project_identity_profile",
+        "finance_source",
+        "wps_source",
+        "redcircle_reserved_export"
+      ]
+    },
+    {
+      "automatic_external_action_allowed": false,
+      "entity_role": "controlled agreement anchor linking customer, project, invoices, receivables, and tax evidence",
+      "entity_type": "contract",
+      "private_ref_required": true,
+      "project_id": "KMFA",
+      "public_repo_safety": {
+        "field_plaintext_committed": false,
+        "normalized_business_values_committed": false,
+        "private_tabular_files_committed": false,
+        "raw_business_values_committed": false,
+        "raw_file_committed": false
+      },
+      "raw_layer_write_allowed": false,
+      "record_type": "business_entity_definition",
+      "required_public_safe_fields": [
+        "entity_ref",
+        "source_ref",
+        "source_hash",
+        "lifecycle_status",
+        "quality_status",
+        "evidence_ref",
+        "contract_hash",
+        "customer_entity_ref",
+        "project_entity_ref"
+      ],
+      "schema_version": "kmfa.business_entity_definition.v1",
+      "stage_phase": "S08-P2",
+      "upstream_refs": [
+        "project_identity_profile",
+        "a0_authority_baseline",
+        "redcircle_reserved_export"
+      ]
+    },
+    {
+      "automatic_external_action_allowed": false,
+      "entity_role": "project identity anchor linked to contract, customer, cost, invoice, receivable, and collection evidence",
+      "entity_type": "project",
+      "private_ref_required": true,
+      "project_id": "KMFA",
+      "public_repo_safety": {
+        "field_plaintext_committed": false,
+        "normalized_business_values_committed": false,
+        "private_tabular_files_committed": false,
+        "raw_business_values_committed": false,
+        "raw_file_committed": false
+      },
+      "raw_layer_write_allowed": false,
+      "record_type": "business_entity_definition",
+      "required_public_safe_fields": [
+        "entity_ref",
+        "source_ref",
+        "source_hash",
+        "lifecycle_status",
+        "quality_status",
+        "evidence_ref",
+        "project_identity_profile_ref",
+        "project_composite_key_hash",
+        "company_entity_hash"
+      ],
+      "schema_version": "kmfa.business_entity_definition.v1",
+      "stage_phase": "S08-P2",
+      "upstream_refs": [
+        "project_composite_key",
+        "a0_authority_baseline",
+        "finance_source",
+        "wps_source"
+      ]
+    },
+    {
+      "automatic_external_action_allowed": false,
+      "entity_role": "project cost evidence container; not a fact-layer posting in S08-P2",
+      "entity_type": "cost_record",
+      "private_ref_required": true,
+      "project_id": "KMFA",
+      "public_repo_safety": {
+        "field_plaintext_committed": false,
+        "normalized_business_values_committed": false,
+        "private_tabular_files_committed": false,
+        "raw_business_values_committed": false,
+        "raw_file_committed": false
+      },
+      "raw_layer_write_allowed": false,
+      "record_type": "business_entity_definition",
+      "required_public_safe_fields": [
+        "entity_ref",
+        "source_ref",
+        "source_hash",
+        "lifecycle_status",
+        "quality_status",
+        "evidence_ref",
+        "project_entity_ref",
+        "amount_signature_hash",
+        "cost_category_ref"
+      ],
+      "schema_version": "kmfa.business_entity_definition.v1",
+      "stage_phase": "S08-P2",
+      "upstream_refs": [
+        "a0_authority_baseline",
+        "finance_source"
+      ]
+    },
+    {
+      "automatic_external_action_allowed": false,
+      "entity_role": "billing evidence container linked to project, contract, customer, receivable, collection, and tax evidence",
+      "entity_type": "invoice",
+      "private_ref_required": true,
+      "project_id": "KMFA",
+      "public_repo_safety": {
+        "field_plaintext_committed": false,
+        "normalized_business_values_committed": false,
+        "private_tabular_files_committed": false,
+        "raw_business_values_committed": false,
+        "raw_file_committed": false
+      },
+      "raw_layer_write_allowed": false,
+      "record_type": "business_entity_definition",
+      "required_public_safe_fields": [
+        "entity_ref",
+        "source_ref",
+        "source_hash",
+        "lifecycle_status",
+        "quality_status",
+        "evidence_ref",
+        "invoice_hash",
+        "project_entity_ref",
+        "contract_entity_ref",
+        "customer_entity_ref"
+      ],
+      "schema_version": "kmfa.business_entity_definition.v1",
+      "stage_phase": "S08-P2",
+      "upstream_refs": [
+        "finance_source",
+        "wps_source",
+        "redcircle_reserved_export"
+      ]
+    },
+    {
+      "automatic_external_action_allowed": false,
+      "entity_role": "payment collection evidence container linked to invoice and receivable settlement status",
+      "entity_type": "collection",
+      "private_ref_required": true,
+      "project_id": "KMFA",
+      "public_repo_safety": {
+        "field_plaintext_committed": false,
+        "normalized_business_values_committed": false,
+        "private_tabular_files_committed": false,
+        "raw_business_values_committed": false,
+        "raw_file_committed": false
+      },
+      "raw_layer_write_allowed": false,
+      "record_type": "business_entity_definition",
+      "required_public_safe_fields": [
+        "entity_ref",
+        "source_ref",
+        "source_hash",
+        "lifecycle_status",
+        "quality_status",
+        "evidence_ref",
+        "collection_hash",
+        "invoice_entity_ref",
+        "receivable_entity_ref"
+      ],
+      "schema_version": "kmfa.business_entity_definition.v1",
+      "stage_phase": "S08-P2",
+      "upstream_refs": [
+        "finance_source",
+        "wps_source",
+        "redcircle_reserved_export"
+      ]
+    },
+    {
+      "automatic_external_action_allowed": false,
+      "entity_role": "receivable evidence container linked to customer, project, invoice, and collection status",
+      "entity_type": "receivable",
+      "private_ref_required": true,
+      "project_id": "KMFA",
+      "public_repo_safety": {
+        "field_plaintext_committed": false,
+        "normalized_business_values_committed": false,
+        "private_tabular_files_committed": false,
+        "raw_business_values_committed": false,
+        "raw_file_committed": false
+      },
+      "raw_layer_write_allowed": false,
+      "record_type": "business_entity_definition",
+      "required_public_safe_fields": [
+        "entity_ref",
+        "source_ref",
+        "source_hash",
+        "lifecycle_status",
+        "quality_status",
+        "evidence_ref",
+        "receivable_hash",
+        "customer_entity_ref",
+        "project_entity_ref",
+        "invoice_entity_ref"
+      ],
+      "schema_version": "kmfa.business_entity_definition.v1",
+      "stage_phase": "S08-P2",
+      "upstream_refs": [
+        "finance_source",
+        "wps_source"
+      ]
+    },
+    {
+      "automatic_external_action_allowed": false,
+      "entity_role": "tax evidence container linked to invoice and contract without enabling automatic tax filing",
+      "entity_type": "tax_evidence",
+      "private_ref_required": true,
+      "project_id": "KMFA",
+      "public_repo_safety": {
+        "field_plaintext_committed": false,
+        "normalized_business_values_committed": false,
+        "private_tabular_files_committed": false,
+        "raw_business_values_committed": false,
+        "raw_file_committed": false
+      },
+      "raw_layer_write_allowed": false,
+      "record_type": "business_entity_definition",
+      "required_public_safe_fields": [
+        "entity_ref",
+        "source_ref",
+        "source_hash",
+        "lifecycle_status",
+        "quality_status",
+        "evidence_ref",
+        "tax_evidence_hash",
+        "invoice_entity_ref",
+        "contract_entity_ref"
+      ],
+      "schema_version": "kmfa.business_entity_definition.v1",
+      "stage_phase": "S08-P2",
+      "upstream_refs": [
+        "finance_source",
+        "redcircle_reserved_export"
+      ]
+    }
+  ],
+  "generated_at": "2026-06-30T21:00:00+10:00",
+  "lifecycle_ref": "KMFA/metadata/schema_maps/business_entity_lifecycle_statuses.jsonl",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "field_plaintext_committed": false,
+    "normalized_business_values_committed": false,
+    "private_tabular_files_committed": false,
+    "raw_business_values_committed": false,
+    "raw_file_committed": false
+  },
+  "record_type": "business_entity_model_schema",
+  "relationship_ref": "KMFA/metadata/schema_maps/business_entity_relationships.jsonl",
+  "schema_version": "kmfa.business_entity_model_schema.v1",
+  "source_model_refs": {
+    "a0_authority_baseline": "KMFA/metadata/baseline/a0_authority_baseline_manifest.json",
+    "finance_adapter": "KMFA/metadata/schema_maps/finance_file_adapter_manifest.json",
+    "project_composite_key_manifest": "KMFA/metadata/schema_maps/project_composite_key_manifest.json",
+    "project_identity_profiles": "KMFA/metadata/schema_maps/project_identity_profiles.jsonl",
+    "redcircle_postponement": "KMFA/metadata/schema_maps/redcircle_postponement_manifest.json",
+    "wps_adapter": "KMFA/metadata/schema_maps/wps_file_adapter_manifest.json"
+  },
+  "stage_phase": "S08-P2"
+}
