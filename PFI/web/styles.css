@@ -39,7 +39,141 @@
   text-decoration: none;
 }
 
+.stage4-subpage-surface {
+  margin: 14px 0 18px;
+}
+
+.stage4-subpage {
+  display: grid;
+  gap: 16px;
+  padding: 18px;
+  border: 1px solid var(--pfi-border, #d7dee2);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--pfi-surface, #ffffff) 88%, #dff8f3), var(--pfi-surface, #ffffff)),
+    var(--pfi-surface, #ffffff);
+  box-shadow: 0 18px 45px rgba(18, 42, 56, 0.08);
+}
+
+.stage4-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--pfi-muted, #62717a);
+  font-size: 13px;
+}
+
+.stage4-breadcrumb span:last-child {
+  color: var(--pfi-text, #1c2a33);
+  font-weight: 700;
+}
+
+.stage4-subpage-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) max-content;
+  gap: 18px;
+  align-items: start;
+}
+
+.stage4-subpage-head h2 {
+  margin: 0 0 8px;
+  font-size: 28px;
+  line-height: 1.15;
+}
+
+.stage4-subpage-head p:last-child {
+  max-width: 720px;
+  margin: 0;
+  color: var(--pfi-muted, #62717a);
+}
+
+.stage4-state-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+}
+
+.stage4-state-grid div {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--pfi-border, #d7dee2);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--pfi-surface, #ffffff) 84%, #eef6ff);
+}
+
+.stage4-state-grid dt {
+  margin: 0 0 7px;
+  color: var(--pfi-muted, #62717a);
+  font-size: 12px;
+}
+
+.stage4-state-grid dd {
+  margin: 0;
+  color: var(--pfi-text, #1c2a33);
+  font-weight: 650;
+}
+
+.stage4-section-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 0.9fr;
+  gap: 12px;
+}
+
+.stage4-section {
+  min-height: 122px;
+  padding: 14px;
+  border: 1px solid var(--pfi-border, #d7dee2);
+  border-radius: 8px;
+  background: var(--pfi-surface, #ffffff);
+}
+
+.stage4-section h3 {
+  margin: 0 0 10px;
+  font-size: 17px;
+}
+
+.stage4-section p {
+  margin: 0;
+  color: var(--pfi-muted, #62717a);
+}
+
+.stage4-layout-account-map .stage4-section-grid,
+.stage4-layout-investment-overview .stage4-section-grid {
+  grid-template-columns: 1.45fr 0.8fr 1fr;
+}
+
+.stage4-layout-ledger-filter .stage4-section-grid,
+.stage4-layout-ledger-review .stage4-section-grid {
+  grid-template-columns: 0.9fr 1.35fr 0.9fr;
+}
+
+.stage4-layout-account-reconcile,
+.stage4-layout-ledger-export,
+.stage4-layout-investment-returns {
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--pfi-surface, #ffffff) 86%, #fff3d7), var(--pfi-surface, #ffffff)),
+    var(--pfi-surface, #ffffff);
+}
+
+.stage4-layout-investment-holdings,
+.stage4-layout-investment-trades {
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--pfi-surface, #ffffff) 86%, #e7edff), var(--pfi-surface, #ffffff)),
+    var(--pfi-surface, #ffffff);
+}
+
 @media (max-width: 780px) {
+  .stage4-subpage-head,
+  .stage4-state-grid,
+  .stage4-section-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stage4-primary-action {
+    width: 100%;
+  }
+
   .mobile-bottom-nav[data-stage3-mobile-primary="10"] {
     display: flex;
     grid-template-columns: none;

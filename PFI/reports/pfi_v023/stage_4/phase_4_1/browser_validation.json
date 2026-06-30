@@ -1,0 +1,471 @@
+{
+  "phase_id": "V023-S4-P4.1",
+  "index_url": "file:///Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/web/index.html",
+  "browser": "Google Chrome headless via playwright-core",
+  "screenshot_paths": {
+    "accounts": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_4/phase_4_1/screenshots/accounts_subpages.png",
+    "ledger": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_4/phase_4_1/screenshots/ledger_subpages.png",
+    "investment": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_4/phase_4_1/screenshots/investment_subpages.png"
+  },
+  "workspace_results": {
+    "accounts": [
+      {
+        "hash": "#/accounts?tab=overview",
+        "h1": "账户与资产 · 账户地图",
+        "workspace": "accounts",
+        "routeAlias": "/accounts?tab=overview",
+        "stage4Route": "/accounts?tab=overview",
+        "surfaceVisible": true,
+        "layoutKind": "account-map",
+        "primaryObject": "账户地图",
+        "primaryAction": "核对账户来源",
+        "emptyState": "未加载真实账户快照时，只显示账户地图空态和下一步导入入口。",
+        "errorState": "无法读取账户快照，请检查本机 PFI 数据目录和来源权限。",
+        "dataSource": "本机账户资料 / read-model",
+        "breadcrumb": [
+          "账户与资产",
+          "账户地图"
+        ],
+        "sectionKinds": [
+          "map",
+          "status",
+          "action"
+        ],
+        "activeSecondary": [
+          "账户总览"
+        ],
+        "secondaryRoutes": [
+          "/accounts?tab=overview",
+          "/accounts?tab=list",
+          "/accounts?tab=trend",
+          "/accounts?tab=reconcile"
+        ],
+        "scrollY": 0
+      },
+      {
+        "hash": "#/accounts?tab=list",
+        "h1": "账户与资产 · 账户清单",
+        "workspace": "accounts",
+        "routeAlias": "/accounts?tab=list",
+        "stage4Route": "/accounts?tab=list",
+        "surfaceVisible": true,
+        "layoutKind": "account-list",
+        "primaryObject": "账户清单",
+        "primaryAction": "打开账户明细",
+        "emptyState": "未加载真实账户列表时，保留列结构并提示先导入或绑定来源。",
+        "errorState": "无法读取账户清单，请检查账户 profile 和导入批次。",
+        "dataSource": "本机账户 profile / source profile",
+        "breadcrumb": [
+          "账户与资产",
+          "账户清单"
+        ],
+        "sectionKinds": [
+          "table",
+          "filter",
+          "action"
+        ],
+        "activeSecondary": [
+          "账户列表"
+        ],
+        "secondaryRoutes": [
+          "/accounts?tab=overview",
+          "/accounts?tab=list",
+          "/accounts?tab=trend",
+          "/accounts?tab=reconcile"
+        ],
+        "scrollY": 0
+      },
+      {
+        "hash": "#/accounts?tab=trend",
+        "h1": "账户与资产 · 资产趋势",
+        "workspace": "accounts",
+        "routeAlias": "/accounts?tab=trend",
+        "stage4Route": "/accounts?tab=trend",
+        "surfaceVisible": true,
+        "layoutKind": "asset-trend",
+        "primaryObject": "资产趋势",
+        "primaryAction": "查看趋势缺口",
+        "emptyState": "未加载真实资产序列时，不画伪造曲线，只显示趋势缺口说明。",
+        "errorState": "无法读取资产趋势，请检查 read-model hash 和汇率快照。",
+        "dataSource": "SQLite read-model / FX snapshot",
+        "breadcrumb": [
+          "账户与资产",
+          "资产趋势"
+        ],
+        "sectionKinds": [
+          "chart",
+          "range",
+          "action"
+        ],
+        "activeSecondary": [
+          "资产趋势"
+        ],
+        "secondaryRoutes": [
+          "/accounts?tab=overview",
+          "/accounts?tab=list",
+          "/accounts?tab=trend",
+          "/accounts?tab=reconcile"
+        ],
+        "scrollY": 0
+      },
+      {
+        "hash": "#/accounts?tab=reconcile",
+        "h1": "账户与资产 · 账户对账",
+        "workspace": "accounts",
+        "routeAlias": "/accounts?tab=reconcile",
+        "stage4Route": "/accounts?tab=reconcile",
+        "surfaceVisible": true,
+        "layoutKind": "account-reconcile",
+        "primaryObject": "账户对账",
+        "primaryAction": "处理对账差异",
+        "emptyState": "没有真实平台余额时，只显示待导入状态，不把差异写成 0。",
+        "errorState": "无法比对平台余额，请检查平台快照、账本余额和汇率快照。",
+        "dataSource": "平台余额快照 / PFI 账本余额",
+        "breadcrumb": [
+          "账户与资产",
+          "账户对账"
+        ],
+        "sectionKinds": [
+          "compare",
+          "review",
+          "action"
+        ],
+        "activeSecondary": [
+          "对账状态"
+        ],
+        "secondaryRoutes": [
+          "/accounts?tab=overview",
+          "/accounts?tab=list",
+          "/accounts?tab=trend",
+          "/accounts?tab=reconcile"
+        ],
+        "scrollY": 0
+      }
+    ],
+    "ledger": [
+      {
+        "hash": "#/ledger?tab=list",
+        "h1": "账本流水 · 流水列表",
+        "workspace": "ledger",
+        "routeAlias": "/ledger?tab=list",
+        "stage4Route": "/ledger?tab=list",
+        "surfaceVisible": true,
+        "layoutKind": "ledger-table",
+        "primaryObject": "流水列表",
+        "primaryAction": "打开流水证据",
+        "emptyState": "未加载真实流水时，显示空列表和导入入口，不显示财务假 0。",
+        "errorState": "无法读取流水列表，请检查 processed ledger 和原始批次。",
+        "dataSource": "MetaDatabase/PFI processed ledger",
+        "breadcrumb": [
+          "账本流水",
+          "流水列表"
+        ],
+        "sectionKinds": [
+          "table",
+          "batch",
+          "action"
+        ],
+        "activeSecondary": [
+          "流水列表"
+        ],
+        "secondaryRoutes": [
+          "/ledger?tab=list",
+          "/ledger?tab=filter",
+          "/ledger?tab=review",
+          "/ledger?tab=export"
+        ],
+        "scrollY": 0
+      },
+      {
+        "hash": "#/ledger?tab=filter",
+        "h1": "账本流水 · 筛选搜索",
+        "workspace": "ledger",
+        "routeAlias": "/ledger?tab=filter",
+        "stage4Route": "/ledger?tab=filter",
+        "surfaceVisible": true,
+        "layoutKind": "ledger-filter",
+        "primaryObject": "筛选搜索",
+        "primaryAction": "保存筛选条件",
+        "emptyState": "没有真实流水时，筛选器保持可见并说明无可筛记录。",
+        "errorState": "无法执行筛选，请检查索引字段和日期范围。",
+        "dataSource": "标准化流水索引",
+        "breadcrumb": [
+          "账本流水",
+          "筛选搜索"
+        ],
+        "sectionKinds": [
+          "query",
+          "preview",
+          "action"
+        ],
+        "activeSecondary": [
+          "筛选搜索"
+        ],
+        "secondaryRoutes": [
+          "/ledger?tab=list",
+          "/ledger?tab=filter",
+          "/ledger?tab=review",
+          "/ledger?tab=export"
+        ],
+        "scrollY": 0
+      },
+      {
+        "hash": "#/ledger?tab=review",
+        "h1": "账本流水 · 分类复核",
+        "workspace": "ledger",
+        "routeAlias": "/ledger?tab=review",
+        "stage4Route": "/ledger?tab=review",
+        "surfaceVisible": true,
+        "layoutKind": "ledger-review",
+        "primaryObject": "分类复核",
+        "primaryAction": "保存分类复核",
+        "emptyState": "没有真实低置信度流水时，显示复核队列为空和触发条件。",
+        "errorState": "无法加载复核队列，请检查置信度规则和导入批次。",
+        "dataSource": "分类规则 / 复核队列",
+        "breadcrumb": [
+          "账本流水",
+          "分类复核"
+        ],
+        "sectionKinds": [
+          "queue",
+          "decision",
+          "action"
+        ],
+        "activeSecondary": [
+          "分类复核"
+        ],
+        "secondaryRoutes": [
+          "/ledger?tab=list",
+          "/ledger?tab=filter",
+          "/ledger?tab=review",
+          "/ledger?tab=export"
+        ],
+        "scrollY": 0
+      },
+      {
+        "hash": "#/ledger?tab=export",
+        "h1": "账本流水 · 导出流水",
+        "workspace": "ledger",
+        "routeAlias": "/ledger?tab=export",
+        "stage4Route": "/ledger?tab=export",
+        "surfaceVisible": true,
+        "layoutKind": "ledger-export",
+        "primaryObject": "导出流水",
+        "primaryAction": "生成导出文件",
+        "emptyState": "没有真实筛选结果时，导出按钮显示阻断原因。",
+        "errorState": "无法生成导出，请检查筛选条件、文件权限和目标目录。",
+        "dataSource": "当前筛选结果 / 本机导出目录",
+        "breadcrumb": [
+          "账本流水",
+          "导出流水"
+        ],
+        "sectionKinds": [
+          "scope",
+          "format",
+          "action"
+        ],
+        "activeSecondary": [
+          "导出流水"
+        ],
+        "secondaryRoutes": [
+          "/ledger?tab=list",
+          "/ledger?tab=filter",
+          "/ledger?tab=review",
+          "/ledger?tab=export"
+        ],
+        "scrollY": 0
+      }
+    ],
+    "investment": [
+      {
+        "hash": "#/investment?tab=overview",
+        "h1": "投资管理 · 投资总览",
+        "workspace": "investment",
+        "routeAlias": "/investment?tab=overview",
+        "stage4Route": "/investment?tab=overview",
+        "surfaceVisible": true,
+        "layoutKind": "investment-overview",
+        "primaryObject": "投资总览",
+        "primaryAction": "查看资产配置",
+        "emptyState": "未加载真实持仓时，只显示投资空态和接入说明。",
+        "errorState": "无法读取投资总览，请检查持仓、现金仓位和汇率快照。",
+        "dataSource": "SQLite holdings / FX snapshot",
+        "breadcrumb": [
+          "投资管理",
+          "投资总览"
+        ],
+        "sectionKinds": [
+          "summary",
+          "allocation",
+          "action"
+        ],
+        "activeSecondary": [
+          "投资总览"
+        ],
+        "secondaryRoutes": [
+          "/investment?tab=overview",
+          "/investment?tab=holdings",
+          "/investment?tab=trades",
+          "/investment?tab=returns"
+        ],
+        "scrollY": 0
+      },
+      {
+        "hash": "#/investment?tab=holdings",
+        "h1": "投资管理 · 持仓",
+        "workspace": "investment",
+        "routeAlias": "/investment?tab=holdings",
+        "stage4Route": "/investment?tab=holdings",
+        "surfaceVisible": true,
+        "layoutKind": "investment-holdings",
+        "primaryObject": "持仓",
+        "primaryAction": "编辑持仓快照",
+        "emptyState": "没有真实持仓时，显示持仓空表和新增入口，不使用浏览器缓存当正式数据。",
+        "errorState": "无法读取持仓，请检查 SQLite 服务和本机 operational database。",
+        "dataSource": "SQLite operational holdings",
+        "breadcrumb": [
+          "投资管理",
+          "持仓"
+        ],
+        "sectionKinds": [
+          "table",
+          "draft",
+          "action"
+        ],
+        "activeSecondary": [
+          "持仓"
+        ],
+        "secondaryRoutes": [
+          "/investment?tab=overview",
+          "/investment?tab=holdings",
+          "/investment?tab=trades",
+          "/investment?tab=returns"
+        ],
+        "scrollY": 0
+      },
+      {
+        "hash": "#/investment?tab=trades",
+        "h1": "投资管理 · 交易记录",
+        "workspace": "investment",
+        "routeAlias": "/investment?tab=trades",
+        "stage4Route": "/investment?tab=trades",
+        "surfaceVisible": true,
+        "layoutKind": "investment-trades",
+        "primaryObject": "交易记录",
+        "primaryAction": "核对交易流水",
+        "emptyState": "未导入真实交易时，显示券商导入入口和缺口说明。",
+        "errorState": "无法读取交易记录，请检查券商流水、费用字段和税费字段。",
+        "dataSource": "券商交易流水 / 手工交易记录",
+        "breadcrumb": [
+          "投资管理",
+          "交易记录"
+        ],
+        "sectionKinds": [
+          "timeline",
+          "match",
+          "action"
+        ],
+        "activeSecondary": [
+          "交易记录"
+        ],
+        "secondaryRoutes": [
+          "/investment?tab=overview",
+          "/investment?tab=holdings",
+          "/investment?tab=trades",
+          "/investment?tab=returns"
+        ],
+        "scrollY": 0
+      },
+      {
+        "hash": "#/investment?tab=returns",
+        "h1": "投资管理 · 收益分析",
+        "workspace": "investment",
+        "routeAlias": "/investment?tab=returns",
+        "stage4Route": "/investment?tab=returns",
+        "surfaceVisible": true,
+        "layoutKind": "investment-returns",
+        "primaryObject": "收益分析",
+        "primaryAction": "查看收益拆解",
+        "emptyState": "没有真实持仓和交易时，不输出收益结论，只列出缺失证据。",
+        "errorState": "无法计算收益，请检查成本、成交、费用、税费和最新价格。",
+        "dataSource": "持仓快照 / 交易流水 / 价格快照",
+        "breadcrumb": [
+          "投资管理",
+          "收益分析"
+        ],
+        "sectionKinds": [
+          "attribution",
+          "formula",
+          "action"
+        ],
+        "activeSecondary": [
+          "收益分析"
+        ],
+        "secondaryRoutes": [
+          "/investment?tab=overview",
+          "/investment?tab=holdings",
+          "/investment?tab=trades",
+          "/investment?tab=returns"
+        ],
+        "scrollY": 0
+      }
+    ]
+  },
+  "accounts_subpages_differentiated": true,
+  "ledger_subpages_differentiated": true,
+  "investment_subpages_differentiated": true,
+  "url_state_breadcrumb_title_changed": true,
+  "empty_and_error_states_present": true,
+  "phase41_only_workspaces": [
+    "accounts",
+    "ledger",
+    "investment"
+  ],
+  "workspace_pass_detail": {
+    "accounts": {
+      "count": 4,
+      "all_surface_visible": true,
+      "routes_match": true,
+      "hash_match": true,
+      "active_secondary_changes": true,
+      "breadcrumb_changes": true,
+      "title_changes": true,
+      "layout_signatures_unique": true,
+      "empty_error_present": true,
+      "primary_object_action_present": true,
+      "screenshots": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_4/phase_4_1/screenshots/accounts_subpages.png"
+    },
+    "ledger": {
+      "count": 4,
+      "all_surface_visible": true,
+      "routes_match": true,
+      "hash_match": true,
+      "active_secondary_changes": true,
+      "breadcrumb_changes": true,
+      "title_changes": true,
+      "layout_signatures_unique": true,
+      "empty_error_present": true,
+      "primary_object_action_present": true,
+      "screenshots": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_4/phase_4_1/screenshots/ledger_subpages.png"
+    },
+    "investment": {
+      "count": 4,
+      "all_surface_visible": true,
+      "routes_match": true,
+      "hash_match": true,
+      "active_secondary_changes": true,
+      "breadcrumb_changes": true,
+      "title_changes": true,
+      "layout_signatures_unique": true,
+      "empty_error_present": true,
+      "primary_object_action_present": true,
+      "screenshots": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_4/phase_4_1/screenshots/investment_subpages.png"
+    }
+  },
+  "console_errors": [],
+  "network_resource_errors": [
+    "http://127.0.0.1:8766/api/trends net::ERR_CONNECTION_REFUSED",
+    "Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "http://127.0.0.1:8766/api/holdings net::ERR_CONNECTION_REFUSED"
+  ]
+}

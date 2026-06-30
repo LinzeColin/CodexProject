@@ -1,0 +1,12 @@
+PFI/docs/pfi_v023/STAGE4_SUBPAGES.md
+PFI/reports/pfi_v023/stage_4/phase_4_1/browser_validation.json
+PFI/reports/pfi_v023/stage_4/phase_4_1/changed_files.txt
+PFI/reports/pfi_v023/stage_4/phase_4_1/evidence.json
+PFI/reports/pfi_v023/stage_4/phase_4_1/screenshots/accounts_subpages.png
+PFI/reports/pfi_v023/stage_4/phase_4_1/screenshots/investment_subpages.png
+PFI/reports/pfi_v023/stage_4/phase_4_1/screenshots/ledger_subpages.png
+PFI/reports/pfi_v023/stage_4/phase_4_1/terminal.log
+PFI/tests/test_v023_stage4_subpage_differentiation.py
+PFI/web/app/pages/stage4Subpages.js
+PFI/web/app/shell.js
+PFI/web/styles.css
