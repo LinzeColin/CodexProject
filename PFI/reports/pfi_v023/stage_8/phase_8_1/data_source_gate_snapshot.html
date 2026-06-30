@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>PFI v0.2.3 Stage 8 Phase 8.1 Data Source Gate</title>
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif; background: #f5f7f4; color: #1d2620; }
+main { width: 1160px; margin: 0 auto; padding: 42px 0 70px; }
+header { border-bottom: 2px solid #1d2620; display: flex; justify-content: space-between; gap: 24px; align-items: flex-end; padding-bottom: 22px; margin-bottom: 24px; }
+h1 { font-size: 40px; line-height: 1.08; margin: 0 0 10px; letter-spacing: 0; }
+header p { max-width: 760px; color: #4d5a53; margin: 0; line-height: 1.55; }
+.badge { border: 1px solid #1d2620; padding: 8px 10px; font-size: 13px; font-weight: 700; white-space: nowrap; }
+.summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 0 0 18px; }
+.summary div { background: #fff; border: 1px solid #d9ddd4; padding: 14px; min-height: 76px; }
+.summary b { display: block; font-size: 27px; line-height: 1.1; margin-top: 6px; }
+.source { background: #fff; border: 1px solid #d9ddd4; border-left: 8px solid #5d6f65; padding: 20px; margin: 14px 0; }
+.source.ready { border-left-color: #4a8462; }
+.source.not_mounted { border-left-color: #a43d37; }
+.source-head { display: flex; justify-content: space-between; gap: 16px; align-items: center; }
+h2 { font-size: 23px; margin: 0; }
+.source-head span { border: 1px solid currentColor; padding: 5px 9px; font-size: 13px; font-weight: 700; }
+dl { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 16px 0; }
+dl div { background: #f8f9f5; border: 1px solid #e4e7de; padding: 10px; min-height: 78px; }
+dt { color: #58655d; font-size: 12px; margin-bottom: 6px; }
+dd { margin: 0; font-size: 13px; line-height: 1.35; }
+p { line-height: 1.55; margin: 10px 0 0; }
+.muted { color: #58655d; font-size: 13px; }
+footer { margin-top: 24px; color: #5c665f; font-size: 13px; }
+</style>
+</head>
+<body>
+<main>
+<header><div><h1>Stage 8 Phase 8.1 数据源模型</h1><p>数据源模型展示 status、records、date range、last updated 与 blocked metrics；Phase 8.2 才实现正式检查板 UI。</p></div><div class="badge">sha256:b5616d2c2ba17a73fb101d0c184d65c6ebbea904287074f1a9b1965dcd49b675</div></header>
+<section class="summary"><div>数据源<b>3</b></div><div>已挂链<b>1</b></div><div>阻断<b>2</b></div><div>as of<b>2026-06-03</b></div></section>
+
+        <section class="source ready">
+          <div class="source-head"><h2>MetaDatabase/PFI Alipay 日流水</h2><span>真实数据已挂链</span></div>
+          <dl>
+            <div><dt>status</dt><dd>status: ready</dd></div>
+            <div><dt>records</dt><dd>records: 记录数：8,815 条规范化流水，4 个原始文件</dd></div>
+            <div><dt>date range</dt><dd>date range: 2022-06-06 至 2026-06-03</dd></div>
+            <div><dt>last updated</dt><dd>last updated: 2026-06-03</dd></div>
+            <div><dt>blocked metrics</dt><dd>blocked metrics: 无</dd></div>
+          </dl>
+          <p>真实 Alipay 日流水已读取，可支撑消费与数据健康报告。</p>
+          <p class="muted">下一步：打开账本流水复核；打开报告与洞察查看消费结构缺口</p>
+        </section>
+
+        <section class="source not_mounted">
+          <div class="source-head"><h2>账户余额 read model</h2><span>数据源未挂链</span></div>
+          <dl>
+            <div><dt>status</dt><dd>status: not_mounted</dd></div>
+            <div><dt>records</dt><dd>records: 记录数：数据源未挂链</dd></div>
+            <div><dt>date range</dt><dd>date range: 未挂链</dd></div>
+            <div><dt>last updated</dt><dd>last updated: 未挂链</dd></div>
+            <div><dt>blocked metrics</dt><dd>blocked metrics: net_worth_cny、cash_balance_cny</dd></div>
+          </dl>
+          <p>账户余额 read model 未挂链，净资产和现金余额保持阻断。</p>
+          <p class="muted">下一步：挂载账户余额 read model；返回账户与资产复核数据目录</p>
+        </section>
+
+        <section class="source not_mounted">
+          <div class="source-head"><h2>持仓市值 read model</h2><span>数据源未挂链</span></div>
+          <dl>
+            <div><dt>status</dt><dd>status: not_mounted</dd></div>
+            <div><dt>records</dt><dd>records: 记录数：数据源未挂链</dd></div>
+            <div><dt>date range</dt><dd>date range: 未挂链</dd></div>
+            <div><dt>last updated</dt><dd>last updated: 未挂链</dd></div>
+            <div><dt>blocked metrics</dt><dd>blocked metrics: net_worth_cny、investment_market_value_cny</dd></div>
+          </dl>
+          <p>持仓市值 read model 未挂链，净资产和投资市值保持阻断。</p>
+          <p class="muted">下一步：挂载持仓市值 read model；返回投资管理复核持仓数据</p>
+        </section>
+
+<footer>Phase 8.2、Phase 8.3、Stage 8 whole-stage review、GitHub main upload 均未执行。</footer>
+</main>
+</body>
+</html>

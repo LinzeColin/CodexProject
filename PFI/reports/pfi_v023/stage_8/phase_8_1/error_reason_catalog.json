@@ -1,0 +1,63 @@
+{
+  "schema": "PFIV023Stage8ErrorReasonCatalogV1",
+  "version": "v0.2.3",
+  "stage": "Stage 8",
+  "phase_id": "V023-S8-P8.1",
+  "reasons": [
+    {
+      "status": "ready",
+      "reason_zh": "真实数据已挂链并可读取。",
+      "next_action_zh": "继续检查报告、账本或相关指标。"
+    },
+    {
+      "status": "confirmed_zero",
+      "reason_zh": "真实数据确认数值为零，必须保留证据链。",
+      "next_action_zh": "打开证据来源复核零值是否仍有效。"
+    },
+    {
+      "status": "not_loaded",
+      "reason_zh": "未加载真实数据，不能显示财务数值。",
+      "next_action_zh": "检查数据目录配置并重新读取真实文件。"
+    },
+    {
+      "status": "not_mounted",
+      "reason_zh": "数据源未挂链，相关指标保持阻断。",
+      "next_action_zh": "挂载对应 read model 后重新生成指标。"
+    },
+    {
+      "status": "path_error",
+      "reason_zh": "路径不可用，系统无法定位本机真实文件。",
+      "next_action_zh": "检查文件路径、挂载盘和目录权限。"
+    },
+    {
+      "status": "permission_error",
+      "reason_zh": "权限不足，系统无法读取本机真实文件。",
+      "next_action_zh": "在 Finder 或终端修复读取权限后重试。"
+    },
+    {
+      "status": "parse_error",
+      "reason_zh": "解析失败，需查看文件、行号、字段或异常摘要。",
+      "next_action_zh": "修正文件格式或字段映射后重新解析。"
+    },
+    {
+      "status": "outdated",
+      "reason_zh": "快照已过期，必须显示快照日期。",
+      "next_action_zh": "刷新数据源或确认旧快照仍可用于只读复核。"
+    },
+    {
+      "status": "filter_empty",
+      "reason_zh": "当前筛选无结果，不代表真实余额为零。",
+      "next_action_zh": "调整筛选条件或回到完整数据范围。"
+    },
+    {
+      "status": "calculation_error",
+      "reason_zh": "指标计算失败，不能输出财务结论。",
+      "next_action_zh": "检查输入字段、公式参数和错误摘要。"
+    },
+    {
+      "status": "review_required",
+      "reason_zh": "需要人工复核，系统不能自动放行。",
+      "next_action_zh": "进入账本或报告复核相关记录。"
+    }
+  ]
+}

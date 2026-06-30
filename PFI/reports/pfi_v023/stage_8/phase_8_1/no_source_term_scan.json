@@ -1,0 +1,11 @@
+{
+  "schema": "PFIV023Stage8Phase81SourceTermScanV1",
+  "version": "v0.2.3",
+  "stage": "Stage 8",
+  "phase_id": "V023-S8-P8.1",
+  "scanned_file_count": 12,
+  "ignored_contract_fields": [
+    "sample_size"
+  ],
+  "violations": []
+}

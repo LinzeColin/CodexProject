@@ -1,0 +1,170 @@
+{
+  "schema": "PFIV023Stage8DataSourceGateV1",
+  "version": "v0.2.3",
+  "stage": "Stage 8",
+  "phase_id": "V023-S8-P8.1",
+  "phase_name": "数据源模型",
+  "data_source_statuses": [
+    "ready",
+    "confirmed_zero",
+    "not_loaded",
+    "not_mounted",
+    "path_error",
+    "permission_error",
+    "parse_error",
+    "outdated",
+    "filter_empty",
+    "calculation_error",
+    "review_required"
+  ],
+  "source_core_metrics": {
+    "path": "PFI/reports/pfi_v023/stage_6/phase_6_1/core_metrics.json",
+    "read_model_hash": "sha256:b5616d2c2ba17a73fb101d0c184d65c6ebbea904287074f1a9b1965dcd49b675",
+    "as_of": "2026-06-03"
+  },
+  "data_sources": [
+    {
+      "data_source_id": "metadatabase_pfi_alipay_daily",
+      "label": "MetaDatabase/PFI Alipay 日流水",
+      "status": "ready",
+      "status_zh": "真实数据已挂链",
+      "path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv",
+      "manifest_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/MetaDatabase/PFI/alipay_daily/processed/alipay_import_manifest.json",
+      "records": {
+        "raw_file_count": 4,
+        "normalized_record_count": 8815,
+        "account_count": 0,
+        "holding_count": 0,
+        "display_zh": "记录数：8,815 条规范化流水，4 个原始文件"
+      },
+      "date_range": {
+        "start": "2022-06-06",
+        "end": "2026-06-03"
+      },
+      "last_updated": "2026-06-03",
+      "read_model_hash": "sha256:b5616d2c2ba17a73fb101d0c184d65c6ebbea904287074f1a9b1965dcd49b675",
+      "evidence_hash": "sha256:174c37726d9ab434dca7316029d6b1e499e320c0ab00fd82c6549a110258c18a",
+      "ready_metric_ids": [
+        "life_consumption_cny",
+        "total_consumption_outflow_cny",
+        "data_health"
+      ],
+      "blocked_metric_ids": [],
+      "affected_report_ids": [
+        "consumption_structure_report",
+        "data_quality_report"
+      ],
+      "reason_zh": "真实 Alipay 日流水已读取，可支撑消费与数据健康报告。",
+      "next_actions": [
+        "打开账本流水复核",
+        "打开报告与洞察查看消费结构缺口"
+      ],
+      "route_targets": [
+        "/ledger/review",
+        "/reports"
+      ],
+      "auto_import_enabled": false
+    },
+    {
+      "data_source_id": "account_balance_read_model",
+      "label": "账户余额 read model",
+      "status": "not_mounted",
+      "status_zh": "数据源未挂链",
+      "path": null,
+      "manifest_path": null,
+      "records": {
+        "raw_file_count": null,
+        "normalized_record_count": null,
+        "account_count": null,
+        "holding_count": null,
+        "display_zh": "记录数：数据源未挂链"
+      },
+      "date_range": {
+        "start": null,
+        "end": null
+      },
+      "last_updated": null,
+      "read_model_hash": null,
+      "evidence_hash": null,
+      "ready_metric_ids": [],
+      "blocked_metric_ids": [
+        "net_worth_cny",
+        "cash_balance_cny"
+      ],
+      "affected_report_ids": [
+        "net_worth_report",
+        "cash_balance_report",
+        "data_quality_report"
+      ],
+      "reason_zh": "账户余额 read model 未挂链，净资产和现金余额保持阻断。",
+      "next_actions": [
+        "挂载账户余额 read model",
+        "返回账户与资产复核数据目录"
+      ],
+      "route_targets": [
+        "/accounts/reconcile",
+        "/reports"
+      ],
+      "auto_import_enabled": false
+    },
+    {
+      "data_source_id": "holding_market_value_read_model",
+      "label": "持仓市值 read model",
+      "status": "not_mounted",
+      "status_zh": "数据源未挂链",
+      "path": null,
+      "manifest_path": null,
+      "records": {
+        "raw_file_count": null,
+        "normalized_record_count": null,
+        "account_count": null,
+        "holding_count": null,
+        "display_zh": "记录数：数据源未挂链"
+      },
+      "date_range": {
+        "start": null,
+        "end": null
+      },
+      "last_updated": null,
+      "read_model_hash": null,
+      "evidence_hash": null,
+      "ready_metric_ids": [],
+      "blocked_metric_ids": [
+        "net_worth_cny",
+        "investment_market_value_cny"
+      ],
+      "affected_report_ids": [
+        "net_worth_report",
+        "investment_market_value_report",
+        "data_quality_report"
+      ],
+      "reason_zh": "持仓市值 read model 未挂链，净资产和投资市值保持阻断。",
+      "next_actions": [
+        "挂载持仓市值 read model",
+        "返回投资管理复核持仓数据"
+      ],
+      "route_targets": [
+        "/investment/holdings",
+        "/reports"
+      ],
+      "auto_import_enabled": false
+    }
+  ],
+  "summary": {
+    "ready_count": 1,
+    "blocked_count": 2,
+    "total_sources": 3,
+    "blocked_metric_ids": [
+      "net_worth_cny",
+      "cash_balance_cny",
+      "investment_market_value_cny"
+    ],
+    "auto_import_enabled": false
+  },
+  "explicitly_not_done": [
+    "Phase 8.2 检查板 UI",
+    "Phase 8.3 禁止假数据回退",
+    "Stage 8 whole-stage review",
+    "GitHub main upload for intermediate phase"
+  ]
+}
