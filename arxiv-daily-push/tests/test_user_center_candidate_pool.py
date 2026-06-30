@@ -132,7 +132,7 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         table_rows = re.findall(r"^\| \d+ \|", page, flags=re.MULTILINE)
         readme = (USER_CENTER / "README.md").read_text(encoding="utf-8")
 
-        self.assertGreaterEqual(len(matrix_rows), 401)
+        self.assertGreaterEqual(len(matrix_rows), 402)
         self.assertEqual(len(table_rows), len(matrix_rows))
         self.assertTrue(page.startswith("# 功能任务测试证据追踪链\n"))
         self.assertRegex(page, r"更新时间：\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} Australia/Sydney")
@@ -167,6 +167,20 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("terminal_proof_real_email_count_after_current_capture_window=4", page)
         self.assertIn("remaining_real_delivery_days_for_terminal_proof=1", page)
         self.assertIn("remaining_real_email_count_for_terminal_proof=4", page)
+
+        self.assertIn("REQ-ADP-V7-058-S2PMT07-FINAL-BUNDLE-LIVE-ARTIFACT-WRITE-GUARD", page)
+        self.assertIn("S2PMT07-FINAL-BUNDLE-LIVE-ARTIFACT-WRITE-GUARD", page)
+        self.assertIn(
+            "ADP-S2PMT07-FINAL-BUNDLE-LIVE-ARTIFACT-WRITE-GUARD-20260701.json",
+            page,
+        )
+        self.assertIn("PHASE_S2PMT07_FINAL_BUNDLE_LIVE_ARTIFACT_WRITE_GUARD.md", page)
+        self.assertIn("blocked_final_bundle_live_artifact_write_guard_synced_no_production", page)
+        self.assertIn("live_artifact_write_guard", page)
+        self.assertIn("9454e47e36d6cc04e20918f50d8f7d6be6e5c12fadfc4a6f5f86144562199eb9", page)
+        self.assertIn("1146133f14fe04dba14e0313409fad828bfe2d6439adefc68a640d5500568b85", page)
+        self.assertIn("HANDOFF/00_下一Agent先读.md", page)
+        self.assertIn("FINAL_ACCEPTANCE_BUNDLE/manifest.json", page)
 
         self.assertIn("REQ-ADP-V7-056-S2PMT07-FINAL-BUNDLE-S2PLT02-CAPTURE-WINDOW-SUMMARY", page)
         self.assertIn("S2PMT07-FINAL-BUNDLE-S2PLT02-CAPTURE-WINDOW-SUMMARY", page)

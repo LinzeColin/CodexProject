@@ -662,6 +662,31 @@ S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_FORBIDDEN_FLAGS = (
     "v7_1_baseline_changed",
     "v7_2_contract_files_changed",
 )
+S2PMT07_FINAL_BUNDLE_LIVE_ARTIFACT_WRITE_GUARD_SCOPE = (
+    "final_bundle_live_artifact_write_guard_no_production_acceptance"
+)
+S2PMT07_FINAL_BUNDLE_LIVE_ARTIFACT_FORBIDDEN_CURRENT_ACTIONS = (
+    "write_live_s2plt04_completion_report_without_terminal_proofs",
+    "write_live_final_command_execution_without_s2plt04_completion",
+    "write_live_next_agent_handoff",
+    "write_independent_review_signoff_without_handoff_and_final_command",
+    "write_final_acceptance_bundle_manifest",
+    "claim_stage2_or_s3_production_acceptance",
+)
+S2PMT07_FINAL_BUNDLE_LIVE_ARTIFACT_TEMPLATE_REFS = {
+    "S2PLT04_COMPLETION_REPORT": "FINAL_ACCEPTANCE_BUNDLE/templates/s2plt04_completion_report.template.json",
+    "FINAL_COMMAND_EXECUTION": "FINAL_ACCEPTANCE_BUNDLE/templates/final_command_execution.template.json",
+    "NEXT_AGENT_HANDOFF": "FINAL_ACCEPTANCE_BUNDLE/templates/next_agent_handoff.template.json",
+    "INDEPENDENT_REVIEW_SIGNOFF": "FINAL_ACCEPTANCE_BUNDLE/templates/independent_review_signoff.template.yaml",
+    "FINAL_ACCEPTANCE_BUNDLE_MANIFEST": "FINAL_ACCEPTANCE_BUNDLE/templates/manifest.template.json",
+}
+S2PMT07_FINAL_BUNDLE_LIVE_ARTIFACT_SAFE_ACTIONS = {
+    "S2PLT04_COMPLETION_REPORT": "resolve_s2plt02_s2plt03_terminal_proofs_before_writing_completion_report",
+    "FINAL_COMMAND_EXECUTION": "keep_template_only_until_s2plt04_passes",
+    "NEXT_AGENT_HANDOFF": "keep_template_only_until_s2plt04_and_final_command_pass",
+    "INDEPENDENT_REVIEW_SIGNOFF": "keep_template_only_until_final_command_and_handoff_pass",
+    "FINAL_ACCEPTANCE_BUNDLE_MANIFEST": "keep_template_only_until_all_final_bundle_artifacts_pass",
+}
 S2PMT07_MAINLINE_ATTESTATION_REQUIRED_VALIDATIONS = (
     "FOCUSED_FINAL_GATE_TESTS",
     "FULL_ADP_UNITTEST",
@@ -9081,6 +9106,66 @@ def build_final_bundle_prerequisite_plan_state(
         if live_authorization_artifact is not None
         else ""
     )
+    step_by_id = {str(step["step_id"]): step for step in ordered_steps}
+    guarded_live_artifact_refs = {
+        "S2PLT04_COMPLETION_REPORT": "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json",
+        "FINAL_COMMAND_EXECUTION": "FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json",
+        "NEXT_AGENT_HANDOFF": "HANDOFF/00_下一Agent先读.md",
+        "INDEPENDENT_REVIEW_SIGNOFF": "FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml",
+        "FINAL_ACCEPTANCE_BUNDLE_MANIFEST": "FINAL_ACCEPTANCE_BUNDLE/manifest.json",
+    }
+    blocked_live_artifact_refs: dict[str, dict[str, Any]] = {}
+    for step_id, artifact_ref in guarded_live_artifact_refs.items():
+        step = step_by_id[step_id]
+        if step["status"] == "pass":
+            continue
+        blocked_by_steps = list(step["blocked_by_steps"])
+        if step_id == "S2PLT04_COMPLETION_REPORT" and s2plt04_blocked_by_upstream_evidence:
+            blocked_by_steps = [
+                "S2PLT02_TERMINAL_DELIVERY_PROOF",
+                "S2PLT03_TERMINAL_RESILIENCE_PROOF",
+            ]
+        blocked_live_artifact_refs[artifact_ref] = {
+            "step_id": step_id,
+            "template_ref": S2PMT07_FINAL_BUNDLE_LIVE_ARTIFACT_TEMPLATE_REFS[step_id],
+            "blocked_by_steps": blocked_by_steps,
+            "upstream_blockers": (
+                list(upstream_blockers)
+                if step_id == "S2PLT04_COMPLETION_REPORT" and s2plt04_blocked_by_upstream_evidence
+                else []
+            ),
+            "safe_current_action": S2PMT07_FINAL_BUNDLE_LIVE_ARTIFACT_SAFE_ACTIONS[step_id],
+        }
+    live_artifact_write_allowed = all_required_steps_passed and not blocked_live_artifact_refs
+    live_artifact_write_guard = {
+        "status": "pass" if live_artifact_write_allowed else "blocked",
+        "scope": S2PMT07_FINAL_BUNDLE_LIVE_ARTIFACT_WRITE_GUARD_SCOPE,
+        "live_artifact_write_allowed": live_artifact_write_allowed,
+        "guarded_live_artifact_refs": list(guarded_live_artifact_refs.values()),
+        "blocked_live_artifact_refs": blocked_live_artifact_refs,
+        "next_required_step": next_required_step,
+        "next_executable_task": next_executable_task,
+        "next_executable_runtime_step": (
+            s2plt02_capture_plan_summary.get("next_executable_step", "")
+            if next_executable_task == "S2PLT02_TERMINAL_DELIVERY_PROOF"
+            else ""
+        ),
+        "upstream_blockers": (
+            list(upstream_blockers)
+            if s2plt04_blocked_by_upstream_evidence
+            else []
+        ),
+        "forbidden_current_actions": list(
+            S2PMT07_FINAL_BUNDLE_LIVE_ARTIFACT_FORBIDDEN_CURRENT_ACTIONS
+        ),
+        "production_acceptance_claimed": False,
+        "integrated_production_accepted": False,
+        "daily_operation_enabled": False,
+        "real_smtp_send_enabled": False,
+        "scheduler_install_enabled": False,
+        "release_packaging_enabled": False,
+        "production_restore_enabled": False,
+    }
     state = {
         "status": "pass" if all_required_steps_passed else "blocked",
         "scope": "final_bundle_prerequisite_plan_only_no_production_acceptance",
@@ -9184,6 +9269,7 @@ def build_final_bundle_prerequisite_plan_state(
             if s2plt04_step and s2plt04_step.get("upstream_blocked") is True
             else []
         ),
+        "live_artifact_write_guard": live_artifact_write_guard,
         "all_required_steps_passed": all_required_steps_passed,
         "ready_for_final_bundle_manifest": False,
         "blocking_reasons": blocking_reasons,
@@ -9296,6 +9382,78 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
     )
     if state.get("next_executable_task") != expected_next_executable_task:
         errors.append("final bundle prerequisite plan next_executable_task is invalid")
+    live_artifact_write_guard = _mapping(state.get("live_artifact_write_guard"))
+    if live_artifact_write_guard.get("scope") != S2PMT07_FINAL_BUNDLE_LIVE_ARTIFACT_WRITE_GUARD_SCOPE:
+        errors.append("final bundle live artifact write guard scope is invalid")
+    guarded_live_artifact_refs = {
+        "S2PLT04_COMPLETION_REPORT": "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json",
+        "FINAL_COMMAND_EXECUTION": "FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json",
+        "NEXT_AGENT_HANDOFF": "HANDOFF/00_下一Agent先读.md",
+        "INDEPENDENT_REVIEW_SIGNOFF": "FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml",
+        "FINAL_ACCEPTANCE_BUNDLE_MANIFEST": "FINAL_ACCEPTANCE_BUNDLE/manifest.json",
+    }
+    if live_artifact_write_guard.get("guarded_live_artifact_refs") != list(
+        guarded_live_artifact_refs.values()
+    ):
+        errors.append("final bundle live artifact write guard refs are invalid")
+    expected_guard_upstream_blockers = expected_upstream_blockers if expected_next_step_upstream_blocked else []
+    if live_artifact_write_guard.get("upstream_blockers") != expected_guard_upstream_blockers:
+        errors.append("final bundle live artifact write guard upstream blockers are invalid")
+    for field in ("next_required_step", "next_executable_task", "next_executable_runtime_step"):
+        if live_artifact_write_guard.get(field) != state.get(field):
+            errors.append(f"final bundle live artifact write guard {field} must match prerequisite plan")
+    if tuple(live_artifact_write_guard.get("forbidden_current_actions", ())) != (
+        S2PMT07_FINAL_BUNDLE_LIVE_ARTIFACT_FORBIDDEN_CURRENT_ACTIONS
+    ):
+        errors.append("final bundle live artifact write guard forbidden actions are invalid")
+    step_by_id = {step.get("step_id"): step for step in ordered_steps}
+    expected_blocked_live_artifact_refs: dict[str, dict[str, Any]] = {}
+    for step_id, artifact_ref in guarded_live_artifact_refs.items():
+        step = step_by_id.get(step_id, {})
+        if step.get("status") == "pass":
+            continue
+        expected_blocked_by_steps = list(step.get("blocked_by_steps", []))
+        if step_id == "S2PLT04_COMPLETION_REPORT" and expected_next_step_upstream_blocked:
+            expected_blocked_by_steps = [
+                "S2PLT02_TERMINAL_DELIVERY_PROOF",
+                "S2PLT03_TERMINAL_RESILIENCE_PROOF",
+            ]
+        expected_blocked_live_artifact_refs[artifact_ref] = {
+            "step_id": step_id,
+            "template_ref": S2PMT07_FINAL_BUNDLE_LIVE_ARTIFACT_TEMPLATE_REFS[step_id],
+            "blocked_by_steps": expected_blocked_by_steps,
+            "upstream_blockers": (
+                expected_guard_upstream_blockers
+                if step_id == "S2PLT04_COMPLETION_REPORT" and expected_next_step_upstream_blocked
+                else []
+            ),
+            "safe_current_action": S2PMT07_FINAL_BUNDLE_LIVE_ARTIFACT_SAFE_ACTIONS[step_id],
+        }
+    blocked_live_artifact_refs = {
+        str(ref): dict(_mapping(detail))
+        for ref, detail in _mapping(live_artifact_write_guard.get("blocked_live_artifact_refs")).items()
+    }
+    if blocked_live_artifact_refs != expected_blocked_live_artifact_refs:
+        errors.append("final bundle live artifact write guard blocked refs are invalid")
+    expected_live_artifact_write_allowed = (
+        state.get("all_required_steps_passed") is True and not expected_blocked_live_artifact_refs
+    )
+    if live_artifact_write_guard.get("live_artifact_write_allowed") is not expected_live_artifact_write_allowed:
+        errors.append("final bundle live artifact write guard allowed flag is invalid")
+    expected_guard_status = "pass" if expected_live_artifact_write_allowed else "blocked"
+    if live_artifact_write_guard.get("status") != expected_guard_status:
+        errors.append("final bundle live artifact write guard status is invalid")
+    for flag in (
+        "production_acceptance_claimed",
+        "integrated_production_accepted",
+        "daily_operation_enabled",
+        "real_smtp_send_enabled",
+        "scheduler_install_enabled",
+        "release_packaging_enabled",
+        "production_restore_enabled",
+    ):
+        if live_artifact_write_guard.get(flag) is not False:
+            errors.append(f"final bundle live artifact write guard {flag} must be false")
     capture_plan_summary = _mapping(state.get("s2plt02_terminal_delivery_capture_plan_summary"))
     if expected_next_step_upstream_blocked:
         if capture_plan_summary.get("status") not in {"pass", "blocked"}:

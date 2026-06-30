@@ -21,10 +21,18 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 311
+- task_count: 312
 - acceptance_count: 127
 
 ## Delivery Tasks
+
+## 2026-07-01 00:41:25 Australia/Sydney - S2PMT07 Final Bundle Live Artifact Write Guard
+
+- `S2PMT07-FINAL-BUNDLE-LIVE-ARTIFACT-WRITE-GUARD` adds `live_artifact_write_guard` to `plan-final-bundle-prerequisites` and `validate-final-acceptance-bundle`.
+- Current live CLIs remain blocked / exit 2: prerequisite plan `state_hash=9454e47e36d6cc04e20918f50d8f7d6be6e5c12fadfc4a6f5f86144562199eb9` and final validator `state_hash=1146133f14fe04dba14e0313409fad828bfe2d6439adefc68a640d5500568b85`.
+- Guard fields: `live_artifact_write_allowed=false`, `next_executable_task=S2PLT02_TERMINAL_DELIVERY_PROOF`, `next_executable_runtime_step=WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`, blocked refs `FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json`, `FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json`, `HANDOFF/00_下一Agent先读.md`, `FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml`, and `FINAL_ACCEPTANCE_BUNDLE/manifest.json`.
+- Evidence: `governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-LIVE-ARTIFACT-WRITE-GUARD-20260701.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_LIVE_ARTIFACT_WRITE_GUARD.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`.
+- No S2PLT02/S2PLT03 terminal proof artifact, S2PLT04 completion report, final-bundle manifest/handoff/signoff/final-command proof, SMTP send, scheduler enable/install/kickstart, Release, restore, CURRENT/V7 change, public schema/DB/source/ranking/queue mutation, P0/P1 closure claim, S2PLT02/S2PLT03/S2PLT04/S2PMT07 acceptance, DAILY_OPERATION, Stage2/S3 production acceptance, or production side effect is introduced.
 
 ## 2026-07-01 00:13:52 Australia/Sydney - S2PMT07 Final Bundle S2PLT02 Terminal Count Split
 

@@ -1,0 +1,83 @@
+{
+  "schema_version": "codexproject.run_manifest.v1",
+  "project_id": "arxiv-daily-push",
+  "event_id": "EVENT-20260701-ADP-S2PMT07-FINAL-BUNDLE-LIVE-ARTIFACT-WRITE-GUARD",
+  "iteration_id": "ITER-20260701-ADP-S2PMT07-FINAL-BUNDLE-LIVE-ARTIFACT-WRITE-GUARD",
+  "task_id": "S2PMT07-FINAL-BUNDLE-LIVE-ARTIFACT-WRITE-GUARD",
+  "task_ids": [
+    "S2PMT07-FINAL-BUNDLE-LIVE-ARTIFACT-WRITE-GUARD",
+    "S2PMT07-FINAL-BUNDLE-PREREQUISITES",
+    "S2PLT02-TERMINAL-DELIVERY-PROOF",
+    "S2PLT04-COMPLETION-REPORT",
+    "S2PMT07",
+    "ACC-S2PMT07-FINAL-REVIEW"
+  ],
+  "phase": "S2PL",
+  "status": "blocked",
+  "gate": "S2PMT07_FINAL_BUNDLE_LIVE_ARTIFACT_WRITE_GUARD_BLOCKED_NO_PRODUCTION",
+  "generated_at": "2026-07-01T00:41:25+10:00",
+  "result": "blocked_final_bundle_live_artifact_write_guard_synced_no_production",
+  "fact_level": "EXTRACTED",
+  "summary": "S2PMT07-FINAL-BUNDLE-LIVE-ARTIFACT-WRITE-GUARD adds a machine-validated live_artifact_write_guard to the final-bundle prerequisite plan. It blocks premature writes to S2PLT04 completion report, final command execution, next-agent handoff, independent signoff, and final bundle manifest until upstream terminal evidence and final commands pass.",
+  "state_hashes": {
+    "plan_final_bundle_prerequisites": "9454e47e36d6cc04e20918f50d8f7d6be6e5c12fadfc4a6f5f86144562199eb9",
+    "validate_final_acceptance_bundle": "1146133f14fe04dba14e0313409fad828bfe2d6439adefc68a640d5500568b85",
+    "s2plt02_capture_plan": "e7c9834eca19f665f1b57566f47cbd03ecaaf95fa9eb538187af3c3f7e1aa7f1"
+  },
+  "live_artifact_write_guard": {
+    "status": "blocked",
+    "scope": "final_bundle_live_artifact_write_guard_no_production_acceptance",
+    "live_artifact_write_allowed": false,
+    "next_executable_task": "S2PLT02_TERMINAL_DELIVERY_PROOF",
+    "next_executable_runtime_step": "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW",
+    "blocked_live_artifact_refs": [
+      "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json",
+      "FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json",
+      "HANDOFF/00_下一Agent先读.md",
+      "FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml",
+      "FINAL_ACCEPTANCE_BUNDLE/manifest.json"
+    ],
+    "forbidden_current_actions": [
+      "write_live_s2plt04_completion_report_without_terminal_proofs",
+      "write_live_final_command_execution_without_s2plt04_completion",
+      "write_live_next_agent_handoff",
+      "write_independent_review_signoff_without_handoff_and_final_command",
+      "write_final_acceptance_bundle_manifest",
+      "claim_stage2_or_s3_production_acceptance"
+    ]
+  },
+  "files_changed": [
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py",
+    "arxiv-daily-push/tests/test_stage2_final_gate.py",
+    "arxiv-daily-push/tests/test_governance_current_state.py",
+    "arxiv-daily-push/tests/test_user_center_candidate_pool.py",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_LIVE_ARTIFACT_WRITE_GUARD.md",
+    "governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-LIVE-ARTIFACT-WRITE-GUARD-20260701.json"
+  ],
+  "evidence_refs": [
+    "governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-LIVE-ARTIFACT-WRITE-GUARD-20260701.json",
+    "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_LIVE_ARTIFACT_WRITE_GUARD.md",
+    "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py",
+    "arxiv-daily-push/tests/test_stage2_final_gate.py"
+  ],
+  "production_acceptance_claimed": false,
+  "integrated_production_accepted": false,
+  "stage2_integrated_production_accepted": false,
+  "daily_operation_enabled": false,
+  "real_smtp_sent": false,
+  "real_smtp_send_enabled": false,
+  "scheduler_enabled": false,
+  "scheduler_install_enabled": false,
+  "release_uploaded": false,
+  "release_packaging_enabled": false,
+  "production_restore_enabled": false,
+  "production_restore_executed": false,
+  "public_schema_changed": false,
+  "db_migration_executed": false,
+  "production_queue_mutated": false,
+  "source_adapter_changed": false,
+  "ranking_algorithm_changed": false,
+  "current_pointer_changed": false,
+  "v7_1_baseline_changed": false,
+  "v7_2_contract_files_changed": false
+}

@@ -5800,6 +5800,51 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(validate_final_bundle_prerequisite_plan_state(plan), [])
         self.assertEqual(validate_final_acceptance_bundle_readiness_state(state), [])
 
+    def test_final_bundle_prerequisite_plan_blocks_premature_live_final_artifacts(self) -> None:
+        state = build_final_acceptance_bundle_readiness_state()
+        plan = state["final_bundle_prerequisite_plan"]
+        guard = plan["live_artifact_write_guard"]
+
+        self.assertEqual(guard["status"], "blocked")
+        self.assertEqual(
+            guard["scope"],
+            "final_bundle_live_artifact_write_guard_no_production_acceptance",
+        )
+        self.assertFalse(guard["live_artifact_write_allowed"])
+        self.assertEqual(guard["next_executable_task"], "S2PLT02_TERMINAL_DELIVERY_PROOF")
+        self.assertIn(
+            "HANDOFF/00_下一Agent先读.md",
+            guard["blocked_live_artifact_refs"],
+        )
+        handoff_guard = guard["blocked_live_artifact_refs"]["HANDOFF/00_下一Agent先读.md"]
+        self.assertEqual(
+            handoff_guard["safe_current_action"],
+            "keep_template_only_until_s2plt04_and_final_command_pass",
+        )
+        self.assertEqual(
+            handoff_guard["template_ref"],
+            "FINAL_ACCEPTANCE_BUNDLE/templates/next_agent_handoff.template.json",
+        )
+        self.assertIn("S2PLT04_COMPLETION_REPORT", handoff_guard["blocked_by_steps"])
+        self.assertIn("FINAL_COMMAND_EXECUTION", handoff_guard["blocked_by_steps"])
+        self.assertIn(
+            "FINAL_ACCEPTANCE_BUNDLE/manifest.json",
+            guard["blocked_live_artifact_refs"],
+        )
+        self.assertIn("write_live_next_agent_handoff", guard["forbidden_current_actions"])
+        self.assertIn("write_final_acceptance_bundle_manifest", guard["forbidden_current_actions"])
+        self.assertIn("claim_stage2_or_s3_production_acceptance", guard["forbidden_current_actions"])
+        self.assertIn(
+            "s2plt04_completion_report_blocked_by_s2plt02_terminal_delivery_proof_missing",
+            guard["upstream_blockers"],
+        )
+        self.assertIn(
+            "s2plt04_completion_report_blocked_by_s2plt03_terminal_resilience_proof_missing",
+            guard["upstream_blockers"],
+        )
+        self.assertEqual(validate_final_bundle_prerequisite_plan_state(plan), [])
+        self.assertEqual(validate_final_acceptance_bundle_readiness_state(state), [])
+
     def test_final_acceptance_bundle_artifact_validation_blocks_incomplete_bundle_directory(self) -> None:
         state = build_final_acceptance_bundle_artifact_validation_state(bundle_directory_present=True)
 
