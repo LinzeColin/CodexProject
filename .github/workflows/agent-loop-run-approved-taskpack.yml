@@ -13,7 +13,7 @@ on:
         default: false
         type: boolean
   issues:
-    types: [labeled]
+    types: [opened, edited, labeled]
   repository_dispatch:
     types: [agent_loop_taskpack]
 
@@ -28,11 +28,21 @@ jobs:
   run-approved-taskpack:
     if: >-
       github.event_name != 'issues' ||
-      (github.event.action == 'labeled' && github.event.label.name == 'agent:run')
+      (
+        github.event.issue.body &&
+        contains(github.event.issue.body, 'AGENT_LOOP_METADATA') &&
+        contains(github.event.issue.labels.*.name, 'source:chatgpt-approved') &&
+        contains(github.event.issue.labels.*.name, 'agent:run') &&
+        !contains(github.event.issue.labels.*.name, 'agent:running') &&
+        !contains(github.event.issue.labels.*.name, 'agent:done') &&
+        !contains(github.event.issue.labels.*.name, 'agent:blocked')
+      )
     runs-on: ubuntu-latest
     env:
       TASKPACK_PATH: /tmp/agent_loop/taskpack.md
+      RAW_TASKPACK_PATH: /tmp/agent_loop/taskpack.raw.md
       WORK_DIR: agent-loop-work
+      AUDIT_ISSUE: ${{ github.event_name == 'issues' && github.event.issue.number || '' }}
       DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || false }}
       GH_TOKEN: ${{ github.token }}
       AUTOFIX_LOOPS_USED: "0"
@@ -40,6 +50,7 @@ jobs:
       VALIDATION_STATUS: FAIL
       CHANGED_FILES_STATUS: FAIL
       PLAN_STATUS: FAIL
+      ROUTING_STATUS: FAIL
       TASKPACK_STATUS: FAIL
       NEEDS_AUTOFIX: "false"
       REVIEW_NEEDS_AUTOFIX: "false"
@@ -87,8 +98,16 @@ jobs:
           elif event_name == "issues":
               labels = json.loads(os.environ.get("ISSUE_LABELS_JSON") or "[]")
               label_names = {str(item.get("name", "")) for item in labels if isinstance(item, dict)}
-              if event_action != "labeled" or os.environ.get("ISSUE_LABEL_NAME") != "agent:run":
-                  raise SystemExit("issues:labeled trigger ignored because label is not agent:run")
+              if event_action not in {"opened", "edited", "labeled"}:
+                  raise SystemExit("issues trigger ignored because action is not opened, edited, or labeled")
+              required = {"agent:run", "source:chatgpt-approved"}
+              blocked = {"agent:running", "agent:done", "agent:blocked"}
+              missing = sorted(required - label_names)
+              present_blocked = sorted(blocked & label_names)
+              if missing:
+                  raise SystemExit(f"issues trigger missing required labels: {', '.join(missing)}")
+              if present_blocked:
+                  raise SystemExit(f"issues trigger blocked by state labels: {', '.join(present_blocked)}")
               if "source:chatgpt-approved" not in label_names:
                   raise SystemExit("issues:labeled requires source:chatgpt-approved label")
               taskpack = os.environ.get("ISSUE_BODY", "")
@@ -104,7 +123,7 @@ jobs:
 
           if "AGENT_LOOP_METADATA" not in taskpack:
               raise SystemExit(f"{mode} Task Pack must contain AGENT_LOOP_METADATA")
-          Path("/tmp/agent_loop/taskpack.md").write_text(taskpack, encoding="utf-8")
+          Path("/tmp/agent_loop/taskpack.raw.md").write_text(taskpack, encoding="utf-8")
           Path("agent-loop-work/ingestion-mode.txt").write_text(mode + "\n", encoding="utf-8")
           Path("agent-loop-work/repository-dispatch-title.txt").write_text(
               os.environ.get("DISPATCH_TITLE", "") + "\n",
@@ -112,6 +131,82 @@ jobs:
           )
           print(f"INGESTION_MODE={mode}")
           PY
+
+      - name: Prepare Agent Loop labels
+        run: |
+          gh label create "agent:run" --color "5319e7" --description "Agent Loop run" || true
+          gh label create "agent:running" --color "1d76db" --description "Agent Loop is running" || true
+          gh label create "agent:done" --color "0e8a16" --description "Agent Loop completed" || true
+          gh label create "agent:blocked" --color "b60205" --description "Agent Loop blocked" || true
+          gh label create "source:chatgpt-approved" --color "0e8a16" --description "Approved ChatGPT Task Pack" || true
+
+      - name: Resolve audit issue
+        id: audit
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          ISSUE_NUMBER: ${{ github.event_name == 'issues' && github.event.issue.number || '' }}
+        run: |
+          python3 - <<'PY' > "$WORK_DIR/raw-title.txt"
+          from pathlib import Path
+          text = Path("/tmp/agent_loop/taskpack.raw.md").read_text(encoding="utf-8", errors="ignore")
+          for line in text.splitlines():
+              if line.startswith("# "):
+                  print(line[2:].strip()[:120] or "Approved Task Pack")
+                  break
+          else:
+              print("Approved Task Pack")
+          PY
+          title="$(cat "$WORK_DIR/raw-title.txt")"
+          if [ "$EVENT_NAME" = "repository_dispatch" ]; then
+            dispatch_title="$(cat "$WORK_DIR/repository-dispatch-title.txt")"
+            if [ -n "$dispatch_title" ]; then
+              title="$dispatch_title"
+            fi
+          fi
+
+          if [ "$EVENT_NAME" = "issues" ]; then
+            echo "AUDIT_ISSUE=${ISSUE_NUMBER}" >> "$GITHUB_ENV"
+            echo "issue_number=${ISSUE_NUMBER}" >> "$GITHUB_OUTPUT"
+            gh issue edit "$ISSUE_NUMBER" --add-label "agent:running" || true
+            gh issue comment "$ISSUE_NUMBER" --body "Agent Loop run started from this approved Task Pack issue: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          else
+            {
+              echo "Workflow run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+              echo
+              echo "Ingestion mode: $EVENT_NAME"
+              echo
+              echo "Raw approved Task Pack:"
+              echo
+              cat "$RAW_TASKPACK_PATH"
+            } > "$WORK_DIR/audit-issue-body.md"
+            issue_url="$(gh issue create \
+              --title "[Agent Loop] ${title}" \
+              --body-file "$WORK_DIR/audit-issue-body.md" \
+              --label "agent:run" \
+              --label "agent:running" \
+              --label "source:chatgpt-approved")"
+            issue_number="${issue_url##*/}"
+            echo "AUDIT_ISSUE=${issue_number}" >> "$GITHUB_ENV"
+            echo "issue_number=${issue_number}" >> "$GITHUB_OUTPUT"
+            gh issue edit "$issue_number" --add-label "agent:running" || true
+          fi
+
+      - name: Autofill Task Pack routing metadata
+        run: |
+          set +e
+          python3 scripts/agent_loop/autofill_taskpack_metadata.py \
+            --input "$RAW_TASKPACK_PATH" \
+            --output "$TASKPACK_PATH" \
+            --report "$WORK_DIR/routing-report.json" \
+            > "$WORK_DIR/routing-output.txt" 2>&1
+          status=$?
+          cat "$WORK_DIR/routing-output.txt"
+          if [ "$status" -eq 0 ]; then
+            echo "ROUTING_STATUS=READY" >> "$GITHUB_ENV"
+          else
+            echo "ROUTING_STATUS=BLOCKED" >> "$GITHUB_ENV"
+            exit "$status"
+          fi
 
       - name: Extract Task Pack metadata
         run: |
@@ -139,10 +234,8 @@ jobs:
             exit "$status"
           fi
 
-      - name: Prepare routing, labels, and branch
+      - name: Prepare routing and branch
         run: |
-          gh label create "agent:run" --color "5319e7" --description "Agent Loop run" || true
-          gh label create "source:chatgpt-approved" --color "0e8a16" --description "Approved ChatGPT Task Pack" || true
           python3 - <<'PY'
           import json
           import os
@@ -169,46 +262,7 @@ jobs:
           Path("agent-loop-work/project.txt").write_text(project + "\n", encoding="utf-8")
           PY
           gh label create "risk:${RISK_TIER}" --color "fbca04" --description "Agent Loop risk tier ${RISK_TIER}" || true
-
-      - name: Resolve audit issue
-        id: audit
-        env:
-          EVENT_NAME: ${{ github.event_name }}
-          ISSUE_NUMBER: ${{ github.event_name == 'issues' && github.event.issue.number || '' }}
-        run: |
-          title="$(cat "$WORK_DIR/title.txt")"
-          if [ "$EVENT_NAME" = "repository_dispatch" ]; then
-            dispatch_title="$(cat "$WORK_DIR/repository-dispatch-title.txt")"
-            if [ -n "$dispatch_title" ]; then
-              title="$dispatch_title"
-            fi
-          fi
-
-          if [ "$EVENT_NAME" = "issues" ]; then
-            echo "AUDIT_ISSUE=${ISSUE_NUMBER}" >> "$GITHUB_ENV"
-            echo "issue_number=${ISSUE_NUMBER}" >> "$GITHUB_OUTPUT"
-            gh issue edit "$ISSUE_NUMBER" --add-label "risk:${RISK_TIER}" || true
-            gh issue comment "$ISSUE_NUMBER" --body "Agent Loop run started from this approved Task Pack issue: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
-          else
-            {
-              echo "Workflow run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
-              echo
-              echo "Ingestion mode: $EVENT_NAME"
-              echo
-              echo "Approved Task Pack:"
-              echo
-              cat "$TASKPACK_PATH"
-            } > "$WORK_DIR/audit-issue-body.md"
-            issue_url="$(gh issue create \
-              --title "[Agent Loop] ${title}" \
-              --body-file "$WORK_DIR/audit-issue-body.md" \
-              --label "agent:run" \
-              --label "risk:${RISK_TIER}" \
-              --label "source:chatgpt-approved")"
-            issue_number="${issue_url##*/}"
-            echo "AUDIT_ISSUE=${issue_number}" >> "$GITHUB_ENV"
-            echo "issue_number=${issue_number}" >> "$GITHUB_OUTPUT"
-          fi
+          gh issue edit "$AUDIT_ISSUE" --add-label "risk:${RISK_TIER}" || true
 
       - name: Create working branch
         run: |
@@ -664,8 +718,47 @@ jobs:
         if: ${{ env.DRY_RUN != 'true' }}
         run: |
           gh pr merge "$PR_NUMBER" --squash --delete-branch
+          gh issue edit "$AUDIT_ISSUE" --remove-label "agent:running" || true
+          gh issue edit "$AUDIT_ISSUE" --add-label "agent:done" || true
           gh issue comment "$AUDIT_ISSUE" --body "PR #${PR_NUMBER} merged with squash. Production deployment was not attempted."
           gh issue close "$AUDIT_ISSUE" --comment "Agent Loop completed and audit issue closed."
+
+      - name: Mark audit issue blocked on failure
+        if: ${{ failure() && env.AUDIT_ISSUE != '' }}
+        run: |
+          mkdir -p "$WORK_DIR"
+          gh label create "agent:running" --color "1d76db" --description "Agent Loop is running" || true
+          gh label create "agent:blocked" --color "b60205" --description "Agent Loop blocked" || true
+          gh issue edit "$AUDIT_ISSUE" --remove-label "agent:running" || true
+          gh issue edit "$AUDIT_ISSUE" --add-label "agent:blocked" || true
+          {
+            echo "## Agent Loop Failure"
+            echo
+            echo "Workflow run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            echo
+            echo "Routing status: ${ROUTING_STATUS}"
+            echo "TaskPack status: ${TASKPACK_STATUS}"
+            echo "Plan status: ${PLAN_STATUS}"
+            echo "Validation status: ${VALIDATION_STATUS}"
+            echo "Changed-files status: ${CHANGED_FILES_STATUS}"
+            echo
+            for file in \
+              "$WORK_DIR/routing-output.txt" \
+              "$WORK_DIR/routing-report.json" \
+              "$WORK_DIR/taskpack-validation.txt" \
+              "$WORK_DIR/plan-validation.txt" \
+              "$WORK_DIR/validation-output.txt" \
+              "$WORK_DIR/changed-files-policy.txt" \
+              "$WORK_DIR/merge-policy.txt"; do
+              if [ -f "$file" ]; then
+                echo "### $file"
+                echo
+                sed -n '1,160p' "$file"
+                echo
+              fi
+            done
+          } > "$WORK_DIR/failure-summary.md"
+          gh issue comment "$AUDIT_ISSUE" --body-file "$WORK_DIR/failure-summary.md"
 
       - name: Write summary artifact
         if: ${{ always() }}
