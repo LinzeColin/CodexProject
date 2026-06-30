@@ -1,10 +1,10 @@
 project_id: "KMFA"
 project_name: "KMFA 经营分析系统"
-version: "0.1.0-s12-github-upload"
+version: "0.1.0-s13p1-financial-operating-report"
 current_stage: "S13"
-current_phase: "S13PA"
-current_phase_status: "planned"
-current_stage_status: "uploaded_to_github_main"
+current_phase: "S13PB"
+current_phase_status: "planned_next"
+current_stage_status: "in_progress_s13p1_completed_validated_local_only"
 github_directory: "LinzeColin/CodexProject/KMFA"
 human_plane:
   - "README.md"
@@ -88,6 +88,14 @@ machine_plane:
   - "stage_artifacts/S12_STAGE_REVIEW/machine/stage12_review_manifest.json"
   - "stage_artifacts/S12_GITHUB_UPLOAD/human/github_upload_record.md"
   - "stage_artifacts/S12_GITHUB_UPLOAD/machine/stage12_upload_manifest.json"
+  - "metadata/reports/financial_operating_report_manifest.json"
+  - "metadata/reports/financial_operating_report_source_lanes.jsonl"
+  - "metadata/reports/financial_operating_report_drafts.jsonl"
+  - "stage_artifacts/S13_P1_financial_operating_report/human/s13_p1_completion_record.md"
+  - "stage_artifacts/S13_P1_financial_operating_report/human/test_results.md"
+  - "stage_artifacts/S13_P1_financial_operating_report/machine/s13_p1_manifest.json"
+  - "stage_artifacts/S13_P1_financial_operating_report/exports/html/financial_operating_weekly_draft.html"
+  - "stage_artifacts/S13_P1_financial_operating_report/exports/html/financial_operating_monthly_draft.html"
   - "stage_artifacts/S04_P3_basic_tool_tests/human/tool_function_test_report.md"
   - "stage_artifacts/S04_STAGE_REVIEW/human/stage4_review_report.md"
   - "stage_artifacts/S04_STAGE_REVIEW/human/github_upload_record.md"
@@ -307,5 +315,16 @@ upload_policy:
   stage12_upload_evidence: "KMFA/stage_artifacts/S12_GITHUB_UPLOAD/human/github_upload_record.md"
   stage12_upload_manifest: "KMFA/stage_artifacts/S12_GITHUB_UPLOAD/machine/stage12_upload_manifest.json"
   stage12_blocker: "none"
+  stage13_phase_completion_upload_allowed: false
+  stage13_s13p1_completed_validated_local_only: true
+  stage13_s13p1_evidence: "KMFA/stage_artifacts/S13_P1_financial_operating_report/human/s13_p1_completion_record.md"
+  stage13_s13p1_manifest: "KMFA/stage_artifacts/S13_P1_financial_operating_report/machine/s13_p1_manifest.json"
+  stage13_s13p2_completed_validated_local_only: false
+  stage13_s13p3_completed_validated_local_only: false
+  stage13_review_required_before_upload: true
+  stage13_review_passed: false
+  stage13_upload_ready_local_only: false
+  stage13_uploaded_to_github_main: false
+  stage13_blocker: "s13p2_s13p3_stage_review_upload_not_completed"
   next_phase_upload_allowed: false
-  upload_surface: "stage12_uploaded_next_run_s13p1"
+  upload_surface: "s13p1_completed_local_only_next_run_s13p2"

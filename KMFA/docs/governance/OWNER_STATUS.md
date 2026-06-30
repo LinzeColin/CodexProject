@@ -4,7 +4,7 @@
 
 ## 一句话状态
 
-KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload、Stage 5 全部 Phase/复审/upload、Stage 6 全部 Phase/复审/upload、Stage 7 全部 Phase/复审/upload、Stage 8 全部 Phase/复审/upload、Stage 9 全部 Phase/复审/upload、Stage 10 全部 Phase/复审/upload、Stage 11 全部 Phase/复审/upload，以及 Stage 12 全部 Phase/复审/upload。Stage 12 upload 证据在 `KMFA/stage_artifacts/S12_STAGE_REVIEW/`。但 S13-P1、lineage、正式报告运行时仍未完成，且当前 2 条报告等级记录均为 D，项目仍不是可用业务系统。
+KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub upload、Stage 5 全部 Phase/复审/upload、Stage 6 全部 Phase/复审/upload、Stage 7 全部 Phase/复审/upload、Stage 8 全部 Phase/复审/upload、Stage 9 全部 Phase/复审/upload、Stage 10 全部 Phase/复审/upload、Stage 11 全部 Phase/复审/upload、Stage 12 全部 Phase/复审/upload，以及 S13-P1 财务经营报表本地验证。S13-P1 只生成 public-safe 经营周报/月报初稿和 HTML draft；S13-P2、S13-P3、lineage、正式报告运行时仍未完成，且当前报告等级仍为 D，项目仍不是可用业务系统。
 
 ## 你现在能信任什么
 
@@ -66,6 +66,7 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 - S12-P3 重跑机制已本地验证完成：`KMFA/tools/manual_rerun_mechanism.py`、`KMFA/tools/check_s12_p3_manual_rerun_mechanism.py`、`KMFA/tests/test_manual_rerun_mechanism.py`、`KMFA/metadata/lineage/manual_rerun_manifest.json`、`KMFA/metadata/lineage/manual_rerun_cache_invalidations.jsonl`、`KMFA/metadata/lineage/manual_rerun_steps.jsonl`、`KMFA/metadata/lineage/manual_rerun_consistency_checks.jsonl` 和 `KMFA/stage_artifacts/S12_P3_manual_rerun_mechanism/` 已生成；只有通过影响预览的 2 条事件进入重跑，3 条高风险 pending preview 不进入重跑，旧版本保留、新版本追加。
 - Stage 12 整体复审已本地通过：`KMFA/tools/check_s12_stage_review.py`、`KMFA/tests/test_s12_stage_review.py` 和 `KMFA/stage_artifacts/S12_STAGE_REVIEW/` 已生成；复审复跑 S12-P1/P2/P3 validators、全量 152 个 KMFA tests、治理 validator、raw/secret scan 和 parse checks，未执行 GitHub upload、S13、lineage full check、正式报告或外部接口。
 - Stage 12 final GitHub upload 已完成：`KMFA/stage_artifacts/S12_GITHUB_UPLOAD/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S12_GITHUB_UPLOAD/machine/stage12_upload_manifest.json` 已生成并记录 rebase、validators、安全扫描、dry-run push、push 和 post-push parity。
+- S13-P1 财务经营报表已本地验证完成：`KMFA/tools/financial_operating_report.py`、`KMFA/tools/check_s13_p1_financial_operating_report.py`、`KMFA/tests/test_financial_operating_report.py`、`KMFA/metadata/reports/financial_operating_report_manifest.json`、`KMFA/metadata/reports/financial_operating_report_source_lanes.jsonl`、`KMFA/metadata/reports/financial_operating_report_drafts.jsonl` 和 `KMFA/stage_artifacts/S13_P1_financial_operating_report/` 已生成；覆盖经营情况、费用税金资产、现金情况、贷款明细四类 source lane，生成周报/月报初稿和 2 个 HTML draft，报告等级显示 D，正式报告和经营决策依据继续阻断。
 
 ## 你现在不能信任什么
 
@@ -74,7 +75,7 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 - 不能认为 S05-P3 已经提交真实合同额、支出合计、毛利、毛利率或成本分类明文；公开仓库只保存 public-safe hash/source-anchor baseline。
 - 不能认为 A0 authority baseline 已经可以发布正式经营报告；lineage 和报告发布门禁尚未完成。
 - 不能认为 Stage 6 upload、Stage 7 upload、Stage 8 upload、Stage 9 upload 或 Stage 10 upload 代表正式经营报告、lineage、自动接口或差异关闭能力已经实现。
-- 不能认为 S11-P1 首页导航、S11-P2 数据源检查板、S11-P3 项目成本页面、Stage 11 upload、S12-P1 人工处理事件、S12-P2 影响预览、S12-P3 重跑机制、Stage 12 review 或 Stage 12 upload 等于完整业务系统；S13-P1、lineage full check 和正式报告仍未完成。
+- 不能认为 S11-P1 首页导航、S11-P2 数据源检查板、S11-P3 项目成本页面、Stage 11 upload、S12-P1 人工处理事件、S12-P2 影响预览、S12-P3 重跑机制、Stage 12 review、Stage 12 upload 或 S13-P1 财务经营报表等于完整业务系统；S13-P2、S13-P3、lineage full check 和正式报告仍未完成。
 - 不能认为 lineage 完整检查已正式实现。
 - 不能认为 Stage 1 已经实现业务功能。
 - 不能把 S02-P3 的报告等级协议当成真实报告生成能力。
@@ -83,4 +84,4 @@ KMFA 已在 v1.2 FULL_HTML_NO_OMISSION 基线上完成 Stage 4 final GitHub uplo
 
 ## 下一步
 
-下一步只执行 `S13-P1｜财务经营报表`；不得扩大到 S13-P2/S13-P3、lineage full check、正式报告或自动接口。
+下一步只执行 `S13-P2｜回款应收账龄`；不得扩大到 S13-P3、Stage 13 review、lineage full check、正式报告或自动接口。

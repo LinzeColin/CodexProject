@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.0-s13p1-financial-operating-report - 2026-07-01
+
+- 完成 `S13-P1｜财务经营报表` 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/financial_operating_report.py`、`KMFA/tools/check_s13_p1_financial_operating_report.py` 和 `KMFA/tests/test_financial_operating_report.py`。
+- 生成 4 条 public-safe 财务经营 source lane：经营情况、费用税金资产、现金情况、贷款明细；共 8 个 source refs、39 个字段映射 refs。
+- 生成经营周报初稿和经营月报初稿，并输出 2 个蓝色商务风 HTML draft；初稿展示数据状态、报告等级 D、12 条 pending reconciliation 和使用限制。
+- 不提交 raw business data、zip、Excel workbook、PDF、private CSV、字段明文、真实金额、真实账号或 credentials。
+- S13-P1 不执行 S13-P2 回款应收账龄、S13-P3 跨表复核、Stage 13 整体复审、GitHub upload、lineage full check、正式报告、外部 connector、付款、贷款管理或税务申报。
+- 下一轮只能执行 `S13-P2｜回款应收账龄`。
+
 ## 0.1.0-s12-github-upload - 2026-07-01
 
 - 完成 Stage 12 final GitHub upload gate，目标为 `LinzeColin/CodexProject main`。
