@@ -2,21 +2,27 @@
 
 ## 三种入口
 
-Agent Loop 支持三种 Task Pack ingestion mode。三种入口都会把批准的
-dual-plane Task Pack 规范化到同一个文件：
+Agent Loop 支持三种 Task Pack ingestion mode。三种入口都会先把批准的
+dual-plane Task Pack 写入 raw 文件：
+
+```text
+/tmp/agent_loop/taskpack.raw.md
+```
+
+然后通过 routing/autofill 层生成 normalized 文件：
 
 ```text
 /tmp/agent_loop/taskpack.md
 ```
 
 后续 Codex plan、implementation、validation、review、autofix、merge policy
-都只读取这个文件。
+都只读取 normalized 文件。
 
 | 入口 | 触发方式 | Task Pack 来源 | Audit issue |
 |---|---|---|---|
 | Manual fallback | `workflow_dispatch` | `taskpack` input | workflow 创建 |
-| Issue automation | `issues:labeled` | issue body | 触发 issue 本身 |
-| Future integration | `repository_dispatch` `agent_loop_taskpack` | `client_payload.taskpack` | workflow 创建 |
+| C2 Issue automation | `issues` opened/edited/labeled | issue body | 触发 issue 本身 |
+| D1/Future integration | `repository_dispatch` `agent_loop_taskpack` | `client_payload.taskpack` | workflow 创建 |
 
 ## 不是 Planner Agent
 
@@ -37,13 +43,17 @@ GitHub Actions 只消费 Owner 已批准的 Task Pack：
 - `taskpack` input 必须包含 `AGENT_LOOP_METADATA`。
 - Workflow 创建新的 audit issue。
 
-`issues:labeled`:
+`issues` opened/edited/labeled:
 
-- 新增标签必须是 `agent:run`。
-- Issue 必须已有 `source:chatgpt-approved`。
 - Issue body 必须包含 `AGENT_LOOP_METADATA`。
+- Issue 必须有 `source:chatgpt-approved`。
+- Issue 必须有 `agent:run`。
+- Issue 不得已有 `agent:running`、`agent:done`、`agent:blocked`。
 - Metadata 中 `source` 必须是 `chatgpt-approved`。
 - 这个 issue 本身就是 audit issue。
+- Workflow 开始时添加 `agent:running`。
+- 成功时移除 `agent:running`、添加 `agent:done`、关闭 issue。
+- 失败时移除 `agent:running`、添加 `agent:blocked`、评论失败摘要。
 
 `repository_dispatch`:
 
@@ -69,6 +79,30 @@ Workflow 不猜项目。路由字段必须来自 metadata：
 - `validation_commands`
 
 如果 `project` 缺失、为空、占位或同时指向多个项目，Task Pack validation 必须失败。
+
+## Routing / Autofill
+
+Owner 不需要记忆每个项目的 `allowed_paths` 和 `forbidden_paths`。
+
+- 路由事实源是 `PROJECT_ROUTING_MATRIX.md` 的
+  `AGENT_LOOP_ROUTING_MATRIX_JSON` block。
+- `route_taskpack.py` 判断 project 是否唯一。
+- `autofill_taskpack_metadata.py` 只补全缺失的 routing metadata。
+- 如果路由模糊、多项目、或缺少可运行 validation command，workflow 标记
+  `agent:blocked` 并评论候选项目和缺失字段。
+- 该层不生成需求、不运行 Planner Agent、不把 T2 降为 T1。
+
+## C2/C3/D1 使用方式
+
+- C2: Owner 创建 issue，把完整 Task Pack 放在 issue body，并带上
+  `source:chatgpt-approved` 与 `agent:run`。Workflow 自动运行。
+- C3: Owner 使用 `.github/ISSUE_TEMPLATE/codex-task.yml`。表单只有一个大
+  textarea，不要求手选 project 或 risk；这些字段必须来自 metadata。
+- D1: 可选本地工具。Owner 不需要默认运行脚本；C2/C3 是默认入口。
+- D2 future: 可由 Cloudflare Workers 或类似 webhook bridge 转发已批准的
+  Task Pack 到 `repository_dispatch`。本阶段不实现。
+- D3 future: 可由 ChatGPT connector、MCP 或外部 action 直接提交已批准的
+  Task Pack。当前不依赖。
 
 ## T1 和 T2
 

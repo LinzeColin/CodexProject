@@ -74,18 +74,54 @@ YAML-only 语法。
 同一个 Task Pack 可以通过三种方式进入 workflow：
 
 - `workflow_dispatch`: 粘贴到 `taskpack` 输入。
-- `issues:labeled`: issue body 就是 Task Pack，标签为 `agent:run` 且已有
-  `source:chatgpt-approved`。
+- `issues` opened/edited/labeled: issue body 就是 Task Pack，issue 必须同时有
+  `agent:run` 和 `source:chatgpt-approved`，且没有 `agent:running`、
+  `agent:done`、`agent:blocked`。
 - `repository_dispatch`: event type 为 `agent_loop_taskpack`，payload 中
   `taskpack` 字段就是 Task Pack。
 
-三种入口都会归一化为：
+三种入口都会先写入：
+
+```text
+/tmp/agent_loop/taskpack.raw.md
+```
+
+然后 routing/autofill 层生成：
 
 ```text
 /tmp/agent_loop/taskpack.md
 ```
 
 后续所有自动化只读取这个文件。
+
+## Project Routing
+
+Workflow 和脚本不得猜测目标项目。以下字段必须来自 metadata：
+
+- `project`
+- `allowed_paths`
+- `forbidden_paths`
+- `risk_tier`
+- `plan_required`
+- `validation_commands`
+
+如果 `project` 缺失、为空、占位、或任务实际跨多个项目但没有拆分，Task
+Pack 应失败或标记 `BLOCKED`。默认路由参考
+`docs/governance/agent_loop/PROJECT_ROUTING_MATRIX.md`。
+
+Workflow 可以补全缺失的 routing metadata，但只在
+`TASKPACK_ROUTING_POLICY.md` 允许且项目唯一时补全。多项目必须拆分；模糊项目
+必须 blocked。
+
+## C2/C3/D1 Entry Points
+
+- C2: Issue body 作为已批准 Task Pack，标签触发自动运行。
+- C3: Issue Form 或 prefilled issue URL 降低非代码 Owner 的操作成本。
+- D1: `scripts/agent_loop/submit_taskpack.py` 用本机 `gh` 创建 issue、发送
+  dispatch 或触发 workflow fallback。
+
+所有入口都不能加入 Planner Agent，不能在 GitHub Actions 内重新生成 Task
+Pack，不能从模糊 issue 推断需求。
 
 ## T1 示例
 

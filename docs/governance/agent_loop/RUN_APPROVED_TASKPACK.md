@@ -13,9 +13,9 @@
 9. 如只想校验和生成计划，设置 `dry_run=true`。
 10. 启动 workflow。
 
-## 入口 2: issues:labeled
+## 入口 2: C2 Issue-triggered Task Pack
 
-1. 创建 issue。
+1. 创建 issue，或使用 `Codex Task Pack` Issue Form。
 2. 把完整 dual-plane Task Pack 放在 issue body。
 3. 给 issue 添加 `source:chatgpt-approved`。
 4. 给 issue 添加 `agent:run`。
@@ -23,12 +23,57 @@
 
 触发条件：
 
-- 新增标签必须是 `agent:run`。
 - Issue body 必须包含 `AGENT_LOOP_METADATA`。
 - Issue 必须有 `source:chatgpt-approved`。
+- Issue 必须有 `agent:run`。
+- Issue 不得有 `agent:running`、`agent:done`、`agent:blocked`。
 - Metadata 中 `source` 必须是 `chatgpt-approved`。
 
-## 入口 3: repository_dispatch
+状态标签：
+
+- 开始时添加 `agent:running`。
+- 成功时移除 `agent:running`，添加 `agent:done`，并关闭 issue。
+- 失败时移除 `agent:running`，添加 `agent:blocked`，并评论失败摘要。
+
+## 入口 3: C3 Issue Form / prefilled issue
+
+推荐 Owner 默认使用 GitHub 的 `Codex Task Pack` Issue Form。表单只有一个大文本框：
+
+- 粘贴完整 Task Pack。
+- 不需要手选 project。
+- 不需要手选 risk tier。
+- 默认带 `source:chatgpt-approved` 和 `agent:run`。
+
+也可以生成预填 issue URL：
+
+```bash
+python3 scripts/agent_loop/build_prefilled_issue_url.py \
+  --taskpack path/to/taskpack.md \
+  --repo LinzeColin/CodexProject
+```
+
+如果 URL 太长，直接使用普通 issue 表单粘贴 Task Pack；D1 只是可选本地工具。
+
+## 入口 4: D1 local gh submitter
+
+本地脚本使用已有 `gh` 登录，不要求 PAT、不保存 token。它不是 Owner 默认路径；
+默认路径仍然是 C2 issue 或 C3 Issue Form。
+
+```bash
+python3 scripts/agent_loop/submit_taskpack.py \
+  --taskpack path/to/taskpack.md \
+  --mode issue \
+  --repo LinzeColin/CodexProject
+```
+
+可选模式：
+
+- `--mode issue`: 创建 Task Pack issue，并按顺序添加触发标签。
+- `--mode dispatch`: 发送 `repository_dispatch`。
+- `--mode workflow`: 触发 `workflow_dispatch` 兜底入口。
+- `--dry-run-local`: 只做本地校验和打印动作，不调用 GitHub。
+
+## 入口 5: repository_dispatch
 
 用于未来 ChatGPT/connector/webhook 集成。Event type 必须是：
 
@@ -49,6 +94,11 @@ Payload:
 
 Workflow 会从 payload 创建新的 audit issue。真实项目路由仍以 Task Pack
 metadata 为准。
+
+D2 webhook bridge 可以使用 Cloudflare Workers 或类似服务转发已批准 Task
+Pack，但当前 bootstrap hardening 不实现该桥。详见
+`docs/governance/agent_loop/WEBHOOK_BRIDGE_DESIGN.md`。D3 direct ChatGPT
+connector、MCP 或 external action 也是未来入口，不是当前依赖。
 
 ## dry_run
 
