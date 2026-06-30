@@ -252,16 +252,16 @@ parameter_profile_versions:
   adp-s2plt02-real-proof-capture-authorization: "adp-s2plt02-real-proof-capture-authorization-v1"
   adp-s2plt02-real-proof-capture-authorization-parameters: "adp-s2plt02-real-proof-capture-authorization-parameters-v1"
 data_snapshot_version: "fixture_arxiv_atom_to_daily_dry_run_v1"
-current_iteration: "ITER-20260630-ADP-S2PLT02-REAL-DELIVERY-MANIFEST-INPUT-VALIDATOR"
+current_iteration: "ITER-20260630-ADP-S2PLT02-REAL-DELIVERY-MANIFEST-NORMALIZATION"
 current_phase: "S2PL"
-current_gate: "S2PLT02_REAL_DELIVERY_MANIFEST_INPUT_VALIDATOR_READY_NO_WRITE_NO_PRODUCTION"
+current_gate: "S2PLT02_REAL_DELIVERY_MANIFEST_NORMALIZATION_READY_NO_WRITE_NO_PRODUCTION"
 current_v6_task_id: "NOT_APPLICABLE"
 current_v7_contract_version: "ADP-PRODUCT-CONTRACT-V7.2"
 current_v7_roadmap_version: "ADP-ROADMAP-V7.2"
 current_v7_task_id: "S2PMT07"
 current_v7_shadow_source_task_id: "NONE_WHILE_S2PMT07_BLOCKED"
 current_v7_final_task_id: "S2PMT07"
-current_v7_legacy_alias: "S2PLT02-REAL-DELIVERY-MANIFEST-INPUT-VALIDATOR records the no-write one-day real delivery manifest input gate before terminal proof assembly. The normalized first-day evidence model validates, but the historical committed 2026-06-28 manifest is blocked by strict CLI validation until explicit no-production fields are present; second real SMTP day, 8 real emails, real scheduler proof, S2PLT02 terminal proof, S2PLT03 terminal proof, S2PLT04 completion, live final manifest, final commands, handoff, signoff, DAILY_OPERATION, and integrated production acceptance remain blocked."
+current_v7_legacy_alias: "S2PLT02-REAL-DELIVERY-MANIFEST-NORMALIZATION records that the historical 2026-06-28 first real M1-M4 delivery manifest has been normalized into an explicit no-production S2PLT02 terminal proof input. The immutable raw manifest hash is bound, normalized_manifest_ready=true, strict normalized manifest validation passes, and direct raw strict validation remains blocked_missing_explicit_no_production_flags. Second real SMTP day, 8 real emails, real scheduler proof, S2PLT02 terminal proof, S2PLT03 terminal proof, S2PLT04 completion, live final manifest, final commands, handoff, signoff, DAILY_OPERATION, and integrated production acceptance remain blocked."
 s2pmt07_final_bundle_manifest_template_iteration: "ITER-20260629-ADP-S2PMT07-FINAL-BUNDLE-MANIFEST-TEMPLATE"
 s2pmt07_final_bundle_manifest_template_gate: "S2PMT07_FINAL_BUNDLE_MANIFEST_TEMPLATE_READY_FINAL_BUNDLE_STILL_BLOCKED_NO_PRODUCTION"
 s2pmt07_final_bundle_manifest_template_status: "final_bundle_manifest_template_ready_live_manifest_missing_no_production"
@@ -336,6 +336,18 @@ s2plt02_real_delivery_manifest_input_validator_state_hash: "8e345486be00628254e1
 s2plt02_real_delivery_manifest_input_validator_delivery_manifest_ready: true
 s2plt02_real_delivery_manifest_input_validator_historical_manifest_strict_status: "blocked_missing_explicit_no_production_flags"
 s2plt02_real_delivery_manifest_input_validator_artifact_written: false
+s2plt02_real_delivery_manifest_normalization_iteration: "ITER-20260630-ADP-S2PLT02-REAL-DELIVERY-MANIFEST-NORMALIZATION"
+s2plt02_real_delivery_manifest_normalization_gate: "S2PLT02_REAL_DELIVERY_MANIFEST_NORMALIZATION_READY_NO_WRITE_NO_PRODUCTION"
+s2plt02_real_delivery_manifest_normalization_status: "s2plt02_real_delivery_manifest_normalized_no_write_no_production"
+s2plt02_real_delivery_manifest_normalization_manifest: "governance/run_manifests/ADP-S2PLT02-REAL-DELIVERY-MANIFEST-NORMALIZATION-20260630.json"
+s2plt02_real_delivery_manifest_normalized_manifest_ref: "governance/run_manifests/ADP-S2PLT02-NORMALIZED-REAL-DELIVERY-MANIFEST-20260628.json"
+s2plt02_real_delivery_manifest_normalization_raw_manifest_ref: "governance/run_manifests/ADP-LOCAL-DAILY-M1-M4-RESEND-EXECUTION-20260628.json"
+s2plt02_real_delivery_manifest_normalization_raw_manifest_hash: "a795bd90778b5a0bbbd217d286f696936954af47a1a547ed689f907b677d9fa2"
+s2plt02_real_delivery_manifest_normalization_manifest_validation_state_hash: "91bf1a4477c621a75fceed90efecdb620341cfc97d5a751c127cc5ffbd6a0d99"
+s2plt02_real_delivery_manifest_normalization_default_manifest_validation_state_hash: "998acab034dce772e57fa263bce02f54e549bcebc0a4d499b785561682df0d5c"
+s2plt02_real_delivery_manifest_normalization_state_hash: "c56a7a1a5e9cb8a81ba0b05aa848c05e1577ce7558bae1700ea4563652c2d93c"
+s2plt02_real_delivery_manifest_normalization_normalized_manifest_ready: true
+s2plt02_real_delivery_manifest_normalization_artifact_written: false
 s2plt02_real_scheduler_proof_input_validator_status: "s2plt02_real_scheduler_proof_input_validator_ready_no_write_no_production"
 s2plt02_real_scheduler_proof_input_validator_manifest: "governance/run_manifests/ADP-S2PLT02-REAL-SCHEDULER-PROOF-INPUT-VALIDATOR-20260630.json"
 s2plt02_real_scheduler_proof_input_validator_state_hash: "5e1157dc9c710501cb2bf2e5dcdd3cc09afb40ee68164ff32d844e993843fb80"
@@ -509,7 +521,7 @@ s2plt02_delivery_evidence_ledger_gate: "S2PLT02_DELIVERY_EVIDENCE_LEDGER_BLOCKED
 s2plt02_delivery_evidence_ledger_status: "partial"
 s2plt02_delivery_evidence_ledger_duplicate_email_count: 0
 s2plt02_delivery_evidence_ledger_duplicate_service_date_count: 0
-s2plt02_delivery_evidence_ledger_hash: "555c0f122e65823a6311e1c4cc32f4b51253758d98f12db671453bd25378c70e"
+s2plt02_delivery_evidence_ledger_hash: "bb785595c11cf7ac8123affc23ce17a130c9106f6dbf6bcc06bd188b45375892"
 s2plt02_m4_watermark_proof_iteration: "ITER-20260628-ADP-S2PLT02-M4-WATERMARK-PROOF-RECORD"
 s2plt02_m4_watermark_proof_gate: "S2PLT02_M4_WATERMARK_PROOF_READY_S2PLT02_BLOCKED_NO_ACCEPTANCE"
 s2plt02_m4_watermark_proof_status: "ready"

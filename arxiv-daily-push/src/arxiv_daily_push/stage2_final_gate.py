@@ -822,6 +822,13 @@ S2PLT02_BLOCKING_REASONS = (
 S2PLT02_PARTIAL_REAL_DELIVERY_SERVICE_DATE = "2026-06-28"
 S2PLT02_PARTIAL_REAL_DELIVERY_GENERATED_AT = "2026-06-28T11:28:25+10:00"
 S2PLT02_PARTIAL_REAL_DELIVERY_SCOPE = "one_day_real_delivery_evidence_not_s2plt02_acceptance"
+S2PLT02_NORMALIZED_REAL_DELIVERY_MANIFEST_REF = (
+    "governance/run_manifests/ADP-S2PLT02-NORMALIZED-REAL-DELIVERY-MANIFEST-20260628.json"
+)
+S2PLT02_PARTIAL_REAL_DELIVERY_RAW_MANIFEST_HASH = (
+    "a795bd90778b5a0bbbd217d286f696936954af47a1a547ed689f907b677d9fa2"
+)
+S2PLT02_PARTIAL_REAL_DELIVERY_NORMALIZED_AT = "2026-06-30T11:45:16+10:00"
 S2PLT02_PARTIAL_REAL_DELIVERY_EVIDENCE_REFS = (
     "governance/run_manifests/ADP-LOCAL-DAILY-M1-M4-RESEND-EXECUTION-20260628.json",
     "arxiv-daily-push/docs/phase_records/PHASE_LOCAL_DAILY_M1_M4_RESEND_EXECUTION_20260628.md",
@@ -840,6 +847,12 @@ S2PLT02_DELIVERY_EVIDENCE_LEDGER_MODEL_ID = "adp-s2plt02-delivery-evidence-ledge
 S2PLT02_DELIVERY_EVIDENCE_LEDGER_SCOPE = "delivery_manifest_ledger_no_s2plt02_acceptance"
 S2PLT02_REAL_DELIVERY_MANIFEST_VALIDATION_SCOPE = (
     "real_delivery_manifest_input_validation_no_smtp_send_no_write"
+)
+S2PLT02_REAL_DELIVERY_MANIFEST_NORMALIZATION_MODEL_ID = (
+    "adp-s2plt02-real-delivery-manifest-normalization-v1"
+)
+S2PLT02_REAL_DELIVERY_MANIFEST_NORMALIZATION_SCOPE = (
+    "real_delivery_manifest_normalization_no_smtp_send_no_write"
 )
 S2PLT02_DELIVERY_EVIDENCE_LEDGER_FORBIDDEN_SOURCE_FLAGS = (
     "integrated_production_accepted",
@@ -1310,13 +1323,18 @@ def _default_s2plt02_delivery_manifest_records() -> list[dict[str, Any]]:
 
     return [
         {
-            "manifest_ref": S2PLT02_PARTIAL_REAL_DELIVERY_EVIDENCE_REFS[0],
+            "manifest_ref": S2PLT02_NORMALIZED_REAL_DELIVERY_MANIFEST_REF,
             "schema_version": 1,
             "project_id": "arxiv-daily-push",
             "task_id": "LOCAL-DAILY-M1-M4-RESEND-EXECUTION",
             "status": "pass",
             "generated_at": S2PLT02_PARTIAL_REAL_DELIVERY_GENERATED_AT,
             "service_date": S2PLT02_PARTIAL_REAL_DELIVERY_SERVICE_DATE,
+            "normalized_at": S2PLT02_PARTIAL_REAL_DELIVERY_NORMALIZED_AT,
+            "normalization_task_id": "S2PLT02-REAL-DELIVERY-MANIFEST-NORMALIZATION",
+            "normalization_scope": S2PLT02_REAL_DELIVERY_MANIFEST_NORMALIZATION_SCOPE,
+            "normalized_from_manifest_ref": S2PLT02_PARTIAL_REAL_DELIVERY_EVIDENCE_REFS[0],
+            "normalized_from_manifest_hash": S2PLT02_PARTIAL_REAL_DELIVERY_RAW_MANIFEST_HASH,
             "mail_delivery_summary": {
                 "planned_send_total": len(S2PLT02_REQUIRED_MAIL_PRODUCTS),
                 "sent_mail_count": len(S2PLT02_REQUIRED_MAIL_PRODUCTS),
@@ -1341,7 +1359,10 @@ def _default_s2plt02_delivery_manifest_records() -> list[dict[str, Any]]:
             "current_pointer_changed": False,
             "v7_1_baseline_changed": False,
             "v7_2_contract_files_changed": False,
-            "evidence_refs": list(S2PLT02_PARTIAL_REAL_DELIVERY_EVIDENCE_REFS),
+            "evidence_refs": list(
+                (S2PLT02_NORMALIZED_REAL_DELIVERY_MANIFEST_REF,)
+                + S2PLT02_PARTIAL_REAL_DELIVERY_EVIDENCE_REFS
+            ),
         }
     ]
 
@@ -2487,6 +2508,164 @@ def validate_s2plt02_real_delivery_manifest_validation_state(state: Mapping[str,
     expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
     if state.get("state_hash") != expected_hash:
         errors.append("S2PLT02 real delivery manifest validation state_hash does not match state content")
+    return errors
+
+
+def build_s2plt02_normalized_delivery_manifest_state(
+    *,
+    raw_manifest: Mapping[str, Any],
+    raw_manifest_ref: str,
+    normalized_manifest_ref: str,
+    normalized_at: str,
+) -> dict[str, Any]:
+    """Build a normalized real-delivery manifest wrapper without writing artifacts or sending mail."""
+
+    raw_copy = json.loads(json.dumps(raw_manifest, ensure_ascii=False))
+    raw_ref = raw_manifest_ref or str(raw_copy.get("manifest_ref") or "")
+    normalized_ref = normalized_manifest_ref or raw_ref
+    raw_hash = _stable_hash(raw_copy)
+    evidence_refs: list[str] = []
+    if raw_ref:
+        evidence_refs.append(raw_ref)
+    for ref in raw_copy.get("evidence_refs", []):
+        if isinstance(ref, str) and ref not in evidence_refs:
+            evidence_refs.append(ref)
+
+    normalized_manifest = raw_copy
+    normalized_manifest["manifest_ref"] = normalized_ref
+    normalized_manifest["normalized_from_manifest_ref"] = raw_ref
+    normalized_manifest["normalized_from_manifest_hash"] = raw_hash
+    normalized_manifest["normalization_task_id"] = "S2PLT02-REAL-DELIVERY-MANIFEST-NORMALIZATION"
+    normalized_manifest["normalization_scope"] = S2PLT02_REAL_DELIVERY_MANIFEST_NORMALIZATION_SCOPE
+    normalized_manifest["normalized_at"] = normalized_at
+    normalized_manifest["evidence_refs"] = evidence_refs
+    mail_summary = _mapping(normalized_manifest.get("mail_delivery_summary"))
+    products = mail_summary.get("sent_mail_products", [])
+    if isinstance(products, list):
+        normalized_manifest["sent_mail_products"] = [str(product) for product in products]
+    for flag in S2PLT02_DELIVERY_EVIDENCE_LEDGER_FORBIDDEN_SOURCE_FLAGS:
+        normalized_manifest.setdefault(flag, False)
+
+    manifest_validation = build_s2plt02_real_delivery_manifest_validation_state(
+        delivery_manifest=normalized_manifest
+    )
+    manifest_validation_errors = validate_s2plt02_real_delivery_manifest_validation_state(manifest_validation)
+    ready = manifest_validation.get("status") == "pass" and not manifest_validation_errors
+    state: dict[str, Any] = {
+        "model_id": S2PLT02_REAL_DELIVERY_MANIFEST_NORMALIZATION_MODEL_ID,
+        "schema_version": S2PLT02_SCHEMA_VERSION,
+        "task_id": "S2PLT02-REAL-DELIVERY-MANIFEST-NORMALIZATION",
+        "acceptance_id": S2PLT02_ACCEPTANCE_ID,
+        "status": "pass" if ready else "blocked",
+        "scope": S2PLT02_REAL_DELIVERY_MANIFEST_NORMALIZATION_SCOPE,
+        "normalized_at": normalized_at,
+        "raw_manifest_ref": raw_ref,
+        "raw_manifest_hash": raw_hash,
+        "normalized_manifest_ref": normalized_ref,
+        "normalized_manifest_ready": ready,
+        "normalized_manifest": normalized_manifest,
+        "manifest_validation": manifest_validation,
+        "manifest_validation_errors": manifest_validation_errors,
+        "blocking_reasons": [] if ready else ["normalized_delivery_manifest_not_valid"],
+        "artifact_written": False,
+        "terminal_delivery_proof_written": False,
+        "s2plt02_accepted": False,
+        "production_acceptance_claimed": False,
+        "integrated_production_accepted": False,
+        "stage2_integrated_production_accepted": False,
+        "daily_operation_enabled": False,
+        "real_smtp_send_enabled": False,
+        "scheduler_enabled": False,
+        "scheduler_install_enabled": False,
+        "release_packaging_enabled": False,
+        "production_restore_enabled": False,
+        "public_schema_changed": False,
+        "db_migration_executed": False,
+        "production_queue_mutated": False,
+        "source_adapter_changed": False,
+        "ranking_algorithm_changed": False,
+        "current_pointer_changed": False,
+        "v7_1_baseline_changed": False,
+        "v7_2_contract_files_changed": False,
+        "state_hash": "",
+    }
+    state["state_hash"] = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    return state
+
+
+def validate_s2plt02_normalized_delivery_manifest_state(state: Mapping[str, Any]) -> list[str]:
+    """Validate a normalized delivery manifest wrapper state."""
+
+    errors: list[str] = []
+    if state.get("model_id") != S2PLT02_REAL_DELIVERY_MANIFEST_NORMALIZATION_MODEL_ID:
+        errors.append("S2PLT02 normalized delivery manifest model_id is invalid")
+    if state.get("schema_version") != S2PLT02_SCHEMA_VERSION:
+        errors.append("S2PLT02 normalized delivery manifest schema_version must be 1")
+    if state.get("task_id") != "S2PLT02-REAL-DELIVERY-MANIFEST-NORMALIZATION":
+        errors.append("S2PLT02 normalized delivery manifest task_id is invalid")
+    if state.get("acceptance_id") != S2PLT02_ACCEPTANCE_ID:
+        errors.append("S2PLT02 normalized delivery manifest acceptance_id is invalid")
+    if state.get("scope") != S2PLT02_REAL_DELIVERY_MANIFEST_NORMALIZATION_SCOPE:
+        errors.append("S2PLT02 normalized delivery manifest scope is invalid")
+    normalized_manifest = _mapping(state.get("normalized_manifest"))
+    if not normalized_manifest:
+        errors.append("normalized_manifest is required")
+    else:
+        if normalized_manifest.get("manifest_ref") != state.get("normalized_manifest_ref"):
+            errors.append("normalized_manifest manifest_ref must match normalized_manifest_ref")
+        if normalized_manifest.get("normalized_from_manifest_ref") != state.get("raw_manifest_ref"):
+            errors.append("normalized_manifest normalized_from_manifest_ref must match raw_manifest_ref")
+        if normalized_manifest.get("normalized_from_manifest_hash") != state.get("raw_manifest_hash"):
+            errors.append("normalized_manifest normalized_from_manifest_hash must match raw_manifest_hash")
+        if normalized_manifest.get("normalization_scope") != S2PLT02_REAL_DELIVERY_MANIFEST_NORMALIZATION_SCOPE:
+            errors.append("normalized_manifest normalization_scope is invalid")
+        for flag in S2PLT02_DELIVERY_EVIDENCE_LEDGER_FORBIDDEN_SOURCE_FLAGS:
+            if normalized_manifest.get(flag) is not False:
+                errors.append(f"normalized_manifest {flag} must be false")
+        recomputed_validation = build_s2plt02_real_delivery_manifest_validation_state(
+            delivery_manifest=normalized_manifest
+        )
+        recomputed_errors = validate_s2plt02_real_delivery_manifest_validation_state(recomputed_validation)
+        if recomputed_validation.get("status") != _mapping(state.get("manifest_validation")).get("status"):
+            errors.append("manifest_validation status does not match normalized manifest")
+        for error in recomputed_errors:
+            errors.append(error)
+    ready = state.get("normalized_manifest_ready") is True
+    if state.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PLT02 normalized delivery manifest status must be pass or blocked")
+    if state.get("status") == "pass" and not ready:
+        errors.append("pass status requires normalized_manifest_ready")
+    if ready and state.get("manifest_validation_errors"):
+        errors.append("normalized_manifest_ready requires no manifest_validation_errors")
+    if not ready and "normalized_delivery_manifest_not_valid" not in state.get("blocking_reasons", []):
+        errors.append("blocked normalized manifest state must include normalized_delivery_manifest_not_valid")
+    for flag in (
+        "artifact_written",
+        "terminal_delivery_proof_written",
+        "s2plt02_accepted",
+        "production_acceptance_claimed",
+        "integrated_production_accepted",
+        "stage2_integrated_production_accepted",
+        "daily_operation_enabled",
+        "real_smtp_send_enabled",
+        "scheduler_enabled",
+        "scheduler_install_enabled",
+        "release_packaging_enabled",
+        "production_restore_enabled",
+        "public_schema_changed",
+        "db_migration_executed",
+        "production_queue_mutated",
+        "source_adapter_changed",
+        "ranking_algorithm_changed",
+        "current_pointer_changed",
+        "v7_1_baseline_changed",
+        "v7_2_contract_files_changed",
+    ):
+        if state.get(flag) is not False:
+            errors.append(f"{flag} must be false")
+    expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
+    if state.get("state_hash") != expected_hash:
+        errors.append("S2PLT02 normalized delivery manifest state_hash does not match state content")
     return errors
 
 

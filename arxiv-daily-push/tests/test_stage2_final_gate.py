@@ -152,6 +152,7 @@ from arxiv_daily_push.stage2_final_gate import (
     build_s2plt02_real_proof_capture_authorization_validation_state,
     build_s2plt02_real_proof_capture_readiness_state,
     build_s2plt02_real_delivery_manifest_validation_state,
+    build_s2plt02_normalized_delivery_manifest_state,
     build_s2plt02_real_scheduler_proof_validation_state,
     build_s2plt02_partial_real_delivery_state,
     build_s2plt02_terminal_delivery_input_inventory_state,
@@ -182,6 +183,7 @@ from arxiv_daily_push.stage2_final_gate import (
     validate_s2plt02_real_proof_capture_authorization_owner_packet_state,
     validate_s2plt02_real_proof_capture_readiness_state,
     validate_s2plt02_real_delivery_manifest_validation_state,
+    validate_s2plt02_normalized_delivery_manifest_state,
     validate_s2plt02_real_scheduler_proof_validation_state,
     validate_s2plt02_terminal_delivery_input_inventory_state,
     validate_s2plt02_terminal_delivery_proof_capture_plan_state,
@@ -385,6 +387,72 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(validate_s2plt02_real_delivery_manifest_validation_state(state), [])
         self.assertFalse(state["artifact_written"])
         self.assertFalse(state["real_smtp_send_enabled"])
+
+    def test_s2plt02_normalized_delivery_manifest_adds_explicit_no_production_flags(self) -> None:
+        raw_manifest = {
+            "schema_version": 1,
+            "project_id": "arxiv-daily-push",
+            "task_id": "LOCAL-DAILY-M1-M4-RESEND-EXECUTION",
+            "status": "pass",
+            "generated_at": "2026-06-28T11:28:25+10:00",
+            "service_date": "2026-06-28",
+            "mail_delivery_summary": {
+                "planned_send_total": 4,
+                "sent_mail_count": 4,
+                "sent_mail_products": ["M1", "M2", "M3", "M4"],
+                "delivery_ref_by_product": {
+                    "M1": "smtp://message/smtp-delivery:87f268d29a31288d",
+                    "M2": "smtp://message/smtp-delivery:c72ffcd03a277e1d",
+                    "M3": "smtp://message/smtp-delivery:590b7230463ff9f7",
+                    "M4": "smtp://message/smtp-delivery:7f815186af789297",
+                },
+            },
+            "evidence_refs": ["arxiv-daily-push/docs/phase_records/PHASE_LOCAL_DAILY_M1_M4_RESEND_EXECUTION_20260628.md"],
+            "real_smtp_sent": True,
+            "real_smtp_send_enabled": True,
+            "stage2_integrated_production_accepted": False,
+            "integrated_production_accepted": False,
+            "scheduler_enabled": False,
+            "release_uploaded": False,
+            "public_schema_changed": False,
+            "ranking_algorithm_changed": False,
+            "source_adapter_changed": False,
+            "current_pointer_changed": False,
+        }
+
+        state = build_s2plt02_normalized_delivery_manifest_state(
+            raw_manifest=raw_manifest,
+            raw_manifest_ref="governance/run_manifests/ADP-LOCAL-DAILY-M1-M4-RESEND-EXECUTION-20260628.json",
+            normalized_manifest_ref=(
+                "governance/run_manifests/"
+                "ADP-S2PLT02-NORMALIZED-REAL-DELIVERY-MANIFEST-20260628.json"
+            ),
+            normalized_at="2026-06-30T11:45:16+10:00",
+        )
+
+        normalized = state["normalized_manifest"]
+        self.assertEqual(state["status"], "pass")
+        self.assertTrue(state["normalized_manifest_ready"])
+        self.assertEqual(normalized["service_date"], "2026-06-28")
+        self.assertEqual(normalized["sent_mail_products"], ["M1", "M2", "M3", "M4"])
+        self.assertTrue(normalized["real_smtp_sent"])
+        self.assertTrue(normalized["real_smtp_send_enabled"])
+        self.assertFalse(normalized["daily_operation_enabled"])
+        self.assertFalse(normalized["production_restore_executed"])
+        self.assertFalse(normalized["production_queue_mutated"])
+        self.assertFalse(normalized["db_migration_executed"])
+        self.assertFalse(normalized["v7_1_baseline_changed"])
+        self.assertFalse(normalized["v7_2_contract_files_changed"])
+        self.assertEqual(
+            normalized["normalized_from_manifest_ref"],
+            "governance/run_manifests/ADP-LOCAL-DAILY-M1-M4-RESEND-EXECUTION-20260628.json",
+        )
+        self.assertRegex(normalized["normalized_from_manifest_hash"], r"^[0-9a-f]{64}$")
+        self.assertEqual(state["manifest_validation"]["status"], "pass")
+        self.assertEqual(validate_s2plt02_normalized_delivery_manifest_state(state), [])
+        self.assertFalse(state["artifact_written"])
+        self.assertFalse(state["terminal_delivery_proof_written"])
+        self.assertFalse(state["daily_operation_enabled"])
 
     def test_s2plt02_second_day_dry_run_audit_does_not_count_as_terminal_delivery(self) -> None:
         with TemporaryDirectory() as tmp_dir:
@@ -4358,7 +4426,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertEqual(s2plt02["terminal_readiness_audit_status"], "blocked")
         self.assertEqual(
             s2plt02["terminal_readiness_audit_state_hash"],
-            "faedeea7dcc41d0122044cbdd07c1901f01fa6a7ca39f0d580f9f6844fc3f9b2",
+            "a54814e6df000eb20fc8c0caf5b680c8b71bbb59721ea6bf41644afd6af1665b",
         )
         self.assertTrue(s2plt02["terminal_dependency_state"]["S2PLT01_ACCEPTED"])
         self.assertTrue(s2plt02["terminal_dependency_state"]["P0_ZERO"])
