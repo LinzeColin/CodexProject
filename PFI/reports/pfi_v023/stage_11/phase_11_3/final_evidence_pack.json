@@ -1,0 +1,45 @@
+{
+  "schema": "PFIV023Stage11FinalCandidateEvidencePackV1",
+  "version": "v0.2.3",
+  "stage": "Stage 11",
+  "phase_id": "V023-S11-P11.3",
+  "generated_at": "2026-06-30T07:38:00Z",
+  "status": "candidate_pass",
+  "human_acceptance_claimed": false,
+  "stage_11_whole_review_done": false,
+  "github_main_upload_done": false,
+  "included_phase_ids": [
+    "V023-S11-P11.1",
+    "V023-S11-P11.2",
+    "V023-S11-P11.3"
+  ],
+  "required_artifacts": [
+    "tests/test_v023_regression.py",
+    "reports/pfi_v023/stage_11/phase_11_1/evidence.json",
+    "reports/pfi_v023/stage_11/phase_11_1/terminal.log",
+    "reports/pfi_v023/stage_11/phase_11_2/evidence.json",
+    "reports/pfi_v023/stage_11/phase_11_2/terminal.log",
+    "reports/pfi_v023/stage_11/phase_11_3/evidence.json",
+    "reports/pfi_v023/stage_11/phase_11_3/screenshot_index.json",
+    "reports/pfi_v023/stage_11/phase_11_3/validation_summary.json",
+    "reports/pfi_v023/stage_11/phase_11_3/risk_register.json",
+    "reports/pfi_v023/stage_11/phase_11_3/remaining_items.json",
+    "reports/pfi_v023/stage_11/phase_11_3/changed_files.txt",
+    "reports/pfi_v023/stage_11/phase_11_3/terminal.log",
+    "reports/pfi_v023/stage_11/phase_11_3/screenshots/final_desktop.png",
+    "reports/pfi_v023/stage_11/phase_11_3/screenshots/final_mobile.png"
+  ],
+  "candidate_gate_summary": {
+    "regression_tests": true,
+    "doc_freeze": true,
+    "final_screenshot_index": true,
+    "validation_summary": true,
+    "risk_register": true,
+    "remaining_items": true
+  },
+  "git": {
+    "head_at_generation": "9cb1eafcc0df3d5fb067880ef550ccf4eae98a7d",
+    "origin_main_at_generation": "946f5c41c8db1ec4eb5e289ae35696ccb6d42f47",
+    "main_parity_claimed": false
+  }
+}

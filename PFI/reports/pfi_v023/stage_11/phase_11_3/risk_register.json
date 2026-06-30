@@ -1,0 +1,30 @@
+{
+  "schema": "PFIV023Stage11RiskRegisterV1",
+  "version": "v0.2.3",
+  "stage": "Stage 11",
+  "phase_id": "V023-S11-P11.3",
+  "generated_at": "2026-06-30T07:38:00Z",
+  "risks": [
+    {
+      "id": "S11-R1",
+      "title": "用户手动验收未完成",
+      "severity": "medium",
+      "status": "open",
+      "control": "README and evidence keep candidate status only; closeout requires explicit user acceptance in a later run."
+    },
+    {
+      "id": "S11-R2",
+      "title": "Stage 11 whole-stage review 未执行",
+      "severity": "medium",
+      "status": "open",
+      "control": "This run is limited to Phase 11.3; whole-stage review/fix is the next separate run."
+    },
+    {
+      "id": "S11-R3",
+      "title": "GitHub main upload 未执行",
+      "severity": "medium",
+      "status": "open",
+      "control": "Per current policy, phase commits remain local until a separate whole-stage review/upload run."
+    }
+  ]
+}

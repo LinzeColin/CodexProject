@@ -1,0 +1,30 @@
+{
+  "schema": "PFIV023Stage11RemainingItemsV1",
+  "version": "v0.2.3",
+  "stage": "Stage 11",
+  "phase_id": "V023-S11-P11.3",
+  "generated_at": "2026-06-30T07:38:00Z",
+  "items": [
+    {
+      "id": "S11-N1",
+      "title": "用户明确验收",
+      "owner": "user",
+      "required_before_closeout": true,
+      "status": "open"
+    },
+    {
+      "id": "S11-N2",
+      "title": "Stage 11 whole-stage review",
+      "owner": "codex",
+      "required_before_github_upload": true,
+      "status": "open"
+    },
+    {
+      "id": "S11-N3",
+      "title": "Stage 11 GitHub main upload",
+      "owner": "codex",
+      "required_before_main_parity_claim": true,
+      "status": "open"
+    }
+  ]
+}
