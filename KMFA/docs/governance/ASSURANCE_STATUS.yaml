@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260701-S12P3-MANUAL-RERUN-MECHANISM"
+as_of_event_id: "EVENT-KMFA-20260701-S12-GITHUB-UPLOAD"
 source_snapshot_hash: "sha256:precommit-pending"
-source_base_commit: "7a175eb0a44c92dda3f96d55b93e9825f2d5dd6e"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S12P3_LOCAL_COMMIT"
-snapshot_event_time: "2026-07-01T14:00:00+10:00"
-generator_version: "manual-s12-stage-review"
+source_base_commit: "5f6ff2792c8a879998ac90262b0f0a259107cad0"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S12_UPLOAD_COMMIT"
+snapshot_event_time: "2026-07-01T16:00:00+10:00"
+generator_version: "manual-s12-github-upload"
 final_commit_binding: "local_commit_pending"
 dimensions:
   structural_completeness:
@@ -345,14 +345,19 @@ dimensions:
       - "KMFA/stage_artifacts/S12_P3_manual_rerun_mechanism/human/test_results.md"
       - "KMFA/stage_artifacts/S12_P3_manual_rerun_mechanism/machine/s12_p3_manifest.json"
       - "KMFA/tools/check_s12_p3_manual_rerun_mechanism.py"
+      - "KMFA/stage_artifacts/S12_STAGE_REVIEW/human/stage12_review_report.md"
+      - "KMFA/stage_artifacts/S12_STAGE_REVIEW/human/test_results.md"
+      - "KMFA/stage_artifacts/S12_STAGE_REVIEW/machine/stage12_review_manifest.json"
+      - "KMFA/stage_artifacts/S12_GITHUB_UPLOAD/human/github_upload_record.md"
+      - "KMFA/stage_artifacts/S12_GITHUB_UPLOAD/machine/stage12_upload_manifest.json"
   evidence_freshness:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "S12_STAGE_REVIEW_PASSED_UPLOAD_READY_LOCAL_ONLY"
-  release_gate: "KMFA-S12-GITHUB-UPLOAD-GATE"
+  status: "S12_UPLOADED_TO_GITHUB_MAIN"
+  release_gate: "KMFA-S13-P1-GATE"
   blocker_ids:
-    - "STAGE12_GITHUB_UPLOAD_NOT_PERFORMED"
+    - "S13_P1_NOT_STARTED"
     - "LINEAGE_AND_REPORT_RELEASE_GATE_NOT_STARTED"

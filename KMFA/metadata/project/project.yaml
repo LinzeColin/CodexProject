@@ -1,10 +1,10 @@
 project_id: "KMFA"
 project_name: "KMFA 经营分析系统"
-version: "0.1.0-s12-stage-review"
-current_stage: "S12"
-current_phase: "S12-GITHUB-UPLOAD"
-current_phase_status: "pending"
-current_stage_status: "s12_stage_review_passed_upload_ready_local_only"
+version: "0.1.0-s12-github-upload"
+current_stage: "S13"
+current_phase: "S13PA"
+current_phase_status: "planned"
+current_stage_status: "uploaded_to_github_main"
 github_directory: "LinzeColin/CodexProject/KMFA"
 human_plane:
   - "README.md"
@@ -86,6 +86,8 @@ machine_plane:
   - "stage_artifacts/S12_STAGE_REVIEW/human/stage12_review_report.md"
   - "stage_artifacts/S12_STAGE_REVIEW/human/test_results.md"
   - "stage_artifacts/S12_STAGE_REVIEW/machine/stage12_review_manifest.json"
+  - "stage_artifacts/S12_GITHUB_UPLOAD/human/github_upload_record.md"
+  - "stage_artifacts/S12_GITHUB_UPLOAD/machine/stage12_upload_manifest.json"
   - "stage_artifacts/S04_P3_basic_tool_tests/human/tool_function_test_report.md"
   - "stage_artifacts/S04_STAGE_REVIEW/human/stage4_review_report.md"
   - "stage_artifacts/S04_STAGE_REVIEW/human/github_upload_record.md"
@@ -300,8 +302,10 @@ upload_policy:
   stage12_review_passed: true
   stage12_review_evidence: "KMFA/stage_artifacts/S12_STAGE_REVIEW/human/stage12_review_report.md"
   stage12_review_manifest: "KMFA/stage_artifacts/S12_STAGE_REVIEW/machine/stage12_review_manifest.json"
-  stage12_upload_ready_local_only: true
-  stage12_uploaded_to_github_main: false
-  stage12_blocker: "Stage 12 final GitHub upload not performed"
-  next_phase_upload_allowed: true
-  upload_surface: "project_level_kmfa_worktree_stage12_final_upload_next"
+  stage12_upload_ready_local_only: false
+  stage12_uploaded_to_github_main: true
+  stage12_upload_evidence: "KMFA/stage_artifacts/S12_GITHUB_UPLOAD/human/github_upload_record.md"
+  stage12_upload_manifest: "KMFA/stage_artifacts/S12_GITHUB_UPLOAD/machine/stage12_upload_manifest.json"
+  stage12_blocker: "none"
+  next_phase_upload_allowed: false
+  upload_surface: "stage12_uploaded_next_run_s13p1"
