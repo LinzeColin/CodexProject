@@ -1146,6 +1146,8 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertEqual(plan["next_executable_step"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
         wait_guard = plan["capture_wait_state_guard"]
+        self.assertEqual(plan["current_wait_state"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
+        self.assertEqual(plan["current_wait_state"], wait_guard["current_wait_state"])
         self.assertEqual(wait_guard["status"], "blocked")
         self.assertEqual(wait_guard["current_wait_state"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
         self.assertEqual(wait_guard["next_safe_runtime_action"], "wait_for_real_smtp_scheduler_capture_window")
@@ -5519,6 +5521,11 @@ class Stage2FinalGateTests(unittest.TestCase):
         capture_summary = plan["s2plt02_terminal_delivery_capture_plan_summary"]
         self.assertEqual(capture_summary["status"], "blocked")
         self.assertEqual(capture_summary["next_executable_step"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
+        self.assertEqual(capture_summary["current_wait_state"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
+        self.assertEqual(
+            capture_summary["current_wait_state"],
+            capture_summary["capture_wait_state_guard"]["current_wait_state"],
+        )
         self.assertEqual(capture_summary["authorization_artifact_status"], "pass")
         self.assertFalse(capture_summary["runtime_capture_ready"])
         self.assertEqual(capture_summary["observed_real_delivery_days"], 1)
@@ -6074,7 +6081,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertEqual(
             state["s2plt02_terminal_delivery_capture_plan_summary"]["state_hash"],
-            "5b344929d8d00c9cf881accbbd9abd68963b5f40cbd975a805fa4da62a8a8a25",
+            "c9216c53cedf0cb5fcc12fd15ffb021b83586906f233a4f78ed96ecfe84f9b13",
         )
         self.assertEqual(
             state["s2plt02_terminal_delivery_capture_plan_summary"]["generated_at"],
@@ -6082,6 +6089,10 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertFalse(state["s2plt02_terminal_delivery_capture_plan_summary"]["runtime_capture_ready"])
         wait_guard = state["s2plt02_terminal_delivery_capture_plan_summary"]["capture_wait_state_guard"]
+        self.assertEqual(
+            state["s2plt02_terminal_delivery_capture_plan_summary"]["current_wait_state"],
+            wait_guard["current_wait_state"],
+        )
         self.assertEqual(wait_guard["state_hash"], "581fe9f53d82db88959196f874d312e50b1739a839158f7bf2d38cc186c03506")
         self.assertEqual(wait_guard["current_wait_state"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
         self.assertEqual(

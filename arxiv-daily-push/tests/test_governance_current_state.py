@@ -36,6 +36,21 @@ class GovernanceCurrentStateTests(unittest.TestCase):
 
 
         self.assertIn(
+            "S2PMT07_FINAL_BUNDLE_S2PLT02_CURRENT_WAIT_STATE_SUMMARY_BLOCKED_NO_PRODUCTION",
+            current_state,
+        )
+        self.assertIn("S2PMT07-FINAL-BUNDLE-S2PLT02-CURRENT-WAIT-STATE-SUMMARY", current_state)
+        self.assertIn("current_wait_state=WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW", current_state)
+        self.assertIn("c9216c53cedf0cb5fcc12fd15ffb021b83586906f233a4f78ed96ecfe84f9b13", current_state)
+        self.assertIn("0b6753d007633aaeca00368eb29ebe54cc677846085051988a60854713c93b42", current_state)
+        self.assertIn("4f1e0e311ea68a5cc320e1c0a5d11985b2a256acbeb06217a57e86d6fa217d65", current_state)
+        self.assertIn(
+            "ADP-S2PMT07-FINAL-BUNDLE-S2PLT02-CURRENT-WAIT-STATE-SUMMARY-20260701.json",
+            current_state,
+        )
+        self.assertIn("PHASE_S2PMT07_FINAL_BUNDLE_S2PLT02_CURRENT_WAIT_STATE_SUMMARY.md", ledger)
+
+        self.assertIn(
             "S2PMT07_FINAL_BUNDLE_PREREQUISITE_MISSING_INVENTORY_SYNC_BLOCKED_NO_PRODUCTION",
             current_state,
         )

@@ -4364,6 +4364,7 @@ def build_s2plt02_terminal_delivery_proof_capture_plan_state(
         "terminal_artifact_ready": terminal_artifact_validation.get("terminal_delivery_proof_ready"),
         "terminal_artifact_validation_errors": list(terminal_artifact_validation.get("validation_errors", [])),
         "terminal_artifact_blocking_reasons": list(terminal_artifact_validation.get("blocking_reasons", [])),
+        "current_wait_state": capture_wait_state_guard["current_wait_state"],
         "capture_wait_state_guard": capture_wait_state_guard,
         "capture_steps": capture_steps,
         "next_executable_step": next_step,
@@ -4566,12 +4567,16 @@ def validate_s2plt02_terminal_delivery_proof_capture_plan_state(state: Mapping[s
     if wait_guard.get("status") not in {"pass", "blocked"}:
         errors.append("S2PLT02 terminal delivery proof capture wait guard status is invalid")
     if state.get("runtime_capture_ready") is False:
+        if state.get("current_wait_state") != "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW":
+            errors.append("blocked runtime capture must expose top-level WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
         if wait_guard.get("status") != "blocked":
             errors.append("blocked runtime capture must keep wait guard blocked")
         if wait_guard.get("current_wait_state") != "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW":
             errors.append("blocked runtime capture must expose WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
         if wait_guard.get("next_safe_runtime_action") != "wait_for_real_smtp_scheduler_capture_window":
             errors.append("blocked runtime capture wait guard next action is invalid")
+    if state.get("current_wait_state") != wait_guard.get("current_wait_state"):
+        errors.append("S2PLT02 terminal delivery proof current wait state must match wait guard")
     if wait_guard.get("runtime_capture_blockers") != state.get("runtime_capture_blockers"):
         errors.append("S2PLT02 wait guard runtime blockers must match capture plan")
     if wait_guard.get("blocked_by_missing_inputs") != state.get("blocked_by_missing_inputs"):
@@ -8980,6 +8985,7 @@ def build_final_bundle_prerequisite_plan_state(
             "state_hash": s2plt02_capture_plan.get("state_hash"),
             "generated_at": s2plt02_capture_plan.get("generated_at"),
             "next_executable_step": s2plt02_capture_plan.get("next_executable_step"),
+            "current_wait_state": s2plt02_capture_plan.get("current_wait_state"),
             "authorization_artifact_status": s2plt02_capture_plan.get("authorization_artifact_status"),
             "authorization_validation_state_hash": s2plt02_capture_plan.get(
                 "authorization_validation_state_hash"
@@ -9644,6 +9650,7 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
         for field in (
             "state_hash",
             "next_executable_step",
+            "current_wait_state",
             "authorization_artifact_status",
             "authorization_validation_state_hash",
             "terminal_evidence_inventory_state_hash",
@@ -9772,12 +9779,16 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
         if wait_guard.get("status") not in {"pass", "blocked"}:
             errors.append("S2PLT02 capture plan summary wait guard status is invalid")
         if capture_plan_summary.get("runtime_capture_ready") is False:
+            if capture_plan_summary.get("current_wait_state") != "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW":
+                errors.append("S2PLT02 capture plan summary current wait state is invalid")
             if wait_guard.get("status") != "blocked":
                 errors.append("S2PLT02 capture plan summary wait guard must be blocked")
             if wait_guard.get("current_wait_state") != "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW":
                 errors.append("S2PLT02 capture plan summary wait guard current state is invalid")
             if wait_guard.get("next_safe_runtime_action") != "wait_for_real_smtp_scheduler_capture_window":
                 errors.append("S2PLT02 capture plan summary wait guard next action is invalid")
+        if capture_plan_summary.get("current_wait_state") != wait_guard.get("current_wait_state"):
+            errors.append("S2PLT02 capture plan summary current wait state must match wait guard")
         if wait_guard.get("runtime_capture_blockers") != capture_plan_summary.get("runtime_capture_blockers"):
             errors.append("S2PLT02 capture plan summary wait guard blockers must match summary")
         if wait_guard.get("blocked_by_missing_inputs") != capture_plan_summary.get("blocked_by_missing_inputs"):
