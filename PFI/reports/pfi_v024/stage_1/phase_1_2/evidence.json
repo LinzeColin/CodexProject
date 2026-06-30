@@ -1,0 +1,154 @@
+{
+  "schema": "PFIV024Stage1Phase12EvidenceV1",
+  "version": "v0.2.3-repair",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Stage 1",
+  "phase_id": "1.2",
+  "phase_name": "最小恢复",
+  "status": "candidate_pass",
+  "allowed_files_obeyed": true,
+  "generated_at": "2026-06-30T11:50:17Z",
+  "last_verified_at": "2026-06-30T11:56:40Z",
+  "repo": {
+    "path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi",
+    "branch": "codex/pfi",
+    "remote": "git@github.com:LinzeColin/CodexProject.git",
+    "head_at_evidence_write": "03d3bbea91144b661d87abd251731ce857c3d6f3",
+    "origin_main_at_evidence_write": "847d4791d05b42c093bb470717d620a8cb55365b",
+    "local_ahead_origin_main_at_evidence_write": 1
+  },
+  "tasks": {
+    "T1.2.1": {
+      "status": "done",
+      "artifact": "PFI/web/app/shell.js"
+    },
+    "T1.2.2": {
+      "status": "done",
+      "artifact": "PFI/web/app/version.js"
+    },
+    "T1.2.3": {
+      "status": "done",
+      "artifact": "PFI/web/app/shell.js"
+    },
+    "T1.2.4": {
+      "status": "done",
+      "artifact": "PFI/tests/test_v024_stage1_phase12_shell_repair.py"
+    }
+  },
+  "shell_before_after": {
+    "before_sha256": "bb2492ead4404dd8affd730b3c231884281aa163ce3adb1a438a3e26e9c3aa90",
+    "after_sha256": "e8fded83cf99a0c7e2df6891a2f4273b2a311d070639ea42b58605ab80c30151",
+    "after_bytes": 275814,
+    "after_lines_wc": 5605,
+    "version_js_sha256": "0eb03a0345480823ff191cae8046b0a69a231e76219f26f7ef94b45740f05a71",
+    "version_js_bytes": 614,
+    "version_js_lines_wc": 21
+  },
+  "repair_surface": {
+    "shell_integrity_api": "window.PFI_STAGE1_SHELL",
+    "version_read_interface": "window.PFI_READ_STAGE1_VERSION",
+    "initialization_entry": "initializePFIStage1Shell",
+    "route_mount_entry": "mountPFIStage1Route",
+    "error_boundary_entry": "handlePFIStage1ShellError",
+    "ui_contract_version": "PFI-V024-STAGE1-SHELL-INTEGRITY"
+  },
+  "phase_1_1_complete": true,
+  "phase_1_2_complete": true,
+  "phase_1_3_complete": false,
+  "stage_1_complete": false,
+  "requires_user_acceptance": true,
+  "no_auto_next_phase": true,
+  "no_auto_closeout": true,
+  "business_ui_changes_made": false,
+  "data_logic_changes_made": false,
+  "app_bundle_changes_made": false,
+  "launcher_changes_made": false,
+  "acceptance_checks": {
+    "safe_initialization_skeleton": true,
+    "version_read_interface": true,
+    "route_mount_entry": true,
+    "error_boundary": true,
+    "no_formal_fake_financial_data": true,
+    "no_business_ui_or_data_logic_changes": true
+  },
+  "commands": [
+    {
+      "cmd": "node --check PFI/web/app/shell.js",
+      "status": "unavailable",
+      "detail": "node is not on PATH in this Codex environment"
+    },
+    {
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage1_phase12_shell_repair.py -q",
+      "status": "red_then_green",
+      "red_detail": "6 failed before Phase 1.2 implementation",
+      "green_detail": "6 passed"
+    },
+    {
+      "cmd": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js",
+      "status": "pass"
+    },
+    {
+      "cmd": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/version.js",
+      "status": "pass"
+    },
+    {
+      "cmd": "python3 -B -m py_compile PFI/src/pfi_v02/stage_v024_stage1_shell_integrity.py PFI/tests/test_v024_stage1_phase12_shell_repair.py",
+      "status": "pass"
+    },
+    {
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage1_phase11_shell_diagnosis.py PFI/tests/test_v024_stage1_phase12_shell_repair.py -q",
+      "status": "pass",
+      "detail": "10 passed"
+    },
+    {
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_pre_stage0_contract.py PFI/tests/test_v024_stage0_phase01_contract.py PFI/tests/test_v024_stage0_phase02_contract.py PFI/tests/test_v024_stage0_phase03_contract.py PFI/tests/test_v024_stage0_whole_review_contract.py PFI/tests/test_v024_stage1_phase11_shell_diagnosis.py PFI/tests/test_v024_stage1_phase12_shell_repair.py -q",
+      "status": "pass",
+      "detail": "26 passed"
+    },
+    {
+      "cmd": "python3 -m json.tool PFI/reports/pfi_v024/stage_1/phase_1_2/evidence.json",
+      "status": "pass"
+    },
+    {
+      "cmd": "git diff --check -- PFI",
+      "status": "pass"
+    }
+  ],
+  "changed_files": [
+    "PFI/CHANGELOG.md",
+    "PFI/HANDOFF.md",
+    "PFI/README.md",
+    "PFI/功能清单.md",
+    "PFI/开发记录.md",
+    "PFI/模型参数文件.md",
+    "PFI/docs/pfi_v024/RUN_CONTRACT.md",
+    "PFI/reports/pfi_v024/stage_1/phase_1_2/changed_files.txt",
+    "PFI/reports/pfi_v024/stage_1/phase_1_2/evidence.json",
+    "PFI/reports/pfi_v024/stage_1/phase_1_2/risk_and_rollback.md",
+    "PFI/reports/pfi_v024/stage_1/phase_1_2/shell_before_after_summary.md",
+    "PFI/reports/pfi_v024/stage_1/phase_1_2/terminal.log",
+    "PFI/src/pfi_v02/stage_v024_stage1_shell_integrity.py",
+    "PFI/tests/test_v024_stage1_phase12_shell_repair.py",
+    "PFI/web/app/shell.js",
+    "PFI/web/app/version.js"
+  ],
+  "explicitly_not_done": [
+    "Stage 1 Phase 1.3 validation closeout",
+    "Stage 1 whole-stage review",
+    "business UI changes",
+    "app bundle or launcher changes",
+    "data logic changes",
+    "GitHub main upload before Stage 1 whole-stage review"
+  ],
+  "validation_results": {
+    "node_check_shell_js": "pass via Codex bundled Node",
+    "node_check_version_js": "pass via Codex bundled Node",
+    "py_compile": "pass",
+    "node_on_path": "unavailable",
+    "pytest_phase12_contract": "6 passed",
+    "pytest_v024_stage1_regression": "10 passed",
+    "pytest_v024_pre_stage0_stage0_stage1_regression": "26 passed",
+    "json_and_git_diff_check": "pass"
+  }
+}

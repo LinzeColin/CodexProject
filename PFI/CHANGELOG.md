@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 1 Phase 1.2 - 2026-06-30
+
+- 完成 `Stage 1 / Phase 1.2 - 最小恢复`：在 `shell.js` 中新增 `window.PFI_STAGE1_SHELL`，暴露 version、initialize、mountRoute 和 errorBoundary。
+- 新增 `PFI/web/app/version.js`，提供 `window.PFI_STAGE1_VERSION` 和 `window.PFI_READ_STAGE1_VERSION` 版本读取接口。
+- 新增 `tests/test_v024_stage1_phase12_shell_repair.py` 和 `reports/pfi_v024/stage_1/phase_1_2/evidence.json`。
+- 本轮只做 shell integrity 最小恢复；Phase 1.3 和 Stage 1 whole-stage review 尚未执行。
+- 本轮未修改业务 UI、app bundle、launcher 或真实指标计算。
+
 ## v0.2.4 Repair Pack Stage 1 Phase 1.1 - 2026-06-30
 
 - 完成 `Stage 1 / Phase 1.1 - 现状定位`：保存当前 `PFI/web/app/shell.js` 快照，记录语法检查结果，并定位当前残缺片段范围。

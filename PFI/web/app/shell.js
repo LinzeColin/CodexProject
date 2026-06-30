@@ -1,6 +1,7 @@
 const CONTEXT_STORAGE_KEY = "pfi-context-v2";
 const RUNTIME_CONFIG = readRuntimeConfig();
 const PFI_RUNTIME_API_BASE_URL = RUNTIME_CONFIG.apiBaseUrl || "http://127.0.0.1:8766";
+const PFI_STAGE1_SHELL_INTEGRITY_CONTRACT = "PFI-V024-STAGE1-SHELL-INTEGRITY";
 const PFI_STAGE1_ENTRY_METADATA = Object.freeze({
   schema: RUNTIME_CONFIG.schema || "PFIV023Stage1RuntimeMetadataV1",
   pfiVersion: RUNTIME_CONFIG.pfiVersion || document.body?.dataset.pfiVersion || "v0.2.3",
@@ -17,6 +18,90 @@ const PFI_STAGE1_ENTRY_METADATA = Object.freeze({
   shellJsSha256: RUNTIME_CONFIG.shellJsSha256 || "",
 });
 window.PFI_STAGE1_ENTRY_METADATA = PFI_STAGE1_ENTRY_METADATA;
+
+function readPFIStage1Version() {
+  const externalVersion = typeof window.PFI_READ_STAGE1_VERSION === "function"
+    ? window.PFI_READ_STAGE1_VERSION()
+    : window.PFI_STAGE1_VERSION;
+  return Object.freeze({
+    schema: "PFIV024Stage1ShellVersionReadModelV1",
+    targetVersion: "v0.2.4",
+    sourcePackageVersion: "v0.2.3-repair",
+    shellIntegrityContract: PFI_STAGE1_SHELL_INTEGRITY_CONTRACT,
+    ...PFI_STAGE1_ENTRY_METADATA,
+    ...(externalVersion && typeof externalVersion === "object" ? externalVersion : {}),
+  });
+}
+
+function handlePFIStage1ShellError(error, context = {}) {
+  const message = error instanceof Error ? error.message : String(error || "unknown shell error");
+  try {
+    console.error("PFI shell boundary captured error", { message, context, error });
+    document.body.dataset.pfiShellError = "true";
+    document.body.dataset.pfiShellBoundary = "PFI-V024-STAGE1";
+    const shell = document.querySelector(".app-shell");
+    if (shell) {
+      shell.dataset.state = "error";
+      shell.dataset.shellBoundary = "PFI-V024-STAGE1";
+    }
+    if (typeof showToast === "function") {
+      showToast("PFI 页面初始化失败，请刷新或检查本机服务", "failure");
+    }
+  } catch (_boundaryError) {
+    // Keep the boundary non-throwing so the original failure remains diagnosable.
+  }
+  return {
+    status: "handled",
+    boundary: "PFI-V024-STAGE1-ERROR-BOUNDARY",
+    message,
+    context,
+  };
+}
+
+function mountPFIStage1Route(routeAlias = "", options = {}) {
+  try {
+    const clean = normalizeRouteAlias(routeAlias || routeAliasFromLocation());
+    if (!clean) return { status: "skipped", routeAlias: "" };
+    const routeTarget = workspaceTargetFromRoute(clean);
+    if (!routeTarget) return { status: "unmatched", routeAlias: clean };
+    if (routeTarget.view) {
+      openFunctionView(routeTarget.view, { silent: true, routeAlias: clean, skipRouteSync: true });
+    } else if (routeTarget.workspace) {
+      renderWorkspace(routeTarget.workspace, {
+        routeAlias: clean,
+        silent: true,
+        preserveFocus: true,
+        skipRouteSync: true,
+      });
+    }
+    syncBrowserRoute(clean, { replace: options.replace === true });
+    return { status: "mounted", routeAlias: clean, workspace: routeTarget.workspace || "" };
+  } catch (error) {
+    return handlePFIStage1ShellError(error, { source: "route" });
+  }
+}
+
+function initializePFIStage1Shell(options = {}) {
+  try {
+    bootPFIShell();
+    return {
+      status: "initialized",
+      source: options.source || "manual",
+      version: readPFIStage1Version(),
+    };
+  } catch (error) {
+    return handlePFIStage1ShellError(error, { source: options.source || "initialize" });
+  }
+}
+
+window.PFI_STAGE1_SHELL = Object.freeze({
+  schema: "PFIV024Stage1ShellIntegrityAPIv1",
+  version: readPFIStage1Version,
+  initialize: initializePFIStage1Shell,
+  mountRoute: mountPFIStage1Route,
+  errorBoundary: handlePFIStage1ShellError,
+  metadata: PFI_STAGE1_ENTRY_METADATA,
+});
 const FEEDBACK_SLA_MS = {
   instant: 100,
   skeleton: 300,
@@ -5487,15 +5572,25 @@ function bootPFIShell() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  Promise.all([loadStage4PagesCatalog(), loadStage5HomeExperience()]).then(() => bootPFIShell());
+  Promise.all([loadStage4PagesCatalog(), loadStage5HomeExperience()])
+    .then(() => initializePFIStage1Shell({ source: "DOMContentLoaded" }))
+    .catch((error) => handlePFIStage1ShellError(error, { source: "DOMContentLoaded" }));
 });
 
 window.addEventListener("hashchange", () => {
-  applyRouteFromLocation();
+  try {
+    mountPFIStage1Route(routeAliasFromLocation(), { replace: true });
+  } catch (error) {
+    handlePFIStage1ShellError(error, { source: "route" });
+  }
 });
 
 window.addEventListener("popstate", () => {
-  applyRouteFromLocation();
+  try {
+    mountPFIStage1Route(routeAliasFromLocation(), { replace: true });
+  } catch (error) {
+    handlePFIStage1ShellError(error, { source: "route" });
+  }
 });
 
 function initialSearchParams() {
