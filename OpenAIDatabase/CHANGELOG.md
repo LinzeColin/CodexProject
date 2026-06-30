@@ -9,6 +9,9 @@
 - Added the Stage 2.2 Galaxy replacement plan, including a legacy/new renderer
   feature-flag strategy, starfield extraction boundary, rollback path, and
   screenshot/FPS/privacy validation plan.
+- Added the Stage 2.3 Timeline replacement plan, including a legacy/new river
+  feature-flag strategy, UTC scale, theme-lane, brush, hover, Inspector sync
+  and reduced-motion validation plan.
 
 No production route, raw/private data access, direct writeback, Cloudflare live
 deployment, or visual board replacement was added.
