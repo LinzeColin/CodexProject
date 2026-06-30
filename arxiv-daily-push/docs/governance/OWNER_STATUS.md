@@ -6,7 +6,7 @@ arxiv-daily-push 当前治理结论：实现一致性为 `VERIFIED`，方法/实
 
 ## 2. 本次运行改变了什么
 
-Owner 视图现在明确区分：S2PLT02 live 授权 artifact 当前仍 pass，但 capture plan 已进一步绑定 terminal evidence inventory 和 runtime blockers。`plan-s2plt02-terminal-delivery-proof-capture` 当前 blocked / exit 2，`state_hash=6fa850a802d93e839146cabf158689af05941a54e895911220cc9c077efde7d2`，`authorization_artifact_status=pass`，`runtime_capture_ready=false`，`next_executable_step=WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`；阻断项包括 `adp_allow_smtp_send_false`、`daily_run_succeeded_but_smtp_dry_run_not_terminal`、`blocked_candidate_inputs_present`、第二真实 M1-M4 SMTP 日缺失和真实 launchd scheduler proof 缺失。这只强化 S2PLT02 捕获计划门，不发送 SMTP、不启用 scheduler、不写 S2PLT02/S2PLT03 terminal proof；S2PLT02 终态 proof、S2PLT03 终态 proof、S2PLT04 completion report、final command、handoff、signoff、manifest 和生产验收仍保持阻断。
+Owner 视图现在明确区分：S2PMT07 final-bundle prerequisite plan 已消费 S2PLT02 capture-plan summary，并在顶层暴露 `next_executable_runtime_step=WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`。`plan-final-bundle-prerequisites` 当前 blocked / exit 2，`state_hash=bc5c75ce6138842f2b3de247420260b55d3b1a5f7cfb6f10dc44f91efb594af6`；其嵌套 S2PLT02 capture plan 仍为 `state_hash=6fa850a802d93e839146cabf158689af05941a54e895911220cc9c077efde7d2`，`authorization_artifact_status=pass`，`runtime_capture_ready=false`，阻断项包括 `adp_allow_smtp_send_false`、`daily_run_succeeded_but_smtp_dry_run_not_terminal`、`blocked_candidate_inputs_present`、第二真实 M1-M4 SMTP 日缺失和真实 launchd scheduler proof 缺失。这只强化 final-bundle prerequisite 的可见性，不发送 SMTP、不启用 scheduler、不写 S2PLT02/S2PLT03 terminal proof；S2PLT02 终态 proof、S2PLT03 终态 proof、S2PLT04 completion report、final command、handoff、signoff、manifest 和生产验收仍保持阻断。
 
 ## 3. 为什么重要
 
@@ -78,7 +78,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PLT02_TERMINAL_CAPTURE_PLAN_RUNTIME_AUTH_GATE_BLOCKED_NO_PRODUCTION`
+- release_gate: `S2PMT07_FINAL_BUNDLE_PREREQUISITE_S2PLT02_RUNTIME_STEP_SYNC_BLOCKED_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
@@ -86,8 +86,8 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - tree_bound_events: `1`
 - commit_bound_events: `4`
 - legacy_unbound_events: `289`
-- precommit_pending_events: `40`
-- pending_or_stale_events: `329`
+- precommit_pending_events: `41`
+- pending_or_stale_events: `330`
 
 ## 15. UNKNOWN
 
@@ -101,7 +101,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - snapshot_event_time: `2026-06-30T15:31:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PL / S2PLT02_TERMINAL_CAPTURE_PLAN_RUNTIME_AUTH_GATE_BLOCKED_NO_PRODUCTION`
+- phase/gate: `S2PL / S2PMT07_FINAL_BUNDLE_PREREQUISITE_S2PLT02_RUNTIME_STEP_SYNC_BLOCKED_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 

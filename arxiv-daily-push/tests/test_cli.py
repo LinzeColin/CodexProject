@@ -1366,6 +1366,13 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["next_required_step"], "S2PLT04_COMPLETION_REPORT")
         self.assertFalse(payload["next_required_step_is_actionable"])
         self.assertEqual(payload["next_executable_task"], "S2PLT02_TERMINAL_DELIVERY_PROOF")
+        self.assertEqual(payload["next_executable_runtime_step"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
+        capture_summary = payload["s2plt02_terminal_delivery_capture_plan_summary"]
+        self.assertEqual(capture_summary["status"], "blocked")
+        self.assertEqual(capture_summary["next_executable_step"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
+        self.assertEqual(capture_summary["authorization_artifact_status"], "pass")
+        self.assertFalse(capture_summary["runtime_capture_ready"])
+        self.assertIn("real_launchd_scheduler_proof_missing", capture_summary["runtime_capture_blockers"])
         self.assertEqual(payload["next_executable_command"], "")
         self.assertEqual(payload["next_executable_command_args"], {})
         self.assertFalse(payload["next_executable_command_writes_artifact"])

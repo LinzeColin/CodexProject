@@ -1089,6 +1089,9 @@ S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT02_AUTH_DRAFT_EVIDENCE_REFS = (
     "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_READINESS_RUNTIME_STATE_SYNC.md",
     "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION.md",
 )
+S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT02_CAPTURE_PLAN_GENERATED_AT = (
+    "2026-06-30T18:03:24+10:00"
+)
 S2PLT02_M4_WATERMARK_FORBIDDEN_SOURCE_FLAGS = (
     "integrated_production_accepted",
     "stage2_integrated_production_accepted",
@@ -8482,6 +8485,32 @@ def build_final_bundle_prerequisite_plan_state(
         and live_authorization_artifact is not None
         and not live_authorization_validation.get("validation_errors")
     )
+    s2plt02_capture_plan = (
+        build_s2plt02_terminal_delivery_proof_capture_plan_state(
+            generated_at=S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT02_CAPTURE_PLAN_GENERATED_AT,
+            repo_root=root,
+        )
+        if s2plt04_blocked_by_upstream_evidence
+        else {}
+    )
+    s2plt02_capture_plan_summary = (
+        {
+            "status": s2plt02_capture_plan.get("status"),
+            "state_hash": s2plt02_capture_plan.get("state_hash"),
+            "next_executable_step": s2plt02_capture_plan.get("next_executable_step"),
+            "authorization_artifact_status": s2plt02_capture_plan.get("authorization_artifact_status"),
+            "authorization_validation_state_hash": s2plt02_capture_plan.get(
+                "authorization_validation_state_hash"
+            ),
+            "terminal_evidence_inventory_state_hash": s2plt02_capture_plan.get(
+                "terminal_evidence_inventory_state_hash"
+            ),
+            "runtime_capture_ready": s2plt02_capture_plan.get("runtime_capture_ready"),
+            "runtime_capture_blockers": list(s2plt02_capture_plan.get("runtime_capture_blockers", [])),
+        }
+        if s2plt04_blocked_by_upstream_evidence
+        else {}
+    )
     upstream_blockers = list(S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_UPSTREAM_BLOCKERS)
     upstream_unblock_order = list(S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_UPSTREAM_UNBLOCK_ORDER)
     if live_authorization_passed:
@@ -8535,6 +8564,12 @@ def build_final_bundle_prerequisite_plan_state(
         "next_required_step_is_actionable": not s2plt04_blocked_by_upstream_evidence,
         "next_required_step_blocked_by_upstream_evidence": s2plt04_blocked_by_upstream_evidence,
         "next_executable_task": next_executable_task,
+        "next_executable_runtime_step": (
+            s2plt02_capture_plan_summary.get("next_executable_step", "")
+            if next_executable_task == "S2PLT02_TERMINAL_DELIVERY_PROOF"
+            else ""
+        ),
+        "s2plt02_terminal_delivery_capture_plan_summary": s2plt02_capture_plan_summary,
         "next_executable_command": (
             S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_S2PLT02_AUTH_DRAFT_COMMAND
             if next_executable_is_s2plt02_auth
@@ -8715,6 +8750,39 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
     )
     if state.get("next_executable_task") != expected_next_executable_task:
         errors.append("final bundle prerequisite plan next_executable_task is invalid")
+    capture_plan_summary = _mapping(state.get("s2plt02_terminal_delivery_capture_plan_summary"))
+    if expected_next_step_upstream_blocked:
+        if capture_plan_summary.get("status") not in {"pass", "blocked"}:
+            errors.append("S2PLT02 capture plan summary status is invalid")
+        for field in (
+            "state_hash",
+            "next_executable_step",
+            "authorization_artifact_status",
+            "authorization_validation_state_hash",
+            "terminal_evidence_inventory_state_hash",
+        ):
+            if not isinstance(capture_plan_summary.get(field), str) or not capture_plan_summary.get(field):
+                errors.append(f"S2PLT02 capture plan summary {field} is required")
+        if not isinstance(capture_plan_summary.get("runtime_capture_ready"), bool):
+            errors.append("S2PLT02 capture plan summary runtime_capture_ready must be boolean")
+        if not isinstance(capture_plan_summary.get("runtime_capture_blockers"), list):
+            errors.append("S2PLT02 capture plan summary runtime_capture_blockers must be a list")
+        if (
+            expected_next_executable_task == "S2PLT02_TERMINAL_DELIVERY_PROOF"
+            and capture_plan_summary.get("next_executable_step")
+            in {"CAPTURE_SECOND_REAL_M1_M4_SMTP_DAY", "COLLECT_REAL_LAUNCHD_SCHEDULER_PROOF"}
+            and capture_plan_summary.get("runtime_capture_blockers")
+        ):
+            errors.append("S2PLT02 runtime blockers must prevent direct SMTP/scheduler capture routing")
+    elif capture_plan_summary:
+        errors.append("S2PLT02 capture plan summary must be empty when S2PLT04 is not upstream-blocked")
+    expected_next_executable_runtime_step = (
+        str(capture_plan_summary.get("next_executable_step") or "")
+        if expected_next_executable_task == "S2PLT02_TERMINAL_DELIVERY_PROOF"
+        else ""
+    )
+    if state.get("next_executable_runtime_step") != expected_next_executable_runtime_step:
+        errors.append("final bundle prerequisite plan next_executable_runtime_step is invalid")
     expected_next_executable_is_s2plt02_auth = (
         expected_next_executable_task
         == S2PMT07_FINAL_BUNDLE_PREREQUISITE_PLAN_NEXT_EXECUTABLE_TASK_WHEN_S2PLT04_BLOCKED
