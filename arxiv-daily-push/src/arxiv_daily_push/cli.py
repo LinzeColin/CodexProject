@@ -136,6 +136,7 @@ from .stage2_final_gate import (
     build_s2plt02_real_proof_capture_authorization_owner_packet_state,
     build_s2plt02_real_proof_capture_authorization_validation_state,
     build_s2plt02_real_proof_capture_readiness_state,
+    build_s2plt02_real_delivery_manifest_validation_state,
     build_s2plt02_real_scheduler_proof_validation_state,
     build_s2plt02_terminal_delivery_input_inventory_state,
     build_s2plt02_terminal_delivery_proof_capture_plan_state,
@@ -153,6 +154,7 @@ from .stage2_final_gate import (
     validate_s2plt02_real_proof_capture_authorization_owner_packet_state,
     validate_s2plt02_dry_run_second_day_audit_state,
     validate_s2plt02_real_proof_capture_readiness_state,
+    validate_s2plt02_real_delivery_manifest_validation_state,
     validate_s2plt02_real_scheduler_proof_validation_state,
     validate_s2plt02_terminal_delivery_input_inventory_state,
     validate_s2plt02_terminal_delivery_proof_capture_plan_state,
@@ -1350,6 +1352,20 @@ def build_parser() -> argparse.ArgumentParser:
         "--json",
         action="store_true",
         help="Print JSON scheduler proof validation state.",
+    )
+    s2plt02_real_delivery_manifest = subparsers.add_parser(
+        "validate-s2plt02-real-delivery-manifest",
+        help="Validate one real M1-M4 delivery manifest input without sending mail or writing artifacts.",
+    )
+    s2plt02_real_delivery_manifest.add_argument(
+        "--delivery-manifest",
+        required=True,
+        help="Real M1-M4 delivery manifest JSON to validate as S2PLT02 input.",
+    )
+    s2plt02_real_delivery_manifest.add_argument(
+        "--json",
+        action="store_true",
+        help="Print JSON delivery manifest validation state.",
     )
     s2plt02_terminal_delivery_inputs = subparsers.add_parser(
         "audit-s2plt02-terminal-delivery-inputs",
@@ -3984,6 +4000,27 @@ def main(argv: list[str] | None = None) -> int:
             print(report["status"])
             print(f"- scheduler_proof_ready: {report.get('scheduler_proof_ready')}")
             print(f"- proof_ref: {report.get('proof_ref')}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in report.get("validation_errors", []):
+                print(f"- error: {error}")
+            for error in state_errors:
+                print(f"- state_error: {error}")
+        return 0 if report["status"] == "pass" and not state_errors else 2
+    if args.command == "validate-s2plt02-real-delivery-manifest":
+        report = build_s2plt02_real_delivery_manifest_validation_state(
+            delivery_manifest=load_json_mapping(args.delivery_manifest)
+        )
+        state_errors = validate_s2plt02_real_delivery_manifest_validation_state(report)
+        if state_errors:
+            report = {**report, "state_validation_errors": state_errors}
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- delivery_manifest_ready: {report.get('delivery_manifest_ready')}")
+            print(f"- manifest_ref: {report.get('manifest_ref')}")
+            print(f"- service_date: {report.get('service_date')}")
             for reason in report.get("blocking_reasons", []):
                 print(f"- blocked: {reason}")
             for error in report.get("validation_errors", []):

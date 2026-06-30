@@ -21,10 +21,18 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 286
+- task_count: 287
 - acceptance_count: 127
 
 ## Delivery Tasks
+
+## 2026-06-30 11:05:56 Australia/Sydney - S2PLT02 Real Delivery Manifest Input Validator
+
+- `S2PLT02-REAL-DELIVERY-MANIFEST-INPUT-VALIDATOR` adds a no-write CLI validator for one complete real M1-M4 delivery manifest before terminal proof assembly.
+- Normalized first-day evidence validates with `delivery_manifest_ready=true`, `service_date=2026-06-28`, `observed_email_count=4`, `sent_mail_products=M1,M2,M3,M4`, `artifact_written=false`, `real_smtp_send_enabled=false`, `scheduler_install_enabled=false`, `daily_operation_enabled=false`, and state hash `8e345486be00628254e15147aec0495c924a3e9b7f5a22eda2583b7c74bddb24`.
+- Direct strict validation of the historical committed 2026-06-28 manifest returns blocked / exit 2 because it predates explicit no-production fields. Future terminal proof inputs must use complete manifests.
+- Evidence: `governance/run_manifests/ADP-S2PLT02-REAL-DELIVERY-MANIFEST-INPUT-VALIDATOR-20260630.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_DELIVERY_MANIFEST_INPUT_VALIDATOR.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/src/arxiv_daily_push/cli.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`; `arxiv-daily-push/tests/test_cli.py`.
+- This does not write terminal proof, send SMTP, enable scheduler, upload Release assets, execute restore, mutate schema/DB/source/ranking/CURRENT/V7, enable DAILY_OPERATION, or claim S2PLT02/S2PMT07/integrated production acceptance.
 
 ## 2026-06-30 10:41:36 Australia/Sydney - S2PLT02 Terminal Delivery Proof Capture Plan
 

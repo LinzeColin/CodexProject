@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-06-30 11:05:56 Australia/Sydney - S2PLT02 real delivery manifest input validator
+
+- Added `validate-s2plt02-real-delivery-manifest`, a no-write validator for one complete real M1-M4 delivery manifest before S2PLT02 terminal proof assembly.
+- Normalized first-day evidence validates with `delivery_manifest_ready=true`, `service_date=2026-06-28`, `observed_email_count=4`, `sent_mail_products=M1,M2,M3,M4`, `artifact_written=false`, `real_smtp_send_enabled=false`, `scheduler_install_enabled=false`, `daily_operation_enabled=false`, and state hash `8e345486be00628254e15147aec0495c924a3e9b7f5a22eda2583b7c74bddb24`.
+- Direct strict validation of the historical committed 2026-06-28 manifest returns blocked / exit 2 because it predates explicit no-production fields. This preserves fail-closed terminal proof input handling.
+- No second real SMTP day, live terminal proof artifact, SMTP, scheduler, Release, restore, CURRENT/V7, public schema, DB, source, ranking, queue, DAILY_OPERATION, or production acceptance was enabled.
+
 ## 2026-06-30 10:41:36 Australia/Sydney - S2PLT02 terminal delivery proof capture plan
 
 - Added `plan-s2plt02-terminal-delivery-proof-capture`, a no-write ordered capture plan for the future S2PLT02 terminal delivery proof.

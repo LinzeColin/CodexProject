@@ -5268,3 +5268,27 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PLT02-REAL-DELIVERY-MANIFEST-INPUT-VALIDATOR"
+    title: "S2PLT02 real delivery manifest input validator"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-30T11:05:56+10:00"
+    objective: "Add a no-write validator for one complete real M1-M4 delivery manifest before S2PLT02 terminal proof assembly."
+    scope: "Final-gate delivery manifest validator, CLI command, focused tests, phase record, run manifest, traceability row, delivery/event records, user-center status, and three base notes."
+    non_scope: "No second real delivery capture, no live terminal delivery proof artifact, no SMTP send, no scheduler enable/install/kickstart, no Release, no restore, no CURRENT/V7 change, no public schema/DB/source/ranking/queue mutation, no S2PLT02/S2PLT04/S2PMT07 acceptance, and no integrated production acceptance."
+    owner: "engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    dependencies: ["S2PLT02-REAL-PROOF-CAPTURE-AUTHORIZATION", "S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN", "S2PLT02-REAL-SCHEDULER-PROOF-INPUT-VALIDATOR"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_DELIVERY_MANIFEST_INPUT_VALIDATOR.md", "governance/run_manifests/ADP-S2PLT02-REAL-DELIVERY-MANIFEST-INPUT-VALIDATOR-20260630.json"]
+    acceptance_ids: ["ACC-S2PLT02-2D", "ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s2plt02_delivery_manifest_red PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_cli.py -k 'real_delivery_manifest'", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s2plt02_delivery_manifest_green PYTHONPATH=arxiv-daily-push/src python3 -m pytest -q arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_cli.py -k 'real_delivery_manifest'", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_s2plt02_delivery_manifest_cli_actual PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli validate-s2plt02-real-delivery-manifest --delivery-manifest governance/run_manifests/ADP-LOCAL-DAILY-M1-M4-RESEND-EXECUTION-20260628.json --json"]
+    test_results: ["TDD red failed before build_s2plt02_real_delivery_manifest_validation_state existed", "focused final-gate and CLI real-delivery-manifest tests: 3 passed", "strict CLI check of committed 2026-06-28 historical manifest: blocked / exit 2 because explicit no-production fields are missing"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PLT02-REAL-DELIVERY-MANIFEST-INPUT-VALIDATOR-20260630.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_REAL_DELIVERY_MANIFEST_INPUT_VALIDATOR.md", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/src/arxiv_daily_push/cli.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py"]
+    result: "s2plt02_real_delivery_manifest_input_validator_ready_no_write_no_production"
+    risk: "A passing single-day manifest can be misread as S2PLT02 terminal proof; this validator only checks one complete delivery manifest and cannot replace the second real day, eight real emails, scheduler proof, independent review, or live terminal artifact validator."
+    rollback: "Revert the real delivery manifest input validator, CLI command, focused tests, phase record, run manifest, traceability row, delivery/event records, user-center notes, and three base notes; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
