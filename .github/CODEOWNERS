@@ -1,0 +1,9 @@
+# Agent Loop governance ownership.
+#
+# GitHub branch protection is not required for Agent Loop policy enforcement;
+# workflows enforce the merge policy. CODEOWNERS provides review visibility.
+
+/.github/workflows/agent-loop-* @LinzeColin
+/.github/codex/ @LinzeColin
+/docs/governance/agent_loop/ @LinzeColin
+/scripts/agent_loop/ @LinzeColin
