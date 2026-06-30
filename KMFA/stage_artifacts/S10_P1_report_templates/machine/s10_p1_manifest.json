@@ -1,0 +1,61 @@
+{
+  "artifact_refs": {
+    "completion_record": "KMFA/stage_artifacts/S10_P1_report_templates/human/s10_p1_completion_record.md",
+    "report_template_manifest": "KMFA/metadata/reports/report_template_manifest.json",
+    "report_template_sections": "KMFA/metadata/reports/report_template_sections.jsonl",
+    "report_templates": "KMFA/metadata/reports/report_templates.jsonl",
+    "stage_manifest": "KMFA/stage_artifacts/S10_P1_report_templates/machine/s10_p1_manifest.json",
+    "test_results": "KMFA/stage_artifacts/S10_P1_report_templates/human/test_results.md",
+    "validator": "KMFA/tools/check_s10_p1_report_templates.py"
+  },
+  "content_hash": "sha256:dc02a28d14ef445af3da1df03a42ecd8117942b8ab1ab03872c6fa0c9fb8401d",
+  "generated_at": "2026-06-30T23:59:45+10:00",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "field_plaintext_committed": false,
+    "normalized_business_values_committed": false,
+    "private_tabular_files_committed": false,
+    "raw_business_values_committed": false,
+    "raw_file_committed": false
+  },
+  "quality_gate": {
+    "csv_excel_export_allowed": false,
+    "formal_report_allowed": false,
+    "github_upload_allowed": false,
+    "html_export_allowed": false,
+    "pdf_export_allowed": false,
+    "pending_reconciliation_count": 12,
+    "phase_completion_upload_allowed": false,
+    "raw_layer_write_allowed": false,
+    "release_block_reason": "pending_report_grade_runtime_and_unclosed_scope_reconciliations",
+    "report_runtime_scope_included": false,
+    "s10_p2_report_grade_runtime_allowed": false,
+    "s10_p3_export_allowed": false,
+    "stage10_review_allowed": false,
+    "trusted_grade_assignment_allowed": false
+  },
+  "record_type": "s10_p1_report_templates_stage_manifest",
+  "schema_version": "kmfa.s10_p1_stage_manifest.v1",
+  "stage_phase": "S10-P1",
+  "stage_scope": {
+    "external_connector_scope_included": false,
+    "formal_report_runtime_scope_included": false,
+    "lineage_full_check_scope_included": false,
+    "s10_p1_report_template_scope_included": true,
+    "s10_p2_report_grade_scope_included": false,
+    "s10_p3_export_scope_included": false,
+    "stage10_review_scope_included": false,
+    "trusted_report_grade_scope_included": false,
+    "ui_scope_included": false
+  },
+  "status": "completed_validated_local_only",
+  "summary": {
+    "business_overview_section_count": 7,
+    "export_artifact_count": 0,
+    "formal_report_count": 0,
+    "pending_reconciliation_count": 12,
+    "project_cost_section_count": 4,
+    "section_count": 11,
+    "template_count": 2
+  }
+}

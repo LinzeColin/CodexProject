@@ -1,10 +1,10 @@
 # KMFA Model Spec
 
-product_version: 0.1.0-s09-github-upload
+product_version: 0.1.0-s10p1-report-templates
 
 ## Scope
 
-当前模型说明覆盖 S01 已建立并按 v1.2 重放的治理边界、S02-P1 metadata 协议、S02-P2 不可污染原则、S02-P3 质量等级门禁协议、S03-P1 文件型导入登记模型、S03-P2 数据源检查矩阵模型、S03-P3 源优先级模型、S04-P1 金额工具、S04-P2 字段标准化工具、S04-P3 基础工具测试、Stage 4 整体复审与上传、S05-P1 A0 文件登记、S05-P2 public-safe A0 字段级黄金基准候选合同、S05-P3 public-safe A0 authority baseline lock、Stage 5 整体复审与上传、S06-P1 public-safe zero-delta validator、S06-P2 public-safe cross-source difference queue、S06-P3 public-safe validation evidence output、Stage 6 整体复审与上传、S07-P1 财务文件适配、S07-P2 WPS 文件适配、S07-P3 红圈导出后置策略、Stage 7 整体复审与上传、S08-P1 public-safe 项目组合键、S08-P2 public-safe 业务实体模型、S08-P3 public-safe 匹配质量测试、S09-P1 public-safe 项目成本事实层、S09-P2 public-safe 毛利与现金毛利计算层、S09-P3 public-safe 口径转换与差异核对层、Stage 9 整体复审与 GitHub main 上传。不声明 S10 报告模板、lineage 完整检查或正式报告生成已经实现。
+当前模型说明覆盖 S01 已建立并按 v1.2 重放的治理边界、S02-P1 metadata 协议、S02-P2 不可污染原则、S02-P3 质量等级门禁协议、S03-P1 文件型导入登记模型、S03-P2 数据源检查矩阵模型、S03-P3 源优先级模型、S04-P1 金额工具、S04-P2 字段标准化工具、S04-P3 基础工具测试、Stage 4 整体复审与上传、S05-P1 A0 文件登记、S05-P2 public-safe A0 字段级黄金基准候选合同、S05-P3 public-safe A0 authority baseline lock、Stage 5 整体复审与上传、S06-P1 public-safe zero-delta validator、S06-P2 public-safe cross-source difference queue、S06-P3 public-safe validation evidence output、Stage 6 整体复审与上传、S07-P1 财务文件适配、S07-P2 WPS 文件适配、S07-P3 红圈导出后置策略、Stage 7 整体复审与上传、S08-P1 public-safe 项目组合键、S08-P2 public-safe 业务实体模型、S08-P3 public-safe 匹配质量测试、S09-P1 public-safe 项目成本事实层、S09-P2 public-safe 毛利与现金毛利计算层、S09-P3 public-safe 口径转换与差异核对层、Stage 9 整体复审与 GitHub main 上传，以及 S10-P1 public-safe 报告模板。不声明 S10-P2 报告可信等级运行时、S10-P3 导出、lineage 完整检查或正式报告生成已经实现。
 
 ## Active Model
 
@@ -166,20 +166,28 @@ product_version: 0.1.0-s09-github-upload
 - evidence: `KMFA/tools/project_scope_reconciliation.py`, `KMFA/tools/check_s09_p3_scope_reconciliation.py`, `KMFA/metadata/reports/project_scope_reconciliation_manifest.json`, `KMFA/metadata/quality/scope_reconciliation_records.jsonl`, `KMFA/metadata/quality/scope_reconciliation_domain_controls.jsonl`, `KMFA/stage_artifacts/S09_P3_scope_reconciliation/human/s09_p3_completion_record.md`
 - limitation: 只保存 source refs、private refs、hash refs、原因候选、依据 refs、影响范围、责任角色、reviewer 和 pending 状态；不提交 raw business values、字段明文、Excel/PDF/zip/private CSV，不关闭差异，不实际重跑派生指标或正式报告；Stage 9 review 已本地通过但不代表 lineage 完整检查、UI、外部接口或 GitHub upload 完成。
 
+### FORM-KMFA-REPORT-TEMPLATE-001
+
+- status: active
+- type: deterministic public-safe report template contract
+- purpose: 建立项目成本专题报告和经营总览报告模板，锁定管理可读章节与 v1.2 HTML/报告样板引用。
+- evidence: `KMFA/tools/report_templates.py`, `KMFA/tools/check_s10_p1_report_templates.py`, `KMFA/metadata/reports/report_template_manifest.json`, `KMFA/metadata/reports/report_templates.jsonl`, `KMFA/metadata/reports/report_template_sections.jsonl`, `KMFA/stage_artifacts/S10_P1_report_templates/human/s10_p1_completion_record.md`
+- limitation: 只保存模板结构、管理可读章节、source refs、HTML 验收样板引用、status 和 evidence metadata；不提交 raw business values、字段明文、Excel/PDF/zip/private CSV，不判定 A/B/C/D 可信等级，不生成 HTML/CSV/Excel/PDF 导出，不执行 Stage 10 review、lineage 完整检查、UI、外部接口或 GitHub upload。
+
 ## Planned Business Model
 
 ### MOD-KMFA-COST-001
 
-- status: planned with S04-P1 amount formula, S04-P2 field standardization formula, S04-P3 boundary validation, S05-P1 A0 file registration, S05-P2 public-safe fixture contract, S05-P3 public-safe authority lock, Stage 5 review/upload, Stage 6 review/upload, S07-P1 finance file adapter, S07-P2 WPS file adapter, S07-P3 redcircle postponement policy, Stage 7 review/upload, S08-P1 project composite key, S08-P2 business entity model, S08-P3 entity matching quality, S09-P1 project cost fact layer, S09-P2 margin/cash margin layer, S09-P3 scope reconciliation, and Stage 9 review active
+- status: planned with S04-P1 amount formula, S04-P2 field standardization formula, S04-P3 boundary validation, S05-P1 A0 file registration, S05-P2 public-safe fixture contract, S05-P3 public-safe authority lock, Stage 5 review/upload, Stage 6 review/upload, S07-P1 finance file adapter, S07-P2 WPS file adapter, S07-P3 redcircle postponement policy, Stage 7 review/upload, S08-P1 project composite key, S08-P2 business entity model, S08-P3 entity matching quality, S09-P1 project cost fact layer, S09-P2 margin/cash margin layer, S09-P3 scope reconciliation, Stage 9 review/upload, and S10-P1 report templates active
 - purpose: 后续文件型项目成本分析 MVP。
 - dependency: S05 A0 基准、S06 零差异、S08 项目身份匹配、S09 成本计算、S10 报告等级。
-- current limitation: Stage 9 final GitHub upload, lineage full check, official report generation, UI, and Redcircle automatic connector are not implemented.
+- current limitation: S10-P2 report grade runtime, S10-P3 export, lineage full check, official report generation, UI, and Redcircle automatic connector are not implemented.
 
 ## Counts
 
 - active models: 7
-- active formulas: 24
-- active parameters: 96
+- active formulas: 25
+- active parameters: 102
 - planned models: 1
 - planned formulas: 0
 - planned parameters: 1

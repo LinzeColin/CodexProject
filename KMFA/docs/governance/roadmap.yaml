@@ -3,10 +3,10 @@ roadmap_kind: "product"
 project_id: "KMFA"
 total_estimated_hours: 54
 completed_estimated_hours: 54
-current_stage_id: "S9"
-current_phase_id: "S10P1"
-current_task_id: "S10-P1"
-next_gate_id: "KMFA-S10-P1-GATE"
+current_stage_id: "S10"
+current_phase_id: "S10P2"
+current_task_id: "S10-P2"
+next_gate_id: "KMFA-S10-P2-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -673,9 +673,17 @@ stages:
       - "KMFA/stage_artifacts/S09_STAGE_REVIEW/machine/stage9_upload_manifest.json"
   - stage_id: "S10"
     name: "报告可信等级与经营报告生成"
-    status: "planned"
+    status: "in_progress_s10p1_completed_local_only"
     estimated_hours: 3
-    estimated_pct: 0
+    estimated_pct: 33
+    current_result: "S10-P1 报告模板已完成本地验证：2 个 public-safe 模板、11 个管理可读章节和 v1.2 HTML/报告样板引用已生成；S10-P2 报告可信等级、S10-P3 导出、Stage 10 review、GitHub upload、UI、lineage full check 和外部接口未执行。"
+    evidence_refs:
+      - "KMFA/stage_artifacts/S10_P1_report_templates/human/s10_p1_completion_record.md"
+      - "KMFA/stage_artifacts/S10_P1_report_templates/human/test_results.md"
+      - "KMFA/stage_artifacts/S10_P1_report_templates/machine/s10_p1_manifest.json"
+      - "KMFA/metadata/reports/report_template_manifest.json"
+      - "KMFA/metadata/reports/report_templates.jsonl"
+      - "KMFA/metadata/reports/report_template_sections.jsonl"
   - stage_id: "S11"
     name: "前端基础界面与数据源检查板"
     status: "planned"

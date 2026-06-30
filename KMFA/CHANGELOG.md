@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-s10p1-report-templates - 2026-06-30
+
+- 完成 `S10-P1｜报告模板` 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/report_templates.py`、`KMFA/tools/check_s10_p1_report_templates.py` 和 `KMFA/tests/test_report_templates.py`。
+- 生成 public-safe 报告模板 manifest、2 个模板和 11 个管理可读章节：项目成本专题报告覆盖经营摘要、项目毛利、成本结构、风险事项；经营总览报告覆盖经营总览、收入、开票、回款、现金、项目、税务。
+- 模板继承 v1.2 HTML/报告验收样板引用，但本阶段不生成 HTML、CSV、Excel 或 PDF 导出文件。
+- 保持 `formal_report_allowed=false`、`trusted_grade_assignment_allowed=false`、`s10_p2_scope_included=false`、`s10_p3_scope_included=false`、`ui_scope_included=false`；S09-P3 12 条 pending reconciliation 仍阻断正式报告。
+- 不提交 raw business data、zip、Excel、PDF、private CSV、字段明文或真实业务值；本次不执行 Stage 10 整体复审、GitHub upload、lineage full check、UI 或外部接口。
+
 ## 0.1.0-s09-github-upload - 2026-06-30
 
 - 完成 Stage 9 final GitHub upload gate，目标为 `LinzeColin/CodexProject main`。
