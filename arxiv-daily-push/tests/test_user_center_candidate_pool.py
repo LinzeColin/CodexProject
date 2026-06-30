@@ -132,7 +132,7 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         table_rows = re.findall(r"^\| \d+ \|", page, flags=re.MULTILINE)
         readme = (USER_CENTER / "README.md").read_text(encoding="utf-8")
 
-        self.assertGreaterEqual(len(matrix_rows), 396)
+        self.assertGreaterEqual(len(matrix_rows), 397)
         self.assertEqual(len(table_rows), len(matrix_rows))
         self.assertTrue(page.startswith("# 功能任务测试证据追踪链\n"))
         self.assertRegex(page, r"更新时间：\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} Australia/Sydney")
@@ -143,6 +143,24 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("[test_stage2_sources.py](../tests/test_stage2_sources.py)", page)
         self.assertIn(f"TRACEABILITY_MATRIX 行数 | {len(matrix_rows)}", page)
         self.assertIn(f"{len(matrix_rows)} 条可点击链路", readme)
+        self.assertIn("REQ-ADP-V7-053-S2PMT07-FINAL-BUNDLE-S2PLT02-ARTIFACT-VALIDATION-SUMMARY", page)
+        self.assertIn("S2PMT07-FINAL-BUNDLE-S2PLT02-ARTIFACT-VALIDATION-SUMMARY", page)
+        self.assertIn(
+            "ADP-S2PMT07-FINAL-BUNDLE-S2PLT02-ARTIFACT-VALIDATION-SUMMARY-20260630.json",
+            page,
+        )
+        self.assertIn("PHASE_S2PMT07_FINAL_BUNDLE_S2PLT02_ARTIFACT_VALIDATION_SUMMARY.md", page)
+        self.assertIn("blocked_final_bundle_s2plt02_artifact_validation_summary_synced_no_production", page)
+        self.assertIn("084c08ec36f925dedb7ecb3488874a23d82090e124b0a791ecd34a998691e54c", page)
+        self.assertIn("8b7dc7003c7f60c9065448b2c86d7e1089aedc022b56a84a36487899aa604fa9", page)
+        self.assertIn("797c920987dcb0f38a1af8c8dc2ed80633c412cf9bb5f91686a7c29bfeaa68f8", page)
+        self.assertIn("3fbde96111dd78d3ffe4474e012fa5d86de76a24e6fa7640d0310c178003e1db", page)
+        self.assertIn("terminal_artifact_validation_status=blocked", page)
+        self.assertIn("terminal_artifact_ref=FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json", page)
+        self.assertIn("terminal_artifact_present=false", page)
+        self.assertIn("terminal_artifact_ready=false", page)
+        self.assertIn("terminal_artifact_validation_errors=s2plt02_terminal_delivery_proof_artifact_missing", page)
+        self.assertIn("terminal_artifact_blocking_reasons=s2plt02_terminal_delivery_proof_artifact_missing;two_consecutive_real_days_not_proven;eight_real_emails_not_proven;real_scheduler_not_proven", page)
         self.assertIn("REQ-ADP-V7-052-S2PMT07-FINAL-BUNDLE-S2PLT03-SUMMARY-SYNC", page)
         self.assertIn("S2PMT07-FINAL-BUNDLE-S2PLT03-SUMMARY-SYNC", page)
         self.assertIn(

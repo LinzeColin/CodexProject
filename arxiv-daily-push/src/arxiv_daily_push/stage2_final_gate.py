@@ -4027,6 +4027,9 @@ def build_s2plt02_terminal_delivery_proof_capture_plan_state(
         generated_at=generated_at,
         repo_root=root,
     )
+    terminal_artifact_validation = build_s2plt02_terminal_delivery_proof_artifact_validation_state(
+        repo_root=root,
+    )
     authorization_artifact = _load_json_mapping_artifact(
         root / S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_ARTIFACT_PATH
     )
@@ -4189,6 +4192,13 @@ def build_s2plt02_terminal_delivery_proof_capture_plan_state(
         "required_mail_products": list(S2PLT02_REQUIRED_MAIL_PRODUCTS),
         "terminal_delivery_proof_ready": terminal_delivery_proof_ready,
         "terminal_delivery_proof_artifact_ref": S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH,
+        "terminal_artifact_validation_status": terminal_artifact_validation.get("status"),
+        "terminal_artifact_validation_state_hash": terminal_artifact_validation.get("state_hash"),
+        "terminal_artifact_ref": terminal_artifact_validation.get("artifact_ref"),
+        "terminal_artifact_present": terminal_artifact_validation.get("artifact_present"),
+        "terminal_artifact_ready": terminal_artifact_validation.get("terminal_delivery_proof_ready"),
+        "terminal_artifact_validation_errors": list(terminal_artifact_validation.get("validation_errors", [])),
+        "terminal_artifact_blocking_reasons": list(terminal_artifact_validation.get("blocking_reasons", [])),
         "capture_steps": capture_steps,
         "next_executable_step": next_step,
         "no_production_side_effects": True,
@@ -4237,6 +4247,29 @@ def validate_s2plt02_terminal_delivery_proof_capture_plan_state(state: Mapping[s
         errors.append("S2PLT02 terminal delivery proof capture plan required_mail_products must be M1-M4")
     if state.get("terminal_delivery_proof_artifact_ref") != S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH:
         errors.append("S2PLT02 terminal delivery proof capture plan artifact ref is invalid")
+    if state.get("terminal_artifact_ref") != S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH:
+        errors.append("S2PLT02 terminal delivery proof capture plan terminal artifact ref is invalid")
+    if state.get("terminal_artifact_validation_status") not in {"pass", "blocked"}:
+        errors.append("S2PLT02 terminal delivery proof capture plan terminal artifact validation status is invalid")
+    if not isinstance(state.get("terminal_artifact_validation_state_hash"), str) or not state.get(
+        "terminal_artifact_validation_state_hash"
+    ):
+        errors.append("S2PLT02 terminal delivery proof capture plan terminal artifact validation hash is required")
+    if not isinstance(state.get("terminal_artifact_present"), bool):
+        errors.append("S2PLT02 terminal delivery proof capture plan terminal_artifact_present must be boolean")
+    if not isinstance(state.get("terminal_artifact_ready"), bool):
+        errors.append("S2PLT02 terminal delivery proof capture plan terminal_artifact_ready must be boolean")
+    if not isinstance(state.get("terminal_artifact_validation_errors"), list):
+        errors.append("S2PLT02 terminal delivery proof capture plan terminal_artifact_validation_errors must be a list")
+    if not isinstance(state.get("terminal_artifact_blocking_reasons"), list):
+        errors.append("S2PLT02 terminal delivery proof capture plan terminal_artifact_blocking_reasons must be a list")
+    if state.get("terminal_artifact_present") is False:
+        if "s2plt02_terminal_delivery_proof_artifact_missing" not in state.get(
+            "terminal_artifact_blocking_reasons", []
+        ):
+            errors.append("missing S2PLT02 terminal artifact must appear in terminal artifact blockers")
+        if state.get("terminal_artifact_ready") is not False:
+            errors.append("missing S2PLT02 terminal artifact must not be ready")
     if state.get("authorization_artifact_path") != S2PLT02_REAL_PROOF_CAPTURE_AUTHORIZATION_ARTIFACT_PATH:
         errors.append("S2PLT02 terminal delivery proof capture plan authorization artifact path is invalid")
     if state.get("authorization_artifact_status") not in {"pass", "blocked"}:
@@ -8627,6 +8660,21 @@ def build_final_bundle_prerequisite_plan_state(
             "terminal_evidence_inventory_state_hash": s2plt02_capture_plan.get(
                 "terminal_evidence_inventory_state_hash"
             ),
+            "terminal_artifact_validation_status": s2plt02_capture_plan.get(
+                "terminal_artifact_validation_status"
+            ),
+            "terminal_artifact_validation_state_hash": s2plt02_capture_plan.get(
+                "terminal_artifact_validation_state_hash"
+            ),
+            "terminal_artifact_ref": s2plt02_capture_plan.get("terminal_artifact_ref"),
+            "terminal_artifact_present": s2plt02_capture_plan.get("terminal_artifact_present"),
+            "terminal_artifact_ready": s2plt02_capture_plan.get("terminal_artifact_ready"),
+            "terminal_artifact_validation_errors": list(
+                s2plt02_capture_plan.get("terminal_artifact_validation_errors", [])
+            ),
+            "terminal_artifact_blocking_reasons": list(
+                s2plt02_capture_plan.get("terminal_artifact_blocking_reasons", [])
+            ),
             "runtime_capture_ready": s2plt02_capture_plan.get("runtime_capture_ready"),
             "runtime_capture_blockers": list(s2plt02_capture_plan.get("runtime_capture_blockers", [])),
             "remaining_runtime_actions": list(s2plt02_capture_plan.get("remaining_runtime_actions", [])),
@@ -8980,9 +9028,29 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
             "authorization_artifact_status",
             "authorization_validation_state_hash",
             "terminal_evidence_inventory_state_hash",
+            "terminal_artifact_validation_status",
+            "terminal_artifact_validation_state_hash",
+            "terminal_artifact_ref",
         ):
             if not isinstance(capture_plan_summary.get(field), str) or not capture_plan_summary.get(field):
                 errors.append(f"S2PLT02 capture plan summary {field} is required")
+        if capture_plan_summary.get("terminal_artifact_ref") != S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH:
+            errors.append("S2PLT02 capture plan summary terminal artifact ref is invalid")
+        if not isinstance(capture_plan_summary.get("terminal_artifact_present"), bool):
+            errors.append("S2PLT02 capture plan summary terminal_artifact_present must be boolean")
+        if not isinstance(capture_plan_summary.get("terminal_artifact_ready"), bool):
+            errors.append("S2PLT02 capture plan summary terminal_artifact_ready must be boolean")
+        if not isinstance(capture_plan_summary.get("terminal_artifact_validation_errors"), list):
+            errors.append("S2PLT02 capture plan summary terminal_artifact_validation_errors must be a list")
+        if not isinstance(capture_plan_summary.get("terminal_artifact_blocking_reasons"), list):
+            errors.append("S2PLT02 capture plan summary terminal_artifact_blocking_reasons must be a list")
+        if capture_plan_summary.get("terminal_artifact_present") is False:
+            if "s2plt02_terminal_delivery_proof_artifact_missing" not in capture_plan_summary.get(
+                "terminal_artifact_blocking_reasons", []
+            ):
+                errors.append("S2PLT02 capture plan summary must expose missing terminal artifact blocker")
+            if capture_plan_summary.get("terminal_artifact_ready") is not False:
+                errors.append("S2PLT02 capture plan summary missing terminal artifact must not be ready")
         if not isinstance(capture_plan_summary.get("runtime_capture_ready"), bool):
             errors.append("S2PLT02 capture plan summary runtime_capture_ready must be boolean")
         if not isinstance(capture_plan_summary.get("runtime_capture_blockers"), list):
