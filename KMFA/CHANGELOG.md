@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.0-s11p2-source-check-board - 2026-07-01
+
+- 完成 `S11-P2｜数据源检查板` 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/source_check_board_runtime.py`、`KMFA/tools/check_s11_p2_source_check_board.py` 和 `KMFA/tests/test_source_check_board_runtime.py`。
+- 生成 public-safe 数据源检查板 manifest、13 条检查板记录和 1 个蓝灰商务风 HTML 样张，覆盖固定 11 列和 5 种状态。
+- 状态点击可查看影响报告、处理规则和下一步；异常只用小型徽标提示，`large_yellow_surface_count=0`。
+- 保持 `formal_report_allowed=false`、`business_decision_basis_allowed=false`、`s11_p3_project_cost_detail_scope_included=false`、`stage11_review_scope_included=false`、`github_upload_allowed=false`。
+- 不提交 raw business data、zip、Excel workbook、PDF、private CSV、sqlite/db、字段明文、真实账号、真实业务值或 credentials。
+- 下一轮只能执行 `S11-P3｜项目成本页面`；不得做 Stage 11 整体复审、GitHub upload、S12、lineage full check、正式报告或外部接口。
+
 ## 0.1.0-s11p1-home-navigation - 2026-07-01
 
 - 完成 `S11-P1｜首页与导航` 本地验证，不上传 GitHub。

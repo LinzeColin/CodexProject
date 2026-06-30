@@ -1,0 +1,131 @@
+{
+  "allowed_statuses": [
+    "已就绪",
+    "部分/阻塞",
+    "失败/不适用",
+    "已过期",
+    "人工复核"
+  ],
+  "artifact_refs": {
+    "completion_record": "KMFA/stage_artifacts/S11_P2_source_check_board/human/s11_p2_completion_record.md",
+    "html_export": "KMFA/stage_artifacts/S11_P2_source_check_board/exports/html/kmfa_source_check_board.html",
+    "source_check_board_manifest": "KMFA/metadata/reports/source_check_board_manifest.json",
+    "source_check_board_rows": "KMFA/metadata/reports/source_check_board_rows.jsonl",
+    "stage_manifest": "KMFA/stage_artifacts/S11_P2_source_check_board/machine/s11_p2_manifest.json",
+    "test_results": "KMFA/stage_artifacts/S11_P2_source_check_board/human/test_results.md",
+    "validator": "KMFA/tools/check_s11_p2_source_check_board.py"
+  },
+  "brand_mark": "KM",
+  "brand_mark_is_single_k": false,
+  "content_hash": "sha256:3f45a4c53e17a2f1864880e0ee619efde82ed906078b6ab59d26b8a0fa8b1d5e",
+  "generated_at": "2026-07-01T10:00:00+10:00",
+  "interaction": {
+    "detail_panel_fields": [
+      "影响报告",
+      "处理规则",
+      "下一步"
+    ],
+    "raw_layer_write_allowed": false,
+    "status_click_detail_enabled": true,
+    "write_back_allowed": false
+  },
+  "interaction_version": "INTERACTION-KMFA-S11P2-STATUS-DETAIL-001",
+  "limitations": [
+    "S11-P2 只生成数据源检查板，不生成 S11-P3 项目成本页面。",
+    "检查板只展示公开安全来源状态和处理提示，不展示真实文件名、账号、字段明文或业务值。",
+    "状态点击只切换页面详情，不写 raw layer，不执行外部接口。",
+    "正式报告、完整可信报告和经营决策依据继续受报告等级阻断。",
+    "本 phase 不执行 Stage 11 整体复审或 GitHub upload。"
+  ],
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "credential_secret_committed": false,
+    "excel_workbook_committed": false,
+    "field_plaintext_committed": false,
+    "pdf_file_committed": false,
+    "private_tabular_files_committed": false,
+    "raw_business_values_committed": false,
+    "raw_file_committed": false,
+    "real_account_number_committed": false
+  },
+  "public_safety_version": "SAFE-KMFA-S11P2-PUBLIC-001",
+  "quality_gate": {
+    "business_decision_basis_allowed": false,
+    "complete_trusted_report_display_allowed": false,
+    "formal_report_allowed": false,
+    "github_upload_allowed": false,
+    "phase_completion_upload_allowed": false,
+    "raw_layer_write_allowed": false,
+    "raw_source_mutation_allowed": false,
+    "release_block_reason": "s11_p2_source_check_board_only_reports_remain_blocked",
+    "report_grade_visible": "D",
+    "source_check_board_export_allowed": true,
+    "stage11_review_allowed": false
+  },
+  "record_type": "source_check_board_manifest",
+  "required_columns": [
+    "来源系统",
+    "业务板块",
+    "文件包",
+    "公司主体",
+    "银行或系统账户",
+    "账户或报表",
+    "频率",
+    "状态",
+    "影响报告",
+    "处理规则",
+    "下一步"
+  ],
+  "runtime_status": "public_safe_source_check_board_generated_local_only",
+  "schema_version": "kmfa.source_check_board_manifest.v1",
+  "source_check_board_version": "UI-KMFA-S11P2-SOURCE-CHECK-BOARD-001",
+  "source_taskpack_refs": {
+    "frontend_report_rules": "KMFA/taskpack/v1_2/01_KMFA_Codex_TaskPack_v1_2_完整防遗漏_含HTML验收样板.md:11",
+    "roadmap_s11_p2": "KMFA/taskpack/v1_2/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_2.md:S11-P2",
+    "s03_metadata_protocol": "KMFA/metadata/sources/source_check_matrix_policy.yaml",
+    "source_check_html_sample": "KMFA/taskpack/v1_2/20_HTML_UIUX_报告预览/01_核心HTML验收样板/KMFA_数据源检查板_v0_5_blue.html"
+  },
+  "stage_phase": "S11-P2",
+  "stage_scope": {
+    "external_connector_scope_included": false,
+    "formal_report_runtime_scope_included": false,
+    "github_upload_scope_included": false,
+    "lineage_full_check_scope_included": false,
+    "s11_p1_home_navigation_scope_included": false,
+    "s11_p2_source_check_board_scope_included": true,
+    "s11_p3_project_cost_detail_scope_included": false,
+    "stage11_review_scope_included": false
+  },
+  "style_gate": {
+    "blue_gray_surface_dominant": true,
+    "large_yellow_surface_count": 0,
+    "status_badges_only": true,
+    "status_color_accessibility_note": "异常只用小徽标提示，大面积区域保持蓝灰和白色。",
+    "yellow_surface_allowed": false
+  },
+  "style_version": "STYLE-KMFA-S11P2-BLUE-GRAY-001",
+  "summary": {
+    "allowed_status_count": 5,
+    "blue_gray_surface_dominant": true,
+    "business_decision_basis_count": 0,
+    "formal_report_count": 0,
+    "html_export_count": 1,
+    "km_brand_mark_count": 1,
+    "large_yellow_surface_count": 0,
+    "matrix_row_count": 13,
+    "private_file_reference_count": 0,
+    "raw_business_value_count": 0,
+    "required_column_count": 11,
+    "required_columns_covered": true,
+    "single_k_brand_mark_count": 0,
+    "status_click_detail_enabled": true,
+    "status_counts": {
+      "人工复核": 2,
+      "失败/不适用": 1,
+      "已就绪": 4,
+      "已过期": 2,
+      "部分/阻塞": 4
+    }
+  },
+  "system_name": "KMFA 经营分析系统"
+}
