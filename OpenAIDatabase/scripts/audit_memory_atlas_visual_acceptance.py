@@ -218,7 +218,7 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         and "function buildTimelineDensityBackdrops" in app_source
         and ".timeline-control-bar" in css_source
         and ".timeline-density-track" in css_source
-        and "grid-template-rows: auto auto auto auto auto minmax(0, 1fr) auto;" in css_source
+        and "grid-template-rows: auto auto auto auto auto auto minmax(0, 1fr) auto;" in css_source
         and ".timeline-map .timeline-canvas" in css_source
         and "min-height: 360px;" in css_source
         and ".timeline-cursor line" in css_source
@@ -256,18 +256,68 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         and ".memory-river-level-label" in css_source
         and ".memory-river-lane-flow" in css_source
         and ".memory-river-marker" in css_source
-        and 'stage: "5.1"' in memory_river_params_source
         and "renderer_default: memory-river" in memory_river_params_source
         and "legacy_renderer: legacy" in memory_river_params_source
         and "use_utc_scale: true" in memory_river_params_source
         and "label: Macro" in memory_river_params_source
         and "label: Meso" in memory_river_params_source
-        and "label: Micro" in memory_river_params_source
-        and "brush_enabled: false" in memory_river_params_source
-        and "click_event_card_enabled: false" in memory_river_params_source,
+        and "label: Micro" in memory_river_params_source,
         "timeline_stage5_1_river_rendering_ready",
         "Timeline defaults to Memory River behind a reversible renderer flag, uses explicit UTC scale helpers, and renders Macro/Meso/Micro lane paths with dedicated river markers",
         "Stage 5.1 Memory River rendering, UTC scale, Macro/Meso/Micro lanes, feature flag, or legacy rollback contract is missing",
+    )
+    require(
+        checks,
+        'type TimelineInteractionMode = "pan" | "brush"' in app_source
+        and "interface TimelineTimeRangeSelection" in app_source
+        and "const [timelineTimeRange, setTimelineTimeRange]" in app_source
+        and "handleMemoryRiverPointerDown" in timeline_view
+        and "handleMemoryRiverPointerMove" in timeline_view
+        and "handleMemoryRiverPointerUp" in timeline_view
+        and "setPanDraft" in timeline_view
+        and "setBrushDraft" in timeline_view
+        and "buildTimelineRangeSelection" in app_source
+        and "buildMemoryRiverRangeOverlay" in app_source
+        and "buildMemoryRiverDraftOverlay" in app_source
+        and "memory-river-interaction-bar" in timeline_view
+        and "river-mode-tabs" in timeline_view
+        and "memory-river-selected-range" in timeline_view
+        and "memory-river-brush-draft" in timeline_view
+        and "timeline-range-chip" in app_source
+        and "timelineRangeSummary(timelineTimeRange)" in app_source
+        and "时间河选择 · {timelineTimeRange.label}" in app_source
+        and "lockedEventId" in timeline_view
+        and "lockMemoryRiverEvent" in timeline_view
+        and "memory-river-event-card" in timeline_view
+        and 'data-event-card={lockedEvent ? "locked" : "hover"}' in timeline_view
+        and "redacted derived event" in timeline_view
+        and "同步 Inspector" in timeline_view
+        and "interface TimelineFeedbackSettings" in app_source
+        and "TIMELINE_FEEDBACK_SETTINGS_KEY" in app_source
+        and "getInitialTimelineFeedbackSettings" in app_source
+        and "persistTimelineFeedbackSettings" in app_source
+        and "pseudoHaptic: false" in app_source
+        and "audio: false" in app_source
+        and "emitTimelineFeedback" in app_source
+        and "navigator.vibrate" in app_source
+        and "gain.gain.value = 0.018" in app_source
+        and ".memory-river-interaction-bar" in css_source
+        and ".river-mode-tabs" in css_source
+        and ".memory-river-selected-range rect" in css_source
+        and ".memory-river-brush-draft rect" in css_source
+        and ".memory-river-event-card" in css_source
+        and ".timeline-sync-pill" in css_source
+        and ".filter-chip-row .timeline-range-chip" in css_source
+        and 'stage: "5.2"' in memory_river_params_source
+        and "pan_enabled: true" in memory_river_params_source
+        and "brush_enabled: true" in memory_river_params_source
+        and "click_event_card_enabled: true" in memory_river_params_source
+        and "pseudo_haptic_default: false" in memory_river_params_source
+        and "audio_feedback_default: false" in memory_river_params_source
+        and "vibration_default: false" in memory_river_params_source,
+        "timeline_stage5_2_river_interaction_ready",
+        "Memory River supports pointer pan, brush range selection synced to Home/Galaxy/Interaction Lens, hover/click event cards, and safe reduced-motion/audio/haptic feedback settings",
+        "Stage 5.2 Memory River pan, brush, event-card, sync, safe-feedback, or parameter contract is missing",
     )
     require(
         checks,
