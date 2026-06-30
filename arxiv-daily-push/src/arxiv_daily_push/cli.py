@@ -148,6 +148,7 @@ from .stage2_final_gate import (
     build_s2plt02_terminal_delivery_proof_artifact_draft_state,
     build_s2plt02_terminal_delivery_proof_artifact_validation_state,
     build_s2plt02_terminal_readiness_audit_state,
+    build_s2plt03_terminal_resilience_proof_capture_plan_state,
     build_s2plt03_terminal_resilience_proof_artifact_validation_state,
     build_s2plt03_resilience_precheck_report,
     build_s2plt04_completion_evidence_audit_state,
@@ -167,6 +168,7 @@ from .stage2_final_gate import (
     validate_s2plt02_terminal_proof_evidence_inventory_state,
     validate_s2plt02_terminal_delivery_proof_capture_plan_state,
     validate_s2plt02_terminal_delivery_proof_artifact,
+    validate_s2plt03_terminal_resilience_proof_capture_plan_state,
     validate_s2plt03_terminal_resilience_proof_artifact_validation_state,
     validate_s2plt04_completion_evidence_audit_state,
 )
@@ -1564,6 +1566,26 @@ def build_parser() -> argparse.ArgumentParser:
         help="Evidence timestamp for the deterministic audit payload.",
     )
     s2plt03_resilience_audit.add_argument("--json", action="store_true", help="Print JSON S2PLT03 resilience-readiness audit state.")
+
+    s2plt03_terminal_resilience_capture_plan = subparsers.add_parser(
+        "plan-s2plt03-terminal-resilience-proof-capture",
+        help="Plan S2PLT03 terminal resilience proof capture without writing artifacts or accepting production.",
+    )
+    s2plt03_terminal_resilience_capture_plan.add_argument(
+        "--repo-root",
+        default=".",
+        help="Repository root containing final-bundle artifacts.",
+    )
+    s2plt03_terminal_resilience_capture_plan.add_argument(
+        "--generated-at",
+        required=True,
+        help="Capture-plan timestamp.",
+    )
+    s2plt03_terminal_resilience_capture_plan.add_argument(
+        "--json",
+        action="store_true",
+        help="Print JSON S2PLT03 terminal resilience proof capture plan.",
+    )
 
     s2plt03_terminal_resilience_proof = subparsers.add_parser(
         "validate-s2plt03-terminal-resilience-proof",
@@ -4369,6 +4391,26 @@ def main(argv: list[str] | None = None) -> int:
             for reason in report.get("blocking_reasons", []):
                 print(f"- blocked: {reason}")
         return 0 if report["status"] == "pass" else 2
+    if args.command == "plan-s2plt03-terminal-resilience-proof-capture":
+        report = build_s2plt03_terminal_resilience_proof_capture_plan_state(
+            generated_at=args.generated_at,
+            repo_root=args.repo_root,
+        )
+        errors = validate_s2plt03_terminal_resilience_proof_capture_plan_state(report)
+        if errors:
+            report = {**report, "validation_errors": errors, "status": "blocked"}
+        if args.json:
+            print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
+        else:
+            print(report["status"])
+            print(f"- next_executable_step: {report.get('next_executable_step')}")
+            for missing in report.get("missing_terminal_inputs", []):
+                print(f"- missing: {missing}")
+            for reason in report.get("blocking_reasons", []):
+                print(f"- blocked: {reason}")
+            for error in report.get("validation_errors", []):
+                print(f"- error: {error}")
+        return 0 if report["status"] == "pass" and not errors else 2
     if args.command == "validate-s2plt03-terminal-resilience-proof":
         report = build_s2plt03_terminal_resilience_proof_artifact_validation_state(repo_root=args.repo_root)
         errors = validate_s2plt03_terminal_resilience_proof_artifact_validation_state(report)

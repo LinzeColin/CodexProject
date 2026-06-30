@@ -35,8 +35,21 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
-            "S2PLT02_TERMINAL_PROOF_EVIDENCE_INVENTORY_INPUT_HARDENING_BLOCKED_NO_PRODUCTION",
+            "S2PLT03_TERMINAL_RESILIENCE_PROOF_CAPTURE_PLAN_BLOCKED_NO_PRODUCTION",
             current_state,
+        )
+        self.assertIn("S2PLT03-TERMINAL-RESILIENCE-PROOF-CAPTURE-PLAN", current_state)
+        self.assertIn("WAIT_FOR_S2PLT02_TERMINAL_ACCEPTANCE", current_state)
+        self.assertIn("S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT", current_state)
+        self.assertIn("S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT", current_state)
+        self.assertIn("s2plt03_terminal_resilience_proof_artifact_missing", current_state)
+        self.assertIn("s2plt02_not_accepted", current_state)
+        self.assertIn("bd5f74277b41f7e43ec1a907f6d13eee215808e86d04594e03bd4ed71091ddd5", current_state)
+        self.assertIn("ADP-S2PLT03-TERMINAL-RESILIENCE-PROOF-CAPTURE-PLAN-20260630.json", current_state)
+        self.assertIn("PHASE_S2PLT03_TERMINAL_RESILIENCE_PROOF_CAPTURE_PLAN.md", ledger)
+        self.assertIn(
+            "S2PLT02_TERMINAL_PROOF_EVIDENCE_INVENTORY_INPUT_HARDENING_BLOCKED_NO_PRODUCTION",
+            ledger,
         )
         self.assertIn("S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY-INPUT-HARDENING", current_state)
         self.assertIn("launchctl_disabled_file_missing", current_state)
@@ -185,6 +198,7 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             self.assertIn("S2PLT02-TERMINAL-CAPTURE-WINDOW-AUDIT-CLI", text)
             self.assertIn("S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY", text)
             self.assertIn("S2PMT07-S2PLT04-S2PLT02-LATEST-NONTERMINAL-EVIDENCE-SYNC", text)
+            self.assertIn("S2PLT03-TERMINAL-RESILIENCE-PROOF-CAPTURE-PLAN", text)
             self.assertIn("S2PLT02-TERMINAL-DELIVERY-PROOF", text)
             self.assertIn("ACC-S2PMT07-FINAL-REVIEW", text)
             self.assertIn("real", text_lower)
@@ -197,6 +211,7 @@ class GovernanceCurrentStateTests(unittest.TestCase):
             self.assertIn("manifest", text_lower)
             self.assertIn("normalized manifest", text_lower)
             self.assertIn("dry-run", text_lower)
+            self.assertIn("resilience", text_lower)
             self.assertNotIn(stale_option, text)
         self.assertIn("adp_s2pmt07_blocked_next_task", generator)
         self.assertIn("terminal_delivery_proof_is_next", generator)

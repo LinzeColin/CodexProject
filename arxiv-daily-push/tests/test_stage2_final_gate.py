@@ -165,6 +165,7 @@ from arxiv_daily_push.stage2_final_gate import (
     build_s2plt03_local_resilience_drill_bundle,
     build_s2plt03_resilience_evidence_state,
     build_s2plt03_resilience_precheck_report,
+    build_s2plt03_terminal_resilience_proof_capture_plan_state,
     build_s2plt03_terminal_resilience_proof_artifact_validation_state,
     build_s2plt03_terminal_resilience_proof_hash,
     build_s2plt04_dependency_state,
@@ -195,6 +196,7 @@ from arxiv_daily_push.stage2_final_gate import (
     validate_s2plt02_terminal_delivery_proof_artifact_validation_state,
     validate_s2plt03_local_resilience_drill_bundle,
     validate_s2plt03_resilience_precheck_report,
+    validate_s2plt03_terminal_resilience_proof_capture_plan_state,
     validate_s2plt03_terminal_resilience_proof_artifact,
     validate_s2plt03_terminal_resilience_proof_artifact_validation_state,
     validate_s2plt04_integration_candidate_report,
@@ -1653,6 +1655,28 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(report["inherited_p0_p1_closed"])
         self.assertFalse(report["s2plt03_accepted"])
         self.assertFalse(report["integrated_production_accepted"])
+
+    def test_s2plt03_terminal_resilience_proof_capture_plan_blocks_until_s2plt02_acceptance(self) -> None:
+        plan = build_s2plt03_terminal_resilience_proof_capture_plan_state(
+            generated_at="2026-06-30T17:00:08+10:00",
+            repo_root=REPO_ROOT,
+        )
+
+        self.assertEqual(plan["status"], "blocked")
+        self.assertEqual(plan["task_id"], "S2PLT03-TERMINAL-RESILIENCE-PROOF-CAPTURE-PLAN")
+        self.assertEqual(plan["next_executable_step"], "WAIT_FOR_S2PLT02_TERMINAL_ACCEPTANCE")
+        self.assertIn("S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT", plan["missing_terminal_inputs"])
+        self.assertIn("S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT", plan["missing_terminal_inputs"])
+        self.assertIn("s2plt02_not_accepted", plan["blocking_reasons"])
+        self.assertFalse(plan["artifact_written"])
+        self.assertFalse(plan["s2plt03_accepted"])
+        self.assertFalse(plan["production_acceptance_claimed"])
+        self.assertFalse(plan["real_smtp_send_enabled"])
+        self.assertFalse(plan["scheduler_install_enabled"])
+        self.assertFalse(plan["production_restore_enabled"])
+        self.assertEqual(plan["completed_inputs"]["LOCAL_RESILIENCE_DRILL"], True)
+        self.assertEqual(plan["completed_inputs"]["P0_P1_ZERO_PROOF"], True)
+        self.assertEqual(validate_s2plt03_terminal_resilience_proof_capture_plan_state(plan), [])
 
     def test_s2plt03_terminal_resilience_proof_blocks_missing_artifact(self) -> None:
         report = build_s2plt03_terminal_resilience_proof_artifact_validation_state(repo_root=REPO_ROOT)

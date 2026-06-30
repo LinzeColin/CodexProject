@@ -1185,6 +1185,33 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["integrated_production_accepted"])
         self.assertFalse(payload["scheduler_install_enabled"])
 
+    def test_plan_s2plt03_terminal_resilience_proof_capture_json_blocks_until_s2plt02_acceptance(self):
+        buffer = io.StringIO()
+        with redirect_stdout(buffer):
+            result = main(
+                [
+                    "plan-s2plt03-terminal-resilience-proof-capture",
+                    "--repo-root",
+                    ".",
+                    "--generated-at",
+                    "2026-06-30T17:00:08+10:00",
+                    "--json",
+                ]
+            )
+        payload = json.loads(buffer.getvalue())
+
+        self.assertEqual(result, 2)
+        self.assertEqual(payload["status"], "blocked")
+        self.assertEqual(payload["next_executable_step"], "WAIT_FOR_S2PLT02_TERMINAL_ACCEPTANCE")
+        self.assertIn("s2plt02_not_accepted", payload["blocking_reasons"])
+        self.assertIn("S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT", payload["missing_terminal_inputs"])
+        self.assertIn("S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT", payload["missing_terminal_inputs"])
+        self.assertFalse(payload["artifact_written"])
+        self.assertFalse(payload["s2plt03_accepted"])
+        self.assertFalse(payload["production_acceptance_claimed"])
+        self.assertFalse(payload["real_smtp_send_enabled"])
+        self.assertFalse(payload["scheduler_install_enabled"])
+
     def test_plan_final_bundle_prerequisites_json_command_blocks_without_artifacts(self):
         buffer = io.StringIO()
         with redirect_stdout(buffer):

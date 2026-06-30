@@ -1204,6 +1204,17 @@ S2PLT03_TERMINAL_RESILIENCE_PROOF_NO_PRODUCTION_FLAGS = (
     "v7_1_baseline_changed",
     "v7_2_contract_files_changed",
 )
+S2PLT03_TERMINAL_RESILIENCE_PROOF_CAPTURE_PLAN_TASK_ID = "S2PLT03-TERMINAL-RESILIENCE-PROOF-CAPTURE-PLAN"
+S2PLT03_TERMINAL_RESILIENCE_PROOF_CAPTURE_PLAN_SCOPE = (
+    "s2plt03_terminal_resilience_proof_capture_plan_no_write_no_production"
+)
+S2PLT03_TERMINAL_RESILIENCE_PROOF_CAPTURE_PLAN_STEPS = (
+    "WAIT_FOR_S2PLT02_TERMINAL_ACCEPTANCE",
+    "REVALIDATE_S2PLT03_PRECHECK",
+    "BUILD_REVIEWED_S2PLT03_TERMINAL_RESILIENCE_PROOF",
+    "RUN_VALIDATE_S2PLT03_TERMINAL_RESILIENCE_PROOF",
+    "FEED_S2PLT04_COMPLETION_EVIDENCE",
+)
 S2PLT03_LOCAL_DRILL_MODEL_ID = "adp-s2plt03-local-resilience-drill-v1"
 S2PLT03_LOCAL_DRILL_SCOPE = "local_no_production_drill_not_terminal_acceptance"
 S2PLT03_LOCAL_DRILL_REQUIRED_CASES = (
@@ -5237,6 +5248,133 @@ def validate_s2plt03_terminal_resilience_proof_artifact_validation_state(state: 
     expected_hash = _stable_hash({key: value for key, value in state.items() if key != "state_hash"})
     if state.get("state_hash") != expected_hash:
         errors.append("S2PLT03 terminal resilience proof validation state_hash does not match state content")
+    return errors
+
+
+def build_s2plt03_terminal_resilience_proof_capture_plan_state(
+    *,
+    generated_at: str,
+    repo_root: str | Path = ".",
+) -> dict[str, Any]:
+    """Build a no-write S2PLT03 terminal resilience proof capture plan."""
+
+    root = Path(repo_root)
+    resilience_precheck = build_s2plt03_resilience_precheck_report(
+        generated_at="2026-06-29T12:12:00+10:00",
+        repo_root=root,
+    )
+    artifact_validation = build_s2plt03_terminal_resilience_proof_artifact_validation_state(repo_root=root)
+    terminal_gates = _mapping(artifact_validation.get("terminal_gates"))
+    completed_inputs = {
+        "LOCAL_RESILIENCE_DRILL": all(
+            bool(terminal_gates.get(gate))
+            for gate in (
+                "rate_limit_drill_proven",
+                "parser_drift_drill_proven",
+                "restart_recovery_drill_proven",
+                "disk_pressure_drill_proven",
+                "backup_restore_point_proven",
+                "rollback_executable",
+                "ledger_count_conserved",
+            )
+        ),
+        "RESILIENCE_PRECHECK": validate_s2plt03_resilience_precheck_report(resilience_precheck) == [],
+        "P0_P1_ZERO_PROOF": terminal_gates.get("p0_zero") is True and terminal_gates.get("p1_zero") is True,
+        "S2PLT02_TERMINAL_DELIVERY_PROOF": terminal_gates.get("s2plt02_accepted") is True,
+        "S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT": artifact_validation.get("artifact_present") is True,
+    }
+    missing_terminal_inputs: list[str] = []
+    if not completed_inputs["S2PLT02_TERMINAL_DELIVERY_PROOF"]:
+        missing_terminal_inputs.append("S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT")
+    if not completed_inputs["S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT"]:
+        missing_terminal_inputs.append("S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT")
+    blocking_reasons = list(dict.fromkeys(str(reason) for reason in artifact_validation.get("blocking_reasons", [])))
+    if missing_terminal_inputs and not blocking_reasons:
+        blocking_reasons.append("s2plt03_terminal_resilience_proof_inputs_missing")
+    if not completed_inputs["S2PLT02_TERMINAL_DELIVERY_PROOF"]:
+        next_executable_step = "WAIT_FOR_S2PLT02_TERMINAL_ACCEPTANCE"
+    elif not completed_inputs["S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT"]:
+        next_executable_step = "BUILD_REVIEWED_S2PLT03_TERMINAL_RESILIENCE_PROOF"
+    else:
+        next_executable_step = "RUN_VALIDATE_S2PLT03_TERMINAL_RESILIENCE_PROOF"
+    plan = {
+        "schema_version": S2PLT03_SCHEMA_VERSION,
+        "task_id": S2PLT03_TERMINAL_RESILIENCE_PROOF_CAPTURE_PLAN_TASK_ID,
+        "parent_task_id": S2PLT03_TASK_ID,
+        "acceptance_id": S2PLT03_ACCEPTANCE_ID,
+        "generated_at": generated_at,
+        "status": "blocked" if missing_terminal_inputs or blocking_reasons else "pass",
+        "scope": S2PLT03_TERMINAL_RESILIENCE_PROOF_CAPTURE_PLAN_SCOPE,
+        "ordered_steps": list(S2PLT03_TERMINAL_RESILIENCE_PROOF_CAPTURE_PLAN_STEPS),
+        "next_executable_step": next_executable_step,
+        "completed_inputs": completed_inputs,
+        "missing_terminal_inputs": missing_terminal_inputs,
+        "blocking_reasons": blocking_reasons,
+        "terminal_artifact_ref": S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT_PATH,
+        "s2plt02_terminal_delivery_proof_ref": S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT_PATH,
+        "resilience_precheck_status": resilience_precheck.get("status"),
+        "resilience_precheck_report_hash": resilience_precheck.get("report_hash"),
+        "terminal_artifact_validation_status": artifact_validation.get("status"),
+        "terminal_artifact_validation_state_hash": artifact_validation.get("state_hash"),
+        "artifact_written": False,
+        "s2plt03_accepted": False,
+        "s2plt03_resilience_drill_completed": False,
+        "state_hash": "",
+        **{flag: False for flag in S2PLT03_TERMINAL_RESILIENCE_PROOF_NO_PRODUCTION_FLAGS},
+    }
+    plan["state_hash"] = _stable_hash({key: value for key, value in plan.items() if key != "state_hash"})
+    return plan
+
+
+def validate_s2plt03_terminal_resilience_proof_capture_plan_state(plan: Mapping[str, Any]) -> list[str]:
+    """Validate no-write S2PLT03 terminal resilience proof capture plans."""
+
+    errors: list[str] = []
+    if plan.get("schema_version") != S2PLT03_SCHEMA_VERSION:
+        errors.append("S2PLT03 capture plan schema_version must be 1")
+    if plan.get("task_id") != S2PLT03_TERMINAL_RESILIENCE_PROOF_CAPTURE_PLAN_TASK_ID:
+        errors.append("S2PLT03 capture plan task_id is invalid")
+    if plan.get("parent_task_id") != S2PLT03_TASK_ID:
+        errors.append("S2PLT03 capture plan parent_task_id is invalid")
+    if plan.get("acceptance_id") != S2PLT03_ACCEPTANCE_ID:
+        errors.append("S2PLT03 capture plan acceptance_id is invalid")
+    if plan.get("scope") != S2PLT03_TERMINAL_RESILIENCE_PROOF_CAPTURE_PLAN_SCOPE:
+        errors.append("S2PLT03 capture plan scope is invalid")
+    if tuple(plan.get("ordered_steps", [])) != S2PLT03_TERMINAL_RESILIENCE_PROOF_CAPTURE_PLAN_STEPS:
+        errors.append("S2PLT03 capture plan ordered_steps are invalid")
+    if plan.get("next_executable_step") not in S2PLT03_TERMINAL_RESILIENCE_PROOF_CAPTURE_PLAN_STEPS:
+        errors.append("S2PLT03 capture plan next_executable_step is invalid")
+    if plan.get("status") not in {"pass", "blocked"}:
+        errors.append("S2PLT03 capture plan status must be pass or blocked")
+    if plan.get("artifact_written") is not False:
+        errors.append("S2PLT03 capture plan must not write an artifact")
+    if plan.get("s2plt03_accepted") is not False:
+        errors.append("S2PLT03 capture plan must not accept S2PLT03")
+    if plan.get("s2plt03_resilience_drill_completed") is not False:
+        errors.append("S2PLT03 capture plan must not complete resilience drill")
+    for flag in S2PLT03_TERMINAL_RESILIENCE_PROOF_NO_PRODUCTION_FLAGS:
+        if plan.get(flag) is not False:
+            errors.append(f"{flag} must be false")
+    completed_inputs = _mapping(plan.get("completed_inputs"))
+    for key in (
+        "LOCAL_RESILIENCE_DRILL",
+        "RESILIENCE_PRECHECK",
+        "P0_P1_ZERO_PROOF",
+        "S2PLT02_TERMINAL_DELIVERY_PROOF",
+        "S2PLT03_TERMINAL_RESILIENCE_PROOF_ARTIFACT",
+    ):
+        if key not in completed_inputs:
+            errors.append(f"S2PLT03 capture plan completed_inputs must include {key}")
+    if plan.get("status") == "blocked" and not plan.get("blocking_reasons"):
+        errors.append("blocked S2PLT03 capture plan must include blocking_reasons")
+    if (
+        completed_inputs.get("S2PLT02_TERMINAL_DELIVERY_PROOF") is False
+        and plan.get("next_executable_step") != "WAIT_FOR_S2PLT02_TERMINAL_ACCEPTANCE"
+    ):
+        errors.append("S2PLT03 capture plan must wait for S2PLT02 acceptance first")
+    expected_hash = _stable_hash({key: value for key, value in plan.items() if key != "state_hash"})
+    if plan.get("state_hash") != expected_hash:
+        errors.append("S2PLT03 capture plan state_hash does not match state content")
     return errors
 
 
