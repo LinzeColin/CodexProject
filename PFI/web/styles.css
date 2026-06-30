@@ -197,3 +197,202 @@
     text-overflow: ellipsis;
   }
 }
+
+/* PFI v0.2.3 Stage 9 Phase 9.1 design system */
+body[data-pfi-version="v0.2.3"] {
+  color-scheme: light;
+  --pfi-v023-bg: #f7fafc;
+  --pfi-v023-surface: #ffffff;
+  --pfi-v023-surface-soft: #eef6ff;
+  --pfi-v023-surface-raised: #fbfdff;
+  --pfi-v023-text: #172033;
+  --pfi-v023-muted: #5b6878;
+  --pfi-v023-border: #d8e3ef;
+  --pfi-v023-border-strong: #b9c9dc;
+  --pfi-v023-accent-blue: #2563eb;
+  --pfi-v023-accent-teal: #0f766e;
+  --pfi-v023-accent-gold: #b7791f;
+  --pfi-v023-accent-red: #b42318;
+  --pfi-v023-radius-card: 8px;
+  --pfi-v023-radius-control: 8px;
+  --pfi-v023-shadow-card: 0 10px 28px rgba(23, 32, 51, 0.08);
+  --pfi-v023-shadow-panel: 0 18px 42px rgba(37, 99, 235, 0.1);
+  --pfi-bg: var(--pfi-v023-bg);
+  --pfi-surface: var(--pfi-v023-surface);
+  --pfi-surface-muted: var(--pfi-v023-surface-soft);
+  --pfi-ink: var(--pfi-v023-text);
+  --pfi-muted: var(--pfi-v023-muted);
+  --pfi-border: var(--pfi-v023-border);
+  --pfi-border-strong: var(--pfi-v023-border-strong);
+  --pfi-blue: var(--pfi-v023-accent-blue);
+  --pfi-teal: var(--pfi-v023-accent-teal);
+  --pfi-amber: var(--pfi-v023-accent-gold);
+  --pfi-red: var(--pfi-v023-accent-red);
+  --pfi-focus: var(--pfi-v023-accent-blue);
+  --pfi-radius: var(--pfi-v023-radius-control);
+  --pfi-shadow: var(--pfi-v023-shadow-card);
+  background:
+    linear-gradient(180deg, #f7fafc 0%, #eef6ff 46%, #f8fbf4 100%);
+  color: var(--pfi-v023-text);
+}
+
+body[data-pfi-version="v0.2.3"] .top-bar,
+body[data-pfi-version="v0.2.3"] .side-nav,
+body[data-pfi-version="v0.2.3"] .evidence-panel,
+body[data-pfi-version="v0.2.3"] .task-panel,
+body[data-pfi-version="v0.2.3"] .command-palette {
+  background: color-mix(in srgb, var(--pfi-v023-surface) 94%, var(--pfi-v023-surface-soft));
+  border-color: var(--pfi-v023-border);
+}
+
+body[data-pfi-version="v0.2.3"] .brand-mark {
+  background: linear-gradient(135deg, var(--pfi-v023-accent-blue), var(--pfi-v023-accent-teal));
+  color: #ffffff;
+  box-shadow: 0 10px 22px rgba(37, 99, 235, 0.18);
+}
+
+body[data-pfi-version="v0.2.3"] .workspace-header,
+body[data-pfi-version="v0.2.3"] .page-tabs-panel,
+body[data-pfi-version="v0.2.3"] .workflow-runtime,
+body[data-pfi-version="v0.2.3"] .function-panel,
+body[data-pfi-version="v0.2.3"] .stage4-subpage {
+  border: 1px solid var(--pfi-v023-border);
+  border-radius: var(--pfi-v023-radius-card);
+  background: var(--pfi-v023-surface);
+  box-shadow: var(--pfi-v023-shadow-panel);
+}
+
+body[data-pfi-version="v0.2.3"] .metric-tile,
+body[data-pfi-version="v0.2.3"] .workflow-card,
+body[data-pfi-version="v0.2.3"] .stage4-section,
+body[data-pfi-version="v0.2.3"] .rail-card,
+body[data-pfi-version="v0.2.3"] .data-source-card {
+  min-width: 0;
+  border: 1px solid var(--pfi-v023-border);
+  border-radius: var(--pfi-v023-radius-card);
+  background: var(--pfi-v023-surface);
+  box-shadow: var(--pfi-v023-shadow-card);
+}
+
+body[data-pfi-version="v0.2.3"] .metric-tile strong,
+body[data-pfi-version="v0.2.3"] .workflow-card strong,
+body[data-pfi-version="v0.2.3"] .stage4-section h3 {
+  color: var(--pfi-v023-text);
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
+}
+
+body[data-pfi-version="v0.2.3"] .compact-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  border: 1px solid var(--pfi-v023-border);
+  border-radius: var(--pfi-v023-radius-card);
+  background: var(--pfi-v023-surface);
+}
+
+body[data-pfi-version="v0.2.3"] .compact-table th,
+body[data-pfi-version="v0.2.3"] .compact-table td {
+  border-bottom: 1px solid var(--pfi-v023-border);
+  color: var(--pfi-v023-text);
+  vertical-align: top;
+}
+
+body[data-pfi-version="v0.2.3"] .compact-table th {
+  background: var(--pfi-v023-surface-soft);
+  color: var(--pfi-v023-muted);
+  font-weight: 760;
+}
+
+body[data-pfi-version="v0.2.3"] button,
+body[data-pfi-version="v0.2.3"] .primary-action,
+body[data-pfi-version="v0.2.3"] .secondary-action,
+body[data-pfi-version="v0.2.3"] .workflow-card button,
+body[data-pfi-version="v0.2.3"] .secondary-tab,
+body[data-pfi-version="v0.2.3"] .mobile-tab {
+  min-height: 44px;
+  border-radius: var(--pfi-v023-radius-control);
+  letter-spacing: 0;
+}
+
+body[data-pfi-version="v0.2.3"] .primary-action,
+body[data-pfi-version="v0.2.3"] .workflow-open {
+  border-color: var(--pfi-v023-accent-blue);
+  background: var(--pfi-v023-accent-blue);
+  color: #ffffff;
+}
+
+body[data-pfi-version="v0.2.3"] .secondary-action,
+body[data-pfi-version="v0.2.3"] .workflow-card button:not(.workflow-open),
+body[data-pfi-version="v0.2.3"] .secondary-tab {
+  border-color: var(--pfi-v023-border);
+  background: var(--pfi-v023-surface-raised);
+  color: var(--pfi-v023-text);
+}
+
+body[data-pfi-version="v0.2.3"] .secondary-tab.is-active,
+body[data-pfi-version="v0.2.3"] .nav-item.is-active,
+body[data-pfi-version="v0.2.3"] .mobile-tab.is-active {
+  border-color: color-mix(in srgb, var(--pfi-v023-accent-blue) 42%, var(--pfi-v023-border));
+  background: var(--pfi-v023-surface-soft);
+  color: var(--pfi-v023-accent-blue);
+}
+
+body[data-pfi-version="v0.2.3"] .trend-empty,
+body[data-pfi-version="v0.2.3"] .v023-chart-empty {
+  display: grid;
+  min-height: 128px;
+  place-items: center;
+  padding: 20px;
+  border: 1px dashed var(--pfi-v023-border-strong);
+  border-radius: var(--pfi-v023-radius-card);
+  background: linear-gradient(135deg, #ffffff, #eef6ff);
+  color: var(--pfi-v023-muted);
+  text-align: center;
+}
+
+body[data-pfi-version="v0.2.3"] .v023-chart-empty::before {
+  content: "暂无真实图表数据，请先进入数据源与上传检查状态";
+}
+
+@media (max-width: 780px) {
+  body[data-pfi-version="v0.2.3"] .app-shell {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-areas:
+      "top"
+      "main";
+    padding-bottom: 86px;
+  }
+
+  body[data-pfi-version="v0.2.3"] .top-bar,
+  body[data-pfi-version="v0.2.3"] .workspace,
+  body[data-pfi-version="v0.2.3"] .workspace-header,
+  body[data-pfi-version="v0.2.3"] .metric-grid,
+  body[data-pfi-version="v0.2.3"] .workflow-grid,
+  body[data-pfi-version="v0.2.3"] .stage4-section-grid {
+    grid-template-columns: 1fr;
+  }
+
+  body[data-pfi-version="v0.2.3"] .side-nav,
+  body[data-pfi-version="v0.2.3"] .evidence-panel {
+    display: none;
+  }
+
+  body[data-pfi-version="v0.2.3"] .mobile-bottom-nav {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    padding: 8px;
+  }
+
+  body[data-pfi-version="v0.2.3"] .mobile-tab {
+    flex: 0 0 auto;
+    min-width: 96px;
+    max-width: 128px;
+    white-space: normal;
+    word-break: break-word;
+    scroll-snap-align: start;
+  }
+}

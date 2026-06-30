@@ -1,0 +1,60 @@
+{
+  "schema": "PFIV023Stage9Phase91DesignSystemAuditV1",
+  "version": "v0.2.3",
+  "stage": "Stage 9",
+  "phase_id": "V023-S9-P9.1",
+  "phase_name": "设计系统",
+  "generated_at_utc": "2026-06-30T05:27:26Z",
+  "token_surface": {
+    "source": "PFI/web/styles.css",
+    "load_order": [
+      "PFI/web/styles/tokens.css",
+      "PFI/web/styles.css"
+    ],
+    "color_scheme": "light",
+    "background": "#f7fafc",
+    "surface": "#ffffff",
+    "soft_surface": "#eef6ff",
+    "accent_blue": "#2563eb",
+    "accent_teal": "#0f766e",
+    "accent_gold": "#b7791f",
+    "card_radius_px": 8
+  },
+  "component_rules": [
+    "cards",
+    "tables",
+    "buttons",
+    "chart_empty_states",
+    "mobile"
+  ],
+  "component_scope": {
+    "cards": [
+      "metric-tile",
+      "workflow-card",
+      "stage4-section",
+      "rail-card",
+      "data-source-card"
+    ],
+    "tables": [
+      "compact-table"
+    ],
+    "buttons": [
+      "primary-action",
+      "secondary-action",
+      "workflow-open",
+      "secondary-tab",
+      "mobile-tab"
+    ],
+    "chart_empty_states": [
+      "trend-empty",
+      "v023-chart-empty"
+    ],
+    "mobile": [
+      "app-shell",
+      "mobile-bottom-nav",
+      "mobile-tab"
+    ]
+  },
+  "phase_9_2_motion_feedback_started": false,
+  "phase_9_3_haptics_settings_started": false
+}

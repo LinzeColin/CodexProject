@@ -1,0 +1,8 @@
+PFI/web/styles.css
+PFI/tests/test_v023_stage9_visual_feedback.py
+PFI/docs/pfi_v023/STAGE9_VISUAL_FEEDBACK.md
+PFI/reports/pfi_v023/stage_9/phase_9_1/evidence.json
+PFI/reports/pfi_v023/stage_9/phase_9_1/design_system_audit.json
+PFI/reports/pfi_v023/stage_9/phase_9_1/no_source_term_scan.json
+PFI/reports/pfi_v023/stage_9/phase_9_1/terminal.log
+PFI/reports/pfi_v023/stage_9/phase_9_1/changed_files.txt

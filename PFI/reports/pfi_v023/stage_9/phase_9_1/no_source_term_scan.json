@@ -1,0 +1,17 @@
+{
+  "schema": "PFIV023Stage9NoSourceTermScanV1",
+  "version": "v0.2.3",
+  "stage": "Stage 9",
+  "phase_id": "V023-S9-P9.1",
+  "generated_at_utc": "2026-06-30T05:27:26Z",
+  "scanned_files": [
+    "PFI/web/styles.css",
+    "PFI/tests/test_v023_stage9_visual_feedback.py",
+    "PFI/docs/pfi_v023/STAGE9_VISUAL_FEEDBACK.md"
+  ],
+  "blocked_term_count": 6,
+  "ignored_contract_fields": [
+    "sample_size"
+  ],
+  "violations": []
+}
