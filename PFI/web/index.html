@@ -23,8 +23,9 @@
     data-pfi-bundle-version="20260630.2"
     data-pfi-web-bundle-hash="runtime-computed"
     data-pfi-ui-contract-version="PFI-V024-STAGE2-ENTRY-CONSISTENCY"
-    data-pfi-stage="Stage 2"
-    data-pfi-phase="2.2"
+    data-pfi-stage="Stage 3"
+    data-pfi-phase="3.1"
+    data-stage3-navigation-contract="PFI-V024-STAGE3-PHASE31-NAVIGATION"
   >
     <a class="skip-link" href="#main-workspace">跳到内容</a>
     <div class="app-shell" data-state="ready">
@@ -113,7 +114,7 @@
         </div>
       </header>
 
-      <nav class="side-nav" aria-label="一级工作区" data-primary-workspaces="10">
+      <nav class="side-nav" aria-label="一级工作区" data-primary-workspaces="10" data-stage3-primary-nav-contract="PFI-V024-STAGE3-PHASE31-NAVIGATION" data-legacy-primary-entries="0">
         <button class="nav-item is-active" type="button" data-primary-entry="true" data-nav-index="1" data-workspace="home" data-route-alias="/home" data-nav-icon="⌂" data-nav-hint="净资产 · 现金流 · 数据健康">首页总览</button>
         <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="2" data-workspace="accounts" data-route-alias="/accounts" data-nav-icon="◫" data-nav-hint="账户地图 · 对账 · 跨币种">账户与资产</button>
         <button class="nav-item" type="button" data-primary-entry="true" data-nav-index="3" data-workspace="ledger" data-route-alias="/ledger" data-nav-icon="≋" data-nav-hint="标准流水 · A/B/C/D 复核">账本流水</button>
@@ -640,7 +641,7 @@
       </aside>
     </div>
 
-    <nav class="mobile-bottom-nav" aria-label="移动端一级工作区" data-stage3-mobile-primary="10">
+    <nav class="mobile-bottom-nav" aria-label="移动端一级工作区" data-stage3-mobile-primary="10" data-stage3-primary-nav-contract="PFI-V024-STAGE3-PHASE31-NAVIGATION" data-legacy-primary-entries="0">
       <button type="button" class="mobile-tab is-active" data-mobile-primary-entry="true" data-mobile-workspace="home" data-route-alias="/home"><span aria-hidden="true">⌂</span><span>首页总览</span></button>
       <button type="button" class="mobile-tab" data-mobile-primary-entry="true" data-mobile-workspace="accounts" data-route-alias="/accounts"><span aria-hidden="true">◫</span><span>账户与资产</span></button>
       <button type="button" class="mobile-tab" data-mobile-primary-entry="true" data-mobile-workspace="ledger" data-route-alias="/ledger"><span aria-hidden="true">≋</span><span>账本流水</span></button>
@@ -734,6 +735,7 @@
     </script>
     <script src="./app/version.js"></script>
     <script src="./app/entry_audit.js"></script>
+    <script src="./app/navigation.js"></script>
     <script src="./app/routes.js"></script>
     <script src="./app/shell.js"></script>
   </body>

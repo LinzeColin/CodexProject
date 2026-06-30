@@ -2,28 +2,31 @@
 
 ## Current Run
 
-本轮只执行：PFI v0.2.4 Stage 2 whole-stage review - 复审并解决暴露问题。
-不执行 Stage 3 或 GitHub main upload。
+本轮只执行：PFI v0.2.4 `Stage 3 / Phase 3.1 - 导航合同`。
+不执行 Phase 3.2、Phase 3.3、Stage 3 whole-stage review 或 GitHub main upload。
 
 ## Goal
 
-Review Phase 2.1, Phase 2.2, and Phase 2.3 together against the Stage 2
-app/localhost entry-consistency acceptance criteria. Fix review findings within
-the Stage 2 boundary, refresh evidence if it is stale, and close Stage 2
-locally without starting Stage 3 or uploading GitHub main.
+Freeze the Stage 3 navigation contract for the repair package:
+
+1. Official first-level navigation has exactly 10 entries.
+2. `市场与研究` is a formal first-level entry at index 9.
+3. v0.1 labels `首页`、`市场`、`研究`、`持仓`、`策略实验室`、`数据与系统` remain accessible only as secondary/alias/command paths.
+4. The page does not expose 16 peer first-level entries in sidebar, bottom navigation, or no-js fallback.
+5. Active-state rules are declared before Phase 3.2 route implementation.
 
 ## Allowed Files
 
 ```text
-PFI/StartPFI.command
-PFI/docs/pfi_v024/*
-PFI/src/pfi_v02/stage_v024_stage2_entry_consistency.py
-PFI/scripts/startPFI.sh
-PFI/scripts/validate_v024_stage2_phase23_entry.js
-PFI/tests/test_v024_stage2_phase23_real_entry_validation.py
-PFI/tests/test_v024_stage2_whole_review_contract.py
-PFI/reports/pfi_v024/stage_2/phase_2_3/*
-PFI/reports/pfi_v024/stage_2/whole_stage_review/*
+PFI/web/index.html
+PFI/web/app/navigation.js
+PFI/web/app/routes.js
+PFI/web/app/shell.js
+PFI/src/pfi_os/app/streamlit_app.py
+PFI/src/pfi_v02/stage_v024_stage3_navigation.py
+PFI/tests/test_v024_stage3_phase31_navigation_contract.py
+PFI/docs/pfi_v024/STAGE3_NAVIGATION_ROUTING.md
+PFI/reports/pfi_v024/stage_3/phase_3_1/*
 PFI/README.md
 PFI/HANDOFF.md
 PFI/CHANGELOG.md
@@ -35,39 +38,33 @@ PFI/模型参数文件.md
 Read-only inspection allowed:
 
 ```text
-PFI/scripts/installPFIEntryApps.sh
-PFI/macos/PFI_launcher.c
-PFI/macos/PFI.app/Contents/Info.plist
-/Applications/PFI.app
-~/Downloads/PFI.app
-~/Desktop/PFI.app
+PFI/docs/pfi_v024/*
+PFI/reports/pfi_v024/stage_2/*
+PFI/tests/test_v023_stage3_navigation_routes.py
+PFI/tests/test_v024_stage2_*.py
+PFI/StartPFI.command
+PFI/scripts/startPFI.sh
 ```
 
 ## Validation
 
 ```bash
+PATH=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH node --check PFI/web/app/navigation.js
+PATH=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH node --check PFI/web/app/routes.js
 PATH=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH node --check PFI/web/app/shell.js
-PATH=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH node --check PFI/web/app/version.js
-PATH=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH node --check PFI/web/app/entry_audit.js
-PATH=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH node --check PFI/scripts/validate_v024_stage2_phase23_entry.js
-zsh -n PFI/StartPFI.command
-zsh -n PFI/scripts/startPFI.sh
-PLAYWRIGHT_CORE_PATH=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/.pnpm/playwright-core@1.61.0/node_modules/playwright-core CHROME_EXECUTABLE_PATH="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node PFI/scripts/validate_v024_stage2_phase23_entry.js
-PYTHONDONTWRITEBYTECODE=1 python3 -B -m py_compile PFI/src/pfi_v02/stage_v024_stage2_entry_consistency.py PFI/tests/test_v024_stage2_phase23_real_entry_validation.py
-PYTHONDONTWRITEBYTECODE=1 python3 -B -m py_compile PFI/tests/test_v024_stage2_whole_review_contract.py
-PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage2_phase23_real_entry_validation.py -q
-PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage2_whole_review_contract.py -q
-python3 -m json.tool PFI/reports/pfi_v024/stage_2/phase_2_3/evidence.json
-python3 -m json.tool PFI/reports/pfi_v024/stage_2/phase_2_3/browser_validation.json
-python3 -m json.tool PFI/reports/pfi_v024/stage_2/whole_stage_review/evidence.json
+PYTHONDONTWRITEBYTECODE=1 python3 -B -m py_compile PFI/src/pfi_v02/stage_v024_stage3_navigation.py PFI/tests/test_v024_stage3_phase31_navigation_contract.py
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage3_phase31_navigation_contract.py -q
+python3 -m json.tool PFI/reports/pfi_v024/stage_3/phase_3_1/evidence.json
 git diff --check -- PFI
 ```
 
 ## Explicit Non-Goals
 
-- Do not start Stage 3 navigation repair in this run.
+- Do not implement Phase 3.2 route mutation, redirect, or history behavior in this run.
+- Do not perform Phase 3.3 browser back/forward/direct URL validation in this run.
+- Do not run Stage 3 whole-stage review in this run.
 - Do not reinstall or mutate app bundles.
-- Do not modify app launcher C source or Info.plist.
-- Do not change business financial UI flows or data logic.
+- Do not modify launcher C source or Info.plist.
+- Do not change business financial UI data logic, metrics, formulas, or user data.
 - Do not add mock/sample/demo/synthetic/fixture/fake financial data.
 - Do not push to GitHub main in this run.

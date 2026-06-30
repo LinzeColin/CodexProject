@@ -5,6 +5,7 @@
   }
   if (root) {
     root.PFI_V023_STAGE3_NAV = api;
+    root.PFI_V024_STAGE3_ROUTE_COMPAT = api.v024Phase31RouteContract;
   }
 })(typeof window !== "undefined" ? window : globalThis, function buildPFIStage3Routes() {
   const officialPrimaryEntries = Object.freeze([
@@ -32,6 +33,20 @@
   const legacyRouteAliasTargets = Object.freeze(Object.fromEntries(
     legacyAliasEntries.map((entry) => [entry.routeAlias, entry.resolvedRouteAlias])
   ));
+  const v024Phase31RouteContract = Object.freeze({
+    version: "v0.2.4",
+    sourcePackageVersion: "v0.2.3-repair",
+    stage: "Stage 3",
+    phaseId: "3.1",
+    phaseName: "导航合同",
+    sourceGlobal: "PFI_V024_STAGE3_NAVIGATION",
+    officialPrimaryEntryCount: 10,
+    marketResearchPrimaryIndex: 9,
+    legacyAliasPolicy: "secondary_or_command_alias",
+    legacyAliasLabels: Object.freeze(["首页", "市场", "研究", "持仓", "策略实验室", "数据与系统"]),
+    legacyAliasPrimaryEntryAllowed: false,
+    taskIds: Object.freeze(["T3.1.1", "T3.1.2", "T3.1.3", "T3.1.4"]),
+  });
 
   function resolveLegacyRouteAlias(routeAlias) {
     const clean = String(routeAlias || "").trim();
@@ -45,6 +60,7 @@
     officialPrimaryEntries,
     legacyAliasEntries,
     legacyRouteAliasTargets,
+    v024Phase31RouteContract,
     resolveLegacyRouteAlias,
   });
 });

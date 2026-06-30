@@ -70,9 +70,36 @@ Stage 1 records:
 - `tests/test_v024_stage1_whole_review_contract.py`
 - `reports/pfi_v024/stage_1/whole_stage_review/evidence.json`
 
+## v0.2.4 Stage 3 Status
+
+Current run unit: `Stage 3 / Phase 3.1 - 导航合同`.
+
+- Stage 2 GitHub main upload: complete at `c34af606f9793272e92d067fbe808dfdf100ec84`.
+- Phase 3.1: candidate pass.
+- Phase 3.2: not executed.
+- Phase 3.3: not executed.
+- Stage 3 candidate complete: no.
+- Stage 3 whole-stage review: not executed.
+- GitHub main upload: not executed in this run.
+- Current navigation contract: `PFI-V024-STAGE3-PHASE31-NAVIGATION`.
+- Official primary entries remain exactly 10: `首页总览`、`账户与资产`、`账本流水`、`投资管理`、`消费管理`、`数据源与上传`、`建议与复盘`、`报告与洞察`、`市场与研究`、`设置`.
+- v0.1 labels `首页`、`市场`、`研究`、`持仓`、`策略实验室`、`数据与系统` remain available only as aliases/commands, not peer primary entries.
+- `PFI/web/app/navigation.js` is loaded before `routes.js`; Streamlit embed now inlines it before routes and shell.
+- Business financial data logic changes: none.
+- App bundle changes: none.
+- Next gate: Phase 3.2 route implementation only after user instruction.
+
+Phase 3.1 records:
+
+- `docs/pfi_v024/STAGE3_NAVIGATION_ROUTING.md`
+- `src/pfi_v02/stage_v024_stage3_navigation.py`
+- `tests/test_v024_stage3_phase31_navigation_contract.py`
+- `web/app/navigation.js`
+- `reports/pfi_v024/stage_3/phase_3_1/evidence.json`
+
 ## v0.2.4 Stage 2 Status
 
-Current run unit: `Stage 2 whole-stage review - 复审并解决暴露问题`.
+Current run unit: completed and uploaded before Stage 3.
 
 - Stage 1 GitHub main upload: complete at `99dea6212dd79b1b0027e8152fa18d81321d46a8`.
 - Phase 2.1: candidate pass.
@@ -81,9 +108,9 @@ Current run unit: `Stage 2 whole-stage review - 复审并解决暴露问题`.
 - Stage 2 candidate complete: yes.
 - Stage 2 whole-stage review: pass.
 - Stage 2 complete: yes at local review level.
-- Stage 3: not started.
-- GitHub main upload: not executed in this run.
-- Next gate: Stage 2 GitHub main upload before Stage 3.
+- Stage 3 at Stage 2 review time: not started; current Stage 3 status is tracked above.
+- GitHub main upload: complete at `c34af606f9793272e92d067fbe808dfdf100ec84`.
+- Next gate after upload: Stage 3 Phase 3.1, now candidate pass.
 - Business UI changes: limited to entry identity status strip and version metadata visibility.
 - Data logic changes: none.
 - App bundle changes: none.
