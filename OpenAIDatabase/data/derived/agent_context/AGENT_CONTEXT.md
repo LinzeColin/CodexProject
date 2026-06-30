@@ -2,9 +2,9 @@
 
 固定入口：给任意 ChatGPT / Codex / future agent 启动时读取。
 
-- 生成时间：2026-06-30T07:11:00Z
+- 生成时间：2026-06-30T07:12:22Z
 - 数据来源：OpenAIDatabase redacted derived memory surfaces
-- 覆盖 Codex：2026-06-03 至 2026-06-30，408 个 session，137865 条消息，457606 次工具调用。
+- 覆盖 Codex：2026-06-02 至 2026-06-30，408 个 session，137872 条消息，457620 次工具调用。
 - Memory Atlas：732 个节点，3892 条边。
 - 数据源注册表：memory_atlas_data_source_registry.v1，当前 2 个 active，3 个 planned。
 
