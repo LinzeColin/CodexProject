@@ -4244,13 +4244,18 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertEqual(
             readiness["independent_final_reviewer_assignment_request"]["status"],
-            "blocked_reviewer_assignment_request_ready_no_assignment",
+            "blocked_reviewer_assignment_validated_waiting_closure_decision",
+        )
+        self.assertTrue(
+            readiness["independent_final_reviewer_assignment_request"][
+                "independent_final_reviewer_assigned"
+            ]
         )
 
         tampered = json.loads(json.dumps(state))
         tampered["independent_final_reviewer_assigned"] = True
         self.assertIn(
-            "independent_final_reviewer_assigned must be false until assignment artifact exists",
+            "independent_final_reviewer_assigned must match assignment artifact validation",
             validate_independent_final_reviewer_assignment_request_state(tampered),
         )
 
@@ -4388,6 +4393,30 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertTrue(assignment_validation["assignment_present"])
         self.assertTrue(assignment_validation["independent_final_reviewer_assigned_by_payload"])
         self.assertEqual(assignment_validation["validation_errors"], [])
+        assignment_request = state["independent_final_reviewer_assignment_request"]
+        self.assertEqual(
+            assignment_request["status"],
+            "blocked_reviewer_assignment_validated_waiting_closure_decision",
+        )
+        self.assertTrue(assignment_request["independent_final_reviewer_assigned"])
+        self.assertEqual(
+            assignment_request["next_required_action"],
+            "independent_final_reviewer_must_issue_or_reject_closure_decision",
+        )
+        self.assertNotIn(
+            "independent_final_reviewer_assignment_missing",
+            assignment_request["blocking_reasons"],
+        )
+        closure_request = state["independent_final_closure_decision_request"]
+        self.assertTrue(closure_request["independent_final_reviewer_assigned"])
+        self.assertEqual(
+            closure_request["reviewer_assignment_request"]["status"],
+            "blocked_reviewer_assignment_validated_waiting_closure_decision",
+        )
+        self.assertNotIn(
+            "independent_final_reviewer_assignment_missing",
+            closure_request["blocking_reasons"],
+        )
         self.assertEqual(state["status"], "blocked")
         self.assertFalse(state["production_acceptance_claimed"])
         self.assertFalse(state["integrated_production_accepted"])

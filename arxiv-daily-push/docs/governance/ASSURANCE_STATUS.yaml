@@ -1,5 +1,5 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260701-ADP-S2PMT07-FINAL-BUNDLE-NO-WRITE-FLAGS-OUTERMOST-SYNC"
+as_of_event_id: "EVENT-20260701-ADP-S2PMT07-FINAL-BUNDLE-REVIEWER-ASSIGNMENT-CONSUMPTION-SYNC"
 source_snapshot_hash: "sha256:33d61400aa5e461ec4512d546b2ceca25cac9804e4261e1a994ba1e9aa56fc01"
 source_base_commit: "fd90a208c7b009aa11bc26c4629a7ea92679c5ff"
 source_tree_hash: "c44d743a2833842b3cc0dd9e098fb70017cdc5a2"
@@ -66,7 +66,7 @@ dimensions:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "BLOCKED_PRECHECK"
-  release_gate: "S2PMT07_FINAL_BUNDLE_NO_WRITE_FLAGS_OUTERMOST_SYNC_BLOCKED_NO_PRODUCTION"
+  release_gate: "S2PMT07_FINAL_BUNDLE_REVIEWER_ASSIGNMENT_CONSUMPTION_SYNC_BLOCKED_NO_PRODUCTION"
   blocker_ids:
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
@@ -82,7 +82,7 @@ delivery_readiness:
   p0_p1_zero_proof_artifact_state_hash: "bf966c244f9f7c52b75ae7d56ff8f8c0fbda498cd678f4003ee3ed2c40961786"
   p0_p1_zero_proof_current_p0_findings: 0
   p0_p1_zero_proof_current_p1_findings: 0
-  p0_p1_zero_proof_boundary: "V7.1 inherited baseline P0=8/P1=37 remains a historical contract baseline; current zero-proof artifact P0=0/P1=0 is a usable final-bundle input only and does not equal Stage2 production acceptance."
+  p0_p1_zero_proof_boundary: "V7.1 inherited baseline P0=8/P1=37 remains a historical contract baseline; current zero-proof artifact P0=0/P1=0 and validated independent final reviewer assignment are usable final-bundle inputs only and do not equal independent closure signoff, S2PLT04, or Stage2 production acceptance."
   s2plt04_completion_evidence_summary_status: "blocked"
   s2plt04_completion_evidence_summary_state_hash: "ee3917fedcd96e10a23fbd228367e6837ffca092734d98288502d9702514165f"
   s2plt04_completion_report_ready: false

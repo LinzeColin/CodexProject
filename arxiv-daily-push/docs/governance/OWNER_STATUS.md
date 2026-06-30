@@ -6,6 +6,8 @@ arxiv-daily-push 当前治理结论：实现一致性为 `VERIFIED`，方法/实
 
 ## 2. 本次运行改变了什么
 
+Owner 视图现在把已验证的独立最终复审人分配文件接入 final bundle readiness：`FINAL_ACCEPTANCE_BUNDLE/independent_final_reviewer_assignment.json` 已由 validator 读取，assignment validation `state_hash=b5b117307bd61f168ae6a422b24c865227f4824191348b851081af66730ed2c2`，assignment request `state_hash=7f59ff864ad3a43f24e3b105f13a5aed8802729e8c18482483db8ed78c2921ad`，closure decision request `state_hash=246a736255b77c3a40f74fbdc4431f52367e3d474d4d13156a19ec9b6e7feddf`，final validator `state_hash=be9cd3bb14da9d57dcaee0168bae396ed95049bf6c261515a5d39959cf3ad461`。validated request 不再保留 `independent_final_reviewer_assignment_missing`，但 `independent_final_closure_decision_present=false`，S2PLT02/S2PLT03 terminal proof、S2PLT04 completion report、final bundle manifest、handoff、signoff、final command 和 production acceptance 仍全部 blocked。这不是 P0/P1 closure，也不是 SMTP/scheduler 授权。
+
 Owner 视图现在在 final bundle 最外层直接显示 `ready_to_write_live_artifacts=false`：S2PLT02 capture plan `state_hash=c9216c53cedf0cb5fcc12fd15ffb021b83586906f233a4f78ed96ecfe84f9b13`，wait guard `state_hash=581fe9f53d82db88959196f874d312e50b1739a839158f7bf2d38cc186c03506`，prerequisite plan `state_hash=256aa1a8dfeff4f598fa9fbb172aae3f6e7cde428bde570424a2bc779da7e320`，final validator `state_hash=494538d0e454c51869eca559808316740a422f92b7deeb070d348f65e1277d67`。`ready_to_write_live_artifacts` 必须等于 `live_artifact_write_guard.live_artifact_write_allowed`；当前 `current_wait_state=WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`，下一步仍是 `S2PLT02_TERMINAL_DELIVERY_PROOF` / `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`。这不是 SMTP/scheduler 授权，也不是 S2PLT02/S2PLT03/S2PLT04/S2PMT07 或生产验收。
 
 Owner 视图现在也显示 `capture_wait_state_guard`：当前 S2PLT02 capture plan `state_hash=5b344929d8d00c9cf881accbbd9abd68963b5f40cbd975a805fa4da62a8a8a25`，wait guard `state_hash=581fe9f53d82db88959196f874d312e50b1739a839158f7bf2d38cc186c03506`，current wait state 为 `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`。只允许继续运行只读命令 `adp plan-s2plt02-terminal-delivery-proof-capture --repo-root . --generated-at 2026-06-30T18:03:24+10:00 --json;adp audit-s2plt02-terminal-capture-window --repo-root . --json;adp audit-s2plt02-terminal-proof-evidence-inventory --repo-root . --json;adp validate-s2plt02-terminal-delivery-proof --repo-root . --json`；禁止提前写入 `FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json;FINAL_ACCEPTANCE_BUNDLE/s2plt03_terminal_resilience_proof.json;FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json;FINAL_ACCEPTANCE_BUNDLE/manifest.json;HANDOFF/00_下一Agent先读.md`。prerequisite plan 最新 `state_hash=8409313fd39c4627122aca97cc80d28480f65b5230f6982ae7e720b6e0134b73`，final validator 最新 `state_hash=eef4f33e08feb99de67c24c9339ae204658f6b0ac4d0e5cd810092b5a3246aff`。这不是 SMTP/scheduler 授权，也不是 S2PLT02/S2PLT03/S2PLT04/S2PMT07 或生产验收。
@@ -90,7 +92,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PMT07_FINAL_BUNDLE_NO_WRITE_FLAGS_OUTERMOST_SYNC_BLOCKED_NO_PRODUCTION`
+- release_gate: `S2PMT07_FINAL_BUNDLE_REVIEWER_ASSIGNMENT_CONSUMPTION_SYNC_BLOCKED_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
@@ -113,7 +115,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - snapshot_event_time: `2026-06-30T15:31:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PL / S2PMT07_FINAL_BUNDLE_MISSING_ARTIFACT_INVENTORY_BLOCKED_NO_PRODUCTION`
+- phase/gate: `S2PL / S2PMT07_FINAL_BUNDLE_REVIEWER_ASSIGNMENT_CONSUMPTION_SYNC_BLOCKED_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 
