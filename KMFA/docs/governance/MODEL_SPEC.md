@@ -1,10 +1,10 @@
 # KMFA Model Spec
 
-product_version: 0.1.0-s05p3-authority-baseline-lock
+product_version: 0.1.0-s05-stage-review
 
 ## Scope
 
-当前模型说明覆盖 S01 已建立并按 v1.2 重放的治理边界、S02-P1 metadata 协议、S02-P2 不可污染原则、S02-P3 质量等级门禁协议、S03-P1 文件型导入登记模型、S03-P2 数据源检查矩阵模型、S03-P3 源优先级模型、S04-P1 金额工具、S04-P2 字段标准化工具、S04-P3 基础工具测试、Stage 4 整体复审与上传、S05-P1 A0 文件登记、S05-P2 public-safe A0 字段级黄金基准候选合同和 S05-P3 public-safe A0 authority baseline lock。不声明 Stage 5 整体复审、项目成本事实层、zero-delta、lineage 完整检查或正式报告生成已经实现。
+当前模型说明覆盖 S01 已建立并按 v1.2 重放的治理边界、S02-P1 metadata 协议、S02-P2 不可污染原则、S02-P3 质量等级门禁协议、S03-P1 文件型导入登记模型、S03-P2 数据源检查矩阵模型、S03-P3 源优先级模型、S04-P1 金额工具、S04-P2 字段标准化工具、S04-P3 基础工具测试、Stage 4 整体复审与上传、S05-P1 A0 文件登记、S05-P2 public-safe A0 字段级黄金基准候选合同、S05-P3 public-safe A0 authority baseline lock 和 Stage 5 整体复审。不声明项目成本事实层、zero-delta、lineage 完整检查、正式报告生成或 Stage 5 GitHub upload 已经实现。
 
 ## Active Model
 
@@ -108,13 +108,13 @@ product_version: 0.1.0-s05p3-authority-baseline-lock
 - purpose: 将 40 条具备 private hash/source-anchor 证据的 PDF 字段锁定为 Q5 calculation baseline，并将 5 条 Excel 字段按 active owner/授权降级决策排除。
 - fact_level: EXTRACTED
 - evidence: `KMFA/tools/a0_authority_baseline_lock.py`, `KMFA/tools/check_a0_authority_baseline_lock.py`, `KMFA/metadata/baseline/a0_authority_baseline_manifest.json`, `KMFA/stage_artifacts/S05_P3_authority_baseline_lock/human/s05_p3_completion_record.md`
-- limitation: 只保存 public-safe hash/source-anchor baseline，不提交真实字段明文；不代表 Stage 5 review、zero-delta、lineage 或正式报告发布完成。
+- limitation: 只保存 public-safe hash/source-anchor baseline，不提交真实字段明文；Stage 5 review 已本地通过，但不代表 zero-delta、lineage、正式报告发布或 GitHub upload 完成。
 
 ## Planned Business Model
 
 ### MOD-KMFA-COST-001
 
-- status: planned with S04-P1 amount formula, S04-P2 field standardization formula, S04-P3 boundary validation, S05-P1 A0 file registration, S05-P2 public-safe fixture contract, and S05-P3 public-safe authority lock active
+- status: planned with S04-P1 amount formula, S04-P2 field standardization formula, S04-P3 boundary validation, S05-P1 A0 file registration, S05-P2 public-safe fixture contract, S05-P3 public-safe authority lock, and Stage 5 review active
 - purpose: 后续文件型项目成本分析 MVP。
 - dependency: S05 A0 基准、S06 零差异、S09 成本计算、S10 报告等级。
 - current limitation: no production data import, no zero-delta, no lineage full check, no official report generation, and no Stage 5 GitHub upload.
