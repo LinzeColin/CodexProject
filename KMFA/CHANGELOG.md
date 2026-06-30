@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-s09p2-margin-cash-margin - 2026-06-30
+
+- 完成 `S09-P2｜毛利与现金毛利` 本地验证，不上传 GitHub。
+- 新增 `KMFA/tools/project_margin_cash_margin.py`、`KMFA/tools/check_s09_p2_margin_cash_margin.py` 和 `KMFA/tests/test_project_margin_cash_margin.py`。
+- 生成 public-safe margin/cash margin manifest、4 条 project margin records 和 12 条 scope difference summary records，覆盖 authority gross profit、system recomputed gross profit、cash gross profit 和 gross margin rate。
+- 保留 A0 authority display value refs/hash 与 S09-P2 system recomputed refs/hash，不互相覆盖；差异只进入口径差异摘要，S09-P3 尚未执行。
+- 公开仓库不提交 raw business data、zip、Excel、PDF、private CSV、字段明文或真实业务值；S09-P3、Stage 9 review、lineage、正式报告、UI、外部接口和 GitHub upload 均未执行。
+
 ## 0.1.0-s09p1-project-cost-fact-layer - 2026-06-30
 
 - 完成 `S09-P1｜项目成本事实层` 本地验证，不上传 GitHub。
