@@ -1,0 +1,51 @@
+{
+  "acceptance_ids": [
+    "ACC-KMFA-S06-P3"
+  ],
+  "completed_task_ids": [
+    "S6PCT01",
+    "S6PCT02",
+    "S6PCT03"
+  ],
+  "data_quality_records_written": 2,
+  "evidence_refs": [
+    "KMFA/tools/validation_evidence_output.py",
+    "KMFA/tools/check_s06_p3_validation_evidence.py",
+    "KMFA/tests/test_validation_evidence_output.py",
+    "KMFA/stage_artifacts/S06_P3_validation_evidence_output/human/s06_p3_completion_record.md",
+    "KMFA/stage_artifacts/S06_P3_validation_evidence_output/human/test_results.md",
+    "KMFA/stage_artifacts/S06_P3_validation_evidence_output/machine/zero_delta_result.json",
+    "KMFA/stage_artifacts/S06_P3_validation_evidence_output/machine/mismatch_report.csv",
+    "KMFA/stage_artifacts/S06_P3_validation_evidence_output/machine/project_validation_status.jsonl",
+    "KMFA/metadata/quality/zero_delta_results.jsonl",
+    "KMFA/metadata/quality/data_quality_results.jsonl",
+    "KMFA/metadata/quality/source_difference_queue.jsonl",
+    "KMFA/metadata/quality/mismatch_report.csv"
+  ],
+  "formal_report_allowed": false,
+  "github_upload_allowed": false,
+  "metadata_mismatch_rows_written": 1,
+  "metadata_queue_records_written": 1,
+  "metadata_zero_delta_records_written": 1,
+  "phase_id": "S6PC",
+  "private_csv_committed": false,
+  "project_id": "KMFA",
+  "project_validation_statuses": 2,
+  "public_repo_raw_files_committed": false,
+  "raw_business_data_used": false,
+  "source_amount_literals_committed": false,
+  "record_type": "stage_phase_manifest",
+  "report_grade_a_allowed_before_resolution": false,
+  "schema_version": "kmfa.stage_phase_manifest.v1",
+  "sensitive_field_plaintext_committed": false,
+  "stage6_review_completed": false,
+  "stage_id": "S06",
+  "status": "completed_validated_local_only_validation_evidence_output",
+  "test_commands": [
+    "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest KMFA.tests.test_validation_evidence_output -q",
+    "PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/validation_evidence_output.py --zero-delta-result KMFA/stage_artifacts/S06_P1_zero_delta_validator/machine/s06_p1_synthetic_zero_delta_result.json --source-mismatch-report KMFA/stage_artifacts/S06_P1_zero_delta_validator/machine/s06_p1_synthetic_mismatch_report.csv --difference-queue KMFA/stage_artifacts/S06_P2_cross_source_difference_queue/machine/s06_p2_synthetic_difference_queue.jsonl --report-gate KMFA/stage_artifacts/S06_P2_cross_source_difference_queue/machine/s06_p2_report_grade_gate.json --output-dir KMFA/stage_artifacts/S06_P3_validation_evidence_output/machine --metadata-quality-dir KMFA/metadata/quality --evidence-time 2026-06-30T14:30:00+10:00",
+    "PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/check_s06_p3_validation_evidence.py"
+  ],
+  "updated_at": "2026-06-30T14:30:00+10:00",
+  "zero_delta_passed": false
+}

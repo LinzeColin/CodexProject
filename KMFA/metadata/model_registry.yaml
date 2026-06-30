@@ -1,4 +1,4 @@
-version: "0.1.0-s06p2-cross-source-difference-queue"
+version: "0.1.0-s06p3-validation-evidence-output"
 project: "KMFA"
 active_model_ids:
   - "MOD-KMFA-GOV-001"
@@ -18,6 +18,7 @@ active_formula_ids:
   - "FORM-KMFA-A0-AUTHORITY-BASELINE-LOCK-001"
   - "FORM-KMFA-ZERO-DELTA-VALIDATOR-001"
   - "FORM-KMFA-CROSS-SOURCE-DIFF-QUEUE-001"
+  - "FORM-KMFA-VALIDATION-EVIDENCE-OUTPUT-001"
 source_of_truth:
   - "KMFA/docs/governance/model_registry.yaml"
   - "KMFA/docs/governance/formula_registry.yaml"

@@ -118,7 +118,7 @@ models:
     owner: "KMFA"
     status: "planned"
     fact_level: "EXTRACTED"
-    model_version: "0.1.0-s06p2-cross-source-difference-queue"
+    model_version: "0.1.0-s06p3-validation-evidence-output"
     assumptions:
       - "ASM-KMFA-003"
     formula_ids:
@@ -129,6 +129,7 @@ models:
       - "FORM-KMFA-A0-AUTHORITY-BASELINE-LOCK-001"
       - "FORM-KMFA-ZERO-DELTA-VALIDATOR-001"
       - "FORM-KMFA-CROSS-SOURCE-DIFF-QUEUE-001"
+      - "FORM-KMFA-VALIDATION-EVIDENCE-OUTPUT-001"
     parameter_ids:
       - "PARAM-KMFA-101"
       - "PARAM-KMFA-102"
@@ -152,6 +153,10 @@ models:
       - "PARAM-KMFA-413"
       - "PARAM-KMFA-414"
       - "PARAM-KMFA-415"
+      - "PARAM-KMFA-416"
+      - "PARAM-KMFA-417"
+      - "PARAM-KMFA-418"
+      - "PARAM-KMFA-419"
     inputs:
       - "raw file hash and manifest"
       - "authorized extracted values"
@@ -173,7 +178,9 @@ models:
       - "KMFA/tools/zero_delta_validator.py"
       - "KMFA/tools/cross_source_difference_queue.py"
       - "KMFA/tools/check_s06_p2_difference_queue.py"
-      - "remaining_cost_model_not_implemented_until_S06_P3_S10"
+      - "KMFA/tools/validation_evidence_output.py"
+      - "KMFA/tools/check_s06_p3_validation_evidence.py"
+      - "remaining_cost_model_not_implemented_until_S07_S10"
     test_refs:
       - "python3 -m unittest KMFA.tests.test_amount_tools -q"
       - "python3 KMFA/tools/check_no_float_money.py"
@@ -189,6 +196,8 @@ models:
       - "python3 -m unittest KMFA.tests.test_zero_delta_validator -q"
       - "python3 -m unittest KMFA.tests.test_cross_source_difference_queue -q"
       - "python3 KMFA/tools/check_s06_p2_difference_queue.py"
+      - "python3 -m unittest KMFA.tests.test_validation_evidence_output -q"
+      - "python3 KMFA/tools/check_s06_p3_validation_evidence.py"
     evidence_refs:
       - "KMFA/模型参数文件.md"
       - "KMFA/stage_artifacts/S04_P1_amount_tools/human/s04_p1_completion_record.md"
@@ -198,6 +207,7 @@ models:
       - "KMFA/stage_artifacts/S05_P2_a0_golden_fixture/human/s05_p2_completion_record.md"
       - "KMFA/stage_artifacts/S06_P1_zero_delta_validator/human/s06_p1_completion_record.md"
       - "KMFA/stage_artifacts/S06_P2_cross_source_difference_queue/human/s06_p2_completion_record.md"
+      - "KMFA/stage_artifacts/S06_P3_validation_evidence_output/human/s06_p3_completion_record.md"
       - "KMFA/stage_artifacts/S05_P3_authority_baseline_lock/human/s05_p3_completion_record.md"
   - model_id: "MOD-KMFA-METADATA-001"
     name: "KMFA metadata protocol and identifier contract"

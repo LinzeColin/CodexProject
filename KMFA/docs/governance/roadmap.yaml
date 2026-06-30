@@ -2,11 +2,11 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KMFA"
 total_estimated_hours: 54
-completed_estimated_hours: 51
+completed_estimated_hours: 54
 current_stage_id: "S6"
-current_phase_id: "S6PC"
-current_task_id: "S6PCT01-S6PCT03"
-next_gate_id: "KMFA-S06-P3-GATE"
+current_phase_id: "S6REV"
+current_task_id: "KMFA-S06-STAGE-REVIEW"
+next_gate_id: "KMFA-S06-STAGE-REVIEW-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -599,9 +599,9 @@ stages:
       - "KMFA/stage_artifacts/S05_STAGE_REVIEW/machine/stage5_upload_manifest.json"
   - stage_id: "S6"
     name: "零差异校验与差异处理队列"
-    status: "in_progress_local_only"
+    status: "completed_local_only_pending_stage_review"
     estimated_hours: 3
-    estimated_pct: 66.67
+    estimated_pct: 100
     evidence_refs:
       - "KMFA/stage_artifacts/S06_P1_zero_delta_validator/human/s06_p1_completion_record.md"
       - "KMFA/stage_artifacts/S06_P1_zero_delta_validator/human/test_results.md"
@@ -609,6 +609,9 @@ stages:
       - "KMFA/stage_artifacts/S06_P2_cross_source_difference_queue/human/s06_p2_completion_record.md"
       - "KMFA/stage_artifacts/S06_P2_cross_source_difference_queue/human/test_results.md"
       - "KMFA/stage_artifacts/S06_P2_cross_source_difference_queue/machine/s06_p2_manifest.json"
+      - "KMFA/stage_artifacts/S06_P3_validation_evidence_output/human/s06_p3_completion_record.md"
+      - "KMFA/stage_artifacts/S06_P3_validation_evidence_output/human/test_results.md"
+      - "KMFA/stage_artifacts/S06_P3_validation_evidence_output/machine/s06_p3_manifest.json"
   - stage_id: "S7"
     name: "文件型源适配与字段映射"
     status: "planned"
