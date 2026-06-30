@@ -56,9 +56,11 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
 
     app_source = read_text(repo_root / "apps/memory-atlas/src/App.tsx")
     galaxy_source = read_text(repo_root / "apps/memory-atlas/src/components/GalaxyScene.tsx")
+    starfield_params_source = read_text(repo_root / "apps/memory-atlas/src/config/memoryStarfieldParameters.ts")
     obsidian_source = read_text(repo_root / "apps/memory-atlas/src/components/ObsidianGraphScene.tsx")
     visual_flags_source = read_text(repo_root / "apps/memory-atlas/src/config/visualFlags.ts")
     css_source = read_text(repo_root / "apps/memory-atlas/src/styles.css")
+    model_params_source = read_text(repo_root / "config/visualization/model_parameters.memory_starfield.yaml")
     data_builder_source = read_text(repo_root / "scripts/build_memory_atlas_data.py")
     installer_source = read_text(repo_root / "scripts/install_memory_atlas_app.py")
     readme = read_text(repo_root / "README.md")
@@ -708,6 +710,38 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         "galaxy_stage4_1_rendering_integration_ready",
         "Galaxy has a default Memory Starfield renderer behind a rollback flag, Flow Field trajectories, quality fallback controls, semantic signal markers, and legacy mode",
         "Galaxy Stage 4.1 feature flag, Flow Field renderer, quality fallback, semantic signal markers, or legacy rollback path is missing",
+    )
+    require(
+        checks,
+        "product_target: Memory Atlas v1.1.5" in model_params_source
+        and "cluster_mass:" in model_params_source
+        and "particle_attributes:" in model_params_source
+        and "terrain:" in model_params_source
+        and "recency_half_life_days" in model_params_source
+        and "importance_to_mass_scale" in model_params_source
+        and "quality_settings:" in model_params_source
+        and "model_parameters.memory_starfield.yaml?raw" in starfield_params_source
+        and "parseYamlScalarPaths" in starfield_params_source
+        and "MEMORY_STARFIELD_PARAMS" in starfield_params_source
+        and "MemoryTerrainType" in starfield_params_source
+        and "STARFIELD_QUALITY_SETTINGS = MEMORY_STARFIELD_PARAMS.qualitySettings" in galaxy_source
+        and "function memoryStarfieldMass" in galaxy_source
+        and "memoryStarfieldRecencyScore" in galaxy_source
+        and "memoryStarfieldConfidenceScore" in galaxy_source
+        and "function memoryStarfieldParticleAttributes" in galaxy_source
+        and "function memoryTerrainType" in galaxy_source
+        and "function buildTerrainSummary" in galaxy_source
+        and "memory-starfield-terrain-layer" in galaxy_source
+        and "terrainFeatureCount" in galaxy_source
+        and "parameterSource: MEMORY_STARFIELD_PARAMS.parameterSource" in galaxy_source
+        and "terrainAnalysisOpen" in galaxy_source
+        and 'className="galaxy-terrain-panel"' in galaxy_source
+        and ".galaxy-terrain-panel" in css_source
+        and ".terrain-row[data-terrain-type=\"ridge\"]" in css_source
+        and ".terrain-row[data-terrain-type=\"fault-line\"]" in css_source,
+        "galaxy_stage4_2_data_mapping_ready",
+        "Galaxy Stage 4.2 maps mass, particle attributes, trajectory strength, quality settings, and Memory Terrain from the v1.1.5 parameter file with an explainable terrain panel",
+        "Galaxy Stage 4.2 data mapping may still be hardcoded or lack parameter-backed mass, particle attributes, terrain layer, analysis panel, or audit signal",
     )
     require(
         checks,

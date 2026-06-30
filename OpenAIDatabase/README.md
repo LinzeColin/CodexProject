@@ -247,7 +247,7 @@ Current visualization modes:
   active filter chips, previous/next focus buttons, theme focus, and reset
   controls. Filter chips clear individual filters without mutating the memory
   database; theme focus only changes the current browser view.
-- Galaxy: Three.js scene. WebGL 正常时不叠加 HTML 点层，并使用不透明 WebGL 背景和逐帧清屏，避免 2D 残影；WebGL 内部程序化星云纹理负责旋臂、核心辉光、尘埃带和星云云团，避免退回只有光点的点云；只有 WebGL fallback 才启用可点击点层。Galaxy 支持 hover 最近星体预览、点击选中后相机自动飞近并聚焦、关联边高亮、关联邻居节点脉冲高亮、右上角视角重置和缩放按钮；hover 只做预览，点击才同步右侧 Inspector。聚焦后必须使用局部邻域布局：高权重邻居进入内环 primary layer，次级邻居进入外环 secondary layer；高连接主题节点只显示 Top 局部邻居和有限焦点边线，其余显示为折叠数量，避免一次性拉出过多边线。选中节点后，画布边缘显示内环邻居小型详情卡，卡片包含标签、层级/分类、权重排名，并可点击跳转到对应邻居节点。
+- Galaxy: Three.js scene. WebGL 正常时不叠加 HTML 点层，并使用不透明 WebGL 背景和逐帧清屏，避免 2D 残影；WebGL 内部程序化星云纹理负责旋臂、核心辉光、尘埃带和星云云团，避免退回只有光点的点云；只有 WebGL fallback 才启用可点击点层。Galaxy 支持 hover 最近星体预览、点击选中后相机自动飞近并聚焦、关联边高亮、关联邻居节点脉冲高亮、右上角视角重置和缩放按钮；hover 只做预览，点击才同步右侧 Inspector。聚焦后必须使用局部邻域布局：高权重邻居进入内环 primary layer，次级邻居进入外环 secondary layer；高连接主题节点只显示 Top 局部邻居和有限焦点边线，其余显示为折叠数量，避免一次性拉出过多边线。选中节点后，画布边缘显示内环邻居小型详情卡，卡片包含标签、层级/分类、权重排名，并可点击跳转到对应邻居节点。Memory Starfield 的 cluster mass、粒子大小、亮度、颜色和轨迹强度必须来自 `config/visualization/model_parameters.memory_starfield.yaml`；recency、confidence、interaction density 要可见但不过度彩色化。Memory Terrain 在 Presentation 中只显示 ridge、shoreline、valley、basin、fault-line 的轻提示，Analysis panel 才解释对应语义和样本节点。
 - 数据导图: 用框架导图格式展示来源、画像、项目决策和行动机会四层。顶部保留简短状态条，说明当前图谱按数据源/主题、个人画像/偏好、项目/决策/工作流、行动/机会读取；导图卡片可点击并同步右侧 Inspector。
 - ROI Dashboard: memories sorted by `metrics.roi.leverage_score`. It must show
   synchronized mini-bar visual summaries for level assets, topic categories, and

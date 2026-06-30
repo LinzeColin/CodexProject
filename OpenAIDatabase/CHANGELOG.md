@@ -1,5 +1,24 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.5 Stage 4.2 Data Mapping
+
+- Added a parameter-backed Memory Starfield mapping module that reads
+  `config/visualization/model_parameters.memory_starfield.yaml` through the
+  frontend build and exposes the v1.1.5 mass, particle, terrain and quality
+  settings to the Galaxy renderer.
+- Replaced hardcoded Galaxy mass, particle size, brightness, color and
+  trajectory strength calculations with mappings from importance, recency,
+  confidence and interaction density.
+- Added a subtle Memory Terrain layer for ridge, shoreline, valley, basin and
+  fault-line semantics, plus an opt-in Analysis panel explaining the current
+  terrain mapping.
+- Extended visual acceptance with a deterministic Stage 4.2 data-mapping
+  contract.
+
+No Stage 4.3 interaction expansion, Timeline replacement, ingestion,
+raw/private data access, direct writeback, Cloudflare live deploy, or external
+account operation was added.
+
 ## Unreleased - Memory Atlas v1.1.5 Stage 4.1 Galaxy Rendering Integration
 
 - Added a production Galaxy renderer feature flag with `memory-starfield` as

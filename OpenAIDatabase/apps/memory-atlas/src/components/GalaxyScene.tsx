@@ -1,4 +1,4 @@
-import { Gauge, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
+import { Gauge, Layers, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
 import type { CSSProperties } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -26,6 +26,11 @@ import {
   Vector3,
   WebGLRenderer,
 } from "three";
+import {
+  MEMORY_STARFIELD_PARAMS,
+  type MemoryTerrainType,
+  type StarfieldQuality,
+} from "../config/memoryStarfieldParameters";
 import type { GalaxyRendererMode } from "../config/visualFlags";
 import { normalizeMemoryTier } from "../data/atlas";
 import type { AtlasEdge, AtlasNode } from "../types";
@@ -71,6 +76,8 @@ interface GalaxySignal {
   rendererMode: GalaxyRendererMode;
   quality: StarfieldQuality;
   flowFieldStrength: number;
+  terrainFeatureCount: number;
+  parameterSource: string;
   fallbackMode: "webgl" | "low-quality" | "legacy";
 }
 
@@ -89,7 +96,6 @@ interface HoverPreview {
 }
 
 type FocusNeighborLayer = "primary" | "secondary";
-type StarfieldQuality = "high" | "mid" | "low";
 
 interface FocusNeighbor {
   id: string;
@@ -109,6 +115,31 @@ interface FocusNeighborhood {
   visibleNeighborIds: Set<string>;
 }
 
+interface MemoryStarfieldParticleAttributes {
+  mass: number;
+  size: number;
+  brightness: number;
+  color: string;
+  recencyScore: number;
+  confidenceScore: number;
+  interactionScore: number;
+  trailStrength: number;
+  terrainType: MemoryTerrainType | null;
+}
+
+interface TerrainSummaryRow {
+  type: MemoryTerrainType;
+  label: string;
+  explanation: string;
+  count: number;
+  sampleLabels: string[];
+}
+
+interface TerrainSummary {
+  total: number;
+  rows: TerrainSummaryRow[];
+}
+
 declare global {
   interface Window {
     __memoryAtlasGalaxySignal?: () => GalaxySignal;
@@ -123,10 +154,39 @@ const MAX_FOCUS_VISIBLE_NEIGHBORS = MAX_FOCUS_PRIMARY_NEIGHBORS + MAX_FOCUS_SECO
 const MAX_PULSE_NEIGHBORS = MAX_FOCUS_VISIBLE_NEIGHBORS;
 const GALAXY_ARM_COLORS = ["#bcdfff", "#d7e8ff", "#a7ecff", "#e5d6ff", "#c8f7e7", "#f7c8dd"];
 const GALAXY_ARM_COUNT = 6;
-const STARFIELD_QUALITY_SETTINGS: Record<StarfieldQuality, { maxNodes: number; ambientParticles: number; haloParticles: number; flowTrailCount: number }> = {
-  high: { maxNodes: 900, ambientParticles: 11200, haloParticles: 2600, flowTrailCount: 190 },
-  mid: { maxNodes: 720, ambientParticles: 9400, haloParticles: 2100, flowTrailCount: 150 },
-  low: { maxNodes: 420, ambientParticles: 5200, haloParticles: 1200, flowTrailCount: 84 },
+const STARFIELD_QUALITY_SETTINGS = MEMORY_STARFIELD_PARAMS.qualitySettings;
+const MEMORY_TERRAIN_ORDER: MemoryTerrainType[] = ["ridge", "shoreline", "valley", "basin", "fault-line"];
+const MEMORY_TERRAIN_VISUALS: Record<MemoryTerrainType, { label: string; explanation: string; color: string; opacity: number }> = {
+  ridge: {
+    label: "山脉 / Ridge",
+    explanation: "persistent high-ROI theme",
+    color: "#7ee8d4",
+    opacity: 0.2,
+  },
+  shoreline: {
+    label: "城市/图书馆岸线 / Shoreline",
+    explanation: "boundary between mature and emerging topics",
+    color: "#bcdfff",
+    opacity: 0.16,
+  },
+  valley: {
+    label: "河谷 / Valley",
+    explanation: "underdeveloped or inactive area",
+    color: "#8fd3ff",
+    opacity: 0.12,
+  },
+  basin: {
+    label: "遗迹盆地 / Basin",
+    explanation: "repeated low-value loop",
+    color: "#94a3b8",
+    opacity: 0.14,
+  },
+  "fault-line": {
+    label: "工业断层 / Fault line",
+    explanation: "contradiction or conflict zone",
+    color: "#f48fb1",
+    opacity: 0.18,
+  },
 };
 
 export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelectNode }: GalaxySceneProps) {
@@ -142,6 +202,7 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
   const [hoverPreview, setHoverPreview] = useState<HoverPreview | null>(null);
   const [starfieldQuality, setStarfieldQuality] = useState<StarfieldQuality>("mid");
   const [flowFieldStrength, setFlowFieldStrength] = useState(1);
+  const [terrainAnalysisOpen, setTerrainAnalysisOpen] = useState(false);
 
   const qualitySettings = STARFIELD_QUALITY_SETTINGS[starfieldQuality];
   const renderNodeLimit = rendererMode === "memory-starfield" ? qualitySettings.maxNodes : MAX_RENDERED_NODES;
@@ -153,6 +214,11 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
   const nodeById = useMemo(() => new Map(nodes.map((node) => [node.id, node])), [nodes]);
   const renderableNodeIds = useMemo(() => new Set(renderNodes.map((node) => node.id)), [renderNodes]);
   const degreeById = useMemo(() => degreeMap(edges), [edges]);
+  const latestNodeTime = useMemo(() => latestNodeTimestamp(nodes), [nodes]);
+  const terrainSummary = useMemo(
+    () => buildTerrainSummary(renderNodes, degreeById, latestNodeTime),
+    [degreeById, latestNodeTime, renderNodes],
+  );
   const selectedNeighborhood = useMemo(
     () => selectedNode ? buildFocusedNeighborhood(selectedNode.id, edges, renderableNodeIds) : emptyFocusedNeighborhood(""),
     [edges, renderableNodeIds, selectedNode?.id],
@@ -239,7 +305,7 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
     const galaxyPlaneMaterial = new MeshBasicMaterial({
       map: galaxyTexture,
       transparent: true,
-      opacity: 0.86,
+      opacity: 0.58 + MEMORY_STARFIELD_PARAMS.visual.nebulaOpacity * 0.34,
       depthWrite: false,
       depthTest: false,
     });
@@ -293,16 +359,17 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
     renderItems.forEach((item) => {
       const node = item.node;
       const position = item.position;
-      const color = new Color(node.visual?.color ?? "#8fd3ff");
-      const brightness = node.visual?.brightness ?? 0.72;
+      const attributes = memoryStarfieldParticleAttributes(node, degreeById, latestNodeTime);
+      const color = new Color(attributes.color);
+      const brightness = attributes.brightness;
       positions.push(position.x, position.y, position.z);
       colors.push(color.r * brightness, color.g * brightness, color.b * brightness);
-      sizes.push(node.visual?.size ?? 6);
+      sizes.push(attributes.size);
       nodeIndexByPoint.push(node.id);
     });
     const baseNodePositions = new Float32Array(positions);
     const flowPhases = renderItems.map((item) => stableUnit(item.node.id, "memory-starfield-flow-phase") * Math.PI * 2);
-    const flowMasses = renderItems.map((item) => memoryStarfieldMass(item.node, degreeById));
+    const flowMasses = renderItems.map((item) => memoryStarfieldMass(item.node, degreeById, latestNodeTime));
     geometry.setAttribute("position", new Float32BufferAttribute(positions, 3));
     geometry.setAttribute("color", new Float32BufferAttribute(colors, 3));
     geometry.setAttribute("size", new Float32BufferAttribute(sizes, 1));
@@ -335,8 +402,10 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
         const target = scenePositionById.get(edge.target);
         if (!source || !target) return;
         edgePositions.push(source.x, source.y, source.z, target.x, target.y, target.z);
-        const sourceColor = new Color(renderItems.find((item) => item.node.id === edge.source)?.node.visual?.color ?? "#8fd3ff");
-        const targetColor = new Color(renderItems.find((item) => item.node.id === edge.target)?.node.visual?.color ?? "#8fd3ff");
+        const sourceNode = renderItems.find((item) => item.node.id === edge.source)?.node;
+        const targetNode = renderItems.find((item) => item.node.id === edge.target)?.node;
+        const sourceColor = new Color(sourceNode ? memoryStarfieldParticleAttributes(sourceNode, degreeById, latestNodeTime).color : "#8fd3ff");
+        const targetColor = new Color(targetNode ? memoryStarfieldParticleAttributes(targetNode, degreeById, latestNodeTime).color : "#8fd3ff");
         const alpha = Math.max(0.018, Math.min(0.07, edge.weight * 0.08));
         edgeColors.push(sourceColor.r * alpha, sourceColor.g * alpha, sourceColor.b * alpha, targetColor.r * alpha, targetColor.g * alpha, targetColor.b * alpha);
       });
@@ -355,7 +424,7 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
 
     const flowTrailGeometry = new BufferGeometry();
     const flowTrailSegments = rendererMode === "memory-starfield"
-      ? createFlowTrailSegments(renderItems, degreeById, qualitySettings.flowTrailCount)
+      ? createFlowTrailSegments(renderItems, degreeById, latestNodeTime, qualitySettings.flowTrailCount)
       : { positions: [], colors: [] };
     flowTrailGeometry.setAttribute("position", new Float32BufferAttribute(flowTrailSegments.positions, 3));
     flowTrailGeometry.setAttribute("color", new Float32BufferAttribute(flowTrailSegments.colors, 3));
@@ -431,19 +500,20 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
     const nodeMaterials: MeshBasicMaterial[] = [];
     renderItems.forEach((item) => {
       const node = item.node;
-      if (!isProminentBody(node)) return;
+      if (!isProminentBody(node, degreeById, latestNodeTime)) return;
       const position = item.position;
-      const color = new Color(node.visual?.color ?? "#8fd3ff");
+      const attributes = memoryStarfieldParticleAttributes(node, degreeById, latestNodeTime);
+      const color = new Color(attributes.color);
       const materialForNode = new MeshBasicMaterial({
         color,
         transparent: true,
-        opacity: Math.max(0.22, (node.visual?.brightness ?? 0.72) * 0.44),
+        opacity: Math.max(0.22, attributes.brightness * 0.44),
         blending: AdditiveBlending,
         depthWrite: false,
       });
       const mesh = new Mesh(nodeSphereGeometry, materialForNode);
       mesh.position.set(position.x, position.y, position.z);
-      mesh.scale.setScalar(Math.max(0.9, (node.visual?.size ?? 6) * 0.22));
+      mesh.scale.setScalar(Math.max(0.9, attributes.size * 0.22));
       mesh.frustumCulled = false;
       nodeMaterials.push(materialForNode);
       galaxyGroup.add(mesh);
@@ -466,10 +536,10 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
     const signalMeshes: Mesh[] = [];
     if (rendererMode === "memory-starfield") {
       renderItems
-        .filter((item) => Boolean(memoryStarfieldSignalKind(item.node)))
+        .filter((item) => Boolean(memoryStarfieldSignalKind(item.node, degreeById, latestNodeTime)))
         .slice(0, 18)
         .forEach((item) => {
-          const signal = memoryStarfieldSignalKind(item.node);
+          const signal = memoryStarfieldSignalKind(item.node, degreeById, latestNodeTime);
           if (!signal) return;
           const color = signal === "black-hole" ? "#111827" : signal === "proto-star" ? "#ffef9a" : "#74c0fc";
           const materialForSignal = new MeshBasicMaterial({
@@ -495,6 +565,43 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
           signalMeshes.push(sphere, ring);
           galaxyGroup.add(sphere);
           galaxyGroup.add(ring);
+        });
+    }
+
+    const terrainRingGeometry = new TorusGeometry(1, 0.04, 8, 64);
+    const terrainMaterials: MeshBasicMaterial[] = [];
+    const terrainMeshes: Mesh[] = [];
+    if (rendererMode === "memory-starfield") {
+      renderItems
+        .map((item) => ({
+          item,
+          attributes: memoryStarfieldParticleAttributes(item.node, degreeById, latestNodeTime),
+        }))
+        .filter(({ attributes }) => Boolean(attributes.terrainType))
+        .sort((a, b) => b.attributes.mass - a.attributes.mass)
+        .slice(0, MEMORY_STARFIELD_PARAMS.layout.lodTiers.midMaxClusters)
+        .forEach(({ item, attributes }) => {
+          if (!attributes.terrainType) return;
+          const terrainVisual = terrainVisualStyle(attributes.terrainType);
+          const terrainMaterial = new MeshBasicMaterial({
+            color: terrainVisual.color,
+            transparent: true,
+            opacity: terrainVisual.opacity,
+            blending: AdditiveBlending,
+            depthWrite: false,
+            wireframe: true,
+          });
+          const terrainRing = new Mesh(terrainRingGeometry, terrainMaterial);
+          terrainRing.name = `memory-starfield-terrain-layer-${attributes.terrainType}`;
+          terrainRing.position.set(item.position.x, item.position.y, item.position.z - 3);
+          terrainRing.rotation.x = attributes.terrainType === "fault-line" ? 1.32 : 1.12;
+          terrainRing.rotation.y = (stableUnit(item.node.id, "terrain-y") - 0.5) * 0.34;
+          terrainRing.rotation.z = stableUnit(item.node.id, "terrain-z") * Math.PI;
+          terrainRing.scale.setScalar(5.8 + Math.min(14, attributes.mass * 0.34));
+          terrainRing.frustumCulled = false;
+          terrainMaterials.push(terrainMaterial);
+          terrainMeshes.push(terrainRing);
+          galaxyGroup.add(terrainRing);
         });
     }
 
@@ -570,6 +677,8 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
         rendererMode,
         quality: starfieldQuality,
         flowFieldStrength: Number(flowFieldStrengthRef.current.toFixed(2)),
+        terrainFeatureCount: terrainSummary.total,
+        parameterSource: MEMORY_STARFIELD_PARAMS.parameterSource,
         fallbackMode: rendererMode === "legacy" ? "legacy" : starfieldQuality === "low" ? "low-quality" : "webgl",
       };
     }
@@ -616,7 +725,10 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
       selectedMarker.material.opacity = 0.72;
       const source = renderItems[selectedIndex]?.position ?? { x: 0, y: 0, z: 0 };
       selectedMarker.position.set(source.x, source.y, source.z);
-      selectedMarker.scale.setScalar(Math.max(6, (renderItems[selectedIndex]?.node.visual?.size ?? 8) * 0.72));
+      const selectedAttributes = renderItems[selectedIndex]
+        ? memoryStarfieldParticleAttributes(renderItems[selectedIndex].node, degreeById, latestNodeTime)
+        : null;
+      selectedMarker.scale.setScalar(Math.max(6, (selectedAttributes?.size ?? 8) * 0.72));
     }
 
     function updateFocusEdgeHighlight() {
@@ -632,8 +744,10 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
           activeFocusedNeighborhood.neighbors.forEach((neighbor) => {
             const target = localNeighborhoodPosition(focusPosition, neighbor, activeFocusedNeighborhood);
             focusPositions.push(focusPosition.x, focusPosition.y, focusPosition.z, target.x, target.y, target.z);
-            const sourceColor = new Color(sceneItemById.get(focusId)?.node.visual?.color ?? "#8fd3ff");
-            const targetColor = new Color(sceneItemById.get(neighbor.id)?.node.visual?.color ?? "#8fd3ff");
+            const focusNode = sceneItemById.get(focusId)?.node;
+            const targetNode = sceneItemById.get(neighbor.id)?.node;
+            const sourceColor = new Color(focusNode ? memoryStarfieldParticleAttributes(focusNode, degreeById, latestNodeTime).color : "#8fd3ff");
+            const targetColor = new Color(targetNode ? memoryStarfieldParticleAttributes(targetNode, degreeById, latestNodeTime).color : "#8fd3ff");
             const alpha = neighbor.layer === "primary" ? 0.96 : 0.42;
             focusColors.push(
               sourceColor.r * alpha,
@@ -681,7 +795,7 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
         const sceneItem = sceneItemById.get(target.id);
         if (!position || !sceneItem) continue;
         if (!target.selected) activeNeighborIds.add(target.id);
-        const color = target.selected ? new Color("#ffffff") : new Color(sceneItem.node.visual?.color ?? "#8fd3ff");
+        const color = target.selected ? new Color("#ffffff") : new Color(memoryStarfieldParticleAttributes(sceneItem.node, degreeById, latestNodeTime).color);
         const materialForPulse = new MeshBasicMaterial({
           color,
           transparent: true,
@@ -751,6 +865,9 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
       flowTrailLines.rotation.z = Math.sin(time * 0.7) * 0.035;
       signalMeshes.forEach((mesh, index) => {
         mesh.rotation.z += index % 2 === 0 ? 0.008 : -0.006;
+      });
+      terrainMeshes.forEach((mesh, index) => {
+        mesh.rotation.z += index % 2 === 0 ? 0.0025 : -0.0018;
       });
     }
 
@@ -931,6 +1048,8 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
       signalSphereGeometry.dispose();
       signalRingGeometry.dispose();
       for (const signalMaterial of signalMaterials) signalMaterial.dispose();
+      terrainRingGeometry.dispose();
+      for (const terrainMaterial of terrainMaterials) terrainMaterial.dispose();
       material.dispose();
       ambient.material.dispose();
       halo.material.dispose();
@@ -946,7 +1065,7 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
         delete window.__memoryAtlasGalaxyDebugTargets;
       }
     };
-  }, [degreeById, edges, onSelectNode, qualitySettings, renderItems, renderNodes, rendererMode, starfieldQuality]);
+  }, [degreeById, edges, latestNodeTime, onSelectNode, qualitySettings, renderItems, renderNodes, rendererMode, starfieldQuality, terrainSummary.total]);
 
   function resetGalaxyView() {
     rotationRef.current = { x: -0.14, y: 0.42 };
@@ -1015,6 +1134,17 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
               />
             </label>
           ) : null}
+          {rendererMode === "memory-starfield" ? (
+            <button
+              aria-label={terrainAnalysisOpen ? "关闭 Memory Terrain analysis" : "打开 Memory Terrain analysis"}
+              aria-pressed={terrainAnalysisOpen}
+              title="Memory Terrain analysis"
+              type="button"
+              onClick={() => setTerrainAnalysisOpen((open) => !open)}
+            >
+              <Layers size={16} />
+            </button>
+          ) : null}
           <button aria-label="放大银河视角" title="放大" type="button" onClick={() => zoomGalaxy(0.14)}>
             <ZoomIn size={16} />
           </button>
@@ -1024,6 +1154,24 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
           <button aria-label="重置银河视角" title="重置视角" type="button" onClick={resetGalaxyView}>
             <RotateCcw size={16} />
           </button>
+        </div>
+      ) : null}
+      {rendererMode === "memory-starfield" && terrainAnalysisOpen ? (
+        <div className="galaxy-terrain-panel" aria-label="Memory Terrain analysis panel">
+          <div className="terrain-panel-heading">
+            <strong>Memory Terrain</strong>
+            <span>{terrainSummary.total.toLocaleString()} mapped features</span>
+          </div>
+          <div className="terrain-row-list">
+            {terrainSummary.rows.map((row) => (
+              <div className="terrain-row" data-terrain-type={row.type} key={row.type}>
+                <b>{row.label}</b>
+                <span>{row.count.toLocaleString()} nodes</span>
+                <em>{row.explanation}</em>
+                <small>{row.sampleLabels.length ? row.sampleLabels.join(" / ") : "No current sample"}</small>
+              </div>
+            ))}
+          </div>
         </div>
       ) : null}
       {hoverPreview && !renderError ? (
@@ -1086,6 +1234,10 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
           <strong>{selectedNode ? (selectedNeighborhood.hiddenNeighborCount ? `折叠 ${selectedNeighborhood.hiddenNeighborCount.toLocaleString()}` : "无折叠") : "未折叠"}</strong>
           <span>高连接保护</span>
         </div>
+        <div>
+          <strong>{terrainSummary.total.toLocaleString()}</strong>
+          <span>Terrain 映射</span>
+        </div>
       </div>
       {renderError ? (
         <div className="galaxy-fallback" title={renderError}>
@@ -1100,20 +1252,21 @@ export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelect
 function createFlowTrailSegments(
   items: SceneNode[],
   degreeById: Map<string, number>,
+  latestNodeTime: number,
   limit: number,
 ): { positions: number[]; colors: number[] } {
   const positions: number[] = [];
   const colors: number[] = [];
   const candidates = [...items]
-    .sort((a, b) => memoryStarfieldMass(b.node, degreeById) - memoryStarfieldMass(a.node, degreeById))
+    .sort((a, b) => memoryStarfieldMass(b.node, degreeById, latestNodeTime) - memoryStarfieldMass(a.node, degreeById, latestNodeTime))
     .slice(0, limit);
   for (const item of candidates) {
     const position = item.position;
-    const mass = memoryStarfieldMass(item.node, degreeById);
+    const attributes = memoryStarfieldParticleAttributes(item.node, degreeById, latestNodeTime);
     const phase = stableUnit(item.node.id, "flow-trail-phase") * Math.PI * 2;
-    const flow = flowVectorFor(position, phase, mass);
-    const sourceColor = new Color(nodeColor(item.node));
-    const alpha = 0.2 + Math.min(0.42, mass * 0.045);
+    const flow = flowVectorFor(position, phase, attributes.mass * attributes.trailStrength);
+    const sourceColor = new Color(attributes.color);
+    const alpha = 0.12 + Math.min(0.52, attributes.trailStrength * 0.38);
     positions.push(
       position.x - flow.x * 0.72,
       position.y - flow.y * 0.72,
@@ -1128,7 +1281,7 @@ function createFlowTrailSegments(
 }
 
 function flowVectorFor(position: { x: number; y: number; z: number }, phase: number, mass: number): { x: number; y: number; z: number } {
-  const strength = 4.5 + Math.min(13, mass * 1.6);
+  const strength = 4.5 + Math.min(13, mass * MEMORY_STARFIELD_PARAMS.forces.curlNoiseAmplitude * 1.6);
   return {
     x: Math.sin(position.y * 0.025 + phase) * strength - position.y * 0.018,
     y: Math.cos((position.x + position.z) * 0.016 + phase) * strength * 0.42 + position.x * 0.006,
@@ -1136,32 +1289,182 @@ function flowVectorFor(position: { x: number; y: number; z: number }, phase: num
   };
 }
 
-function memoryStarfieldMass(node: AtlasNode, degreeById: Map<string, number>): number {
+function memoryStarfieldMass(node: AtlasNode, degreeById: Map<string, number>, latestNodeTime: number): number {
+  const params = MEMORY_STARFIELD_PARAMS.mapping.clusterMass;
   const tier = normalizeMemoryTier(node.memory_tier);
-  const tierMass = tier === "核心画像" ? 8 : tier === "一般" ? 4.8 : 1.6;
-  const roiMass = (node.metrics?.roi?.leverage_score ?? 0) * 7;
-  const importanceMass = node.importance === "高" ? 4 : node.importance === "中" ? 2 : 0.5;
-  const kindMass = node.kind === "theme" ? 6 : node.kind === "decision" ? 4 : node.kind === "project" ? 3 : 0;
-  return tierMass + roiMass + importanceMass + kindMass + Math.sqrt(degreeById.get(node.id) ?? 0);
+  const tierMass = tier === "核心画像" ? params.tierCore : tier === "一般" ? params.tierMid : params.tierOuter;
+  const roiMass = (node.metrics?.roi?.leverage_score ?? 0) * params.roiMultiplier;
+  const importanceMass = node.importance === "高" ? params.importanceHigh : node.importance === "中" ? params.importanceMedium : params.importanceLow;
+  const kindMass = node.kind === "theme" ? params.kindTheme : node.kind === "decision" ? params.kindDecision : node.kind === "project" ? params.kindProject : 0;
+  const recencyMass = memoryStarfieldRecencyScore(node, latestNodeTime) * params.recencyMultiplier;
+  const usageMass = Math.sqrt(degreeById.get(node.id) ?? 0) * params.usageSqrtMultiplier;
+  return (tierMass + roiMass + importanceMass + kindMass + recencyMass + usageMass) * MEMORY_STARFIELD_PARAMS.mapping.importanceToMassScale;
 }
 
-function memoryStarfieldSignalKind(node: AtlasNode): "black-hole" | "proto-star" | "terrain" | null {
+function memoryStarfieldParticleAttributes(
+  node: AtlasNode,
+  degreeById: Map<string, number>,
+  latestNodeTime: number,
+): MemoryStarfieldParticleAttributes {
+  const params = MEMORY_STARFIELD_PARAMS.mapping.particleAttributes;
+  const mass = memoryStarfieldMass(node, degreeById, latestNodeTime);
+  const recencyScore = memoryStarfieldRecencyScore(node, latestNodeTime);
+  const confidenceScore = memoryStarfieldConfidenceScore(node);
+  const interactionScore = Math.sqrt(degreeById.get(node.id) ?? 0) * MEMORY_STARFIELD_PARAMS.mapping.interactionDensityScale;
+  const terrainType = memoryTerrainType(node, degreeById, latestNodeTime);
+  const baseColor = terrainType ? terrainVisualStyle(terrainType).color : nodeColor(node);
+  const recencyColor = mixColor(baseColor, "#ffffff", recencyScore * 0.13);
+  const color = confidenceScore < params.confidenceMedium
+    ? mixColor(recencyColor, "#94a3b8", (1 - confidenceScore) * params.confidenceColorDesaturation)
+    : recencyColor;
+  const brightness = clamp(
+    (node.visual?.brightness ?? 0.68) +
+      recencyScore * params.recencyBrightnessBoost +
+      (confidenceScore - params.confidenceMedium) * MEMORY_STARFIELD_PARAMS.mapping.confidenceNoiseAmplitude,
+    0.22,
+    1.24,
+  );
+  const size = clamp(
+    Math.max(node.visual?.size ?? 0, params.baseSize) +
+      mass * params.massSizeScale +
+      recencyScore * params.recencySizeBoost,
+    2.2,
+    19,
+  );
+  const trailStrength = clamp(
+    interactionScore * params.interactionTrailScale +
+      recencyScore * 0.22 +
+      confidenceScore * 0.18,
+    0.12,
+    1.36,
+  );
+  return {
+    mass,
+    size,
+    brightness,
+    color,
+    recencyScore,
+    confidenceScore,
+    interactionScore,
+    trailStrength,
+    terrainType,
+  };
+}
+
+function memoryStarfieldRecencyScore(node: AtlasNode, latestNodeTime: number): number {
+  const nodeTime = nodeTimestamp(node);
+  if (!nodeTime || !latestNodeTime) return 0.32;
+  const ageDays = Math.max(0, (latestNodeTime - nodeTime) / 86_400_000);
+  return clamp(Math.pow(0.5, ageDays / MEMORY_STARFIELD_PARAMS.mapping.recencyHalfLifeDays), 0, 1);
+}
+
+function memoryStarfieldConfidenceScore(node: AtlasNode): number {
+  const confidence = `${node.confidence ?? ""} ${node.statement ?? ""}`.toLowerCase();
+  const params = MEMORY_STARFIELD_PARAMS.mapping.particleAttributes;
+  if (/high|高|confirmed|strong/.test(confidence)) return params.confidenceHigh;
+  if (/low|低|weak|uncertain|不确定/.test(confidence)) return params.confidenceLow;
+  return params.confidenceMedium;
+}
+
+function memoryTerrainType(node: AtlasNode, degreeById: Map<string, number>, latestNodeTime: number): MemoryTerrainType | null {
+  const params = MEMORY_STARFIELD_PARAMS.mapping.terrain;
+  const text = `${node.label} ${node.statement ?? ""} ${node.source_label ?? ""}`;
+  const roiScore = node.metrics?.roi?.leverage_score ?? 0;
+  const recencyScore = memoryStarfieldRecencyScore(node, latestNodeTime);
+  const degree = degreeById.get(node.id) ?? 0;
+  const faultPattern = safeRegex(params.faultConflictPattern, /conflict|contradiction|冲突|矛盾/i);
+
+  if (faultPattern.test(text)) return "fault-line";
+  if (
+    node.metrics?.roi?.staleness_status === params.basinStaleStatus ||
+    /低价值循环|重复|过时|废弃|shadow|standalone/i.test(text)
+  ) {
+    return "basin";
+  }
+  if (
+    roiScore >= params.ridgeRoiThreshold ||
+    (node.kind === "theme" && degree >= 4) ||
+    (normalizeMemoryTier(node.memory_tier) === "核心画像" && node.importance === "高")
+  ) {
+    return "ridge";
+  }
+  if (recencyScore <= params.valleyRecentThreshold && degree <= 2 && roiScore < 0.42) return "valley";
+  if (
+    recencyScore >= params.shorelineRecentMin &&
+    (node.kind === "project" || node.kind === "decision" || /机会|上升|proto|新生|增长|下一步|emerging/i.test(text))
+  ) {
+    return "shoreline";
+  }
+  if (node.category === "workflow" || node.category === "project_context") return "shoreline";
+  return null;
+}
+
+function memoryStarfieldSignalKind(node: AtlasNode, degreeById: Map<string, number>, latestNodeTime: number): "black-hole" | "proto-star" | "terrain" | null {
   const text = `${node.label} ${node.statement ?? ""} ${node.source_label ?? ""}`;
   if (
     node.category === "deprecated_info" ||
-    node.metrics?.roi?.staleness_status === "stale_short_term" ||
+    node.metrics?.roi?.staleness_status === MEMORY_STARFIELD_PARAMS.mapping.terrain.basinStaleStatus ||
     /过时|旧电脑|shadow|standalone|低价值循环/i.test(text)
   ) {
     return "black-hole";
   }
   if (
-    (node.metrics?.roi?.leverage_score ?? 0) >= 0.72 ||
+    (node.metrics?.roi?.leverage_score ?? 0) >= MEMORY_STARFIELD_PARAMS.mapping.terrain.ridgeRoiThreshold ||
     /机会|上升|proto|新生|增长|下一步/i.test(text)
   ) {
     return "proto-star";
   }
-  if (node.kind === "theme" || node.category === "workflow" || node.category === "project_context") return "terrain";
+  if (memoryTerrainType(node, degreeById, latestNodeTime)) return "terrain";
   return null;
+}
+
+function buildTerrainSummary(nodes: AtlasNode[], degreeById: Map<string, number>, latestNodeTime: number): TerrainSummary {
+  const grouped = new Map<MemoryTerrainType, AtlasNode[]>();
+  for (const terrainType of MEMORY_TERRAIN_ORDER) grouped.set(terrainType, []);
+  for (const node of nodes) {
+    const terrainType = memoryTerrainType(node, degreeById, latestNodeTime);
+    if (!terrainType) continue;
+    grouped.get(terrainType)?.push(node);
+  }
+
+  const rows = MEMORY_TERRAIN_ORDER.map((terrainType) => {
+    const nodesForTerrain = grouped.get(terrainType) ?? [];
+    const visual = terrainVisualStyle(terrainType);
+    return {
+      type: terrainType,
+      label: visual.label,
+      explanation: visual.explanation,
+      count: nodesForTerrain.length,
+      sampleLabels: nodesForTerrain.slice(0, 2).map((node) => galaxyPreviewTitle(node)),
+    };
+  });
+
+  return {
+    total: rows.reduce((sum, row) => sum + row.count, 0),
+    rows,
+  };
+}
+
+function terrainVisualStyle(terrainType: MemoryTerrainType): { label: string; explanation: string; color: string; opacity: number } {
+  return MEMORY_TERRAIN_VISUALS[terrainType];
+}
+
+function latestNodeTimestamp(nodes: AtlasNode[]): number {
+  return nodes.reduce((latest, node) => Math.max(latest, nodeTimestamp(node) ?? 0), 0);
+}
+
+function nodeTimestamp(node: AtlasNode): number | null {
+  if (!node.date) return null;
+  const parsed = Date.parse(node.date);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function safeRegex(pattern: string, fallback: RegExp): RegExp {
+  try {
+    return new RegExp(pattern, "i");
+  } catch {
+    return fallback;
+  }
 }
 
 function renderNebulaCanvas(canvas: HTMLCanvasElement, items: SceneNode[], edges: AtlasEdge[]) {
@@ -1762,14 +2065,16 @@ function nodeColor(node: AtlasNode): string {
   return node.visual?.color ?? "#94a3b8";
 }
 
-function isProminentBody(node: AtlasNode): boolean {
+function isProminentBody(node: AtlasNode, degreeById?: Map<string, number>, latestNodeTime = 0): boolean {
+  const parameterMass = degreeById ? memoryStarfieldMass(node, degreeById, latestNodeTime) : 0;
   return (
     node.kind === "theme" ||
     node.kind === "project" ||
     node.kind === "decision" ||
     normalizeMemoryTier(node.memory_tier) === "核心画像" ||
     node.importance === "高" ||
-    (node.metrics?.roi?.leverage_score ?? 0) >= 0.72
+    (node.metrics?.roi?.leverage_score ?? 0) >= MEMORY_STARFIELD_PARAMS.mapping.terrain.ridgeRoiThreshold ||
+    parameterMass >= 15
   );
 }
 

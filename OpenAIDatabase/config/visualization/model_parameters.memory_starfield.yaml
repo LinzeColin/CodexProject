@@ -42,12 +42,57 @@ mapping:
   recency_half_life_days: 45
   interaction_density_scale: 0.8
   confidence_noise_amplitude: 0.35
+  cluster_mass:
+    tier_core: 8.0
+    tier_mid: 4.8
+    tier_outer: 1.6
+    kind_theme: 6.0
+    kind_decision: 4.0
+    kind_project: 3.0
+    roi_multiplier: 7.0
+    importance_high: 4.0
+    importance_medium: 2.0
+    importance_low: 0.5
+    recency_multiplier: 2.4
+    usage_sqrt_multiplier: 1.0
+  particle_attributes:
+    base_size: 6.0
+    mass_size_scale: 0.42
+    recency_brightness_boost: 0.18
+    recency_size_boost: 1.2
+    confidence_high: 1.0
+    confidence_medium: 0.82
+    confidence_low: 0.64
+    confidence_color_desaturation: 0.34
+    interaction_trail_scale: 0.045
+  terrain:
+    ridge_roi_threshold: 0.72
+    valley_recent_threshold: 0.18
+    basin_stale_status: stale_short_term
+    fault_conflict_pattern: conflict|contradiction|冲突|矛盾
+    shoreline_recent_min: 0.42
 performance:
   desktop_target_fps: 60
   desktop_min_fps: 45
   particle_count_high: 60000
   particle_count_mid: 25000
   particle_count_low: 8000
+  quality_settings:
+    high:
+      max_nodes: 900
+      ambient_particles: 11200
+      halo_particles: 2600
+      flow_trail_count: 190
+    mid:
+      max_nodes: 720
+      ambient_particles: 9400
+      halo_particles: 2100
+      flow_trail_count: 150
+    low:
+      max_nodes: 420
+      ambient_particles: 5200
+      halo_particles: 1200
+      flow_trail_count: 84
 validation_hints:
   required_sections:
     - layout
