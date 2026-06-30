@@ -467,6 +467,7 @@ const HOLDINGS_DRAFT_STORAGE_KEY = "pfi-v021-unsubmitted-holdings-draft";
 let holdingsPersistenceState = defaultHoldingsState();
 let runtimeTrendState = null;
 let stage4PagesCatalog = typeof window !== "undefined" ? window.PFI_V023_STAGE4_PAGES || null : null;
+let stage5HomeExperience = typeof window !== "undefined" ? window.PFI_V023_STAGE5_HOME || null : null;
 let runtimeReadModelState = null;
 let runtimeStage4SyncState = null;
 
@@ -2412,6 +2413,41 @@ function restoreOwnerHomeWorkflow() {
     task("复核流水", "导入后处理分类、合并和排除", "review"),
     task("查看报告", "生成月报或导出本机报告", "queued"),
   ];
+  applyStage5Phase51Home();
+}
+
+function applyStage5Phase51Home() {
+  const api = stage5HomeExperience || window.PFI_V023_STAGE5_HOME;
+  if (!api || typeof api.buildStage5HomeViewModel !== "function") return;
+  const view = api.buildStage5HomeViewModel({});
+  WORKSPACES.home.conclusion = "先看我现在有多少钱、钱在哪里、数据健康和最近变化，再进入具体页面处理。";
+  WORKSPACES.home.runtime = "首页信息架构：财务状态、钱在哪里、数据健康、最近变化";
+  if (Array.isArray(view.home_cards) && view.home_cards.length) {
+    WORKSPACES.home.cards = view.home_cards;
+  }
+  if (Array.isArray(view.home_features) && view.home_features.length) {
+    WORKSPACES.home.features = view.home_features.map((item) =>
+      feature(
+        item.title,
+        item.status,
+        item.source,
+        item.detail,
+        item.target || { workspace: "home", routeAlias: "/home?tab=status", label: "查看首页" },
+      ),
+    );
+  }
+  if (Array.isArray(view.home_rows) && view.home_rows.length) {
+    WORKSPACES.home.rows = view.home_rows.map((item) => row(item[0], item[1], item[2], item[3], item[4]));
+  }
+  if (Array.isArray(view.home_tasks) && view.home_tasks.length) {
+    WORKSPACES.home.tasks = view.home_tasks.map((item) => task(item.title, item.detail, item.status));
+  }
+  WORKSPACES.home.evidence = evidence(
+    "首页说明",
+    "Stage 5 Phase 5.1 首页信息架构",
+    "Stage 2 数据状态机",
+    "首页只展示财务状态摘要、钱在哪里、数据健康和最近变化；下一步动作生成留到 Phase 5.2。",
+  );
 }
 
 function applyStage3Dashboard(dashboard) {
@@ -5290,6 +5326,24 @@ function loadStage4PagesCatalog() {
   });
 }
 
+function loadStage5HomeExperience() {
+  if (stage5HomeExperience || window.PFI_V023_STAGE5_HOME) {
+    stage5HomeExperience = stage5HomeExperience || window.PFI_V023_STAGE5_HOME;
+    return Promise.resolve(stage5HomeExperience);
+  }
+  return new Promise((resolve) => {
+    const script = document.createElement("script");
+    script.src = "./app/pages/home.js";
+    script.dataset.stage5HomeLoader = "true";
+    script.onload = () => {
+      stage5HomeExperience = window.PFI_V023_STAGE5_HOME || null;
+      resolve(stage5HomeExperience);
+    };
+    script.onerror = () => resolve(null);
+    document.head.appendChild(script);
+  });
+}
+
 function bootPFIShell() {
   restoreContext();
   bindEvents();
@@ -5311,7 +5365,7 @@ function bootPFIShell() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  loadStage4PagesCatalog().then(bootPFIShell);
+  Promise.all([loadStage4PagesCatalog(), loadStage5HomeExperience()]).then(() => bootPFIShell());
 });
 
 window.addEventListener("hashchange", () => {

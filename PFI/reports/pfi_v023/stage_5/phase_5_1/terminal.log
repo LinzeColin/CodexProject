@@ -1,0 +1,70 @@
+PFI v0.2.3 Stage 5 Phase 5.1
+Timestamp: 2026-06-30T11:38:00+10:00
+Repo: /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+Branch: codex/pfi
+
+Scope:
+Only V023-S5-P5.1 home information architecture.
+No Phase 5.2 next-action generation.
+No Stage 6 read model.
+No GitHub main upload for this intermediate phase.
+
+RED:
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage5_home_experience.py -q
+5 failed because Stage 5 home module, shell loader, docs, and evidence were missing.
+
+Implementation:
+Added PFI/web/app/pages/home.js with the Stage 5 Phase 5.1 home view model.
+Added minimal PFI/web/app/shell.js loader/application so the real homepage uses the new view model.
+Added docs and phase evidence.
+
+GREEN:
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage5_home_experience.py -q
+5 passed, 12 subtests passed in 0.17s
+
+$ /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/pages/home.js
+Exit code: 0
+
+$ /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js
+Exit code: 0
+
+Browser:
+$ Google Chrome headless screenshot of PFI/web/index.html#/home
+Screenshot: PFI/reports/pfi_v023/stage_5/phase_5_1/home_phase51.png
+Size: 1440x1100, 562278 bytes
+
+Regression:
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q
+81 passed, 76 subtests passed in 1.05s
+
+$ rg forbidden finance-data terms over Stage 5 Phase 5.1 files
+Exit code: 1, no matches
+
+$ git diff --check -- PFI
+Exit code: 0
+
+Remote update and rebase:
+$ git fetch https://github.com/LinzeColin/CodexProject.git main:refs/remotes/origin/main
+origin/main advanced to 57958bff with unrelated ADP manifest validator work.
+
+$ git rebase origin/main
+Successfully rebased and updated refs/heads/codex/pfi.
+
+Post-rebase:
+$ git rev-parse HEAD
+46d415dead11231edd6c7054ac75097a735804f5
+
+$ git rev-parse origin/main
+57958bffbc8e2e2f23de4d4574123115905c23da
+
+$ git rev-list --left-right --count HEAD...origin/main
+1 0
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage5_home_experience.py -q
+5 passed, 12 subtests passed in 0.14s
+
+$ PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q
+81 passed, 76 subtests passed in 1.05s
+
+$ node --check PFI/web/app/pages/home.js && node --check PFI/web/app/shell.js && node --check PFI/web/app/routes.js
+Exit code: 0
