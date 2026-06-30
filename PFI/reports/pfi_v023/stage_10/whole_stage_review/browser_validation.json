@@ -1,0 +1,264 @@
+{
+  "schema": "PFIV023Stage10WholeStageBrowserValidationV1",
+  "version": "v0.2.3",
+  "stage": "Stage 10",
+  "review_id": "V023-S10-WHOLE-STAGE-REVIEW",
+  "generated_at": "2026-06-30T07:05:53.277Z",
+  "git": {
+    "head": "7892474ea494b3d56abccaa64ad311bc49f01104",
+    "origin_main": "3a1769d4745e510a3e895c814b897cd5943eff7a",
+    "status_short": "## codex/pfi...origin/main [ahead 3, behind 1]\n M PFI/tests/test_v023_stage10_e2e_acceptance.py\n?? PFI/reports/pfi_v023/stage_10/whole_stage_review/"
+  },
+  "localhost": {
+    "url": "http://127.0.0.1:8501",
+    "health": "ok",
+    "api_health": "{\"status\": \"ok\", \"schema\": \"PFIV021RuntimeAPIV1\"}"
+  },
+  "app_entry": {
+    "path": "/Users/linzezhang/Downloads/PFI.app",
+    "dry_run_exit_code": 0,
+    "dry_run_stdout": "",
+    "dry_run_stderr": "",
+    "downloads_app_project_binding": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI"
+  },
+  "official_nav_labels": [
+    "首页总览",
+    "账户与资产",
+    "账本流水",
+    "投资管理",
+    "消费管理",
+    "数据源与上传",
+    "建议与复盘",
+    "报告与洞察",
+    "市场与研究",
+    "设置"
+  ],
+  "entry_clicks": [
+    {
+      "label": "首页总览",
+      "clicked": true,
+      "body_has_label": true,
+      "frame_url": "about:srcdoc#/home"
+    },
+    {
+      "label": "账户与资产",
+      "clicked": true,
+      "body_has_label": true,
+      "frame_url": "about:srcdoc#/accounts"
+    },
+    {
+      "label": "账本流水",
+      "clicked": true,
+      "body_has_label": true,
+      "frame_url": "about:srcdoc#/ledger"
+    },
+    {
+      "label": "投资管理",
+      "clicked": true,
+      "body_has_label": true,
+      "frame_url": "about:srcdoc#/investment"
+    },
+    {
+      "label": "消费管理",
+      "clicked": true,
+      "body_has_label": true,
+      "frame_url": "about:srcdoc#/consumption"
+    },
+    {
+      "label": "数据源与上传",
+      "clicked": true,
+      "body_has_label": true,
+      "frame_url": "about:srcdoc#/sources-upload"
+    },
+    {
+      "label": "建议与复盘",
+      "clicked": true,
+      "body_has_label": true,
+      "frame_url": "about:srcdoc#/review"
+    },
+    {
+      "label": "报告与洞察",
+      "clicked": true,
+      "body_has_label": true,
+      "frame_url": "about:srcdoc#/reports"
+    },
+    {
+      "label": "市场与研究",
+      "clicked": true,
+      "body_has_label": true,
+      "frame_url": "about:srcdoc#/market-research"
+    },
+    {
+      "label": "设置",
+      "clicked": true,
+      "body_has_label": true,
+      "frame_url": "about:srcdoc#/settings"
+    }
+  ],
+  "secondary_clicks": [
+    {
+      "entry_label": "首页总览",
+      "clicked": true,
+      "tab_text": "财务状态"
+    },
+    {
+      "entry_label": "账户与资产",
+      "clicked": true,
+      "tab_text": "账户总览"
+    },
+    {
+      "entry_label": "账本流水",
+      "clicked": true,
+      "tab_text": "流水列表"
+    },
+    {
+      "entry_label": "投资管理",
+      "clicked": true,
+      "tab_text": "投资总览"
+    },
+    {
+      "entry_label": "消费管理",
+      "clicked": true,
+      "tab_text": "消费总览"
+    },
+    {
+      "entry_label": "数据源与上传",
+      "clicked": true,
+      "tab_text": "上传中心"
+    },
+    {
+      "entry_label": "建议与复盘",
+      "clicked": true,
+      "tab_text": "建议列表"
+    },
+    {
+      "entry_label": "报告与洞察",
+      "clicked": true,
+      "tab_text": "月报"
+    },
+    {
+      "entry_label": "市场与研究",
+      "clicked": true,
+      "tab_text": "市场观察"
+    },
+    {
+      "entry_label": "设置",
+      "clicked": true,
+      "tab_text": "账户偏好"
+    }
+  ],
+  "history_validation": {
+    "back": {
+      "ok": true,
+      "frame_url": "about:srcdoc#/accounts"
+    },
+    "forward": {
+      "ok": true,
+      "frame_url": "about:srcdoc#/ledger"
+    }
+  },
+  "core_metrics": {
+    "metrics": [
+      {
+        "label": "净资产",
+        "value_text": "CNY 0.00",
+        "source_note": "账户和持仓汇总"
+      },
+      {
+        "label": "现金余额",
+        "value_text": "CNY 0.00",
+        "source_note": "账户现金汇总"
+      },
+      {
+        "label": "投资市值",
+        "value_text": "CNY 0.00",
+        "source_note": "持仓读模型"
+      },
+      {
+        "label": "本月支出",
+        "value_text": "CNY 7,153.98",
+        "source_note": "MetaDatabase 真实支付宝流水"
+      },
+      {
+        "label": "待复核交易",
+        "value_text": "406",
+        "source_note": "8815 条真实流水"
+      },
+      {
+        "label": "数据源状态",
+        "value_text": "已导入",
+        "source_note": "真实流水可读取"
+      }
+    ],
+    "monthly_spending": {
+      "label": "本月支出",
+      "value_text": "CNY 7,153.98",
+      "source_note": "MetaDatabase 真实支付宝流水"
+    },
+    "pending_review": {
+      "label": "待复核交易",
+      "value_text": "406",
+      "source_note": "8815 条真实流水"
+    },
+    "zero_value_metrics": [
+      {
+        "label": "净资产",
+        "value_text": "CNY 0.00",
+        "source_note": "账户和持仓汇总"
+      },
+      {
+        "label": "现金余额",
+        "value_text": "CNY 0.00",
+        "source_note": "账户现金汇总"
+      },
+      {
+        "label": "投资市值",
+        "value_text": "CNY 0.00",
+        "source_note": "持仓读模型"
+      }
+    ],
+    "all_zero_values_explained": true
+  },
+  "data_check_board": {
+    "workspace": "sync",
+    "contains_data_source_status": true,
+    "contains_review_queue": true,
+    "evidence_text": "跳到内容\nPFI\nPFI\n全局搜索\n数据源\n支付宝\n微信\nCBA\nMoomoo\n账户\n视图\n个人财务\n投资复盘\n消费复盘\nAUD/CNY=4.69（2026/06/28 06:00）\n⌘\n搜索\n✓\n待办\n◫\n说明\n⚙\n设置\n首页总览\n账户与资产\n账本流水\n投资管理\n消费管理\n数据源与上传\n建议与复盘\n报告与洞察\n市场与研究\n设置\n\n上传中心\n\n数据源与上传 · 上传中心\n\n未选择真实本机文件时，只显示上传空态和格式要求。\n\n本机数据可用\n等待上传\n真实支付宝流水\n8,815 条\n4 个文件 · 2022-06-06 至 2026-06-03\n待复核流水\n406 条\n低置信度记录进入账本复核\n上传中心\n可用\nCSV / ZIP / XLSX 多文件本机预检\n导入中心\n已接入真实数据\n批次、摘要、待复核入口同屏显示\n\n二级入口\n\n页面导航\n上传中心\n导入中心\n数据源管理\n待复核\n导入历史\n数据源与上传\n/\n上传中心\n\n上传中心\n\n数据源与上传 · 上传中心\n\n未选择真实本机文件时，只显示上传空态和格式要求。\n\n选择上传文件\n主对象\n上传中心\n数据来源\n待补\n空状态\n未选择真实本机文件时，只显示上传空态和格式要求。\n错误状态\n无法启动上传，请检查本机文件权限、目录和解析器配置。\n文件入口\n\n展示可上传来源、格式和目标数据域。\n\n解析器\n\n匹配解析器版本、字段要求和拒绝原因。\n\n数据门禁\n\n未完成文件校验前不写入正式 PFI 数据。\n\n上传动作\n\n选择文件、校验格式或转到导入中心。\n\n快捷操作\n\n常用任务\n当前页面：上传中心与导入中心\n上传中心\n打开上传\n查看说明\n导入中心\n打开导入\n查看说明\n数据源管理\n管理数据源\n查看说明\n待复核\n查看待复核\n查看说明\n导入历史\n查看历史\n查看说明\n\n上传中心\n\n上传支付宝账单\n等待选择文件\n拖拽 CSV / ZIP / XLSX 到这里\n也可以点击选择文件；写入本机 PFI 和 MetaDatabase，不上传到外部服务。\n等待 CSV / ZIP / XLSX 文件\n解析预览\n等待真实文件；记录数以本机解析结果为准。\n\n导入中心\n\n批次与摘要\n进入账本复核\n字段映射\n等待真实文件解析后确认日期、金额、币种、账户和备注字段。\n已选择文件\n4\n预计记录\n8815\n待复核\n406\n失败反馈\n0\n确认入库\n等待真实文件\n待复核队列：暂无真实导入批次。\n真实支付宝流水\n支付宝三年历史账单\n文件数\n4\n记录数\n8815\n待复核\n406\n状态\n已接入真实数据\n\n2022-06-06 至 2026-06-03 · 8815 条标准化流水 · 406 条待复核\n\n待办列表\n\n今日待处理\n刷新本机状态\n\n数据源与上传 · 统一趋势\n\n状态趋势\nCNY 基准\n\n趋势数据需要先接入真实数据，当前不显示伪造曲线。\n\n排序\n导出\n优先级\t对象\t依据\t动作\t状态\nP0\t真实支付宝流水\t4 个原始文件\t2022-06-06 至 2026-06-03 · 8,815 条标准化流水\t已接入真实数据\nP0\t导入中心\t真实账本摘要\t待复核 406 条，进入账本流水处理。\t可用\nP1\t上传中心\tCSV / ZIP / XLSX\t点击或拖拽选择账单文件；已有真实账本不会被伪造覆盖。\t可用\nP1\t账本复核\t低置信度记录\t进入账本流水处理待复核记录。\t复核\n\n待办清单\n\n当前待处理\n×\n真实支付宝流水\n8,815 条 · 2022-06-06 至 2026-06-03\n待复核流水\n406 条 · 进入账本流水处理\n上传中心\n可用 · 支持多文件 CSV / ZIP / XLSX\n导入摘要\n可用 · 批次、记录和待复核同屏展示\n成功\n已切换到数据源与上传\n已切换到数据源与上传"
+  },
+  "report_center": {
+    "workspace": "insights",
+    "has_conclusion_or_blocker": true,
+    "evidence_text": "跳到内容\nPFI\nPFI\n全局搜索\n数据源\n支付宝\n微信\nCBA\nMoomoo\n账户\n视图\n个人财务\n投资复盘\n消费复盘\nAUD/CNY=4.69（2026/06/28 06:00）\n⌘\n搜索\n✓\n待办\n◫\n说明\n⚙\n设置\n首页总览\n账户与资产\n账本流水\n投资管理\n消费管理\n数据源与上传\n建议与复盘\n报告与洞察\n市场与研究\n设置\n\n月报\n\n报告与洞察 · 月报\n\n未加载真实月度账本时，只显示月报空态和缺口说明。\n\n本机数据可用\n等待报告数据\n月报\nCNY 0.00\n净资产、现金流、消费、投资\n投资报告\nCNY 0.00\n0 条持仓，读取 SQLite\n收益复核\nCNY 0.00\n由持仓成本和现价派生\n导出\n可用\n待补充\n\n二级入口\n\n页面导航\n月报\n季报\n年报\n自定义报告\n导出\n报告与洞察\n/\n月报\n\n月报\n\n报告与洞察 · 月报\n\n未加载真实月度账本时，只显示月报空态和缺口说明。\n\n生成月报草稿\n主对象\n月报\n数据来源\n待补\n空状态\n未加载真实月度账本时，只显示月报空态和缺口说明。\n错误状态\n无法生成月报，请检查月度流水、账户快照和分类覆盖。\n报告期间\n\n显示月份、数据覆盖天数和缺失来源。\n\n月度发现\n\n只呈现已通过门禁的数据项和待复核项。\n\n数据门禁\n\n关键数据未齐时阻断报告结论生成。\n\n月报动作\n\n生成草稿、补齐数据或导出证据。\n\n快捷操作\n\n常用任务\n当前页面：报告列表与导出\n项目级复审\n打开入口\n查看说明\n真实数据闭环\n打开设置\n查看说明\n回归治理\n打开入口\n查看说明\n交付与回滚\n打开入口\n查看说明\n回滚计划\n打开入口\n查看说明\n后续任务清单\n打开设置\n查看说明\n\n待办列表\n\n今日待处理\n刷新本机状态\n\n报告与洞察 · 统一趋势\n\n状态趋势\nCNY 基准\n\n趋势数据需要先接入真实数据，当前不显示伪造曲线。\n\n排序\n导出\n优先级\t对象\t依据\t动作\t状态\nP0\t项目级复审\t总验收门禁\t20/20 个门禁通过。\t通过\nP0\t真实数据闭环\t验收记录\t0 个核心源；首页状态 通过。\t通过\nP1\t回归治理\t治理脚本\t运行变更范围治理。\t通过\nP1\t交付与回滚\t交付回滚\t8 步回滚 · 5 项后续任务。\t通过\n\n待办清单\n\n当前待处理\n×\n用户文档\n3 个用户文档已覆盖\n分类闭环\n9 个账本分类检查\n建议闭环\n8 条建议 · 生命周期 8\n回归命令\n冒烟检查 / 聚焦测试 / 治理已记录\n成功\n已切换到报告与洞察\n已切换到报告与洞察"
+  },
+  "error_state_path": {
+    "workspace": "market_research",
+    "has_explanatory_empty_state": true,
+    "has_next_action": true,
+    "evidence_text": "跳到内容\nPFI\nPFI\n全局搜索\n数据源\n支付宝\n微信\nCBA\nMoomoo\n账户\n视图\n个人财务\n投资复盘\n消费复盘\nAUD/CNY=4.69（2026/06/28 06:00）\n⌘\n搜索\n✓\n待办\n◫\n说明\n⚙\n设置\n首页总览\n账户与资产\n账本流水\n投资管理\n消费管理\n数据源与上传\n建议与复盘\n报告与洞察\n市场与研究\n设置\n\n市场观察\n\n市场与研究 · 市场观察\n\n未加载真实市场观察资料时，只显示市场观察空态和来源说明。\n\n本机数据可用\n等待市场资料\n市场观察\n可用\n指数、ETF、主题和自选\n公司研究\n可用\n公司资料和反方条件\n基金研究\n可用\n基金持仓、费率和风格\n策略实验室\n唯一入口\n回测、参数扫描和盘感训练\n\n二级入口\n\n页面导航\n市场观察\n研究笔记\n公司研究\n基金研究\n策略实验室\n市场与研究\n/\n市场观察\n\n市场观察\n\n市场与研究 · 市场观察\n\n未加载真实市场观察资料时，只显示市场观察空态和来源说明。\n\n打开观察清单\n主对象\n市场观察\n数据来源\n待补\n空状态\n未加载真实市场观察资料时，只显示市场观察空态和来源说明。\n错误状态\n无法读取市场观察，请检查市场资料来源、更新时间和本机缓存。\n观察清单\n\n按指数、ETF、主题和自选对象组织观察对象。\n\n状态信号\n\n展示价格、事件、来源时间和待复核状态。\n\n兼容入口\n\nv0.1 市场入口 /market/watch 进入本页面。\n\n观察动作\n\n打开对象、保存观察视图或跳转研究笔记。\n\n快捷操作\n\n常用任务\n当前页面：市场观察、研究和策略实验室\n市场观察\n打开市场\n查看说明\n公司研究\n打开公司\n查看说明\n基金研究\n打开基金\n查看说明\n政策研究\n打开政策\n查看说明\n策略实验室\n打开策略\n查看说明\n\n待办列表\n\n今日待处理\n刷新本机状态\n\n市场与研究 · 统一趋势\n\n状态趋势\nCNY 基准\n\n趋势数据需要先接入真实数据，当前不显示伪造曲线。\n\n排序\n导出\n优先级\t对象\t依据\t动作\t状态\n1\t市场观察\t等待市场资料\t查看市场\t可用\n2\t研究材料\t等待材料\t查看研究\t可用\n3\t策略实验室\t唯一入口\t打开策略\t可用\n\n待办清单\n\n当前待处理\n×\n市场观察\n查看市场和自选\n公司/基金研究\n整理研究材料\n策略实验室\n统一进入回测和盘感训练\n成功\n已切换到市场与研究\n已切换到市场与研究"
+  },
+  "mobile_basic": {
+    "official_nav_count": 10,
+    "contains_home": true
+  },
+  "screenshots": {
+    "app_entry_review": {
+      "path": "PFI/reports/pfi_v023/stage_10/whole_stage_review/screenshots/app_entry_review.png",
+      "bytes": 241258
+    },
+    "navigation_review": {
+      "path": "PFI/reports/pfi_v023/stage_10/whole_stage_review/screenshots/navigation_review.png",
+      "bytes": 252601
+    },
+    "data_report_review": {
+      "path": "PFI/reports/pfi_v023/stage_10/whole_stage_review/screenshots/data_report_review.png",
+      "bytes": 240967
+    },
+    "mobile_review": {
+      "path": "PFI/reports/pfi_v023/stage_10/whole_stage_review/screenshots/mobile_review.png",
+      "bytes": 70058
+    }
+  },
+  "console_errors": [],
+  "page_errors": [],
+  "http_errors": []
+}

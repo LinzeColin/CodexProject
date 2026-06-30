@@ -1,0 +1,121 @@
+{
+  "schema": "PFIV023Stage10WholeStageReviewEvidenceV1",
+  "version": "v0.2.3",
+  "stage": "Stage 10",
+  "review_id": "V023-S10-WHOLE-STAGE-REVIEW",
+  "status": "review_pass",
+  "current_stage_only": true,
+  "no_stage11_work": true,
+  "completed_phases": [
+    "V023-S10-P10.1",
+    "V023-S10-P10.2",
+    "V023-S10-P10.3"
+  ],
+  "source_contract": "/Users/linzezhang/Downloads/PFI_v0.2.3_Human_Product_Experience_Recovery_Roadmap.txt#Stage 10",
+  "stage_contract": {
+    "phase_10_1_entry_e2e_done": true,
+    "phase_10_2_navigation_e2e_done": true,
+    "phase_10_3_data_report_e2e_done": true,
+    "stage_10_whole_review_done": true,
+    "github_main_upload_gate": "terminal_verified_after_commit",
+    "head_semantics": "This committed evidence cannot self-contain the final post-push remote HEAD; the upload gate is verified by git fetch/rev-parse after push."
+  },
+  "acceptance_checks": {
+    "app_opens_new_ui": true,
+    "localhost_same_ui": true,
+    "ten_first_level_entries_clickable": true,
+    "secondary_paths_clickable": true,
+    "core_metrics_not_masked_zero": true,
+    "report_center_conclusion_or_blocker_visible": true,
+    "browser_back_forward_works": true,
+    "screenshots_and_json_present": true
+  },
+  "validation_commands": [
+    "node --check PFI/web/app/shell.js",
+    "python3 -m pytest PFI/tests/test_v023_stage10_e2e_acceptance.py -q",
+    "python3 -m pytest PFI/tests/test_v023_*.py -q",
+    "python3 -m json.tool PFI/reports/pfi_v023/stage_10/**/*.json",
+    "git diff --check -- PFI",
+    "git push origin HEAD:main"
+  ],
+  "screenshots": {
+    "app_entry_review": {
+      "path": "PFI/reports/pfi_v023/stage_10/whole_stage_review/screenshots/app_entry_review.png",
+      "bytes": 241258
+    },
+    "navigation_review": {
+      "path": "PFI/reports/pfi_v023/stage_10/whole_stage_review/screenshots/navigation_review.png",
+      "bytes": 252601
+    },
+    "data_report_review": {
+      "path": "PFI/reports/pfi_v023/stage_10/whole_stage_review/screenshots/data_report_review.png",
+      "bytes": 240967
+    },
+    "mobile_review": {
+      "path": "PFI/reports/pfi_v023/stage_10/whole_stage_review/screenshots/mobile_review.png",
+      "bytes": 70058
+    }
+  },
+  "changed_files": [
+    "PFI/docs/pfi_v023/STAGE10_E2E_ACCEPTANCE.md",
+    "PFI/reports/pfi_v023/stage_10/phase_10_1/browser_probe_raw.json",
+    "PFI/reports/pfi_v023/stage_10/phase_10_1/browser_validation.json",
+    "PFI/reports/pfi_v023/stage_10/phase_10_1/build_hash_consistency.json",
+    "PFI/reports/pfi_v023/stage_10/phase_10_1/cache_cleanup_dry_run.json",
+    "PFI/reports/pfi_v023/stage_10/phase_10_1/changed_files.txt",
+    "PFI/reports/pfi_v023/stage_10/phase_10_1/evidence.json",
+    "PFI/reports/pfi_v023/stage_10/phase_10_1/screenshots/app_entry.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_1/screenshots/localhost.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_1/terminal.log",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/browser_probe_raw.json",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/browser_validation.json",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/changed_files.txt",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/evidence.json",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/entries/entry_01_home.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/entries/entry_02_accounts.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/entries/entry_03_ledger.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/entries/entry_04_investment.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/entries/entry_05_consumption.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/entries/entry_06_sync.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/entries/entry_07_recommendations.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/entries/entry_08_insights.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/entries/entry_09_market_research.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/entries/entry_10_settings.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/mobile_basic.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/secondary/secondary_01_home.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/secondary/secondary_02_accounts.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/secondary/secondary_03_ledger.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/secondary/secondary_04_investment.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/secondary/secondary_05_consumption.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/secondary/secondary_06_sync.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/secondary/secondary_07_recommendations.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/secondary/secondary_08_insights.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/secondary/secondary_09_market_research.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/screenshots/secondary/secondary_10_settings.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_2/terminal.log",
+    "PFI/reports/pfi_v023/stage_10/phase_10_3/browser_probe_raw.json",
+    "PFI/reports/pfi_v023/stage_10/phase_10_3/browser_validation.json",
+    "PFI/reports/pfi_v023/stage_10/phase_10_3/changed_files.txt",
+    "PFI/reports/pfi_v023/stage_10/phase_10_3/core_metrics_state.json",
+    "PFI/reports/pfi_v023/stage_10/phase_10_3/data_check_board.json",
+    "PFI/reports/pfi_v023/stage_10/phase_10_3/error_state_paths.json",
+    "PFI/reports/pfi_v023/stage_10/phase_10_3/evidence.json",
+    "PFI/reports/pfi_v023/stage_10/phase_10_3/report_center.json",
+    "PFI/reports/pfi_v023/stage_10/phase_10_3/screenshots/core_metrics.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_3/screenshots/data_check_board.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_3/screenshots/error_state_path.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_3/screenshots/report_center.png",
+    "PFI/reports/pfi_v023/stage_10/phase_10_3/terminal.log",
+    "PFI/reports/pfi_v023/stage_10/whole_stage_review/browser_validation.json",
+    "PFI/reports/pfi_v023/stage_10/whole_stage_review/changed_files.txt",
+    "PFI/reports/pfi_v023/stage_10/whole_stage_review/evidence.json",
+    "PFI/reports/pfi_v023/stage_10/whole_stage_review/screenshots/app_entry_review.png",
+    "PFI/reports/pfi_v023/stage_10/whole_stage_review/screenshots/data_report_review.png",
+    "PFI/reports/pfi_v023/stage_10/whole_stage_review/screenshots/mobile_review.png",
+    "PFI/reports/pfi_v023/stage_10/whole_stage_review/screenshots/navigation_review.png",
+    "PFI/reports/pfi_v023/stage_10/whole_stage_review/terminal.log",
+    "PFI/src/pfi_os/app/streamlit_app.py",
+    "PFI/src/pfi_os/system/cache_cleanup.py",
+    "PFI/tests/test_v023_stage10_e2e_acceptance.py"
+  ]
+}
