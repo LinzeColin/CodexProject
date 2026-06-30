@@ -1,0 +1,59 @@
+{
+  "artifact_refs": {
+    "completion_record": "KMFA/stage_artifacts/S12_P2_manual_impact_preview/human/s12_p2_completion_record.md",
+    "html_export": "KMFA/stage_artifacts/S12_P2_manual_impact_preview/exports/html/kmfa_manual_impact_preview.html",
+    "manual_impact_preview_manifest": "KMFA/metadata/approvals/manual_impact_preview_manifest.json",
+    "manual_impact_previews": "KMFA/metadata/approvals/manual_impact_previews.jsonl",
+    "stage_manifest": "KMFA/stage_artifacts/S12_P2_manual_impact_preview/machine/s12_p2_manifest.json",
+    "test_results": "KMFA/stage_artifacts/S12_P2_manual_impact_preview/human/test_results.md",
+    "validator": "KMFA/tools/check_s12_p2_manual_impact_preview.py"
+  },
+  "content_hash": "sha256:49c6154f8b80d80901f4e6112617f0478687cd8bd339231805269f3dd079bbcb",
+  "project_id": "KMFA",
+  "quality_gate": {
+    "business_decision_basis_allowed": false,
+    "business_plaintext_commit_allowed": false,
+    "derived_rerun_allowed": false,
+    "derived_rerun_executed": false,
+    "formal_report_allowed": false,
+    "formal_report_generated": false,
+    "github_upload_allowed": false,
+    "high_risk_second_confirmation_required": true,
+    "impact_preview_generation_allowed": true,
+    "impact_preview_required_before_publish": true,
+    "phase_completion_upload_allowed": false,
+    "raw_layer_write_allowed": false,
+    "raw_source_mutation_allowed": false,
+    "source_layer_write_allowed": false,
+    "unpassed_preview_publish_allowed": false
+  },
+  "record_type": "stage_artifact_manifest",
+  "schema_version": "kmfa.stage_artifact_manifest.v1",
+  "stage_phase": "S12-P2",
+  "stage_scope": {
+    "difference_closure_scope_included": false,
+    "external_connector_scope_included": false,
+    "formal_report_runtime_scope_included": false,
+    "github_upload_scope_included": false,
+    "lineage_full_check_scope_included": false,
+    "s12_p1_manual_resolution_event_dependency_included": true,
+    "s12_p2_impact_preview_scope_included": true,
+    "s12_p3_rerun_mechanism_scope_included": false,
+    "stage12_review_scope_included": false
+  },
+  "status": "completed_validated_local_only",
+  "summary": {
+    "affected_metric_count": 11,
+    "affected_project_count": 8,
+    "affected_report_count": 5,
+    "blocked_publish_count": 3,
+    "derived_rerun_count": 0,
+    "formal_report_count": 0,
+    "github_upload_count": 0,
+    "high_risk_count": 3,
+    "impact_preview_count": 5,
+    "raw_layer_write_count": 0,
+    "second_confirmation_required_count": 3,
+    "source_event_count": 5
+  }
+}
