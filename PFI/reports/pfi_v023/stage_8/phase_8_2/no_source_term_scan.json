@@ -1,0 +1,14 @@
+{
+  "schema": "PFIV023Stage8NoSourceTermScanV1",
+  "version": "v0.2.3",
+  "stage": "Stage 8",
+  "phase_id": "V023-S8-P8.2",
+  "scanned_files": [
+    "PFI/src/pfi_v02/stage_v023_data_sources.py",
+    "PFI/web/app/pages/upload.js",
+    "PFI/tests/test_v023_stage8_data_source_gate.py",
+    "PFI/docs/pfi_v023/STAGE8_DATA_SOURCE_GATE.md"
+  ],
+  "blocked_term_count": 6,
+  "violations": []
+}

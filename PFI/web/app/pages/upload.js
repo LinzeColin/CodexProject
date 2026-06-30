@@ -44,6 +44,42 @@
     });
   }
 
+  function buildStage8Phase82DashboardViewModel(dashboard = {}) {
+    const rows = dashboard.data_source_matrix && Array.isArray(dashboard.data_source_matrix.rows) ? dashboard.data_source_matrix.rows.map(buildDashboardRow) : [];
+    const summary = dashboard.summary || {};
+    const routeActions = Array.isArray(dashboard.route_actions) ? dashboard.route_actions.map(buildRouteAction) : [];
+    const parseEntries = dashboard.parse_preview && Array.isArray(dashboard.parse_preview.entries) ? dashboard.parse_preview.entries : [];
+    const fieldMappings = Array.isArray(dashboard.field_mapping_entries) ? dashboard.field_mapping_entries : [];
+    const sections = [
+      buildSection("data-source-matrix", "数据源矩阵", rows.map((row) => row.matrix_label)),
+      buildSection("import-status", "上传/导入状态", buildImportStatusLines(dashboard.upload_import_status || {})),
+      buildSection("parse-preview", "解析预览", parseEntries.map((entry) => `${entry.label || entry.data_source_id}: ${entry.detail_zh || "需要人工复核"}`)),
+      buildSection("field-mapping", "字段映射", fieldMappings.map(buildFieldMappingLine)),
+      buildSection("route-actions", "跳转到报告/复核", routeActions.map((action) => `${action.label_zh}: ${action.route}`)),
+    ];
+    return Object.freeze({
+      schema: "PFIV023Stage8DashboardPageViewModelV1",
+      version: VERSION,
+      stage: "Stage 8",
+      phase_id: "V023-S8-P8.2",
+      page: "upload",
+      title: "数据源检查板",
+      subtitle_zh: "检查真实数据挂链、上传/导入状态、解析预览、字段映射入口与复核跳转。",
+      source_count: Number(summary.source_count || rows.length),
+      ready_count: Number(summary.ready_count || rows.filter((row) => row.status === "ready" || row.status === "confirmed_zero").length),
+      blocked_count: Number(summary.blocked_count || rows.filter((row) => !["ready", "confirmed_zero"].includes(row.status)).length),
+      action_count: routeActions.length,
+      auto_import_enabled: Boolean(summary.auto_import_enabled),
+      read_model_hash: summary.read_model_hash || null,
+      as_of: summary.as_of || null,
+      rows,
+      route_actions: routeActions,
+      sections,
+      stage_contract: dashboard.stage_contract || {},
+      summary_zh: `数据源 ${Number(summary.source_count || rows.length)} 个：${Number(summary.ready_count || 0)} 个已挂链，${Number(summary.blocked_count || 0)} 个阻断。`,
+    });
+  }
+
   function buildDataSourceCard(source = {}) {
     const blockedMetrics = Array.isArray(source.blocked_metric_ids) ? source.blocked_metric_ids : [];
     return Object.freeze({
@@ -79,7 +115,67 @@
     return `${range.start || "未知"} 至 ${range.end || "未知"}`;
   }
 
+  function buildDashboardRow(row = {}) {
+    const blockedMetrics = Array.isArray(row.blocked_metric_ids) ? row.blocked_metric_ids : [];
+    const matrixLabel = [
+      row.label || row.data_source_id || "未命名数据源",
+      row.status_label || `status: ${row.status || "review_required"}`,
+      row.records_label || `records: ${recordsText(row.records)}`,
+      row.date_range_label || `date range: ${dateRangeText(row.date_range)}`,
+      row.last_updated_label || `last updated: ${row.last_updated || "未挂链"}`,
+      row.blocked_metrics_label || `blocked metrics: ${blockedMetrics.length ? blockedMetrics.join("、") : "无"}`,
+    ].join(" · ");
+    return Object.freeze({
+      data_source_id: row.data_source_id || "",
+      label: row.label || "未命名数据源",
+      status: row.status || "review_required",
+      status_zh: row.status_zh || STATUS_COPY_ZH[row.status] || "需要人工复核",
+      records_label: row.records_label || `records: ${recordsText(row.records)}`,
+      date_range_label: row.date_range_label || `date range: ${dateRangeText(row.date_range)}`,
+      last_updated_label: row.last_updated_label || `last updated: ${row.last_updated || "未挂链"}`,
+      blocked_metrics_label: row.blocked_metrics_label || `blocked metrics: ${blockedMetrics.length ? blockedMetrics.join("、") : "无"}`,
+      matrix_label: matrixLabel,
+      reason_zh: row.reason_zh || "需要人工复核数据源状态。",
+      route_targets: Array.isArray(row.route_targets) ? row.route_targets : [],
+      evidence_hash: row.evidence_hash || row.read_model_hash || null,
+    });
+  }
+
+  function buildImportStatusLines(status = {}) {
+    const actions = Array.isArray(status.import_actions) ? status.import_actions : [];
+    return [
+      `status: ${status.status || "read_only_gate"}`,
+      `auto import: ${Boolean(status.auto_import_enabled) ? "enabled" : "disabled"}`,
+      status.status_zh || "当前仅展示真实数据挂链状态。",
+      ...actions.map((action) => `${action.label_zh || action.action_id}: ${action.route || ""}`),
+    ];
+  }
+
+  function buildFieldMappingLine(entry = {}) {
+    const fields = Array.isArray(entry.source_fields) && entry.source_fields.length ? entry.source_fields.join(", ") : "未挂链";
+    return `${entry.title_zh || "字段映射"} · ${entry.data_source_id || ""} · ${entry.mapping_status || "blocked"} · ${fields} · ${entry.route || "/reports"}`;
+  }
+
+  function buildRouteAction(action = {}) {
+    return Object.freeze({
+      action_id: action.action_id || "",
+      label_zh: action.label_zh || "打开复核入口",
+      type: action.type || "route",
+      route: action.route || "/reports",
+      reason_zh: action.reason_zh || "查看相关数据源状态。",
+    });
+  }
+
+  function buildSection(sectionId, title, lines) {
+    return Object.freeze({
+      section_id: sectionId,
+      title_zh: title,
+      lines: Array.isArray(lines) ? lines.filter(Boolean) : [],
+    });
+  }
+
   return Object.freeze({
     buildStage8Phase81DataSourceGateViewModel,
+    buildStage8Phase82DashboardViewModel,
   });
 });
