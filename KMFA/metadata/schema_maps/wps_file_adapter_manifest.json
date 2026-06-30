@@ -1,0 +1,110 @@
+{
+  "active_mapping_rule_version": "MAP-SRC-kmfa-wps-file-adapter-s07p2-v0.1.0",
+  "conversion_guidance_ref": "stage_artifacts/S07_P2_wps_file_adapter/machine/wps_conversion_guidance.jsonl",
+  "field_mappings_ref": "metadata/schema_maps/wps_field_mappings.jsonl",
+  "field_report_ref": "stage_artifacts/S07_P2_wps_file_adapter/machine/wps_readonly_field_report.jsonl",
+  "generated_at": "2026-06-30T17:00:00+10:00",
+  "mapping_rule_versions_ref": "metadata/schema_maps/wps_mapping_rule_versions.json",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "normalized_business_values_committed": false,
+    "pdf_committed": false,
+    "private_csv_committed": false,
+    "raw_business_values_committed": false,
+    "raw_file_committed": false,
+    "source_header_plaintext_committed": false,
+    "xlsx_committed": false,
+    "zip_committed": false
+  },
+  "quality_gate": {
+    "candidate_quality_grade": "Q2_structure_candidate",
+    "formal_report_allowed": false,
+    "q5_calculation_baseline_allowed": false,
+    "requires_stage7_review_before_downstream_use": true
+  },
+  "record_type": "wps_file_adapter_manifest",
+  "schema_version": "kmfa.wps_file_adapter.v1",
+  "source_registry": [
+    {
+      "converted_file_format": "xlsx",
+      "converted_file_hash": "sha256:acdeb3b860f189ba7293c2f392710e88b697874b307795216f79dd69f4ab62ec",
+      "export_type": "collection",
+      "native_wps_conversion_required": true,
+      "native_wps_parse_status": "requires_conversion_to_xlsx_or_csv",
+      "parse_status": "parsed_structure_from_converted_xlsx",
+      "raw_layer_write_allowed": false,
+      "raw_source_mutation_allowed": false,
+      "read_only_parse": true,
+      "source_file_private_ref": "private://KMFA/S07-P2/source/SRC-WPS-COLLECTION-001",
+      "source_header_plaintext_committed": false,
+      "source_ref": "SRC-WPS-COLLECTION-001"
+    },
+    {
+      "converted_file_format": "xlsx",
+      "converted_file_hash": "sha256:3a8d749fb885b96bcd35f17ed2763ce621ec1388134358e169399843d5e51aee",
+      "export_type": "receivable_aging",
+      "native_wps_conversion_required": true,
+      "native_wps_parse_status": "requires_conversion_to_xlsx_or_csv",
+      "parse_status": "parsed_structure_from_converted_xlsx",
+      "raw_layer_write_allowed": false,
+      "raw_source_mutation_allowed": false,
+      "read_only_parse": true,
+      "source_file_private_ref": "private://KMFA/S07-P2/source/SRC-WPS-AGING-001",
+      "source_header_plaintext_committed": false,
+      "source_ref": "SRC-WPS-AGING-001"
+    },
+    {
+      "converted_file_format": "xlsx",
+      "converted_file_hash": "sha256:399e2de774024362496bec66f55db56a51388eaff30082139405d25387240a11",
+      "export_type": "production_project_status",
+      "native_wps_conversion_required": true,
+      "native_wps_parse_status": "requires_conversion_to_xlsx_or_csv",
+      "parse_status": "parsed_structure_from_converted_xlsx",
+      "raw_layer_write_allowed": false,
+      "raw_source_mutation_allowed": false,
+      "read_only_parse": true,
+      "source_file_private_ref": "private://KMFA/S07-P2/source/SRC-WPS-PROJECT-STATUS-001",
+      "source_header_plaintext_committed": false,
+      "source_ref": "SRC-WPS-PROJECT-STATUS-001"
+    },
+    {
+      "converted_file_format": "xlsx",
+      "converted_file_hash": "sha256:0429666e3ef4e6b0f0af6048dbcc525e7e87926811498dc54e9ecf966e46fa3c",
+      "export_type": "deposit",
+      "native_wps_conversion_required": true,
+      "native_wps_parse_status": "requires_conversion_to_xlsx_or_csv",
+      "parse_status": "parsed_structure_from_converted_xlsx",
+      "raw_layer_write_allowed": false,
+      "raw_source_mutation_allowed": false,
+      "read_only_parse": true,
+      "source_file_private_ref": "private://KMFA/S07-P2/source/SRC-WPS-DEPOSIT-001",
+      "source_header_plaintext_committed": false,
+      "source_ref": "SRC-WPS-DEPOSIT-001"
+    }
+  ],
+  "source_registry_ref": "metadata/imports/wps_export_source_registry.json",
+  "stage_phase": "S07-P2",
+  "stage_scope": {
+    "external_connector_included": false,
+    "facts_layer_write_included": false,
+    "finance_scope_included": false,
+    "formal_report_generation_included": false,
+    "redcircle_scope_included": false,
+    "wps_scope_included": true
+  },
+  "summary": {
+    "conversion_guidance_count": 4,
+    "field_mapping_count": 20,
+    "field_report_count": 4,
+    "mapping_rule_version_count": 1,
+    "source_export_type_count": 4,
+    "source_header_hash_count": 20,
+    "source_registry_count": 4
+  },
+  "wps_export_types": [
+    "collection",
+    "receivable_aging",
+    "production_project_status",
+    "deposit"
+  ]
+}

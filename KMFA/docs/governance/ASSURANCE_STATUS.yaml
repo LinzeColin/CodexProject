@@ -1,11 +1,11 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260630-S07P1-FINANCE-FILE-ADAPTER"
+as_of_event_id: "EVENT-KMFA-20260630-S07P2-WPS-FILE-ADAPTER"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "fd14057e7427d7f275fdb62a33619936618d0d35"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S06_UPLOAD"
-snapshot_event_time: "2026-06-30T16:00:00+10:00"
-generator_version: "manual-s07p1-finance-file-adapter"
-final_commit_binding: "precommit-pending-s07p1"
+snapshot_event_time: "2026-06-30T17:00:00+10:00"
+generator_version: "manual-s07p2-wps-file-adapter"
+final_commit_binding: "precommit-pending-s07p2"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 48
-    total_active_formulas: 16
+    total_active_parameters: 53
+    total_active_formulas: 17
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -76,6 +76,9 @@ dimensions:
       - "KMFA/stage_artifacts/S07_P1_finance_file_adapter/human/test_results.md"
       - "KMFA/tools/finance_file_adapter.py"
       - "KMFA/tools/check_s07_p1_finance_file_adapter.py"
+      - "KMFA/stage_artifacts/S07_P2_wps_file_adapter/human/test_results.md"
+      - "KMFA/tools/wps_file_adapter.py"
+      - "KMFA/tools/check_s07_p2_wps_file_adapter.py"
   operational_validation:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
@@ -179,16 +182,24 @@ dimensions:
       - "KMFA/metadata/imports/finance_support_source_registry.json"
       - "KMFA/metadata/schema_maps/finance_file_adapter_manifest.json"
       - "KMFA/metadata/schema_maps/finance_field_candidates.jsonl"
+      - "KMFA/stage_artifacts/S07_P2_wps_file_adapter/human/s07_p2_completion_record.md"
+      - "KMFA/stage_artifacts/S07_P2_wps_file_adapter/human/test_results.md"
+      - "KMFA/stage_artifacts/S07_P2_wps_file_adapter/machine/s07_p2_manifest.json"
+      - "KMFA/stage_artifacts/S07_P2_wps_file_adapter/machine/wps_conversion_guidance.jsonl"
+      - "KMFA/stage_artifacts/S07_P2_wps_file_adapter/machine/wps_readonly_field_report.jsonl"
+      - "KMFA/metadata/imports/wps_export_source_registry.json"
+      - "KMFA/metadata/schema_maps/wps_file_adapter_manifest.json"
+      - "KMFA/metadata/schema_maps/wps_field_mappings.jsonl"
+      - "KMFA/metadata/schema_maps/wps_mapping_rule_versions.json"
   evidence_freshness:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "S07P1_COMPLETED_VALIDATED_LOCAL_ONLY_S07P2_NOT_STARTED"
-  release_gate: "KMFA-S07-P2-GATE"
+  status: "S07P2_COMPLETED_VALIDATED_LOCAL_ONLY_S07P3_NOT_STARTED"
+  release_gate: "KMFA-S07-P3-GATE"
   blocker_ids:
-    - "S07_P2_NOT_STARTED"
     - "S07_P3_NOT_STARTED"
     - "STAGE7_REVIEW_NOT_STARTED"
     - "LINEAGE_AND_REPORT_RELEASE_GATE_NOT_STARTED"

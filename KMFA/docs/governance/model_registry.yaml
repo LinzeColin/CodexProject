@@ -118,7 +118,7 @@ models:
     owner: "KMFA"
     status: "planned"
     fact_level: "EXTRACTED"
-    model_version: "0.1.0-s07p1-finance-file-adapter"
+    model_version: "0.1.0-s07p2-wps-file-adapter"
     assumptions:
       - "ASM-KMFA-003"
     formula_ids:
@@ -131,6 +131,7 @@ models:
       - "FORM-KMFA-CROSS-SOURCE-DIFF-QUEUE-001"
       - "FORM-KMFA-VALIDATION-EVIDENCE-OUTPUT-001"
       - "FORM-KMFA-FINANCE-FILE-ADAPTER-001"
+      - "FORM-KMFA-WPS-FILE-ADAPTER-001"
     parameter_ids:
       - "PARAM-KMFA-101"
       - "PARAM-KMFA-102"
@@ -162,6 +163,11 @@ models:
       - "PARAM-KMFA-421"
       - "PARAM-KMFA-422"
       - "PARAM-KMFA-423"
+      - "PARAM-KMFA-424"
+      - "PARAM-KMFA-425"
+      - "PARAM-KMFA-426"
+      - "PARAM-KMFA-427"
+      - "PARAM-KMFA-428"
     inputs:
       - "raw file hash and manifest"
       - "authorized extracted values"
@@ -187,6 +193,8 @@ models:
       - "KMFA/tools/check_s06_p3_validation_evidence.py"
       - "KMFA/tools/finance_file_adapter.py"
       - "KMFA/tools/check_s07_p1_finance_file_adapter.py"
+      - "KMFA/tools/wps_file_adapter.py"
+      - "KMFA/tools/check_s07_p2_wps_file_adapter.py"
       - "remaining_cost_model_not_implemented_until_S07_S10"
     test_refs:
       - "python3 -m unittest KMFA.tests.test_amount_tools -q"
@@ -207,6 +215,8 @@ models:
       - "python3 KMFA/tools/check_s06_p3_validation_evidence.py"
       - "python3 -m unittest KMFA.tests.test_finance_file_adapter -q"
       - "python3 KMFA/tools/check_s07_p1_finance_file_adapter.py"
+      - "python3 -m unittest KMFA.tests.test_wps_file_adapter -q"
+      - "python3 KMFA/tools/check_s07_p2_wps_file_adapter.py"
     evidence_refs:
       - "KMFA/模型参数文件.md"
       - "KMFA/stage_artifacts/S04_P1_amount_tools/human/s04_p1_completion_record.md"
@@ -219,6 +229,7 @@ models:
       - "KMFA/stage_artifacts/S06_P3_validation_evidence_output/human/s06_p3_completion_record.md"
       - "KMFA/stage_artifacts/S05_P3_authority_baseline_lock/human/s05_p3_completion_record.md"
       - "KMFA/stage_artifacts/S07_P1_finance_file_adapter/human/s07_p1_completion_record.md"
+      - "KMFA/stage_artifacts/S07_P2_wps_file_adapter/human/s07_p2_completion_record.md"
   - model_id: "MOD-KMFA-METADATA-001"
     name: "KMFA metadata protocol and identifier contract"
     kind: "deterministic_metadata_governance_contract"

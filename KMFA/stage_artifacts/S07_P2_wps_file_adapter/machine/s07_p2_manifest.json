@@ -1,0 +1,38 @@
+{
+  "completion_record_ref": "KMFA/stage_artifacts/S07_P2_wps_file_adapter/human/s07_p2_completion_record.md",
+  "conversion_guidance_ref": "KMFA/stage_artifacts/S07_P2_wps_file_adapter/machine/wps_conversion_guidance.jsonl",
+  "field_mapping_count": 20,
+  "field_mappings_ref": "KMFA/metadata/schema_maps/wps_field_mappings.jsonl",
+  "field_report_count": 4,
+  "field_report_ref": "KMFA/stage_artifacts/S07_P2_wps_file_adapter/machine/wps_readonly_field_report.jsonl",
+  "finance_scope_included": false,
+  "formal_report_allowed": false,
+  "generated_at": "2026-06-30T17:00:00+10:00",
+  "github_upload_allowed": false,
+  "mapping_rule_version_id": "MAP-SRC-kmfa-wps-file-adapter-s07p2-v0.1.0",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "normalized_business_values_committed": false,
+    "private_csv_committed": false,
+    "raw_business_values_committed": false,
+    "raw_file_committed": false,
+    "source_header_plaintext_committed": false
+  },
+  "q5_calculation_baseline_allowed": false,
+  "raw_layer_write_allowed": false,
+  "record_type": "s07_p2_wps_file_adapter_manifest",
+  "redcircle_scope_included": false,
+  "schema_version": "kmfa.s07_p2_manifest.v1",
+  "source_header_hash_count": 20,
+  "stage_phase": "S07-P2",
+  "test_results_ref": "KMFA/stage_artifacts/S07_P2_wps_file_adapter/human/test_results.md",
+  "validator_ref": "KMFA/tools/check_s07_p2_wps_file_adapter.py",
+  "wps_export_type_count": 4,
+  "wps_export_types": [
+    "collection",
+    "receivable_aging",
+    "production_project_status",
+    "deposit"
+  ],
+  "wps_scope_included": true
+}

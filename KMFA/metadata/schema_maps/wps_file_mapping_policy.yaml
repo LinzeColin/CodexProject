@@ -1,0 +1,37 @@
+schema_version: "kmfa.wps_file_mapping_policy.v1"
+project_id: "KMFA"
+stage_phase: "S07-P2"
+mapping_rule_version_id: "MAP-SRC-kmfa-wps-file-adapter-s07p2-v0.1.0"
+required_export_types:
+  - "collection"
+  - "receivable_aging"
+  - "production_project_status"
+  - "deposit"
+public_repo_policy:
+  raw_business_values_committed: false
+  normalized_business_values_committed: false
+  source_header_plaintext_committed: false
+  raw_file_committed: false
+  private_csv_committed: false
+parse_policy:
+  native_wps_parse_status: "requires_conversion_to_xlsx_or_csv"
+  accepted_converted_formats:
+    - ".xlsx"
+    - ".csv"
+  read_only_after_conversion: true
+  raw_layer_write_allowed: false
+  raw_source_mutation_allowed: false
+quality_gate:
+  machine_candidate_quality_grade: "Q2_structure_candidate"
+  q4_human_confirmed: false
+  q5_calculation_baseline_allowed: false
+  formal_report_allowed: false
+out_of_scope:
+  redcircle_scope_included: false
+  facts_layer_write_included: false
+  formal_report_generation_included: false
+  external_connector_included: false
+evidence_refs:
+  - "KMFA/tools/wps_file_adapter.py"
+  - "KMFA/tools/check_s07_p2_wps_file_adapter.py"
+  - "KMFA/stage_artifacts/S07_P2_wps_file_adapter/human/s07_p2_completion_record.md"

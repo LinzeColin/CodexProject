@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.0-s07p1-finance-file-adapter
+product_version: 0.1.0-s07p2-wps-file-adapter
 
 ## Current Iteration
 
 - project_id: `KMFA`
 - current_stage: `S07`
-- current_phase: `S07-P2 WPS 文件适配 待开始`
-- current_tasks: `KMFA-S07-P2-GATE`
-- status: `s07p1_completed_validated_local_only_s07p2_not_started`
+- current_phase: `S07-P3 红圈导出后置策略 待开始`
+- current_tasks: `KMFA-S07-P3-GATE`
+- status: `s07p2_completed_validated_local_only_s07p3_not_started`
 - risk_tier: `T3`
 
 ## Completed
@@ -56,16 +56,17 @@ product_version: 0.1.0-s07p1-finance-file-adapter
 | `KMFA-S06-STAGE-REVIEW-20260630` | Stage 6 整体复审本地通过，复审步骤未执行 GitHub upload | `KMFA/stage_artifacts/S06_STAGE_REVIEW/human/stage6_review_report.md` |
 | `KMFA-S06-GITHUB-UPLOAD-20260630` | Stage 6 final GitHub upload 已完成 | `KMFA/stage_artifacts/S06_STAGE_REVIEW/human/github_upload_record.md` |
 | `S7PAT01-S7PAT03` | S07-P1 财务文件适配完成本地验证：9 类财务支撑源登记、45 条 hash-only 字段候选和 9 条只读字段报告已生成 | `KMFA/stage_artifacts/S07_P1_finance_file_adapter/human/s07_p1_completion_record.md` |
+| `S7PBT01-S7PBT03` | S07-P2 WPS 文件适配完成本地验证：4 类 WPS 导出、20 条 hash-only 字段映射、4 条转换提示、4 条只读字段报告和 1 个映射规则版本已生成 | `KMFA/stage_artifacts/S07_P2_wps_file_adapter/human/s07_p2_completion_record.md` |
 
 ## In Progress
 
 | Task | Result | Evidence |
 |---|---|---|
-| `KMFA-S07-P2-GATE` | S07-P2 WPS 文件适配尚未开始 | `KMFA/taskpack/v1_2/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_2.md` |
+| `KMFA-S07-P3-GATE` | S07-P3 红圈导出后置策略尚未开始 | `KMFA/taskpack/v1_2/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_2.md` |
 
 ## Not Completed
 
 | Task | Reason | Next |
 |---|---|---|
-| `S07-P2` WPS 文件适配 | S07-P1 已完成；WPS 文件适配尚未开始 | 下一轮只执行 S07-P2，建立 WPS 映射和转换提示 |
+| `S07-P3` 红圈导出后置策略 | S07-P1 和 S07-P2 已完成；红圈后置策略尚未开始 | 下一轮只执行 S07-P3，预留红圈导出模板并明确自动接口后置 |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |

@@ -1,0 +1,29 @@
+{
+  "active_mapping_rule_version": "MAP-SRC-kmfa-wps-file-adapter-s07p2-v0.1.0",
+  "project_id": "KMFA",
+  "record_type": "wps_mapping_rule_versions",
+  "schema_version": "kmfa.wps_mapping_rule_versions.v1",
+  "stage_phase": "S07-P2",
+  "versions": [
+    {
+      "change_type": "initial_s07p2_wps_mapping_rule_version",
+      "covered_export_types": [
+        "collection",
+        "receivable_aging",
+        "production_project_status",
+        "deposit"
+      ],
+      "created_at": "2026-06-30T17:00:00+10:00",
+      "mapping_records_ref": "metadata/schema_maps/wps_field_mappings.jsonl",
+      "mapping_rule_version_id": "MAP-SRC-kmfa-wps-file-adapter-s07p2-v0.1.0",
+      "public_repo_safety": {
+        "normalized_business_values_committed": false,
+        "private_csv_committed": false,
+        "raw_business_values_committed": false,
+        "raw_file_committed": false,
+        "source_header_plaintext_committed": false
+      },
+      "version_status": "active"
+    }
+  ]
+}
