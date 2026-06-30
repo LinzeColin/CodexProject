@@ -1,5 +1,22 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.5 Stage 4.1 Galaxy Rendering Integration
+
+- Added a production Galaxy renderer feature flag with `memory-starfield` as
+  the explicit default and `legacy` as the rollback mode through URL,
+  localStorage or `VITE_MEMORY_ATLAS_GALAXY_RENDERER`.
+- Integrated the Memory Starfield rendering path into the Galaxy board with
+  Flow Field motion, trajectory lines, semantic signal markers, compact quality
+  controls and a low-quality fallback mode.
+- Preserved the existing static nebula fallback for WebGL initialization
+  failure and kept legacy Galaxy reachable without changing routes.
+- Extended visual acceptance with a deterministic Stage 4.1 Galaxy rendering
+  integration contract.
+
+No Stage 4.2 data mapping, Stage 4.3 interaction expansion, Timeline
+replacement, ingestion, raw/private data access, direct writeback, Cloudflare
+live deploy, or external account operation was added.
+
 ## Unreleased - Memory Atlas v1.1.5 Stage 3.2 Preview Widgets
 
 - Added Home Overview preview widgets for Stage 3.2: a lightweight static

@@ -1,4 +1,4 @@
-import { RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
+import { Gauge, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
 import type { CSSProperties } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -6,6 +6,7 @@ import {
   BufferGeometry,
   CanvasTexture,
   Color,
+  DynamicDrawUsage,
   Float32BufferAttribute,
   Group,
   LinearFilter,
@@ -20,16 +21,19 @@ import {
   Raycaster,
   Scene,
   SphereGeometry,
+  TorusGeometry,
   Vector2,
   Vector3,
   WebGLRenderer,
 } from "three";
+import type { GalaxyRendererMode } from "../config/visualFlags";
 import { normalizeMemoryTier } from "../data/atlas";
 import type { AtlasEdge, AtlasNode } from "../types";
 
 interface GalaxySceneProps {
   nodes: AtlasNode[];
   edges: AtlasEdge[];
+  rendererMode: GalaxyRendererMode;
   selectedNode: AtlasNode | null;
   onSelectNode: (node: AtlasNode) => void;
 }
@@ -64,6 +68,10 @@ interface GalaxySignal {
   cameraY: number;
   cameraZ: number;
   cameraDistance: number;
+  rendererMode: GalaxyRendererMode;
+  quality: StarfieldQuality;
+  flowFieldStrength: number;
+  fallbackMode: "webgl" | "low-quality" | "legacy";
 }
 
 interface SceneNode {
@@ -81,6 +89,7 @@ interface HoverPreview {
 }
 
 type FocusNeighborLayer = "primary" | "secondary";
+type StarfieldQuality = "high" | "mid" | "low";
 
 interface FocusNeighbor {
   id: string;
@@ -114,8 +123,13 @@ const MAX_FOCUS_VISIBLE_NEIGHBORS = MAX_FOCUS_PRIMARY_NEIGHBORS + MAX_FOCUS_SECO
 const MAX_PULSE_NEIGHBORS = MAX_FOCUS_VISIBLE_NEIGHBORS;
 const GALAXY_ARM_COLORS = ["#bcdfff", "#d7e8ff", "#a7ecff", "#e5d6ff", "#c8f7e7", "#f7c8dd"];
 const GALAXY_ARM_COUNT = 6;
+const STARFIELD_QUALITY_SETTINGS: Record<StarfieldQuality, { maxNodes: number; ambientParticles: number; haloParticles: number; flowTrailCount: number }> = {
+  high: { maxNodes: 900, ambientParticles: 11200, haloParticles: 2600, flowTrailCount: 190 },
+  mid: { maxNodes: 720, ambientParticles: 9400, haloParticles: 2100, flowTrailCount: 150 },
+  low: { maxNodes: 420, ambientParticles: 5200, haloParticles: 1200, flowTrailCount: 84 },
+};
 
-export function GalaxyScene({ nodes, edges, selectedNode, onSelectNode }: GalaxySceneProps) {
+export function GalaxyScene({ nodes, edges, rendererMode, selectedNode, onSelectNode }: GalaxySceneProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const nebulaCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const pointerRef = useRef<PointerState>({ dragging: false, moved: false, x: 0, y: 0 });
@@ -123,10 +137,15 @@ export function GalaxyScene({ nodes, edges, selectedNode, onSelectNode }: Galaxy
   const zoomRef = useRef(1);
   const selectedIdRef = useRef<string | null>(selectedNode?.id ?? null);
   const hoveredIdRef = useRef<string | null>(null);
+  const flowFieldStrengthRef = useRef(1);
   const [renderError, setRenderError] = useState("");
   const [hoverPreview, setHoverPreview] = useState<HoverPreview | null>(null);
+  const [starfieldQuality, setStarfieldQuality] = useState<StarfieldQuality>("mid");
+  const [flowFieldStrength, setFlowFieldStrength] = useState(1);
 
-  const renderNodes = useMemo(() => nodes.slice(0, MAX_RENDERED_NODES), [nodes]);
+  const qualitySettings = STARFIELD_QUALITY_SETTINGS[starfieldQuality];
+  const renderNodeLimit = rendererMode === "memory-starfield" ? qualitySettings.maxNodes : MAX_RENDERED_NODES;
+  const renderNodes = useMemo(() => nodes.slice(0, renderNodeLimit), [nodes, renderNodeLimit]);
   const renderItems = useMemo<SceneNode[]>(
     () => renderNodes.map((node) => ({ node, position: galaxyPosition(node) })),
     [renderNodes],
@@ -153,6 +172,10 @@ export function GalaxyScene({ nodes, edges, selectedNode, onSelectNode }: Galaxy
   useEffect(() => {
     selectedIdRef.current = selectedNode?.id ?? null;
   }, [selectedNode?.id]);
+
+  useEffect(() => {
+    flowFieldStrengthRef.current = flowFieldStrength;
+  }, [flowFieldStrength]);
 
   useEffect(() => {
     hoveredIdRef.current = null;
@@ -198,6 +221,9 @@ export function GalaxyScene({ nodes, edges, selectedNode, onSelectNode }: Galaxy
     renderer.autoClear = true;
     renderer.domElement.className = "galaxy-webgl-canvas";
     renderer.domElement.dataset.nebulaTexture = "spiral-dust-cloud";
+    renderer.domElement.dataset.rendererMode = rendererMode;
+    renderer.domElement.dataset.quality = rendererMode === "memory-starfield" ? starfieldQuality : "legacy";
+    renderer.domElement.dataset.flowField = rendererMode === "memory-starfield" ? "enabled" : "legacy-off";
     containerElement.appendChild(renderer.domElement);
 
     const scene = new Scene();
@@ -226,7 +252,8 @@ export function GalaxyScene({ nodes, edges, selectedNode, onSelectNode }: Galaxy
     const ambientPositions: number[] = [];
     const ambientColors: number[] = [];
     const armColors = GALAXY_ARM_COLORS;
-    for (let i = 0; i < 7600; i += 1) {
+    const ambientParticleCount = rendererMode === "memory-starfield" ? qualitySettings.ambientParticles : 7600;
+    for (let i = 0; i < ambientParticleCount; i += 1) {
       const arm = i % armColors.length;
       const radius = 14 + Math.pow(stableUnit(`ambient-${i}`, "radius"), 0.72) * 226;
       const angle = (arm / armColors.length) * Math.PI * 2 + radius * 0.029 + (stableUnit(`ambient-${i}`, "angle") - 0.5) * 0.48;
@@ -273,9 +300,15 @@ export function GalaxyScene({ nodes, edges, selectedNode, onSelectNode }: Galaxy
       sizes.push(node.visual?.size ?? 6);
       nodeIndexByPoint.push(node.id);
     });
+    const baseNodePositions = new Float32Array(positions);
+    const flowPhases = renderItems.map((item) => stableUnit(item.node.id, "memory-starfield-flow-phase") * Math.PI * 2);
+    const flowMasses = renderItems.map((item) => memoryStarfieldMass(item.node, degreeById));
     geometry.setAttribute("position", new Float32BufferAttribute(positions, 3));
     geometry.setAttribute("color", new Float32BufferAttribute(colors, 3));
     geometry.setAttribute("size", new Float32BufferAttribute(sizes, 1));
+    if (rendererMode === "memory-starfield") {
+      (geometry.getAttribute("position") as Float32BufferAttribute).setUsage(DynamicDrawUsage);
+    }
 
     const material = new PointsMaterial({
       size: 2.15,
@@ -287,6 +320,7 @@ export function GalaxyScene({ nodes, edges, selectedNode, onSelectNode }: Galaxy
       depthWrite: false,
     });
     const points = new Points(geometry, material);
+    points.name = rendererMode === "memory-starfield" ? "Production Memory Starfield Flow Field" : "Legacy Galaxy Points";
     galaxyGroup.add(points);
 
     const edgePositions: number[] = [];
@@ -319,6 +353,24 @@ export function GalaxyScene({ nodes, edges, selectedNode, onSelectNode }: Galaxy
     const edgeLines = new LineSegments(edgeGeometry, edgeMaterial);
     galaxyGroup.add(edgeLines);
 
+    const flowTrailGeometry = new BufferGeometry();
+    const flowTrailSegments = rendererMode === "memory-starfield"
+      ? createFlowTrailSegments(renderItems, degreeById, qualitySettings.flowTrailCount)
+      : { positions: [], colors: [] };
+    flowTrailGeometry.setAttribute("position", new Float32BufferAttribute(flowTrailSegments.positions, 3));
+    flowTrailGeometry.setAttribute("color", new Float32BufferAttribute(flowTrailSegments.colors, 3));
+    const flowTrailMaterial = new LineBasicMaterial({
+      vertexColors: true,
+      transparent: true,
+      opacity: rendererMode === "memory-starfield" ? 0.28 : 0,
+      blending: AdditiveBlending,
+      depthWrite: false,
+    });
+    const flowTrailLines = new LineSegments(flowTrailGeometry, flowTrailMaterial);
+    flowTrailLines.name = "memory-starfield-flow-field-trajectories";
+    flowTrailLines.renderOrder = 3;
+    galaxyGroup.add(flowTrailLines);
+
     const focusEdgeGeometry = new BufferGeometry();
     focusEdgeGeometry.setAttribute("position", new Float32BufferAttribute([], 3));
     focusEdgeGeometry.setAttribute("color", new Float32BufferAttribute([], 3));
@@ -337,7 +389,8 @@ export function GalaxyScene({ nodes, edges, selectedNode, onSelectNode }: Galaxy
 
     const haloPositions: number[] = [];
     const haloColors: number[] = [];
-    for (let i = 0; i < 1800; i += 1) {
+    const haloParticleCount = rendererMode === "memory-starfield" ? qualitySettings.haloParticles : 1800;
+    for (let i = 0; i < haloParticleCount; i += 1) {
       const radius = 170 + Math.pow(stableUnit(`halo-${i}`, "radius"), 0.52) * 130;
       const angle = stableUnit(`halo-${i}`, "angle") * Math.PI * 2;
       const z = (stableUnit(`halo-${i}`, "z") - 0.5) * 150;
@@ -406,6 +459,44 @@ export function GalaxyScene({ nodes, edges, selectedNode, onSelectNode }: Galaxy
     });
     const selectedMarker = new Mesh(selectedMarkerGeometry, selectedMarkerMaterial);
     galaxyGroup.add(selectedMarker);
+
+    const signalSphereGeometry = new SphereGeometry(1, 24, 14);
+    const signalRingGeometry = new TorusGeometry(1.7, 0.055, 8, 48);
+    const signalMaterials: MeshBasicMaterial[] = [];
+    const signalMeshes: Mesh[] = [];
+    if (rendererMode === "memory-starfield") {
+      renderItems
+        .filter((item) => Boolean(memoryStarfieldSignalKind(item.node)))
+        .slice(0, 18)
+        .forEach((item) => {
+          const signal = memoryStarfieldSignalKind(item.node);
+          if (!signal) return;
+          const color = signal === "black-hole" ? "#111827" : signal === "proto-star" ? "#ffef9a" : "#74c0fc";
+          const materialForSignal = new MeshBasicMaterial({
+            color,
+            transparent: true,
+            opacity: signal === "black-hole" ? 0.48 : 0.36,
+            blending: AdditiveBlending,
+            depthWrite: false,
+          });
+          const position = item.position;
+          const sphere = new Mesh(signalSphereGeometry, materialForSignal);
+          sphere.position.set(position.x, position.y, position.z + (signal === "proto-star" ? 6 : 0));
+          sphere.scale.setScalar(signal === "black-hole" ? 7.4 : signal === "proto-star" ? 5.8 : 4.6);
+          sphere.frustumCulled = false;
+          const ringMaterial = materialForSignal.clone();
+          const ring = new Mesh(signalRingGeometry, ringMaterial);
+          ring.position.copy(sphere.position);
+          ring.rotation.x = signal === "black-hole" ? 1.3 : 1.08;
+          ring.rotation.y = signal === "black-hole" ? 0.22 : -0.16;
+          ring.scale.setScalar(signal === "black-hole" ? 4.4 : 3.4);
+          ring.frustumCulled = false;
+          signalMaterials.push(materialForSignal, ringMaterial);
+          signalMeshes.push(sphere, ring);
+          galaxyGroup.add(sphere);
+          galaxyGroup.add(ring);
+        });
+    }
 
     const pulseSphereGeometry = new SphereGeometry(1, 22, 12);
     const neighborPulseGroup = new Group();
@@ -476,6 +567,10 @@ export function GalaxyScene({ nodes, edges, selectedNode, onSelectNode }: Galaxy
         cameraY: Number(camera.position.y.toFixed(3)),
         cameraZ: Number(camera.position.z.toFixed(3)),
         cameraDistance: Number(camera.position.length().toFixed(3)),
+        rendererMode,
+        quality: starfieldQuality,
+        flowFieldStrength: Number(flowFieldStrengthRef.current.toFixed(2)),
+        fallbackMode: rendererMode === "legacy" ? "legacy" : starfieldQuality === "low" ? "low-quality" : "webgl",
       };
     }
 
@@ -630,6 +725,35 @@ export function GalaxyScene({ nodes, edges, selectedNode, onSelectNode }: Galaxy
       }
     }
 
+    function updateMemoryStarfieldFlow() {
+      if (rendererMode !== "memory-starfield") return;
+      const positionAttribute = geometry.getAttribute("position") as Float32BufferAttribute;
+      const positionArray = positionAttribute.array as Float32Array;
+      const time = frame * 0.016;
+      const reducedScale = prefersReducedMotion ? 0.25 : 1;
+      const flowScale = flowFieldStrengthRef.current * reducedScale;
+      for (let index = 0; index < renderItems.length; index += 1) {
+        const offset = index * 3;
+        const baseX = baseNodePositions[offset];
+        const baseY = baseNodePositions[offset + 1];
+        const baseZ = baseNodePositions[offset + 2];
+        const phase = flowPhases[index];
+        const mass = flowMasses[index];
+        const curlX = Math.sin(baseY * 0.028 + time + phase) * 3.4;
+        const curlY = Math.cos((baseX + baseZ) * 0.018 + time * 0.82 + phase) * 1.65;
+        const curlZ = Math.sin(baseX * 0.02 - time * 1.12 + phase) * 2.9;
+        const orbital = 0.012 + mass * 0.0045;
+        positionArray[offset] = baseX + (curlX - baseY * orbital) * flowScale;
+        positionArray[offset + 1] = baseY + (curlY + baseX * orbital * 0.34) * flowScale;
+        positionArray[offset + 2] = baseZ + curlZ * flowScale;
+      }
+      positionAttribute.needsUpdate = true;
+      flowTrailLines.rotation.z = Math.sin(time * 0.7) * 0.035;
+      signalMeshes.forEach((mesh, index) => {
+        mesh.rotation.z += index % 2 === 0 ? 0.008 : -0.006;
+      });
+    }
+
     function updateCameraFocus() {
       const focusId = selectedIdRef.current;
       const focusPosition = focusId ? scenePositionById.get(focusId) : undefined;
@@ -658,6 +782,7 @@ export function GalaxyScene({ nodes, edges, selectedNode, onSelectNode }: Galaxy
       galaxyGroup.updateMatrixWorld(true);
       updateCameraFocus();
       updateSelectedMarker();
+      updateMemoryStarfieldFlow();
       updateFocusEdgeHighlight();
       rebuildNeighborPulses();
       updateNeighborPulse();
@@ -793,6 +918,8 @@ export function GalaxyScene({ nodes, edges, selectedNode, onSelectNode }: Galaxy
       focusEdgeMaterial.dispose();
       pulseSphereGeometry.dispose();
       for (const item of pulseItems) item.material.dispose();
+      flowTrailGeometry.dispose();
+      flowTrailMaterial.dispose();
       ambientGeometry.dispose();
       haloGeometry.dispose();
       galaxyPlaneGeometry.dispose();
@@ -801,6 +928,9 @@ export function GalaxyScene({ nodes, edges, selectedNode, onSelectNode }: Galaxy
       coreGeometry.dispose();
       coreMaterial.dispose();
       selectedMarkerGeometry.dispose();
+      signalSphereGeometry.dispose();
+      signalRingGeometry.dispose();
+      for (const signalMaterial of signalMaterials) signalMaterial.dispose();
       material.dispose();
       ambient.material.dispose();
       halo.material.dispose();
@@ -816,7 +946,7 @@ export function GalaxyScene({ nodes, edges, selectedNode, onSelectNode }: Galaxy
         delete window.__memoryAtlasGalaxyDebugTargets;
       }
     };
-  }, [degreeById, edges, onSelectNode, renderItems, renderNodes]);
+  }, [degreeById, edges, onSelectNode, qualitySettings, renderItems, renderNodes, rendererMode, starfieldQuality]);
 
   function resetGalaxyView() {
     rotationRef.current = { x: -0.14, y: 0.42 };
@@ -827,8 +957,12 @@ export function GalaxyScene({ nodes, edges, selectedNode, onSelectNode }: Galaxy
     zoomRef.current = Math.min(2.4, Math.max(0.58, zoomRef.current + delta));
   }
 
+  function updateStarfieldQuality(nextQuality: StarfieldQuality) {
+    setStarfieldQuality(nextQuality);
+  }
+
   return (
-    <div className="galaxy-scene" ref={containerRef}>
+    <div className="galaxy-scene" data-renderer-mode={rendererMode} data-starfield-quality={starfieldQuality} ref={containerRef}>
       {renderError ? <canvas className="nebula-canvas" ref={nebulaCanvasRef} aria-hidden="true" /> : null}
       {renderError ? (
         <div className="star-overlay" aria-label="可点击记忆星体层">
@@ -850,6 +984,37 @@ export function GalaxyScene({ nodes, edges, selectedNode, onSelectNode }: Galaxy
       ) : null}
       {!renderError ? (
         <div className="galaxy-controls" aria-label="银河视角控制">
+          <span className="galaxy-renderer-chip">{rendererMode === "memory-starfield" ? "Flow Field" : "Legacy"}</span>
+          {rendererMode === "memory-starfield" ? (
+            <div className="galaxy-quality-tabs" aria-label="Flow Field quality selector">
+              {(["high", "mid", "low"] as StarfieldQuality[]).map((quality) => (
+                <button
+                  aria-label={`${quality} quality`}
+                  aria-pressed={starfieldQuality === quality}
+                  key={quality}
+                  title={quality === "low" ? "低质量 fallback 模式" : `${quality} quality`}
+                  type="button"
+                  onClick={() => updateStarfieldQuality(quality)}
+                >
+                  {quality}
+                </button>
+              ))}
+            </div>
+          ) : null}
+          {rendererMode === "memory-starfield" ? (
+            <label className="galaxy-flow-control" title="Flow Field strength">
+              <Gauge size={15} />
+              <input
+                aria-label="Flow Field strength"
+                max="1.4"
+                min="0"
+                onChange={(event) => setFlowFieldStrength(Number(event.target.value))}
+                step="0.05"
+                type="range"
+                value={flowFieldStrength}
+              />
+            </label>
+          ) : null}
           <button aria-label="放大银河视角" title="放大" type="button" onClick={() => zoomGalaxy(0.14)}>
             <ZoomIn size={16} />
           </button>
@@ -925,11 +1090,78 @@ export function GalaxyScene({ nodes, edges, selectedNode, onSelectNode }: Galaxy
       {renderError ? (
         <div className="galaxy-fallback" title={renderError}>
           <strong>WebGL 不可用</strong>
-          <span>已启用静态星云 fallback，仍可点击星体查看记忆。</span>
+          <span>已启用静态星云 fallback，仍可点击星体查看记忆；也可通过 Galaxy feature flag 回到 Legacy。</span>
         </div>
       ) : null}
     </div>
   );
+}
+
+function createFlowTrailSegments(
+  items: SceneNode[],
+  degreeById: Map<string, number>,
+  limit: number,
+): { positions: number[]; colors: number[] } {
+  const positions: number[] = [];
+  const colors: number[] = [];
+  const candidates = [...items]
+    .sort((a, b) => memoryStarfieldMass(b.node, degreeById) - memoryStarfieldMass(a.node, degreeById))
+    .slice(0, limit);
+  for (const item of candidates) {
+    const position = item.position;
+    const mass = memoryStarfieldMass(item.node, degreeById);
+    const phase = stableUnit(item.node.id, "flow-trail-phase") * Math.PI * 2;
+    const flow = flowVectorFor(position, phase, mass);
+    const sourceColor = new Color(nodeColor(item.node));
+    const alpha = 0.2 + Math.min(0.42, mass * 0.045);
+    positions.push(
+      position.x - flow.x * 0.72,
+      position.y - flow.y * 0.72,
+      position.z - flow.z * 0.28,
+      position.x + flow.x,
+      position.y + flow.y,
+      position.z + flow.z * 0.42,
+    );
+    colors.push(sourceColor.r * alpha, sourceColor.g * alpha, sourceColor.b * alpha, sourceColor.r * 0.04, sourceColor.g * 0.04, sourceColor.b * 0.04);
+  }
+  return { positions, colors };
+}
+
+function flowVectorFor(position: { x: number; y: number; z: number }, phase: number, mass: number): { x: number; y: number; z: number } {
+  const strength = 4.5 + Math.min(13, mass * 1.6);
+  return {
+    x: Math.sin(position.y * 0.025 + phase) * strength - position.y * 0.018,
+    y: Math.cos((position.x + position.z) * 0.016 + phase) * strength * 0.42 + position.x * 0.006,
+    z: Math.sin(position.x * 0.018 - phase) * strength * 0.62,
+  };
+}
+
+function memoryStarfieldMass(node: AtlasNode, degreeById: Map<string, number>): number {
+  const tier = normalizeMemoryTier(node.memory_tier);
+  const tierMass = tier === "核心画像" ? 8 : tier === "一般" ? 4.8 : 1.6;
+  const roiMass = (node.metrics?.roi?.leverage_score ?? 0) * 7;
+  const importanceMass = node.importance === "高" ? 4 : node.importance === "中" ? 2 : 0.5;
+  const kindMass = node.kind === "theme" ? 6 : node.kind === "decision" ? 4 : node.kind === "project" ? 3 : 0;
+  return tierMass + roiMass + importanceMass + kindMass + Math.sqrt(degreeById.get(node.id) ?? 0);
+}
+
+function memoryStarfieldSignalKind(node: AtlasNode): "black-hole" | "proto-star" | "terrain" | null {
+  const text = `${node.label} ${node.statement ?? ""} ${node.source_label ?? ""}`;
+  if (
+    node.category === "deprecated_info" ||
+    node.metrics?.roi?.staleness_status === "stale_short_term" ||
+    /过时|旧电脑|shadow|standalone|低价值循环/i.test(text)
+  ) {
+    return "black-hole";
+  }
+  if (
+    (node.metrics?.roi?.leverage_score ?? 0) >= 0.72 ||
+    /机会|上升|proto|新生|增长|下一步/i.test(text)
+  ) {
+    return "proto-star";
+  }
+  if (node.kind === "theme" || node.category === "workflow" || node.category === "project_context") return "terrain";
+  return null;
 }
 
 function renderNebulaCanvas(canvas: HTMLCanvasElement, items: SceneNode[], edges: AtlasEdge[]) {

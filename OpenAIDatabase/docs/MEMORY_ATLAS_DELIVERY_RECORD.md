@@ -120,6 +120,7 @@ Writeback：
 - 2026-06-30：完成 Memory Atlas v1.1.5 Stage 2 整体复审；复审确认本阶段只新增计划和记录文件，未替换生产路由、Galaxy、Timeline 或写回行为。
 - 2026-06-30：完成 Memory Atlas v1.1.5 Stage 3.1 默认首页实现；`记忆总览` 成为启动板块，左侧导航保留，首页显示 Memory Weather、Universe State 状态卡、Black Hole / Proto-Star 信号和 proposal-only 行动建议；Galaxy 与 Timeline 仍未替换。
 - 2026-06-30：完成 Memory Atlas v1.1.5 Stage 3.2 首页预览组件；首页新增轻量 `Mini Starfield`、近期主题变化 `River Pulse` 和 `Inspector Deep Link`，点击前同步当前焦点再进入 Galaxy、Timeline 或详情检索；Stage 3 整体复审通过，仍未替换 Galaxy/Timeline、未直接写回长期记忆、未读取 raw/private 数据。
+- 2026-06-30：完成 Memory Atlas v1.1.5 Stage 4.1 Galaxy Rendering Integration；`memory-starfield` 成为 Galaxy 默认生产 renderer，`legacy` 可通过 feature flag 回滚；生产 Galaxy 增加 Flow Field 动态、轨迹线、语义信号标记、quality selector 和低质量 fallback，仍未进入 Stage 4.2 数据映射或 Stage 4.3 交互扩展。
 
 近期提交参考：
 

@@ -57,6 +57,7 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
     app_source = read_text(repo_root / "apps/memory-atlas/src/App.tsx")
     galaxy_source = read_text(repo_root / "apps/memory-atlas/src/components/GalaxyScene.tsx")
     obsidian_source = read_text(repo_root / "apps/memory-atlas/src/components/ObsidianGraphScene.tsx")
+    visual_flags_source = read_text(repo_root / "apps/memory-atlas/src/config/visualFlags.ts")
     css_source = read_text(repo_root / "apps/memory-atlas/src/styles.css")
     data_builder_source = read_text(repo_root / "scripts/build_memory_atlas_data.py")
     installer_source = read_text(repo_root / "scripts/install_memory_atlas_app.py")
@@ -677,6 +678,36 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         "galaxy_webgl_has_nebula_texture_layer",
         "Galaxy WebGL includes a procedural nebula texture with spiral arms, dust, and cloud knots behind interactive bodies",
         "Galaxy WebGL may still be only a point-cloud layer without a nebula/spiral substrate",
+    )
+    require(
+        checks,
+        'DEFAULT_GALAXY_RENDERER_MODE: GalaxyRendererMode = "memory-starfield"' in visual_flags_source
+        and "VITE_MEMORY_ATLAS_GALAXY_RENDERER" in visual_flags_source
+        and "GALAXY_RENDERER_STORAGE_KEY" in visual_flags_source
+        and "galaxyRenderer" in visual_flags_source
+        and "persistGalaxyRendererMode" in app_source
+        and "galaxy-renderer-toggle" in app_source
+        and 'aria-pressed={galaxyRendererMode === "memory-starfield"}' in app_source
+        and 'aria-pressed={galaxyRendererMode === "legacy"}' in app_source
+        and "rendererMode: GalaxyRendererMode" in galaxy_source
+        and 'renderer.domElement.dataset.rendererMode = rendererMode' in galaxy_source
+        and 'renderer.domElement.dataset.flowField = rendererMode === "memory-starfield" ? "enabled" : "legacy-off"' in galaxy_source
+        and "STARFIELD_QUALITY_SETTINGS" in galaxy_source
+        and "createFlowTrailSegments" in galaxy_source
+        and "updateMemoryStarfieldFlow" in galaxy_source
+        and "memory-starfield-flow-field-trajectories" in galaxy_source
+        and "memoryStarfieldSignalKind" in galaxy_source
+        and '"black-hole"' in galaxy_source
+        and '"proto-star"' in galaxy_source
+        and "fallbackMode: rendererMode === \"legacy\" ? \"legacy\" : starfieldQuality === \"low\" ? \"low-quality\" : \"webgl\"" in galaxy_source
+        and "Flow Field quality selector" in galaxy_source
+        and "低质量 fallback 模式" in galaxy_source
+        and ".galaxy-renderer-toggle" in css_source
+        and ".galaxy-quality-tabs" in css_source
+        and ".galaxy-flow-control" in css_source,
+        "galaxy_stage4_1_rendering_integration_ready",
+        "Galaxy has a default Memory Starfield renderer behind a rollback flag, Flow Field trajectories, quality fallback controls, semantic signal markers, and legacy mode",
+        "Galaxy Stage 4.1 feature flag, Flow Field renderer, quality fallback, semantic signal markers, or legacy rollback path is missing",
     )
     require(
         checks,
