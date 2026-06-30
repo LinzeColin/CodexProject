@@ -143,6 +143,20 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("[test_stage2_sources.py](../tests/test_stage2_sources.py)", page)
         self.assertIn(f"TRACEABILITY_MATRIX 行数 | {len(matrix_rows)}", page)
         self.assertIn(f"{len(matrix_rows)} 条可点击链路", readme)
+        self.assertIn("REQ-ADP-V7-051-S2PMT07-FINAL-BUNDLE-S2PLT02-CAPTURE-COMMAND-SYNC", page)
+        self.assertIn("S2PMT07-FINAL-BUNDLE-S2PLT02-CAPTURE-COMMAND-SYNC", page)
+        self.assertIn(
+            "ADP-S2PMT07-FINAL-BUNDLE-S2PLT02-CAPTURE-COMMAND-SYNC-20260630.json",
+            page,
+        )
+        self.assertIn("PHASE_S2PMT07_FINAL_BUNDLE_S2PLT02_CAPTURE_COMMAND_SYNC.md", page)
+        self.assertIn("blocked_final_bundle_s2plt02_capture_command_synced_no_production", page)
+        self.assertIn("9621084d1f10a325d6d02284f66db8e78a239aeb16e556bb9de55d455c244f6b", page)
+        self.assertIn("e7f33cbf0d084cb00c547016d83139b47e62809e2638be3a33effc8dcbe74358", page)
+        self.assertIn("next_executable_command=plan-s2plt02-terminal-delivery-proof-capture", page)
+        self.assertIn("next_executable_command_dry_run_status=blocked", page)
+        self.assertIn("next_executable_command_writes_artifact=false", page)
+        self.assertIn("next_executable_command_satisfies_gate=false", page)
         self.assertIn("REQ-ADP-V7-049-S2PMT07-FINAL-BUNDLE-VALIDATOR-RUNTIME-STEP-SUMMARY", page)
         self.assertIn("S2PMT07-FINAL-BUNDLE-VALIDATOR-RUNTIME-STEP-SUMMARY", page)
         self.assertIn("ADP-S2PMT07-FINAL-BUNDLE-VALIDATOR-RUNTIME-STEP-SUMMARY-20260630.json", page)

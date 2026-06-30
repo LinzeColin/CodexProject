@@ -5712,3 +5712,28 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PMT07-FINAL-BUNDLE-S2PLT02-CAPTURE-COMMAND-SYNC"
+    title: "S2PMT07 final bundle S2PLT02 capture command sync"
+    parent_task_id: "S2PMT07-FINAL-BUNDLE-PREREQUISITES"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-30T20:57:02+10:00"
+    objective: "Make the final bundle prerequisite plan expose the no-write S2PLT02 capture command while S2PLT04 remains upstream-blocked."
+    scope: "Final-bundle prerequisite plan builder validation, focused final-gate and CLI regressions, phase record, run manifest, traceability row, delivery/event records, owner/user-center status, and three base notes."
+    non_scope: "No S2PLT02 terminal proof artifact, no S2PLT03 terminal proof artifact, no S2PLT04 completion report, no final-bundle manifest/handoff/signoff/final-command proof, no SMTP send, no scheduler enable/install/kickstart, no Release, no restore, no CURRENT/V7 change, no public schema/DB/source/ranking/queue mutation, no P0/P1 closure claim, no S2PLT02/S2PLT03/S2PLT04/S2PMT07 acceptance, and no integrated production acceptance."
+    owner: "engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    dependencies: ["S2PMT07-FINAL-BUNDLE-S2PLT02-RUNTIME-READINESS-SUMMARY", "S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN", "S2PLT04-COMPLETION-REPORT"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_S2PLT02_CAPTURE_COMMAND_SYNC.md", "governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-S2PLT02-CAPTURE-COMMAND-SYNC-20260630.json"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW", "ACC-S2PLT02-2D"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_operator_red PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_cli.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_operator_green PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_cli.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_live_plan_now PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli plan-final-bundle-prerequisites --json", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_live_final_now PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli validate-final-acceptance-bundle --repo-root . --json"]
+    test_results: ["TDD red failed because next_executable_command was empty", "focused final-gate + CLI tests: 159 OK", "plan-final-bundle-prerequisites live CLI: blocked / exit 2 with state_hash 9621084d1f10a325d6d02284f66db8e78a239aeb16e556bb9de55d455c244f6b and next_executable_command plan-s2plt02-terminal-delivery-proof-capture", "validate-final-acceptance-bundle live CLI: blocked / exit 2 with state_hash e7f33cbf0d084cb00c547016d83139b47e62809e2638be3a33effc8dcbe74358"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-S2PLT02-CAPTURE-COMMAND-SYNC-20260630.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_S2PLT02_CAPTURE_COMMAND_SYNC.md", "governance/run_manifests/ADP-S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN-20260630.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_DELIVERY_PROOF_CAPTURE_PLAN.md", "FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py"]
+    result: "blocked_final_bundle_s2plt02_capture_command_synced_no_production"
+    risk: "An exposed next command can be misread as permission to send SMTP or write terminal proof. This task keeps the command dry-run blocked, no-write, and non-satisfying."
+    rollback: "Revert the capture-command summary fields, focused tests, phase record, run manifest, traceability row, delivery/event records, user-center notes, and three base notes; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
