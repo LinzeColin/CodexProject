@@ -5,12 +5,12 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.0-s06-p3-validation-evidence-output`
+- version: `0.1.0-s06-stage-review`
 - current_stage: `S06`
-- current_phase: `S06-REV Stage 6 整体复审待开始`
-- status: `s06_p3_completed_validated_local_only_pending_stage_review`
+- current_phase: `S06-UPLOAD Stage 6 final GitHub upload 待执行`
+- status: `s06_stage_review_passed_upload_ready_local_only`
 - production_ready: `false`
-- github_upload_ready: `false_until_s06_stage_completion_and_review`
+- github_upload_ready: `true_after_s06_stage_review_pending_upload_gate`
 
 ## 已完成
 
@@ -50,14 +50,15 @@
 - S06-P1 零差异校验器已完成本地验证：`KMFA/tools/zero_delta_validator.py` 对 public-safe 已结构化整数分逐字段比较，任意 1 分差异失败并输出 mismatch report。
 - S06-P2 跨源差异队列已完成本地验证：`KMFA/tools/cross_source_difference_queue.py` 将 public-safe PDF/Excel 同项目同字段冲突写入人工队列，禁止自动修正、平均、四舍五入掩盖和自动选边；`KMFA/tools/check_s06_p2_difference_queue.py` 验证未关闭差异阻断 A 级报告。
 - S06-P3 校验证据输出已完成本地验证：`KMFA/tools/validation_evidence_output.py` 输出 S06-P3 zero-delta summary、sanitized mismatch index、project validation status，并写入 `KMFA/metadata/quality`；`KMFA/tools/check_s06_p3_validation_evidence.py` 验证 metadata 不新增字段明文或原始金额值。
+- Stage 6 整体复审已本地通过：`KMFA/stage_artifacts/S06_STAGE_REVIEW/` 记录复审报告、测试结果和 machine manifest；复审确认 S06-P1/P2/P3 证据、治理 validator、raw/secret scan 和 evidence consistency check 通过。
 
 ## 未完成
 
-- Stage 6 整体复审、事实层、lineage 完整检查、报告、UI 和外部接口尚未完成；S05-P3 authority baseline lock 和 S06-P1/P2/P3 本地证据不代表正式报告可发布。
+- Stage 6 final GitHub upload、事实层、lineage 完整检查、报告、UI 和外部接口尚未完成；S05-P3 authority baseline lock、S06-P1/P2/P3 和 Stage 6 review 本地证据不代表正式报告可发布。
 
 ## 阻塞条件
 
 - 不能把 Stage 1 治理基线当成业务 MVP。
 - 不能上传原始敏感经营数据。
-- S05-P3 已完成 40 条 public-safe hash/source-anchor 字段锁定并排除 5 条 Excel 字段，Stage 5 review/upload、S06-P1、S06-P2 和 S06-P3 已完成；下一步只能执行 Stage 6 整体复审，不能跳到 UI、报告、事实层或外部接口。
+- S05-P3 已完成 40 条 public-safe hash/source-anchor 字段锁定并排除 5 条 Excel 字段，Stage 5 review/upload、S06-P1、S06-P2、S06-P3 和 Stage 6 review 已完成；下一步只能执行 Stage 6 final GitHub upload gate，不能跳到 UI、报告、事实层或外部接口。
 - 后续所有开发必须建立在 v1.2 完整任务包和 HTML 样板基线上。

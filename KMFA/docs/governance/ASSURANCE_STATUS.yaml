@@ -1,11 +1,11 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260630-S06P3-VALIDATION-EVIDENCE-OUTPUT"
+as_of_event_id: "EVENT-KMFA-20260630-S06-STAGE-REVIEW"
 source_snapshot_hash: "sha256:precommit-pending"
-source_base_commit: "precommit-pending"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S06_P3"
-snapshot_event_time: "2026-06-30T14:30:00+10:00"
-generator_version: "manual-s06-p3"
-final_commit_binding: "precommit-pending-s06-p3"
+source_base_commit: "cadb1e814bb06f8b65dd5ca84befb973b465bce6"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S06_REVIEW"
+snapshot_event_time: "2026-06-30T15:10:00+10:00"
+generator_version: "manual-s06-stage-review"
+final_commit_binding: "precommit-pending-s06-review"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -71,6 +71,7 @@ dimensions:
       - "KMFA/stage_artifacts/S06_P3_validation_evidence_output/human/test_results.md"
       - "KMFA/tools/validation_evidence_output.py"
       - "KMFA/tools/check_s06_p3_validation_evidence.py"
+      - "KMFA/stage_artifacts/S06_STAGE_REVIEW/human/test_results.md"
   operational_validation:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
@@ -163,14 +164,17 @@ dimensions:
       - "KMFA/stage_artifacts/S06_P2_cross_source_difference_queue/machine/s06_p2_report_grade_gate.json"
       - "KMFA/tools/cross_source_difference_queue.py"
       - "KMFA/tools/check_s06_p2_difference_queue.py"
+      - "KMFA/stage_artifacts/S06_STAGE_REVIEW/human/stage6_review_report.md"
+      - "KMFA/stage_artifacts/S06_STAGE_REVIEW/human/test_results.md"
+      - "KMFA/stage_artifacts/S06_STAGE_REVIEW/machine/stage6_review_manifest.json"
   evidence_freshness:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
 delivery_readiness:
-  status: "S06_P3_COMPLETED_VALIDATED_LOCAL_ONLY_STAGE_REVIEW_NOT_STARTED"
-  release_gate: "KMFA-S06-STAGE-REVIEW-GATE"
+  status: "S06_STAGE_REVIEW_PASSED_UPLOAD_READY_LOCAL_ONLY"
+  release_gate: "KMFA-S06-FINAL-GITHUB-UPLOAD-GATE"
   blocker_ids:
-    - "S06_STAGE_REVIEW_NOT_STARTED"
+    - "S06_FINAL_GITHUB_UPLOAD_NOT_PERFORMED"
     - "LINEAGE_AND_REPORT_RELEASE_GATE_NOT_STARTED"

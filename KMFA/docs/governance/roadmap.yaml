@@ -4,9 +4,9 @@ project_id: "KMFA"
 total_estimated_hours: 54
 completed_estimated_hours: 54
 current_stage_id: "S6"
-current_phase_id: "S6REV"
-current_task_id: "KMFA-S06-STAGE-REVIEW"
-next_gate_id: "KMFA-S06-STAGE-REVIEW-GATE"
+current_phase_id: "S6UPLOAD"
+current_task_id: "KMFA-S06-FINAL-GITHUB-UPLOAD"
+next_gate_id: "KMFA-S06-FINAL-GITHUB-UPLOAD-GATE"
 stages:
   - stage_id: "S1"
     name: "只读启动与项目治理基线"
@@ -599,7 +599,7 @@ stages:
       - "KMFA/stage_artifacts/S05_STAGE_REVIEW/machine/stage5_upload_manifest.json"
   - stage_id: "S6"
     name: "零差异校验与差异处理队列"
-    status: "completed_local_only_pending_stage_review"
+    status: "review_passed_upload_ready_local_only"
     estimated_hours: 3
     estimated_pct: 100
     evidence_refs:
@@ -612,6 +612,9 @@ stages:
       - "KMFA/stage_artifacts/S06_P3_validation_evidence_output/human/s06_p3_completion_record.md"
       - "KMFA/stage_artifacts/S06_P3_validation_evidence_output/human/test_results.md"
       - "KMFA/stage_artifacts/S06_P3_validation_evidence_output/machine/s06_p3_manifest.json"
+      - "KMFA/stage_artifacts/S06_STAGE_REVIEW/human/stage6_review_report.md"
+      - "KMFA/stage_artifacts/S06_STAGE_REVIEW/human/test_results.md"
+      - "KMFA/stage_artifacts/S06_STAGE_REVIEW/machine/stage6_review_manifest.json"
   - stage_id: "S7"
     name: "文件型源适配与字段映射"
     status: "planned"

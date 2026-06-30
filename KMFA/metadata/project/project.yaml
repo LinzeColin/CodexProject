@@ -1,10 +1,10 @@
 project_id: "KMFA"
 project_name: "KMFA 经营分析系统"
-version: "0.1.0-s06-p3-validation-evidence-output"
+version: "0.1.0-s06-stage-review"
 current_stage: "S06"
-current_phase: "S06-REV"
-current_phase_status: "stage_review_pending"
-current_stage_status: "s06_p3_completed_validated_local_only_pending_stage_review"
+current_phase: "S06-UPLOAD"
+current_phase_status: "final_github_upload_pending"
+current_stage_status: "s06_stage_review_passed_upload_ready_local_only"
 github_directory: "LinzeColin/CodexProject/KMFA"
 human_plane:
   - "README.md"
@@ -50,6 +50,9 @@ machine_plane:
   - "stage_artifacts/S06_P3_validation_evidence_output/human/s06_p3_completion_record.md"
   - "stage_artifacts/S06_P3_validation_evidence_output/human/test_results.md"
   - "stage_artifacts/S06_P3_validation_evidence_output/machine/s06_p3_manifest.json"
+  - "stage_artifacts/S06_STAGE_REVIEW/human/stage6_review_report.md"
+  - "stage_artifacts/S06_STAGE_REVIEW/human/test_results.md"
+  - "stage_artifacts/S06_STAGE_REVIEW/machine/stage6_review_manifest.json"
 privacy_policy:
   raw_sensitive_data_public_repo_allowed: false
   metadata_plain_sensitive_data_allowed: false
@@ -78,6 +81,11 @@ upload_policy:
   stage5_review_passed: true
   stage5_upload_ready_local_only: true
   stage5_uploaded_to_github_main: true
+  stage6_phase_completion_upload_allowed: false
+  stage6_review_required_before_upload: true
+  stage6_review_passed: true
+  stage6_upload_ready_local_only: true
+  stage6_uploaded_to_github_main: false
   stage5_upload_evidence: "KMFA/stage_artifacts/S05_STAGE_REVIEW/human/github_upload_record.md"
   stage5_blocker: "none"
   stage6_phase_completion_upload_allowed: false

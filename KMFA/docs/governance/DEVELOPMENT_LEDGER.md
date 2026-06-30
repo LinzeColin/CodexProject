@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.0-s06-p3-validation-evidence-output
+product_version: 0.1.0-s06-stage-review
 
 ## Current Iteration
 
 - project_id: `KMFA`
 - current_stage: `S06`
-- current_phase: `S06-REV Stage 6 整体复审待开始`
-- current_tasks: `KMFA-S06-STAGE-REVIEW`
-- status: `s06_p3_completed_validated_local_only_pending_stage_review`
+- current_phase: `S06-UPLOAD Stage 6 final GitHub upload 待执行`
+- current_tasks: `KMFA-S06-FINAL-GITHUB-UPLOAD`
+- status: `s06_stage_review_passed_upload_ready_local_only`
 - risk_tier: `T3`
 
 ## Completed
@@ -53,17 +53,17 @@ product_version: 0.1.0-s06-p3-validation-evidence-output
 | `S6PAT01-S6PAT03` | S06-P1 零差异校验器完成本地验证：逐字段比较整数分，任意 1 分差异失败并生成 public-safe mismatch report | `KMFA/stage_artifacts/S06_P1_zero_delta_validator/human/s06_p1_completion_record.md` |
 | `S6PBT01-S6PBT03` | S06-P2 跨源差异队列完成本地验证：PDF/Excel 同项目冲突进入人工队列，未关闭差异阻断 A 级报告 | `KMFA/stage_artifacts/S06_P2_cross_source_difference_queue/human/s06_p2_completion_record.md` |
 | `S6PCT01-S6PCT03` | S06-P3 校验证据输出完成本地验证：zero-delta summary、sanitized mismatch index、project validation status 和 metadata/quality records 已生成 | `KMFA/stage_artifacts/S06_P3_validation_evidence_output/human/s06_p3_completion_record.md` |
+| `KMFA-S06-STAGE-REVIEW-20260630` | Stage 6 整体复审本地通过，GitHub upload 未执行 | `KMFA/stage_artifacts/S06_STAGE_REVIEW/human/stage6_review_report.md` |
 
 ## In Progress
 
 | Task | Result | Evidence |
 |---|---|---|
-| `KMFA-S06-STAGE-REVIEW` | Stage 6 整体复审尚未开始 | `KMFA/stage_artifacts/S06_P3_validation_evidence_output/human/s06_p3_completion_record.md` |
+| `KMFA-S06-FINAL-GITHUB-UPLOAD` | Stage 6 final GitHub upload 尚未执行 | `KMFA/stage_artifacts/S06_STAGE_REVIEW/human/stage6_review_report.md` |
 
 ## Not Completed
 
 | Task | Reason | Next |
 |---|---|---|
-| `S06` Stage review | 三个 Phase 已本地完成，Stage 复审尚未执行 | 下一轮只执行 Stage 6 整体复审，不上传中间 Phase |
-| `S06` GitHub upload | Stage review/fix 未完成 | Stage 6 review 通过并修复 findings 后再上传 |
+| `S06` GitHub upload | Stage review 已本地通过，final upload gate 未执行 | 下一轮只执行 Stage 6 final GitHub upload gate |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |
