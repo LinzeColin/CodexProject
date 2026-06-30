@@ -7,8 +7,8 @@
 - project_id: `KMFA`
 - version: `0.1.0-s05p2-private-backfill-partial`
 - current_stage: `S05`
-- current_phase: `S05-P2 字段级黄金基准 hash-only 部分回填与 Excel 待决策`
-- status: `s05p2_excel_resolution_pending_human_decision_required`
+- current_phase: `S05-P2 字段级黄金基准 hash-only 部分回填、Excel 待决策与 completion gate 阻断`
+- status: `s05p2_completion_gate_blocked_expected_pending_owner_decision`
 - production_ready: `false`
 - github_upload_ready: `false_until_stage5_review`
 
@@ -42,15 +42,15 @@
 - S05-P1 A0 文件登记已完成本地验证：`KMFA/tools/a0_file_register.py` 生成 8 个 PDF + 1 个 Excel 的 public-safe A0 文件清单和项目候选清单。
 - S05-P2 已生成 public-safe 字段合同和 A0 golden fixture 候选结构：`KMFA/tools/a0_golden_fixture.py` 生成 5 个字段合同和 45 条字段候选。
 - S05-P2 已对 8 个 PDF A0 候选执行 hash-only 部分回填：40 条字段候选已记录 private value hash/source anchor，1 个 Excel 候选的 5 条字段仍 pending。
-- S05-P2 已完成 Excel 候选机器复核记录、owner 决策包、owner decision validator、owner decision intake validator 和三种 owner 决策模板：当前证据只能证明交叉来源支持，不能安全机器合成为单一 A0 项目基准；仍需 owner 或授权私有映射决策。
+- S05-P2 已完成 Excel 候选机器复核记录、owner 决策包、owner decision validator、owner decision intake validator、三种 owner 决策模板和 completion gate：当前证据只能证明交叉来源支持，不能安全机器合成为单一 A0 项目基准；completion gate 在 5 条 Excel 字段 pending 且无 active owner/授权决策时按预期阻断，仍需 owner 或授权私有映射决策。
 
 ## 未完成
 
-- S05-P2 Excel 候选 5 条字段 hash/source anchor 回填或 owner/授权人工决策、S05-P3 权威锁定、zero-delta、事实层、报告、UI 和外部接口尚未完成；intake validator 和模板只验证/辅助后续决策记录的公开安全边界。
+- S05-P2 Excel 候选 5 条字段 hash/source anchor 回填或 owner/授权人工决策、S05-P3 权威锁定、zero-delta、事实层、报告、UI 和外部接口尚未完成；intake validator、模板和 completion gate 只验证/辅助/阻断公开安全边界。
 
 ## 阻塞条件
 
 - 不能把 Stage 1 治理基线当成业务 MVP。
 - 不能上传原始敏感经营数据。
-- S05-P2 已完成 40/45 hash-only 部分回填并记录 Excel 机器复核、owner 决策包、intake validator 和决策模板，但 5 条 Excel 字段仍 pending；下一步仍只能执行 S05-P2 Excel 私有字段回填或 owner/授权人工豁免/不适用/降级决策，不能进入 S05-P3。
+- S05-P2 已完成 40/45 hash-only 部分回填并记录 Excel 机器复核、owner 决策包、intake validator、决策模板和 completion gate blocked-as-expected 证据，但 5 条 Excel 字段仍 pending；下一步仍只能执行 S05-P2 Excel 私有字段回填或 owner/授权人工豁免/不适用/降级决策，不能进入 S05-P3。
 - 后续所有开发必须建立在 v1.2 完整任务包和 HTML 样板基线上。

@@ -20,6 +20,7 @@
 - 新增 `KMFA/tools/check_s05_p2_excel_owner_decision.py` 和 `KMFA/tests/test_s05_p2_excel_owner_decision.py`，验证 owner 决策包、fixture pending 状态、approval/control events 和 Q4/Q5 禁止状态一致。
 - 新增 `KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/excel_owner_decision_intake_contract.json`、`KMFA/tools/check_s05_p2_owner_decision_intake.py` 和 `KMFA/tests/test_s05_p2_owner_decision_intake.py`，限定后续 owner/授权决策记录的 public-safe schema、actor role、禁止明文键和 Q4/Q5 边界。
 - 新增 `KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/owner_decision_templates/`、`KMFA/tools/check_s05_p2_owner_decision_templates.py` 和 `KMFA/tests/test_s05_p2_owner_decision_templates.py`，为三种允许决策提供 public-safe 非决策模板，并验证模板不能被误当成 active owner 决策。
+- 新增 `KMFA/tools/check_s05_p2_completion_gate.py` 和 `KMFA/tests/test_s05_p2_completion_gate.py`，验证 S05-P2 只有在 45/45 hash/source anchor 完整或存在 resolving active owner/授权决策时才可关闭；当前默认 gate 返回 `BLOCKED`，`--expect-blocked` 验证通过。
 
 ## 边界
 
@@ -34,11 +35,11 @@
 - `S5PBT01`: 已建立 5 个字段级黄金基准候选合同；8 个 PDF 候选的 40 条字段已 hash-only 回填，Excel 候选 5 条字段 pending。
 - `S5PBT02`: 每条字段候选均绑定 `source_file_ref`、`page_ref`、`sheet_ref`、`cell_ref`、`raw_value_private_ref`、`normalized_value_private_ref` 和 pending/hash 状态；公开仓库不保存 raw/normalized 明文。
 - `S5PBT03`: 已生成 A0 golden fixture 候选 JSONL，所有记录保持 `Q3` 机器候选、`q4_human_confirmed=false`、`q5_calculation_baseline_allowed=false`。
-- Excel 候选待决策状态: `awaiting_owner_or_authorized_decision`，且 owner decision packet、intake 和 template validators 已通过。
+- Excel 候选待决策状态: `awaiting_owner_or_authorized_decision`，且 owner decision packet、intake、template 和 completion gate validators 已通过；completion gate 当前 `blocked as expected`。
 
 ## 风险
 
-- 当前回填、owner 决策包和 owner 决策模板都不是正式 A0 golden fixture 锁定；仍有 5 条 Excel 字段 pending，且未做 Q4 人工确认。
+- 当前回填、owner 决策包、owner 决策模板和 completion gate 都不是正式 A0 golden fixture 锁定；仍有 5 条 Excel 字段 pending，且未做 Q4 人工确认。
 - 后续必须补齐 Excel 候选字段或形成明确 owner/授权人工豁免、不适用或降级决策，再进入 S05-P3；公开仓库仍只允许保存 hash/ref/status，不允许保存真实字段值。
 - 45 条字段候选不能用于正式报告或 zero-delta 通过声明。
 
