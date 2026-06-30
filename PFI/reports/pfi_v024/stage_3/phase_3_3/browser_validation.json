@@ -1,7 +1,7 @@
 {
   "contract": "PFI-V024-STAGE3-PHASE33-BROWSER-NAVIGATION",
   "status": "pass",
-  "source": "http://127.0.0.1:55893/index.html",
+  "source": "http://127.0.0.1:56360/index.html",
   "desktop_primary_count": 10,
   "mobile_primary_count": 10,
   "desktop_primary_labels": [
@@ -91,6 +91,6 @@
     "desktop_nav": "screenshots/desktop_nav.png",
     "browser_back_after_forward": "screenshots/browser_back_after_forward.png"
   },
-  "generated_at": "2026-06-30T22:00:47.685Z",
+  "generated_at": "2026-06-30T22:12:49.048Z",
   "validation_hash": "386660499cc7446376faa8bc787fc0ea04c77d45409c82c38eb150f73f228142"
 }

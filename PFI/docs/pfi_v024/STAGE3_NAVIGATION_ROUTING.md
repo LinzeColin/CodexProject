@@ -1,7 +1,7 @@
 # PFI v0.2.4 Stage 3 Navigation Routing
 
-当前已完成至：`Stage 3 whole-stage review - 复审并解决暴露问题`。
-GitHub main upload 尚未执行。
+当前已完成至：`Stage 3 GitHub main upload gate`。
+GitHub main upload 由独立 terminal gate 验证。
 
 ## Scope
 
@@ -112,6 +112,6 @@ Phase 3.1 固定当前 v0.2.4 修补包的一级导航合同：
 
 ## Explicitly Not Done
 
-- GitHub main upload is not completed in this run.
+- GitHub main upload is handled by `STAGE3_GITHUB_MAIN_UPLOAD.md` and terminal remote verification.
 - Stage 4 is not started.
 - No app bundle reinstall, launcher source change, or financial data logic change was made.
