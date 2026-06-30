@@ -1,9 +1,9 @@
 schema_version: memory_river_params.v1
 product_target: Memory Atlas v1.1.5
-stage: "0"
-task: "0.5 Model Parameters Templates"
-status: template_v1_heuristic
-last_updated: "2026-06-30"
+stage: "5.1"
+task: "5.1 Memory River Rendering"
+status: production_phase_5_1_heuristic
+last_updated: "2026-07-01"
 data_boundary:
   allowed_inputs:
     - data/derived/visualization/memory_atlas.json
@@ -13,29 +13,75 @@ data_boundary:
   local_absolute_paths_allowed: false
   writeback_allowed: false
 notes:
-  purpose: "Parameter template for the future isolated Memory River spike and production integration."
-  calibration_status: "initial heuristic from taskpack; not empirically calibrated"
-  rollback: "Delete this file or reduce to the minimal time/interaction parameter set."
+  purpose: "Production Stage 5.1 parameters for Timeline renderer flag, UTC day scale, and Macro/Meso/Micro Memory River lanes."
+  calibration_status: "heuristic layout constants; source-level and browser-smoke validated, not empirically calibrated"
+  rollback: "Set timelineRenderer=legacy, timeline=legacy, VITE_MEMORY_ATLAS_TIMELINE_RENDERER=legacy, or localStorage memory-atlas.timeline-renderer=legacy."
 time:
-  default_window_days: 90
-  min_zoom_days: 1
-  max_zoom_days: 1460
   use_utc_scale: true
+  date_parse_contract: "YYYY-MM-DD is parsed as Date.UTC(year, month, day)"
+  x_min: 80
+  x_max: 960
+  svg_viewbox: "0 0 1000 640"
+  visible_event_cap: 260
+  density_band_count: 48
+  density_backdrop_count: 36
 lanes:
-  max_visible_theme_lanes: 12
-  lane_grouping: topic_then_project
+  renderer_default: memory-river
+  legacy_renderer: legacy
+  levels:
+    macro:
+      label: Macro
+      grouping: memory_tier
+      max_lanes: 3
+      base_y: 118
+    meso:
+      label: Meso
+      grouping: theme_or_project_cluster
+      max_lanes: 4
+      base_y: 294
+    micro:
+      label: Micro
+      grouping: memory_category
+      max_lanes: 4
+      base_y: 464
+  lane_sort:
+    - descending_event_count
+    - descending_memory_river_event_score
+    - zh_cn_label
 visual:
-  river_smoothing: 0.72
-  pulse_decay: 0.86
-  black_hole_band_opacity: 0.62
-  proto_star_marker_intensity: 1.2
+  river_curve: cubic_midpoint
+  river_wave_jitter_px: 38
+  lane_stroke_width_min: 8
+  lane_stroke_width_max: 34
+  lane_stroke_log_count_multiplier: 9
+  lane_stroke_score_multiplier: 0.03
+  black_hole_marker_categories:
+    - deprecated_info
+    - temporary_or_sensitive
+  proto_star_marker_categories:
+    - decision
+  marker_cap: 64
+scoring:
+  importance_high: 12
+  importance_medium: 6
+  importance_low: 2
+  decision_bonus: 8
+  core_memory_tier_bonus: 8
+  general_memory_tier_bonus: 4
 interaction:
-  brush_enabled: true
-  zoom_enabled: true
-  hover_card_delay_ms: 120
-  reduced_motion_default_safe: true
+  renderer_toggle_enabled: true
+  legacy_rollback_enabled: true
+  wheel_zoom_inherited_from_legacy_timeline: true
+  playback_cursor_inherited_from_legacy_timeline: true
+  brush_enabled: false
+  hover_card_delay_ms: null
+  click_event_card_enabled: false
+  deferred_to_stage_5_2:
+    - brush selection
+    - hover/click event cards
+    - multimodal feedback
 feedback:
-  pseudo_haptic_enabled: true
+  pseudo_haptic_enabled: false
   audio_feedback_default: false
   vibration_default: false
 validation_hints:
@@ -46,14 +92,17 @@ validation_hints:
     - interaction
     - feedback
   required_interactions:
-    - zoom
-    - brush
-    - theme lanes
-    - black hole band
+    - renderer toggle
+    - legacy rollback
+    - UTC scale
+    - Macro lane
+    - Meso lane
+    - Micro lane
+    - black hole marker
     - proto-star marker
-    - pseudo-haptic
-    - reduced motion
   non_goals:
-    - no production import in Stage 0
+    - no Stage 5.2 brush interaction in Phase 5.1
+    - no Stage 5.2 hover/click event card in Phase 5.1
+    - no multimodal feedback in Phase 5.1
     - no raw transcript access
     - no writeback
