@@ -15,6 +15,11 @@ from pfi_v02.stage_v023_contract import (
     stage1_query_string,
     stage1_ui_contract_version,
 )
+from pfi_v02.stage_v024_stage2_entry_consistency import (
+    STAGE2_BUILD_ID,
+    STAGE2_UI_CONTRACT_VERSION,
+    build_v024_stage2_entry_runtime_metadata,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -53,33 +58,46 @@ class TestV023Stage1AppEntryBundleContract(unittest.TestCase):
         self.assertRegex(metadata["webIndexSha256"], r"^[0-9a-f]{64}$")
         self.assertRegex(metadata["shellJsSha256"], r"^[0-9a-f]{64}$")
 
-    def test_static_web_shell_exposes_stage1_contract_markers(self) -> None:
+    def test_static_web_shell_exposes_current_entry_contract_markers(self) -> None:
         html = (ROOT / "web" / "index.html").read_text(encoding="utf-8")
         js = (ROOT / "web" / "app" / "shell.js").read_text(encoding="utf-8")
 
         self.assertIn('data-pfi-version="v0.2.3"', html)
         self.assertIn(f'data-pfi-app-version="{app_version}"', html)
-        self.assertIn(f'data-pfi-build-id="{stage1_build_id}"', html)
-        self.assertIn(f'data-pfi-ui-contract-version="{stage1_ui_contract_version}"', html)
+        self.assertIn(f'data-pfi-build-id="{STAGE2_BUILD_ID}"', html)
+        self.assertIn(f'data-pfi-ui-contract-version="{STAGE2_UI_CONTRACT_VERSION}"', html)
+        self.assertNotIn(f'data-pfi-build-id="{stage1_build_id}"', html)
+        self.assertNotIn(f'data-pfi-ui-contract-version="{stage1_ui_contract_version}"', html)
         self.assertIn("PFI_STAGE1_ENTRY_METADATA", js)
+        self.assertIn("PFI_STAGE2_ENTRY_METADATA", js)
         self.assertIn("webBundleHash", js)
         self.assertIn("shellJsSha256", js)
 
-    def test_streamlit_shell_injects_dynamic_stage1_runtime_metadata(self) -> None:
+    def test_streamlit_shell_injects_dynamic_stage2_runtime_metadata(self) -> None:
         source = (ROOT / "src" / "pfi_os" / "app" / "streamlit_app.py").read_text(encoding="utf-8")
 
-        self.assertIn("build_stage1_runtime_metadata", source)
+        metadata = build_v024_stage2_entry_runtime_metadata(ROOT)
+
+        self.assertIn("build_v024_stage2_entry_runtime_metadata", source)
         self.assertIn('"projectRoot": str(ROOT)', source)
         self.assertIn("runtime_payload", source)
+        self.assertEqual(metadata["buildId"], STAGE2_BUILD_ID)
+        self.assertEqual(metadata["uiContractVersion"], STAGE2_UI_CONTRACT_VERSION)
 
-    def test_app_bundle_and_launchers_use_v023_stage1_versioned_url(self) -> None:
+    def test_app_bundle_keeps_v023_version_and_launchers_use_current_entry_url(self) -> None:
         plist = plistlib.loads((ROOT / "macos" / "PFI.app" / "Contents" / "Info.plist").read_bytes())
         self.assertEqual(plist["CFBundleShortVersionString"], app_version)
         self.assertEqual(plist["CFBundleVersion"], stage1_bundle_version)
 
+        current_query_string = (
+            f"pfi_app_version={app_version}"
+            f"&pfi_build={STAGE2_BUILD_ID}"
+            f"&pfi_ui_contract={STAGE2_UI_CONTRACT_VERSION}"
+        )
         for relative in ("StartPFI.command", "scripts/startPFI.sh"):
             text = (ROOT / relative).read_text(encoding="utf-8")
-            self.assertIn(stage1_query_string, text)
+            self.assertIn(current_query_string, text)
+            self.assertNotIn(stage1_query_string, text)
             self.assertNotIn("pfi_app_version=0.2.1.1", text)
 
     def test_start_pfi_lock_path_accepts_clean_first_launch(self) -> None:

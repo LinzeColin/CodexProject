@@ -954,11 +954,13 @@ def _pfi_web_shell_html(home_summary: dict | None = None) -> str:
         runtime_api_base_url = ensure_v021_runtime_api_server()
     except Exception:
         runtime_api_base_url = "http://127.0.0.1:8766"
-    from pfi_v02.stage_v023_contract import build_stage1_runtime_metadata
+    from pfi_v02.stage_v024_stage2_entry_consistency import build_v024_stage2_entry_runtime_metadata
 
     shell_path = ROOT / "web" / "index.html"
     css_path = ROOT / "web" / "styles" / "tokens.css"
     legacy_css_path = ROOT / "web" / "styles.css"
+    version_path = ROOT / "web" / "app" / "version.js"
+    entry_audit_path = ROOT / "web" / "app" / "entry_audit.js"
     routes_path = ROOT / "web" / "app" / "routes.js"
     stage4_pages_path = ROOT / "web" / "app" / "pages" / "stage4Subpages.js"
     home_page_path = ROOT / "web" / "app" / "pages" / "home.js"
@@ -966,6 +968,8 @@ def _pfi_web_shell_html(home_summary: dict | None = None) -> str:
     shell_html = shell_path.read_text(encoding="utf-8")
     css = css_path.read_text(encoding="utf-8")
     legacy_css = legacy_css_path.read_text(encoding="utf-8")
+    version_js = version_path.read_text(encoding="utf-8")
+    entry_audit_js = entry_audit_path.read_text(encoding="utf-8")
     routes_js = routes_path.read_text(encoding="utf-8")
     stage4_pages_js = stage4_pages_path.read_text(encoding="utf-8")
     home_page_js = home_page_path.read_text(encoding="utf-8")
@@ -975,7 +979,7 @@ def _pfi_web_shell_html(home_summary: dict | None = None) -> str:
     runtime_payload = {
         "apiBaseUrl": runtime_api_base_url,
         "projectRoot": str(ROOT),
-        **build_stage1_runtime_metadata(ROOT),
+        **build_v024_stage2_entry_runtime_metadata(ROOT),
     }
     runtime_json = json.dumps(runtime_payload, ensure_ascii=False).replace("</", "<\\/")
     shell_html = shell_html.replace('<link rel="stylesheet" href="./styles/tokens.css" />', f"<style>{css}</style>")
@@ -991,6 +995,14 @@ def _pfi_web_shell_html(home_summary: dict | None = None) -> str:
         f'<script type="application/json" id="pfi-home-summary">{summary_json}</script>',
         shell_html,
         flags=re.DOTALL,
+    )
+    shell_html = shell_html.replace(
+        '<script src="./app/version.js"></script>',
+        f"<script>{version_js}</script>",
+    )
+    shell_html = shell_html.replace(
+        '<script src="./app/entry_audit.js"></script>',
+        f"<script>{entry_audit_js}</script>",
     )
     shell_html = shell_html.replace(
         '<script src="./app/routes.js"></script>',

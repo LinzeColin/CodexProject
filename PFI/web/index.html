@@ -17,9 +17,14 @@
     data-uiux-delivery-target="v021_feedback_preferences"
     data-pfi-version="v0.2.3"
     data-pfi-app-version="0.2.3"
-    data-pfi-build-id="20260629-stage1"
-    data-pfi-ui-contract-version="PFI-V023-STAGE1-APP-ENTRY-BUNDLE-CONSISTENCY"
-    data-pfi-stage="Stage 1"
+    data-pfi-target-version="v0.2.4"
+    data-pfi-repair-label="PFI v0.2.3 Repair"
+    data-pfi-build-id="pfi-v024-stage2-phase22"
+    data-pfi-bundle-version="20260630.2"
+    data-pfi-web-bundle-hash="runtime-computed"
+    data-pfi-ui-contract-version="PFI-V024-STAGE2-ENTRY-CONSISTENCY"
+    data-pfi-stage="Stage 2"
+    data-pfi-phase="2.2"
   >
     <a class="skip-link" href="#main-workspace">跳到内容</a>
     <div class="app-shell" data-state="ready">
@@ -27,6 +32,12 @@
         <div class="brand" aria-label="PFI">
           <span class="brand-mark" aria-hidden="true">PFI</span>
           <span class="brand-name">PFI</span>
+        </div>
+        <div class="entry-status-strip" data-pfi-entry-version-strip aria-label="入口版本">
+          <span data-pfi-entry-repair-label>PFI v0.2.3 Repair</span>
+          <span data-pfi-entry-build-id>pfi-v024-stage2-phase22</span>
+          <span data-pfi-entry-bundle-hash>bundle runtime-computed</span>
+          <span data-pfi-entry-ui-contract>PFI-V024-STAGE2-ENTRY-CONSISTENCY</span>
         </div>
         <div class="global-search" data-search-surface="global">
           <label for="global-search" class="sr-only">全局搜索</label>
@@ -721,6 +732,8 @@
         }
       }
     </script>
+    <script src="./app/version.js"></script>
+    <script src="./app/entry_audit.js"></script>
     <script src="./app/routes.js"></script>
     <script src="./app/shell.js"></script>
   </body>

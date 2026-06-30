@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 2 Phase 2.2 - 2026-06-30
+
+- 完成 `Stage 2 / Phase 2.2 - 版本链路实现`：页面可见 `PFI v0.2.3 Repair`、build id、bundle version、bundle hash 和 UI contract version。
+- 新增 `PFI/web/app/entry_audit.js`，提供 `window.PFI_READ_STAGE2_ENTRY_AUDIT` 给 Phase 2.3 真实 app/local/browser 验收读取。
+- `PFI/web/app/version.js` 升级为 Stage 2 entry version metadata，同时保留 Stage 1 shell integrity compatibility fields。
+- `PFI/web/app/shell.js` 会把 Streamlit 注入的动态 runtime metadata 写入 body dataset 和入口身份条。
+- `PFI/web/styles/tokens.css` 为入口身份条提供稳定 top-bar 布局，并纳入 Stage 2 bundle hash。
+- `PFI/StartPFI.command` 和 `PFI/scripts/startPFI.sh` 的 versioned URL 改为 `pfi-v024-stage2-phase22` / `PFI-V024-STAGE2-ENTRY-CONSISTENCY`。
+- 本轮未执行 Phase 2.3 实机验收、未重装 app bundle、未修改 launcher C/Info.plist、未修改真实财务数据逻辑、未上传 GitHub main。
+
 ## v0.2.4 Repair Pack Stage 2 Phase 2.1 - 2026-06-30
 
 - 完成 `Stage 2 / Phase 2.1 - 入口链路映射`：定位 macOS app、StartPFI、Streamlit、静态 HTML、shell runtime 和 version runtime 的当前链路。

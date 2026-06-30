@@ -1,14 +1,91 @@
 from __future__ import annotations
 
+import hashlib
 from dataclasses import asdict, dataclass
+from pathlib import Path
 
 
 TARGET_VERSION = "v0.2.4"
 SOURCE_PACKAGE_VERSION = "v0.2.3-repair"
 STAGE_ID = "Stage 2"
 PHASE_2_1_ID = "2.1"
+PHASE_2_2_ID = "2.2"
 
 PROJECT_ROOT = "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI"
+REPAIR_LABEL = "PFI v0.2.3 Repair"
+STAGE2_BUILD_ID = "pfi-v024-stage2-phase22"
+STAGE2_BUNDLE_VERSION = "20260630.2"
+STAGE2_UI_CONTRACT_VERSION = "PFI-V024-STAGE2-ENTRY-CONSISTENCY"
+STAGE1_SHELL_INTEGRITY_CONTRACT = "PFI-V024-STAGE1-SHELL-INTEGRITY"
+
+STAGE2_WEB_BUNDLE_FILES = (
+    "web/index.html",
+    "web/styles/tokens.css",
+    "web/app/version.js",
+    "web/app/entry_audit.js",
+    "web/app/routes.js",
+    "web/app/shell.js",
+)
+
+
+def _file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    digest.update(path.read_bytes())
+    return digest.hexdigest()
+
+
+def build_v024_stage2_web_bundle_manifest(root: Path | str | None = None) -> dict[str, object]:
+    project_root = Path(root) if root is not None else Path(__file__).resolve().parents[2]
+    files = []
+    bundle_digest = hashlib.sha256()
+    for relative in STAGE2_WEB_BUNDLE_FILES:
+        path = project_root / relative
+        file_hash = _file_sha256(path)
+        files.append(
+            {
+                "path": f"PFI/{relative}",
+                "sha256": file_hash,
+                "bytes": path.stat().st_size,
+            }
+        )
+        bundle_digest.update(relative.encode("utf-8"))
+        bundle_digest.update(b"\0")
+        bundle_digest.update(file_hash.encode("ascii"))
+        bundle_digest.update(b"\0")
+    return {
+        "schema": "PFIV024Stage2WebBundleManifestV1",
+        "files": files,
+        "webBundleHash": bundle_digest.hexdigest(),
+    }
+
+
+def build_v024_stage2_entry_runtime_metadata(root: Path | str | None = None) -> dict[str, object]:
+    manifest = build_v024_stage2_web_bundle_manifest(root)
+    hash_by_path = {item["path"]: item["sha256"] for item in manifest["files"]}
+    return {
+        "schema": "PFIV024Stage2EntryRuntimeMetadataV1",
+        "targetVersion": TARGET_VERSION,
+        "sourcePackageVersion": SOURCE_PACKAGE_VERSION,
+        "pfiVersion": "v0.2.3",
+        "appVersion": "0.2.3",
+        "repairLabel": REPAIR_LABEL,
+        "buildId": STAGE2_BUILD_ID,
+        "bundleVersion": STAGE2_BUNDLE_VERSION,
+        "uiContractVersion": STAGE2_UI_CONTRACT_VERSION,
+        "shellIntegrityContract": STAGE1_SHELL_INTEGRITY_CONTRACT,
+        "entryConsistencyContract": STAGE2_UI_CONTRACT_VERSION,
+        "stage": STAGE_ID,
+        "phase": PHASE_2_2_ID,
+        "webBundleHash": manifest["webBundleHash"],
+        "webIndexSha256": hash_by_path["PFI/web/index.html"],
+        "tokensCssSha256": hash_by_path["PFI/web/styles/tokens.css"],
+        "versionJsSha256": hash_by_path["PFI/web/app/version.js"],
+        "entryAuditJsSha256": hash_by_path["PFI/web/app/entry_audit.js"],
+        "routesJsSha256": hash_by_path["PFI/web/app/routes.js"],
+        "shellJsSha256": hash_by_path["PFI/web/app/shell.js"],
+        "frontendBundleFiles": STAGE2_WEB_BUNDLE_FILES,
+        "visibleFields": ("repairLabel", "buildId", "webBundleHash", "uiContractVersion"),
+    }
 
 
 ENTRY_SURFACES = [
@@ -194,6 +271,70 @@ def build_v024_stage2_phase21_contract() -> V024Stage2Phase21Contract:
         data_logic_changes_allowed=False,
         app_bundle_changes_allowed=False,
         launcher_changes_allowed=False,
+        github_main_upload_allowed=False,
+        next_phase_requires_user_acceptance=True,
+    )
+
+
+@dataclass(frozen=True)
+class V024Stage2Phase22Contract:
+    target_version: str
+    source_package_version: str
+    stage_id: str
+    phase_id: str
+    phase_name: str
+    task_ids: list[str]
+    phase_2_1_complete: bool
+    phase_2_2_complete: bool
+    phase_2_3_complete: bool
+    stage_2_candidate_complete: bool
+    stage_2_complete: bool
+    max_phases_per_run: int
+    repair_label: str
+    build_id: str
+    bundle_version: str
+    ui_contract_version: str
+    web_bundle_files: list[str]
+    visible_identity_fields: list[str]
+    entry_audit_interface: str
+    app_bundle_changes_allowed: bool
+    launcher_source_changes_allowed: bool
+    app_bundle_reinstall_allowed: bool
+    business_ui_changes_allowed: bool
+    data_logic_changes_allowed: bool
+    github_main_upload_allowed: bool
+    next_phase_requires_user_acceptance: bool
+
+    def to_dict(self) -> dict[str, object]:
+        return asdict(self)
+
+
+def build_v024_stage2_phase22_contract() -> V024Stage2Phase22Contract:
+    return V024Stage2Phase22Contract(
+        target_version=TARGET_VERSION,
+        source_package_version=SOURCE_PACKAGE_VERSION,
+        stage_id=STAGE_ID,
+        phase_id=PHASE_2_2_ID,
+        phase_name="版本链路实现",
+        task_ids=["T2.2.1", "T2.2.2", "T2.2.3", "T2.2.4"],
+        phase_2_1_complete=True,
+        phase_2_2_complete=True,
+        phase_2_3_complete=False,
+        stage_2_candidate_complete=False,
+        stage_2_complete=False,
+        max_phases_per_run=1,
+        repair_label=REPAIR_LABEL,
+        build_id=STAGE2_BUILD_ID,
+        bundle_version=STAGE2_BUNDLE_VERSION,
+        ui_contract_version=STAGE2_UI_CONTRACT_VERSION,
+        web_bundle_files=list(STAGE2_WEB_BUNDLE_FILES),
+        visible_identity_fields=["repairLabel", "buildId", "webBundleHash", "uiContractVersion"],
+        entry_audit_interface="window.PFI_READ_STAGE2_ENTRY_AUDIT",
+        app_bundle_changes_allowed=False,
+        launcher_source_changes_allowed=True,
+        app_bundle_reinstall_allowed=False,
+        business_ui_changes_allowed=False,
+        data_logic_changes_allowed=False,
         github_main_upload_allowed=False,
         next_phase_requires_user_acceptance=True,
     )

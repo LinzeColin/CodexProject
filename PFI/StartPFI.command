@@ -8,7 +8,7 @@ mkdir -p "$PROJECT_DIR/data/cache"
 LOG_FILE="$PROJECT_DIR/data/cache/pfi_macos_app.log"
 exec >> "$LOG_FILE" 2>&1
 echo "==== PFI launch $(date -u +"%Y-%m-%dT%H:%M:%SZ") pid=$$ ===="
-PFI_VERSION_QUERY="pfi_app_version=0.2.3&pfi_build=20260629-stage1&pfi_ui_contract=PFI-V023-STAGE1-APP-ENTRY-BUNDLE-CONSISTENCY"
+PFI_VERSION_QUERY="pfi_app_version=0.2.3&pfi_build=pfi-v024-stage2-phase22&pfi_ui_contract=PFI-V024-STAGE2-ENTRY-CONSISTENCY"
 
 process_cwd() {
   local pid="$1"

@@ -13,7 +13,7 @@ export PFI_UI_V2="${PFI_UI_V2:-1}"
 PYTHON_BIN="$(pfi_os_ensure_app_python "$PROJECT_DIR")"
 LOG_DIR="$PROJECT_DIR/data/cache"
 LOG_FILE="$LOG_DIR/pfi_streamlit.log"
-PFI_VERSION_QUERY="pfi_app_version=0.2.3&pfi_build=20260629-stage1&pfi_ui_contract=PFI-V023-STAGE1-APP-ENTRY-BUNDLE-CONSISTENCY"
+PFI_VERSION_QUERY="pfi_app_version=0.2.3&pfi_build=pfi-v024-stage2-phase22&pfi_ui_contract=PFI-V024-STAGE2-ENTRY-CONSISTENCY"
 mkdir -p "$LOG_DIR"
 
 process_cwd() {
