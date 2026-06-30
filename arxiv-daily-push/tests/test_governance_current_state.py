@@ -35,6 +35,20 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
+            "S2PMT07_FINAL_BUNDLE_S2PLT02_RUNTIME_READINESS_SUMMARY_BLOCKED_NO_PRODUCTION",
+            current_state,
+        )
+        self.assertIn("S2PMT07-FINAL-BUNDLE-S2PLT02-RUNTIME-READINESS-SUMMARY", current_state)
+        self.assertIn("a386b1848f2abcdc29e104759f3873173576572d8433af0a2448235d107daa92", current_state)
+        self.assertIn("final_bundle_prerequisite_plan_state_hash=ccdc7b1d95af5a88943e8631e34523bbb8705360fd688aa02152339d04404fee", current_state)
+        self.assertIn("s2plt02_runtime_readiness_summary_state_hash=dd079b6489a4e2ef4c630093ecd90664fbc1a41497e9be289547f105be85a4ee", current_state)
+        self.assertIn("remaining_runtime_actions=capture_second_consecutive_real_m1_m4_smtp_day;capture_real_launchd_scheduler_proof;write_and_validate_s2plt02_terminal_delivery_proof_artifact", current_state)
+        self.assertIn("blocked_by_missing_inputs=SECOND_REAL_DELIVERY_DAY;EIGHT_REAL_EMAILS;REAL_SCHEDULER_PROOF;S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT", current_state)
+        self.assertIn("observed_real_delivery_days=1/2", current_state)
+        self.assertIn("observed_real_email_count=4/8", current_state)
+        self.assertIn("ADP-S2PMT07-FINAL-BUNDLE-S2PLT02-RUNTIME-READINESS-SUMMARY-20260630.json", current_state)
+        self.assertIn("PHASE_S2PMT07_FINAL_BUNDLE_S2PLT02_RUNTIME_READINESS_SUMMARY.md", ledger)
+        self.assertIn(
             "S2PMT07_FINAL_BUNDLE_VALIDATOR_RUNTIME_STEP_SUMMARY_BLOCKED_NO_PRODUCTION",
             current_state,
         )
