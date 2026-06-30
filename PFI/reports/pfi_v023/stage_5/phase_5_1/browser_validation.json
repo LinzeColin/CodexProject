@@ -1,0 +1,22 @@
+{
+  "stage_id": "PFI-V023-STAGE5-PHASE51",
+  "browser": "Google Chrome headless",
+  "url": "file:///Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/web/index.html#/home",
+  "screenshot": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI/reports/pfi_v023/stage_5/phase_5_1/home_phase51.png",
+  "screenshot_bytes": 562278,
+  "pixel_width": 1440,
+  "pixel_height": 1100,
+  "stage5_home_module_loaded_by_shell": true,
+  "visible_phase51_sections": [
+    "财务状态摘要",
+    "钱在哪里",
+    "数据健康",
+    "最近变化"
+  ],
+  "financial_zero_shortcut_visible": false,
+  "forbidden_home_artifacts_visible": false,
+  "notes": [
+    "Screenshot confirms the real file-based home route renders the existing Stage 4 route surface and the Stage 5 Phase 5.1 information cards below it.",
+    "Stage 4 route surface cleanup is outside Phase 5.1 and remains for later Stage 5 review or Phase 5.3."
+  ]
+}

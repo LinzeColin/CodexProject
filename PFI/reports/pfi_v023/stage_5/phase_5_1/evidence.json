@@ -1,0 +1,111 @@
+{
+  "version": "v0.2.3",
+  "stage": "Stage 5",
+  "stage_name": "首页人类任务流重建",
+  "phase_id": "V023-S5-P5.1",
+  "phase_name": "首页信息架构",
+  "created_at": "2026-06-30T11:38:00+10:00",
+  "status": "candidate_pass",
+  "current_phase_only": true,
+  "max_one_phase_per_run": true,
+  "no_forbidden_financial_data": true,
+  "uses_stage2_data_state_machine": true,
+  "home_information_questions": [
+    "我现在有多少钱",
+    "钱在哪里",
+    "哪些数据有问题",
+    "最近发生了什么"
+  ],
+  "implemented_sections": [
+    "financial_state",
+    "money_location",
+    "data_health",
+    "recent_changes"
+  ],
+  "runtime_integration_note": "PFI/web/app/shell.js was minimally updated because the current app runtime owns home rendering and must load PFI/web/app/pages/home.js for the user-visible homepage.",
+  "browser_validation": {
+    "path": "PFI/reports/pfi_v023/stage_5/phase_5_1/browser_validation.json",
+    "screenshot": "PFI/reports/pfi_v023/stage_5/phase_5_1/home_phase51.png",
+    "pixel_width": 1440,
+    "pixel_height": 1100,
+    "stage5_home_module_loaded_by_shell": true,
+    "financial_zero_shortcut_visible": false,
+    "forbidden_home_artifacts_visible": false
+  },
+  "commands": [
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage5_home_experience.py -q",
+      "exit_code": 1,
+      "summary": "RED before implementation: 5 failed because Stage 5 home module, shell loader, docs, and evidence were missing"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage5_home_experience.py -q",
+      "exit_code": 0,
+      "summary": "GREEN after implementation: 5 passed, 12 subtests passed"
+    },
+    {
+      "command": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/pages/home.js",
+      "exit_code": 0,
+      "summary": "Stage 5 home module syntax check passed"
+    },
+    {
+      "command": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js",
+      "exit_code": 0,
+      "summary": "Shell syntax check passed after minimal home module loader/application"
+    },
+    {
+      "command": "Google Chrome headless screenshot of PFI/web/index.html#/home",
+      "exit_code": 0,
+      "summary": "Generated 1440x1100 homepage screenshot at PFI/reports/pfi_v023/stage_5/phase_5_1/home_phase51.png"
+    },
+    {
+      "command": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q",
+      "exit_code": 0,
+      "summary": "v0.2.3 regression suite: 81 passed, 76 subtests passed"
+    },
+    {
+      "command": "rg forbidden finance-data terms over Stage 5 Phase 5.1 files",
+      "exit_code": 1,
+      "summary": "No forbidden financial data terms found in Stage 5 Phase 5.1 source, test, docs, or evidence files"
+    },
+    {
+      "command": "git diff --check -- PFI",
+      "exit_code": 0,
+      "summary": "No whitespace errors in Stage 5 Phase 5.1 diff"
+    },
+    {
+      "command": "git fetch https://github.com/LinzeColin/CodexProject.git main:refs/remotes/origin/main",
+      "exit_code": 0,
+      "summary": "origin/main advanced to 57958bff with unrelated ADP manifest validator work before local Phase 5.1 commit was uploaded anywhere"
+    },
+    {
+      "command": "git rebase origin/main",
+      "exit_code": 0,
+      "summary": "Rebased local Stage 5 Phase 5.1 commit onto origin/main 57958bff without conflicts"
+    },
+    {
+      "command": "post-rebase validation set",
+      "exit_code": 0,
+      "summary": "HEAD 46d415de before evidence amend; ahead 1 behind 0; Stage 5 target 5 passed, 12 subtests passed; v0.2.3 regression 81 passed, 76 subtests passed; home, shell, and routes syntax checks passed"
+    }
+  ],
+  "changed_files": [
+    "PFI/docs/pfi_v023/STAGE5_HOME_EXPERIENCE.md",
+    "PFI/reports/pfi_v023/stage_5/phase_5_1/browser_validation.json",
+    "PFI/reports/pfi_v023/stage_5/phase_5_1/changed_files.txt",
+    "PFI/reports/pfi_v023/stage_5/phase_5_1/evidence.json",
+    "PFI/reports/pfi_v023/stage_5/phase_5_1/home_phase51.png",
+    "PFI/reports/pfi_v023/stage_5/phase_5_1/terminal.log",
+    "PFI/tests/test_v023_stage5_home_experience.py",
+    "PFI/web/app/pages/home.js",
+    "PFI/web/app/shell.js"
+  ],
+  "explicitly_not_done": [
+    "Phase 5.2 下一步动作生成",
+    "Phase 5.3 去 AI 痕迹全量清理",
+    "Stage 5 whole-stage review",
+    "Stage 6 核心财务指标 read model 接入",
+    "GitHub main upload for intermediate phase"
+  ],
+  "requires_user_acceptance": true
+}
