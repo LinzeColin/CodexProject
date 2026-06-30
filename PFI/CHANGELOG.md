@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 2 Whole-Stage Review - 2026-06-30
+
+- 完成 `Stage 2 whole-stage review - 复审并解决暴露问题`，复审 Phase 2.1、Phase 2.2、Phase 2.3 的入口链路、版本链路、真实浏览器验收和 evidence。
+- 新增 `PFI/docs/pfi_v024/STAGE2_WHOLE_STAGE_REVIEW.md`、`PFI/tests/test_v024_stage2_whole_review_contract.py` 和 `PFI/reports/pfi_v024/stage_2/whole_stage_review/evidence.json`。
+- 修复复审发现的证据漂移：重新运行 Phase 2.3 真实浏览器验收，使 `phase_2_3/evidence.json` 记录当前 Stage 2 review baseline。
+- Stage 2 本地整阶段复审完成；本轮未进入 Stage 3、未重装 app bundle、未修改 launcher C/Info.plist、未修改真实财务数据逻辑、未上传 GitHub main。
+
 ## v0.2.4 Repair Pack Stage 2 Phase 2.3 - 2026-06-30
 
 - 完成 `Stage 2 / Phase 2.3 - 实机验收`：localhost、app、清缓存浏览器上下文、新 Profile 四条路径均读取同一 Stage 2 build id 和 bundle hash。
