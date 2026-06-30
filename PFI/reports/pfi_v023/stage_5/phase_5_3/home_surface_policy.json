@@ -1,0 +1,30 @@
+{
+  "version": "v0.2.3",
+  "stage": "Stage 5",
+  "phase_id": "V023-S5-P5.3",
+  "home_visible_sections": [
+    "financial_state",
+    "data_health",
+    "next_actions",
+    "recent_changes",
+    "report_entry"
+  ],
+  "settings_feedback_isolated": true,
+  "evidence_parameters_routed_out": true,
+  "no_developer_stage_terms_on_home": true,
+  "evidence_route": {
+    "targetWorkspace": "insights",
+    "routeAlias": "/reports?tab=monthly",
+    "label": "查看报告"
+  },
+  "parameter_route": {
+    "targetWorkspace": "settings",
+    "routeAlias": "/settings?tab=data-system",
+    "label": "打开设置"
+  },
+  "home_shell_behavior": {
+    "hide_page_explanation_button_on_home": true,
+    "close_page_explanation_drawer_on_home": true,
+    "hide_function_detail_on_home": true
+  }
+}

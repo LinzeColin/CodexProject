@@ -21,6 +21,14 @@ STAGE5_PHASE52_ACTION_SOURCES = (
     "review_task",
 )
 
+STAGE5_PHASE53_HOME_VISIBLE_SECTIONS = (
+    "financial_state",
+    "data_health",
+    "next_actions",
+    "recent_changes",
+    "report_entry",
+)
+
 HOME_FORBIDDEN_VISIBLE_TERMS = (
     "Task Pack",
     "运行边界",
@@ -28,6 +36,23 @@ HOME_FORBIDDEN_VISIBLE_TERMS = (
     "反馈控制台",
     "证据抽屉",
     "系统能力",
+)
+
+PHASE53_FORBIDDEN_HOME_ARTIFACTS = (
+    "Task Pack",
+    "运行边界",
+    "AI 控制台",
+    "反馈控制台",
+    "证据抽屉",
+    "系统能力面板",
+    "参数面板",
+    "PFI 功能入口",
+    "Stage",
+    "Phase",
+    "workflow",
+    "runtime",
+    "console",
+    "evidence drawer",
 )
 
 
@@ -39,6 +64,7 @@ const payload = JSON.parse(process.argv[1] || '{}');
 console.log(JSON.stringify({
   contract: home.buildStage5Phase51Contract(),
   phase52Contract: home.buildStage5Phase52Contract(),
+  phase53Contract: home.buildStage5Phase53Contract(),
   view: home.buildStage5HomeViewModel(payload),
 }));
 """
@@ -51,6 +77,39 @@ console.log(JSON.stringify({
     )
     self_output = completed.stdout
     return json.loads(self_output)
+
+
+def home_visible_surface_text(view: dict[str, object]) -> str:
+    visible_payload = [
+        view.get("home_conclusion"),
+        view.get("home_runtime_label"),
+        view.get("home_cards"),
+        [
+            [
+                item.get("title"),
+                item.get("status"),
+                item.get("source"),
+                item.get("detail"),
+                (item.get("target") or {}).get("label"),
+            ]
+            for item in view.get("home_features", [])
+        ],
+        view.get("home_rows"),
+        [
+            [
+                item.get("title"),
+                item.get("detail"),
+                item.get("status"),
+            ]
+            for item in view.get("home_tasks", [])
+        ],
+        [
+            view.get("report_entry", {}).get("title"),
+            view.get("report_entry", {}).get("label"),
+            view.get("report_entry", {}).get("detail"),
+        ],
+    ]
+    return json.dumps(visible_payload, ensure_ascii=False)
 
 
 class TestV023Stage5HomeExperience(unittest.TestCase):
@@ -91,6 +150,25 @@ class TestV023Stage5HomeExperience(unittest.TestCase):
         self.assertIn("动作可跳转", contract["tasks"])
         self.assertIn("阻断动作可解释", contract["tasks"])
         self.assertIn("Phase 5.3 去 AI 痕迹全量清理", contract["explicitly_not_done"])
+        self.assertIn("Stage 6 核心财务指标 read model 接入", contract["explicitly_not_done"])
+        self.assertIn("GitHub main upload for intermediate phase", contract["explicitly_not_done"])
+
+    def test_phase53_contract_is_limited_to_home_artifact_cleanup(self) -> None:
+        payload = load_stage5_home()
+        contract = payload["phase53Contract"]
+
+        self.assertEqual(contract["version"], "v0.2.3")
+        self.assertEqual(contract["stage"], "Stage 5")
+        self.assertEqual(contract["phase_id"], "V023-S5-P5.3")
+        self.assertEqual(contract["phase_name"], "去 AI 痕迹")
+        self.assertTrue(contract["current_phase_only"])
+        self.assertTrue(contract["max_one_phase_per_run"])
+        self.assertEqual(tuple(contract["home_visible_sections"]), STAGE5_PHASE53_HOME_VISIBLE_SECTIONS)
+        self.assertIn("删除首页开发术语", contract["tasks"])
+        self.assertIn("设置/反馈隔离", contract["tasks"])
+        self.assertIn("证据/参数收纳到报告或详情", contract["tasks"])
+        self.assertIn("禁止词测试", contract["tasks"])
+        self.assertIn("Stage 5 whole-stage review", contract["explicitly_not_done"])
         self.assertIn("Stage 6 核心财务指标 read model 接入", contract["explicitly_not_done"])
         self.assertIn("GitHub main upload for intermediate phase", contract["explicitly_not_done"])
 
@@ -247,12 +325,57 @@ class TestV023Stage5HomeExperience(unittest.TestCase):
         self.assertTrue(any(task["source_type"] == "data_status" for task in view["home_tasks"]))
         self.assertNotIn("写死", json.dumps(view["next_actions"], ensure_ascii=False))
 
+    def test_phase53_home_view_model_surface_policy_excludes_dev_artifacts(self) -> None:
+        payload = load_stage5_home()
+        view = payload["view"]
+        policy = view["home_surface_policy"]
+
+        self.assertEqual(tuple(policy["home_visible_sections"]), STAGE5_PHASE53_HOME_VISIBLE_SECTIONS)
+        self.assertTrue(policy["settings_feedback_isolated"])
+        self.assertTrue(policy["evidence_parameters_routed_out"])
+        self.assertTrue(policy["no_developer_stage_terms_on_home"])
+
+        visible_text = home_visible_surface_text(view)
+        for term in PHASE53_FORBIDDEN_HOME_ARTIFACTS:
+            with self.subTest(term=term):
+                self.assertNotIn(term, visible_text)
+
+    def test_phase53_evidence_and_parameters_route_outside_home(self) -> None:
+        payload = load_stage5_home()
+        view = payload["view"]
+        policy = view["home_surface_policy"]
+
+        self.assertEqual(view["report_entry"]["targetWorkspace"], "insights")
+        self.assertEqual(view["report_entry"]["routeAlias"], "/reports?tab=monthly")
+        self.assertEqual(policy["evidence_route"]["targetWorkspace"], "insights")
+        self.assertEqual(policy["evidence_route"]["routeAlias"], "/reports?tab=monthly")
+        self.assertEqual(policy["parameter_route"]["targetWorkspace"], "settings")
+        self.assertEqual(policy["parameter_route"]["routeAlias"], "/settings?tab=data-system")
+
+        visible_text = home_visible_surface_text(view)
+        for term in ("证据", "参数", "功能入口", "Stage", "Phase", "workflow", "runtime"):
+            with self.subTest(term=term):
+                self.assertNotIn(term, visible_text)
+
     def test_phase51_shell_loads_home_module_before_rendering_home(self) -> None:
         shell_text = (ROOT / "web" / "app" / "shell.js").read_text(encoding="utf-8")
 
         self.assertIn("./app/pages/home.js", shell_text)
         self.assertIn("PFI_V023_STAGE5_HOME", shell_text)
         self.assertIn("applyStage5Phase51Home", shell_text)
+
+    def test_phase53_shell_home_block_hides_developer_surfaces(self) -> None:
+        shell_text = (ROOT / "web" / "app" / "shell.js").read_text(encoding="utf-8")
+        start = shell_text.index("function applyStage5Phase51Home()")
+        end = shell_text.index("function applyStage3Dashboard", start)
+        home_block = shell_text[start:end]
+
+        self.assertIn("applyStage5Phase53HomeSurfacePolicy", shell_text)
+        self.assertIn("data-evidence-toggle", shell_text)
+        self.assertIn('workspaceId === "home"', shell_text)
+        for term in ("Stage 5 Phase 5.1", "Stage 2 数据状态机", "留到 Phase 5.2"):
+            with self.subTest(term=term):
+                self.assertNotIn(term, home_block)
 
     def test_phase51_home_surface_does_not_show_forbidden_home_artifacts(self) -> None:
         payload = load_stage5_home()
@@ -284,3 +407,28 @@ class TestV023Stage5HomeExperience(unittest.TestCase):
         self.assertTrue(evidence["current_phase_only"])
         self.assertTrue(evidence["max_one_phase_per_run"])
         self.assertTrue(evidence["no_forbidden_financial_data"])
+
+    def test_phase53_doc_and_evidence_exist_before_candidate_pass(self) -> None:
+        doc_path = ROOT / "docs" / "pfi_v023" / "STAGE5_HOME_EXPERIENCE.md"
+        phase_dir = ROOT / "reports" / "pfi_v023" / "stage_5" / "phase_5_3"
+        evidence_path = phase_dir / "evidence.json"
+        policy_path = phase_dir / "home_surface_policy.json"
+        changed_files_path = phase_dir / "changed_files.txt"
+        terminal_log_path = phase_dir / "terminal.log"
+
+        self.assertTrue(doc_path.exists(), "Stage 5 home experience doc is required")
+        self.assertTrue(evidence_path.exists(), "Stage 5 Phase 5.3 evidence is required")
+        self.assertTrue(policy_path.exists(), "Stage 5 Phase 5.3 surface policy record is required")
+        self.assertTrue(changed_files_path.exists(), "Stage 5 Phase 5.3 changed files record is required")
+        self.assertTrue(terminal_log_path.exists(), "Stage 5 Phase 5.3 terminal log is required")
+
+        evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
+        policy = json.loads(policy_path.read_text(encoding="utf-8"))
+        self.assertEqual(evidence["version"], "v0.2.3")
+        self.assertEqual(evidence["stage"], "Stage 5")
+        self.assertEqual(evidence["phase_id"], "V023-S5-P5.3")
+        self.assertEqual(evidence["status"], "candidate_pass")
+        self.assertTrue(evidence["current_phase_only"])
+        self.assertTrue(evidence["max_one_phase_per_run"])
+        self.assertTrue(evidence["no_forbidden_financial_data"])
+        self.assertEqual(tuple(policy["home_visible_sections"]), STAGE5_PHASE53_HOME_VISIBLE_SECTIONS)

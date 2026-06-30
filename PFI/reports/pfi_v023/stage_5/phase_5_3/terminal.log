@@ -1,0 +1,25 @@
+RED:
+PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage5_home_experience.py -q
+Result: failed before implementation because Phase 5.3 contract, home surface policy, shell isolation, and phase evidence were absent.
+
+GREEN commands to rerun before local commit:
+node --check PFI/web/app/pages/home.js
+node --check PFI/web/app/shell.js
+PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage5_home_experience.py -q
+PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q
+
+GREEN:
+PATH=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH node --check PFI/web/app/pages/home.js
+Result: pass
+
+PATH=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH node --check PFI/web/app/shell.js
+Result: pass
+
+PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage5_home_experience.py -q
+Result: 13 passed, 36 subtests passed
+
+PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q
+Result: 89 passed, 100 subtests passed
+
+Scope note:
+Only Stage 5 Phase 5.3 home artifact cleanup is included. Stage 5 whole-stage review, Stage 6, and GitHub upload remain pending.

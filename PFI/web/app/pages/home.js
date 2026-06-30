@@ -13,6 +13,8 @@
   const PHASE51_NAME = "首页信息架构";
   const PHASE52_ID = "V023-S5-P5.2";
   const PHASE52_NAME = "下一步动作";
+  const PHASE53_ID = "V023-S5-P5.3";
+  const PHASE53_NAME = "去 AI 痕迹";
 
   const DISPLAY_VALUE_STATUSES = Object.freeze(["ready", "confirmed_zero"]);
   const STATUS_COPY_ZH = Object.freeze({
@@ -51,6 +53,48 @@
       question: "最近真实记录发生了什么",
     }),
   ]);
+
+  const HOME_VISIBLE_SECTIONS_PHASE53 = Object.freeze([
+    "financial_state",
+    "data_health",
+    "next_actions",
+    "recent_changes",
+    "report_entry",
+  ]);
+
+  const HOME_FORBIDDEN_ARTIFACTS_PHASE53 = Object.freeze([
+    "Task Pack",
+    "运行边界",
+    "AI 控制台",
+    "反馈控制台",
+    "证据抽屉",
+    "系统能力面板",
+    "参数面板",
+    "PFI 功能入口",
+    "Stage",
+    "Phase",
+    "workflow",
+    "runtime",
+    "console",
+    "evidence drawer",
+  ]);
+
+  const HOME_SURFACE_POLICY_PHASE53 = Object.freeze({
+    home_visible_sections: HOME_VISIBLE_SECTIONS_PHASE53,
+    settings_feedback_isolated: true,
+    evidence_parameters_routed_out: true,
+    no_developer_stage_terms_on_home: true,
+    evidence_route: Object.freeze({
+      targetWorkspace: "insights",
+      routeAlias: "/reports?tab=monthly",
+      label: "查看报告",
+    }),
+    parameter_route: Object.freeze({
+      targetWorkspace: "settings",
+      routeAlias: "/settings?tab=data-system",
+      label: "打开设置",
+    }),
+  });
 
   const DEFAULT_METRICS = Object.freeze([
     metric("net_worth_cny", "净资产", "CNY"),
@@ -143,6 +187,49 @@
     });
   }
 
+  function buildStage5Phase53Contract() {
+    return Object.freeze({
+      version: VERSION,
+      stage: STAGE,
+      phase_id: PHASE53_ID,
+      phase_name: PHASE53_NAME,
+      current_phase_only: true,
+      max_one_phase_per_run: true,
+      home_visible_sections: HOME_VISIBLE_SECTIONS_PHASE53,
+      forbidden_home_artifacts: HOME_FORBIDDEN_ARTIFACTS_PHASE53,
+      tasks: Object.freeze([
+        "删除首页开发术语",
+        "设置/反馈隔离",
+        "证据/参数收纳到报告或详情",
+        "禁止词测试",
+      ]),
+      allowed_files: Object.freeze([
+        "PFI/web/app/pages/home.js",
+        "PFI/web/app/shell.js (home-only surface isolation)",
+        "PFI/tests/test_v023_stage5_home_experience.py",
+        "PFI/docs/pfi_v023/STAGE5_HOME_EXPERIENCE.md",
+        "PFI/reports/pfi_v023/stage_5/phase_5_3/*",
+      ]),
+      validation_commands: Object.freeze([
+        "node --check PFI/web/app/pages/home.js",
+        "node --check PFI/web/app/shell.js",
+        "python3 -m pytest PFI/tests/test_v023_stage5_home_experience.py -q",
+        "python3 -m pytest PFI/tests/test_v023_*.py -q",
+      ]),
+      evidence_files: Object.freeze([
+        "PFI/reports/pfi_v023/stage_5/phase_5_3/evidence.json",
+        "PFI/reports/pfi_v023/stage_5/phase_5_3/home_surface_policy.json",
+        "PFI/reports/pfi_v023/stage_5/phase_5_3/terminal.log",
+        "PFI/reports/pfi_v023/stage_5/phase_5_3/changed_files.txt",
+      ]),
+      explicitly_not_done: Object.freeze([
+        "Stage 5 whole-stage review",
+        "Stage 6 核心财务指标 read model 接入",
+        "GitHub main upload for intermediate phase",
+      ]),
+    });
+  }
+
   function buildStage5HomeViewModel(input = {}) {
     const metricStates = normalizeMetricStates(input.metric_states || input.metricStates || input.core_metric_states);
     const financialState = metricStates.map(buildFinancialCard);
@@ -151,15 +238,19 @@
     const recentChanges = normalizeRecentChanges(input.recent_changes || input.recentChanges);
     const reviewTasks = normalizeReviewTasks(input.review_tasks || input.reviewTasks);
     const nextActions = buildNextActions(financialState, reviewTasks);
+    const reportEntry = buildReportEntry();
 
     return Object.freeze({
       schema: "PFIV023Stage5HomeExperienceV1",
       version: VERSION,
       stage: STAGE,
       phase_id: PHASE51_ID,
-      phase_ids: Object.freeze([PHASE51_ID, PHASE52_ID]),
+      phase_ids: Object.freeze([PHASE51_ID, PHASE52_ID, PHASE53_ID]),
       current_phase_only: true,
       sections: HOME_SECTIONS.map((section) => ({ ...section })),
+      home_conclusion: "先看财务状态、数据健康、下一步动作、最近变化，再进入报告。",
+      home_runtime_label: "财务状态与下一步动作",
+      home_surface_policy: cloneSurfacePolicy(),
       financial_state: financialState,
       money_location: buildMoneyLocation(financialState),
       data_health: Object.freeze({
@@ -182,14 +273,15 @@
       }),
       recent_changes: recentChanges,
       next_actions: nextActions,
+      report_entry: reportEntry,
       home_cards: financialState.map((item) => [
         item.label,
         item.display_value,
         item.source ? `${item.status_label} · ${item.source}` : item.message_zh,
       ]),
-      home_features: buildHomeInformationCards(financialState, readyCount, blockedCount, recentChanges, nextActions),
-      home_rows: buildHomeRows(financialState, readyCount, blockedCount, recentChanges),
-      home_tasks: buildHomeTaskRows(readyCount, blockedCount, recentChanges, nextActions),
+      home_features: buildHomeInformationCards(financialState, readyCount, blockedCount, recentChanges, nextActions, reportEntry),
+      home_rows: buildHomeRows(financialState, readyCount, blockedCount, recentChanges, reportEntry),
+      home_tasks: buildHomeTaskRows(readyCount, blockedCount, recentChanges, nextActions, reportEntry),
     });
   }
 
@@ -332,7 +424,7 @@
     return `补齐${item.label}数据`;
   }
 
-  function buildHomeInformationCards(financialState, readyCount, blockedCount, recentChanges, nextActions) {
+  function buildHomeInformationCards(financialState, readyCount, blockedCount, recentChanges, nextActions, reportEntry) {
     const locationReady = financialState.filter((item) => item.source).length;
     return [
       {
@@ -347,7 +439,7 @@
       {
         title: "财务状态摘要",
         status: blockedCount ? "需要复核" : "可用",
-        source: "Stage 2 数据状态机",
+        source: "数据状态",
         detail: `核心指标 ${readyCount} 个可显示，${blockedCount} 个保留中文状态。`,
         target: { workspace: "home", routeAlias: "/home?tab=status", label: "查看状态" },
       },
@@ -372,19 +464,27 @@
         detail: recentChanges[0]?.message || "查看最近真实变化。",
         target: { workspace: "home", routeAlias: "/home?tab=reports", label: "查看变化" },
       },
+      {
+        title: reportEntry.title,
+        status: "可查看",
+        source: "报告与洞察",
+        detail: reportEntry.detail,
+        target: { workspace: reportEntry.targetWorkspace, routeAlias: reportEntry.routeAlias, label: reportEntry.label },
+      },
     ];
   }
 
-  function buildHomeRows(financialState, readyCount, blockedCount, recentChanges) {
+  function buildHomeRows(financialState, readyCount, blockedCount, recentChanges, reportEntry) {
     return [
       ["1", "财务状态摘要", `可显示 ${readyCount} 项`, blockedCount ? `${blockedCount} 项显示中文状态` : "核心指标可解释", blockedCount ? "复核" : "可用"],
       ["2", "钱在哪里", "账户、现金、投资", "按真实来源和状态拆分，不补写金额。", "可查看"],
-      ["3", "数据健康", "Stage 2 状态", blockedCount ? "优先处理阻断状态。" : "状态完整。", blockedCount ? "有阻断" : "可用"],
+      ["3", "数据健康", "数据状态", blockedCount ? "优先处理阻断状态。" : "状态完整。", blockedCount ? "有阻断" : "可用"],
       ["4", "最近变化", recentChanges[0]?.label || "最近变化", recentChanges[0]?.message || "等待真实变化记录。", recentChanges[0]?.state === "empty" ? "暂无记录" : "可用"],
+      ["5", reportEntry.title, "报告与洞察", reportEntry.detail, "可查看"],
     ];
   }
 
-  function buildHomeTaskRows(readyCount, blockedCount, recentChanges, nextActions) {
+  function buildHomeTaskRows(readyCount, blockedCount, recentChanges, nextActions, reportEntry) {
     const actionTasks = nextActions.slice(0, 3).map((action) => ({
       title: action.title,
       detail: action.explanation_zh,
@@ -398,7 +498,29 @@
       { title: "财务状态摘要", detail: `可显示 ${readyCount} 项，中文状态 ${blockedCount} 项`, status: blockedCount ? "review" : "ready", source_type: "home_section" },
       { title: "钱在哪里", detail: "账户、现金和投资只按真实来源展示。", status: "ready", source_type: "home_section" },
       { title: "最近变化", detail: recentChanges[0]?.message || "等待真实变化记录。", status: recentChanges[0]?.state === "empty" ? "queued" : "ready", source_type: "home_section" },
+      { title: reportEntry.title, detail: reportEntry.detail, status: "ready", source_type: "report_entry", routeAlias: reportEntry.routeAlias, targetWorkspace: reportEntry.targetWorkspace },
     ].slice(0, 6);
+  }
+
+  function buildReportEntry() {
+    return Object.freeze({
+      title: "报告入口",
+      label: "打开报告与洞察",
+      detail: "查看结论、数据范围、公式和报告状态。",
+      targetWorkspace: "insights",
+      routeAlias: "/reports?tab=monthly",
+    });
+  }
+
+  function cloneSurfacePolicy() {
+    return Object.freeze({
+      home_visible_sections: [...HOME_SURFACE_POLICY_PHASE53.home_visible_sections],
+      settings_feedback_isolated: HOME_SURFACE_POLICY_PHASE53.settings_feedback_isolated,
+      evidence_parameters_routed_out: HOME_SURFACE_POLICY_PHASE53.evidence_parameters_routed_out,
+      no_developer_stage_terms_on_home: HOME_SURFACE_POLICY_PHASE53.no_developer_stage_terms_on_home,
+      evidence_route: { ...HOME_SURFACE_POLICY_PHASE53.evidence_route },
+      parameter_route: { ...HOME_SURFACE_POLICY_PHASE53.parameter_route },
+    });
   }
 
   function renderMetricValueZh(metricState) {
@@ -448,6 +570,7 @@
   return Object.freeze({
     buildStage5Phase51Contract,
     buildStage5Phase52Contract,
+    buildStage5Phase53Contract,
     buildStage5HomeViewModel,
     renderMetricValueZh,
     canDisplayFinancialValue,

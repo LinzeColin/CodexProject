@@ -56,6 +56,31 @@ Phase 5.2 只解决四件事：
 - Stage 6 核心财务指标 read model 接入。
 - 中间 phase GitHub main 上传。
 
+## Phase 5.3 范围
+
+本轮只执行 `V023-S5-P5.3 去 AI 痕迹`，不进入 Stage 5 whole-stage review、Stage 6 或后续 Stage。
+
+Phase 5.3 只解决四件事：
+
+1. 删除首页可见面的开发阶段术语。
+2. 设置与反馈只在设置页展示，不作为首页常驻控制台。
+3. 页面说明、公式和数据范围归入报告与设置入口，不作为首页抽屉。
+4. 对首页可见面增加禁止词测试。
+
+## Phase 5.3 交付内容
+
+- `PFI/web/app/pages/home.js` 新增 `buildStage5Phase53Contract()`。
+- 首页 view model 新增 `home_surface_policy`、`home_conclusion`、`home_runtime_label` 和 `report_entry`。
+- 首页产品卡片不再显示 `Stage`、`Phase`、`workflow`、`runtime` 等开发阶段词。
+- `PFI/web/app/shell.js` 在首页隐藏页面说明按钮、关闭说明抽屉，并关闭功能详情面板。
+- 报告入口统一跳转到 `/reports?tab=monthly`，参数归口到 `/settings?tab=data-system`。
+
+## Phase 5.3 明确未完成
+
+- Stage 5 whole-stage review。
+- Stage 6 核心财务指标 read model 接入。
+- 中间 phase GitHub main 上传。
+
 ## 验收方式
 
 - `PFI/tests/test_v023_stage5_home_experience.py`

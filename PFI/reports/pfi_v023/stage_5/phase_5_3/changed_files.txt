@@ -1,0 +1,8 @@
+PFI/web/app/pages/home.js
+PFI/web/app/shell.js
+PFI/tests/test_v023_stage5_home_experience.py
+PFI/docs/pfi_v023/STAGE5_HOME_EXPERIENCE.md
+PFI/reports/pfi_v023/stage_5/phase_5_3/evidence.json
+PFI/reports/pfi_v023/stage_5/phase_5_3/home_surface_policy.json
+PFI/reports/pfi_v023/stage_5/phase_5_3/terminal.log
+PFI/reports/pfi_v023/stage_5/phase_5_3/changed_files.txt
