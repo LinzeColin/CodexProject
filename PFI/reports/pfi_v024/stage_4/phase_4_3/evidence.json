@@ -1,0 +1,75 @@
+{
+  "browser_validation": "PFI/reports/pfi_v024/stage_4/phase_4_3/browser_validation.json",
+  "confirmed_zero_requires_evidence": true,
+  "current_phase_only": true,
+  "explicitly_not_done": [
+    "Stage 4 whole-stage review",
+    "GitHub main upload",
+    "app bundle reinstall",
+    "financial data mutation or synthesis"
+  ],
+  "generated_at": "2026-06-30T23:39:10Z",
+  "github_main_uploaded": false,
+  "max_phases_per_run": 1,
+  "no_financial_zero_when_data_missing": true,
+  "phase_4_1_complete": true,
+  "phase_4_2_complete": true,
+  "phase_4_3_complete": true,
+  "phase_id": "4.3",
+  "phase_name": "验收",
+  "real_confirmed_zero_metric_count": 0,
+  "schema": "PFIV024Stage4Phase43EvidenceV1",
+  "screenshots": [
+    "PFI/reports/pfi_v024/stage_4/phase_4_3/screenshots/data_missing_state.png",
+    "PFI/reports/pfi_v024/stage_4/phase_4_3/screenshots/confirmed_zero_gate.png"
+  ],
+  "source_package_version": "v0.2.3-repair",
+  "source_summary": {
+    "as_of": "2026-06-03",
+    "raw_file_count": 4,
+    "record_count": 8815,
+    "status": "ready"
+  },
+  "final_validated_at": "2026-06-30T23:39:25Z",
+  "commands": [
+    {
+      "cmd": "pytest stage4 phase43 red run",
+      "status": "expected_fail",
+      "detail": "1 failed: missing validate_v024_stage4_phase43_chrome.py and phase_4_3 evidence"
+    },
+    {
+      "cmd": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/data_state.js",
+      "status": "pass"
+    },
+    {
+      "cmd": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js",
+      "status": "pass"
+    },
+    {
+      "cmd": "python py_compile phase43 script and tests",
+      "status": "pass"
+    },
+    {
+      "cmd": "PYTHONPATH=PFI/src PFI/.venv/bin/python -B PFI/scripts/validate_v024_stage4_phase43_chrome.py",
+      "status": "pass"
+    },
+    {
+      "cmd": "pytest stage4 phase43 plus phase42/phase41/no-mock regression",
+      "status": "pass",
+      "detail": "21 passed in 1.07s"
+    },
+    {
+      "cmd": "python3 -m json.tool phase43 evidence files",
+      "status": "pass"
+    },
+    {
+      "cmd": "git diff --check -- PFI",
+      "status": "pass"
+    }
+  ],
+  "stage": "Stage 4",
+  "stage_4_whole_review_complete": false,
+  "status": "candidate_pass",
+  "target_version": "v0.2.4",
+  "validation_hash": "c1ba6de25bdfe1328d23d51a485ebd2977999f12ef91c0866e0f822d0f456611"
+}

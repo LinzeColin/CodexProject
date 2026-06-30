@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PFI v0.2.4 Stage 4 Phase 4.3 data missing state</title>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: #182234;
+        background: #f5f8fb;
+      }
+      main {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 42px 28px 56px;
+      }
+      header {
+        display: flex;
+        justify-content: space-between;
+        gap: 24px;
+        align-items: flex-start;
+        margin-bottom: 28px;
+      }
+      h1 {
+        margin: 0 0 10px;
+        font-size: 30px;
+        letter-spacing: 0;
+      }
+      .meta {
+        color: #596679;
+        font-size: 15px;
+        line-height: 1.6;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+      }
+      .card {
+        min-height: 160px;
+        border: 1px solid rgba(31, 47, 68, 0.14);
+        border-radius: 8px;
+        background: white;
+        box-shadow: 0 12px 32px rgba(30, 42, 58, 0.09);
+        padding: 20px;
+      }
+      .label {
+        color: #5c6a7d;
+        font-size: 14px;
+        margin-bottom: 12px;
+      }
+      .value {
+        color: #182234;
+        font-size: 24px;
+        font-weight: 720;
+        line-height: 1.3;
+      }
+      .detail {
+        margin-top: 12px;
+        color: #607086;
+        font-size: 13px;
+        line-height: 1.5;
+      }
+      .ready .value {
+        color: #156b55;
+      }
+      .blocked .value {
+        color: #8a4a21;
+      }
+    </style>
+    <script>(function attachStage4DataState(root, factory) {
+  const api = factory();
+  if (typeof module !== "undefined" && module.exports) {
+    module.exports = api;
+  }
+  if (root) {
+    root.PFI_V024_STAGE4_DATA_STATE = api;
+  }
+})(typeof window !== "undefined" ? window : globalThis, function buildStage4DataState() {
+  const statuses = Object.freeze([
+    "ready",
+    "confirmed_zero",
+    "not_loaded",
+    "source_missing",
+    "path_error",
+    "parse_failed",
+    "outdated_snapshot",
+    "permission_denied",
+    "calculation_failed",
+    "filtered_empty",
+  ]);
+
+  const requiredFields = Object.freeze([
+    "metric_id",
+    "value",
+    "currency",
+    "status",
+    "source_id",
+    "record_count",
+    "as_of",
+    "formula_id",
+    "confidence",
+    "blocking_reason_zh",
+    "calculation_state",
+  ]);
+
+  const blockingReasonZh = Object.freeze({
+    ready: "真实数据已加载",
+    confirmed_zero: "真实数据确认数值为零",
+    not_loaded: "未加载真实数据",
+    source_missing: "真实数据源未挂链",
+    path_error: "数据路径错误，请检查本机数据目录",
+    parse_failed: "解析失败，请检查文件、行或字段",
+    outdated_snapshot: "快照过期，请刷新或确认日期",
+    permission_denied: "权限失败，请检查本机文件权限",
+    calculation_failed: "计算失败，请查看公式和输入字段",
+    filtered_empty: "当前筛选无结果，不代表全局为零",
+  });
+
+  const sharedSurfaces = Object.freeze(["home", "accounts", "investment", "consumption", "insights"]);
+
+  function canDisplayFinancialValue(metric) {
+    return Boolean(
+      metric &&
+        (metric.status === "ready" || metric.status === "confirmed_zero") &&
+        metric.value !== null &&
+        metric.value !== undefined,
+    );
+  }
+
+  function renderMetricValueZh(metric) {
+    if (!canDisplayFinancialValue(metric)) {
+      const status = metric && metric.status ? metric.status : "not_loaded";
+      const reason =
+        (metric && metric.blocking_reason_zh) || blockingReasonZh[status] || "数据状态未知";
+      if (status === "outdated_snapshot" && metric && metric.as_of) {
+        return `${reason}（快照日期：${metric.as_of}）`;
+      }
+      return reason;
+    }
+    const currency = metric.currency || "CNY";
+    return `${currency} ${Number(metric.value).toLocaleString("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`;
+  }
+
+  function normalizeReadModelStatus(payload) {
+    const source = payload && typeof payload === "object" ? payload : {};
+    const metrics = Array.isArray(source.core_metric_states) ? source.core_metric_states : [];
+    return {
+      schema: source.schema || "PFIV024Stage4ReadModelStatusV1",
+      read_model_hash: source.read_model_hash || null,
+      as_of: source.as_of || null,
+      source: source.source || {},
+      core_metric_states: metrics.map(normalizeMetricState),
+    };
+  }
+
+  function buildSurfaceMetricViews(payload) {
+    const normalized = normalizeReadModelStatus(payload);
+    const surfaces = {};
+    sharedSurfaces.forEach((surface) => {
+      surfaces[surface] = {
+        surface,
+        read_model_hash: normalized.read_model_hash,
+        as_of: normalized.as_of,
+        metrics: normalized.core_metric_states.map((metric) => ({
+          ...metric,
+          display_value: renderMetricValueZh(metric),
+          display_detail: metricDetailZh(metric),
+        })),
+      };
+    });
+    return Object.freeze({
+      schema: "PFIV024Stage4SurfaceStateViewsV1",
+      surfaces,
+    });
+  }
+
+  function metricById(payload, metricId) {
+    const normalized = normalizeReadModelStatus(payload);
+    return normalized.core_metric_states.find((metric) => metric.metric_id === metricId) || null;
+  }
+
+  function normalizeMetricState(metric) {
+    const source = metric && typeof metric === "object" ? metric : {};
+    const status = statuses.includes(source.status) ? source.status : "not_loaded";
+    return {
+      metric_id: source.metric_id || "",
+      value: source.value === undefined ? null : source.value,
+      currency: source.currency === undefined ? "CNY" : source.currency,
+      status,
+      source_id: source.source_id || null,
+      record_count: nullableNumber(source.record_count),
+      as_of: source.as_of || null,
+      formula_id: source.formula_id || null,
+      confidence: nullableNumber(source.confidence),
+      blocking_reason_zh: source.blocking_reason_zh || blockingReasonZh[status] || "数据状态未知",
+      calculation_state: source.calculation_state || "blocked",
+    };
+  }
+
+  function nullableNumber(value) {
+    if (value === null || value === undefined || value === "") return null;
+    const numeric = Number(value);
+    return Number.isFinite(numeric) ? numeric : null;
+  }
+
+  function metricDetailZh(metric) {
+    const parts = [];
+    if (metric.source_id) parts.push(metric.source_id);
+    if (metric.record_count !== null && metric.record_count !== undefined && Number.isFinite(Number(metric.record_count))) {
+      parts.push(`${Number(metric.record_count).toLocaleString("zh-CN")} 条记录`);
+    }
+    if (metric.as_of) parts.push(`截至 ${metric.as_of}`);
+    if (metric.formula_id) parts.push(metric.formula_id);
+    return parts.join(" · ") || metric.calculation_state || "状态待确认";
+  }
+
+  return Object.freeze({
+    statuses,
+    requiredFields,
+    blockingReasonZh,
+    sharedSurfaces,
+    buildSurfaceMetricViews,
+    canDisplayFinancialValue,
+    metricById,
+    normalizeReadModelStatus,
+    renderMetricValueZh,
+  });
+});
+</script>
+  </head>
+  <body>
+    <main id="stage4-phase43-missing-state">
+      <header>
+        <div>
+          <h1>核心财务指标状态验收</h1>
+          <div class="meta">缺失或未挂链指标必须显示中文原因，不得显示 CNY 0.00。</div>
+        </div>
+        <div class="meta" id="source-summary"></div>
+      </header>
+      <section class="grid" id="metric-grid"></section>
+    </main>
+    <script>
+      const payload = {"as_of": "2026-06-03", "blocked_metric_ids": ["net_worth_cny", "cash_balance_cny", "investment_market_value_cny"], "contract_version": "PFI-V024-STAGE4-PHASE42-READ-MODEL-STATUS", "core_metric_states": [{"as_of": null, "blocking_reason_zh": "未挂链账户余额与持仓 read model，无法计算净资产", "calculation_state": "blocked_by_missing_source", "confidence": null, "currency": "CNY", "formula_id": "net_worth_v1", "metric_id": "net_worth_cny", "record_count": null, "source_id": "read_model:accounts_holdings", "status": "source_missing", "value": null}, {"as_of": null, "blocking_reason_zh": "未挂链账户余额 read model，无法计算现金余额", "calculation_state": "blocked_by_missing_source", "confidence": null, "currency": "CNY", "formula_id": "cash_balance_v1", "metric_id": "cash_balance_cny", "record_count": null, "source_id": "read_model:accounts", "status": "source_missing", "value": null}, {"as_of": null, "blocking_reason_zh": "未挂链持仓市值 read model，无法计算投资市值", "calculation_state": "blocked_by_missing_source", "confidence": null, "currency": "CNY", "formula_id": "investment_market_value_v1", "metric_id": "investment_market_value_cny", "record_count": null, "source_id": "read_model:holdings", "status": "source_missing", "value": null}, {"as_of": "2026-06-03", "blocking_reason_zh": "真实流水消费总流出已加载", "calculation_state": "calculated", "confidence": 0.98, "currency": "CNY", "formula_id": "total_consumption_outflow_v1", "metric_id": "consumption_outflow_cny", "record_count": 8815, "source_id": "MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv", "status": "ready", "value": 1727278.37}, {"as_of": "2026-06-03", "blocking_reason_zh": "真实数据源已加载，仍有 3 个核心指标等待 read model 挂链", "calculation_state": "partially_ready", "confidence": 0.9, "currency": null, "formula_id": "report_summary_status_v1", "metric_id": "report_summary_status", "record_count": 8815, "source_id": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/MetaDatabase/PFI/alipay_daily/processed/alipay_import_manifest.json", "status": "ready", "value": null}], "generated_at_utc": "2026-06-30T23:39:03Z", "phase_id": "4.2", "read_model_hash": "sha256:b06d3f30badb0fa1a2f2d59a12e80f3a57ef8236782ffd79dc2a3d7731abd1ac", "schema": "PFIV024Stage4ReadModelStatusV1", "source": {"as_of": "2026-06-03", "blocking_reason_zh": "真实 MetaDatabase/PFI 数据已加载", "data_root": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/MetaDatabase/PFI", "date_range": {"end": "2026-06-03", "start": "2022-06-06"}, "evidence_hash": "sha256:174c37726d9ab434dca7316029d6b1e499e320c0ab00fd82c6549a110258c18a", "manifest_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/MetaDatabase/PFI/alipay_daily/processed/alipay_import_manifest.json", "raw_file_count": 4, "record_count": 8815, "status": "ready", "transactions_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv", "type": "metadatabase_pfi"}, "source_package_version": "v0.2.3-repair", "stage": "Stage 4", "surface_ids": ["home", "accounts", "investment", "consumption", "insights"], "target_version": "v0.2.4"};
+      const api = window.PFI_V024_STAGE4_DATA_STATE;
+      const view = api.buildSurfaceMetricViews(payload).surfaces.home;
+      const labels = {
+        net_worth_cny: "净资产",
+        cash_balance_cny: "现金余额",
+        investment_market_value_cny: "投资市值",
+        consumption_outflow_cny: "消费总流出",
+        report_summary_status: "数据记录"
+      };
+      document.querySelector("#source-summary").textContent =
+        `${payload.source.status} · ${payload.source.record_count} 条记录 · ${payload.source.raw_file_count} 个原始文件 · 截至 ${payload.source.as_of}`;
+      document.querySelector("#metric-grid").innerHTML = view.metrics.map((metric) => `
+        <article class="card ${metric.status === "ready" || metric.status === "confirmed_zero" ? "ready" : "blocked"}" data-metric-id="${metric.metric_id}">
+          <div class="label">${labels[metric.metric_id] || metric.metric_id}</div>
+          <div class="value">${metric.display_value}</div>
+          <div class="detail">${metric.display_detail}</div>
+        </article>
+      `).join("");
+    </script>
+  </body>
+</html>

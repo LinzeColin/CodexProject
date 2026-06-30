@@ -2282,7 +2282,9 @@ function fallbackV024MetricDisplay(metric) {
 function fallbackV024MetricDetail(metric) {
   const parts = [];
   if (metric?.source_id) parts.push(metric.source_id);
-  if (Number.isFinite(Number(metric?.record_count))) parts.push(`${Number(metric.record_count).toLocaleString("zh-CN")} 条记录`);
+  if (metric?.record_count !== null && metric?.record_count !== undefined && Number.isFinite(Number(metric.record_count))) {
+    parts.push(`${Number(metric.record_count).toLocaleString("zh-CN")} 条记录`);
+  }
   if (metric?.as_of) parts.push(`截至 ${metric.as_of}`);
   if (metric?.formula_id) parts.push(metric.formula_id);
   return parts.join(" · ") || metric?.calculation_state || "状态待确认";

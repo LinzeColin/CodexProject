@@ -72,12 +72,12 @@ Stage 1 records:
 
 ## v0.2.4 Stage 4 Status
 
-Current run unit: `Stage 4 / Phase 4.2 - read model 挂链`.
+Current run unit: `Stage 4 / Phase 4.3 - 验收`.
 
 - Stage 3 GitHub main upload: complete before this run.
 - Phase 4.1: candidate pass.
 - Phase 4.2 read model 挂链: candidate pass.
-- Phase 4.3 验收: not started.
+- Phase 4.3 验收: candidate pass.
 - Stage 4 whole-stage review: not executed.
 - GitHub main upload: not executed in this run.
 - Current data state contract: `PFI-V024-STAGE4-PHASE41-DATA-STATE`.
@@ -87,10 +87,12 @@ Current run unit: `Stage 4 / Phase 4.2 - read model 挂链`.
 - Non-ready statuses must not render `CNY 0.00`.
 - `confirmed_zero` may render `CNY 0.00` only with source, as-of time, record count, formula, and confidence evidence.
 - Phase 4.2 wires the shared read model status into `/api/read-model-status`, Streamlit embedded JSON, `data_state.js`, and the Home/accounts/investment/consumption/insights card surfaces.
+- Phase 4.3 validates no false financial zero, confirms `confirmed_zero` evidence requirements, fixes null `record_count`/`confidence` frontend rendering, and captures Chrome headless screenshots.
 - Current real source summary: `MetaDatabase/PFI` ready, `8815` records, `4` raw files, as of `2026-06-03`; net worth/cash/investment remain `source_missing` until their real account/holding read models are mounted.
+- Current real production `confirmed_zero` metric count: `0`; Phase 4.3 only proves the display gate with a non-production zero-proof page.
 - Business financial source data changes: none.
 - App bundle changes: none.
-- Next gate: Stage 4 Phase 4.3 only after explicit user instruction.
+- Next gate: Stage 4 whole-stage review only after explicit user instruction.
 
 Stage 4 Phase 4.1 records:
 
@@ -117,6 +119,17 @@ Stage 4 Phase 4.2 records:
 - `reports/pfi_v024/stage_4/phase_4_2/read_model_status.json`
 - `reports/pfi_v024/stage_4/phase_4_2/core_metric_states.json`
 - `reports/pfi_v024/stage_4/phase_4_2/page_metric_states.json`
+
+Stage 4 Phase 4.3 records:
+
+- `scripts/validate_v024_stage4_phase43_chrome.py`
+- `tests/test_v024_stage4_phase43_acceptance.py`
+- `web/app/data_state.js`
+- `web/app/shell.js`
+- `reports/pfi_v024/stage_4/phase_4_3/evidence.json`
+- `reports/pfi_v024/stage_4/phase_4_3/browser_validation.json`
+- `reports/pfi_v024/stage_4/phase_4_3/screenshots/data_missing_state.png`
+- `reports/pfi_v024/stage_4/phase_4_3/screenshots/confirmed_zero_gate.png`
 
 ## v0.2.4 Stage 3 Status
 

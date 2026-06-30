@@ -1,7 +1,7 @@
 # PFI v0.2.4 Stage 4 Data State Machine
 
-当前已完成：`Stage 4 / Phase 4.2 - read model 挂链`。
-不执行 Phase 4.3 验收、不执行 Stage 4 whole-stage review、不上传 GitHub main。
+当前已完成：`Stage 4 / Phase 4.3 - 验收`。
+不执行 Stage 4 whole-stage review、不上传 GitHub main。
 
 ## Scope
 
@@ -18,6 +18,12 @@ Phase 4.2 把该合同挂到共享 read model status：
 - `#pfi-read-model-status` 为 app bundle 提供嵌入式兜底。
 - `data_state.js` 生成 home/accounts/investment/consumption/insights 的同源 surface view model。
 - `shell.js` 使用同一状态对象覆盖核心卡片，不再让缺失状态落到 `CNY 0.00`。
+
+Phase 4.3 验收该合同：
+
+- `tests/test_v024_stage4_phase43_acceptance.py` 覆盖缺失指标不显示财务 0、`confirmed_zero` 必须有证据链。
+- `validate_v024_stage4_phase43_chrome.py` 生成 Chrome headless 截图和 browser validation。
+- `data_state.js` 和 `shell.js` 保持 null `record_count` / `confidence` 为未知，避免误显示 `0 条记录`。
 
 ## Status Values
 
@@ -53,9 +59,19 @@ Phase 4.2 把该合同挂到共享 read model status：
 
 当前 source summary：`MetaDatabase/PFI` ready，`8815` 条记录，`4` 个原始文件，as of `2026-06-03`。
 
+## Phase 4.3 Acceptance
+
+| check | result | evidence |
+| --- | --- | --- |
+| 缺失/未挂链指标不显示财务 0 | pass | `reports/pfi_v024/stage_4/phase_4_3/screenshots/data_missing_state.png` |
+| `confirmed_zero` 缺证据不可通过 | pass | `tests/test_v024_stage4_phase43_acceptance.py` |
+| 真零显示必须含 source、as_of、record_count、formula | pass | `reports/pfi_v024/stage_4/phase_4_3/screenshots/confirmed_zero_gate.png` |
+| 前端 null 记录数不显示成 0 | pass | `web/app/data_state.js`、`web/app/shell.js` |
+
+当前真实生产 `confirmed_zero` 指标数量：`0`。Phase 4.3 只证明零值显示门禁，不把零值门禁页作为生产财务事实。
+
 ## Remaining Non Goals
 
-- 不执行 Phase 4.3 截图/浏览器验收。
 - 不执行 Stage 4 整阶段复审。
 - 不重装 app bundle。
 - 不上传 GitHub main。
