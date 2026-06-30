@@ -1,0 +1,18 @@
+PFI v0.2.3 Stage 11 Phase 11.1 regression test evidence
+generated_at=2026-06-30T07:19:06Z
+base_head_at_evidence_write=d3e93f40585b8eb7921a67df0807f1b422574a4d
+scope=Stage 11 Phase 11.1 only
+tasks=T11.1.1 entry regression; T11.1.2 navigation regression; T11.1.3 data state regression; T11.1.4 report structure regression
+red_result=PFI/tests/test_v023_regression.py initially failed only because the Phase 11.1 evidence pack did not exist after schema correction
+stage_11_phase_2_done=false
+stage_11_phase_3_done=false
+stage_11_whole_review_done=false
+github_main_upload_done=false
+human_acceptance_claimed=false
+final validation commands are run after evidence creation and before local commit.
+green_result=PFI/tests/test_v023_regression.py 5 passed in 0.03s
+v023_regression_result=PFI/tests/test_v023_*.py 173 passed in 2.49s
+node_check_result=shell.js routes.js reports.js upload.js passed
+json_validation_result=evidence.json passed
+diff_check_result=git diff --check -- PFI passed
+scope_check_result=only PFI/tests/test_v023_regression.py and PFI/reports/pfi_v023/stage_11/phase_11_1 files changed
