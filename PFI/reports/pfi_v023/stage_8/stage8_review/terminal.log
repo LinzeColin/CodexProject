@@ -1,0 +1,13 @@
+Stage 8 whole-stage review
+RED: PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage8_data_source_gate.py -q -> 3 failed, 13 passed
+Generated review evidence from Phase 8.1, 8.2, and 8.3 candidate-pass artifacts.
+No new personal financial data was created or imported.
+GREEN: PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage8_data_source_gate.py -q -> 16 passed in 0.21s
+GREEN: PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q -> 139 passed, 100 subtests passed in 2.08s
+NOTE: shell PATH did not include node for the first syntax-check attempt.
+GREEN: PATH=$PATH:/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin node --check PFI/web/app/pages/upload.js -> pass
+GREEN: py_compile stage_v023_data_sources.py and test_v023_stage8_data_source_gate.py -> pass
+GREEN: json.tool stage8_review evidence/audit/scan -> pass
+GREEN: Stage 8 review source term scan -> no violations
+GREEN: git diff --check -- PFI -> pass
+validated_at_utc=2026-06-30T05:18:50Z
