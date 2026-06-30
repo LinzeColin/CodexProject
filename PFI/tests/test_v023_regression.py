@@ -346,6 +346,64 @@ class TestV023Stage7To9GroupReview(unittest.TestCase):
         self.assertTrue(evidence["acceptance_checks"]["no_project_closeout_overclaim"])
 
 
+class TestV023Stage10To11GroupReview(unittest.TestCase):
+    def test_stage10_to_11_group_review_evidence_covers_e2e_closeout_and_current_goal_boundary(self) -> None:
+        review_dir = ROOT / "reports" / "pfi_v023" / "group_reviews" / "stage_10_11"
+        evidence_path = review_dir / "evidence.json"
+        browser_path = review_dir / "browser_audit.json"
+        changed_files_path = review_dir / "changed_files.txt"
+
+        for path in (evidence_path, browser_path, changed_files_path):
+            self.assertTrue(path.exists(), str(path))
+
+        evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
+        browser = json.loads(browser_path.read_text(encoding="utf-8"))
+        changed_files = [line.strip() for line in changed_files_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+
+        self.assertEqual(evidence["schema"], "PFIV023Stage10To11GroupReviewEvidenceV1")
+        self.assertEqual(evidence["review_id"], "V023-S10-S11-GROUP-REVIEW")
+        self.assertEqual(evidence["status"], "review_pass")
+        self.assertEqual(evidence["review_scope"], ["Stage 10", "Stage 11"])
+        self.assertEqual(evidence["changed_files"], changed_files)
+        self.assertEqual(evidence["external_taskpack_status"], "missing_from_downloads")
+        self.assertFalse(evidence["current_three_phase_goal_complete"])
+        self.assertFalse(evidence["github_main_uploaded_in_this_group_run"])
+
+        self.assertEqual(browser["findings"], [])
+        self.assertEqual(browser["desktop"]["primary_count"], 10)
+        self.assertEqual(browser["desktop"]["primary"], EXPECTED_PRIMARY_NAV)
+        self.assertEqual(browser["mobile"]["primary_count"], 10)
+        self.assertEqual(browser["mobile"]["primary"], EXPECTED_PRIMARY_NAV)
+        self.assertTrue(all(row["clicked"] and row["body_has_label"] for row in browser["desktop"]["entry_clicks"]))
+        self.assertTrue(all(row["secondary_clicked"] for row in browser["desktop"]["routes"].values()))
+        self.assertTrue(browser["desktop"]["history_validation"]["back"]["ok"])
+        self.assertTrue(browser["desktop"]["history_validation"]["forward"]["ok"])
+        self.assertEqual(browser["desktop"]["console_errors"], [])
+        self.assertEqual(browser["desktop"]["page_errors"], [])
+        self.assertEqual(browser["desktop"]["http_errors"], [])
+        self.assertEqual(browser["mobile"]["console_errors"], [])
+        self.assertEqual(browser["mobile"]["page_errors"], [])
+        self.assertEqual(browser["mobile"]["http_errors"], [])
+
+        self.assertTrue(browser["desktop"]["routes"]["home"]["has_real_home_metrics"])
+        self.assertTrue(browser["mobile"]["home"]["has_real_home_metrics"])
+        self.assertTrue(browser["desktop"]["routes"]["sync"]["has_source_gate"])
+        self.assertTrue(browser["desktop"]["routes"]["insights"]["has_report_blocker"])
+        self.assertTrue(browser["mobile"]["reports"]["has_report_blocker"])
+        self.assertEqual(browser["desktop"]["routes"]["insights"]["cny_zero_count"], 0)
+        self.assertEqual(browser["mobile"]["reports"]["cny_zero_count"], 0)
+        self.assertTrue(browser["desktop"]["routes"]["market_research"]["has_market_error_state"])
+        for workspace in ("home", "accounts", "ledger", "investment", "consumption", "sync", "recommendations", "insights", "market_research"):
+            self.assertFalse(browser["desktop"]["routes"][workspace]["has_feedback_console"], workspace)
+
+        self.assertTrue(evidence["stage10_e2e_contract"]["current_browser_e2e_passed"])
+        self.assertTrue(evidence["stage11_closeout_contract"]["stage_11_whole_review_done"])
+        self.assertTrue(evidence["stage11_closeout_contract"]["human_acceptance_claimed"])
+        self.assertTrue(evidence["acceptance_checks"]["stage10_entry_navigation_data_report_e2e"])
+        self.assertTrue(evidence["acceptance_checks"]["stage11_closeout_evidence_present"])
+        self.assertTrue(evidence["acceptance_checks"]["current_goal_boundary_not_overclaimed"])
+
+
 class TestV023Stage11Phase112DocFreeze(unittest.TestCase):
     def test_t1121_phase112_evidence_records_readme_candidate_boundary(self) -> None:
         evidence = read_json("reports/pfi_v023/stage_11/phase_11_2/evidence.json")

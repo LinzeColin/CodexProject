@@ -97,3 +97,15 @@ repo 内当前合同、stage evidence、测试和真实 localhost/browser 证据
 - Stage 9：设置页集中展示反馈偏好、触感、声音、视觉、通知和反馈测试；业务页面不展示反馈控制台。
 
 记录文件：`STAGE7_9_GROUP_REVIEW.md`。
+
+## Stage 10-11 Group Review 状态
+
+第二阶段第四组整体复审覆盖 Stage 10、Stage 11。本轮重新检查时，
+`/Users/linzezhang/Downloads` 下的外部 roadmap/taskpack 文件仍缺失，因此本组只使用
+repo 内当前合同、stage evidence、测试和真实 localhost/browser 证据，不用缺失文件替代事实。
+
+- Stage 10：入口、导航、二级页面、浏览器历史、真实首页指标、数据源状态、报告阻断和市场空态 E2E 均重新通过真实浏览器复验。
+- Stage 11：现有 whole-stage review、user acceptance、final evidence pack、截图索引和 closeout evidence 重新核对通过。
+- 当前边界：本组不声明三阶段总目标完成，不上传 GitHub main，不执行整体项目复审或本地清理。
+
+记录文件：`STAGE10_11_GROUP_REVIEW.md`。

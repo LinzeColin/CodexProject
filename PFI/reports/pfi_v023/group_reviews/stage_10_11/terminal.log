@@ -1,0 +1,24 @@
+# PFI v0.2.3 Stage 10-11 Group Review Terminal Log
+
+Working tree: /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+Branch: codex/pfi
+HEAD before group commit: 705a489c488c814cd974ece194ae4b69d6ec62c0
+origin/main at final validation: ce2881204c49a56da463893db5314ff180c7812d
+Last verified at: 2026-06-30T09:28:47Z
+
+External files checked and missing:
+- /Users/linzezhang/Downloads/PFI_v0.2.3_Human_Product_Experience_Recovery_Roadmap.txt
+- /Users/linzezhang/Downloads/PFI_v0.2.3_Human_Product_Experience_Recovery_TaskPack.zip
+- /Users/linzezhang/Downloads/pfi_v023_phase1_human_product_experience_preview.html
+
+Commands:
+- git fetch origin main; git rebase origin/main -> success
+- curl -fsS http://127.0.0.1:8501/_stcore/health -> ok
+- curl -fsS http://127.0.0.1:8766/health -> {"status":"ok","schema":"PFIV021RuntimeAPIV1"}
+- PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_stage10_e2e_acceptance.py PFI/tests/test_v023_regression.py -q -> 33 passed in 0.06s
+- /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js -> pass
+- Playwright browser audit over localhost 8501 with system Chrome -> findings=[]; desktop_primary_count=10; mobile_primary_count=10
+- PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_regression.py -q -> 23 passed in 0.05s
+- PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v023_*.py -q -> 193 passed in 2.38s
+- python3 -m json.tool stage_10_11 evidence/review/browser JSON and git diff --check -- PFI -> pass
+- PFI/scripts/macosAppAcceptanceLite.sh --project-root /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI --summary-json -> 29 pass / 0 fail / 2 info

@@ -28,6 +28,19 @@ v0.2.3 后续开发必须遵守 `docs/pfi_v023/STAGE11_DOC_FREEZE.md` 和
 禁止虚构财务数据，每次 run work 最多只解决一个 phase，后续新阶段必须重新建立
 scope、run contract、evidence 和验收 gate。
 
+## v0.2.3 Three-Phase Recovery Review Status
+
+当前本地 `codex/pfi` 分支正在执行 v0.2.3 三阶段恢复复审，不等同于新的整体项目 closeout。
+第二阶段已本地完成 Stage 1-3、Stage 4-6、Stage 7-9、Stage 10-11 四组 group review。
+第三阶段整体项目复审、GitHub main 同步、备份和本地非必要文件清理仍需单独执行。
+
+记录文件：
+
+- `docs/pfi_v023/STAGE1_3_GROUP_REVIEW.md`
+- `docs/pfi_v023/STAGE4_6_GROUP_REVIEW.md`
+- `docs/pfi_v023/STAGE7_9_GROUP_REVIEW.md`
+- `docs/pfi_v023/STAGE10_11_GROUP_REVIEW.md`
+
 ## v0.2.1.1 Product UI Recovery Stage 0
 
 `v0.2.1.1 Product UI Recovery` 是当前前端 UIUX 逻辑优化准备轮。用户已明确：当前 v0.2.1 前端优化不再作为正式 UI 完成状态，后续不能继续在 AI 化 Web Shell 上补丁式堆卡片、堆关键词或用字符串测试冒充验收。
