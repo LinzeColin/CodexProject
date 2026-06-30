@@ -146,7 +146,7 @@ def normalize_category(value: str) -> str:
     return normalized
 
 
-def normalized_private_token(field: FieldSpec, raw_value: str, unit: str | None) -> str:
+def normalized_private_hash_source(field: FieldSpec, raw_value: str, unit: str | None) -> str:
     if field.value_kind == "money_cents":
         try:
             cents = normalize_amount_to_cents(raw_value, unit=unit or None)
@@ -197,14 +197,14 @@ def build_value_binding(field: FieldSpec, fixture_id: str, private_row: dict[str
     raw_text = private_row["raw_value"]
     if not raw_text:
         raise ValueError(f"private field row missing raw value for {fixture_id}")
-    normalized_token = normalized_private_token(field, raw_text, private_row.get("unit"))
+    normalized_hash_source = normalized_private_hash_source(field, raw_text, private_row.get("unit"))
     return {
         "raw_value_private_ref": private_ref(fixture_id, "raw"),
         "normalized_value_private_ref": private_ref(fixture_id, "normalized"),
         "raw_value_status": "hash_recorded_from_private_input",
         "normalized_value_status": "hash_recorded_from_private_input",
         "raw_value_hash": f"sha256:{sha256_text('raw:' + raw_text)}",
-        "normalized_value_hash": f"sha256:{sha256_text(normalized_token)}",
+        "normalized_value_hash": f"sha256:{sha256_text(normalized_hash_source)}",
         "normalized_value_kind": field.value_kind,
         "raw_value_public_committed": False,
         "normalized_value_public_committed": False,

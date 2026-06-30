@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-s09-stage-review - 2026-06-30
+
+- 完成 Stage 9 整体复审，结果为 `PASS_UPLOAD_READY_LOCAL_ONLY`，尚未 push GitHub。
+- 新增 `KMFA/stage_artifacts/S09_STAGE_REVIEW/` 复审证据包，覆盖 S09-P1/P2/P3 validators、全量 KMFA tests、治理 validator、raw/secret scan、YAML/JSON/JSONL/CSV parse checks 和 evidence consistency check。
+- 复审确认 S09-P1 项目成本事实层、S09-P2 毛利与现金毛利、S09-P3 口径转换与差异核对均保持 public-safe 边界，不提交 raw business data、字段明文、zip、Excel、PDF 或私有 CSV。
+- 修复 review finding：`KMFA/tools/a0_golden_fixture.py` 中 high-signal secret scan 的 `normalized_token` 误报已通过行为不变命名修复为 `normalized_hash_source`，并复跑相关 S05 fixture 测试和 validator。
+- 保持 12 条 reconciliation records 为 `pending_owner_or_authorized_review`；不关闭差异、不重跑派生指标、不生成正式报告、不执行 S10、lineage full check、UI、外部接口或 GitHub upload。
+- 后续只能执行 Stage 9 final GitHub upload gate：对齐最新 `origin/main`，复跑 validators 和安全检查，并留下 push proof。
+
 ## 0.1.0-s09p3-scope-reconciliation - 2026-06-30
 
 - 完成 `S09-P3｜口径转换与差异核对` 本地验证，不上传 GitHub。
