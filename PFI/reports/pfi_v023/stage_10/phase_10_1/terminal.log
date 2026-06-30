@@ -51,3 +51,8 @@ Post-rebase metadata sync:
 - branch=codex/pfi
 - head=b461aade21d9612634e2555c1d3fd695754bd6cd
 - remote=git@github.com:LinzeColin/CodexProject.git
+
+Phase 10.1 metadata correction before Phase 10.2 commit:
+- branch=codex/pfi
+- head=41c8d66e31813364f89f80f02553c895dda36cef
+- remote=git@github.com:LinzeColin/CodexProject.git

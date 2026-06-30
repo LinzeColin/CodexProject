@@ -17,8 +17,9 @@
   "repo": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi",
   "git": {
     "branch": "codex/pfi",
-    "head": "b461aade21d9612634e2555c1d3fd695754bd6cd",
-    "remote": "git@github.com:LinzeColin/CodexProject.git"
+    "head": "41c8d66e31813364f89f80f02553c895dda36cef",
+    "remote": "git@github.com:LinzeColin/CodexProject.git",
+    "head_semantics": "base_head_at_metadata_sync_before_phase_10_2_commit"
   },
   "stage_contract": {
     "phase_10_1_entry_e2e_done": true,
