@@ -5724,9 +5724,23 @@ class Stage2FinalGateTests(unittest.TestCase):
     def test_final_acceptance_bundle_readiness_embeds_directory_level_artifact_validation(self) -> None:
         state = build_final_acceptance_bundle_readiness_state()
         directory_validation = state["final_acceptance_bundle_artifact_validation"]
+        prerequisite_plan = state["final_bundle_prerequisite_plan"]
 
         self.assertEqual(directory_validation["status"], "blocked")
         self.assertTrue(directory_validation["bundle_directory_present"])
+        self.assertEqual(state["next_required_step"], "S2PLT04_COMPLETION_REPORT")
+        self.assertEqual(state["next_executable_task"], "S2PLT02_TERMINAL_DELIVERY_PROOF")
+        self.assertEqual(state["next_executable_runtime_step"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
+        self.assertEqual(state["final_bundle_prerequisite_plan_state_hash"], prerequisite_plan["state_hash"])
+        self.assertEqual(
+            state["s2plt02_terminal_delivery_capture_plan_summary"],
+            prerequisite_plan["s2plt02_terminal_delivery_capture_plan_summary"],
+        )
+        self.assertEqual(
+            state["s2plt02_terminal_delivery_capture_plan_summary"]["state_hash"],
+            "6fa850a802d93e839146cabf158689af05941a54e895911220cc9c077efde7d2",
+        )
+        self.assertFalse(state["s2plt02_terminal_delivery_capture_plan_summary"]["runtime_capture_ready"])
         self.assertFalse(state["available_prebundle_evidence"]["FINAL_ACCEPTANCE_BUNDLE_ARTIFACT_VALIDATION"])
         self.assertNotIn("final_acceptance_bundle_directory_missing", directory_validation["blocking_reasons"])
         self.assertNotIn("no_production_side_effect_attestation_missing", directory_validation["blocking_reasons"])

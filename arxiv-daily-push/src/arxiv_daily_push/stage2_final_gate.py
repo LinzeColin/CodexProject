@@ -9473,6 +9473,13 @@ def build_final_acceptance_bundle_readiness_state(
         },
         "missing_items": missing_items,
         "blocking_reasons": blocking_reasons,
+        "final_bundle_prerequisite_plan_state_hash": final_bundle_prerequisite_plan.get("state_hash"),
+        "next_required_step": final_bundle_prerequisite_plan.get("next_required_step"),
+        "next_executable_task": final_bundle_prerequisite_plan.get("next_executable_task"),
+        "next_executable_runtime_step": final_bundle_prerequisite_plan.get("next_executable_runtime_step"),
+        "s2plt02_terminal_delivery_capture_plan_summary": dict(
+            final_bundle_prerequisite_plan.get("s2plt02_terminal_delivery_capture_plan_summary", {})
+        ),
         "final_bundle_prerequisite_plan": final_bundle_prerequisite_plan,
         "p0_p1_technical_closure_candidate_state": p0_p1_technical_candidate_state,
         "p0_p1_zero_proof_assembly": p0_p1_zero_proof_assembly,
@@ -9627,6 +9634,17 @@ def validate_final_acceptance_bundle_readiness_state(state: Mapping[str, Any]) -
     final_bundle_prerequisite_plan = _mapping(state.get("final_bundle_prerequisite_plan"))
     if validate_final_bundle_prerequisite_plan_state(final_bundle_prerequisite_plan):
         errors.append("final acceptance bundle readiness final-bundle prerequisite plan is invalid")
+    if state.get("final_bundle_prerequisite_plan_state_hash") != final_bundle_prerequisite_plan.get("state_hash"):
+        errors.append("final acceptance bundle readiness prerequisite plan hash must match nested plan")
+    for field in ("next_required_step", "next_executable_task", "next_executable_runtime_step"):
+        if state.get(field) != final_bundle_prerequisite_plan.get(field):
+            errors.append(f"final acceptance bundle readiness {field} must match nested prerequisite plan")
+    if state.get("s2plt02_terminal_delivery_capture_plan_summary") != final_bundle_prerequisite_plan.get(
+        "s2plt02_terminal_delivery_capture_plan_summary"
+    ):
+        errors.append(
+            "final acceptance bundle readiness S2PLT02 capture-plan summary must match nested prerequisite plan"
+        )
     p0_p1_candidate = _mapping(state.get("p0_p1_technical_closure_candidate_state"))
     if validate_p0_p1_technical_closure_candidate_state(p0_p1_candidate):
         errors.append("final acceptance bundle readiness P0/P1 technical candidate state is invalid")

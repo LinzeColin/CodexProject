@@ -1764,6 +1764,18 @@ class CliTests(unittest.TestCase):
         self.assertNotIn("independent_final_reviewer_assignment_missing", payload["blocking_reasons"])
         self.assertNotIn("p0_p1_zero_proof_missing", payload["blocking_reasons"])
         self.assertIn("s2plt04_completion_evidence_missing", payload["blocking_reasons"])
+        self.assertEqual(payload["next_required_step"], "S2PLT04_COMPLETION_REPORT")
+        self.assertEqual(payload["next_executable_task"], "S2PLT02_TERMINAL_DELIVERY_PROOF")
+        self.assertEqual(payload["next_executable_runtime_step"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
+        self.assertEqual(
+            payload["final_bundle_prerequisite_plan_state_hash"],
+            payload["final_bundle_prerequisite_plan"]["state_hash"],
+        )
+        self.assertEqual(
+            payload["s2plt02_terminal_delivery_capture_plan_summary"],
+            payload["final_bundle_prerequisite_plan"]["s2plt02_terminal_delivery_capture_plan_summary"],
+        )
+        self.assertFalse(payload["s2plt02_terminal_delivery_capture_plan_summary"]["runtime_capture_ready"])
         self.assertFalse(payload["production_acceptance_claimed"])
         self.assertFalse(payload["integrated_production_accepted"])
         self.assertFalse(payload["daily_operation_enabled"])

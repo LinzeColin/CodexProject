@@ -1,5 +1,5 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260630-ADP-S2PMT07-FINAL-BUNDLE-PREREQUISITE-S2PLT02-RUNTIME-STEP-SYNC"
+as_of_event_id: "EVENT-20260630-ADP-S2PMT07-FINAL-BUNDLE-VALIDATOR-RUNTIME-STEP-SUMMARY"
 source_snapshot_hash: "sha256:33d61400aa5e461ec4512d546b2ceca25cac9804e4261e1a994ba1e9aa56fc01"
 source_base_commit: "fd90a208c7b009aa11bc26c4629a7ea92679c5ff"
 source_tree_hash: "c44d743a2833842b3cc0dd9e098fb70017cdc5a2"
@@ -61,12 +61,12 @@ dimensions:
     tree_bound_events: 1
     commit_bound_events: 4
     legacy_unbound_events: 289
-    precommit_pending_events: 41
+    precommit_pending_events: 42
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "BLOCKED_PRECHECK"
-  release_gate: "S2PMT07_FINAL_BUNDLE_PREREQUISITE_S2PLT02_RUNTIME_STEP_SYNC_BLOCKED_NO_PRODUCTION"
+  release_gate: "S2PMT07_FINAL_BUNDLE_VALIDATOR_RUNTIME_STEP_SUMMARY_BLOCKED_NO_PRODUCTION"
   blocker_ids:
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
@@ -84,7 +84,7 @@ delivery_readiness:
 next_executable_task:
   task_id: "S2PLT02-TERMINAL-DELIVERY-PROOF"
   status: "blocked"
-  reason: "The final bundle prerequisite plan now exposes the S2PLT02 capture-plan summary and next_executable_runtime_step=WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW; authorization passes, but runtime_capture_ready=false until a real SMTP/scheduler capture window clears the missing second day, eight real emails, real launchd scheduler proof, and terminal delivery proof artifact."
+  reason: "The final bundle validator now exposes the prerequisite routing at top level, including next_executable_runtime_step=WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW; authorization passes, but runtime_capture_ready=false until a real SMTP/scheduler capture window clears the missing second day, eight real emails, real launchd scheduler proof, and terminal delivery proof artifact."
   acceptance_ids:
     - "ACC-S2PLT02-2D"
     - "ACC-S2PMT07-FINAL-REVIEW"
