@@ -1187,7 +1187,10 @@ class Stage2FinalGateTests(unittest.TestCase):
                 f"--generated-at {plan['generated_at']} --json"
             ),
             "adp audit-s2plt02-terminal-capture-window --repo-root . --json",
-            "adp audit-s2plt02-terminal-proof-evidence-inventory --repo-root . --json",
+            (
+                "adp audit-s2plt02-terminal-proof-evidence-inventory --repo-root . "
+                f"--generated-at {plan['generated_at']} --json"
+            ),
             "adp validate-s2plt02-terminal-delivery-proof --repo-root . --json",
         ])
         self.assertEqual(wait_guard["forbidden_until_terminal_dependencies_pass"], [
@@ -6237,7 +6240,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertEqual(
             state["s2plt02_terminal_delivery_capture_plan_summary"]["state_hash"],
-            "3285063a1708b45cc881f1868d91282293b89bdb8cc9b3a2a2d87d07d5dd439b",
+            "bb901dfd9fdb65683c0d76ca413ba1d9df853169bc63e7c9d37ef1ebc343a723",
         )
         self.assertEqual(
             state["s2plt02_terminal_delivery_capture_plan_summary"]["generated_at"],
@@ -6249,11 +6252,16 @@ class Stage2FinalGateTests(unittest.TestCase):
             state["s2plt02_terminal_delivery_capture_plan_summary"]["current_wait_state"],
             wait_guard["current_wait_state"],
         )
-        self.assertEqual(wait_guard["state_hash"], "581fe9f53d82db88959196f874d312e50b1739a839158f7bf2d38cc186c03506")
+        self.assertEqual(wait_guard["state_hash"], "a6f7e782a8e62a223087ee08ffebbf444c46909ef096e878849af079400abc47")
         self.assertEqual(wait_guard["current_wait_state"], "WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW")
         self.assertEqual(
             wait_guard["allowed_readonly_commands"][0],
             "adp plan-s2plt02-terminal-delivery-proof-capture --repo-root . "
+            "--generated-at 2026-06-30T18:03:24+10:00 --json",
+        )
+        self.assertEqual(
+            wait_guard["allowed_readonly_commands"][2],
+            "adp audit-s2plt02-terminal-proof-evidence-inventory --repo-root . "
             "--generated-at 2026-06-30T18:03:24+10:00 --json",
         )
         self.assertIn(

@@ -6,6 +6,8 @@ arxiv-daily-push 当前治理结论：实现一致性为 `VERIFIED`，方法/实
 
 ## 2. 本次运行改变了什么
 
+Owner 视图现在把 S2PLT02 wait guard 的只读命令收口为可执行命令集合：`allowed_readonly_commands` 中的 terminal proof evidence inventory 命令已带 `--generated-at 2026-07-01T05:42:34+10:00`，CLI regression 会逐条执行只读命令并确认返回 blocked JSON。当前 direct capture plan `state_hash=aafb8d5147d8c7849a2489bfb4991376e978d646b5e149156cbba58ae513aff1`，wait guard `state_hash=502a892c3a207233c0d9ea985685c5064e2aaa279ca9010a490b30190aefecfe`，inventory command `state_hash=26207ef1ba63b2fe56d7904e141cf20dbd49268d98407a45a73dbf2fcfd0ed4c`，prerequisite plan `state_hash=94fbe44f8211dff645ad5939696843122191b5b10ed939a1e04105c5e312c6b9`，final validator `state_hash=6ae337c9dd434e0f43909cf2ddc13f3d0de3a1bb5beb919ac2323ee61b8ef48f`。当前仍缺 `SECOND_REAL_DELIVERY_DAY;EIGHT_REAL_EMAILS;REAL_SCHEDULER_PROOF;S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`，`current_wait_state=WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`，`write_terminal_artifact_allowed=false`，`scheduler_enable_allowed_by_this_plan=false`，`production_acceptance_allowed=false`。这不是 S2PLT02 terminal proof，不是 SMTP/scheduler 授权，也不是 Stage2/S3 production accepted。
+
 Owner 视图现在把 S2PLT02 终态捕获计划的输入清单和 artifact 校验摘要公开到 final bundle readiness：`terminal_delivery_input_inventory_summary.state_hash=4df922bd5dc56541cbd76380adc6897fb779c929afa1c37e7f1d2eab236e8e5b`，`terminal_delivery_artifact_validation_summary.state_hash=3fbde96111dd78d3ffe4474e012fa5d86de76a24e6fa7640d0310c178003e1db`，capture plan `state_hash=cba2fb5be5cc1a7dc098b28fe0b0bd137fb43d18e4f077d755571313bcee03e4`，prerequisite plan `state_hash=bcb40505ad7244626589c24991dcf05fe775268ce44b5eab3b68444f38cded6e`，final validator `state_hash=23c5a2f6beed34c440ee8f3de870ca71a2c2deb1d44cbd67623a3c7aa7fc510c`。当前仍缺 `SECOND_REAL_DELIVERY_DAY;EIGHT_REAL_EMAILS;REAL_SCHEDULER_PROOF;S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT`，`current_wait_state=WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`，`write_terminal_artifact_allowed=false`，`scheduler_enable_allowed_by_this_plan=false`，`production_acceptance_allowed=false`。这不是 S2PLT02 terminal proof，不是 SMTP/scheduler 授权，也不是 Stage2/S3 production accepted。
 
 Owner 视图现在把已验证的 P0/P1 zero-proof artifact 接入 final bundle request 状态：`FINAL_ACCEPTANCE_BUNDLE/p0_p1_zero_proof.json` 已由 validator 读取，zero-proof artifact validation `state_hash=bf966c244f9f7c52b75ae7d56ff8f8c0fbda498cd678f4003ee3ed2c40961786`，assignment request `state_hash=8a4596dbb16f55932e36b256fc22852e1f8ca52da22bdd85d6d1c79d23b61c1b`，closure decision request `state_hash=afc1155fafad8c460db5e09eb9890e7408a1e28dd0bf155121bf1a0308529e34`，final validator `state_hash=cf9a46ccbdfd35b01bd579511ed7ae1cdfcac411e00d8f610c80625f596e1094`。validated request 不再保留 `p0_p1_zero_proof_artifact_missing`，但 `independent_final_closure_decision_present=false`，S2PLT02/S2PLT03 terminal proof、S2PLT04 completion report、final bundle manifest、handoff、signoff、final command 和 production acceptance 仍全部 blocked。这不是 P0/P1 closure，也不是 SMTP/scheduler 授权。
@@ -96,7 +98,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PLT02_TERMINAL_CAPTURE_INVENTORY_SUMMARY_SYNC_BLOCKED_NO_PRODUCTION`
+- release_gate: `S2PLT02_TERMINAL_CAPTURE_READONLY_COMMAND_EXECUTABILITY_SYNC_BLOCKED_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
@@ -119,7 +121,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - snapshot_event_time: `2026-06-30T15:31:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PL / S2PMT07_FINAL_BUNDLE_REVIEWER_ASSIGNMENT_CONSUMPTION_SYNC_BLOCKED_NO_PRODUCTION`
+- phase/gate: `S2PL / S2PLT02_TERMINAL_CAPTURE_READONLY_COMMAND_EXECUTABILITY_SYNC_BLOCKED_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 

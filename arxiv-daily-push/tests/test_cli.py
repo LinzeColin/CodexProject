@@ -1061,6 +1061,16 @@ class CliTests(unittest.TestCase):
             guard_payload["capture_wait_state_guard"]["allowed_readonly_commands"][0],
             guard_command,
         )
+        for readonly_command in payload["capture_wait_state_guard"]["allowed_readonly_commands"]:
+            command_args = shlex.split(readonly_command)
+            self.assertEqual(command_args[0], "adp")
+            readonly_buffer = io.StringIO()
+            with redirect_stdout(readonly_buffer):
+                readonly_result = main(command_args[1:])
+            readonly_payload = json.loads(readonly_buffer.getvalue())
+            self.assertEqual(readonly_result, 2)
+            self.assertEqual(readonly_payload["status"], "blocked")
+            self.assertNotIn("state_validation_errors", readonly_payload)
         self.assertEqual(payload["capture_steps"][0]["step_id"], "CAPTURE_SECOND_REAL_M1_M4_SMTP_DAY")
         self.assertEqual(
             payload["capture_steps"][-1]["command"],

@@ -1,5 +1,5 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260701-ADP-S2PLT02-TERMINAL-CAPTURE-INVENTORY-SUMMARY-SYNC"
+as_of_event_id: "EVENT-20260701-ADP-S2PLT02-TERMINAL-CAPTURE-READONLY-COMMAND-EXECUTABILITY-SYNC"
 source_snapshot_hash: "sha256:33d61400aa5e461ec4512d546b2ceca25cac9804e4261e1a994ba1e9aa56fc01"
 source_base_commit: "fd90a208c7b009aa11bc26c4629a7ea92679c5ff"
 source_tree_hash: "c44d743a2833842b3cc0dd9e098fb70017cdc5a2"
@@ -66,7 +66,7 @@ dimensions:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "BLOCKED_PRECHECK"
-  release_gate: "S2PLT02_TERMINAL_CAPTURE_INVENTORY_SUMMARY_SYNC_BLOCKED_NO_PRODUCTION"
+  release_gate: "S2PLT02_TERMINAL_CAPTURE_READONLY_COMMAND_EXECUTABILITY_SYNC_BLOCKED_NO_PRODUCTION"
   blocker_ids:
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
@@ -106,7 +106,7 @@ delivery_readiness:
 next_executable_task:
   task_id: "S2PLT02-TERMINAL-DELIVERY-PROOF"
   status: "blocked"
-  reason: "The S2PLT02 capture plan and final-bundle readiness now expose terminal_delivery_input_inventory_summary and terminal_delivery_artifact_validation_summary while S2PLT02/S2PLT03/S2PLT04 remain blocked. Capture plan state_hash=cba2fb5be5cc1a7dc098b28fe0b0bd137fb43d18e4f077d755571313bcee03e4, input summary state_hash=4df922bd5dc56541cbd76380adc6897fb779c929afa1c37e7f1d2eab236e8e5b, artifact summary state_hash=3fbde96111dd78d3ffe4474e012fa5d86de76a24e6fa7640d0310c178003e1db, final readiness state_hash=23c5a2f6beed34c440ee8f3de870ca71a2c2deb1d44cbd67623a3c7aa7fc510c. S2PLT02 terminal delivery proof still lacks the second consecutive real M1-M4 SMTP day, eight real emails, real scheduler proof, and reviewed terminal proof artifact."
+  reason: "The S2PLT02 capture wait guard now lists only parser-executable readonly commands, including generated-at terminal proof evidence inventory. Direct capture plan state_hash=aafb8d5147d8c7849a2489bfb4991376e978d646b5e149156cbba58ae513aff1, wait guard state_hash=502a892c3a207233c0d9ea985685c5064e2aaa279ca9010a490b30190aefecfe, inventory command state_hash=26207ef1ba63b2fe56d7904e141cf20dbd49268d98407a45a73dbf2fcfd0ed4c, final-bundle prerequisite state_hash=94fbe44f8211dff645ad5939696843122191b5b10ed939a1e04105c5e312c6b9, final readiness state_hash=6ae337c9dd434e0f43909cf2ddc13f3d0de3a1bb5beb919ac2323ee61b8ef48f. S2PLT02 terminal delivery proof still lacks the second consecutive real M1-M4 SMTP day, eight real emails, real scheduler proof, and reviewed terminal proof artifact."
   acceptance_ids:
     - "ACC-S2PLT02-2D"
     - "ACC-S2PMT07-FINAL-REVIEW"
