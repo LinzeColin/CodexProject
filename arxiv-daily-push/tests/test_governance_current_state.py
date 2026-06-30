@@ -36,6 +36,21 @@ class GovernanceCurrentStateTests(unittest.TestCase):
 
 
         self.assertIn(
+            "S2PMT07_FINAL_BUNDLE_MISSING_ARTIFACT_INVENTORY_BLOCKED_NO_PRODUCTION",
+            current_state,
+        )
+        self.assertIn("S2PMT07-FINAL-BUNDLE-MISSING-ARTIFACT-INVENTORY", current_state)
+        self.assertIn("final_bundle_missing_artifact_inventory", current_state)
+        self.assertIn("missing_item_count=5", current_state)
+        self.assertIn("2e80e00465c90d27c821981c2f2a7190050ea7c3e390a38a526ff6d7bbb539ae", current_state)
+        self.assertIn("51d89042f47937b6ef65862d30dff1d8398caf21f5d8f875709ac6e6ff255cf0", current_state)
+        self.assertIn(
+            "ADP-S2PMT07-FINAL-BUNDLE-MISSING-ARTIFACT-INVENTORY-20260701.json",
+            current_state,
+        )
+        self.assertIn("PHASE_S2PMT07_FINAL_BUNDLE_MISSING_ARTIFACT_INVENTORY.md", ledger)
+
+        self.assertIn(
             "S2PMT07_FINAL_BUNDLE_LIVE_ARTIFACT_WRITE_GUARD_BLOCKED_NO_PRODUCTION",
             current_state,
         )

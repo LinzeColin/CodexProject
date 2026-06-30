@@ -6,7 +6,7 @@ arxiv-daily-push 当前治理结论：实现一致性为 `VERIFIED`，方法/实
 
 ## 2. 本次运行改变了什么
 
-Owner 视图现在明确显示 `live_artifact_write_guard`：当前 `live_artifact_write_allowed=false`，不得提前写入 `FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json`、`FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json`、`HANDOFF/00_下一Agent先读.md`、`FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml`、`FINAL_ACCEPTANCE_BUNDLE/manifest.json`。当前 prerequisite plan blocked / exit 2，`state_hash=9454e47e36d6cc04e20918f50d8f7d6be6e5c12fadfc4a6f5f86144562199eb9`；final validator blocked / exit 2，`state_hash=1146133f14fe04dba14e0313409fad828bfe2d6439adefc68a640d5500568b85`；下一步仍是 `S2PLT02_TERMINAL_DELIVERY_PROOF` / `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`，但这不是授权发送 SMTP 或启用 scheduler。
+Owner 视图现在明确显示 `final_bundle_missing_artifact_inventory and live_artifact_write_guard`：当前 `live_artifact_write_allowed=false`，不得提前写入 `FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json`、`FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json`、`HANDOFF/00_下一Agent先读.md`、`FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml`、`FINAL_ACCEPTANCE_BUNDLE/manifest.json`。当前 prerequisite plan blocked / exit 2，`state_hash=9454e47e36d6cc04e20918f50d8f7d6be6e5c12fadfc4a6f5f86144562199eb9`；final validator blocked / exit 2，`state_hash=2e80e00465c90d27c821981c2f2a7190050ea7c3e390a38a526ff6d7bbb539ae`，inventory `state_hash=51d89042f47937b6ef65862d30dff1d8398caf21f5d8f875709ac6e6ff255cf0`，missing live refs `FINAL_ACCEPTANCE_BUNDLE/manifest.json;FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json;FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml;FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json;HANDOFF/00_下一Agent先读.md`；下一步仍是 `S2PLT02_TERMINAL_DELIVERY_PROOF` / `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`，但这不是授权发送 SMTP 或启用 scheduler。
 
 既有 S2PLT02 计数拆分仍保留为历史阻断输入：final-bundle S2PLT02 summary 里的 `observed_real_delivery_days=1` / `observed_real_email_count=4` 只来自既有真实 SMTP 输入清单；当前 2026-06-29/2026-06-30 capture-window 新增真实天数和真实邮件数都是 0，`current_capture_window_dry_run_email_count_rejected=8`。S2PLT02 capture plan `state_hash=e7c9834eca19f665f1b57566f47cbd03ecaaf95fa9eb538187af3c3f7e1aa7f1`；remaining terminal proof gaps 仍为 1 个真实日和 4 封真实邮件。P0/P1 zero-proof artifact 仍为可用输入，但不等于 S2PLT04 或生产验收；不发送 SMTP、不启用 scheduler、不写 S2PLT02/S2PLT03 terminal proof；S2PLT02 终态 proof、S2PLT03 终态 proof、S2PLT04 completion report、final command、handoff、signoff、manifest 和生产验收仍保持阻断.
 
@@ -23,7 +23,7 @@ Owner 视图现在明确显示 `live_artifact_write_guard`：当前 `live_artifa
 
 ## 5. 默认建议
 
-- current_recommendation: A: keep V7.2 as CURRENT product contract, keep V7.1 read-only, treat the validated independent reviewer assignment, P0/P1 zero-proof artifact, and S2PLT02 artifact validation summary as blocked final-bundle visibility inputs only, keep V7.1 inherited baseline counts separate from the current zero-proof artifact, keep `FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json` missing/not ready until two consecutive real M1-M4 SMTP days, eight real emails, real scheduler proof, reviewed artifact write, and artifact validation are all present, do not write S2PLT03 terminal proof or S2PLT04 completion proof before S2PLT02 terminal delivery proof validates, keep live authorization hash-bound and stale hashes fail-closed, and continue only through no-write evidence gates until the terminal capture window is actually satisfied.
+- current_recommendation: A: keep V7.2 as CURRENT product contract, treat final_bundle_missing_artifact_inventory as the current blocked final-bundle artifact inventory,, keep V7.1 read-only, treat the validated independent reviewer assignment, P0/P1 zero-proof artifact, and S2PLT02 artifact validation summary as blocked final-bundle visibility inputs only, keep V7.1 inherited baseline counts separate from the current zero-proof artifact, keep `FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json` missing/not ready until two consecutive real M1-M4 SMTP days, eight real emails, real scheduler proof, reviewed artifact write, and artifact validation are all present, do not write S2PLT03 terminal proof or S2PLT04 completion proof before S2PLT02 terminal delivery proof validates, keep live authorization hash-bound and stale hashes fail-closed, and continue only through no-write evidence gates until the terminal capture window is actually satisfied.
 - estimated_effort: P0/P1; contract hash, AGENTS, 三基文件, validator/test, no production side effect
 - estimated_cost_or_resource: local development and GitHub PR/CI evidence; no GitHub cloud scheduled production runner
 
@@ -80,7 +80,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S2PMT07_FINAL_BUNDLE_S2PLT02_CAPTURE_WINDOW_SUMMARY_BLOCKED_NO_PRODUCTION`
+- release_gate: `S2PMT07_FINAL_BUNDLE_MISSING_ARTIFACT_INVENTORY_BLOCKED_NO_PRODUCTION`
 
 ## 14. Evidence Freshness
 
@@ -103,7 +103,7 @@ Stage2 agents may keep using V7.1 or V1.1 inconsistently, increasing contract dr
 - snapshot_event_time: `2026-06-30T15:31:00+10:00`
 - generator_version: `4.0.0`
 - version: `0.23.1`
-- phase/gate: `S2PL / S2PMT07_FINAL_BUNDLE_S2PLT02_CAPTURE_WINDOW_SUMMARY_BLOCKED_NO_PRODUCTION`
+- phase/gate: `S2PL / S2PMT07_FINAL_BUNDLE_MISSING_ARTIFACT_INVENTORY_BLOCKED_NO_PRODUCTION`
 
 ## 17. Next Unique Task
 

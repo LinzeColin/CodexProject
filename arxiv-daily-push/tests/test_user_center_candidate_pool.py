@@ -132,7 +132,7 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         table_rows = re.findall(r"^\| \d+ \|", page, flags=re.MULTILINE)
         readme = (USER_CENTER / "README.md").read_text(encoding="utf-8")
 
-        self.assertGreaterEqual(len(matrix_rows), 402)
+        self.assertGreaterEqual(len(matrix_rows), 403)
         self.assertEqual(len(table_rows), len(matrix_rows))
         self.assertTrue(page.startswith("# 功能任务测试证据追踪链\n"))
         self.assertRegex(page, r"更新时间：\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} Australia/Sydney")
@@ -143,6 +143,19 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("[test_stage2_sources.py](../tests/test_stage2_sources.py)", page)
         self.assertIn(f"TRACEABILITY_MATRIX 行数 | {len(matrix_rows)}", page)
         self.assertIn(f"{len(matrix_rows)} 条可点击链路", readme)
+
+        self.assertIn("REQ-ADP-V7-059-S2PMT07-FINAL-BUNDLE-MISSING-ARTIFACT-INVENTORY", page)
+        self.assertIn("S2PMT07-FINAL-BUNDLE-MISSING-ARTIFACT-INVENTORY", page)
+        self.assertIn(
+            "ADP-S2PMT07-FINAL-BUNDLE-MISSING-ARTIFACT-INVENTORY-20260701.json",
+            page,
+        )
+        self.assertIn("PHASE_S2PMT07_FINAL_BUNDLE_MISSING_ARTIFACT_INVENTORY.md", page)
+        self.assertIn("blocked_final_bundle_missing_artifact_inventory_synced_no_production", page)
+        self.assertIn("final_bundle_missing_artifact_inventory", page)
+        self.assertIn("missing_item_count=5", page)
+        self.assertIn("2e80e00465c90d27c821981c2f2a7190050ea7c3e390a38a526ff6d7bbb539ae", page)
+        self.assertIn("51d89042f47937b6ef65862d30dff1d8398caf21f5d8f875709ac6e6ff255cf0", page)
 
         self.assertIn("REQ-ADP-V7-057-S2PMT07-FINAL-BUNDLE-S2PLT02-TERMINAL-COUNT-SPLIT", page)
         self.assertIn("S2PMT07-FINAL-BUNDLE-S2PLT02-TERMINAL-COUNT-SPLIT", page)

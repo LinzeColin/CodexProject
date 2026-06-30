@@ -5912,3 +5912,28 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PMT07-FINAL-BUNDLE-MISSING-ARTIFACT-INVENTORY"
+    title: "S2PMT07 final bundle missing artifact inventory"
+    parent_task_id: "S2PMT07-FINAL-BUNDLE-PREREQUISITES"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-07-01T01:13:56+10:00"
+    objective: "Expose final-bundle missing live artifact refs as a machine-readable inventory inside final acceptance bundle readiness."
+    scope: "Final-bundle readiness builder/validator, focused final-gate regression, phase record, run manifest, traceability row, delivery/event records, owner/user-center status, and three base notes."
+    non_scope: "No S2PLT02/S2PLT03 terminal proof artifact, S2PLT04 completion report, final-bundle manifest/handoff/signoff/final-command proof, SMTP send, scheduler enable/install/kickstart, Release, restore, CURRENT/V7 change, public schema/DB/source/ranking/queue mutation, P0/P1 closure claim, S2PLT02/S2PLT03/S2PLT04/S2PMT07 acceptance, DAILY_OPERATION, Stage2/S3 production acceptance, or production side effect is introduced."
+    owner: "engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    dependencies: ["S2PMT07-FINAL-BUNDLE-LIVE-ARTIFACT-WRITE-GUARD", "S2PLT02-TERMINAL-DELIVERY-PROOF", "S2PLT03-TERMINAL-RESILIENCE-PROOF", "S2PLT04-COMPLETION-REPORT"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_governance_current_state.py", "arxiv-daily-push/tests/test_user_center_candidate_pool.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_MISSING_ARTIFACT_INVENTORY.md", "governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-MISSING-ARTIFACT-INVENTORY-20260701.json"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_missing_inventory_red PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_missing_inventory_green PYTHONPATH=arxiv-daily-push/src python3 -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_missing_inventory_cli PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli validate-final-acceptance-bundle --repo-root . --json"]
+    test_results: ["TDD red failed with KeyError because final_bundle_missing_artifact_inventory was missing", "focused final-gate tests: 121 OK", "validate-final-acceptance-bundle live CLI remains blocked / exit 2 with state_hash 2e80e00465c90d27c821981c2f2a7190050ea7c3e390a38a526ff6d7bbb539ae, inventory_hash 51d89042f47937b6ef65862d30dff1d8398caf21f5d8f875709ac6e6ff255cf0, and missing_item_count=5"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PMT07-FINAL-BUNDLE-MISSING-ARTIFACT-INVENTORY-20260701.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PMT07_FINAL_BUNDLE_MISSING_ARTIFACT_INVENTORY.md", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_governance_current_state.py", "arxiv-daily-push/tests/test_user_center_candidate_pool.py"]
+    result: "blocked_final_bundle_missing_artifact_inventory_synced_no_production"
+    risk: "Future reviewers can miss final bundle missing live artifacts if only blocking_reasons expose them without a machine-readable artifact inventory."
+    rollback: "Revert the inventory builder/validator fields, focused tests, phase record, run manifest, traceability row, delivery/event records, user-center notes, and three base notes; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []
