@@ -1,0 +1,145 @@
+{
+  "schema": "PFIV024Stage0Phase02EvidenceV1",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Stage 0",
+  "phase_id": "0.2",
+  "phase_name": "历史约束废弃",
+  "status": "candidate_pass",
+  "generated_at": "2026-06-30T10:55:44Z",
+  "repo": {
+    "path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi",
+    "branch": "codex/pfi",
+    "remote": "git@github.com:LinzeColin/CodexProject.git",
+    "head_at_evidence_write": "38021e805c3b84b3589b42e2f5b4d5db69f8be87",
+    "origin_main_at_evidence_write": "38021e805c3b84b3589b42e2f5b4d5db69f8be87",
+    "head_at_final_validation": "38021e805c3b84b3589b42e2f5b4d5db69f8be87",
+    "origin_main_at_final_validation": "38021e805c3b84b3589b42e2f5b4d5db69f8be87"
+  },
+  "source_files": {
+    "roadmap": {
+      "path": "/Users/linzezhang/Downloads/PFI_v0.2.3_Repair_Roadmap.md",
+      "exists": true,
+      "sha256": "04a817a7f90acccc959c1eb537c24648e0061df0e764cdec5d834bbd07047950"
+    },
+    "taskpack_zip": {
+      "path": "/Users/linzezhang/Downloads/PFI_v0.2.3_Repair_TaskPack.zip",
+      "exists": true,
+      "sha256": "4521fe2ded19104e2dfd8aa368d235b2e724824171b47d336c42a09ee8ca760d"
+    }
+  },
+  "tasks": {
+    "T0.2.1": {
+      "status": "done",
+      "artifact": "PFI/docs/pfi_v024/HISTORY_DEPRECATION_POLICY.md"
+    },
+    "T0.2.2": {
+      "status": "done",
+      "artifact": "PFI/docs/pfi_v024/HISTORY_DEPRECATION_POLICY.md"
+    },
+    "T0.2.3": {
+      "status": "done",
+      "artifact": "PFI/docs/pfi_v024/HISTORY_DEPRECATION_POLICY.md"
+    },
+    "T0.2.4": {
+      "status": "done",
+      "artifact": "PFI/docs/pfi_v024/HISTORY_DEPRECATION_POLICY.md"
+    }
+  },
+  "deprecated_constraints": {
+    "old_nine_entry_primary_nav": "deprecated",
+    "market_research_top_level_ban": "deprecated",
+    "dark_ai_console_default_direction": "deprecated",
+    "sample_data_acceptance": "deprecated"
+  },
+  "retained_reference_principles": [
+    "one stage/phase per run until user acceptance or explicit instruction",
+    "real evidence over README/docs-only completion",
+    "no mock/sample/demo/synthetic/fixture/fake financial data",
+    "real routes over long-page anchor scroll",
+    "real persistence over browser storage as production storage"
+  ],
+  "phase_0_1_complete": true,
+  "phase_0_2_complete": true,
+  "phase_0_3_complete": false,
+  "stage_0_complete": false,
+  "requires_user_acceptance": true,
+  "no_auto_next_phase": true,
+  "no_auto_closeout": true,
+  "business_ui_changes_made": false,
+  "data_logic_changes_made": false,
+  "acceptance_checks": {
+    "old_nine_entry_constraint_deprecated": true,
+    "market_research_ban_deprecated": true,
+    "dark_ai_console_direction_deprecated": true,
+    "sample_financial_data_acceptance_deprecated": true,
+    "retained_reference_principles_present": true,
+    "no_business_ui_or_data_logic_changes": true
+  },
+  "commands": [
+    {
+      "cmd": "node --check PFI/web/app/shell.js",
+      "status": "unavailable",
+      "detail": "node is not on PATH in this Codex environment"
+    },
+    {
+      "cmd": "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --check PFI/web/app/shell.js",
+      "status": "pass"
+    },
+    {
+      "cmd": "python3 -m py_compile PFI/src/pfi_v02/stage_v024_repair_contract.py PFI/tests/test_v024_stage0_phase02_contract.py",
+      "status": "pass"
+    },
+    {
+      "cmd": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v024_stage0_phase02_contract.py -q",
+      "status": "pass"
+    },
+    {
+      "cmd": "PYTHONPATH=PFI/src PFI/.venv/bin/python -m pytest PFI/tests/test_v024_stage0_phase01_contract.py PFI/tests/test_v024_pre_stage0_contract.py -q",
+      "status": "pass"
+    },
+    {
+      "cmd": "python3 -m json.tool PFI/reports/pfi_v024/stage_0/phase_0_2/evidence.json",
+      "status": "pass"
+    },
+    {
+      "cmd": "git diff --check -- PFI",
+      "status": "pass"
+    }
+  ],
+  "changed_files": [
+    "PFI/CHANGELOG.md",
+    "PFI/HANDOFF.md",
+    "PFI/README.md",
+    "PFI/功能清单.md",
+    "PFI/开发记录.md",
+    "PFI/模型参数文件.md",
+    "PFI/docs/pfi_v024/HISTORY_DEPRECATION_POLICY.md",
+    "PFI/docs/pfi_v024/REPAIR_SCOPE_LOCK.md",
+    "PFI/docs/pfi_v024/RUN_CONTRACT.md",
+    "PFI/reports/pfi_v024/stage_0/phase_0_2/changed_files.txt",
+    "PFI/reports/pfi_v024/stage_0/phase_0_2/evidence.json",
+    "PFI/reports/pfi_v024/stage_0/phase_0_2/risk_and_rollback.md",
+    "PFI/reports/pfi_v024/stage_0/phase_0_2/terminal.log",
+    "PFI/src/pfi_v02/stage_v024_repair_contract.py",
+    "PFI/tests/test_v024_stage0_phase02_contract.py"
+  ],
+  "explicitly_not_done": [
+    "Stage 0 Phase 0.3 full test and evidence pack",
+    "Stage 0 whole-stage review",
+    "Stage 1 shell.js repair",
+    "business UI changes",
+    "data logic changes"
+  ],
+  "next_gate": "user acceptance or explicit instruction to enter Stage 0 Phase 0.3",
+  "validation_results": {
+    "node_on_path": "unavailable",
+    "node_check_shell_js": "pass via Codex bundled Node",
+    "py_compile_phase02_contract_and_test": "pass",
+    "pytest_phase02_contract": "3 passed in 0.10s",
+    "pytest_phase01_and_pre_stage0_regression": "6 passed in 0.12s",
+    "json_and_git_diff_check": "pass",
+    "project_cache_after_validation": "0 dirs / 0 files outside PFI/.venv"
+  },
+  "last_verified_at": "2026-06-30T11:04:39Z"
+}
