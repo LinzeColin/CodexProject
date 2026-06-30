@@ -1,0 +1,134 @@
+{
+  "schema": "PFIV024Stage3Phase32RouteEvidenceV1",
+  "version": "v0.2.3-repair",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Stage 3",
+  "phase_id": "3.2",
+  "phase_name": "路由实现",
+  "status": "candidate_pass",
+  "allowed_files_obeyed": true,
+  "generated_at": "2026-07-01T07:31:05+10:00",
+  "repo": {
+    "path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi",
+    "branch": "codex/pfi",
+    "remote": "git@github.com:LinzeColin/CodexProject.git",
+    "head_at_evidence_write": "faffd55c25c5159e6e766e40dd5db6a371260205",
+    "origin_main_at_evidence_write": "7a175eb0a44c92dda3f96d55b93e9825f2d5dd6e",
+    "local_ahead_origin_main_at_evidence_write": 1,
+    "local_behind_origin_main_at_evidence_write": 17,
+    "origin_main_delta_touches_pfi": false
+  },
+  "tasks": {
+    "T3.2.1": {
+      "status": "done",
+      "artifact": "PFI/web/app/routes.js",
+      "summary": "Defined primary route table for the 10 official entries."
+    },
+    "T3.2.2": {
+      "status": "done",
+      "artifact": "PFI/web/app/routes.js",
+      "summary": "Defined 45 owned secondary routes across the 10 workspaces."
+    },
+    "T3.2.3": {
+      "status": "done",
+      "artifact": "PFI/web/app/routes.js",
+      "summary": "Defined v0.1 alias redirects to owned v0.2.4 routes."
+    },
+    "T3.2.4": {
+      "status": "done",
+      "artifact": "PFI/web/app/shell.js",
+      "summary": "Shell runtime uses route table and declares hash/history/popstate handling."
+    }
+  },
+  "route_counts": {
+    "primary_routes": 10,
+    "secondary_routes": 45,
+    "legacy_redirect_routes": 6
+  },
+  "phase_3_1_complete": true,
+  "phase_3_2_complete": true,
+  "phase_3_3_complete": false,
+  "stage_3_candidate_complete": false,
+  "stage_3_complete": false,
+  "current_phase_only": true,
+  "max_one_phase_per_run": true,
+  "requires_user_acceptance": true,
+  "next_phase_requires_user_instruction": true,
+  "browser_history_validation_done": false,
+  "github_main_uploaded": false,
+  "app_bundle_changes_made": false,
+  "app_bundle_reinstall_executed": false,
+  "launcher_c_or_plist_changes_made": false,
+  "data_logic_changes_made": false,
+  "formal_fake_financial_data_added": false,
+  "acceptance_checks": {
+    "primary_routes_resolve": true,
+    "secondary_routes_resolve": true,
+    "v01_aliases_redirect": true,
+    "history_popstate_runtime_declared": true,
+    "browser_history_validation_deferred_to_phase_3_3": true,
+    "no_financial_data_logic_changes": true,
+    "github_main_not_uploaded": true
+  },
+  "commands": [
+    {
+      "cmd": "pytest stage3 phase32 contract red run",
+      "status": "expected_fail",
+      "detail": "missing phase32 contract, route API, shell route table integration, and evidence pack before implementation"
+    },
+    {
+      "cmd": "node --check PFI/web/app/routes.js",
+      "status": "pass"
+    },
+    {
+      "cmd": "node --check PFI/web/app/shell.js",
+      "status": "pass"
+    },
+    {
+      "cmd": "pytest stage3 phase32 route implementation",
+      "status": "pass",
+      "detail": "5 passed"
+    },
+    {
+      "cmd": "pytest v024 regression through stage3 phase32",
+      "status": "pass",
+      "detail": "67 passed"
+    },
+    {
+      "cmd": "pytest v023 stage3 navigation compatibility",
+      "status": "pass",
+      "detail": "13 passed"
+    },
+    {
+      "cmd": "git diff --check -- PFI",
+      "status": "pass"
+    }
+  ],
+  "changed_files": [
+    "PFI/CHANGELOG.md",
+    "PFI/HANDOFF.md",
+    "PFI/README.md",
+    "PFI/docs/pfi_v024/RUN_CONTRACT.md",
+    "PFI/docs/pfi_v024/STAGE3_NAVIGATION_ROUTING.md",
+    "PFI/reports/pfi_v024/stage_3/phase_3_2/changed_files.txt",
+    "PFI/reports/pfi_v024/stage_3/phase_3_2/evidence.json",
+    "PFI/reports/pfi_v024/stage_3/phase_3_2/risk_and_rollback.md",
+    "PFI/reports/pfi_v024/stage_3/phase_3_2/terminal.log",
+    "PFI/src/pfi_v02/stage_v024_stage3_navigation.py",
+    "PFI/tests/test_v024_stage3_phase32_route_implementation.py",
+    "PFI/web/app/routes.js",
+    "PFI/web/app/shell.js",
+    "PFI/功能清单.md",
+    "PFI/开发记录.md",
+    "PFI/模型参数文件.md"
+  ],
+  "explicitly_not_done": [
+    "Stage 3 Phase 3.3 browser history validation",
+    "Stage 3 whole-stage review",
+    "GitHub main upload",
+    "app bundle reinstall",
+    "launcher C or Info.plist changes",
+    "financial data or metric logic changes"
+  ]
+}

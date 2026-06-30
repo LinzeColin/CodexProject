@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 3 Phase 3.2 - 2026-07-01
+
+- 完成 `Stage 3 / Phase 3.2 - 路由实现`：`PFI/web/app/routes.js` 暴露 `window.PFI_V024_STAGE3_ROUTES`，可解析一级 route、二级 route 和 v0.1 alias redirect。
+- 新增 `PFI/tests/test_v024_stage3_phase32_route_implementation.py`，用 Node 调用真实 route API 验证 10 个一级 route、45 个二级 route 和 6 个旧入口 redirect。
+- `PFI/web/app/shell.js` 优先调用 `PFI_V024_STAGE3_ROUTES.resolveRouteAlias()`，再进入旧 fallback；保留 hash、`pushState`、`replaceState`、`hashchange` 和 `popstate` runtime 声明。
+- 扩展 `PFI/src/pfi_v02/stage_v024_stage3_navigation.py`，新增 Phase 3.2 route contract。
+- 新增 `PFI/reports/pfi_v024/stage_3/phase_3_2/evidence.json`。
+- 本轮未执行 Phase 3.3 浏览器历史验收、Stage 3 whole-stage review、app bundle reinstall、真实数据逻辑修改或 GitHub main upload。
+
 ## v0.2.4 Repair Pack Stage 3 Phase 3.1 - 2026-06-30
 
 - 完成 `Stage 3 / Phase 3.1 - 导航合同`：正式一级入口固定 10 个，`市场与研究` 保持第 9 个正式一级入口。
