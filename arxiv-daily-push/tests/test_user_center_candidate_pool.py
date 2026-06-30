@@ -151,6 +151,16 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
             "blocked_s2plt02_real_proof_capture_readiness_live_authorization_pass_terminal_gaps_visible_no_production",
             page,
         )
+        self.assertIn("REQ-ADP-V7-043-S2PLT02-TERMINAL-CAPTURE-PLAN-RUNTIME-AUTH-GATE", page)
+        self.assertIn("S2PLT02-TERMINAL-CAPTURE-PLAN-RUNTIME-AUTH-GATE", page)
+        self.assertIn("ADP-S2PLT02-TERMINAL-CAPTURE-PLAN-RUNTIME-AUTH-GATE-20260630.json", page)
+        self.assertIn("PHASE_S2PLT02_TERMINAL_CAPTURE_PLAN_RUNTIME_AUTH_GATE.md", page)
+        self.assertIn("blocked_s2plt02_capture_plan_runtime_auth_gate_no_production", page)
+        self.assertIn("runtime_capture_ready=false", page)
+        self.assertIn("next_executable_step=WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW", page)
+        self.assertIn("6fa850a802d93e839146cabf158689af05941a54e895911220cc9c077efde7d2", page)
+        self.assertIn("e8942077e2a2448ab8c354c1680e9d634872b4bea8f9e0f9006efac1cbd91336", page)
+        self.assertIn("adp_allow_smtp_send_false", page)
         self.assertIn("REQ-ADP-V7-043-S2PLT02-AUTHORIZATION-READINESS-HASH-GATE", page)
         self.assertIn("S2PLT02-AUTHORIZATION-READINESS-HASH-GATE", page)
         self.assertIn("ADP-S2PLT02-AUTHORIZATION-READINESS-HASH-GATE-20260630.json", page)

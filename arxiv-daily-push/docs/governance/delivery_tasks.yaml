@@ -5612,3 +5612,28 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "S2PLT02-TERMINAL-CAPTURE-PLAN-RUNTIME-AUTH-GATE"
+    title: "S2PLT02 terminal capture plan runtime auth gate"
+    parent_task_id: "S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN"
+    phase: "S2PL"
+    status: "blocked"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-06-30T18:11:03+10:00"
+    objective: "Make the S2PLT02 terminal delivery proof capture plan validate live authorization and terminal evidence inventory before routing to real capture steps."
+    scope: "S2PLT02 capture-plan builder validation, focused final-gate and CLI regressions, phase record, run manifest, traceability row, delivery/event records, owner/user-center status, and three base notes."
+    non_scope: "No S2PLT02 terminal proof artifact, no S2PLT03 terminal proof artifact, no S2PLT04 completion report, no SMTP send, no scheduler enable/install/kickstart, no Release, no restore, no CURRENT/V7 change, no public schema/DB/source/ranking/queue mutation, no P0/P1 closure claim, no S2PLT02/S2PLT03/S2PLT04/S2PMT07 acceptance, and no integrated production acceptance."
+    owner: "engineering_owner + independent_final_reviewer"
+    risk_tier: "T1"
+    dependencies: ["S2PLT02-AUTHORIZATION-READINESS-HASH-GATE", "S2PLT02-TERMINAL-PROOF-EVIDENCE-INVENTORY", "S2PLT02-TERMINAL-DELIVERY-PROOF-CAPTURE-PLAN"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_CAPTURE_PLAN_RUNTIME_AUTH_GATE.md", "governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-PLAN-RUNTIME-AUTH-GATE-20260630.json"]
+    acceptance_ids: ["ACC-S2PLT02-2D", "ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_capture_plan_red PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_capture_plan_green2 PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_capture_plan_focus PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest arxiv-daily-push/tests/test_stage2_final_gate.py arxiv-daily-push/tests/test_cli.py -q", "PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/adp_capture_plan_live_final PYTHONPATH=arxiv-daily-push/src python3 -m arxiv_daily_push.cli plan-s2plt02-terminal-delivery-proof-capture --repo-root . --generated-at 2026-06-30T18:03:24+10:00 --json"]
+    test_results: ["TDD red failed with missing authorization/runtime fields", "focused final-gate tests: 119 OK", "focused final-gate + CLI tests: 159 OK", "live CLI: blocked / exit 2 with state_hash 6fa850a802d93e839146cabf158689af05941a54e895911220cc9c077efde7d2 and next_executable_step WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW"]
+    evidence_refs: ["governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-PLAN-RUNTIME-AUTH-GATE-20260630.json", "arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_CAPTURE_PLAN_RUNTIME_AUTH_GATE.md", "FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_cli.py"]
+    result: "blocked_s2plt02_capture_plan_runtime_auth_gate_no_production"
+    risk: "A capture plan can be misread as permission to collect real SMTP/scheduler proof even while runtime blockers persist; this gate makes those blockers explicit and fail-closed."
+    rollback: "Revert the capture-plan runtime/auth fields, focused tests, phase record, run manifest, traceability row, delivery/event records, user-center notes, and three base notes; no runtime production state was changed."
+    target_version: "0.24.0"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

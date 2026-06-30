@@ -35,10 +35,16 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         current_state = ledger.split("\n### `", 1)[0]
 
         self.assertIn(
-            "S2PLT02_AUTHORIZATION_READINESS_HASH_GATE_BLOCKED_NO_PRODUCTION",
+            "S2PLT02_TERMINAL_CAPTURE_PLAN_RUNTIME_AUTH_GATE_BLOCKED_NO_PRODUCTION",
             current_state,
         )
-        self.assertIn("S2PLT02-AUTHORIZATION-READINESS-HASH-GATE", current_state)
+        self.assertIn("S2PLT02-TERMINAL-CAPTURE-PLAN-RUNTIME-AUTH-GATE", current_state)
+        self.assertIn("runtime_capture_ready=false", current_state)
+        self.assertIn("next_executable_step=WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW", current_state)
+        self.assertIn("6fa850a802d93e839146cabf158689af05941a54e895911220cc9c077efde7d2", current_state)
+        self.assertIn("e8942077e2a2448ab8c354c1680e9d634872b4bea8f9e0f9006efac1cbd91336", current_state)
+        self.assertIn("ADP-S2PLT02-TERMINAL-CAPTURE-PLAN-RUNTIME-AUTH-GATE-20260630.json", current_state)
+        self.assertIn("PHASE_S2PLT02_TERMINAL_CAPTURE_PLAN_RUNTIME_AUTH_GATE.md", ledger)
         self.assertIn("--expected-authorization-readiness-state-hash", current_state)
         self.assertIn("readiness_state_hash does not match current readiness state", current_state)
         self.assertIn("authorization_artifact_status=blocked", current_state)
@@ -163,7 +169,7 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("EIGHT_REAL_EMAILS", current_state)
         self.assertIn("REAL_SCHEDULER_PROOF", current_state)
         self.assertIn("S2PLT02_TERMINAL_DELIVERY_PROOF_ARTIFACT", current_state)
-        self.assertIn("CAPTURE_SECOND_REAL_M1_M4_SMTP_DAY", current_state)
+        self.assertIn("WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW", current_state)
         self.assertIn("delivery_manifest_ready=true", current_state)
         self.assertIn("blocked_missing_explicit_no_production_flags", current_state)
         self.assertIn("ADP-S2PLT02-NORMALIZED-REAL-DELIVERY-MANIFEST-20260628.json", current_state)
@@ -242,7 +248,7 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("capture plan", first_action_row)
         self.assertIn("audit-s2plt02-terminal-capture-window", first_action_row)
         self.assertIn("validate-s2plt02-real-delivery-manifest", first_action_row)
-        self.assertIn("CAPTURE_SECOND_REAL_M1_M4_SMTP_DAY", first_action_row)
+        self.assertIn("WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW", first_action_row)
         self.assertIn("dry-run/scheduler-disabled", first_action_row)
         self.assertIn("FINAL_ACCEPTANCE_BUNDLE/s2plt02_real_proof_capture_authorization.json", default_next)
         self.assertIn("FINAL_ACCEPTANCE_BUNDLE/s2plt02_terminal_delivery_proof.json", default_next)
