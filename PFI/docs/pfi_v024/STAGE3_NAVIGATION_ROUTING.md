@@ -1,7 +1,7 @@
 # PFI v0.2.4 Stage 3 Navigation Routing
 
-当前已完成至：`Stage 3 / Phase 3.3 - 导航验收`。
-Stage 3 whole-stage review 和 GitHub main upload 尚未执行。
+当前已完成至：`Stage 3 whole-stage review - 复审并解决暴露问题`。
+GitHub main upload 尚未执行。
 
 ## Scope
 
@@ -26,6 +26,8 @@ Phase 3.1 固定当前 v0.2.4 修补包的一级导航合同：
 | `PFI/tests/test_v024_stage3_phase32_route_implementation.py` | Phase 3.2 route 解析、redirect 和 runtime 声明测试。 |
 | `PFI/tests/test_v024_stage3_phase33_navigation_acceptance.py` | Phase 3.3 浏览器验收 evidence 合同测试。 |
 | `PFI/scripts/validate_v024_stage3_phase33_browser.js` | Phase 3.3 Node Playwright 真实浏览器验收脚本。 |
+| `PFI/docs/pfi_v024/STAGE3_WHOLE_STAGE_REVIEW.md` | Stage 3 整阶段复审报告。 |
+| `PFI/tests/test_v024_stage3_whole_review_contract.py` | Stage 3 整阶段复审合同测试。 |
 
 ## Official Primary Entries
 
@@ -98,8 +100,18 @@ Phase 3.1 固定当前 v0.2.4 修补包的一级导航合同：
   - `PFI/reports/pfi_v024/stage_3/phase_3_3/browser_validation.json`
   - `PFI/reports/pfi_v024/stage_3/phase_3_3/legacy_routes_validation.json`
 
+### Whole-Stage Review
+
+- Reviewed Phase 3.1, Phase 3.2, and Phase 3.3 evidence.
+- Reran Node Playwright browser validation at review time.
+- Fixed the missing whole-stage review contract/evidence gate.
+- Fixed top-level status files that still pointed at Phase 3.3 as the current gate.
+- Refreshed Phase 3.3 browser validation JSON and screenshot evidence.
+- Review evidence is recorded at:
+  - `PFI/reports/pfi_v024/stage_3/whole_stage_review/evidence.json`
+
 ## Explicitly Not Done
 
-- Stage 3 whole-stage review is not completed in this run.
 - GitHub main upload is not completed in this run.
+- Stage 4 is not started.
 - No app bundle reinstall, launcher source change, or financial data logic change was made.
