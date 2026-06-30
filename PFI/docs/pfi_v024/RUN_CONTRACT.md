@@ -2,34 +2,26 @@
 
 ## Current Run
 
-本轮只执行：PFI v0.2.4 Stage 2 / Phase 2.2 - 版本链路实现。
-不执行 Phase 2.3、Stage 2 whole-stage review 或 GitHub main upload。
+本轮只执行：PFI v0.2.4 Stage 2 / Phase 2.3 - 实机验收。
+不执行 Stage 2 whole-stage review、Stage 3 或 GitHub main upload。
 
 ## Goal
 
-Implement the visible and machine-readable version chain defined in Phase 2.1:
-repair label, build id, bundle version, bundle hash, UI contract version, and
-entry audit read model. This phase may mark Phase 2.2 candidate pass, but it
-must not claim real app/browser validation is complete.
+Validate the visible and machine-readable version chain from real entry paths:
+localhost, app dry-run/open URL, clear-cache browser context, and new browser
+profile. This phase may mark Stage 2 candidate complete, but it must not claim
+Stage 2 whole-stage review or GitHub main upload is complete.
 
 ## Allowed Files
 
 ```text
 PFI/StartPFI.command
 PFI/docs/pfi_v024/*
-PFI/src/pfi_os/app/streamlit_app.py
 PFI/src/pfi_v02/stage_v024_stage2_entry_consistency.py
 PFI/scripts/startPFI.sh
-PFI/tests/test_pfi_app_entry_version_contract.py
-PFI/tests/test_v023_stage1_app_entry_bundle_contract.py
-PFI/tests/test_v024_stage1_whole_review_contract.py
-PFI/tests/test_v024_stage2_phase22_version_link.py
-PFI/reports/pfi_v024/stage_2/phase_2_2/*
-PFI/web/index.html
-PFI/web/styles/tokens.css
-PFI/web/app/shell.js
-PFI/web/app/version.js
-PFI/web/app/entry_audit.js
+PFI/scripts/validate_v024_stage2_phase23_entry.js
+PFI/tests/test_v024_stage2_phase23_real_entry_validation.py
+PFI/reports/pfi_v024/stage_2/phase_2_3/*
 PFI/README.md
 PFI/HANDOFF.md
 PFI/CHANGELOG.md
@@ -55,16 +47,21 @@ PFI/macos/PFI.app/Contents/Info.plist
 PATH=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH node --check PFI/web/app/shell.js
 PATH=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH node --check PFI/web/app/version.js
 PATH=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH node --check PFI/web/app/entry_audit.js
-PYTHONDONTWRITEBYTECODE=1 python3 -B -m py_compile PFI/src/pfi_v02/stage_v024_stage2_entry_consistency.py PFI/tests/test_v024_stage2_phase22_version_link.py
-PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage2_phase22_version_link.py -q
-python3 -m json.tool PFI/reports/pfi_v024/stage_2/phase_2_2/evidence.json
+PATH=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH node --check PFI/scripts/validate_v024_stage2_phase23_entry.js
+zsh -n PFI/StartPFI.command
+zsh -n PFI/scripts/startPFI.sh
+PLAYWRIGHT_CORE_PATH=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/.pnpm/playwright-core@1.61.0/node_modules/playwright-core CHROME_EXECUTABLE_PATH="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node PFI/scripts/validate_v024_stage2_phase23_entry.js
+PYTHONDONTWRITEBYTECODE=1 python3 -B -m py_compile PFI/src/pfi_v02/stage_v024_stage2_entry_consistency.py PFI/tests/test_v024_stage2_phase23_real_entry_validation.py
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_stage2_phase23_real_entry_validation.py -q
+python3 -m json.tool PFI/reports/pfi_v024/stage_2/phase_2_3/evidence.json
+python3 -m json.tool PFI/reports/pfi_v024/stage_2/phase_2_3/browser_validation.json
 git diff --check -- PFI
 ```
 
 ## Explicit Non-Goals
 
-- Do not execute Phase 2.3 real app/browser validation in this run.
-- Do not claim app and localhost real-browser consistency is fully validated.
+- Do not execute Stage 2 whole-stage review in this run.
+- Do not start Stage 3 navigation repair in this run.
 - Do not reinstall or mutate app bundles.
 - Do not modify app launcher C source or Info.plist.
 - Do not change business financial UI flows or data logic.

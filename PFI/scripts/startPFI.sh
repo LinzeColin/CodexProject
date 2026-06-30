@@ -13,29 +13,64 @@ export PFI_UI_V2="${PFI_UI_V2:-1}"
 PYTHON_BIN="$(pfi_os_ensure_app_python "$PROJECT_DIR")"
 LOG_DIR="$PROJECT_DIR/data/cache"
 LOG_FILE="$LOG_DIR/pfi_streamlit.log"
-PFI_VERSION_QUERY="pfi_app_version=0.2.3&pfi_build=pfi-v024-stage2-phase22&pfi_ui_contract=PFI-V024-STAGE2-ENTRY-CONSISTENCY"
 mkdir -p "$LOG_DIR"
+PFI_ACTIVE_BUILD_ID="pfi-v024-stage2-phase22"
+PFI_ACTIVE_UI_CONTRACT="PFI-V024-STAGE2-ENTRY-CONSISTENCY"
+PFI_VERSION_QUERY="pfi_app_version=0.2.3&pfi_build=pfi-v024-stage2-phase22&pfi_ui_contract=PFI-V024-STAGE2-ENTRY-CONSISTENCY"
+PFI_ACTIVE_SERVICE_FILE="$LOG_DIR/pfi_active_service.env"
 
 process_cwd() {
   local pid="$1"
   lsof -a -p "$pid" -d cwd -Fn 2>/dev/null | awk '/^n/ {sub(/^n/, ""); print; exit}'
 }
 
+marker_value() {
+  local key="$1"
+  [[ -f "$PFI_ACTIVE_SERVICE_FILE" ]] || return 1
+  awk -F= -v key="$key" '$1 == key {sub(/^[^=]*=/, ""); print; exit}' "$PFI_ACTIVE_SERVICE_FILE"
+}
+
+active_service_url_if_current_build() {
+  local marker_project marker_pid marker_port marker_url marker_build marker_contract command cwd_path
+  marker_project="$(marker_value PFI_ACTIVE_PROJECT_DIR || true)"
+  marker_pid="$(marker_value PFI_ACTIVE_PID || true)"
+  marker_port="$(marker_value PFI_ACTIVE_PORT || true)"
+  marker_url="$(marker_value PFI_ACTIVE_URL || true)"
+  marker_build="$(marker_value PFI_ACTIVE_BUILD_ID || true)"
+  marker_contract="$(marker_value PFI_ACTIVE_UI_CONTRACT || true)"
+  [[ "$marker_project" == "$PROJECT_DIR" ]] || return 1
+  [[ "$marker_build" == "$PFI_ACTIVE_BUILD_ID" ]] || return 1
+  [[ "$marker_contract" == "$PFI_ACTIVE_UI_CONTRACT" ]] || return 1
+  [[ -n "$marker_pid" && -n "$marker_port" && -n "$marker_url" ]] || return 1
+  kill -0 "$marker_pid" >/dev/null 2>&1 || return 1
+  curl -s -o /dev/null -w "%{http_code}" "$marker_url/_stcore/health" | grep -q "200" || return 1
+  command="$(ps -p "$marker_pid" -o command= 2>/dev/null || true)"
+  cwd_path="$(process_cwd "$marker_pid")"
+  [[ "$command" == *"src/pfi_os/app/streamlit_app.py"* ]] || return 1
+  [[ "$cwd_path" == "$PROJECT_DIR" || "$command" == *"$PROJECT_DIR"* ]] || return 1
+  printf "%s\n" "$marker_url"
+}
+
+write_active_service_marker() {
+  local pid="$1"
+  local port="$2"
+  local url="$3"
+  {
+    printf "PFI_ACTIVE_SCHEMA=PFIActiveServiceV1\n"
+    printf "PFI_ACTIVE_PROJECT_DIR=%s\n" "$PROJECT_DIR"
+    printf "PFI_ACTIVE_PID=%s\n" "$pid"
+    printf "PFI_ACTIVE_PORT=%s\n" "$port"
+    printf "PFI_ACTIVE_URL=%s\n" "$url"
+    printf "PFI_ACTIVE_BUILD_ID=%s\n" "$PFI_ACTIVE_BUILD_ID"
+    printf "PFI_ACTIVE_UI_CONTRACT=%s\n" "$PFI_ACTIVE_UI_CONTRACT"
+    printf "PFI_ACTIVE_STARTED_AT=%s\n" "$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+  } > "$PFI_ACTIVE_SERVICE_FILE"
+}
+
 service_url_if_current_project() {
-  local port pids pid command cwd_path
-  for port in {8501..8510}; do
-    if curl -s -o /dev/null -w "%{http_code}" "http://localhost:$port/_stcore/health" | grep -q "200"; then
-      pids="$(lsof -tiTCP:"$port" -sTCP:LISTEN 2>/dev/null || true)"
-      for pid in ${(f)pids}; do
-        command="$(ps -p "$pid" -o command= 2>/dev/null || true)"
-        cwd_path="$(process_cwd "$pid")"
-        if [[ "$command" == *"src/pfi_os/app/streamlit_app.py"* && ( "$command" == *"$PROJECT_DIR"* || "$cwd_path" == "$PROJECT_DIR" ) ]]; then
-          printf "http://localhost:%s\n" "$port"
-          return 0
-        fi
-      done
-    fi
-  done
+  if active_service_url_if_current_build; then
+    return 0
+  fi
   return 1
 }
 
@@ -114,6 +149,7 @@ fi
 
 echo "PFI 已就绪：$URL"
 echo "运行日志：$LOG_FILE"
+write_active_service_marker "$STREAMLIT_PID" "$PORT" "$URL"
 if [[ -t 1 && "${PFI_START_OPEN_BROWSER:-1}" == "1" ]]; then
   open "$OPEN_URL" >/dev/null 2>&1 || true
 else

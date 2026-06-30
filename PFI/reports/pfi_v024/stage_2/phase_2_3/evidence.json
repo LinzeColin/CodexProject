@@ -1,0 +1,101 @@
+{
+  "schema": "PFIV024Stage2Phase23EvidenceV1",
+  "version": "v0.2.3-repair",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Stage 2",
+  "phase_id": "2.3",
+  "phase_name": "实机验收",
+  "status": "candidate_pass",
+  "allowed_files_obeyed": true,
+  "generated_at": "2026-06-30T13:38:40.784Z",
+  "repo": {
+    "path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi",
+    "branch": "codex/pfi",
+    "remote": "git@github.com:LinzeColin/CodexProject.git",
+    "head_at_evidence_write": "87da6e6808445dbabd15ca096e4274182bcbd427",
+    "origin_main_at_evidence_write": "4d2cb00b4dd4e83c60aff586f9e54a046262477b",
+    "local_ahead_origin_main_at_evidence_write": 3
+  },
+  "tasks": {
+    "T2.3.1": {
+      "status": "done",
+      "artifact": "PFI/reports/pfi_v024/stage_2/phase_2_3/screenshots/localhost_home.png"
+    },
+    "T2.3.2": {
+      "status": "done",
+      "artifact": "PFI/reports/pfi_v024/stage_2/phase_2_3/screenshots/app_home.png"
+    },
+    "T2.3.3": {
+      "status": "done",
+      "artifact": "PFI/reports/pfi_v024/stage_2/phase_2_3/screenshots/clear_cache_home.png"
+    },
+    "T2.3.4": {
+      "status": "done",
+      "artifact": "PFI/reports/pfi_v024/stage_2/phase_2_3/screenshots/new_profile_home.png"
+    }
+  },
+  "phase_2_1_complete": true,
+  "phase_2_2_complete": true,
+  "phase_2_3_complete": true,
+  "stage_2_candidate_complete": true,
+  "stage_2_complete": false,
+  "requires_user_acceptance": true,
+  "no_auto_next_stage": true,
+  "no_auto_closeout": true,
+  "github_main_uploaded": false,
+  "app_bundle_changes_made": false,
+  "app_bundle_reinstall_executed": false,
+  "launcher_c_or_plist_changes_made": false,
+  "data_logic_changes_made": false,
+  "business_ui_changes_made": false,
+  "browser_validation": "PFI/reports/pfi_v024/stage_2/phase_2_3/browser_validation.json",
+  "screenshots": [
+    "PFI/reports/pfi_v024/stage_2/phase_2_3/screenshots/localhost_home.png",
+    "PFI/reports/pfi_v024/stage_2/phase_2_3/screenshots/app_home.png",
+    "PFI/reports/pfi_v024/stage_2/phase_2_3/screenshots/clear_cache_home.png",
+    "PFI/reports/pfi_v024/stage_2/phase_2_3/screenshots/new_profile_home.png"
+  ],
+  "changed_files": [
+    "PFI/CHANGELOG.md",
+    "PFI/HANDOFF.md",
+    "PFI/README.md",
+    "PFI/StartPFI.command",
+    "PFI/docs/pfi_v024/RUN_CONTRACT.md",
+    "PFI/docs/pfi_v024/STAGE2_ENTRY_CONSISTENCY.md",
+    "PFI/reports/pfi_v024/stage_2/phase_2_3/browser_validation.json",
+    "PFI/reports/pfi_v024/stage_2/phase_2_3/bundle_hash.txt",
+    "PFI/reports/pfi_v024/stage_2/phase_2_3/changed_files.txt",
+    "PFI/reports/pfi_v024/stage_2/phase_2_3/evidence.json",
+    "PFI/reports/pfi_v024/stage_2/phase_2_3/risk_and_rollback.md",
+    "PFI/reports/pfi_v024/stage_2/phase_2_3/screenshots/app_home.png",
+    "PFI/reports/pfi_v024/stage_2/phase_2_3/screenshots/clear_cache_home.png",
+    "PFI/reports/pfi_v024/stage_2/phase_2_3/screenshots/localhost_home.png",
+    "PFI/reports/pfi_v024/stage_2/phase_2_3/screenshots/new_profile_home.png",
+    "PFI/reports/pfi_v024/stage_2/phase_2_3/terminal.log",
+    "PFI/scripts/startPFI.sh",
+    "PFI/scripts/validate_v024_stage2_phase23_entry.js",
+    "PFI/src/pfi_v02/stage_v024_stage2_entry_consistency.py",
+    "PFI/tests/test_v024_stage2_phase23_real_entry_validation.py",
+    "PFI/功能清单.md",
+    "PFI/开发记录.md",
+    "PFI/模型参数文件.md"
+  ],
+  "explicitly_not_done": [
+    "Stage 2 whole-stage review",
+    "GitHub main upload",
+    "app bundle reinstall",
+    "launcher C or Info.plist changes",
+    "business financial UI flow redesign",
+    "data logic changes",
+    "mock/sample/demo/synthetic/fixture/fake financial data",
+    "Stage 3 navigation repair"
+  ],
+  "validation_results": {
+    "browser_validation": "pass",
+    "app_dry_run_bindings": "pass",
+    "all_paths_same_bundle_hash": "pass",
+    "all_paths_same_build_id": "pass",
+    "console_page_http_errors": "pass"
+  }
+}

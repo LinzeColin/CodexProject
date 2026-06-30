@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 2 Phase 2.3 - 2026-06-30
+
+- 完成 `Stage 2 / Phase 2.3 - 实机验收`：localhost、app、清缓存浏览器上下文、新 Profile 四条路径均读取同一 Stage 2 build id 和 bundle hash。
+- 新增 `PFI/scripts/validate_v024_stage2_phase23_entry.js`，生成 `browser_validation.json` 和四张真实浏览器截图。
+- 修复 Phase 2.3 暴露的同路径旧服务复用问题：`PFI/StartPFI.command` 和 `PFI/scripts/startPFI.sh` 只复用带当前 build/UI contract marker 的 Streamlit 服务。
+- 当前真实验收服务为 `http://127.0.0.1:8502`；旧 `8501` 同路径服务不再作为当前 build 入口复用。
+- 本轮未执行 Stage 2 whole-stage review、未进入 Stage 3、未重装 app bundle、未修改 launcher C/Info.plist、未修改真实财务数据逻辑、未上传 GitHub main。
+
 ## v0.2.4 Repair Pack Stage 2 Phase 2.2 - 2026-06-30
 
 - 完成 `Stage 2 / Phase 2.2 - 版本链路实现`：页面可见 `PFI v0.2.3 Repair`、build id、bundle version、bundle hash 和 UI contract version。

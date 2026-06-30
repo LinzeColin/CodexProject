@@ -4,36 +4,73 @@ setopt NO_BG_NICE
 
 PROJECT_DIR="${0:A:h}"
 cd "$PROJECT_DIR"
-mkdir -p "$PROJECT_DIR/data/cache"
-LOG_FILE="$PROJECT_DIR/data/cache/pfi_macos_app.log"
+LOG_DIR="$PROJECT_DIR/data/cache"
+mkdir -p "$LOG_DIR"
+LOG_FILE="$LOG_DIR/pfi_macos_app.log"
 exec >> "$LOG_FILE" 2>&1
 echo "==== PFI launch $(date -u +"%Y-%m-%dT%H:%M:%SZ") pid=$$ ===="
+PFI_ACTIVE_BUILD_ID="pfi-v024-stage2-phase22"
+PFI_ACTIVE_UI_CONTRACT="PFI-V024-STAGE2-ENTRY-CONSISTENCY"
 PFI_VERSION_QUERY="pfi_app_version=0.2.3&pfi_build=pfi-v024-stage2-phase22&pfi_ui_contract=PFI-V024-STAGE2-ENTRY-CONSISTENCY"
+PFI_ACTIVE_SERVICE_FILE="$LOG_DIR/pfi_active_service.env"
 
 process_cwd() {
   local pid="$1"
   lsof -a -p "$pid" -d cwd -Fn 2>/dev/null | awk '/^n/ {sub(/^n/, ""); print; exit}'
 }
 
+marker_value() {
+  local key="$1"
+  [[ -f "$PFI_ACTIVE_SERVICE_FILE" ]] || return 1
+  awk -F= -v key="$key" '$1 == key {sub(/^[^=]*=/, ""); print; exit}' "$PFI_ACTIVE_SERVICE_FILE"
+}
+
+active_service_url_if_current_build() {
+  local marker_project marker_pid marker_port marker_url marker_build marker_contract command cwd_path
+  marker_project="$(marker_value PFI_ACTIVE_PROJECT_DIR || true)"
+  marker_pid="$(marker_value PFI_ACTIVE_PID || true)"
+  marker_port="$(marker_value PFI_ACTIVE_PORT || true)"
+  marker_url="$(marker_value PFI_ACTIVE_URL || true)"
+  marker_build="$(marker_value PFI_ACTIVE_BUILD_ID || true)"
+  marker_contract="$(marker_value PFI_ACTIVE_UI_CONTRACT || true)"
+  [[ "$marker_project" == "$PROJECT_DIR" ]] || return 1
+  [[ "$marker_build" == "$PFI_ACTIVE_BUILD_ID" ]] || return 1
+  [[ "$marker_contract" == "$PFI_ACTIVE_UI_CONTRACT" ]] || return 1
+  [[ -n "$marker_pid" && -n "$marker_port" && -n "$marker_url" ]] || return 1
+  kill -0 "$marker_pid" >/dev/null 2>&1 || return 1
+  curl -s -o /dev/null -w "%{http_code}" "$marker_url/_stcore/health" | grep -q "200" || return 1
+  command="$(ps -p "$marker_pid" -o command= 2>/dev/null || true)"
+  cwd_path="$(process_cwd "$marker_pid")"
+  [[ "$command" == *"src/pfi_os/app/streamlit_app.py"* ]] || return 1
+  [[ "$cwd_path" == "$PROJECT_DIR" || "$command" == *"$PROJECT_DIR"* ]] || return 1
+  printf "%s\n" "$marker_url"
+}
+
+write_active_service_marker() {
+  local pid="$1"
+  local port="$2"
+  local url="$3"
+  {
+    printf "PFI_ACTIVE_SCHEMA=PFIActiveServiceV1\n"
+    printf "PFI_ACTIVE_PROJECT_DIR=%s\n" "$PROJECT_DIR"
+    printf "PFI_ACTIVE_PID=%s\n" "$pid"
+    printf "PFI_ACTIVE_PORT=%s\n" "$port"
+    printf "PFI_ACTIVE_URL=%s\n" "$url"
+    printf "PFI_ACTIVE_BUILD_ID=%s\n" "$PFI_ACTIVE_BUILD_ID"
+    printf "PFI_ACTIVE_UI_CONTRACT=%s\n" "$PFI_ACTIVE_UI_CONTRACT"
+    printf "PFI_ACTIVE_STARTED_AT=%s\n" "$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+  } > "$PFI_ACTIVE_SERVICE_FILE"
+}
+
 open_existing_service() {
-  local existing_port pids pid command cwd_path
-  for EXISTING_PORT in {8501..8510}; do
-    if curl -s -o /dev/null -w "%{http_code}" "http://localhost:$EXISTING_PORT/_stcore/health" | grep -q "200"; then
-      pids="$(lsof -tiTCP:"$EXISTING_PORT" -sTCP:LISTEN 2>/dev/null || true)"
-      for pid in ${(f)pids}; do
-        command="$(ps -p "$pid" -o command= 2>/dev/null || true)"
-        cwd_path="$(process_cwd "$pid")"
-        if [[ "$command" == *"src/pfi_os/app/streamlit_app.py"* && ( "$command" == *"$PROJECT_DIR"* || "$cwd_path" == "$PROJECT_DIR" ) ]]; then
-          EXISTING_URL="http://localhost:$EXISTING_PORT"
-          OPEN_URL="$EXISTING_URL/?$PFI_VERSION_QUERY"
-          echo "PFI 当前项目服务已在运行：$EXISTING_URL。复用现有服务。"
-          open "$OPEN_URL" >/dev/null 2>&1
-          return 0
-        fi
-      done
-      echo "端口 $EXISTING_PORT 上有其他健康服务，但不是当前 PFI 项目。已忽略。"
-    fi
-  done
+  local existing_url
+  if existing_url="$(active_service_url_if_current_build)"; then
+    OPEN_URL="$existing_url/?$PFI_VERSION_QUERY"
+    echo "PFI 当前 build 服务已在运行：$existing_url。复用现有服务。"
+    open "$OPEN_URL" >/dev/null 2>&1
+    return 0
+  fi
+  echo "未找到当前 build 的 PFI 服务；将忽略同路径旧服务并启动新实例。"
   return 1
 }
 
@@ -179,6 +216,7 @@ if [ "$READY" != "1" ]; then
 fi
 
 echo "PFI 已就绪，正在打开：$OPEN_URL"
+write_active_service_marker "$STREAMLIT_PID" "$PORT" "$URL"
 open "$OPEN_URL" >/dev/null 2>&1
 
 wait "$STREAMLIT_PID" >/dev/null 2>&1 || true

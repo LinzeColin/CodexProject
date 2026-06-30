@@ -1,0 +1,14 @@
+generated_at=2026-06-30T13:38:40.784Z
+pwd=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi
+service_url=http://127.0.0.1:8502
+service_pid=56703
+service_project_root=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI
+app_dry_run_bindings=pass
+browser_validation=pass
+web_bundle_hash=e8928ed7f3067ae3e732aacda74427a61b69fbcfe855b2254118e7dafe38f8e4
+phase23_red_test=4 failed before implementation
+phase_2_1_complete=true
+phase_2_2_complete=true
+phase_2_3_complete=true
+stage_2_complete=false
+github_main_uploaded=false

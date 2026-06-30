@@ -2,8 +2,8 @@
 
 ## Current Run
 
-本轮只执行 `Stage 2 / Phase 2.2 - 版本链路实现`。
-本轮不执行真实 app/browser 四路径验收、不做 Stage 2 整体复审、不上传 GitHub main。
+本轮只执行 `Stage 2 / Phase 2.3 - 实机验收`。
+本轮不执行 Stage 2 整体复审、不进入 Stage 3、不上传 GitHub main。
 
 ## Phase 2.1 Result
 
@@ -25,7 +25,9 @@ Phase 2.1 已定位当前入口链路：
 - `PFI/web/app/version.js` now exposes Stage 2 entry version metadata while preserving Stage 1 shell integrity compatibility fields.
 - `PFI/web/app/entry_audit.js` exposes a read model for Phase 2.3 app/local/browser validation.
 - `PFI/web/styles/tokens.css` now carries the entry identity strip layout and is included in the Stage 2 bundle hash.
-- Real app/browser screenshot validation remains Phase 2.3 and is not claimed by Phase 2.2.
+- Phase 2.3 discovered that a same-cwd Streamlit process started before Phase 2.2 could still serve old Stage 1 runtime metadata on port `8501`.
+- `PFI/StartPFI.command` and `PFI/scripts/startPFI.sh` now reuse only services with a current build-scoped `pfi_active_service.env` marker.
+- Real browser validation runs on the current build service at `http://127.0.0.1:8502`.
 
 ## Phase 2.2 Result
 
@@ -38,6 +40,17 @@ Phase 2.2 已实现：
 5. `PFI/web/styles/tokens.css` keeps the entry identity strip stable in the top-bar layout and is part of `frontendBundleFiles`.
 6. Streamlit iframe injection inlines `version.js`, `entry_audit.js`, and Stage 2 runtime metadata from `build_v024_stage2_entry_runtime_metadata`.
 7. `StartPFI.command` and `scripts/startPFI.sh` open the new Stage 2 build/query contract.
+
+## Phase 2.3 Result
+
+Phase 2.3 已实现：
+
+1. `localhost` path captured `PFI/reports/pfi_v024/stage_2/phase_2_3/screenshots/localhost_home.png`.
+2. `app` path captured `PFI/reports/pfi_v024/stage_2/phase_2_3/screenshots/app_home.png` after installed app dry-run bindings resolved to this checkout.
+3. clear-cache browser context captured `PFI/reports/pfi_v024/stage_2/phase_2_3/screenshots/clear_cache_home.png`.
+4. new browser profile captured `PFI/reports/pfi_v024/stage_2/phase_2_3/screenshots/new_profile_home.png`.
+5. `PFI/reports/pfi_v024/stage_2/phase_2_3/browser_validation.json` proves all four paths expose the same build id and bundle hash.
+6. Stage 2 is now candidate complete, but whole-stage review has not been executed.
 
 ## Phase 2.1 Artifacts
 
@@ -53,8 +66,16 @@ Phase 2.2 已实现：
 - `PFI/reports/pfi_v024/stage_2/phase_2_2/version_link_summary.md`
 - `PFI/reports/pfi_v024/stage_2/phase_2_2/terminal.log`
 
+## Phase 2.3 Artifacts
+
+- `PFI/reports/pfi_v024/stage_2/phase_2_3/evidence.json`
+- `PFI/reports/pfi_v024/stage_2/phase_2_3/browser_validation.json`
+- `PFI/reports/pfi_v024/stage_2/phase_2_3/bundle_hash.txt`
+- `PFI/reports/pfi_v024/stage_2/phase_2_3/terminal.log`
+- `PFI/reports/pfi_v024/stage_2/phase_2_3/screenshots/`
+
 ## Explicitly Not Done
 
-- Stage 2 Phase 2.3 real app/browser validation.
-- App bundle reinstall or launcher rewrite.
+- Stage 2 whole-stage review.
+- App bundle reinstall or launcher C/Info.plist rewrite.
 - GitHub main upload.
