@@ -48,6 +48,20 @@
 
 浏览器验收记录在 `PFI/reports/pfi_v023/stage_3/phase_3_3/browser_validation.json`，截图为 `screenshots/browser_history.png` 和 `screenshots/no_js_fallback.png`。
 
+## Stage 3 整体复审
+
+Stage 3 closeout 只复审 Stage 3 合同，不进入 Stage 4 或后续功能。复审记录在 `PFI/reports/pfi_v023/stage_3/stage3_review/evidence.json`，浏览器复核记录在 `PFI/reports/pfi_v023/stage_3/stage3_review/browser_review.json`。
+
+复审结论：
+
+- 正式一级入口固定为 10 个。
+- `市场与研究` 是正式一级入口。
+- v0.1 旧入口只作为兼容 route、二级入口、重定向或搜索命令存在。
+- URL/hash 会随点击更新，浏览器后退/前进可恢复工作区状态。
+- 页面不是通过长页锚点滚动伪装跳转。
+- `noscript` fallback 暴露 10 个正式一级入口 route。
+- Stage 3 没有引入禁用的伪造财务数据。
+
 ## 明确未做
 
-已完成 phase 不做二级页面差异化、不做 Stage 3 整体复审、不上传 GitHub main。上述内容分别属于 Stage 4 或 Stage 3 整体复审。
+Stage 3 不做二级页面差异化、不做 Stage 4 及后续功能。GitHub main 上传在 closeout commit 之后用 `git push` 和 `git ls-remote` 终端验证证明，不写成提交内的自引用事实。

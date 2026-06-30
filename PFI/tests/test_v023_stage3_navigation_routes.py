@@ -431,6 +431,51 @@ class TestV023Stage3NavigationRoutes(unittest.TestCase):
         self.assertIn("Stage 3 review not run", evidence["explicitly_not_done"])
         self.assertIn("GitHub main upload for intermediate phase", evidence["explicitly_not_done"])
 
+    def test_stage3_review_closeout_evidence_exists(self) -> None:
+        review_root = ROOT / "reports" / "pfi_v023" / "stage_3" / "stage3_review"
+        evidence_path = review_root / "evidence.json"
+        changed_files_path = review_root / "changed_files.txt"
+        terminal_log_path = review_root / "terminal.log"
+        browser_review_path = review_root / "browser_review.json"
+        screenshot_path = review_root / "screenshots" / "stage3_review.png"
+        no_js_screenshot_path = review_root / "screenshots" / "stage3_review_no_js.png"
+
+        self.assertTrue(evidence_path.exists())
+        self.assertTrue(changed_files_path.exists())
+        self.assertTrue(terminal_log_path.exists())
+        self.assertTrue(browser_review_path.exists())
+        self.assertTrue(screenshot_path.exists())
+        self.assertTrue(no_js_screenshot_path.exists())
+
+        evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
+        browser_review = json.loads(browser_review_path.read_text(encoding="utf-8"))
+        changed_files = [
+            line.strip()
+            for line in changed_files_path.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        ]
+
+        self.assertEqual(evidence["version"], "v0.2.3")
+        self.assertEqual(evidence["stage"], "Stage 3")
+        self.assertEqual(evidence["review_id"], "PFI-V023-STAGE3-REVIEW")
+        self.assertEqual(evidence["status"], "pass")
+        self.assertEqual(evidence["changed_files"], changed_files)
+        self.assertTrue(evidence["allowed_files_obeyed"])
+        self.assertTrue(evidence["history_deprecation_policy_obeyed"])
+        self.assertTrue(evidence["no_mock_financial_data"])
+        self.assertTrue(evidence["stage3_contract"]["official_primary_entries_count_is_10"])
+        self.assertTrue(evidence["stage3_contract"]["market_research_is_formal_primary"])
+        self.assertTrue(evidence["stage3_contract"]["legacy_9_entry_constraint_is_obsolete"])
+        self.assertTrue(evidence["stage3_contract"]["v01_entries_are_not_primary"])
+        self.assertTrue(evidence["stage3_contract"]["browser_back_forward_ok"])
+        self.assertTrue(evidence["stage3_contract"]["page_not_anchor_scroll_only"])
+        self.assertTrue(browser_review["desktop_primary_count_is_10"])
+        self.assertTrue(browser_review["mobile_primary_count_is_10"])
+        self.assertTrue(browser_review["direct_url_open_ok"])
+        self.assertEqual(browser_review["console_errors"], [])
+        self.assertNotIn("Stage 3 review not run", evidence["explicitly_not_done"])
+        self.assertIn("Stage 4 subpage differentiation", evidence["explicitly_not_done"])
+
 
 if __name__ == "__main__":
     unittest.main()
