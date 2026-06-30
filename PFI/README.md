@@ -13,7 +13,7 @@ PFI v0.2.4 is the repair package following the completed v0.2.3 closeout.
 The user-provided source package is named `v0.2.3-repair`; this thread maps it
 to target version `v0.2.4`.
 
-Current run status:
+Pre-stage record status:
 
 - current unit: `Pre Stage 0 / Phase P0.0`
 - Stage 0 executed: no
@@ -32,11 +32,12 @@ Records:
 
 ## v0.2.4 Stage 0 Status
 
-Current run unit: `Stage 0 / Phase 0.2 - 历史约束废弃`.
+Current run unit: `Stage 0 / Phase 0.3 - Stage 0 测试与证据`.
 
 - Phase 0.1: candidate pass.
 - Phase 0.2: candidate pass.
-- Phase 0.3: not executed.
+- Phase 0.3: candidate pass.
+- Stage 0 candidate: complete.
 - Stage 0 whole-stage review: not executed.
 - Business UI changes: none.
 - Data logic changes: none.
@@ -47,9 +48,17 @@ Phase 0.1 records:
 - `src/pfi_v02/stage_v024_repair_contract.py`
 - `tests/test_v024_stage0_phase01_contract.py`
 - `reports/pfi_v024/stage_0/phase_0_1/evidence.json`
+
+Phase 0.2 records:
+
 - `docs/pfi_v024/HISTORY_DEPRECATION_POLICY.md`
 - `tests/test_v024_stage0_phase02_contract.py`
 - `reports/pfi_v024/stage_0/phase_0_2/evidence.json`
+
+Phase 0.3 records:
+
+- `tests/test_v024_stage0_phase03_contract.py`
+- `reports/pfi_v024/stage_0/phase_0_3/evidence.json`
 
 ## v0.2.3 Closeout Status
 
