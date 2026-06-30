@@ -961,6 +961,7 @@ def _pfi_web_shell_html(home_summary: dict | None = None) -> str:
     legacy_css_path = ROOT / "web" / "styles.css"
     version_path = ROOT / "web" / "app" / "version.js"
     entry_audit_path = ROOT / "web" / "app" / "entry_audit.js"
+    navigation_path = ROOT / "web" / "app" / "navigation.js"
     routes_path = ROOT / "web" / "app" / "routes.js"
     stage4_pages_path = ROOT / "web" / "app" / "pages" / "stage4Subpages.js"
     home_page_path = ROOT / "web" / "app" / "pages" / "home.js"
@@ -970,6 +971,7 @@ def _pfi_web_shell_html(home_summary: dict | None = None) -> str:
     legacy_css = legacy_css_path.read_text(encoding="utf-8")
     version_js = version_path.read_text(encoding="utf-8")
     entry_audit_js = entry_audit_path.read_text(encoding="utf-8")
+    navigation_js = navigation_path.read_text(encoding="utf-8")
     routes_js = routes_path.read_text(encoding="utf-8")
     stage4_pages_js = stage4_pages_path.read_text(encoding="utf-8")
     home_page_js = home_page_path.read_text(encoding="utf-8")
@@ -1003,6 +1005,10 @@ def _pfi_web_shell_html(home_summary: dict | None = None) -> str:
     shell_html = shell_html.replace(
         '<script src="./app/entry_audit.js"></script>',
         f"<script>{entry_audit_js}</script>",
+    )
+    shell_html = shell_html.replace(
+        '<script src="./app/navigation.js"></script>',
+        f"<script>{navigation_js}</script>",
     )
     shell_html = shell_html.replace(
         '<script src="./app/routes.js"></script>',

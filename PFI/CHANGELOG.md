@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## v0.2.4 Repair Pack Stage 3 Phase 3.1 - 2026-06-30
+
+- 完成 `Stage 3 / Phase 3.1 - 导航合同`：正式一级入口固定 10 个，`市场与研究` 保持第 9 个正式一级入口。
+- 新增 `PFI/web/app/navigation.js` 和 `PFI/src/pfi_v02/stage_v024_stage3_navigation.py`，将 v0.2.4 Stage 3 导航合同独立为前端和 Python 可验证资源。
+- `首页`、`市场`、`研究`、`持仓`、`策略实验室`、`数据与系统` 保留为 v0.1 alias/command，不作为同级一级入口。
+- `PFI/web/index.html` 加载 `navigation.js` 后再加载 `routes.js`；`PFI/src/pfi_os/app/streamlit_app.py` 同步内联该脚本，避免 app/localhost bundle 漂移。
+- 新增 `PFI/tests/test_v024_stage3_phase31_navigation_contract.py`、`PFI/docs/pfi_v024/STAGE3_NAVIGATION_ROUTING.md` 和 `PFI/reports/pfi_v024/stage_3/phase_3_1/evidence.json`。
+- 本轮未执行 Phase 3.2、Phase 3.3、Stage 3 whole-stage review、app bundle reinstall、真实数据逻辑修改或 GitHub main upload。
+
 ## v0.2.4 Repair Pack Stage 2 Whole-Stage Review - 2026-06-30
 
 - 完成 `Stage 2 whole-stage review - 复审并解决暴露问题`，复审 Phase 2.1、Phase 2.2、Phase 2.3 的入口链路、版本链路、真实浏览器验收和 evidence。

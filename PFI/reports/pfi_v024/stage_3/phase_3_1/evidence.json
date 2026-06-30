@@ -1,0 +1,167 @@
+{
+  "schema": "PFIV024Stage3Phase31NavigationEvidenceV1",
+  "version": "v0.2.3-repair",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "stage": "Stage 3",
+  "phase_id": "3.1",
+  "phase_name": "导航合同",
+  "status": "candidate_pass",
+  "allowed_files_obeyed": true,
+  "generated_at": "2026-06-30T14:10:00Z",
+  "repo": {
+    "path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi",
+    "branch": "codex/pfi",
+    "remote": "git@github.com:LinzeColin/CodexProject.git",
+    "head_at_evidence_write": "c34af606f9793272e92d067fbe808dfdf100ec84",
+    "origin_main_at_evidence_write": "892ae7151c4bc8c570117f2121026d6bef72953b",
+    "local_ahead_origin_main_at_evidence_write": 0,
+    "local_behind_origin_main_at_evidence_write": 7,
+    "origin_main_delta_touches_pfi": false
+  },
+  "tasks": {
+    "T3.1.1": {
+      "status": "done",
+      "artifact": "PFI/web/app/navigation.js",
+      "summary": "Defined exactly 10 official primary navigation entries in taskpack order."
+    },
+    "T3.1.2": {
+      "status": "done",
+      "artifact": "PFI/web/app/navigation.js and PFI/web/app/routes.js",
+      "summary": "Defined v0.1 labels as secondary_or_command_alias routes, not primary entries."
+    },
+    "T3.1.3": {
+      "status": "done",
+      "artifact": "PFI/web/index.html",
+      "summary": "Desktop, mobile, and no-js surfaces expose only the 10 official primary entries."
+    },
+    "T3.1.4": {
+      "status": "done",
+      "artifact": "PFI/tests/test_v024_stage3_phase31_navigation_contract.py",
+      "summary": "Active-state rule contract freezes one active primary workspace and alias-to-workspace resolution."
+    }
+  },
+  "official_primary_entries": [
+    "首页总览",
+    "账户与资产",
+    "账本流水",
+    "投资管理",
+    "消费管理",
+    "数据源与上传",
+    "建议与复盘",
+    "报告与洞察",
+    "市场与研究",
+    "设置"
+  ],
+  "legacy_alias_labels": [
+    "首页",
+    "市场",
+    "研究",
+    "持仓",
+    "策略实验室",
+    "数据与系统"
+  ],
+  "active_state_rules": {
+    "nav_index_sequence": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    "single_active_primary_entry": true,
+    "desktop_and_mobile_active_state_share_workspace": true,
+    "legacy_alias_primary_entry_allowed": false,
+    "legacy_alias_resolves_before_active_workspace": true
+  },
+  "phase_3_1_complete": true,
+  "phase_3_2_complete": false,
+  "phase_3_3_complete": false,
+  "stage_3_candidate_complete": false,
+  "stage_3_complete": false,
+  "current_phase_only": true,
+  "max_one_phase_per_run": true,
+  "requires_user_acceptance": true,
+  "next_phase_requires_user_instruction": true,
+  "browser_history_validation_done": false,
+  "github_main_uploaded": false,
+  "app_bundle_changes_made": false,
+  "app_bundle_reinstall_executed": false,
+  "launcher_c_or_plist_changes_made": false,
+  "data_logic_changes_made": false,
+  "formal_fake_financial_data_added": false,
+  "acceptance_checks": {
+    "official_primary_entries_count_is_10": true,
+    "market_research_is_formal_primary": true,
+    "legacy_9_entry_constraint_is_obsolete": true,
+    "v01_entries_are_alias_or_command_only": true,
+    "no_bottom_or_sidebar_16_peer_entries": true,
+    "navigation_js_loads_before_routes_js": true,
+    "streamlit_embed_inlines_navigation_js": true,
+    "active_state_rules_declared": true,
+    "no_financial_data_logic_changes": true,
+    "github_main_not_uploaded": true
+  },
+  "commands": [
+    {
+      "cmd": "pytest stage3 phase31 contract red run",
+      "status": "expected_fail",
+      "detail": "missing pfi_v02.stage_v024_stage3_navigation before implementation"
+    },
+    {
+      "cmd": "node --check PFI/web/app/navigation.js",
+      "status": "pass"
+    },
+    {
+      "cmd": "node --check PFI/web/app/routes.js",
+      "status": "pass"
+    },
+    {
+      "cmd": "node --check PFI/web/app/shell.js",
+      "status": "pass"
+    },
+    {
+      "cmd": "pytest stage3 phase31 contract",
+      "status": "pass",
+      "detail": "6 passed"
+    },
+    {
+      "cmd": "git diff --check -- PFI",
+      "status": "pass"
+    },
+    {
+      "cmd": "pytest v024 regression through stage3 phase31",
+      "status": "pass",
+      "detail": "62 passed"
+    },
+    {
+      "cmd": "pytest v023 stage3 navigation compatibility",
+      "status": "pass",
+      "detail": "13 passed"
+    }
+  ],
+  "changed_files": [
+    "PFI/CHANGELOG.md",
+    "PFI/HANDOFF.md",
+    "PFI/README.md",
+    "PFI/docs/pfi_v024/RUN_CONTRACT.md",
+    "PFI/docs/pfi_v024/STAGE3_NAVIGATION_ROUTING.md",
+    "PFI/reports/pfi_v024/stage_3/phase_3_1/changed_files.txt",
+    "PFI/reports/pfi_v024/stage_3/phase_3_1/evidence.json",
+    "PFI/reports/pfi_v024/stage_3/phase_3_1/risk_and_rollback.md",
+    "PFI/reports/pfi_v024/stage_3/phase_3_1/terminal.log",
+    "PFI/src/pfi_os/app/streamlit_app.py",
+    "PFI/src/pfi_v02/stage_v024_stage3_navigation.py",
+    "PFI/tests/test_v024_stage3_phase31_navigation_contract.py",
+    "PFI/web/app/navigation.js",
+    "PFI/web/app/routes.js",
+    "PFI/web/app/shell.js",
+    "PFI/web/index.html",
+    "PFI/功能清单.md",
+    "PFI/开发记录.md",
+    "PFI/模型参数文件.md"
+  ],
+  "explicitly_not_done": [
+    "Stage 3 Phase 3.2 route implementation",
+    "Stage 3 Phase 3.3 browser history validation",
+    "Stage 3 whole-stage review",
+    "GitHub main upload",
+    "app bundle reinstall",
+    "launcher C or Info.plist changes",
+    "financial data or metric logic changes"
+  ]
+}

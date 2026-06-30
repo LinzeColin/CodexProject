@@ -459,14 +459,14 @@ const SEARCH_ALIASES = {
 };
 
 const SEARCH_DEFAULT_LIMIT = 10;
-const STAGE3_NAV = window.PFI_V023_STAGE3_NAV || Object.freeze({
+const STAGE3_NAV = window.PFI_V024_STAGE3_NAVIGATION || window.PFI_V024_STAGE3_NAV || window.PFI_V023_STAGE3_NAV || Object.freeze({
   legacyAliasEntries: Object.freeze([
-    Object.freeze({ taskId: "T3.2.1", label: "首页", targetWorkspace: "home", routeAlias: "/home/today", resolvedRouteAlias: "/home" }),
-    Object.freeze({ taskId: "T3.2.2", label: "市场", targetWorkspace: "market_research", routeAlias: "/market/watch", resolvedRouteAlias: "/market-research?tab=market" }),
-    Object.freeze({ taskId: "T3.2.2", label: "研究", targetWorkspace: "market_research", routeAlias: "/market/research", resolvedRouteAlias: "/market-research?tab=research" }),
-    Object.freeze({ taskId: "T3.2.3", label: "持仓", targetWorkspace: "investment", routeAlias: "/investment/holdings", resolvedRouteAlias: "/investment?tab=holdings" }),
-    Object.freeze({ taskId: "T3.2.4", label: "策略实验室", targetWorkspace: "market_research", routeAlias: "/market/lab", resolvedRouteAlias: "/market-research/strategy-lab" }),
-    Object.freeze({ taskId: "T3.2.4", label: "数据与系统", targetWorkspace: "settings", routeAlias: "/settings/data", resolvedRouteAlias: "/settings?tab=data-system" }),
+    Object.freeze({ taskId: "T3.1.2", label: "首页", targetWorkspace: "home", routeAlias: "/home/today", resolvedRouteAlias: "/home", aliasClass: "secondary_or_command_alias", primaryEntryAllowed: false }),
+    Object.freeze({ taskId: "T3.1.2", label: "市场", targetWorkspace: "market_research", routeAlias: "/market/watch", resolvedRouteAlias: "/market-research?tab=market", aliasClass: "secondary_or_command_alias", primaryEntryAllowed: false }),
+    Object.freeze({ taskId: "T3.1.2", label: "研究", targetWorkspace: "market_research", routeAlias: "/market/research", resolvedRouteAlias: "/market-research?tab=research", aliasClass: "secondary_or_command_alias", primaryEntryAllowed: false }),
+    Object.freeze({ taskId: "T3.1.2", label: "持仓", targetWorkspace: "investment", routeAlias: "/investment/holdings", resolvedRouteAlias: "/investment?tab=holdings", aliasClass: "secondary_or_command_alias", primaryEntryAllowed: false }),
+    Object.freeze({ taskId: "T3.1.2", label: "策略实验室", targetWorkspace: "market_research", routeAlias: "/market/lab", resolvedRouteAlias: "/market-research/strategy-lab", aliasClass: "secondary_or_command_alias", primaryEntryAllowed: false }),
+    Object.freeze({ taskId: "T3.1.2", label: "数据与系统", targetWorkspace: "settings", routeAlias: "/settings/data", resolvedRouteAlias: "/settings?tab=data-system", aliasClass: "secondary_or_command_alias", primaryEntryAllowed: false }),
   ]),
 });
 const LEGACY_ALIAS_ENTRIES = Object.freeze([...(STAGE3_NAV.legacyAliasEntries || [])]);
