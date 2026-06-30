@@ -138,6 +138,40 @@ class CodexMemorySyncTests(unittest.TestCase):
         self.assertEqual(second["status"], "PASS")
         self.assertEqual(second["cache"], {"cached": 1, "parsed": 0, "skipped": 0})
 
+    def test_snapshot_range_starts_from_first_session_start_day(self):
+        module = load_module()
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            db = root / "db"
+            codex_home = root / ".codex"
+            session_id = "01999999-aaaa-bbbb-cccc-333333333333"
+            write_jsonl(
+                codex_home / "sessions/2026/06/02/session.jsonl",
+                [
+                    {
+                        "type": "session_meta",
+                        "timestamp": "2026-06-02T07:00:00Z",
+                        "payload": {"id": session_id},
+                    },
+                    {
+                        "type": "response_item",
+                        "timestamp": "2026-06-09T07:00:00Z",
+                        "payload": {"type": "message", "role": "user", "content": [{"text": "默认中文输出"}]},
+                    },
+                ],
+            )
+
+            result = module.sync_codex_data(db, codex_home, build_atlas=False, commit=False, push=False)
+            snapshot = json.loads((db / module.SNAPSHOT_OUTPUT).read_text(encoding="utf-8"))
+            rows = [json.loads(line) for line in (db / module.SESSION_OUTPUT).read_text(encoding="utf-8").splitlines()]
+
+        self.assertEqual(result["range_start"], "2026-06-02")
+        self.assertEqual(result["range_end"], "2026-06-09")
+        self.assertEqual(snapshot["session_started_range_start"], "2026-06-02")
+        self.assertEqual(snapshot["activity_range_start"], "2026-06-09")
+        self.assertEqual(rows[0]["started_day"], "2026-06-02")
+        self.assertEqual(rows[0]["updated_day"], "2026-06-09")
+
 
 if __name__ == "__main__":
     unittest.main()

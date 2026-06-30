@@ -31,7 +31,7 @@ SNAPSHOT_OUTPUT = Path("data/processed/codex/codex_activity_snapshot.json")
 RECOMMENDATION_OUTPUT = Path("data/derived/codex/codex_agent_recommendations.json")
 REPORT_OUTPUT = Path("data/derived/codex/codex_behavior_report.md")
 SYNC_LOG_DIR = Path("data/run_logs/sync_runs")
-SESSION_CACHE_VERSION = "codex_session_manifest.cache.v1"
+SESSION_CACHE_VERSION = "codex_session_manifest.cache.v2"
 
 SECRET_PATTERNS = [
     re.compile(r"sk-[A-Za-z0-9_\-]{16,}"),
@@ -347,6 +347,8 @@ def parse_session_file(path: Path, codex_home: Path, index: dict[str, dict[str, 
         "thread_name": thread_name,
         "started_at": started_at.isoformat().replace("+00:00", "Z") if started_at else "",
         "updated_at": updated_at.isoformat().replace("+00:00", "Z") if updated_at else "",
+        "started_day": day_key(started_at),
+        "updated_day": day_key(updated_at),
         "day": day_key(updated_at or started_at),
         "source_bucket": source_bucket(path, codex_home),
         "source_file_hash": signature["source_file_hash"],
@@ -532,6 +534,24 @@ def build_recommendations(rows: list[dict[str, Any]], previous_path: Path) -> di
 def build_snapshot(rows: list[dict[str, Any]], daily: list[dict[str, Any]], recommendations: dict[str, Any]) -> dict[str, Any]:
     topic_counts: Counter[str] = Counter()
     tool_counts: Counter[str] = Counter()
+    started_days = sorted(
+        {
+            str(row.get("started_day") or day_key(parse_time(row.get("started_at"))) or "")
+            for row in rows
+            if row.get("started_day") or row.get("started_at")
+        }
+    )
+    updated_days = sorted(
+        {
+            str(row.get("updated_day") or day_key(parse_time(row.get("updated_at"))) or row.get("day") or "")
+            for row in rows
+            if row.get("updated_day") or row.get("updated_at") or row.get("day")
+        }
+    )
+    activity_range_start = daily[0]["date"] if daily else ""
+    activity_range_end = daily[-1]["date"] if daily else ""
+    coverage_start = min([day for day in [activity_range_start, *started_days] if day], default="")
+    coverage_end = max([day for day in [activity_range_end, *updated_days, *started_days] if day], default="")
     for row in rows:
         for topic in row.get("topics", []):
             topic_counts[str(topic.get("label"))] += int(topic.get("count") or 0)
@@ -544,8 +564,12 @@ def build_snapshot(rows: list[dict[str, Any]], daily: list[dict[str, Any]], reco
         "backup_policy": "redacted_summary_only_no_raw_transcript_no_plaintext_secret",
         "session_count": len(rows),
         "day_count": len(daily),
-        "range_start": daily[0]["date"] if daily else "",
-        "range_end": daily[-1]["date"] if daily else "",
+        "range_start": coverage_start,
+        "range_end": coverage_end,
+        "activity_range_start": activity_range_start,
+        "activity_range_end": activity_range_end,
+        "session_started_range_start": started_days[0] if started_days else "",
+        "session_started_range_end": started_days[-1] if started_days else "",
         "message_count": sum(int(row.get("message_count") or 0) for row in rows),
         "tool_call_count": sum(int(row.get("tool_call_count") or 0) for row in rows),
         "error_event_count": sum(int(row.get("error_event_count") or 0) for row in rows),
@@ -578,6 +602,7 @@ def build_report(snapshot: dict[str, Any], recommendations: dict[str, Any]) -> s
         f"- 生成时间：{snapshot['generated_at']}",
         f"- 数据来源：真实本地 Codex session 派生摘要，不包含原始全文和 plaintext secret。",
         f"- 覆盖范围：{snapshot['range_start']} 至 {snapshot['range_end']}，{snapshot['session_count']} 个 session，{snapshot['message_count']} 条消息，{snapshot['tool_call_count']} 次工具调用。",
+        f"- 统计口径：覆盖范围按最早 session 开始日到最新 session 更新日；热度日历仍按 session 最新活动日聚合（{snapshot.get('activity_range_start', '')} 至 {snapshot.get('activity_range_end', '')}）。",
         "",
         "## 主要话题",
     ]
