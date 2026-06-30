@@ -1496,6 +1496,25 @@ class CliTests(unittest.TestCase):
                 "s2plt04_completion_report_blocked_by_s2plt03_terminal_resilience_proof_missing",
             ],
         )
+        missing_inventory = payload["final_bundle_missing_artifact_inventory"]
+        self.assertEqual(missing_inventory["status"], "blocked")
+        self.assertEqual(missing_inventory["missing_item_count"], 5)
+        self.assertEqual(
+            missing_inventory["missing_live_artifact_refs"],
+            [
+                "FINAL_ACCEPTANCE_BUNDLE/manifest.json",
+                "FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json",
+                "FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml",
+                "FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json",
+                "HANDOFF/00_下一Agent先读.md",
+            ],
+        )
+        self.assertEqual(missing_inventory["next_executable_task"], payload["next_executable_task"])
+        self.assertEqual(
+            missing_inventory["next_executable_runtime_step"],
+            payload["next_executable_runtime_step"],
+        )
+        self.assertFalse(missing_inventory["ready_to_write_live_artifacts"])
         self.assertFalse(payload["all_required_steps_passed"])
         self.assertFalse(payload["ready_for_final_bundle_manifest"])
         step_status = {step["step_id"]: step["status"] for step in payload["ordered_steps"]}

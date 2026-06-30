@@ -36,7 +36,7 @@ class GovernanceCurrentStateTests(unittest.TestCase):
 
 
         self.assertIn(
-            "S2PLT02_TERMINAL_CAPTURE_WAIT_STATE_READONLY_COMMAND_CONTRACT_BLOCKED_NO_PRODUCTION",
+            "S2PMT07_FINAL_BUNDLE_PREREQUISITE_MISSING_INVENTORY_SYNC_BLOCKED_NO_PRODUCTION",
             current_state,
         )
         self.assertIn("S2PLT02-TERMINAL-CAPTURE-WAIT-STATE-READONLY-COMMAND-CONTRACT", current_state)
@@ -53,6 +53,18 @@ class GovernanceCurrentStateTests(unittest.TestCase):
         self.assertIn("PHASE_S2PLT02_TERMINAL_CAPTURE_WAIT_STATE_READONLY_COMMAND_CONTRACT.md", ledger)
         self.assertIn("ADP-S2PLT02-TERMINAL-CAPTURE-WAIT-STATE-GUARD-20260701.json", current_state)
         self.assertIn("PHASE_S2PLT02_TERMINAL_CAPTURE_WAIT_STATE_GUARD.md", ledger)
+
+        self.assertIn(
+            "S2PMT07_FINAL_BUNDLE_PREREQUISITE_MISSING_INVENTORY_SYNC_BLOCKED_NO_PRODUCTION",
+            current_state,
+        )
+        self.assertIn("S2PMT07-FINAL-BUNDLE-PREREQUISITE-MISSING-INVENTORY-SYNC", current_state)
+        self.assertIn("final_bundle_missing_artifact_inventory", current_state)
+        self.assertIn("447072118012325d6b8740d76f37b1838ec788e09e591fbe451fe3a61b0f8d04", current_state)
+        self.assertIn("45669a5d11c178dc6f2eaf23c806fabc420c2e20b2bf4f6b0fbd4f79504d1048", current_state)
+        self.assertIn("51d89042f47937b6ef65862d30dff1d8398caf21f5d8f875709ac6e6ff255cf0", current_state)
+        self.assertIn("ADP-S2PMT07-FINAL-BUNDLE-PREREQUISITE-MISSING-INVENTORY-SYNC-20260701.json", current_state)
+        self.assertIn("PHASE_S2PMT07_FINAL_BUNDLE_PREREQUISITE_MISSING_INVENTORY_SYNC.md", ledger)
 
         self.assertIn(
             "S2PMT07_FINAL_BUNDLE_MISSING_ARTIFACT_INVENTORY_BLOCKED_NO_PRODUCTION",

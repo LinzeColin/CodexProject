@@ -132,7 +132,7 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         table_rows = re.findall(r"^\| \d+ \|", page, flags=re.MULTILINE)
         readme = (USER_CENTER / "README.md").read_text(encoding="utf-8")
 
-        self.assertGreaterEqual(len(matrix_rows), 403)
+        self.assertGreaterEqual(len(matrix_rows), 406)
         self.assertEqual(len(table_rows), len(matrix_rows))
         self.assertTrue(page.startswith("# 功能任务测试证据追踪链\n"))
         self.assertRegex(page, r"更新时间：\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} Australia/Sydney")
@@ -160,6 +160,18 @@ class UserCenterCandidatePoolTests(unittest.TestCase):
         self.assertIn("581fe9f53d82db88959196f874d312e50b1739a839158f7bf2d38cc186c03506", page)
         self.assertIn("8409313fd39c4627122aca97cc80d28480f65b5230f6982ae7e720b6e0134b73", page)
         self.assertIn("eef4f33e08feb99de67c24c9339ae204658f6b0ac4d0e5cd810092b5a3246aff", page)
+
+        self.assertIn("REQ-ADP-V7-062-S2PMT07-FINAL-BUNDLE-PREREQUISITE-MISSING-INVENTORY-SYNC", page)
+        self.assertIn("S2PMT07-FINAL-BUNDLE-PREREQUISITE-MISSING-INVENTORY-SYNC", page)
+        self.assertIn(
+            "ADP-S2PMT07-FINAL-BUNDLE-PREREQUISITE-MISSING-INVENTORY-SYNC-20260701.json",
+            page,
+        )
+        self.assertIn("PHASE_S2PMT07_FINAL_BUNDLE_PREREQUISITE_MISSING_INVENTORY_SYNC.md", page)
+        self.assertIn("blocked_final_bundle_prerequisite_missing_inventory_synced_no_production", page)
+        self.assertIn("447072118012325d6b8740d76f37b1838ec788e09e591fbe451fe3a61b0f8d04", page)
+        self.assertIn("45669a5d11c178dc6f2eaf23c806fabc420c2e20b2bf4f6b0fbd4f79504d1048", page)
+        self.assertIn("51d89042f47937b6ef65862d30dff1d8398caf21f5d8f875709ac6e6ff255cf0", page)
 
         self.assertIn("REQ-ADP-V7-060-S2PLT02-TERMINAL-CAPTURE-WAIT-STATE-GUARD", page)
         self.assertIn("S2PLT02-TERMINAL-CAPTURE-WAIT-STATE-GUARD", page)

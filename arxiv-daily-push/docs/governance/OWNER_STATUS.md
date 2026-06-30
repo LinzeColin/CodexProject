@@ -12,6 +12,8 @@ Owner 视图现在明确显示 `final_bundle_missing_artifact_inventory and live
 
 既有 S2PLT02 计数拆分仍保留为历史阻断输入：final-bundle S2PLT02 summary 里的 `observed_real_delivery_days=1` / `observed_real_email_count=4` 只来自既有真实 SMTP 输入清单；当前 2026-06-29/2026-06-30 capture-window 新增真实天数和真实邮件数都是 0，`current_capture_window_dry_run_email_count_rejected=8`。S2PLT02 capture plan `state_hash=e7c9834eca19f665f1b57566f47cbd03ecaaf95fa9eb538187af3c3f7e1aa7f1`；remaining terminal proof gaps 仍为 1 个真实日和 4 封真实邮件。P0/P1 zero-proof artifact 仍为可用输入，但不等于 S2PLT04 或生产验收；不发送 SMTP、不启用 scheduler、不写 S2PLT02/S2PLT03 terminal proof；S2PLT02 终态 proof、S2PLT03 终态 proof、S2PLT04 completion report、final command、handoff、signoff、manifest 和生产验收仍保持阻断.
 
+Owner 视图现在明确显示 prerequisite plan 与 final validator 的缺失清单一致：`plan-final-bundle-prerequisites` blocked / exit 2，`state_hash=447072118012325d6b8740d76f37b1838ec788e09e591fbe451fe3a61b0f8d04`；`validate-final-acceptance-bundle` blocked / exit 2，`state_hash=45669a5d11c178dc6f2eaf23c806fabc420c2e20b2bf4f6b0fbd4f79504d1048`；`final_bundle_missing_artifact_inventory.state_hash=51d89042f47937b6ef65862d30dff1d8398caf21f5d8f875709ac6e6ff255cf0`；`missing_item_count=5`；缺失 live refs 为 `FINAL_ACCEPTANCE_BUNDLE/manifest.json;FINAL_ACCEPTANCE_BUNDLE/s2plt04_completion_report.json;FINAL_ACCEPTANCE_BUNDLE/independent_review_signoff.yaml;FINAL_ACCEPTANCE_BUNDLE/final_command_execution.json;HANDOFF/00_下一Agent先读.md`。下一步仍是 `S2PLT02_TERMINAL_DELIVERY_PROOF` / `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`，且 `ready_to_write_live_artifacts=false`；这不是 SMTP/scheduler 授权，也不是 S2PLT02/S2PLT03/S2PLT04/S2PMT07 或生产验收。
+
 ## 3. 为什么重要
 
 在保持 arXiv 稳定运行的前提下，统一 V7.1 有效要求与 V1.1 新要求，并让 Stage2 agents 在 V7.2 下聚焦 S2PMT07 独立终审、P0/P1 零证明、S2PLT04 完成和最终验收包证据。

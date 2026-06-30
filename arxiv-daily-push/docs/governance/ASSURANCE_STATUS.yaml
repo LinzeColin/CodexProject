@@ -66,7 +66,7 @@ dimensions:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "BLOCKED_PRECHECK"
-  release_gate: "S2PLT02_TERMINAL_CAPTURE_WAIT_STATE_READONLY_COMMAND_CONTRACT_BLOCKED_NO_PRODUCTION"
+  release_gate: "S2PMT07_FINAL_BUNDLE_PREREQUISITE_MISSING_INVENTORY_SYNC_BLOCKED_NO_PRODUCTION"
   blocker_ids:
     - "INHERITED_V7_1_AUDIT_P0_P1_OPEN"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"
