@@ -1,11 +1,11 @@
 project_id: "KMFA"
-as_of_event_id: "EVENT-KMFA-20260630-S09P2-MARGIN-CASH-MARGIN"
+as_of_event_id: "EVENT-KMFA-20260630-S09P3-SCOPE-RECONCILIATION"
 source_snapshot_hash: "sha256:precommit-pending"
-source_base_commit: "precommit-pending-s09p2-local"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S09P2_LOCAL_COMMIT"
-snapshot_event_time: "2026-06-30T23:45:00+10:00"
-generator_version: "manual-s09p2-margin-cash-margin"
-final_commit_binding: "precommit-pending-s09p2-local"
+source_base_commit: "precommit-pending-s09p3-local"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_S09P3_LOCAL_COMMIT"
+snapshot_event_time: "2026-06-30T23:55:00+10:00"
+generator_version: "manual-s09p3-scope-reconciliation"
+final_commit_binding: "precommit-pending-s09p3-local"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 90
-    total_active_formulas: 23
+    total_active_parameters: 96
+    total_active_formulas: 24
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -100,6 +100,9 @@ dimensions:
       - "KMFA/stage_artifacts/S09_P2_margin_cash_margin/human/test_results.md"
       - "KMFA/tools/project_margin_cash_margin.py"
       - "KMFA/tools/check_s09_p2_margin_cash_margin.py"
+      - "KMFA/stage_artifacts/S09_P3_scope_reconciliation/human/test_results.md"
+      - "KMFA/tools/project_scope_reconciliation.py"
+      - "KMFA/tools/check_s09_p3_scope_reconciliation.py"
   operational_validation:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
@@ -144,6 +147,9 @@ dimensions:
       - "KMFA/stage_artifacts/S08_P3_entity_matching_quality/human/test_results.md"
       - "KMFA/stage_artifacts/S08_STAGE_REVIEW/human/test_results.md"
       - "KMFA/stage_artifacts/S08_STAGE_REVIEW/human/github_upload_record.md"
+      - "KMFA/tools/project_scope_reconciliation.py"
+      - "KMFA/tools/check_s09_p3_scope_reconciliation.py"
+      - "KMFA/stage_artifacts/S09_P3_scope_reconciliation/human/test_results.md"
   delivery_evidence:
     status: "VERIFIED"
     fact_level: "EXTRACTED"

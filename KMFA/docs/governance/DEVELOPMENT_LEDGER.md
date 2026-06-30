@@ -1,14 +1,14 @@
 # KMFA Development Ledger
 
-product_version: 0.1.0-s09p2-margin-cash-margin
+product_version: 0.1.0-s09p3-scope-reconciliation
 
 ## Current Iteration
 
 - project_id: `KMFA`
 - current_stage: `S09`
-- current_phase: `S09-P3｜口径转换与差异核对 待开始`
-- current_tasks: `S9PCT01-S9PCT03`
-- status: `s09p2_completed_validated_local_only_s09p3_next`
+- current_phase: `S09-STAGE-REVIEW｜Stage 9 整体复审 待开始`
+- current_tasks: `KMFA-S09-STAGE-REVIEW-20260630`
+- status: `s09p3_completed_validated_local_only_stage9_review_next`
 - risk_tier: `T3`
 
 ## Completed
@@ -67,17 +67,18 @@ product_version: 0.1.0-s09p2-margin-cash-margin
 | `KMFA-S08-GITHUB-UPLOAD-20260630` | Stage 8 final GitHub upload 已完成 | `KMFA/stage_artifacts/S08_STAGE_REVIEW/human/github_upload_record.md` |
 | `S9PAT01-S9PAT03` | S09-P1 项目成本事实层完成本地验证：6 个 fact metric slots、4 条 project cost fact records、9 条 unallocated project cost pool records；保留 S06/S08 质量阻断，不执行 S09-P2/S09-P3、Stage 9 review 或 GitHub upload | `KMFA/stage_artifacts/S09_P1_project_cost_fact_layer/human/s09_p1_completion_record.md` |
 | `S9PBT01-S9PBT03` | S09-P2 毛利与现金毛利完成本地验证：4 条 project margin records、12 条 scope difference summary records；权威显示值和系统复算值分开保留，不执行 S09-P3、Stage 9 review 或 GitHub upload | `KMFA/stage_artifacts/S09_P2_margin_cash_margin/human/s09_p2_completion_record.md` |
+| `S9PCT01-S9PCT03` | S09-P3 口径转换与差异核对完成本地验证：12 条 public-safe reconciliation records、6 条 domain controls；记录原因候选、依据 refs、影响范围、责任角色、reviewer 和 pending 状态，不执行 Stage 9 review 或 GitHub upload | `KMFA/stage_artifacts/S09_P3_scope_reconciliation/human/s09_p3_completion_record.md` |
 
 ## In Progress
 
 | Task | Result | Evidence |
 |---|---|---|
-| `S9PCT01-S9PCT03` | S09-P3 口径转换与差异核对尚未开始；下一轮只允许建立 public-safe 差异原因、依据、责任人、处理状态、validator、metadata 和证据 | `KMFA/taskpack/v1_2/roadmap/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_2.md` |
+| `KMFA-S09-STAGE-REVIEW-20260630` | Stage 9 整体复审尚未开始；下一轮只允许复跑 S09-P1/P2/P3 validators、治理 validator、raw/secret scan、parse checks 和 evidence consistency check，并修复复审 findings | `KMFA/stage_artifacts/S09_P3_scope_reconciliation/human/test_results.md` |
 
 ## Not Completed
 
 | Task | Reason | Next |
 |---|---|---|
-| S09-P3 经营质量 bridge | S09-P2 已完成 local-only，S09-P3 尚未开始 | 下一轮只执行 S09-P3 |
-| Stage 9 整体复审/GitHub upload | S09-P3 尚未完成，且本轮禁止执行 | 等 Stage 9 所有 phase 完成后再复审 |
+| Stage 9 整体复审 | S09-P1/P2/P3 已完成 local-only，但复审尚未执行 | 下一轮只执行 Stage 9 整体复审 |
+| Stage 9 GitHub upload | Stage 9 review 尚未通过，且本轮禁止执行 | 等 Stage 9 复审 findings 修复后再执行 upload gate |
 | v1.2 私有源数据 | 只能本地私有使用，禁止提交公开 GitHub | 公开仓库只保存 SHA256 清单和禁止提交规则 |

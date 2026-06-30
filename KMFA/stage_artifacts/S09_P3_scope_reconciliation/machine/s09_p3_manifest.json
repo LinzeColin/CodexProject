@@ -1,0 +1,22 @@
+{
+  "completion_record_ref": "KMFA/stage_artifacts/S09_P3_scope_reconciliation/human/s09_p3_completion_record.md",
+  "confirmed_resolution_count": 0,
+  "derived_metric_rerun_allowed": false,
+  "domain_control_count": 6,
+  "formal_report_allowed": false,
+  "generated_at": "2026-06-30T23:55:00+10:00",
+  "github_upload_allowed": false,
+  "pending_resolution_count": 12,
+  "project_id": "KMFA",
+  "raw_layer_write_allowed": false,
+  "reconciliation_record_count": 12,
+  "record_type": "s09_p3_scope_reconciliation_manifest",
+  "schema_version": "kmfa.s09_p3_manifest.v1",
+  "scope_reconciliation_domain_controls_ref": "KMFA/metadata/quality/scope_reconciliation_domain_controls.jsonl",
+  "scope_reconciliation_manifest_ref": "KMFA/metadata/reports/project_scope_reconciliation_manifest.json",
+  "scope_reconciliation_records_ref": "KMFA/metadata/quality/scope_reconciliation_records.jsonl",
+  "stage9_review_allowed": false,
+  "stage_phase": "S09-P3",
+  "test_results_ref": "KMFA/stage_artifacts/S09_P3_scope_reconciliation/human/test_results.md",
+  "validator_ref": "KMFA/tools/check_s09_p3_scope_reconciliation.py"
+}
