@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-07-01 03:46:29 Australia/Sydney - S2PLT02 terminal capture no-write flags top-level sync
+
+- Added top-level S2PLT02 no-write/no-enable/no-acceptance flags to capture-plan and final-bundle summaries.
+- Live CLIs remain blocked with capture plan `12b564610114a7278b9566255085d5308984c28e433965581bcbde630e9bf9aa`, prerequisite plan `d95f0afad934a6692635960d48cda963074840c0615f9bafe1fb023ff9c4f612`, and final validator `0c032d9c804410f2b4ffe11cb52b00e91500fd7790d1eac533154650625b3c6e`; wait guard remains `581fe9f53d82db88959196f874d312e50b1739a839158f7bf2d38cc186c03506`.
+- No S2PLT02/S2PLT03 terminal proof, S2PLT04 completion report, final-bundle manifest/handoff/signoff/final-command proof, SMTP, scheduler, Release, restore, CURRENT/V7, public schema, DB, source, ranking, queue, DAILY_OPERATION, or production acceptance was enabled.
+
 ## 2026-07-01 00:13:52 Australia/Sydney - S2PMT07 final bundle S2PLT02 terminal count split
 
 - Added explicit S2PLT02 count-split fields so final-bundle summaries distinguish existing real SMTP evidence from current capture-window additions.

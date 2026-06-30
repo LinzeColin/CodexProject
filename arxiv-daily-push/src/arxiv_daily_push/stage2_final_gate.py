@@ -4365,6 +4365,11 @@ def build_s2plt02_terminal_delivery_proof_capture_plan_state(
         "terminal_artifact_validation_errors": list(terminal_artifact_validation.get("validation_errors", [])),
         "terminal_artifact_blocking_reasons": list(terminal_artifact_validation.get("blocking_reasons", [])),
         "current_wait_state": capture_wait_state_guard["current_wait_state"],
+        "write_terminal_artifact_allowed": capture_wait_state_guard["write_terminal_artifact_allowed"],
+        "scheduler_enable_allowed_by_this_plan": capture_wait_state_guard[
+            "scheduler_enable_allowed_by_this_plan"
+        ],
+        "production_acceptance_allowed": capture_wait_state_guard["production_acceptance_allowed"],
         "capture_wait_state_guard": capture_wait_state_guard,
         "capture_steps": capture_steps,
         "next_executable_step": next_step,
@@ -4612,6 +4617,13 @@ def validate_s2plt02_terminal_delivery_proof_capture_plan_state(state: Mapping[s
     ):
         if wait_guard.get(flag) is not False:
             errors.append(f"S2PLT02 wait guard {flag} must be false")
+    for flag in (
+        "write_terminal_artifact_allowed",
+        "scheduler_enable_allowed_by_this_plan",
+        "production_acceptance_allowed",
+    ):
+        if state.get(flag) is not wait_guard.get(flag):
+            errors.append(f"S2PLT02 terminal delivery proof capture plan {flag} must match wait guard")
     if wait_guard.get("no_production_side_effects") is not True:
         errors.append("S2PLT02 wait guard no_production_side_effects must be true")
     expected_wait_hash = _stable_hash({key: value for key, value in wait_guard.items() if key != "state_hash"})
@@ -9011,6 +9023,13 @@ def build_final_bundle_prerequisite_plan_state(
             "terminal_artifact_blocking_reasons": list(
                 s2plt02_capture_plan.get("terminal_artifact_blocking_reasons", [])
             ),
+            "write_terminal_artifact_allowed": s2plt02_capture_plan.get(
+                "write_terminal_artifact_allowed"
+            ),
+            "scheduler_enable_allowed_by_this_plan": s2plt02_capture_plan.get(
+                "scheduler_enable_allowed_by_this_plan"
+            ),
+            "production_acceptance_allowed": s2plt02_capture_plan.get("production_acceptance_allowed"),
             "capture_wait_state_guard": dict(
                 _mapping(s2plt02_capture_plan.get("capture_wait_state_guard"))
             ),
@@ -9077,6 +9096,13 @@ def build_final_bundle_prerequisite_plan_state(
             "smtp_secret_env_ready": s2plt02_capture_plan.get("smtp_secret_env_ready"),
             "smtp_secret_values_logged": s2plt02_capture_plan.get("smtp_secret_values_logged"),
             "blocked_by_missing_inputs": list(s2plt02_capture_plan.get("blocked_by_missing_inputs", [])),
+            "write_terminal_artifact_allowed": s2plt02_capture_plan.get(
+                "write_terminal_artifact_allowed"
+            ),
+            "scheduler_enable_allowed_by_this_plan": s2plt02_capture_plan.get(
+                "scheduler_enable_allowed_by_this_plan"
+            ),
+            "production_acceptance_allowed": s2plt02_capture_plan.get("production_acceptance_allowed"),
             "observed_real_counts_source": s2plt02_capture_plan.get("observed_real_counts_source"),
             "observed_real_delivery_days": s2plt02_capture_plan.get("observed_real_delivery_days"),
             "required_real_delivery_days": s2plt02_capture_plan.get("required_real_delivery_days"),
@@ -9838,6 +9864,13 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
         ):
             if wait_guard.get(flag) is not False:
                 errors.append(f"S2PLT02 capture plan summary wait guard {flag} must be false")
+        for flag in (
+            "write_terminal_artifact_allowed",
+            "scheduler_enable_allowed_by_this_plan",
+            "production_acceptance_allowed",
+        ):
+            if capture_plan_summary.get(flag) is not wait_guard.get(flag):
+                errors.append(f"S2PLT02 capture plan summary {flag} must match wait guard")
         if wait_guard.get("no_production_side_effects") is not True:
             errors.append("S2PLT02 capture plan summary wait guard no_production_side_effects must be true")
         expected_wait_hash = _stable_hash({key: value for key, value in wait_guard.items() if key != "state_hash"})
@@ -9865,6 +9898,9 @@ def validate_final_bundle_prerequisite_plan_state(state: Mapping[str, Any]) -> l
             "terminal_proof_real_email_count_after_current_capture_window",
             "remaining_real_delivery_days_for_terminal_proof",
             "remaining_real_email_count_for_terminal_proof",
+            "write_terminal_artifact_allowed",
+            "scheduler_enable_allowed_by_this_plan",
+            "production_acceptance_allowed",
         ):
             if runtime_summary.get(field) != capture_plan_summary.get(field):
                 errors.append(f"S2PLT02 runtime readiness summary {field} must match capture plan summary")
