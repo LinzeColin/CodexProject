@@ -1005,6 +1005,21 @@ class CliTests(unittest.TestCase):
             payload["current_wait_state"],
             payload["capture_wait_state_guard"]["current_wait_state"],
         )
+        self.assertFalse(payload["write_terminal_artifact_allowed"])
+        self.assertFalse(payload["scheduler_enable_allowed_by_this_plan"])
+        self.assertFalse(payload["production_acceptance_allowed"])
+        self.assertIs(
+            payload["write_terminal_artifact_allowed"],
+            payload["capture_wait_state_guard"]["write_terminal_artifact_allowed"],
+        )
+        self.assertIs(
+            payload["scheduler_enable_allowed_by_this_plan"],
+            payload["capture_wait_state_guard"]["scheduler_enable_allowed_by_this_plan"],
+        )
+        self.assertIs(
+            payload["production_acceptance_allowed"],
+            payload["capture_wait_state_guard"]["production_acceptance_allowed"],
+        )
         guard_command = payload["capture_wait_state_guard"]["allowed_readonly_commands"][0]
         self.assertEqual(
             guard_command,
@@ -1926,6 +1941,14 @@ class CliTests(unittest.TestCase):
                 "current_wait_state"
             ],
         )
+        capture_summary = payload["s2plt02_terminal_delivery_capture_plan_summary"]
+        wait_guard = capture_summary["capture_wait_state_guard"]
+        self.assertIs(capture_summary["write_terminal_artifact_allowed"], wait_guard["write_terminal_artifact_allowed"])
+        self.assertIs(
+            capture_summary["scheduler_enable_allowed_by_this_plan"],
+            wait_guard["scheduler_enable_allowed_by_this_plan"],
+        )
+        self.assertIs(capture_summary["production_acceptance_allowed"], wait_guard["production_acceptance_allowed"])
         self.assertEqual(
             payload["s2plt03_terminal_resilience_capture_plan_summary"],
             payload["final_bundle_prerequisite_plan"]["s2plt03_terminal_resilience_capture_plan_summary"],

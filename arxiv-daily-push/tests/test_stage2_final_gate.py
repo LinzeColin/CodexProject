@@ -1175,6 +1175,12 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(wait_guard["scheduler_enable_allowed_by_this_plan"])
         self.assertFalse(wait_guard["production_acceptance_allowed"])
         self.assertTrue(wait_guard["no_production_side_effects"])
+        self.assertIs(plan["write_terminal_artifact_allowed"], wait_guard["write_terminal_artifact_allowed"])
+        self.assertIs(
+            plan["scheduler_enable_allowed_by_this_plan"],
+            wait_guard["scheduler_enable_allowed_by_this_plan"],
+        )
+        self.assertIs(plan["production_acceptance_allowed"], wait_guard["production_acceptance_allowed"])
         self.assertIsInstance(wait_guard["state_hash"], str)
         self.assertTrue(wait_guard["state_hash"])
         self.assertEqual(
@@ -6092,7 +6098,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertEqual(
             state["s2plt02_terminal_delivery_capture_plan_summary"]["state_hash"],
-            "c9216c53cedf0cb5fcc12fd15ffb021b83586906f233a4f78ed96ecfe84f9b13",
+            "12b564610114a7278b9566255085d5308984c28e433965581bcbde630e9bf9aa",
         )
         self.assertEqual(
             state["s2plt02_terminal_delivery_capture_plan_summary"]["generated_at"],
@@ -6122,6 +6128,18 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(wait_guard["write_terminal_artifact_allowed"])
         self.assertFalse(wait_guard["scheduler_enable_allowed_by_this_plan"])
         self.assertFalse(wait_guard["production_acceptance_allowed"])
+        self.assertIs(
+            state["s2plt02_terminal_delivery_capture_plan_summary"]["write_terminal_artifact_allowed"],
+            wait_guard["write_terminal_artifact_allowed"],
+        )
+        self.assertIs(
+            state["s2plt02_terminal_delivery_capture_plan_summary"]["scheduler_enable_allowed_by_this_plan"],
+            wait_guard["scheduler_enable_allowed_by_this_plan"],
+        )
+        self.assertIs(
+            state["s2plt02_terminal_delivery_capture_plan_summary"]["production_acceptance_allowed"],
+            wait_guard["production_acceptance_allowed"],
+        )
         self.assertIn(
             "real_smtp_secret_env_missing",
             state["s2plt02_terminal_delivery_capture_plan_summary"]["runtime_capture_blockers"],

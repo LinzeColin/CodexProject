@@ -21,10 +21,18 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- task_count: 319
+- task_count: 320
 - acceptance_count: 127
 
 ## Delivery Tasks
+
+## 2026-07-01 03:46:29 Australia/Sydney - S2PLT02 Terminal Capture No-Write Flags Top-Level Sync
+
+- `S2PLT02-TERMINAL-CAPTURE-NO-WRITE-FLAGS-TOP-LEVEL-SYNC` makes `plan-s2plt02-terminal-delivery-proof-capture`, `plan-final-bundle-prerequisites`, and `validate-final-acceptance-bundle` expose S2PLT02 no-write/no-enable/no-acceptance flags at top level.
+- Current live CLIs remain blocked / exit 2: S2PLT02 capture plan `state_hash=12b564610114a7278b9566255085d5308984c28e433965581bcbde630e9bf9aa`, wait guard `state_hash=581fe9f53d82db88959196f874d312e50b1739a839158f7bf2d38cc186c03506`, prerequisite plan `state_hash=d95f0afad934a6692635960d48cda963074840c0615f9bafe1fb023ff9c4f612`, final validator `state_hash=0c032d9c804410f2b4ffe11cb52b00e91500fd7790d1eac533154650625b3c6e`.
+- Current wait state remains `WAIT_FOR_REAL_SMTP_SCHEDULER_CAPTURE_WINDOW`; next executable task remains `S2PLT02_TERMINAL_DELIVERY_PROOF`; `write_terminal_artifact_allowed=false`; `scheduler_enable_allowed_by_this_plan=false`; `production_acceptance_allowed=false`; `ready_to_write_live_artifacts=false`.
+- Evidence: `governance/run_manifests/ADP-S2PLT02-TERMINAL-CAPTURE-NO-WRITE-FLAGS-TOP-LEVEL-SYNC-20260701.json`; `arxiv-daily-push/docs/phase_records/PHASE_S2PLT02_TERMINAL_CAPTURE_NO_WRITE_FLAGS_TOP_LEVEL_SYNC.md`; `arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py`; `arxiv-daily-push/tests/test_stage2_final_gate.py`; `arxiv-daily-push/tests/test_cli.py`.
+- No S2PLT02/S2PLT03 terminal proof artifact, S2PLT04 completion report, final-bundle manifest/handoff/signoff/final-command proof, SMTP send, scheduler enable/install/kickstart, Release, restore, CURRENT/V7 change, public schema/DB/source/ranking/queue mutation, P0/P1 closure claim, S2PLT02/S2PLT03/S2PLT04/S2PMT07 acceptance, DAILY_OPERATION, Stage2/S3 production acceptance, or production side effect is introduced.
 
 ## 2026-07-01 03:21:16 Australia/Sydney - S2PMT07 Final Bundle Live Write Ready Top-Level Sync
 
